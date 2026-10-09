@@ -7,6 +7,8 @@ const attributes = {
   strength: 5,
   speed: 5,
   stamina: 5,
+  chakraControl: 5,
+  intellect: 5,
   perception: 5,
   willpower: 5,
   taijutsu: 5,
@@ -34,7 +36,7 @@ function fightUntilOver(engine: CombatEngine, state: CombatState, optionId: stri
   let current = state;
   const rng = createRng(11);
   for (let i = 0; i < 100 && !engine.outcome(current); i++) {
-    const next = engine.act(current, optionId, rng);
+    const next = engine.act(current, { optionId: optionId }, rng);
     if (!next.ok) throw new Error(next.error);
     current = next.value;
   }
@@ -92,11 +94,11 @@ describe('duel engine', () => {
       },
       createRng(1),
     );
-    expect(engine.act(state, 'tech:blast', createRng(1))).toEqual({
+    expect(engine.act(state, { optionId: 'tech:blast' }, createRng(1))).toEqual({
       ok: false,
       error: 'Not enough chakra',
     });
-    expect(engine.act(state, 'flee', createRng(1)).ok).toBe(false);
+    expect(engine.act(state, { optionId: 'flee' }, createRng(1)).ok).toBe(false);
   });
 
   it('spends chakra on techniques', () => {
@@ -117,7 +119,7 @@ describe('duel engine', () => {
       },
       createRng(1),
     );
-    const next = engine.act(state, 'tech:jab', createRng(2));
+    const next = engine.act(state, { optionId: 'tech:jab' }, createRng(2));
     if (!next.ok) throw new Error(next.error);
     const hero = engine.view(next.value).combatants.find((c) => c.id === 'hero');
     // 20 - 6 cost + 2 regen
@@ -162,7 +164,7 @@ describe('duel engine', () => {
     );
     let current = state;
     for (let i = 0; i < 12; i++) {
-      const next = engine.act(current, 'guard', createRng(i + 20));
+      const next = engine.act(current, { optionId: 'guard' }, createRng(i + 20));
       if (!next.ok) throw new Error(next.error);
       current = next.value;
     }
@@ -181,7 +183,7 @@ describe('duel engine', () => {
       data: { ...data, fighters: data.fighters.map(({ side: _side, ...f }) => f) },
     };
     expect(engine.view(old).combatants.map((c) => c.side)).toEqual(['player', 'enemy']);
-    expect(engine.act(old, 'strike', createRng(2)).ok).toBe(true);
+    expect(engine.act(old, { optionId: 'strike' }, createRng(2)).ok).toBe(true);
   });
 
   it('rejects state from another engine', () => {
@@ -213,7 +215,7 @@ describe('duel engine', () => {
         .combatants.find((c) => c.id === 'hero')!
         .statuses.includes('Sealed');
       if (sealedNow) break;
-      const next = engine.act(current, 'guard', createRng(i + 1));
+      const next = engine.act(current, { optionId: 'guard' }, createRng(i + 1));
       if (!next.ok) throw new Error(next.error);
       current = next.value;
     }

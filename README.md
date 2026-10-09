@@ -48,6 +48,11 @@ choose **GitHub Actions**.
   you. Once a week your sensei gives a lesson at the training ground, and once you're friends
   they teach you their signature technique. Spar with any genin who's around: win or lose,
   you learn from them and nobody ends up in hospital.
+- **Four fight styles to playtest** (Shinobi tab → Fight style): _Classic_; _Plan & Watch_
+  (choose a tactic, watch it play out, one trump card); _Deck_ (your techniques are cards:
+  draw five, three actions a turn, read enemy intents); _Mind Game_ (read their tell, then
+  strike, feint, guard, counter or cast). All of them use range (close, mid, far), the
+  elemental cycle, and an awakened bloodline's insight.
 - **Travel** lists the other villages (coming soon).
 
 ## Releases

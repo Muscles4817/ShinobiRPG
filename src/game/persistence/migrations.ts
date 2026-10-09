@@ -104,9 +104,15 @@ function v4ToV5(state: RawState): RawState {
   return { ...state, people: { ...people, team, sparringWith: null } };
 }
 
+/** v5 → v6: per-save settings, starting with the fight style (the classic engine). */
+function v5ToV6(state: RawState): RawState {
+  return { ...state, settings: { combatStyle: 'duel-v1' } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
   3: v3ToV4,
   4: v4ToV5,
+  5: v5ToV6,
 };

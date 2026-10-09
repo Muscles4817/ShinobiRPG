@@ -1,50 +1,44 @@
-import { combatScene, type CombatOption, type Discipline } from '@/game';
+import { useState } from 'react';
 
-import { TechniqueCard } from '../../components/TechniqueCard';
+import { combatScene, type CombatOption } from '@/game';
+
 import type { ScreenProps } from '../types';
+import { ActionBar, Hand, PlanPicker } from './combat/Choices';
+import { Foes } from './combat/Foes';
+import { RangeStrip } from './combat/RangeStrip';
 
-function cardDiscipline(o: CombatOption): Discipline | 'basic' {
-  return o.kind === 'technique' && o.discipline ? o.discipline : 'basic';
-}
-
-/** Enemy above, the exchange in the middle, your hand of technique cards below. */
+/**
+ * One screen for every fight style: enemies above (tap one to target it), the exchange in the
+ * middle, your side and resources below, and the engine's options laid out by kind.
+ */
 export function CombatScene({ ctx, state, perform }: ScreenProps) {
   const view = combatScene(state, ctx);
+  const [chosen, setChosen] = useState<string | null>(null);
   if (!view) return null;
   const enemies = view.combatants.filter((c) => c.side === 'enemy');
+  const living = enemies.filter((e) => e.health > 0);
+  const targetId = living.find((e) => e.id === chosen)?.id ?? living[0]?.id ?? null;
   const [player, ...allies] = view.combatants.filter((c) => c.side === 'player');
-  const hand = view.options.filter((o) => o.kind !== 'escape');
+  const of = (...kinds: CombatOption['kind'][]) =>
+    view.options.filter((o) => kinds.includes(o.kind));
   const escape = view.options.find((o) => o.kind === 'escape');
-  const act = (id: string) => {
-    perform({ type: 'combatAct', optionId: id });
+  const pick = (o: CombatOption) => {
+    perform({
+      type: 'combatAct',
+      optionId: o.id,
+      ...(o.targeted && targetId ? { targetId } : {}),
+    });
   };
 
   return (
     <>
-      <header className="foes">
-        {enemies.map((e) => (
-          <div key={e.id} className={e.health > 0 ? 'foe' : 'foe down'}>
-            <div className="foe-name">
-              {e.tag && <span className="badge d-spirit">{e.tag}</span>}
-              <b>{e.name}</b>
-              {e.statuses.map((s) => (
-                <span key={s} className="chip">
-                  {s}
-                </span>
-              ))}
-            </div>
-            <span className="hp">
-              <i style={{ width: `${(e.health / e.maxHealth) * 100}%` }} />
-            </span>
-            <span className="foe-foot num">
-              <span>
-                {e.health} / {e.maxHealth}
-              </span>
-              <span>Round {view.round}</span>
-            </span>
-          </div>
-        ))}
-      </header>
+      <Foes
+        foes={enemies}
+        round={view.round}
+        targetId={targetId}
+        onTarget={living.length > 1 ? setChosen : null}
+      />
+      {view.range && <RangeStrip range={view.range} />}
       <main className="page feed combat-log" aria-live="polite">
         {view.log.slice(-6).map((line, i) => (
           <p key={`${view.round}-${i}`} className={line.startsWith('—') ? 'divider' : 'story'}>
@@ -52,6 +46,7 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
           </p>
         ))}
       </main>
+      {view.prompt && <p className="combat-prompt">{view.prompt}</p>}
       {allies.length > 0 && (
         <section className="allies" aria-label="Your team">
           {allies.map((a) => (
@@ -81,40 +76,33 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
           <span className="num">
             {player.chakra}/{player.maxChakra}
           </span>
+          {view.meters?.map((m) => (
+            <span key={m.id} className="meter-chip num">
+              {m.label} {m.value}/{m.max}
+            </span>
+          ))}
+          {player.statuses.length > 0 && (
+            <span className="meter-chip">{player.statuses.join(' · ')}</span>
+          )}
         </div>
       )}
-      <nav className="hand" aria-label="Your techniques">
-        {hand.map((o) => (
+      <div className="combat-controls">
+        <PlanPicker options={of('plan')} onPick={pick} />
+        <Hand options={of('basic', 'technique')} onPick={pick} />
+        <ActionBar options={of('move', 'continue', 'end')} onPick={pick} />
+        {escape && (
           <button
-            key={o.id}
             type="button"
-            className="hand-slot"
-            disabled={o.disabledReason !== undefined}
-            title={o.disabledReason}
+            className="flee"
+            disabled={escape.disabledReason !== undefined}
             onClick={() => {
-              act(o.id);
+              pick(escape);
             }}
           >
-            <TechniqueCard
-              name={o.label}
-              detail={o.disabledReason ?? o.detail}
-              discipline={cardDiscipline(o)}
-            />
+            {escape.disabledReason ?? 'Try to flee'}
           </button>
-        ))}
-      </nav>
-      {escape && (
-        <button
-          type="button"
-          className="flee"
-          disabled={escape.disabledReason !== undefined}
-          onClick={() => {
-            act(escape.id);
-          }}
-        >
-          {escape.disabledReason ?? 'Try to flee'}
-        </button>
-      )}
+        )}
+      </div>
     </>
   );
 }

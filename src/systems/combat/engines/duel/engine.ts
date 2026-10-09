@@ -1,6 +1,7 @@
 import { err, ok, type Result } from '@/core';
 
 import type {
+  CombatChoice,
   CombatEngine,
   CombatOption,
   CombatOutcome,
@@ -64,13 +65,14 @@ function options(state: DuelState): CombatOption[] {
       detail: `${t.chakraCost} chakra · ${EFFECT_DETAIL[t.effect](t.power)}`,
       kind: 'technique',
       discipline: t.discipline,
+      ...(t.effect === 'heal' ? {} : { targeted: true }),
     };
     if ((player.sealed ?? 0) > 0) return { ...base, disabledReason: 'Your chakra is sealed' };
     return t.chakraCost > player.chakra ? { ...base, disabledReason: 'Not enough chakra' } : base;
   });
   const flee: CombatOption = { id: 'flee', label: 'Flee', detail: 'Try to escape', kind: 'escape' };
   return [
-    { id: 'strike', label: 'Strike', detail: 'Free', kind: 'basic' },
+    { id: 'strike', label: 'Strike', detail: 'Free', kind: 'basic', targeted: true },
     { id: 'guard', label: 'Guard', detail: 'Halve damage · +chakra', kind: 'basic' },
     ...techniques,
     state.canFlee ? flee : { ...flee, disabledReason: 'You cannot flee this fight' },
@@ -99,15 +101,21 @@ function parseOption(state: DuelState, optionId: string): Result<DuelAction> {
 export function createDuelEngine(): CombatEngine {
   return {
     id: DUEL_ENGINE_ID,
+    label: 'Classic',
+    summary: 'Pick one move a round: strike, guard, a technique or flee.',
 
     start: (setup) => encode(initialDuel(setup)),
 
-    act(state: CombatState, optionId, rng): Result<CombatState> {
+    act(state: CombatState, choice: CombatChoice, rng): Result<CombatState> {
       const duel = decode(state);
       if (duel.result) return err('The fight is already over.');
-      const action = parseOption(duel, optionId);
+      const action = parseOption(duel, choice.optionId);
       if (!action.ok) return action;
-      return ok(encode(resolveRound(duel, action.value, rng)));
+      const move = {
+        action: action.value,
+        ...(choice.targetId === undefined ? {} : { targetId: choice.targetId }),
+      };
+      return ok(encode(resolveRound(duel, move, rng)));
     },
 
     view(state): CombatView {

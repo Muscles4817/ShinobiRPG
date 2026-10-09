@@ -33,6 +33,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 65,
     maxChakra: 40,
     techniqueIds: ['palm-strike', 'pebble-volley'],
+    nature: 'earth',
   },
   {
     id: 'storehouse-wraith',

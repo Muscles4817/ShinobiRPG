@@ -40,6 +40,14 @@ export interface GameState {
   readonly reports: readonly Report[];
   /** Classmates, bonds, your team and any conversation in progress. */
   readonly people: People;
+  /** Player preferences that belong to this save, e.g. the fight style. */
+  readonly settings: Settings;
+}
+
+/** Player preferences stored with the save. */
+export interface Settings {
+  /** Engine id of the fight style used for new fights. */
+  readonly combatStyle: string;
 }
 
 export interface Character {

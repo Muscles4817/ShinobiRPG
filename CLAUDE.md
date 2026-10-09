@@ -9,8 +9,8 @@ Rules marked **(enforced)** fail CI if broken; the rest are enforced in review.
 played on a phone while travelling. Original setting: Tōrōgakure, the Village Hidden Among
 Lanterns. Stack: TypeScript (strict), React, Vite, vite-plugin-pwa, Vitest.
 
-Roadmap (milestones): **1. vertical slice** (done) → 2. people & relationships → 3. progression
-(ranks, elements, spirits) → 4. world & travel → 5. branching paths (rogue / Kage) → 6. depth.
+Roadmap (milestones): **1. vertical slice** (done) → **2. people & relationships** (done) → 3. progression (ranks, elements, spirits) → 4. world & travel → 5. branching paths (rogue / Kage)
+→ 6. depth. Before 3, combat is being playtested in several styles (see decision 16).
 
 The game ships **content packs** (whole settings). `naruto` is a fan pack for personal play;
 `original` is the game's own world and the only one a public release may contain.
@@ -76,7 +76,10 @@ ui ──► game ──► content ──► systems ──► core
    `CombatSetup` and reads a `CombatOutcome`; the UI renders a generic `CombatView`; saves hold
    an opaque `CombatState`. Only the engine looks inside its own state. A setup has
    `allies` (teammates on team missions) who act on their own; a fight's purpose (mission,
-   spar) is game state (`people.sparringWith`), never the engine's concern.
+   spar) is game state (`people.sparringWith`), never the engine's concern. The player's
+   choice is a `CombatChoice` (option id + optional target); the view may add `range`,
+   `prompt`, `meters` and per-combatant `intent`, and options say their `kind` so one fight
+   screen can lay out any engine.
 6. **The UI renders view models** (`src/game/views/`), not raw state. Activity lists are
    `ActionOption`s that already carry the `GameAction` to dispatch and the blocker reason.
 7. **Content is data, validated by tests.** Unique ids, resolvable references, reachable
@@ -111,6 +114,12 @@ ui ──► game ──► content ──► systems ──► core
     stored stats; `companionStats` derives them from their specialty and your record, so a
     teammate is always a fair match. Your sensei teaches weekly (`lesson`) and hands over
     their `teaches` techniques once your bond is high enough.
+16. **Fight styles are engines, chosen per save.** `GameContext.engines` lists every engine
+    (Classic, Plan & Watch, Deck, Mind Game); `settings.combatStyle` picks the one that starts
+    new fights and `engineFor` routes to it. A fight in progress always continues in the engine
+    whose id is in its `CombatState`. The newer engines share `systems/combat/rules/` (range
+    bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
+    styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`).
 
 ### Content packs
 
@@ -127,10 +136,11 @@ ui ──► game ──► content ──► systems ──► core
 
 ### Recipes
 
-- **Swap/rewrite the combat engine:** implement `CombatEngine` in
-  `systems/combat/engines/<name>/`, export its factory from `systems/combat/index.ts`, and use
-  it in `createDefaultContext`. No other code changes. If you change the engine id, old
-  mid-fight saves need a migration (or to resolve the fight on load).
+- **Add or rewrite a combat engine (fight style):** implement `CombatEngine` in
+  `systems/combat/engines/<name>/` on top of `rules/`, export its factory from
+  `systems/combat/index.ts`, and add it to `defaultEngines()` in `game/context.ts`. It appears
+  in the fight-style picker automatically. No other code changes. Removing an engine or
+  changing its id needs a migration for saves that are mid-fight in it or have it chosen.
 - **Add a player action:** add a variant to `GameAction` (`game/actions/types.ts`), write a
   handler (`check` + `perform`), register it in `game/actions/registry.ts` (the compiler
   insists), expose it through a view model, add tests.

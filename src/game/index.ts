@@ -48,6 +48,7 @@ export {
   type Scroll,
 } from './views/boards';
 export { travelView, type Destination } from './views/travel';
+export { fightStyles, type FightStyleOption } from './views/fightStyle';
 export type { LessonCard, SparOption } from './views/team';
 export {
   jutsuDeck,
@@ -82,7 +83,13 @@ export {
   type TeamScene,
   type SenseiOffer,
 } from './views/peopleScenes';
-export type { CombatView, CombatOption, CombatantView } from '@/systems/combat';
+export type {
+  CombatView,
+  CombatOption,
+  CombatantView,
+  CombatMeter,
+  RangeBand,
+} from '@/systems/combat';
 export type { BackdropId, IconId, PlaceKind } from '@/content';
 export type { TimeSlot } from '@/systems/time';
 export type {

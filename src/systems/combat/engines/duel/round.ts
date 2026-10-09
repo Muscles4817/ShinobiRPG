@@ -19,6 +19,14 @@ interface Plan {
   readonly actorId: string;
   readonly action: DuelAction;
   readonly initiative: number;
+  /** The enemy the player chose to aim at, if any. */
+  readonly targetId?: string;
+}
+
+/** The player's move this round. */
+export interface PlayerMove {
+  readonly action: DuelAction;
+  readonly targetId?: string;
 }
 
 function decideResult(fighters: readonly Fighter[]): CombatResult | null {
@@ -36,11 +44,16 @@ function endOfRound(fighters: readonly Fighter[]): Fighter[] {
   }));
 }
 
-function planRound(state: DuelState, playerAction: DuelAction, rng: Rng): Plan[] {
+function planRound(state: DuelState, move: PlayerMove, rng: Rng): Plan[] {
   const initiative = (f: Fighter): number => f.attributes.speed + rng.next() * 4;
   const player = playerOf(state);
   const plans: Plan[] = [
-    { actorId: player.id, action: playerAction, initiative: initiative(player) },
+    {
+      actorId: player.id,
+      action: move.action,
+      initiative: initiative(player),
+      ...(move.targetId === undefined ? {} : { targetId: move.targetId }),
+    },
     ...state.fighters
       .filter((f) => !f.isPlayer && isAlive(f))
       .map((f) => ({ actorId: f.id, action: chooseAiAction(f, rng), initiative: initiative(f) })),
@@ -52,8 +65,15 @@ function planRound(state: DuelState, playerAction: DuelAction, rng: Rng): Plan[]
  * The player's side focuses the first enemy still standing. Enemies pick among those standing
  * against them (no roll when it is only the player, so solo fights replay as before).
  */
-function targetFor(fighters: readonly Fighter[], actor: Fighter, rng: Rng): Fighter | undefined {
+function targetFor(
+  fighters: readonly Fighter[],
+  actor: Fighter,
+  rng: Rng,
+  chosen?: string,
+): Fighter | undefined {
   const foes = livingOn(fighters, sideOf(actor) === 'player' ? 'enemy' : 'player');
+  const picked = foes.find((f) => f.id === chosen);
+  if (picked) return picked;
   if (sideOf(actor) === 'player' || foes.length <= 1) return foes[0];
   return rng.pick(foes);
 }
@@ -66,7 +86,8 @@ function tryFlee(state: DuelState, rng: Rng): { escaped: boolean; line: string }
 }
 
 /** Plays out one full round given the player's chosen action. */
-export function resolveRound(state: DuelState, playerAction: DuelAction, rng: Rng): DuelState {
+export function resolveRound(state: DuelState, move: PlayerMove, rng: Rng): DuelState {
+  const playerAction = move.action;
   const log: string[] = [...state.log, `— Round ${state.round} —`];
 
   if (playerAction.kind === 'flee') {
@@ -75,7 +96,7 @@ export function resolveRound(state: DuelState, playerAction: DuelAction, rng: Rn
     if (attempt.escaped) return { ...state, log: log.slice(-LOG_LIMIT), result: 'escaped' };
   }
 
-  const plans = planRound(state, playerAction, rng);
+  const plans = planRound(state, move, rng);
   let fighters: readonly Fighter[] = state.fighters;
 
   // Guarding takes effect before anyone acts, regardless of speed.
@@ -92,7 +113,7 @@ export function resolveRound(state: DuelState, playerAction: DuelAction, rng: Rn
       log.push(`${actor.name} is dazed and loses their turn.`);
       continue;
     }
-    const target = targetFor(fighters, actor, rng);
+    const target = targetFor(fighters, actor, rng, plan.targetId);
     if (!target) continue;
     const result = performAction(fighters, { actor, target }, plan.action, rng);
     fighters = result.fighters;

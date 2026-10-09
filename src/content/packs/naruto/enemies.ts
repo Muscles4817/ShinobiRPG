@@ -66,5 +66,6 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 80,
     maxChakra: 60,
     techniqueIds: ['water-bullet', 'shuriken-jutsu'],
+    nature: 'water',
   },
 ];

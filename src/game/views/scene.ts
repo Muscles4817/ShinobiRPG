@@ -3,6 +3,7 @@ import { checkChance, STAT_INFO } from '@/systems/stats';
 
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
+import { engineFor } from '../fightStyle';
 import { activeMission, activeStage } from '../missionFlow';
 import type { GameState } from '../state';
 
@@ -85,5 +86,5 @@ export function missionScene(state: GameState, ctx: GameContext): MissionScene |
 }
 
 export function combatScene(state: GameState, ctx: GameContext): CombatView | null {
-  return state.combat ? ctx.combat.view(state.combat) : null;
+  return state.combat ? engineFor(state, ctx).view(state.combat) : null;
 }
