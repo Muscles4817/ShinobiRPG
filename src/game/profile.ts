@@ -37,6 +37,7 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
     ...traits.map((t) => t.modifiers),
     gradeModifiers(character.grades),
     natureModifiers(character.nature, clan?.nature),
+    (character.meal ? content.recipes.get(character.meal)?.buff : undefined) ?? {},
   ]);
 }
 

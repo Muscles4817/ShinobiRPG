@@ -1,4 +1,5 @@
 import type { IconId } from '@/content';
+import { pantryCount } from '@/systems/inventory';
 import { METER_MAX } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
@@ -15,8 +16,18 @@ export interface MarketItem extends Choice {
   readonly satiety: number;
   readonly energy: number;
   readonly slots: number;
-  /** How full you'd be after eating it. */
-  readonly fullAfter: number;
+  /** Fullness that would go to waste because you're already nearly full. */
+  readonly wasted: number;
+}
+
+/** A raw ingredient at the grocer, to cook at home. */
+export interface IngredientItem extends Choice {
+  readonly id: string;
+  readonly name: string;
+  readonly icon: IconId;
+  readonly cost: number;
+  /** How many you already have in the pantry. */
+  readonly inPantry: number;
 }
 
 export interface MarketView {
@@ -28,6 +39,7 @@ export interface MarketView {
     readonly blurb: string;
     readonly icon: IconId;
     readonly items: readonly MarketItem[];
+    readonly ingredients: readonly IngredientItem[];
   }[];
 }
 
@@ -55,7 +67,18 @@ export function marketView(state: GameState, ctx: GameContext): MarketView | nul
           satiety: food.satiety,
           energy: food.energy,
           slots: food.slots,
-          fullAfter: Math.min(METER_MAX, fullness + food.satiety),
+          wasted: Math.max(0, fullness + food.satiety - METER_MAX),
+        };
+      }),
+      ingredients: (stall.ingredientIds ?? []).map((id) => {
+        const item = ctx.content.ingredients.require(id);
+        return {
+          ...choice(state, ctx, { type: 'buyIngredient', ingredientId: id }),
+          id,
+          name: item.name,
+          icon: item.icon,
+          cost: item.cost,
+          inPantry: pantryCount(state.inventory, id),
         };
       }),
     })),

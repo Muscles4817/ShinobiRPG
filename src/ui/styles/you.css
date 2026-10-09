@@ -179,3 +179,18 @@
   font-size: 0.75rem;
   text-align: right;
 }
+
+.undiscovered {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.undiscovered-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.undiscovered .badge {
+  font-size: 0.72rem;
+  padding: 3px 8px;
+}

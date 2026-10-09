@@ -8,6 +8,8 @@ import { FOODS } from './food';
 import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
+import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
+import { GEAR } from './gear';
 import { NARUTO_CONVERSATIONS } from './conversations';
 import { CANON_GENIN } from './genin';
 import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
@@ -42,6 +44,9 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,
+  gear: GEAR,
+  ingredients: INGREDIENTS,
+  recipes: RECIPES,
   people: [...SENSEIS_AND_ELDERS, ...CANON_GENIN],
   conversations: [...GENERIC_CONVERSATIONS, ...NARUTO_CONVERSATIONS],
   names: NAMES,

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { headerView, missionScene } from '@/game';
 
+import { Backdrop } from '../../art/Backdrop';
 import { Vitals } from '../../components/Vitals';
 import type { ScreenProps } from '../types';
 
@@ -17,11 +18,18 @@ export function MissionScene({ ctx, state, perform }: ScreenProps) {
   if (!scene) return null;
   return (
     <>
-      <header className="scene-head">
-        <p className="label">
-          Mission · {scene.rank}-rank · {scene.client}
-        </p>
-        <h1>{scene.title}</h1>
+      <header
+        className="scene-head vignette sky"
+        data-slot={header.slot}
+        data-land={header.backdrop}
+      >
+        <Backdrop id={header.backdrop} />
+        <div className="vignette-text">
+          <p className="label">
+            Mission · {scene.rank}-rank · {scene.client}
+          </p>
+          <h1>{scene.title}</h1>
+        </div>
         <Vitals meters={header.meters} />
       </header>
       <main className="page feed">

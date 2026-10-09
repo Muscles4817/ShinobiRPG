@@ -47,6 +47,8 @@ export interface MissionDef {
   readonly minMissionsCompleted: number;
   /** Your teammates come along and fight beside you. */
   readonly withTeam?: boolean;
+  /** Always on the board (patrols, watches); otherwise jobs are posted for a few days at a time. */
+  readonly standing?: boolean;
   readonly stages: readonly MissionStage[];
 }
 

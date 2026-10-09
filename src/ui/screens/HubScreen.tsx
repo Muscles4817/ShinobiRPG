@@ -80,7 +80,10 @@ export function HubScreen({ ctx, state, onOpenPlace, onOpenPerson, onOpenRecord 
             <span className="place-icon">
               <Icon id={p.icon} />
             </span>
-            <b>{p.name}</b>
+            <b>
+              {p.name}
+              {p.badge && <span className="place-badge">{p.badge}</span>}
+            </b>
             <small>{p.line}</small>
             <Faces faces={p.people} />
           </button>

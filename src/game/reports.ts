@@ -23,7 +23,10 @@ export type Report =
       readonly ryo: number;
       readonly reputation: number;
       readonly missionsCompleted: number;
+      /** Kinds of work newly trusted to you (not shown by name: the board reveals them). */
       readonly unlocked: readonly string[];
+      /** Ryo docked from the posted reward because things went wrong. */
+      readonly docked?: number;
       /** Bond gained with each teammate; absent on reports saved before team missions. */
       readonly teamBond?: number;
     }

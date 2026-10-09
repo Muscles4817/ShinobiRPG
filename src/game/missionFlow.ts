@@ -83,6 +83,7 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
     reputation: earned.reputation,
     missionsCompleted: standing.missionsCompleted,
     unlocked: newlyUnlocked(state, ctx, standing.missionsCompleted),
+    docked: Math.max(0, def.reward.ryo - earned.ryo),
     teamBond,
   });
 }

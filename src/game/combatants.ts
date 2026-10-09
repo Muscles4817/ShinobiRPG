@@ -4,6 +4,7 @@ import { createStats, type Stats } from '@/systems/stats';
 import { maxChakra, maxHealth } from '@/systems/vitals';
 
 import type { GameContext } from './context';
+import { combatStats } from './gear';
 import type { GameState } from './state';
 
 /** Translates game entities into the combat contract's vocabulary. */
@@ -35,10 +36,11 @@ function perksOf(state: GameState, ctx: GameContext): CombatPerk[] {
 
 export function playerCombatant(state: GameState, ctx: GameContext): CombatantSetup {
   const { name, stats, vitals, nature } = state.character;
+  const armed = combatStats(state, ctx);
   return {
     id: 'player',
     name,
-    attributes: attributesOf(stats),
+    attributes: attributesOf(armed),
     health: vitals.health,
     maxHealth: maxHealth(stats),
     chakra: vitals.chakra,

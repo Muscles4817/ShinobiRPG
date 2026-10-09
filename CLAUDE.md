@@ -35,7 +35,7 @@ src/
   core/       Game-agnostic utilities: seeded Rng, Result, math. Knows nothing about the game.
   systems/    Self-contained domain modules. Pure functions over their own slice of state.
     time/ stats/ vitals/ wallet/ housing/ techniques/ missions/ combat/ standing/ journal/
-    modifiers/ profile/ bonds/
+    modifiers/ profile/ bonds/ inventory/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
@@ -120,6 +120,16 @@ ui ──► game ──► content ──► systems ──► core
     whose id is in its `CombatState`. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
     styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`).
+17. **The jobs board rotates.** Most jobs are postings that stay up a few days; `standing`
+    jobs (patrols) are always there, once a day; jobs above your record are never shown, not
+    even sealed. Postings come from `hashUnit(seed, day, id)` (`game/board.ts`), so the board
+    is reproducible and catches up lazily without consuming the game's Rng. Tests that take a
+    specific job use `postEverything` (the default `newGame` fixture does).
+18. **Gear counts in fights; meals count for a day.** Equipped gear (`inventory` system,
+    `game/gear.ts`) adds its `statBonuses` to the stats a fight sees (`combatStats`), never
+    to trained stats, so it works the same in every fight style. A home-cooked recipe sets
+    `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
+    `spendTime` clears it when the day ends.
 
 ### Content packs
 
@@ -164,15 +174,22 @@ ui ──► game ──► content ──► systems ──► core
   schedule of place ids in the start location). Senseis need `role: 'sensei'` and a
   `sensei` profile (style, lesson text, `teaches` technique ids); at least two specialties
   must exist for the team choice (validated).
+- **Add a mission:** add a `MissionDef` and list it at a mission hall. It is posted from time
+  to time once the player's record reaches `minMissionsCompleted`; set `standing: true` for
+  jobs that are always available (every pack needs one a fresh genin can take — validated).
 - **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
   fight as allies and each gains bond on success. Offer it at a mission hall as usual.
+- **Add gear:** add a `GearDef` (slot, cost, `statBonuses`) to the pack's `gear` and list it at
+  a `gear` place (a smith, an outfitter). **Add an ingredient or recipe:** add it to
+  `shared/kitchen.ts` (or a pack's own list); ingredients must be sold at a market stall's
+  `ingredientIds`, and recipes may only use known ingredients (validated).
 - **Add a conversation:** add a `ConversationDef` (generic, or with `personId`) with a
   `minStage` and choices that each carry a `Tone`. Traits' `likes`/`dislikes` decide how a
   tone lands, so new tones need tastes on the traits that care.
 - **Add a discipline:** add it to `STAT_IDS` and `DISCIPLINES`, a colour token, a card glyph,
   starter technique in every pack's `disciplineStarters`, drills, and a save migration that
   gives existing characters the base value.
-- **Add a backdrop or icon:** add the id to `BackdropId`/`IconId` in `content/types.ts` and the
+- **Add a backdrop or icon:** add the id to `BackdropId`/`IconId` in `content/art.ts` and the
   drawing to `ui/art/` (a `Record` keyed by id, so a missing drawing is a type error).
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.

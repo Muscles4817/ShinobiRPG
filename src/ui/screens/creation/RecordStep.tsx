@@ -1,4 +1,4 @@
-import type { Appearance, HairStyle, HeadbandPlace, Pronouns } from '@/game';
+import type { Appearance, ClanOption, HairStyle, HeadbandPlace, Pronouns } from '@/game';
 
 import { Portrait } from '../../art/Portrait';
 import { OptionCard } from './OptionCard';
@@ -68,6 +68,24 @@ function Segments<T extends string>({
 }
 
 /** Student record: name, pronouns, family and appearance. */
+/** The full detail of the chosen clan; the others stay folded to keep the page short. */
+function ClanDetails({ clan: c }: { readonly clan: ClanOption }) {
+  return (
+    <>
+      {c.kekkeiGenkai && (
+        <span className="kg">
+          <b>{c.kekkeiGenkai.name}</b> · {c.kekkeiGenkai.dormant ? 'dormant' : 'active'}.{' '}
+          {c.kekkeiGenkai.description}
+        </span>
+      )}
+      {c.techniques.length > 0 && (
+        <span className="muted small">Starts with {c.techniques.join(', ')}</span>
+      )}
+      {c.lodging && <span className="muted small">Lives rent-free: {c.lodging}</span>}
+    </>
+  );
+}
+
 export function RecordStep({ view, draft, update }: StepProps) {
   const { palettes } = view;
   const look = (patch: Partial<Appearance>) => {
@@ -117,29 +135,26 @@ export function RecordStep({ view, draft, update }: StepProps) {
       </div>
       <h2 className="file-h">Family</h2>
       <div className="opt-list">
-        {view.clans.map((c) => (
-          <OptionCard
-            key={c.id}
-            name={c.name}
-            description={c.description}
-            effects={c.effects}
-            selected={c.id === draft.clanId}
-            onSelect={() => {
-              update({ clanId: c.id });
-            }}
-          >
-            {c.kekkeiGenkai && (
-              <span className="kg">
-                <b>{c.kekkeiGenkai.name}</b> · {c.kekkeiGenkai.dormant ? 'dormant' : 'active'}.{' '}
-                {c.kekkeiGenkai.description}
-              </span>
-            )}
-            {c.techniques.length > 0 && (
-              <span className="muted small">Starts with {c.techniques.join(', ')}</span>
-            )}
-            {c.lodging && <span className="muted small">Lives rent-free: {c.lodging}</span>}
-          </OptionCard>
-        ))}
+        {view.clans.map((c) => {
+          const selected = c.id === draft.clanId;
+          return (
+            <OptionCard
+              key={c.id}
+              name={c.name}
+              description={c.description}
+              effects={selected ? c.effects : []}
+              selected={selected}
+              onSelect={() => {
+                update({ clanId: c.id });
+              }}
+            >
+              {selected && <ClanDetails clan={c} />}
+              {!selected && c.kekkeiGenkai && (
+                <span className="muted small">Bloodline: {c.kekkeiGenkai.name}</span>
+              )}
+            </OptionCard>
+          );
+        })}
       </div>
       <h2 className="file-h">Appearance</h2>
       <Segments<HairStyle>

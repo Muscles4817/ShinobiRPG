@@ -51,6 +51,7 @@ function TabContent({ nav, setNav, onAbandon, onOpenPerson, ...props }: TabConte
         <PlacePage
           {...props}
           kind={place.kind}
+          placeId={place.id}
           onBack={() => {
             setNav({ tab: 'here', placeId: null });
           }}

@@ -33,9 +33,17 @@ export function formTeam(state: GameState, context: GameContext = ctx): GameStat
   return { ...act(assigned, { type: 'chooseSensei', senseiId }, context), reports: [] };
 }
 
-/** A game ready to play, with its team formed. */
+/** Puts every job on the board, so tests can take any job they are trusted with. */
+export function postEverything(state: GameState, context: GameContext = ctx): GameState {
+  const postings = context.content.missions.all
+    .filter((m) => !m.standing)
+    .map((m) => ({ missionId: m.id, postedDay: state.time.day, expiresDay: 9999 }));
+  return { ...state, board: { ...state.board, refreshedDay: state.time.day, postings } };
+}
+
+/** A game ready to play, with its team formed and every job posted. */
 export function newGame(overrides: Partial<GameState> = {}, context: GameContext = ctx): GameState {
-  return { ...formTeam(freshGame(context), context), ...overrides };
+  return { ...postEverything(formTeam(freshGame(context), context), context), ...overrides };
 }
 
 /** Dispatches an action, failing the test if it is refused. */

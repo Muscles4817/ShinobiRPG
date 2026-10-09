@@ -12,6 +12,8 @@ const EFFECT_TEXT: Readonly<Record<JutsuCard['effect'], (power: number) => strin
   seal: () => 'seals',
 };
 
+const DISCIPLINE_ORDER = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
+
 const FILTER_LABELS: Readonly<Record<Discipline | 'all', string>> = {
   all: 'All',
   taijutsu: 'Taijutsu',
@@ -32,7 +34,12 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
   const deck = jutsuDeck(state, ctx);
   const [filter, setFilter] = useState<Discipline | 'all'>('all');
   const [selectedId, setSelectedId] = useState(deck[0]?.id);
-  const shown = deck.filter((c) => filter === 'all' || c.discipline === filter);
+  const inFilter = deck.filter((c) => filter === 'all' || c.discipline === filter);
+  const shown = inFilter.filter((c) => c.status !== 'unknown');
+  const undiscovered = DISCIPLINE_ORDER.map((d) => ({
+    discipline: d,
+    count: inFilter.filter((c) => c.status === 'unknown' && c.discipline === d).length,
+  })).filter((g) => g.count > 0);
   const selected = deck.find((c) => c.id === selectedId);
   const known = deck.filter((c) => c.status === 'known').length;
   return (
@@ -79,6 +86,21 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
             </button>
           ))}
         </div>
+        {undiscovered.length > 0 && (
+          <section className="undiscovered" aria-label="To discover">
+            <h2 className="label">Still to discover</h2>
+            <div className="undiscovered-row">
+              {undiscovered.map((g) => (
+                <span key={g.discipline} className={`badge d-${g.discipline}`}>
+                  {FILTER_LABELS[g.discipline]} · {g.count}
+                </span>
+              ))}
+            </div>
+            <p className="muted small">
+              Scrolls at the Academy, your clan and your sensei teach the rest.
+            </p>
+          </section>
+        )}
         {selected && (
           <section className="detail-card">
             <b>

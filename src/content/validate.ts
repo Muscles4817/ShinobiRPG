@@ -1,3 +1,5 @@
+import { DISCIPLINES } from '@/systems/techniques';
+
 import { duplicateIds } from './catalog';
 import { validatePeople } from './validatePeople';
 import { validateWorld } from './validateWorld';
@@ -16,8 +18,42 @@ export function validateContent(pack: ContentPack): string[] {
     ...numberProblems(pack),
     ...validateWorld(pack),
     ...profileProblems(pack),
+    ...beginnerProblems(pack),
+    ...recipeProblems(pack),
     ...validatePeople(pack),
   ];
+}
+
+/** Recipes cook from ingredients the pack sells, and actually fill you up. */
+function recipeProblems(pack: ContentPack): string[] {
+  const known = new Set(pack.ingredients.map((i) => i.id));
+  return pack.recipes.flatMap((r) => [
+    ...r.ingredients
+      .filter((i) => !known.has(i.id))
+      .map((i) => `recipe "${r.id}" needs unknown ingredient "${i.id}"`),
+    ...(r.ingredients.length === 0 || r.satiety <= 0
+      ? [`recipe "${r.id}" needs ingredients and must feed you`]
+      : []),
+  ]);
+}
+
+/** A fresh graduate (every stat at the base value) must be able to start a scroll in each discipline. */
+const BEGINNER_LEVEL = 5;
+
+function beginnerProblems(pack: ContentPack): string[] {
+  const start = pack.locations.find((l) => l.id === pack.startLocationId);
+  const offered = new Set(
+    start?.places.flatMap((p) => (p.kind === 'academy' ? p.techniqueIds : [])) ?? [],
+  );
+  const beginner = pack.techniques.filter(
+    (t) =>
+      offered.has(t.id) &&
+      t.clan === undefined &&
+      Object.values(t.requirements).every((min) => min <= BEGINNER_LEVEL),
+  );
+  return DISCIPLINES.filter((d) => !beginner.some((t) => t.discipline === d)).map(
+    (d) => `academy needs a ${d} scroll a fresh graduate can study`,
+  );
 }
 
 /** Clans, traits and clan techniques must fit together. */
@@ -53,6 +89,9 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['talent', pack.talents],
     ['trait', pack.traits],
     ['nindo', pack.nindos],
+    ['gear', pack.gear],
+    ['ingredient', pack.ingredients],
+    ['recipe', pack.recipes],
     ['person', pack.people],
     ['conversation', pack.conversations],
   ];
@@ -79,22 +118,28 @@ function techniqueReferenceProblems(pack: ContentPack): string[] {
 
 function missionProblems(pack: ContentPack): string[] {
   const enemyIds = new Set(pack.enemies.map((e) => e.id));
-  return pack.missions.flatMap((m) => {
-    const problems = m.stages.length === 0 ? [`mission "${m.id}" has no stages`] : [];
-    for (const stage of m.stages) {
-      if (stage.kind === 'check' && stage.approaches.length === 0) {
-        problems.push(`mission "${m.id}" has a check with no approaches`);
+  const always = pack.missions.some((m) => m.standing && m.minMissionsCompleted === 0);
+  const board = always ? [] : ['pack needs a standing job a fresh genin can always take'];
+  return pack.missions
+    .flatMap((m) => {
+      const problems = m.stages.length === 0 ? [`mission "${m.id}" has no stages`] : [];
+      for (const stage of m.stages) {
+        if (stage.kind === 'check' && stage.approaches.length === 0) {
+          problems.push(`mission "${m.id}" has a check with no approaches`);
+        }
+        if (stage.kind === 'combat' && stage.enemyIds.length === 0) {
+          problems.push(`mission "${m.id}" has a combat with no enemies`);
+        }
+        if (stage.kind === 'combat') {
+          const unknown = stage.enemyIds.filter((id) => !enemyIds.has(id));
+          problems.push(
+            ...unknown.map((id) => `mission "${m.id}" references unknown enemy "${id}"`),
+          );
+        }
       }
-      if (stage.kind === 'combat' && stage.enemyIds.length === 0) {
-        problems.push(`mission "${m.id}" has a combat with no enemies`);
-      }
-      if (stage.kind === 'combat') {
-        const unknown = stage.enemyIds.filter((id) => !enemyIds.has(id));
-        problems.push(...unknown.map((id) => `mission "${m.id}" references unknown enemy "${id}"`));
-      }
-    }
-    return problems;
-  });
+      return problems;
+    })
+    .concat(board);
 }
 
 function numberProblems(pack: ContentPack): string[] {

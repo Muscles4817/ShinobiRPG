@@ -88,6 +88,18 @@ function capital(word: string): string {
 }
 
 /** Human-readable description of a spec, for chips on creation and profile screens. */
+/** One line per discipline, or a single line when every discipline gets the same boost. */
+function studyLines(study: Partial<Record<Discipline, number>>): EffectLine[] {
+  const values = DISCIPLINES.map((d) => study[d]);
+  const [first] = values;
+  if (first !== undefined && values.every((v) => v === first)) {
+    return [line('All techniques learned', first, 'faster', 'slower')];
+  }
+  return (Object.entries(study) as [Discipline, number][]).map(([d, m]) =>
+    line(`${STAT_INFO[d].label} learned`, m, 'faster', 'slower'),
+  );
+}
+
 export function describeSpec(spec: ModifierSpec): EffectLine[] {
   const lines: EffectLine[] = [];
   if (spec.training !== undefined)
@@ -95,9 +107,7 @@ export function describeSpec(spec: ModifierSpec): EffectLine[] {
   for (const [stat, m] of Object.entries(spec.growth ?? {}) as [StatId, number][]) {
     lines.push(line(`${STAT_INFO[stat].label} grows`, m, 'faster', 'slower'));
   }
-  for (const [d, m] of Object.entries(spec.studyDiscipline ?? {}) as [Discipline, number][]) {
-    lines.push(line(`${STAT_INFO[d].label} learned`, m, 'faster', 'slower'));
-  }
+  lines.push(...studyLines(spec.studyDiscipline ?? {}));
   for (const [e, m] of Object.entries(spec.studyElement ?? {}) as [Element, number][]) {
     lines.push(line(`${capital(e)} techniques learned`, m, 'faster', 'slower'));
   }

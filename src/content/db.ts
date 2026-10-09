@@ -7,6 +7,9 @@ import type {
   ClanDef,
   ContentPack,
   ConversationDef,
+  GearDef,
+  IngredientDef,
+  RecipeDef,
   EnemyDef,
   FoodDef,
   LocationDef,
@@ -42,6 +45,9 @@ export interface ContentDb {
   readonly traits: Catalog<TraitDef>;
   readonly nindos: Catalog<NindoDef>;
   readonly breakIn: BreakInScene;
+  readonly gear: Catalog<GearDef>;
+  readonly ingredients: Catalog<IngredientDef>;
+  readonly recipes: Catalog<RecipeDef>;
   readonly people: Catalog<PersonDef>;
   readonly conversations: Catalog<ConversationDef>;
   readonly names: NamePools;
@@ -68,6 +74,9 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     traits: createCatalog('trait', pack.traits),
     nindos: createCatalog('nindo', pack.nindos),
     breakIn: pack.breakIn,
+    gear: createCatalog('gear', pack.gear),
+    ingredients: createCatalog('ingredient', pack.ingredients),
+    recipes: createCatalog('recipe', pack.recipes),
     people: createCatalog('person', pack.people),
     conversations: createCatalog('conversation', pack.conversations),
     names: pack.names,

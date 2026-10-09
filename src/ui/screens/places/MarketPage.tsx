@@ -64,8 +64,34 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
                     {item.energy > 0 && <span className="chip gain">Energy +{item.energy}</span>}
                     {item.slots > 0 && <span className="chip">{item.slots} slot</span>}
                   </span>
+                  {item.blocker ? (
+                    <small className="blocker">{item.blocker}</small>
+                  ) : (
+                    item.wasted > 0 && (
+                      <small className="muted">Too full: {item.wasted} would go to waste</small>
+                    )
+                  )}
+                </button>
+              ))}
+              {stall.ingredients.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="item"
+                  disabled={item.blocker !== null}
+                  title={item.blocker ?? undefined}
+                  onClick={() => {
+                    perform(item.action);
+                  }}
+                >
+                  <span className="tag num">{item.cost}</span>
+                  <span className="item-pic">
+                    <Icon id={item.icon} size={28} />
+                  </span>
+                  <b>{item.name}</b>
                   <small className={item.blocker ? 'blocker' : 'muted'}>
-                    {item.blocker ?? `You’d be ${item.fullAfter} / 100 fed`}
+                    {item.blocker ??
+                      (item.inPantry > 0 ? `${item.inPantry} at home` : 'For cooking at home')}
                   </small>
                 </button>
               ))}

@@ -47,12 +47,12 @@ describe('missions', () => {
     expect(done.mission).toBeNull();
   });
 
-  it('locks missions until enough have been completed', () => {
+  it('hides jobs you are not trusted with yet', () => {
     expect(
       dispatch(newGame(), { type: 'startMission', missionId: 'storehouse-ghost' }, ctx),
     ).toEqual({
       ok: false,
-      error: 'Opens after 3 completed missions.',
+      error: 'That job isn’t on the board right now.',
     });
   });
 

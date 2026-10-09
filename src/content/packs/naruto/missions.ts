@@ -2,6 +2,36 @@ import type { MissionDef } from '@/systems/missions';
 
 export const MISSIONS: readonly MissionDef[] = [
   {
+    id: 'border-patrol',
+    title: 'Village Border Patrol',
+    rank: 'D',
+    client: 'Konoha Gate Guard',
+    summary: 'Walk the inner border of the village woods and report anything odd. Always needed.',
+    slots: 2,
+    energyCost: 15,
+    reward: { ryo: 55, reputation: 1 },
+    minMissionsCompleted: 0,
+    standing: true,
+    stages: [
+      {
+        kind: 'narrative',
+        text: 'Kotetsu and Izumo wave you through the gate with a map and a yawn.',
+      },
+      {
+        kind: 'check',
+        text: 'Deep in the woods, you find fresh tracks that don’t belong to any Leaf shinobi.',
+        approaches: [
+          { label: 'Follow the tracks carefully', stat: 'perception', difficulty: 7 },
+          { label: 'Race back and report them', stat: 'speed', difficulty: 7 },
+        ],
+        success: 'The tracks lead to a lost merchant. You guide him back to the road.',
+        failure: 'You lose the trail in a stream and come back empty-handed and soaked.',
+        onFailure: 'penalty',
+        failureDamage: 2,
+      },
+    ],
+  },
+  {
     id: 'catch-tora',
     title: 'Catch Tora the Cat',
     rank: 'D',

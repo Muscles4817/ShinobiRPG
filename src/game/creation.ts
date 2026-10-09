@@ -1,5 +1,6 @@
 import { createRng } from '@/core';
 import { freeLodging, newTenancy } from '@/systems/housing';
+import { EMPTY_INVENTORY } from '@/systems/inventory';
 import { EMPTY_JOURNAL } from '@/systems/journal';
 import {
   gradeStatBonuses,
@@ -17,6 +18,7 @@ import { fullVitals } from '@/systems/vitals';
 
 import type { GameContext } from './context';
 import { chip, log, placeHere } from './ops';
+import { newBoard } from './boardState';
 import { defaultSettings } from './fightStyle';
 import { NO_PEOPLE } from './people/state';
 import type { GameState } from './state';
@@ -140,6 +142,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       stats,
       startingStats: stats,
       vitals: fullVitals(stats),
+      meal: null,
     },
     wallet: { ryo: content.startingRyo },
     housing: housingFor(draft, ctx, home.id, home.rentPerWeek),
@@ -151,6 +154,8 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     reports: [],
     people: NO_PEOPLE,
     settings: defaultSettings(ctx),
+    board: newBoard(seed),
+    inventory: EMPTY_INVENTORY,
   };
   return logOpening(state, ctx, roll);
 }

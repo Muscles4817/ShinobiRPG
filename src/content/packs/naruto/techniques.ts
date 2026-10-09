@@ -31,7 +31,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     effect: 'damage',
     chakraCost: 5,
     power: 13,
-    requirements: { taijutsu: 8, speed: 7 },
+    requirements: { taijutsu: 5 },
     difficulty: 40,
   },
   {
@@ -43,7 +43,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     effect: 'damage',
     chakraCost: 8,
     power: 12,
-    requirements: { ninjutsu: 7 },
+    requirements: { ninjutsu: 5 },
     difficulty: 40,
   },
   {
@@ -54,7 +54,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     effect: 'stun',
     chakraCost: 10,
     power: 12,
-    requirements: { genjutsu: 8, perception: 6 },
+    requirements: { genjutsu: 5 },
     difficulty: 45,
   },
   {
@@ -110,7 +110,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     effect: 'damage',
     chakraCost: 4,
     power: 12,
-    requirements: { kenjutsu: 7 },
+    requirements: { kenjutsu: 5 },
     difficulty: 40,
   },
   {
@@ -132,7 +132,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     effect: 'damage',
     chakraCost: 6,
     power: 12,
-    requirements: { fuuinjutsu: 7 },
+    requirements: { fuuinjutsu: 5 },
     difficulty: 40,
   },
   {

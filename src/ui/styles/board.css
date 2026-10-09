@@ -78,18 +78,6 @@
   font-size: 0.75rem;
   font-family: var(--font-story);
 }
-.paper.sealed {
-  background: #3a2a1c;
-  color: #c9b48d;
-  border: 1px dashed #8a6f4a;
-  box-shadow: none;
-}
-.paper.sealed::before {
-  background: #6a5238;
-}
-.paper.sealed .paper-foot {
-  border-color: #6a5238;
-}
 .r1 {
   transform: rotate(-2deg);
 }
@@ -271,4 +259,16 @@
   position: absolute;
   right: 10px;
   bottom: 10px;
+}
+
+/* Standing jobs are pinned with a plain tack and never expire. */
+.paper.standing {
+  background: color-mix(in srgb, var(--paper) 88%, var(--wood));
+}
+.board-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--paper);
+  font-family: var(--font-story);
+  padding: 24px 0;
 }

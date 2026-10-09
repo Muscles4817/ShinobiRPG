@@ -2,13 +2,19 @@ import type { PlaceKind } from '@/game';
 
 import type { PlaceProps } from '../types';
 import { AcademyPage } from './AcademyPage';
+import { GearShopPage } from './GearShopPage';
 import { HomePage, HospitalPage } from './HomePages';
 import { MarketPage } from './MarketPage';
 import { MissionHallPage } from './MissionHallPage';
 import { TrainingPage } from './TrainingPage';
 
 /** Each kind of place has its own page design. */
-export function PlacePage({ kind, ...props }: PlaceProps & { readonly kind: PlaceKind }) {
+interface PlacePageProps extends PlaceProps {
+  readonly kind: PlaceKind;
+  readonly placeId: string;
+}
+
+export function PlacePage({ kind, placeId, ...props }: PlacePageProps) {
   switch (kind) {
     case 'training':
       return <TrainingPage {...props} />;
@@ -22,5 +28,7 @@ export function PlacePage({ kind, ...props }: PlaceProps & { readonly kind: Plac
       return <MissionHallPage {...props} />;
     case 'academy':
       return <AcademyPage {...props} />;
+    case 'gear':
+      return <GearShopPage {...props} placeId={placeId} />;
   }
 }

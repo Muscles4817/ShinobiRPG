@@ -43,6 +43,16 @@ export function Room({ slot }: { readonly slot: TimeSlot }) {
       <rect x="192" y="196" width="6" height="22" fill="#5a3c25" />
       <rect x="244" y="196" width="6" height="22" fill="#5a3c25" />
       <path d="M206 186v-12a8 8 0 0 1 16 0v12" fill="#2a2a2a" />
+      <rect x="168" y="126" width="46" height="40" rx="3" fill="#3a2a22" />
+      <rect x="174" y="148" width="34" height="12" rx="2" fill="#c4664a" opacity=".8" />
+      <path d="M176 126a15 9 0 0 0 30 0z" fill="#2a2a2a" />
+      <path
+        d="M184 114c-2-4 2-6 0-10M192 112c-2-4 2-6 0-10M200 114c-2-4 2-6 0-10"
+        stroke="#d9cbb0"
+        strokeWidth="2"
+        fill="none"
+        opacity=".6"
+      />
       <rect x="252" y="138" width="40" height="34" rx="3" fill="#6b4a2e" />
       <rect x="252" y="150" width="40" height="3" fill="#3a2818" />
       <rect x="268" y="146" width="8" height="8" rx="1" fill="#c9a24a" />

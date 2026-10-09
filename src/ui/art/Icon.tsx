@@ -81,6 +81,20 @@ const PATHS: Readonly<Record<IconId, ReactNode>> = {
   grill: (
     <path d="M5 13h22a11 9 0 0 1-22 0zM9 26l-2 4M23 26l2 4M10 9c-1-2 1-3 0-5M16 9c-1-2 1-3 0-5M22 9c-1-2 1-3 0-5" />
   ),
+  anvil: <path d="M4 10h20c0 4 2 6 5 6v3H18l2 7H9l2-7H4zM9 26h11M14 6l2-3M19 7l3-2" />,
+  vest: <path d="M11 4l5 4 5-4 6 4-2 6v14H7V14L5 8zM16 8v20M11 18h3M18 18h3" />,
+  charm: (
+    <>
+      <circle cx="16" cy="19" r="8" />
+      <path d="M16 3v8M13 7h6M16 15v8M12 19h8" />
+    </>
+  ),
+  pot: (
+    <path d="M5 13h22v7a8 7 0 0 1-8 7h-6a8 7 0 0 1-8-7zM3 13h26M10 9c-1-2 1-3 0-5M16 9c-1-2 1-3 0-5M22 9c-1-2 1-3 0-5" />
+  ),
+  veg: (
+    <path d="M16 28c-6-3-9-9-7-15 3 0 6 2 7 5 1-3 4-5 7-5 2 6-1 12-7 15zM16 13V4M12 6l4 3 4-3" />
+  ),
 };
 
 interface IconProps {

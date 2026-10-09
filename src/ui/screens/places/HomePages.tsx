@@ -2,6 +2,8 @@ import { headerView, homeView, hospitalView, type Choice } from '@/game';
 
 import { Room } from '../../art/Room';
 import { Banner } from '../../components/Banner';
+import { GearLocker } from './GearLocker';
+import { HomeKitchen } from './HomeKitchen';
 import type { PlaceProps } from '../types';
 
 interface HotspotProps {
@@ -21,6 +23,21 @@ function Hotspot({ label, choice, className, perform }: HotspotProps) {
       title={choice?.blocker ?? undefined}
       onClick={() => {
         if (choice) perform(choice.action);
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+/** A room object that opens a section of the page (the kitchen, the gear chest). */
+function Jump({ label, className, target }: { label: string; className: string; target: string }) {
+  return (
+    <button
+      type="button"
+      className={`hotspot ${className}`}
+      onClick={() => {
+        document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }}
     >
       {label}
@@ -53,7 +70,8 @@ export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
           perform={perform}
         />
         <Hotspot className="hs-kettle" label="Kettle · Nap" choice={view.nap} perform={perform} />
-        <Hotspot className="hs-chest" label="Chest · Storage soon" perform={perform} />
+        <Jump className="hs-stove" label="Stove · Cook" target="kitchen" />
+        <Jump className="hs-chest" label="Chest · Gear" target="locker" />
         <Hotspot className="hs-shrine" label="Shrine · Pray soon" perform={perform} />
       </div>
       <main className="page">
@@ -101,6 +119,8 @@ export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
           )}
           {view.nap.blocker && <p className="muted small">Nap: {view.nap.blocker}</p>}
         </section>
+        <HomeKitchen ctx={ctx} state={state} perform={perform} />
+        <GearLocker ctx={ctx} state={state} perform={perform} />
       </main>
     </>
   );
