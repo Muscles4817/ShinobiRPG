@@ -34,6 +34,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
               }}
             >
               <span className="rank">{n.rank}</span>
+              {n.withTeam && <span className="team-stamp">班 Team</span>}
               <b>
                 {n.title}
                 {n.fightLikely && (
@@ -84,6 +85,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
               <span className="chip cost">−{open.energyCost} energy</span>
               <span className="chip">{open.slots} slots</span>
               {open.fightLikely && <span className="chip harm">Fight likely</span>}
+              {open.withTeam && <span className="chip gain">With your team</span>}
             </span>
             {open.blocker && <p className="blocker">{open.blocker}</p>}
             <button

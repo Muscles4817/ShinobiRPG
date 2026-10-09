@@ -8,6 +8,7 @@ import { placeHere } from '../ops';
 import { trainingScale } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
+import { lessonCard, sparOptions, type LessonCard, type SparOption } from './team';
 
 export type DrillGroup = Discipline | 'body' | 'mind';
 
@@ -35,6 +36,9 @@ export interface TrainingView {
   /** How many more drills of typical cost today's energy covers. */
   readonly drillsLeft: number;
   readonly drills: readonly Drill[];
+  /** Your sensei's weekly lesson; null before you have a sensei. */
+  readonly lesson: LessonCard | null;
+  readonly sparring: readonly SparOption[];
 }
 
 function groupOf(stats: readonly StatId[]): DrillGroup {
@@ -76,5 +80,7 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
     energy: Math.round(vitals.energy),
     drillsLeft: Math.floor(vitals.energy / typical),
     drills,
+    lesson: lessonCard(state, ctx),
+    sparring: sparOptions(state, ctx),
   };
 }

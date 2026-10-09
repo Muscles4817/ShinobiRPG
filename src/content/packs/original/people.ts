@@ -27,6 +27,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       specialty: 'taijutsu',
       favouredTraits: ['brash', 'diligent', 'proud'],
       style: 'Up before dawn, running stairs until you can’t feel your legs. Loud about it.',
+      lesson: 'Gōran has you hit the striking post until it splinters, then hands you a new one.',
+      teaches: ['iron-gate-palm'],
     },
   },
   {
@@ -56,6 +58,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['proud', 'curious', 'brash'],
       nature: 'fire',
       style: 'Demanding and dazzling. Expects you to burn as bright as she does.',
+      lesson:
+        'Akari makes you hold a flame in your palm until it stops flickering. It takes all afternoon.',
+      teaches: ['great-lantern-flame'],
     },
   },
   {
@@ -80,6 +85,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['calm', 'curious', 'humble'],
       nature: 'water',
       style: 'Soft-spoken and strange. Teaches you to notice what you were not meant to.',
+      lesson:
+        'Yomi has you sit among the grave lanterns until you can tell which lights are lit by the living.',
+      teaches: ['ghost-lantern-veil'],
     },
   },
   {
@@ -108,6 +116,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['focused', 'humble', 'calm'],
       nature: 'earth',
       style: 'A thousand cuts a day, each one perfect. Silence is praise.',
+      lesson: 'Tetsu watches you cut a thousand times and says one word. It is the right word.',
+      teaches: ['forge-flash-cut'],
     },
   },
   {
@@ -136,6 +146,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['cunning', 'diligent', 'focused'],
       nature: 'wind',
       style: 'Patient, precise, and always three moves ahead. Loves a good trap.',
+      lesson:
+        'Ito sets traps around the training ground and makes you write a ward for each before dark.',
+      teaches: ['shrine-rope-binding'],
     },
   },
   {

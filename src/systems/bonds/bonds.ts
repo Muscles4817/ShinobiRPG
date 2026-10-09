@@ -78,11 +78,16 @@ export function reactionTo(tastes: readonly Taste[], tone: string): number {
   );
 }
 
+/** Records time spent together (a talk, a spar): points and the day. */
+export function recordMeeting(bond: Bond, meeting: { day: number; delta: number }): Bond {
+  return { ...addPoints(bond, meeting.delta), lastTalkDay: meeting.day };
+}
+
 /** Records a finished talk: points, the day, and what was said. */
 export function recordTalk(bond: Bond, talk: { day: number; delta: number; heard: string }): Bond {
+  const met = recordMeeting(bond, talk);
   return {
-    ...addPoints(bond, talk.delta),
-    lastTalkDay: talk.day,
+    ...met,
     heard: bond.heard.includes(talk.heard) ? bond.heard : [...bond.heard, talk.heard],
   };
 }

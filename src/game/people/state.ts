@@ -13,6 +13,8 @@ export interface People {
   /** Null until teams are read out the morning after graduation. */
   readonly team: Team | null;
   readonly conversation: Conversation | null;
+  /** The genin you are sparring with while a spar's fight is on. */
+  readonly sparringWith: string | null;
 }
 
 export interface Team {
@@ -21,6 +23,8 @@ export interface Team {
   readonly senseiOptions: readonly string[];
   /** Null until you choose. */
   readonly senseiId: string | null;
+  /** The day of your last lesson with your sensei, if any. */
+  readonly lastLessonDay: number | null;
 }
 
 export interface Conversation {
@@ -37,4 +41,10 @@ export interface Answer {
   readonly newStage: number | null;
 }
 
-export const NO_PEOPLE: People = { generated: [], bonds: {}, team: null, conversation: null };
+export const NO_PEOPLE: People = {
+  generated: [],
+  bonds: {},
+  team: null,
+  conversation: null,
+  sparringWith: null,
+};

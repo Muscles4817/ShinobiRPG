@@ -94,8 +94,19 @@ function v3ToV4(state: RawState): RawState {
   return { ...state, people: { generated: [], bonds: {}, team: null, conversation: null } };
 }
 
+/** v4 → v5: weekly sensei lessons and sparring. Nobody has had a lesson yet. */
+function v4ToV5(state: RawState): RawState {
+  const people = asRecord(state.people);
+  const team =
+    typeof people.team === 'object' && people.team !== null
+      ? { ...asRecord(people.team), lastLessonDay: null }
+      : null;
+  return { ...state, people: { ...people, team, sparringWith: null } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
   3: v3ToV4,
+  4: v4ToV5,
 };

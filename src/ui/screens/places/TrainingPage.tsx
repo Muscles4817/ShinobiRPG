@@ -5,6 +5,7 @@ import { headerView, hubView, trainingView, type DrillGroup } from '@/game';
 import { Icon } from '../../art/Icon';
 import { Chips } from '../../components/Chips';
 import { Banner } from '../../components/Banner';
+import { TeamCorner } from './TeamCorner';
 import type { PlaceProps } from '../types';
 
 const FILTERS: readonly { id: DrillGroup | 'all'; label: string }[] = [
@@ -55,6 +56,7 @@ export function TrainingPage({ ctx, state, perform, onBack }: PlaceProps) {
             <i style={{ width: `${view.energy}%` }} />
           </span>
         </section>
+        <TeamCorner lesson={view.lesson} sparring={view.sparring} perform={perform} />
         <div className="filters" role="group" aria-label="Filter drills">
           {FILTERS.map((f) => (
             <button

@@ -128,6 +128,24 @@ describe('App (smoke test)', () => {
     expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
   });
 
+  it('offers a sensei lesson and sparring at the training grounds', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Training Grounds/));
+    expect(screen.getByText(/Weekly lesson/)).toBeInTheDocument();
+    const sparring = screen.getByRole('region', { name: 'Sparring' });
+    const spar = within(sparring)
+      .getAllByRole('button', { name: 'Spar' })
+      .find((b) => !(b as HTMLButtonElement).disabled)!;
+    await user.click(spar);
+    expect(screen.getByText('Sparring')).toBeInTheDocument();
+    for (let i = 0; i < 60 && !screen.queryByRole('dialog'); i++) {
+      await user.click(screen.getByRole('button', { name: /^Strike/ }));
+    }
+    expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
+  });
+
   it('resumes a saved game', async () => {
     const user = userEvent.setup();
     const store = memoryStore();

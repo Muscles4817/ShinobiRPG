@@ -36,6 +36,8 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'tea-merchant-escort',
           'academy-dropout',
           'storehouse-ghost',
+          'river-road-bandits',
+          'festival-haunting',
         ],
       },
       {

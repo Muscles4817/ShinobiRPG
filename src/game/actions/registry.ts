@@ -2,6 +2,8 @@ import { combatAct } from './combat';
 import { eat, rest, sleep, train } from './daily';
 import { missionChoose, missionContinue, startMission } from './mission';
 import { payRent, treat } from './services';
+import { lesson } from './lesson';
+import { spar } from './spar';
 import { study } from './study';
 import { endConversation, reply, talk } from './talk';
 import { assignTeam, chooseSensei } from './team';
@@ -30,4 +32,6 @@ export const HANDLERS: Registry = {
   talk,
   reply,
   endConversation,
+  lesson,
+  spar,
 };

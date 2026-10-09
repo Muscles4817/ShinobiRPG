@@ -74,7 +74,9 @@ ui ──► game ──► content ──► systems ──► core
    engine are injected, so tests can substitute them.
 5. **Combat is behind a contract** (`src/systems/combat/contract.ts`). The game builds a
    `CombatSetup` and reads a `CombatOutcome`; the UI renders a generic `CombatView`; saves hold
-   an opaque `CombatState`. Only the engine looks inside its own state.
+   an opaque `CombatState`. Only the engine looks inside its own state. A setup has
+   `allies` (teammates on team missions) who act on their own; a fight's purpose (mission,
+   spar) is game state (`people.sparringWith`), never the engine's concern.
 6. **The UI renders view models** (`src/game/views/`), not raw state. Activity lists are
    `ActionOption`s that already carry the `GameAction` to dispatch and the blocker reason.
 7. **Content is data, validated by tests.** Unique ids, resolvable references, reachable
@@ -105,6 +107,10 @@ ui ──► game ──► content ──► systems ──► core
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
     (fight › mission › conversation › team assignment). Anything that must happen before
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
+15. **Companions grow with you, not on their own.** Teammates and sparring partners have no
+    stored stats; `companionStats` derives them from their specialty and your record, so a
+    teammate is always a fair match. Your sensei teaches weekly (`lesson`) and hands over
+    their `teaches` techniques once your bond is high enough.
 
 ### Content packs
 
@@ -146,7 +152,10 @@ ui ──► game ──► content ──► systems ──► core
   needs a `none` clan (validated).
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
   schedule of place ids in the start location). Senseis need `role: 'sensei'` and a
-  `sensei` profile; at least two specialties must exist for the team choice (validated).
+  `sensei` profile (style, lesson text, `teaches` technique ids); at least two specialties
+  must exist for the team choice (validated).
+- **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
+  fight as allies and each gains bond on success. Offer it at a mission hall as usual.
 - **Add a conversation:** add a `ConversationDef` (generic, or with `personId`) with a
   `minStage` and choices that each carry a `Tone`. Traits' `likes`/`dislikes` decide how a
   tone lands, so new tones need tastes on the traits that care.

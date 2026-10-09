@@ -26,7 +26,9 @@ export type GameAction =
   | { readonly type: 'chooseSensei'; readonly senseiId: string }
   | { readonly type: 'talk'; readonly personId: string }
   | { readonly type: 'reply'; readonly choiceIndex: number }
-  | { readonly type: 'endConversation' };
+  | { readonly type: 'endConversation' }
+  | { readonly type: 'lesson' }
+  | { readonly type: 'spar'; readonly personId: string };
 
 export type GameActionType = GameAction['type'];
 export type ActionOf<T extends GameActionType> = Extract<GameAction, { type: T }>;

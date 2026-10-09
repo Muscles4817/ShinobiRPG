@@ -2,9 +2,18 @@ import type { Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
 import { applyGuard, patchFighter, performAction, type DuelAction } from './actions';
-import { chooseEnemyAction } from './ai';
+import { chooseAiAction } from './ai';
 import { CHAKRA_REGEN_PER_ROUND, fleeChance } from './formulas';
-import { isAlive, LOG_LIMIT, livingEnemies, playerOf, type DuelState, type Fighter } from './state';
+import {
+  isAlive,
+  LOG_LIMIT,
+  livingEnemies,
+  livingOn,
+  playerOf,
+  sideOf,
+  type DuelState,
+  type Fighter,
+} from './state';
 
 interface Plan {
   readonly actorId: string;
@@ -15,7 +24,7 @@ interface Plan {
 function decideResult(fighters: readonly Fighter[]): CombatResult | null {
   const player = fighters.find((f) => f.isPlayer);
   if (!player || !isAlive(player)) return 'defeat';
-  return fighters.some((f) => !f.isPlayer && isAlive(f)) ? null : 'victory';
+  return livingOn(fighters, 'enemy').length > 0 ? null : 'victory';
 }
 
 function endOfRound(fighters: readonly Fighter[]): Fighter[] {
@@ -32,19 +41,21 @@ function planRound(state: DuelState, playerAction: DuelAction, rng: Rng): Plan[]
   const player = playerOf(state);
   const plans: Plan[] = [
     { actorId: player.id, action: playerAction, initiative: initiative(player) },
-    ...livingEnemies(state).map((e) => ({
-      actorId: e.id,
-      action: chooseEnemyAction(e, rng),
-      initiative: initiative(e),
-    })),
+    ...state.fighters
+      .filter((f) => !f.isPlayer && isAlive(f))
+      .map((f) => ({ actorId: f.id, action: chooseAiAction(f, rng), initiative: initiative(f) })),
   ];
   return plans.sort((a, b) => b.initiative - a.initiative);
 }
 
-function targetFor(fighters: readonly Fighter[], actor: Fighter): Fighter | undefined {
-  return actor.isPlayer
-    ? fighters.find((f) => !f.isPlayer && isAlive(f))
-    : fighters.find((f) => f.isPlayer);
+/**
+ * The player's side focuses the first enemy still standing. Enemies pick among those standing
+ * against them (no roll when it is only the player, so solo fights replay as before).
+ */
+function targetFor(fighters: readonly Fighter[], actor: Fighter, rng: Rng): Fighter | undefined {
+  const foes = livingOn(fighters, sideOf(actor) === 'player' ? 'enemy' : 'player');
+  if (sideOf(actor) === 'player' || foes.length <= 1) return foes[0];
+  return rng.pick(foes);
 }
 
 function tryFlee(state: DuelState, rng: Rng): { escaped: boolean; line: string } {
@@ -81,7 +92,7 @@ export function resolveRound(state: DuelState, playerAction: DuelAction, rng: Rn
       log.push(`${actor.name} is dazed and loses their turn.`);
       continue;
     }
-    const target = targetFor(fighters, actor);
+    const target = targetFor(fighters, actor, rng);
     if (!target) continue;
     const result = performAction(fighters, { actor, target }, plan.action, rng);
     fighters = result.fighters;

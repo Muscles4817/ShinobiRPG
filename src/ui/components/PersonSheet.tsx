@@ -1,4 +1,10 @@
-import { personSheet, type GameAction, type GameContext, type GameState } from '@/game';
+import {
+  personSheet,
+  type GameAction,
+  type GameContext,
+  type GameState,
+  type PersonSheet as Sheet,
+} from '@/game';
 
 import { Portrait } from '../art/Portrait';
 import { BondMeter } from './BondMeter';
@@ -12,6 +18,52 @@ interface PersonSheetProps {
 }
 
 const RELATION_LABEL = { sensei: 'Your sensei', teammate: 'Your teammate' } as const;
+
+interface PersonActionsProps {
+  readonly sheet: Sheet;
+  readonly perform: (action: GameAction) => void;
+  readonly onClose: () => void;
+}
+
+/** Talk (and, with genin, spar), each saying why not when it can't be done. */
+function PersonActions({ sheet: p, perform, onClose }: PersonActionsProps) {
+  const { spar } = p;
+  return (
+    <>
+      {p.talk.blocker && <p className="blocker">{p.talk.blocker}</p>}
+      <div className="row-buttons">
+        <button
+          type="button"
+          className="btn"
+          disabled={p.talk.blocker !== null}
+          onClick={() => {
+            perform(p.talk.action);
+            onClose();
+          }}
+        >
+          Talk to {p.name}
+        </button>
+        {spar && (
+          <button
+            type="button"
+            className="btn ghost"
+            disabled={spar.blocker !== null}
+            title={spar.blocker ?? undefined}
+            onClick={() => {
+              perform(spar.action);
+              onClose();
+            }}
+          >
+            Spar
+          </button>
+        )}
+      </div>
+      {spar?.blocker && spar.blocker !== p.talk.blocker && (
+        <p className="blocker">Spar: {spar.blocker}</p>
+      )}
+    </>
+  );
+}
 
 /** Someone's page: who they are, how close you are, what they're like, and a way to talk. */
 export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSheetProps) {
@@ -69,18 +121,7 @@ export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSh
           </p>
         )}
         {p.reveal && <p className="muted small">{p.reveal}</p>}
-        {p.talk.blocker && <p className="blocker">{p.talk.blocker}</p>}
-        <button
-          type="button"
-          className="btn wide"
-          disabled={p.talk.blocker !== null}
-          onClick={() => {
-            perform(p.talk.action);
-            onClose();
-          }}
-        >
-          Talk to {p.name}
-        </button>
+        <PersonActions sheet={p} perform={perform} onClose={onClose} />
       </section>
     </div>
   );
