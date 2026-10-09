@@ -120,7 +120,7 @@ export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameS
 
 function hospitalise(state: GameState, ctx: GameContext, title: string | null): GameState {
   const fee = Math.min(state.wallet.ryo, HOSPITAL_FEE);
-  const recovered = spendTime(state, slotsUntilNextMorning(state.time));
+  const recovered = spendTime(state, slotsUntilNextMorning(state.time), ctx);
   const health = Math.round(maxHealth(state.character.stats) * HOSPITAL_HEALTH_FRACTION);
   const patched = adjust(recovered, { health: health - recovered.character.vitals.health });
   const text = ctx.content.text.hospitalWake;

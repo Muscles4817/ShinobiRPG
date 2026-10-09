@@ -7,6 +7,7 @@ import {
   healAmount,
   resistChance,
   strikeDamage,
+  sealTurns,
   stunTurns,
   techniqueDamage,
 } from './formulas';
@@ -30,7 +31,7 @@ export interface Turn {
   readonly target: Fighter;
 }
 
-type Patch = Partial<Pick<Fighter, 'health' | 'chakra' | 'stunned' | 'guarding'>>;
+type Patch = Partial<Pick<Fighter, 'health' | 'chakra' | 'stunned' | 'sealed' | 'guarding'>>;
 
 export function patchFighter(fighters: readonly Fighter[], id: string, patch: Patch): Fighter[] {
   return fighters.map((f) => (f.id === id ? { ...f, ...patch } : f));
@@ -79,6 +80,13 @@ function useTechnique(
         ? `${target.name} shakes off the illusion.`
         : `${target.name} sees it coming and evades.`;
     return { fighters: paid, lines: [opener, avoided] };
+  }
+  if (technique.effect === 'seal') {
+    const turns = sealTurns(technique);
+    return {
+      fighters: patchFighter(paid, target.id, { sealed: (target.sealed ?? 0) + turns }),
+      lines: [opener, `Seals crawl over ${target.name}. Their chakra is locked!`],
+    };
   }
   if (technique.effect === 'stun') {
     const turns = stunTurns(technique);

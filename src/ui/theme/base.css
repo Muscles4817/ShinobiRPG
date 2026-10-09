@@ -134,6 +134,12 @@ button:disabled {
 .d-genjutsu {
   --d: var(--genjutsu);
 }
+.d-kenjutsu {
+  --d: var(--kenjutsu);
+}
+.d-fuuinjutsu {
+  --d: var(--fuuinjutsu);
+}
 .d-body {
   --d: var(--gold);
 }

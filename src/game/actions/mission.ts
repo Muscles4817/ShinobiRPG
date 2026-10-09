@@ -35,7 +35,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
   },
   perform(state, action, ctx) {
     const def = ctx.content.missions.require(action.missionId);
-    const started = adjust(spendTime({ ...state, mission: startRun(def) }, def.slots), {
+    const started = adjust(spendTime({ ...state, mission: startRun(def) }, def.slots, ctx), {
       energy: -def.energyCost,
     });
     return log(started, { heading: def.title, text: def.summary, tone: 'info' });

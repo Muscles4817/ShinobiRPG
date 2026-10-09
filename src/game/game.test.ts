@@ -1,11 +1,11 @@
-import { act, ctx, lastEntry, newGame, withAllStats } from '@/test/gameFixtures';
+import { act, ctx, draft, lastEntry, newGame, withAllStats } from '@/test/gameFixtures';
 
 import { contextForPack, packChoices } from './context';
 import { dispatch } from './dispatch';
-import { createNewGame } from './newGame';
+import { createNewGame } from './creation';
 
 describe('new game', () => {
-  it('starts a genin in the pack’s home village with academy and aptitude techniques', () => {
+  it('starts a genin in the pack’s home village', () => {
     const state = newGame();
     expect(state).toMatchObject({ packId: 'original', locationId: 'torogakure' });
     expect(state.techniques.known).toEqual(['palm-strike', 'shadow-feint', 'gale-heel']);
@@ -13,15 +13,10 @@ describe('new game', () => {
     expect(state.housing).toEqual({ placeId: 'home', rentPerWeek: 30, paidThroughDay: 7 });
   });
 
-  it('applies aptitude stat bonuses', () => {
-    expect(newGame().character.stats.taijutsu).toBe(8);
-  });
-
   it('can start in any shipped pack', () => {
     for (const pack of packChoices()) {
       const context = contextForPack(pack.id)!;
-      const aptitudeId = context.content.aptitudes.all[0]!.id;
-      const state = createNewGame({ name: 'A', aptitudeId, seed: 1 }, context);
+      const state = createNewGame({ draft: draft({}, context), seed: 1 }, context);
       expect(state.packId).toBe(pack.id);
     }
   });

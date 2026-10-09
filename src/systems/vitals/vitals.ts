@@ -52,15 +52,15 @@ export function adjustVitals(vitals: Vitals, delta: VitalsDelta, stats: Stats): 
   };
 }
 
-/** Passive effects of time passing (hunger). Starving slowly drains health. */
-export function passTime(vitals: Vitals, slots: number, stats: Stats): Vitals {
-  const satietyAfter = vitals.satiety - SATIETY_DECAY_PER_SLOT * slots;
-  const starvingSlots = satietyAfter < 0 ? Math.ceil(-satietyAfter / SATIETY_DECAY_PER_SLOT) : 0;
-  return adjustVitals(
-    vitals,
-    { satiety: -SATIETY_DECAY_PER_SLOT * slots, health: -3 * starvingSlots },
-    stats,
-  );
+/**
+ * Passive effects of time passing (hunger). Starving slowly drains health.
+ * `hungerRate` scales how fast you get hungry (some clans eat for two).
+ */
+export function passTime(vitals: Vitals, slots: number, stats: Stats, hungerRate = 1): Vitals {
+  const decay = SATIETY_DECAY_PER_SLOT * hungerRate;
+  const satietyAfter = vitals.satiety - decay * slots;
+  const starvingSlots = satietyAfter < 0 ? Math.ceil(-satietyAfter / decay) : 0;
+  return adjustVitals(vitals, { satiety: -decay * slots, health: -3 * starvingSlots }, stats);
 }
 
 /** A full night's sleep. Hunger reduces how well you recover. */

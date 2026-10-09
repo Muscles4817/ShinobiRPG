@@ -56,6 +56,12 @@
 .t-genjutsu {
   background: linear-gradient(160deg, var(--genjutsu), #44207a);
 }
+.t-kenjutsu {
+  background: linear-gradient(160deg, #6f8fa8, #2a3a4a);
+}
+.t-fuuinjutsu {
+  background: linear-gradient(160deg, #c9932f, #5a3a10);
+}
 .t-basic {
   background: linear-gradient(160deg, #4b4560, #25213a);
 }

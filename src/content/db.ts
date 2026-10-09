@@ -3,14 +3,19 @@ import type { TechniqueDef } from '@/systems/techniques';
 
 import { createCatalog, type Catalog } from './catalog';
 import type {
-  AptitudeDef,
+  BreakInScene,
+  ClanDef,
   ContentPack,
   EnemyDef,
   FoodDef,
   LocationDef,
+  NindoDef,
   SettingText,
+  TalentDef,
   TrainingDef,
+  TraitDef,
 } from './types';
+import type { Discipline } from '@/systems/techniques';
 
 /**
  * A content pack indexed for lookup. The game receives this through its context, so tests
@@ -28,8 +33,13 @@ export interface ContentDb {
   readonly enemies: Catalog<EnemyDef>;
   readonly training: Catalog<TrainingDef>;
   readonly foods: Catalog<FoodDef>;
-  readonly aptitudes: Catalog<AptitudeDef>;
+  readonly clans: Catalog<ClanDef>;
+  readonly talents: Catalog<TalentDef>;
+  readonly traits: Catalog<TraitDef>;
+  readonly nindos: Catalog<NindoDef>;
+  readonly breakIn: BreakInScene;
   readonly academyTechniques: readonly string[];
+  readonly disciplineStarters: Readonly<Record<Discipline, string>>;
 }
 
 export function buildContentDb(pack: ContentPack): ContentDb {
@@ -45,7 +55,12 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     enemies: createCatalog('enemy', pack.enemies),
     training: createCatalog('training', pack.training),
     foods: createCatalog('food', pack.foods),
-    aptitudes: createCatalog('aptitude', pack.aptitudes),
+    clans: createCatalog('clan', pack.clans),
+    talents: createCatalog('talent', pack.talents),
+    traits: createCatalog('trait', pack.traits),
+    nindos: createCatalog('nindo', pack.nindos),
+    breakIn: pack.breakIn,
     academyTechniques: pack.academyTechniques,
+    disciplineStarters: pack.disciplineStarters,
   };
 }

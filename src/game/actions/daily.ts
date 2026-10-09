@@ -16,12 +16,12 @@ import {
   statChips,
 } from '../ops';
 import type { GameContext } from '../context';
+import { trainingScale } from '../profile';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Everyday life in a village: training, eating, napping and sleeping. */
 
-const HUNGRY_TRAINING_EFFICIENCY = 0.5;
 const NAP_ENERGY = 30;
 const MIN_HEALTH_TO_TRAIN = 0.2;
 const LOCKED_OUT_RECOVERY = 0.4;
@@ -56,10 +56,10 @@ export const train: ActionHandler<ActionOf<'train'>> = {
     const def = ctx.content.training.require(action.trainingId);
     const hungry = isHungry(state.character.vitals);
     const before = state.character.stats;
-    const stats = applyTraining(before, def.gains, hungry ? HUNGRY_TRAINING_EFFICIENCY : 1);
+    const stats = applyTraining(before, def.gains, trainingScale(state.character, ctx, hungry));
 
     let next: GameState = { ...state, character: { ...state.character, stats } };
-    next = adjust(spendTime(next, def.slots), { energy: -def.energyCost });
+    next = adjust(spendTime(next, def.slots, ctx), { energy: -def.energyCost });
     return log(next, {
       heading: def.name,
       text: hungry
@@ -89,7 +89,7 @@ export const eat: ActionHandler<ActionOf<'eat'>> = {
       { ...state, wallet: paid.value },
       { satiety: def.satiety, energy: def.energy },
     );
-    return log(spendTime(fed, def.slots), {
+    return log(spendTime(fed, def.slots, ctx), {
       heading: def.name,
       text: def.description,
       tone: 'info',
@@ -111,8 +111,8 @@ export const rest: ActionHandler<ActionOf<'rest'>> = {
       state.character.vitals.energy >= METER_MAX && 'You are not tired.',
     );
   },
-  perform(state) {
-    return log(adjust(spendTime(state, 1), { energy: NAP_ENERGY }), {
+  perform(state, _action, ctx) {
+    return log(adjust(spendTime(state, 1, ctx), { energy: NAP_ENERGY }), {
       heading: 'Nap',
       text: 'You put the kettle on and doze off before it boils.',
       tone: 'info',
@@ -134,7 +134,7 @@ export const sleep: ActionHandler<ActionOf<'sleep'>> = {
       ? { ...full, health: Math.round((full.health ?? 0) * LOCKED_OUT_RECOVERY) }
       : full;
     const before = state.character.vitals.health;
-    const rested = adjust(spendTime(state, slotsUntilNextMorning(state.time)), recovery);
+    const rested = adjust(spendTime(state, slotsUntilNextMorning(state.time), ctx), recovery);
     const story = lockedOut ? text.sleepLockedOut : hungry ? text.sleepHungry : text.sleepWell;
     const next = log(rested, {
       heading: 'Sleep till dawn',

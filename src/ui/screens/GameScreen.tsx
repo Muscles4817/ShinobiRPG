@@ -11,7 +11,8 @@ import { PlacePage } from './places/PlacePage';
 import { RecordScreen } from './RecordScreen';
 import { CombatScene } from './scenes/CombatScene';
 import { MissionScene } from './scenes/MissionScene';
-import { JutsuScreen, ShinobiScreen } from './YouScreens';
+import { JutsuScreen } from './YouScreens';
+import { ShinobiScreen } from './ShinobiScreen';
 import { TravelScreen } from './TravelScreen';
 import type { ScreenProps } from './types';
 

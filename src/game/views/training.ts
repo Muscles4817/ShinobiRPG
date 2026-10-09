@@ -1,12 +1,15 @@
 import type { IconId } from '@/content';
 import { STAT_INFO, trainingGain, type StatId } from '@/systems/stats';
+import { DISCIPLINES, type Discipline } from '@/systems/techniques';
+import { isHungry } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
+import { trainingScale } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 
-export type DrillGroup = 'taijutsu' | 'ninjutsu' | 'genjutsu' | 'body' | 'mind';
+export type DrillGroup = Discipline | 'body' | 'mind';
 
 export interface StatPreview {
   readonly label: string;
@@ -34,11 +37,11 @@ export interface TrainingView {
   readonly drills: readonly Drill[];
 }
 
-const DISCIPLINES: readonly StatId[] = ['taijutsu', 'ninjutsu', 'genjutsu'];
-
 function groupOf(stats: readonly StatId[]): DrillGroup {
-  const discipline = stats.find((s) => DISCIPLINES.includes(s));
-  if (discipline) return discipline as DrillGroup;
+  const discipline = stats.find((s): s is Discipline =>
+    (DISCIPLINES as readonly string[]).includes(s),
+  );
+  if (discipline) return discipline;
   return stats.some((s) => STAT_INFO[s].group === 'body') ? 'body' : 'mind';
 }
 
@@ -47,6 +50,7 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
   if (!place) return null;
   const { stats, vitals } = state.character;
   const lastHeading = state.journal.entries.at(-1)?.heading;
+  const scale = trainingScale(state.character, ctx, isHungry(vitals));
   const drills = place.trainingIds.map((id): Drill => {
     const def = ctx.content.training.require(id);
     const gained = Object.keys(def.gains) as StatId[];
@@ -62,7 +66,7 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
       previews: gained.map((stat) => ({
         label: STAT_INFO[stat].label,
         now: stats[stat],
-        after: stats[stat] + trainingGain(stats[stat], def.gains[stat] ?? 0),
+        after: stats[stat] + trainingGain(stats[stat], def.gains[stat] ?? 0, scale[stat] ?? 1),
       })),
     };
   });

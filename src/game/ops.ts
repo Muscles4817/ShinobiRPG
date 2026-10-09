@@ -5,6 +5,7 @@ import { advanceSlots } from '@/systems/time';
 import { adjustVitals, maxHealth, passTime, type VitalsDelta } from '@/systems/vitals';
 
 import type { GameContext } from './context';
+import { characterModifiers } from './profile';
 import type { GameState } from './state';
 
 /**
@@ -12,13 +13,17 @@ import type { GameState } from './state';
  * none of them validate — validation lives in each handler's `check`.
  */
 
-export function spendTime(state: GameState, slots: number): GameState {
+export function spendTime(state: GameState, slots: number, ctx: GameContext): GameState {
   if (slots <= 0) return state;
   const { character } = state;
+  const { hungerRate } = characterModifiers(character, ctx);
   return {
     ...state,
     time: advanceSlots(state.time, slots),
-    character: { ...character, vitals: passTime(character.vitals, slots, character.stats) },
+    character: {
+      ...character,
+      vitals: passTime(character.vitals, slots, character.stats, hungerRate),
+    },
   };
 }
 

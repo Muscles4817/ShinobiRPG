@@ -26,6 +26,11 @@ choose **GitHub Actions**.
 
 ## What's in it
 
+- **Your character is a file you break into.** The night before graduation you sneak into the
+  Academy and read your own record: family and clan (with bloodlines such as the Byakugan or a
+  dormant Sharingan), report-card grades across taijutsu, ninjutsu, genjutsu, kenjutsu and
+  fūinjutsu, chakra nature, personality traits, a special talent and your dream. Each choice
+  shows exactly what it changes.
 - **Two worlds.** _Hidden Leaf_ uses Naruto names (a fan pack for personal play);
   _Land of Embers_ is the game's own setting. Choose when you start a new life.
 - **The village is home.** Each village has its own backdrop and sky that follows the time of

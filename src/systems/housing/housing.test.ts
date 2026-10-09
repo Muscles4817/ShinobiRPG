@@ -1,4 +1,11 @@
-import { daysOfRentLeft, isRentOverdue, newTenancy, payWeek } from './housing';
+import {
+  daysOfRentLeft,
+  freeLodging,
+  isRentFree,
+  isRentOverdue,
+  newTenancy,
+  payWeek,
+} from './housing';
 
 describe('housing', () => {
   const home = newTenancy('home', 30, 1);
@@ -12,5 +19,11 @@ describe('housing', () => {
   it('extends the tenancy a week at a time', () => {
     expect(isRentOverdue(payWeek(home), 14)).toBe(false);
     expect(isRentOverdue(payWeek(home), 15)).toBe(true);
+  });
+
+  it('never charges rent for free lodging', () => {
+    const compound = freeLodging('home', 'The clan compound', 1);
+    expect(isRentOverdue(compound, 100)).toBe(false);
+    expect(isRentFree(compound)).toBe(true);
   });
 });

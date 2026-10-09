@@ -42,4 +42,48 @@ function v1ToV2(state: RawState): RawState {
   };
 }
 
-export const MIGRATIONS: Readonly<Record<number, Migration>> = { 1: v1ToV2 };
+const DISCIPLINE_IDS = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'];
+
+/** New disciplines start at the base value for characters made before they existed. */
+function withNewDisciplines(stats: unknown): RawState {
+  return { kenjutsu: 5, fuuinjutsu: 5, ...asRecord(stats) };
+}
+
+/**
+ * v2 → v3: the full character profile (clan, grades, nature, traits, talent, nindō,
+ * appearance) and two new disciplines. Old characters become clanless, with their old
+ * gift as their A-grade specialty.
+ */
+function v2ToV3(state: RawState): RawState {
+  const character = asRecord(state.character);
+  const { aptitudeId, ...rest } = character;
+  const specialty = typeof aptitudeId === 'string' ? aptitudeId : 'taijutsu';
+  const grades = Object.fromEntries(DISCIPLINE_IDS.map((d) => [d, d === specialty ? 'A' : 'C']));
+  return {
+    ...state,
+    character: {
+      ...rest,
+      familyName: '',
+      pronouns: 'they',
+      appearance: {
+        hairStyle: 'spiky',
+        hairColour: '#4a2f1d',
+        eyeColour: '#2a1d14',
+        skinTone: '#e2b48c',
+        outfitColour: '#e8823a',
+        headband: 'forehead',
+      },
+      clanId: 'none',
+      grades,
+      nature: 'fire',
+      traitIds: [],
+      talentId: null,
+      nindoId: null,
+      breakIn: { approachId: 'none', succeeded: true },
+      stats: withNewDisciplines(character.stats),
+      startingStats: withNewDisciplines(character.startingStats),
+    },
+  };
+}
+
+export const MIGRATIONS: Readonly<Record<number, Migration>> = { 1: v1ToV2, 2: v2ToV3 };

@@ -6,6 +6,7 @@ import {
   deserialize,
   dispatch,
   serialize,
+  type CreationDraft,
   type GameAction,
   type GameContext,
   type GameState,
@@ -22,7 +23,7 @@ export interface GameSession {
   /** The most recent refusal or load problem, for a dismissible notice. */
   readonly notice: string | null;
   readonly perform: (action: GameAction) => void;
-  readonly start: (packId: string, name: string, aptitudeId: string) => void;
+  readonly start: (packId: string, draft: CreationDraft, seed: number) => void;
   readonly abandon: () => void;
   readonly dismissNotice: () => void;
 }
@@ -40,10 +41,6 @@ function loadInitial(store: SaveStore): { game: Loaded | null; notice: string | 
     };
   }
   return { game: { game: loaded.value, ctx }, notice: null };
-}
-
-function randomSeed(): number {
-  return crypto.getRandomValues(new Uint32Array(1))[0] ?? 1;
 }
 
 /** Owns the live GameState and its context: dispatches actions and autosaves after every change. */
@@ -70,10 +67,10 @@ export function useGameSession(store: SaveStore): GameSession {
     [game],
   );
 
-  const start = useCallback((packId: string, name: string, aptitudeId: string) => {
+  const start = useCallback((packId: string, draft: CreationDraft, seed: number) => {
     const ctx = contextForPack(packId);
     if (!ctx) return;
-    setGame({ game: createNewGame({ name, aptitudeId, seed: randomSeed() }, ctx), ctx });
+    setGame({ game: createNewGame({ draft, seed }, ctx), ctx });
     setNotice(null);
   }, []);
 

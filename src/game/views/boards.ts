@@ -1,8 +1,8 @@
 import { STAT_INFO, type StatId } from '@/systems/stats';
-import { studyPoints } from '@/systems/techniques';
 
 import { STUDY_ENERGY_COST } from '../actions/study';
 import type { GameContext } from '../context';
+import { studyPointsFor } from '../profile';
 import { placeHere } from '../ops';
 import type { GameState } from '../state';
 import { choice, type Choice, type Discipline } from './common';
@@ -64,6 +64,8 @@ export interface Scroll extends Choice {
   readonly progress: number;
   readonly difficulty: number;
   readonly sessionsLeft: number;
+  /** A technique only your clan teaches. */
+  readonly fromClan: boolean;
   /** Unmet requirements, e.g. "Ninjutsu 7 · you have 5.0". */
   readonly needs: readonly string[];
 }
@@ -81,7 +83,13 @@ export function academyView(state: GameState, ctx: GameContext): AcademyView | n
   if (!place) return null;
   const { stats } = state.character;
   const scrolls = place.techniqueIds
-    .filter((id) => !state.techniques.known.includes(id))
+    .filter((id) => {
+      const clan = ctx.content.techniques.require(id).clan;
+      return (
+        !state.techniques.known.includes(id) &&
+        (clan === undefined || clan === state.character.clanId)
+      );
+    })
     .map((id): Scroll => {
       const t = ctx.content.techniques.require(id);
       const progress = state.techniques.progress[id] ?? 0;
@@ -98,8 +106,11 @@ export function academyView(state: GameState, ctx: GameContext): AcademyView | n
         discipline: t.discipline,
         progress,
         difficulty: t.difficulty,
-        sessionsLeft: Math.ceil((t.difficulty - progress) / studyPoints(stats, t)),
+        sessionsLeft: Math.ceil(
+          (t.difficulty - progress) / studyPointsFor(state.character, t, ctx),
+        ),
         needs,
+        fromClan: t.clan !== undefined,
       };
     });
   return {

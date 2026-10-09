@@ -18,4 +18,4 @@ export function choice(state: GameState, ctx: GameContext, action: GameAction): 
   return { action, blocker: blockerFor(state, action, ctx) };
 }
 
-export type Discipline = 'taijutsu' | 'ninjutsu' | 'genjutsu';
+export type { Discipline } from '@/systems/techniques';

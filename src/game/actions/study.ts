@@ -1,6 +1,7 @@
 import { STAT_INFO } from '@/systems/stats';
-import { learnBlocker, study as studyTechnique, studyPoints } from '@/systems/techniques';
+import { learnBlocker, study as studyTechnique } from '@/systems/techniques';
 
+import { studyPointsFor } from '../profile';
 import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -12,10 +13,12 @@ export const study: ActionHandler<ActionOf<'study'>> = {
     const def = ctx.content.techniques.get(action.techniqueId);
     const academy = placeHere(state, ctx, 'academy');
     if (!def || !academy?.techniqueIds.includes(def.id)) return 'That scroll isn’t kept here.';
-    const blocker = learnBlocker(state.techniques, def, state.character.stats);
+    const { character } = state;
+    const blocker = learnBlocker(state.techniques, def, character.stats, character.clanId);
     return firstBlocker(
       busyReason(state),
       blocker?.kind === 'already-known' && 'You already know this technique.',
+      blocker?.kind === 'clan' && 'Only taught within its clan.',
       blocker?.kind === 'requirements' &&
         `Needs better ${blocker.unmet.map((id) => STAT_INFO[id].label).join(', ')}.`,
       state.character.vitals.energy < STUDY_ENERGY_COST && `Needs ${STUDY_ENERGY_COST} energy.`,
@@ -23,9 +26,9 @@ export const study: ActionHandler<ActionOf<'study'>> = {
   },
   perform(state, action, ctx) {
     const def = ctx.content.techniques.require(action.techniqueId);
-    const points = studyPoints(state.character.stats, def);
+    const points = studyPointsFor(state.character, def, ctx);
     const result = studyTechnique(state.techniques, def, points);
-    const next = adjust(spendTime({ ...state, techniques: result.book }, STUDY_SLOTS), {
+    const next = adjust(spendTime({ ...state, techniques: result.book }, STUDY_SLOTS, ctx), {
       energy: -STUDY_ENERGY_COST,
     });
     const pct = Math.round((result.progress / def.difficulty) * 100);

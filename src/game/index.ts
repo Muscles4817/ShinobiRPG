@@ -10,12 +10,20 @@ export {
 } from './context';
 export {
   createNewGame,
-  aptitudeChoices,
-  newGameView,
+  draftProblems,
+  rollBreakIn,
+  type CreationDraft,
   type NewGameOptions,
-  type AptitudeChoice,
-  type NewGameView,
-} from './newGame';
+  type BreakInRoll,
+} from './creation';
+export {
+  creationView,
+  defaultDraft,
+  type CreationView,
+  type ClanOption,
+  type TraitOption,
+  type ProfileOption,
+} from './views/creation';
 export type { GameAction, GameActionType } from './actions/types';
 export { dispatch, blockerFor } from './dispatch';
 export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';
@@ -42,14 +50,12 @@ export {
 export { travelView, type Destination } from './views/travel';
 export {
   jutsuDeck,
-  shinobiView,
   recordView,
   type JutsuCard,
-  type ShinobiView,
-  type StatLine,
   type RecordDay,
   type RecordLine,
 } from './views/you';
+export { shinobiView, type ShinobiView, type StatLine } from './views/shinobi';
 export {
   missionScene,
   combatScene,
@@ -60,3 +66,14 @@ export {
 export type { CombatView, CombatOption, CombatantView } from '@/systems/combat';
 export type { BackdropId, IconId, PlaceKind } from '@/content';
 export type { TimeSlot } from '@/systems/time';
+export type {
+  Appearance,
+  Grade,
+  Grades,
+  Pronouns,
+  HairStyle,
+  HeadbandPlace,
+} from '@/systems/profile';
+export { gradesFromQuickPick, pointsSpent } from '@/systems/profile';
+export type { Element } from '@/systems/techniques';
+export type { EffectLine } from '@/systems/modifiers';

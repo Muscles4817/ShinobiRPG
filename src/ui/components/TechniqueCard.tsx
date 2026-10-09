@@ -5,6 +5,8 @@ const GLYPH: Readonly<Record<Discipline | 'basic', string>> = {
   taijutsu: '体',
   ninjutsu: '忍',
   genjutsu: '幻',
+  kenjutsu: '剣',
+  fuuinjutsu: '封',
   basic: '基',
 };
 

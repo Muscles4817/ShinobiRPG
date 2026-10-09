@@ -35,6 +35,7 @@ src/
   core/       Game-agnostic utilities: seeded Rng, Result, math. Knows nothing about the game.
   systems/    Self-contained domain modules. Pure functions over their own slice of state.
     time/ stats/ vitals/ wallet/ housing/ techniques/ missions/ combat/ standing/ journal/
+    modifiers/ profile/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
@@ -87,6 +88,14 @@ ui ──► game ──► content ──► systems ──► core
 10. **Places decide what you can do.** Location → places (`PlaceDef`, discriminated by `kind`).
     Actions check the current location offers them (`placeHere`). Each place kind has its own
     view model and page.
+11. **Identity is modifiers.** Clan, talent, traits, academy grades and chakra nature each
+    declare a `ModifierSpec`; `characterModifiers` (`game/profile.ts`) multiplies them into one
+    `Modifiers` value that training growth, study speed and hunger read. A new kind of identity
+    (bloodline stage, gear, a sensei's teaching) is another spec, not new branches in actions.
+    Option cards show `describeSpec` output, so what the player is told is what the code does.
+12. **Character creation is the opening scene.** The academy break-in collects a
+    `CreationDraft`; `draftProblems` validates it and `createNewGame` builds the first state.
+    The break-in roll is seeded, so the scene and the game agree on the outcome.
 
 ### Content packs
 
@@ -120,6 +129,13 @@ ui ──► game ──► content ──► systems ──► core
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
   model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
   compiler lists every switch you missed).
+- **Add a clan, talent or trait:** add it to the pack's `clans` (or the shared `talents`/
+  `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
+  `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
+  needs a `none` clan (validated).
+- **Add a discipline:** add it to `STAT_IDS` and `DISCIPLINES`, a colour token, a card glyph,
+  starter technique in every pack's `disciplineStarters`, drills, and a save migration that
+  gives existing characters the base value.
 - **Add a backdrop or icon:** add the id to `BackdropId`/`IconId` in `content/types.ts` and the
   drawing to `ui/art/` (a `Record` keyed by id, so a missing drawing is a type error).
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
@@ -180,7 +196,8 @@ ui ──► game ──► content ──► systems ──► core
 - **Feedback lands near the thumb**: the ticker above the dock, the choice bar in scenes, and
   report cards for milestones (fight result, mission debrief, defeat).
 - **Story text never contains numbers.** Numbers go in chips: green gain, amber cost, red harm.
-- **Discipline colours are fixed**: taijutsu ember, ninjutsu blue, genjutsu violet, spirit teal.
+- **Discipline colours are fixed**: taijutsu ember, ninjutsu blue, genjutsu violet, kenjutsu
+  steel, fūinjutsu ink-gold, spirit teal.
   Techniques are always shown as the same card (`TechniqueCard`), in the deck and in fights.
 - **Disabled things say why**, and when possible what fixes it ("Needs 30 energy. Nap or eat first.").
 - **Locked content folds away** (sealed notices, "Coming up" scrolls, coming-soon destinations)

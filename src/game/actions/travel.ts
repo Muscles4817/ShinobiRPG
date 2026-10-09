@@ -24,6 +24,7 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
     const arrived = spendTime(
       { ...state, wallet: paid.value, locationId: destination.id },
       days * SLOTS_PER_DAY,
+      ctx,
     );
     return log(arrived, {
       heading: `Travel to ${destination.name}`,

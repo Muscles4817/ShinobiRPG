@@ -1,0 +1,325 @@
+/* Character creation: the academy file. Paper pages under the night sky. */
+.creation .ng-hero {
+  height: 170px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+.ng-hero-text {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 34px;
+}
+
+.file {
+  flex: 1;
+  margin: -24px var(--gutter) 0;
+  position: relative;
+  background: var(--paper);
+  color: var(--paper-ink);
+  border-radius: 4px;
+  padding: 18px 16px 20px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.file .story {
+  color: var(--paper-ink);
+}
+.file .muted {
+  color: var(--paper-muted);
+}
+.file .label {
+  color: var(--paper-muted);
+}
+.file-stamp {
+  align-self: flex-end;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--seal);
+  border: 1.5px solid var(--seal);
+  padding: 1px 8px;
+  border-radius: 3px;
+  transform: rotate(-3deg);
+}
+
+.file-title {
+  font-family: var(--font-story);
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.file-h {
+  font-family: var(--font-story);
+  font-size: 1.05rem;
+  font-weight: 800;
+  border-bottom: 1px solid #c9b994;
+  padding-bottom: 2px;
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.file .you {
+  background: #e3d5b4;
+  border-color: #c9b994;
+  color: var(--paper-ink);
+}
+.file .roll {
+  border-color: #c9b994;
+  color: var(--paper-muted);
+}
+.file .choice {
+  background: #f6efdf;
+  border-color: #c9b994;
+  color: var(--paper-ink);
+}
+.choices-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.file input:not([type='radio']) {
+  font: inherit;
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #c9b994;
+  background: #f8f2e5;
+  color: var(--paper-ink);
+}
+
+.record-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.record-head .portrait {
+  flex-shrink: 0;
+  background: #d9c9a4;
+  border-radius: 6px;
+}
+.record-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.opt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.opt-list.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.opt-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 12px;
+  border: 1px solid #c9b994;
+  border-radius: 8px;
+  background: #f8f2e5;
+  color: var(--paper-ink);
+  min-width: 0;
+}
+
+.opt-card b {
+  font-family: var(--font-story);
+  font-size: 1rem;
+}
+.opt-card.selected {
+  border-color: var(--seal);
+  box-shadow: inset 0 0 0 1.5px var(--seal);
+  background: #fbf3e2;
+}
+.opt-card:disabled {
+  opacity: 0.45;
+}
+.opt-desc {
+  font-size: 0.84rem;
+  color: #4a3d2a;
+}
+.opt-card .small {
+  font-size: 0.76rem;
+}
+.kg {
+  font-size: 0.8rem;
+  color: #5a2a1a;
+  background: #f2dcc8;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.file .chip {
+  background: #e8dcc2;
+  color: var(--paper-ink);
+  white-space: normal;
+}
+.file .chip.gain {
+  background: #dcefe2;
+  color: #22663e;
+}
+.file .chip.cost {
+  background: #f5ddd6;
+  color: #9a2f1c;
+}
+
+.swatch-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.swatch-row .label {
+  text-transform: capitalize;
+}
+.swatches {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #c9b994;
+}
+.swatch.on {
+  border-color: var(--paper-ink);
+  box-shadow:
+    0 0 0 2px var(--paper),
+    0 0 0 4px var(--seal);
+}
+.segments {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.seg {
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid #c9b994;
+  background: #f8f2e5;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--paper-ink);
+  min-height: 34px;
+}
+
+.seg.on {
+  background: var(--paper-ink);
+  color: var(--paper);
+  border-color: var(--paper-ink);
+}
+.segments.mode {
+  align-self: flex-start;
+}
+
+.report-card {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.report-card th {
+  text-align: left;
+  padding: 6px 4px;
+  font-weight: 700;
+  border-bottom: 1px dashed #c9b994;
+}
+.report-card td {
+  padding: 6px 4px;
+  border-bottom: 1px dashed #c9b994;
+}
+.grade {
+  font-family: var(--font-story);
+  font-size: 1.3rem;
+  font-weight: 800;
+  width: 2em;
+  text-align: center;
+}
+.g-A {
+  color: var(--seal);
+}
+.g-D {
+  color: var(--paper-muted);
+}
+
+.file-summary {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.file-summary .portrait {
+  background: #d9c9a4;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.file-summary .kv {
+  font-size: 0.8rem;
+}
+
+.file-nav {
+  position: sticky;
+  bottom: 0;
+  margin-top: 12px;
+  padding: 10px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.file-progress {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.creation {
+  padding-bottom: 0;
+}
+
+/* Shinobi identity block */
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+.identity .label {
+  display: inline-block;
+  min-width: 5.5em;
+}
+.grades-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+.grade-chip {
+  border-radius: 6px;
+  padding: 1px 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--d) 20%, transparent);
+  color: var(--d);
+}
+.disc-tiles {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.disc-tiles .disc b {
+  font-size: 1.1rem;
+}
+.disc-tiles .disc small {
+  font-size: 0.6rem;
+}

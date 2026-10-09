@@ -53,6 +53,46 @@ describe('persistence', () => {
     expect(loaded.value.character.startingStats).toEqual(loaded.value.character.stats);
   });
 
+  it('upgrades a version 2 save to the full character profile', () => {
+    const { character, ...rest } = newGame();
+    const {
+      familyName: _f,
+      pronouns: _p,
+      appearance: _a,
+      clanId: _c,
+      grades: _g,
+      nature: _n,
+      traitIds: _t,
+      talentId: _ta,
+      nindoId: _ni,
+      breakIn: _b,
+      ...oldCharacter
+    } = character;
+    const strip = ({ kenjutsu: _k, fuuinjutsu: _fu, ...s }: typeof character.stats) => s;
+    const v2 = {
+      version: 2,
+      state: {
+        ...rest,
+        character: {
+          ...oldCharacter,
+          aptitudeId: 'ninjutsu',
+          stats: strip(character.stats),
+          startingStats: strip(character.startingStats),
+        },
+      },
+    };
+    const loaded = deserialize(JSON.stringify(v2));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.character).toMatchObject({
+      clanId: 'none',
+      grades: { ninjutsu: 'A', taijutsu: 'C' },
+      traitIds: [],
+      talentId: null,
+      stats: { kenjutsu: 5, fuuinjutsu: 5 },
+    });
+    expect('aptitudeId' in loaded.value.character).toBe(false);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

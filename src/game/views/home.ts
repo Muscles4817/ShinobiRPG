@@ -1,4 +1,4 @@
-import { daysOfRentLeft, isRentOverdue } from '@/systems/housing';
+import { daysOfRentLeft, isRentFree, isRentOverdue } from '@/systems/housing';
 import { slotName, type TimeSlot } from '@/systems/time';
 import { maxHealth } from '@/systems/vitals';
 
@@ -12,6 +12,7 @@ export interface HomeView {
   readonly lodging: string;
   readonly slot: TimeSlot;
   readonly rentPerWeek: number;
+  readonly rentFree: boolean;
   readonly rentStatus: string;
   readonly overdue: boolean;
   readonly sleepQuality: string;
@@ -21,6 +22,7 @@ export interface HomeView {
 }
 
 function rentStatus(state: GameState): string {
+  if (isRentFree(state.housing)) return 'Rent-free';
   const left = daysOfRentLeft(state.housing, state.time.day);
   if (left < 0) return `Overdue by ${-left} ${left === -1 ? 'day' : 'days'}`;
   if (left === 0) return 'Due tomorrow';
@@ -31,9 +33,11 @@ export function homeView(state: GameState, ctx: GameContext): HomeView | null {
   const place = placeHere(state, ctx, 'home');
   if (!place) return null;
   const overdue = isRentOverdue(state.housing, state.time.day);
+  const rentFree = isRentFree(state.housing);
   return {
-    name: place.name,
-    lodging: place.lodging,
+    name: rentFree ? 'Home' : place.name,
+    lodging: state.housing.lodging ?? place.lodging,
+    rentFree,
     slot: slotName(state.time),
     rentPerWeek: state.housing.rentPerWeek,
     rentStatus: rentStatus(state),

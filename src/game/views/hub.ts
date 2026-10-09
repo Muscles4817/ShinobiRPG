@@ -1,5 +1,5 @@
 import type { IconId, PlaceDef, PlaceKind } from '@/content';
-import { daysOfRentLeft, isRentOverdue } from '@/systems/housing';
+import { daysOfRentLeft, isRentFree, isRentOverdue } from '@/systems/housing';
 import { isHungry, maxHealth } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
@@ -60,6 +60,7 @@ function academyLine(ids: readonly string[], state: GameState, ctx: GameContext)
 }
 
 function homeLine(state: GameState, blurb: string): string {
+  if (isRentFree(state.housing)) return state.housing.lodging ?? blurb;
   if (isRentOverdue(state.housing, state.time.day)) return 'Rent overdue';
   const left = daysOfRentLeft(state.housing, state.time.day);
   if (left === 0) return 'Rent due tomorrow';
@@ -88,7 +89,7 @@ export function hubView(state: GameState, ctx: GameContext): HubView {
     places: places.map((p) => ({
       id: p.id,
       kind: p.kind,
-      name: p.name,
+      name: p.kind === 'home' && isRentFree(state.housing) ? 'Home' : p.name,
       icon: p.icon,
       line: liveLine(p, state, ctx),
       suggested: p.kind === suggested,

@@ -22,6 +22,7 @@ function endOfRound(fighters: readonly Fighter[]): Fighter[] {
   return fighters.map((f) => ({
     ...f,
     guarding: false,
+    sealed: Math.max(0, (f.sealed ?? 0) - 1),
     chakra: isAlive(f) ? Math.min(f.maxChakra, f.chakra + CHAKRA_REGEN_PER_ROUND) : f.chakra,
   }));
 }
