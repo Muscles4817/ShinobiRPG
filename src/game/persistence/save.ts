@@ -10,7 +10,7 @@ import { MIGRATIONS } from './migrations';
  *  3. add a test that an old-format save still loads.
  * Never break a player's existing save.
  */
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 
 /** Where saves live. Implemented by the platform layer (e.g. localStorage). */
 export interface SaveStore {
@@ -43,6 +43,7 @@ const REQUIRED_KEYS: readonly (keyof GameState)[] = [
   'journal',
   'mission',
   'combat',
+  'people',
 ];
 
 function isRecord(value: unknown): value is Record<string, unknown> {

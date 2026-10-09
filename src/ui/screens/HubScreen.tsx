@@ -3,18 +3,21 @@ import { headerView, hubView } from '@/game';
 import { Backdrop } from '../art/Backdrop';
 import { Icon } from '../art/Icon';
 import { Chips } from '../components/Chips';
+import { Avatar, Faces } from '../components/Faces';
 import { DayStrip, Vitals } from '../components/Vitals';
 import type { ScreenProps } from './types';
 
 interface HubScreenProps extends ScreenProps {
   readonly onOpenPlace: (placeId: string) => void;
+  readonly onOpenPerson: (personId: string) => void;
   readonly onOpenRecord: () => void;
 }
 
 /** "Here": the village you're in, its sky and backdrop, and the places you can go. */
-export function HubScreen({ ctx, state, onOpenPlace, onOpenRecord }: HubScreenProps) {
+export function HubScreen({ ctx, state, onOpenPlace, onOpenPerson, onOpenRecord }: HubScreenProps) {
   const header = headerView(state, ctx);
   const hub = hubView(state, ctx);
+  const around = hub.places.flatMap((p) => p.people);
   return (
     <>
       <header className="hub-hero sky" data-slot={header.slot} data-land={header.backdrop}>
@@ -44,6 +47,26 @@ export function HubScreen({ ctx, state, onOpenPlace, onOpenRecord }: HubScreenPr
         </div>
         <Vitals meters={header.meters} />
       </header>
+      {around.length > 0 && (
+        <section className="around" aria-label="Who’s here">
+          <span className="label">Who’s here</span>
+          <div className="around-row">
+            {around.map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                className="around-face"
+                onClick={() => {
+                  onOpenPerson(f.id);
+                }}
+              >
+                <Avatar face={f} size={40} />
+                <small>{f.name}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
       <main className="places">
         {hub.places.map((p) => (
           <button
@@ -59,6 +82,7 @@ export function HubScreen({ ctx, state, onOpenPlace, onOpenRecord }: HubScreenPr
             </span>
             <b>{p.name}</b>
             <small>{p.line}</small>
+            <Faces faces={p.people} />
           </button>
         ))}
       </main>

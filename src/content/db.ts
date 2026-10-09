@@ -6,12 +6,16 @@ import type {
   BreakInScene,
   ClanDef,
   ContentPack,
+  ConversationDef,
   EnemyDef,
   FoodDef,
   LocationDef,
+  NamePools,
   NindoDef,
+  PersonDef,
   SettingText,
   TalentDef,
+  TeamText,
   TrainingDef,
   TraitDef,
 } from './types';
@@ -38,6 +42,10 @@ export interface ContentDb {
   readonly traits: Catalog<TraitDef>;
   readonly nindos: Catalog<NindoDef>;
   readonly breakIn: BreakInScene;
+  readonly people: Catalog<PersonDef>;
+  readonly conversations: Catalog<ConversationDef>;
+  readonly names: NamePools;
+  readonly team: TeamText;
   readonly academyTechniques: readonly string[];
   readonly disciplineStarters: Readonly<Record<Discipline, string>>;
 }
@@ -60,6 +68,10 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     traits: createCatalog('trait', pack.traits),
     nindos: createCatalog('nindo', pack.nindos),
     breakIn: pack.breakIn,
+    people: createCatalog('person', pack.people),
+    conversations: createCatalog('conversation', pack.conversations),
+    names: pack.names,
+    team: pack.team,
     academyTechniques: pack.academyTechniques,
     disciplineStarters: pack.disciplineStarters,
   };

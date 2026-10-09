@@ -1,6 +1,6 @@
 import type { Discipline } from '@/systems/techniques';
 
-import type { BreakInScene, NindoDef } from '../../types';
+import type { BreakInScene, NamePools, NindoDef, TeamText } from '../../types';
 
 /** Techniques every graduate knows, regardless of specialty. */
 export const ACADEMY_TECHNIQUES: readonly string[] = ['palm-strike', 'shadow-feint'];
@@ -82,4 +82,52 @@ export const BREAK_IN: BreakInScene = {
   caught:
     'A lantern flares in the doorway. "Reading your own file the night before graduation?" ' +
     'Instructor Rin sighs, and almost smiles. "Go home. Be on time tomorrow. And put the drawer back."',
+};
+
+/** Names for generated genin: your classmates and teammates. */
+export const NAMES: NamePools = {
+  given: [
+    'Aoi',
+    'Chiyo',
+    'Daisuke',
+    'Emi',
+    'Fumio',
+    'Goro',
+    'Hana',
+    'Ibuki',
+    'Kazu',
+    'Mako',
+    'Nobu',
+    'Rei',
+    'Saya',
+    'Shun',
+    'Tama',
+    'Toru',
+    'Umeko',
+    'Yoshi',
+    'Kohaku',
+    'Asuka',
+  ],
+  family: [
+    'Akagi',
+    'Fujiwara',
+    'Hayami',
+    'Kanō',
+    'Kiyose',
+    'Mori',
+    'Nagano',
+    'Okubo',
+    'Sasaki',
+    'Tachibana',
+    'Wada',
+    'Yoshida',
+  ],
+};
+
+export const TEAM: TeamText = {
+  intro:
+    'The morning after graduation, Instructor Rin reads out the new teams under the Academy ' +
+    'lanterns. Your name comes up between two classmates you barely know.',
+  choose: 'Two jōnin have asked for your team. The Tōrokage lets you choose.',
+  formed: 'A new team of Tōrogakure. Your sensei is waiting at the training grounds.',
 };

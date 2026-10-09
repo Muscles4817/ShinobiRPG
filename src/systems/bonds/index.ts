@@ -1,0 +1,18 @@
+export {
+  BOND_STAGES,
+  MAX_BOND,
+  NEW_BOND,
+  TALK_BASE,
+  LIKED_TONE,
+  DISLIKED_TONE,
+  bondWith,
+  stageOf,
+  stageName,
+  stageProgress,
+  addPoints,
+  talkedToday,
+  reactionTo,
+  recordTalk,
+  type Bond,
+  type Taste,
+} from './bonds';

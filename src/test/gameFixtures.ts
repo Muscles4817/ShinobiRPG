@@ -21,8 +21,21 @@ export function draft(
   return { ...defaultDraft(context), name: 'Kaito', talentId: 'sensor', ...overrides };
 }
 
+/** A game straight out of character creation, before teams are read out. */
+export function freshGame(context: GameContext = ctx): GameState {
+  return createNewGame({ draft: draft({}, context), seed: 1234 }, context);
+}
+
+/** Reads out the teams and takes the first sensei offered, clearing the result card. */
+export function formTeam(state: GameState, context: GameContext = ctx): GameState {
+  const assigned = act(state, { type: 'assignTeam' }, context);
+  const senseiId = assigned.people.team?.senseiOptions[0] ?? '';
+  return { ...act(assigned, { type: 'chooseSensei', senseiId }, context), reports: [] };
+}
+
+/** A game ready to play, with its team formed. */
 export function newGame(overrides: Partial<GameState> = {}, context: GameContext = ctx): GameState {
-  return { ...createNewGame({ draft: draft({}, context), seed: 1234 }, context), ...overrides };
+  return { ...formTeam(freshGame(context), context), ...overrides };
 }
 
 /** Dispatches an action, failing the test if it is refused. */

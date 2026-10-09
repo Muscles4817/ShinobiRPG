@@ -6,7 +6,11 @@ import { CLANS } from './clans';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { MISSIONS } from './missions';
-import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NINDOS } from './profile';
+import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
+import { NARUTO_CONVERSATIONS } from './conversations';
+import { CANON_GENIN } from './genin';
+import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
+import { SENSEIS_AND_ELDERS } from './senseis';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
@@ -14,8 +18,11 @@ import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
 /**
  * Fan setting using Naruto names, for personal play only. Never ship it in a public
  * release: build with VITE_EXCLUDE_FAN_PACKS=true to drop it from the bundle.
+ *
+ * Built inside a pure-annotated function: top-level array spreads count as side effects to
+ * the bundler, which would otherwise keep this pack's data in a release build.
  */
-export const NARUTO_PACK: ContentPack = {
+export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   id: 'naruto',
   name: 'Hidden Leaf (Naruto)',
   description: 'Konohagakure in the Land of Fire, with names from Naruto. Fan pack.',
@@ -33,6 +40,10 @@ export const NARUTO_PACK: ContentPack = {
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,
+  people: [...SENSEIS_AND_ELDERS, ...CANON_GENIN],
+  conversations: [...GENERIC_CONVERSATIONS, ...NARUTO_CONVERSATIONS],
+  names: NAMES,
+  team: TEAM,
   academyTechniques: ACADEMY_TECHNIQUES,
   disciplineStarters: DISCIPLINE_STARTERS,
-};
+}))();

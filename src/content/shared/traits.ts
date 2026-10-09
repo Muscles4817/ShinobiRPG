@@ -4,6 +4,8 @@ import type { TraitDef } from '../types';
 export const TRAITS: readonly TraitDef[] = [
   {
     id: 'brash',
+    likes: ['challenge', 'joke'],
+    dislikes: ['quiet'],
     name: 'Brash',
     note: 'Charges in before the bell has finished ringing.',
     opposite: 'calm',
@@ -11,6 +13,8 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'calm',
+    likes: ['quiet', 'earnest'],
+    dislikes: ['tease'],
     name: 'Calm',
     note: 'Never raises their voice. Never misses a detail.',
     opposite: 'brash',
@@ -18,6 +22,8 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'diligent',
+    likes: ['earnest', 'challenge'],
+    dislikes: ['joke'],
     name: 'Diligent',
     note: 'First to arrive, last to leave. Forgets to eat.',
     opposite: 'lazy',
@@ -25,6 +31,8 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'lazy',
+    likes: ['joke', 'quiet'],
+    dislikes: ['challenge'],
     name: 'Lazy',
     note: 'Talented, when awake. Usually found watching clouds.',
     opposite: 'diligent',
@@ -32,6 +40,8 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'kind',
+    likes: ['kind', 'earnest'],
+    dislikes: ['tease'],
     name: 'Kind',
     note: 'Shares lunch with whoever forgot theirs.',
     opposite: 'cunning',
@@ -39,6 +49,8 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'cunning',
+    likes: ['tease', 'curious'],
+    dislikes: ['earnest'],
     name: 'Cunning',
     note: 'Has never once been caught. We suspect plenty.',
     opposite: 'kind',
@@ -46,6 +58,8 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'proud',
+    likes: ['praise', 'challenge'],
+    dislikes: ['tease'],
     name: 'Proud',
     note: 'Will not accept help. Will not accept losing.',
     opposite: 'humble',
@@ -53,6 +67,8 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'humble',
+    likes: ['kind', 'curious'],
+    dislikes: ['praise'],
     name: 'Humble',
     note: 'Asks questions. Listens to the answers.',
     opposite: 'proud',
@@ -68,6 +84,8 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'curious',
+    likes: ['curious', 'joke'],
+    dislikes: ['quiet'],
     name: 'Curious',
     note: 'Has read every scroll in the library, including the ones we hid.',
     opposite: 'focused',
@@ -75,6 +93,8 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'focused',
+    likes: ['earnest', 'quiet'],
+    dislikes: ['joke'],
     name: 'Focused',
     note: 'Picks one thing and does it until it is perfect.',
     opposite: 'curious',

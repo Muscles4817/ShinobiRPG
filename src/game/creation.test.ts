@@ -1,14 +1,18 @@
 import { gradesFromQuickPick } from '@/systems/profile';
-import { act, ctx, draft, newGame } from '@/test/gameFixtures';
+import { act, ctx, draft, formTeam, freshGame, newGame } from '@/test/gameFixtures';
 
 import { contextForPack } from './context';
-import { createNewGame, draftProblems, rollBreakIn } from './creation';
+import { createNewGame, draftProblems, rollBreakIn, type CreationDraft } from './creation';
 import { characterModifiers } from './profile';
 import { creationView } from './views/creation';
 import { homeView } from './views/home';
 import { hubView } from './views/hub';
 
 const naruto = contextForPack('naruto')!;
+
+/** A ready-to-play Hidden Leaf game. */
+const leafGame = (overrides: Partial<CreationDraft> = {}) =>
+  formTeam(createNewGame({ draft: draft(overrides, naruto), seed: 1 }, naruto), naruto);
 
 describe('character creation', () => {
   it('a default draft with a name is valid', () => {
@@ -36,7 +40,7 @@ describe('character creation', () => {
   });
 
   it('starts with academy techniques plus a starter for each A grade', () => {
-    expect(newGame().techniques.known).toEqual(['palm-strike', 'shadow-feint', 'gale-heel']);
+    expect(freshGame().techniques.known).toEqual(['palm-strike', 'shadow-feint', 'gale-heel']);
   });
 
   it('grades shape starting stats', () => {
@@ -47,7 +51,7 @@ describe('character creation', () => {
   });
 
   it('clans give their name, stats, techniques and a rent-free home', () => {
-    const state = createNewGame({ draft: draft({ clanId: 'uchiha' }, naruto), seed: 1 }, naruto);
+    const state = leafGame({ clanId: 'uchiha' });
     expect(state.character.familyName).toBe('Uchiha');
     expect(state.techniques.known).toContain('phoenix-flower');
     expect(state.housing).toMatchObject({
@@ -58,7 +62,7 @@ describe('character creation', () => {
   });
 
   it('family homes show as rent-free and refuse rent', () => {
-    const state = createNewGame({ draft: draft({ clanId: 'hyuga' }, naruto), seed: 1 }, naruto);
+    const state = leafGame({ clanId: 'hyuga' });
     const home = homeView(state, naruto)!;
     expect(home).toMatchObject({ name: 'Home', rentFree: true, rentStatus: 'Rent-free' });
     expect(hubView(state, naruto).places.find((p) => p.kind === 'home')?.line).toBe(
@@ -75,7 +79,7 @@ describe('character creation', () => {
   });
 
   it('records the break-in and graduation', () => {
-    const headings = newGame().journal.entries.map((e) => e.heading);
+    const headings = freshGame().journal.entries.map((e) => e.heading);
     expect(headings).toContain('The night before graduation');
     expect(headings.at(-1)).toBe('Graduation');
   });
@@ -91,11 +95,8 @@ describe('character creation', () => {
 
 describe('identity shapes play', () => {
   it('a clan with a big appetite gets hungry faster', () => {
-    const plain = createNewGame({ draft: draft({}, naruto), seed: 1 }, naruto);
-    const akimichi = createNewGame(
-      { draft: draft({ clanId: 'akimichi' }, naruto), seed: 1 },
-      naruto,
-    );
+    const plain = leafGame();
+    const akimichi = leafGame({ clanId: 'akimichi' });
     const after = (s: typeof plain) => act(s, { type: 'rest' }, naruto);
     const tired = (s: typeof plain) => ({
       ...s,
@@ -107,18 +108,15 @@ describe('identity shapes play', () => {
   });
 
   it('nature and clan speed up matching study', () => {
-    const uchiha = createNewGame(
-      { draft: draft({ clanId: 'uchiha', nature: 'fire' }, naruto), seed: 1 },
-      naruto,
-    );
+    const uchiha = leafGame({ clanId: 'uchiha', nature: 'fire' });
     const mods = characterModifiers(uchiha.character, naruto);
     expect(mods.studyElement.fire).toBeCloseTo(1.3 * 1.5 * 1.2);
     expect(mods.studyElement.water).toBeCloseTo(0.85);
   });
 
   it('clan techniques are only taught to the clan', () => {
-    const uchiha = createNewGame({ draft: draft({ clanId: 'uchiha' }, naruto), seed: 1 }, naruto);
-    const plain = createNewGame({ draft: draft({}, naruto), seed: 1 }, naruto);
+    const uchiha = leafGame({ clanId: 'uchiha' });
+    const plain = leafGame();
     const study = { type: 'study', techniqueId: 'great-fireball' } as const;
     const strong = (s: typeof plain) => ({
       ...s,

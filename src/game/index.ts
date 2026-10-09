@@ -63,6 +63,24 @@ export {
   type SceneLine,
   type SceneChoice,
 } from './views/scene';
+export {
+  bondsView,
+  personSheet,
+  type BondsView,
+  type PersonCard,
+  type PersonFace,
+  type PersonSheet,
+  type Relation,
+} from './views/people';
+export {
+  activeScene,
+  conversationScene,
+  teamScene,
+  type SceneKind,
+  type ConversationScene,
+  type TeamScene,
+  type SenseiOffer,
+} from './views/peopleScenes';
 export type { CombatView, CombatOption, CombatantView } from '@/systems/combat';
 export type { BackdropId, IconId, PlaceKind } from '@/content';
 export type { TimeSlot } from '@/systems/time';

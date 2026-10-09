@@ -51,18 +51,26 @@ function Headband({ place }: { readonly place: Appearance['headband'] }) {
   return null;
 }
 
+/** A bust shows the shoulders; a face is cropped square to the head, for avatars. */
+const FRAMES = {
+  bust: { viewBox: '0 0 80 96', aspect: 96 / 80 },
+  face: { viewBox: '10 8 60 60', aspect: 1 },
+} as const;
+
 interface PortraitProps {
   readonly appearance: Appearance;
   readonly size?: number;
+  readonly framing?: keyof typeof FRAMES;
 }
 
-export function Portrait({ appearance: a, size = 80 }: PortraitProps) {
+export function Portrait({ appearance: a, size = 80, framing = 'bust' }: PortraitProps) {
+  const frame = FRAMES[framing];
   return (
     <svg
       className="portrait"
-      viewBox="0 0 80 96"
+      viewBox={frame.viewBox}
       width={size}
-      height={(size * 96) / 80}
+      height={size * frame.aspect}
       aria-hidden="true"
     >
       <path d="M6 96 Q8 72 40 70 Q72 72 74 96Z" fill={a.outfitColour} />

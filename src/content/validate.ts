@@ -1,4 +1,5 @@
 import { duplicateIds } from './catalog';
+import { validatePeople } from './validatePeople';
 import { validateWorld } from './validateWorld';
 import type { ContentPack, Identified } from './types';
 
@@ -15,6 +16,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...numberProblems(pack),
     ...validateWorld(pack),
     ...profileProblems(pack),
+    ...validatePeople(pack),
   ];
 }
 
@@ -51,6 +53,8 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['talent', pack.talents],
     ['trait', pack.traits],
     ['nindo', pack.nindos],
+    ['person', pack.people],
+    ['conversation', pack.conversations],
   ];
   return collections.flatMap(([kind, items]) =>
     duplicateIds(items).map((id) => `duplicate ${kind} id "${id}"`),

@@ -1,9 +1,10 @@
-export type DockTab = 'here' | 'travel' | 'jutsu' | 'shinobi' | 'record';
+export type DockTab = 'here' | 'travel' | 'jutsu' | 'bonds' | 'shinobi' | 'record';
 
 const TABS: readonly { id: DockTab; kanji: string; label: string }[] = [
   { id: 'here', kanji: '里', label: 'Here' },
   { id: 'travel', kanji: '旅', label: 'Travel' },
   { id: 'jutsu', kanji: '術', label: 'Jutsu' },
+  { id: 'bonds', kanji: '縁', label: 'Bonds' },
   { id: 'shinobi', kanji: '忍', label: 'Shinobi' },
   { id: 'record', kanji: '記', label: 'Record' },
 ];

@@ -10,6 +10,7 @@ import type { GameTime } from '@/systems/time';
 import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
 
+import type { People } from './people/state';
 import type { Report } from './reports';
 
 /**
@@ -37,6 +38,8 @@ export interface GameState {
   readonly combat: CombatState | null;
   /** Result cards waiting to be shown, oldest first. */
   readonly reports: readonly Report[];
+  /** Classmates, bonds, your team and any conversation in progress. */
+  readonly people: People;
 }
 
 export interface Character {

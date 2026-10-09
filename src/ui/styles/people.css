@@ -1,0 +1,229 @@
+/* People: faces, who's here, bonds, person sheets, conversations and team assignment. */
+
+/* Faces */
+.faces {
+  display: flex;
+  padding-left: 6px;
+}
+.place-card .faces {
+  grid-column: 2;
+  margin-top: 4px;
+}
+.face,
+.avatar {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--raise);
+  flex: none;
+}
+.face {
+  width: 24px;
+  height: 24px;
+  margin-left: -6px;
+  border: 2px solid var(--surface);
+}
+.face.more {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.avatar {
+  border: 2px solid var(--line);
+}
+.face.team,
+.avatar.team {
+  border-color: var(--lantern);
+}
+
+/* Who's here */
+.around {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px var(--gutter) 0;
+}
+.around-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.around-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 52px;
+  min-height: 40px;
+}
+.around-face small {
+  font-size: 0.7rem;
+  color: var(--muted);
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Bond meter */
+.bond-meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bond-meter small {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--lantern);
+  white-space: nowrap;
+}
+.bond-bar {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--raise);
+  overflow: hidden;
+  min-width: 40px;
+}
+.bond-bar i {
+  display: block;
+  height: 100%;
+  background: var(--lantern);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* Bonds tab */
+.bond-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bond-group.fold summary {
+  cursor: pointer;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+.bond-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  text-align: left;
+  width: 100%;
+}
+.bond-card:active {
+  background: var(--raise);
+}
+.bond-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bond-main small {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+/* Person sheet and shared person header */
+.person-sheet {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  max-height: 88vh;
+  overflow-y: auto;
+}
+.person-top {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.person-top h2 {
+  font-family: var(--font-story);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+.person-photo {
+  border-radius: var(--radius-sm);
+  background: var(--raise);
+  border: 2px solid var(--line);
+  overflow: hidden;
+  display: grid;
+  flex: none;
+}
+.person-photo.team {
+  border-color: var(--lantern);
+}
+.person-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+  align-items: center;
+}
+.person-traits {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.person-traits dt {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.person-traits dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* Conversation scene */
+.talk-head {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+.talk-head > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Team assignment */
+.mates {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+.mate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.mate .portrait {
+  border-radius: var(--radius-sm);
+  background: var(--raise);
+}
+.sensei-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--d) 18%, var(--surface)),
+    var(--surface)
+  );
+  border: 1px solid color-mix(in srgb, var(--d) 45%, var(--line));
+}
