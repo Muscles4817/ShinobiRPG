@@ -14,9 +14,15 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
-Once the built app (`npm run build` → `dist/`) is hosted on any static host (e.g. GitHub Pages),
-open it on your phone and use **Add to Home Screen**. It installs as an app and works fully
-offline; your progress autosaves on the device.
+**On your phone:** the game is published to GitHub Pages at
+**https://muscles4817.github.io/ShinobiRPG/** every time CI passes on `main`
+(`.github/workflows/deploy.yml`). Open it in your phone's browser and use
+**Add to Home Screen** (Safari: Share → Add to Home Screen; Chrome: ⋮ → Install app).
+It then runs as an app and works fully offline; progress autosaves on the device.
+New versions download automatically the next time you open it with a connection.
+
+One-time setup: in the repo go to **Settings → Pages → Build and deployment → Source** and
+choose **GitHub Actions**.
 
 ## Milestone 1 (current)
 
