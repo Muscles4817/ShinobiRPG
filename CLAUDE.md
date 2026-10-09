@@ -132,6 +132,9 @@ ui ──► game ──► content ──► systems ──► core
     to trained stats, so it works the same in every fight style. A home-cooked recipe sets
     `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
     `spendTime` clears it when the day ends.
+    Hunger works the same way: the player sees a Hunger meter (100 − satiety), and each
+    stage (`hungerLevel`: peckish, hungry, starving) is a `ModifierSpec` plus a fight-strength
+    multiplier in `game/hunger.ts`; starving also blocks hard work (`weakFromHunger`).
 19. **Village life is derived from the calendar.** `game/village.ts` decides what is open
     (`hours` on places and stalls; closed ones say when they open), today's festival (cheaper
     market, warmer talks), the gossip (`rumoursToday`: a job's rumour goes round the day

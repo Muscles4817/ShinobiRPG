@@ -28,7 +28,7 @@ export type { GameAction, GameActionType } from './actions/types';
 export { dispatch, blockerFor } from './dispatch';
 export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';
 export type { Choice, Discipline } from './views/common';
-export { headerView, type HeaderView, type Meter } from './views/header';
+export { headerView, type HeaderView, type HungerNote, type Meter } from './views/header';
 export { hubView, type HubView, type PlaceCard } from './views/hub';
 export {
   villageView,

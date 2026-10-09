@@ -42,6 +42,9 @@ choose **GitHub Actions**.
 - **Shops and home cooking.** A smith and an outfitter sell weapons, armour and charms that
   add to your stats in fights. Buy ingredients from the grocer and cook at home: cheaper than
   eating out, and a good meal gives you a buff for the rest of the day.
+- **Hunger matters.** The hunger bar fills through the day. Peckish slows training a little;
+  hungry slows training and study and weakens you in fights; starving drains health and
+  leaves you too weak to train, spar or take jobs until you eat.
 - **Missions play as a story** with real odds on every choice; fights use a hand of technique
   cards. Results come as cards: fight results, mission debriefs, hospital bills.
 - **People live in the village.** The morning after graduation your team is read out: two

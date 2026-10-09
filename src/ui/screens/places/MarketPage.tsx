@@ -29,9 +29,9 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
             <small> ryo</small>
           </span>
           <span className="purse-fill">
-            <span className="muted">Fed {view.fullness} / 100</span>
+            <span className="muted">Hunger {view.hunger} / 100</span>
             <span className="fbar">
-              <i style={{ width: `${view.fullness}%` }} />
+              <i style={{ width: `${view.hunger}%` }} />
             </span>
           </span>
         </section>
@@ -67,7 +67,7 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
                     </span>
                     <b>{item.name}</b>
                     <span className="chips">
-                      <span className="chip gain">Fed +{item.satiety}</span>
+                      <span className="chip gain">Hunger −{item.satiety}</span>
                       {item.energy > 0 && <span className="chip gain">Energy +{item.energy}</span>}
                       {item.slots > 0 && <span className="chip">{item.slots} slot</span>}
                     </span>

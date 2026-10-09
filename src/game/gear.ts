@@ -1,7 +1,9 @@
+import { round1 } from '@/core';
 import type { GearDef, GearSlot } from '@/content';
 import { STAT_IDS, sumDeltas, type StatDelta, type Stats } from '@/systems/stats';
 
 import type { GameContext } from './context';
+import { hungerEffect } from './hunger';
 import type { GameState } from './state';
 
 /** Gear you wear: what is equipped, and the bonuses it adds to your stats in fights. */
@@ -22,9 +24,12 @@ export function gearBonuses(state: GameState, ctx: GameContext): StatDelta {
   return sumDeltas(...equippedGear(state, ctx).map((g) => g.statBonuses));
 }
 
-/** Your stats as they count in a fight: training plus gear. */
+/** Your stats as they count in a fight: training plus gear, weakened by hunger. */
 export function combatStats(state: GameState, ctx: GameContext): Stats {
   const bonus = gearBonuses(state, ctx);
-  const stats = state.character.stats;
-  return Object.fromEntries(STAT_IDS.map((id) => [id, stats[id] + (bonus[id] ?? 0)])) as Stats;
+  const { stats, vitals } = state.character;
+  const strength = hungerEffect(vitals).fightStrength;
+  return Object.fromEntries(
+    STAT_IDS.map((id) => [id, round1((stats[id] + (bonus[id] ?? 0)) * strength)]),
+  ) as Stats;
 }

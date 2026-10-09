@@ -2,7 +2,6 @@ import type { PersonDef } from '@/content';
 import { addPoints, stageOf } from '@/systems/bonds';
 import { applyTraining, diffStats, type StatDelta, type StatId } from '@/systems/stats';
 import { study as studyTechnique, type Discipline } from '@/systems/techniques';
-import { isHungry } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import {
@@ -15,6 +14,7 @@ import {
   spendTime,
   statChips,
 } from '../ops';
+import { weakFromHunger } from '../hunger';
 import { bondOf, findPerson, whereNow } from '../people/cast';
 import { studyPointsFor, trainingScale } from '../profile';
 import { addReport } from '../reports';
@@ -82,6 +82,7 @@ export const lesson: ActionHandler<ActionOf<'lesson'>> = {
     const wait = daysUntilLesson(state);
     return firstBlocker(
       busyReason(state),
+      weakFromHunger(state),
       !sensei && 'You don’t have a sensei yet.',
       !placeHere(state, ctx, 'training') && 'Lessons happen at a training ground.',
       sensei !== undefined &&
@@ -100,7 +101,7 @@ export const lesson: ActionHandler<ActionOf<'lesson'>> = {
     const { specialty } = profile;
     const gains: StatDelta = { [specialty]: LESSON_GAIN, [SUPPORT_STAT[specialty]]: SUPPORT_GAIN };
     const before = state.character.stats;
-    const scale = trainingScale(state.character, ctx, isHungry(state.character.vitals));
+    const scale = trainingScale(state.character, ctx);
     const stats = applyTraining(before, gains, scale);
     const bond = addPoints(bondOf(state, sensei.id), LESSON_BOND);
     const trained: GameState = {

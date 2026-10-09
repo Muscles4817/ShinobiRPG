@@ -1,7 +1,6 @@
 import type { IconId } from '@/content';
 import { STAT_INFO, trainingGain, type StatId } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
-import { isHungry } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
@@ -54,7 +53,7 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
   if (!place) return null;
   const { stats, vitals } = state.character;
   const lastHeading = state.journal.entries.at(-1)?.heading;
-  const scale = trainingScale(state.character, ctx, isHungry(vitals));
+  const scale = trainingScale(state.character, ctx);
   const drills = place.trainingIds.map((id): Drill => {
     const def = ctx.content.training.require(id);
     const gained = Object.keys(def.gains) as StatId[];

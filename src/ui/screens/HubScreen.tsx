@@ -4,7 +4,7 @@ import { Backdrop } from '../art/Backdrop';
 import { Icon } from '../art/Icon';
 import { Chips } from '../components/Chips';
 import { Avatar, Faces } from '../components/Faces';
-import { DayStrip, Vitals } from '../components/Vitals';
+import { DayStrip, HungerNote, Vitals } from '../components/Vitals';
 import type { ScreenProps } from './types';
 import { VillageLife } from './VillageLife';
 
@@ -56,6 +56,7 @@ export function HubScreen({
         </div>
         <Vitals meters={header.meters} />
       </header>
+      <HungerNote note={header.hunger} />
       {around.length > 0 && (
         <section className="around" aria-label="Who’s here">
           <span className="label">Who’s here</span>

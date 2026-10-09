@@ -170,8 +170,36 @@
 .m-energy {
   background: var(--energy);
 }
-.m-fed {
+.m-hunger {
   background: var(--fed);
+}
+.m-hunger[data-level='peckish'] {
+  background: var(--cost);
+}
+.m-hunger[data-level='hungry'],
+.m-hunger[data-level='starving'] {
+  background: var(--harm);
+}
+
+/* What hunger is doing to you, under the vitals */
+.hunger-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  margin: 8px var(--gutter) 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 0.72rem;
+}
+.hunger-note b {
+  color: var(--cost);
+}
+.hunger-note[data-level='hungry'] b,
+.hunger-note[data-level='starving'] b {
+  color: var(--harm);
 }
 
 .daystrip {

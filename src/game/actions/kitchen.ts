@@ -48,7 +48,7 @@ export function cookMeal(
     energy: recipe.energy,
   });
   const chips = [
-    chip(`Fed +${recipe.satiety}`, 'gain'),
+    chip(`Hunger −${recipe.satiety}`, 'gain'),
     ...(recipe.energy > 0 ? [chip(`Energy +${recipe.energy}`, 'gain')] : []),
     ...describeSpec(recipe.buff).map((e) => chip(e.label, 'gain')),
   ];

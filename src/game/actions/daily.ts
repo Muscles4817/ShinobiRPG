@@ -15,6 +15,7 @@ import {
   spendTime,
   statChips,
 } from '../ops';
+import { weakFromHunger } from '../hunger';
 import type { GameContext } from '../context';
 import { trainingScale } from '../profile';
 import type { GameState } from '../state';
@@ -52,6 +53,7 @@ export const train: ActionHandler<ActionOf<'train'>> = {
     if (!def || !offeredHere(state, ctx).training(def.id)) return 'You can’t train that here.';
     return firstBlocker(
       busyReason(state),
+      weakFromHunger(state),
       state.character.vitals.energy < def.energyCost &&
         `Needs ${def.energyCost} energy. Nap or eat first.`,
       healthFraction(state) < MIN_HEALTH_TO_TRAIN && 'You are too injured to train.',
@@ -61,7 +63,7 @@ export const train: ActionHandler<ActionOf<'train'>> = {
     const def = ctx.content.training.require(action.trainingId);
     const hungry = isHungry(state.character.vitals);
     const before = state.character.stats;
-    const stats = applyTraining(before, def.gains, trainingScale(state.character, ctx, hungry));
+    const stats = applyTraining(before, def.gains, trainingScale(state.character, ctx));
 
     let next: GameState = { ...state, character: { ...state.character, stats } };
     next = adjust(spendTime(next, def.slots, ctx), { energy: -def.energyCost });
@@ -103,7 +105,7 @@ export const eat: ActionHandler<ActionOf<'eat'>> = {
       text: def.description,
       tone: 'info',
       chips: [
-        chip(`Fed +${def.satiety}`, 'gain'),
+        chip(`Hunger −${def.satiety}`, 'gain'),
         ...(def.energy > 0 ? [chip(`Energy +${def.energy}`, 'gain')] : []),
         chip(`−${cost} ryo`, 'cost'),
       ],
