@@ -1,13 +1,11 @@
 import type { StatDelta } from '@/systems/stats';
-import type { TimeSlot } from '@/systems/time';
+
+import type { Stall } from './stall';
 
 /**
  * Village life: what people gossip about, what walks the streets at night, and the days the
  * whole village celebrates. All of it is data; the game decides what shows up on which day.
  */
-
-/** When a place or stall is open. Absent means always. */
-export type OpeningHours = readonly TimeSlot[];
 
 /**
  * Gossip heard around the village. A rumour about a job goes round the day before the job is
@@ -49,6 +47,8 @@ export interface FestivalDef {
   readonly marketPrices: number;
   /** Extra bond points from every conversation on the day. */
   readonly bondBonus: number;
+  /** Stalls that set up in the market only on the day. */
+  readonly stalls?: readonly Stall[];
 }
 
 export interface VillageLife {

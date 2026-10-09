@@ -11,6 +11,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     title: 'Genin',
     clanId: 'uzumaki',
     traitIds: ['brash', 'kind'],
+    favouriteRecipeId: 'miso-soup',
     appearance: look('spiky', {
       hair: '#e0b64a',
       eyes: '#3b6fb6',
@@ -34,6 +35,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     title: 'Genin',
     clanId: 'uchiha',
     traitIds: ['proud', 'focused'],
+    favouriteRecipeId: 'grilled-fish-set',
     appearance: look('spiky', {
       hair: '#1b1a22',
       eyes: '#2a1d14',
@@ -56,6 +58,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     role: 'genin',
     title: 'Genin',
     traitIds: ['diligent', 'proud'],
+    favouriteRecipeId: 'rice-ball-bento',
     appearance: look('long', {
       hair: '#d8789a',
       eyes: '#4f8a3a',
@@ -79,6 +82,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     title: 'Genin',
     clanId: 'hyuga',
     traitIds: ['kind', 'humble'],
+    favouriteRecipeId: 'spicy-hot-pot',
     appearance: look(
       'long',
       { hair: '#3d5fa8', eyes: '#c9c3d9', skin: '#f3d2b3', outfit: '#e8e0d0' },

@@ -11,6 +11,7 @@ export const GENIN: readonly PersonDef[] = [
     title: 'Genin',
     clanId: 'hibana',
     traitIds: ['brash', 'proud'],
+    favouriteRecipeId: 'spicy-hot-pot',
     appearance: look('spiky', {
       hair: '#b8322c',
       eyes: '#c88a2a',
@@ -34,6 +35,7 @@ export const GENIN: readonly PersonDef[] = [
     title: 'Genin',
     clanId: 'tokaku',
     traitIds: ['calm', 'kind'],
+    favouriteRecipeId: 'miso-soup',
     appearance: look('long', {
       hair: '#e8e0d0',
       eyes: '#8ab4d8',
@@ -52,6 +54,7 @@ export const GENIN: readonly PersonDef[] = [
     title: 'Genin',
     clanId: 'kurogane',
     traitIds: ['focused', 'proud'],
+    favouriteRecipeId: 'grilled-fish-set',
     appearance: look(
       'short',
       { hair: '#1b1a22', eyes: '#2a1d14', skin: '#c68e63', outfit: '#3e4a52' },
@@ -74,6 +77,7 @@ export const GENIN: readonly PersonDef[] = [
     title: 'Genin',
     clanId: 'shimenawa',
     traitIds: ['humble', 'diligent'],
+    favouriteRecipeId: 'rice-ball-bento',
     appearance: look(
       'buns',
       { hair: '#4a2f1d', eyes: '#5a7a4a', skin: '#f3d2b3', outfit: '#e8e0d0' },

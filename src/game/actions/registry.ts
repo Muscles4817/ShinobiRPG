@@ -2,6 +2,7 @@ import { combatAct } from './combat';
 import { eat, rest, sleep, train } from './daily';
 import { missionChoose, missionContinue, startMission } from './mission';
 import { payRent, treat } from './services';
+import { hostDinner } from './dinner';
 import { cook } from './kitchen';
 import { lesson } from './lesson';
 import { setCombatStyle } from './settings';
@@ -45,4 +46,5 @@ export const HANDLERS: Registry = {
   buyIngredient,
   cook,
   followSight,
+  hostDinner,
 };

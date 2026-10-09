@@ -39,7 +39,10 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
           <p className="festival-note">{view.festival}: festival prices on every stall.</p>
         )}
         {view.stalls.map((stall) => (
-          <section key={stall.name} className={stall.closed ? 'stall shut' : 'stall'}>
+          <section
+            key={stall.name}
+            className={stall.closed ? 'stall shut' : stall.festival ? 'stall festive' : 'stall'}
+          >
             <div className="stall-head">
               <Icon id={stall.icon} />
               <h2>{stall.name}</h2>

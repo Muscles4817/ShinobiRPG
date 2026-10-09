@@ -10,6 +10,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     role: 'sensei',
     title: 'Jōnin',
     traitIds: ['brash', 'diligent'],
+    favouriteRecipeId: 'grilled-fish-set',
     appearance: look(
       'shaved',
       { hair: '#1b1a22', eyes: '#2a1d14', skin: '#a8714c', outfit: '#7a3b2a' },
@@ -39,6 +40,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     title: 'Jōnin',
     clanId: 'hibana',
     traitIds: ['proud', 'curious'],
+    favouriteRecipeId: 'miso-soup',
     appearance: look('ponytail', {
       hair: '#b8322c',
       eyes: '#c88a2a',
@@ -71,6 +73,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     title: 'Jōnin',
     clanId: 'tokaku',
     traitIds: ['calm', 'curious'],
+    favouriteRecipeId: 'rice-ball-bento',
     appearance: look('long', {
       hair: '#e8e0d0',
       eyes: '#8ab4d8',
@@ -194,6 +197,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     role: 'villager',
     title: 'Noodle-stall owner',
     traitIds: ['kind', 'cunning'],
+    favouriteRecipeId: 'miso-soup',
     appearance: look(
       'buns',
       { hair: '#e8e0d0', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3e6b3a' },

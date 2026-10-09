@@ -1,7 +1,10 @@
-import type { ContentPack, PlaceDef } from './types';
+import type { ContentPack, PlaceDef, Stall } from './types';
 import { duplicateIds } from './catalog';
 
-/** Checks locations and places: references resolve and every activity is reachable. */
+/**
+ * Checks locations and places (and festival stalls): references resolve and every activity is
+ * reachable.
+ */
 export function validateWorld(pack: ContentPack): string[] {
   const problems: string[] = [];
   const start = pack.locations.find((l) => l.id === pack.startLocationId);
@@ -32,7 +35,12 @@ export function validateWorld(pack: ContentPack): string[] {
   const placeLinks = pack.locations.flatMap((l) =>
     l.places.flatMap((place) => placeRefs(place).map(([kind, id]) => ({ place, kind, id }))),
   );
-  for (const { place, kind, id } of placeLinks) {
+  const festivalLinks = pack.village.festivals.flatMap((f) =>
+    (f.stalls ?? []).flatMap((s) =>
+      stallRefs(s).map(([kind, id]) => ({ place: { id: `festival ${f.id}` }, kind, id })),
+    ),
+  );
+  for (const { place, kind, id } of [...placeLinks, ...festivalLinks]) {
     if (!refs[kind].has(id))
       problems.push(`place "${place.id}" references unknown ${kind} "${id}"`);
     if (kind !== 'technique') reached[kind].add(id);
@@ -47,15 +55,19 @@ export function validateWorld(pack: ContentPack): string[] {
 
 type RefKind = 'training' | 'food' | 'mission' | 'technique' | 'gear' | 'ingredient';
 
+function stallRefs(stall: Stall): [RefKind, string][] {
+  return [
+    ...stall.foodIds.map((id): [RefKind, string] => ['food', id]),
+    ...(stall.ingredientIds ?? []).map((id): [RefKind, string] => ['ingredient', id]),
+  ];
+}
+
 function placeRefs(place: PlaceDef): [RefKind, string][] {
   switch (place.kind) {
     case 'training':
       return place.trainingIds.map((id) => ['training', id]);
     case 'market':
-      return place.stalls.flatMap((s): [RefKind, string][] => [
-        ...s.foodIds.map((id): [RefKind, string] => ['food', id]),
-        ...(s.ingredientIds ?? []).map((id): [RefKind, string] => ['ingredient', id]),
-      ]);
+      return place.stalls.flatMap(stallRefs);
     case 'gear':
       return place.gearIds.map((id) => ['gear', id]);
     case 'missions':

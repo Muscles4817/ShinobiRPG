@@ -63,7 +63,7 @@ export {
   type LoadoutView,
   type LoadoutSlot,
 } from './views/shops';
-export { kitchenView, type KitchenView, type RecipeCard } from './views/kitchen';
+export { kitchenView, type DinnerInvite, type KitchenView, type RecipeCard } from './views/kitchen';
 export type { LessonCard, SparOption } from './views/team';
 export {
   jutsuDeck,

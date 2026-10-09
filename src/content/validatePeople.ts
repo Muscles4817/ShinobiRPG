@@ -26,6 +26,10 @@ function personProblems(pack: ContentPack, person: PersonDef): string[] {
   for (const id of [...person.traitIds, ...(person.sensei?.favouredTraits ?? [])]) {
     if (!traitIds.has(id)) problems.push(`person "${person.id}" references unknown trait "${id}"`);
   }
+  const favourite = person.favouriteRecipeId;
+  if (favourite !== undefined && !pack.recipes.some((r) => r.id === favourite)) {
+    problems.push(`person "${person.id}" loves unknown recipe "${favourite}"`);
+  }
   if (person.clanId !== undefined && !pack.clans.some((c) => c.id === person.clanId)) {
     problems.push(`person "${person.id}" belongs to unknown clan "${person.clanId}"`);
   }

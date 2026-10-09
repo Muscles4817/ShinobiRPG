@@ -3,9 +3,9 @@ import { addGear, equip, owns, stock, unequip } from '@/systems/inventory';
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
-import { busyReason, chip, firstBlocker, log, placeHere, placesHere } from '../ops';
+import { busyReason, chip, firstBlocker, log, placesHere } from '../ops';
 import type { GameState } from '../state';
-import { closedReason, isOpen, marketPrice } from '../village';
+import { closedReason, isOpen, marketPrice, stallsHere } from '../village';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Buying and wearing gear, and stocking the pantry. */
@@ -17,9 +17,7 @@ function shopFor(state: GameState, ctx: GameContext, gearId: string) {
 }
 
 function grocerFor(state: GameState, ctx: GameContext, ingredientId: string) {
-  const stalls = (placeHere(state, ctx, 'market')?.stalls ?? []).filter((s) =>
-    s.ingredientIds?.includes(ingredientId),
-  );
+  const stalls = stallsHere(state, ctx).filter((s) => s.ingredientIds?.includes(ingredientId));
   return stalls.find((s) => isOpen(s.hours, state)) ?? stalls[0];
 }
 

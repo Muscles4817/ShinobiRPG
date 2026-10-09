@@ -10,6 +10,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     role: 'sensei',
     title: 'Jōnin',
     traitIds: ['calm', 'lazy'],
+    favouriteRecipeId: 'grilled-fish-set',
     appearance: look('spiky', {
       hair: '#e8e0d0',
       eyes: '#2a1d14',
@@ -41,6 +42,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     role: 'sensei',
     title: 'Jōnin',
     traitIds: ['brash', 'diligent'],
+    favouriteRecipeId: 'spicy-hot-pot',
     appearance: look(
       'short',
       { hair: '#1b1a22', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3e6b3a' },
@@ -161,6 +163,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     role: 'instructor',
     title: 'Academy instructor',
     traitIds: ['kind', 'diligent'],
+    favouriteRecipeId: 'miso-soup',
     appearance: look('ponytail', {
       hair: '#4a2f1d',
       eyes: '#2a1d14',
