@@ -46,7 +46,7 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
               <b>{r.name}</b>
             </div>
             <span className="chips">
-              <span className="chip gain">Fed +{r.satiety}</span>
+              <span className="chip gain">Hunger −{r.satiety}</span>
               {r.energy > 0 && <span className="chip gain">Energy +{r.energy}</span>}
               {r.effects.map((e) => (
                 <span key={e.label} className="chip gain">

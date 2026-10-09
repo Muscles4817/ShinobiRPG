@@ -1,16 +1,34 @@
 import type { BackdropId } from '@/content';
 import { RANK_LABELS } from '@/systems/standing';
 import { formatDate, slotName, type TimeSlot } from '@/systems/time';
-import { isHungry, maxChakra, maxHealth, METER_MAX } from '@/systems/vitals';
+import type { EffectLine } from '@/systems/modifiers';
+import {
+  hungerLevel,
+  hungerOf,
+  maxChakra,
+  maxHealth,
+  METER_MAX,
+  type HungerLevel,
+} from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import { currentLocation } from '../ops';
+import { hungerEffect, hungerLines } from '../hunger';
 import type { GameState } from '../state';
 
 export interface Meter {
   readonly label: string;
   readonly value: number;
   readonly max: number;
+  /** For meters that are bad when full (hunger): how worried to look. */
+  readonly level?: HungerLevel;
+}
+
+/** What hunger is doing to you right now; null when you're satisfied. */
+export interface HungerNote {
+  readonly label: string;
+  readonly level: HungerLevel;
+  readonly effects: readonly EffectLine[];
 }
 
 /** Everything the top of a screen shows: who, where, when, and how you're doing. */
@@ -28,6 +46,7 @@ export interface HeaderView {
   readonly visiting: boolean;
   readonly meters: readonly Meter[];
   readonly warnings: readonly string[];
+  readonly hunger: HungerNote | null;
 }
 
 export function headerView(state: GameState, ctx: GameContext): HeaderView {
@@ -35,7 +54,7 @@ export function headerView(state: GameState, ctx: GameContext): HeaderView {
   const location = currentLocation(state, ctx);
   const warnings: string[] = [];
   if (vitals.health < maxHealth(stats) * 0.3) warnings.push('Badly hurt');
-  if (isHungry(vitals)) warnings.push('Hungry');
+  const level = hungerLevel(vitals);
   if (vitals.energy < 20) warnings.push('Exhausted');
   return {
     name: state.character.name,
@@ -52,8 +71,12 @@ export function headerView(state: GameState, ctx: GameContext): HeaderView {
       { label: 'Health', value: Math.round(vitals.health), max: maxHealth(stats) },
       { label: 'Chakra', value: Math.round(vitals.chakra), max: maxChakra(stats) },
       { label: 'Energy', value: Math.round(vitals.energy), max: METER_MAX },
-      { label: 'Fed', value: Math.round(vitals.satiety), max: METER_MAX },
+      { label: 'Hunger', value: Math.round(hungerOf(vitals)), max: METER_MAX, level },
     ],
     warnings,
+    hunger:
+      level === 'satisfied'
+        ? null
+        : { label: hungerEffect(vitals).label, level, effects: hungerLines(vitals) },
   };
 }

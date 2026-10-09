@@ -5,11 +5,13 @@ import { gradeModifiers } from '@/systems/profile';
 import { ELEMENTS, studyPoints, type Element, type TechniqueDef } from '@/systems/techniques';
 
 import type { GameContext } from './context';
+import { hungerEffect } from './hunger';
 import type { Character } from './state';
 
 /**
  * Turns a character's identity into growth modifiers. Every source (clan, talent, traits,
- * academy grades, chakra nature) contributes a ModifierSpec; the result is their product.
+ * academy grades, chakra nature, today's meal, hunger) contributes a ModifierSpec; the result
+ * is their product.
  */
 
 /** Techniques of your own nature are learned this much faster; others a little slower. */
@@ -38,17 +40,14 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
     gradeModifiers(character.grades),
     natureModifiers(character.nature, clan?.nature),
     (character.meal ? content.recipes.get(character.meal)?.buff : undefined) ?? {},
+    hungerEffect(character.vitals).spec,
   ]);
 }
 
-/** Hunger halves how much a training session achieves. */
-export const HUNGRY_TRAINING_EFFICIENCY = 0.5;
-
-/** Per-stat training multipliers for this character right now. */
-export function trainingScale(character: Character, ctx: GameContext, hungry: boolean): StatScale {
+/** Per-stat training multipliers for this character right now (hunger included). */
+export function trainingScale(character: Character, ctx: GameContext): StatScale {
   const { growth } = characterModifiers(character, ctx);
-  const factor = hungry ? HUNGRY_TRAINING_EFFICIENCY : 1;
-  return Object.fromEntries(STAT_IDS.map((id) => [id, growth[id] * factor]));
+  return Object.fromEntries(STAT_IDS.map((id) => [id, growth[id]]));
 }
 
 /** Study points one session earns towards a technique, after clan, talent and nature. */

@@ -15,8 +15,15 @@ export interface Vitals {
 export const METER_MAX = 100;
 /** Satiety lost per time slot that passes. */
 export const SATIETY_DECAY_PER_SLOT = 5;
-/** Below this satiety the character counts as hungry (training is less effective). */
+/** Hunger has stages; each lower satiety threshold makes it worse. */
+export const PECKISH_THRESHOLD = 50;
+/** Below this satiety the character counts as hungry. */
 export const HUNGRY_THRESHOLD = 25;
+/** Below this the character is starving: health drains and they are too weak for hard work. */
+export const STARVING_THRESHOLD = 5;
+
+export const HUNGER_LEVELS = ['satisfied', 'peckish', 'hungry', 'starving'] as const;
+export type HungerLevel = (typeof HUNGER_LEVELS)[number];
 
 export function maxHealth(stats: Stats): number {
   return Math.round(60 + stats.stamina * 4 + stats.strength);
@@ -75,4 +82,16 @@ export function sleepRecovery(vitals: Vitals, stats: Stats): VitalsDelta {
 
 export function isHungry(vitals: Vitals): boolean {
   return vitals.satiety < HUNGRY_THRESHOLD;
+}
+
+/** How hungry you are, 0 (full) to 100 (empty): the meter the player sees. */
+export function hungerOf(vitals: Pick<Vitals, 'satiety'>): number {
+  return METER_MAX - vitals.satiety;
+}
+
+export function hungerLevel(vitals: Pick<Vitals, 'satiety'>): HungerLevel {
+  if (vitals.satiety < STARVING_THRESHOLD) return 'starving';
+  if (vitals.satiety < HUNGRY_THRESHOLD) return 'hungry';
+  if (vitals.satiety < PECKISH_THRESHOLD) return 'peckish';
+  return 'satisfied';
 }

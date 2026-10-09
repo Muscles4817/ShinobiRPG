@@ -18,6 +18,7 @@ import {
   placeHere,
   spendTime,
 } from '../ops';
+import { weakFromHunger } from '../hunger';
 import type { ActionHandler, ActionOf } from './types';
 
 const MIN_HEALTH_FOR_MISSION = 0.4;
@@ -31,6 +32,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
     if (on.kind === 'absent') return 'That job isn’t on the board right now.';
     return firstBlocker(
       busyReason(state),
+      weakFromHunger(state),
       on.kind === 'standing' && on.doneToday && 'You’ve done that today. Come back tomorrow.',
       state.character.vitals.energy < def.energyCost && `Needs ${def.energyCost} energy.`,
       healthFraction(state) < MIN_HEALTH_FOR_MISSION && 'You are too injured to take a mission.',

@@ -63,8 +63,8 @@ describe('cooking', () => {
     expect(cooked.inventory.pantry).toEqual({});
     expect(cooked.character.vitals.satiety).toBeGreaterThan(60);
     expect(cooked.character.meal).toBe('grilled-fish-set');
-    const before = trainingScale(hungry.character, ctx, false).strength ?? 1;
-    expect(trainingScale(cooked.character, ctx, false).strength).toBeCloseTo(before * 1.1);
+    const before = trainingScale(state.character, ctx).strength ?? 1;
+    expect(trainingScale(cooked.character, ctx).strength).toBeCloseTo(before * 1.1);
     expect(kitchenView(cooked, ctx).meal?.name).toBe('Grilled Fish Set');
   });
 

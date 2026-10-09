@@ -1,6 +1,9 @@
 export {
   METER_MAX,
   HUNGRY_THRESHOLD,
+  PECKISH_THRESHOLD,
+  STARVING_THRESHOLD,
+  HUNGER_LEVELS,
   SATIETY_DECAY_PER_SLOT,
   maxHealth,
   maxChakra,
@@ -9,6 +12,9 @@ export {
   passTime,
   sleepRecovery,
   isHungry,
+  hungerOf,
+  hungerLevel,
+  type HungerLevel,
   type Vitals,
   type VitalsDelta,
 } from './vitals';

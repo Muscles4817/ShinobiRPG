@@ -1,7 +1,7 @@
 import type { CombatOutcome } from '@/systems/combat';
 import { recordMeeting } from '@/systems/bonds';
 import { applyTraining, diffStats, type StatDelta } from '@/systems/stats';
-import { isHungry, maxHealth } from '@/systems/vitals';
+import { maxHealth } from '@/systems/vitals';
 
 import type { GameContext } from './context';
 import { adjust, chip, log, statChips } from './ops';
@@ -55,7 +55,7 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
           ...(partner.specialty ? { [partner.specialty]: LEARNING_GAIN } : {}),
           speed: FOOTWORK_GAIN,
         };
-  const grown = applyTraining(stats, gains, trainingScale(state.character, ctx, isHungry(vitals)));
+  const grown = applyTraining(stats, gains, trainingScale(state.character, ctx));
   const bond = BOND_FOR[result];
   const after = adjust(
     {

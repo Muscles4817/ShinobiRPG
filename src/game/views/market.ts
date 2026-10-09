@@ -36,7 +36,8 @@ export interface MarketView {
   /** Today's festival, when prices are down. */
   readonly festival: string | null;
   readonly ryo: number;
-  readonly fullness: number;
+  /** How hungry you are, 0 (full) to 100 (empty). */
+  readonly hunger: number;
   readonly stalls: readonly {
     readonly name: string;
     readonly blurb: string;
@@ -54,11 +55,12 @@ export function marketView(state: GameState, ctx: GameContext): MarketView | nul
   const place = placeHere(state, ctx, 'market');
   if (!place) return null;
   const fullness = Math.round(state.character.vitals.satiety);
+  const hunger = METER_MAX - fullness;
   return {
     name: place.name,
     festival: festivalToday(state, ctx)?.name ?? null,
     ryo: state.wallet.ryo,
-    fullness,
+    hunger,
     stalls: stallsHere(state, ctx).map((stall) => ({
       name: stall.name,
       festival: stall.festival,
