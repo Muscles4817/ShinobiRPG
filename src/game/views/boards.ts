@@ -82,6 +82,8 @@ export interface Scroll extends Choice {
   readonly fromClan: boolean;
   /** Unmet requirements, e.g. "Ninjutsu 7 · you have 5.0". */
   readonly needs: readonly string[];
+  /** Total stat points still missing; Coming up lists the closest first. */
+  readonly shortfall: number;
 }
 
 export interface AcademyView {
@@ -107,11 +109,12 @@ export function academyView(state: GameState, ctx: GameContext): AcademyView | n
     .map((id): Scroll => {
       const t = ctx.content.techniques.require(id);
       const progress = state.techniques.progress[id] ?? 0;
-      const needs = (Object.entries(t.requirements) as [StatId, number][])
-        .filter(([stat, min]) => stats[stat] < min)
-        .map(
-          ([stat, min]) => `${STAT_INFO[stat].label} ${min} · you have ${stats[stat].toFixed(1)}`,
-        );
+      const unmet = (Object.entries(t.requirements) as [StatId, number][]).filter(
+        ([stat, min]) => stats[stat] < min,
+      );
+      const needs = unmet.map(
+        ([stat, min]) => `${STAT_INFO[stat].label} ${min} · you have ${stats[stat].toFixed(1)}`,
+      );
       return {
         ...choice(state, ctx, { type: 'study', techniqueId: id }),
         id,
@@ -125,6 +128,7 @@ export function academyView(state: GameState, ctx: GameContext): AcademyView | n
         ),
         needs,
         fromClan: t.clan !== undefined,
+        shortfall: unmet.reduce((sum, [stat, min]) => sum + min - stats[stat], 0),
       };
     });
   return {
@@ -132,6 +136,6 @@ export function academyView(state: GameState, ctx: GameContext): AcademyView | n
     energyCost: STUDY_ENERGY_COST,
     studying: scrolls.filter((s) => s.progress > 0),
     ready: scrolls.filter((s) => s.progress === 0 && s.needs.length === 0),
-    comingUp: scrolls.filter((s) => s.needs.length > 0),
+    comingUp: scrolls.filter((s) => s.needs.length > 0).sort((a, b) => a.shortfall - b.shortfall),
   };
 }

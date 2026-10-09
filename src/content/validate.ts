@@ -1,3 +1,5 @@
+import { DISCIPLINES } from '@/systems/techniques';
+
 import { duplicateIds } from './catalog';
 import { validatePeople } from './validatePeople';
 import { validateWorld } from './validateWorld';
@@ -16,8 +18,28 @@ export function validateContent(pack: ContentPack): string[] {
     ...numberProblems(pack),
     ...validateWorld(pack),
     ...profileProblems(pack),
+    ...beginnerProblems(pack),
     ...validatePeople(pack),
   ];
+}
+
+/** A fresh graduate (every stat at the base value) must be able to start a scroll in each discipline. */
+const BEGINNER_LEVEL = 5;
+
+function beginnerProblems(pack: ContentPack): string[] {
+  const start = pack.locations.find((l) => l.id === pack.startLocationId);
+  const offered = new Set(
+    start?.places.flatMap((p) => (p.kind === 'academy' ? p.techniqueIds : [])) ?? [],
+  );
+  const beginner = pack.techniques.filter(
+    (t) =>
+      offered.has(t.id) &&
+      t.clan === undefined &&
+      Object.values(t.requirements).every((min) => min <= BEGINNER_LEVEL),
+  );
+  return DISCIPLINES.filter((d) => !beginner.some((t) => t.discipline === d)).map(
+    (d) => `academy needs a ${d} scroll a fresh graduate can study`,
+  );
 }
 
 /** Clans, traits and clan techniques must fit together. */

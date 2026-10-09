@@ -15,8 +15,8 @@ export interface MarketItem extends Choice {
   readonly satiety: number;
   readonly energy: number;
   readonly slots: number;
-  /** How full you'd be after eating it. */
-  readonly fullAfter: number;
+  /** Fullness that would go to waste because you're already nearly full. */
+  readonly wasted: number;
 }
 
 export interface MarketView {
@@ -55,7 +55,7 @@ export function marketView(state: GameState, ctx: GameContext): MarketView | nul
           satiety: food.satiety,
           energy: food.energy,
           slots: food.slots,
-          fullAfter: Math.min(METER_MAX, fullness + food.satiety),
+          wasted: Math.max(0, fullness + food.satiety - METER_MAX),
         };
       }),
     })),

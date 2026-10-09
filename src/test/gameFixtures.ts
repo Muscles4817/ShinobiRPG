@@ -37,7 +37,7 @@ export function formTeam(state: GameState, context: GameContext = ctx): GameStat
 export function postEverything(state: GameState, context: GameContext = ctx): GameState {
   const postings = context.content.missions.all
     .filter((m) => !m.standing)
-    .map((m) => ({ missionId: m.id, expiresDay: 9999 }));
+    .map((m) => ({ missionId: m.id, postedDay: state.time.day, expiresDay: 9999 }));
   return { ...state, board: { ...state.board, refreshedDay: state.time.day, postings } };
 }
 

@@ -64,9 +64,13 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
                     {item.energy > 0 && <span className="chip gain">Energy +{item.energy}</span>}
                     {item.slots > 0 && <span className="chip">{item.slots} slot</span>}
                   </span>
-                  <small className={item.blocker ? 'blocker' : 'muted'}>
-                    {item.blocker ?? `You’d be ${item.fullAfter} / 100 fed`}
-                  </small>
+                  {item.blocker ? (
+                    <small className="blocker">{item.blocker}</small>
+                  ) : (
+                    item.wasted > 0 && (
+                      <small className="muted">Too full: {item.wasted} would go to waste</small>
+                    )
+                  )}
                 </button>
               ))}
             </div>

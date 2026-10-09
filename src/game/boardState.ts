@@ -2,6 +2,7 @@
 
 export interface Posting {
   readonly missionId: string;
+  readonly postedDay: number;
   /** Last day the job stays up. */
   readonly expiresDay: number;
 }

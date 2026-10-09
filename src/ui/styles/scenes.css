@@ -428,3 +428,24 @@ button.foe {
   margin-right: 6px;
   vertical-align: middle;
 }
+
+/* Mission scenes open on a vignette of the village's sky and skyline. */
+.scene-head.vignette {
+  position: relative;
+  overflow: hidden;
+  min-height: 170px;
+  justify-content: flex-end;
+  color: #fff;
+}
+.vignette-text {
+  position: relative;
+  text-shadow: 0 2px 10px rgb(0 0 0 / 0.55);
+}
+.vignette-text .label {
+  color: #fff;
+  opacity: 0.85;
+}
+.scene-head.vignette .vitals {
+  position: relative;
+  color: #fff;
+}

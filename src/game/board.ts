@@ -27,7 +27,7 @@ function trusted(def: MissionDef, completed: number): boolean {
 function postingFor(board: Board, def: MissionDef, day: number): Posting {
   const span = MAX_DAYS_UP - MIN_DAYS_UP + 1;
   const daysUp = MIN_DAYS_UP + Math.floor(hashUnit(board.seed, day, def.id, 'length') * span);
-  return { missionId: def.id, expiresDay: day + daysUp - 1 };
+  return { missionId: def.id, postedDay: day, expiresDay: day + daysUp - 1 };
 }
 
 /** Postings for one new day: expired ones come down, new ones go up. */
@@ -66,7 +66,7 @@ export function boardFor(state: GameState, ctx: GameContext): Board {
 
 export type Availability =
   | { readonly kind: 'standing'; readonly doneToday: boolean }
-  | { readonly kind: 'posted'; readonly daysLeft: number }
+  | { readonly kind: 'posted'; readonly daysLeft: number; readonly isNew: boolean }
   | { readonly kind: 'absent' };
 
 /** Whether a job is on the board today, and how. */
@@ -78,7 +78,11 @@ export function availability(state: GameState, ctx: GameContext, def: MissionDef
   }
   const posting = board.postings.find((p) => p.missionId === def.id);
   if (!posting) return { kind: 'absent' };
-  return { kind: 'posted', daysLeft: posting.expiresDay - state.time.day + 1 };
+  return {
+    kind: 'posted',
+    daysLeft: posting.expiresDay - state.time.day + 1,
+    isNew: posting.postedDay === state.time.day,
+  };
 }
 
 /** Records that a job was taken: postings come down, standing jobs wait until tomorrow. */
