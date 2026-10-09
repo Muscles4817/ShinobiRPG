@@ -31,6 +31,7 @@ export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): 
   return {
     id: `${def.id}#${index}`,
     name: def.name,
+    tag: def.kind,
     attributes: attributesOf(createStats(def.baseStat, def.statBonuses)),
     health: def.maxHealth,
     maxHealth: def.maxHealth,

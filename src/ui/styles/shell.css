@@ -1,0 +1,355 @@
+/* App shell: column layout, dock, ticker, banners, notices, sheets, report cards. */
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(var(--dock-height) + env(safe-area-inset-bottom));
+  position: relative;
+}
+
+.page {
+  flex: 1;
+  padding: 12px var(--gutter) 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.small {
+  font-size: 0.82rem;
+}
+.gold {
+  color: var(--gold);
+}
+.harm {
+  color: var(--harm);
+}
+.gain {
+  color: var(--good);
+}
+.cost {
+  color: var(--cost);
+}
+
+.btn.small {
+  min-height: 32px;
+  padding: 0.35em 0.85em;
+  font-size: 0.85rem;
+}
+.btn.danger {
+  background: var(--harm);
+  color: #2a0a06;
+}
+.btn.danger-outline {
+  color: var(--harm);
+  border-color: var(--harm);
+}
+.row-buttons {
+  display: flex;
+  gap: 8px;
+}
+.row-buttons .btn {
+  flex: 1;
+}
+
+/* Dock */
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  max-width: 560px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 6px 8px calc(8px + env(safe-area-inset-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+}
+
+.dk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 5px 0;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.dk i {
+  font-style: normal;
+  font-family: var(--font-story);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.dk.on {
+  background: var(--raise);
+  color: var(--ink);
+}
+.dk.on i {
+  color: var(--lantern);
+}
+
+/* Ticker: the latest result, just above the dock */
+.ticker {
+  position: sticky;
+  bottom: calc(var(--dock-height) + env(safe-area-inset-bottom) + 6px);
+  margin: 0 var(--gutter) 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border-radius: 12px;
+  background: var(--raise);
+  border: 1px solid var(--line);
+  font-size: 0.85rem;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.35);
+  z-index: 5;
+}
+
+.ticker .chips {
+  flex: 1;
+  min-width: 0;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+.ticker b {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 45%;
+}
+.ticker .more {
+  color: var(--muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+/* Shared vitals */
+.vitals {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  font-size: 0.7rem;
+}
+
+.vitals .vl {
+  display: flex;
+  justify-content: space-between;
+  opacity: 0.92;
+}
+.vitals .vm {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.35);
+  margin-top: 3px;
+  overflow: hidden;
+}
+.vitals .vm i {
+  display: block;
+  height: 100%;
+  transition: width 0.4s ease;
+}
+.m-health {
+  background: var(--health);
+}
+.m-chakra {
+  background: var(--chakra);
+}
+.m-energy {
+  background: var(--energy);
+}
+.m-fed {
+  background: var(--fed);
+}
+
+.daystrip {
+  display: inline-flex;
+  gap: 3px;
+}
+.daystrip i {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.3);
+}
+.daystrip i.on {
+  background: var(--gold);
+}
+
+/* Banner for place pages */
+.banner {
+  position: relative;
+  min-height: 110px;
+  overflow: hidden;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.banner-in {
+  position: relative;
+  padding: 12px var(--gutter);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 110px;
+  justify-content: flex-end;
+}
+.banner-title {
+  font-family: var(--font-story);
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-shadow: 0 2px 10px rgb(0 0 0 / 0.45);
+}
+.banner-sub {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+.back {
+  position: absolute;
+  top: 10px;
+  left: var(--gutter);
+  font-size: 0.82rem;
+  opacity: 0.9;
+  color: #fff;
+  padding: 4px 0;
+}
+.back.on-art {
+  z-index: 2;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+}
+
+.plain-head {
+  padding: 18px var(--gutter) 6px;
+  background: linear-gradient(180deg, #2a2236, var(--bg));
+}
+.plain-head h1 {
+  font-family: var(--font-story);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+/* Notices and sheets */
+.notice-bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px var(--gutter);
+  background: color-mix(in srgb, var(--harm) 22%, var(--surface));
+  border-bottom: 1px solid var(--harm);
+  font-size: 0.9rem;
+}
+
+.sheet-backdrop,
+.report-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgb(8 6 12 / 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.report-backdrop {
+  align-items: center;
+  padding: var(--gutter);
+  z-index: 50;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 560px;
+  border-radius: 20px 20px 0 0;
+  padding: 18px var(--gutter) calc(18px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.report {
+  width: 100%;
+  max-width: 400px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.5);
+}
+
+.report.tone-bad {
+  border-color: color-mix(in srgb, var(--harm) 50%, var(--line));
+}
+.report-title {
+  font-family: var(--font-story);
+  font-size: 1.5rem;
+  font-weight: 800;
+  padding-right: 56px;
+}
+.report-rows {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+.report-rows div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--line);
+  padding: 3px 0;
+}
+.report-rows dt {
+  color: var(--muted);
+}
+.report-rows dd {
+  margin: 0;
+  font-weight: 700;
+}
+.report-note {
+  font-size: 0.95rem;
+}
+
+.seal {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--seal);
+  color: var(--seal);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-story);
+  font-weight: 800;
+  font-size: 1.6rem;
+  transform: rotate(-9deg);
+  background: color-mix(in srgb, var(--seal) 8%, transparent);
+}

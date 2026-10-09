@@ -5,10 +5,10 @@ interface NoticeProps {
 
 export function Notice({ text, onDismiss }: NoticeProps) {
   return (
-    <div className="notice" role="alert">
+    <div className="notice-bar" role="alert">
       <span>{text}</span>
       {onDismiss && (
-        <button type="button" className="link" onClick={onDismiss} aria-label="Dismiss">
+        <button type="button" onClick={onDismiss} aria-label="Dismiss">
           ✕
         </button>
       )}

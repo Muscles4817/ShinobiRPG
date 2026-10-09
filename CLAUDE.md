@@ -12,6 +12,9 @@ Lanterns. Stack: TypeScript (strict), React, Vite, vite-plugin-pwa, Vitest.
 Roadmap (milestones): **1. vertical slice** (done) → 2. people & relationships → 3. progression
 (ranks, elements, spirits) → 4. world & travel → 5. branching paths (rogue / Kage) → 6. depth.
 
+The game ships **content packs** (whole settings). `naruto` is a fan pack for personal play;
+`original` is the game's own world and the only one a public release may contain.
+
 ## Commands
 
 ```bash
@@ -19,6 +22,7 @@ npm run dev            # local dev server
 npm run check          # EVERYTHING CI runs: typecheck, lint, format, arch, test, build
 npm test               # unit + integration + UI smoke tests
 npm run arch           # module-boundary check (dependency-cruiser)
+npm run check:release  # release build without fan packs, verified free of fan names
 npm run format         # auto-format with Prettier
 ```
 
@@ -30,11 +34,12 @@ Run `npm run check` before every commit. Nothing merges unless it is green.
 src/
   core/       Game-agnostic utilities: seeded Rng, Result, math. Knows nothing about the game.
   systems/    Self-contained domain modules. Pure functions over their own slice of state.
-    time/  stats/  vitals/  wallet/  techniques/  missions/  combat/  standing/  journal/
-  content/    Static game data (techniques, missions, enemies, food…) + integrity validation.
+    time/ stats/ vitals/ wallet/ housing/ techniques/ missions/ combat/ standing/ journal/
+  content/    Content schema, validation and the pack registry.
+    packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
   platform/   Browser adapters (localStorage save store).
-  ui/         React components. Renders view models, dispatches GameActions.
+  ui/         React. theme/ (tokens), art/ (SVG icons & backdrops), components/, screens/.
   main.tsx    App composition root: picks platform adapters and the game context.
 ```
 
@@ -71,8 +76,28 @@ ui ──► game ──► content ──► systems ──► core
    an opaque `CombatState`. Only the engine looks inside its own state.
 6. **The UI renders view models** (`src/game/views/`), not raw state. Activity lists are
    `ActionOption`s that already carry the `GameAction` to dispatch and the blocker reason.
-7. **Content is data, validated by tests.** Unique ids, resolvable references and sane numbers
-   are checked in `content.test.ts`, so a typo fails CI rather than crashing on a phone.
+7. **Content is data, validated by tests.** Unique ids, resolvable references, reachable
+   activities and sane numbers are checked for every pack in `content.test.ts`, so a typo fails
+   CI rather than crashing on a phone.
+8. **No setting names in code.** Every name, place and line of setting-specific text comes
+   from the active `ContentPack` (`SettingText` covers engine wording such as sleep and hospital
+   lines). Code may reference ids only through content, never hard-code `'konohagakure'`.
+9. **A save belongs to one pack.** `GameState.packId` is fixed at creation; the context is
+   built from it on load. Ids are only unique within a pack.
+10. **Places decide what you can do.** Location → places (`PlaceDef`, discriminated by `kind`).
+    Actions check the current location offers them (`placeHere`). Each place kind has its own
+    view model and page.
+
+### Content packs
+
+- A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
+  `src/content/packs/index.ts`. Validation runs on it automatically.
+- Fan packs (names we don't own) go in the conditional branch of the registry, so
+  `VITE_EXCLUDE_FAN_PACKS=true` tree-shakes them out. CI's `check:release` fails if fan names
+  leak into a release build; add a marker for each new fan pack to `scripts/check-release.mjs`.
+- Content is typed TypeScript for now (type-checked, validated, zero runtime cost). If packs
+  ever need to be authored outside the codebase or loaded at runtime (mods, downloads), move
+  them to JSON with a runtime schema at the same `ContentPack` boundary — nothing else changes.
 
 ### Recipes
 
@@ -85,8 +110,18 @@ ui ──► game ──► content ──► systems ──► core
   insists), expose it through a view model, add tests.
 - **Add a system:** create `systems/<name>/` with `<name>.ts`, `index.ts` (public API) and
   `<name>.test.ts`. Add its slice to `GameState` + `createNewGame` + a save migration.
-- **Add content:** add entries to the relevant `content/*.ts` array. Run `npm test` —
-  validation will catch broken references.
+- **Add content:** add entries to the pack's arrays _and_ offer them at a place (training at a
+  training place, food at a stall, missions at a mission hall). Run `npm test` — validation
+  catches broken references and anything no place offers.
+- **Add a content pack:** copy `packs/original/`, change ids/names, register it. Keep every
+  pack complete; packs don't inherit from each other.
+- **Add a location:** add a `LocationDef` with a backdrop and places. Leave `travel.lockedReason`
+  set until it is playable; the Travel tab shows it as coming soon.
+- **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
+  model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
+  compiler lists every switch you missed).
+- **Add a backdrop or icon:** add the id to `BackdropId`/`IconId` in `content/types.ts` and the
+  drawing to `ui/art/` (a `Record` keyed by id, so a missing drawing is a type error).
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.
 
@@ -131,6 +166,29 @@ ui ──► game ──► content ──► systems ──► core
 - The UI has smoke tests (`ui/App.test.tsx`) for the core loop; keep them passing and add one
   for each new screen.
 
+### UI design rules (the "Village Hub" design)
+
+- **Navigation has three layers.** The dock (里 Here · 旅 Travel · 術 Jutsu · 忍 Shinobi · 記 Record)
+  is always present except in scenes. _Here_ is the current location's village screen, whose
+  place cards open place pages. Scenes (missions, fights) take over the whole screen and
+  return to where you were.
+- **Each page is designed for its job**, not built from one generic list: training is a drill
+  board, the market is stalls with price tags, home is your room with tappable objects, the
+  mission hall is a notice board, the academy is a scroll rack. New place kinds get their own
+  presentation.
+- **Every village looks different**: backdrop + sky by time slot (`.sky[data-slot][data-land]`).
+- **Feedback lands near the thumb**: the ticker above the dock, the choice bar in scenes, and
+  report cards for milestones (fight result, mission debrief, defeat).
+- **Story text never contains numbers.** Numbers go in chips: green gain, amber cost, red harm.
+- **Discipline colours are fixed**: taijutsu ember, ninjutsu blue, genjutsu violet, spirit teal.
+  Techniques are always shown as the same card (`TechniqueCard`), in the deck and in fights.
+- **Disabled things say why**, and when possible what fixes it ("Needs 30 energy. Nap or eat first.").
+- **Locked content folds away** (sealed notices, "Coming up" scrolls, coming-soon destinations)
+  with what unlocks it.
+- **Tokens only**: colours, fonts and radii come from `ui/theme/tokens.css`. Icons and scenery
+  are inline SVG in `ui/art/` (offline, no image files). Tap targets ≥ 40px. Motion is subtle
+  and always disabled under `prefers-reduced-motion`. Night is the default theme.
+
 ### Formatting & hygiene
 
 - Prettier decides formatting **(enforced)**. ESLint must pass with zero warnings **(enforced)**.
@@ -139,7 +197,7 @@ ui ──► game ──► content ──► systems ──► core
 
 ## Definition of done
 
-1. `npm run check` is green.
+1. `npm run check` (and `npm run check:release`) are green.
 2. New behaviour has tests; boundaries respected without lint/arch exceptions.
 3. Save compatibility preserved (migration + test if the shape changed).
 4. Works at phone width (≈390px) and offline.

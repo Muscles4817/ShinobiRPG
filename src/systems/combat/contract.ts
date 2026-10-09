@@ -34,6 +34,8 @@ export type CombatTechnique = Pick<
 export interface CombatantSetup {
   readonly id: string;
   readonly name: string;
+  /** Short descriptor such as "Spirit" or "Bandit", shown on the combatant's banner. */
+  readonly tag?: string;
   readonly attributes: CombatAttributes;
   readonly health: number;
   readonly maxHealth: number;
@@ -62,6 +64,7 @@ export type CombatSide = 'player' | 'enemy';
 export interface CombatantView {
   readonly id: string;
   readonly name: string;
+  readonly tag?: string;
   readonly side: CombatSide;
   readonly health: number;
   readonly maxHealth: number;
@@ -76,6 +79,9 @@ export interface CombatOption {
   readonly id: string;
   readonly label: string;
   readonly detail: string;
+  /** Lets the UI present options differently: techniques as cards, escape apart. */
+  readonly kind: 'basic' | 'technique' | 'escape';
+  readonly discipline?: TechniqueDef['discipline'];
   /** Present when the option is shown but cannot be chosen right now. */
   readonly disabledReason?: string;
 }

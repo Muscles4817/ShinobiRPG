@@ -13,6 +13,10 @@ export type GameAction =
   | { readonly type: 'eat'; readonly foodId: string }
   | { readonly type: 'rest' }
   | { readonly type: 'sleep' }
+  | { readonly type: 'payRent' }
+  | { readonly type: 'treat' }
+  | { readonly type: 'travel'; readonly locationId: string }
+  | { readonly type: 'dismissReport' }
   | { readonly type: 'study'; readonly techniqueId: string }
   | { readonly type: 'startMission'; readonly missionId: string }
   | { readonly type: 'missionChoose'; readonly approachIndex: number }

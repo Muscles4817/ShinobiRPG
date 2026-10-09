@@ -1,0 +1,73 @@
+/*
+ * Design tokens. Every colour, font and radius in the UI comes from here.
+ * Night is the only theme for now; a Daylight theme will redefine these tokens.
+ */
+:root {
+  --bg: #14121b;
+  --surface: #1e1b28;
+  --raise: #282435;
+  --line: #353046;
+  --ink: #efe9f6;
+  --story: #e9e0cc;
+  --muted: #a39ab4;
+
+  --lantern: #f0a050;
+  --gold: #ffd27a;
+  --on-lantern: #1b120a;
+
+  /* Semantic chips: gains, costs, harm. */
+  --good: #7fd6a0;
+  --cost: #e8b25a;
+  --harm: #ff6f61;
+
+  /* Disciplines mean the same colour everywhere. */
+  --taijutsu: #e5643f;
+  --ninjutsu: #4f8fe8;
+  --genjutsu: #a46cf2;
+  --spirit: #57c7b8;
+
+  /* Vitals meters. */
+  --health: #ff7b6b;
+  --chakra: #6fb0ff;
+  --energy: #ffd27a;
+  --fed: #8fe0a4;
+
+  --paper: #efe3c8;
+  --paper-ink: #2a2118;
+  --paper-muted: #6f6149;
+  --seal: #c0392b;
+  --wood: #4f3420;
+
+  --font-story: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', Georgia, serif;
+  --font-ui: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius: 14px;
+  --radius-sm: 10px;
+  --gutter: 14px;
+  --dock-height: 64px;
+
+  color-scheme: dark;
+}
+
+/* Skies by time slot; a backdrop may refine them with data-land. */
+.sky[data-slot='morning'] {
+  background: linear-gradient(180deg, #5d7fb8 0%, #e8a96a 100%);
+}
+.sky[data-slot='afternoon'] {
+  background: linear-gradient(180deg, #3f78b8 0%, #9cc3df 100%);
+}
+.sky[data-slot='evening'] {
+  background: linear-gradient(180deg, #241d48 0%, #7a3a5c 55%, #e08a4c 100%);
+}
+.sky[data-slot='night'] {
+  background: linear-gradient(180deg, #0b0a1e 0%, #1d1840 100%);
+}
+.sky[data-land='dunes'][data-slot='afternoon'] {
+  background: linear-gradient(180deg, #5c9bd0 0%, #e9cf96 100%);
+}
+.sky[data-land='dunes'][data-slot='evening'] {
+  background: linear-gradient(180deg, #3b2a5a 0%, #c86a3a 60%, #f2b765 100%);
+}
+.sky[data-land='mist'] {
+  background: linear-gradient(180deg, #5a6878 0%, #a8b6c2 100%);
+}

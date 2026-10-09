@@ -1,0 +1,208 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  text-align: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--lantern);
+  outline-offset: 2px;
+}
+
+.story {
+  font-family: var(--font-story);
+  color: var(--story);
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.label {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Buttons */
+.btn {
+  background: var(--lantern);
+  color: var(--on-lantern);
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  padding: 0.55em 1em;
+  min-height: 40px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.btn:disabled {
+  background: var(--raise);
+  color: var(--muted);
+  border-color: transparent;
+}
+
+.btn.wide {
+  width: 100%;
+}
+
+/* Chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chip {
+  border-radius: 6px;
+  padding: 1px 7px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  background: var(--raise);
+  color: var(--muted);
+}
+
+.chip.gain {
+  background: color-mix(in srgb, var(--good) 15%, transparent);
+  color: var(--good);
+}
+.chip.cost {
+  background: color-mix(in srgb, var(--cost) 15%, transparent);
+  color: var(--cost);
+}
+.chip.harm {
+  background: color-mix(in srgb, var(--harm) 16%, transparent);
+  color: var(--harm);
+}
+
+.d-taijutsu {
+  --d: var(--taijutsu);
+}
+.d-ninjutsu {
+  --d: var(--ninjutsu);
+}
+.d-genjutsu {
+  --d: var(--genjutsu);
+}
+.d-body {
+  --d: var(--gold);
+}
+.d-mind {
+  --d: var(--fed);
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: #fff;
+  letter-spacing: 0.04em;
+  background: var(--d, var(--raise));
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.blocker {
+  color: var(--cost);
+  font-size: 0.8rem;
+}
+
+.lamp {
+  fill: #ffb45e;
+  filter: drop-shadow(0 0 4px rgb(255 170 80 / 0.9));
+  animation: flicker 3.2s ease-in-out infinite;
+}
+
+.lamp:nth-of-type(2n) {
+  animation-delay: -1.3s;
+}
+.lamp:nth-of-type(3n) {
+  animation-delay: -2.1s;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.78;
+  }
+  55% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.enter {
+  animation: rise 0.25s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lamp,
+  .enter {
+    animation: none;
+  }
+}

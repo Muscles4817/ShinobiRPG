@@ -10,6 +10,7 @@ export {
   type MissionStage,
   type MissionDef,
   type MissionRun,
+  type MissionNote,
   type CheckStage,
   type CheckChoice,
   type CheckResolution,

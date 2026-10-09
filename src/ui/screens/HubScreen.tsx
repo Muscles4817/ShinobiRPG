@@ -1,0 +1,74 @@
+import { headerView, hubView } from '@/game';
+
+import { Backdrop } from '../art/Backdrop';
+import { Icon } from '../art/Icon';
+import { Chips } from '../components/Chips';
+import { DayStrip, Vitals } from '../components/Vitals';
+import type { ScreenProps } from './types';
+
+interface HubScreenProps extends ScreenProps {
+  readonly onOpenPlace: (placeId: string) => void;
+  readonly onOpenRecord: () => void;
+}
+
+/** "Here": the village you're in, its sky and backdrop, and the places you can go. */
+export function HubScreen({ ctx, state, onOpenPlace, onOpenRecord }: HubScreenProps) {
+  const header = headerView(state, ctx);
+  const hub = hubView(state, ctx);
+  return (
+    <>
+      <header className="hub-hero sky" data-slot={header.slot} data-land={header.backdrop}>
+        <Backdrop id={header.backdrop} />
+        <div className="hub-top">
+          <div className="hub-row">
+            <b>{header.name}</b>
+            <span>
+              {header.rank}
+              {header.visiting ? ' · visiting' : ''}
+            </span>
+            <span className="ryo num">{header.ryo} ryo</span>
+          </div>
+          <div className="hub-row">
+            <span className="when">
+              {header.date} · {header.slot}
+            </span>
+            <DayStrip slotIndex={header.slotIndex} />
+            {header.warnings.map((w) => (
+              <span key={w} className="warn-chip">
+                {w}
+              </span>
+            ))}
+          </div>
+          <h1 className="hub-place">{header.location}</h1>
+          <p className="hub-epithet">{header.epithet}</p>
+        </div>
+        <Vitals meters={header.meters} />
+      </header>
+      <main className="places">
+        {hub.places.map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            className={`place-card k-${p.kind}${p.suggested ? ' suggested' : ''}`}
+            onClick={() => {
+              onOpenPlace(p.id);
+            }}
+          >
+            <span className="place-icon">
+              <Icon id={p.icon} />
+            </span>
+            <b>{p.name}</b>
+            <small>{p.line}</small>
+          </button>
+        ))}
+      </main>
+      {hub.latest && (
+        <button type="button" className="ticker" onClick={onOpenRecord}>
+          <b>{hub.latest.heading}</b>
+          <Chips chips={hub.latest.chips} />
+          <span className="more">Record ›</span>
+        </button>
+      )}
+    </>
+  );
+}
