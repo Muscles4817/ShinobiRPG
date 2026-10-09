@@ -29,6 +29,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['calm', 'cunning', 'focused'],
       nature: 'lightning',
       style: 'Late, lazy-looking, and misses nothing. Teaches teamwork the hard way.',
+      lesson:
+        'Kakashi turns up late, closes his book, and runs you ragged through every drill you thought you knew.',
+      teaches: ['summoning-ninken', 'lightning-blade'],
     },
   },
   {
@@ -55,6 +58,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       specialty: 'taijutsu',
       favouredTraits: ['brash', 'diligent', 'proud'],
       style: 'Shouts, runs, and never lets you quit. Ever.',
+      lesson:
+        'Guy has you running laps on your hands before breakfast. He does twice as many, cheering.',
+      teaches: ['leaf-hurricane', 'front-lotus'],
     },
   },
   {
@@ -82,6 +88,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       specialty: 'genjutsu',
       favouredTraits: ['calm', 'kind', 'humble'],
       style: 'Patient and precise. Builds confidence before she builds technique.',
+      lesson:
+        'Kurenai walks you through an illusion slowly, then again, until you can see the seams.',
+      teaches: ['petal-storm'],
     },
   },
   {
@@ -110,6 +119,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['lazy', 'cunning', 'kind'],
       nature: 'wind',
       style: 'Easy-going until it matters. Teaches through shōgi as much as sparring.',
+      lesson:
+        'Asuma teaches you to feel the wind along a blade, then beats you at shōgi to make a point.',
+      teaches: ['flying-swallow'],
     },
   },
   {
@@ -137,6 +149,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       specialty: 'fuuinjutsu',
       favouredTraits: ['brash', 'curious', 'cunning'],
       style: 'Throws you in the deep end, then throws snakes in after you.',
+      lesson:
+        'Anko chases you through the training forest with snakes until your seals come out clean.',
+      teaches: ['snake-binding-seal'],
     },
   },
   {

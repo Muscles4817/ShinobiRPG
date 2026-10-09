@@ -44,6 +44,10 @@ choose **GitHub Actions**.
   original) characters keep daily schedules; the village screen shows who's where.
 - **Bonds.** Talk to anyone who's around once a day. Pick a reply by its tone; their traits
   decide whether it lands. Get closer to learn what they're like and what they like to hear.
+- **Your team in action.** C-rank team missions bring your teammates into every fight beside
+  you. Once a week your sensei gives a lesson at the training ground, and once you're friends
+  they teach you their signature technique. Spar with any genin who's around: win or lose,
+  you learn from them and nobody ends up in hospital.
 - **Travel** lists the other villages (coming soon).
 
 ## Releases

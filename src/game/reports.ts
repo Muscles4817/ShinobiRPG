@@ -24,6 +24,8 @@ export type Report =
       readonly reputation: number;
       readonly missionsCompleted: number;
       readonly unlocked: readonly string[];
+      /** Bond gained with each teammate; absent on reports saved before team missions. */
+      readonly teamBond?: number;
     }
   | {
       readonly kind: 'mission-failed';
@@ -37,6 +39,27 @@ export type Report =
       readonly hospitalFee: number;
       readonly reputationLost: number;
       readonly text: string;
+    }
+  | {
+      readonly kind: 'lesson';
+      readonly sensei: string;
+      readonly text: string;
+      /** Stat gains as display labels, e.g. "Ninjutsu +1.4". */
+      readonly gains: readonly string[];
+      readonly bond: number;
+      readonly technique: {
+        readonly name: string;
+        readonly mastered: boolean;
+        readonly percent: number;
+      } | null;
+    }
+  | {
+      readonly kind: 'spar';
+      readonly opponent: string;
+      readonly result: 'won' | 'lost' | 'yielded';
+      readonly text: string;
+      readonly gains: readonly string[];
+      readonly bond: number;
     }
   | {
       readonly kind: 'team-formed';

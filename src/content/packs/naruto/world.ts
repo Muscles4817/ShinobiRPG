@@ -36,6 +36,8 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'merchant-escort',
           'stolen-scrolls',
           'haunted-granary',
+          'border-bandits',
+          'missing-nin-forest',
         ],
       },
       {

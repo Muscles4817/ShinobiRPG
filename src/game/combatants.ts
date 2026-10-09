@@ -8,7 +8,7 @@ import type { GameState } from './state';
 
 /** Translates game entities into the combat contract's vocabulary. */
 
-function attributesOf(stats: Stats): CombatAttributes {
+export function attributesOf(stats: Stats): CombatAttributes {
   const { strength, speed, stamina, perception, willpower } = stats;
   const { taijutsu, ninjutsu, genjutsu, kenjutsu, fuuinjutsu } = stats;
   return {

@@ -48,6 +48,7 @@ export {
   type Scroll,
 } from './views/boards';
 export { travelView, type Destination } from './views/travel';
+export type { LessonCard, SparOption } from './views/team';
 export {
   jutsuDeck,
   recordView,

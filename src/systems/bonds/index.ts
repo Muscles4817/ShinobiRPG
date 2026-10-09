@@ -13,6 +13,7 @@ export {
   talkedToday,
   reactionTo,
   recordTalk,
+  recordMeeting,
   type Bond,
   type Taste,
 } from './bonds';

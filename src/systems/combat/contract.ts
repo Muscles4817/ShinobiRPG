@@ -48,8 +48,12 @@ export interface CombatantSetup {
 
 export interface CombatSetup {
   readonly player: CombatantSetup;
+  /** Fighters on the player's side, acting on their own. */
+  readonly allies: readonly CombatantSetup[];
   readonly enemies: readonly CombatantSetup[];
   readonly canFlee: boolean;
+  /** Opening line of the fight; the engine words one when absent. */
+  readonly intro?: string;
 }
 
 /**

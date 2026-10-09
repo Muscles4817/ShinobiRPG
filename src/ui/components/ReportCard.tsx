@@ -1,19 +1,6 @@
 import type { Report } from '@/game';
 
-interface Row {
-  readonly label: string;
-  readonly value: string;
-  readonly tone?: 'gain' | 'cost' | 'harm';
-}
-
-interface CardContent {
-  readonly title: string;
-  readonly subtitle: string;
-  readonly seal: string | null;
-  readonly rows: readonly Row[];
-  readonly note: string | null;
-  readonly tone: 'good' | 'bad';
-}
+import { peopleCardContent, type CardContent } from './peopleReports';
 
 function content(report: Report): CardContent {
   switch (report.kind) {
@@ -44,6 +31,9 @@ function content(report: Report): CardContent {
           { label: 'Reward', value: `+${report.ryo} ryo`, tone: 'gain' },
           { label: 'Reputation', value: `+${report.reputation}`, tone: 'gain' },
           { label: 'Missions done', value: String(report.missionsCompleted) },
+          ...(report.teamBond
+            ? [{ label: 'Team bond', value: `+${report.teamBond}`, tone: 'gain' as const }]
+            : []),
         ],
         note: report.unlocked.length > 0 ? `New jobs posted: ${report.unlocked.join(', ')}` : null,
       };
@@ -71,18 +61,10 @@ function content(report: Report): CardContent {
         ],
         note: report.text,
       };
+    case 'lesson':
+    case 'spar':
     case 'team-formed':
-      return {
-        title: 'Your team',
-        subtitle: 'Team assignment',
-        seal: '班',
-        tone: 'good',
-        rows: [
-          { label: report.senseiTitle, value: report.sensei },
-          ...report.teammates.map((name) => ({ label: 'Teammate', value: name })),
-        ],
-        note: report.text,
-      };
+      return peopleCardContent(report);
   }
 }
 
@@ -107,8 +89,8 @@ export function ReportCard({ report, onContinue }: ReportCardProps) {
           {c.title}
         </h2>
         <dl className="report-rows">
-          {c.rows.map((r) => (
-            <div key={r.label}>
+          {c.rows.map((r, i) => (
+            <div key={`${r.label}-${i}`}>
               <dt>{r.label}</dt>
               <dd className={`num ${r.tone ?? ''}`}>{r.value}</dd>
             </div>

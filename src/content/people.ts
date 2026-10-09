@@ -26,6 +26,10 @@ export interface SenseiProfile {
   readonly nature?: Element;
   /** One line on how they teach. */
   readonly style: string;
+  /** Story text for a weekly lesson (no numbers). */
+  readonly lesson: string;
+  /** Signature techniques, taught in order once you are close enough. */
+  readonly teaches: readonly string[];
 }
 
 /**

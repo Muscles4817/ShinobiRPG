@@ -3,8 +3,11 @@ import type { Rng } from '@/core';
 import type { DuelAction } from './actions';
 import type { Fighter } from './state';
 
-/** Simple opponent behaviour: heal when low, otherwise mix techniques, guards and strikes. */
-export function chooseEnemyAction(self: Fighter, rng: Rng): DuelAction {
+/**
+ * Behaviour for every fighter the player doesn't control, on either side: heal when low,
+ * otherwise mix techniques, guards and strikes.
+ */
+export function chooseAiAction(self: Fighter, rng: Rng): DuelAction {
   const sealed = (self.sealed ?? 0) > 0;
   const affordable = sealed ? [] : self.techniques.filter((t) => t.chakraCost <= self.chakra);
   const heal = affordable.find((t) => t.effect === 'heal');

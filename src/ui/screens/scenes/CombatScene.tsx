@@ -12,7 +12,7 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
   const view = combatScene(state, ctx);
   if (!view) return null;
   const enemies = view.combatants.filter((c) => c.side === 'enemy');
-  const player = view.combatants.find((c) => c.side === 'player');
+  const [player, ...allies] = view.combatants.filter((c) => c.side === 'player');
   const hand = view.options.filter((o) => o.kind !== 'escape');
   const escape = view.options.find((o) => o.kind === 'escape');
   const act = (id: string) => {
@@ -52,6 +52,19 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
           </p>
         ))}
       </main>
+      {allies.length > 0 && (
+        <section className="allies" aria-label="Your team">
+          {allies.map((a) => (
+            <div key={a.id} className={a.health > 0 ? 'ally' : 'ally down'}>
+              <b>{a.name}</b>
+              <span className="hp mine">
+                <i style={{ width: `${(a.health / a.maxHealth) * 100}%` }} />
+              </span>
+              <small>{a.statuses.join(' · ') || a.tag}</small>
+            </div>
+          ))}
+        </section>
+      )}
       {player && (
         <div className="me">
           <b>{player.name}</b>

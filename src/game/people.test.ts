@@ -162,6 +162,7 @@ describe('saves', () => {
       bonds: {},
       team: null,
       conversation: null,
+      sparringWith: null,
     });
     expect(activeScene(loaded.value)).toBe('team');
   });

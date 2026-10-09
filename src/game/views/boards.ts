@@ -18,6 +18,8 @@ export interface Notice extends Choice {
   readonly slots: number;
   readonly energyCost: number;
   readonly fightLikely: boolean;
+  /** Your teammates come along. */
+  readonly withTeam: boolean;
   /** Present while the job is sealed (not yet unlocked). */
   readonly opensAt?: number;
 }
@@ -50,6 +52,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         slots: m.slots,
         energyCost: m.energyCost,
         fightLikely: m.stages.some((s) => s.kind === 'combat'),
+        withTeam: m.withTeam ?? false,
         ...(sealed ? { opensAt: m.minMissionsCompleted } : {}),
       };
     }),

@@ -17,6 +17,7 @@ import {
   encode,
   initialDuel,
   playerOf,
+  sideOf,
   type DuelState,
   type Fighter,
 } from './state';
@@ -44,7 +45,7 @@ function toView(f: Fighter): CombatantView {
     id: f.id,
     name: f.name,
     ...(f.tag === undefined ? {} : { tag: f.tag }),
-    side: f.isPlayer ? 'player' : 'enemy',
+    side: sideOf(f),
     health: f.health,
     maxHealth: f.maxHealth,
     chakra: f.chakra,

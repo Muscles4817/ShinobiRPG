@@ -29,6 +29,11 @@ function personProblems(pack: ContentPack, person: PersonDef): string[] {
   if (person.clanId !== undefined && !pack.clans.some((c) => c.id === person.clanId)) {
     problems.push(`person "${person.id}" belongs to unknown clan "${person.clanId}"`);
   }
+  const techniqueIds = new Set(pack.techniques.map((t) => t.id));
+  for (const id of person.sensei?.teaches ?? []) {
+    if (!techniqueIds.has(id))
+      problems.push(`sensei "${person.id}" teaches unknown technique "${id}"`);
+  }
   if ((person.role === 'sensei') !== (person.sensei !== undefined)) {
     problems.push(`person "${person.id}" needs a sensei profile exactly when their role is sensei`);
   }

@@ -7,6 +7,7 @@ import {
   type MissionDef,
   type MissionStage,
 } from '@/systems/missions';
+import { addPoints } from '@/systems/bonds';
 import { recordMissionFailure, recordMissionSuccess } from '@/systems/standing';
 import { slotsUntilNextMorning } from '@/systems/time';
 import { maxHealth } from '@/systems/vitals';
@@ -15,6 +16,8 @@ import { deduct, earn } from '@/systems/wallet';
 import { enemyCombatant, playerCombatant } from './combatants';
 import type { GameContext } from './context';
 import { adjust, chip, log, placeHere, spendTime } from './ops';
+import { bondOf, requirePerson } from './people/cast';
+import { companionCombatant } from './people/companions';
 import { addReport } from './reports';
 import type { GameState } from './state';
 
@@ -25,6 +28,9 @@ import type { GameState } from './state';
 
 export const FAILURE_REPUTATION_LOSS = 2;
 export const HOSPITAL_FEE = 40;
+/** Bond with each teammate for finishing a team mission together. */
+export const TEAM_MISSION_BOND = 6;
+const TEAMMATE_TAG = 'Teammate';
 const HOSPITAL_HEALTH_FRACTION = 0.25;
 
 export function activeMission(state: GameState, ctx: GameContext): MissionDef | null {
@@ -51,8 +57,9 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
   if (!def || !state.mission || currentStage(def, state.mission)) return state;
   const earned = reward(def, state.mission);
   const standing = recordMissionSuccess(state.standing, earned.reputation);
+  const teamBond = def.withTeam ? TEAM_MISSION_BOND : 0;
   const next: GameState = {
-    ...state,
+    ...withTeamBond(state, teamBond),
     mission: null,
     wallet: earn(state.wallet, earned.ryo),
     standing,
@@ -61,7 +68,11 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
     heading: `${def.title} complete`,
     text: `${def.client} thanks you.`,
     tone: 'success',
-    chips: [chip(`+${earned.ryo} ryo`, 'gain'), chip(`+${earned.reputation} reputation`, 'gain')],
+    chips: [
+      chip(`+${earned.ryo} ryo`, 'gain'),
+      chip(`+${earned.reputation} reputation`, 'gain'),
+      ...(teamBond > 0 ? [chip(`+${teamBond} team bond`, 'gain')] : []),
+    ],
   });
   return addReport(logged, {
     kind: 'mission-complete',
@@ -71,7 +82,25 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
     reputation: earned.reputation,
     missionsCompleted: standing.missionsCompleted,
     unlocked: newlyUnlocked(state, ctx, standing.missionsCompleted),
+    teamBond,
   });
+}
+
+/** Adds bond with every teammate. */
+function withTeamBond(state: GameState, points: number): GameState {
+  const ids = state.people.team?.teammateIds ?? [];
+  if (points === 0 || ids.length === 0) return state;
+  const raised = Object.fromEntries(ids.map((id) => [id, addPoints(bondOf(state, id), points)]));
+  return { ...state, people: { ...state.people, bonds: { ...state.people.bonds, ...raised } } };
+}
+
+/** Teammates who fight beside you on team missions. */
+function teamAllies(state: GameState, ctx: GameContext) {
+  const def = activeMission(state, ctx);
+  if (!def?.withTeam) return [];
+  return (state.people.team?.teammateIds ?? []).map((id) =>
+    companionCombatant(requirePerson(state, ctx, id), state, ctx, TEAMMATE_TAG),
+  );
 }
 
 function endMission(
@@ -112,7 +141,12 @@ export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameS
     enemyCombatant(ctx.content.enemies.require(id), i, ctx),
   );
   const combat = ctx.combat.start(
-    { player: playerCombatant(state, ctx), enemies, canFlee: stage.canFlee },
+    {
+      player: playerCombatant(state, ctx),
+      allies: teamAllies(state, ctx),
+      enemies,
+      canFlee: stage.canFlee,
+    },
     rng,
   );
   return { ...state, combat };

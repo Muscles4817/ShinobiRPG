@@ -3,6 +3,7 @@ import type {
   CombatantSetup,
   CombatResult,
   CombatSetup,
+  CombatSide,
   CombatState,
   CombatTechnique,
 } from '../../contract';
@@ -15,6 +16,8 @@ export interface Fighter {
   readonly name: string;
   readonly tag?: string;
   readonly isPlayer: boolean;
+  /** Absent in saves from before allies existed: then the player alone is on their side. */
+  readonly side?: CombatSide;
   readonly attributes: CombatAttributes;
   readonly health: number;
   readonly maxHealth: number;
@@ -36,16 +39,31 @@ export interface DuelState {
   readonly canFlee: boolean;
 }
 
-function toFighter(setup: CombatantSetup, isPlayer: boolean): Fighter {
-  return { ...setup, isPlayer, stunned: 0, guarding: false };
+function toFighter(setup: CombatantSetup, side: CombatSide, isPlayer = false): Fighter {
+  return { ...setup, isPlayer, side, stunned: 0, guarding: false };
+}
+
+/** "A", "A and B", "A, B and C". */
+function listNames(names: readonly string[]): string {
+  const last = names.at(-1) ?? '';
+  return names.length <= 1 ? last : `${names.slice(0, -1).join(', ')} and ${last}`;
+}
+
+function defaultIntro(setup: CombatSetup): string {
+  const names = listNames(setup.enemies.map((e) => e.name));
+  const against = `${names} stand${setup.enemies.length > 1 ? '' : 's'} against you!`;
+  return setup.allies.length > 0 ? `${against} Your team closes ranks.` : against;
 }
 
 export function initialDuel(setup: CombatSetup): DuelState {
-  const names = setup.enemies.map((e) => e.name).join(' and ');
   return {
     round: 1,
-    fighters: [toFighter(setup.player, true), ...setup.enemies.map((e) => toFighter(e, false))],
-    log: [`${names} stand${setup.enemies.length > 1 ? '' : 's'} against you!`],
+    fighters: [
+      toFighter(setup.player, 'player', true),
+      ...setup.allies.map((a) => toFighter(a, 'player')),
+      ...setup.enemies.map((e) => toFighter(e, 'enemy')),
+    ],
+    log: [setup.intro ?? defaultIntro(setup)],
     result: null,
     canFlee: setup.canFlee,
   };
@@ -69,8 +87,17 @@ export function playerOf(state: DuelState): Fighter {
   return player;
 }
 
+export function sideOf(f: Fighter): CombatSide {
+  return f.side ?? (f.isPlayer ? 'player' : 'enemy');
+}
+
+/** Living fighters on one side. */
+export function livingOn(fighters: readonly Fighter[], side: CombatSide): Fighter[] {
+  return fighters.filter((f) => sideOf(f) === side && f.health > 0);
+}
+
 export function livingEnemies(state: DuelState): Fighter[] {
-  return state.fighters.filter((f) => !f.isPlayer && f.health > 0);
+  return livingOn(state.fighters, 'enemy');
 }
 
 export function isAlive(f: Fighter): boolean {

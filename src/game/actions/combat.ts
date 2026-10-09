@@ -1,4 +1,5 @@
 import { resolveCombat } from '../missionFlow';
+import { resolveSpar } from '../sparFlow';
 import type { ActionHandler, ActionOf } from './types';
 
 export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
@@ -14,6 +15,10 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     if (!next.ok) return state;
     const combat = next.value;
     const outcome = ctx.combat.outcome(combat);
-    return outcome ? resolveCombat({ ...state, combat }, outcome, ctx) : { ...state, combat };
+    if (!outcome) return { ...state, combat };
+    const ended = { ...state, combat };
+    return state.people.sparringWith
+      ? resolveSpar(ended, outcome, ctx)
+      : resolveCombat(ended, outcome, ctx);
   },
 };

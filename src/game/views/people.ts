@@ -35,6 +35,8 @@ export interface PersonCard extends PersonFace {
   /** Where they are now, e.g. "At the Training Grounds", or "Away". */
   readonly where: string;
   readonly talk: Choice;
+  /** Null for people who don't spar (anyone but genin). */
+  readonly spar: Choice | null;
 }
 
 export interface PersonSheet extends PersonCard {
@@ -95,6 +97,8 @@ export function personCard(state: GameState, ctx: GameContext, person: PersonDef
     progress: stageProgress(points),
     where: whereLabel(state, ctx, person),
     talk: choice(state, ctx, { type: 'talk', personId: person.id }),
+    spar:
+      person.role === 'genin' ? choice(state, ctx, { type: 'spar', personId: person.id }) : null,
   };
 }
 

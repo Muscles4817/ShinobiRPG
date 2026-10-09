@@ -6,11 +6,13 @@ import { CLANS } from './clans';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { MISSIONS } from './missions';
+import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
 import { NARUTO_CONVERSATIONS } from './conversations';
 import { CANON_GENIN } from './genin';
 import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
 import { SENSEIS_AND_ELDERS } from './senseis';
+import { SENSEI_TECHNIQUES } from './senseiTechniques';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
@@ -30,8 +32,8 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   startingRyo: 300,
   text: NARUTO_TEXT,
   locations: NARUTO_LOCATIONS,
-  techniques: [...TECHNIQUES, ...CLAN_TECHNIQUES],
-  missions: MISSIONS,
+  techniques: [...TECHNIQUES, ...CLAN_TECHNIQUES, ...SENSEI_TECHNIQUES],
+  missions: [...MISSIONS, ...TEAM_MISSIONS],
   enemies: ENEMIES,
   training: TRAINING,
   foods: FOODS,

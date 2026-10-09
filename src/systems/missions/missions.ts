@@ -45,6 +45,8 @@ export interface MissionDef {
   readonly energyCost: number;
   readonly reward: { readonly ryo: number; readonly reputation: number };
   readonly minMissionsCompleted: number;
+  /** Your teammates come along and fight beside you. */
+  readonly withTeam?: boolean;
   readonly stages: readonly MissionStage[];
 }
 
