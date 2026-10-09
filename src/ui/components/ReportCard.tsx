@@ -71,6 +71,18 @@ function content(report: Report): CardContent {
         ],
         note: report.text,
       };
+    case 'team-formed':
+      return {
+        title: 'Your team',
+        subtitle: 'Team assignment',
+        seal: '班',
+        tone: 'good',
+        rows: [
+          { label: report.senseiTitle, value: report.sensei },
+          ...report.teammates.map((name) => ({ label: 'Teammate', value: name })),
+        ],
+        note: report.text,
+      };
   }
 }
 

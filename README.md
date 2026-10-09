@@ -4,7 +4,7 @@ A text-based shinobi life RPG you can play offline on your phone.
 
 You are a freshly graduated Genin in a world where the elements answer to those who listen and
 the dead do not always rest. Train, eat, pay your rent, study techniques and take missions.
-Later milestones add relationships, travel, elements and spirits, and the choice between going
+You make friends, join a team under a sensei, and later milestones add travel, elements and spirits, and the choice between going
 rogue and rising to Kage.
 
 ## Playing
@@ -39,6 +39,11 @@ choose **GitHub Actions**.
   (pay rent or get locked out), a notice board of jobs, a rack of technique scrolls.
 - **Missions play as a story** with real odds on every choice; fights use a hand of technique
   cards. Results come as cards: fight results, mission debriefs, hospital bills.
+- **People live in the village.** The morning after graduation your team is read out: two
+  generated classmates, and a choice between the two jōnin who suit you best. Canon (or
+  original) characters keep daily schedules; the village screen shows who's where.
+- **Bonds.** Talk to anyone who's around once a day. Pick a reply by its tone; their traits
+  decide whether it lands. Get closer to learn what they're like and what they like to hear.
 - **Travel** lists the other villages (coming soon).
 
 ## Releases

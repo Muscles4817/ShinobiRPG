@@ -13,6 +13,7 @@ import '@/ui/styles/board.css';
 import '@/ui/styles/you.css';
 import '@/ui/styles/scenes.css';
 import '@/ui/styles/creation.css';
+import '@/ui/styles/people.css';
 
 // Composition root for the app: choose the platform adapters here.
 const root = document.getElementById('root');

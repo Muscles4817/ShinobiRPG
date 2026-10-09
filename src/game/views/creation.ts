@@ -20,6 +20,7 @@ import { DISCIPLINES, ELEMENTS, type Discipline, type Element } from '@/systems/
 
 import type { GameContext } from '../context';
 import { BASE_STAT, type CreationDraft } from '../creation';
+import { capitalise } from './common';
 
 /** Everything the academy break-in scene offers, with effects spelled out as chips. */
 
@@ -99,8 +100,6 @@ function statEffects(delta: StatDelta): EffectLine[] {
     }));
 }
 
-const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
 export function creationView(ctx: GameContext): CreationView {
   const { content } = ctx;
   const { breakIn } = content;
@@ -151,7 +150,7 @@ export function creationView(ctx: GameContext): CreationView {
       description: n.essay,
       effects: [],
     })),
-    natures: ELEMENTS.map((e) => ({ id: e, name: capital(e), description: NATURE_TEXT[e] })),
+    natures: ELEMENTS.map((e) => ({ id: e, name: capitalise(e), description: NATURE_TEXT[e] })),
     disciplines: DISCIPLINES.map((d) => ({
       id: d,
       name: STAT_INFO[d].label,

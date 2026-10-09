@@ -35,7 +35,7 @@ src/
   core/       Game-agnostic utilities: seeded Rng, Result, math. Knows nothing about the game.
   systems/    Self-contained domain modules. Pure functions over their own slice of state.
     time/ stats/ vitals/ wallet/ housing/ techniques/ missions/ combat/ standing/ journal/
-    modifiers/ profile/
+    modifiers/ profile/ bonds/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
@@ -96,6 +96,15 @@ ui ──► game ──► content ──► systems ──► core
 12. **Character creation is the opening scene.** The academy break-in collects a
     `CreationDraft`; `draftProblems` validates it and `createNewGame` builds the first state.
     The break-in roll is seeded, so the scene and the game agree on the outcome.
+13. **People are data, wherever they come from.** Authored people (`PersonDef`) live in the
+    pack; generated genin are built from the pack's name pools by `game/people/generator.ts`
+    and stored in `GameState.people.generated` in the same shape, so every view and action
+    treats them alike (look people up with `findPerson`, never `content.people` alone).
+    Schedules place people at places in the start location by time slot. Bonds (points,
+    stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
+14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
+    (fight › mission › conversation › team assignment). Anything that must happen before
+    normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 
 ### Content packs
 
@@ -104,6 +113,8 @@ ui ──► game ──► content ──► systems ──► core
 - Fan packs (names we don't own) go in the conditional branch of the registry, so
   `VITE_EXCLUDE_FAN_PACKS=true` tree-shakes them out. CI's `check:release` fails if fan names
   leak into a release build; add a marker for each new fan pack to `scripts/check-release.mjs`.
+  Build a fan pack's object inside a `/*#__PURE__*/` IIFE and mark content helpers called at
+  module level `/*#__NO_SIDE_EFFECTS__*/`; otherwise array spreads and calls keep its data alive.
 - Content is typed TypeScript for now (type-checked, validated, zero runtime cost). If packs
   ever need to be authored outside the codebase or loaded at runtime (mods, downloads), move
   them to JSON with a runtime schema at the same `ContentPack` boundary — nothing else changes.
@@ -133,6 +144,12 @@ ui ──► game ──► content ──► systems ──► core
   `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
   needs a `none` clan (validated).
+- **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
+  schedule of place ids in the start location). Senseis need `role: 'sensei'` and a
+  `sensei` profile; at least two specialties must exist for the team choice (validated).
+- **Add a conversation:** add a `ConversationDef` (generic, or with `personId`) with a
+  `minStage` and choices that each carry a `Tone`. Traits' `likes`/`dislikes` decide how a
+  tone lands, so new tones need tastes on the traits that care.
 - **Add a discipline:** add it to `STAT_IDS` and `DISCIPLINES`, a colour token, a card glyph,
   starter technique in every pack's `disciplineStarters`, drills, and a save migration that
   gives existing characters the base value.
@@ -184,7 +201,7 @@ ui ──► game ──► content ──► systems ──► core
 
 ### UI design rules (the "Village Hub" design)
 
-- **Navigation has three layers.** The dock (里 Here · 旅 Travel · 術 Jutsu · 忍 Shinobi · 記 Record)
+- **Navigation has three layers.** The dock (里 Here · 旅 Travel · 術 Jutsu · 縁 Bonds · 忍 Shinobi · 記 Record)
   is always present except in scenes. _Here_ is the current location's village screen, whose
   place cards open place pages. Scenes (missions, fights) take over the whole screen and
   return to where you were.

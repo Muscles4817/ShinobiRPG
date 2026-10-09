@@ -1,6 +1,6 @@
 import type { Discipline } from '@/systems/techniques';
 
-import type { BreakInScene, NindoDef } from '../../types';
+import type { BreakInScene, NamePools, NindoDef, TeamText } from '../../types';
 
 /** Techniques every academy graduate knows. */
 export const ACADEMY_TECHNIQUES: readonly string[] = ['shuriken-jutsu', 'clone-jutsu'];
@@ -84,4 +84,52 @@ export const BREAK_IN: BreakInScene = {
   caught:
     'A lamp flares in the doorway. "Reading your own file the night before graduation?" Iruka-sensei ' +
     'sighs, and almost smiles. "Go home. Be on time tomorrow. And put the drawer back."',
+};
+
+/** Names for generated genin: your classmates and teammates. */
+export const NAMES: NamePools = {
+  given: [
+    'Daichi',
+    'Haruki',
+    'Hotaru',
+    'Isamu',
+    'Kaede',
+    'Kenta',
+    'Mai',
+    'Natsu',
+    'Ren',
+    'Riku',
+    'Sora',
+    'Suzu',
+    'Takumi',
+    'Tomo',
+    'Yui',
+    'Yuzu',
+    'Akane',
+    'Botan',
+    'Jirō',
+    'Mikoto',
+  ],
+  family: [
+    'Kazama',
+    'Mizuki',
+    'Morino',
+    'Namikawa',
+    'Ōta',
+    'Sakamoto',
+    'Takeda',
+    'Tsukiyo',
+    'Kagami',
+    'Ueda',
+    'Yamada',
+    'Hoshino',
+  ],
+};
+
+export const TEAM: TeamText = {
+  intro:
+    'The morning after graduation, Iruka reads the new teams aloud. Your name comes up, ' +
+    'between two classmates you know only a little.',
+  choose: 'Two jōnin have asked for your team. Lord Hokage lets you choose.',
+  formed: 'A new three-man cell of the Hidden Leaf. Your sensei is waiting on the roof.',
 };

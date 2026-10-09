@@ -6,6 +6,7 @@ import type { GameContext } from '../context';
 import { currentLocation, healthFraction } from '../ops';
 import type { GameState } from '../state';
 import { choice } from './common';
+import { facesByPlace, type PersonFace } from './people';
 
 /** A place on the village screen, with one live line about it. */
 export interface PlaceCard {
@@ -16,6 +17,8 @@ export interface PlaceCard {
   readonly line: string;
   /** The one place the game suggests going next. */
   readonly suggested: boolean;
+  /** Who is there right now. */
+  readonly people: readonly PersonFace[];
 }
 
 export interface HubView {
@@ -84,6 +87,7 @@ function suggestion(state: GameState, places: readonly PlaceDef[]): PlaceKind | 
 export function hubView(state: GameState, ctx: GameContext): HubView {
   const { places } = currentLocation(state, ctx);
   const suggested = suggestion(state, places);
+  const faces = facesByPlace(state, ctx);
   const last = state.journal.entries.at(-1);
   return {
     places: places.map((p) => ({
@@ -93,6 +97,7 @@ export function hubView(state: GameState, ctx: GameContext): HubView {
       icon: p.icon,
       line: liveLine(p, state, ctx),
       suggested: p.kind === suggested,
+      people: faces.get(p.id) ?? [],
     })),
     latest: last ? { heading: last.heading ?? last.text, chips: last.chips ?? [] } : null,
   };

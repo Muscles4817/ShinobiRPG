@@ -3,6 +3,19 @@ import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta } from '@/systems/stats';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 
+import type { ConversationDef, NamePools, PersonDef, TeamText, Tone } from './people';
+
+export type {
+  ConversationChoice,
+  ConversationDef,
+  NamePools,
+  PersonDef,
+  PersonRole,
+  SenseiProfile,
+  TeamText,
+  Tone,
+} from './people';
+
 /**
  * Content schemas. A ContentPack is one complete, self-contained setting (names, places,
  * techniques, missions…). Schemas owned by a system (TechniqueDef, MissionDef) live with
@@ -118,6 +131,9 @@ export interface TraitDef {
   readonly note: string;
   readonly opposite?: string;
   readonly modifiers: ModifierSpec;
+  /** How people with this trait react to the tone of what you say. */
+  readonly likes: readonly Tone[];
+  readonly dislikes: readonly Tone[];
 }
 
 /** Your dream: the goal you wrote in your academy application. */
@@ -226,6 +242,10 @@ export interface ContentPack {
   readonly traits: readonly TraitDef[];
   readonly nindos: readonly NindoDef[];
   readonly breakIn: BreakInScene;
+  readonly people: readonly PersonDef[];
+  readonly conversations: readonly ConversationDef[];
+  readonly names: NamePools;
+  readonly team: TeamText;
   readonly academyTechniques: readonly string[];
   /** The technique a graduate starts with for their specialty discipline. */
   readonly disciplineStarters: Readonly<Record<Discipline, string>>;

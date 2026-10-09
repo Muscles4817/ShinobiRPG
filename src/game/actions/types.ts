@@ -21,7 +21,12 @@ export type GameAction =
   | { readonly type: 'startMission'; readonly missionId: string }
   | { readonly type: 'missionChoose'; readonly approachIndex: number }
   | { readonly type: 'missionContinue' }
-  | { readonly type: 'combatAct'; readonly optionId: string };
+  | { readonly type: 'combatAct'; readonly optionId: string }
+  | { readonly type: 'assignTeam' }
+  | { readonly type: 'chooseSensei'; readonly senseiId: string }
+  | { readonly type: 'talk'; readonly personId: string }
+  | { readonly type: 'reply'; readonly choiceIndex: number }
+  | { readonly type: 'endConversation' };
 
 export type GameActionType = GameAction['type'];
 export type ActionOf<T extends GameActionType> = Extract<GameAction, { type: T }>;

@@ -6,7 +6,11 @@ import { CLANS } from './clans';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { MISSIONS } from './missions';
-import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NINDOS } from './profile';
+import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
+import { ORIGINAL_CONVERSATIONS } from './conversations';
+import { GENIN } from './genin';
+import { SENSEIS_AND_ELDERS } from './people';
+import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
@@ -30,6 +34,10 @@ export const ORIGINAL_PACK: ContentPack = {
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,
+  people: [...SENSEIS_AND_ELDERS, ...GENIN],
+  conversations: [...GENERIC_CONVERSATIONS, ...ORIGINAL_CONVERSATIONS],
+  names: NAMES,
+  team: TEAM,
   academyTechniques: ACADEMY_TECHNIQUES,
   disciplineStarters: DISCIPLINE_STARTERS,
 };

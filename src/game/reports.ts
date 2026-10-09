@@ -37,6 +37,13 @@ export type Report =
       readonly hospitalFee: number;
       readonly reputationLost: number;
       readonly text: string;
+    }
+  | {
+      readonly kind: 'team-formed';
+      readonly sensei: string;
+      readonly senseiTitle: string;
+      readonly teammates: readonly string[];
+      readonly text: string;
     };
 
 export function addReport<S extends { readonly reports: readonly Report[] }>(

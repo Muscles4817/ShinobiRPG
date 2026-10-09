@@ -32,6 +32,13 @@ async function startGame(user: User, world = /Land of Embers/) {
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
   }
   await user.click(screen.getByRole('button', { name: /forehead protector/i }));
+  await formTeam(user);
+}
+
+async function formTeam(user: User) {
+  await user.click(screen.getByRole('button', { name: 'Hear the teams' }));
+  await user.click(screen.getAllByRole('button', { name: /^Train under/ })[0]!);
+  await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Continue' }));
 }
 
 function place(name: RegExp) {
@@ -99,10 +106,26 @@ describe('App (smoke test)', () => {
       await user.click(screen.getByRole('button', { name: /Here/ }));
       await user.click(place(name));
     }
-    for (const tab of [/Jutsu/, /Shinobi/, /Record/]) {
+    for (const tab of [/Jutsu/, /Bonds/, /Shinobi/, /Record/]) {
       await user.click(screen.getByRole('button', { name: tab }));
     }
     expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument();
+  });
+
+  it('forms a team, then talks to someone who is here', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(screen.getByRole('button', { name: /Bonds/ }));
+    expect(screen.getByRole('heading', { name: 'Your team' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Here/ }));
+    const around = screen.getByRole('region', { name: 'Who’s here' });
+    await user.click(within(around).getByRole('button', { name: /Kaen/ }));
+    await user.click(screen.getByRole('button', { name: 'Talk to Kaen' }));
+    await user.click(screen.getByRole('button', { name: /Bet I can beat you anyway/ }));
+    expect(screen.getByText(/^\+\d+ bond$/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Say goodbye' }));
+    expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
   });
 
   it('resumes a saved game', async () => {
@@ -137,6 +160,7 @@ describe('App (smoke test)', () => {
     }
     await user.click(screen.getByRole('button', { name: /forehead protector/i }));
     expect(store.data).toContain('"clanId":"uchiha"');
+    await formTeam(user);
     await user.click(screen.getByRole('button', { name: /Shinobi/ }));
     expect(screen.getByRole('heading', { name: 'Itachi Uchiha' })).toBeInTheDocument();
     expect(screen.getByText(/Sharingan/)).toBeInTheDocument();

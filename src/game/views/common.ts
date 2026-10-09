@@ -18,4 +18,9 @@ export function choice(state: GameState, ctx: GameContext, action: GameAction): 
   return { action, blocker: blockerFor(state, action, ctx) };
 }
 
+/** "fire" → "Fire": ids shown as labels. */
+export function capitalise(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export type { Discipline } from '@/systems/techniques';

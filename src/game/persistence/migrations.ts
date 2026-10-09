@@ -86,4 +86,16 @@ function v2ToV3(state: RawState): RawState {
   };
 }
 
-export const MIGRATIONS: Readonly<Record<number, Migration>> = { 1: v1ToV2, 2: v2ToV3 };
+/**
+ * v3 → v4: people and bonds. Existing characters have no classmates yet; teams are read
+ * out the next time they are free, exactly as for a new character.
+ */
+function v3ToV4(state: RawState): RawState {
+  return { ...state, people: { generated: [], bonds: {}, team: null, conversation: null } };
+}
+
+export const MIGRATIONS: Readonly<Record<number, Migration>> = {
+  1: v1ToV2,
+  2: v2ToV3,
+  3: v3ToV4,
+};

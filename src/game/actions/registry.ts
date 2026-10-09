@@ -3,6 +3,8 @@ import { eat, rest, sleep, train } from './daily';
 import { missionChoose, missionContinue, startMission } from './mission';
 import { payRent, treat } from './services';
 import { study } from './study';
+import { endConversation, reply, talk } from './talk';
+import { assignTeam, chooseSensei } from './team';
 import { dismissReport, travel } from './travel';
 import type { ActionHandler, ActionOf, GameActionType } from './types';
 
@@ -23,4 +25,9 @@ export const HANDLERS: Registry = {
   missionChoose,
   missionContinue,
   combatAct,
+  assignTeam,
+  chooseSensei,
+  talk,
+  reply,
+  endConversation,
 };
