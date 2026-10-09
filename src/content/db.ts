@@ -21,6 +21,7 @@ import type {
   TeamText,
   TrainingDef,
   TraitDef,
+  VillageLife,
 } from './types';
 import type { Discipline } from '@/systems/techniques';
 
@@ -52,6 +53,7 @@ export interface ContentDb {
   readonly conversations: Catalog<ConversationDef>;
   readonly names: NamePools;
   readonly team: TeamText;
+  readonly village: VillageLife;
   readonly academyTechniques: readonly string[];
   readonly disciplineStarters: Readonly<Record<Discipline, string>>;
 }
@@ -81,6 +83,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     conversations: createCatalog('conversation', pack.conversations),
     names: pack.names,
     team: pack.team,
+    village: pack.village,
     academyTechniques: pack.academyTechniques,
     disciplineStarters: pack.disciplineStarters,
   };

@@ -130,6 +130,11 @@ function v8ToV9(state: RawState): RawState {
   return { ...state, settings: { ...asRecord(state.settings), combatPlans: {} } };
 }
 
+/** v9 → v10: village life; no spirit followed yet. */
+function v9ToV10(state: RawState): RawState {
+  return { ...state, village: { lastSightDay: null } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -139,4 +144,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   6: v6ToV7,
   7: v7ToV8,
   8: v8ToV9,
+  9: v9ToV10,
 };

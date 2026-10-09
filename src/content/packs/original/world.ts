@@ -77,18 +77,21 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           {
             name: 'Riverside Grill',
             blurb: 'Cheap and quick',
+            hours: ['morning', 'afternoon', 'evening'],
             icon: 'fish',
             foodIds: ['grilled-fish', 'rice-ball'],
           },
           {
             name: 'Apothecary',
             blurb: 'Pills and salves',
+            hours: ['morning', 'afternoon', 'evening'],
             icon: 'pill',
             foodIds: ['soldier-pill'],
           },
           {
             name: 'Sato’s Grocery',
             blurb: 'Cook it yourself, save a fortune',
+            hours: ['morning', 'afternoon'],
             icon: 'veg',
             foodIds: [],
             ingredientIds: ['rice', 'river-fish', 'vegetables', 'miso', 'spices'],
@@ -101,6 +104,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         name: 'Kurogane Forge',
         icon: 'anvil',
         blurb: 'Blades, brushes and fists',
+        hours: ['morning', 'afternoon'],
         keeper: 'Old Hagane, smith',
         gearIds: [
           'wrapped-knuckles',
@@ -117,6 +121,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         name: 'Ember Outfitters',
         icon: 'vest',
         blurb: 'Armour and charms',
+        hours: ['morning', 'afternoon', 'evening'],
         keeper: 'Mother Ume, tailor',
         gearIds: [
           'padded-jacket',
@@ -133,6 +138,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         name: 'Academy',
         icon: 'scroll',
         blurb: 'The library of techniques',
+        hours: ['morning', 'afternoon', 'evening'],
         techniqueIds: [
           'gale-heel',
           'pebble-volley',

@@ -496,3 +496,15 @@
   grid-row: 1 / span 2;
   grid-column: 3;
 }
+
+.festival-note {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--lantern);
+  color: var(--gold);
+  font-size: 0.84rem;
+}
+.stall.shut {
+  opacity: 0.6;
+}

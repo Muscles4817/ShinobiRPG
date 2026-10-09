@@ -11,6 +11,7 @@ import { study } from './study';
 import { endConversation, reply, talk } from './talk';
 import { assignTeam, chooseSensei } from './team';
 import { dismissReport, travel } from './travel';
+import { followSight } from './village';
 import type { ActionHandler, ActionOf, GameActionType } from './types';
 
 type Registry = { readonly [T in GameActionType]: ActionHandler<ActionOf<T>> };
@@ -43,4 +44,5 @@ export const HANDLERS: Registry = {
   unequipGear,
   buyIngredient,
   cook,
+  followSight,
 };

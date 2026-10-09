@@ -48,6 +48,13 @@ export interface GameState {
   readonly board: Board;
   /** Gear you own and wear, and your pantry. */
   readonly inventory: Inventory;
+  /** Village life you have taken part in. */
+  readonly village: VillageMemory;
+}
+
+/** What the village remembers of you: the last night you followed a spirit. */
+export interface VillageMemory {
+  readonly lastSightDay: number | null;
 }
 
 /** Player preferences stored with the save. */

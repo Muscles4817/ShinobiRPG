@@ -6,6 +6,11 @@ export {
   slotsUntilNextMorning,
   slotName,
   formatDate,
+  calendarDay,
+  daysUntil,
+  DAYS_PER_SEASON,
+  SEASONS,
+  type CalendarDay,
   type GameTime,
   type TimeSlot,
 } from './time';

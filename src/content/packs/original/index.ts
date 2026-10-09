@@ -17,6 +17,7 @@ import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM 
 import { SENSEI_TECHNIQUES } from './senseiTechniques';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
+import { VILLAGE } from './village';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
 
 /** The game's own setting: Tōrōgakure in the Land of Embers. Safe to ship publicly. */
@@ -45,6 +46,7 @@ export const ORIGINAL_PACK: ContentPack = {
   conversations: [...GENERIC_CONVERSATIONS, ...ORIGINAL_CONVERSATIONS],
   names: NAMES,
   team: TEAM,
+  village: VILLAGE,
   academyTechniques: ACADEMY_TECHNIQUES,
   disciplineStarters: DISCIPLINE_STARTERS,
 };

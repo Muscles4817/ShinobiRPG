@@ -17,6 +17,7 @@ import { SENSEIS_AND_ELDERS } from './senseis';
 import { SENSEI_TECHNIQUES } from './senseiTechniques';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
+import { VILLAGE } from './village';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
 
 /**
@@ -51,6 +52,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   conversations: [...GENERIC_CONVERSATIONS, ...NARUTO_CONVERSATIONS],
   names: NAMES,
   team: TEAM,
+  village: VILLAGE,
   academyTechniques: ACADEMY_TECHNIQUES,
   disciplineStarters: DISCIPLINE_STARTERS,
 }))();

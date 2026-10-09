@@ -1,4 +1,4 @@
-import { headerView, hubView } from '@/game';
+import { headerView, hubView, villageView } from '@/game';
 
 import { Backdrop } from '../art/Backdrop';
 import { Icon } from '../art/Icon';
@@ -6,6 +6,7 @@ import { Chips } from '../components/Chips';
 import { Avatar, Faces } from '../components/Faces';
 import { DayStrip, Vitals } from '../components/Vitals';
 import type { ScreenProps } from './types';
+import { VillageLife } from './VillageLife';
 
 interface HubScreenProps extends ScreenProps {
   readonly onOpenPlace: (placeId: string) => void;
@@ -14,9 +15,17 @@ interface HubScreenProps extends ScreenProps {
 }
 
 /** "Here": the village you're in, its sky and backdrop, and the places you can go. */
-export function HubScreen({ ctx, state, onOpenPlace, onOpenPerson, onOpenRecord }: HubScreenProps) {
+export function HubScreen({
+  ctx,
+  state,
+  perform,
+  onOpenPlace,
+  onOpenPerson,
+  onOpenRecord,
+}: HubScreenProps) {
   const header = headerView(state, ctx);
   const hub = hubView(state, ctx);
+  const village = villageView(state, ctx);
   const around = hub.places.flatMap((p) => p.people);
   return (
     <>
@@ -67,12 +76,14 @@ export function HubScreen({ ctx, state, onOpenPlace, onOpenPerson, onOpenRecord 
           </div>
         </section>
       )}
+      <VillageLife view={village} perform={perform} />
       <main className="places">
         {hub.places.map((p) => (
           <button
             key={p.id}
             type="button"
-            className={`place-card k-${p.kind}${p.suggested ? ' suggested' : ''}`}
+            className={`place-card k-${p.kind}${p.suggested ? ' suggested' : ''}${p.closed ? ' closed' : ''}`}
+            disabled={p.closed !== null}
             onClick={() => {
               onOpenPlace(p.id);
             }}
@@ -84,7 +95,7 @@ export function HubScreen({ ctx, state, onOpenPlace, onOpenPerson, onOpenRecord 
               {p.name}
               {p.badge && <span className="place-badge">{p.badge}</span>}
             </b>
-            <small>{p.line}</small>
+            <small>{p.closed ?? p.line}</small>
             <Faces faces={p.people} />
           </button>
         ))}

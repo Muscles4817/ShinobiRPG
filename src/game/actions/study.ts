@@ -3,6 +3,7 @@ import { learnBlocker, study as studyTechnique } from '@/systems/techniques';
 
 import { studyPointsFor } from '../profile';
 import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
+import { closedReason } from '../village';
 import type { ActionHandler, ActionOf } from './types';
 
 export const STUDY_ENERGY_COST = 15;
@@ -17,6 +18,7 @@ export const study: ActionHandler<ActionOf<'study'>> = {
     const blocker = learnBlocker(state.techniques, def, character.stats, character.clanId);
     return firstBlocker(
       busyReason(state),
+      closedReason(academy.name, academy.hours, state),
       blocker?.kind === 'already-known' && 'You already know this technique.',
       blocker?.kind === 'clan' && 'Only taught within its clan.',
       blocker?.kind === 'requirements' &&

@@ -35,67 +35,72 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
             </span>
           </span>
         </section>
+        {view.festival && (
+          <p className="festival-note">{view.festival}: festival prices on every stall.</p>
+        )}
         {view.stalls.map((stall) => (
-          <section key={stall.name} className="stall">
+          <section key={stall.name} className={stall.closed ? 'stall shut' : 'stall'}>
             <div className="stall-head">
               <Icon id={stall.icon} />
               <h2>{stall.name}</h2>
-              <small className="muted">{stall.blurb}</small>
+              <small className="muted">{stall.closed ?? stall.blurb}</small>
             </div>
-            <div className="stall-items">
-              {stall.items.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  className="item"
-                  disabled={item.blocker !== null}
-                  title={item.blocker ?? undefined}
-                  onClick={() => {
-                    perform(item.action);
-                  }}
-                >
-                  <span className="tag num">{item.cost}</span>
-                  <span className="item-pic">
-                    <Icon id={item.icon} size={28} />
-                  </span>
-                  <b>{item.name}</b>
-                  <span className="chips">
-                    <span className="chip gain">Fed +{item.satiety}</span>
-                    {item.energy > 0 && <span className="chip gain">Energy +{item.energy}</span>}
-                    {item.slots > 0 && <span className="chip">{item.slots} slot</span>}
-                  </span>
-                  {item.blocker ? (
-                    <small className="blocker">{item.blocker}</small>
-                  ) : (
-                    item.wasted > 0 && (
-                      <small className="muted">Too full: {item.wasted} would go to waste</small>
-                    )
-                  )}
-                </button>
-              ))}
-              {stall.ingredients.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  className="item"
-                  disabled={item.blocker !== null}
-                  title={item.blocker ?? undefined}
-                  onClick={() => {
-                    perform(item.action);
-                  }}
-                >
-                  <span className="tag num">{item.cost}</span>
-                  <span className="item-pic">
-                    <Icon id={item.icon} size={28} />
-                  </span>
-                  <b>{item.name}</b>
-                  <small className={item.blocker ? 'blocker' : 'muted'}>
-                    {item.blocker ??
-                      (item.inPantry > 0 ? `${item.inPantry} at home` : 'For cooking at home')}
-                  </small>
-                </button>
-              ))}
-            </div>
+            {!stall.closed && (
+              <div className="stall-items">
+                {stall.items.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="item"
+                    disabled={item.blocker !== null}
+                    title={item.blocker ?? undefined}
+                    onClick={() => {
+                      perform(item.action);
+                    }}
+                  >
+                    <span className="tag num">{item.cost}</span>
+                    <span className="item-pic">
+                      <Icon id={item.icon} size={28} />
+                    </span>
+                    <b>{item.name}</b>
+                    <span className="chips">
+                      <span className="chip gain">Fed +{item.satiety}</span>
+                      {item.energy > 0 && <span className="chip gain">Energy +{item.energy}</span>}
+                      {item.slots > 0 && <span className="chip">{item.slots} slot</span>}
+                    </span>
+                    {item.blocker ? (
+                      <small className="blocker">{item.blocker}</small>
+                    ) : (
+                      item.wasted > 0 && (
+                        <small className="muted">Too full: {item.wasted} would go to waste</small>
+                      )
+                    )}
+                  </button>
+                ))}
+                {stall.ingredients.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="item"
+                    disabled={item.blocker !== null}
+                    title={item.blocker ?? undefined}
+                    onClick={() => {
+                      perform(item.action);
+                    }}
+                  >
+                    <span className="tag num">{item.cost}</span>
+                    <span className="item-pic">
+                      <Icon id={item.icon} size={28} />
+                    </span>
+                    <b>{item.name}</b>
+                    <small className={item.blocker ? 'blocker' : 'muted'}>
+                      {item.blocker ??
+                        (item.inPantry > 0 ? `${item.inPantry} at home` : 'For cooking at home')}
+                    </small>
+                  </button>
+                ))}
+              </div>
+            )}
           </section>
         ))}
       </main>
