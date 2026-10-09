@@ -1,5 +1,7 @@
 import { advance, resolveCheck, startRun } from '@/systems/missions';
 
+import { availability, takeJob } from '../board';
+
 import {
   activeMission,
   activeStage,
@@ -25,17 +27,19 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
     const def = ctx.content.missions.get(action.missionId);
     const hall = placeHere(state, ctx, 'missions');
     if (!def || !hall?.missionIds.includes(def.id)) return 'That job isn’t posted here.';
+    const on = availability(state, ctx, def);
+    if (on.kind === 'absent') return 'That job isn’t on the board right now.';
     return firstBlocker(
       busyReason(state),
-      state.standing.missionsCompleted < def.minMissionsCompleted &&
-        `Opens after ${def.minMissionsCompleted} completed missions.`,
+      on.kind === 'standing' && on.doneToday && 'You’ve done that today. Come back tomorrow.',
       state.character.vitals.energy < def.energyCost && `Needs ${def.energyCost} energy.`,
       healthFraction(state) < MIN_HEALTH_FOR_MISSION && 'You are too injured to take a mission.',
     );
   },
   perform(state, action, ctx) {
     const def = ctx.content.missions.require(action.missionId);
-    const started = adjust(spendTime({ ...state, mission: startRun(def) }, def.slots, ctx), {
+    const taken = { ...state, board: takeJob(state, ctx, def), mission: startRun(def) };
+    const started = adjust(spendTime(taken, def.slots, ctx), {
       energy: -def.energyCost,
     });
     return log(started, { heading: def.title, text: def.summary, tone: 'info' });

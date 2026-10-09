@@ -10,6 +10,7 @@ import type { GameTime } from '@/systems/time';
 import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
 
+import type { Board } from './boardState';
 import type { People } from './people/state';
 import type { Report } from './reports';
 
@@ -42,6 +43,8 @@ export interface GameState {
   readonly people: People;
   /** Player preferences that belong to this save, e.g. the fight style. */
   readonly settings: Settings;
+  /** The jobs board: what is posted and when standing jobs were last taken. */
+  readonly board: Board;
 }
 
 /** Player preferences stored with the save. */

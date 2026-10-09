@@ -4,6 +4,7 @@ import { STAT_INFO, type StatDelta, type StatId } from '@/systems/stats';
 import { advanceSlots } from '@/systems/time';
 import { adjustVitals, maxHealth, passTime, type VitalsDelta } from '@/systems/vitals';
 
+import { boardFor } from './board';
 import type { GameContext } from './context';
 import { characterModifiers } from './profile';
 import type { GameState } from './state';
@@ -17,7 +18,7 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
   if (slots <= 0) return state;
   const { character } = state;
   const { hungerRate } = characterModifiers(character, ctx);
-  return {
+  const passed: GameState = {
     ...state,
     time: advanceSlots(state.time, slots),
     character: {
@@ -25,6 +26,7 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
       vitals: passTime(character.vitals, slots, character.stats, hungerRate),
     },
   };
+  return { ...passed, board: boardFor(passed, ctx) };
 }
 
 export function adjust(state: GameState, delta: VitalsDelta): GameState {

@@ -1,6 +1,7 @@
 import { STAT_INFO, type StatId } from '@/systems/stats';
 
 import { STUDY_ENERGY_COST } from '../actions/study';
+import { availability } from '../board';
 import type { GameContext } from '../context';
 import { studyPointsFor } from '../profile';
 import { placeHere } from '../ops';
@@ -20,14 +21,22 @@ export interface Notice extends Choice {
   readonly fightLikely: boolean;
   /** Your teammates come along. */
   readonly withTeam: boolean;
-  /** Present while the job is sealed (not yet unlocked). */
-  readonly opensAt?: number;
+  /** "Standing job" or how long the posting stays up, e.g. "Gone after tomorrow". */
+  readonly posted: string;
+  readonly standing: boolean;
 }
 
 export interface MissionBoardView {
   readonly name: string;
   readonly completed: number;
   readonly notices: readonly Notice[];
+}
+
+/** How long a posting stays up, in words. */
+function postedFor(daysLeft: number): string {
+  if (daysLeft <= 1) return 'Last day';
+  if (daysLeft === 2) return 'Gone after tomorrow';
+  return `Up for ${daysLeft} days`;
 }
 
 export function missionBoardView(state: GameState, ctx: GameContext): MissionBoardView | null {
@@ -37,9 +46,10 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
   return {
     name: place.name,
     completed,
-    notices: place.missionIds.map((id) => {
+    notices: place.missionIds.flatMap((id) => {
       const m = ctx.content.missions.require(id);
-      const sealed = completed < m.minMissionsCompleted;
+      const on = availability(state, ctx, m);
+      if (on.kind === 'absent') return [];
       return {
         ...choice(state, ctx, { type: 'startMission', missionId: id }),
         id,
@@ -53,7 +63,8 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         energyCost: m.energyCost,
         fightLikely: m.stages.some((s) => s.kind === 'combat'),
         withTeam: m.withTeam ?? false,
-        ...(sealed ? { opensAt: m.minMissionsCompleted } : {}),
+        standing: on.kind === 'standing',
+        posted: on.kind === 'standing' ? 'Standing job' : postedFor(on.daysLeft),
       };
     }),
   };

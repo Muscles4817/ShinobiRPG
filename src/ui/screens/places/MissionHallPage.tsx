@@ -23,43 +23,36 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
         backLabel={header.location}
       />
       <main className="board">
-        {view.notices.map((n, i) =>
-          n.opensAt === undefined ? (
-            <button
-              key={n.id}
-              type="button"
-              className={`paper ${TILT[i % TILT.length] ?? ''}`}
-              onClick={() => {
-                setOpen(n);
-              }}
-            >
-              <span className="rank">{n.rank}</span>
-              {n.withTeam && <span className="team-stamp">班 Team</span>}
-              <b>
-                {n.title}
-                {n.fightLikely && (
-                  <span className="sword" aria-label="Fight likely">
-                    {' '}
-                    ⚔
-                  </span>
-                )}
-              </b>
-              <span className="client">{n.client}</span>
-              <span className="paper-foot num">
-                <span>{n.ryo} ryo</span>
-                <span>{n.slots} slots</span>
-              </span>
-            </button>
-          ) : (
-            <div key={n.id} className={`paper sealed ${TILT[i % TILT.length] ?? ''}`}>
-              <b>Sealed</b>
-              <span>{n.title}</span>
-              <span className="paper-foot">
-                Opens after {n.opensAt} {n.opensAt === 1 ? 'job' : 'jobs'}
-              </span>
-            </div>
-          ),
+        {view.notices.length === 0 && (
+          <p className="board-empty">Nothing posted today. Check back tomorrow.</p>
         )}
+        {view.notices.map((n, i) => (
+          <button
+            key={n.id}
+            type="button"
+            className={`paper ${n.standing ? 'standing ' : ''}${TILT[i % TILT.length] ?? ''}`}
+            onClick={() => {
+              setOpen(n);
+            }}
+          >
+            <span className="rank">{n.rank}</span>
+            {n.withTeam && <span className="team-stamp">班 Team</span>}
+            <b>
+              {n.title}
+              {n.fightLikely && (
+                <span className="sword" aria-label="Fight likely">
+                  {' '}
+                  ⚔
+                </span>
+              )}
+            </b>
+            <span className="client">{n.client}</span>
+            <span className="paper-foot num">
+              <span>{n.ryo} ryo</span>
+              <span>{n.posted}</span>
+            </span>
+          </button>
+        ))}
       </main>
       {open && (
         <div
@@ -84,6 +77,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
               <span className="chip gain">+{open.reputation} rep</span>
               <span className="chip cost">−{open.energyCost} energy</span>
               <span className="chip">{open.slots} slots</span>
+              <span className="chip">{open.posted}</span>
               {open.fightLikely && <span className="chip harm">Fight likely</span>}
               {open.withTeam && <span className="chip gain">With your team</span>}
             </span>

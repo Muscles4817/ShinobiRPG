@@ -30,6 +30,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         icon: 'board',
         blurb: 'Requests from villagers',
         missionIds: [
+          'lantern-patrol',
           'lantern-keepers-cat',
           'shrine-weeding',
           'kuroda-medicine',

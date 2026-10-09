@@ -17,6 +17,7 @@ import { fullVitals } from '@/systems/vitals';
 
 import type { GameContext } from './context';
 import { chip, log, placeHere } from './ops';
+import { newBoard } from './boardState';
 import { defaultSettings } from './fightStyle';
 import { NO_PEOPLE } from './people/state';
 import type { GameState } from './state';
@@ -151,6 +152,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     reports: [],
     people: NO_PEOPLE,
     settings: defaultSettings(ctx),
+    board: newBoard(seed),
   };
   return logOpening(state, ctx, roll);
 }

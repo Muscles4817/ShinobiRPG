@@ -79,22 +79,28 @@ function techniqueReferenceProblems(pack: ContentPack): string[] {
 
 function missionProblems(pack: ContentPack): string[] {
   const enemyIds = new Set(pack.enemies.map((e) => e.id));
-  return pack.missions.flatMap((m) => {
-    const problems = m.stages.length === 0 ? [`mission "${m.id}" has no stages`] : [];
-    for (const stage of m.stages) {
-      if (stage.kind === 'check' && stage.approaches.length === 0) {
-        problems.push(`mission "${m.id}" has a check with no approaches`);
+  const always = pack.missions.some((m) => m.standing && m.minMissionsCompleted === 0);
+  const board = always ? [] : ['pack needs a standing job a fresh genin can always take'];
+  return pack.missions
+    .flatMap((m) => {
+      const problems = m.stages.length === 0 ? [`mission "${m.id}" has no stages`] : [];
+      for (const stage of m.stages) {
+        if (stage.kind === 'check' && stage.approaches.length === 0) {
+          problems.push(`mission "${m.id}" has a check with no approaches`);
+        }
+        if (stage.kind === 'combat' && stage.enemyIds.length === 0) {
+          problems.push(`mission "${m.id}" has a combat with no enemies`);
+        }
+        if (stage.kind === 'combat') {
+          const unknown = stage.enemyIds.filter((id) => !enemyIds.has(id));
+          problems.push(
+            ...unknown.map((id) => `mission "${m.id}" references unknown enemy "${id}"`),
+          );
+        }
       }
-      if (stage.kind === 'combat' && stage.enemyIds.length === 0) {
-        problems.push(`mission "${m.id}" has a combat with no enemies`);
-      }
-      if (stage.kind === 'combat') {
-        const unknown = stage.enemyIds.filter((id) => !enemyIds.has(id));
-        problems.push(...unknown.map((id) => `mission "${m.id}" references unknown enemy "${id}"`));
-      }
-    }
-    return problems;
-  });
+      return problems;
+    })
+    .concat(board);
 }
 
 function numberProblems(pack: ContentPack): string[] {

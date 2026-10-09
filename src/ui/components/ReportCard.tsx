@@ -2,6 +2,37 @@ import type { Report } from '@/game';
 
 import { peopleCardContent, type CardContent } from './peopleReports';
 
+/** The debrief: what you earned, what was docked, and how the team grew. */
+function missionCompleteCard(report: Extract<Report, { kind: 'mission-complete' }>): CardContent {
+  return {
+    title: report.title,
+    subtitle: `For ${report.client}`,
+    seal: '完',
+    tone: 'good',
+    rows: [
+      { label: 'Reward', value: `+${report.ryo} ryo`, tone: 'gain' },
+      ...(report.docked
+        ? [
+            {
+              label: 'Docked for trouble',
+              value: `−${report.docked} ryo`,
+              tone: 'harm' as const,
+            },
+          ]
+        : []),
+      { label: 'Reputation', value: `+${report.reputation}`, tone: 'gain' },
+      { label: 'Missions done', value: String(report.missionsCompleted) },
+      ...(report.teamBond
+        ? [{ label: 'Team bond', value: `+${report.teamBond}`, tone: 'gain' as const }]
+        : []),
+    ],
+    note:
+      report.unlocked.length > 0
+        ? 'Word is the hall will trust you with harder work now. Watch the board.'
+        : null,
+  };
+}
+
 function content(report: Report): CardContent {
   switch (report.kind) {
     case 'fight':
@@ -22,21 +53,7 @@ function content(report: Report): CardContent {
             : null,
       };
     case 'mission-complete':
-      return {
-        title: report.title,
-        subtitle: `For ${report.client}`,
-        seal: '完',
-        tone: 'good',
-        rows: [
-          { label: 'Reward', value: `+${report.ryo} ryo`, tone: 'gain' },
-          { label: 'Reputation', value: `+${report.reputation}`, tone: 'gain' },
-          { label: 'Missions done', value: String(report.missionsCompleted) },
-          ...(report.teamBond
-            ? [{ label: 'Team bond', value: `+${report.teamBond}`, tone: 'gain' as const }]
-            : []),
-        ],
-        note: report.unlocked.length > 0 ? `New jobs posted: ${report.unlocked.join(', ')}` : null,
-      };
+      return missionCompleteCard(report);
     case 'mission-failed':
       return {
         title: report.title,

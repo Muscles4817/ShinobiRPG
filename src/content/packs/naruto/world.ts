@@ -30,6 +30,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         icon: 'board',
         blurb: 'Iruka hands out D-ranks',
         missionIds: [
+          'border-patrol',
           'catch-tora',
           'yamanaka-weeding',
           'farm-medicine',

@@ -109,10 +109,17 @@ function v5ToV6(state: RawState): RawState {
   return { ...state, settings: { combatStyle: 'duel-v1' } };
 }
 
+/** v6 → v7: the rotating jobs board, seeded from the save's dice so it differs per save. */
+function v6ToV7(state: RawState): RawState {
+  const seed = typeof state.rngState === 'number' ? state.rngState : 1;
+  return { ...state, board: { seed, refreshedDay: 0, postings: [], lastTaken: {} } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
   3: v3ToV4,
   4: v4ToV5,
   5: v5ToV6,
+  6: v6ToV7,
 };

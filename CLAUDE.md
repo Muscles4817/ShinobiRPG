@@ -120,6 +120,11 @@ ui ──► game ──► content ──► systems ──► core
     whose id is in its `CombatState`. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
     styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`).
+17. **The jobs board rotates.** Most jobs are postings that stay up a few days; `standing`
+    jobs (patrols) are always there, once a day; jobs above your record are never shown, not
+    even sealed. Postings come from `hashUnit(seed, day, id)` (`game/board.ts`), so the board
+    is reproducible and catches up lazily without consuming the game's Rng. Tests that take a
+    specific job use `postEverything` (the default `newGame` fixture does).
 
 ### Content packs
 
@@ -164,6 +169,9 @@ ui ──► game ──► content ──► systems ──► core
   schedule of place ids in the start location). Senseis need `role: 'sensei'` and a
   `sensei` profile (style, lesson text, `teaches` technique ids); at least two specialties
   must exist for the team choice (validated).
+- **Add a mission:** add a `MissionDef` and list it at a mission hall. It is posted from time
+  to time once the player's record reaches `minMissionsCompleted`; set `standing: true` for
+  jobs that are always available (every pack needs one a fresh genin can take — validated).
 - **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
   fight as allies and each gains bond on success. Offer it at a mission hall as usual.
 - **Add a conversation:** add a `ConversationDef` (generic, or with `personId`) with a

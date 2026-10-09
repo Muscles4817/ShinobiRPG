@@ -37,6 +37,8 @@ choose **GitHub Actions**.
   day, and places to visit: Mission Hall, Training Grounds, Market, Academy, Home, Hospital.
 - **Every place works differently.** A drill board for training, food stalls, your rented room
   (pay rent or get locked out), a notice board of jobs, a rack of technique scrolls.
+- **The jobs board changes.** Postings go up for a few days and come down; standing jobs
+  like the patrol are always there. Harder work appears only once the hall trusts you.
 - **Missions play as a story** with real odds on every choice; fights use a hand of technique
   cards. Results come as cards: fight results, mission debriefs, hospital bills.
 - **People live in the village.** The morning after graduation your team is read out: two

@@ -2,6 +2,37 @@ import type { MissionDef } from '@/systems/missions';
 
 export const MISSIONS: readonly MissionDef[] = [
   {
+    id: 'lantern-patrol',
+    title: 'Lantern Patrol',
+    rank: 'D',
+    client: 'Tōrōgakure Watch',
+    summary:
+      'Walk the wall at dusk and make sure every lantern is lit. The village never stops needing this.',
+    slots: 2,
+    energyCost: 15,
+    reward: { ryo: 55, reputation: 1 },
+    minMissionsCompleted: 0,
+    standing: true,
+    stages: [
+      {
+        kind: 'narrative',
+        text: 'The watch captain hands you a taper and a list of a hundred lanterns.',
+      },
+      {
+        kind: 'check',
+        text: 'Halfway round, a stretch of wall has gone dark, and something is moving in it.',
+        approaches: [
+          { label: 'Relight them one by one, eyes open', stat: 'perception', difficulty: 7 },
+          { label: 'Run the whole stretch before it notices', stat: 'speed', difficulty: 7 },
+        ],
+        success: 'The last lantern catches. Whatever it was slips back into the night.',
+        failure: 'Something cold brushes past you in the dark. You finish the round shaken.',
+        onFailure: 'penalty',
+        failureDamage: 2,
+      },
+    ],
+  },
+  {
     id: 'lantern-keepers-cat',
     title: 'The Lantern-Keeper’s Cat',
     rank: 'D',
