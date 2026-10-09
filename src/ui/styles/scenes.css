@@ -362,6 +362,63 @@ button.foe {
   gap: 6px;
   padding: 0 var(--gutter);
 }
+.plan-tabs {
+  display: flex;
+  gap: 6px;
+}
+.plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.plan-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 44px;
+  padding: 6px 10px;
+  text-align: left;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.plan-card small {
+  color: var(--muted);
+  white-space: normal;
+}
+.plan-card.on {
+  border-color: var(--lantern);
+  background: var(--raise);
+}
+.plan-card.on[data-discipline='basic'] {
+  border-left-color: var(--lantern);
+}
+.plan-card.on[data-discipline='taijutsu'] {
+  border-left-color: var(--taijutsu);
+}
+.plan-card.on[data-discipline='ninjutsu'] {
+  border-left-color: var(--ninjutsu);
+}
+.plan-card.on[data-discipline='genjutsu'] {
+  border-left-color: var(--genjutsu);
+}
+.plan-card.on[data-discipline='kenjutsu'] {
+  border-left-color: var(--kenjutsu);
+}
+.plan-card.on[data-discipline='fuuinjutsu'] {
+  border-left-color: var(--fuuinjutsu);
+}
+.plan-card:disabled {
+  opacity: 0.5;
+}
 .plan-picker .choice {
   flex-direction: column;
   align-items: flex-start;

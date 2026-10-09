@@ -15,8 +15,7 @@ function fightOut(start: GameState): GameState {
   for (let i = 0; i < 300 && state.combat; i++) {
     const options = combatScene(state, ctx)!.options.filter((o) => !o.disabledReason);
     const pick =
-      options.find((o) => o.kind === 'plan') ??
-      options.find((o) => o.id === 'auto') ??
+      options.find((o) => o.id === 'begin' || o.id === 'round') ??
       options.find((o) => o.targeted) ??
       options.find((o) => o.kind === 'end') ??
       options.find((o) => o.kind === 'move') ??

@@ -54,7 +54,9 @@ choose **GitHub Actions**.
   they teach you their signature technique. Spar with any genin who's around: win or lose,
   you learn from them and nobody ends up in hospital.
 - **Four fight styles to playtest** (Shinobi tab → Fight style): _Classic_; _Plan & Watch_
-  (choose a tactic, watch it play out, one trump card); _Deck_ (your techniques are cards:
+  (Punch Club style: slot a few cards for each distance — attacks, jutsu, footwork that
+  tries to change the range, defences that react on their own — then watch each round and
+  re-plan between rounds); _Deck_ (your techniques are cards:
   draw five, three actions a turn, read enemy intents); _Mind Game_ (read their tell, then
   strike, feint, guard, counter or cast). All of them use range (close, mid, far), the
   elemental cycle, and an awakened bloodline's insight.

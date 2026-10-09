@@ -4,42 +4,53 @@ import { bodyFrom, type Body } from '../../rules/body';
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
 
-export type TacticId = 'rush' | 'technician' | 'patient' | 'trickster';
+/** A card slotted for one distance: a basic, a footwork card, a defence, or `jutsu:<id>`. */
+export type CardId = string;
 
-/** When a rule applies. */
-export type Condition =
-  'always' | 'out-of-position' | 'low-health' | 'enemy-dazed' | 'enemy-fresh' | 'chakra-high';
-
-/** What a rule does. Technique picks are resolved against what the fighter knows. */
-export type PlanAction =
-  'move' | 'strongest' | 'physical-technique' | 'stun' | 'heal' | 'guard' | 'attack';
-
-export interface Rule {
-  readonly when: Condition;
-  readonly then: PlanAction;
-}
+/** The cards a fighter brings to each distance. */
+export type Loadout = Readonly<Record<RangeBand, readonly CardId[]>>;
 
 export interface PlanFighter extends Body {
   readonly stunned: number;
   readonly sealed: number;
-  readonly guarding: boolean;
+  readonly loadout: Loadout;
 }
 
 export interface PlanState {
-  /** Choosing a tactic, then watching it play out. */
-  readonly phase: 'plan' | 'fight';
-  readonly tactic: TacticId | null;
+  /** Setting up cards between rounds, then watching the round play out. */
+  readonly phase: 'loadout' | 'fight';
+  /** Exchanges fought so far, plus one. */
   readonly round: number;
+  /** Which round of the fight this is; cards can be changed between rounds. */
+  readonly bout: number;
+  /** Exchanges already fought in this round. */
+  readonly exchange: number;
   readonly fighters: readonly PlanFighter[];
   readonly range: RangeBand;
-  readonly trumpUsed: boolean;
+  /** Cards each fighter has been seen to use, so you can adapt between rounds. */
+  readonly seen: Readonly<Record<string, readonly CardId[]>>;
   readonly log: readonly string[];
   readonly result: CombatResult | null;
   readonly canFlee: boolean;
 }
 
+/** One exchange in progress. */
+export interface Round {
+  readonly fighters: PlanFighter[];
+  readonly range: RangeBand;
+  readonly lines: readonly string[];
+  readonly seen: PlanState['seen'];
+}
+
+export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
+
 function fighterFrom(setup: CombatSetup['player'], side: 'player' | 'enemy', isPlayer = false) {
-  return { ...bodyFrom(setup, side, isPlayer), stunned: 0, sealed: 0, guarding: false };
+  return {
+    ...bodyFrom(setup, side, isPlayer),
+    stunned: 0,
+    sealed: 0,
+    loadout: EMPTY_LOADOUT,
+  };
 }
 
 export function initialFighters(setup: CombatSetup): PlanFighter[] {
@@ -71,7 +82,7 @@ export function playerOf(state: Pick<PlanState, 'fighters'>): PlanFighter {
 export function patch(
   fighters: readonly PlanFighter[],
   id: string,
-  change: Partial<Pick<PlanFighter, 'health' | 'chakra' | 'stunned' | 'sealed' | 'guarding'>>,
+  change: Partial<Pick<PlanFighter, 'health' | 'chakra' | 'stunned' | 'sealed' | 'loadout'>>,
 ): PlanFighter[] {
   return fighters.map((f) => (f.id === id ? { ...f, ...change } : f));
 }
