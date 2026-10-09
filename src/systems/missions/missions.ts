@@ -1,0 +1,121 @@
+import type { Rng } from '@/core';
+import { rollCheck, type StatId, type Stats } from '@/systems/stats';
+
+/**
+ * Missions are a linear sequence of stages. This module tracks progress through them
+ * and resolves stat checks. It deliberately knows nothing about *how* combat works:
+ * a combat stage just names enemies, and the game layer reports back win/lose.
+ */
+export type MissionRank = 'D' | 'C' | 'B' | 'A' | 'S';
+
+export interface CheckApproach {
+  readonly label: string;
+  readonly stat: StatId;
+  readonly difficulty: number;
+}
+
+export type MissionStage =
+  | { readonly kind: 'narrative'; readonly text: string }
+  | {
+      readonly kind: 'check';
+      readonly text: string;
+      /** The player picks one approach; each tests a different stat. */
+      readonly approaches: readonly CheckApproach[];
+      readonly success: string;
+      readonly failure: string;
+      /** 'penalty' docks the reward and continues; 'abort' fails the mission. */
+      readonly onFailure: 'penalty' | 'abort';
+      readonly failureDamage?: number;
+    }
+  | {
+      readonly kind: 'combat';
+      readonly text: string;
+      readonly enemyIds: readonly string[];
+      readonly canFlee: boolean;
+    };
+
+export interface MissionDef {
+  readonly id: string;
+  readonly title: string;
+  readonly rank: MissionRank;
+  readonly client: string;
+  readonly summary: string;
+  /** Time slots the mission takes, charged when it begins. */
+  readonly slots: number;
+  readonly energyCost: number;
+  readonly reward: { readonly ryo: number; readonly reputation: number };
+  readonly minMissionsCompleted: number;
+  readonly stages: readonly MissionStage[];
+}
+
+export interface MissionRun {
+  readonly missionId: string;
+  readonly stageIndex: number;
+  /** Starts at 1; each penalised check reduces it. */
+  readonly rewardMultiplier: number;
+  /** The story so far, shown to the player while on the mission. */
+  readonly notes: readonly string[];
+}
+
+export const CHECK_FAILURE_PENALTY = 0.25;
+
+export function startRun(def: MissionDef): MissionRun {
+  return { missionId: def.id, stageIndex: 0, rewardMultiplier: 1, notes: [] };
+}
+
+/** The stage awaiting the player, or undefined when every stage is done. */
+export function currentStage(def: MissionDef, run: MissionRun): MissionStage | undefined {
+  return def.stages[run.stageIndex];
+}
+
+export function advance(run: MissionRun, note: string): MissionRun {
+  return { ...run, stageIndex: run.stageIndex + 1, notes: [...run.notes, note] };
+}
+
+export type CheckStage = Extract<MissionStage, { kind: 'check' }>;
+
+/** The check being attempted and the approach the player picked for it. */
+export interface CheckChoice {
+  readonly stage: CheckStage;
+  readonly approach: CheckApproach;
+}
+
+export interface CheckResolution {
+  readonly run: MissionRun;
+  readonly aborted: boolean;
+  readonly damage: number;
+}
+
+export function resolveCheck(
+  run: MissionRun,
+  { stage, approach }: CheckChoice,
+  stats: Stats,
+  rng: Rng,
+): CheckResolution {
+  const { success, chance } = rollCheck(stats[approach.stat], approach.difficulty, rng);
+  const pct = Math.round(chance * 100);
+  if (success) {
+    return {
+      run: advance(run, `${stage.success} (${approach.label}, ${pct}%)`),
+      aborted: false,
+      damage: 0,
+    };
+  }
+  const note = `${stage.failure} (${approach.label}, ${pct}%)`;
+  const damage = stage.failureDamage ?? 0;
+  if (stage.onFailure === 'abort') {
+    return { run: { ...run, notes: [...run.notes, note] }, aborted: true, damage };
+  }
+  const penalised = {
+    ...run,
+    rewardMultiplier: Math.max(0, run.rewardMultiplier - CHECK_FAILURE_PENALTY),
+  };
+  return { run: advance(penalised, note), aborted: false, damage };
+}
+
+export function reward(def: MissionDef, run: MissionRun): { ryo: number; reputation: number } {
+  return {
+    ryo: Math.round(def.reward.ryo * run.rewardMultiplier),
+    reputation: Math.round(def.reward.reputation * run.rewardMultiplier),
+  };
+}
