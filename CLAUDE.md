@@ -132,6 +132,12 @@ ui ──► game ──► content ──► systems ──► core
     to trained stats, so it works the same in every fight style. A home-cooked recipe sets
     `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
     `spendTime` clears it when the day ends.
+19. **Village life is derived from the calendar.** `game/village.ts` decides what is open
+    (`hours` on places and stalls; closed ones say when they open), today's festival (cheaper
+    market, warmer talks), the gossip (`rumoursToday`: a job's rumour goes round the day
+    before `newPostingsTomorrow` posts it) and tonight's sight, which only an awakened
+    bloodline can follow. Like the board it hashes the seed and day, never the Rng; only
+    `village.lastSightDay` is stored.
 
 ### Content packs
 
@@ -185,6 +191,10 @@ ui ──► game ──► content ──► systems ──► core
   a `gear` place (a smith, an outfitter). **Add an ingredient or recipe:** add it to
   `shared/kitchen.ts` (or a pack's own list); ingredients must be sold at a market stall's
   `ingredientIds`, and recipes may only use known ingredients (validated).
+- **Add village life:** rumours (`missionId` for a job hint, `personId` for gossip), night
+  sights (with a small stat `reward`) and festivals (season, day, `marketPrices`,
+  `bondBonus`) go in the pack's `village`. Give shops and stalls `hours` if they close.
+  Validation checks references, real dates and that nothing is never open.
 - **Add a conversation:** add a `ConversationDef` (generic, or with `personId`) with a
   `minStage` and choices that each carry a `Tone`. Traits' `likes`/`dislikes` decide how a
   tone lands, so new tones need tastes on the traits that care.

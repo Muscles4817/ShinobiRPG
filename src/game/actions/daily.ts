@@ -18,6 +18,7 @@ import {
 import type { GameContext } from '../context';
 import { trainingScale } from '../profile';
 import type { GameState } from '../state';
+import { closedReason, isOpen, marketPrice } from '../village';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Everyday life in a village: training, eating, napping and sleeping. */
@@ -29,9 +30,15 @@ const LOCKED_OUT_RECOVERY = 0.4;
 function offeredHere(state: GameState, ctx: GameContext) {
   return {
     training: (id: string) => placeHere(state, ctx, 'training')?.trainingIds.includes(id) ?? false,
-    food: (id: string) =>
-      placeHere(state, ctx, 'market')?.stalls.some((s) => s.foodIds.includes(id)) ?? false,
   };
+}
+
+/** The stall here selling this food, preferring one that is open now. */
+function foodStall(state: GameState, ctx: GameContext, foodId: string) {
+  const stalls = (placeHere(state, ctx, 'market')?.stalls ?? []).filter((s) =>
+    s.foodIds.includes(foodId),
+  );
+  return stalls.find((s) => isOpen(s.hours, state)) ?? stalls[0];
 }
 
 /** Why the character can't use their home right now, or null. */
@@ -74,16 +81,20 @@ export const train: ActionHandler<ActionOf<'train'>> = {
 export const eat: ActionHandler<ActionOf<'eat'>> = {
   check(state, action, ctx) {
     const def = ctx.content.foods.get(action.foodId);
-    if (!def || !offeredHere(state, ctx).food(def.id)) return 'That isn’t sold here.';
+    const stall = def && foodStall(state, ctx, def.id);
+    if (!def || !stall) return 'That isn’t sold here.';
+    const cost = marketPrice(def.cost, state, ctx);
     return firstBlocker(
       busyReason(state),
-      state.wallet.ryo < def.cost && `You can’t afford it (${def.cost} ryo).`,
+      closedReason(stall.name, stall.hours, state),
+      state.wallet.ryo < cost && `You can’t afford it (${cost} ryo).`,
       state.character.vitals.satiety >= METER_MAX && 'You are completely full.',
     );
   },
   perform(state, action, ctx) {
     const def = ctx.content.foods.require(action.foodId);
-    const paid = spend(state.wallet, def.cost);
+    const cost = marketPrice(def.cost, state, ctx);
+    const paid = spend(state.wallet, cost);
     if (!paid.ok) return state;
     const fed = adjust(
       { ...state, wallet: paid.value },
@@ -96,7 +107,7 @@ export const eat: ActionHandler<ActionOf<'eat'>> = {
       chips: [
         chip(`Fed +${def.satiety}`, 'gain'),
         ...(def.energy > 0 ? [chip(`Energy +${def.energy}`, 'gain')] : []),
-        chip(`−${def.cost} ryo`, 'cost'),
+        chip(`−${cost} ryo`, 'cost'),
       ],
     });
   },

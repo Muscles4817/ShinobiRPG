@@ -53,6 +53,10 @@ choose **GitHub Actions**.
   you. Once a week your sensei gives a lesson at the training ground, and once you're friends
   they teach you their signature technique. Spar with any genin who's around: win or lose,
   you learn from them and nobody ends up in hospital.
+- **Village life.** Shops and stalls keep hours, and night feels different. Every day brings
+  new gossip, and a job's rumour goes round the day before it's posted. Those with awakened
+  eyes see spirits at night and can follow them. Festivals come round each season with
+  cheaper food and warmer conversations.
 - **Four fight styles to playtest** (Shinobi tab → Fight style): _Classic_; _Plan & Watch_
   (Punch Club style: slot a few cards for each distance — attacks, jutsu, footwork that
   tries to change the range, defences that react on their own — then watch each round and

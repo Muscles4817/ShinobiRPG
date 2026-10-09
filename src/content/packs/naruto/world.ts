@@ -77,19 +77,28 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           {
             name: 'Yakiniku Q',
             blurb: 'Barbecue, take your time',
+            hours: ['afternoon', 'evening', 'night'],
             icon: 'grill',
             foodIds: ['yakiniku'],
           },
-          { name: 'Amaguriama', blurb: 'Sweets and tea', icon: 'dango', foodIds: ['dango'] },
+          {
+            name: 'Amaguriama',
+            blurb: 'Sweets and tea',
+            hours: ['morning', 'afternoon'],
+            icon: 'dango',
+            foodIds: ['dango'],
+          },
           {
             name: 'Konoha Pharmacy',
             blurb: 'Pills and salves',
+            hours: ['morning', 'afternoon', 'evening'],
             icon: 'pill',
             foodIds: ['soldier-pill'],
           },
           {
             name: 'Konoha Grocer',
             blurb: 'Ingredients for home cooking',
+            hours: ['morning', 'afternoon'],
             icon: 'veg',
             foodIds: [],
             ingredientIds: ['rice', 'river-fish', 'vegetables', 'miso', 'spices'],
@@ -102,6 +111,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         name: 'Higurashi Weapons',
         icon: 'anvil',
         blurb: 'Every blade a shinobi could want',
+        hours: ['morning', 'afternoon', 'evening'],
         keeper: 'Tenten’s father',
         gearIds: [
           'fingerless-gloves',
@@ -118,6 +128,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         name: 'Shinobi Outfitters',
         icon: 'vest',
         blurb: 'Armour and charms',
+        hours: ['morning', 'afternoon'],
         keeper: 'The tailor by the gate',
         gearIds: [
           'mesh-shirt',
@@ -134,6 +145,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         name: 'Ninja Academy',
         icon: 'scroll',
         blurb: 'Library of techniques',
+        hours: ['morning', 'afternoon'],
         techniqueIds: [
           'leaf-whirlwind',
           'phoenix-flower',

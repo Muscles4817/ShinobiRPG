@@ -63,6 +63,15 @@ describe('App (smoke test)', () => {
     expect(place(/Ichiraku is open|Shopping District/)).toBeInTheDocument();
   });
 
+  it('shows village talk and the next festival on the village screen', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    const life = screen.getByRole('region', { name: 'Village life' });
+    expect(within(life).getByText('Village talk')).toBeInTheDocument();
+    expect(within(life).getByText('Kite Day')).toBeInTheDocument();
+  });
+
   it('trains at the training grounds', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

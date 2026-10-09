@@ -31,6 +31,12 @@ export type { Choice, Discipline } from './views/common';
 export { headerView, type HeaderView, type Meter } from './views/header';
 export { hubView, type HubView, type PlaceCard } from './views/hub';
 export {
+  villageView,
+  type FestivalBanner,
+  type NightSight,
+  type VillageView,
+} from './views/village';
+export {
   trainingView,
   type TrainingView,
   type Drill,

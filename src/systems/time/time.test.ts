@@ -1,4 +1,12 @@
-import { advanceSlots, formatDate, slotName, slotsUntilNextMorning, START_TIME } from './time';
+import {
+  advanceSlots,
+  calendarDay,
+  daysUntil,
+  formatDate,
+  slotName,
+  slotsUntilNextMorning,
+  START_TIME,
+} from './time';
 
 describe('time', () => {
   it('advances within a day', () => {
@@ -19,6 +27,15 @@ describe('time', () => {
     expect(formatDate(START_TIME)).toBe('Year 1, Spring 1');
     expect(formatDate({ day: 29, slot: 0 })).toBe('Year 1, Summer 1');
     expect(formatDate({ day: 113, slot: 0 })).toBe('Year 2, Spring 1');
+  });
+
+  it('finds the day of the year and counts down to a date', () => {
+    expect(calendarDay(1)).toEqual({ season: 0, day: 1 });
+    expect(calendarDay(30)).toEqual({ season: 1, day: 2 });
+    expect(calendarDay(113)).toEqual({ season: 0, day: 1 });
+    expect(daysUntil(1, { season: 0, day: 1 })).toBe(0);
+    expect(daysUntil(1, { season: 0, day: 8 })).toBe(7);
+    expect(daysUntil(30, { season: 0, day: 1 })).toBe(83);
   });
 
   it('names slots', () => {

@@ -6,6 +6,7 @@ import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 import type { BackdropId, IconId } from './art';
 import type { GearDef, IngredientDef, RecipeDef } from './items';
 import type { ConversationDef, NamePools, PersonDef, TeamText, Tone } from './people';
+import type { OpeningHours, VillageLife } from './village';
 
 export type { BackdropId, IconId } from './art';
 export type { GearDef, GearSlot, IngredientCount, IngredientDef, RecipeDef } from './items';
@@ -19,6 +20,7 @@ export type {
   TeamText,
   Tone,
 } from './people';
+export type { FestivalDef, OpeningHours, RumourDef, SightDef, VillageLife } from './village';
 
 /**
  * Content schemas. A ContentPack is one complete, self-contained setting (names, places,
@@ -145,6 +147,7 @@ export interface Stall {
   readonly foodIds: readonly string[];
   /** Raw ingredients to cook at home (a grocer). */
   readonly ingredientIds?: readonly string[];
+  readonly hours?: OpeningHours;
 }
 
 interface PlaceBase {
@@ -153,6 +156,8 @@ interface PlaceBase {
   readonly icon: IconId;
   /** One line under the name on the village screen when nothing more specific applies. */
   readonly blurb: string;
+  /** Shops and schools close; homes, grounds, the hall and the hospital never do. */
+  readonly hours?: OpeningHours;
 }
 
 /**
@@ -233,6 +238,7 @@ export interface ContentPack {
   readonly conversations: readonly ConversationDef[];
   readonly names: NamePools;
   readonly team: TeamText;
+  readonly village: VillageLife;
   readonly academyTechniques: readonly string[];
   /** The technique a graduate starts with for their specialty discipline. */
   readonly disciplineStarters: Readonly<Record<Discipline, string>>;

@@ -40,3 +40,26 @@ export function formatDate(time: GameTime): string {
   const dayOfSeason = (dayIndex % DAYS_PER_SEASON) + 1;
   return `Year ${year}, ${season ?? ''} ${dayOfSeason}`;
 }
+
+/** A day of the year: which season (0-based) and which day of it (1-based). */
+export interface CalendarDay {
+  readonly season: number;
+  readonly day: number;
+}
+
+const DAYS_PER_YEAR = DAYS_PER_SEASON * SEASONS.length;
+
+export function calendarDay(day: number): CalendarDay {
+  const dayOfYear = (day - 1) % DAYS_PER_YEAR;
+  return {
+    season: Math.floor(dayOfYear / DAYS_PER_SEASON),
+    day: (dayOfYear % DAYS_PER_SEASON) + 1,
+  };
+}
+
+/** Days from `day` until the next time the calendar shows `date` (0 when it is today). */
+export function daysUntil(day: number, date: CalendarDay): number {
+  const today = (day - 1) % DAYS_PER_YEAR;
+  const target = date.season * DAYS_PER_SEASON + date.day - 1;
+  return (target - today + DAYS_PER_YEAR) % DAYS_PER_YEAR;
+}

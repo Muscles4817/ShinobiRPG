@@ -6,6 +6,7 @@ import type { GameContext } from '../context';
 import { currentLocation, healthFraction } from '../ops';
 import type { GameState } from '../state';
 import { availability } from '../board';
+import { closedSign } from '../village';
 import { choice } from './common';
 import { lessonCard } from './team';
 import { facesByPlace, type PersonFace } from './people';
@@ -23,6 +24,8 @@ export interface PlaceCard {
   readonly people: readonly PersonFace[];
   /** Something new worth a visit today, e.g. "2 new" or "Lesson ready". */
   readonly badge: string | null;
+  /** "Closed. Opens in the morning." when shut right now, or null when open. */
+  readonly closed: string | null;
 }
 
 export interface HubView {
@@ -120,6 +123,7 @@ export function hubView(state: GameState, ctx: GameContext): HubView {
       suggested: p.kind === suggested,
       people: faces.get(p.id) ?? [],
       badge: badgeFor(p, state, ctx),
+      closed: closedSign(p.hours, state),
     })),
     latest: last ? { heading: last.heading ?? last.text, chips: last.chips ?? [] } : null,
   };

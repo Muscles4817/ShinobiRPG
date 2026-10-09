@@ -93,3 +93,15 @@ export function takeJob(state: GameState, ctx: GameContext, def: MissionDef): Bo
   }
   return { ...board, postings: board.postings.filter((p) => p.missionId !== def.id) };
 }
+
+/** Jobs that will go up tomorrow (if nothing changes before then), for the village gossip. */
+export function newPostingsTomorrow(state: GameState, ctx: GameContext): string[] {
+  const tomorrow = state.time.day + 1;
+  const next = postDay(
+    boardFor(state, ctx),
+    tomorrow,
+    ctx.content.missions.all,
+    state.standing.missionsCompleted,
+  );
+  return next.postings.filter((p) => p.postedDay === tomorrow).map((p) => p.missionId);
+}

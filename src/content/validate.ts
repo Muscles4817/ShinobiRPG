@@ -2,6 +2,7 @@ import { DISCIPLINES } from '@/systems/techniques';
 
 import { duplicateIds } from './catalog';
 import { validatePeople } from './validatePeople';
+import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
 import type { ContentPack, Identified } from './types';
 
@@ -21,6 +22,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...beginnerProblems(pack),
     ...recipeProblems(pack),
     ...validatePeople(pack),
+    ...validateVillage(pack),
   ];
 }
 
