@@ -1,5 +1,5 @@
 import {
-  createDefaultContext,
+  contextForPack,
   createNewGame,
   dispatch,
   type GameAction,
@@ -7,7 +7,8 @@ import {
   type GameState,
 } from '@/game';
 
-export const ctx: GameContext = createDefaultContext();
+/** Tests use the original pack: its ids are stable and it always ships. */
+export const ctx: GameContext = contextForPack('original')!;
 
 export function newGame(overrides: Partial<GameState> = {}, context: GameContext = ctx): GameState {
   return {
@@ -32,6 +33,10 @@ export function withAllStats(state: GameState, value: number): GameState {
   };
 }
 
-export function lastJournal(state: GameState): string {
-  return state.journal.entries.at(-1)?.text ?? '';
+export function veteran(state: GameState, completed = 5): GameState {
+  return { ...state, standing: { ...state.standing, missionsCompleted: completed } };
+}
+
+export function lastEntry(state: GameState) {
+  return state.journal.entries.at(-1);
 }

@@ -44,3 +44,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Release build has no fan content
+        run: npm run check:release

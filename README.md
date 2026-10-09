@@ -2,10 +2,10 @@
 
 A text-based shinobi life RPG you can play offline on your phone.
 
-You are a freshly graduated Genin of **Tōrōgakure, the Village Hidden Among Lanterns**, in a
-world where the elements answer to those who listen and the dead do not always rest. Train,
-eat, rest, study techniques and take missions. Later milestones add relationships, travel,
-elements and spirits, and the choice between going rogue and rising to Kage.
+You are a freshly graduated Genin in a world where the elements answer to those who listen and
+the dead do not always rest. Train, eat, pay your rent, study techniques and take missions.
+Later milestones add relationships, travel, elements and spirits, and the choice between going
+rogue and rising to Kage.
 
 ## Playing
 
@@ -24,15 +24,23 @@ New versions download automatically the next time you open it with a connection.
 One-time setup: in the repo go to **Settings → Pages → Build and deployment → Source** and
 choose **GitHub Actions**.
 
-## Milestone 1 (current)
+## What's in it
 
-- Character creation with three aptitudes (Taijutsu / Ninjutsu / Genjutsu prodigy)
-- Calendar with four time slots per day, seasons and years
-- Ten stats with diminishing-returns training at nine training spots
-- Health, chakra, energy and hunger; food stalls, naps and sleep
-- Ten techniques to study at the academy library
-- Six D-rank missions with stat-check choices and turn-based combat
-- Hospital, reputation, journal, autosave and versioned saves
+- **Two worlds.** _Hidden Leaf_ uses Naruto names (a fan pack for personal play);
+  _Land of Embers_ is the game's own setting. Choose when you start a new life.
+- **The village is home.** Each village has its own backdrop and sky that follows the time of
+  day, and places to visit: Mission Hall, Training Grounds, Market, Academy, Home, Hospital.
+- **Every place works differently.** A drill board for training, food stalls, your rented room
+  (pay rent or get locked out), a notice board of jobs, a rack of technique scrolls.
+- **Missions play as a story** with real odds on every choice; fights use a hand of technique
+  cards. Results come as cards: fight results, mission debriefs, hospital bills.
+- **Travel** lists the other villages (coming soon).
+
+## Releases
+
+`npm run build` includes every pack. For anything public, use `npm run build:release`, which
+leaves fan packs out entirely (`npm run check:release` verifies it). Note that the GitHub
+Pages deploy uses the normal build, so it includes the fan pack.
 
 ## Development
 

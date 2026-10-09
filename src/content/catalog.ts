@@ -20,3 +20,13 @@ export function createCatalog<T extends Identified>(kind: string, items: readonl
     },
   };
 }
+
+/** Ids that appear more than once, in order of their second appearance. */
+export function duplicateIds(items: readonly Identified[]): string[] {
+  const seen = new Set<string>();
+  return items.flatMap(({ id }) => {
+    const duplicate = seen.has(id);
+    seen.add(id);
+    return duplicate ? [id] : [];
+  });
+}

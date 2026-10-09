@@ -1,0 +1,48 @@
+import type { EnemyDef } from '../../types';
+
+export const ENEMIES: readonly EnemyDef[] = [
+  {
+    id: 'wild-boar',
+    name: 'Wild Boar',
+    kind: 'Beast',
+    description: 'A tusked brute from the forests outside the walls.',
+    baseStat: 3,
+    statBonuses: { speed: 3, strength: 1 },
+    maxHealth: 40,
+    maxChakra: 0,
+    techniqueIds: [],
+  },
+  {
+    id: 'bandit-thug',
+    name: 'Bandit Thug',
+    kind: 'Bandit',
+    description: 'A road-bandit with a club and no patience.',
+    baseStat: 5,
+    statBonuses: { strength: 2, taijutsu: 1 },
+    maxHealth: 60,
+    maxChakra: 10,
+    techniqueIds: [],
+  },
+  {
+    id: 'academy-dropout',
+    name: 'Academy Dropout',
+    kind: 'Rogue',
+    description: 'Failed the graduation exam twice and blames everyone but himself.',
+    baseStat: 6,
+    statBonuses: { ninjutsu: 1 },
+    maxHealth: 65,
+    maxChakra: 40,
+    techniqueIds: ['shuriken-jutsu', 'phoenix-flower'],
+  },
+  {
+    id: 'restless-spirit',
+    name: 'Restless Spirit',
+    kind: 'Spirit',
+    description: 'The cold remnant of a merchant who died counting his grain.',
+    baseStat: 6,
+    statBonuses: { genjutsu: 3, willpower: 3, stamina: -2 },
+    maxHealth: 55,
+    maxChakra: 40,
+    techniqueIds: ['clone-jutsu', 'tree-binding'],
+  },
+];

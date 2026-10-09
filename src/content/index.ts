@@ -1,5 +1,18 @@
-export { WORLD } from './world';
-export { buildContentDb, DEFAULT_CONTENT_SOURCE, type ContentDb, type ContentSource } from './db';
+export { CONTENT_PACKS } from './packs';
+export { buildContentDb, type ContentDb } from './db';
 export { validateContent } from './validate';
 export type { Catalog } from './catalog';
-export type { AptitudeDef, EnemyDef, FoodDef, TrainingDef } from './types';
+export type {
+  AptitudeDef,
+  BackdropId,
+  ContentPack,
+  EnemyDef,
+  FoodDef,
+  IconId,
+  LocationDef,
+  PlaceDef,
+  PlaceKind,
+  SettingText,
+  Stall,
+  TrainingDef,
+} from './types';

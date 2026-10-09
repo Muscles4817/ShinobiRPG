@@ -7,7 +7,15 @@ import {
   completeIfFinished,
   failMission,
 } from '../missionFlow';
-import { adjust, busyReason, firstBlocker, healthFraction, log, spendTime } from '../ops';
+import {
+  adjust,
+  busyReason,
+  firstBlocker,
+  healthFraction,
+  log,
+  placeHere,
+  spendTime,
+} from '../ops';
 import type { ActionHandler, ActionOf } from './types';
 
 const MIN_HEALTH_FOR_MISSION = 0.4;
@@ -15,12 +23,13 @@ const MIN_HEALTH_FOR_MISSION = 0.4;
 export const startMission: ActionHandler<ActionOf<'startMission'>> = {
   check(state, action, ctx) {
     const def = ctx.content.missions.get(action.missionId);
-    if (!def) return 'Unknown mission.';
+    const hall = placeHere(state, ctx, 'missions');
+    if (!def || !hall?.missionIds.includes(def.id)) return 'That job isn’t posted here.';
     return firstBlocker(
       busyReason(state),
       state.standing.missionsCompleted < def.minMissionsCompleted &&
-        `Complete ${def.minMissionsCompleted} missions first.`,
-      state.character.vitals.energy < def.energyCost && 'You are too tired for this mission.',
+        `Opens after ${def.minMissionsCompleted} completed missions.`,
+      state.character.vitals.energy < def.energyCost && `Needs ${def.energyCost} energy.`,
       healthFraction(state) < MIN_HEALTH_FOR_MISSION && 'You are too injured to take a mission.',
     );
   },
@@ -29,7 +38,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
     const started = adjust(spendTime({ ...state, mission: startRun(def) }, def.slots), {
       energy: -def.energyCost,
     });
-    return log(started, `You accept the mission "${def.title}" from ${def.client}.`);
+    return log(started, { heading: def.title, text: def.summary, tone: 'info' });
   },
 };
 
@@ -64,7 +73,8 @@ export const missionContinue: ActionHandler<ActionOf<'missionContinue'>> = {
     if (!state.mission || !stage) return completeIfFinished(state, ctx);
     if (stage.kind === 'combat') return beginCombat(state, ctx, rng);
     if (stage.kind === 'narrative') {
-      return completeIfFinished({ ...state, mission: advance(state.mission, stage.text) }, ctx);
+      const mission = advance(state.mission, { kind: 'story', text: stage.text });
+      return completeIfFinished({ ...state, mission }, ctx);
     }
     return state;
   },

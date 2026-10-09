@@ -2,7 +2,7 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { createDefaultContext, type SaveStore } from '@/game';
+import type { SaveStore } from '@/game';
 
 import { App } from './App';
 
@@ -20,54 +20,97 @@ function memoryStore(initial: string | null = null): SaveStore & { data: string 
   return store;
 }
 
-async function startGame(user: ReturnType<typeof userEvent.setup>) {
+type User = ReturnType<typeof userEvent.setup>;
+
+async function startGame(user: User, world = /Land of Embers/) {
+  await user.click(screen.getByText(world));
   await user.type(screen.getByLabelText('Your name'), 'Aoi');
   await user.click(screen.getByRole('button', { name: /forehead protector/i }));
 }
 
+function place(name: RegExp) {
+  return screen.getByRole('button', { name });
+}
+
 describe('App (smoke test)', () => {
-  it('creates a character, trains, and autosaves', async () => {
+  it('starts in the chosen world’s village and autosaves', async () => {
     const user = userEvent.setup();
     const store = memoryStore();
-    render(<App ctx={createDefaultContext()} store={store} />);
-
+    render(<App store={store} />);
     await startGame(user);
-    expect(screen.getByText('Aoi')).toBeInTheDocument();
-    expect(store.data).toContain('"name":"Aoi"');
-
-    await user.click(screen.getByRole('button', { name: 'Train' }));
-    const card = screen.getByRole('heading', { name: 'Rooftop Sprints' }).closest('article')!;
-    await user.click(within(card).getByRole('button', { name: 'Train' }));
-    expect(screen.getByText(/Rooftop Sprints: Speed \+/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
+    expect(store.data).toContain('"packId":"original"');
   });
 
-  it('plays a mission to completion', async () => {
+  it('starts in Konohagakure with the fan pack', async () => {
     const user = userEvent.setup();
-    render(<App ctx={createDefaultContext()} store={memoryStore()} />);
+    render(<App store={memoryStore()} />);
+    await startGame(user, /^Hidden Leaf/);
+    expect(screen.getByRole('heading', { name: 'Konohagakure' })).toBeInTheDocument();
+    expect(place(/Ichiraku is open|Shopping District/)).toBeInTheDocument();
+  });
+
+  it('trains at the training grounds', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
     await startGame(user);
+    await user.click(place(/Training Grounds/));
+    const drill = () =>
+      screen.getAllByRole('article').find((a) => a.textContent.includes('Rooftop Sprints'))!;
+    await user.click(within(drill()).getByRole('button', { name: 'Train' }));
+    expect(within(drill()).getByRole('button', { name: /Again/ })).toBeInTheDocument();
+  });
 
-    await user.click(screen.getByRole('button', { name: 'Missions' }));
-    const card = screen.getByRole('heading', { name: /Lantern-Keeper/ }).closest('article')!;
-    await user.click(within(card).getByRole('button', { name: 'Accept' }));
-
+  it('plays a mission from the notice board to its debrief', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Mission Hall/));
+    await user.click(screen.getByRole('button', { name: /Lantern-Keeper/ }));
+    await user.click(screen.getByRole('button', { name: 'Accept the job' }));
     await user.click(screen.getByRole('button', { name: 'Continue' }));
     await user.click(screen.getByRole('button', { name: /Chase her down/ }));
-    expect(screen.getByText(/Mission complete/)).toBeInTheDocument();
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByText(/^\+\d+ ryo$/)).toBeInTheDocument();
+    await user.click(within(dialog).getByRole('button', { name: 'Continue' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('shows travel destinations as coming soon', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(screen.getByRole('button', { name: /Travel/ }));
+    expect(screen.getByText('You are here')).toBeInTheDocument();
+    expect(screen.getAllByText('Coming soon').length).toBeGreaterThan(0);
+  });
+
+  it('opens every dock tab and place without crashing', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    for (const name of [/Market Street/, /Academy/, /^Home/, /Hospital/]) {
+      await user.click(screen.getByRole('button', { name: /Here/ }));
+      await user.click(place(name));
+    }
+    for (const tab of [/Jutsu/, /Shinobi/, /Record/]) {
+      await user.click(screen.getByRole('button', { name: tab }));
+    }
+    expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument();
   });
 
   it('resumes a saved game', async () => {
     const user = userEvent.setup();
     const store = memoryStore();
-    const first = render(<App ctx={createDefaultContext()} store={store} />);
+    const first = render(<App store={store} />);
     await startGame(user);
     first.unmount();
-
-    render(<App ctx={createDefaultContext()} store={store} />);
-    expect(screen.getByText('Aoi')).toBeInTheDocument();
+    render(<App store={store} />);
+    expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
   });
 
   it('reports an unreadable save instead of crashing', () => {
-    render(<App ctx={createDefaultContext()} store={memoryStore('garbage')} />);
+    render(<App store={memoryStore('garbage')} />);
     expect(screen.getByRole('alert')).toHaveTextContent(/could not be loaded/);
   });
 });

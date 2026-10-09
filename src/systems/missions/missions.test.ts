@@ -38,9 +38,9 @@ const approach = check.approaches[0]!;
 
 describe('missions', () => {
   it('walks through stages', () => {
-    const run = advance(startRun(mission), 'started');
+    const run = advance(startRun(mission), { kind: 'story', text: 'started' });
     expect(currentStage(mission, run)).toBe(check);
-    expect(currentStage(mission, advance(run, 'done'))).toBeUndefined();
+    expect(currentStage(mission, advance(run))).toBeUndefined();
   });
 
   it('advances on a successful check', () => {

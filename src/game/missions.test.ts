@@ -1,6 +1,6 @@
 import { ok } from '@/core';
 import type { CombatEngine } from '@/systems/combat';
-import { act, ctx, lastJournal, newGame, withAllStats } from '@/test/gameFixtures';
+import { act, ctx, lastEntry, newGame, veteran, withAllStats } from '@/test/gameFixtures';
 
 import type { GameContext } from './context';
 import { dispatch } from './dispatch';
@@ -23,12 +23,28 @@ function playMission(
 }
 
 describe('missions', () => {
-  it('a capable genin completes a check-only mission and is paid', () => {
+  it('a capable genin completes a check-only mission, is paid and gets a debrief', () => {
     const start = withAllStats(newGame(), 30);
     const end = playMission(start, 'lantern-keepers-cat');
     expect(end.mission).toBeNull();
     expect(end.wallet.ryo).toBe(start.wallet.ryo + 90);
     expect(end.standing.missionsCompleted).toBe(1);
+    expect(end.reports).toEqual([
+      expect.objectContaining({
+        kind: 'mission-complete',
+        ryo: 90,
+        unlocked: ['Medicine for Kuroda Farm'],
+      }),
+    ]);
+  });
+
+  it('records the check as choice, roll and story', () => {
+    const start = withAllStats(newGame(), 30);
+    let s = act(start, { type: 'startMission', missionId: 'lantern-keepers-cat' });
+    s = act(s, { type: 'missionContinue' });
+    expect(s.mission?.notes.map((n) => n.kind)).toEqual(['story']);
+    const done = act(s, { type: 'missionChoose', approachIndex: 0 });
+    expect(done.mission).toBeNull();
   });
 
   it('locks missions until enough have been completed', () => {
@@ -36,7 +52,7 @@ describe('missions', () => {
       dispatch(newGame(), { type: 'startMission', missionId: 'storehouse-ghost' }, ctx),
     ).toEqual({
       ok: false,
-      error: 'Complete 3 missions first.',
+      error: 'Opens after 3 completed missions.',
     });
   });
 
@@ -45,27 +61,24 @@ describe('missions', () => {
     expect(dispatch(onMission, { type: 'train', trainingId: 'lake-laps' }, ctx).ok).toBe(false);
   });
 
-  it('a strong genin wins mission combat', () => {
-    const veteran = withAllStats(
-      newGame({ standing: { ...newGame().standing, missionsCompleted: 5 } }),
-      30,
-    );
-    const end = playMission(veteran, 'tea-merchant-escort');
+  it('a strong genin wins mission combat: fight card, then debrief', () => {
+    const end = playMission(withAllStats(veteran(newGame()), 30), 'tea-merchant-escort');
     expect(end.combat).toBeNull();
     expect(end.standing.missionsCompleted).toBe(6);
-    expect(lastJournal(end)).toMatch(/Mission complete/);
+    expect(end.reports.map((r) => r.kind)).toEqual(['fight', 'mission-complete']);
+    const dismissed = act(act(end, { type: 'dismissReport' }), { type: 'dismissReport' });
+    expect(dismissed.reports).toEqual([]);
   });
 
   it('losing a fight fails the mission and lands you in hospital', () => {
-    const weakling = withAllStats(
-      newGame({ standing: { ...newGame().standing, missionsCompleted: 5 } }),
-      1,
-    );
-    const end = playMission(weakling, 'storehouse-ghost');
+    const end = playMission(withAllStats(veteran(newGame()), 1), 'storehouse-ghost');
     expect(end.standing.missionsFailed).toBe(1);
     expect(end.mission).toBeNull();
     expect(end.time.slot).toBe(0);
-    expect(lastJournal(end)).toMatch(/hospital/);
+    expect(end.reports).toEqual([
+      expect.objectContaining({ kind: 'defeat', title: 'The Storehouse Ghost' }),
+    ]);
+    expect(lastEntry(end)?.text).toMatch(/hospital/);
   });
 });
 
@@ -80,7 +93,7 @@ describe('combat engine boundary', () => {
         round: 1,
         combatants: [],
         log: [],
-        options: [{ id: 'win', label: 'Win', detail: '' }],
+        options: [{ id: 'win', label: 'Win', detail: '', kind: 'basic' }],
       }),
       outcome: (state) =>
         (state.data as { done: boolean }).done
@@ -88,10 +101,7 @@ describe('combat engine boundary', () => {
           : null,
     };
     const context: GameContext = { ...ctx, combat: instantWin };
-    const weakling = withAllStats(
-      newGame({ standing: { ...newGame().standing, missionsCompleted: 5 } }, context),
-      1,
-    );
+    const weakling = withAllStats(veteran(newGame({}, context)), 1);
     const end = playMission(weakling, 'storehouse-ghost', 'win', context);
     expect(end.standing.missionsCompleted).toBe(6);
     expect(end.character.vitals.health).toBe(1);

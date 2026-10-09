@@ -13,6 +13,7 @@ export const LOG_LIMIT = 40;
 export interface Fighter {
   readonly id: string;
   readonly name: string;
+  readonly tag?: string;
   readonly isPlayer: boolean;
   readonly attributes: CombatAttributes;
   readonly health: number;

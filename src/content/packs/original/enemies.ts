@@ -1,0 +1,48 @@
+import type { EnemyDef } from '../../types';
+
+export const ENEMIES: readonly EnemyDef[] = [
+  {
+    id: 'feral-tanuki',
+    kind: 'Beast',
+    name: 'Feral Tanuki',
+    description: 'Fat, furious, and far quicker than it looks.',
+    baseStat: 3,
+    statBonuses: { speed: 3, strength: 1 },
+    maxHealth: 40,
+    maxChakra: 0,
+    techniqueIds: [],
+  },
+  {
+    id: 'bandit-thug',
+    kind: 'Bandit',
+    name: 'Bandit Thug',
+    description: 'A road-bandit with a club and no patience.',
+    baseStat: 5,
+    statBonuses: { strength: 2, taijutsu: 1 },
+    maxHealth: 60,
+    maxChakra: 10,
+    techniqueIds: [],
+  },
+  {
+    id: 'academy-dropout',
+    kind: 'Rogue',
+    name: 'Academy Dropout',
+    description: 'Washed out of the academy two years ago and bitter about it.',
+    baseStat: 6,
+    statBonuses: { ninjutsu: 1 },
+    maxHealth: 65,
+    maxChakra: 40,
+    techniqueIds: ['palm-strike', 'pebble-volley'],
+  },
+  {
+    id: 'storehouse-wraith',
+    kind: 'Spirit',
+    name: 'Storehouse Wraith',
+    description: 'The cold remnant of a merchant who died counting his rice.',
+    baseStat: 6,
+    statBonuses: { genjutsu: 3, willpower: 3, stamina: -2 },
+    maxHealth: 55,
+    maxChakra: 40,
+    techniqueIds: ['shadow-feint', 'whispering-dread'],
+  },
+];

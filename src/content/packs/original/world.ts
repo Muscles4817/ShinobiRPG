@@ -1,0 +1,146 @@
+import type { LocationDef, SettingText } from '../../types';
+
+export const ORIGINAL_TEXT: SettingText = {
+  nation: 'the Land of Embers',
+  leaderTitle: 'Tōrokage',
+  currency: 'ryo',
+  intro:
+    'In the Land of Embers, the dead do not always rest and the elements answer to those ' +
+    'who listen. Tōrōgakure keeps ten thousand lanterns burning to guide wandering spirits ' +
+    'home, and trains shinobi to deal with the ones that refuse to go.',
+  graduate: 'Receive your forehead protector',
+  sleepWell: 'You sleep soundly. Somewhere a temple bell counts the hours.',
+  sleepHungry: 'You sleep fitfully on an empty stomach.',
+  sleepLockedOut: 'The landlord has locked your door over unpaid rent. You sleep in the stairwell.',
+  hospitalWake: 'You wake in the village hospital, under lantern light and clean sheets.',
+};
+
+export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
+  {
+    id: 'torogakure',
+    name: 'Tōrōgakure',
+    epithet: 'Village Hidden Among Lanterns',
+    backdrop: 'lantern-rooftops',
+    travel: { days: 0, cost: 0, danger: 'Home' },
+    places: [
+      {
+        id: 'mission-hall',
+        kind: 'missions',
+        name: 'Mission Hall',
+        icon: 'board',
+        blurb: 'Requests from villagers',
+        missionIds: [
+          'lantern-keepers-cat',
+          'shrine-weeding',
+          'kuroda-medicine',
+          'tea-merchant-escort',
+          'academy-dropout',
+          'storehouse-ghost',
+        ],
+      },
+      {
+        id: 'training-grounds',
+        kind: 'training',
+        name: 'Training Grounds',
+        icon: 'post',
+        blurb: 'Posts, rooftops and the lake',
+        trainingIds: [
+          'post-kicks',
+          'rooftop-sprints',
+          'lake-laps',
+          'leaf-meditation',
+          'seal-drills',
+          'library-study',
+          'lantern-watching',
+          'waterfall-endurance',
+          'dojo-sparring',
+        ],
+      },
+      {
+        id: 'market-street',
+        kind: 'market',
+        name: 'Market Street',
+        icon: 'bowl',
+        blurb: 'Stalls open till night',
+        stalls: [
+          {
+            name: "Kenji's Noodle Stand",
+            blurb: 'Open till night',
+            icon: 'bowl',
+            foodIds: ['ember-noodles', 'teahouse-feast'],
+          },
+          {
+            name: 'Riverside Grill',
+            blurb: 'Cheap and quick',
+            icon: 'fish',
+            foodIds: ['grilled-fish', 'rice-ball'],
+          },
+          {
+            name: 'Apothecary',
+            blurb: 'Pills and salves',
+            icon: 'pill',
+            foodIds: ['soldier-pill'],
+          },
+        ],
+      },
+      {
+        id: 'academy',
+        kind: 'academy',
+        name: 'Academy',
+        icon: 'scroll',
+        blurb: 'The library of techniques',
+        techniqueIds: [
+          'gale-heel',
+          'pebble-volley',
+          'lantern-mirage',
+          'crescent-drop',
+          'ember-breath',
+          'tide-lash',
+          'whispering-dread',
+          'mending-glow',
+        ],
+      },
+      {
+        id: 'home',
+        kind: 'home',
+        name: 'Home',
+        icon: 'house',
+        blurb: 'Room above the noodle stand',
+        lodging: 'Room above the noodle stand',
+        rentPerWeek: 30,
+      },
+      {
+        id: 'hospital',
+        kind: 'hospital',
+        name: 'Hospital',
+        icon: 'heal',
+        blurb: 'Healers on call',
+        treatmentCost: 60,
+      },
+    ],
+  },
+  {
+    id: 'sakyugakure',
+    name: 'Sakyūgakure',
+    epithet: 'Village Hidden in the Dunes',
+    backdrop: 'dunes',
+    places: [],
+    travel: { days: 3, cost: 120, danger: 'Bandits: low', lockedReason: 'Coming soon' },
+  },
+  {
+    id: 'port-shiomachi',
+    name: 'Port Shiomachi',
+    epithet: 'Fishing town',
+    backdrop: 'coast',
+    places: [],
+    travel: { days: 1, cost: 0, danger: 'Safe road', lockedReason: 'Coming soon' },
+  },
+  {
+    id: 'mount-reikon',
+    name: 'Mount Reikon',
+    epithet: 'Where spirits gather',
+    backdrop: 'mountain',
+    places: [],
+    travel: { days: 4, cost: 0, danger: 'Spirits', lockedReason: 'Needs Chūnin rank' },
+  },
+];

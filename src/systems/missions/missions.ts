@@ -48,13 +48,25 @@ export interface MissionDef {
   readonly stages: readonly MissionStage[];
 }
 
+/** One line of the mission's story feed. Story text never carries numbers. */
+export type MissionNote =
+  | { readonly kind: 'story'; readonly text: string }
+  | { readonly kind: 'choice'; readonly text: string }
+  | {
+      readonly kind: 'roll';
+      readonly stat: StatId;
+      readonly chance: number;
+      readonly success: boolean;
+    }
+  | { readonly kind: 'outcome'; readonly text: string };
+
 export interface MissionRun {
   readonly missionId: string;
   readonly stageIndex: number;
   /** Starts at 1; each penalised check reduces it. */
   readonly rewardMultiplier: number;
   /** The story so far, shown to the player while on the mission. */
-  readonly notes: readonly string[];
+  readonly notes: readonly MissionNote[];
 }
 
 export const CHECK_FAILURE_PENALTY = 0.25;
@@ -68,8 +80,9 @@ export function currentStage(def: MissionDef, run: MissionRun): MissionStage | u
   return def.stages[run.stageIndex];
 }
 
-export function advance(run: MissionRun, note: string): MissionRun {
-  return { ...run, stageIndex: run.stageIndex + 1, notes: [...run.notes, note] };
+/** Moves to the next stage, adding any notes describing what just happened. */
+export function advance(run: MissionRun, ...notes: MissionNote[]): MissionRun {
+  return { ...run, stageIndex: run.stageIndex + 1, notes: [...run.notes, ...notes] };
 }
 
 export type CheckStage = Extract<MissionStage, { kind: 'check' }>;
@@ -93,24 +106,19 @@ export function resolveCheck(
   rng: Rng,
 ): CheckResolution {
   const { success, chance } = rollCheck(stats[approach.stat], approach.difficulty, rng);
-  const pct = Math.round(chance * 100);
-  if (success) {
-    return {
-      run: advance(run, `${stage.success} (${approach.label}, ${pct}%)`),
-      aborted: false,
-      damage: 0,
-    };
-  }
-  const note = `${stage.failure} (${approach.label}, ${pct}%)`;
+  const notes: MissionNote[] = [
+    { kind: 'choice', text: approach.label },
+    { kind: 'roll', stat: approach.stat, chance, success },
+    { kind: 'story', text: success ? stage.success : stage.failure },
+  ];
+  if (success) return { run: advance(run, ...notes), aborted: false, damage: 0 };
+
   const damage = stage.failureDamage ?? 0;
   if (stage.onFailure === 'abort') {
-    return { run: { ...run, notes: [...run.notes, note] }, aborted: true, damage };
+    return { run: { ...run, notes: [...run.notes, ...notes] }, aborted: true, damage };
   }
-  const penalised = {
-    ...run,
-    rewardMultiplier: Math.max(0, run.rewardMultiplier - CHECK_FAILURE_PENALTY),
-  };
-  return { run: advance(penalised, note), aborted: false, damage };
+  const rewardMultiplier = Math.max(0, run.rewardMultiplier - CHECK_FAILURE_PENALTY);
+  return { run: advance({ ...run, rewardMultiplier }, ...notes), aborted: false, damage };
 }
 
 export function reward(def: MissionDef, run: MissionRun): { ryo: number; reputation: number } {

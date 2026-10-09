@@ -34,6 +34,7 @@ function toView(f: Fighter): CombatantView {
   return {
     id: f.id,
     name: f.name,
+    ...(f.tag === undefined ? {} : { tag: f.tag }),
     side: f.isPlayer ? 'player' : 'enemy',
     health: f.health,
     maxHealth: f.maxHealth,
@@ -47,17 +48,19 @@ function options(state: DuelState): CombatOption[] {
   if (state.result) return [];
   const player = playerOf(state);
   const techniques: CombatOption[] = player.techniques.map((t) => {
-    const base = {
+    const base: CombatOption = {
       id: `${TECHNIQUE_PREFIX}${t.id}`,
       label: t.name,
-      detail: `${t.discipline} · ${t.effect} · ${t.chakraCost} chakra`,
+      detail: `${t.chakraCost} chakra · ${t.effect === 'damage' ? `power ${t.power}` : t.effect}`,
+      kind: 'technique',
+      discipline: t.discipline,
     };
     return t.chakraCost > player.chakra ? { ...base, disabledReason: 'Not enough chakra' } : base;
   });
-  const flee: CombatOption = { id: 'flee', label: 'Flee', detail: 'Try to escape' };
+  const flee: CombatOption = { id: 'flee', label: 'Flee', detail: 'Try to escape', kind: 'escape' };
   return [
-    { id: 'strike', label: 'Strike', detail: 'A plain taijutsu attack' },
-    { id: 'guard', label: 'Guard', detail: 'Halve damage taken, recover chakra' },
+    { id: 'strike', label: 'Strike', detail: 'Free', kind: 'basic' },
+    { id: 'guard', label: 'Guard', detail: 'Halve damage · +chakra', kind: 'basic' },
     ...techniques,
     state.canFlee ? flee : { ...flee, disabledReason: 'You cannot flee this fight' },
   ];

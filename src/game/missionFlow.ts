@@ -14,7 +14,8 @@ import { deduct, earn } from '@/systems/wallet';
 
 import { enemyCombatant, playerCombatant } from './combatants';
 import type { GameContext } from './context';
-import { adjust, log, spendTime } from './ops';
+import { adjust, chip, log, placeHere, spendTime } from './ops';
+import { addReport } from './reports';
 import type { GameState } from './state';
 
 /**
@@ -35,25 +36,49 @@ export function activeStage(state: GameState, ctx: GameContext): MissionStage | 
   return def && state.mission ? (currentStage(def, state.mission) ?? null) : null;
 }
 
+/** Titles of missions here that open exactly at `completed` finished missions. */
+function newlyUnlocked(state: GameState, ctx: GameContext, completed: number): string[] {
+  const hall = placeHere(state, ctx, 'missions');
+  return (hall?.missionIds ?? [])
+    .map((id) => ctx.content.missions.require(id))
+    .filter((m) => m.minMissionsCompleted === completed)
+    .map((m) => m.title);
+}
+
 /** Completes the mission if every stage is done; otherwise returns the state unchanged. */
 export function completeIfFinished(state: GameState, ctx: GameContext): GameState {
   const def = activeMission(state, ctx);
   if (!def || !state.mission || currentStage(def, state.mission)) return state;
   const earned = reward(def, state.mission);
+  const standing = recordMissionSuccess(state.standing, earned.reputation);
   const next: GameState = {
     ...state,
     mission: null,
     wallet: earn(state.wallet, earned.ryo),
-    standing: recordMissionSuccess(state.standing, earned.reputation),
+    standing,
   };
-  return log(
-    next,
-    `Mission complete: ${def.title}. Earned ${earned.ryo} ryo and ${earned.reputation} reputation.`,
-    'success',
-  );
+  const logged = log(next, {
+    heading: `${def.title} complete`,
+    text: `${def.client} thanks you.`,
+    tone: 'success',
+    chips: [chip(`+${earned.ryo} ryo`, 'gain'), chip(`+${earned.reputation} reputation`, 'gain')],
+  });
+  return addReport(logged, {
+    kind: 'mission-complete',
+    title: def.title,
+    client: def.client,
+    ryo: earned.ryo,
+    reputation: earned.reputation,
+    missionsCompleted: standing.missionsCompleted,
+    unlocked: newlyUnlocked(state, ctx, standing.missionsCompleted),
+  });
 }
 
-export function failMission(state: GameState, ctx: GameContext, reason: string): GameState {
+function endMission(
+  state: GameState,
+  ctx: GameContext,
+  reason: string,
+): { state: GameState; title: string | null } {
   const def = activeMission(state, ctx);
   const next: GameState = {
     ...state,
@@ -61,7 +86,23 @@ export function failMission(state: GameState, ctx: GameContext, reason: string):
     combat: null,
     standing: recordMissionFailure(state.standing, FAILURE_REPUTATION_LOSS),
   };
-  return log(next, `Mission failed${def ? `: ${def.title}` : ''}. ${reason}`, 'danger');
+  const logged = log(next, {
+    heading: def ? `${def.title} failed` : 'Mission failed',
+    text: reason,
+    tone: 'danger',
+    chips: [chip(`−${FAILURE_REPUTATION_LOSS} reputation`, 'harm')],
+  });
+  return { state: logged, title: def?.title ?? null };
+}
+
+export function failMission(state: GameState, ctx: GameContext, reason: string): GameState {
+  const ended = endMission(state, ctx, reason);
+  return addReport(ended.state, {
+    kind: 'mission-failed',
+    title: ended.title ?? 'Mission',
+    reason,
+    reputationLost: FAILURE_REPUTATION_LOSS,
+  });
 }
 
 export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameState {
@@ -77,16 +118,27 @@ export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameS
   return { ...state, combat };
 }
 
-function hospitalise(state: GameState): GameState {
+function hospitalise(state: GameState, ctx: GameContext, title: string | null): GameState {
   const fee = Math.min(state.wallet.ryo, HOSPITAL_FEE);
   const recovered = spendTime(state, slotsUntilNextMorning(state.time));
   const health = Math.round(maxHealth(state.character.stats) * HOSPITAL_HEALTH_FRACTION);
   const patched = adjust(recovered, { health: health - recovered.character.vitals.health });
-  return log(
+  const text = ctx.content.text.hospitalWake;
+  const logged = log(
     { ...patched, wallet: deduct(patched.wallet, fee) },
-    `You wake in the village hospital the next morning. The bill is ${fee} ryo.`,
-    'warning',
+    {
+      text,
+      tone: 'warning',
+      chips: [chip(`−${fee} ryo`, 'cost')],
+    },
   );
+  return addReport(logged, {
+    kind: 'defeat',
+    title,
+    hospitalFee: fee,
+    reputationLost: title ? FAILURE_REPUTATION_LOSS : 0,
+    text,
+  });
 }
 
 /** Applies a finished fight's outcome to the character and the mission it belonged to. */
@@ -95,7 +147,7 @@ export function resolveCombat(
   outcome: CombatOutcome,
   ctx: GameContext,
 ): GameState {
-  const { vitals } = state.character;
+  const { vitals, stats } = state.character;
   const afterFight = adjust(
     { ...state, combat: null },
     {
@@ -103,16 +155,36 @@ export function resolveCombat(
       chakra: outcome.player.chakra - vitals.chakra,
     },
   );
+  const stage = activeStage(state, ctx);
+  const enemies =
+    stage?.kind === 'combat'
+      ? stage.enemyIds.map((id) => ctx.content.enemies.require(id).name).join(' and ')
+      : 'your opponent';
 
   switch (outcome.result) {
     case 'victory': {
-      if (!afterFight.mission) return log(afterFight, 'You won the fight.', 'success');
-      const mission = advance(afterFight.mission, `You won the fight in ${outcome.rounds} rounds.`);
-      return completeIfFinished({ ...afterFight, mission }, ctx);
+      const reported = addReport(afterFight, {
+        kind: 'fight',
+        result: 'victory',
+        enemies,
+        rounds: outcome.rounds,
+        damageTaken: Math.max(0, vitals.health - outcome.player.health),
+        chakraSpent: Math.max(0, vitals.chakra - outcome.player.chakra),
+        health: afterFight.character.vitals.health,
+        maxHealth: maxHealth(stats),
+      });
+      if (!reported.mission) return reported;
+      const mission = advance(reported.mission, {
+        kind: 'outcome',
+        text: `You defeated ${enemies}.`,
+      });
+      return completeIfFinished({ ...reported, mission }, ctx);
     }
     case 'escaped':
       return failMission(afterFight, ctx, 'You retreated from the fight.');
-    case 'defeat':
-      return hospitalise(failMission(afterFight, ctx, 'You were beaten unconscious.'));
+    case 'defeat': {
+      const ended = endMission(afterFight, ctx, 'You were beaten unconscious.');
+      return hospitalise(ended.state, ctx, ended.title);
+    }
   }
 }
