@@ -7,71 +7,101 @@ import type {
   CombatOutcome,
   CombatState,
   CombatView,
+  RangeBand,
 } from '../../contract';
-import { alive, viewOf } from '../../rules/body';
-import { RANGE_LABEL } from '../../rules/range';
-import { resolveExchange, trumpDeed } from './round';
-import { execution, TACTICS } from './tactics';
+import { alive, hasPerk, viewOf } from '../../rules/body';
+import { RANGE_BANDS, RANGE_LABEL } from '../../rules/range';
+import {
+  cardDetail,
+  cardId,
+  cardLabel,
+  cardsFor,
+  defaultLoadout,
+  findCard,
+  slotLimit,
+} from './cards';
+import { upgradeLegacy } from './legacy';
+import { decide, resolveExchange } from './round';
 import {
   decode,
   encode,
   initialFighters,
+  patch,
   PLAN_ENGINE_ID,
   playerOf,
   type PlanFighter,
   type PlanState,
-  type TacticId,
 } from './state';
 
 /**
- * Plan & Watch: choose a tactic before the fight, then watch it play out exchange by
- * exchange. One trump card lets you go all out once.
+ * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
+ * (attacks, techniques, footwork that tries to change the range, defences that react on their
+ * own), then watch the round play out. Between rounds you see what worked and re-plan.
  */
 
 const START_RANGE = 'mid';
-/** "Play it out" stops after this many exchanges so a stalemate can't loop forever. */
-const AUTO_LIMIT = 30;
-const TACTIC_PREFIX = 'tactic:';
+/** Exchanges per round; the cards can be changed between rounds. */
+export const ROUND_EXCHANGES = 4;
+const SLOT_PREFIX = 'slot:';
+
+function read(state: CombatState): PlanState {
+  return upgradeLegacy(decode(state));
+}
 
 function statuses(f: PlanFighter): string[] {
-  return [
-    ...(f.stunned > 0 ? ['Dazed'] : []),
-    ...(f.sealed > 0 ? ['Sealed'] : []),
-    ...(f.guarding ? ['Guarding'] : []),
-  ];
+  return [...(f.stunned > 0 ? ['Dazed'] : []), ...(f.sealed > 0 ? ['Sealed'] : [])];
 }
 
-function planOptions(): CombatOption[] {
-  return TACTICS.map((t) => ({
-    id: `${TACTIC_PREFIX}${t.id}`,
-    label: t.label,
-    detail: `${t.summary} ${RANGE_LABEL[t.range]} range.`,
-    kind: 'plan',
-  }));
-}
-
-function trumpOption(state: PlanState): CombatOption {
-  const deed = trumpDeed(playerOf(state), state.range);
-  const what = deed.kind === 'technique' ? deed.technique.name : 'an all-out blow';
-  return {
-    id: 'trump',
-    label: 'Trump card',
-    detail: `Go all out with ${what}`,
-    kind: 'basic',
-    ...(state.trumpUsed ? { disabledReason: 'Already played this fight' } : {}),
-  };
+function slotOptions(player: PlanFighter, band: RangeBand): CombatOption[] {
+  const chosen = player.loadout[band];
+  const full = chosen.length >= slotLimit(player);
+  return cardsFor(player, band).map((card) => {
+    const id = cardId(card);
+    const selected = chosen.includes(id);
+    return {
+      id: `${SLOT_PREFIX}${band}:${id}`,
+      label: cardLabel(card),
+      detail: cardDetail(card, player),
+      kind: 'plan',
+      group: RANGE_LABEL[band],
+      selected,
+      ...(card.kind === 'jutsu' ? { discipline: card.technique.discipline } : {}),
+      ...(full && !selected ? { disabledReason: 'Slots full. Take a card out first.' } : {}),
+    };
+  });
 }
 
 function options(state: PlanState): CombatOption[] {
   if (state.result) return [];
-  if (state.phase === 'plan') return planOptions();
   const flee: CombatOption = { id: 'flee', label: 'Flee', detail: 'Try to escape', kind: 'escape' };
+  const escape = state.canFlee ? flee : { ...flee, disabledReason: 'You cannot flee this fight' };
+  if (state.phase === 'loadout') {
+    const player = playerOf(state);
+    const begin = state.bout === 1 ? 'Begin the fight' : `Begin round ${state.bout}`;
+    return [
+      ...RANGE_BANDS.flatMap((band) => slotOptions(player, band)),
+      { id: 'begin', label: begin, detail: '', kind: 'continue' },
+      escape,
+    ];
+  }
   return [
     { id: 'next', label: 'Next exchange', detail: '', kind: 'continue' },
-    { id: 'auto', label: 'Play it out', detail: '', kind: 'continue' },
-    trumpOption(state),
-    state.canFlee ? flee : { ...flee, disabledReason: 'You cannot flee this fight' },
+    { id: 'round', label: 'Watch the round', detail: '', kind: 'continue' },
+    escape,
   ];
+}
+
+function toggle(state: PlanState, optionId: string): PlanState {
+  const rest = optionId.slice(SLOT_PREFIX.length);
+  const split = rest.indexOf(':');
+  // The id came from our own options, so the band is one of RANGE_BANDS.
+  const band = rest.slice(0, split) as RangeBand;
+  const id = rest.slice(split + 1);
+  const player = playerOf(state);
+  const chosen = player.loadout[band];
+  const next = chosen.includes(id) ? chosen.filter((c) => c !== id) : [...chosen, id];
+  const loadout = { ...player.loadout, [band]: next };
+  return { ...state, fighters: patch(state.fighters, player.id, { loadout }) };
 }
 
 function fleeChance(state: PlanState): number {
@@ -82,10 +112,22 @@ function fleeChance(state: PlanState): number {
   return clamp(0.4 + (runner.attributes.speed - fastest) * 0.05 + distance, 0.1, 0.9);
 }
 
-function playOut(state: PlanState, rng: Rng): PlanState {
+/** Fights an exchange and, when the round is over, returns to the card table. */
+function exchange(state: PlanState, rng: Rng): PlanState {
+  const next = resolveExchange(state, rng);
+  if (next.result || next.exchange < ROUND_EXCHANGES) return next;
+  return {
+    ...next,
+    phase: 'loadout',
+    bout: next.bout + 1,
+    exchange: 0,
+    log: [...next.log, `— End of round ${state.bout}. Change your cards if you like. —`],
+  };
+}
+
+function watchRound(state: PlanState, rng: Rng): PlanState {
   let current = state;
-  for (let i = 0; i < AUTO_LIMIT && !current.result; i++)
-    current = resolveExchange(current, false, rng);
+  while (current.phase === 'fight' && !current.result) current = exchange(current, rng);
   return current;
 }
 
@@ -97,44 +139,68 @@ function flee(state: PlanState, rng: Rng): PlanState {
       result: 'escaped',
     };
   }
-  const failed = { ...state, log: [...state.log, 'You try to slip away, but you are cut off!'] };
-  return resolveExchange(failed, false, rng);
+  const failed = {
+    ...state,
+    phase: 'fight' as const,
+    log: [...state.log, 'You try to slip away, but you are cut off!'],
+  };
+  return exchange(failed, rng);
 }
 
 function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   const option = options(state).find((o) => o.id === optionId);
   if (!option) return err(`Unknown combat option "${optionId}".`);
   if (option.disabledReason) return err(option.disabledReason);
-  if (optionId.startsWith(TACTIC_PREFIX)) {
-    const tactic = optionId.slice(TACTIC_PREFIX.length) as TacticId;
-    const label = TACTICS.find((t) => t.id === tactic)?.label ?? tactic;
-    return ok({
-      ...state,
-      phase: 'fight',
-      tactic,
-      log: [...state.log, `You settle on a plan: ${label}.`],
-    });
+  if (optionId.startsWith(SLOT_PREFIX)) return ok(toggle(state, optionId));
+  switch (optionId) {
+    case 'begin':
+      return ok({ ...state, phase: 'fight', log: [...state.log, `— Round ${state.bout} —`] });
+    case 'flee':
+      return ok(flee(state, rng));
+    case 'round':
+      return ok(watchRound(state, rng));
+    default:
+      return ok(exchange(state, rng));
   }
-  if (optionId === 'auto') return ok(playOut(state, rng));
-  if (optionId === 'flee') return ok(flee(state, rng));
-  return ok(resolveExchange(state, optionId === 'trump', rng));
+}
+
+/** What you know of an enemy's cards: all of them with insight, else what you've seen. */
+function intentOf(state: PlanState, f: PlanFighter, insight: boolean): string | undefined {
+  if (f.side !== 'enemy' || !alive(f)) return undefined;
+  const ids = insight ? f.loadout[state.range] : (state.seen[f.id] ?? []);
+  const names = ids.flatMap((id) => {
+    const card = findCard(f, id);
+    return card ? [cardLabel(card)] : [];
+  });
+  if (names.length === 0) return undefined;
+  return `${insight ? `${RANGE_LABEL[state.range]} cards` : 'Seen'}: ${names.join(', ')}`;
+}
+
+function prompt(state: PlanState): string {
+  if (state.phase === 'loadout') {
+    return `Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} cards for each distance.`;
+  }
+  return `${RANGE_LABEL[state.range]} range · round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
 }
 
 export function createPlanEngine(): CombatEngine {
   return {
     id: PLAN_ENGINE_ID,
     label: 'Plan & Watch',
-    summary: 'Choose a tactic, then watch it play out. One trump card per fight.',
+    summary:
+      'Slot cards for each distance, then watch each round play out. Re-plan between rounds.',
 
     start(setup) {
       const names = setup.enemies.map((e) => e.name).join(', ');
+      const fighters = initialFighters(setup).map((f) => ({ ...f, loadout: defaultLoadout(f) }));
       const state: PlanState = {
-        phase: 'plan',
-        tactic: null,
+        phase: 'loadout',
         round: 1,
-        fighters: initialFighters(setup),
+        bout: 1,
+        exchange: 0,
+        fighters,
         range: START_RANGE,
-        trumpUsed: false,
+        seen: {},
         log: [setup.intro ?? `${names} square up. How will you fight?`],
         result: null,
         canFlee: setup.canFlee,
@@ -143,35 +209,32 @@ export function createPlanEngine(): CombatEngine {
     },
 
     act(state: CombatState, choice: CombatChoice, rng): Result<CombatState> {
-      const plan = decode(state);
+      const plan = read(state);
       if (plan.result) return err('The fight is already over.');
       const next = act(plan, choice.optionId, rng);
       return next.ok ? ok(encode(next.value)) : next;
     },
 
     view(state): CombatView {
-      const plan = decode(state);
-      const player = playerOf(plan);
-      const reliability = Math.round(execution(player) * 100);
+      const plan = read(state);
+      const insight = hasPerk(playerOf(plan), 'insight');
       return {
         round: plan.round,
-        combatants: plan.fighters.map((f) => viewOf(f, statuses(f))),
+        combatants: plan.fighters.map((f) => viewOf(f, statuses(f), intentOf(plan, f, insight))),
         log: plan.log,
         options: options(plan),
         range: plan.range,
-        prompt:
-          plan.phase === 'plan'
-            ? 'Choose your tactic.'
-            : `${RANGE_LABEL[plan.range]} range · you follow your plan ${reliability}% of the time`,
+        prompt: prompt(plan),
       };
     },
 
     outcome(state): CombatOutcome | null {
-      const plan = decode(state);
-      if (!plan.result) return null;
+      const plan = read(state);
+      const result = plan.result ?? decide(plan.fighters);
+      if (!result) return null;
       const player = playerOf(plan);
       return {
-        result: plan.result,
+        result,
         rounds: plan.round,
         player: { health: player.health, chakra: player.chakra },
       };

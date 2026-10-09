@@ -120,6 +120,10 @@ export interface CombatOption {
   readonly cost?: number;
   /** Aimed at one enemy: the UI sends the chosen target with it. */
   readonly targeted?: boolean;
+  /** Plans that are set up in parts (e.g. cards per range) say which part this belongs to. */
+  readonly group?: string;
+  /** For toggles: whether this is currently part of the plan. */
+  readonly selected?: boolean;
   /** Present when the option is shown but cannot be chosen right now. */
   readonly disabledReason?: string;
 }
@@ -132,7 +136,7 @@ export interface CombatView {
   readonly options: readonly CombatOption[];
   /** Current distance, for engines that track range. */
   readonly range?: RangeBand;
-  /** One line telling the player what to do now, e.g. "Choose your tactic". */
+  /** One line telling the player what to do now, e.g. "Pick your cards". */
   readonly prompt?: string;
   readonly meters?: readonly CombatMeter[];
 }

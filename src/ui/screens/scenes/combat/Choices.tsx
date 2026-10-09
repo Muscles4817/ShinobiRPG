@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import type { CombatOption, Discipline } from '@/game';
 
 import { TechniqueCard } from '../../../components/TechniqueCard';
@@ -42,7 +44,38 @@ export function Hand({
   );
 }
 
-/** Tactics to choose between before a planned fight. */
+function groupsOf(options: readonly CombatOption[]): string[] {
+  return [...new Set(options.flatMap((o) => (o.group === undefined ? [] : [o.group])))];
+}
+
+/** One plan option: a list entry, or a card that toggles in and out of its slots. */
+function PlanChoice({
+  option: o,
+  onPick,
+}: {
+  readonly option: CombatOption;
+  readonly onPick: Pick;
+}) {
+  const toggle = o.selected !== undefined;
+  return (
+    <button
+      type="button"
+      className={toggle ? `plan-card${o.selected ? ' on' : ''}` : 'choice'}
+      data-discipline={o.discipline ?? 'basic'}
+      aria-pressed={toggle ? o.selected : undefined}
+      disabled={o.disabledReason !== undefined}
+      title={o.disabledReason}
+      onClick={() => {
+        onPick(o);
+      }}
+    >
+      <b>{o.label}</b>
+      <small>{o.detail}</small>
+    </button>
+  );
+}
+
+/** Plans to set up before (or between rounds of) a planned fight, by group when grouped. */
 export function PlanPicker({
   options,
   onPick,
@@ -50,22 +83,36 @@ export function PlanPicker({
   readonly options: readonly CombatOption[];
   readonly onPick: Pick;
 }) {
+  const groups = groupsOf(options);
+  const [tab, setTab] = useState<string | null>(null);
   if (options.length === 0) return null;
+  const shown = tab ?? groups[0];
+  const visible = groups.length > 0 ? options.filter((o) => o.group === shown) : options;
   return (
-    <nav className="plan-picker" aria-label="Tactics">
-      {options.map((o) => (
-        <button
-          key={o.id}
-          type="button"
-          className="choice"
-          onClick={() => {
-            onPick(o);
-          }}
-        >
-          <b>{o.label}</b>
-          <small>{o.detail}</small>
-        </button>
-      ))}
+    <nav className="plan-picker" aria-label="Plan">
+      {groups.length > 0 && (
+        <div className="plan-tabs" role="tablist">
+          {groups.map((g) => (
+            <button
+              key={g}
+              type="button"
+              role="tab"
+              aria-selected={g === shown}
+              className={g === shown ? 'btn small' : 'btn ghost small'}
+              onClick={() => {
+                setTab(g);
+              }}
+            >
+              {g} <small>{options.filter((o) => o.group === g && o.selected).length}</small>
+            </button>
+          ))}
+        </div>
+      )}
+      <div className={groups.length > 0 ? 'plan-cards' : 'plan-list'}>
+        {visible.map((o) => (
+          <PlanChoice key={o.id} option={o} onPick={onPick} />
+        ))}
+      </div>
     </nav>
   );
 }

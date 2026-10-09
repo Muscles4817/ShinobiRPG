@@ -147,7 +147,7 @@ describe('App (smoke test)', () => {
   });
 
   it.each([
-    ['Plan & Watch', 'Choose your tactic.'],
+    ['Plan & Watch', /cards for each distance/],
     ['Deck', 'End turn'],
     ['Mind Game', 'Feint'],
   ])('switches the fight style to %s and fights with it', async (style, marker) => {
@@ -164,6 +164,34 @@ describe('App (smoke test)', () => {
       .find((b) => !(b as HTMLButtonElement).disabled)!;
     await user.click(spar);
     expect(screen.getAllByText(marker).length).toBeGreaterThan(0);
+  });
+
+  it('plans a fight with cards for each distance, then watches the round', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
+    await user.click(screen.getByRole('button', { name: /^Plan & Watch/ }));
+    await user.click(screen.getByRole('button', { name: /Here/ }));
+    await user.click(place(/Training Grounds/));
+    const sparring = screen.getByRole('region', { name: 'Sparring' });
+    await user.click(
+      within(sparring)
+        .getAllByRole('button', { name: 'Spar' })
+        .find((b) => !(b as HTMLButtonElement).disabled)!,
+    );
+    await user.click(screen.getByRole('tab', { name: /^Far/ }));
+    const dodge = screen.getByRole('button', { name: /^Dodge/ });
+    const before = dodge.getAttribute('aria-pressed');
+    if (before === 'true' || !(dodge as HTMLButtonElement).disabled) {
+      await user.click(dodge);
+      expect(screen.getByRole('button', { name: /^Dodge/ }).getAttribute('aria-pressed')).not.toBe(
+        before,
+      );
+    }
+    await user.click(screen.getByRole('button', { name: /^Begin the fight/ }));
+    await user.click(screen.getByRole('button', { name: /^Watch the round/ }));
+    expect(screen.queryByText(/End of round 1/) ?? screen.queryByRole('dialog')).not.toBeNull();
   });
 
   it('buys gear at the forge, groceries at the market, and cooks at home', async () => {
