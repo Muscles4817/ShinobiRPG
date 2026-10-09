@@ -1,7 +1,7 @@
 import { talkedToday } from '@/systems/bonds';
 
 import { playerCombatant } from '../combatants';
-import { engineFor } from '../fightStyle';
+import { startFight } from '../fightStyle';
 import { adjust, busyReason, firstBlocker, healthFraction, placeHere, spendTime } from '../ops';
 import { bondOf, findPerson, whereNow } from '../people/cast';
 import { companionCombatant } from '../people/companions';
@@ -34,7 +34,9 @@ export const spar: ActionHandler<ActionOf<'spar'>> = {
     const partner = findPerson(state, ctx, action.personId);
     if (!partner) return state;
     const ready = adjust(spendTime(state, SPAR_SLOTS, ctx), { energy: -SPAR_ENERGY });
-    const combat = engineFor(ready, ctx).start(
+    const combat = startFight(
+      ready,
+      ctx,
       {
         player: playerCombatant(ready, ctx),
         allies: [],

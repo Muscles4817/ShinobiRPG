@@ -117,7 +117,9 @@ ui ──► game ──► content ──► systems ──► core
 16. **Fight styles are engines, chosen per save.** `GameContext.engines` lists every engine
     (Classic, Plan & Watch, Deck, Mind Game); `settings.combatStyle` picks the one that starts
     new fights and `engineFor` routes to it. A fight in progress always continues in the engine
-    whose id is in its `CombatState`. The newer engines share `systems/combat/rules/` (range
+    whose id is in its `CombatState`. What the player sets up in a style (Plan & Watch cards) comes
+    back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
+    handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
     styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`).
 17. **The jobs board rotates.** Most jobs are postings that stay up a few days; `standing`

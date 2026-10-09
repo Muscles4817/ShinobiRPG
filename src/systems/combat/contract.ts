@@ -68,6 +68,11 @@ export interface CombatSetup {
   readonly canFlee: boolean;
   /** Opening line of the fight; the engine words one when absent. */
   readonly intro?: string;
+  /**
+   * The player's plan from their last fight in this engine, exactly as the engine handed it
+   * back in `CombatOutcome.plan`. Opaque to the game; the engine must validate it.
+   */
+  readonly plan?: unknown;
 }
 
 /**
@@ -154,6 +159,8 @@ export interface CombatOutcome {
   readonly rounds: number;
   /** The player's condition after the fight, to be written back to their vitals. */
   readonly player: { readonly health: number; readonly chakra: number };
+  /** Anything the player set up that should carry over to their next fight (JSON-safe). */
+  readonly plan?: unknown;
 }
 
 export interface CombatEngine {
