@@ -71,6 +71,13 @@ const PATHS: Readonly<Record<IconId, ReactNode>> = {
       <circle cx="11" cy="22" r="4" />
     </>
   ),
+  sword: <path d="M24 3l5 5-17 17-5-5zM7 20l5 5M4 28l5-5M9 18l5 5" />,
+  seal: (
+    <>
+      <rect x="7" y="4" width="18" height="24" rx="2" />
+      <path d="M12 10h8M16 10v12M12 16h8M12 22h8" />
+    </>
+  ),
   grill: (
     <path d="M5 13h22a11 9 0 0 1-22 0zM9 26l-2 4M23 26l2 4M10 9c-1-2 1-3 0-5M16 9c-1-2 1-3 0-5M22 9c-1-2 1-3 0-5" />
   ),

@@ -60,11 +60,13 @@ export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
         <section className="deed">
           <div className="deed-head">
             <h2>Your place</h2>
-            <span className={view.overdue ? 'chip harm' : 'chip'}>Rented</span>
+            <span className={view.overdue ? 'chip harm' : 'chip'}>
+              {view.rentFree ? 'Family home' : 'Rented'}
+            </span>
           </div>
           <dl className="kv">
             <dt>Rent</dt>
-            <dd className="num">{view.rentPerWeek} ryo / week</dd>
+            <dd className="num">{view.rentFree ? 'None' : `${view.rentPerWeek} ryo / week`}</dd>
             <dt>Status</dt>
             <dd className={view.overdue ? 'harm' : ''}>{view.rentStatus}</dd>
             <dt>Sleep</dt>
@@ -81,18 +83,22 @@ export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
             >
               Sleep till dawn
             </button>
-            <button
-              type="button"
-              className="btn ghost"
-              disabled={view.payRent.blocker !== null}
-              onClick={() => {
-                perform(view.payRent.action);
-              }}
-            >
-              Pay rent
-            </button>
+            {!view.rentFree && (
+              <button
+                type="button"
+                className="btn ghost"
+                disabled={view.payRent.blocker !== null}
+                onClick={() => {
+                  perform(view.payRent.action);
+                }}
+              >
+                Pay rent
+              </button>
+            )}
           </div>
-          {view.payRent.blocker && <p className="muted small">{view.payRent.blocker}</p>}
+          {!view.rentFree && view.payRent.blocker && (
+            <p className="muted small">{view.payRent.blocker}</p>
+          )}
           {view.nap.blocker && <p className="muted small">Nap: {view.nap.blocker}</p>}
         </section>
       </main>

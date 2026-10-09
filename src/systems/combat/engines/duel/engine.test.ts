@@ -12,6 +12,8 @@ const attributes = {
   taijutsu: 5,
   ninjutsu: 5,
   genjutsu: 5,
+  kenjutsu: 5,
+  fuuinjutsu: 5,
 };
 
 function fighter(id: string, overrides: Partial<CombatantSetup> = {}): CombatantSetup {
@@ -115,5 +117,35 @@ describe('duel engine', () => {
 
   it('rejects state from another engine', () => {
     expect(() => engine.view({ engineId: 'other', data: {} })).toThrow();
+  });
+
+  it('seals stop the target using techniques', () => {
+    const seal = {
+      id: 'seal',
+      name: 'Seal',
+      discipline: 'fuuinjutsu' as const,
+      effect: 'seal' as const,
+      chakraCost: 1,
+      power: 14,
+    };
+    const sealer = fighter('sealer', {
+      attributes: { ...attributes, fuuinjutsu: 60, speed: 60 },
+      techniques: [seal],
+    });
+    const victim = fighter('hero', { techniques: [seal] });
+    const state = engine.start({ player: victim, enemies: [sealer], canFlee: false }, createRng(1));
+    let current = state;
+    for (let i = 0; i < 10; i++) {
+      const sealedNow = engine
+        .view(current)
+        .combatants.find((c) => c.id === 'hero')!
+        .statuses.includes('Sealed');
+      if (sealedNow) break;
+      const next = engine.act(current, 'guard', createRng(i + 1));
+      if (!next.ok) throw new Error(next.error);
+      current = next.value;
+    }
+    const option = engine.view(current).options.find((o) => o.id === 'tech:seal');
+    expect(option?.disabledReason).toBe('Your chakra is sealed');
   });
 });

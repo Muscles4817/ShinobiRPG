@@ -26,7 +26,7 @@ export function techniqueDamage(
   variance: number,
 ): number {
   const skill = attacker.attributes[technique.discipline];
-  const bonus = technique.discipline === 'taijutsu' ? attacker.attributes.strength * 0.3 : 0;
+  const bonus = PHYSICAL_BONUS[technique.discipline](attacker);
   return mitigate((technique.power * (1 + skill / 20) + bonus) * variance, defender);
 }
 
@@ -42,6 +42,20 @@ export function resistChance(
       ? defender.attributes.willpower
       : defender.attributes.perception;
   return clamp(0.6 * logistic((defence - skill) / 4), 0.05, 0.6);
+}
+
+/** Physical disciplines add body stats on top of skill: fists use strength, blades speed too. */
+const PHYSICAL_BONUS: Readonly<Record<CombatTechnique['discipline'], (f: Fighter) => number>> = {
+  taijutsu: (f) => f.attributes.strength * 0.3,
+  kenjutsu: (f) => f.attributes.strength * 0.15 + f.attributes.speed * 0.15,
+  ninjutsu: () => 0,
+  genjutsu: () => 0,
+  fuuinjutsu: () => 0,
+};
+
+/** Rounds a seal lasts: stronger seals hold longer. */
+export function sealTurns(technique: CombatTechnique): number {
+  return technique.power >= 12 ? 3 : 2;
 }
 
 export function stunTurns(technique: CombatTechnique): number {

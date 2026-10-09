@@ -5,7 +5,8 @@ import type { Fighter } from './state';
 
 /** Simple opponent behaviour: heal when low, otherwise mix techniques, guards and strikes. */
 export function chooseEnemyAction(self: Fighter, rng: Rng): DuelAction {
-  const affordable = self.techniques.filter((t) => t.chakraCost <= self.chakra);
+  const sealed = (self.sealed ?? 0) > 0;
+  const affordable = sealed ? [] : self.techniques.filter((t) => t.chakraCost <= self.chakra);
   const heal = affordable.find((t) => t.effect === 'heal');
   if (heal && self.health < self.maxHealth * 0.35) return { kind: 'technique', technique: heal };
 

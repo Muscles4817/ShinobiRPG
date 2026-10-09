@@ -1,4 +1,4 @@
-import { daysOfRentLeft, DAYS_PER_RENT_PERIOD, payWeek } from '@/systems/housing';
+import { daysOfRentLeft, DAYS_PER_RENT_PERIOD, isRentFree, payWeek } from '@/systems/housing';
 import { maxHealth } from '@/systems/vitals';
 import { spend } from '@/systems/wallet';
 
@@ -17,6 +17,7 @@ export const payRent: ActionHandler<ActionOf<'payRent'>> = {
     return firstBlocker(
       busyReason(state),
       homeBlocker(state, ctx),
+      isRentFree(housing) && 'You live here rent-free.',
       daysOfRentLeft(housing, time.day) >= PAY_AHEAD_WINDOW && 'Your rent is paid well ahead.',
       wallet.ryo < housing.rentPerWeek && `Rent is ${housing.rentPerWeek} ryo.`,
     );
@@ -56,7 +57,7 @@ export const treat: ActionHandler<ActionOf<'treat'>> = {
     const hospital = placeHere(state, ctx, 'hospital');
     const paid = hospital ? spend(state.wallet, hospital.treatmentCost) : null;
     if (!hospital || !paid?.ok) return state;
-    const healed = adjust(spendTime({ ...state, wallet: paid.value }, TREATMENT_SLOTS), {
+    const healed = adjust(spendTime({ ...state, wallet: paid.value }, TREATMENT_SLOTS, ctx), {
       health: maxHealth(state.character.stats),
     });
     return log(healed, {

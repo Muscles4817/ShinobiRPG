@@ -17,11 +17,11 @@ const fireball: TechniqueDef = {
 
 describe('techniques', () => {
   it('blocks learning when requirements are unmet', () => {
-    expect(learnBlocker(EMPTY_BOOK, fireball, createStats(5))).toEqual({
+    expect(learnBlocker(EMPTY_BOOK, fireball, createStats(5), 'none')).toEqual({
       kind: 'requirements',
       unmet: ['ninjutsu'],
     });
-    expect(learnBlocker(EMPTY_BOOK, fireball, createStats(8))).toBeNull();
+    expect(learnBlocker(EMPTY_BOOK, fireball, createStats(8), 'none')).toBeNull();
   });
 
   it('accumulates progress then masters the technique', () => {
@@ -35,8 +35,19 @@ describe('techniques', () => {
     expect(second.book.progress.fireball).toBeUndefined();
   });
 
+  it('restricts clan techniques to clan members', () => {
+    const clanJutsu = { ...fireball, clan: 'uchiha' };
+    expect(learnBlocker(EMPTY_BOOK, clanJutsu, createStats(10), 'none')).toEqual({
+      kind: 'clan',
+      clan: 'uchiha',
+    });
+    expect(learnBlocker(EMPTY_BOOK, clanJutsu, createStats(10), 'uchiha')).toBeNull();
+  });
+
   it('blocks relearning a known technique', () => {
     const book = { known: ['fireball'], progress: {} };
-    expect(learnBlocker(book, fireball, createStats(10))).toEqual({ kind: 'already-known' });
+    expect(learnBlocker(book, fireball, createStats(10), 'none')).toEqual({
+      kind: 'already-known',
+    });
   });
 });

@@ -1,4 +1,6 @@
 export {
+  DISCIPLINES,
+  ELEMENTS,
   EMPTY_BOOK,
   learnBlocker,
   studyPoints,

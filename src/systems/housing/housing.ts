@@ -10,6 +10,8 @@ export interface Housing {
   readonly rentPerWeek: number;
   /** Last day covered by rent already paid. */
   readonly paidThroughDay: number;
+  /** Where you actually live, when it isn't the home place's own lodging (e.g. a clan compound). */
+  readonly lodging?: string;
 }
 
 export function newTenancy(placeId: string, rentPerWeek: number, today: number): Housing {
@@ -17,8 +19,17 @@ export function newTenancy(placeId: string, rentPerWeek: number, today: number):
   return { placeId, rentPerWeek, paidThroughDay: today + DAYS_PER_RENT_PERIOD - 1 };
 }
 
+/** Rent-free lodging, such as a room in your clan's compound. */
+export function freeLodging(placeId: string, lodging: string, today: number): Housing {
+  return { placeId, rentPerWeek: 0, paidThroughDay: today, lodging };
+}
+
+export function isRentFree(housing: Housing): boolean {
+  return housing.rentPerWeek === 0;
+}
+
 export function isRentOverdue(housing: Housing, today: number): boolean {
-  return today > housing.paidThroughDay;
+  return !isRentFree(housing) && today > housing.paidThroughDay;
 }
 
 /** Days until rent runs out; 0 means it runs out at the end of today, negative = overdue. */

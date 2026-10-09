@@ -1,8 +1,12 @@
 import type { ContentPack } from '../../types';
-import { ACADEMY_TECHNIQUES, APTITUDES } from './aptitudes';
+import { TALENTS } from '../../shared/talents';
+import { TRAITS } from '../../shared/traits';
+import { CLAN_TECHNIQUES } from './clanTechniques';
+import { CLANS } from './clans';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { MISSIONS } from './missions';
+import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NINDOS } from './profile';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
@@ -19,11 +23,16 @@ export const NARUTO_PACK: ContentPack = {
   startingRyo: 300,
   text: NARUTO_TEXT,
   locations: NARUTO_LOCATIONS,
-  techniques: TECHNIQUES,
+  techniques: [...TECHNIQUES, ...CLAN_TECHNIQUES],
   missions: MISSIONS,
   enemies: ENEMIES,
   training: TRAINING,
   foods: FOODS,
-  aptitudes: APTITUDES,
+  clans: CLANS,
+  talents: TALENTS,
+  traits: TRAITS,
+  nindos: NINDOS,
+  breakIn: BREAK_IN,
   academyTechniques: ACADEMY_TECHNIQUES,
+  disciplineStarters: DISCIPLINE_STARTERS,
 };

@@ -1,10 +1,16 @@
 import { round1 } from '@/core';
 import { unmetRequirements, type StatDelta, type StatId, type Stats } from '@/systems/stats';
 
-export type Discipline = 'taijutsu' | 'ninjutsu' | 'genjutsu';
-export type Element = 'fire' | 'water' | 'earth' | 'wind' | 'lightning';
-/** What a technique does when used. The combat engine decides how to interpret it. */
-export type TechniqueEffect = 'damage' | 'stun' | 'heal';
+export const DISCIPLINES = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
+export type Discipline = (typeof DISCIPLINES)[number];
+export const ELEMENTS = ['fire', 'wind', 'lightning', 'earth', 'water'] as const;
+export type Element = (typeof ELEMENTS)[number];
+/**
+ * What a technique does when used. The combat engine decides how to interpret it:
+ * damage hurts, stun costs the target turns, heal restores the user, seal stops the target
+ * using techniques for a while.
+ */
+export type TechniqueEffect = 'damage' | 'stun' | 'heal' | 'seal';
 
 export interface TechniqueDef {
   readonly id: string;
@@ -20,6 +26,8 @@ export interface TechniqueDef {
   readonly requirements: StatDelta;
   /** Total study points needed to master it. */
   readonly difficulty: number;
+  /** Only members of this clan may learn it. */
+  readonly clan?: string;
 }
 
 /** Techniques the character has mastered, plus partial study progress on others. */
@@ -32,14 +40,17 @@ export const EMPTY_BOOK: TechniqueBook = { known: [], progress: {} };
 
 export type LearnBlocker =
   | { readonly kind: 'already-known' }
+  | { readonly kind: 'clan'; readonly clan: string }
   | { readonly kind: 'requirements'; readonly unmet: readonly StatId[] };
 
 export function learnBlocker(
   book: TechniqueBook,
   def: TechniqueDef,
   stats: Stats,
+  clanId: string,
 ): LearnBlocker | null {
   if (book.known.includes(def.id)) return { kind: 'already-known' };
+  if (def.clan !== undefined && def.clan !== clanId) return { kind: 'clan', clan: def.clan };
   const unmet = unmetRequirements(stats, def.requirements);
   return unmet.length > 0 ? { kind: 'requirements', unmet } : null;
 }

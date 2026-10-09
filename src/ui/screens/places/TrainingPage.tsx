@@ -12,6 +12,8 @@ const FILTERS: readonly { id: DrillGroup | 'all'; label: string }[] = [
   { id: 'taijutsu', label: 'Taijutsu' },
   { id: 'ninjutsu', label: 'Ninjutsu' },
   { id: 'genjutsu', label: 'Genjutsu' },
+  { id: 'kenjutsu', label: 'Kenjutsu' },
+  { id: 'fuuinjutsu', label: 'Fūinjutsu' },
   { id: 'body', label: 'Body' },
   { id: 'mind', label: 'Mind' },
 ];

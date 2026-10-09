@@ -6,9 +6,11 @@ export {
   applyTraining,
   diffStats,
   unmetRequirements,
+  sumDeltas,
   type StatId,
   type StatGroup,
   type Stats,
   type StatDelta,
+  type StatScale,
 } from './stats';
 export { checkChance, rollCheck, type CheckResult } from './checks';

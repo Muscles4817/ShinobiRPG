@@ -24,6 +24,8 @@ export type CombatAttributes = Pick<
   | 'taijutsu'
   | 'ninjutsu'
   | 'genjutsu'
+  | 'kenjutsu'
+  | 'fuuinjutsu'
 >;
 
 export type CombatTechnique = Pick<

@@ -1,6 +1,7 @@
 import type { MissionDef } from '@/systems/missions';
+import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta } from '@/systems/stats';
-import type { TechniqueDef } from '@/systems/techniques';
+import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 
 /**
  * Content schemas. A ContentPack is one complete, self-contained setting (names, places,
@@ -38,7 +39,9 @@ export type IconId =
   | 'leaf'
   | 'tree'
   | 'dango'
-  | 'grill';
+  | 'grill'
+  | 'sword'
+  | 'seal';
 
 export interface TrainingDef {
   readonly id: string;
@@ -78,13 +81,69 @@ export interface EnemyDef {
   readonly techniqueIds: readonly string[];
 }
 
-/** The specialty chosen at character creation. */
-export interface AptitudeDef {
+/** A family the character can be born into. Clans shape growth and give techniques. */
+export interface ClanDef {
   readonly id: string;
   readonly name: string;
   readonly description: string;
   readonly statBonuses: StatDelta;
-  readonly techniqueIds: readonly string[];
+  readonly modifiers: ModifierSpec;
+  /** The clan's chakra nature; choosing the same nature earns a bonus. */
+  readonly nature?: Element;
+  readonly startingTechniqueIds: readonly string[];
+  /** Clan members live rent-free here instead of renting. */
+  readonly lodging?: string;
+  readonly kekkeiGenkai?: {
+    readonly name: string;
+    readonly description: string;
+    /** Dormant bloodlines awaken through later events. */
+    readonly dormant: boolean;
+  };
+}
+
+/** A special talent noted on the academy file. Each has an upside and a downside. */
+export interface TalentDef {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly statBonuses: StatDelta;
+  readonly modifiers: ModifierSpec;
+}
+
+/** A personality trait. Opposites can't be taken together. */
+export interface TraitDef {
+  readonly id: string;
+  readonly name: string;
+  /** How an instructor would write it in your file. */
+  readonly note: string;
+  readonly opposite?: string;
+  readonly modifiers: ModifierSpec;
+}
+
+/** Your dream: the goal you wrote in your academy application. */
+export interface NindoDef {
+  readonly id: string;
+  readonly name: string;
+  readonly essay: string;
+}
+
+export interface BreakInApproach {
+  readonly id: string;
+  readonly label: string;
+  readonly stat: 'speed' | 'intellect' | 'genjutsu';
+  readonly difficulty: number;
+  readonly success: string;
+  readonly failure: string;
+}
+
+/** The opening scene: breaking into the academy to read your own file. */
+export interface BreakInScene {
+  readonly intro: string;
+  readonly approaches: readonly BreakInApproach[];
+  readonly records: string;
+  /** The instructor who catches you at the end. */
+  readonly instructor: string;
+  readonly caught: string;
 }
 
 export interface Stall {
@@ -162,6 +221,12 @@ export interface ContentPack {
   readonly enemies: readonly EnemyDef[];
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];
-  readonly aptitudes: readonly AptitudeDef[];
+  readonly clans: readonly ClanDef[];
+  readonly talents: readonly TalentDef[];
+  readonly traits: readonly TraitDef[];
+  readonly nindos: readonly NindoDef[];
+  readonly breakIn: BreakInScene;
   readonly academyTechniques: readonly string[];
+  /** The technique a graduate starts with for their specialty discipline. */
+  readonly disciplineStarters: Readonly<Record<Discipline, string>>;
 }

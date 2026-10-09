@@ -1,10 +1,11 @@
 import type { CombatState } from '@/systems/combat';
 import type { Housing } from '@/systems/housing';
 import type { Journal } from '@/systems/journal';
+import type { Appearance, Grades, Pronouns } from '@/systems/profile';
 import type { MissionRun } from '@/systems/missions';
 import type { Standing } from '@/systems/standing';
 import type { Stats } from '@/systems/stats';
-import type { TechniqueBook } from '@/systems/techniques';
+import type { Element, TechniqueBook } from '@/systems/techniques';
 import type { GameTime } from '@/systems/time';
 import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
@@ -40,7 +41,19 @@ export interface GameState {
 
 export interface Character {
   readonly name: string;
-  readonly aptitudeId: string;
+  /** Family name; for clan members, the clan's name. */
+  readonly familyName: string;
+  readonly pronouns: Pronouns;
+  readonly appearance: Appearance;
+  readonly clanId: string;
+  readonly grades: Grades;
+  readonly nature: Element;
+  readonly traitIds: readonly string[];
+  /** Null for characters from saves made before talents existed. */
+  readonly talentId: string | null;
+  readonly nindoId: string | null;
+  /** How the academy break-in went; later scenes remember it. */
+  readonly breakIn: { readonly approachId: string; readonly succeeded: boolean };
   readonly stats: Stats;
   /** Stats on graduation day, to show growth. */
   readonly startingStats: Stats;

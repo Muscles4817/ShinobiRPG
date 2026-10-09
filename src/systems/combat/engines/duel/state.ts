@@ -23,6 +23,8 @@ export interface Fighter {
   readonly techniques: readonly CombatTechnique[];
   /** Turns of action this fighter will lose. */
   readonly stunned: number;
+  /** Rounds this fighter can't use techniques. Absent in saves from before seals existed. */
+  readonly sealed?: number;
   readonly guarding: boolean;
 }
 

@@ -14,7 +14,29 @@ export function validateContent(pack: ContentPack): string[] {
     ...missionProblems(pack),
     ...numberProblems(pack),
     ...validateWorld(pack),
+    ...profileProblems(pack),
   ];
+}
+
+/** Clans, traits and clan techniques must fit together. */
+function profileProblems(pack: ContentPack): string[] {
+  const clanIds = new Set(pack.clans.map((c) => c.id));
+  const problems: string[] = [];
+  if (!clanIds.has('none')) problems.push('pack needs a "none" clan for clanless characters');
+  if (pack.traits.length < 2) problems.push('pack needs at least two traits');
+  for (const t of pack.techniques) {
+    if (t.clan !== undefined && !clanIds.has(t.clan)) {
+      problems.push(`technique "${t.id}" belongs to unknown clan "${t.clan}"`);
+    }
+  }
+  for (const t of pack.traits) {
+    if (t.opposite === undefined) continue;
+    const opposite = pack.traits.find((o) => o.id === t.opposite);
+    if (!opposite) problems.push(`trait "${t.id}" has unknown opposite "${t.opposite}"`);
+    else if (opposite.opposite !== t.id)
+      problems.push(`traits "${t.id}" and "${opposite.id}" are not mutual opposites`);
+  }
+  return problems;
 }
 
 function uniqueIdProblems(pack: ContentPack): string[] {
@@ -25,7 +47,10 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['enemy', pack.enemies],
     ['training', pack.training],
     ['food', pack.foods],
-    ['aptitude', pack.aptitudes],
+    ['clan', pack.clans],
+    ['talent', pack.talents],
+    ['trait', pack.traits],
+    ['nindo', pack.nindos],
   ];
   return collections.flatMap(([kind, items]) =>
     duplicateIds(items).map((id) => `duplicate ${kind} id "${id}"`),
@@ -36,9 +61,10 @@ function techniqueReferenceProblems(pack: ContentPack): string[] {
   const known = new Set(pack.techniques.map((t) => t.id));
   const owners: [string, readonly string[]][] = [
     ['academyTechniques', pack.academyTechniques],
-    ...pack.aptitudes.map((a): [string, readonly string[]] => [
-      `aptitude "${a.id}"`,
-      a.techniqueIds,
+    ['disciplineStarters', Object.values(pack.disciplineStarters)],
+    ...pack.clans.map((c): [string, readonly string[]] => [
+      `clan "${c.id}"`,
+      c.startingTechniqueIds,
     ]),
     ...pack.enemies.map((e): [string, readonly string[]] => [`enemy "${e.id}"`, e.techniqueIds]),
   ];

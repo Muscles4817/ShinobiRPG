@@ -23,8 +23,14 @@ function memoryStore(initial: string | null = null): SaveStore & { data: string 
 type User = ReturnType<typeof userEvent.setup>;
 
 async function startGame(user: User, world = /Land of Embers/) {
-  await user.click(screen.getByText(world));
-  await user.type(screen.getByLabelText('Your name'), 'Aoi');
+  await user.click(screen.getByRole('button', { name: world }));
+  await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+  await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
+  await user.click(screen.getByRole('button', { name: 'Find your file' }));
+  await user.type(screen.getByLabelText('Given name'), 'Aoi');
+  for (let page = 0; page < 6; page++) {
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+  }
   await user.click(screen.getByRole('button', { name: /forehead protector/i }));
 }
 
@@ -45,7 +51,7 @@ describe('App (smoke test)', () => {
   it('starts in Konohagakure with the fan pack', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);
-    await startGame(user, /^Hidden Leaf/);
+    await startGame(user, /Hidden Leaf/);
     expect(screen.getByRole('heading', { name: 'Konohagakure' })).toBeInTheDocument();
     expect(place(/Ichiraku is open|Shopping District/)).toBeInTheDocument();
   });
@@ -107,6 +113,33 @@ describe('App (smoke test)', () => {
     first.unmount();
     render(<App store={store} />);
     expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
+  });
+
+  it('creates a clan character with point-buy grades', async () => {
+    const user = userEvent.setup();
+    const store = memoryStore();
+    render(<App store={store} />);
+    await user.click(screen.getByRole('button', { name: /Hidden Leaf/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
+    await user.click(screen.getByRole('button', { name: 'Find your file' }));
+    await user.type(screen.getByLabelText('Given name'), 'Itachi');
+    await user.click(screen.getByRole('button', { name: /^Uchiha/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getByRole('button', { name: 'Point buy' }));
+    const kenjutsu = screen.getByRole('group', { name: 'Kenjutsu' });
+    await user.click(within(kenjutsu).getByRole('button', { name: 'A' }));
+    expect(screen.getByText(/Points spent 6 of 3/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Turn the page' })).toBeDisabled();
+    await user.click(within(kenjutsu).getByRole('button', { name: 'C' }));
+    for (let page = 0; page < 5; page++) {
+      await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    }
+    await user.click(screen.getByRole('button', { name: /forehead protector/i }));
+    expect(store.data).toContain('"clanId":"uchiha"');
+    await user.click(screen.getByRole('button', { name: /Shinobi/ }));
+    expect(screen.getByRole('heading', { name: 'Itachi Uchiha' })).toBeInTheDocument();
+    expect(screen.getByText(/Sharingan/)).toBeInTheDocument();
   });
 
   it('reports an unreadable save instead of crashing', () => {

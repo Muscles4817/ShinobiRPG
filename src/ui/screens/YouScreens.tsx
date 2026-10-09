@@ -1,16 +1,30 @@
 import { useState } from 'react';
 
-import { headerView, jutsuDeck, shinobiView, type Discipline, type JutsuCard } from '@/game';
+import { jutsuDeck, type Discipline, type JutsuCard } from '@/game';
 
 import { TechniqueCard } from '../components/TechniqueCard';
 import type { ScreenProps } from './types';
 
+const EFFECT_TEXT: Readonly<Record<JutsuCard['effect'], (power: number) => string>> = {
+  damage: (power) => `power ${power}`,
+  stun: () => 'dazes',
+  heal: () => 'heals',
+  seal: () => 'seals',
+};
+
+const FILTER_LABELS: Readonly<Record<Discipline | 'all', string>> = {
+  all: 'All',
+  taijutsu: 'Taijutsu',
+  ninjutsu: 'Ninjutsu',
+  genjutsu: 'Genjutsu',
+  kenjutsu: 'Kenjutsu',
+  fuuinjutsu: 'Fūinjutsu',
+};
+
 function cardDetail(card: JutsuCard): string {
   if (card.status === 'studying') return `Studying · ${card.progressPct}%`;
   if (card.status === 'unknown') return 'Not learned';
-  const effect =
-    card.effect === 'damage' ? `power ${card.power}` : card.effect === 'stun' ? 'dazes' : 'heals';
-  return `${card.chakraCost} chakra · ${effect}`;
+  return `${card.chakraCost} chakra · ${EFFECT_TEXT[card.effect](card.power)}`;
 }
 
 /** Your techniques as a deck of the same cards you play in fights. */
@@ -31,18 +45,20 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
       </header>
       <main className="page">
         <div className="filters" role="group" aria-label="Filter techniques">
-          {(['all', 'taijutsu', 'ninjutsu', 'genjutsu'] as const).map((f) => (
-            <button
-              key={f}
-              type="button"
-              className={`filter d-${f}${f === filter ? ' on' : ''}`}
-              onClick={() => {
-                setFilter(f);
-              }}
-            >
-              {f === 'all' ? 'All' : f}
-            </button>
-          ))}
+          {(['all', 'taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const).map(
+            (f) => (
+              <button
+                key={f}
+                type="button"
+                className={`filter d-${f}${f === filter ? ' on' : ''}`}
+                onClick={() => {
+                  setFilter(f);
+                }}
+              >
+                {FILTER_LABELS[f]}
+              </button>
+            ),
+          )}
         </div>
         <div className="deck">
           {shown.map((c) => (
@@ -76,112 +92,5 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
         )}
       </main>
     </>
-  );
-}
-
-const GROUP_TITLES = { discipline: 'Disciplines', body: 'Body', mind: 'Mind' } as const;
-
-/** Asks twice before throwing a life away. */
-function AbandonButton({ onAbandon }: { readonly onAbandon: () => void }) {
-  const [armed, setArmed] = useState(false);
-  return armed ? (
-    <div className="row-buttons">
-      <button type="button" className="btn danger" onClick={onAbandon}>
-        Yes, start over
-      </button>
-      <button
-        type="button"
-        className="btn ghost"
-        onClick={() => {
-          setArmed(false);
-        }}
-      >
-        Keep playing
-      </button>
-    </div>
-  ) : (
-    <button
-      type="button"
-      className="btn ghost danger-outline"
-      onClick={() => {
-        setArmed(true);
-      }}
-    >
-      Start a new life
-    </button>
-  );
-}
-
-/** Your shinobi registration card and stats. */
-export function ShinobiScreen({
-  ctx,
-  state,
-  onAbandon,
-}: ScreenProps & { readonly onAbandon: () => void }) {
-  const view = shinobiView(state, ctx);
-  const header = headerView(state, ctx);
-  const [disciplines, ...rest] = view.groups;
-  return (
-    <main className="page">
-      <section className="idcard">
-        <span className="stamp" aria-hidden="true">
-          忍
-        </span>
-        <span className="photo" aria-hidden="true">
-          <svg viewBox="0 0 70 86" width="70" height="86">
-            <circle cx="35" cy="34" r="15" fill="#8a7650" />
-            <path d="M8 86c2-20 14-28 27-28s25 8 27 28z" fill="#8a7650" />
-            <rect x="18" y="24" width="34" height="7" rx="2" fill="#5a6fa8" />
-          </svg>
-        </span>
-        <h1 className="id-name">{view.name}</h1>
-        <dl className="id-kv">
-          <dt>Rank</dt>
-          <dd>{view.rank}</dd>
-          <dt>Village</dt>
-          <dd>{view.village}</dd>
-          <dt>Gift</dt>
-          <dd>{view.gift}</dd>
-          <dt>Missions</dt>
-          <dd>
-            {view.missionsCompleted} done · {view.missionsFailed} failed
-          </dd>
-          <dt>Reputation</dt>
-          <dd>{view.reputation}</dd>
-        </dl>
-        <p className="id-no">
-          Shinobi registry · No. {view.registryNo} · issued {view.issued}
-        </p>
-      </section>
-      {disciplines && (
-        <section className="disc-tiles">
-          {disciplines.stats.map((s) => (
-            <div key={s.label} className={`disc d-${s.label.toLowerCase()}`}>
-              <small>{s.label}</small>
-              <b className="num">{s.value.toFixed(1)}</b>
-              <small>{s.growth > 0 ? `+${s.growth} since graduation` : '—'}</small>
-            </div>
-          ))}
-        </section>
-      )}
-      <section className="stat-cols">
-        {rest.map((g) => (
-          <div key={g.group}>
-            <h2 className="label">{GROUP_TITLES[g.group]}</h2>
-            {g.stats.map((s) => (
-              <div key={s.label} className="stat-row num">
-                <span>{s.label}</span>
-                <span>{s.value.toFixed(1)}</span>
-                <span className="growth">{s.growth > 0 ? `+${s.growth}` : ''}</span>
-              </div>
-            ))}
-          </div>
-        ))}
-      </section>
-      <p className="muted small">
-        {header.date} · {header.location}
-      </p>
-      <AbandonButton onAbandon={onAbandon} />
-    </main>
   );
 }

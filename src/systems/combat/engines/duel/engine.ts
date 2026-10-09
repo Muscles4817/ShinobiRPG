@@ -7,6 +7,7 @@ import type {
   CombatState,
   CombatView,
   CombatantView,
+  CombatTechnique,
 } from '../../contract';
 import type { DuelAction } from './actions';
 import { resolveRound } from './round';
@@ -22,10 +23,18 @@ import {
 
 const TECHNIQUE_PREFIX = 'tech:';
 
+const EFFECT_DETAIL: Readonly<Record<CombatTechnique['effect'], (power: number) => string>> = {
+  damage: (power) => `power ${power}`,
+  stun: () => 'dazes',
+  heal: () => 'heals',
+  seal: () => 'seals',
+};
+
 function statuses(f: Fighter): string[] {
   const list: string[] = [];
   if (f.health <= 0) list.push('Down');
   if (f.stunned > 0) list.push('Dazed');
+  if ((f.sealed ?? 0) > 0) list.push('Sealed');
   if (f.guarding) list.push('Guarding');
   return list;
 }
@@ -51,10 +60,11 @@ function options(state: DuelState): CombatOption[] {
     const base: CombatOption = {
       id: `${TECHNIQUE_PREFIX}${t.id}`,
       label: t.name,
-      detail: `${t.chakraCost} chakra · ${t.effect === 'damage' ? `power ${t.power}` : t.effect}`,
+      detail: `${t.chakraCost} chakra · ${EFFECT_DETAIL[t.effect](t.power)}`,
       kind: 'technique',
       discipline: t.discipline,
     };
+    if ((player.sealed ?? 0) > 0) return { ...base, disabledReason: 'Your chakra is sealed' };
     return t.chakraCost > player.chakra ? { ...base, disabledReason: 'Not enough chakra' } : base;
   });
   const flee: CombatOption = { id: 'flee', label: 'Flee', detail: 'Try to escape', kind: 'escape' };
