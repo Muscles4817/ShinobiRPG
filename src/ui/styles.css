@@ -1,0 +1,438 @@
+:root {
+  --bg: #14121a;
+  --surface: #1e1b26;
+  --surface-2: #2a2534;
+  --border: #3a3347;
+  --text: #ece6f2;
+  --muted: #9d93ad;
+  --accent: #e8913a;
+  --accent-strong: #ffb45e;
+  --success: #6fcf8f;
+  --warning: #f2c14e;
+  --danger: #ef6b6b;
+  --health: #e05a5a;
+  --chakra: #5aa7e0;
+  --energy: #e0c35a;
+  --fullness: #7ccf6f;
+  --radius: 12px;
+
+  color-scheme: dark;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0.4em 0;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.15rem;
+  color: var(--accent-strong);
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+p {
+  margin: 0.4em 0;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.9em;
+}
+
+button {
+  font: inherit;
+  color: var(--bg);
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  min-height: 40px;
+}
+
+button:disabled {
+  background: var(--surface-2);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+button.primary {
+  width: 100%;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+button.danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  margin: 1.5rem 0;
+}
+
+button.link {
+  background: transparent;
+  color: inherit;
+  min-height: auto;
+  padding: 0 0.25em;
+}
+
+/* Layout */
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen {
+  flex: 1;
+  padding: 0.75rem 1rem 6rem;
+}
+
+.new-game {
+  max-width: 640px;
+  margin: 0 auto;
+  padding-top: 2rem;
+}
+
+/* Status bar */
+.status {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: calc(0.5rem + env(safe-area-inset-top)) 1rem 0.6rem;
+}
+
+.status-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ryo {
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.status-time {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.warning-chip {
+  background: color-mix(in srgb, var(--warning) 20%, transparent);
+  color: var(--warning);
+  border-radius: 999px;
+  padding: 0 0.5em;
+  font-size: 0.8em;
+}
+
+.meters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem 0.75rem;
+  margin-top: 0.4rem;
+}
+
+.meter-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.meter-track {
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.meter-health {
+  background: var(--health);
+}
+.meter-chakra {
+  background: var(--chakra);
+}
+.meter-energy {
+  background: var(--energy);
+}
+.meter-fullness {
+  background: var(--fullness);
+}
+
+/* Feedback */
+.latest {
+  border-left: 3px solid var(--accent);
+  padding: 0.4rem 0.75rem;
+  background: var(--surface);
+  border-radius: 0 8px 8px 0;
+}
+
+.notice {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: color-mix(in srgb, var(--danger) 18%, var(--surface));
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.tone-success {
+  border-color: var(--success);
+  color: var(--success);
+}
+.tone-warning {
+  border-color: var(--warning);
+  color: var(--warning);
+}
+.tone-danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* Cards */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.card-header h3,
+.card-header p {
+  margin: 0;
+}
+
+.tags {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tags li {
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 0.05em 0.6em;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.blocker {
+  color: var(--warning);
+  font-size: 0.85rem;
+}
+
+progress {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+/* Profile */
+.facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 1rem;
+  margin: 0.5rem 0;
+}
+
+.facts dt {
+  color: var(--muted);
+}
+
+.facts dd {
+  margin: 0;
+}
+
+.fact-row {
+  display: contents;
+}
+
+.journal {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Mission + combat */
+.story {
+  padding-left: 1.2rem;
+  color: var(--muted);
+}
+
+.prompt {
+  font-size: 1.05rem;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.choice-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.choice-button:not(:disabled):active {
+  border-color: var(--accent);
+}
+
+.combatants {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.combatant {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+}
+
+.side-player {
+  border-color: var(--chakra);
+}
+
+.side-enemy {
+  border-color: var(--danger);
+}
+
+.combat-log {
+  list-style: none;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  min-height: 6rem;
+}
+
+/* New game form */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 1rem 0;
+  border: none;
+  padding: 0;
+}
+
+.field input:not([type='radio']) {
+  font: inherit;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.choice input {
+  position: absolute;
+  opacity: 0;
+}
+
+.choice.selected {
+  border-color: var(--accent);
+}
+
+/* Bottom tab bar */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.tabbar button {
+  background: transparent;
+  color: var(--muted);
+  border-radius: 0;
+  padding: 0.75rem 0;
+  font-size: 0.8rem;
+}
+
+.tabbar button.active {
+  color: var(--accent-strong);
+  box-shadow: inset 0 2px 0 var(--accent);
+}
