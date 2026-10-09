@@ -125,6 +125,11 @@ function v7ToV8(state: RawState): RawState {
   };
 }
 
+/** v8 → v9: fight plans remembered between fights; nothing remembered yet. */
+function v8ToV9(state: RawState): RawState {
+  return { ...state, settings: { ...asRecord(state.settings), combatPlans: {} } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -133,4 +138,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   5: v5ToV6,
   6: v6ToV7,
   7: v7ToV8,
+  8: v8ToV9,
 };

@@ -176,6 +176,40 @@ describe('plan & watch engine', () => {
     expect(engine.act(legacy, { optionId: 'begin' }, createRng(1)).ok).toBe(true);
   });
 
+  it('starts from the plan you had last time, cleaned up, and hands it back at the end', () => {
+    const plan = { close: ['counter', 'jutsu:gone', 'strike'], mid: ['dodge'], far: 'nonsense' };
+    const state = engine.start(
+      {
+        player: fighter('hero', { techniques: [daze, blast] }),
+        allies: [],
+        enemies: [fighter('bandit')],
+        canFlee: true,
+        plan,
+      },
+      createRng(1),
+    );
+    const hero = decode(state).fighters[0]!;
+    expect(hero.loadout.close).toEqual(defaultLoadout(hero).close);
+    const kept = engine.start(
+      {
+        player: fighter('hero'),
+        allies: [],
+        enemies: [fighter('bandit')],
+        canFlee: true,
+        plan: { close: ['counter', 'jutsu:gone', 'strike'], mid: ['dodge'], far: [] },
+      },
+      createRng(1),
+    );
+    expect(decode(kept).fighters[0]!.loadout).toEqual({
+      close: ['counter', 'strike'],
+      mid: ['dodge'],
+      far: [],
+    });
+    const fled = act(engine, kept, 'flee', 5);
+    const outcome = engine.outcome(fled);
+    if (outcome) expect(outcome.plan).toEqual(decode(kept).fighters[0]!.loadout);
+  });
+
   it('rejects state from another engine', () => {
     expect(() => engine.view({ engineId: 'other', data: {} })).toThrow();
   });

@@ -54,6 +54,11 @@ export interface GameState {
 export interface Settings {
   /** Engine id of the fight style used for new fights. */
   readonly combatStyle: string;
+  /**
+   * What you last set up in each fight style (e.g. Plan & Watch cards), by engine id, so the
+   * next fight starts from it. Opaque: only that engine reads it.
+   */
+  readonly combatPlans: Readonly<Record<string, unknown>>;
 }
 
 export interface Character {

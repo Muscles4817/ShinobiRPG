@@ -82,6 +82,33 @@ describe('fight styles', () => {
     const { settings: _settings, ...v5state } = newGame();
     const loaded = deserialize(JSON.stringify({ version: 5, state: v5state }));
     if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.settings).toEqual({ combatStyle: 'duel-v1' });
+    expect(loaded.value.settings).toEqual({ combatStyle: 'duel-v1', combatPlans: {} });
+  });
+
+  it('a version 8 save remembers no plans yet', () => {
+    const state = newGame();
+    const v8 = { ...state, settings: { combatStyle: 'plan-v1' } };
+    const loaded = deserialize(JSON.stringify({ version: 8, state: v8 }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.settings).toEqual({ combatStyle: 'plan-v1', combatPlans: {} });
+  });
+
+  it('Plan & Watch cards carry over to the next fight', () => {
+    const strong = withAllStats(withStyle('plan-v1'), 40);
+    let fight = act(strong, { type: 'spar', personId: 'kaen' });
+    const cards = () =>
+      combatScene(fight, ctx)!
+        .options.filter((o) => o.group === 'Far' && o.selected)
+        .map((o) => o.id);
+    const [first] = cards();
+    fight = act(fight, { type: 'combatAct', optionId: first! });
+    fight = act(fight, { type: 'combatAct', optionId: 'slot:far:dodge' });
+    const chosen = cards();
+    expect(chosen).toContain('slot:far:dodge');
+    const done = fightOut(fight);
+    expect(done.settings.combatPlans['plan-v1']).toBeDefined();
+    const nextDay = { ...done, time: { ...done.time, day: done.time.day + 1, slot: 1 } };
+    fight = act(nextDay, { type: 'spar', personId: 'kaen' });
+    expect(cards()).toEqual(chosen);
   });
 });

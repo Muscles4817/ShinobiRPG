@@ -15,7 +15,7 @@ import { deduct, earn } from '@/systems/wallet';
 
 import { enemyCombatant, playerCombatant } from './combatants';
 import type { GameContext } from './context';
-import { engineFor } from './fightStyle';
+import { startFight } from './fightStyle';
 import { adjust, chip, log, placeHere, spendTime } from './ops';
 import { bondOf, requirePerson } from './people/cast';
 import { companionCombatant } from './people/companions';
@@ -142,7 +142,9 @@ export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameS
   const enemies = stage.enemyIds.map((id, i) =>
     enemyCombatant(ctx.content.enemies.require(id), i, ctx),
   );
-  const combat = engineFor(state, ctx).start(
+  const combat = startFight(
+    state,
+    ctx,
     {
       player: playerCombatant(state, ctx),
       allies: teamAllies(state, ctx),

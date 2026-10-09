@@ -21,6 +21,7 @@ import {
   slotLimit,
 } from './cards';
 import { upgradeLegacy } from './legacy';
+import { rememberedLoadout } from './memory';
 import { decide, resolveExchange } from './round';
 import {
   decode,
@@ -192,7 +193,10 @@ export function createPlanEngine(): CombatEngine {
 
     start(setup) {
       const names = setup.enemies.map((e) => e.name).join(', ');
-      const fighters = initialFighters(setup).map((f) => ({ ...f, loadout: defaultLoadout(f) }));
+      const fighters = initialFighters(setup).map((f) => ({
+        ...f,
+        loadout: (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ?? defaultLoadout(f),
+      }));
       const state: PlanState = {
         phase: 'loadout',
         round: 1,
@@ -237,6 +241,7 @@ export function createPlanEngine(): CombatEngine {
         result,
         rounds: plan.round,
         player: { health: player.health, chakra: player.chakra },
+        plan: player.loadout,
       };
     },
   };
