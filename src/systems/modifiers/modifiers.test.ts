@@ -29,4 +29,10 @@ describe('modifiers', () => {
       { label: 'Get hungry 60% faster', tone: 'cost' },
     ]);
   });
+  it('describes a boost to every discipline as one line', () => {
+    const all = { taijutsu: 1.1, ninjutsu: 1.1, genjutsu: 1.1, kenjutsu: 1.1, fuuinjutsu: 1.1 };
+    expect(describeSpec({ studyDiscipline: all }).map((l) => l.label)).toEqual([
+      'All techniques learned 10% faster',
+    ]);
+  });
 });

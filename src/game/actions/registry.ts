@@ -2,8 +2,10 @@ import { combatAct } from './combat';
 import { eat, rest, sleep, train } from './daily';
 import { missionChoose, missionContinue, startMission } from './mission';
 import { payRent, treat } from './services';
+import { cook } from './kitchen';
 import { lesson } from './lesson';
 import { setCombatStyle } from './settings';
+import { buyGear, buyIngredient, equipGear, unequipGear } from './shop';
 import { spar } from './spar';
 import { study } from './study';
 import { endConversation, reply, talk } from './talk';
@@ -36,4 +38,9 @@ export const HANDLERS: Registry = {
   lesson,
   spar,
   setCombatStyle,
+  buyGear,
+  equipGear,
+  unequipGear,
+  buyIngredient,
+  cook,
 };

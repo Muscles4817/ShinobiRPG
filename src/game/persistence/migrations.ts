@@ -115,6 +115,16 @@ function v6ToV7(state: RawState): RawState {
   return { ...state, board: { seed, refreshedDay: 0, postings: [], lastTaken: {} } };
 }
 
+/** v7 → v8: inventory (gear and pantry) and today's home-cooked meal. */
+function v7ToV8(state: RawState): RawState {
+  const character = asRecord(state.character);
+  return {
+    ...state,
+    character: { ...character, meal: null },
+    inventory: { gear: [], equipped: {}, pantry: {} },
+  };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -122,4 +132,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   4: v4ToV5,
   5: v5ToV6,
   6: v6ToV7,
+  7: v7ToV8,
 };

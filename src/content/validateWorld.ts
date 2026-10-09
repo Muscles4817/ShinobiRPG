@@ -13,11 +13,15 @@ export function validateWorld(pack: ContentPack): string[] {
     food: new Set(pack.foods.map((f) => f.id)),
     mission: new Set(pack.missions.map((m) => m.id)),
     technique: new Set(pack.techniques.map((t) => t.id)),
+    gear: new Set(pack.gear.map((g) => g.id)),
+    ingredient: new Set(pack.ingredients.map((i) => i.id)),
   };
   const reached = {
     training: new Set<string>(),
     food: new Set<string>(),
     mission: new Set<string>(),
+    gear: new Set<string>(),
+    ingredient: new Set<string>(),
   };
 
   for (const location of pack.locations) {
@@ -33,7 +37,7 @@ export function validateWorld(pack: ContentPack): string[] {
       problems.push(`place "${place.id}" references unknown ${kind} "${id}"`);
     if (kind !== 'technique') reached[kind].add(id);
   }
-  for (const kind of ['training', 'food', 'mission'] as const) {
+  for (const kind of ['training', 'food', 'mission', 'gear', 'ingredient'] as const) {
     refs[kind].forEach((id) => {
       if (!reached[kind].has(id)) problems.push(`${kind} "${id}" is not offered at any place`);
     });
@@ -41,14 +45,19 @@ export function validateWorld(pack: ContentPack): string[] {
   return problems;
 }
 
-type RefKind = 'training' | 'food' | 'mission' | 'technique';
+type RefKind = 'training' | 'food' | 'mission' | 'technique' | 'gear' | 'ingredient';
 
 function placeRefs(place: PlaceDef): [RefKind, string][] {
   switch (place.kind) {
     case 'training':
       return place.trainingIds.map((id) => ['training', id]);
     case 'market':
-      return place.stalls.flatMap((s) => s.foodIds.map((id): [RefKind, string] => ['food', id]));
+      return place.stalls.flatMap((s): [RefKind, string][] => [
+        ...s.foodIds.map((id): [RefKind, string] => ['food', id]),
+        ...(s.ingredientIds ?? []).map((id): [RefKind, string] => ['ingredient', id]),
+      ]);
+    case 'gear':
+      return place.gearIds.map((id) => ['gear', id]);
     case 'missions':
       return place.missionIds.map((id) => ['mission', id]);
     case 'academy':

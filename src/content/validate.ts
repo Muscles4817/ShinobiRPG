@@ -19,8 +19,22 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateWorld(pack),
     ...profileProblems(pack),
     ...beginnerProblems(pack),
+    ...recipeProblems(pack),
     ...validatePeople(pack),
   ];
+}
+
+/** Recipes cook from ingredients the pack sells, and actually fill you up. */
+function recipeProblems(pack: ContentPack): string[] {
+  const known = new Set(pack.ingredients.map((i) => i.id));
+  return pack.recipes.flatMap((r) => [
+    ...r.ingredients
+      .filter((i) => !known.has(i.id))
+      .map((i) => `recipe "${r.id}" needs unknown ingredient "${i.id}"`),
+    ...(r.ingredients.length === 0 || r.satiety <= 0
+      ? [`recipe "${r.id}" needs ingredients and must feed you`]
+      : []),
+  ]);
 }
 
 /** A fresh graduate (every stat at the base value) must be able to start a scroll in each discipline. */
@@ -75,6 +89,9 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['talent', pack.talents],
     ['trait', pack.traits],
     ['nindo', pack.nindos],
+    ['gear', pack.gear],
+    ['ingredient', pack.ingredients],
+    ['recipe', pack.recipes],
     ['person', pack.people],
     ['conversation', pack.conversations],
   ];

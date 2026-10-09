@@ -39,6 +39,9 @@ choose **GitHub Actions**.
   (pay rent or get locked out), a notice board of jobs, a rack of technique scrolls.
 - **The jobs board changes.** Postings go up for a few days and come down; standing jobs
   like the patrol are always there. Harder work appears only once the hall trusts you.
+- **Shops and home cooking.** A smith and an outfitter sell weapons, armour and charms that
+  add to your stats in fights. Buy ingredients from the grocer and cook at home: cheaper than
+  eating out, and a good meal gives you a buff for the rest of the day.
 - **Missions play as a story** with real odds on every choice; fights use a hand of technique
   cards. Results come as cards: fight results, mission debriefs, hospital bills.
 - **People live in the village.** The morning after graduation your team is read out: two

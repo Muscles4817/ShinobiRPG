@@ -1,5 +1,6 @@
 import type { CombatState } from '@/systems/combat';
 import type { Housing } from '@/systems/housing';
+import type { Inventory } from '@/systems/inventory';
 import type { Journal } from '@/systems/journal';
 import type { Appearance, Grades, Pronouns } from '@/systems/profile';
 import type { MissionRun } from '@/systems/missions';
@@ -45,6 +46,8 @@ export interface GameState {
   readonly settings: Settings;
   /** The jobs board: what is posted and when standing jobs were last taken. */
   readonly board: Board;
+  /** Gear you own and wear, and your pantry. */
+  readonly inventory: Inventory;
 }
 
 /** Player preferences stored with the save. */
@@ -72,4 +75,6 @@ export interface Character {
   /** Stats on graduation day, to show growth. */
   readonly startingStats: Stats;
   readonly vitals: Vitals;
+  /** Today's home-cooked meal (a recipe id): its buff lasts until the day ends. */
+  readonly meal: string | null;
 }

@@ -154,7 +154,7 @@ describe('App (smoke test)', () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);
     await startGame(user);
-    await user.click(screen.getByRole('button', { name: /Shinobi/ }));
+    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
     await user.click(screen.getByRole('button', { name: new RegExp(`^${style}`) }));
     await user.click(screen.getByRole('button', { name: /Here/ }));
     await user.click(place(/Training Grounds/));
@@ -164,6 +164,29 @@ describe('App (smoke test)', () => {
       .find((b) => !(b as HTMLButtonElement).disabled)!;
     await user.click(spar);
     expect(screen.getAllByText(marker).length).toBeGreaterThan(0);
+  });
+
+  it('buys gear at the forge, groceries at the market, and cooks at home', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Kurogane Forge/));
+    const knuckles = screen
+      .getAllByRole('article')
+      .find((a) => a.textContent.includes('Wrapped Knuckles'))!;
+    await user.click(within(knuckles).getByRole('button', { name: 'Buy' }));
+    expect(within(knuckles).getByRole('button', { name: 'Wearing' })).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: /Here/ }));
+    await user.click(place(/Market Street/));
+    await user.click(screen.getByRole('button', { name: /^8\s*Rice\s*For cooking/ }));
+    await user.click(screen.getByRole('button', { name: /^8\s*Rice\s*1 at home/ }));
+    await user.click(screen.getByRole('button', { name: /Here/ }));
+    await user.click(place(/^Home/));
+    const bento = screen
+      .getAllByRole('article')
+      .find((a) => a.textContent.includes('Rice Ball Bento'))!;
+    await user.click(within(bento).getByRole('button', { name: 'Cook' }));
+    expect(screen.getByText(/Today you ate/)).toBeInTheDocument();
   });
 
   it('resumes a saved game', async () => {
@@ -199,7 +222,7 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /forehead protector/i }));
     expect(store.data).toContain('"clanId":"uchiha"');
     await formTeam(user);
-    await user.click(screen.getByRole('button', { name: /Shinobi/ }));
+    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
     expect(screen.getByRole('heading', { name: 'Itachi Uchiha' })).toBeInTheDocument();
     expect(screen.getByText(/Sharingan/)).toBeInTheDocument();
   });

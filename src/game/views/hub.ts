@@ -50,6 +50,8 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
       return academyLine(place.techniqueIds, state, ctx);
     case 'home':
       return homeLine(state, place.blurb);
+    case 'gear':
+      return place.blurb;
     case 'hospital':
       return state.character.vitals.health < maxHealth(state.character.stats)
         ? `Treatment ${place.treatmentCost} ryo`

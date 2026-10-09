@@ -73,6 +73,28 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
                   )}
                 </button>
               ))}
+              {stall.ingredients.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="item"
+                  disabled={item.blocker !== null}
+                  title={item.blocker ?? undefined}
+                  onClick={() => {
+                    perform(item.action);
+                  }}
+                >
+                  <span className="tag num">{item.cost}</span>
+                  <span className="item-pic">
+                    <Icon id={item.icon} size={28} />
+                  </span>
+                  <b>{item.name}</b>
+                  <small className={item.blocker ? 'blocker' : 'muted'}>
+                    {item.blocker ??
+                      (item.inPantry > 0 ? `${item.inPantry} at home` : 'For cooking at home')}
+                  </small>
+                </button>
+              ))}
             </div>
           </section>
         ))}

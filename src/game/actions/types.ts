@@ -29,7 +29,12 @@ export type GameAction =
   | { readonly type: 'endConversation' }
   | { readonly type: 'lesson' }
   | { readonly type: 'spar'; readonly personId: string }
-  | { readonly type: 'setCombatStyle'; readonly style: string };
+  | { readonly type: 'setCombatStyle'; readonly style: string }
+  | { readonly type: 'buyGear'; readonly gearId: string }
+  | { readonly type: 'equipGear'; readonly gearId: string }
+  | { readonly type: 'unequipGear'; readonly slot: string }
+  | { readonly type: 'buyIngredient'; readonly ingredientId: string }
+  | { readonly type: 'cook'; readonly recipeId: string };
 
 export type GameActionType = GameAction['type'];
 export type ActionOf<T extends GameActionType> = Extract<GameAction, { type: T }>;

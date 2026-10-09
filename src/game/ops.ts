@@ -18,12 +18,15 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
   if (slots <= 0) return state;
   const { character } = state;
   const { hungerRate } = characterModifiers(character, ctx);
+  const time = advanceSlots(state.time, slots);
   const passed: GameState = {
     ...state,
-    time: advanceSlots(state.time, slots),
+    time,
     character: {
       ...character,
       vitals: passTime(character.vitals, slots, character.stats, hungerRate),
+      // A home-cooked meal's buff lasts until the day ends.
+      meal: time.day === state.time.day ? character.meal : null,
     },
   };
   return { ...passed, board: boardFor(passed, ctx) };
@@ -75,6 +78,17 @@ export function currentLocation(
   ctx: GameContext,
 ): LocationDef {
   return ctx.content.locations.require(state.locationId);
+}
+
+/** Every place of the given kind where the character is. */
+export function placesHere<K extends PlaceKind>(
+  state: Pick<GameState, 'locationId'>,
+  ctx: GameContext,
+  kind: K,
+): Extract<PlaceDef, { kind: K }>[] {
+  return currentLocation(state, ctx).places.filter(
+    (p): p is Extract<PlaceDef, { kind: K }> => p.kind === kind,
+  );
 }
 
 /** The first place of the given kind where the character is, if the location has one. */

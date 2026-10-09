@@ -37,7 +37,7 @@ export {
   type DrillGroup,
   type StatPreview,
 } from './views/training';
-export { marketView, type MarketView, type MarketItem } from './views/market';
+export { marketView, type MarketView, type MarketItem, type IngredientItem } from './views/market';
 export { homeView, hospitalView, type HomeView, type HospitalView } from './views/home';
 export {
   missionBoardView,
@@ -49,6 +49,15 @@ export {
 } from './views/boards';
 export { travelView, type Destination } from './views/travel';
 export { fightStyles, type FightStyleOption } from './views/fightStyle';
+export {
+  gearShopView,
+  loadoutView,
+  type GearShopView,
+  type GearItem,
+  type LoadoutView,
+  type LoadoutSlot,
+} from './views/shops';
+export { kitchenView, type KitchenView, type RecipeCard } from './views/kitchen';
 export type { LessonCard, SparOption } from './views/team';
 export {
   jutsuDeck,

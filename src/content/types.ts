@@ -3,8 +3,12 @@ import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta } from '@/systems/stats';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 
+import type { BackdropId, IconId } from './art';
+import type { GearDef, IngredientDef, RecipeDef } from './items';
 import type { ConversationDef, NamePools, PersonDef, TeamText, Tone } from './people';
 
+export type { BackdropId, IconId } from './art';
+export type { GearDef, GearSlot, IngredientCount, IngredientDef, RecipeDef } from './items';
 export type {
   ConversationChoice,
   ConversationDef,
@@ -25,36 +29,6 @@ export type {
 export interface Identified {
   readonly id: string;
 }
-
-/** Drawn scenery the UI knows how to paint. Adding one = add it here and in ui/art. */
-export type BackdropId =
-  'leaf-village' | 'lantern-rooftops' | 'dunes' | 'coast' | 'mist' | 'mountain';
-
-/** Small line drawings for places, items and drills. */
-export type IconId =
-  | 'post'
-  | 'bowl'
-  | 'board'
-  | 'scroll'
-  | 'house'
-  | 'heal'
-  | 'torii'
-  | 'lantern'
-  | 'fish'
-  | 'rice'
-  | 'pill'
-  | 'tea'
-  | 'wind'
-  | 'cart'
-  | 'fist'
-  | 'wave'
-  | 'eye'
-  | 'leaf'
-  | 'tree'
-  | 'dango'
-  | 'grill'
-  | 'sword'
-  | 'seal';
 
 export interface TrainingDef {
   readonly id: string;
@@ -169,6 +143,8 @@ export interface Stall {
   readonly blurb: string;
   readonly icon: IconId;
   readonly foodIds: readonly string[];
+  /** Raw ingredients to cook at home (a grocer). */
+  readonly ingredientIds?: readonly string[];
 }
 
 interface PlaceBase {
@@ -189,7 +165,13 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'missions'; readonly missionIds: readonly string[] })
   | (PlaceBase & { readonly kind: 'academy'; readonly techniqueIds: readonly string[] })
   | (PlaceBase & { readonly kind: 'home'; readonly rentPerWeek: number; readonly lodging: string })
-  | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number });
+  | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
+  | (PlaceBase & {
+      readonly kind: 'gear';
+      /** Who runs the shop, e.g. "Old Tetsuya, smith". */
+      readonly keeper: string;
+      readonly gearIds: readonly string[];
+    });
 
 export type PlaceKind = PlaceDef['kind'];
 
@@ -244,6 +226,9 @@ export interface ContentPack {
   readonly traits: readonly TraitDef[];
   readonly nindos: readonly NindoDef[];
   readonly breakIn: BreakInScene;
+  readonly gear: readonly GearDef[];
+  readonly ingredients: readonly IngredientDef[];
+  readonly recipes: readonly RecipeDef[];
   readonly people: readonly PersonDef[];
   readonly conversations: readonly ConversationDef[];
   readonly names: NamePools;

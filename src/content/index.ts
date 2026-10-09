@@ -3,6 +3,7 @@ export { buildContentDb, type ContentDb } from './db';
 export { validateContent } from './validate';
 export type { Catalog } from './catalog';
 export { TONES } from './people';
+export { GEAR_SLOTS } from './items';
 export type {
   BackdropId,
   BreakInApproach,
@@ -13,6 +14,10 @@ export type {
   ConversationDef,
   EnemyDef,
   FoodDef,
+  GearDef,
+  GearSlot,
+  IngredientDef,
+  RecipeDef,
   IconId,
   LocationDef,
   NamePools,

@@ -1,5 +1,6 @@
 import { createRng } from '@/core';
 import { freeLodging, newTenancy } from '@/systems/housing';
+import { EMPTY_INVENTORY } from '@/systems/inventory';
 import { EMPTY_JOURNAL } from '@/systems/journal';
 import {
   gradeStatBonuses,
@@ -141,6 +142,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       stats,
       startingStats: stats,
       vitals: fullVitals(stats),
+      meal: null,
     },
     wallet: { ryo: content.startingRyo },
     housing: housingFor(draft, ctx, home.id, home.rentPerWeek),
@@ -153,6 +155,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     people: NO_PEOPLE,
     settings: defaultSettings(ctx),
     board: newBoard(seed),
+    inventory: EMPTY_INVENTORY,
   };
   return logOpening(state, ctx, roll);
 }
