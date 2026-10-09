@@ -92,6 +92,8 @@ export interface EnemyDef {
   readonly maxHealth: number;
   readonly maxChakra: number;
   readonly techniqueIds: readonly string[];
+  /** Elemental nature, for matchups; most enemies have none. */
+  readonly nature?: Element;
 }
 
 /** A family the character can be born into. Clans shape growth and give techniques. */

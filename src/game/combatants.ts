@@ -1,5 +1,5 @@
 import type { EnemyDef } from '@/content';
-import type { CombatantSetup, CombatAttributes } from '@/systems/combat';
+import type { CombatantSetup, CombatAttributes, CombatPerk } from '@/systems/combat';
 import { createStats, type Stats } from '@/systems/stats';
 import { maxChakra, maxHealth } from '@/systems/vitals';
 
@@ -9,12 +9,14 @@ import type { GameState } from './state';
 /** Translates game entities into the combat contract's vocabulary. */
 
 export function attributesOf(stats: Stats): CombatAttributes {
-  const { strength, speed, stamina, perception, willpower } = stats;
+  const { strength, speed, stamina, chakraControl, intellect, perception, willpower } = stats;
   const { taijutsu, ninjutsu, genjutsu, kenjutsu, fuuinjutsu } = stats;
   return {
     strength,
     speed,
     stamina,
+    chakraControl,
+    intellect,
     perception,
     willpower,
     taijutsu,
@@ -25,8 +27,14 @@ export function attributesOf(stats: Stats): CombatAttributes {
   };
 }
 
+/** An awakened bloodline lets you read opponents ("insight"); dormant ones do nothing yet. */
+function perksOf(state: GameState, ctx: GameContext): CombatPerk[] {
+  const bloodline = ctx.content.clans.get(state.character.clanId)?.kekkeiGenkai;
+  return bloodline && !bloodline.dormant ? ['insight'] : [];
+}
+
 export function playerCombatant(state: GameState, ctx: GameContext): CombatantSetup {
-  const { name, stats, vitals } = state.character;
+  const { name, stats, vitals, nature } = state.character;
   return {
     id: 'player',
     name,
@@ -36,6 +44,8 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     chakra: vitals.chakra,
     maxChakra: maxChakra(stats),
     techniques: state.techniques.known.map((id) => ctx.content.techniques.require(id)),
+    nature,
+    perks: perksOf(state, ctx),
   };
 }
 
@@ -50,5 +60,6 @@ export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): 
     chakra: def.maxChakra,
     maxChakra: def.maxChakra,
     techniques: def.techniqueIds.map((id) => ctx.content.techniques.require(id)),
+    ...(def.nature ? { nature: def.nature } : {}),
   };
 }

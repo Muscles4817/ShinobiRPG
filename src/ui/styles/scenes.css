@@ -255,3 +255,176 @@
     transition: none;
   }
 }
+
+/* Fight styles: targeting, intents, range, resources and per-kind controls */
+button.foe {
+  width: 100%;
+  text-align: left;
+  color: inherit;
+}
+.foe.targeted {
+  border-color: var(--lantern);
+  box-shadow: inset 0 0 0 1px var(--lantern);
+}
+.target-mark {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lantern);
+}
+.intent {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--gold);
+}
+.intent::before {
+  content: '→ ';
+  font-style: normal;
+}
+.range-strip {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px var(--gutter) 0;
+}
+.range-strip .band {
+  flex: 1;
+  max-width: 96px;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 0;
+  border-radius: 6px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.range-strip .band.on {
+  color: var(--on-lantern);
+  background: var(--lantern);
+  border-color: transparent;
+}
+.combat-prompt {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  padding: 0 var(--gutter) 6px;
+}
+.meter-chip {
+  grid-column: 1 / -1;
+  justify-self: start;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.combat-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: linear-gradient(180deg, transparent, rgb(0 0 0 / 0.45) 30%);
+}
+.combat-controls .hand {
+  position: static;
+  overflow-x: auto;
+  justify-content: safe center;
+  scrollbar-width: none;
+  background: none;
+}
+.combat-controls .flee {
+  position: static;
+}
+.hand-slot {
+  position: relative;
+  flex: none;
+}
+.cost-pip {
+  position: absolute;
+  top: -4px;
+  left: -2px;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--on-lantern);
+  background: var(--gold);
+}
+.plan-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 var(--gutter);
+}
+.plan-picker .choice {
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 2px;
+}
+.plan-picker .choice small {
+  white-space: normal;
+}
+.action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 var(--gutter);
+}
+
+/* Fight style picker (Shinobi tab) */
+.fight-styles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.style-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.style-option small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.style-option.on {
+  border-color: var(--lantern);
+  box-shadow: inset 0 0 0 1px var(--lantern);
+}
+
+/* Several enemies: tighter cards so the whole fight fits a phone screen */
+.foes.many {
+  gap: 6px;
+  padding-top: 10px;
+}
+.foes.many .foe {
+  padding: 8px 10px;
+}
+.foes.many .hp {
+  height: 6px;
+  margin-top: 4px;
+}
+.foes.many .foe-foot {
+  margin-top: 2px;
+}
+.cost-pip.inline {
+  position: static;
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  vertical-align: middle;
+}

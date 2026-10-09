@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { headerView, shinobiView } from '@/game';
 
 import { Portrait } from '../art/Portrait';
+import { FightStylePicker } from './FightStylePicker';
 import type { ScreenProps } from './types';
 
 const GROUP_TITLES = { discipline: 'Disciplines', body: 'Body', mind: 'Mind' } as const;
@@ -42,6 +43,7 @@ function AbandonButton({ onAbandon }: { readonly onAbandon: () => void }) {
 export function ShinobiScreen({
   ctx,
   state,
+  perform,
   onAbandon,
 }: ScreenProps & { readonly onAbandon: () => void }) {
   const view = shinobiView(state, ctx);
@@ -131,6 +133,7 @@ export function ShinobiScreen({
           </div>
         ))}
       </section>
+      <FightStylePicker ctx={ctx} state={state} perform={perform} />
       <p className="muted small">
         {header.date} · {header.location}
       </p>

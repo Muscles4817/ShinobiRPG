@@ -1,6 +1,6 @@
 import type { Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
-import type { TechniqueDef } from '@/systems/techniques';
+import type { Element, TechniqueDef } from '@/systems/techniques';
 
 /**
  * THE COMBAT CONTRACT
@@ -19,6 +19,8 @@ export type CombatAttributes = Pick<
   | 'strength'
   | 'speed'
   | 'stamina'
+  | 'chakraControl'
+  | 'intellect'
   | 'perception'
   | 'willpower'
   | 'taijutsu'
@@ -30,8 +32,17 @@ export type CombatAttributes = Pick<
 
 export type CombatTechnique = Pick<
   TechniqueDef,
-  'id' | 'name' | 'discipline' | 'effect' | 'chakraCost' | 'power'
+  'id' | 'name' | 'discipline' | 'element' | 'effect' | 'chakraCost' | 'power'
 >;
+
+/** How far apart the two sides stand. Engines decide what each band allows. */
+export type RangeBand = 'close' | 'mid' | 'far';
+
+/**
+ * Special abilities a combatant brings, e.g. an awakened bloodline's eyes. Engines that
+ * don't know a perk ignore it.
+ */
+export type CombatPerk = 'insight';
 
 export interface CombatantSetup {
   readonly id: string;
@@ -44,6 +55,9 @@ export interface CombatantSetup {
   readonly chakra: number;
   readonly maxChakra: number;
   readonly techniques: readonly CombatTechnique[];
+  /** Chakra nature: boosts techniques of the same element and decides elemental matchups. */
+  readonly nature?: Element;
+  readonly perks?: readonly CombatPerk[];
 }
 
 export interface CombatSetup {
@@ -78,6 +92,16 @@ export interface CombatantView {
   readonly maxChakra: number;
   /** Short human-readable conditions, e.g. "Dazed", "Guarding". */
   readonly statuses: readonly string[];
+  /** What they seem about to do (a telegraph or tell), when the engine shows one. */
+  readonly intent?: string;
+}
+
+/** A resource the engine wants shown (action points, momentum, block…). */
+export interface CombatMeter {
+  readonly id: string;
+  readonly label: string;
+  readonly value: number;
+  readonly max: number;
 }
 
 /** A choice the player can make this turn. `id` is passed back to `act`. */
@@ -85,9 +109,17 @@ export interface CombatOption {
   readonly id: string;
   readonly label: string;
   readonly detail: string;
-  /** Lets the UI present options differently: techniques as cards, escape apart. */
-  readonly kind: 'basic' | 'technique' | 'escape';
+  /**
+   * Lets the UI present options differently: basics and techniques as cards in the hand,
+   * moves (stepping in or back) as small buttons, plans as a list to pick from, continue and
+   * end-turn in the choice bar, escape apart.
+   */
+  readonly kind: 'basic' | 'technique' | 'move' | 'plan' | 'continue' | 'end' | 'escape';
   readonly discipline?: TechniqueDef['discipline'];
+  /** Points spent from a per-turn budget, for engines that have one. */
+  readonly cost?: number;
+  /** Aimed at one enemy: the UI sends the chosen target with it. */
+  readonly targeted?: boolean;
   /** Present when the option is shown but cannot be chosen right now. */
   readonly disabledReason?: string;
 }
@@ -98,6 +130,17 @@ export interface CombatView {
   /** Narration, oldest first. */
   readonly log: readonly string[];
   readonly options: readonly CombatOption[];
+  /** Current distance, for engines that track range. */
+  readonly range?: RangeBand;
+  /** One line telling the player what to do now, e.g. "Choose your tactic". */
+  readonly prompt?: string;
+  readonly meters?: readonly CombatMeter[];
+}
+
+/** What the player chose: an option and, for targeted options, which enemy. */
+export interface CombatChoice {
+  readonly optionId: string;
+  readonly targetId?: string;
 }
 
 export type CombatResult = 'victory' | 'defeat' | 'escaped';
@@ -111,9 +154,12 @@ export interface CombatOutcome {
 
 export interface CombatEngine {
   readonly id: string;
+  /** Shown when choosing a fight style, e.g. "Deck". */
+  readonly label: string;
+  readonly summary: string;
   start(setup: CombatSetup, rng: Rng): CombatState;
-  /** Performs the player's chosen option (and whatever the opponents do in response). */
-  act(state: CombatState, optionId: string, rng: Rng): Result<CombatState>;
+  /** Performs the player's choice (and whatever the opponents do in response). */
+  act(state: CombatState, choice: CombatChoice, rng: Rng): Result<CombatState>;
   view(state: CombatState): CombatView;
   /** Null while the fight is still going. */
   outcome(state: CombatState): CombatOutcome | null;

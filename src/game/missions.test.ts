@@ -87,6 +87,8 @@ describe('combat engine boundary', () => {
     // A trivial engine that wins instantly — proves the game depends only on the contract.
     const instantWin: CombatEngine = {
       id: 'instant-win',
+      label: 'Instant win',
+      summary: 'Test engine.',
       start: () => ({ engineId: 'instant-win', data: { done: false } }),
       act: () => ok({ engineId: 'instant-win', data: { done: true } }),
       view: () => ({
@@ -100,7 +102,7 @@ describe('combat engine boundary', () => {
           ? { result: 'victory', rounds: 1, player: { health: 1, chakra: 0 } }
           : null,
     };
-    const context: GameContext = { ...ctx, combat: instantWin };
+    const context: GameContext = { ...ctx, engines: [instantWin] };
     const weakling = withAllStats(veteran(newGame({}, context)), 1);
     const end = playMission(weakling, 'storehouse-ghost', 'win', context);
     expect(end.standing.missionsCompleted).toBe(6);
