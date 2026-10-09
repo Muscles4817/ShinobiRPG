@@ -52,7 +52,11 @@ function festivalProblems(f: ContentPack['village']['festivals'][number]): strin
 
 function hoursProblems(pack: ContentPack): string[] {
   const empty = (hours: OpeningHours | undefined) => hours?.length === 0;
-  return pack.locations.flatMap((l) =>
+  const festivalStalls = pack.village.festivals
+    .flatMap((f) => f.stalls ?? [])
+    .filter((s) => empty(s.hours))
+    .map((s) => `stall "${s.name}" is never open`);
+  const places = pack.locations.flatMap((l) =>
     l.places.flatMap((p) => [
       ...(empty(p.hours) ? [`place "${p.id}" is never open`] : []),
       ...(p.kind === 'market'
@@ -60,4 +64,5 @@ function hoursProblems(pack: ContentPack): string[] {
         : []),
     ]),
   );
+  return [...festivalStalls, ...places];
 }

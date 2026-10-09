@@ -51,6 +51,8 @@ export interface PersonDef {
   /** Where they are in each time slot: a place id in the start location, or null (away). */
   readonly schedule: Readonly<Record<TimeSlot, string | null>>;
   readonly sensei?: SenseiProfile;
+  /** A recipe they love: serve it at dinner and the evening means more to them. */
+  readonly favouriteRecipeId?: string;
 }
 
 export interface ConversationChoice {

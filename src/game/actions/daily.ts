@@ -18,7 +18,7 @@ import {
 import type { GameContext } from '../context';
 import { trainingScale } from '../profile';
 import type { GameState } from '../state';
-import { closedReason, isOpen, marketPrice } from '../village';
+import { closedReason, isOpen, marketPrice, stallsHere } from '../village';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Everyday life in a village: training, eating, napping and sleeping. */
@@ -35,9 +35,7 @@ function offeredHere(state: GameState, ctx: GameContext) {
 
 /** The stall here selling this food, preferring one that is open now. */
 function foodStall(state: GameState, ctx: GameContext, foodId: string) {
-  const stalls = (placeHere(state, ctx, 'market')?.stalls ?? []).filter((s) =>
-    s.foodIds.includes(foodId),
-  );
+  const stalls = stallsHere(state, ctx).filter((s) => s.foodIds.includes(foodId));
   return stalls.find((s) => isOpen(s.hours, state)) ?? stalls[0];
 }
 

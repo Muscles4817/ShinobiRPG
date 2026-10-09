@@ -6,7 +6,8 @@ import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 import type { BackdropId, IconId } from './art';
 import type { GearDef, IngredientDef, RecipeDef } from './items';
 import type { ConversationDef, NamePools, PersonDef, TeamText, Tone } from './people';
-import type { OpeningHours, VillageLife } from './village';
+import type { OpeningHours, Stall } from './stall';
+import type { VillageLife } from './village';
 
 export type { BackdropId, IconId } from './art';
 export type { GearDef, GearSlot, IngredientCount, IngredientDef, RecipeDef } from './items';
@@ -20,7 +21,8 @@ export type {
   TeamText,
   Tone,
 } from './people';
-export type { FestivalDef, OpeningHours, RumourDef, SightDef, VillageLife } from './village';
+export type { OpeningHours, Stall } from './stall';
+export type { FestivalDef, RumourDef, SightDef, VillageLife } from './village';
 
 /**
  * Content schemas. A ContentPack is one complete, self-contained setting (names, places,
@@ -138,16 +140,6 @@ export interface BreakInScene {
   /** The instructor who catches you at the end. */
   readonly instructor: string;
   readonly caught: string;
-}
-
-export interface Stall {
-  readonly name: string;
-  readonly blurb: string;
-  readonly icon: IconId;
-  readonly foodIds: readonly string[];
-  /** Raw ingredients to cook at home (a grocer). */
-  readonly ingredientIds?: readonly string[];
-  readonly hours?: OpeningHours;
 }
 
 interface PlaceBase {

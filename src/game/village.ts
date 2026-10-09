@@ -1,9 +1,10 @@
 import { hashUnit } from '@/core';
-import type { FestivalDef, OpeningHours, RumourDef, SightDef } from '@/content';
+import type { FestivalDef, OpeningHours, RumourDef, SightDef, Stall } from '@/content';
 import { calendarDay, daysUntil, slotName, TIME_SLOTS } from '@/systems/time';
 
 import { newPostingsTomorrow } from './board';
 import type { GameContext } from './context';
+import { placeHere } from './ops';
 import type { GameState } from './state';
 
 /**
@@ -78,6 +79,22 @@ export function festivalNotice(state: GameState, ctx: GameContext): FestivalNoti
 export function marketPrice(cost: number, state: GameState, ctx: GameContext): number {
   const factor = festivalToday(state, ctx)?.marketPrices ?? 1;
   return Math.max(1, Math.round(cost * factor));
+}
+
+/** A stall in the market here; festival stalls only set up on their day. */
+export interface MarketStall extends Stall {
+  readonly festival: boolean;
+}
+
+/** The market's stalls here, with today's festival stalls set up in front. */
+export function stallsHere(state: GameState, ctx: GameContext): MarketStall[] {
+  const market = placeHere(state, ctx, 'market');
+  if (!market) return [];
+  const festive = festivalToday(state, ctx)?.stalls ?? [];
+  return [
+    ...festive.map((stall) => ({ ...stall, festival: true })),
+    ...market.stalls.map((stall) => ({ ...stall, festival: false })),
+  ];
 }
 
 /** Extra bond points every conversation earns today. */

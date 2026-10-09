@@ -124,6 +124,15 @@ export const VILLAGE: VillageLife = {
       day: 10,
       marketPrices: 0.7,
       bondBonus: 3,
+      stalls: [
+        {
+          name: 'Blossom Dango Stand',
+          blurb: 'Only during hanami',
+          icon: 'dango',
+          foodIds: ['hanami-dango'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
     },
     {
       id: 'summer-fireworks',
@@ -133,6 +142,15 @@ export const VILLAGE: VillageLife = {
       day: 20,
       marketPrices: 0.8,
       bondBonus: 3,
+      stalls: [
+        {
+          name: 'Riverside Festival Stalls',
+          blurb: 'Only on fireworks night',
+          icon: 'bowl',
+          foodIds: ['takoyaki', 'shaved-ice'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
     },
     {
       id: 'founding-day',
@@ -142,6 +160,15 @@ export const VILLAGE: VillageLife = {
       day: 10,
       marketPrices: 0.5,
       bondBonus: 4,
+      stalls: [
+        {
+          name: 'Founding Day Yatai',
+          blurb: 'Only on Founding Day',
+          icon: 'bowl',
+          foodIds: ['festival-yakisoba'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
     },
     {
       id: 'new-year',
@@ -151,6 +178,15 @@ export const VILLAGE: VillageLife = {
       day: 28,
       marketPrices: 0.8,
       bondBonus: 3,
+      stalls: [
+        {
+          name: 'New Year Soba Stand',
+          blurb: 'Only on New Year’s Eve',
+          icon: 'bowl',
+          foodIds: ['toshikoshi-soba'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
     },
   ],
 };

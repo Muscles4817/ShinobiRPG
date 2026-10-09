@@ -35,7 +35,8 @@ export type GameAction =
   | { readonly type: 'unequipGear'; readonly slot: string }
   | { readonly type: 'buyIngredient'; readonly ingredientId: string }
   | { readonly type: 'cook'; readonly recipeId: string }
-  | { readonly type: 'followSight' };
+  | { readonly type: 'followSight' }
+  | { readonly type: 'hostDinner'; readonly recipeId: string; readonly guestId: string };
 
 export type GameActionType = GameAction['type'];
 export type ActionOf<T extends GameActionType> = Extract<GameAction, { type: T }>;

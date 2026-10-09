@@ -508,3 +508,38 @@
 .stall.shut {
   opacity: 0.6;
 }
+
+/* Dinner invites */
+.invites {
+  display: grid;
+  gap: 6px;
+}
+.invite-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.invite {
+  width: 100%;
+  min-height: 44px;
+  display: grid;
+  gap: 2px;
+  padding: 6px 10px;
+  text-align: left;
+  color: var(--ink);
+  background: var(--raise);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.invite small {
+  color: var(--muted);
+}
+.invite:disabled {
+  opacity: 0.6;
+}
+.stall.festive {
+  border-left: 3px solid var(--lantern);
+  padding-left: 8px;
+}

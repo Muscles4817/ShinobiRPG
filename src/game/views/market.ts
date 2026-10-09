@@ -5,7 +5,7 @@ import { METER_MAX } from '@/systems/vitals';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import type { GameState } from '../state';
-import { closedSign, festivalToday, marketPrice } from '../village';
+import { closedSign, festivalToday, marketPrice, stallsHere } from '../village';
 import { choice, type Choice } from './common';
 
 export interface MarketItem extends Choice {
@@ -41,6 +41,8 @@ export interface MarketView {
     readonly name: string;
     readonly blurb: string;
     readonly icon: IconId;
+    /** Set up for today's festival only. */
+    readonly festival: boolean;
     /** Why the stall is shut right now, or null when open. */
     readonly closed: string | null;
     readonly items: readonly MarketItem[];
@@ -57,8 +59,9 @@ export function marketView(state: GameState, ctx: GameContext): MarketView | nul
     festival: festivalToday(state, ctx)?.name ?? null,
     ryo: state.wallet.ryo,
     fullness,
-    stalls: place.stalls.map((stall) => ({
+    stalls: stallsHere(state, ctx).map((stall) => ({
       name: stall.name,
+      festival: stall.festival,
       blurb: stall.blurb,
       icon: stall.icon,
       closed: closedSign(stall.hours, state),

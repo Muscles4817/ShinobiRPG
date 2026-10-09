@@ -141,6 +141,15 @@ export const VILLAGE: VillageLife = {
       day: 7,
       marketPrices: 0.7,
       bondBonus: 2,
+      stalls: [
+        {
+          name: 'Kite Day Sweets',
+          blurb: 'Only on Kite Day',
+          icon: 'dango',
+          foodIds: ['kite-candy'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
     },
     {
       id: 'summer-fire',
@@ -150,6 +159,15 @@ export const VILLAGE: VillageLife = {
       day: 14,
       marketPrices: 0.8,
       bondBonus: 3,
+      stalls: [
+        {
+          name: 'Hibana Fire Grill',
+          blurb: 'Cooked on festival flame',
+          icon: 'fish',
+          foodIds: ['spark-squid'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
     },
     {
       id: 'lantern-festival',
@@ -160,6 +178,15 @@ export const VILLAGE: VillageLife = {
       day: 21,
       marketPrices: 0.5,
       bondBonus: 4,
+      stalls: [
+        {
+          name: 'Lantern Festival Yatai',
+          blurb: 'Only on festival night',
+          icon: 'dango',
+          foodIds: ['lantern-dango', 'festival-takoyaki'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
     },
     {
       id: 'winter-vigil',
@@ -169,6 +196,15 @@ export const VILLAGE: VillageLife = {
       day: 14,
       marketPrices: 0.8,
       bondBonus: 3,
+      stalls: [
+        {
+          name: 'Brazier Soup Cart',
+          blurb: 'Free warmth, almost',
+          icon: 'bowl',
+          foodIds: ['vigil-soup'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
     },
   ],
 };

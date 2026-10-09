@@ -137,7 +137,10 @@ ui ──► game ──► content ──► systems ──► core
     market, warmer talks), the gossip (`rumoursToday`: a job's rumour goes round the day
     before `newPostingsTomorrow` posts it) and tonight's sight, which only an awakened
     bloodline can follow. Like the board it hashes the seed and day, never the Rng; only
-    `village.lastSightDay` is stored.
+    `village.lastSightDay` is stored. Festivals can bring their own `stalls`, which
+    `stallsHere` sets up in the market on the day. Dinner invites (`hostDinner`) cook a
+    recipe for two in the evening; they count as the day's time with that person and are worth
+    more for their `favouriteRecipeId`.
 
 ### Content packs
 
@@ -193,7 +196,8 @@ ui ──► game ──► content ──► systems ──► core
   `ingredientIds`, and recipes may only use known ingredients (validated).
 - **Add village life:** rumours (`missionId` for a job hint, `personId` for gossip), night
   sights (with a small stat `reward`) and festivals (season, day, `marketPrices`,
-  `bondBonus`) go in the pack's `village`. Give shops and stalls `hours` if they close.
+  `bondBonus`, optional `stalls` of festival-only food) go in the pack's `village`. Give a
+  person a `favouriteRecipeId` to make dinner with them special. Give shops and stalls `hours` if they close.
   Validation checks references, real dates and that nothing is never open.
 - **Add a conversation:** add a `ConversationDef` (generic, or with `personId`) with a
   `minStage` and choices that each carry a `Tone`. Traits' `likes`/`dislikes` decide how a

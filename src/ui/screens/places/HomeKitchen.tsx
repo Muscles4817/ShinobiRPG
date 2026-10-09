@@ -1,6 +1,7 @@
 import { kitchenView, type GameContext, type GameState } from '@/game';
 
 import { Icon } from '../../art/Icon';
+import { DinnerInvites } from './DinnerInvites';
 import type { PlaceProps } from '../types';
 
 interface HomeKitchenProps {
@@ -36,6 +37,7 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
               </span>
             ))}
       </p>
+      {view.noGuests && <p className="muted">{view.noGuests}</p>}
       <div className="recipes">
         {view.recipes.map((r) => (
           <article key={r.id} className="recipe">
@@ -66,6 +68,9 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
             >
               Cook
             </button>
+            {!view.noGuests && (
+              <DinnerInvites invites={r.invites} blocker={r.inviteBlocker} perform={perform} />
+            )}
           </article>
         ))}
       </div>
