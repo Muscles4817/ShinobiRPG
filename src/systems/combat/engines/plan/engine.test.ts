@@ -67,8 +67,17 @@ describe('plan & watch cards', () => {
     const [hero] = bodies();
     const ids = (band: 'close' | 'mid' | 'far') =>
       cardsFor(hero!, band).map((c) => (c.kind === 'jutsu' ? c.technique.id : c.kind));
-    expect(ids('close')).toEqual(['strike', 'step', 'guard', 'dodge', 'counter', 'daze']);
-    expect(ids('far')).toEqual(['throw', 'step', 'guard', 'dodge', 'daze', 'blast']);
+    const senses = ['search', 'dispel'];
+    expect(ids('close')).toEqual([
+      'strike',
+      'step',
+      'guard',
+      'dodge',
+      'counter',
+      ...senses,
+      'daze',
+    ]);
+    expect(ids('far')).toEqual(['throw', 'step', 'guard', 'dodge', ...senses, 'daze', 'blast']);
   });
 
   it('a sharp mind gets an extra slot', () => {

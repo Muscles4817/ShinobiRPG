@@ -8,14 +8,25 @@ import {
   holdTurns,
   resistChance,
   strikeDamage,
+  targetable,
   techniqueDamage,
 } from '../../rules/body';
 import { matchup, matchupLine } from '../../rules/elements';
+import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
-import { cardId, type Card } from './cards';
+import { cardId, isOffence, type Card } from './cards';
 import { chooseCard } from './choose';
+import { dispel, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
-import { LOG_LIMIT, patch, playerOf, type PlanFighter, type PlanState, type Round } from './state';
+import {
+  LOG_LIMIT,
+  patch,
+  playerOf,
+  say,
+  type PlanFighter,
+  type PlanState,
+  type Round,
+} from './state';
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
@@ -27,13 +38,9 @@ const THROW_SCALE = 0.6;
 const STEP_BASE = 0.55;
 const STEP_PER_SPEED = 0.04;
 
-function opponentsOf(fighters: readonly PlanFighter[], self: PlanFighter): PlanFighter[] {
-  return fighters.filter((f) => f.side !== self.side && alive(f));
-}
-
-/** The player's side focuses the weakest enemy; enemies pick at random. */
+/** The player's side focuses the weakest enemy; enemies pick at random. Hidden foes are skipped. */
 function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
-  const foes = opponentsOf(fighters, self);
+  const foes = opponentsOf(fighters, self).filter(targetable);
   if (foes.length === 0) return undefined;
   if (self.side === 'player') return [...foes].sort((a, b) => a.health - b.health)[0];
   return rng.pick(foes);
@@ -42,17 +49,6 @@ function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
   if (!alive(playerOf({ fighters }))) return 'defeat';
   return fighters.some((f) => f.side === 'enemy' && alive(f)) ? null : 'victory';
-}
-
-function say(round: Round, ...lines: string[]): Round {
-  return { ...round, lines: [...round.lines, ...lines] };
-}
-
-/** What stays fixed for one fighter's turn. */
-interface Turn {
-  readonly actor: PlanFighter;
-  readonly target: PlanFighter | undefined;
-  readonly rng: Rng;
 }
 
 function step(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' | 'back') {
@@ -116,6 +112,7 @@ function useJutsu(round: Round, { actor, target, rng }: Turn, t: CombatTechnique
     what: t.name,
     dodgeable: t.discipline !== 'genjutsu',
     physical: physical(t),
+    kind: attackKindOf(t),
   };
   const hit = react(paid, { attacker: actor, target, blow, rng });
   const element = matchupLine(matchup(t.element, target.nature), target.name);
@@ -129,6 +126,7 @@ function strike(round: Round, { actor, target, rng }: Turn, thrown: boolean): Ro
     what: thrown ? 'kunai' : 'strike',
     dodgeable: true,
     physical: !thrown,
+    kind: attackKindOf(null, thrown),
   };
   return react(round, { attacker: actor, target, blow, rng });
 }
@@ -136,7 +134,15 @@ function strike(round: Round, { actor, target, rng }: Turn, thrown: boolean): Ro
 function play(round: Round, turn: Turn, card: Card): Round {
   switch (card.kind) {
     case 'step':
-      return step(round, turn, card.direction);
+      return step(
+        round,
+        { ...turn, target: turn.target ?? opponentsOf(round.fighters, turn.actor)[0] },
+        card.direction,
+      );
+    case 'search':
+      return search(round, turn);
+    case 'dispel':
+      return dispel(round, turn);
     case 'jutsu':
       return useJutsu(round, turn, card.technique);
     case 'strike':
@@ -154,16 +160,31 @@ function remember(seen: Round['seen'], fighterId: string, id: string): Round['se
   return known.includes(id) ? seen : { ...seen, [fighterId]: [...known, id] };
 }
 
-function turn(round: Round, actorId: string, rng: Rng): Round {
-  const actor = round.fighters.find((f) => f.id === actorId);
-  if (!actor || !alive(actor) || decide(round.fighters)) return round;
+/** Plays a card, unless it's an attack with no one in sight or confusion sends it wide. */
+function attempt(round: Round, turn: Turn, card: Card): Round {
+  const { actor, target, rng } = turn;
+  const lost = isOffence(card) && !target;
+  if (lost) return say(round, `${actor.name} can't find a target.`);
+  if (isOffence(card) && misfires(actor, rng)) {
+    const whose = actor.isPlayer ? 'Your senses lie to you.' : `${actor.name}'s senses lie.`;
+    return say(round, `${whose} The attack goes wide.`);
+  }
+  return play(round, turn, card);
+}
+
+function turn(start: Round, actorId: string, rng: Rng): Round {
+  const before = start.fighters.find((f) => f.id === actorId);
+  if (!before || !alive(before) || decide(start.fighters)) return start;
+  const round = startOfTurn(start, before, rng);
+  const actor = round.fighters.find((f) => f.id === actorId) ?? before;
   if (actor.stunned > 0) {
     const fighters = patch(round.fighters, actor.id, { stunned: actor.stunned - 1 });
     return say({ ...round, fighters }, `${actor.name} is dazed and loses the exchange.`);
   }
   const target = targetFor(round.fighters, actor, rng);
-  const card = chooseCard(actor, { band: round.range, foe: target }, rng);
-  const played = play(round, { actor, target, rng }, card);
+  const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
+  const card = chooseCard(actor, { band: round.range, foe: target, hiddenFoe }, rng);
+  const played = attempt(round, { actor, target, rng }, card);
   return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
 }
 
@@ -174,6 +195,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     .map((f) => ({ id: f.id, initiative: f.attributes.speed + rng.next() * 4 }))
     .sort((a, b) => b.initiative - a.initiative);
   const start: Round = {
+    number: state.round,
     fighters: [...state.fighters],
     range: state.range,
     lines: [`— Exchange ${state.round} —`],
