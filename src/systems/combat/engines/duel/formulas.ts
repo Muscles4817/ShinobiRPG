@@ -1,11 +1,23 @@
 import { clamp, logistic } from '@/core';
 
 import type { CombatTechnique } from '../../contract';
+import { hasTrait, SWIFT_DODGE } from '../../rules/kit';
 import type { Fighter } from './state';
 
-/** Chance the defender sidesteps a physical attack, max 30%. */
+/** Extra chance a swift defender slips any single-target attack. */
+export function swiftDodge(defender: Fighter): number {
+  return hasTrait(defender, 'swift') ? SWIFT_DODGE : 0;
+}
+
+/** Chance the defender sidesteps a blow: up to 30% on speed, more if they are swift. */
 export function dodgeChance(attacker: Fighter, defender: Fighter): number {
-  return 0.3 * logistic((defender.attributes.speed - attacker.attributes.speed) / 5);
+  const bySpeed = 0.3 * logistic((defender.attributes.speed - attacker.attributes.speed) / 5);
+  return bySpeed + swiftDodge(defender);
+}
+
+/** Chance to close the gap on someone, or to back away from them: speed against speed. */
+export function footworkChance(mover: Fighter, opponent: Fighter): number {
+  return clamp(0.5 + (mover.attributes.speed - opponent.attributes.speed) * 0.05, 0.15, 0.85);
 }
 
 function mitigate(raw: number, defender: Fighter): number {

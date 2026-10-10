@@ -1,12 +1,16 @@
 import type {
   CombatAttributes,
   CombatantSetup,
+  CombatPerk,
   CombatResult,
   CombatSetup,
   CombatSide,
   CombatState,
   CombatTechnique,
+  CombatTrait,
 } from '../../contract';
+import { startsHidden } from '../../rules/conditions';
+import { hasTrait } from '../../rules/kit';
 
 export const DUEL_ENGINE_ID = 'duel-v1';
 export const LOG_LIMIT = 40;
@@ -16,8 +20,7 @@ export interface Fighter {
   readonly name: string;
   readonly tag?: string;
   readonly isPlayer: boolean;
-  /** Absent in saves from before allies existed: then the player alone is on their side. */
-  readonly side?: CombatSide;
+  readonly side: CombatSide;
   readonly attributes: CombatAttributes;
   readonly health: number;
   readonly maxHealth: number;
@@ -29,7 +32,22 @@ export interface Fighter {
   /** Rounds this fighter can't use techniques. Absent in saves from before seals existed. */
   readonly sealed?: number;
   readonly guarding: boolean;
+  readonly perks: readonly CombatPerk[];
+  readonly traits: readonly CombatTrait[];
+  /** Hidden in an illusion: can't be targeted until found. */
+  readonly hidden: boolean;
+  /** Turns of confusion left: the player's attacks may misfire. */
+  readonly confused: number;
+  /**
+   * Standing back from the fray. Blows and blades only reach between two fighters who are
+   * both engaged; archers start distant.
+   */
+  readonly distant: boolean;
 }
+
+/** Fields that saves from before allies (side) or combat kits (the rest) lack. */
+type AddedLater = 'side' | 'perks' | 'traits' | 'hidden' | 'confused' | 'distant';
+type StoredFighter = Omit<Fighter, AddedLater> & Partial<Pick<Fighter, AddedLater>>;
 
 export interface DuelState {
   readonly round: number;
@@ -40,7 +58,32 @@ export interface DuelState {
 }
 
 function toFighter(setup: CombatantSetup, side: CombatSide, isPlayer = false): Fighter {
-  return { ...setup, isPlayer, side, stunned: 0, guarding: false };
+  const traits = setup.traits ?? [];
+  return {
+    ...setup,
+    isPlayer,
+    side,
+    stunned: 0,
+    guarding: false,
+    perks: setup.perks ?? [],
+    traits,
+    hidden: startsHidden({ traits }),
+    confused: 0,
+    distant: hasTrait({ traits }, 'archer'),
+  };
+}
+
+/** Old saves: the player alone on their side, nobody kitted, hidden or standing back. */
+function withDefaults(f: StoredFighter): Fighter {
+  return {
+    ...f,
+    side: f.side ?? (f.isPlayer ? 'player' : 'enemy'),
+    perks: f.perks ?? [],
+    traits: f.traits ?? [],
+    hidden: f.hidden ?? false,
+    confused: f.confused ?? 0,
+    distant: f.distant ?? false,
+  };
 }
 
 /** "A", "A and B", "A, B and C". */
@@ -78,7 +121,11 @@ export function decode(state: CombatState): DuelState {
   if (state.engineId !== DUEL_ENGINE_ID) {
     throw new Error(`Duel engine cannot read combat state from engine "${state.engineId}"`);
   }
-  return state.data as DuelState;
+  // Trust boundary: only this engine writes duel state, but older versions wrote less of it.
+  const stored = state.data as Omit<DuelState, 'fighters'> & {
+    readonly fighters: readonly StoredFighter[];
+  };
+  return { ...stored, fighters: stored.fighters.map(withDefaults) };
 }
 
 export function playerOf(state: DuelState): Fighter {
@@ -87,13 +134,9 @@ export function playerOf(state: DuelState): Fighter {
   return player;
 }
 
-export function sideOf(f: Fighter): CombatSide {
-  return f.side ?? (f.isPlayer ? 'player' : 'enemy');
-}
-
 /** Living fighters on one side. */
 export function livingOn(fighters: readonly Fighter[], side: CombatSide): Fighter[] {
-  return fighters.filter((f) => sideOf(f) === side && f.health > 0);
+  return fighters.filter((f) => f.side === side && f.health > 0);
 }
 
 export function livingEnemies(state: DuelState): Fighter[] {

@@ -1,7 +1,7 @@
 import type { Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
-import { applyGuard, patchFighter, performAction, type DuelAction } from './actions';
+import { applyGuard } from './actions';
 import { chooseAiAction } from './ai';
 import { CHAKRA_REGEN_PER_ROUND, fleeChance } from './formulas';
 import {
@@ -10,24 +10,18 @@ import {
   livingEnemies,
   livingOn,
   playerOf,
-  sideOf,
   type DuelState,
   type Fighter,
 } from './state';
+import { takeTurn, type TurnPlan } from './turn';
 
-interface Plan {
+interface Plan extends TurnPlan {
   readonly actorId: string;
-  readonly action: DuelAction;
   readonly initiative: number;
-  /** The enemy the player chose to aim at, if any. */
-  readonly targetId?: string;
 }
 
 /** The player's move this round. */
-export interface PlayerMove {
-  readonly action: DuelAction;
-  readonly targetId?: string;
-}
+export type PlayerMove = TurnPlan;
 
 function decideResult(fighters: readonly Fighter[]): CombatResult | null {
   const player = fighters.find((f) => f.isPlayer);
@@ -61,23 +55,6 @@ function planRound(state: DuelState, move: PlayerMove, rng: Rng): Plan[] {
   return plans.sort((a, b) => b.initiative - a.initiative);
 }
 
-/**
- * The player's side focuses the first enemy still standing. Enemies pick among those standing
- * against them (no roll when it is only the player, so solo fights replay as before).
- */
-function targetFor(
-  fighters: readonly Fighter[],
-  actor: Fighter,
-  rng: Rng,
-  chosen?: string,
-): Fighter | undefined {
-  const foes = livingOn(fighters, sideOf(actor) === 'player' ? 'enemy' : 'player');
-  const picked = foes.find((f) => f.id === chosen);
-  if (picked) return picked;
-  if (sideOf(actor) === 'player' || foes.length <= 1) return foes[0];
-  return rng.pick(foes);
-}
-
 function tryFlee(state: DuelState, rng: Rng): { escaped: boolean; line: string } {
   const escaped = rng.chance(fleeChance(playerOf(state), livingEnemies(state)));
   return escaped
@@ -108,18 +85,9 @@ export function resolveRound(state: DuelState, move: PlayerMove, rng: Rng): Duel
   for (const plan of plans) {
     const actor = fighters.find((f) => f.id === plan.actorId);
     if (!actor || !isAlive(actor) || decideResult(fighters)) continue;
-    if (actor.stunned > 0) {
-      fighters = patchFighter(fighters, actor.id, { stunned: actor.stunned - 1 });
-      log.push(`${actor.name} is dazed and loses their turn.`);
-      continue;
-    }
-    const target = targetFor(fighters, actor, rng, plan.targetId);
-    if (!target) continue;
-    const result = performAction(fighters, { actor, target }, plan.action, rng);
-    fighters = result.fighters;
-    log.push(...result.lines);
-    const targetAfter = fighters.find((f) => f.id === target.id);
-    if (targetAfter && !isAlive(targetAfter)) log.push(`${targetAfter.name} falls!`);
+    const turn = takeTurn(fighters, actor.id, plan, { rng, round: state.round });
+    fighters = turn.fighters;
+    log.push(...turn.lines);
   }
 
   const outcome = decideResult(fighters);
