@@ -3,6 +3,7 @@ import { clamp, logistic } from '@/core';
 import type {
   CombatantSetup,
   CombatantView,
+  CombatItem,
   CombatPerk,
   CombatSide,
   CombatTechnique,
@@ -36,6 +37,8 @@ export interface Body {
   readonly hidden: boolean;
   /** Turns of confusion left: actions may misfire. */
   readonly confused: number;
+  /** Tools still in the pouch (only the player carries any). */
+  readonly items: readonly CombatItem[];
 }
 
 export function bodyFrom(setup: CombatantSetup, side: CombatSide, isPlayer = false): Body {
@@ -48,14 +51,23 @@ export function bodyFrom(setup: CombatantSetup, side: CombatSide, isPlayer = fal
     traits,
     hidden: startsHidden({ traits }),
     confused: 0,
+    items: setup.items ?? [],
   };
 }
 
-/** Bodies from saves made before traits existed lack the new fields; fill them in. */
-export function withKit<B extends Omit<Body, 'traits' | 'hidden' | 'confused'>>(
-  b: B & Partial<Pick<Body, 'traits' | 'hidden' | 'confused'>>,
-): B & Pick<Body, 'traits' | 'hidden' | 'confused'> {
-  return { ...b, traits: b.traits ?? [], hidden: b.hidden ?? false, confused: b.confused ?? 0 };
+type KitField = 'traits' | 'hidden' | 'confused' | 'items';
+
+/** Bodies from saves made before traits and tools existed lack those fields; fill them in. */
+export function withKit<B extends Omit<Body, KitField>>(
+  b: B & Partial<Pick<Body, KitField>>,
+): B & Pick<Body, KitField> {
+  return {
+    ...b,
+    traits: b.traits ?? [],
+    hidden: b.hidden ?? false,
+    confused: b.confused ?? 0,
+    items: b.items ?? [],
+  };
 }
 
 /** Can be picked as a target: alive and not hidden. */

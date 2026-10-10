@@ -17,9 +17,11 @@ export type {
   CombatMeter,
   CombatPerk,
   CombatTrait,
+  CombatItem,
+  CombatItemEffect,
   RangeBand,
 } from './contract';
-export { COMBAT_TRAITS } from './contract';
+export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS } from './contract';
 export { createDuelEngine } from './engines/duel/engine';
 export { createMindEngine } from './engines/mind/engine';
 export { createDeckEngine } from './engines/deck/engine';
