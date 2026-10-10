@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { combatScene, type CombatOption } from '@/game';
+import { combatScene, combatScouting, type CombatOption } from '@/game';
 
 import type { ScreenProps } from '../types';
 import { ActionBar, Hand, PlanPicker } from './combat/Choices';
@@ -37,6 +37,7 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
         round={view.round}
         targetId={targetId}
         onTarget={living.length > 1 ? setChosen : null}
+        reads={combatScouting(state, ctx)}
       />
       {view.range && <RangeStrip range={view.range} />}
       <main className="page feed combat-log" aria-live="polite">

@@ -5,6 +5,7 @@ import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { engineFor } from '../fightStyle';
 import { activeMission, activeStage } from '../missionFlow';
+import { scoutOpponents, type ScoutingRead } from '../scouting';
 import type { GameState } from '../state';
 
 export type SceneLine =
@@ -87,4 +88,15 @@ export function missionScene(state: GameState, ctx: GameContext): MissionScene |
 
 export function combatScene(state: GameState, ctx: GameContext): CombatView | null {
   return state.combat ? engineFor(state, ctx).view(state.combat) : null;
+}
+
+/** How each opponent in the current fight sizes up against you. */
+export function combatScouting(
+  state: GameState,
+  ctx: GameContext,
+): Readonly<Record<string, ScoutingRead>> {
+  const view = combatScene(state, ctx);
+  if (!view) return {};
+  const foes = view.combatants.filter((c) => c.side === 'enemy').map((c) => c.id);
+  return scoutOpponents(state, ctx, foes);
 }

@@ -1,4 +1,6 @@
-import type { CombatantView } from '@/game';
+import type { CombatantView, ScoutingRead } from '@/game';
+
+import { ThreatChip } from '../../../components/ThreatChip';
 
 interface FoesProps {
   readonly foes: readonly CombatantView[];
@@ -6,14 +8,32 @@ interface FoesProps {
   readonly targetId: string | null;
   /** Null when there is nothing to choose between. */
   readonly onTarget: ((id: string) => void) | null;
+  /** How each foe sizes up against you, by combatant id. */
+  readonly reads: Readonly<Record<string, ScoutingRead>>;
+}
+
+/** The threat, how they fight and, for sharp eyes, where they outclass you. */
+function Read({ read }: { readonly read: ScoutingRead }) {
+  return (
+    <span className="foe-read">
+      <ThreatChip threat={read.threat} label={read.threatLabel} />
+      <small>{read.style}</small>
+      {read.details.length > 0 && (
+        <small className="num">
+          {read.details.map((d) => `${d.label} ${d.theirs} (you ${d.yours})`).join(' · ')}
+        </small>
+      )}
+    </span>
+  );
 }
 
 /** Enemies across the top: health, conditions, what they seem about to do. Tap to target. */
-export function Foes({ foes, round, targetId, onTarget }: FoesProps) {
+export function Foes({ foes, round, targetId, onTarget, reads }: FoesProps) {
   return (
     <header className={foes.length > 1 ? 'foes many' : 'foes'}>
       {foes.map((e) => {
         const down = e.health <= 0;
+        const read = reads[e.id];
         const targeted = !down && e.id === targetId && onTarget !== null;
         const body = (
           <>
@@ -31,6 +51,7 @@ export function Foes({ foes, round, targetId, onTarget }: FoesProps) {
               <i style={{ width: `${(e.health / e.maxHealth) * 100}%` }} />
             </span>
             {e.intent && !down && <span className="intent">{e.intent}</span>}
+            {!down && read && <Read read={read} />}
             <span className="foe-foot num">
               <span>
                 {e.health} / {e.maxHealth}

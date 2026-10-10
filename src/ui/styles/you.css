@@ -194,3 +194,29 @@
   font-size: 0.72rem;
   padding: 3px 8px;
 }
+
+/* Frame of reference: what a stat value means */
+.stat-row .tier {
+  grid-column: 1 / -1;
+  margin-top: -2px;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+.disc .tier {
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+.overall {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin: 10px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.overall b {
+  color: var(--gold);
+}

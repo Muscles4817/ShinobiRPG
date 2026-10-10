@@ -2,6 +2,7 @@ import type { GameAction, LessonCard, SparOption } from '@/game';
 
 import { Portrait } from '../../art/Portrait';
 import { Avatar } from '../../components/Faces';
+import { ThreatChip } from '../../components/ThreatChip';
 
 /** Partners shown before the rest fold away. */
 const SHOWN_PARTNERS = 3;
@@ -76,6 +77,7 @@ function SparRow({ option: s, perform }: SparRowProps) {
       <span className="bond-main">
         <b>{s.person.name}</b>
         <small>{s.blocker ?? s.where}</small>
+        {s.read && <ThreatChip threat={s.read.threat} label={s.read.threatLabel} />}
       </span>
       {s.specialty && <span className={`badge d-${s.specialty.id}`}>{s.specialty.label}</span>}
       <button
