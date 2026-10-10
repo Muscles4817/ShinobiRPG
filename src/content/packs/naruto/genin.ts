@@ -112,7 +112,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       morning: 'training-grounds',
       afternoon: 'shopping-district',
       evening: 'training-grounds',
-      night: null,
+      night: 'izakaya',
     },
   },
   {

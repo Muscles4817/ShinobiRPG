@@ -6,6 +6,7 @@ import { GearShopPage } from './GearShopPage';
 import { HomePage, HospitalPage } from './HomePages';
 import { MarketPage } from './MarketPage';
 import { MissionHallPage } from './MissionHallPage';
+import { TavernPage } from './TavernPage';
 import { TrainingPage } from './TrainingPage';
 
 /** Each kind of place has its own page design. */
@@ -30,5 +31,7 @@ export function PlacePage({ kind, placeId, ...props }: PlacePageProps) {
       return <AcademyPage {...props} />;
     case 'gear':
       return <GearShopPage {...props} placeId={placeId} />;
+    case 'tavern':
+      return <TavernPage {...props} />;
   }
 }

@@ -143,7 +143,9 @@ ui ──► game ──► content ──► systems ──► core
     `village.lastSightDay` is stored. Festivals can bring their own `stalls`, which
     `stallsHere` sets up in the market on the day. Dinner invites (`hostDinner`) cook a
     recipe for two in the evening; they count as the day's time with that person and are worth
-    more for their `favouriteRecipeId`.
+    more for their `favouriteRecipeId`. Night-only places are `tavern` places (an izakaya)
+    with `hours`; people's schedules bring regulars in at night, a round (`buyRound`) warms
+    everyone inside once a night, and the counter hears more gossip (`rumoursOverheard`).
 
 ### Content packs
 

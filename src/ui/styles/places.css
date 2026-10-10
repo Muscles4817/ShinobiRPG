@@ -543,3 +543,64 @@
   border-left: 3px solid var(--lantern);
   padding-left: 8px;
 }
+
+/* Izakaya */
+.tavern-keeper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--gold);
+  font-size: 0.84rem;
+}
+.tavern {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.tavern-closed {
+  font-family: var(--font-story);
+  color: var(--muted);
+}
+.tavern-crowd {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--lantern);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.tavern-crowd .btn {
+  justify-self: start;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+}
+.crowd-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+.crowd-face {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  font-size: 0.72rem;
+}
+.overheard ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.overheard li {
+  font-family: var(--font-story);
+  color: var(--story);
+  font-size: 0.86rem;
+  line-height: 1.35;
+  border-left: 3px solid var(--line);
+  padding-left: 10px;
+}

@@ -30,6 +30,7 @@ export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persiste
 export type { Choice, Discipline } from './views/common';
 export { headerView, type HeaderView, type HungerNote, type Meter } from './views/header';
 export { hubView, type HubView, type PlaceCard } from './views/hub';
+export { tavernView, type TavernView } from './views/tavern';
 export {
   villageView,
   type FestivalBanner,

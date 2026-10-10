@@ -70,6 +70,8 @@ function placeRefs(place: PlaceDef): [RefKind, string][] {
       return place.stalls.flatMap(stallRefs);
     case 'gear':
       return place.gearIds.map((id) => ['gear', id]);
+    case 'tavern':
+      return place.foodIds.map((id) => ['food', id]);
     case 'missions':
       return place.missionIds.map((id) => ['mission', id]);
     case 'academy':

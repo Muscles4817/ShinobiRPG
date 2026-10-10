@@ -9,6 +9,7 @@ import { setCombatStyle } from './settings';
 import { buyGear, buyIngredient, equipGear, unequipGear } from './shop';
 import { spar } from './spar';
 import { study } from './study';
+import { buyRound } from './tavern';
 import { endConversation, reply, talk } from './talk';
 import { assignTeam, chooseSensei } from './team';
 import { dismissReport, travel } from './travel';
@@ -47,4 +48,5 @@ export const HANDLERS: Registry = {
   cook,
   followSight,
   hostDinner,
+  buyRound,
 };

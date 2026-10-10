@@ -7,6 +7,7 @@ import { currentLocation, healthFraction } from '../ops';
 import type { GameState } from '../state';
 import { availability } from '../board';
 import { closedSign } from '../village';
+import { tavernCrowd } from '../actions/tavern';
 import { choice } from './common';
 import { lessonCard } from './team';
 import { facesByPlace, type PersonFace } from './people';
@@ -55,11 +56,18 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
       return homeLine(state, place.blurb);
     case 'gear':
       return place.blurb;
+    case 'tavern':
+      return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
     case 'hospital':
       return state.character.vitals.health < maxHealth(state.character.stats)
         ? `Treatment ${place.treatmentCost} ryo`
         : 'You’re healthy';
   }
+}
+
+function tavernLine(inside: number, blurb: string): string {
+  if (inside === 0) return blurb;
+  return inside === 1 ? 'One regular inside' : `${inside} regulars inside`;
 }
 
 function academyLine(ids: readonly string[], state: GameState, ctx: GameContext): string {

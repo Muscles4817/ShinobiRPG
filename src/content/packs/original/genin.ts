@@ -24,7 +24,7 @@ export const GENIN: readonly PersonDef[] = [
       morning: 'training-grounds',
       afternoon: 'mission-hall',
       evening: 'market-street',
-      night: null,
+      night: 'izakaya',
     },
   },
   {
@@ -106,7 +106,12 @@ export const GENIN: readonly PersonDef[] = [
     ),
     specialty: 'taijutsu',
     bio: 'Passed the final exam by being asleep in the right place. Nobody knows how.',
-    schedule: { morning: null, afternoon: 'market-street', evening: 'market-street', night: null },
+    schedule: {
+      morning: null,
+      afternoon: 'market-street',
+      evening: 'market-street',
+      night: 'izakaya',
+    },
   },
   {
     id: 'mio',

@@ -72,6 +72,22 @@ describe('App (smoke test)', () => {
     expect(within(life).getByText('Kite Day')).toBeInTheDocument();
   });
 
+  it('the izakaya opens at night: regulars, a round and supper', async () => {
+    const user = userEvent.setup();
+    const store = memoryStore();
+    const first = render(<App store={store} />);
+    await startGame(user);
+    first.unmount();
+    const save = JSON.parse(store.data ?? '{}') as { state: { time: unknown } };
+    save.state.time = { day: 2, slot: 3 };
+    render(<App store={memoryStore(JSON.stringify(save))} />);
+    await user.click(place(/The Paper Lantern/));
+    expect(screen.getByText('Tonight’s crowd')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Stand everyone a round/ }));
+    expect(screen.getByText('You’ve already stood a round tonight.')).toBeInTheDocument();
+    expect(screen.getByText('Overheard at the counter')).toBeInTheDocument();
+  });
+
   it('trains at the training grounds', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

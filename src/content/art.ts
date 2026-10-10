@@ -33,4 +33,5 @@ export type IconId =
   | 'vest'
   | 'charm'
   | 'pot'
-  | 'veg';
+  | 'veg'
+  | 'sake';

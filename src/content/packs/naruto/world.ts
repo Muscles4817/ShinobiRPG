@@ -170,6 +170,17 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         ],
       },
       {
+        id: 'izakaya',
+        kind: 'tavern',
+        name: 'Izakaya Tanuki',
+        icon: 'sake',
+        blurb: 'Where off-duty shinobi unwind',
+        hours: ['evening', 'night'],
+        keeper: 'Old Tanuki, behind the counter',
+        foodIds: ['tavern-yakitori', 'tavern-oden', 'barley-tea'],
+        roundCost: 40,
+      },
+      {
         id: 'apartment',
         kind: 'home',
         name: 'Your Apartment',

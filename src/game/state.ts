@@ -52,9 +52,10 @@ export interface GameState {
   readonly village: VillageMemory;
 }
 
-/** What the village remembers of you: the last night you followed a spirit. */
+/** What the village remembers of you: the last night you followed a spirit or stood a round. */
 export interface VillageMemory {
   readonly lastSightDay: number | null;
+  readonly lastRoundDay: number | null;
 }
 
 /** Player preferences stored with the save. */

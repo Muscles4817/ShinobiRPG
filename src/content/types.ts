@@ -164,6 +164,14 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'home'; readonly rentPerWeek: number; readonly lodging: string })
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
   | (PlaceBase & {
+      /** An izakaya: open evenings and nights, with a menu and whoever drops in. */
+      readonly kind: 'tavern';
+      readonly keeper: string;
+      readonly foodIds: readonly string[];
+      /** What buying everyone inside a round costs. */
+      readonly roundCost: number;
+    })
+  | (PlaceBase & {
       readonly kind: 'gear';
       /** Who runs the shop, e.g. "Old Tetsuya, smith". */
       readonly keeper: string;

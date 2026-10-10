@@ -22,7 +22,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       morning: 'training-grounds',
       afternoon: 'training-grounds',
       evening: 'market-street',
-      night: null,
+      night: 'izakaya',
     },
     sensei: {
       specialty: 'taijutsu',
@@ -112,7 +112,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       morning: 'training-grounds',
       afternoon: 'market-street',
       evening: null,
-      night: null,
+      night: 'izakaya',
     },
     sensei: {
       specialty: 'kenjutsu',
@@ -172,7 +172,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       morning: 'academy',
       afternoon: 'mission-hall',
       evening: 'market-street',
-      night: null,
+      night: 'izakaya',
     },
   },
   {

@@ -8,6 +8,7 @@ import {
   adjust,
   busyReason,
   chip,
+  currentLocation,
   firstBlocker,
   log,
   placeHere,
@@ -76,6 +77,16 @@ function teach(state: GameState, ctx: GameContext, sensei: PersonDef) {
   };
 }
 
+/** Lessons happen where your sensei trains; say where they are instead when they aren't. */
+function senseiElsewhere(state: GameState, ctx: GameContext, sensei: PersonDef): string | null {
+  const placeId = whereNow(state, ctx, sensei);
+  if (placeId === null) return `${sensei.name} is away right now.`;
+  const place = currentLocation(state, ctx).places.find((p) => p.id === placeId);
+  return place?.kind === 'training'
+    ? null
+    : `${sensei.name} is at ${place?.name ?? 'work'} right now.`;
+}
+
 export const lesson: ActionHandler<ActionOf<'lesson'>> = {
   check(state, _action, ctx) {
     const sensei = yourSensei(state, ctx);
@@ -85,10 +96,8 @@ export const lesson: ActionHandler<ActionOf<'lesson'>> = {
       weakFromHunger(state),
       !sensei && 'You don’t have a sensei yet.',
       !placeHere(state, ctx, 'training') && 'Lessons happen at a training ground.',
-      sensei !== undefined &&
-        whereNow(state, ctx, sensei) === null &&
-        `${sensei.name} is away right now.`,
       wait > 0 && `Your next lesson is in ${wait === 1 ? 'a day' : `${wait} days`}.`,
+      sensei !== undefined && senseiElsewhere(state, ctx, sensei),
       state.character.vitals.energy < LESSON_ENERGY &&
         `Needs ${LESSON_ENERGY} energy. Nap or eat first.`,
     );
