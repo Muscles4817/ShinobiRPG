@@ -28,7 +28,7 @@ export const followSight: ActionHandler<ActionOf<'followSight'>> = {
       {
         ...state,
         character: { ...state.character, stats },
-        village: { lastSightDay: state.time.day },
+        village: { ...state.village, lastSightDay: state.time.day },
       },
       { energy: -SIGHT_ENERGY },
     );

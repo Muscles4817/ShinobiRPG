@@ -2,6 +2,7 @@ import { headerView, marketView } from '@/game';
 
 import { Icon } from '../../art/Icon';
 import { Banner } from '../../components/Banner';
+import { FoodCard } from './FoodCard';
 import type { PlaceProps } from '../types';
 
 const CURTAINS = ['#a3361f', '#2b4f7a', '#4a6b3a', '#5a3a6e'];
@@ -51,34 +52,7 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
             {!stall.closed && (
               <div className="stall-items">
                 {stall.items.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className="item"
-                    disabled={item.blocker !== null}
-                    title={item.blocker ?? undefined}
-                    onClick={() => {
-                      perform(item.action);
-                    }}
-                  >
-                    <span className="tag num">{item.cost}</span>
-                    <span className="item-pic">
-                      <Icon id={item.icon} size={28} />
-                    </span>
-                    <b>{item.name}</b>
-                    <span className="chips">
-                      <span className="chip gain">Hunger −{item.satiety}</span>
-                      {item.energy > 0 && <span className="chip gain">Energy +{item.energy}</span>}
-                      {item.slots > 0 && <span className="chip">{item.slots} slot</span>}
-                    </span>
-                    {item.blocker ? (
-                      <small className="blocker">{item.blocker}</small>
-                    ) : (
-                      item.wasted > 0 && (
-                        <small className="muted">Too full: {item.wasted} would go to waste</small>
-                      )
-                    )}
-                  </button>
+                  <FoodCard key={item.id} item={item} perform={perform} />
                 ))}
                 {stall.ingredients.map((item) => (
                   <button

@@ -61,6 +61,8 @@ choose **GitHub Actions**.
   eyes see spirits at night and can follow them. Festivals come round each season with
   cheaper food, warmer conversations and festival-only stalls. In the evening, cook for two
   and invite a friend to dinner; cook their favourite and they won't forget it.
+  After dark the izakaya opens: the regulars drop in, you can stand everyone a round, and the
+  counter hears every job tip going round.
 - **Four fight styles to playtest** (Shinobi tab → Fight style): _Classic_; _Plan & Watch_
   (Punch Club style: slot a few cards for each distance — attacks, jutsu, footwork that
   tries to change the range, defences that react on their own — then watch each round and

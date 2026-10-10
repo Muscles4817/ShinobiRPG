@@ -156,7 +156,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     settings: defaultSettings(ctx),
     board: newBoard(seed),
     inventory: EMPTY_INVENTORY,
-    village: { lastSightDay: null },
+    village: { lastSightDay: null, lastRoundDay: null },
   };
   return logOpening(state, ctx, roll);
 }

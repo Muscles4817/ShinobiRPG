@@ -51,6 +51,24 @@ export interface MarketView {
   }[];
 }
 
+/** A dish you can buy here, priced for today, with what eating it would do. */
+export function foodItem(state: GameState, ctx: GameContext, id: string): MarketItem {
+  const food = ctx.content.foods.require(id);
+  const fullness = Math.round(state.character.vitals.satiety);
+  return {
+    ...choice(state, ctx, { type: 'eat', foodId: id }),
+    id,
+    name: food.name,
+    description: food.description,
+    icon: food.icon,
+    cost: marketPrice(food.cost, state, ctx),
+    satiety: food.satiety,
+    energy: food.energy,
+    slots: food.slots,
+    wasted: Math.max(0, fullness + food.satiety - METER_MAX),
+  };
+}
+
 export function marketView(state: GameState, ctx: GameContext): MarketView | null {
   const place = placeHere(state, ctx, 'market');
   if (!place) return null;
@@ -67,21 +85,7 @@ export function marketView(state: GameState, ctx: GameContext): MarketView | nul
       blurb: stall.blurb,
       icon: stall.icon,
       closed: closedSign(stall.hours, state),
-      items: stall.foodIds.map((id) => {
-        const food = ctx.content.foods.require(id);
-        return {
-          ...choice(state, ctx, { type: 'eat', foodId: id }),
-          id,
-          name: food.name,
-          description: food.description,
-          icon: food.icon,
-          cost: marketPrice(food.cost, state, ctx),
-          satiety: food.satiety,
-          energy: food.energy,
-          slots: food.slots,
-          wasted: Math.max(0, fullness + food.satiety - METER_MAX),
-        };
-      }),
+      items: stall.foodIds.map((id) => foodItem(state, ctx, id)),
       ingredients: (stall.ingredientIds ?? []).map((id) => {
         const item = ctx.content.ingredients.require(id);
         return {

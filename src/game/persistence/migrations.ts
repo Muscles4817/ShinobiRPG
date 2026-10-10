@@ -135,6 +135,11 @@ function v9ToV10(state: RawState): RawState {
   return { ...state, village: { lastSightDay: null } };
 }
 
+/** v10 → v11: izakaya rounds; none bought yet. */
+function v10ToV11(state: RawState): RawState {
+  return { ...state, village: { ...asRecord(state.village), lastRoundDay: null } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -145,4 +150,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   7: v7ToV8,
   8: v8ToV9,
   9: v9ToV10,
+  10: v10ToV11,
 };

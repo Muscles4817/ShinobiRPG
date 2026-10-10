@@ -78,9 +78,11 @@ describe('sensei lessons', () => {
     );
   });
 
-  it('needs your sensei to be around', () => {
-    const evening = { ...newGame(), time: { day: 1, slot: 3 } };
-    expect(blockerFor(evening, { type: 'lesson' }, ctx)).toBe('Gōran is away right now.');
+  it('needs your sensei to be on the training ground', () => {
+    const night = { ...newGame(), time: { day: 1, slot: 3 } };
+    expect(blockerFor(night, { type: 'lesson' }, ctx)).toBe(
+      'Gōran is at The Paper Lantern right now.',
+    );
   });
 });
 

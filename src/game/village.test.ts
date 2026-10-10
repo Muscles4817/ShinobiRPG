@@ -131,6 +131,6 @@ describe('saves', () => {
     const { village: _village, ...v9 } = newGame();
     const loaded = deserialize(JSON.stringify({ version: 9, state: v9 }));
     if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.village).toEqual({ lastSightDay: null });
+    expect(loaded.value.village).toEqual({ lastSightDay: null, lastRoundDay: null });
   });
 });

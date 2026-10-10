@@ -4,7 +4,7 @@ import { calendarDay, daysUntil, slotName, TIME_SLOTS } from '@/systems/time';
 
 import { newPostingsTomorrow } from './board';
 import type { GameContext } from './context';
-import { placeHere } from './ops';
+import { placeHere, placesHere } from './ops';
 import type { GameState } from './state';
 
 /**
@@ -14,6 +14,8 @@ import type { GameState } from './state';
  */
 
 const RUMOURS_PER_DAY = 3;
+/** The izakaya hears more than the street does. */
+const OVERHEARD_PER_NIGHT = 5;
 /** Job rumours go round the day before the job is posted, but never crowd out all the gossip. */
 const MAX_JOB_RUMOURS = 2;
 /** A festival is announced on the village screen this many days ahead. */
@@ -97,6 +99,18 @@ export function stallsHere(state: GameState, ctx: GameContext): MarketStall[] {
   ];
 }
 
+/** Everywhere here that sells food: market stalls (festival ones too) and izakaya menus. */
+export function foodSellersHere(state: GameState, ctx: GameContext): Stall[] {
+  const taverns = placesHere(state, ctx, 'tavern').map((t): Stall => ({
+    name: t.name,
+    blurb: t.blurb,
+    icon: t.icon,
+    foodIds: t.foodIds,
+    ...(t.hours ? { hours: t.hours } : {}),
+  }));
+  return [...stallsHere(state, ctx), ...taverns];
+}
+
 /** Extra bond points every conversation earns today. */
 export function festivalBondBonus(state: GameState, ctx: GameContext): number {
   return festivalToday(state, ctx)?.bondBonus ?? 0;
@@ -108,19 +122,33 @@ function byHash(state: GameState, salt: string) {
     hashUnit(state.board.seed, state.time.day, b.id, salt);
 }
 
-/** Today's gossip: hints at tomorrow's new jobs first, then talk about people and the village. */
-export function rumoursToday(state: GameState, ctx: GameContext): RumourDef[] {
+interface Earful {
+  readonly maxJobs: number;
+  readonly total: number;
+}
+
+function gossip(state: GameState, ctx: GameContext, { maxJobs, total }: Earful): RumourDef[] {
   const { rumours } = ctx.content.village;
   const tomorrow = new Set(newPostingsTomorrow(state, ctx));
   const jobs = rumours
     .filter((r) => r.missionId !== undefined && tomorrow.has(r.missionId))
     .sort(byHash(state, 'rumour'))
-    .slice(0, MAX_JOB_RUMOURS);
+    .slice(0, maxJobs);
   const talk = rumours
     .filter((r) => r.missionId === undefined)
     .sort(byHash(state, 'rumour'))
-    .slice(0, RUMOURS_PER_DAY - jobs.length);
+    .slice(0, Math.max(0, total - jobs.length));
   return [...jobs, ...talk];
+}
+
+/** Today's gossip: hints at tomorrow's new jobs first, then talk about people and the village. */
+export function rumoursToday(state: GameState, ctx: GameContext): RumourDef[] {
+  return gossip(state, ctx, { maxJobs: MAX_JOB_RUMOURS, total: RUMOURS_PER_DAY });
+}
+
+/** What you overhear at the izakaya counter: every job tip going round, and more besides. */
+export function rumoursOverheard(state: GameState, ctx: GameContext): RumourDef[] {
+  return gossip(state, ctx, { maxJobs: Infinity, total: OVERHEARD_PER_NIGHT });
 }
 
 /** Eyes like an awakened bloodline's see what walks the village at night. */

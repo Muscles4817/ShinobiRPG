@@ -160,6 +160,17 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         ],
       },
       {
+        id: 'izakaya',
+        kind: 'tavern',
+        name: 'The Paper Lantern',
+        icon: 'sake',
+        blurb: 'An izakaya that opens at dusk',
+        hours: ['evening', 'night'],
+        keeper: 'Mama Sayo, who hears everything',
+        foodIds: ['lantern-yakitori', 'night-oden', 'roasted-barley-tea'],
+        roundCost: 40,
+      },
+      {
         id: 'home',
         kind: 'home',
         name: 'Home',
