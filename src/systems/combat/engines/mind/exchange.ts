@@ -65,6 +65,10 @@ function counterLanding(counter: Move, defender: Move, range: RangeBand): Landin
 /** What `mover`'s move does to an opponent who chose `defender`, at `range`. */
 export function clash(mover: Move, defender: Move, range: RangeBand): Landing {
   if (!reaches(mover, range)) return mover.kind === 'guard' ? NONE : { kind: 'whiff' };
+  return landingInReach(mover, defender, range);
+}
+
+function landingInReach(mover: Move, defender: Move, range: RangeBand): Landing {
   switch (mover.kind) {
     case 'strike':
     case 'throw':
@@ -80,6 +84,8 @@ export function clash(mover: Move, defender: Move, range: RangeBand): Landing {
     case 'guard':
     case 'step-in':
     case 'step-back':
+    case 'search':
+    case 'dispel':
     case 'idle':
       return NONE;
   }
