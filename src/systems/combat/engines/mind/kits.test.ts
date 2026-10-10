@@ -199,16 +199,20 @@ describe('mind game kits: illusions', () => {
 });
 
 describe('mind game kits: old saves', () => {
-  it('a fight saved before kits still views and plays', () => {
+  it('a fight saved before kits and tools still views and plays', () => {
     const fresh = decode(engine.start(setup([fighter('bandit')]), createRng(6)));
     // Deliberately the pre-kit shape, which the current types no longer describe.
     const old = encode({
       ...fresh,
-      fighters: fresh.fighters.map(({ traits: _t, hidden: _h, confused: _c, ...rest }) => rest),
+      fighters: fresh.fighters.map(
+        ({ traits: _t, hidden: _h, confused: _c, items: _i, ...rest }) => rest,
+      ),
     } as unknown as typeof fresh);
     expect(engine.view(old).combatants.every((c) => c.targetable)).toBe(true);
     const next = act(old, 'guard', 7);
     if (!next.ok) throw new Error(next.error);
     expect(decode(next.value).fighters.every((f) => Array.isArray(f.traits))).toBe(true);
+    expect(decode(next.value).fighters.every((f) => Array.isArray(f.items))).toBe(true);
+    expect(engine.view(next.value).options.some((o) => o.kind === 'item')).toBe(false);
   });
 });
