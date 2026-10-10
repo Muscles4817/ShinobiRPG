@@ -2,14 +2,16 @@ import { createStats } from './stats';
 import { fightingPower, statTier } from './tiers';
 
 describe('stat tiers', () => {
-  it('names what a value means and what the next step is', () => {
+  it('grades a value E–S with its shinobi rank, and names the next step', () => {
     expect(statTier(5)).toEqual({
-      label: 'Academy level',
-      next: { label: 'Genin level', at: 7 },
+      grade: 'E',
+      label: 'E · Genin',
+      next: { label: 'D · Genin', at: 8 },
     });
-    expect(statTier(12).label).toBe('Seasoned genin');
-    expect(statTier(40)).toEqual({ label: 'Kage level', next: null });
-    expect(statTier(1).label).toBe('Untrained');
+    expect(statTier(15).label).toBe('C · Chūnin');
+    expect([20, 28].map((v) => statTier(v).label)).toEqual(['B · Jōnin', 'A · Jōnin']);
+    expect(statTier(45)).toEqual({ grade: 'S', label: 'S · Kage', next: null });
+    expect(statTier(1).grade).toBe('E');
   });
 
   it('a specialist fights above their all-round level', () => {

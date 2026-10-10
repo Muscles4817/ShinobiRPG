@@ -54,8 +54,8 @@ describe('scouting in play', () => {
 
   it('your stats come with what they mean', () => {
     const view = shinobiView(newGame(), ctx);
-    expect(view.overall.label).toBe('Academy level');
-    expect(view.overall.next).toEqual({ label: 'Genin level', at: 7 });
-    expect(view.groups[0]?.stats[0]?.tier).toMatch(/level|genin/i);
+    expect(view.overall.label).toBe('E · Genin');
+    expect(view.overall.next).toEqual({ label: 'D · Genin', at: 8 });
+    expect(view.groups[0]?.stats[0]?.tier).toMatch(/^[EDCBAS] · /);
   });
 });
