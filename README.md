@@ -67,6 +67,10 @@ choose **GitHub Actions**.
   B–A jōnin, S kage) and you have an overall fighting grade. Opponents are sized up against you
   before and during fights (stronger, evenly matched, weaker; how they fight), and sharp eyes
   read their standout stats.
+- **Enemies fight differently.** Archers shoot from afar and fold up close; brawlers charge;
+  illusionists hide and confuse you until you Search (perception) or Dispel (chakra, will);
+  armour blunts blows; spirits shrug off plain hits but fear seals; packs hunt together;
+  cowards run. Scouting tells you what you're facing and how to beat it.
 - **Four fight styles to playtest** (Shinobi tab → Fight style): _Classic_; _Plan & Watch_
   (Punch Club style: slot a few cards for each distance — attacks, jutsu, footwork that
   tries to change the range, defences that react on their own — then watch each round and
