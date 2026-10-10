@@ -12,13 +12,16 @@ import {
   techniqueDamage,
 } from '../../rules/body';
 import { matchup, matchupLine } from '../../rules/elements';
+import { revealOnAttack } from '../../rules/items';
 import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { cardId, isOffence, type Card } from './cards';
 import { chooseCard } from './choose';
+import { useTool } from './pouch';
 import { dispel, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
 import {
+  fighterIn,
   LOG_LIMIT,
   patch,
   playerOf,
@@ -145,6 +148,8 @@ function play(round: Round, turn: Turn, card: Card): Round {
       return dispel(round, turn);
     case 'jutsu':
       return useJutsu(round, turn, card.technique);
+    case 'item':
+      return useTool(round, turn, card.item);
     case 'strike':
     case 'throw':
       return strike(round, turn, card.kind === 'throw');
@@ -160,16 +165,36 @@ function remember(seen: Round['seen'], fighterId: string, id: string): Round['se
   return known.includes(id) ? seen : { ...seen, [fighterId]: [...known, id] };
 }
 
-/** Plays a card, unless it's an attack with no one in sight or confusion sends it wide. */
+function lostSight(round: Round, actor: PlanFighter): Round {
+  const vanished = opponentsOf(round.fighters, actor).some((f) => f.hidden);
+  return vanished && actor.side === 'enemy'
+    ? say(round, `${actor.name} loses sight of you.`)
+    : say(round, `${actor.name} can't find a target.`);
+}
+
+/** Attacking from smoke gives you away, hit or miss. */
+function revealed(round: Round, actorId: string): Round {
+  const actor = fighterIn(round, actorId);
+  if (!actor) return round;
+  return {
+    ...round,
+    fighters: patch(round.fighters, actorId, { hidden: revealOnAttack(actor).hidden }),
+  };
+}
+
+/**
+ * Plays a card, unless it's an attack with no one in sight or confusion sends it wide. Tools
+ * never misfire and don't give a hidden fighter away; attacks and techniques that hurt do.
+ */
 function attempt(round: Round, turn: Turn, card: Card): Round {
   const { actor, target, rng } = turn;
-  const lost = isOffence(card) && !target;
-  if (lost) return say(round, `${actor.name} can't find a target.`);
-  if (isOffence(card) && misfires(actor, rng)) {
+  if (isOffence(card) && !target) return lostSight(round, actor);
+  if (card.kind === 'item' || !isOffence(card)) return play(round, turn, card);
+  if (misfires(actor, rng)) {
     const whose = actor.isPlayer ? 'Your senses lie to you.' : `${actor.name}'s senses lie.`;
-    return say(round, `${whose} The attack goes wide.`);
+    return revealed(say(round, `${whose} The attack goes wide.`), actor.id);
   }
-  return play(round, turn, card);
+  return revealed(play(round, turn, card), actor.id);
 }
 
 function turn(start: Round, actorId: string, rng: Rng): Round {
@@ -183,7 +208,8 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   }
   const target = targetFor(round.fighters, actor, rng);
   const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
-  const card = chooseCard(actor, { band: round.range, foe: target, hiddenFoe }, rng);
+  const moment = { band: round.range, foe: target, hiddenFoe, opening: round.opening ?? false };
+  const card = chooseCard(actor, moment, rng);
   const played = attempt(round, { actor, target, rng }, card);
   return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
 }
@@ -196,6 +222,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     .sort((a, b) => b.initiative - a.initiative);
   const start: Round = {
     number: state.round,
+    opening: state.exchange === 0,
     fighters: [...state.fighters],
     range: state.range,
     lines: [`— Exchange ${state.round} —`],
