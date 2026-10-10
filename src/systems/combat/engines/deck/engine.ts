@@ -9,6 +9,7 @@ import type {
   CombatView,
 } from '../../contract';
 import { alive, chakraCost, hasPerk, viewOf } from '../../rules/body';
+import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
 import {
   buildDeck,
@@ -20,6 +21,7 @@ import {
   shuffle,
 } from './cards';
 import { describeIntent, effectiveIntent } from './enemy';
+import { ITEM_PREFIX, itemOptions, useTool } from './items';
 import { UNSEEN_REASON } from './kit';
 import { dispel, search, senseOptions } from './senses';
 import {
@@ -118,6 +120,7 @@ function options(state: DeckState): CombatOption[] {
     ...state.hand.map((c) => cardOption(c, state)),
     ...stepOptions(state),
     ...senseOptions(state),
+    ...itemOptions(state),
     { id: 'end', label: 'End turn', detail: '', kind: 'end' },
     state.canFlee ? flee : { ...flee, disabledReason: 'You cannot flee this fight' },
   ];
@@ -139,6 +142,7 @@ function act(deck: DeckState, choice: CombatChoice, rng: Rng) {
   if (option.id === 'step-in' || option.id === 'step-back') return ok(step(deck, option.id));
   if (option.id === 'search') return ok(search(deck, rng));
   if (option.id === 'dispel') return ok(dispel(deck, rng));
+  if (option.id.startsWith(ITEM_PREFIX)) return useTool(deck, choice, rng);
   if (option.id === 'flee') {
     if (rng.chance(fleeChance(deck))) {
       return ok({
@@ -224,6 +228,7 @@ export function createDeckEngine(): CombatEngine {
         result,
         rounds: deck.round,
         player: { health: player.health, chakra: player.chakra },
+        items: itemsLeft(player),
       };
     },
   };

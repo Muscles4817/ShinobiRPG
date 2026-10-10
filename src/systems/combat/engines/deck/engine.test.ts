@@ -276,13 +276,17 @@ describe('deck engine', () => {
       const legacy = mutate(start(), (d) => ({
         ...d,
         fighters: d.fighters.map((f) => {
-          const { traits: _t, hidden: _h, confused: _c, ...old } = f;
+          const { traits: _t, hidden: _h, confused: _c, items: _i, ...old } = f;
           // Old saves lack the kit fields; the engine must fill them in.
           return old as DeckFighter;
         }),
       }));
       expect(engine.view(legacy).combatants).toHaveLength(2);
+      expect(engine.view(legacy).options.some((o) => o.kind === 'item')).toBe(false);
       expect(decode(act(legacy, 'end')).round).toBe(2);
+      expect(engine.outcome(mutate(legacy, (d) => ({ ...d, result: 'escaped' })))?.items).toEqual(
+        {},
+      );
     });
   });
 });
