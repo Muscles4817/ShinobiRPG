@@ -6,7 +6,8 @@ import { hostDinner } from './dinner';
 import { cook } from './kitchen';
 import { lesson } from './lesson';
 import { setCombatStyle } from './settings';
-import { buyGear, buyIngredient, equipGear, unequipGear } from './shop';
+import { buyIntel } from './intel';
+import { buyGear, buyIngredient, buyTool, equipGear, unequipGear } from './shop';
 import { spar } from './spar';
 import { study } from './study';
 import { buyRound } from './tavern';
@@ -42,6 +43,8 @@ export const HANDLERS: Registry = {
   spar,
   setCombatStyle,
   buyGear,
+  buyTool,
+  buyIntel,
   equipGear,
   unequipGear,
   buyIngredient,

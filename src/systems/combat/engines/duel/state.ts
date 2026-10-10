@@ -1,6 +1,7 @@
 import type {
   CombatAttributes,
   CombatantSetup,
+  CombatItem,
   CombatPerk,
   CombatResult,
   CombatSetup,
@@ -43,10 +44,12 @@ export interface Fighter {
    * both engaged; archers start distant.
    */
   readonly distant: boolean;
+  /** Tools still in the pouch (only the player carries any). */
+  readonly items: readonly CombatItem[];
 }
 
-/** Fields that saves from before allies (side) or combat kits (the rest) lack. */
-type AddedLater = 'side' | 'perks' | 'traits' | 'hidden' | 'confused' | 'distant';
+/** Fields that saves from before allies (side), combat kits or fight tools lack. */
+type AddedLater = 'side' | 'perks' | 'traits' | 'hidden' | 'confused' | 'distant' | 'items';
 type StoredFighter = Omit<Fighter, AddedLater> & Partial<Pick<Fighter, AddedLater>>;
 
 export interface DuelState {
@@ -70,10 +73,11 @@ function toFighter(setup: CombatantSetup, side: CombatSide, isPlayer = false): F
     hidden: startsHidden({ traits }),
     confused: 0,
     distant: hasTrait({ traits }, 'archer'),
+    items: setup.items ?? [],
   };
 }
 
-/** Old saves: the player alone on their side, nobody kitted, hidden or standing back. */
+/** Old saves: the player alone on their side, nobody kitted, hidden, standing back or carrying tools. */
 function withDefaults(f: StoredFighter): Fighter {
   return {
     ...f,
@@ -83,6 +87,7 @@ function withDefaults(f: StoredFighter): Fighter {
     hidden: f.hidden ?? false,
     confused: f.confused ?? 0,
     distant: f.distant ?? false,
+    items: f.items ?? [],
   };
 }
 

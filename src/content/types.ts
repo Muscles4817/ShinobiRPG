@@ -5,13 +5,20 @@ import type { StatDelta } from '@/systems/stats';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 
 import type { BackdropId, IconId } from './art';
-import type { GearDef, IngredientDef, RecipeDef } from './items';
+import type { GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
 import type { ConversationDef, NamePools, PersonDef, TeamText, Tone } from './people';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
 
 export type { BackdropId, IconId } from './art';
-export type { GearDef, GearSlot, IngredientCount, IngredientDef, RecipeDef } from './items';
+export type {
+  GearDef,
+  GearSlot,
+  IngredientCount,
+  IngredientDef,
+  RecipeDef,
+  ToolDef,
+} from './items';
 export type {
   ConversationChoice,
   ConversationDef,
@@ -179,6 +186,8 @@ export type PlaceDef =
       /** Who runs the shop, e.g. "Old Tetsuya, smith". */
       readonly keeper: string;
       readonly gearIds: readonly string[];
+      /** Fight tools sold by the piece. */
+      readonly toolIds?: readonly string[];
     });
 
 export type PlaceKind = PlaceDef['kind'];
@@ -235,6 +244,7 @@ export interface ContentPack {
   readonly nindos: readonly NindoDef[];
   readonly breakIn: BreakInScene;
   readonly gear: readonly GearDef[];
+  readonly tools: readonly ToolDef[];
   readonly ingredients: readonly IngredientDef[];
   readonly recipes: readonly RecipeDef[];
   readonly people: readonly PersonDef[];

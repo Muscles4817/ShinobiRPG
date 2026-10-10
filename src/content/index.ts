@@ -17,6 +17,7 @@ export type {
   FoodDef,
   GearDef,
   GearSlot,
+  ToolDef,
   IngredientDef,
   RecipeDef,
   RumourDef,

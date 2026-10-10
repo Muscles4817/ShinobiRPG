@@ -86,6 +86,7 @@ function landingInReach(mover: Move, defender: Move, range: RangeBand): Landing 
     case 'step-back':
     case 'search':
     case 'dispel':
+    case 'item':
     case 'idle':
       return NONE;
   }

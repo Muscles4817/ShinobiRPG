@@ -92,6 +92,7 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['trait', pack.traits],
     ['nindo', pack.nindos],
     ['gear', pack.gear],
+    ['tool', pack.tools],
     ['ingredient', pack.ingredients],
     ['recipe', pack.recipes],
     ['person', pack.people],

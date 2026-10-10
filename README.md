@@ -71,6 +71,11 @@ choose **GitHub Actions**.
   illusionists hide and confuse you until you Search (perception) or Dispel (chakra, will);
   armour blunts blows; spirits shrug off plain hits but fear seals; packs hunt together;
   cowards run. Scouting tells you what you're facing and how to beat it.
+- **Prepare before you go.** Buy the client's report at the mission hall to learn who a job
+  pits you against, then stock your pouch at the forge: smoke bombs, flash tags, explosive
+  tags, soldier pills, wound salves and clarity charms work in every fight style. Genin you
+  spar with fight to their specialty (taijutsu brawlers, blade-quick swordsmen, hiding
+  illusionists).
 - **Four fight styles to playtest** (Shinobi tab → Fight style): _Classic_; _Plan & Watch_
   (Punch Club style: slot a few cards for each distance — attacks, jutsu, footwork that
   tries to change the range, defences that react on their own — then watch each round and

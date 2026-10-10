@@ -9,9 +9,11 @@ import type {
   CombatView,
 } from '../../contract';
 import { alive, hasPerk, targetable, viewOf } from '../../rules/body';
+import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
 import { moveFromOption, playerOptions, UNSEEN } from './moves';
 import { nextPlans, resolveRound, type PlayerChoice } from './round';
+import { itemMove, itemOptions } from './tools';
 import {
   decode,
   encode,
@@ -30,6 +32,7 @@ import {
 
 const START_RANGE = 'mid';
 const UNREADABLE = '???';
+const DOWN = 'They are already down.';
 const RECOVER: CombatOption = {
   id: 'recover',
   label: 'Shake it off',
@@ -57,12 +60,26 @@ function options(state: MindState): CombatOption[] {
   const player = playerOf(state);
   if (player.stunned > 0) return [RECOVER];
   const foes = state.fighters.filter((f) => f.side === 'enemy' && alive(f));
-  return playerOptions(player, {
+  const all = playerOptions(player, {
     range: state.range,
     canFlee: state.canFlee,
     hiddenFoes: foes.some((f) => f.hidden),
     visibleFoes: foes.some(targetable),
   });
+  // Tools sit just before Flee, which stays last.
+  return [...all.slice(0, -1), ...itemOptions(player, foes), ...all.slice(-1)];
+}
+
+/** Why the chosen target can't be aimed at: hidden, or (for a tool) already down. */
+function targetRefusal(
+  state: MindState,
+  option: CombatOption,
+  targetId: string | undefined,
+): string | null {
+  const target = state.fighters.find((f) => f.id === targetId);
+  if (!option.targeted || !target) return null;
+  if (target.side === 'enemy' && target.hidden) return UNSEEN;
+  return option.kind === 'item' && !alive(target) ? DOWN : null;
 }
 
 function toChoice(state: MindState, choice: CombatChoice): Result<PlayerChoice> {
@@ -71,10 +88,10 @@ function toChoice(state: MindState, choice: CombatChoice): Result<PlayerChoice> 
   if (option.disabledReason) return err(option.disabledReason);
   if (option.id === 'flee') return ok({ kind: 'flee' });
   if (option.id === 'recover') return ok({ kind: 'recover' });
-  const move = moveFromOption(playerOf(state), option.id);
+  const move = itemMove(playerOf(state), option.id) ?? moveFromOption(playerOf(state), option.id);
   if (!move) return err(`Unknown move "${option.id}".`);
-  const target = state.fighters.find((f) => f.id === choice.targetId);
-  if (option.targeted && target?.side === 'enemy' && target.hidden) return err(UNSEEN);
+  const refused = targetRefusal(state, option, choice.targetId);
+  if (refused) return err(refused);
   return ok({
     kind: 'move',
     move,
@@ -131,6 +148,7 @@ export function createMindEngine(): CombatEngine {
         result: mind.result,
         rounds: mind.round,
         player: { health: player.health, chakra: player.chakra },
+        items: itemsLeft(player),
       };
     },
   };

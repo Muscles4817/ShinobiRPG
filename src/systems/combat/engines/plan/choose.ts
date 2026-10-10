@@ -4,6 +4,7 @@ import type { CombatTechnique, RangeBand } from '../../contract';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
 import { isOffence, playable, slotted, type Card } from './cards';
+import { toolInstinct } from './pouch';
 import type { PlanFighter } from './state';
 
 /**
@@ -11,7 +12,8 @@ import type { PlanFighter } from './state';
  * hurt, daze a fresh foe, punish a dazed one); otherwise they pick among the cards slotted for
  * this distance, stronger ones more often. With nothing playable they improvise a basic blow,
  * or, when their kit can't attack from here, a step towards where it can. A fighter with Search
- * or Dispel slotted uses it first when a foe is hidden (Dispel also when confused).
+ * or Dispel slotted uses it first when a foe is hidden (Dispel also when confused); then a
+ * slotted tool the moment calls for (see `pouch.ts`).
  */
 
 const LOW_HEALTH = 0.35;
@@ -60,13 +62,22 @@ export interface Moment {
   readonly foe: PlanFighter | undefined;
   /** Some living foe is hidden in an illusion. */
   readonly hiddenFoe?: boolean;
+  /** The first exchange of a round, when a smoke bomb opens. */
+  readonly opening?: boolean;
+}
+
+/** Search or Dispel for a hidden foe, else a tool the moment calls for. */
+function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment): Card | undefined {
+  const hiddenFoe = moment.hiddenFoe ?? false;
+  const opening = moment.opening ?? false;
+  return senses(self, ready, hiddenFoe) ?? toolInstinct(self, ready, { hiddenFoe, opening });
 }
 
 export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   const { band, foe } = moment;
   const ready = slotted(self, band).filter((c) => playable(self, c));
-  const sense = senses(self, ready, moment.hiddenFoe ?? false);
-  if (sense) return sense;
+  const instinct = instinctFor(self, ready, moment);
+  if (instinct) return instinct;
   const heal = jutsu(ready, (t) => t.effect === 'heal');
   if (heal && self.health < self.maxHealth * LOW_HEALTH) return heal;
   const reaches = canAttackFrom(self, band);

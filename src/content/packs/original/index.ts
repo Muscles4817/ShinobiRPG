@@ -10,6 +10,7 @@ import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
 import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
 import { GEAR } from './gear';
+import { TOOLS } from '../../shared/tools';
 import { ORIGINAL_CONVERSATIONS } from './conversations';
 import { GENIN } from './genin';
 import { SENSEIS_AND_ELDERS } from './people';
@@ -40,6 +41,7 @@ export const ORIGINAL_PACK: ContentPack = {
   nindos: NINDOS,
   breakIn: BREAK_IN,
   gear: GEAR,
+  tools: TOOLS,
   ingredients: INGREDIENTS,
   recipes: RECIPES,
   people: [...SENSEIS_AND_ELDERS, ...GENIN],

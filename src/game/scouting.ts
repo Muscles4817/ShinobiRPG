@@ -5,7 +5,7 @@ import { createStats } from '@/systems/stats';
 
 import type { GameContext } from './context';
 import { combatStats } from './gear';
-import { companionStats, PERSON_PREFIX } from './people/companions';
+import { companionStats, companionTraits, PERSON_PREFIX } from './people/companions';
 import { findPerson } from './people/cast';
 import type { GameState } from './state';
 
@@ -162,7 +162,9 @@ interface Opponent {
 function opponentOf(state: GameState, ctx: GameContext, combatantId: string): Opponent | null {
   if (combatantId.startsWith(PERSON_PREFIX)) {
     const person = findPerson(state, ctx, combatantId.slice(PERSON_PREFIX.length));
-    return person ? { stats: companionStats(person, state), traits: [] } : null;
+    return person
+      ? { stats: companionStats(person, state), traits: companionTraits(person) }
+      : null;
   }
   const [base = combatantId] = combatantId.split('#');
   const stats = enemyStats(ctx, base);

@@ -3,9 +3,10 @@ import type { Rng } from '@/core';
 import type { CombatResult } from '../../contract';
 import { alive, chakraCost, targetable } from '../../rules/body';
 import { MISFIRE_CHANCE } from '../../rules/conditions';
+import { revealOnAttack } from '../../rules/items';
 import { canAttackFrom } from '../../rules/kit';
 import { inReach, reachOf, stepBack, stepIn, STRIKE_REACH } from '../../rules/range';
-import { cardPoints, playOn, shuffle } from './cards';
+import { cardPoints, isTargeted, playOn, shuffle } from './cards';
 import { chooseIntent, effectiveIntent, enemyAct, type TurnResult } from './enemy';
 import { startOfTurn } from './kit';
 import {
@@ -86,14 +87,18 @@ export function playCard(
   const played = misfires
     ? { fighters: [...state.fighters], lines: [MISFIRE_LINE] }
     : playOn([...state.fighters], { user, target, card }, rng);
+  // Attacking (hit, miss or misfire) gives a smoke-hidden player away; a Guard or heal doesn't.
+  const fighters = isTargeted(card)
+    ? played.fighters.map((f) => (f.id === user.id ? revealOnAttack(f) : f))
+    : played.fighters;
   return {
     ...state,
-    fighters: played.fighters,
+    fighters,
     hand: state.hand.filter((c) => c.uid !== card.uid),
     discard: [...state.discard, card],
     points: state.points - cardPoints(card),
     log: [...state.log, ...played.lines].slice(-LOG_LIMIT),
-    result: decide(played.fighters),
+    result: decide(fighters),
   };
 }
 

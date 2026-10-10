@@ -31,6 +31,7 @@ export function reachOfMove(move: Move): readonly RangeBand[] {
     case 'step-back':
     case 'search':
     case 'dispel':
+    case 'item':
     case 'idle':
       return RANGE_BANDS;
   }
@@ -51,6 +52,7 @@ export function isAttack(move: Move): boolean {
     case 'step-back':
     case 'search':
     case 'dispel':
+    case 'item':
     case 'idle':
       return false;
   }
@@ -67,6 +69,7 @@ export const TELLS: Readonly<Record<MoveKind, string>> = {
   'step-back': 'Easing away',
   search: 'Eyes narrowed, searching',
   dispel: 'Hands pressed together, breathing slow',
+  item: 'Reaching into a pouch',
   idle: 'Reeling',
 };
 

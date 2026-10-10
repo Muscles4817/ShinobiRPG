@@ -69,6 +69,19 @@ export function GearLocker({ ctx, state, perform }: GearLockerProps) {
           ))}
         </div>
       ))}
+      <div className="locker-slot">
+        <span className="label">Pouch</span>
+        {view.pouch.length === 0 && (
+          <small className="muted">Empty. Fight tools are sold by the piece.</small>
+        )}
+        {view.pouch.map((t) => (
+          <div key={t.id} className="locker-row">
+            <Icon id={t.icon} size={22} />
+            <b>{t.name}</b>
+            <small className="muted num">×{t.count}</small>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

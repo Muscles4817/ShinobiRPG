@@ -1,4 +1,5 @@
 import type { LocationDef, SettingText } from '../../types';
+import { TOOL_IDS } from '../../shared/tools';
 
 export const NARUTO_TEXT: SettingText = {
   nation: 'the Land of Fire',
@@ -121,6 +122,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'trench-knives',
           'katana',
         ],
+        toolIds: TOOL_IDS,
       },
       {
         id: 'outfitter',

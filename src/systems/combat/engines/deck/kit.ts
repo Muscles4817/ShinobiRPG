@@ -76,7 +76,8 @@ export function confuse(fighters: DeckFighter[], blow: Blow, rng: Rng): Landed {
   };
 }
 
-function fleeIfCoward(fighters: DeckFighter[], id: string): Landed {
+/** A coward who is now badly hurt runs, which counts as being down. */
+export function fleeIfCoward(fighters: DeckFighter[], id: string): Landed {
   const f = fighters.find((x) => x.id === id);
   if (!f || !shouldFlee(f)) return { fighters, lines: [] };
   return { fighters: patch(fighters, id, { health: 0 }), lines: [`${f.name} flees!`] };

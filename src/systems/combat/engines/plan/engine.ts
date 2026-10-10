@@ -10,6 +10,7 @@ import type {
   RangeBand,
 } from '../../contract';
 import { alive, hasPerk, viewOf } from '../../rules/body';
+import { itemsLeft } from '../../rules/items';
 import { RANGE_BANDS, RANGE_LABEL } from '../../rules/range';
 import {
   cardDetail,
@@ -18,7 +19,9 @@ import {
   cardsFor,
   defaultLoadout,
   findCard,
+  ITEM_PREFIX,
   slotLimit,
+  type Card,
 } from './cards';
 import { upgradeLegacy, withKits } from './legacy';
 import { rememberedLoadout } from './memory';
@@ -53,12 +56,36 @@ function statuses(f: PlanFighter): string[] {
   return [...(f.stunned > 0 ? ['Dazed'] : []), ...(f.sealed > 0 ? ['Sealed'] : [])];
 }
 
+/** Why a card can't go in a slot: slots full, or a tool you have none of. */
+function slotBlocker(card: Card, full: boolean): string | null {
+  if (full) return 'Slots full. Take a card out first.';
+  return card.kind === 'item' && card.item.count <= 0 ? `No ${card.item.name} left.` : null;
+}
+
+/**
+ * Tools remembered from an earlier fight that aren't in the pouch now: still slotted (they
+ * play again once restocked), and shown so they can be taken out.
+ */
+function emptyPouchOptions(player: PlanFighter, band: RangeBand): CombatOption[] {
+  return player.loadout[band]
+    .filter((id) => id.startsWith(ITEM_PREFIX) && !findCard(player, id))
+    .map((id) => ({
+      id: `${SLOT_PREFIX}${band}:${id}`,
+      label: 'Empty pouch',
+      detail: '×0 · Restock to use',
+      kind: 'plan',
+      group: RANGE_LABEL[band],
+      selected: true,
+    }));
+}
+
 function slotOptions(player: PlanFighter, band: RangeBand): CombatOption[] {
   const chosen = player.loadout[band];
   const full = chosen.length >= slotLimit(player);
-  return cardsFor(player, band).map((card) => {
+  const cards = cardsFor(player, band).map((card): CombatOption => {
     const id = cardId(card);
     const selected = chosen.includes(id);
+    const blocker = selected ? null : slotBlocker(card, full);
     return {
       id: `${SLOT_PREFIX}${band}:${id}`,
       label: cardLabel(card),
@@ -67,9 +94,10 @@ function slotOptions(player: PlanFighter, band: RangeBand): CombatOption[] {
       group: RANGE_LABEL[band],
       selected,
       ...(card.kind === 'jutsu' ? { discipline: card.technique.discipline } : {}),
-      ...(full && !selected ? { disabledReason: 'Slots full. Take a card out first.' } : {}),
+      ...(blocker ? { disabledReason: blocker } : {}),
     };
   });
+  return [...cards, ...emptyPouchOptions(player, band)];
 }
 
 function options(state: PlanState): CombatOption[] {
@@ -243,6 +271,7 @@ export function createPlanEngine(): CombatEngine {
         result,
         rounds: plan.round,
         player: { health: player.health, chakra: player.chakra },
+        items: itemsLeft(player),
         plan: player.loadout,
       };
     },

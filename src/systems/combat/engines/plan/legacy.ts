@@ -7,11 +7,15 @@ import { EMPTY_LOADOUT, type PlanFighter, type PlanState } from './state';
  * the card table with every fighter's default cards, so the fight carries on.
  */
 
-interface LegacyFighter extends Omit<PlanFighter, 'loadout' | 'traits' | 'hidden' | 'confused'> {
+interface LegacyFighter extends Omit<
+  PlanFighter,
+  'loadout' | 'traits' | 'hidden' | 'confused' | 'items'
+> {
   readonly loadout?: PlanFighter['loadout'];
   readonly traits?: PlanFighter['traits'];
   readonly hidden?: boolean;
   readonly confused?: number;
+  readonly items?: PlanFighter['items'];
 }
 
 interface LegacyState extends Omit<PlanState, 'phase' | 'bout' | 'exchange' | 'seen' | 'fighters'> {
@@ -21,7 +25,8 @@ interface LegacyState extends Omit<PlanState, 'phase' | 'bout' | 'exchange' | 's
 }
 
 /**
- * Fighters saved before combat kits have no traits, hidden or confused; they fight as before.
+ * Fighters saved before combat kits (or fight tools) have no traits, hidden, confused or
+ * items; they fight as before, with an empty pouch.
  * Runs before `upgradeLegacy`, whose default cards read traits.
  */
 export function withKits(state: PlanState): PlanState {

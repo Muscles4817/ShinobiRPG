@@ -1,6 +1,7 @@
-import type { CombatTechnique, RangeBand } from '../../contract';
+import type { CombatItem, CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
 import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
+import { carried } from '../../rules/items';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import type { CardId, Loadout, PlanFighter } from './state';
@@ -15,6 +16,7 @@ import type { CardId, Loadout, PlanFighter } from './state';
 const BASE_SLOTS = 3;
 const EXTRA_SLOT_INTELLECT = 10;
 const JUTSU_PREFIX = 'jutsu:';
+export const ITEM_PREFIX = 'item:';
 
 export type Card =
   | { readonly kind: 'strike' }
@@ -25,7 +27,11 @@ export type Card =
   | { readonly kind: 'counter' }
   | { readonly kind: 'search' }
   | { readonly kind: 'dispel' }
-  | { readonly kind: 'jutsu'; readonly technique: CombatTechnique };
+  | { readonly kind: 'jutsu'; readonly technique: CombatTechnique }
+  | { readonly kind: 'item'; readonly item: CombatItem };
+
+/** What a fighter brings: their techniques, and the tools in their pouch. */
+type Kit = Pick<PlanFighter, 'techniques' | 'items'>;
 
 const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'strike', card: { kind: 'strike' } },
@@ -44,11 +50,9 @@ export function slotLimit(fighter: Pick<PlanFighter, 'attributes'>): number {
 }
 
 export function cardId(card: Card): CardId {
-  return card.kind === 'jutsu'
-    ? `${JUTSU_PREFIX}${card.technique.id}`
-    : card.kind === 'step'
-      ? `step-${card.direction}`
-      : card.kind;
+  if (card.kind === 'jutsu') return `${JUTSU_PREFIX}${card.technique.id}`;
+  if (card.kind === 'item') return `${ITEM_PREFIX}${card.item.id}`;
+  return card.kind === 'step' ? `step-${card.direction}` : card.kind;
 }
 
 function fitsBand(card: Card, band: RangeBand): boolean {
@@ -65,23 +69,39 @@ function fitsBand(card: Card, band: RangeBand): boolean {
     case 'dodge':
     case 'search':
     case 'dispel':
+    case 'item':
       return true;
     case 'jutsu':
       return inReach(reachOf(card.technique), band);
   }
 }
 
-/** Every card this fighter could slot at a distance, basics first. */
-export function cardsFor(fighter: Pick<PlanFighter, 'techniques'>, band: RangeBand): Card[] {
+/** Every card this fighter could slot at a distance: basics, then jutsu, then tools. */
+export function cardsFor(fighter: Kit, band: RangeBand): Card[] {
   const jutsu = fighter.techniques.map((technique): Card => ({ kind: 'jutsu', technique }));
-  return [...BASIC_CARDS.map((b) => b.card), ...jutsu].filter((c) => fitsBand(c, band));
+  const tools = fighter.items.map((item): Card => ({ kind: 'item', item }));
+  return [...BASIC_CARDS.map((b) => b.card), ...jutsu, ...tools].filter((c) => fitsBand(c, band));
 }
 
-export function findCard(fighter: Pick<PlanFighter, 'techniques'>, id: CardId): Card | null {
+export function findCard(fighter: Kit, id: CardId): Card | null {
   const basic = BASIC_CARDS.find((b) => b.id === id);
   if (basic) return basic.card;
+  if (id.startsWith(ITEM_PREFIX)) {
+    const item = carried(fighter, id.slice(ITEM_PREFIX.length));
+    return item ? { kind: 'item', item } : null;
+  }
   const technique = fighter.techniques.find((t) => `${JUTSU_PREFIX}${t.id}` === id);
   return technique ? { kind: 'jutsu', technique } : null;
+}
+
+/**
+ * Whether a remembered card still belongs at a distance. Tools stay even when the pouch has
+ * none, so the plan works again once you restock; until then they simply don't play.
+ */
+export function keepsInLoadout(fighter: Kit, band: RangeBand, id: CardId): boolean {
+  if (id.startsWith(ITEM_PREFIX)) return true;
+  const card = findCard(fighter, id);
+  return card !== null && fitsBand(card, band);
 }
 
 /** The cards slotted at a distance, resolved. */
@@ -100,7 +120,22 @@ export function isReaction(card: Card): boolean {
 /** Cards that hurt or hinder a foe: what reach and confusion rule out. */
 export function isOffence(card: Card): boolean {
   if (card.kind === 'jutsu') return card.technique.effect !== 'heal';
+  if (card.kind === 'item') return card.item.effect === 'blast';
   return card.kind === 'strike' || card.kind === 'throw';
+}
+
+const TOOL_DOES: Readonly<Record<CombatItemEffect, string>> = {
+  smoke: 'Vanish until you attack',
+  flash: 'Reveal hidden foes',
+  blast: 'Seal blast · through armour',
+  chakra: 'Restore chakra',
+  heal: 'Restore health',
+  clarity: 'Clear confusion',
+};
+
+/** A tool card's detail: how many are left and what it does. */
+export function toolDetail(item: CombatItem): string {
+  return `×${item.count} · ${TOOL_DOES[item.effect]}`;
 }
 
 const EFFECT_WORD: Readonly<Record<CombatTechnique['effect'], string>> = {
@@ -130,6 +165,8 @@ export function cardLabel(card: Card): string {
       return 'Dispel';
     case 'jutsu':
       return card.technique.name;
+    case 'item':
+      return card.item.name;
   }
 }
 
@@ -153,6 +190,8 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
       return `Break illusions · ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':
       return `${EFFECT_WORD[card.technique.effect]} · ${chakraCost(fighter, card.technique)} chakra`;
+    case 'item':
+      return toolDetail(card.item);
   }
 }
 
@@ -194,9 +233,10 @@ export function defaultLoadout(fighter: PlanFighter): Loadout {
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };
 }
 
-/** Footwork and attacks the fighter can actually use this exchange. */
+/** Footwork, attacks and tools the fighter can actually use this exchange. */
 export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
+  if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu') return !isReaction(card);
   return fighter.sealed === 0 && chakraCost(fighter, card.technique) <= fighter.chakra;
 }

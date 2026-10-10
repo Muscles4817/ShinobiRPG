@@ -1,5 +1,5 @@
 import type { PersonDef } from '@/content';
-import type { CombatantSetup } from '@/systems/combat';
+import type { CombatantSetup, CombatTrait } from '@/systems/combat';
 import { createStats, type StatDelta, type Stats } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 import { maxChakra, maxHealth } from '@/systems/vitals';
@@ -26,6 +26,23 @@ export function companionStats(person: PersonDef, state: GameState): Stats {
   const growth = Math.min(MAX_GROWTH, state.standing.missionsCompleted * GROWTH_PER_MISSION);
   const specialty: StatDelta = person.specialty ? { [person.specialty]: SPECIALTY_BONUS } : {};
   return createStats(COMPANION_BASE + growth, { ...BODY_BONUS, ...specialty });
+}
+
+/**
+ * How a genin fights follows from what they're good at: taijutsu specialists only fight up
+ * close, blade specialists are quick on their feet, genjutsu specialists hide in illusions.
+ * Ninjutsu and fūinjutsu specialists fight at any range.
+ */
+const SPECIALTY_KIT: Readonly<Record<Discipline, readonly CombatTrait[]>> = {
+  taijutsu: ['brawler'],
+  kenjutsu: ['swift'],
+  genjutsu: ['illusionist'],
+  ninjutsu: [],
+  fuuinjutsu: [],
+};
+
+export function companionTraits(person: PersonDef): readonly CombatTrait[] {
+  return person.specialty ? SPECIALTY_KIT[person.specialty] : [];
 }
 
 function companionTechniques(person: PersonDef, ctx: GameContext): string[] {
@@ -59,5 +76,6 @@ export function companionCombatant(
     chakra: maxChakra(stats),
     maxChakra: maxChakra(stats),
     techniques: companionTechniques(person, ctx).map((id) => ctx.content.techniques.require(id)),
+    traits: companionTraits(person),
   };
 }

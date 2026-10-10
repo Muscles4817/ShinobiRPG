@@ -435,6 +435,17 @@ button.foe {
   gap: 6px;
   padding: 0 var(--gutter);
 }
+/* Fight tools: compact buttons (name and count) that wrap like the action bar. */
+.pouch {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 var(--gutter);
+}
+.pouch .btn {
+  border-color: var(--gold);
+}
 
 /* Fight style picker (Shinobi tab) */
 .fight-styles {

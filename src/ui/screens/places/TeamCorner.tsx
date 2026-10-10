@@ -78,6 +78,11 @@ function SparRow({ option: s, perform }: SparRowProps) {
         <b>{s.person.name}</b>
         <small>{s.blocker ?? s.where}</small>
         {s.read && <ThreatChip threat={s.read.threat} label={s.read.threatLabel} />}
+        {s.read?.traits.map((t) => (
+          <span key={t.trait} className="chip" title={t.counter}>
+            {t.label}
+          </span>
+        ))}
       </span>
       {s.specialty && <span className={`badge d-${s.specialty.id}`}>{s.specialty.label}</span>}
       <button

@@ -31,6 +31,8 @@ export type GameAction =
   | { readonly type: 'spar'; readonly personId: string }
   | { readonly type: 'setCombatStyle'; readonly style: string }
   | { readonly type: 'buyGear'; readonly gearId: string }
+  | { readonly type: 'buyTool'; readonly toolId: string }
+  | { readonly type: 'buyIntel'; readonly missionId: string }
   | { readonly type: 'equipGear'; readonly gearId: string }
   | { readonly type: 'unequipGear'; readonly slot: string }
   | { readonly type: 'buyIngredient'; readonly ingredientId: string }

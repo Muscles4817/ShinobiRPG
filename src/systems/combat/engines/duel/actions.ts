@@ -1,6 +1,6 @@
 import type { Rng } from '@/core';
 
-import type { CombatTechnique } from '../../contract';
+import type { CombatItem, CombatTechnique } from '../../contract';
 import { CONFUSION_TURNS, confuseChance, HIDDEN_DAMAGE } from '../../rules/conditions';
 import {
   attackKindOf,
@@ -32,7 +32,8 @@ export type DuelAction =
   | { readonly kind: 'flee' }
   | { readonly kind: 'close-in' }
   | { readonly kind: 'search' }
-  | { readonly kind: 'dispel' };
+  | { readonly kind: 'dispel' }
+  | { readonly kind: 'item'; readonly item: CombatItem };
 
 /** The effect of one fighter's action: updated fighters and narration. */
 export interface ActionResult {
@@ -70,7 +71,7 @@ function kitDamage(fighters: readonly Fighter[], turn: Turn, base: number, kind:
   return Math.max(1, Math.round(base * scale));
 }
 
-function kitLine(target: Fighter, kind: AttackKind): string[] {
+export function kitLine(target: Fighter, kind: AttackKind): string[] {
   const scale = kitDamageScale(target, kind);
   if (scale > 1) return [`The seal bites deep into ${target.name}.`];
   if (scale === 1) return [];
@@ -80,7 +81,12 @@ function kitLine(target: Fighter, kind: AttackKind): string[] {
 }
 
 /** Damage lands: the target may fall, run (cowards) or be left confused (illusionists). */
-function land(fighters: readonly Fighter[], turn: Turn, damage: number, rng: Rng): ActionResult {
+export function land(
+  fighters: readonly Fighter[],
+  turn: Turn,
+  damage: number,
+  rng: Rng,
+): ActionResult {
   const { actor, target } = turn;
   const health = Math.max(0, target.health - damage);
   const hurt = { ...target, health };

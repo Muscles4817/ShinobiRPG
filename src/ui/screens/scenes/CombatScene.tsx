@@ -5,6 +5,7 @@ import { combatScene, combatScouting, type CombatOption } from '@/game';
 import type { ScreenProps } from '../types';
 import { ActionBar, Hand, PlanPicker } from './combat/Choices';
 import { Foes } from './combat/Foes';
+import { Pouch } from './combat/Pouch';
 import { RangeStrip } from './combat/RangeStrip';
 
 /**
@@ -90,6 +91,7 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
       <div className="combat-controls">
         <PlanPicker options={of('plan')} onPick={pick} />
         <Hand options={of('basic', 'technique')} onPick={pick} />
+        <Pouch options={of('item')} onPick={pick} />
         <ActionBar options={of('move', 'continue', 'end')} onPick={pick} />
         {escape && (
           <button

@@ -4,8 +4,9 @@ import type { CombatChoice, CombatOption, CombatTechnique } from '../../contract
 import { targetable } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import type { DuelAction } from './actions';
-import { reaches } from './reach';
+import { reaches, UNSEEN } from './reach';
 import { livingEnemies, playerOf, type DuelState, type Fighter } from './state';
+import { isToolOption, toolAction, toolOptions } from './tools';
 
 /**
  * What the player can choose this round, why some choices are shut, and turning a choice
@@ -13,7 +14,6 @@ import { livingEnemies, playerOf, type DuelState, type Fighter } from './state';
  */
 
 const TECHNIQUE_PREFIX = 'tech:';
-const UNSEEN = "You can't see them. Search or Dispel.";
 const OUT_OF_REACH = 'Out of reach. Close in first.';
 
 const EFFECT_DETAIL: Readonly<Record<CombatTechnique['effect'], (power: number) => string>> = {
@@ -98,6 +98,7 @@ export function options(state: DuelState): CombatOption[] {
     { id: 'guard', label: 'Guard', detail: 'Halve damage · +chakra', kind: 'basic' },
     ...moveOptions(state),
     ...player.techniques.map((t) => techniqueOption(state, t)),
+    ...toolOptions(state),
     state.canFlee ? flee : { ...flee, disabledReason: 'You cannot flee this fight' },
   ];
 }
@@ -112,6 +113,7 @@ function actionFor(state: DuelState, optionId: string): Result<DuelAction> {
     case 'dispel':
       return ok({ kind: optionId });
   }
+  if (isToolOption(optionId)) return toolAction(state, optionId);
   const techniqueId = optionId.slice(TECHNIQUE_PREFIX.length);
   const technique = playerOf(state).techniques.find((t) => t.id === techniqueId);
   return technique
@@ -132,6 +134,7 @@ function targetProblem(state: DuelState, action: DuelAction, target: Fighter): s
     case 'flee':
     case 'search':
     case 'dispel':
+    case 'item':
       return null;
   }
 }
@@ -142,6 +145,9 @@ export function parseChoice(state: DuelState, choice: CombatChoice): Result<Duel
   if (option.disabledReason) return err(option.disabledReason);
   const action = actionFor(state, choice.optionId);
   const target = livingEnemies(state).find((f) => f.id === choice.targetId);
+  if (action.ok && action.value.kind === 'item' && choice.targetId !== undefined && !target) {
+    return err('They are already down.');
+  }
   if (!action.ok || !option.targeted || !target) return action;
   const problem = targetProblem(state, action.value, target);
   return problem ? err(problem) : action;

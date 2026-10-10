@@ -60,6 +60,28 @@ export const COMBAT_TRAITS = [
 ] as const;
 export type CombatTrait = (typeof COMBAT_TRAITS)[number];
 
+/**
+ * What a fight tool does when used (see `rules/items.ts`): vanish in smoke, light up hidden
+ * foes, blast one foe with a seal, restore chakra or health, or clear your head.
+ */
+export const COMBAT_ITEM_EFFECTS = [
+  'smoke',
+  'flash',
+  'blast',
+  'chakra',
+  'heal',
+  'clarity',
+] as const;
+export type CombatItemEffect = (typeof COMBAT_ITEM_EFFECTS)[number];
+
+/** A kind of tool the player carries into a fight, and how many. */
+export interface CombatItem {
+  readonly id: string;
+  readonly name: string;
+  readonly effect: CombatItemEffect;
+  readonly count: number;
+}
+
 export interface CombatantSetup {
   readonly id: string;
   readonly name: string;
@@ -75,6 +97,8 @@ export interface CombatantSetup {
   readonly nature?: Element;
   readonly perks?: readonly CombatPerk[];
   readonly traits?: readonly CombatTrait[];
+  /** Tools carried into the fight (the player's pouch). */
+  readonly items?: readonly CombatItem[];
 }
 
 export interface CombatSetup {
@@ -135,10 +159,10 @@ export interface CombatOption {
   readonly detail: string;
   /**
    * Lets the UI present options differently: basics and techniques as cards in the hand,
-   * moves (stepping in or back) as small buttons, plans as a list to pick from, continue and
+   * moves (stepping in or back) as small buttons, tools from the pouch as their own row, plans as a list to pick from, continue and
    * end-turn in the choice bar, escape apart.
    */
-  readonly kind: 'basic' | 'technique' | 'move' | 'plan' | 'continue' | 'end' | 'escape';
+  readonly kind: 'basic' | 'technique' | 'move' | 'item' | 'plan' | 'continue' | 'end' | 'escape';
   readonly discipline?: TechniqueDef['discipline'];
   /** Points spent from a per-turn budget, for engines that have one. */
   readonly cost?: number;
@@ -178,6 +202,8 @@ export interface CombatOutcome {
   readonly rounds: number;
   /** The player's condition after the fight, to be written back to their vitals. */
   readonly player: { readonly health: number; readonly chakra: number };
+  /** Tools left in the player's pouch, by item id; absent from engines that predate tools. */
+  readonly items?: Readonly<Record<string, number>>;
   /** Anything the player set up that should carry over to their next fight (JSON-safe). */
   readonly plan?: unknown;
 }

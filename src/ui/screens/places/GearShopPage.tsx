@@ -1,4 +1,4 @@
-import { gearShopView, headerView, type GearItem } from '@/game';
+import { gearShopView, headerView, type GearItem, type ToolItem } from '@/game';
 
 import { Icon } from '../../art/Icon';
 import { Banner } from '../../components/Banner';
@@ -38,6 +38,42 @@ function RackItem({ item, perform }: ShopItemProps) {
         }}
       >
         {label}
+      </button>
+    </article>
+  );
+}
+
+interface ToolProps {
+  readonly item: ToolItem;
+  readonly perform: PlaceProps['perform'];
+}
+
+/** A fight tool on the counter: price, how many you carry, buy one more. */
+function TrayItem({ item, perform }: ToolProps) {
+  const { buy } = item;
+  return (
+    <article className="rack-item">
+      <span className="tag num">{item.cost}</span>
+      <span className="item-pic">
+        <Icon id={item.icon} size={28} />
+      </span>
+      <b>{item.name}</b>
+      <span className="chips">
+        <span className="chip">
+          In pouch {item.count}/{item.limit}
+        </span>
+      </span>
+      <small className="muted">{item.description}</small>
+      {buy.blocker && <small className="blocker">{buy.blocker}</small>}
+      <button
+        type="button"
+        className="btn small"
+        disabled={buy.blocker !== null}
+        onClick={() => {
+          perform(buy.action);
+        }}
+      >
+        Buy
       </button>
     </article>
   );
@@ -83,6 +119,17 @@ export function GearShopPage({
             </div>
           </section>
         ))}
+        {view.tools.length > 0 && (
+          <section className="rack" aria-label="Fight tools">
+            <h2 className="label">Fight tools</h2>
+            <p className="muted small">Used up in fights, in any fight style.</p>
+            <div className="rack-items">
+              {view.tools.map((item) => (
+                <TrayItem key={item.id} item={item} perform={perform} />
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </>
   );
