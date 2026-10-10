@@ -8,6 +8,10 @@ export {
   stock,
   hasAll,
   useUp,
+  POUCH_LIMIT,
+  toolCount,
+  addTool,
+  restockPouch,
   type Inventory,
   type Needed,
 } from './inventory';

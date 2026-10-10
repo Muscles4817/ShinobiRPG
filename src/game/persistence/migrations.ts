@@ -140,6 +140,15 @@ function v10ToV11(state: RawState): RawState {
   return { ...state, village: { ...asRecord(state.village), lastRoundDay: null } };
 }
 
+/** v11 → v12: fight tools and mission intel; an empty pouch, no intel bought. */
+function v11ToV12(state: RawState): RawState {
+  return {
+    ...state,
+    inventory: { ...asRecord(state.inventory), tools: {} },
+    board: { ...asRecord(state.board), intel: [] },
+  };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -151,4 +160,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   8: v8ToV9,
   9: v9ToV10,
   10: v10ToV11,
+  11: v11ToV12,
 };

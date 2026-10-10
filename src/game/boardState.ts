@@ -14,8 +14,10 @@ export interface Board {
   readonly postings: readonly Posting[];
   /** Standing jobs: the day each was last taken. */
   readonly lastTaken: Readonly<Record<string, number>>;
+  /** Jobs you've paid the clerk to tell you about: you know who you'll face. */
+  readonly intel: readonly string[];
 }
 
 export function newBoard(seed: number): Board {
-  return { seed, refreshedDay: 0, postings: [], lastTaken: {} };
+  return { seed, refreshedDay: 0, postings: [], lastTaken: {}, intel: [] };
 }

@@ -1,4 +1,5 @@
 import type { LocationDef, SettingText } from '../../types';
+import { TOOL_IDS } from '../../shared/tools';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -114,6 +115,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'ember-gauntlets',
           'kurogane-katana',
         ],
+        toolIds: TOOL_IDS,
       },
       {
         id: 'outfitter',

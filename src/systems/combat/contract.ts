@@ -64,7 +64,14 @@ export type CombatTrait = (typeof COMBAT_TRAITS)[number];
  * What a fight tool does when used (see `rules/items.ts`): vanish in smoke, light up hidden
  * foes, blast one foe with a seal, restore chakra or health, or clear your head.
  */
-export const COMBAT_ITEM_EFFECTS = ['smoke', 'flash', 'blast', 'chakra', 'heal', 'clarity'] as const;
+export const COMBAT_ITEM_EFFECTS = [
+  'smoke',
+  'flash',
+  'blast',
+  'chakra',
+  'heal',
+  'clarity',
+] as const;
 export type CombatItemEffect = (typeof COMBAT_ITEM_EFFECTS)[number];
 
 /** A kind of tool the player carries into a fight, and how many. */
@@ -155,15 +162,7 @@ export interface CombatOption {
    * moves (stepping in or back) as small buttons, tools from the pouch as their own row, plans as a list to pick from, continue and
    * end-turn in the choice bar, escape apart.
    */
-  readonly kind:
-    | 'basic'
-    | 'technique'
-    | 'move'
-    | 'item'
-    | 'plan'
-    | 'continue'
-    | 'end'
-    | 'escape';
+  readonly kind: 'basic' | 'technique' | 'move' | 'item' | 'plan' | 'continue' | 'end' | 'escape';
   readonly discipline?: TechniqueDef['discipline'];
   /** Points spent from a per-turn budget, for engines that have one. */
   readonly cost?: number;

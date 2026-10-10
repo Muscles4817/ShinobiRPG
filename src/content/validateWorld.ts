@@ -17,6 +17,7 @@ export function validateWorld(pack: ContentPack): string[] {
     mission: new Set(pack.missions.map((m) => m.id)),
     technique: new Set(pack.techniques.map((t) => t.id)),
     gear: new Set(pack.gear.map((g) => g.id)),
+    tool: new Set(pack.tools.map((t) => t.id)),
     ingredient: new Set(pack.ingredients.map((i) => i.id)),
   };
   const reached = {
@@ -24,6 +25,7 @@ export function validateWorld(pack: ContentPack): string[] {
     food: new Set<string>(),
     mission: new Set<string>(),
     gear: new Set<string>(),
+    tool: new Set<string>(),
     ingredient: new Set<string>(),
   };
 
@@ -45,7 +47,7 @@ export function validateWorld(pack: ContentPack): string[] {
       problems.push(`place "${place.id}" references unknown ${kind} "${id}"`);
     if (kind !== 'technique') reached[kind].add(id);
   }
-  for (const kind of ['training', 'food', 'mission', 'gear', 'ingredient'] as const) {
+  for (const kind of ['training', 'food', 'mission', 'gear', 'tool', 'ingredient'] as const) {
     refs[kind].forEach((id) => {
       if (!reached[kind].has(id)) problems.push(`${kind} "${id}" is not offered at any place`);
     });
@@ -53,7 +55,7 @@ export function validateWorld(pack: ContentPack): string[] {
   return problems;
 }
 
-type RefKind = 'training' | 'food' | 'mission' | 'technique' | 'gear' | 'ingredient';
+type RefKind = 'training' | 'food' | 'mission' | 'technique' | 'gear' | 'tool' | 'ingredient';
 
 function stallRefs(stall: Stall): [RefKind, string][] {
   return [
@@ -69,7 +71,10 @@ function placeRefs(place: PlaceDef): [RefKind, string][] {
     case 'market':
       return place.stalls.flatMap(stallRefs);
     case 'gear':
-      return place.gearIds.map((id) => ['gear', id]);
+      return [
+        ...place.gearIds.map((id): [RefKind, string] => ['gear', id]),
+        ...(place.toolIds ?? []).map((id): [RefKind, string] => ['tool', id]),
+      ];
     case 'tavern':
       return place.foodIds.map((id) => ['food', id]);
     case 'missions':

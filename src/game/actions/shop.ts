@@ -1,5 +1,14 @@
 import { GEAR_SLOTS } from '@/content';
-import { addGear, equip, owns, stock, unequip } from '@/systems/inventory';
+import {
+  addGear,
+  addTool,
+  equip,
+  owns,
+  POUCH_LIMIT,
+  stock,
+  toolCount,
+  unequip,
+} from '@/systems/inventory';
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
@@ -8,11 +17,16 @@ import type { GameState } from '../state';
 import { closedReason, isOpen, marketPrice, stallsHere } from '../village';
 import type { ActionHandler, ActionOf } from './types';
 
-/** Buying and wearing gear, and stocking the pantry. */
+/** Buying and wearing gear, filling the tool pouch, and stocking the pantry. */
 
 /** The shop here selling this, preferring one that is open now. */
 function shopFor(state: GameState, ctx: GameContext, gearId: string) {
   const shops = placesHere(state, ctx, 'gear').filter((p) => p.gearIds.includes(gearId));
+  return shops.find((p) => isOpen(p.hours, state)) ?? shops[0];
+}
+
+function toolShopFor(state: GameState, ctx: GameContext, toolId: string) {
+  const shops = placesHere(state, ctx, 'gear').filter((p) => p.toolIds?.includes(toolId));
   return shops.find((p) => isOpen(p.hours, state)) ?? shops[0];
 }
 
@@ -49,6 +63,27 @@ export const buyGear: ActionHandler<ActionOf<'buyGear'>> = {
         chips: [chip(`−${def.cost} ryo`, 'cost')],
       },
     );
+  },
+};
+
+export const buyTool: ActionHandler<ActionOf<'buyTool'>> = {
+  check(state, action, ctx) {
+    const def = ctx.content.tools.get(action.toolId);
+    const shop = def && toolShopFor(state, ctx, def.id);
+    if (!def || !shop) return 'That isn’t sold here.';
+    return firstBlocker(
+      busyReason(state),
+      closedReason(shop.name, shop.hours, state),
+      toolCount(state.inventory, def.id) >= POUCH_LIMIT &&
+        `Your pouch holds ${POUCH_LIMIT} of those.`,
+      state.wallet.ryo < def.cost && `You can’t afford it (${def.cost} ryo).`,
+    );
+  },
+  perform(state, action, ctx) {
+    const def = ctx.content.tools.require(action.toolId);
+    const paid = spend(state.wallet, def.cost);
+    if (!paid.ok) return state;
+    return { ...state, wallet: paid.value, inventory: addTool(state.inventory, def.id) };
   },
 };
 

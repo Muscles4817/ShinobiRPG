@@ -51,6 +51,7 @@ export {
   academyView,
   type MissionBoardView,
   type Notice,
+  type Foe,
   type AcademyView,
   type Scroll,
 } from './views/boards';
@@ -61,6 +62,7 @@ export {
   loadoutView,
   type GearShopView,
   type GearItem,
+  type ToolItem,
   type LoadoutView,
   type LoadoutSlot,
 } from './views/shops';

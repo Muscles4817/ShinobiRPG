@@ -1,8 +1,8 @@
 import { err, ok, type Result } from '@/core';
 
 /**
- * What the character owns: gear (and which piece fills each slot) and the pantry of
- * ingredients. Ids are opaque here; content decides what they mean.
+ * What the character owns: gear (and which piece fills each slot), the pouch of fight tools
+ * and the pantry of ingredients. Ids are opaque here; content decides what they mean.
  */
 
 export interface Inventory {
@@ -11,6 +11,8 @@ export interface Inventory {
   readonly equipped: Readonly<Record<string, string>>;
   /** Ingredient id → how many. */
   readonly pantry: Readonly<Record<string, number>>;
+  /** Fight tool id → how many in the pouch. */
+  readonly tools: Readonly<Record<string, number>>;
 }
 
 export interface Needed {
@@ -18,7 +20,10 @@ export interface Needed {
   readonly count: number;
 }
 
-export const EMPTY_INVENTORY: Inventory = { gear: [], equipped: {}, pantry: {} };
+export const EMPTY_INVENTORY: Inventory = { gear: [], equipped: {}, pantry: {}, tools: {} };
+
+/** How many of one tool fit in the pouch. */
+export const POUCH_LIMIT = 5;
 
 export function owns(inventory: Inventory, gearId: string): boolean {
   return inventory.gear.includes(gearId);
@@ -46,6 +51,25 @@ export function stock(inventory: Inventory, id: string, count = 1): Inventory {
     ...inventory,
     pantry: { ...inventory.pantry, [id]: pantryCount(inventory, id) + count },
   };
+}
+
+export function toolCount(inventory: Inventory, id: string): number {
+  return inventory.tools[id] ?? 0;
+}
+
+export function addTool(inventory: Inventory, id: string): Inventory {
+  return { ...inventory, tools: { ...inventory.tools, [id]: toolCount(inventory, id) + 1 } };
+}
+
+/** Writes back what's left of the tools after a fight; tools used up leave the pouch. */
+export function restockPouch(
+  inventory: Inventory,
+  left: Readonly<Record<string, number>>,
+): Inventory {
+  const tools = Object.fromEntries(
+    Object.entries({ ...inventory.tools, ...left }).filter(([, count]) => count > 0),
+  );
+  return { ...inventory, tools };
 }
 
 export function hasAll(inventory: Inventory, needs: readonly Needed[]): boolean {

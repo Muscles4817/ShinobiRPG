@@ -435,6 +435,18 @@ button.foe {
   gap: 6px;
   padding: 0 var(--gutter);
 }
+/* Fight tools: a scrollable row so a full pouch never pushes the controls off screen. */
+.pouch {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 0 var(--gutter);
+  scrollbar-width: none;
+}
+.pouch .btn {
+  flex: none;
+  border-color: var(--gold);
+}
 
 /* Fight style picker (Shinobi tab) */
 .fight-styles {

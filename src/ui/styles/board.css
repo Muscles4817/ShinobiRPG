@@ -272,3 +272,37 @@
   font-family: var(--font-story);
   padding: 24px 0;
 }
+
+/* Who a job pits you against, from the client's report. */
+.notice-foes {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.notice-foes li {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: rgb(0 0 0 / 0.06);
+}
+.notice-foes small {
+  color: var(--paper-muted);
+  font-size: 0.8rem;
+}
+.notice-foes small b {
+  color: var(--paper-ink);
+}
+.notice-intel {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  color: var(--paper-muted);
+}
+.notice-intel .btn {
+  justify-self: start;
+  color: var(--paper-ink);
+  border-color: rgb(0 0 0 / 0.25);
+}

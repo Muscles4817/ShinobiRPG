@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
-import { headerView, missionBoardView, type Notice } from '@/game';
+import { headerView, missionBoardView } from '@/game';
+
+import { Opposition } from './Opposition';
 
 import { Banner } from '../../components/Banner';
 import { ThreatChip } from '../../components/ThreatChip';
@@ -12,8 +14,10 @@ const TILT = ['r1', 'r2', 'r3', 'r4'];
 export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
   const view = missionBoardView(state, ctx);
   const header = headerView(state, ctx);
-  const [open, setOpen] = useState<Notice | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
   if (!view) return null;
+  // Looked up afresh each render, so buying the report updates the open notice.
+  const open = view.notices.find((n) => n.id === openId) ?? null;
   return (
     <>
       <Banner
@@ -33,7 +37,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
             type="button"
             className={`paper ${n.standing ? 'standing ' : ''}${TILT[i % TILT.length] ?? ''}`}
             onClick={() => {
-              setOpen(n);
+              setOpenId(n.id);
             }}
           >
             <span className="rank">{n.rank}</span>
@@ -59,7 +63,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
         <div
           className="sheet-backdrop"
           onClick={() => {
-            setOpen(null);
+            setOpenId(null);
           }}
         >
           <section
@@ -80,19 +84,13 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
               <span className="chip">{open.slots} slots</span>
               <span className="chip">{open.posted}</span>
               {open.opposition ? (
-                <>
-                  <ThreatChip threat={open.opposition.threat} label={open.opposition.label} />
-                  {open.opposition.traits.map((t) => (
-                    <span key={t} className="chip">
-                      {t}
-                    </span>
-                  ))}
-                </>
+                <ThreatChip threat={open.opposition.threat} label={open.opposition.label} />
               ) : (
                 open.fightLikely && <span className="chip harm">Fight likely</span>
               )}
               {open.withTeam && <span className="chip gain">With your team</span>}
             </span>
+            {open.opposition && <Opposition opposition={open.opposition} perform={perform} />}
             {open.blocker && <p className="blocker">{open.blocker}</p>}
             <button
               type="button"
@@ -100,7 +98,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
               disabled={open.blocker !== null}
               onClick={() => {
                 perform(open.action);
-                setOpen(null);
+                setOpenId(null);
               }}
             >
               Accept the job

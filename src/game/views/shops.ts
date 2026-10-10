@@ -1,5 +1,5 @@
-import { GEAR_SLOTS, type GearDef, type GearSlot, type IconId } from '@/content';
-import { owns } from '@/systems/inventory';
+import { GEAR_SLOTS, type GearDef, type GearSlot, type IconId, type ToolDef } from '@/content';
+import { owns, POUCH_LIMIT, toolCount } from '@/systems/inventory';
 import { STAT_INFO, type StatDelta, type StatId } from '@/systems/stats';
 
 import type { GameContext } from '../context';
@@ -8,7 +8,7 @@ import { currentLocation } from '../ops';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 
-/** Gear shops (a rack of what's for sale) and your own gear locker at home. */
+/** Gear shops (racks of gear, a tray of fight tools) and your own gear locker at home. */
 
 export const SLOT_LABEL: Readonly<Record<GearSlot, string>> = {
   weapon: 'Weapons',
@@ -31,6 +31,32 @@ export interface GearItem {
   readonly equip: Choice | null;
 }
 
+/** A fight tool on the counter or in your pouch. */
+export interface ToolItem {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly icon: IconId;
+  readonly cost: number;
+  /** How many you carry, out of `limit`. */
+  readonly count: number;
+  readonly limit: number;
+  readonly buy: Choice;
+}
+
+function toolItem(state: GameState, ctx: GameContext, def: ToolDef): ToolItem {
+  return {
+    id: def.id,
+    name: def.name,
+    description: def.description,
+    icon: def.icon,
+    cost: def.cost,
+    count: toolCount(state.inventory, def.id),
+    limit: POUCH_LIMIT,
+    buy: choice(state, ctx, { type: 'buyTool', toolId: def.id }),
+  };
+}
+
 export interface GearShopView {
   readonly name: string;
   readonly keeper: string;
@@ -40,6 +66,8 @@ export interface GearShopView {
     readonly label: string;
     readonly items: readonly GearItem[];
   }[];
+  /** Fight tools sold by the piece; empty if the shop sells none. */
+  readonly tools: readonly ToolItem[];
 }
 
 export function bonusLabels(delta: StatDelta): string[] {
@@ -82,6 +110,7 @@ export function gearShopView(
       label: SLOT_LABEL[slot],
       items: items.filter((g) => g.slot === slot).map((g) => gearItem(state, ctx, g)),
     })).filter((r) => r.items.length > 0),
+    tools: (place.toolIds ?? []).map((id) => toolItem(state, ctx, ctx.content.tools.require(id))),
   };
 }
 
@@ -98,6 +127,8 @@ export interface LoadoutView {
   readonly slots: readonly LoadoutSlot[];
   /** Everything your gear adds in fights, e.g. ["Kenjutsu +2"]. */
   readonly total: readonly string[];
+  /** The fight tools you carry. */
+  readonly pouch: readonly ToolItem[];
 }
 
 export function loadoutView(state: GameState, ctx: GameContext): LoadoutView {
@@ -119,5 +150,9 @@ export function loadoutView(state: GameState, ctx: GameContext): LoadoutView {
       };
     }),
     total: bonusLabels(gearBonuses(state, ctx)),
+    pouch: Object.keys(state.inventory.tools).flatMap((id) => {
+      const def = ctx.content.tools.get(id);
+      return def ? [toolItem(state, ctx, def)] : [];
+    }),
   };
 }

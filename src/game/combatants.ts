@@ -1,5 +1,12 @@
 import type { EnemyDef } from '@/content';
-import type { CombatantSetup, CombatAttributes, CombatPerk } from '@/systems/combat';
+import type {
+  CombatantSetup,
+  CombatAttributes,
+  CombatItem,
+  CombatOutcome,
+  CombatPerk,
+} from '@/systems/combat';
+import { restockPouch } from '@/systems/inventory';
 import { createStats, type Stats } from '@/systems/stats';
 import { maxChakra, maxHealth } from '@/systems/vitals';
 
@@ -34,6 +41,20 @@ function perksOf(state: GameState, ctx: GameContext): CombatPerk[] {
   return bloodline && !bloodline.dormant ? ['insight'] : [];
 }
 
+/** The tools in your pouch, as the fight sees them. */
+function pouchOf(state: GameState, ctx: GameContext): CombatItem[] {
+  return Object.entries(state.inventory.tools).flatMap(([id, count]) => {
+    const def = ctx.content.tools.get(id);
+    return def && count > 0 ? [{ id, name: def.name, effect: def.effect, count }] : [];
+  });
+}
+
+/** Takes the tools a finished fight used up out of the pouch. */
+export function afterPouch(state: GameState, outcome: CombatOutcome): GameState {
+  if (!outcome.items) return state;
+  return { ...state, inventory: restockPouch(state.inventory, outcome.items) };
+}
+
 export function playerCombatant(state: GameState, ctx: GameContext): CombatantSetup {
   const { name, stats, vitals, nature } = state.character;
   const armed = combatStats(state, ctx);
@@ -48,6 +69,7 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     techniques: state.techniques.known.map((id) => ctx.content.techniques.require(id)),
     nature,
     perks: perksOf(state, ctx),
+    items: pouchOf(state, ctx),
   };
 }
 
