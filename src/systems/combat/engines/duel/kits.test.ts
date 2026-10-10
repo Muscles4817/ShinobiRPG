@@ -189,12 +189,15 @@ describe('duel engine: combat kits', () => {
     expect(engine.view(state).log).toContain('coward flees!');
   });
 
-  it('reads a fight saved before combat kits existed', () => {
-    const kitFields = ['traits', 'perks', 'hidden', 'confused', 'distant'];
+  it('reads a fight saved before combat kits and tools existed', () => {
+    const kitFields = ['traits', 'perks', 'hidden', 'confused', 'distant', 'items'];
     const old = edit(duel(fighter('hero'), fighter('bandit')), (f) =>
       Object.fromEntries(Object.entries(f).filter(([key]) => !kitFields.includes(key))),
     );
     expect(engine.view(old).combatants.map((c) => c.targetable)).toEqual([true, true]);
     expect(engine.act(old, { optionId: 'strike' }, createRng(2)).ok).toBe(true);
+    expect(engine.view(old).options.some((o) => o.kind === 'item')).toBe(false);
+    const won = { ...old, data: { ...(old.data as object), result: 'victory' } };
+    expect(engine.outcome(won)?.items).toEqual({});
   });
 });

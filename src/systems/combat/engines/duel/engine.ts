@@ -9,6 +9,7 @@ import type {
   CombatantView,
 } from '../../contract';
 import { conditionStatuses, targetable } from '../../rules/body';
+import { itemsLeft } from '../../rules/items';
 import { options, parseChoice } from './options';
 import { resolveRound } from './round';
 import { decode, DUEL_ENGINE_ID, encode, initialDuel, playerOf, type Fighter } from './state';
@@ -47,7 +48,7 @@ export function createDuelEngine(): CombatEngine {
   return {
     id: DUEL_ENGINE_ID,
     label: 'Classic',
-    summary: 'Pick one move a round: strike, guard, a technique or flee.',
+    summary: 'Pick one move a round: strike, guard, a technique, a tool or flee.',
 
     start: (setup) => encode(initialDuel(setup)),
 
@@ -81,6 +82,7 @@ export function createDuelEngine(): CombatEngine {
         result: duel.result,
         rounds: duel.round,
         player: { health: player.health, chakra: player.chakra },
+        items: itemsLeft(player),
       };
     },
   };

@@ -11,6 +11,8 @@ import { livingOn, type Fighter } from './state';
  * can attack from at all (archers not up close, brawlers only up close).
  */
 
+export const UNSEEN = "You can't see them. Search or Dispel.";
+
 export function bandBetween(a: Fighter, b: Fighter): RangeBand {
   return a.distant || b.distant ? 'far' : 'close';
 }

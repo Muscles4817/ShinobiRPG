@@ -2,6 +2,7 @@ import type { Rng } from '@/core';
 
 import { targetable } from '../../rules/body';
 import { MISFIRE_CHANCE, rehidesNow, shakeOffChance } from '../../rules/conditions';
+import { revealOnAttack } from '../../rules/items';
 import {
   patchFighter,
   performAttack,
@@ -12,6 +13,7 @@ import {
 import { backOff, closeIn, dispel, search } from './moves';
 import { foesOf, footworkWanted, reachableFoes } from './reach';
 import type { Fighter } from './state';
+import { useTool } from './tools';
 
 /**
  * One fighter's turn within a round: conditions tick, then they move or act. Fighters the
@@ -66,11 +68,23 @@ function pickTarget(candidates: readonly Fighter[], actor: Fighter, rng: Rng, ch
   return rng.pick(candidates);
 }
 
-/** Nobody in reach of the attack: close in on a distant foe instead, if there is one. */
+/**
+ * Nobody in reach of the attack: close in on a distant foe instead, if there is one. Foes who
+ * find only smoke where you stood lose their attack.
+ */
 function noneInReach(fighters: readonly Fighter[], actor: Fighter, rng: Rng): ActionResult {
-  const distant = foesOf(fighters, actor).find((f) => targetable(f) && f.distant);
+  const foes = foesOf(fighters, actor);
+  const distant = foes.find((f) => targetable(f) && f.distant);
   if (distant) return closeIn(fighters, actor, distant, rng);
+  if (actor.side === 'enemy' && foes.some((f) => f.hidden)) {
+    return { fighters, lines: [`${actor.name} loses sight of you.`] };
+  }
   return { fighters, lines: [`${actor.name} can't reach anyone.`] };
+}
+
+/** Attacking, hit or miss, gives away a fighter hidden in smoke. */
+function revealed(fighters: readonly Fighter[], actorId: string): Fighter[] {
+  return fighters.map((f) => (f.id === actorId ? revealOnAttack(f) : f));
 }
 
 function attack(
@@ -86,7 +100,8 @@ function attack(
   const candidates = reachableFoes(fighters, actor, action);
   const target = pickTarget(candidates, actor, rng, plan.targetId);
   if (!target) return noneInReach(fighters, actor, rng);
-  return performAttack(fighters, { actor, target }, action, rng);
+  const result = performAttack(fighters, { actor, target }, action, rng);
+  return { ...result, fighters: revealed(result.fighters, actor.id) };
 }
 
 /** The player closes in on the chosen distant foe, or the first one in sight. */
@@ -95,6 +110,10 @@ function closeInOnChosen(fighters: readonly Fighter[], actor: Fighter, plan: Tur
   const target = distant.find((f) => f.id === plan.targetId) ?? distant[0];
   if (!target) return { fighters, lines: [`${actor.name} is already toe to toe.`] };
   return closeIn(fighters, actor, target, rng);
+}
+
+function targetOf(plan: TurnPlan): { targetId?: string } {
+  return plan.targetId === undefined ? {} : { targetId: plan.targetId };
 }
 
 function act(fighters: readonly Fighter[], actor: Fighter, plan: TurnPlan, rng: Rng) {
@@ -113,6 +132,8 @@ function act(fighters: readonly Fighter[], actor: Fighter, plan: TurnPlan, rng: 
       return search(fighters, actor, rng);
     case 'dispel':
       return dispel(fighters, actor, rng);
+    case 'item':
+      return useTool(fighters, actor, { item: action.item, ...targetOf(plan) }, rng);
   }
 }
 
@@ -139,7 +160,10 @@ function mainAction(
   if (!actor.isPlayer)
     return footwork(fighters, actor, ctx.rng) ?? act(fighters, actor, plan, ctx.rng);
   if (ctx.confused && isAttack(plan.action) && ctx.rng.chance(MISFIRE_CHANCE)) {
-    return { fighters, lines: ['Your senses lie to you. The attack goes wide.'] };
+    return {
+      fighters: revealed(fighters, actor.id),
+      lines: ['Your senses lie to you. The attack goes wide.'],
+    };
   }
   return act(fighters, actor, plan, ctx.rng);
 }
