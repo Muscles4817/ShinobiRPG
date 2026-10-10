@@ -1,13 +1,8 @@
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { chakraCost } from '../../rules/body';
-import {
-  inReach,
-  preferredRange,
-  RANGE_BANDS,
-  reachOf,
-  STRIKE_REACH,
-  THROW_REACH,
-} from '../../rules/range';
+import { DISPEL_CHAKRA } from '../../rules/conditions';
+import { canAttackFrom, homeBand } from '../../rules/kit';
+import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import type { CardId, Loadout, PlanFighter } from './state';
 
 /**
@@ -28,6 +23,8 @@ export type Card =
   | { readonly kind: 'guard' }
   | { readonly kind: 'dodge' }
   | { readonly kind: 'counter' }
+  | { readonly kind: 'search' }
+  | { readonly kind: 'dispel' }
   | { readonly kind: 'jutsu'; readonly technique: CombatTechnique };
 
 const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
@@ -38,6 +35,8 @@ const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'guard', card: { kind: 'guard' } },
   { id: 'dodge', card: { kind: 'dodge' } },
   { id: 'counter', card: { kind: 'counter' } },
+  { id: 'search', card: { kind: 'search' } },
+  { id: 'dispel', card: { kind: 'dispel' } },
 ];
 
 export function slotLimit(fighter: Pick<PlanFighter, 'attributes'>): number {
@@ -64,6 +63,8 @@ function fitsBand(card: Card, band: RangeBand): boolean {
       return band === 'close';
     case 'guard':
     case 'dodge':
+    case 'search':
+    case 'dispel':
       return true;
     case 'jutsu':
       return inReach(reachOf(card.technique), band);
@@ -96,6 +97,12 @@ export function isReaction(card: Card): boolean {
   return card.kind === 'guard' || card.kind === 'dodge' || card.kind === 'counter';
 }
 
+/** Cards that hurt or hinder a foe: what reach and confusion rule out. */
+export function isOffence(card: Card): boolean {
+  if (card.kind === 'jutsu') return card.technique.effect !== 'heal';
+  return card.kind === 'strike' || card.kind === 'throw';
+}
+
 const EFFECT_WORD: Readonly<Record<CombatTechnique['effect'], string>> = {
   damage: 'Attack',
   stun: 'Daze',
@@ -117,6 +124,10 @@ export function cardLabel(card: Card): string {
       return 'Dodge';
     case 'counter':
       return 'Counter';
+    case 'search':
+      return 'Search';
+    case 'dispel':
+      return 'Dispel';
     case 'jutsu':
       return card.technique.name;
   }
@@ -136,6 +147,10 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
       return 'Reacts · may avoid a hit';
     case 'counter':
       return 'Reacts · hit back up close';
+    case 'search':
+      return 'Find hidden foes · perception';
+    case 'dispel':
+      return `Break illusions · ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':
       return `${EFFECT_WORD[card.technique.effect]} · ${chakraCost(fighter, card.technique)} chakra`;
   }
@@ -147,9 +162,13 @@ function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean)
     .sort((a, b) => b.technique.power - a.technique.power);
 }
 
-/** A sensible starting plan: footwork towards your best range, your best moves, a defence. */
+/**
+ * A sensible starting plan: footwork towards where you fight best, your best moves, a defence.
+ * Attacks your kit can't make from a distance (an archer up close) are left out.
+ */
 function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): CardId[] {
-  const pool = cardsFor(fighter, band);
+  const reaches = canAttackFrom(fighter, band);
+  const pool = cardsFor(fighter, band).filter((c) => reaches || !isOffence(c));
   const has = (kind: Card['kind']) => pool.filter((c) => c.kind === kind);
   const towardsHome = RANGE_BANDS.indexOf(band) > RANGE_BANDS.indexOf(home) ? 'in' : 'back';
   const footwork =
@@ -170,13 +189,14 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Car
 }
 
 export function defaultLoadout(fighter: PlanFighter): Loadout {
-  const home = preferredRange(fighter);
+  const home = homeBand(fighter);
   const [close, mid, far] = RANGE_BANDS.map((band) => defaultFor(fighter, band, home));
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };
 }
 
 /** Footwork and attacks the fighter can actually use this exchange. */
 export function playable(fighter: PlanFighter, card: Card): boolean {
+  if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind !== 'jutsu') return !isReaction(card);
   return fighter.sealed === 0 && chakraCost(fighter, card.technique) <= fighter.chakra;
 }

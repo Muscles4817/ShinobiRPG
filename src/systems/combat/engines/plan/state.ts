@@ -36,6 +36,8 @@ export interface PlanState {
 
 /** One exchange in progress. */
 export interface Round {
+  /** The exchange number (`PlanState.round`), which decides when illusionists slip away. */
+  readonly number: number;
   readonly fighters: PlanFighter[];
   readonly range: RangeBand;
   readonly lines: readonly string[];
@@ -82,7 +84,20 @@ export function playerOf(state: Pick<PlanState, 'fighters'>): PlanFighter {
 export function patch(
   fighters: readonly PlanFighter[],
   id: string,
-  change: Partial<Pick<PlanFighter, 'health' | 'chakra' | 'stunned' | 'sealed' | 'loadout'>>,
+  change: Partial<
+    Pick<
+      PlanFighter,
+      'health' | 'chakra' | 'stunned' | 'sealed' | 'loadout' | 'hidden' | 'confused'
+    >
+  >,
 ): PlanFighter[] {
   return fighters.map((f) => (f.id === id ? { ...f, ...change } : f));
+}
+
+export function say(round: Round, ...lines: string[]): Round {
+  return { ...round, lines: [...round.lines, ...lines] };
+}
+
+export function fighterIn(round: Round, id: string): PlanFighter | undefined {
+  return round.fighters.find((f) => f.id === id);
 }
