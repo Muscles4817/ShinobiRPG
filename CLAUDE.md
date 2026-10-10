@@ -132,7 +132,13 @@ ui ──► game ──► content ──► systems ──► core
     mean lives once in `rules/kit.ts` (reach, `kitDamageScale` by `AttackKind`, pack, coward)
     and `rules/conditions.ts` (Hidden and Confused, Search and Dispel chances); every engine
     applies them, so an archer is an archer in every fight style. Scouting names each trait
-    with its counter.
+    with its counter. Genin get traits from their specialty (`companionTraits`).
+    **Preparation** happens before the fight: fight tools (`ToolDef`, sold by the piece at
+    `gear` places' `toolIds`, kept in `inventory.tools`) ride in as `CombatantSetup.items`;
+    what they do lives once in `rules/items.ts`, every engine offers them, and
+    `CombatOutcome.items` writes back what's left (`afterPouch`). A mission notice shows only
+    the threat until you buy the client's report (`buyIntel`, `board.intel`), which names every
+    foe and their tricks.
 17. **The jobs board rotates.** Most jobs are postings that stay up a few days; `standing`
     jobs (patrols) are always there, once a day; jobs above your record are never shown, not
     even sealed. Postings come from `hashUnit(seed, day, id)` (`game/board.ts`), so the board
@@ -205,6 +211,9 @@ ui ──► game ──► content ──► systems ──► core
   pack's `enemies` and use it in a mission's combat stage. A new trait goes in
   `COMBAT_TRAITS`, its rule in `rules/kit.ts` or `rules/conditions.ts`, its counter text in
   `game/scouting.ts`, and every engine must honour it.
+- **Add a fight tool:** add a `ToolDef` to `shared/tools.ts` (or a pack's own list) with an
+  existing `effect` and list it in a gear place's `toolIds`. A new effect goes in
+  `COMBAT_ITEM_EFFECTS` with its rule in `rules/items.ts`; every engine must offer it.
 - **Add a mission:** add a `MissionDef` and list it at a mission hall. It is posted from time
   to time once the player's record reaches `minMissionsCompleted`; set `standing: true` for
   jobs that are always available (every pack needs one a fresh genin can take — validated).
