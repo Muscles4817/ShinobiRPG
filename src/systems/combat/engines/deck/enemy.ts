@@ -1,7 +1,14 @@
 import type { Rng } from '@/core';
 
 import type { RangeBand } from '../../contract';
-import { alive, chakraCost, hasPerk, strikeDamage, techniqueDamage } from '../../rules/body';
+import {
+  alive,
+  chakraCost,
+  hasPerk,
+  strikeDamage,
+  targetable,
+  techniqueDamage,
+} from '../../rules/body';
 import { HIDDEN_DAMAGE } from '../../rules/conditions';
 import { attackKindOf, canAttackFrom, homeBand, kitDamageScale } from '../../rules/kit';
 import {
@@ -152,38 +159,55 @@ function jutsuAct(turn: TurnResult, { self, target }: Duo, intent: Intent, rng: 
   return { ...turn, fighters: played.fighters, lines: [...turn.lines, ...played.lines] };
 }
 
-/** Carries out one enemy's intent against the player. */
+/**
+ * Who an enemy goes for: the player, unless they have vanished in smoke; then a teammate it
+ * can see, or no one.
+ */
+function targetFor(fighters: readonly DeckFighter[], player: DeckFighter): DeckFighter | undefined {
+  if (targetable(player)) return player;
+  return fighters.find((f) => f.side === 'player' && targetable(f));
+}
+
+/** Carries out one enemy's intent against the player (or whoever it can still see). */
 export function enemyAct(
   turn: TurnResult,
   self: DeckFighter,
   intent: Intent,
   rng: Rng,
 ): TurnResult {
-  const target = turn.fighters.find((f) => f.isPlayer);
-  if (!target || !alive(self) || !alive(target)) return turn;
-  const fresh = patch(turn.fighters, self.id, { block: 0 });
+  const player = turn.fighters.find((f) => f.isPlayer);
+  if (!player || !alive(self) || !alive(player)) return turn;
+  const fresh = { ...turn, fighters: patch(turn.fighters, self.id, { block: 0 }) };
+  const target = targetFor(turn.fighters, player);
+  const attacking = intent.kind === 'attack' || intent.kind === 'jutsu';
+  if (attacking && !target) {
+    return { ...fresh, lines: [...turn.lines, `${self.name} loses sight of you.`] };
+  }
+  return perform(fresh, { self, target: target ?? player }, intent, rng);
+}
+
+function perform(turn: TurnResult, duo: Duo, intent: Intent, rng: Rng): TurnResult {
+  const { self } = duo;
   switch (intent.kind) {
     case 'dazed':
-      return { ...turn, fighters: fresh, lines: [...turn.lines, `${self.name} is dazed.`] };
+      return { ...turn, lines: [...turn.lines, `${self.name} is dazed.`] };
     case 'step-in':
     case 'step-back': {
       const range = intent.kind === 'step-in' ? stepIn(turn.range) : stepBack(turn.range);
       const verb = intent.kind === 'step-in' ? 'closes in' : 'backs off';
-      return { fighters: fresh, range, lines: [...turn.lines, `${self.name} ${verb}.`] };
+      return { ...turn, range, lines: [...turn.lines, `${self.name} ${verb}.`] };
     }
-    case 'guard': {
-      const block = guardBlock(self);
+    case 'guard':
       return {
         ...turn,
-        fighters: patch(fresh, self.id, { block }),
+        fighters: patch(turn.fighters, self.id, { block: guardBlock(self) }),
         lines: [...turn.lines, `${self.name} braces.`],
       };
-    }
     case 'attack': {
-      const hit = attack(fresh, { self, target }, turn.range, rng);
+      const hit = attack(turn.fighters, duo, turn.range, rng);
       return { ...turn, fighters: hit.fighters, lines: [...turn.lines, ...hit.lines] };
     }
     case 'jutsu':
-      return jutsuAct({ ...turn, fighters: fresh }, { self, target }, intent, rng);
+      return jutsuAct(turn, duo, intent, rng);
   }
 }
