@@ -435,16 +435,15 @@ button.foe {
   gap: 6px;
   padding: 0 var(--gutter);
 }
-/* Fight tools: a scrollable row so a full pouch never pushes the controls off screen. */
+/* Fight tools: compact buttons (name and count) that wrap like the action bar. */
 .pouch {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 6px;
-  overflow-x: auto;
   padding: 0 var(--gutter);
-  scrollbar-width: none;
 }
 .pouch .btn {
-  flex: none;
   border-color: var(--gold);
 }
 
