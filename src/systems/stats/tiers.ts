@@ -28,8 +28,12 @@ export const STAT_TIERS: readonly StatTier[] = [
 
 export interface TierRead {
   readonly grade: StatGrade;
+  /** The shinobi rank the grade belongs to, e.g. "Genin". */
+  readonly rank: string;
   /** "D · Genin". */
   readonly label: string;
+  /** How far through this grade towards the next, 0–1 (1 at the top). */
+  readonly progress: number;
   /** The next grade up and the value that reaches it; null at the top. */
   readonly next: { readonly label: string; readonly at: number } | null;
 }
@@ -42,9 +46,12 @@ export function statTier(value: number): TierRead {
   const index = STAT_TIERS.reduce((found, tier, i) => (value >= tier.min ? i : found), 0);
   const tier = STAT_TIERS[index] ?? { min: 0, grade: 'E', rank: 'Genin' };
   const next = STAT_TIERS[index + 1];
+  const progress = next ? Math.min(1, (value - tier.min) / (next.min - tier.min)) : 1;
   return {
     grade: tier.grade,
+    rank: tier.rank,
     label: labelOf(tier),
+    progress: Math.max(0, progress),
     next: next ? { label: labelOf(next), at: next.min } : null,
   };
 }

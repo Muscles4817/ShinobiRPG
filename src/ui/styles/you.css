@@ -169,10 +169,14 @@
 }
 .stat-row {
   display: grid;
-  grid-template-columns: 1fr auto 2.6em;
-  gap: 6px;
+  grid-template-columns: auto 1fr auto 2.2em;
+  align-items: center;
+  column-gap: 6px;
   font-size: 0.85rem;
-  padding: 2px 0;
+  padding: 3px 0;
+}
+.stat-row .grade-bar {
+  grid-column: 2 / -1;
 }
 .stat-row .growth {
   color: var(--good);
@@ -195,28 +199,100 @@
   padding: 3px 8px;
 }
 
-/* Frame of reference: what a stat value means */
-.stat-row .tier {
-  grid-column: 1 / -1;
-  margin-top: -2px;
-  font-size: 0.68rem;
-  color: var(--muted);
+/* Stat grades E–S */
+.grade-badge {
+  --g: var(--grade-e);
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--g);
+  background: color-mix(in srgb, var(--g) 18%, var(--bg));
+  color: var(--g);
+  font-family: var(--font-story);
+  font-weight: 800;
+  font-size: 0.82rem;
+  line-height: 1;
 }
-.disc .tier {
-  font-size: 0.62rem;
-  color: var(--muted);
+.grade-badge.large {
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  border-width: 2.5px;
+  font-size: 2.1rem;
+  box-shadow: 0 0 18px -6px var(--g);
+}
+[data-grade='D'] {
+  --g: var(--grade-d);
+}
+[data-grade='C'] {
+  --g: var(--grade-c);
+}
+[data-grade='B'] {
+  --g: var(--grade-b);
+}
+[data-grade='A'] {
+  --g: var(--grade-a);
+}
+[data-grade='S'] {
+  --g: var(--grade-s);
+}
+.grade-bar {
+  --g: var(--grade-e);
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--g) 18%, transparent);
+  overflow: hidden;
+}
+.grade-bar i {
+  display: block;
+  height: 100%;
+  background: var(--g);
+}
+.disc-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+.grade-badge {
+  flex-shrink: 0;
+}
+.disc .grade-badge {
+  background: color-mix(in srgb, var(--g) 30%, #000);
+}
+.disc .grade-bar {
+  background: rgb(0 0 0 / 30%);
+  margin: 4px 0 2px;
 }
 .overall {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 4px 8px;
+  gap: 12px;
   margin: 10px 0;
-  padding: 10px 12px;
+  padding: 12px;
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
   background: var(--surface);
 }
-.overall b {
-  color: var(--gold);
+.overall-body {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+}
+.overall-body b {
+  font-size: 1.1rem;
+}
+.grade-key {
+  font-size: 0.7rem;
+  margin: 8px 0 0;
+}
+.fight-styles summary {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
 }

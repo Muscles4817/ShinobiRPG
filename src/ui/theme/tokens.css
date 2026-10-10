@@ -28,6 +28,14 @@
   --fuuinjutsu: #d9a441;
   --spirit: #57c7b8;
 
+  /* Stat grades E–S: the higher, the rarer the colour. */
+  --grade-e: #e6dfd0;
+  --grade-d: #7fd6a0;
+  --grade-c: #6fb0ff;
+  --grade-b: #b48cff;
+  --grade-a: #ffd27a;
+  --grade-s: #ff6f61;
+
   /* Vitals meters. */
   --health: #ff7b6b;
   --chakra: #6fb0ff;
