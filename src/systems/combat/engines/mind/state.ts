@@ -1,4 +1,5 @@
 import type {
+  CombatItem,
   CombatResult,
   CombatSetup,
   CombatState,
@@ -22,11 +23,14 @@ export type MoveKind =
   | 'step-back'
   | 'search'
   | 'dispel'
+  | 'item'
   | 'idle';
 
 export interface Move {
   readonly kind: MoveKind;
   readonly technique?: CombatTechnique;
+  /** The tool used, for an `item` move (only the player has any). */
+  readonly item?: CombatItem;
 }
 
 export interface MindFighter extends Body {
@@ -74,9 +78,9 @@ export function encode(state: MindState): CombatState {
   return { engineId: MIND_ENGINE_ID, data: state };
 }
 
-/** A fighter as saved before combat kits: no traits, hidden or confused. */
-type SavedFighter = Omit<MindFighter, 'traits' | 'hidden' | 'confused'> &
-  Partial<Pick<MindFighter, 'traits' | 'hidden' | 'confused'>>;
+/** A fighter as saved before combat kits and tools: no traits, hidden, confused or items. */
+type KitField = 'traits' | 'hidden' | 'confused' | 'items';
+type SavedFighter = Omit<MindFighter, KitField> & Partial<Pick<MindFighter, KitField>>;
 
 /** Recovers mind-game state from the opaque contract type. Only this engine may do this. */
 export function decode(state: CombatState): MindState {

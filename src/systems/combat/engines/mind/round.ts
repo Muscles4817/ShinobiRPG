@@ -2,6 +2,7 @@ import { clamp, type Rng } from '@/core';
 
 import type { CombatResult, RangeBand } from '../../contract';
 import { alive, targetable } from '../../rules/body';
+import { revealOnAttack } from '../../rules/items';
 import { canAttackFrom } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { chooseMove, planFor } from './ai';
@@ -10,6 +11,7 @@ import { clash, interrupted, netStep } from './exchange';
 import { isAttack } from './moves';
 import { rehide, sense } from './senses';
 import { applyLanding, castJutsu } from './strike';
+import { useTool } from './tools';
 import {
   LOG_LIMIT,
   playerOf,
@@ -35,6 +37,8 @@ interface Round {
   readonly lines: readonly string[];
   readonly range: RangeBand;
   readonly rng: Rng;
+  /** The player is out of sight this exchange (smoke): enemies can't go at them. */
+  readonly playerHidden: boolean;
 }
 
 interface Moves {
@@ -79,18 +83,27 @@ function land(round: Round, attempt: Attempt): Round {
 }
 
 /**
+ * An enemy's move on you, or, while you're hidden, on a teammate they can see; with no one in
+ * sight the attack is lost.
+ */
+function enemyGoesAt(round: Round, enemy: MindFighter, eMove: Move, moves: Moves): Round {
+  const attempt = { moverId: enemy.id, move: eMove };
+  if (!round.playerHidden || !isAttack(eMove)) {
+    return land(round, { ...attempt, targetId: playerOf(round).id, defence: moves.player });
+  }
+  const ally = round.fighters.find((f) => f.side === 'player' && !f.isPlayer && targetable(f));
+  if (!ally) return { ...round, lines: [...round.lines, `${enemy.name} loses sight of you.`] };
+  return land(round, { ...attempt, targetId: ally.id, defence: moves.allies[ally.id] ?? IDLE });
+}
+
+/**
  * The player's exchange with one enemy: the enemy's move on you, and yours on them. A hidden
  * enemy can't be struck back, not even by a counter.
  */
 function exchangeWith(round: Round, enemy: MindFighter, moves: Moves, isTarget: boolean): Round {
   const playerId = playerOf(round).id;
   const eMove = moves.enemy[enemy.id] ?? IDLE;
-  const struck = land(round, {
-    moverId: enemy.id,
-    targetId: playerId,
-    move: eMove,
-    defence: moves.player,
-  });
+  const struck = enemyGoesAt(round, enemy, eMove, moves);
   const engages = isTarget || moves.player.kind === 'counter';
   if (!engages || moves.playerCutOff || enemy.hidden) return struck;
   return land(struck, {
@@ -189,6 +202,13 @@ function commit(state: MindState, fighters: MindFighter[], player: Move, rng: Rn
   return { enemies, moves, range };
 }
 
+/** Attacking (hit or miss) gives a smoke-hidden player away, once every exchange is done. */
+function revealed(round: Round, attempted: Move): Round {
+  if (!isAttack(attempted)) return round;
+  const fighters = round.fighters.map((f) => (f.isPlayer ? revealOnAttack(f) : f));
+  return { ...round, fighters };
+}
+
 export function resolveRound(state: MindState, choice: PlayerChoice, rng: Rng): MindState {
   const opening = playerMoveFor(state, choice, rng);
   const header = [`— Round ${state.round} —`, ...(opening.line ? [opening.line] : [])];
@@ -202,15 +222,24 @@ export function resolveRound(state: MindState, choice: PlayerChoice, rng: Rng): 
   const technique = moves.playerCutOff ? moves.player.technique : undefined;
   const cutOff = technique ? [`Your ${technique.name} is cut off mid-seal!`] : [];
   const target = targetOf(enemies, choice);
+  const tool = useTool(cast.fighters, moves.player, target?.id, rng);
   const start: Round = {
-    fighters: cast.fighters,
-    lines: [...header, ...sensed.lines, ...rangeLine(state.range, range), ...cast.lines, ...cutOff],
+    fighters: tool.fighters,
+    lines: [
+      ...header,
+      ...sensed.lines,
+      ...rangeLine(state.range, range),
+      ...cast.lines,
+      ...tool.lines,
+      ...cutOff,
+    ],
     range,
     rng,
+    playerHidden: playerOf({ fighters: tool.fighters }).hidden,
   };
   const exchanged = enemies.reduce((r, e) => exchangeWith(r, e, moves, e.id === target?.id), start);
   const round = alliesAct(exchanged, moves);
-  const kept = upkeep(state, round, moves);
+  const kept = upkeep(state, revealed(round, opening.move), moves);
   const result = decide(kept);
   const after = result ? { fighters: kept, lines: [] } : rehide(kept, state.round + 1);
   return {
