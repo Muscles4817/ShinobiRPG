@@ -63,6 +63,10 @@ choose **GitHub Actions**.
   and invite a friend to dinner; cook their favourite and they won't forget it.
   After dark the izakaya opens: the regulars drop in, you can stand everyone a round, and the
   counter hears every job tip going round.
+- **Know where you stand.** Every stat says what it means (academy level, genin level,
+  chūnin level…) and you have an overall fighting level. Opponents are sized up against you
+  before and during fights (stronger, evenly matched, weaker; how they fight), and sharp eyes
+  read their standout stats.
 - **Four fight styles to playtest** (Shinobi tab → Fight style): _Classic_; _Plan & Watch_
   (Punch Club style: slot a few cards for each distance — attacks, jutsu, footwork that
   tries to change the range, defences that react on their own — then watch each round and

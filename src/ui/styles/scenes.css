@@ -506,3 +506,17 @@ button.foe {
   position: relative;
   color: #fff;
 }
+
+/* Sizing up a foe */
+.foe-read {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.foes.many .foe-read small {
+  display: none;
+}

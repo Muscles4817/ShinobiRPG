@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { headerView, missionBoardView, type Notice } from '@/game';
 
 import { Banner } from '../../components/Banner';
+import { ThreatChip } from '../../components/ThreatChip';
 import type { PlaceProps } from '../types';
 
 const TILT = ['r1', 'r2', 'r3', 'r4'];
@@ -78,7 +79,11 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
               <span className="chip cost">−{open.energyCost} energy</span>
               <span className="chip">{open.slots} slots</span>
               <span className="chip">{open.posted}</span>
-              {open.fightLikely && <span className="chip harm">Fight likely</span>}
+              {open.opposition ? (
+                <ThreatChip threat={open.opposition.threat} label={open.opposition.label} />
+              ) : (
+                open.fightLikely && <span className="chip harm">Fight likely</span>
+              )}
               {open.withTeam && <span className="chip gain">With your team</span>}
             </span>
             {open.blocker && <p className="blocker">{open.blocker}</p>}

@@ -13,6 +13,8 @@ import type { GameState } from '../state';
  * stored stats: they grow with your record, so your teammates keep pace with you.
  */
 
+/** Combatant ids for people start with this, so a fight's people can be traced back. */
+export const PERSON_PREFIX = 'person:';
 const COMPANION_BASE = 5;
 const SPECIALTY_BONUS = 4;
 /** Body stats a genin trains alongside their specialty. */
@@ -48,7 +50,7 @@ export function companionCombatant(
 ): CombatantSetup {
   const stats = companionStats(person, state);
   return {
-    id: `person:${person.id}`,
+    id: `${PERSON_PREFIX}${person.id}`,
     name: person.name,
     tag,
     attributes: attributesOf(stats),

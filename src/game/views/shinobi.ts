@@ -1,7 +1,14 @@
 import { round1 } from '@/core';
 import type { Appearance, Grade, Pronouns } from '@/systems/profile';
 import { RANK_LABELS } from '@/systems/standing';
-import { STAT_IDS, STAT_INFO, type StatGroup } from '@/systems/stats';
+import {
+  fightingPower,
+  STAT_IDS,
+  STAT_INFO,
+  statTier,
+  type StatGroup,
+  type TierRead,
+} from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { formatDate } from '@/systems/time';
 
@@ -13,6 +20,8 @@ export interface StatLine {
   readonly value: number;
   /** Growth since graduation. */
   readonly growth: number;
+  /** What the value means: "Genin level". */
+  readonly tier: string;
 }
 
 export interface ShinobiView {
@@ -39,6 +48,8 @@ export interface ShinobiView {
   readonly missionsFailed: number;
   readonly reputation: number;
   readonly groups: readonly { readonly group: StatGroup; readonly stats: readonly StatLine[] }[];
+  /** Your all-round fighting level and what the next step up takes. */
+  readonly overall: TierRead & { readonly power: number };
 }
 
 /** A stable registry number derived from the name, so it never changes between visits. */
@@ -85,7 +96,9 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
         label: STAT_INFO[id].label,
         value: stats[id],
         growth: round1(stats[id] - startingStats[id]),
+        tier: statTier(stats[id]).label,
       })),
     })),
+    overall: { ...statTier(fightingPower(stats)), power: round1(fightingPower(stats)) },
   };
 }

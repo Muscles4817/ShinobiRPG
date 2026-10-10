@@ -7,6 +7,7 @@ import { SPAR_ENERGY } from '../actions/spar';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import { everyone, fullName, whereNow } from '../people/cast';
+import { scoutPerson, type ScoutingRead } from '../scouting';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { personCard, personFace, type PersonFace } from './people';
@@ -31,6 +32,8 @@ export interface SparOption extends Choice {
   readonly where: string;
   readonly specialty: { readonly id: Discipline; readonly label: string } | null;
   readonly energyCost: number;
+  /** How they size up against you. */
+  readonly read: ScoutingRead | null;
 }
 
 export function lessonCard(state: GameState, ctx: GameContext): LessonCard | null {
@@ -75,6 +78,7 @@ export function sparOptions(state: GameState, ctx: GameContext): SparOption[] {
       where: card.where,
       specialty: card.specialty,
       energyCost: SPAR_ENERGY,
+      read: scoutPerson(state, ctx, person.id),
     }))
     .sort((a, b) => Number(b.person.relation !== null) - Number(a.person.relation !== null));
 }

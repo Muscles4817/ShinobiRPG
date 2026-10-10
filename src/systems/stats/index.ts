@@ -14,3 +14,4 @@ export {
   type StatScale,
 } from './stats';
 export { checkChance, rollCheck, type CheckResult } from './checks';
+export { STAT_TIERS, statTier, fightingPower, type StatTier, type TierRead } from './tiers';

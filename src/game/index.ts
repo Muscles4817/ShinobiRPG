@@ -74,9 +74,11 @@ export {
   type RecordLine,
 } from './views/you';
 export { shinobiView, type ShinobiView, type StatLine } from './views/shinobi';
+export type { ScoutingRead, StatCompare, Threat } from './scouting';
 export {
   missionScene,
   combatScene,
+  combatScouting,
   type MissionScene,
   type SceneLine,
   type SceneChoice,

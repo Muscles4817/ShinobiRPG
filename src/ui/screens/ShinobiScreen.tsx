@@ -108,6 +108,16 @@ export function ShinobiScreen({
           ))}
         </p>
       </section>
+      <section className="overall" aria-label="Fighting level">
+        <span className="label">Fighting level</span>
+        <b>{view.overall.label}</b>
+        <span className="chip num">{view.overall.power}</span>
+        {view.overall.next && (
+          <small className="muted">
+            {view.overall.next.label} at <span className="num">{view.overall.next.at}</span>
+          </small>
+        )}
+      </section>
       {disciplines && (
         <section className="disc-tiles">
           {disciplines.stats.map((s) => (
@@ -115,6 +125,7 @@ export function ShinobiScreen({
               <small>{s.label}</small>
               <b className="num">{s.value.toFixed(1)}</b>
               <small>{s.growth > 0 ? `+${s.growth}` : '—'}</small>
+              <small className="tier">{s.tier}</small>
             </div>
           ))}
         </section>
@@ -128,6 +139,7 @@ export function ShinobiScreen({
                 <span>{s.label}</span>
                 <span>{s.value.toFixed(1)}</span>
                 <span className="growth">{s.growth > 0 ? `+${s.growth}` : ''}</span>
+                <small className="tier">{s.tier}</small>
               </div>
             ))}
           </div>

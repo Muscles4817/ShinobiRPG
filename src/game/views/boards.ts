@@ -1,10 +1,13 @@
-import { STAT_INFO, type StatId } from '@/systems/stats';
+import type { MissionDef } from '@/systems/missions';
+import { fightingPower, STAT_INFO, type StatId } from '@/systems/stats';
 
 import { STUDY_ENERGY_COST } from '../actions/study';
 import { availability } from '../board';
 import type { GameContext } from '../context';
+import { combatStats } from '../gear';
 import { studyPointsFor } from '../profile';
 import { placeHere } from '../ops';
+import { enemyStats, scout, type Threat } from '../scouting';
 import type { GameState } from '../state';
 import { choice, type Choice, type Discipline } from './common';
 
@@ -19,6 +22,8 @@ export interface Notice extends Choice {
   readonly slots: number;
   readonly energyCost: number;
   readonly fightLikely: boolean;
+  /** How the toughest opponent on the job compares with you, if there's a fight. */
+  readonly opposition: { readonly threat: Threat; readonly label: string } | null;
   /** Your teammates come along. */
   readonly withTeam: boolean;
   /** "Standing job" or how long the posting stays up, e.g. "Gone after tomorrow". */
@@ -30,6 +35,21 @@ export interface MissionBoardView {
   readonly name: string;
   readonly completed: number;
   readonly notices: readonly Notice[];
+}
+
+/** The toughest enemy a job can throw at you, read against you as you are now. */
+function oppositionOf(
+  state: GameState,
+  ctx: GameContext,
+  mission: MissionDef,
+): Notice['opposition'] {
+  const enemies = mission.stages.flatMap((s) => (s.kind === 'combat' ? s.enemyIds : []));
+  const stats = enemies.flatMap((id) => enemyStats(ctx, id) ?? []);
+  const toughest = stats.sort((a, b) => fightingPower(b) - fightingPower(a))[0];
+  if (!toughest) return null;
+  const read = scout(toughest, combatStats(state, ctx), false);
+  const many = enemies.length > 1 ? ` (${enemies.length} foes)` : '';
+  return { threat: read.threat, label: `${read.threatLabel}${many}` };
 }
 
 /** How long a posting stays up, in words. */
@@ -62,6 +82,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         slots: m.slots,
         energyCost: m.energyCost,
         fightLikely: m.stages.some((s) => s.kind === 'combat'),
+        opposition: oppositionOf(state, ctx, m),
         withTeam: m.withTeam ?? false,
         standing: on.kind === 'standing',
         posted: on.kind === 'standing' ? 'Standing job' : postedFor(on.daysLeft),

@@ -122,6 +122,10 @@ ui ──► game ──► content ──► systems ──► core
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
     styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`).
+    Every number has a frame of reference: `statTier` names what a stat value means and
+    `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you
+    (threat, fighting style, and with sharp eyes their standout stats) for fights, sparring
+    partners and mission notices, from the same stats the fight uses.
 17. **The jobs board rotates.** Most jobs are postings that stay up a few days; `standing`
     jobs (patrols) are always there, once a day; jobs above your record are never shown, not
     even sealed. Postings come from `hashUnit(seed, day, id)` (`game/board.ts`), so the board
