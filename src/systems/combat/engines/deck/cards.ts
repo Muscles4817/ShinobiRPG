@@ -11,8 +11,10 @@ import {
   techniqueDamage,
 } from '../../rules/body';
 import { matchup, matchupLine } from '../../rules/elements';
+import { attackKindOf } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
-import { absorb, patch, type Card, type CardKind, type DeckFighter } from './state';
+import { confuse, kitDamage, landHit, slips, UNSEEN_REASON } from './kit';
+import { patch, type Card, type CardKind, type DeckFighter } from './state';
 
 /**
  * The cards: a starter set of basics plus one card per technique you know. Playing a card
@@ -81,6 +83,7 @@ export function isTargeted(card: Card): boolean {
 
 /** Why a card can't be played now, or null. */
 export function cardBlocker(card: Card, user: DeckFighter, ctx: PlayContext): string | null {
+  if (isTargeted(card) && !ctx.canSee) return UNSEEN_REASON;
   if (cardPoints(card) > ctx.points) return 'Not enough actions';
   if (!inReach(cardReach(card), ctx.range)) return `Out of reach at ${ctx.range} range`;
   if (!card.technique) return null;
@@ -91,6 +94,8 @@ export function cardBlocker(card: Card, user: DeckFighter, ctx: PlayContext): st
 export interface PlayContext {
   readonly points: number;
   readonly range: RangeBand;
+  /** Whether any living foe can be targeted (not hidden). */
+  readonly canSee: boolean;
 }
 
 export interface Played {
@@ -101,10 +106,6 @@ export interface Played {
 /** Block a Guard card gives: sturdier fighters brace better. */
 export function guardBlock(user: DeckFighter): number {
   return Math.round(5 + user.attributes.stamina * 0.5);
-}
-
-function hurt(fighters: DeckFighter[], target: DeckFighter, damage: number): DeckFighter[] {
-  return patch(fighters, target.id, absorb(target, damage));
 }
 
 /** Who plays which card on whom. */
@@ -119,13 +120,20 @@ interface Aimed extends Play {
 }
 
 function basicPlay(fighters: DeckFighter[], { user, target, card }: Aimed, rng: Rng): Played {
-  const scale = card.kind === 'kunai' ? KUNAI_SCALE : 1;
-  const damage = Math.max(1, Math.round(strikeDamage(user, target, rng.next()) * scale));
-  const verb =
-    card.kind === 'kunai' ? `throws a kunai at ${target.name}` : `strikes ${target.name}`;
+  const thrown = card.kind === 'kunai';
+  if (slips(target, rng)) {
+    const what = thrown ? 'kunai' : 'blow';
+    return { fighters, lines: [`${target.name} slips aside from ${user.name}'s ${what}.`] };
+  }
+  const verb = thrown ? `throws a kunai at ${target.name}` : `strikes ${target.name}`;
+  const scale = thrown ? KUNAI_SCALE : 1;
+  const base = Math.max(1, Math.round(strikeDamage(user, target, rng.next()) * scale));
+  const blow = { attacker: user, target, kind: attackKindOf(null, thrown) };
+  const damage = kitDamage(fighters, blow, base);
+  const landed = landHit(fighters, blow, damage, rng);
   return {
-    fighters: hurt(fighters, target, damage),
-    lines: [`${user.name} ${verb} for ${damage}.`],
+    fighters: landed.fighters,
+    lines: [`${user.name} ${verb} for ${damage}.`, ...landed.lines],
   };
 }
 
@@ -133,26 +141,40 @@ function jutsuPlay(fighters: DeckFighter[], { user, target, card }: Aimed, rng: 
   const t = card.technique;
   if (!t) return { fighters, lines: [] };
   const opener = `${user.name} uses ${t.name}!`;
+  if (slips(target, rng)) return { fighters, lines: [opener, `${target.name} slips aside.`] };
   if (rng.chance(resistChance(user, target, t))) {
     return { fighters, lines: [opener, `${target.name} sees it coming.`] };
   }
+  const blow = { attacker: user, target, kind: attackKindOf(t) };
+  if (t.effect === 'stun' || t.effect === 'seal') {
+    const held = holdPlay(fighters, { user, target, card }, t);
+    const dazzled = confuse(held.fighters, blow, rng);
+    return { fighters: dazzled.fighters, lines: [opener, ...held.lines, ...dazzled.lines] };
+  }
+  const damage = kitDamage(fighters, blow, techniqueDamage(user, target, t, rng.next()));
+  const element = matchupLine(matchup(t.element, target.nature), target.name);
+  const landed = landHit(fighters, blow, damage, rng);
+  return {
+    fighters: landed.fighters,
+    lines: [
+      opener,
+      `${target.name} takes ${damage}.`,
+      ...(element ? [element] : []),
+      ...landed.lines,
+    ],
+  };
+}
+
+function holdPlay(fighters: DeckFighter[], { target }: Aimed, t: CombatTechnique): Played {
   if (t.effect === 'stun') {
     return {
       fighters: patch(fighters, target.id, { stunned: target.stunned + holdTurns(t) }),
-      lines: [opener, `${target.name} is dazed and will lose their turn!`],
+      lines: [`${target.name} is dazed and will lose their turn!`],
     };
   }
-  if (t.effect === 'seal') {
-    return {
-      fighters: patch(fighters, target.id, { sealed: target.sealed + holdTurns(t) + 1 }),
-      lines: [opener, `Seals lock ${target.name}'s chakra!`],
-    };
-  }
-  const damage = techniqueDamage(user, target, t, rng.next());
-  const element = matchupLine(matchup(t.element, target.nature), target.name);
   return {
-    fighters: hurt(fighters, target, damage),
-    lines: [opener, `${target.name} takes ${damage}.`, ...(element ? [element] : [])],
+    fighters: patch(fighters, target.id, { sealed: target.sealed + holdTurns(t) + 1 }),
+    lines: [`Seals lock ${target.name}'s chakra!`],
   };
 }
 
