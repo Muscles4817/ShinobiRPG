@@ -56,6 +56,6 @@ describe('scouting in play', () => {
     const view = shinobiView(newGame(), ctx);
     expect(view.overall.label).toBe('E · Genin');
     expect(view.overall.next).toEqual({ label: 'D · Genin', at: 8 });
-    expect(view.groups[0]?.stats[0]?.tier).toMatch(/^[EDCBAS] · /);
+    expect(view.groups[0]?.stats[0]?.tier.label).toMatch(/^[EDCBAS] · /);
   });
 });

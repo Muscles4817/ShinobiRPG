@@ -9,9 +9,12 @@ interface FightStylePickerProps {
 /** Playtest switch: which combat engine runs your next fight. */
 export function FightStylePicker({ ctx, state, perform }: FightStylePickerProps) {
   const styles = fightStyles(state, ctx);
+  const active = styles.find((s) => s.active)?.label ?? '';
   return (
-    <section className="fight-styles" aria-label="Fight style">
-      <h2 className="label">Fight style · playtest</h2>
+    <details className="fight-styles" aria-label="Fight style">
+      <summary>
+        <span className="label">Fight style · playtest</span> <b>{active}</b>
+      </summary>
       <p className="muted small">Applies from your next fight.</p>
       {styles.map((s) => (
         <button
@@ -27,6 +30,6 @@ export function FightStylePicker({ ctx, state, perform }: FightStylePickerProps)
           <small>{s.summary}</small>
         </button>
       ))}
-    </section>
+    </details>
   );
 }

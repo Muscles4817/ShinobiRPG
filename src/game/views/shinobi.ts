@@ -1,5 +1,5 @@
 import { round1 } from '@/core';
-import type { Appearance, Grade, Pronouns } from '@/systems/profile';
+import { GRADE_INFO, type Appearance, type Grade, type Pronouns } from '@/systems/profile';
 import { RANK_LABELS } from '@/systems/standing';
 import {
   fightingPower,
@@ -15,13 +15,15 @@ import { formatDate } from '@/systems/time';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 
+export type { StatGrade, TierRead } from '@/systems/stats';
+
 export interface StatLine {
   readonly label: string;
   readonly value: number;
   /** Growth since graduation. */
   readonly growth: number;
-  /** What the value means: "D · Genin". */
-  readonly tier: string;
+  /** What the value means: grade, rank, and how close the next grade is. */
+  readonly tier: TierRead;
 }
 
 export interface ShinobiView {
@@ -41,6 +43,8 @@ export interface ShinobiView {
     readonly discipline: Discipline;
     readonly label: string;
     readonly grade: Grade;
+    /** The academy's word for the grade ("Outstanding"), so it isn't read as a stat grade. */
+    readonly mark: string;
   }[];
   readonly registryNo: string;
   readonly issued: string;
@@ -84,6 +88,7 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
       discipline: d,
       label: STAT_INFO[d].label,
       grade: character.grades[d],
+      mark: GRADE_INFO[character.grades[d]].label,
     })),
     registryNo: registryNumber(character.name),
     issued: formatDate({ day: 1, slot: 0 }),
@@ -96,7 +101,7 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
         label: STAT_INFO[id].label,
         value: stats[id],
         growth: round1(stats[id] - startingStats[id]),
-        tier: statTier(stats[id]).label,
+        tier: statTier(stats[id]),
       })),
     })),
     overall: { ...statTier(fightingPower(stats)), power: round1(fightingPower(stats)) },

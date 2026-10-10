@@ -4,9 +4,8 @@ import { headerView, shinobiView } from '@/game';
 
 import { Portrait } from '../art/Portrait';
 import { FightStylePicker } from './FightStylePicker';
+import { StatSheet } from './StatSheet';
 import type { ScreenProps } from './types';
-
-const GROUP_TITLES = { discipline: 'Disciplines', body: 'Body', mind: 'Mind' } as const;
 
 /** Asks twice before throwing a life away. */
 function AbandonButton({ onAbandon }: { readonly onAbandon: () => void }) {
@@ -48,7 +47,6 @@ export function ShinobiScreen({
 }: ScreenProps & { readonly onAbandon: () => void }) {
   const view = shinobiView(state, ctx);
   const header = headerView(state, ctx);
-  const [disciplines, ...rest] = view.groups;
   return (
     <main className="page">
       <section className="idcard">
@@ -99,52 +97,16 @@ export function ShinobiScreen({
             <span className="label">Dream</span> {view.nindo}
           </p>
         )}
-        <p className="grades-line num">
-          <span className="label">Grades</span>{' '}
+        <p className="grades-line">
+          <span className="label">Academy report</span>{' '}
           {view.grades.map((g) => (
             <span key={g.discipline} className={`grade-chip d-${g.discipline}`}>
-              {g.label.slice(0, 3)} {g.grade}
+              {g.label.slice(0, 3)} · {g.mark}
             </span>
           ))}
         </p>
       </section>
-      <section className="overall" aria-label="Fighting level">
-        <span className="label">Fighting level</span>
-        <b>{view.overall.label}</b>
-        <span className="chip num">{view.overall.power}</span>
-        {view.overall.next && (
-          <small className="muted">
-            {view.overall.next.label} at <span className="num">{view.overall.next.at}</span>
-          </small>
-        )}
-      </section>
-      {disciplines && (
-        <section className="disc-tiles">
-          {disciplines.stats.map((s) => (
-            <div key={s.label} className={`disc d-${s.label.toLowerCase().replace('ū', 'uu')}`}>
-              <small>{s.label}</small>
-              <b className="num">{s.value.toFixed(1)}</b>
-              <small>{s.growth > 0 ? `+${s.growth}` : '—'}</small>
-              <small className="tier">{s.tier}</small>
-            </div>
-          ))}
-        </section>
-      )}
-      <section className="stat-cols">
-        {rest.map((g) => (
-          <div key={g.group}>
-            <h2 className="label">{GROUP_TITLES[g.group]}</h2>
-            {g.stats.map((s) => (
-              <div key={s.label} className="stat-row num">
-                <span>{s.label}</span>
-                <span>{s.value.toFixed(1)}</span>
-                <span className="growth">{s.growth > 0 ? `+${s.growth}` : ''}</span>
-                <small className="tier">{s.tier}</small>
-              </div>
-            ))}
-          </div>
-        ))}
-      </section>
+      <StatSheet view={view} />
       <FightStylePicker ctx={ctx} state={state} perform={perform} />
       <p className="muted small">
         {header.date} · {header.location}
