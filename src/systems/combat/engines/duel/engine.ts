@@ -3,38 +3,20 @@ import { err, ok, type Result } from '@/core';
 import type {
   CombatChoice,
   CombatEngine,
-  CombatOption,
   CombatOutcome,
   CombatState,
   CombatView,
   CombatantView,
-  CombatTechnique,
 } from '../../contract';
-import type { DuelAction } from './actions';
+import { conditionStatuses, targetable } from '../../rules/body';
+import { options, parseChoice } from './options';
 import { resolveRound } from './round';
-import {
-  decode,
-  DUEL_ENGINE_ID,
-  encode,
-  initialDuel,
-  playerOf,
-  sideOf,
-  type DuelState,
-  type Fighter,
-} from './state';
-
-const TECHNIQUE_PREFIX = 'tech:';
-
-const EFFECT_DETAIL: Readonly<Record<CombatTechnique['effect'], (power: number) => string>> = {
-  damage: (power) => `power ${power}`,
-  stun: () => 'dazes',
-  heal: () => 'heals',
-  seal: () => 'seals',
-};
+import { decode, DUEL_ENGINE_ID, encode, initialDuel, playerOf, type Fighter } from './state';
 
 function statuses(f: Fighter): string[] {
-  const list: string[] = [];
-  if (f.health <= 0) list.push('Down');
+  if (f.health <= 0) return ['Down'];
+  const list = conditionStatuses(f);
+  if (f.distant) list.push('Far');
   if (f.stunned > 0) list.push('Dazed');
   if ((f.sealed ?? 0) > 0) list.push('Sealed');
   if (f.guarding) list.push('Guarding');
@@ -46,57 +28,20 @@ function toView(f: Fighter): CombatantView {
     id: f.id,
     name: f.name,
     ...(f.tag === undefined ? {} : { tag: f.tag }),
-    side: sideOf(f),
+    side: f.side,
     health: f.health,
     maxHealth: f.maxHealth,
     chakra: f.chakra,
     maxChakra: f.maxChakra,
     statuses: statuses(f),
+    targetable: targetable(f),
   };
-}
-
-function options(state: DuelState): CombatOption[] {
-  if (state.result) return [];
-  const player = playerOf(state);
-  const techniques: CombatOption[] = player.techniques.map((t) => {
-    const base: CombatOption = {
-      id: `${TECHNIQUE_PREFIX}${t.id}`,
-      label: t.name,
-      detail: `${t.chakraCost} chakra · ${EFFECT_DETAIL[t.effect](t.power)}`,
-      kind: 'technique',
-      discipline: t.discipline,
-      ...(t.effect === 'heal' ? {} : { targeted: true }),
-    };
-    if ((player.sealed ?? 0) > 0) return { ...base, disabledReason: 'Your chakra is sealed' };
-    return t.chakraCost > player.chakra ? { ...base, disabledReason: 'Not enough chakra' } : base;
-  });
-  const flee: CombatOption = { id: 'flee', label: 'Flee', detail: 'Try to escape', kind: 'escape' };
-  return [
-    { id: 'strike', label: 'Strike', detail: 'Free', kind: 'basic', targeted: true },
-    { id: 'guard', label: 'Guard', detail: 'Halve damage · +chakra', kind: 'basic' },
-    ...techniques,
-    state.canFlee ? flee : { ...flee, disabledReason: 'You cannot flee this fight' },
-  ];
-}
-
-function parseOption(state: DuelState, optionId: string): Result<DuelAction> {
-  const option = options(state).find((o) => o.id === optionId);
-  if (!option) return err(`Unknown combat option "${optionId}".`);
-  if (option.disabledReason) return err(option.disabledReason);
-
-  if (optionId === 'strike' || optionId === 'guard' || optionId === 'flee') {
-    return ok({ kind: optionId });
-  }
-  const techniqueId = optionId.slice(TECHNIQUE_PREFIX.length);
-  const technique = playerOf(state).techniques.find((t) => t.id === techniqueId);
-  return technique
-    ? ok({ kind: 'technique', technique })
-    : err(`Unknown technique "${techniqueId}".`);
 }
 
 /**
  * A turn-based 1-vs-N skirmish. Speed sets turn order, guarding halves damage,
- * genjutsu is resisted by willpower, and chakra slowly regenerates each round.
+ * genjutsu is resisted by willpower, and chakra slowly regenerates each round. Foes who stand
+ * back (archers) must be closed on before blows reach them; hidden ones must be found first.
  */
 export function createDuelEngine(): CombatEngine {
   return {
@@ -109,7 +54,7 @@ export function createDuelEngine(): CombatEngine {
     act(state: CombatState, choice: CombatChoice, rng): Result<CombatState> {
       const duel = decode(state);
       if (duel.result) return err('The fight is already over.');
-      const action = parseOption(duel, choice.optionId);
+      const action = parseChoice(duel, choice);
       if (!action.ok) return action;
       const move = {
         action: action.value,
