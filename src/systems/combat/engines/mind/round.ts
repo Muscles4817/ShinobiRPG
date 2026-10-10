@@ -1,11 +1,14 @@
 import { clamp, type Rng } from '@/core';
 
 import type { CombatResult, RangeBand } from '../../contract';
-import { alive } from '../../rules/body';
+import { alive, targetable } from '../../rules/body';
+import { canAttackFrom } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { chooseMove, planFor } from './ai';
+import { allyMoves, allyTarget, fightingAllies } from './allies';
 import { clash, interrupted, netStep } from './exchange';
-import { moveBlocker } from './moves';
+import { isAttack } from './moves';
+import { rehide, sense } from './senses';
 import { applyLanding, castJutsu } from './strike';
 import {
   LOG_LIMIT,
@@ -16,11 +19,10 @@ import {
   type Move,
 } from './state';
 
-/** Plays out one round of the mind game: movement, every exchange, allies, then upkeep. */
+/** Plays out one round of the mind game: senses, movement, every exchange, allies, upkeep. */
 
 const CHAKRA_REGEN = 2;
 const GUARD_CHAKRA = 5;
-const ALLY_JUTSU_CHANCE = 0.4;
 const IDLE: Move = { kind: 'idle' };
 
 export type PlayerChoice =
@@ -38,6 +40,7 @@ interface Round {
 interface Moves {
   readonly player: Move;
   readonly enemy: Readonly<Record<string, Move>>;
+  readonly allies: Readonly<Record<string, Move>>;
   readonly playerCutOff: boolean;
 }
 
@@ -75,7 +78,10 @@ function land(round: Round, attempt: Attempt): Round {
   return { ...round, fighters: hit.fighters, lines: [...round.lines, ...hit.lines] };
 }
 
-/** The player's exchange with one enemy: the enemy's move on you, and yours on them. */
+/**
+ * The player's exchange with one enemy: the enemy's move on you, and yours on them. A hidden
+ * enemy can't be struck back, not even by a counter.
+ */
 function exchangeWith(round: Round, enemy: MindFighter, moves: Moves, isTarget: boolean): Round {
   const playerId = playerOf(round).id;
   const eMove = moves.enemy[enemy.id] ?? IDLE;
@@ -86,7 +92,7 @@ function exchangeWith(round: Round, enemy: MindFighter, moves: Moves, isTarget: 
     defence: moves.player,
   });
   const engages = isTarget || moves.player.kind === 'counter';
-  if (!engages || moves.playerCutOff) return struck;
+  if (!engages || moves.playerCutOff || enemy.hidden) return struck;
   return land(struck, {
     moverId: playerId,
     targetId: enemy.id,
@@ -95,27 +101,13 @@ function exchangeWith(round: Round, enemy: MindFighter, moves: Moves, isTarget: 
   });
 }
 
-function allyMove(ally: MindFighter, range: RangeBand, rng: Rng): Move {
-  const usable = ally.techniques.filter(
-    (t) =>
-      t.effect !== 'heal' && moveBlocker(ally, { kind: 'jutsu', technique: t }, range) === null,
-  );
-  if (usable.length > 0 && rng.chance(ALLY_JUTSU_CHANCE)) {
-    return { kind: 'jutsu', technique: rng.pick(usable) };
-  }
-  return { kind: range === 'close' ? 'strike' : 'throw' };
-}
-
-function alliesAct(start: Round, enemyMoves: Moves['enemy']): Round {
-  const allies = start.fighters.filter(
-    (f) => f.side === 'player' && !f.isPlayer && alive(f) && f.stunned === 0,
-  );
-  return allies.reduce((round, ally) => {
-    const target = livingEnemies(round.fighters)[0];
-    if (!target) return round;
-    const move = allyMove(ally, round.range, round.rng);
+function alliesAct(start: Round, moves: Moves): Round {
+  return fightingAllies(start.fighters).reduce((round, ally) => {
+    const target = allyTarget(round.fighters);
+    const move = moves.allies[ally.id] ?? IDLE;
+    if (!target || !isAttack(move) || !canAttackFrom(ally, round.range)) return round;
     const cast = { ...round, fighters: castJutsu(round.fighters, ally.id, move).fighters };
-    const defence = enemyMoves[target.id] ?? IDLE;
+    const defence = moves.enemy[target.id] ?? IDLE;
     return land(cast, { moverId: ally.id, targetId: target.id, move, defence });
   }, start);
 }
@@ -142,9 +134,12 @@ function playerMoveFor(state: MindState, choice: PlayerChoice, rng: Rng) {
 }
 
 /** Pays for every jutsu committed this round (and applies heals). */
-function castAll(state: MindState, moves: Moves): { fighters: MindFighter[]; lines: string[] } {
+function castAll(
+  fighters: MindFighter[],
+  moves: Moves,
+): { fighters: MindFighter[]; lines: string[] } {
   const all: [string, Move][] = [
-    [playerOf(state).id, moves.player],
+    [playerOf({ fighters }).id, moves.player],
     ...Object.entries(moves.enemy),
   ];
   return all.reduce(
@@ -152,7 +147,7 @@ function castAll(state: MindState, moves: Moves): { fighters: MindFighter[]; lin
       const cast = castJutsu(acc.fighters, id, move);
       return { fighters: cast.fighters, lines: [...acc.lines, ...cast.lines] };
     },
-    { fighters: [...state.fighters], lines: [] as string[] },
+    { fighters, lines: [] as string[] },
   );
 }
 
@@ -173,6 +168,27 @@ function rangeLine(before: RangeBand, after: RangeBand): string[] {
   return [`The distance ${verb}: ${RANGE_LABEL[after].toLowerCase()} range.`];
 }
 
+/** The foe the player meant, or the first one they can see. */
+function targetOf(enemies: readonly MindFighter[], choice: PlayerChoice): MindFighter | undefined {
+  const targetId = choice.kind === 'move' ? choice.targetId : undefined;
+  const chosen = enemies.find((e) => e.id === targetId);
+  return chosen && targetable(chosen) ? chosen : enemies.find(targetable);
+}
+
+/** Everyone's committed moves, and where they leave the range. */
+function commit(state: MindState, fighters: MindFighter[], player: Move, rng: Rng) {
+  const enemies = livingEnemies(fighters);
+  const enemy = Object.fromEntries(
+    enemies.map((e) => [e.id, state.plans[e.id]?.move ?? chooseMove(e, state.range, rng)]),
+  );
+  const allies = allyMoves(fighters, state.range, rng);
+  const steps = [player, ...Object.values(enemy), ...Object.values(allies)];
+  const range = moved(state.range, steps);
+  const playerCutOff = enemies.some((e) => interrupted(player, enemy[e.id] ?? IDLE, range));
+  const moves: Moves = { player, enemy, allies, playerCutOff };
+  return { enemies, moves, range };
+}
+
 export function resolveRound(state: MindState, choice: PlayerChoice, rng: Rng): MindState {
   const opening = playerMoveFor(state, choice, rng);
   const header = [`— Round ${state.round} —`, ...(opening.line ? [opening.line] : [])];
@@ -180,37 +196,30 @@ export function resolveRound(state: MindState, choice: PlayerChoice, rng: Rng): 
     const log = [...state.log, ...header, 'You vanish in a swirl of leaves and escape!'];
     return { ...state, log: log.slice(-LOG_LIMIT), result: 'escaped' };
   }
-  const enemies = livingEnemies(state.fighters);
-  const enemy = Object.fromEntries(
-    enemies.map((e) => [e.id, state.plans[e.id]?.move ?? chooseMove(e, state.range, rng)]),
-  );
-  const range = moved(state.range, [opening.move, ...Object.values(enemy)]);
-  const playerCutOff = enemies.some((e) => interrupted(opening.move, enemy[e.id] ?? IDLE, range));
-  const moves: Moves = { player: opening.move, enemy, playerCutOff };
-  const cast = castAll(state, moves);
-  const cutOff =
-    playerCutOff && opening.move.technique
-      ? [`Your ${opening.move.technique.name} is cut off mid-seal!`]
-      : [];
-  const targetId = choice.kind === 'move' ? choice.targetId : undefined;
-  const target = enemies.find((e) => e.id === targetId) ?? enemies[0];
+  const sensed = sense([...state.fighters], opening.move, rng);
+  const { enemies, moves, range } = commit(state, sensed.fighters, sensed.move, rng);
+  const cast = castAll(sensed.fighters, moves);
+  const technique = moves.playerCutOff ? moves.player.technique : undefined;
+  const cutOff = technique ? [`Your ${technique.name} is cut off mid-seal!`] : [];
+  const target = targetOf(enemies, choice);
   const start: Round = {
     fighters: cast.fighters,
-    lines: [...header, ...rangeLine(state.range, range), ...cast.lines, ...cutOff],
+    lines: [...header, ...sensed.lines, ...rangeLine(state.range, range), ...cast.lines, ...cutOff],
     range,
     rng,
   };
   const exchanged = enemies.reduce((r, e) => exchangeWith(r, e, moves, e.id === target?.id), start);
-  const round = alliesAct(exchanged, enemy);
-  const after = upkeep(state, round, moves);
-  const result = decide(after);
+  const round = alliesAct(exchanged, moves);
+  const kept = upkeep(state, round, moves);
+  const result = decide(kept);
+  const after = result ? { fighters: kept, lines: [] } : rehide(kept, state.round + 1);
   return {
     ...state,
     round: result ? state.round : state.round + 1,
-    fighters: after,
+    fighters: after.fighters,
     range,
-    plans: result ? {} : nextPlans(after, range, rng),
-    log: [...state.log, ...round.lines].slice(-LOG_LIMIT),
+    plans: result ? {} : nextPlans(after.fighters, range, rng),
+    log: [...state.log, ...round.lines, ...after.lines].slice(-LOG_LIMIT),
     result,
   };
 }

@@ -127,6 +127,12 @@ ui ──► game ──► content ──► systems ──► core
     `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you
     (threat, fighting style, and with sharp eyes their standout stats) for fights, sparring
     partners and mission notices, from the same stats the fight uses.
+    Fighters also have a **kit**: `CombatTrait`s (archer, brawler, illusionist, armoured,
+    swift, pack, coward, spirit) on `EnemyDef.traits` → `CombatantSetup.traits`. What they
+    mean lives once in `rules/kit.ts` (reach, `kitDamageScale` by `AttackKind`, pack, coward)
+    and `rules/conditions.ts` (Hidden and Confused, Search and Dispel chances); every engine
+    applies them, so an archer is an archer in every fight style. Scouting names each trait
+    with its counter.
 17. **The jobs board rotates.** Most jobs are postings that stay up a few days; `standing`
     jobs (patrols) are always there, once a day; jobs above your record are never shown, not
     even sealed. Postings come from `hashUnit(seed, day, id)` (`game/board.ts`), so the board
@@ -195,6 +201,10 @@ ui ──► game ──► content ──► systems ──► core
   schedule of place ids in the start location). Senseis need `role: 'sensei'` and a
   `sensei` profile (style, lesson text, `teaches` technique ids); at least two specialties
   must exist for the team choice (validated).
+- **Add an enemy:** add an `EnemyDef` (stats, techniques, optional `nature`, `traits`) to the
+  pack's `enemies` and use it in a mission's combat stage. A new trait goes in
+  `COMBAT_TRAITS`, its rule in `rules/kit.ts` or `rules/conditions.ts`, its counter text in
+  `game/scouting.ts`, and every engine must honour it.
 - **Add a mission:** add a `MissionDef` and list it at a mission hall. It is posted from time
   to time once the player's record reaches `minMissionsCompleted`; set `standing: true` for
   jobs that are always available (every pack needs one a fresh genin can take — validated).

@@ -80,7 +80,14 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
               <span className="chip">{open.slots} slots</span>
               <span className="chip">{open.posted}</span>
               {open.opposition ? (
-                <ThreatChip threat={open.opposition.threat} label={open.opposition.label} />
+                <>
+                  <ThreatChip threat={open.opposition.threat} label={open.opposition.label} />
+                  {open.opposition.traits.map((t) => (
+                    <span key={t} className="chip">
+                      {t}
+                    </span>
+                  ))}
+                </>
               ) : (
                 open.fightLikely && <span className="chip harm">Fight likely</span>
               )}

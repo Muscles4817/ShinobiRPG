@@ -33,7 +33,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
       {
         kind: 'combat',
         text: 'The bandit chief draws a chipped sword. "Kids? They sent kids?"',
-        enemyIds: ['bandit-thug', 'bandit-chief', 'bandit-thug'],
+        enemyIds: ['bandit-thug', 'bandit-chief', 'bandit-archer'],
         canFlee: false,
       },
     ],

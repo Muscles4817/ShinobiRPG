@@ -16,7 +16,7 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
   const [chosen, setChosen] = useState<string | null>(null);
   if (!view) return null;
   const enemies = view.combatants.filter((c) => c.side === 'enemy');
-  const living = enemies.filter((e) => e.health > 0);
+  const living = enemies.filter((e) => e.health > 0 && e.targetable !== false);
   const targetId = living.find((e) => e.id === chosen)?.id ?? living[0]?.id ?? null;
   const [player, ...allies] = view.combatants.filter((c) => c.side === 'player');
   const of = (...kinds: CombatOption['kind'][]) =>

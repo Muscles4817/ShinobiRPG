@@ -6,7 +6,9 @@ import type {
   CombatPerk,
   CombatSide,
   CombatTechnique,
+  CombatTrait,
 } from '../contract';
+import { startsHidden } from './conditions';
 import { elementMultiplier } from './elements';
 
 /**
@@ -29,10 +31,41 @@ export interface Body {
   readonly techniques: readonly CombatTechnique[];
   readonly nature?: CombatantSetup['nature'];
   readonly perks: readonly CombatPerk[];
+  readonly traits: readonly CombatTrait[];
+  /** Hidden in an illusion: can't be targeted until found. */
+  readonly hidden: boolean;
+  /** Turns of confusion left: actions may misfire. */
+  readonly confused: number;
 }
 
 export function bodyFrom(setup: CombatantSetup, side: CombatSide, isPlayer = false): Body {
-  return { ...setup, side, isPlayer, perks: setup.perks ?? [] };
+  const traits = setup.traits ?? [];
+  return {
+    ...setup,
+    side,
+    isPlayer,
+    perks: setup.perks ?? [],
+    traits,
+    hidden: startsHidden({ traits }),
+    confused: 0,
+  };
+}
+
+/** Bodies from saves made before traits existed lack the new fields; fill them in. */
+export function withKit<B extends Omit<Body, 'traits' | 'hidden' | 'confused'>>(
+  b: B & Partial<Pick<Body, 'traits' | 'hidden' | 'confused'>>,
+): B & Pick<Body, 'traits' | 'hidden' | 'confused'> {
+  return { ...b, traits: b.traits ?? [], hidden: b.hidden ?? false, confused: b.confused ?? 0 };
+}
+
+/** Can be picked as a target: alive and not hidden. */
+export function targetable(b: Pick<Body, 'health' | 'hidden'>): boolean {
+  return b.health > 0 && !b.hidden;
+}
+
+/** Statuses every engine shows for the shared conditions. */
+export function conditionStatuses(b: Pick<Body, 'hidden' | 'confused'>): string[] {
+  return [...(b.hidden ? ['Hidden'] : []), ...(b.confused > 0 ? ['Confused'] : [])];
 }
 
 export function alive(b: Pick<Body, 'health'>): boolean {
@@ -53,8 +86,9 @@ export function viewOf(b: Body, statuses: readonly string[], intent?: string): C
     maxHealth: b.maxHealth,
     chakra: b.chakra,
     maxChakra: b.maxChakra,
-    statuses: alive(b) ? statuses : ['Down'],
+    statuses: alive(b) ? [...conditionStatuses(b), ...statuses] : ['Down'],
     ...(intent === undefined ? {} : { intent }),
+    targetable: targetable(b),
   };
 }
 

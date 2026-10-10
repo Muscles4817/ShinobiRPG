@@ -11,6 +11,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 40,
     maxChakra: 0,
     techniqueIds: [],
+    traits: ['swift', 'coward'],
   },
   {
     id: 'bandit-thug',
@@ -22,6 +23,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 60,
     maxChakra: 10,
     techniqueIds: [],
+    traits: ['brawler'],
   },
   {
     id: 'academy-dropout',
@@ -33,6 +35,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 65,
     maxChakra: 40,
     techniqueIds: ['palm-strike', 'pebble-volley'],
+    traits: ['coward'],
     nature: 'earth',
   },
   {
@@ -45,6 +48,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 55,
     maxChakra: 40,
     techniqueIds: ['shadow-feint', 'whispering-dread'],
+    traits: ['spirit', 'illusionist'],
   },
   {
     id: 'bandit-chief',
@@ -56,6 +60,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 95,
     maxChakra: 30,
     techniqueIds: ['palm-strike', 'crescent-drop'],
+    traits: ['armoured'],
   },
   {
     id: 'hungry-ghost',
@@ -67,5 +72,18 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 60,
     maxChakra: 45,
     techniqueIds: ['whispering-dread', 'shadow-feint'],
+    traits: ['spirit'],
+  },
+  {
+    id: 'bandit-archer',
+    kind: 'Bandit',
+    name: 'Bandit Archer',
+    description: 'Shoots from the treeline and runs the moment anyone gets close.',
+    baseStat: 5,
+    statBonuses: { speed: 2, perception: 2, strength: -1 },
+    maxHealth: 50,
+    maxChakra: 10,
+    techniqueIds: [],
+    traits: ['archer', 'coward'],
   },
 ];

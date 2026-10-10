@@ -6,6 +6,15 @@ import type { GameContext } from './context';
 import { dispatch } from './dispatch';
 import type { GameState } from './state';
 
+/** Takes the given option, or searches for a foe that is hiding when it can't. */
+function fight(state: GameState, optionId: string, context: typeof ctx): GameState {
+  for (const id of [optionId, 'search', 'guard']) {
+    const next = dispatch(state, { type: 'combatAct', optionId: id }, context);
+    if (next.ok) return next.value;
+  }
+  throw new Error(`No combat option worked instead of ${optionId}`);
+}
+
 function playMission(
   state: GameState,
   missionId: string,
@@ -14,7 +23,7 @@ function playMission(
 ): GameState {
   let s = act(state, { type: 'startMission', missionId }, context);
   for (let i = 0; i < 200 && (s.mission || s.combat); i++) {
-    if (s.combat) s = act(s, { type: 'combatAct', optionId: combatOption }, context);
+    if (s.combat) s = fight(s, combatOption, context);
     else if (dispatch(s, { type: 'missionContinue' }, context).ok)
       s = act(s, { type: 'missionContinue' }, context);
     else s = act(s, { type: 'missionChoose', approachIndex: 0 }, context);

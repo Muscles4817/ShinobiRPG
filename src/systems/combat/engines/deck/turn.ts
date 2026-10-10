@@ -1,10 +1,13 @@
 import type { Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
-import { alive, chakraCost } from '../../rules/body';
+import { alive, chakraCost, targetable } from '../../rules/body';
+import { MISFIRE_CHANCE } from '../../rules/conditions';
+import { canAttackFrom } from '../../rules/kit';
 import { inReach, reachOf, stepBack, stepIn, STRIKE_REACH } from '../../rules/range';
 import { cardPoints, playOn, shuffle } from './cards';
-import { chooseIntent, enemyAct, type TurnResult } from './enemy';
+import { chooseIntent, effectiveIntent, enemyAct, type TurnResult } from './enemy';
+import { startOfTurn } from './kit';
 import {
   HAND_SIZE,
   LOG_LIMIT,
@@ -21,6 +24,8 @@ import {
 
 const CHAKRA_REGEN = 3;
 const ALLY_JUTSU_CHANCE = 0.4;
+const MISFIRE_LINE = 'Your senses lie to you. The attack goes wide.';
+const GUARD_CARD: Card = { uid: 'ally', kind: 'guard' };
 
 function livingEnemies(fighters: readonly DeckFighter[]): DeckFighter[] {
   return fighters.filter((f) => f.side === 'enemy' && alive(f));
@@ -62,7 +67,12 @@ export function newIntents(
   );
 }
 
-/** Plays one card from the hand. */
+/** Living foes that can be picked as targets (not hidden). */
+export function visibleEnemies(fighters: readonly DeckFighter[]): DeckFighter[] {
+  return livingEnemies(fighters).filter((f) => targetable(f));
+}
+
+/** Plays one card from the hand. While confused, anything but a Guard may misfire. */
 export function playCard(
   state: DeckState,
   card: Card,
@@ -70,9 +80,12 @@ export function playCard(
   rng: Rng,
 ): DeckState {
   const user = playerOf(state);
-  const enemies = livingEnemies(state.fighters);
+  const enemies = visibleEnemies(state.fighters);
   const target = enemies.find((e) => e.id === targetId) ?? enemies[0];
-  const played = playOn([...state.fighters], { user, target, card }, rng);
+  const misfires = card.kind !== 'guard' && user.confused > 0 && rng.chance(MISFIRE_CHANCE);
+  const played = misfires
+    ? { fighters: [...state.fighters], lines: [MISFIRE_LINE] }
+    : playOn([...state.fighters], { user, target, card }, rng);
   return {
     ...state,
     fighters: played.fighters,
@@ -99,6 +112,7 @@ export function step(state: DeckState, direction: 'step-in' | 'step-back'): Deck
 }
 
 function allyCard(ally: DeckFighter, range: DeckState['range'], rng: Rng): Card {
+  if (!canAttackFrom(ally, range)) return GUARD_CARD;
   const usable = ally.techniques.filter(
     (t) => t.effect !== 'heal' && inReach(reachOf(t), range) && chakraCost(ally, t) <= ally.chakra,
   );
@@ -108,29 +122,39 @@ function allyCard(ally: DeckFighter, range: DeckState['range'], rng: Rng): Card 
   return { uid: 'ally', kind: inReach(STRIKE_REACH, range) ? 'strike' : 'kunai' };
 }
 
-function alliesAct(turn: TurnResult, rng: Rng): TurnResult {
+/** Opens a fighter's turn (re-hiding, confusion wearing off) and returns them as they now are. */
+function opened(turn: TurnResult, id: string, round: number, rng: Rng) {
+  const start = startOfTurn(turn.fighters, id, round, rng);
+  const next = { ...turn, fighters: start.fighters, lines: [...turn.lines, ...start.lines] };
+  return { turn: next, self: start.fighters.find((f) => f.id === id) };
+}
+
+/** Allies strike the first foe they can see, from where their kit reaches, else brace. */
+function alliesAct(turn: TurnResult, round: number, rng: Rng): TurnResult {
   const allies = turn.fighters.filter((f) => f.side === 'player' && !f.isPlayer && alive(f));
   return allies.reduce((acc, ally) => {
-    const target = livingEnemies(acc.fighters)[0];
-    if (!target) return acc;
-    const played = playOn(
-      acc.fighters,
-      { user: ally, target, card: allyCard(ally, acc.range, rng) },
-      rng,
-    );
-    return { ...acc, fighters: played.fighters, lines: [...acc.lines, ...played.lines] };
+    if (decide(acc.fighters)) return acc;
+    const { turn: open, self } = opened(acc, ally.id, round, rng);
+    if (!self || !alive(self)) return open;
+    const fresh = patch(open.fighters, self.id, { block: 0 });
+    const target = visibleEnemies(fresh)[0];
+    const card = target ? allyCard(self, open.range, rng) : GUARD_CARD;
+    const played = playOn(fresh, { user: { ...self, block: 0 }, target, card }, rng);
+    return { ...open, fighters: played.fighters, lines: [...open.lines, ...played.lines] };
   }, turn);
 }
 
-function enemiesAct(turn: TurnResult, intents: DeckState['intents'], rng: Rng): TurnResult {
+function enemiesAct(turn: TurnResult, state: DeckState, rng: Rng): TurnResult {
   return livingEnemies(turn.fighters).reduce((acc, enemy) => {
-    const intent = intents[enemy.id];
-    const current = acc.fighters.find((f) => f.id === enemy.id) ?? enemy;
-    if (!intent || decide(acc.fighters)) return acc;
-    const next = enemyAct(acc, current, intent, rng);
+    const planned = state.intents[enemy.id];
+    if (!planned || decide(acc.fighters)) return acc;
+    const { turn: open, self } = opened(acc, enemy.id, state.round, rng);
+    if (!self || !alive(self)) return open;
+    const intent = effectiveIntent(planned, { self, target: playerOf(open) }, open.range);
+    const next = enemyAct(open, self, intent, rng);
     const dazed =
       intent.kind === 'dazed'
-        ? patch(next.fighters, enemy.id, { stunned: Math.max(0, current.stunned - 1) })
+        ? patch(next.fighters, enemy.id, { stunned: Math.max(0, self.stunned - 1) })
         : next.fighters;
     return { ...next, fighters: dazed };
   }, turn);
@@ -152,15 +176,24 @@ export function endTurn(state: DeckState, rng: Rng, opening: readonly string[] =
     range: state.range,
     lines: [...opening],
   };
-  const afterAllies = alliesAct(start, rng);
+  const afterAllies = alliesAct(start, state.round, rng);
   const afterEnemies = decide(afterAllies.fighters)
     ? afterAllies
-    : enemiesAct(afterAllies, state.intents, rng);
+    : enemiesAct(afterAllies, state, rng);
   const result = decide(afterEnemies.fighters);
-  const fighters = result ? afterEnemies.fighters : upkeep(afterEnemies.fighters);
+  if (result) {
+    const log = [...state.log, ...afterEnemies.lines].slice(-LOG_LIMIT);
+    const { fighters, range } = afterEnemies;
+    return { ...state, fighters, range, log, result };
+  }
+  const yours = startOfTurn(
+    upkeep(afterEnemies.fighters),
+    playerOf(afterEnemies).id,
+    state.round + 1,
+    rng,
+  );
+  const fighters = yours.fighters;
   const log = [...state.log, ...afterEnemies.lines];
-  if (result)
-    return { ...state, fighters, range: afterEnemies.range, log: log.slice(-LOG_LIMIT), result };
   const next: DeckState = {
     ...state,
     round: state.round + 1,
@@ -170,7 +203,7 @@ export function endTurn(state: DeckState, rng: Rng, opening: readonly string[] =
     discard: [...state.discard, ...state.hand],
     points: POINTS_PER_TURN,
     intents: newIntents(fighters, afterEnemies.range, rng),
-    log: [...log, `— Turn ${state.round + 1} —`].slice(-LOG_LIMIT),
+    log: [...log, `— Turn ${state.round + 1} —`, ...yours.lines].slice(-LOG_LIMIT),
   };
   return draw(next, HAND_SIZE, rng);
 }

@@ -8,9 +8,9 @@ import type {
   CombatState,
   CombatView,
 } from '../../contract';
-import { viewOf } from '../../rules/body';
+import { alive, hasPerk, targetable, viewOf } from '../../rules/body';
 import { RANGE_LABEL } from '../../rules/range';
-import { moveFromOption, playerOptions } from './moves';
+import { moveFromOption, playerOptions, UNSEEN } from './moves';
 import { nextPlans, resolveRound, type PlayerChoice } from './round';
 import {
   decode,
@@ -24,10 +24,12 @@ import {
 
 /**
  * The mind game: every round each side secretly commits to a move. Enemies give away a tell
- * first; reading it right (and the range) is the fight.
+ * first; reading it right (and the range) is the fight. A foe hidden in an illusion shows no
+ * honest tell, and has to be found (Search) or broken out of it (Dispel).
  */
 
 const START_RANGE = 'mid';
+const UNREADABLE = '???';
 const RECOVER: CombatOption = {
   id: 'recover',
   label: 'Shake it off',
@@ -46,6 +48,7 @@ function statuses(f: MindFighter): string[] {
 function intentOf(state: MindState, f: MindFighter): string | undefined {
   const plan = state.plans[f.id];
   if (!plan) return undefined;
+  if (f.hidden && !hasPerk(playerOf(state), 'insight')) return UNREADABLE;
   return plan.certain ? `${plan.tell} (you're sure)` : plan.tell;
 }
 
@@ -53,7 +56,13 @@ function options(state: MindState): CombatOption[] {
   if (state.result) return [];
   const player = playerOf(state);
   if (player.stunned > 0) return [RECOVER];
-  return playerOptions(player, state.range, state.canFlee);
+  const foes = state.fighters.filter((f) => f.side === 'enemy' && alive(f));
+  return playerOptions(player, {
+    range: state.range,
+    canFlee: state.canFlee,
+    hiddenFoes: foes.some((f) => f.hidden),
+    visibleFoes: foes.some(targetable),
+  });
 }
 
 function toChoice(state: MindState, choice: CombatChoice): Result<PlayerChoice> {
@@ -64,6 +73,8 @@ function toChoice(state: MindState, choice: CombatChoice): Result<PlayerChoice> 
   if (option.id === 'recover') return ok({ kind: 'recover' });
   const move = moveFromOption(playerOf(state), option.id);
   if (!move) return err(`Unknown move "${option.id}".`);
+  const target = state.fighters.find((f) => f.id === choice.targetId);
+  if (option.targeted && target?.side === 'enemy' && target.hidden) return err(UNSEEN);
   return ok({
     kind: 'move',
     move,

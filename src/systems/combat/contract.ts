@@ -44,6 +44,22 @@ export type RangeBand = 'close' | 'mid' | 'far';
  */
 export type CombatPerk = 'insight';
 
+/**
+ * How a combatant fights, beyond their numbers. Every engine honours the same traits (see
+ * `rules/kit.ts` and `rules/conditions.ts`), so an archer is an archer in every fight style.
+ */
+export const COMBAT_TRAITS = [
+  'archer',
+  'brawler',
+  'illusionist',
+  'armoured',
+  'swift',
+  'pack',
+  'coward',
+  'spirit',
+] as const;
+export type CombatTrait = (typeof COMBAT_TRAITS)[number];
+
 export interface CombatantSetup {
   readonly id: string;
   readonly name: string;
@@ -58,6 +74,7 @@ export interface CombatantSetup {
   /** Chakra nature: boosts techniques of the same element and decides elemental matchups. */
   readonly nature?: Element;
   readonly perks?: readonly CombatPerk[];
+  readonly traits?: readonly CombatTrait[];
 }
 
 export interface CombatSetup {
@@ -99,6 +116,8 @@ export interface CombatantView {
   readonly statuses: readonly string[];
   /** What they seem about to do (a telegraph or tell), when the engine shows one. */
   readonly intent?: string;
+  /** False while they can't be picked as a target (hidden in an illusion). */
+  readonly targetable?: boolean;
 }
 
 /** A resource the engine wants shown (action points, momentum, block…). */

@@ -1,3 +1,4 @@
+import type { CombatTrait } from '@/systems/combat';
 import type { MissionDef } from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta } from '@/systems/stats';
@@ -72,6 +73,8 @@ export interface EnemyDef {
   readonly techniqueIds: readonly string[];
   /** Elemental nature, for matchups; most enemies have none. */
   readonly nature?: Element;
+  /** How they fight: archer, brawler, illusionist… Every fight style honours these. */
+  readonly traits?: readonly CombatTrait[];
 }
 
 /** A family the character can be born into. Clans shape growth and give techniques. */

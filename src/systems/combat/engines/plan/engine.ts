@@ -20,7 +20,7 @@ import {
   findCard,
   slotLimit,
 } from './cards';
-import { upgradeLegacy } from './legacy';
+import { upgradeLegacy, withKits } from './legacy';
 import { rememberedLoadout } from './memory';
 import { decide, resolveExchange } from './round';
 import {
@@ -46,7 +46,7 @@ export const ROUND_EXCHANGES = 4;
 const SLOT_PREFIX = 'slot:';
 
 function read(state: CombatState): PlanState {
-  return upgradeLegacy(decode(state));
+  return upgradeLegacy(withKits(decode(state)));
 }
 
 function statuses(f: PlanFighter): string[] {
@@ -179,7 +179,9 @@ function intentOf(state: PlanState, f: PlanFighter, insight: boolean): string | 
 
 function prompt(state: PlanState): string {
   if (state.phase === 'loadout') {
-    return `Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} cards for each distance.`;
+    const pick = `Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} cards for each distance.`;
+    const hidden = state.fighters.some((f) => f.side === 'enemy' && alive(f) && f.hidden);
+    return hidden ? `${pick} Someone is hidden: Search or Dispel finds them.` : pick;
   }
   return `${RANGE_LABEL[state.range]} range · round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
 }

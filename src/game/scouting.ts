@@ -1,3 +1,4 @@
+import type { CombatTrait } from '@/systems/combat';
 import { fightingPower, STAT_INFO, type StatId, type Stats } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 import { createStats } from '@/systems/stats';
@@ -34,9 +35,36 @@ export interface StatCompare {
   readonly yours: number;
 }
 
+/** One of their traits, named, with how to deal with it. */
+export interface TraitNote {
+  readonly trait: CombatTrait;
+  readonly label: string;
+  readonly counter: string;
+}
+
+const TRAIT_NOTES: Readonly<Record<CombatTrait, Omit<TraitNote, 'trait'>>> = {
+  archer: { label: 'Archer', counter: 'Only attacks from afar. Get close.' },
+  brawler: { label: 'Brawler', counter: 'Only fights up close. Keep your distance.' },
+  illusionist: {
+    label: 'Illusionist',
+    counter: 'Hides and confuses. Search (perception) or Dispel (chakra, willpower).',
+  },
+  armoured: { label: 'Armoured', counter: 'Blunts blows and blades. Use jutsu or seals.' },
+  swift: { label: 'Swift', counter: 'Slips many attacks. Daze or out-last them.' },
+  pack: { label: 'Pack', counter: 'Stronger together. Thin the pack first.' },
+  coward: { label: 'Coward', counter: 'Runs when hurt. Finish fast or let them go.' },
+  spirit: { label: 'Spirit', counter: 'Plain blows barely touch it. Use chakra or seals.' },
+};
+
+export function traitNotes(traits: readonly CombatTrait[]): TraitNote[] {
+  return traits.map((trait) => ({ trait, ...TRAIT_NOTES[trait] }));
+}
+
 export interface ScoutingRead {
   readonly threat: Threat;
   readonly threatLabel: string;
+  /** How they fight beyond numbers, and how to beat it. */
+  readonly traits: readonly TraitNote[];
   /** "Brawler · wants you close". */
   readonly style: string;
   /** Their standout stats beside yours; empty unless your eyes are sharp enough. */
@@ -94,11 +122,17 @@ function standouts(theirs: Stats, yours: Stats): StatCompare[] {
     }));
 }
 
-export function scout(theirs: Stats, yours: Stats, sharp: boolean): ScoutingRead {
+export function scout(
+  theirs: Stats,
+  yours: Stats,
+  sharp: boolean,
+  traits: readonly CombatTrait[] = [],
+): ScoutingRead {
   const threat = threatOf(fightingPower(theirs) / Math.max(1, fightingPower(yours)));
   return {
     threat,
     threatLabel: THREAT_LABEL[threat],
+    traits: traitNotes(traits),
     style: styleOf(theirs),
     details: sharp ? standouts(theirs, yours) : [],
   };
@@ -116,17 +150,23 @@ export function enemyStats(ctx: GameContext, enemyId: string): Stats | null {
   return def ? createStats(def.baseStat, def.statBonuses) : null;
 }
 
+interface Opponent {
+  readonly stats: Stats;
+  readonly traits: readonly CombatTrait[];
+}
+
 /**
- * Stats of whoever stands behind a combatant id: a pack enemy ("bandit-thug#1") or a person
- * you spar with ("person:kaen").
+ * Whoever stands behind a combatant id: a pack enemy ("bandit-thug#1") or a person you spar
+ * with ("person:kaen").
  */
-function opponentStats(state: GameState, ctx: GameContext, combatantId: string): Stats | null {
+function opponentOf(state: GameState, ctx: GameContext, combatantId: string): Opponent | null {
   if (combatantId.startsWith(PERSON_PREFIX)) {
     const person = findPerson(state, ctx, combatantId.slice(PERSON_PREFIX.length));
-    return person ? companionStats(person, state) : null;
+    return person ? { stats: companionStats(person, state), traits: [] } : null;
   }
   const [base = combatantId] = combatantId.split('#');
-  return enemyStats(ctx, base);
+  const stats = enemyStats(ctx, base);
+  return stats ? { stats, traits: ctx.content.enemies.get(base)?.traits ?? [] } : null;
 }
 
 /** A read on each opponent in the fight, keyed by combatant id. */
@@ -139,8 +179,8 @@ export function scoutOpponents(
   const sharp = hasSharpEyes(state, ctx);
   return Object.fromEntries(
     ids.flatMap((id) => {
-      const theirs = opponentStats(state, ctx, id);
-      return theirs ? [[id, scout(theirs, yours, sharp)]] : [];
+      const them = opponentOf(state, ctx, id);
+      return them ? [[id, scout(them.stats, yours, sharp, them.traits)]] : [];
     }),
   );
 }

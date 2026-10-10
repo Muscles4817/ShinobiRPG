@@ -63,5 +63,6 @@ export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): 
     maxChakra: def.maxChakra,
     techniques: def.techniqueIds.map((id) => ctx.content.techniques.require(id)),
     ...(def.nature ? { nature: def.nature } : {}),
+    ...(def.traits ? { traits: def.traits } : {}),
   };
 }

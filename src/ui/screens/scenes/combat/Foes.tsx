@@ -18,6 +18,11 @@ function Read({ read }: { readonly read: ScoutingRead }) {
     <span className="foe-read">
       <ThreatChip threat={read.threat} label={read.threatLabel} />
       <small>{read.style}</small>
+      {read.traits.map((t) => (
+        <span key={t.trait} className="trait-note">
+          <b>{t.label}</b> {t.counter}
+        </span>
+      ))}
       {read.details.length > 0 && (
         <small className="num">
           {read.details.map((d) => `${d.label} ${d.theirs} (you ${d.yours})`).join(' · ')}
@@ -27,14 +32,19 @@ function Read({ read }: { readonly read: ScoutingRead }) {
   );
 }
 
+function foeClass(flags: { down: boolean; hidden: boolean; targeted: boolean }): string {
+  return ['foe', ...Object.entries(flags).flatMap(([name, on]) => (on ? [name] : []))].join(' ');
+}
+
 /** Enemies across the top: health, conditions, what they seem about to do. Tap to target. */
 export function Foes({ foes, round, targetId, onTarget, reads }: FoesProps) {
   return (
     <header className={foes.length > 1 ? 'foes many' : 'foes'}>
       {foes.map((e) => {
         const down = e.health <= 0;
+        const hidden = e.targetable === false;
         const read = reads[e.id];
-        const targeted = !down && e.id === targetId && onTarget !== null;
+        const targeted = !down && !hidden && e.id === targetId && onTarget !== null;
         const body = (
           <>
             <div className="foe-name">
@@ -60,8 +70,8 @@ export function Foes({ foes, round, targetId, onTarget, reads }: FoesProps) {
             </span>
           </>
         );
-        const className = `foe${down ? ' down' : ''}${targeted ? ' targeted' : ''}`;
-        return onTarget && !down ? (
+        const className = foeClass({ down, hidden, targeted });
+        return onTarget && !down && !hidden ? (
           <button
             key={e.id}
             type="button"

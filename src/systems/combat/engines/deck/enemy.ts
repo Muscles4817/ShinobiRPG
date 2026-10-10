@@ -2,9 +2,10 @@ import type { Rng } from '@/core';
 
 import type { RangeBand } from '../../contract';
 import { alive, chakraCost, hasPerk, strikeDamage, techniqueDamage } from '../../rules/body';
+import { HIDDEN_DAMAGE } from '../../rules/conditions';
+import { attackKindOf, canAttackFrom, homeBand, kitDamageScale } from '../../rules/kit';
 import {
   inReach,
-  preferredRange,
   RANGE_BANDS,
   reachOf,
   stepBack,
@@ -13,11 +14,13 @@ import {
   STRIKE_REACH,
 } from '../../rules/range';
 import { guardBlock, playOn } from './cards';
-import { absorb, patch, type Card, type DeckFighter, type Intent } from './state';
+import { kitDamage, landHit, slips } from './kit';
+import { patch, type Card, type DeckFighter, type Intent } from './state';
 
 /**
  * Opponents announce what they will do next turn (Slay the Spire style), then do it. The
- * player sees the intent in advance; insight also reveals which jutsu is coming.
+ * player sees the intent in advance; insight also reveals which jutsu is coming. Opponents
+ * only attack from where their kit reaches (archers keep their distance, brawlers close in).
  */
 
 const MOVE_TOWARDS_CHANCE = 0.5;
@@ -33,8 +36,20 @@ function usableJutsu(self: DeckFighter, range: RangeBand) {
 }
 
 function estimateAgainst(self: DeckFighter, target: DeckFighter, range: RangeBand): number {
-  const scale = inReach(STRIKE_REACH, range) ? 1 : KUNAI_SCALE;
+  const close = inReach(STRIKE_REACH, range);
+  const scale =
+    (close ? 1 : KUNAI_SCALE) *
+    kitDamageScale(target, attackKindOf(null, !close)) *
+    (self.hidden ? HIDDEN_DAMAGE : 1);
   return Math.round(strikeDamage(self, target, 0.5) * scale);
+}
+
+/** One step from `range` towards `goal`; bracing when already there. */
+function moveTowards(range: RangeBand, goal: RangeBand): Intent {
+  const next = stepTowards(range, goal);
+  if (next === range) return { kind: 'guard', estimate: 0 };
+  const closer = RANGE_BANDS.indexOf(next) < RANGE_BANDS.indexOf(range);
+  return { kind: closer ? 'step-in' : 'step-back', estimate: 0 };
 }
 
 export function chooseIntent(
@@ -44,11 +59,9 @@ export function chooseIntent(
   rng: Rng,
 ): Intent {
   if (self.stunned > 0) return { kind: 'dazed', estimate: 0 };
-  const goal = preferredRange(self);
-  if (goal !== range && rng.chance(MOVE_TOWARDS_CHANCE)) {
-    const closer = RANGE_BANDS.indexOf(stepTowards(range, goal)) < RANGE_BANDS.indexOf(range);
-    return { kind: closer ? 'step-in' : 'step-back', estimate: 0 };
-  }
+  const goal = homeBand(self);
+  if (!canAttackFrom(self, range)) return moveTowards(range, goal);
+  if (goal !== range && rng.chance(MOVE_TOWARDS_CHANCE)) return moveTowards(range, goal);
   const jutsu = usableJutsu(self, range);
   if (jutsu.length > 0 && rng.chance(JUTSU_CHANCE)) {
     const technique = rng.pick(jutsu);
@@ -58,6 +71,24 @@ export function chooseIntent(
   }
   if (rng.chance(GUARD_CHANCE)) return { kind: 'guard', estimate: 0 };
   return { kind: 'attack', estimate: estimateAgainst(self, target, range) };
+}
+
+/**
+ * What an announced intent turns into at the current range, which the player may have changed
+ * since: an attack from out of reach becomes a step towards home, a step that goes nowhere
+ * becomes an attack (or a guard when they can't attack from here). The view shows this, and
+ * the enemy then does exactly this.
+ */
+export function effectiveIntent(intent: Intent, duo: Duo, range: RangeBand): Intent {
+  const { self, target } = duo;
+  const attacking = intent.kind === 'attack' || intent.kind === 'jutsu';
+  if (attacking && !canAttackFrom(self, range)) return moveTowards(range, homeBand(self));
+  const moving = intent.kind === 'step-in' || intent.kind === 'step-back';
+  const nowhere = intent.kind === 'step-in' ? stepIn(range) : stepBack(range);
+  if (!moving || nowhere !== range) return intent;
+  return canAttackFrom(self, range)
+    ? { kind: 'attack', estimate: estimateAgainst(self, target, range) }
+    : { kind: 'guard', estimate: 0 };
 }
 
 /** How an intent reads to the player. */
@@ -87,19 +118,27 @@ export interface TurnResult {
   readonly lines: string[];
 }
 
-interface Duo {
+export interface Duo {
   readonly self: DeckFighter;
   readonly target: DeckFighter;
 }
 
 function attack(fighters: DeckFighter[], { self, target }: Duo, range: RangeBand, rng: Rng) {
-  const scale = inReach(STRIKE_REACH, range) ? 1 : KUNAI_SCALE;
-  const damage = Math.max(1, Math.round(strikeDamage(self, target, rng.next()) * scale));
-  const after = absorb(target, damage);
-  const blocked = target.health - after.health < damage ? ' (some blocked)' : '';
+  const close = inReach(STRIKE_REACH, range);
+  if (slips(target, rng)) {
+    return { fighters, lines: [`${target.name} slips aside from ${self.name}'s attack.`] };
+  }
+  const base = Math.max(
+    1,
+    Math.round(strikeDamage(self, target, rng.next()) * (close ? 1 : KUNAI_SCALE)),
+  );
+  const blow = { attacker: self, target, kind: attackKindOf(null, !close) };
+  const damage = kitDamage(fighters, blow, base);
+  const blocked = target.block > 0 ? ' (some blocked)' : '';
+  const landed = landHit(fighters, blow, damage, rng);
   return {
-    fighters: patch(fighters, target.id, after),
-    lines: [`${self.name} hits ${target.name} for ${damage}${blocked}.`],
+    fighters: landed.fighters,
+    lines: [`${self.name} hits ${target.name} for ${damage}${blocked}.`, ...landed.lines],
   };
 }
 

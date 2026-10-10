@@ -145,8 +145,8 @@ export const MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'combat',
-        text: '"Leave the cart and walk away, kid."',
-        enemyIds: ['bandit-thug'],
+        text: '"Leave the cart and walk away, kid." A bowstring creaks somewhere in the trees.',
+        enemyIds: ['bandit-thug', 'bandit-archer'],
         canFlee: false,
       },
     ],

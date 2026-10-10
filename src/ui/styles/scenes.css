@@ -520,3 +520,18 @@ button.foe {
 .foes.many .foe-read small {
   display: none;
 }
+.trait-note {
+  flex-basis: 100%;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.trait-note b {
+  color: var(--gold);
+}
+.foe.hidden {
+  opacity: 0.6;
+  border-style: dashed;
+}
+.foes.many .trait-note {
+  display: none;
+}
