@@ -38,6 +38,8 @@ export interface PlanState {
 export interface Round {
   /** The exchange number (`PlanState.round`), which decides when illusionists slip away. */
   readonly number: number;
+  /** The first exchange of a round (`PlanState.exchange` is 0). */
+  readonly opening?: boolean;
   readonly fighters: PlanFighter[];
   readonly range: RangeBand;
   readonly lines: readonly string[];

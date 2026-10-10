@@ -215,8 +215,8 @@ describe('plan & watch kits: saves', () => {
     expect(rememberedLoadout(plan, hero!)).toEqual(plan);
   });
 
-  it('a fight saved before kits still views and plays', () => {
-    const fighters = pair([]).map(({ traits: _t, hidden: _h, confused: _c, ...f }) => f);
+  it('a fight saved before kits and tools still views and plays', () => {
+    const fighters = pair([]).map(({ traits: _t, hidden: _h, confused: _c, items: _i, ...f }) => f);
     // An old save's fighters lack the kit fields; that is exactly what this test feeds in.
     const old = encode({ ...stateOf(fighters as PlanFighter[]), phase: 'loadout' });
     const engine = createPlanEngine();
@@ -226,5 +226,6 @@ describe('plan & watch kits: saves', () => {
     const next = engine.act(begun.value, { optionId: 'next' }, createRng(2));
     expect(next.ok).toBe(true);
     if (next.ok) expect(decode(next.value).fighters[0]?.traits).toEqual([]);
+    if (next.ok) expect(decode(next.value).fighters[0]?.items).toEqual([]);
   });
 });
