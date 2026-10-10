@@ -8,7 +8,7 @@ import type {
   CombatState,
   CombatView,
 } from '../../contract';
-import { alive, chakraCost, viewOf } from '../../rules/body';
+import { alive, chakraCost, hasPerk, viewOf } from '../../rules/body';
 import { RANGE_LABEL } from '../../rules/range';
 import {
   buildDeck,
@@ -19,8 +19,19 @@ import {
   isTargeted,
   shuffle,
 } from './cards';
-import { describeIntent } from './enemy';
-import { decide, draw, endTurn, newIntents, playCard, step, STEP_POINTS } from './turn';
+import { describeIntent, effectiveIntent } from './enemy';
+import { UNSEEN_REASON } from './kit';
+import { dispel, search, senseOptions } from './senses';
+import {
+  decide,
+  draw,
+  endTurn,
+  newIntents,
+  playCard,
+  step,
+  STEP_POINTS,
+  visibleEnemies,
+} from './turn';
 import {
   DECK_ENGINE_ID,
   decode,
@@ -52,7 +63,11 @@ function statuses(f: DeckFighter): string[] {
 
 function cardOption(card: Card, state: DeckState): CombatOption {
   const player = playerOf(state);
-  const blocker = cardBlocker(card, player, { points: state.points, range: state.range });
+  const blocker = cardBlocker(card, player, {
+    points: state.points,
+    range: state.range,
+    canSee: visibleEnemies(state.fighters).length > 0,
+  });
   const t = card.technique;
   const kindLabel = card.kind === 'jutsu' ? '' : CARD_LABEL[card.kind];
   const detail = t
@@ -102,6 +117,7 @@ function options(state: DeckState): CombatOption[] {
   return [
     ...state.hand.map((c) => cardOption(c, state)),
     ...stepOptions(state),
+    ...senseOptions(state),
     { id: 'end', label: 'End turn', detail: '', kind: 'end' },
     state.canFlee ? flee : { ...flee, disabledReason: 'You cannot flee this fight' },
   ];
@@ -121,6 +137,8 @@ function act(deck: DeckState, choice: CombatChoice, rng: Rng) {
   if (option.disabledReason) return err(option.disabledReason);
   if (option.id === 'end') return ok(endTurn(deck, rng));
   if (option.id === 'step-in' || option.id === 'step-back') return ok(step(deck, option.id));
+  if (option.id === 'search') return ok(search(deck, rng));
+  if (option.id === 'dispel') return ok(dispel(deck, rng));
   if (option.id === 'flee') {
     if (rng.chance(fleeChance(deck))) {
       return ok({
@@ -131,9 +149,24 @@ function act(deck: DeckState, choice: CombatChoice, rng: Rng) {
     }
     return ok(endTurn(deck, rng, ['You try to slip away, but you are cut off!']));
   }
-  const card = deck.hand.find((c) => `${CARD_PREFIX}${c.uid}` === option.id);
+  return playFromHand(deck, choice, rng);
+}
+
+function playFromHand(deck: DeckState, choice: CombatChoice, rng: Rng): Result<DeckState> {
+  const card = deck.hand.find((c) => `${CARD_PREFIX}${c.uid}` === choice.optionId);
   if (!card) return err('That card is not in your hand.');
+  const aimedAt = deck.fighters.find((f) => f.id === choice.targetId);
+  if (isTargeted(card) && aimedAt?.hidden) return err(UNSEEN_REASON);
   return ok(playCard(deck, card, choice.targetId, rng));
+}
+
+/** What an enemy shows it will do: hidden foes give nothing away unless you have insight. */
+function intentLine(deck: DeckState, f: DeckFighter): string | undefined {
+  const planned = deck.intents[f.id];
+  if (f.side !== 'enemy' || !planned || !alive(f)) return undefined;
+  const player = playerOf(deck);
+  if (f.hidden && !hasPerk(player, 'insight')) return '???';
+  return describeIntent(effectiveIntent(planned, { self: f, target: player }, deck.range), player);
 }
 
 export function createDeckEngine(): CombatEngine {
@@ -171,16 +204,9 @@ export function createDeckEngine(): CombatEngine {
 
     view(state): CombatView {
       const deck = decode(state);
-      const player = playerOf(deck);
-      const intent = (f: DeckFighter) => {
-        const planned = deck.intents[f.id];
-        return f.side === 'enemy' && planned && alive(f)
-          ? describeIntent(planned, player)
-          : undefined;
-      };
       return {
         round: deck.round,
-        combatants: deck.fighters.map((f) => viewOf(f, statuses(f), intent(f))),
+        combatants: deck.fighters.map((f) => viewOf(f, statuses(f), intentLine(deck, f))),
         log: deck.log,
         options: options(deck),
         range: deck.range,

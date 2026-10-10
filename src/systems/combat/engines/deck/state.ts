@@ -5,7 +5,7 @@ import type {
   CombatTechnique,
   RangeBand,
 } from '../../contract';
-import { bodyFrom, type Body } from '../../rules/body';
+import { bodyFrom, withKit, type Body } from '../../rules/body';
 
 export const DECK_ENGINE_ID = 'deck-v1';
 export const LOG_LIMIT = 40;
@@ -72,7 +72,9 @@ export function decode(state: CombatState): DeckState {
   if (state.engineId !== DECK_ENGINE_ID) {
     throw new Error(`Deck engine cannot read combat state from engine "${state.engineId}"`);
   }
-  return state.data as DeckState;
+  // Trust boundary: the data was written by `encode`, possibly before combat kits existed.
+  const deck = state.data as DeckState;
+  return { ...deck, fighters: deck.fighters.map((f) => withKit(f)) };
 }
 
 export function playerOf(state: Pick<DeckState, 'fighters'>): DeckFighter {
@@ -84,7 +86,9 @@ export function playerOf(state: Pick<DeckState, 'fighters'>): DeckFighter {
 export function patch(
   fighters: readonly DeckFighter[],
   id: string,
-  change: Partial<Pick<DeckFighter, 'health' | 'chakra' | 'block' | 'stunned' | 'sealed'>>,
+  change: Partial<
+    Pick<DeckFighter, 'health' | 'chakra' | 'block' | 'stunned' | 'sealed' | 'hidden' | 'confused'>
+  >,
 ): DeckFighter[] {
   return fighters.map((f) => (f.id === id ? { ...f, ...change } : f));
 }
