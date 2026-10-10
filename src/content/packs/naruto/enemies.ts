@@ -11,6 +11,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 40,
     maxChakra: 0,
     techniqueIds: [],
+    traits: ['brawler'],
   },
   {
     id: 'bandit-thug',
@@ -22,6 +23,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 60,
     maxChakra: 10,
     techniqueIds: [],
+    traits: ['brawler'],
   },
   {
     id: 'academy-dropout',
@@ -33,6 +35,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 65,
     maxChakra: 40,
     techniqueIds: ['shuriken-jutsu', 'phoenix-flower'],
+    traits: ['coward'],
   },
   {
     id: 'restless-spirit',
@@ -44,6 +47,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 55,
     maxChakra: 40,
     techniqueIds: ['clone-jutsu', 'tree-binding'],
+    traits: ['spirit', 'illusionist'],
   },
   {
     id: 'bandit-chief',
@@ -55,6 +59,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 95,
     maxChakra: 30,
     techniqueIds: ['shuriken-jutsu', 'leaf-whirlwind'],
+    traits: ['armoured'],
   },
   {
     id: 'missing-nin',
@@ -66,6 +71,19 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxHealth: 80,
     maxChakra: 60,
     techniqueIds: ['water-bullet', 'shuriken-jutsu'],
+    traits: ['swift'],
     nature: 'water',
+  },
+  {
+    id: 'bandit-archer',
+    kind: 'Bandit',
+    name: 'Bandit Archer',
+    description: 'A poacher with a hunting bow who would rather not be seen.',
+    baseStat: 5,
+    statBonuses: { speed: 2, perception: 2, strength: -1 },
+    maxHealth: 50,
+    maxChakra: 10,
+    techniqueIds: [],
+    traits: ['archer', 'coward'],
   },
 ];

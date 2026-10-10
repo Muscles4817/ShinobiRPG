@@ -80,7 +80,7 @@ export {
   type StatLine,
   type TierRead,
 } from './views/shinobi';
-export type { ScoutingRead, StatCompare, Threat } from './scouting';
+export type { ScoutingRead, StatCompare, Threat, TraitNote } from './scouting';
 export {
   missionScene,
   combatScene,
