@@ -20,7 +20,7 @@ export interface StatLine {
   readonly value: number;
   /** Growth since graduation. */
   readonly growth: number;
-  /** What the value means: "Genin level". */
+  /** What the value means: "D · Genin". */
   readonly tier: string;
 }
 
