@@ -5,14 +5,24 @@ import type {
   CombatTechnique,
   RangeBand,
 } from '../../contract';
-import { bodyFrom, type Body } from '../../rules/body';
+import { bodyFrom, withKit, type Body } from '../../rules/body';
 
 export const MIND_ENGINE_ID = 'mind-v1';
 export const LOG_LIMIT = 40;
 
 /** What a fighter commits to for one exchange. */
 export type MoveKind =
-  'strike' | 'throw' | 'feint' | 'guard' | 'counter' | 'jutsu' | 'step-in' | 'step-back' | 'idle';
+  | 'strike'
+  | 'throw'
+  | 'feint'
+  | 'guard'
+  | 'counter'
+  | 'jutsu'
+  | 'step-in'
+  | 'step-back'
+  | 'search'
+  | 'dispel'
+  | 'idle';
 
 export interface Move {
   readonly kind: MoveKind;
@@ -64,12 +74,20 @@ export function encode(state: MindState): CombatState {
   return { engineId: MIND_ENGINE_ID, data: state };
 }
 
+/** A fighter as saved before combat kits: no traits, hidden or confused. */
+type SavedFighter = Omit<MindFighter, 'traits' | 'hidden' | 'confused'> &
+  Partial<Pick<MindFighter, 'traits' | 'hidden' | 'confused'>>;
+
 /** Recovers mind-game state from the opaque contract type. Only this engine may do this. */
 export function decode(state: CombatState): MindState {
   if (state.engineId !== MIND_ENGINE_ID) {
     throw new Error(`Mind engine cannot read combat state from engine "${state.engineId}"`);
   }
-  return state.data as MindState;
+  // Trust boundary: the data is this engine's own saved state, possibly from an older version.
+  const saved = state.data as Omit<MindState, 'fighters'> & {
+    readonly fighters: readonly SavedFighter[];
+  };
+  return { ...saved, fighters: saved.fighters.map((f) => withKit(f)) };
 }
 
 export function playerOf(state: Pick<MindState, 'fighters'>): MindFighter {
@@ -81,7 +99,9 @@ export function playerOf(state: Pick<MindState, 'fighters'>): MindFighter {
 export function patch(
   fighters: readonly MindFighter[],
   id: string,
-  change: Partial<Pick<MindFighter, 'health' | 'chakra' | 'stunned' | 'sealed' | 'opened'>>,
+  change: Partial<
+    Pick<MindFighter, 'health' | 'chakra' | 'stunned' | 'sealed' | 'opened' | 'hidden' | 'confused'>
+  >,
 ): MindFighter[] {
   return fighters.map((f) => (f.id === id ? { ...f, ...change } : f));
 }

@@ -9,11 +9,25 @@ import {
   strikeDamage,
   techniqueDamage,
 } from '../../rules/body';
+import { CONFUSION_TURNS, confuseChance, HIDDEN_DAMAGE } from '../../rules/conditions';
 import { matchup, matchupLine } from '../../rules/elements';
+import {
+  attackKindOf,
+  hasTrait,
+  isPhysical,
+  kitDamageScale,
+  packScale,
+  shouldFlee,
+  SWIFT_DODGE,
+  type AttackKind,
+} from '../../rules/kit';
 import type { Landing } from './exchange';
 import { patch, type MindFighter, type Move } from './state';
 
-/** Applying a landed move: damage, dazes, seals and the narration for each. */
+/**
+ * Applying a landed move: damage (scaled by kits), dazes, seals, confusion, cowards running,
+ * and the narration for each.
+ */
 
 const THROW_SCALE = 0.6;
 const OPENED_BONUS = 1.5;
@@ -42,8 +56,29 @@ function find(fighters: readonly MindFighter[], id: string): MindFighter | undef
   return fighters.find((f) => f.id === id);
 }
 
-function wound(fighters: MindFighter[], target: MindFighter, damage: number): MindFighter[] {
-  return patch(fighters, target.id, { health: Math.max(0, target.health - damage), opened: false });
+/** Everything the attacker's and defender's kits do to a hit's damage. */
+function kitScale(fighters: readonly MindFighter[], blow: Blow, kind: AttackKind): number {
+  const hidden = blow.attacker.hidden ? HIDDEN_DAMAGE : 1;
+  return kitDamageScale(blow.target, kind) * packScale(blow.attacker, fighters) * hidden;
+}
+
+/** A short line when the defender's kit changed how much a hit hurt. */
+function kitLine(target: MindFighter, kind: AttackKind): string[] {
+  if (hasTrait(target, 'spirit') && isPhysical(kind))
+    return [`It half passes through ${target.name}.`];
+  if (hasTrait(target, 'spirit') && kind === 'seal')
+    return [`The seal bites deep into ${target.name}.`];
+  if (hasTrait(target, 'armoured') && isPhysical(kind))
+    return [`${target.name}'s armour takes the edge off.`];
+  return [];
+}
+
+/** Deals damage; a coward hurt badly enough runs and is out of the fight. */
+function wound(fighters: MindFighter[], target: MindFighter, damage: number): Hit {
+  const health = Math.max(0, target.health - damage);
+  const hurt = patch(fighters, target.id, { health, opened: false });
+  if (!shouldFlee({ ...target, health })) return { fighters: hurt, lines: [] };
+  return { fighters: patch(hurt, target.id, { health: 0 }), lines: [`${target.name} flees!`] };
 }
 
 function basicVerb(move: Move, attacker: string, target: string, damage: number): string {
@@ -57,13 +92,19 @@ function basicVerb(move: Move, attacker: string, target: string, damage: number)
 
 function basicHit(fighters: MindFighter[], blow: Blow, rng: Rng): Hit {
   const { attacker, target, move } = blow;
+  const kind = attackKindOf(null, move.kind === 'throw');
   const opened = target.opened ? OPENED_BONUS : 1;
   const kindScale = move.kind === 'throw' ? THROW_SCALE : 1;
-  const raw = strikeDamage(attacker, target, rng.next()) * blow.scale * kindScale * opened;
+  const kit = kitScale(fighters, blow, kind);
+  const raw = strikeDamage(attacker, target, rng.next()) * blow.scale * kindScale * opened * kit;
   const damage = Math.max(1, Math.round(raw));
   const hurt = wound(fighters, target, damage);
-  const next = move.kind === 'feint' ? patch(hurt, target.id, { opened: true }) : hurt;
-  return { fighters: next, lines: [basicVerb(move, attacker.name, target.name, damage)] };
+  const next =
+    move.kind === 'feint' && !hurt.lines.length
+      ? patch(hurt.fighters, target.id, { opened: true })
+      : hurt.fighters;
+  const verb = basicVerb(move, attacker.name, target.name, damage);
+  return { fighters: next, lines: [verb, ...kitLine(target, kind), ...hurt.lines] };
 }
 
 function jutsuHit(fighters: MindFighter[], blow: Blow, rng: Rng): Hit {
@@ -88,13 +129,42 @@ function jutsuHit(fighters: MindFighter[], blow: Blow, rng: Rng): Hit {
       lines: [opener, `Seals lock ${target.name}'s chakra!`],
     };
   }
+  const kind = attackKindOf(t);
   const opened = target.opened ? OPENED_BONUS : 1;
-  const raw = techniqueDamage(attacker, target, t, rng.next()) * blow.scale * opened;
+  const kit = kitScale(fighters, blow, kind);
+  const raw = techniqueDamage(attacker, target, t, rng.next()) * blow.scale * opened * kit;
   const damage = Math.max(1, Math.round(raw));
   const element = matchupLine(matchup(t.element, target.nature), target.name);
+  const hurt = wound(fighters, target, damage);
   return {
-    fighters: wound(fighters, target, damage),
-    lines: [opener, `${target.name} takes ${damage}.`, ...(element ? [element] : [])],
+    fighters: hurt.fighters,
+    lines: [
+      opener,
+      `${target.name} takes ${damage}.`,
+      ...(element ? [element] : []),
+      ...kitLine(target, kind),
+      ...hurt.lines,
+    ],
+  };
+}
+
+/** Whether the hit actually did something to the target (not resisted or shrugged off). */
+function landed(before: MindFighter, after: MindFighter | undefined): boolean {
+  if (!after) return false;
+  return (
+    after.health < before.health || after.stunned > before.stunned || after.sealed > before.sealed
+  );
+}
+
+/** An illusionist's hit may leave its victim confused. */
+function maybeConfuse(hit: Hit, blow: Blow, rng: Rng): Hit {
+  if (!hasTrait(blow.attacker, 'illusionist')) return hit;
+  const after = find(hit.fighters, blow.target.id);
+  if (!landed(blow.target, after) || !after || !alive(after)) return hit;
+  if (!rng.chance(confuseChance(blow.attacker, blow.target))) return hit;
+  return {
+    fighters: patch(hit.fighters, after.id, { confused: CONFUSION_TURNS }),
+    lines: [...hit.lines, `The world tilts around ${after.name}. Confused!`],
   };
 }
 
@@ -102,10 +172,13 @@ function hitWith(fighters: MindFighter[], exchange: Exchange, scale: number, rng
   const attacker = find(fighters, exchange.moverId);
   const target = find(fighters, exchange.targetId);
   if (!attacker || !target || !alive(target)) return { fighters, lines: [] };
+  if (hasTrait(target, 'swift') && rng.chance(SWIFT_DODGE)) {
+    return { fighters, lines: [`${target.name} slips aside, too quick for ${attacker.name}.`] };
+  }
   const blow: Blow = { attacker, target, move: exchange.move, scale };
-  return exchange.move.kind === 'jutsu'
-    ? jutsuHit(fighters, blow, rng)
-    : basicHit(fighters, blow, rng);
+  const hit =
+    exchange.move.kind === 'jutsu' ? jutsuHit(fighters, blow, rng) : basicHit(fighters, blow, rng);
+  return maybeConfuse(hit, blow, rng);
 }
 
 /** Applies what a move did to its target, given how it landed. */
