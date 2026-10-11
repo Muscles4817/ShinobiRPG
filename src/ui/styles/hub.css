@@ -68,79 +68,97 @@
   text-transform: none;
 }
 
-.places {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  padding: 12px var(--gutter);
-  align-content: start;
+/* The village as a lantern-lit street: each place hangs a paper lantern on the rope
+   down the street, lit while it's open. */
+.street {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 10px var(--gutter) 18px;
+}
+.street::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--gutter) + 21px);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: repeating-linear-gradient(180deg, var(--wood) 0 7px, transparent 7px 11px);
 }
 
-.place-card {
-  background: var(--grain), var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 10px;
-  min-height: 64px;
+.stop {
+  position: relative;
   display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
-  column-gap: 10px;
+  grid-template-columns: 44px 1fr auto;
+  column-gap: 14px;
   align-items: center;
+  min-height: 64px;
+  padding: 6px 0;
+}
+.stop-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
-
-.place-card b {
-  font-size: 0.9rem;
+.stop-text b {
+  font-family: var(--font-story);
+  font-size: 1.08rem;
   line-height: 1.15;
-  align-self: end;
 }
-.place-card small {
-  font-size: 0.72rem;
+.stop-text small {
+  font-size: 0.78rem;
   color: var(--muted);
-  line-height: 1.25;
-  align-self: start;
+  line-height: 1.3;
 }
-.place-card.suggested {
-  border-color: var(--lantern);
-  box-shadow: inset 0 0 0 1px var(--lantern);
-}
-.place-card:active {
-  background: var(--raise);
-}
-
-.place-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius);
-  display: grid;
-  place-items: center;
-  grid-row: span 2;
-}
-.k-training .place-icon {
-  background: color-mix(in srgb, var(--taijutsu) 16%, transparent);
-  color: #ff9a7d;
-}
-.k-market .place-icon {
-  background: color-mix(in srgb, var(--lantern) 16%, transparent);
-  color: #ffc078;
-}
-.k-missions .place-icon {
-  background: color-mix(in srgb, var(--gold) 14%, transparent);
+.stop.suggested .stop-text b {
   color: var(--gold);
 }
-.k-academy .place-icon {
-  background: color-mix(in srgb, var(--genjutsu) 18%, transparent);
-  color: #c9a6ff;
+.stop:active .stop-text b {
+  color: var(--lantern);
 }
-.k-home .place-icon {
-  background: color-mix(in srgb, var(--good) 14%, transparent);
-  color: #9fe3b6;
+
+/* A paper lantern: ribbed, capped top and bottom, glowing while the place is open. */
+.lantern {
+  position: relative;
+  width: 44px;
+  height: 50px;
+  border-radius: 46% / 36%;
+  display: grid;
+  place-items: center;
+  color: var(--on-lantern);
+  background:
+    repeating-linear-gradient(180deg, transparent 0 7px, rgb(120 50 10 / 0.25) 7px 8px),
+    radial-gradient(circle at 50% 45%, #ffe2b0, var(--lantern) 62%, #b4581f);
+  box-shadow: 0 0 18px -3px rgb(255 170 80 / 0.6);
 }
-.k-hospital .place-icon {
-  background: color-mix(in srgb, var(--spirit) 16%, transparent);
-  color: #8de6da;
+.lantern::before,
+.lantern::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 5px;
+  background: #2a1a10;
+  border-radius: 1px;
+}
+.lantern::before {
+  top: -3px;
+}
+.lantern::after {
+  bottom: -3px;
+}
+.stop.suggested .lantern {
+  box-shadow: 0 0 28px 2px rgb(255 170 80 / 0.85);
+}
+.stop.closed .lantern {
+  background:
+    repeating-linear-gradient(180deg, transparent 0 7px, rgb(0 0 0 / 0.25) 7px 8px), var(--raise);
+  color: var(--muted);
+  box-shadow: none;
+}
+.stop.closed .stop-text b {
+  color: var(--muted);
 }
 
 /* New game */
@@ -308,9 +326,6 @@
   list-style: none;
   display: grid;
   gap: 6px;
-}
-.place-card.closed {
-  opacity: 0.55;
 }
 .festival-soon {
   margin: 0;

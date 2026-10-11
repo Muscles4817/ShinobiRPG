@@ -24,6 +24,7 @@ export interface Drill extends Choice {
   readonly icon: IconId;
   readonly group: DrillGroup;
   readonly energyCost: number;
+  /** What the drill grows, biggest gain first: the board headlines the first. */
   readonly previews: readonly StatPreview[];
   /** The drill you did last, offered as "Again". */
   readonly isLast: boolean;
@@ -66,11 +67,13 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
       group: groupOf(gained),
       energyCost: def.energyCost,
       isLast: lastHeading === def.name,
-      previews: gained.map((stat) => ({
-        label: STAT_INFO[stat].label,
-        now: stats[stat],
-        after: stats[stat] + trainingGain(stats[stat], def.gains[stat] ?? 0, scale[stat] ?? 1),
-      })),
+      previews: gained
+        .map((stat) => ({
+          label: STAT_INFO[stat].label,
+          now: stats[stat],
+          after: stats[stat] + trainingGain(stats[stat], def.gains[stat] ?? 0, scale[stat] ?? 1),
+        }))
+        .sort((a, b) => b.after - b.now - (a.after - a.now)),
     };
   });
   const typical = drills.reduce((sum, d) => sum + d.energyCost, 0) / Math.max(1, drills.length);

@@ -47,6 +47,12 @@
   --paper-muted: #6f6149;
   --seal: #c0392b;
   --wood: #4f3420;
+  /* Pale cypress for ema, the wooden plaques hung at shrines. */
+  --ema: #d9bb8a;
+  --ema-ink: #2b1d10;
+  /* Gain and cost inked dark enough to read on pale wood. */
+  --ema-gain: #2f6b3f;
+  --ema-cost: #8a4b0c;
 
   --font-story: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', Georgia, serif;
   --font-ui: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;

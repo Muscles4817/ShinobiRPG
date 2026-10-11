@@ -78,25 +78,27 @@ export function HubScreen({
         </section>
       )}
       <VillageLife view={village} perform={perform} />
-      <main className="places">
+      <main className="street" aria-label="Places">
         {hub.places.map((p) => (
           <button
             key={p.id}
             type="button"
-            className={`place-card k-${p.kind}${p.suggested ? ' suggested' : ''}${p.closed ? ' closed' : ''}`}
+            className={`stop${p.suggested ? ' suggested' : ''}${p.closed ? ' closed' : ''}`}
             disabled={p.closed !== null}
             onClick={() => {
               onOpenPlace(p.id);
             }}
           >
-            <span className="place-icon">
+            <span className="lantern" aria-hidden="true">
               <Icon id={p.icon} />
             </span>
-            <b>
-              {p.name}
-              {p.badge && <span className="place-badge">{p.badge}</span>}
-            </b>
-            <small>{p.closed ?? p.line}</small>
+            <span className="stop-text">
+              <b>
+                {p.name}
+                {p.badge && <span className="place-badge">{p.badge}</span>}
+              </b>
+              <small>{p.closed ?? p.line}</small>
+            </span>
             <Faces faces={p.people} />
           </button>
         ))}
