@@ -5,7 +5,7 @@
   gap: 10px;
 }
 .deck-slot {
-  border-radius: 12px;
+  border-radius: var(--radius);
 }
 .deck-slot.on .tcard {
   outline: 2px solid var(--gold);
@@ -15,13 +15,13 @@
 .tcard {
   aspect-ratio: 2 / 3;
   width: 100%;
-  border-radius: 11px;
+  border-radius: var(--radius);
   padding: 7px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   color: var(--ink);
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   border: 1.5px solid var(--d);
   position: relative;
   overflow: hidden;
@@ -85,7 +85,7 @@
 .idcard {
   background: linear-gradient(160deg, #f1e6cc, #e2d3b0);
   color: var(--paper-ink);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 12px;
   display: grid;
   grid-template-columns: 70px 1fr;
@@ -150,11 +150,11 @@
   gap: 8px;
 }
 .disc {
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 9px;
   display: flex;
   flex-direction: column;
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   border: 1px solid var(--line);
 }
 .disc b {
@@ -221,7 +221,7 @@
 .grade-badge.large {
   width: 58px;
   height: 58px;
-  border-radius: 12px;
+  border-radius: var(--radius);
   border-width: 2.5px;
   font-size: 2.1rem;
   box-shadow: 0 0 18px -6px var(--g);
@@ -277,7 +277,7 @@
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface);
+  background: var(--grain), var(--surface);
 }
 .overall-body {
   flex: 1;

@@ -15,7 +15,7 @@
   flex: 1;
   margin: -24px var(--gutter) 0;
   position: relative;
-  background: var(--paper);
+  background: var(--grain-ink), var(--paper);
   color: var(--paper-ink);
   border-radius: 4px;
   padding: 18px 16px 20px;
@@ -127,7 +127,7 @@
   gap: 5px;
   padding: 10px 12px;
   border: 1px solid #c9b994;
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: #f8f2e5;
   color: var(--paper-ink);
   min-width: 0;
@@ -206,7 +206,7 @@
 }
 .seg {
   padding: 6px 11px;
-  border-radius: 999px;
+  border-radius: 2px;
   border: 1px solid #c9b994;
   background: #f8f2e5;
   font-size: 0.8rem;
@@ -273,7 +273,7 @@
   bottom: 0;
   margin-top: 12px;
   padding: 10px var(--gutter) calc(12px + env(safe-area-inset-bottom));
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   border-top: 1px solid var(--line);
   display: flex;
   flex-direction: column;

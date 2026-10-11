@@ -10,7 +10,7 @@ body,
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: var(--grain), var(--bg);
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: 15px;
@@ -116,7 +116,7 @@ summary.label {
 }
 
 .chip {
-  border-radius: 6px;
+  border-radius: 2px;
   padding: 1px 7px;
   font-size: 0.74rem;
   font-weight: 700;

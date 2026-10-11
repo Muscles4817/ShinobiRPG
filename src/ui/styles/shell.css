@@ -67,8 +67,17 @@
   grid-template-columns: repeat(6, 1fr);
   gap: 2px;
   padding: 6px 6px calc(8px + env(safe-area-inset-bottom));
-  background: var(--surface);
-  border-top: 1px solid var(--line);
+  background:
+    var(--grain),
+    repeating-linear-gradient(
+      178deg,
+      transparent 0 5px,
+      rgb(0 0 0 / 0.12) 5px 6px,
+      transparent 6px 11px
+    ),
+    var(--wood);
+  border-top: 2px solid color-mix(in srgb, var(--wood) 60%, #000);
+  box-shadow: 0 -6px 16px rgb(0 0 0 / 0.35);
 }
 
 .dk {
@@ -77,10 +86,9 @@
   align-items: center;
   gap: 1px;
   padding: 5px 0;
-  border-radius: 12px;
   font-size: 0.7rem;
   font-weight: 700;
-  color: var(--muted);
+  color: color-mix(in srgb, var(--paper) 70%, var(--wood));
 }
 
 .dk i {
@@ -93,11 +101,11 @@
 }
 
 .dk.on {
-  background: var(--raise);
-  color: var(--ink);
+  color: var(--paper);
 }
 .dk.on i {
   color: var(--lantern);
+  text-shadow: 0 0 12px rgb(255 170 80 / 0.7);
 }
 
 /* Ticker: the latest result, just above the dock */
@@ -109,7 +117,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 11px;
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--raise);
   border: 1px solid var(--line);
   font-size: 0.85rem;
@@ -191,7 +199,7 @@
   padding: 8px 10px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   font-size: 0.72rem;
 }
 .hunger-note b {
@@ -320,7 +328,7 @@
 .report {
   width: 100%;
   max-width: 400px;
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 18px;
@@ -370,7 +378,7 @@
   height: 48px;
   border: 3px solid var(--seal);
   color: var(--seal);
-  border-radius: 8px;
+  border-radius: var(--radius);
   display: grid;
   place-items: center;
   font-family: var(--font-story);

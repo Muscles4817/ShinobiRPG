@@ -113,7 +113,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px;
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   text-align: left;
@@ -136,7 +136,7 @@
 
 /* Person sheet and shared person header */
 .person-sheet {
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   border-top: 1px solid var(--line);
   max-height: 88vh;
   overflow-y: auto;
@@ -265,7 +265,7 @@
   gap: 10px;
   padding: 8px 10px;
   border-radius: var(--radius);
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   border: 1px solid var(--line);
 }
 .spar-row .bond-main small {
@@ -300,7 +300,7 @@
   gap: 3px;
   padding: 6px 8px;
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   border: 1px solid color-mix(in srgb, var(--lantern) 40%, var(--line));
   font-size: 0.8rem;
 }
