@@ -85,7 +85,7 @@ describe('mind game tools', () => {
     expect(optionFor(state, 'heal-tool')).toMatchObject({
       kind: 'item',
       label: 'heal tool',
-      detail: '×2 · Restore health',
+      detail: 'Restore health (×2 left)',
       disabledReason: 'You are unhurt.',
     });
     expect(optionFor(state, 'flash-tool')?.disabledReason).toBe('No one is hiding.');
@@ -103,7 +103,7 @@ describe('mind game tools', () => {
     expect(hero(healed).items.find((i) => i.id === 'heal-tool')?.count).toBe(1);
     const filled = act(healed, 'item:chakra-tool');
     expect(hero(filled).chakra).toBeGreaterThan(hero(healed).chakra + 2);
-    expect(optionFor(filled, 'chakra-tool')?.detail).toBe('×1 · Restore chakra');
+    expect(optionFor(filled, 'chakra-tool')?.detail).toBe('Restore chakra (×1 left)');
   });
 
   it('smoke hides you from their attacks until you attack', () => {

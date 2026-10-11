@@ -127,7 +127,7 @@ export function isOffence(card: Card): boolean {
 const TOOL_DOES: Readonly<Record<CombatItemEffect, string>> = {
   smoke: 'Vanish until you attack',
   flash: 'Reveal hidden foes',
-  blast: 'Seal blast · through armour',
+  blast: 'Seal blast through armour',
   chakra: 'Restore chakra',
   heal: 'Restore health',
   clarity: 'Clear confusion',
@@ -135,7 +135,7 @@ const TOOL_DOES: Readonly<Record<CombatItemEffect, string>> = {
 
 /** A tool card's detail: how many are left and what it does. */
 export function toolDetail(item: CombatItem): string {
-  return `×${item.count} · ${TOOL_DOES[item.effect]}`;
+  return `${TOOL_DOES[item.effect]} (×${item.count} left)`;
 }
 
 const EFFECT_WORD: Readonly<Record<CombatTechnique['effect'], string>> = {
@@ -173,23 +173,23 @@ export function cardLabel(card: Card): string {
 export function cardDetail(card: Card, fighter: PlanFighter): string {
   switch (card.kind) {
     case 'strike':
-      return 'Attack · no chakra';
+      return 'Attack, no chakra';
     case 'throw':
-      return 'Attack · no chakra';
+      return 'Attack, no chakra';
     case 'step':
       return card.direction === 'in' ? 'Try to get closer' : 'Try to open distance';
     case 'guard':
-      return 'Reacts · take less damage';
+      return 'Reacts, take less damage';
     case 'dodge':
-      return 'Reacts · may avoid a hit';
+      return 'Reacts, may avoid a hit';
     case 'counter':
-      return 'Reacts · hit back up close';
+      return 'Reacts, hit back up close';
     case 'search':
-      return 'Find hidden foes · perception';
+      return 'Find hidden foes, perception';
     case 'dispel':
-      return `Break illusions · ${DISPEL_CHAKRA} chakra`;
+      return `Break illusions, ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':
-      return `${EFFECT_WORD[card.technique.effect]} · ${chakraCost(fighter, card.technique)} chakra`;
+      return `${EFFECT_WORD[card.technique.effect]}, ${chakraCost(fighter, card.technique)} chakra`;
     case 'item':
       return toolDetail(card.item);
   }

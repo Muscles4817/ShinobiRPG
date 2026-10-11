@@ -37,7 +37,7 @@ function techniqueOption(state: DuelState, t: CombatTechnique): CombatOption {
   const base: CombatOption = {
     id: `${TECHNIQUE_PREFIX}${t.id}`,
     label: t.name,
-    detail: `${t.chakraCost} chakra · ${EFFECT_DETAIL[t.effect](t.power)}`,
+    detail: `${t.chakraCost} chakra, ${EFFECT_DETAIL[t.effect](t.power)}`,
     kind: 'technique',
     discipline: t.discipline,
     ...(heals ? {} : { targeted: true }),
@@ -56,7 +56,7 @@ function moveOptions(state: DuelState): CombatOption[] {
   const dispel: CombatOption = {
     id: 'dispel',
     label: 'Dispel',
-    detail: `Break illusions · ${DISPEL_CHAKRA} chakra`,
+    detail: `Break illusions, ${DISPEL_CHAKRA} chakra`,
     kind: 'move',
   };
   const short = player.chakra < DISPEL_CHAKRA;
@@ -95,7 +95,7 @@ export function options(state: DuelState): CombatOption[] {
       targeted: true,
       ...(strikeBlocked ? { disabledReason: strikeBlocked } : {}),
     },
-    { id: 'guard', label: 'Guard', detail: 'Halve damage · +chakra', kind: 'basic' },
+    { id: 'guard', label: 'Guard', detail: 'Halve damage, gain chakra', kind: 'basic' },
     ...moveOptions(state),
     ...player.techniques.map((t) => techniqueOption(state, t)),
     ...toolOptions(state),

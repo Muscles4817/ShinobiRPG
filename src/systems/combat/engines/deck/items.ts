@@ -18,7 +18,7 @@ export const ITEM_PREFIX = 'item:';
 const WHAT_IT_DOES: Readonly<Record<CombatItemEffect, string>> = {
   smoke: 'Vanish until you attack',
   flash: 'Reveal hidden foes',
-  blast: 'Seal blast · through armour',
+  blast: 'Seal blast through armour',
   chakra: 'Restore chakra',
   heal: 'Restore health',
   clarity: 'Clear confusion',
@@ -48,7 +48,7 @@ export function itemOptions(state: DeckState): CombatOption[] {
       return {
         id: `${ITEM_PREFIX}${item.id}`,
         label: item.name,
-        detail: `×${item.count} · ${WHAT_IT_DOES[item.effect]}`,
+        detail: `${WHAT_IT_DOES[item.effect]} (×${item.count} left)`,
         kind: 'item' as const,
         cost: ITEM_POINTS,
         ...(itemTargeted(item.effect) ? { targeted: true } : {}),

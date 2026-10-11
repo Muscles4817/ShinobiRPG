@@ -90,11 +90,11 @@ describe('duel engine: fight tools', () => {
     expect(option(state, 'item:heal')).toMatchObject({
       kind: 'item',
       label: 'heal tool',
-      detail: '×1 · Restore health',
+      detail: 'Restore health (×1 left)',
       disabledReason: 'You are unhurt.',
     });
     expect(option(state, 'item:blast')).toMatchObject({
-      detail: '×2 · Seal blast · through armour',
+      detail: 'Seal blast through armour (×2 left)',
       targeted: true,
     });
     expect(option(state, 'item:blast')?.disabledReason).toBeUndefined();
@@ -114,7 +114,7 @@ describe('duel engine: fight tools', () => {
     let state = dazeEnemies(duel(hurt, foe('bandit')));
     state = act(state, { optionId: 'item:heal' });
     expect(combatant(state, 'hero').health).toBe(40);
-    expect(option(state, 'item:heal')?.detail).toBe('×1 · Restore health');
+    expect(option(state, 'item:heal')?.detail).toBe('Restore health (×1 left)');
     state = act(state, { optionId: 'item:chakra' });
     // A pill, plus two rounds of regeneration.
     expect(combatant(state, 'hero').chakra).toBe(25 + 2 + 2);

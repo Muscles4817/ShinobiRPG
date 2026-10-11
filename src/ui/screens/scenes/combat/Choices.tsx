@@ -141,8 +141,8 @@ export function ActionBar({
         >
           {o.cost !== undefined && <span className="cost-pip inline">{o.cost}</span>}
           {o.label}
-          {o.kind !== 'move' && o.detail ? <small> · {o.detail}</small> : null}
-          {o.disabledReason && o.kind === 'move' ? <small> · {o.disabledReason}</small> : null}
+          {o.kind !== 'move' && o.detail ? <small>{o.detail}</small> : null}
+          {o.disabledReason && o.kind === 'move' ? <small>{o.disabledReason}</small> : null}
         </button>
       ))}
     </nav>

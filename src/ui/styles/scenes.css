@@ -34,15 +34,19 @@
 .entry.tone-danger .story {
   color: #ffb3aa;
 }
-.you {
-  align-self: flex-end;
-  background: var(--raise);
-  border: 1px solid var(--line);
-  border-radius: 14px 14px 4px 14px;
-  padding: 4px 12px;
-  font-size: 0.85rem;
+/* A journal entry's title. */
+.entry-head {
+  margin: 6px 0 0;
+  font-family: var(--font-story);
+  font-size: 1.02rem;
   font-weight: 700;
-  max-width: 85%;
+  color: var(--ink);
+}
+/* What you said or chose, set apart like a line in a script rather than a chat bubble. */
+.you {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--lantern);
 }
 
 .scene-head {
@@ -235,6 +239,11 @@
 .hand-slot .tcard {
   aspect-ratio: auto;
   height: 108px;
+}
+/* A hand card is too short for its kanji without covering the text; the border's
+   colour already names the discipline. */
+.hand-slot .tglyph {
+  display: none;
 }
 .flee {
   position: sticky;
@@ -437,6 +446,12 @@ button.foe {
 }
 .pouch .btn {
   border-color: var(--gold);
+}
+.action-bar .btn small,
+.pouch .btn small {
+  margin-left: 6px;
+  font-weight: 400;
+  opacity: 0.85;
 }
 
 /* Fight style picker (Shinobi tab) */

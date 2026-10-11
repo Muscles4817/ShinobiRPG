@@ -44,7 +44,8 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
       <main className="page feed combat-log" aria-live="polite">
         {view.log.slice(-6).map((line, i) => (
           <p key={`${view.round}-${i}`} className={line.startsWith('—') ? 'divider' : 'story'}>
-            {line}
+            {/* A round marker gets drawn rules from .divider, so its own dashes go. */}
+            {line.startsWith('—') ? line.replaceAll('—', '').trim() : line}
           </p>
         ))}
       </main>

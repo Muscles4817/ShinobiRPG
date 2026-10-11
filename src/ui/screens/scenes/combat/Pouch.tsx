@@ -5,9 +5,9 @@ interface PouchProps {
   readonly onPick: (option: CombatOption) => void;
 }
 
-/** Details read "×2 · what it does"; the row is short on room, so it shows the count. */
+/** Details read "what it does (×2 left)"; the row is short on room, so it shows the count. */
 function countOf(detail: string): string {
-  return detail.split(' · ')[0] ?? detail;
+  return /×\d+/.exec(detail)?.[0] ?? detail;
 }
 
 /** The tools you carried in, as a row of their own; each says why when it can't be used. */
@@ -28,7 +28,7 @@ export function Pouch({ options, onPick }: PouchProps) {
         >
           {o.cost !== undefined && <span className="cost-pip inline">{o.cost}</span>}
           {o.label}
-          <small> · {o.disabledReason ?? countOf(o.detail)}</small>
+          <small>{o.disabledReason ?? countOf(o.detail)}</small>
         </button>
       ))}
     </nav>

@@ -72,7 +72,7 @@ function emptyPouchOptions(player: PlanFighter, band: RangeBand): CombatOption[]
     .map((id) => ({
       id: `${SLOT_PREFIX}${band}:${id}`,
       label: 'Empty pouch',
-      detail: '×0 · Restock to use',
+      detail: 'None left. Restock to use',
       kind: 'plan',
       group: RANGE_LABEL[band],
       selected: true,
@@ -211,7 +211,7 @@ function prompt(state: PlanState): string {
     const hidden = state.fighters.some((f) => f.side === 'enemy' && alive(f) && f.hidden);
     return hidden ? `${pick} Someone is hidden: Search or Dispel finds them.` : pick;
   }
-  return `${RANGE_LABEL[state.range]} range · round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
+  return `${RANGE_LABEL[state.range]} range, round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
 }
 
 export function createPlanEngine(): CombatEngine {

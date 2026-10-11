@@ -119,7 +119,7 @@ describe('plan & watch tools: cards', () => {
     expect(salve).toMatchObject({
       kind: 'plan',
       label: 'heal tool',
-      detail: '×2 · Restore health',
+      detail: 'Restore health (×2 left)',
     });
     expect(salve?.disabledReason).toBeUndefined();
     const smoke = options.find((o) => o.id === 'slot:far:item:smoke');

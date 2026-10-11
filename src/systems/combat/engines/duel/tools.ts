@@ -18,7 +18,7 @@ const TOOL_PREFIX = 'item:';
 const TOOL_DETAIL: Readonly<Record<CombatItemEffect, string>> = {
   smoke: 'Vanish until you attack',
   flash: 'Reveal hidden foes',
-  blast: 'Seal blast · through armour',
+  blast: 'Seal blast through armour',
   chakra: 'Restore chakra',
   heal: 'Restore health',
   clarity: 'Clear confusion',
@@ -39,7 +39,7 @@ export function toolOptions(state: DuelState): CombatOption[] {
       const option: CombatOption = {
         id: `${TOOL_PREFIX}${item.id}`,
         label: item.name,
-        detail: `×${item.count} · ${TOOL_DETAIL[item.effect]}`,
+        detail: `${TOOL_DETAIL[item.effect]} (×${item.count} left)`,
         kind: 'item',
         ...(itemTargeted(item.effect) ? { targeted: true } : {}),
       };
