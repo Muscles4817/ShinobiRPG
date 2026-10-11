@@ -68,72 +68,83 @@
 .drills {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 14px 8px;
+  padding-top: 6px;
 }
+/* An ema: a pale wooden plaque with a peaked top, hung from a cord through its hole. */
 .drill {
-  border-radius: var(--radius);
-  padding: 10px;
-  background: var(--grain), var(--surface);
-  border: 1px solid var(--line);
+  --peak: 14px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  position: relative;
-  overflow: hidden;
+  gap: 6px;
   min-width: 0;
+  padding: calc(var(--peak) + 10px) 10px 10px;
+  color: var(--ema-ink);
+  background: var(--grain-ink), var(--ema);
+  clip-path: polygon(0 var(--peak), 50% 0, 100% var(--peak), 100% 100%, 0 100%);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
 }
-
+.drill::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bg);
+}
 .drill.off {
-  opacity: 0.6;
+  opacity: 0.55;
 }
 .drill-head {
   display: flex;
   gap: 8px;
   align-items: flex-start;
-  color: var(--d);
+  color: color-mix(in srgb, var(--d) 70%, #000);
 }
 .drill-head b {
   display: block;
-  font-size: 0.88rem;
+  font-family: var(--font-story);
+  font-size: 0.98rem;
   line-height: 1.15;
-  color: var(--ink);
+  color: var(--ema-ink);
 }
 .drill-head small {
-  font-size: 0.7rem;
-  color: var(--muted);
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--ema-ink) 65%, var(--ema));
 }
-.previews {
+/* The headline: how much the main stat grows, big enough to compare at a glance. */
+.drill-main {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 2px 0 0;
+}
+.drill-main b {
+  font-family: var(--font-story);
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ema-gain);
+}
+.drill-main span {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  line-height: 1.2;
 }
-.preview {
-  display: grid;
-  grid-template-columns: 4.6em 1fr;
-  gap: 6px;
-  align-items: center;
-  font-size: 0.68rem;
-  color: var(--muted);
+.drill-main small {
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--ema-ink) 65%, var(--ema));
 }
-.pbar {
-  height: 6px;
-  border-radius: 3px;
-  background: var(--raise);
-  position: relative;
-  overflow: hidden;
-}
-.pbar i {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  border-radius: 3px;
-}
-.pbar .after {
-  background: var(--good);
-}
-.pbar .now {
-  background: var(--muted);
+.drill-also {
+  margin: 0;
+  font-size: 0.74rem;
+  color: color-mix(in srgb, var(--ema-ink) 75%, var(--ema));
 }
 .drill-foot {
   display: flex;
@@ -141,10 +152,15 @@
   align-items: center;
   margin-top: auto;
 }
-.drill .cost {
-  color: var(--cost);
+.drill .cost,
+.drill .blocker {
+  color: var(--ema-cost);
   font-weight: 700;
   font-size: 0.75rem;
+}
+.drill .btn.ghost {
+  color: var(--ema-ink);
+  border-color: color-mix(in srgb, var(--ema-ink) 45%, transparent);
 }
 
 /* Market */

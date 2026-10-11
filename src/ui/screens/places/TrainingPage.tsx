@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { headerView, hubView, trainingView, type DrillGroup } from '@/game';
+import { headerView, hubView, trainingView, type DrillGroup, type StatPreview } from '@/game';
 
 import { Icon } from '../../art/Icon';
 import { Chips } from '../../components/Chips';
@@ -19,10 +19,15 @@ const FILTERS: readonly { id: DrillGroup | 'all'; label: string }[] = [
   { id: 'mind', label: 'Mind' },
 ];
 
-/** Bars are drawn against this many stat points so growth is visible. */
-const BAR_SCALE = 25;
+/** "+0.4": growth is small, so one decimal place. */
+function gainText(preview: StatPreview): string {
+  return `+${(preview.after - preview.now).toFixed(1)}`;
+}
 
-/** Training Grounds as a drill board: an energy budget and drills that preview their growth. */
+/**
+ * Training Grounds as a rack of ema (wooden shrine plaques): each drill headlines the stat it
+ * grows most, with the rest beneath, under an energy budget.
+ */
 export function TrainingPage({ ctx, state, perform, onBack }: PlaceProps) {
   const [filter, setFilter] = useState<DrillGroup | 'all'>('all');
   const view = trainingView(state, ctx);
@@ -72,50 +77,52 @@ export function TrainingPage({ ctx, state, perform, onBack }: PlaceProps) {
           ))}
         </div>
         <div className="drills">
-          {drills.map((d) => (
-            <article key={d.id} className={`drill d-${d.group}${d.blocker ? ' off' : ''}`}>
-              <div className="drill-head">
-                <Icon id={d.icon} />
-                <div>
-                  <b>{d.name}</b>
-                  <small>{d.spot}</small>
-                </div>
-              </div>
-              <div className="previews">
-                {d.previews.map((p) => (
-                  <div key={p.label} className="preview">
-                    <span>{p.label}</span>
-                    <span className="pbar">
-                      <i
-                        className="after"
-                        style={{ width: `${Math.min(100, (p.after / BAR_SCALE) * 100)}%` }}
-                      />
-                      <i
-                        className="now"
-                        style={{ width: `${Math.min(100, (p.now / BAR_SCALE) * 100)}%` }}
-                      />
-                    </span>
+          {drills.map((d) => {
+            const [main, ...also] = d.previews;
+            return (
+              <article key={d.id} className={`drill d-${d.group}${d.blocker ? ' off' : ''}`}>
+                <div className="drill-head">
+                  <Icon id={d.icon} />
+                  <div>
+                    <b>{d.name}</b>
+                    <small>{d.spot}</small>
                   </div>
-                ))}
-              </div>
-              {d.blocker ? (
-                <p className="blocker">{d.blocker}</p>
-              ) : (
-                <div className="drill-foot">
-                  <span className="cost num">{d.energyCost} energy</span>
-                  <button
-                    type="button"
-                    className={d.isLast ? 'btn ghost small' : 'btn small'}
-                    onClick={() => {
-                      perform(d.action);
-                    }}
-                  >
-                    {d.isLast ? '↻ Again' : 'Train'}
-                  </button>
                 </div>
-              )}
-            </article>
-          ))}
+                {main && (
+                  <p className="drill-main">
+                    <b className="num">{gainText(main)}</b>
+                    <span>
+                      {main.label}
+                      <small className="num">
+                        {main.now.toFixed(1)} → {main.after.toFixed(1)}
+                      </small>
+                    </span>
+                  </p>
+                )}
+                {also.length > 0 && (
+                  <p className="drill-also">
+                    Also {also.map((p) => `${p.label} ${gainText(p)}`).join(', ')}
+                  </p>
+                )}
+                {d.blocker ? (
+                  <p className="blocker">{d.blocker}</p>
+                ) : (
+                  <div className="drill-foot">
+                    <span className="cost num">{d.energyCost} energy</span>
+                    <button
+                      type="button"
+                      className={d.isLast ? 'btn ghost small' : 'btn small'}
+                      onClick={() => {
+                        perform(d.action);
+                      }}
+                    >
+                      {d.isLast ? '↻ Again' : 'Train'}
+                    </button>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
       </main>
       {latest && (
