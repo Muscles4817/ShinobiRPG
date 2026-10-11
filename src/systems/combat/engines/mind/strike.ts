@@ -21,6 +21,7 @@ import {
   SWIFT_DODGE,
   type AttackKind,
 } from '../../rules/kit';
+import { harmLine, healLine } from '../../rules/narration';
 import type { Landing } from './exchange';
 import { patch, type MindFighter, type Move } from './state';
 
@@ -82,12 +83,12 @@ function wound(fighters: MindFighter[], target: MindFighter, damage: number): Hi
 }
 
 function basicVerb(move: Move, attacker: string, target: string, damage: number): string {
-  if (move.kind === 'throw') return `${attacker}'s kunai catches ${target} for ${damage}.`;
-  if (move.kind === 'counter') return `${attacker} counters ${target} for ${damage}!`;
+  if (move.kind === 'throw') return harmLine(`${attacker}'s kunai catches ${target}.`, damage);
+  if (move.kind === 'counter') return harmLine(`${attacker} counters ${target}!`, damage);
   if (move.kind === 'feint') {
-    return `${attacker} feints. ${target} bites and is left open, taking ${damage}.`;
+    return harmLine(`${attacker} feints. ${target} bites and is left open.`, damage);
   }
-  return `${attacker} strikes ${target} for ${damage}.`;
+  return harmLine(`${attacker} strikes ${target}.`, damage);
 }
 
 function basicHit(fighters: MindFighter[], blow: Blow, rng: Rng): Hit {
@@ -140,7 +141,7 @@ function jutsuHit(fighters: MindFighter[], blow: Blow, rng: Rng): Hit {
     fighters: hurt.fighters,
     lines: [
       opener,
-      `${target.name} takes ${damage}.`,
+      harmLine(`${target.name} takes the hit.`, damage),
       ...(element ? [element] : []),
       ...kitLine(target, kind),
       ...hurt.lines,
@@ -213,6 +214,6 @@ export function castJutsu(fighters: MindFighter[], moverId: string, move: Move):
   const health = Math.min(mover.maxHealth, mover.health + healAmount(mover, t));
   return {
     fighters: patch(paid, mover.id, { health }),
-    lines: [`${mover.name} uses ${t.name} and recovers ${health - mover.health}.`],
+    lines: [healLine(`${mover.name} uses ${t.name} and recovers.`, health - mover.health)],
   };
 }

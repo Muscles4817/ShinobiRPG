@@ -3,6 +3,7 @@ import { err, ok, type Result, type Rng } from '@/core';
 import type { CombatItem, CombatItemEffect, CombatOption } from '../../contract';
 import { targetable } from '../../rules/body';
 import { itemBlocker, itemTargeted, useItem } from '../../rules/items';
+import { harmLine } from '../../rules/narration';
 import { kitLine, land, type ActionResult, type DuelAction } from './actions';
 import { UNSEEN } from './reach';
 import { livingEnemies, playerOf, type DuelState, type Fighter } from './state';
@@ -72,7 +73,11 @@ function blastLands(fighters: readonly Fighter[], user: Fighter, target: Fighter
   const landed = land(restored, { actor: user, target }, damage, rng);
   return {
     fighters: landed.fighters,
-    lines: [`${target.name} takes ${damage} damage.`, ...kitLine(target, 'seal'), ...landed.lines],
+    lines: [
+      harmLine(`${target.name} takes the hit.`, damage),
+      ...kitLine(target, 'seal'),
+      ...landed.lines,
+    ],
   };
 }
 

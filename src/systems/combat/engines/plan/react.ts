@@ -11,6 +11,7 @@ import {
   SWIFT_DODGE,
   type AttackKind,
 } from '../../rules/kit';
+import { harmLine } from '../../rules/narration';
 import { slotted } from './cards';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
@@ -104,7 +105,7 @@ function counter(round: Round, { attacker, target, rng }: Hit): Round {
     kind: 'blow',
   };
   const damage = Math.max(1, Math.round(kitted(round, struck, attacker, blow)));
-  return wound(say(round, `${target.name} counters for ${damage}!`), attacker.id, damage);
+  return wound(say(round, harmLine(`${target.name} counters!`, damage)), attacker.id, damage);
 }
 
 /** Lands a blow on the target, letting their slotted defences and kit react. */
@@ -123,7 +124,10 @@ export function react(round: Round, hit: Hit): Round {
   );
   const told = say(
     round,
-    `${attacker.name}'s ${blow.what} hits ${target.name} for ${damage}${guarded ? ' through a guard' : ''}.`,
+    harmLine(
+      `${attacker.name}'s ${blow.what} hits ${target.name}${guarded ? ' through a guard' : ''}.`,
+      damage,
+    ),
     ...kitNote(target, blow.kind),
   );
   const landed = confuse(wound(told, target.id, damage), hit);

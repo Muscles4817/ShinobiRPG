@@ -13,6 +13,7 @@ import {
 import { matchup, matchupLine } from '../../rules/elements';
 import { attackKindOf } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
+import { harmLine, healLine } from '../../rules/narration';
 import { confuse, kitDamage, landHit, slips, UNSEEN_REASON } from './kit';
 import { patch, type Card, type CardKind, type DeckFighter } from './state';
 
@@ -133,7 +134,7 @@ function basicPlay(fighters: DeckFighter[], { user, target, card }: Aimed, rng: 
   const landed = landHit(fighters, blow, damage, rng);
   return {
     fighters: landed.fighters,
-    lines: [`${user.name} ${verb} for ${damage}.`, ...landed.lines],
+    lines: [harmLine(`${user.name} ${verb}.`, damage), ...landed.lines],
   };
 }
 
@@ -158,7 +159,7 @@ function jutsuPlay(fighters: DeckFighter[], { user, target, card }: Aimed, rng: 
     fighters: landed.fighters,
     lines: [
       opener,
-      `${target.name} takes ${damage}.`,
+      harmLine(`${target.name} takes the hit.`, damage),
       ...(element ? [element] : []),
       ...landed.lines,
     ],
@@ -191,7 +192,7 @@ export function playOn(fighters: DeckFighter[], play: Play, rng: Rng): Played {
       const health = Math.min(payer.maxHealth, payer.health + healAmount(payer, t));
       return {
         fighters: patch(paid, payer.id, { health }),
-        lines: [`${payer.name} uses ${t.name} and recovers ${health - payer.health}.`],
+        lines: [healLine(`${payer.name} uses ${t.name} and recovers.`, health - payer.health)],
       };
     }
     return target && alive(target)

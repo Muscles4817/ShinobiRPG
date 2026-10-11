@@ -4,6 +4,7 @@ import type { CombatItemEffect, CombatOption } from '../../contract';
 import { alive, targetable } from '../../rules/body';
 import { carried, itemBlocker, itemTargeted, useItem } from '../../rules/items';
 import { shouldFlee } from '../../rules/kit';
+import { harmLine } from '../../rules/narration';
 import { UNSEEN } from './moves';
 import { playerOf, type MindFighter, type Move } from './state';
 
@@ -56,7 +57,7 @@ function cowardsRun(before: readonly MindFighter[], after: readonly MindFighter[
   const fighters = after.map((f) => {
     const was = before.find((b) => b.id === f.id);
     if (!was || f.health >= was.health) return f;
-    lines.push(`${f.name} takes ${was.health - f.health}.`);
+    lines.push(harmLine(`${f.name} takes the hit.`, was.health - f.health));
     if (!shouldFlee(f)) return f;
     lines.push(`${f.name} flees!`);
     return { ...f, health: 0 };

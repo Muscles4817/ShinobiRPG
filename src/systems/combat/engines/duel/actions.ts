@@ -10,6 +10,7 @@ import {
   shouldFlee,
   type AttackKind,
 } from '../../rules/kit';
+import { harmLine, healLine } from '../../rules/narration';
 import {
   dodgeChance,
   GUARD_CHAKRA_GAIN,
@@ -122,7 +123,7 @@ function strike(fighters: readonly Fighter[], turn: Turn, rng: Rng): ActionResul
   return {
     fighters: landed.fighters,
     lines: [
-      `${actor.name} lands a blow on ${target.name} for ${damage} damage.`,
+      harmLine(`${actor.name} lands a blow on ${target.name}.`, damage),
       ...kitLine(target, kind),
       ...landed.lines,
     ],
@@ -162,7 +163,11 @@ function techniqueEffect(
   const landed = land(paid, turn, damage, rng);
   return {
     fighters: landed.fighters,
-    lines: [`${target.name} takes ${damage} damage.`, ...kitLine(target, kind), ...landed.lines],
+    lines: [
+      harmLine(`${target.name} takes the hit.`, damage),
+      ...kitLine(target, kind),
+      ...landed.lines,
+    ],
   };
 }
 
@@ -181,7 +186,7 @@ function useTechnique(
     const health = Math.min(actor.maxHealth, actor.health + amount);
     return {
       fighters: patchFighter(paid, actor.id, { health }),
-      lines: [opener, `${actor.name} recovers ${health - actor.health} health.`],
+      lines: [opener, healLine(`${actor.name} recovers.`, health - actor.health)],
     };
   }
   if (rng.chance(resistChance(actor, target, technique) + swiftDodge(target))) {

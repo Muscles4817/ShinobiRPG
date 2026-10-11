@@ -91,6 +91,7 @@ export {
   type SceneLine,
   type SceneChoice,
 } from './views/scene';
+export { combatLog, type CombatLogLine } from './views/combatLog';
 export {
   bondsView,
   personSheet,

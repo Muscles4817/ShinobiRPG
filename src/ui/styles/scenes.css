@@ -553,3 +553,10 @@ button.foe {
 .foes.many .trait-note {
   display: none;
 }
+
+/* A fight log line's damage or healing sits at the end of the sentence. */
+.log-line .chips {
+  display: inline-flex;
+  vertical-align: 0.1em;
+  margin-left: 2px;
+}

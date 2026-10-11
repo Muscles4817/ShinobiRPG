@@ -20,6 +20,7 @@ import {
   stepTowards,
   STRIKE_REACH,
 } from '../../rules/range';
+import { harmLine } from '../../rules/narration';
 import { guardBlock, playOn } from './cards';
 import { kitDamage, landHit, slips } from './kit';
 import { patch, type Card, type DeckFighter, type Intent } from './state';
@@ -145,7 +146,7 @@ function attack(fighters: DeckFighter[], { self, target }: Duo, range: RangeBand
   const landed = landHit(fighters, blow, damage, rng);
   return {
     fighters: landed.fighters,
-    lines: [`${self.name} hits ${target.name} for ${damage}${blocked}.`, ...landed.lines],
+    lines: [harmLine(`${self.name} hits ${target.name}${blocked}.`, damage), ...landed.lines],
   };
 }
 
