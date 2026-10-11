@@ -68,18 +68,18 @@ export function ShinobiScreen({
           <dd>{view.nature}</dd>
           <dt>Missions</dt>
           <dd>
-            {view.missionsCompleted} done · {view.missionsFailed} failed
+            {view.missionsCompleted} done, {view.missionsFailed} failed
           </dd>
         </dl>
         <p className="id-no">
-          Shinobi registry · No. {view.registryNo} · {view.pronouns} · issued {view.issued}
+          Registry no. {view.registryNo}, issued {view.issued}. Pronouns: {view.pronouns}.
         </p>
       </section>
       <section className="identity">
         {view.kekkeiGenkai && (
           <p>
             <span className="label">Bloodline</span> {view.kekkeiGenkai.name}
-            {view.kekkeiGenkai.dormant ? ' · dormant' : ' · active'}
+            {view.kekkeiGenkai.dormant ? ' (dormant)' : ' (active)'}
           </p>
         )}
         {view.traits.length > 0 && (
@@ -101,7 +101,7 @@ export function ShinobiScreen({
           <span className="label">Academy report</span>{' '}
           {view.grades.map((g) => (
             <span key={g.discipline} className={`grade-chip d-${g.discipline}`}>
-              {g.label.slice(0, 3)} · {g.mark}
+              {g.label.slice(0, 3)} {g.mark}
             </span>
           ))}
         </p>
@@ -109,7 +109,7 @@ export function ShinobiScreen({
       <StatSheet view={view} />
       <FightStylePicker ctx={ctx} state={state} perform={perform} />
       <p className="muted small">
-        {header.date} · {header.location}
+        {header.location}, {header.date}
       </p>
       <AbandonButton onAbandon={onAbandon} />
     </main>

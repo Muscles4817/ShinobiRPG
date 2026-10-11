@@ -57,7 +57,7 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
               <span className="hp mine">
                 <i style={{ width: `${(a.health / a.maxHealth) * 100}%` }} />
               </span>
-              <small>{a.statuses.join(' · ') || a.tag}</small>
+              <small>{a.statuses.join(', ') || a.tag}</small>
             </div>
           ))}
         </section>
@@ -84,7 +84,7 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
             </span>
           ))}
           {player.statuses.length > 0 && (
-            <span className="meter-chip">{player.statuses.join(' · ')}</span>
+            <span className="meter-chip">{player.statuses.join(', ')}</span>
           )}
         </div>
       )}

@@ -19,7 +19,7 @@ function ScrollRow({
         <b>
           {scroll.name} <span className="badge">{scroll.discipline.slice(0, 3)}</span>
         </b>
-        <small>{locked ? scroll.needs.join(' · ') : scroll.description}</small>
+        <small>{locked ? scroll.needs.join(', ') : scroll.description}</small>
         {!locked && (
           <>
             <span className="unroll">
@@ -28,7 +28,7 @@ function ScrollRow({
             <span className="scroll-foot">
               <small>
                 {scroll.progress > 0
-                  ? `${pct}% · about ${scroll.sessionsLeft} more sessions`
+                  ? `${pct}% studied, about ${scroll.sessionsLeft} more sessions`
                   : `About ${scroll.sessionsLeft} sessions`}
               </small>
               <button

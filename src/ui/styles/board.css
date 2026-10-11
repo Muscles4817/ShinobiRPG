@@ -219,9 +219,9 @@
   font-weight: 800;
 }
 .dest-epithet {
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-story);
+  font-style: italic;
+  font-size: 0.82rem;
   opacity: 0.88;
 }
 .dest-meta {

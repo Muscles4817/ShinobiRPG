@@ -158,7 +158,7 @@ describe('App (smoke test)', () => {
     render(<App store={memoryStore()} />);
     await startGame(user);
     await user.click(place(/Training Grounds/));
-    expect(screen.getByText(/Weekly lesson/)).toBeInTheDocument();
+    expect(screen.getByText(/Weekly \w+ lesson/)).toBeInTheDocument();
     const sparring = screen.getByRole('region', { name: 'Sparring' });
     const spar = within(sparring)
       .getAllByRole('button', { name: 'Spar' })

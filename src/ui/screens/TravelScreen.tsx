@@ -12,7 +12,7 @@ export function TravelScreen({ ctx, state, perform }: ScreenProps) {
     <>
       <Banner
         title="Where to?"
-        subtitle={`From ${header.location} · ${header.date}`}
+        subtitle={`From ${header.location}, ${header.date}`}
         slot={header.slot}
       />
       <main className="page">

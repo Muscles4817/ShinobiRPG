@@ -25,7 +25,7 @@ export function BreakInStep({ view, roll, chosen, onAttempt }: BreakInStepProps)
             >
               <b>{a.label}</b>
               <small>
-                {a.stat} · {a.chance}%
+                {a.stat} {a.chance}%
               </small>
             </button>
           ))}
@@ -35,7 +35,7 @@ export function BreakInStep({ view, roll, chosen, onAttempt }: BreakInStepProps)
           <p className="you">{view.approaches.find((a) => a.id === chosen)?.label}</p>
           <p className={`roll ${roll.succeeded ? 'pass' : 'fail'}`}>
             <i aria-hidden="true">{roll.succeeded ? '✓' : '✗'}</i>
-            {Math.round(roll.chance * 100)}% · {roll.succeeded ? 'passed' : 'failed'}
+            {roll.succeeded ? 'Passed' : 'Failed'} at {Math.round(roll.chance * 100)}%
           </p>
           <p className="story enter">{roll.text}</p>
           <p className="story enter">{view.records}</p>

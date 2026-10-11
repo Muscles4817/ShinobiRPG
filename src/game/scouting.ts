@@ -65,7 +65,7 @@ export interface ScoutingRead {
   readonly threatLabel: string;
   /** How they fight beyond numbers, and how to beat it. */
   readonly traits: readonly TraitNote[];
-  /** "Brawler · wants you close". */
+  /** "Brawler, wants you close". */
   readonly style: string;
   /** Their standout stats beside yours; empty unless your eyes are sharp enough. */
   readonly details: readonly StatCompare[];
@@ -74,17 +74,17 @@ export interface ScoutingRead {
 const ARTS: readonly Discipline[] = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'];
 
 const ART_STYLE: Readonly<Record<Discipline, string>> = {
-  taijutsu: 'Brawler · wants you close',
-  kenjutsu: 'Blade fighter · close to mid range',
-  ninjutsu: 'Jutsu user · keeps their distance',
-  genjutsu: 'Illusionist · dangerous at any range',
-  fuuinjutsu: 'Seal user · close to mid range',
+  taijutsu: 'Brawler, wants you close',
+  kenjutsu: 'Blade fighter, close to mid range',
+  ninjutsu: 'Jutsu user, keeps their distance',
+  genjutsu: 'Illusionist, dangerous at any range',
+  fuuinjutsu: 'Seal user, close to mid range',
 };
 
 const BODY_STYLE: Readonly<Partial<Record<StatId, string>>> = {
-  strength: 'Hits hard · wants you close',
-  speed: 'Quick and slippery · wants you close',
-  stamina: 'Tough to put down · wants you close',
+  strength: 'Hits hard, wants you close',
+  speed: 'Quick and slippery, wants you close',
+  stamina: 'Tough to put down, wants you close',
 };
 
 /** Power ratios (theirs ÷ yours) where each read starts; within ±15% is a fair fight. */

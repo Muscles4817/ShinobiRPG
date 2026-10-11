@@ -177,7 +177,7 @@ function logOpening(state: GameState, ctx: GameContext, roll: BreakInRoll): Game
     tone: roll.succeeded ? 'success' : 'warning',
     chips: [
       chip(
-        `${stat} check · ${pct} · ${roll.succeeded ? 'passed' : 'failed'}`,
+        `${stat} check ${roll.succeeded ? 'passed' : 'failed'} at ${pct}`,
         roll.succeeded ? 'gain' : 'harm',
       ),
     ],

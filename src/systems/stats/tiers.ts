@@ -30,7 +30,7 @@ export interface TierRead {
   readonly grade: StatGrade;
   /** The shinobi rank the grade belongs to, e.g. "Genin". */
   readonly rank: string;
-  /** "D · Genin". */
+  /** "Genin D". */
   readonly label: string;
   /** How far through this grade towards the next, 0–1 (1 at the top). */
   readonly progress: number;
@@ -39,7 +39,7 @@ export interface TierRead {
 }
 
 function labelOf(tier: StatTier): string {
-  return `${tier.grade} · ${tier.rank}`;
+  return `${tier.rank} ${tier.grade}`;
 }
 
 export function statTier(value: number): TierRead {

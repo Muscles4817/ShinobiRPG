@@ -164,13 +164,13 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
       <header className="ng-hero sky" data-slot="night">
         <Backdrop id={view.world.backdrop} />
         <div className="ng-hero-text">
-          <p className="label gold">{view.world.epithet}</p>
+          <p className="epithet gold">{view.world.epithet}</p>
           <h1 className="ng-title">{view.world.village}</h1>
         </div>
       </header>
       <main className="file">
         {notice && <Notice text={notice} />}
-        <p className="file-stamp">Academy record · Confidential</p>
+        <p className="file-stamp">Confidential</p>
         <h2 className="file-title">{TITLES[step]}</h2>
         <StepBody
           step={step}

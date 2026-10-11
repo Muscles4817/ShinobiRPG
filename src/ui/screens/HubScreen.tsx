@@ -36,13 +36,13 @@ export function HubScreen({
             <b>{header.name}</b>
             <span>
               {header.rank}
-              {header.visiting ? ' · visiting' : ''}
+              {header.visiting ? ' (visiting)' : ''}
             </span>
             <span className="ryo num">{header.ryo} ryo</span>
           </div>
           <div className="hub-row">
             <span className="when">
-              {header.date} · {header.slot}
+              {header.slot}, {header.date}
             </span>
             <DayStrip slotIndex={header.slotIndex} />
             {header.warnings.map((w) => (

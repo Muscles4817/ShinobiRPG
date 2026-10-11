@@ -59,20 +59,20 @@ export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
         </button>
         <div className="room-title">
           <p className="label">
-            {view.name} · {view.slot}
+            {view.name}, {view.slot}
           </p>
           <h1>{view.lodging}</h1>
         </div>
         <Hotspot
           className="hs-futon"
-          label="Futon · Sleep till dawn"
+          label="Sleep till dawn"
           choice={view.sleep}
           perform={perform}
         />
-        <Hotspot className="hs-kettle" label="Kettle · Nap" choice={view.nap} perform={perform} />
-        <Jump className="hs-stove" label="Stove · Cook" target="kitchen" />
-        <Jump className="hs-chest" label="Chest · Gear" target="locker" />
-        <Hotspot className="hs-shrine" label="Shrine · Pray soon" perform={perform} />
+        <Hotspot className="hs-kettle" label="Nap" choice={view.nap} perform={perform} />
+        <Jump className="hs-stove" label="Cook" target="kitchen" />
+        <Jump className="hs-chest" label="Change gear" target="locker" />
+        <Hotspot className="hs-shrine" label="Pray (soon)" perform={perform} />
       </div>
       <main className="page">
         <section className="deed">
@@ -162,7 +162,7 @@ export function HospitalPage({ ctx, state, perform, onBack }: PlaceProps) {
               perform(view.treat.action);
             }}
           >
-            Full treatment · {view.cost} ryo
+            Full treatment for {view.cost} ryo
           </button>
           {view.treat.blocker && <p className="muted small">{view.treat.blocker}</p>}
         </section>

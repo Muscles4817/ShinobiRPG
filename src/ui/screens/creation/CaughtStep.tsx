@@ -18,7 +18,7 @@ export function CaughtStep({ view, draft }: StepProps) {
           <dd>{clan?.name}</dd>
           <dt>Grades</dt>
           <dd className="num">
-            {view.disciplines.map((d) => `${d.name.slice(0, 3)} ${draft.grades[d.id]}`).join(' · ')}
+            {view.disciplines.map((d) => `${d.name.slice(0, 3)} ${draft.grades[d.id]}`).join(', ')}
           </dd>
           <dt>Nature</dt>
           <dd>{name(draft.nature, view.natures)}</dd>

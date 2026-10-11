@@ -25,7 +25,7 @@ function Read({ read }: { readonly read: ScoutingRead }) {
       ))}
       {read.details.length > 0 && (
         <small className="num">
-          {read.details.map((d) => `${d.label} ${d.theirs} (you ${d.yours})`).join(' · ')}
+          {read.details.map((d) => `${d.label} ${d.theirs} (you ${d.yours})`).join(', ')}
         </small>
       )}
     </span>

@@ -22,7 +22,7 @@ function Lesson({ lesson, perform }: { lesson: LessonCard; perform: TeamCornerPr
           <Portrait appearance={lesson.sensei.appearance} size={52} />
         </span>
         <div>
-          <p className="label">Weekly lesson · {lesson.specialty.label}</p>
+          <p className="label">Weekly {lesson.specialty.label.toLowerCase()} lesson</p>
           <h2>{lesson.sensei.fullName}</h2>
           <p className="muted small">{lesson.style}</p>
         </div>
@@ -49,7 +49,7 @@ function Lesson({ lesson, perform }: { lesson: LessonCard; perform: TeamCornerPr
         <p className="blocker">{lesson.blocker}</p>
       ) : (
         <div className="drill-foot">
-          <span className="cost num">{lesson.energyCost} energy · 2 slots</span>
+          <span className="cost num">{lesson.energyCost} energy, 2 slots</span>
           <button
             type="button"
             className="btn small"

@@ -133,7 +133,7 @@ export interface Scroll extends Choice {
   readonly sessionsLeft: number;
   /** A technique only your clan teaches. */
   readonly fromClan: boolean;
-  /** Unmet requirements, e.g. "Ninjutsu 7 · you have 5.0". */
+  /** Unmet requirements, e.g. "Ninjutsu 7 (you have 5.0)". */
   readonly needs: readonly string[];
   /** Total stat points still missing; Coming up lists the closest first. */
   readonly shortfall: number;
@@ -166,7 +166,7 @@ export function academyView(state: GameState, ctx: GameContext): AcademyView | n
         ([stat, min]) => stats[stat] < min,
       );
       const needs = unmet.map(
-        ([stat, min]) => `${STAT_INFO[stat].label} ${min} · you have ${stats[stat].toFixed(1)}`,
+        ([stat, min]) => `${STAT_INFO[stat].label} ${min} (you have ${stats[stat].toFixed(1)})`,
       );
       return {
         ...choice(state, ctx, { type: 'study', techniqueId: id }),

@@ -6,13 +6,13 @@ describe('stat tiers', () => {
     expect(statTier(6)).toEqual({
       grade: 'E',
       rank: 'Genin',
-      label: 'E · Genin',
+      label: 'Genin E',
       progress: 0.75,
-      next: { label: 'D · Genin', at: 8 },
+      next: { label: 'Genin D', at: 8 },
     });
-    expect(statTier(15).label).toBe('C · Chūnin');
-    expect([20, 28].map((v) => statTier(v).label)).toEqual(['B · Jōnin', 'A · Jōnin']);
-    expect(statTier(45)).toMatchObject({ grade: 'S', label: 'S · Kage', progress: 1, next: null });
+    expect(statTier(15).label).toBe('Chūnin C');
+    expect([20, 28].map((v) => statTier(v).label)).toEqual(['Jōnin B', 'Jōnin A']);
+    expect(statTier(45)).toMatchObject({ grade: 'S', label: 'Kage S', progress: 1, next: null });
     expect(statTier(1).grade).toBe('E');
   });
 
