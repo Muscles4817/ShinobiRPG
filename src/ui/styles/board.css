@@ -241,12 +241,15 @@
   position: absolute;
   right: 10px;
   top: 10px;
-  background: var(--gold);
-  color: var(--on-lantern);
-  font-size: 0.7rem;
+  color: var(--gold);
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+  font-family: var(--font-story);
+  font-size: 0.76rem;
   font-weight: 800;
-  padding: 1px 8px;
-  border-radius: 999px;
+  padding: 0 6px;
+  background: rgb(10 8 16 / 0.6);
+  transform: rotate(3deg);
 }
 .dest-meta .dest-lock {
   background: rgb(255 255 255 / 0.88);

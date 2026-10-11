@@ -101,7 +101,7 @@ export function ShinobiScreen({
           <span className="label">Academy report</span>{' '}
           {view.grades.map((g) => (
             <span key={g.discipline} className={`grade-chip d-${g.discipline}`}>
-              {g.label.slice(0, 3)} {g.mark}
+              <b>{g.label.slice(0, 3)}</b> {g.mark}
             </span>
           ))}
         </p>

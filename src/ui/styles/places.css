@@ -40,17 +40,17 @@
 
 .filters {
   display: flex;
-  gap: 6px;
+  gap: 12px;
   overflow-x: auto;
   padding-bottom: 2px;
 }
 .filter {
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  padding: 4px 11px;
-  border-radius: 999px;
-  background: var(--raise);
-  color: var(--d, var(--muted));
+  padding: 0 4px;
+  min-height: 40px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
   white-space: nowrap;
   text-transform: capitalize;
 }
@@ -58,8 +58,11 @@
   --d: var(--muted);
 }
 .filter.on {
-  background: var(--ink);
-  color: var(--bg);
+  color: var(--d);
+  border-bottom-color: var(--d);
+}
+.filter.d-all.on {
+  --d: var(--ink);
 }
 
 .drills {
