@@ -3,9 +3,14 @@ import type { ReactNode } from 'react';
 import type { Appearance } from '@/game';
 
 /**
- * A flat bust portrait drawn from an Appearance. Used for the player now and for every
- * generated or authored person later, so it never needs image files.
+ * A bust portrait drawn from an Appearance, in the manner of a woodblock print: flat colour
+ * held by an ink outline, almond eyes and a kimono collar. Used for the player and every
+ * generated or authored person, so it never needs image files.
  */
+
+/** The print's key-block ink, outlining every shape. */
+const INK = '#1d1510';
+const LINE = { stroke: INK, strokeWidth: 1.4, strokeLinejoin: 'round' } as const;
 const HAIR: Readonly<Record<Appearance['hairStyle'], (c: string) => ReactNode>> = {
   spiky: (c) => (
     <path
@@ -73,26 +78,41 @@ export function Portrait({ appearance: a, size = 80, framing = 'bust' }: Portrai
       height={size * frame.aspect}
       aria-hidden="true"
     >
-      <path d="M6 96 Q8 72 40 70 Q72 72 74 96Z" fill={a.outfitColour} />
+      <path d="M6 96 Q8 72 40 70 Q72 72 74 96Z" fill={a.outfitColour} {...LINE} />
+      {/* Kimono collar: the pale under-collar crossing at the chest. */}
+      <path d="M32 70 L40 86 L48 70" fill="none" stroke="#efe3c8" strokeWidth="3" />
+      <path d="M29 71 L40 90 L51 71" fill="none" stroke={INK} strokeWidth="1.2" />
       {a.headband === 'arm' && <rect x="8" y="82" width="12" height="6" rx="1.5" fill="#c9ccd6" />}
       {a.headband === 'belt' && (
         <rect x="30" y="90" width="20" height="6" rx="1.5" fill="#c9ccd6" />
       )}
-      <rect x="33" y="58" width="14" height="14" fill={a.skinTone} />
-      <ellipse cx="40" cy="44" rx="21" ry="24" fill={a.skinTone} />
-      <ellipse cx="32" cy="46" rx="3.2" ry="3.8" fill="#fff" />
-      <ellipse cx="48" cy="46" rx="3.2" ry="3.8" fill="#fff" />
-      <circle cx="32" cy="46.5" r="2.3" fill={a.eyeColour} />
-      <circle cx="48" cy="46.5" r="2.3" fill={a.eyeColour} />
+      <rect x="34" y="58" width="12" height="14" fill={a.skinTone} {...LINE} />
+      <path d="M34 62 Q40 67 46 62 L46 67 Q40 70 34 67Z" fill="rgb(0 0 0 / 0.18)" />
       <path
-        d="M35 58 Q40 61 45 58"
-        stroke="#5a3a2a"
-        strokeWidth="1.4"
+        d="M19 42 Q19 20 40 20 Q61 20 61 42 Q61 58 48 65 Q40 69 32 65 Q19 58 19 42Z"
+        fill={a.skinTone}
+        {...LINE}
+      />
+      <g fill="none" stroke={INK} strokeLinecap="round">
+        <path d="M27.5 40.5 Q31.5 38.6 35.5 40" strokeWidth="1.3" />
+        <path d="M44.5 40 Q48.5 38.6 52.5 40.5" strokeWidth="1.3" />
+        <path d="M28 46.5 Q32 43.6 36 46.5" strokeWidth="1.7" />
+        <path d="M44 46.5 Q48 43.6 52 46.5" strokeWidth="1.7" />
+        <path d="M40.5 49 Q42 52.5 39.5 53.5" strokeWidth="1" />
+      </g>
+      <circle cx="32" cy="47.2" r="1.6" fill={a.eyeColour} stroke={INK} strokeWidth="0.6" />
+      <circle cx="48" cy="47.2" r="1.6" fill={a.eyeColour} stroke={INK} strokeWidth="0.6" />
+      <path
+        d="M37 58.5 Q40 59.6 43 58.5"
+        stroke="#7a3a2a"
+        strokeWidth="1.3"
         fill="none"
         strokeLinecap="round"
       />
-      {HAIR[a.hairStyle](a.hairColour)}
-      <Headband place={a.headband} />
+      <g {...LINE}>
+        {HAIR[a.hairStyle](a.hairColour)}
+        <Headband place={a.headband} />
+      </g>
     </svg>
   );
 }
