@@ -40,7 +40,7 @@ export function missionScene(state: GameState, ctx: GameContext): MissionScene |
       ? {
           kind: 'roll',
           success: n.success,
-          text: `${STAT_INFO[n.stat].label} check · ${Math.round(n.chance * 100)}% · ${n.success ? 'passed' : 'failed'}`,
+          text: `${STAT_INFO[n.stat].label} check ${n.success ? 'passed' : 'failed'} at ${Math.round(n.chance * 100)}%`,
         }
       : n,
   );
@@ -78,7 +78,7 @@ export function missionScene(state: GameState, ctx: GameContext): MissionScene |
         prompt: stage.text,
         choices: stage.approaches.map((a, approachIndex) => ({
           label: a.label,
-          detail: `${STAT_INFO[a.stat].label} · ${Math.round(checkChance(state.character.stats[a.stat], a.difficulty) * 100)}%`,
+          detail: `${STAT_INFO[a.stat].label} ${Math.round(checkChance(state.character.stats[a.stat], a.difficulty) * 100)}%`,
           primary: false,
           action: { type: 'missionChoose', approachIndex },
         })),

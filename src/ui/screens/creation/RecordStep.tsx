@@ -74,7 +74,7 @@ function ClanDetails({ clan: c }: { readonly clan: ClanOption }) {
     <>
       {c.kekkeiGenkai && (
         <span className="kg">
-          <b>{c.kekkeiGenkai.name}</b> · {c.kekkeiGenkai.dormant ? 'dormant' : 'active'}.{' '}
+          <b>{c.kekkeiGenkai.name}</b>, {c.kekkeiGenkai.dormant ? 'dormant' : 'active'}.{' '}
           {c.kekkeiGenkai.description}
         </span>
       )}

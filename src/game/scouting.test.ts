@@ -17,13 +17,13 @@ describe('sizing up an opponent', () => {
   it('reads how they fight from their stats', () => {
     const you = createStats(6);
     expect(scout(createStats(6, { taijutsu: 4 }), you, false).style).toBe(
-      'Brawler · wants you close',
+      'Brawler, wants you close',
     );
     expect(scout(createStats(6, { ninjutsu: 4 }), you, false).style).toBe(
-      'Jutsu user · keeps their distance',
+      'Jutsu user, keeps their distance',
     );
     expect(scout(createStats(3, { speed: 3, strength: 1 }), you, false).style).toBe(
-      'Quick and slippery · wants you close',
+      'Quick and slippery, wants you close',
     );
   });
 
@@ -54,8 +54,8 @@ describe('scouting in play', () => {
 
   it('your stats come with what they mean', () => {
     const view = shinobiView(newGame(), ctx);
-    expect(view.overall.label).toBe('E · Genin');
-    expect(view.overall.next).toEqual({ label: 'D · Genin', at: 8 });
-    expect(view.groups[0]?.stats[0]?.tier.label).toMatch(/^[EDCBAS] · /);
+    expect(view.overall.label).toBe('Genin E');
+    expect(view.overall.next).toEqual({ label: 'Genin D', at: 8 });
+    expect(view.groups[0]?.stats[0]?.tier.label).toMatch(/ [EDCBAS]$/);
   });
 });

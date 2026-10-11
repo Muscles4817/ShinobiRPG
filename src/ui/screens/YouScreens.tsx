@@ -6,10 +6,10 @@ import { TechniqueCard } from '../components/TechniqueCard';
 import type { ScreenProps } from './types';
 
 const EFFECT_TEXT: Readonly<Record<JutsuCard['effect'], (power: number) => string>> = {
-  damage: (power) => `power ${power}`,
-  stun: () => 'dazes',
-  heal: () => 'heals',
-  seal: () => 'seals',
+  damage: (power) => `Power ${power}`,
+  stun: () => 'Dazes',
+  heal: () => 'Heals',
+  seal: () => 'Seals',
 };
 
 const DISCIPLINE_ORDER = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
@@ -24,9 +24,9 @@ const FILTER_LABELS: Readonly<Record<Discipline | 'all', string>> = {
 };
 
 function cardDetail(card: JutsuCard): string {
-  if (card.status === 'studying') return `Studying · ${card.progressPct}%`;
+  if (card.status === 'studying') return `Studying, ${card.progressPct}% learned`;
   if (card.status === 'unknown') return 'Not learned';
-  return `${card.chakraCost} chakra · ${EFFECT_TEXT[card.effect](card.power)}`;
+  return `${EFFECT_TEXT[card.effect](card.power)} for ${card.chakraCost} chakra`;
 }
 
 /** Your techniques as a deck of the same cards you play in fights. */
@@ -47,7 +47,7 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
       <header className="plain-head">
         <h1>Jutsu</h1>
         <p className="label">
-          {known} known · {deck.length - known} to discover
+          {known} known, {deck.length - known} to discover
         </p>
       </header>
       <main className="page">
@@ -92,7 +92,7 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
             <div className="undiscovered-row">
               {undiscovered.map((g) => (
                 <span key={g.discipline} className={`badge d-${g.discipline}`}>
-                  {FILTER_LABELS[g.discipline]} · {g.count}
+                  {FILTER_LABELS[g.discipline]} {g.count}
                 </span>
               ))}
             </div>

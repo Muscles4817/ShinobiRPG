@@ -50,7 +50,7 @@ export function DinnerInvites({ invites, blocker, perform }: DinnerInvitesProps)
                 <b>{g.name}</b>
                 <small>
                   {g.stage}
-                  {g.favourite ? ' · their favourite' : ''}
+                  {g.favourite ? ', their favourite' : ''}
                 </small>
                 {g.blocker && <small className="blocker">{g.blocker}</small>}
               </button>

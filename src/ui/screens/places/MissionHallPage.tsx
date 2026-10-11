@@ -22,7 +22,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
     <>
       <Banner
         title={view.name}
-        subtitle={`${view.completed} completed · energy ${header.meters[2]?.value ?? 0}`}
+        subtitle={`${view.completed} jobs done, ${header.meters[2]?.value ?? 0} energy left`}
         slot={header.slot}
         onBack={onBack}
         backLabel={header.location}

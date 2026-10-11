@@ -39,7 +39,7 @@ function QuickPick({ view, draft, update }: StepProps) {
       {ROLES.map((role) => (
         <div key={role} className="swatch-row" role="group" aria-label={role}>
           <span className="label">
-            {role} · {ROLE_GRADE[role]}
+            {role}, {ROLE_GRADE[role]}
           </span>
           <span className="segments">
             {view.disciplines.map((d) => (
@@ -131,12 +131,12 @@ export function ReportCardStep(props: ReportCardProps) {
                 <td className="muted small">
                   {info?.label}
                   {info && info.statBonus !== 0
-                    ? ` · ${info.statBonus > 0 ? '+' : ''}${info.statBonus}`
+                    ? `, ${info.statBonus > 0 ? '+' : ''}${info.statBonus}`
                     : ''}
                   {info && info.pacePct !== 0
-                    ? ` · learns ${Math.abs(info.pacePct)}% ${info.pacePct > 0 ? 'faster' : 'slower'}`
+                    ? `, learns ${Math.abs(info.pacePct)}% ${info.pacePct > 0 ? 'faster' : 'slower'}`
                     : ''}
-                  {grade === 'A' ? ` · starts with ${d.starter}` : ''}
+                  {grade === 'A' ? `, starts with ${d.starter}` : ''}
                 </td>
               </tr>
             );

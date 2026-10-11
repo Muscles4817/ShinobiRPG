@@ -31,7 +31,7 @@ export function GearLocker({ ctx, state, perform }: GearLockerProps) {
             <div className="locker-row">
               <Icon id={slot.worn.icon} size={22} />
               <b>{slot.worn.name}</b>
-              <small className="muted">{slot.worn.bonuses.join(' · ')}</small>
+              <small className="muted">{slot.worn.bonuses.join(', ')}</small>
               {slot.takeOff && (
                 <button
                   type="button"
@@ -52,7 +52,7 @@ export function GearLocker({ ctx, state, perform }: GearLockerProps) {
             <div key={g.id} className="locker-row spare">
               <Icon id={g.icon} size={22} />
               <span>{g.name}</span>
-              <small className="muted">{g.bonuses.join(' · ')}</small>
+              <small className="muted">{g.bonuses.join(', ')}</small>
               {g.equip && (
                 <button
                   type="button"

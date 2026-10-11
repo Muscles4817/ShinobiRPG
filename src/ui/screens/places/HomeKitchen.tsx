@@ -55,7 +55,7 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
               ))}
             </span>
             <small className="muted">
-              {r.needs.map((n) => `${n.name} ${Math.min(n.have, n.need)}/${n.need}`).join(' · ')}
+              {r.needs.map((n) => `${n.name} ${Math.min(n.have, n.need)}/${n.need}`).join(', ')}
             </small>
             {r.blocker && <small className="blocker">{r.blocker}</small>}
             <button

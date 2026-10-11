@@ -45,7 +45,7 @@ export function Opposition({ opposition, perform }: OppositionProps) {
           perform(intel.action);
         }}
       >
-        Buy the report <span className="num">· {intel.fee} ryo</span>
+        Buy the report for <span className="num">{intel.fee} ryo</span>
       </button>
       {intel.blocker && <small className="blocker">{intel.blocker}</small>}
     </div>

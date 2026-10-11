@@ -15,7 +15,7 @@ function BondCard({ card, onOpen }: { readonly card: PersonCard; readonly onOpen
       <span className="bond-main">
         <b>{card.fullName}</b>
         <small>
-          {card.title} · {card.where}
+          {card.title}, {card.where}
         </small>
         <BondMeter stageName={card.stageName} progress={card.progress} />
       </span>
@@ -41,7 +41,7 @@ export function BondsScreen({ ctx, state, onOpenPerson }: BondsScreenProps) {
   return (
     <main className="page bonds">
       <header className="plain-head">
-        <p className="label">縁 · Bonds</p>
+        <p className="label">縁 Bonds</p>
         <h1>The people in your life</h1>
       </header>
       {view.team.length > 0 && (
@@ -58,7 +58,9 @@ export function BondsScreen({ ctx, state, onOpenPerson }: BondsScreenProps) {
       )}
       {view.strangers.length > 0 && (
         <details className="bond-group fold">
-          <summary className="label">Around the village · {view.strangers.length} to meet</summary>
+          <summary className="label">
+            {view.strangers.length} more to meet around the village
+          </summary>
           {view.strangers.map(card)}
         </details>
       )}

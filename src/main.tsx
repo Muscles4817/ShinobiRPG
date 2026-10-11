@@ -4,6 +4,7 @@ import { registerSW } from 'virtual:pwa-register';
 
 import { createLocalSaveStore } from '@/platform/localSaveStore';
 import { App } from '@/ui/App';
+import '@/ui/theme/fonts.css';
 import '@/ui/theme/tokens.css';
 import '@/ui/theme/base.css';
 import '@/ui/styles/shell.css';

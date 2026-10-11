@@ -78,7 +78,8 @@ export function StatSheet({ view }: { readonly view: ShinobiView }) {
         ))}
       </section>
       <p className="grade-key muted">
-        Grades: E–D genin · C chūnin · B–A jōnin · S kage. Bars show the way to the next letter.
+        E and D are genin grades, C is chūnin, B and A are jōnin, and S is kage. Bars show the way
+        to the next letter.
       </p>
     </>
   );

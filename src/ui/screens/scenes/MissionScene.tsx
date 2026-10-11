@@ -26,7 +26,7 @@ export function MissionScene({ ctx, state, perform }: ScreenProps) {
         <Backdrop id={header.backdrop} />
         <div className="vignette-text">
           <p className="label">
-            Mission · {scene.rank}-rank · {scene.client}
+            {scene.rank}-rank mission for {scene.client}
           </p>
           <h1>{scene.title}</h1>
         </div>

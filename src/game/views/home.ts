@@ -42,7 +42,7 @@ export function homeView(state: GameState, ctx: GameContext): HomeView | null {
     rentPerWeek: state.housing.rentPerWeek,
     rentStatus: rentStatus(state),
     overdue,
-    sleepQuality: overdue ? 'Locked out · poor rest' : 'Good · half your health back overnight',
+    sleepQuality: overdue ? 'Locked out, poor rest' : 'Good, half your health back overnight',
     sleep: choice(state, ctx, { type: 'sleep' }),
     nap: choice(state, ctx, { type: 'rest' }),
     payRent: choice(state, ctx, { type: 'payRent' }),

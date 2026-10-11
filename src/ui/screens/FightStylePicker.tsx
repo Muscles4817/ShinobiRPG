@@ -13,7 +13,7 @@ export function FightStylePicker({ ctx, state, perform }: FightStylePickerProps)
   return (
     <details className="fight-styles" aria-label="Fight style">
       <summary>
-        <span className="label">Fight style · playtest</span> <b>{active}</b>
+        <span className="label">Fight style (playtest)</span> <b>{active}</b>
       </summary>
       <p className="muted small">Applies from your next fight.</p>
       {styles.map((s) => (

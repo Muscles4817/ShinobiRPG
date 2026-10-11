@@ -16,6 +16,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'apple-touch-icon.png'],
+      // Fonts are precached too, or the game falls back to system fonts offline.
+      workbox: { globPatterns: ['**/*.{js,css,html,woff2}'] },
       manifest: {
         name: 'Shinobi RPG — Lantern Village',
         short_name: 'Shinobi RPG',
