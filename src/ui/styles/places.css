@@ -127,7 +127,7 @@
   font-size: 1.7rem;
   font-weight: 800;
   line-height: 1;
-  color: var(--ema-gain);
+  color: var(--ink-gain);
 }
 .drill-main span {
   display: flex;
@@ -154,7 +154,7 @@
 }
 .drill .cost,
 .drill .blocker {
-  color: var(--ema-cost);
+  color: var(--ink-cost);
   font-weight: 700;
   font-size: 0.75rem;
 }
@@ -236,45 +236,70 @@
   margin-left: auto;
   font-size: 0.72rem;
 }
+/* Menu slips: each dish or ingredient hangs from a string under the stall's noren. */
 .stall-items {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding: 12px 2px 6px;
 }
 .item {
-  flex: 0 0 148px;
-  background: var(--grain), var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 9px;
+  flex: 0 0 132px;
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  position: relative;
+  padding: 26px 10px 10px;
+  color: var(--paper-ink);
+  background: var(--grain-ink), var(--paper);
+  border-radius: 1px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.45);
 }
-
+.item::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: calc(50% - 0.5px);
+  width: 1px;
+  height: 16px;
+  background: var(--paper-muted);
+}
 .item:not(:disabled):active {
-  border-color: var(--lantern);
+  transform: translateY(1px);
 }
 .item:disabled {
   opacity: 0.6;
 }
 .item b {
-  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-story);
+  font-size: 0.95rem;
   line-height: 1.2;
 }
+.item b svg {
+  color: var(--wood);
+}
 .item small {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
 }
-.item-pic {
-  height: 52px;
-  border-radius: var(--radius);
-  display: grid;
-  place-items: center;
-  background: color-mix(in srgb, var(--lantern) 14%, transparent);
-  color: #ffc078;
+.item .muted {
+  color: var(--paper-muted);
 }
+.item .blocker {
+  color: var(--ink-cost);
+}
+.item .chip {
+  background: rgb(0 0 0 / 0.07);
+  color: var(--paper-muted);
+}
+.item .chip.gain {
+  background: color-mix(in srgb, var(--ink-gain) 12%, transparent);
+  color: var(--ink-gain);
+}
+
+/* A price tag: a paper label on dark wood; inked red on a paper slip. */
 .tag {
   position: absolute;
   right: 7px;
@@ -286,6 +311,10 @@
   padding: 1px 7px 1px 10px;
   border-radius: 3px;
   clip-path: polygon(6px 0, 100% 0, 100% 100%, 6px 100%, 0 50%);
+}
+.item .tag {
+  background: var(--seal);
+  color: var(--paper);
 }
 
 /* Home */
@@ -405,31 +434,66 @@
   flex-direction: column;
   gap: 8px;
 }
+/* A wall rack: each piece rests on a wooden bar, with room to read what it does. */
 .rack-items {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-.rack-item {
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px;
+  padding: 0 12px;
   border-radius: var(--radius);
-  background: var(--grain), var(--surface);
-  border: 1px solid var(--line);
+  background: var(--grain), color-mix(in srgb, var(--wood) 30%, var(--bg));
 }
-.rack-item.worn {
-  border-color: var(--lantern);
-  box-shadow: inset 0 0 0 1px var(--lantern);
+.rack-item {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  grid-template-areas:
+    'pic name tag'
+    'pic chips chips'
+    'pic desc desc'
+    'pic note btn';
+  column-gap: 12px;
+  row-gap: 5px;
+  align-items: start;
+  padding: 14px 0 12px;
+  border-bottom: 5px solid var(--wood);
 }
-.rack-item small {
-  font-size: 0.74rem;
-  line-height: 1.3;
+.rack-item:last-child {
+  border-bottom: none;
+}
+.rack-pic {
+  grid-area: pic;
+  color: #ffc078;
+  padding-top: 2px;
+}
+.rack-item b {
+  grid-area: name;
+  font-family: var(--font-story);
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+.rack-item.worn b {
+  color: var(--gold);
+}
+.rack-item .tag {
+  grid-area: tag;
+  position: static;
+  justify-self: end;
+}
+.rack-item .chips {
+  grid-area: chips;
+}
+.rack-desc {
+  grid-area: desc;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+.rack-item .blocker {
+  grid-area: note;
+  align-self: center;
+  font-size: 0.75rem;
 }
 .rack-item .btn {
-  margin-top: auto;
+  grid-area: btn;
+  justify-self: end;
 }
 
 .hs-stove {
