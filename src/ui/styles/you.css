@@ -20,11 +20,12 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: #fff;
-  border: 1px solid rgb(255 255 255 / 0.22);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1.5px solid var(--d);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 6px 14px rgb(0 0 0 / 0.35);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.35);
 }
 
 .tname {
@@ -35,35 +36,38 @@
 }
 .tdetail {
   font-size: 0.66rem;
-  opacity: 0.92;
+  color: var(--muted);
   position: relative;
 }
+/* The discipline's kanji sits in the middle of the card like its art. */
 .tglyph {
   position: absolute;
-  right: 6px;
-  bottom: 20px;
+  inset: 0;
+  display: grid;
+  place-items: center;
   font-family: var(--font-story);
-  font-size: 2rem;
+  font-size: 2.6rem;
   font-weight: 800;
-  opacity: 0.25;
+  color: var(--d);
+  opacity: 0.4;
 }
 .t-taijutsu {
-  background: linear-gradient(160deg, var(--taijutsu), #7a2614);
+  --d: var(--taijutsu);
 }
 .t-ninjutsu {
-  background: linear-gradient(160deg, var(--ninjutsu), #1d3d7a);
+  --d: var(--ninjutsu);
 }
 .t-genjutsu {
-  background: linear-gradient(160deg, var(--genjutsu), #44207a);
+  --d: var(--genjutsu);
 }
 .t-kenjutsu {
-  background: linear-gradient(160deg, #6f8fa8, #2a3a4a);
+  --d: var(--kenjutsu);
 }
 .t-fuuinjutsu {
-  background: linear-gradient(160deg, #c9932f, #5a3a10);
+  --d: var(--fuuinjutsu);
 }
 .t-basic {
-  background: linear-gradient(160deg, #4b4560, #25213a);
+  --d: var(--muted);
 }
 .tcard.ghost {
   background: transparent;
@@ -150,15 +154,16 @@
   padding: 9px;
   display: flex;
   flex-direction: column;
-  color: #fff;
-  background: linear-gradient(160deg, var(--d), color-mix(in srgb, var(--d) 40%, #000));
+  background: var(--surface);
+  border: 1px solid var(--line);
 }
 .disc b {
   font-size: 1.4rem;
+  color: var(--d);
 }
 .disc small {
   font-size: 0.68rem;
-  opacity: 0.92;
+  color: var(--muted);
 }
 .stat-cols {
   display: grid;
@@ -262,7 +267,6 @@
   background: color-mix(in srgb, var(--g) 30%, #000);
 }
 .disc .grade-bar {
-  background: rgb(0 0 0 / 30%);
   margin: 4px 0 2px;
 }
 .overall {

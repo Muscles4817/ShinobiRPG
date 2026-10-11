@@ -222,13 +222,15 @@
 .place-badge {
   display: inline-block;
   margin-left: 6px;
-  padding: 0 6px;
-  border-radius: 999px;
-  font-size: 0.64rem;
+  padding: 0 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+  font-family: var(--font-story);
+  font-size: 0.72rem;
   font-weight: 800;
   vertical-align: middle;
-  color: var(--on-lantern);
-  background: var(--lantern);
+  color: var(--lantern);
+  transform: rotate(-3deg);
 }
 
 /* Village life: festival banner, night sights and gossip */

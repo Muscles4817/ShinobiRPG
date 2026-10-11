@@ -307,11 +307,10 @@
   align-items: center;
 }
 .grade-chip {
-  border-radius: 6px;
-  padding: 1px 7px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: color-mix(in srgb, var(--d) 20%, transparent);
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+.grade-chip b {
   color: var(--d);
 }
 .disc-tiles {
