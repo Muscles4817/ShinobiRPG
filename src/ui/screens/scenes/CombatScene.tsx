@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
-import { combatScene, combatScouting, type CombatOption } from '@/game';
+import { combatLog, combatScene, combatScouting, type CombatOption } from '@/game';
 
+import { Chips } from '../../components/Chips';
 import type { ScreenProps } from '../types';
 import { ActionBar, Hand, PlanPicker } from './combat/Choices';
 import { Foes } from './combat/Foes';
@@ -42,12 +43,17 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
       />
       {view.range && <RangeStrip range={view.range} />}
       <main className="page feed combat-log" aria-live="polite">
-        {view.log.slice(-6).map((line, i) => (
-          <p key={`${view.round}-${i}`} className={line.startsWith('—') ? 'divider' : 'story'}>
-            {/* A round marker gets drawn rules from .divider, so its own dashes go. */}
-            {line.startsWith('—') ? line.replaceAll('—', '').trim() : line}
-          </p>
-        ))}
+        {combatLog(view.log.slice(-6)).map((line, i) =>
+          line.kind === 'round' ? (
+            <p key={`${view.round}-${i}`} className="divider">
+              {line.text}
+            </p>
+          ) : (
+            <p key={`${view.round}-${i}`} className="story log-line">
+              {line.text} <Chips chips={line.chips} />
+            </p>
+          ),
+        )}
       </main>
       {view.prompt && <p className="combat-prompt">{view.prompt}</p>}
       {allies.length > 0 && (

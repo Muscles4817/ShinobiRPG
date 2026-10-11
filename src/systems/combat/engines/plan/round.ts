@@ -15,6 +15,7 @@ import { matchup, matchupLine } from '../../rules/elements';
 import { revealOnAttack } from '../../rules/items';
 import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
+import { healLine } from '../../rules/narration';
 import { cardId, isOffence, type Card } from './cards';
 import { chooseCard } from './choose';
 import { useTool } from './pouch';
@@ -104,7 +105,7 @@ function useJutsu(round: Round, { actor, target, rng }: Turn, t: CombatTechnique
   if (t.effect === 'heal') {
     const health = Math.min(actor.maxHealth, actor.health + healAmount(actor, t));
     const healed = { ...paid, fighters: patch(paid.fighters, actor.id, { health }) };
-    return say(healed, `${actor.name} recovers ${health - actor.health}.`);
+    return say(healed, healLine(`${actor.name} recovers.`, health - actor.health));
   }
   if (!target) return paid;
   if (rng.chance(resistChance(actor, target, t)))

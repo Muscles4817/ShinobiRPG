@@ -182,7 +182,8 @@ ui ──► game ──► content ──► systems ──► core
 - **Add or rewrite a combat engine (fight style):** implement `CombatEngine` in
   `systems/combat/engines/<name>/` on top of `rules/`, export its factory from
   `systems/combat/index.ts`, and add it to `defaultEngines()` in `game/context.ts`. It appears
-  in the fight-style picker automatically. No other code changes. Removing an engine or
+  in the fight-style picker automatically. No other code changes. Narrate damage and healing
+  with `harmLine`/`healLine` (`rules/narration.ts`) so the amount shows as a chip, never in the story. Removing an engine or
   changing its id needs a migration for saves that are mid-fight in it or have it chosen.
 - **Add a player action:** add a variant to `GameAction` (`game/actions/types.ts`), write a
   handler (`check` + `perform`), register it in `game/actions/registry.ts` (the compiler
