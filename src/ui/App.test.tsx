@@ -165,8 +165,10 @@ describe('App (smoke test)', () => {
       .find((b) => !(b as HTMLButtonElement).disabled)!;
     await user.click(spar);
     expect(screen.getByText('Sparring')).toBeInTheDocument();
+    // An illusionist partner starts hidden and must be found before strikes land.
     for (let i = 0; i < 60 && !screen.queryByRole('dialog'); i++) {
-      await user.click(screen.getByRole('button', { name: /^Strike/ }));
+      const search = screen.queryByRole('button', { name: /^Search/ });
+      await user.click(search ?? screen.getByRole('button', { name: /^Strike/ }));
     }
     expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
   });
