@@ -16,8 +16,8 @@ function RackItem({ item, perform }: ShopItemProps) {
   return (
     <article className={item.equipped ? 'rack-item worn' : 'rack-item'}>
       {!item.owned && <span className="tag num">{item.cost}</span>}
-      <span className="item-pic">
-        <Icon id={item.icon} size={28} />
+      <span className="rack-pic">
+        <Icon id={item.icon} size={30} />
       </span>
       <b>{item.name}</b>
       <span className="chips">
@@ -27,7 +27,7 @@ function RackItem({ item, perform }: ShopItemProps) {
           </span>
         ))}
       </span>
-      <small className="muted">{item.description}</small>
+      <small className="rack-desc muted">{item.description}</small>
       {action?.blocker && !item.owned && <small className="blocker">{action.blocker}</small>}
       <button
         type="button"
@@ -54,8 +54,8 @@ function TrayItem({ item, perform }: ToolProps) {
   return (
     <article className="rack-item">
       <span className="tag num">{item.cost}</span>
-      <span className="item-pic">
-        <Icon id={item.icon} size={28} />
+      <span className="rack-pic">
+        <Icon id={item.icon} size={30} />
       </span>
       <b>{item.name}</b>
       <span className="chips">
@@ -63,7 +63,7 @@ function TrayItem({ item, perform }: ToolProps) {
           In pouch {item.count}/{item.limit}
         </span>
       </span>
-      <small className="muted">{item.description}</small>
+      <small className="rack-desc muted">{item.description}</small>
       {buy.blocker && <small className="blocker">{buy.blocker}</small>}
       <button
         type="button"
@@ -79,7 +79,7 @@ function TrayItem({ item, perform }: ToolProps) {
   );
 }
 
-/** A gear shop as racks by slot: weapons, armour, charms. */
+/** A gear shop as wall racks by slot (weapons, armour, charms), each piece resting on a bar. */
 export function GearShopPage({
   ctx,
   state,

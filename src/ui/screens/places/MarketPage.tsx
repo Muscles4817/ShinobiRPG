@@ -66,10 +66,10 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
                     }}
                   >
                     <span className="tag num">{item.cost}</span>
-                    <span className="item-pic">
-                      <Icon id={item.icon} size={28} />
-                    </span>
-                    <b>{item.name}</b>
+                    <b>
+                      <Icon id={item.icon} size={18} />
+                      {item.name}
+                    </b>
                     <small className={item.blocker ? 'blocker' : 'muted'}>
                       {item.blocker ??
                         (item.inPantry > 0 ? `${item.inPantry} at home` : 'For cooking at home')}
