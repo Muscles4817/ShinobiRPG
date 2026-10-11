@@ -62,7 +62,7 @@
 .warn-chip {
   background: rgb(255 111 97 / 0.3);
   color: #ffe0dc;
-  border-radius: 999px;
+  border-radius: 2px;
   padding: 0 8px;
   font-size: 0.7rem;
   text-transform: none;
@@ -78,7 +78,7 @@
 }
 
 .place-card {
-  background: var(--surface);
+  background: var(--grain), var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 10px;
@@ -113,7 +113,7 @@
 .place-icon {
   width: 40px;
   height: 40px;
-  border-radius: 11px;
+  border-radius: var(--radius);
   display: grid;
   place-items: center;
   grid-row: span 2;
@@ -195,8 +195,8 @@
   gap: 4px;
   padding: 10px 12px;
   border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface);
+  border-radius: var(--radius);
+  background: var(--grain), var(--surface);
   cursor: pointer;
   position: relative;
 }
@@ -248,7 +248,7 @@
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line);
-  background: var(--surface);
+  background: var(--grain), var(--surface);
 }
 .festival p,
 .night-sight p {

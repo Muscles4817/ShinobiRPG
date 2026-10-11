@@ -2,7 +2,7 @@
 .board {
   flex: 1;
   margin: 12px var(--gutter);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 14px 12px;
   background:
     repeating-linear-gradient(90deg, rgb(0 0 0 / 0.08) 0 2px, transparent 2px 46px),
@@ -15,7 +15,7 @@
 }
 
 .paper {
-  background: var(--paper);
+  background: var(--grain-ink), var(--paper);
   color: var(--paper-ink);
   padding: 14px 9px 9px;
   border-radius: 2px;
@@ -55,13 +55,19 @@
   color: var(--seal);
   font-size: 0.75rem;
 }
+/* The reward never breaks; a long deadline drops to its own line instead. */
 .paper-foot {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  column-gap: 8px;
   font-weight: 700;
   border-top: 1px dashed #b9a67f;
   padding-top: 4px;
   margin-top: auto;
+}
+.paper-foot > :first-child {
+  white-space: nowrap;
 }
 .rank {
   position: absolute;
@@ -92,7 +98,7 @@
 }
 
 .paper-sheet {
-  background: var(--paper);
+  background: var(--grain-ink), var(--paper);
   color: var(--paper-ink);
 }
 .paper-sheet h2 {
@@ -231,11 +237,13 @@
   flex-wrap: wrap;
 }
 .dest-meta span {
-  background: rgb(0 0 0 / 0.5);
-  border-radius: 6px;
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border-radius: 1px;
   padding: 1px 7px;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
 }
 .here {
   position: absolute;
@@ -252,8 +260,8 @@
   transform: rotate(3deg);
 }
 .dest-meta .dest-lock {
-  background: rgb(255 255 255 / 0.88);
-  color: var(--on-lantern);
+  background: var(--seal);
+  color: var(--paper);
 }
 .dest.locked .backdrop {
   filter: grayscale(0.85) brightness(0.7);

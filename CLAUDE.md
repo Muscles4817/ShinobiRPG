@@ -300,6 +300,15 @@ ui ──► game ──► content ──► systems ──► core
 - **Disabled things say why**, and when possible what fixes it ("Needs 30 energy. Nap or eat first.").
 - **Locked content folds away** (sealed notices, "Coming up" scrolls, coming-soon destinations)
   with what unlocks it.
+- **Materials, not app chrome.** The look is a lantern-lit village at night: paper (notices,
+  records, slips), lacquer and wood (panels, the dock), ink (stamps, seals). Surfaces carry the
+  washi grain (`--grain`, `--grain-ink`); corners are near-square (`--radius`). Status marks are
+  ink stamps (`.badge`, `.place-badge`), never filled pills. Colour marks meaning (a discipline,
+  a gain, a cost), never decoration: no gradient fills on cards or tiles.
+- **Avoid the generic-template look.** No small uppercase letter-spaced labels (labels are
+  sentence case; a section label is a serif heading), no " · "-joined meta lines (write a
+  phrase), no coloured left-edge bars on cards, no emoji. Check new screens by screenshot at
+  390px, not just by tests.
 - **Tokens only**: colours, fonts and radii come from `ui/theme/tokens.css`. Icons and scenery
   are inline SVG in `ui/art/` (offline, no image files). Tap targets ≥ 40px. Motion is subtle
   and always disabled under `prefers-reduced-motion`. Night is the default theme.
