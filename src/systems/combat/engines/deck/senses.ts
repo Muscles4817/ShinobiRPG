@@ -34,7 +34,7 @@ export function senseOptions(state: DeckState): CombatOption[] {
   return [
     ...(anyHidden ? [option('search', 'Search', 'Find hidden foes', tired)] : []),
     ...(anyHidden || player.confused > 0
-      ? [option('dispel', 'Dispel', `Break illusions · ${DISPEL_CHAKRA} chakra`, tired ?? short)]
+      ? [option('dispel', 'Dispel', `Break illusions, ${DISPEL_CHAKRA} chakra`, tired ?? short)]
       : []),
   ];
 }

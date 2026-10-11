@@ -5,7 +5,7 @@ import { recordView } from '@/game';
 import { Chips } from '../components/Chips';
 import type { ScreenProps } from './types';
 
-/** The record: everything that happened, as a story feed. Opens scrolled to the latest. */
+/** The record: everything that happened, as a journal by day. Opens scrolled to the latest. */
 export function RecordScreen({ state }: ScreenProps) {
   const days = recordView(state);
   const end = useRef<HTMLDivElement>(null);
@@ -23,7 +23,7 @@ export function RecordScreen({ state }: ScreenProps) {
             <p className="divider">{day.date}</p>
             {day.lines.map((line) => (
               <article key={line.id} className={`entry tone-${line.tone}`}>
-                {line.heading && <p className="you">{line.heading}</p>}
+                {line.heading && <h3 className="entry-head">{line.heading}</h3>}
                 <p className="story">{line.text}</p>
                 <Chips chips={line.chips} />
               </article>

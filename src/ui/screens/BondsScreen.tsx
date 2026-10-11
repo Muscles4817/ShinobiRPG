@@ -8,6 +8,11 @@ interface BondsScreenProps extends ScreenProps {
   readonly onOpenPerson: (personId: string) => void;
 }
 
+/** "At the Forge" reads "Jōnin, at the Forge" after their rank. */
+function midSentence(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
 function BondCard({ card, onOpen }: { readonly card: PersonCard; readonly onOpen: () => void }) {
   return (
     <button type="button" className="bond-card" onClick={onOpen}>
@@ -15,7 +20,7 @@ function BondCard({ card, onOpen }: { readonly card: PersonCard; readonly onOpen
       <span className="bond-main">
         <b>{card.fullName}</b>
         <small>
-          {card.title}, {card.where}
+          {card.title}, {midSentence(card.where)}
         </small>
         <BondMeter stageName={card.stageName} progress={card.progress} />
       </span>

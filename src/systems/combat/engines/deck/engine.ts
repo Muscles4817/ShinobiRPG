@@ -73,7 +73,7 @@ function cardOption(card: Card, state: DeckState): CombatOption {
   const t = card.technique;
   const kindLabel = card.kind === 'jutsu' ? '' : CARD_LABEL[card.kind];
   const detail = t
-    ? `${chakraCost(player, t)} chakra · ${cardReach(card).join('/')}`
+    ? `${chakraCost(player, t)} chakra, ${cardReach(card).join('/')}`
     : card.kind === 'guard'
       ? 'Block damage'
       : cardReach(card).join('/');
@@ -214,7 +214,7 @@ export function createDeckEngine(): CombatEngine {
         log: deck.log,
         options: options(deck),
         range: deck.range,
-        prompt: `${RANGE_LABEL[deck.range]} range · ${deck.drawPile.length} cards to draw`,
+        prompt: `${RANGE_LABEL[deck.range]} range, ${deck.drawPile.length} cards to draw`,
         meters: [{ id: 'actions', label: 'Actions', value: deck.points, max: POINTS_PER_TURN }],
       };
     },

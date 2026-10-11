@@ -88,10 +88,13 @@ describe('deck fight tools', () => {
     const state = start(hero(items));
     const tools = engine.view(state).options.filter((o) => o.kind === 'item');
     expect(tools.map((o) => o.id)).toEqual(['item:smoke', 'item:heal', 'item:pouch:tag']);
-    expect(tools[0]).toMatchObject({ detail: '×2 · Vanish until you attack', cost: 1 });
+    expect(tools[0]).toMatchObject({ detail: 'Vanish until you attack (×2 left)', cost: 1 });
     expect(tools[0]?.disabledReason).toBeUndefined();
     expect(tools[1]?.disabledReason).toBe('You are unhurt.');
-    expect(tools[2]).toMatchObject({ detail: '×1 · Seal blast · through armour', targeted: true });
+    expect(tools[2]).toMatchObject({
+      detail: 'Seal blast through armour (×1 left)',
+      targeted: true,
+    });
     const tired = mutate(state, (d) => ({ ...d, points: 0 }));
     expect(option(tired, 'item:smoke')?.disabledReason).toBe('Not enough actions');
     const blind = start(hero(items), [fighter('ghost', { traits: ['illusionist'] })]);

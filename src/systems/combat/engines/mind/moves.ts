@@ -119,7 +119,7 @@ function senseOptions(player: MindFighter, situation: Situation): CombatOption[]
   const dispel: CombatOption = {
     id: 'dispel',
     label: 'Dispel',
-    detail: `Break illusions · ${DISPEL_CHAKRA} chakra`,
+    detail: `Break illusions, ${DISPEL_CHAKRA} chakra`,
     kind: 'move',
     ...(reason ? { disabledReason: reason } : {}),
   };
@@ -147,7 +147,7 @@ export function playerOptions(player: MindFighter, situation: Situation): Combat
   const techniques = player.techniques.map((t): CombatOption => ({
     id: `${TECHNIQUE_PREFIX}${t.id}`,
     label: t.name,
-    detail: `${chakraCost(player, t)} chakra · ${reachOf(t).join('/')}`,
+    detail: `${chakraCost(player, t)} chakra, ${reachOf(t).join('/')}`,
     kind: 'technique',
     discipline: t.discipline,
     ...(t.effect === 'heal' ? {} : { targeted: true }),
