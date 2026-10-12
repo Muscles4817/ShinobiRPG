@@ -127,6 +127,16 @@ ui ──► game ──► content ──► systems ──► core
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
     styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`).
+    **Health is 100 for every human** (`MAX_HEALTH`); creatures scale it with
+    `EnemyDef.healthScale`. Damage comes from the **gap** between attacker power and defender
+    defence (`rules/damage.ts`: a ratio of ratings, narrow variance), so equals trade the same
+    blows at every grade and each grade of difference is decisive. Defence has layers:
+    evasion (speed, perception), guard and counter (taijutsu, strength) and resistance
+    (willpower against genjutsu, perception against the rest) in `rules/defence.ts`; toughness
+    is stamina (plus `armoured` kit); healing is ninjutsu with chakra control; chakra control
+    breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
+    foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
+    lethality targets; retune the named constants there, not by eye.
     Every number has a frame of reference: `statTier` grades a stat value E–S (E–D genin, C chūnin,
     B–A jōnin, S kage) and
     `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you
@@ -215,7 +225,8 @@ ui ──► game ──► content ──► systems ──► core
   schedule of place ids in the start location). Senseis need `role: 'sensei'` and a
   `sensei` profile (style, lesson text, `teaches` technique ids); at least two specialties
   must exist for the team choice (validated).
-- **Add an enemy:** add an `EnemyDef` (stats, techniques, optional `nature`, `traits`) to the
+- **Add an enemy:** add an `EnemyDef` (stats, techniques, optional `nature`, `traits`, and
+  `healthScale` for a creature bigger or smaller than a person) to the
   pack's `enemies` and use it in a mission's combat stage. A new trait goes in
   `COMBAT_TRAITS`, its rule in `rules/kit.ts` or `rules/conditions.ts`, its counter text in
   `game/scouting.ts`, and every engine must honour it.
