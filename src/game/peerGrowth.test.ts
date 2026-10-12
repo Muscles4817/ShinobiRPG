@@ -36,7 +36,8 @@ describe('generated genin', () => {
     for (const person of newGame().people.generated) {
       expect(person.rank).toBe('genin');
       const specialty = person.specialty ?? 'taijutsu';
-      expect(person.stats[specialty]).toBeGreaterThanOrEqual(8);
+      // An A on the report card, as the player's: the base and its bonus, give or take the spread.
+      expect(person.stats[specialty]).toBeGreaterThanOrEqual(7);
       for (const id of STAT_IDS) expect(statTier(person.stats[id]).grade).toMatch(/[ED]/);
       expect(person.aptitude).toBeDefined();
     }

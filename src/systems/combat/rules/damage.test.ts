@@ -1,6 +1,11 @@
 import type { CombatAttributes, CombatTechnique } from '../contract';
 import {
+  bestArt,
   BLOW_DAMAGE,
+  cappedHit,
+  MAX_HIT_SHARE,
+  SKILL_DEFENCE_SHARE,
+  toughness,
   DAMAGE_VARIANCE,
   gapScale,
   healAmount,
@@ -88,5 +93,29 @@ describe('gap damage', () => {
     expect(healAmount(even(10, { chakraControl: 20 }), mend)).toBeGreaterThan(
       healAmount(even(10), mend),
     );
+  });
+});
+
+describe('skill in defence', () => {
+  it('a trained fighter’s best art defends them alongside stamina', () => {
+    const specialist = even(5, { ninjutsu: 9 });
+    expect(bestArt(specialist)).toBe(9);
+    expect(toughness(specialist)).toBeCloseTo(
+      5 * (1 - SKILL_DEFENCE_SHARE) + 9 * SKILL_DEFENCE_SHARE,
+    );
+  });
+
+  it('so between specialists of the same grade, a technique lands a few blows’ worth, not a kill', () => {
+    const caster = even(5, { ninjutsu: 9 });
+    const brawler = even(5, { taijutsu: 9, strength: 6 });
+    const hit = techniqueDamage(caster, brawler, fireball, 0.5);
+    expect(hit).toBeLessThan(40);
+    expect(hit).toBeGreaterThan(15);
+  });
+
+  it('no hit takes more than half the target’s health', () => {
+    expect(cappedHit(200, 100)).toBe(100 * MAX_HIT_SHARE);
+    expect(cappedHit(20, 100)).toBe(20);
+    expect(cappedHit(200, 50)).toBe(50 * MAX_HIT_SHARE);
   });
 });

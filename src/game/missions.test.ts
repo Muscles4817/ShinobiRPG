@@ -86,8 +86,9 @@ describe('missions', () => {
     const def = ctx.content.injuries.require(end.character.injuries[0]!.injuryId);
     expect(def.causes).toContain('defeat');
     expect(end.reports[0]).toMatchObject({ kind: 'defeat', injury: def.name });
-    expect(lastEntry(end)?.heading).toBe(def.name);
-    expect(lastEntry(end)?.text).not.toMatch(/\d/);
+    const entry = end.journal.entries.find((e) => e.heading === def.name);
+    expect(entry).toBeDefined();
+    expect(entry?.text).not.toMatch(/\d/);
   });
 });
 

@@ -14,9 +14,17 @@ import { driveOf, toughnessKept, type EffectUse } from './verbs';
  */
 
 /** Damage of a plain blow between equals, out of the 100 health every human has. */
-export const BLOW_DAMAGE = 35;
+export const BLOW_DAMAGE = 20;
 /** How steeply damage follows the power-to-defence ratio. */
-export const GAP_EXPONENT = 2.7;
+export const GAP_EXPONENT = 1.8;
+/**
+ * Share of defence that is skill: a trained fighter reads, rolls with and blunts a blow, so
+ * their best art protects them alongside the body. Without it, attacks (driven by an art people
+ * specialise in) met only stamina (which few train), and equals one-shot each other.
+ */
+export const SKILL_DEFENCE_SHARE = 0.7;
+/** No single hit takes more than this share of the target's health: a fight is never one blow. */
+export const MAX_HIT_SHARE = 0.5;
 /** Ratios are taken on ratings plus this, so tiny stat values don't make wild gaps. */
 const RATING_OFFSET = 1;
 /** The ratio counts this far either way; beyond it, more power changes nothing. */
@@ -62,12 +70,28 @@ export function blowPower(f: Rated): number {
   return (f.attributes.strength + f.attributes.taijutsu) / 2;
 }
 
+/** The fighter's best art: the skill that defends them whatever comes at them. */
+export function bestArt(f: Rated): number {
+  const a = f.attributes;
+  return Math.max(a.taijutsu, a.ninjutsu, a.genjutsu, a.kenjutsu, a.fuuinjutsu);
+}
+
+/** A defence of the body or the will, blended with the fighter's skill. */
+function withSkill(f: Rated, base: number): number {
+  return base * (1 - SKILL_DEFENCE_SHARE) + bestArt(f) * SKILL_DEFENCE_SHARE;
+}
+
 /**
- * Toughness: stamina, how much punishment the body takes before it gives. Armour is kit
- * (`kitDamageScale`); later, toughness is also what resists injury.
+ * Toughness: stamina, how much punishment the body takes before it gives, and the skill to take
+ * it well. Armour is kit (`kitDamageScale`); later, toughness is also what resists injury.
  */
 export function toughness(f: Rated): number {
-  return f.attributes.stamina;
+  return withSkill(f, f.attributes.stamina);
+}
+
+/** What a hit may take at most from a fighter with this much health. */
+export function cappedHit(damage: number, maxHealth: number): number {
+  return Math.min(damage, Math.max(1, Math.round(maxHealth * MAX_HIT_SHARE)));
 }
 
 /**
@@ -95,7 +119,9 @@ function effectPower(attacker: Rated, use: EffectUse): number {
  * against a break).
  */
 function defenceAgainst(defender: Rated, use: EffectUse): number {
-  if (use.technique.discipline === 'genjutsu') return defender.attributes.willpower;
+  if (use.technique.discipline === 'genjutsu') {
+    return withSkill(defender, defender.attributes.willpower);
+  }
   return toughness(defender) * toughnessKept(use);
 }
 

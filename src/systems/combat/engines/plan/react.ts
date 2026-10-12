@@ -2,7 +2,7 @@ import type { Rng } from '@/core';
 import type { Discipline } from '@/systems/techniques';
 
 import { alive } from '../../rules/body';
-import { strikeDamage } from '../../rules/damage';
+import { cappedHit, strikeDamage } from '../../rules/damage';
 import { counterChance, dodgeChance, guardScale } from '../../rules/defence';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import {
@@ -25,7 +25,7 @@ import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './
 /**
  * Defence cards react on their own when their owner is hit at the distance they're slotted
  * for: Dodge may avoid the blow (evasion), Guard softens it (guard), Counter hits back up
- * close (taijutsu); see `rules/defence.ts`. A dazed fighter can't react, and a break goes
+ * close (taijutsu); see `rules/defence.ts`. A dazed fighter can only guard, and a break goes
  * straight through a guard. Kits shape every hit: armour and spirits shrug off some kinds of
  * attack (less of a break), packs hit harder together, hidden attackers harder still, swift
  * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run. A
@@ -120,7 +120,10 @@ function counter(round: Round, { attacker, target, rng }: Hit): Round {
     physical: true,
     kind: 'blow',
   };
-  const damage = Math.max(1, Math.round(kitted(round, struck, attacker, blow)));
+  const damage = cappedHit(
+    Math.max(1, Math.round(kitted(round, struck, attacker, blow))),
+    attacker.maxHealth,
+  );
   return wound(say(round, harmLine(`${target.name} counters!`, damage)), attacker.id, damage);
 }
 
@@ -142,10 +145,12 @@ export function react(before: Round, hit: Hit): Round {
   const decoyed = throughClones(before, { attacker, target, what: blow.what, area, rng });
   if (decoyed.absorbed) return decoyed.round;
   const { round } = decoyed;
-  const ready = isDazed(target) ? [] : slotted(target, round.range);
+  // Reeling from a daze, a fighter can still put a guard up, but not dodge, counter or swap out.
+  const reeling = isDazed(target);
+  const ready = slotted(target, round.range).filter((c) => !reeling || c.kind === 'guard');
   const has = (kind: 'guard' | 'dodge' | 'counter') => ready.some((c) => c.kind === kind);
   const evading = dulled(round.field, target);
-  const avoid = blow.dodgeable ? avoidChance(attacker, evading, has('dodge')) : 0;
+  const avoid = blow.dodgeable && !reeling ? avoidChance(attacker, evading, has('dodge')) : 0;
   if (avoid > 0 && rng.chance(avoid)) {
     return say(round, `${target.name} slips past ${attacker.name}'s ${blow.what}.`);
   }
@@ -154,11 +159,14 @@ export function react(before: Round, hit: Hit): Round {
   if (swapped) return swapped;
   const guarded = has('guard') && !blow.breaks;
   const smashed = has('guard') && blow.breaks === true;
-  const damage = Math.max(
-    1,
-    Math.round(
-      kitted(round, attacker, target, blow) * (guarded ? guardLets(attacker, target, blow) : 1),
+  const damage = cappedHit(
+    Math.max(
+      1,
+      Math.round(
+        kitted(round, attacker, target, blow) * (guarded ? guardLets(attacker, target, blow) : 1),
+      ),
     ),
+    target.maxHealth,
   );
   const told = say(
     round,

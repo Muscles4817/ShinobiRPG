@@ -12,6 +12,7 @@ import { prepNeeded } from './prep';
 import { hittable } from './rows';
 import { inSight, opponentsOf } from './senses';
 import {
+  canDaze,
   isDazed,
   type PlanFighter,
   type Round,
@@ -183,9 +184,11 @@ function holdsOnly(card: Card): boolean {
   return card.kind === 'jutsu' && isHindering(card.technique) && !isWounding(card.technique);
 }
 
-/** Not dazed, sealed or confused. */
-function free(foe: PlanFighter): boolean {
-  return !dazed(foe) && foe.confused === 0;
+/** Not dazed, sealed or confused; for a daze, not steady after one either. */
+function free(foe: PlanFighter, card: Card, exchange: number): boolean {
+  const steady =
+    card.kind === 'jutsu' && hasVerb(card.technique, 'daze') && !canDaze(foe, exchange);
+  return !dazed(foe) && foe.confused === 0 && !steady;
 }
 
 function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {
@@ -193,7 +196,7 @@ function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {
   if (!card || !fitsBand(card, round.range) || !useful(self, card, round)) return null;
   const held = whenHolds(self, round, slot.when);
   // Dazing, sealing or confusing a foe already held is wasted: such a card looks for a fresh one.
-  const foes = held && holdsOnly(card) ? held.filter(free) : held;
+  const foes = held && holdsOnly(card) ? held.filter((f) => free(f, card, round.number)) : held;
   if (!foes) return null;
   const inReach = needsAim(card) ? hittable(card, foes, round.fighters) : foes;
   const target = aimAt(inReach, slot.target, self, round);

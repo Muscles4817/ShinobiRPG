@@ -28,6 +28,7 @@ import { react, type Blow } from './react';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
 import {
+  canDaze,
   dazeIn,
   fighterIn,
   isDazed,
@@ -72,6 +73,7 @@ function physical(t: CombatTechnique): boolean {
 }
 
 function daze(round: Round, target: PlanFighter): Round {
+  if (!canDaze(target, round.number)) return say(round, `${target.name} shakes it off.`);
   return say(
     { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number)) },
     `${target.name} is dazed!`,

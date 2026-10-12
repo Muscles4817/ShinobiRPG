@@ -8,9 +8,10 @@ import { isTrump } from '../../rules/trumps';
 import { cardId, findCard, fitsBand, isOffence, playable, type Card } from './cards';
 import { chooseCard, desperate } from './choose';
 import { ownField } from './field';
+import { plannedPlay } from './priority';
 import { opponentsOf } from './senses';
 import { cardLabel } from './wording';
-import { playerOf, type CardId, type PlanFighter, type PlanState } from './state';
+import { playerOf, type CardId, type PlanFighter, type PlanState, type Round } from './state';
 
 /**
  * Telegraphs, as Deck fights had them: when an exchange ends, each foe settles on the card it
@@ -23,9 +24,31 @@ import { playerOf, type CardId, type PlanFighter, type PlanState } from './state
 /** Each foe's next card, by fighter id. */
 export type Intents = Readonly<Record<string, CardId>>;
 
-type Table = Pick<PlanState, 'fighters' | 'range' | 'exchange' | 'field'>;
+type Table = Pick<PlanState, 'fighters' | 'range' | 'exchange' | 'field' | 'round'>;
+
+/**
+ * How often a foe plays its plan in priority order, as the player does (its default plan
+ * already holds its instincts as slot conditions); otherwise it follows instinct, so a foe is
+ * never wholly predictable.
+ */
+export const PLANNED_CHANCE = 0.7;
+
+/** The table as a round about to be played, for a foe weighing its plan. */
+function asRound(table: Table): Round {
+  return {
+    number: table.round,
+    opening: table.exchange === 0,
+    fighters: [...table.fighters],
+    range: table.range,
+    lines: [],
+    seen: {},
+    intents: {},
+    ...(table.field ? { field: table.field } : {}),
+  };
+}
 
 function intentOf(table: Table, self: PlanFighter, rng: Rng): CardId {
+  if (rng.chance(PLANNED_CHANCE)) return cardId(plannedPlay(self, asRound(table)).card);
   const foes = opponentsOf(table.fighters, self);
   const inSight = foes.filter(targetable);
   const moment = {
@@ -34,6 +57,7 @@ function intentOf(table: Table, self: PlanFighter, rng: Rng): CardId {
     hiddenFoe: foes.some((f) => f.hidden),
     opening: table.exchange === 0,
     fieldUp: ownField(table.field, self),
+    exchange: table.round,
   };
   return cardId(chooseCard(self, moment, rng));
 }

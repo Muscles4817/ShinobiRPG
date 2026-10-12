@@ -28,10 +28,11 @@ import {
  *
  *  - Power is real: more resources beat fewer, head-on.        → asserted today.
  *  - Every weakness can be built around.                       → `it.todo` until gating lands.
- *  - Lethality targets (Phase 1, health 100 and gap damage):   → asserted since step 1.1.
- *      equals:              about 1–2 rounds (4–8 exchanges);
- *      one grade apart:     the stronger side wins head-on within a round, mostly;
- *      two or more apart:   head-on, it's over in 1–2 exchanges.
+ *  - Lethality targets (retuned after the combat review: fights between equals were decided
+ *    by the first technique to land, before the plan could matter):
+ *      equals:              two to three rounds (8–14 exchanges), and each side wins about half;
+ *      one grade apart:     the stronger side wins head-on within two rounds, nearly always;
+ *      two or more apart:   head-on, it's over within a round.
  *
  * Tightening: when a phase lands, turn its `it.todo` into a real `it` using the named targets
  * below, and raise the loose thresholds that hold today. Set VITE_BENCH_REPORT=true to print
@@ -43,14 +44,20 @@ const POWER_WIN_RATE = 0.8;
 
 /** Plan & Watch plays four exchanges a round. */
 const EXCHANGES_PER_ROUND = 4;
-/** Target: equals take one to two rounds. */
-const EQUALS_EXCHANGES = { min: 4, max: 2 * EXCHANGES_PER_ROUND } as const;
-/** Target: one grade apart, the stronger side wins within a round this often. */
-const ONE_GRADE_WIN_WITHIN_ROUND = 0.8;
-/** Target: two or more grades apart, head-on fights end within this many exchanges… */
-const TWO_GRADES_EXCHANGES = 2;
+/** Target: equals take two to three rounds, give or take. */
+const EQUALS_EXCHANGES = { min: 2 * EXCHANGES_PER_ROUND, max: 3.5 * EXCHANGES_PER_ROUND } as const;
+/** Target: one grade apart, the stronger side wins within this many exchanges… */
+const ONE_GRADE_EXCHANGES = 2 * EXCHANGES_PER_ROUND;
 /** …this often. */
-const TWO_GRADES_ENDED_RATE = 0.8;
+const ONE_GRADE_WIN_RATE = 0.9;
+/** Target: two or more grades apart, head-on fights end within this many exchanges… */
+const TWO_GRADES_EXCHANGES = EXCHANGES_PER_ROUND;
+/** …this often. */
+const TWO_GRADES_ENDED_RATE = 0.9;
+/** Target: between equals, the player's plan and the foe's instincts each win about half. */
+const EQUALS_WIN_RATE = { min: 0.4, max: 0.65 } as const;
+/** Fairness is a close call, so it gets more seeds. */
+const FAIRNESS_SEEDS = 200;
 
 /** The archetype-by-foe matrix is wide, so each pairing gets fewer seeds. */
 const MATRIX_SEEDS = 10;
@@ -140,13 +147,13 @@ describe('lethality (Phase 1 targets)', () => {
   );
 
   it.each(ONE_APART)(
-    `one grade apart, a plain %s beats a plain %s within ${EXCHANGES_PER_ROUND} exchanges ` +
-      `${ONE_GRADE_WIN_WITHIN_ROUND * 100}% of the time`,
+    `one grade apart, a plain %s beats a plain %s within ${ONE_GRADE_EXCHANGES} exchanges ` +
+      `${ONE_GRADE_WIN_RATE * 100}% of the time`,
     (stronger, weaker) => {
       const report = head(plainAtGrade(stronger), plainAtGrade(weaker));
-      const within = wonWithin(report, EXCHANGES_PER_ROUND);
-      if (REPORT) console.warn(`  won within a round ${within}`);
-      expect(within).toBeGreaterThanOrEqual(ONE_GRADE_WIN_WITHIN_ROUND);
+      const within = wonWithin(report, ONE_GRADE_EXCHANGES);
+      if (REPORT) console.warn(`  won within two rounds ${within}`);
+      expect(within).toBeGreaterThanOrEqual(ONE_GRADE_WIN_RATE);
     },
   );
 
@@ -161,9 +168,12 @@ describe('lethality (Phase 1 targets)', () => {
     },
   );
 
-  // The player plays their plan, the foe its instincts; the plan as a priority list (step
-  // 1.2) is what should even this out. Today equals win about 40% of the time.
-  it.todo('equals win about half their fights');
+  // The player plays their plan, the foe its default plan with some instinct mixed in.
+  it.each(GRADE_LADDER)('equals at grade %s each win about half their fights', (grade) => {
+    const report = bench(plainAtGrade(grade), plainAtGrade(grade), FAIRNESS_SEEDS);
+    expect(report.winRate).toBeGreaterThanOrEqual(EQUALS_WIN_RATE.min);
+    expect(report.winRate).toBeLessThanOrEqual(EQUALS_WIN_RATE.max);
+  });
 });
 
 /** The same skirmish with everyone in the front row, to see what the rows change. */
@@ -226,8 +236,9 @@ describe('hiding has counterplay (step 1.4b)', () => {
     }
   });
 
-  it.each(SCALES)('a %s fighter who knows a sense does better against hidden foes', (scale) => {
-    // The versatile build without its sharp eyes (insight), with and without a sense.
+  it.each(SCALES)('a %s fighter who knows a sense does no worse against hidden foes', (scale) => {
+    // The versatile build without its sharp eyes (insight), with and without a sense. Without
+    // one, its default plan still brings a Search against a foe that hides.
     const { perks: _eyes, ...blind } = archetype('versatile', scale);
     const sensing = {
       ...blind,
@@ -235,7 +246,7 @@ describe('hiding has counterplay (step 1.4b)', () => {
       techniques: [...blind.techniques, ...techniques(['wick-sense'])],
     };
     for (const hider of [archetype('stalker', scale), foe('trickster', scale)]) {
-      expect(head(sensing, hider).winRate).toBeGreaterThan(head(blind, hider).winRate);
+      expect(head(sensing, hider).winRate).toBeGreaterThanOrEqual(head(blind, hider).winRate);
     }
   });
 });

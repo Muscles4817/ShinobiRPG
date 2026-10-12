@@ -14,7 +14,7 @@ import {
   type EffectUse,
 } from '../../rules/verbs';
 import { react } from './react';
-import { dazeIn, fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { canDaze, dazeIn, fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Traps in a planned fight. A trap is set at the distance the fight stands at; the first foe of
@@ -69,7 +69,9 @@ function spring(start: Round, setter: PlanFighter, victim: PlanFighter, rng: Rng
     rng,
   });
   const struck = fighterIn(hit, victim.id);
-  if (!use.effect.dazes || !struck || !alive(struck) || struck.health === victim.health) return hit;
+  const shaken = struck !== undefined && struck.health !== victim.health;
+  if (!use.effect.dazes || !struck || !alive(struck) || !shaken) return hit;
+  if (!canDaze(struck, hit.number)) return hit;
   return say(
     { ...hit, fighters: patch(hit.fighters, victim.id, dazeIn(hit.number)) },
     `${victim.name} is dazed!`,

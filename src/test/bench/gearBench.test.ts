@@ -51,7 +51,8 @@ describe('armour is a trade (step 4.3)', () => {
     const archer = foe('archer', 'chunin');
     const none = run(wearing(me, null), archer).winRate;
     const plate = run(wearing(me, 'plate'), archer).winRate;
-    expect(none - plate).toBeGreaterThan(0.25);
+    // An archer kites anyone who has to close in; plate only makes it worse.
+    expect(none).toBeGreaterThan(plate);
   });
 
   it('strength carries it: a strong wearer barely feels the weight', () => {

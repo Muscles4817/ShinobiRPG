@@ -70,6 +70,11 @@ export interface PlanFighter extends Body, TrumpMemory, EmpowerMemory, CloneBody
    * gets their next turn against it. Absent when not dazed (and in fights saved before it).
    */
   readonly openUntil?: number;
+  /**
+   * The last exchange a fighter is steady after a daze wore off: no fresh daze takes hold
+   * until it is over, so a daze can't be chained into a lock. Absent until their first daze.
+   */
+  readonly steadyUntil?: number;
   /** Their substitution has swapped them out of a hit this round: it works once a round. */
   readonly substituteSpent?: boolean;
   /** A teammate's stance (see `team.ts`); the player and foes have none. */
@@ -102,10 +107,24 @@ export function isDazed(f: Pick<PlanFighter, 'stunned' | 'openUntil'>): boolean 
   return f.stunned > 0 || f.openUntil !== undefined;
 }
 
+/** Exchanges a fighter stays steady (no fresh daze takes hold) after a daze wears off. */
+export const STEADY_EXCHANGES = 1;
+
+/**
+ * Whether a daze can take hold of this fighter in exchange `exchange`: not while dazed, nor
+ * while steady after one. Rounds play out on their own, so a chain of dazes would leave the
+ * player watching themselves lose.
+ */
+export function canDaze(
+  f: Pick<PlanFighter, 'stunned' | 'openUntil' | 'steadyUntil'>,
+  exchange: number,
+): boolean {
+  return !isDazed(f) && (f.steadyUntil === undefined || f.steadyUntil < exchange);
+}
+
 /**
  * A fresh daze, dealt in exchange `exchange`: it costs one turn, and leaves its target open
- * through the next exchange. Dazes don't stack: rounds play out on their own, so a chain of
- * them would leave the player watching themselves lose.
+ * through the next exchange. Check `canDaze` first.
  */
 export function dazeIn(exchange: number): Pick<PlanFighter, 'stunned' | 'openUntil'> {
   return { stunned: 1, openUntil: exchange + 1 };
@@ -115,7 +134,7 @@ export function dazeIn(exchange: number): Pick<PlanFighter, 'stunned' | 'openUnt
 export function wearOffDaze(f: PlanFighter, exchange: number): PlanFighter {
   if (f.openUntil === undefined || f.openUntil > exchange) return f;
   const { openUntil: _done, ...rest } = f;
-  return rest;
+  return { ...rest, steadyUntil: exchange + STEADY_EXCHANGES };
 }
 
 export interface PlanState {
@@ -229,6 +248,7 @@ export function patch(
       | 'concealment'
       | 'perks'
       | 'openUntil'
+      | 'steadyUntil'
       | 'trumpsUsed'
       | 'substituteSpent'
       | 'stance'
