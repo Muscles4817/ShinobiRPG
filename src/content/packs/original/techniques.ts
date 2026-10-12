@@ -8,7 +8,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     effects: [{ verb: 'damage', power: 8 }],
     chakraCost: 3,
-    requirements: {},
+    rank: 'E',
     difficulty: 20,
   },
   {
@@ -18,7 +18,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'daze', power: 6 }],
     chakraCost: 6,
-    requirements: {},
+    rank: 'E',
     difficulty: 20,
   },
   {
@@ -29,7 +29,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     element: 'wind',
     effects: [{ verb: 'damage', power: 13 }],
     chakraCost: 5,
-    requirements: { taijutsu: 5 },
+    rank: 'E',
     difficulty: 40,
   },
   {
@@ -40,7 +40,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     element: 'earth',
     effects: [{ verb: 'damage', power: 12 }],
     chakraCost: 8,
-    requirements: { ninjutsu: 5 },
+    rank: 'E',
     difficulty: 40,
   },
   {
@@ -50,7 +50,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'daze', power: 12 }],
     chakraCost: 10,
-    requirements: { genjutsu: 5 },
+    rank: 'E',
     difficulty: 45,
   },
   {
@@ -60,7 +60,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     effects: [{ verb: 'damage', power: 18 }],
     chakraCost: 7,
-    requirements: { taijutsu: 12, strength: 10 },
+    rank: 'C',
     difficulty: 70,
   },
   {
@@ -71,7 +71,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     element: 'fire',
     effects: [{ verb: 'damage', power: 18 }],
     chakraCost: 12,
-    requirements: { ninjutsu: 10, chakraControl: 8 },
+    rank: 'D',
     difficulty: 70,
   },
   {
@@ -82,7 +82,8 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     element: 'water',
     effects: [{ verb: 'damage', power: 22 }],
     chakraCost: 15,
-    requirements: { ninjutsu: 13, chakraControl: 11 },
+    rank: 'C',
+    needs: { control: 'D' },
     difficulty: 90,
   },
   {
@@ -92,7 +93,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'damage', power: 16 }],
     chakraCost: 11,
-    requirements: { genjutsu: 11, willpower: 9 },
+    rank: 'C',
     difficulty: 75,
   },
   {
@@ -102,7 +103,8 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     effects: [{ verb: 'heal', power: 18 }],
     chakraCost: 12,
-    requirements: { chakraControl: 9, intellect: 8 },
+    rank: 'D',
+    needs: { control: 'D' },
     difficulty: 60,
   },
   {
@@ -112,7 +114,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'kenjutsu',
     effects: [{ verb: 'damage', power: 12 }],
     chakraCost: 4,
-    requirements: { kenjutsu: 5 },
+    rank: 'E',
     difficulty: 40,
   },
   {
@@ -122,7 +124,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'kenjutsu',
     effects: [{ verb: 'damage', power: 20 }],
     chakraCost: 10,
-    requirements: { kenjutsu: 12, speed: 10 },
+    rank: 'C',
     difficulty: 80,
   },
   {
@@ -132,7 +134,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     effects: [{ verb: 'damage', power: 12 }],
     chakraCost: 6,
-    requirements: { fuuinjutsu: 5 },
+    rank: 'E',
     difficulty: 40,
   },
   {
@@ -142,7 +144,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     effects: [{ verb: 'seal', power: 10 }],
     chakraCost: 9,
-    requirements: { fuuinjutsu: 9 },
+    rank: 'D',
     difficulty: 55,
   },
   {
@@ -152,7 +154,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     effects: [{ verb: 'seal', power: 16 }],
     chakraCost: 14,
-    requirements: { fuuinjutsu: 14 },
+    rank: 'C',
     difficulty: 90,
   },
   {
@@ -163,7 +165,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     element: 'fire',
     effects: [{ verb: 'area', power: 10 }],
     chakraCost: 13,
-    requirements: { ninjutsu: 9, chakraControl: 7 },
+    rank: 'D',
     difficulty: 60,
   },
   {
@@ -173,7 +175,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'confuse', power: 12 }],
     chakraCost: 8,
-    requirements: { genjutsu: 8 },
+    rank: 'D',
     difficulty: 50,
   },
   {
@@ -183,7 +185,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'conceal', power: 10 }],
     chakraCost: 9,
-    requirements: { genjutsu: 7, intellect: 5 },
+    rank: 'D',
     difficulty: 50,
   },
   {
@@ -195,7 +197,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     element: 'water',
     effects: [{ verb: 'field', field: 'mist', power: 10 }],
     chakraCost: 9,
-    requirements: { ninjutsu: 7, chakraControl: 5 },
+    rank: 'D',
     difficulty: 50,
   },
   {
@@ -205,7 +207,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     effects: [{ verb: 'move', power: 8 }],
     chakraCost: 5,
-    requirements: { speed: 7, ninjutsu: 5 },
+    rank: 'D',
     difficulty: 45,
   },
   {
@@ -216,7 +218,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     effects: [{ verb: 'substitute', power: 6 }],
     chakraCost: 5,
-    requirements: {},
+    rank: 'E',
     difficulty: 25,
   },
   {
@@ -226,7 +228,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     effects: [{ verb: 'sense', power: 10 }],
     chakraCost: 7,
-    requirements: { perception: 8, ninjutsu: 5 },
+    rank: 'D',
     difficulty: 50,
   },
   {
@@ -236,7 +238,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     effects: [{ verb: 'break', power: 14 }],
     chakraCost: 6,
-    requirements: { taijutsu: 9, strength: 9 },
+    rank: 'D',
     difficulty: 55,
   },
   {
@@ -255,7 +257,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
       },
     ],
     chakraCost: 8,
-    requirements: { taijutsu: 10, stamina: 9, willpower: 8 },
+    rank: 'C',
     difficulty: 70,
   },
   {
@@ -265,7 +267,8 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     effects: [{ verb: 'clone', power: 10, strikes: true }],
     chakraCost: 14,
-    requirements: { ninjutsu: 9, chakraControl: 8 },
+    rank: 'D',
+    needs: { minReserves: 8 },
     difficulty: 65,
   },
   {
@@ -276,7 +279,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     effects: [{ verb: 'trap', power: 8, dazes: true }],
     chakraCost: 8,
-    requirements: { fuuinjutsu: 7, intellect: 6 },
+    rank: 'D',
     difficulty: 50,
   },
 ];

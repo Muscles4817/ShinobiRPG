@@ -9,7 +9,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     effects: [{ verb: 'damage', power: 20 }],
     chakraCost: 8,
-    requirements: {},
+    rank: 'D',
     difficulty: 60,
   },
   {
@@ -20,7 +20,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     element: 'fire',
     effects: [{ verb: 'damage', power: 23 }],
     chakraCost: 14,
-    requirements: {},
+    rank: 'C',
     difficulty: 80,
   },
   {
@@ -30,7 +30,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'daze', power: 18 }],
     chakraCost: 12,
-    requirements: {},
+    rank: 'C',
     difficulty: 70,
   },
   {
@@ -41,7 +41,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     element: 'earth',
     effects: [{ verb: 'damage', power: 21 }],
     chakraCost: 10,
-    requirements: {},
+    rank: 'C',
     difficulty: 70,
   },
   {
@@ -51,7 +51,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     effects: [{ verb: 'seal', power: 16 }],
     chakraCost: 12,
-    requirements: {},
+    rank: 'C',
     difficulty: 70,
   },
 ];

@@ -226,6 +226,9 @@ ui ──► game ──► content ──► systems ──► core
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
   model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
   compiler lists every switch you missed).
+- **Add a technique:** give it a `rank` (E–S, the letters of ability grades): one rank above the
+  learner's grade in its discipline is slow and arrives unstable, two is impossible from any
+  source. Physical needs (nature, reserves, control grade) go in `needs`. Starters must be rank E.
 - **Add a clan, talent or trait:** add it to the pack's `clans` (or the shared `talents`/
   `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack

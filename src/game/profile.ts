@@ -1,8 +1,7 @@
-import { round1 } from '@/core';
-import { combine, studyMultiplier, type ModifierSpec, type Modifiers } from '@/systems/modifiers';
+import { combine, type ModifierSpec, type Modifiers } from '@/systems/modifiers';
 import { STAT_IDS, type Growth, type StatScale } from '@/systems/stats';
 import { gradeModifiers } from '@/systems/profile';
-import { ELEMENTS, studyPoints, type Element, type TechniqueDef } from '@/systems/techniques';
+import { ELEMENTS, type Element } from '@/systems/techniques';
 
 import { withoutGrowth } from './aptitude';
 import type { GameContext } from './context';
@@ -62,12 +61,4 @@ export function growthFor(character: Character, ctx: GameContext, teacher = 1): 
     scale: trainingScale(character, ctx, teacher),
     floors: characterModifiers(character, ctx).soloFloors,
   };
-}
-
-/** Study points one session earns towards a technique, after clan, talent and nature. */
-export function studyPointsFor(character: Character, def: TechniqueDef, ctx: GameContext): number {
-  const mods = characterModifiers(character, ctx);
-  return round1(
-    studyPoints(character.stats, def) * studyMultiplier(mods, def.discipline, def.element),
-  );
 }

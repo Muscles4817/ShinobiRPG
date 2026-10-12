@@ -154,7 +154,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     },
     wallet: { ryo: content.startingRyo },
     housing: housingFor(draft, ctx, home.id, home.rentPerWeek),
-    techniques: { known: startingTechniques(draft, ctx), progress: {} },
+    techniques: { known: startingTechniques(draft, ctx), progress: {}, unstable: [] },
     standing: NEW_GENIN,
     journal: EMPTY_JOURNAL,
     mission: null,

@@ -3,7 +3,6 @@ export {
   STAT_INFO,
   createStats,
   diffStats,
-  unmetRequirements,
   sumDeltas,
   type StatId,
   type StatGroup,

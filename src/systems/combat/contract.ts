@@ -43,7 +43,10 @@ export type CombatTechnique = Pick<
   | 'oncePerFight'
   | 'afterCost'
   | 'combo'
->;
+> & {
+  /** Learned a rank above its user's grade: costlier and may misfire (`rules/unstable.ts`). */
+  readonly unstable?: true;
+};
 
 /** How far apart the two sides stand. Engines decide what each band allows. */
 export type RangeBand = 'close' | 'mid' | 'far';

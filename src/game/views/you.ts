@@ -1,4 +1,5 @@
 import type { JournalChip, JournalTone } from '@/systems/journal';
+import type { StatGrade } from '@/systems/stats';
 import type { Verb } from '@/systems/techniques';
 import { formatDate, slotName } from '@/systems/time';
 
@@ -20,6 +21,9 @@ export interface JutsuCard {
   /** What it does, in order, with each effect's strength. */
   readonly effects: readonly JutsuEffect[];
   readonly chakraCost: number;
+  readonly rank: StatGrade;
+  /** Known, but a rank above your grade: costlier and liable to misfire until it steadies. */
+  readonly unstable: boolean;
   readonly status: 'known' | 'studying' | 'unknown';
   readonly progressPct: number;
 }
@@ -39,6 +43,8 @@ export function jutsuDeck(state: GameState, ctx: GameContext): readonly JutsuCar
         element: t.element ?? null,
         effects: t.effects.map((e) => ({ verb: e.verb, power: e.power })),
         chakraCost: t.chakraCost,
+        rank: t.rank,
+        unstable: state.techniques.unstable.includes(t.id),
         status: known ? 'known' : progress > 0 ? 'studying' : 'unknown',
         progressPct: known ? 100 : Math.round((progress / t.difficulty) * 100),
       };

@@ -843,6 +843,27 @@ These were folded into the D2 discussion. Where each landed:
   reaches C on day 61 (was day 3), and a further month alone adds about one point of the C
   band's seven.
 
+**Phase 4 (in progress).**
+
+- 4.1: technique ranks. `TechniqueDef.rank` (E–S) replaces the raw stat `requirements`, which are
+  gone (and `unmetRequirements` with them); hard needs are `needs: { nature?, minReserves?,
+control? }` (`clan` stays its own field). The rules live in `systems/techniques/learning.ts`
+  and `techniques.ts`: at or below your grade in the discipline learns normally, one above at
+  `UNSTABLE_STUDY` (0.5) and arrives unstable, two or more above is impossible from any source
+  ("Needs D ninjutsu; you're E."). Study speed (`sessionStudyPoints`, through
+  `game/learning.ts`) is the old study points × aptitude in the art × a chakra-control factor
+  (chakra arts only) × the source (scroll 1, teacher 1.5; the old lesson boost) × identity
+  modifiers. The sensei's signatures pass the same gate. `TechniqueBook.unstable` (save v19
+  marks known techniques ranked above the character's grade). In fights an unstable technique
+  costs ×1.5 chakra (`rules/unstable.ts`, read by `chakraCost`, so every engine) and misfires
+  25% of the time in Plan & Watch (chakra spent, nothing done). Every action passes through
+  `stabiliseTechniques` in `dispatch`, which steadies those your grade has caught up with, with a
+  journal line. Validation: ranks and needs are sane, starting techniques are rank E with no
+  needs, and every discipline has such a scroll at the academy. The academy folds blocked
+  scrolls into Coming up with the reason; technique cards carry a rank stamp and an Unstable
+  stamp. Bench (`unstableBench.test.ts`, plain D against plain D, 120 seeds): Ember Breath wins
+  88% steady and 68% unstable; Kindled Pulse 50% and 36%.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -983,3 +1004,17 @@ These were folded into the D2 discussion. Where each landed:
   none has been read, so they don't give talent away.
 - 2.2: the 60-day target holds now, mostly by drilling: the weekly lesson adds little. So the
   stall is in C (asserted), not D; "solo stalls in D" waits for Phase 3 teachers.
+- 4.1: ranks came from the old requirement in the art (5 or less E, 6–10 D, 11–14 C) with
+  judgement for the rest: trumps A or S, sensei signatures D–C (Lightning Blade A, Front Lotus
+  B). Physical needs kept: medical and the fine water jutsu need D control, the clone techniques
+  8 reserves, Lightning Blade a lightning nature. Other old minor stat requirements (strength,
+  speed, willpower) were dropped. No `weapon` need yet: gear kinds arrive with 4.3.
+- 4.1: unstable means "rank above your grade", for migration and new learning alike, so the
+  v19 migration marks known techniques a rank above too (not only two or more above). A
+  stabilised technique stays stable even if a stat later drops.
+- 4.1: chakra control's study factor (0.75 + 0.02 a point, at most 1.5) applies to ninjutsu,
+  genjutsu and fūinjutsu only; taijutsu and kenjutsu study ignores it. The misfire chance is
+  flat (25%), not scaled by control.
+- 4.1: stabilisation runs after every action in `dispatch` (like 2.5's `noteGradeUps`, which
+  belongs beside it once merged). A sensei teaches the first signature you could learn; the
+  lesson card shows the next blocked one with its reason.

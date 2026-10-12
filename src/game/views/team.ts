@@ -3,6 +3,7 @@ import { STAT_INFO } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
 import { LESSON_ENERGY, nextSignature, TEACHES_AT_STAGE, yourSensei } from '../actions/lesson';
+import { learnBlockerFor, learnBlockerText } from '../learning';
 import { SPAR_ENERGY } from '../actions/spar';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
@@ -41,8 +42,12 @@ export function lessonCard(state: GameState, ctx: GameContext): LessonCard | nul
   const profile = sensei?.sensei;
   if (!sensei || !profile) return null;
   const card = personCard(state, ctx, sensei);
-  const nextId = nextSignature(state, sensei);
+  // What they'll teach next; failing that, the first one you can't learn yet, and why.
+  const nextId =
+    nextSignature(state, sensei, ctx) ??
+    profile.teaches.find((id) => !state.techniques.known.includes(id));
   const def = nextId ? ctx.content.techniques.require(nextId) : null;
+  const blocker = def && learnBlockerFor(state, def);
   return {
     ...choice(state, ctx, { type: 'lesson' }),
     sensei: { ...personFace(state, sensei), fullName: fullName(sensei) },
@@ -55,7 +60,7 @@ export function lessonCard(state: GameState, ctx: GameContext): LessonCard | nul
       locked:
         card.stage < TEACHES_AT_STAGE
           ? `Taught once you and ${sensei.name} are ${stageName(TEACHES_AT_STAGE).toLowerCase()}s.`
-          : null,
+          : blocker && learnBlockerText(blocker, def),
     },
   };
 }

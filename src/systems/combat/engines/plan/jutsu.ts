@@ -8,6 +8,7 @@ import { matchup, matchupLine } from '../../rules/elements';
 import { attackKindOf } from '../../rules/kit';
 import { healLine } from '../../rules/narration';
 import { finisherScale } from '../../rules/team';
+import { misfireChance } from '../../rules/unstable';
 import { breakRating } from '../../rules/conditions';
 import {
   confuseTurns,
@@ -230,9 +231,18 @@ export function useJutsu(round: Round, turn: Turn, t: CombatTechnique): Round {
   return partner ? combination(round, turn, { lead: t, partner }, single) : single(round, turn, t);
 }
 
+/** An unstable technique falling apart: the chakra is spent, nothing else happens. */
+function misfired(turn: Turn, t: CombatTechnique): boolean {
+  const chance = misfireChance(t);
+  return chance > 0 && turn.rng.chance(chance);
+}
+
 function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const { actor, rng } = turn;
   const paid = withChakraSpent(round, actor, t);
+  if (misfired(turn, t)) {
+    return say(paid, `${t.name} comes apart in ${actor.name}'s hands. It isn't steady yet.`);
+  }
   const targets = targetsOf(paid, turn, t);
   if (isHarmful(t) && targets.length === 0) return paid;
   // A field dulls the perception of those it blinds: they see techniques coming later.

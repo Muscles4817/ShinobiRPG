@@ -10,27 +10,40 @@ function ScrollRow({
   readonly scroll: Scroll;
   readonly perform: PlaceProps['perform'];
 }) {
-  const locked = scroll.needs.length > 0;
+  const locked = scroll.locked !== null;
   const pct = Math.round((scroll.progress / scroll.difficulty) * 100);
+  const sessions =
+    scroll.sessionsLeft === null
+      ? 'It won’t take for you'
+      : scroll.progress > 0
+        ? `${pct}% studied, about ${scroll.sessionsLeft} more sessions`
+        : `About ${scroll.sessionsLeft} sessions`;
   return (
     <div className={`scroll d-${scroll.discipline}${locked ? ' locked' : ''}`}>
       <span className="cap" />
       <div className="paper-strip">
         <b>
-          {scroll.name} <span className="badge">{scroll.discipline.slice(0, 3)}</span>
+          {scroll.name} <span className="badge">{scroll.discipline.slice(0, 3)}</span>{' '}
+          <span className="badge rank-stamp" title={`Rank ${scroll.rank}`}>
+            {scroll.rank}
+          </span>
+          {scroll.unstable && !locked && (
+            <span
+              className="badge unstable"
+              title="A rank above you: slow, and it arrives unstable"
+            >
+              Unstable
+            </span>
+          )}
         </b>
-        <small>{locked ? scroll.needs.join(', ') : scroll.description}</small>
+        <small>{scroll.locked ?? scroll.description}</small>
         {!locked && (
           <>
             <span className="unroll">
               <i style={{ width: `${pct}%` }} />
             </span>
             <span className="scroll-foot">
-              <small>
-                {scroll.progress > 0
-                  ? `${pct}% studied, about ${scroll.sessionsLeft} more sessions`
-                  : `About ${scroll.sessionsLeft} sessions`}
-              </small>
+              <small>{sessions}</small>
               <button
                 type="button"
                 className="btn small"

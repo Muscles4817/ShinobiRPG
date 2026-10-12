@@ -96,7 +96,7 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
     case 'dispel':
       return `Break illusions, ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':
-      return `${techniqueWords(card.technique)}, ${chakraCost(fighter, card.technique)} chakra${card.technique.oncePerFight ? ', once per fight' : ''}`;
+      return `${techniqueWords(card.technique)}, ${chakraCost(fighter, card.technique)} chakra${card.technique.oncePerFight ? ', once per fight' : ''}${card.technique.unstable ? ', unstable' : ''}`;
     case 'item':
       return toolDetail(card.item);
   }

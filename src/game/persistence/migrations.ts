@@ -1,4 +1,5 @@
 import { v17ToV18 } from './aptitudeMigration';
+import { v18ToV19 } from './rankMigration';
 
 /**
  * Save migrations, keyed by the version being migrated *from*. Each step takes the raw
@@ -280,4 +281,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   15: v15ToV16,
   16: v16ToV17,
   17: v17ToV18,
+  18: v18ToV19,
 };

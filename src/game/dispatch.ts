@@ -3,6 +3,7 @@ import { createRng, err, ok, type Result } from '@/core';
 import { HANDLERS } from './actions/registry';
 import type { ActionHandler, GameAction } from './actions/types';
 import type { GameContext } from './context';
+import { stabiliseTechniques } from './learning';
 import type { GameState } from './state';
 
 function handlerFor<A extends GameAction>(action: A): ActionHandler<A> {
@@ -18,6 +19,7 @@ export function blockerFor(state: GameState, action: GameAction, ctx: GameContex
 /**
  * The single entry point for changing game state. Pure and deterministic: the same state,
  * action and context always produce the same result (randomness comes from `state.rngState`).
+ * Whatever grew a stat, unstable techniques the new grades have caught up with steady here.
  */
 export function dispatch(
   state: GameState,
@@ -29,6 +31,6 @@ export function dispatch(
   if (blocker) return err(blocker);
 
   const rng = createRng(state.rngState);
-  const next = handler.perform(state, action, ctx, rng);
+  const next = stabiliseTechniques(handler.perform(state, action, ctx, rng), ctx);
   return ok({ ...next, rngState: rng.state() });
 }
