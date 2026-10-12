@@ -1,4 +1,5 @@
 import type { ContentPack, PersonDef } from './types';
+import { validateTalk } from './validateTalk';
 
 /** Fewest names a pool needs so generated classmates don't all share one. */
 const MIN_GIVEN_NAMES = 8;
@@ -12,6 +13,7 @@ export function validatePeople(pack: ContentPack): string[] {
     ...pack.people.flatMap((p) => personProblems(pack, p)),
     ...senseiProblems(pack),
     ...conversationProblems(pack),
+    ...validateTalk(pack),
     ...nameProblems(pack),
   ];
 }

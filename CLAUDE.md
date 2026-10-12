@@ -324,6 +324,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a conversation:** add a `ConversationDef` (generic, or with `personId`) with a
   `minStage` and choices that each carry a `Tone`. Traits' `likes`/`dislikes` decide how a
   tone lands, so new tones need tastes on the traits that care.
+- **Add talk for everyone:** a `ConversationDef` with `about` (specialty, trait, clan or role)
+  is a template: anyone with a topic of that kind may say it, and its `{slots}` are filled from
+  the topic. The slots each kind offers are `TOPIC_SLOTS` (`content/conversationTopics.ts`);
+  topics give exactly those words (validated). Shared templates and topics live in
+  `content/shared/talk/`; clan topics in each pack. A friend's newest stage is talked about first.
 - **Add a discipline:** add it to `STAT_IDS` and `DISCIPLINES`, a colour token, a card glyph,
   starter technique in every pack's `disciplineStarters`, drills, and a save migration that
   gives existing characters the base value.

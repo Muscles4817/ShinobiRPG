@@ -10,6 +10,7 @@ import { FOODS } from './food';
 import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
+import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
@@ -86,7 +87,13 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...CANON_GENIN,
     ...SENIOR_GENIN,
   ],
-  conversations: [...GENERIC_CONVERSATIONS, ...NARUTO_CONVERSATIONS, ...ROSTER_CONVERSATIONS],
+  conversations: [
+    ...GENERIC_CONVERSATIONS,
+    ...TEMPLATE_CONVERSATIONS,
+    ...NARUTO_CONVERSATIONS,
+    ...ROSTER_CONVERSATIONS,
+  ],
+  conversationTopics: SHARED_TOPICS,
   names: NAMES,
   team: TEAM,
   village: VILLAGE,
