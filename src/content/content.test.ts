@@ -78,6 +78,18 @@ describe('content validation', () => {
     );
   });
 
+  it('detects injuries that make no sense, and a cause with none to give', () => {
+    const [first, ...rest] = ORIGINAL_PACK.injuries;
+    const odd = { ...first!, days: 0, fight: { speed: 1.2 } };
+    const problems = validateContent({
+      ...ORIGINAL_PACK,
+      injuries: [odd, ...rest.filter((i) => !i.causes.includes('collapse'))],
+    });
+    expect(problems).toContain(`injury "${first!.id}" must last at least a day`);
+    expect(problems).toContain(`injury "${first!.id}" needs fight multipliers between 0 and 1`);
+    expect(problems).toContain('pack needs an injury caused by collapse');
+  });
+
   it('detects activities no place offers', () => {
     const [home, ...rest] = ORIGINAL_PACK.locations;
     const withoutMarket = {

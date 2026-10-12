@@ -17,6 +17,7 @@ import { formatDate } from '@/systems/time';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { conditionView, type ConditionView } from './condition';
 
 export type { StatGrade, TierRead } from '@/systems/stats';
 
@@ -59,6 +60,8 @@ export interface ShinobiView {
   readonly groups: readonly { readonly group: StatGroup; readonly stats: readonly StatLine[] }[];
   /** Your all-round fighting level and what the next step up takes. */
   readonly overall: TierRead & { readonly power: number };
+  /** Injuries and chakra exhaustion you carry. */
+  readonly condition: ConditionView;
 }
 
 /** A stable registry number derived from the name, so it never changes between visits. */
@@ -121,5 +124,6 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
       })),
     })),
     overall: { ...statTier(fightingPower(stats)), power: round1(fightingPower(stats)) },
+    condition: conditionView(state, ctx),
   };
 }

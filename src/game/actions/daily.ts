@@ -16,6 +16,7 @@ import {
   statChips,
 } from '../ops';
 import { weakFromHunger } from '../hunger';
+import { laidUp, sleepChakra } from '../injuries';
 import type { GameContext } from '../context';
 import { growCharacter, logDiscoveries, noTalentReason } from '../growth';
 import type { GameState } from '../state';
@@ -65,6 +66,7 @@ export const train: ActionHandler<ActionOf<'train'>> = {
       busyReason(state),
       main !== undefined && noTalentReason(state.character, main, ctx),
       weakFromHunger(state),
+      laidUp(state, ctx),
       state.character.vitals.energy < def.energyCost &&
         `Needs ${def.energyCost} energy. Nap or eat first.`,
       healthFraction(state) < MIN_HEALTH_TO_TRAIN && 'You are too injured to train.',
@@ -153,7 +155,11 @@ export const sleep: ActionHandler<ActionOf<'sleep'>> = {
     const { text } = ctx.content;
     const lockedOut = isRentOverdue(state.housing, state.time.day);
     const hungry = isHungry(state.character.vitals);
-    const full = sleepRecovery(state.character.vitals, state.character.stats);
+    const night = sleepChakra(state);
+    const full = {
+      ...sleepRecovery(state.character.vitals, state.character.stats),
+      chakra: night.chakra,
+    };
     const recovery = lockedOut
       ? { ...full, health: Math.round((full.health ?? 0) * LOCKED_OUT_RECOVERY) }
       : full;
@@ -165,7 +171,8 @@ export const sleep: ActionHandler<ActionOf<'sleep'>> = {
       text: story,
       tone: lockedOut || hungry ? 'warning' : 'info',
       chips: [
-        chip('Energy & chakra restored', 'gain'),
+        chip(night.partial ? 'Energy restored' : 'Energy & chakra restored', 'gain'),
+        ...(night.partial ? [chip('Chakra only partly back', 'cost')] : []),
         chip(`Health +${Math.max(0, rested.character.vitals.health - before)}`, 'gain'),
       ],
     });

@@ -4,6 +4,7 @@ export { validateContent } from './validate';
 export type { Catalog } from './catalog';
 export { TONES } from './people';
 export { GEAR_SLOTS } from './items';
+export { INJURY_SITE_LABELS, type InjuryCause, type InjuryDef, type InjurySite } from './injuries';
 export type {
   BackdropId,
   BreakInApproach,

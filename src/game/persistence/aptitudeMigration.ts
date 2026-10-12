@@ -21,11 +21,11 @@ function identitySpecs(state: RawState, character: RawState): ModifierSpec[] {
 }
 
 /**
- * v16 → v17: hidden aptitude per stat. Characters made before it get exactly the growth their
+ * v17 → v18: hidden aptitude per stat. Characters made before it get exactly the growth their
  * clan and talent used to give them (no dice), and have found nothing out yet. Traits keep
  * acting as modifiers, as before.
  */
-export function v16ToV17(state: RawState): RawState {
+export function v17ToV18(state: RawState): RawState {
   const character = asRecord(state.character);
   return {
     ...state,

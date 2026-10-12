@@ -1,6 +1,7 @@
 import { costIsSane, DISCIPLINES, effectProblem } from '@/systems/techniques';
 
 import { duplicateIds } from './catalog';
+import { validateInjuries } from './validateInjuries';
 import { validatePeople } from './validatePeople';
 import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
@@ -23,6 +24,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...recipeProblems(pack),
     ...validatePeople(pack),
     ...validateVillage(pack),
+    ...validateInjuries(pack),
   ];
 }
 
@@ -103,6 +105,7 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['nindo', pack.nindos],
     ['gear', pack.gear],
     ['tool', pack.tools],
+    ['injury', pack.injuries],
     ['ingredient', pack.ingredients],
     ['recipe', pack.recipes],
     ['person', pack.people],

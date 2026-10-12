@@ -16,6 +16,7 @@ import {
   statChips,
 } from '../ops';
 import { weakFromHunger } from '../hunger';
+import { laidUp } from '../injuries';
 import { bondOf, findPerson, whereNow } from '../people/cast';
 import { growCharacter, logDiscoveries } from '../growth';
 import { studyPointsFor } from '../profile';
@@ -101,6 +102,7 @@ export const lesson: ActionHandler<ActionOf<'lesson'>> = {
     return firstBlocker(
       busyReason(state),
       weakFromHunger(state),
+      laidUp(state, ctx),
       !sensei && 'You don’t have a sensei yet.',
       !placeHere(state, ctx, 'training') && 'Lessons happen at a training ground.',
       wait > 0 && `Your next lesson is in ${wait === 1 ? 'a day' : `${wait} days`}.`,

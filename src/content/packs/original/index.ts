@@ -10,6 +10,7 @@ import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
 import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
 import { GEAR } from './gear';
+import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { ORIGINAL_CONVERSATIONS } from './conversations';
 import { GENIN } from './genin';
@@ -42,6 +43,7 @@ export const ORIGINAL_PACK: ContentPack = {
   breakIn: BREAK_IN,
   gear: GEAR,
   tools: TOOLS,
+  injuries: INJURIES,
   ingredients: INGREDIENTS,
   recipes: RECIPES,
   people: [...SENSEIS_AND_ELDERS, ...GENIN],

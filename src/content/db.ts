@@ -2,6 +2,7 @@ import type { MissionDef } from '@/systems/missions';
 import type { TechniqueDef } from '@/systems/techniques';
 
 import { createCatalog, type Catalog } from './catalog';
+import type { InjuryDef } from './injuries';
 import type {
   BreakInScene,
   ClanDef,
@@ -49,6 +50,7 @@ export interface ContentDb {
   readonly breakIn: BreakInScene;
   readonly gear: Catalog<GearDef>;
   readonly tools: Catalog<ToolDef>;
+  readonly injuries: Catalog<InjuryDef>;
   readonly ingredients: Catalog<IngredientDef>;
   readonly recipes: Catalog<RecipeDef>;
   readonly people: Catalog<PersonDef>;
@@ -80,6 +82,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     breakIn: pack.breakIn,
     gear: createCatalog('gear', pack.gear),
     tools: createCatalog('tool', pack.tools),
+    injuries: createCatalog('injury', pack.injuries),
     ingredients: createCatalog('ingredient', pack.ingredients),
     recipes: createCatalog('recipe', pack.recipes),
     people: createCatalog('person', pack.people),

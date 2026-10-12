@@ -97,7 +97,7 @@ describe('persistence', () => {
     const game = newGame();
     const { aptitude: _a, aptitudeKnown: _k, aptitudeSessions: _s, ...old } = game.character;
     const hardWorker = { ...old, clanId: 'kurogane', talentId: 'hard-worker' };
-    const raw = JSON.stringify({ version: 16, state: { ...game, character: hardWorker } });
+    const raw = JSON.stringify({ version: 17, state: { ...game, character: hardWorker } });
     const loaded = deserialize(raw);
     if (!loaded.ok) throw new Error(loaded.error);
     const { character } = loaded.value;

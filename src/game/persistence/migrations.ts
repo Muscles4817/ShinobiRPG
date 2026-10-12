@@ -1,4 +1,4 @@
-import { v16ToV17 } from './aptitudeMigration';
+import { v17ToV18 } from './aptitudeMigration';
 
 /**
  * Save migrations, keyed by the version being migrated *from*. Each step takes the raw
@@ -256,6 +256,12 @@ function v15ToV16(state: RawState): RawState {
   };
 }
 
+/** v16 → v17: injuries and chakra exhaustion arrive; everyone starts unhurt and rested. */
+function v16ToV17(state: RawState): RawState {
+  const character = asRecord(state.character);
+  return { ...state, character: { ...character, injuries: [], exhaustion: null } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -273,4 +279,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   14: v14ToV15,
   15: v15ToV16,
   16: v16ToV17,
+  17: v17ToV18,
 };

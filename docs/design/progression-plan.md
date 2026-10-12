@@ -787,6 +787,20 @@ These were folded into the D2 discussion. Where each landed:
   (Plan & Watch reports the player's `CombatOutcome.chakraSpent`; 0.02 base gain a point,
   `game/fightGrowth.ts`). Save v16 seeds reserves from the old maximum (within one point).
   An enemy's reserves are read back from its authored `maxChakra`.
+- 2.6: named injuries are content (`InjuryDef` in `content/injuries.ts`; twelve shared ones
+  in `content/shared/injuries.ts`, validated), with the rules in a new `systems/injuries`.
+  `character.injuries` and `character.exhaustion` (save v17). Injuries add their
+  `ModifierSpec` to `characterModifiers` and their per-stat fight multipliers (and a trump's
+  strain) to `combatStats`; they heal on the morning of `until` (`spendTime`), with a journal
+  line. Sources go through `game/wounds.ts`: a real defeat (`game/fightToll.ts`) picks a
+  `defeat` injury weighted by the share of foe health still standing and names it on the
+  defeat card; `applyFightCosts` now pays trump costs (hospital days: a bed-rest `collapse`
+  injury; exhaustion days; a stat injury: the matching `strain` injury plus the flat amount
+  off that stat in fights; permanent: the stat drops); ending any fight under 10% chakra
+  leaves one night of exhaustion (sleep refills half). Stamina takes 1% a point off a new
+  injury's days (at most half). The hospital treats injuries even at full health: 25 ryo
+  each on top of the fee, halving the days left, once per injury. The Shinobi screen has a
+  Condition section; the hospital lists your injuries.
 
 ### Decisions made during the run
 
@@ -883,3 +897,11 @@ These were folded into the D2 discussion. Where each landed:
   but sharp-eyed scouting lists them like any other standout stat. No drill may grant them
   (validated). The "Huge chakra reserves" talent now gives reserves +4 instead of stamina +3,
   and the fan pack's sealing clan trades one stamina for reserves +3.
+- 2.6: injuries last until the morning of `until` (`until = today + days`), and exhaustion
+  spoils every sleep begun before its `until`, so "one day" of either means tonight. A spar
+  never injures (nobody is really hurt), but ending one drained still exhausts. A bed-rest
+  injury blocks training, lessons, sparring and jobs like starving does. The trump's stat
+  `amount` is kept on the injury as a flat strain in fights, besides the injury's own
+  multipliers. Treatment can be repeated for health, but each injury is set only once (a
+  `treated` flag on it), so ryo can't erase injuries. `exhaustion` is `null` when rested
+  rather than absent.
