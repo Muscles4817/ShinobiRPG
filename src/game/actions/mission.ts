@@ -18,6 +18,7 @@ import {
   placeHere,
   spendTime,
 } from '../ops';
+import { beginEncounter } from '../encounter/current';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
 import type { ActionHandler, ActionOf } from './types';
@@ -74,12 +75,16 @@ export const missionContinue: ActionHandler<ActionOf<'missionContinue'>> = {
     if (state.combat) return 'You are in the middle of a fight.';
     const stage = activeStage(state, ctx);
     if (!stage) return activeMission(state, ctx) ? null : 'You are not on a mission.';
-    return stage.kind === 'check' ? 'Choose an approach first.' : null;
+    if (stage.kind === 'check') return 'Choose an approach first.';
+    return stage.kind === 'encounter' && state.mission?.encounter
+      ? 'Choose how to go in first.'
+      : null;
   },
   perform(state, _action, ctx, rng) {
     const stage = activeStage(state, ctx);
     if (!state.mission || !stage) return completeIfFinished(state, ctx);
     if (stage.kind === 'combat') return beginCombat(state, ctx, rng);
+    if (stage.kind === 'encounter') return beginEncounter(state, ctx);
     if (stage.kind === 'narrative') {
       const mission = advance(state.mission, { kind: 'story', text: stage.text });
       return completeIfFinished({ ...state, mission }, ctx);

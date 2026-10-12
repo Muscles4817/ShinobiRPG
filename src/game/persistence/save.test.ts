@@ -1,4 +1,4 @@
-import { act, newGame, veteran } from '@/test/gameFixtures';
+import { act, intoFight, newGame, veteran } from '@/test/gameFixtures';
 
 import { deserialize, SAVE_VERSION, serialize } from './save';
 
@@ -10,7 +10,7 @@ describe('persistence', () => {
     });
     state = act(state, { type: 'missionContinue' });
     state = act(state, { type: 'missionChoose', approachIndex: 0 });
-    state = act(state, { type: 'missionContinue' });
+    state = intoFight(state);
     expect(state.combat).not.toBeNull();
     expect(deserialize(serialize(state))).toEqual({ ok: true, value: state });
   });

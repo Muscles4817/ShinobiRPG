@@ -1,3 +1,4 @@
+import { stageFoes } from '@/systems/missions';
 import { spend } from '@/systems/wallet';
 
 import { availability } from '../board';
@@ -19,7 +20,7 @@ export const buyIntel: ActionHandler<ActionOf<'buyIntel'>> = {
     if (availability(state, ctx, def).kind === 'absent') return 'That job isn’t on the board.';
     return firstBlocker(
       busyReason(state),
-      !def.stages.some((s) => s.kind === 'combat') && 'No fighting is expected on this job.',
+      !def.stages.some((s) => stageFoes(s).length > 0) && 'No fighting is expected on this job.',
       state.board.intel.includes(def.id) && 'You already know who you’ll face.',
       state.wallet.ryo < INTEL_FEE && `The report costs ${INTEL_FEE} ryo.`,
     );

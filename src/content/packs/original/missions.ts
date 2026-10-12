@@ -108,7 +108,9 @@ export const MISSIONS: readonly MissionDef[] = [
         onFailure: 'penalty',
       },
       {
-        kind: 'combat',
+        kind: 'encounter',
+        template: 'beast',
+        job: 'deliver',
         text: 'A feral tanuki has been raiding the storehouse — and it does not want to share.',
         enemyIds: ['feral-tanuki'],
         canFlee: true,
@@ -144,10 +146,18 @@ export const MISSIONS: readonly MissionDef[] = [
         failureDamage: 10,
       },
       {
-        kind: 'combat',
-        text: '"Leave the cart and walk away, kid." A bowstring creaks somewhere in the trees.',
+        kind: 'encounter',
+        template: 'bandit-camp',
+        job: 'escort',
+        text: 'Where the road narrows, a bowstring creaks somewhere in the trees. They are waiting for the cart.',
         enemyIds: ['bandit-thug', 'bandit-archer'],
         canFlee: false,
+        flavour: {
+          terrain:
+            'Two rocky banks, a narrow road between them, and a treeline where a bow could hide.',
+          slipped:
+            'You lead Ōkubo off the road and round the banks by a goat track. Nobody follows.',
+        },
       },
     ],
   },
@@ -174,10 +184,15 @@ export const MISSIONS: readonly MissionDef[] = [
         onFailure: 'penalty',
       },
       {
-        kind: 'combat',
-        text: '"You think a headband makes you better than me?"',
+        kind: 'encounter',
+        template: 'lone-rogue',
+        job: 'eliminate',
+        text: 'A thin figure with a scratched-out headband is practising seals, alone, scrolls spread around him.',
         enemyIds: ['academy-dropout'],
         canFlee: true,
+        flavour: {
+          parley: '“Fine. Fine! Take me back to Rin, then.” He drops the scrolls at your feet.',
+        },
       },
     ],
   },
@@ -206,8 +221,10 @@ export const MISSIONS: readonly MissionDef[] = [
         failureDamage: 6,
       },
       {
-        kind: 'combat',
-        text: 'A grey figure rises from the rice sacks. "Mine. All of it. Mine."',
+        kind: 'encounter',
+        template: 'spirit',
+        job: 'eliminate',
+        text: 'A grey figure hunches over the rice sacks at the back, muttering. "Mine. All of it. Mine."',
         enemyIds: ['storehouse-wraith'],
         canFlee: false,
       },

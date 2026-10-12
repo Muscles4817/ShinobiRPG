@@ -86,6 +86,7 @@ describe('fights teach', () => {
     let s = act(start, { type: 'startMission', missionId: 'storehouse-ghost' });
     for (let i = 0; i < 50 && (s.mission || s.combat); i++) {
       if (s.combat) s = fightOut(s);
+      else if (s.mission?.encounter) s = act(s, { type: 'encounterApproach', approach: 'head-on' });
       else if (dispatch(s, { type: 'missionContinue' }, ctx).ok)
         s = act(s, { type: 'missionContinue' });
       else s = act(s, { type: 'missionChoose', approachIndex: 0 });

@@ -1,5 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
-import type { MissionDef } from '@/systems/missions';
+import type { EncounterTemplate, MissionDef } from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { AptitudeBand, StatDelta, StatId } from '@/systems/stats';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
@@ -260,6 +260,8 @@ export interface ContentPack {
   readonly locations: readonly LocationDef[];
   readonly techniques: readonly TechniqueDef[];
   readonly missions: readonly MissionDef[];
+  /** Kinds of encounter the missions' encounter stages are built on. */
+  readonly encounters: readonly EncounterTemplate[];
   readonly enemies: readonly EnemyDef[];
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];

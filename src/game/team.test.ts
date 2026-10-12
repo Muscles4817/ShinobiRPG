@@ -1,5 +1,5 @@
 import { MAX_HEALTH } from '@/systems/vitals';
-import { act, ctx, fightOut, newGame, veteran, withAllStats } from '@/test/gameFixtures';
+import { act, ctx, fightOut, intoFight, newGame, veteran, withAllStats } from '@/test/gameFixtures';
 
 import { blockerFor } from './dispatch';
 import { deserialize } from './persistence/save';
@@ -11,7 +11,7 @@ function toRiverFight(start: GameState = newGame()): GameState {
   let state = act(veteran(start, 2), { type: 'startMission', missionId: 'river-road-bandits' });
   state = act(state, { type: 'missionContinue' });
   state = act(state, { type: 'missionChoose', approachIndex: 0 });
-  return act(state, { type: 'missionContinue' });
+  return intoFight(state);
 }
 
 describe('team missions', () => {

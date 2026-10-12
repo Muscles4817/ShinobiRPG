@@ -1,0 +1,172 @@
+/* Encounter scene: a scout's slip of what you know, recon cards and the ways in. */
+.page.encounter {
+  gap: 16px;
+}
+.page.encounter section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* What you know: a paper slip, known facts in ink, unknowns in pencil. */
+.field-notes {
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border-radius: 2px;
+  padding: 12px 12px 14px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.35);
+}
+.field-notes h2.label {
+  color: var(--paper-ink);
+}
+.field-notes dl {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.field-notes dl > div {
+  display: grid;
+  gap: 1px;
+}
+.field-notes dt {
+  font-family: var(--font-story);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.field-notes dd {
+  margin: 0;
+  font-size: 0.88rem;
+}
+.field-notes dd.unknown {
+  color: var(--paper-muted);
+  font-style: italic;
+}
+.field-foes {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.field-foes li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: rgb(0 0 0 / 0.06);
+}
+.field-foes b {
+  font-family: var(--font-story);
+}
+.field-foes small {
+  flex-basis: 100%;
+  color: var(--paper-muted);
+  font-size: 0.8rem;
+}
+.field-foes small b {
+  color: var(--paper-ink);
+  font-family: var(--font-ui);
+}
+/* Chips inked dark enough to read on paper. */
+.field-notes .chip {
+  background: transparent;
+  border: 1px solid currentcolor;
+}
+.field-notes .chip.gain {
+  color: var(--ink-gain);
+}
+.field-notes .chip.cost {
+  color: var(--ink-cost);
+}
+.field-notes .chip.harm {
+  color: var(--seal);
+}
+
+/* Recon: cards on a lacquered tray. */
+.scout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.scout-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  min-height: 72px;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: var(--grain), var(--raise);
+  border: 1px solid var(--line);
+}
+.scout-card b {
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+.scout-card small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.scout-card:disabled {
+  opacity: 0.7;
+}
+.scout-card:disabled b {
+  color: var(--muted);
+}
+
+/* The ways in. */
+.range-pick {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.range-pick .label {
+  margin-right: 4px;
+}
+.range-pick button {
+  min-height: 40px;
+  min-width: 56px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+}
+.range-pick button[aria-pressed='true'] {
+  border-color: var(--lantern);
+  color: var(--lantern);
+}
+.way {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  text-align: left;
+  min-height: 48px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background: var(--grain), var(--raise);
+  border: 1px solid var(--line);
+}
+.way-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+.way-head small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.way-pay {
+  color: var(--cost);
+  font-size: 0.8rem;
+}
+.way:disabled b {
+  color: var(--muted);
+}

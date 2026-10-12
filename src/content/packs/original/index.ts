@@ -13,6 +13,7 @@ import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
+import { ENCOUNTERS } from '../../shared/encounters';
 import { ORIGINAL_CONVERSATIONS } from './conversations';
 import { GENIN } from './genin';
 import { SENSEIS_AND_ELDERS } from './people';
@@ -34,6 +35,7 @@ export const ORIGINAL_PACK: ContentPack = {
   locations: ORIGINAL_LOCATIONS,
   techniques: [...TECHNIQUES, ...CLAN_TECHNIQUES, ...SENSEI_TECHNIQUES, ...COMBO_TECHNIQUES],
   missions: [...MISSIONS, ...TEAM_MISSIONS],
+  encounters: ENCOUNTERS,
   enemies: ENEMIES,
   training: TRAINING,
   foods: FOODS,

@@ -13,6 +13,7 @@ import { PlacePage } from './places/PlacePage';
 import { RecordScreen } from './RecordScreen';
 import { CombatScene } from './scenes/CombatScene';
 import { ConversationScene } from './scenes/ConversationScene';
+import { EncounterScene } from './scenes/EncounterScene';
 import { MissionScene } from './scenes/MissionScene';
 import { TeamScene } from './scenes/TeamScene';
 import { JutsuScreen } from './YouScreens';
@@ -84,6 +85,8 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
   switch (kind) {
     case 'combat':
       return <CombatScene {...props} />;
+    case 'encounter':
+      return <EncounterScene {...props} />;
     case 'mission':
       return <MissionScene {...props} />;
     case 'conversation':

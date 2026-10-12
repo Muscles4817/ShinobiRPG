@@ -10,6 +10,8 @@ function playMission(state: GameState, missionId: string, context = ctx): GameSt
   let s = act(state, { type: 'startMission', missionId }, context);
   for (let i = 0; i < 200 && (s.mission || s.combat); i++) {
     if (s.combat) s = fightOut(s, context);
+    else if (s.mission?.encounter)
+      s = act(s, { type: 'encounterApproach', approach: 'head-on' }, context);
     else if (dispatch(s, { type: 'missionContinue' }, context).ok)
       s = act(s, { type: 'missionContinue' }, context);
     else s = act(s, { type: 'missionChoose', approachIndex: 0 }, context);

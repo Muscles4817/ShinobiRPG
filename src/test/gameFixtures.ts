@@ -80,6 +80,17 @@ export function lastEntry(state: GameState) {
   return state.journal.entries.at(-1);
 }
 
+/**
+ * Moves the mission on into its fight: steps into the encounter there and goes in head-on, or
+ * (at a plain combat stage) simply starts the fight.
+ */
+export function intoFight(state: GameState, context: GameContext = ctx): GameState {
+  const met = act(state, { type: 'missionContinue' }, context);
+  return met.mission?.encounter && !met.combat
+    ? act(met, { type: 'encounterApproach', approach: 'head-on' }, context)
+    : met;
+}
+
 /** Picks something sensible every turn, whatever the engine, until the fight ends. */
 export function fightOut(start: GameState, context: GameContext = ctx): GameState {
   let state = start;
