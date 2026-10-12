@@ -1,0 +1,146 @@
+import type { MissionTemplate } from '../../../../missionTemplates';
+
+/**
+ * D-rank jobs inside the village walls: festival trouble, quarrels to settle and small rites
+ * the clans need a steady pair of hands for.
+ */
+export const D_RANK_TOWN: readonly MissionTemplate[] = [
+  {
+    id: 'd-festival-trouble',
+    rank: 'D',
+    slots: 3,
+    energyCost: 20,
+    reward: { ryo: 120, reputation: 3 },
+    minMissionsCompleted: 0,
+    placeholders: {
+      title: 'the job’s title, e.g. Stewards for the Kite Fair',
+      client: 'who organises it, e.g. the Kite Fair Committee',
+      festival: 'the occasion, mid-sentence, e.g. the autumn kite fair',
+      setup: 'a sentence: the scene as you arrive, crowded and loud',
+      crush: 'a sentence: the crowd gets out of hand somewhere',
+      mischief: 'a sentence: someone or something is making trouble in the crowd',
+      mischiefStopped: 'a sentence: you stop the trouble, and who it turns out to be',
+      mischiefMissed: 'a sentence: the trouble gets away and does its damage first',
+      ending: 'a sentence: the festival’s high point, seen from where you stand',
+    },
+    title: '{title}',
+    client: '{client}',
+    summary: 'Keep order at {festival}. Crowds, stalls, and whatever else turns up.',
+    stages: [
+      { kind: 'narrative', text: '{setup}' },
+      {
+        kind: 'check',
+        text: '{crush}',
+        approaches: [
+          { label: 'Wade in and hold the line', stat: 'strength', difficulty: 7 },
+          { label: 'Shout them into order', stat: 'willpower', difficulty: 8 },
+          { label: 'Open another way out', stat: 'intellect', difficulty: 8 },
+        ],
+        success: 'The crowd eases and flows again. Nobody is hurt.',
+        failure: 'A stall goes over before the crowd eases. Its owner blames you.',
+        onFailure: 'penalty',
+        failureDamage: 3,
+      },
+      {
+        kind: 'check',
+        text: '{mischief}',
+        approaches: [
+          { label: 'Spot them in the crowd', stat: 'perception', difficulty: 8 },
+          { label: 'Cut them off', stat: 'speed', difficulty: 8 },
+        ],
+        success: '{mischiefStopped}',
+        failure: '{mischiefMissed}',
+        onFailure: 'penalty',
+      },
+      { kind: 'narrative', text: '{ending}' },
+    ],
+  },
+  {
+    id: 'd-quarrel',
+    rank: 'D',
+    slots: 2,
+    energyCost: 15,
+    reward: { ryo: 90, reputation: 3 },
+    minMissionsCompleted: 1,
+    placeholders: {
+      title: 'the job’s title, e.g. The Dyers’ Wall',
+      client: 'who asked for a shinobi to settle it, e.g. Ward Elder Kinu',
+      parties: 'the two sides, mid-sentence, e.g. two dyers who share a drying wall',
+      quarrel: 'a sentence: the quarrel at its loudest, both sides talking at once',
+      clue: 'a sentence: the detail that might show who is in the right',
+      truth: 'a sentence: what really happened, laid out plainly',
+      muddle: 'a sentence: you can’t prove it, so you split the difference and nobody is pleased',
+      ending: 'a sentence: how the quarrel ends, with a touch of warmth or wryness',
+    },
+    title: '{title}',
+    client: '{client}',
+    summary: 'Settle a quarrel between {parties} before it comes to blows.',
+    stages: [
+      { kind: 'narrative', text: '{quarrel}' },
+      {
+        kind: 'check',
+        text: '{clue}',
+        approaches: [
+          { label: 'Look closely at the evidence', stat: 'perception', difficulty: 8 },
+          { label: 'Catch the lie in their stories', stat: 'intellect', difficulty: 8 },
+          { label: 'Let them shout until one cracks', stat: 'willpower', difficulty: 9 },
+        ],
+        success: '{truth}',
+        failure: '{muddle}',
+        onFailure: 'penalty',
+      },
+      { kind: 'narrative', text: '{ending}' },
+    ],
+  },
+  {
+    id: 'd-small-rite',
+    rank: 'D',
+    slots: 3,
+    energyCost: 25,
+    reward: { ryo: 130, reputation: 4 },
+    minMissionsCompleted: 2,
+    placeholders: {
+      title: 'the job’s title, e.g. Retying the Well Rope',
+      client: 'the priest or clan elder in charge, e.g. Shimenawa Elder Tsuzuri',
+      rite: 'the rite, mid-sentence, e.g. the yearly retying of a sacred rope round the old well',
+      setup: 'a sentence: the rite laid out before you, and the priest’s warning',
+      binding: 'a sentence: the delicate part of the rite you must do yourself',
+      bound: 'a sentence: you do it right, and what you feel when it holds',
+      frayed: 'a sentence: it goes wrong and the priest has to step in',
+      pull: 'a sentence: something on the other side of the rite pulls at you',
+      ending: 'a sentence: the rite complete, and what changes around you',
+    },
+    title: '{title}',
+    client: '{client}',
+    summary: 'Assist with {rite}. Steady hands and a steady mind wanted.',
+    stages: [
+      { kind: 'narrative', text: '{setup}' },
+      {
+        kind: 'check',
+        text: '{binding}',
+        approaches: [
+          { label: 'Guide your chakra into it', stat: 'chakraControl', difficulty: 8 },
+          { label: 'Write the seal by the book', stat: 'fuuinjutsu', difficulty: 8 },
+          { label: 'Copy the priest exactly', stat: 'perception', difficulty: 9 },
+        ],
+        success: '{bound}',
+        failure: '{frayed}',
+        onFailure: 'penalty',
+      },
+      {
+        kind: 'check',
+        text: '{pull}',
+        approaches: [
+          { label: 'Hold fast', stat: 'willpower', difficulty: 8 },
+          { label: 'See it for what it is', stat: 'genjutsu', difficulty: 9 },
+        ],
+        success: 'You keep your feet and your mind. The pull slackens and is gone.',
+        failure:
+          'You come to on your knees, cold to the bone, with the priest holding your collar.',
+        onFailure: 'penalty',
+        failureDamage: 4,
+      },
+      { kind: 'narrative', text: '{ending}' },
+    ],
+  },
+];

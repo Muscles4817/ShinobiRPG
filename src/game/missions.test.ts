@@ -19,13 +19,11 @@ describe('missions', () => {
     expect(end.mission).toBeNull();
     expect(end.wallet.ryo).toBe(start.wallet.ryo + 90);
     expect(end.standing.missionsCompleted).toBe(1);
-    expect(end.reports).toEqual([
-      expect.objectContaining({
-        kind: 'mission-complete',
-        ryo: 90,
-        unlocked: ['Medicine for Kuroda Farm'],
-      }),
-    ]);
+    expect(end.reports).toEqual([expect.objectContaining({ kind: 'mission-complete', ryo: 90 })]);
+    const [debrief] = end.reports;
+    expect(debrief?.kind === 'mission-complete' && debrief.unlocked).toContain(
+      'Medicine for Kuroda Farm',
+    );
   });
 
   it('records the check as choice, roll and story', () => {
