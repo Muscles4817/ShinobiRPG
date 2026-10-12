@@ -23,7 +23,8 @@ import {
   slotLimit,
   type Card,
 } from './cards';
-import { upgradeLegacy, withKits } from './legacy';
+import { intentLine, rollIntents } from './intent';
+import { upgradeLegacy, withIntents, withKits } from './legacy';
 import { rememberedLoadout } from './memory';
 import { decide, resolveExchange } from './round';
 import {
@@ -49,7 +50,7 @@ export const ROUND_EXCHANGES = 4;
 const SLOT_PREFIX = 'slot:';
 
 function read(state: CombatState): PlanState {
-  return upgradeLegacy(withKits(decode(state)));
+  return withIntents(upgradeLegacy(withKits(decode(state))));
 }
 
 function statuses(f: PlanFighter): string[] {
@@ -141,16 +142,21 @@ function fleeChance(state: PlanState): number {
   return clamp(0.4 + (runner.attributes.speed - fastest) * 0.05 + distance, 0.1, 0.9);
 }
 
-/** Fights an exchange and, when the round is over, returns to the card table. */
+/** Fights an exchange, then foes announce their next move. */
 function exchange(state: PlanState, rng: Rng): PlanState {
-  const next = resolveExchange(state, rng);
+  const next = endOfRound(resolveExchange(state, rng));
+  return next.result ? next : { ...next, intents: rollIntents(next, rng) };
+}
+
+/** When the round is over, back to the card table. */
+function endOfRound(next: PlanState): PlanState {
   if (next.result || next.exchange < ROUND_EXCHANGES) return next;
   return {
     ...next,
     phase: 'loadout',
     bout: next.bout + 1,
     exchange: 0,
-    log: [...next.log, `— End of round ${state.bout}. Change your cards if you like. —`],
+    log: [...next.log, `— End of round ${next.bout}. Change your cards if you like. —`],
   };
 }
 
@@ -193,18 +199,6 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   }
 }
 
-/** What you know of an enemy's cards: all of them with insight, else what you've seen. */
-function intentOf(state: PlanState, f: PlanFighter, insight: boolean): string | undefined {
-  if (f.side !== 'enemy' || !alive(f)) return undefined;
-  const ids = insight ? f.loadout[state.range] : (state.seen[f.id] ?? []);
-  const names = ids.flatMap((id) => {
-    const card = findCard(f, id);
-    return card ? [cardLabel(card)] : [];
-  });
-  if (names.length === 0) return undefined;
-  return `${insight ? `${RANGE_LABEL[state.range]} cards` : 'Seen'}: ${names.join(', ')}`;
-}
-
 function prompt(state: PlanState): string {
   if (state.phase === 'loadout') {
     const pick = `Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} cards for each distance.`;
@@ -221,12 +215,13 @@ export function createPlanEngine(): CombatEngine {
     summary:
       'Slot cards for each distance, then watch each round play out. Re-plan between rounds.',
 
-    start(setup) {
+    start(setup, rng) {
       const names = setup.enemies.map((e) => e.name).join(', ');
       const fighters = initialFighters(setup).map((f) => ({
         ...f,
         loadout: (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ?? defaultLoadout(f),
       }));
+      const table = { fighters, range: START_RANGE, exchange: 0 } as const;
       const state: PlanState = {
         phase: 'loadout',
         round: 1,
@@ -235,6 +230,7 @@ export function createPlanEngine(): CombatEngine {
         fighters,
         range: START_RANGE,
         seen: {},
+        intents: rollIntents(table, rng),
         log: [setup.intro ?? `${names} square up. How will you fight?`],
         result: null,
         canFlee: setup.canFlee,
@@ -254,7 +250,7 @@ export function createPlanEngine(): CombatEngine {
       const insight = hasPerk(playerOf(plan), 'insight');
       return {
         round: plan.round,
-        combatants: plan.fighters.map((f) => viewOf(f, statuses(f), intentOf(plan, f, insight))),
+        combatants: plan.fighters.map((f) => viewOf(f, statuses(f), intentLine(plan, f, insight))),
         log: plan.log,
         options: options(plan),
         range: plan.range,

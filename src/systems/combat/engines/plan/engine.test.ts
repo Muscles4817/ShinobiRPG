@@ -164,7 +164,7 @@ describe('plan & watch engine', () => {
   it('insight shows an enemy’s cards for the current distance', () => {
     const seer = fighter('hero', { perks: ['insight'] });
     const bandit = engine.view(start(seer)).combatants.find((c) => c.id === 'bandit');
-    expect(bandit?.intent).toMatch(/^Mid cards: /);
+    expect(bandit?.intent).toMatch(/\. Mid cards: /);
   });
 
   it('a fight saved under the old single-tactic plan resumes at the card table', () => {

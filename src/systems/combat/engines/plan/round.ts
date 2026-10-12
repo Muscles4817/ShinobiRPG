@@ -18,6 +18,7 @@ import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { healLine } from '../../rules/narration';
 import { cardId, isOffence, type Card } from './cards';
 import { chooseCard } from './choose';
+import { intendedCard } from './intent';
 import { useTool } from './pouch';
 import { dispel, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
@@ -210,7 +211,7 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const target = targetFor(round.fighters, actor, rng);
   const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
   const moment = { band: round.range, foe: target, hiddenFoe, opening: round.opening ?? false };
-  const card = chooseCard(actor, moment, rng);
+  const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
   const played = attempt(round, { actor, target, rng }, card);
   return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
 }
@@ -228,6 +229,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     range: state.range,
     lines: [`— Exchange ${state.round} —`],
     seen: state.seen,
+    intents: state.intents,
   };
   const end = order.reduce((round, { id }) => turn(round, id, rng), start);
   const result = decide(end.fighters);

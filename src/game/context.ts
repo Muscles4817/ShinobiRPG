@@ -1,11 +1,5 @@
 import { buildContentDb, CONTENT_PACKS, type ContentDb, type ContentPack } from '@/content';
-import {
-  createDeckEngine,
-  createDuelEngine,
-  createMindEngine,
-  createPlanEngine,
-  type CombatEngine,
-} from '@/systems/combat';
+import { createDuelEngine, createPlanEngine, type CombatEngine } from '@/systems/combat';
 
 /**
  * Dependencies the game logic needs but should not hard-code. This is the composition
@@ -18,9 +12,12 @@ export interface GameContext {
   readonly engines: readonly CombatEngine[];
 }
 
-/** The fight styles this build offers, default first. */
+/**
+ * The fight styles this build offers, default first. Deck is shelved: its engine is kept and
+ * tested in `systems/combat`, but not offered until it is brought up to date.
+ */
 export function defaultEngines(): readonly CombatEngine[] {
-  return [createDuelEngine(), createPlanEngine(), createDeckEngine(), createMindEngine()];
+  return [createDuelEngine(), createPlanEngine()];
 }
 
 export function createGameContext(

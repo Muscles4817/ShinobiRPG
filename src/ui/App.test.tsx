@@ -173,26 +173,6 @@ describe('App (smoke test)', () => {
     expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
   });
 
-  it.each([
-    ['Plan & Watch', /cards for each distance/],
-    ['Deck', 'End turn'],
-    ['Mind Game', 'Feint'],
-  ])('switches the fight style to %s and fights with it', async (style, marker) => {
-    const user = userEvent.setup();
-    render(<App store={memoryStore()} />);
-    await startGame(user);
-    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
-    await user.click(screen.getByRole('button', { name: new RegExp(`^${style}`) }));
-    await user.click(screen.getByRole('button', { name: /Here/ }));
-    await user.click(place(/Training Grounds/));
-    const sparring = screen.getByRole('region', { name: 'Sparring' });
-    const spar = within(sparring)
-      .getAllByRole('button', { name: 'Spar' })
-      .find((b) => !(b as HTMLButtonElement).disabled)!;
-    await user.click(spar);
-    expect(screen.getAllByText(marker).length).toBeGreaterThan(0);
-  });
-
   it('plans a fight with cards for each distance, then watches the round', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

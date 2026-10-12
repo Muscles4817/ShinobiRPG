@@ -78,6 +78,7 @@ function stateOf(fighters: PlanFighter[], range: PlanState['range'] = 'mid'): Pl
     fighters,
     range,
     seen: {},
+    intents: {},
     log: [],
     result: null,
     canFlee: true,
@@ -93,6 +94,7 @@ function hitOn(defender: PlanFighter, blow: Blow, seed = 1): Round {
     range: 'close',
     lines: [],
     seen: {},
+    intents: {},
   };
   return react(round, { attacker: hero!, target: defender, blow, rng: createRng(seed) });
 }

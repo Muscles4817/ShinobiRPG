@@ -149,6 +149,34 @@ function v11ToV12(state: RawState): RawState {
   };
 }
 
+/** Fight styles no longer offered: Mind Game (deleted) and Deck (shelved). */
+const RETIRED_ENGINE_IDS: readonly unknown[] = ['mind-v1', 'deck-v1'];
+const DEFAULT_ENGINE_ID = 'duel-v1';
+
+/**
+ * v12 → v13: the Mind Game and Deck fight styles are retired. Saves that chose one go back to
+ * Classic, and a fight in progress in one is called off before any blow lands: a mission returns to
+ * its fight stage (vitals only change when a fight resolves), a spar is simply cancelled.
+ */
+function v12ToV13(state: RawState): RawState {
+  const settings = asRecord(state.settings);
+  const combatPlans = Object.fromEntries(
+    Object.entries(asRecord(settings.combatPlans)).filter(
+      ([id]) => !RETIRED_ENGINE_IDS.includes(id),
+    ),
+  );
+  const combatStyle = RETIRED_ENGINE_IDS.includes(settings.combatStyle)
+    ? DEFAULT_ENGINE_ID
+    : settings.combatStyle;
+  const migrated = { ...state, settings: { ...settings, combatStyle, combatPlans } };
+  if (!RETIRED_ENGINE_IDS.includes(asRecord(state.combat).engineId)) return migrated;
+  return {
+    ...migrated,
+    combat: null,
+    people: { ...asRecord(state.people), sparringWith: null },
+  };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -161,4 +189,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   9: v9ToV10,
   10: v10ToV11,
   11: v11ToV12,
+  12: v12ToV13,
 };
