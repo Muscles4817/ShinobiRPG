@@ -1,0 +1,56 @@
+import type { TechniqueDef } from '@/systems/techniques';
+
+/** Signature techniques of the village's jōnin and chūnin, taught by them in "train with". */
+export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
+  {
+    id: 'interrogators-gaze',
+    name: 'Interrogator’s Gaze',
+    description: 'A look that fills the target’s head with every way this could end badly.',
+    discipline: 'genjutsu',
+    effects: [{ verb: 'confuse', power: 15 }],
+    chakraCost: 10,
+    requirements: { genjutsu: 12, intellect: 11 },
+    difficulty: 70,
+  },
+  {
+    id: 'senbon-needles',
+    name: 'Senbon Needles',
+    description: 'A thin needle spat or flicked into a nerve point. Small, quiet and very rude.',
+    discipline: 'taijutsu',
+    effects: [{ verb: 'damage', power: 12 }],
+    chakraCost: 4,
+    requirements: { taijutsu: 9, perception: 8 },
+    difficulty: 50,
+  },
+  {
+    id: 'black-blade-draw',
+    name: 'Black Blade Draw',
+    description: 'A dark blade leaves its sheath and the cut is already finished.',
+    discipline: 'kenjutsu',
+    effects: [{ verb: 'damage', power: 19 }],
+    chakraCost: 10,
+    requirements: { kenjutsu: 13, speed: 10 },
+    difficulty: 75,
+  },
+  {
+    id: 'crow-scatter',
+    name: 'Crow Scatter',
+    description: 'You burst into a flock of crows and are somewhere else when they settle.',
+    discipline: 'genjutsu',
+    effects: [{ verb: 'conceal', power: 12, scaling: { drive: ['genjutsu'] } }],
+    chakraCost: 9,
+    requirements: { genjutsu: 10, perception: 8 },
+    difficulty: 60,
+  },
+  {
+    id: 'syrup-capture-field',
+    name: 'Water Syrup Capture Field',
+    description: 'Sticky water spat across the ground. The next foe to step in stays there.',
+    discipline: 'ninjutsu',
+    element: 'water',
+    effects: [{ verb: 'trap', power: 8, dazes: true }],
+    chakraCost: 8,
+    requirements: { ninjutsu: 8, chakraControl: 7 },
+    difficulty: 55,
+  },
+];

@@ -1,13 +1,16 @@
 import type { PersonDef } from '@/content';
 import type { Bond } from '@/systems/bonds';
+import type { Stats } from '@/systems/stats';
 
 /**
- * The people slice of GameState: generated classmates, your bonds with everyone, your team
- * and the conversation in progress. Authored people live in content; generated ones are
- * stored here in the same shape, so the rest of the game treats them alike.
+ * The people slice of GameState: generated classmates, your bonds with everyone, your team,
+ * the conversation in progress and how far genin have grown. Authored people live in content;
+ * generated ones are stored here in the same shape, so the rest of the game treats them alike.
  */
 export interface People {
   readonly generated: readonly PersonDef[];
+  /** How far genin have grown since they were made, keyed by person id. */
+  readonly progress: Readonly<Record<string, PersonProgress>>;
   /** Keyed by person id. Missing means you have never spoken. */
   readonly bonds: Readonly<Record<string, Bond>>;
   /** Null until teams are read out the morning after graduation. */
@@ -15,6 +18,23 @@ export interface People {
   readonly conversation: Conversation | null;
   /** The genin you are sparring with while a spar's fight is on. */
   readonly sparringWith: string | null;
+  /** Sessions each teacher has given you this week, keyed by person id. */
+  readonly taught: Readonly<Record<string, TaughtSessions>>;
+  /** Favours you have done for teachers who asked (`SimplePrice` favour ids). */
+  readonly favours: readonly string[];
+}
+
+/** How much of a teacher's time you have had: sessions in `week`, and the last day. */
+export interface TaughtSessions {
+  readonly week: number;
+  readonly used: number;
+  readonly lastDay: number;
+}
+
+/** A genin's stats now, and the last day whose training is in them. */
+export interface PersonProgress {
+  readonly stats: Stats;
+  readonly lastGrownDay: number;
 }
 
 export interface Team {
@@ -23,8 +43,6 @@ export interface Team {
   readonly senseiOptions: readonly string[];
   /** Null until you choose. */
   readonly senseiId: string | null;
-  /** The day of your last lesson with your sensei, if any. */
-  readonly lastLessonDay: number | null;
 }
 
 export interface Conversation {
@@ -43,8 +61,11 @@ export interface Answer {
 
 export const NO_PEOPLE: People = {
   generated: [],
+  progress: {},
   bonds: {},
   team: null,
   conversation: null,
   sparringWith: null,
+  taught: {},
+  favours: [],
 };

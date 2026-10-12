@@ -25,12 +25,21 @@ export type {
   ConversationDef,
   NamePools,
   PersonDef,
+  PersonRank,
   PersonRole,
   SenseiProfile,
   TeamText,
   Tone,
 } from './people';
 export type { OpeningHours, Stall } from './stall';
+export type {
+  PriceTemplate,
+  SimplePrice,
+  Steering,
+  SteeringFocus,
+  TeacherProfile,
+  TeachingQuirk,
+} from './teachers';
 export type { FestivalDef, RumourDef, SightDef, VillageLife } from './village';
 
 /**

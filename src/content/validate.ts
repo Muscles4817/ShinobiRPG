@@ -3,6 +3,8 @@ import { costIsSane, DISCIPLINES, effectProblem } from '@/systems/techniques';
 import { duplicateIds } from './catalog';
 import { validateInjuries } from './validateInjuries';
 import { validatePeople } from './validatePeople';
+import { validateRanks } from './validateRanks';
+import { validateTeachers } from './validateTeachers';
 import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
 import type { ContentPack, Identified } from './types';
@@ -23,6 +25,8 @@ export function validateContent(pack: ContentPack): string[] {
     ...beginnerProblems(pack),
     ...recipeProblems(pack),
     ...validatePeople(pack),
+    ...validateRanks(pack),
+    ...validateTeachers(pack),
     ...validateVillage(pack),
     ...validateInjuries(pack),
   ];

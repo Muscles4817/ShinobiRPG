@@ -7,7 +7,7 @@ import type { GameContext } from './context';
 import { growCharacter, logDiscoveries } from './growth';
 import { activeStage } from './missionFlow';
 import { log, statChips } from './ops';
-import { companionStats } from './people/companions';
+import { personStats } from './people/progress';
 import { findPerson } from './people/cast';
 import type { Report } from './reports';
 import type { GameState } from './state';
@@ -49,7 +49,7 @@ function foesFaced(state: GameState, ctx: GameContext): Stats[] {
   const partnerId = state.people.sparringWith;
   if (partnerId) {
     const partner = findPerson(state, ctx, partnerId);
-    return partner ? [companionStats(partner, state)] : [];
+    return partner ? [personStats(partner, state)] : [];
   }
   const stage = activeStage(state, ctx);
   if (stage?.kind !== 'combat') return [];

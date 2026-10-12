@@ -1,0 +1,93 @@
+import { look } from '../../look';
+import { statLine } from '../../statLine';
+import type { PersonDef } from '../../types';
+
+/** Tōrōgakure's chūnin besides Rin: the gate, the desk and the shrine. */
+export const VILLAGE_CHUNIN: readonly PersonDef[] = [
+  {
+    id: 'hotaru',
+    name: 'Hotaru',
+    familyName: 'Inose',
+    role: 'shinobi',
+    title: 'Chūnin, gate watch',
+    rank: 'chunin',
+    stats: statLine('D', { genjutsu: 'C', perception: 'C', willpower: 14 }),
+    traitIds: ['curious', 'kind'],
+    appearance: look('short', {
+      hair: '#c88a2a',
+      eyes: '#2a1d14',
+      skin: '#f3d2b3',
+      outfit: '#2f4f7a',
+    }),
+    specialty: 'genjutsu',
+    bio: 'Counts every lantern on the wall at dusk. Swears there is one more than there should be.',
+    schedule: {
+      morning: 'mission-hall',
+      afternoon: 'training-grounds',
+      evening: 'market-street',
+      night: null,
+    },
+    teacher: {
+      quirk: 'patient',
+      teaches: ['lantern-mirage', 'moth-dance'],
+      price: {
+        kind: 'ryo',
+        perSession: 10,
+        line: '“Buy me a skewer on the way back and we’re even.”',
+      },
+    },
+  },
+  {
+    id: 'gen',
+    name: 'Gen',
+    familyName: 'Tsujimura',
+    role: 'shinobi',
+    title: 'Chūnin, mission desk',
+    rank: 'chunin',
+    stats: statLine('D', { kenjutsu: 'C', speed: 'C', strength: 14 }),
+    traitIds: ['brash', 'diligent'],
+    appearance: look('spiky', {
+      hair: '#1b1a22',
+      eyes: '#2a1d14',
+      skin: '#c68e63',
+      outfit: '#7a3b2a',
+    }),
+    specialty: 'kenjutsu',
+    bio: 'Stamps mission slips all day and swings a practice blade all evening, to make up for it.',
+    schedule: {
+      morning: 'mission-hall',
+      afternoon: 'mission-hall',
+      evening: 'training-grounds',
+      night: 'izakaya',
+    },
+    teacher: {
+      quirk: 'distracted',
+      teaches: ['lantern-cut', 'moonfall-slash'],
+      price: { kind: 'bond', minStage: 1, line: '“Help me sort the slips sometime. Deal?”' },
+    },
+  },
+  {
+    id: 'nanami',
+    name: 'Nanami',
+    familyName: 'Arai',
+    role: 'shinobi',
+    title: 'Chūnin, shrine keeper',
+    rank: 'chunin',
+    stats: statLine('D', { fuuinjutsu: 'C', chakraControl: 'C', intellect: 14 }),
+    traitIds: ['humble', 'focused'],
+    appearance: look('long', {
+      hair: '#4a2f1d',
+      eyes: '#5a7a4a',
+      skin: '#e2b48c',
+      outfit: '#e8e0d0',
+    }),
+    specialty: 'fuuinjutsu',
+    bio: 'Writes the paper wards that hang on every door at festival time. Never misspells one.',
+    schedule: { morning: 'academy', afternoon: 'training-grounds', evening: null, night: null },
+    teacher: {
+      quirk: 'patient',
+      teaches: ['ember-tag', 'binding-ward'],
+      price: { kind: 'bond', minStage: 1 },
+    },
+  },
+];

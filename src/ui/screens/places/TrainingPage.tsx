@@ -5,6 +5,7 @@ import { headerView, hubView, trainingView, type DrillGroup, type StatPreview } 
 import { Icon } from '../../art/Icon';
 import { Chips } from '../../components/Chips';
 import { Banner } from '../../components/Banner';
+import { PeopleHere } from './PeopleHere';
 import { TeamCorner } from './TeamCorner';
 import type { PlaceProps } from '../types';
 
@@ -61,7 +62,8 @@ export function TrainingPage({ ctx, state, perform, onBack }: PlaceProps) {
             <i style={{ width: `${view.energy}%` }} />
           </span>
         </section>
-        <TeamCorner lesson={view.lesson} sparring={view.sparring} perform={perform} />
+        <PeopleHere teachers={view.teachers} perform={perform} />
+        <TeamCorner sparring={view.sparring} perform={perform} />
         <div className="filters" role="group" aria-label="Filter drills">
           {FILTERS.map((f) => (
             <button

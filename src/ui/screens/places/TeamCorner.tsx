@@ -1,6 +1,5 @@
-import type { GameAction, LessonCard, SparOption } from '@/game';
+import type { GameAction, SparOption } from '@/game';
 
-import { Portrait } from '../../art/Portrait';
 import { Avatar } from '../../components/Faces';
 import { ThreatChip } from '../../components/ThreatChip';
 
@@ -8,61 +7,8 @@ import { ThreatChip } from '../../components/ThreatChip';
 const SHOWN_PARTNERS = 3;
 
 interface TeamCornerProps {
-  readonly lesson: LessonCard | null;
   readonly sparring: readonly SparOption[];
   readonly perform: (action: GameAction) => void;
-}
-
-function Lesson({ lesson, perform }: { lesson: LessonCard; perform: TeamCornerProps['perform'] }) {
-  const { signature } = lesson;
-  return (
-    <article className={`lesson-card d-${lesson.specialty.id}`}>
-      <div className="person-top">
-        <span className="person-photo team">
-          <Portrait appearance={lesson.sensei.appearance} size={52} />
-        </span>
-        <div>
-          <p className="label">Weekly {lesson.specialty.label.toLowerCase()} lesson</p>
-          <h2>{lesson.sensei.fullName}</h2>
-          <p className="muted small">{lesson.style}</p>
-        </div>
-      </div>
-      {signature && (
-        <div className="signature">
-          <span className="sig-name">
-            <small className="label">Signature technique</small>
-            <b>{signature.name}</b>
-          </span>
-          {signature.locked ? (
-            <small className="muted">{signature.locked}</small>
-          ) : (
-            <span
-              className="bond-bar"
-              aria-label={`${Math.round(signature.progress * 100)}% learned`}
-            >
-              <i style={{ width: `${Math.round(signature.progress * 100)}%` }} />
-            </span>
-          )}
-        </div>
-      )}
-      {lesson.blocker ? (
-        <p className="blocker">{lesson.blocker}</p>
-      ) : (
-        <div className="drill-foot">
-          <span className="cost num">{lesson.energyCost} energy, 2 slots</span>
-          <button
-            type="button"
-            className="btn small"
-            onClick={() => {
-              perform(lesson.action);
-            }}
-          >
-            Take the lesson
-          </button>
-        </div>
-      )}
-    </article>
-  );
 }
 
 interface SparRowProps {
@@ -99,13 +45,12 @@ function SparRow({ option: s, perform }: SparRowProps) {
   );
 }
 
-/** The team side of the training ground: your sensei's lesson and who you could spar with. */
-export function TeamCorner({ lesson, sparring, perform }: TeamCornerProps) {
+/** Who you could spar with at the training ground. */
+export function TeamCorner({ sparring, perform }: TeamCornerProps) {
   const shown = sparring.slice(0, SHOWN_PARTNERS);
   const folded = sparring.slice(SHOWN_PARTNERS);
   return (
     <>
-      {lesson && <Lesson lesson={lesson} perform={perform} />}
       {sparring.length > 0 && (
         <section className="sparring" aria-label="Sparring">
           <h2 className="label">Spar with someone around</h2>

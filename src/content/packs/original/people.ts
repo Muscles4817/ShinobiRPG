@@ -1,4 +1,5 @@
 import { allDay, look } from '../../look';
+import { statLine } from '../../statLine';
 import type { PersonDef } from '../../types';
 
 /** Jōnin who may take on a team, plus the village figures every genin knows. */
@@ -9,6 +10,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Ishizaki',
     role: 'sensei',
     title: 'Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { taijutsu: 'A', strength: 'B', stamina: 'B', speed: 21 }),
     traitIds: ['brash', 'diligent'],
     favouriteRecipeId: 'grilled-fish-set',
     appearance: look(
@@ -29,7 +32,22 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['brash', 'diligent', 'proud'],
       style: 'Up before dawn, running stairs until you can’t feel your legs. Loud about it.',
       lesson: 'Gōran has you hit the striking post until it splinters, then hands you a new one.',
+    },
+    teacher: {
+      quirk: 'harsh',
+      steers: { focus: 'specialty', freeAtStage: 3 },
       teaches: ['iron-gate-palm'],
+      price: {
+        kind: 'all',
+        parts: [
+          { kind: 'bond', minStage: 1, line: '“I don’t shout at strangers. Much.”' },
+          {
+            kind: 'mission',
+            missionId: 'kuroda-medicine',
+            line: '“Run medicine up to the Kuroda farm and back. Then we talk.”',
+          },
+        ],
+      },
     },
   },
   {
@@ -38,6 +56,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Hibana',
     role: 'sensei',
     title: 'Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { ninjutsu: 'A', chakraControl: 'B', reserves: 'B' }),
     clanId: 'hibana',
     traitIds: ['proud', 'curious'],
     favouriteRecipeId: 'miso-soup',
@@ -62,7 +82,16 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Demanding and dazzling. Expects you to burn as bright as she does.',
       lesson:
         'Akari makes you hold a flame in your palm until it stops flickering. It takes all afternoon.',
+    },
+    teacher: {
+      quirk: 'natural',
+      steers: { focus: 'specialty', freeAtStage: 3 },
       teaches: ['great-lantern-flame'],
+      price: {
+        kind: 'ryo',
+        perSession: 40,
+        line: '“Lantern oil isn’t free, and neither is my evening.”',
+      },
     },
   },
   {
@@ -71,6 +100,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Tōkaku',
     role: 'sensei',
     title: 'Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { genjutsu: 'A', perception: 'B', willpower: 'B' }),
     clanId: 'tokaku',
     traitIds: ['calm', 'curious'],
     favouriteRecipeId: 'rice-ball-bento',
@@ -90,7 +121,16 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Soft-spoken and strange. Teaches you to notice what you were not meant to.',
       lesson:
         'Yomi has you sit among the grave lanterns until you can tell which lights are lit by the living.',
+    },
+    teacher: {
+      quirk: 'distracted',
+      steers: { focus: 'weakest', freeAtStage: 2 },
       teaches: ['ghost-lantern-veil'],
+      price: {
+        kind: 'favour',
+        favourId: 'yomi-grave-lantern',
+        ask: 'Yomi wants a lantern lit at an old grave nobody visits any more.',
+      },
     },
   },
   {
@@ -99,6 +139,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Kurogane',
     role: 'sensei',
     title: 'Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { kenjutsu: 'A', speed: 'B', strength: 'B' }),
     clanId: 'kurogane',
     traitIds: ['focused', 'humble'],
     appearance: look(
@@ -120,7 +162,18 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       nature: 'earth',
       style: 'A thousand cuts a day, each one perfect. Silence is praise.',
       lesson: 'Tetsu watches you cut a thousand times and says one word. It is the right word.',
+    },
+    teacher: {
+      quirk: 'patient',
+      steers: { focus: 'specialty', freeAtStage: 2 },
       teaches: ['forge-flash-cut'],
+      price: {
+        kind: 'all',
+        parts: [
+          { kind: 'bond', minStage: 2 },
+          { kind: 'ryo', perSession: 25, line: 'He nods at the forge’s coal bin. It is empty.' },
+        ],
+      },
     },
   },
   {
@@ -129,6 +182,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Shimenawa',
     role: 'sensei',
     title: 'Special Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { fuuinjutsu: 'B', intellect: 'B', chakraControl: 21 }),
     clanId: 'shimenawa',
     traitIds: ['cunning', 'diligent'],
     appearance: look(
@@ -151,7 +206,11 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Patient, precise, and always three moves ahead. Loves a good trap.',
       lesson:
         'Ito sets traps around the training ground and makes you write a ward for each before dark.',
+    },
+    teacher: {
+      quirk: 'patient',
       teaches: ['shrine-rope-binding'],
+      price: { kind: 'bond', minStage: 2, line: '“Traps are secrets. I tell secrets to friends.”' },
     },
   },
   {
@@ -160,6 +219,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Asagiri',
     role: 'instructor',
     title: 'Academy instructor',
+    rank: 'chunin',
+    stats: statLine('D', { taijutsu: 'C', ninjutsu: 'C', intellect: 'C', chakraControl: 'C' }),
     traitIds: ['kind', 'diligent'],
     appearance: look('ponytail', {
       hair: '#1b1a22',
@@ -181,6 +242,16 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Kagari',
     role: 'leader',
     title: 'Tōrokage',
+    rank: 'kage',
+    stats: statLine('B', {
+      ninjutsu: 'S',
+      chakraControl: 'A',
+      intellect: 'A',
+      willpower: 'A',
+      reserves: 'A',
+      stamina: 'C',
+      speed: 'C',
+    }),
     traitIds: ['calm', 'kind'],
     appearance: look(
       'long',
@@ -196,6 +267,17 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: '',
     role: 'villager',
     title: 'Noodle-stall owner',
+    rank: 'civilian',
+    stats: statLine(4, {
+      intellect: 8,
+      perception: 9,
+      willpower: 9,
+      taijutsu: 1,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 1,
+      fuuinjutsu: 0,
+    }),
     traitIds: ['kind', 'cunning'],
     favouriteRecipeId: 'miso-soup',
     appearance: look(
