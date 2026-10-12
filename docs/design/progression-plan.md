@@ -1023,6 +1023,15 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   pack ride on mid-rank jobs. Every technique needs a source (shelf, teacher, scroll reward or
   starting kit; validated). Grade-up "What this opens" now includes the library once you may use
   it and your own scrolls. Save v23 adds the empty scroll case.
+- 4.4 (content): both packs now meet the per-discipline target (E 2, D 3, C 4, B 3, A 2,
+  S 1; ninjutsu D is over because no existing technique was removed). The original pack
+  gained 44 techniques and the fan pack 54, all with sources. Every S technique is a trump
+  card. The fan pack also gained five elite missions (to rank B) handing out rare scrolls
+  and named weapons; the original pack gained one late team job and two unique weapons.
+  **Follow-up:** the default plan rarely slots seal, confuse or trump cards, so those
+  techniques barely show on a bench. They are strong when a player slots them by hand;
+  the default plan or the foe AI should learn to use them. Several elite missions are
+  untested in play.
 
 ### Decisions made during the run
 
