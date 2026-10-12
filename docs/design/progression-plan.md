@@ -835,6 +835,26 @@ These were folded into the D2 discussion. Where each landed:
   shows each stat's read in words. Pacing (an ordinary talent, taijutsu specialist): taijutsu
   reaches C on day 61 (was day 3), and a further month alone adds about one point of the C
   band's seven.
+- 2.4/2.5: fights teach, and grade-ups are a moment. The teacher rule is
+  `systems/stats/teaching.ts` (`teacherGap`, `teacherEfficiency`; solo efficiency moved to
+  `solo.ts`): the share a session keeps is your solo efficiency × 1.25 with an equal, × 1.6 one
+  grade up and × 2 two up (three counts as two), but never less than 0.35 one up or 0.6 two up;
+  someone below you gives a tenth of a solo session. `Growth.teachers` (their value per stat)
+  switches a stat to it, and `growCharacter` takes a `Session` (`teacher` multiplier for the
+  lesson, `teachers` for fights; Phase 3's "train with" passes its teacher here). After every
+  fight, missions and spars alike (`game/fightGrowth.ts`, read before the result is applied),
+  each art used grows by 1.5 base × `FIGHT_SCALE` (0.3) against the foes' best value in it: a
+  technique's discipline, and plain strikes as taijutsu. Strikes also work strength, steps
+  speed, and losing a tenth of your health stamina (0.5 base each, same rule). The plan engine
+  now counts `blows` and `footwork` in `CombatUsage`. Spars no longer have their own growth.
+  The journal line is "What the fight taught you", and the same gains are listed on the
+  fight's, defeat's or spar's card. Grade-ups are found once per action in `dispatch`
+  (`noteGradeUps`), whatever grew the stat: a `grade` report card stamped with the letter in
+  its colour and a "What this opens" list (academy techniques whose requirements the new
+  stats meet and the old didn't), plus a journal line. The stat sheet rolls a grown number up
+  and brushes an ink stroke over the stretch gained since it was last shown (off under
+  reduced motion). Stat values are cut to one decimal, not rounded, so 7.98 no longer reads
+  "8.0 E". The discipline tiles now show their talent read too. No save change.
 
 ### Decisions made during the run
 
@@ -976,3 +996,23 @@ These were folded into the D2 discussion. Where each landed:
   none has been read, so they don't give talent away.
 - 2.2: the 60-day target holds now, mostly by drilling: the weekly lesson adds little. So the
   stall is in C (asserted), not D; "solo stalls in D" waits for Phase 3 teachers.
+- 2.4: thrown kunai teach no art (they are a tool; throwing weapons may map to an art once gear
+  shapes the throw card). Kenjutsu is learned through kenjutsu techniques until a blade turns
+  Strike into a cut (Phase 4).
+- 2.4: each art used counts once per fight, however often it was used; the body counts if
+  the work was done at all (one strike, one step, a tenth of your health lost). The teacher is
+  the foe with the best value in that stat, so a group with one strong fighter teaches like
+  that fighter. Teammates' grades don't teach in a fight.
+- 2.4: fights teach win, lose or yield; spars use the partner's derived stats as the foe (an
+  even match, so a spar teaches like a fight with an equal). Reserves from chakra spent stay
+  solo practice (no teacher, no fight scale).
+- 2.4: an equal teacher multiplies solo efficiency rather than replacing it, and better
+  teachers set a floor, so at E (where solo is already 1) a better partner still helps.
+- 2.5: grade-ups are noted in `dispatch` rather than in each growth path, so every source
+  (drills, lessons, fights, sights, future ones) fires one card per stat per action, and
+  reserves rising with stamina in a fight can't fire twice. A grade falling (a permanent
+  trump cost) shows nothing. "What this opens" lists only academy techniques newly within
+  reach, on the first card when several stats cross at once; teachers and the tree join the
+  list when they exist.
+- 2.5: the tick plays on the Shinobi screen for whatever grew since it was last shown in this
+  session (remembered in the UI only); the first visit after loading plays nothing.
