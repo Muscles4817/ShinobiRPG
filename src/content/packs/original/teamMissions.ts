@@ -16,13 +16,13 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Your sensei sees the three of you off at the gate. "Stay together. That is the whole lesson."',
+        text: 'Your sensei leads the three of you out through the gate. "Stay together. That is the whole lesson."',
       },
       {
         kind: 'check',
         text: 'Fresh boot prints lead off the towpath into the reeds.',
         approaches: [
-          { label: 'Follow the trail', stat: 'perception', difficulty: 9 },
+          { label: 'Follow the trail', stat: 'perception', difficulty: 9, role: 'tracker' },
           { label: 'Guess where they’ll strike next', stat: 'intellect', difficulty: 10 },
         ],
         success: 'You find their camp before they find you.',
@@ -31,8 +31,10 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         failureDamage: 6,
       },
       {
-        kind: 'combat',
-        text: 'Three figures step out of the reeds, the biggest one grinning.',
+        kind: 'encounter',
+        template: 'bandit-camp',
+        job: 'eliminate',
+        text: 'Three figures sit round a fire in the reeds, the biggest one grinning at some joke.',
         enemyIds: ['bandit-thug', 'bandit-chief', 'bandit-archer'],
         canFlee: false,
       },
@@ -60,6 +62,12 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         approaches: [
           { label: 'Hold your nerve', stat: 'willpower', difficulty: 10 },
           { label: 'See through the illusion', stat: 'genjutsu', difficulty: 10 },
+          {
+            label: 'Feel where the whispers come from',
+            stat: 'perception',
+            difficulty: 10,
+            role: 'sensor',
+          },
         ],
         success: 'You keep your team steady and push through to the shrine.',
         failure: 'One of your teammates wanders off after a voice. You drag them back.',
@@ -67,8 +75,10 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         failureDamage: 6,
       },
       {
-        kind: 'combat',
-        text: 'Two ghosts rise from the unlit lanterns, mouths open and hungry.',
+        kind: 'encounter',
+        template: 'spirit',
+        job: 'eliminate',
+        text: 'Two ghosts drift over the unlit lanterns, mouths open and hungry.',
         enemyIds: ['hungry-ghost', 'hungry-ghost'],
         canFlee: false,
       },
@@ -104,8 +114,10 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         failureDamage: 8,
       },
       {
-        kind: 'combat',
-        text: 'A deserter steps out of the biggest kiln with a black blade, and his crew close in behind.',
+        kind: 'encounter',
+        template: 'guarded-building',
+        job: 'eliminate',
+        text: 'Firelight spills from the biggest kiln. A deserter with a black blade holds court inside, his crew on watch.',
         enemyIds: ['bandit-chief', 'academy-dropout', 'bandit-archer', 'bandit-thug'],
         canFlee: false,
       },

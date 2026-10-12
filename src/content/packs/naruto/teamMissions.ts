@@ -16,13 +16,13 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Your sensei walks you to the gate. "Look underneath the underneath. And stay together."',
+        text: 'Your sensei leads you out through the gate. "Look underneath the underneath. And stay together."',
       },
       {
         kind: 'check',
         text: 'The supply cart’s tracks veer off the road into the forest.',
         approaches: [
-          { label: 'Follow the trail', stat: 'perception', difficulty: 9 },
+          { label: 'Follow the trail', stat: 'perception', difficulty: 9, role: 'tracker' },
           { label: 'Set a trap with a decoy cart', stat: 'intellect', difficulty: 10 },
         ],
         success: 'You catch them by surprise, still counting the stolen rice.',
@@ -31,8 +31,10 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         failureDamage: 6,
       },
       {
-        kind: 'combat',
-        text: 'The bandit chief draws a chipped sword. "Kids? They sent kids?"',
+        kind: 'encounter',
+        template: 'bandit-camp',
+        job: 'eliminate',
+        text: 'Smoke rises from a hollow off the road. The bandit chief is sharpening a chipped sword by the fire.',
         enemyIds: ['bandit-thug', 'bandit-chief', 'bandit-archer'],
         canFlee: false,
       },
@@ -58,7 +60,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         kind: 'check',
         text: 'Somewhere in the mist, someone is watching your team.',
         approaches: [
-          { label: 'Sense their chakra', stat: 'chakraControl', difficulty: 10 },
+          { label: 'Sense their chakra', stat: 'chakraControl', difficulty: 10, role: 'sensor' },
           { label: 'Hold still and listen', stat: 'perception', difficulty: 10 },
         ],
         success: 'You spot the glint of a headband and signal your team.',

@@ -1,4 +1,4 @@
-import { act, newGame, veteran } from '@/test/gameFixtures';
+import { act, intoFight, newGame, veteran } from '@/test/gameFixtures';
 
 import { deserialize, SAVE_VERSION, serialize } from './save';
 
@@ -10,9 +10,26 @@ describe('persistence', () => {
     });
     state = act(state, { type: 'missionContinue' });
     state = act(state, { type: 'missionChoose', approachIndex: 0 });
-    state = act(state, { type: 'missionContinue' });
+    state = intoFight(state);
     expect(state.combat).not.toBeNull();
     expect(deserialize(serialize(state))).toEqual({ ok: true, value: state });
+  });
+
+  it('a save made mid-mission at what was a fight steps into its encounter', () => {
+    // Before encounters, this stage was a plain fight: the run has no encounter state yet.
+    let state = act(newGame({ standing: { ...newGame().standing, missionsCompleted: 5 } }), {
+      type: 'startMission',
+      missionId: 'tea-merchant-escort',
+    });
+    state = act(state, { type: 'missionContinue' });
+    state = act(state, { type: 'missionChoose', approachIndex: 0 });
+    const saved = JSON.parse(serialize(state)) as { version: number };
+    expect(saved.version).toBe(SAVE_VERSION);
+    const loaded = deserialize(JSON.stringify(saved));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.mission?.encounter).toBeUndefined();
+    const met = act(loaded.value, { type: 'missionContinue' });
+    expect(met.mission?.encounter?.alertness).toBe('unaware');
   });
 
   it('upgrades a version 1 save from the first release', () => {

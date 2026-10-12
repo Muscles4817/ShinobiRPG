@@ -1,10 +1,12 @@
 import type { CombatView } from '@/systems/combat';
+import type { CheckApproach, MissionNote } from '@/systems/missions';
 import { checkChance, STAT_INFO } from '@/systems/stats';
 
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { engineFor } from '../fightStyle';
 import { activeMission, activeStage } from '../missionFlow';
+import { checkHand } from '../missionRoles';
 import { scoutOpponents, type ScoutingRead } from '../scouting';
 import type { GameState } from '../state';
 
@@ -31,19 +33,29 @@ export interface MissionScene {
 
 const CONTINUE: GameAction = { type: 'missionContinue' };
 
+/** A line of the mission's story as the scene shows it; rolls are worded with their odds. */
+export function noteLine(n: MissionNote): SceneLine {
+  return n.kind === 'roll'
+    ? {
+        kind: 'roll',
+        success: n.success,
+        text: `${STAT_INFO[n.stat].label} check ${n.success ? 'passed' : 'failed'} at ${Math.round(n.chance * 100)}%`,
+      }
+    : n;
+}
+
+/** The odds of a check, and who takes it when a teammate does ("Perception 70%, Kaen the tracker"). */
+function checkDetail(state: GameState, ctx: GameContext, approach: CheckApproach): string {
+  const hand = checkHand(state, ctx, approach);
+  const odds = `${STAT_INFO[approach.stat].label} ${Math.round(checkChance(hand.value, approach.difficulty) * 100)}%`;
+  return hand.personId && approach.role ? `${odds}, ${hand.name} the ${approach.role}` : odds;
+}
+
 export function missionScene(state: GameState, ctx: GameContext): MissionScene | null {
   const def = activeMission(state, ctx);
   if (!def || !state.mission || state.combat) return null;
   const stage = activeStage(state, ctx);
-  const lines = state.mission.notes.map((n): SceneLine =>
-    n.kind === 'roll'
-      ? {
-          kind: 'roll',
-          success: n.success,
-          text: `${STAT_INFO[n.stat].label} check ${n.success ? 'passed' : 'failed'} at ${Math.round(n.chance * 100)}%`,
-        }
-      : n,
-  );
+  const lines = state.mission.notes.map(noteLine);
   const base = { title: def.title, rank: def.rank, client: def.client, lines };
   if (!stage) {
     return {
@@ -72,13 +84,26 @@ export function missionScene(state: GameState, ctx: GameContext): MissionScene |
           },
         ],
       };
+    case 'encounter':
+      return {
+        ...base,
+        prompt: stage.text,
+        choices: [
+          {
+            label: 'Size them up',
+            detail: ctx.content.encounters.require(stage.template).name,
+            primary: true,
+            action: CONTINUE,
+          },
+        ],
+      };
     case 'check':
       return {
         ...base,
         prompt: stage.text,
         choices: stage.approaches.map((a, approachIndex) => ({
           label: a.label,
-          detail: `${STAT_INFO[a.stat].label} ${Math.round(checkChance(state.character.stats[a.stat], a.difficulty) * 100)}%`,
+          detail: checkDetail(state, ctx, a),
           primary: false,
           action: { type: 'missionChoose', approachIndex },
         })),

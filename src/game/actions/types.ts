@@ -1,4 +1,6 @@
 import type { Rng } from '@/core';
+import type { RangeBand } from '@/systems/combat';
+import type { ApproachId, ReconId } from '@/systems/missions';
 import type { StatId } from '@/systems/stats';
 
 import type { GameContext } from '../context';
@@ -23,6 +25,12 @@ export type GameAction =
   | { readonly type: 'startMission'; readonly missionId: string }
   | { readonly type: 'missionChoose'; readonly approachIndex: number }
   | { readonly type: 'missionContinue' }
+  | { readonly type: 'encounterRecon'; readonly recon: ReconId }
+  | {
+      readonly type: 'encounterApproach';
+      readonly approach: ApproachId;
+      readonly range?: RangeBand;
+    }
   | { readonly type: 'combatAct'; readonly optionId: string; readonly targetId?: string }
   | { readonly type: 'assignTeam' }
   | { readonly type: 'chooseSensei'; readonly senseiId: string }

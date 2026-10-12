@@ -13,6 +13,7 @@ import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
+import { ENCOUNTERS } from '../../shared/encounters';
 import { ORIGINAL_CONVERSATIONS } from './conversations';
 import { CLAN_HEADS } from './clanHeads';
 import { VILLAGE_CHUNIN } from './chunin';
@@ -45,6 +46,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...COMBO_TECHNIQUES,
   ],
   missions: [...MISSIONS, ...TEAM_MISSIONS],
+  encounters: ENCOUNTERS,
   enemies: ENEMIES,
   training: TRAINING,
   foods: FOODS,

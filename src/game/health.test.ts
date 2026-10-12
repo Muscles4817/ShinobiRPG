@@ -1,5 +1,5 @@
 import { MAX_HEALTH } from '@/systems/vitals';
-import { act, ctx, newGame, withAllStats } from '@/test/gameFixtures';
+import { act, ctx, intoFight, newGame, withAllStats } from '@/test/gameFixtures';
 
 import { enemyCombatant, playerCombatant } from './combatants';
 import { deserialize } from './persistence/save';
@@ -14,7 +14,7 @@ function midFight(): GameState {
   });
   state = act(state, { type: 'missionContinue' });
   state = act(state, { type: 'missionChoose', approachIndex: 0 });
-  return act(state, { type: 'missionContinue' });
+  return intoFight(state);
 }
 
 describe('health', () => {
