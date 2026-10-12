@@ -330,6 +330,62 @@ not to make every approach equally strong. More resources should mean more power
 - **Stat roles:** proposed table in the discussion; pending confirmation along with the
   flat health question.
 
+**Health and defence, agreed:**
+
+- **Health is 100 for every human.** Creatures declare a multiplier on `EnemyDef` (giant
+  beasts more, swarms of small things less).
+- **Damage comes from the gap** between the attacker's power and the defender's defence
+  (a ratio or difference), not from absolute values, so equals take about the same number
+  of exchanges at every rank.
+- **Damage variance is narrower than now.** The swing comes from decisions (dodged,
+  guarded) rather than damage rolls.
+- **Defence has five layers:**
+  - Evasion: speed, perception, dodge.
+  - Guard: taijutsu, strength, guard and counter.
+  - Toughness: stamina, armour level.
+  - Resistance: willpower, control (genjutsu and seals).
+  - Healing: medical ninjutsu, regeneration, tools.
+- **Stamina becomes toughness and endurance:** damage reduction, injury resistance,
+  recovery, reserves growth, energy.
+- **Save migration** rescales current health to a fraction of 100.
+
+**Stat roles (agreed with the health change):**
+
+| Stat           | In fights                                                                               | Outside fights                       |
+| -------------- | --------------------------------------------------------------------------------------- | ------------------------------------ |
+| Strength       | blow damage, break, reduces armour's speed penalty                                      | physical checks                      |
+| Speed          | initiative, footwork, evasion, kenjutsu, move verbs                                     | chases, escapes, stealth             |
+| Stamina        | toughness, injury resistance                                                            | recovery, reserves growth, energy    |
+| Reserves (new) | max chakra, clone counts, empower duration                                              | grows with stamina and jutsu use     |
+| Chakra control | jutsu cost, breaking genjutsu, medical and genjutsu precision                           | study speed, control milestones      |
+| Intellect      | loadout slots, trap and fūinjutsu scaling                                               | scroll study, planning checks        |
+| Perception     | finding the hidden, seeing through fields, reading telegraphs precisely, throw accuracy | sensing, tracking, spotting ambushes |
+| Willpower      | genjutsu resistance, fighting on while hurt, enduring trump and Gates costs             | trials, interrogation, intimidation  |
+| Arts (5)       | potency of their techniques; taijutsu and kenjutsu basics                               | gates for techniques and teachers    |
+
+**Engagement, agreed:**
+
+- **An encounter is a scene with three beats:**
+  1. **Recon** (optional, freeform): observe, track, sense, ask around (intel), later
+     clones and summons. Each costs something and tests a stat. Success reveals count,
+     identity, kit, terrain and awareness. Failure risks being noticed.
+  2. **Approach:** head-on, ambush (only if they're unaware), sneak past, talk / bribe /
+     intimidate (only foes who'd listen), set the ground (traps, mist, a chosen spot), or
+     withdraw.
+  3. **The fight**, if any, inherits an **opening** in `CombatSetup`: start range, who
+     is hidden, foes dazed in exchange 1, rows disrupted, a field in place.
+- **Foe alertness** (unaware, wary, alert) is the state variable. Recon failures raise it.
+- **You can be ambushed too:** your perception, a sensor teammate, and careless recon
+  decide who moves first.
+- **Every mission fight** gets at least head-on, withdraw and whatever recon reveals.
+  Some stages (a duel, a surprise attack) skip straight to the fight on purpose.
+- **Rewards depend on the job:**
+  - An escort that arrives safely is fully paid.
+  - "Eliminate" jobs aren't paid for sneaking past.
+  - A negotiated surrender may pay more reputation and less ryo.
+- **Content:** stage templates (bandit camp, beast, lone rogue, guarded building) say which
+  approaches make sense, with flavour swapped per mission.
+
 ### D3. Technique mastery stages and learning by doing: open
 
 ### D4. Techniques as verbs (effect vocabulary): open
