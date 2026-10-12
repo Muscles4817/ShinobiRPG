@@ -141,7 +141,7 @@ Context, as of main @ 7e8f971:
   - Foes telegraph their next card. Insight shows their full loadout.
   - The loadout persists between fights. Allies use the default loadout.
 
-### D2. Growth walls: reworked, under discussion
+### D2. The growth model: agreed (all topics from the discussion)
 
 The earlier limits-and-breakthroughs proposal is withdrawn. Direction from the user:
 
@@ -410,31 +410,304 @@ not to make every approach equally strong. More resources should mean more power
     unlocks.
 - **The skill tree comes after** this plan (not in this run).
 
-### D3. Technique mastery stages and learning by doing: open
+### D3–D13 (from the original review): superseded
 
-### D4. Techniques as verbs (effect vocabulary): open
+These were folded into the D2 discussion. Where each landed:
 
-### D5. Prepared loadout: open
-
-### D6. Gear as kit and trade-offs: open
-
-### D7. Fights feed growth (proficiency and debrief): open
-
-### D8. Limits (exhaustion, injury, seal time): open
-
-### D9. Lethality and HP scale: open
-
-### D10. Team tactics (stances, formation, combos, meter): open
-
-### D11. Companion and rival growth: open
-
-### D12. Stat model (attributes versus arts, intellect's job): open
-
-### D13. Natures and chakra-control milestones: open
+- D3 mastery stages: no improvement with use; staging comes from unstable techniques.
+- D4 verbs: the verb list.
+- D5 loadout: Plan & Watch slots.
+- D6 gear: gear.
+- D7 fight growth: fights use the teacher formula.
+- D8 limits: injuries, exhaustion, trump costs (seal time dropped).
+- D9 lethality: health 100 and gap damage.
+- D10 team tactics: team tactics.
+- D11 companion growth: decision 15 retired, peers grow.
+- D12 stat model: the stat roles table, reserves.
+- D13 natures: chakra paper as discovery. Chakra-control world milestones wait for
+  milestone 4.
 
 ---
 
 ## Part 3: Build plan
 
-To be written once Part 2 is settled: phased PR-sized steps, save migrations, tests, and
-what can run unattended.
+### How the run works
+
+- **Branch:** `ccr-62a24875-5s1vya`. Each numbered step is one commit or more, pushed when
+  `npm run check` **and** `npm run check:release` are green. No step lands red. If a step
+  can't be made green, revert to the last green commit, write down why under "Run log",
+  and move to the next step that doesn't depend on it.
+- **Order is by dependency.** Every phase leaves the game playable end to end (the UI
+  smoke tests prove it). Later phases build on earlier ones, so stopping anywhere still
+  leaves a coherent game.
+- **Saves:** every change to the save shape bumps `SAVE_VERSION` (currently 13) with a
+  migration in `game/persistence/migrations.ts` and a test that a previous-version save
+  still loads. Never break a save.
+- **Numbers:** every tunable is a named constant. Balance is checked by the **bench** and
+  the **pacing harness** (step 0.2), not by eye.
+- **UI:** each new or changed screen gets a smoke test and a screenshot check at 390px
+  (the `run` skill / Playwright), following the Village Hub rules.
+- **Gaps in the design:** when a step meets a question this doc doesn't answer, choose
+  the option most consistent with the principles above (scarcity, not parity; stats drive
+  effects; access is the throttle) and record it under "Decisions made during the run"
+  for review.
+- **Scope honesty:** this is many weeks of human work. The run goes phase by phase in
+  this order. Whatever isn't reached stays planned here.
+
+### Phase 0: Ground and guardrails
+
+**0.1 Shelve Classic.**
+
+- `defaultEngines()` offers Plan & Watch only.
+- Migrate `settings.combatStyle: 'duel-v1'` to `plan-v1`. A Classic fight in progress
+  finishes in Classic.
+- Hide the fight-style picker when only one style is offered.
+- Update CLAUDE.md decision 16.
+- Tests that need Classic inject it explicitly.
+
+**0.2 Bench and pacing harness** (in `src/test/`, headless):
+
+- **Bench:** stat lines, loadouts and kits for archetype fighters (Lee, Guy, Kakashi,
+  Itachi, Zabuza at genin, chūnin and jōnin scale), fought through the Plan & Watch engine
+  against a fixed set of foes over many seeds. It asserts the **lethality targets** and the
+  two principles:
+  - **Power is real:** more resources beat fewer, head-on.
+  - **Every weakness can be built around:** a constrained build with the right plan beats
+    or escapes a somewhat stronger foe.
+  - Assertions are tightened as phases land.
+- **Pacing harness:** a scripted focused player dispatching real actions day by day. It
+  asserts milestone windows (about 60 days to chūnin readiness) once Phase 2 exists.
+
+### Phase 1: The combat core (Plan & Watch)
+
+**1.1 Health 100 and gap damage.**
+
+- Humans have health 100. Creatures have `EnemyDef.healthScale`.
+- Damage comes from attacker power against defender defence, with narrower variance.
+- The five defence layers: evasion, guard, toughness, resistance, healing.
+- Stamina becomes toughness.
+- Genjutsu: willpower resists it taking hold; control breaks it (Dispel and confusion
+  duration).
+- Perception sharpens telegraphs.
+- Migration rescales stored health.
+
+**1.2 The plan as a priority list.**
+
+- A slot becomes `{ card, when?, target? }`.
+- The condition vocabulary: foe dazed or sealed, foe readying a jutsu, me below a third of
+  my health, chakra low, foe hidden.
+- Target rules: weakest, strongest, threatening my back row, marked.
+- The player plays the first playable card whose condition holds; foes and allies keep
+  the instinct AI.
+- `rememberedLoadout` accepts the old shape.
+- Plan editor UI: reorder, set when and target.
+
+**1.3 Rows.**
+
+- Front and back rows per side. The back row can't be struck up close while the front
+  stands.
+- Default placement comes from kit.
+- Rows show on the fight screen. Range code stays open to per-fighter ranges later.
+
+**1.4 Verbs.**
+
+- `TechniqueDef.effect` becomes `effects: Effect[]`, each with a scaling profile in
+  `rules/verbs/` (driving stats, resisting stats; a technique may override).
+- Steps:
+  - 1.4a: the schema and today's four effects; mechanical migration of both packs.
+  - 1.4b: area, confuse, conceal, sense, break.
+  - 1.4c: field (mist, smoke), move, substitute (a defence card).
+  - 1.4d: empower (with cost), clone, trap.
+
+**1.5 Trump cards.**
+
+- `oncePerFight`, plus an after-cost picked from a template set (hospital days,
+  exhaustion days, temporary stat injury, rarely permanent).
+- `CombatOutcome` reports costs incurred, and the game applies them (needs 2.6;
+  until then they are recorded only).
+
+**1.6 Openings.**
+
+- `CombatSetup.opening`: start range, who starts hidden, foes dazed in exchange 1, rows
+  disrupted, field in place, and who moved first.
+- The engine honours it.
+
+**1.7 Team.**
+
+- Allies fight with their own real techniques and loadouts.
+- Stances: press, cover, support, hold. A team mark.
+- Element combos and set-up and payoff, both generic.
+- Combination techniques that need a partner who knows them.
+- `CombatOutcome` reports what each fighter used (feeds 2.4).
+
+### Phase 2: The character, its aptitude and growth
+
+**2.1 Aptitude.**
+
+- Each character has a hidden aptitude per stat, plus a discovery state (unknown,
+  sense, known).
+- It is rolled at creation, seeded by the break-in, and shaped by clan (high floor,
+  narrow spread in clan arts) or clanless (wide spread), and by creation choices.
+- Zero aptitude is possible.
+- Migration derives aptitude from existing clan, talent and trait growth modifiers.
+
+**2.2 Growth.**
+
+- Solo efficiency falls steeply by grade (roughly E 100%, D 40%, C 10%, B 3%), multiplied
+  by aptitude and by hard-work traits (for example Tireless).
+- It replaces `trainingGain`. Zero aptitude blocks training in that art.
+- Early sessions in an art give a discovery read (a journal line).
+
+**2.3 Reserves.**
+
+- A new stat (`STAT_IDS`, plus a save migration seeding it from the old `maxChakra`).
+- Not drilled directly: it grows with stamina training and chakra spent in fights.
+- `maxChakra` derives from reserves.
+
+**2.4 Fights teach.**
+
+- Growth after a fight uses the teacher formula, scaled down, against the foe's grade in
+  the arts you used.
+
+**2.5 Presentation.**
+
+- A tick within a grade animates an ink stroke.
+- A grade-up shows a report card with the seal and a "What this opens" list.
+- The Shinobi screen shows aptitude reads.
+
+**2.6 Injuries and exhaustion.**
+
+- Named injuries as content (`InjuryDef`: where it hurts, `ModifierSpec`, fight effect,
+  days).
+- Defeat, trump costs and Gates add injuries. The hospital shortens them; stamina speeds
+  recovery.
+- Chakra exhaustion carries into the next day.
+
+### Phase 3: People with real grades (decision 15 retired)
+
+**3.1 Real stats.**
+
+- `PersonDef` gains `rank` and stats (authored).
+- Generated genin store stats in `people.generated`.
+- `companionStats` becomes a read of stored stats.
+- Migration snapshots the old derivation.
+
+**3.2 Peers grow.**
+
+- Teammates and rivals grow by themselves, caught up lazily per day from
+  `hashUnit(seed, day, id)` (no Rng, like the board).
+- They also grow from training with you.
+
+**3.3 Teacher profiles.**
+
+- Teaching quirk, steering (whether they choose what to train, loosened by bond),
+  `teaches` list, sessions per week by rank.
+- **Price templates:** bond, ryo, mission, favour, or a combination, with flavour per
+  teacher.
+
+**3.4 "Train with".**
+
+- A new action at training places, with the efficiency formula (grade gap capped at +2,
+  rank teaching factor, quirk, condition).
+- The training page shows who's here, what they could teach and their price.
+- `lesson` folds into it, with the sensei as the special case.
+
+**3.5 The Naruto pack's people.**
+
+- Author the known Konoha shinobi (rank, grades, teaches, price, schedules).
+- Record the totals as the village baseline.
+- Size the original pack's Tōrōgakure from it (authored plus generated).
+
+### Phase 4: Techniques and gear
+
+**4.1 Technique ranks.**
+
+- Ranks E–S. Learnability by grade gap (normal, unstable, impossible).
+- The book tracks unstable techniques; they stabilise when your grade catches up.
+- Hard requirements: nature, clan, reserves, control, weapon.
+- Study speed = aptitude × control × source.
+- Migrate stat requirements to ranks.
+
+**4.2 Sources.**
+
+- The academy holds E–D only.
+- A new `library` place kind: C and some B, needs chūnin rank, with its own page.
+- Clan techniques through clan people.
+- Scroll items in the inventory, studied at home or in the library.
+- Missions can reward scrolls.
+
+**4.3 Gear.**
+
+- Remove `statBonuses`.
+- Weapons shape cards (cut, blows, throws) and are required for kenjutsu.
+- Armour levels with a speed and dodge penalty, reduced by strength.
+- Focus items boost a verb's scaling.
+- Gear ranks D–A and shop access.
+- Unique named weapons with their own verbs.
+- Migration for owned and equipped gear.
+
+**4.4 Content.**
+
+- About 15 general techniques per discipline per pack (E 2, D 3, C 4, B 3, A 2, S 1),
+  Naruto pack first, then original.
+- Gear lists and named weapons.
+- Add fan markers to `scripts/check-release.mjs` as needed.
+
+### Phase 5: Engagement
+
+**5.1 Encounter stages.**
+
+- A mission stage kind `encounter`: recon actions, foe alertness, approaches (head-on,
+  ambush, sneak past, talk / bribe / intimidate, set the ground, withdraw), results
+  feeding `CombatSetup.opening`.
+- Job-dependent reward rules.
+- Templates (bandit camp, beast, lone rogue, guarded building).
+
+**5.2 Around the encounter.**
+
+- You can be ambushed.
+- Mission roles: a check uses the best teammate.
+- The sensei joins high-threat missions.
+
+**5.3 Migration.**
+
+- Existing combat stages become encounters via templates (or stay plain fights where
+  that's the point).
+
+### Phase 6: Ranks
+
+**6.1 Exam framework.**
+
+- `ExamDef`, a list of modular stage definitions.
+- Calendar twice a year, announced through rumours and the sensei.
+- Entry: nomination, record, team of three. A replacement teammate costs the bond and
+  depends on the sensei's tolerance.
+
+**6.2 First stages.**
+
+- The mind test, survival (encounters) and the tournament (duels against generated
+  rivals).
+- Conduct scoring.
+
+**6.3 Promotion.**
+
+- A promotion scene, the rank change, the flak jacket, and the unlocks (library, mission
+  ranks, teachers, solo missions).
+- Jōnin by nomination.
+
+### Not in this run
+
+- The skill tree (after gating and teachers).
+- Teaching juniors.
+- Per-fighter ranges.
+- Summons and spirits.
+- Chakra-control world milestones (milestone 4).
+- Aptitude changes.
+
+### Run log
+
+_(filled in during the run)_
+
+### Decisions made during the run
+
+_(filled in during the run, for review)_
