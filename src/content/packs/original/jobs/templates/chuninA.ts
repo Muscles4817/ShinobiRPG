@@ -105,7 +105,7 @@ export const A_RANK_JOBS: readonly MissionTemplate[] = [
         kind: 'check',
         text: '{search}',
         approaches: [
-          { label: 'Read the ransom note', stat: 'intellect', difficulty: 13 },
+          { label: 'Read what they left behind', stat: 'intellect', difficulty: 13 },
           { label: 'Track the captors', stat: 'perception', difficulty: 13 },
         ],
         success: '{found}',
