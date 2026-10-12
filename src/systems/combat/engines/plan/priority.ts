@@ -1,5 +1,6 @@
 import { targetable } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
+import { hasVerb } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, playable, type Card } from './cards';
 import { improvise } from './choose';
 import { toolInstinct } from './pouch';
@@ -108,7 +109,7 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
         toolInstinct(self, [card], { hiddenFoe, opening: round.opening ?? false }) !== undefined
       );
     case 'jutsu':
-      return card.technique.effect !== 'heal' || self.health < self.maxHealth;
+      return !hasVerb(card.technique, 'heal') || self.health < self.maxHealth;
     case 'strike':
     case 'throw':
     case 'step':

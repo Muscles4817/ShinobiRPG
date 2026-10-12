@@ -36,9 +36,8 @@ const seal: CombatTechnique = {
   id: 'seal',
   name: 'Seal',
   discipline: 'fuuinjutsu',
-  effect: 'damage',
+  effects: [{ verb: 'damage', power: 10 }],
   chakraCost: 5,
-  power: 10,
 };
 
 describe('kits', () => {

@@ -1,4 +1,5 @@
 import { createRng } from '@/core';
+import type { Verb } from '@/systems/techniques';
 
 import type { CombatantSetup, CombatEngine, CombatState, CombatTechnique } from '../../contract';
 import { createPlanEngine } from './engine';
@@ -45,16 +46,15 @@ function fighter(id: string, overrides: Partial<CombatantSetup> = {}): Combatant
   };
 }
 
-const technique = (id: string, effect: CombatTechnique['effect']): CombatTechnique => ({
+const technique = (id: string, verb: Verb): CombatTechnique => ({
   id,
   name: id,
   discipline: 'ninjutsu',
-  effect,
+  effects: [{ verb, power: 16 }],
   chakraCost: 6,
-  power: 16,
 });
 const blast = technique('blast', 'damage');
-const daze = technique('daze', 'stun');
+const daze = technique('daze', 'daze');
 const mend = technique('mend', 'heal');
 
 /** A hero (with blast, daze and mend) against foes, with these mid-range slots. */

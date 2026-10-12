@@ -52,9 +52,8 @@ const blast: CombatTechnique = {
   id: 'blast',
   name: 'Blast',
   discipline: 'ninjutsu',
-  effect: 'damage',
+  effects: [{ verb: 'damage', power: 16 }],
   chakraCost: 6,
-  power: 16,
 };
 
 const NO_CARDS: Loadout = { close: [], mid: [], far: [] };

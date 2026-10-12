@@ -32,7 +32,7 @@ export type CombatAttributes = Pick<
 
 export type CombatTechnique = Pick<
   TechniqueDef,
-  'id' | 'name' | 'discipline' | 'element' | 'effect' | 'chakraCost' | 'power'
+  'id' | 'name' | 'discipline' | 'element' | 'effects' | 'chakraCost'
 >;
 
 /** How far apart the two sides stand. Engines decide what each band allows. */

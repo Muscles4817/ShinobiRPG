@@ -81,9 +81,8 @@ describe('duel engine', () => {
       id: 'blast',
       name: 'Blast',
       discipline: 'ninjutsu' as const,
-      effect: 'damage' as const,
+      effects: [{ verb: 'damage' as const, power: 10 }],
       chakraCost: 99,
-      power: 10,
     };
     const state = engine.start(
       {
@@ -106,9 +105,8 @@ describe('duel engine', () => {
       id: 'jab',
       name: 'Jab',
       discipline: 'taijutsu' as const,
-      effect: 'damage' as const,
+      effects: [{ verb: 'damage' as const, power: 5 }],
       chakraCost: 6,
-      power: 5,
     };
     const state = engine.start(
       {
@@ -186,6 +184,25 @@ describe('duel engine', () => {
     expect(engine.act(old, { optionId: 'strike' }, createRng(2)).ok).toBe(true);
   });
 
+  it('reads a fight saved before techniques had effect lists', () => {
+    const jab = { id: 'jab', name: 'Jab', discipline: 'taijutsu', chakraCost: 6 };
+    const saved = engine.start(
+      { allies: [], player: fighter('hero'), enemies: [fighter('bandit')], canFlee: true },
+      createRng(1),
+    );
+    const data = saved.data as { fighters: Record<string, unknown>[] };
+    const fighters = data.fighters.map((f) => ({
+      ...f,
+      techniques: [{ ...jab, effect: 'damage', power: 5 }],
+    }));
+    const old = { ...saved, data: { ...data, fighters } };
+    const options = engine.view(old).options.find((o) => o.id === 'tech:jab');
+    expect(options?.detail).toBe('6 chakra, power 5');
+    expect(engine.act(old, { optionId: 'tech:jab', targetId: 'bandit' }, createRng(2)).ok).toBe(
+      true,
+    );
+  });
+
   it('rejects state from another engine', () => {
     expect(() => engine.view({ engineId: 'other', data: {} })).toThrow();
   });
@@ -195,9 +212,8 @@ describe('duel engine', () => {
       id: 'seal',
       name: 'Seal',
       discipline: 'fuuinjutsu' as const,
-      effect: 'seal' as const,
+      effects: [{ verb: 'seal' as const, power: 14 }],
       chakraCost: 1,
-      power: 14,
     };
     const sealer = fighter('sealer', {
       attributes: { ...attributes, fuuinjutsu: 60, speed: 60 },

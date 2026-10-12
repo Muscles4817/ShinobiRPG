@@ -72,6 +72,7 @@ export {
   jutsuDeck,
   recordView,
   type JutsuCard,
+  type JutsuEffect,
   type RecordDay,
   type RecordLine,
 } from './views/you';

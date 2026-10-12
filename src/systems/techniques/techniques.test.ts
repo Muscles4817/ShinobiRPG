@@ -8,9 +8,8 @@ const fireball: TechniqueDef = {
   description: '',
   discipline: 'ninjutsu',
   element: 'fire',
-  effect: 'damage',
+  effects: [{ verb: 'damage', power: 15 }],
   chakraCost: 10,
-  power: 15,
   requirements: { ninjutsu: 8 },
   difficulty: 30,
 };

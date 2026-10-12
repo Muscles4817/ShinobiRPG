@@ -1,4 +1,5 @@
 import { withKit } from '../../rules/body';
+import { upgradeTechnique } from '../../rules/verbs';
 import { defaultLoadout } from './cards';
 import type { RangeBand } from '../../contract';
 import { EMPTY_LOADOUT, type CardId, type PlanFighter, type PlanState, type Slot } from './state';
@@ -30,13 +31,16 @@ interface LegacyState extends Omit<
 
 /**
  * Fighters saved before combat kits (or fight tools) have no traits, hidden, confused or
- * items; they fight as before, with an empty pouch.
+ * items; they fight as before, with an empty pouch. Their techniques may predate effect lists.
  * Runs before `upgradeLegacy`, whose default cards read traits.
  */
 export function withKits(state: PlanState): PlanState {
   // Saved state may predate kits; every field withKit fills is checked before use.
   const raw = state as unknown as { readonly fighters: readonly LegacyFighter[] };
-  return { ...state, fighters: raw.fighters.map((f) => withKit(f)) as PlanFighter[] };
+  const fighters = raw.fighters.map((f) =>
+    withKit({ ...f, techniques: f.techniques.map(upgradeTechnique) }),
+  );
+  return { ...state, fighters: fighters as PlanFighter[] };
 }
 
 export function upgradeLegacy(state: PlanState): PlanState {
