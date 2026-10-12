@@ -7,6 +7,7 @@ import { carried } from '../../rules/items';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { trumpSpent } from '../../rules/trumps';
+import { weaponMissing } from '../../rules/weapons';
 import {
   hasVerb,
   isHarmful,
@@ -183,7 +184,9 @@ function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Fo
  */
 function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slot[] {
   const reaches = canAttackFrom(fighter, band);
-  const pool = cardsFor(fighter, band).filter((c) => reaches || !isOffence(c));
+  const pool = cardsFor(fighter, band).filter(
+    (c) => (reaches || !isOffence(c)) && cardBlocked(fighter, c) === null,
+  );
   const has = (kind: Card['kind']) => pool.filter((c) => c.kind === kind);
   const towardsHome = RANGE_BANDS.indexOf(band) > RANGE_BANDS.indexOf(home) ? 'in' : 'back';
   const footwork = footworkFor(fighter, band, home);
@@ -215,8 +218,14 @@ export function defaultLoadout(fighter: PlanFighter, home = homeBand(fighter)): 
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };
 }
 
+/** Why the fighter can't use this card at all, whatever the moment: a blade art with no blade. */
+export function cardBlocked(fighter: Pick<PlanFighter, 'gear'>, card: Card): string | null {
+  return card.kind === 'jutsu' ? weaponMissing(fighter, card.technique) : null;
+}
+
 /** Footwork, attacks and tools the fighter can actually use this exchange. */
 export function playable(fighter: PlanFighter, card: Card): boolean {
+  if (cardBlocked(fighter, card)) return false;
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);

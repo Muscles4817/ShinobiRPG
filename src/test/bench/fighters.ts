@@ -1,5 +1,6 @@
 import type {
   CombatantSetup,
+  CombatGear,
   CombatPerk,
   CombatRow,
   CombatStance,
@@ -64,6 +65,8 @@ export interface FighterSpec {
   readonly row?: CombatRow;
   /** As a teammate, the stance they fight in (their kit's when absent). */
   readonly stance?: CombatStance;
+  /** What they wear into the fight (step 4.3); absent: armed as their kit suggests. */
+  readonly gear?: CombatGear;
 }
 
 export type StatProfile = Partial<Readonly<Record<StatId, Emphasis>>>;
@@ -100,5 +103,6 @@ export function toSetup(spec: FighterSpec, id: string): CombatantSetup {
     ...(spec.perks ? { perks: spec.perks } : {}),
     ...(spec.row ? { row: spec.row } : {}),
     ...(spec.stance ? { stance: spec.stance } : {}),
+    ...(spec.gear ? { gear: spec.gear } : {}),
   };
 }

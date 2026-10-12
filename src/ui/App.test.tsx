@@ -241,6 +241,13 @@ describe('App (smoke test)', () => {
     const knuckles = screen
       .getAllByRole('article')
       .find((a) => a.textContent.includes('Wrapped Knuckles'))!;
+    expect(within(knuckles).getByLabelText('Rank D')).toBeInTheDocument();
+    expect(within(knuckles).getByText(/through a guard/)).toBeInTheDocument();
+    const katana = screen
+      .getAllByRole('article')
+      .find((a) => a.textContent.includes('Kurogane Katana'))!;
+    expect(within(katana).getByText(/sold to chūnin/)).toBeInTheDocument();
+    expect(within(katana).getByRole('button', { name: 'Buy' })).toBeDisabled();
     await user.click(within(knuckles).getByRole('button', { name: 'Buy' }));
     expect(within(knuckles).getByRole('button', { name: 'Wearing' })).toBeDisabled();
     await user.click(screen.getByRole('button', { name: /Here/ }));

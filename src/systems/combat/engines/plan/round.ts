@@ -3,11 +3,10 @@ import { clamp, type Rng } from '@/core';
 import type { CombatResult } from '../../contract';
 import { alive } from '../../rules/body';
 import { searchChance } from '../../rules/conditions';
-import { strikeDamage } from '../../rules/damage';
 import { revealOnAttack } from '../../rules/items';
-import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { afterUsing } from '../../rules/trumps';
+import { strike } from './arms';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
@@ -19,7 +18,6 @@ import { useTool } from './pouch';
 import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
 import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
-import { react, type Blow } from './react';
 import { intercept } from './team';
 import { springTraps } from './traps';
 import {
@@ -42,7 +40,6 @@ import {
  */
 
 const CHAKRA_REGEN = 2;
-const THROW_SCALE = 0.6;
 const STEP_BASE = 0.55;
 const STEP_PER_SPEED = 0.04;
 /** Initiative the side that moved first gets in exchange 1: more than any speed gap. */
@@ -90,18 +87,6 @@ function step(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' |
         round,
         `${actor.name} tries for ${where} range, but ${foe?.name ?? 'no one'} won't allow it.`,
       );
-}
-
-function strike(round: Round, { actor, target, rng }: Turn, thrown: boolean): Round {
-  if (!target) return round;
-  const blow: Blow = {
-    raw: strikeDamage(actor, target, rng.next()) * (thrown ? THROW_SCALE : 1),
-    what: thrown ? 'kunai' : 'strike',
-    dodgeable: true,
-    physical: !thrown,
-    kind: attackKindOf(null, thrown),
-  };
-  return react(round, { attacker: actor, target, blow, rng });
 }
 
 function play(round: Round, turn: Turn, card: Card): Round {

@@ -47,8 +47,11 @@ export function validateWorld(pack: ContentPack): string[] {
       problems.push(`place "${place.id}" references unknown ${kind} "${id}"`);
     if (kind !== 'technique') reached[kind].add(id);
   }
+  // Unique gear is never sold (`validateGear.ts`): it is earned, found or inherited.
+  const unique = new Set(pack.gear.filter((g) => g.unique === true).map((g) => g.id));
   for (const kind of ['training', 'food', 'mission', 'gear', 'tool', 'ingredient'] as const) {
     refs[kind].forEach((id) => {
+      if (kind === 'gear' && unique.has(id)) return;
       if (!reached[kind].has(id)) problems.push(`${kind} "${id}" is not offered at any place`);
     });
   }

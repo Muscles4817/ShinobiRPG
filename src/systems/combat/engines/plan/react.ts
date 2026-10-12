@@ -53,6 +53,8 @@ export interface Blow {
   readonly discipline?: Discipline;
   /** An area hit: bursts every clone and still reaches its target (`decoys.ts`). */
   readonly area?: boolean;
+  /** Share of a guard it goes through (knuckles, a sundering weapon: `rules/weapons.ts`). */
+  readonly pierce?: number;
 }
 
 export interface Hit {
@@ -122,6 +124,12 @@ function counter(round: Round, { attacker, target, rng }: Hit): Round {
   return wound(say(round, harmLine(`${target.name} counters!`, damage)), attacker.id, damage);
 }
 
+/** What a Guard lets through of this blow: a piercing weapon goes partly through it. */
+function guardLets(attacker: PlanFighter, target: PlanFighter, blow: Blow): number {
+  const kept = guardScale(attacker, target);
+  return kept + (1 - kept) * (blow.pierce ?? 0);
+}
+
 function guardWords(guarded: boolean, smashed: boolean): string {
   if (smashed) return ', smashing through the guard';
   return guarded ? ' through a guard' : '';
@@ -149,7 +157,7 @@ export function react(before: Round, hit: Hit): Round {
   const damage = Math.max(
     1,
     Math.round(
-      kitted(round, attacker, target, blow) * (guarded ? guardScale(attacker, target) : 1),
+      kitted(round, attacker, target, blow) * (guarded ? guardLets(attacker, target, blow) : 1),
     ),
   );
   const told = say(

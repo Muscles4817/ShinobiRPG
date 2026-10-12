@@ -111,4 +111,29 @@ describe('content validation', () => {
       'food "rice-ball" is not offered at any place',
     );
   });
+
+  it('lets unique gear go unsold, but never on a shelf, and keeps A rank and verbs unique', () => {
+    expect(validateContent(ORIGINAL_PACK)).toEqual([]);
+    const gear = ORIGINAL_PACK.gear.map((g) =>
+      g.id === 'hungry-lantern' ? { ...g, unique: false } : g,
+    );
+    const problems = validateContent({ ...ORIGINAL_PACK, gear });
+    expect(problems).toContain('gear "hungry-lantern" is rank A but not unique');
+    expect(problems).toContain('gear "hungry-lantern" has its own verbs but is not unique');
+    expect(problems).toContain('gear "hungry-lantern" is not offered at any place');
+    const [home, ...rest] = ORIGINAL_PACK.locations;
+    const shelved = {
+      ...ORIGINAL_PACK,
+      locations: [
+        {
+          ...home!,
+          places: home!.places.map((p) =>
+            p.kind === 'gear' ? { ...p, gearIds: [...p.gearIds, 'hungry-lantern'] } : p,
+          ),
+        },
+        ...rest,
+      ],
+    };
+    expect(validateContent(shelved)).toContain('unique gear "hungry-lantern" is sold at a shop');
+  });
 });

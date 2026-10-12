@@ -1,6 +1,7 @@
 import { costIsSane, DISCIPLINES, effectProblem } from '@/systems/techniques';
 
 import { duplicateIds } from './catalog';
+import { validateGear } from './validateGear';
 import { validateInjuries } from './validateInjuries';
 import { validatePeople } from './validatePeople';
 import { validateVillage } from './validateVillage';
@@ -25,6 +26,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validatePeople(pack),
     ...validateVillage(pack),
     ...validateInjuries(pack),
+    ...validateGear(pack),
   ];
 }
 

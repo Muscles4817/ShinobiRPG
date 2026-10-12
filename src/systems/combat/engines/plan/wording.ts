@@ -1,6 +1,7 @@
 import type { TechniqueEffect, Verb } from '@/systems/techniques';
 
 import type { CombatItem, CombatItemEffect, CombatTechnique } from '../../contract';
+import type { CombatGear } from '../../gearContract';
 import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import type { Card } from './cards';
@@ -52,12 +53,38 @@ function techniqueWords(technique: CombatTechnique): string {
   return [first, ...rest.map((w) => w.toLowerCase())].join(', then ');
 }
 
-export function cardLabel(card: Card): string {
+interface Armed {
+  readonly gear?: CombatGear;
+}
+
+interface Words {
+  readonly label: string;
+  readonly detail: string;
+}
+
+/**
+ * The strike and kunai cards as the fighter's weapons make them: a blade's cut, knuckles'
+ * heavy blow, senbon from a needle case.
+ */
+function armsWords(kind: 'strike' | 'throw', { gear }: Armed): Words {
+  if (kind === 'throw') {
+    return gear?.thrown?.shape === 'senbon'
+      ? { label: 'Senbon', detail: 'Attack, may daze, no chakra' }
+      : { label: 'Kunai', detail: 'Attack, no chakra' };
+  }
+  if (gear?.held?.shape === 'blade')
+    return { label: 'Cut', detail: 'Cut with your blade, kenjutsu' };
+  if (gear?.held?.shape === 'knuckles') {
+    return { label: 'Strike', detail: 'Heavy blow, partly through a guard' };
+  }
+  return { label: 'Strike', detail: 'Attack, no chakra' };
+}
+
+export function cardLabel(card: Card, fighter: Armed): string {
   switch (card.kind) {
     case 'strike':
-      return 'Strike';
     case 'throw':
-      return 'Kunai';
+      return armsWords(card.kind, fighter).label;
     case 'step':
       return card.direction === 'in' ? 'Close in' : 'Back off';
     case 'guard':
@@ -80,9 +107,8 @@ export function cardLabel(card: Card): string {
 export function cardDetail(card: Card, fighter: PlanFighter): string {
   switch (card.kind) {
     case 'strike':
-      return 'Attack, no chakra';
     case 'throw':
-      return 'Attack, no chakra';
+      return armsWords(card.kind, fighter).detail;
     case 'step':
       return card.direction === 'in' ? 'Try to get closer' : 'Try to open distance';
     case 'guard':

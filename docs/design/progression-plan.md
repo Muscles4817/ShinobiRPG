@@ -843,6 +843,24 @@ These were folded into the D2 discussion. Where each landed:
   reaches C on day 61 (was day 3), and a further month alone adds about one point of the C
   band's seven.
 
+**Phase 4 (in progress).**
+
+- 4.3: gear. `GearDef` is a union by `kind` (weapon with a `shape`: blade, knuckles, throwing,
+  senbon; armour with a `level`: light, flak, heavy, plate; focus with `boosts` a verb or a
+  discipline), with a `rank` D–A and `unique` for named weapons; `statBonuses` is gone. Slots are
+  weapon (held), thrown, body and charm. Equipped gear reaches the fight as `CombatantSetup.gear`
+  (`systems/combat/gearContract.ts`); the rules are `rules/weapons.ts` (cut driven by kenjutsu,
+  knuckles' power and guard pierce, throwing steel, senbon with a perception-driven daze; unique
+  verbs drain, daze, sunder), `rules/armour.ts` (the `armoured` kit rule by level, and a speed cost
+  strength carries away) and `rules/focus.ts` (drive ×1.12, +0.06 a rank, inside `driveOf`).
+  Kenjutsu techniques need a blade (a disabled reason at the card table). Shops show kind, a rank
+  stamp and chips from the same rule numbers; B-rank needs chūnin. Two unique weapons per pack,
+  unsold. Save v19 moves worn pieces to their new slots and issues a blade to a character who
+  knows a blade art and owns none (new genin get one at creation too). Gear bench
+  (`gearBench.test.ts`, chūnin plain against equals): win rate in no armour 43%, flak 65%, heavy
+  85%, plate 93%; against an archer 43% bare, 3% in plate; with strength 30, 98% either way. A
+  kenjutsu-peak fighter wins 0% bare-handed, 80% with a D blade. The 1v1 bench is unchanged.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -983,3 +1001,17 @@ These were folded into the D2 discussion. Where each landed:
   none has been read, so they don't give talent away.
 - 2.2: the 60-day target holds now, mostly by drilling: the weekly lesson adds little. So the
   stall is in C (asserted), not D; "solo stalls in D" waits for Phase 3 teachers.
+- 4.3: no gear shop has a keeper person, so B-rank access is by rank only (chūnin and up);
+  the smith's favour waits for a keeper person. A-rank gear is unique only (validated). The
+  flak vest is rank B, so it is sold to chūnin (and 6.3 hands it over at promotion).
+- 4.3: gear quality is its rank (D 0 … A 3 steps); each rule grows by the step, no per-item
+  numbers. The kenjutsu blade requirement is discipline-based in `rules/weapons.ts` and applies
+  only to fighters whose gear is known (the player); foes and teammates carry no `gear` and are
+  armed as their techniques suggest. 4.1's `needs.weapon` can replace the discipline test.
+- 4.3: armour's speed cost is applied to the fighter's speed for the whole fight (`bodyFrom`),
+  so it slows initiative, footwork and dodging together; strength 40 carries any armour. Worn
+  armour and the `armoured` trait don't stack (the better counts). Thrown weapons count as
+  `weapon` hits, so armour helps against kunai.
+- 4.3: unique weapons are in the packs but not obtainable yet (no reward hook); 4.2/4.4 hand
+  them out. The issued blade is the cheapest D blade the start location sells; the v19 migration
+  uses the pack's content (as v18 does) to find it.

@@ -3,7 +3,7 @@ export { buildContentDb, type ContentDb } from './db';
 export { validateContent } from './validate';
 export type { Catalog } from './catalog';
 export { TONES } from './people';
-export { GEAR_SLOTS } from './items';
+export { GEAR_SLOTS, gearSlot } from './items';
 export { INJURY_SITE_LABELS, type InjuryCause, type InjuryDef, type InjurySite } from './injuries';
 export type {
   BackdropId,
@@ -17,6 +17,7 @@ export type {
   FestivalDef,
   FoodDef,
   GearDef,
+  GearKind,
   GearSlot,
   ToolDef,
   IngredientDef,

@@ -2,6 +2,7 @@ import type { Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
 import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
 
+import type { CombatGear } from './gearContract';
 import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
 
 /**
@@ -54,10 +55,7 @@ export type RangeBand = 'close' | 'mid' | 'far';
  */
 export type CombatRow = 'front' | 'back';
 
-/**
- * Special abilities a combatant brings, e.g. an awakened bloodline's eyes. Engines that
- * don't know a perk ignore it.
- */
+/** Special abilities a combatant brings (an awakened bloodline's eyes); others ignore it. */
 export type CombatPerk = 'insight';
 
 /**
@@ -115,6 +113,8 @@ export interface CombatantSetup {
   readonly traits?: readonly CombatTrait[];
   /** Tools carried into the fight (the player's pouch). */
   readonly items?: readonly CombatItem[];
+  /** Equipped gear (see `gearContract.ts`); absent for fighters armed as their kit suggests. */
+  readonly gear?: CombatGear;
   /** A preferred row; when absent the engine places the fighter by their kit. */
   readonly row?: CombatRow;
   /** An ally's stance; when absent the engine picks one from their kit. */
