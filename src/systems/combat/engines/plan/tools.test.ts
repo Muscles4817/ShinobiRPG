@@ -1,7 +1,8 @@
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatItem, CombatItemEffect, CombatTrait } from '../../contract';
-import { cardsFor, defaultLoadout } from './cards';
+import { cardsFor } from './cards';
+import { defaultLoadout } from './defaults';
 import { chooseCard } from './choose';
 import { createPlanEngine } from './engine';
 import { rememberedLoadout } from './memory';

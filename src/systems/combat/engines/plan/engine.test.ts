@@ -1,7 +1,8 @@
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatEngine, CombatState, CombatTechnique } from '../../contract';
-import { cardsFor, defaultLoadout, slotLimit } from './cards';
+import { cardsFor, slotLimit } from './cards';
+import { defaultLoadout } from './defaults';
 import { chooseCard } from './choose';
 import { createPlanEngine, ROUND_EXCHANGES } from './engine';
 import { decode, encode, initialFighters, plainSlots, type PlanFighter } from './state';
@@ -233,8 +234,9 @@ describe('plan & watch engine', () => {
       },
       createRng(1),
     );
-    const hero = decode(state).fighters[0]!;
-    expect(hero.loadout.close).toEqual(defaultLoadout(hero).close);
+    const { fighters } = decode(state);
+    const hero = fighters[0]!;
+    expect(hero.loadout.close).toEqual(defaultLoadout(hero, fighters).close);
     const kept = engine.start(
       {
         player: fighter('hero'),

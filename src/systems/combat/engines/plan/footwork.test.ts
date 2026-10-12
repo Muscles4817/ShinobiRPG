@@ -2,7 +2,8 @@ import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { raiseField } from '../../rules/verbs';
-import { cardsFor, defaultLoadout, playable } from './cards';
+import { cardsFor, playable } from './cards';
+import { defaultLoadout } from './defaults';
 import { createPlanEngine } from './engine';
 import { substitutionsReady } from './footwork';
 import { useJutsu } from './jutsu';

@@ -5,16 +5,9 @@ import { inReach, RANGE_BANDS, reachOf } from '../../rules/range';
 import { coverChance } from '../../rules/team';
 import { isHindering, isWounding } from '../../rules/verbs';
 import type { CombatStance } from '../../teamContract';
-import {
-  defaultLoadout,
-  findCard,
-  isOffence,
-  isReaction,
-  needsAim,
-  slotLimit,
-  type Card,
-} from './cards';
+import { findCard, isOffence, isReaction, needsAim, slotLimit, type Card } from './cards';
 import { withoutLoneCombos } from './combo';
+import { defaultLoadout } from './defaults';
 import { canHit } from './rows';
 import type { Turn } from './senses';
 import { isDazed, say, type Loadout, type PlanFighter, type Round, type Slot } from './state';
@@ -122,7 +115,10 @@ export function stanceLoadout(
   stance: CombatStance,
   fighters: readonly PlanFighter[],
 ): Loadout {
-  const base = defaultLoadout(withoutLoneCombos(f, fighters), homeFor(f, stance));
+  const base = defaultLoadout(withoutLoneCombos(f, fighters), fighters, {
+    home: homeFor(f, stance),
+    support: stance.kind === 'support',
+  });
   const shape = shaperFor(stance);
   const [close, mid, far] = RANGE_BANDS.map((band) => shape(f, base[band]));
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };

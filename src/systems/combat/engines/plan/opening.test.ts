@@ -118,7 +118,10 @@ describe('plan & watch trump cards', () => {
 
   it('plays a trump once per fight and reports what it costs', () => {
     const hero = fighter('hero', { techniques: [blaze], health: 1000, maxHealth: 1000 });
-    const fight = setup({ player: hero, enemies: [tough] });
+    // Slotted first at every distance, so only once-per-fight keeps it from playing again.
+    const first = ['jutsu:blaze', 'strike', 'throw'];
+    const slots = { close: first, mid: first, far: first };
+    const fight = setup({ player: hero, enemies: [tough], plan: slots });
     let state = act(engine, engine.start(fight, createRng(3)), 'begin');
     for (let round = 0; round < 3; round++)
       state = act(engine, act(engine, state, 'round'), 'begin');

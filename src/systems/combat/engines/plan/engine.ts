@@ -15,7 +15,8 @@ import { RANGE_LABEL } from '../../rules/range';
 import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed } from '../../rules/verbs';
-import { defaultLoadout, slotLimit } from './cards';
+import { slotLimit } from './cards';
+import { defaultLoadout } from './defaults';
 import { withoutLoneCombos } from './combo';
 import { fieldMeter, fieldStatuses } from './field';
 import { substitutionsReady } from './footwork';
@@ -197,7 +198,7 @@ export function createPlanEngine(): CombatEngine {
           ...f,
           loadout:
             (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ??
-            defaultLoadout(withoutLoneCombos(f, fighters)),
+            defaultLoadout(withoutLoneCombos(f, fighters), fighters),
         })),
       );
       const table = { fighters: planned, range, exchange: 0, ...(field ? { field } : {}) };

@@ -1,4 +1,4 @@
-import type { StatId, Stats } from './stats';
+import type { Stats } from './stats';
 
 /**
  * A frame of reference for stat numbers: a letter grade with the shinobi rank it belongs to
@@ -63,7 +63,7 @@ export function statTier(value: number): TierRead {
  * Reserves are left out: they say how long someone can keep using jutsu, not how dangerous each
  * exchange with them is, and an enemy's chakra is authored apart from their stats.
  */
-const BODY_AND_MIND: readonly StatId[] = [
+const BODY_AND_MIND = [
   'strength',
   'speed',
   'stamina',
@@ -71,14 +71,17 @@ const BODY_AND_MIND: readonly StatId[] = [
   'intellect',
   'perception',
   'willpower',
-];
-const ARTS: readonly StatId[] = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'];
+] as const;
+const ARTS = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
+
+/** The stats a fighting rating reads (everything but reserves). */
+export type FightingStats = Pick<Stats, (typeof BODY_AND_MIND)[number] | (typeof ARTS)[number]>;
 
 /**
  * One number for how dangerous someone is in a fight: half their all-round body and mind,
  * half their best art (a specialist is as dangerous as their speciality).
  */
-export function fightingPower(stats: Stats): number {
+export function fightingPower(stats: FightingStats): number {
   const rounded = BODY_AND_MIND.reduce((sum, id) => sum + stats[id], 0) / BODY_AND_MIND.length;
   const best = Math.max(...ARTS.map((id) => stats[id]));
   return (rounded + best) / 2;

@@ -45,6 +45,7 @@ export {
   STAT_TIERS,
   statTier,
   fightingPower,
+  type FightingStats,
   type StatGrade,
   type StatTier,
   type TierRead,

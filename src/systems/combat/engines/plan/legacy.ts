@@ -1,7 +1,7 @@
 import { withKit } from '../../rules/body';
 import { formed, preferredRow } from '../../rules/rows';
 import { upgradeTechnique } from '../../rules/verbs';
-import { defaultLoadout } from './cards';
+import { defaultLoadout } from './defaults';
 import type { RangeBand } from '../../contract';
 import { EMPTY_LOADOUT, type CardId, type PlanFighter, type PlanState, type Slot } from './state';
 

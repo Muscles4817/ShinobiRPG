@@ -129,9 +129,13 @@ describe('trump costs', () => {
 
   it('a trump played in a fight leaves its cost', () => {
     const strong = withAllStats(newGame(), 30);
+    // A trump waits for the last ditch by default; this plan plays it at once.
+    const first = ['jutsu:hibana-kiln-heart', 'strike', 'throw'];
+    const plan = { close: first, mid: first, far: first };
     const trained = {
       ...strong,
       techniques: { ...strong.techniques, known: ['hibana-kiln-heart'] },
+      settings: { ...strong.settings, combatPlans: { 'plan-v1': plan } },
     };
     const done = fightOut(openedFight(trained, { range: 'mid' }));
     const headings = done.journal.entries.map((e) => e.heading);

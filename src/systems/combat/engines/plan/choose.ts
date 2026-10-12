@@ -3,7 +3,8 @@ import type { Rng } from '@/core';
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
-import { hasVerb, isHindering, isWounding, techniquePower } from '../../rules/verbs';
+import { isTrump, lastDitch, outmatched } from '../../rules/trumps';
+import { hasVerb, isHarmful, isHindering, isWounding, techniquePower } from '../../rules/verbs';
 import { isOffence, playable, slotted, type Card } from './cards';
 import { partnered } from './combo';
 import { moveDestination } from './footwork';
@@ -14,7 +15,8 @@ import { isDazed, type PlanFighter } from './state';
 
 /**
  * Which slotted card a fighter plays this exchange. Fighters follow a few instincts (heal when
- * hurt, daze a fresh foe, punish a dazed one); otherwise they pick among the cards slotted for
+ * hurt, daze a fresh foe, punish a dazed one, keep a trump for the last ditch or a far stronger
+ * foe, seal only a foe who fights with jutsu); otherwise they pick among the cards slotted for
  * this distance, stronger ones more often. With nothing playable they improvise a basic blow,
  * or, when their kit can't attack from here, a step towards where it can. A fighter with Search
  * or Dispel slotted uses it first when a foe is hidden (Dispel also when confused); then a
@@ -100,25 +102,68 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
   );
 }
 
-export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
-  const { band, foe } = moment;
-  const fighters = moment.fighters ?? [];
-  const ready = slotted(self, band).filter(
-    (c) => playable(self, c) && (c.kind !== 'jutsu' || partnered(fighters, self, c.technique)),
-  );
-  const instinct = instinctFor(self, ready, moment);
-  if (instinct) return instinct;
-  const heal = jutsu(ready, (t) => hasVerb(t, 'heal'));
-  if (heal && self.health < self.maxHealth * LOW_HEALTH) return heal;
+/** A trump card's moment: badly hurt, or facing a far stronger foe. */
+function trumpTime(self: PlanFighter, foe: PlanFighter | undefined): boolean {
+  return lastDitch(self) || (foe !== undefined && outmatched(self, [foe]));
+}
+
+function trumpCard(card: Card): boolean {
+  return card.kind === 'jutsu' && isTrump(card.technique);
+}
+
+/** A hold worth putting on this foe: a seal only locks something when they fight with jutsu. */
+function holdsBack(foe: PlanFighter | undefined) {
+  const usesJutsu = foe === undefined || foe.techniques.some(isHarmful);
+  return (t: CombatTechnique) =>
+    isHindering(t) && (usesJutsu || hasVerb(t, 'daze') || hasVerb(t, 'confuse'));
+}
+
+/** Footwork and attacks that reach from here: what a turn can be spent on. */
+function moves(self: PlanFighter, ready: readonly Card[], band: RangeBand): Card[] {
   const reaches = canAttackFrom(self, band);
-  const harmful = ready.filter(
+  return ready.filter(
     (c) => c.kind === 'step' || flickers(self, c, band) || (isOffence(c) && reaches),
   );
-  const daze = jutsu(harmful, isHindering);
+}
+
+/**
+ * An attack or footwork: a trump (only offered in its moment), a hold on a fresh foe (often), the finisher on
+ * a dazed one, else any of them, stronger ones more often.
+ */
+function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, rng: Rng): Card {
+  const { band, foe } = moment;
+  const trump = harmful.find(trumpCard);
+  if (trump) return trump;
+  const daze = jutsu(harmful, holdsBack(foe));
   const fresh = foe !== undefined && !isDazed(foe) && foe.sealed === 0 && foe.confused === 0;
   if (daze && fresh && rng.chance(DAZE_FIRST_CHANCE)) return daze;
   const finisher = jutsu(harmful, isWounding);
   if (finisher && foe && isDazed(foe)) return finisher;
   const usual = harmful.filter((c) => c !== daze || fresh);
   return weighted(usual, rng) ?? improvise(self, band);
+}
+
+/**
+ * Badly hurt with a trump ready here: whatever they announced, the fight has moved on, and the
+ * trump comes out now (`intent.ts`).
+ */
+export function desperate(self: PlanFighter, band: RangeBand): boolean {
+  return lastDitch(self) && slotted(self, band).some((c) => trumpCard(c) && playable(self, c));
+}
+
+export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
+  const fighters = moment.fighters ?? [];
+  // A trump is held back (from every instinct, an empower's too) until its moment.
+  const trumpNow = trumpTime(self, moment.foe);
+  const ready = slotted(self, moment.band).filter(
+    (c) =>
+      playable(self, c) &&
+      (trumpNow || !trumpCard(c)) &&
+      (c.kind !== 'jutsu' || partnered(fighters, self, c.technique)),
+  );
+  const instinct = instinctFor(self, ready, moment);
+  if (instinct) return instinct;
+  const heal = jutsu(ready, (t) => hasVerb(t, 'heal'));
+  if (heal && self.health < self.maxHealth * LOW_HEALTH) return heal;
+  return onTheMove(self, moves(self, ready, moment.band), moment, rng);
 }
