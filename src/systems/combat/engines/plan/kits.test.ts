@@ -2,7 +2,7 @@ import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique, CombatTrait } from '../../contract';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
-import { defaultLoadout } from './cards';
+import { defaultLoadout } from './defaults';
 import { chooseCard } from './choose';
 import { createPlanEngine } from './engine';
 import { rememberedLoadout } from './memory';

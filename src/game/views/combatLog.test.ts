@@ -42,10 +42,13 @@ describe('combat log view', () => {
     expect(combatLog(['— Round 2 —'])).toEqual([{ kind: 'round', text: 'Round 2' }]);
   });
 
-  it.each(STYLES)('keeps numbers out of the story in %s and shows them as chips', (style, c) => {
+  it.each(STYLES)('keeps numbers out of the story and its dividers in %s, as chips', (style, c) => {
     const lines = combatLog(sparLog(style, c));
     const story = lines.flatMap((l) => (l.kind === 'story' ? [l] : []));
     expect(story.filter((l) => /\d/.test(l.text))).toEqual([]);
+    const dividers = lines.filter((l) => l.kind === 'round');
+    expect(dividers.length).toBeGreaterThan(0);
+    expect(dividers.filter((l) => /\d/.test(l.text))).toEqual([]);
     expect(story.some((l) => l.chips.some((chip) => chip.tone === 'harm'))).toBe(true);
   });
 });

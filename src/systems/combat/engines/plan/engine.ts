@@ -15,7 +15,8 @@ import { RANGE_LABEL } from '../../rules/range';
 import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed } from '../../rules/verbs';
-import { defaultLoadout, slotLimit } from './cards';
+import { slotLimit } from './cards';
+import { defaultLoadout } from './defaults';
 import { withoutLoneCombos } from './combo';
 import { fieldMeter, fieldStatuses } from './field';
 import { substitutionsReady } from './footwork';
@@ -78,7 +79,10 @@ function options(state: PlanState): CombatOption[] {
     const player = playerOf(state);
     const begin = state.bout === 1 ? 'Begin the fight' : `Begin round ${state.bout}`;
     return [
-      ...tableOptions(player),
+      ...tableOptions(
+        player,
+        state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+      ),
       ...teamOptions(state),
       { id: 'begin', label: begin, detail: '', kind: 'continue' },
       escape,
@@ -129,7 +133,7 @@ function endOfRound(next: PlanState): PlanState {
     bout: next.bout + 1,
     exchange: 0,
     fighters: substitutionsReady(next.fighters),
-    log: [...next.log, `— End of round ${next.bout}. Change your cards if you like. —`],
+    log: [...next.log, '— The round is over. Change your cards if you like. —'],
   };
 }
 
@@ -162,8 +166,11 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   const planned = editPlan(state, optionId) ?? editTeam(state, optionId);
   if (planned) return ok(planned);
   switch (optionId) {
-    case 'begin':
-      return ok({ ...state, phase: 'fight', log: [...state.log, `— Round ${state.bout} —`] });
+    case 'begin': {
+      // Dividers are story text too: no numbers (the round number shows above the log).
+      const divider = state.bout === 1 ? '— The fight begins —' : '— The next round begins —';
+      return ok({ ...state, phase: 'fight', log: [...state.log, divider] });
+    }
     case 'flee':
       return ok(flee(state, rng));
     case 'round':
@@ -197,7 +204,7 @@ export function createPlanEngine(): CombatEngine {
           ...f,
           loadout:
             (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ??
-            defaultLoadout(withoutLoneCombos(f, fighters)),
+            defaultLoadout(withoutLoneCombos(f, fighters), fighters),
         })),
       );
       const table = { fighters: planned, range, exchange: 0, ...(field ? { field } : {}) };

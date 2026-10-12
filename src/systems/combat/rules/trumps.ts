@@ -1,4 +1,6 @@
-import type { CombatCost, CombatTechnique } from '../contract';
+import { fightingPower } from '@/systems/stats';
+
+import type { CombatAttributes, CombatCost, CombatTechnique } from '../contract';
 
 /**
  * Trump cards: techniques usable once per fight, whose price (`afterCost`) comes due once the
@@ -12,6 +14,32 @@ export interface TrumpMemory {
 }
 
 type Trump = Pick<CombatTechnique, 'id' | 'oncePerFight'>;
+
+/** Below this share of their health a fighter reaches for their trump: the last-ditch moment. */
+export const TRUMP_HEALTH = 1 / 3;
+/**
+ * A foe this much stronger (fighting power, theirs ÷ yours) is worth a trump from the start:
+ * where scouting's "far stronger than you" begins.
+ */
+export const OUTMATCHED_RATIO = 1.4;
+
+export function isTrump(technique: Pick<CombatTechnique, 'oncePerFight'>): boolean {
+  return technique.oncePerFight === true;
+}
+
+/** Some foe is far stronger than this fighter: no point saving a trump for later. */
+export function outmatched(
+  self: { readonly attributes: CombatAttributes },
+  foes: readonly { readonly attributes: CombatAttributes }[],
+): boolean {
+  const own = Math.max(1, fightingPower(self.attributes));
+  return foes.some((foe) => fightingPower(foe.attributes) / own > OUTMATCHED_RATIO);
+}
+
+/** Hurt badly enough that a trump kept back would be wasted. */
+export function lastDitch(f: { readonly health: number; readonly maxHealth: number }): boolean {
+  return f.health < f.maxHealth * TRUMP_HEALTH;
+}
 
 /** A once-per-fight technique this fighter has already used. */
 export function trumpSpent(fighter: TrumpMemory, technique: Trump): boolean {

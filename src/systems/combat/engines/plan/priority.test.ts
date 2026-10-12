@@ -259,6 +259,22 @@ describe('plan & watch priorities: the engine', () => {
     expect(of('step-in').some((o) => o.setting === 'When')).toBe(true);
   });
 
+  it('offers the back row and the team mark as targets only when a team fights', () => {
+    const plan = { close: [], mid: ['throw'], far: [] };
+    const targets = (allies: CombatantSetup[]) =>
+      engine
+        .view(engine.start({ ...setup, allies, plan }, createRng(1)))
+        .options.filter((o) => o.adjusts === 'slot:mid:throw' && o.setting === 'Target')
+        .map((o) => o.label);
+    expect(targets([])).toEqual(['Weakest foe', 'Strongest foe']);
+    expect(targets([fighter('mate')])).toEqual([
+      'Weakest foe',
+      'Strongest foe',
+      'Back-row threat',
+      'The team mark',
+    ]);
+  });
+
   it('hands the plan back with its conditions, for the next fight', () => {
     const begun = act(
       engine.start({ ...setup, plan: { close: [], mid: ['jutsu:blast'], far: [] } }, createRng(1)),

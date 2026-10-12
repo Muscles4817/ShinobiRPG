@@ -4,7 +4,7 @@ import type { CombatantSetup, CombatTechnique } from '../../contract';
 import type { CombatGear, CombatWeapon } from '../../gearContract';
 import { NEEDS_WEAPON } from '../../rules/weapons';
 import { strike } from './arms';
-import { defaultLoadout } from './cards';
+import { defaultLoadout } from './defaults';
 import { createPlanEngine } from './engine';
 import { initialFighters, plainSlots, type PlanFighter, type Round } from './state';
 

@@ -46,7 +46,10 @@ const WHEN_LABEL: Readonly<Record<SlotCondition | typeof ALWAYS, string>> = {
   'foe-hidden': 'A foe is hidden',
 };
 
-/** The target rules offered at the table; the mark is set between rounds (`orders.ts`). */
+/**
+ * The target rules offered at the table; the mark is set between rounds (`orders.ts`). The
+ * back row and the mark are a team's business: fighting alone, only the first two are offered.
+ */
 const AIM_LABEL: Readonly<Record<TargetRule, string>> = {
   weakest: 'Weakest foe',
   strongest: 'Strongest foe',
@@ -71,7 +74,16 @@ function rankOf(player: PlanFighter, band: RangeBand, id: CardId): number {
 }
 
 /** Setting choices for one slotted card: move up, when it plays, whom it aims at. */
-function adjustments(band: RangeBand, slot: Slot, rank: number, card: Card | null): CombatOption[] {
+const SOLO_AIMS: readonly TargetRule[] = ['weakest', 'strongest'];
+
+/** Where a slot sits: its distance, its place in the order, and whether a team fights too. */
+interface SlotAt {
+  readonly band: RangeBand;
+  readonly rank: number;
+  readonly team: boolean;
+}
+
+function adjustments({ band, rank, team }: SlotAt, slot: Slot, card: Card | null): CombatOption[] {
   const adjusts = entryId(band, slot.card);
   const base = { detail: '', kind: 'plan', group: RANGE_LABEL[band], adjusts } as const;
   const raise: CombatOption[] =
@@ -88,10 +100,11 @@ function adjustments(band: RangeBand, slot: Slot, rank: number, card: Card | nul
     selected: (slot.when ?? ALWAYS) === c,
   }));
   const aimed = card !== null && isOffence(card);
-  const aim = (aimed ? Object.entries(AIM_LABEL) : []).map(([rule, label]): CombatOption => ({
+  const rules = team ? TARGET_RULES : SOLO_AIMS;
+  const aim = (aimed ? rules : []).map((rule): CombatOption => ({
     ...base,
     id: `${AIM_PREFIX}${band}:${rule}:${slot.card}`,
-    label,
+    label: AIM_LABEL[rule],
     setting: 'Target',
     selected: (slot.target ?? 'weakest') === rule,
   }));
@@ -116,7 +129,7 @@ function emptyPouchOptions(player: PlanFighter, band: RangeBand): CombatOption[]
     }));
 }
 
-function slotOptions(player: PlanFighter, band: RangeBand): CombatOption[] {
+function slotOptions(player: PlanFighter, band: RangeBand, team: boolean): CombatOption[] {
   const full = player.loadout[band].length >= slotLimit(player);
   const cards = cardsFor(player, band).map((card): CombatOption => {
     const id = cardId(card);
@@ -135,14 +148,14 @@ function slotOptions(player: PlanFighter, band: RangeBand): CombatOption[] {
     };
   });
   const settings = player.loadout[band].flatMap((slot, rank) =>
-    adjustments(band, slot, rank, findCard(player, slot.card)),
+    adjustments({ band, rank, team }, slot, findCard(player, slot.card)),
   );
   return [...cards, ...emptyPouchOptions(player, band), ...settings];
 }
 
-/** Every option at the card table, distance by distance. */
-export function tableOptions(player: PlanFighter): CombatOption[] {
-  return RANGE_BANDS.flatMap((band) => slotOptions(player, band));
+/** Every option at the card table, distance by distance; `team` when allies fight too. */
+export function tableOptions(player: PlanFighter, team = true): CombatOption[] {
+  return RANGE_BANDS.flatMap((band) => slotOptions(player, band, team));
 }
 
 /** An edit to the plan, read back from one of our own option ids. */

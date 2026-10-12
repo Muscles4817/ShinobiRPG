@@ -28,6 +28,10 @@ export interface FightRecord {
   readonly exchanges: number;
   /** The player's health left, as a fraction of their maximum. */
   readonly healthLeft: number;
+  /** The techniques the player used, in first-use order (none counted in a stalemate). */
+  readonly used: readonly string[];
+  /** The techniques any foe used (none counted in a stalemate). */
+  readonly foesUsed: readonly string[];
 }
 
 export interface BenchReport {
@@ -86,7 +90,15 @@ export function skirmishOnce({ player, allies, foes }: Skirmish, seed: number): 
     }
   }
   const outcome = engine.outcome(state)!;
-  return { result: outcome.result, exchanges, healthLeft: healthFraction(player, outcome.player) };
+  return {
+    result: outcome.result,
+    exchanges,
+    healthLeft: healthFraction(player, outcome.player),
+    used: outcome.used?.player?.techniqueIds ?? [],
+    foesUsed: Object.entries(outcome.used ?? {}).flatMap(([id, usage]) =>
+      id.startsWith('foe') ? usage.techniqueIds : [],
+    ),
+  };
 }
 
 function healthFraction(player: FighterSpec, now: { readonly health: number }): number {
@@ -100,6 +112,8 @@ function stalemate(player: FighterSpec, state: CombatState, engine: CombatEngine
     result: 'stalemate',
     exchanges: STALEMATE_EXCHANGES,
     healthLeft: healthFraction(player, { health }),
+    used: [],
+    foesUsed: [],
   };
 }
 
@@ -135,6 +149,12 @@ export function endedWithin(report: BenchReport, exchanges: number): number {
 export function wonWithin(report: BenchReport, exchanges: number): number {
   const won = report.records.filter((r) => r.result === 'victory' && r.exchanges <= exchanges);
   return won.length / report.fights;
+}
+
+/** Fraction of fights in which the player (or, with `by: 'foes'`, a foe) used this technique. */
+export function usedIn(report: BenchReport, techniqueId: string, by: 'player' | 'foes' = 'player') {
+  const used = (r: FightRecord) => (by === 'player' ? r.used : r.foesUsed);
+  return report.records.filter((r) => used(r).includes(techniqueId)).length / report.fights;
 }
 
 /** One line for logs: "Rusher (genin) v Brute (genin): 72% won, 9.3 exchanges, 41% health". */

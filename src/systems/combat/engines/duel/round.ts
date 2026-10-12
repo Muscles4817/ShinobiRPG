@@ -65,7 +65,7 @@ function tryFlee(state: DuelState, rng: Rng): { escaped: boolean; line: string }
 /** Plays out one full round given the player's chosen action. */
 export function resolveRound(state: DuelState, move: PlayerMove, rng: Rng): DuelState {
   const playerAction = move.action;
-  const log: string[] = [...state.log, `— Round ${state.round} —`];
+  const log: string[] = [...state.log, '— Another round —'];
 
   if (playerAction.kind === 'flee') {
     const attempt = tryFlee(state, rng);

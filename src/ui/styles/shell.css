@@ -34,7 +34,8 @@
 }
 
 .btn.small {
-  min-height: 32px;
+  /* Small type, full-size target: every tap target is at least 40px. */
+  min-height: 40px;
   padding: 0.35em 0.85em;
   font-size: 0.85rem;
 }
@@ -261,12 +262,15 @@
 }
 .back {
   position: absolute;
-  top: 10px;
+  top: 0;
   left: var(--gutter);
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
   font-size: 0.82rem;
   opacity: 0.9;
   color: #fff;
-  padding: 4px 0;
+  padding: 0 8px 0 0;
 }
 .back.on-art {
   z-index: 2;

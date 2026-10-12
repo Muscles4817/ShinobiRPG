@@ -4,8 +4,9 @@ import type { RangeBand } from '../../contract';
 import { alive, targetable } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
 import { RANGE_LABEL } from '../../rules/range';
+import { isTrump } from '../../rules/trumps';
 import { cardId, findCard, fitsBand, isOffence, playable, type Card } from './cards';
-import { chooseCard } from './choose';
+import { chooseCard, desperate } from './choose';
 import { ownField } from './field';
 import { opponentsOf } from './senses';
 import { cardLabel } from './wording';
@@ -52,6 +53,9 @@ export function intendedCard(
   const id = intents[actor.id];
   const card = id === undefined ? null : findCard(actor, id);
   if (!card || !fitsBand(card, band) || !playable(actor, card)) return undefined;
+  if (desperate(actor, band) && !(card.kind === 'jutsu' && isTrump(card.technique))) {
+    return undefined;
+  }
   return isOffence(card) && !canAttackFrom(actor, band) ? undefined : card;
 }
 

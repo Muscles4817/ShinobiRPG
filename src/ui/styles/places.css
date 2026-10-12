@@ -49,6 +49,7 @@
   font-weight: 700;
   padding: 0 4px;
   min-height: 40px;
+  min-width: 40px;
   border-bottom: 2px solid transparent;
   color: var(--muted);
   white-space: nowrap;

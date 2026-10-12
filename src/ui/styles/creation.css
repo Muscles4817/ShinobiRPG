@@ -179,17 +179,14 @@
   flex-direction: column;
   gap: 5px;
 }
-.swatch-row .label {
-  text-transform: capitalize;
-}
 .swatches {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 .swatch {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 2px solid #c9b994;
 }
@@ -213,7 +210,7 @@
   font-weight: 700;
   text-transform: capitalize;
   color: var(--paper-ink);
-  min-height: 34px;
+  min-height: 40px;
 }
 
 .seg.on {

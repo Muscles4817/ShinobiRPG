@@ -1121,6 +1121,36 @@ stages, rumour, announcement, intro, verdict }` with `ExamStageDef` a union (`mi
   a smaller ceremony. Save v24 adds `exams` and the senior record. Pacing: the focused player is
   nominated on day 59 (asserted 60 ± 15); the first exam after it is day 63.
 
+**Polish pass (after Phase 5).**
+
+- Default plans (`engines/plan/defaults.ts`, split out of `cards.ts`) now know whom they face.
+  A trump waits in a "below a third of my health" slot, or goes first against a far stronger
+  foe (`rules/trumps.ts` `outmatched`: fighting power over 1.4×, scouting's "far stronger"). Foes
+  hold their trump back from every instinct (an empower trump too) until the same moment, and a
+  foe driven to the last ditch drops a stale telegraph for it. Hold bench (`holdBench.test.ts`):
+  a plain D with a blade trump wins 68% of equal fights against 43% without, playing it in 78%;
+  a foe with one cuts the player's wins from 43% to 30%, playing it in 59%. A seal or confusion
+  is slotted only against foes who fight with jutsu, a daze ahead of the attacks, a seal or
+  confusion behind the best wounding jutsu; supporting teammates keep a hold whatever the foe.
+  **Not done: seal and confusion don't pay one-on-one.** Every placement measured lost fights:
+  a caster mirror with Binding Ward slotted first wins 6% (35% at "foe readying", 64% held
+  behind Ember Breath, 66% without); Moth Dance played on any free foe drops 43% to 5–9%, even
+  at genjutsu 16; a supporting teammate's seal or confusion lowers the team's wins too. The
+  causes are rules, not plans: a seal leaves the foe their blows and lands late against a faster
+  foe; a confusion is shaken off at 55% a turn (willpower 10) and misfires only 35%, about a
+  quarter of a turn for a whole turn spent; and fights last four to six exchanges. A tuning
+  (longer seals, technique confusions that can't be shaken off the turn they land) is a
+  balance step of its own.
+- Fight screen: solo fights offer only "Weakest foe" and "Strongest foe" as targets; fighters
+  who share a name are numbered ("Hungry Ghost 1", `numberedNames`), in the log too; the range
+  reads as a ruled scale with an ink mark, not tabs; log dividers are words ("The fight begins",
+  "Second exchange", "The round is over").
+- 390px check: the academy rack (about twenty ready scrolls) sorts ready scrolls by art and has
+  the drill board's art filter; "About one session". The library's shelves already group by
+  art and stay short; "Train with someone here" already folds. Small buttons (Study, Train,
+  Spar), the banner back link, filter tabs, creation's segments and colour swatches all reach
+  40px.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -1415,3 +1445,10 @@ stages, rumour, announcement, intro, verdict }` with `ExamStageDef` a union (`mi
   chūnin. The migration starts the senior record at zero.
 - 6.3: the jōnin nomination is automatic once earned (a smaller ceremony, accept only); its
   marks (5 senior jobs, best art at B, 80 reputation) are constants in `exam/promotion.ts`.
+- Polish: a hold slotted to spoil a telegraphed jutsu stays the default plan's only use of seals
+  and confusion (no new "fresh foe" condition): on any free foe they cost more than they win
+  (see the run log). A trump that doesn't reach where its owner fights (a ranged trump on a
+  close fighter) still counts towards their home range, as before; keeping trumps out of it
+  measured worse.
+- Polish: duplicate names carry a numeral although story text keeps numbers out: it is part of a
+  name, as asked, not an amount. The fight's opening line still names them plainly.
