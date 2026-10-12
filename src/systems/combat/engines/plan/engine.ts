@@ -7,98 +7,45 @@ import type {
   CombatOutcome,
   CombatState,
   CombatView,
-  RangeBand,
 } from '../../contract';
 import { alive, hasPerk, viewOf } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
-import { RANGE_BANDS, RANGE_LABEL } from '../../rules/range';
-import {
-  cardDetail,
-  cardId,
-  cardLabel,
-  cardsFor,
-  defaultLoadout,
-  findCard,
-  ITEM_PREFIX,
-  slotLimit,
-  type Card,
-} from './cards';
+import { RANGE_LABEL } from '../../rules/range';
+import { defaultLoadout, slotLimit } from './cards';
 import { intentLine, rollIntents } from './intent';
-import { upgradeLegacy, withIntents, withKits } from './legacy';
+import { upgradeLegacy, withIntents, withKits, withSlots } from './legacy';
 import { rememberedLoadout } from './memory';
 import { decide, resolveExchange } from './round';
 import {
   decode,
   encode,
   initialFighters,
-  patch,
+  isDazed,
   PLAN_ENGINE_ID,
   playerOf,
   type PlanFighter,
   type PlanState,
 } from './state';
+import { editPlan, tableOptions } from './table';
 
 /**
  * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
  * (attacks, techniques, footwork that tries to change the range, defences that react on their
- * own), then watch the round play out. Between rounds you see what worked and re-plan.
+ * own), then watch the round play out. Slot order is priority: each exchange you play the first
+ * card that is ready and whose condition holds (see `priority.ts`). Between rounds you see what
+ * worked and re-plan.
  */
 
 const START_RANGE = 'mid';
 /** Exchanges per round; the cards can be changed between rounds. */
 export const ROUND_EXCHANGES = 4;
-const SLOT_PREFIX = 'slot:';
 
 function read(state: CombatState): PlanState {
-  return withIntents(upgradeLegacy(withKits(decode(state))));
+  return withIntents(withSlots(upgradeLegacy(withKits(decode(state)))));
 }
 
 function statuses(f: PlanFighter): string[] {
-  return [...(f.stunned > 0 ? ['Dazed'] : []), ...(f.sealed > 0 ? ['Sealed'] : [])];
-}
-
-/** Why a card can't go in a slot: slots full, or a tool you have none of. */
-function slotBlocker(card: Card, full: boolean): string | null {
-  if (full) return 'Slots full. Take a card out first.';
-  return card.kind === 'item' && card.item.count <= 0 ? `No ${card.item.name} left.` : null;
-}
-
-/**
- * Tools remembered from an earlier fight that aren't in the pouch now: still slotted (they
- * play again once restocked), and shown so they can be taken out.
- */
-function emptyPouchOptions(player: PlanFighter, band: RangeBand): CombatOption[] {
-  return player.loadout[band]
-    .filter((id) => id.startsWith(ITEM_PREFIX) && !findCard(player, id))
-    .map((id) => ({
-      id: `${SLOT_PREFIX}${band}:${id}`,
-      label: 'Empty pouch',
-      detail: 'None left. Restock to use',
-      kind: 'plan',
-      group: RANGE_LABEL[band],
-      selected: true,
-    }));
-}
-
-function slotOptions(player: PlanFighter, band: RangeBand): CombatOption[] {
-  const chosen = player.loadout[band];
-  const full = chosen.length >= slotLimit(player);
-  const cards = cardsFor(player, band).map((card): CombatOption => {
-    const id = cardId(card);
-    const selected = chosen.includes(id);
-    const blocker = selected ? null : slotBlocker(card, full);
-    return {
-      id: `${SLOT_PREFIX}${band}:${id}`,
-      label: cardLabel(card),
-      detail: cardDetail(card, player),
-      kind: 'plan',
-      group: RANGE_LABEL[band],
-      selected,
-      ...(card.kind === 'jutsu' ? { discipline: card.technique.discipline } : {}),
-      ...(blocker ? { disabledReason: blocker } : {}),
-    };
-  });
-  return [...cards, ...emptyPouchOptions(player, band)];
+  return [...(isDazed(f) ? ['Dazed'] : []), ...(f.sealed > 0 ? ['Sealed'] : [])];
 }
 
 function options(state: PlanState): CombatOption[] {
@@ -109,7 +56,7 @@ function options(state: PlanState): CombatOption[] {
     const player = playerOf(state);
     const begin = state.bout === 1 ? 'Begin the fight' : `Begin round ${state.bout}`;
     return [
-      ...RANGE_BANDS.flatMap((band) => slotOptions(player, band)),
+      ...tableOptions(player),
       { id: 'begin', label: begin, detail: '', kind: 'continue' },
       escape,
     ];
@@ -119,19 +66,6 @@ function options(state: PlanState): CombatOption[] {
     { id: 'round', label: 'Watch the round', detail: '', kind: 'continue' },
     escape,
   ];
-}
-
-function toggle(state: PlanState, optionId: string): PlanState {
-  const rest = optionId.slice(SLOT_PREFIX.length);
-  const split = rest.indexOf(':');
-  // The id came from our own options, so the band is one of RANGE_BANDS.
-  const band = rest.slice(0, split) as RangeBand;
-  const id = rest.slice(split + 1);
-  const player = playerOf(state);
-  const chosen = player.loadout[band];
-  const next = chosen.includes(id) ? chosen.filter((c) => c !== id) : [...chosen, id];
-  const loadout = { ...player.loadout, [band]: next };
-  return { ...state, fighters: patch(state.fighters, player.id, { loadout }) };
 }
 
 function fleeChance(state: PlanState): number {
@@ -186,7 +120,8 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   const option = options(state).find((o) => o.id === optionId);
   if (!option) return err(`Unknown combat option "${optionId}".`);
   if (option.disabledReason) return err(option.disabledReason);
-  if (optionId.startsWith(SLOT_PREFIX)) return ok(toggle(state, optionId));
+  const planned = editPlan(state, optionId);
+  if (planned) return ok(planned);
   switch (optionId) {
     case 'begin':
       return ok({ ...state, phase: 'fight', log: [...state.log, `— Round ${state.bout} —`] });
@@ -201,7 +136,7 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
 
 function prompt(state: PlanState): string {
   if (state.phase === 'loadout') {
-    const pick = `Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} cards for each distance.`;
+    const pick = `Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} cards for each distance. Higher cards play first.`;
     const hidden = state.fighters.some((f) => f.side === 'enemy' && alive(f) && f.hidden);
     return hidden ? `${pick} Someone is hidden: Search or Dispel finds them.` : pick;
   }

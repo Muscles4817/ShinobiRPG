@@ -194,7 +194,7 @@ describe('deck fight tools', () => {
   });
 
   it('a blast that badly hurts a coward sends them running', () => {
-    const coward = fighter('coward', { traits: ['coward'], health: 18, maxHealth: 50 });
+    const coward = fighter('coward', { traits: ['coward'], health: 50, maxHealth: 100 });
     const after = decode(act(start(hero([tool('blast')]), [coward]), 'item:blast', 'coward'));
     expect(after.log.at(-1)).toBe('coward flees!');
     expect(after.result).toBe('victory');

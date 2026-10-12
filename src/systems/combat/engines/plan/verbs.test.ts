@@ -8,6 +8,7 @@ import {
   encode,
   fighterIn,
   initialFighters,
+  plainSlots,
   type Loadout,
   type PlanFighter,
   type PlanState,
@@ -107,7 +108,7 @@ describe('plan & watch verbs: area', () => {
     const round = roundOf({ foes: [{ traits: ['illusionist'] }] });
     const hero: PlanFighter = {
       ...fighterIn(round, 'hero')!,
-      loadout: { ...NO_CARDS, mid: ['jutsu:sweep'] },
+      loadout: { ...NO_CARDS, mid: plainSlots(['jutsu:sweep']) },
     };
     const fighters = [hero, fighterIn(round, 'foe1')!];
     const state = stateOf({ ...round, range: 'mid', fighters });
@@ -145,7 +146,7 @@ describe('plan & watch verbs: conceal', () => {
       ...fighterIn(round, 'hero')!,
       hidden: true,
       concealment: 40,
-      loadout: { ...NO_CARDS, close: ['strike'] },
+      loadout: { ...NO_CARDS, close: plainSlots(['strike']) },
     };
     const after = resolveExchange(
       stateOf({ ...round, fighters: [hero, fighterIn(round, 'foe1')!] }),
@@ -163,7 +164,7 @@ describe('plan & watch verbs: sense', () => {
     expect(fighterIn(after, 'foe2')?.hidden).toBe(false);
     expect(fighterIn(after, 'hero')?.perks).toContain('insight');
     const engine = createPlanEngine();
-    const foeCards = { close: ['strike'], mid: [], far: [] };
+    const foeCards: Loadout = { close: plainSlots(['strike']), mid: [], far: [] };
     const fighters = after.fighters.map((f) => (f.isPlayer ? f : { ...f, loadout: foeCards }));
     const view = engine.view(encode(stateOf({ ...after, fighters })));
     expect(view.combatants.find((c) => c.id === 'foe1')?.intent).toMatch(/Close cards: Strike/);
@@ -171,7 +172,7 @@ describe('plan & watch verbs: sense', () => {
 });
 
 describe('plan & watch verbs: break', () => {
-  const guarding: Loadout = { close: ['guard'], mid: [], far: [] };
+  const guarding: Loadout = { close: plainSlots(['guard']), mid: [], far: [] };
   const hurt = (t: CombatTechnique, traits: CombatTrait[] = []) => {
     const round = roundOf({ foes: [{ traits }], foeCards: guarding });
     return 80 - health(useUntil(round, t, new RegExp(`${t.name} hits`)), 'foe1');
@@ -195,7 +196,11 @@ describe('plan & watch: hidden fighters are found', () => {
       hero: { traits: ['illusionist'], techniques: [punch] },
       foes: [{ traits: ['illusionist'], techniques: [punch] }],
     });
-    const cards: Loadout = { close: ['jutsu:punch', 'strike'], mid: ['step-in'], far: ['step-in'] };
+    const cards: Loadout = {
+      close: plainSlots(['jutsu:punch', 'strike']),
+      mid: plainSlots(['step-in']),
+      far: plainSlots(['step-in']),
+    };
     let state = stateOf({
       ...round,
       fighters: round.fighters.map((f) => ({ ...f, loadout: cards })),

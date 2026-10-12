@@ -1,17 +1,13 @@
 import type { CombatTechnique } from '../../contract';
-import {
-  alive,
-  chakraCost,
-  healAmount,
-  holdTurns,
-  resistChance,
-  techniqueDamage,
-} from '../../rules/body';
+import { alive, chakraCost, holdTurns } from '../../rules/body';
+import { healAmount, techniqueDamage } from '../../rules/damage';
+import { resistChance } from '../../rules/defence';
 import { matchup, matchupLine } from '../../rules/elements';
 import { attackKindOf } from '../../rules/kit';
 import { healLine } from '../../rules/narration';
+import { breakRating } from '../../rules/conditions';
 import {
-  confusionTurns,
+  confuseTurns,
   driveOf,
   hasVerb,
   isHarmful,
@@ -56,7 +52,10 @@ function physical(t: CombatTechnique): boolean {
  */
 function daze(round: Round, target: PlanFighter): Round {
   return say(
-    { ...round, fighters: patch(round.fighters, target.id, { stunned: 1 }) },
+    {
+      ...round,
+      fighters: patch(round.fighters, target.id, { stunned: 1, openUntil: round.number + 1 }),
+    },
     `${target.name} is dazed!`,
   );
 }
@@ -70,7 +69,7 @@ function seal(round: Round, target: PlanFighter, use: EffectUse<'seal'>): Round 
 }
 
 function confuse(round: Round, { actor, target }: Aimed, use: EffectUse<'confuse'>): Round {
-  const turns = confusionTurns(driveOf(actor, use), use, target.attributes.chakraControl);
+  const turns = confuseTurns(driveOf(actor, use), use, breakRating(target));
   // The target counts a turn down as their own turn starts, before acting: hold one more.
   const confused = Math.max(target.confused, turns + 1);
   return say(

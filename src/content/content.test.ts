@@ -28,6 +28,14 @@ describe('content validation', () => {
     expect(problems).toContain('academyTechniques references unknown technique "does-not-exist"');
   });
 
+  it('detects creatures with no health', () => {
+    const [first, ...rest] = ORIGINAL_PACK.enemies;
+    const ghostly = { ...ORIGINAL_PACK, enemies: [{ ...first!, healthScale: 0 }, ...rest] };
+    expect(validateContent(ghostly)).toContain(
+      `enemy "${first!.id}" needs a positive health scale`,
+    );
+  });
+
   it('detects a technique that does nothing', () => {
     const [first, ...rest] = ORIGINAL_PACK.techniques;
     const inert = { ...ORIGINAL_PACK, techniques: [{ ...first!, effects: [] }, ...rest] };

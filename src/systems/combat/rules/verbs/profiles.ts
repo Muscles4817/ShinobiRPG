@@ -22,7 +22,7 @@ export const VERB_PROFILES: Readonly<Record<Verb, VerbProfile>> = {
   damage: { aim: 'foe', drive: ['art'], resist: ['guard'] },
   daze: { aim: 'foe', drive: ['art'], resist: ['guard'] },
   seal: { aim: 'foe', drive: ['art'], resist: ['guard'] },
-  heal: { aim: 'self', drive: ['ninjutsu'], resist: [] },
+  heal: { aim: 'self', drive: ['ninjutsu', 'chakraControl'], resist: [] },
   // Hits every foe; each may see it coming, dodge or guard on their own.
   area: { aim: 'foe', drive: ['art'], resist: ['guard'] },
   // Takes hold by genjutsu against willpower; chakra control shortens it (`confusionTurns`).

@@ -1,18 +1,20 @@
 import { clamp, type Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
-import { alive, hasPerk, strikeDamage, targetable } from '../../rules/body';
+import { alive } from '../../rules/body';
 import { searchChance } from '../../rules/conditions';
+import { strikeDamage } from '../../rules/damage';
 import { revealOnAttack } from '../../rules/items';
 import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
-import { hasVerb } from '../../rules/verbs';
-import { cardId, isOffence, type Card } from './cards';
+
+import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { intendedCard } from './intent';
 import { useJutsu } from './jutsu';
 import { useTool } from './pouch';
-import { dispel, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
+import { plannedPlay, type Play } from './priority';
+import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
 import {
   fighterIn,
@@ -23,11 +25,13 @@ import {
   type PlanFighter,
   type PlanState,
   type Round,
+  wearOffDaze,
 } from './state';
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
- * the current distance. Footwork is contested by speed; defences react on their own.
+ * the current distance (the player by their plan's priorities, see `priority.ts`). Footwork is
+ * contested by speed; defences react on their own.
  */
 
 const CHAKRA_REGEN = 2;
@@ -35,17 +39,21 @@ const THROW_SCALE = 0.6;
 const STEP_BASE = 0.55;
 const STEP_PER_SPEED = 0.04;
 
-/** Hidden foes can't be aimed at, unless you read foes (insight, or a sense this fight). */
-function inSight(self: PlanFighter, foe: PlanFighter): boolean {
-  return targetable(foe) || hasPerk(self, 'insight');
-}
-
-/** The player's side focuses the weakest enemy; enemies pick at random. */
+/** Allies focus the weakest enemy; enemies pick at random. */
 function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
   const foes = opponentsOf(fighters, self).filter((foe) => inSight(self, foe));
   if (foes.length === 0) return undefined;
   if (self.side === 'player') return [...foes].sort((a, b) => a.health - b.health)[0];
   return rng.pick(foes);
+}
+
+/** Foes and allies play their telegraphed card, or follow their instincts. */
+function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
+  const target = targetFor(round.fighters, actor, rng);
+  const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
+  const moment = { band: round.range, foe: target, hiddenFoe, opening: round.opening ?? false };
+  const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
+  return { card, target };
 }
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
@@ -109,12 +117,6 @@ function remember(seen: Round['seen'], fighterId: string, id: string): Round['se
   return known.includes(id) ? seen : { ...seen, [fighterId]: [...known, id] };
 }
 
-/** An attack you can only make at someone you can see: an area technique needs no aim. */
-function needsAim(card: Card): boolean {
-  if (card.kind === 'jutsu' && hasVerb(card.technique, 'area')) return false;
-  return isOffence(card);
-}
-
 /** Nobody in sight to attack: rather than stand idle, look for whoever is hiding. */
 function unseen(round: Round, turn: Turn): Round {
   const hiding = opponentsOf(round.fighters, turn.actor).some((f) => f.hidden);
@@ -164,10 +166,7 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
     const fighters = patch(round.fighters, actor.id, { stunned: actor.stunned - 1 });
     return say({ ...round, fighters }, `${actor.name} is dazed and loses the exchange.`);
   }
-  const target = targetFor(round.fighters, actor, rng);
-  const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
-  const moment = { band: round.range, foe: target, hiddenFoe, opening: round.opening ?? false };
-  const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
+  const { card, target } = actor.isPlayer ? plannedPlay(actor, round) : instinct(round, actor, rng);
   const played = attempt(round, { actor, target, rng }, card);
   return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
 }
@@ -190,7 +189,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const end = order.reduce((round, { id }) => turn(round, id, rng), start);
   const result = decide(end.fighters);
   const fighters = end.fighters.map((f) => ({
-    ...f,
+    ...wearOffDaze(f, state.round),
     sealed: Math.max(0, f.sealed - 1),
     chakra: alive(f) ? Math.min(f.maxChakra, f.chakra + CHAKRA_REGEN) : f.chakra,
   }));

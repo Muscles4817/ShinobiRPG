@@ -429,6 +429,70 @@ button.foe {
 .plan-picker .choice small {
   white-space: normal;
 }
+/* A plan in priority order: numbered slots, each with its card and how it plays. */
+.plan-order {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.plan-slot {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 6px;
+}
+.plan-rank {
+  font-family: var(--font-story);
+  font-size: 1.05rem;
+  color: var(--lantern);
+  text-align: center;
+}
+.plan-slot .plan-card {
+  min-width: 0;
+}
+.plan-move {
+  min-height: 40px;
+}
+.plan-settings {
+  grid-column: 2 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.plan-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.plan-setting select {
+  min-height: 40px;
+  width: 100%;
+  padding: 0 6px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.plan-heading {
+  margin: 4px 0 0;
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  font-weight: normal;
+  color: var(--muted);
+}
+.plan-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
 .action-bar {
   display: flex;
   flex-wrap: wrap;

@@ -7,7 +7,7 @@ import { hasVerb, isHindering, isWounding, techniquePower } from '../../rules/ve
 import { isOffence, playable, slotted, type Card } from './cards';
 import { toolInstinct } from './pouch';
 import { sightInstinct } from './sight';
-import type { PlanFighter } from './state';
+import { isDazed, type PlanFighter } from './state';
 
 /**
  * Which slotted card a fighter plays this exchange. Fighters follow a few instincts (heal when
@@ -44,7 +44,8 @@ function weighted(cards: readonly Card[], rng: Rng): Card | undefined {
   return cards[cards.length - 1];
 }
 
-function improvise(self: PlanFighter, band: RangeBand): Card {
+/** A basic blow when the kit reaches from here, else a step towards where it does. */
+export function improvise(self: PlanFighter, band: RangeBand): Card {
   if (canAttackFrom(self, band)) return band === 'close' ? { kind: 'strike' } : { kind: 'throw' };
   const further = RANGE_BANDS.indexOf(homeBand(self)) > RANGE_BANDS.indexOf(band);
   return { kind: 'step', direction: further ? 'back' : 'in' };
@@ -90,10 +91,10 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   const reaches = canAttackFrom(self, band);
   const harmful = ready.filter((c) => c.kind === 'step' || (isOffence(c) && reaches));
   const daze = jutsu(harmful, isHindering);
-  const fresh = foe?.stunned === 0 && foe.sealed === 0 && foe.confused === 0;
+  const fresh = foe !== undefined && !isDazed(foe) && foe.sealed === 0 && foe.confused === 0;
   if (daze && fresh && rng.chance(DAZE_FIRST_CHANCE)) return daze;
   const finisher = jutsu(harmful, isWounding);
-  if (finisher && (foe?.stunned ?? 0) > 0) return finisher;
+  if (finisher && foe && isDazed(foe)) return finisher;
   const usual = harmful.filter((c) => c !== daze || fresh);
   return weighted(usual, rng) ?? improvise(self, band);
 }

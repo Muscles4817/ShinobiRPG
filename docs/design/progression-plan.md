@@ -723,6 +723,26 @@ These were folded into the D2 discussion. Where each landed:
   - Growth: a focused stat goes D→C by day 3, A by day 12 and S by about day 22
     (target about 60 days to C-level readiness). Phase 2.
 
+**Phase 1 (in progress).**
+
+- 1.4a: techniques carry `effects: [{ verb, power, scaling? }]`. Verb profiles live in
+  `rules/verbs/`. This was a behaviour-preserving refactor; the bench output was identical.
+- 1.2: the player's plan is a priority list of `{ card, when?, target? }` slots, edited in a
+  new plan editor. The player's equal-fight win rate rose from 25–40% to 43–57% before 1.1.
+- 1.1: health is 100 (save v15 rescales stored health); `EnemyDef.healthScale`. Damage
+  comes from the power/defence ratio (`rules/damage.ts`, `rules/defence.ts`), with ±8%
+  variance. The bench lethality targets now hold: equals 6.4–6.5 exchanges; one grade
+  apart, the stronger wins within a round 85–95% of the time; two apart, it's over in 2
+  exchanges 82–88% of the time. The retune after merging with 1.2 traced long fights to
+  kunai duels at mid range: footwork now closes in for full blows, and Dodge joins the
+  default plan.
+- 1.4b: verbs area, confuse, conceal, sense and break, with a technique for each in both
+  packs (academy). Hiding has counterplay: a fighter with no one in sight searches instead
+  of idling, an illusionist's attack may be traced back by the one it struck, and insight
+  (or a sense) sees the hidden. The bench now asserts that a stalker is hit by every foe,
+  that hidden against hidden never stalls (it stalled 100% before), and that knowing a
+  sense wins more often against a stalker and a trickster.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -731,3 +751,33 @@ These were folded into the D2 discussion. Where each landed:
 - 0.2: "chūnin readiness" is measured, for now, as the focused stat reaching grade C. The
   scripted player goes to hospital below 40% health, because missions refuse anyone under
   that.
+- 1.4a: power lives on each effect, not the technique. A technique has one landing check;
+  a dodged damage effect stops the foe-aimed effects after it.
+- 1.2: the default plan has no "finisher when dazed" (it was dead with the old daze
+  timing); it uses the daze to spoil a telegraphed jutsu. The `marked` target is reserved
+  but hidden until the team mark exists.
+- 1.1: toughness is pure stamina, so a low-stamina versatile build is fragile against
+  equals head-on (its "built around" path is for later verbs). Explosive tags are fixed at
+  40 damage, ignoring the gap.
+- 1.1 retune: **a daze now leaves the target open** (no defences, a finisher target)
+  until the end of the following exchange, so set-up and payoff works one-on-one.
+- 1.4b: an area technique hits every foe standing, hidden ones included (it needs no aim);
+  each foe sees it coming, dodges and guards on their own. Self-aimed effects in it happen
+  once.
+- 1.4b: a sense reveals each hidden foe with a chance (its drive and power against their
+  concealment, floor 40%) and grants **insight** for the rest of the fight. Insight now
+  lets its holder aim at hidden foes in Plan & Watch (it already made Search certain);
+  this also applies to the insight perk from bloodlines.
+- 1.4b: a conceal sets a `concealment` on the fighter; Search and sense are measured
+  against it (else against genjutsu, as before). Conceal has no instant check against
+  foes' perception: the contest is every Search.
+- 1.4b: break ignores a guard entirely, 15% of toughness (the gap formula is steep, so
+  that is about half again as hard a hit) and half of what armour or a spirit's form
+  shrugs off. Its drive is strength alone.
+- 1.4b: confuse lasts 1–3 turns from power and the user's genjutsu against the target's
+  `breakRating` (chakra control first).
+- 1.4b: an illusionist is no longer untouchable while attacking: the fighter it struck
+  may trace it back (Search odds). A master illusionist still usually wins before being
+  found matters, which is power, not a bug.
+- Accepted: the player's equal-fight win rate at grade E is 35% (43% at D–A). Parity
+  isn't a goal; a better foe sense of tempo can come later.

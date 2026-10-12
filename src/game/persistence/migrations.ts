@@ -190,6 +190,35 @@ function v13ToV14(state: RawState): RawState {
   return { ...state, settings: { ...settings, combatStyle: CANONICAL_ENGINE_ID } };
 }
 
+/** Every human's health from save version 15 on. */
+const HEALTH_MAX = 100;
+
+function statOf(stats: RawState, id: string): number {
+  const value = stats[id];
+  return typeof value === 'number' ? value : 0;
+}
+
+/**
+ * v14 → v15: health is 100 for everyone instead of growing with stamina and strength. Current
+ * health keeps its fraction of the old maximum. A fight in progress keeps its own numbers; its
+ * result sets health when it ends, as always.
+ */
+function v14ToV15(state: RawState): RawState {
+  const character = asRecord(state.character);
+  const stats = asRecord(character.stats);
+  const vitals = asRecord(character.vitals);
+  const oldMax = Math.round(60 + statOf(stats, 'stamina') * 4 + statOf(stats, 'strength'));
+  const health = typeof vitals.health === 'number' ? vitals.health : oldMax;
+  const rescaled = Math.round((health / oldMax) * HEALTH_MAX);
+  return {
+    ...state,
+    character: {
+      ...character,
+      vitals: { ...vitals, health: Math.min(HEALTH_MAX, Math.max(0, rescaled)) },
+    },
+  };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -204,4 +233,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   11: v11ToV12,
   12: v12ToV13,
   13: v13ToV14,
+  14: v14ToV15,
 };

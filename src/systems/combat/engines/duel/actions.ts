@@ -1,7 +1,7 @@
 import type { Rng } from '@/core';
 
 import type { CombatItem, CombatTechnique } from '../../contract';
-import { CONFUSION_TURNS, confuseChance, HIDDEN_DAMAGE } from '../../rules/conditions';
+import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import {
   attackKindOf,
   hasTrait,
@@ -107,7 +107,10 @@ export function land(
   const confuses = hasTrait(actor, 'illusionist') && rng.chance(confuseChance(actor, target));
   return confuses
     ? {
-        fighters: patchFighter(fighters, target.id, { health, confused: CONFUSION_TURNS }),
+        fighters: patchFighter(fighters, target.id, {
+          health,
+          confused: confusionTurns(actor, target),
+        }),
         lines: [`${target.name}'s senses swim. They are confused!`],
       }
     : { fighters: patchFighter(fighters, target.id, { health }), lines: [] };

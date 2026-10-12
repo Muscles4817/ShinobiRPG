@@ -15,4 +15,11 @@ export {
 } from './use';
 export { upgradeTechnique } from './legacy';
 export { concealmentFrom, concealmentOf, senseChance, type Hider } from './hiding';
-export { armourKept, BREAK_PIERCE, brokenScale, confusionTurns, MAX_CONFUSION_TURNS } from './hold';
+export {
+  BREAK_ARMOUR,
+  BREAK_TOUGHNESS,
+  brokenScale,
+  confuseTurns,
+  MAX_CONFUSION_TURNS,
+  toughnessKept,
+} from './hold';

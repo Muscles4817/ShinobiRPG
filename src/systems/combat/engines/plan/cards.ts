@@ -7,7 +7,7 @@ import { carried } from '../../rules/items';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { hasVerb, isHarmful, isHindering, isWounding, techniquePower } from '../../rules/verbs';
-import type { CardId, Loadout, PlanFighter } from './state';
+import { plainSlots, type CardId, type Loadout, type PlanFighter, type Slot } from './state';
 
 /**
  * The cards a fighter can slot for each distance, Punch Club style: a few slots per range,
@@ -107,9 +107,9 @@ export function keepsInLoadout(fighter: Kit, band: RangeBand, id: CardId): boole
   return card !== null && fitsBand(card, band);
 }
 
-/** The cards slotted at a distance, resolved. */
+/** The cards slotted at a distance, resolved, in priority order. */
 export function slotted(fighter: PlanFighter, band: RangeBand): Card[] {
-  return fighter.loadout[band].flatMap((id) => {
+  return fighter.loadout[band].flatMap(({ card: id }) => {
     const card = findCard(fighter, id);
     return card && fitsBand(card, band) ? [card] : [];
   });
@@ -125,6 +125,12 @@ export function isOffence(card: Card): boolean {
   if (card.kind === 'jutsu') return isHarmful(card.technique);
   if (card.kind === 'item') return card.item.effect === 'blast';
   return card.kind === 'strike' || card.kind === 'throw';
+}
+
+/** An offence aimed at someone in sight; an area technique needs no aim. */
+export function needsAim(card: Card): boolean {
+  if (card.kind === 'jutsu' && hasVerb(card.technique, 'area')) return false;
+  return isOffence(card);
 }
 
 const TOOL_DOES: Readonly<Record<CombatItemEffect, string>> = {
@@ -215,32 +221,58 @@ function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean)
     .sort((a, b) => techniquePower(b.technique) - techniquePower(a.technique));
 }
 
+function damageJutsu(cards: readonly Card[]): Card[] {
+  return strongest(cards, isWounding);
+}
+
+/** How much a step towards home is worth: before attacking, after, or not at all. */
+type Footwork = 'first' | 'after-attacks' | 'none';
+
 /**
- * A sensible starting plan: footwork towards where you fight best, your best moves (a sense or
- * a conceal among them), a defence.
- * Attacks your kit can't make from a distance (an archer up close) are left out.
+ * Whether a fighter should spend their turn moving towards home: first when their kit can't
+ * attack from here or more of their jutsu reach from home; after their attacks when only a full
+ * blow waits at home (kunai land softer, but stepping in hands the foe the first blow, so the
+ * plan keeps throwing and lets a foe who closes in come to it).
  */
-function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): CardId[] {
+function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Footwork {
+  if (band === home) return 'none';
+  if (!canAttackFrom(fighter, band)) return 'first';
+  const jutsuAtHome = damageJutsu(cardsFor(fighter, home)).length;
+  if (jutsuAtHome > damageJutsu(cardsFor(fighter, band)).length) return 'first';
+  return inReach(STRIKE_REACH, home) && !inReach(STRIKE_REACH, band) ? 'first' : 'none';
+}
+
+/**
+ * A sensible starting plan, in priority order: a heal for when you're badly hurt, a sense for
+ * when a foe hides, footwork towards where you fight best (when it's worth a turn), a daze,
+ * seal or confusion to spoil a foe's telegraphed jutsu, your best attack, then plain blows,
+ * more attacks, a conceal and a defence. Attacks
+ * your kit can't make from a distance (an archer up close) are left out.
+ */
+function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slot[] {
   const reaches = canAttackFrom(fighter, band);
   const pool = cardsFor(fighter, band).filter((c) => reaches || !isOffence(c));
   const has = (kind: Card['kind']) => pool.filter((c) => c.kind === kind);
   const towardsHome = RANGE_BANDS.indexOf(band) > RANGE_BANDS.indexOf(home) ? 'in' : 'back';
-  const footwork =
-    band === home
-      ? []
-      : has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome);
-  const damage = strongest(pool, isWounding);
-  const ordered: Card[] = [
-    ...footwork,
-    ...damage.slice(0, 1),
-    ...strongest(pool, isHindering).slice(0, 1),
-    ...strongest(pool, (t) => hasVerb(t, 'sense') || hasVerb(t, 'conceal')).slice(0, 1),
-    ...has('strike'),
-    ...has('throw'),
-    ...damage.slice(1),
-    ...has('guard'),
+  const footwork = footworkFor(fighter, band, home);
+  const step = has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome);
+  const at = (when: Footwork) => (footwork === when ? step : []);
+  const heal = strongest(pool, (t) => hasVerb(t, 'heal')).slice(0, 1);
+  const damage = damageJutsu(pool);
+  const daze = strongest(pool, isHindering).slice(0, 1);
+  const sense = strongest(pool, (t) => hasVerb(t, 'sense')).slice(0, 1);
+  const conceal = strongest(pool, (t) => hasVerb(t, 'conceal')).slice(0, 1);
+  const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
+  const ordered: Slot[] = [
+    ...heal.map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
+    ...sense.map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' })),
+    ...plain(at('first')),
+    ...daze.map((c): Slot => ({ card: cardId(c), when: 'foe-readying' })),
+    ...plain([...damage.slice(0, 1), ...has('strike'), ...has('throw'), ...at('after-attacks')]),
+    ...plain([...damage.slice(1), ...conceal, ...has('guard'), ...has('dodge')]),
   ];
-  return [...new Set(ordered.map(cardId))].slice(0, slotLimit(fighter));
+  const unique = ordered.filter((slot, i) => ordered.findIndex((s) => s.card === slot.card) === i);
+  return unique.slice(0, slotLimit(fighter));
 }
 
 export function defaultLoadout(fighter: PlanFighter): Loadout {

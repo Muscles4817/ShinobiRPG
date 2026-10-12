@@ -2,7 +2,7 @@ import type { LocationDef, PlaceDef, PlaceKind } from '@/content';
 import { write, type ChipTone, type JournalChip, type NewEntry } from '@/systems/journal';
 import { STAT_INFO, type StatDelta, type StatId } from '@/systems/stats';
 import { advanceSlots } from '@/systems/time';
-import { adjustVitals, maxHealth, passTime, type VitalsDelta } from '@/systems/vitals';
+import { adjustVitals, MAX_HEALTH, passTime, type VitalsDelta } from '@/systems/vitals';
 
 import { boardFor } from './board';
 import type { GameContext } from './context';
@@ -64,7 +64,7 @@ export function busyReason(state: GameState): string | null {
 }
 
 export function healthFraction(state: GameState): number {
-  return state.character.vitals.health / maxHealth(state.character.stats);
+  return state.character.vitals.health / MAX_HEALTH;
 }
 
 /** Composes blocker checks: returns the first non-null reason. */

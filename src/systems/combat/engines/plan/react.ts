@@ -1,7 +1,9 @@
-import { clamp, type Rng } from '@/core';
+import type { Rng } from '@/core';
 
-import { alive, strikeDamage } from '../../rules/body';
-import { CONFUSION_TURNS, confuseChance, HIDDEN_DAMAGE } from '../../rules/conditions';
+import { alive } from '../../rules/body';
+import { strikeDamage } from '../../rules/damage';
+import { counterChance, dodgeChance, guardScale } from '../../rules/defence';
+import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import {
   canAttackFrom,
   hasTrait,
@@ -14,17 +16,17 @@ import {
 import { harmLine } from '../../rules/narration';
 import { brokenScale } from '../../rules/verbs';
 import { slotted } from './cards';
-import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Defence cards react on their own when their owner is hit at the distance they're slotted
- * for: Dodge may avoid the blow (speed), Guard softens it, Counter hits back up close
- * (taijutsu). A dazed fighter can't react, and a break goes straight through a guard. Kits shape every hit: armour and spirits shrug off
- * some kinds of attack, packs hit harder together, hidden attackers harder still, swift
+ * for: Dodge may avoid the blow (evasion), Guard softens it (guard), Counter hits back up
+ * close (taijutsu); see `rules/defence.ts`. A dazed fighter can't react, and a break goes
+ * straight through a guard. Kits shape every hit: armour and spirits shrug off some kinds of
+ * attack (less of a break), packs hit harder together, hidden attackers harder still, swift
  * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run.
  */
 
-const GUARD_SCALE = 0.6;
 const COUNTER_SCALE = 0.6;
 /** A swift fighter without a Dodge slotted still slips this much of the swift bonus. */
 const SWIFT_INSTINCT = 0.5;
@@ -50,18 +52,9 @@ export interface Hit {
   readonly rng: Rng;
 }
 
-function dodgeChance(attacker: PlanFighter, target: PlanFighter): number {
-  return clamp(0.2 + (target.attributes.speed - attacker.attributes.speed) * 0.03, 0.05, 0.5);
-}
-
 function avoidChance(attacker: PlanFighter, target: PlanFighter, dodging: boolean): number {
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE : 0;
   return dodging ? dodgeChance(attacker, target) + swift : swift * SWIFT_INSTINCT;
-}
-
-function counterChance(attacker: PlanFighter, target: PlanFighter): number {
-  const gap = target.attributes.taijutsu - attacker.attributes.taijutsu;
-  return clamp(0.4 + gap * 0.03, 0.15, 0.65);
 }
 
 /** Damage after the defender's kit, the attacker's pack and whether they strike from hiding. */
@@ -93,7 +86,10 @@ function confuse(round: Round, { attacker, target, rng }: Hit): Round {
   const struck = fighterIn(round, target.id);
   if (chance <= 0 || !struck || !alive(struck) || !rng.chance(chance)) return round;
   return say(
-    { ...round, fighters: patch(round.fighters, target.id, { confused: CONFUSION_TURNS }) },
+    {
+      ...round,
+      fighters: patch(round.fighters, target.id, { confused: confusionTurns(attacker, target) }),
+    },
     `${target.name}'s senses swim in ${attacker.name}'s illusion.`,
   );
 }
@@ -120,7 +116,7 @@ function guardWords(guarded: boolean, smashed: boolean): string {
 /** Lands a blow on the target, letting their slotted defences and kit react. */
 export function react(round: Round, hit: Hit): Round {
   const { attacker, target, blow, rng } = hit;
-  const ready = target.stunned > 0 ? [] : slotted(target, round.range);
+  const ready = isDazed(target) ? [] : slotted(target, round.range);
   const has = (kind: 'guard' | 'dodge' | 'counter') => ready.some((c) => c.kind === kind);
   const avoid = blow.dodgeable ? avoidChance(attacker, target, has('dodge')) : 0;
   if (avoid > 0 && rng.chance(avoid)) {
@@ -130,7 +126,9 @@ export function react(round: Round, hit: Hit): Round {
   const smashed = has('guard') && blow.breaks === true;
   const damage = Math.max(
     1,
-    Math.round(kitted(round, attacker, target, blow) * (guarded ? GUARD_SCALE : 1)),
+    Math.round(
+      kitted(round, attacker, target, blow) * (guarded ? guardScale(attacker, target) : 1),
+    ),
   );
   const told = say(
     round,

@@ -1,5 +1,5 @@
 import { daysOfRentLeft, DAYS_PER_RENT_PERIOD, isRentFree, payWeek } from '@/systems/housing';
-import { maxHealth } from '@/systems/vitals';
+import { MAX_HEALTH } from '@/systems/vitals';
 import { spend } from '@/systems/wallet';
 
 import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
@@ -49,7 +49,7 @@ export const treat: ActionHandler<ActionOf<'treat'>> = {
     if (!hospital) return 'There is no hospital here.';
     return firstBlocker(
       busyReason(state),
-      state.character.vitals.health >= maxHealth(state.character.stats) && 'You are not hurt.',
+      state.character.vitals.health >= MAX_HEALTH && 'You are not hurt.',
       state.wallet.ryo < hospital.treatmentCost && `Treatment costs ${hospital.treatmentCost} ryo.`,
     );
   },
@@ -58,7 +58,7 @@ export const treat: ActionHandler<ActionOf<'treat'>> = {
     const paid = hospital ? spend(state.wallet, hospital.treatmentCost) : null;
     if (!hospital || !paid?.ok) return state;
     const healed = adjust(spendTime({ ...state, wallet: paid.value }, TREATMENT_SLOTS, ctx), {
-      health: maxHealth(state.character.stats),
+      health: MAX_HEALTH,
     });
     return log(healed, {
       heading: 'Treatment',

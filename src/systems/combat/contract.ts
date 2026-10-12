@@ -172,6 +172,17 @@ export interface CombatOption {
   readonly group?: string;
   /** For toggles: whether this is currently part of the plan. */
   readonly selected?: boolean;
+  /** For plans kept in priority order: this entry's place in its group, 0 coming first. */
+  readonly rank?: number;
+  /**
+   * Set on an option that adjusts another plan entry (moves it up, or sets how it plays): the
+   * id of the entry it adjusts. Adjustments to one entry that share a `setting` are
+   * alternatives, and `selected` marks the current one; a setting with a single option is an
+   * action (e.g. "Move up").
+   */
+  readonly adjusts?: string;
+  /** What an adjustment sets, e.g. "When" or "Target"; shown as the control's label. */
+  readonly setting?: string;
   /** Present when the option is shown but cannot be chosen right now. */
   readonly disabledReason?: string;
 }

@@ -10,7 +10,7 @@ import {
   type GameState,
 } from '@/game';
 import { createDuelEngine } from '@/systems/combat';
-import { maxChakra, maxHealth } from '@/systems/vitals';
+import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 /** Tests use the original pack: its ids are stable and it always ships. */
 export const ctx: GameContext = contextForPack('original')!;
@@ -67,7 +67,7 @@ export function withAllStats(state: GameState, value: number): GameState {
     character: {
       ...state.character,
       stats: typed,
-      vitals: { ...state.character.vitals, health: maxHealth(typed), chakra: maxChakra(typed) },
+      vitals: { ...state.character.vitals, health: MAX_HEALTH, chakra: maxChakra(typed) },
     },
   };
 }

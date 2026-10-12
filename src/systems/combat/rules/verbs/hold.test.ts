@@ -1,5 +1,5 @@
 import type { CombatTechnique } from '../../contract';
-import { armourKept, BREAK_PIERCE, brokenScale, confusionTurns, MAX_CONFUSION_TURNS } from '.';
+import { BREAK_TOUGHNESS, brokenScale, confuseTurns, MAX_CONFUSION_TURNS, toughnessKept } from '.';
 
 const haze: CombatTechnique = {
   id: 'haze',
@@ -14,18 +14,18 @@ const confuse = (power: number) => ({
 });
 
 describe('confuse and break', () => {
-  it('a confusion holds longer when stronger, shorter against chakra control', () => {
-    expect(confusionTurns(10, confuse(8), 10)).toBe(1);
-    expect(confusionTurns(10, confuse(12), 10)).toBe(2);
-    expect(confusionTurns(26, confuse(12), 10)).toBe(MAX_CONFUSION_TURNS);
-    expect(confusionTurns(10, confuse(12), 26)).toBe(1);
+  it('a confusion holds longer when stronger, shorter against a mind that breaks illusions', () => {
+    expect(confuseTurns(10, confuse(8), 10)).toBe(1);
+    expect(confuseTurns(10, confuse(12), 10)).toBe(2);
+    expect(confuseTurns(26, confuse(12), 10)).toBe(MAX_CONFUSION_TURNS);
+    expect(confuseTurns(10, confuse(12), 26)).toBe(1);
   });
 
-  it('a break keeps only part of the armour against it; other effects all of it', () => {
+  it('a break meets only part of the toughness; other effects all of it', () => {
     const smash = { technique: haze, effect: { verb: 'break' as const, power: 10 } };
     const hit = { technique: haze, effect: { verb: 'damage' as const, power: 10 } };
-    expect(armourKept(smash)).toBe(1 - BREAK_PIERCE);
-    expect(armourKept(hit)).toBe(1);
+    expect(toughnessKept(smash)).toBe(1 - BREAK_TOUGHNESS);
+    expect(toughnessKept(hit)).toBe(1);
   });
 
   it('a break cuts what a kit shrugs off, never a weakness', () => {

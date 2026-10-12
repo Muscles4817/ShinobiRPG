@@ -2,7 +2,7 @@ import type { PersonDef } from '@/content';
 import type { CombatantSetup, CombatTrait } from '@/systems/combat';
 import { createStats, type StatDelta, type Stats } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
-import { maxChakra, maxHealth } from '@/systems/vitals';
+import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 import { attributesOf } from '../combatants';
 import type { GameContext } from '../context';
@@ -71,8 +71,8 @@ export function companionCombatant(
     name: person.name,
     tag,
     attributes: attributesOf(stats),
-    health: maxHealth(stats),
-    maxHealth: maxHealth(stats),
+    health: MAX_HEALTH,
+    maxHealth: MAX_HEALTH,
     chakra: maxChakra(stats),
     maxChakra: maxChakra(stats),
     techniques: companionTechniques(person, ctx).map((id) => ctx.content.techniques.require(id)),
