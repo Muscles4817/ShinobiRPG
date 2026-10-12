@@ -201,12 +201,14 @@ describe('plan & watch tools: when they are played', () => {
 describe('plan & watch tools: smoke and flash', () => {
   const fast = { attributes: { ...attributes, speed: 30 } };
 
-  it('smoke hides you; enemies lose sight of you; your next attack gives you away', () => {
-    const [hero, foe] = pair([tool('smoke')], ['item:smoke', 'throw'], { hero: fast });
-    const first = resolveExchange(stateOf([hero!, foe!]), createRng(3));
+  it('smoke hides you; enemies search instead of attacking; your next attack gives you away', () => {
+    // A hero this hard to find is missed by a Search almost every time.
+    const elusive = { attributes: { ...fast.attributes, genjutsu: 30 } };
+    const [hero, foe] = pair([tool('smoke')], ['item:smoke', 'throw'], { hero: elusive });
+    const first = resolveExchange(stateOf([hero!, foe!]), createRng(1));
     expect(heroOf(first).hidden).toBe(true);
     expect(heroOf(first).health).toBe(50);
-    expect(first.log).toContain('foe loses sight of you.');
+    expect(first.log).toContain('foe searches, but finds no one.');
     const second = resolveExchange(first, createRng(4));
     expect(second.log.some((l) => l.includes('hero') && l.includes('kunai'))).toBe(true);
     expect(heroOf(second).hidden).toBe(false);
@@ -237,7 +239,9 @@ describe('plan & watch tools: explosive tags', () => {
   it('a blast is an attack that needs a target in sight, and is not spent without one', () => {
     const [hero, foe] = pair([tool('blast')], ['item:blast'], { foeTraits: ['illusionist'] });
     const next = resolveExchange(stateOf([hero!, foe!]), createRng(1));
-    expect(next.log).toContain("hero can't find a target.");
+    expect(next.log.some((l) => l.startsWith('hero searches') || l.startsWith('hero spots'))).toBe(
+      true,
+    );
     expect(heroOf(next).items[0]?.count).toBe(2);
   });
 

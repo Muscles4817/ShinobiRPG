@@ -10,6 +10,11 @@ const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => strin
   daze: () => 'Dazes',
   heal: () => 'Heals',
   seal: () => 'Seals',
+  area: (power) => `Power ${power} on every foe`,
+  confuse: () => 'Confuses',
+  conceal: () => 'Hides you',
+  sense: () => 'Finds the hidden',
+  break: (power) => `Power ${power} through guard`,
 };
 
 /** Each effect in order: "Power 12, then dazes". */

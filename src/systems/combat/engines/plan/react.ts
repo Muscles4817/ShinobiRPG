@@ -12,13 +12,14 @@ import {
   type AttackKind,
 } from '../../rules/kit';
 import { harmLine } from '../../rules/narration';
+import { brokenScale } from '../../rules/verbs';
 import { slotted } from './cards';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Defence cards react on their own when their owner is hit at the distance they're slotted
  * for: Dodge may avoid the blow (speed), Guard softens it, Counter hits back up close
- * (taijutsu). A dazed fighter can't react. Kits shape every hit: armour and spirits shrug off
+ * (taijutsu). A dazed fighter can't react, and a break goes straight through a guard. Kits shape every hit: armour and spirits shrug off
  * some kinds of attack, packs hit harder together, hidden attackers harder still, swift
  * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run.
  */
@@ -38,6 +39,8 @@ export interface Blow {
   readonly physical: boolean;
   /** Blow, blade, jutsu or seal: what armour and spirits care about. */
   readonly kind: AttackKind;
+  /** A break: goes through a guard, and through part of armour and a spirit's form. */
+  readonly breaks?: boolean;
 }
 
 export interface Hit {
@@ -65,7 +68,8 @@ function counterChance(attacker: PlanFighter, target: PlanFighter): number {
 function kitted(round: Round, attacker: PlanFighter, defender: PlanFighter, blow: Blow): number {
   const hidden = attacker.hidden ? HIDDEN_DAMAGE : 1;
   const pack = packScale(attacker, round.fighters);
-  return blow.raw * kitDamageScale(defender, blow.kind) * pack * hidden;
+  const kit = kitDamageScale(defender, blow.kind);
+  return blow.raw * (blow.breaks ? brokenScale(kit) : kit) * pack * hidden;
 }
 
 function kitNote(defender: PlanFighter, kind: AttackKind): string[] {
@@ -108,6 +112,11 @@ function counter(round: Round, { attacker, target, rng }: Hit): Round {
   return wound(say(round, harmLine(`${target.name} counters!`, damage)), attacker.id, damage);
 }
 
+function guardWords(guarded: boolean, smashed: boolean): string {
+  if (smashed) return ', smashing through the guard';
+  return guarded ? ' through a guard' : '';
+}
+
 /** Lands a blow on the target, letting their slotted defences and kit react. */
 export function react(round: Round, hit: Hit): Round {
   const { attacker, target, blow, rng } = hit;
@@ -117,7 +126,8 @@ export function react(round: Round, hit: Hit): Round {
   if (avoid > 0 && rng.chance(avoid)) {
     return say(round, `${target.name} slips past ${attacker.name}'s ${blow.what}.`);
   }
-  const guarded = has('guard');
+  const guarded = has('guard') && !blow.breaks;
+  const smashed = has('guard') && blow.breaks === true;
   const damage = Math.max(
     1,
     Math.round(kitted(round, attacker, target, blow) * (guarded ? GUARD_SCALE : 1)),
@@ -125,7 +135,7 @@ export function react(round: Round, hit: Hit): Round {
   const told = say(
     round,
     harmLine(
-      `${attacker.name}'s ${blow.what} hits ${target.name}${guarded ? ' through a guard' : ''}.`,
+      `${attacker.name}'s ${blow.what} hits ${target.name}${guardWords(guarded, smashed)}.`,
       damage,
     ),
     ...kitNote(target, blow.kind),

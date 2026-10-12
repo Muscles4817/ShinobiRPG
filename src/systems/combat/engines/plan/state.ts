@@ -14,6 +14,8 @@ export interface PlanFighter extends Body {
   readonly stunned: number;
   readonly sealed: number;
   readonly loadout: Loadout;
+  /** How hard they are to find while hidden, once a conceal set it (`concealmentOf`). */
+  readonly concealment?: number;
 }
 
 export interface PlanState {
@@ -92,7 +94,15 @@ export function patch(
   change: Partial<
     Pick<
       PlanFighter,
-      'health' | 'chakra' | 'stunned' | 'sealed' | 'loadout' | 'hidden' | 'confused'
+      | 'health'
+      | 'chakra'
+      | 'stunned'
+      | 'sealed'
+      | 'loadout'
+      | 'hidden'
+      | 'confused'
+      | 'concealment'
+      | 'perks'
     >
   >,
 ): PlanFighter[] {

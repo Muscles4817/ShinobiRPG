@@ -3,9 +3,10 @@ import type { Rng } from '@/core';
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
-import { hasVerb, techniquePower } from '../../rules/verbs';
+import { hasVerb, isHindering, isWounding, techniquePower } from '../../rules/verbs';
 import { isOffence, playable, slotted, type Card } from './cards';
 import { toolInstinct } from './pouch';
+import { sightInstinct } from './sight';
 import type { PlanFighter } from './state';
 
 /**
@@ -67,11 +68,16 @@ export interface Moment {
   readonly opening?: boolean;
 }
 
-/** Search or Dispel for a hidden foe, else a tool the moment calls for. */
+/** A sense, Search or Dispel for a hidden foe, a conceal to open; else a tool that's called for. */
 function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment): Card | undefined {
   const hiddenFoe = moment.hiddenFoe ?? false;
   const opening = moment.opening ?? false;
-  return senses(self, ready, hiddenFoe) ?? toolInstinct(self, ready, { hiddenFoe, opening });
+  const now = { hiddenFoe, opening };
+  return (
+    sightInstinct(self, ready, now) ??
+    senses(self, ready, hiddenFoe) ??
+    toolInstinct(self, ready, now)
+  );
 }
 
 export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
@@ -83,10 +89,10 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   if (heal && self.health < self.maxHealth * LOW_HEALTH) return heal;
   const reaches = canAttackFrom(self, band);
   const harmful = ready.filter((c) => c.kind === 'step' || (isOffence(c) && reaches));
-  const daze = jutsu(harmful, (t) => hasVerb(t, 'daze') || hasVerb(t, 'seal'));
-  const fresh = foe?.stunned === 0 && foe.sealed === 0;
+  const daze = jutsu(harmful, isHindering);
+  const fresh = foe?.stunned === 0 && foe.sealed === 0 && foe.confused === 0;
   if (daze && fresh && rng.chance(DAZE_FIRST_CHANCE)) return daze;
-  const finisher = jutsu(harmful, (t) => hasVerb(t, 'damage'));
+  const finisher = jutsu(harmful, isWounding);
   if (finisher && (foe?.stunned ?? 0) > 0) return finisher;
   const usual = harmful.filter((c) => c !== daze || fresh);
   return weighted(usual, rng) ?? improvise(self, band);

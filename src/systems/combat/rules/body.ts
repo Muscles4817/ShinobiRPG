@@ -11,7 +11,7 @@ import type {
 } from '../contract';
 import { startsHidden } from './conditions';
 import { elementMultiplier } from './elements';
-import { driveOf, landingUse, resistOf, type EffectUse } from './verbs';
+import { armourKept, driveOf, landingUse, resistOf, type EffectUse } from './verbs';
 
 /**
  * The fighter shape and formulas the newer engines share. Each engine extends `Body` with its
@@ -129,11 +129,14 @@ const PHYSICAL_BONUS: Readonly<Record<CombatTechnique['discipline'], (b: Body) =
   fuuinjutsu: () => 0,
 };
 
-/** A damaging technique: power scaled by skill, body stats for physical arts, and elements. */
+/**
+ * A damaging technique: power scaled by skill, body stats for physical arts, and elements. A
+ * break goes through part of the defender's armour.
+ */
 export function techniqueDamage(
   attacker: Body,
   defender: Body,
-  use: EffectUse<'damage'>,
+  use: EffectUse<'damage' | 'area' | 'break'>,
   roll: number,
 ): number {
   const { technique, effect } = use;
@@ -143,7 +146,7 @@ export function techniqueDamage(
     (effect.power * (1 + skill / 20) + PHYSICAL_BONUS[technique.discipline](attacker)) *
     elements *
     variance(roll);
-  return Math.max(1, Math.round(raw - armour(defender)));
+  return Math.max(1, Math.round(raw - armour(defender) * armourKept(use)));
 }
 
 export function healAmount(user: Body, use: EffectUse<'heal'>): number {

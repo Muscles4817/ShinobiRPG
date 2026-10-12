@@ -6,7 +6,7 @@ import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { carried } from '../../rules/items';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
-import { hasVerb, isHarmful, techniquePower } from '../../rules/verbs';
+import { hasVerb, isHarmful, isHindering, isWounding, techniquePower } from '../../rules/verbs';
 import type { CardId, Loadout, PlanFighter } from './state';
 
 /**
@@ -146,6 +146,11 @@ const VERB_WORD: Readonly<Record<Verb, string>> = {
   daze: 'Daze',
   seal: 'Seal',
   heal: 'Heal when hurt',
+  area: 'Hit every foe',
+  confuse: 'Confuse',
+  conceal: 'Vanish until you attack',
+  sense: 'Find the hidden, read every card',
+  break: 'Smash through a guard',
 };
 
 /** What a technique does, in words: "Attack", or "Attack, then daze" for several effects. */
@@ -211,7 +216,8 @@ function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean)
 }
 
 /**
- * A sensible starting plan: footwork towards where you fight best, your best moves, a defence.
+ * A sensible starting plan: footwork towards where you fight best, your best moves (a sense or
+ * a conceal among them), a defence.
  * Attacks your kit can't make from a distance (an archer up close) are left out.
  */
 function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): CardId[] {
@@ -223,11 +229,12 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Car
     band === home
       ? []
       : has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome);
-  const damage = strongest(pool, (t) => hasVerb(t, 'damage'));
+  const damage = strongest(pool, isWounding);
   const ordered: Card[] = [
     ...footwork,
     ...damage.slice(0, 1),
-    ...strongest(pool, (t) => hasVerb(t, 'daze') || hasVerb(t, 'seal')).slice(0, 1),
+    ...strongest(pool, isHindering).slice(0, 1),
+    ...strongest(pool, (t) => hasVerb(t, 'sense') || hasVerb(t, 'conceal')).slice(0, 1),
     ...has('strike'),
     ...has('throw'),
     ...damage.slice(1),

@@ -5,6 +5,8 @@ export {
   effectsOf,
   hasVerb,
   isHarmful,
+  isHindering,
+  isWounding,
   landingUse,
   primaryEffect,
   resistOf,
@@ -12,3 +14,5 @@ export {
   type EffectUse,
 } from './use';
 export { upgradeTechnique } from './legacy';
+export { concealmentFrom, concealmentOf, senseChance, type Hider } from './hiding';
+export { armourKept, BREAK_PIERCE, brokenScale, confusionTurns, MAX_CONFUSION_TURNS } from './hold';

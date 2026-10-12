@@ -1,10 +1,12 @@
 import { clamp, type Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
-import { alive, strikeDamage, targetable } from '../../rules/body';
+import { alive, hasPerk, strikeDamage, targetable } from '../../rules/body';
+import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
 import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
+import { hasVerb } from '../../rules/verbs';
 import { cardId, isOffence, type Card } from './cards';
 import { chooseCard } from './choose';
 import { intendedCard } from './intent';
@@ -33,9 +35,14 @@ const THROW_SCALE = 0.6;
 const STEP_BASE = 0.55;
 const STEP_PER_SPEED = 0.04;
 
-/** The player's side focuses the weakest enemy; enemies pick at random. Hidden foes are skipped. */
+/** Hidden foes can't be aimed at, unless you read foes (insight, or a sense this fight). */
+function inSight(self: PlanFighter, foe: PlanFighter): boolean {
+  return targetable(foe) || hasPerk(self, 'insight');
+}
+
+/** The player's side focuses the weakest enemy; enemies pick at random. */
 function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
-  const foes = opponentsOf(fighters, self).filter(targetable);
+  const foes = opponentsOf(fighters, self).filter((foe) => inSight(self, foe));
   if (foes.length === 0) return undefined;
   if (self.side === 'player') return [...foes].sort((a, b) => a.health - b.health)[0];
   return rng.pick(foes);
@@ -102,36 +109,50 @@ function remember(seen: Round['seen'], fighterId: string, id: string): Round['se
   return known.includes(id) ? seen : { ...seen, [fighterId]: [...known, id] };
 }
 
-function lostSight(round: Round, actor: PlanFighter): Round {
-  const vanished = opponentsOf(round.fighters, actor).some((f) => f.hidden);
-  return vanished && actor.side === 'enemy'
-    ? say(round, `${actor.name} loses sight of you.`)
-    : say(round, `${actor.name} can't find a target.`);
+/** An attack you can only make at someone you can see: an area technique needs no aim. */
+function needsAim(card: Card): boolean {
+  if (card.kind === 'jutsu' && hasVerb(card.technique, 'area')) return false;
+  return isOffence(card);
 }
 
-/** Attacking from smoke gives you away, hit or miss. */
-function revealed(round: Round, actorId: string): Round {
-  const actor = fighterIn(round, actorId);
-  if (!actor) return round;
-  return {
-    ...round,
-    fighters: patch(round.fighters, actorId, { hidden: revealOnAttack(actor).hidden }),
-  };
+/** Nobody in sight to attack: rather than stand idle, look for whoever is hiding. */
+function unseen(round: Round, turn: Turn): Round {
+  const hiding = opponentsOf(round.fighters, turn.actor).some((f) => f.hidden);
+  return hiding ? search(round, turn) : say(round, `${turn.actor.name} can't find a target.`);
 }
 
 /**
- * Plays a card, unless it's an attack with no one in sight or confusion sends it wide. Tools
+ * Attacking from smoke or a conceal gives you away, hit or miss. An illusionist stays hidden,
+ * unless the one they struck at traces the illusion back (as a Search would find them).
+ */
+function revealed(round: Round, { actor: before, target, rng }: Turn): Round {
+  const actor = fighterIn(round, before.id);
+  if (!actor?.hidden) return round;
+  if (!revealOnAttack(actor).hidden) {
+    return { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) };
+  }
+  const victim = target && fighterIn(round, target.id);
+  if (!victim || !alive(victim) || !rng.chance(searchChance(victim, actor))) return round;
+  return say(
+    { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) },
+    `${victim.name} traces the illusion back to ${actor.name}.`,
+  );
+}
+
+/**
+ * Plays a card, unless it's an attack with no one in sight (then they search instead) or
+ * confusion sends it wide. Tools
  * never misfire and don't give a hidden fighter away; attacks and techniques that hurt do.
  */
 function attempt(round: Round, turn: Turn, card: Card): Round {
   const { actor, target, rng } = turn;
-  if (isOffence(card) && !target) return lostSight(round, actor);
+  if (needsAim(card) && !target) return unseen(round, turn);
   if (card.kind === 'item' || !isOffence(card)) return play(round, turn, card);
   if (misfires(actor, rng)) {
     const whose = actor.isPlayer ? 'Your senses lie to you.' : `${actor.name}'s senses lie.`;
-    return revealed(say(round, `${whose} The attack goes wide.`), actor.id);
+    return revealed(say(round, `${whose} The attack goes wide.`), turn);
   }
-  return revealed(play(round, turn, card), actor.id);
+  return revealed(play(round, turn, card), turn);
 }
 
 function turn(start: Round, actorId: string, rng: Rng): Round {

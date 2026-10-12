@@ -50,6 +50,9 @@ function head(player: FighterSpec, opponent: FighterSpec): BenchReport {
   return logged(player, opponent, bench(player, opponent));
 }
 
+/** The archetypes who start every fight hidden. */
+const HIDERS = ['illusionist', 'stalker'] as const;
+
 const GRADE_LADDER = ['E', 'D', 'C', 'B', 'A'] as const;
 const ONE_APART = GRADE_LADDER.slice(1).map((g, i) => [g, GRADE_LADDER[i]!] as const);
 const TWO_APART = GRADE_LADDER.slice(2).map((g, i) => [g, GRADE_LADDER[i]!] as const);
@@ -147,8 +150,27 @@ describe('lethality (Phase 1 targets, measured today)', () => {
 describe('every weakness can be built around (Phase 1–4 target)', () => {
   it.todo('a rusher with the right plan beats or escapes a trickster one grade up');
   it.todo('a versatile fighter low on stamina outlasts a brute of the same rank');
-  it.todo(
-    'a fighter with search or flash tools finds a hidden stalker (today hidden is untouched)',
-  );
-  it.todo('two hidden fighters do not stall each other forever');
+});
+
+describe('hiding has counterplay (step 1.4b)', () => {
+  it.each(SCALES)('%s fighters who start hidden still get hit', (scale) => {
+    for (const id of HIDERS) {
+      for (const opponent of FOE_IDS) {
+        const report = head(archetype(id, scale), foe(opponent, scale));
+        expect(report.avgHealthLeft).toBeLessThan(1);
+      }
+    }
+  });
+
+  it.each(SCALES)('%s hidden fighters do not stall each other', (scale) => {
+    for (const id of HIDERS) {
+      const report = head(archetype(id, scale), foe('trickster', scale));
+      expect(report.stalemateRate).toBe(0);
+    }
+  });
+
+  // Measured, not asserted: slotting a sense in place of a basic attack doesn't yet swing
+  // a fight against a stalker (the stalker's damage decides it within 7–8 exchanges, before
+  // being found matters much). Revisit once health 100 and gap damage (step 1.1) land.
+  it.todo('a fighter who slots a sense fares better against a stalker than one who does not');
 });

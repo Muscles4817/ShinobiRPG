@@ -169,6 +169,11 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'insect-jar',
           'passing-fang',
           'adamantine-chains',
+          'great-breakthrough',
+          'false-surroundings',
+          'hidden-mist',
+          'chakra-sensing',
+          'dynamic-entry',
         ],
       },
       {

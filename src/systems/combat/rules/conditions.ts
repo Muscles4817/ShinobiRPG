@@ -1,11 +1,12 @@
 import { clamp } from '@/core';
 
 import type { CombatAttributes, CombatPerk, CombatTrait } from '../contract';
+import { concealmentOf } from './verbs';
 
 /**
  * Hidden and Confused, shared by every engine. An illusionist starts hidden: they can't be
  * targeted and hit harder, until someone finds them (Search: perception and intellect against
- * their genjutsu; insight always sees them) or breaks the illusion (Dispel: chakra control and
+ * their concealment, which is their genjutsu unless a conceal set it; insight always sees them) or breaks the illusion (Dispel: chakra control and
  * willpower, costs chakra). Their hits can confuse, making the victim's actions misfire until
  * willpower shakes it off.
  */
@@ -29,6 +30,7 @@ interface Senses {
 interface Illusion {
   readonly attributes: CombatAttributes;
   readonly traits: readonly CombatTrait[];
+  readonly concealment?: number;
 }
 
 export function startsHidden(f: { readonly traits: readonly CombatTrait[] }): boolean {
@@ -39,7 +41,7 @@ export function startsHidden(f: { readonly traits: readonly CombatTrait[] }): bo
 export function searchChance(seeker: Senses, hider: Illusion): number {
   if (seeker.perks.includes('insight')) return 1;
   const senses = seeker.attributes.perception * 0.6 + seeker.attributes.intellect * 0.4;
-  return clamp(0.35 + (senses - hider.attributes.genjutsu) * 0.06, 0.15, 0.9);
+  return clamp(0.35 + (senses - concealmentOf(hider)) * 0.06, 0.15, 0.9);
 }
 
 /** Chance a Dispel breaks a hidden fighter's illusion (and your own confusion). */

@@ -1,3 +1,5 @@
+import type { TechniqueEffect, Verb } from '@/systems/techniques';
+
 import type { CombatAttributes, CombatTechnique } from '../../contract';
 import { resistChance, bodyFrom } from '../body';
 import {
@@ -54,13 +56,31 @@ const mend: CombatTechnique = {
 };
 
 describe('verbs', () => {
-  it('every verb has a profile, and only heal is aimed at the user', () => {
+  it('every verb has a profile; heal, conceal and sense are aimed at the user', () => {
     expect(Object.entries(VERB_PROFILES).map(([verb, p]) => [verb, p.aim])).toEqual([
       ['damage', 'foe'],
       ['daze', 'foe'],
       ['seal', 'foe'],
       ['heal', 'self'],
+      ['area', 'foe'],
+      ['confuse', 'foe'],
+      ['conceal', 'self'],
+      ['sense', 'self'],
+      ['break', 'foe'],
     ]);
+  });
+
+  it('each new verb scales by the stats its role names', () => {
+    const use = (verb: Verb) => {
+      const effect: TechniqueEffect = { verb, power: 10 };
+      return { technique: { ...crush, effects: [effect] }, effect };
+    };
+    expect(driveOf(fighter, use('confuse'))).toBe(attributes.genjutsu);
+    expect(resistOf(fighter, use('confuse'))).toBe(attributes.willpower);
+    expect(driveOf(fighter, use('conceal'))).toBe(attributes.genjutsu);
+    expect(driveOf(fighter, use('sense'))).toBe((attributes.perception + attributes.ninjutsu) / 2);
+    expect(driveOf(fighter, use('break'))).toBe(attributes.strength);
+    expect(driveOf(fighter, use('area'))).toBe(attributes.taijutsu);
   });
 
   it('a technique is driven by its art and seen coming by the matching guard', () => {

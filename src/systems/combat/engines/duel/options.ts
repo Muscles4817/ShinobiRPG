@@ -23,6 +23,11 @@ const EFFECT_DETAIL: Readonly<Record<Verb, (power: number) => string>> = {
   daze: () => 'dazes',
   heal: () => 'heals',
   seal: () => 'seals',
+  area: (power) => `power ${power}`,
+  confuse: () => 'confuses',
+  conceal: () => 'hides',
+  sense: () => 'senses',
+  break: (power) => `power ${power}`,
 };
 
 /**
