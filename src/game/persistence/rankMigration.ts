@@ -15,10 +15,10 @@ function asStrings(value: unknown): string[] {
 }
 
 /**
- * v20 → v21: techniques have ranks. Everything already known stays known, but a technique
+ * v19 → v20: techniques have ranks. Everything already known stays known, but a technique
  * ranked above the character's grade in its discipline becomes unstable until they grow into it.
  */
-export function v20ToV21(state: RawState): RawState {
+export function v19ToV20(state: RawState): RawState {
   const pack = CONTENT_PACKS.find((p) => p.id === state.packId);
   const techniques = asRecord(state.techniques);
   // Trust boundary: a v19 character's stats are a full stat line (v16 added the last, reserves).

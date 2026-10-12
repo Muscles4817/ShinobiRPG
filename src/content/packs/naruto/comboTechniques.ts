@@ -22,6 +22,7 @@ export const COMBO_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Rising Twin Dragons',
     description: 'Two scrolls unroll into a storm of blades that rides whatever wind it is given.',
     discipline: 'kenjutsu',
+    needs: { weapon: 'blade' },
     effects: [{ verb: 'damage', power: 18 }],
     chakraCost: 9,
     rank: 'D',

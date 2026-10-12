@@ -1,6 +1,7 @@
 export {
   DISCIPLINES,
   ELEMENTS,
+  NEEDED_WEAPONS,
   EMPTY_BOOK,
   learnBlocker,
   learnabilityFor,
@@ -17,6 +18,7 @@ export {
   type TechniqueDef,
   type TechniqueBook,
   type TechniqueNeeds,
+  type NeededWeapon,
   type LearnBlocker,
   type StudyConditions,
   type StudyResult,

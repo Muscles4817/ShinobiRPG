@@ -12,7 +12,7 @@ import { createStats, type Stats } from '@/systems/stats';
 import { maxChakra, MAX_HEALTH, reservesFor } from '@/systems/vitals';
 
 import type { GameContext } from './context';
-import { combatStats } from './gear';
+import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
 
 /** Translates game entities into the combat contract's vocabulary. */
@@ -83,6 +83,7 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     nature,
     perks: perksOf(state, ctx),
     items: pouchOf(state, ctx),
+    gear: combatGear(state, ctx),
   };
 }
 

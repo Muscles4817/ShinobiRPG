@@ -36,17 +36,17 @@ describe('gear', () => {
     expect(act(state, { type: 'unequipGear', slot: 'weapon' }).inventory.equipped).toEqual({});
   });
 
-  it('gear adds to your stats in fights, not your trained stats', () => {
-    const state = act(rich(), { type: 'buyGear', gearId: 'kurogane-katana' });
+  it('gear never adds to your stats: it rides into the fight as gear', () => {
+    const state = act(rich(), { type: 'buyGear', gearId: 'forge-wakizashi' });
     const fighter = playerCombatant(state, ctx);
-    expect(fighter.attributes.kenjutsu).toBe(state.character.stats.kenjutsu + 3);
-    expect(state.character.stats.kenjutsu).toBe(newGame().character.stats.kenjutsu);
+    expect(fighter.attributes.kenjutsu).toBe(state.character.stats.kenjutsu);
+    expect(fighter.gear?.held).toEqual({ name: 'Forge Wakizashi', shape: 'blade', rank: 'C' });
   });
 
   it('refuses what you cannot afford', () => {
     const poor = { ...newGame(), wallet: { ryo: 10 } };
-    expect(blockerFor(poor, { type: 'buyGear', gearId: 'flak-vest' }, ctx)).toBe(
-      'You can’t afford it (260 ryo).',
+    expect(blockerFor(poor, { type: 'buyGear', gearId: 'lacquered-cuirass' }, ctx)).toBe(
+      'You can’t afford it (360 ryo).',
     );
   });
 });

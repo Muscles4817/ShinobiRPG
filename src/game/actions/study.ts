@@ -24,7 +24,7 @@ function masteryLine(name: string, result: Studied): string {
 
 /** What stops any scroll study of this technique, wherever the scroll comes from. */
 export function studyBlocker(state: GameState, def: TechniqueDef, ctx: GameContext) {
-  const blocker = learnBlockerFor(state, def);
+  const blocker = learnBlockerFor(state, def, ctx);
   return firstBlocker(
     noTalentReason(state.character, def.discipline, ctx),
     blocker && learnBlockerText(blocker, def),

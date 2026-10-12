@@ -38,6 +38,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Forge-Flash Cut',
     description: 'A draw so fast the blade glows like it has just left the fire.',
     discipline: 'kenjutsu',
+    needs: { weapon: 'blade' },
     element: 'earth',
     effects: [{ verb: 'damage', power: 21 }],
     chakraCost: 10,

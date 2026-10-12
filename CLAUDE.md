@@ -182,8 +182,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     is reproducible and catches up lazily without consuming the game's Rng. Tests that take a
     specific job use `postEverything` (the default `newGame` fixture does).
 18. **Gear counts in fights; meals count for a day.** Equipped gear (`inventory` system,
-    `game/gear.ts`) adds its `statBonuses` to the stats a fight sees (`combatStats`), never
-    to trained stats, so it works the same in every fight style. A home-cooked recipe sets
+    `game/gear.ts`) never adds to stats: it rides in as `CombatantSetup.gear` (`gearContract.ts`)
+    and changes the cards (a blade's cut, needed for kenjutsu; knuckles; thrown steel and senbon;
+    armour levels that trade protection for speed, eased by strength; a focus that sharpens a
+    verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. Gear has
+    ranks D–A: shops sell D and C, B to chūnin; A and `unique` named weapons are never sold. A home-cooked recipe sets
     `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
     `spendTime` clears it when the day ends.
     Hunger works the same way: the player sees a Hunger meter (100 − satiety), and each
@@ -275,8 +278,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a combination technique:** two `TechniqueDef`s whose `combo.partnerTechniqueId` name
   each other (validated); offer them at the academy. A teammate knows the half in their
   specialty, and a half plays only beside someone on your side who knows the other.
-- **Add gear:** add a `GearDef` (slot, cost, `statBonuses`) to the pack's `gear` and list it at
-  a `gear` place (a smith, an outfitter). **Add an ingredient or recipe:** add it to
+- **Add gear:** add a `GearDef` (`kind` weapon/armour/focus with its shape, level or boosts,
+  `rank`, cost) to the pack's `gear` and list it at a `gear` place (a smith, an outfitter);
+  `unique` pieces are never listed. **Add an ingredient or recipe:** add it to
   `shared/kitchen.ts` (or a pack's own list); ingredients must be sold at a market stall's
   `ingredientIds`, and recipes may only use known ingredients (validated).
 - **Add village life:** rumours (`missionId` for a job hint, `personId` for gossip), night

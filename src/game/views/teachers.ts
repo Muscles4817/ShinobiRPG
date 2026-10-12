@@ -101,26 +101,29 @@ function teachStat(state: GameState, ctx: GameContext, person: PersonDef, id: St
   };
 }
 
+/**
+ * What they'll teach next; failing that, the first one you can't learn yet, and why. A clan's
+ * arts are never shown to outsiders.
+ */
 function signatureOf(state: GameState, ctx: GameContext, teaching: Teaching) {
-  // What they'll teach next; failing that, the first you can't learn yet, and why. A clan's
-  // arts are never shown to outsiders.
   const nextId =
-    nextSignature(state, ctx, teaching) ??
+    nextSignature(state, teaching, ctx) ??
     teaching.teaches.find((id) => {
-      const blocker = learnBlockerFor(state, ctx.content.techniques.require(id));
-      return blocker?.kind !== 'already-known' && blocker?.kind !== 'clan';
+      const kind = learnBlockerFor(state, ctx.content.techniques.require(id), ctx)?.kind;
+      return kind !== 'already-known' && kind !== 'clan';
     });
   if (!nextId) return null;
   const def = ctx.content.techniques.require(nextId);
-  const blocker = learnBlockerFor(state, def);
   const stage = stageOf(bondOf(state, teaching.person.id).points);
+  const blocker = learnBlockerFor(state, def, ctx);
+  const bondLock =
+    stage < TEACHES_AT_STAGE
+      ? `Taught once you and ${teaching.person.name} are ${stageName(TEACHES_AT_STAGE).toLowerCase()}s.`
+      : null;
   return {
     name: def.name,
     progress: Math.min(1, (state.techniques.progress[def.id] ?? 0) / def.difficulty),
-    locked:
-      stage < TEACHES_AT_STAGE
-        ? `Taught once you and ${teaching.person.name} are ${stageName(TEACHES_AT_STAGE).toLowerCase()}s.`
-        : blocker && learnBlockerText(blocker, def),
+    locked: blocker ? learnBlockerText(blocker, def) : bondLock,
   };
 }
 

@@ -1,6 +1,8 @@
 import { v17ToV18 } from './aptitudeMigration';
+import { v21ToV22 } from './gearMigration';
 import { v18ToV19 } from './peopleMigration';
-import { v20ToV21 } from './rankMigration';
+// Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
+import { v19ToV20 as v20ToV21 } from './rankMigration';
 import { v19ToV20 } from './teachingMigration';
 
 /**
@@ -286,4 +288,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   18: v18ToV19,
   19: v19ToV20,
   20: v20ToV21,
+  21: v21ToV22,
 };

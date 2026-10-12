@@ -21,6 +21,7 @@ import type { GameContext } from './context';
 import { chip, log, placeHere } from './ops';
 import { newBoard } from './boardState';
 import { defaultSettings } from './fightStyle';
+import { withIssuedBlade } from './gear';
 import { NO_PEOPLE } from './people/state';
 import type { GameState } from './state';
 
@@ -124,6 +125,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
   const roll = rollBreakIn(ctx, draft.breakInApproachId, seed);
   const dice = createRng(roll.rngState);
   const aptitude = rollCharacterAptitude(dice, clan, talent);
+  const known = startingTechniques(draft, ctx);
 
   const state: GameState = {
     packId: content.packId,
@@ -154,7 +156,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     },
     wallet: { ryo: content.startingRyo },
     housing: housingFor(draft, ctx, home.id, home.rentPerWeek),
-    techniques: { known: startingTechniques(draft, ctx), progress: {}, unstable: [] },
+    techniques: { known, progress: {}, unstable: [] },
     standing: NEW_GENIN,
     journal: EMPTY_JOURNAL,
     mission: null,
@@ -163,7 +165,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     people: NO_PEOPLE,
     settings: defaultSettings(ctx),
     board: newBoard(seed),
-    inventory: EMPTY_INVENTORY,
+    inventory: withIssuedBlade(EMPTY_INVENTORY, known, content),
     village: { lastSightDay: null, lastRoundDay: null },
   };
   return logOpening(state, ctx, roll);

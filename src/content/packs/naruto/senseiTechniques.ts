@@ -59,6 +59,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Flying Swallow',
     description: 'Wind chakra lengthens your blade’s edge beyond the steel.',
     discipline: 'kenjutsu',
+    needs: { weapon: 'blade' },
     element: 'wind',
     effects: [{ verb: 'damage', power: 21 }],
     chakraCost: 10,

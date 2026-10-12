@@ -1,5 +1,5 @@
 import { STAT_GRADES } from '@/systems/stats';
-import { DISCIPLINES, ELEMENTS, type TechniqueDef } from '@/systems/techniques';
+import { DISCIPLINES, ELEMENTS, NEEDED_WEAPONS, type TechniqueDef } from '@/systems/techniques';
 
 import type { ContentPack } from './types';
 
@@ -18,11 +18,15 @@ export function validateTechniques(pack: ContentPack): string[] {
 
 const grades: readonly string[] = STAT_GRADES;
 const elements: readonly string[] = ELEMENTS;
+const weapons: readonly string[] = NEEDED_WEAPONS;
 
 function rankProblems(t: TechniqueDef): string[] {
   const problems: string[] = [];
   if (!grades.includes(t.rank)) problems.push(`technique "${t.id}" has unknown rank "${t.rank}"`);
   const needs = t.needs;
+  if (t.discipline === 'kenjutsu' && needs?.weapon !== 'blade') {
+    problems.push(`technique "${t.id}" is a blade art and must need a blade`);
+  }
   if (!needs) return problems;
   if (needs.minReserves !== undefined && needs.minReserves <= 0) {
     problems.push(`technique "${t.id}" needs a positive minimum of reserves`);
@@ -33,13 +37,20 @@ function rankProblems(t: TechniqueDef): string[] {
   if (needs.nature !== undefined && !elements.includes(needs.nature)) {
     problems.push(`technique "${t.id}" needs an unknown nature "${needs.nature}"`);
   }
+  if (needs.weapon !== undefined && !weapons.includes(needs.weapon)) {
+    problems.push(`technique "${t.id}" needs an unknown weapon "${needs.weapon}"`);
+  }
   if (Object.keys(needs).length === 0) problems.push(`technique "${t.id}" has empty needs`);
   return problems;
 }
 
-/** A technique anyone at grade E learns at the normal pace, with nothing else required. */
+/**
+ * A technique anyone at grade E learns at the normal pace, with nothing else required but a
+ * weapon (a genin who starts with a blade art is issued a blade, and the shops sell D blades).
+ */
 function forBeginners(t: TechniqueDef): boolean {
-  return t.rank === 'E' && t.needs === undefined;
+  const { weapon: _weapon, ...bodily } = t.needs ?? {};
+  return t.rank === 'E' && Object.keys(bodily).length === 0;
 }
 
 /** Techniques a character can start with are rank E, so nobody begins with an unstable one. */

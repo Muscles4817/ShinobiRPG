@@ -2,6 +2,7 @@ import type { Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
 import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
 
+import type { CombatGear, CombatItem } from './gearContract';
 import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
 
 /**
@@ -43,6 +44,7 @@ export type CombatTechnique = Pick<
   | 'oncePerFight'
   | 'afterCost'
   | 'combo'
+  | 'needs'
 > & {
   /** Learned a rank above its user's grade: costlier and may misfire (`rules/unstable.ts`). */
   readonly unstable?: true;
@@ -57,10 +59,10 @@ export type RangeBand = 'close' | 'mid' | 'far';
  */
 export type CombatRow = 'front' | 'back';
 
-/**
- * Special abilities a combatant brings, e.g. an awakened bloodline's eyes. Engines that
- * don't know a perk ignore it.
- */
+// Fight tools are part of what a fighter carries in (`gearContract.ts`).
+export { COMBAT_ITEM_EFFECTS, type CombatItem, type CombatItemEffect } from './gearContract';
+
+/** Special abilities a combatant brings (an awakened bloodline's eyes); others ignore it. */
 export type CombatPerk = 'insight';
 
 /**
@@ -79,28 +81,6 @@ export const COMBAT_TRAITS = [
 ] as const;
 export type CombatTrait = (typeof COMBAT_TRAITS)[number];
 
-/**
- * What a fight tool does when used (see `rules/items.ts`): vanish in smoke, light up hidden
- * foes, blast one foe with a seal, restore chakra or health, or clear your head.
- */
-export const COMBAT_ITEM_EFFECTS = [
-  'smoke',
-  'flash',
-  'blast',
-  'chakra',
-  'heal',
-  'clarity',
-] as const;
-export type CombatItemEffect = (typeof COMBAT_ITEM_EFFECTS)[number];
-
-/** A kind of tool the player carries into a fight, and how many. */
-export interface CombatItem {
-  readonly id: string;
-  readonly name: string;
-  readonly effect: CombatItemEffect;
-  readonly count: number;
-}
-
 export interface CombatantSetup {
   readonly id: string;
   readonly name: string;
@@ -118,6 +98,8 @@ export interface CombatantSetup {
   readonly traits?: readonly CombatTrait[];
   /** Tools carried into the fight (the player's pouch). */
   readonly items?: readonly CombatItem[];
+  /** Equipped gear (see `gearContract.ts`); absent for fighters armed as their kit suggests. */
+  readonly gear?: CombatGear;
   /** A preferred row; when absent the engine places the fighter by their kit. */
   readonly row?: CombatRow;
   /** An ally's stance; when absent the engine picks one from their kit. */

@@ -14,6 +14,7 @@ import type { VillageLife } from './village';
 export type { BackdropId, IconId } from './art';
 export type {
   GearDef,
+  GearKind,
   GearSlot,
   IngredientCount,
   IngredientDef,

@@ -25,6 +25,7 @@ export const COMBO_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Anvil Fall',
     description: 'The whole blade comes down on whatever the rope is holding, like a hammer.',
     discipline: 'kenjutsu',
+    needs: { weapon: 'blade' },
     effects: [{ verb: 'damage', power: 18 }],
     chakraCost: 9,
     rank: 'D',

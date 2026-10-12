@@ -17,6 +17,7 @@ import {
 } from '@/systems/techniques';
 
 import type { GameContext } from './context';
+import { equippedIn } from './gear';
 import { chip, log } from './ops';
 import { characterModifiers } from './profile';
 import type { Character, GameState } from './state';
@@ -27,13 +28,25 @@ import type { Character, GameState } from './state';
  * unstable when they were a rank above you and steady once your grade catches up.
  */
 
-export function learnerOf(character: Character): Learner {
-  return { stats: character.stats, clanId: character.clanId, nature: character.nature };
+/** The character as a learner, with the weapon in their hand (`needs.weapon`). */
+export function learnerOf(state: GameState, ctx: GameContext): Learner {
+  const { character } = state;
+  const held = equippedIn(state, ctx, 'weapon');
+  return {
+    stats: character.stats,
+    clanId: character.clanId,
+    nature: character.nature,
+    held: held?.kind === 'weapon' ? held.shape : null,
+  };
 }
 
 /** Why this character can't learn the technique from any source, or null. */
-export function learnBlockerFor(state: GameState, def: TechniqueDef): LearnBlocker | null {
-  return learnBlocker(state.techniques, def, learnerOf(state.character));
+export function learnBlockerFor(
+  state: GameState,
+  def: TechniqueDef,
+  ctx: GameContext,
+): LearnBlocker | null {
+  return learnBlocker(state.techniques, def, learnerOf(state, ctx));
 }
 
 /** What the player is told, and what fixes it ("Needs C ninjutsu; you're E."). */
@@ -53,6 +66,8 @@ export function learnBlockerText(blocker: LearnBlocker, def: TechniqueDef): stri
       return `Needs chakra reserves of ${blocker.min}; yours are ${blocker.have.toFixed(1)}.`;
     case 'control':
       return `Needs ${blocker.grade} chakra control; you're ${blocker.have}.`;
+    case 'weapon':
+      return `Needs ${blocker.weapon === 'blade' ? 'a blade' : 'knuckles'} in hand. Equip one at home.`;
   }
 }
 

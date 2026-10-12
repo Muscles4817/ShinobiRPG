@@ -937,6 +937,23 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   stamp. Bench (`unstableBench.test.ts`, plain D against plain D, 120 seeds): Ember Breath wins
   88% steady and 68% unstable; Kindled Pulse 50% and 36%.
 
+- 4.3: gear. `GearDef` is a union by `kind` (weapon with a `shape`: blade, knuckles, throwing,
+  senbon; armour with a `level`: light, flak, heavy, plate; focus with `boosts` a verb or a
+  discipline), with a `rank` D–A and `unique` for named weapons; `statBonuses` is gone. Slots are
+  weapon (held), thrown, body and charm. Equipped gear reaches the fight as `CombatantSetup.gear`
+  (`systems/combat/gearContract.ts`); the rules are `rules/weapons.ts` (cut driven by kenjutsu,
+  knuckles' power and guard pierce, throwing steel, senbon with a perception-driven daze; unique
+  verbs drain, daze, sunder), `rules/armour.ts` (the `armoured` kit rule by level, and a speed cost
+  strength carries away) and `rules/focus.ts` (drive ×1.12, +0.06 a rank, inside `driveOf`).
+  Blade arts need a blade in hand (`needs.weapon`), to study and to play (a disabled reason at
+  the card table). A starting technique may need a weapon (the academy issues the blade). Shops show kind, a rank
+  stamp and chips from the same rule numbers; B-rank needs chūnin. Two unique weapons per pack,
+  unsold. Save v22 (after 3.3's v20 and 4.1's v21) moves worn pieces to their new slots and issues a blade to a character who
+  knows a blade art and owns none (new genin get one at creation too). Gear bench
+  (`gearBench.test.ts`, chūnin plain against equals): win rate in no armour 43%, flak 65%, heavy
+  85%, plate 93%; against an archer 43% bare, 3% in plate; with strength 30, 98% either way. A
+  kenjutsu-peak fighter wins 0% bare-handed, 80% with a D blade. The 1v1 bench is unchanged.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -1141,3 +1158,19 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   flat (25%), not scaled by control.
 - 4.1: stabilisation runs after every action in `dispatch`, beside 2.5's `noteGradeUps`. A sensei teaches the first signature you could learn; the
   lesson card shows the next blocked one with its reason.
+- 4.3: no gear shop has a keeper person, so B-rank access is by rank only (chūnin and up);
+  the smith's favour waits for a keeper person. A-rank gear is unique only (validated). The
+  flak vest is rank B, so it is sold to chūnin (and 6.3 hands it over at promotion).
+- 4.3: gear quality is its rank (D 0 … A 3 steps); each rule grows by the step, no per-item
+  numbers. Weapon needs are `TechniqueNeeds.weapon` (blade or knuckles; every kenjutsu technique
+  needs a blade, validated). They gate learning against the weapon equipped in hand (not grade-up
+  "What this opens" lists) and using: `rules/weapons.ts` blocks the card only for fighters whose
+  gear is known (the player); foes and teammates carry no `gear` and are
+  armed as their techniques suggest.
+- 4.3: armour's speed cost is applied to the fighter's speed for the whole fight (`bodyFrom`),
+  so it slows initiative, footwork and dodging together; strength 40 carries any armour. Worn
+  armour and the `armoured` trait don't stack (the better counts). Thrown weapons count as
+  `weapon` hits, so armour helps against kunai.
+- 4.3: unique weapons are in the packs but not obtainable yet (no reward hook); 4.2/4.4 hand
+  them out. The issued blade is the cheapest D blade the start location sells; the v22 migration
+  uses the pack's content (as v18 does) to find it.

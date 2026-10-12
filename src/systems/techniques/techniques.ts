@@ -47,14 +47,19 @@ export interface TechniqueDef {
   readonly combo?: { readonly partnerTechniqueId: string };
 }
 
+/** Weapons a technique can need in hand: a blade for the sword arts, knuckles for some fists. */
+export const NEEDED_WEAPONS = ['blade', 'knuckles'] as const;
+export type NeededWeapon = (typeof NEEDED_WEAPONS)[number];
+
 /**
  * Hard requirements where the body must have something: a chakra nature, deep enough reserves,
- * a grade of chakra control. (A clan or bloodline is `TechniqueDef.clan`.)
+ * a grade of chakra control, a weapon in hand. (A clan or bloodline is `TechniqueDef.clan`.)
  */
 export interface TechniqueNeeds {
   readonly nature?: Element;
   readonly minReserves?: number;
   readonly control?: StatGrade;
+  readonly weapon?: NeededWeapon;
 }
 
 /**
@@ -70,11 +75,13 @@ export interface TechniqueBook {
 
 export const EMPTY_BOOK: TechniqueBook = { known: [], progress: {}, unstable: [] };
 
-/** Who is learning: what their grades, clan and nature allow. */
+/** Who is learning: what their grades, clan, nature and the weapon in their hand allow. */
 export interface Learner {
   readonly stats: Stats;
   readonly clanId: string;
   readonly nature: Element;
+  /** The held weapon's shape (null: empty hands); absent when gear isn't known. */
+  readonly held?: string | null;
 }
 
 export type LearnBlocker =
@@ -83,7 +90,8 @@ export type LearnBlocker =
   | { readonly kind: 'rank'; readonly rank: StatGrade; readonly grade: StatGrade }
   | { readonly kind: 'nature'; readonly nature: Element }
   | { readonly kind: 'reserves'; readonly min: number; readonly have: number }
-  | { readonly kind: 'control'; readonly grade: StatGrade; readonly have: StatGrade };
+  | { readonly kind: 'control'; readonly grade: StatGrade; readonly have: StatGrade }
+  | { readonly kind: 'weapon'; readonly weapon: NeededWeapon };
 
 /** How a technique stands against the learner's grade in its discipline. */
 export function learnabilityFor(def: TechniqueDef, stats: Stats): Learnability {
@@ -101,6 +109,9 @@ function needsBlocker(needs: TechniqueNeeds, learner: Learner): LearnBlocker | n
   const control = gradeOf(stats.chakraControl);
   if (needs.control !== undefined && gradeIndex(control) < gradeIndex(needs.control)) {
     return { kind: 'control', grade: needs.control, have: control };
+  }
+  if (needs.weapon !== undefined && learner.held !== undefined && learner.held !== needs.weapon) {
+    return { kind: 'weapon', weapon: needs.weapon };
   }
   return null;
 }

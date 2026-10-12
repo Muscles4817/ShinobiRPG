@@ -48,14 +48,15 @@ function teachingPlaces(ctx: GameContext): Map<string, string> {
   return where;
 }
 
-/** Techniques the new stats put within reach that the old ones didn't, and where to learn them. */
+/**
+ * Techniques the new stats put within reach that the old ones didn't, and where to learn them.
+ * The weapon in hand is left out: a grade opens what the grade allows.
+ */
 function opened(state: GameState, before: Stats, ctx: GameContext): GradeReport['opens'] {
   const { character, techniques } = state;
+  const { held: _held, ...learner } = learnerOf(state, ctx);
   const blocked = (stats: Stats, id: string) =>
-    learnBlocker(techniques, ctx.content.techniques.require(id), {
-      ...learnerOf(character),
-      stats,
-    });
+    learnBlocker(techniques, ctx.content.techniques.require(id), { ...learner, stats });
   return [...teachingPlaces(ctx)].flatMap(([id, where]) =>
     blocked(before, id) !== null && blocked(character.stats, id) === null
       ? [{ name: ctx.content.techniques.require(id).name, where }]

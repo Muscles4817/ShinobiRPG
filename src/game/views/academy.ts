@@ -60,6 +60,7 @@ function shortfallOf(blocker: LearnBlocker | null, def: TechniqueDef, state: Gam
   switch (blocker?.kind) {
     case undefined:
     case 'already-known':
+    case 'weapon':
       return 0;
     case 'rank':
       return gradeLine(gradeToAttempt(def.rank)) - stats[def.discipline];
@@ -89,7 +90,7 @@ export function scrollOf(
 ): Scroll {
   const { character } = state;
   const progress = state.techniques.progress[def.id] ?? 0;
-  const blocker = learnBlockerFor(state, def);
+  const blocker = learnBlockerFor(state, def, ctx);
   const aptitude = assumedAptitude(character)[def.discipline];
   const points = studyPointsFor(character, def, ctx, { aptitude, source: reading.source });
   return {

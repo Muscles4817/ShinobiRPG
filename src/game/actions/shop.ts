@@ -1,4 +1,4 @@
-import { GEAR_SLOTS } from '@/content';
+import { GEAR_SLOTS, gearSlot } from '@/content';
 import {
   addGear,
   addTool,
@@ -12,6 +12,7 @@ import {
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
+import { gearRankBlocker } from '../gear';
 import { busyReason, chip, firstBlocker, log, placesHere } from '../ops';
 import type { GameState } from '../state';
 import { closedReason, isOpen, marketPrice, stallsHere } from '../village';
@@ -44,6 +45,7 @@ export const buyGear: ActionHandler<ActionOf<'buyGear'>> = {
       busyReason(state),
       closedReason(shop.name, shop.hours, state),
       owns(state.inventory, def.id) && 'You already own this.',
+      gearRankBlocker(state, def),
       state.wallet.ryo < def.cost && `You can’t afford it (${def.cost} ryo).`,
     );
   },
@@ -53,7 +55,8 @@ export const buyGear: ActionHandler<ActionOf<'buyGear'>> = {
     if (!paid.ok) return state;
     const bought = addGear(state.inventory, def.id);
     // A new piece goes straight on if the slot is empty.
-    const inventory = bought.equipped[def.slot] ? bought : equip(bought, def.slot, def.id);
+    const slot = gearSlot(def);
+    const inventory = bought.equipped[slot] ? bought : equip(bought, slot, def.id);
     return log(
       { ...state, wallet: paid.value, inventory },
       {
@@ -93,12 +96,12 @@ export const equipGear: ActionHandler<ActionOf<'equipGear'>> = {
     if (!def || !owns(state.inventory, def.id)) return 'You don’t own that.';
     return firstBlocker(
       busyReason(state),
-      state.inventory.equipped[def.slot] === def.id && 'You’re already wearing it.',
+      state.inventory.equipped[gearSlot(def)] === def.id && 'You’re already wearing it.',
     );
   },
   perform(state, action, ctx) {
     const def = ctx.content.gear.require(action.gearId);
-    return { ...state, inventory: equip(state.inventory, def.slot, def.id) };
+    return { ...state, inventory: equip(state.inventory, gearSlot(def), def.id) };
   },
 };
 
