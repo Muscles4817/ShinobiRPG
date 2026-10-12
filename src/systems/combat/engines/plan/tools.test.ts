@@ -11,6 +11,7 @@ import {
   decode,
   encode,
   initialFighters,
+  plainSlots,
   type Loadout,
   type PlanFighter,
   type PlanState,
@@ -56,7 +57,7 @@ function pair(
   mid: string[],
   { foeTraits = [], hero = {} }: { foeTraits?: CombatTrait[]; hero?: Partial<CombatantSetup> } = {},
 ): PlanFighter[] {
-  const loadout: Loadout = { close: [], mid, far: [] };
+  const loadout: Loadout = { close: [], mid: plainSlots(mid), far: [] };
   const [h, foe] = initialFighters({
     player: fighter('hero', { items, ...hero }),
     allies: [],
@@ -99,7 +100,7 @@ describe('plan & watch tools: cards', () => {
     expect(
       Object.values(defaults)
         .flat()
-        .filter((id) => id.startsWith('item:')),
+        .filter((s) => s.card.startsWith('item:')),
     ).toEqual([]);
   });
 
@@ -127,13 +128,13 @@ describe('plan & watch tools: cards', () => {
     expect(smoke?.disabledReason).toBe('No smoke tool left.');
     const slotted = engine.act(state, { optionId: 'slot:mid:item:heal' }, createRng(1));
     if (!slotted.ok) throw new Error(slotted.error);
-    expect(decode(slotted.value).fighters[0]?.loadout.mid).toContain('item:heal');
+    expect(decode(slotted.value).fighters[0]?.loadout.mid).toContainEqual({ card: 'item:heal' });
   });
 
   it('keeps remembered tools you have none of, so they play again once restocked', () => {
     const [hero] = pair([], []);
     const plan = { close: [], mid: ['item:smoke', 'throw'], far: [] };
-    expect(rememberedLoadout(plan, hero!)).toEqual(plan);
+    expect(rememberedLoadout(plan, hero!)).toEqual({ ...plan, mid: plainSlots(plan.mid) });
     const engine = createPlanEngine();
     const state = engine.start(
       { player: fighter('hero'), allies: [], enemies: [fighter('foe')], canFlee: true, plan },
@@ -152,7 +153,11 @@ describe('plan & watch tools: when they are played', () => {
     const [hero, foe] = pair([tool('heal'), tool('chakra')], ['item:heal', 'item:chakra']);
     const moment = { band: 'mid' as const, foe };
     expect(
-      chooseCard({ ...hero!, loadout: { ...hero!.loadout, mid: ['item:heal'] } }, moment, rng).kind,
+      chooseCard(
+        { ...hero!, loadout: { ...hero!.loadout, mid: plainSlots(['item:heal']) } },
+        moment,
+        rng,
+      ).kind,
     ).not.toBe('item');
     const hurt = { ...hero!, health: 20 };
     expect(chooseCard(hurt, moment, rng)).toMatchObject({ kind: 'item', item: { id: 'heal' } });
@@ -168,10 +173,10 @@ describe('plan & watch tools: when they are played', () => {
     const moment = { band: 'mid' as const, foe };
     expect(chooseCard(hero!, moment, rng).kind).not.toBe('item');
     expect(chooseCard(hero!, { ...moment, hiddenFoe: true }, rng).kind).toBe('item');
-    const charm = { ...hero!, loadout: { ...hero!.loadout, mid: ['item:clarity'] } };
+    const charm = { ...hero!, loadout: { ...hero!.loadout, mid: plainSlots(['item:clarity']) } };
     expect(chooseCard(charm, moment, rng).kind).not.toBe('item');
     expect(chooseCard({ ...charm, confused: 2 }, moment, rng).kind).toBe('item');
-    const smoke = { ...hero!, loadout: { ...hero!.loadout, mid: ['item:smoke'] } };
+    const smoke = { ...hero!, loadout: { ...hero!.loadout, mid: plainSlots(['item:smoke']) } };
     expect(chooseCard(smoke, moment, rng).kind).not.toBe('item');
     expect(chooseCard(smoke, { ...moment, opening: true }, rng).kind).toBe('item');
   });

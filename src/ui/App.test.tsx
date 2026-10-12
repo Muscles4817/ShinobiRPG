@@ -206,6 +206,33 @@ describe('App (smoke test)', () => {
     expect(screen.queryByText(/End of round 1/) ?? screen.queryByRole('dialog')).not.toBeNull();
   });
 
+  it('orders the plan and sets when and at whom each card plays', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Training Grounds/));
+    const sparring = screen.getByRole('region', { name: 'Sparring' });
+    await user.click(
+      within(sparring)
+        .getAllByRole('button', { name: 'Spar' })
+        .find((b) => !(b as HTMLButtonElement).disabled)!,
+    );
+    const order = () => within(screen.getByRole('list', { name: /^Close: first to last/ }));
+    const second = order().getAllByRole('listitem')[1]!;
+    const name = within(second).getAllByRole('button')[0]!.querySelector('b')!.textContent;
+    await user.click(within(second).getByRole('button', { name: /^Move up/ }));
+    const first = order().getAllByRole('listitem')[0]!;
+    expect(first.textContent).toContain(name);
+    const when = within(first).getByRole('combobox', { name: /^When for/ });
+    await user.selectOptions(when, 'A foe is hidden');
+    const now = order().getAllByRole('listitem')[0]!;
+    expect(within(now).getByRole('combobox', { name: /^When for/ })).toHaveDisplayValue(
+      'A foe is hidden',
+    );
+    await user.click(screen.getByRole('button', { name: /^Begin the fight/ }));
+    expect(screen.getByRole('button', { name: /^Watch the round/ })).toBeInTheDocument();
+  });
+
   it('buys gear at the forge, groceries at the market, and cooks at home', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

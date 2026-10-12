@@ -20,6 +20,7 @@ import { cardId, isOffence, type Card } from './cards';
 import { chooseCard } from './choose';
 import { intendedCard } from './intent';
 import { useTool } from './pouch';
+import { plannedPlay, type Play } from './priority';
 import { dispel, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
 import {
@@ -35,7 +36,8 @@ import {
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
- * the current distance. Footwork is contested by speed; defences react on their own.
+ * the current distance (the player by their plan's priorities, see `priority.ts`). Footwork is
+ * contested by speed; defences react on their own.
  */
 
 const CHAKRA_REGEN = 2;
@@ -43,12 +45,21 @@ const THROW_SCALE = 0.6;
 const STEP_BASE = 0.55;
 const STEP_PER_SPEED = 0.04;
 
-/** The player's side focuses the weakest enemy; enemies pick at random. Hidden foes are skipped. */
+/** Allies focus the weakest enemy; enemies pick at random. Hidden foes are skipped. */
 function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
   const foes = opponentsOf(fighters, self).filter(targetable);
   if (foes.length === 0) return undefined;
   if (self.side === 'player') return [...foes].sort((a, b) => a.health - b.health)[0];
   return rng.pick(foes);
+}
+
+/** Foes and allies play their telegraphed card, or follow their instincts. */
+function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
+  const target = targetFor(round.fighters, actor, rng);
+  const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
+  const moment = { band: round.range, foe: target, hiddenFoe, opening: round.opening ?? false };
+  const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
+  return { card, target };
 }
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
@@ -208,10 +219,7 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
     const fighters = patch(round.fighters, actor.id, { stunned: actor.stunned - 1 });
     return say({ ...round, fighters }, `${actor.name} is dazed and loses the exchange.`);
   }
-  const target = targetFor(round.fighters, actor, rng);
-  const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
-  const moment = { band: round.range, foe: target, hiddenFoe, opening: round.opening ?? false };
-  const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
+  const { card, target } = actor.isPlayer ? plannedPlay(actor, round) : instinct(round, actor, rng);
   const played = attempt(round, { actor, target, rng }, card);
   return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
 }

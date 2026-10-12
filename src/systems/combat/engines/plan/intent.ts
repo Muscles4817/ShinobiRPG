@@ -84,7 +84,7 @@ function nextMove(state: PlanState, f: PlanFighter, insight: boolean): string | 
 
 /** The cards you know of: all of them at this distance with insight, else what you've seen. */
 function knownCards(state: PlanState, f: PlanFighter, insight: boolean): string | undefined {
-  const ids = insight ? f.loadout[state.range] : (state.seen[f.id] ?? []);
+  const ids = insight ? f.loadout[state.range].map((s) => s.card) : (state.seen[f.id] ?? []);
   const names = ids.flatMap((id) => {
     const card = findCard(f, id);
     return card ? [cardLabel(card)] : [];

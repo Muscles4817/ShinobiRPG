@@ -42,7 +42,8 @@ function weighted(cards: readonly Card[], rng: Rng): Card | undefined {
   return cards[cards.length - 1];
 }
 
-function improvise(self: PlanFighter, band: RangeBand): Card {
+/** A basic blow when the kit reaches from here, else a step towards where it does. */
+export function improvise(self: PlanFighter, band: RangeBand): Card {
   if (canAttackFrom(self, band)) return band === 'close' ? { kind: 'strike' } : { kind: 'throw' };
   const further = RANGE_BANDS.indexOf(homeBand(self)) > RANGE_BANDS.indexOf(band);
   return { kind: 'step', direction: further ? 'back' : 'in' };
