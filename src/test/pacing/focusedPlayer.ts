@@ -1,4 +1,11 @@
-import { blockerFor, dispatch, type GameAction, type GameContext, type GameState } from '@/game';
+import {
+  blockerFor,
+  dispatch,
+  trainingView,
+  type GameAction,
+  type GameContext,
+  type GameState,
+} from '@/game';
 import { isRentOverdue } from '@/systems/housing';
 import {
   STAT_GRADES,
@@ -15,7 +22,8 @@ import { ctx as originalPack } from '@/test/gameFixtures';
  * THE PACING HARNESS
  *
  * A scripted "focused player" who lives day by day through real `dispatch` actions, the way a
- * keen player would: lesson with the sensei whenever it's due, the standing job every few
+ * keen player would: training with their sensei whenever they can and with any genin better
+ * than them in their focus (unless the plan says to drill alone), the standing job every few
  * days for money, food when hungry, the hospital when badly hurt, and otherwise the one drill
  * they've chosen, napping when out of energy and sleeping at the end of the day. It records
  * every stat's grade at the end of each day, so milestone windows (how long until a stat
@@ -29,6 +37,11 @@ export interface FocusPlan {
   readonly drillId: string;
   /** How often they take the standing job, in days. */
   readonly missionEveryDays: number;
+  /**
+   * Whether they train with people better than them: their sensei whenever they can, and any
+   * genin ahead of them in their focus. Off, they only drill (and fight).
+   */
+  readonly withTeachers: boolean;
 }
 
 export interface DayRecord {
@@ -120,13 +133,28 @@ function upkeep(state: GameState, today: Today): GameAction | null {
   return options.find((a) => allowed(state, a, context)) ?? null;
 }
 
+/**
+ * Sessions worth taking now: the sensei in whatever they offer (the focus if they let you
+ * choose), then any genin who can teach the focus.
+ */
+function teacherSessions(state: GameState, today: Today): GameAction[] {
+  if (!today.plan.withTeachers) return [];
+  const offers = trainingView(state, today.context)?.teachers ?? [];
+  const { focus } = today.plan;
+  return offers.flatMap((offer) => {
+    const open = offer.open.filter((s) => s.blocker === null);
+    const pick = open.find((s) => s.id === focus) ?? (offer.isSensei ? open[0] : undefined);
+    return pick && (offer.isSensei || offer.isPeer) ? [pick.action] : [];
+  });
+}
+
 /** The focused player's next move today. */
 function nextAction(state: GameState, today: Today): GameAction {
   const { context, plan } = today;
   const jobDay = state.time.day % plan.missionEveryDays === 0 && !today.jobDone;
   const work: GameAction[] = [
     { type: 'dismissReport' },
-    { type: 'lesson' },
+    ...teacherSessions(state, today),
     ...(jobDay ? [{ type: 'startMission', missionId: today.jobId } as const] : []),
     { type: 'train', trainingId: plan.drillId },
     { type: 'rest' },

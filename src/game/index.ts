@@ -68,7 +68,9 @@ export {
   type LoadoutSlot,
 } from './views/shops';
 export { kitchenView, type DinnerInvite, type KitchenView, type RecipeCard } from './views/kitchen';
-export type { LessonCard, SparOption } from './views/team';
+export type { SparOption } from './views/team';
+export type { TeacherOffer, TeachStat } from './views/teachers';
+export type { PricePart } from './people/price';
 export {
   jutsuDeck,
   recordView,

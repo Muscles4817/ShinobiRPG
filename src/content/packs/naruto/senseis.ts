@@ -2,6 +2,14 @@ import { allDay, look } from '../../look';
 import { statLine } from '../../statLine';
 import type { PersonDef } from '../../types';
 
+import {
+  ANKO_TEACHER,
+  ASUMA_TEACHER,
+  GUY_TEACHER,
+  KAKASHI_TEACHER,
+  KURENAI_TEACHER,
+} from './teachers';
+
 /** Jōnin who may take on a team, plus the village figures every genin knows. */
 export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
   {
@@ -44,8 +52,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Late, lazy-looking, and misses nothing. Teaches teamwork the hard way.',
       lesson:
         'Kakashi turns up late, closes his book, and runs you ragged through every drill you thought you knew.',
-      teaches: ['summoning-ninken', 'lightning-blade'],
     },
+    teacher: KAKASHI_TEACHER,
   },
   {
     id: 'guy',
@@ -84,8 +92,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Shouts, runs, and never lets you quit. Ever.',
       lesson:
         'Guy has you running laps on your hands before breakfast. He does twice as many, cheering.',
-      teaches: ['leaf-hurricane', 'front-lotus'],
     },
+    teacher: GUY_TEACHER,
   },
   {
     id: 'kurenai',
@@ -116,8 +124,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Patient and precise. Builds confidence before she builds technique.',
       lesson:
         'Kurenai walks you through an illusion slowly, then again, until you can see the seams.',
-      teaches: ['petal-storm'],
     },
+    teacher: KURENAI_TEACHER,
   },
   {
     id: 'asuma',
@@ -149,8 +157,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Easy-going until it matters. Teaches through shōgi as much as sparring.',
       lesson:
         'Asuma teaches you to feel the wind along a blade, then beats you at shōgi to make a point.',
-      teaches: ['flying-swallow'],
     },
+    teacher: ASUMA_TEACHER,
   },
   {
     id: 'anko',
@@ -181,8 +189,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Throws you in the deep end, then throws snakes in after you.',
       lesson:
         'Anko chases you through the training forest with snakes until your seals come out clean.',
-      teaches: ['snake-binding-seal'],
     },
+    teacher: ANKO_TEACHER,
   },
   {
     id: 'iruka',

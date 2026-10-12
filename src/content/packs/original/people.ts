@@ -32,7 +32,22 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['brash', 'diligent', 'proud'],
       style: 'Up before dawn, running stairs until you can’t feel your legs. Loud about it.',
       lesson: 'Gōran has you hit the striking post until it splinters, then hands you a new one.',
+    },
+    teacher: {
+      quirk: 'harsh',
+      steers: { focus: 'specialty', freeAtStage: 3 },
       teaches: ['iron-gate-palm'],
+      price: {
+        kind: 'all',
+        parts: [
+          { kind: 'bond', minStage: 1, line: '“I don’t shout at strangers. Much.”' },
+          {
+            kind: 'mission',
+            missionId: 'kuroda-medicine',
+            line: '“Run medicine up to the Kuroda farm and back. Then we talk.”',
+          },
+        ],
+      },
     },
   },
   {
@@ -67,7 +82,16 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Demanding and dazzling. Expects you to burn as bright as she does.',
       lesson:
         'Akari makes you hold a flame in your palm until it stops flickering. It takes all afternoon.',
+    },
+    teacher: {
+      quirk: 'natural',
+      steers: { focus: 'specialty', freeAtStage: 3 },
       teaches: ['great-lantern-flame'],
+      price: {
+        kind: 'ryo',
+        perSession: 40,
+        line: '“Lantern oil isn’t free, and neither is my evening.”',
+      },
     },
   },
   {
@@ -97,7 +121,16 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Soft-spoken and strange. Teaches you to notice what you were not meant to.',
       lesson:
         'Yomi has you sit among the grave lanterns until you can tell which lights are lit by the living.',
+    },
+    teacher: {
+      quirk: 'distracted',
+      steers: { focus: 'weakest', freeAtStage: 2 },
       teaches: ['ghost-lantern-veil'],
+      price: {
+        kind: 'favour',
+        favourId: 'yomi-grave-lantern',
+        ask: 'Yomi wants a lantern lit at an old grave nobody visits any more.',
+      },
     },
   },
   {
@@ -129,7 +162,18 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       nature: 'earth',
       style: 'A thousand cuts a day, each one perfect. Silence is praise.',
       lesson: 'Tetsu watches you cut a thousand times and says one word. It is the right word.',
+    },
+    teacher: {
+      quirk: 'patient',
+      steers: { focus: 'specialty', freeAtStage: 2 },
       teaches: ['forge-flash-cut'],
+      price: {
+        kind: 'all',
+        parts: [
+          { kind: 'bond', minStage: 2 },
+          { kind: 'ryo', perSession: 25, line: 'He nods at the forge’s coal bin. It is empty.' },
+        ],
+      },
     },
   },
   {
@@ -162,7 +206,11 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Patient, precise, and always three moves ahead. Loves a good trap.',
       lesson:
         'Ito sets traps around the training ground and makes you write a ward for each before dark.',
+    },
+    teacher: {
+      quirk: 'patient',
       teaches: ['shrine-rope-binding'],
+      price: { kind: 'bond', minStage: 2, line: '“Traps are secrets. I tell secrets to friends.”' },
     },
   },
   {

@@ -153,12 +153,26 @@ describe('App (smoke test)', () => {
     expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
   });
 
-  it('offers a sensei lesson and sparring at the training grounds', async () => {
+  it('trains with your sensei among the people at the training grounds', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);
     await startGame(user);
     await user.click(place(/Training Grounds/));
-    expect(screen.getByText(/Weekly \w+ lesson/)).toBeInTheDocument();
+    const here = screen.getByRole('region', { name: 'People here' });
+    const sensei = within(here).getAllByRole('article')[0]!;
+    expect(within(sensei).getByText(/^Your sensei\./)).toBeInTheDocument();
+    const train = within(sensei)
+      .getAllByRole('button', { name: /^Train / })
+      .find((b) => !(b as HTMLButtonElement).disabled)!;
+    await user.click(train);
+    expect(within(screen.getByRole('dialog')).getByText(/^Lesson with/)).toBeInTheDocument();
+  });
+
+  it('offers sparring at the training grounds', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Training Grounds/));
     const sparring = screen.getByRole('region', { name: 'Sparring' });
     const spar = within(sparring)
       .getAllByRole('button', { name: 'Spar' })

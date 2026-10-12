@@ -4,6 +4,8 @@ import type { Aptitude, Stats } from '@/systems/stats';
 import type { Discipline, Element } from '@/systems/techniques';
 import type { TimeSlot } from '@/systems/time';
 
+import type { TeacherProfile } from './teachers';
+
 /** Content schemas for the cast: people, how they talk, and the names generated genin get. */
 /** How a reply in conversation comes across. People's traits decide which tones land. */
 export const TONES = [
@@ -33,8 +35,6 @@ export interface SenseiProfile {
   readonly style: string;
   /** Story text for a weekly lesson (no numbers). */
   readonly lesson: string;
-  /** Signature techniques, taught in order once you are close enough. */
-  readonly teaches: readonly string[];
 }
 
 /**
@@ -64,6 +64,8 @@ export interface PersonDef {
   /** Where they are in each time slot: a place id in the start location, or null (away). */
   readonly schedule: Readonly<Record<TimeSlot, string | null>>;
   readonly sensei?: SenseiProfile;
+  /** How they teach and what they ask. Every sensei has one (their signatures live here). */
+  readonly teacher?: TeacherProfile;
   /** A recipe they love: serve it at dinner and the evening means more to them. */
   readonly favouriteRecipeId?: string;
 }
@@ -72,6 +74,8 @@ export interface ConversationChoice {
   readonly label: string;
   readonly tone: Tone;
   readonly reply: string;
+  /** Picking this reply does the favour a teacher asked for (`SimplePrice` favour id). */
+  readonly favour?: string;
 }
 
 /**
