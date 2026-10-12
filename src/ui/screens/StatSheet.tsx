@@ -24,6 +24,14 @@ function FightingGrade({ overall }: { readonly overall: ShinobiView['overall'] }
   );
 }
 
+/**
+ * A stat to one decimal, cut rather than rounded, so a value just under a grade line never
+ * reads as the line itself (7.98 shows 7.9 beside its E, not 8.0).
+ */
+function statText(value: number): string {
+  return (Math.floor(value * 10 + 1e-6) / 10).toFixed(1);
+}
+
 function growthText(growth: number): string {
   return growth > 0 ? `+${growth}` : '';
 }
@@ -44,10 +52,11 @@ function DisciplineTile({ stat }: { readonly stat: StatLine }) {
     <div className={`disc d-${css}`}>
       <small>{stat.label}</small>
       <span className="disc-value">
-        <b className="num">{tick.shown.toFixed(1)}</b>
+        <b className="num">{statText(tick.shown)}</b>
         <GradeBadge grade={stat.tier.grade} />
       </span>
       <GradeBar tier={stat.tier} from={tick.from} />
+      <TalentRead stat={stat} />
       <small className="num">{growthText(stat.growth) || ' '}</small>
     </div>
   );
@@ -59,7 +68,7 @@ function StatRow({ stat }: { readonly stat: StatLine }) {
     <div className="stat-row">
       <GradeBadge grade={stat.tier.grade} />
       <span>{stat.label}</span>
-      <span className="num">{tick.shown.toFixed(1)}</span>
+      <span className="num">{statText(tick.shown)}</span>
       <span className="growth num">{growthText(stat.growth)}</span>
       <GradeBar tier={stat.tier} from={tick.from} />
       <TalentRead stat={stat} />
