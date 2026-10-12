@@ -35,6 +35,8 @@ export type {
   PlaceDef,
   PlaceKind,
   PriceTemplate,
+  PromotedRank,
+  PromotionText,
   SenseiProfile,
   SettingText,
   SightDef,

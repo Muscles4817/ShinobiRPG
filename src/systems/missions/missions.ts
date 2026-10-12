@@ -1,4 +1,5 @@
 import type { Rng } from '@/core';
+import type { Rank } from '@/systems/standing';
 import { rollCheck, type StatId, type Stats } from '@/systems/stats';
 
 import type { EncounterRun, EncounterStage } from './encounter';
@@ -11,6 +12,20 @@ import type { StagePay } from './encounterPay';
  * stage (`encounter.ts`) puts recon and a choice of approach before any fight.
  */
 export type MissionRank = 'D' | 'C' | 'B' | 'A' | 'S';
+
+/** The shinobi rank each rank of job is given to: B and A to chūnin, S to jōnin. */
+export const RANK_FOR_MISSION: Readonly<Record<MissionRank, Rank>> = {
+  D: 'genin',
+  C: 'genin',
+  B: 'chunin',
+  A: 'chunin',
+  S: 'jonin',
+};
+
+/** B-rank and harder jobs: the record a jōnin nomination reads. */
+export function isSeniorMission(rank: MissionRank): boolean {
+  return rank !== 'D' && rank !== 'C';
+}
 
 export interface CheckApproach {
   readonly label: string;
@@ -61,6 +76,8 @@ export interface MissionDef {
   readonly withTeam?: boolean;
   /** Always on the board (patrols, watches); otherwise jobs are posted for a few days at a time. */
   readonly standing?: boolean;
+  /** Never posted: an exam stage runs it (the survival forest). */
+  readonly examOnly?: boolean;
   readonly stages: readonly MissionStage[];
 }
 

@@ -1,5 +1,6 @@
 import { hashUnit } from '@/core';
-import type { MissionDef } from '@/systems/missions';
+import { RANK_FOR_MISSION, type MissionDef } from '@/systems/missions';
+import { rankAtLeast, type Standing } from '@/systems/standing';
 
 import type { GameContext } from './context';
 import type { Board, Posting } from './boardState';
@@ -8,7 +9,8 @@ import type { GameState } from './state';
 /**
  * The jobs board. Standing jobs (patrols, watches) are always there, once a day. Everything
  * else is posted for a few days and then gone, and only jobs you are trusted with are posted
- * at all. Which jobs go up is a hash of the save's seed and the day: varied per save,
+ * at all: your record must reach a job's mark, and your rank its rank (B-rank jobs go to chūnin).
+ * Exam-only missions are never posted. Which jobs go up is a hash of the save's seed and the day: varied per save,
  * reproducible, and computable at any time without consuming the game's dice.
  */
 
@@ -20,8 +22,12 @@ const MAX_DAYS_UP = 4;
 /** After a long absence, only the last few weeks of postings matter. */
 const MAX_CATCH_UP_DAYS = 28;
 
-function trusted(def: MissionDef, completed: number): boolean {
-  return def.minMissionsCompleted <= completed;
+function trusted(def: MissionDef, standing: Standing): boolean {
+  return (
+    def.examOnly !== true &&
+    def.minMissionsCompleted <= standing.missionsCompleted &&
+    rankAtLeast(standing.rank, RANK_FOR_MISSION[def.rank])
+  );
 }
 
 function postingFor(board: Board, def: MissionDef, day: number): Posting {
@@ -35,11 +41,11 @@ function postDay(
   board: Board,
   day: number,
   missions: readonly MissionDef[],
-  completed: number,
+  standing: Standing,
 ): Board {
   const kept = board.postings.filter((p) => p.expiresDay >= day);
   const candidates = missions.filter(
-    (m) => !m.standing && trusted(m, completed) && !kept.some((p) => p.missionId === m.id),
+    (m) => !m.standing && trusted(m, standing) && !kept.some((p) => p.missionId === m.id),
   );
   const fresh = candidates.filter((m) => hashUnit(board.seed, day, m.id) < DAILY_POST_CHANCE);
   const fillers = candidates
@@ -57,10 +63,9 @@ export function boardFor(state: GameState, ctx: GameContext): Board {
   const today = state.time.day;
   if (state.board.refreshedDay >= today) return state.board;
   const missions = ctx.content.missions.all;
-  const completed = state.standing.missionsCompleted;
   const from = Math.max(state.board.refreshedDay + 1, today - MAX_CATCH_UP_DAYS);
   let board = state.board;
-  for (let day = from; day <= today; day++) board = postDay(board, day, missions, completed);
+  for (let day = from; day <= today; day++) board = postDay(board, day, missions, state.standing);
   return board;
 }
 
@@ -71,7 +76,7 @@ export type Availability =
 
 /** Whether a job is on the board today, and how. */
 export function availability(state: GameState, ctx: GameContext, def: MissionDef): Availability {
-  if (!trusted(def, state.standing.missionsCompleted)) return { kind: 'absent' };
+  if (!trusted(def, state.standing)) return { kind: 'absent' };
   const board = boardFor(state, ctx);
   if (def.standing) {
     return { kind: 'standing', doneToday: board.lastTaken[def.id] === state.time.day };
@@ -101,7 +106,7 @@ export function newPostingsTomorrow(state: GameState, ctx: GameContext): string[
     boardFor(state, ctx),
     tomorrow,
     ctx.content.missions.all,
-    state.standing.missionsCompleted,
+    state.standing,
   );
   return next.postings.filter((p) => p.postedDay === tomorrow).map((p) => p.missionId);
 }

@@ -39,6 +39,11 @@ export interface SenseiProfile {
   readonly style: string;
   /** Story text for a weekly lesson (no numbers). */
   readonly lesson: string;
+  /**
+   * Whether they let another genin sit an exam in place of a teammate who can't or won't.
+   * Left out, they refuse: a team is a team.
+   */
+  readonly toleratesReplacement?: boolean;
 }
 
 /**
