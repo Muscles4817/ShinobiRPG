@@ -210,6 +210,26 @@ not to make every approach equally strong. More resources should mean more power
   village populations. Other villages and the original pack are filled to match, with a mix
   of authored and generated people.
 
+**Training relationship, agreed in principle:**
+
+- **The verb:** "Train with [person]" where they are. They offer the arts they are
+  better than you at.
+- **Efficiency:** base × your aptitude × grade gap (equal is a little better than solo,
+  +1 is good, +2 is very good, +3 is no better than +2) × their rank as a teaching
+  factor (plus a personal quirk) × your condition.
+- **Access is the throttle:** bond needed (scaled by their rank relative to yours),
+  sessions per week by rank, bond grows from training, peers grow together. The sensei is
+  the special case: guaranteed weekly time and signature techniques. `lesson` folds into
+  this verb.
+- **Fights use the same formula,** scaled down, with the foe's grade in the arts you used.
+- **Who chooses what you train depends on the teacher and the relationship.** A teacher
+  profile says whether they steer, and bond can loosen that.
+- **Teaching juniors** is worth having eventually, once the player has genin. Not now.
+- **A teacher's price is templated:** a few reusable approaches with swappable
+  flavour: bond, ryo, a mission, a favour, or combinations.
+- **Order:** the Naruto pack's people come first (author the known Konoha shinobi); the
+  original pack is sized from that baseline.
+
 ### D3. Technique mastery stages and learning by doing: open
 
 ### D4. Techniques as verbs (effect vocabulary): open
