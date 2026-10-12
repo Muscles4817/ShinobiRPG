@@ -310,6 +310,26 @@ not to make every approach equally strong. More resources should mean more power
 - **The sensei fights alongside the team when it's serious** (high-threat missions).
   After promotion to chūnin, more missions are solo.
 
+**Lethality and injury, agreed:**
+
+- **Lethality targets:**
+  - Equals: about 1–2 rounds (4–8 exchanges).
+  - One grade apart: the stronger side wins head-on within a round unless the weaker
+    side's kit turns it.
+  - Two or more grades apart: head-on, it's over in 1–2 exchanges.
+  - These are bench tests.
+- **Avoiding combat must be a valid path to victory.** The gameplay before a fight
+  (missions, scouting, approach) needs work so that not fighting, sneaking past,
+  negotiating or fleeing are real options. This is its own topic (engagement).
+- **No death.** Defeat means hospital plus an injury.
+- **Named injuries** (ribs, hand, eyes…), each with specific effects and a duration in
+  days, built like hunger (a `ModifierSpec` plus a fight effect). The hospital shortens
+  them; stamina speeds recovery.
+- **Chakra exhaustion:** ending a fight nearly drained, or overusing empowerment,
+  leaves reserves only partly refilled the next day.
+- **Stat roles:** proposed table in the discussion; pending confirmation along with the
+  flat health question.
+
 ### D3. Technique mastery stages and learning by doing: open
 
 ### D4. Techniques as verbs (effect vocabulary): open
