@@ -10,7 +10,7 @@ played on a phone while travelling. Original setting: Tōrōgakure, the Village 
 Lanterns. Stack: TypeScript (strict), React, Vite, vite-plugin-pwa, Vitest.
 
 Roadmap (milestones): **1. vertical slice** (done) → **2. people & relationships** (done) → 3. progression (ranks, elements, spirits) → 4. world & travel → 5. branching paths (rogue / Kage)
-→ 6. depth. Before 3, combat is being playtested in several styles (see decision 16).
+→ 6. depth. Combat has settled on Plan & Watch; other styles are shelved (see decision 16).
 
 The game ships **content packs** (whole settings). `naruto` is a fan pack for personal play;
 `original` is the game's own world and the only one a public release may contain.
@@ -114,11 +114,15 @@ ui ──► game ──► content ──► systems ──► core
     stored stats; `companionStats` derives them from their specialty and your record, so a
     teammate is always a fair match. Your sensei teaches weekly (`lesson`) and hands over
     their `teaches` techniques once your bond is high enough.
-16. **Fight styles are engines, chosen per save.** `GameContext.engines` lists every engine on offer
-    (Classic, Plan & Watch; Deck is shelved: its code and tests stay in `engines/deck/` and must
-    keep passing, but it isn't offered and new traits and tools need not reach it); `settings.combatStyle` picks the one that starts
+16. **Fight styles are engines; Plan & Watch is the canonical one.** `GameContext.engines` lists
+    every engine on offer, and today that is Plan & Watch (`plan-v1`) alone, so the fight-style
+    picker is hidden. Classic (`engines/duel/`) and Deck (`engines/deck/`) are **shelved**: their
+    code and tests stay and must keep passing, but they aren't offered, and new traits, tools and
+    verbs need not reach them ("every engine" below means Plan & Watch). Tests that need a
+    shelved engine inject it into the context. `settings.combatStyle` picks the one that starts
     new fights and `engineFor` routes to it. A fight in progress always continues in the engine
-    whose id is in its `CombatState`. What the player sets up in a style (Plan & Watch cards) comes
+    whose id is in its `CombatState`, even a shelved one (`GameContext.shelvedEngines` keeps
+    Classic routable for saves made mid-fight in it). What the player sets up in a style (Plan & Watch cards) comes
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
@@ -183,7 +187,9 @@ ui ──► game ──► content ──► systems ──► core
 - **Add or rewrite a combat engine (fight style):** implement `CombatEngine` in
   `systems/combat/engines/<name>/` on top of `rules/`, export its factory from
   `systems/combat/index.ts`, and add it to `defaultEngines()` in `game/context.ts`. It appears
-  in the fight-style picker automatically. No other code changes. Narrate damage and healing
+  in the fight-style picker automatically (shown once more than one style is offered). No
+  other code changes. Shelving an engine moves it to `shelvedEngines()` (if saves may be
+  mid-fight in it) and migrates saves that chose it. Narrate damage and healing
   with `harmLine`/`healLine` (`rules/narration.ts`) so the amount shows as a chip, never in the story. Removing an engine or
   changing its id needs a migration for saves that are mid-fight in it or have it chosen.
 - **Add a player action:** add a variant to `GameAction` (`game/actions/types.ts`), write a

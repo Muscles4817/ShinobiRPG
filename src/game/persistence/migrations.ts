@@ -177,6 +177,19 @@ function v12ToV13(state: RawState): RawState {
   };
 }
 
+/** The one fight style offered from save version 14 on. */
+const CANONICAL_ENGINE_ID = 'plan-v1';
+
+/**
+ * v13 → v14: Plan & Watch becomes the only fight style; Classic is shelved. A save that chose
+ * any other style moves to Plan & Watch. A Classic fight in progress is left alone: the game
+ * still routes it to the shelved Classic engine, so it finishes as it started.
+ */
+function v13ToV14(state: RawState): RawState {
+  const settings = asRecord(state.settings);
+  return { ...state, settings: { ...settings, combatStyle: CANONICAL_ENGINE_ID } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -190,4 +203,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   10: v10ToV11,
   11: v11ToV12,
   12: v12ToV13,
+  13: v13ToV14,
 };

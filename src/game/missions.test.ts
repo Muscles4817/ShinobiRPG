@@ -1,29 +1,15 @@
 import { ok } from '@/core';
 import type { CombatEngine } from '@/systems/combat';
-import { act, ctx, lastEntry, newGame, veteran, withAllStats } from '@/test/gameFixtures';
+import { act, ctx, fightOut, lastEntry, newGame, veteran, withAllStats } from '@/test/gameFixtures';
 
 import type { GameContext } from './context';
 import { dispatch } from './dispatch';
 import type { GameState } from './state';
 
-/** Takes the given option, or searches for a foe that is hiding when it can't. */
-function fight(state: GameState, optionId: string, context: typeof ctx): GameState {
-  for (const id of [optionId, 'search', 'guard']) {
-    const next = dispatch(state, { type: 'combatAct', optionId: id }, context);
-    if (next.ok) return next.value;
-  }
-  throw new Error(`No combat option worked instead of ${optionId}`);
-}
-
-function playMission(
-  state: GameState,
-  missionId: string,
-  combatOption = 'strike',
-  context = ctx,
-): GameState {
+function playMission(state: GameState, missionId: string, context = ctx): GameState {
   let s = act(state, { type: 'startMission', missionId }, context);
   for (let i = 0; i < 200 && (s.mission || s.combat); i++) {
-    if (s.combat) s = fight(s, combatOption, context);
+    if (s.combat) s = fightOut(s, context);
     else if (dispatch(s, { type: 'missionContinue' }, context).ok)
       s = act(s, { type: 'missionContinue' }, context);
     else s = act(s, { type: 'missionChoose', approachIndex: 0 }, context);
@@ -113,7 +99,7 @@ describe('combat engine boundary', () => {
     };
     const context: GameContext = { ...ctx, engines: [instantWin] };
     const weakling = withAllStats(veteran(newGame({}, context)), 1);
-    const end = playMission(weakling, 'storehouse-ghost', 'win', context);
+    const end = playMission(weakling, 'storehouse-ghost', context);
     expect(end.standing.missionsCompleted).toBe(6);
     expect(end.character.vitals.health).toBe(1);
   });
