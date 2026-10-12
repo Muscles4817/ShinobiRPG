@@ -62,7 +62,7 @@ export const VILLAGE_CHUNIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'distracted',
-      teaches: ['lantern-cut', 'moonfall-slash'],
+      teaches: ['lantern-cut', 'moonfall-slash', 'twice-folded-edge'],
       price: { kind: 'bond', minStage: 1, line: '“Help me sort the slips sometime. Deal?”' },
     },
   },

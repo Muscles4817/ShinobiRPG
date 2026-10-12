@@ -18,6 +18,18 @@ const PATHS: Readonly<Record<IconId, ReactNode>> = {
     </>
   ),
   scroll: <path d="M9 6h14v20H9zM6 6h6M20 6h6M6 26h6M20 26h6M13 11h6M13 15h6M13 19h4" />,
+  stacks: (
+    <>
+      <path d="M5 4h22v24H5zM5 12h22M5 20h22" />
+      <circle cx="10" cy="8" r="2" />
+      <circle cx="16" cy="8" r="2" />
+      <circle cx="13" cy="16" r="2" />
+      <circle cx="21" cy="16" r="2" />
+      <circle cx="10" cy="24" r="2" />
+      <circle cx="16" cy="24" r="2" />
+      <circle cx="22" cy="24" r="2" />
+    </>
+  ),
   house: <path d="M3 15L16 5l13 10M7 13v14h18V13M13 27v-7h6v7" />,
   heal: <path d="M13 5h6v8h8v6h-8v8h-6v-8H5v-6h8z" />,
   torii: <path d="M3 8c9 2.5 17 2.5 26 0M6 13h20M10 9v20M22 9v20" />,

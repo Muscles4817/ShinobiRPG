@@ -9,7 +9,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     effects: [{ verb: 'daze', power: 16 }],
     chakraCost: 12,
-    requirements: {},
+    rank: 'D',
     difficulty: 60,
   },
   {
@@ -20,7 +20,8 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     element: 'lightning',
     effects: [{ verb: 'damage', power: 26 }],
     chakraCost: 18,
-    requirements: {},
+    rank: 'A',
+    needs: { nature: 'lightning' },
     difficulty: 100,
   },
   {
@@ -30,7 +31,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     effects: [{ verb: 'damage', power: 19 }],
     chakraCost: 8,
-    requirements: {},
+    rank: 'D',
     difficulty: 60,
   },
   {
@@ -40,7 +41,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     effects: [{ verb: 'damage', power: 27 }],
     chakraCost: 14,
-    requirements: {},
+    rank: 'B',
     difficulty: 100,
   },
   {
@@ -50,7 +51,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'daze', power: 18 }],
     chakraCost: 12,
-    requirements: {},
+    rank: 'C',
     difficulty: 70,
   },
   {
@@ -58,10 +59,11 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Flying Swallow',
     description: 'Wind chakra lengthens your blade’s edge beyond the steel.',
     discipline: 'kenjutsu',
+    needs: { weapon: 'blade' },
     element: 'wind',
     effects: [{ verb: 'damage', power: 21 }],
     chakraCost: 10,
-    requirements: {},
+    rank: 'C',
     difficulty: 70,
   },
   {
@@ -71,7 +73,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     effects: [{ verb: 'seal', power: 16 }],
     chakraCost: 12,
-    requirements: {},
+    rank: 'C',
     difficulty: 70,
   },
 ];

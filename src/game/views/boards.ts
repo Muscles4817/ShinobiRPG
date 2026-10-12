@@ -1,16 +1,14 @@
 import type { MissionDef } from '@/systems/missions';
-import { fightingPower, STAT_INFO, type StatId } from '@/systems/stats';
+import { fightingPower } from '@/systems/stats';
 
 import { INTEL_FEE } from '../actions/intel';
-import { STUDY_ENERGY_COST } from '../actions/study';
 import { availability } from '../board';
 import type { GameContext } from '../context';
 import { combatStats } from '../gear';
-import { studyPointsFor } from '../profile';
 import { placeHere } from '../ops';
 import { enemyStats, scout, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
-import { choice, type Choice, type Discipline } from './common';
+import { choice, type Choice } from './common';
 
 /** One kind of foe on a job, from the client's report. */
 export interface Foe {
@@ -120,75 +118,5 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         posted: on.kind === 'standing' ? 'Standing job' : postedFor(on.daysLeft),
       };
     }),
-  };
-}
-
-export interface Scroll extends Choice {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly discipline: Discipline;
-  readonly progress: number;
-  readonly difficulty: number;
-  readonly sessionsLeft: number;
-  /** A technique only your clan teaches. */
-  readonly fromClan: boolean;
-  /** Unmet requirements, e.g. "Ninjutsu 7 (you have 5.0)". */
-  readonly needs: readonly string[];
-  /** Total stat points still missing; Coming up lists the closest first. */
-  readonly shortfall: number;
-}
-
-export interface AcademyView {
-  readonly name: string;
-  readonly energyCost: number;
-  readonly studying: readonly Scroll[];
-  readonly ready: readonly Scroll[];
-  readonly comingUp: readonly Scroll[];
-}
-
-export function academyView(state: GameState, ctx: GameContext): AcademyView | null {
-  const place = placeHere(state, ctx, 'academy');
-  if (!place) return null;
-  const { stats } = state.character;
-  const scrolls = place.techniqueIds
-    .filter((id) => {
-      const clan = ctx.content.techniques.require(id).clan;
-      return (
-        !state.techniques.known.includes(id) &&
-        (clan === undefined || clan === state.character.clanId)
-      );
-    })
-    .map((id): Scroll => {
-      const t = ctx.content.techniques.require(id);
-      const progress = state.techniques.progress[id] ?? 0;
-      const unmet = (Object.entries(t.requirements) as [StatId, number][]).filter(
-        ([stat, min]) => stats[stat] < min,
-      );
-      const needs = unmet.map(
-        ([stat, min]) => `${STAT_INFO[stat].label} ${min} (you have ${stats[stat].toFixed(1)})`,
-      );
-      return {
-        ...choice(state, ctx, { type: 'study', techniqueId: id }),
-        id,
-        name: t.name,
-        description: t.description,
-        discipline: t.discipline,
-        progress,
-        difficulty: t.difficulty,
-        sessionsLeft: Math.ceil(
-          (t.difficulty - progress) / studyPointsFor(state.character, t, ctx),
-        ),
-        needs,
-        fromClan: t.clan !== undefined,
-        shortfall: unmet.reduce((sum, [stat, min]) => sum + min - stats[stat], 0),
-      };
-    });
-  return {
-    name: place.name,
-    energyCost: STUDY_ENERGY_COST,
-    studying: scrolls.filter((s) => s.progress > 0),
-    ready: scrolls.filter((s) => s.progress === 0 && s.needs.length === 0),
-    comingUp: scrolls.filter((s) => s.needs.length > 0).sort((a, b) => a.shortfall - b.shortfall),
   };
 }

@@ -1,10 +1,11 @@
-import { headerView, homeView, hospitalView, type Choice } from '@/game';
+import { headerView, homeView, hospitalView, scrollDesk, type Choice } from '@/game';
 
 import { Room } from '../../art/Room';
 import { Banner } from '../../components/Banner';
 import { InjuryList } from '../Condition';
 import { GearLocker } from './GearLocker';
 import { HomeKitchen } from './HomeKitchen';
+import { ScrollDesk } from './ScrollDesk';
 import type { PlaceProps } from '../types';
 
 interface HotspotProps {
@@ -50,6 +51,7 @@ function Jump({ label, className, target }: { label: string; className: string; 
 export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
   const view = homeView(state, ctx);
   const header = headerView(state, ctx);
+  const desk = scrollDesk(state, ctx);
   if (!view) return null;
   return (
     <>
@@ -73,6 +75,9 @@ export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
         <Hotspot className="hs-kettle" label="Nap" choice={view.nap} perform={perform} />
         <Jump className="hs-stove" label="Cook" target="kitchen" />
         <Jump className="hs-chest" label="Change gear" target="locker" />
+        {desk.scrolls.length > 0 && (
+          <Jump className="hs-desk" label="Read scrolls" target="scroll-desk" />
+        )}
         <Hotspot className="hs-shrine" label="Pray (soon)" perform={perform} />
       </div>
       <main className="page">
@@ -120,6 +125,7 @@ export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
           )}
           {view.nap.blocker && <p className="muted small">Nap: {view.nap.blocker}</p>}
         </section>
+        <ScrollDesk desk={desk} perform={perform} />
         <HomeKitchen ctx={ctx} state={state} perform={perform} />
         <GearLocker ctx={ctx} state={state} perform={perform} />
       </main>

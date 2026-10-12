@@ -87,7 +87,7 @@ export const VILLAGE_CHUNIN: readonly PersonDef[] = [
     schedule: { morning: 'hospital', afternoon: 'training-grounds', evening: null, night: null },
     teacher: {
       quirk: 'patient',
-      teaches: ['mystical-palm', 'passing-fang'],
+      teaches: ['mystical-palm', 'passing-fang', 'cherry-blossom-impact'],
       price: { kind: 'bond', minStage: 1 },
     },
   },

@@ -33,7 +33,13 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     teacher: {
       quirk: 'harsh',
       steers: { focus: 'weakest', freeAtStage: 3 },
-      teaches: ['lantern-question', 'whispering-dread'],
+      teaches: [
+        'lantern-question',
+        'whispering-dread',
+        'cellar-silence',
+        'the-long-question',
+        'night-without-lanterns',
+      ],
       price: { kind: 'bond', minStage: 3, line: '“I teach people I trust. I trust very few.”' },
     },
   },
@@ -63,7 +69,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'patient',
-      teaches: ['river-fog', 'tide-lash'],
+      teaches: ['river-fog', 'tide-lash', 'falls-hammer', 'thousand-lantern-shades'],
       price: { kind: 'ryo', perSession: 30, line: '“Bait money. The fish are getting choosy.”' },
     },
   },
@@ -92,7 +98,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'natural',
-      teaches: ['moth-needle', 'snuffed-wick-step'],
+      teaches: ['moth-needle', 'snuffed-wick-step', 'night-watch-flurry'],
       price: { kind: 'bond', minStage: 2 },
     },
   },
@@ -120,7 +126,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'distracted',
-      teaches: ['snare-ward', 'pitch-snare'],
+      teaches: ['snare-ward', 'pitch-snare', 'buried-lantern', 'great-ash-mandala'],
       price: {
         kind: 'all',
         parts: [
@@ -159,7 +165,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'patient',
-      teaches: ['mending-glow', 'wick-sense'],
+      teaches: ['mending-glow', 'wick-sense', 'night-ward-lamp'],
       price: {
         kind: 'mission',
         missionId: 'lantern-keepers-cat',
@@ -195,7 +201,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     teacher: {
       quirk: 'natural',
       steers: { focus: 'weakest', freeAtStage: 4 },
-      teaches: ['temple-bell-palm', 'kindled-pulse'],
+      teaches: ['temple-bell-palm', 'kindled-pulse', 'bridge-holder-palm', 'every-lantern-lit'],
       price: {
         kind: 'all',
         parts: [

@@ -36,7 +36,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     teacher: {
       quirk: 'harsh',
       steers: { focus: 'specialty', freeAtStage: 3 },
-      teaches: ['iron-gate-palm'],
+      teaches: ['iron-gate-palm', 'kiln-door-kick', 'banked-coals'],
       price: {
         kind: 'all',
         parts: [
@@ -86,7 +86,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     teacher: {
       quirk: 'natural',
       steers: { focus: 'specialty', freeAtStage: 3 },
-      teaches: ['great-lantern-flame'],
+      teaches: ['great-lantern-flame', 'hibana-kiln-heart', 'gatefire-pillar'],
       price: {
         kind: 'ryo',
         perSession: 40,
@@ -125,7 +125,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     teacher: {
       quirk: 'distracted',
       steers: { focus: 'weakest', freeAtStage: 2 },
-      teaches: ['ghost-lantern-veil'],
+      teaches: ['ghost-lantern-veil', 'last-lantern', 'grave-lantern-walk', 'ten-thousand-wicks'],
       price: {
         kind: 'favour',
         favourId: 'yomi-grave-lantern',
@@ -166,7 +166,13 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     teacher: {
       quirk: 'patient',
       steers: { focus: 'specialty', freeAtStage: 2 },
-      teaches: ['forge-flash-cut'],
+      teaches: [
+        'forge-flash-cut',
+        'smiths-hammer',
+        'lantern-gate-edge',
+        'forge-yard-storm',
+        'last-light-of-the-forge',
+      ],
       price: {
         kind: 'all',
         parts: [
@@ -209,7 +215,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'patient',
-      teaches: ['shrine-rope-binding'],
+      teaches: ['shrine-rope-binding', 'stitch-seal', 'ink-prison', 'thousand-rope-shrine'],
       price: { kind: 'bond', minStage: 2, line: '“Traps are secrets. I tell secrets to friends.”' },
     },
   },

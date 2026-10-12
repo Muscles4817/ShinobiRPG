@@ -1,19 +1,37 @@
-import { GEAR_SLOTS, type GearDef, type GearSlot, type IconId, type ToolDef } from '@/content';
+import {
+  GEAR_SLOTS,
+  gearSlot,
+  type GearDef,
+  type GearSlot,
+  type IconId,
+  type ToolDef,
+} from '@/content';
+import type { GearRank } from '@/systems/combat';
 import { owns, POUCH_LIMIT, toolCount } from '@/systems/inventory';
-import { STAT_INFO, type StatDelta, type StatId } from '@/systems/stats';
+import type { JournalChip } from '@/systems/journal';
 
 import type { GameContext } from '../context';
-import { equippedIn, gearBonuses } from '../gear';
+import { combatStats, equippedIn } from '../gear';
 import { currentLocation } from '../ops';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
+import { gearChips, gearKindLabel } from './gearWords';
 
 /** Gear shops (racks of gear, a tray of fight tools) and your own gear locker at home. */
 
 export const SLOT_LABEL: Readonly<Record<GearSlot, string>> = {
-  weapon: 'Weapons',
+  weapon: 'Blades and fists',
+  thrown: 'Thrown',
   body: 'Armour',
-  charm: 'Charms',
+  charm: 'Focus charms',
+};
+
+/** One piece of each slot, for the gear chest at home. */
+const SLOT_SINGULAR: Readonly<Record<GearSlot, string>> = {
+  weapon: 'In hand',
+  thrown: 'Thrown',
+  body: 'Armour',
+  charm: 'Focus',
 };
 
 export interface GearItem {
@@ -22,8 +40,13 @@ export interface GearItem {
   readonly description: string;
   readonly icon: IconId;
   readonly cost: number;
-  /** e.g. ["Kenjutsu +2", "Speed +1"]. */
-  readonly bonuses: readonly string[];
+  readonly rank: GearRank;
+  /** What kind of piece: "Blade", "Flak jacket", "Focus". */
+  readonly kind: string;
+  /** Named, never sold: earned, found or inherited. */
+  readonly unique: boolean;
+  /** What it does in a fight, e.g. "Strike becomes a cut", "Cuts +10%". */
+  readonly effects: readonly JournalChip[];
   readonly owned: boolean;
   readonly equipped: boolean;
   readonly buy: Choice;
@@ -70,22 +93,19 @@ export interface GearShopView {
   readonly tools: readonly ToolItem[];
 }
 
-export function bonusLabels(delta: StatDelta): string[] {
-  return (Object.entries(delta) as [StatId, number][]).map(
-    ([id, value]) => `${STAT_INFO[id].label} ${value >= 0 ? '+' : ''}${value}`,
-  );
-}
-
 function gearItem(state: GameState, ctx: GameContext, def: GearDef): GearItem {
   const owned = owns(state.inventory, def.id);
-  const equipped = state.inventory.equipped[def.slot] === def.id;
+  const equipped = state.inventory.equipped[gearSlot(def)] === def.id;
   return {
     id: def.id,
     name: def.name,
     description: def.description,
     icon: def.icon,
     cost: def.cost,
-    bonuses: bonusLabels(def.statBonuses),
+    rank: def.rank,
+    kind: gearKindLabel(def),
+    unique: def.unique === true,
+    effects: gearChips(def, combatStats(state, ctx).strength),
     owned,
     equipped,
     buy: choice(state, ctx, { type: 'buyGear', gearId: def.id }),
@@ -108,7 +128,7 @@ export function gearShopView(
     racks: GEAR_SLOTS.map((slot) => ({
       slot,
       label: SLOT_LABEL[slot],
-      items: items.filter((g) => g.slot === slot).map((g) => gearItem(state, ctx, g)),
+      items: items.filter((g) => gearSlot(g) === slot).map((g) => gearItem(state, ctx, g)),
     })).filter((r) => r.items.length > 0),
     tools: (place.toolIds ?? []).map((id) => toolItem(state, ctx, ctx.content.tools.require(id))),
   };
@@ -125,8 +145,6 @@ export interface LoadoutSlot {
 
 export interface LoadoutView {
   readonly slots: readonly LoadoutSlot[];
-  /** Everything your gear adds in fights, e.g. ["Kenjutsu +2"]. */
-  readonly total: readonly string[];
   /** The fight tools you carry. */
   readonly pouch: readonly ToolItem[];
 }
@@ -141,15 +159,14 @@ export function loadoutView(state: GameState, ctx: GameContext): LoadoutView {
       const worn = equippedIn(state, ctx, slot);
       return {
         slot,
-        label: SLOT_LABEL[slot].replace(/s$/, ''),
+        label: SLOT_SINGULAR[slot],
         worn: worn && gearItem(state, ctx, worn),
         takeOff: worn ? choice(state, ctx, { type: 'unequipGear', slot }) : null,
         spares: owned
-          .filter((g) => g.slot === slot && g.id !== worn?.id)
+          .filter((g) => gearSlot(g) === slot && g.id !== worn?.id)
           .map((g) => gearItem(state, ctx, g)),
       };
     }),
-    total: bonusLabels(gearBonuses(state, ctx)),
     pouch: Object.keys(state.inventory.tools).flatMap((id) => {
       const def = ctx.content.tools.get(id);
       return def ? [toolItem(state, ctx, def)] : [];

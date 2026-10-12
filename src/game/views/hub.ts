@@ -6,6 +6,7 @@ import type { GameContext } from '../context';
 import { currentLocation, healthFraction } from '../ops';
 import type { GameState } from '../state';
 import { availability } from '../board';
+import { libraryAccess } from '../shelves';
 import { closedSign } from '../village';
 import { tavernCrowd } from '../actions/tavern';
 import { choice } from './common';
@@ -52,6 +53,10 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
       return isHungry(state.character.vitals) ? 'You’re hungry' : place.blurb;
     case 'academy':
       return academyLine(place.techniqueIds, state, ctx);
+    case 'library':
+      return libraryAccess(state)
+        ? 'For chūnin and above'
+        : academyLine(place.techniqueIds, state, ctx);
     case 'home':
       return homeLine(state, place.blurb);
     case 'gear':

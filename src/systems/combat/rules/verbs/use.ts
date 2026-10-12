@@ -1,6 +1,8 @@
 import type { EffectOf, ScalingStat, TechniqueEffect, Verb } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatTechnique } from '../../contract';
+import type { CombatGear } from '../../gearContract';
+import { focusDrive } from '../focus';
 import { profileOf } from './profiles';
 
 /**
@@ -16,6 +18,7 @@ export interface EffectUse<V extends Verb = Verb> {
 
 interface Fighter {
   readonly attributes: CombatAttributes;
+  readonly gear?: CombatGear;
 }
 
 function statValue(fighter: Fighter, stat: ScalingStat, technique: CombatTechnique): number {
@@ -32,9 +35,10 @@ function average(fighter: Fighter, stats: readonly ScalingStat[], t: CombatTechn
   return stats.reduce((sum, s) => sum + statValue(fighter, s, t), 0) / stats.length;
 }
 
-/** How strongly the user drives this effect. */
+/** How strongly the user drives this effect, sharpened by a focus that covers it. */
 export function driveOf(user: Fighter, use: EffectUse): number {
-  return average(user, profileOf(use.effect).drive, use.technique);
+  const focus = focusDrive(user, use.effect.verb, use.technique.discipline);
+  return average(user, profileOf(use.effect).drive, use.technique) * focus;
 }
 
 /** How well the target resists this effect; zero when nothing resists it. */

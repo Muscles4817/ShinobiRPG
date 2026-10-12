@@ -5,13 +5,14 @@ import type {
   CombatItem,
   CombatOutcome,
   CombatPerk,
+  CombatTechnique,
 } from '@/systems/combat';
 import { restockPouch } from '@/systems/inventory';
 import { createStats, type Stats } from '@/systems/stats';
 import { maxChakra, MAX_HEALTH, reservesFor } from '@/systems/vitals';
 
 import type { GameContext } from './context';
-import { combatStats } from './gear';
+import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
 
 /** Translates game entities into the combat contract's vocabulary. */
@@ -58,6 +59,15 @@ export function afterPouch(state: GameState, outcome: CombatOutcome): GameState 
 /** The player's combatant id in every fight. */
 export const PLAYER_COMBATANT_ID = 'player';
 
+/** What the player knows, the unstable ones marked so the fight makes them costly and unsure. */
+function playerTechniques(state: GameState, ctx: GameContext): CombatTechnique[] {
+  const { known, unstable } = state.techniques;
+  return known.map((id) => {
+    const def = ctx.content.techniques.require(id);
+    return unstable.includes(id) ? { ...def, unstable: true } : def;
+  });
+}
+
 export function playerCombatant(state: GameState, ctx: GameContext): CombatantSetup {
   const { name, stats, vitals, nature } = state.character;
   const armed = combatStats(state, ctx);
@@ -69,10 +79,11 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     maxHealth: MAX_HEALTH,
     chakra: vitals.chakra,
     maxChakra: maxChakra(stats),
-    techniques: state.techniques.known.map((id) => ctx.content.techniques.require(id)),
+    techniques: playerTechniques(state, ctx),
     nature,
     perks: perksOf(state, ctx),
     items: pouchOf(state, ctx),
+    gear: combatGear(state, ctx),
   };
 }
 

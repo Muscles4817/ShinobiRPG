@@ -71,9 +71,11 @@ describe('daily actions', () => {
     expect(state.techniques.known).toContain('ember-breath');
   });
 
-  it('blocks studying techniques with unmet requirements', () => {
-    const result = dispatch(newGame(), { type: 'study', techniqueId: 'tide-lash' }, ctx);
-    expect(result).toEqual({ ok: false, error: 'Needs better Chakra Control, Ninjutsu.' });
+  it('blocks studying a technique two ranks above your grade, saying what opens it', () => {
+    const game = newGame();
+    const chunin = { ...game, standing: { ...game.standing, rank: 'chunin' as const } };
+    const result = dispatch(chunin, { type: 'study', techniqueId: 'tide-lash' }, ctx);
+    expect(result).toEqual({ ok: false, error: "Needs D ninjutsu; you're E." });
   });
 });
 

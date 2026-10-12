@@ -33,6 +33,7 @@
   font-weight: 700;
   line-height: 1.15;
   position: relative;
+  padding-right: 18px;
 }
 .tdetail {
   font-size: 0.66rem;
@@ -69,11 +70,30 @@
 .t-basic {
   --d: var(--muted);
 }
+/* Rank and stability are ink stamps on the card, never filled pills. */
+.tcard .trank {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: var(--g, var(--grade-e));
+}
+.tcard .tunstable {
+  align-self: flex-start;
+  position: relative;
+  color: var(--cost);
+  font-size: 0.62rem;
+}
 .tcard.ghost {
   background: transparent;
   border: 1px dashed var(--line);
   color: var(--muted);
   box-shadow: none;
+}
+.detail-card .badge[data-grade] {
+  color: var(--g, var(--grade-e));
+}
+.detail-card .badge.unstable {
+  color: var(--cost);
 }
 .detail-card b {
   display: flex;

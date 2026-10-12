@@ -9,7 +9,7 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'confuse', power: 15 }],
     chakraCost: 10,
-    requirements: { genjutsu: 12, intellect: 11 },
+    rank: 'C',
     difficulty: 70,
   },
   {
@@ -19,7 +19,7 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     effects: [{ verb: 'damage', power: 12 }],
     chakraCost: 4,
-    requirements: { taijutsu: 9, perception: 8 },
+    rank: 'D',
     difficulty: 50,
   },
   {
@@ -29,7 +29,8 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'kenjutsu',
     effects: [{ verb: 'damage', power: 19 }],
     chakraCost: 10,
-    requirements: { kenjutsu: 13, speed: 10 },
+    rank: 'C',
+    needs: { weapon: 'blade' },
     difficulty: 75,
   },
   {
@@ -39,7 +40,7 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'conceal', power: 12, scaling: { drive: ['genjutsu'] } }],
     chakraCost: 9,
-    requirements: { genjutsu: 10, perception: 8 },
+    rank: 'D',
     difficulty: 60,
   },
   {
@@ -50,7 +51,8 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     element: 'water',
     effects: [{ verb: 'trap', power: 8, dazes: true }],
     chakraCost: 8,
-    requirements: { ninjutsu: 8, chakraControl: 7 },
+    rank: 'D',
+    needs: { control: 'D' },
     difficulty: 55,
   },
 ];

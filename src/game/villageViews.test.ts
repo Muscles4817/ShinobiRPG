@@ -1,6 +1,6 @@
 import { ctx, formTeam, freshGame, newGame } from '@/test/gameFixtures';
 
-import { academyView } from './views/boards';
+import { academyView } from './views/academy';
 import { hubView } from './views/hub';
 import { marketView } from './views/market';
 

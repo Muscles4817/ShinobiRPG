@@ -1,5 +1,7 @@
 import { gearShopView, headerView, type GearItem, type ToolItem } from '@/game';
 
+import { GearChips, GearKind } from './GearTags';
+
 import { Icon } from '../../art/Icon';
 import { Banner } from '../../components/Banner';
 import type { PlaceProps } from '../types';
@@ -9,7 +11,7 @@ interface ShopItemProps {
   readonly perform: PlaceProps['perform'];
 }
 
-/** One piece on the rack: price tag, what it adds, and buy or wear. */
+/** One piece on the rack: price tag, kind and rank, what it does, and buy or wear. */
 function RackItem({ item, perform }: ShopItemProps) {
   const action = item.owned ? item.equip : item.buy;
   const label = item.equipped ? 'Wearing' : item.owned ? 'Wear' : 'Buy';
@@ -20,13 +22,8 @@ function RackItem({ item, perform }: ShopItemProps) {
         <Icon id={item.icon} size={30} />
       </span>
       <b>{item.name}</b>
-      <span className="chips">
-        {item.bonuses.map((b) => (
-          <span key={b} className="chip gain">
-            {b}
-          </span>
-        ))}
-      </span>
+      <GearKind item={item} />
+      <GearChips item={item} />
       <small className="rack-desc muted">{item.description}</small>
       {action?.blocker && !item.owned && <small className="blocker">{action.blocker}</small>}
       <button
@@ -79,7 +76,7 @@ function TrayItem({ item, perform }: ToolProps) {
   );
 }
 
-/** A gear shop as wall racks by slot (weapons, armour, charms), each piece resting on a bar. */
+/** A gear shop as wall racks by slot (held, thrown, armour, focus), each piece on a bar. */
 export function GearShopPage({
   ctx,
   state,
@@ -106,7 +103,8 @@ export function GearShopPage({
             <small> ryo</small>
           </span>
           <span className="muted small">
-            Gear adds to your stats in fights. New gear goes on if the slot is free.
+            Gear changes how you fight, not your stats. Rank B is sold to chūnin. New gear goes on
+            if the slot is free.
           </span>
         </section>
         {view.racks.map((rack) => (

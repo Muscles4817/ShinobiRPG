@@ -10,7 +10,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     summary: 'A gang has been robbing barges below the falls. The guild wants a whole team on it.',
     slots: 4,
     energyCost: 30,
-    reward: { ryo: 280, reputation: 7 },
+    reward: { ryo: 280, reputation: 7, scrollId: 'riverbank-draw', gearId: 'ashen-needles' },
     minMissionsCompleted: 2,
     withTeam: true,
     stages: [
@@ -46,7 +46,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     summary: 'Ghosts are snuffing out the Festival of Returning lanterns. The shrine needs a team.',
     slots: 4,
     energyCost: 30,
-    reward: { ryo: 320, reputation: 8 },
+    reward: { ryo: 320, reputation: 8, scrollId: 'kindled-pulse', gearId: 'hungry-lantern' },
     minMissionsCompleted: 4,
     withTeam: true,
     stages: [
@@ -70,6 +70,43 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         kind: 'combat',
         text: 'Two ghosts rise from the unlit lanterns, mouths open and hungry.',
         enemyIds: ['hungry-ghost', 'hungry-ghost'],
+        canFlee: false,
+      },
+    ],
+  },
+  {
+    id: 'cold-kiln',
+    title: 'The Cold Kilns',
+    rank: 'C',
+    client: 'The Tōrokage’s Office',
+    summary:
+      'Someone has lit the abandoned kilns above the falls. The Old Lamp wants a team to find out who.',
+    slots: 4,
+    energyCost: 30,
+    reward: { ryo: 360, reputation: 9, scrollId: 'old-lamp-dawn', gearId: 'inkwell-blade' },
+    minMissionsCompleted: 6,
+    withTeam: true,
+    stages: [
+      {
+        kind: 'narrative',
+        text: 'The kilns have been cold since before you were born. Tonight smoke is rising from every chimney.',
+      },
+      {
+        kind: 'check',
+        text: 'Ash lies thick on the kiln road, and something has been dragged through it.',
+        approaches: [
+          { label: 'Read the marks in the ash', stat: 'perception', difficulty: 11 },
+          { label: 'Work out what they are firing', stat: 'intellect', difficulty: 11 },
+        ],
+        success: 'You find the back way in, past a sleeping lookout.',
+        failure: 'A bell rings in the dark. They know you are coming.',
+        onFailure: 'penalty',
+        failureDamage: 8,
+      },
+      {
+        kind: 'combat',
+        text: 'A deserter steps out of the biggest kiln with a black blade, and his crew close in behind.',
+        enemyIds: ['bandit-chief', 'academy-dropout', 'bandit-archer', 'bandit-thug'],
         canFlee: false,
       },
     ],

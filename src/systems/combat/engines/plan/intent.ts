@@ -98,7 +98,7 @@ function knownCards(state: PlanState, f: PlanFighter, insight: boolean): string 
   const ids = insight ? f.loadout[state.range].map((s) => s.card) : (state.seen[f.id] ?? []);
   const names = ids.flatMap((id) => {
     const card = findCard(f, id);
-    return card ? [cardLabel(card)] : [];
+    return card ? [cardLabel(card, f)] : [];
   });
   if (names.length === 0) return undefined;
   return `${insight ? `${RANGE_LABEL[state.range]} cards` : 'Seen'}: ${names.join(', ')}`;

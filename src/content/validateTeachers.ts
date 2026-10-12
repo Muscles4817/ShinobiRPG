@@ -29,7 +29,8 @@ export function validateTeachers(pack: ContentPack): string[] {
   ];
 }
 
-function partsOf(price: PriceTemplate): readonly SimplePrice[] {
+function partsOf(price: PriceTemplate | undefined): readonly SimplePrice[] {
+  if (!price) return [];
   return price.kind === 'all' ? price.parts : [price];
 }
 
@@ -92,14 +93,18 @@ function shapeProblems(teacher: TeacherProfile): string[] {
   } else if (sessions !== undefined && sessions > DAYS_PER_WEEK) {
     problems.push('can’t teach more than once a day');
   }
-  const parts = partsOf(teacher.price);
-  if (teacher.price.kind === 'all' && new Set(parts.map((p) => p.kind)).size !== parts.length) {
-    problems.push('has a combined price that repeats a kind');
-  }
-  if (teacher.price.kind === 'all' && parts.length < 2) {
-    problems.push('has a combined price with fewer than two parts');
-  }
-  return problems;
+  return [...problems, ...combinedPriceProblems(teacher.price)];
+}
+
+function combinedPriceProblems(price: PriceTemplate | undefined): string[] {
+  if (price?.kind !== 'all') return [];
+  const parts = partsOf(price);
+  return [
+    ...(new Set(parts.map((p) => p.kind)).size !== parts.length
+      ? ['has a combined price that repeats a kind']
+      : []),
+    ...(parts.length < 2 ? ['has a combined price with fewer than two parts'] : []),
+  ];
 }
 
 function priceProblems(

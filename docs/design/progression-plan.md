@@ -965,6 +965,74 @@ statId }` (`game/actions/trainWith.ts`): at a training place, anyone ranked shin
   a training place at some hour and teaches only their own clan's techniques. Release markers
   add Ibiki, Hiashi and Shikaku. No save change.
 
+**Phase 4 (in progress).**
+
+- 4.1: technique ranks. `TechniqueDef.rank` (E–S) replaces the raw stat `requirements`, which are
+  gone (and `unmetRequirements` with them); hard needs are `needs: { nature?, minReserves?,
+control? }` (`clan` stays its own field). The rules live in `systems/techniques/learning.ts`
+  and `techniques.ts`: at or below your grade in the discipline learns normally, one above at
+  `UNSTABLE_STUDY` (0.5) and arrives unstable, two or more above is impossible from any source
+  ("Needs D ninjutsu; you're E."). Study speed (`sessionStudyPoints`, through
+  `game/learning.ts`) is the old study points × aptitude in the art × a chakra-control factor
+  (chakra arts only) × the source (scroll 1, teacher 1.5; the old lesson boost) × identity
+  modifiers. The sensei's signatures pass the same gate. `TechniqueBook.unstable` (save v20
+  marks known techniques ranked above the character's grade). In fights an unstable technique
+  costs ×1.5 chakra (`rules/unstable.ts`, read by `chakraCost`, so every engine) and misfires
+  25% of the time in Plan & Watch (chakra spent, nothing done). Every action passes through
+  `stabiliseTechniques` in `dispatch`, which steadies those your grade has caught up with, with a
+  journal line. Validation: ranks and needs are sane, starting techniques are rank E with no
+  needs, and every discipline has such a scroll at the academy. The academy folds blocked
+  scrolls into Coming up with the reason; technique cards carry a rank stamp and an Unstable
+  stamp. Bench (`unstableBench.test.ts`, plain D against plain D, 120 seeds): Ember Breath wins
+  88% steady and 68% unstable; Kindled Pulse 50% and 36%.
+
+- 4.3: gear. `GearDef` is a union by `kind` (weapon with a `shape`: blade, knuckles, throwing,
+  senbon; armour with a `level`: light, flak, heavy, plate; focus with `boosts` a verb or a
+  discipline), with a `rank` D–A and `unique` for named weapons; `statBonuses` is gone. Slots are
+  weapon (held), thrown, body and charm. Equipped gear reaches the fight as `CombatantSetup.gear`
+  (`systems/combat/gearContract.ts`); the rules are `rules/weapons.ts` (cut driven by kenjutsu,
+  knuckles' power and guard pierce, throwing steel, senbon with a perception-driven daze; unique
+  verbs drain, daze, sunder), `rules/armour.ts` (the `armoured` kit rule by level, and a speed cost
+  strength carries away) and `rules/focus.ts` (drive ×1.12, +0.06 a rank, inside `driveOf`).
+  Blade arts need a blade in hand (`needs.weapon`), to study and to play (a disabled reason at
+  the card table). A starting technique may need a weapon (the academy issues the blade). Shops show kind, a rank
+  stamp and chips from the same rule numbers; B-rank needs chūnin. Two unique weapons per pack,
+  unsold. Save v22 (after 3.3's v20 and 4.1's v21) moves worn pieces to their new slots and issues a blade to a character who
+  knows a blade art and owns none (new genin get one at creation too). Gear bench
+  (`gearBench.test.ts`, chūnin plain against equals): win rate in no armour 43%, flak 65%, heavy
+  85%, plate 93%; against an archer 43% bare, 3% in plate; with strength 30, 98% either way. A
+  kenjutsu-peak fighter wins 0% bare-handed, 80% with a D blade. The 1v1 bench is unchanged.
+
+- 4.2: sources. The academy holds rank E–D only and no clan techniques; a new `library` place
+  kind (`techniqueIds`, rank C–B, no clan techniques; both validated in `validateSources`) is
+  open to chūnin and above ("The restricted stacks are for chūnin and above.") and studied at a
+  new source quality, `library` 1.1 (scroll 1, teacher 1.5). Each pack's start location has one
+  (the Village Archives, the Lantern Archive) with hours; its page shows a lattice with the
+  reason while you're shut out, then a bay of shelves per art with what you're reading on the
+  desk (`game/shelves.ts`, `views/library.ts`, `LibraryPage`). Clan techniques come from clan
+  people through 3.3's `teacher.teaches` (3.5's clan heads, plus Sasuke and Naruto for the
+  clans without a head, and Akari and Yomi for the clan trumps); `TeacherProfile.quirk` and
+  `price` became optional so a teacher can be just a `teaches` list. Scroll items:
+  `inventory.scrolls` (technique id → true), read with `studyScroll { techniqueId }` at home or
+  in a library you may use, at the scroll's pace and by the same gate (`studyFrom` is shared with
+  `study`); the home page has a reading desk and a "Read scrolls" hotspot when you own unread
+  ones. Missions hand over `reward.scrollId` and `reward.gearId` once (`game/missionRewards.ts`),
+  shown as chips and on the debrief. The general C techniques moved to the library; Gate of
+  Opening and Kindled Pulse (the taijutsu trumps) are scroll rewards only, from the hardest team
+  job, which also hands over a named weapon (Samehada, the Hungry Lantern); two more C scrolls per
+  pack ride on mid-rank jobs. Every technique needs a source (shelf, teacher, scroll reward or
+  starting kit; validated). Grade-up "What this opens" now includes the library once you may use
+  it and your own scrolls. Save v23 adds the empty scroll case.
+- 4.4 (content): both packs now meet the per-discipline target (E 2, D 3, C 4, B 3, A 2,
+  S 1; ninjutsu D is over because no existing technique was removed). The original pack
+  gained 44 techniques and the fan pack 54, all with sources. Every S technique is a trump
+  card. The fan pack also gained five elite missions (to rank B) handing out rare scrolls
+  and named weapons; the original pack gained one late team job and two unique weapons.
+  **Follow-up:** the default plan rarely slots seal, confuse or trump cards, so those
+  techniques barely show on a bench. They are strong when a player slots them by hand;
+  the default plan or the foe AI should learn to use them. Several elite missions are
+  untested in play.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -1172,3 +1240,44 @@ statId }` (`game/actions/trainWith.ts`): at a training place, anyone ranked shin
 - 3.5: Rin (original) has no teacher profile, as before: her schedule never reaches the training
   ground and the tavern's regulars depend on it. Iruka's does (his night slot), since Konoha's
   academy instructor was the obvious first teacher.
+- 4.1: ranks came from the old requirement in the art (5 or less E, 6–10 D, 11–14 C) with
+  judgement for the rest: trumps A or S, sensei signatures D–C (Lightning Blade A, Front Lotus
+  B). Physical needs kept: medical and the fine water jutsu need D control, the clone techniques
+  8 reserves, Lightning Blade a lightning nature. Other old minor stat requirements (strength,
+  speed, willpower) were dropped. No `weapon` need yet: gear kinds arrive with 4.3.
+- 4.1: unstable means "rank above your grade", for migration and new learning alike, so the
+  v20 migration marks known techniques a rank above too (not only two or more above). A
+  stabilised technique stays stable even if a stat later drops.
+- 4.1: chakra control's study factor (0.75 + 0.02 a point, at most 1.5) applies to ninjutsu,
+  genjutsu and fūinjutsu only; taijutsu and kenjutsu study ignores it. The misfire chance is
+  flat (25%), not scaled by control.
+- 4.1: stabilisation runs after every action in `dispatch`, beside 2.5's `noteGradeUps`. A sensei teaches the first signature you could learn; the
+  lesson card shows the next blocked one with its reason.
+- 4.3: no gear shop has a keeper person, so B-rank access is by rank only (chūnin and up);
+  the smith's favour waits for a keeper person. A-rank gear is unique only (validated). The
+  flak vest is rank B, so it is sold to chūnin (and 6.3 hands it over at promotion).
+- 4.3: gear quality is its rank (D 0 … A 3 steps); each rule grows by the step, no per-item
+  numbers. Weapon needs are `TechniqueNeeds.weapon` (blade or knuckles; every kenjutsu technique
+  needs a blade, validated). They gate learning against the weapon equipped in hand (not grade-up
+  "What this opens" lists) and using: `rules/weapons.ts` blocks the card only for fighters whose
+  gear is known (the player); foes and teammates carry no `gear` and are
+  armed as their techniques suggest.
+- 4.3: armour's speed cost is applied to the fighter's speed for the whole fight (`bodyFrom`),
+  so it slows initiative, footwork and dodging together; strength 40 carries any armour. Worn
+  armour and the `armoured` trait don't stack (the better counts). Thrown weapons count as
+  `weapon` hits, so armour helps against kunai.
+- 4.3: unique weapons are in the packs but not obtainable yet (no reward hook); 4.2/4.4 hand
+  them out. The issued blade is the cheapest D blade the start location sells; the v22 migration
+  uses the pack's content (as v18 does) to find it.
+- 4.2: no general B technique exists in either pack yet, so the libraries hold C only until 4.4
+  adds B content; validation already allows B.
+- 4.2: the trumps 1.5 placed at the academy were not library material: Gate of Opening and
+  Kindled Pulse became mission scrolls, the clan trumps clan teachings.
+- 4.2: a clan technique is taught through the existing signature path, so it needs the bond stage
+  any signature does, and a train-with session with someone ahead of you in a stat. A clan with no
+  clan head is taught by its genin (Sasuke, Naruto) until the roster has elders for them.
+- 4.2: reading your own scroll in a library obeys the library's rank and hours; at home it is
+  always possible. A scroll you own stays in the case after you learn it; the desk hides it. A
+  repeated job doesn't hand over a scroll or weapon you already own.
+- 4.2: 3.5's roster techniques were converted to ranks by the 4.1 rule (12–13 → C, 8–10 → D),
+  Black Blade Draw needing a blade and Water Syrup Capture Field D control.
