@@ -284,6 +284,32 @@ not to make every approach equally strong. More resources should mean more power
   carry their own verbs.
 - **Gear does not grow with use.** Durability and weight are out.
 
+**Team tactics, agreed:**
+
+- **Formation is rows:** each side has a front and a back row, with the shared range
+  band between the sides. The back row can't be struck up close while someone stands in
+  front of it. Foes use rows too. **Future experiment:** real per-fighter ranges
+  (Shikamaru hangs back while Chōji closes in). Not in this pass; keep the engine's
+  range code open to it.
+- **Control escalates with bonds:**
+  - At first you **don't** direct the team: the sensei or the teammates' own judgement
+    sets their stances.
+  - As bonds grow, you earn **stances** for teammates who trust you, then **card editing**
+    once a teammate's trust is high or your sensei sees you as the leader.
+- **Stances:** press, cover [someone], support, hold.
+- **Targeting:** a per-card target rule (weakest, strongest, threatening my back row,
+  marked) and a team mark set between rounds.
+- **Combos:**
+  - Generic, with no authoring: element combos when two allies hit one target in an
+    exchange; set-up and payoff (an ally's daze or seal makes your finisher land
+    harder).
+  - Authored, bond-gated: combination techniques both partners must know.
+- **No coordination meter.**
+- **Mission roles are in:** on team missions, a stage check uses the best teammate for
+  the job (tracker, sensor, medic). Stages are written with roles in mind.
+- **The sensei fights alongside the team when it's serious** (high-threat missions).
+  After promotion to chūnin, more missions are solo.
+
 ### D3. Technique mastery stages and learning by doing: open
 
 ### D4. Techniques as verbs (effect vocabulary): open
