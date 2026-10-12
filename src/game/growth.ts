@@ -15,7 +15,7 @@ import type { Character, GameState } from './state';
 
 /**
  * Every way a character grows in stats (drills, lessons, spars, fights) goes through
- * `growCharacter`: one formula (base × solo efficiency × aptitude × modifiers × teacher) and
+ * `growCharacter`: one formula (base × solo or teacher efficiency × aptitude × modifiers) and
  * one discovery rule. The first few sessions in a stat give a rough read of the talent for it;
  * an art with no talent at all shows itself on the first try.
  */
@@ -56,14 +56,24 @@ export function discover(character: Character, gains: StatDelta): Grown {
   };
 }
 
-/** Grows the character from a session's base gains; `teacher` multiplies the session. */
+/** Who a session is with, beyond the character's own effort. */
+export interface Session {
+  /** A flat multiplier on the whole session (the sensei's weekly lesson). */
+  readonly teacher?: number;
+  /** Someone to learn from: their value in each stat (see `teacherEfficiency`). */
+  readonly teachers?: StatDelta;
+}
+
+/** Grows the character from a session's base gains. */
 export function growCharacter(
   character: Character,
   gains: StatDelta,
   ctx: GameContext,
-  teacher = 1,
+  session: Session = {},
 ): Grown {
-  const stats = applyTraining(character.stats, gains, growthFor(character, ctx, teacher));
+  const growth = growthFor(character, ctx, session.teacher);
+  const withTeachers = session.teachers ? { ...growth, teachers: session.teachers } : growth;
+  const stats = applyTraining(character.stats, gains, withTeachers);
   return discover({ ...character, stats }, gains);
 }
 

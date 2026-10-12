@@ -103,7 +103,7 @@ export const lesson: ActionHandler<ActionOf<'lesson'>> = {
     if (!sensei || !team || !profile) return state;
     const gains = lessonGains(profile.specialty);
     const before = state.character.stats;
-    const grown = growCharacter(state.character, gains, ctx, LESSON_TEACHER);
+    const grown = growCharacter(state.character, gains, ctx, { teacher: LESSON_TEACHER });
     const { stats } = grown.character;
     const bond = addPoints(bondOf(state, sensei.id), LESSON_BOND);
     const trained: GameState = {

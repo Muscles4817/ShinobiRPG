@@ -62,7 +62,8 @@ describe('growth and aptitude', () => {
   it('lets a teacher multiply a session', () => {
     const state = withAptitude(withAllStats(newGame(), 10), {});
     const alone = growCharacter(state.character, { taijutsu: 1 }, ctx).character.stats.taijutsu;
-    const taught = growCharacter(state.character, { taijutsu: 1 }, ctx, 3).character.stats;
+    const taught = growCharacter(state.character, { taijutsu: 1 }, ctx, { teacher: 3 }).character
+      .stats;
     expect(taught.taijutsu - 10).toBeCloseTo(3 * (alone - 10), 2);
   });
 

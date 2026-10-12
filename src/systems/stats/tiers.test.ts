@@ -7,6 +7,7 @@ describe('stat tiers', () => {
       grade: 'E',
       rank: 'Genin',
       label: 'Genin E',
+      min: 0,
       progress: 0.75,
       next: { label: 'Genin D', at: 8 },
     });

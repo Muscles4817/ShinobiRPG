@@ -1,6 +1,7 @@
 import type { ShinobiView, StatLine } from '@/game';
 
 import { GradeBadge, GradeBar } from '../components/Grade';
+import { useTick } from '../components/useTick';
 
 const GROUP_TITLES = { discipline: 'Disciplines', body: 'Body', mind: 'Mind' } as const;
 
@@ -38,27 +39,29 @@ function TalentRead({ stat }: { readonly stat: StatLine }) {
 
 function DisciplineTile({ stat }: { readonly stat: StatLine }) {
   const css = stat.label.toLowerCase().replace('ū', 'uu');
+  const tick = useTick(stat.label, stat.value);
   return (
     <div className={`disc d-${css}`}>
       <small>{stat.label}</small>
       <span className="disc-value">
-        <b className="num">{stat.value.toFixed(1)}</b>
+        <b className="num">{tick.shown.toFixed(1)}</b>
         <GradeBadge grade={stat.tier.grade} />
       </span>
-      <GradeBar tier={stat.tier} />
+      <GradeBar tier={stat.tier} from={tick.from} />
       <small className="num">{growthText(stat.growth) || ' '}</small>
     </div>
   );
 }
 
 function StatRow({ stat }: { readonly stat: StatLine }) {
+  const tick = useTick(stat.label, stat.value);
   return (
     <div className="stat-row">
       <GradeBadge grade={stat.tier.grade} />
       <span>{stat.label}</span>
-      <span className="num">{stat.value.toFixed(1)}</span>
+      <span className="num">{tick.shown.toFixed(1)}</span>
       <span className="growth num">{growthText(stat.growth)}</span>
-      <GradeBar tier={stat.tier} />
+      <GradeBar tier={stat.tier} from={tick.from} />
       <TalentRead stat={stat} />
     </div>
   );

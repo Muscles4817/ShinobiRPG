@@ -356,6 +356,7 @@
 .report-rows div {
   display: flex;
   justify-content: space-between;
+  gap: 12px;
   border-bottom: 1px dashed var(--line);
   padding: 3px 0;
 }
@@ -368,6 +369,23 @@
 }
 .report-note {
   font-size: 0.95rem;
+}
+.report-list {
+  display: grid;
+  gap: 4px;
+}
+.report-list-title {
+  font-family: var(--font-story);
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 4px 0 0;
+}
+.report-rows dt,
+.report-rows dd {
+  overflow-wrap: anywhere;
+}
+.report-rows dd {
+  text-align: right;
 }
 
 .seal {
@@ -388,6 +406,16 @@
   background: color-mix(in srgb, var(--seal) 8%, transparent);
   /* The game's one flourish: the seal is pressed onto the card just after it appears. */
   animation: stamp 0.4s cubic-bezier(0.2, 0.8, 0.3, 1.2) 0.25s both;
+}
+
+/* A grade-up's seal is the new letter, in the grade's own colour. */
+.seal.grade-seal {
+  width: 56px;
+  height: 56px;
+  font-size: 2.1rem;
+  border-color: var(--g, var(--seal));
+  color: var(--g, var(--seal));
+  background: color-mix(in srgb, var(--g, var(--seal)) 12%, transparent);
 }
 
 @keyframes stamp {
