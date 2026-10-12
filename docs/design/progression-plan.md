@@ -836,6 +836,29 @@ These were folded into the D2 discussion. Where each landed:
   reaches C on day 61 (was day 3), and a further month alone adds about one point of the C
   band's seven.
 
+**Phase 3 (in progress).**
+
+- 3.1/3.2: people have real stats; peers grow. `PersonDef` has a `rank` (`PersonRank`: the
+  standing ranks without `academy`, plus `civilian`), `stats` (authored with the new
+  `statLine(base, marks)` helper: a grade or exact value for everything, then exceptions) and an
+  optional `aptitude` (`talent(base, marks)`). Every person in both packs has them: senseis are
+  jōnin, A in their specialty (Ito and Anko B), the instructors chūnin C, the leaders kage
+  (A–S), villagers civilians, genin E–D (the original pack's genin sit on the old 5/9/6 line).
+  `validateRanks` checks role against rank, the best stat against the rank's band and a
+  sensei's specialty at B–A. Generated genin get a graduate's line (5, +4 specialty, +1 body,
+  each stat ±1) and a clanless aptitude from `createRng(hashString(seed|id))`, so the game's
+  dice are untouched. `companionStats` is gone: fights and scouting read `personStats` (the
+  stored stats, else the `PersonDef`'s). Genin grow every day (`game/people/regimen.ts`: four
+  sessions of specialty, its support stat and one body stat, a day off in about seven) through
+  `applyTraining` with their aptitude and traits; teammates also get the sensei's weekly lesson
+  (× 3, the sensei's specialty) on their own weekday. `peopleGrown` catches up every ended day
+  on each new day (`spendTime`), into `people.progress` (stats plus `lastGrownDay`); a spar
+  trains the partner with the same gains as you. Save v19 snapshots the old derivation at the
+  save's mission record for every genin (authored ones into `progress`), and gives generated
+  ones a rank and talent. Pacing: over a month, the focused player's fighting power goes 6.6 to
+  8.7 and taijutsu 8 to 11.5; teammates go about 7.2 to 9.5, their specialty about +3.5
+  (asserted: more than 1.5, and within 25% of the player's fighting power).
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -976,3 +999,16 @@ These were folded into the D2 discussion. Where each landed:
   none has been read, so they don't give talent away.
 - 2.2: the 60-day target holds now, mostly by drilling: the weekly lesson adds little. So the
   stall is in C (asserted), not D; "solo stalls in D" waits for Phase 3 teachers.
+- 3.1: villagers have a `civilian` rank rather than none; a leader may be jōnin or kage, an
+  instructor chūnin or jōnin. A grade in `statLine` stands for a typical value in its band (E 5,
+  D 10, C 16, B 23, A 32, S 44). Authored people without an `aptitude` roll one from their id
+  with their clan's odds, the same in every save.
+- 3.1: generated genin's stats and talent come from a hash-seeded Rng (seed and id), not the
+  game's dice, so the class, the scenes and every later roll stay as they were.
+- 3.2: only genin grow (adults stay as written). Someone with no `progress` entry starts
+  growing from the next day; nobody grows for days before the save knew them. Catch-up is
+  capped at 60 days. A teammate's weekly lesson is in the sensei's specialty (as yours is), not
+  their own. Rivals are not a separate kind: a classmate with a better aptitude simply pulls
+  ahead (asserted in `peerGrowth.test.ts`).
+- 3.2: the support stat per discipline and the lesson's gains moved from `actions/lesson.ts` to
+  `people/regimen.ts`, shared by your lesson and your teammates'.

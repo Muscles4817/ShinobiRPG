@@ -1,7 +1,8 @@
 import { look } from '../../look';
+import { statLine, talent } from '../../statLine';
 import type { PersonDef } from '../../types';
 
-/** The genin of your graduating year and the year above. Friends, rivals, nuisances. */
+/** The genin of your graduating year. Friends, rivals, nuisances. */
 export const CANON_GENIN: readonly PersonDef[] = [
   {
     id: 'naruto',
@@ -9,6 +10,23 @@ export const CANON_GENIN: readonly PersonDef[] = [
     familyName: 'Uzumaki',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, {
+      ninjutsu: 9,
+      stamina: 10,
+      reserves: 12,
+      willpower: 11,
+      chakraControl: 3,
+      intellect: 3,
+      genjutsu: 1,
+    }),
+    aptitude: talent(1, {
+      reserves: 1.6,
+      stamina: 1.4,
+      willpower: 1.3,
+      genjutsu: 0.4,
+      chakraControl: 0.7,
+    }),
     clanId: 'uzumaki',
     traitIds: ['brash', 'kind'],
     favouriteRecipeId: 'miso-soup',
@@ -33,6 +51,8 @@ export const CANON_GENIN: readonly PersonDef[] = [
     familyName: 'Uchiha',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(6, { ninjutsu: 12, speed: 11, taijutsu: 10, perception: 10, chakraControl: 9 }),
     clanId: 'uchiha',
     traitIds: ['proud', 'focused'],
     favouriteRecipeId: 'grilled-fish-set',
@@ -57,6 +77,15 @@ export const CANON_GENIN: readonly PersonDef[] = [
     familyName: 'Haruno',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, {
+      genjutsu: 9,
+      chakraControl: 12,
+      intellect: 12,
+      strength: 4,
+      stamina: 4,
+      reserves: 4,
+    }),
     traitIds: ['diligent', 'proud'],
     favouriteRecipeId: 'rice-ball-bento',
     appearance: look('long', {
@@ -80,6 +109,8 @@ export const CANON_GENIN: readonly PersonDef[] = [
     familyName: 'Hyūga',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { taijutsu: 9, perception: 11, chakraControl: 9, willpower: 6 }),
     clanId: 'hyuga',
     traitIds: ['kind', 'humble'],
     favouriteRecipeId: 'spicy-hot-pot',
@@ -98,6 +129,8 @@ export const CANON_GENIN: readonly PersonDef[] = [
     familyName: 'Inuzuka',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { taijutsu: 10, perception: 10, speed: 9, strength: 8 }),
     clanId: 'inuzuka',
     traitIds: ['brash', 'proud'],
     appearance: look('spiky', {
@@ -121,6 +154,8 @@ export const CANON_GENIN: readonly PersonDef[] = [
     familyName: 'Aburame',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { ninjutsu: 9, intellect: 10, perception: 9, willpower: 9 }),
     clanId: 'aburame',
     traitIds: ['calm', 'focused'],
     appearance: look('short', {
@@ -139,6 +174,8 @@ export const CANON_GENIN: readonly PersonDef[] = [
     familyName: 'Nara',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { ninjutsu: 9, intellect: 12, perception: 9, willpower: 4, stamina: 4 }),
     clanId: 'nara',
     traitIds: ['lazy', 'cunning'],
     appearance: look(
@@ -161,6 +198,8 @@ export const CANON_GENIN: readonly PersonDef[] = [
     familyName: 'Akimichi',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { taijutsu: 9, strength: 11, stamina: 10, reserves: 9, speed: 4 }),
     clanId: 'akimichi',
     traitIds: ['kind', 'humble'],
     appearance: look('spiky', {
@@ -184,6 +223,8 @@ export const CANON_GENIN: readonly PersonDef[] = [
     familyName: 'Yamanaka',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { genjutsu: 10, perception: 8, intellect: 8 }),
     clanId: 'yamanaka',
     traitIds: ['proud', 'curious'],
     appearance: look(
@@ -197,72 +238,6 @@ export const CANON_GENIN: readonly PersonDef[] = [
       morning: 'shopping-district',
       afternoon: 'mission-desk',
       evening: 'shopping-district',
-      night: null,
-    },
-  },
-  {
-    id: 'lee',
-    name: 'Rock',
-    familyName: 'Lee',
-    role: 'genin',
-    title: 'Genin',
-    traitIds: ['diligent', 'brash'],
-    appearance: look(
-      'short',
-      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#f3d2b3', outfit: '#3e6b3a' },
-      'belt',
-    ),
-    specialty: 'taijutsu',
-    bio: 'Cannot use ninjutsu or genjutsu at all. Has decided this will not stop him.',
-    schedule: {
-      morning: 'training-grounds',
-      afternoon: 'training-grounds',
-      evening: 'training-grounds',
-      night: null,
-    },
-  },
-  {
-    id: 'neji',
-    name: 'Neji',
-    familyName: 'Hyūga',
-    role: 'genin',
-    title: 'Genin',
-    clanId: 'hyuga',
-    traitIds: ['proud', 'calm'],
-    appearance: look('long', {
-      hair: '#2a1d14',
-      eyes: '#c9c3d9',
-      skin: '#f3d2b3',
-      outfit: '#e8e0d0',
-    }),
-    specialty: 'taijutsu',
-    bio: 'A branch-house prodigy who believes fate is decided at birth. Rarely wrong in a fight.',
-    schedule: {
-      morning: 'training-grounds',
-      afternoon: 'training-grounds',
-      evening: null,
-      night: null,
-    },
-  },
-  {
-    id: 'tenten',
-    name: 'Tenten',
-    familyName: '',
-    role: 'genin',
-    title: 'Genin',
-    traitIds: ['focused', 'kind'],
-    appearance: look('buns', {
-      hair: '#4a2f1d',
-      eyes: '#4a2f1d',
-      skin: '#f3d2b3',
-      outfit: '#d8789a',
-    }),
-    specialty: 'kenjutsu',
-    bio: 'Never misses with a thrown weapon. Has a scroll for every blade ever made.',
-    schedule: {
-      morning: 'training-grounds',
-      afternoon: 'shopping-district',
-      evening: 'training-grounds',
       night: null,
     },
   },

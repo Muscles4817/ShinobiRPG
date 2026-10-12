@@ -6,13 +6,15 @@ import { MAX_HEALTH } from '@/systems/vitals';
 import type { GameContext } from './context';
 import { adjust, chip, log, statChips } from './ops';
 import { bondOf, requirePerson } from './people/cast';
+import { trainPerson } from './people/progress';
 import { growCharacter, logDiscoveries } from './growth';
 import { addReport, type Report } from './reports';
 import type { GameState } from './state';
 
 /**
  * How a spar ends. Nobody goes to hospital: the fight stops before anyone is really hurt.
- * Win or lose, you learn from your partner's specialty and grow closer.
+ * Win or lose, you learn from your partner's specialty and grow closer, and they learn from
+ * the bout too.
  */
 
 /** Sparring stops before you drop below this share of your health. */
@@ -56,6 +58,8 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
           speed: FOOTWORK_GAIN,
         };
   const growth = growCharacter(state.character, gains, ctx);
+  // The same bout is practice in their own specialty, and footwork, for them.
+  const people = trainPerson(state, ctx, partner, gains);
   const grown = growth.character.stats;
   const bond = BOND_FOR[result];
   const after = adjust(
@@ -64,10 +68,10 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
       combat: null,
       character: growth.character,
       people: {
-        ...state.people,
+        ...people,
         sparringWith: null,
         bonds: {
-          ...state.people.bonds,
+          ...people.bonds,
           [partner.id]: recordMeeting(bondOf(state, partner.id), {
             day: state.time.day,
             delta: bond,

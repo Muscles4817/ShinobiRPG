@@ -15,6 +15,7 @@ import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { NARUTO_CONVERSATIONS } from './conversations';
 import { CANON_GENIN } from './genin';
+import { SENIOR_GENIN } from './seniorGenin';
 import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
 import { SENSEIS_AND_ELDERS } from './senseis';
 import { SENSEI_TECHNIQUES } from './senseiTechniques';
@@ -53,7 +54,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   injuries: INJURIES,
   ingredients: INGREDIENTS,
   recipes: RECIPES,
-  people: [...SENSEIS_AND_ELDERS, ...CANON_GENIN],
+  people: [...SENSEIS_AND_ELDERS, ...CANON_GENIN, ...SENIOR_GENIN],
   conversations: [...GENERIC_CONVERSATIONS, ...NARUTO_CONVERSATIONS],
   names: NAMES,
   team: TEAM,

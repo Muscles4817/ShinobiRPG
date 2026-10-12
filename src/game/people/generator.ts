@@ -1,4 +1,4 @@
-import type { Rng } from '@/core';
+import { createRng, hashString, round1, type Rng } from '@/core';
 import type { PersonDef, PlaceKind } from '@/content';
 import {
   EYE_COLOURS,
@@ -9,14 +9,18 @@ import {
   SKIN_TONES,
   type Appearance,
 } from '@/systems/profile';
-import { DISCIPLINES } from '@/systems/techniques';
+import { createStats, STAT_IDS, type StatId, type Stats } from '@/systems/stats';
+import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { TIME_SLOTS, type TimeSlot } from '@/systems/time';
 
+import { rollCharacterAptitude } from '../aptitude';
 import type { GameContext } from '../context';
 
 /**
  * The genin generator: classmates built from the pack's name pools, its traits and the
  * appearance palettes. Deterministic for a given Rng, so the same seed makes the same class.
+ * Their stats and talent come from the save's seed and their id (not the game's dice): a fresh
+ * graduate's line, a little uneven, and an aptitude rolled like a clanless character's.
  */
 
 /** Where generated genin spend their days. */
@@ -24,6 +28,14 @@ const HAUNTS: readonly PlaceKind[] = ['training', 'market', 'missions', 'academy
 /** Chance a generated genin is out of the village in a given daytime slot. */
 const AWAY_CHANCE = 0.25;
 export const GENERATED_ID_PREFIX = 'genin-';
+/** A fresh graduate's stats, as old classmates were before they had stats of their own. */
+const GRADUATE_BASE = 5;
+const SPECIALTY_BONUS = 4;
+const BODY_BONUS = 1;
+const BODY_STATS: readonly StatId[] = ['strength', 'speed', 'stamina'];
+/** Each stat is off the line by up to this much either way. */
+const STAT_SPREAD = 1;
+const CLANLESS = 'none';
 
 export interface GeneratorInput {
   readonly count: number;
@@ -31,6 +43,8 @@ export interface GeneratorInput {
   readonly takenNames: readonly string[];
   /** Numbering continues from here, so ids stay unique across calls. */
   readonly firstNumber: number;
+  /** The save's seed: stats and talent come from it and the id. */
+  readonly seed: number;
 }
 
 export function generateGenin(ctx: GameContext, rng: Rng, input: GeneratorInput): PersonDef[] {
@@ -43,7 +57,7 @@ export function generateGenin(ctx: GameContext, rng: Rng, input: GeneratorInput)
     taken.add(name);
     families.add(familyName);
     const id = `${GENERATED_ID_PREFIX}${input.firstNumber + i}`;
-    people.push(generateOne(ctx, rng, { id, name, familyName }));
+    people.push(generateOne(ctx, rng, { id, name, familyName, seed: input.seed }));
   }
   return people;
 }
@@ -57,23 +71,42 @@ interface Identity {
   readonly id: string;
   readonly name: string;
   readonly familyName: string;
+  readonly seed: number;
 }
 
 function generateOne(ctx: GameContext, rng: Rng, who: Identity): PersonDef {
   const traitIds = pickTraits(ctx, rng);
   const notes = traitIds.map((id) => ctx.content.traits.require(id).note);
+  const appearance = randomAppearance(rng);
+  const specialty = rng.pick(DISCIPLINES);
+  const talentRng = createRng(hashString(`${who.seed}|${who.id}`));
   return {
     id: who.id,
     name: who.name,
     familyName: who.familyName,
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: graduateStats(specialty, talentRng),
+    aptitude: rollCharacterAptitude(talentRng, ctx.content.clans.require(CLANLESS)),
     traitIds,
-    appearance: randomAppearance(rng),
-    specialty: rng.pick(DISCIPLINES),
+    appearance,
+    specialty,
     bio: notes.join(' '),
     schedule: randomSchedule(ctx, rng),
   };
+}
+
+/** A fresh graduate's line: a specialty, some body work, every stat a little off. */
+function graduateStats(specialty: Discipline, rng: Rng): Stats {
+  const line = createStats(GRADUATE_BASE, {
+    ...Object.fromEntries(BODY_STATS.map((id) => [id, BODY_BONUS])),
+    [specialty]: SPECIALTY_BONUS,
+  });
+  const varied = STAT_IDS.map(
+    (id) => [id, round1(line[id] + (rng.next() * 2 - 1) * STAT_SPREAD)] as const,
+  );
+  return Object.fromEntries(varied) as Record<StatId, number>;
 }
 
 /** Two traits that don't contradict each other. */
