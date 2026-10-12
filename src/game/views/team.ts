@@ -1,32 +1,15 @@
-import { stageName } from '@/systems/bonds';
-import { STAT_INFO } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
-import { LESSON_ENERGY, nextSignature, TEACHES_AT_STAGE, yourSensei } from '../actions/lesson';
-import { learnBlockerFor, learnBlockerText } from '../learning';
 import { SPAR_ENERGY } from '../actions/spar';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
-import { everyone, fullName, whereNow } from '../people/cast';
+import { everyone, whereNow } from '../people/cast';
 import { scoutPerson, type ScoutingRead } from '../scouting';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { personCard, personFace, type PersonFace } from './people';
 
-/** The team side of the training ground: your sensei's weekly lesson and sparring partners. */
-
-export interface LessonCard extends Choice {
-  readonly sensei: PersonFace & { readonly fullName: string };
-  readonly specialty: { readonly id: Discipline; readonly label: string };
-  readonly energyCost: number;
-  readonly style: string;
-  /** The next signature technique: progress once teaching has begun, or what unlocks it. */
-  readonly signature: {
-    readonly name: string;
-    readonly progress: number;
-    readonly locked: string | null;
-  } | null;
-}
+/** Sparring partners at the training ground. */
 
 export interface SparOption extends Choice {
   readonly person: PersonFace;
@@ -35,34 +18,6 @@ export interface SparOption extends Choice {
   readonly energyCost: number;
   /** How they size up against you. */
   readonly read: ScoutingRead | null;
-}
-
-export function lessonCard(state: GameState, ctx: GameContext): LessonCard | null {
-  const sensei = yourSensei(state, ctx);
-  const profile = sensei?.sensei;
-  if (!sensei || !profile) return null;
-  const card = personCard(state, ctx, sensei);
-  // What they'll teach next; failing that, the first one you can't learn yet, and why.
-  const nextId =
-    nextSignature(state, sensei, ctx) ??
-    profile.teaches.find((id) => !state.techniques.known.includes(id));
-  const def = nextId ? ctx.content.techniques.require(nextId) : null;
-  const blocker = def && learnBlockerFor(state, def, ctx);
-  return {
-    ...choice(state, ctx, { type: 'lesson' }),
-    sensei: { ...personFace(state, sensei), fullName: fullName(sensei) },
-    specialty: { id: profile.specialty, label: STAT_INFO[profile.specialty].label },
-    energyCost: LESSON_ENERGY,
-    style: profile.style,
-    signature: def && {
-      name: def.name,
-      progress: Math.min(1, (state.techniques.progress[def.id] ?? 0) / def.difficulty),
-      locked:
-        card.stage < TEACHES_AT_STAGE
-          ? `Taught once you and ${sensei.name} are ${stageName(TEACHES_AT_STAGE).toLowerCase()}s.`
-          : blocker && learnBlockerText(blocker, def),
-    },
-  };
 }
 
 /**

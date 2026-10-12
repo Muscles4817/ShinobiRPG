@@ -1,9 +1,10 @@
 import { act, ctx, newGame } from '@/test/gameFixtures';
 
-import { nextSignature } from './actions/lesson';
 import { playerCombatant } from './combatants';
 import { blockerFor } from './dispatch';
 import { studyPointsFor } from './learning';
+import { nextSignature } from './people/signatures';
+import { teachingOf } from './people/teachers';
 import type { GameState } from './state';
 import { academyView } from './views/academy';
 import { trainingView } from './views/training';
@@ -123,28 +124,29 @@ describe('unstable techniques', () => {
   });
 });
 
-describe('a sensei’s signature techniques', () => {
+describe('a teacher’s signature techniques', () => {
   /** A sensei whose signature is rank C, with you as their close student. */
   function withRankCSensei(value: number) {
     const sensei = ctx.content.people.all.find((p) =>
-      p.sensei?.teaches.some((id) => ctx.content.techniques.require(id).rank === 'C'),
+      p.teacher?.teaches.some((id) => ctx.content.techniques.require(id).rank === 'C'),
     )!;
-    const def = ctx.content.techniques.require(sensei.sensei!.teaches[0]!);
+    const def = ctx.content.techniques.require(sensei.teacher!.teaches[0]!);
     const state = withStat(newGame(), def.discipline, value);
     const team = { ...state.people.team!, senseiId: sensei.id };
     const bond = { points: 30, lastTalkDay: null, heard: [] };
     const people = { ...state.people, team, bonds: { ...state.people.bonds, [sensei.id]: bond } };
-    return { state: { ...state, people }, sensei, def };
+    const ready: GameState = { ...state, people };
+    return { state: ready, teaching: teachingOf(ready, sensei)!, def };
   }
 
   it('obey the same gate: two ranks above you waits, even with a teacher', () => {
     const low = withRankCSensei(5);
-    expect(nextSignature(low.state, low.sensei, ctx)).toBeNull();
-    expect(trainingView(low.state, ctx)?.lesson?.signature).toMatchObject({
-      name: low.def.name,
-      locked: expect.stringMatching(/^Needs D /) as unknown,
-    });
+    expect(nextSignature(low.state, low.teaching, ctx)).toBeNull();
+    const offer = trainingView(low.state, ctx)?.teachers.find(
+      (t) => t.signature?.name === low.def.name,
+    );
+    expect(offer?.signature?.locked).toMatch(/^Needs D /);
     const ready = withRankCSensei(10);
-    expect(nextSignature(ready.state, ready.sensei, ctx)).toBe(ready.def.id);
+    expect(nextSignature(ready.state, ready.teaching, ctx)).toBe(ready.def.id);
   });
 });

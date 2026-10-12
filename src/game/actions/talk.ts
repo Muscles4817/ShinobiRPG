@@ -6,6 +6,11 @@ import { pickConversation } from '../people/talk';
 import { festivalBondBonus } from '../village';
 import type { ActionHandler, ActionOf } from './types';
 
+/** A reply that does a teacher's favour marks it done, once. */
+function withFavour(done: readonly string[], favour: string | undefined): readonly string[] {
+  return favour === undefined || done.includes(favour) ? done : [...done, favour];
+}
+
 export const talk: ActionHandler<ActionOf<'talk'>> = {
   check(state, action, ctx) {
     const person = findPerson(state, ctx, action.personId);
@@ -55,6 +60,7 @@ export const reply: ActionHandler<ActionOf<'reply'>> = {
       people: {
         ...state.people,
         bonds: { ...state.people.bonds, [person.id]: after },
+        favours: withFavour(state.people.favours, choice.favour),
         conversation: { ...talking, answer: { choiceIndex: action.choiceIndex, delta, newStage } },
       },
     };

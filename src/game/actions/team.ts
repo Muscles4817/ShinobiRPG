@@ -39,7 +39,6 @@ export const assignTeam: ActionHandler<ActionOf<'assignTeam'>> = {
           teammateIds,
           senseiOptions: offerSenseis(state.character, ctx.content.people.all),
           senseiId: null,
-          lastLessonDay: null,
         },
       },
     };

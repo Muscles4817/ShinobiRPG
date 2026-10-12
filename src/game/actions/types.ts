@@ -1,4 +1,5 @@
 import type { Rng } from '@/core';
+import type { StatId } from '@/systems/stats';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
@@ -27,7 +28,7 @@ export type GameAction =
   | { readonly type: 'talk'; readonly personId: string }
   | { readonly type: 'reply'; readonly choiceIndex: number }
   | { readonly type: 'endConversation' }
-  | { readonly type: 'lesson' }
+  | { readonly type: 'trainWith'; readonly personId: string; readonly statId: StatId }
   | { readonly type: 'spar'; readonly personId: string }
   | { readonly type: 'setCombatStyle'; readonly style: string }
   | { readonly type: 'buyGear'; readonly gearId: string }

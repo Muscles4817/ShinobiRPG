@@ -1,0 +1,124 @@
+/* "People here" at the training ground: who could train with you, and on what terms. */
+.teachers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.teacher-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+}
+.teacher-card h3 {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 1.05rem;
+}
+.teacher-card .person-top {
+  align-items: flex-start;
+}
+
+/* The price, as a paper slip of conditions. */
+.teach-price {
+  list-style: none;
+  margin: 0;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-radius: var(--radius-sm);
+  background: var(--grain-ink), var(--raise);
+  font-size: 0.85rem;
+}
+.teach-price li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.teach-price li > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.teach-price q {
+  color: var(--muted);
+  font-family: var(--font-story);
+  font-style: italic;
+  quotes: none;
+}
+.teach-price .badge {
+  flex: none;
+  font-size: 0.7rem;
+}
+.teach-price .met .badge {
+  color: var(--good);
+  border-color: var(--good);
+}
+.teach-price .unmet .badge {
+  color: var(--cost);
+  border-color: var(--cost);
+}
+
+/* One tile per stat: the stat in its colour, their grade over yours. */
+.teach-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 6px;
+}
+.teach-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 56px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--d) 55%, var(--line));
+  background: var(--grain), var(--surface);
+  color: var(--ink);
+  text-align: left;
+}
+.teach-stat:disabled {
+  opacity: 0.55;
+}
+.teach-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--d);
+}
+.teach-grades {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.teach-grades small {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.teach-locked {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+.teacher-card .fold summary {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.teachers > .fold summary {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}

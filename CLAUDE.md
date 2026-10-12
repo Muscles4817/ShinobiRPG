@@ -124,8 +124,15 @@ ui ──► game ──► content ──► systems ──► core
     like the board (`peopleGrown` in `game/people/progress.ts`, hashing the seed, never the
     Rng) into `people.progress` (stats plus `lastGrownDay`); your teammates also get your
     sensei's weekly lesson, and a spar trains your partner too. Fights and scouting read
-    `personStats`. Your sensei teaches weekly (`lesson`) and hands over their `teaches`
-    techniques once your bond is high enough.
+    `personStats`. **Training with people** (`trainWith`, at a training place where they are):
+    anyone ranked shinobi offers the stats they are ahead of you in, grown by the teacher rule
+    (`systems/stats/teaching.ts`, the grade gap) × their rank and quirk (`game/people/
+teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering (they pick
+    the stat until a bond stage), signature `teaches`, sessions a week and a templated price
+    (bond, ryo, a finished mission, a favour done in conversation, or `all` of them;
+    `game/people/price.ts`); without one, defaults by rank apply. Sessions are counted per
+    teacher per week (`people.taught`). Your sensei is the special case: no price, comes to the
+    training ground for you by day, once a week, and the session is the lesson card.
 16. **Fight styles are engines; Plan & Watch is the canonical one.** `GameContext.engines` lists
     every engine on offer, and today that is Plan & Watch (`plan-v1`) alone, so the fight-style
     picker is hidden. Classic (`engines/duel/`) and Deck (`engines/deck/`) are **shelved**: their
@@ -245,9 +252,11 @@ ui ──► game ──► content ──► systems ──► core
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
   schedule of place ids in the start location, a `rank` and `stats` via `statLine()`, and
   optionally an `aptitude` via `talent()`). Their best stat must fit their rank (genin E–D,
-  chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'` and a
-  `sensei` profile (style, lesson text, `teaches` technique ids); at least two specialties
-  must exist for the team choice (validated).
+  chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
+  `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
+  technique ids, price); at least two specialties must exist for the team choice (validated).
+  Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
+  needs a conversation reply with that `favour` id (validated).
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, optional `nature`, `traits`, and
   `healthScale` for a creature bigger or smaller than a person) to the
   pack's `enemies` and use it in a mission's combat stage. A new trait goes in

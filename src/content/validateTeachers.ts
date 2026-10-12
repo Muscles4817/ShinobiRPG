@@ -1,0 +1,105 @@
+import type { PersonDef } from './people';
+import type { PriceTemplate, SimplePrice, TeacherProfile } from './teachers';
+import type { ContentPack } from './types';
+
+/**
+ * Checks teacher profiles: signatures are real techniques, prices name real jobs and favours
+ * someone can actually do, numbers are sane, and every sensei has a profile.
+ */
+
+/** Friendship stages run 0 (stranger) to 4 (bonded). */
+const MAX_STAGE = 4;
+const DAYS_PER_WEEK = 7;
+
+export function validateTeachers(pack: ContentPack): string[] {
+  const favoursDone = new Set(
+    pack.conversations.flatMap((c) => c.choices.flatMap((choice) => choice.favour ?? [])),
+  );
+  const favoursAsked = new Set(
+    pack.people.flatMap((p) =>
+      p.teacher ? partsOf(p.teacher.price).flatMap((part) => favourOf(part)) : [],
+    ),
+  );
+  return [
+    ...pack.people.flatMap((p) => teacherProblems(pack, p, favoursDone)),
+    ...[...favoursDone]
+      .filter((id) => !favoursAsked.has(id))
+      .map((id) => `favour "${id}" is done in conversation but no teacher asks for it`),
+  ];
+}
+
+function partsOf(price: PriceTemplate): readonly SimplePrice[] {
+  return price.kind === 'all' ? price.parts : [price];
+}
+
+function favourOf(part: SimplePrice): string[] {
+  return part.kind === 'favour' ? [part.favourId] : [];
+}
+
+function teacherProblems(
+  pack: ContentPack,
+  person: PersonDef,
+  favoursDone: ReadonlySet<string>,
+): string[] {
+  const teacher = person.teacher;
+  const who = `teacher "${person.id}"`;
+  if (!teacher) return person.sensei ? [`sensei "${person.id}" needs a teacher profile`] : [];
+  const problems: string[] = [];
+  if (person.rank === 'civilian') problems.push(`${who} is a civilian and can’t teach`);
+  const techniqueIds = new Set(pack.techniques.map((t) => t.id));
+  for (const id of teacher.teaches) {
+    if (!techniqueIds.has(id)) problems.push(`${who} teaches unknown technique "${id}"`);
+  }
+  problems.push(...shapeProblems(teacher).map((p) => `${who} ${p}`));
+  const parts = partsOf(teacher.price);
+  for (const part of parts) {
+    problems.push(...priceProblems(pack, part, favoursDone).map((p) => `${who} ${p}`));
+  }
+  return problems;
+}
+
+/** Steering, sessions and the price's shape. */
+function shapeProblems(teacher: TeacherProfile): string[] {
+  const problems: string[] = [];
+  const free = teacher.steers?.freeAtStage;
+  if (free !== undefined && (free < 1 || free > MAX_STAGE)) {
+    problems.push(`lets you choose at a stage outside 1–${MAX_STAGE}`);
+  }
+  const sessions = teacher.sessionsPerWeek;
+  if (sessions !== undefined && !(Number.isInteger(sessions) && sessions >= 1)) {
+    problems.push('needs a whole number of sessions a week, at least one');
+  } else if (sessions !== undefined && sessions > DAYS_PER_WEEK) {
+    problems.push('can’t teach more than once a day');
+  }
+  const parts = partsOf(teacher.price);
+  if (teacher.price.kind === 'all' && new Set(parts.map((p) => p.kind)).size !== parts.length) {
+    problems.push('has a combined price that repeats a kind');
+  }
+  if (teacher.price.kind === 'all' && parts.length < 2) {
+    problems.push('has a combined price with fewer than two parts');
+  }
+  return problems;
+}
+
+function priceProblems(
+  pack: ContentPack,
+  part: SimplePrice,
+  favoursDone: ReadonlySet<string>,
+): string[] {
+  switch (part.kind) {
+    case 'bond':
+      return part.minStage >= 0 && part.minStage <= MAX_STAGE
+        ? []
+        : [`asks for a bond stage outside 0–${MAX_STAGE}`];
+    case 'ryo':
+      return part.perSession > 0 ? [] : ['must charge more than nothing a session'];
+    case 'mission':
+      return pack.missions.some((m) => m.id === part.missionId)
+        ? []
+        : [`asks for unknown mission "${part.missionId}"`];
+    case 'favour':
+      return favoursDone.has(part.favourId)
+        ? []
+        : [`asks for favour "${part.favourId}" that no conversation reply does`];
+  }
+}

@@ -2,20 +2,16 @@ import { hashUnit } from '@/core';
 import type { PersonDef } from '@/content';
 import type { StatDelta, StatId } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
+import { DAYS_PER_WEEK } from '@/systems/time';
 
 /**
- * What a day's practice works, for anyone: the sensei's weekly lesson (yours and your
- * teammates') and a genin's own daily routine. Gains here are base weights; the growth formula
- * (solo efficiency × aptitude × teacher) turns them into points.
+ * What a day's practice works, for anyone: a session with a teacher (yours, and your
+ * teammates' weekly lesson) and a genin's own daily routine. Gains here are base weights; the
+ * growth formula (solo or teacher efficiency × aptitude × teaching factor) turns them into points.
  */
 
 const LESSON_GAIN = 1.5;
 const LESSON_SUPPORT_GAIN = 0.6;
-/**
- * A lesson grows you like a drill, times this: someone better than you is watching. Phase 3
- * replaces it with the grade gap between you and the teacher.
- */
-export const LESSON_TEACHER = 3;
 
 /** The body or mind stat each discipline's practice also works. */
 const SUPPORT_STAT: Readonly<Record<Discipline, StatId>> = {
@@ -29,6 +25,15 @@ const SUPPORT_STAT: Readonly<Record<Discipline, StatId>> = {
 /** A lesson in the sensei's specialty and the stat that supports it. */
 export function lessonGains(specialty: Discipline): StatDelta {
   return { [specialty]: LESSON_GAIN, [SUPPORT_STAT[specialty]]: LESSON_SUPPORT_GAIN };
+}
+
+function isDiscipline(stat: StatId): stat is Discipline {
+  return stat in SUPPORT_STAT;
+}
+
+/** A session with a teacher in one stat: an art also works its support stat. */
+export function sessionGains(stat: StatId): StatDelta {
+  return isDiscipline(stat) ? lessonGains(stat) : { [stat]: LESSON_GAIN };
 }
 
 /** A genin takes about one day in this many off. */
@@ -60,8 +65,6 @@ export function dailyRegimen(person: PersonDef, seed: number, day: number): Stat
   }
   return gains;
 }
-
-const DAYS_PER_WEEK = 7;
 
 /** Whether `day` is this pupil's weekly lesson day (each pupil has their own weekday). */
 export function isLessonDay(personId: string, seed: number, day: number): boolean {

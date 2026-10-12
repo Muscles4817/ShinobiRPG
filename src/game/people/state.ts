@@ -18,6 +18,17 @@ export interface People {
   readonly conversation: Conversation | null;
   /** The genin you are sparring with while a spar's fight is on. */
   readonly sparringWith: string | null;
+  /** Sessions each teacher has given you this week, keyed by person id. */
+  readonly taught: Readonly<Record<string, TaughtSessions>>;
+  /** Favours you have done for teachers who asked (`SimplePrice` favour ids). */
+  readonly favours: readonly string[];
+}
+
+/** How much of a teacher's time you have had: sessions in `week`, and the last day. */
+export interface TaughtSessions {
+  readonly week: number;
+  readonly used: number;
+  readonly lastDay: number;
 }
 
 /** A genin's stats now, and the last day whose training is in them. */
@@ -32,8 +43,6 @@ export interface Team {
   readonly senseiOptions: readonly string[];
   /** Null until you choose. */
   readonly senseiId: string | null;
-  /** The day of your last lesson with your sensei, if any. */
-  readonly lastLessonDay: number | null;
 }
 
 export interface Conversation {
@@ -57,4 +66,6 @@ export const NO_PEOPLE: People = {
   team: null,
   conversation: null,
   sparringWith: null,
+  taught: {},
+  favours: [],
 };
