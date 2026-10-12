@@ -1,6 +1,6 @@
 import type { Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
-import type { CostTemplate, Element, TechniqueDef } from '@/systems/techniques';
+import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
 
 /**
  * THE COMBAT CONTRACT
@@ -102,15 +102,27 @@ export interface CombatantSetup {
 }
 
 /**
+ * A field already over the ground when the fight opens (the player set the ground with mist):
+ * which field, the side it favours, and its potency (perception above it sees through).
+ */
+export interface CombatOpeningField {
+  readonly id: FieldId;
+  readonly side: CombatSide;
+  readonly potency: number;
+}
+
+/**
  * How the fight begins, when what came before it (an ambush, a chase, recon) shaped it: the
  * starting distance, fighters (by id) who start hidden or reel through the first exchange,
- * and which side moved first and so acts first in it. Absent: a plain head-on fight.
+ * which side moved first and so acts first in it, and a field in place. Absent: a plain
+ * head-on fight.
  */
 export interface CombatOpening {
   readonly range?: RangeBand;
   readonly hidden?: readonly string[];
   readonly dazed?: readonly string[];
   readonly firstMover?: CombatSide;
+  readonly field?: CombatOpeningField;
 }
 
 export interface CombatSetup {

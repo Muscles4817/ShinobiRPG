@@ -1,11 +1,13 @@
 import type { CombatOpening, RangeBand } from '../../contract';
 import { RANGE_LABEL } from '../../rules/range';
+import { FIELD_RULES, raiseField, type ActiveField } from '../../rules/verbs';
 import type { PlanFighter } from './state';
 
 /**
  * How a planned fight begins when what came before shaped it (`CombatSetup.opening`): the
  * starting distance, who starts hidden, who reels through the first exchange (dazed and open,
- * as if struck), and which side acts first in it (see `resolveExchange`).
+ * as if struck), which side acts first in it (see `resolveExchange`), and a field already over
+ * the ground, lasting from the first exchange as if raised in it.
  */
 
 const HEAD_ON_RANGE: RangeBand = 'mid';
@@ -17,6 +19,7 @@ export interface OpenedFight {
   readonly range: RangeBand;
   /** What the opening looks like, for the fight log. */
   readonly lines: string[];
+  readonly field?: ActiveField;
 }
 
 function opened(f: PlanFighter, opening: CombatOpening): PlanFighter {
@@ -41,6 +44,7 @@ function linesFor(fighters: readonly PlanFighter[], opening: CombatOpening): str
       f.isPlayer ? 'You start out of sight.' : `${f.name} is out of sight.`,
     ),
   );
+  if (opening.field) lines.push(FIELD_RULES[opening.field.id].rises);
   return lines;
 }
 
@@ -53,5 +57,6 @@ export function openFight(
     fighters: fighters.map((f) => opened(f, opening)),
     range: opening.range ?? HEAD_ON_RANGE,
     lines: linesFor(fighters, opening),
+    ...(opening.field ? { field: raiseField(opening.field, FIRST_EXCHANGE) } : {}),
   };
 }

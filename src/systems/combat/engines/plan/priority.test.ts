@@ -46,7 +46,7 @@ function fighter(id: string, overrides: Partial<CombatantSetup> = {}): Combatant
   };
 }
 
-const technique = (id: string, verb: Verb): CombatTechnique => ({
+const technique = (id: string, verb: Exclude<Verb, 'field'>): CombatTechnique => ({
   id,
   name: id,
   discipline: 'ninjutsu',

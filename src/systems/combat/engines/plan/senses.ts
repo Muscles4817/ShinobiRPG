@@ -9,6 +9,7 @@ import {
   searchChance,
   shakeOffChance,
 } from '../../rules/conditions';
+import { dulled } from '../../rules/verbs';
 import { patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -69,7 +70,9 @@ function reveal(round: Round, foes: readonly PlanFighter[]): Round {
 
 export function search(round: Round, { actor, rng }: Turn): Round {
   const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden);
-  const found = hidden.filter((foe) => rng.chance(searchChance(actor, foe)));
+  // A field that blinds the seeker dulls their eyes.
+  const seeker = dulled(round.field, actor);
+  const found = hidden.filter((foe) => rng.chance(searchChance(seeker, foe)));
   if (found.length === 0) return say(round, `${actor.name} searches, but finds no one.`);
   const names = found.map((f) => f.name).join(' and ');
   return say(reveal(round, found), `${actor.name} spots ${names}!`);

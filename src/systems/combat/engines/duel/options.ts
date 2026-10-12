@@ -28,6 +28,9 @@ const EFFECT_DETAIL: Readonly<Record<Verb, (power: number) => string>> = {
   conceal: () => 'hides',
   sense: () => 'senses',
   break: (power) => `power ${power}`,
+  field: () => 'blinds',
+  move: () => 'moves',
+  substitute: () => 'swaps out',
 };
 
 /**

@@ -15,6 +15,9 @@ export {
 } from './techniques';
 export {
   VERBS,
+  FIELD_IDS,
+  type FieldId,
+  type MoveDistance,
   type Verb,
   type ScalingStat,
   type VerbScaling,

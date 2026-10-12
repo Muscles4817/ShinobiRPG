@@ -16,6 +16,20 @@ export {
 export { upgradeTechnique } from './legacy';
 export { concealmentFrom, concealmentOf, senseChance, type Hider } from './hiding';
 export {
+  blinds,
+  covered,
+  dulled,
+  FIELD_RULES,
+  fieldLeft,
+  fieldMissChance,
+  fieldPotency,
+  raiseField,
+  type ActiveField,
+  type FieldRule,
+  type FieldSource,
+} from './field';
+export { moveGoal, substitutable } from './footwork';
+export {
   BREAK_ARMOUR,
   BREAK_TOUGHNESS,
   brokenScale,

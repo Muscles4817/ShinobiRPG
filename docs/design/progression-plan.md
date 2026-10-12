@@ -747,6 +747,15 @@ These were folded into the D2 discussion. Where each landed:
   that hidden against hidden never stalls (it stalled 100% before), and that knowing a
   sense wins more often against a stalker and a trickster.
 
+- 1.4c: verbs field, move and substitute, with techniques in both packs (academy): a mist
+  (Hidden Mist now raises a field; Camouflage Concealment keeps a conceal in the fan pack),
+  a body flicker and a substitution. `CombatSetup.opening.field` puts a field in place from
+  exchange 1. The fight screen shows a field as a meter ("Your mist 3/4") and the fighters it
+  blinds as "Blinded". Bench, a new mist blade archetype with and without its mist: against a
+  rusher it wins 95–98% (65–83% without), against a powerhouse 38–57% (3–13%), and against
+  a brute it ends with 57–65% health (28–48%). A fragile fighter with a substitution lasts
+  2.8 exchanges against a brute instead of 1.5 (it still loses: time, not invulnerability).
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -788,3 +797,17 @@ These were folded into the D2 discussion. Where each landed:
 - 1.5: the new trump techniques sit at the academy as a placeholder (grade B
   requirements); 4.2 moves them to teachers and scrolls. Once-per-fight applies to foes
   too.
+- 1.4c: fields are `mist` and `smoke` (`FIELD_RULES` in `rules/verbs/field.ts`). A field
+  belongs to the side that raised it and blinds everyone else whose perception is at or below
+  its potency (the caster's art plus a fifth of its power) and who doesn't read foes (insight
+  or a sense). The blinded: attacks go wide (mist 30%, smoke 40%), perception halved for
+  dodging, seeing techniques coming and searching. In mist the owning side strikes the blinded
+  as if from hiding; smoke gives no cover. One field at a time; a new one replaces the old.
+- 1.4c: a move goes to the distance it names, else the user's home band; it is uncontested
+  and its power only ranks it. The default plan uses a move instead of a step as footwork, and
+  a field before footwork (it sets the ground, then stays out of the way while it holds).
+- 1.4c: a substitution works **once a round**, not once an exchange: with one foe striking
+  about once an exchange, once an exchange made its owner untouchable (100% health left
+  against every foe in the bench) until their chakra ran out. It reacts after a Dodge has had
+  its chance, costs its chakra each time, and never swaps out of a genjutsu. It is certain; its
+  profile has no driving stats.

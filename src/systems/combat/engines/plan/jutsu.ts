@@ -9,11 +9,14 @@ import { breakRating } from '../../rules/conditions';
 import {
   confuseTurns,
   driveOf,
+  dulled,
   hasVerb,
   isHarmful,
   profileOf,
   type EffectUse,
 } from '../../rules/verbs';
+import { castField } from './field';
+import { move } from './footwork';
 import { react, type Blow } from './react';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
@@ -92,6 +95,7 @@ function damage(round: Round, { actor, target, rng }: Aimed, use: Wounding): Rou
     dodgeable: t.discipline !== 'genjutsu',
     physical: physical(t),
     kind: attackKindOf(t),
+    discipline: t.discipline,
     ...(use.effect.verb === 'break' ? { breaks: true } : {}),
   };
   const hit = react(round, { attacker: actor, target, blow, rng });
@@ -100,25 +104,32 @@ function damage(round: Round, { actor, target, rng }: Aimed, use: Wounding): Rou
 }
 
 /** One effect on one foe, as the fighters stand now. Nothing happens to a foe who is down. */
-function onFoe(round: Round, turn: Aimed, { technique, effect }: EffectUse): Round {
+function onFoe(round: Round, turn: Aimed, use: EffectUse): Round {
   const actor = fighterIn(round, turn.actor.id) ?? turn.actor;
   const target = fighterIn(round, turn.target.id);
   if (!target || !alive(target)) return round;
-  const aimed = { ...turn, actor, target };
+  return landOn(round, { ...turn, actor, target }, use);
+}
+
+function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): Round {
   switch (effect.verb) {
     case 'damage':
     case 'area':
     case 'break':
       return damage(round, aimed, { technique, effect });
     case 'daze':
-      return daze(round, target);
+      return daze(round, aimed.target);
     case 'seal':
-      return seal(round, target, { technique, effect });
+      return seal(round, aimed.target, { technique, effect });
     case 'confuse':
       return confuse(round, aimed, { technique, effect });
+    // Effects aimed at the user happen once, in `onSelf`.
     case 'heal':
     case 'conceal':
     case 'sense':
+    case 'field':
+    case 'move':
+    case 'substitute':
       return round;
   }
 }
@@ -133,6 +144,12 @@ function onSelf(round: Round, turn: Turn, { technique, effect }: EffectUse): Rou
       return conceal(round, actor, { technique, effect });
     case 'sense':
       return sense(round, { ...turn, actor }, { technique, effect });
+    case 'field':
+      return castField(round, actor, { technique, effect });
+    case 'move':
+      return move(round, actor, technique);
+    // A substitution reacts when hit (`footwork.ts`); it is never played on a turn.
+    case 'substitute':
     case 'damage':
     case 'area':
     case 'break':
@@ -182,7 +199,8 @@ export function useJutsu(round: Round, turn: Turn, t: CombatTechnique): Round {
   const paid = withChakraSpent(round, actor, t);
   const targets = targetsOf(paid, turn, t);
   if (isHarmful(t) && targets.length === 0) return paid;
-  const seen = targets.filter((foe) => rng.chance(resistChance(actor, foe, t)));
+  // A field dulls the perception of those it blinds: they see techniques coming later.
+  const seen = targets.filter((foe) => rng.chance(resistChance(actor, dulled(paid.field, foe), t)));
   const told = seen.reduce((r, foe) => say(r, `${foe.name} sees it coming.`), paid);
   if (isHarmful(t) && seen.length === targets.length) return told;
   const start: Flight = { round: told, reaching: targets.filter((f) => !seen.includes(f)) };

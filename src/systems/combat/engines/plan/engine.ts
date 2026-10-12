@@ -13,6 +13,8 @@ import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
 import { costsOwed } from '../../rules/trumps';
 import { defaultLoadout, slotLimit } from './cards';
+import { fieldMeter, fieldStatuses } from './field';
+import { substitutionsReady } from './footwork';
 import { intentLine, rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withSlots } from './legacy';
 import { rememberedLoadout } from './memory';
@@ -45,8 +47,12 @@ function read(state: CombatState): PlanState {
   return withIntents(withSlots(upgradeLegacy(withKits(decode(state)))));
 }
 
-function statuses(f: PlanFighter): string[] {
-  return [...(isDazed(f) ? ['Dazed'] : []), ...(f.sealed > 0 ? ['Sealed'] : [])];
+function statuses(state: PlanState, f: PlanFighter): string[] {
+  return [
+    ...(isDazed(f) ? ['Dazed'] : []),
+    ...(f.sealed > 0 ? ['Sealed'] : []),
+    ...fieldStatuses(state, f),
+  ];
 }
 
 function options(state: PlanState): CombatOption[] {
@@ -91,6 +97,7 @@ function endOfRound(next: PlanState): PlanState {
     phase: 'loadout',
     bout: next.bout + 1,
     exchange: 0,
+    fighters: substitutionsReady(next.fighters),
     log: [...next.log, `— End of round ${next.bout}. Change your cards if you like. —`],
   };
 }
@@ -153,12 +160,12 @@ export function createPlanEngine(): CombatEngine {
 
     start(setup, rng) {
       const names = setup.enemies.map((e) => e.name).join(', ');
-      const { fighters, range, lines } = openFight(initialFighters(setup), setup.opening);
+      const { fighters, range, lines, field } = openFight(initialFighters(setup), setup.opening);
       const planned = fighters.map((f) => ({
         ...f,
         loadout: (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ?? defaultLoadout(f),
       }));
-      const table = { fighters: planned, range, exchange: 0 };
+      const table = { fighters: planned, range, exchange: 0, ...(field ? { field } : {}) };
       const firstMover = setup.opening?.firstMover;
       const state: PlanState = {
         phase: 'loadout',
@@ -173,6 +180,7 @@ export function createPlanEngine(): CombatEngine {
         result: null,
         canFlee: setup.canFlee,
         ...(firstMover === undefined ? {} : { firstMover }),
+        ...(field ? { field } : {}),
       };
       return encode(state);
     },
@@ -187,13 +195,17 @@ export function createPlanEngine(): CombatEngine {
     view(state): CombatView {
       const plan = read(state);
       const insight = hasPerk(playerOf(plan), 'insight');
+      const meter = fieldMeter(plan);
       return {
         round: plan.round,
-        combatants: plan.fighters.map((f) => viewOf(f, statuses(f), intentLine(plan, f, insight))),
+        combatants: plan.fighters.map((f) =>
+          viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
+        ),
         log: plan.log,
         options: options(plan),
         range: plan.range,
         prompt: prompt(plan),
+        ...(meter ? { meters: [meter] } : {}),
       };
     },
 

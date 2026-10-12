@@ -34,6 +34,14 @@ export const VERB_PROFILES: Readonly<Record<Verb, VerbProfile>> = {
   sense: { aim: 'self', drive: ['perception', 'ninjutsu'], resist: [] },
   // Raw force through a guard and armour; seen coming like any blow.
   break: { aim: 'foe', drive: ['strength'], resist: ['guard'] },
+  // Raises a fight-wide condition (`field.ts`) as dense as the user's art makes it; whoever's
+  // perception rises above that density sees through it.
+  field: { aim: 'self', drive: ['art'], resist: ['perception'] },
+  // Footwork too fast to contest: the user is simply there. Nothing drives or resists it.
+  move: { aim: 'self', drive: [], resist: [] },
+  // A defence that reacts on its own: the first hit that would land each round strikes a
+  // decoy instead. Certain, but paid in chakra each time; genjutsu isn't fooled by it.
+  substitute: { aim: 'self', drive: [], resist: [] },
 };
 
 /** The profile an effect scales by: its verb's, with the effect's own overrides on top. */

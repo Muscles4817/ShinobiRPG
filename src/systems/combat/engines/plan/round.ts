@@ -10,6 +10,7 @@ import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { afterUsing } from '../../rules/trumps';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
+import { fieldAfter, lostInField, ownField } from './field';
 import { intendedCard } from './intent';
 import { useJutsu } from './jutsu';
 import { useTool } from './pouch';
@@ -53,7 +54,13 @@ function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng
 function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
   const target = targetFor(round.fighters, actor, rng);
   const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
-  const moment = { band: round.range, foe: target, hiddenFoe, opening: round.opening ?? false };
+  const moment = {
+    band: round.range,
+    foe: target,
+    hiddenFoe,
+    opening: round.opening ?? false,
+    fieldUp: ownField(round.field, actor),
+  };
   const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
   return { card, target };
 }
@@ -148,7 +155,7 @@ function revealed(round: Round, { actor: before, target, rng }: Turn): Round {
 
 /**
  * Plays a card, unless it's an attack with no one in sight (then they search instead) or
- * confusion sends it wide. Tools
+ * confusion or a field that blinds them sends it wide. Tools
  * never misfire and don't give a hidden fighter away; attacks and techniques that hurt do.
  */
 function attempt(round: Round, turn: Turn, card: Card): Round {
@@ -159,6 +166,8 @@ function attempt(round: Round, turn: Turn, card: Card): Round {
     const whose = actor.isPlayer ? 'Your senses lie to you.' : `${actor.name}'s senses lie.`;
     return revealed(say(round, `${whose} The attack goes wide.`), turn);
   }
+  const lost = lostInField(round, actor, rng);
+  if (lost) return revealed(say(round, lost), turn);
   return revealed(play(round, turn, card), turn);
 }
 
@@ -195,22 +204,26 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     lines: [`— Exchange ${state.round} —`],
     seen: state.seen,
     intents: state.intents,
+    ...(state.field ? { field: state.field } : {}),
   };
   const end = order.reduce((round, { id }) => turn(round, id, rng), start);
   const result = decide(end.fighters);
+  const { field, lines: fading } = fieldAfter(end.field, state.round);
   const fighters = end.fighters.map((f) => ({
     ...wearOffDaze(f, state.round),
     sealed: Math.max(0, f.sealed - 1),
     chakra: alive(f) ? Math.min(f.maxChakra, f.chakra + CHAKRA_REGEN) : f.chakra,
   }));
+  const { field: _old, ...rest } = state;
   return {
-    ...state,
+    ...rest,
     round: result ? state.round : state.round + 1,
     exchange: state.exchange + 1,
     fighters,
     range: end.range,
     seen: end.seen,
-    log: [...state.log, ...end.lines].slice(-LOG_LIMIT),
+    log: [...state.log, ...end.lines, ...(result ? [] : fading)].slice(-LOG_LIMIT),
     result,
+    ...(field ? { field } : {}),
   };
 }

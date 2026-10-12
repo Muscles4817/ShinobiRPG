@@ -4,6 +4,8 @@ import { canAttackFrom } from '../../rules/kit';
 import { hasVerb } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
 import { improvise } from './choose';
+import { ownField } from './field';
+import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { inSight, opponentsOf } from './senses';
 import {
@@ -103,10 +105,16 @@ export function aimAt(
   }
 }
 
-/** No healing at full health, no sensing with no one hidden (or foes already read), no hiding twice. */
-function jutsuNeeded(self: PlanFighter, t: CombatTechnique, hiddenFoe: boolean): boolean {
+/**
+ * No healing at full health, no sensing with no one hidden (or foes already read), no hiding
+ * twice, no raising a field while yours is up, no move to where you already are.
+ */
+function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
+  const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
   if (hasVerb(t, 'heal') && self.health >= self.maxHealth) return false;
   if (hasVerb(t, 'sense') && (!hiddenFoe || hasPerk(self, 'insight'))) return false;
+  if (hasVerb(t, 'field') && ownField(round.field, self)) return false;
+  if (moveDestination(self, t) === round.range) return false;
   return !(hasVerb(t, 'conceal') && self.hidden);
 }
 
@@ -124,7 +132,7 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
         toolInstinct(self, [card], { hiddenFoe, opening: round.opening ?? false }) !== undefined
       );
     case 'jutsu':
-      return jutsuNeeded(self, card.technique, hiddenFoe);
+      return jutsuNeeded(self, card.technique, round);
     case 'strike':
     case 'throw':
     case 'step':

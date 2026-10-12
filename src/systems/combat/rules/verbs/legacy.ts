@@ -8,7 +8,7 @@ import type { CombatTechnique } from '../../contract';
  * fight carries on as it would have.
  */
 
-const LEGACY_VERB: Readonly<Record<string, Verb>> = {
+const LEGACY_VERB: Readonly<Record<string, Extract<Verb, 'damage' | 'daze' | 'seal' | 'heal'>>> = {
   damage: 'damage',
   stun: 'daze',
   seal: 'seal',

@@ -15,6 +15,9 @@ const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => strin
   conceal: () => 'Hides you',
   sense: () => 'Finds the hidden',
   break: (power) => `Power ${power} through guard`,
+  field: () => 'Blinds foes for a while',
+  move: () => 'Moves you in a flash',
+  substitute: () => 'Swaps you out of a hit',
 };
 
 /** Each effect in order: "Power 12, then dazes". */
