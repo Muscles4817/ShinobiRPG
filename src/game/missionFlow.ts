@@ -1,10 +1,14 @@
 import type { Rng } from '@/core';
-import type { CombatantSetup, CombatOutcome } from '@/systems/combat';
+import type { CombatantSetup, CombatOpening, CombatOutcome } from '@/systems/combat';
 import {
   advance,
   currentStage,
   reward,
+  stageFoes,
+  stagePay,
+  withStagePay,
   type MissionDef,
+  type MissionRun,
   type MissionStage,
 } from '@/systems/missions';
 import { addPoints } from '@/systems/bonds';
@@ -126,36 +130,55 @@ function endMission(
   state: GameState,
   ctx: GameContext,
   reason: string,
+  reputationLost = FAILURE_REPUTATION_LOSS,
 ): { state: GameState; title: string | null } {
   const def = activeMission(state, ctx);
   const next: GameState = {
     ...state,
     mission: null,
     combat: null,
-    standing: recordMissionFailure(state.standing, FAILURE_REPUTATION_LOSS),
+    standing: recordMissionFailure(state.standing, reputationLost),
   };
   const logged = log(next, {
     heading: def ? `${def.title} failed` : 'Mission failed',
     text: reason,
     tone: 'danger',
-    chips: [chip(`−${FAILURE_REPUTATION_LOSS} reputation`, 'harm')],
+    chips: reputationLost > 0 ? [chip(`−${reputationLost} reputation`, 'harm')] : [],
   });
   return { state: logged, title: def?.title ?? null };
 }
 
-export function failMission(state: GameState, ctx: GameContext, reason: string): GameState {
-  const ended = endMission(state, ctx, reason);
+/** Ends the mission as failed; `reputationLost` is less for pulling out before any harm. */
+export function failMission(
+  state: GameState,
+  ctx: GameContext,
+  reason: string,
+  reputationLost = FAILURE_REPUTATION_LOSS,
+): GameState {
+  const ended = endMission(state, ctx, reason, reputationLost);
   return addReport(ended.state, {
     kind: 'mission-failed',
     title: ended.title ?? 'Mission',
     reason,
-    reputationLost: FAILURE_REPUTATION_LOSS,
+    reputationLost,
   });
 }
 
-export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameState {
+/** How a mission fight begins, when an encounter's approach shaped it. */
+export interface FightStart {
+  readonly opening?: CombatOpening;
+  readonly intro?: string;
+}
+
+/** Starts the fight of the current combat or encounter stage. */
+export function beginCombat(
+  state: GameState,
+  ctx: GameContext,
+  rng: Rng,
+  start: FightStart = {},
+): GameState {
   const stage = activeStage(state, ctx);
-  if (stage?.kind !== 'combat') return state;
+  if (stage?.kind !== 'combat' && stage?.kind !== 'encounter') return state;
   const enemies = stage.enemyIds.map((id, i) =>
     enemyCombatant(ctx.content.enemies.require(id), i, ctx),
   );
@@ -167,10 +190,18 @@ export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameS
       allies: teamAllies(state, ctx),
       enemies,
       canFlee: stage.canFlee,
+      ...(start.opening ? { opening: start.opening } : {}),
+      ...(start.intro ? { intro: start.intro } : {}),
     },
     rng,
   );
   return { ...state, combat };
+}
+
+/** A won fight moves the mission on; an encounter's fight pays as its job says. */
+function afterVictory(run: MissionRun, stage: MissionStage | null, enemies: string): MissionRun {
+  const next = advance(run, { kind: 'outcome', text: `You defeated ${enemies}.` });
+  return stage?.kind === 'encounter' ? withStagePay(next, stagePay(stage.job, 'fought')) : next;
 }
 
 function hospitalise(state: GameState, ctx: GameContext, title: string | null): GameState {
@@ -211,9 +242,10 @@ export function resolveCombat(
     },
   );
   const stage = activeStage(state, ctx);
+  const foes = stage ? stageFoes(stage) : [];
   const enemies =
-    stage?.kind === 'combat'
-      ? stage.enemyIds.map((id) => ctx.content.enemies.require(id).name).join(' and ')
+    foes.length > 0
+      ? foes.map((id) => ctx.content.enemies.require(id).name).join(' and ')
       : 'your opponent';
 
   switch (outcome.result) {
@@ -229,10 +261,7 @@ export function resolveCombat(
         maxHealth: MAX_HEALTH,
       });
       if (!reported.mission) return reported;
-      const mission = advance(reported.mission, {
-        kind: 'outcome',
-        text: `You defeated ${enemies}.`,
-      });
+      const mission = afterVictory(reported.mission, stage, enemies);
       return completeIfFinished({ ...reported, mission }, ctx);
     }
     case 'escaped':

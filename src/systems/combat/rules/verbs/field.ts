@@ -84,7 +84,12 @@ interface Watcher {
 
 /** The potency a field technique gives, from its user's drive (their art). */
 export function fieldPotency(drive: number, use: EffectUse<'field'>): number {
-  return drive + use.effect.power * FIELD_POWER_SHARE;
+  return potencyOf(drive, use.effect.power);
+}
+
+/** A field's potency from its raiser's art and the effect's power (also for a field raised before a fight). */
+export function potencyOf(art: number, power: number): number {
+  return art + power * FIELD_POWER_SHARE;
 }
 
 /** A field rising in exchange `exchange`. */

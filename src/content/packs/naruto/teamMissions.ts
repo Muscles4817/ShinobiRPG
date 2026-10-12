@@ -31,8 +31,10 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         failureDamage: 6,
       },
       {
-        kind: 'combat',
-        text: 'The bandit chief draws a chipped sword. "Kids? They sent kids?"',
+        kind: 'encounter',
+        template: 'bandit-camp',
+        job: 'eliminate',
+        text: 'Smoke rises from a hollow off the road. The bandit chief is sharpening a chipped sword by the fire.',
         enemyIds: ['bandit-thug', 'bandit-chief', 'bandit-archer'],
         canFlee: false,
       },

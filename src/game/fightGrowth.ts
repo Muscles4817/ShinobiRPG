@@ -1,4 +1,5 @@
 import type { CombatOutcome } from '@/systems/combat';
+import { stageFoes } from '@/systems/missions';
 import { diffStats, reservesFromChakraSpent, type StatDelta, type Stats } from '@/systems/stats';
 import { MAX_HEALTH } from '@/systems/vitals';
 
@@ -52,8 +53,9 @@ function foesFaced(state: GameState, ctx: GameContext): Stats[] {
     return partner ? [personStats(partner, state)] : [];
   }
   const stage = activeStage(state, ctx);
-  if (stage?.kind !== 'combat') return [];
-  return stage.enemyIds.map((id) => enemyStatLine(ctx.content.enemies.require(id)));
+  return (stage ? stageFoes(stage) : []).map((id) =>
+    enemyStatLine(ctx.content.enemies.require(id)),
+  );
 }
 
 /** Reads what the fight can teach, from the state as the fight ended (before it is resolved). */

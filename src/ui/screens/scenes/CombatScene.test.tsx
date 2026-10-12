@@ -2,7 +2,7 @@
 import { render, screen, within } from '@testing-library/react';
 
 import type { GameState } from '@/game';
-import { act, ctx, newGame, veteran } from '@/test/gameFixtures';
+import { act, ctx, intoFight, newGame, veteran } from '@/test/gameFixtures';
 
 import { CombatScene } from './CombatScene';
 
@@ -16,7 +16,7 @@ function riverFight(start: GameState = newGame()): GameState {
   state = act(state, { type: 'startMission', missionId: 'river-road-bandits' });
   state = act(state, { type: 'missionContinue' });
   state = act(state, { type: 'missionChoose', approachIndex: 0 });
-  return act(state, { type: 'missionContinue' });
+  return intoFight(state);
 }
 
 describe('CombatScene (smoke test)', () => {

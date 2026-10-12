@@ -1,4 +1,4 @@
-import type { MissionDef } from '@/systems/missions';
+import { stageFoes, type MissionDef } from '@/systems/missions';
 import { fightingPower } from '@/systems/stats';
 
 import { INTEL_FEE } from '../actions/intel';
@@ -65,7 +65,7 @@ function oppositionOf(
   ctx: GameContext,
   mission: MissionDef,
 ): Notice['opposition'] {
-  const enemies = mission.stages.flatMap((s) => (s.kind === 'combat' ? s.enemyIds : []));
+  const enemies = mission.stages.flatMap(stageFoes);
   const stats = enemies.flatMap((id) => enemyStats(ctx, id) ?? []);
   const toughest = stats.sort((a, b) => fightingPower(b) - fightingPower(a))[0];
   if (!toughest) return null;
@@ -111,7 +111,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         reputation: m.reward.reputation,
         slots: m.slots,
         energyCost: m.energyCost,
-        fightLikely: m.stages.some((s) => s.kind === 'combat'),
+        fightLikely: m.stages.some((s) => stageFoes(s).length > 0),
         opposition: oppositionOf(state, ctx, m),
         withTeam: m.withTeam ?? false,
         standing: on.kind === 'standing',

@@ -97,6 +97,14 @@ export {
 } from './views/scene';
 export { combatLog, type CombatLogLine } from './views/combatLog';
 export {
+  encounterScene,
+  type ApproachCard,
+  type EncounterFoe,
+  type EncounterScene,
+  type FactLine,
+  type ReconCard,
+} from './views/encounter';
+export {
   bondsView,
   personSheet,
   type BondsView,

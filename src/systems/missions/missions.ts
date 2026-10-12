@@ -1,10 +1,14 @@
 import type { Rng } from '@/core';
 import { rollCheck, type StatId, type Stats } from '@/systems/stats';
 
+import type { EncounterRun, EncounterStage } from './encounter';
+import type { StagePay } from './encounterPay';
+
 /**
  * Missions are a linear sequence of stages. This module tracks progress through them
  * and resolves stat checks. It deliberately knows nothing about *how* combat works:
- * a combat stage just names enemies, and the game layer reports back win/lose.
+ * a combat stage just names enemies, and the game layer reports back win/lose. An encounter
+ * stage (`encounter.ts`) puts recon and a choice of approach before any fight.
  */
 export type MissionRank = 'D' | 'C' | 'B' | 'A' | 'S';
 
@@ -32,7 +36,8 @@ export type MissionStage =
       readonly text: string;
       readonly enemyIds: readonly string[];
       readonly canFlee: boolean;
-    };
+    }
+  | EncounterStage;
 
 export interface MissionDef {
   readonly id: string;
@@ -78,6 +83,10 @@ export interface MissionRun {
   readonly rewardMultiplier: number;
   /** The story so far, shown to the player while on the mission. */
   readonly notes: readonly MissionNote[];
+  /** The encounter being sized up, while the current stage is one. */
+  readonly encounter?: EncounterRun;
+  /** What encounters' endings did to the pay (multipliers); absent means full pay. */
+  readonly pay?: { readonly ryo: number; readonly reputation: number };
 }
 
 export const CHECK_FAILURE_PENALTY = 0.25;
@@ -93,7 +102,25 @@ export function currentStage(def: MissionDef, run: MissionRun): MissionStage | u
 
 /** Moves to the next stage, adding any notes describing what just happened. */
 export function advance(run: MissionRun, ...notes: MissionNote[]): MissionRun {
-  return { ...run, stageIndex: run.stageIndex + 1, notes: [...run.notes, ...notes] };
+  return {
+    missionId: run.missionId,
+    stageIndex: run.stageIndex + 1,
+    rewardMultiplier: run.rewardMultiplier,
+    notes: [...run.notes, ...notes],
+    ...(run.pay ? { pay: run.pay } : {}),
+  };
+}
+
+/** The enemies a stage may make you fight: a combat's, or the foes of an encounter. */
+export function stageFoes(stage: MissionStage): readonly string[] {
+  return stage.kind === 'combat' || stage.kind === 'encounter' ? stage.enemyIds : [];
+}
+
+/** Applies an encounter's pay to the run's reward. */
+export function withStagePay(run: MissionRun, pay: StagePay): MissionRun {
+  const ryo = (run.pay?.ryo ?? 1) * pay.ryo;
+  const reputation = (run.pay?.reputation ?? 1) * pay.reputation;
+  return { ...run, pay: { ryo, reputation } };
 }
 
 export type CheckStage = Extract<MissionStage, { kind: 'check' }>;
@@ -134,7 +161,9 @@ export function resolveCheck(
 
 export function reward(def: MissionDef, run: MissionRun): { ryo: number; reputation: number } {
   return {
-    ryo: Math.round(def.reward.ryo * run.rewardMultiplier),
-    reputation: Math.round(def.reward.reputation * run.rewardMultiplier),
+    ryo: Math.round(def.reward.ryo * run.rewardMultiplier * (run.pay?.ryo ?? 1)),
+    reputation: Math.round(
+      def.reward.reputation * run.rewardMultiplier * (run.pay?.reputation ?? 1),
+    ),
   };
 }
