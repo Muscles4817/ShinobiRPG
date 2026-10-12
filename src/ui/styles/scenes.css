@@ -292,26 +292,41 @@ button.foe {
 }
 .range-strip {
   display: flex;
-  justify-content: center;
-  gap: 4px;
-  padding: 8px var(--gutter) 0;
+  box-sizing: border-box;
+  width: min(300px, 100%);
+  margin: 12px auto 0;
+  padding: 0 var(--gutter);
 }
+/* A ruled scale, not tabs: one line, three ticks, an ink mark where the fight stands. */
 .range-strip .band {
   flex: 1;
-  max-width: 96px;
+  position: relative;
   text-align: center;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 3px 0;
-  border-radius: 6px;
+  font-size: 0.7rem;
+  padding-top: 9px;
   color: var(--muted);
-  background: var(--grain), var(--surface);
-  border: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+}
+.range-strip .band::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 1px;
+  height: 7px;
+  background: var(--line);
 }
 .range-strip .band.on {
-  color: var(--on-lantern);
+  color: var(--story);
+  font-weight: 700;
+}
+.range-strip .band.on::before {
+  top: -5px;
+  width: 9px;
+  height: 9px;
+  margin-left: -4px;
+  border-radius: 50%;
   background: var(--lantern);
-  border-color: transparent;
 }
 .combat-prompt {
   text-align: center;
