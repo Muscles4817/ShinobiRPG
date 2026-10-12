@@ -29,6 +29,8 @@ export interface PlanState {
   readonly range: RangeBand;
   /** Cards each fighter has been seen to use, so you can adapt between rounds. */
   readonly seen: Readonly<Record<string, readonly CardId[]>>;
+  /** The card each foe has announced for the next exchange (see `intent.ts`). */
+  readonly intents: Readonly<Record<string, CardId>>;
   readonly log: readonly string[];
   readonly result: CombatResult | null;
   readonly canFlee: boolean;
@@ -44,6 +46,7 @@ export interface Round {
   readonly range: RangeBand;
   readonly lines: readonly string[];
   readonly seen: PlanState['seen'];
+  readonly intents: PlanState['intents'];
 }
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };

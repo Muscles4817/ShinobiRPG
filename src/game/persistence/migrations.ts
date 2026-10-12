@@ -149,21 +149,27 @@ function v11ToV12(state: RawState): RawState {
   };
 }
 
-const RETIRED_ENGINE_ID = 'mind-v1';
+/** Fight styles no longer offered: Mind Game (deleted) and Deck (shelved). */
+const RETIRED_ENGINE_IDS: readonly unknown[] = ['mind-v1', 'deck-v1'];
 const DEFAULT_ENGINE_ID = 'duel-v1';
 
 /**
- * v12 → v13: the Mind Game fight style is retired. Saves that chose it go back to Classic,
- * and a fight in progress in it is called off before any blow lands: a mission returns to
+ * v12 → v13: the Mind Game and Deck fight styles are retired. Saves that chose one go back to
+ * Classic, and a fight in progress in one is called off before any blow lands: a mission returns to
  * its fight stage (vitals only change when a fight resolves), a spar is simply cancelled.
  */
 function v12ToV13(state: RawState): RawState {
   const settings = asRecord(state.settings);
-  const { [RETIRED_ENGINE_ID]: _retiredPlan, ...combatPlans } = asRecord(settings.combatPlans);
-  const combatStyle =
-    settings.combatStyle === RETIRED_ENGINE_ID ? DEFAULT_ENGINE_ID : settings.combatStyle;
+  const combatPlans = Object.fromEntries(
+    Object.entries(asRecord(settings.combatPlans)).filter(
+      ([id]) => !RETIRED_ENGINE_IDS.includes(id),
+    ),
+  );
+  const combatStyle = RETIRED_ENGINE_IDS.includes(settings.combatStyle)
+    ? DEFAULT_ENGINE_ID
+    : settings.combatStyle;
   const migrated = { ...state, settings: { ...settings, combatStyle, combatPlans } };
-  if (asRecord(state.combat).engineId !== RETIRED_ENGINE_ID) return migrated;
+  if (!RETIRED_ENGINE_IDS.includes(asRecord(state.combat).engineId)) return migrated;
   return {
     ...migrated,
     combat: null,

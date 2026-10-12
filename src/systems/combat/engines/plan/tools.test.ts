@@ -75,6 +75,7 @@ function stateOf(fighters: PlanFighter[], exchange = 0): PlanState {
     fighters,
     range: 'mid',
     seen: {},
+    intents: {},
     log: [],
     result: null,
     canFlee: true,
@@ -82,7 +83,7 @@ function stateOf(fighters: PlanFighter[], exchange = 0): PlanState {
 }
 
 function roundOf(fighters: PlanFighter[]): Round {
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {} };
+  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
 }
 
 const heroOf = (s: Pick<PlanState, 'fighters'>) => s.fighters.find((f) => f.id === 'hero')!;

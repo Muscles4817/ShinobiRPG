@@ -18,7 +18,10 @@ interface LegacyFighter extends Omit<
   readonly items?: PlanFighter['items'];
 }
 
-interface LegacyState extends Omit<PlanState, 'phase' | 'bout' | 'exchange' | 'seen' | 'fighters'> {
+interface LegacyState extends Omit<
+  PlanState,
+  'phase' | 'bout' | 'exchange' | 'seen' | 'intents' | 'fighters'
+> {
   readonly phase: string;
   readonly bout?: number;
   readonly fighters: readonly LegacyFighter[];
@@ -52,8 +55,19 @@ export function upgradeLegacy(state: PlanState): PlanState {
     fighters,
     range: raw.range,
     seen: {},
+    intents: {},
     log: [...raw.log, 'You rethink your plan.'],
     result: raw.result,
     canFlee: raw.canFlee,
   };
+}
+
+/**
+ * Fights saved before foes announced their moves have none yet: everyone chooses on their turn
+ * until the next exchange ends, when the telegraphs begin.
+ */
+export function withIntents(state: PlanState): PlanState {
+  // Saved state may predate intents; the field is checked before use.
+  const raw = state as Omit<PlanState, 'intents'> & { readonly intents?: PlanState['intents'] };
+  return raw.intents ? state : { ...state, intents: {} };
 }

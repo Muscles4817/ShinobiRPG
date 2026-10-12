@@ -78,7 +78,7 @@ ui ──► game ──► content ──► systems ──► core
    `allies` (teammates on team missions) who act on their own; a fight's purpose (mission,
    spar) is game state (`people.sparringWith`), never the engine's concern. The player's
    choice is a `CombatChoice` (option id + optional target); the view may add `range`,
-   `prompt`, `meters` and per-combatant `intent`, and options say their `kind` so one fight
+   `prompt`, `meters` and per-combatant `intent` (a foe's telegraphed next move), and options say their `kind` so one fight
    screen can lay out any engine.
 6. **The UI renders view models** (`src/game/views/`), not raw state. Activity lists are
    `ActionOption`s that already carry the `GameAction` to dispatch and the blocker reason.
@@ -114,8 +114,9 @@ ui ──► game ──► content ──► systems ──► core
     stored stats; `companionStats` derives them from their specialty and your record, so a
     teammate is always a fair match. Your sensei teaches weekly (`lesson`) and hands over
     their `teaches` techniques once your bond is high enough.
-16. **Fight styles are engines, chosen per save.** `GameContext.engines` lists every engine
-    (Classic, Plan & Watch, Deck); `settings.combatStyle` picks the one that starts
+16. **Fight styles are engines, chosen per save.** `GameContext.engines` lists every engine on offer
+    (Classic, Plan & Watch; Deck is shelved: its code and tests stay in `engines/deck/` and must
+    keep passing, but it isn't offered and new traits and tools need not reach it); `settings.combatStyle` picks the one that starts
     new fights and `engineFor` routes to it. A fight in progress always continues in the engine
     whose id is in its `CombatState`. What the player sets up in a style (Plan & Watch cards) comes
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is

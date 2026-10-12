@@ -55,7 +55,7 @@ export function cardId(card: Card): CardId {
   return card.kind === 'step' ? `step-${card.direction}` : card.kind;
 }
 
-function fitsBand(card: Card, band: RangeBand): boolean {
+export function fitsBand(card: Card, band: RangeBand): boolean {
   switch (card.kind) {
     case 'strike':
       return inReach(STRIKE_REACH, band);
