@@ -2,7 +2,16 @@ import { statTier } from '@/systems/stats';
 
 import { ARCHETYPE_IDS, archetype, foe, FOE_IDS, plainAtGrade, plainAtScale } from './archetypes';
 import { GRADE_MIDPOINT, SCALES, SCALE_VALUES, type FighterSpec } from './fighters';
-import { bench, endedWithin, fightOnce, summarise, wonWithin, type BenchReport } from './runner';
+import {
+  bench,
+  benchSkirmish,
+  endedWithin,
+  fightOnce,
+  summarise,
+  wonWithin,
+  type BenchReport,
+  type Skirmish,
+} from './runner';
 
 /**
  * THE COMBAT BENCH
@@ -145,6 +154,44 @@ describe('lethality (Phase 1 targets)', () => {
   // The player plays their plan, the foe its instincts; the plan as a priority list (step
   // 1.2) is what should even this out. Today equals win about 40% of the time.
   it.todo('equals win about half their fights');
+});
+
+/** The same skirmish with everyone in the front row, to see what the rows change. */
+function inOneLine({ player, allies, foes }: Skirmish): Skirmish {
+  const front = (f: FighterSpec): FighterSpec => ({ ...f, row: 'front' });
+  return { player: front(player), allies: allies.map(front), foes: foes.map(front) };
+}
+
+function skirmish(label: string, fight: Skirmish): BenchReport {
+  const report = benchSkirmish(fight);
+  if (REPORT) console.warn(`${label}: ${summarise(fight.player, fight.foes[0]!, report)}`);
+  return report;
+}
+
+describe('rows (step 1.3)', () => {
+  const twoBrutes = [foe('brute', 'chunin'), foe('brute', 'chunin')];
+  const covered: Skirmish = {
+    player: plainAtGrade('C'),
+    allies: [foe('archer', 'chunin')],
+    foes: twoBrutes,
+  };
+
+  it('the front row takes the blows meant for the back', () => {
+    const rows = skirmish('C + archer v two brutes, in rows', covered);
+    const line = skirmish('C + archer v two brutes, in one line', inOneLine(covered));
+    expect(rows.avgHealthLeft).toBeLessThan(line.avgHealthLeft);
+  });
+
+  it('team fights end cleanly', () => {
+    const wolf: FighterSpec = { ...plainAtGrade('D'), name: 'Wolf D', traits: ['pack'] };
+    const pack: Skirmish = {
+      player: plainAtGrade('C'),
+      allies: [foe('archer', 'chunin')],
+      foes: [wolf, wolf, foe('archer', 'genin')],
+    };
+    const report = skirmish('C + archer v two wolves and an archer', pack);
+    expect(report.stalemateRate).toBe(0);
+  });
 });
 
 describe('every weakness can be built around (Phase 1–4 target)', () => {

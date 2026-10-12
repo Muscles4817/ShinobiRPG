@@ -736,6 +736,19 @@ These were folded into the D2 discussion. Where each landed:
   exchanges 82–88% of the time. The retune after merging with 1.2 traced long fights to
   kunai duels at mid range: footwork now closes in for full blows, and Dodge joins the
   default plan.
+- 1.3: rows. Each side has a front and a back row (`PlanFighter.row`, `CombatantView.row`,
+  optional `CombatantSetup.row`). The rule lives once in `rules/rows.ts` (`canReach`, with an
+  `area` flag for 1.4b's area effects); the plan engine asks it through `engines/plan/rows.ts`
+  (`attackOf(card)`). Instinct targeting, the plan's slots and counters respect it; a
+  screened fighter shows a "Screened" status. Fights saved before rows are placed on load
+  (`withRows`); no save version change. The fight screen splits the foes into back and front
+  rows and stamps your side's rows. The 1v1 bench is unchanged (a side of one stands in
+  front). New group measurements (`benchSkirmish`): a C fighter with an archer behind them
+  against two chūnin brutes wins 88% with 33% health left in rows, against 100% and 51% when
+  everyone stands in one line: the front takes the blows. Two pack wolves and an archer: 100%
+  won, 18.8 exchanges, no stalemates. Against a guardian and an archer the rows change
+  nothing: the player goes for the front anyway, and the archer spends its turns in the
+  shared range tug-of-war (per-fighter ranges are the real fix, later).
 
 ### Decisions made during the run
 
@@ -755,5 +768,13 @@ These were folded into the D2 discussion. Where each landed:
   40 damage, ignoring the gap.
 - 1.1 retune: **a daze now leaves the target open** (no defences, a finisher target)
   until the end of the following exchange, so set-up and payoff works one-on-one.
+- 1.3: kit placement: archers, illusionists and healers (more heals than attacks) at the
+  back; brawlers and the armoured always in front; everyone else in front. A setup's `row`
+  wins, but a side with no one in front all stands in front. "Up close" means an attack
+  whose reach is close range only (blows, counters, taijutsu); a kenjutsu technique that also
+  reaches mid can hit the back row. Rows are fixed for the fight; when the front falls the
+  back is simply exposed (nobody steps up). The `threat` target rule is now "threatening our
+  back row": a foe whose telegraphed attack can reach someone in our back row; with no one
+  there, any foe about to attack.
 - Accepted: the player's equal-fight win rate at grade E is 35% (43% at D–A). Parity
   isn't a goal; a better foe sense of tempo can come later.

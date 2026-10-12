@@ -49,15 +49,27 @@ function step(engine: CombatEngine, state: CombatState, optionId: string, rng: R
   return next.value;
 }
 
+/** A fight between groups: the player and their allies against one or more foes. */
+export interface Skirmish {
+  readonly player: FighterSpec;
+  readonly allies: readonly FighterSpec[];
+  readonly foes: readonly FighterSpec[];
+}
+
 /** One seeded fight of `player` against `opponent`. */
 export function fightOnce(player: FighterSpec, opponent: FighterSpec, seed: number): FightRecord {
+  return skirmishOnce({ player, allies: [], foes: [opponent] }, seed);
+}
+
+/** One seeded fight between groups. */
+export function skirmishOnce({ player, allies, foes }: Skirmish, seed: number): FightRecord {
   const engine = createPlanEngine();
   const rng = createRng(seed);
   let state = engine.start(
     {
       player: toSetup(player, 'player'),
-      allies: [],
-      enemies: [toSetup(opponent, 'foe')],
+      allies: allies.map((a, i) => toSetup(a, `ally-${i}`)),
+      enemies: foes.map((f, i) => toSetup(f, i === 0 ? 'foe' : `foe-${i}`)),
       canFlee: false,
       ...(player.plan ? { plan: player.plan } : {}),
     },
@@ -97,7 +109,12 @@ function mean(values: readonly number[]): number {
 
 /** `seeds` fights of `player` against `opponent`, summarised. */
 export function bench(player: FighterSpec, opponent: FighterSpec, seeds = DEFAULT_SEEDS) {
-  const records = Array.from({ length: seeds }, (_, i) => fightOnce(player, opponent, i + 1));
+  return benchSkirmish({ player, allies: [], foes: [opponent] }, seeds);
+}
+
+/** `seeds` fights between groups, summarised. */
+export function benchSkirmish(skirmish: Skirmish, seeds = DEFAULT_SEEDS): BenchReport {
+  const records = Array.from({ length: seeds }, (_, i) => skirmishOnce(skirmish, i + 1));
   const report: BenchReport = {
     fights: records.length,
     winRate: records.filter((r) => r.result === 'victory').length / records.length,

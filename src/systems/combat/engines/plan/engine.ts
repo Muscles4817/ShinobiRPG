@@ -11,9 +11,10 @@ import type {
 import { alive, hasPerk, viewOf } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
+import { screened } from '../../rules/rows';
 import { defaultLoadout, slotLimit } from './cards';
 import { intentLine, rollIntents } from './intent';
-import { upgradeLegacy, withIntents, withKits, withSlots } from './legacy';
+import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { rememberedLoadout } from './memory';
 import { decide, resolveExchange } from './round';
 import {
@@ -41,11 +42,16 @@ const START_RANGE = 'mid';
 export const ROUND_EXCHANGES = 4;
 
 function read(state: CombatState): PlanState {
-  return withIntents(withSlots(upgradeLegacy(withKits(decode(state)))));
+  return withRows(withIntents(withSlots(upgradeLegacy(withKits(decode(state))))));
 }
 
-function statuses(f: PlanFighter): string[] {
-  return [...(isDazed(f) ? ['Dazed'] : []), ...(f.sealed > 0 ? ['Sealed'] : [])];
+/** Conditions, and whether a back-row fighter is still out of reach behind their front row. */
+function statuses(f: PlanFighter, fighters: readonly PlanFighter[]): string[] {
+  return [
+    ...(isDazed(f) ? ['Dazed'] : []),
+    ...(f.sealed > 0 ? ['Sealed'] : []),
+    ...(alive(f) && screened(f, fighters) ? ['Screened'] : []),
+  ];
 }
 
 function options(state: PlanState): CombatOption[] {
@@ -185,7 +191,10 @@ export function createPlanEngine(): CombatEngine {
       const insight = hasPerk(playerOf(plan), 'insight');
       return {
         round: plan.round,
-        combatants: plan.fighters.map((f) => viewOf(f, statuses(f), intentLine(plan, f, insight))),
+        combatants: plan.fighters.map((f) => ({
+          ...viewOf(f, statuses(f, plan.fighters), intentLine(plan, f, insight)),
+          row: f.row,
+        })),
         log: plan.log,
         options: options(plan),
         range: plan.range,

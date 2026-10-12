@@ -1,4 +1,5 @@
 import { withKit } from '../../rules/body';
+import { formed, preferredRow } from '../../rules/rows';
 import { upgradeTechnique } from '../../rules/verbs';
 import { defaultLoadout } from './cards';
 import type { RangeBand } from '../../contract';
@@ -103,4 +104,18 @@ export function withSlots(state: PlanState): PlanState {
     },
   }));
   return { ...state, fighters };
+}
+
+/**
+ * Fights saved before rows stand in the formation their kits give them, as a fight started now
+ * would. Runs after `withKits`, since placement reads traits.
+ */
+export function withRows(state: PlanState): PlanState {
+  // Saved state may predate rows; the field is checked before use.
+  const raw = state.fighters as readonly (Omit<PlanFighter, 'row'> & {
+    readonly row?: PlanFighter['row'];
+  })[];
+  if (raw.every((f) => f.row !== undefined)) return state;
+  const placed = raw.map((f) => ({ ...f, row: f.row ?? preferredRow(f) }));
+  return { ...state, fighters: formed(placed) };
 }

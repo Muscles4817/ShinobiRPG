@@ -15,6 +15,7 @@ import {
 } from '../../rules/kit';
 import { harmLine } from '../../rules/narration';
 import { slotted } from './cards';
+import { canHit } from './rows';
 import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -22,7 +23,8 @@ import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './
  * for: Dodge may avoid the blow (evasion), Guard softens it (guard), Counter hits back up
  * close (taijutsu); see `rules/defence.ts`. A dazed fighter can't react. Kits shape every hit: armour and spirits shrug off
  * some kinds of attack, packs hit harder together, hidden attackers harder still, swift
- * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run.
+ * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run. A
+ * counter is a blow up close, so it can't reach an attacker standing behind their front row.
  */
 
 const COUNTER_SCALE = 0.6;
@@ -132,6 +134,7 @@ export function react(round: Round, hit: Hit): Round {
     has('counter') &&
     blow.physical &&
     round.range === 'close' &&
-    canAttackFrom(target, round.range);
+    canAttackFrom(target, round.range) &&
+    canHit({ kind: 'counter' }, attacker, round.fighters);
   return canCounter ? counter(landed, hit) : landed;
 }

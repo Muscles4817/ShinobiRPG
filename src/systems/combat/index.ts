@@ -20,6 +20,7 @@ export type {
   CombatItem,
   CombatItemEffect,
   RangeBand,
+  CombatRow,
 } from './contract';
 export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS } from './contract';
 export { splitNarration } from './rules/narration';

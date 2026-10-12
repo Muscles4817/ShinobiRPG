@@ -11,6 +11,7 @@ import { chooseCard } from './choose';
 import { intendedCard } from './intent';
 import { useJutsu } from './jutsu';
 import { useTool } from './pouch';
+import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
 import { dispel, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
@@ -37,21 +38,25 @@ const THROW_SCALE = 0.6;
 const STEP_BASE = 0.55;
 const STEP_PER_SPEED = 0.04;
 
-/** Allies focus the weakest enemy; enemies pick at random. Hidden foes are skipped. */
-function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
-  const foes = opponentsOf(fighters, self).filter(targetable);
+/** Allies focus the weakest of the foes; enemies pick at random. */
+function targetFor(foes: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
   if (foes.length === 0) return undefined;
   if (self.side === 'player') return [...foes].sort((a, b) => a.health - b.health)[0];
   return rng.pick(foes);
 }
 
-/** Foes and allies play their telegraphed card, or follow their instincts. */
+/**
+ * Foes and allies play their telegraphed card, or follow their instincts. They size up a foe in
+ * sight; when the card can't reach them past their front row, they turn on one it can reach.
+ */
 function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
-  const target = targetFor(round.fighters, actor, rng);
+  const inSight = opponentsOf(round.fighters, actor).filter(targetable);
+  const foe = targetFor(inSight, actor, rng);
   const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
-  const moment = { band: round.range, foe: target, hiddenFoe, opening: round.opening ?? false };
+  const moment = { band: round.range, foe, hiddenFoe, opening: round.opening ?? false };
   const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
-  return { card, target };
+  if (!foe || !isOffence(card) || canHit(card, foe, round.fighters)) return { card, target: foe };
+  return { card, target: targetFor(hittable(card, inSight, round.fighters), actor, rng) };
 }
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {

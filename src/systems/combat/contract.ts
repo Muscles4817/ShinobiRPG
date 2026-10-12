@@ -39,6 +39,12 @@ export type CombatTechnique = Pick<
 export type RangeBand = 'close' | 'mid' | 'far';
 
 /**
+ * Where a fighter stands in their side's formation. The back row can't be struck up close
+ * while someone stands in front of it (see `rules/rows.ts`); engines without rows ignore it.
+ */
+export type CombatRow = 'front' | 'back';
+
+/**
  * Special abilities a combatant brings, e.g. an awakened bloodline's eyes. Engines that
  * don't know a perk ignore it.
  */
@@ -99,6 +105,8 @@ export interface CombatantSetup {
   readonly traits?: readonly CombatTrait[];
   /** Tools carried into the fight (the player's pouch). */
   readonly items?: readonly CombatItem[];
+  /** A preferred row; when absent the engine places the fighter by their kit. */
+  readonly row?: CombatRow;
 }
 
 export interface CombatSetup {
@@ -142,6 +150,8 @@ export interface CombatantView {
   readonly intent?: string;
   /** False while they can't be picked as a target (hidden in an illusion). */
   readonly targetable?: boolean;
+  /** Their row, for engines with formations. */
+  readonly row?: CombatRow;
 }
 
 /** A resource the engine wants shown (action points, momentum, block…). */
