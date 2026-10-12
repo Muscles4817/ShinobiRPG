@@ -7,6 +7,7 @@ import type {
   RangeBand,
 } from '../../contract';
 import { bodyFrom, type Body } from '../../rules/body';
+import { numberedNames } from '../../rules/narration';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
 import type { ActiveField, CloneBody, EmpowerMemory, TrapMemory } from '../../rules/verbs';
@@ -185,11 +186,13 @@ function fighterFrom(
 
 /** Everyone in the fight, each side in formation. */
 export function initialFighters(setup: CombatSetup): PlanFighter[] {
-  return formed([
-    fighterFrom(setup.player, 'player', true),
-    ...setup.allies.map((a) => fighterFrom(a, 'player')),
-    ...setup.enemies.map((e) => fighterFrom(e, 'enemy')),
-  ]);
+  return formed(
+    numberedNames([
+      fighterFrom(setup.player, 'player', true),
+      ...setup.allies.map((a) => fighterFrom(a, 'player')),
+      ...setup.enemies.map((e) => fighterFrom(e, 'enemy')),
+    ]),
+  );
 }
 
 export function encode(state: PlanState): CombatState {
