@@ -3,6 +3,7 @@ import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
 import { CLAN_TECHNIQUES } from './clanTechniques';
 import { CLANS } from './clans';
+import { COMBO_TECHNIQUES } from './comboTechniques';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { MISSIONS } from './missions';
@@ -37,7 +38,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   startingRyo: 300,
   text: NARUTO_TEXT,
   locations: NARUTO_LOCATIONS,
-  techniques: [...TECHNIQUES, ...CLAN_TECHNIQUES, ...SENSEI_TECHNIQUES],
+  techniques: [...TECHNIQUES, ...CLAN_TECHNIQUES, ...SENSEI_TECHNIQUES, ...COMBO_TECHNIQUES],
   missions: [...MISSIONS, ...TEAM_MISSIONS],
   enemies: ENEMIES,
   training: TRAINING,

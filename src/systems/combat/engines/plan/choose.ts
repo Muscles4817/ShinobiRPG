@@ -5,6 +5,7 @@ import { canAttackFrom, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
 import { hasVerb, isHindering, isWounding, techniquePower } from '../../rules/verbs';
 import { isOffence, playable, slotted, type Card } from './cards';
+import { partnered } from './combo';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
@@ -79,6 +80,8 @@ export interface Moment {
   readonly opening?: boolean;
   /** A field of their own side is already over the fight. */
   readonly fieldUp?: boolean;
+  /** Everyone in the fight, when known: a combination technique needs a partner among them. */
+  readonly fighters?: readonly PlanFighter[];
 }
 
 /**
@@ -99,7 +102,10 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
 
 export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   const { band, foe } = moment;
-  const ready = slotted(self, band).filter((c) => playable(self, c));
+  const fighters = moment.fighters ?? [];
+  const ready = slotted(self, band).filter(
+    (c) => playable(self, c) && (c.kind !== 'jutsu' || partnered(fighters, self, c.technique)),
+  );
   const instinct = instinctFor(self, ready, moment);
   if (instinct) return instinct;
   const heal = jutsu(ready, (t) => hasVerb(t, 'heal'));

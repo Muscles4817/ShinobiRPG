@@ -1,5 +1,5 @@
 import type { Rng } from '@/core';
-import type { CombatOutcome } from '@/systems/combat';
+import type { CombatantSetup, CombatOutcome } from '@/systems/combat';
 import {
   advance,
   currentStage,
@@ -13,12 +13,13 @@ import { slotsUntilNextMorning } from '@/systems/time';
 import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct, earn } from '@/systems/wallet';
 
-import { enemyCombatant, playerCombatant } from './combatants';
+import { enemyCombatant, PLAYER_COMBATANT_ID, playerCombatant } from './combatants';
 import type { GameContext } from './context';
 import { startFight } from './fightStyle';
 import { adjust, chip, log, placeHere, spendTime } from './ops';
 import { bondOf, requirePerson } from './people/cast';
 import { companionCombatant } from './people/companions';
+import { defaultStance, ordersFor } from './people/teamOrders';
 import { addReport } from './reports';
 import type { GameState } from './state';
 
@@ -96,13 +97,21 @@ function withTeamBond(state: GameState, points: number): GameState {
   return { ...state, people: { ...state.people, bonds: { ...state.people.bonds, ...raised } } };
 }
 
-/** Teammates who fight beside you on team missions. */
-function teamAllies(state: GameState, ctx: GameContext) {
+/**
+ * Teammates who fight beside you on team missions, each in the stance their specialty suggests
+ * and taking from you only the orders your bonds have earned.
+ */
+function teamAllies(state: GameState, ctx: GameContext): CombatantSetup[] {
   const def = activeMission(state, ctx);
   if (!def?.withTeam) return [];
-  return (state.people.team?.teammateIds ?? []).map((id) =>
-    companionCombatant(requirePerson(state, ctx, id), state, ctx, TEAMMATE_TAG),
-  );
+  return (state.people.team?.teammateIds ?? []).map((id) => {
+    const person = requirePerson(state, ctx, id);
+    return {
+      ...companionCombatant(person, state, ctx, TEAMMATE_TAG),
+      stance: defaultStance(person, PLAYER_COMBATANT_ID),
+      orders: ordersFor(state, person),
+    };
+  });
 }
 
 function endMission(

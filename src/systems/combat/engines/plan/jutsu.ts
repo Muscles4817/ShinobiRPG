@@ -7,6 +7,7 @@ import { resistChance } from '../../rules/defence';
 import { matchup, matchupLine } from '../../rules/elements';
 import { attackKindOf } from '../../rules/kit';
 import { healLine } from '../../rules/narration';
+import { finisherScale } from '../../rules/team';
 import { breakRating } from '../../rules/conditions';
 import {
   confuseTurns,
@@ -18,13 +19,23 @@ import {
   type EffectUse,
 } from '../../rules/verbs';
 import { makeClones } from './clones';
+import { combination, comboPartner, elementBoost, recordHit } from './combo';
 import { empowerSelf } from './empower';
 import { castField } from './field';
 import { move } from './footwork';
 import { react, type Blow } from './react';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
-import { dazeIn, fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
+import {
+  dazeIn,
+  fighterIn,
+  isDazed,
+  patch,
+  paying,
+  say,
+  type PlanFighter,
+  type Round,
+} from './state';
 import { setTrap } from './traps';
 
 /**
@@ -42,9 +53,15 @@ interface Aimed extends Turn {
 /** The effects that wound. */
 type Wounding = EffectUse<'damage' | 'area' | 'break'>;
 
+/** Pays the chakra, and notes the technique and the chakra for the outcome's usage report. */
 function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
+  const known = actor.used ?? [];
+  const change = {
+    ...paying(actor, chakraCost(actor, t)),
+    used: known.includes(t.id) ? known : [...known, t.id],
+  };
   return say(
-    { ...round, fighters: patch(round.fighters, actor.id, paying(actor, chakraCost(actor, t))) },
+    { ...round, fighters: patch(round.fighters, actor.id, change) },
     `${actor.name} uses ${t.name}!`,
   );
 }
@@ -84,10 +101,17 @@ function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
   return say(healed, healLine(`${actor.name} recovers.`, health - actor.health));
 }
 
-function damage(round: Round, { actor, target, rng }: Aimed, use: Wounding): Round {
+/**
+ * A wounding effect: harder on a foe left open by a daze or held by a seal (set-up and
+ * payoff), in an element combo, and in a combination technique.
+ */
+function damage(round: Round, { actor, target, rng, boost }: Aimed, use: Wounding): Round {
   const t = use.technique;
+  const open = isDazed(target) || target.sealed > 0;
+  const combo = elementBoost(round, actor, target.id, t);
+  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1);
   const blow: Blow = {
-    raw: techniqueDamage(actor, target, use, rng.next()),
+    raw: techniqueDamage(actor, target, use, rng.next()) * scale,
     what: t.name,
     dodgeable: t.discipline !== 'genjutsu',
     physical: physical(t),
@@ -97,8 +121,11 @@ function damage(round: Round, { actor, target, rng }: Aimed, use: Wounding): Rou
     ...(use.effect.verb === 'area' ? { area: true } : {}),
   };
   const hit = react(round, { attacker: actor, target, blow, rng });
+  const landed = fighterIn(hit, target.id)?.health !== target.health;
   const element = matchupLine(matchup(t.element, target.nature), target.name);
-  return element ? say(hit, element) : hit;
+  const lines = [...(landed && combo ? [combo.line] : []), ...(element ? [element] : [])];
+  const told = lines.length > 0 ? say(hit, ...lines) : hit;
+  return landed ? recordHit(told, actor, target.id, t) : told;
 }
 
 /** The verbs that land on a foe; every other verb happens to the user. */
@@ -196,7 +223,14 @@ function applyEffect(flight: Flight, turn: Turn, use: EffectUse): Flight {
   }, flight);
 }
 
+/** Uses a technique: with a partner when it's a combination one (see `combo.ts`). */
 export function useJutsu(round: Round, turn: Turn, t: CombatTechnique): Round {
+  const partner =
+    turn.boost === undefined ? comboPartner(round.fighters, turn.actor, t) : undefined;
+  return partner ? combination(round, turn, { lead: t, partner }, single) : single(round, turn, t);
+}
+
+function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const { actor, rng } = turn;
   const paid = withChakraSpent(round, actor, t);
   const targets = targetsOf(paid, turn, t);

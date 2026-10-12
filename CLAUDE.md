@@ -75,7 +75,8 @@ ui ──► game ──► content ──► systems ──► core
 5. **Combat is behind a contract** (`src/systems/combat/contract.ts`). The game builds a
    `CombatSetup` and reads a `CombatOutcome`; the UI renders a generic `CombatView`; saves hold
    an opaque `CombatState`. Only the engine looks inside its own state. A setup has
-   `allies` (teammates on team missions) who act on their own; a fight's purpose (mission,
+   `allies` (teammates on team missions) who fight by a `stance` and take only the `orders`
+   the game says your bonds have earned (`game/people/teamOrders.ts`); a fight's purpose (mission,
    spar) is game state (`people.sparringWith`), never the engine's concern. The player's
    choice is a `CombatChoice` (option id + optional target); the view may add `range`,
    `prompt`, `meters` and per-combatant `intent` (a foe's telegraphed next move), and options say their `kind` so one fight
@@ -98,6 +99,11 @@ ui ──► game ──► content ──► systems ──► core
     `Modifiers` value that training growth, study speed and hunger read. A new kind of identity
     (bloodline stage, gear, a sensei's teaching) is another spec, not new branches in actions.
     Option cards show `describeSpec` output, so what the player is told is what the code does.
+    **Talent is aptitude**: a hidden multiplier per stat (`character.aptitude`, 0 = never),
+    rolled at creation (`game/aptitude.ts`; clan `arts`, talent floors, clan and talent growth
+    as tilts) and found out by training (`aptitudeKnown`). All growth goes through
+    `growCharacter` (`game/growth.ts`): base × solo efficiency by grade × aptitude × modifiers
+    (× a teacher); hard-work traits set a `soloEfficiencyFloor`. Players see reads, never numbers.
 12. **Character creation is the opening scene.** The academy break-in collects a
     `CreationDraft`; `draftProblems` validates it and `createNewGame` builds the first state.
     The break-in roll is seeded, so the scene and the game agree on the outcome.
@@ -246,6 +252,9 @@ ui ──► game ──► content ──► systems ──► core
   jobs that are always available (every pack needs one a fresh genin can take — validated).
 - **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
   fight as allies and each gains bond on success. Offer it at a mission hall as usual.
+- **Add a combination technique:** two `TechniqueDef`s whose `combo.partnerTechniqueId` name
+  each other (validated); offer them at the academy. A teammate knows the half in their
+  specialty, and a half plays only beside someone on your side who knows the other.
 - **Add gear:** add a `GearDef` (slot, cost, `statBonuses`) to the pack's `gear` and list it at
   a `gear` place (a smith, an outfitter). **Add an ingredient or recipe:** add it to
   `shared/kitchen.ts` (or a pack's own list); ingredients must be sold at a market stall's

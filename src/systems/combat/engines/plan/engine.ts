@@ -8,6 +8,7 @@ import type {
   CombatState,
   CombatView,
 } from '../../contract';
+import type { CombatUsage } from '../../teamContract';
 import { alive, hasPerk, viewOf } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
@@ -15,6 +16,7 @@ import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed } from '../../rules/verbs';
 import { defaultLoadout, slotLimit } from './cards';
+import { withoutLoneCombos } from './combo';
 import { fieldMeter, fieldStatuses } from './field';
 import { substitutionsReady } from './footwork';
 import { intentLine, rollIntents } from './intent';
@@ -33,7 +35,9 @@ import {
   type PlanFighter,
   type PlanState,
 } from './state';
+import { editTeam, teamOptions } from './orders';
 import { editPlan, tableOptions } from './table';
+import { stanceStatus, withStances } from './team';
 
 /**
  * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
@@ -61,6 +65,8 @@ function statuses(state: PlanState, f: PlanFighter): string[] {
     ...(alive(f) && screened(f, state.fighters) ? ['Screened'] : []),
     ...fieldStatuses(state, f),
     ...prepStatuses(f),
+    ...stanceStatus(f, state.fighters),
+    ...(alive(f) && f.id === state.mark ? ['Marked'] : []),
   ];
 }
 
@@ -73,6 +79,7 @@ function options(state: PlanState): CombatOption[] {
     const begin = state.bout === 1 ? 'Begin the fight' : `Begin round ${state.bout}`;
     return [
       ...tableOptions(player),
+      ...teamOptions(state),
       { id: 'begin', label: begin, detail: '', kind: 'continue' },
       escape,
     ];
@@ -82,6 +89,13 @@ function options(state: PlanState): CombatOption[] {
     { id: 'round', label: 'Watch the round', detail: '', kind: 'continue' },
     escape,
   ];
+}
+
+/** What each fighter used, for the outcome. */
+function usage(fighters: readonly PlanFighter[]): Record<string, CombatUsage> {
+  return Object.fromEntries(
+    fighters.map((f) => [f.id, { techniqueIds: f.used ?? [], chakraSpent: f.chakraSpent ?? 0 }]),
+  );
 }
 
 function fleeChance(state: PlanState): number {
@@ -137,7 +151,7 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   const option = options(state).find((o) => o.id === optionId);
   if (!option) return err(`Unknown combat option "${optionId}".`);
   if (option.disabledReason) return err(option.disabledReason);
-  const planned = editPlan(state, optionId);
+  const planned = editPlan(state, optionId) ?? editTeam(state, optionId);
   if (planned) return ok(planned);
   switch (optionId) {
     case 'begin':
@@ -170,10 +184,14 @@ export function createPlanEngine(): CombatEngine {
     start(setup, rng) {
       const names = setup.enemies.map((e) => e.name).join(', ');
       const { fighters, range, lines, field } = openFight(initialFighters(setup), setup.opening);
-      const planned = fighters.map((f) => ({
-        ...f,
-        loadout: (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ?? defaultLoadout(f),
-      }));
+      const planned = withStances(
+        fighters.map((f) => ({
+          ...f,
+          loadout:
+            (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ??
+            defaultLoadout(withoutLoneCombos(f, fighters)),
+        })),
+      );
       const table = { fighters: planned, range, exchange: 0, ...(field ? { field } : {}) };
       const firstMover = setup.opening?.firstMover;
       const state: PlanState = {
@@ -232,6 +250,7 @@ export function createPlanEngine(): CombatEngine {
         plan: player.loadout,
         costs: [...costsOwed(player), ...empowerCostsOwed(player)],
         chakraSpent: player.chakraSpent ?? 0,
+        used: usage(plan.fighters),
       };
     },
   };

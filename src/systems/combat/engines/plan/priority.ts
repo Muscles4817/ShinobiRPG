@@ -1,9 +1,10 @@
 import type { CombatTechnique } from '../../contract';
 import { alive, hasPerk } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
-import { hasVerb } from '../../rules/verbs';
+import { hasVerb, isHindering, isWounding } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
 import { improvise } from './choose';
+import { partnered } from './combo';
 import { ownField } from './field';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
@@ -24,8 +25,10 @@ import {
  * first slotted card at this distance that would do something now and whose condition holds,
  * aimed by the slot's target rule. A condition about a foe (dazed, readying a jutsu) also picks
  * whom the card goes for. An attack only aims at foes it can reach past their front row (see
- * `rows.ts`); a slot with none in reach is passed over. When no slot qualifies, the player improvises a basic blow or a step.
- * Foes and allies don't plan this way; they follow their instincts (`choose.ts`).
+ * `rows.ts`); a slot with none in reach is passed over. A daze, seal or confusion looks for a
+ * foe not already held. When no slot qualifies, the player improvises a basic blow or a step.
+ * Teammates play their cards this way too (`team.ts`); foes follow their instincts
+ * (`choose.ts`).
  */
 
 /** "Below a third of my health." */
@@ -97,7 +100,7 @@ function byHealth(foes: readonly PlanFighter[], most: boolean): PlanFighter | un
   return [...foes].sort((a, b) => (most ? b.health - a.health : a.health - b.health))[0];
 }
 
-/** Whom a slot aims at among the foes it may target. The team mark doesn't exist yet. */
+/** Whom a slot aims at among the foes it may target; the mark, when it's among them. */
 export function aimAt(
   foes: readonly PlanFighter[],
   rule: TargetRule | undefined,
@@ -110,6 +113,7 @@ export function aimAt(
     case 'threat':
       return byHealth(nonEmpty(foes.filter((f) => threatening(f, self, round))) ?? foes, false);
     case 'marked':
+      return foes.find((f) => f.id === round.mark) ?? byHealth(foes, false);
     case 'weakest':
     case undefined:
       return byHealth(foes, false);
@@ -118,7 +122,8 @@ export function aimAt(
 
 /**
  * No healing at full health, no sensing with no one hidden (or foes already read), no hiding
- * twice, no raising a field while yours is up, no move to where you already are.
+ * twice, no raising a field while yours is up, no move to where you already are, no
+ * combination without a partner ready to join it.
  */
 function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
   const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
@@ -126,6 +131,7 @@ function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boole
   if (hasVerb(t, 'sense') && (!hiddenFoe || hasPerk(self, 'insight'))) return false;
   if (hasVerb(t, 'field') && ownField(round.field, self)) return false;
   if (moveDestination(self, t) === round.range) return false;
+  if (!partnered(round.fighters, self, t)) return false;
   const foeInSight = opponentsOf(round.fighters, self).some((f) => inSight(self, f));
   if (!prepNeeded(self, t, foeInSight)) return false;
   return !(hasVerb(t, 'conceal') && self.hidden);
@@ -172,17 +178,29 @@ export interface Play {
   readonly target: PlanFighter | undefined;
 }
 
+/** A technique that only holds a foe back (daze, seal, confuse), without wounding them. */
+function holdsOnly(card: Card): boolean {
+  return card.kind === 'jutsu' && isHindering(card.technique) && !isWounding(card.technique);
+}
+
+/** Not dazed, sealed or confused. */
+function free(foe: PlanFighter): boolean {
+  return !dazed(foe) && foe.confused === 0;
+}
+
 function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {
   const card = findCard(self, slot.card);
   if (!card || !fitsBand(card, round.range) || !useful(self, card, round)) return null;
-  const foes = whenHolds(self, round, slot.when);
+  const held = whenHolds(self, round, slot.when);
+  // Dazing, sealing or confusing a foe already held is wasted: such a card looks for a fresh one.
+  const foes = held && holdsOnly(card) ? held.filter(free) : held;
   if (!foes) return null;
   const inReach = needsAim(card) ? hittable(card, foes, round.fighters) : foes;
   const target = aimAt(inReach, slot.target, self, round);
   return needsAim(card) && !target ? null : { card, target };
 }
 
-/** The first slot at this distance that qualifies, else an improvised blow or step. */
+/** The first slot at this distance that qualifies, else an improvised blow or step (at the mark). */
 export function plannedPlay(self: PlanFighter, round: Round): Play {
   for (const slot of self.loadout[round.range]) {
     const play = fromSlot(self, round, slot);
@@ -190,5 +208,5 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   }
   const card = improvise(self, round.range);
   const seen = opponentsOf(round.fighters, self).filter((f) => inSight(self, f));
-  return { card, target: aimAt(hittable(card, seen, round.fighters), 'weakest', self, round) };
+  return { card, target: aimAt(hittable(card, seen, round.fighters), 'marked', self, round) };
 }

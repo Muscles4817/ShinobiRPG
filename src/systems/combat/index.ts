@@ -26,6 +26,8 @@ export type {
   CombatRow,
 } from './contract';
 export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS } from './contract';
+export type { CombatOrders, CombatStance, CombatUsage, StanceKind } from './teamContract';
+export { STANCE_KINDS } from './teamContract';
 export { splitNarration } from './rules/narration';
 export type { Narration, NarrationAmount, NarrationAmountKind } from './rules/narration';
 export { createDuelEngine } from './engines/duel/engine';

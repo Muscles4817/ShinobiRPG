@@ -9,8 +9,8 @@ import type {
 import { bodyFrom, type Body } from '../../rules/body';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
-import type { ActiveField } from '../../rules/verbs';
-import type { CloneBody, EmpowerMemory, TrapMemory } from '../../rules/verbs';
+import type { ActiveField, CloneBody, EmpowerMemory, TrapMemory } from '../../rules/verbs';
+import type { CombatOrders, CombatStance } from '../../teamContract';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -33,8 +33,8 @@ export type SlotCondition = (typeof SLOT_CONDITIONS)[number];
 
 /**
  * Whom a slotted attack aims at: the weakest foe, the strongest, the one threatening my back
- * row (its telegraphed attack can reach someone there), or the team's mark (no marks yet, so
- * it aims like `weakest`).
+ * row (its telegraphed attack can reach someone there), or the team's mark (the foe the player
+ * marked between rounds; with none, or the mark down, it aims like `weakest`).
  */
 export const TARGET_RULES = ['weakest', 'strongest', 'threat', 'marked'] as const;
 export type TargetRule = (typeof TARGET_RULES)[number];
@@ -71,6 +71,14 @@ export interface PlanFighter extends Body, TrumpMemory, EmpowerMemory, CloneBody
   readonly openUntil?: number;
   /** Their substitution has swapped them out of a hit this round: it works once a round. */
   readonly substituteSpent?: boolean;
+  /** A teammate's stance (see `team.ts`); the player and foes have none. */
+  readonly stance?: CombatStance;
+  /** What the player may change about this teammate. */
+  readonly orders?: CombatOrders;
+  /** Joined a partner's combination technique: their next turn went into it. */
+  readonly joined?: boolean;
+  /** Techniques used so far (by id, first use first), for the outcome. */
+  readonly used?: readonly string[];
   /** Chakra paid so far this fight (it deepens reserves); absent until they pay any. */
   readonly chakraSpent?: number;
 }
@@ -127,6 +135,15 @@ export interface PlanState {
   readonly firstMover?: CombatSide;
   /** A field over the fight (mist, smoke), until it fades. */
   readonly field?: ActiveField;
+  /** The team mark: the foe (by id) the player's side goes for. */
+  readonly mark?: string;
+}
+
+/** A hit with an element that landed this exchange, for element combos (`combo.ts`). */
+export interface ElementHit {
+  readonly targetId: string;
+  readonly fighterId: string;
+  readonly element: NonNullable<PlanFighter['nature']>;
 }
 
 /** One exchange in progress. */
@@ -141,6 +158,9 @@ export interface Round {
   readonly seen: PlanState['seen'];
   readonly intents: PlanState['intents'];
   readonly field?: ActiveField;
+  readonly mark?: string;
+  /** Elemental hits landed this exchange. */
+  readonly hits?: readonly ElementHit[];
 }
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
@@ -204,6 +224,9 @@ export function patch(
       | 'openUntil'
       | 'trumpsUsed'
       | 'substituteSpent'
+      | 'stance'
+      | 'joined'
+      | 'used'
       | 'chakraSpent'
       | 'clones'
     >

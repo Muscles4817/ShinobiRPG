@@ -10,10 +10,11 @@ import {
 
 import { Chips } from '../../components/Chips';
 import type { ScreenProps } from '../types';
-import { ActionBar, Hand, PlanPicker } from './combat/Choices';
+import { ActionBar, Hand } from './combat/Choices';
 import { Foes } from './combat/Foes';
 import { Pouch } from './combat/Pouch';
 import { RangeStrip } from './combat/RangeStrip';
+import { PlansByOwner, TeamOrders } from './combat/TeamOrders';
 
 /** Which row one of yours stands in, shown once your side has a back row. */
 function RowMark({ fighter, shown }: { readonly fighter: CombatantView; readonly shown: boolean }) {
@@ -37,6 +38,7 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
   const ours = view.combatants.filter((c) => c.side === 'player');
   const [player, ...allies] = ours;
   const inRows = ours.some((c) => c.row === 'back');
+  const names = Object.fromEntries(allies.map((a) => [a.id, a.name]));
   const of = (...kinds: CombatOption['kind'][]) =>
     view.options.filter((o) => kinds.includes(o.kind));
   const escape = view.options.find((o) => o.kind === 'escape');
@@ -116,7 +118,8 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
         </div>
       )}
       <div className="combat-controls">
-        <PlanPicker options={of('plan')} onPick={pick} />
+        <TeamOrders options={of('order')} onPick={pick} />
+        <PlansByOwner options={of('plan')} names={names} onPick={pick} />
         <Hand options={of('basic', 'technique')} onPick={pick} />
         <Pouch options={of('item')} onPick={pick} />
         <ActionBar options={of('move', 'continue', 'end')} onPick={pick} />

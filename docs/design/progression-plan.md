@@ -779,6 +779,24 @@ These were folded into the D2 discussion. Where each landed:
   Lantern Shades 83% (7.6), Snare Ward 83% (7.2); against a plain B, each still 0%. The
   Naruto pack's Clone Jutsu is now a clone (it was a daze). No save version change.
 
+- 1.7: team. Teammates fight by a **stance** (`CombatSetup` ally `stance`; `engines/plan/team.ts`):
+  press, cover <someone>, support or hold, each shaping their default cards, which they now play
+  as a priority list like the player's (foes keep the instinct AI). The **team mark** is set at
+  the card table and the `marked` target rule is offered; pressing teammates aim at it. A cover
+  may step in front of a single attack aimed at the one it covers (`rules/team.ts`). Generic
+  combos: element pairs (`rules/elements.ts`: wind and fire, water and lightning, earth and
+  water) when two fighters of one side hit one foe in an exchange, and a finisher bonus on a
+  dazed or sealed foe. **Combination techniques** (`TechniqueDef.combo`), one pair per pack at
+  the academy. **Control escalates with bonds** (`game/people/teamOrders.ts`): stances from a
+  friend, cards from a close friend or once your sensei is a close friend. `CombatOutcome.used`
+  reports each fighter's techniques and chakra spent. No save change (the new plan-state
+  fields are optional). Team bench (`teamBench.test.ts`): a back row covered by a teammate ends
+  with 80% health against 65% when the teammate presses; earth and water together end a fight
+  in 3.3 exchanges against 3.8; a snare-and-anvil pair in 3.3 against 4.6 apart. The 1v1 bench
+  moved only where dazes are involved (the finisher bonus, and no re-dazing a held foe): a
+  versatile fighter now beats a trickster 90–100% (was 40–80%); a trickster now beats a rusher
+  or a powerhouse a little more often.
+
 **Phase 2 (in progress).**
 
 - 2.3: `reserves` ("Chakra Reserves", body group) is a stat. Max chakra is 30 + 3.5 per point
@@ -801,6 +819,22 @@ These were folded into the D2 discussion. Where each landed:
   injury's days (at most half). The hospital treats injuries even at full health: 25 ryo
   each on top of the fee, halving the days left, once per injury. The Shinobi screen has a
   Condition section; the hospital lists your injuries.
+- 2.1/2.2: aptitude and growth. `character.aptitude` (a hidden multiplier per stat, 0 to 1.8),
+  `aptitudeKnown` (unknown, sense, known) and `aptitudeSessions` (save v18 derives aptitude
+  from the clan's and talent's growth multipliers, nothing known). New characters roll it from
+  the break-in dice (`game/aptitude.ts`): a clan's `arts` (new `ClanDef` field, both packs)
+  1.1–1.4, its other stats 0.75–1.2; the clanless 0.6–1.35 with 8% prodigies (1.4–1.8), 10%
+  holes (0.25–0.55) and a 12% chance of one void art (0). A talent's raised stats never roll
+  under 1; clan and talent growth multipliers tilt the roll and no longer act as modifiers.
+  Growth (`systems/stats/growth.ts`, through `game/growth.ts` for every source) is base ×
+  `SESSION_PACE` (0.09) × solo efficiency by grade (E 1, D 0.4, C 0.1, B 0.03, A 0.01, S
+  0.003) × aptitude × modifiers, and × 3 for the sensei's lesson. Stats are stored to three
+  decimals. The Tireless trait (`soloEfficiencyFloor`) keeps 0.4 through B in strength, speed,
+  stamina and taijutsu. Three sessions in a stat give a rough read (a journal line); a void
+  art shows itself on the first try and then refuses its drills and scrolls. The Shinobi screen
+  shows each stat's read in words. Pacing (an ordinary talent, taijutsu specialist): taijutsu
+  reaches C on day 61 (was day 3), and a further month alone adds about one point of the C
+  band's seven.
 
 ### Decisions made during the run
 
@@ -890,6 +924,26 @@ These were folded into the D2 discussion. Where each landed:
 - 1.4d (merged with 1.4c): a blow meets its target's clones first, then a Dodge, then a
   substitution. Both clones and a substitution are decoys, but a clone is a chance per hit
   that runs out, a substitution a certainty once a round paid in chakra.
+- 1.7: allies play their cards as a priority list (as the player does), so a stance and an
+  edited card mean exactly what they say; foes keep the instinct AI. With no stance given, an
+  illusionist supports and anyone else presses.
+- 1.7: the team mark is always available once there is a team or more than one foe; it is a
+  target the player calls, not an order a teammate can refuse. Pressing teammates aim at it.
+  The improvised blow (no slot qualifies) also goes for the mark.
+- 1.7: "press" closes in to close range only when the fighter's wounding jutsu still reach
+  there (a ninjutsu caster keeps its distance).
+- 1.7: a daze, seal or confusion from a slot looks for a foe not already held; the finisher
+  bonus (×1.25) applies to technique damage on a dazed (open) or sealed foe.
+- 1.7: a combination technique fires both halves at the same foe, each ×1.4; the partner pays
+  their own chakra and loses their next turn. A half nobody on your side could join is left
+  out of default plans. Teammates know the half in their specialty (no clan); the packs' pairs
+  are fūinjutsu and kenjutsu (original: Shrine Snare and Anvil Fall) and ninjutsu and
+  kenjutsu (fan pack: Gale Palm and Rising Twin Dragons).
+- 1.7: control thresholds: a teammate at Friend takes stances; at Close friend, or with the
+  sensei at Close friend ("sees you as the leader"), they let you edit their cards too. Default
+  stances by specialty: taijutsu and ninjutsu press, kenjutsu covers you, genjutsu and
+  fūinjutsu support. Edits to a teammate's cards last for the fight only, and a new stance
+  rebuilds their cards.
 - 2.3: reserves are not a combat attribute or a technique scaling stat (`ScalingStat`
   excludes them): they size the chakra pool, which reaches the fight as `maxChakra`. Clone
   counts and empower duration can add them to `CombatAttributes` when those verbs need them.
@@ -905,3 +959,20 @@ These were folded into the D2 discussion. Where each landed:
   multipliers. Treatment can be repeated for health, but each injury is set only once (a
   `treated` flag on it), so ryo can't erase injuries. `exhaustion` is `null` when rested
   rather than absent.
+- 2.1: clan and talent growth multipliers moved into aptitude (they tilt the roll and the
+  v18 migration copies them), so they aren't counted twice; traits, academy grades, meals,
+  hunger and injuries stay modifiers. Traits don't tilt aptitude: they are temperament, which
+  already acts on every session.
+- 2.1: aptitude is rolled from the break-in dice after the roll, and the game continues from
+  the dice after aptitude (the scene and the game still agree on the break-in).
+- 2.2: within a grade, efficiency holds the grade's value for the lower 60% of the band and
+  eases geometrically to the next grade's over the top 40%, so a boundary is no cliff. A
+  hard-work floor holds through its grade and stops at the next (a drop, not an exploit).
+- 2.2: a drill belongs to its largest gain; a void art blocks only drills it heads (a void
+  taijutsu still lets Kicking Posts grow strength until it is known; then it is refused). A
+  void art is revealed by the first session or scroll in it, which grows nothing in it.
+- 2.2: every growth source goes through the new formula: drills, lessons (× 3), spars (until
+  2.4), night sights and fight reserves. Drill previews assume an ordinary aptitude where
+  none has been read, so they don't give talent away.
+- 2.2: the 60-day target holds now, mostly by drilling: the weekly lesson adds little. So the
+  stall is in C (asserted), not D; "solo stalls in D" waits for Phase 3 teachers.

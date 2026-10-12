@@ -23,6 +23,8 @@ export interface Turn {
   readonly actor: PlanFighter;
   readonly target: PlanFighter | undefined;
   readonly rng: Rng;
+  /** How much harder their damage lands: set while a combination technique resolves. */
+  readonly boost?: number;
 }
 
 /** Hidden foes can't be aimed at, unless you read foes (insight, or a sense this fight). */

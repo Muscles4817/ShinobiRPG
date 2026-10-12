@@ -45,14 +45,12 @@ const WHEN_LABEL: Readonly<Record<SlotCondition | typeof ALWAYS, string>> = {
   'foe-hidden': 'A foe is hidden',
 };
 
-/**
- * The target rules offered at the table. `marked` is reserved for the team mark, which doesn't
- * exist yet, so it isn't offered: what the player is told is what the code does.
- */
-const AIM_LABEL: Readonly<Partial<Record<TargetRule, string>>> = {
+/** The target rules offered at the table; the mark is set between rounds (`orders.ts`). */
+const AIM_LABEL: Readonly<Record<TargetRule, string>> = {
   weakest: 'Weakest foe',
   strongest: 'Strongest foe',
   threat: 'Foe threatening our back row',
+  marked: 'The team mark',
 };
 
 /** Why a card can't go in a slot: slots full, or a tool you have none of. */
@@ -207,11 +205,19 @@ function edited(slots: readonly Slot[], edit: Edit): Slot[] {
   }
 }
 
-/** Applies a card-table option to the player's plan, or null when it isn't one. */
-export function editPlan(state: PlanState, optionId: string): PlanState | null {
+/** Applies a card-table option to a fighter's plan, or null when it isn't one. */
+export function editLoadout(
+  state: PlanState,
+  fighter: PlanFighter,
+  optionId: string,
+): PlanState | null {
   const edit = parse(optionId);
   if (!edit) return null;
-  const player = playerOf(state);
-  const loadout = { ...player.loadout, [edit.band]: edited(player.loadout[edit.band], edit) };
-  return { ...state, fighters: patch(state.fighters, player.id, { loadout }) };
+  const loadout = { ...fighter.loadout, [edit.band]: edited(fighter.loadout[edit.band], edit) };
+  return { ...state, fighters: patch(state.fighters, fighter.id, { loadout }) };
+}
+
+/** Applies a card-table option to the player's plan, or null when it isn't one. */
+export function editPlan(state: PlanState, optionId: string): PlanState | null {
+  return editLoadout(state, playerOf(state), optionId);
 }

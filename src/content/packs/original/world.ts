@@ -171,6 +171,8 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'lantern-husk',
           'wick-sense',
           'temple-bell-palm',
+          'shrine-snare',
+          'anvil-fall',
           'kindled-pulse',
           'lantern-shades',
           'snare-ward',

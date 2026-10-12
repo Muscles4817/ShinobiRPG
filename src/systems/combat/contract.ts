@@ -2,6 +2,8 @@ import type { Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
 import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
 
+import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
+
 /**
  * THE COMBAT CONTRACT
  *
@@ -32,7 +34,15 @@ export type CombatAttributes = Pick<
 
 export type CombatTechnique = Pick<
   TechniqueDef,
-  'id' | 'name' | 'discipline' | 'element' | 'effects' | 'chakraCost' | 'oncePerFight' | 'afterCost'
+  | 'id'
+  | 'name'
+  | 'discipline'
+  | 'element'
+  | 'effects'
+  | 'chakraCost'
+  | 'oncePerFight'
+  | 'afterCost'
+  | 'combo'
 >;
 
 /** How far apart the two sides stand. Engines decide what each band allows. */
@@ -107,6 +117,10 @@ export interface CombatantSetup {
   readonly items?: readonly CombatItem[];
   /** A preferred row; when absent the engine places the fighter by their kit. */
   readonly row?: CombatRow;
+  /** An ally's stance; when absent the engine picks one from their kit. */
+  readonly stance?: CombatStance;
+  /** What the player may change about this ally (see `teamContract.ts`). */
+  readonly orders?: CombatOrders;
 }
 
 /**
@@ -194,10 +208,12 @@ export interface CombatOption {
   readonly detail: string;
   /**
    * Lets the UI present options differently: basics and techniques as cards in the hand,
-   * moves (stepping in or back) as small buttons, tools from the pouch as their own row, plans as a list to pick from, continue and
+   * moves (stepping in or back) as small buttons, tools from the pouch as their own row, plans as
+   * a list to pick from, orders to the team (stances, the mark) as pickers, continue and
    * end-turn in the choice bar, escape apart.
    */
-  readonly kind: 'basic' | 'technique' | 'move' | 'item' | 'plan' | 'continue' | 'end' | 'escape';
+  readonly kind:
+    'basic' | 'technique' | 'move' | 'item' | 'plan' | 'order' | 'continue' | 'end' | 'escape';
   readonly discipline?: TechniqueDef['discipline'];
   /** Points spent from a per-turn budget, for engines that have one. */
   readonly cost?: number;
@@ -205,6 +221,8 @@ export interface CombatOption {
   readonly targeted?: boolean;
   /** Plans that are set up in parts (e.g. cards per range) say which part this belongs to. */
   readonly group?: string;
+  /** A plan option for a teammate's cards: whose (a combatant id). Absent for your own. */
+  readonly owner?: string;
   /** For toggles: whether this is currently part of the plan. */
   readonly selected?: boolean;
   /** For plans kept in priority order: this entry's place in its group, 0 coming first. */
@@ -263,6 +281,8 @@ export interface CombatOutcome {
   readonly costs?: readonly CombatCost[];
   /** Chakra the player paid during the fight (it deepens reserves); absent from older engines. */
   readonly chakraSpent?: number;
+  /** What each fighter used, by combatant id; absent from engines that don't track it. */
+  readonly used?: Readonly<Record<string, CombatUsage>>;
 }
 
 export interface CombatEngine {

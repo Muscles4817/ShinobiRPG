@@ -126,6 +126,10 @@ function techniqueReferenceProblems(pack: ContentPack): string[] {
       c.startingTechniqueIds,
     ]),
     ...pack.enemies.map((e): [string, readonly string[]] => [`enemy "${e.id}"`, e.techniqueIds]),
+    ...pack.techniques.map((t): [string, readonly string[]] => [
+      `combination technique "${t.id}"`,
+      t.combo ? [t.combo.partnerTechniqueId] : [],
+    ]),
   ];
   return owners.flatMap(([owner, ids]) =>
     ids.filter((id) => !known.has(id)).map((id) => `${owner} references unknown technique "${id}"`),
