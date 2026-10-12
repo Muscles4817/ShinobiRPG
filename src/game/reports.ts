@@ -32,6 +32,8 @@ export type Report =
       readonly docked?: number;
       /** Bond gained with each teammate; absent on reports saved before team missions. */
       readonly teamBond?: number;
+      /** The technique scroll the client handed over, by name. */
+      readonly scroll?: string;
     }
   | {
       readonly kind: 'mission-failed';

@@ -28,7 +28,8 @@ export function validateTeachers(pack: ContentPack): string[] {
   ];
 }
 
-function partsOf(price: PriceTemplate): readonly SimplePrice[] {
+function partsOf(price: PriceTemplate | undefined): readonly SimplePrice[] {
+  if (!price) return [];
   return price.kind === 'all' ? price.parts : [price];
 }
 
@@ -72,10 +73,10 @@ function shapeProblems(teacher: TeacherProfile): string[] {
     problems.push('can’t teach more than once a day');
   }
   const parts = partsOf(teacher.price);
-  if (teacher.price.kind === 'all' && new Set(parts.map((p) => p.kind)).size !== parts.length) {
+  if (teacher.price?.kind === 'all' && new Set(parts.map((p) => p.kind)).size !== parts.length) {
     problems.push('has a combined price that repeats a kind');
   }
-  if (teacher.price.kind === 'all' && parts.length < 2) {
+  if (teacher.price?.kind === 'all' && parts.length < 2) {
     problems.push('has a combined price with fewer than two parts');
   }
   return problems;

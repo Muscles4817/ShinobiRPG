@@ -33,6 +33,13 @@ function gradeCard(report: Extract<Report, { kind: 'grade' }>): CardContent {
   };
 }
 
+function missionNote(report: Extract<Report, { kind: 'mission-complete' }>): string | null {
+  if (report.scroll) return 'The client presses a sealed scroll into your hands. Read it at home.';
+  return report.unlocked.length > 0
+    ? 'Word is the hall will trust you with harder work now. Watch the board.'
+    : null;
+}
+
 /** The debrief: what you earned, what was docked, and how the team grew. */
 function missionCompleteCard(report: Extract<Report, { kind: 'mission-complete' }>): CardContent {
   return {
@@ -56,11 +63,11 @@ function missionCompleteCard(report: Extract<Report, { kind: 'mission-complete' 
       ...(report.teamBond
         ? [{ label: 'Team bond', value: `+${report.teamBond}`, tone: 'gain' as const }]
         : []),
+      ...(report.scroll
+        ? [{ label: 'Scroll', value: report.scroll, tone: 'gain' as const }]
+        : []),
     ],
-    note:
-      report.unlocked.length > 0
-        ? 'Word is the hall will trust you with harder work now. Watch the board.'
-        : null,
+    note: missionNote(report),
   };
 }
 

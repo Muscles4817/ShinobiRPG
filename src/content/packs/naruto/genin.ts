@@ -38,6 +38,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Loud, stubborn and impossible to discourage. Says he will be Hokage. Eats only ramen.',
+    teacher: { teaches: ['adamantine-chains'] },
     schedule: {
       morning: 'training-grounds',
       afternoon: 'mission-desk',
@@ -64,6 +65,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Top of the class and knows it. Trains alone. Talks less than he should.',
+    teacher: { teaches: ['great-fireball', 'amaterasu'] },
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',
@@ -141,6 +143,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'taijutsu',
     bio: 'Never seen without Akamaru on his head. Picks fights he’s sure he can win.',
+    teacher: { teaches: ['passing-fang'] },
     schedule: {
       morning: 'training-grounds',
       afternoon: 'shopping-district',
@@ -166,6 +169,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Speaks in complete, logical sentences. Remembers every slight. Carries a colony.',
+    teacher: { teaches: ['insect-jar'] },
     schedule: { morning: 'academy', afternoon: 'training-grounds', evening: null, night: null },
   },
   {
@@ -185,6 +189,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     ),
     specialty: 'ninjutsu',
     bio: 'Genius, if he could be bothered. Would rather watch clouds than do almost anything.',
+    teacher: { teaches: ['shadow-neck-bind'] },
     schedule: {
       morning: null,
       afternoon: 'training-grounds',
@@ -210,6 +215,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'taijutsu',
     bio: 'Big-hearted, loyal, and always holding a bag of chips. Do not call him fat.',
+    teacher: { teaches: ['human-bullet-tank'] },
     schedule: {
       morning: 'shopping-district',
       afternoon: 'training-grounds',
@@ -234,6 +240,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     ),
     specialty: 'genjutsu',
     bio: 'Knows everyone’s business by lunchtime. Works the family flower shop when she has to.',
+    teacher: { teaches: ['mind-destruction'] },
     schedule: {
       morning: 'shopping-district',
       afternoon: 'mission-desk',

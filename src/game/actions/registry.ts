@@ -8,6 +8,7 @@ import { setCombatStyle } from './settings';
 import { buyIntel } from './intel';
 import { buyGear, buyIngredient, buyTool, equipGear, unequipGear } from './shop';
 import { spar } from './spar';
+import { studyScroll } from './scrollStudy';
 import { study } from './study';
 import { trainWith } from './trainWith';
 import { buyRound } from './tavern';
@@ -30,6 +31,7 @@ export const HANDLERS: Registry = {
   travel,
   dismissReport,
   study,
+  studyScroll,
   startMission,
   missionChoose,
   missionContinue,

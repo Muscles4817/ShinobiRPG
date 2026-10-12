@@ -1,8 +1,14 @@
+import type { StudySource, TechniqueDef } from '@/systems/techniques';
+
+import type { GameContext } from '../context';
 import { discover, logDiscoveries, noTalentReason } from '../growth';
 import { learnBlockerFor, learnBlockerText, studySession, type Studied } from '../learning';
-import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
-import { closedReason } from '../village';
+import { adjust, busyReason, chip, firstBlocker, log, spendTime } from '../ops';
+import { shelfBlocker, shelfHolding, sourceOf } from '../shelves';
+import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
+
+/** Studying a scroll on the shelves here: the academy's rack or the library's stacks. */
 
 export const STUDY_ENERGY_COST = 15;
 export const STUDY_SLOTS = 1;
@@ -16,36 +22,50 @@ function masteryLine(name: string, result: Studied): string {
     : `It finally clicks. ${name} is yours.`;
 }
 
+/** What stops any scroll study of this technique, wherever the scroll comes from. */
+export function studyBlocker(state: GameState, def: TechniqueDef, ctx: GameContext) {
+  const blocker = learnBlockerFor(state, def);
+  return firstBlocker(
+    noTalentReason(state.character, def.discipline, ctx),
+    blocker && learnBlockerText(blocker, def),
+    state.character.vitals.energy < STUDY_ENERGY_COST && `Needs ${STUDY_ENERGY_COST} energy.`,
+  );
+}
+
+/** One session with a scroll from any source: progress, time, energy and a record line. */
+export function studyFrom(
+  state: GameState,
+  def: TechniqueDef,
+  ctx: GameContext,
+  source: StudySource,
+): GameState {
+  const result = studySession(state, def, ctx, source);
+  const practised = discover(state.character, { [def.discipline]: 1 });
+  const studied = { ...state, techniques: result.book, character: practised.character };
+  const next = adjust(spendTime(studied, STUDY_SLOTS, ctx), { energy: -STUDY_ENERGY_COST });
+  const logged = log(next, {
+    heading: `Study ${def.name}`,
+    text: masteryLine(def.name, result),
+    tone: result.mastered ? 'success' : 'info',
+    chips: [
+      chip(result.mastered ? 'Mastered' : `${result.percent}% learned`, 'gain'),
+      ...(result.unstable ? [chip('Unstable', 'cost')] : []),
+      chip(`−${STUDY_ENERGY_COST} energy`, 'cost'),
+    ],
+  });
+  return logDiscoveries(logged, practised.discovered, ctx);
+}
+
 export const study: ActionHandler<ActionOf<'study'>> = {
   check(state, action, ctx) {
     const def = ctx.content.techniques.get(action.techniqueId);
-    const academy = placeHere(state, ctx, 'academy');
-    if (!def || !academy?.techniqueIds.includes(def.id)) return 'That scroll isn’t kept here.';
-    const blocker = learnBlockerFor(state, def);
-    return firstBlocker(
-      busyReason(state),
-      noTalentReason(state.character, def.discipline, ctx),
-      closedReason(academy.name, academy.hours, state),
-      blocker && learnBlockerText(blocker, def),
-      state.character.vitals.energy < STUDY_ENERGY_COST && `Needs ${STUDY_ENERGY_COST} energy.`,
-    );
+    const shelf = shelfHolding(state, ctx, action.techniqueId);
+    if (!def || !shelf) return 'That scroll isn’t kept here.';
+    return firstBlocker(busyReason(state), shelfBlocker(state, shelf), studyBlocker(state, def, ctx));
   },
   perform(state, action, ctx) {
     const def = ctx.content.techniques.require(action.techniqueId);
-    const result = studySession(state, def, ctx, 'scroll');
-    const practised = discover(state.character, { [def.discipline]: 1 });
-    const studied = { ...state, techniques: result.book, character: practised.character };
-    const next = adjust(spendTime(studied, STUDY_SLOTS, ctx), { energy: -STUDY_ENERGY_COST });
-    const logged = log(next, {
-      heading: `Study ${def.name}`,
-      text: masteryLine(def.name, result),
-      tone: result.mastered ? 'success' : 'info',
-      chips: [
-        chip(result.mastered ? 'Mastered' : `${result.percent}% learned`, 'gain'),
-        ...(result.unstable ? [chip('Unstable', 'cost')] : []),
-        chip(`−${STUDY_ENERGY_COST} energy`, 'cost'),
-      ],
-    });
-    return logDiscoveries(logged, practised.discovered, ctx);
+    const shelf = shelfHolding(state, ctx, action.techniqueId);
+    return studyFrom(state, def, ctx, shelf ? sourceOf(shelf) : 'scroll');
   },
 };

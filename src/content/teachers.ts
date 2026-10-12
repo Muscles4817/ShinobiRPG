@@ -39,13 +39,14 @@ export type PriceTemplate =
   SimplePrice | { readonly kind: 'all'; readonly parts: readonly SimplePrice[] };
 
 export interface TeacherProfile {
-  readonly quirk: TeachingQuirk;
+  /** Left out, they teach plainly (no quirk), like someone with no profile. */
+  readonly quirk?: TeachingQuirk;
   /** Left out, they let you choose from the first session. */
   readonly steers?: Steering;
   /** Signature techniques, taught in order once you are close enough. */
   readonly teaches: readonly string[];
   /** Left out, it follows their rank (genin daily, chūnin twice, jōnin once). */
   readonly sessionsPerWeek?: number;
-  /** Your own sensei waives it. */
-  readonly price: PriceTemplate;
+  /** Your own sensei waives it. Left out, they ask a bond stage by rank, like someone with no profile. */
+  readonly price?: PriceTemplate;
 }

@@ -49,6 +49,13 @@ export { homeView, hospitalView, type HomeView, type HospitalView } from './view
 export type { ConditionView, InjuryLine } from './views/condition';
 export { missionBoardView, type MissionBoardView, type Notice, type Foe } from './views/boards';
 export { academyView, type AcademyView, type Scroll } from './views/academy';
+export {
+  libraryView,
+  scrollDesk,
+  type LibraryView,
+  type ScrollDesk,
+  type Stack,
+} from './views/library';
 export { travelView, type Destination } from './views/travel';
 export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
 export {

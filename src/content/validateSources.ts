@@ -1,15 +1,20 @@
 import { STAT_GRADES, type StatGrade } from '@/systems/stats';
 
-import { CLAN_TEACHER_RANKS } from './people';
 import type { ContentPack, PlaceDef } from './types';
 
 /**
  * Where techniques come from. The academy holds rank E–D, the library C–B, and neither holds a
- * clan's techniques (clan people teach those). Every technique must be reachable from at least
- * one source: a shelf, a clan member, a teacher, a mission's scroll, or a starting kit.
+ * clan's techniques (clan members teach those, through `teacher.teaches`). Every technique must
+ * be reachable from at least one source: a shelf, a teacher, a mission's scroll, or a starting
+ * kit.
  */
 export function validateSources(pack: ContentPack): string[] {
-  return [...shelfProblems(pack), ...scrollRewardProblems(pack), ...unsourcedProblems(pack)];
+  return [
+    ...shelfProblems(pack),
+    ...scrollRewardProblems(pack),
+    ...clanTeacherProblems(pack),
+    ...unsourcedProblems(pack),
+  ];
 }
 
 type ShelfKind = Extract<PlaceDef, { techniqueIds: readonly string[] }>['kind'];
@@ -50,19 +55,21 @@ function scrollRewardProblems(pack: ContentPack): string[] {
   });
 }
 
-function clanTaught(pack: ContentPack): Set<string> {
-  const clans = new Set(
-    pack.people.flatMap((p) =>
-      p.clanId && CLAN_TEACHER_RANKS.includes(p.rank) ? [p.clanId] : [],
-    ),
+/** A clan's arts stay in the clan: only its own members teach them. */
+function clanTeacherProblems(pack: ContentPack): string[] {
+  return pack.people.flatMap((p) =>
+    (p.teacher?.teaches ?? []).flatMap((id) => {
+      const clan = pack.techniques.find((t) => t.id === id)?.clan;
+      return clan !== undefined && clan !== p.clanId
+        ? [`teacher "${p.id}" teaches "${id}" but isn't of the ${clan} clan`]
+        : [];
+    }),
   );
-  return new Set(pack.techniques.flatMap((t) => (t.clan && clans.has(t.clan) ? [t.id] : [])));
 }
 
 function sourcedIds(pack: ContentPack): Set<string> {
   return new Set([
     ...shelves(pack).flatMap((p) => p.techniqueIds),
-    ...clanTaught(pack),
     ...pack.people.flatMap((p) => p.teacher?.teaches ?? []),
     ...pack.missions.flatMap((m) => (m.reward.scrollId ? [m.reward.scrollId] : [])),
     ...pack.academyTechniques,

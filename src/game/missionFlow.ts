@@ -11,6 +11,7 @@ import { addPoints } from '@/systems/bonds';
 import { recordMissionFailure, recordMissionSuccess } from '@/systems/standing';
 import { slotsUntilNextMorning } from '@/systems/time';
 import { MAX_HEALTH } from '@/systems/vitals';
+import { addScroll, ownsScroll } from '@/systems/inventory';
 import { deduct, earn } from '@/systems/wallet';
 
 import { enemyCombatant, PLAYER_COMBATANT_ID, playerCombatant } from './combatants';
@@ -60,6 +61,7 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
   const earned = reward(def, state.mission);
   const standing = recordMissionSuccess(state.standing, earned.reputation);
   const teamBond = def.withTeam ? TEAM_MISSION_BOND : 0;
+  const scroll = scrollReward(state, ctx, def);
   const next: GameState = {
     ...withTeamBond(state, teamBond),
     mission: null,
@@ -68,6 +70,7 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
     board: state.board.completed.includes(def.id)
       ? state.board
       : { ...state.board, completed: [...state.board.completed, def.id] },
+    inventory: scroll ? addScroll(state.inventory, scroll.id) : state.inventory,
   };
   const logged = log(next, {
     heading: `${def.title} complete`,
@@ -77,6 +80,7 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
       chip(`+${earned.ryo} ryo`, 'gain'),
       chip(`+${earned.reputation} reputation`, 'gain'),
       ...(teamBond > 0 ? [chip(`+${teamBond} team bond`, 'gain')] : []),
+      ...(scroll ? [chip(`${scroll.name} scroll`, 'gain')] : []),
     ],
   });
   return addReport(logged, {
@@ -89,7 +93,15 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
     unlocked: newlyUnlocked(state, ctx, standing.missionsCompleted),
     docked: Math.max(0, def.reward.ryo - earned.ryo),
     teamBond,
+    ...(scroll ? { scroll: scroll.name } : {}),
   });
+}
+
+/** The scroll the client hands over, unless you already own a copy. */
+function scrollReward(state: GameState, ctx: GameContext, def: MissionDef) {
+  const id = def.reward.scrollId;
+  if (id === undefined || ownsScroll(state.inventory, id)) return null;
+  return ctx.content.techniques.require(id);
 }
 
 /** Adds bond with every teammate. */
