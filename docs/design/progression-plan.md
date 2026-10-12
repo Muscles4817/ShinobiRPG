@@ -736,9 +736,19 @@ These were folded into the D2 discussion. Where each landed:
   exchanges 82–88% of the time. The retune after merging with 1.2 traced long fights to
   kunai duels at mid range: footwork now closes in for full blows, and Dodge joins the
   default plan.
+- 1.5/1.6: trump cards (`oncePerFight`, `afterCost` templates) and `CombatSetup.opening`
+  (range, hidden, dazed, first mover) are in. Costs are journalled only, through
+  `applyFightCosts`, until 2.6 applies them. Opening fields wait on 1.4c, and rows
+  disruption on 1.3.
+- 1.4b: verbs area, confuse, conceal, sense and break, with a technique for each in both
+  packs (academy). Hiding has counterplay: a fighter with no one in sight searches instead
+  of idling, an illusionist's attack may be traced back by the one it struck, and insight
+  (or a sense) sees the hidden. The bench now asserts that a stalker is hit by every foe,
+  that hidden against hidden never stalls (it stalled 100% before), and that knowing a
+  sense wins more often against a stalker and a trickster.
 - 1.3: rows. Each side has a front and a back row (`PlanFighter.row`, `CombatantView.row`,
   optional `CombatantSetup.row`). The rule lives once in `rules/rows.ts` (`canReach`, with an
-  `area` flag for 1.4b's area effects); the plan engine asks it through `engines/plan/rows.ts`
+  `area` flag that area techniques set); the plan engine asks it through `engines/plan/rows.ts`
   (`attackOf(card)`). Instinct targeting, the plan's slots and counters respect it; a
   screened fighter shows a "Screened" status. Fights saved before rows are placed on load
   (`withRows`); no save version change. The fight screen splits the foes into back and front
@@ -768,6 +778,24 @@ These were folded into the D2 discussion. Where each landed:
   40 damage, ignoring the gap.
 - 1.1 retune: **a daze now leaves the target open** (no defences, a finisher target)
   until the end of the following exchange, so set-up and payoff works one-on-one.
+- 1.4b: an area technique hits every foe standing, hidden ones included (it needs no aim);
+  each foe sees it coming, dodges and guards on their own. Self-aimed effects in it happen
+  once.
+- 1.4b: a sense reveals each hidden foe with a chance (its drive and power against their
+  concealment, floor 40%) and grants **insight** for the rest of the fight. Insight now
+  lets its holder aim at hidden foes in Plan & Watch (it already made Search certain);
+  this also applies to the insight perk from bloodlines.
+- 1.4b: a conceal sets a `concealment` on the fighter; Search and sense are measured
+  against it (else against genjutsu, as before). Conceal has no instant check against
+  foes' perception: the contest is every Search.
+- 1.4b: break ignores a guard entirely, 15% of toughness (the gap formula is steep, so
+  that is about half again as hard a hit) and half of what armour or a spirit's form
+  shrugs off. Its drive is strength alone.
+- 1.4b: confuse lasts 1–3 turns from power and the user's genjutsu against the target's
+  `breakRating` (chakra control first).
+- 1.4b: an illusionist is no longer untouchable while attacking: the fighter it struck
+  may trace it back (Search odds). A master illusionist still usually wins before being
+  found matters, which is power, not a bug.
 - 1.3: kit placement: archers, illusionists and healers (more heals than attacks) at the
   back; brawlers and the armoured always in front; everyone else in front. A setup's `row`
   wins, but a side with no one in front all stands in front. "Up close" means an attack
@@ -778,3 +806,6 @@ These were folded into the D2 discussion. Where each landed:
   there, any foe about to attack.
 - Accepted: the player's equal-fight win rate at grade E is 35% (43% at D–A). Parity
   isn't a goal; a better foe sense of tempo can come later.
+- 1.5: the new trump techniques sit at the academy as a placeholder (grade B
+  requirements); 4.2 moves them to teachers and scrolls. Once-per-fight applies to foes
+  too.

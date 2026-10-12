@@ -1,6 +1,6 @@
 import type { Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
-import type { Element, TechniqueDef } from '@/systems/techniques';
+import type { CostTemplate, Element, TechniqueDef } from '@/systems/techniques';
 
 /**
  * THE COMBAT CONTRACT
@@ -32,7 +32,7 @@ export type CombatAttributes = Pick<
 
 export type CombatTechnique = Pick<
   TechniqueDef,
-  'id' | 'name' | 'discipline' | 'element' | 'effects' | 'chakraCost'
+  'id' | 'name' | 'discipline' | 'element' | 'effects' | 'chakraCost' | 'oncePerFight' | 'afterCost'
 >;
 
 /** How far apart the two sides stand. Engines decide what each band allows. */
@@ -109,6 +109,18 @@ export interface CombatantSetup {
   readonly row?: CombatRow;
 }
 
+/**
+ * How the fight begins, when what came before it (an ambush, a chase, recon) shaped it: the
+ * starting distance, fighters (by id) who start hidden or reel through the first exchange,
+ * and which side moved first and so acts first in it. Absent: a plain head-on fight.
+ */
+export interface CombatOpening {
+  readonly range?: RangeBand;
+  readonly hidden?: readonly string[];
+  readonly dazed?: readonly string[];
+  readonly firstMover?: CombatSide;
+}
+
 export interface CombatSetup {
   readonly player: CombatantSetup;
   /** Fighters on the player's side, acting on their own. */
@@ -122,6 +134,7 @@ export interface CombatSetup {
    * back in `CombatOutcome.plan`. Opaque to the game; the engine must validate it.
    */
   readonly plan?: unknown;
+  readonly opening?: CombatOpening;
 }
 
 /**
@@ -218,6 +231,13 @@ export interface CombatChoice {
 
 export type CombatResult = 'victory' | 'defeat' | 'escaped';
 
+/** A price the player paid for a trump card they used in the fight, due once it is over. */
+export interface CombatCost {
+  readonly techniqueId: string;
+  readonly techniqueName: string;
+  readonly cost: CostTemplate;
+}
+
 export interface CombatOutcome {
   readonly result: CombatResult;
   readonly rounds: number;
@@ -227,6 +247,8 @@ export interface CombatOutcome {
   readonly items?: Readonly<Record<string, number>>;
   /** Anything the player set up that should carry over to their next fight (JSON-safe). */
   readonly plan?: unknown;
+  /** Trump costs the player incurred, one per trump used; absent from engines without trumps. */
+  readonly costs?: readonly CombatCost[];
 }
 
 export interface CombatEngine {

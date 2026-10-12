@@ -1,7 +1,7 @@
 import { statTier } from '@/systems/stats';
 
 import { ARCHETYPE_IDS, archetype, foe, FOE_IDS, plainAtGrade, plainAtScale } from './archetypes';
-import { GRADE_MIDPOINT, SCALES, SCALE_VALUES, type FighterSpec } from './fighters';
+import { GRADE_MIDPOINT, SCALES, SCALE_VALUES, techniques, type FighterSpec } from './fighters';
 import {
   bench,
   benchSkirmish,
@@ -58,6 +58,9 @@ function logged(player: FighterSpec, opponent: FighterSpec, report: BenchReport)
 function head(player: FighterSpec, opponent: FighterSpec): BenchReport {
   return logged(player, opponent, bench(player, opponent));
 }
+
+/** The archetypes who start every fight hidden. */
+const HIDERS = ['illusionist', 'stalker'] as const;
 
 const GRADE_LADDER = ['E', 'D', 'C', 'B', 'A'] as const;
 const ONE_APART = GRADE_LADDER.slice(1).map((g, i) => [g, GRADE_LADDER[i]!] as const);
@@ -197,8 +200,35 @@ describe('rows (step 1.3)', () => {
 describe('every weakness can be built around (Phase 1–4 target)', () => {
   it.todo('a rusher with the right plan beats or escapes a trickster one grade up');
   it.todo('a versatile fighter low on stamina outlasts a brute of the same rank');
-  it.todo(
-    'a fighter with search or flash tools finds a hidden stalker (today hidden is untouched)',
-  );
-  it.todo('two hidden fighters do not stall each other forever');
+});
+
+describe('hiding has counterplay (step 1.4b)', () => {
+  // A hider with little genjutsu behind it (the stalker) is found and hit by every foe. A
+  // master illusionist is found too, but usually wins before it matters: power is real.
+  it.each(SCALES)('a %s stalker who starts hidden still gets hit', (scale) => {
+    for (const opponent of FOE_IDS) {
+      const report = head(archetype('stalker', scale), foe(opponent, scale));
+      expect(report.avgHealthLeft).toBeLessThan(1);
+    }
+  });
+
+  it.each(SCALES)('%s hidden fighters do not stall each other', (scale) => {
+    for (const id of HIDERS) {
+      const report = head(archetype(id, scale), foe('trickster', scale));
+      expect(report.stalemateRate).toBe(0);
+    }
+  });
+
+  it.each(SCALES)('a %s fighter who knows a sense does better against hidden foes', (scale) => {
+    // The versatile build without its sharp eyes (insight), with and without a sense.
+    const { perks: _eyes, ...blind } = archetype('versatile', scale);
+    const sensing = {
+      ...blind,
+      name: `${blind.name} with a sense`,
+      techniques: [...blind.techniques, ...techniques(['wick-sense'])],
+    };
+    for (const hider of [archetype('stalker', scale), foe('trickster', scale)]) {
+      expect(head(sensing, hider).winRate).toBeGreaterThan(head(blind, hider).winRate);
+    }
+  });
 });

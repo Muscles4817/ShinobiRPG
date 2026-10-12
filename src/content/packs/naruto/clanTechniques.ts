@@ -168,4 +168,19 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     difficulty: 90,
     clan: 'uzumaki',
   },
+  {
+    id: 'amaterasu',
+    name: 'Amaterasu',
+    description:
+      'Black flames that burn wherever the eye rests and will not go out. The eye bleeds for it.',
+    discipline: 'ninjutsu',
+    element: 'fire',
+    effects: [{ verb: 'damage', power: 34 }],
+    chakraCost: 24,
+    requirements: { ninjutsu: 24, perception: 20 },
+    difficulty: 160,
+    clan: 'uchiha',
+    oncePerFight: true,
+    afterCost: { kind: 'injury', stat: 'perception', amount: 3, days: 7 },
+  },
 ];

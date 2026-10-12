@@ -1,11 +1,12 @@
-import { alive, targetable } from '../../rules/body';
+import type { CombatTechnique } from '../../contract';
+import { alive, hasPerk } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
 import { hasVerb } from '../../rules/verbs';
-import { findCard, fitsBand, isOffence, playable, type Card } from './cards';
+import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
 import { improvise } from './choose';
 import { toolInstinct } from './pouch';
 import { hittable } from './rows';
-import { opponentsOf } from './senses';
+import { inSight, opponentsOf } from './senses';
 import {
   isDazed,
   type PlanFighter,
@@ -72,20 +73,20 @@ function whenHolds(
   when: SlotCondition | undefined,
 ): readonly PlanFighter[] | null {
   const foes = opponentsOf(round.fighters, self);
-  const inSight = foes.filter(targetable);
+  const seen = foes.filter((f) => inSight(self, f));
   switch (when) {
     case undefined:
-      return inSight;
+      return seen;
     case 'foe-dazed':
-      return nonEmpty(inSight.filter(dazed));
+      return nonEmpty(seen.filter(dazed));
     case 'foe-readying':
-      return nonEmpty(inSight.filter((f) => readying(f, round.intents)));
+      return nonEmpty(seen.filter((f) => readying(f, round.intents)));
     case 'low-health':
-      return self.health < self.maxHealth * LOW_HEALTH ? inSight : null;
+      return self.health < self.maxHealth * LOW_HEALTH ? seen : null;
     case 'low-chakra':
-      return self.chakra < self.maxChakra * LOW_CHAKRA ? inSight : null;
+      return self.chakra < self.maxChakra * LOW_CHAKRA ? seen : null;
     case 'foe-hidden':
-      return foes.some((f) => f.hidden) ? inSight : null;
+      return foes.some((f) => f.hidden) ? seen : null;
   }
 }
 
@@ -112,6 +113,13 @@ export function aimAt(
   }
 }
 
+/** No healing at full health, no sensing with no one hidden (or foes already read), no hiding twice. */
+function jutsuNeeded(self: PlanFighter, t: CombatTechnique, hiddenFoe: boolean): boolean {
+  if (hasVerb(t, 'heal') && self.health >= self.maxHealth) return false;
+  if (hasVerb(t, 'sense') && (!hiddenFoe || hasPerk(self, 'insight'))) return false;
+  return !(hasVerb(t, 'conceal') && self.hidden);
+}
+
 /** Whether a card is needed now: no searching with no one hidden, no healing at full health. */
 function needed(self: PlanFighter, card: Card, round: Round): boolean {
   const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
@@ -126,7 +134,7 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
         toolInstinct(self, [card], { hiddenFoe, opening: round.opening ?? false }) !== undefined
       );
     case 'jutsu':
-      return !hasVerb(card.technique, 'heal') || self.health < self.maxHealth;
+      return jutsuNeeded(self, card.technique, hiddenFoe);
     case 'strike':
     case 'throw':
     case 'step':
@@ -155,9 +163,9 @@ function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {
   if (!card || !fitsBand(card, round.range) || !useful(self, card, round)) return null;
   const foes = whenHolds(self, round, slot.when);
   if (!foes) return null;
-  const inReach = isOffence(card) ? hittable(card, foes, round.fighters) : foes;
+  const inReach = needsAim(card) ? hittable(card, foes, round.fighters) : foes;
   const target = aimAt(inReach, slot.target, self, round);
-  return isOffence(card) && !target ? null : { card, target };
+  return needsAim(card) && !target ? null : { card, target };
 }
 
 /** The first slot at this distance that qualifies, else an improvised blow or step. */
@@ -167,6 +175,6 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
     if (play) return play;
   }
   const card = improvise(self, round.range);
-  const inSight = opponentsOf(round.fighters, self).filter(targetable);
-  return { card, target: aimAt(hittable(card, inSight, round.fighters), 'weakest', self, round) };
+  const seen = opponentsOf(round.fighters, self).filter((f) => inSight(self, f));
+  return { card, target: aimAt(hittable(card, seen, round.fighters), 'weakest', self, round) };
 }

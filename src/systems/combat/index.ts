@@ -12,6 +12,8 @@ export type {
   CombatView,
   CombatResult,
   CombatOutcome,
+  CombatCost,
+  CombatOpening,
   CombatEngine,
   CombatChoice,
   CombatMeter,

@@ -1,6 +1,6 @@
 import type { Rng } from '@/core';
 
-import { alive } from '../../rules/body';
+import { alive, hasPerk, targetable } from '../../rules/body';
 import {
   DISPEL_CHAKRA,
   dispelChance,
@@ -22,6 +22,11 @@ export interface Turn {
   readonly actor: PlanFighter;
   readonly target: PlanFighter | undefined;
   readonly rng: Rng;
+}
+
+/** Hidden foes can't be aimed at, unless you read foes (insight, or a sense this fight). */
+export function inSight(self: PlanFighter, foe: PlanFighter): boolean {
+  return targetable(foe) || (alive(foe) && hasPerk(self, 'insight'));
 }
 
 export function opponentsOf(fighters: readonly PlanFighter[], self: PlanFighter): PlanFighter[] {

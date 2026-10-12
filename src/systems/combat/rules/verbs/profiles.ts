@@ -23,6 +23,17 @@ export const VERB_PROFILES: Readonly<Record<Verb, VerbProfile>> = {
   daze: { aim: 'foe', drive: ['art'], resist: ['guard'] },
   seal: { aim: 'foe', drive: ['art'], resist: ['guard'] },
   heal: { aim: 'self', drive: ['ninjutsu', 'chakraControl'], resist: [] },
+  // Hits every foe; each may see it coming, dodge or guard on their own.
+  area: { aim: 'foe', drive: ['art'], resist: ['guard'] },
+  // Takes hold by genjutsu against willpower; chakra control shortens it (`confusionTurns`).
+  confuse: { aim: 'foe', drive: ['genjutsu'], resist: ['willpower'] },
+  // Hides the user; foes look for them with perception (`searchChance`). Smoke-style
+  // techniques override the drive with ninjutsu.
+  conceal: { aim: 'self', drive: ['genjutsu'], resist: ['perception'] },
+  // Reaches out for hidden foes; their concealment is what it has to overcome.
+  sense: { aim: 'self', drive: ['perception', 'ninjutsu'], resist: [] },
+  // Raw force through a guard and armour; seen coming like any blow.
+  break: { aim: 'foe', drive: ['strength'], resist: ['guard'] },
 };
 
 /** The profile an effect scales by: its verb's, with the effect's own overrides on top. */

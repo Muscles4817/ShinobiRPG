@@ -2,7 +2,7 @@ import { clamp } from '@/core';
 
 import type { CombatAttributes, CombatantSetup, CombatTechnique } from '../contract';
 import { elementMultiplier } from './elements';
-import { driveOf, type EffectUse } from './verbs';
+import { driveOf, toughnessKept, type EffectUse } from './verbs';
 
 /**
  * How hard hits land and how much heals restore, shared by the engines built on `rules/`.
@@ -90,9 +90,13 @@ function effectPower(attacker: Rated, use: EffectUse): number {
   return body ? drive * (1 - BODY_SHARE) + body(attacker) * BODY_SHARE : drive;
 }
 
-/** What a technique meets: a genjutsu meets the will, everything else the body. */
-function defenceAgainst(defender: Rated, technique: CombatTechnique): number {
-  return technique.discipline === 'genjutsu' ? defender.attributes.willpower : toughness(defender);
+/**
+ * What a technique meets: a genjutsu meets the will, everything else the body (less of it
+ * against a break).
+ */
+function defenceAgainst(defender: Rated, use: EffectUse): number {
+  if (use.technique.discipline === 'genjutsu') return defender.attributes.willpower;
+  return toughness(defender) * toughnessKept(use);
 }
 
 /** A plain blow: strength and taijutsu against toughness. */
@@ -101,15 +105,18 @@ export function strikeDamage(attacker: Rated, defender: Rated, roll: number): nu
   return Math.max(1, Math.round(BLOW_DAMAGE * scale * variance(roll)));
 }
 
-/** A damaging effect: its power, what drives it against what it meets, and elements. */
+/**
+ * A damaging effect (a hit, an area hit or a break): its power, what drives it against what it
+ * meets, and elements.
+ */
 export function techniqueDamage(
   attacker: Natured,
   defender: Natured,
-  use: EffectUse<'damage'>,
+  use: EffectUse<'damage' | 'area' | 'break'>,
   roll: number,
 ): number {
   const { technique, effect } = use;
-  const scale = gapScale(effectPower(attacker, use), defenceAgainst(defender, technique));
+  const scale = gapScale(effectPower(attacker, use), defenceAgainst(defender, use));
   const weight = TECHNIQUE_BASE + effect.power * TECHNIQUE_PER_POWER;
   const elements = elementMultiplier(technique, attacker.nature, defender.nature);
   return Math.max(1, Math.round(BLOW_DAMAGE * weight * scale * elements * variance(roll)));

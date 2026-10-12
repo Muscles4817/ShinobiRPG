@@ -1,6 +1,14 @@
-import type { CombatResult, CombatRow, CombatSetup, CombatState, RangeBand } from '../../contract';
+import type {
+  CombatResult,
+  CombatRow,
+  CombatSetup,
+  CombatSide,
+  CombatState,
+  RangeBand,
+} from '../../contract';
 import { bodyFrom, type Body } from '../../rules/body';
 import { formed, preferredRow } from '../../rules/rows';
+import type { TrumpMemory } from '../../rules/trumps';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -44,13 +52,15 @@ export function plainSlots(cards: readonly CardId[]): Slot[] {
   return cards.map((card) => ({ card }));
 }
 
-export interface PlanFighter extends Body {
+export interface PlanFighter extends Body, TrumpMemory {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;
   readonly loadout: Loadout;
   /** Front or back row of their side (see `rules/rows.ts`); fixed for the fight. */
   readonly row: CombatRow;
+  /** How hard they are to find while hidden, once a conceal set it (`concealmentOf`). */
+  readonly concealment?: number;
   /**
    * The last exchange a daze leaves this fighter open (no defences, a target for finishers),
    * even after the lost turn: through the exchange after the daze, so whoever dazed them
@@ -89,6 +99,8 @@ export interface PlanState {
   readonly log: readonly string[];
   readonly result: CombatResult | null;
   readonly canFlee: boolean;
+  /** The side that moved first (from the fight's opening) acts first in exchange 1. */
+  readonly firstMover?: CombatSide;
 }
 
 /** One exchange in progress. */
@@ -153,7 +165,17 @@ export function patch(
   change: Partial<
     Pick<
       PlanFighter,
-      'health' | 'chakra' | 'stunned' | 'sealed' | 'loadout' | 'hidden' | 'confused' | 'openUntil'
+      | 'health'
+      | 'chakra'
+      | 'stunned'
+      | 'sealed'
+      | 'loadout'
+      | 'hidden'
+      | 'confused'
+      | 'concealment'
+      | 'perks'
+      | 'openUntil'
+      | 'trumpsUsed'
     >
   >,
 ): PlanFighter[] {

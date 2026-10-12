@@ -1,8 +1,10 @@
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatSetup, CombatTechnique } from '../../contract';
+import { findCard } from './cards';
 import { createPlanEngine } from './engine';
 import { plannedPlay } from './priority';
+import { hittable } from './rows';
 import { react, type Blow } from './react';
 import { resolveExchange } from './round';
 import {
@@ -126,6 +128,21 @@ describe('plan & watch rows: reach', () => {
   it('kunai still reach the back row', () => {
     const field = [throws, hurt(wall!, 50), hurt(archer!, 10)];
     expect(plannedPlay(throws, roundOf(field, 'mid')).target?.id).toBe('archer');
+  });
+
+  it('an area technique washes over both rows, even one that only reaches up close', () => {
+    const quake: CombatTechnique = {
+      id: 'quake',
+      name: 'Quake',
+      discipline: 'taijutsu',
+      effects: [{ verb: 'area', power: 10 }],
+      chakraCost: 4,
+    };
+    const card = findCard({ techniques: [quake], items: [] }, 'jutsu:quake')!;
+    const field = [hero!, wall!, archer!];
+    expect(hittable(card, [wall!, archer!], field).map((f) => f.id)).toEqual(['wall', 'archer']);
+    const punch = findCard({ techniques: [], items: [] }, 'strike')!;
+    expect(hittable(punch, [wall!, archer!], field).map((f) => f.id)).toEqual(['wall']);
   });
 
   it('a slot aimed only at a foe out of reach is passed over', () => {
