@@ -14,6 +14,7 @@ import { fieldAfter, lostInField, ownField } from './field';
 import { intendedCard } from './intent';
 import { useJutsu } from './jutsu';
 import { useTool } from './pouch';
+import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
 import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
@@ -42,27 +43,31 @@ const STEP_PER_SPEED = 0.04;
 /** Initiative the side that moved first gets in exchange 1: more than any speed gap. */
 const FIRST_MOVER_LEAD = 1000;
 
-/** Allies focus the weakest enemy; enemies pick at random. */
-function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
-  const foes = opponentsOf(fighters, self).filter((foe) => inSight(self, foe));
+/** Allies focus the weakest of the foes; enemies pick at random. */
+function targetFor(foes: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
   if (foes.length === 0) return undefined;
   if (self.side === 'player') return [...foes].sort((a, b) => a.health - b.health)[0];
   return rng.pick(foes);
 }
 
-/** Foes and allies play their telegraphed card, or follow their instincts. */
+/**
+ * Foes and allies play their telegraphed card, or follow their instincts. They size up a foe in
+ * sight; when the card can't reach them past their front row, they turn on one it can reach.
+ */
 function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
-  const target = targetFor(round.fighters, actor, rng);
+  const seen = opponentsOf(round.fighters, actor).filter((f) => inSight(actor, f));
+  const foe = targetFor(seen, actor, rng);
   const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
   const moment = {
     band: round.range,
-    foe: target,
+    foe,
     hiddenFoe,
     opening: round.opening ?? false,
     fieldUp: ownField(round.field, actor),
   };
   const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
-  return { card, target };
+  if (!foe || !isOffence(card) || canHit(card, foe, round.fighters)) return { card, target: foe };
+  return { card, target: targetFor(hittable(card, seen, round.fighters), actor, rng) };
 }
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {

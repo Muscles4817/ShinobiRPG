@@ -18,6 +18,7 @@ import { harmLine } from '../../rules/narration';
 import { brokenScale, covered, dulled } from '../../rules/verbs';
 import { slotted } from './cards';
 import { substituted } from './footwork';
+import { canHit } from './rows';
 import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -26,7 +27,8 @@ import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './
  * close (taijutsu); see `rules/defence.ts`. A dazed fighter can't react, and a break goes
  * straight through a guard. Kits shape every hit: armour and spirits shrug off some kinds of
  * attack (less of a break), packs hit harder together, hidden attackers harder still, swift
- * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run.
+ * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run. A
+ * counter is a blow up close, so it can't reach an attacker standing behind their front row.
  */
 
 const COUNTER_SCALE = 0.6;
@@ -155,6 +157,7 @@ export function react(round: Round, hit: Hit): Round {
     has('counter') &&
     blow.physical &&
     round.range === 'close' &&
-    canAttackFrom(target, round.range);
+    canAttackFrom(target, round.range) &&
+    canHit({ kind: 'counter' }, attacker, round.fighters);
   return canCounter ? counter(landed, hit) : landed;
 }

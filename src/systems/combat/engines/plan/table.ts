@@ -52,7 +52,7 @@ const WHEN_LABEL: Readonly<Record<SlotCondition | typeof ALWAYS, string>> = {
 const AIM_LABEL: Readonly<Partial<Record<TargetRule, string>>> = {
   weakest: 'Weakest foe',
   strongest: 'Strongest foe',
-  threat: 'Foe about to attack',
+  threat: 'Foe threatening our back row',
 };
 
 /** Why a card can't go in a slot: slots full, or a tool you have none of. */

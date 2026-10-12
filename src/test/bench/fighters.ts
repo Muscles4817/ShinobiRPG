@@ -1,4 +1,10 @@
-import type { CombatantSetup, CombatPerk, CombatTechnique, CombatTrait } from '@/systems/combat';
+import type {
+  CombatantSetup,
+  CombatPerk,
+  CombatRow,
+  CombatTechnique,
+  CombatTrait,
+} from '@/systems/combat';
 import { STAT_IDS, type StatId, type Stats } from '@/systems/stats';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 import { ctx } from '@/test/gameFixtures';
@@ -53,6 +59,8 @@ export interface FighterSpec {
   readonly perks?: readonly CombatPerk[];
   /** The plan the fighter brings, when they're the player; the engine's default otherwise. */
   readonly plan?: BenchLoadout;
+  /** A row to stand in, overriding the one their kit would give them. */
+  readonly row?: CombatRow;
 }
 
 export type StatProfile = Partial<Readonly<Record<StatId, Emphasis>>>;
@@ -87,5 +95,6 @@ export function toSetup(spec: FighterSpec, id: string): CombatantSetup {
     techniques: spec.techniques,
     ...(spec.traits ? { traits: spec.traits } : {}),
     ...(spec.perks ? { perks: spec.perks } : {}),
+    ...(spec.row ? { row: spec.row } : {}),
   };
 }

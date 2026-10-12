@@ -1,5 +1,5 @@
 import type { CombatTechnique } from '../../contract';
-import { hasPerk } from '../../rules/body';
+import { alive, hasPerk } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
 import { hasVerb } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
@@ -7,6 +7,7 @@ import { improvise } from './choose';
 import { ownField } from './field';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
+import { hittable } from './rows';
 import { inSight, opponentsOf } from './senses';
 import {
   isDazed,
@@ -21,7 +22,8 @@ import {
  * How the player's plan plays: slot order is priority. Each exchange the player plays the
  * first slotted card at this distance that would do something now and whose condition holds,
  * aimed by the slot's target rule. A condition about a foe (dazed, readying a jutsu) also picks
- * whom the card goes for. When no slot qualifies, the player improvises a basic blow or a step.
+ * whom the card goes for. An attack only aims at foes it can reach past their front row (see
+ * `rows.ts`); a slot with none in reach is passed over. When no slot qualifies, the player improvises a basic blow or a step.
  * Foes and allies don't plan this way; they follow their instincts (`choose.ts`).
  */
 
@@ -46,10 +48,17 @@ function readying(foe: PlanFighter, intents: Intents): boolean {
   return announced(foe, intents)?.kind === 'jutsu';
 }
 
-/** A foe whose next move is an attack on our side. */
-function threatening(foe: PlanFighter, intents: Intents): boolean {
-  const card = announced(foe, intents);
-  return card !== null && isOffence(card);
+/**
+ * A foe whose telegraphed attack can reach my side's back row; with no one standing there, any
+ * foe about to attack.
+ */
+function threatening(foe: PlanFighter, self: PlanFighter, round: Round): boolean {
+  const card = announced(foe, round.intents);
+  if (card === null || !isOffence(card)) return false;
+  const backRow = round.fighters.filter(
+    (f) => f.side === self.side && alive(f) && f.row === 'back',
+  );
+  return backRow.length === 0 || hittable(card, backRow, round.fighters).length > 0;
 }
 
 function nonEmpty(foes: readonly PlanFighter[]): readonly PlanFighter[] | null {
@@ -91,13 +100,14 @@ function byHealth(foes: readonly PlanFighter[], most: boolean): PlanFighter | un
 export function aimAt(
   foes: readonly PlanFighter[],
   rule: TargetRule | undefined,
-  intents: Intents,
+  self: PlanFighter,
+  round: Round,
 ): PlanFighter | undefined {
   switch (rule) {
     case 'strongest':
       return byHealth(foes, true);
     case 'threat':
-      return byHealth(nonEmpty(foes.filter((f) => threatening(f, intents))) ?? foes, false);
+      return byHealth(nonEmpty(foes.filter((f) => threatening(f, self, round))) ?? foes, false);
     case 'marked':
     case 'weakest':
     case undefined:
@@ -161,7 +171,8 @@ function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {
   if (!card || !fitsBand(card, round.range) || !useful(self, card, round)) return null;
   const foes = whenHolds(self, round, slot.when);
   if (!foes) return null;
-  const target = aimAt(foes, slot.target, round.intents);
+  const inReach = needsAim(card) ? hittable(card, foes, round.fighters) : foes;
+  const target = aimAt(inReach, slot.target, self, round);
   return needsAim(card) && !target ? null : { card, target };
 }
 
@@ -171,6 +182,7 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
     const play = fromSlot(self, round, slot);
     if (play) return play;
   }
+  const card = improvise(self, round.range);
   const seen = opponentsOf(round.fighters, self).filter((f) => inSight(self, f));
-  return { card: improvise(self, round.range), target: aimAt(seen, 'weakest', {}) };
+  return { card, target: aimAt(hittable(card, seen, round.fighters), 'weakest', self, round) };
 }

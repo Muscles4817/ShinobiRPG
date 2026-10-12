@@ -1,5 +1,13 @@
-import type { CombatResult, CombatSetup, CombatSide, CombatState, RangeBand } from '../../contract';
+import type {
+  CombatResult,
+  CombatRow,
+  CombatSetup,
+  CombatSide,
+  CombatState,
+  RangeBand,
+} from '../../contract';
 import { bodyFrom, type Body } from '../../rules/body';
+import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
 import type { ActiveField } from '../../rules/verbs';
 
@@ -23,8 +31,9 @@ export const SLOT_CONDITIONS = [
 export type SlotCondition = (typeof SLOT_CONDITIONS)[number];
 
 /**
- * Whom a slotted attack aims at: the weakest foe, the strongest, the one whose telegraphed move
- * is an attack, or the team's mark (no marks yet, so it aims like `weakest`).
+ * Whom a slotted attack aims at: the weakest foe, the strongest, the one threatening my back
+ * row (its telegraphed attack can reach someone there), or the team's mark (no marks yet, so
+ * it aims like `weakest`).
  */
 export const TARGET_RULES = ['weakest', 'strongest', 'threat', 'marked'] as const;
 export type TargetRule = (typeof TARGET_RULES)[number];
@@ -49,6 +58,8 @@ export interface PlanFighter extends Body, TrumpMemory {
   readonly stunned: number;
   readonly sealed: number;
   readonly loadout: Loadout;
+  /** Front or back row of their side (see `rules/rows.ts`); fixed for the fight. */
+  readonly row: CombatRow;
   /** How hard they are to find while hidden, once a conceal set it (`concealmentOf`). */
   readonly concealment?: number;
   /**
@@ -113,21 +124,27 @@ export interface Round {
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
 
-function fighterFrom(setup: CombatSetup['player'], side: 'player' | 'enemy', isPlayer = false) {
+function fighterFrom(
+  setup: CombatSetup['player'],
+  side: 'player' | 'enemy',
+  isPlayer = false,
+): PlanFighter {
   return {
     ...bodyFrom(setup, side, isPlayer),
     stunned: 0,
     sealed: 0,
     loadout: EMPTY_LOADOUT,
+    row: preferredRow(setup),
   };
 }
 
+/** Everyone in the fight, each side in formation. */
 export function initialFighters(setup: CombatSetup): PlanFighter[] {
-  return [
+  return formed([
     fighterFrom(setup.player, 'player', true),
     ...setup.allies.map((a) => fighterFrom(a, 'player')),
     ...setup.enemies.map((e) => fighterFrom(e, 'enemy')),
-  ];
+  ]);
 }
 
 export function encode(state: PlanState): CombatState {

@@ -11,12 +11,13 @@ import type {
 import { alive, hasPerk, viewOf } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
+import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
 import { defaultLoadout, slotLimit } from './cards';
 import { fieldMeter, fieldStatuses } from './field';
 import { substitutionsReady } from './footwork';
 import { intentLine, rollIntents } from './intent';
-import { upgradeLegacy, withIntents, withKits, withSlots } from './legacy';
+import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { rememberedLoadout } from './memory';
 import { openFight } from './opening';
 import { decide, resolveExchange } from './round';
@@ -44,13 +45,18 @@ import { editPlan, tableOptions } from './table';
 export const ROUND_EXCHANGES = 4;
 
 function read(state: CombatState): PlanState {
-  return withIntents(withSlots(upgradeLegacy(withKits(decode(state)))));
+  return withRows(withIntents(withSlots(upgradeLegacy(withKits(decode(state))))));
 }
 
+/**
+ * Conditions, whether a back-row fighter is still out of reach behind their front row, and
+ * whether a field blinds them.
+ */
 function statuses(state: PlanState, f: PlanFighter): string[] {
   return [
     ...(isDazed(f) ? ['Dazed'] : []),
     ...(f.sealed > 0 ? ['Sealed'] : []),
+    ...(alive(f) && screened(f, state.fighters) ? ['Screened'] : []),
     ...fieldStatuses(state, f),
   ];
 }
@@ -198,9 +204,10 @@ export function createPlanEngine(): CombatEngine {
       const meter = fieldMeter(plan);
       return {
         round: plan.round,
-        combatants: plan.fighters.map((f) =>
-          viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
-        ),
+        combatants: plan.fighters.map((f) => ({
+          ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
+          row: f.row,
+        })),
         log: plan.log,
         options: options(plan),
         range: plan.range,

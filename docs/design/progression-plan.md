@@ -746,6 +746,19 @@ These were folded into the D2 discussion. Where each landed:
   (or a sense) sees the hidden. The bench now asserts that a stalker is hit by every foe,
   that hidden against hidden never stalls (it stalled 100% before), and that knowing a
   sense wins more often against a stalker and a trickster.
+- 1.3: rows. Each side has a front and a back row (`PlanFighter.row`, `CombatantView.row`,
+  optional `CombatantSetup.row`). The rule lives once in `rules/rows.ts` (`canReach`, with an
+  `area` flag that area techniques set); the plan engine asks it through `engines/plan/rows.ts`
+  (`attackOf(card)`). Instinct targeting, the plan's slots and counters respect it; a
+  screened fighter shows a "Screened" status. Fights saved before rows are placed on load
+  (`withRows`); no save version change. The fight screen splits the foes into back and front
+  rows and stamps your side's rows. The 1v1 bench is unchanged (a side of one stands in
+  front). New group measurements (`benchSkirmish`): a C fighter with an archer behind them
+  against two chūnin brutes wins 88% with 33% health left in rows, against 100% and 51% when
+  everyone stands in one line: the front takes the blows. Two pack wolves and an archer: 100%
+  won, 18.8 exchanges, no stalemates. Against a guardian and an archer the rows change
+  nothing: the player goes for the front anyway, and the archer spends its turns in the
+  shared range tug-of-war (per-fighter ranges are the real fix, later).
 
 - 1.4c: verbs field, move and substitute, with techniques in both packs (academy): a mist
   (Hidden Mist now raises a field; Camouflage Concealment keeps a conceal in the fan pack),
@@ -792,6 +805,14 @@ These were folded into the D2 discussion. Where each landed:
 - 1.4b: an illusionist is no longer untouchable while attacking: the fighter it struck
   may trace it back (Search odds). A master illusionist still usually wins before being
   found matters, which is power, not a bug.
+- 1.3: kit placement: archers, illusionists and healers (more heals than attacks) at the
+  back; brawlers and the armoured always in front; everyone else in front. A setup's `row`
+  wins, but a side with no one in front all stands in front. "Up close" means an attack
+  whose reach is close range only (blows, counters, taijutsu); a kenjutsu technique that also
+  reaches mid can hit the back row. Rows are fixed for the fight; when the front falls the
+  back is simply exposed (nobody steps up). The `threat` target rule is now "threatening our
+  back row": a foe whose telegraphed attack can reach someone in our back row; with no one
+  there, any foe about to attack.
 - Accepted: the player's equal-fight win rate at grade E is 35% (43% at D–A). Parity
   isn't a goal; a better foe sense of tempo can come later.
 - 1.5: the new trump techniques sit at the academy as a placeholder (grade B

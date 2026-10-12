@@ -127,6 +127,9 @@ ui ──► game ──► content ──► systems ──► core
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
     styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`).
+    Each side stands in a front and a back **row** (`rules/rows.ts`, placed by kit or
+    `CombatantSetup.row`): a blow up close can't reach the back row while the front stands;
+    throws, longer-reach techniques and area effects can. Ask `canReach`, never test rows inline.
     **Health is 100 for every human** (`MAX_HEALTH`); creatures scale it with
     `EnemyDef.healthScale`. Damage comes from the **gap** between attacker power and defender
     defence (`rules/damage.ts`: a ratio of ratings, narrow variance), so equals trade the same

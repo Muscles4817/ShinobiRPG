@@ -544,6 +544,29 @@ button.foe {
   box-shadow: inset 0 0 0 1px var(--lantern);
 }
 
+/* Formation: a side with a back row shows its rows apart, the back row furthest away. */
+.foe-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.row-label {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.foes.in-rows .foe-row + .foe-row {
+  padding-top: 6px;
+  border-top: 1px dashed var(--line);
+}
+.row-mark {
+  margin-left: 4px;
+  font-size: 0.66rem;
+  text-transform: none;
+}
+
 /* Several enemies: tighter cards so the whole fight fits a phone screen */
 .foes.many {
   gap: 6px;
