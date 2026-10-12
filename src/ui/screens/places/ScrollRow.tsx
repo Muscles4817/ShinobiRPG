@@ -2,6 +2,15 @@ import type { Scroll } from '@/game';
 
 import type { PlaceProps } from '../types';
 
+/** "About one session", "40% studied, about 3 more sessions". */
+function sessionsText(scroll: Scroll, pct: number): string {
+  const left = scroll.sessionsLeft;
+  if (left === null) return 'It won’t take for you';
+  const more = scroll.progress > 0 ? ' more' : '';
+  const count = left === 1 ? `one${more} session` : `${left}${more} sessions`;
+  return scroll.progress > 0 ? `${pct}% studied, about ${count}` : `About ${count}`;
+}
+
 /** One scroll, unrolled as far as you've studied it; a folded one says what opens it. */
 export function ScrollRow({
   scroll,
@@ -12,12 +21,7 @@ export function ScrollRow({
 }) {
   const locked = scroll.locked !== null;
   const pct = Math.round((scroll.progress / scroll.difficulty) * 100);
-  const sessions =
-    scroll.sessionsLeft === null
-      ? 'It won’t take for you'
-      : scroll.progress > 0
-        ? `${pct}% studied, about ${scroll.sessionsLeft} more sessions`
-        : `About ${scroll.sessionsLeft} sessions`;
+  const sessions = sessionsText(scroll, pct);
   return (
     <div className={`scroll d-${scroll.discipline}${locked ? ' locked' : ''}`}>
       <span className="cap" />

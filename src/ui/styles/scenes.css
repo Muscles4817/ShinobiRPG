@@ -469,11 +469,6 @@ button.foe {
 .plan-slot .plan-card {
   min-width: 0;
 }
-/* Fight controls are tapped mid-fight: every one is a full-size target. */
-.combat-controls .btn.small,
-.plan-slot .btn.small.plan-move {
-  min-height: 40px;
-}
 .plan-settings {
   grid-column: 2 / -1;
   display: grid;
