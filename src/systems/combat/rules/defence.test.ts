@@ -22,9 +22,8 @@ const illusion: CombatTechnique = {
   id: 'illusion',
   name: 'Illusion',
   discipline: 'genjutsu',
-  effect: 'stun',
   chakraCost: 4,
-  power: 10,
+  effects: [{ verb: 'daze', power: 10 }],
 };
 const bolt: CombatTechnique = { ...illusion, id: 'bolt', discipline: 'ninjutsu' };
 

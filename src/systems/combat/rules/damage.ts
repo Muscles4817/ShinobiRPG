@@ -2,6 +2,7 @@ import { clamp } from '@/core';
 
 import type { CombatAttributes, CombatantSetup, CombatTechnique } from '../contract';
 import { elementMultiplier } from './elements';
+import { driveOf, type EffectUse } from './verbs';
 
 /**
  * How hard hits land and how much heals restore, shared by the engines built on `rules/`.
@@ -69,14 +70,25 @@ export function toughness(f: Rated): number {
   return f.attributes.stamina;
 }
 
-/** Power behind a technique: its art, with body stats for the physical arts. */
-const TECHNIQUE_POWER: Readonly<Record<CombatTechnique['discipline'], (f: Rated) => number>> = {
-  taijutsu: ({ attributes: a }) => a.taijutsu * 0.6 + a.strength * 0.4,
-  kenjutsu: ({ attributes: a }) => a.kenjutsu * 0.6 + a.strength * 0.2 + a.speed * 0.2,
-  ninjutsu: ({ attributes: a }) => a.ninjutsu,
-  genjutsu: ({ attributes: a }) => a.genjutsu,
-  fuuinjutsu: ({ attributes: a }) => a.fuuinjutsu,
+/**
+ * Body stats the physical arts add to the stats driving them: fists put strength behind a
+ * blow, blades strength and footwork. They make up `BODY_SHARE` of the power.
+ */
+const BODY_SHARE = 0.4;
+const BODY_POWER: Readonly<Record<CombatTechnique['discipline'], ((f: Rated) => number) | null>> = {
+  taijutsu: ({ attributes: a }) => a.strength,
+  kenjutsu: ({ attributes: a }) => (a.strength + a.speed) / 2,
+  ninjutsu: null,
+  genjutsu: null,
+  fuuinjutsu: null,
 };
+
+/** Power behind an effect: the stats driving it, with body stats for the physical arts. */
+function effectPower(attacker: Rated, use: EffectUse): number {
+  const drive = driveOf(attacker, use);
+  const body = BODY_POWER[use.technique.discipline];
+  return body ? drive * (1 - BODY_SHARE) + body(attacker) * BODY_SHARE : drive;
+}
 
 /** What a technique meets: a genjutsu meets the will, everything else the body. */
 function defenceAgainst(defender: Rated, technique: CombatTechnique): number {
@@ -89,25 +101,21 @@ export function strikeDamage(attacker: Rated, defender: Rated, roll: number): nu
   return Math.max(1, Math.round(BLOW_DAMAGE * scale * variance(roll)));
 }
 
-/** A damaging technique: its power, the art behind it against what it meets, and elements. */
+/** A damaging effect: its power, what drives it against what it meets, and elements. */
 export function techniqueDamage(
   attacker: Natured,
   defender: Natured,
-  technique: CombatTechnique,
+  use: EffectUse<'damage'>,
   roll: number,
 ): number {
-  const power = TECHNIQUE_POWER[technique.discipline](attacker);
-  const scale = gapScale(power, defenceAgainst(defender, technique));
-  const weight = TECHNIQUE_BASE + technique.power * TECHNIQUE_PER_POWER;
+  const { technique, effect } = use;
+  const scale = gapScale(effectPower(attacker, use), defenceAgainst(defender, technique));
+  const weight = TECHNIQUE_BASE + effect.power * TECHNIQUE_PER_POWER;
   const elements = elementMultiplier(technique, attacker.nature, defender.nature);
   return Math.max(1, Math.round(BLOW_DAMAGE * weight * scale * elements * variance(roll)));
 }
 
-/** Healing skill: medical ninjutsu needs both the art and fine chakra control. */
-export function healingSkill(f: Rated): number {
-  return (f.attributes.ninjutsu + f.attributes.chakraControl) / 2;
-}
-
-export function healAmount(user: Rated, technique: CombatTechnique): number {
-  return Math.round(technique.power * (1 + healingSkill(user) * HEAL_PER_SKILL));
+/** A heal restores its power, more in skilled hands (ninjutsu and chakra control by default). */
+export function healAmount(user: Rated, use: EffectUse<'heal'>): number {
+  return Math.round(use.effect.power * (1 + driveOf(user, use) * HEAL_PER_SKILL));
 }

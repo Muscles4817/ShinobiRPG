@@ -39,17 +39,15 @@ const daze: CombatTechnique = {
   id: 'daze',
   name: 'Daze',
   discipline: 'genjutsu',
-  effect: 'stun',
+  effects: [{ verb: 'daze', power: 12 }],
   chakraCost: 4,
-  power: 12,
 };
 const blast: CombatTechnique = {
   id: 'blast',
   name: 'Blast',
   discipline: 'ninjutsu',
-  effect: 'damage',
+  effects: [{ verb: 'damage', power: 16 }],
   chakraCost: 6,
-  power: 16,
 };
 
 function bodies(player = fighter('hero', { techniques: [daze, blast] })): PlanFighter[] {
@@ -183,6 +181,15 @@ describe('plan & watch engine', () => {
     const view = engine.view(legacy);
     expect(view.prompt).toBe('Round 1: pick up to 3 cards for each distance.');
     expect(engine.act(legacy, { optionId: 'begin' }, createRng(1)).ok).toBe(true);
+  });
+
+  it('a fight saved before effect lists reads each technique as its old effect', () => {
+    const state = decode(start());
+    const old = { id: 'daze', name: 'Daze', discipline: 'genjutsu', effect: 'stun', power: 12 };
+    const fighters = state.fighters.map((f) => ({ ...f, techniques: [{ ...old, chakraCost: 4 }] }));
+    const resumed = encode({ ...state, fighters } as never);
+    const hero = decode(act(engine, resumed, 'begin')).fighters.find((f) => f.id === 'hero');
+    expect(hero?.techniques).toEqual([{ ...daze }]);
   });
 
   it('starts from the plan you had last time, cleaned up, and hands it back at the end', () => {

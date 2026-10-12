@@ -2,6 +2,7 @@ import { clamp, logistic } from '@/core';
 
 import type { CombatAttributes, CombatTechnique } from '../contract';
 import { blowPower, gapRatio } from './damage';
+import { driveOf, landingUse, resistOf } from './verbs';
 
 /**
  * The layers of defence every fighter has, besides toughness (`damage.ts`) and kit:
@@ -9,7 +10,7 @@ import { blowPower, gapRatio } from './damage';
  *  - Guard: taijutsu and strength, how well blows are caught. A Guard reads it.
  *  - Resistance: willpower against a genjutsu taking hold, perception against seeing any other
  *    technique too late. (Breaking a genjutsu once it holds is chakra control: `conditions.ts`.)
- *  - Healing: medical skill (`healingSkill` in `damage.ts`).
+ *  - Healing: medical skill, ninjutsu with chakra control (`healAmount` in `damage.ts`).
  * Like damage, each reads the gap between two ratings, so it works the same at every grade.
  */
 
@@ -65,13 +66,13 @@ export function counterChance(attacker: Rated, defender: Rated): number {
   return clamp(COUNTER_BASE * ratio, COUNTER_MIN, COUNTER_MAX);
 }
 
-/** Chance a technique fails to land: genjutsu meets willpower, the rest perception. */
+/**
+ * Chance a technique fails to land, from the profile of its first effect aimed at a foe (by
+ * default: genjutsu meets willpower, the rest perception). Nothing resists a self-aimed one.
+ */
 export function resistChance(attacker: Rated, defender: Rated, technique: CombatTechnique): number {
-  const skill = attacker.attributes[technique.discipline];
-  const defence =
-    technique.discipline === 'genjutsu'
-      ? defender.attributes.willpower
-      : defender.attributes.perception;
-  const gap = Math.log(gapRatio(defence, skill));
+  const use = landingUse(technique);
+  if (!use) return 0;
+  const gap = Math.log(gapRatio(resistOf(defender, use), driveOf(attacker, use)));
   return clamp(RESIST_MAX * logistic(gap * RESIST_STEEPNESS), RESIST_FLOOR, RESIST_MAX);
 }

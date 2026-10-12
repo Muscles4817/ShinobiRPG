@@ -10,12 +10,12 @@ import type {
   CombatTrait,
 } from '../contract';
 import { startsHidden } from './conditions';
+import type { EffectUse } from './verbs';
 
 /**
  * The fighter shape and formulas the newer engines share. Each engine extends `Body` with its
  * own fields (block, momentum, plans) but hits and resists the same way (`damage.ts`,
- * `defence.ts`), so comparing fight
- * styles compares the styles, not different maths.
+ * `defence.ts`), so comparing fight styles compares the styles, not different maths.
  */
 
 export interface Body {
@@ -104,9 +104,9 @@ export function viewOf(b: Body, statuses: readonly string[], intent?: string): C
   };
 }
 
-/** Turns a daze or seal lasts: stronger techniques hold longer. */
-export function holdTurns(technique: CombatTechnique): number {
-  return technique.power >= 12 ? 2 : 1;
+/** Turns a daze or seal lasts: stronger effects hold longer. */
+export function holdTurns(effect: Pick<EffectUse['effect'], 'power'>): number {
+  return effect.power >= 12 ? 2 : 1;
 }
 
 /** Chakra a technique costs, after the user's chakra control (up to a third off). */

@@ -230,6 +230,11 @@ ui ──► game ──► content ──► systems ──► core
   pack's `enemies` and use it in a mission's combat stage. A new trait goes in
   `COMBAT_TRAITS`, its rule in `rules/kit.ts` or `rules/conditions.ts`, its counter text in
   `game/scouting.ts`, and every engine must honour it.
+- **Add a technique verb:** a technique's `effects` is a list of verbs applied in order
+  (`systems/techniques/effects.ts`). A new verb goes in `VERBS` with its scaling profile
+  (which user stats drive it, which target stats resist it) in `rules/verbs/profiles.ts`;
+  Plan & Watch applies it in `engines/plan/jutsu.ts`. Shelved engines read a technique
+  through `primaryEffect`.
 - **Add a fight tool:** add a `ToolDef` to `shared/tools.ts` (or a pack's own list) with an
   existing `effect` and list it in a gear place's `toolIds`. A new effect goes in
   `COMBAT_ITEM_EFFECTS` with its rule in `rules/items.ts`; every engine must offer it.

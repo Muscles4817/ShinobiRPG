@@ -8,6 +8,7 @@ import { matchup, matchupLine } from '../../rules/elements';
 import { attackKindOf } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { harmLine, healLine } from '../../rules/narration';
+import { isHarmful, primaryEffect, type EffectUse } from '../../rules/verbs';
 import { confuse, kitDamage, landHit, slips, UNSEEN_REASON } from './kit';
 import { patch, type Card, type CardKind, type DeckFighter } from './state';
 
@@ -72,7 +73,7 @@ export function cardReach(card: Card): readonly RangeBand[] {
 }
 
 export function isTargeted(card: Card): boolean {
-  if (card.technique) return card.technique.effect !== 'heal';
+  if (card.technique) return isHarmful(card.technique);
   return card.kind === 'strike' || card.kind === 'kunai';
 }
 
@@ -141,12 +142,16 @@ function jutsuPlay(fighters: DeckFighter[], { user, target, card }: Aimed, rng: 
     return { fighters, lines: [opener, `${target.name} sees it coming.`] };
   }
   const blow = { attacker: user, target, kind: attackKindOf(t) };
-  if (t.effect === 'stun' || t.effect === 'seal') {
-    const held = holdPlay(fighters, { user, target, card }, t);
+  // The deck predates effect lists: it plays a technique as its leading effect.
+  const lead = primaryEffect(t);
+  if (lead.verb === 'daze' || lead.verb === 'seal') {
+    const held = holdPlay(fighters, { user, target, card }, lead);
     const dazzled = confuse(held.fighters, blow, rng);
     return { fighters: dazzled.fighters, lines: [opener, ...held.lines, ...dazzled.lines] };
   }
-  const damage = kitDamage(fighters, blow, techniqueDamage(user, target, t, rng.next()));
+  if (lead.verb !== 'damage') return { fighters, lines: [opener] };
+  const use = { technique: t, effect: lead };
+  const damage = kitDamage(fighters, blow, techniqueDamage(user, target, use, rng.next()));
   const element = matchupLine(matchup(t.element, target.nature), target.name);
   const landed = landHit(fighters, blow, damage, rng);
   return {
@@ -160,15 +165,18 @@ function jutsuPlay(fighters: DeckFighter[], { user, target, card }: Aimed, rng: 
   };
 }
 
-function holdPlay(fighters: DeckFighter[], { target }: Aimed, t: CombatTechnique): Played {
-  if (t.effect === 'stun') {
+/** A daze or a seal: the effects that hold a target. */
+type HoldEffect = EffectUse<'daze' | 'seal'>['effect'];
+
+function holdPlay(fighters: DeckFighter[], { target }: Aimed, effect: HoldEffect): Played {
+  if (effect.verb === 'daze') {
     return {
-      fighters: patch(fighters, target.id, { stunned: target.stunned + holdTurns(t) }),
+      fighters: patch(fighters, target.id, { stunned: target.stunned + holdTurns(effect) }),
       lines: [`${target.name} is dazed and will lose their turn!`],
     };
   }
   return {
-    fighters: patch(fighters, target.id, { sealed: target.sealed + holdTurns(t) + 1 }),
+    fighters: patch(fighters, target.id, { sealed: target.sealed + holdTurns(effect) + 1 }),
     lines: [`Seals lock ${target.name}'s chakra!`],
   };
 }
@@ -182,8 +190,10 @@ export function playOn(fighters: DeckFighter[], play: Play, rng: Rng): Played {
       chakra: Math.max(0, user.chakra - chakraCost(user, t)),
     });
     const payer = paid.find((f) => f.id === user.id) ?? user;
-    if (t.effect === 'heal') {
-      const health = Math.min(payer.maxHealth, payer.health + healAmount(payer, t));
+    const lead = primaryEffect(t);
+    if (lead.verb === 'heal') {
+      const restored = healAmount(payer, { technique: t, effect: lead });
+      const health = Math.min(payer.maxHealth, payer.health + restored);
       return {
         fighters: patch(paid, payer.id, { health }),
         lines: [healLine(`${payer.name} uses ${t.name} and recovers.`, health - payer.health)],

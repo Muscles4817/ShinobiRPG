@@ -11,6 +11,7 @@ import {
   type AttackKind,
 } from '../../rules/kit';
 import { harmLine, healLine } from '../../rules/narration';
+import { primaryEffect } from '../../rules/verbs';
 import {
   dodgeChance,
   GUARD_CHAKRA_GAIN,
@@ -146,7 +147,8 @@ function techniqueEffect(
   rng: Rng,
 ): ActionResult {
   const { target } = turn;
-  if (technique.effect === 'seal') {
+  const lead = primaryEffect(technique).verb;
+  if (lead === 'seal') {
     return {
       fighters: patchFighter(paid, target.id, {
         sealed: (target.sealed ?? 0) + sealTurns(technique),
@@ -154,7 +156,7 @@ function techniqueEffect(
       lines: [`Seals crawl over ${target.name}. Their chakra is locked!`],
     };
   }
-  if (technique.effect === 'stun') {
+  if (lead === 'daze') {
     return {
       fighters: patchFighter(paid, target.id, { stunned: target.stunned + stunTurns(technique) }),
       lines: [`${target.name} is dazed!`],
@@ -184,7 +186,7 @@ function useTechnique(
   const paid = patchFighter(fighters, actor.id, { chakra: actor.chakra - technique.chakraCost });
   const opener = `${actor.name} uses ${technique.name}!`;
 
-  if (technique.effect === 'heal') {
+  if (primaryEffect(technique).verb === 'heal') {
     const amount = healAmount(actor, technique);
     const health = Math.min(actor.maxHealth, actor.health + amount);
     return {

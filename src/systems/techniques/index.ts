@@ -8,9 +8,16 @@ export {
   knows,
   type Discipline,
   type Element,
-  type TechniqueEffect,
   type TechniqueDef,
   type TechniqueBook,
   type LearnBlocker,
   type StudyResult,
 } from './techniques';
+export {
+  VERBS,
+  type Verb,
+  type ScalingStat,
+  type VerbScaling,
+  type TechniqueEffect,
+  type EffectOf,
+} from './effects';

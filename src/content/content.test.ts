@@ -36,6 +36,12 @@ describe('content validation', () => {
     );
   });
 
+  it('detects a technique that does nothing', () => {
+    const [first, ...rest] = ORIGINAL_PACK.techniques;
+    const inert = { ...ORIGINAL_PACK, techniques: [{ ...first!, effects: [] }, ...rest] };
+    expect(validateContent(inert)).toContain(`technique "${first!.id}" has no effects`);
+  });
+
   it('detects activities no place offers', () => {
     const [home, ...rest] = ORIGINAL_PACK.locations;
     const withoutMarket = {

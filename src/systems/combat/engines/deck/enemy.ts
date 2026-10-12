@@ -15,6 +15,7 @@ import {
   STRIKE_REACH,
 } from '../../rules/range';
 import { harmLine } from '../../rules/narration';
+import { isHarmful, primaryEffect } from '../../rules/verbs';
 import { guardBlock, playOn } from './cards';
 import { kitDamage, landHit, slips } from './kit';
 import { patch, type Card, type DeckFighter, type Intent } from './state';
@@ -33,7 +34,7 @@ const KUNAI_SCALE = 0.6;
 function usableJutsu(self: DeckFighter, range: RangeBand) {
   if (self.sealed > 0) return [];
   return self.techniques.filter(
-    (t) => t.effect !== 'heal' && inReach(reachOf(t), range) && chakraCost(self, t) <= self.chakra,
+    (t) => isHarmful(t) && inReach(reachOf(t), range) && chakraCost(self, t) <= self.chakra,
   );
 }
 
@@ -67,8 +68,9 @@ export function chooseIntent(
   const jutsu = usableJutsu(self, range);
   if (jutsu.length > 0 && rng.chance(JUTSU_CHANCE)) {
     const technique = rng.pick(jutsu);
+    const lead = primaryEffect(technique);
     const estimate =
-      technique.effect === 'damage' ? techniqueDamage(self, target, technique, 0.5) : 0;
+      lead.verb === 'damage' ? techniqueDamage(self, target, { technique, effect: lead }, 0.5) : 0;
     return { kind: 'jutsu', technique, estimate };
   }
   if (rng.chance(GUARD_CHANCE)) return { kind: 'guard', estimate: 0 };

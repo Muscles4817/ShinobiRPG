@@ -2,6 +2,7 @@ import { clamp, logistic } from '@/core';
 
 import type { CombatTechnique } from '../../contract';
 import { hasTrait, SWIFT_DODGE } from '../../rules/kit';
+import { techniquePower } from '../../rules/verbs';
 import type { Fighter } from './state';
 
 /** Extra chance a swift defender slips any single-target attack. */
@@ -39,7 +40,7 @@ export function techniqueDamage(
 ): number {
   const skill = attacker.attributes[technique.discipline];
   const bonus = PHYSICAL_BONUS[technique.discipline](attacker);
-  return mitigate((technique.power * (1 + skill / 20) + bonus) * variance, defender);
+  return mitigate((techniquePower(technique) * (1 + skill / 20) + bonus) * variance, defender);
 }
 
 /** Genjutsu is resisted by willpower; everything else by perception (seeing it coming). */
@@ -67,15 +68,15 @@ const PHYSICAL_BONUS: Readonly<Record<CombatTechnique['discipline'], (f: Fighter
 
 /** Rounds a seal lasts: stronger seals hold longer. */
 export function sealTurns(technique: CombatTechnique): number {
-  return technique.power >= 12 ? 3 : 2;
+  return techniquePower(technique) >= 12 ? 3 : 2;
 }
 
 export function stunTurns(technique: CombatTechnique): number {
-  return technique.power >= 12 ? 2 : 1;
+  return techniquePower(technique) >= 12 ? 2 : 1;
 }
 
 export function healAmount(user: Fighter, technique: CombatTechnique): number {
-  return Math.round(technique.power * (1 + user.attributes.ninjutsu / 25));
+  return Math.round(techniquePower(technique) * (1 + user.attributes.ninjutsu / 25));
 }
 
 export function fleeChance(runner: Fighter, chasers: readonly Fighter[]): number {

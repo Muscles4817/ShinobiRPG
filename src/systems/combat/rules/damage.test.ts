@@ -29,16 +29,22 @@ function even(value: number, over: Partial<CombatAttributes> = {}) {
   return { attributes: { ...attributes, ...over } };
 }
 
-const fireball: CombatTechnique = {
+const fireballTechnique: CombatTechnique = {
   id: 'fireball',
   name: 'Fireball',
   discipline: 'ninjutsu',
-  effect: 'damage',
   chakraCost: 8,
-  power: 16,
+  effects: [{ verb: 'damage', power: 16 }],
 };
-const dread: CombatTechnique = { ...fireball, id: 'dread', discipline: 'genjutsu' };
-const mend: CombatTechnique = { ...fireball, id: 'mend', effect: 'heal', power: 18 };
+const fireball = { technique: fireballTechnique, effect: { verb: 'damage', power: 16 } } as const;
+const dread = {
+  technique: { ...fireballTechnique, id: 'dread', discipline: 'genjutsu' },
+  effect: fireball.effect,
+} as const;
+const mend = {
+  technique: { ...fireballTechnique, id: 'mend', effects: [{ verb: 'heal', power: 18 }] },
+  effect: { verb: 'heal', power: 18 },
+} as const;
 
 describe('gap damage', () => {
   it('equals trade the same blows at every grade', () => {
