@@ -169,6 +169,14 @@ describe('plan & watch engine', () => {
     expect(Object.keys(plan.seen)).toContain('bandit');
   });
 
+  it('shows the round the player plans by, not the exchange count', () => {
+    let state = act(engine, start(), 'begin');
+    state = act(engine, state, 'next');
+    expect(engine.view(state).round).toBe(1);
+    state = act(engine, state, 'round');
+    expect(decode(state).result ?? engine.view(state).round).toBe(2);
+  });
+
   it('a much stronger fighter wins over a few rounds', () => {
     const strong = fighter('hero', { attributes: { ...attributes, strength: 40, speed: 20 } });
     let state = start(strong);

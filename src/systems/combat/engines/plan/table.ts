@@ -49,7 +49,7 @@ const WHEN_LABEL: Readonly<Record<SlotCondition | typeof ALWAYS, string>> = {
 const AIM_LABEL: Readonly<Record<TargetRule, string>> = {
   weakest: 'Weakest foe',
   strongest: 'Strongest foe',
-  threat: 'Foe threatening our back row',
+  threat: 'Back-row threat',
   marked: 'The team mark',
 };
 

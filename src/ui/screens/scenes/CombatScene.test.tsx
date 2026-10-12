@@ -41,6 +41,12 @@ describe('CombatScene (smoke test)', () => {
     expect(within(orders).getAllByText(/won't take orders from you yet/).length).toBeGreaterThan(0);
   });
 
+  it('says once why the cards you could add are blocked, and the round once', () => {
+    render(<CombatScene ctx={ctx} state={riverFight()} perform={() => undefined} />);
+    expect(screen.getAllByText('Slots full. Take a card out first.')).toHaveLength(1);
+    expect(screen.getAllByText(/^Round \d+$/)).toHaveLength(1);
+  });
+
   it('lets you set a friend’s stance and cards', () => {
     const start = newGame();
     const [first] = start.people.team?.teammateIds ?? [];

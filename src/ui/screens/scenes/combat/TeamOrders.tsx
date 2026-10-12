@@ -34,10 +34,11 @@ function Order({
   const locked = choices.find((c) => c.disabledReason !== undefined);
   if (locked && choices.every((c) => c.disabledReason !== undefined)) {
     return (
-      <p className="order-locked">
-        {current && <b>{current.label}. </b>}
+      <div className="plan-setting order-locked">
+        <span>{setting}</span>
+        {current && <b>{current.label}</b>}
         <small>{locked.disabledReason}</small>
-      </p>
+      </div>
     );
   }
   return (

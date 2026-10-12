@@ -796,6 +796,13 @@ These were folded into the D2 discussion. Where each landed:
   moved only where dazes are involved (the finisher bonus, and no re-dazing a held foe): a
   versatile fighter now beats a trickster 90–100% (was 40–80%); a trickster now beats a rusher
   or a powerhouse a little more often.
+- Phase 1 UI check (390px, real app, Playwright outside the project): fixed the fight
+  view showing the exchange number as the round (cards and report), disabled cards not
+  saying why on phones, unlabelled locked orders, tap targets under 40px, and a clipped
+  target label. **Follow-ups noted:** a solo spar still offers the "back-row threat" and
+  "team mark" targets; two foes with the same name can't be told apart; the read-only
+  range strip looks like the range tabs; log dividers carry numbers ("End of round 1");
+  the "⚔" on team notices; creation buttons and swatches under 40px.
 
 **Phase 2 (in progress).**
 
