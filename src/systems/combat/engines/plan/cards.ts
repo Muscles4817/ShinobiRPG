@@ -158,6 +158,9 @@ const VERB_WORD: Readonly<Record<Verb, string>> = {
   conceal: 'Vanish until you attack',
   sense: 'Find the hidden, read every card',
   break: 'Smash through a guard',
+  empower: 'Push past your limits, at a price',
+  clone: 'Clones take hits for you',
+  trap: 'Set a trap where you stand',
 };
 
 /** What a technique does, in words: "Attack", or "Attack, then daze" for several effects. */
@@ -246,8 +249,9 @@ function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Fo
 /**
  * A sensible starting plan, in priority order: a heal for when you're badly hurt, a sense for
  * when a foe hides, footwork towards where you fight best (when it's worth a turn), a daze,
- * seal or confusion to spoil a foe's telegraphed jutsu, your best attack, then plain blows,
- * more attacks, a conceal and a defence. Attacks
+ * seal or confusion to spoil a foe's telegraphed jutsu, an empower or clones and a trap where
+ * you can attack (the plan passes over them while they hold), your best attack, then plain
+ * blows, more attacks, a conceal and a defence. Attacks
  * your kit can't make from a distance (an archer up close) are left out.
  */
 function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slot[] {
@@ -263,12 +267,15 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slo
   const daze = strongest(pool, isHindering).slice(0, 1);
   const sense = strongest(pool, (t) => hasVerb(t, 'sense')).slice(0, 1);
   const conceal = strongest(pool, (t) => hasVerb(t, 'conceal')).slice(0, 1);
+  const ready = strongest(pool, (t) => hasVerb(t, 'empower') || hasVerb(t, 'clone')).slice(0, 1);
+  const trap = strongest(pool, (t) => hasVerb(t, 'trap')).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const ordered: Slot[] = [
     ...heal.map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
     ...sense.map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' })),
     ...plain(at('first')),
     ...daze.map((c): Slot => ({ card: cardId(c), when: 'foe-readying' })),
+    ...plain(reaches ? [...ready, ...trap] : []),
     ...plain([...damage.slice(0, 1), ...has('strike'), ...has('throw'), ...at('after-attacks')]),
     ...plain([...damage.slice(1), ...conceal, ...has('guard'), ...has('dodge')]),
   ];

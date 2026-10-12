@@ -13,10 +13,12 @@ import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
 import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
+import { empowerCostsOwed } from '../../rules/verbs';
 import { defaultLoadout, slotLimit } from './cards';
 import { intentLine, rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { rememberedLoadout } from './memory';
+import { prepStatuses } from './prep';
 import { openFight } from './opening';
 import { decide, resolveExchange } from './round';
 import {
@@ -46,12 +48,16 @@ function read(state: CombatState): PlanState {
   return withRows(withIntents(withSlots(upgradeLegacy(withKits(decode(state))))));
 }
 
-/** Conditions, and whether a back-row fighter is still out of reach behind their front row. */
+/**
+ * Conditions, whether a back-row fighter is still out of reach behind their front row, and
+ * what they have ready (empowered, clones, a trap).
+ */
 function statuses(f: PlanFighter, fighters: readonly PlanFighter[]): string[] {
   return [
     ...(isDazed(f) ? ['Dazed'] : []),
     ...(f.sealed > 0 ? ['Sealed'] : []),
     ...(alive(f) && screened(f, fighters) ? ['Screened'] : []),
+    ...prepStatuses(f),
   ];
 }
 
@@ -217,7 +223,7 @@ export function createPlanEngine(): CombatEngine {
         player: { health: player.health, chakra: player.chakra },
         items: itemsLeft(player),
         plan: player.loadout,
-        costs: costsOwed(player),
+        costs: [...costsOwed(player), ...empowerCostsOwed(player)],
       };
     },
   };

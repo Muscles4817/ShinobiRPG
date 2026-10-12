@@ -14,10 +14,13 @@ import {
   profileOf,
   type EffectUse,
 } from '../../rules/verbs';
+import { makeClones } from './clones';
+import { empowerSelf } from './empower';
 import { react, type Blow } from './react';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
-import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { setTrap } from './traps';
+import { dazeIn, fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Using a technique in a planned fight: pay its chakra, see whether the target saw it coming,
@@ -46,16 +49,9 @@ function physical(t: CombatTechnique): boolean {
   return t.discipline === 'taijutsu' || t.discipline === 'kenjutsu';
 }
 
-/**
- * A daze costs one exchange and doesn't stack: rounds play out on their own, so a chain of
- * dazes would leave the player watching themselves lose.
- */
 function daze(round: Round, target: PlanFighter): Round {
   return say(
-    {
-      ...round,
-      fighters: patch(round.fighters, target.id, { stunned: 1, openUntil: round.number + 1 }),
-    },
+    { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number)) },
     `${target.name} is dazed!`,
   );
 }
@@ -93,18 +89,16 @@ function damage(round: Round, { actor, target, rng }: Aimed, use: Wounding): Rou
     physical: physical(t),
     kind: attackKindOf(t),
     ...(use.effect.verb === 'break' ? { breaks: true } : {}),
+    ...(use.effect.verb === 'area' ? { area: true } : {}),
   };
   const hit = react(round, { attacker: actor, target, blow, rng });
   const element = matchupLine(matchup(t.element, target.nature), target.name);
   return element ? say(hit, element) : hit;
 }
 
-/** One effect on one foe, as the fighters stand now. Nothing happens to a foe who is down. */
-function onFoe(round: Round, turn: Aimed, { technique, effect }: EffectUse): Round {
-  const actor = fighterIn(round, turn.actor.id) ?? turn.actor;
-  const target = fighterIn(round, turn.target.id);
-  if (!target || !alive(target)) return round;
-  const aimed = { ...turn, actor, target };
+/** One effect landing on a foe who is standing. */
+function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): Round {
+  const { target } = aimed;
   switch (effect.verb) {
     case 'damage':
     case 'area':
@@ -119,8 +113,19 @@ function onFoe(round: Round, turn: Aimed, { technique, effect }: EffectUse): Rou
     case 'heal':
     case 'conceal':
     case 'sense':
+    case 'empower':
+    case 'clone':
+    case 'trap':
       return round;
   }
+}
+
+/** One effect on one foe, as the fighters stand now. Nothing happens to a foe who is down. */
+function onFoe(round: Round, turn: Aimed, use: EffectUse): Round {
+  const actor = fighterIn(round, turn.actor.id) ?? turn.actor;
+  const target = fighterIn(round, turn.target.id);
+  if (!target || !alive(target)) return round;
+  return landOn(round, { ...turn, actor, target }, use);
 }
 
 /** One effect on the user themselves. */
@@ -133,6 +138,12 @@ function onSelf(round: Round, turn: Turn, { technique, effect }: EffectUse): Rou
       return conceal(round, actor, { technique, effect });
     case 'sense':
       return sense(round, { ...turn, actor }, { technique, effect });
+    case 'empower':
+      return empowerSelf(round, actor, { technique, effect });
+    case 'clone':
+      return makeClones(round, actor, { technique, effect });
+    case 'trap':
+      return setTrap(round, actor, { technique, effect });
     case 'damage':
     case 'area':
     case 'break':

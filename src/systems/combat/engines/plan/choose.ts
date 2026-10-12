@@ -6,6 +6,7 @@ import { RANGE_BANDS } from '../../rules/range';
 import { hasVerb, isHindering, isWounding, techniquePower } from '../../rules/verbs';
 import { isOffence, playable, slotted, type Card } from './cards';
 import { toolInstinct } from './pouch';
+import { prepInstinct } from './prep';
 import { sightInstinct } from './sight';
 import { isDazed, type PlanFighter } from './state';
 
@@ -69,7 +70,10 @@ export interface Moment {
   readonly opening?: boolean;
 }
 
-/** A sense, Search or Dispel for a hidden foe, a conceal to open; else a tool that's called for. */
+/**
+ * A sense, Search or Dispel for a hidden foe, a conceal to open, an empower, clones or a trap
+ * (`prep.ts`); else a tool that's called for.
+ */
 function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment): Card | undefined {
   const hiddenFoe = moment.hiddenFoe ?? false;
   const opening = moment.opening ?? false;
@@ -77,6 +81,7 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
   return (
     sightInstinct(self, ready, now) ??
     senses(self, ready, hiddenFoe) ??
+    prepInstinct(self, ready, moment) ??
     toolInstinct(self, ready, now)
   );
 }

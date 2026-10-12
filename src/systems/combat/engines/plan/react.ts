@@ -16,6 +16,7 @@ import {
 import { harmLine } from '../../rules/narration';
 import { brokenScale } from '../../rules/verbs';
 import { slotted } from './cards';
+import { throughClones } from './decoys';
 import { canHit } from './rows';
 import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
 
@@ -27,6 +28,7 @@ import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './
  * attack (less of a break), packs hit harder together, hidden attackers harder still, swift
  * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run. A
  * counter is a blow up close, so it can't reach an attacker standing behind their front row.
+ * Before any of it, a clone may take the blow instead (`decoys.ts`).
  */
 
 const COUNTER_SCALE = 0.6;
@@ -45,6 +47,8 @@ export interface Blow {
   readonly kind: AttackKind;
   /** A break: goes through a guard, and through part of armour and a spirit's form. */
   readonly breaks?: boolean;
+  /** An area hit: bursts every clone and still reaches its target (`decoys.ts`). */
+  readonly area?: boolean;
 }
 
 export interface Hit {
@@ -115,9 +119,13 @@ function guardWords(guarded: boolean, smashed: boolean): string {
   return guarded ? ' through a guard' : '';
 }
 
-/** Lands a blow on the target, letting their slotted defences and kit react. */
-export function react(round: Round, hit: Hit): Round {
+/** Lands a blow on the target, letting their clones, slotted defences and kit react. */
+export function react(before: Round, hit: Hit): Round {
   const { attacker, target, blow, rng } = hit;
+  const area = blow.area === true;
+  const decoyed = throughClones(before, { attacker, target, what: blow.what, area, rng });
+  if (decoyed.absorbed) return decoyed.round;
+  const { round } = decoyed;
   const ready = isDazed(target) ? [] : slotted(target, round.range);
   const has = (kind: 'guard' | 'dodge' | 'counter') => ready.some((c) => c.kind === kind);
   const avoid = blow.dodgeable ? avoidChance(attacker, target, has('dodge')) : 0;

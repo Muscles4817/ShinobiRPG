@@ -232,3 +232,24 @@ describe('hiding has counterplay (step 1.4b)', () => {
     }
   });
 });
+
+describe('empower, clone and trap (step 1.4d)', () => {
+  const ready = ['kindled-pulse', 'lantern-shades', 'snare-ward'] as const;
+  const knowing = (f: FighterSpec, id: string): FighterSpec => ({
+    ...f,
+    name: `${f.name} with ${id}`,
+    techniques: [...f.techniques, ...techniques([id])],
+  });
+
+  it.each(ready)('knowing %s wins more often against an equal', (id) => {
+    const plain = plainAtGrade('C');
+    const report = head(knowing(plain, id), plain);
+    expect(report.winRate).toBeGreaterThan(head(plain, plain).winRate);
+    expect(report.stalemateRate).toBe(0);
+  });
+
+  it.each(ready)('knowing %s does not close a whole grade: power is real', (id) => {
+    const report = head(knowing(plainAtGrade('C'), id), plainAtGrade('B'));
+    expect(report.winRate).toBeLessThan(1 - POWER_WIN_RATE);
+  });
+});

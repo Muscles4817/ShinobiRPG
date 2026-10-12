@@ -15,10 +15,15 @@ export {
 } from './techniques';
 export {
   VERBS,
+  effectProblem,
   type Verb,
+  type PlainVerb,
   type ScalingStat,
   type VerbScaling,
   type TechniqueEffect,
   type EffectOf,
+  type EmpowerEffect,
+  type CloneEffect,
+  type TrapEffect,
 } from './effects';
 export { costIsSane, type CostTemplate } from './costs';

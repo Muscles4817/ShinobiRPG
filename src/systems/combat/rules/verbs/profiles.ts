@@ -34,6 +34,12 @@ export const VERB_PROFILES: Readonly<Record<Verb, VerbProfile>> = {
   sense: { aim: 'self', drive: ['perception', 'ninjutsu'], resist: [] },
   // Raw force through a guard and armour; seen coming like any blow.
   break: { aim: 'foe', drive: ['strength'], resist: ['guard'] },
+  // Raises the user's own stats; skill in the art decides by how much (`rules/verbs/empower.ts`).
+  empower: { aim: 'self', drive: ['art'], resist: [] },
+  // Decoys made with the art; sharp eyes pick the real one out (`rules/verbs/clones.ts`).
+  clone: { aim: 'self', drive: ['art'], resist: ['perception'] },
+  // Set by sealing craft and cunning; a foe who notices it steps around (`rules/verbs/trap.ts`).
+  trap: { aim: 'self', drive: ['fuuinjutsu', 'intellect'], resist: ['perception'] },
 };
 
 /** The profile an effect scales by: its verb's, with the effect's own overrides on top. */

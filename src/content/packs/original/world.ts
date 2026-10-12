@@ -166,6 +166,9 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'paper-veil',
           'wick-sense',
           'temple-bell-palm',
+          'kindled-pulse',
+          'lantern-shades',
+          'snare-ward',
         ],
       },
       {

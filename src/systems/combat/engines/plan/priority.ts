@@ -5,6 +5,7 @@ import { hasVerb } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
 import { improvise } from './choose';
 import { toolInstinct } from './pouch';
+import { prepNeeded } from './prep';
 import { hittable } from './rows';
 import { inSight, opponentsOf } from './senses';
 import {
@@ -120,7 +121,10 @@ function jutsuNeeded(self: PlanFighter, t: CombatTechnique, hiddenFoe: boolean):
   return !(hasVerb(t, 'conceal') && self.hidden);
 }
 
-/** Whether a card is needed now: no searching with no one hidden, no healing at full health. */
+/**
+ * Whether a card is needed now: no searching with no one hidden, no healing at full health, no
+ * getting ready twice over or with no foe in sight (`prep.ts`).
+ */
 function needed(self: PlanFighter, card: Card, round: Round): boolean {
   const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
   switch (card.kind) {
@@ -134,7 +138,14 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
         toolInstinct(self, [card], { hiddenFoe, opening: round.opening ?? false }) !== undefined
       );
     case 'jutsu':
-      return jutsuNeeded(self, card.technique, hiddenFoe);
+      return (
+        jutsuNeeded(self, card.technique, hiddenFoe) &&
+        prepNeeded(
+          self,
+          card.technique,
+          opponentsOf(round.fighters, self).some((f) => inSight(self, f)),
+        )
+      );
     case 'strike':
     case 'throw':
     case 'step':

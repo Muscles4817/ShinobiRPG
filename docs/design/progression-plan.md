@@ -760,6 +760,17 @@ These were folded into the D2 discussion. Where each landed:
   nothing: the player goes for the front anyway, and the archer spends its turns in the
   shared range tug-of-war (per-fighter ranges are the real fix, later).
 
+- 1.4d: verbs empower, clone and trap (`rules/verbs/empower.ts`, `clones.ts`, `trap.ts`; the
+  plan engine's `empower.ts`, `clones.ts`, `decoys.ts`, `traps.ts`, `prep.ts`), with a technique
+  for each in both packs (academy). An empower raises its `boosts` stats for a few exchanges and
+  takes `healthPerExchange` (eased by willpower) and/or an `afterCost` reported in
+  `CombatOutcome.costs` per use. Clones stand beside their maker ("Clones ×N"), take
+  single-target hits that reach the maker, burst all at once to an area hit, and solid ones
+  (`strikes`) add a weak blow. A trap waits at the band it was set at ("Trap at … range").
+  Bench (plain C against plain C, 43% won without): with Kindled Pulse 83% (5.7 exchanges),
+  Lantern Shades 83% (7.6), Snare Ward 83% (7.2); against a plain B, each still 0%. The
+  Naruto pack's Clone Jutsu is now a clone (it was a daze). No save version change.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -809,3 +820,25 @@ These were folded into the D2 discussion. Where each landed:
 - 1.5: the new trump techniques sit at the academy as a placeholder (grade B
   requirements); 4.2 moves them to teachers and scrolls. Once-per-fight applies to foes
   too.
+- 1.4d: empower and clone durations and counts read `maxChakra` until reserves exist (2.x).
+  An empower holds `1 + maxChakra / 50` exchanges (at most 4) after the one it is used in;
+  boosts are a share of the user's own stat (power and art), so the gap maths keeps grades
+  apart. Its health price never takes the user below 1. Its `afterCost` is on the effect, not
+  the technique, so it needs no `oncePerFight`; each use owes it again ("overusing
+  empowerment").
+- 1.4d: clones are a count on their maker rather than fighters of their own: they stand in the
+  maker's row, so a hit only meets them once it has reached the maker past the rows (and a
+  solid clone's blow obeys the rows like a strike or kunai). The odds a hit takes a clone are
+  `n / (n + 2)`, shifted by the maker's art against the attacker's perception, halved by
+  insight, at most 70%. Counters, traps and every single-target hit can be taken by a clone.
+- 1.4d: a trap springs on a foe's turn start (from the exchange after it was set) or as soon as
+  a foe's step moves the fight into its band; only foes of the setter spring it, and a foe whose
+  perception beats the setter's craft may spot and disarm it (25% between equals). Its bite is
+  `techniqueDamage` (fūinjutsu and intellect against toughness), can't be dodged, can be
+  guarded; a daze sprung at turn start costs that turn. One trap per fighter.
+- 1.4d: foes and allies reach for an empower or clones when a foe is in sight and they can
+  attack from here, and set a trap to open a round; the player's plan passes over all three
+  while one holds (or, for empower and clones, with no foe in sight). The default plan slots
+  them ahead of attacks. In short fights the turn spent can cost more than it gives (a rusher
+  with Kindled Pulse wins less against a brute at genin and chūnin scale); accepted, it's the
+  trade.

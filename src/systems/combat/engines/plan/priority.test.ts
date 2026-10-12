@@ -1,5 +1,5 @@
 import { createRng } from '@/core';
-import type { Verb } from '@/systems/techniques';
+import type { PlainVerb } from '@/systems/techniques';
 
 import type { CombatantSetup, CombatEngine, CombatState, CombatTechnique } from '../../contract';
 import { createPlanEngine } from './engine';
@@ -46,7 +46,7 @@ function fighter(id: string, overrides: Partial<CombatantSetup> = {}): Combatant
   };
 }
 
-const technique = (id: string, verb: Verb): CombatTechnique => ({
+const technique = (id: string, verb: PlainVerb): CombatTechnique => ({
   id,
   name: id,
   discipline: 'ninjutsu',
