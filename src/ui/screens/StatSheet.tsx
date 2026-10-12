@@ -27,6 +27,15 @@ function growthText(growth: number): string {
   return growth > 0 ? `+${growth}` : '';
 }
 
+/** Your read on your talent for a stat, once training has given you one. */
+function TalentRead({ stat }: { readonly stat: StatLine }) {
+  return (
+    <small className="talent-read" data-read={stat.talent.read}>
+      {stat.talent.phrase}
+    </small>
+  );
+}
+
 function DisciplineTile({ stat }: { readonly stat: StatLine }) {
   const css = stat.label.toLowerCase().replace('ū', 'uu');
   return (
@@ -50,6 +59,7 @@ function StatRow({ stat }: { readonly stat: StatLine }) {
       <span className="num">{stat.value.toFixed(1)}</span>
       <span className="growth num">{growthText(stat.growth)}</span>
       <GradeBar tier={stat.tier} />
+      <TalentRead stat={stat} />
     </div>
   );
 }
@@ -79,7 +89,7 @@ export function StatSheet({ view }: { readonly view: ShinobiView }) {
       </section>
       <p className="grade-key muted">
         E and D are genin grades, C is chūnin, B and A are jōnin, and S is kage. Bars show the way
-        to the next letter.
+        to the next letter. Under each stat is what training has told you of your talent for it.
       </p>
     </>
   );

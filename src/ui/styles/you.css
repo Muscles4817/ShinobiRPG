@@ -186,6 +186,23 @@
   font-size: 0.75rem;
   text-align: right;
 }
+.stat-row .talent-read {
+  grid-column: 2 / -1;
+}
+.talent-read {
+  font-family: var(--font-story);
+  font-style: italic;
+  font-size: 0.72rem;
+  color: var(--story);
+}
+.disc .talent-read {
+  color: var(--story);
+  font-size: 0.68rem;
+}
+.talent-read[data-read='unknown'],
+.disc .talent-read[data-read='unknown'] {
+  color: var(--muted);
+}
 
 .undiscovered {
   display: flex;

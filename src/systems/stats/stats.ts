@@ -1,6 +1,4 @@
-import { round1 } from '@/core';
-
-import { withReserves } from './reserves';
+import { round2 } from '@/core';
 
 /**
  * Character attributes. Adding a stat = add it here and give it a label/group;
@@ -51,32 +49,11 @@ export function createStats(base: number, bonuses: StatDelta = {}): Stats {
   return Object.fromEntries(entries) as Record<StatId, number>;
 }
 
-/**
- * Training gain with diminishing returns: the higher a stat already is, the less a
- * session adds. `efficiency` scales the whole gain (e.g. 0.5 when exhausted).
- */
-export function trainingGain(current: number, baseGain: number, efficiency = 1): number {
-  return round1((baseGain * efficiency) / (1 + current / 25));
-}
-
-/** Applies a session's gains; reserves grow alongside stamina (`withReserves`). */
-export function applyTraining(stats: Stats, gains: StatDelta, scale: StatScale = {}): Stats {
-  const next: Record<StatId, number> = { ...stats };
-  const grown = withReserves(gains);
-  for (const id of STAT_IDS) {
-    const base = grown[id];
-    if (base !== undefined) {
-      next[id] = round1(stats[id] + trainingGain(stats[id], base, scale[id] ?? 1));
-    }
-  }
-  return next;
-}
-
 /** Stat-by-stat difference `after - before`, omitting unchanged stats. */
 export function diffStats(before: Stats, after: Stats): StatDelta {
   const delta: Partial<Record<StatId, number>> = {};
   for (const id of STAT_IDS) {
-    const d = round1(after[id] - before[id]);
+    const d = round2(after[id] - before[id]);
     if (d !== 0) delta[id] = d;
   }
   return delta;

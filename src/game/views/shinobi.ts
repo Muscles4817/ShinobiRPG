@@ -2,11 +2,14 @@ import { round1 } from '@/core';
 import { GRADE_INFO, type Appearance, type Grade, type Pronouns } from '@/systems/profile';
 import { RANK_LABELS } from '@/systems/standing';
 import {
+  aptitudeBand,
   fightingPower,
   STAT_IDS,
   STAT_INFO,
   statTier,
+  type AptitudeRead,
   type StatGroup,
+  type StatId,
   type TierRead,
 } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
@@ -24,6 +27,8 @@ export interface StatLine {
   readonly growth: number;
   /** What the value means: grade, rank, and how close the next grade is. */
   readonly tier: TierRead;
+  /** What you have found out about your talent for it: a phrase, never a number. */
+  readonly talent: { readonly read: AptitudeRead; readonly phrase: string };
 }
 
 export interface ShinobiView {
@@ -61,6 +66,16 @@ function registryNumber(name: string): string {
   let hash = 0;
   for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) % 9000;
   return String(1000 + hash);
+}
+
+function talentRead(state: GameState, ctx: GameContext, id: StatId): StatLine['talent'] {
+  const { aptitude, aptitudeKnown } = state.character;
+  const text = ctx.content.text.aptitude;
+  const read = aptitudeKnown[id];
+  return {
+    read,
+    phrase: read === 'unknown' ? text.unknown : text.senses[aptitudeBand(aptitude[id])],
+  };
 }
 
 export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
@@ -102,6 +117,7 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
         value: stats[id],
         growth: round1(stats[id] - startingStats[id]),
         tier: statTier(stats[id]),
+        talent: talentRead(state, ctx, id),
       })),
     })),
     overall: { ...statTier(fightingPower(stats)), power: round1(fightingPower(stats)) },

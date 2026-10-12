@@ -59,6 +59,16 @@ describe('content validation', () => {
     );
   });
 
+  it('detects clans without arts, and a clanless family with some', () => {
+    const clans = ORIGINAL_PACK.clans.map((c) => ({
+      ...c,
+      arts: c.id === 'none' ? (['taijutsu'] as const) : [],
+    }));
+    const problems = validateContent({ ...ORIGINAL_PACK, clans });
+    expect(problems).toContain('the "none" clan can’t have arts');
+    expect(problems).toContain('clan "hibana" declares no arts');
+  });
+
   it('detects an empower that costs nothing', () => {
     const [first, ...rest] = ORIGINAL_PACK.techniques;
     const effects = [{ verb: 'empower', power: 10, boosts: ['strength'] }] as const;

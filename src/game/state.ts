@@ -5,7 +5,7 @@ import type { Journal } from '@/systems/journal';
 import type { Appearance, Grades, Pronouns } from '@/systems/profile';
 import type { MissionRun } from '@/systems/missions';
 import type { Standing } from '@/systems/standing';
-import type { Stats } from '@/systems/stats';
+import type { Aptitude, AptitudeKnown, StatId, Stats } from '@/systems/stats';
 import type { Element, TechniqueBook } from '@/systems/techniques';
 import type { GameTime } from '@/systems/time';
 import type { Vitals } from '@/systems/vitals';
@@ -87,6 +87,12 @@ export interface Character {
   readonly stats: Stats;
   /** Stats on graduation day, to show growth. */
   readonly startingStats: Stats;
+  /** Hidden talent per stat: a growth multiplier, 0 for an art that will never take. */
+  readonly aptitude: Aptitude;
+  /** What the character has found out about their aptitude, per stat. */
+  readonly aptitudeKnown: AptitudeKnown;
+  /** Sessions counted towards a first read of each stat's aptitude (missing = none). */
+  readonly aptitudeSessions: Readonly<Partial<Record<StatId, number>>>;
   readonly vitals: Vitals;
   /** Today's home-cooked meal (a recipe id): its buff lasts until the day ends. */
   readonly meal: string | null;

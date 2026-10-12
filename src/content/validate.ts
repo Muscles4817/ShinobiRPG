@@ -58,12 +58,22 @@ function beginnerProblems(pack: ContentPack): string[] {
   );
 }
 
+/** Clans declare the arts their members are talented in; the clanless have none. */
+function clanArtProblems(pack: ContentPack): string[] {
+  return pack.clans.flatMap((c) => {
+    if (c.id === 'none') return c.arts.length > 0 ? ['the "none" clan can’t have arts'] : [];
+    if (c.arts.length === 0) return [`clan "${c.id}" declares no arts`];
+    return new Set(c.arts).size < c.arts.length ? [`clan "${c.id}" lists an art twice`] : [];
+  });
+}
+
 /** Clans, traits and clan techniques must fit together. */
 function profileProblems(pack: ContentPack): string[] {
   const clanIds = new Set(pack.clans.map((c) => c.id));
   const problems: string[] = [];
   if (!clanIds.has('none')) problems.push('pack needs a "none" clan for clanless characters');
   if (pack.traits.length < 2) problems.push('pack needs at least two traits');
+  problems.push(...clanArtProblems(pack));
   for (const t of pack.techniques) {
     if (t.clan !== undefined && !clanIds.has(t.clan)) {
       problems.push(`technique "${t.id}" belongs to unknown clan "${t.clan}"`);

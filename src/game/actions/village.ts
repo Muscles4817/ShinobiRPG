@@ -1,5 +1,6 @@
-import { applyTraining, diffStats } from '@/systems/stats';
+import { diffStats } from '@/systems/stats';
 
+import { growCharacter, logDiscoveries } from '../growth';
 import { adjust, busyReason, chip, firstBlocker, log, statChips } from '../ops';
 import { hasSight, isNight, sightTonight } from '../village';
 import type { ActionHandler, ActionOf } from './types';
@@ -23,20 +24,22 @@ export const followSight: ActionHandler<ActionOf<'followSight'>> = {
     const sight = sightTonight(state, ctx);
     if (!sight) return state;
     const before = state.character.stats;
-    const stats = applyTraining(before, sight.reward);
+    const grown = growCharacter(state.character, sight.reward, ctx);
+    const { stats } = grown.character;
     const followed = adjust(
       {
         ...state,
-        character: { ...state.character, stats },
+        character: grown.character,
         village: { ...state.village, lastSightDay: state.time.day },
       },
       { energy: -SIGHT_ENERGY },
     );
-    return log(followed, {
+    const logged = log(followed, {
       heading: sight.title,
       text: sight.outcome,
       tone: 'success',
       chips: [...statChips(diffStats(before, stats)), chip(`−${SIGHT_ENERGY} energy`, 'cost')],
     });
+    return logDiscoveries(logged, grown.discovered, ctx);
   },
 };

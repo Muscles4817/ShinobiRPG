@@ -35,4 +35,26 @@ describe('modifiers', () => {
       'All techniques learned 10% faster',
     ]);
   });
+
+  it('collects hard-work floors from every source', () => {
+    const floor = { floor: 0.4, throughGrade: 'B' } as const;
+    const lower = { floor: 0.2, throughGrade: 'C' } as const;
+    const mods = combine([
+      { soloEfficiencyFloor: { taijutsu: floor } },
+      { soloEfficiencyFloor: { taijutsu: lower, speed: floor } },
+    ]);
+    expect(mods.soloFloors.taijutsu).toEqual([floor, lower]);
+    expect(mods.soloFloors.speed).toEqual([floor]);
+    expect(mods.soloFloors.ninjutsu).toBeUndefined();
+  });
+
+  it('describes a hard-work floor as one line per grade', () => {
+    const floor = { floor: 0.4, throughGrade: 'B' } as const;
+    expect(describeSpec({ soloEfficiencyFloor: { strength: floor, taijutsu: floor } })).toEqual([
+      {
+        label: 'Training alone keeps paying off up to grade B in Strength and Taijutsu',
+        tone: 'gain',
+      },
+    ]);
+  });
 });

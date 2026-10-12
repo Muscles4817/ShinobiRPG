@@ -93,6 +93,21 @@ describe('persistence', () => {
     expect('aptitudeId' in loaded.value.character).toBe(false);
   });
 
+  it('gives a character from before aptitude the growth their clan and talent gave them', () => {
+    const game = newGame();
+    const { aptitude: _a, aptitudeKnown: _k, aptitudeSessions: _s, ...old } = game.character;
+    const hardWorker = { ...old, clanId: 'kurogane', talentId: 'hard-worker' };
+    const raw = JSON.stringify({ version: 16, state: { ...game, character: hardWorker } });
+    const loaded = deserialize(raw);
+    if (!loaded.ok) throw new Error(loaded.error);
+    const { character } = loaded.value;
+    expect(character.aptitude.taijutsu).toBeCloseTo(1.4);
+    expect(character.aptitude.kenjutsu).toBeCloseTo(1.2);
+    expect(character.aptitude.perception).toBe(1);
+    expect(new Set(Object.values(character.aptitudeKnown))).toEqual(new Set(['unknown']));
+    expect(character.aptitudeSessions).toEqual({});
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

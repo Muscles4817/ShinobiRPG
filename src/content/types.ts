@@ -1,7 +1,7 @@
 import type { CombatTrait } from '@/systems/combat';
 import type { MissionDef } from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
-import type { StatDelta } from '@/systems/stats';
+import type { AptitudeBand, StatDelta, StatId } from '@/systems/stats';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 
 import type { BackdropId, IconId } from './art';
@@ -95,6 +95,11 @@ export interface ClanDef {
   readonly description: string;
   readonly statBonuses: StatDelta;
   readonly modifiers: ModifierSpec;
+  /**
+   * The stats the clan is known for. Members' aptitude in them has a high floor and a narrow
+   * spread; elsewhere they are ordinary. Empty for the clanless, whose talent is a wide gamble.
+   */
+  readonly arts: readonly StatId[];
   /** The clan's chakra nature; choosing the same nature earns a bonus. */
   readonly nature?: Element;
   readonly startingTechniqueIds: readonly string[];
@@ -226,6 +231,20 @@ export interface SettingText {
   readonly sleepHungry: string;
   readonly sleepLockedOut: string;
   readonly hospitalWake: string;
+  /** How talent shows itself as you train. */
+  readonly aptitude: AptitudeText;
+}
+
+/** Words for aptitude, which players only ever learn as rough reads (never numbers). */
+export interface AptitudeText {
+  /** Journal line when the first sessions in a stat give a rough read, by band. */
+  readonly reads: Readonly<Record<AptitudeBand, string>>;
+  /** Short phrase for the Shinobi screen, by band. */
+  readonly senses: Readonly<Record<AptitudeBand, string>>;
+  /** Shinobi screen phrase before any read. */
+  readonly unknown: string;
+  /** Why a drill or scroll in an art you have no talent for is refused, once you know it. */
+  readonly blocked: string;
 }
 
 export interface ContentPack {

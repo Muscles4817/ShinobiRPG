@@ -1,5 +1,6 @@
 import { RESERVES_PER_STAMINA, reservesFromChakraSpent, withReserves } from './reserves';
-import { applyTraining, createStats } from './stats';
+import { applyTraining } from './growth';
+import { createStats } from './stats';
 
 const stats = createStats(5);
 
@@ -21,7 +22,7 @@ describe('chakra reserves', () => {
   });
 
   it('follow their own growth multiplier', () => {
-    const stalled = applyTraining(stats, { stamina: 1.5 }, { reserves: 0 });
+    const stalled = applyTraining(stats, { stamina: 1.5 }, { scale: { reserves: 0 } });
     expect(stalled.reserves).toBe(stats.reserves);
   });
 

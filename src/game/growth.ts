@@ -1,0 +1,106 @@
+import {
+  aptitudeBand,
+  applyTraining,
+  STAT_IDS,
+  STAT_INFO,
+  type Aptitude,
+  type StatDelta,
+  type StatId,
+} from '@/systems/stats';
+
+import type { GameContext } from './context';
+import { log } from './ops';
+import { growthFor } from './profile';
+import type { Character, GameState } from './state';
+
+/**
+ * Every way a character grows in stats (drills, lessons, spars, fights) goes through
+ * `growCharacter`: one formula (base × solo efficiency × aptitude × modifiers × teacher) and
+ * one discovery rule. The first few sessions in a stat give a rough read of the talent for it;
+ * an art with no talent at all shows itself on the first try.
+ */
+
+/** Sessions in a stat before its aptitude gives a rough read. */
+export const SESSIONS_TO_SENSE = 3;
+
+export interface Grown {
+  readonly character: Character;
+  /** Stats whose aptitude was sensed for the first time in this session. */
+  readonly discovered: readonly StatId[];
+}
+
+function practised(gains: StatDelta): StatId[] {
+  return (Object.entries(gains) as [StatId, number][]).filter(([, v]) => v > 0).map(([id]) => id);
+}
+
+/**
+ * Counts a session in each practised stat still unknown, sensing those that are due. Growth
+ * calls it; so does anything else that is practice in an art (studying its scrolls).
+ */
+export function discover(character: Character, gains: StatDelta): Grown {
+  const known = { ...character.aptitudeKnown };
+  const sessions = { ...character.aptitudeSessions };
+  const discovered: StatId[] = [];
+  for (const id of practised(gains)) {
+    if (known[id] !== 'unknown') continue;
+    const count = (sessions[id] ?? 0) + 1;
+    sessions[id] = count;
+    if (count >= SESSIONS_TO_SENSE || character.aptitude[id] <= 0) {
+      known[id] = 'sense';
+      discovered.push(id);
+    }
+  }
+  return {
+    character: { ...character, aptitudeKnown: known, aptitudeSessions: sessions },
+    discovered,
+  };
+}
+
+/** Grows the character from a session's base gains; `teacher` multiplies the session. */
+export function growCharacter(
+  character: Character,
+  gains: StatDelta,
+  ctx: GameContext,
+  teacher = 1,
+): Grown {
+  const stats = applyTraining(character.stats, gains, growthFor(character, ctx, teacher));
+  return discover({ ...character, stats }, gains);
+}
+
+/** Journal lines for the stats whose aptitude was just sensed. */
+export function logDiscoveries(
+  state: GameState,
+  discovered: readonly StatId[],
+  ctx: GameContext,
+): GameState {
+  const { reads } = ctx.content.text.aptitude;
+  return discovered.reduce(
+    (next, id) =>
+      log(next, {
+        heading: `${STAT_INFO[id].label}: a first read`,
+        text: reads[aptitudeBand(state.character.aptitude[id])],
+        tone: 'info',
+      }),
+    state,
+  );
+}
+
+/**
+ * The aptitude a character can reckon with: what they have sensed, and ordinary where they
+ * haven't tried yet. Previews use it, so they never give away a talent not yet found.
+ */
+export function assumedAptitude(character: Character): Aptitude {
+  const read = (id: StatId) =>
+    character.aptitudeKnown[id] === 'unknown' ? 1 : character.aptitude[id];
+  return Object.fromEntries(STAT_IDS.map((id) => [id, read(id)])) as Record<StatId, number>;
+}
+
+/** Why work in this stat is refused: the character knows it will never take. */
+export function noTalentReason(
+  character: Character,
+  stat: StatId,
+  ctx: GameContext,
+): string | null {
+  const known = character.aptitudeKnown[stat] !== 'unknown';
+  return known && character.aptitude[stat] <= 0 ? ctx.content.text.aptitude.blocked : null;
+}

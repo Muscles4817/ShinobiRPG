@@ -1,3 +1,5 @@
+import { v16ToV17 } from './aptitudeMigration';
+
 /**
  * Save migrations, keyed by the version being migrated *from*. Each step takes the raw
  * state object of one version and returns the next version's shape. Never edit a step
@@ -270,4 +272,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   13: v13ToV14,
   14: v14ToV15,
   15: v15ToV16,
+  16: v16ToV17,
 };

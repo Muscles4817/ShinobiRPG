@@ -11,11 +11,12 @@ import {
   type Pronouns,
 } from '@/systems/profile';
 import { NEW_GENIN } from '@/systems/standing';
-import { checkChance, createStats, STAT_INFO, sumDeltas } from '@/systems/stats';
+import { checkChance, createStats, nothingKnown, STAT_INFO, sumDeltas } from '@/systems/stats';
 import type { Element } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
 import { fullVitals } from '@/systems/vitals';
 
+import { rollCharacterAptitude } from './aptitude';
 import type { GameContext } from './context';
 import { chip, log, placeHere } from './ops';
 import { newBoard } from './boardState';
@@ -55,7 +56,7 @@ export interface BreakInRoll {
   readonly succeeded: boolean;
   readonly chance: number;
   readonly text: string;
-  /** RNG state after the roll, so the game continues the same sequence. */
+  /** The break-in's dice after the roll; creation goes on to roll aptitude from them. */
   readonly rngState: number;
 }
 
@@ -121,10 +122,12 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
   const home = placeHere(location, ctx, 'home');
   if (!home) throw new Error(`Start location "${content.startLocationId}" has no home`);
   const roll = rollBreakIn(ctx, draft.breakInApproachId, seed);
+  const dice = createRng(roll.rngState);
+  const aptitude = rollCharacterAptitude(dice, clan, talent);
 
   const state: GameState = {
     packId: content.packId,
-    rngState: roll.rngState,
+    rngState: dice.state(),
     time: START_TIME,
     ...location,
     character: {
@@ -141,6 +144,9 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       breakIn: { approachId: draft.breakInApproachId, succeeded: roll.succeeded },
       stats,
       startingStats: stats,
+      aptitude,
+      aptitudeKnown: nothingKnown(),
+      aptitudeSessions: {},
       vitals: fullVitals(stats),
       meal: null,
     },
