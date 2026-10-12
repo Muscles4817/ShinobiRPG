@@ -286,6 +286,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   to time once the player's record reaches `minMissionsCompleted`; set `standing: true` for
   jobs that are always available (every pack needs one a fresh genin can take — validated).
   `reward.scrollId` / `reward.gearId` hand over a technique scroll or a named weapon once.
+- **Add many jobs of one shape:** write a `MissionTemplate` (`content/missionTemplates.ts`) with
+  `{slot}` placeholders and their meanings in `placeholders`, then add `MissionFill`s giving every
+  slot a value (`packs/original/jobs/`). Fills become ordinary missions on the board; validation
+  reports any slot left unfilled, and tests check each fill gives exactly what its template asks.
 - **Add a technique:** give it a source (validated): the academy (rank E–D), a library (C–B,
   chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
   scroll reward.

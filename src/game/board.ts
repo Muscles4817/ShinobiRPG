@@ -47,7 +47,12 @@ function postDay(
   const candidates = missions.filter(
     (m) => !m.standing && trusted(m, standing) && !kept.some((p) => p.missionId === m.id),
   );
-  const fresh = candidates.filter((m) => hashUnit(board.seed, day, m.id) < DAILY_POST_CHANCE);
+  // Shuffled by the hash, so the cap on postings favours no job for where it sits in the pack.
+  const fresh = candidates
+    .filter((m) => hashUnit(board.seed, day, m.id) < DAILY_POST_CHANCE)
+    .sort(
+      (a, b) => hashUnit(board.seed, day, a.id, 'order') - hashUnit(board.seed, day, b.id, 'order'),
+    );
   const fillers = candidates
     .filter((m) => !fresh.includes(m))
     .sort(
