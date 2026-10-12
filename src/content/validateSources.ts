@@ -4,17 +4,12 @@ import type { ContentPack, PlaceDef } from './types';
 
 /**
  * Where techniques come from. The academy holds rank E–D, the library C–B, and neither holds a
- * clan's techniques (clan members teach those, through `teacher.teaches`). Every technique must
- * be reachable from at least one source: a shelf, a teacher, a mission's scroll, or a starting
- * kit.
+ * clan's techniques (clan members teach those, through `teacher.teaches`; `validateTeachers`
+ * keeps them in the clan). Every technique must be reachable from at least one source: a shelf,
+ * a teacher, a mission's scroll, or a starting kit.
  */
 export function validateSources(pack: ContentPack): string[] {
-  return [
-    ...shelfProblems(pack),
-    ...scrollRewardProblems(pack),
-    ...clanTeacherProblems(pack),
-    ...unsourcedProblems(pack),
-  ];
+  return [...shelfProblems(pack), ...scrollRewardProblems(pack), ...unsourcedProblems(pack)];
 }
 
 type ShelfKind = Extract<PlaceDef, { techniqueIds: readonly string[] }>['kind'];
@@ -60,18 +55,6 @@ function scrollRewardProblems(pack: ContentPack): string[] {
         : []),
     ];
   });
-}
-
-/** A clan's arts stay in the clan: only its own members teach them. */
-function clanTeacherProblems(pack: ContentPack): string[] {
-  return pack.people.flatMap((p) =>
-    (p.teacher?.teaches ?? []).flatMap((id) => {
-      const clan = pack.techniques.find((t) => t.id === id)?.clan;
-      return clan !== undefined && clan !== p.clanId
-        ? [`teacher "${p.id}" teaches "${id}" but isn't of the ${clan} clan`]
-        : [];
-    }),
-  );
 }
 
 function sourcedIds(pack: ContentPack): Set<string> {
