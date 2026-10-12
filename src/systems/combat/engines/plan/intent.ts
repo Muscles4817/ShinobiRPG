@@ -7,14 +7,14 @@ import { RANGE_LABEL } from '../../rules/range';
 import { cardId, cardLabel, findCard, fitsBand, isOffence, playable, type Card } from './cards';
 import { chooseCard } from './choose';
 import { opponentsOf } from './senses';
-import type { CardId, PlanFighter, PlanState } from './state';
+import { playerOf, type CardId, type PlanFighter, type PlanState } from './state';
 
 /**
  * Telegraphs, as Deck fights had them: when an exchange ends, each foe settles on the card it
  * plays next and the fight screen shows it, so you slot your cards against what is coming. The
  * foe plays it unless the fight has moved on by its turn (the range changed, chakra or a tool
- * ran out), and then chooses afresh. Insight names the jutsu and tools; a hidden foe gives
- * nothing away without it.
+ * ran out), and then chooses afresh. Insight, or perception at least the foe's, names the
+ * jutsu and tools; a hidden foe gives nothing away without insight.
  */
 
 /** Each foe's next card, by fighter id. */
@@ -52,7 +52,15 @@ export function intendedCard(
   return isOffence(card) && !canAttackFrom(actor, band) ? undefined : card;
 }
 
-function telegraph(card: Card, insight: boolean): string {
+/**
+ * Sharp eyes read a telegraph precisely: with perception at least the foe's, you see which
+ * technique they are readying or which tool they reach for. Insight always does.
+ */
+function readsPrecisely(viewer: PlanFighter, foe: PlanFighter, insight: boolean): boolean {
+  return insight || viewer.attributes.perception >= foe.attributes.perception;
+}
+
+function telegraph(card: Card, precise: boolean): string {
   switch (card.kind) {
     case 'strike':
       return 'Coming in to strike';
@@ -65,9 +73,9 @@ function telegraph(card: Card, insight: boolean): string {
     case 'dispel':
       return 'Gathering chakra to break the illusion';
     case 'jutsu':
-      return insight ? `Readying ${card.technique.name}` : 'Readying a technique';
+      return precise ? `Readying ${card.technique.name}` : 'Readying a technique';
     case 'item':
-      return insight ? `Reaching for a ${card.item.name.toLowerCase()}` : 'Reaching into a pouch';
+      return precise ? `Reaching for a ${card.item.name.toLowerCase()}` : 'Reaching into a pouch';
     case 'guard':
     case 'dodge':
     case 'counter':
@@ -79,7 +87,7 @@ function nextMove(state: PlanState, f: PlanFighter, insight: boolean): string | 
   if (f.hidden && !insight) return undefined;
   const id = state.intents[f.id];
   const card = id === undefined ? null : findCard(f, id);
-  return card ? telegraph(card, insight) : undefined;
+  return card ? telegraph(card, readsPrecisely(playerOf(state), f, insight)) : undefined;
 }
 
 /** The cards you know of: all of them at this distance with insight, else what you've seen. */

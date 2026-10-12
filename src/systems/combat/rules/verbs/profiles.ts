@@ -22,7 +22,7 @@ export const VERB_PROFILES: Readonly<Record<Verb, VerbProfile>> = {
   damage: { aim: 'foe', drive: ['art'], resist: ['guard'] },
   daze: { aim: 'foe', drive: ['art'], resist: ['guard'] },
   seal: { aim: 'foe', drive: ['art'], resist: ['guard'] },
-  heal: { aim: 'self', drive: ['ninjutsu'], resist: [] },
+  heal: { aim: 'self', drive: ['ninjutsu', 'chakraControl'], resist: [] },
 };
 
 /** The profile an effect scales by: its verb's, with the effect's own overrides on top. */

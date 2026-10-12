@@ -81,10 +81,14 @@ describe('plan & watch telegraphs', () => {
     }
   });
 
-  it('shows the move on the fight screen; insight names the jutsu', () => {
+  it('shows the move on the fight screen; sharp eyes or insight name the jutsu', () => {
     const state = { ...start({}, { techniques: [blast] }), intents: { bandit: 'jutsu:blast' } };
-    expect(intentOf(state)).toBe('Readying a technique');
-    expect(intentOf(state, { perks: ['insight'] })).toMatch(/^Readying Blast\. Mid cards: /);
+    const dull = { attributes: { ...attributes, perception: 4 } };
+    expect(intentOf(state, dull)).toBe('Readying a technique');
+    expect(intentOf(state)).toBe('Readying Blast');
+    expect(intentOf(state, { ...dull, perks: ['insight'] })).toMatch(
+      /^Readying Blast\. Mid cards: /,
+    );
   });
 
   it('a hidden foe gives nothing away without insight', () => {

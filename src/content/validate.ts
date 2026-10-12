@@ -153,6 +153,9 @@ function numberProblems(pack: ContentPack): string[] {
     ...pack.techniques
       .filter((t) => t.chakraCost < 0 || t.difficulty <= 0 || t.effects.some((e) => e.power <= 0))
       .map((t) => `technique "${t.id}" has non-positive numbers`),
+    ...pack.enemies
+      .filter((e) => e.healthScale !== undefined && e.healthScale <= 0)
+      .map((e) => `enemy "${e.id}" needs a positive health scale`),
     ...pack.foods.filter((f) => f.cost <= 0).map((f) => `food "${f.id}" must cost something`),
     ...pack.training
       .filter((t) => Object.keys(t.gains).length === 0)

@@ -1,6 +1,6 @@
 import type { IconId, PlaceDef, PlaceKind } from '@/content';
 import { daysOfRentLeft, isRentFree, isRentOverdue } from '@/systems/housing';
-import { isHungry, maxHealth } from '@/systems/vitals';
+import { isHungry, MAX_HEALTH } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import { currentLocation, healthFraction } from '../ops';
@@ -59,7 +59,7 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
     case 'tavern':
       return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
     case 'hospital':
-      return state.character.vitals.health < maxHealth(state.character.stats)
+      return state.character.vitals.health < MAX_HEALTH
         ? `Treatment ${place.treatmentCost} ryo`
         : 'You’re healthy';
   }

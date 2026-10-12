@@ -249,7 +249,9 @@ describe('deck engine', () => {
     });
 
     it('a coward flees once badly hurt', () => {
-      const [player, coward] = fightersOf(fighter('coward', { traits: ['coward'], health: 20 }));
+      const [player, coward] = fightersOf(
+        fighter('coward', { traits: ['coward'], health: 40, maxHealth: 100 }),
+      );
       const card: Card = { uid: 's', kind: 'strike' };
       const played = playOn([player!, coward!], { user: player!, target: coward!, card }, rng(4));
       expect(played.fighters[1]!.health).toBe(0);

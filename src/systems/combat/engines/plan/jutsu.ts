@@ -1,12 +1,7 @@
 import type { CombatTechnique } from '../../contract';
-import {
-  alive,
-  chakraCost,
-  healAmount,
-  holdTurns,
-  resistChance,
-  techniqueDamage,
-} from '../../rules/body';
+import { alive, chakraCost, holdTurns } from '../../rules/body';
+import { healAmount, techniqueDamage } from '../../rules/damage';
+import { resistChance } from '../../rules/defence';
 import { matchup, matchupLine } from '../../rules/elements';
 import { attackKindOf } from '../../rules/kit';
 import { healLine } from '../../rules/narration';

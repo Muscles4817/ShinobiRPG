@@ -8,7 +8,7 @@ import {
   type StatId,
   type Stats,
 } from '@/systems/stats';
-import { isHungry, maxHealth } from '@/systems/vitals';
+import { isHungry, MAX_HEALTH } from '@/systems/vitals';
 import { ctx as originalPack } from '@/test/gameFixtures';
 
 /**
@@ -111,13 +111,11 @@ interface Today {
 /** Upkeep comes first: rent once it's overdue, food when hungry, a medic when badly hurt. */
 function upkeep(state: GameState, today: Today): GameAction | null {
   const { context } = today;
-  const { vitals, stats } = state.character;
+  const { vitals } = state.character;
   const options: GameAction[] = [
     ...(isRentOverdue(state.housing, state.time.day) ? [{ type: 'payRent' } as const] : []),
     ...(isHungry(vitals) ? today.foods.map((foodId) => ({ type: 'eat', foodId }) as const) : []),
-    ...(vitals.health < maxHealth(stats) * SEEK_TREATMENT_BELOW
-      ? [{ type: 'treat' } as const]
-      : []),
+    ...(vitals.health < MAX_HEALTH * SEEK_TREATMENT_BELOW ? [{ type: 'treat' } as const] : []),
   ];
   return options.find((a) => allowed(state, a, context)) ?? null;
 }

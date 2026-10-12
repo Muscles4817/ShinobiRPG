@@ -7,7 +7,7 @@ import { fighterIn, initialFighters, plainSlots, type PlanFighter, type Round } 
 const attributes = {
   strength: 5,
   speed: 5,
-  stamina: 5,
+  stamina: 20,
   chakraControl: 5,
   intellect: 5,
   perception: 5,

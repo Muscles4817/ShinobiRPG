@@ -1,7 +1,8 @@
 import { clamp, type Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
-import { alive, strikeDamage, targetable } from '../../rules/body';
+import { alive, targetable } from '../../rules/body';
+import { strikeDamage } from '../../rules/damage';
 import { revealOnAttack } from '../../rules/items';
 import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';

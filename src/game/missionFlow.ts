@@ -10,7 +10,7 @@ import {
 import { addPoints } from '@/systems/bonds';
 import { recordMissionFailure, recordMissionSuccess } from '@/systems/standing';
 import { slotsUntilNextMorning } from '@/systems/time';
-import { maxHealth } from '@/systems/vitals';
+import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct, earn } from '@/systems/wallet';
 
 import { enemyCombatant, playerCombatant } from './combatants';
@@ -159,7 +159,7 @@ export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameS
 function hospitalise(state: GameState, ctx: GameContext, title: string | null): GameState {
   const fee = Math.min(state.wallet.ryo, HOSPITAL_FEE);
   const recovered = spendTime(state, slotsUntilNextMorning(state.time), ctx);
-  const health = Math.round(maxHealth(state.character.stats) * HOSPITAL_HEALTH_FRACTION);
+  const health = Math.round(MAX_HEALTH * HOSPITAL_HEALTH_FRACTION);
   const patched = adjust(recovered, { health: health - recovered.character.vitals.health });
   const text = ctx.content.text.hospitalWake;
   const logged = log(
@@ -185,7 +185,7 @@ export function resolveCombat(
   outcome: CombatOutcome,
   ctx: GameContext,
 ): GameState {
-  const { vitals, stats } = state.character;
+  const { vitals } = state.character;
   const afterFight = adjust(
     { ...state, combat: null },
     {
@@ -209,7 +209,7 @@ export function resolveCombat(
         damageTaken: Math.max(0, vitals.health - outcome.player.health),
         chakraSpent: Math.max(0, vitals.chakra - outcome.player.chakra),
         health: afterFight.character.vitals.health,
-        maxHealth: maxHealth(stats),
+        maxHealth: MAX_HEALTH,
       });
       if (!reported.mission) return reported;
       const mission = advance(reported.mission, {

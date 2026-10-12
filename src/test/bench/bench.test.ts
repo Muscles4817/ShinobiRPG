@@ -12,7 +12,7 @@ import { bench, endedWithin, fightOnce, summarise, wonWithin, type BenchReport }
  *
  *  - Power is real: more resources beat fewer, head-on.        → asserted today.
  *  - Every weakness can be built around.                       → `it.todo` until gating lands.
- *  - Lethality targets (Phase 1, health 100 and gap damage):   → measured today, `it.todo`.
+ *  - Lethality targets (Phase 1, health 100 and gap damage):   → asserted since step 1.1.
  *      equals:              about 1–2 rounds (4–8 exchanges);
  *      one grade apart:     the stronger side wins head-on within a round, mostly;
  *      two or more apart:   head-on, it's over in 1–2 exchanges.
@@ -110,38 +110,41 @@ describe('power is real: more resources beat fewer, head-on', () => {
   });
 });
 
-describe('lethality (Phase 1 targets, measured today)', () => {
-  // Measured, not asserted: today equals take about 16–20 exchanges, one grade apart about
-  // 12–13, two apart about 9. The `it.todo`s below become real once health 100 and gap
-  // damage (step 1.1) land. Until then this keeps the numbers one env flag away.
-  it('measures every grade pairing', () => {
-    for (const grade of GRADE_LADDER) {
+describe('lethality (Phase 1 targets)', () => {
+  it.each(GRADE_LADDER)(
+    `equals at grade %s finish in ${EQUALS_EXCHANGES.min}–${EQUALS_EXCHANGES.max} exchanges on average`,
+    (grade) => {
       const report = head(plainAtGrade(grade), plainAtGrade(grade));
-      expect(report.avgExchanges).toBeGreaterThan(0);
-    }
-    for (const [stronger, weaker] of [...ONE_APART, ...TWO_APART]) {
-      const report = head(plainAtGrade(stronger), plainAtGrade(weaker));
-      const within = {
-        round: wonWithin(report, EXCHANGES_PER_ROUND),
-        quick: endedWithin(report, TWO_GRADES_EXCHANGES),
-      };
-      if (REPORT) console.warn(`  won within a round ${within.round}, ended in 2 ${within.quick}`);
-      expect(within.round).toBeGreaterThanOrEqual(0);
-    }
-  });
+      expect(report.avgExchanges).toBeGreaterThanOrEqual(EQUALS_EXCHANGES.min);
+      expect(report.avgExchanges).toBeLessThanOrEqual(EQUALS_EXCHANGES.max);
+    },
+  );
 
-  it.todo(
-    `equals at every grade finish in ${EQUALS_EXCHANGES.min}–${EQUALS_EXCHANGES.max} exchanges on average`,
-  );
-  it.todo(
-    `one grade apart, the stronger wins within ${EXCHANGES_PER_ROUND} exchanges ` +
+  it.each(ONE_APART)(
+    `one grade apart, a plain %s beats a plain %s within ${EXCHANGES_PER_ROUND} exchanges ` +
       `${ONE_GRADE_WIN_WITHIN_ROUND * 100}% of the time`,
+    (stronger, weaker) => {
+      const report = head(plainAtGrade(stronger), plainAtGrade(weaker));
+      const within = wonWithin(report, EXCHANGES_PER_ROUND);
+      if (REPORT) console.warn(`  won within a round ${within}`);
+      expect(within).toBeGreaterThanOrEqual(ONE_GRADE_WIN_WITHIN_ROUND);
+    },
   );
-  it.todo(
-    `two or more grades apart, ${TWO_GRADES_ENDED_RATE * 100}% of fights end within ` +
-      `${TWO_GRADES_EXCHANGES} exchanges`,
+
+  it.each(TWO_APART)(
+    `two grades apart, a plain %s against a plain %s is over within ` +
+      `${TWO_GRADES_EXCHANGES} exchanges ${TWO_GRADES_ENDED_RATE * 100}% of the time`,
+    (stronger, weaker) => {
+      const report = head(plainAtGrade(stronger), plainAtGrade(weaker));
+      const quick = endedWithin(report, TWO_GRADES_EXCHANGES);
+      if (REPORT) console.warn(`  ended in ${TWO_GRADES_EXCHANGES} ${quick}`);
+      expect(quick).toBeGreaterThanOrEqual(TWO_GRADES_ENDED_RATE);
+    },
   );
-  it.todo('equals win about half their fights (today the player side wins only a third)');
+
+  // The player plays their plan, the foe its instincts; the plan as a priority list (step
+  // 1.2) is what should even this out. Today equals win about 40% of the time.
+  it.todo('equals win about half their fights');
 });
 
 describe('every weakness can be built around (Phase 1–4 target)', () => {

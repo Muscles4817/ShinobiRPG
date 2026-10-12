@@ -1,5 +1,6 @@
 import type { CombatAttributes, CombatTechnique } from '../../contract';
-import { resistChance, bodyFrom } from '../body';
+import { bodyFrom } from '../body';
+import { resistChance } from '../defence';
 import {
   driveOf,
   effectsOf,
@@ -72,9 +73,9 @@ describe('verbs', () => {
     expect(resistOf(fighter, blow)).toBe(attributes.perception);
   });
 
-  it('healing grows with ninjutsu and nothing resists it', () => {
+  it('healing grows with ninjutsu and chakra control, and nothing resists it', () => {
     const heal = { technique: mend, effect: primaryEffect(mend) };
-    expect(driveOf(fighter, heal)).toBe(attributes.ninjutsu);
+    expect(driveOf(fighter, heal)).toBe((attributes.ninjutsu + attributes.chakraControl) / 2);
     expect(resistOf(fighter, heal)).toBe(0);
   });
 
