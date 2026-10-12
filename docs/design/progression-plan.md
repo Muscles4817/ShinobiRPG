@@ -261,6 +261,29 @@ not to make every approach equally strong. More resources should mean more power
 - **Content target:** about 15 general techniques per discipline per pack (E 2, D 3, C 4,
   B 3, A 2, S 1), plus clan and teacher signatures.
 
+**Gear, agreed:**
+
+- **Flat `statBonuses` are removed.** Gear changes how you fight; quality shows through the
+  verb (a better blade's cut does more), not through stats.
+- **Weapons enable and shape:**
+  - A blade turns Strike into a cut and is required for kenjutsu techniques.
+  - Knuckles and gauntlets change taijutsu blows.
+  - Throwing weapons (kunai, shuriken, senbon) change the throw card.
+- **Armour comes in levels,** each a trade of protection against speed and dodge:
+  - Light, no penalty.
+  - Flak jacket.
+  - Heavier shinobi armour (more than a flak jacket, less than full plate).
+  - Full samurai plate.
+  - It uses the `armoured` kit rule, scaled by level.
+- **Focus items** boost a verb's or discipline's scaling (seals hold longer, confusion
+  lands more often).
+- **Tools** stay as consumables, with rank tiers.
+- **Gear has ranks (D–A).** Shops stock D and C, and B with chūnin rank or the smith's
+  favour.
+- **Unique named weapons are in this pass.** They are earned, found or inherited, and can
+  carry their own verbs.
+- **Gear does not grow with use.** Durability and weight are out.
+
 ### D3. Technique mastery stages and learning by doing: open
 
 ### D4. Techniques as verbs (effect vocabulary): open
