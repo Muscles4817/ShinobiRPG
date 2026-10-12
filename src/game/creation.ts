@@ -143,6 +143,8 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       startingStats: stats,
       vitals: fullVitals(stats),
       meal: null,
+      injuries: [],
+      exhaustion: null,
     },
     wallet: { ryo: content.startingRyo },
     housing: housingFor(draft, ctx, home.id, home.rentPerWeek),

@@ -6,12 +6,13 @@ import { ELEMENTS, studyPoints, type Element, type TechniqueDef } from '@/system
 
 import type { GameContext } from './context';
 import { hungerEffect } from './hunger';
+import { injurySpecs } from './injuries';
 import type { Character } from './state';
 
 /**
  * Turns a character's identity into growth modifiers. Every source (clan, talent, traits,
- * academy grades, chakra nature, today's meal, hunger) contributes a ModifierSpec; the result
- * is their product.
+ * academy grades, chakra nature, today's meal, hunger, injuries) contributes a ModifierSpec;
+ * the result is their product.
  */
 
 /** Techniques of your own nature are learned this much faster; others a little slower. */
@@ -41,6 +42,7 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
     natureModifiers(character.nature, clan?.nature),
     (character.meal ? content.recipes.get(character.meal)?.buff : undefined) ?? {},
     hungerEffect(character.vitals).spec,
+    ...injurySpecs(character, ctx),
   ]);
 }
 

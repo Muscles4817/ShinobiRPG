@@ -6,6 +6,7 @@ import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 
 import type { BackdropId, IconId } from './art';
 import type { GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
+import type { InjuryDef } from './injuries';
 import type { ConversationDef, NamePools, PersonDef, TeamText, Tone } from './people';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
@@ -249,6 +250,7 @@ export interface ContentPack {
   readonly breakIn: BreakInScene;
   readonly gear: readonly GearDef[];
   readonly tools: readonly ToolDef[];
+  readonly injuries: readonly InjuryDef[];
   readonly ingredients: readonly IngredientDef[];
   readonly recipes: readonly RecipeDef[];
   readonly people: readonly PersonDef[];

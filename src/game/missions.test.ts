@@ -73,7 +73,17 @@ describe('missions', () => {
     expect(end.reports).toEqual([
       expect.objectContaining({ kind: 'defeat', title: 'The Storehouse Ghost' }),
     ]);
-    expect(lastEntry(end)?.text).toMatch(/hospital/);
+    expect(end.journal.entries.some((e) => e.text.includes('hospital'))).toBe(true);
+  });
+
+  it('a defeat leaves a named injury, shown on the defeat card and in the journal', () => {
+    const end = playMission(withAllStats(veteran(newGame()), 1), 'storehouse-ghost');
+    expect(end.character.injuries).toHaveLength(1);
+    const def = ctx.content.injuries.require(end.character.injuries[0]!.injuryId);
+    expect(def.causes).toContain('defeat');
+    expect(end.reports[0]).toMatchObject({ kind: 'defeat', injury: def.name });
+    expect(lastEntry(end)?.heading).toBe(def.name);
+    expect(lastEntry(end)?.text).not.toMatch(/\d/);
   });
 });
 

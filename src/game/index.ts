@@ -46,6 +46,7 @@ export {
 } from './views/training';
 export { marketView, type MarketView, type MarketItem, type IngredientItem } from './views/market';
 export { homeView, hospitalView, type HomeView, type HospitalView } from './views/home';
+export type { ConditionView, InjuryLine } from './views/condition';
 export {
   missionBoardView,
   academyView,
