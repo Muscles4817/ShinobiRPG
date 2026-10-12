@@ -5,6 +5,7 @@ import { canAttackFrom, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
 import { hasVerb, isHindering, isWounding, techniquePower } from '../../rules/verbs';
 import { isOffence, playable, slotted, type Card } from './cards';
+import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
 import { sightInstinct } from './sight';
@@ -16,7 +17,8 @@ import { isDazed, type PlanFighter } from './state';
  * this distance, stronger ones more often. With nothing playable they improvise a basic blow,
  * or, when their kit can't attack from here, a step towards where it can. A fighter with Search
  * or Dispel slotted uses it first when a foe is hidden (Dispel also when confused); then a
- * slotted tool the moment calls for (see `pouch.ts`).
+ * slotted tool the moment calls for (see `pouch.ts`). A move technique is footwork, picked like
+ * a step when it would take them elsewhere.
  */
 
 const LOW_HEALTH = 0.35;
@@ -52,6 +54,13 @@ export function improvise(self: PlanFighter, band: RangeBand): Card {
   return { kind: 'step', direction: further ? 'back' : 'in' };
 }
 
+/** A move technique that would take them somewhere else: footwork, like a step. */
+function flickers(self: PlanFighter, card: Card, band: RangeBand): boolean {
+  if (card.kind !== 'jutsu') return false;
+  const to = moveDestination(self, card.technique);
+  return to !== null && to !== band;
+}
+
 function senses(self: PlanFighter, ready: readonly Card[], hiddenFoe: boolean): Card | undefined {
   const search = ready.find((c) => c.kind === 'search');
   if (search && hiddenFoe) return search;
@@ -68,6 +77,8 @@ export interface Moment {
   readonly hiddenFoe?: boolean;
   /** The first exchange of a round, when a smoke bomb opens. */
   readonly opening?: boolean;
+  /** A field of their own side is already over the fight. */
+  readonly fieldUp?: boolean;
 }
 
 /**
@@ -79,7 +90,7 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
   const opening = moment.opening ?? false;
   const now = { hiddenFoe, opening };
   return (
-    sightInstinct(self, ready, now) ??
+    sightInstinct(self, ready, { ...now, fieldUp: moment.fieldUp ?? false }) ??
     senses(self, ready, hiddenFoe) ??
     prepInstinct(self, ready, moment) ??
     toolInstinct(self, ready, now)
@@ -94,7 +105,9 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   const heal = jutsu(ready, (t) => hasVerb(t, 'heal'));
   if (heal && self.health < self.maxHealth * LOW_HEALTH) return heal;
   const reaches = canAttackFrom(self, band);
-  const harmful = ready.filter((c) => c.kind === 'step' || (isOffence(c) && reaches));
+  const harmful = ready.filter(
+    (c) => c.kind === 'step' || flickers(self, c, band) || (isOffence(c) && reaches),
+  );
   const daze = jutsu(harmful, isHindering);
   const fresh = foe !== undefined && !isDazed(foe) && foe.sealed === 0 && foe.confused === 0;
   if (daze && fresh && rng.chance(DAZE_FIRST_CHANCE)) return daze;

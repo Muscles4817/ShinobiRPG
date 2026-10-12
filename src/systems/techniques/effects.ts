@@ -18,6 +18,9 @@ export const VERBS = [
   'conceal',
   'sense',
   'break',
+  'field',
+  'move',
+  'substitute',
   'empower',
   'clone',
   'trap',
@@ -39,54 +42,68 @@ export interface VerbScaling {
   readonly resist?: readonly ScalingStat[];
 }
 
+/**
+ * Fight-wide conditions a field effect raises (mist, smoke). What each does lives once in the
+ * combat system's `rules/verbs/field.ts`.
+ */
+export const FIELD_IDS = ['mist', 'smoke'] as const;
+export type FieldId = (typeof FIELD_IDS)[number];
+
+/** A distance a move effect takes its user to (the combat system's range bands). */
+export type MoveDistance = 'close' | 'mid' | 'far';
+
 interface EffectBase<V extends Verb> {
   readonly verb: V;
   /**
    * Strength of the effect: damage dealt (damage, area, break), how long a daze, seal or
-   * confusion holds, health restored, how well a conceal hides or a sense reaches, how much an
-   * empower raises, how many clones, how hard a trap bites.
+   * confusion holds, health restored, how well a conceal hides, a sense reaches or a field
+   * blinds, how much an empower raises, how many clones, how hard a trap bites. A move or a
+   * substitution simply happens; their power only ranks them.
    */
   readonly power: number;
   readonly scaling?: VerbScaling;
 }
 
-/** Verbs whose effects carry nothing beyond their power. */
-export type PlainVerb = Exclude<Verb, 'empower' | 'clone' | 'trap'>;
-
 /**
- * A self-buff for a few exchanges (the Gates are the reference), and never free: it costs the
- * body health each exchange it holds, or leaves a price due after the fight (validated: at
- * least one of the two). `power` is how much it raises the boosted stats.
+ * What some verbs need besides power: which field rises, where a move goes, what an empower
+ * raises and what it costs, whether clones fight, whether a trap dazes.
  */
-export interface EmpowerEffect extends EffectBase<'empower'> {
-  /** The stats it raises while it holds. Never empty (validated). */
-  readonly boosts: readonly StatId[];
-  /** Health the user's body pays at the end of each exchange it holds. */
-  readonly healthPerExchange?: number;
-  /** What it takes out of its user once the fight is over, each time it is used. */
-  readonly afterCost?: CostTemplate;
-}
-
-/** Decoys that take single-target hits meant for their maker. `power` is how many. */
-export interface CloneEffect extends EffectBase<'clone'> {
+interface VerbExtras {
+  readonly field: { readonly field: FieldId };
+  /** Where the move goes; without it, wherever its user fights best. */
+  readonly move: { readonly to?: MoveDistance };
+  /**
+   * A self-buff for a few exchanges (the Gates are the reference), and never free: it costs
+   * the body health each exchange it holds, or leaves a price due after the fight (validated:
+   * at least one of the two).
+   */
+  readonly empower: {
+    /** The stats it raises while it holds. Never empty (validated). */
+    readonly boosts: readonly StatId[];
+    /** Health the user's body pays at the end of each exchange it holds. */
+    readonly healthPerExchange?: number;
+    /** What it takes out of its user once the fight is over, each time it is used. */
+    readonly afterCost?: CostTemplate;
+  };
   /** Solid clones that throw a weak blow of their own when their maker attacks. */
-  readonly strikes?: true;
+  readonly clone: { readonly strikes?: true };
+  /** A trap that also dazes whoever springs it. */
+  readonly trap: { readonly dazes?: true };
 }
 
-/** A trap set at the current distance, sprung by the first foe there. `power` is its damage. */
-export interface TrapEffect extends EffectBase<'trap'> {
-  /** It also dazes whoever springs it. */
-  readonly dazes?: true;
-}
+type ExtrasOf<V extends Verb> = V extends keyof VerbExtras ? VerbExtras[V] : unknown;
 
-export type TechniqueEffect =
-  | { readonly [V in PlainVerb]: EffectBase<V> }[PlainVerb]
-  | EmpowerEffect
-  | CloneEffect
-  | TrapEffect;
+export type TechniqueEffect = { readonly [V in Verb]: EffectBase<V> & ExtrasOf<V> }[Verb];
+
+/** Verbs whose effects need nothing beyond their power. */
+export type PlainVerb = Exclude<Verb, 'field' | 'empower'>;
 
 /** The effect variant for one verb. */
 export type EffectOf<V extends Verb> = Extract<TechniqueEffect, { readonly verb: V }>;
+
+export type EmpowerEffect = EffectOf<'empower'>;
+export type CloneEffect = EffectOf<'clone'>;
+export type TrapEffect = EffectOf<'trap'>;
 
 /**
  * Why an effect's data can't work as written, or null. An empower must raise something and

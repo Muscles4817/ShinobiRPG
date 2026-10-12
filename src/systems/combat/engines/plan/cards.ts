@@ -1,13 +1,20 @@
 import type { Verb } from '@/systems/techniques';
 
-import type { CombatItem, CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
+import type { CombatItem, CombatTechnique, RangeBand } from '../../contract';
 import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { carried } from '../../rules/items';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { trumpSpent } from '../../rules/trumps';
-import { hasVerb, isHarmful, isHindering, isWounding, techniquePower } from '../../rules/verbs';
+import {
+  hasVerb,
+  isHarmful,
+  isHindering,
+  isWounding,
+  moveGoal,
+  techniquePower,
+} from '../../rules/verbs';
 import { plainSlots, type CardId, type Loadout, type PlanFighter, type Slot } from './state';
 
 /**
@@ -116,8 +123,12 @@ export function slotted(fighter: PlanFighter, band: RangeBand): Card[] {
   });
 }
 
-/** Defences react on their own; everything else is something you do on your turn. */
+/**
+ * Defences react on their own (a substitution among them); everything else is something you
+ * do on your turn.
+ */
 export function isReaction(card: Card): boolean {
+  if (card.kind === 'jutsu') return hasVerb(card.technique, 'substitute');
   return card.kind === 'guard' || card.kind === 'dodge' || card.kind === 'counter';
 }
 
@@ -132,91 +143,6 @@ export function isOffence(card: Card): boolean {
 export function needsAim(card: Card): boolean {
   if (card.kind === 'jutsu' && hasVerb(card.technique, 'area')) return false;
   return isOffence(card);
-}
-
-const TOOL_DOES: Readonly<Record<CombatItemEffect, string>> = {
-  smoke: 'Vanish until you attack',
-  flash: 'Reveal hidden foes',
-  blast: 'Seal blast through armour',
-  chakra: 'Restore chakra',
-  heal: 'Restore health',
-  clarity: 'Clear confusion',
-};
-
-/** A tool card's detail: how many are left and what it does. */
-export function toolDetail(item: CombatItem): string {
-  return `${TOOL_DOES[item.effect]} (×${item.count} left)`;
-}
-
-const VERB_WORD: Readonly<Record<Verb, string>> = {
-  damage: 'Attack',
-  daze: 'Daze',
-  seal: 'Seal',
-  heal: 'Heal when hurt',
-  area: 'Hit every foe',
-  confuse: 'Confuse',
-  conceal: 'Vanish until you attack',
-  sense: 'Find the hidden, read every card',
-  break: 'Smash through a guard',
-  empower: 'Push past your limits, at a price',
-  clone: 'Clones take hits for you',
-  trap: 'Set a trap where you stand',
-};
-
-/** What a technique does, in words: "Attack", or "Attack, then daze" for several effects. */
-function techniqueWords(technique: CombatTechnique): string {
-  const [first, ...rest] = technique.effects.map((e) => VERB_WORD[e.verb]);
-  return [first, ...rest.map((w) => w.toLowerCase())].join(', then ');
-}
-
-export function cardLabel(card: Card): string {
-  switch (card.kind) {
-    case 'strike':
-      return 'Strike';
-    case 'throw':
-      return 'Kunai';
-    case 'step':
-      return card.direction === 'in' ? 'Close in' : 'Back off';
-    case 'guard':
-      return 'Guard';
-    case 'dodge':
-      return 'Dodge';
-    case 'counter':
-      return 'Counter';
-    case 'search':
-      return 'Search';
-    case 'dispel':
-      return 'Dispel';
-    case 'jutsu':
-      return card.technique.name;
-    case 'item':
-      return card.item.name;
-  }
-}
-
-export function cardDetail(card: Card, fighter: PlanFighter): string {
-  switch (card.kind) {
-    case 'strike':
-      return 'Attack, no chakra';
-    case 'throw':
-      return 'Attack, no chakra';
-    case 'step':
-      return card.direction === 'in' ? 'Try to get closer' : 'Try to open distance';
-    case 'guard':
-      return 'Reacts, take less damage';
-    case 'dodge':
-      return 'Reacts, may avoid a hit';
-    case 'counter':
-      return 'Reacts, hit back up close';
-    case 'search':
-      return 'Find hidden foes, perception';
-    case 'dispel':
-      return `Break illusions, ${DISPEL_CHAKRA} chakra`;
-    case 'jutsu':
-      return `${techniqueWords(card.technique)}, ${chakraCost(fighter, card.technique)} chakra${card.technique.oncePerFight ? ', once per fight' : ''}`;
-    case 'item':
-      return toolDetail(card.item);
-  }
 }
 
 function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean): Card[] {
@@ -248,10 +174,11 @@ function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Fo
 
 /**
  * A sensible starting plan, in priority order: a heal for when you're badly hurt, a sense for
- * when a foe hides, footwork towards where you fight best (when it's worth a turn), a daze,
- * seal or confusion to spoil a foe's telegraphed jutsu, an empower or clones and a trap where
- * you can attack (the plan passes over them while they hold), your best attack, then plain
- * blows, more attacks, a conceal and a defence. Attacks
+ * when a foe hides, a field to set the ground (it plays only while none of yours is up),
+ * footwork towards where you fight best (when it's worth a turn; a move technique rather than
+ * a step), a daze, seal or confusion to spoil a foe's telegraphed jutsu, an empower or clones
+ * and a trap where you can attack (the plan passes over them while they hold), your best
+ * attack, then plain blows, more attacks, a conceal, a substitution and a defence. Attacks
  * your kit can't make from a distance (an archer up close) are left out.
  */
 function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slot[] {
@@ -261,23 +188,22 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slo
   const towardsHome = RANGE_BANDS.indexOf(band) > RANGE_BANDS.indexOf(home) ? 'in' : 'back';
   const footwork = footworkFor(fighter, band, home);
   const step = has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome);
-  const at = (when: Footwork) => (footwork === when ? step : []);
-  const heal = strongest(pool, (t) => hasVerb(t, 'heal')).slice(0, 1);
+  const flicker = strongest(pool, (t) => moveGoal(t, home) === home).slice(0, 1);
+  const at = (when: Footwork) => (footwork === when ? [...flicker, ...step].slice(0, 1) : []);
+  const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
   const damage = damageJutsu(pool);
   const daze = strongest(pool, isHindering).slice(0, 1);
-  const sense = strongest(pool, (t) => hasVerb(t, 'sense')).slice(0, 1);
-  const conceal = strongest(pool, (t) => hasVerb(t, 'conceal')).slice(0, 1);
   const ready = strongest(pool, (t) => hasVerb(t, 'empower') || hasVerb(t, 'clone')).slice(0, 1);
-  const trap = strongest(pool, (t) => hasVerb(t, 'trap')).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const ordered: Slot[] = [
-    ...heal.map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
-    ...sense.map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' })),
-    ...plain(at('first')),
+    ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
+    ...best('sense').map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' })),
+    ...plain([...best('field'), ...at('first')]),
     ...daze.map((c): Slot => ({ card: cardId(c), when: 'foe-readying' })),
-    ...plain(reaches ? [...ready, ...trap] : []),
+    ...plain(reaches ? [...ready, ...best('trap')] : []),
     ...plain([...damage.slice(0, 1), ...has('strike'), ...has('throw'), ...at('after-attacks')]),
-    ...plain([...damage.slice(1), ...conceal, ...has('guard'), ...has('dodge')]),
+    ...plain([...damage.slice(1), ...best('conceal'), ...best('substitute')]),
+    ...plain([...has('guard'), ...has('dodge')]),
   ];
   const unique = ordered.filter((slot, i) => ordered.findIndex((s) => s.card === slot.card) === i);
   return unique.slice(0, slotLimit(fighter));
@@ -293,7 +219,7 @@ export function defaultLoadout(fighter: PlanFighter): Loadout {
 export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind === 'item') return card.item.count > 0;
-  if (card.kind !== 'jutsu') return !isReaction(card);
+  if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
   if (trumpSpent(fighter, card.technique)) return false;
   return fighter.sealed === 0 && chakraCost(fighter, card.technique) <= fighter.chakra;
 }

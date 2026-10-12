@@ -9,6 +9,7 @@ import type {
 import { bodyFrom, type Body } from '../../rules/body';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
+import type { ActiveField } from '../../rules/verbs';
 import type { CloneBody, EmpowerMemory, TrapMemory } from '../../rules/verbs';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -68,6 +69,8 @@ export interface PlanFighter extends Body, TrumpMemory, EmpowerMemory, CloneBody
    * gets their next turn against it. Absent when not dazed (and in fights saved before it).
    */
   readonly openUntil?: number;
+  /** Their substitution has swapped them out of a hit this round: it works once a round. */
+  readonly substituteSpent?: boolean;
 }
 
 /** Dazed: about to lose a turn, or still reeling from one. */
@@ -111,6 +114,8 @@ export interface PlanState {
   readonly canFlee: boolean;
   /** The side that moved first (from the fight's opening) acts first in exchange 1. */
   readonly firstMover?: CombatSide;
+  /** A field over the fight (mist, smoke), until it fades. */
+  readonly field?: ActiveField;
 }
 
 /** One exchange in progress. */
@@ -124,6 +129,7 @@ export interface Round {
   readonly lines: readonly string[];
   readonly seen: PlanState['seen'];
   readonly intents: PlanState['intents'];
+  readonly field?: ActiveField;
 }
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
@@ -186,6 +192,7 @@ export function patch(
       | 'perks'
       | 'openUntil'
       | 'trumpsUsed'
+      | 'substituteSpent'
       | 'clones'
     >
   >,

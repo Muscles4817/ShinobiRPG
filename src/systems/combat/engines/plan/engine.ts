@@ -15,6 +15,8 @@ import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed } from '../../rules/verbs';
 import { defaultLoadout, slotLimit } from './cards';
+import { fieldMeter, fieldStatuses } from './field';
+import { substitutionsReady } from './footwork';
 import { intentLine, rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { rememberedLoadout } from './memory';
@@ -50,13 +52,14 @@ function read(state: CombatState): PlanState {
 
 /**
  * Conditions, whether a back-row fighter is still out of reach behind their front row, and
- * what they have ready (empowered, clones, a trap).
+ * whether a field blinds them, and what they have ready (empowered, clones, a trap).
  */
-function statuses(f: PlanFighter, fighters: readonly PlanFighter[]): string[] {
+function statuses(state: PlanState, f: PlanFighter): string[] {
   return [
     ...(isDazed(f) ? ['Dazed'] : []),
     ...(f.sealed > 0 ? ['Sealed'] : []),
-    ...(alive(f) && screened(f, fighters) ? ['Screened'] : []),
+    ...(alive(f) && screened(f, state.fighters) ? ['Screened'] : []),
+    ...fieldStatuses(state, f),
     ...prepStatuses(f),
   ];
 }
@@ -103,6 +106,7 @@ function endOfRound(next: PlanState): PlanState {
     phase: 'loadout',
     bout: next.bout + 1,
     exchange: 0,
+    fighters: substitutionsReady(next.fighters),
     log: [...next.log, `— End of round ${next.bout}. Change your cards if you like. —`],
   };
 }
@@ -165,12 +169,12 @@ export function createPlanEngine(): CombatEngine {
 
     start(setup, rng) {
       const names = setup.enemies.map((e) => e.name).join(', ');
-      const { fighters, range, lines } = openFight(initialFighters(setup), setup.opening);
+      const { fighters, range, lines, field } = openFight(initialFighters(setup), setup.opening);
       const planned = fighters.map((f) => ({
         ...f,
         loadout: (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ?? defaultLoadout(f),
       }));
-      const table = { fighters: planned, range, exchange: 0 };
+      const table = { fighters: planned, range, exchange: 0, ...(field ? { field } : {}) };
       const firstMover = setup.opening?.firstMover;
       const state: PlanState = {
         phase: 'loadout',
@@ -185,6 +189,7 @@ export function createPlanEngine(): CombatEngine {
         result: null,
         canFlee: setup.canFlee,
         ...(firstMover === undefined ? {} : { firstMover }),
+        ...(field ? { field } : {}),
       };
       return encode(state);
     },
@@ -199,16 +204,18 @@ export function createPlanEngine(): CombatEngine {
     view(state): CombatView {
       const plan = read(state);
       const insight = hasPerk(playerOf(plan), 'insight');
+      const meter = fieldMeter(plan);
       return {
         round: plan.round,
         combatants: plan.fighters.map((f) => ({
-          ...viewOf(f, statuses(f, plan.fighters), intentLine(plan, f, insight)),
+          ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
           row: f.row,
         })),
         log: plan.log,
         options: options(plan),
         range: plan.range,
         prompt: prompt(plan),
+        ...(meter ? { meters: [meter] } : {}),
       };
     },
 

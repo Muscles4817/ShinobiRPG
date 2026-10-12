@@ -1,4 +1,5 @@
 import type { Rng } from '@/core';
+import type { Discipline } from '@/systems/techniques';
 
 import { alive } from '../../rules/body';
 import { strikeDamage } from '../../rules/damage';
@@ -14,9 +15,10 @@ import {
   type AttackKind,
 } from '../../rules/kit';
 import { harmLine } from '../../rules/narration';
-import { brokenScale } from '../../rules/verbs';
+import { brokenScale, covered, dulled } from '../../rules/verbs';
 import { slotted } from './cards';
 import { throughClones } from './decoys';
+import { substituted } from './footwork';
 import { canHit } from './rows';
 import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
 
@@ -47,6 +49,8 @@ export interface Blow {
   readonly kind: AttackKind;
   /** A break: goes through a guard, and through part of armour and a spirit's form. */
   readonly breaks?: boolean;
+  /** The art behind a technique's hit (a substitution can't swap out of a genjutsu). */
+  readonly discipline?: Discipline;
   /** An area hit: bursts every clone and still reaches its target (`decoys.ts`). */
   readonly area?: boolean;
 }
@@ -63,9 +67,13 @@ function avoidChance(attacker: PlanFighter, target: PlanFighter, dodging: boolea
   return dodging ? dodgeChance(attacker, target) + swift : swift * SWIFT_INSTINCT;
 }
 
-/** Damage after the defender's kit, the attacker's pack and whether they strike from hiding. */
+/**
+ * Damage after the defender's kit, the attacker's pack and whether they strike from hiding (or
+ * from a field that covers them).
+ */
 function kitted(round: Round, attacker: PlanFighter, defender: PlanFighter, blow: Blow): number {
-  const hidden = attacker.hidden ? HIDDEN_DAMAGE : 1;
+  const unseen = attacker.hidden || covered(round.field, attacker, defender);
+  const hidden = unseen ? HIDDEN_DAMAGE : 1;
   const pack = packScale(attacker, round.fighters);
   const kit = kitDamageScale(defender, blow.kind);
   return blow.raw * (blow.breaks ? brokenScale(kit) : kit) * pack * hidden;
@@ -128,10 +136,14 @@ export function react(before: Round, hit: Hit): Round {
   const { round } = decoyed;
   const ready = isDazed(target) ? [] : slotted(target, round.range);
   const has = (kind: 'guard' | 'dodge' | 'counter') => ready.some((c) => c.kind === kind);
-  const avoid = blow.dodgeable ? avoidChance(attacker, target, has('dodge')) : 0;
+  const evading = dulled(round.field, target);
+  const avoid = blow.dodgeable ? avoidChance(attacker, evading, has('dodge')) : 0;
   if (avoid > 0 && rng.chance(avoid)) {
     return say(round, `${target.name} slips past ${attacker.name}'s ${blow.what}.`);
   }
+  const swap = { target, attacker, what: blow.what, discipline: blow.discipline };
+  const swapped = substituted(round, ready, swap);
+  if (swapped) return swapped;
   const guarded = has('guard') && !blow.breaks;
   const smashed = has('guard') && blow.breaks === true;
   const damage = Math.max(

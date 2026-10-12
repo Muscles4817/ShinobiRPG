@@ -1,3 +1,4 @@
+import type { CombatTechnique } from '../../contract';
 import { hasPerk } from '../../rules/body';
 import { concealmentFrom, driveOf, hasVerb, senseChance, type EffectUse } from '../../rules/verbs';
 import type { Card } from './cards';
@@ -39,18 +40,25 @@ export function sense(round: Round, { actor, rng }: Turn, use: EffectUse<'sense'
   return hidden.length > 0 ? say(reached, 'Someone stays just out of reach.') : reached;
 }
 
+/** What decides whether sight is worth a turn: a tool's moment, and whether their field is up. */
+export interface SightMoment extends ToolMoment {
+  readonly fieldUp: boolean;
+}
+
 /**
  * A slotted sense the moment calls for (a foe is hidden and they don't read foes already), or
- * a conceal to open a round from hiding, as a smoke bomb would.
+ * to open a round, a conceal (as a smoke bomb would) or a field when theirs isn't up.
  */
 export function sightInstinct(
   self: PlanFighter,
   ready: readonly Card[],
-  moment: ToolMoment,
+  moment: SightMoment,
 ): Card | undefined {
+  const opens = (c: CombatTechnique) =>
+    (!self.hidden && hasVerb(c, 'conceal')) || (!moment.fieldUp && hasVerb(c, 'field'));
   const wants = (c: Card) =>
     c.kind === 'jutsu' &&
     ((moment.hiddenFoe && !hasPerk(self, 'insight') && hasVerb(c.technique, 'sense')) ||
-      (moment.opening && !self.hidden && hasVerb(c.technique, 'conceal')));
+      (moment.opening && opens(c.technique)));
   return ready.find(wants);
 }

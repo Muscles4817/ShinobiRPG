@@ -1,4 +1,4 @@
-import type { PlainVerb } from '@/systems/techniques';
+import type { Verb } from '@/systems/techniques';
 
 import type { CombatTechnique } from '../../contract';
 
@@ -8,7 +8,7 @@ import type { CombatTechnique } from '../../contract';
  * fight carries on as it would have.
  */
 
-const LEGACY_VERB: Readonly<Record<string, PlainVerb>> = {
+const LEGACY_VERB: Readonly<Record<string, Extract<Verb, 'damage' | 'daze' | 'seal' | 'heal'>>> = {
   damage: 'damage',
   stun: 'daze',
   seal: 'seal',

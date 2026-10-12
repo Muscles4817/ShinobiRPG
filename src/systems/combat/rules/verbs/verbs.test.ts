@@ -57,7 +57,7 @@ const mend: CombatTechnique = {
 };
 
 describe('verbs', () => {
-  it('every verb has a profile; heal, conceal, sense, empower, clone and trap are aimed at the user', () => {
+  it('every verb has a profile; heal, conceal, sense and the newer verbs aim at the user', () => {
     expect(Object.entries(VERB_PROFILES).map(([verb, p]) => [verb, p.aim])).toEqual([
       ['damage', 'foe'],
       ['daze', 'foe'],
@@ -68,6 +68,9 @@ describe('verbs', () => {
       ['conceal', 'self'],
       ['sense', 'self'],
       ['break', 'foe'],
+      ['field', 'self'],
+      ['move', 'self'],
+      ['substitute', 'self'],
       ['empower', 'self'],
       ['clone', 'self'],
       ['trap', 'self'],

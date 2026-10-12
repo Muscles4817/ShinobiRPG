@@ -1,7 +1,14 @@
 import { statTier } from '@/systems/stats';
 
 import { ARCHETYPE_IDS, archetype, foe, FOE_IDS, plainAtGrade, plainAtScale } from './archetypes';
-import { GRADE_MIDPOINT, SCALES, SCALE_VALUES, techniques, type FighterSpec } from './fighters';
+import {
+  GRADE_MIDPOINT,
+  SCALES,
+  SCALE_VALUES,
+  techniques,
+  type FighterSpec,
+  type Scale,
+} from './fighters';
 import {
   bench,
   benchSkirmish,
@@ -230,6 +237,63 @@ describe('hiding has counterplay (step 1.4b)', () => {
     for (const hider of [archetype('stalker', scale), foe('trickster', scale)]) {
       expect(head(sensing, hider).winRate).toBeGreaterThan(head(blind, hider).winRate);
     }
+  });
+});
+
+describe('fields, moves and substitutions find their niche (step 1.4c)', () => {
+  // The same blade with and without its mist. Against brawlers the mist is the edge: they
+  // swing half blind while the blade strikes from cover.
+  const withoutMist = (spec: FighterSpec): FighterSpec => ({
+    ...spec,
+    name: `${spec.name} without mist`,
+    techniques: spec.techniques.filter((t) => !t.effects.some((e) => e.verb === 'field')),
+  });
+  const brawler = (id: 'rusher' | 'powerhouse', scale: Scale): FighterSpec => {
+    const { plan: _own, ...spec } = archetype(id, scale);
+    return spec;
+  };
+
+  it.each(SCALES)('a %s mist blade beats brawlers more often in its mist', (scale) => {
+    const misty = archetype('mistBlade', scale);
+    for (const id of ['rusher', 'powerhouse'] as const) {
+      const opponent = brawler(id, scale);
+      expect(head(misty, opponent).winRate).toBeGreaterThan(
+        head(withoutMist(misty), opponent).winRate,
+      );
+    }
+  });
+
+  it.each(SCALES)('a %s mist blade comes out of a brute fight in better shape', (scale) => {
+    const misty = archetype('mistBlade', scale);
+    const brute = foe('brute', scale);
+    expect(head(misty, brute).avgHealthLeft).toBeGreaterThan(
+      head(withoutMist(misty), brute).avgHealthLeft,
+    );
+  });
+
+  it.each(SCALES)('a %s fragile fighter lasts longer with a substitution', (scale) => {
+    // The versatile build is short on stamina; a substitution buys it time, not invulnerability.
+    const versatile = archetype('versatile', scale);
+    const plain: FighterSpec = {
+      ...versatile,
+      plan: {
+        close: ['jutsu:palm-strike', 'strike', 'guard'],
+        mid: ['step-in', 'jutsu:ember-breath', 'throw'],
+        far: ['step-in', 'jutsu:ember-breath', 'throw'],
+      },
+    };
+    const swapping: FighterSpec = {
+      ...versatile,
+      name: `${versatile.name} with a substitution`,
+      techniques: [...versatile.techniques, ...techniques(['lantern-husk'])],
+      plan: {
+        close: ['jutsu:palm-strike', 'strike', 'jutsu:lantern-husk'],
+        mid: ['step-in', 'jutsu:ember-breath', 'jutsu:lantern-husk'],
+        far: ['step-in', 'jutsu:ember-breath', 'jutsu:lantern-husk'],
+      },
+    };
+    const brute = foe('brute', scale);
+    expect(head(swapping, brute).avgExchanges).toBeGreaterThan(head(plain, brute).avgExchanges);
   });
 });
 

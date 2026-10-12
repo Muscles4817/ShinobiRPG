@@ -16,6 +16,9 @@ export {
 export {
   VERBS,
   effectProblem,
+  FIELD_IDS,
+  type FieldId,
+  type MoveDistance,
   type Verb,
   type PlainVerb,
   type ScalingStat,

@@ -4,9 +4,11 @@ import type { RangeBand } from '../../contract';
 import { alive, targetable } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
 import { RANGE_LABEL } from '../../rules/range';
-import { cardId, cardLabel, findCard, fitsBand, isOffence, playable, type Card } from './cards';
+import { cardId, findCard, fitsBand, isOffence, playable, type Card } from './cards';
 import { chooseCard } from './choose';
+import { ownField } from './field';
 import { opponentsOf } from './senses';
+import { cardLabel } from './wording';
 import { playerOf, type CardId, type PlanFighter, type PlanState } from './state';
 
 /**
@@ -20,7 +22,7 @@ import { playerOf, type CardId, type PlanFighter, type PlanState } from './state
 /** Each foe's next card, by fighter id. */
 export type Intents = Readonly<Record<string, CardId>>;
 
-type Table = Pick<PlanState, 'fighters' | 'range' | 'exchange'>;
+type Table = Pick<PlanState, 'fighters' | 'range' | 'exchange' | 'field'>;
 
 function intentOf(table: Table, self: PlanFighter, rng: Rng): CardId {
   const foes = opponentsOf(table.fighters, self);
@@ -30,6 +32,7 @@ function intentOf(table: Table, self: PlanFighter, rng: Rng): CardId {
     foe: inSight.length > 0 ? rng.pick(inSight) : undefined,
     hiddenFoe: foes.some((f) => f.hidden),
     opening: table.exchange === 0,
+    fieldUp: ownField(table.field, self),
   };
   return cardId(chooseCard(self, moment, rng));
 }

@@ -1,9 +1,7 @@
 import type { CombatOption, RangeBand } from '../../contract';
 import { RANGE_BANDS, RANGE_LABEL } from '../../rules/range';
 import {
-  cardDetail,
   cardId,
-  cardLabel,
   cardsFor,
   findCard,
   isOffence,
@@ -12,6 +10,7 @@ import {
   slotLimit,
   type Card,
 } from './cards';
+import { cardDetail, cardLabel } from './wording';
 import {
   patch,
   playerOf,
