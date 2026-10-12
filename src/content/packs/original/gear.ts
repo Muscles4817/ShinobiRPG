@@ -210,4 +210,30 @@ export const GEAR: readonly GearDef[] = [
     cost: 0,
     icon: 'fist',
   },
+  {
+    id: 'ashen-needles',
+    name: 'The Ashen Needles',
+    description:
+      'Senbon cooled in kiln ash by a bandit who stole them from a medic. They find the gap in any armour.',
+    kind: 'weapon',
+    shape: 'senbon',
+    rank: 'B',
+    unique: true,
+    effects: ['sunder'],
+    cost: 0,
+    icon: 'pill',
+  },
+  {
+    id: 'inkwell-blade',
+    name: 'The Inkwell',
+    description:
+      'A black blade from the cold kilns that never quite dries. Whoever it cuts sees ink running down the world.',
+    kind: 'weapon',
+    shape: 'blade',
+    rank: 'A',
+    unique: true,
+    effects: ['daze'],
+    cost: 0,
+    icon: 'sword',
+  },
 ];
