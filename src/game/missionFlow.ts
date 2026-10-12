@@ -1,5 +1,5 @@
 import type { Rng } from '@/core';
-import type { CombatOutcome } from '@/systems/combat';
+import type { CombatantSetup, CombatOutcome } from '@/systems/combat';
 import {
   advance,
   currentStage,
@@ -10,15 +10,16 @@ import {
 import { addPoints } from '@/systems/bonds';
 import { recordMissionFailure, recordMissionSuccess } from '@/systems/standing';
 import { slotsUntilNextMorning } from '@/systems/time';
-import { maxHealth } from '@/systems/vitals';
+import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct, earn } from '@/systems/wallet';
 
-import { enemyCombatant, playerCombatant } from './combatants';
+import { enemyCombatant, PLAYER_COMBATANT_ID, playerCombatant } from './combatants';
 import type { GameContext } from './context';
 import { startFight } from './fightStyle';
 import { adjust, chip, log, placeHere, spendTime } from './ops';
 import { bondOf, requirePerson } from './people/cast';
 import { companionCombatant } from './people/companions';
+import { defaultStance, ordersFor } from './people/teamOrders';
 import { addReport } from './reports';
 import type { GameState } from './state';
 
@@ -96,13 +97,21 @@ function withTeamBond(state: GameState, points: number): GameState {
   return { ...state, people: { ...state.people, bonds: { ...state.people.bonds, ...raised } } };
 }
 
-/** Teammates who fight beside you on team missions. */
-function teamAllies(state: GameState, ctx: GameContext) {
+/**
+ * Teammates who fight beside you on team missions, each in the stance their specialty suggests
+ * and taking from you only the orders your bonds have earned.
+ */
+function teamAllies(state: GameState, ctx: GameContext): CombatantSetup[] {
   const def = activeMission(state, ctx);
   if (!def?.withTeam) return [];
-  return (state.people.team?.teammateIds ?? []).map((id) =>
-    companionCombatant(requirePerson(state, ctx, id), state, ctx, TEAMMATE_TAG),
-  );
+  return (state.people.team?.teammateIds ?? []).map((id) => {
+    const person = requirePerson(state, ctx, id);
+    return {
+      ...companionCombatant(person, state, ctx, TEAMMATE_TAG),
+      stance: defaultStance(person, PLAYER_COMBATANT_ID),
+      orders: ordersFor(state, person),
+    };
+  });
 }
 
 function endMission(
@@ -159,7 +168,7 @@ export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameS
 function hospitalise(state: GameState, ctx: GameContext, title: string | null): GameState {
   const fee = Math.min(state.wallet.ryo, HOSPITAL_FEE);
   const recovered = spendTime(state, slotsUntilNextMorning(state.time), ctx);
-  const health = Math.round(maxHealth(state.character.stats) * HOSPITAL_HEALTH_FRACTION);
+  const health = Math.round(MAX_HEALTH * HOSPITAL_HEALTH_FRACTION);
   const patched = adjust(recovered, { health: health - recovered.character.vitals.health });
   const text = ctx.content.text.hospitalWake;
   const logged = log(
@@ -185,7 +194,7 @@ export function resolveCombat(
   outcome: CombatOutcome,
   ctx: GameContext,
 ): GameState {
-  const { vitals, stats } = state.character;
+  const { vitals } = state.character;
   const afterFight = adjust(
     { ...state, combat: null },
     {
@@ -209,7 +218,7 @@ export function resolveCombat(
         damageTaken: Math.max(0, vitals.health - outcome.player.health),
         chakraSpent: Math.max(0, vitals.chakra - outcome.player.chakra),
         health: afterFight.character.vitals.health,
-        maxHealth: maxHealth(stats),
+        maxHealth: MAX_HEALTH,
       });
       if (!reported.mission) return reported;
       const mission = advance(reported.mission, {

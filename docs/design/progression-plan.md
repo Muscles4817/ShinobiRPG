@@ -723,6 +723,87 @@ These were folded into the D2 discussion. Where each landed:
   - Growth: a focused stat goes D→C by day 3, A by day 12 and S by about day 22
     (target about 60 days to C-level readiness). Phase 2.
 
+**Phase 1 (in progress).**
+
+- 1.4a: techniques carry `effects: [{ verb, power, scaling? }]`. Verb profiles live in
+  `rules/verbs/`. This was a behaviour-preserving refactor; the bench output was identical.
+- 1.2: the player's plan is a priority list of `{ card, when?, target? }` slots, edited in a
+  new plan editor. The player's equal-fight win rate rose from 25–40% to 43–57% before 1.1.
+- 1.1: health is 100 (save v15 rescales stored health); `EnemyDef.healthScale`. Damage
+  comes from the power/defence ratio (`rules/damage.ts`, `rules/defence.ts`), with ±8%
+  variance. The bench lethality targets now hold: equals 6.4–6.5 exchanges; one grade
+  apart, the stronger wins within a round 85–95% of the time; two apart, it's over in 2
+  exchanges 82–88% of the time. The retune after merging with 1.2 traced long fights to
+  kunai duels at mid range: footwork now closes in for full blows, and Dodge joins the
+  default plan.
+- 1.5/1.6: trump cards (`oncePerFight`, `afterCost` templates) and `CombatSetup.opening`
+  (range, hidden, dazed, first mover) are in. Costs are journalled only, through
+  `applyFightCosts`, until 2.6 applies them. Opening fields wait on 1.4c, and rows
+  disruption on 1.3.
+- 1.4b: verbs area, confuse, conceal, sense and break, with a technique for each in both
+  packs (academy). Hiding has counterplay: a fighter with no one in sight searches instead
+  of idling, an illusionist's attack may be traced back by the one it struck, and insight
+  (or a sense) sees the hidden. The bench now asserts that a stalker is hit by every foe,
+  that hidden against hidden never stalls (it stalled 100% before), and that knowing a
+  sense wins more often against a stalker and a trickster.
+- 1.3: rows. Each side has a front and a back row (`PlanFighter.row`, `CombatantView.row`,
+  optional `CombatantSetup.row`). The rule lives once in `rules/rows.ts` (`canReach`, with an
+  `area` flag that area techniques set); the plan engine asks it through `engines/plan/rows.ts`
+  (`attackOf(card)`). Instinct targeting, the plan's slots and counters respect it; a
+  screened fighter shows a "Screened" status. Fights saved before rows are placed on load
+  (`withRows`); no save version change. The fight screen splits the foes into back and front
+  rows and stamps your side's rows. The 1v1 bench is unchanged (a side of one stands in
+  front). New group measurements (`benchSkirmish`): a C fighter with an archer behind them
+  against two chūnin brutes wins 88% with 33% health left in rows, against 100% and 51% when
+  everyone stands in one line: the front takes the blows. Two pack wolves and an archer: 100%
+  won, 18.8 exchanges, no stalemates. Against a guardian and an archer the rows change
+  nothing: the player goes for the front anyway, and the archer spends its turns in the
+  shared range tug-of-war (per-fighter ranges are the real fix, later).
+
+- 1.4c: verbs field, move and substitute, with techniques in both packs (academy): a mist
+  (Hidden Mist now raises a field; Camouflage Concealment keeps a conceal in the fan pack),
+  a body flicker and a substitution. `CombatSetup.opening.field` puts a field in place from
+  exchange 1. The fight screen shows a field as a meter ("Your mist 3/4") and the fighters it
+  blinds as "Blinded". Bench, a new mist blade archetype with and without its mist: against a
+  rusher it wins 95–98% (65–83% without), against a powerhouse 38–57% (3–13%), and against
+  a brute it ends with 57–65% health (28–48%). A fragile fighter with a substitution lasts
+  2.8 exchanges against a brute instead of 1.5 (it still loses: time, not invulnerability).
+- 1.4d: verbs empower, clone and trap (`rules/verbs/empower.ts`, `clones.ts`, `trap.ts`; the
+  plan engine's `empower.ts`, `clones.ts`, `decoys.ts`, `traps.ts`, `prep.ts`), with a technique
+  for each in both packs (academy). An empower raises its `boosts` stats for a few exchanges and
+  takes `healthPerExchange` (eased by willpower) and/or an `afterCost` reported in
+  `CombatOutcome.costs` per use. Clones stand beside their maker ("Clones ×N"), take
+  single-target hits that reach the maker, burst all at once to an area hit, and solid ones
+  (`strikes`) add a weak blow. A trap waits at the band it was set at ("Trap at … range").
+  Bench (plain C against plain C, 43% won without): with Kindled Pulse 83% (5.7 exchanges),
+  Lantern Shades 83% (7.6), Snare Ward 83% (7.2); against a plain B, each still 0%. The
+  Naruto pack's Clone Jutsu is now a clone (it was a daze). No save version change.
+
+- 1.7: team. Teammates fight by a **stance** (`CombatSetup` ally `stance`; `engines/plan/team.ts`):
+  press, cover <someone>, support or hold, each shaping their default cards, which they now play
+  as a priority list like the player's (foes keep the instinct AI). The **team mark** is set at
+  the card table and the `marked` target rule is offered; pressing teammates aim at it. A cover
+  may step in front of a single attack aimed at the one it covers (`rules/team.ts`). Generic
+  combos: element pairs (`rules/elements.ts`: wind and fire, water and lightning, earth and
+  water) when two fighters of one side hit one foe in an exchange, and a finisher bonus on a
+  dazed or sealed foe. **Combination techniques** (`TechniqueDef.combo`), one pair per pack at
+  the academy. **Control escalates with bonds** (`game/people/teamOrders.ts`): stances from a
+  friend, cards from a close friend or once your sensei is a close friend. `CombatOutcome.used`
+  reports each fighter's techniques and chakra spent. No save change (the new plan-state
+  fields are optional). Team bench (`teamBench.test.ts`): a back row covered by a teammate ends
+  with 80% health against 65% when the teammate presses; earth and water together end a fight
+  in 3.3 exchanges against 3.8; a snare-and-anvil pair in 3.3 against 4.6 apart. The 1v1 bench
+  moved only where dazes are involved (the finisher bonus, and no re-dazing a held foe): a
+  versatile fighter now beats a trickster 90–100% (was 40–80%); a trickster now beats a rusher
+  or a powerhouse a little more often.
+- Phase 1 UI check (390px, real app, Playwright outside the project): fixed the fight
+  view showing the exchange number as the round (cards and report), disabled cards not
+  saying why on phones, unlabelled locked orders, tap targets under 40px, and a clipped
+  target label. **Follow-ups noted:** a solo spar still offers the "back-row threat" and
+  "team mark" targets; two foes with the same name can't be told apart; the read-only
+  range strip looks like the range tabs; log dividers carry numbers ("End of round 1");
+  the "⚔" on team notices; creation buttons and swatches under 40px.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -731,3 +812,103 @@ These were folded into the D2 discussion. Where each landed:
 - 0.2: "chūnin readiness" is measured, for now, as the focused stat reaching grade C. The
   scripted player goes to hospital below 40% health, because missions refuse anyone under
   that.
+- 1.4a: power lives on each effect, not the technique. A technique has one landing check;
+  a dodged damage effect stops the foe-aimed effects after it.
+- 1.2: the default plan has no "finisher when dazed" (it was dead with the old daze
+  timing); it uses the daze to spoil a telegraphed jutsu. The `marked` target is reserved
+  but hidden until the team mark exists.
+- 1.1: toughness is pure stamina, so a low-stamina versatile build is fragile against
+  equals head-on (its "built around" path is for later verbs). Explosive tags are fixed at
+  40 damage, ignoring the gap.
+- 1.1 retune: **a daze now leaves the target open** (no defences, a finisher target)
+  until the end of the following exchange, so set-up and payoff works one-on-one.
+- 1.4b: an area technique hits every foe standing, hidden ones included (it needs no aim);
+  each foe sees it coming, dodges and guards on their own. Self-aimed effects in it happen
+  once.
+- 1.4b: a sense reveals each hidden foe with a chance (its drive and power against their
+  concealment, floor 40%) and grants **insight** for the rest of the fight. Insight now
+  lets its holder aim at hidden foes in Plan & Watch (it already made Search certain);
+  this also applies to the insight perk from bloodlines.
+- 1.4b: a conceal sets a `concealment` on the fighter; Search and sense are measured
+  against it (else against genjutsu, as before). Conceal has no instant check against
+  foes' perception: the contest is every Search.
+- 1.4b: break ignores a guard entirely, 15% of toughness (the gap formula is steep, so
+  that is about half again as hard a hit) and half of what armour or a spirit's form
+  shrugs off. Its drive is strength alone.
+- 1.4b: confuse lasts 1–3 turns from power and the user's genjutsu against the target's
+  `breakRating` (chakra control first).
+- 1.4b: an illusionist is no longer untouchable while attacking: the fighter it struck
+  may trace it back (Search odds). A master illusionist still usually wins before being
+  found matters, which is power, not a bug.
+- 1.3: kit placement: archers, illusionists and healers (more heals than attacks) at the
+  back; brawlers and the armoured always in front; everyone else in front. A setup's `row`
+  wins, but a side with no one in front all stands in front. "Up close" means an attack
+  whose reach is close range only (blows, counters, taijutsu); a kenjutsu technique that also
+  reaches mid can hit the back row. Rows are fixed for the fight; when the front falls the
+  back is simply exposed (nobody steps up). The `threat` target rule is now "threatening our
+  back row": a foe whose telegraphed attack can reach someone in our back row; with no one
+  there, any foe about to attack.
+- Accepted: the player's equal-fight win rate at grade E is 35% (43% at D–A). Parity
+  isn't a goal; a better foe sense of tempo can come later.
+- 1.5: the new trump techniques sit at the academy as a placeholder (grade B
+  requirements); 4.2 moves them to teachers and scrolls. Once-per-fight applies to foes
+  too.
+- 1.4c: fields are `mist` and `smoke` (`FIELD_RULES` in `rules/verbs/field.ts`). A field
+  belongs to the side that raised it and blinds everyone else whose perception is at or below
+  its potency (the caster's art plus a fifth of its power) and who doesn't read foes (insight
+  or a sense). The blinded: attacks go wide (mist 30%, smoke 40%), perception halved for
+  dodging, seeing techniques coming and searching. In mist the owning side strikes the blinded
+  as if from hiding; smoke gives no cover. One field at a time; a new one replaces the old.
+- 1.4c: a move goes to the distance it names, else the user's home band; it is uncontested
+  and its power only ranks it. The default plan uses a move instead of a step as footwork, and
+  a field before footwork (it sets the ground, then stays out of the way while it holds).
+- 1.4c: a substitution works **once a round**, not once an exchange: with one foe striking
+  about once an exchange, once an exchange made its owner untouchable (100% health left
+  against every foe in the bench) until their chakra ran out. It reacts after a Dodge has had
+  its chance, costs its chakra each time, and never swaps out of a genjutsu. It is certain; its
+  profile has no driving stats.
+- 1.4d: empower and clone durations and counts read `maxChakra` until reserves exist (2.x).
+  An empower holds `1 + maxChakra / 50` exchanges (at most 4) after the one it is used in;
+  boosts are a share of the user's own stat (power and art), so the gap maths keeps grades
+  apart. Its health price never takes the user below 1. Its `afterCost` is on the effect, not
+  the technique, so it needs no `oncePerFight`; each use owes it again ("overusing
+  empowerment").
+- 1.4d: clones are a count on their maker rather than fighters of their own: they stand in the
+  maker's row, so a hit only meets them once it has reached the maker past the rows (and a
+  solid clone's blow obeys the rows like a strike or kunai). The odds a hit takes a clone are
+  `n / (n + 2)`, shifted by the maker's art against the attacker's perception, halved by
+  insight, at most 70%. Counters, traps and every single-target hit can be taken by a clone.
+- 1.4d: a trap springs on a foe's turn start (from the exchange after it was set) or as soon as
+  a foe's step moves the fight into its band; only foes of the setter spring it, and a foe whose
+  perception beats the setter's craft may spot and disarm it (25% between equals). Its bite is
+  `techniqueDamage` (fūinjutsu and intellect against toughness), can't be dodged, can be
+  guarded; a daze sprung at turn start costs that turn. One trap per fighter.
+- 1.4d: foes and allies reach for an empower or clones when a foe is in sight and they can
+  attack from here, and set a trap to open a round; the player's plan passes over all three
+  while one holds (or, for empower and clones, with no foe in sight). The default plan slots
+  them ahead of attacks. In short fights the turn spent can cost more than it gives (a rusher
+  with Kindled Pulse wins less against a brute at genin and chūnin scale); accepted, it's the
+  trade.
+- 1.4d (merged with 1.4c): a blow meets its target's clones first, then a Dodge, then a
+  substitution. Both clones and a substitution are decoys, but a clone is a chance per hit
+  that runs out, a substitution a certainty once a round paid in chakra.
+- 1.7: allies play their cards as a priority list (as the player does), so a stance and an
+  edited card mean exactly what they say; foes keep the instinct AI. With no stance given, an
+  illusionist supports and anyone else presses.
+- 1.7: the team mark is always available once there is a team or more than one foe; it is a
+  target the player calls, not an order a teammate can refuse. Pressing teammates aim at it.
+  The improvised blow (no slot qualifies) also goes for the mark.
+- 1.7: "press" closes in to close range only when the fighter's wounding jutsu still reach
+  there (a ninjutsu caster keeps its distance).
+- 1.7: a daze, seal or confusion from a slot looks for a foe not already held; the finisher
+  bonus (×1.25) applies to technique damage on a dazed (open) or sealed foe.
+- 1.7: a combination technique fires both halves at the same foe, each ×1.4; the partner pays
+  their own chakra and loses their next turn. A half nobody on your side could join is left
+  out of default plans. Teammates know the half in their specialty (no clan); the packs' pairs
+  are fūinjutsu and kenjutsu (original: Shrine Snare and Anvil Fall) and ninjutsu and
+  kenjutsu (fan pack: Gale Palm and Rising Twin Dragons).
+- 1.7: control thresholds: a teammate at Friend takes stances; at Close friend, or with the
+  sensei at Close friend ("sees you as the leader"), they let you edit their cards too. Default
+  stances by specialty: taijutsu and ninjutsu press, kenjutsu covers you, genjutsu and
+  fūinjutsu support. Edits to a teammate's cards last for the fight only, and a new stance
+  rebuilds their cards.

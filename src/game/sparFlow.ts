@@ -1,7 +1,7 @@
 import type { CombatOutcome } from '@/systems/combat';
 import { recordMeeting } from '@/systems/bonds';
 import { applyTraining, diffStats, type StatDelta } from '@/systems/stats';
-import { maxHealth } from '@/systems/vitals';
+import { MAX_HEALTH } from '@/systems/vitals';
 
 import type { GameContext } from './context';
 import { adjust, chip, log, statChips } from './ops';
@@ -46,7 +46,7 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
   const partner = requirePerson(state, ctx, partnerId);
   const result = RESULT_OF[outcome.result];
   const { vitals, stats } = state.character;
-  const floor = Math.round(maxHealth(stats) * SPAR_HEALTH_FLOOR);
+  const floor = Math.round(MAX_HEALTH * SPAR_HEALTH_FLOOR);
   const health = Math.max(outcome.player.health, Math.min(floor, vitals.health));
   const gains: StatDelta =
     result === 'yielded'

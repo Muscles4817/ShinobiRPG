@@ -2,7 +2,7 @@ import type { PersonDef } from '@/content';
 import type { CombatantSetup, CombatTrait } from '@/systems/combat';
 import { createStats, type StatDelta, type Stats } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
-import { maxChakra, maxHealth } from '@/systems/vitals';
+import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 import { attributesOf } from '../combatants';
 import type { GameContext } from '../context';
@@ -45,15 +45,24 @@ export function companionTraits(person: PersonDef): readonly CombatTrait[] {
   return person.specialty ? SPECIALTY_KIT[person.specialty] : [];
 }
 
+/**
+ * What a genin knows: the academy's techniques, their specialty's starter, their clan's, and
+ * the half of each combination technique in their specialty (no clan's), so a teammate can
+ * join yours.
+ */
 function companionTechniques(person: PersonDef, ctx: GameContext): string[] {
   const { content } = ctx;
   const specialty: Discipline | undefined = person.specialty;
   const clan = person.clanId ? content.clans.get(person.clanId) : undefined;
+  const combos = content.techniques.all.filter(
+    (t) => t.combo && !t.clan && t.discipline === specialty,
+  );
   return [
     ...new Set([
       ...content.academyTechniques,
       ...(specialty ? [content.disciplineStarters[specialty]] : []),
       ...(clan?.startingTechniqueIds ?? []),
+      ...combos.map((t) => t.id),
     ]),
   ];
 }
@@ -71,8 +80,8 @@ export function companionCombatant(
     name: person.name,
     tag,
     attributes: attributesOf(stats),
-    health: maxHealth(stats),
-    maxHealth: maxHealth(stats),
+    health: MAX_HEALTH,
+    maxHealth: MAX_HEALTH,
     chakra: maxChakra(stats),
     maxChakra: maxChakra(stats),
     techniques: companionTechniques(person, ctx).map((id) => ctx.content.techniques.require(id)),

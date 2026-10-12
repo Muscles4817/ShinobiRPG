@@ -1,7 +1,10 @@
-import { clamp, type Rng } from '@/core';
+import type { Rng } from '@/core';
+import type { Discipline } from '@/systems/techniques';
 
-import { alive, strikeDamage } from '../../rules/body';
-import { CONFUSION_TURNS, confuseChance, HIDDEN_DAMAGE } from '../../rules/conditions';
+import { alive } from '../../rules/body';
+import { strikeDamage } from '../../rules/damage';
+import { counterChance, dodgeChance, guardScale } from '../../rules/defence';
+import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import {
   canAttackFrom,
   hasTrait,
@@ -12,18 +15,24 @@ import {
   type AttackKind,
 } from '../../rules/kit';
 import { harmLine } from '../../rules/narration';
+import { brokenScale, covered, dulled } from '../../rules/verbs';
 import { slotted } from './cards';
-import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { throughClones } from './decoys';
+import { substituted } from './footwork';
+import { canHit } from './rows';
+import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Defence cards react on their own when their owner is hit at the distance they're slotted
- * for: Dodge may avoid the blow (speed), Guard softens it, Counter hits back up close
- * (taijutsu). A dazed fighter can't react. Kits shape every hit: armour and spirits shrug off
- * some kinds of attack, packs hit harder together, hidden attackers harder still, swift
- * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run.
+ * for: Dodge may avoid the blow (evasion), Guard softens it (guard), Counter hits back up
+ * close (taijutsu); see `rules/defence.ts`. A dazed fighter can't react, and a break goes
+ * straight through a guard. Kits shape every hit: armour and spirits shrug off some kinds of
+ * attack (less of a break), packs hit harder together, hidden attackers harder still, swift
+ * fighters slip blows even without a Dodge, illusionists' hits confuse, and cowards run. A
+ * counter is a blow up close, so it can't reach an attacker standing behind their front row.
+ * Before any of it, a clone may take the blow instead (`decoys.ts`).
  */
 
-const GUARD_SCALE = 0.6;
 const COUNTER_SCALE = 0.6;
 /** A swift fighter without a Dodge slotted still slips this much of the swift bonus. */
 const SWIFT_INSTINCT = 0.5;
@@ -38,6 +47,12 @@ export interface Blow {
   readonly physical: boolean;
   /** Blow, blade, jutsu or seal: what armour and spirits care about. */
   readonly kind: AttackKind;
+  /** A break: goes through a guard, and through part of armour and a spirit's form. */
+  readonly breaks?: boolean;
+  /** The art behind a technique's hit (a substitution can't swap out of a genjutsu). */
+  readonly discipline?: Discipline;
+  /** An area hit: bursts every clone and still reaches its target (`decoys.ts`). */
+  readonly area?: boolean;
 }
 
 export interface Hit {
@@ -47,25 +62,21 @@ export interface Hit {
   readonly rng: Rng;
 }
 
-function dodgeChance(attacker: PlanFighter, target: PlanFighter): number {
-  return clamp(0.2 + (target.attributes.speed - attacker.attributes.speed) * 0.03, 0.05, 0.5);
-}
-
 function avoidChance(attacker: PlanFighter, target: PlanFighter, dodging: boolean): number {
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE : 0;
   return dodging ? dodgeChance(attacker, target) + swift : swift * SWIFT_INSTINCT;
 }
 
-function counterChance(attacker: PlanFighter, target: PlanFighter): number {
-  const gap = target.attributes.taijutsu - attacker.attributes.taijutsu;
-  return clamp(0.4 + gap * 0.03, 0.15, 0.65);
-}
-
-/** Damage after the defender's kit, the attacker's pack and whether they strike from hiding. */
+/**
+ * Damage after the defender's kit, the attacker's pack and whether they strike from hiding (or
+ * from a field that covers them).
+ */
 function kitted(round: Round, attacker: PlanFighter, defender: PlanFighter, blow: Blow): number {
-  const hidden = attacker.hidden ? HIDDEN_DAMAGE : 1;
+  const unseen = attacker.hidden || covered(round.field, attacker, defender);
+  const hidden = unseen ? HIDDEN_DAMAGE : 1;
   const pack = packScale(attacker, round.fighters);
-  return blow.raw * kitDamageScale(defender, blow.kind) * pack * hidden;
+  const kit = kitDamageScale(defender, blow.kind);
+  return blow.raw * (blow.breaks ? brokenScale(kit) : kit) * pack * hidden;
 }
 
 function kitNote(defender: PlanFighter, kind: AttackKind): string[] {
@@ -89,7 +100,10 @@ function confuse(round: Round, { attacker, target, rng }: Hit): Round {
   const struck = fighterIn(round, target.id);
   if (chance <= 0 || !struck || !alive(struck) || !rng.chance(chance)) return round;
   return say(
-    { ...round, fighters: patch(round.fighters, target.id, { confused: CONFUSION_TURNS }) },
+    {
+      ...round,
+      fighters: patch(round.fighters, target.id, { confused: confusionTurns(attacker, target) }),
+    },
     `${target.name}'s senses swim in ${attacker.name}'s illusion.`,
   );
 }
@@ -108,24 +122,40 @@ function counter(round: Round, { attacker, target, rng }: Hit): Round {
   return wound(say(round, harmLine(`${target.name} counters!`, damage)), attacker.id, damage);
 }
 
-/** Lands a blow on the target, letting their slotted defences and kit react. */
-export function react(round: Round, hit: Hit): Round {
+function guardWords(guarded: boolean, smashed: boolean): string {
+  if (smashed) return ', smashing through the guard';
+  return guarded ? ' through a guard' : '';
+}
+
+/** Lands a blow on the target, letting their clones, slotted defences and kit react. */
+export function react(before: Round, hit: Hit): Round {
   const { attacker, target, blow, rng } = hit;
-  const ready = target.stunned > 0 ? [] : slotted(target, round.range);
+  const area = blow.area === true;
+  const decoyed = throughClones(before, { attacker, target, what: blow.what, area, rng });
+  if (decoyed.absorbed) return decoyed.round;
+  const { round } = decoyed;
+  const ready = isDazed(target) ? [] : slotted(target, round.range);
   const has = (kind: 'guard' | 'dodge' | 'counter') => ready.some((c) => c.kind === kind);
-  const avoid = blow.dodgeable ? avoidChance(attacker, target, has('dodge')) : 0;
+  const evading = dulled(round.field, target);
+  const avoid = blow.dodgeable ? avoidChance(attacker, evading, has('dodge')) : 0;
   if (avoid > 0 && rng.chance(avoid)) {
     return say(round, `${target.name} slips past ${attacker.name}'s ${blow.what}.`);
   }
-  const guarded = has('guard');
+  const swap = { target, attacker, what: blow.what, discipline: blow.discipline };
+  const swapped = substituted(round, ready, swap);
+  if (swapped) return swapped;
+  const guarded = has('guard') && !blow.breaks;
+  const smashed = has('guard') && blow.breaks === true;
   const damage = Math.max(
     1,
-    Math.round(kitted(round, attacker, target, blow) * (guarded ? GUARD_SCALE : 1)),
+    Math.round(
+      kitted(round, attacker, target, blow) * (guarded ? guardScale(attacker, target) : 1),
+    ),
   );
   const told = say(
     round,
     harmLine(
-      `${attacker.name}'s ${blow.what} hits ${target.name}${guarded ? ' through a guard' : ''}.`,
+      `${attacker.name}'s ${blow.what} hits ${target.name}${guardWords(guarded, smashed)}.`,
       damage,
     ),
     ...kitNote(target, blow.kind),
@@ -135,6 +165,7 @@ export function react(round: Round, hit: Hit): Round {
     has('counter') &&
     blow.physical &&
     round.range === 'close' &&
-    canAttackFrom(target, round.range);
+    canAttackFrom(target, round.range) &&
+    canHit({ kind: 'counter' }, attacker, round.fighters);
   return canCounter ? counter(landed, hit) : landed;
 }

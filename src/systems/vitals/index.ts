@@ -5,7 +5,7 @@ export {
   STARVING_THRESHOLD,
   HUNGER_LEVELS,
   SATIETY_DECAY_PER_SLOT,
-  maxHealth,
+  MAX_HEALTH,
   maxChakra,
   fullVitals,
   adjustVitals,

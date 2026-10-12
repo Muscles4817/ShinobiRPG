@@ -3,7 +3,7 @@ import type { Rng } from '@/core';
 import { alive } from '../../rules/body';
 import {
   confuseChance,
-  CONFUSION_TURNS,
+  confusionTurns,
   HIDDEN_DAMAGE,
   rehidesNow,
   shakeOffChance,
@@ -71,7 +71,7 @@ export function confuse(fighters: DeckFighter[], blow: Blow, rng: Rng): Landed {
     return { fighters, lines: [] };
   }
   return {
-    fighters: patch(fighters, victim.id, { confused: CONFUSION_TURNS }),
+    fighters: patch(fighters, victim.id, { confused: confusionTurns(blow.attacker, victim) }),
     lines: [`${victim.name}'s senses swim.`],
   };
 }

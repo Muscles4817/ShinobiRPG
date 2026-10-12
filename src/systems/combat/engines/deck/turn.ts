@@ -6,6 +6,7 @@ import { MISFIRE_CHANCE } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
 import { canAttackFrom } from '../../rules/kit';
 import { inReach, reachOf, stepBack, stepIn, STRIKE_REACH } from '../../rules/range';
+import { isHarmful } from '../../rules/verbs';
 import { cardPoints, isTargeted, playOn, shuffle } from './cards';
 import { chooseIntent, effectiveIntent, enemyAct, type TurnResult } from './enemy';
 import { startOfTurn } from './kit';
@@ -119,7 +120,7 @@ export function step(state: DeckState, direction: 'step-in' | 'step-back'): Deck
 function allyCard(ally: DeckFighter, range: DeckState['range'], rng: Rng): Card {
   if (!canAttackFrom(ally, range)) return GUARD_CARD;
   const usable = ally.techniques.filter(
-    (t) => t.effect !== 'heal' && inReach(reachOf(t), range) && chakraCost(ally, t) <= ally.chakra,
+    (t) => isHarmful(t) && inReach(reachOf(t), range) && chakraCost(ally, t) <= ally.chakra,
   );
   if (usable.length > 0 && rng.chance(ALLY_JUTSU_CHANCE)) {
     return { uid: 'ally', kind: 'jutsu', technique: rng.pick(usable) };

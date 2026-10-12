@@ -29,9 +29,8 @@ const blast: CombatTechnique = {
   id: 'blast',
   name: 'Blast',
   discipline: 'ninjutsu',
-  effect: 'damage',
+  effects: [{ verb: 'damage', power: 8 }],
   chakraCost: 2,
-  power: 8,
 };
 
 function fighter(id: string, overrides: Partial<CombatantSetup> = {}): CombatantSetup {

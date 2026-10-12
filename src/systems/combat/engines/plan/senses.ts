@@ -1,6 +1,6 @@
 import type { Rng } from '@/core';
 
-import { alive } from '../../rules/body';
+import { alive, hasPerk, targetable } from '../../rules/body';
 import {
   DISPEL_CHAKRA,
   dispelChance,
@@ -9,6 +9,7 @@ import {
   searchChance,
   shakeOffChance,
 } from '../../rules/conditions';
+import { dulled } from '../../rules/verbs';
 import { patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -22,6 +23,13 @@ export interface Turn {
   readonly actor: PlanFighter;
   readonly target: PlanFighter | undefined;
   readonly rng: Rng;
+  /** How much harder their damage lands: set while a combination technique resolves. */
+  readonly boost?: number;
+}
+
+/** Hidden foes can't be aimed at, unless you read foes (insight, or a sense this fight). */
+export function inSight(self: PlanFighter, foe: PlanFighter): boolean {
+  return targetable(foe) || (alive(foe) && hasPerk(self, 'insight'));
 }
 
 export function opponentsOf(fighters: readonly PlanFighter[], self: PlanFighter): PlanFighter[] {
@@ -64,7 +72,9 @@ function reveal(round: Round, foes: readonly PlanFighter[]): Round {
 
 export function search(round: Round, { actor, rng }: Turn): Round {
   const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden);
-  const found = hidden.filter((foe) => rng.chance(searchChance(actor, foe)));
+  // A field that blinds the seeker dulls their eyes.
+  const seeker = dulled(round.field, actor);
+  const found = hidden.filter((foe) => rng.chance(searchChance(seeker, foe)));
   if (found.length === 0) return say(round, `${actor.name} searches, but finds no one.`);
   const names = found.map((f) => f.name).join(' and ');
   return say(reveal(round, found), `${actor.name} spots ${names}!`);
@@ -72,8 +82,12 @@ export function search(round: Round, { actor, rng }: Turn): Round {
 
 export function dispel(round: Round, { actor, rng }: Turn): Round {
   const chakra = Math.max(0, actor.chakra - DISPEL_CHAKRA);
+  const chakraSpent = (actor.chakraSpent ?? 0) + actor.chakra - chakra;
   const paid = say(
-    { ...round, fighters: patch(round.fighters, actor.id, { chakra, confused: 0 }) },
+    {
+      ...round,
+      fighters: patch(round.fighters, actor.id, { chakra, chakraSpent, confused: 0 }),
+    },
     `${actor.name} forms the seal to break illusions.`,
   );
   const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden);

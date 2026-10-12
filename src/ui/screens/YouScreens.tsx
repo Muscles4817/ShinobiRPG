@@ -1,16 +1,33 @@
 import { useState } from 'react';
 
-import { jutsuDeck, type Discipline, type JutsuCard } from '@/game';
+import { jutsuDeck, type Discipline, type JutsuCard, type JutsuEffect } from '@/game';
 
 import { TechniqueCard } from '../components/TechniqueCard';
 import type { ScreenProps } from './types';
 
-const EFFECT_TEXT: Readonly<Record<JutsuCard['effect'], (power: number) => string>> = {
+const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => string>> = {
   damage: (power) => `Power ${power}`,
-  stun: () => 'Dazes',
+  daze: () => 'Dazes',
   heal: () => 'Heals',
   seal: () => 'Seals',
+  area: (power) => `Power ${power} on every foe`,
+  confuse: () => 'Confuses',
+  conceal: () => 'Hides you',
+  sense: () => 'Finds the hidden',
+  break: (power) => `Power ${power} through guard`,
+  field: () => 'Blinds foes for a while',
+  move: () => 'Moves you in a flash',
+  substitute: () => 'Swaps you out of a hit',
+  empower: () => 'Pushes past your limits, at a price',
+  clone: () => 'Makes clones that take hits',
+  trap: (power) => `Sets a trap of power ${power}`,
 };
+
+/** Each effect in order: "Power 12, then dazes". */
+function effectText(effects: readonly JutsuEffect[]): string {
+  const [first, ...rest] = effects.map((e) => EFFECT_TEXT[e.verb](e.power));
+  return [first, ...rest.map((t) => t.toLowerCase())].join(', then ');
+}
 
 const DISCIPLINE_ORDER = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
 
@@ -26,7 +43,7 @@ const FILTER_LABELS: Readonly<Record<Discipline | 'all', string>> = {
 function cardDetail(card: JutsuCard): string {
   if (card.status === 'studying') return `Studying, ${card.progressPct}% learned`;
   if (card.status === 'unknown') return 'Not learned';
-  return `${EFFECT_TEXT[card.effect](card.power)} for ${card.chakraCost} chakra`;
+  return `${effectText(card.effects)} for ${card.chakraCost} chakra`;
 }
 
 /** Your techniques as a deck of the same cards you play in fights. */

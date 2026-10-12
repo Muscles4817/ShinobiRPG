@@ -1,13 +1,28 @@
 import { useState } from 'react';
 
-import { combatLog, combatScene, combatScouting, type CombatOption } from '@/game';
+import {
+  combatLog,
+  combatScene,
+  combatScouting,
+  type CombatantView,
+  type CombatOption,
+} from '@/game';
 
 import { Chips } from '../../components/Chips';
 import type { ScreenProps } from '../types';
-import { ActionBar, Hand, PlanPicker } from './combat/Choices';
+import { ActionBar, Hand } from './combat/Choices';
 import { Foes } from './combat/Foes';
 import { Pouch } from './combat/Pouch';
 import { RangeStrip } from './combat/RangeStrip';
+import { PlansByOwner, TeamOrders } from './combat/TeamOrders';
+
+/** Which row one of yours stands in, shown once your side has a back row. */
+function RowMark({ fighter, shown }: { readonly fighter: CombatantView; readonly shown: boolean }) {
+  if (!shown || !fighter.row) return null;
+  return (
+    <span className="badge row-mark">{fighter.row === 'back' ? 'Back row' : 'Front row'}</span>
+  );
+}
 
 /**
  * One screen for every fight style: enemies above (tap one to target it), the exchange in the
@@ -20,7 +35,10 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
   const enemies = view.combatants.filter((c) => c.side === 'enemy');
   const living = enemies.filter((e) => e.health > 0 && e.targetable !== false);
   const targetId = living.find((e) => e.id === chosen)?.id ?? living[0]?.id ?? null;
-  const [player, ...allies] = view.combatants.filter((c) => c.side === 'player');
+  const ours = view.combatants.filter((c) => c.side === 'player');
+  const [player, ...allies] = ours;
+  const inRows = ours.some((c) => c.row === 'back');
+  const names = Object.fromEntries(allies.map((a) => [a.id, a.name]));
   const of = (...kinds: CombatOption['kind'][]) =>
     view.options.filter((o) => kinds.includes(o.kind));
   const escape = view.options.find((o) => o.kind === 'escape');
@@ -60,7 +78,9 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
         <section className="allies" aria-label="Your team">
           {allies.map((a) => (
             <div key={a.id} className={a.health > 0 ? 'ally' : 'ally down'}>
-              <b>{a.name}</b>
+              <b>
+                {a.name} <RowMark fighter={a} shown={inRows} />
+              </b>
               <span className="hp mine">
                 <i style={{ width: `${(a.health / a.maxHealth) * 100}%` }} />
               </span>
@@ -71,7 +91,9 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
       )}
       {player && (
         <div className="me">
-          <b>{player.name}</b>
+          <b>
+            {player.name} <RowMark fighter={player} shown={inRows} />
+          </b>
           <span className="hp mine">
             <i style={{ width: `${(player.health / player.maxHealth) * 100}%` }} />
           </span>
@@ -96,7 +118,8 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
         </div>
       )}
       <div className="combat-controls">
-        <PlanPicker options={of('plan')} onPick={pick} />
+        <TeamOrders options={of('order')} onPick={pick} />
+        <PlansByOwner options={of('plan')} names={names} onPick={pick} />
         <Hand options={of('basic', 'technique')} onPick={pick} />
         <Pouch options={of('item')} onPick={pick} />
         <ActionBar options={of('move', 'continue', 'end')} onPick={pick} />

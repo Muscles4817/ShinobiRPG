@@ -1,27 +1,27 @@
 import { clamp, type Rng } from '@/core';
 
-import type { CombatResult, CombatTechnique } from '../../contract';
-import {
-  alive,
-  chakraCost,
-  healAmount,
-  holdTurns,
-  resistChance,
-  strikeDamage,
-  targetable,
-  techniqueDamage,
-} from '../../rules/body';
-import { matchup, matchupLine } from '../../rules/elements';
+import type { CombatResult } from '../../contract';
+import { alive } from '../../rules/body';
+import { searchChance } from '../../rules/conditions';
+import { strikeDamage } from '../../rules/damage';
 import { revealOnAttack } from '../../rules/items';
 import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
-import { healLine } from '../../rules/narration';
-import { cardId, isOffence, type Card } from './cards';
+import { afterUsing } from '../../rules/trumps';
+import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
+import { cloneFollowUp } from './clones';
+import { afterEmpowers } from './empower';
+import { fieldAfter, lostInField, ownField } from './field';
 import { intendedCard } from './intent';
+import { useJutsu } from './jutsu';
 import { useTool } from './pouch';
-import { dispel, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
+import { canHit, hittable } from './rows';
+import { plannedPlay, type Play } from './priority';
+import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
+import { intercept } from './team';
+import { springTraps } from './traps';
 import {
   fighterIn,
   LOG_LIMIT,
@@ -31,24 +31,47 @@ import {
   type PlanFighter,
   type PlanState,
   type Round,
+  wearOffDaze,
 } from './state';
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
- * the current distance. Footwork is contested by speed; defences react on their own.
+ * the current distance (the player by their plan's priorities, see `priority.ts`). Footwork is
+ * contested by speed; defences react on their own. A foe's trap springs as a turn begins where
+ * it waits, or when a step moves the fight onto it; empowers take their price as it ends.
  */
 
 const CHAKRA_REGEN = 2;
 const THROW_SCALE = 0.6;
 const STEP_BASE = 0.55;
 const STEP_PER_SPEED = 0.04;
+/** Initiative the side that moved first gets in exchange 1: more than any speed gap. */
+const FIRST_MOVER_LEAD = 1000;
 
-/** The player's side focuses the weakest enemy; enemies pick at random. Hidden foes are skipped. */
-function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
-  const foes = opponentsOf(fighters, self).filter(targetable);
-  if (foes.length === 0) return undefined;
-  if (self.side === 'player') return [...foes].sort((a, b) => a.health - b.health)[0];
-  return rng.pick(foes);
+/** Foes acting on instinct pick a target at random. */
+function targetFor(foes: readonly PlanFighter[], rng: Rng) {
+  return foes.length === 0 ? undefined : rng.pick(foes);
+}
+
+/**
+ * Foes play their telegraphed card, or follow their instincts. They size up a foe in sight;
+ * when the card can't reach them past their front row, they turn on one it can reach.
+ */
+function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
+  const seen = opponentsOf(round.fighters, actor).filter((f) => inSight(actor, f));
+  const foe = targetFor(seen, rng);
+  const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
+  const moment = {
+    band: round.range,
+    foe,
+    hiddenFoe,
+    opening: round.opening ?? false,
+    fieldUp: ownField(round.field, actor),
+    fighters: round.fighters,
+  };
+  const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
+  if (!foe || !isOffence(card) || canHit(card, foe, round.fighters)) return { card, target: foe };
+  return { card, target: targetFor(hittable(card, seen, round.fighters), rng) };
 }
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
@@ -67,61 +90,6 @@ function step(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' |
         round,
         `${actor.name} tries for ${where} range, but ${foe?.name ?? 'no one'} won't allow it.`,
       );
-}
-
-function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
-  const chakra = Math.max(0, actor.chakra - chakraCost(actor, t));
-  return say(
-    { ...round, fighters: patch(round.fighters, actor.id, { chakra }) },
-    `${actor.name} uses ${t.name}!`,
-  );
-}
-
-function physical(t: CombatTechnique): boolean {
-  return t.discipline === 'taijutsu' || t.discipline === 'kenjutsu';
-}
-
-/**
- * A daze costs one exchange and doesn't stack: rounds play out on their own, so a chain of
- * dazes would leave the player watching themselves lose.
- */
-function hold(round: Round, target: PlanFighter, t: CombatTechnique): Round {
-  const turns = holdTurns(t);
-  return t.effect === 'stun'
-    ? say(
-        { ...round, fighters: patch(round.fighters, target.id, { stunned: 1 }) },
-        `${target.name} is dazed!`,
-      )
-    : say(
-        {
-          ...round,
-          fighters: patch(round.fighters, target.id, { sealed: target.sealed + turns + 1 }),
-        },
-        `Seals lock ${target.name}'s chakra!`,
-      );
-}
-
-function useJutsu(round: Round, { actor, target, rng }: Turn, t: CombatTechnique): Round {
-  const paid = withChakraSpent(round, actor, t);
-  if (t.effect === 'heal') {
-    const health = Math.min(actor.maxHealth, actor.health + healAmount(actor, t));
-    const healed = { ...paid, fighters: patch(paid.fighters, actor.id, { health }) };
-    return say(healed, healLine(`${actor.name} recovers.`, health - actor.health));
-  }
-  if (!target) return paid;
-  if (rng.chance(resistChance(actor, target, t)))
-    return say(paid, `${target.name} sees it coming.`);
-  if (t.effect !== 'damage') return hold(paid, target, t);
-  const blow: Blow = {
-    raw: techniqueDamage(actor, target, t, rng.next()),
-    what: t.name,
-    dodgeable: t.discipline !== 'genjutsu',
-    physical: physical(t),
-    kind: attackKindOf(t),
-  };
-  const hit = react(paid, { attacker: actor, target, blow, rng });
-  const element = matchupLine(matchup(t.element, target.nature), target.name);
-  return element ? say(hit, element) : hit;
 }
 
 function strike(round: Round, { actor, target, rng }: Turn, thrown: boolean): Round {
@@ -148,8 +116,11 @@ function play(round: Round, turn: Turn, card: Card): Round {
       return search(round, turn);
     case 'dispel':
       return dispel(round, turn);
-    case 'jutsu':
-      return useJutsu(round, turn, card.technique);
+    case 'jutsu': {
+      const trumpsUsed = afterUsing(turn.actor, card.technique);
+      const marked = { ...round, fighters: patch(round.fighters, turn.actor.id, { trumpsUsed }) };
+      return useJutsu(marked, turn, card.technique);
+    }
     case 'item':
       return useTool(round, turn, card.item);
     case 'strike':
@@ -167,60 +138,86 @@ function remember(seen: Round['seen'], fighterId: string, id: string): Round['se
   return known.includes(id) ? seen : { ...seen, [fighterId]: [...known, id] };
 }
 
-function lostSight(round: Round, actor: PlanFighter): Round {
-  const vanished = opponentsOf(round.fighters, actor).some((f) => f.hidden);
-  return vanished && actor.side === 'enemy'
-    ? say(round, `${actor.name} loses sight of you.`)
-    : say(round, `${actor.name} can't find a target.`);
-}
-
-/** Attacking from smoke gives you away, hit or miss. */
-function revealed(round: Round, actorId: string): Round {
-  const actor = fighterIn(round, actorId);
-  if (!actor) return round;
-  return {
-    ...round,
-    fighters: patch(round.fighters, actorId, { hidden: revealOnAttack(actor).hidden }),
-  };
+/** Nobody in sight to attack: rather than stand idle, look for whoever is hiding. */
+function unseen(round: Round, turn: Turn): Round {
+  const hiding = opponentsOf(round.fighters, turn.actor).some((f) => f.hidden);
+  return hiding ? search(round, turn) : say(round, `${turn.actor.name} can't find a target.`);
 }
 
 /**
- * Plays a card, unless it's an attack with no one in sight or confusion sends it wide. Tools
+ * Attacking from smoke or a conceal gives you away, hit or miss. An illusionist stays hidden,
+ * unless the one they struck at traces the illusion back (as a Search would find them).
+ */
+function revealed(round: Round, { actor: before, target, rng }: Turn): Round {
+  const actor = fighterIn(round, before.id);
+  if (!actor?.hidden) return round;
+  if (!revealOnAttack(actor).hidden) {
+    return { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) };
+  }
+  const victim = target && fighterIn(round, target.id);
+  if (!victim || !alive(victim) || !rng.chance(searchChance(victim, actor))) return round;
+  return say(
+    { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) },
+    `${victim.name} traces the illusion back to ${actor.name}.`,
+  );
+}
+
+/**
+ * Plays a card, unless it's an attack with no one in sight (then they search instead) or
+ * confusion or a field that blinds them sends it wide. Tools
  * never misfire and don't give a hidden fighter away; attacks and techniques that hurt do.
  */
 function attempt(round: Round, turn: Turn, card: Card): Round {
   const { actor, target, rng } = turn;
-  if (isOffence(card) && !target) return lostSight(round, actor);
+  if (needsAim(card) && !target) return unseen(round, turn);
   if (card.kind === 'item' || !isOffence(card)) return play(round, turn, card);
   if (misfires(actor, rng)) {
     const whose = actor.isPlayer ? 'Your senses lie to you.' : `${actor.name}'s senses lie.`;
-    return revealed(say(round, `${whose} The attack goes wide.`), actor.id);
+    return revealed(say(round, `${whose} The attack goes wide.`), turn);
   }
-  return revealed(play(round, turn, card), actor.id);
+  const lost = lostInField(round, actor, rng);
+  if (lost) return revealed(say(round, lost), turn);
+  return cloneFollowUp(revealed(play(round, turn, card), turn), turn, card);
+}
+
+/** A step that moved the fight springs any foe's trap waiting where it now stands. */
+function afterStep(before: Round, after: Round, actorId: string, rng: Rng): Round {
+  return after.range === before.range ? after : springTraps(after, actorId, rng, true);
 }
 
 function turn(start: Round, actorId: string, rng: Rng): Round {
   const before = start.fighters.find((f) => f.id === actorId);
   if (!before || !alive(before) || decide(start.fighters)) return start;
-  const round = startOfTurn(start, before, rng);
+  const round = springTraps(startOfTurn(start, before, rng), actorId, rng, false);
   const actor = round.fighters.find((f) => f.id === actorId) ?? before;
+  if (!alive(actor)) return round;
   if (actor.stunned > 0) {
     const fighters = patch(round.fighters, actor.id, { stunned: actor.stunned - 1 });
     return say({ ...round, fighters }, `${actor.name} is dazed and loses the exchange.`);
   }
-  const target = targetFor(round.fighters, actor, rng);
-  const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
-  const moment = { band: round.range, foe: target, hiddenFoe, opening: round.opening ?? false };
-  const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
-  const played = attempt(round, { actor, target, rng }, card);
+  if (actor.joined) {
+    const fighters = patch(round.fighters, actor.id, { joined: false });
+    return say({ ...round, fighters }, `${actor.name} gathers themself after the combination.`);
+  }
+  // The player and their teammates play their cards in priority order; foes on instinct.
+  const planned = actor.side === 'player' ? plannedPlay(actor, round) : instinct(round, actor, rng);
+  const { card } = planned;
+  const aim = intercept(round, { actor, target: planned.target, rng }, card);
+  const tried = attempt(aim.round, { actor, target: aim.target, rng }, card);
+  const played = afterStep(aim.round, tried, actor.id, rng);
   return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
 }
 
 /** Resolves one exchange. */
 export function resolveExchange(state: PlanState, rng: Rng): PlanState {
+  // Whoever moved first (the fight's opening) acts first in the first exchange.
+  const ahead = state.round === 1 ? state.firstMover : undefined;
   const order = state.fighters
     .filter(alive)
-    .map((f) => ({ id: f.id, initiative: f.attributes.speed + rng.next() * 4 }))
+    .map((f) => ({
+      id: f.id,
+      initiative: f.attributes.speed + rng.next() * 4 + (f.side === ahead ? FIRST_MOVER_LEAD : 0),
+    }))
     .sort((a, b) => b.initiative - a.initiative);
   const start: Round = {
     number: state.round,
@@ -230,22 +227,30 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     lines: [`— Exchange ${state.round} —`],
     seen: state.seen,
     intents: state.intents,
+    ...(state.field ? { field: state.field } : {}),
+    ...(state.mark ? { mark: state.mark } : {}),
   };
-  const end = order.reduce((round, { id }) => turn(round, id, rng), start);
+  const end = afterEmpowers(
+    order.reduce((round, { id }) => turn(round, id, rng), start),
+    state.round,
+  );
   const result = decide(end.fighters);
+  const { field, lines: fading } = fieldAfter(end.field, state.round);
   const fighters = end.fighters.map((f) => ({
-    ...f,
+    ...wearOffDaze(f, state.round),
     sealed: Math.max(0, f.sealed - 1),
     chakra: alive(f) ? Math.min(f.maxChakra, f.chakra + CHAKRA_REGEN) : f.chakra,
   }));
+  const { field: _old, ...rest } = state;
   return {
-    ...state,
+    ...rest,
     round: result ? state.round : state.round + 1,
     exchange: state.exchange + 1,
     fighters,
     range: end.range,
     seen: end.seen,
-    log: [...state.log, ...end.lines].slice(-LOG_LIMIT),
+    log: [...state.log, ...end.lines, ...(result ? [] : fading)].slice(-LOG_LIMIT),
     result,
+    ...(field ? { field } : {}),
   };
 }

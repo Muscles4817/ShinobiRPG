@@ -75,7 +75,11 @@ export interface EnemyDef {
   readonly kind: string;
   readonly baseStat: number;
   readonly statBonuses: StatDelta;
-  readonly maxHealth: number;
+  /**
+   * Health as a multiple of a human's 100: a giant beast more, a small creature less.
+   * Humans leave it out (1).
+   */
+  readonly healthScale?: number;
   readonly maxChakra: number;
   readonly techniqueIds: readonly string[];
   /** Elemental nature, for matchups; most enemies have none. */

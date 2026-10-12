@@ -1,8 +1,10 @@
 import { err, ok, type Result } from '@/core';
+import type { Verb } from '@/systems/techniques';
 
 import type { CombatChoice, CombatOption, CombatTechnique } from '../../contract';
 import { targetable } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
+import { primaryEffect } from '../../rules/verbs';
 import type { DuelAction } from './actions';
 import { reaches, UNSEEN } from './reach';
 import { livingEnemies, playerOf, type DuelState, type Fighter } from './state';
@@ -16,11 +18,22 @@ import { isToolOption, toolAction, toolOptions } from './tools';
 const TECHNIQUE_PREFIX = 'tech:';
 const OUT_OF_REACH = 'Out of reach. Close in first.';
 
-const EFFECT_DETAIL: Readonly<Record<CombatTechnique['effect'], (power: number) => string>> = {
+const EFFECT_DETAIL: Readonly<Record<Verb, (power: number) => string>> = {
   damage: (power) => `power ${power}`,
-  stun: () => 'dazes',
+  daze: () => 'dazes',
   heal: () => 'heals',
   seal: () => 'seals',
+  area: (power) => `power ${power}`,
+  confuse: () => 'confuses',
+  conceal: () => 'hides',
+  sense: () => 'senses',
+  break: (power) => `power ${power}`,
+  field: () => 'blinds',
+  move: () => 'moves',
+  substitute: () => 'swaps out',
+  empower: () => 'empowers',
+  clone: () => 'clones',
+  trap: () => 'sets a trap',
 };
 
 /**
@@ -33,11 +46,12 @@ function attackBlocker(state: DuelState): string | undefined {
 
 function techniqueOption(state: DuelState, t: CombatTechnique): CombatOption {
   const player = playerOf(state);
-  const heals = t.effect === 'heal';
+  const lead = primaryEffect(t);
+  const heals = lead.verb === 'heal';
   const base: CombatOption = {
     id: `${TECHNIQUE_PREFIX}${t.id}`,
     label: t.name,
-    detail: `${t.chakraCost} chakra, ${EFFECT_DETAIL[t.effect](t.power)}`,
+    detail: `${t.chakraCost} chakra, ${EFFECT_DETAIL[lead.verb](lead.power)}`,
     kind: 'technique',
     discipline: t.discipline,
     ...(heals ? {} : { targeted: true }),

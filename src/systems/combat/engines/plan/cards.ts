@@ -1,10 +1,21 @@
-import type { CombatItem, CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
+import type { Verb } from '@/systems/techniques';
+
+import type { CombatItem, CombatTechnique, RangeBand } from '../../contract';
 import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { carried } from '../../rules/items';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
-import type { CardId, Loadout, PlanFighter } from './state';
+import { trumpSpent } from '../../rules/trumps';
+import {
+  hasVerb,
+  isHarmful,
+  isHindering,
+  isWounding,
+  moveGoal,
+  techniquePower,
+} from '../../rules/verbs';
+import { plainSlots, type CardId, type Loadout, type PlanFighter, type Slot } from './state';
 
 /**
  * The cards a fighter can slot for each distance, Punch Club style: a few slots per range,
@@ -104,131 +115,102 @@ export function keepsInLoadout(fighter: Kit, band: RangeBand, id: CardId): boole
   return card !== null && fitsBand(card, band);
 }
 
-/** The cards slotted at a distance, resolved. */
+/** The cards slotted at a distance, resolved, in priority order. */
 export function slotted(fighter: PlanFighter, band: RangeBand): Card[] {
-  return fighter.loadout[band].flatMap((id) => {
+  return fighter.loadout[band].flatMap(({ card: id }) => {
     const card = findCard(fighter, id);
     return card && fitsBand(card, band) ? [card] : [];
   });
 }
 
-/** Defences react on their own; everything else is something you do on your turn. */
+/**
+ * Defences react on their own (a substitution among them); everything else is something you
+ * do on your turn.
+ */
 export function isReaction(card: Card): boolean {
+  if (card.kind === 'jutsu') return hasVerb(card.technique, 'substitute');
   return card.kind === 'guard' || card.kind === 'dodge' || card.kind === 'counter';
 }
 
 /** Cards that hurt or hinder a foe: what reach and confusion rule out. */
 export function isOffence(card: Card): boolean {
-  if (card.kind === 'jutsu') return card.technique.effect !== 'heal';
+  if (card.kind === 'jutsu') return isHarmful(card.technique);
   if (card.kind === 'item') return card.item.effect === 'blast';
   return card.kind === 'strike' || card.kind === 'throw';
 }
 
-const TOOL_DOES: Readonly<Record<CombatItemEffect, string>> = {
-  smoke: 'Vanish until you attack',
-  flash: 'Reveal hidden foes',
-  blast: 'Seal blast through armour',
-  chakra: 'Restore chakra',
-  heal: 'Restore health',
-  clarity: 'Clear confusion',
-};
-
-/** A tool card's detail: how many are left and what it does. */
-export function toolDetail(item: CombatItem): string {
-  return `${TOOL_DOES[item.effect]} (×${item.count} left)`;
-}
-
-const EFFECT_WORD: Readonly<Record<CombatTechnique['effect'], string>> = {
-  damage: 'Attack',
-  stun: 'Daze',
-  seal: 'Seal',
-  heal: 'Heal when hurt',
-};
-
-export function cardLabel(card: Card): string {
-  switch (card.kind) {
-    case 'strike':
-      return 'Strike';
-    case 'throw':
-      return 'Kunai';
-    case 'step':
-      return card.direction === 'in' ? 'Close in' : 'Back off';
-    case 'guard':
-      return 'Guard';
-    case 'dodge':
-      return 'Dodge';
-    case 'counter':
-      return 'Counter';
-    case 'search':
-      return 'Search';
-    case 'dispel':
-      return 'Dispel';
-    case 'jutsu':
-      return card.technique.name;
-    case 'item':
-      return card.item.name;
-  }
-}
-
-export function cardDetail(card: Card, fighter: PlanFighter): string {
-  switch (card.kind) {
-    case 'strike':
-      return 'Attack, no chakra';
-    case 'throw':
-      return 'Attack, no chakra';
-    case 'step':
-      return card.direction === 'in' ? 'Try to get closer' : 'Try to open distance';
-    case 'guard':
-      return 'Reacts, take less damage';
-    case 'dodge':
-      return 'Reacts, may avoid a hit';
-    case 'counter':
-      return 'Reacts, hit back up close';
-    case 'search':
-      return 'Find hidden foes, perception';
-    case 'dispel':
-      return `Break illusions, ${DISPEL_CHAKRA} chakra`;
-    case 'jutsu':
-      return `${EFFECT_WORD[card.technique.effect]}, ${chakraCost(fighter, card.technique)} chakra`;
-    case 'item':
-      return toolDetail(card.item);
-  }
+/** An offence aimed at someone in sight; an area technique needs no aim. */
+export function needsAim(card: Card): boolean {
+  if (card.kind === 'jutsu' && hasVerb(card.technique, 'area')) return false;
+  return isOffence(card);
 }
 
 function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean): Card[] {
   return pool
     .flatMap((c) => (c.kind === 'jutsu' && test(c.technique) ? [c] : []))
-    .sort((a, b) => b.technique.power - a.technique.power);
+    .sort((a, b) => techniquePower(b.technique) - techniquePower(a.technique));
+}
+
+function damageJutsu(cards: readonly Card[]): Card[] {
+  return strongest(cards, isWounding);
+}
+
+/** How much a step towards home is worth: before attacking, after, or not at all. */
+type Footwork = 'first' | 'after-attacks' | 'none';
+
+/**
+ * Whether a fighter should spend their turn moving towards home: first when their kit can't
+ * attack from here or more of their jutsu reach from home; after their attacks when only a full
+ * blow waits at home (kunai land softer, but stepping in hands the foe the first blow, so the
+ * plan keeps throwing and lets a foe who closes in come to it).
+ */
+function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Footwork {
+  if (band === home) return 'none';
+  if (!canAttackFrom(fighter, band)) return 'first';
+  const jutsuAtHome = damageJutsu(cardsFor(fighter, home)).length;
+  if (jutsuAtHome > damageJutsu(cardsFor(fighter, band)).length) return 'first';
+  return inReach(STRIKE_REACH, home) && !inReach(STRIKE_REACH, band) ? 'first' : 'none';
 }
 
 /**
- * A sensible starting plan: footwork towards where you fight best, your best moves, a defence.
- * Attacks your kit can't make from a distance (an archer up close) are left out.
+ * A sensible starting plan, in priority order: a heal for when you're badly hurt, a sense for
+ * when a foe hides, a field to set the ground (it plays only while none of yours is up),
+ * footwork towards where you fight best (when it's worth a turn; a move technique rather than
+ * a step), a daze, seal or confusion to spoil a foe's telegraphed jutsu, an empower or clones
+ * and a trap where you can attack (the plan passes over them while they hold), your best
+ * attack, then plain blows, more attacks, a conceal, a substitution and a defence. Attacks
+ * your kit can't make from a distance (an archer up close) are left out.
  */
-function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): CardId[] {
+function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slot[] {
   const reaches = canAttackFrom(fighter, band);
   const pool = cardsFor(fighter, band).filter((c) => reaches || !isOffence(c));
   const has = (kind: Card['kind']) => pool.filter((c) => c.kind === kind);
   const towardsHome = RANGE_BANDS.indexOf(band) > RANGE_BANDS.indexOf(home) ? 'in' : 'back';
-  const footwork =
-    band === home
-      ? []
-      : has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome);
-  const damage = strongest(pool, (t) => t.effect === 'damage');
-  const ordered: Card[] = [
-    ...footwork,
-    ...damage.slice(0, 1),
-    ...strongest(pool, (t) => t.effect === 'stun' || t.effect === 'seal').slice(0, 1),
-    ...has('strike'),
-    ...has('throw'),
-    ...damage.slice(1),
-    ...has('guard'),
+  const footwork = footworkFor(fighter, band, home);
+  const step = has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome);
+  const flicker = strongest(pool, (t) => moveGoal(t, home) === home).slice(0, 1);
+  const at = (when: Footwork) => (footwork === when ? [...flicker, ...step].slice(0, 1) : []);
+  const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
+  const damage = damageJutsu(pool);
+  const daze = strongest(pool, isHindering).slice(0, 1);
+  const ready = strongest(pool, (t) => hasVerb(t, 'empower') || hasVerb(t, 'clone')).slice(0, 1);
+  const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
+  const ordered: Slot[] = [
+    ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
+    ...best('sense').map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' })),
+    ...plain([...best('field'), ...at('first')]),
+    ...daze.map((c): Slot => ({ card: cardId(c), when: 'foe-readying' })),
+    ...plain(reaches ? [...ready, ...best('trap')] : []),
+    ...plain([...damage.slice(0, 1), ...has('strike'), ...has('throw'), ...at('after-attacks')]),
+    ...plain([...damage.slice(1), ...best('conceal'), ...best('substitute')]),
+    ...plain([...has('guard'), ...has('dodge')]),
   ];
-  return [...new Set(ordered.map(cardId))].slice(0, slotLimit(fighter));
+  const unique = ordered.filter((slot, i) => ordered.findIndex((s) => s.card === slot.card) === i);
+  return unique.slice(0, slotLimit(fighter));
 }
 
-export function defaultLoadout(fighter: PlanFighter): Loadout {
-  const home = homeBand(fighter);
+/** The default plan; a teammate pressing in plans around a closer distance than their kit's. */
+export function defaultLoadout(fighter: PlanFighter, home = homeBand(fighter)): Loadout {
   const [close, mid, far] = RANGE_BANDS.map((band) => defaultFor(fighter, band, home));
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };
 }
@@ -237,6 +219,7 @@ export function defaultLoadout(fighter: PlanFighter): Loadout {
 export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind === 'item') return card.item.count > 0;
-  if (card.kind !== 'jutsu') return !isReaction(card);
+  if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
+  if (trumpSpent(fighter, card.technique)) return false;
   return fighter.sealed === 0 && chakraCost(fighter, card.technique) <= fighter.chakra;
 }

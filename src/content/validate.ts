@@ -1,4 +1,4 @@
-import { DISCIPLINES } from '@/systems/techniques';
+import { costIsSane, DISCIPLINES, effectProblem } from '@/systems/techniques';
 
 import { duplicateIds } from './catalog';
 import { validatePeople } from './validatePeople';
@@ -113,6 +113,10 @@ function techniqueReferenceProblems(pack: ContentPack): string[] {
       c.startingTechniqueIds,
     ]),
     ...pack.enemies.map((e): [string, readonly string[]] => [`enemy "${e.id}"`, e.techniqueIds]),
+    ...pack.techniques.map((t): [string, readonly string[]] => [
+      `combination technique "${t.id}"`,
+      t.combo ? [t.combo.partnerTechniqueId] : [],
+    ]),
   ];
   return owners.flatMap(([owner, ids]) =>
     ids.filter((id) => !known.has(id)).map((id) => `${owner} references unknown technique "${id}"`),
@@ -148,8 +152,26 @@ function missionProblems(pack: ContentPack): string[] {
 function numberProblems(pack: ContentPack): string[] {
   return [
     ...pack.techniques
-      .filter((t) => t.chakraCost < 0 || t.power <= 0 || t.difficulty <= 0)
+      .filter((t) => t.effects.length === 0)
+      .map((t) => `technique "${t.id}" has no effects`),
+    ...pack.techniques
+      .filter((t) => t.chakraCost < 0 || t.difficulty <= 0 || t.effects.some((e) => e.power <= 0))
       .map((t) => `technique "${t.id}" has non-positive numbers`),
+    ...pack.techniques.flatMap((t) =>
+      t.effects.flatMap((e) => {
+        const problem = effectProblem(e);
+        return problem ? [`technique "${t.id}" has ${problem}`] : [];
+      }),
+    ),
+    ...pack.techniques
+      .filter((t) => t.afterCost && (!t.oncePerFight || !costIsSane(t.afterCost)))
+      .map(
+        (t) =>
+          `technique "${t.id}" has an after-cost but is not once per fight, or its cost is not positive`,
+      ),
+    ...pack.enemies
+      .filter((e) => e.healthScale !== undefined && e.healthScale <= 0)
+      .map((e) => `enemy "${e.id}" needs a positive health scale`),
     ...pack.foods.filter((f) => f.cost <= 0).map((f) => `food "${f.id}" must cost something`),
     ...pack.training
       .filter((t) => Object.keys(t.gains).length === 0)

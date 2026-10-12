@@ -1,5 +1,6 @@
 import type { Rng } from '@/core';
 
+import { primaryEffect } from '../../rules/verbs';
 import type { DuelAction } from './actions';
 import type { Fighter } from './state';
 
@@ -10,10 +11,10 @@ import type { Fighter } from './state';
 export function chooseAiAction(self: Fighter, rng: Rng): DuelAction {
   const sealed = (self.sealed ?? 0) > 0;
   const affordable = sealed ? [] : self.techniques.filter((t) => t.chakraCost <= self.chakra);
-  const heal = affordable.find((t) => t.effect === 'heal');
+  const heal = affordable.find((t) => primaryEffect(t).verb === 'heal');
   if (heal && self.health < self.maxHealth * 0.35) return { kind: 'technique', technique: heal };
 
-  const offensive = affordable.filter((t) => t.effect !== 'heal');
+  const offensive = affordable.filter((t) => primaryEffect(t).verb !== 'heal');
   if (offensive.length > 0 && rng.chance(0.45)) {
     return { kind: 'technique', technique: rng.pick(offensive) };
   }

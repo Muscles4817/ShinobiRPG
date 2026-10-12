@@ -1,10 +1,15 @@
 import type { JournalChip, JournalTone } from '@/systems/journal';
-import type { TechniqueEffect } from '@/systems/techniques';
+import type { Verb } from '@/systems/techniques';
 import { formatDate, slotName } from '@/systems/time';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import type { Discipline } from './common';
+
+export interface JutsuEffect {
+  readonly verb: Verb;
+  readonly power: number;
+}
 
 export interface JutsuCard {
   readonly id: string;
@@ -12,9 +17,9 @@ export interface JutsuCard {
   readonly description: string;
   readonly discipline: Discipline;
   readonly element: string | null;
-  readonly effect: TechniqueEffect;
+  /** What it does, in order, with each effect's strength. */
+  readonly effects: readonly JutsuEffect[];
   readonly chakraCost: number;
-  readonly power: number;
   readonly status: 'known' | 'studying' | 'unknown';
   readonly progressPct: number;
 }
@@ -32,9 +37,8 @@ export function jutsuDeck(state: GameState, ctx: GameContext): readonly JutsuCar
         description: t.description,
         discipline: t.discipline,
         element: t.element ?? null,
-        effect: t.effect,
+        effects: t.effects.map((e) => ({ verb: e.verb, power: e.power })),
         chakraCost: t.chakraCost,
-        power: t.power,
         status: known ? 'known' : progress > 0 ? 'studying' : 'unknown',
         progressPct: known ? 100 : Math.round((progress / t.difficulty) * 100),
       };

@@ -1,16 +1,13 @@
 import { round1 } from '@/core';
 import { unmetRequirements, type StatDelta, type StatId, type Stats } from '@/systems/stats';
 
+import type { CostTemplate } from './costs';
+import type { TechniqueEffect } from './effects';
+
 export const DISCIPLINES = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
 export type Discipline = (typeof DISCIPLINES)[number];
 export const ELEMENTS = ['fire', 'wind', 'lightning', 'earth', 'water'] as const;
 export type Element = (typeof ELEMENTS)[number];
-/**
- * What a technique does when used. The combat engine decides how to interpret it:
- * damage hurts, stun costs the target turns, heal restores the user, seal stops the target
- * using techniques for a while.
- */
-export type TechniqueEffect = 'damage' | 'stun' | 'heal' | 'seal';
 
 export interface TechniqueDef {
   readonly id: string;
@@ -18,16 +15,24 @@ export interface TechniqueDef {
   readonly description: string;
   readonly discipline: Discipline;
   readonly element?: Element;
-  readonly effect: TechniqueEffect;
+  /** What it does, in order (damage, then daze…). Never empty (validated). */
+  readonly effects: readonly TechniqueEffect[];
   readonly chakraCost: number;
-  /** Strength of the effect (damage dealt, stun potency, health restored). */
-  readonly power: number;
   /** Minimum stats needed to begin studying the technique. */
   readonly requirements: StatDelta;
   /** Total study points needed to master it. */
   readonly difficulty: number;
   /** Only members of this clan may learn it. */
   readonly clan?: string;
+  /** A trump card: usable once per fight. */
+  readonly oncePerFight?: true;
+  /** What using it costs its user once the fight is over (validated: trump cards only). */
+  readonly afterCost?: CostTemplate;
+  /**
+   * A combination technique: playable only beside a fighter on your side who knows the partner
+   * technique (and isn't dazed); both go off together, harder than either alone.
+   */
+  readonly combo?: { readonly partnerTechniqueId: string };
 }
 
 /** Techniques the character has mastered, plus partial study progress on others. */

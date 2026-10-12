@@ -1,6 +1,6 @@
 import { daysOfRentLeft, isRentFree, isRentOverdue } from '@/systems/housing';
 import { slotName, type TimeSlot } from '@/systems/time';
-import { maxHealth } from '@/systems/vitals';
+import { MAX_HEALTH } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
@@ -63,7 +63,7 @@ export function hospitalView(state: GameState, ctx: GameContext): HospitalView |
   return {
     name: place.name,
     health: Math.round(state.character.vitals.health),
-    maxHealth: maxHealth(state.character.stats),
+    maxHealth: MAX_HEALTH,
     cost: place.treatmentCost,
     treat: choice(state, ctx, { type: 'treat' }),
   };

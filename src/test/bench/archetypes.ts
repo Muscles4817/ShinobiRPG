@@ -33,6 +33,7 @@ export const ARCHETYPE_IDS = [
   'versatile',
   'illusionist',
   'stalker',
+  'mistBlade',
 ] as const;
 export type ArchetypeId = (typeof ARCHETYPE_IDS)[number];
 
@@ -121,6 +122,19 @@ const ARCHETYPES: Readonly<Record<ArchetypeId, Archetype>> = {
     },
     techniqueIds: ['lantern-cut', 'moonfall-slash', 'tide-lash'],
     traits: ['illusionist'],
+  },
+  // Zabuza again, the other way: no illusion, a mist over the field and a blade inside it.
+  mistBlade: {
+    label: 'Mist blade',
+    profile: {
+      kenjutsu: 'peak',
+      ninjutsu: 'strong',
+      strength: 'strong',
+      stamina: 'strong',
+      speed: 'strong',
+      genjutsu: 'weak',
+    },
+    techniqueIds: ['river-fog', 'lantern-cut', 'moonfall-slash', 'snuffed-wick-step'],
   },
 };
 

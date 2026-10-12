@@ -10,6 +10,7 @@ import type {
   CombatTechnique,
   CombatTrait,
 } from '../../contract';
+import { upgradeTechnique } from '../../rules/verbs';
 import { startsHidden } from '../../rules/conditions';
 import { hasTrait } from '../../rules/kit';
 
@@ -88,6 +89,7 @@ function withDefaults(f: StoredFighter): Fighter {
     confused: f.confused ?? 0,
     distant: f.distant ?? false,
     items: f.items ?? [],
+    techniques: f.techniques.map(upgradeTechnique),
   };
 }
 

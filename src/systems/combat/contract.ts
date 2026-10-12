@@ -1,6 +1,8 @@
 import type { Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
-import type { Element, TechniqueDef } from '@/systems/techniques';
+import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
+
+import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
 
 /**
  * THE COMBAT CONTRACT
@@ -32,11 +34,25 @@ export type CombatAttributes = Pick<
 
 export type CombatTechnique = Pick<
   TechniqueDef,
-  'id' | 'name' | 'discipline' | 'element' | 'effect' | 'chakraCost' | 'power'
+  | 'id'
+  | 'name'
+  | 'discipline'
+  | 'element'
+  | 'effects'
+  | 'chakraCost'
+  | 'oncePerFight'
+  | 'afterCost'
+  | 'combo'
 >;
 
 /** How far apart the two sides stand. Engines decide what each band allows. */
 export type RangeBand = 'close' | 'mid' | 'far';
+
+/**
+ * Where a fighter stands in their side's formation. The back row can't be struck up close
+ * while someone stands in front of it (see `rules/rows.ts`); engines without rows ignore it.
+ */
+export type CombatRow = 'front' | 'back';
 
 /**
  * Special abilities a combatant brings, e.g. an awakened bloodline's eyes. Engines that
@@ -99,6 +115,36 @@ export interface CombatantSetup {
   readonly traits?: readonly CombatTrait[];
   /** Tools carried into the fight (the player's pouch). */
   readonly items?: readonly CombatItem[];
+  /** A preferred row; when absent the engine places the fighter by their kit. */
+  readonly row?: CombatRow;
+  /** An ally's stance; when absent the engine picks one from their kit. */
+  readonly stance?: CombatStance;
+  /** What the player may change about this ally (see `teamContract.ts`). */
+  readonly orders?: CombatOrders;
+}
+
+/**
+ * A field already over the ground when the fight opens (the player set the ground with mist):
+ * which field, the side it favours, and its potency (perception above it sees through).
+ */
+export interface CombatOpeningField {
+  readonly id: FieldId;
+  readonly side: CombatSide;
+  readonly potency: number;
+}
+
+/**
+ * How the fight begins, when what came before it (an ambush, a chase, recon) shaped it: the
+ * starting distance, fighters (by id) who start hidden or reel through the first exchange,
+ * which side moved first and so acts first in it, and a field in place. Absent: a plain
+ * head-on fight.
+ */
+export interface CombatOpening {
+  readonly range?: RangeBand;
+  readonly hidden?: readonly string[];
+  readonly dazed?: readonly string[];
+  readonly firstMover?: CombatSide;
+  readonly field?: CombatOpeningField;
 }
 
 export interface CombatSetup {
@@ -114,6 +160,7 @@ export interface CombatSetup {
    * back in `CombatOutcome.plan`. Opaque to the game; the engine must validate it.
    */
   readonly plan?: unknown;
+  readonly opening?: CombatOpening;
 }
 
 /**
@@ -142,6 +189,8 @@ export interface CombatantView {
   readonly intent?: string;
   /** False while they can't be picked as a target (hidden in an illusion). */
   readonly targetable?: boolean;
+  /** Their row, for engines with formations. */
+  readonly row?: CombatRow;
 }
 
 /** A resource the engine wants shown (action points, momentum, block…). */
@@ -159,10 +208,12 @@ export interface CombatOption {
   readonly detail: string;
   /**
    * Lets the UI present options differently: basics and techniques as cards in the hand,
-   * moves (stepping in or back) as small buttons, tools from the pouch as their own row, plans as a list to pick from, continue and
+   * moves (stepping in or back) as small buttons, tools from the pouch as their own row, plans as
+   * a list to pick from, orders to the team (stances, the mark) as pickers, continue and
    * end-turn in the choice bar, escape apart.
    */
-  readonly kind: 'basic' | 'technique' | 'move' | 'item' | 'plan' | 'continue' | 'end' | 'escape';
+  readonly kind:
+    'basic' | 'technique' | 'move' | 'item' | 'plan' | 'order' | 'continue' | 'end' | 'escape';
   readonly discipline?: TechniqueDef['discipline'];
   /** Points spent from a per-turn budget, for engines that have one. */
   readonly cost?: number;
@@ -170,8 +221,21 @@ export interface CombatOption {
   readonly targeted?: boolean;
   /** Plans that are set up in parts (e.g. cards per range) say which part this belongs to. */
   readonly group?: string;
+  /** A plan option for a teammate's cards: whose (a combatant id). Absent for your own. */
+  readonly owner?: string;
   /** For toggles: whether this is currently part of the plan. */
   readonly selected?: boolean;
+  /** For plans kept in priority order: this entry's place in its group, 0 coming first. */
+  readonly rank?: number;
+  /**
+   * Set on an option that adjusts another plan entry (moves it up, or sets how it plays): the
+   * id of the entry it adjusts. Adjustments to one entry that share a `setting` are
+   * alternatives, and `selected` marks the current one; a setting with a single option is an
+   * action (e.g. "Move up").
+   */
+  readonly adjusts?: string;
+  /** What an adjustment sets, e.g. "When" or "Target"; shown as the control's label. */
+  readonly setting?: string;
   /** Present when the option is shown but cannot be chosen right now. */
   readonly disabledReason?: string;
 }
@@ -197,6 +261,13 @@ export interface CombatChoice {
 
 export type CombatResult = 'victory' | 'defeat' | 'escaped';
 
+/** A price the player paid for a trump card they used in the fight, due once it is over. */
+export interface CombatCost {
+  readonly techniqueId: string;
+  readonly techniqueName: string;
+  readonly cost: CostTemplate;
+}
+
 export interface CombatOutcome {
   readonly result: CombatResult;
   readonly rounds: number;
@@ -206,6 +277,10 @@ export interface CombatOutcome {
   readonly items?: Readonly<Record<string, number>>;
   /** Anything the player set up that should carry over to their next fight (JSON-safe). */
   readonly plan?: unknown;
+  /** Trump costs the player incurred, one per trump used; absent from engines without trumps. */
+  readonly costs?: readonly CombatCost[];
+  /** What each fighter used, by combatant id; absent from engines that don't track it. */
+  readonly used?: Readonly<Record<string, CombatUsage>>;
 }
 
 export interface CombatEngine {

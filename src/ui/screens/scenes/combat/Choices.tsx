@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { CombatOption, Discipline } from '@/game';
 
 import { TechniqueCard } from '../../../components/TechniqueCard';
+import { PlanSlots } from './PlanSlots';
 
 type Pick = (option: CombatOption) => void;
 
@@ -48,13 +49,25 @@ function groupsOf(options: readonly CombatOption[]): string[] {
   return [...new Set(options.flatMap((o) => (o.group === undefined ? [] : [o.group])))];
 }
 
-/** One plan option: a list entry, or a card that toggles in and out of its slots. */
+/** The one reason every card shown is blocked (slots full), said once instead of on each. */
+function sharedBlocker(options: readonly CombatOption[]): string | null {
+  const reasons = new Set(options.map((o) => o.disabledReason));
+  const [only] = reasons;
+  return reasons.size === 1 && only !== undefined ? only : null;
+}
+
+/**
+ * One plan option: a list entry, or a card that toggles in and out of its slots. A blocked
+ * option says why on the card, unless the reason is already said once above the cards.
+ */
 function PlanChoice({
   option: o,
   onPick,
+  reasonShown,
 }: {
   readonly option: CombatOption;
   readonly onPick: Pick;
+  readonly reasonShown: boolean;
 }) {
   const toggle = o.selected !== undefined;
   return (
@@ -70,7 +83,7 @@ function PlanChoice({
       }}
     >
       <b>{o.label}</b>
-      <small>{o.detail}</small>
+      <small>{reasonShown ? o.detail : (o.disabledReason ?? o.detail)}</small>
     </button>
   );
 }
@@ -87,7 +100,13 @@ export function PlanPicker({
   const [tab, setTab] = useState<string | null>(null);
   if (options.length === 0) return null;
   const shown = tab ?? groups[0];
-  const visible = groups.length > 0 ? options.filter((o) => o.group === shown) : options;
+  const inGroup = groups.length > 0 ? options.filter((o) => o.group === shown) : options;
+  const adjustments = inGroup.filter((o) => o.adjusts !== undefined);
+  const entries = inGroup.filter((o) => o.adjusts === undefined);
+  const ordered = entries.filter((o) => o.rank !== undefined);
+  const visible = entries.filter((o) => o.rank === undefined);
+  const ranks = options.some((o) => o.rank !== undefined || o.adjusts !== undefined);
+  const blocker = sharedBlocker(visible);
   return (
     <nav className="plan-picker" aria-label="Plan">
       {groups.length > 0 && (
@@ -103,14 +122,27 @@ export function PlanPicker({
                 setTab(g);
               }}
             >
-              {g} <small>{options.filter((o) => o.group === g && o.selected).length}</small>
+              {g}{' '}
+              <small>
+                {options.filter((o) => o.group === g && o.selected && !o.adjusts).length}
+              </small>
             </button>
           ))}
         </div>
       )}
+      {ranks && (
+        <PlanSlots
+          entries={ordered}
+          adjustments={adjustments}
+          label={`${shown ?? 'Plan'}: first to last`}
+          onPick={onPick}
+        />
+      )}
+      {ranks && visible.length > 0 && <h3 className="plan-heading">Cards you could add</h3>}
+      {blocker && <p className="plan-empty">{blocker}</p>}
       <div className={groups.length > 0 ? 'plan-cards' : 'plan-list'}>
         {visible.map((o) => (
-          <PlanChoice key={o.id} option={o} onPick={onPick} />
+          <PlanChoice key={o.id} option={o} onPick={onPick} reasonShown={blocker !== null} />
         ))}
       </div>
     </nav>

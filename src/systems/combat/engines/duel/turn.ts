@@ -10,6 +10,7 @@ import {
   type AttackAction,
   type DuelAction,
 } from './actions';
+import { primaryEffect } from '../../rules/verbs';
 import { backOff, closeIn, dispel, search } from './moves';
 import { foesOf, footworkWanted, reachableFoes } from './reach';
 import type { Fighter } from './state';
@@ -94,7 +95,7 @@ function attack(
   rng: Rng,
 ): ActionResult {
   const { action } = plan;
-  if (action.kind === 'technique' && action.technique.effect === 'heal') {
+  if (action.kind === 'technique' && primaryEffect(action.technique).verb === 'heal') {
     return performAttack(fighters, { actor, target: actor }, action, rng);
   }
   const candidates = reachableFoes(fighters, actor, action);

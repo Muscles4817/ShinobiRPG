@@ -6,7 +6,7 @@ import {
   hungerLevel,
   hungerOf,
   maxChakra,
-  maxHealth,
+  MAX_HEALTH,
   METER_MAX,
   type HungerLevel,
 } from '@/systems/vitals';
@@ -53,7 +53,7 @@ export function headerView(state: GameState, ctx: GameContext): HeaderView {
   const { stats, vitals } = state.character;
   const location = currentLocation(state, ctx);
   const warnings: string[] = [];
-  if (vitals.health < maxHealth(stats) * 0.3) warnings.push('Badly hurt');
+  if (vitals.health < MAX_HEALTH * 0.3) warnings.push('Badly hurt');
   const level = hungerLevel(vitals);
   if (vitals.energy < 20) warnings.push('Exhausted');
   return {
@@ -68,7 +68,7 @@ export function headerView(state: GameState, ctx: GameContext): HeaderView {
     backdrop: location.backdrop,
     visiting: location.id !== ctx.content.startLocationId,
     meters: [
-      { label: 'Health', value: Math.round(vitals.health), max: maxHealth(stats) },
+      { label: 'Health', value: Math.round(vitals.health), max: MAX_HEALTH },
       { label: 'Chakra', value: Math.round(vitals.chakra), max: maxChakra(stats) },
       { label: 'Energy', value: Math.round(vitals.energy), max: METER_MAX },
       { label: 'Hunger', value: Math.round(hungerOf(vitals)), max: METER_MAX, level },

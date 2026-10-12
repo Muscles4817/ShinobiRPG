@@ -5,7 +5,7 @@ import {
   fullVitals,
   hungerLevel,
   hungerOf,
-  maxHealth,
+  MAX_HEALTH,
   passTime,
   sleepRecovery,
 } from './vitals';
@@ -15,7 +15,7 @@ const stats = createStats(5);
 describe('vitals', () => {
   it('clamps meters to their ranges', () => {
     const v = adjustVitals(fullVitals(stats), { health: 1000, energy: -1000 }, stats);
-    expect(v.health).toBe(maxHealth(stats));
+    expect(v.health).toBe(MAX_HEALTH);
     expect(v.energy).toBe(0);
   });
 

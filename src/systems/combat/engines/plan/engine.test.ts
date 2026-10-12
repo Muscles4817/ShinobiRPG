@@ -4,7 +4,7 @@ import type { CombatantSetup, CombatEngine, CombatState, CombatTechnique } from 
 import { cardsFor, defaultLoadout, slotLimit } from './cards';
 import { chooseCard } from './choose';
 import { createPlanEngine, ROUND_EXCHANGES } from './engine';
-import { decode, encode, initialFighters, type PlanFighter } from './state';
+import { decode, encode, initialFighters, plainSlots, type PlanFighter } from './state';
 
 const attributes = {
   strength: 5,
@@ -26,8 +26,8 @@ function fighter(id: string, overrides: Partial<CombatantSetup> = {}): Combatant
     id,
     name: id,
     attributes,
-    health: 50,
-    maxHealth: 50,
+    health: 100,
+    maxHealth: 100,
     chakra: 30,
     maxChakra: 30,
     techniques: [],
@@ -39,17 +39,15 @@ const daze: CombatTechnique = {
   id: 'daze',
   name: 'Daze',
   discipline: 'genjutsu',
-  effect: 'stun',
+  effects: [{ verb: 'daze', power: 12 }],
   chakraCost: 4,
-  power: 12,
 };
 const blast: CombatTechnique = {
   id: 'blast',
   name: 'Blast',
   discipline: 'ninjutsu',
-  effect: 'damage',
+  effects: [{ verb: 'damage', power: 16 }],
   chakraCost: 6,
-  power: 16,
 };
 
 function bodies(player = fighter('hero', { techniques: [daze, blast] })): PlanFighter[] {
@@ -86,19 +84,36 @@ describe('plan & watch cards', () => {
   });
 
   it('the default plan walks a brawler in and keeps a jutsu user at range', () => {
-    const [brawler] = bodies(fighter('hero'));
-    expect(defaultLoadout(brawler!).far[0]).toBe('step-in');
+    const [brawler] = bodies(fighter('hero', { traits: ['brawler'] }));
+    expect(defaultLoadout(brawler!).far[0]?.card).toBe('step-in');
     const [caster] = bodies();
     const plan = defaultLoadout(caster!);
-    expect(plan.close[0]).toBe('step-back');
-    expect(plan.mid).toContain('jutsu:blast');
+    expect(plan.close[0]?.card).toBe('step-back');
+    expect(plan.mid).toEqual([
+      { card: 'jutsu:daze', when: 'foe-readying' },
+      { card: 'jutsu:blast' },
+      { card: 'throw' },
+    ]);
+  });
+
+  it('a plain fighter closes in for full blows, and heals only when badly hurt', () => {
+    const [plain] = bodies(fighter('hero'));
+    expect(defaultLoadout(plain!).far.map((s) => s.card)).toEqual(['step-in', 'throw', 'guard']);
+    const mend: CombatTechnique = {
+      ...blast,
+      id: 'mend',
+      name: 'Mend',
+      effects: [{ verb: 'heal', power: 16 }],
+    };
+    const [healer] = bodies(fighter('hero', { techniques: [mend] }));
+    expect(defaultLoadout(healer!).close[0]).toEqual({ card: 'jutsu:mend', when: 'low-health' });
   });
 
   it('dazes a fresh foe and punishes a dazed one', () => {
     const [hero, bandit] = bodies();
     const slotted = {
       ...hero!,
-      loadout: { close: [], mid: ['jutsu:daze', 'jutsu:blast'], far: [] },
+      loadout: { close: [], mid: plainSlots(['jutsu:daze', 'jutsu:blast']), far: [] },
     };
     const dazed = chooseCard(
       slotted,
@@ -110,7 +125,7 @@ describe('plan & watch cards', () => {
 
   it('improvises a basic blow when nothing slotted can be played', () => {
     const [hero, bandit] = bodies();
-    const guardOnly = { ...hero!, loadout: { close: ['guard'], mid: [], far: [] } };
+    const guardOnly = { ...hero!, loadout: { close: plainSlots(['guard']), mid: [], far: [] } };
     expect(chooseCard(guardOnly, { band: 'close', foe: bandit }, createRng(1))).toEqual({
       kind: 'strike',
     });
@@ -124,7 +139,9 @@ describe('plan & watch engine', () => {
 
   it('opens at the card table with cards grouped by distance', () => {
     const view = engine.view(start());
-    expect(view.prompt).toBe('Round 1: pick up to 3 cards for each distance.');
+    expect(view.prompt).toBe(
+      'Round 1: pick up to 3 cards for each distance. Higher cards play first.',
+    );
     const groups = new Set(view.options.filter((o) => o.kind === 'plan').map((o) => o.group));
     expect([...groups]).toEqual(['Close', 'Mid', 'Far']);
   });
@@ -135,11 +152,11 @@ describe('plan & watch engine', () => {
     expect(option(state, 'slot:close:dodge')?.disabledReason).toBe(
       'Slots full. Take a card out first.',
     );
-    const [first] = decode(state).fighters[0]!.loadout.close;
+    const first = decode(state).fighters[0]!.loadout.close[0]?.card;
     const freed = act(engine, state, `slot:close:${first}`);
     expect(option(freed, `slot:close:${first}`)?.selected).toBe(false);
     const swapped = act(engine, freed, 'slot:close:dodge');
-    expect(decode(swapped).fighters[0]!.loadout.close).toContain('dodge');
+    expect(decode(swapped).fighters[0]!.loadout.close).toContainEqual({ card: 'dodge' });
   });
 
   it('a round plays out, then you can re-plan', () => {
@@ -150,6 +167,14 @@ describe('plan & watch engine', () => {
     expect(plan.result ?? plan.phase).toBe('loadout');
     expect(plan.round).toBe(1 + ROUND_EXCHANGES);
     expect(Object.keys(plan.seen)).toContain('bandit');
+  });
+
+  it('shows the round the player plans by, not the exchange count', () => {
+    let state = act(engine, start(), 'begin');
+    state = act(engine, state, 'next');
+    expect(engine.view(state).round).toBe(1);
+    state = act(engine, state, 'round');
+    expect(decode(state).result ?? engine.view(state).round).toBe(2);
   });
 
   it('a much stronger fighter wins over a few rounds', () => {
@@ -181,8 +206,19 @@ describe('plan & watch engine', () => {
       canFlee: true,
     } as never);
     const view = engine.view(legacy);
-    expect(view.prompt).toBe('Round 1: pick up to 3 cards for each distance.');
+    expect(view.prompt).toBe(
+      'Round 1: pick up to 3 cards for each distance. Higher cards play first.',
+    );
     expect(engine.act(legacy, { optionId: 'begin' }, createRng(1)).ok).toBe(true);
+  });
+
+  it('a fight saved before effect lists reads each technique as its old effect', () => {
+    const state = decode(start());
+    const old = { id: 'daze', name: 'Daze', discipline: 'genjutsu', effect: 'stun', power: 12 };
+    const fighters = state.fighters.map((f) => ({ ...f, techniques: [{ ...old, chakraCost: 4 }] }));
+    const resumed = encode({ ...state, fighters } as never);
+    const hero = decode(act(engine, resumed, 'begin')).fighters.find((f) => f.id === 'hero');
+    expect(hero?.techniques).toEqual([{ ...daze }]);
   });
 
   it('starts from the plan you had last time, cleaned up, and hands it back at the end', () => {
@@ -210,8 +246,8 @@ describe('plan & watch engine', () => {
       createRng(1),
     );
     expect(decode(kept).fighters[0]!.loadout).toEqual({
-      close: ['counter', 'strike'],
-      mid: ['dodge'],
+      close: plainSlots(['counter', 'strike']),
+      mid: plainSlots(['dodge']),
       far: [],
     });
     const fled = act(engine, kept, 'flee', 5);

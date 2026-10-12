@@ -4,7 +4,9 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'dist-release', 'dev-dist', 'coverage', '.dependency-cruiser.cjs'] },
+  {
+    ignores: ['dist', 'dist-release', 'dev-dist', 'coverage', '.claude', '.dependency-cruiser.cjs'],
+  },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,

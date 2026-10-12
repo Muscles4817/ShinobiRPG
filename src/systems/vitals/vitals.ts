@@ -2,8 +2,8 @@ import { clamp } from '@/core';
 import type { Stats } from '@/systems/stats';
 
 /**
- * The body's moment-to-moment condition. Health and chakra maxima derive from stats;
- * energy (fatigue) and satiety (hunger) are fixed 0–100 meters.
+ * The body's moment-to-moment condition. Health is out of a fixed 100 for everyone; the chakra
+ * maximum derives from stats; energy (fatigue) and satiety (hunger) are fixed 0–100 meters.
  */
 export interface Vitals {
   readonly health: number;
@@ -25,9 +25,11 @@ export const STARVING_THRESHOLD = 5;
 export const HUNGER_LEVELS = ['satisfied', 'peckish', 'hungry', 'starving'] as const;
 export type HungerLevel = (typeof HUNGER_LEVELS)[number];
 
-export function maxHealth(stats: Stats): number {
-  return Math.round(60 + stats.stamina * 4 + stats.strength);
-}
+/**
+ * Every human has the same health. Stats decide how fast it goes in a fight (toughness is
+ * stamina, `rules/damage.ts` in combat), not how much there is.
+ */
+export const MAX_HEALTH = 100;
 
 export function maxChakra(stats: Stats): number {
   return Math.round(30 + stats.chakraControl * 3 + stats.stamina * 1.5);
@@ -35,7 +37,7 @@ export function maxChakra(stats: Stats): number {
 
 export function fullVitals(stats: Stats): Vitals {
   return {
-    health: maxHealth(stats),
+    health: MAX_HEALTH,
     chakra: maxChakra(stats),
     energy: METER_MAX,
     satiety: 80,
@@ -52,7 +54,7 @@ export interface VitalsDelta {
 /** Applies a delta and clamps every meter to its valid range. */
 export function adjustVitals(vitals: Vitals, delta: VitalsDelta, stats: Stats): Vitals {
   return {
-    health: clamp(vitals.health + (delta.health ?? 0), 0, maxHealth(stats)),
+    health: clamp(vitals.health + (delta.health ?? 0), 0, MAX_HEALTH),
     chakra: clamp(vitals.chakra + (delta.chakra ?? 0), 0, maxChakra(stats)),
     energy: clamp(vitals.energy + (delta.energy ?? 0), 0, METER_MAX),
     satiety: clamp(vitals.satiety + (delta.satiety ?? 0), 0, METER_MAX),
@@ -76,7 +78,7 @@ export function sleepRecovery(vitals: Vitals, stats: Stats): VitalsDelta {
   return {
     energy: METER_MAX,
     chakra: maxChakra(stats),
-    health: Math.round(maxHealth(stats) * (wellFed ? 0.5 : 0.2)),
+    health: Math.round(MAX_HEALTH * (wellFed ? 0.5 : 0.2)),
   };
 }
 

@@ -12,6 +12,7 @@ import {
   decode,
   encode,
   initialFighters,
+  plainSlots,
   type Loadout,
   type PlanFighter,
   type PlanState,
@@ -51,9 +52,8 @@ const blast: CombatTechnique = {
   id: 'blast',
   name: 'Blast',
   discipline: 'ninjutsu',
-  effect: 'damage',
+  effects: [{ verb: 'damage', power: 16 }],
   chakraCost: 6,
-  power: 16,
 };
 
 const NO_CARDS: Loadout = { close: [], mid: [], far: [] };
@@ -107,9 +107,12 @@ function damageTo(defender: PlanFighter, kind: 'blow' | 'jutsu'): number {
 describe('plan & watch kits: reach', () => {
   it('an archer never attacks up close and backs away instead', () => {
     const [, archer] = pair(['archer']);
-    expect(defaultLoadout(archer!).close[0]).toBe('step-back');
-    expect(defaultLoadout(archer!).close).not.toContain('strike');
-    const slotted = { ...archer!, loadout: { ...NO_CARDS, close: ['strike', 'guard'] } };
+    expect(defaultLoadout(archer!).close[0]?.card).toBe('step-back');
+    expect(defaultLoadout(archer!).close).not.toContainEqual({ card: 'strike' });
+    const slotted = {
+      ...archer!,
+      loadout: { ...NO_CARDS, close: plainSlots(['strike', 'guard']) },
+    };
     for (let seed = 1; seed <= 20; seed++) {
       const card = chooseCard(slotted, { band: 'close', foe: undefined }, createRng(seed));
       expect(card).toEqual({ kind: 'step', direction: 'back' });
@@ -118,8 +121,8 @@ describe('plan & watch kits: reach', () => {
 
   it('a brawler closes in instead of throwing from afar', () => {
     const [, brawler] = pair(['brawler']);
-    expect(defaultLoadout(brawler!).far[0]).toBe('step-in');
-    const slotted = { ...brawler!, loadout: { ...NO_CARDS, far: ['throw'] } };
+    expect(defaultLoadout(brawler!).far[0]?.card).toBe('step-in');
+    const slotted = { ...brawler!, loadout: { ...NO_CARDS, far: plainSlots(['throw']) } };
     for (let seed = 1; seed <= 20; seed++) {
       const card = chooseCard(slotted, { band: 'far', foe: undefined }, createRng(seed));
       expect(card).toEqual({ kind: 'step', direction: 'in' });
@@ -156,18 +159,21 @@ describe('plan & watch kits: hits', () => {
 });
 
 describe('plan & watch kits: illusions', () => {
-  it('a hidden foe cannot be attacked', () => {
+  it('a hidden foe cannot be attacked: with no one in sight, the attacker searches instead', () => {
     const [hero, ghost] = pair(['illusionist']);
     expect(ghost!.hidden).toBe(true);
-    const armed = { ...hero!, loadout: { ...NO_CARDS, mid: ['throw'] } };
+    const armed = { ...hero!, loadout: { ...NO_CARDS, mid: plainSlots(['throw']) } };
     const after = resolveExchange(stateOf([armed, ghost!]), createRng(3));
-    expect(after.log).toContain("hero can't find a target.");
+    expect(after.log.some((l) => l.startsWith('hero searches') || l === 'hero spots foe!')).toBe(
+      true,
+    );
+    expect(after.log.some((l) => l.includes("hero's kunai"))).toBe(false);
     expect(after.fighters[1]?.health).toBe(ghost!.health);
   });
 
   it('Search finds a hidden foe (insight always does)', () => {
     const [hero, ghost] = pair(['illusionist'], { perks: ['insight'] });
-    const seeker = { ...hero!, loadout: { ...NO_CARDS, mid: ['search', 'throw'] } };
+    const seeker = { ...hero!, loadout: { ...NO_CARDS, mid: plainSlots(['search', 'throw']) } };
     const after = resolveExchange(stateOf([seeker, ghost!]), createRng(3));
     expect(after.log).toContain('hero spots foe!');
     expect(after.fighters[1]?.hidden).toBe(false);
@@ -175,7 +181,7 @@ describe('plan & watch kits: illusions', () => {
 
   it('Dispel spends chakra and clears your head', () => {
     const [hero, ghost] = pair(['illusionist']);
-    const caster = { ...hero!, confused: 2, loadout: { ...NO_CARDS, mid: ['dispel'] } };
+    const caster = { ...hero!, confused: 2, loadout: { ...NO_CARDS, mid: plainSlots(['dispel']) } };
     const moment = { band: 'mid' as const, foe: undefined, hiddenFoe: true };
     expect(chooseCard(caster, moment, createRng(1))).toEqual({ kind: 'dispel' });
     // The illusionist is dazed this exchange, so it can't confuse the caster again.
@@ -189,7 +195,7 @@ describe('plan & watch kits: illusions', () => {
 
   it('confused attacks sometimes go wide', () => {
     const [hero, foe] = pair([]);
-    const dazed = { ...hero!, confused: 2, loadout: { ...NO_CARDS, mid: ['throw'] } };
+    const dazed = { ...hero!, confused: 2, loadout: { ...NO_CARDS, mid: plainSlots(['throw']) } };
     const logs = Array.from({ length: 20 }, (_, seed) =>
       resolveExchange(stateOf([dazed, foe!]), createRng(seed)).log.join('\n'),
     );
@@ -213,7 +219,11 @@ describe('plan & watch kits: illusions', () => {
 describe('plan & watch kits: saves', () => {
   it('remembers Search and Dispel in a loadout', () => {
     const [hero] = pair([], { techniques: [blast] });
-    const plan = { close: ['search'], mid: ['dispel', 'jutsu:blast'], far: [] };
+    const plan = {
+      close: plainSlots(['search']),
+      mid: plainSlots(['dispel', 'jutsu:blast']),
+      far: [],
+    };
     expect(rememberedLoadout(plan, hero!)).toEqual(plan);
   });
 

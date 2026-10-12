@@ -1,6 +1,8 @@
 import type { CombatAttributes, CombatTechnique } from '../contract';
 import {
   confuseChance,
+  CONFUSION_TURNS,
+  confusionTurns,
   dispelChance,
   rehidesNow,
   searchChance,
@@ -36,9 +38,8 @@ const seal: CombatTechnique = {
   id: 'seal',
   name: 'Seal',
   discipline: 'fuuinjutsu',
-  effect: 'damage',
+  effects: [{ verb: 'damage', power: 10 }],
   chakraCost: 5,
-  power: 10,
 };
 
 describe('kits', () => {
@@ -92,5 +93,13 @@ describe('hidden and confused', () => {
     expect(dispelChance(strong, illusionist)).toBeGreaterThan(dispelChance(weak, illusionist));
     expect(confuseChance(illusionist, weak)).toBeGreaterThan(confuseChance(illusionist, strong));
     expect(shakeOffChance(strong)).toBeGreaterThan(shakeOffChance(weak));
+  });
+
+  it('chakra control breaks an illusion and cuts confusion short', () => {
+    const control = { attributes: attributes({ chakraControl: 14 }), perks: [] };
+    const will = { attributes: attributes({ willpower: 14 }), perks: [] };
+    expect(dispelChance(control, illusionist)).toBeGreaterThan(dispelChance(will, illusionist));
+    expect(confusionTurns(illusionist, control)).toBeLessThan(CONFUSION_TURNS);
+    expect(confusionTurns(illusionist, will)).toBe(CONFUSION_TURNS);
   });
 });

@@ -75,7 +75,8 @@ ui ──► game ──► content ──► systems ──► core
 5. **Combat is behind a contract** (`src/systems/combat/contract.ts`). The game builds a
    `CombatSetup` and reads a `CombatOutcome`; the UI renders a generic `CombatView`; saves hold
    an opaque `CombatState`. Only the engine looks inside its own state. A setup has
-   `allies` (teammates on team missions) who act on their own; a fight's purpose (mission,
+   `allies` (teammates on team missions) who fight by a `stance` and take only the `orders`
+   the game says your bonds have earned (`game/people/teamOrders.ts`); a fight's purpose (mission,
    spar) is game state (`people.sparringWith`), never the engine's concern. The player's
    choice is a `CombatChoice` (option id + optional target); the view may add `range`,
    `prompt`, `meters` and per-combatant `intent` (a foe's telegraphed next move), and options say their `kind` so one fight
@@ -127,6 +128,19 @@ ui ──► game ──► content ──► systems ──► core
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
     styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`).
+    Each side stands in a front and a back **row** (`rules/rows.ts`, placed by kit or
+    `CombatantSetup.row`): a blow up close can't reach the back row while the front stands;
+    throws, longer-reach techniques and area effects can. Ask `canReach`, never test rows inline.
+    **Health is 100 for every human** (`MAX_HEALTH`); creatures scale it with
+    `EnemyDef.healthScale`. Damage comes from the **gap** between attacker power and defender
+    defence (`rules/damage.ts`: a ratio of ratings, narrow variance), so equals trade the same
+    blows at every grade and each grade of difference is decisive. Defence has layers:
+    evasion (speed, perception), guard and counter (taijutsu, strength) and resistance
+    (willpower against genjutsu, perception against the rest) in `rules/defence.ts`; toughness
+    is stamina (plus `armoured` kit); healing is ninjutsu with chakra control; chakra control
+    breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
+    foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
+    lethality targets; retune the named constants there, not by eye.
     Every number has a frame of reference: `statTier` grades a stat value E–S (E–D genin, C chūnin,
     B–A jōnin, S kage) and
     `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you
@@ -215,10 +229,16 @@ ui ──► game ──► content ──► systems ──► core
   schedule of place ids in the start location). Senseis need `role: 'sensei'` and a
   `sensei` profile (style, lesson text, `teaches` technique ids); at least two specialties
   must exist for the team choice (validated).
-- **Add an enemy:** add an `EnemyDef` (stats, techniques, optional `nature`, `traits`) to the
+- **Add an enemy:** add an `EnemyDef` (stats, techniques, optional `nature`, `traits`, and
+  `healthScale` for a creature bigger or smaller than a person) to the
   pack's `enemies` and use it in a mission's combat stage. A new trait goes in
   `COMBAT_TRAITS`, its rule in `rules/kit.ts` or `rules/conditions.ts`, its counter text in
   `game/scouting.ts`, and every engine must honour it.
+- **Add a technique verb:** a technique's `effects` is a list of verbs applied in order
+  (`systems/techniques/effects.ts`). A new verb goes in `VERBS` with its scaling profile
+  (which user stats drive it, which target stats resist it) in `rules/verbs/profiles.ts`;
+  Plan & Watch applies it in `engines/plan/jutsu.ts`. Shelved engines read a technique
+  through `primaryEffect`.
 - **Add a fight tool:** add a `ToolDef` to `shared/tools.ts` (or a pack's own list) with an
   existing `effect` and list it in a gear place's `toolIds`. A new effect goes in
   `COMBAT_ITEM_EFFECTS` with its rule in `rules/items.ts`; every engine must offer it.
@@ -227,6 +247,9 @@ ui ──► game ──► content ──► systems ──► core
   jobs that are always available (every pack needs one a fresh genin can take — validated).
 - **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
   fight as allies and each gains bond on success. Offer it at a mission hall as usual.
+- **Add a combination technique:** two `TechniqueDef`s whose `combo.partnerTechniqueId` name
+  each other (validated); offer them at the academy. A teammate knows the half in their
+  specialty, and a half plays only beside someone on your side who knows the other.
 - **Add gear:** add a `GearDef` (slot, cost, `statBonuses`) to the pack's `gear` and list it at
   a `gear` place (a smith, an outfitter). **Add an ingredient or recipe:** add it to
   `shared/kitchen.ts` (or a pack's own list); ingredients must be sold at a market stall's

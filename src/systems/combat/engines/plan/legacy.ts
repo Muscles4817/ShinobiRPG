@@ -1,6 +1,9 @@
 import { withKit } from '../../rules/body';
+import { formed, preferredRow } from '../../rules/rows';
+import { upgradeTechnique } from '../../rules/verbs';
 import { defaultLoadout } from './cards';
-import { EMPTY_LOADOUT, type PlanFighter, type PlanState } from './state';
+import type { RangeBand } from '../../contract';
+import { EMPTY_LOADOUT, type CardId, type PlanFighter, type PlanState, type Slot } from './state';
 
 /**
  * Saves made mid-fight before cards per distance existed hold a single tactic. They resume at
@@ -29,13 +32,16 @@ interface LegacyState extends Omit<
 
 /**
  * Fighters saved before combat kits (or fight tools) have no traits, hidden, confused or
- * items; they fight as before, with an empty pouch.
+ * items; they fight as before, with an empty pouch. Their techniques may predate effect lists.
  * Runs before `upgradeLegacy`, whose default cards read traits.
  */
 export function withKits(state: PlanState): PlanState {
   // Saved state may predate kits; every field withKit fills is checked before use.
   const raw = state as unknown as { readonly fighters: readonly LegacyFighter[] };
-  return { ...state, fighters: raw.fighters.map((f) => withKit(f)) as PlanFighter[] };
+  const fighters = raw.fighters.map((f) =>
+    withKit({ ...f, techniques: f.techniques.map(upgradeTechnique) }),
+  );
+  return { ...state, fighters: fighters as PlanFighter[] };
 }
 
 export function upgradeLegacy(state: PlanState): PlanState {
@@ -70,4 +76,46 @@ export function withIntents(state: PlanState): PlanState {
   // Saved state may predate intents; the field is checked before use.
   const raw = state as Omit<PlanState, 'intents'> & { readonly intents?: PlanState['intents'] };
   return raw.intents ? state : { ...state, intents: {} };
+}
+
+/** A slot as fights saved before priorities held it: a bare card id. */
+type LegacySlot = Slot | CardId;
+
+function slotOf(entry: LegacySlot): Slot {
+  return typeof entry === 'string' ? { card: entry } : entry;
+}
+
+/**
+ * Fights saved before slots had conditions hold bare card ids per distance; each becomes a
+ * slot that always plays, in the order it was slotted. Runs after `upgradeLegacy`, which
+ * gives older fighters their loadouts.
+ */
+export function withSlots(state: PlanState): PlanState {
+  // Saved state may predate slots; each entry's type is checked before use.
+  const raw = state.fighters as readonly (Omit<PlanFighter, 'loadout'> & {
+    readonly loadout: Readonly<Record<RangeBand, readonly LegacySlot[]>>;
+  })[];
+  const fighters = raw.map((f) => ({
+    ...f,
+    loadout: {
+      close: f.loadout.close.map(slotOf),
+      mid: f.loadout.mid.map(slotOf),
+      far: f.loadout.far.map(slotOf),
+    },
+  }));
+  return { ...state, fighters };
+}
+
+/**
+ * Fights saved before rows stand in the formation their kits give them, as a fight started now
+ * would. Runs after `withKits`, since placement reads traits.
+ */
+export function withRows(state: PlanState): PlanState {
+  // Saved state may predate rows; the field is checked before use.
+  const raw = state.fighters as readonly (Omit<PlanFighter, 'row'> & {
+    readonly row?: PlanFighter['row'];
+  })[];
+  if (raw.every((f) => f.row !== undefined)) return state;
+  const placed = raw.map((f) => ({ ...f, row: f.row ?? preferredRow(f) }));
+  return { ...state, fighters: formed(placed) };
 }
