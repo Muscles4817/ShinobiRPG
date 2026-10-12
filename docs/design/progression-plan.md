@@ -706,8 +706,28 @@ These were folded into the D2 discussion. Where each landed:
 
 ### Run log
 
-_(filled in during the run)_
+**Phase 0 (done).**
+
+- 0.1: Classic is shelved; save v14 moves every save to `plan-v1`. A shelved engine
+  still finishes a fight in progress (`GameContext.shelvedEngines`). The style picker
+  hides when there is only one style.
+- 0.2: The bench (`src/test/bench/`) and the pacing harness (`src/test/pacing/`) are in.
+  Baseline measurements, the targets for Phase 1 and 2 to fix:
+  - Equal fights take about 15–20 exchanges (target 4–8), and the player's default plan
+    wins only 25–40% of them against the foe AI.
+  - One grade apart, the stronger side always wins but takes about 12–13 exchanges. Two
+    apart takes about 9 (target 1–2).
+  - **Fighters who start hidden are never hit.** Hidden against hidden stalls 100% of the
+    time. (Phase 1.4b/c: sense, field, search balance.)
+  - The rusher and the powerhouse lose every fight to a trickster.
+  - Growth: a focused stat goes D→C by day 3, A by day 12 and S by about day 22
+    (target about 60 days to C-level readiness). Phase 2.
 
 ### Decisions made during the run
 
-_(filled in during the run, for review)_
+- 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
+  (otherwise they'd stay on offer). Deck isn't routable, since its fights were already
+  called off at v13.
+- 0.2: "chūnin readiness" is measured, for now, as the focused stat reaching grade C. The
+  scripted player goes to hospital below 40% health, because missions refuse anyone under
+  that.
