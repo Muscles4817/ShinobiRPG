@@ -123,8 +123,8 @@ export const D_RANK_ROAD: readonly MissionTemplate[] = [
           { label: 'Keep yourself awake', stat: 'willpower', difficulty: 8 },
           { label: 'Walk the rounds all night', stat: 'stamina', difficulty: 8 },
         ],
-        success: 'You are wide awake when the shutter creaks.',
-        failure: 'You jerk awake to the sound of a shutter creaking. Someone is already inside.',
+        success: 'You are wide awake when something moves in the dark.',
+        failure: 'You jerk awake to a sound in the dark. Someone is already inside.',
         onFailure: 'penalty',
       },
       {

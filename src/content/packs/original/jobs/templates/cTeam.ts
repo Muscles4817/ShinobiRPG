@@ -40,7 +40,7 @@ export const C_TEAM_ROAD: readonly MissionTemplate[] = [
           { label: 'Work out where you’d strike', stat: 'intellect', difficulty: 10 },
         ],
         success: 'You see them before they see you, and the carts halt out of bowshot.',
-        failure: 'An arrow thuds into the lead cart. A drover is hurt, and the oxen bolt.',
+        failure: 'An arrow thuds in among the loads. A drover is hurt, and the beasts bolt.',
         onFailure: 'penalty',
         failureDamage: 6,
       },
