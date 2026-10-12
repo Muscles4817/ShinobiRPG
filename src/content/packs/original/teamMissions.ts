@@ -114,8 +114,10 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         failureDamage: 8,
       },
       {
-        kind: 'combat',
-        text: 'A deserter steps out of the biggest kiln with a black blade, and his crew close in behind.',
+        kind: 'encounter',
+        template: 'guarded-building',
+        job: 'eliminate',
+        text: 'Firelight spills from the biggest kiln. A deserter with a black blade holds court inside, his crew on watch.',
         enemyIds: ['bandit-chief', 'academy-dropout', 'bandit-archer', 'bandit-thug'],
         canFlee: false,
       },
