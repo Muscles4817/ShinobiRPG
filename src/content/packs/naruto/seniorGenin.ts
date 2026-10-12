@@ -61,7 +61,6 @@ export const SENIOR_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'taijutsu',
     bio: 'A branch-house prodigy who believes fate is decided at birth. Rarely wrong in a fight.',
-    teacher: { teaches: ['sixty-four-palms'] },
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',

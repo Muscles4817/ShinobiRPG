@@ -20,6 +20,13 @@ export const GUY_TEACHER: TeacherProfile = {
   price: { kind: 'bond', minStage: 1, line: '“Anyone who burns with youth may join me!”' },
 };
 
+export const IRUKA_TEACHER: TeacherProfile = {
+  quirk: 'patient',
+  teaches: ['substitution-jutsu', 'clone-jutsu'],
+  sessionsPerWeek: 3,
+  price: { kind: 'bond', minStage: 0, line: '“Come by after class. I’ll always make time.”' },
+};
+
 export const KURENAI_TEACHER: TeacherProfile = {
   quirk: 'patient',
   steers: { focus: 'specialty', freeAtStage: 2 },

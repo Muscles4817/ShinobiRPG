@@ -1,0 +1,212 @@
+import { look } from '../../look';
+import { statLine } from '../../statLine';
+import type { PersonDef } from '../../types';
+
+/**
+ * Tōrōgakure's jōnin who don't lead a team, and its one living legend. Sized from the fan
+ * pack's village baseline (see the progression plan's "Village baseline").
+ */
+export const VILLAGE_JONIN: readonly PersonDef[] = [
+  {
+    id: 'kagero',
+    name: 'Kagerō',
+    familyName: 'Usui',
+    role: 'shinobi',
+    title: 'Special Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { genjutsu: 'B', intellect: 'A', willpower: 'B', perception: 'B' }),
+    traitIds: ['calm', 'cunning'],
+    appearance: look('long', {
+      hair: '#3a3a42',
+      eyes: '#2a1d14',
+      skin: '#f3d2b3',
+      outfit: '#2a2a32',
+    }),
+    specialty: 'genjutsu',
+    bio: 'Questions prisoners in the lantern cellar. Nobody has ever heard him raise his voice.',
+    schedule: {
+      morning: null,
+      afternoon: 'mission-hall',
+      evening: 'training-grounds',
+      night: null,
+    },
+    teacher: {
+      quirk: 'harsh',
+      steers: { focus: 'weakest', freeAtStage: 3 },
+      teaches: ['lantern-question', 'whispering-dread'],
+      price: { kind: 'bond', minStage: 3, line: '“I teach people I trust. I trust very few.”' },
+    },
+  },
+  {
+    id: 'minase',
+    name: 'Haruto',
+    familyName: 'Minase',
+    role: 'shinobi',
+    title: 'Jōnin, river gate',
+    rank: 'jonin',
+    stats: statLine('C', { ninjutsu: 'B', chakraControl: 'B', stamina: 'B' }),
+    traitIds: ['kind', 'lazy'],
+    favouriteRecipeId: 'grilled-fish-set',
+    appearance: look('short', {
+      hair: '#2a1d14',
+      eyes: '#4a7a9a',
+      skin: '#c68e63',
+      outfit: '#2f4f7a',
+    }),
+    specialty: 'ninjutsu',
+    bio: 'Keeps the river gate and fishes from it when nobody is coming. Somebody usually is.',
+    schedule: {
+      morning: 'mission-hall',
+      afternoon: 'training-grounds',
+      evening: 'market-street',
+      night: 'izakaya',
+    },
+    teacher: {
+      quirk: 'patient',
+      teaches: ['river-fog', 'tide-lash'],
+      price: { kind: 'ryo', perSession: 30, line: '“Bait money. The fish are getting choosy.”' },
+    },
+  },
+  {
+    id: 'suzu',
+    name: 'Suzu',
+    familyName: 'Kanade',
+    role: 'shinobi',
+    title: 'Night Watch',
+    rank: 'jonin',
+    stats: statLine('C', { taijutsu: 'B', speed: 'A', perception: 'B' }),
+    traitIds: ['focused', 'curious'],
+    appearance: look('ponytail', {
+      hair: '#1b1a22',
+      eyes: '#7a4a8a',
+      skin: '#e2b48c',
+      outfit: '#2a2a32',
+    }),
+    specialty: 'taijutsu',
+    bio: 'One of the masked Night Watch. By day she sells moth charms and pretends not to know you.',
+    schedule: {
+      morning: null,
+      afternoon: 'market-street',
+      evening: 'training-grounds',
+      night: null,
+    },
+    teacher: {
+      quirk: 'natural',
+      teaches: ['moth-needle', 'snuffed-wick-step'],
+      price: { kind: 'bond', minStage: 2 },
+    },
+  },
+  {
+    id: 'bunta',
+    name: 'Bunta',
+    familyName: 'Okiya',
+    role: 'shinobi',
+    title: 'Special Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { fuuinjutsu: 'B', intellect: 'B', perception: 21 }),
+    traitIds: ['cunning', 'lazy'],
+    appearance: look(
+      'spiky',
+      { hair: '#6a4a2a', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3e6b3a' },
+      'belt',
+    ),
+    specialty: 'fuuinjutsu',
+    bio: 'Mines the village roads every war and unmines them every peace. Misses the odd one.',
+    schedule: {
+      morning: 'training-grounds',
+      afternoon: null,
+      evening: 'izakaya',
+      night: 'izakaya',
+    },
+    teacher: {
+      quirk: 'distracted',
+      teaches: ['snare-ward', 'pitch-snare'],
+      price: {
+        kind: 'all',
+        parts: [
+          { kind: 'ryo', perSession: 15, line: '“Pitch and paper cost money, kid.”' },
+          {
+            kind: 'mission',
+            missionId: 'tea-merchant-escort',
+            line: '“Walk the tea road once. See what I mean about the odd one.”',
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'tamaki',
+    name: 'Tamaki',
+    familyName: 'Shirai',
+    role: 'shinobi',
+    title: 'Jōnin, medic',
+    rank: 'jonin',
+    stats: statLine('C', { chakraControl: 'A', ninjutsu: 'B', intellect: 'B' }),
+    traitIds: ['kind', 'diligent'],
+    appearance: look('buns', {
+      hair: '#4a2f1d',
+      eyes: '#2a1d14',
+      skin: '#f3d2b3',
+      outfit: '#e8e0d0',
+    }),
+    specialty: 'ninjutsu',
+    bio: 'Runs the hospital’s night ward. Has stitched up half the village and scolded all of it.',
+    schedule: {
+      morning: 'training-grounds',
+      afternoon: 'hospital',
+      evening: 'hospital',
+      night: null,
+    },
+    teacher: {
+      quirk: 'patient',
+      teaches: ['mending-glow', 'wick-sense'],
+      price: {
+        kind: 'mission',
+        missionId: 'lantern-keepers-cat',
+        line: '“Find the lantern keeper’s cat. It keeps getting into my ward.”',
+      },
+    },
+  },
+  {
+    id: 'koun',
+    name: 'Kōun',
+    familyName: 'Amagiri',
+    role: 'shinobi',
+    title: 'The Ash Lantern',
+    rank: 'kage',
+    stats: statLine('B', {
+      taijutsu: 42,
+      willpower: 'A',
+      intellect: 'A',
+      strength: 'A',
+      speed: 'C',
+      stamina: 'C',
+      genjutsu: 'C',
+    }),
+    traitIds: ['calm', 'humble'],
+    appearance: look(
+      'shaved',
+      { hair: '#e8e0d0', eyes: '#2a1d14', skin: '#a8714c', outfit: '#3e4a52' },
+      'arm',
+    ),
+    specialty: 'taijutsu',
+    bio: 'Held the east bridge alone in the last war. Retired now; sweeps the training ground at dawn.',
+    schedule: { morning: 'training-grounds', afternoon: null, evening: null, night: 'izakaya' },
+    teacher: {
+      quirk: 'natural',
+      steers: { focus: 'weakest', freeAtStage: 4 },
+      teaches: ['temple-bell-palm', 'kindled-pulse'],
+      price: {
+        kind: 'all',
+        parts: [
+          { kind: 'bond', minStage: 3 },
+          {
+            kind: 'favour',
+            favourId: 'koun-tea',
+            ask: 'Kōun wants someone to sit and drink tea with him, and not ask about the war.',
+          },
+        ],
+      },
+    },
+  },
+];

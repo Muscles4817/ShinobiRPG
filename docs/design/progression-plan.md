@@ -618,6 +618,41 @@ These were folded into the D2 discussion. Where each landed:
 - Record the totals as the village baseline.
 - Size the original pack's Tōrōgakure from it (authored plus generated).
 
+### Village baseline
+
+Recorded in step 3.5 from the Naruto pack's Konoha, set in Part 1 between graduation and the
+Chūnin Exams (the Third Hokage leads; Team Guy is a year ahead of the player's class). The
+Sannin, Shizune and Yamato are away in that era and Mizuki is gone on graduation night, so none
+of them are in the village. "Best" is a person's highest stat, "specialty" their grade in it.
+
+| Rank          | Konoha (authored)                              | Best stat   | Specialty             | Teacher profiles                    |
+| ------------- | ---------------------------------------------- | ----------- | --------------------- | ----------------------------------- |
+| Genin         | 12, plus 6 generated classmates and the player | D ×12       | D ×12                 | none (they teach by default)        |
+| Chūnin        | 4                                              | C ×4        | C ×3 (Iruka has none) | 4                                   |
+| Jōnin         | 18: 5 senseis, 7 without a team, 6 clan heads  | A ×12, B ×6 | A ×10, B ×8           | 18                                  |
+| Legend (kage) | 1, the Hokage                                  | S           | none                  | none (never at the training ground) |
+| Civilians     | 2                                              | E           | none                  | none                                |
+
+So a village is roughly **one legend, about twenty jōnin, a handful of named chūnin and a
+genin year or two of about a dozen authored plus the generated class**. Jōnin are two-thirds
+A at their best, special jōnin and the less famous B; every jōnin teaches something. Chūnin
+sit at C. The canon gives few named chūnin; the generated population is where the rank fills
+out later (Phase 6).
+
+**Tōrōgakure, sized from it.** Its clans are four to Konoha's eight, and its authored genin
+six to twelve, so it has a smaller authored roster in the same shape:
+
+| Rank          | Tōrōgakure (authored)                            | Best stat   | Specialty           | Teacher profiles |
+| ------------- | ------------------------------------------------ | ----------- | ------------------- | ---------------- |
+| Genin         | 6, plus 6 generated and the player               | D ×6        | D ×6                | none             |
+| Chūnin        | 4: Rin and three more                            | C ×4        | C ×3 (Rin has none) | 3                |
+| Jōnin         | 14: 5 senseis, 5 without a team, 4 clan heads    | A ×11, B ×3 | A ×8, B ×6          | 14               |
+| Legend (kage) | 2: the Tōrokage and a retired legend who teaches | S ×2        | S ×1                | 1                |
+| Civilians     | 1                                                | D           | none                | none             |
+
+Unlike Konoha in its era, Tōrōgakure keeps one legend at home (Kōun, the Ash Lantern), so the
+legend tier has a teacher in the original pack.
+
 ### Phase 4: Techniques and gear
 
 **4.1 Technique ranks.**
@@ -915,6 +950,20 @@ statId }` (`game/actions/trainWith.ts`): at a training place, anyone ranked shin
   it's on offer and with any genin ahead in their focus; taijutsu reaches C on day 59 (drilling
   alone, day 73). The window is now 60 ± 10, and a new assertion holds the teacher run at least
   seven days ahead of the solo one.
+- 3.5: the village's people. The Naruto pack gains seven jōnin without a team (Ibiki, Genma,
+  Raidō, Aoba, Hayate, Yūgao, Ebisu; `naruto/jonin.ts`), six clan heads (Hiashi, Inoichi,
+  Shikaku, Chōza, Tsume, Shibi; `naruto/clanHeads.ts`) and three chūnin (Izumo, Kotetsu, Hana;
+  `naruto/chunin.ts`), each with rank, stats, schedule, bio and a teacher profile (quirk, price,
+  `teaches`); Iruka gets a profile too and stays late at the training ground at night. Five new
+  signature techniques (`naruto/rosterTechniques.ts`) and the favours Ibiki and Shikaku ask
+  (`naruto/rosterConversations.ts`). The original pack is sized from the baseline (see "Village
+  baseline"): five jōnin and a retired legend (`original/jonin.ts`), four clan heads
+  (`original/clanHeads.ts`), three chūnin (`original/chunin.ts`), three techniques and two
+  favours. A new `PersonRole`, `shinobi` (chūnin, jōnin or kage with no post the game models);
+  clan heads are `leader`s. A teacher's clan techniques go only to members of that clan
+  (`nextSignature`), and `validateTeachers` now checks that a teacher who isn't a sensei comes to
+  a training place at some hour and teaches only their own clan's techniques. Release markers
+  add Ibiki, Hiashi and Shikaku. No save change.
 
 **Phase 4 (in progress).**
 
@@ -1145,6 +1194,22 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   session, so "Your next lesson is in N days" counts to the week's turn.
 - 3.4: a session is two slots and 30 energy, like the lesson was; the support-stat gain uses the
   teacher's value there too, so a specialist who is weaker in it teaches it almost nothing.
+- 3.5: the era is Part 1 before the Chūnin Exams, matching the pack's senseis and genin: no
+  Sannin, Shizune or Yamato (away), no Mizuki (gone on graduation night), Hayate alive. The
+  Hokage has no teacher profile and keeps to the mission desk; the legend tier is taught in the
+  original pack only, by a retired legend.
+- 3.5: people with a rank but no post (examiners, guards, ANBU, gate chūnin) get a new role,
+  `shinobi`, rather than `sensei` (which would offer them at team assignment) or `instructor`.
+  Clan heads are `leader`s; Shikaku is titled Jōnin Commander but is a jōnin (S is kage-only).
+- 3.5: clan heads teach their clan's techniques, but signatures were taught to anyone; a clan's
+  techniques now go only to its members (an outsider can still train stats with the head). This
+  is the "Clan: the clan's people" source from D2.
+- 3.5: a teacher must be reachable to count as "learnable in principle": validation asks every
+  non-sensei teacher to be at a training place in some slot (senseis come to their own team).
+  New teachers' schedules each pass the training ground once, spread over the slots.
+- 3.5: Rin (original) has no teacher profile, as before: her schedule never reaches the training
+  ground and the tavern's regulars depend on it. Iruka's does (his night slot), since Konoha's
+  academy instructor was the obvious first teacher.
 - 4.1: ranks came from the old requirement in the art (5 or less E, 6–10 D, 11–14 C) with
   judgement for the rest: trumps A or S, sensei signatures D–C (Lightning Blade A, Front Lotus
   B). Physical needs kept: medical and the fine water jutsu need D control, the clone techniques

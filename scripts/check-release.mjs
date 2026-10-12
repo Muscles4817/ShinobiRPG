@@ -3,7 +3,17 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const FAN_MARKERS = ['Konohagakure', 'Hokage', 'Ichiraku', 'Iruka', 'Sharingan', 'Kakashi'];
+const FAN_MARKERS = [
+  'Konohagakure',
+  'Hokage',
+  'Ichiraku',
+  'Iruka',
+  'Sharingan',
+  'Kakashi',
+  'Ibiki',
+  'Hiashi',
+  'Shikaku',
+];
 
 function files(dir) {
   return readdirSync(dir).flatMap((name) => {

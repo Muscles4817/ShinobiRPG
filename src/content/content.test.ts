@@ -124,7 +124,11 @@ describe('content validation', () => {
       if (p.id === 'tsune') {
         return {
           ...p,
-          teacher: { quirk: 'patient', teaches: [], price: { kind: 'bond', minStage: 1 } },
+          teacher: {
+            quirk: 'patient',
+            teaches: ['forge-cut'],
+            price: { kind: 'bond', minStage: 1 },
+          },
         };
       }
       return p;
@@ -143,6 +147,10 @@ describe('content validation', () => {
       'favour "yomi-grave-lantern" is done in conversation but no teacher asks for it',
     );
     expect(problems).toContain('teacher "tsune" is a civilian and can’t teach');
+    expect(problems).toContain('teacher "tsune" never comes to a training place');
+    expect(problems).toContain(
+      'teacher "tsune" teaches "forge-cut" but isn’t of the kurogane clan',
+    );
   });
 
   it('detects an empower that costs nothing', () => {

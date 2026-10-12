@@ -175,6 +175,24 @@ describe('training with other teachers', () => {
     );
   });
 
+  it('a clan head teaches the clan’s own techniques only to its members', () => {
+    const daigoKenjutsu = { type: 'trainWith', personId: 'daigo', statId: 'kenjutsu' } as const;
+    const evening = withBond({ ...at(newGame(), EVENING), wallet: { ryo: 100 } }, 'daigo', 30);
+    // Forge Cut is kenjutsu, so it needs a blade in hand (4.3) whoever teaches it.
+    const blade = 'lantern-steel-tanto';
+    const as = (clanId: string): GameState => ({
+      ...evening,
+      character: { ...evening.character, clanId },
+      inventory: { ...evening.inventory, gear: [blade], equipped: { weapon: blade } },
+    });
+    const offer = (state: GameState) =>
+      trainingView(state, ctx)?.teachers.find((t) => t.person.id === 'daigo');
+    expect(offer(as('none'))?.signature).toBeNull();
+    expect(act(as('none'), daigoKenjutsu).techniques.progress['forge-cut']).toBeUndefined();
+    expect(offer(as('kurogane'))?.signature?.name).toBe('Forge Cut');
+    expect(act(as('kurogane'), daigoKenjutsu).techniques.progress['forge-cut']).toBeGreaterThan(0);
+  });
+
   it('a jōnin teaches better than a genin, and civilians don’t teach', () => {
     const state = newGame();
     expect(teachingFactor(requirePerson(state, ctx, 'goran'))).toBeGreaterThan(
