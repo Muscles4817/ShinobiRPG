@@ -230,7 +230,7 @@ describe('App (smoke test)', () => {
     }
     await user.click(screen.getByRole('button', { name: /^Begin the fight/ }));
     await user.click(screen.getByRole('button', { name: /^Watch the round/ }));
-    expect(screen.queryByText(/End of round 1/) ?? screen.queryByRole('dialog')).not.toBeNull();
+    expect(screen.queryByText(/The round is over/) ?? screen.queryByRole('dialog')).not.toBeNull();
   });
 
   it('orders the plan and sets when and at whom each card plays', async () => {

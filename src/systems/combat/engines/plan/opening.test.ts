@@ -106,7 +106,7 @@ describe('plan & watch openings', () => {
     for (const seed of [1, 2, 3, 4]) {
       const state = engine.start(fight, createRng(seed));
       const log = engine.view(act(engine, act(engine, state, 'begin'), 'next', seed)).log;
-      const exchange = log.slice(log.indexOf('— Exchange 1 —') + 1);
+      const exchange = log.slice(log.indexOf('— First exchange —') + 1);
       expect(exchange[0]).toMatch(/^bandit/);
     }
   });

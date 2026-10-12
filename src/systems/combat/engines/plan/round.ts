@@ -45,6 +45,8 @@ const STEP_BASE = 0.55;
 const STEP_PER_SPEED = 0.04;
 /** Initiative the side that moved first gets in exchange 1: more than any speed gap. */
 const FIRST_MOVER_LEAD = 1000;
+/** How the log marks each exchange of a round: in words, since story text shows no numbers. */
+const EXCHANGE_NAMES = ['First', 'Second', 'Third', 'Last'] as const;
 
 /** Foes acting on instinct pick a target at random. */
 function targetFor(foes: readonly PlanFighter[], rng: Rng) {
@@ -211,7 +213,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     opening: state.exchange === 0,
     fighters: [...state.fighters],
     range: state.range,
-    lines: [`— Exchange ${state.round} —`],
+    lines: [`— ${EXCHANGE_NAMES[state.exchange] ?? 'Another'} exchange —`],
     seen: state.seen,
     intents: state.intents,
     ...(state.field ? { field: state.field } : {}),

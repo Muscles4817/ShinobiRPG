@@ -133,7 +133,7 @@ function endOfRound(next: PlanState): PlanState {
     bout: next.bout + 1,
     exchange: 0,
     fighters: substitutionsReady(next.fighters),
-    log: [...next.log, `— End of round ${next.bout}. Change your cards if you like. —`],
+    log: [...next.log, '— The round is over. Change your cards if you like. —'],
   };
 }
 
@@ -166,8 +166,11 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   const planned = editPlan(state, optionId) ?? editTeam(state, optionId);
   if (planned) return ok(planned);
   switch (optionId) {
-    case 'begin':
-      return ok({ ...state, phase: 'fight', log: [...state.log, `— Round ${state.bout} —`] });
+    case 'begin': {
+      // Dividers are story text too: no numbers (the round number shows above the log).
+      const divider = state.bout === 1 ? '— The fight begins —' : '— The next round begins —';
+      return ok({ ...state, phase: 'fight', log: [...state.log, divider] });
+    }
     case 'flee':
       return ok(flee(state, rng));
     case 'round':
