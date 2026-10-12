@@ -34,7 +34,10 @@ function physical(t: CombatTechnique): boolean {
  */
 function daze(round: Round, target: PlanFighter): Round {
   return say(
-    { ...round, fighters: patch(round.fighters, target.id, { stunned: 1 }) },
+    {
+      ...round,
+      fighters: patch(round.fighters, target.id, { stunned: 1, openUntil: round.number + 1 }),
+    },
     `${target.name} is dazed!`,
   );
 }

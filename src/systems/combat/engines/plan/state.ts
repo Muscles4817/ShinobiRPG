@@ -43,9 +43,28 @@ export function plainSlots(cards: readonly CardId[]): Slot[] {
 }
 
 export interface PlanFighter extends Body {
+  /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;
   readonly loadout: Loadout;
+  /**
+   * The last exchange a daze leaves this fighter open (no defences, a target for finishers),
+   * even after the lost turn: through the exchange after the daze, so whoever dazed them
+   * gets their next turn against it. Absent when not dazed (and in fights saved before it).
+   */
+  readonly openUntil?: number;
+}
+
+/** Dazed: about to lose a turn, or still reeling from one. */
+export function isDazed(f: Pick<PlanFighter, 'stunned' | 'openUntil'>): boolean {
+  return f.stunned > 0 || f.openUntil !== undefined;
+}
+
+/** At the end of an exchange: a daze whose last open exchange this was wears off. */
+export function wearOffDaze(f: PlanFighter, exchange: number): PlanFighter {
+  if (f.openUntil === undefined || f.openUntil > exchange) return f;
+  const { openUntil: _done, ...rest } = f;
+  return rest;
 }
 
 export interface PlanState {
@@ -124,7 +143,7 @@ export function patch(
   change: Partial<
     Pick<
       PlanFighter,
-      'health' | 'chakra' | 'stunned' | 'sealed' | 'loadout' | 'hidden' | 'confused'
+      'health' | 'chakra' | 'stunned' | 'sealed' | 'loadout' | 'hidden' | 'confused' | 'openUntil'
     >
   >,
 ): PlanFighter[] {

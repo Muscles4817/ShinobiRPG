@@ -6,7 +6,7 @@ import { RANGE_BANDS } from '../../rules/range';
 import { hasVerb, techniquePower } from '../../rules/verbs';
 import { isOffence, playable, slotted, type Card } from './cards';
 import { toolInstinct } from './pouch';
-import type { PlanFighter } from './state';
+import { isDazed, type PlanFighter } from './state';
 
 /**
  * Which slotted card a fighter plays this exchange. Fighters follow a few instincts (heal when
@@ -85,10 +85,10 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   const reaches = canAttackFrom(self, band);
   const harmful = ready.filter((c) => c.kind === 'step' || (isOffence(c) && reaches));
   const daze = jutsu(harmful, (t) => hasVerb(t, 'daze') || hasVerb(t, 'seal'));
-  const fresh = foe?.stunned === 0 && foe.sealed === 0;
+  const fresh = foe !== undefined && !isDazed(foe) && foe.sealed === 0;
   if (daze && fresh && rng.chance(DAZE_FIRST_CHANCE)) return daze;
   const finisher = jutsu(harmful, (t) => hasVerb(t, 'damage'));
-  if (finisher && (foe?.stunned ?? 0) > 0) return finisher;
+  if (finisher && foe && isDazed(foe)) return finisher;
   const usual = harmful.filter((c) => c !== daze || fresh);
   return weighted(usual, rng) ?? improvise(self, band);
 }

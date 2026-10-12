@@ -15,7 +15,7 @@ import {
 } from '../../rules/kit';
 import { harmLine } from '../../rules/narration';
 import { slotted } from './cards';
-import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Defence cards react on their own when their owner is hit at the distance they're slotted
@@ -106,7 +106,7 @@ function counter(round: Round, { attacker, target, rng }: Hit): Round {
 /** Lands a blow on the target, letting their slotted defences and kit react. */
 export function react(round: Round, hit: Hit): Round {
   const { attacker, target, blow, rng } = hit;
-  const ready = target.stunned > 0 ? [] : slotted(target, round.range);
+  const ready = isDazed(target) ? [] : slotted(target, round.range);
   const has = (kind: 'guard' | 'dodge' | 'counter') => ready.some((c) => c.kind === kind);
   const avoid = blow.dodgeable ? avoidChance(attacker, target, has('dodge')) : 0;
   if (avoid > 0 && rng.chance(avoid)) {

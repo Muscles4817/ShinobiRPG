@@ -96,9 +96,9 @@ describe('plan & watch cards', () => {
     ]);
   });
 
-  it('a plain fighter fights where it stands, and heals only when badly hurt', () => {
+  it('a plain fighter closes in for full blows, and heals only when badly hurt', () => {
     const [plain] = bodies(fighter('hero'));
-    expect(defaultLoadout(plain!).far[0]?.card).toBe('throw');
+    expect(defaultLoadout(plain!).far.map((s) => s.card)).toEqual(['step-in', 'throw', 'guard']);
     const mend: CombatTechnique = {
       ...blast,
       id: 'mend',

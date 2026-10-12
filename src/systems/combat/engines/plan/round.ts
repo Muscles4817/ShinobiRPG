@@ -23,6 +23,7 @@ import {
   type PlanFighter,
   type PlanState,
   type Round,
+  wearOffDaze,
 } from './state';
 
 /**
@@ -178,7 +179,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const end = order.reduce((round, { id }) => turn(round, id, rng), start);
   const result = decide(end.fighters);
   const fighters = end.fighters.map((f) => ({
-    ...f,
+    ...wearOffDaze(f, state.round),
     sealed: Math.max(0, f.sealed - 1),
     chakra: alive(f) ? Math.min(f.maxChakra, f.chakra + CHAKRA_REGEN) : f.chakra,
   }));

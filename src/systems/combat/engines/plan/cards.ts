@@ -214,15 +214,21 @@ function damageJutsu(cards: readonly Card[]): Card[] {
   return strongest(cards, (t) => hasVerb(t, 'damage'));
 }
 
+/** How much a step towards home is worth: before attacking, after, or not at all. */
+type Footwork = 'first' | 'after-attacks' | 'none';
+
 /**
- * Whether a fighter should spend their turn moving towards home before attacking from here:
- * when their kit can't attack from here, or more of their jutsu reach from home. Blows are as
- * good at one distance as another, so a fighter with nothing better at home stays and fights.
+ * Whether a fighter should spend their turn moving towards home: first when their kit can't
+ * attack from here or more of their jutsu reach from home; after their attacks when only a full
+ * blow waits at home (kunai land softer, but stepping in hands the foe the first blow, so the
+ * plan keeps throwing and lets a foe who closes in come to it).
  */
-function worthMoving(fighter: PlanFighter, band: RangeBand, home: RangeBand): boolean {
-  if (band === home) return false;
-  if (!canAttackFrom(fighter, band)) return true;
-  return damageJutsu(cardsFor(fighter, home)).length > damageJutsu(cardsFor(fighter, band)).length;
+function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Footwork {
+  if (band === home) return 'none';
+  if (!canAttackFrom(fighter, band)) return 'first';
+  const jutsuAtHome = damageJutsu(cardsFor(fighter, home)).length;
+  if (jutsuAtHome > damageJutsu(cardsFor(fighter, band)).length) return 'first';
+  return inReach(STRIKE_REACH, home) && !inReach(STRIKE_REACH, band) ? 'first' : 'none';
 }
 
 /**
@@ -236,19 +242,19 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slo
   const pool = cardsFor(fighter, band).filter((c) => reaches || !isOffence(c));
   const has = (kind: Card['kind']) => pool.filter((c) => c.kind === kind);
   const towardsHome = RANGE_BANDS.indexOf(band) > RANGE_BANDS.indexOf(home) ? 'in' : 'back';
-  const footwork = worthMoving(fighter, band, home)
-    ? has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome)
-    : [];
+  const footwork = footworkFor(fighter, band, home);
+  const step = has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome);
+  const at = (when: Footwork) => (footwork === when ? step : []);
   const heal = strongest(pool, (t) => hasVerb(t, 'heal')).slice(0, 1);
   const damage = damageJutsu(pool);
   const daze = strongest(pool, (t) => hasVerb(t, 'daze') || hasVerb(t, 'seal')).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const ordered: Slot[] = [
     ...heal.map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
-    ...plain(footwork),
+    ...plain(at('first')),
     ...daze.map((c): Slot => ({ card: cardId(c), when: 'foe-readying' })),
-    ...plain([...damage.slice(0, 1), ...has('strike'), ...has('throw')]),
-    ...plain([...damage.slice(1), ...has('guard')]),
+    ...plain([...damage.slice(0, 1), ...has('strike'), ...has('throw'), ...at('after-attacks')]),
+    ...plain([...damage.slice(1), ...has('guard'), ...has('dodge')]),
   ];
   const unique = ordered.filter((slot, i) => ordered.findIndex((s) => s.card === slot.card) === i);
   return unique.slice(0, slotLimit(fighter));

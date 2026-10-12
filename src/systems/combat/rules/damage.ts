@@ -14,7 +14,7 @@ import { driveOf, type EffectUse } from './verbs';
  */
 
 /** Damage of a plain blow between equals, out of the 100 health every human has. */
-export const BLOW_DAMAGE = 30;
+export const BLOW_DAMAGE = 35;
 /** How steeply damage follows the power-to-defence ratio. */
 export const GAP_EXPONENT = 2.7;
 /** Ratios are taken on ratings plus this, so tiny stat values don't make wild gaps. */

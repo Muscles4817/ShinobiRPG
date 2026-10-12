@@ -5,7 +5,14 @@ import { findCard, fitsBand, isOffence, playable, type Card } from './cards';
 import { improvise } from './choose';
 import { toolInstinct } from './pouch';
 import { opponentsOf } from './senses';
-import type { PlanFighter, Round, Slot, SlotCondition, TargetRule } from './state';
+import {
+  isDazed,
+  type PlanFighter,
+  type Round,
+  type Slot,
+  type SlotCondition,
+  type TargetRule,
+} from './state';
 
 /**
  * How the player's plan plays: slot order is priority. Each exchange the player plays the
@@ -29,7 +36,7 @@ function announced(foe: PlanFighter, intents: Intents): Card | null {
 }
 
 function dazed(foe: PlanFighter): boolean {
-  return foe.stunned > 0 || foe.sealed > 0;
+  return isDazed(foe) || foe.sealed > 0;
 }
 
 function readying(foe: PlanFighter, intents: Intents): boolean {

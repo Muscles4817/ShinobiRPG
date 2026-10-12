@@ -20,6 +20,7 @@ import {
   decode,
   encode,
   initialFighters,
+  isDazed,
   PLAN_ENGINE_ID,
   playerOf,
   type PlanFighter,
@@ -44,7 +45,7 @@ function read(state: CombatState): PlanState {
 }
 
 function statuses(f: PlanFighter): string[] {
-  return [...(f.stunned > 0 ? ['Dazed'] : []), ...(f.sealed > 0 ? ['Sealed'] : [])];
+  return [...(isDazed(f) ? ['Dazed'] : []), ...(f.sealed > 0 ? ['Sealed'] : [])];
 }
 
 function options(state: PlanState): CombatOption[] {
