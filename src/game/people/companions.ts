@@ -1,32 +1,20 @@
 import type { PersonDef } from '@/content';
 import type { CombatantSetup, CombatTrait } from '@/systems/combat';
-import { createStats, type StatDelta, type Stats } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 import { attributesOf } from '../combatants';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { personStats } from './progress';
 
 /**
- * Genin who fight beside you (teammates) or against you (sparring partners). They have no
- * stored stats: they grow with your record, so your teammates keep pace with you.
+ * Genin who fight beside you (teammates) or against you (sparring partners), from their real
+ * stats: what they were made with plus how far they have grown (`people/progress.ts`).
  */
 
 /** Combatant ids for people start with this, so a fight's people can be traced back. */
 export const PERSON_PREFIX = 'person:';
-const COMPANION_BASE = 5;
-const SPECIALTY_BONUS = 4;
-/** Body stats a genin trains alongside their specialty. */
-const BODY_BONUS: StatDelta = { strength: 1, speed: 1, stamina: 1 };
-const GROWTH_PER_MISSION = 0.4;
-const MAX_GROWTH = 12;
-
-export function companionStats(person: PersonDef, state: GameState): Stats {
-  const growth = Math.min(MAX_GROWTH, state.standing.missionsCompleted * GROWTH_PER_MISSION);
-  const specialty: StatDelta = person.specialty ? { [person.specialty]: SPECIALTY_BONUS } : {};
-  return createStats(COMPANION_BASE + growth, { ...BODY_BONUS, ...specialty });
-}
 
 /**
  * How a genin fights follows from what they're good at: taijutsu specialists only fight up
@@ -74,7 +62,7 @@ export function companionCombatant(
   ctx: GameContext,
   tag: string,
 ): CombatantSetup {
-  const stats = companionStats(person, state);
+  const stats = personStats(person, state);
   return {
     id: `${PERSON_PREFIX}${person.id}`,
     name: person.name,

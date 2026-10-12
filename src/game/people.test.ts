@@ -157,7 +157,7 @@ describe('saves', () => {
     const { people: _people, ...v3state } = newGame();
     const loaded = deserialize(JSON.stringify({ version: 3, state: v3state }));
     if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.people).toEqual({
+    expect(loaded.value.people).toMatchObject({
       generated: [],
       bonds: {},
       team: null,

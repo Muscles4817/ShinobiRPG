@@ -1,0 +1,95 @@
+import { look } from '../../look';
+import { statLine, talent } from '../../statLine';
+import type { PersonDef } from '../../types';
+
+/** The genin of the year above yours, a team a year into its missions. */
+export const SENIOR_GENIN: readonly PersonDef[] = [
+  {
+    id: 'lee',
+    name: 'Rock',
+    familyName: 'Lee',
+    role: 'genin',
+    title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, {
+      taijutsu: 12,
+      speed: 11,
+      stamina: 11,
+      strength: 9,
+      willpower: 12,
+      ninjutsu: 0,
+      genjutsu: 0,
+    }),
+    aptitude: talent(1, {
+      taijutsu: 1.5,
+      speed: 1.3,
+      stamina: 1.3,
+      willpower: 1.4,
+      ninjutsu: 0,
+      genjutsu: 0,
+    }),
+    traitIds: ['diligent', 'brash'],
+    appearance: look(
+      'short',
+      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#f3d2b3', outfit: '#3e6b3a' },
+      'belt',
+    ),
+    specialty: 'taijutsu',
+    bio: 'Cannot use ninjutsu or genjutsu at all. Has decided this will not stop him.',
+    schedule: {
+      morning: 'training-grounds',
+      afternoon: 'training-grounds',
+      evening: 'training-grounds',
+      night: null,
+    },
+  },
+  {
+    id: 'neji',
+    name: 'Neji',
+    familyName: 'Hyūga',
+    role: 'genin',
+    title: 'Genin',
+    rank: 'genin',
+    stats: statLine(6, { taijutsu: 12, perception: 12, chakraControl: 11, speed: 10 }),
+    clanId: 'hyuga',
+    traitIds: ['proud', 'calm'],
+    appearance: look('long', {
+      hair: '#2a1d14',
+      eyes: '#c9c3d9',
+      skin: '#f3d2b3',
+      outfit: '#e8e0d0',
+    }),
+    specialty: 'taijutsu',
+    bio: 'A branch-house prodigy who believes fate is decided at birth. Rarely wrong in a fight.',
+    schedule: {
+      morning: 'training-grounds',
+      afternoon: 'training-grounds',
+      evening: null,
+      night: null,
+    },
+  },
+  {
+    id: 'tenten',
+    name: 'Tenten',
+    familyName: '',
+    role: 'genin',
+    title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { kenjutsu: 11, perception: 10, speed: 9, intellect: 8 }),
+    traitIds: ['focused', 'kind'],
+    appearance: look('buns', {
+      hair: '#4a2f1d',
+      eyes: '#4a2f1d',
+      skin: '#f3d2b3',
+      outfit: '#d8789a',
+    }),
+    specialty: 'kenjutsu',
+    bio: 'Never misses with a thrown weapon. Has a scroll for every blade ever made.',
+    schedule: {
+      morning: 'training-grounds',
+      afternoon: 'shopping-district',
+      evening: 'training-grounds',
+      night: null,
+    },
+  },
+];
