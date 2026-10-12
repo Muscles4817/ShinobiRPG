@@ -165,21 +165,26 @@ describe('App (smoke test)', () => {
       .find((b) => !(b as HTMLButtonElement).disabled)!;
     await user.click(spar);
     expect(screen.getByText('Sparring')).toBeInTheDocument();
-    // An illusionist partner starts hidden and must be found before strikes land.
+    // The default style plays out on your cards: begin each round, then watch it, to the end.
     for (let i = 0; i < 60 && !screen.queryByRole('dialog'); i++) {
-      const search = screen.queryByRole('button', { name: /^Search/ });
-      await user.click(search ?? screen.getByRole('button', { name: /^Strike/ }));
+      const begin = screen.queryByRole('button', { name: /^Begin (the fight|round)/ });
+      await user.click(begin ?? screen.getByRole('button', { name: /^Watch the round/ }));
     }
     expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
+  });
+
+  it('has no fight-style switch while only one style is offered', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
+    expect(screen.queryByText(/Fight style/)).not.toBeInTheDocument();
   });
 
   it('plans a fight with cards for each distance, then watches the round', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);
     await startGame(user);
-    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
-    await user.click(screen.getByRole('button', { name: /^Plan & Watch/ }));
-    await user.click(screen.getByRole('button', { name: /Here/ }));
     await user.click(place(/Training Grounds/));
     const sparring = screen.getByRole('region', { name: 'Sparring' });
     await user.click(

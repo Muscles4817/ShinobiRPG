@@ -56,7 +56,7 @@ export {
   type Scroll,
 } from './views/boards';
 export { travelView, type Destination } from './views/travel';
-export { fightStyles, type FightStyleOption } from './views/fightStyle';
+export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
 export {
   gearShopView,
   loadoutView,
