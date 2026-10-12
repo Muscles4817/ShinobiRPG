@@ -23,6 +23,7 @@ export const assignTeam: ActionHandler<ActionOf<'assignTeam'>> = {
       count: CLASSMATES,
       takenNames: [state.character.name, ...ctx.content.people.all.map((p) => p.name)],
       firstNumber: state.people.generated.length + 1,
+      seed: state.board.seed,
     });
     const teammateIds = classmates.slice(0, TEAMMATES).map((p) => p.id);
     const next = {

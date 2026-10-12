@@ -116,10 +116,16 @@ ui ──► game ──► content ──► systems ──► core
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
     (fight › mission › conversation › team assignment). Anything that must happen before
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
-15. **Companions grow with you, not on their own.** Teammates and sparring partners have no
-    stored stats; `companionStats` derives them from their specialty and your record, so a
-    teammate is always a fair match. Your sensei teaches weekly (`lesson`) and hands over
-    their `teaches` techniques once your bond is high enough.
+15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
+    derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`
+    (authored with `statLine`; validated against rank and role) and may have an `aptitude`;
+    generated genin get theirs at generation from the save's seed. Genin train every day
+    (`game/people/regimen.ts`) through the same growth formula as you, caught up lazily per day
+    like the board (`peopleGrown` in `game/people/progress.ts`, hashing the seed, never the
+    Rng) into `people.progress` (stats plus `lastGrownDay`); your teammates also get your
+    sensei's weekly lesson, and a spar trains your partner too. Fights and scouting read
+    `personStats`. Your sensei teaches weekly (`lesson`) and hands over their `teaches`
+    techniques once your bond is high enough.
 16. **Fight styles are engines; Plan & Watch is the canonical one.** `GameContext.engines` lists
     every engine on offer, and today that is Plan & Watch (`plan-v1`) alone, so the fight-style
     picker is hidden. Classic (`engines/duel/`) and Deck (`engines/deck/`) are **shelved**: their
@@ -229,12 +235,17 @@ ui ──► game ──► content ──► systems ──► core
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
   model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
   compiler lists every switch you missed).
+- **Add a technique:** give it a `rank` (E–S, the letters of ability grades): one rank above the
+  learner's grade in its discipline is slow and arrives unstable, two is impossible from any
+  source. Physical needs (nature, reserves, control grade) go in `needs`. Starters must be rank E.
 - **Add a clan, talent or trait:** add it to the pack's `clans` (or the shared `talents`/
   `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
   needs a `none` clan (validated).
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
-  schedule of place ids in the start location). Senseis need `role: 'sensei'` and a
+  schedule of place ids in the start location, a `rank` and `stats` via `statLine()`, and
+  optionally an `aptitude` via `talent()`). Their best stat must fit their rank (genin E–D,
+  chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'` and a
   `sensei` profile (style, lesson text, `teaches` technique ids); at least two specialties
   must exist for the team choice (validated).
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, optional `nature`, `traits`, and

@@ -1,5 +1,7 @@
 import { clamp } from '@/core';
 
+import type { NeededWeapon } from '@/systems/techniques';
+
 import type { CombatAttributes, CombatTechnique } from '../contract';
 import type { CombatGear, CombatWeapon, WeaponShape } from '../gearContract';
 import {
@@ -75,8 +77,11 @@ const MAX_DAZE = 0.5;
 /** A draining weapon drinks this much chakra per point of damage it deals. */
 export const DRAIN_PER_DAMAGE = 0.5;
 
-/** The reason a kenjutsu card won't play without a blade. */
-export const NEEDS_BLADE = 'Needs a blade. Equip one before the fight.';
+/** Why a technique that needs a weapon in hand won't play without it. */
+export const NEEDS_WEAPON: Readonly<Record<NeededWeapon, string>> = {
+  blade: 'Needs a blade. Equip one before the fight.',
+  knuckles: 'Needs knuckles. Equip them before the fight.',
+};
 
 interface Armed {
   readonly attributes: CombatAttributes;
@@ -174,20 +179,16 @@ export function throwWith(attacker: Armed, defender: Armed, roll: number): Attac
   return { ...hit, raw: hit.raw * PLAIN_THROW_SCALE, what, kind: 'weapon' };
 }
 
-/** Whether the fighter holds a blade. */
-export function holdsBlade(f: Pick<Armed, 'gear'>): boolean {
-  return f.gear?.held?.shape === 'blade';
-}
-
 /**
- * Why a technique can't be used with what the fighter carries: kenjutsu needs a blade. Only
- * fighters whose gear is known are held to it (foes and teammates are armed as their kit
- * suggests).
+ * Why a technique can't be used with what the fighter holds: its `needs.weapon` (every blade
+ * art needs a blade, validated). Only fighters whose gear is known are held to it (foes and
+ * teammates are armed as their techniques suggest).
  */
 export function weaponMissing(
   f: Pick<Armed, 'gear'>,
-  technique: Pick<CombatTechnique, 'discipline'>,
+  technique: Pick<CombatTechnique, 'needs'>,
 ): string | null {
-  if (f.gear === undefined || technique.discipline !== 'kenjutsu') return null;
-  return holdsBlade(f) ? null : NEEDS_BLADE;
+  const needed = technique.needs?.weapon;
+  if (f.gear === undefined || needed === undefined) return null;
+  return f.gear.held?.shape === needed ? null : NEEDS_WEAPON[needed];
 }

@@ -12,6 +12,7 @@ import type {
 import type { CombatGear } from '../gearContract';
 import { armouredAttributes } from './armour';
 import { startsHidden } from './conditions';
+import { unstableCostScale } from './unstable';
 import type { EffectUse } from './verbs';
 
 /**
@@ -115,8 +116,12 @@ export function holdTurns(effect: Pick<EffectUse['effect'], 'power'>): number {
   return effect.power >= 12 ? 2 : 1;
 }
 
-/** Chakra a technique costs, after the user's chakra control (up to a third off). */
+/**
+ * Chakra a technique costs, after the user's chakra control (up to a third off), and more for
+ * an unstable one.
+ */
 export function chakraCost(user: Body, technique: CombatTechnique): number {
   const discount = clamp(user.attributes.chakraControl / 60, 0, 1 / 3);
-  return Math.max(1, Math.round(technique.chakraCost * (1 - discount)));
+  const base = technique.chakraCost * unstableCostScale(technique);
+  return Math.max(1, Math.round(base * (1 - discount)));
 }

@@ -25,6 +25,7 @@ import {
   LOG_LIMIT,
   patch,
   playerOf,
+  practise,
   say,
   type PlanFighter,
   type PlanState,
@@ -93,7 +94,7 @@ function play(round: Round, turn: Turn, card: Card): Round {
   switch (card.kind) {
     case 'step':
       return step(
-        round,
+        practise(round, turn.actor, 'footwork'),
         { ...turn, target: turn.target ?? opponentsOf(round.fighters, turn.actor)[0] },
         card.direction,
       );
@@ -109,8 +110,9 @@ function play(round: Round, turn: Turn, card: Card): Round {
     case 'item':
       return useTool(round, turn, card.item);
     case 'strike':
+      return strike(practise(round, turn.actor, 'blows'), turn, false);
     case 'throw':
-      return strike(round, turn, card.kind === 'throw');
+      return strike(round, turn, true);
     case 'guard':
     case 'dodge':
     case 'counter':

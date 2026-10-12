@@ -4,9 +4,12 @@ import { playerCombatant } from './combatants';
 import { createNewGame } from './creation';
 import { blockerFor } from './dispatch';
 import { combatGear } from './gear';
-import { deserialize, serialize } from './persistence/save';
+import { deserialize, SAVE_VERSION, serialize } from './persistence/save';
 import type { GameState } from './state';
 import { gearShopView, loadoutView } from './views/shops';
+
+/** The save version before gear shaped fights (the gear migration is the latest step). */
+const PRE_GEAR = SAVE_VERSION - 1;
 
 const rich = (state: GameState = newGame()): GameState => ({ ...state, wallet: { ryo: 5000 } });
 const chunin = (state: GameState): GameState => ({
@@ -105,6 +108,26 @@ describe('gear', () => {
   });
 });
 
+describe('a blade art needs a blade in hand', () => {
+  it('to study it, and the scroll says how to fix it', () => {
+    const bare = newGame();
+    expect(blockerFor(bare, { type: 'study', techniqueId: 'lantern-cut' }, ctx)).toBe(
+      'Needs a blade in hand. Equip one at home.',
+    );
+    const armed = act(rich(bare), { type: 'buyGear', gearId: 'lantern-steel-tanto' });
+    expect(blockerFor(armed, { type: 'study', techniqueId: 'lantern-cut' }, ctx)).toBeNull();
+    const knuckled = act(rich(bare), { type: 'buyGear', gearId: 'wrapped-knuckles' });
+    expect(blockerFor(knuckled, { type: 'study', techniqueId: 'lantern-cut' }, ctx)).not.toBeNull();
+  });
+
+  it('to use it in a fight: the technique carries its need into the fight', () => {
+    const known = { ...newGame().techniques, known: ['lantern-cut'] };
+    const fighter = playerCombatant({ ...newGame(), techniques: known }, ctx);
+    expect(fighter.techniques[0]?.needs).toEqual({ weapon: 'blade' });
+    expect(fighter.gear).toEqual({});
+  });
+});
+
 describe('the issued blade', () => {
   it('a genin who starts out knowing a blade art is issued a blade, in hand', () => {
     const swordsman = createNewGame({ draft: draft({ clanId: 'kurogane' }), seed: 1 }, ctx);
@@ -115,9 +138,9 @@ describe('the issued blade', () => {
 });
 
 describe('saves from before gear shaped fights', () => {
-  it('a version 18 save moves a brush to the charm slot and issues a blade art a blade', () => {
+  it('a save from before gear shaped fights moves a brush to the charm slot and issues a blade art a blade', () => {
     const state = newGame();
-    const v18 = {
+    const old = {
       ...state,
       techniques: { ...state.techniques, known: [...state.techniques.known, 'forge-cut'] },
       inventory: {
@@ -126,8 +149,8 @@ describe('saves from before gear shaped fights', () => {
         equipped: { weapon: 'ash-ink-brush', body: 'padded-jacket' },
       },
     };
-    const raw = JSON.parse(serialize(v18)) as { state: unknown };
-    const loaded = deserialize(JSON.stringify({ version: 18, state: raw.state }));
+    const raw = JSON.parse(serialize(old)) as { state: unknown };
+    const loaded = deserialize(JSON.stringify({ version: PRE_GEAR, state: raw.state }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.inventory.gear).toEqual([
       'ash-ink-brush',
@@ -141,16 +164,16 @@ describe('saves from before gear shaped fights', () => {
     });
   });
 
-  it('a version 18 save that already owns a blade keeps its gear as it was', () => {
+  it('a save from before gear shaped fights that already owns a blade keeps its gear as it was', () => {
     const state = newGame();
-    const v18 = {
+    const old = {
       ...state,
       techniques: { ...state.techniques, known: [...state.techniques.known, 'forge-cut'] },
       inventory: { ...state.inventory, gear: ['kurogane-katana'], equipped: {} },
     };
-    const raw = JSON.parse(serialize(v18)) as { state: unknown };
-    const loaded = deserialize(JSON.stringify({ version: 18, state: raw.state }));
+    const raw = JSON.parse(serialize(old)) as { state: unknown };
+    const loaded = deserialize(JSON.stringify({ version: PRE_GEAR, state: raw.state }));
     if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.inventory).toEqual(v18.inventory);
+    expect(loaded.value.inventory).toEqual(old.inventory);
   });
 });

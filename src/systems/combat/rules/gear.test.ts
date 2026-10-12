@@ -8,7 +8,7 @@ import { kitDamageScale } from './kit';
 import { driveOf } from './verbs';
 import {
   cutPower,
-  NEEDS_BLADE,
+  NEEDS_WEAPON,
   PLAIN_THROW_SCALE,
   strikeWith,
   throwWith,
@@ -50,6 +50,7 @@ const kenjutsuCut: CombatTechnique = {
   id: 'cut',
   name: 'Cut',
   discipline: 'kenjutsu',
+  needs: { weapon: 'blade' },
   effects: [{ verb: 'damage', power: 10 }],
   chakraCost: 5,
 };
@@ -116,9 +117,11 @@ describe('weapons', () => {
     expect(weaponNumbers(weapon('blade', 'A'))).toMatchObject({ drain: 0, daze: 0, pierce: 0 });
   });
 
-  it('kenjutsu needs a blade, for fighters whose gear is known', () => {
-    expect(weaponMissing({ gear: {} }, kenjutsuCut)).toBe(NEEDS_BLADE);
-    expect(weaponMissing({ gear: { held: weapon('knuckles') } }, kenjutsuCut)).toBe(NEEDS_BLADE);
+  it('a technique that needs a blade needs one in hand, for fighters whose gear is known', () => {
+    expect(weaponMissing({ gear: {} }, kenjutsuCut)).toBe(NEEDS_WEAPON.blade);
+    expect(weaponMissing({ gear: { held: weapon('knuckles') } }, kenjutsuCut)).toBe(
+      NEEDS_WEAPON.blade,
+    );
     expect(weaponMissing({ gear: { held: weapon('blade') } }, kenjutsuCut)).toBeNull();
     expect(weaponMissing({ gear: {} }, sealing)).toBeNull();
     // Foes and teammates are armed as their techniques suggest.

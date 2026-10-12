@@ -2,7 +2,7 @@ import type { Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
 import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
 
-import type { CombatGear } from './gearContract';
+import type { CombatGear, CombatItem } from './gearContract';
 import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
 
 /**
@@ -44,7 +44,11 @@ export type CombatTechnique = Pick<
   | 'oncePerFight'
   | 'afterCost'
   | 'combo'
->;
+  | 'needs'
+> & {
+  /** Learned a rank above its user's grade: costlier and may misfire (`rules/unstable.ts`). */
+  readonly unstable?: true;
+};
 
 /** How far apart the two sides stand. Engines decide what each band allows. */
 export type RangeBand = 'close' | 'mid' | 'far';
@@ -54,6 +58,9 @@ export type RangeBand = 'close' | 'mid' | 'far';
  * while someone stands in front of it (see `rules/rows.ts`); engines without rows ignore it.
  */
 export type CombatRow = 'front' | 'back';
+
+// Fight tools are part of what a fighter carries in (`gearContract.ts`).
+export { COMBAT_ITEM_EFFECTS, type CombatItem, type CombatItemEffect } from './gearContract';
 
 /** Special abilities a combatant brings (an awakened bloodline's eyes); others ignore it. */
 export type CombatPerk = 'insight';
@@ -73,28 +80,6 @@ export const COMBAT_TRAITS = [
   'spirit',
 ] as const;
 export type CombatTrait = (typeof COMBAT_TRAITS)[number];
-
-/**
- * What a fight tool does when used (see `rules/items.ts`): vanish in smoke, light up hidden
- * foes, blast one foe with a seal, restore chakra or health, or clear your head.
- */
-export const COMBAT_ITEM_EFFECTS = [
-  'smoke',
-  'flash',
-  'blast',
-  'chakra',
-  'heal',
-  'clarity',
-] as const;
-export type CombatItemEffect = (typeof COMBAT_ITEM_EFFECTS)[number];
-
-/** A kind of tool the player carries into a fight, and how many. */
-export interface CombatItem {
-  readonly id: string;
-  readonly name: string;
-  readonly effect: CombatItemEffect;
-  readonly count: number;
-}
 
 export interface CombatantSetup {
   readonly id: string;

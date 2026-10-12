@@ -1,4 +1,5 @@
 import { allDay, look } from '../../look';
+import { statLine } from '../../statLine';
 import type { PersonDef } from '../../types';
 
 /** Jōnin who may take on a team, plus the village figures every genin knows. */
@@ -9,6 +10,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Ishizaki',
     role: 'sensei',
     title: 'Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { taijutsu: 'A', strength: 'B', stamina: 'B', speed: 21 }),
     traitIds: ['brash', 'diligent'],
     favouriteRecipeId: 'grilled-fish-set',
     appearance: look(
@@ -38,6 +41,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Hibana',
     role: 'sensei',
     title: 'Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { ninjutsu: 'A', chakraControl: 'B', reserves: 'B' }),
     clanId: 'hibana',
     traitIds: ['proud', 'curious'],
     favouriteRecipeId: 'miso-soup',
@@ -71,6 +76,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Tōkaku',
     role: 'sensei',
     title: 'Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { genjutsu: 'A', perception: 'B', willpower: 'B' }),
     clanId: 'tokaku',
     traitIds: ['calm', 'curious'],
     favouriteRecipeId: 'rice-ball-bento',
@@ -99,6 +106,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Kurogane',
     role: 'sensei',
     title: 'Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { kenjutsu: 'A', speed: 'B', strength: 'B' }),
     clanId: 'kurogane',
     traitIds: ['focused', 'humble'],
     appearance: look(
@@ -129,6 +138,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Shimenawa',
     role: 'sensei',
     title: 'Special Jōnin',
+    rank: 'jonin',
+    stats: statLine('C', { fuuinjutsu: 'B', intellect: 'B', chakraControl: 21 }),
     clanId: 'shimenawa',
     traitIds: ['cunning', 'diligent'],
     appearance: look(
@@ -160,6 +171,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Asagiri',
     role: 'instructor',
     title: 'Academy instructor',
+    rank: 'chunin',
+    stats: statLine('D', { taijutsu: 'C', ninjutsu: 'C', intellect: 'C', chakraControl: 'C' }),
     traitIds: ['kind', 'diligent'],
     appearance: look('ponytail', {
       hair: '#1b1a22',
@@ -181,6 +194,16 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: 'Kagari',
     role: 'leader',
     title: 'Tōrokage',
+    rank: 'kage',
+    stats: statLine('B', {
+      ninjutsu: 'S',
+      chakraControl: 'A',
+      intellect: 'A',
+      willpower: 'A',
+      reserves: 'A',
+      stamina: 'C',
+      speed: 'C',
+    }),
     traitIds: ['calm', 'kind'],
     appearance: look(
       'long',
@@ -196,6 +219,17 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     familyName: '',
     role: 'villager',
     title: 'Noodle-stall owner',
+    rank: 'civilian',
+    stats: statLine(4, {
+      intellect: 8,
+      perception: 9,
+      willpower: 9,
+      taijutsu: 1,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 1,
+      fuuinjutsu: 0,
+    }),
     traitIds: ['kind', 'cunning'],
     favouriteRecipeId: 'miso-soup',
     appearance: look(

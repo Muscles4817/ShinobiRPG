@@ -26,6 +26,7 @@ export type {
   ConversationDef,
   NamePools,
   PersonDef,
+  PersonRank,
   PersonRole,
   SenseiProfile,
   TeamText,

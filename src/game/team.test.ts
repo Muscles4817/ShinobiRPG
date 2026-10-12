@@ -80,8 +80,8 @@ describe('sensei lessons', () => {
 describe('sparring', () => {
   it('a won spar teaches you something and brings you closer, without hospital', () => {
     const strong = withAllStats(newGame(), 40);
-    // Learning from a spar, like any growth, is slow at the top grades: leave room to grow.
-    const room = { ...strong.character.stats, ninjutsu: 10 };
+    // A spar teaches what you used against a partner as good as you: leave room to grow.
+    const room = { ...strong.character.stats, taijutsu: 5, strength: 5 };
     const learner = { ...strong, character: { ...strong.character, stats: room } };
     const fight = act(learner, { type: 'spar', personId: 'kaen' });
     expect(fight.people.sparringWith).toBe('kaen');
@@ -91,7 +91,10 @@ describe('sparring', () => {
     const done = fightOut(fight);
     expect(done.people.sparringWith).toBeNull();
     expect(done.reports.at(-1)).toMatchObject({ kind: 'spar', result: 'won', bond: 5 });
-    expect(done.character.stats.ninjutsu).toBeGreaterThan(10);
+    expect(done.character.stats.taijutsu).toBeGreaterThan(5);
+    const card = done.reports.at(-1);
+    const gains = card?.kind === 'spar' ? card.gains : [];
+    expect(gains.some((g) => g.startsWith('Taijutsu +'))).toBe(true);
   });
 
   it('losing a spar stops before you are badly hurt', () => {

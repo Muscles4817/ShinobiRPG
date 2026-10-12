@@ -42,8 +42,8 @@ export function withoutGrowth({ growth: _g, training: _t, ...rest }: ModifierSpe
   return rest;
 }
 
-function oddsFor(clan: ClanDef, talent: TalentDef): (stat: StatId) => AptitudeOdds {
-  const tilt = identityTilt([clan.modifiers, talent.modifiers]);
+function oddsFor(clan: ClanDef, talent: TalentDef | undefined): (stat: StatId) => AptitudeOdds {
+  const tilt = identityTilt([clan.modifiers, talent?.modifiers ?? {}]);
   return (stat) => {
     const base =
       clan.arts.length === 0
@@ -51,20 +51,21 @@ function oddsFor(clan: ClanDef, talent: TalentDef): (stat: StatId) => AptitudeOd
         : clan.arts.includes(stat)
           ? CLAN_ART_ODDS
           : CLAN_OTHER_ODDS;
-    const raised = (talent.statBonuses[stat] ?? 0) > 0;
+    const raised = (talent?.statBonuses[stat] ?? 0) > 0;
     return { ...base, tilt: tilt[stat], ...(raised ? { atLeast: TALENT_FLOOR } : {}) };
   };
 }
 
 /**
  * Rolls a new character's aptitude, continuing the break-in's dice. The clanless always draw
- * for a void art, so the sequence after it doesn't depend on the clan.
+ * for a void art, so the sequence after it doesn't depend on the clan. Classmates and other
+ * people are rolled the same way, with no talent on file.
  */
-export function rollCharacterAptitude(rng: Rng, clan: ClanDef, talent: TalentDef): Aptitude {
+export function rollCharacterAptitude(rng: Rng, clan: ClanDef, talent?: TalentDef): Aptitude {
   const rolled: Record<StatId, number> = { ...rollAptitude(rng, oddsFor(clan, talent)) };
   const luck = rng.next();
   const art = rng.pick(DISCIPLINES);
-  const raised = (talent.statBonuses[art] ?? 0) > 0;
+  const raised = (talent?.statBonuses[art] ?? 0) > 0;
   if (clan.arts.length === 0 && luck < VOID_ART_CHANCE && !raised) rolled[art] = 0;
   return rolled;
 }

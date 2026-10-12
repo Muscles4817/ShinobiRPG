@@ -1,4 +1,4 @@
-import { act, newGame } from '@/test/gameFixtures';
+import { act, newGame, veteran } from '@/test/gameFixtures';
 
 import { deserialize, SAVE_VERSION, serialize } from './save';
 
@@ -106,6 +106,40 @@ describe('persistence', () => {
     expect(character.aptitude.perception).toBe(1);
     expect(new Set(Object.values(character.aptitudeKnown))).toEqual(new Set(['unknown']));
     expect(character.aptitudeSessions).toEqual({});
+  });
+
+  it('keeps genin where the old rule had them when people get real stats', () => {
+    const game = veteran(newGame(), 10);
+    const generated = game.people.generated.map(
+      ({ rank: _r, stats: _s, aptitude: _a, ...old }) => old,
+    );
+    const { progress: _p, ...oldPeople } = game.people;
+    const raw = { ...game, people: { ...oldPeople, generated } };
+    const loaded = deserialize(JSON.stringify({ version: 18, state: raw }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    const { people } = loaded.value;
+    const [mate] = people.generated;
+    const specialty = mate?.specialty ?? 'taijutsu';
+    // The old rule: 5, plus 0.4 a mission completed; +4 in the specialty, +1 in body stats.
+    expect(mate?.stats[specialty]).toBeCloseTo(13);
+    expect(mate?.stats.stamina).toBe(10);
+    expect(mate?.rank).toBe('genin');
+    expect(mate?.aptitude).toBeDefined();
+    expect(people.progress.kaen?.stats.ninjutsu).toBeCloseTo(13);
+    expect(people.progress.kaen?.lastGrownDay).toBe(game.time.day - 1);
+    expect(people.progress.goran).toBeUndefined();
+  });
+
+  it('keeps techniques known before ranks, the ones above your grade unstable', () => {
+    const game = newGame();
+    const known = [...game.techniques.known, 'crescent-drop', 'ember-breath'];
+    const { unstable: _u, ...oldBook } = { ...game.techniques, known };
+    const raw = JSON.stringify({ version: 19, state: { ...game, techniques: oldBook } });
+    const loaded = deserialize(raw);
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.techniques.known).toEqual(known);
+    // Grade E in both arts: the C and the D technique are beyond it, the starters are not.
+    expect(loaded.value.techniques.unstable).toEqual(['crescent-drop', 'ember-breath']);
   });
 
   it('rejects corrupted data', () => {

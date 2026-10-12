@@ -80,7 +80,7 @@ export function withIssuedBlade(
   techniqueIds: readonly string[],
   content: ContentDb,
 ): Inventory {
-  const bladeArt = techniqueIds.some((id) => content.techniques.get(id)?.discipline === 'kenjutsu');
+  const bladeArt = techniqueIds.some((id) => content.techniques.get(id)?.needs?.weapon === 'blade');
   const armed = inventory.gear.some((id) => isBlade(content.gear.get(id)));
   const blade = bladeArt && !armed ? issuedBlade(content) : null;
   if (!blade) return inventory;

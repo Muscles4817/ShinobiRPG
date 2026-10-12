@@ -2,7 +2,7 @@ import { createRng, type Rng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import type { CombatGear, CombatWeapon } from '../../gearContract';
-import { NEEDS_BLADE } from '../../rules/weapons';
+import { NEEDS_WEAPON } from '../../rules/weapons';
 import { strike } from './arms';
 import { defaultLoadout } from './cards';
 import { createPlanEngine } from './engine';
@@ -27,6 +27,7 @@ const slash: CombatTechnique = {
   id: 'slash',
   name: 'Slash',
   discipline: 'kenjutsu',
+  needs: { weapon: 'blade' },
   effects: [{ verb: 'damage', power: 10 }],
   chakraCost: 4,
 };
@@ -92,9 +93,9 @@ function tableOf(gear: CombatGear) {
 }
 
 describe('plan & watch weapons', () => {
-  it('kenjutsu techniques are blocked at the card table without a blade, and say why', () => {
+  it('blade arts are blocked at the card table without a blade, and say why', () => {
     const bare = tableOf({}).find((o) => o.id === 'slot:close:jutsu:slash');
-    expect(bare?.disabledReason).toBe(NEEDS_BLADE);
+    expect(bare?.disabledReason).toBe(NEEDS_WEAPON.blade);
     const bladed = tableOf({ held: weapon('blade') }).find(
       (o) => o.id === 'slot:close:jutsu:slash',
     );

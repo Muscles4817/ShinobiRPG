@@ -137,6 +137,19 @@ describe('App (smoke test)', () => {
     expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument();
   });
 
+  it('stamps technique ranks, and folds away scrolls you can’t study yet', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Academy/));
+    const comingUp = screen.getByRole('heading', { name: 'Coming up' }).parentElement!;
+    expect(
+      within(comingUp).getAllByText(/^Needs [A-S] [\w ū]+; you're [A-S]\.$/).length,
+    ).toBeGreaterThan(0);
+    await user.click(screen.getByRole('button', { name: /Jutsu/ }));
+    expect(screen.getAllByLabelText('Rank E').length).toBeGreaterThan(0);
+  });
+
   it('forms a team, then talks to someone who is here', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

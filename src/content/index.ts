@@ -29,6 +29,7 @@ export type {
   NindoDef,
   OpeningHours,
   PersonDef,
+  PersonRank,
   PersonRole,
   PlaceDef,
   PlaceKind,

@@ -27,12 +27,12 @@ function reslotted(inventory: Inventory, content: ContentDb): Inventory {
 }
 
 /**
- * v18 → v19: gear no longer adds to stats; it shapes how you fight. Piece ids are kept, but
+ * v20 → v21: gear no longer adds to stats; it shapes how you fight. Piece ids are kept, but
  * some changed slot (sealing brushes and bells are focus charms now, not weapons), so a worn
  * piece moves to its new slot. Kenjutsu now needs a blade: a character who knows a blade art
  * and owns no blade is issued one, as a new genin would be.
  */
-export function v18ToV19(state: RawState): RawState {
+export function v20ToV21(state: RawState): RawState {
   const pack = CONTENT_PACKS.find((p) => p.id === state.packId);
   if (!pack) return state;
   const content = buildContentDb(pack);

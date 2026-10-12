@@ -70,3 +70,25 @@ export interface CombatGear {
   readonly armour?: CombatArmour;
   readonly focus?: CombatFocus;
 }
+
+/**
+ * What a fight tool does when used (see `rules/items.ts`): vanish in smoke, light up hidden
+ * foes, blast one foe with a seal, restore chakra or health, or clear your head.
+ */
+export const COMBAT_ITEM_EFFECTS = [
+  'smoke',
+  'flash',
+  'blast',
+  'chakra',
+  'heal',
+  'clarity',
+] as const;
+export type CombatItemEffect = (typeof COMBAT_ITEM_EFFECTS)[number];
+
+/** A kind of tool the player carries into a fight, and how many. */
+export interface CombatItem {
+  readonly id: string;
+  readonly name: string;
+  readonly effect: CombatItemEffect;
+  readonly count: number;
+}

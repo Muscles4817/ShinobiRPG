@@ -1,4 +1,5 @@
 import { look } from '../../look';
+import { statLine } from '../../statLine';
 import type { PersonDef } from '../../types';
 
 /** The genin of your graduating year. Friends, rivals, nuisances. */
@@ -9,6 +10,8 @@ export const GENIN: readonly PersonDef[] = [
     familyName: 'Hibana',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { ninjutsu: 9, reserves: 7, strength: 6, speed: 6, stamina: 6 }),
     clanId: 'hibana',
     traitIds: ['brash', 'proud'],
     favouriteRecipeId: 'spicy-hot-pot',
@@ -33,6 +36,8 @@ export const GENIN: readonly PersonDef[] = [
     familyName: 'Tōkaku',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { genjutsu: 9, perception: 7, speed: 6 }),
     clanId: 'tokaku',
     traitIds: ['calm', 'kind'],
     favouriteRecipeId: 'miso-soup',
@@ -52,6 +57,8 @@ export const GENIN: readonly PersonDef[] = [
     familyName: 'Kurogane',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { kenjutsu: 9, speed: 7, strength: 6 }),
     clanId: 'kurogane',
     traitIds: ['focused', 'proud'],
     favouriteRecipeId: 'grilled-fish-set',
@@ -75,6 +82,8 @@ export const GENIN: readonly PersonDef[] = [
     familyName: 'Shimenawa',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { fuuinjutsu: 9, intellect: 7, chakraControl: 6 }),
     clanId: 'shimenawa',
     traitIds: ['humble', 'diligent'],
     favouriteRecipeId: 'rice-ball-bento',
@@ -98,6 +107,8 @@ export const GENIN: readonly PersonDef[] = [
     familyName: 'Oda',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { taijutsu: 9, strength: 7, stamina: 6 }),
     traitIds: ['lazy', 'cunning'],
     appearance: look(
       'short',
@@ -119,6 +130,8 @@ export const GENIN: readonly PersonDef[] = [
     familyName: 'Sakai',
     role: 'genin',
     title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { taijutsu: 9, speed: 7, stamina: 6 }),
     traitIds: ['curious', 'kind'],
     appearance: look('ponytail', {
       hair: '#8a5a2b',
