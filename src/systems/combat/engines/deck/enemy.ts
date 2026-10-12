@@ -1,14 +1,8 @@
 import type { Rng } from '@/core';
 
 import type { RangeBand } from '../../contract';
-import {
-  alive,
-  chakraCost,
-  hasPerk,
-  strikeDamage,
-  targetable,
-  techniqueDamage,
-} from '../../rules/body';
+import { alive, chakraCost, hasPerk, targetable } from '../../rules/body';
+import { strikeDamage, techniqueDamage } from '../../rules/damage';
 import { HIDDEN_DAMAGE } from '../../rules/conditions';
 import { attackKindOf, canAttackFrom, homeBand, kitDamageScale } from '../../rules/kit';
 import {

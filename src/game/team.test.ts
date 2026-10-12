@@ -1,4 +1,4 @@
-import { maxHealth } from '@/systems/vitals';
+import { MAX_HEALTH } from '@/systems/vitals';
 import { act, ctx, fightOut, newGame, veteran, withAllStats } from '@/test/gameFixtures';
 
 import { blockerFor } from './dispatch';
@@ -94,9 +94,7 @@ describe('sparring', () => {
     const done = fightOut(act(withAllStats(newGame(), 2), { type: 'spar', personId: 'kaen' }));
     expect(done.reports.map((r) => r.kind)).toEqual(['spar']);
     expect(done.reports[0]).toMatchObject({ result: 'lost' });
-    expect(done.character.vitals.health).toBeGreaterThanOrEqual(
-      maxHealth(done.character.stats) / 2,
-    );
+    expect(done.character.vitals.health).toBeGreaterThanOrEqual(MAX_HEALTH / 2);
     const mission = { type: 'startMission', missionId: 'lantern-keepers-cat' } as const;
     expect(blockerFor(done, mission, ctx) ?? '').not.toMatch(/injured/);
   });

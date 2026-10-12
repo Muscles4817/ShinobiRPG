@@ -11,9 +11,12 @@ const STYLES: readonly (readonly [string, GameContext])[] = [
   ['plan-v1', ctx],
 ];
 
+/** About a fresh genin partner's level, so the spar lasts long enough to trade blows. */
+const SPARRING_STATS = 7;
+
 /** Every log line the fight screen showed over a whole spar, picking sensibly each turn. */
 function sparLog(style: string, context: GameContext): string[] {
-  let state: GameState = withAllStats(newGame({}, context), 20);
+  let state: GameState = withAllStats(newGame({}, context), SPARRING_STATS);
   if (style !== state.settings.combatStyle) {
     state = act(state, { type: 'setCombatStyle', style }, context);
   }

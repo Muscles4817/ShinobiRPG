@@ -1,4 +1,4 @@
-import { clamp, logistic } from '@/core';
+import { clamp } from '@/core';
 
 import type {
   CombatantSetup,
@@ -10,11 +10,11 @@ import type {
   CombatTrait,
 } from '../contract';
 import { startsHidden } from './conditions';
-import { elementMultiplier } from './elements';
 
 /**
  * The fighter shape and formulas the newer engines share. Each engine extends `Body` with its
- * own fields (block, momentum, plans) but hits and resists the same way, so comparing fight
+ * own fields (block, momentum, plans) but hits and resists the same way (`damage.ts`,
+ * `defence.ts`), so comparing fight
  * styles compares the styles, not different maths.
  */
 
@@ -102,60 +102,6 @@ export function viewOf(b: Body, statuses: readonly string[], intent?: string): C
     ...(intent === undefined ? {} : { intent }),
     targetable: targetable(b),
   };
-}
-
-/** ±20% so fights aren't fully predictable. */
-export function variance(roll: number): number {
-  return 0.8 + roll * 0.4;
-}
-
-function armour(defender: Body): number {
-  return defender.attributes.stamina * 0.3;
-}
-
-/** A plain blow: strength and taijutsu. */
-export function strikeDamage(attacker: Body, defender: Body, roll: number): number {
-  const { strength, taijutsu } = attacker.attributes;
-  const raw = (4 + strength * 0.5 + taijutsu * 0.5) * variance(roll);
-  return Math.max(1, Math.round(raw - armour(defender)));
-}
-
-const PHYSICAL_BONUS: Readonly<Record<CombatTechnique['discipline'], (b: Body) => number>> = {
-  taijutsu: (b) => b.attributes.strength * 0.3,
-  kenjutsu: (b) => b.attributes.strength * 0.15 + b.attributes.speed * 0.15,
-  ninjutsu: () => 0,
-  genjutsu: () => 0,
-  fuuinjutsu: () => 0,
-};
-
-/** A damaging technique: power scaled by skill, body stats for physical arts, and elements. */
-export function techniqueDamage(
-  attacker: Body,
-  defender: Body,
-  technique: CombatTechnique,
-  roll: number,
-): number {
-  const skill = attacker.attributes[technique.discipline];
-  const elements = elementMultiplier(technique, attacker.nature, defender.nature);
-  const raw =
-    (technique.power * (1 + skill / 20) + PHYSICAL_BONUS[technique.discipline](attacker)) *
-    elements *
-    variance(roll);
-  return Math.max(1, Math.round(raw - armour(defender)));
-}
-
-export function healAmount(user: Body, technique: CombatTechnique): number {
-  return Math.round(technique.power * (1 + user.attributes.ninjutsu / 25));
-}
-
-/** Genjutsu is resisted by willpower; everything else by perception. */
-export function resistChance(attacker: Body, defender: Body, technique: CombatTechnique): number {
-  const skill = attacker.attributes[technique.discipline];
-  const defence =
-    technique.discipline === 'genjutsu'
-      ? defender.attributes.willpower
-      : defender.attributes.perception;
-  return clamp(0.6 * logistic((defence - skill) / 4), 0.05, 0.6);
 }
 
 /** Turns a daze or seal lasts: stronger techniques hold longer. */

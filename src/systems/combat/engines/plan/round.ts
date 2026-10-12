@@ -1,16 +1,9 @@
 import { clamp, type Rng } from '@/core';
 
 import type { CombatResult, CombatTechnique } from '../../contract';
-import {
-  alive,
-  chakraCost,
-  healAmount,
-  holdTurns,
-  resistChance,
-  strikeDamage,
-  targetable,
-  techniqueDamage,
-} from '../../rules/body';
+import { alive, chakraCost, holdTurns, targetable } from '../../rules/body';
+import { healAmount, strikeDamage, techniqueDamage } from '../../rules/damage';
+import { resistChance } from '../../rules/defence';
 import { matchup, matchupLine } from '../../rules/elements';
 import { revealOnAttack } from '../../rules/items';
 import { attackKindOf } from '../../rules/kit';

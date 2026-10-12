@@ -1,6 +1,6 @@
 import type { CombatantSetup, CombatPerk, CombatTechnique, CombatTrait } from '@/systems/combat';
 import { STAT_IDS, type StatId, type Stats } from '@/systems/stats';
-import { maxChakra, maxHealth } from '@/systems/vitals';
+import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 import { ctx } from '@/test/gameFixtures';
 
 /**
@@ -80,8 +80,8 @@ export function toSetup(spec: FighterSpec, id: string): CombatantSetup {
     id,
     name: spec.name,
     attributes: spec.stats,
-    health: maxHealth(spec.stats),
-    maxHealth: maxHealth(spec.stats),
+    health: MAX_HEALTH,
+    maxHealth: MAX_HEALTH,
     chakra: maxChakra(spec.stats),
     maxChakra: maxChakra(spec.stats),
     techniques: spec.techniques,

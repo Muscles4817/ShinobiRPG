@@ -8,7 +8,7 @@ import type {
 } from '@/systems/combat';
 import { restockPouch } from '@/systems/inventory';
 import { createStats, type Stats } from '@/systems/stats';
-import { maxChakra, maxHealth } from '@/systems/vitals';
+import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 import type { GameContext } from './context';
 import { combatStats } from './gear';
@@ -63,7 +63,7 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     name,
     attributes: attributesOf(armed),
     health: vitals.health,
-    maxHealth: maxHealth(stats),
+    maxHealth: MAX_HEALTH,
     chakra: vitals.chakra,
     maxChakra: maxChakra(stats),
     techniques: state.techniques.known.map((id) => ctx.content.techniques.require(id)),
@@ -73,14 +73,19 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
   };
 }
 
+/** A human's 100 health, scaled for creatures bigger or smaller than one. */
+function enemyMaxHealth(def: Pick<EnemyDef, 'healthScale'>): number {
+  return Math.max(1, Math.round(MAX_HEALTH * (def.healthScale ?? 1)));
+}
+
 export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
   return {
     id: `${def.id}#${index}`,
     name: def.name,
     tag: def.kind,
     attributes: attributesOf(createStats(def.baseStat, def.statBonuses)),
-    health: def.maxHealth,
-    maxHealth: def.maxHealth,
+    health: enemyMaxHealth(def),
+    maxHealth: enemyMaxHealth(def),
     chakra: def.maxChakra,
     maxChakra: def.maxChakra,
     techniques: def.techniqueIds.map((id) => ctx.content.techniques.require(id)),

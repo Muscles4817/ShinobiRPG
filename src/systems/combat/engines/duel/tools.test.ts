@@ -191,7 +191,7 @@ describe('duel engine: fight tools', () => {
       result: 'victory',
       items: { blast: 1, smoke: 2 },
     });
-    const coward = fighter('coward', { traits: ['coward'], health: 40, maxHealth: 100 });
+    const coward = fighter('coward', { traits: ['coward'], health: 60, maxHealth: 100 });
     const fled = act(duel(hero([tool('blast')]), coward), { optionId: 'item:blast' });
     expect(engine.view(fled).log).toContain('coward flees!');
     expect(engine.outcome(fled)?.result).toBe('victory');

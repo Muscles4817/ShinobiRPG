@@ -1,7 +1,8 @@
 import type { Rng } from '@/core';
 
 import type { CombatItem, CombatItemEffect } from '../contract';
-import { variance, type Body } from './body';
+import type { Body } from './body';
+import { variance } from './damage';
 import { kitDamageScale } from './kit';
 
 /**
@@ -12,7 +13,11 @@ import { kitDamageScale } from './kit';
  * carried tool, ask `itemBlocker` why not, and call `useItem`.
  */
 
-export const BLAST_POWER = 14;
+/**
+ * A blast does the same to anyone, whatever the gap: a bit more than a plain blow between
+ * equals, so it matters most to the weaker side.
+ */
+export const BLAST_POWER = 40;
 export const CHAKRA_RESTORE = 25;
 export const HEAL_RESTORE = 30;
 

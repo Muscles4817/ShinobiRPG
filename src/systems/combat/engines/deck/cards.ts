@@ -1,15 +1,9 @@
 import type { Rng } from '@/core';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
-import {
-  alive,
-  chakraCost,
-  healAmount,
-  holdTurns,
-  resistChance,
-  strikeDamage,
-  techniqueDamage,
-} from '../../rules/body';
+import { alive, chakraCost, holdTurns } from '../../rules/body';
+import { healAmount, strikeDamage, techniqueDamage } from '../../rules/damage';
+import { resistChance } from '../../rules/defence';
 import { matchup, matchupLine } from '../../rules/elements';
 import { attackKindOf } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
