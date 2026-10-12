@@ -42,6 +42,8 @@ export type Report =
       readonly hospitalFee: number;
       readonly reputationLost: number;
       readonly text: string;
+      /** The injury the beating left, by name. */
+      readonly injury?: string;
     }
   | {
       readonly kind: 'lesson';

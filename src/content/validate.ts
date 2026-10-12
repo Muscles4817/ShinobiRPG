@@ -1,6 +1,7 @@
 import { costIsSane, DISCIPLINES, effectProblem } from '@/systems/techniques';
 
 import { duplicateIds } from './catalog';
+import { validateInjuries } from './validateInjuries';
 import { validatePeople } from './validatePeople';
 import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
@@ -23,6 +24,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...recipeProblems(pack),
     ...validatePeople(pack),
     ...validateVillage(pack),
+    ...validateInjuries(pack),
   ];
 }
 
@@ -58,12 +60,22 @@ function beginnerProblems(pack: ContentPack): string[] {
   );
 }
 
+/** Clans declare the arts their members are talented in; the clanless have none. */
+function clanArtProblems(pack: ContentPack): string[] {
+  return pack.clans.flatMap((c) => {
+    if (c.id === 'none') return c.arts.length > 0 ? ['the "none" clan can’t have arts'] : [];
+    if (c.arts.length === 0) return [`clan "${c.id}" declares no arts`];
+    return new Set(c.arts).size < c.arts.length ? [`clan "${c.id}" lists an art twice`] : [];
+  });
+}
+
 /** Clans, traits and clan techniques must fit together. */
 function profileProblems(pack: ContentPack): string[] {
   const clanIds = new Set(pack.clans.map((c) => c.id));
   const problems: string[] = [];
   if (!clanIds.has('none')) problems.push('pack needs a "none" clan for clanless characters');
   if (pack.traits.length < 2) problems.push('pack needs at least two traits');
+  problems.push(...clanArtProblems(pack));
   for (const t of pack.techniques) {
     if (t.clan !== undefined && !clanIds.has(t.clan)) {
       problems.push(`technique "${t.id}" belongs to unknown clan "${t.clan}"`);
@@ -93,6 +105,7 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['nindo', pack.nindos],
     ['gear', pack.gear],
     ['tool', pack.tools],
+    ['injury', pack.injuries],
     ['ingredient', pack.ingredients],
     ['recipe', pack.recipes],
     ['person', pack.people],
@@ -176,5 +189,8 @@ function numberProblems(pack: ContentPack): string[] {
     ...pack.training
       .filter((t) => Object.keys(t.gains).length === 0)
       .map((t) => `training "${t.id}" grants no gains`),
+    ...pack.training
+      .filter((t) => t.gains.reserves !== undefined)
+      .map((t) => `training "${t.id}" drills reserves, which only grow with stamina and jutsu use`),
   ];
 }

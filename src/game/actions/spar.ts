@@ -4,6 +4,7 @@ import { playerCombatant } from '../combatants';
 import { startFight } from '../fightStyle';
 import { adjust, busyReason, firstBlocker, healthFraction, placeHere, spendTime } from '../ops';
 import { weakFromHunger } from '../hunger';
+import { laidUp } from '../injuries';
 import { bondOf, findPerson, whereNow } from '../people/cast';
 import { companionCombatant } from '../people/companions';
 import type { ActionHandler, ActionOf } from './types';
@@ -22,6 +23,7 @@ export const spar: ActionHandler<ActionOf<'spar'>> = {
     return firstBlocker(
       busyReason(state),
       weakFromHunger(state),
+      laidUp(state, ctx),
       partner.role !== 'genin' && `${partner.name} doesn’t spar with genin.`,
       !placeHere(state, ctx, 'training') && 'Find a training ground to spar.',
       whereNow(state, ctx, partner) === null && `${partner.name} isn’t around right now.`,

@@ -2,6 +2,7 @@ import { headerView, homeView, hospitalView, type Choice } from '@/game';
 
 import { Room } from '../../art/Room';
 import { Banner } from '../../components/Banner';
+import { InjuryList } from '../Condition';
 import { GearLocker } from './GearLocker';
 import { HomeKitchen } from './HomeKitchen';
 import type { PlaceProps } from '../types';
@@ -150,10 +151,11 @@ export function HospitalPage({ ctx, state, perform, onBack }: PlaceProps) {
             <i style={{ width: `${pct}%` }} />
           </span>
           <p className="story">
-            {pct >= 100
+            {pct >= 100 && view.injuries.length === 0
               ? 'The medic waves you off. Nothing to treat.'
               : 'A medic looks you over and frowns at the bruises.'}
           </p>
+          <InjuryList injuries={view.injuries} />
           <button
             type="button"
             className="btn wide"

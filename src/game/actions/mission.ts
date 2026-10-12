@@ -19,6 +19,7 @@ import {
   spendTime,
 } from '../ops';
 import { weakFromHunger } from '../hunger';
+import { laidUp } from '../injuries';
 import type { ActionHandler, ActionOf } from './types';
 
 const MIN_HEALTH_FOR_MISSION = 0.4;
@@ -33,6 +34,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
     return firstBlocker(
       busyReason(state),
       weakFromHunger(state),
+      laidUp(state, ctx),
       on.kind === 'standing' && on.doneToday && 'You’ve done that today. Come back tomorrow.',
       state.character.vitals.energy < def.energyCost && `Needs ${def.energyCost} energy.`,
       healthFraction(state) < MIN_HEALTH_FOR_MISSION && 'You are too injured to take a mission.',

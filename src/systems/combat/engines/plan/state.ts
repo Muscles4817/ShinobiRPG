@@ -79,8 +79,17 @@ export interface PlanFighter extends Body, TrumpMemory, EmpowerMemory, CloneBody
   readonly joined?: boolean;
   /** Techniques used so far (by id, first use first), for the outcome. */
   readonly used?: readonly string[];
-  /** Chakra spent so far on techniques and dispels. */
+  /** Chakra paid so far this fight (it deepens reserves); absent until they pay any. */
   readonly chakraSpent?: number;
+}
+
+/** The change to a fighter who pays chakra: less left, more spent (never below empty). */
+export function paying(
+  f: Pick<PlanFighter, 'chakra' | 'chakraSpent'>,
+  cost: number,
+): Pick<PlanFighter, 'chakra' | 'chakraSpent'> {
+  const paid = Math.min(f.chakra, cost);
+  return { chakra: f.chakra - paid, chakraSpent: (f.chakraSpent ?? 0) + paid };
 }
 
 /** Dazed: about to lose a turn, or still reeling from one. */

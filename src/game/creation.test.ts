@@ -1,6 +1,8 @@
+import { createRng } from '@/core';
 import { gradesFromQuickPick } from '@/systems/profile';
 import { act, ctx, draft, formTeam, freshGame, newGame } from '@/test/gameFixtures';
 
+import { rollCharacterAptitude } from './aptitude';
 import { contextForPack } from './context';
 import { createNewGame, draftProblems, rollBreakIn, type CreationDraft } from './creation';
 import { characterModifiers } from './profile';
@@ -75,7 +77,12 @@ describe('character creation', () => {
     const roll = rollBreakIn(ctx, 'roof', 99);
     const state = createNewGame({ draft: draft({ breakInApproachId: 'roof' }), seed: 99 }, ctx);
     expect(state.character.breakIn.succeeded).toBe(roll.succeeded);
-    expect(state.rngState).toBe(roll.rngState);
+    // The same dice go on to roll aptitude, and the game carries on from there.
+    const dice = createRng(roll.rngState);
+    const clan = ctx.content.clans.require(state.character.clanId);
+    const talent = ctx.content.talents.require(state.character.talentId ?? '');
+    expect(state.character.aptitude).toEqual(rollCharacterAptitude(dice, clan, talent));
+    expect(state.rngState).toBe(dice.state());
   });
 
   it('records the break-in and graduation', () => {

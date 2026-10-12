@@ -1,4 +1,9 @@
+import type { SoloFloor } from '@/systems/stats';
+
 import type { TraitDef } from '../types';
+
+/** Hard work: body and taijutsu drills stay as worthwhile as at D, all the way through B. */
+const TIRELESS_FLOOR: SoloFloor = { floor: 0.4, throughGrade: 'B' };
 
 /** Personality traits, in opposing pairs. Setting-neutral, so every pack can use them. */
 export const TRAITS: readonly TraitDef[] = [
@@ -99,5 +104,21 @@ export const TRAITS: readonly TraitDef[] = [
     note: 'Picks one thing and does it until it is perfect.',
     opposite: 'curious',
     modifiers: { growth: { chakraControl: 1.1 } },
+  },
+  {
+    id: 'tireless',
+    likes: ['challenge', 'earnest'],
+    dislikes: ['tease'],
+    name: 'Tireless',
+    note: 'Runs laps after the others go home. A thousand kicks, then a thousand more.',
+    modifiers: {
+      soloEfficiencyFloor: {
+        strength: TIRELESS_FLOOR,
+        speed: TIRELESS_FLOOR,
+        stamina: TIRELESS_FLOOR,
+        taijutsu: TIRELESS_FLOOR,
+      },
+      hungerRate: 1.15,
+    },
   },
 ];

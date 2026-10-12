@@ -1,6 +1,6 @@
 import type { PersonDef } from '@/content';
 import { addPoints, stageOf } from '@/systems/bonds';
-import { applyTraining, diffStats, type StatDelta, type StatId } from '@/systems/stats';
+import { diffStats, type StatDelta, type StatId } from '@/systems/stats';
 import { study as studyTechnique, type Discipline } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
@@ -16,8 +16,10 @@ import {
   statChips,
 } from '../ops';
 import { weakFromHunger } from '../hunger';
+import { laidUp } from '../injuries';
 import { bondOf, findPerson, whereNow } from '../people/cast';
-import { studyPointsFor, trainingScale } from '../profile';
+import { growCharacter, logDiscoveries } from '../growth';
+import { studyPointsFor } from '../profile';
 import { addReport } from '../reports';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
@@ -33,6 +35,11 @@ const LESSON_SLOTS = 2;
 const LESSON_GAIN = 1.5;
 const SUPPORT_GAIN = 0.6;
 const LESSON_BOND = 6;
+/**
+ * A lesson grows you like a drill, times this: someone better than you is watching. Phase 3
+ * replaces it with the grade gap between you and the teacher.
+ */
+export const LESSON_TEACHER = 3;
 /** Friendship stage at which a sensei starts teaching signature techniques. */
 export const TEACHES_AT_STAGE = 2;
 /** A sensei's personal teaching beats reading a scroll. */
@@ -67,6 +74,7 @@ function teach(state: GameState, ctx: GameContext, sensei: PersonDef) {
   const id = nextSignature(state, sensei);
   if (!id || stageOf(bondOf(state, sensei.id).points) < TEACHES_AT_STAGE) return null;
   const def = ctx.content.techniques.require(id);
+  if (state.character.aptitude[def.discipline] <= 0) return null;
   const points = studyPointsFor(state.character, def, ctx) * LESSON_STUDY_BOOST;
   const result = studyTechnique(state.techniques, def, points);
   return {
@@ -94,6 +102,7 @@ export const lesson: ActionHandler<ActionOf<'lesson'>> = {
     return firstBlocker(
       busyReason(state),
       weakFromHunger(state),
+      laidUp(state, ctx),
       !sensei && 'You don’t have a sensei yet.',
       !placeHere(state, ctx, 'training') && 'Lessons happen at a training ground.',
       wait > 0 && `Your next lesson is in ${wait === 1 ? 'a day' : `${wait} days`}.`,
@@ -110,12 +119,12 @@ export const lesson: ActionHandler<ActionOf<'lesson'>> = {
     const { specialty } = profile;
     const gains: StatDelta = { [specialty]: LESSON_GAIN, [SUPPORT_STAT[specialty]]: SUPPORT_GAIN };
     const before = state.character.stats;
-    const scale = trainingScale(state.character, ctx);
-    const stats = applyTraining(before, gains, scale);
+    const grown = growCharacter(state.character, gains, ctx, LESSON_TEACHER);
+    const { stats } = grown.character;
     const bond = addPoints(bondOf(state, sensei.id), LESSON_BOND);
     const trained: GameState = {
       ...state,
-      character: { ...state.character, stats },
+      character: grown.character,
       people: {
         ...state.people,
         team: { ...team, lastLessonDay: state.time.day },
@@ -145,7 +154,7 @@ export const lesson: ActionHandler<ActionOf<'lesson'>> = {
         chip(`−${LESSON_ENERGY} energy`, 'cost'),
       ],
     });
-    return addReport(logged, {
+    return addReport(logDiscoveries(logged, grown.discovered, ctx), {
       kind: 'lesson',
       sensei: sensei.name,
       text: profile.lesson,

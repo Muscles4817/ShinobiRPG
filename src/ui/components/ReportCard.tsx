@@ -72,6 +72,9 @@ function content(report: Report): CardContent {
         rows: [
           ...(report.title ? [{ label: 'Mission', value: 'Failed', tone: 'harm' as const }] : []),
           { label: 'Hospital bill', value: `${report.hospitalFee} ryo`, tone: 'cost' },
+          ...(report.injury
+            ? [{ label: 'Injury', value: report.injury, tone: 'harm' as const }]
+            : []),
           ...(report.reputationLost > 0
             ? [{ label: 'Reputation', value: `−${report.reputationLost}`, tone: 'harm' as const }]
             : []),

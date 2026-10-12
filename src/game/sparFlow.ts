@@ -1,12 +1,12 @@
 import type { CombatOutcome } from '@/systems/combat';
 import { recordMeeting } from '@/systems/bonds';
-import { applyTraining, diffStats, type StatDelta } from '@/systems/stats';
+import { diffStats, type StatDelta } from '@/systems/stats';
 import { MAX_HEALTH } from '@/systems/vitals';
 
 import type { GameContext } from './context';
 import { adjust, chip, log, statChips } from './ops';
 import { bondOf, requirePerson } from './people/cast';
-import { trainingScale } from './profile';
+import { growCharacter, logDiscoveries } from './growth';
 import { addReport, type Report } from './reports';
 import type { GameState } from './state';
 
@@ -55,13 +55,14 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
           ...(partner.specialty ? { [partner.specialty]: LEARNING_GAIN } : {}),
           speed: FOOTWORK_GAIN,
         };
-  const grown = applyTraining(stats, gains, trainingScale(state.character, ctx));
+  const growth = growCharacter(state.character, gains, ctx);
+  const grown = growth.character.stats;
   const bond = BOND_FOR[result];
   const after = adjust(
     {
       ...state,
       combat: null,
-      character: { ...state.character, stats: grown },
+      character: growth.character,
       people: {
         ...state.people,
         sparringWith: null,
@@ -84,7 +85,7 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
     tone: result === 'won' ? 'success' : 'info',
     chips: [...statChips(diffStats(stats, grown)), chip(`+${bond} bond`, 'gain')],
   });
-  return addReport(logged, {
+  return addReport(logDiscoveries(logged, growth.discovered, ctx), {
     kind: 'spar',
     opponent: partner.name,
     result,

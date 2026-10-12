@@ -1,3 +1,4 @@
+import { evenAptitude, STAT_IDS } from '@/systems/stats';
 import { newGame } from '@/test/gameFixtures';
 
 import {
@@ -11,11 +12,10 @@ import {
 /**
  * PACING
  *
- * A focused player (see `focusedPlayer.ts`) lives day by day through real actions. Today's
- * growth is fast and flat: a taijutsu specialist drilling taijutsu reaches C in a few days and
- * S within a month. The growth model (progression plan, Phase 2) brings diminishing solo
- * returns and teachers, which should put chūnin readiness at about two months. When it lands,
- * turn the `it.todo`s into real tests against the named targets below.
+ * A focused player (see `focusedPlayer.ts`) lives day by day through real actions: drills
+ * every day, the sensei's lesson every week. Growth falls steeply by grade (progression plan,
+ * Phase 2): solo practice is effective at E, mild at D and far too slow to fill C. The player
+ * here has an ordinary talent in everything, so the targets measure the formula, not the dice.
  * Set VITE_BENCH_REPORT=true to print the day-by-day grades.
  */
 
@@ -25,8 +25,11 @@ const CHUNIN_READY_DAYS = 60;
 const CHUNIN_READY_WINDOW = 15;
 /** What "ready" means for now: the focused stat at the chūnin grade. */
 const CHUNIN_GRADE = 'C';
-
-/** Today's coarse check: a month of focused play lifts the focused stat a grade or more. */
+/** Long enough to see the window close. */
+const DAYS = CHUNIN_READY_DAYS + CHUNIN_READY_WINDOW;
+/** After reaching C, a month alone fills less than this share of the C band (13 to 20). */
+const C_STALL_SHARE = 0.25;
+const C_BAND = 7;
 const MONTH = 30;
 
 const TAIJUTSU_FOCUS: FocusPlan = {
@@ -40,42 +43,59 @@ const REPORT = import.meta.env.VITE_BENCH_REPORT === 'true';
 function report(run: PacingRun, plan: FocusPlan): void {
   if (!REPORT) return;
   for (const d of run.days) {
-    const value = d.stats[plan.focus].toFixed(1);
+    const value = d.stats[plan.focus].toFixed(2);
     console.warn(`day ${d.day}: ${plan.focus} ${value} (${d.grades[plan.focus]}), ${d.ryo} ryo`);
   }
 }
 
+function ordinaryTalent() {
+  const game = newGame();
+  return { ...game, character: { ...game.character, aptitude: evenAptitude(1) } };
+}
+
 describe('pacing: a focused player', () => {
-  const run = playFocused(newGame(), TAIJUTSU_FOCUS, MONTH);
+  const run = playFocused(ordinaryTalent(), TAIJUTSU_FOCUS, DAYS);
   report(run, TAIJUTSU_FOCUS);
   const first = run.days[0]!;
   const last = run.days.at(-1)!;
 
-  it('lives every day of the month through real actions', () => {
-    expect(run.days).toHaveLength(MONTH + 1);
-    expect(last.day).toBe(first.day + MONTH);
+  it('lives every day through real actions', () => {
+    expect(run.days).toHaveLength(DAYS + 1);
+    expect(last.day).toBe(first.day + DAYS);
     expect(last.missionsCompleted).toBeGreaterThan(0);
     expect(run.state.people.team?.lastLessonDay).not.toBeNull();
   });
 
-  it('plays the same month for the same game', () => {
-    expect(playFocused(newGame(), TAIJUTSU_FOCUS, MONTH).days).toEqual(run.days);
-  });
-
-  it('a month of focus lifts the focused stat at least a grade', () => {
-    const start = gradeIndex(first.grades.taijutsu);
-    expect(gradeIndex(last.grades.taijutsu)).toBeGreaterThan(start);
+  it('plays the same days for the same game', () => {
+    expect(playFocused(ordinaryTalent(), TAIJUTSU_FOCUS, MONTH).days).toEqual(
+      run.days.slice(0, MONTH + 1),
+    );
   });
 
   it('records a grade for every stat every day', () => {
-    for (const day of run.days) expect(Object.keys(day.grades)).toHaveLength(12);
+    for (const day of run.days) expect(Object.keys(day.grades)).toHaveLength(STAT_IDS.length);
     expect(dayReached(run, 'taijutsu', first.grades.taijutsu)).toBe(first.day);
   });
 
+  it(`the focused stat reaches ${CHUNIN_GRADE} on day ${CHUNIN_READY_DAYS} ± ${CHUNIN_READY_WINDOW}`, () => {
+    expect(gradeIndex(first.grades.taijutsu)).toBeLessThan(gradeIndex(CHUNIN_GRADE));
+    const reached = dayReached(run, 'taijutsu', CHUNIN_GRADE);
+    expect(reached).not.toBeNull();
+    expect(Math.abs((reached ?? 0) - first.day - CHUNIN_READY_DAYS)).toBeLessThanOrEqual(
+      CHUNIN_READY_WINDOW,
+    );
+  });
+
+  it('solo drilling stalls in C: a month alone barely dents the band', () => {
+    expect(last.grades.taijutsu).toBe(CHUNIN_GRADE);
+    const later = playFocused(run.state, TAIJUTSU_FOCUS, MONTH).days.at(-1)!;
+    expect(later.stats.taijutsu - last.stats.taijutsu).toBeLessThan(C_BAND * C_STALL_SHARE);
+  });
+
   it.todo(
-    `the focused stat reaches ${CHUNIN_GRADE} on day ${CHUNIN_READY_DAYS} ± ${CHUNIN_READY_WINDOW} (Phase 2)`,
+    'solo drilling alone stalls in D: without a teacher C is far off (Phase 3: today the ' +
+      'weekly lesson adds little, so a drilling player reaches C mostly alone and stalls there)',
   );
-  it.todo('solo drilling alone stalls in D: without a teacher C is far off (Phase 2)');
   it.todo('training with someone a grade or two higher is what carries a stat into C (Phase 2)');
   it.todo('the focused player is nominated for the chūnin exam inside the window (Phase 6)');
 });

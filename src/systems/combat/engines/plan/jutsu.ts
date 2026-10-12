@@ -26,7 +26,16 @@ import { move } from './footwork';
 import { react, type Blow } from './react';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
-import { dazeIn, fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
+import {
+  dazeIn,
+  fighterIn,
+  isDazed,
+  patch,
+  paying,
+  say,
+  type PlanFighter,
+  type Round,
+} from './state';
 import { setTrap } from './traps';
 
 /**
@@ -46,11 +55,9 @@ type Wounding = EffectUse<'damage' | 'area' | 'break'>;
 
 /** Pays the chakra, and notes the technique and the chakra for the outcome's usage report. */
 function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
-  const chakra = Math.max(0, actor.chakra - chakraCost(actor, t));
   const known = actor.used ?? [];
   const change = {
-    chakra,
-    chakraSpent: (actor.chakraSpent ?? 0) + actor.chakra - chakra,
+    ...paying(actor, chakraCost(actor, t)),
     used: known.includes(t.id) ? known : [...known, t.id],
   };
   return say(

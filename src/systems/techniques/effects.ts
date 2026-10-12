@@ -28,11 +28,17 @@ export const VERBS = [
 export type Verb = (typeof VERBS)[number];
 
 /**
+ * A stat a technique can read or raise in a fight. Reserves are not one: they size the chakra
+ * pool (max chakra), they don't make a technique stronger.
+ */
+export type FightStat = Exclude<StatId, 'reserves'>;
+
+/**
  * A stat that scales a verb. Besides plain stats: `art` is the fighter's skill in the
  * technique's own discipline, and `guard` is what sees that art coming (willpower against
  * genjutsu, perception against the rest).
  */
-export type ScalingStat = StatId | 'art' | 'guard';
+export type ScalingStat = FightStat | 'art' | 'guard';
 
 /** Overrides a verb's scaling profile for one technique; any part left out keeps the default. */
 export interface VerbScaling {
@@ -79,7 +85,7 @@ interface VerbExtras {
    */
   readonly empower: {
     /** The stats it raises while it holds. Never empty (validated). */
-    readonly boosts: readonly StatId[];
+    readonly boosts: readonly FightStat[];
     /** Health the user's body pays at the end of each exchange it holds. */
     readonly healthPerExchange?: number;
     /** What it takes out of its user once the fight is over, each time it is used. */

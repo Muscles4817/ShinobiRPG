@@ -32,7 +32,7 @@ export const TALENTS: readonly TalentDef[] = [
     id: 'chakra-reserves',
     name: 'Huge chakra reserves',
     description: 'More chakra than a jōnin, and very little idea how to steer it.',
-    statBonuses: { stamina: 3, chakraControl: -2 },
+    statBonuses: { reserves: 4, chakraControl: -2 },
     modifiers: { growth: { chakraControl: 0.85 } },
   },
   {

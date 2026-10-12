@@ -804,6 +804,45 @@ These were folded into the D2 discussion. Where each landed:
   range strip looks like the range tabs; log dividers carry numbers ("End of round 1");
   the "⚔" on team notices; creation buttons and swatches under 40px.
 
+**Phase 2 (in progress).**
+
+- 2.3: `reserves` ("Chakra Reserves", body group) is a stat. Max chakra is 30 + 3.5 per point
+  of reserves + 1 per point of control; stamina no longer feeds it. Reserves grow with half of
+  every stamina gain (`withReserves` inside `applyTraining`) and with chakra paid in fights
+  (Plan & Watch reports the player's `CombatOutcome.chakraSpent`; 0.02 base gain a point,
+  `game/fightGrowth.ts`). Save v16 seeds reserves from the old maximum (within one point).
+  An enemy's reserves are read back from its authored `maxChakra`.
+- 2.6: named injuries are content (`InjuryDef` in `content/injuries.ts`; twelve shared ones
+  in `content/shared/injuries.ts`, validated), with the rules in a new `systems/injuries`.
+  `character.injuries` and `character.exhaustion` (save v17). Injuries add their
+  `ModifierSpec` to `characterModifiers` and their per-stat fight multipliers (and a trump's
+  strain) to `combatStats`; they heal on the morning of `until` (`spendTime`), with a journal
+  line. Sources go through `game/wounds.ts`: a real defeat (`game/fightToll.ts`) picks a
+  `defeat` injury weighted by the share of foe health still standing and names it on the
+  defeat card; `applyFightCosts` now pays trump costs (hospital days: a bed-rest `collapse`
+  injury; exhaustion days; a stat injury: the matching `strain` injury plus the flat amount
+  off that stat in fights; permanent: the stat drops); ending any fight under 10% chakra
+  leaves one night of exhaustion (sleep refills half). Stamina takes 1% a point off a new
+  injury's days (at most half). The hospital treats injuries even at full health: 25 ryo
+  each on top of the fee, halving the days left, once per injury. The Shinobi screen has a
+  Condition section; the hospital lists your injuries.
+- 2.1/2.2: aptitude and growth. `character.aptitude` (a hidden multiplier per stat, 0 to 1.8),
+  `aptitudeKnown` (unknown, sense, known) and `aptitudeSessions` (save v18 derives aptitude
+  from the clan's and talent's growth multipliers, nothing known). New characters roll it from
+  the break-in dice (`game/aptitude.ts`): a clan's `arts` (new `ClanDef` field, both packs)
+  1.1–1.4, its other stats 0.75–1.2; the clanless 0.6–1.35 with 8% prodigies (1.4–1.8), 10%
+  holes (0.25–0.55) and a 12% chance of one void art (0). A talent's raised stats never roll
+  under 1; clan and talent growth multipliers tilt the roll and no longer act as modifiers.
+  Growth (`systems/stats/growth.ts`, through `game/growth.ts` for every source) is base ×
+  `SESSION_PACE` (0.09) × solo efficiency by grade (E 1, D 0.4, C 0.1, B 0.03, A 0.01, S
+  0.003) × aptitude × modifiers, and × 3 for the sensei's lesson. Stats are stored to three
+  decimals. The Tireless trait (`soloEfficiencyFloor`) keeps 0.4 through B in strength, speed,
+  stamina and taijutsu. Three sessions in a stat give a rough read (a journal line); a void
+  art shows itself on the first try and then refuses its drills and scrolls. The Shinobi screen
+  shows each stat's read in words. Pacing (an ordinary talent, taijutsu specialist): taijutsu
+  reaches C on day 61 (was day 3), and a further month alone adds about one point of the C
+  band's seven.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -912,3 +951,35 @@ These were folded into the D2 discussion. Where each landed:
   stances by specialty: taijutsu and ninjutsu press, kenjutsu covers you, genjutsu and
   fūinjutsu support. Edits to a teammate's cards last for the fight only, and a new stance
   rebuilds their cards.
+- 2.3: reserves are not a combat attribute or a technique scaling stat (`ScalingStat`
+  excludes them): they size the chakra pool, which reaches the fight as `maxChakra`. Clone
+  counts and empower duration can add them to `CombatAttributes` when those verbs need them.
+  They are left out of `fightingPower` (an enemy's chakra is authored apart from its stats),
+  but sharp-eyed scouting lists them like any other standout stat. No drill may grant them
+  (validated). The "Huge chakra reserves" talent now gives reserves +4 instead of stamina +3,
+  and the fan pack's sealing clan trades one stamina for reserves +3.
+- 2.6: injuries last until the morning of `until` (`until = today + days`), and exhaustion
+  spoils every sleep begun before its `until`, so "one day" of either means tonight. A spar
+  never injures (nobody is really hurt), but ending one drained still exhausts. A bed-rest
+  injury blocks training, lessons, sparring and jobs like starving does. The trump's stat
+  `amount` is kept on the injury as a flat strain in fights, besides the injury's own
+  multipliers. Treatment can be repeated for health, but each injury is set only once (a
+  `treated` flag on it), so ryo can't erase injuries. `exhaustion` is `null` when rested
+  rather than absent.
+- 2.1: clan and talent growth multipliers moved into aptitude (they tilt the roll and the
+  v18 migration copies them), so they aren't counted twice; traits, academy grades, meals,
+  hunger and injuries stay modifiers. Traits don't tilt aptitude: they are temperament, which
+  already acts on every session.
+- 2.1: aptitude is rolled from the break-in dice after the roll, and the game continues from
+  the dice after aptitude (the scene and the game still agree on the break-in).
+- 2.2: within a grade, efficiency holds the grade's value for the lower 60% of the band and
+  eases geometrically to the next grade's over the top 40%, so a boundary is no cliff. A
+  hard-work floor holds through its grade and stops at the next (a drop, not an exploit).
+- 2.2: a drill belongs to its largest gain; a void art blocks only drills it heads (a void
+  taijutsu still lets Kicking Posts grow strength until it is known; then it is refused). A
+  void art is revealed by the first session or scroll in it, which grows nothing in it.
+- 2.2: every growth source goes through the new formula: drills, lessons (× 3), spars (until
+  2.4), night sights and fight reserves. Drill previews assume an ordinary aptitude where
+  none has been read, so they don't give talent away.
+- 2.2: the 60-day target holds now, mostly by drilling: the weekly lesson adds little. So the
+  stall is in C (asserted), not D; "solo stalls in D" waits for Phase 3 teachers.

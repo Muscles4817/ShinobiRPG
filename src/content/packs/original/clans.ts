@@ -7,6 +7,7 @@ export const CLANS: readonly ClanDef[] = [
     description: 'Nobody handed you anything. You train a little harder because of it.',
     statBonuses: {},
     modifiers: { training: 1.05 },
+    arts: [],
     startingTechniqueIds: [],
   },
   {
@@ -15,6 +16,7 @@ export const CLANS: readonly ClanDef[] = [
     description: 'Fire-breathers who light the village’s great lanterns each dusk. Hot-tempered.',
     statBonuses: { ninjutsu: 2, stamina: 1, willpower: -2 },
     modifiers: { studyElement: { fire: 1.3 } },
+    arts: ['ninjutsu', 'stamina'],
     nature: 'fire',
     startingTechniqueIds: ['hibana-spark'],
     lodging: 'Your room in the Hibana kiln-house',
@@ -25,6 +27,7 @@ export const CLANS: readonly ClanDef[] = [
     description: 'Lantern-keepers who guide the dead home. They see what others can’t.',
     statBonuses: { perception: 2, willpower: 1, genjutsu: 1, strength: -2 },
     modifiers: { studyDiscipline: { genjutsu: 1.2 } },
+    arts: ['perception', 'genjutsu'],
     startingTechniqueIds: ['guiding-light'],
     lodging: 'Your room in the Tōkaku lantern hall',
     kekkeiGenkai: {
@@ -40,6 +43,7 @@ export const CLANS: readonly ClanDef[] = [
     description: 'Smiths and swordsmen. Every child forges their first blade at twelve.',
     statBonuses: { kenjutsu: 2, strength: 1, genjutsu: -1, intellect: -1 },
     modifiers: { studyDiscipline: { kenjutsu: 1.25, genjutsu: 0.8 } },
+    arts: ['kenjutsu', 'strength'],
     startingTechniqueIds: ['forge-cut'],
     lodging: 'The loft above the Kurogane forge',
   },
@@ -49,6 +53,7 @@ export const CLANS: readonly ClanDef[] = [
     description: 'Weavers of the sacred ropes that bind the restless dead. Patient, and frail.',
     statBonuses: { fuuinjutsu: 2, chakraControl: 1, stamina: -2 },
     modifiers: { studyDiscipline: { fuuinjutsu: 1.3 } },
+    arts: ['fuuinjutsu', 'chakraControl'],
     startingTechniqueIds: ['binding-rope'],
     lodging: 'Your room at the Shimenawa shrine',
     kekkeiGenkai: {

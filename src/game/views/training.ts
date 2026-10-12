@@ -1,10 +1,11 @@
 import type { IconId } from '@/content';
-import { STAT_INFO, trainingGain, type StatId } from '@/systems/stats';
+import { applyTraining, STAT_INFO, type StatId } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
-import { trainingScale } from '../profile';
+import { assumedAptitude } from '../growth';
+import { growthFor } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { lessonCard, sparOptions, type LessonCard, type SparOption } from './team';
@@ -54,10 +55,11 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
   if (!place) return null;
   const { stats, vitals } = state.character;
   const lastHeading = state.journal.entries.at(-1)?.heading;
-  const scale = trainingScale(state.character, ctx);
+  const growth = growthFor({ ...state.character, aptitude: assumedAptitude(state.character) }, ctx);
   const drills = place.trainingIds.map((id): Drill => {
     const def = ctx.content.training.require(id);
     const gained = Object.keys(def.gains) as StatId[];
+    const after = applyTraining(stats, def.gains, growth);
     return {
       ...choice(state, ctx, { type: 'train', trainingId: id }),
       id,
@@ -71,7 +73,7 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
         .map((stat) => ({
           label: STAT_INFO[stat].label,
           now: stats[stat],
-          after: stats[stat] + trainingGain(stats[stat], def.gains[stat] ?? 0, scale[stat] ?? 1),
+          after: after[stat],
         }))
         .sort((a, b) => b.after - b.now - (a.after - a.now)),
     };

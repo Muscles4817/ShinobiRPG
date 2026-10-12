@@ -1,7 +1,7 @@
 import { createRng } from '@/core';
 
 import { checkChance, rollCheck } from './checks';
-import { applyTraining, createStats, diffStats, trainingGain, unmetRequirements } from './stats';
+import { createStats, diffStats, unmetRequirements } from './stats';
 
 describe('stats', () => {
   it('creates stats from a base with bonuses', () => {
@@ -10,15 +10,9 @@ describe('stats', () => {
     expect(stats.genjutsu).toBe(5);
   });
 
-  it('has diminishing training returns', () => {
-    expect(trainingGain(0, 1)).toBeGreaterThan(trainingGain(50, 1));
-  });
-
-  it('applies training only to the trained stats', () => {
+  it('diffs stats to two decimals, leaving unchanged stats out', () => {
     const before = createStats(5);
-    const after = applyTraining(before, { speed: 1 });
-    expect(after.speed).toBeGreaterThan(before.speed);
-    expect(diffStats(before, after)).toEqual({ speed: 0.8 });
+    expect(diffStats(before, { ...before, speed: 5.04 })).toEqual({ speed: 0.04 });
   });
 
   it('reports unmet requirements', () => {
