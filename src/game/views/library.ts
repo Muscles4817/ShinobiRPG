@@ -66,10 +66,12 @@ export function libraryView(state: GameState, ctx: GameContext): LibraryView | n
   if (!place) return null;
   const scrolls = place.techniqueIds
     .filter((id) => !state.techniques.known.includes(id))
-    .map((id) => scrollOf(state, ctx, ctx.content.techniques.require(id), {
-      action: 'study',
-      source: 'library',
-    }));
+    .map((id) =>
+      scrollOf(state, ctx, ctx.content.techniques.require(id), {
+        action: 'study',
+        source: 'library',
+      }),
+    );
   const sorted = sortScrolls(scrolls);
   return {
     name: place.name,

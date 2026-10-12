@@ -34,6 +34,7 @@ function gradeCard(report: Extract<Report, { kind: 'grade' }>): CardContent {
 }
 
 function missionNote(report: Extract<Report, { kind: 'mission-complete' }>): string | null {
+  if (report.gear) return 'The client insists you keep the weapon. It is yours now.';
   if (report.scroll) return 'The client presses a sealed scroll into your hands. Read it at home.';
   return report.unlocked.length > 0
     ? 'Word is the hall will trust you with harder work now. Watch the board.'
@@ -63,9 +64,8 @@ function missionCompleteCard(report: Extract<Report, { kind: 'mission-complete' 
       ...(report.teamBond
         ? [{ label: 'Team bond', value: `+${report.teamBond}`, tone: 'gain' as const }]
         : []),
-      ...(report.scroll
-        ? [{ label: 'Scroll', value: report.scroll, tone: 'gain' as const }]
-        : []),
+      ...(report.scroll ? [{ label: 'Scroll', value: report.scroll, tone: 'gain' as const }] : []),
+      ...(report.gear ? [{ label: 'Weapon', value: report.gear, tone: 'gain' as const }] : []),
     ],
     note: missionNote(report),
   };

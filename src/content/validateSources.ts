@@ -45,13 +45,20 @@ function shelfProblems(pack: ContentPack): string[] {
   );
 }
 
+/** Mission rewards name real techniques (a scroll) and real gear. */
 function scrollRewardProblems(pack: ContentPack): string[] {
   const known = new Set(pack.techniques.map((t) => t.id));
+  const gear = new Set(pack.gear.map((g) => g.id));
   return pack.missions.flatMap((m) => {
-    const id = m.reward.scrollId;
-    return id !== undefined && !known.has(id)
-      ? [`mission "${m.id}" rewards a scroll of unknown technique "${id}"`]
-      : [];
+    const { scrollId, gearId } = m.reward;
+    return [
+      ...(scrollId !== undefined && !known.has(scrollId)
+        ? [`mission "${m.id}" rewards a scroll of unknown technique "${scrollId}"`]
+        : []),
+      ...(gearId !== undefined && !gear.has(gearId)
+        ? [`mission "${m.id}" rewards unknown gear "${gearId}"`]
+        : []),
+    ];
   });
 }
 

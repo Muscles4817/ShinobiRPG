@@ -267,6 +267,12 @@ function v16ToV17(state: RawState): RawState {
   return { ...state, character: { ...character, injuries: [], exhaustion: null } };
 }
 
+/** v22 → v23: technique scrolls can be owned; nobody has any yet. */
+function v22ToV23(state: RawState): RawState {
+  const inventory = asRecord(state.inventory);
+  return { ...state, inventory: { ...inventory, scrolls: asRecord(inventory.scrolls) } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -289,4 +295,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   19: v19ToV20,
   20: v20ToV21,
   21: v21ToV22,
+  22: v22ToV23,
 };

@@ -142,6 +142,15 @@ describe('persistence', () => {
     expect(loaded.value.techniques.unstable).toEqual(['crescent-drop', 'ember-breath']);
   });
 
+  it('gives a save from before owned scrolls an empty scroll case', () => {
+    const game = newGame();
+    const { scrolls: _s, ...oldInventory } = game.inventory;
+    const raw = JSON.stringify({ version: 22, state: { ...game, inventory: oldInventory } });
+    const loaded = deserialize(raw);
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.inventory).toEqual({ ...oldInventory, scrolls: {} });
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

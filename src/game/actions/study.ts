@@ -23,7 +23,7 @@ function masteryLine(name: string, result: Studied): string {
 }
 
 /** What stops any scroll study of this technique, wherever the scroll comes from. */
-export function studyBlocker(state: GameState, def: TechniqueDef, ctx: GameContext) {
+export function studyBlocker(state: GameState, def: TechniqueDef, ctx: GameContext): string | null {
   const blocker = learnBlockerFor(state, def, ctx);
   return firstBlocker(
     noTalentReason(state.character, def.discipline, ctx),
@@ -61,7 +61,11 @@ export const study: ActionHandler<ActionOf<'study'>> = {
     const def = ctx.content.techniques.get(action.techniqueId);
     const shelf = shelfHolding(state, ctx, action.techniqueId);
     if (!def || !shelf) return 'That scroll isn’t kept here.';
-    return firstBlocker(busyReason(state), shelfBlocker(state, shelf), studyBlocker(state, def, ctx));
+    return firstBlocker(
+      busyReason(state),
+      shelfBlocker(state, shelf),
+      studyBlocker(state, def, ctx),
+    );
   },
   perform(state, action, ctx) {
     const def = ctx.content.techniques.require(action.techniqueId);

@@ -5,6 +5,9 @@ import { act, ctx, draft, formTeam, freshGame, newGame } from '@/test/gameFixtur
 import { rollCharacterAptitude } from './aptitude';
 import { contextForPack } from './context';
 import { createNewGame, draftProblems, rollBreakIn, type CreationDraft } from './creation';
+import { learnBlockerFor, learnBlockerText } from './learning';
+import { nextSignature } from './people/signatures';
+import { teachingOf } from './people/teachers';
 import { characterModifiers } from './profile';
 import { creationView } from './views/creation';
 import { homeView } from './views/home';
@@ -121,15 +124,19 @@ describe('identity shapes play', () => {
     expect(mods.studyElement.water).toBeCloseTo(0.85);
   });
 
-  it('clan techniques are only taught to the clan', () => {
+  it('clan techniques are only taught to the clan, by its own people', () => {
     const uchiha = leafGame({ clanId: 'uchiha' });
     const plain = leafGame();
-    const study = { type: 'study', techniqueId: 'great-fireball' } as const;
     const strong = (s: typeof plain) => ({
       ...s,
       character: { ...s.character, stats: { ...s.character.stats, ninjutsu: 20 } },
     });
-    expect(act(strong(uchiha), study, naruto).techniques.known).toContain('great-fireball');
-    expect(() => act(strong(plain), study, naruto)).toThrow(/Only taught within its clan/);
+    const sasuke = naruto.content.people.require('sasuke');
+    const next = (s: typeof plain) => nextSignature(s, teachingOf(s, sasuke)!, naruto);
+    expect(next(strong(uchiha))).toBe('great-fireball');
+    expect(next(strong(plain))).toBeNull();
+    const fireball = naruto.content.techniques.require('great-fireball');
+    const blocker = learnBlockerFor(strong(plain), fireball, naruto);
+    expect(blocker && learnBlockerText(blocker, fireball)).toBe('Only taught within its clan.');
   });
 });

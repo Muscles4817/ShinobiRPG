@@ -84,8 +84,8 @@ describe('learning by rank', () => {
 
   it('the academy folds away what you can’t study yet, with the reason', () => {
     const view = academyView(withStat(newGame(), 'ninjutsu', 5), ctx)!;
-    const tide = view.comingUp.find((s) => s.id === 'tide-lash');
-    expect(tide?.locked).toBe("Needs D ninjutsu; you're E.");
+    const sense = view.comingUp.find((s) => s.id === 'mending-glow');
+    expect(sense?.locked).toBe("Needs D chakra control; you're E.");
     const ember = view.ready.find((s) => s.id === 'ember-breath');
     expect(ember).toMatchObject({ rank: 'D', unstable: true, locked: null });
   });

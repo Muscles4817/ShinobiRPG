@@ -88,7 +88,13 @@ describe('saves', () => {
     const { meal: _meal, ...character } = v7.character;
     const loaded = deserialize(JSON.stringify({ version: 7, state: { ...v7, character } }));
     if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.inventory).toEqual({ gear: [], equipped: {}, pantry: {}, tools: {} });
+    expect(loaded.value.inventory).toEqual({
+      gear: [],
+      equipped: {},
+      pantry: {},
+      tools: {},
+      scrolls: {},
+    });
     expect(loaded.value.character.meal).toBeNull();
   });
 });

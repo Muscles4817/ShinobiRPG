@@ -121,7 +121,9 @@ export function academyView(state: GameState, ctx: GameContext): AcademyView | n
 }
 
 /** Studying first, then ready to start, then what is folded away (closest first). */
-export function sortScrolls(scrolls: readonly Scroll[]) {
+export function sortScrolls(
+  scrolls: readonly Scroll[],
+): Pick<AcademyView, 'studying' | 'ready' | 'comingUp'> {
   const open = scrolls.filter((s) => s.locked === null);
   return {
     studying: open.filter((s) => s.progress > 0),

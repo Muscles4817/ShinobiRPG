@@ -54,7 +54,9 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
     case 'academy':
       return academyLine(place.techniqueIds, state, ctx);
     case 'library':
-      return libraryAccess(state) ? 'For chūnin and above' : academyLine(place.techniqueIds, state, ctx);
+      return libraryAccess(state)
+        ? 'For chūnin and above'
+        : academyLine(place.techniqueIds, state, ctx);
     case 'home':
       return homeLine(state, place.blurb);
     case 'gear':

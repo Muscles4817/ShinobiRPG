@@ -34,6 +34,8 @@ export type Report =
       readonly teamBond?: number;
       /** The technique scroll the client handed over, by name. */
       readonly scroll?: string;
+      /** The gear the client handed over (a named weapon), by name. */
+      readonly gear?: string;
     }
   | {
       readonly kind: 'mission-failed';

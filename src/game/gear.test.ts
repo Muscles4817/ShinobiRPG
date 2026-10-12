@@ -4,12 +4,12 @@ import { playerCombatant } from './combatants';
 import { createNewGame } from './creation';
 import { blockerFor } from './dispatch';
 import { combatGear } from './gear';
-import { deserialize, SAVE_VERSION, serialize } from './persistence/save';
+import { deserialize, serialize } from './persistence/save';
 import type { GameState } from './state';
 import { gearShopView, loadoutView } from './views/shops';
 
 /** The save version before gear shaped fights (the gear migration is the latest step). */
-const PRE_GEAR = SAVE_VERSION - 1;
+const PRE_GEAR = 21;
 
 const rich = (state: GameState = newGame()): GameState => ({ ...state, wallet: { ryo: 5000 } });
 const chunin = (state: GameState): GameState => ({

@@ -29,7 +29,11 @@ export function sourceOf(shelf: Shelf): StudySource {
 }
 
 /** The academy or library here that keeps this technique's scroll, if any. */
-export function shelfHolding(state: GameState, ctx: GameContext, techniqueId: string) {
+export function shelfHolding(
+  state: GameState,
+  ctx: GameContext,
+  techniqueId: string,
+): Shelf | undefined {
   return [placeHere(state, ctx, 'academy'), placeHere(state, ctx, 'library')].find((shelf) =>
     shelf?.techniqueIds.includes(techniqueId),
   );

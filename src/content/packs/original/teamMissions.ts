@@ -46,7 +46,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     summary: 'Ghosts are snuffing out the Festival of Returning lanterns. The shrine needs a team.',
     slots: 4,
     energyCost: 30,
-    reward: { ryo: 320, reputation: 8, scrollId: 'kindled-pulse' },
+    reward: { ryo: 320, reputation: 8, scrollId: 'kindled-pulse', gearId: 'hungry-lantern' },
     minMissionsCompleted: 4,
     withTeam: true,
     stages: [

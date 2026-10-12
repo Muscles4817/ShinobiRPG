@@ -6,12 +6,14 @@ import {
   type StatId,
   type Stats,
 } from '@/systems/stats';
+import { scrollIds } from '@/systems/inventory';
 import { learnBlocker } from '@/systems/techniques';
 
 import type { GameContext } from './context';
 import { learnerOf, stabiliseTechniques } from './learning';
 import { chip, log } from './ops';
 import { addReport, type Report } from './reports';
+import { libraryAccess } from './shelves';
 import type { GameState } from './state';
 
 /**
@@ -36,15 +38,25 @@ export function gradeUpsBetween(before: Stats, after: Stats): StatId[] {
   return STAT_IDS.filter((id) => gradeIndex(after[id]) > gradeIndex(before[id]));
 }
 
-/** Where each technique is taught, by id (the first place that keeps its scroll). */
-function teachingPlaces(ctx: GameContext): Map<string, string> {
+/** Name for your own scrolls in "What this opens". */
+const YOUR_SCROLLS = 'Your scrolls';
+
+/**
+ * Where each technique can be studied, by id: the first academy (or, once your rank lets you
+ * in, library) that keeps its scroll, else your own scrolls.
+ */
+function teachingPlaces(state: GameState, ctx: GameContext): Map<string, string> {
   const where = new Map<string, string>();
-  const academies = ctx.content.locations.all.flatMap((l) =>
-    l.places.flatMap((p) => (p.kind === 'academy' ? [p] : [])),
+  const stacksOpen = libraryAccess(state) === null;
+  const shelves = ctx.content.locations.all.flatMap((l) =>
+    l.places.flatMap((p) =>
+      p.kind === 'academy' || (p.kind === 'library' && stacksOpen) ? [p] : [],
+    ),
   );
-  for (const place of academies) {
+  for (const place of shelves) {
     for (const id of place.techniqueIds) if (!where.has(id)) where.set(id, place.name);
   }
+  for (const id of scrollIds(state.inventory)) if (!where.has(id)) where.set(id, YOUR_SCROLLS);
   return where;
 }
 
@@ -57,7 +69,7 @@ function opened(state: GameState, before: Stats, ctx: GameContext): GradeReport[
   const { held: _held, ...learner } = learnerOf(state, ctx);
   const blocked = (stats: Stats, id: string) =>
     learnBlocker(techniques, ctx.content.techniques.require(id), { ...learner, stats });
-  return [...teachingPlaces(ctx)].flatMap(([id, where]) =>
+  return [...teachingPlaces(state, ctx)].flatMap(([id, where]) =>
     blocked(before, id) !== null && blocked(character.stats, id) === null
       ? [{ name: ctx.content.techniques.require(id).name, where }]
       : [],

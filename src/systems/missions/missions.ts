@@ -48,6 +48,8 @@ export interface MissionDef {
     readonly reputation: number;
     /** A technique scroll the client hands over on success (a technique id). */
     readonly scrollId?: string;
+    /** A piece of gear the client hands over on success (a gear id), e.g. a named weapon. */
+    readonly gearId?: string;
   };
   readonly minMissionsCompleted: number;
   /** Your teammates come along and fight beside you. */
