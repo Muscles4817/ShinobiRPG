@@ -736,6 +736,10 @@ These were folded into the D2 discussion. Where each landed:
   exchanges 82–88% of the time. The retune after merging with 1.2 traced long fights to
   kunai duels at mid range: footwork now closes in for full blows, and Dodge joins the
   default plan.
+- 1.5/1.6: trump cards (`oncePerFight`, `afterCost` templates) and `CombatSetup.opening`
+  (range, hidden, dazed, first mover) are in. Costs are journalled only, through
+  `applyFightCosts`, until 2.6 applies them. Opening fields wait on 1.4c, and rows
+  disruption on 1.3.
 
 ### Decisions made during the run
 
@@ -757,3 +761,6 @@ These were folded into the D2 discussion. Where each landed:
   until the end of the following exchange, so set-up and payoff works one-on-one.
 - Accepted: the player's equal-fight win rate at grade E is 35% (43% at D–A). Parity
   isn't a goal; a better foe sense of tempo can come later.
+- 1.5: the new trump techniques sit at the academy as a placeholder (grade B
+  requirements); 4.2 moves them to teachers and scrolls. Once-per-fight applies to foes
+  too.
