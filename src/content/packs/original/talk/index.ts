@@ -1,22 +1,10 @@
 import type { ConversationTopic } from '../../../types';
 
-/** What the setting’s clans give templated talk about clans to say. */
+/**
+ * What the setting’s clans give templated talk about clans to say. Clanless families have
+ * none: their talk comes from their art, traits and role instead.
+ */
 export const CLAN_TOPICS: readonly ConversationTopic[] = [
-  {
-    kind: 'clan',
-    key: 'none',
-    values: {
-      clan: 'no clan at all',
-      duty: 'honest work, a clean doorstep, and a bowl kept warm for whoever comes home late',
-      elder:
-        'my grandmother, who sold rice crackers on the same corner for fifty years and never once let anyone owe her',
-      rite: 'the supper at the start of each year where everyone at the table names one thing they did well',
-      burden:
-        'Nobody expects anything of them, so every time they do well someone calls it luck. They are tired of proving it was not.',
-      secret:
-        'My family wanted me to keep the shop. I sneaked off to the academy the morning I was meant to start behind the counter. They still haven’t really forgiven me.',
-    },
-  },
   {
     kind: 'clan',
     key: 'hibana',
