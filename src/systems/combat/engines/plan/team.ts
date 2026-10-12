@@ -1,7 +1,7 @@
 import type { RangeBand } from '../../contract';
 import { alive } from '../../rules/body';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
-import { RANGE_BANDS } from '../../rules/range';
+import { inReach, RANGE_BANDS, reachOf } from '../../rules/range';
 import { coverChance } from '../../rules/team';
 import { isHindering, isWounding } from '../../rules/verbs';
 import type { CombatStance } from '../../teamContract';
@@ -105,9 +105,15 @@ function shaperFor(stance: CombatStance): Shaper {
   }
 }
 
-/** Where a stance wants to fight: pressing closes in when the kit can strike up close. */
+/**
+ * Where a stance wants to fight: pressing closes in when the kit can strike up close and their
+ * wounding jutsu (if any) still reach there; a caster whose jutsu don't stays at their distance.
+ */
 function homeFor(f: PlanFighter, stance: CombatStance): RangeBand {
-  return stance.kind === 'press' && canAttackFrom(f, 'close') ? 'close' : homeBand(f);
+  if (stance.kind !== 'press' || !canAttackFrom(f, 'close')) return homeBand(f);
+  const wounding = f.techniques.filter(isWounding);
+  const reachClose = wounding.some((t) => inReach(reachOf(t), 'close'));
+  return wounding.length === 0 || reachClose ? 'close' : homeBand(f);
 }
 
 /** A teammate's cards for their stance. */

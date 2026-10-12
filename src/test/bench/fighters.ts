@@ -2,6 +2,7 @@ import type {
   CombatantSetup,
   CombatPerk,
   CombatRow,
+  CombatStance,
   CombatTechnique,
   CombatTrait,
 } from '@/systems/combat';
@@ -61,6 +62,8 @@ export interface FighterSpec {
   readonly plan?: BenchLoadout;
   /** A row to stand in, overriding the one their kit would give them. */
   readonly row?: CombatRow;
+  /** As a teammate, the stance they fight in (their kit's when absent). */
+  readonly stance?: CombatStance;
 }
 
 export type StatProfile = Partial<Readonly<Record<StatId, Emphasis>>>;
@@ -96,5 +99,6 @@ export function toSetup(spec: FighterSpec, id: string): CombatantSetup {
     ...(spec.traits ? { traits: spec.traits } : {}),
     ...(spec.perks ? { perks: spec.perks } : {}),
     ...(spec.row ? { row: spec.row } : {}),
+    ...(spec.stance ? { stance: spec.stance } : {}),
   };
 }
