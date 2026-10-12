@@ -1,5 +1,5 @@
 import type { PersonDef, TeachingQuirk } from '@/content';
-import { stageName, stageOf } from '@/systems/bonds';
+import { stageForPair, stageOf } from '@/systems/bonds';
 import { STAT_INFO, statTier, type StatGrade, type StatId } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
@@ -66,11 +66,12 @@ export interface TeacherOffer {
   readonly slots: number;
 }
 
+/** How a quirk teaches, said after the person's own bio so no two teachers read the same. */
 const QUIRK_MANNER: Readonly<Record<TeachingQuirk, string>> = {
-  patient: 'Patient. Goes over it until it sticks.',
-  harsh: 'Harsh. Drives you hard and doesn’t warm up quickly.',
-  natural: 'A natural teacher. Makes hard things look simple.',
-  distracted: 'Distracted. Brilliant in patches.',
+  patient: 'A patient teacher: goes over it until it sticks.',
+  harsh: 'A harsh teacher: drives you hard and doesn’t warm up quickly.',
+  natural: 'A natural teacher: makes hard things look simple.',
+  distracted: 'A distracted teacher: brilliant in patches.',
 };
 
 const PER_WEEK: Readonly<Record<number, string>> = {
@@ -101,6 +102,13 @@ function teachStat(state: GameState, ctx: GameContext, person: PersonDef, id: St
   };
 }
 
+/** An academy that also keeps this technique's scroll, so a teacher's art never hides one. */
+function academyWith(ctx: GameContext, techniqueId: string): string | null {
+  const places = ctx.content.locations.all.flatMap((l) => l.places);
+  const shelf = places.find((p) => p.kind === 'academy' && p.techniqueIds.includes(techniqueId));
+  return shelf?.name ?? null;
+}
+
 /**
  * What they'll teach next; failing that, the first one you can't learn yet, and why. A clan's
  * arts are never shown to outsiders.
@@ -116,9 +124,11 @@ function signatureOf(state: GameState, ctx: GameContext, teaching: Teaching) {
   const def = ctx.content.techniques.require(nextId);
   const stage = stageOf(bondOf(state, teaching.person.id).points);
   const blocker = learnBlockerFor(state, def, ctx);
+  const shelf = academyWith(ctx, def.id);
+  const orScroll = shelf ? `, or study the scroll at the ${shelf}` : '';
   const bondLock =
     stage < TEACHES_AT_STAGE
-      ? `Taught once you and ${teaching.person.name} are ${stageName(TEACHES_AT_STAGE).toLowerCase()}s.`
+      ? `Taught once you and ${teaching.person.name} are ${stageForPair(TEACHES_AT_STAGE)}${orScroll}.`
       : null;
   return {
     name: def.name,
@@ -141,9 +151,7 @@ function offerOf(state: GameState, ctx: GameContext, teaching: Teaching): Teache
     isPeer: person.rank === 'genin',
     manner: teaching.isSensei
       ? (person.sensei?.style ?? '')
-      : quirk
-        ? QUIRK_MANNER[quirk]
-        : 'Happy to show you what they know.',
+      : `${person.bio} ${quirk ? QUIRK_MANNER[quirk] : 'Happy to show you what they know.'}`,
     price: teaching.price ? readPrice(state, ctx, person, teaching.price) : [],
     sessions: sessionsText(state, teaching),
     steering: steered ? steeringNote(teaching) : null,

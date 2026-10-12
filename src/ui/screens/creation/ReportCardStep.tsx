@@ -10,8 +10,13 @@ interface ReportCardProps extends StepProps {
 }
 
 type Role = 'specialty' | 'strength' | 'weakness';
-const ROLE_GRADE: Readonly<Record<Role, Grade>> = { specialty: 'A', strength: 'B', weakness: 'D' };
 const ROLES: readonly Role[] = ['specialty', 'strength', 'weakness'];
+/** Each pick as the instructors would write it on the card. */
+const ROLE_LABEL: Readonly<Record<Role, string>> = {
+  specialty: 'Your specialty gets an A',
+  strength: 'Your strength gets a B',
+  weakness: 'Your weakness gets a D',
+};
 
 /** Reads the current quick pick back out of the grades (falls back to a valid default). */
 function currentPick(grades: Readonly<Record<Discipline, Grade>>, order: readonly Discipline[]) {
@@ -37,10 +42,8 @@ function QuickPick({ view, draft, update }: StepProps) {
   return (
     <div className="quick-pick">
       {ROLES.map((role) => (
-        <div key={role} className="swatch-row" role="group" aria-label={role}>
-          <span className="label">
-            {role}, {ROLE_GRADE[role]}
-          </span>
+        <div key={role} className="swatch-row" role="group" aria-label={ROLE_LABEL[role]}>
+          <span className="label">{ROLE_LABEL[role]}</span>
           <span className="segments">
             {view.disciplines.map((d) => (
               <button

@@ -8,6 +8,7 @@ export {
   bondWith,
   stageOf,
   stageName,
+  stageForPair,
   stageProgress,
   addPoints,
   talkedToday,

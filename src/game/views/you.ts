@@ -1,8 +1,10 @@
+import { chakraCost } from '@/systems/combat';
 import type { JournalChip, JournalTone } from '@/systems/journal';
 import type { StatGrade } from '@/systems/stats';
 import type { Verb } from '@/systems/techniques';
 import { formatDate, slotName } from '@/systems/time';
 
+import { playerCombatant } from '../combatants';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import type { Discipline } from './common';
@@ -31,10 +33,13 @@ export interface JutsuCard {
 /** Every technique in the setting: known ones first, then those being studied. */
 export function jutsuDeck(state: GameState, ctx: GameContext): readonly JutsuCard[] {
   const order = { known: 0, studying: 1, unknown: 2 } as const;
+  // The cost a fight would charge you today: chakra control (and anything weighing on it) counts.
+  const you = { attributes: playerCombatant(state, ctx).attributes };
   return ctx.content.techniques.all
     .map((t): JutsuCard => {
       const progress = state.techniques.progress[t.id] ?? 0;
       const known = state.techniques.known.includes(t.id);
+      const unstable = state.techniques.unstable.includes(t.id);
       return {
         id: t.id,
         name: t.name,
@@ -42,9 +47,12 @@ export function jutsuDeck(state: GameState, ctx: GameContext): readonly JutsuCar
         discipline: t.discipline,
         element: t.element ?? null,
         effects: t.effects.map((e) => ({ verb: e.verb, power: e.power })),
-        chakraCost: t.chakraCost,
+        chakraCost: chakraCost(you, {
+          chakraCost: t.chakraCost,
+          ...(unstable ? { unstable } : {}),
+        }),
         rank: t.rank,
-        unstable: state.techniques.unstable.includes(t.id),
+        unstable,
         status: known ? 'known' : progress > 0 ? 'studying' : 'unknown',
         progressPct: known ? 100 : Math.round((progress / t.difficulty) * 100),
       };

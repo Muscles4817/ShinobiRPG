@@ -1,4 +1,4 @@
-import { harmLine, healLine, numberedNames, splitNarration } from './narration';
+import { harmLine, healLine, numberedNames, splitNarration, squareUpLine } from './narration';
 
 describe('fight narration', () => {
   it('keeps the amount out of the sentence', () => {
@@ -27,5 +27,14 @@ describe('fight narration', () => {
       { id: 'g2', name: 'Hungry Ghost' },
     ]).map((f) => f.name);
     expect(names).toEqual(['Aoi', 'Hungry Ghost 1', 'Bandit', 'Hungry Ghost 2']);
+  });
+});
+
+describe('squareUpLine', () => {
+  it('agrees with one foe or several', () => {
+    expect(squareUpLine(['Academy Dropout'])).toBe('Academy Dropout squares up.');
+    expect(squareUpLine(['Bandit Thug', 'Bandit Archer'])).toBe(
+      'Bandit Thug, Bandit Archer square up.',
+    );
   });
 });

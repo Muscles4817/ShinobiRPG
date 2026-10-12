@@ -1,6 +1,15 @@
-import type { Scroll } from '@/game';
+import type { Discipline, Scroll } from '@/game';
 
 import type { PlaceProps } from '../types';
+
+/** The short mark on a scroll's badge, spelled as the rest of the game spells the art. */
+const SHORT_NAME: Readonly<Record<Discipline, string>> = {
+  taijutsu: 'Tai',
+  ninjutsu: 'Nin',
+  genjutsu: 'Gen',
+  kenjutsu: 'Ken',
+  fuuinjutsu: 'Fūi',
+};
 
 /** "About one session", "40% studied, about 3 more sessions". */
 function sessionsText(scroll: Scroll, pct: number): string {
@@ -27,7 +36,7 @@ export function ScrollRow({
       <span className="cap" />
       <div className="paper-strip">
         <b>
-          {scroll.name} <span className="badge">{scroll.discipline.slice(0, 3)}</span>{' '}
+          {scroll.name} <span className="badge">{SHORT_NAME[scroll.discipline]}</span>{' '}
           <span className="badge rank-stamp" title={`Rank ${scroll.rank}`}>
             {scroll.rank}
           </span>

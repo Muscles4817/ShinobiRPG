@@ -1,5 +1,5 @@
 import type { PersonDef } from '@/content';
-import { stageName, stageOf } from '@/systems/bonds';
+import { stageForPair, stageOf } from '@/systems/bonds';
 import { STAT_GRADES, STAT_IDS, statTier, type StatGrade, type Stats } from '@/systems/stats';
 
 import type { GameContext } from '../context';
@@ -59,7 +59,7 @@ export function nominationBlocker(state: GameState, ctx: GameContext): string | 
   if (!sensei) return 'You need a sensei to nominate you.';
   const name = sensei.name;
   if (stageOf(bondOf(state, sensei.id).points) < NOMINATION_BOND_STAGE) {
-    return `${name} doesn’t know you well enough to vouch for you. Be at least ${stageName(NOMINATION_BOND_STAGE).toLowerCase()}s.`;
+    return `${name} doesn’t know you well enough to vouch for you. Be at least ${stageForPair(NOMINATION_BOND_STAGE)}.`;
   }
   const gap = readinessGap(state.character.stats);
   if (gap) return `${name} doesn’t think you’re ready. You need ${gap}.`;

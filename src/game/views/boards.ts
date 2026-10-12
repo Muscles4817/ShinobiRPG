@@ -31,6 +31,8 @@ export interface Notice extends Choice {
   readonly opposition: {
     readonly threat: Threat;
     readonly label: string;
+    /** Why the read is worse than usual (hunger, injuries), or null. */
+    readonly handicap: string | null;
     /** Who you'll face and how they fight; null until you've bought the client's report. */
     readonly foes: readonly Foe[] | null;
     /** Buying the report, while you don't have it. */
@@ -74,6 +76,7 @@ function oppositionOf(
   return {
     threat: read.threat,
     label: `${read.threatLabel}${many}`,
+    handicap: read.handicap,
     foes: known ? foesOf(ctx, enemies) : null,
     intel: known
       ? null

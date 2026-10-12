@@ -38,10 +38,11 @@
   background: var(--health);
 }
 
+/* Filters wrap rather than scroll: a clipped last tab gives no hint that more lie beyond. */
 .filters {
   display: flex;
-  gap: 12px;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  gap: 0 12px;
   padding-bottom: 2px;
 }
 .filter {

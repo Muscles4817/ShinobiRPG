@@ -129,5 +129,5 @@ export const TEAM: TeamText = {
     'The morning after graduation, Instructor Rin reads out the new teams under the Academy ' +
     'lanterns. Your name comes up between two classmates you barely know.',
   choose: 'Two jōnin have asked for your team. The Tōrokage lets you choose.',
-  formed: 'A new team of Tōrogakure. Your sensei is waiting at the training grounds.',
+  formed: 'A new team of Tōrōgakure. Your sensei is waiting at the training grounds.',
 };

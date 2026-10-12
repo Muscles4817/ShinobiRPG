@@ -39,6 +39,7 @@ import {
 import { editTeam, teamOptions } from './orders';
 import { editPlan, tableOptions } from './table';
 import { stanceStatus, withStances } from './team';
+import { squareUpLine } from '../../rules/narration';
 
 /**
  * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
@@ -197,7 +198,7 @@ export function createPlanEngine(): CombatEngine {
       'Slot cards for each distance, then watch each round play out. Re-plan between rounds.',
 
     start(setup, rng) {
-      const names = setup.enemies.map((e) => e.name).join(', ');
+      const names = setup.enemies.map((e) => e.name);
       const { fighters, range, lines, field } = openFight(initialFighters(setup), setup.opening);
       const planned = withStances(
         fighters.map((f) => ({
@@ -218,7 +219,7 @@ export function createPlanEngine(): CombatEngine {
         range,
         seen: {},
         intents: rollIntents(table, rng),
-        log: [setup.intro ?? `${names} square up. How will you fight?`, ...lines],
+        log: [setup.intro ?? `${squareUpLine(names)} How will you fight?`, ...lines],
         result: null,
         canFlee: setup.canFlee,
         ...(firstMover === undefined ? {} : { firstMover }),

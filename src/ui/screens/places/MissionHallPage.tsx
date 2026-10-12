@@ -7,6 +7,7 @@ import { Opposition } from './Opposition';
 
 import { Banner } from '../../components/Banner';
 import { ThreatChip } from '../../components/ThreatChip';
+import { Icon } from '../../art/Icon';
 import type { PlaceProps } from '../types';
 
 const TILT = ['r1', 'r2', 'r3', 'r4'];
@@ -47,9 +48,8 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
             <b>
               {n.title}
               {n.fightLikely && (
-                <span className="sword" aria-label="Fight likely">
-                  {' '}
-                  ⚔
+                <span className="sword" role="img" aria-label="Fight likely">
+                  <Icon id="sword" size={14} />
                 </span>
               )}
             </b>
@@ -93,6 +93,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
               {open.withTeam && <span className="chip gain">With your team</span>}
               {open.sensei && <span className="chip gain">{open.sensei} leads it</span>}
             </span>
+            {open.opposition?.handicap && <p className="handicap">{open.opposition.handicap}</p>}
             {open.opposition && <Opposition opposition={open.opposition} perform={perform} />}
             {open.blocker && <p className="blocker">{open.blocker}</p>}
             <button

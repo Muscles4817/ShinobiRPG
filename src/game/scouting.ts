@@ -1,11 +1,13 @@
 import type { CombatTrait } from '@/systems/combat';
 import { stageFoes, type MissionDef } from '@/systems/missions';
-import { fightingPower, STAT_INFO, type StatId, type Stats } from '@/systems/stats';
+import { fightingPower, STAT_IDS, STAT_INFO, type StatId, type Stats } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
 import { enemyStatLine } from './combatants';
 import type { GameContext } from './context';
 import { combatStats } from './gear';
+import { hungerEffect } from './hunger';
+import { injuryFightEffect } from './injuries';
 import { companionTraits, PERSON_PREFIX } from './people/companions';
 import { personStats } from './people/progress';
 import { findPerson } from './people/cast';
@@ -71,6 +73,8 @@ export interface ScoutingRead {
   readonly style: string;
   /** Their standout stats beside yours; empty unless your eyes are sharp enough. */
   readonly details: readonly StatCompare[];
+  /** Why the read is worse than your stats alone make it (hunger, injuries), or null. */
+  readonly handicap: string | null;
 }
 
 const ARTS: readonly Discipline[] = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'];
@@ -137,7 +141,23 @@ export function scout(
     traits: traitNotes(traits),
     style: styleOf(theirs),
     details: sharp ? standouts(theirs, yours) : [],
+    handicap: null,
   };
+}
+
+/**
+ * What is weighing on you in a fight right now, said with the read: the read is made against
+ * you as you are, so a job that looked even can look worse once hunger or a wound sets in.
+ */
+export function handicapOf(state: GameState, ctx: GameContext): string | null {
+  const hunger = hungerEffect(state.character.vitals);
+  const hurt = injuryFightEffect(state.character, ctx);
+  const injured = STAT_IDS.some((id) => hurt.scale[id] < 1 || hurt.strain[id] > 0);
+  const reasons = [
+    ...(hunger.fightStrength < 1 ? [hunger.label.toLowerCase()] : []),
+    ...(injured ? ['injured'] : []),
+  ];
+  return reasons.length > 0 ? `Read against you as you are now: ${reasons.join(' and ')}.` : null;
 }
 
 /** Sharp eyes: enough perception, or a bloodline that sees chakra. */
@@ -179,10 +199,12 @@ export function scoutOpponents(
 ): Readonly<Record<string, ScoutingRead>> {
   const yours = combatStats(state, ctx);
   const sharp = hasSharpEyes(state, ctx);
+  const handicap = handicapOf(state, ctx);
   return Object.fromEntries(
     ids.flatMap((id) => {
       const them = opponentOf(state, ctx, id);
-      return them ? [[id, scout(them.stats, yours, sharp, them.traits)]] : [];
+      const read = them ? { ...scout(them.stats, yours, sharp, them.traits), handicap } : null;
+      return read ? [[id, read]] : [];
     }),
   );
 }
@@ -205,5 +227,6 @@ export function missionThreat(
 ): ScoutingRead | null {
   const stats = mission.stages.flatMap(stageFoes).flatMap((id) => enemyStats(ctx, id) ?? []);
   const toughest = stats.sort((a, b) => fightingPower(b) - fightingPower(a))[0];
-  return toughest ? scout(toughest, combatStats(state, ctx), false) : null;
+  if (!toughest) return null;
+  return { ...scout(toughest, combatStats(state, ctx), false), handicap: handicapOf(state, ctx) };
 }

@@ -52,8 +52,10 @@
   font-size: 0.7rem;
 }
 .paper .sword {
+  display: inline-flex;
+  margin-left: 4px;
   color: var(--seal);
-  font-size: 0.75rem;
+  vertical-align: -2px;
 }
 /* The reward never breaks; a long deadline drops to its own line instead. */
 .paper-foot {
