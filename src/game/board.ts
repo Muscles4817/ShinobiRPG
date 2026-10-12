@@ -1,5 +1,5 @@
 import { hashUnit } from '@/core';
-import { RANK_FOR_MISSION, type MissionDef } from '@/systems/missions';
+import { rankForMission, type MissionDef } from '@/systems/missions';
 import { rankAtLeast, type Standing } from '@/systems/standing';
 
 import type { GameContext } from './context';
@@ -9,7 +9,7 @@ import type { GameState } from './state';
 /**
  * The jobs board. Standing jobs (patrols, watches) are always there, once a day. Everything
  * else is posted for a few days and then gone, and only jobs you are trusted with are posted
- * at all: your record must reach a job's mark, and your rank its rank (B-rank jobs go to chūnin).
+ * at all: your record must reach a job's mark, and your rank its rank (a B-rank job done alone goes to chūnin).
  * Exam-only missions are never posted. Which jobs go up is a hash of the save's seed and the day: varied per save,
  * reproducible, and computable at any time without consuming the game's dice.
  */
@@ -26,7 +26,7 @@ function trusted(def: MissionDef, standing: Standing): boolean {
   return (
     def.examOnly !== true &&
     def.minMissionsCompleted <= standing.missionsCompleted &&
-    rankAtLeast(standing.rank, RANK_FOR_MISSION[def.rank])
+    rankAtLeast(standing.rank, rankForMission(def))
   );
 }
 

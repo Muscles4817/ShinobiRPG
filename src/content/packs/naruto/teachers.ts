@@ -5,7 +5,7 @@ import type { TeacherProfile } from '../../types';
 export const KAKASHI_TEACHER: TeacherProfile = {
   quirk: 'distracted',
   steers: { focus: 'weakest', freeAtStage: 3 },
-  teaches: ['summoning-ninken', 'lightning-blade'],
+  teaches: ['summoning-ninken', 'water-prison', 'lightning-blade', 'rasengan'],
   price: {
     kind: 'favour',
     favourId: 'kakashi-patience',
@@ -16,7 +16,14 @@ export const KAKASHI_TEACHER: TeacherProfile = {
 export const GUY_TEACHER: TeacherProfile = {
   quirk: 'natural',
   steers: { focus: 'specialty', freeAtStage: 4 },
-  teaches: ['leaf-hurricane', 'front-lotus'],
+  teaches: [
+    'leaf-hurricane',
+    'front-lotus',
+    'gate-of-life',
+    'reverse-lotus',
+    'morning-peacock',
+    'daytime-tiger',
+  ],
   price: { kind: 'bond', minStage: 1, line: '“Anyone who burns with youth may join me!”' },
 };
 
@@ -30,20 +37,25 @@ export const IRUKA_TEACHER: TeacherProfile = {
 export const KURENAI_TEACHER: TeacherProfile = {
   quirk: 'patient',
   steers: { focus: 'specialty', freeAtStage: 2 },
-  teaches: ['petal-storm'],
+  teaches: ['petal-storm', 'tree-binding-death', 'mirror-heaven-earth'],
   price: { kind: 'bond', minStage: 2 },
 };
 
 export const ASUMA_TEACHER: TeacherProfile = {
   quirk: 'patient',
-  teaches: ['flying-swallow'],
+  teaches: ['flying-swallow', 'seven-swords-dance'],
   price: { kind: 'ryo', perSession: 30, line: '“You’re buying the cigarettes. Kidding. Mostly.”' },
 };
 
 export const ANKO_TEACHER: TeacherProfile = {
   quirk: 'harsh',
   steers: { focus: 'weakest', freeAtStage: 3 },
-  teaches: ['snake-binding-seal'],
+  teaches: [
+    'snake-binding-seal',
+    'chakra-absorbing-seal',
+    'eight-trigrams-seal',
+    'four-symbols-seal',
+  ],
   price: {
     kind: 'all',
     parts: [

@@ -4,6 +4,8 @@ import { createStats } from '@/systems/stats';
 import {
   advance,
   currentStage,
+  isSeniorMission,
+  rankForMission,
   resolveCheck,
   reward,
   startRun,
@@ -93,5 +95,16 @@ describe('missions', () => {
     );
     expect(r.aborted).toBe(true);
     expect(r.run.stageIndex).toBe(0);
+  });
+});
+
+describe('who a job is given to', () => {
+  it('gives B-rank and harder jobs done alone to chūnin, team jobs to any genin team', () => {
+    expect(rankForMission({ rank: 'C' })).toBe('genin');
+    expect(rankForMission({ rank: 'B' })).toBe('chunin');
+    expect(rankForMission({ rank: 'S' })).toBe('jonin');
+    expect(rankForMission({ rank: 'B', withTeam: true })).toBe('genin');
+    expect(isSeniorMission('B')).toBe(true);
+    expect(isSeniorMission('C')).toBe(false);
   });
 });

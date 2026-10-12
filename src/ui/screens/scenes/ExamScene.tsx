@@ -71,6 +71,36 @@ function ChoiceButton({ c, perform }: { readonly c: ExamChoice } & Pick<ScreenPr
   );
 }
 
+/** Ways to answer a question: cards with their odds, the proctors' eye on the cheats. */
+function Answers({
+  answers,
+  perform,
+}: { readonly answers: readonly ExamChoice[] } & Pick<ScreenProps, 'perform'>) {
+  if (answers.length === 0) return null;
+  return (
+    <section className="exam-answers" aria-label="Ways to answer">
+      <div className="scout-grid">
+        {answers.map((c) => (
+          <button
+            key={c.label}
+            type="button"
+            className="scout-card"
+            disabled={c.blocker !== null}
+            onClick={() => {
+              perform(c.action);
+            }}
+          >
+            <b>{c.label}</b>
+            <small>{c.detail}</small>
+            {c.risk && !c.blocker && <span className="chip harm">{c.risk}</span>}
+            {c.blocker && <small className="blocker">{c.blocker}</small>}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 /** An exam takes over the screen: a stage strip, the story so far, then your choices. */
 export function ExamScene({ ctx, state, perform }: ScreenProps) {
   const scene = examScene(state, ctx);
@@ -81,6 +111,8 @@ export function ExamScene({ ctx, state, perform }: ScreenProps) {
     end.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }, [lineCount]);
   if (!scene) return null;
+  const answers = scene.choices.filter((c) => c.action.type === 'examAnswer');
+  const others = scene.choices.filter((c) => c.action.type !== 'examAnswer');
   return (
     <>
       <header className="scene-head">
@@ -114,13 +146,16 @@ export function ExamScene({ ctx, state, perform }: ScreenProps) {
           </p>
         )}
         {scene.verdict && <VerdictSlip verdict={scene.verdict} />}
+        <Answers answers={answers} perform={perform} />
         <div ref={end} />
       </main>
-      <nav className="choices" aria-label="Choices">
-        {scene.choices.map((c) => (
-          <ChoiceButton key={c.label} c={c} perform={perform} />
-        ))}
-      </nav>
+      {others.length > 0 && (
+        <nav className="choices" aria-label="Choices">
+          {others.map((c) => (
+            <ChoiceButton key={c.label} c={c} perform={perform} />
+          ))}
+        </nav>
+      )}
     </>
   );
 }

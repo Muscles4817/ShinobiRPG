@@ -1,5 +1,5 @@
 import type { ExamDef, ExamStageDef, MindStageDef, TournamentStageDef } from '@/systems/exams';
-import { RANK_FOR_MISSION, type MissionDef } from '@/systems/missions';
+import { rankForMission, type MissionDef } from '@/systems/missions';
 import { DAYS_PER_SEASON, SEASONS } from '@/systems/time';
 
 import type { ContentPack } from './types';
@@ -17,9 +17,7 @@ export function validateExams(pack: ContentPack): string[] {
       e.stages.flatMap((s) => (s.kind === 'survival' ? [s.missionId] : [])),
     ),
   );
-  const chuninJobs = pack.missions.some(
-    (m) => !m.examOnly && RANK_FOR_MISSION[m.rank] === 'chunin',
-  );
+  const chuninJobs = pack.missions.some((m) => !m.examOnly && rankForMission(m) === 'chunin');
   return [
     ...(pack.exams.length > 0 ? [] : ['pack needs a chūnin exam']),
     ...(chuninJobs ? [] : ['pack needs jobs for chūnin (B- or A-rank)']),

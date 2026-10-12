@@ -48,7 +48,7 @@ describe('exams (smoke test)', () => {
     const stages = screen.getByRole('list', { name: 'Stages' });
     expect(within(stages).getByText('The written paper')).toHaveClass('now');
     expect(screen.getByText(/spirit lantern burns blue/)).toBeInTheDocument();
-    const choices = screen.getByRole('navigation', { name: 'Choices' });
+    const choices = screen.getByRole('region', { name: 'Ways to answer' });
     const clone = within(choices).getByRole('button', { name: /Send a clone/ });
     expect(clone).toBeDisabled();
     expect(within(clone).getByText('Needs a clone technique.')).toBeInTheDocument();

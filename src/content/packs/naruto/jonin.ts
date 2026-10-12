@@ -34,7 +34,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     teacher: {
       quirk: 'harsh',
       steers: { focus: 'weakest', freeAtStage: 3 },
-      teaches: ['interrogators-gaze', 'hell-viewing'],
+      teaches: ['interrogators-gaze', 'hell-viewing', 'shackling-stakes'],
       price: {
         kind: 'favour',
         favourId: 'ibiki-silence',
@@ -100,7 +100,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'patient',
-      teaches: ['black-blade-draw'],
+      teaches: ['black-blade-draw', 'flying-thunder-god-slash'],
       price: {
         kind: 'all',
         parts: [
@@ -139,7 +139,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'distracted',
-      teaches: ['crow-scatter', 'false-surroundings'],
+      teaches: ['crow-scatter', 'false-surroundings', 'bringer-of-darkness'],
       price: { kind: 'bond', minStage: 2, line: '“I don’t waste my crows on strangers.”' },
     },
   },
@@ -164,7 +164,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     teacher: {
       quirk: 'natural',
       steers: { focus: 'specialty', freeAtStage: 3 },
-      teaches: ['iaido-draw', 'crescent-moon-dance'],
+      teaches: ['iaido-draw', 'crescent-moon-dance', 'shadow-clone-sword-dance', 'iai-kamiari'],
       price: {
         kind: 'all',
         parts: [
@@ -194,7 +194,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     schedule: { morning: null, afternoon: null, evening: 'training-grounds', night: null },
     teacher: {
       quirk: 'patient',
-      teaches: ['iaido-draw', 'camouflage-concealment'],
+      teaches: ['iaido-draw', 'camouflage-concealment', 'chidori-sword'],
       price: { kind: 'bond', minStage: 3, line: '“ANBU don’t teach. Friends sometimes do.”' },
     },
   },

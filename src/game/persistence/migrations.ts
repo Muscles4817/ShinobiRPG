@@ -1,5 +1,5 @@
 import { v17ToV18 } from './aptitudeMigration';
-import { v23ToV24, v24ToV25 } from './examMigration';
+import { v23ToV24 } from './examMigration';
 import { v21ToV22 } from './gearMigration';
 import { v18ToV19 } from './peopleMigration';
 import { v22ToV23 } from './scrollMigration';
@@ -293,5 +293,4 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   21: v21ToV22,
   22: v22ToV23,
   23: v23ToV24,
-  24: v24ToV25,
 };

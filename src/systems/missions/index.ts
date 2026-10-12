@@ -2,6 +2,7 @@ export {
   CHECK_FAILURE_PENALTY,
   RANK_FOR_MISSION,
   isSeniorMission,
+  rankForMission,
   MISSION_ROLES,
   startRun,
   currentStage,

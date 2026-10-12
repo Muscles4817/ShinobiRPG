@@ -22,6 +22,14 @@ export const RANK_FOR_MISSION: Readonly<Record<MissionRank, Rank>> = {
   S: 'jonin',
 };
 
+/**
+ * The rank a job is given to. Team jobs go out under the sensei, so a genin team takes them at
+ * any rank; a job done alone goes by its rank (`RANK_FOR_MISSION`).
+ */
+export function rankForMission(def: Pick<MissionDef, 'rank' | 'withTeam'>): Rank {
+  return def.withTeam === true ? 'genin' : RANK_FOR_MISSION[def.rank];
+}
+
 /** B-rank and harder jobs: the record a jōnin nomination reads. */
 export function isSeniorMission(rank: MissionRank): boolean {
   return rank !== 'D' && rank !== 'C';

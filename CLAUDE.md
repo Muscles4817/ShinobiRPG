@@ -203,6 +203,18 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     more for their `favouriteRecipeId`. Night-only places are `tavern` places (an izakaya)
     with `hours`; people's schedules bring regulars in at night, a round (`buyRound`) warms
     everyone inside once a night, and the counter hears more gossip (`rumoursOverheard`).
+20. **Ranks are earned in scenes.** The chūnin exam (`ExamDef`, `systems/exams`) is held on its
+    calendar dates (twice a year; rumours and the sensei's word the week before) and entered at
+    the mission hall with the sensei's nomination (bond, their judgement of your grades, a
+    record of jobs) and a team of three (`game/exam/entry.ts`; a replacement only if the
+    sensei's `toleratesReplacement`). The run (`exams.run`) is a scene with a `busyReason`; its
+    stages are a discriminated union (`mind`, `survival`, `tournament`): the forest is an
+    `examOnly` team mission of encounters whose ends come back to the exam, the tournament is
+    bouts against rivals generated from the seed. Every stage records conduct marks
+    (`conduct.ts`), and the verdict weighs conduct with results. A promotion is its own scene
+    (`exams.ceremony`): the rank, the vest, and unlocks derived from data (`exam/unlocks.ts`).
+    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it. A job done
+    alone goes to its rank (`rankForMission`: B and A to chūnin); team jobs to any genin team.
 
 ### Content packs
 
@@ -281,6 +293,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   fight as allies and each gains bond on success. Offer it at a mission hall as usual. Give a
   check approach a `role` (tracker, sensor, medic) when the best teammate should take it; from
   C-rank (or a far-stronger foe) the sensei leads it and fights too (`game/missionTeam.ts`).
+- **Add an exam stage kind:** add a variant to `ExamStageDef` and `StageProgress`
+  (`systems/exams/exams.ts`), its play in `game/exam/`, its choices in `views/exam.ts` and its
+  checks in `validateExams.ts` (the compiler lists the switches). Exam text (the paper's
+  questions, the forest mission, the bouts' lines) lives in the pack's `exam.ts`; ceremony words
+  in `SettingText.promotions`.
 - **Add foes to a mission:** use an `encounter` stage (recon, then an approach, then maybe a
   fight) with a shared template (`content/shared/encounters.ts`: which approaches and recon make
   sense, base alertness, flavour a stage may swap) and a `job` kind; how each way past pays per

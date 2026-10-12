@@ -1,5 +1,5 @@
 import type { PromotedRank } from '@/content';
-import { RANK_FOR_MISSION } from '@/systems/missions';
+import { rankForMission } from '@/systems/missions';
 
 import type { GameContext } from '../context';
 import { gearRankBlocker } from '../gear';
@@ -12,8 +12,8 @@ import type { GameState } from '../state';
 
 /**
  * What a promotion opens, worked out from the data by comparing what you may do at your rank
- * now with what you may do at the new one: the library's stacks, jobs on the board (and which
- * of them you take alone), gear the shops will sell you, and the shinobi who will now train you.
+ * now with what you may do at the new one: the library's stacks, jobs on the board (taken
+ * alone), gear the shops will sell you, and the shinobi who will now train you.
  */
 
 export interface Unlock {
@@ -38,8 +38,8 @@ function jobs(state: GameState, ctx: GameContext, rank: PromotedRank): Unlock[] 
     currentLocation(state, ctx).places.flatMap((p) => (p.kind === 'missions' ? p.missionIds : [])),
   );
   const items = ctx.content.missions.all
-    .filter((m) => offered.has(m.id) && !m.examOnly && RANK_FOR_MISSION[m.rank] === rank)
-    .map((m) => `${m.rank}-rank: ${m.title}${m.withTeam ? '' : ', alone'}`);
+    .filter((m) => offered.has(m.id) && !m.examOnly && rankForMission(m) === rank)
+    .map((m) => `${m.rank}-rank: ${m.title}, alone`);
   return items.length > 0 ? [{ heading: 'Jobs on the board', items }] : [];
 }
 

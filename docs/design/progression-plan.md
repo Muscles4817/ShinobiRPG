@@ -1023,6 +1023,15 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   pack ride on mid-rank jobs. Every technique needs a source (shelf, teacher, scroll reward or
   starting kit; validated). Grade-up "What this opens" now includes the library once you may use
   it and your own scrolls. Save v23 adds the empty scroll case.
+- 4.4 (content): both packs now meet the per-discipline target (E 2, D 3, C 4, B 3, A 2,
+  S 1; ninjutsu D is over because no existing technique was removed). The original pack
+  gained 44 techniques and the fan pack 54, all with sources. Every S technique is a trump
+  card. The fan pack also gained five elite missions (to rank B) handing out rare scrolls
+  and named weapons; the original pack gained one late team job and two unique weapons.
+  **Follow-up:** the default plan rarely slots seal, confuse or trump cards, so those
+  techniques barely show on a bench. They are strong when a player slots them by hand;
+  the default plan or the foe AI should learn to use them. Several elite missions are
+  untested in play.
 
 **Phase 5 (in progress).**
 
@@ -1068,6 +1077,49 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   specialty stance, and both orders locked. Sneaking as a team goes at the slowest speed among
   teammates who won't take your orders (those who will hang back). Team mission narratives and
   checks in both packs reworded to use roles and the sensei. No save change.
+
+**Phase 6 (done).**
+
+- 6.1–6.3: ranks. A new system, `systems/exams`: `ExamDef { id, name, rank: 'chunin', dates,
+stages, rumour, announcement, intro, verdict }` with `ExamStageDef` a union (`mind`,
+  `survival`, `tournament`), the run (`ExamRun`: stage, progress, notes, conduct marks, rounds
+  won, exit, verdict) and conduct (`conduct.ts`: ten signals with their points). Content in each
+  pack's `exam.ts` (the Lantern Trials; the Chūnin Exams), held on Autumn 7 and Spring 7 (day 63
+  in year one). Calendar (`game/exam/calendar.ts`): the exam for the rank above yours, gossiped
+  about the week before (it heads `rumoursToday`), "Exam today" on the mission hall card, and a
+  notice pinned on the board with the sensei's announcement or why not yet. Entry
+  (`enterExam`, `game/exam/entry.ts`) on the day at the mission hall, once a sitting: the
+  sensei's nomination (bond stage Friend, readiness of one stat at C and three at D or better,
+  10 jobs done) and two teammates who are ready by the same rule and at least acquaintances. A
+  teammate who can't sit can be replaced by a ready friend only if the sensei's
+  `toleratesReplacement` (Akari and Ito; Kurenai, Asuma and Anko), at −25 bond with the one left
+  out. The run is a scene (`activeScene` 'exam') with a `busyReason`. The written test
+  (`exam/mind.ts`): per question, work it out (intellect), read it closely (perception, +2), or
+  cheat (−4 difficulty) with a genjutsu technique, a way to sense, or a clone technique; a cheat
+  is caught at 0.6 × the chance the proctors' vigilance beats the stat: a −2 mark, and the second
+  catch disqualifies the team. A last question (stay +2, or walk out) and a pass mark. The forest
+  is an `examOnly` team mission of encounters on a new `rival-team` template (so recon, being
+  spotted, approaches, roles and fights all work); it is never posted and has no sensei; its ends
+  come back through `missionFlow` (`exam/forest.ts`): cleared, the next stage after a night in
+  the exam lodgings (rested and fed); failed, beaten (hospital, no reputation lost) or withdrawn,
+  out. Forest conduct: a withdrawal when the strongest rival reads stronger is sensible (+2), else
+  giving up (−1); a way past without a fight +1; a won fight with the team standing +1, a
+  teammate down −1. The tournament (`exam/tournament.ts`): three rounds against rivals
+  generated from the save's seed and the sitting (best art 11, 12.5, 14; the rest 8); the medics
+  bring you to 60% before a bout and stop it at 20% (no hospital, no injury). A win with two or
+  more techniques +1; a yield under 30% health +1, at 50% or more −1. The verdict: rounds won ×
+  2 plus conduct, promoted at 4 if the run wasn't cut short, so a finalist with clean conduct is
+  promoted even after losing the final, and a champion caught cheating twice is not. Promotion
+  (`exam/promotion.ts`, `views/promotion.ts`): a full scene with the pack's
+  `SettingText.promotions` words, the title, the pack's plainest flak vest (owned, and worn if
+  the body slot is empty) and "What this opens", worked out by comparing access at both ranks
+  (`exam/unlocks.ts`): the library's stacks, jobs on the board, B-rank gear, and shinobi whose
+  price is now met. Jobs done alone are given by rank (`rankForMission`: B and A to chūnin, S to
+  jōnin); team jobs to any genin team. New B and A solo jobs in both packs (`chuninMissions.ts`).
+  `Standing.seniorMissionsCompleted` counts B-and-harder jobs; a chūnin with 5 of them, a best art
+  at B and 80 reputation is nominated jōnin (`notePromotions` after every action in `dispatch`),
+  a smaller ceremony. Save v24 adds `exams` and the senior record. Pacing: the focused player is
+  nominated on day 59 (asserted 60 ± 15); the first exam after it is day 63.
 
 ### Decisions made during the run
 
@@ -1346,3 +1398,20 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   (bond Friend, or you lead), rather than a separate choice.
 - 5.2: the medic heals between stages only (not after the last), and only from a teammate; the
   sensei doesn't patch you up, so a medic on the team still matters.
+- 6.1: readiness is one stat at C and three at D or better, not three at C: the focused player
+  has one art at C by day 60, and three would put nomination months out. Teammates and
+  replacements are judged by the same rule, and a teammate is willing from Acquaintance.
+- 6.1: entry is at the mission hall on the exam's day only; a sitting can't be entered twice.
+  Replacements are offered only for a teammate who can't or won't sit, never to drop a ready one.
+- 6.2: the forest is a real (exam-only) team mission rather than a new stage engine, so 5.1/5.2's
+  encounters, spotting, roles and medic all apply unchanged; the exam's own team (with any
+  replacement) goes in, and the sensei stays out. Withdrawing from a forest encounter ends the
+  exam (no second token).
+- 6.2: conduct points and the promotion mark are constants in `systems/exams`; cheating cleanly
+  is not marked (information-gathering is part of the test), only being caught.
+- 6.2: tournament bouts start in the save's fight style (Plan & Watch, the only one offered).
+- 6.3: B-rank team jobs (the fan pack's elite jobs) stay open to genin teams, who go with their
+  sensei; B-rank solo jobs (Sound Spies, Scroll of Seals and the new chūnin jobs) now need
+  chūnin. The migration starts the senior record at zero.
+- 6.3: the jōnin nomination is automatic once earned (a smaller ceremony, accept only); its
+  marks (5 senior jobs, best art at B, 80 reputation) are constants in `exam/promotion.ts`.

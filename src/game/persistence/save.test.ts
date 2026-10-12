@@ -172,7 +172,7 @@ describe('persistence', () => {
     const game = newGame();
     const { exams: _e, ...old } = game;
     const { seniorMissionsCompleted: _s, ...oldStanding } = game.standing;
-    for (const version of [23, 24]) {
+    for (const version of [23]) {
       const raw = JSON.stringify({ version, state: { ...old, standing: oldStanding } });
       const loaded = deserialize(raw);
       if (!loaded.ok) throw new Error(loaded.error);

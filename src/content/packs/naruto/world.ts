@@ -1,7 +1,6 @@
 import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
 import { TOOL_IDS } from '../../shared/tools';
-import { CHUNIN_MISSIONS } from './chuninMissions';
 import { PROMOTIONS } from './exam';
 
 export const NARUTO_TEXT: SettingText = {
@@ -45,7 +44,14 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'haunted-granary',
           'border-bandits',
           'missing-nin-forest',
-          ...CHUNIN_MISSIONS.map((m) => m.id),
+          'demon-brothers',
+          'bridge-builder',
+          'sound-spies',
+          'lightning-swordsman',
+          'scroll-of-seals',
+          'smugglers-of-tanzaku',
+          'bridge-builders-debt',
+          'border-outpost-orders',
         ],
       },
       {
@@ -180,6 +186,16 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'twin-rising-dragons',
           'shadow-clone',
           'explosive-tag-trap',
+          'shadow-dancing-leaf',
+          'thousand-years-of-death',
+          'transformation',
+          'sly-mind-affect',
+          'deflecting-guard',
+          'silent-killing',
+          'chakra-flow',
+          'wheel-cut',
+          'weapon-unsealing',
+          'smoke-tag',
         ],
       },
       {
@@ -195,6 +211,26 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'tree-binding',
           'crescent-moon-dance',
           'five-elements-seal',
+          'leaf-strong-whirlwind',
+          'drunken-fist',
+          'earth-flow-wall',
+          'headhunter',
+          'false-darkness',
+          'phantom-sound-chains',
+          'mist-servant',
+          'flower-petal-escape',
+          'samurai-sabre',
+          'swallow-return',
+          'hilt-and-edge',
+          'paralysis-tag',
+          'evil-sealing-method',
+          'chain-detonation',
+          'lion-combo',
+          'fire-dragon-flame',
+          'temple-of-nirvana',
+          'decapitating-sweep',
+          'mass-tag-detonation',
+          'four-violet-flames',
         ],
       },
       {
