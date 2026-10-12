@@ -80,6 +80,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['proud', 'curious', 'brash'],
       nature: 'fire',
       style: 'Demanding and dazzling. Expects you to burn as bright as she does.',
+      toleratesReplacement: true,
       lesson:
         'Akari makes you hold a flame in your palm until it stops flickering. It takes all afternoon.',
     },
@@ -210,6 +211,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['cunning', 'diligent', 'focused'],
       nature: 'wind',
       style: 'Patient, precise, and always three moves ahead. Loves a good trap.',
+      toleratesReplacement: true,
       lesson:
         'Ito sets traps around the training ground and makes you write a ward for each before dark.',
     },

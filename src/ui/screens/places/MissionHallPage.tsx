@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { headerView, missionBoardView } from '@/game';
 
+import { ExamNotice } from './ExamNotice';
 import { Opposition } from './Opposition';
 
 import { Banner } from '../../components/Banner';
@@ -28,6 +29,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
         backLabel={header.location}
       />
       <main className="board">
+        <ExamNotice ctx={ctx} state={state} perform={perform} />
         {view.notices.length === 0 && (
           <p className="board-empty">Nothing posted today. Check back tomorrow.</p>
         )}

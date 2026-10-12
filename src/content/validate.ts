@@ -3,6 +3,7 @@ import { costIsSane, effectProblem } from '@/systems/techniques';
 import { duplicateIds } from './catalog';
 import { validateGear } from './validateGear';
 import { validateEncounters } from './validateEncounters';
+import { validateExams } from './validateExams';
 import { validateInjuries } from './validateInjuries';
 import { validatePeople } from './validatePeople';
 import { validateTechniques } from './validateTechniques';
@@ -36,6 +37,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateInjuries(pack),
     ...validateGear(pack),
     ...validateEncounters(pack),
+    ...validateExams(pack),
   ];
 }
 

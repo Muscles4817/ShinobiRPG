@@ -3,6 +3,7 @@ import type { CombatOpening, CombatOutcome } from '@/systems/combat';
 import {
   advance,
   currentStage,
+  isSeniorMission,
   reward,
   stageFoes,
   stagePay,
@@ -19,6 +20,7 @@ import { deduct, earn } from '@/systems/wallet';
 
 import { enemyCombatant, playerCombatant } from './combatants';
 import type { GameContext } from './context';
+import { forestCleared, forestLost } from './exam/forest';
 import { startFight } from './fightStyle';
 import { adjust, chip, log, placeHere, spendTime } from './ops';
 import { handedOver } from './missionRewards';
@@ -29,7 +31,8 @@ import type { GameState } from './state';
 
 /**
  * Orchestrates a mission's life-cycle across systems: missions (progress), combat
- * (fights, via the engine contract), wallet/standing (rewards) and vitals (injuries).
+ * (fights, via the engine contract), wallet/standing (rewards) and vitals (injuries). An
+ * exam's forest (`examOnly`) ends back in the exam instead of paying or failing a job.
  */
 
 export const FAILURE_REPUTATION_LOSS = 2;
@@ -37,6 +40,7 @@ export const HOSPITAL_FEE = 40;
 /** Bond with each teammate for finishing a team mission together. */
 export const TEAM_MISSION_BOND = 6;
 const HOSPITAL_HEALTH_FRACTION = 0.25;
+const BEATEN = 'You were beaten unconscious.';
 
 export function activeMission(state: GameState, ctx: GameContext): MissionDef | null {
   return state.mission ? ctx.content.missions.require(state.mission.missionId) : null;
@@ -64,8 +68,10 @@ export function afterStage(state: GameState, ctx: GameContext): GameState {
   const def = activeMission(state, ctx);
   if (!def || !state.mission) return state;
   if (currentStage(def, state.mission)) return tendWounds(state, ctx, def);
+  if (def.examOnly) return forestCleared(state, ctx);
   const earned = reward(def, state.mission);
-  const standing = recordMissionSuccess(state.standing, earned.reputation);
+  const senior = isSeniorMission(def.rank);
+  const standing = recordMissionSuccess(state.standing, earned.reputation, senior);
   const teamBond = def.withTeam ? TEAM_MISSION_BOND : 0;
   const gifts = handedOver(state, ctx, def);
   const next: GameState = {
@@ -111,13 +117,24 @@ function withTeamBond(state: GameState, points: number): GameState {
   return { ...state, people: { ...state.people, bonds: { ...state.people.bonds, ...raised } } };
 }
 
+interface Ended {
+  readonly state: GameState;
+  readonly title: string | null;
+  /** The exam's forest ended (nothing to report as a failed job). */
+  readonly exam: boolean;
+}
+
 function endMission(
   state: GameState,
   ctx: GameContext,
   reason: string,
   reputationLost = FAILURE_REPUTATION_LOSS,
-): { state: GameState; title: string | null } {
+): Ended {
   const def = activeMission(state, ctx);
+  if (def?.examOnly) {
+    const exit = reason === BEATEN ? 'beaten' : 'no-token';
+    return { state: forestLost(state, ctx, exit), title: null, exam: true };
+  }
   const next: GameState = {
     ...state,
     mission: null,
@@ -130,7 +147,7 @@ function endMission(
     tone: 'danger',
     chips: reputationLost > 0 ? [chip(`−${reputationLost} reputation`, 'harm')] : [],
   });
-  return { state: logged, title: def?.title ?? null };
+  return { state: logged, title: def?.title ?? null, exam: false };
 }
 
 /** Ends the mission as failed; `reputationLost` is less for pulling out before any harm. */
@@ -141,6 +158,7 @@ export function failMission(
   reputationLost = FAILURE_REPUTATION_LOSS,
 ): GameState {
   const ended = endMission(state, ctx, reason, reputationLost);
+  if (ended.exam) return ended.state;
   return addReport(ended.state, {
     kind: 'mission-failed',
     title: ended.title ?? 'Mission',
@@ -252,7 +270,7 @@ export function resolveCombat(
     case 'escaped':
       return failMission(afterFight, ctx, 'You retreated from the fight.');
     case 'defeat': {
-      const ended = endMission(afterFight, ctx, 'You were beaten unconscious.');
+      const ended = endMission(afterFight, ctx, BEATEN);
       return hospitalise(ended.state, ctx, ended.title);
     }
   }

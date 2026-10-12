@@ -123,6 +123,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       specialty: 'genjutsu',
       favouredTraits: ['calm', 'kind', 'humble'],
       style: 'Patient and precise. Builds confidence before she builds technique.',
+      toleratesReplacement: true,
       lesson:
         'Kurenai walks you through an illusion slowly, then again, until you can see the seams.',
     },
@@ -156,6 +157,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['lazy', 'cunning', 'kind'],
       nature: 'wind',
       style: 'Easy-going until it matters. Teaches through shōgi as much as sparring.',
+      toleratesReplacement: true,
       lesson:
         'Asuma teaches you to feel the wind along a blade, then beats you at shōgi to make a point.',
     },
@@ -188,6 +190,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       specialty: 'fuuinjutsu',
       favouredTraits: ['brash', 'curious', 'cunning'],
       style: 'Throws you in the deep end, then throws snakes in after you.',
+      toleratesReplacement: true,
       lesson:
         'Anko chases you through the training forest with snakes until your seals come out clean.',
     },

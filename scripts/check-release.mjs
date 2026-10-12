@@ -13,6 +13,7 @@ const FAN_MARKERS = [
   'Ibiki',
   'Hiashi',
   'Shikaku',
+  'Forest of Death',
 ];
 
 function files(dir) {

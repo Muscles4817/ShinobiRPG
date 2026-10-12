@@ -1,6 +1,8 @@
 import type { Rng } from '@/core';
 import type { RangeBand } from '@/systems/combat';
 import type { ApproachId, ReconId } from '@/systems/missions';
+import type { MindApproach } from '../exam/mind';
+import type { Replacement } from '../exam/entry';
 import type { StatId } from '@/systems/stats';
 
 import type { GameContext } from '../context';
@@ -49,7 +51,12 @@ export type GameAction =
   | { readonly type: 'cook'; readonly recipeId: string }
   | { readonly type: 'followSight' }
   | { readonly type: 'hostDinner'; readonly recipeId: string; readonly guestId: string }
-  | { readonly type: 'buyRound' };
+  | { readonly type: 'buyRound' }
+  | { readonly type: 'enterExam'; readonly replacements?: readonly Replacement[] }
+  | { readonly type: 'examAnswer'; readonly approach: MindApproach }
+  | { readonly type: 'examFinal'; readonly stay: boolean }
+  | { readonly type: 'examContinue' }
+  | { readonly type: 'acceptPromotion' };
 
 export type GameActionType = GameAction['type'];
 export type ActionOf<T extends GameActionType> = Extract<GameAction, { type: T }>;

@@ -8,6 +8,7 @@ import type { GameState } from '../state';
 import { availability } from '../board';
 import { libraryAccess } from '../shelves';
 import { closedSign } from '../village';
+import { examToday } from '../exam/calendar';
 import { tavernCrowd } from '../actions/tavern';
 import { choice } from './common';
 import { teacherOffers } from './teachers';
@@ -95,6 +96,7 @@ function homeLine(state: GameState, blurb: string): string {
 /** Today's news for a place: fresh postings, or a lesson your sensei is ready to give. */
 function badgeFor(place: PlaceDef, state: GameState, ctx: GameContext): string | null {
   if (place.kind === 'missions') {
+    if (examToday(state, ctx)) return 'Exam today';
     const fresh = place.missionIds.filter((id) => {
       const on = availability(state, ctx, ctx.content.missions.require(id));
       return on.kind === 'posted' && on.isNew;

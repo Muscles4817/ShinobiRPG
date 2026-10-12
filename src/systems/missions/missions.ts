@@ -1,4 +1,5 @@
 import type { Rng } from '@/core';
+import type { Rank } from '@/systems/standing';
 import { rollCheck, type StatId, type Stats } from '@/systems/stats';
 
 import type { EncounterRun, EncounterStage } from './encounter';
@@ -12,6 +13,27 @@ import type { StagePay } from './encounterPay';
  */
 export type MissionRank = 'D' | 'C' | 'B' | 'A' | 'S';
 
+/** The shinobi rank each rank of job is given to: B and A to chūnin, S to jōnin. */
+export const RANK_FOR_MISSION: Readonly<Record<MissionRank, Rank>> = {
+  D: 'genin',
+  C: 'genin',
+  B: 'chunin',
+  A: 'chunin',
+  S: 'jonin',
+};
+
+/**
+ * The rank a job is given to. Team jobs go out under the sensei, so a genin team takes them at
+ * any rank; a job done alone goes by its rank (`RANK_FOR_MISSION`).
+ */
+export function rankForMission(def: Pick<MissionDef, 'rank' | 'withTeam'>): Rank {
+  return def.withTeam === true ? 'genin' : RANK_FOR_MISSION[def.rank];
+}
+
+/** B-rank and harder jobs: the record a jōnin nomination reads. */
+export function isSeniorMission(rank: MissionRank): boolean {
+  return rank !== 'D' && rank !== 'C';
+}
 /**
  * Jobs on a team mission that fall to whoever on the team is best at them: the tracker follows
  * a trail, the sensor feels for chakra, the medic patches people up.
@@ -70,6 +92,8 @@ export interface MissionDef {
   readonly withTeam?: boolean;
   /** Always on the board (patrols, watches); otherwise jobs are posted for a few days at a time. */
   readonly standing?: boolean;
+  /** Never posted: an exam stage runs it (the survival forest). */
+  readonly examOnly?: boolean;
   readonly stages: readonly MissionStage[];
 }
 

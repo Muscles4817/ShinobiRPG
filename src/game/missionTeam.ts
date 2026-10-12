@@ -5,6 +5,7 @@ import { MAX_HEALTH } from '@/systems/vitals';
 
 import { PLAYER_COMBATANT_ID } from './combatants';
 import type { GameContext } from './context';
+import { fieldTeamIds } from './exam/fieldTeam';
 import { adjust, chip, log } from './ops';
 import { requirePerson } from './people/cast';
 import { companionCombatant, senseiCombatant } from './people/companions';
@@ -35,7 +36,7 @@ export const MEDIC_HEAL_PER_CONTROL = 1;
 
 function teammates(state: GameState, ctx: GameContext, def: MissionDef | null): PersonDef[] {
   if (!def?.withTeam) return [];
-  return (state.people.team?.teammateIds ?? []).map((id) => requirePerson(state, ctx, id));
+  return fieldTeamIds(state).map((id) => requirePerson(state, ctx, id));
 }
 
 /**
@@ -54,7 +55,8 @@ export function senseiAlong(
   def: MissionDef | null,
 ): PersonDef | null {
   const senseiId = state.people.team?.senseiId;
-  if (!def?.withTeam || !senseiId || !seriousJob(state, ctx, def)) return null;
+  // An exam is the genin's own: no sensei goes into the forest with them.
+  if (!def?.withTeam || def.examOnly || !senseiId || !seriousJob(state, ctx, def)) return null;
   return requirePerson(state, ctx, senseiId);
 }
 

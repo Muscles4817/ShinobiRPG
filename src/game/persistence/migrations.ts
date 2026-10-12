@@ -1,6 +1,8 @@
 import { v17ToV18 } from './aptitudeMigration';
+import { v23ToV24 } from './examMigration';
 import { v21ToV22 } from './gearMigration';
 import { v18ToV19 } from './peopleMigration';
+import { v22ToV23 } from './scrollMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
 import { v19ToV20 as v20ToV21 } from './rankMigration';
 import { v19ToV20 } from './teachingMigration';
@@ -267,12 +269,6 @@ function v16ToV17(state: RawState): RawState {
   return { ...state, character: { ...character, injuries: [], exhaustion: null } };
 }
 
-/** v22 → v23: technique scrolls can be owned; nobody has any yet. */
-function v22ToV23(state: RawState): RawState {
-  const inventory = asRecord(state.inventory);
-  return { ...state, inventory: { ...inventory, scrolls: asRecord(inventory.scrolls) } };
-}
-
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -296,4 +292,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   20: v20ToV21,
   21: v21ToV22,
   22: v22ToV23,
+  23: v23ToV24,
 };
