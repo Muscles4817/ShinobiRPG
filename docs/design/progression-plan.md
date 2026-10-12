@@ -740,6 +740,12 @@ These were folded into the D2 discussion. Where each landed:
   (range, hidden, dazed, first mover) are in. Costs are journalled only, through
   `applyFightCosts`, until 2.6 applies them. Opening fields wait on 1.4c, and rows
   disruption on 1.3.
+- 1.4b: verbs area, confuse, conceal, sense and break, with a technique for each in both
+  packs (academy). Hiding has counterplay: a fighter with no one in sight searches instead
+  of idling, an illusionist's attack may be traced back by the one it struck, and insight
+  (or a sense) sees the hidden. The bench now asserts that a stalker is hit by every foe,
+  that hidden against hidden never stalls (it stalled 100% before), and that knowing a
+  sense wins more often against a stalker and a trickster.
 
 ### Decisions made during the run
 
@@ -759,6 +765,24 @@ These were folded into the D2 discussion. Where each landed:
   40 damage, ignoring the gap.
 - 1.1 retune: **a daze now leaves the target open** (no defences, a finisher target)
   until the end of the following exchange, so set-up and payoff works one-on-one.
+- 1.4b: an area technique hits every foe standing, hidden ones included (it needs no aim);
+  each foe sees it coming, dodges and guards on their own. Self-aimed effects in it happen
+  once.
+- 1.4b: a sense reveals each hidden foe with a chance (its drive and power against their
+  concealment, floor 40%) and grants **insight** for the rest of the fight. Insight now
+  lets its holder aim at hidden foes in Plan & Watch (it already made Search certain);
+  this also applies to the insight perk from bloodlines.
+- 1.4b: a conceal sets a `concealment` on the fighter; Search and sense are measured
+  against it (else against genjutsu, as before). Conceal has no instant check against
+  foes' perception: the contest is every Search.
+- 1.4b: break ignores a guard entirely, 15% of toughness (the gap formula is steep, so
+  that is about half again as hard a hit) and half of what armour or a spirit's form
+  shrugs off. Its drive is strength alone.
+- 1.4b: confuse lasts 1–3 turns from power and the user's genjutsu against the target's
+  `breakRating` (chakra control first).
+- 1.4b: an illusionist is no longer untouchable while attacking: the fighter it struck
+  may trace it back (Search odds). A master illusionist still usually wins before being
+  found matters, which is power, not a bug.
 - Accepted: the player's equal-fight win rate at grade E is 35% (43% at D–A). Parity
   isn't a goal; a better foe sense of tempo can come later.
 - 1.5: the new trump techniques sit at the academy as a placeholder (grade B

@@ -159,12 +159,15 @@ describe('plan & watch kits: hits', () => {
 });
 
 describe('plan & watch kits: illusions', () => {
-  it('a hidden foe cannot be attacked', () => {
+  it('a hidden foe cannot be attacked: with no one in sight, the attacker searches instead', () => {
     const [hero, ghost] = pair(['illusionist']);
     expect(ghost!.hidden).toBe(true);
     const armed = { ...hero!, loadout: { ...NO_CARDS, mid: plainSlots(['throw']) } };
     const after = resolveExchange(stateOf([armed, ghost!]), createRng(3));
-    expect(after.log).toContain("hero can't find a target.");
+    expect(after.log.some((l) => l.startsWith('hero searches') || l === 'hero spots foe!')).toBe(
+      true,
+    );
+    expect(after.log.some((l) => l.includes("hero's kunai"))).toBe(false);
     expect(after.fighters[1]?.health).toBe(ghost!.health);
   });
 

@@ -55,6 +55,20 @@ export function hasVerb(technique: CombatTechnique, verb: Verb): boolean {
   return technique.effects.some((e) => e.verb === verb);
 }
 
+/** Deals damage: to one foe, to every foe, or through their guard. */
+export function isWounding(technique: CombatTechnique): boolean {
+  return technique.effects.some(
+    (e) => e.verb === 'damage' || e.verb === 'area' || e.verb === 'break',
+  );
+}
+
+/** Holds a foe back without wounding them: dazes, seals or confuses them. */
+export function isHindering(technique: CombatTechnique): boolean {
+  return technique.effects.some(
+    (e) => e.verb === 'daze' || e.verb === 'seal' || e.verb === 'confuse',
+  );
+}
+
 /** Aimed at a foe (it hurts or hinders), rather than only at the user. */
 export function isHarmful(technique: CombatTechnique): boolean {
   return technique.effects.some((e) => profileOf(e).aim === 'foe');

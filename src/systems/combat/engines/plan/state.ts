@@ -48,6 +48,8 @@ export interface PlanFighter extends Body, TrumpMemory {
   readonly stunned: number;
   readonly sealed: number;
   readonly loadout: Loadout;
+  /** How hard they are to find while hidden, once a conceal set it (`concealmentOf`). */
+  readonly concealment?: number;
   /**
    * The last exchange a daze leaves this fighter open (no defences, a target for finishers),
    * even after the lost turn: through the exchange after the daze, so whoever dazed them
@@ -153,6 +155,8 @@ export function patch(
       | 'loadout'
       | 'hidden'
       | 'confused'
+      | 'concealment'
+      | 'perks'
       | 'openUntil'
       | 'trumpsUsed'
     >

@@ -7,7 +7,7 @@ import { carried } from '../../rules/items';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { trumpSpent } from '../../rules/trumps';
-import { hasVerb, isHarmful, techniquePower } from '../../rules/verbs';
+import { hasVerb, isHarmful, isHindering, isWounding, techniquePower } from '../../rules/verbs';
 import { plainSlots, type CardId, type Loadout, type PlanFighter, type Slot } from './state';
 
 /**
@@ -128,6 +128,12 @@ export function isOffence(card: Card): boolean {
   return card.kind === 'strike' || card.kind === 'throw';
 }
 
+/** An offence aimed at someone in sight; an area technique needs no aim. */
+export function needsAim(card: Card): boolean {
+  if (card.kind === 'jutsu' && hasVerb(card.technique, 'area')) return false;
+  return isOffence(card);
+}
+
 const TOOL_DOES: Readonly<Record<CombatItemEffect, string>> = {
   smoke: 'Vanish until you attack',
   flash: 'Reveal hidden foes',
@@ -147,6 +153,11 @@ const VERB_WORD: Readonly<Record<Verb, string>> = {
   daze: 'Daze',
   seal: 'Seal',
   heal: 'Heal when hurt',
+  area: 'Hit every foe',
+  confuse: 'Confuse',
+  conceal: 'Vanish until you attack',
+  sense: 'Find the hidden, read every card',
+  break: 'Smash through a guard',
 };
 
 /** What a technique does, in words: "Attack", or "Attack, then daze" for several effects. */
@@ -212,7 +223,7 @@ function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean)
 }
 
 function damageJutsu(cards: readonly Card[]): Card[] {
-  return strongest(cards, (t) => hasVerb(t, 'damage'));
+  return strongest(cards, isWounding);
 }
 
 /** How much a step towards home is worth: before attacking, after, or not at all. */
@@ -233,9 +244,10 @@ function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Fo
 }
 
 /**
- * A sensible starting plan, in priority order: a heal for when you're badly hurt, footwork
- * towards where you fight best (when it's worth a turn), a daze or seal to spoil a foe's
- * telegraphed jutsu, your best attack, then plain blows, more attacks and a defence. Attacks
+ * A sensible starting plan, in priority order: a heal for when you're badly hurt, a sense for
+ * when a foe hides, footwork towards where you fight best (when it's worth a turn), a daze,
+ * seal or confusion to spoil a foe's telegraphed jutsu, your best attack, then plain blows,
+ * more attacks, a conceal and a defence. Attacks
  * your kit can't make from a distance (an archer up close) are left out.
  */
 function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slot[] {
@@ -248,14 +260,17 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slo
   const at = (when: Footwork) => (footwork === when ? step : []);
   const heal = strongest(pool, (t) => hasVerb(t, 'heal')).slice(0, 1);
   const damage = damageJutsu(pool);
-  const daze = strongest(pool, (t) => hasVerb(t, 'daze') || hasVerb(t, 'seal')).slice(0, 1);
+  const daze = strongest(pool, isHindering).slice(0, 1);
+  const sense = strongest(pool, (t) => hasVerb(t, 'sense')).slice(0, 1);
+  const conceal = strongest(pool, (t) => hasVerb(t, 'conceal')).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const ordered: Slot[] = [
     ...heal.map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
+    ...sense.map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' })),
     ...plain(at('first')),
     ...daze.map((c): Slot => ({ card: cardId(c), when: 'foe-readying' })),
     ...plain([...damage.slice(0, 1), ...has('strike'), ...has('throw'), ...at('after-attacks')]),
-    ...plain([...damage.slice(1), ...has('guard'), ...has('dodge')]),
+    ...plain([...damage.slice(1), ...conceal, ...has('guard'), ...has('dodge')]),
   ];
   const unique = ordered.filter((slot, i) => ordered.findIndex((s) => s.card === slot.card) === i);
   return unique.slice(0, slotLimit(fighter));

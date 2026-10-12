@@ -161,6 +161,11 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'last-lantern',
           'tempered-edge',
           'sacred-rope-ward',
+          'lantern-scatter',
+          'moth-dance',
+          'paper-veil',
+          'wick-sense',
+          'temple-bell-palm',
         ],
       },
       {
