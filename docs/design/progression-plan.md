@@ -386,6 +386,30 @@ not to make every approach equally strong. More resources should mean more power
 - **Content:** stage templates (bandit camp, beast, lone rogue, guarded building) say which
   approaches make sense, with flavour swapped per mission.
 
+**Promotions and presentation, agreed:**
+
+- **The chūnin exam:**
+  - A calendar event, **twice a year**, announced ahead through rumours and the sensei.
+  - **Entry:** sensei nomination (bond plus their judgement), a mission record, and a
+    **three-person team**. A replacement teammate is possible but **hits the bond with the
+    left-out teammate hard**, and depends on the sensei: some won't tolerate it.
+  - **Modular stages:** an exam is a list of stage definitions (a discriminated union),
+    so alternative stages can be designed and slotted in. The first set:
+    1. A mind test (intellect and perception; cheating is an approach, with risk).
+    2. Survival (the engagement layer, against other teams).
+    3. A tournament (Plan & Watch duels against generated rivals).
+  - **Promotion is judged on conduct,** not just winning.
+- **Jōnin by nomination:** a record of B- and A-rank missions, grades in your specialty,
+  and standing with the leadership.
+- **Presentation tiers:**
+  - A tick within a grade is an ink-stroke roll on the stat.
+  - An ability grade-up is a report card with the grade seal and a "What this opens" list.
+  - Discovery reads are journal lines; the Shinobi screen shows aptitude as unknown, a
+    rough sense, or known.
+  - A rank promotion is a full scene: the ceremony, the title, the flak jacket, the
+    unlocks.
+- **The skill tree comes after** this plan (not in this run).
+
 ### D3. Technique mastery stages and learning by doing: open
 
 ### D4. Techniques as verbs (effect vocabulary): open
