@@ -182,8 +182,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     is reproducible and catches up lazily without consuming the game's Rng. Tests that take a
     specific job use `postEverything` (the default `newGame` fixture does).
 18. **Gear counts in fights; meals count for a day.** Equipped gear (`inventory` system,
-    `game/gear.ts`) adds its `statBonuses` to the stats a fight sees (`combatStats`), never
-    to trained stats, so it works the same in every fight style. A home-cooked recipe sets
+    `game/gear.ts`) never adds to stats: it rides in as `CombatantSetup.gear` (`gearContract.ts`)
+    and changes the cards (a blade's cut, needed for kenjutsu; knuckles; thrown steel and senbon;
+    armour levels that trade protection for speed, eased by strength; a focus that sharpens a
+    verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. Gear has
+    ranks D–A: shops sell D and C, B to chūnin; A and `unique` named weapons are never sold. A home-cooked recipe sets
     `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
     `spendTime` clears it when the day ends.
     Hunger works the same way: the player sees a Hunger meter (100 − satiety), and each
@@ -239,6 +242,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
   model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
   compiler lists every switch you missed).
+- **Add a technique:** give it a `rank` (E–S, the letters of ability grades): one rank above the
+  learner's grade in its discipline is slow and arrives unstable, two is impossible from any
+  source. Physical needs (nature, reserves, control grade) go in `needs`. Starters must be rank E.
 - **Add a clan, talent or trait:** add it to the pack's `clans` (or the shared `talents`/
   `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
@@ -267,13 +273,18 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a mission:** add a `MissionDef` and list it at a mission hall. It is posted from time
   to time once the player's record reaches `minMissionsCompleted`; set `standing: true` for
   jobs that are always available (every pack needs one a fresh genin can take — validated).
+  `reward.scrollId` / `reward.gearId` hand over a technique scroll or a named weapon once.
+- **Add a technique:** give it a source (validated): the academy (rank E–D), a library (C–B,
+  chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
+  scroll reward.
 - **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
   fight as allies and each gains bond on success. Offer it at a mission hall as usual.
 - **Add a combination technique:** two `TechniqueDef`s whose `combo.partnerTechniqueId` name
   each other (validated); offer them at the academy. A teammate knows the half in their
   specialty, and a half plays only beside someone on your side who knows the other.
-- **Add gear:** add a `GearDef` (slot, cost, `statBonuses`) to the pack's `gear` and list it at
-  a `gear` place (a smith, an outfitter). **Add an ingredient or recipe:** add it to
+- **Add gear:** add a `GearDef` (`kind` weapon/armour/focus with its shape, level or boosts,
+  `rank`, cost) to the pack's `gear` and list it at a `gear` place (a smith, an outfitter);
+  `unique` pieces are never listed. **Add an ingredient or recipe:** add it to
   `shared/kitchen.ts` (or a pack's own list); ingredients must be sold at a market stall's
   `ingredientIds`, and recipes may only use known ingredients (validated).
 - **Add village life:** rumours (`missionId` for a job hint, `personId` for gossip), night

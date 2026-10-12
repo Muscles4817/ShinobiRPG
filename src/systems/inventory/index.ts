@@ -12,6 +12,9 @@ export {
   toolCount,
   addTool,
   restockPouch,
+  ownsScroll,
+  addScroll,
+  scrollIds,
   type Inventory,
   type Needed,
 } from './inventory';

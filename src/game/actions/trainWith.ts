@@ -153,6 +153,7 @@ function report(state: GameState, before: GameState, session: Session): GameStat
             ),
           ]
         : []),
+      ...(taught?.unstable ? [chip(`${taught.name} unstable`, 'cost')] : []),
       chip(`−${TRAIN_WITH_ENERGY} energy`, 'cost'),
       ...(ryo > 0 ? [chip(`−${ryo} ryo`, 'cost')] : []),
     ],

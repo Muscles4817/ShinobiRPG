@@ -137,6 +137,19 @@ describe('App (smoke test)', () => {
     expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument();
   });
 
+  it('stamps technique ranks, and folds away scrolls you can’t study yet', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Academy/));
+    const comingUp = screen.getByRole('heading', { name: 'Coming up' }).parentElement!;
+    expect(
+      within(comingUp).getAllByText(/^Needs [A-S] [\w ū]+; you're [A-S]\.$/).length,
+    ).toBeGreaterThan(0);
+    await user.click(screen.getByRole('button', { name: /Jutsu/ }));
+    expect(screen.getAllByLabelText('Rank E').length).toBeGreaterThan(0);
+  });
+
   it('forms a team, then talks to someone who is here', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);
@@ -255,6 +268,13 @@ describe('App (smoke test)', () => {
     const knuckles = screen
       .getAllByRole('article')
       .find((a) => a.textContent.includes('Wrapped Knuckles'))!;
+    expect(within(knuckles).getByLabelText('Rank D')).toBeInTheDocument();
+    expect(within(knuckles).getByText(/through a guard/)).toBeInTheDocument();
+    const katana = screen
+      .getAllByRole('article')
+      .find((a) => a.textContent.includes('Kurogane Katana'))!;
+    expect(within(katana).getByText(/sold to chūnin/)).toBeInTheDocument();
+    expect(within(katana).getByRole('button', { name: 'Buy' })).toBeDisabled();
     await user.click(within(knuckles).getByRole('button', { name: 'Buy' }));
     expect(within(knuckles).getByRole('button', { name: 'Wearing' })).toBeDisabled();
     await user.click(screen.getByRole('button', { name: /Here/ }));

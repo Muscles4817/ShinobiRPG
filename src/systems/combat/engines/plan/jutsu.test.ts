@@ -1,6 +1,7 @@
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
+import { UNSTABLE_MISFIRE } from '../../rules/unstable';
 import { chooseCard } from './choose';
 import { useJutsu } from './jutsu';
 import {
@@ -145,5 +146,27 @@ describe('plan & watch techniques', () => {
     const after = crushUntil(roundWith(nimble, dodging), /slips past/);
     expect(fighterIn(after, 'bandit')).toMatchObject({ health: 80, stunned: 0 });
     expect(after.lines.join(' ')).not.toMatch(/dazed/);
+  });
+
+  it('an unstable technique costs more and sometimes comes apart, chakra spent', () => {
+    const shaky: CombatTechnique = { ...crush, unstable: true };
+    const round = roundWith();
+    const [hero, bandit] = round.fighters;
+    const SEEDS = 400;
+    let misfires = 0;
+    for (let seed = 1; seed <= SEEDS; seed++) {
+      const after = useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed) }, shaky);
+      expect(fighterIn(after, 'hero')?.chakra).toBe(30 - 8);
+      if (after.lines.some((l) => l.includes('comes apart'))) {
+        misfires++;
+        expect(fighterIn(after, 'bandit')).toMatchObject({ health: 80, stunned: 0 });
+      }
+    }
+    expect(misfires / SEEDS).toBeGreaterThan(UNSTABLE_MISFIRE - 0.06);
+    expect(misfires / SEEDS).toBeLessThan(UNSTABLE_MISFIRE + 0.06);
+    for (let seed = 1; seed <= 50; seed++) {
+      const after = useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed) }, crush);
+      expect(after.lines.join(' ')).not.toMatch(/comes apart/);
+    }
   });
 });

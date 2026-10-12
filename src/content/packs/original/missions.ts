@@ -159,7 +159,7 @@ export const MISSIONS: readonly MissionDef[] = [
     summary: 'A washed-out student has been stealing practice scrolls. Bring him in.',
     slots: 3,
     energyCost: 25,
-    reward: { ryo: 200, reputation: 5 },
+    reward: { ryo: 200, reputation: 5, scrollId: 'great-seal-of-ash' },
     minMissionsCompleted: 2,
     stages: [
       {
@@ -190,7 +190,7 @@ export const MISSIONS: readonly MissionDef[] = [
       'Something is spoiling the rice in Hanada’s storehouse, and the workers refuse to go in.',
     slots: 3,
     energyCost: 30,
-    reward: { ryo: 260, reputation: 8 },
+    reward: { ryo: 260, reputation: 8, scrollId: 'whispering-dread' },
     minMissionsCompleted: 3,
     stages: [
       {

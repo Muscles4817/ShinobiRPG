@@ -10,6 +10,7 @@ export type IconId =
   | 'bowl'
   | 'board'
   | 'scroll'
+  | 'stacks'
   | 'house'
   | 'heal'
   | 'torii'

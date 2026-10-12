@@ -1,6 +1,7 @@
 import type { CombatOption, RangeBand } from '../../contract';
 import { RANGE_BANDS, RANGE_LABEL } from '../../rules/range';
 import {
+  cardBlocked,
   cardId,
   cardsFor,
   findCard,
@@ -53,8 +54,10 @@ const AIM_LABEL: Readonly<Record<TargetRule, string>> = {
   marked: 'The team mark',
 };
 
-/** Why a card can't go in a slot: slots full, or a tool you have none of. */
-function slotBlocker(card: Card, full: boolean): string | null {
+/** Why a card can't go in a slot: you can't use it, slots full, or a tool you have none of. */
+function slotBlocker(player: PlanFighter, card: Card, full: boolean): string | null {
+  const blocked = cardBlocked(player, card);
+  if (blocked) return blocked;
   if (full) return 'Slots full. Take a card out first.';
   return card.kind === 'item' && card.item.count <= 0 ? `No ${card.item.name} left.` : null;
 }
@@ -118,10 +121,10 @@ function slotOptions(player: PlanFighter, band: RangeBand): CombatOption[] {
   const cards = cardsFor(player, band).map((card): CombatOption => {
     const id = cardId(card);
     const rank = rankOf(player, band, id);
-    const blocker = rank >= 0 ? null : slotBlocker(card, full);
+    const blocker = rank >= 0 ? cardBlocked(player, card) : slotBlocker(player, card, full);
     return {
       id: entryId(band, id),
-      label: cardLabel(card),
+      label: cardLabel(card, player),
       detail: cardDetail(card, player),
       kind: 'plan',
       group: RANGE_LABEL[band],

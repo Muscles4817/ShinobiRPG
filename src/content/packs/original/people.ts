@@ -86,7 +86,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     teacher: {
       quirk: 'natural',
       steers: { focus: 'specialty', freeAtStage: 3 },
-      teaches: ['great-lantern-flame'],
+      teaches: ['great-lantern-flame', 'hibana-kiln-heart'],
       price: {
         kind: 'ryo',
         perSession: 40,
@@ -125,7 +125,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     teacher: {
       quirk: 'distracted',
       steers: { focus: 'weakest', freeAtStage: 2 },
-      teaches: ['ghost-lantern-veil'],
+      teaches: ['ghost-lantern-veil', 'last-lantern'],
       price: {
         kind: 'favour',
         favourId: 'yomi-grave-lantern',

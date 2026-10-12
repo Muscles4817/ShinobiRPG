@@ -1,7 +1,7 @@
 import { createRng } from '@/core';
 
 import { checkChance, rollCheck } from './checks';
-import { createStats, diffStats, unmetRequirements } from './stats';
+import { createStats, diffStats } from './stats';
 
 describe('stats', () => {
   it('creates stats from a base with bonuses', () => {
@@ -13,12 +13,6 @@ describe('stats', () => {
   it('diffs stats to two decimals, leaving unchanged stats out', () => {
     const before = createStats(5);
     expect(diffStats(before, { ...before, speed: 5.04 })).toEqual({ speed: 0.04 });
-  });
-
-  it('reports unmet requirements', () => {
-    const stats = createStats(5, { ninjutsu: 5 });
-    expect(unmetRequirements(stats, { ninjutsu: 8, intellect: 6 })).toEqual(['intellect']);
-    expect(unmetRequirements(stats, { ninjutsu: 10 })).toEqual([]);
   });
 });
 

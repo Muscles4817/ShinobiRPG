@@ -99,6 +99,8 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
                 detail={cardDetail(c)}
                 discipline={c.discipline}
                 ghost={c.status !== 'known'}
+                rank={c.rank}
+                unstable={c.unstable}
               />
             </button>
           ))}
@@ -123,10 +125,20 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
             <b>
               {selected.status === 'unknown' ? 'Undiscovered technique' : selected.name}{' '}
               <span className={`badge d-${selected.discipline}`}>{selected.discipline}</span>
+              <span className="badge" data-grade={selected.rank}>
+                Rank {selected.rank}
+              </span>
+              {selected.unstable && <span className="badge unstable">Unstable</span>}
               {selected.element && <span className="chip"> {selected.element}</span>}
             </b>
             {selected.status !== 'unknown' && <p className="story">{selected.description}</p>}
             <p className="muted small">{cardDetail(selected)}</p>
+            {selected.unstable && (
+              <p className="muted small">
+                Beyond your grade: it costs more chakra and can misfire. It steadies once your{' '}
+                {FILTER_LABELS[selected.discipline].toLowerCase()} reaches grade {selected.rank}.
+              </p>
+            )}
           </section>
         )}
       </main>

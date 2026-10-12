@@ -1,4 +1,6 @@
 import type { CombatTechnique, CombatTrait, RangeBand } from '../contract';
+import type { CombatGear } from '../gearContract';
+import { wornArmourKept } from './armour';
 import { preferredRange, RANGE_BANDS } from './range';
 
 /**
@@ -22,6 +24,7 @@ export const SWIFT_DODGE = 0.2;
 
 interface Kitted {
   readonly traits: readonly CombatTrait[];
+  readonly gear?: CombatGear;
 }
 
 export function hasTrait(f: Kitted, trait: CombatTrait): boolean {
@@ -48,10 +51,19 @@ export function isPhysical(kind: AttackKind): boolean {
   return kind === 'blow' || kind === 'weapon';
 }
 
+/**
+ * Share of a blow or blade that gets through the defender's armour: an armoured kit's, or the
+ * armour they wear (`armour.ts`), whichever protects more.
+ */
+function physicalKept(defender: Kitted): number {
+  const kit = hasTrait(defender, 'armoured') ? ARMOUR_SCALE : 1;
+  return Math.min(kit, wornArmourKept(defender));
+}
+
 /** How much of an attack of this kind actually hurts the defender. */
 export function kitDamageScale(defender: Kitted, kind: AttackKind): number {
   let scale = 1;
-  if (hasTrait(defender, 'armoured') && isPhysical(kind)) scale *= ARMOUR_SCALE;
+  if (isPhysical(kind)) scale *= physicalKept(defender);
   if (hasTrait(defender, 'spirit')) {
     if (isPhysical(kind)) scale *= SPIRIT_PHYSICAL_SCALE;
     if (kind === 'seal') scale *= SPIRIT_SEAL_SCALE;

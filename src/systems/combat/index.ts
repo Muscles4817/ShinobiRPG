@@ -28,6 +28,28 @@ export type {
 export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS } from './contract';
 export type { CombatOrders, CombatStance, CombatUsage, StanceKind } from './teamContract';
 export { STANCE_KINDS } from './teamContract';
+export type {
+  ArmourLevel,
+  CombatArmour,
+  CombatFocus,
+  CombatGear,
+  CombatWeapon,
+  FocusTarget,
+  GearRank,
+  WeaponEffect,
+  WeaponShape,
+} from './gearContract';
+export {
+  ARMOUR_LEVELS,
+  GEAR_RANKS,
+  HELD_SHAPES,
+  WEAPON_EFFECTS,
+  WEAPON_SHAPES,
+} from './gearContract';
+// Gear's numbers, for describing a piece the same way the fight applies it.
+export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
+export { focusScale } from './rules/focus';
+export { weaponNumbers, type WeaponNumbers } from './rules/weapons';
 export { splitNarration } from './rules/narration';
 export type { Narration, NarrationAmount, NarrationAmountKind } from './rules/narration';
 export { createDuelEngine } from './engines/duel/engine';

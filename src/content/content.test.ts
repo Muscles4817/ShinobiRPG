@@ -184,4 +184,40 @@ describe('content validation', () => {
       'food "rice-ball" is not offered at any place',
     );
   });
+
+  it('lets unique gear go unsold, but never on a shelf, and keeps A rank and verbs unique', () => {
+    expect(validateContent(ORIGINAL_PACK)).toEqual([]);
+    const gear = ORIGINAL_PACK.gear.map((g) =>
+      g.id === 'hungry-lantern' ? { ...g, unique: false } : g,
+    );
+    const problems = validateContent({ ...ORIGINAL_PACK, gear });
+    expect(problems).toContain('gear "hungry-lantern" is rank A but not unique');
+    expect(problems).toContain('gear "hungry-lantern" has its own verbs but is not unique');
+    expect(problems).toContain('gear "hungry-lantern" is not offered at any place');
+    const [home, ...rest] = ORIGINAL_PACK.locations;
+    const shelved = {
+      ...ORIGINAL_PACK,
+      locations: [
+        {
+          ...home!,
+          places: home!.places.map((p) =>
+            p.kind === 'gear' ? { ...p, gearIds: [...p.gearIds, 'hungry-lantern'] } : p,
+          ),
+        },
+        ...rest,
+      ],
+    };
+    expect(validateContent(shelved)).toContain('unique gear "hungry-lantern" is sold at a shop');
+  });
+
+  it('detects a blade art that does not need a blade', () => {
+    const techniques = ORIGINAL_PACK.techniques.map((t) => {
+      if (t.id !== 'lantern-cut') return t;
+      const { needs: _needs, ...rest } = t;
+      return rest;
+    });
+    expect(validateContent({ ...ORIGINAL_PACK, techniques })).toContain(
+      'technique "lantern-cut" is a blade art and must need a blade',
+    );
+  });
 });

@@ -20,6 +20,7 @@ import { adjust, chip, log, placeHere, spendTime } from './ops';
 import { bondOf, requirePerson } from './people/cast';
 import { companionCombatant } from './people/companions';
 import { defaultStance, ordersFor } from './people/teamOrders';
+import { handedOver } from './missionRewards';
 import { addReport } from './reports';
 import type { GameState } from './state';
 
@@ -60,6 +61,7 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
   const earned = reward(def, state.mission);
   const standing = recordMissionSuccess(state.standing, earned.reputation);
   const teamBond = def.withTeam ? TEAM_MISSION_BOND : 0;
+  const gifts = handedOver(state, ctx, def);
   const next: GameState = {
     ...withTeamBond(state, teamBond),
     mission: null,
@@ -68,6 +70,7 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
     board: state.board.completed.includes(def.id)
       ? state.board
       : { ...state.board, completed: [...state.board.completed, def.id] },
+    inventory: gifts.inventory,
   };
   const logged = log(next, {
     heading: `${def.title} complete`,
@@ -77,6 +80,7 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
       chip(`+${earned.ryo} ryo`, 'gain'),
       chip(`+${earned.reputation} reputation`, 'gain'),
       ...(teamBond > 0 ? [chip(`+${teamBond} team bond`, 'gain')] : []),
+      ...gifts.chips,
     ],
   });
   return addReport(logged, {
@@ -89,6 +93,7 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
     unlocked: newlyUnlocked(state, ctx, standing.missionsCompleted),
     docked: Math.max(0, def.reward.ryo - earned.ryo),
     teamBond,
+    ...gifts.report,
   });
 }
 

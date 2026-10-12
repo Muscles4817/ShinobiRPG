@@ -9,7 +9,7 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'genjutsu',
     effects: [{ verb: 'confuse', power: 15 }],
     chakraCost: 10,
-    requirements: { genjutsu: 12, intellect: 11 },
+    rank: 'C',
     difficulty: 70,
   },
   {
@@ -19,7 +19,7 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     effects: [{ verb: 'damage', power: 12 }],
     chakraCost: 4,
-    requirements: { taijutsu: 9, perception: 8 },
+    rank: 'D',
     difficulty: 50,
   },
   {
@@ -29,7 +29,7 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     effects: [{ verb: 'trap', power: 8, dazes: true }],
     chakraCost: 8,
-    requirements: { fuuinjutsu: 8, intellect: 7 },
+    rank: 'D',
     difficulty: 55,
   },
 ];

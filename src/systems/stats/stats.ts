@@ -59,14 +59,6 @@ export function diffStats(before: Stats, after: Stats): StatDelta {
   return delta;
 }
 
-/** Returns the requirements the stats do NOT meet (empty when all are met). */
-export function unmetRequirements(stats: Stats, requirements: StatDelta): StatId[] {
-  return STAT_IDS.filter((id) => {
-    const needed = requirements[id];
-    return needed !== undefined && stats[id] < needed;
-  });
-}
-
 /** Adds several stat deltas together. */
 export function sumDeltas(...deltas: readonly StatDelta[]): StatDelta {
   const total: Partial<Record<StatId, number>> = {};

@@ -190,6 +190,15 @@
   justify-content: space-between;
   gap: 8px;
 }
+.paper-strip .rank-stamp {
+  color: var(--paper-ink);
+}
+.paper-strip .unstable {
+  color: var(--ink-cost);
+}
+.scroll.locked .paper-strip .rank-stamp {
+  color: var(--muted);
+}
 .scroll.locked .paper-strip {
   background: #3a3346;
   color: var(--muted);

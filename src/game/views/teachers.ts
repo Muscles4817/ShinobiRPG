@@ -9,6 +9,7 @@ import { placeHere } from '../ops';
 import { bondOf, everyone, fullName } from '../people/cast';
 import { readPrice, type PricePart } from '../people/price';
 import { personStats } from '../people/progress';
+import { learnBlockerFor, learnBlockerText } from '../learning';
 import { nextSignature, TEACHES_AT_STAGE } from '../people/signatures';
 import {
   aheadIn,
@@ -100,18 +101,29 @@ function teachStat(state: GameState, ctx: GameContext, person: PersonDef, id: St
   };
 }
 
+/**
+ * What they'll teach next; failing that, the first one you can't learn yet, and why. A clan's
+ * arts are never shown to outsiders.
+ */
 function signatureOf(state: GameState, ctx: GameContext, teaching: Teaching) {
-  const nextId = nextSignature(state, ctx, teaching);
+  const nextId =
+    nextSignature(state, teaching, ctx) ??
+    teaching.teaches.find((id) => {
+      const kind = learnBlockerFor(state, ctx.content.techniques.require(id), ctx)?.kind;
+      return kind !== 'already-known' && kind !== 'clan';
+    });
   if (!nextId) return null;
   const def = ctx.content.techniques.require(nextId);
   const stage = stageOf(bondOf(state, teaching.person.id).points);
+  const blocker = learnBlockerFor(state, def, ctx);
+  const bondLock =
+    stage < TEACHES_AT_STAGE
+      ? `Taught once you and ${teaching.person.name} are ${stageName(TEACHES_AT_STAGE).toLowerCase()}s.`
+      : null;
   return {
     name: def.name,
     progress: Math.min(1, (state.techniques.progress[def.id] ?? 0) / def.difficulty),
-    locked:
-      stage < TEACHES_AT_STAGE
-        ? `Taught once you and ${teaching.person.name} are ${stageName(TEACHES_AT_STAGE).toLowerCase()}s.`
-        : null,
+    locked: blocker ? learnBlockerText(blocker, def) : bondLock,
   };
 }
 

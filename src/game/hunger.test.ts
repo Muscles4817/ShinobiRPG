@@ -2,7 +2,8 @@ import { ctx, newGame } from '@/test/gameFixtures';
 
 import { playerCombatant } from './combatants';
 import { blockerFor } from './dispatch';
-import { studyPointsFor, trainingScale } from './profile';
+import { studyPointsFor } from './learning';
+import { trainingScale } from './profile';
 import type { GameState } from './state';
 import { headerView } from './views/header';
 
@@ -38,8 +39,9 @@ describe('hunger', () => {
       (trainingScale(satisfied.character, ctx).strength ?? 1);
     expect(training).toBeCloseTo(0.6);
     const scroll = ctx.content.techniques.require('gale-heel');
-    expect(studyPointsFor(hungry.character, scroll, ctx)).toBeCloseTo(
-      studyPointsFor(satisfied.character, scroll, ctx) * 0.75,
+    const read = { aptitude: 1, source: 'scroll' } as const;
+    expect(studyPointsFor(hungry.character, scroll, ctx, read)).toBeCloseTo(
+      studyPointsFor(satisfied.character, scroll, ctx, read) * 0.75,
       0,
     );
     const strong = playerCombatant(satisfied, ctx).attributes.strength;

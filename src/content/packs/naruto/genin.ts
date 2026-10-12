@@ -38,6 +38,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Loud, stubborn and impossible to discourage. Says he will be Hokage. Eats only ramen.',
+    teacher: { teaches: ['adamantine-chains'] },
     schedule: {
       morning: 'training-grounds',
       afternoon: 'mission-desk',
@@ -64,6 +65,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Top of the class and knows it. Trains alone. Talks less than he should.',
+    teacher: { teaches: ['great-fireball', 'amaterasu'] },
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',

@@ -4,6 +4,9 @@ import {
   equip,
   hasAll,
   owns,
+  ownsScroll,
+  addScroll,
+  scrollIds,
   pantryCount,
   stock,
   unequip,
@@ -31,5 +34,12 @@ describe('inventory', () => {
     expect(cooked.value.pantry).toEqual({});
     expect(pantryCount(cooked.value, 'rice')).toBe(0);
     expect(useUp(inv, [{ id: 'rice', count: 3 }]).ok).toBe(false);
+  });
+
+  it('keeps one of each scroll', () => {
+    const inv = addScroll(addScroll(addScroll(EMPTY_INVENTORY, 'tide'), 'fog'), 'tide');
+    expect(ownsScroll(inv, 'tide')).toBe(true);
+    expect(ownsScroll(inv, 'ash')).toBe(false);
+    expect(scrollIds(inv)).toEqual(['tide', 'fog']);
   });
 });

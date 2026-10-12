@@ -1,0 +1,96 @@
+/* Library: the restricted stacks, a bay of shelves per art, and the reading desk */
+.stacks {
+  gap: 18px;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.stack h2,
+.reading-desk h2,
+.lattice h2 {
+  font-family: var(--font-story);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+.stack:not(.open-on-desk) h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* A small ink tab in the art's colour marks which bay this is. */
+.stack:not(.open-on-desk) h2::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--disc, var(--muted));
+}
+.stack.d-taijutsu {
+  --disc: var(--taijutsu);
+}
+.stack.d-ninjutsu {
+  --disc: var(--ninjutsu);
+}
+.stack.d-genjutsu {
+  --disc: var(--genjutsu);
+}
+.stack.d-kenjutsu {
+  --disc: var(--kenjutsu);
+}
+.stack.d-fuuinjutsu {
+  --disc: var(--fuuinjutsu);
+}
+/* The bay: wooden uprights either side and a thick ledge the scrolls lie on. */
+.shelf {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 8px 10px;
+  background: var(--grain-ink), var(--raise);
+  border-left: 6px solid var(--wood);
+  border-right: 6px solid var(--wood);
+  border-bottom: 8px solid var(--wood);
+  border-radius: var(--radius-sm);
+}
+.lattice {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 14px;
+  background: var(--grain), var(--surface);
+  border: 6px solid var(--wood);
+  border-radius: var(--radius);
+  outline: 1px solid var(--line);
+}
+.lattice-seal {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--seal);
+  border-radius: var(--radius-sm);
+  color: var(--seal);
+  font-family: var(--font-story);
+  font-size: 1.3rem;
+  transform: rotate(-6deg);
+}
+.reading-desk {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px 12px;
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-bottom: 6px solid var(--wood);
+  border-radius: var(--radius);
+}
+.hs-desk {
+  right: 3%;
+  top: 24%;
+}

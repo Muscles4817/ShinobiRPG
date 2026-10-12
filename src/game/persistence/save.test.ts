@@ -130,6 +130,27 @@ describe('persistence', () => {
     expect(people.progress.goran).toBeUndefined();
   });
 
+  it('keeps techniques known before ranks, the ones above your grade unstable', () => {
+    const game = newGame();
+    const known = [...game.techniques.known, 'crescent-drop', 'ember-breath'];
+    const { unstable: _u, ...oldBook } = { ...game.techniques, known };
+    const raw = JSON.stringify({ version: 19, state: { ...game, techniques: oldBook } });
+    const loaded = deserialize(raw);
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.techniques.known).toEqual(known);
+    // Grade E in both arts: the C and the D technique are beyond it, the starters are not.
+    expect(loaded.value.techniques.unstable).toEqual(['crescent-drop', 'ember-breath']);
+  });
+
+  it('gives a save from before owned scrolls an empty scroll case', () => {
+    const game = newGame();
+    const { scrolls: _s, ...oldInventory } = game.inventory;
+    const raw = JSON.stringify({ version: 22, state: { ...game, inventory: oldInventory } });
+    const loaded = deserialize(raw);
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.inventory).toEqual({ ...oldInventory, scrolls: {} });
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);
