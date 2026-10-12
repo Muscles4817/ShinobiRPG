@@ -885,6 +885,36 @@ These were folded into the D2 discussion. Where each landed:
   ones a rank and talent. Pacing: over a month, the focused player's fighting power goes 6.6 to
   8.7 and taijutsu 8 to 11.5; teammates go about 7.2 to 9.5, their specialty about +3.5
   (asserted: more than 1.5, and within 25% of the player's fighting power).
+- 3.3/3.4: teachers and "train with". `PersonDef.teacher` (`TeacherProfile`, `content/teachers.ts`):
+  a `quirk` (patient 1.1, harsh 1.2 with half the bond, natural 1.3, distracted 0.8), optional
+  `steers` (`focus` specialty or weakest, `freeAtStage`), `teaches` (moved from
+  `SenseiProfile`), optional `sessionsPerWeek` (by rank: genin 7, chūnin 2, jōnin and kage 1) and
+  a `price` (`PriceTemplate`: bond stage, ryo a session, a mission finished once, a favour, or
+  `all` of distinct kinds; each with the teacher's own `line`). A favour is done by a
+  conversation reply carrying its id (`ConversationChoice.favour`). `validateTeachers` checks
+  techniques, missions, favours both ways, stages, sessions and that every sensei has a profile;
+  every sensei in both packs has one (one of each price kind per pack). `trainWith { personId,
+statId }` (`game/actions/trainWith.ts`): at a training place, anyone ranked shinobi who is
+  there offers the stats they are ahead of you in (by value; reserves excepted); a session is
+  `sessionGains` (1.5 in the stat, plus 0.6 in an art's support stat) through `growCharacter`
+  with their values as `teachers` (the 2.4 grade-gap rule) and `teacher` = rank factor (genin
+  0.6, chūnin 0.85, jōnin 1, kage 1.2) × quirk (`game/people/teachingFactor.ts`); aptitude and
+  condition come from `growthFor` as for any session. 30 energy, two slots, +3 bond (+6 with your
+  sensei; a harsh teacher half), ryo paid; a genin practises the same gains (`trainPerson`).
+  Sessions are counted per teacher per calendar week (`people.taught`, `weekOf`), one a day.
+  Profile-less shinobi ask a bond stage by rank above yours (same rank 1, +1 2, +2 3, +3 4). The
+  `lesson` action is gone: your sensei is a teacher with no price, once a week, who comes to the
+  training ground for you by day, and whose session keeps the lesson report card; teammates'
+  weekly lessons use the same rule against the sensei's stats (`LESSON_TEACHER` is gone). The
+  training page's "Train with someone here" lists who's present (sensei first, then by teaching
+  factor; three shown, the rest folded): manner, price slip with met/not-yet stamps, a tile per
+  stat with their grade over yours, the one shared reason when something stops every tile, and
+  the stats they won't teach yet folded with why. Save v20 turns `team.lastLessonDay` into the
+  sensei's `people.taught` entry and adds `people.favours` and `board.completed` (jobs finished at
+  least once, recorded from now on). Pacing: the focused player trains with the sensei whenever
+  it's on offer and with any genin ahead in their focus; taijutsu reaches C on day 59 (drilling
+  alone, day 73). The window is now 60 ± 10, and a new assertion holds the teacher run at least
+  seven days ahead of the solo one.
 
 ### Decisions made during the run
 
@@ -1059,3 +1089,21 @@ These were folded into the D2 discussion. Where each landed:
   ahead (asserted in `peerGrowth.test.ts`).
 - 3.2: the support stat per discipline and the lesson's gains moved from `actions/lesson.ts` to
   `people/regimen.ts`, shared by your lesson and your teammates'.
+- 3.3: a profile's `price` is waived for your own sensei, not optional; a teacher with no profile
+  uses defaults (no quirk, no steering, sessions and a bond price by rank). Civilians never teach.
+- 3.3: a favour is a flag set by a conversation reply; the pack's person-specific conversations
+  come first, so the ask comes up the first time you talk. "Bring an item" waits for items that
+  can be given.
+- 3.3: no record of finished jobs existed, so `board.completed` starts empty on old saves: a
+  mission price counts jobs finished from v20 on.
+- 3.4: "ahead of you" is by value, not grade (an equal-grade teacher a little ahead gives the
+  1.25 × solo of the rule). A steering teacher picks their specialty when they're ahead in it,
+  else (or with `focus: 'weakest'`) your lowest stat among those they're ahead in, skipping a
+  known void art.
+- 3.4: your sensei makes time for you: they count as at the training ground whenever they are in
+  the village from morning to evening, so a sensei whose schedule never passes the ground (Yomi,
+  Ito, Asuma) can still give the weekly lesson. Others must actually be there.
+- 3.4: weekly allowances use calendar weeks (days 1–7, 8–14…), not seven days since the last
+  session, so "Your next lesson is in N days" counts to the week's turn.
+- 3.4: a session is two slots and 30 energy, like the lesson was; the support-stat gain uses the
+  teacher's value there too, so a specialist who is weaker in it teaches it almost nothing.
