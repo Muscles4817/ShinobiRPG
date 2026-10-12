@@ -33,9 +33,12 @@ export function enterForest(state: GameState, ctx: GameContext): GameState {
   if (!here || here.run.progress?.kind !== 'survival') return state;
   const def = ctx.content.missions.require(here.stage.missionId);
   const run = { ...here.run, progress: { kind: 'survival' as const, started: true } };
-  const started = adjust(spendTime({ ...withRun(state, run), mission: startRun(def) }, def.slots, ctx), {
-    energy: -def.energyCost,
-  });
+  const started = adjust(
+    spendTime({ ...withRun(state, run), mission: startRun(def) }, def.slots, ctx),
+    {
+      energy: -def.energyCost,
+    },
+  );
   return log(started, { heading: here.stage.name, text: def.summary, tone: 'info' });
 }
 
@@ -84,4 +87,3 @@ export function noteForestFight(
   const down = allies.some((health) => health <= 0);
   return markConduct(state, down ? 'teammate-down' : 'team-standing');
 }
-

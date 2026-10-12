@@ -97,6 +97,17 @@ export {
 } from './views/scene';
 export { combatLog, type CombatLogLine } from './views/combatLog';
 export {
+  examScene,
+  type ConductLine,
+  type ExamChoice,
+  type ExamScene,
+  type ExamStageMark,
+  type ExamVerdict,
+} from './views/exam';
+export { examNotice, type ExamEntry, type ExamNotice, type ExamTeammate } from './views/examNotice';
+export { promotionScene, type PromotionScene } from './views/promotion';
+export type { Unlock } from './exam/unlocks';
+export {
   encounterScene,
   type ApproachCard,
   type EncounterFoe,

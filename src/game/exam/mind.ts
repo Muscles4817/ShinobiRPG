@@ -116,7 +116,10 @@ export function mindQuestion(
 ): { readonly stage: MindStageDef; readonly question: MindQuestion | null } | null {
   const { stage, run } = here;
   if (stage?.kind !== 'mind' || run.progress?.kind !== 'mind') return null;
-  return { stage, question: run.progress.final ? null : (stage.questions[run.progress.question] ?? null) };
+  return {
+    stage,
+    question: run.progress.final ? null : (stage.questions[run.progress.question] ?? null),
+  };
 }
 
 /** Every way of answering the current question, with its odds and what it needs. */
@@ -159,6 +162,34 @@ function outcome(text: string): MissionNote {
   return { kind: 'outcome', text };
 }
 
+interface Answer {
+  readonly plan: MindPlan;
+  readonly stage: MindStageDef;
+  readonly right: boolean;
+  readonly caught: boolean;
+}
+
+/** The run with a question answered: its notes, the tally, and a strike if a proctor saw. */
+function afterAnswer(run: ExamRun, { plan, stage, right, caught }: Answer): ExamRun {
+  const progress = run.progress;
+  if (progress?.kind !== 'mind') return run;
+  const notes: MissionNote[] = [
+    { kind: 'choice', text: plan.label },
+    { kind: 'roll', stat: plan.stat, chance: plan.chance, success: right },
+    ...(caught ? [{ kind: 'story' as const, text: stage.caught }] : []),
+  ];
+  const marked = caught ? withConduct(run, conductMark('caught-cheating')) : run;
+  return {
+    ...withNotes(marked, ...notes),
+    progress: {
+      ...progress,
+      question: progress.question + 1,
+      correct: progress.correct + (right ? 1 : 0),
+      strikes: progress.strikes + (caught ? 1 : 0),
+    },
+  };
+}
+
 /** Answers the current question the chosen way (already checked open). */
 export function answerQuestion(
   state: GameState,
@@ -169,30 +200,17 @@ export function answerQuestion(
   const here = examHere(state, ctx);
   const at = here && mindQuestion(here);
   const plan = mindPlans(state, ctx).find((p) => p.id === approach);
-  const progress = here?.run.progress;
-  if (!here || !at?.question || !plan || progress?.kind !== 'mind') return state;
+  if (!here || !at?.question || !plan) return state;
   const answered = rng.chance(plan.chance);
   const caught = plan.risk > 0 && rng.chance(plan.risk);
-  const notes: MissionNote[] = [
-    { kind: 'choice', text: plan.label },
-    { kind: 'roll', stat: plan.stat, chance: plan.chance, success: answered && !caught },
-    ...(caught ? [{ kind: 'story' as const, text: at.stage.caught }] : []),
-  ];
-  const strikes = progress.strikes + (caught ? 1 : 0);
-  const marked = caught ? withConduct(here.run, conductMark('caught-cheating')) : here.run;
-  const run: ExamRun = {
-    ...withNotes(marked, ...notes),
-    progress: {
-      ...progress,
-      question: progress.question + 1,
-      correct: progress.correct + (answered && !caught ? 1 : 0),
-      strikes,
-    },
-  };
+  const run = afterAnswer(here.run, { plan, stage: at.stage, right: answered && !caught, caught });
+  const progress = run.progress;
+  const strikes = progress?.kind === 'mind' ? progress.strikes : 0;
+  const asked = progress?.kind === 'mind' ? progress.question : 0;
   if (strikes >= MAX_STRIKES) {
     return withRun(state, endRun(withNotes(run, outcome(at.stage.disqualified)), 'disqualified'));
   }
-  if (progress.question + 1 >= at.stage.questions.length) {
+  if (asked >= at.stage.questions.length) {
     return afterLastQuestion(state, ctx, run, at.stage);
   }
   return withRun(state, run);
@@ -206,6 +224,9 @@ export function answerFinal(state: GameState, ctx: GameContext, stay: boolean): 
   if (!here || !at || !final) return state;
   const said = withNotes(here.run, { kind: 'choice', text: stay ? final.stay : final.leave });
   if (!stay) return withRun(state, endRun(withNotes(said, outcome(final.left)), 'walked-out'));
-  const stayed = withNotes(withConduct(said, conductMark('stayed-for-final')), outcome(final.stayed));
+  const stayed = withNotes(
+    withConduct(said, conductMark('stayed-for-final')),
+    outcome(final.stayed),
+  );
   return markPaper(state, ctx, stayed, at.stage);
 }

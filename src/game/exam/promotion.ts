@@ -52,7 +52,10 @@ export function leaveExam(state: GameState, ctx: GameContext): GameState {
     tone: verdict.promoted ? 'success' : 'info',
     chips: [
       chip(`${verdict.roundsWon} bouts won`, 'gain'),
-      chip(`Conduct ${verdict.conduct >= 0 ? '+' : ''}${verdict.conduct}`, verdict.conduct >= 0 ? 'gain' : 'cost'),
+      chip(
+        `Conduct ${verdict.conduct >= 0 ? '+' : ''}${verdict.conduct}`,
+        verdict.conduct >= 0 ? 'gain' : 'cost',
+      ),
     ],
   });
 }
@@ -109,7 +112,10 @@ export function acceptPromotion(state: GameState, ctx: GameContext): GameState {
   };
   return log(raised, {
     heading: `Promoted to ${RANK_LABELS[ceremony.rank]}`,
-    text: unlocks.length > 0 ? `It opens: ${unlocks.map((u) => u.heading.toLowerCase()).join(', ')}.` : 'A new rank.',
+    text:
+      unlocks.length > 0
+        ? `It opens: ${unlocks.map((u) => u.heading.toLowerCase()).join(', ')}.`
+        : 'A new rank.',
     tone: 'success',
     chips: [chip(RANK_LABELS[ceremony.rank], 'gain'), ...(vest ? [chip(vest.name, 'gain')] : [])],
   });

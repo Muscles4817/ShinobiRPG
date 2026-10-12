@@ -33,7 +33,10 @@ export const EXAMS: readonly ExamDef[] = [
         intro:
           'Four questions, one hour, and a proctor at every window. "Five eyes on each of you," the head proctor says. "Be caught twice and your whole team goes home."',
         questions: [
-          { text: 'A spirit lantern burns blue in a dry wind. Which way did it come?', difficulty: 5 },
+          {
+            text: 'A spirit lantern burns blue in a dry wind. Which way did it come?',
+            difficulty: 5,
+          },
           { text: 'Plot the arc of a kunai thrown from a moving barge.', difficulty: 7 },
           { text: 'Decode the cipher on the back of the page.', difficulty: 9 },
           { text: 'Name the seal that binds a wraith to running water.', difficulty: 11 },

@@ -14,7 +14,9 @@ import { RecordScreen } from './RecordScreen';
 import { CombatScene } from './scenes/CombatScene';
 import { ConversationScene } from './scenes/ConversationScene';
 import { EncounterScene } from './scenes/EncounterScene';
+import { ExamScene } from './scenes/ExamScene';
 import { MissionScene } from './scenes/MissionScene';
+import { PromotionScene } from './scenes/PromotionScene';
 import { TeamScene } from './scenes/TeamScene';
 import { JutsuScreen } from './YouScreens';
 import { ShinobiScreen } from './ShinobiScreen';
@@ -89,6 +91,10 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
       return <EncounterScene {...props} />;
     case 'mission':
       return <MissionScene {...props} />;
+    case 'exam':
+      return <ExamScene {...props} />;
+    case 'promotion':
+      return <PromotionScene {...props} />;
     case 'conversation':
       return <ConversationScene {...props} />;
     case 'team':
@@ -97,8 +103,8 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
 }
 
 /**
- * Routes between the three layers: scenes (fights, missions, talks, team assignment) take
- * the whole screen; otherwise the dock tab decides, and "Here" shows the village or a place.
+ * Routes between the three layers: scenes (fights, missions, exams, ceremonies, talks, team
+ * assignment) take the whole screen; otherwise the dock tab decides, and "Here" shows the village or a place.
  * A person's sheet can open over any tab.
  */
 export function GameScreen({ session, ctx, state }: GameScreenProps) {

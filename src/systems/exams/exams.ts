@@ -103,12 +103,7 @@ export interface ExamDef {
 
 /** Why a run ended before the last stage was done. */
 export type ExamExit =
-  | 'failed-mind'
-  | 'disqualified'
-  | 'walked-out'
-  | 'no-token'
-  | 'withdrew'
-  | 'beaten';
+  'failed-mind' | 'disqualified' | 'walked-out' | 'no-token' | 'withdrew' | 'beaten';
 
 /** Where the run stands inside its current stage. */
 export type StageProgress =
@@ -246,7 +241,12 @@ export function boutWon(
   if (progress?.kind !== 'tournament') return { run, champion: false };
   const roundsWon = progress.roundsWon + 1;
   const champion = progress.round + 1 >= stage.rivals.length;
-  const next: StageProgress = { ...progress, round: progress.round + 1, roundsWon, fighting: false };
+  const next: StageProgress = {
+    ...progress,
+    round: progress.round + 1,
+    roundsWon,
+    fighting: false,
+  };
   return { run: { ...run, roundsWon, progress: next }, champion };
 }
 

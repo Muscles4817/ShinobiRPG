@@ -5,7 +5,7 @@ import { MAX_HEALTH } from '@/systems/vitals';
 
 import { PLAYER_COMBATANT_ID } from './combatants';
 import type { GameContext } from './context';
-import { fieldTeamIds } from './exam/state';
+import { fieldTeamIds } from './exam/fieldTeam';
 import { adjust, chip, log } from './ops';
 import { requirePerson } from './people/cast';
 import { companionCombatant, senseiCombatant } from './people/companions';

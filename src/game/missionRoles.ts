@@ -2,7 +2,7 @@ import type { CheckApproach } from '@/systems/missions';
 import type { StatId } from '@/systems/stats';
 
 import type { GameContext } from './context';
-import { fieldTeamIds } from './exam/state';
+import { fieldTeamIds } from './exam/fieldTeam';
 import { activeMission } from './missionFlow';
 import { requirePerson } from './people/cast';
 import { personStats } from './people/progress';

@@ -35,7 +35,8 @@ function whenNext(state: GameState, ctx: GameContext): string {
 function withReplacements(state: GameState, replacements: readonly Replacement[]): GameState {
   if (replacements.length === 0) return state;
   const bonds = { ...state.people.bonds };
-  for (const r of replacements) bonds[r.leaving] = addPoints(bondOf(state, r.leaving), -REPLACEMENT_BOND_HIT);
+  for (const r of replacements)
+    bonds[r.leaving] = addPoints(bondOf(state, r.leaving), -REPLACEMENT_BOND_HIT);
   return { ...state, people: { ...state.people, bonds } };
 }
 
@@ -121,7 +122,9 @@ export const examContinue: ActionHandler<ActionOf<'examContinue'>> = {
 export const acceptPromotion: ActionHandler<ActionOf<'acceptPromotion'>> = {
   check(state) {
     if (!state.exams.ceremony) return 'There is no ceremony waiting.';
-    return state.combat || state.mission || state.exams.run ? 'Finish what you are doing first.' : null;
+    return state.combat || state.mission || state.exams.run
+      ? 'Finish what you are doing first.'
+      : null;
   },
   perform(state, _action, ctx) {
     return promoteNow(state, ctx);

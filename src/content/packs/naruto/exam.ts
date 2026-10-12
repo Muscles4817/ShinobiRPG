@@ -34,7 +34,10 @@ export const EXAMS: readonly ExamDef[] = [
           'Ibiki Morino stands at the front with his scars and his clipboard. "Ten points each. Every time a proctor catches you cheating, you lose two. Twice, and your team is out."',
         questions: [
           { text: 'Plot the arc of a shuriken thrown from a moving branch.', difficulty: 5 },
-          { text: 'How far does a decoy kunai have to fall to sound like footsteps?', difficulty: 7 },
+          {
+            text: 'How far does a decoy kunai have to fall to sound like footsteps?',
+            difficulty: 7,
+          },
           { text: 'Decode the cipher at the bottom of the page.', difficulty: 9 },
           { text: 'Name the seal that keeps a summoning contract sealed.', difficulty: 11 },
         ],
@@ -48,7 +51,8 @@ export const EXAMS: readonly ExamDef[] = [
           text: '"The tenth question," Ibiki says. "If you take it and get it wrong, you will never sit this exam again. If you don’t want to take it, leave now with your team."',
           stay: 'Stay in your seat',
           leave: 'Raise your hand and leave',
-          stayed: '"Then... you all pass." Ibiki takes off his headband. The scars beneath are worse.',
+          stayed:
+            '"Then... you all pass." Ibiki takes off his headband. The scars beneath are worse.',
           left: 'Your hand goes up. Your team follows you out of the room.',
         },
       },
@@ -58,7 +62,8 @@ export const EXAMS: readonly ExamDef[] = [
         intro:
           'Anko Mitarashi hands your team a Heaven scroll at the gate of Training Ground 44. "Bring me an Earth scroll and this one to the tower. Try not to die."',
         missionId: FOREST,
-        passed: 'You hand both scrolls in at the tower. Iruka’s face appears in the smoke, grinning.',
+        passed:
+          'You hand both scrolls in at the tower. Iruka’s face appears in the smoke, grinning.',
         failed: 'Five days are up. Your team walks out of the forest with one scroll, or none.',
       },
       {

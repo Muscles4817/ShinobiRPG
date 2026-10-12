@@ -1,6 +1,7 @@
+import { nominationBlocker } from '@/game/exam/entry';
 import { personStats } from '@/game/people/progress';
 import { evenAptitude, fightingPower, STAT_IDS } from '@/systems/stats';
-import { newGame } from '@/test/gameFixtures';
+import { ctx, newGame } from '@/test/gameFixtures';
 
 import {
   dayReached,
@@ -26,6 +27,8 @@ const CHUNIN_READY_DAYS = 60;
 const CHUNIN_READY_WINDOW = 10;
 /** What "ready" means for now: the focused stat at the chūnin grade. */
 const CHUNIN_GRADE = 'C';
+/** The sensei puts the focused player forward for the chūnin exam within this many days of 60. */
+const NOMINATION_WINDOW = 15;
 /** Training with the sensei every week gets the focus to C at least this many days sooner. */
 const TEACHERS_LEAD_DAYS = 7;
 /** Long enough to see the window close. */
@@ -131,5 +134,15 @@ describe('pacing: a focused player', () => {
     );
     expect(solo ?? Infinity).toBeGreaterThanOrEqual(reached + TEACHERS_LEAD_DAYS);
   });
-  it.todo('the focused player is nominated for the chūnin exam inside the window (Phase 6)');
+  it(`the focused player is nominated for the chūnin exam on day ${CHUNIN_READY_DAYS} ± ${NOMINATION_WINDOW}`, () => {
+    let state = ordinaryTalent();
+    const start = state.time.day;
+    let nominated: number | null = null;
+    for (let day = 0; day <= CHUNIN_READY_DAYS + NOMINATION_WINDOW && nominated === null; day++) {
+      if (nominationBlocker(state, ctx) === null) nominated = state.time.day - start;
+      else state = playFocused(state, TAIJUTSU_FOCUS, 1).state;
+    }
+    expect(nominated).not.toBeNull();
+    expect(Math.abs((nominated ?? 0) - CHUNIN_READY_DAYS)).toBeLessThanOrEqual(NOMINATION_WINDOW);
+  });
 });

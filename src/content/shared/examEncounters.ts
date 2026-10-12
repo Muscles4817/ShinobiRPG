@@ -28,7 +28,8 @@ export const EXAM_ENCOUNTERS: readonly EncounterTemplate[] = [
     talkable: true,
     resolve: 10,
     flavour: {
-      terrain: 'A clearing under the canopy, one stream to drink from and a dozen trees to hide in.',
+      terrain:
+        'A clearing under the canopy, one stream to drink from and a dozen trees to hide in.',
       noticed: 'A twig snaps under your foot. Three heads turn at once.',
       slipped: 'You slip from branch to branch above them and lift what you came for.',
       caught: '"There! In the trees!" Kunai come up in three hands.',

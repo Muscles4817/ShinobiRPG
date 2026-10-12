@@ -98,7 +98,8 @@ export const CHUNIN_ENEMIES: readonly EnemyDef[] = [
     id: 'ember-missing-nin',
     kind: 'Rogue',
     name: 'Ember Missing-nin',
-    description: 'Left the village with its secrets and a grudge. Fights like a chūnin, because he was one.',
+    description:
+      'Left the village with its secrets and a grudge. Fights like a chūnin, because he was one.',
     baseStat: 11,
     statBonuses: { ninjutsu: 4, speed: 2, kenjutsu: 2 },
     maxChakra: 70,

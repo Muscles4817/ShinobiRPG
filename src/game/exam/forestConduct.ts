@@ -39,6 +39,8 @@ export function withdrawFromForest(state: GameState, ctx: GameContext): GameStat
 /** After an approach in the forest: a way past that worked without a fight is noted. */
 export function noteWayPast(before: GameState, after: GameState, approach: ApproachId): GameState {
   if (!PEACEFUL.includes(approach) || after.combat) return after;
-  const stillThere = after.mission?.encounter !== undefined && after.mission.stageIndex === before.mission?.stageIndex;
+  const stillThere =
+    after.mission?.encounter !== undefined &&
+    after.mission.stageIndex === before.mission?.stageIndex;
   return stillThere ? after : markConduct(after, 'avoided-fight');
 }

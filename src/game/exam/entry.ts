@@ -104,11 +104,7 @@ export function sittingTeam(state: GameState, replacements: readonly Replacement
   );
 }
 
-function replacementBlocker(
-  state: GameState,
-  ctx: GameContext,
-  r: Replacement,
-): string | null {
+function replacementBlocker(state: GameState, ctx: GameContext, r: Replacement): string | null {
   const leaving = requirePerson(state, ctx, r.leaving);
   if (!teammateBlocker(state, leaving)) return `${leaving.name} is ready to sit it with you.`;
   if (!replacementCandidates(state, ctx).some((p) => p.id === r.joining)) {
