@@ -140,6 +140,9 @@ function missionProblems(pack: ContentPack): string[] {
         if (stage.kind === 'check' && stage.approaches.length === 0) {
           problems.push(`mission "${m.id}" has a check with no approaches`);
         }
+        if (stage.kind === 'check' && !m.withTeam && stage.approaches.some((a) => a.role)) {
+          problems.push(`mission "${m.id}" gives a check a team role but goes without the team`);
+        }
         if (stage.kind === 'combat' && stage.enemyIds.length === 0) {
           problems.push(`mission "${m.id}" has a combat with no enemies`);
         }

@@ -34,6 +34,7 @@ export const EXAM_ENCOUNTERS: readonly EncounterTemplate[] = [
       caught: '"There! In the trees!" Kunai come up in three hands.',
       parley: 'A long look between their leader and yours, then they back off into the green.',
       ambush: 'You drop out of the canopy on top of them.',
+      spotted: 'They were in the branches above you all along. Kunai first, questions never.',
     },
   },
 ];

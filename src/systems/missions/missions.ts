@@ -26,11 +26,19 @@ export const RANK_FOR_MISSION: Readonly<Record<MissionRank, Rank>> = {
 export function isSeniorMission(rank: MissionRank): boolean {
   return rank !== 'D' && rank !== 'C';
 }
+/**
+ * Jobs on a team mission that fall to whoever on the team is best at them: the tracker follows
+ * a trail, the sensor feels for chakra, the medic patches people up.
+ */
+export const MISSION_ROLES = ['tracker', 'sensor', 'medic'] as const;
+export type MissionRole = (typeof MISSION_ROLES)[number];
 
 export interface CheckApproach {
   readonly label: string;
   readonly stat: StatId;
   readonly difficulty: number;
+  /** On a team mission, the teammate best at the stat may take it for you. */
+  readonly role?: MissionRole;
 }
 
 export type MissionStage =
@@ -146,6 +154,8 @@ export type CheckStage = Extract<MissionStage, { kind: 'check' }>;
 export interface CheckChoice {
   readonly stage: CheckStage;
   readonly approach: CheckApproach;
+  /** A teammate who takes the check for you (a mission role), and what they roll with. */
+  readonly hand?: { readonly name: string; readonly value: number };
 }
 
 export interface CheckResolution {
@@ -156,13 +166,14 @@ export interface CheckResolution {
 
 export function resolveCheck(
   run: MissionRun,
-  { stage, approach }: CheckChoice,
+  { stage, approach, hand }: CheckChoice,
   stats: Stats,
   rng: Rng,
 ): CheckResolution {
-  const { success, chance } = rollCheck(stats[approach.stat], approach.difficulty, rng);
+  const value = hand?.value ?? stats[approach.stat];
+  const { success, chance } = rollCheck(value, approach.difficulty, rng);
   const notes: MissionNote[] = [
-    { kind: 'choice', text: approach.label },
+    { kind: 'choice', text: hand ? `${approach.label} (${hand.name})` : approach.label },
     { kind: 'roll', stat: approach.stat, chance, success },
     { kind: 'story', text: success ? stage.success : stage.failure },
   ];

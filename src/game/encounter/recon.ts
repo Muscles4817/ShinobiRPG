@@ -9,11 +9,13 @@ import { adjust, firstBlocker } from '../ops';
 import type { GameState } from '../state';
 import { encounterHere, withEncounter, type EncounterHere } from './current';
 import { senseMeans } from './means';
+import { watchedFor } from './spotted';
 
 /**
  * Recon: watching, tracking, sensing and asking around before choosing how to go in. Each costs
  * something and tests a stat (on team missions, the teammate best at it); success reveals facts,
- * failure puts the foes more on guard. Asking around is paid for and never fails.
+ * failure puts the foes more on guard, and they may spot you. Asking around is paid for and never
+ * fails.
  */
 
 export const OBSERVE_ENERGY = 5;
@@ -147,5 +149,6 @@ export function performRecon(state: GameState, ctx: GameContext, id: ReconId, rn
       : []),
     { kind: 'story', text: success ? SUCCESS[id] : here.flavour.noticed },
   );
-  return payFor({ ...state, mission }, plan.cost);
+  const paid = payFor({ ...state, mission }, plan.cost);
+  return success ? paid : watchedFor(paid, ctx, rng, false);
 }

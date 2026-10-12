@@ -27,6 +27,7 @@ const camp: EncounterTemplate = {
     caught: 'Caught!',
     parley: 'They let you by.',
     ambush: 'You drop on them.',
+    spotted: 'They saw you first.',
   },
 };
 

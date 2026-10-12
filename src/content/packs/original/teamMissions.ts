@@ -16,13 +16,13 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Your sensei sees the three of you off at the gate. "Stay together. That is the whole lesson."',
+        text: 'Your sensei leads the three of you out through the gate. "Stay together. That is the whole lesson."',
       },
       {
         kind: 'check',
         text: 'Fresh boot prints lead off the towpath into the reeds.',
         approaches: [
-          { label: 'Follow the trail', stat: 'perception', difficulty: 9 },
+          { label: 'Follow the trail', stat: 'perception', difficulty: 9, role: 'tracker' },
           { label: 'Guess where they’ll strike next', stat: 'intellect', difficulty: 10 },
         ],
         success: 'You find their camp before they find you.',
@@ -62,6 +62,12 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         approaches: [
           { label: 'Hold your nerve', stat: 'willpower', difficulty: 10 },
           { label: 'See through the illusion', stat: 'genjutsu', difficulty: 10 },
+          {
+            label: 'Feel where the whispers come from',
+            stat: 'perception',
+            difficulty: 10,
+            role: 'sensor',
+          },
         ],
         success: 'You keep your team steady and push through to the shrine.',
         failure: 'One of your teammates wanders off after a voice. You drag them back.',

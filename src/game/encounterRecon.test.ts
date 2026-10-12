@@ -1,5 +1,5 @@
 import { act, ctx, newGame, veteran, withAllStats } from '@/test/gameFixtures';
-import { atEncounter, capable, hardCtx, SURE, withStats } from '@/test/encounterFixtures';
+import { atEncounter, capable, hardCtx, keenEyed, SURE, withStats } from '@/test/encounterFixtures';
 
 import { dispatch } from './dispatch';
 import { OBSERVE_ENERGY, ASK_AROUND_FEE, reconPlans } from './encounter/recon';
@@ -64,7 +64,7 @@ describe('recon', () => {
   });
 
   it('failing puts them on guard, a step at a time, and the looks run out', () => {
-    let s = atEncounter('academy-dropout', capable(hardCtx), hardCtx);
+    let s = atEncounter('academy-dropout', keenEyed(hardCtx), hardCtx);
     expect(s.mission?.encounter?.alertness).toBe('wary');
     s = act(s, { type: 'encounterRecon', recon: 'observe' }, hardCtx);
     expect(s.mission?.encounter?.alertness).toBe('alert');

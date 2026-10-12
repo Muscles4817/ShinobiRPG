@@ -35,6 +35,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
       caught: '"Oi! Who’s that?" A torch swings your way.',
       parley: 'They grumble and spit, but they let you by and melt back into the brush.',
       ambush: 'You drop on them before anyone reaches for a weapon.',
+      spotted: 'A lookout you never saw whistles. They come at you from the brush.',
     },
   },
   {
@@ -57,6 +58,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
       caught: 'It wheels round with a snarl and charges.',
       parley: 'It backs away, hackles up, and slinks off.',
       ambush: 'You are on it before it can turn.',
+      spotted: 'It caught your scent long ago. It bursts out of the undergrowth at you.',
     },
   },
   {
@@ -79,6 +81,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
       caught: '"I see you. Come out, then."',
       parley: 'Their shoulders drop. They hold out their wrists.',
       ambush: 'You strike before they know you are there.',
+      spotted: 'They were watching you all along. They strike first.',
     },
   },
   {
@@ -100,6 +103,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
       caught: 'A whistle shrills. Doors bang open all over the yard.',
       parley: 'A few words, a nod, and the gate is opened for you.',
       ambush: 'You take the guard at the gate before they can shout.',
+      spotted: 'A guard on the roof saw you coming. They rush you before you are ready.',
     },
   },
   {
@@ -121,6 +125,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
       caught: 'The lamps gutter and die. It knows you are here.',
       parley: 'It sighs and thins into the dark.',
       ambush: 'You strike while it is still lost in its grief.',
+      spotted: 'The cold closes round you from behind. It found you first.',
     },
   },
 ];

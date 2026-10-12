@@ -2,6 +2,7 @@
 import { render, screen, within } from '@testing-library/react';
 
 import type { GameState } from '@/game';
+import { atEncounter, capable, hardCtx, withStats } from '@/test/encounterFixtures';
 import { act, ctx, intoFight, newGame, veteran } from '@/test/gameFixtures';
 
 import { CombatScene } from './CombatScene';
@@ -39,6 +40,24 @@ describe('CombatScene (smoke test)', () => {
       within(orders).getByRole('combobox', { name: 'Mark for Team mark' }),
     ).toBeInTheDocument();
     expect(within(orders).getAllByText(/won't take orders from you yet/).length).toBeGreaterThan(0);
+  });
+
+  it('your sensei leads a serious job, fighting beside you and taking no orders', () => {
+    const state = riverFight();
+    const sensei = ctx.content.people.require(state.people.team!.senseiId!);
+    render(<CombatScene ctx={ctx} state={state} perform={() => undefined} />);
+    const team = screen.getByRole('region', { name: 'Your team' });
+    expect(within(team).getByText(sensei.name)).toBeInTheDocument();
+    const orders = screen.getByRole('region', { name: 'Orders' });
+    expect(within(orders).getAllByText(/leads this mission/).length).toBeGreaterThan(0);
+  });
+
+  it('says plainly when foes saw you first', () => {
+    const blind = withStats(capable(hardCtx), { perception: 1 });
+    const state = atEncounter('academy-dropout', blind, hardCtx);
+    render(<CombatScene ctx={hardCtx} state={state} perform={() => undefined} />);
+    expect(screen.getByText(/They saw you first\./)).toBeInTheDocument();
+    expect(screen.getByText('They move first!')).toBeInTheDocument();
   });
 
   it('says once why the cards you could add are blocked, and the round once', () => {

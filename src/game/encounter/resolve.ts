@@ -13,7 +13,7 @@ import {
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
-import { beginCombat, completeIfFinished, failMission, type FightStart } from '../missionFlow';
+import { beginCombat, afterStage, failMission, type FightStart } from '../missionFlow';
 import type { GameState } from '../state';
 import { approachPlans, bribeCost, type ApproachPlan } from './approaches';
 import { encounterHere, withEncounter, type EncounterHere } from './current';
@@ -58,7 +58,7 @@ function getPast(
   const pay = stagePay(here.stage.job, ending.end);
   if (!pay.jobDone) return failMission(state, ctx, UNDONE_REASON, 0);
   const run = withStagePay(advance(here.run, ...ending.notes), pay);
-  return completeIfFinished({ ...state, mission: run }, ctx);
+  return afterStage({ ...state, mission: run }, ctx);
 }
 
 /** Into the fight, with the notes on how it began kept in the story. */

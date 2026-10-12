@@ -77,6 +77,8 @@ export interface EncounterFlavour {
   readonly parley: string;
   /** The first moment of your ambush. */
   readonly ambush: string;
+  /** They saw you first and fell on you. */
+  readonly spotted: string;
 }
 
 /**

@@ -1,5 +1,12 @@
 import { act, ctx, fightOut } from '@/test/gameFixtures';
-import { atEncounter, capable, hardCtx, spying, withStats } from '@/test/encounterFixtures';
+import {
+  atEncounter,
+  capable,
+  hardCtx,
+  keenEyed,
+  spying,
+  withStats,
+} from '@/test/encounterFixtures';
 
 import { dispatch } from './dispatch';
 import { BRIBE_PER_FOE } from './encounter/approaches';
@@ -38,7 +45,7 @@ describe('going in to fight', () => {
     expect(spy.setups[0]?.opening).toBeUndefined();
 
     const hard = spying(hardCtx);
-    let s = atEncounter(ELIMINATE, capable(hard.context), hard.context);
+    let s = atEncounter(ELIMINATE, keenEyed(hard.context), hard.context);
     s = act(s, { type: 'encounterRecon', recon: 'observe' }, hard.context);
     expect(s.mission?.encounter?.alertness).toBe('alert');
     approach(s, 'head-on', hard.context);
@@ -109,7 +116,7 @@ describe('ways past without a fight', () => {
 
   it('a failed sneak is a fight they start', () => {
     const spy = spying(hardCtx);
-    const s = withStats(atEncounter(ESCORT, capable(spy.context), spy.context), { speed: 1 });
+    const s = withStats(atEncounter(ESCORT, keenEyed(spy.context), spy.context), { speed: 1 });
     const caught = approach(s, 'sneak', spy.context);
     expect(caught.combat).not.toBeNull();
     expect(spy.setups[0]?.opening).toEqual({ firstMover: 'enemy' });
@@ -129,7 +136,7 @@ describe('ways past without a fight', () => {
   });
 
   it('talk that fails puts them on guard and can’t be tried again', () => {
-    const s = atEncounter(ELIMINATE, capable(hardCtx), hardCtx);
+    const s = atEncounter(ELIMINATE, keenEyed(hardCtx), hardCtx);
     const laughed = approach(s, 'talk', hardCtx);
     expect(laughed.combat).toBeNull();
     expect(laughed.mission?.encounter).toMatchObject({ alertness: 'alert', tried: ['talk'] });
@@ -141,7 +148,7 @@ describe('ways past without a fight', () => {
 
   it('a threat that doesn’t land starts a fight', () => {
     const spy = spying(hardCtx);
-    const s = atEncounter(ELIMINATE, capable(spy.context), spy.context);
+    const s = atEncounter(ELIMINATE, keenEyed(spy.context), spy.context);
     expect(approach(s, 'intimidate', spy.context).combat).not.toBeNull();
     expect(spy.setups[0]?.opening).toEqual({ firstMover: 'enemy' });
   });

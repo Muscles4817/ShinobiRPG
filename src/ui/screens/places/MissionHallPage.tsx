@@ -89,6 +89,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
                 open.fightLikely && <span className="chip harm">Fight likely</span>
               )}
               {open.withTeam && <span className="chip gain">With your team</span>}
+              {open.sensei && <span className="chip gain">{open.sensei} leads it</span>}
             </span>
             {open.opposition && <Opposition opposition={open.opposition} perform={perform} />}
             {open.blocker && <p className="blocker">{open.blocker}</p>}
