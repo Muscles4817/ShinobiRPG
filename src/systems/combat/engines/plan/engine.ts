@@ -79,7 +79,10 @@ function options(state: PlanState): CombatOption[] {
     const player = playerOf(state);
     const begin = state.bout === 1 ? 'Begin the fight' : `Begin round ${state.bout}`;
     return [
-      ...tableOptions(player),
+      ...tableOptions(
+        player,
+        state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+      ),
       ...teamOptions(state),
       { id: 'begin', label: begin, detail: '', kind: 'continue' },
       escape,
