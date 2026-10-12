@@ -129,10 +129,14 @@ function factValue(here: EncounterHere, fact: EncounterFact): string {
   }
 }
 
+function lowerFirst(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
 function factHint(here: EncounterHere, fact: EncounterFact): string {
   const ways = here.template.recon.filter((r) => RECON_REVEALS[r.id].includes(fact));
   return ways.length > 0
-    ? `Unknown. ${ways.map((r) => r.label).join(' or ')}.`
+    ? `Unknown. ${ways.map((r, i) => (i === 0 ? r.label : lowerFirst(r.label))).join(' or ')}.`
     : 'Unknown. You’ll find out when it starts.';
 }
 
@@ -202,8 +206,10 @@ export function payNote(job: JobKind, approach: ApproachId): string | null {
 }
 
 function approachCard(here: EncounterHere, plan: ApproachPlan): ApproachCard {
+  // A closed way shows why, not odds it can't use.
+  const odds = plan.blocker === null ? percent(plan.chance) : '';
   const detail = plan.stat
-    ? `${STAT_INFO[plan.stat].label} ${percent(plan.chance)}`
+    ? odds && `${STAT_INFO[plan.stat].label} ${odds}`
     : plan.ryo > 0
       ? `${plan.ryo} ryo`
       : FIXED_DETAIL[plan.id];
