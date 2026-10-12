@@ -162,6 +162,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'chakra-suppression-seal',
           'five-elements-seal',
           'great-fireball',
+          'amaterasu',
           'sixty-four-palms',
           'shadow-neck-bind',
           'human-bullet-tank',

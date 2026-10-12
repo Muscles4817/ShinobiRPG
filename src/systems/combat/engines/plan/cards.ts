@@ -6,6 +6,7 @@ import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { carried } from '../../rules/items';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
+import { trumpSpent } from '../../rules/trumps';
 import { hasVerb, isHarmful, techniquePower } from '../../rules/verbs';
 import { plainSlots, type CardId, type Loadout, type PlanFighter, type Slot } from './state';
 
@@ -198,7 +199,7 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
     case 'dispel':
       return `Break illusions, ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':
-      return `${techniqueWords(card.technique)}, ${chakraCost(fighter, card.technique)} chakra`;
+      return `${techniqueWords(card.technique)}, ${chakraCost(fighter, card.technique)} chakra${card.technique.oncePerFight ? ', once per fight' : ''}`;
     case 'item':
       return toolDetail(card.item);
   }
@@ -271,5 +272,6 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu') return !isReaction(card);
+  if (trumpSpent(fighter, card.technique)) return false;
   return fighter.sealed === 0 && chakraCost(fighter, card.technique) <= fighter.chakra;
 }

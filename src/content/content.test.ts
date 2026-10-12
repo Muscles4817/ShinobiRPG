@@ -42,6 +42,15 @@ describe('content validation', () => {
     expect(validateContent(inert)).toContain(`technique "${first!.id}" has no effects`);
   });
 
+  it('detects an after-cost on a technique that is not a trump card', () => {
+    const [first, ...rest] = ORIGINAL_PACK.techniques;
+    const afterCost = { kind: 'hospital', days: 2 } as const;
+    const priced = { ...ORIGINAL_PACK, techniques: [{ ...first!, afterCost }, ...rest] };
+    expect(validateContent(priced)).toContain(
+      `technique "${first!.id}" has an after-cost but is not once per fight, or its cost is not positive`,
+    );
+  });
+
   it('detects activities no place offers', () => {
     const [home, ...rest] = ORIGINAL_PACK.locations;
     const withoutMarket = {

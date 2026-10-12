@@ -1,6 +1,7 @@
 import { round1 } from '@/core';
 import { unmetRequirements, type StatDelta, type StatId, type Stats } from '@/systems/stats';
 
+import type { CostTemplate } from './costs';
 import type { TechniqueEffect } from './effects';
 
 export const DISCIPLINES = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
@@ -23,6 +24,10 @@ export interface TechniqueDef {
   readonly difficulty: number;
   /** Only members of this clan may learn it. */
   readonly clan?: string;
+  /** A trump card: usable once per fight. */
+  readonly oncePerFight?: true;
+  /** What using it costs its user once the fight is over (validated: trump cards only). */
+  readonly afterCost?: CostTemplate;
 }
 
 /** Techniques the character has mastered, plus partial study progress on others. */

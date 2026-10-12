@@ -6,6 +6,7 @@ import { strikeDamage } from '../../rules/damage';
 import { revealOnAttack } from '../../rules/items';
 import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
+import { afterUsing } from '../../rules/trumps';
 import { cardId, isOffence, type Card } from './cards';
 import { chooseCard } from './choose';
 import { intendedCard } from './intent';
@@ -36,6 +37,8 @@ const CHAKRA_REGEN = 2;
 const THROW_SCALE = 0.6;
 const STEP_BASE = 0.55;
 const STEP_PER_SPEED = 0.04;
+/** Initiative the side that moved first gets in exchange 1: more than any speed gap. */
+const FIRST_MOVER_LEAD = 1000;
 
 /** Allies focus the weakest enemy; enemies pick at random. Hidden foes are skipped. */
 function targetFor(fighters: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
@@ -96,8 +99,11 @@ function play(round: Round, turn: Turn, card: Card): Round {
       return search(round, turn);
     case 'dispel':
       return dispel(round, turn);
-    case 'jutsu':
-      return useJutsu(round, turn, card.technique);
+    case 'jutsu': {
+      const trumpsUsed = afterUsing(turn.actor, card.technique);
+      const marked = { ...round, fighters: patch(round.fighters, turn.actor.id, { trumpsUsed }) };
+      return useJutsu(marked, turn, card.technique);
+    }
     case 'item':
       return useTool(round, turn, card.item);
     case 'strike':
@@ -163,9 +169,14 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
 
 /** Resolves one exchange. */
 export function resolveExchange(state: PlanState, rng: Rng): PlanState {
+  // Whoever moved first (the fight's opening) acts first in the first exchange.
+  const ahead = state.round === 1 ? state.firstMover : undefined;
   const order = state.fighters
     .filter(alive)
-    .map((f) => ({ id: f.id, initiative: f.attributes.speed + rng.next() * 4 }))
+    .map((f) => ({
+      id: f.id,
+      initiative: f.attributes.speed + rng.next() * 4 + (f.side === ahead ? FIRST_MOVER_LEAD : 0),
+    }))
     .sort((a, b) => b.initiative - a.initiative);
   const start: Round = {
     number: state.round,

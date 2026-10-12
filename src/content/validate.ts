@@ -1,4 +1,4 @@
-import { DISCIPLINES } from '@/systems/techniques';
+import { costIsSane, DISCIPLINES } from '@/systems/techniques';
 
 import { duplicateIds } from './catalog';
 import { validatePeople } from './validatePeople';
@@ -153,6 +153,12 @@ function numberProblems(pack: ContentPack): string[] {
     ...pack.techniques
       .filter((t) => t.chakraCost < 0 || t.difficulty <= 0 || t.effects.some((e) => e.power <= 0))
       .map((t) => `technique "${t.id}" has non-positive numbers`),
+    ...pack.techniques
+      .filter((t) => t.afterCost && (!t.oncePerFight || !costIsSane(t.afterCost)))
+      .map(
+        (t) =>
+          `technique "${t.id}" has an after-cost but is not once per fight, or its cost is not positive`,
+      ),
     ...pack.enemies
       .filter((e) => e.healthScale !== undefined && e.healthScale <= 0)
       .map((e) => `enemy "${e.id}" needs a positive health scale`),

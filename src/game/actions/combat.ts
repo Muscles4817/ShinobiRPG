@@ -1,4 +1,5 @@
 import { afterPouch } from '../combatants';
+import { applyFightCosts } from '../fightCosts';
 import { engineFor, rememberPlan } from '../fightStyle';
 import { resolveCombat } from '../missionFlow';
 import { resolveSpar } from '../sparFlow';
@@ -26,8 +27,9 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const outcome = engine.outcome(combat);
     if (!outcome) return { ...state, combat };
     const ended = afterPouch(rememberPlan({ ...state, combat }, engine.id, outcome), outcome);
-    return state.people.sparringWith
+    const resolved = state.people.sparringWith
       ? resolveSpar(ended, outcome, ctx)
       : resolveCombat(ended, outcome, ctx);
+    return applyFightCosts(resolved, outcome);
   },
 };

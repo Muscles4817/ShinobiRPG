@@ -92,4 +92,36 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     difficulty: 90,
     clan: 'shimenawa',
   },
+  {
+    id: 'hibana-kiln-heart',
+    name: 'Kiln Heart',
+    description:
+      'Stoke your own chakra like a kiln until it roars out as fire. It leaves you cold for days.',
+    discipline: 'ninjutsu',
+    element: 'fire',
+    effects: [{ verb: 'damage', power: 32 }],
+    chakraCost: 24,
+    requirements: { ninjutsu: 20, stamina: 16 },
+    difficulty: 150,
+    clan: 'hibana',
+    oncePerFight: true,
+    afterCost: { kind: 'exhaustion', days: 3 },
+  },
+  {
+    id: 'last-lantern',
+    name: 'The Last Lantern',
+    description:
+      'Open the Spirit Sight all the way and show the enemy the road the dead walk. Your eyes pay.',
+    discipline: 'genjutsu',
+    effects: [
+      { verb: 'damage', power: 28 },
+      { verb: 'daze', power: 14 },
+    ],
+    chakraCost: 26,
+    requirements: { genjutsu: 22, perception: 20, willpower: 18 },
+    difficulty: 160,
+    clan: 'tokaku',
+    oncePerFight: true,
+    afterCost: { kind: 'injury', stat: 'perception', amount: 3, days: 7 },
+  },
 ];

@@ -11,10 +11,12 @@ import type {
 import { alive, hasPerk, viewOf } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
+import { costsOwed } from '../../rules/trumps';
 import { defaultLoadout, slotLimit } from './cards';
 import { intentLine, rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withSlots } from './legacy';
 import { rememberedLoadout } from './memory';
+import { openFight } from './opening';
 import { decide, resolveExchange } from './round';
 import {
   decode,
@@ -36,7 +38,6 @@ import { editPlan, tableOptions } from './table';
  * worked and re-plan.
  */
 
-const START_RANGE = 'mid';
 /** Exchanges per round; the cards can be changed between rounds. */
 export const ROUND_EXCHANGES = 4;
 
@@ -152,23 +153,26 @@ export function createPlanEngine(): CombatEngine {
 
     start(setup, rng) {
       const names = setup.enemies.map((e) => e.name).join(', ');
-      const fighters = initialFighters(setup).map((f) => ({
+      const { fighters, range, lines } = openFight(initialFighters(setup), setup.opening);
+      const planned = fighters.map((f) => ({
         ...f,
         loadout: (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ?? defaultLoadout(f),
       }));
-      const table = { fighters, range: START_RANGE, exchange: 0 } as const;
+      const table = { fighters: planned, range, exchange: 0 };
+      const firstMover = setup.opening?.firstMover;
       const state: PlanState = {
         phase: 'loadout',
         round: 1,
         bout: 1,
         exchange: 0,
-        fighters,
-        range: START_RANGE,
+        fighters: planned,
+        range,
         seen: {},
         intents: rollIntents(table, rng),
-        log: [setup.intro ?? `${names} square up. How will you fight?`],
+        log: [setup.intro ?? `${names} square up. How will you fight?`, ...lines],
         result: null,
         canFlee: setup.canFlee,
+        ...(firstMover === undefined ? {} : { firstMover }),
       };
       return encode(state);
     },
@@ -204,6 +208,7 @@ export function createPlanEngine(): CombatEngine {
         player: { health: player.health, chakra: player.chakra },
         items: itemsLeft(player),
         plan: player.loadout,
+        costs: costsOwed(player),
       };
     },
   };
