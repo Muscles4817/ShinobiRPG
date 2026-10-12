@@ -157,8 +157,8 @@ Mechanics:
   limit, then tapers linearly to a floor of 15%, and the stat is clamped at its limit.
   At the limit the stat shows "Plateau" and the drill card says what breaks it.
   Specialising is no longer taxed until the wall.
-- **Breakthroughs** raise one stat's limit to the next grade top. First-pass sources (no
-  preference was given, so these are my choices):
+- **Breakthroughs** raise one stat's limit to the next grade top. Proposed first-pass sources
+  (not yet discussed):
   1. **Trials.** One per stat group (body, mind, arts), unlocked when any stat in that
      group is plateaued. A risky scene at a training place: costs a day and energy, and
      succeeds by chance, helped by willpower, grit or hard-work traits, today's meal and
