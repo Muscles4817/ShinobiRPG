@@ -27,6 +27,7 @@ const ROLE_RANKS: Readonly<Record<PersonRole, readonly PersonRank[]>> = {
   sensei: ['jonin'],
   instructor: ['chunin', 'jonin'],
   leader: ['jonin', 'kage'],
+  shinobi: ['chunin', 'jonin', 'kage'],
   villager: ['civilian'],
 };
 

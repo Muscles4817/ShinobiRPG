@@ -20,7 +20,11 @@ export const TONES = [
 ] as const;
 export type Tone = (typeof TONES)[number];
 
-export type PersonRole = 'genin' | 'sensei' | 'instructor' | 'leader' | 'villager';
+/**
+ * What someone does in the village. `leader` covers the kage and clan heads; `shinobi` is a
+ * chūnin, jōnin or legend with no post the game models (guards, examiners, ANBU).
+ */
+export type PersonRole = 'genin' | 'sensei' | 'instructor' | 'leader' | 'shinobi' | 'villager';
 
 /** A person's shinobi rank (as the player's standing names them); villagers are civilians. */
 export type PersonRank = 'civilian' | Exclude<Rank, 'academy'>;

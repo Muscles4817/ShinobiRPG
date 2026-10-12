@@ -24,9 +24,20 @@ export interface Taught {
   readonly percent: number;
 }
 
-/** The next signature technique this teacher will teach you, if any are left. */
-export function nextSignature(state: GameState, teaching: Teaching): string | null {
-  return teaching.teaches.find((id) => !state.techniques.known.includes(id)) ?? null;
+/**
+ * The next signature technique this teacher will teach you, if any are left. A clan's own
+ * techniques stay in the clan: a clan head teaches them only to their own.
+ */
+export function nextSignature(
+  state: GameState,
+  ctx: GameContext,
+  teaching: Teaching,
+): string | null {
+  const forYou = (id: string) => {
+    const clan = ctx.content.techniques.require(id).clan;
+    return clan === undefined || clan === state.character.clanId;
+  };
+  return teaching.teaches.find((id) => !state.techniques.known.includes(id) && forYou(id)) ?? null;
 }
 
 /** A session's progress on the next signature, if the teacher is teaching one yet. */
@@ -35,7 +46,7 @@ export function teachSignature(
   ctx: GameContext,
   teaching: Teaching,
 ): Taught | null {
-  const id = nextSignature(state, teaching);
+  const id = nextSignature(state, ctx, teaching);
   if (!id || stageOf(bondOf(state, teaching.person.id).points) < TEACHES_AT_STAGE) return null;
   const def = ctx.content.techniques.require(id);
   if (state.character.aptitude[def.discipline] <= 0) return null;

@@ -15,6 +15,11 @@ import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { NARUTO_CONVERSATIONS } from './conversations';
 import { CANON_GENIN } from './genin';
+import { CLAN_HEADS } from './clanHeads';
+import { VILLAGE_CHUNIN } from './chunin';
+import { VILLAGE_JONIN } from './jonin';
+import { ROSTER_CONVERSATIONS } from './rosterConversations';
+import { ROSTER_TECHNIQUES } from './rosterTechniques';
 import { SENIOR_GENIN } from './seniorGenin';
 import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
 import { SENSEIS_AND_ELDERS } from './senseis';
@@ -39,7 +44,13 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   startingRyo: 300,
   text: NARUTO_TEXT,
   locations: NARUTO_LOCATIONS,
-  techniques: [...TECHNIQUES, ...CLAN_TECHNIQUES, ...SENSEI_TECHNIQUES, ...COMBO_TECHNIQUES],
+  techniques: [
+    ...TECHNIQUES,
+    ...CLAN_TECHNIQUES,
+    ...SENSEI_TECHNIQUES,
+    ...ROSTER_TECHNIQUES,
+    ...COMBO_TECHNIQUES,
+  ],
   missions: [...MISSIONS, ...TEAM_MISSIONS],
   enemies: ENEMIES,
   training: TRAINING,
@@ -54,8 +65,15 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   injuries: INJURIES,
   ingredients: INGREDIENTS,
   recipes: RECIPES,
-  people: [...SENSEIS_AND_ELDERS, ...CANON_GENIN, ...SENIOR_GENIN],
-  conversations: [...GENERIC_CONVERSATIONS, ...NARUTO_CONVERSATIONS],
+  people: [
+    ...SENSEIS_AND_ELDERS,
+    ...VILLAGE_JONIN,
+    ...CLAN_HEADS,
+    ...VILLAGE_CHUNIN,
+    ...CANON_GENIN,
+    ...SENIOR_GENIN,
+  ],
+  conversations: [...GENERIC_CONVERSATIONS, ...NARUTO_CONVERSATIONS, ...ROSTER_CONVERSATIONS],
   names: NAMES,
   team: TEAM,
   village: VILLAGE,

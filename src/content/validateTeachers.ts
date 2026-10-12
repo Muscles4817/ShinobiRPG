@@ -3,8 +3,9 @@ import type { PriceTemplate, SimplePrice, TeacherProfile } from './teachers';
 import type { ContentPack } from './types';
 
 /**
- * Checks teacher profiles: signatures are real techniques, prices name real jobs and favours
- * someone can actually do, numbers are sane, and every sensei has a profile.
+ * Checks teacher profiles: signatures are real techniques a teacher can actually pass on, the
+ * teacher can be found where people train, prices name real jobs and favours someone can
+ * actually do, numbers are sane, and every sensei has a profile.
  */
 
 /** Friendship stages run 0 (stranger) to 4 (bonded). */
@@ -50,10 +51,30 @@ function teacherProblems(
   for (const id of teacher.teaches) {
     if (!techniqueIds.has(id)) problems.push(`${who} teaches unknown technique "${id}"`);
   }
+  problems.push(...reachProblems(pack, person).map((p) => `${who} ${p}`));
   problems.push(...shapeProblems(teacher).map((p) => `${who} ${p}`));
   const parts = partsOf(teacher.price);
   for (const part of parts) {
     problems.push(...priceProblems(pack, part, favoursDone).map((p) => `${who} ${p}`));
+  }
+  return problems;
+}
+
+/**
+ * A teacher can actually be learned from: they come to a training place at some hour (your
+ * sensei comes to you), and a clan's own techniques are taught only by its members.
+ */
+function reachProblems(pack: ContentPack, person: PersonDef): string[] {
+  const problems: string[] = [];
+  const start = pack.locations.find((l) => l.id === pack.startLocationId);
+  const training = new Set(start?.places.filter((p) => p.kind === 'training').map((p) => p.id));
+  const visits = Object.values(person.schedule).some((id) => id !== null && training.has(id));
+  if (!person.sensei && !visits) problems.push('never comes to a training place');
+  for (const id of person.teacher?.teaches ?? []) {
+    const clan = pack.techniques.find((t) => t.id === id)?.clan;
+    if (clan !== undefined && clan !== person.clanId) {
+      problems.push(`teaches "${id}" but isn’t of the ${clan} clan`);
+    }
   }
   return problems;
 }

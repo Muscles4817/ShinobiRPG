@@ -101,7 +101,7 @@ function teachStat(state: GameState, ctx: GameContext, person: PersonDef, id: St
 }
 
 function signatureOf(state: GameState, ctx: GameContext, teaching: Teaching) {
-  const nextId = nextSignature(state, teaching);
+  const nextId = nextSignature(state, ctx, teaching);
   if (!nextId) return null;
   const def = ctx.content.techniques.require(nextId);
   const stage = stageOf(bondOf(state, teaching.person.id).points);

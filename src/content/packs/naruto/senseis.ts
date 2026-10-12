@@ -6,6 +6,7 @@ import {
   ANKO_TEACHER,
   ASUMA_TEACHER,
   GUY_TEACHER,
+  IRUKA_TEACHER,
   KAKASHI_TEACHER,
   KURENAI_TEACHER,
 } from './teachers';
@@ -213,8 +214,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       morning: 'academy',
       afternoon: 'mission-desk',
       evening: 'shopping-district',
-      night: null,
+      night: 'training-grounds',
     },
+    teacher: IRUKA_TEACHER,
   },
   {
     id: 'hiruzen',
