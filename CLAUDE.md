@@ -115,7 +115,7 @@ ui ──► game ──► content ──► systems ──► core
     teammate is always a fair match. Your sensei teaches weekly (`lesson`) and hands over
     their `teaches` techniques once your bond is high enough.
 16. **Fight styles are engines, chosen per save.** `GameContext.engines` lists every engine
-    (Classic, Plan & Watch, Deck, Mind Game); `settings.combatStyle` picks the one that starts
+    (Classic, Plan & Watch, Deck); `settings.combatStyle` picks the one that starts
     new fights and `engineFor` routes to it. A fight in progress always continues in the engine
     whose id is in its `CombatState`. What the player sets up in a style (Plan & Watch cards) comes
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is

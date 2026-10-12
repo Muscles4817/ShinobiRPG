@@ -2,7 +2,6 @@ import { buildContentDb, CONTENT_PACKS, type ContentDb, type ContentPack } from 
 import {
   createDeckEngine,
   createDuelEngine,
-  createMindEngine,
   createPlanEngine,
   type CombatEngine,
 } from '@/systems/combat';
@@ -20,7 +19,7 @@ export interface GameContext {
 
 /** The fight styles this build offers, default first. */
 export function defaultEngines(): readonly CombatEngine[] {
-  return [createDuelEngine(), createPlanEngine(), createDeckEngine(), createMindEngine()];
+  return [createDuelEngine(), createPlanEngine(), createDeckEngine()];
 }
 
 export function createGameContext(

@@ -4,7 +4,7 @@ import type { GameState } from '../state';
 import { combatLog } from './combatLog';
 import { combatScene } from './scene';
 
-const STYLES = ['duel-v1', 'plan-v1', 'deck-v1', 'mind-v1'] as const;
+const STYLES = ['duel-v1', 'plan-v1', 'deck-v1'] as const;
 
 /** Every log line the fight screen showed over a whole spar, picking sensibly each turn. */
 function sparLog(style: string): string[] {

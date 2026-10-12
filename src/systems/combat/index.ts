@@ -25,6 +25,5 @@ export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS } from './contract';
 export { splitNarration } from './rules/narration';
 export type { Narration, NarrationAmount, NarrationAmountKind } from './rules/narration';
 export { createDuelEngine } from './engines/duel/engine';
-export { createMindEngine } from './engines/mind/engine';
 export { createDeckEngine } from './engines/deck/engine';
 export { createPlanEngine } from './engines/plan/engine';

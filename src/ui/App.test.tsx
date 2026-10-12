@@ -176,7 +176,6 @@ describe('App (smoke test)', () => {
   it.each([
     ['Plan & Watch', /cards for each distance/],
     ['Deck', 'End turn'],
-    ['Mind Game', 'Feint'],
   ])('switches the fight style to %s and fights with it', async (style, marker) => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

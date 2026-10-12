@@ -7,7 +7,7 @@ import type { GameState } from './state';
 import { combatScene } from './views/scene';
 import { fightStyles } from './views/fightStyle';
 
-const STYLES = ['duel-v1', 'plan-v1', 'deck-v1', 'mind-v1'] as const;
+const STYLES = ['duel-v1', 'plan-v1', 'deck-v1'] as const;
 
 /** Picks something sensible every turn, whatever the engine, until the fight ends. */
 function fightOut(start: GameState): GameState {
@@ -73,9 +73,9 @@ describe('fight styles', () => {
 
   it('a fight in progress finishes in the style it started in', () => {
     const fight = act(withAllStats(withStyle('deck-v1'), 40), { type: 'spar', personId: 'kaen' });
-    const switched = act(fight, { type: 'setCombatStyle', style: 'mind-v1' });
+    const switched = act(fight, { type: 'setCombatStyle', style: 'plan-v1' });
     expect(engineFor(switched, ctx).id).toBe('deck-v1');
-    expect(fightOut(switched).settings.combatStyle).toBe('mind-v1');
+    expect(fightOut(switched).settings.combatStyle).toBe('plan-v1');
   });
 
   it('a version 5 save starts on the classic style', () => {
@@ -91,6 +91,27 @@ describe('fight styles', () => {
     const loaded = deserialize(JSON.stringify({ version: 8, state: v8 }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.settings).toEqual({ combatStyle: 'plan-v1', combatPlans: {} });
+  });
+
+  it('a version 12 save on the retired Mind Game style moves to Classic', () => {
+    const state = newGame();
+    const settings = { combatStyle: 'mind-v1', combatPlans: { 'mind-v1': 1, 'plan-v1': 2 } };
+    const loaded = deserialize(JSON.stringify({ version: 12, state: { ...state, settings } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.settings).toEqual({
+      combatStyle: 'duel-v1',
+      combatPlans: { 'plan-v1': 2 },
+    });
+  });
+
+  it('a version 12 save mid-fight in Mind Game calls the fight off', () => {
+    const sparring = act(withStyle('duel-v1'), { type: 'spar', personId: 'kaen' });
+    const v12 = { ...sparring, combat: { engineId: 'mind-v1', data: {} } };
+    const loaded = deserialize(JSON.stringify({ version: 12, state: v12 }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.combat).toBeNull();
+    expect(loaded.value.people.sparringWith).toBeNull();
+    expect(loaded.value.character.vitals).toEqual(sparring.character.vitals);
   });
 
   it('Plan & Watch cards carry over to the next fight', () => {
