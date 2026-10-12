@@ -15,11 +15,11 @@ export const MAX_BOND = 100;
 
 /** Stage thresholds, lowest first. A stage's index is its number (0 = stranger). */
 export const BOND_STAGES = [
-  { name: 'Stranger', min: 0 },
-  { name: 'Acquaintance', min: 10 },
-  { name: 'Friend', min: 30 },
-  { name: 'Close friend', min: 55 },
-  { name: 'Bonded', min: 80 },
+  { name: 'Stranger', pair: 'strangers', min: 0 },
+  { name: 'Acquaintance', pair: 'acquaintances', min: 10 },
+  { name: 'Friend', pair: 'friends', min: 30 },
+  { name: 'Close friend', pair: 'close friends', min: 55 },
+  { name: 'Bonded', pair: 'bonded', min: 80 },
 ] as const;
 
 /** Every talk is worth something; tones the listener likes or dislikes move it further. */
@@ -43,6 +43,11 @@ export function stageOf(points: number): number {
 
 export function stageName(stage: number): string {
   return BOND_STAGES[stage]?.name ?? 'Stranger';
+}
+
+/** The stage said of two people: "until you are {close friends}", "once you are {bonded}". */
+export function stageForPair(stage: number): string {
+  return BOND_STAGES[stage]?.pair ?? 'strangers';
 }
 
 /** How far through the current stage, 0–1 (1 at the top stage). */

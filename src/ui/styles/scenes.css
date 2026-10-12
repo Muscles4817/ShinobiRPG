@@ -691,3 +691,13 @@ button.foe {
   vertical-align: 0.1em;
   margin-left: 2px;
 }
+
+/* A threat read made worse by hunger or a wound: said beside the read, in the cost colour. */
+.handicap {
+  font-size: 0.8rem;
+  color: var(--cost);
+}
+.paper-sheet .handicap,
+.field-notes .handicap {
+  color: #9a5c12;
+}

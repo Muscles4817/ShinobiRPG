@@ -28,6 +28,8 @@ export type Report =
       readonly missionsCompleted: number;
       /** Kinds of work newly trusted to you (not shown by name: the board reveals them). */
       readonly unlocked: readonly string[];
+      /** How a job that ends on a check turned out; the scene closes before it can show. */
+      readonly ending?: string;
       /** Ryo docked from the posted reward because things went wrong. */
       readonly docked?: number;
       /** Bond gained with each teammate; absent on reports saved before team missions. */

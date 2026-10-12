@@ -37,6 +37,17 @@ describe('missions', () => {
     expect(done.mission).toBeNull();
   });
 
+  it('a job that ends on a check tells you how it went on the debrief and in the journal', () => {
+    const strong = playMission(withAllStats(newGame(), 30), 'lantern-keepers-cat');
+    const caught = 'You scoop Mochi up mid-leap. She bites you, but only a little.';
+    expect(strong.reports[0]).toMatchObject({ kind: 'mission-complete', ending: caught });
+    expect(lastEntry(strong)?.text).toBe(caught);
+    const weak = playMission(withAllStats(newGame(), 0.5), 'lantern-keepers-cat');
+    expect(weak.reports[0]).toMatchObject({
+      ending: 'Mochi leads you on a two-hour chase before you finally corner her.',
+    });
+  });
+
   it('hides jobs you are not trusted with yet', () => {
     expect(
       dispatch(newGame(), { type: 'startMission', missionId: 'storehouse-ghost' }, ctx),

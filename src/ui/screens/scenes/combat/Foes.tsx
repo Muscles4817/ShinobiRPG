@@ -18,6 +18,7 @@ function Read({ read }: { readonly read: ScoutingRead }) {
     <span className="foe-read">
       <ThreatChip threat={read.threat} label={read.threatLabel} />
       <small>{read.style}</small>
+      {read.handicap && <small className="handicap">{read.handicap}</small>}
       {read.traits.map((t) => (
         <span key={t.trait} className="trait-note">
           <b>{t.label}</b> {t.counter}

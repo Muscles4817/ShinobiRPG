@@ -17,7 +17,7 @@ import type { GameContext } from '../context';
 import { approachPlans, type ApproachPlan } from '../encounter/approaches';
 import { encounterHere, type EncounterHere } from '../encounter/current';
 import { reconPlans, type ReconCost, type ReconPlan } from '../encounter/recon';
-import { scoutOpponents, traitNotes, type Threat, type TraitNote } from '../scouting';
+import { handicapOf, scoutOpponents, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
 import { noteLine, type SceneLine } from './scene';
 
@@ -74,6 +74,8 @@ export interface EncounterScene {
   readonly lines: readonly SceneLine[];
   readonly facts: readonly FactLine[];
   readonly foes: readonly EncounterFoe[] | null;
+  /** Why the foes read worse than usual (hunger, injuries), or null. */
+  readonly handicap: string | null;
   readonly reconLeft: number;
   readonly recon: readonly ReconCard[];
   readonly approaches: readonly ApproachCard[];
@@ -236,6 +238,7 @@ export function encounterScene(state: GameState, ctx: GameContext): EncounterSce
     lines: here.run.notes.slice(here.encounter.notesFrom).map(noteLine),
     facts: factLines(here),
     foes: foesOf(state, ctx, here),
+    handicap: handicapOf(state, ctx),
     reconLeft: Math.max(0, MAX_RECON - here.encounter.recons),
     recon: reconPlans(state, ctx, here).map(reconCard),
     approaches: approachPlans(state, ctx, here).map((p) => approachCard(here, p)),

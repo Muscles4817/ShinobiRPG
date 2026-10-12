@@ -46,6 +46,7 @@ import {
   type DeckFighter,
   type DeckState,
 } from './state';
+import { squareUpLine } from '../../rules/narration';
 
 /**
  * Deck fights: your techniques are cards. Draw five, spend three actions a turn, read what
@@ -182,7 +183,7 @@ export function createDeckEngine(): CombatEngine {
     start(setup, rng) {
       const fighters = initialFighters(setup);
       const player = playerOf({ fighters });
-      const names = setup.enemies.map((e) => e.name).join(', ');
+      const names = setup.enemies.map((e) => e.name);
       const state: DeckState = {
         round: 1,
         fighters,
@@ -192,7 +193,7 @@ export function createDeckEngine(): CombatEngine {
         discard: [],
         points: POINTS_PER_TURN,
         intents: newIntents(fighters, START_RANGE, rng),
-        log: [setup.intro ?? `${names} square up.`, '— Turn 1 —'],
+        log: [setup.intro ?? squareUpLine(names), '— Turn 1 —'],
         result: null,
         canFlee: setup.canFlee,
       };

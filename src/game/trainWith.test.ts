@@ -90,6 +90,14 @@ describe('training with your sensei (the weekly lesson)', () => {
     );
   });
 
+  it('says when a teacher’s technique is also on the academy rack', () => {
+    const koun = trainingView(newGame(), ctx)?.teachers.find((t) => t.person.id === 'koun');
+    expect(koun?.signature).toMatchObject({
+      name: 'Temple-Bell Palm',
+      locked: 'Taught once you and Kōun are friends, or study the scroll at the Academy.',
+    });
+  });
+
   it('comes to the training ground for you by day, but not at night', () => {
     expect(blockerFor(at(newGame(), EVENING), goranTaijutsu, ctx)).toBeNull();
     expect(blockerFor(at(newGame(), NIGHT), goranTaijutsu, ctx)).toBe(

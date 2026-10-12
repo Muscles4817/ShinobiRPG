@@ -120,7 +120,10 @@ export function holdTurns(effect: Pick<EffectUse['effect'], 'power'>): number {
  * Chakra a technique costs, after the user's chakra control (up to a third off), and more for
  * an unstable one.
  */
-export function chakraCost(user: Body, technique: CombatTechnique): number {
+export function chakraCost(
+  user: Pick<Body, 'attributes'>,
+  technique: Pick<CombatTechnique, 'chakraCost' | 'unstable'>,
+): number {
   const discount = clamp(user.attributes.chakraControl / 60, 0, 1 / 3);
   const base = technique.chakraCost * unstableCostScale(technique);
   return Math.max(1, Math.round(base * (1 - discount)));

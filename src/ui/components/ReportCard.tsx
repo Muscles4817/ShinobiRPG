@@ -33,12 +33,18 @@ function gradeCard(report: Extract<Report, { kind: 'grade' }>): CardContent {
   };
 }
 
-function missionNote(report: Extract<Report, { kind: 'mission-complete' }>): string | null {
+function handOverNote(report: Extract<Report, { kind: 'mission-complete' }>): string | null {
   if (report.gear) return 'The client insists you keep the weapon. It is yours now.';
   if (report.scroll) return 'The client presses a sealed scroll into your hands. Read it at home.';
   return report.unlocked.length > 0
     ? 'Word is the hall will trust you with harder work now. Watch the board.'
     : null;
+}
+
+/** How the job ended, if the scene closed before it could say, then what came of it. */
+function missionNote(report: Extract<Report, { kind: 'mission-complete' }>): string | null {
+  const lines = [report.ending, handOverNote(report)].filter((l): l is string => Boolean(l));
+  return lines.length > 0 ? lines.join(' ') : null;
 }
 
 /** The debrief: what you earned, what was docked, and how the team grew. */

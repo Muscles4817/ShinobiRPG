@@ -30,6 +30,8 @@
   font-weight: 800;
 }
 .exam-when {
+  /* A phrase ("In 6 days"), not a label: badges capitalise every word. */
+  text-transform: none;
   align-self: flex-start;
   color: var(--seal);
 }

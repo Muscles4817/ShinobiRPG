@@ -36,6 +36,7 @@ export function FieldNotes({ scene }: { readonly scene: EncounterScene }) {
           ))}
         </ul>
       )}
+      {scene.foes && scene.handicap && <p className="handicap">{scene.handicap}</p>}
     </section>
   );
 }

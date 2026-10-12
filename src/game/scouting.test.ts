@@ -1,12 +1,23 @@
 import { act, ctx, newGame, veteran, withAllStats } from '@/test/gameFixtures';
 import { createStats } from '@/systems/stats';
 
-import { scout } from './scouting';
+import { missionThreat, scout } from './scouting';
 import { missionBoardView } from './views/boards';
 import { combatScouting } from './views/scene';
 import { shinobiView } from './views/shinobi';
 
 describe('sizing up an opponent', () => {
+  it('says when hunger makes a job read worse than your stats alone', () => {
+    const fed = newGame();
+    const job = ctx.content.missions.require('academy-dropout');
+    expect(missionThreat(fed, ctx, job)?.handicap).toBeNull();
+    const vitals = { ...fed.character.vitals, satiety: 0 };
+    const starving = { ...fed, character: { ...fed.character, vitals } };
+    expect(missionThreat(starving, ctx, job)?.handicap).toBe(
+      'Read against you as you are now: starving.',
+    );
+  });
+
   it('says how they compare with you', () => {
     const you = createStats(6);
     expect(scout(createStats(3), you, false).threat).toBe('much-weaker');

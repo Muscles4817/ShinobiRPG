@@ -48,6 +48,7 @@ export {
 } from './gearContract';
 // Gear's numbers, for describing a piece the same way the fight applies it.
 export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
+export { chakraCost } from './rules/body';
 export { focusScale } from './rules/focus';
 export { weaponNumbers, type WeaponNumbers } from './rules/weapons';
 export { splitNarration } from './rules/narration';

@@ -5,6 +5,7 @@ import {
   NEW_BOND,
   reactionTo,
   recordTalk,
+  stageForPair,
   stageName,
   stageOf,
   stageProgress,
@@ -18,6 +19,11 @@ describe('bonds', () => {
     expect(stageOf(54)).toBe(2);
     expect(stageOf(MAX_BOND)).toBe(4);
     expect(stageName(stageOf(30))).toBe('Friend');
+  });
+
+  it('names a stage as said of two people', () => {
+    expect(stageForPair(3)).toBe('close friends');
+    expect(stageForPair(4)).toBe('bonded');
   });
 
   it('reports progress within a stage', () => {

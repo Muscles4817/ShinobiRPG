@@ -74,6 +74,7 @@ export function afterStage(state: GameState, ctx: GameContext): GameState {
   const standing = recordMissionSuccess(state.standing, earned.reputation, senior);
   const teamBond = def.withTeam ? TEAM_MISSION_BOND : 0;
   const gifts = handedOver(state, ctx, def);
+  const ending = endingLine(def, state.mission);
   const next: GameState = {
     ...withTeamBond(state, teamBond),
     mission: null,
@@ -86,7 +87,7 @@ export function afterStage(state: GameState, ctx: GameContext): GameState {
   };
   const logged = log(next, {
     heading: `${def.title} complete`,
-    text: `${def.client} thanks you.`,
+    text: ending ?? `${def.client} thanks you.`,
     tone: 'success',
     chips: [
       chip(`+${earned.ryo} ryo`, 'gain'),
@@ -105,8 +106,15 @@ export function afterStage(state: GameState, ctx: GameContext): GameState {
     unlocked: newlyUnlocked(state, ctx, standing.missionsCompleted),
     docked: Math.max(0, def.reward.ryo - earned.ryo),
     teamBond,
+    ...(ending ? { ending } : {}),
     ...gifts.report,
   });
+}
+
+/** The last story line, when the job ended on a check (its outcome is otherwise never seen). */
+function endingLine(def: MissionDef, run: MissionRun): string | undefined {
+  if (def.stages.at(-1)?.kind !== 'check') return undefined;
+  return run.notes.findLast((n) => n.kind === 'story')?.text;
 }
 
 /** Adds bond with every teammate. */

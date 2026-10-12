@@ -50,3 +50,8 @@ export function numberedNames<T extends { readonly name: string }>(fighters: rea
     return { ...f, name: `${f.name} ${nth}` };
   });
 }
+
+/** The opening line: "The bandit squares up", "Bandit, Archer square up". */
+export function squareUpLine(names: readonly string[]): string {
+  return `${names.join(', ')} ${names.length === 1 ? 'squares' : 'square'} up.`;
+}

@@ -1,5 +1,5 @@
 import type { PersonDef, PriceTemplate, Steering } from '@/content';
-import { stageName, stageOf } from '@/systems/bonds';
+import { stageForPair, stageOf } from '@/systems/bonds';
 import { RANKS, type Rank } from '@/systems/standing';
 import { STAT_IDS, type StatId } from '@/systems/stats';
 import { slotName, TIME_SLOTS, weekOf, type TimeSlot } from '@/systems/time';
@@ -104,7 +104,7 @@ export function steeredStat(state: GameState, teaching: Teaching): StatId | null
 export function steeringNote(teaching: Teaching): string | null {
   const free = teaching.steers?.freeAtStage;
   if (free === undefined) return null;
-  return `${teaching.person.name} decides what you work on until you are ${stageName(free).toLowerCase()}s.`;
+  return `${teaching.person.name} decides what you work on until you are ${stageForPair(free)}.`;
 }
 
 /** Sessions this teacher has given you this week. */
