@@ -230,6 +230,37 @@ not to make every approach equally strong. More resources should mean more power
 - **Order:** the Naruto pack's people come first (author the known Konoha shinobi); the
   original pack is sized from that baseline.
 
+**Techniques, agreed:**
+
+- **Ranks E–S** use the same letters as ability grades. Compared with your grade in the
+  technique's discipline:
+  - At or below your grade: learn normally.
+  - One above: slow, and it arrives **unstable** (extra chakra, can misfire), stabilising
+    when your grade catches up.
+  - Two or more above: **impossible, even with a teacher.**
+- **Hard requirements** where physically needed: nature, clan or bloodline, minimum
+  reserves, a control grade, a weapon.
+- **Study speed** = aptitude × chakra control × source quality (a teacher beats a
+  scroll, a scroll beats nothing).
+- **Sources:**
+  - Academy: E and D.
+  - Clan: the clan's people, through "train with".
+  - Library: C and some B, needs chūnin rank.
+  - Teachers: their `teaches` list and price.
+  - **Scroll items:** rewards, gifts, finds. Studied at home or in the library.
+- **Techniques don't improve with use.** Their effect is tied to the **user's stats**, so
+  the same technique differs in two people's hands. Every verb has a scaling profile in
+  `rules/` (which stats drive its potency, and which of the target's stats resist it); a
+  technique may override it.
+- **Verbs** (composable effect list, each rule defined once): damage, area, daze, seal,
+  confuse, conceal, field, move, substitute, empower (with cost), break, clone, trap, sense,
+  heal. The list is accepted for now. Summons are a separate topic later.
+- **Seal cast time and interruption are out for now.**
+- **A trump card's cost varies by card:** a template set (hospital days, chakra exhaustion
+  days, temporary stat injury, rarely permanent), chosen per technique.
+- **Content target:** about 15 general techniques per discipline per pack (E 2, D 3, C 4,
+  B 3, A 2, S 1), plus clan and teacher signatures.
+
 ### D3. Technique mastery stages and learning by doing: open
 
 ### D4. Techniques as verbs (effect vocabulary): open
