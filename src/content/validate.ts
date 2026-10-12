@@ -1,4 +1,4 @@
-import { costIsSane, DISCIPLINES } from '@/systems/techniques';
+import { costIsSane, DISCIPLINES, effectProblem } from '@/systems/techniques';
 
 import { duplicateIds } from './catalog';
 import { validatePeople } from './validatePeople';
@@ -157,6 +157,12 @@ function numberProblems(pack: ContentPack): string[] {
     ...pack.techniques
       .filter((t) => t.chakraCost < 0 || t.difficulty <= 0 || t.effects.some((e) => e.power <= 0))
       .map((t) => `technique "${t.id}" has non-positive numbers`),
+    ...pack.techniques.flatMap((t) =>
+      t.effects.flatMap((e) => {
+        const problem = effectProblem(e);
+        return problem ? [`technique "${t.id}" has ${problem}`] : [];
+      }),
+    ),
     ...pack.techniques
       .filter((t) => t.afterCost && (!t.oncePerFight || !costIsSane(t.afterCost)))
       .map(

@@ -18,6 +18,9 @@ const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => strin
   field: () => 'Blinds foes for a while',
   move: () => 'Moves you in a flash',
   substitute: () => 'Swaps you out of a hit',
+  empower: () => 'Pushes past your limits, at a price',
+  clone: () => 'Makes clones that take hits',
+  trap: (power) => `Sets a trap of power ${power}`,
 };
 
 /** Each effect in order: "Power 12, then dazes". */

@@ -35,6 +35,9 @@ const VERB_WORD: Readonly<Record<Verb, string>> = {
   field: 'Blind foes in a field',
   move: 'Go straight to where you fight best',
   substitute: 'Reacts, swaps you out of a hit once a round',
+  empower: 'Push past your limits, at a price',
+  clone: 'Clones take hits for you',
+  trap: 'Set a trap where you stand',
 };
 
 /** One effect in words; a move that names its distance says so. */

@@ -176,9 +176,10 @@ function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Fo
  * A sensible starting plan, in priority order: a heal for when you're badly hurt, a sense for
  * when a foe hides, a field to set the ground (it plays only while none of yours is up),
  * footwork towards where you fight best (when it's worth a turn; a move technique rather than
- * a step), a daze, seal or confusion to spoil a foe's telegraphed jutsu, your best attack, then
- * plain blows, more attacks, a conceal, a substitution and a defence. Attacks your kit can't
- * make from a distance (an archer up close) are left out.
+ * a step), a daze, seal or confusion to spoil a foe's telegraphed jutsu, an empower or clones
+ * and a trap where you can attack (the plan passes over them while they hold), your best
+ * attack, then plain blows, more attacks, a conceal, a substitution and a defence. Attacks
+ * your kit can't make from a distance (an archer up close) are left out.
  */
 function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slot[] {
   const reaches = canAttackFrom(fighter, band);
@@ -192,12 +193,14 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slo
   const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
   const damage = damageJutsu(pool);
   const daze = strongest(pool, isHindering).slice(0, 1);
+  const ready = strongest(pool, (t) => hasVerb(t, 'empower') || hasVerb(t, 'clone')).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const ordered: Slot[] = [
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
     ...best('sense').map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' })),
     ...plain([...best('field'), ...at('first')]),
     ...daze.map((c): Slot => ({ card: cardId(c), when: 'foe-readying' })),
+    ...plain(reaches ? [...ready, ...best('trap')] : []),
     ...plain([...damage.slice(0, 1), ...has('strike'), ...has('throw'), ...at('after-attacks')]),
     ...plain([...damage.slice(1), ...best('conceal'), ...best('substitute')]),
     ...plain([...has('guard'), ...has('dodge')]),

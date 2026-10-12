@@ -1,4 +1,4 @@
-import type { TechniqueEffect, Verb } from '@/systems/techniques';
+import type { PlainVerb, TechniqueEffect } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatTechnique } from '../../contract';
 import { bodyFrom } from '../body';
@@ -57,7 +57,7 @@ const mend: CombatTechnique = {
 };
 
 describe('verbs', () => {
-  it('every verb has a profile; heal, conceal, sense, field, move and substitute aim at the user', () => {
+  it('every verb has a profile; heal, conceal, sense and the newer verbs aim at the user', () => {
     expect(Object.entries(VERB_PROFILES).map(([verb, p]) => [verb, p.aim])).toEqual([
       ['damage', 'foe'],
       ['daze', 'foe'],
@@ -71,11 +71,14 @@ describe('verbs', () => {
       ['field', 'self'],
       ['move', 'self'],
       ['substitute', 'self'],
+      ['empower', 'self'],
+      ['clone', 'self'],
+      ['trap', 'self'],
     ]);
   });
 
   it('each new verb scales by the stats its role names', () => {
-    const use = (verb: Exclude<Verb, 'field'>) => {
+    const use = (verb: PlainVerb) => {
       const effect: TechniqueEffect = { verb, power: 10 };
       return { technique: { ...crush, effects: [effect] }, effect };
     };

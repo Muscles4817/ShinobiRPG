@@ -106,13 +106,13 @@ export function strikeDamage(attacker: Rated, defender: Rated, roll: number): nu
 }
 
 /**
- * A damaging effect (a hit, an area hit or a break): its power, what drives it against what it
- * meets, and elements.
+ * A damaging effect (a hit, an area hit, a break or a sprung trap): its power, what drives it
+ * against what it meets, and elements.
  */
 export function techniqueDamage(
   attacker: Natured,
   defender: Natured,
-  use: EffectUse<'damage' | 'area' | 'break'>,
+  use: EffectUse<'damage' | 'area' | 'break' | 'trap'>,
   roll: number,
 ): number {
   const { technique, effect } = use;

@@ -8,6 +8,7 @@ import { partnered } from './combo';
 import { ownField } from './field';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
+import { prepNeeded } from './prep';
 import { hittable } from './rows';
 import { inSight, opponentsOf } from './senses';
 import {
@@ -131,10 +132,15 @@ function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boole
   if (hasVerb(t, 'field') && ownField(round.field, self)) return false;
   if (moveDestination(self, t) === round.range) return false;
   if (!partnered(round.fighters, self, t)) return false;
+  const foeInSight = opponentsOf(round.fighters, self).some((f) => inSight(self, f));
+  if (!prepNeeded(self, t, foeInSight)) return false;
   return !(hasVerb(t, 'conceal') && self.hidden);
 }
 
-/** Whether a card is needed now: no searching with no one hidden, no healing at full health. */
+/**
+ * Whether a card is needed now: no searching with no one hidden, no healing at full health, no
+ * getting ready twice over or with no foe in sight (`prep.ts`).
+ */
 function needed(self: PlanFighter, card: Card, round: Round): boolean {
   const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
   switch (card.kind) {
