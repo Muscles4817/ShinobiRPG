@@ -11,6 +11,7 @@ import type {
 } from '../contract';
 import { startsHidden } from './conditions';
 import { elementMultiplier } from './elements';
+import { driveOf, landingUse, resistOf, type EffectUse } from './verbs';
 
 /**
  * The fighter shape and formulas the newer engines share. Each engine extends `Body` with its
@@ -132,35 +133,38 @@ const PHYSICAL_BONUS: Readonly<Record<CombatTechnique['discipline'], (b: Body) =
 export function techniqueDamage(
   attacker: Body,
   defender: Body,
-  technique: CombatTechnique,
+  use: EffectUse<'damage'>,
   roll: number,
 ): number {
-  const skill = attacker.attributes[technique.discipline];
+  const { technique, effect } = use;
+  const skill = driveOf(attacker, use);
   const elements = elementMultiplier(technique, attacker.nature, defender.nature);
   const raw =
-    (technique.power * (1 + skill / 20) + PHYSICAL_BONUS[technique.discipline](attacker)) *
+    (effect.power * (1 + skill / 20) + PHYSICAL_BONUS[technique.discipline](attacker)) *
     elements *
     variance(roll);
   return Math.max(1, Math.round(raw - armour(defender)));
 }
 
-export function healAmount(user: Body, technique: CombatTechnique): number {
-  return Math.round(technique.power * (1 + user.attributes.ninjutsu / 25));
+export function healAmount(user: Body, use: EffectUse<'heal'>): number {
+  return Math.round(use.effect.power * (1 + driveOf(user, use) / 25));
 }
 
-/** Genjutsu is resisted by willpower; everything else by perception. */
+/**
+ * Chance the target sees a technique coming, from the profile of its first effect aimed at a
+ * foe (by default: genjutsu is resisted by willpower, everything else by perception).
+ */
 export function resistChance(attacker: Body, defender: Body, technique: CombatTechnique): number {
-  const skill = attacker.attributes[technique.discipline];
-  const defence =
-    technique.discipline === 'genjutsu'
-      ? defender.attributes.willpower
-      : defender.attributes.perception;
+  const use = landingUse(technique);
+  if (!use) return 0;
+  const skill = driveOf(attacker, use);
+  const defence = resistOf(defender, use);
   return clamp(0.6 * logistic((defence - skill) / 4), 0.05, 0.6);
 }
 
-/** Turns a daze or seal lasts: stronger techniques hold longer. */
-export function holdTurns(technique: CombatTechnique): number {
-  return technique.power >= 12 ? 2 : 1;
+/** Turns a daze or seal lasts: stronger effects hold longer. */
+export function holdTurns(effect: Pick<EffectUse['effect'], 'power'>): number {
+  return effect.power >= 12 ? 2 : 1;
 }
 
 /** Chakra a technique costs, after the user's chakra control (up to a third off). */

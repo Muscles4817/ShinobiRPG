@@ -1,9 +1,12 @@
+import type { Verb } from '@/systems/techniques';
+
 import type { CombatItem, CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
 import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { carried } from '../../rules/items';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
+import { hasVerb, isHarmful, techniquePower } from '../../rules/verbs';
 import type { CardId, Loadout, PlanFighter } from './state';
 
 /**
@@ -119,7 +122,7 @@ export function isReaction(card: Card): boolean {
 
 /** Cards that hurt or hinder a foe: what reach and confusion rule out. */
 export function isOffence(card: Card): boolean {
-  if (card.kind === 'jutsu') return card.technique.effect !== 'heal';
+  if (card.kind === 'jutsu') return isHarmful(card.technique);
   if (card.kind === 'item') return card.item.effect === 'blast';
   return card.kind === 'strike' || card.kind === 'throw';
 }
@@ -138,12 +141,18 @@ export function toolDetail(item: CombatItem): string {
   return `${TOOL_DOES[item.effect]} (×${item.count} left)`;
 }
 
-const EFFECT_WORD: Readonly<Record<CombatTechnique['effect'], string>> = {
+const VERB_WORD: Readonly<Record<Verb, string>> = {
   damage: 'Attack',
-  stun: 'Daze',
+  daze: 'Daze',
   seal: 'Seal',
   heal: 'Heal when hurt',
 };
+
+/** What a technique does, in words: "Attack", or "Attack, then daze" for several effects. */
+function techniqueWords(technique: CombatTechnique): string {
+  const [first, ...rest] = technique.effects.map((e) => VERB_WORD[e.verb]);
+  return [first, ...rest.map((w) => w.toLowerCase())].join(', then ');
+}
 
 export function cardLabel(card: Card): string {
   switch (card.kind) {
@@ -189,7 +198,7 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
     case 'dispel':
       return `Break illusions, ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':
-      return `${EFFECT_WORD[card.technique.effect]}, ${chakraCost(fighter, card.technique)} chakra`;
+      return `${techniqueWords(card.technique)}, ${chakraCost(fighter, card.technique)} chakra`;
     case 'item':
       return toolDetail(card.item);
   }
@@ -198,7 +207,7 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
 function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean): Card[] {
   return pool
     .flatMap((c) => (c.kind === 'jutsu' && test(c.technique) ? [c] : []))
-    .sort((a, b) => b.technique.power - a.technique.power);
+    .sort((a, b) => techniquePower(b.technique) - techniquePower(a.technique));
 }
 
 /**
@@ -214,11 +223,11 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Car
     band === home
       ? []
       : has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome);
-  const damage = strongest(pool, (t) => t.effect === 'damage');
+  const damage = strongest(pool, (t) => hasVerb(t, 'damage'));
   const ordered: Card[] = [
     ...footwork,
     ...damage.slice(0, 1),
-    ...strongest(pool, (t) => t.effect === 'stun' || t.effect === 'seal').slice(0, 1),
+    ...strongest(pool, (t) => hasVerb(t, 'daze') || hasVerb(t, 'seal')).slice(0, 1),
     ...has('strike'),
     ...has('throw'),
     ...damage.slice(1),

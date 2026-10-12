@@ -1,6 +1,7 @@
 import type { Discipline } from '@/systems/techniques';
 
 import type { CombatTechnique, CombatantSetup, RangeBand } from '../contract';
+import { isHarmful } from './verbs';
 
 /**
  * Distance between the two sides of a fight. Each discipline has a reach: fists need you
@@ -28,7 +29,7 @@ export const RANGE_LABEL: Readonly<Record<RangeBand, string>> = {
 };
 
 export function reachOf(technique: CombatTechnique): readonly RangeBand[] {
-  return technique.effect === 'heal' ? RANGE_BANDS : REACH[technique.discipline];
+  return isHarmful(technique) ? REACH[technique.discipline] : RANGE_BANDS;
 }
 
 export function inReach(reach: readonly RangeBand[], band: RangeBand): boolean {
@@ -56,7 +57,7 @@ export function stepTowards(band: RangeBand, goal: RangeBand): RangeBand {
  * techniques want to be close.
  */
 export function preferredRange(setup: Pick<CombatantSetup, 'techniques'>): RangeBand {
-  const offensive = setup.techniques.filter((t) => t.effect !== 'heal');
+  const offensive = setup.techniques.filter(isHarmful);
   const votes = RANGE_BANDS.map(
     (band) => offensive.filter((t) => inReach(reachOf(t), band)).length,
   );

@@ -1,16 +1,12 @@
 import { round1 } from '@/core';
 import { unmetRequirements, type StatDelta, type StatId, type Stats } from '@/systems/stats';
 
+import type { TechniqueEffect } from './effects';
+
 export const DISCIPLINES = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
 export type Discipline = (typeof DISCIPLINES)[number];
 export const ELEMENTS = ['fire', 'wind', 'lightning', 'earth', 'water'] as const;
 export type Element = (typeof ELEMENTS)[number];
-/**
- * What a technique does when used. The combat engine decides how to interpret it:
- * damage hurts, stun costs the target turns, heal restores the user, seal stops the target
- * using techniques for a while.
- */
-export type TechniqueEffect = 'damage' | 'stun' | 'heal' | 'seal';
 
 export interface TechniqueDef {
   readonly id: string;
@@ -18,10 +14,9 @@ export interface TechniqueDef {
   readonly description: string;
   readonly discipline: Discipline;
   readonly element?: Element;
-  readonly effect: TechniqueEffect;
+  /** What it does, in order (damage, then daze…). Never empty (validated). */
+  readonly effects: readonly TechniqueEffect[];
   readonly chakraCost: number;
-  /** Strength of the effect (damage dealt, stun potency, health restored). */
-  readonly power: number;
   /** Minimum stats needed to begin studying the technique. */
   readonly requirements: StatDelta;
   /** Total study points needed to master it. */

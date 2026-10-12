@@ -52,9 +52,8 @@ const fireball: CombatTechnique = {
   name: 'Fireball',
   discipline: 'ninjutsu',
   element: 'fire',
-  effect: 'damage',
+  effects: [{ verb: 'damage', power: 14 }],
   chakraCost: 8,
-  power: 14,
 };
 
 /** Plays every playable card each turn (attacks first), then ends the turn. */

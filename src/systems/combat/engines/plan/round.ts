@@ -1,24 +1,14 @@
 import { clamp, type Rng } from '@/core';
 
-import type { CombatResult, CombatTechnique } from '../../contract';
-import {
-  alive,
-  chakraCost,
-  healAmount,
-  holdTurns,
-  resistChance,
-  strikeDamage,
-  targetable,
-  techniqueDamage,
-} from '../../rules/body';
-import { matchup, matchupLine } from '../../rules/elements';
+import type { CombatResult } from '../../contract';
+import { alive, strikeDamage, targetable } from '../../rules/body';
 import { revealOnAttack } from '../../rules/items';
 import { attackKindOf } from '../../rules/kit';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
-import { healLine } from '../../rules/narration';
 import { cardId, isOffence, type Card } from './cards';
 import { chooseCard } from './choose';
 import { intendedCard } from './intent';
+import { useJutsu } from './jutsu';
 import { useTool } from './pouch';
 import { dispel, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
@@ -67,61 +57,6 @@ function step(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' |
         round,
         `${actor.name} tries for ${where} range, but ${foe?.name ?? 'no one'} won't allow it.`,
       );
-}
-
-function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
-  const chakra = Math.max(0, actor.chakra - chakraCost(actor, t));
-  return say(
-    { ...round, fighters: patch(round.fighters, actor.id, { chakra }) },
-    `${actor.name} uses ${t.name}!`,
-  );
-}
-
-function physical(t: CombatTechnique): boolean {
-  return t.discipline === 'taijutsu' || t.discipline === 'kenjutsu';
-}
-
-/**
- * A daze costs one exchange and doesn't stack: rounds play out on their own, so a chain of
- * dazes would leave the player watching themselves lose.
- */
-function hold(round: Round, target: PlanFighter, t: CombatTechnique): Round {
-  const turns = holdTurns(t);
-  return t.effect === 'stun'
-    ? say(
-        { ...round, fighters: patch(round.fighters, target.id, { stunned: 1 }) },
-        `${target.name} is dazed!`,
-      )
-    : say(
-        {
-          ...round,
-          fighters: patch(round.fighters, target.id, { sealed: target.sealed + turns + 1 }),
-        },
-        `Seals lock ${target.name}'s chakra!`,
-      );
-}
-
-function useJutsu(round: Round, { actor, target, rng }: Turn, t: CombatTechnique): Round {
-  const paid = withChakraSpent(round, actor, t);
-  if (t.effect === 'heal') {
-    const health = Math.min(actor.maxHealth, actor.health + healAmount(actor, t));
-    const healed = { ...paid, fighters: patch(paid.fighters, actor.id, { health }) };
-    return say(healed, healLine(`${actor.name} recovers.`, health - actor.health));
-  }
-  if (!target) return paid;
-  if (rng.chance(resistChance(actor, target, t)))
-    return say(paid, `${target.name} sees it coming.`);
-  if (t.effect !== 'damage') return hold(paid, target, t);
-  const blow: Blow = {
-    raw: techniqueDamage(actor, target, t, rng.next()),
-    what: t.name,
-    dodgeable: t.discipline !== 'genjutsu',
-    physical: physical(t),
-    kind: attackKindOf(t),
-  };
-  const hit = react(paid, { attacker: actor, target, blow, rng });
-  const element = matchupLine(matchup(t.element, target.nature), target.name);
-  return element ? say(hit, element) : hit;
 }
 
 function strike(round: Round, { actor, target, rng }: Turn, thrown: boolean): Round {

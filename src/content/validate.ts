@@ -148,7 +148,10 @@ function missionProblems(pack: ContentPack): string[] {
 function numberProblems(pack: ContentPack): string[] {
   return [
     ...pack.techniques
-      .filter((t) => t.chakraCost < 0 || t.power <= 0 || t.difficulty <= 0)
+      .filter((t) => t.effects.length === 0)
+      .map((t) => `technique "${t.id}" has no effects`),
+    ...pack.techniques
+      .filter((t) => t.chakraCost < 0 || t.difficulty <= 0 || t.effects.some((e) => e.power <= 0))
       .map((t) => `technique "${t.id}" has non-positive numbers`),
     ...pack.foods.filter((f) => f.cost <= 0).map((f) => `food "${f.id}" must cost something`),
     ...pack.training
