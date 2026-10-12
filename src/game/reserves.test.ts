@@ -69,13 +69,15 @@ describe('chakra reserves', () => {
 
   it('deepen with the chakra spent in a fight, in a journal line without numbers', () => {
     const before = newGame();
-    const after = growFromFight(before, fought, ctx);
+    const lessons = { outcome: fought, foes: [], hurt: 0, reportsBefore: 0 };
+    const after = growFromFight(before, lessons, ctx);
     expect(after.character.stats.reserves).toBeGreaterThan(before.character.stats.reserves);
     const entry = lastEntry(after)!;
-    expect(entry.heading).toBe('Deeper reserves');
+    expect(entry.heading).toBe('What the fight taught you');
     expect(entry.text).not.toMatch(/\d/);
     expect(entry.chips?.[0]?.label).toMatch(/^Chakra Reserves \+/);
-    expect(growFromFight(before, { ...fought, chakraSpent: 0 }, ctx)).toBe(before);
+    const spentNothing = { ...lessons, outcome: { ...fought, chakraSpent: 0 } };
+    expect(growFromFight(before, spentNothing, ctx)).toBe(before);
   });
 
   it('a fight fought with jutsu leaves them deeper', () => {
