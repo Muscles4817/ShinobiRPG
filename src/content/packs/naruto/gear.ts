@@ -209,4 +209,17 @@ export const GEAR: readonly GearDef[] = [
     cost: 0,
     icon: 'sword',
   },
+  {
+    id: 'kubikiribocho',
+    name: 'Kubikiribōchō',
+    description:
+      'The Executioner’s Blade. A cleaver as tall as a man; it drinks the iron of what it cuts to mend itself.',
+    kind: 'weapon',
+    shape: 'blade',
+    rank: 'A',
+    unique: true,
+    effects: ['sunder', 'drain'],
+    cost: 0,
+    icon: 'sword',
+  },
 ];
