@@ -1,5 +1,5 @@
 import { isRentOverdue } from '@/systems/housing';
-import { applyTraining, diffStats } from '@/systems/stats';
+import { diffStats, type StatDelta, type StatId } from '@/systems/stats';
 import { slotsUntilNextMorning } from '@/systems/time';
 import { isHungry, METER_MAX, sleepRecovery } from '@/systems/vitals';
 import { spend } from '@/systems/wallet';
@@ -16,8 +16,9 @@ import {
   statChips,
 } from '../ops';
 import { weakFromHunger } from '../hunger';
+import { laidUp, sleepChakra } from '../injuries';
 import type { GameContext } from '../context';
-import { trainingScale } from '../profile';
+import { growCharacter, logDiscoveries, noTalentReason } from '../growth';
 import type { GameState } from '../state';
 import { closedReason, foodSellersHere, isOpen, marketPrice } from '../village';
 import type { ActionHandler, ActionOf } from './types';
@@ -47,13 +48,25 @@ export function homeBlocker(state: GameState, ctx: GameContext): string | null {
   return null;
 }
 
+/** The stat a drill is mainly for: its largest gain. */
+export function mainStat(gains: StatDelta): StatId | undefined {
+  const entries = Object.entries(gains) as [StatId, number][];
+  return entries.reduce<[StatId, number] | undefined>(
+    (best, entry) => (!best || entry[1] > best[1] ? entry : best),
+    undefined,
+  )?.[0];
+}
+
 export const train: ActionHandler<ActionOf<'train'>> = {
   check(state, action, ctx) {
     const def = ctx.content.training.get(action.trainingId);
     if (!def || !offeredHere(state, ctx).training(def.id)) return 'You can’t train that here.';
+    const main = mainStat(def.gains);
     return firstBlocker(
       busyReason(state),
+      main !== undefined && noTalentReason(state.character, main, ctx),
       weakFromHunger(state),
+      laidUp(state, ctx),
       state.character.vitals.energy < def.energyCost &&
         `Needs ${def.energyCost} energy. Nap or eat first.`,
       healthFraction(state) < MIN_HEALTH_TO_TRAIN && 'You are too injured to train.',
@@ -63,11 +76,12 @@ export const train: ActionHandler<ActionOf<'train'>> = {
     const def = ctx.content.training.require(action.trainingId);
     const hungry = isHungry(state.character.vitals);
     const before = state.character.stats;
-    const stats = applyTraining(before, def.gains, trainingScale(state.character, ctx));
+    const grown = growCharacter(state.character, def.gains, ctx);
+    const { stats } = grown.character;
 
-    let next: GameState = { ...state, character: { ...state.character, stats } };
+    let next: GameState = { ...state, character: grown.character };
     next = adjust(spendTime(next, def.slots, ctx), { energy: -def.energyCost });
-    return log(next, {
+    const logged = log(next, {
       heading: def.name,
       text: hungry
         ? `${def.description} Your rumbling stomach makes it hard to focus.`
@@ -75,6 +89,7 @@ export const train: ActionHandler<ActionOf<'train'>> = {
       tone: 'info',
       chips: [...statChips(diffStats(before, stats)), chip(`−${def.energyCost} energy`, 'cost')],
     });
+    return logDiscoveries(logged, grown.discovered, ctx);
   },
 };
 
@@ -140,7 +155,11 @@ export const sleep: ActionHandler<ActionOf<'sleep'>> = {
     const { text } = ctx.content;
     const lockedOut = isRentOverdue(state.housing, state.time.day);
     const hungry = isHungry(state.character.vitals);
-    const full = sleepRecovery(state.character.vitals, state.character.stats);
+    const night = sleepChakra(state);
+    const full = {
+      ...sleepRecovery(state.character.vitals, state.character.stats),
+      chakra: night.chakra,
+    };
     const recovery = lockedOut
       ? { ...full, health: Math.round((full.health ?? 0) * LOCKED_OUT_RECOVERY) }
       : full;
@@ -152,7 +171,8 @@ export const sleep: ActionHandler<ActionOf<'sleep'>> = {
       text: story,
       tone: lockedOut || hungry ? 'warning' : 'info',
       chips: [
-        chip('Energy & chakra restored', 'gain'),
+        chip(night.partial ? 'Energy restored' : 'Energy & chakra restored', 'gain'),
+        ...(night.partial ? [chip('Chakra only partly back', 'cost')] : []),
         chip(`Health +${Math.max(0, rested.character.vitals.health - before)}`, 'gain'),
       ],
     });

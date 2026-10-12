@@ -22,6 +22,7 @@ export {
   type Verb,
   type PlainVerb,
   type ScalingStat,
+  type FightStat,
   type VerbScaling,
   type TechniqueEffect,
   type EffectOf,

@@ -1,4 +1,5 @@
 import type { CombatResult } from '@/systems/combat';
+import type { StatGrade } from '@/systems/stats';
 
 /**
  * Result cards: moments the player should stop and see (a fight's end, a mission's
@@ -15,6 +16,8 @@ export type Report =
       readonly chakraSpent: number;
       readonly health: number;
       readonly maxHealth: number;
+      /** What the fight taught you, as display labels ("Taijutsu +0.05"). */
+      readonly taught?: readonly string[];
     }
   | {
       readonly kind: 'mission-complete';
@@ -42,6 +45,10 @@ export type Report =
       readonly hospitalFee: number;
       readonly reputationLost: number;
       readonly text: string;
+      /** The injury the beating left, by name. */
+      readonly injury?: string;
+      /** What the fight taught you, even in defeat, as display labels. */
+      readonly taught?: readonly string[];
     }
   | {
       readonly kind: 'lesson';
@@ -63,6 +70,16 @@ export type Report =
       readonly text: string;
       readonly gains: readonly string[];
       readonly bond: number;
+    }
+  | {
+      /** A stat crossed into a new grade. */
+      readonly kind: 'grade';
+      readonly stat: string;
+      readonly grade: StatGrade;
+      /** The shinobi rank the grade belongs to, e.g. "Chūnin". */
+      readonly rank: string;
+      /** What the new grade opens: techniques now within reach, and where they are taught. */
+      readonly opens: readonly { readonly name: string; readonly where: string }[];
     }
   | {
       readonly kind: 'team-formed';

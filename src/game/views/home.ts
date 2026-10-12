@@ -5,7 +5,9 @@ import { MAX_HEALTH } from '@/systems/vitals';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import type { GameState } from '../state';
+import { treatmentBill } from '../actions/services';
 import { choice, type Choice } from './common';
+import { conditionView, type InjuryLine } from './condition';
 
 export interface HomeView {
   readonly name: string;
@@ -53,7 +55,9 @@ export interface HospitalView {
   readonly name: string;
   readonly health: number;
   readonly maxHealth: number;
+  /** Today's bill: health, plus each injury not yet treated. */
   readonly cost: number;
+  readonly injuries: readonly InjuryLine[];
   readonly treat: Choice;
 }
 
@@ -64,7 +68,8 @@ export function hospitalView(state: GameState, ctx: GameContext): HospitalView |
     name: place.name,
     health: Math.round(state.character.vitals.health),
     maxHealth: MAX_HEALTH,
-    cost: place.treatmentCost,
+    cost: treatmentBill(state, ctx) ?? place.treatmentCost,
+    injuries: conditionView(state, ctx).injuries,
     treat: choice(state, ctx, { type: 'treat' }),
   };
 }

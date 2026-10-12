@@ -19,9 +19,9 @@ const FILTERS: readonly { id: DrillGroup | 'all'; label: string }[] = [
   { id: 'mind', label: 'Mind' },
 ];
 
-/** "+0.4": growth is small, so one decimal place. */
+/** "+0.04": a session adds hundredths once a stat is past its first grade. */
 function gainText(preview: StatPreview): string {
-  return `+${(preview.after - preview.now).toFixed(1)}`;
+  return `+${(preview.after - preview.now).toFixed(2)}`;
 }
 
 /**
@@ -94,7 +94,7 @@ export function TrainingPage({ ctx, state, perform, onBack }: PlaceProps) {
                     <span>
                       {main.label}
                       <small className="num">
-                        {main.now.toFixed(1)} → {main.after.toFixed(1)}
+                        {main.now.toFixed(2)} → {main.after.toFixed(2)}
                       </small>
                     </span>
                   </p>

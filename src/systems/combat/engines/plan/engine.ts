@@ -94,7 +94,15 @@ function options(state: PlanState): CombatOption[] {
 /** What each fighter used, for the outcome. */
 function usage(fighters: readonly PlanFighter[]): Record<string, CombatUsage> {
   return Object.fromEntries(
-    fighters.map((f) => [f.id, { techniqueIds: f.used ?? [], chakraSpent: f.chakraSpent ?? 0 }]),
+    fighters.map((f) => [
+      f.id,
+      {
+        techniqueIds: f.used ?? [],
+        chakraSpent: f.chakraSpent ?? 0,
+        blows: f.blows ?? 0,
+        footwork: f.footwork ?? 0,
+      },
+    ]),
   );
 }
 
@@ -249,6 +257,7 @@ export function createPlanEngine(): CombatEngine {
         items: itemsLeft(player),
         plan: player.loadout,
         costs: [...costsOwed(player), ...empowerCostsOwed(player)],
+        chakraSpent: player.chakraSpent ?? 0,
         used: usage(plan.fighters),
       };
     },

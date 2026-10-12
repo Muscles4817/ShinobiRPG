@@ -7,6 +7,7 @@ export {
   SATIETY_DECAY_PER_SLOT,
   MAX_HEALTH,
   maxChakra,
+  reservesFor,
   fullVitals,
   adjustVitals,
   passTime,

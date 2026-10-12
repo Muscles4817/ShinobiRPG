@@ -124,6 +124,15 @@ describe('plan & watch techniques', () => {
     }
   });
 
+  it('add what they cost to the chakra spent in the fight, hit or miss', () => {
+    const once = crushUntil(roundWith(), /hits bandit/);
+    expect(fighterIn(once, 'hero')).toMatchObject({ chakra: 24, chakraSpent: 6 });
+    const [hero, bandit] = once.fighters;
+    const twice = useJutsu(once, { actor: hero!, target: bandit, rng: createRng(3) }, crush);
+    expect(fighterIn(twice, 'hero')).toMatchObject({ chakra: 18, chakraSpent: 12 });
+    expect(fighterIn(twice, 'bandit')?.chakraSpent).toBeUndefined();
+  });
+
   it('miss entirely when the target sees them coming', () => {
     const watchful = { attributes: { ...attributes, perception: 60 } };
     const after = crushUntil(roundWith(watchful), /sees it coming/);

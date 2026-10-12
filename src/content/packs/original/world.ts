@@ -1,4 +1,5 @@
 import type { LocationDef, SettingText } from '../../types';
+import { APTITUDE_TEXT } from '../../shared/aptitude';
 import { TOOL_IDS } from '../../shared/tools';
 
 export const ORIGINAL_TEXT: SettingText = {
@@ -14,6 +15,7 @@ export const ORIGINAL_TEXT: SettingText = {
   sleepHungry: 'You sleep fitfully on an empty stomach.',
   sleepLockedOut: 'The landlord has locked your door over unpaid rent. You sleep in the stairwell.',
   hospitalWake: 'You wake in the village hospital, under lantern light and clean sheets.',
+  aptitude: APTITUDE_TEXT,
 };
 
 export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [

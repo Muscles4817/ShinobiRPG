@@ -1,3 +1,5 @@
+import { v17ToV18 } from './aptitudeMigration';
+
 /**
  * Save migrations, keyed by the version being migrated *from*. Each step takes the raw
  * state object of one version and returns the next version's shape. Never edit a step
@@ -219,6 +221,47 @@ function v14ToV15(state: RawState): RawState {
   };
 }
 
+/** Max chakra before save version 16, which grew with stamina and chakra control. */
+function oldMaxChakra(stats: RawState): number {
+  return Math.round(30 + statOf(stats, 'chakraControl') * 3 + statOf(stats, 'stamina') * 1.5);
+}
+
+/**
+ * Reserves that keep max chakra where it was under the version 16 rule (30, plus 3.5 a point
+ * of reserves, plus 1 a point of control). Written out here so the step never changes.
+ */
+function seededReserves(stats: RawState): number {
+  const reserves = (oldMaxChakra(stats) - 30 - statOf(stats, 'chakraControl')) / 3.5;
+  return Math.max(0, Math.round(reserves * 10) / 10);
+}
+
+function withReserves(stats: unknown): RawState {
+  const record = asRecord(stats);
+  return { ...record, reserves: seededReserves(record) };
+}
+
+/**
+ * v15 → v16: chakra reserves become a stat and max chakra derives from them instead of from
+ * stamina. Reserves are seeded so max chakra stays about where it was; current chakra is kept.
+ */
+function v15ToV16(state: RawState): RawState {
+  const character = asRecord(state.character);
+  return {
+    ...state,
+    character: {
+      ...character,
+      stats: withReserves(character.stats),
+      startingStats: withReserves(character.startingStats),
+    },
+  };
+}
+
+/** v16 → v17: injuries and chakra exhaustion arrive; everyone starts unhurt and rested. */
+function v16ToV17(state: RawState): RawState {
+  const character = asRecord(state.character);
+  return { ...state, character: { ...character, injuries: [], exhaustion: null } };
+}
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: v1ToV2,
   2: v2ToV3,
@@ -234,4 +277,7 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   12: v12ToV13,
   13: v13ToV14,
   14: v14ToV15,
+  15: v15ToV16,
+  16: v16ToV17,
+  17: v17ToV18,
 };

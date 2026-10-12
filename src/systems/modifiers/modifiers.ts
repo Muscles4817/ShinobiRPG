@@ -1,4 +1,4 @@
-import { STAT_IDS, STAT_INFO, type StatId } from '@/systems/stats';
+import { STAT_IDS, STAT_INFO, type SoloFloor, type SoloFloors, type StatId } from '@/systems/stats';
 import { DISCIPLINES, ELEMENTS, type Discipline, type Element } from '@/systems/techniques';
 
 /**
@@ -17,6 +17,8 @@ export interface ModifierSpec {
   readonly studyElement?: Readonly<Partial<Record<Element, number>>>;
   /** How fast you get hungry. */
   readonly hungerRate?: number;
+  /** Hard work: solo training in these stats keeps at least this efficiency up to a grade. */
+  readonly soloEfficiencyFloor?: Readonly<Partial<Record<StatId, SoloFloor>>>;
 }
 
 export interface Modifiers {
@@ -24,6 +26,8 @@ export interface Modifiers {
   readonly studyDiscipline: Readonly<Record<Discipline, number>>;
   readonly studyElement: Readonly<Record<Element, number>>;
   readonly hungerRate: number;
+  /** Every hard-work floor on each stat's solo efficiency (the best one that applies wins). */
+  readonly soloFloors: SoloFloors;
 }
 
 function filled<K extends string>(keys: readonly K[]): Record<K, number> {
@@ -35,6 +39,7 @@ export const NEUTRAL: Modifiers = {
   studyDiscipline: filled(DISCIPLINES),
   studyElement: filled(ELEMENTS),
   hungerRate: 1,
+  soloFloors: {},
 };
 
 function scaleAll<K extends string>(
@@ -47,6 +52,14 @@ function scaleAll<K extends string>(
   return next;
 }
 
+function withFloors(floors: SoloFloors, added: ModifierSpec['soloEfficiencyFloor']): SoloFloors {
+  const next: Partial<Record<StatId, readonly SoloFloor[]>> = { ...floors };
+  for (const [stat, floor] of Object.entries(added ?? {}) as [StatId, SoloFloor][]) {
+    next[stat] = [...(floors[stat] ?? []), floor];
+  }
+  return next;
+}
+
 export function combine(specs: readonly ModifierSpec[]): Modifiers {
   return specs.reduce<Modifiers>(
     (acc, spec) => ({
@@ -54,6 +67,7 @@ export function combine(specs: readonly ModifierSpec[]): Modifiers {
       studyDiscipline: scaleAll(acc.studyDiscipline, spec.studyDiscipline),
       studyElement: scaleAll(acc.studyElement, spec.studyElement),
       hungerRate: acc.hungerRate * (spec.hungerRate ?? 1),
+      soloFloors: withFloors(acc.soloFloors, spec.soloEfficiencyFloor),
     }),
     NEUTRAL,
   );
@@ -100,6 +114,26 @@ function studyLines(study: Partial<Record<Discipline, number>>): EffectLine[] {
   );
 }
 
+/** One line per hard-work floor grade, naming the stats it holds up. */
+function floorLines(floors: Partial<Record<StatId, SoloFloor>>): EffectLine[] {
+  const byGrade = new Map<string, string[]>();
+  for (const [stat, floor] of Object.entries(floors) as [StatId, SoloFloor][]) {
+    byGrade.set(floor.throughGrade, [
+      ...(byGrade.get(floor.throughGrade) ?? []),
+      STAT_INFO[stat].label,
+    ]);
+  }
+  return [...byGrade].map(([grade, labels]) => ({
+    label: `Training alone keeps paying off up to grade ${grade} in ${listed(labels)}`,
+    tone: 'gain',
+  }));
+}
+
+function listed(labels: readonly string[]): string {
+  const last = labels.at(-1) ?? '';
+  return labels.length > 1 ? `${labels.slice(0, -1).join(', ')} and ${last}` : last;
+}
+
 export function describeSpec(spec: ModifierSpec): EffectLine[] {
   const lines: EffectLine[] = [];
   if (spec.training !== undefined)
@@ -111,6 +145,7 @@ export function describeSpec(spec: ModifierSpec): EffectLine[] {
   for (const [e, m] of Object.entries(spec.studyElement ?? {}) as [Element, number][]) {
     lines.push(line(`${capital(e)} techniques learned`, m, 'faster', 'slower'));
   }
+  lines.push(...floorLines(spec.soloEfficiencyFloor ?? {}));
   if (spec.hungerRate !== undefined) {
     lines.push(
       spec.hungerRate > 1

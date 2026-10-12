@@ -1,5 +1,4 @@
 import { clamp, round1 } from '@/core';
-import { STAT_IDS, type StatId } from '@/systems/stats';
 
 import type { CombatAttributes, CombatCost, CombatTechnique } from '../../contract';
 import type { EffectUse } from './use';
@@ -7,7 +6,7 @@ import type { EffectUse } from './use';
 /**
  * Empower: a self-buff for a few exchanges, with a price (the Gates are the reference). How much
  * it raises the boosted stats comes from its power and the user's art; how long it holds from
- * their reserves (max chakra, until reserves are a stat of their own); the body pays health
+ * their reserves (through max chakra, which derives from them); the body pays health
  * each exchange, eased by willpower, and some empowers leave a cost due after the fight. Engines
  * raise the stats themselves while it holds, so every rule that reads a stat sees it.
  */
@@ -73,10 +72,9 @@ export function empowerPrice(willpower: number, use: EffectUse<'empower'>): numb
 }
 
 function addTo(attributes: CombatAttributes, added: Empowerment['added'], sign: 1 | -1) {
-  const next: Record<StatId, number> = { ...attributes };
-  for (const id of STAT_IDS) {
-    const amount = added[id];
-    if (amount !== undefined) next[id] = round1(next[id] + sign * amount);
+  const next: Record<Stat, number> = { ...attributes };
+  for (const [id, amount] of Object.entries(added) as [Stat, number][]) {
+    next[id] = round1(next[id] + sign * amount);
   }
   return next;
 }
@@ -95,7 +93,7 @@ export function empower(
   { drive, exchange }: { readonly drive: number; readonly exchange: number },
 ): Empowered {
   const share = empowerShare(drive, use);
-  const boosts: readonly StatId[] = use.effect.boosts;
+  const boosts: readonly Stat[] = use.effect.boosts;
   const added = Object.fromEntries(
     boosts.map((stat) => [stat, round1(fighter.attributes[stat] * share)]),
   );

@@ -6,13 +6,30 @@ import {
   hungerLevel,
   hungerOf,
   MAX_HEALTH,
+  maxChakra,
   passTime,
+  reservesFor,
   sleepRecovery,
 } from './vitals';
 
 const stats = createStats(5);
 
 describe('vitals', () => {
+  it('draws max chakra from reserves and a little control, not stamina', () => {
+    expect(maxChakra({ ...stats, reserves: 15 })).toBeGreaterThan(maxChakra(stats) + 30);
+    expect(maxChakra({ ...stats, chakraControl: 15 })).toBeGreaterThan(maxChakra(stats));
+    expect(maxChakra({ ...stats, chakraControl: 15 })).toBeLessThan(
+      maxChakra({ ...stats, reserves: 15 }),
+    );
+    const tough = { ...stats, stamina: 30 };
+    expect(maxChakra(tough)).toBe(maxChakra(stats));
+  });
+
+  it('finds the reserves behind a chakra pool', () => {
+    expect(maxChakra({ ...stats, reserves: reservesFor(80, 5) })).toBe(80);
+    expect(reservesFor(0, 5)).toBe(0);
+  });
+
   it('clamps meters to their ranges', () => {
     const v = adjustVitals(fullVitals(stats), { health: 1000, energy: -1000 }, stats);
     expect(v.health).toBe(MAX_HEALTH);

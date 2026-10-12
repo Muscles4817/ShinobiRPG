@@ -27,8 +27,14 @@ export interface CombatOrders {
   readonly cardsLocked?: string;
 }
 
-/** What one fighter used in a fight: techniques (by id, in first-use order) and chakra spent. */
+/**
+ * What one fighter used in a fight: techniques (by id, in first-use order), chakra spent, and
+ * how often they struck with their own body (`blows`) and fought for the distance (`footwork`),
+ * the plain work that fights teach. The counts are absent from engines that don't track them.
+ */
 export interface CombatUsage {
   readonly techniqueIds: readonly string[];
   readonly chakraSpent: number;
+  readonly blows?: number;
+  readonly footwork?: number;
 }

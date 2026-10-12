@@ -32,6 +32,8 @@ export interface TierRead {
   readonly rank: string;
   /** "Genin D". */
   readonly label: string;
+  /** The value this grade begins at. */
+  readonly min: number;
   /** How far through this grade towards the next, 0–1 (1 at the top). */
   readonly progress: number;
   /** The next grade up and the value that reaches it; null at the top. */
@@ -51,11 +53,16 @@ export function statTier(value: number): TierRead {
     grade: tier.grade,
     rank: tier.rank,
     label: labelOf(tier),
+    min: tier.min,
     progress: Math.max(0, progress),
     next: next ? { label: labelOf(next), at: next.min } : null,
   };
 }
 
+/**
+ * Reserves are left out: they say how long someone can keep using jutsu, not how dangerous each
+ * exchange with them is, and an enemy's chakra is authored apart from their stats.
+ */
 const BODY_AND_MIND: readonly StatId[] = [
   'strength',
   'speed',

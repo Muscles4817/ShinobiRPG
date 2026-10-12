@@ -195,6 +195,30 @@ describe('plan & watch: what each fighter used', () => {
     const used = engine.outcome(state)?.used;
     expect(used?.hero?.techniqueIds).toEqual(['flame']);
     expect(used?.hero?.chakraSpent).toBeGreaterThan(0);
-    expect(used?.bandit).toEqual({ techniqueIds: [], chakraSpent: 0 });
+    expect(used?.bandit).toMatchObject({ techniqueIds: [], chakraSpent: 0 });
+  });
+
+  it('counts plain strikes as blows and steps as footwork, but not kunai', () => {
+    const engine = createPlanEngine();
+    const rng = createRng(4);
+    let state = engine.start(
+      {
+        player: fighter('hero', { attributes: { ...attributes, strength: 20, speed: 20 } }),
+        allies: [],
+        enemies: [fighter('bandit', { health: 30, maxHealth: 30 })],
+        canFlee: false,
+        plan: { close: ['strike'], mid: ['step-in'], far: ['step-in'] },
+        opening: { range: 'far' },
+      },
+      rng,
+    );
+    for (let i = 0; i < 60 && !engine.outcome(state); i++) {
+      const atTable = engine.view(state).options.some((o) => o.id === 'begin');
+      const next = engine.act(state, { optionId: atTable ? 'begin' : 'next' }, rng);
+      if (next.ok) state = next.value;
+    }
+    const hero = engine.outcome(state)?.used?.hero;
+    expect(hero?.blows).toBeGreaterThan(0);
+    expect(hero?.footwork).toBeGreaterThan(0);
   });
 });

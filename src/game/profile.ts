@@ -1,17 +1,20 @@
 import { round1 } from '@/core';
 import { combine, studyMultiplier, type ModifierSpec, type Modifiers } from '@/systems/modifiers';
-import { STAT_IDS, type StatScale } from '@/systems/stats';
+import { STAT_IDS, type Growth, type StatScale } from '@/systems/stats';
 import { gradeModifiers } from '@/systems/profile';
 import { ELEMENTS, studyPoints, type Element, type TechniqueDef } from '@/systems/techniques';
 
+import { withoutGrowth } from './aptitude';
 import type { GameContext } from './context';
 import { hungerEffect } from './hunger';
+import { injurySpecs } from './injuries';
 import type { Character } from './state';
 
 /**
  * Turns a character's identity into growth modifiers. Every source (clan, talent, traits,
- * academy grades, chakra nature, today's meal, hunger) contributes a ModifierSpec; the result
- * is their product.
+ * academy grades, chakra nature, today's meal, hunger, injuries) contributes a ModifierSpec;
+ * the result is their product. Clan and talent growth is not among them: it shaped the
+ * character's aptitude when they were made, and aptitude multiplies every growth source.
  */
 
 /** Techniques of your own nature are learned this much faster; others a little slower. */
@@ -34,20 +37,31 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
   const talent = character.talentId ? content.talents.get(character.talentId) : undefined;
   const traits = character.traitIds.flatMap((id) => content.traits.get(id) ?? []);
   return combine([
-    clan?.modifiers ?? {},
-    talent?.modifiers ?? {},
+    withoutGrowth(clan?.modifiers ?? {}),
+    withoutGrowth(talent?.modifiers ?? {}),
     ...traits.map((t) => t.modifiers),
     gradeModifiers(character.grades),
     natureModifiers(character.nature, clan?.nature),
     (character.meal ? content.recipes.get(character.meal)?.buff : undefined) ?? {},
     hungerEffect(character.vitals).spec,
+    ...injurySpecs(character, ctx),
   ]);
 }
 
-/** Per-stat training multipliers for this character right now (hunger included). */
-export function trainingScale(character: Character, ctx: GameContext): StatScale {
+/** Per-stat growth multipliers for this character right now: aptitude, identity, condition. */
+export function trainingScale(character: Character, ctx: GameContext, teacher = 1): StatScale {
   const { growth } = characterModifiers(character, ctx);
-  return Object.fromEntries(STAT_IDS.map((id) => [id, growth[id]]));
+  return Object.fromEntries(
+    STAT_IDS.map((id) => [id, character.aptitude[id] * growth[id] * teacher]),
+  );
+}
+
+/** Everything that shapes this character's growth right now; `teacher` multiplies it. */
+export function growthFor(character: Character, ctx: GameContext, teacher = 1): Growth {
+  return {
+    scale: trainingScale(character, ctx, teacher),
+    floors: characterModifiers(character, ctx).soloFloors,
+  };
 }
 
 /** Study points one session earns towards a technique, after clan, talent and nature. */

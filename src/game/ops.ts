@@ -6,6 +6,7 @@ import { adjustVitals, MAX_HEALTH, passTime, type VitalsDelta } from '@/systems/
 
 import { boardFor } from './board';
 import type { GameContext } from './context';
+import { healInjuries } from './injuries';
 import { characterModifiers } from './profile';
 import type { GameState } from './state';
 
@@ -29,7 +30,8 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
       meal: time.day === state.time.day ? character.meal : null,
     },
   };
-  return { ...passed, board: boardFor(passed, ctx) };
+  const healed = time.day === state.time.day ? passed : healInjuries(passed, ctx);
+  return { ...healed, board: boardFor(healed, ctx) };
 }
 
 export function adjust(state: GameState, delta: VitalsDelta): GameState {

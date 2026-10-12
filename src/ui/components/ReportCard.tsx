@@ -1,6 +1,37 @@
 import type { Report } from '@/game';
 
-import { peopleCardContent, type CardContent } from './peopleReports';
+import { gainRow, peopleCardContent, type CardContent, type CardList } from './peopleReports';
+
+/** What a fight taught, as a list on its card (absent when it taught nothing visible). */
+function taughtList(taught: readonly string[] | undefined): { list?: CardList } {
+  return taught && taught.length > 0
+    ? { list: { title: 'What the fight taught you', rows: taught.map(gainRow) } }
+    : {};
+}
+
+/** A stat's new grade: the letter as a stamp, and what it opens, from content. */
+function gradeCard(report: Extract<Report, { kind: 'grade' }>): CardContent {
+  return {
+    title: `${report.stat}: grade ${report.grade}`,
+    subtitle: `${report.rank}-grade work`,
+    seal: null,
+    grade: report.grade,
+    tone: 'good',
+    rows: [],
+    ...(report.opens.length > 0
+      ? {
+          list: {
+            title: 'What this opens',
+            rows: report.opens.map((o) => ({ label: o.name, value: o.where })),
+          },
+        }
+      : {}),
+    note:
+      report.opens.length > 0
+        ? 'New scrolls are within your reach.'
+        : 'Nothing new is within reach yet, but you are not the shinobi you were.',
+  };
+}
 
 /** The debrief: what you earned, what was docked, and how the team grew. */
 function missionCompleteCard(report: Extract<Report, { kind: 'mission-complete' }>): CardContent {
@@ -47,6 +78,7 @@ function content(report: Report): CardContent {
           { label: 'Chakra spent', value: String(report.chakraSpent), tone: 'cost' },
           { label: 'Health left', value: `${report.health} / ${report.maxHealth}` },
         ],
+        ...taughtList(report.taught),
         note:
           report.health < report.maxHealth * 0.25
             ? 'That was close. Rest before your next fight.'
@@ -72,17 +104,39 @@ function content(report: Report): CardContent {
         rows: [
           ...(report.title ? [{ label: 'Mission', value: 'Failed', tone: 'harm' as const }] : []),
           { label: 'Hospital bill', value: `${report.hospitalFee} ryo`, tone: 'cost' },
+          ...(report.injury
+            ? [{ label: 'Injury', value: report.injury, tone: 'harm' as const }]
+            : []),
           ...(report.reputationLost > 0
             ? [{ label: 'Reputation', value: `−${report.reputationLost}`, tone: 'harm' as const }]
             : []),
         ],
+        ...taughtList(report.taught),
         note: report.text,
       };
+    case 'grade':
+      return gradeCard(report);
     case 'lesson':
     case 'spar':
     case 'team-formed':
       return peopleCardContent(report);
   }
+}
+
+function ReportList({ list }: { readonly list: CardList }) {
+  return (
+    <section className="report-list" aria-label={list.title}>
+      <h3 className="report-list-title">{list.title}</h3>
+      <dl className="report-rows">
+        {list.rows.map((r, i) => (
+          <div key={`${r.label}-${i}`}>
+            <dt>{r.label}</dt>
+            <dd className={`num ${r.tone ?? ''}`}>{r.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
 }
 
 interface ReportCardProps {
@@ -101,6 +155,11 @@ export function ReportCard({ report, onContinue }: ReportCardProps) {
             {c.seal}
           </span>
         )}
+        {c.grade && (
+          <span className="seal grade-seal" data-grade={c.grade} aria-hidden="true">
+            {c.grade}
+          </span>
+        )}
         <p className="label">{c.subtitle}</p>
         <h2 id="report-title" className="report-title">
           {c.title}
@@ -113,6 +172,7 @@ export function ReportCard({ report, onContinue }: ReportCardProps) {
             </div>
           ))}
         </dl>
+        {c.list && <ReportList list={c.list} />}
         {c.note && <p className="story report-note">{c.note}</p>}
         <button type="button" className="btn wide" onClick={onContinue} autoFocus>
           Continue

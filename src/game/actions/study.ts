@@ -1,6 +1,7 @@
 import { STAT_INFO } from '@/systems/stats';
 import { learnBlocker, study as studyTechnique } from '@/systems/techniques';
 
+import { discover, logDiscoveries, noTalentReason } from '../growth';
 import { studyPointsFor } from '../profile';
 import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
 import { closedReason } from '../village';
@@ -18,6 +19,7 @@ export const study: ActionHandler<ActionOf<'study'>> = {
     const blocker = learnBlocker(state.techniques, def, character.stats, character.clanId);
     return firstBlocker(
       busyReason(state),
+      noTalentReason(character, def.discipline, ctx),
       closedReason(academy.name, academy.hours, state),
       blocker?.kind === 'already-known' && 'You already know this technique.',
       blocker?.kind === 'clan' && 'Only taught within its clan.',
@@ -28,13 +30,15 @@ export const study: ActionHandler<ActionOf<'study'>> = {
   },
   perform(state, action, ctx) {
     const def = ctx.content.techniques.require(action.techniqueId);
-    const points = studyPointsFor(state.character, def, ctx);
+    const { character } = state;
+    const talent = character.aptitude[def.discipline] > 0;
+    const points = talent ? studyPointsFor(character, def, ctx) : 0;
     const result = studyTechnique(state.techniques, def, points);
-    const next = adjust(spendTime({ ...state, techniques: result.book }, STUDY_SLOTS, ctx), {
-      energy: -STUDY_ENERGY_COST,
-    });
+    const practised = discover(character, { [def.discipline]: 1 });
+    const studied = { ...state, techniques: result.book, character: practised.character };
+    const next = adjust(spendTime(studied, STUDY_SLOTS, ctx), { energy: -STUDY_ENERGY_COST });
     const pct = Math.round((result.progress / def.difficulty) * 100);
-    return log(next, {
+    const logged = log(next, {
       heading: `Study ${def.name}`,
       text: result.mastered
         ? `It finally clicks. ${def.name} is yours.`
@@ -45,5 +49,6 @@ export const study: ActionHandler<ActionOf<'study'>> = {
         chip(`−${STUDY_ENERGY_COST} energy`, 'cost'),
       ],
     });
+    return logDiscoveries(logged, practised.discovered, ctx);
   },
 };

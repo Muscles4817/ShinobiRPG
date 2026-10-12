@@ -186,6 +186,23 @@
   font-size: 0.75rem;
   text-align: right;
 }
+.stat-row .talent-read {
+  grid-column: 2 / -1;
+}
+.talent-read {
+  font-family: var(--font-story);
+  font-style: italic;
+  font-size: 0.72rem;
+  color: var(--story);
+}
+.disc .talent-read {
+  color: var(--story);
+  font-size: 0.68rem;
+}
+.talent-read[data-read='unknown'],
+.disc .talent-read[data-read='unknown'] {
+  color: var(--muted);
+}
 
 .undiscovered {
   display: flex;
@@ -249,10 +266,42 @@
   background: color-mix(in srgb, var(--g) 18%, transparent);
   overflow: hidden;
 }
+.grade-bar {
+  position: relative;
+}
 .grade-bar i {
   display: block;
   height: 100%;
   background: var(--g);
+}
+/* A tick within a grade: the stretch just gained is brushed in with ink, then settles. */
+.grade-bar .ink-stroke {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--ink);
+  transform-origin: left center;
+  animation: ink-stroke 0.9s ease-out both;
+}
+@keyframes ink-stroke {
+  from {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  45% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grade-bar .ink-stroke {
+    animation: none;
+    opacity: 0;
+  }
 }
 .disc-value {
   display: flex;
@@ -297,4 +346,32 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
+}
+
+/* Condition: injuries and chakra exhaustion, as a medic's slips */
+.condition {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+.injury-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.injury-slip {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--grain), var(--surface);
+}
+.injury-head b {
+  font-family: var(--font-story);
+}
+.ward .injury-list {
+  margin-top: 4px;
 }

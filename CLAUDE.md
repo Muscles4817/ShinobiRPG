@@ -99,6 +99,11 @@ ui ──► game ──► content ──► systems ──► core
     `Modifiers` value that training growth, study speed and hunger read. A new kind of identity
     (bloodline stage, gear, a sensei's teaching) is another spec, not new branches in actions.
     Option cards show `describeSpec` output, so what the player is told is what the code does.
+    **Talent is aptitude**: a hidden multiplier per stat (`character.aptitude`, 0 = never),
+    rolled at creation (`game/aptitude.ts`; clan `arts`, talent floors, clan and talent growth
+    as tilts) and found out by training (`aptitudeKnown`). All growth goes through
+    `growCharacter` (`game/growth.ts`): base × solo efficiency by grade × aptitude × modifiers
+    (× a teacher); hard-work traits set a `soloEfficiencyFloor`. Players see reads, never numbers.
 12. **Character creation is the opening scene.** The academy break-in collects a
     `CreationDraft`; `draftProblems` validates it and `createNewGame` builds the first state.
     The break-in roll is seeded, so the scene and the game agree on the outcome.

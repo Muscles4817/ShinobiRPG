@@ -8,7 +8,7 @@ import type {
 } from '@/systems/combat';
 import { restockPouch } from '@/systems/inventory';
 import { createStats, type Stats } from '@/systems/stats';
-import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
+import { maxChakra, MAX_HEALTH, reservesFor } from '@/systems/vitals';
 
 import type { GameContext } from './context';
 import { combatStats } from './gear';
@@ -81,12 +81,21 @@ function enemyMaxHealth(def: Pick<EnemyDef, 'healthScale'>): number {
   return Math.max(1, Math.round(MAX_HEALTH * (def.healthScale ?? 1)));
 }
 
+/**
+ * An enemy's stat line. Their chakra is authored (`EnemyDef.maxChakra`), so their reserves are
+ * whatever gives that chakra at their control: a beast with none has none to speak of.
+ */
+export function enemyStatLine(def: EnemyDef): Stats {
+  const stats = createStats(def.baseStat, def.statBonuses);
+  return { ...stats, reserves: reservesFor(def.maxChakra, stats.chakraControl) };
+}
+
 export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
   return {
     id: `${def.id}#${index}`,
     name: def.name,
     tag: def.kind,
-    attributes: attributesOf(createStats(def.baseStat, def.statBonuses)),
+    attributes: attributesOf(enemyStatLine(def)),
     health: enemyMaxHealth(def),
     maxHealth: enemyMaxHealth(def),
     chakra: def.maxChakra,

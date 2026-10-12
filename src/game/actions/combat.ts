@@ -1,5 +1,6 @@
 import { afterPouch } from '../combatants';
-import { applyFightCosts } from '../fightCosts';
+import { fightLessons, growFromFight } from '../fightGrowth';
+import { applyFightToll } from '../fightToll';
 import { engineFor, rememberPlan } from '../fightStyle';
 import { resolveCombat } from '../missionFlow';
 import { resolveSpar } from '../sparFlow';
@@ -26,10 +27,13 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const combat = next.value;
     const outcome = engine.outcome(combat);
     if (!outcome) return { ...state, combat };
+    const lessons = fightLessons(state, outcome, ctx);
     const ended = afterPouch(rememberPlan({ ...state, combat }, engine.id, outcome), outcome);
-    const resolved = state.people.sparringWith
+    const sparring = state.people.sparringWith !== null;
+    const resolved = sparring
       ? resolveSpar(ended, outcome, ctx)
       : resolveCombat(ended, outcome, ctx);
-    return applyFightCosts(resolved, outcome);
+    const end = { outcome, view: engine.view(combat), sparring };
+    return growFromFight(applyFightToll(resolved, end, ctx, rng), lessons, ctx);
   },
 };

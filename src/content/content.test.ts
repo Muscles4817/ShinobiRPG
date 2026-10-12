@@ -62,6 +62,24 @@ describe('content validation', () => {
     );
   });
 
+  it('detects a drill for reserves, which only grow with stamina and jutsu use', () => {
+    const [first, ...rest] = ORIGINAL_PACK.training;
+    const drill = { ...first!, gains: { ...first!.gains, reserves: 1 } };
+    expect(validateContent({ ...ORIGINAL_PACK, training: [drill, ...rest] })).toContain(
+      `training "${first!.id}" drills reserves, which only grow with stamina and jutsu use`,
+    );
+  });
+
+  it('detects clans without arts, and a clanless family with some', () => {
+    const clans = ORIGINAL_PACK.clans.map((c) => ({
+      ...c,
+      arts: c.id === 'none' ? (['taijutsu'] as const) : [],
+    }));
+    const problems = validateContent({ ...ORIGINAL_PACK, clans });
+    expect(problems).toContain('the "none" clan can’t have arts');
+    expect(problems).toContain('clan "hibana" declares no arts');
+  });
+
   it('detects an empower that costs nothing', () => {
     const [first, ...rest] = ORIGINAL_PACK.techniques;
     const effects = [{ verb: 'empower', power: 10, boosts: ['strength'] }] as const;
@@ -69,6 +87,18 @@ describe('content validation', () => {
     expect(validateContent(free)).toContain(
       `technique "${first!.id}" has an empower with no price (it needs a health price or an after-cost)`,
     );
+  });
+
+  it('detects injuries that make no sense, and a cause with none to give', () => {
+    const [first, ...rest] = ORIGINAL_PACK.injuries;
+    const odd = { ...first!, days: 0, fight: { speed: 1.2 } };
+    const problems = validateContent({
+      ...ORIGINAL_PACK,
+      injuries: [odd, ...rest.filter((i) => !i.causes.includes('collapse'))],
+    });
+    expect(problems).toContain(`injury "${first!.id}" must last at least a day`);
+    expect(problems).toContain(`injury "${first!.id}" needs fight multipliers between 0 and 1`);
+    expect(problems).toContain('pack needs an injury caused by collapse');
   });
 
   it('detects activities no place offers', () => {

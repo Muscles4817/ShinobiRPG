@@ -1,8 +1,8 @@
 import type { CombatTrait } from '@/systems/combat';
 import { fightingPower, STAT_INFO, type StatId, type Stats } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
-import { createStats } from '@/systems/stats';
 
+import { enemyStatLine } from './combatants';
 import type { GameContext } from './context';
 import { combatStats } from './gear';
 import { companionStats, companionTraits, PERSON_PREFIX } from './people/companions';
@@ -147,7 +147,7 @@ export function hasSharpEyes(state: GameState, ctx: GameContext): boolean {
 /** Stats of an enemy from the pack, by id. */
 export function enemyStats(ctx: GameContext, enemyId: string): Stats | null {
   const def = ctx.content.enemies.get(enemyId);
-  return def ? createStats(def.baseStat, def.statBonuses) : null;
+  return def ? enemyStatLine(def) : null;
 }
 
 interface Opponent {
