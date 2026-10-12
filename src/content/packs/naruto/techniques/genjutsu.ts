@@ -17,7 +17,7 @@ export const GENJUTSU: readonly TechniqueDef[] = [
     name: 'Demonic Illusion: Hell Viewing',
     description: 'Show the target the thing they fear most.',
     discipline: 'genjutsu',
-    effects: [{ verb: 'daze', power: 12 }],
+    effects: [{ verb: 'damage', power: 10 }],
     chakraCost: 10,
     rank: 'E',
     difficulty: 45,

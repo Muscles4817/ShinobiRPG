@@ -1,7 +1,7 @@
 import type { Verb } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
-import { canAttackFrom, homeBand } from '../../rules/kit';
+import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, STRIKE_REACH } from '../../rules/range';
 import { isTrump, outmatched } from '../../rules/trumps';
 import {
@@ -36,18 +36,30 @@ function damageJutsu(cards: readonly Card[]): Card[] {
 /** How much a step towards home is worth: before attacking, after, or not at all. */
 type Footwork = 'first' | 'after-attacks' | 'none';
 
+/** A plain blow's weight against techniques' power, for weighing where to stand. */
+const STRIKE_POWER = 8;
+/** A step costs a turn and may fail: it goes first only for a clearly better attack. */
+const STEP_WORTH = 1.25;
+
+/** The hardest-hitting attack the kit has at a distance, as technique power. */
+function bestAttack(fighter: PlanFighter, band: RangeBand): number {
+  const jutsu = damageJutsu(cardsFor(fighter, band))[0];
+  const power = jutsu?.kind === 'jutsu' ? techniquePower(jutsu.technique) : 0;
+  return Math.max(power, inReach(STRIKE_REACH, band) ? STRIKE_POWER : 0);
+}
+
 /**
  * Whether a fighter should spend their turn moving towards home: first when their kit can't
- * attack from here or more of their jutsu reach from home; after their attacks when only a full
- * blow waits at home (kunai land softer, but stepping in hands the foe the first blow, so the
- * plan keeps throwing and lets a foe who closes in come to it).
+ * attack from here or a clearly stronger attack waits at home; otherwise after their attacks
+ * (a step hands the foe a free turn, so the plan fights with what reaches and lets a foe who
+ * closes in come to it).
  */
 function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Footwork {
   if (band === home) return 'none';
   if (!canAttackFrom(fighter, band)) return 'first';
-  const jutsuAtHome = damageJutsu(cardsFor(fighter, home)).length;
-  if (jutsuAtHome > damageJutsu(cardsFor(fighter, band)).length) return 'first';
-  return inReach(STRIKE_REACH, home) && !inReach(STRIKE_REACH, band) ? 'first' : 'none';
+  return bestAttack(fighter, home) > bestAttack(fighter, band) * STEP_WORTH
+    ? 'first'
+    : 'after-attacks';
 }
 
 /** Whom the plan is made against, as far as it is known. */
@@ -58,6 +70,8 @@ interface Facing {
   readonly outmatched: boolean;
   /** Fighting to set the others up (a teammate in support): a hold whatever the foe. */
   readonly support: boolean;
+  /** Some foe fights from hiding (an illusionist, or hidden already): bring a Search. */
+  readonly foeHides: boolean;
 }
 
 /** A hold slotted ahead of the attacks, or behind the best jutsu. */
@@ -69,17 +83,27 @@ interface Hold {
 /**
  * A hold (daze, seal or confusion) to spoil a telegraphed jutsu, when some foe fights with
  * jutsu: against blows alone the slot would never play. Only then: a hold played at any moment
- * costs a turn that a blow would have used better. A daze costs the foe their whole turn, so it
- * goes ahead of the attacks; a seal leaves them their blows and a confusion only sometimes
- * spoils a turn, so they wait behind the best wounding jutsu (the hold bench measures both).
+ * costs a turn that a blow would have used better. Every hold waits behind the best wounding
+ * jutsu: a daze trades your turn for theirs, may be seen coming, and can't be chained (the
+ * target is steady after one), so leading with it loses fights; a teammate in support, whose
+ * job is setting the others up, is the exception.
  */
 function holdSlot(pool: readonly Card[], facing: Facing): Hold {
   const [hold] = facing.foeJutsu || facing.support ? strongest(pool, isHindering) : [];
   if (hold?.kind !== 'jutsu') return { early: [], late: [] };
   const slot: Slot = { card: cardId(hold), when: 'foe-readying' };
-  return hasVerb(hold.technique, 'daze') || facing.support
-    ? { early: [slot], late: [] }
-    : { early: [], late: [slot] };
+  // Only a teammate in support leads with the hold: a daze trades your turn for theirs and
+  // may be seen coming, so on your own it follows your best attack.
+  return facing.support ? { early: [slot], late: [] } : { early: [], late: [slot] };
+}
+
+/**
+ * How to find a hidden foe: a sense technique when the kit has one, else, against a foe known
+ * to hide, a Search (a plan with neither can't touch an illusionist at all).
+ */
+function finding(senses: readonly Card[], search: readonly Card[], facing: Facing): Slot[] {
+  const by = senses.length > 0 ? senses : facing.foeHides ? search.slice(0, 1) : [];
+  return by.map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' }));
 }
 
 /** The strongest trump that does something to a foe: kept for the last ditch, unless outmatched. */
@@ -91,31 +115,29 @@ function trumpSlot(trumps: readonly Card[], facing: Facing): Slot[] {
   ];
 }
 
-function isDefence(slot: Slot): boolean {
-  return slot.card === 'guard' || slot.card === 'dodge';
-}
-
 /**
- * The slots that fit, keeping a defence when a hold or a trump took its place: those play only
- * now and then, and a plan with no guard at all loses more than a hold wins back.
+ * The slots that fit, always keeping a defence when the kit has one: a Guard or Dodge costs no
+ * turn and no chakra, it reacts to every hit, and a plan without one loses to a plan with one
+ * far more often than any third attack wins back (the content bench measures it).
  */
-function fitted(ordered: readonly Slot[], extras: readonly Slot[], limit: number): Slot[] {
+function fitted(ordered: readonly Slot[], defences: readonly Slot[], limit: number): Slot[] {
   const unique = ordered.filter((slot, i) => ordered.findIndex((s) => s.card === slot.card) === i);
   const kept = unique.slice(0, limit);
+  const isDefence = (slot: Slot) => defences.some((d) => d.card === slot.card);
   const defence = unique.find(isDefence);
-  const crowded = extras.some((e) => kept.some((k) => k.card === e.card));
-  if (!crowded || !defence || kept.some(isDefence)) return kept;
+  if (!defence || limit < 2 || kept.some(isDefence)) return kept;
   return [...kept.slice(0, limit - 1), defence];
 }
 
 /**
  * A sensible starting plan, in priority order: a heal for when you're badly hurt, a trump for
- * the last ditch (or first, against a far stronger foe), a sense for when a foe hides, a field
- * to set the ground (it plays only while none of yours is up), footwork towards where you fight
- * best (when it's worth a turn; a move technique rather than a step), a hold (see `holdSlot`),
- * an empower or clones and a trap where you can attack (the plan passes over them while they
- * hold), your best attack, then plain blows, more attacks, a conceal, a substitution and a
- * defence. Attacks your kit can't make from a distance (an archer up close) are left out.
+ * the last ditch (or first, against a far stronger foe), a sense or Search for when a foe hides,
+ * a field to set the ground (it plays only while none of yours is up), footwork towards where you
+ * fight best (when it's worth a turn; a move technique rather than a step), an empower or clones
+ * and a trap where you can attack (the plan passes over them while they hold), your best attack,
+ * a hold (see `holdSlot`), then plain blows, more attacks and a conceal; the last slot is always
+ * a defence (a substitution, a Guard or a Dodge: see `fitted`). Attacks your kit can't make from
+ * a distance (an archer up close) are left out.
  */
 function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand, facing: Facing) {
   const reaches = canAttackFrom(fighter, band);
@@ -136,20 +158,22 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand, faci
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const trump = reaches ? trumpSlot(trumps, facing) : [];
   const hold = holdSlot(pool, facing);
+  // Reactions, best first: a substitution, then a Guard, then a Dodge.
+  const defences = plain([...best('substitute'), ...has('guard'), ...has('dodge')]);
   const ordered: Slot[] = [
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
     ...trump,
-    ...best('sense').map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' })),
+    ...finding(best('sense'), has('search'), facing),
     ...plain([...best('field'), ...at('first')]),
     ...hold.early,
     ...plain(reaches ? [...ready, ...best('trap')] : []),
     ...plain(damage.slice(0, 1)),
     ...hold.late,
     ...plain([...has('strike'), ...has('throw'), ...at('after-attacks')]),
-    ...plain([...damage.slice(1), ...best('conceal'), ...best('substitute')]),
-    ...plain([...has('guard'), ...has('dodge')]),
+    ...plain([...damage.slice(1), ...best('conceal')]),
+    ...defences,
   ];
-  return fitted(ordered, trump, slotLimit(fighter));
+  return fitted(ordered, defences, slotLimit(fighter));
 }
 
 /** How a teammate's stance bends the plan (`team.ts`). */
@@ -172,6 +196,7 @@ export function defaultLoadout(
     foeJutsu: foes.length === 0 || foes.some((f) => f.techniques.some(isHarmful)),
     outmatched: outmatched(fighter, foes),
     support: shape.support ?? false,
+    foeHides: foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
   };
   const [close, mid, far] = RANGE_BANDS.map((band) => defaultFor(fighter, band, home, facing));
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };

@@ -15,9 +15,11 @@ export const GENJUTSU: readonly TechniqueDef[] = [
   {
     id: 'lantern-mirage',
     name: 'Lantern Mirage',
-    description: 'Dozens of drifting lantern-lights crowd the target’s vision.',
+    description:
+      'Dozens of drifting lantern-lights crowd the target’s vision until their head throbs.',
     discipline: 'genjutsu',
-    effects: [{ verb: 'daze', power: 12 }],
+    // A genjutsu specialist's first art must wound: the academy's Shadow Feint already dazes.
+    effects: [{ verb: 'damage', power: 10 }],
     chakraCost: 10,
     rank: 'E',
     difficulty: 45,

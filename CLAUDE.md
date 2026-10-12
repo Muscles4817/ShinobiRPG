@@ -155,10 +155,19 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     blows at every grade and each grade of difference is decisive. Defence has layers:
     evasion (speed, perception), guard and counter (taijutsu, strength) and resistance
     (willpower against genjutsu, perception against the rest) in `rules/defence.ts`; toughness
-    is stamina (plus `armoured` kit); healing is ninjutsu with chakra control; chakra control
+    is stamina (plus `armoured` kit), and toughness and will both blend in the fighter's best art
+    (`SKILL_DEFENCE_SHARE`: skill defends, so specialists of a grade don't one-shot each other);
+    no hit takes more than half the target's health (`cappedHit`). A daze costs the target their
+    next turn and leaves them open (no dodge, a finisher target, though a Guard still works);
+    afterwards they are steady for an exchange (`canDaze`), so dazes can't be chained. Foes play
+    their default plan by priority, as the player does, most of the time (`PLANNED_CHANCE`), and
+    instinct otherwise; a default plan always keeps a defence and brings a Search against a foe
+    that hides. Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
     foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
-    lethality targets; retune the named constants there, not by eye.
+    lethality targets (equals fight two to three rounds and win about half) and the content bench
+    (`contentBench.test.ts`) a fresh character's real fights: against an AI copy, the genin of
+    their year and D-rank foes; retune the named constants there, not by eye.
     Every number has a frame of reference: `statTier` grades a stat value E–S (E–D genin, C chūnin,
     B–A jōnin, S kage) and
     `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you

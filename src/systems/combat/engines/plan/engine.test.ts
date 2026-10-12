@@ -90,11 +90,26 @@ describe('plan & watch cards', () => {
     const [caster] = bodies();
     const plan = defaultLoadout(caster!);
     expect(plan.close[0]?.card).toBe('step-back');
+    // The best attack leads, the daze follows it, and the last slot is always a defence.
     expect(plan.mid).toEqual([
-      { card: 'jutsu:daze', when: 'foe-readying' },
       { card: 'jutsu:blast' },
-      { card: 'throw' },
+      { card: 'jutsu:daze', when: 'foe-readying' },
+      { card: 'guard' },
     ]);
+  });
+
+  it('the default plan always keeps a defence, and brings a Search against a foe that hides', () => {
+    const [hero, shade] = initialFighters({
+      player: fighter('hero', { techniques: [daze, blast] }),
+      allies: [],
+      enemies: [fighter('shade', { traits: ['illusionist'] })],
+      canFlee: false,
+    });
+    const plan = defaultLoadout(hero!, [hero!, shade!]);
+    for (const band of ['close', 'mid', 'far'] as const) {
+      expect(plan[band].at(-1)?.card).toMatch(/guard|dodge/);
+      expect(plan[band][0]).toEqual({ card: 'search', when: 'foe-hidden' });
+    }
   });
 
   it('a plain fighter closes in for full blows, and heals only when badly hurt', () => {

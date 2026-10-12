@@ -7,6 +7,7 @@ import { useJutsu } from './jutsu';
 import {
   fighterIn,
   initialFighters,
+  canDaze,
   isDazed,
   plainSlots,
   wearOffDaze,
@@ -122,6 +123,43 @@ describe('plan & watch techniques', () => {
     for (let seed = 1; seed <= 20; seed++) {
       const card = chooseCard(finishing, { band: 'close', foe: spent }, createRng(seed));
       expect(card).toEqual({ kind: 'jutsu', technique: jab });
+    }
+  });
+
+  it('a daze can’t be chained: the target is steady for an exchange after it wears off', () => {
+    const after = crushUntil(roundWith(), /bandit is dazed/);
+    const bandit = fighterIn(after, 'bandit')!;
+    expect(canDaze(bandit, after.number + 1)).toBe(false);
+    const recovered = wearOffDaze({ ...bandit, stunned: 0 }, after.number + 1);
+    expect(isDazed(recovered)).toBe(false);
+    expect(canDaze(recovered, after.number + 2)).toBe(false);
+    expect(canDaze(recovered, after.number + 3)).toBe(true);
+    const steady = {
+      ...after,
+      number: after.number + 2,
+      fighters: after.fighters.map((f) => (f.id === 'bandit' ? recovered : f)),
+    };
+    const again = crushUntil(steady, /shakes it off/);
+    expect(fighterIn(again, 'bandit')?.stunned).toBe(0);
+  });
+
+  it('a dazed fighter can still guard, but not dodge', () => {
+    const nimble = { attributes: { ...attributes, speed: 60 }, traits: ['swift' as const] };
+    const both = { close: plainSlots(['dodge', 'guard']), mid: [], far: [] };
+    const round = roundWith(nimble, both);
+    const reeling = {
+      ...round,
+      fighters: round.fighters.map((f) =>
+        f.id === 'bandit' ? { ...f, stunned: 1, openUntil: 2 } : f,
+      ),
+    };
+    const [hero, bandit] = reeling.fighters;
+    for (let seed = 1; seed <= 30; seed++) {
+      const after = useJutsu(reeling, { actor: hero!, target: bandit, rng: createRng(seed) }, jab);
+      expect(after.lines.join(' ')).not.toMatch(/slips past/);
+      if (after.lines.some((l) => l.includes('hits bandit'))) {
+        expect(after.lines.join(' ')).toMatch(/through a guard/);
+      }
     }
   });
 

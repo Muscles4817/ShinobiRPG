@@ -208,7 +208,13 @@ export function createPlanEngine(): CombatEngine {
             defaultLoadout(withoutLoneCombos(f, fighters), fighters),
         })),
       );
-      const table = { fighters: planned, range, exchange: 0, ...(field ? { field } : {}) };
+      const table = {
+        fighters: planned,
+        range,
+        exchange: 0,
+        round: 1,
+        ...(field ? { field } : {}),
+      };
       const firstMover = setup.opening?.firstMover;
       const state: PlanState = {
         phase: 'loadout',

@@ -11,7 +11,7 @@ import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
 import { sightInstinct } from './sight';
-import { isDazed, type PlanFighter } from './state';
+import { canDaze, isDazed, type PlanFighter } from './state';
 
 /**
  * Which slotted card a fighter plays this exchange. Fighters follow a few instincts (heal when
@@ -84,6 +84,8 @@ export interface Moment {
   readonly fieldUp?: boolean;
   /** Everyone in the fight, when known: a combination technique needs a partner among them. */
   readonly fighters?: readonly PlanFighter[];
+  /** The exchange the card would be played in: a foe steady after a daze can't be dazed. */
+  readonly exchange?: number;
 }
 
 /**
@@ -135,7 +137,11 @@ function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, 
   const trump = harmful.find(trumpCard);
   if (trump) return trump;
   const daze = jutsu(harmful, holdsBack(foe));
-  const fresh = foe !== undefined && !isDazed(foe) && foe.sealed === 0 && foe.confused === 0;
+  const fresh =
+    foe !== undefined &&
+    canDaze(foe, moment.exchange ?? 0) &&
+    foe.sealed === 0 &&
+    foe.confused === 0;
   if (daze && fresh && rng.chance(DAZE_FIRST_CHANCE)) return daze;
   const finisher = jutsu(harmful, isWounding);
   if (finisher && foe && isDazed(foe)) return finisher;

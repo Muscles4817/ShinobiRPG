@@ -30,8 +30,9 @@ const AWAY_CHANCE = 0.25;
 export const GENERATED_ID_PREFIX = 'genin-';
 /** A fresh graduate's stats, as old classmates were before they had stats of their own. */
 const GRADUATE_BASE = 5;
-const SPECIALTY_BONUS = 4;
-const BODY_BONUS = 1;
+/** A graduate's specialty and body work, level with the player's report card (A is +3). */
+const SPECIALTY_BONUS = 3;
+const BODY_BONUS = 0.5;
 const BODY_STATS: readonly StatId[] = ['strength', 'speed', 'stamina'];
 /** Each stat is off the line by up to this much either way. */
 const STAT_SPREAD = 1;

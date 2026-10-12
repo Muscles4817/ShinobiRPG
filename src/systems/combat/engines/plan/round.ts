@@ -68,6 +68,7 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
     opening: round.opening ?? false,
     fieldUp: ownField(round.field, actor),
     fighters: round.fighters,
+    exchange: round.number,
   };
   const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
   if (!foe || !isOffence(card) || canHit(card, foe, round.fighters)) return { card, target: foe };

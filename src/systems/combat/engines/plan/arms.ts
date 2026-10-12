@@ -4,7 +4,7 @@ import { alive } from '../../rules/body';
 import { strikeWith, throwWith, type Attack } from '../../rules/weapons';
 import { react, type Blow } from './react';
 import type { Turn } from './senses';
-import { dazeIn, fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
+import { canDaze, dazeIn, fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * The strike and kunai cards, as the fighter's weapons make them (`rules/weapons.ts`): a blade's
@@ -32,7 +32,7 @@ function landed(before: PlanFighter, after: Round): number {
 
 function dazeOnHit(round: Round, target: PlanFighter, chance: number, rng: Rng): Round {
   const struck = fighterIn(round, target.id);
-  if (chance <= 0 || !struck || !alive(struck) || isDazed(struck)) return round;
+  if (chance <= 0 || !struck || !alive(struck) || !canDaze(struck, round.number)) return round;
   if (!rng.chance(chance)) return round;
   return say(
     { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number)) },
