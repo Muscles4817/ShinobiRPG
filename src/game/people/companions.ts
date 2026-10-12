@@ -45,15 +45,24 @@ export function companionTraits(person: PersonDef): readonly CombatTrait[] {
   return person.specialty ? SPECIALTY_KIT[person.specialty] : [];
 }
 
+/**
+ * What a genin knows: the academy's techniques, their specialty's starter, their clan's, and
+ * the half of each combination technique in their specialty (no clan's), so a teammate can
+ * join yours.
+ */
 function companionTechniques(person: PersonDef, ctx: GameContext): string[] {
   const { content } = ctx;
   const specialty: Discipline | undefined = person.specialty;
   const clan = person.clanId ? content.clans.get(person.clanId) : undefined;
+  const combos = content.techniques.all.filter(
+    (t) => t.combo && !t.clan && t.discipline === specialty,
+  );
   return [
     ...new Set([
       ...content.academyTechniques,
       ...(specialty ? [content.disciplineStarters[specialty]] : []),
       ...(clan?.startingTechniqueIds ?? []),
+      ...combos.map((t) => t.id),
     ]),
   ];
 }

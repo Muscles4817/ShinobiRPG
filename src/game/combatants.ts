@@ -55,11 +55,14 @@ export function afterPouch(state: GameState, outcome: CombatOutcome): GameState 
   return { ...state, inventory: restockPouch(state.inventory, outcome.items) };
 }
 
+/** The player's combatant id in every fight. */
+export const PLAYER_COMBATANT_ID = 'player';
+
 export function playerCombatant(state: GameState, ctx: GameContext): CombatantSetup {
   const { name, stats, vitals, nature } = state.character;
   const armed = combatStats(state, ctx);
   return {
-    id: 'player',
+    id: PLAYER_COMBATANT_ID,
     name,
     attributes: attributesOf(armed),
     health: vitals.health,

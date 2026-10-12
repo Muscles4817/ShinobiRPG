@@ -28,6 +28,11 @@ export interface TechniqueDef {
   readonly oncePerFight?: true;
   /** What using it costs its user once the fight is over (validated: trump cards only). */
   readonly afterCost?: CostTemplate;
+  /**
+   * A combination technique: playable only beside a fighter on your side who knows the partner
+   * technique (and isn't dazed); both go off together, harder than either alone.
+   */
+  readonly combo?: { readonly partnerTechniqueId: string };
 }
 
 /** Techniques the character has mastered, plus partial study progress on others. */

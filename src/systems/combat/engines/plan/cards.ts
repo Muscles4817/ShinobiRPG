@@ -206,8 +206,8 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Slo
   return unique.slice(0, slotLimit(fighter));
 }
 
-export function defaultLoadout(fighter: PlanFighter): Loadout {
-  const home = homeBand(fighter);
+/** The default plan; a teammate pressing in plans around a closer distance than their kit's. */
+export function defaultLoadout(fighter: PlanFighter, home = homeBand(fighter)): Loadout {
   const [close, mid, far] = RANGE_BANDS.map((band) => defaultFor(fighter, band, home));
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };
 }

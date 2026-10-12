@@ -18,6 +18,7 @@ import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
 import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
+import { intercept } from './team';
 import {
   fighterIn,
   LOG_LIMIT,
@@ -43,20 +44,18 @@ const STEP_PER_SPEED = 0.04;
 /** Initiative the side that moved first gets in exchange 1: more than any speed gap. */
 const FIRST_MOVER_LEAD = 1000;
 
-/** Allies focus the weakest of the foes; enemies pick at random. */
-function targetFor(foes: readonly PlanFighter[], self: PlanFighter, rng: Rng) {
-  if (foes.length === 0) return undefined;
-  if (self.side === 'player') return [...foes].sort((a, b) => a.health - b.health)[0];
-  return rng.pick(foes);
+/** Foes acting on instinct pick a target at random. */
+function targetFor(foes: readonly PlanFighter[], rng: Rng) {
+  return foes.length === 0 ? undefined : rng.pick(foes);
 }
 
 /**
- * Foes and allies play their telegraphed card, or follow their instincts. They size up a foe in
- * sight; when the card can't reach them past their front row, they turn on one it can reach.
+ * Foes play their telegraphed card, or follow their instincts. They size up a foe in sight;
+ * when the card can't reach them past their front row, they turn on one it can reach.
  */
 function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
   const seen = opponentsOf(round.fighters, actor).filter((f) => inSight(actor, f));
-  const foe = targetFor(seen, actor, rng);
+  const foe = targetFor(seen, rng);
   const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
   const moment = {
     band: round.range,
@@ -64,10 +63,11 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
     hiddenFoe,
     opening: round.opening ?? false,
     fieldUp: ownField(round.field, actor),
+    fighters: round.fighters,
   };
   const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
   if (!foe || !isOffence(card) || canHit(card, foe, round.fighters)) return { card, target: foe };
-  return { card, target: targetFor(hittable(card, seen, round.fighters), actor, rng) };
+  return { card, target: targetFor(hittable(card, seen, round.fighters), rng) };
 }
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
@@ -185,8 +185,15 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
     const fighters = patch(round.fighters, actor.id, { stunned: actor.stunned - 1 });
     return say({ ...round, fighters }, `${actor.name} is dazed and loses the exchange.`);
   }
-  const { card, target } = actor.isPlayer ? plannedPlay(actor, round) : instinct(round, actor, rng);
-  const played = attempt(round, { actor, target, rng }, card);
+  if (actor.joined) {
+    const fighters = patch(round.fighters, actor.id, { joined: false });
+    return say({ ...round, fighters }, `${actor.name} gathers themself after the combination.`);
+  }
+  // The player and their teammates play their cards in priority order; foes on instinct.
+  const planned = actor.side === 'player' ? plannedPlay(actor, round) : instinct(round, actor, rng);
+  const { card } = planned;
+  const aim = intercept(round, { actor, target: planned.target, rng }, card);
+  const played = attempt(aim.round, { actor, target: aim.target, rng }, card);
   return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
 }
 
@@ -210,6 +217,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     seen: state.seen,
     intents: state.intents,
     ...(state.field ? { field: state.field } : {}),
+    ...(state.mark ? { mark: state.mark } : {}),
   };
   const end = order.reduce((round, { id }) => turn(round, id, rng), start);
   const result = decide(end.fighters);
