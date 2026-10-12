@@ -11,16 +11,16 @@ export {
   type StatDelta,
   type StatScale,
 } from './stats';
+export { SESSION_PACE, trainingGain, applyTraining, type Growth } from './growth';
+export { SOLO_EFFICIENCY, soloEfficiency, type SoloFloor, type SoloFloors } from './solo';
 export {
-  SOLO_EFFICIENCY,
-  SESSION_PACE,
-  soloEfficiency,
-  trainingGain,
-  applyTraining,
-  type Growth,
-  type SoloFloor,
-  type SoloFloors,
-} from './growth';
+  MAX_TEACHER_GAP,
+  TEACHER_GAP_FLOOR,
+  TEACHER_GAP_SCALE,
+  WEAKER_TEACHER_SCALE,
+  teacherEfficiency,
+  teacherGap,
+} from './teaching';
 export {
   APTITUDE_BANDS,
   APTITUDE_MAX,

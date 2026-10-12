@@ -81,6 +81,10 @@ export interface PlanFighter extends Body, TrumpMemory, EmpowerMemory, CloneBody
   readonly used?: readonly string[];
   /** Chakra paid so far this fight (it deepens reserves); absent until they pay any. */
   readonly chakraSpent?: number;
+  /** Plain strikes thrown so far (not kunai), for the outcome's usage report. */
+  readonly blows?: number;
+  /** Steps played so far, for the outcome's usage report. */
+  readonly footwork?: number;
 }
 
 /** The change to a fighter who pays chakra: less left, more spent (never below empty). */
@@ -229,10 +233,18 @@ export function patch(
       | 'used'
       | 'chakraSpent'
       | 'clones'
+      | 'blows'
+      | 'footwork'
     >
   >,
 ): PlanFighter[] {
   return fighters.map((f) => (f.id === id ? { ...f, ...change } : f));
+}
+
+/** Counts a plain strike or a step towards the fighter's usage report. */
+export function practise(round: Round, actor: PlanFighter, work: 'blows' | 'footwork'): Round {
+  const done = fighterIn(round, actor.id)?.[work] ?? 0;
+  return { ...round, fighters: patch(round.fighters, actor.id, { [work]: done + 1 }) };
 }
 
 export function say(round: Round, ...lines: string[]): Round {

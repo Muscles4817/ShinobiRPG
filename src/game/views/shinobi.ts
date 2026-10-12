@@ -123,7 +123,11 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
         talent: talentRead(state, ctx, id),
       })),
     })),
-    overall: { ...statTier(fightingPower(stats)), power: round1(fightingPower(stats)) },
+    // Cut, not rounded: a rating just under a grade line never reads as the line itself.
+    overall: {
+      ...statTier(fightingPower(stats)),
+      power: Math.floor(fightingPower(stats) * 10) / 10,
+    },
     condition: conditionView(state, ctx),
   };
 }

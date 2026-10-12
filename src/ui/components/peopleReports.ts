@@ -1,4 +1,4 @@
-import type { Report } from '@/game';
+import type { Report, StatGrade } from '@/game';
 
 /** What a result card shows. Built per report kind; people-related kinds live here. */
 
@@ -8,13 +8,30 @@ export interface Row {
   readonly tone?: 'gain' | 'cost' | 'harm';
 }
 
+/** A titled list under the card's rows, e.g. "What this opens". */
+export interface CardList {
+  readonly title: string;
+  readonly rows: readonly Row[];
+}
+
 export interface CardContent {
   readonly title: string;
   readonly subtitle: string;
   readonly seal: string | null;
+  /** A grade letter stamped in place of the seal. */
+  readonly grade?: StatGrade;
   readonly rows: readonly Row[];
+  readonly list?: CardList;
   readonly note: string | null;
   readonly tone: 'good' | 'bad';
+}
+
+/** "Taijutsu +0.05" as a growth row: the stat, then the gain. */
+export function gainRow(label: string): Row {
+  const cut = label.lastIndexOf(' ');
+  return cut < 0
+    ? { label, value: '', tone: 'gain' }
+    : { label: label.slice(0, cut), value: label.slice(cut + 1), tone: 'gain' };
 }
 
 type PeopleReport = Extract<Report, { kind: 'lesson' | 'spar' | 'team-formed' }>;
@@ -50,10 +67,10 @@ export function peopleCardContent(report: PeopleReport): CardContent {
         subtitle: `Spar with ${report.opponent}`,
         seal: null,
         tone: 'good',
-        rows: [
-          ...report.gains.map((g) => ({ label: 'Growth', value: g, tone: 'gain' as const })),
-          { label: 'Bond', value: `+${report.bond}`, tone: 'gain' },
-        ],
+        rows: [{ label: 'Bond', value: `+${report.bond}`, tone: 'gain' }],
+        ...(report.gains.length > 0
+          ? { list: { title: 'What the spar taught you', rows: report.gains.map(gainRow) } }
+          : {}),
         note: report.text,
       };
     case 'team-formed':
