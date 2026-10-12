@@ -769,6 +769,24 @@ These were folded into the D2 discussion. Where each landed:
   a brute it ends with 57–65% health (28–48%). A fragile fighter with a substitution lasts
   2.8 exchanges against a brute instead of 1.5 (it still loses: time, not invulnerability).
 
+- 1.7: team. Teammates fight by a **stance** (`CombatSetup` ally `stance`; `engines/plan/team.ts`):
+  press, cover <someone>, support or hold, each shaping their default cards, which they now play
+  as a priority list like the player's (foes keep the instinct AI). The **team mark** is set at
+  the card table and the `marked` target rule is offered; pressing teammates aim at it. A cover
+  may step in front of a single attack aimed at the one it covers (`rules/team.ts`). Generic
+  combos: element pairs (`rules/elements.ts`: wind and fire, water and lightning, earth and
+  water) when two fighters of one side hit one foe in an exchange, and a finisher bonus on a
+  dazed or sealed foe. **Combination techniques** (`TechniqueDef.combo`), one pair per pack at
+  the academy. **Control escalates with bonds** (`game/people/teamOrders.ts`): stances from a
+  friend, cards from a close friend or once your sensei is a close friend. `CombatOutcome.used`
+  reports each fighter's techniques and chakra spent. No save change (the new plan-state
+  fields are optional). Team bench (`teamBench.test.ts`): a back row covered by a teammate ends
+  with 80% health against 65% when the teammate presses; earth and water together end a fight
+  in 3.3 exchanges against 3.8; a snare-and-anvil pair in 3.3 against 4.6 apart. The 1v1 bench
+  moved only where dazes are involved (the finisher bonus, and no re-dazing a held foe): a
+  versatile fighter now beats a trickster 90–100% (was 40–80%); a trickster now beats a rusher
+  or a powerhouse a little more often.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -832,3 +850,23 @@ These were folded into the D2 discussion. Where each landed:
   against every foe in the bench) until their chakra ran out. It reacts after a Dodge has had
   its chance, costs its chakra each time, and never swaps out of a genjutsu. It is certain; its
   profile has no driving stats.
+- 1.7: allies play their cards as a priority list (as the player does), so a stance and an
+  edited card mean exactly what they say; foes keep the instinct AI. With no stance given, an
+  illusionist supports and anyone else presses.
+- 1.7: the team mark is always available once there is a team or more than one foe; it is a
+  target the player calls, not an order a teammate can refuse. Pressing teammates aim at it.
+  The improvised blow (no slot qualifies) also goes for the mark.
+- 1.7: "press" closes in to close range only when the fighter's wounding jutsu still reach
+  there (a ninjutsu caster keeps its distance).
+- 1.7: a daze, seal or confusion from a slot looks for a foe not already held; the finisher
+  bonus (×1.25) applies to technique damage on a dazed (open) or sealed foe.
+- 1.7: a combination technique fires both halves at the same foe, each ×1.4; the partner pays
+  their own chakra and loses their next turn. A half nobody on your side could join is left
+  out of default plans. Teammates know the half in their specialty (no clan); the packs' pairs
+  are fūinjutsu and kenjutsu (original: Shrine Snare and Anvil Fall) and ninjutsu and
+  kenjutsu (fan pack: Gale Palm and Rising Twin Dragons).
+- 1.7: control thresholds: a teammate at Friend takes stances; at Close friend, or with the
+  sensei at Close friend ("sees you as the leader"), they let you edit their cards too. Default
+  stances by specialty: taijutsu and ninjutsu press, kenjutsu covers you, genjutsu and
+  fūinjutsu support. Edits to a teammate's cards last for the fight only, and a new stance
+  rebuilds their cards.
