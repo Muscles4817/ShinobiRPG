@@ -141,42 +141,32 @@ Context, as of main @ 7e8f971:
   - Foes telegraph their next card. Insight shows their full loadout.
   - The loadout persists between fights. Allies use the default loadout.
 
-### D2. Ceilings and breakthroughs: limits agreed; triggers and pacing still under discussion
+### D2. Growth walls: reworked, under discussion
 
-**Decision: personal limits, separate from rank.** Power is capped by personal
-limits on each stat. Village `rank` is a separate social track. Rank exams _require_
-broken limits but don't raise them by themselves, except the exam's own breakthrough.
-This keeps milestone 5 (rogue) coherent: power isn't a village title.
+The earlier limits-and-breakthroughs proposal is withdrawn. Direction from the user:
 
-Mechanics:
-
-- **Limits.** `character.limits: Record<StatId, number>`. A fresh genin's limit sits at the
-  top of grade D (13). A talent or clan bonus may start some stats one grade higher (C top,
-  20). Grade tops follow `STAT_TIERS`: 13, 20, 28, 40, then S (open-ended, set per pack).
-- **Growth curve.** It replaces `base / (1 + stat/25)`. Gain is full until 70% of the
-  limit, then tapers linearly to a floor of 15%, and the stat is clamped at its limit.
-  At the limit the stat shows "Plateau" and the drill card says what breaks it.
-  Specialising is no longer taxed until the wall.
-- **Breakthroughs** raise one stat's limit to the next grade top. Proposed first-pass sources
-  (not yet discussed):
-  1. **Trials.** One per stat group (body, mind, arts), unlocked when any stat in that
-     group is plateaued. A risky scene at a training place: costs a day and energy, and
-     succeeds by chance, helped by willpower, grit or hard-work traits, today's meal and
-     sensei bond. Failure injures (see D8) but raises the next attempt's odds.
-  2. **Near-death wins.** Win a fight at under 10% health against a foe whose
-     `fightingPower` is at least yours. The plateaued stat you leaned on most (the
-     discipline of your most-played cards) breaks through.
-  3. **The chūnin exam.** A rank event (built later in milestone 3) that is also a
-     breakthrough. The **gate** to enter: at least 3 stats past their first limit, plus
-     the mission record.
-  4. Bond and rival moments come later, with D11.
-- **Pacing target** (proposed, not yet discussed): a focused player
-  reaches chūnin level, meaning first limits broken and exam eligibility, in about 60
-  in-game days. Numbers are tuned against a **headless pacing harness**: a scripted
-  "focused player" plays through days in a test and asserts milestone windows, so a
-  pacing change fails CI.
-- **Save migration.** Existing characters get limits of max(the default limit, the
-  current stat's grade top), so nobody loses progress.
+- **Ranking up should be a big deal.** Crossing from one grade to another must feel like an
+  event and must unlock concrete things.
+- **No hard lock. The wall should come about naturally:**
+  - Solo training hits diminishing returns fast: effective at E, mildly effective at D,
+    far too slow to fill C.
+  - Training with someone who has a higher grade in that ability gives reasonable progress.
+  - The teacher's shinobi rank helps too: a jōnin with B taijutsu teaches better than a
+    chūnin with B taijutsu.
+  - Traits can unlock better solo training in a field.
+- **Techniques are gated by rank.** A C-grade ninjutsu user should struggle to learn
+  higher techniques, and some should be impossible.
+- **Training should vary.** Some technique acquisition (not all) should be staged.
+- **Even builds are an engine problem.** Different approaches must each be effective.
+  Reference archetypes: Lee, Guy, Kakashi, Itachi, Zabuza (see the discussion log).
+- **Where techniques are found:**
+  - Clan techniques are found within the clan, gated by rank or ability.
+  - The academy holds E and D only.
+  - An adult library holds C and some B.
+  - The best B and A techniques come from a willing teacher, or from scrolls found in
+    the wild or given as rewards.
+- **A trait or skill tree** gives another meaningful goal, even though there are only
+  about four ranks.
 
 ### D3. Technique mastery stages and learning by doing: open
 
