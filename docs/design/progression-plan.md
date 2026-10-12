@@ -168,6 +168,27 @@ The earlier limits-and-breakthroughs proposal is withdrawn. Direction from the u
 - **A trait or skill tree** gives another meaningful goal, even though there are only
   about four ranks.
 
+**Principle agreed: no enforced parity.** Builds come from **scarce resources**, not
+from balancing approaches against each other. The perfect build (good at everything) exists
+and is strong. Almost nobody reaches it, because it needs the perfect mix of **talent**
+(aptitude), **trainers** (access to people better than you) and **scrolls** (access to
+techniques), which is to say talent and luck. Kakashi's low stamina is a talent gap he built
+around. Lee is a taijutsu monster because he can't do ninjutsu or genjutsu. The engine's job
+is to make sure **every weakness can be built around** (there are tools that compensate),
+not to make every approach equally strong. More resources should mean more power.
+
+**Agreed answers:**
+
+1. **Presentation of growth comes in three tiers:**
+   - A tick within a grade (12.9 → 13.0) is a quick, simple animation.
+   - Crossing an ability grade (D → C) needs no sign-off from a person, just a fitting
+     presentation: a moment, a stamp, and what it unlocks.
+   - A shinobi rank promotion (for example chūnin → jōnin) is a big moment, a scene of its own.
+2. **Decision 15 is retired.** People have real grades and a rank. Teammates and rivals
+   have stored stats and grow on their own.
+3. **Scope is everything.** Plan it all properly, then build all of it.
+4. **The skill tree comes after** gating, teachers and technique ranks are in.
+
 ### D3. Technique mastery stages and learning by doing: open
 
 ### D4. Techniques as verbs (effect vocabulary): open
