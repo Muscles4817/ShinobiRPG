@@ -1,20 +1,11 @@
 import { maxHealth } from '@/systems/vitals';
-import { act, ctx, newGame, veteran, withAllStats } from '@/test/gameFixtures';
+import { act, ctx, fightOut, newGame, veteran, withAllStats } from '@/test/gameFixtures';
 
 import { blockerFor } from './dispatch';
 import { deserialize } from './persistence/save';
 import type { GameState } from './state';
 import { combatScene } from './views/scene';
 import { trainingView } from './views/training';
-
-/** Strikes until the fight ends. */
-function fightOut(state: GameState): GameState {
-  let current = state;
-  for (let i = 0; i < 60 && current.combat; i++) {
-    current = act(current, { type: 'combatAct', optionId: 'strike' });
-  }
-  return current;
-}
 
 function toRiverFight(start: GameState = newGame()): GameState {
   let state = act(veteran(start, 2), { type: 'startMission', missionId: 'river-road-bandits' });

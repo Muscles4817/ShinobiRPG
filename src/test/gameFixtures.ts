@@ -1,4 +1,5 @@
 import {
+  combatScene,
   contextForPack,
   createNewGame,
   defaultDraft,
@@ -8,10 +9,14 @@ import {
   type GameContext,
   type GameState,
 } from '@/game';
+import { createDuelEngine } from '@/systems/combat';
 import { maxChakra, maxHealth } from '@/systems/vitals';
 
 /** Tests use the original pack: its ids are stable and it always ships. */
 export const ctx: GameContext = contextForPack('original')!;
+
+/** The same game with the shelved Classic style offered too, as the default. */
+export const classicCtx: GameContext = { ...ctx, engines: [createDuelEngine(), ...ctx.engines] };
 
 /** A clanless sensor, taijutsu specialist (A taijutsu, B ninjutsu, D genjutsu). */
 export function draft(
@@ -73,4 +78,20 @@ export function veteran(state: GameState, completed = 5): GameState {
 
 export function lastEntry(state: GameState) {
   return state.journal.entries.at(-1);
+}
+
+/** Picks something sensible every turn, whatever the engine, until the fight ends. */
+export function fightOut(start: GameState, context: GameContext = ctx): GameState {
+  let state = start;
+  for (let i = 0; i < 300 && state.combat; i++) {
+    const options = combatScene(state, context)!.options.filter((o) => !o.disabledReason);
+    const pick =
+      options.find((o) => o.id === 'begin' || o.id === 'round') ??
+      options.find((o) => o.targeted) ??
+      options.find((o) => o.kind === 'end') ??
+      options.find((o) => o.kind === 'move') ??
+      options[0]!;
+    state = act(state, { type: 'combatAct', optionId: pick.id }, context);
+  }
+  return state;
 }

@@ -10,21 +10,35 @@ export interface GameContext {
   readonly content: ContentDb;
   /** Every fight style on offer; the first is the default. A save picks one in its settings. */
   readonly engines: readonly CombatEngine[];
+  /**
+   * Shelved styles: no longer offered or started, but a fight already under way in one (from a
+   * save made before it was shelved) still plays out in it.
+   */
+  readonly shelvedEngines: readonly CombatEngine[];
 }
 
 /**
- * The fight styles this build offers, default first. Deck is shelved: its engine is kept and
- * tested in `systems/combat`, but not offered until it is brought up to date.
+ * The fight styles this build offers, default first. Plan & Watch is the canonical engine.
+ * Classic and Deck are shelved: their engines are kept and tested in `systems/combat`, but
+ * not offered.
  */
 export function defaultEngines(): readonly CombatEngine[] {
-  return [createDuelEngine(), createPlanEngine()];
+  return [createPlanEngine()];
+}
+
+/**
+ * Shelved styles a save may still be mid-fight in. Classic was offered up to save version 13;
+ * Deck fights were called off when it was shelved, so it needs no route.
+ */
+export function shelvedEngines(): readonly CombatEngine[] {
+  return [createDuelEngine()];
 }
 
 export function createGameContext(
   pack: ContentPack,
   engines: readonly CombatEngine[] = defaultEngines(),
 ): GameContext {
-  return { content: buildContentDb(pack), engines };
+  return { content: buildContentDb(pack), engines, shelvedEngines: shelvedEngines() };
 }
 
 export interface PackChoice {

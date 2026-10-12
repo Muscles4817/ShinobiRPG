@@ -6,8 +6,8 @@ import type { GameState, Settings } from './state';
 
 /**
  * Which combat engine runs a fight. A fight in progress always continues in the engine that
- * started it; new fights use the save's chosen style (falling back to the default), starting
- * from whatever plan you set up last time in that style.
+ * started it, even one since shelved; new fights use the save's chosen style (falling back to
+ * the default), starting from whatever plan you set up last time in that style.
  */
 
 export function defaultSettings(ctx: GameContext): Settings {
@@ -22,11 +22,14 @@ function firstEngine(ctx: GameContext): CombatEngine {
 
 /** The engine for the fight in progress, or for the next fight when there is none. */
 export function engineFor(state: GameState, ctx: GameContext): CombatEngine {
-  const id = state.combat?.engineId ?? state.settings.combatStyle;
-  const engine = ctx.engines.find((e) => e.id === id);
-  if (engine) return engine;
-  if (state.combat) throw new Error(`No engine "${state.combat.engineId}" for this fight`);
-  return firstEngine(ctx);
+  if (state.combat) {
+    const id = state.combat.engineId;
+    const engine = [...ctx.engines, ...ctx.shelvedEngines].find((e) => e.id === id);
+    if (!engine) throw new Error(`No engine "${id}" for this fight`);
+    return engine;
+  }
+  const chosen = ctx.engines.find((e) => e.id === state.settings.combatStyle);
+  return chosen ?? firstEngine(ctx);
 }
 
 /** Starts a fight in the chosen style, handing the engine your plan from last time. */

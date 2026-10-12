@@ -6,9 +6,10 @@ interface FightStylePickerProps {
   readonly perform: (action: GameAction) => void;
 }
 
-/** Playtest switch: which combat engine runs your next fight. */
+/** Playtest switch: which combat engine runs your next fight. Hidden with only one style. */
 export function FightStylePicker({ ctx, state, perform }: FightStylePickerProps) {
-  const styles = fightStyles(state, ctx);
+  const { options: styles, choosable } = fightStyles(state, ctx);
+  if (!choosable) return null;
   const active = styles.find((s) => s.active)?.label ?? '';
   return (
     <details className="fight-styles" aria-label="Fight style">
