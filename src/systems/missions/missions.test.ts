@@ -72,6 +72,17 @@ describe('missions', () => {
     expect(reward(mission, r.run)).toEqual({ ryo: 75, reputation: 3 });
   });
 
+  it('a teammate who takes the check rolls with their own value and is named', () => {
+    const r = resolveCheck(
+      startRun(mission),
+      { stage: check, approach, hand: { name: 'Kaen', value: 100 } },
+      createStats(-100),
+      createRng(1),
+    );
+    expect(r.run.stageIndex).toBe(1);
+    expect(r.run.notes[0]).toEqual({ kind: 'choice', text: 'Chase (Kaen)' });
+  });
+
   it('aborts on a failed abort check', () => {
     const abortCheck = { ...check, onFailure: 'abort' as const };
     const r = resolveCheck(

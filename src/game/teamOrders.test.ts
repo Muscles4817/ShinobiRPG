@@ -1,5 +1,5 @@
 import { BOND_STAGES, bondWith } from '@/systems/bonds';
-import { act, ctx, newGame, veteran } from '@/test/gameFixtures';
+import { act, ctx, intoFight, newGame, veteran } from '@/test/gameFixtures';
 
 import { requirePerson } from './people/cast';
 import { companionCombatant } from './people/companions';
@@ -25,7 +25,7 @@ function toRiverFight(start: GameState): GameState {
   let state = act(veteran(start, 2), { type: 'startMission', missionId: 'river-road-bandits' });
   state = act(state, { type: 'missionContinue' });
   state = act(state, { type: 'missionChoose', approachIndex: 0 });
-  return act(state, { type: 'missionContinue' });
+  return intoFight(state);
 }
 
 const stanceOptions = (state: GameState, allyId: string) =>

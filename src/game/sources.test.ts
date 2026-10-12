@@ -5,7 +5,7 @@ import { act, ctx, newGame, withAllStats } from '@/test/gameFixtures';
 import { dispatch } from './dispatch';
 import { noteGradeUps } from './gradeUps';
 import { studyPointsFor } from './learning';
-import { completeIfFinished } from './missionFlow';
+import { afterStage } from './missionFlow';
 import type { GameState } from './state';
 import { hubView } from './views/hub';
 import { libraryView, scrollDesk } from './views/library';
@@ -28,7 +28,7 @@ function ready(): GameState {
 function finished(state: GameState, missionId: string): GameState {
   const def = ctx.content.missions.require(missionId);
   const mission = { missionId, stageIndex: def.stages.length, rewardMultiplier: 1, notes: [] };
-  return completeIfFinished({ ...state, mission }, ctx);
+  return afterStage({ ...state, mission }, ctx);
 }
 
 describe('the library', () => {

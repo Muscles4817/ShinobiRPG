@@ -1,12 +1,11 @@
-import type { MissionDef } from '@/systems/missions';
-import { fightingPower } from '@/systems/stats';
+import { stageFoes, type MissionDef } from '@/systems/missions';
 
 import { INTEL_FEE } from '../actions/intel';
 import { availability } from '../board';
 import type { GameContext } from '../context';
-import { combatStats } from '../gear';
+import { senseiAlong } from '../missionTeam';
 import { placeHere } from '../ops';
-import { enemyStats, scout, traitNotes, type Threat, type TraitNote } from '../scouting';
+import { missionThreat, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 
@@ -39,6 +38,8 @@ export interface Notice extends Choice {
   } | null;
   /** Your teammates come along. */
   readonly withTeam: boolean;
+  /** Your sensei's name, when the job is serious enough for them to lead it. */
+  readonly sensei: string | null;
   /** "Standing job" or how long the posting stays up, e.g. "Gone after tomorrow". */
   readonly posted: string;
   readonly standing: boolean;
@@ -65,11 +66,9 @@ function oppositionOf(
   ctx: GameContext,
   mission: MissionDef,
 ): Notice['opposition'] {
-  const enemies = mission.stages.flatMap((s) => (s.kind === 'combat' ? s.enemyIds : []));
-  const stats = enemies.flatMap((id) => enemyStats(ctx, id) ?? []);
-  const toughest = stats.sort((a, b) => fightingPower(b) - fightingPower(a))[0];
-  if (!toughest) return null;
-  const read = scout(toughest, combatStats(state, ctx), false);
+  const enemies = mission.stages.flatMap(stageFoes);
+  const read = missionThreat(state, ctx, mission);
+  if (!read) return null;
   const many = enemies.length > 1 ? ` (${enemies.length} foes)` : '';
   const known = state.board.intel.includes(mission.id);
   return {
@@ -111,9 +110,10 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         reputation: m.reward.reputation,
         slots: m.slots,
         energyCost: m.energyCost,
-        fightLikely: m.stages.some((s) => s.kind === 'combat'),
+        fightLikely: m.stages.some((s) => stageFoes(s).length > 0),
         opposition: oppositionOf(state, ctx, m),
         withTeam: m.withTeam ?? false,
+        sensei: senseiAlong(state, ctx, m)?.name ?? null,
         standing: on.kind === 'standing',
         posted: on.kind === 'standing' ? 'Standing job' : postedFor(on.daysLeft),
       };

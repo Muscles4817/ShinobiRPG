@@ -114,7 +114,7 @@ ui ──► game ──► content ──► systems ──► core
     Schedules place people at places in the start location by time slot. Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
-    (fight › mission › conversation › team assignment). Anything that must happen before
+    (fight › encounter › mission › conversation › team assignment). Anything that must happen before
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
     derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`
@@ -278,7 +278,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
   scroll reward.
 - **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
-  fight as allies and each gains bond on success. Offer it at a mission hall as usual.
+  fight as allies and each gains bond on success. Offer it at a mission hall as usual. Give a
+  check approach a `role` (tracker, sensor, medic) when the best teammate should take it; from
+  C-rank (or a far-stronger foe) the sensei leads it and fights too (`game/missionTeam.ts`).
+- **Add foes to a mission:** use an `encounter` stage (recon, then an approach, then maybe a
+  fight) with a shared template (`content/shared/encounters.ts`: which approaches and recon make
+  sense, base alertness, flavour a stage may swap) and a `job` kind; how each way past pays per
+  job lives once in `systems/missions/encounterPay.ts`. Keep a plain `combat` stage only where a
+  straight fight is the point (a duel, a surprise attack). On team jobs a check falls to the best
+  teammate for it (`bestHandFor`, `game/missionRoles.ts`).
 - **Add a combination technique:** two `TechniqueDef`s whose `combo.partnerTechniqueId` name
   each other (validated); offer them at the academy. A teammate knows the half in their
   specialty, and a half plays only beside someone on your side who knows the other.

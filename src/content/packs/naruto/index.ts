@@ -14,6 +14,7 @@ import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
+import { ENCOUNTERS } from '../../shared/encounters';
 import { NARUTO_CONVERSATIONS } from './conversations';
 import { CANON_GENIN } from './genin';
 import { CLAN_HEADS } from './clanHeads';
@@ -53,6 +54,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...COMBO_TECHNIQUES,
   ],
   missions: [...MISSIONS, ...TEAM_MISSIONS, ...ELITE_MISSIONS],
+  encounters: ENCOUNTERS,
   enemies: ENEMIES,
   training: TRAINING,
   foods: FOODS,

@@ -1,10 +1,14 @@
 import type { Rng } from '@/core';
-import type { CombatantSetup, CombatOutcome } from '@/systems/combat';
+import type { CombatOpening, CombatOutcome } from '@/systems/combat';
 import {
   advance,
   currentStage,
   reward,
+  stageFoes,
+  stagePay,
+  withStagePay,
   type MissionDef,
+  type MissionRun,
   type MissionStage,
 } from '@/systems/missions';
 import { addPoints } from '@/systems/bonds';
@@ -13,14 +17,13 @@ import { slotsUntilNextMorning } from '@/systems/time';
 import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct, earn } from '@/systems/wallet';
 
-import { enemyCombatant, PLAYER_COMBATANT_ID, playerCombatant } from './combatants';
+import { enemyCombatant, playerCombatant } from './combatants';
 import type { GameContext } from './context';
 import { startFight } from './fightStyle';
 import { adjust, chip, log, placeHere, spendTime } from './ops';
-import { bondOf, requirePerson } from './people/cast';
-import { companionCombatant } from './people/companions';
-import { defaultStance, ordersFor } from './people/teamOrders';
 import { handedOver } from './missionRewards';
+import { teamAllies, tendWounds } from './missionTeam';
+import { bondOf } from './people/cast';
 import { addReport } from './reports';
 import type { GameState } from './state';
 
@@ -33,7 +36,6 @@ export const FAILURE_REPUTATION_LOSS = 2;
 export const HOSPITAL_FEE = 40;
 /** Bond with each teammate for finishing a team mission together. */
 export const TEAM_MISSION_BOND = 6;
-const TEAMMATE_TAG = 'Teammate';
 const HOSPITAL_HEALTH_FRACTION = 0.25;
 
 export function activeMission(state: GameState, ctx: GameContext): MissionDef | null {
@@ -54,10 +56,14 @@ function newlyUnlocked(state: GameState, ctx: GameContext, completed: number): s
     .map((m) => m.title);
 }
 
-/** Completes the mission if every stage is done; otherwise returns the state unchanged. */
-export function completeIfFinished(state: GameState, ctx: GameContext): GameState {
+/**
+ * After a stage is cleared: completes the mission if every stage is done; otherwise the team's
+ * medic (on a team mission) patches you up for the next one.
+ */
+export function afterStage(state: GameState, ctx: GameContext): GameState {
   const def = activeMission(state, ctx);
-  if (!def || !state.mission || currentStage(def, state.mission)) return state;
+  if (!def || !state.mission) return state;
+  if (currentStage(def, state.mission)) return tendWounds(state, ctx, def);
   const earned = reward(def, state.mission);
   const standing = recordMissionSuccess(state.standing, earned.reputation);
   const teamBond = def.withTeam ? TEAM_MISSION_BOND : 0;
@@ -105,57 +111,59 @@ function withTeamBond(state: GameState, points: number): GameState {
   return { ...state, people: { ...state.people, bonds: { ...state.people.bonds, ...raised } } };
 }
 
-/**
- * Teammates who fight beside you on team missions, each in the stance their specialty suggests
- * and taking from you only the orders your bonds have earned.
- */
-function teamAllies(state: GameState, ctx: GameContext): CombatantSetup[] {
-  const def = activeMission(state, ctx);
-  if (!def?.withTeam) return [];
-  return (state.people.team?.teammateIds ?? []).map((id) => {
-    const person = requirePerson(state, ctx, id);
-    return {
-      ...companionCombatant(person, state, ctx, TEAMMATE_TAG),
-      stance: defaultStance(person, PLAYER_COMBATANT_ID),
-      orders: ordersFor(state, person),
-    };
-  });
-}
-
 function endMission(
   state: GameState,
   ctx: GameContext,
   reason: string,
+  reputationLost = FAILURE_REPUTATION_LOSS,
 ): { state: GameState; title: string | null } {
   const def = activeMission(state, ctx);
   const next: GameState = {
     ...state,
     mission: null,
     combat: null,
-    standing: recordMissionFailure(state.standing, FAILURE_REPUTATION_LOSS),
+    standing: recordMissionFailure(state.standing, reputationLost),
   };
   const logged = log(next, {
     heading: def ? `${def.title} failed` : 'Mission failed',
     text: reason,
     tone: 'danger',
-    chips: [chip(`−${FAILURE_REPUTATION_LOSS} reputation`, 'harm')],
+    chips: reputationLost > 0 ? [chip(`−${reputationLost} reputation`, 'harm')] : [],
   });
   return { state: logged, title: def?.title ?? null };
 }
 
-export function failMission(state: GameState, ctx: GameContext, reason: string): GameState {
-  const ended = endMission(state, ctx, reason);
+/** Ends the mission as failed; `reputationLost` is less for pulling out before any harm. */
+export function failMission(
+  state: GameState,
+  ctx: GameContext,
+  reason: string,
+  reputationLost = FAILURE_REPUTATION_LOSS,
+): GameState {
+  const ended = endMission(state, ctx, reason, reputationLost);
   return addReport(ended.state, {
     kind: 'mission-failed',
     title: ended.title ?? 'Mission',
     reason,
-    reputationLost: FAILURE_REPUTATION_LOSS,
+    reputationLost,
   });
 }
 
-export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameState {
+/** How a mission fight begins, when an encounter's approach shaped it. */
+export interface FightStart {
+  readonly opening?: CombatOpening;
+  readonly intro?: string;
+}
+
+/** Starts the fight of the current combat or encounter stage. */
+export function beginCombat(
+  state: GameState,
+  ctx: GameContext,
+  rng: Rng,
+  start: FightStart = {},
+): GameState {
   const stage = activeStage(state, ctx);
-  if (stage?.kind !== 'combat') return state;
+  if (stage?.kind !== 'combat' && stage?.kind !== 'encounter') return state;
   const enemies = stage.enemyIds.map((id, i) =>
     enemyCombatant(ctx.content.enemies.require(id), i, ctx),
   );
@@ -164,13 +172,21 @@ export function beginCombat(state: GameState, ctx: GameContext, rng: Rng): GameS
     ctx,
     {
       player: playerCombatant(state, ctx),
-      allies: teamAllies(state, ctx),
+      allies: teamAllies(state, ctx, activeMission(state, ctx)),
       enemies,
       canFlee: stage.canFlee,
+      ...(start.opening ? { opening: start.opening } : {}),
+      ...(start.intro ? { intro: start.intro } : {}),
     },
     rng,
   );
   return { ...state, combat };
+}
+
+/** A won fight moves the mission on; an encounter's fight pays as its job says. */
+function afterVictory(run: MissionRun, stage: MissionStage | null, enemies: string): MissionRun {
+  const next = advance(run, { kind: 'outcome', text: `You defeated ${enemies}.` });
+  return stage?.kind === 'encounter' ? withStagePay(next, stagePay(stage.job, 'fought')) : next;
 }
 
 function hospitalise(state: GameState, ctx: GameContext, title: string | null): GameState {
@@ -211,9 +227,10 @@ export function resolveCombat(
     },
   );
   const stage = activeStage(state, ctx);
+  const foes = stage ? stageFoes(stage) : [];
   const enemies =
-    stage?.kind === 'combat'
-      ? stage.enemyIds.map((id) => ctx.content.enemies.require(id).name).join(' and ')
+    foes.length > 0
+      ? foes.map((id) => ctx.content.enemies.require(id).name).join(' and ')
       : 'your opponent';
 
   switch (outcome.result) {
@@ -229,11 +246,8 @@ export function resolveCombat(
         maxHealth: MAX_HEALTH,
       });
       if (!reported.mission) return reported;
-      const mission = advance(reported.mission, {
-        kind: 'outcome',
-        text: `You defeated ${enemies}.`,
-      });
-      return completeIfFinished({ ...reported, mission }, ctx);
+      const mission = afterVictory(reported.mission, stage, enemies);
+      return afterStage({ ...reported, mission }, ctx);
     }
     case 'escaped':
       return failMission(afterFight, ctx, 'You retreated from the fight.');

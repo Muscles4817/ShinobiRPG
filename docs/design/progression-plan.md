@@ -1032,6 +1032,50 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   techniques barely show on a bench. They are strong when a player slots them by hand;
   the default plan or the foe AI should learn to use them. Several elite missions are
   untested in play.
+  **Phase 5 (in progress).**
+
+- 5.1/5.3: encounter stages. `MissionStage` has an `encounter` kind (`systems/missions/encounter.ts`):
+  a template id, foes, `canFlee`, a `job` (escort, deliver, eliminate, retrieve, patrol) and
+  optional `approaches`, `talkable`, `bypassable` and `flavour` overrides. Five shared templates
+  (`content/shared/encounters.ts`: bandit camp, beast, lone rogue, guarded building, spirit) say
+  which approaches and recon make sense, base alertness (unaware, wary, alert), the foes'
+  `resolve` and the flavour lines; `ContentPack.encounters`, validated (`validateEncounters.ts`).
+  Reaching the stage, "Size them up" opens the encounter scene (`activeScene` 'encounter', state
+  on `MissionRun.encounter`). Recon (`game/encounter/recon.ts`), at most three looks: observe
+  and track (perception; on team jobs the best teammate's, `bestHandFor` in
+  `game/missionRoles.ts`, which 5.2 reuses), sense (the better of perception and ninjutsu; needs
+  an awakened bloodline, which makes it certain, a sense technique, or ninjutsu 10), ask around
+  (15 ryo, certain; the client's report counts as done). Success reveals facts (count, identity,
+  kit, terrain, awareness); failure raises alertness a step. Approaches
+  (`approaches.ts`, played in `resolve.ts`, openings in `opening.ts`): head-on (alert foes move
+  first), ambush (only when they are unaware and you know it: every foe dazed in exchange 1,
+  your side first, at a range you pick), sneak past (speed, or genjutsu with a conceal or field
+  technique, +3 with a smoke bomb, which it uses up, against their best perception plus
+  alertness; caught: they move first), talk (willpower plus reputation / 10 against resolve,
+  alertness and numbers; a failure stirs them and can't be retried), pay them off (40 ryo a foe;
+  not when alert), frighten them off (willpower plus your fighting-power edge against their
+  nerve; failure is a fight they start), set the ground (fūinjutsu or intellect; needs a field
+  or trap technique or a smoke bomb: your field or smoke in place, or the first foe snared, you
+  first at your range; not when alert), withdraw (the job fails, unhurt, −1 reputation instead
+  of −2). Pay by job lives in `encounterPay.ts` (`MissionRun.pay` multiplies the reward).
+  Converted: every combat stage in the original pack, and all but the fan pack's missing-nin
+  (who steps out of the mist to confront the team: a surprise attack stays a plain fight). No
+  save change: the new run fields are optional, and a save mid-mission at a former fight steps
+  into its encounter (tested).
+- 5.2: around the encounter. Being ambushed (`game/encounter/spotted.ts`): on arrival, and again
+  after every failed recon, the foes look round: their best perception plus alertness against
+  your lookout's (`bestHandFor` perception, so a sharp-eyed teammate keeps watch) plus a
+  `SPOT_HEADSTART` of 8. Spotted, the encounter becomes a fight at once (`SPOTTED_OPENING`: they
+  move first and you are dazed through exchange 1), opening on the template's new `spotted`
+  line. Mission roles: `CheckApproach.role` (tracker, sensor, medic; validated to be on team
+  missions only) hands a check to the best teammate in its stat (`checkHand`); the choice line
+  names them. A medic (the teammate with the most chakra control, at least 8) heals you by their
+  control between stages (`afterStage`, which replaced `completeIfFinished`). The sensei leads
+  serious team jobs (C-rank and up, or a far-stronger foe on the notice): a fourth ally with
+  their real stats, their specialty's techniques plus their signatures and nature, the
+  specialty stance, and both orders locked. Sneaking as a team goes at the slowest speed among
+  teammates who won't take your orders (those who will hang back). Team mission narratives and
+  checks in both packs reworded to use roles and the sensei. No save change.
 
 ### Decisions made during the run
 
@@ -1281,3 +1325,31 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   repeated job doesn't hand over a scroll or weapon you already own.
 - 4.2: 3.5's roster techniques were converted to ranks by the 4.1 rule (12–13 → C, 8–10 → D),
   Black Blade Draw needing a blade and Water Syrup Capture Field D control.
+- 5.1: an eliminate job's foes slipped past leave the job undone: the mission ends at once,
+  unpaid and unrecorded but without the reputation loss (a quiet exit beats being seen running).
+  A negotiated surrender (talk or a threat that lands) pays ×0.6 ryo and ×1.5 reputation; a
+  bribe on an eliminate job ×0.5 ryo, normal reputation. A patrol that slips round trouble is
+  paid half; on a patrol a bribe keeps the ryo but halves the reputation. Escorts, deliveries
+  and retrievals pay in full however you got past.
+- 5.1: talk, pay and threats are three approaches rather than one; beasts and spirits don't
+  listen (validated: a template offering them needs `resolve`). Spirits can't be slipped past
+  (their template leaves sneak out).
+- 5.1: an ambush needs `awareness` known as well as unaware foes, so recon has a point. Its
+  range and set-the-ground's are picked on the scene ("Strike from"), close by default.
+- 5.1: on team jobs only observe and track use the best teammate (mission roles); sensing,
+  sneaking and talking are yours (you lead; the whole team sneaking past by its weakest member
+  can come with 5.2). The sensor talent works through its perception, not a special case.
+- 5.1: recon costs energy (observe 5, track 8), chakra (sense 10) or ryo (ask 15), not time:
+  a day has four slots, too coarse for a look over a ridge.
+- 5.3: stage texts were reworded to set the scene before contact ("sit round a fire" rather than
+  "step out of the reeds"), since you now see the foes before they see you.
+- 5.2: "deadly" is the notice's top read, far stronger than you (`much-stronger`). The sensei
+  comes only on team missions (it "joins the team"); every team mission is C-rank today, so
+  they lead them all.
+- 5.2: being spotted always means both: they move first and you are dazed. Arrival notes the
+  lookout's roll; after recon only being seen is noted.
+- 5.2: roles name who rolls but the stat stays the check's own; teammates sneak and keep pace
+  on speed. Ordering teammates to hang back is automatic for those who take your stance orders
+  (bond Friend, or you lead), rather than a separate choice.
+- 5.2: the medic heals between stages only (not after the last), and only from a teammate; the
+  sensei doesn't patch you up, so a medic on the team still matters.

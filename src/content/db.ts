@@ -1,4 +1,4 @@
-import type { MissionDef } from '@/systems/missions';
+import type { EncounterTemplate, MissionDef } from '@/systems/missions';
 import type { TechniqueDef } from '@/systems/techniques';
 
 import { createCatalog, type Catalog } from './catalog';
@@ -40,6 +40,7 @@ export interface ContentDb {
   readonly locations: Catalog<LocationDef>;
   readonly techniques: Catalog<TechniqueDef>;
   readonly missions: Catalog<MissionDef>;
+  readonly encounters: Catalog<EncounterTemplate>;
   readonly enemies: Catalog<EnemyDef>;
   readonly training: Catalog<TrainingDef>;
   readonly foods: Catalog<FoodDef>;
@@ -72,6 +73,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     locations: createCatalog('location', pack.locations),
     techniques: createCatalog('technique', pack.techniques),
     missions: createCatalog('mission', pack.missions),
+    encounters: createCatalog('encounter', pack.encounters),
     enemies: createCatalog('enemy', pack.enemies),
     training: createCatalog('training', pack.training),
     foods: createCatalog('food', pack.foods),

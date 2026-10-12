@@ -3,6 +3,7 @@ import {
   classicCtx,
   ctx,
   fightOut,
+  intoFight,
   newGame,
   veteran,
   withAllStats,
@@ -83,9 +84,9 @@ describe('fight styles', () => {
     );
     state = act(state, { type: 'missionContinue' }, context);
     state = act(state, { type: 'missionChoose', approachIndex: 0 }, context);
-    state = act(state, { type: 'missionContinue' }, context);
+    state = intoFight(state, context);
     const yourSide = combatScene(state, context)?.combatants.filter((c) => c.side === 'player');
-    expect(yourSide).toHaveLength(3);
+    expect(yourSide).toHaveLength(4);
     const done = fightOut(state, context);
     expect(done.mission).toBeNull();
     expect(done.standing.missionsCompleted).toBe(3);

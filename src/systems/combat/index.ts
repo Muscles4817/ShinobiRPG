@@ -51,6 +51,8 @@ export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
 export { focusScale } from './rules/focus';
 export { weaponNumbers, type WeaponNumbers } from './rules/weapons';
 export { splitNarration } from './rules/narration';
+export { RANGE_BANDS, RANGE_LABEL } from './rules/range';
+export { potencyOf as fieldPotencyOf } from './rules/verbs/field';
 export type { Narration, NarrationAmount, NarrationAmountKind } from './rules/narration';
 export { createDuelEngine } from './engines/duel/engine';
 /** Shelved: kept compiling and tested, but not offered as a fight style (see `game/context.ts`). */

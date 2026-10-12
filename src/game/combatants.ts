@@ -37,9 +37,13 @@ export function attributesOf(stats: Stats): CombatAttributes {
 }
 
 /** An awakened bloodline lets you read opponents ("insight"); dormant ones do nothing yet. */
-function perksOf(state: GameState, ctx: GameContext): CombatPerk[] {
+export function hasInsight(state: GameState, ctx: GameContext): boolean {
   const bloodline = ctx.content.clans.get(state.character.clanId)?.kekkeiGenkai;
-  return bloodline && !bloodline.dormant ? ['insight'] : [];
+  return !!bloodline && !bloodline.dormant;
+}
+
+function perksOf(state: GameState, ctx: GameContext): CombatPerk[] {
+  return hasInsight(state, ctx) ? ['insight'] : [];
 }
 
 /** The tools in your pouch, as the fight sees them. */
@@ -101,9 +105,14 @@ export function enemyStatLine(def: EnemyDef): Stats {
   return { ...stats, reserves: reservesFor(def.maxChakra, stats.chakraControl) };
 }
 
+/** The combatant id of the `index`th enemy of a fight. */
+export function enemyCombatantId(enemyId: string, index: number): string {
+  return `${enemyId}#${index}`;
+}
+
 export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
   return {
-    id: `${def.id}#${index}`,
+    id: enemyCombatantId(def.id, index),
     name: def.name,
     tag: def.kind,
     attributes: attributesOf(enemyStatLine(def)),

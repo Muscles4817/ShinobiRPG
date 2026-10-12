@@ -1,6 +1,6 @@
 import { ok } from '@/core';
 import type { CombatEngine } from '@/systems/combat';
-import { act, ctx, fightOut, lastEntry, newGame, veteran, withAllStats } from '@/test/gameFixtures';
+import { act, ctx, lastEntry, newGame, pressOn, veteran, withAllStats } from '@/test/gameFixtures';
 
 import type { GameContext } from './context';
 import { dispatch } from './dispatch';
@@ -8,12 +8,7 @@ import type { GameState } from './state';
 
 function playMission(state: GameState, missionId: string, context = ctx): GameState {
   let s = act(state, { type: 'startMission', missionId }, context);
-  for (let i = 0; i < 200 && (s.mission || s.combat); i++) {
-    if (s.combat) s = fightOut(s, context);
-    else if (dispatch(s, { type: 'missionContinue' }, context).ok)
-      s = act(s, { type: 'missionContinue' }, context);
-    else s = act(s, { type: 'missionChoose', approachIndex: 0 }, context);
-  }
+  for (let i = 0; i < 200 && (s.mission || s.combat); i++) s = pressOn(s, context);
   return s;
 }
 

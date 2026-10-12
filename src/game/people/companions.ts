@@ -76,3 +76,26 @@ export function companionCombatant(
     traits: companionTraits(person),
   };
 }
+
+/**
+ * Your sensei beside you: their real stats, what a shinobi of their specialty knows, the
+ * signature techniques they teach, and their chakra nature.
+ */
+export function senseiCombatant(
+  person: PersonDef,
+  state: GameState,
+  ctx: GameContext,
+  tag: string,
+): CombatantSetup {
+  const base = companionCombatant(person, state, ctx, tag);
+  const known = new Set(base.techniques.map((t) => t.id));
+  const signatures = (person.teacher?.teaches ?? [])
+    .filter((id) => !known.has(id))
+    .map((id) => ctx.content.techniques.require(id));
+  const nature = person.sensei?.nature;
+  return {
+    ...base,
+    techniques: [...base.techniques, ...signatures],
+    ...(nature ? { nature } : {}),
+  };
+}

@@ -107,7 +107,9 @@ export const MISSIONS: readonly MissionDef[] = [
         onFailure: 'penalty',
       },
       {
-        kind: 'combat',
+        kind: 'encounter',
+        template: 'beast',
+        job: 'deliver',
         text: 'A wild boar has been raiding the storehouse, and it does not want to share.',
         enemyIds: ['wild-boar'],
         canFlee: true,
@@ -143,10 +145,18 @@ export const MISSIONS: readonly MissionDef[] = [
         failureDamage: 10,
       },
       {
-        kind: 'combat',
-        text: '"Leave the cart and walk away, kid." A bowstring creaks somewhere in the trees.',
+        kind: 'encounter',
+        template: 'bandit-camp',
+        job: 'escort',
+        text: 'Where the road narrows, a bowstring creaks somewhere in the trees. They are waiting for the cart.',
         enemyIds: ['bandit-thug', 'bandit-archer'],
         canFlee: false,
+        flavour: {
+          terrain:
+            'Two rocky banks, a narrow road between them, and a treeline where a bow could hide.',
+          slipped:
+            'You lead the cart off the road and round the banks by a goat track. Nobody follows.',
+        },
       },
     ],
   },
@@ -173,8 +183,10 @@ export const MISSIONS: readonly MissionDef[] = [
         onFailure: 'penalty',
       },
       {
-        kind: 'combat',
-        text: '"You think a headband makes you better than me?"',
+        kind: 'encounter',
+        template: 'lone-rogue',
+        job: 'eliminate',
+        text: 'A thin figure with a scratched-out headband is practising seals, alone, scrolls spread around him.',
         enemyIds: ['academy-dropout'],
         canFlee: true,
       },
@@ -204,8 +216,10 @@ export const MISSIONS: readonly MissionDef[] = [
         failureDamage: 6,
       },
       {
-        kind: 'combat',
-        text: 'A grey figure rises from the grain sacks. "Mine. All of it. Mine."',
+        kind: 'encounter',
+        template: 'spirit',
+        job: 'eliminate',
+        text: 'A grey figure hunches over the grain sacks at the back, muttering. "Mine. All of it. Mine."',
         enemyIds: ['restless-spirit'],
         canFlee: false,
       },
