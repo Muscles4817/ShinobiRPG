@@ -189,6 +189,27 @@ not to make every approach equally strong. More resources should mean more power
 3. **Scope is everything.** Plan it all properly, then build all of it.
 4. **The skill tree comes after** gating, teachers and technique ranks are in.
 
+**Talent (aptitude), agreed:**
+
+- **Aptitude per stat** multiplies every growth source (solo, teacher, fight). With
+  efficiency falling by grade, low aptitude gives a natural ceiling and **zero aptitude
+  means impossible** (no training, no techniques in that art). **Hard work** (for example a
+  Tireless trait) is separate: it raises the solo-training floor and energy, not aptitude.
+- **Aptitude is found by discovery,** not shown up front.
+- **Luck in talent is tied to other choices.** Most clan shinobi are reasonably talented
+  (a higher floor in the clan's arts). The exact shape is still to confirm.
+- **Aptitude can change, rarely** (awakening, forbidden arts). This is not needed for the
+  first implementation.
+- **Chakra reserves become their own stat:**
+  - Largely tied to stamina; they grow alongside stamina and from using jutsu, and aren't
+    drilled directly. `maxChakra` derives from reserves.
+  - **Chakra control** stays separate. It multiplies jutsu learning and matters especially
+    for some ninjutsu, most genjutsu, and escaping genjutsu.
+- **The people baseline:** in the Naruto pack, author all the known Konoha shinobi, then
+  use their totals (how many genin, chūnin and jōnin, and their grades) as the baseline for
+  village populations. Other villages and the original pack are filled to match, with a mix
+  of authored and generated people.
+
 ### D3. Technique mastery stages and learning by doing: open
 
 ### D4. Techniques as verbs (effect vocabulary): open
