@@ -18,8 +18,7 @@ describe('team missions', () => {
   it('your teammates fight beside you', () => {
     const view = combatScene(toRiverFight(), ctx)!;
     const yourSide = view.combatants.filter((c) => c.side === 'player');
-    expect(yourSide).toHaveLength(3);
-    expect(yourSide.slice(1).every((c) => c.tag === 'Teammate')).toBe(true);
+    expect(yourSide.map((c) => c.tag)).toEqual([undefined, 'Teammate', 'Teammate', 'Sensei']);
   });
 
   it('finishing one together brings the team closer', () => {

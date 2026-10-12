@@ -2,13 +2,7 @@ import { advance, resolveCheck, startRun } from '@/systems/missions';
 
 import { availability, takeJob } from '../board';
 
-import {
-  activeMission,
-  activeStage,
-  beginCombat,
-  completeIfFinished,
-  failMission,
-} from '../missionFlow';
+import { activeMission, activeStage, beginCombat, afterStage, failMission } from '../missionFlow';
 import {
   adjust,
   busyReason,
@@ -18,7 +12,8 @@ import {
   placeHere,
   spendTime,
 } from '../ops';
-import { beginEncounter } from '../encounter/current';
+import { enterEncounter } from '../encounter/spotted';
+import { checkHand } from '../missionRoles';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
 import type { ActionHandler, ActionOf } from './types';
@@ -63,10 +58,12 @@ export const missionChoose: ActionHandler<ActionOf<'missionChoose'>> = {
     const approach = stage?.kind === 'check' ? stage.approaches[action.approachIndex] : undefined;
     if (!state.mission || stage?.kind !== 'check' || !approach) return state;
 
-    const result = resolveCheck(state.mission, { stage, approach }, state.character.stats, rng);
+    const hand = checkHand(state, ctx, approach);
+    const choice = hand.personId ? { stage, approach, hand } : { stage, approach };
+    const result = resolveCheck(state.mission, choice, state.character.stats, rng);
     const hurt = adjust({ ...state, mission: result.run }, { health: -result.damage });
     if (result.aborted) return failMission(hurt, ctx, stage.failure);
-    return completeIfFinished(hurt, ctx);
+    return afterStage(hurt, ctx);
   },
 };
 
@@ -82,12 +79,12 @@ export const missionContinue: ActionHandler<ActionOf<'missionContinue'>> = {
   },
   perform(state, _action, ctx, rng) {
     const stage = activeStage(state, ctx);
-    if (!state.mission || !stage) return completeIfFinished(state, ctx);
+    if (!state.mission || !stage) return afterStage(state, ctx);
     if (stage.kind === 'combat') return beginCombat(state, ctx, rng);
-    if (stage.kind === 'encounter') return beginEncounter(state, ctx);
+    if (stage.kind === 'encounter') return enterEncounter(state, ctx, rng);
     if (stage.kind === 'narrative') {
       const mission = advance(state.mission, { kind: 'story', text: stage.text });
-      return completeIfFinished({ ...state, mission }, ctx);
+      return afterStage({ ...state, mission }, ctx);
     }
     return state;
   },

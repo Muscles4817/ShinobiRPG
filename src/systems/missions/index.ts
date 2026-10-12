@@ -1,5 +1,6 @@
 export {
   CHECK_FAILURE_PENALTY,
+  MISSION_ROLES,
   startRun,
   currentStage,
   advance,
@@ -8,6 +9,7 @@ export {
   stageFoes,
   withStagePay,
   type MissionRank,
+  type MissionRole,
   type CheckApproach,
   type MissionStage,
   type MissionDef,

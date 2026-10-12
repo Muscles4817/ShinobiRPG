@@ -995,6 +995,20 @@ statId }` (`game/actions/trainWith.ts`): at a training place, anyone ranked shin
   (who steps out of the mist to confront the team: a surprise attack stays a plain fight). No
   save change: the new run fields are optional, and a save mid-mission at a former fight steps
   into its encounter (tested).
+- 5.2: around the encounter. Being ambushed (`game/encounter/spotted.ts`): on arrival, and again
+  after every failed recon, the foes look round: their best perception plus alertness against
+  your lookout's (`bestHandFor` perception, so a sharp-eyed teammate keeps watch) plus a
+  `SPOT_HEADSTART` of 8. Spotted, the encounter becomes a fight at once (`SPOTTED_OPENING`: they
+  move first and you are dazed through exchange 1), opening on the template's new `spotted`
+  line. Mission roles: `CheckApproach.role` (tracker, sensor, medic; validated to be on team
+  missions only) hands a check to the best teammate in its stat (`checkHand`); the choice line
+  names them. A medic (the teammate with the most chakra control, at least 8) heals you by their
+  control between stages (`afterStage`, which replaced `completeIfFinished`). The sensei leads
+  serious team jobs (C-rank and up, or a far-stronger foe on the notice): a fourth ally with
+  their real stats, their specialty's techniques plus their signatures and nature, the
+  specialty stance, and both orders locked. Sneaking as a team goes at the slowest speed among
+  teammates who won't take your orders (those who will hang back). Team mission narratives and
+  checks in both packs reworded to use roles and the sensei. No save change.
 
 ### Decisions made during the run
 
@@ -1221,3 +1235,13 @@ statId }` (`game/actions/trainWith.ts`): at a training place, anyone ranked shin
   a day has four slots, too coarse for a look over a ridge.
 - 5.3: stage texts were reworded to set the scene before contact ("sit round a fire" rather than
   "step out of the reeds"), since you now see the foes before they see you.
+- 5.2: "deadly" is the notice's top read, far stronger than you (`much-stronger`). The sensei
+  comes only on team missions (it "joins the team"); every team mission is C-rank today, so
+  they lead them all.
+- 5.2: being spotted always means both: they move first and you are dazed. Arrival notes the
+  lookout's roll; after recon only being seen is noted.
+- 5.2: roles name who rolls but the stat stays the check's own; teammates sneak and keep pace
+  on speed. Ordering teammates to hang back is automatic for those who take your stance orders
+  (bond Friend, or you lead), rather than a separate choice.
+- 5.2: the medic heals between stages only (not after the last), and only from a teammate; the
+  sensei doesn't patch you up, so a medic on the team still matters.

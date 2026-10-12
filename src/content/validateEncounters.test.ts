@@ -16,6 +16,32 @@ function withStage(change: (stage: MissionStage) => MissionStage): ContentPack {
   };
 }
 
+describe('mission role validation', () => {
+  it('detects a team role on a check the team isn’t there for', () => {
+    const solo = {
+      ...ORIGINAL_PACK,
+      missions: ORIGINAL_PACK.missions.map((m) =>
+        m.id === 'academy-dropout'
+          ? {
+              ...m,
+              stages: m.stages.map((s) =>
+                s.kind === 'check'
+                  ? {
+                      ...s,
+                      approaches: s.approaches.map((a) => ({ ...a, role: 'tracker' as const })),
+                    }
+                  : s,
+              ),
+            }
+          : m,
+      ),
+    };
+    expect(validateContent(solo)).toContain(
+      'mission "academy-dropout" gives a check a team role but goes without the team',
+    );
+  });
+});
+
 describe('encounter validation', () => {
   it('every combat stage that isn’t a plain fight on purpose is an encounter', () => {
     const fights = ORIGINAL_PACK.missions.flatMap((m) => m.stages).map((s) => s.kind);

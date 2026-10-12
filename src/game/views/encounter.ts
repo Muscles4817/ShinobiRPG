@@ -208,8 +208,9 @@ export function payNote(job: JobKind, approach: ApproachId): string | null {
 function approachCard(here: EncounterHere, plan: ApproachPlan): ApproachCard {
   // A closed way shows why, not odds it can't use.
   const odds = plan.blocker === null ? percent(plan.chance) : '';
+  const pace = plan.pace ? `, at ${plan.pace}’s pace` : '';
   const detail = plan.stat
-    ? odds && `${STAT_INFO[plan.stat].label} ${odds}`
+    ? odds && `${STAT_INFO[plan.stat].label} ${odds}${pace}`
     : plan.ryo > 0
       ? `${plan.ryo} ryo`
       : FIXED_DETAIL[plan.id];

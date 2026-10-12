@@ -4,6 +4,7 @@ import { checkChance, fightingPower, type StatId } from '@/systems/stats';
 import { enemyStatLine } from '../combatants';
 import type { GameContext } from '../context';
 import { combatStats } from '../gear';
+import { slowestAlong } from '../missionRoles';
 import { firstBlocker } from '../ops';
 import type { GameState } from '../state';
 import type { EncounterHere } from './current';
@@ -50,6 +51,8 @@ export interface ApproachPlan {
   readonly chance: number;
   /** Ryo it costs (a bribe). */
   readonly ryo: number;
+  /** The teammate who holds the team back (sneaking), when someone does. */
+  readonly pace: string | null;
   /** Whether a starting distance is chosen with it (an ambush, a prepared ground). */
   readonly needsRange: boolean;
   readonly blocker: string | null;
@@ -58,6 +61,8 @@ export interface ApproachPlan {
 interface Odds {
   readonly stat: StatId | null;
   readonly chance: number;
+  /** The teammate whose pace the roll is made at, when it isn't yours. */
+  readonly pace?: string;
 }
 
 const CERTAIN: Odds = { stat: null, chance: 1 };
@@ -70,12 +75,20 @@ export function bribeCost(here: EncounterHere): number {
   return BRIBE_PER_FOE * here.foes.length;
 }
 
+/** On a team job, the team slips by at the pace of its slowest who won't hang back. */
 function sneakOdds(state: GameState, ctx: GameContext, here: EncounterHere): Odds {
-  const stealth = stealthOf(state, ctx);
+  const yours = stealthOf(state, ctx);
+  const slowest = slowestAlong(state, ctx);
+  const held = slowest !== null && slowest.value < yours.value;
+  const stealth = held ? { stat: 'speed' as const, value: slowest.value } : yours;
   const smoke = toolInPouch(state, ctx, 'smoke') ? SMOKE_SNEAK_BONUS : 0;
   const watch = Math.max(...foeStats(here).map((s) => s.perception));
   const difficulty = watch + ALERT_STEP[here.encounter.alertness];
-  return { stat: stealth.stat, chance: checkChance(stealth.value + smoke, difficulty) };
+  return {
+    stat: stealth.stat,
+    chance: checkChance(stealth.value + smoke, difficulty),
+    ...(held ? { pace: slowest.name } : {}),
+  };
 }
 
 function talkOdds(state: GameState, here: EncounterHere): Odds {
@@ -180,6 +193,7 @@ export function approachPlans(
       stat: odds.stat,
       chance: odds.chance,
       ryo: id === 'bribe' ? bribeCost(here) : 0,
+      pace: odds.pace ?? null,
       needsRange: id === 'ambush' || id === 'set-ground',
       blocker: blockerOf(state, ctx, here, id),
     };

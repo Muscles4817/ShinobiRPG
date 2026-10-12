@@ -1,4 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
+import { stageFoes, type MissionDef } from '@/systems/missions';
 import { fightingPower, STAT_INFO, type StatId, type Stats } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
@@ -194,4 +195,15 @@ export function scoutPerson(
 ): ScoutingRead | null {
   const id = `${PERSON_PREFIX}${personId}`;
   return scoutOpponents(state, ctx, [id])[id] ?? null;
+}
+
+/** The toughest foe a job can throw at you, read against you (no sharp eyes: a notice's read). */
+export function missionThreat(
+  state: GameState,
+  ctx: GameContext,
+  mission: MissionDef,
+): ScoutingRead | null {
+  const stats = mission.stages.flatMap(stageFoes).flatMap((id) => enemyStats(ctx, id) ?? []);
+  const toughest = stats.sort((a, b) => fightingPower(b) - fightingPower(a))[0];
+  return toughest ? scout(toughest, combatStats(state, ctx), false) : null;
 }

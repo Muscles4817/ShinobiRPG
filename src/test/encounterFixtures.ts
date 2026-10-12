@@ -15,6 +15,10 @@ import { act, ctx, newGame, veteran, withAllStats } from './gameFixtures';
 export const SURE = 60;
 /** Far beyond anyone's stats: whatever is rolled against it fails. */
 const HOPELESS = 60;
+/** Eyes so keen that even `hardCtx`'s foes never spot you first. */
+export const KEEN = 200;
+/** Ground no one can scout, not even with `KEEN` eyes. */
+const UNSCOUTABLE = 1000;
 
 const original = CONTENT_PACKS.find((p) => p.id === 'original')!;
 
@@ -27,7 +31,7 @@ export const hardCtx: GameContext = createGameContext({
   encounters: original.encounters.map((t) => ({
     ...t,
     resolve: HOPELESS,
-    recon: t.recon.map((r) => ({ ...r, difficulty: HOPELESS })),
+    recon: t.recon.map((r) => ({ ...r, difficulty: UNSCOUTABLE })),
   })),
   enemies: original.enemies.map((e) => ({
     ...e,
@@ -54,6 +58,11 @@ export function spying(context: GameContext = ctx): {
 /** A capable veteran (every stat `SURE`), with every job posted. */
 export function capable(context: GameContext = ctx): GameState {
   return withAllStats(veteran(newGame({}, context), 5), SURE);
+}
+
+/** A capable veteran with `KEEN` eyes: no foe, even in `hardCtx`, sees them first. */
+export function keenEyed(context: GameContext = ctx): GameState {
+  return withStats(capable(context), { perception: KEEN });
 }
 
 /** Takes a job and plays it up to its encounter, stepping into it. */

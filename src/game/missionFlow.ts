@@ -1,5 +1,5 @@
 import type { Rng } from '@/core';
-import type { CombatantSetup, CombatOpening, CombatOutcome } from '@/systems/combat';
+import type { CombatOpening, CombatOutcome } from '@/systems/combat';
 import {
   advance,
   currentStage,
@@ -17,13 +17,12 @@ import { slotsUntilNextMorning } from '@/systems/time';
 import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct, earn } from '@/systems/wallet';
 
-import { enemyCombatant, PLAYER_COMBATANT_ID, playerCombatant } from './combatants';
+import { enemyCombatant, playerCombatant } from './combatants';
 import type { GameContext } from './context';
 import { startFight } from './fightStyle';
 import { adjust, chip, log, placeHere, spendTime } from './ops';
-import { bondOf, requirePerson } from './people/cast';
-import { companionCombatant } from './people/companions';
-import { defaultStance, ordersFor } from './people/teamOrders';
+import { teamAllies, tendWounds } from './missionTeam';
+import { bondOf } from './people/cast';
 import { addReport } from './reports';
 import type { GameState } from './state';
 
@@ -36,7 +35,6 @@ export const FAILURE_REPUTATION_LOSS = 2;
 export const HOSPITAL_FEE = 40;
 /** Bond with each teammate for finishing a team mission together. */
 export const TEAM_MISSION_BOND = 6;
-const TEAMMATE_TAG = 'Teammate';
 const HOSPITAL_HEALTH_FRACTION = 0.25;
 
 export function activeMission(state: GameState, ctx: GameContext): MissionDef | null {
@@ -57,10 +55,14 @@ function newlyUnlocked(state: GameState, ctx: GameContext, completed: number): s
     .map((m) => m.title);
 }
 
-/** Completes the mission if every stage is done; otherwise returns the state unchanged. */
-export function completeIfFinished(state: GameState, ctx: GameContext): GameState {
+/**
+ * After a stage is cleared: completes the mission if every stage is done; otherwise the team's
+ * medic (on a team mission) patches you up for the next one.
+ */
+export function afterStage(state: GameState, ctx: GameContext): GameState {
   const def = activeMission(state, ctx);
-  if (!def || !state.mission || currentStage(def, state.mission)) return state;
+  if (!def || !state.mission) return state;
+  if (currentStage(def, state.mission)) return tendWounds(state, ctx, def);
   const earned = reward(def, state.mission);
   const standing = recordMissionSuccess(state.standing, earned.reputation);
   const teamBond = def.withTeam ? TEAM_MISSION_BOND : 0;
@@ -102,23 +104,6 @@ function withTeamBond(state: GameState, points: number): GameState {
   if (points === 0 || ids.length === 0) return state;
   const raised = Object.fromEntries(ids.map((id) => [id, addPoints(bondOf(state, id), points)]));
   return { ...state, people: { ...state.people, bonds: { ...state.people.bonds, ...raised } } };
-}
-
-/**
- * Teammates who fight beside you on team missions, each in the stance their specialty suggests
- * and taking from you only the orders your bonds have earned.
- */
-function teamAllies(state: GameState, ctx: GameContext): CombatantSetup[] {
-  const def = activeMission(state, ctx);
-  if (!def?.withTeam) return [];
-  return (state.people.team?.teammateIds ?? []).map((id) => {
-    const person = requirePerson(state, ctx, id);
-    return {
-      ...companionCombatant(person, state, ctx, TEAMMATE_TAG),
-      stance: defaultStance(person, PLAYER_COMBATANT_ID),
-      orders: ordersFor(state, person),
-    };
-  });
 }
 
 function endMission(
@@ -182,7 +167,7 @@ export function beginCombat(
     ctx,
     {
       player: playerCombatant(state, ctx),
-      allies: teamAllies(state, ctx),
+      allies: teamAllies(state, ctx, activeMission(state, ctx)),
       enemies,
       canFlee: stage.canFlee,
       ...(start.opening ? { opening: start.opening } : {}),
@@ -257,7 +242,7 @@ export function resolveCombat(
       });
       if (!reported.mission) return reported;
       const mission = afterVictory(reported.mission, stage, enemies);
-      return completeIfFinished({ ...reported, mission }, ctx);
+      return afterStage({ ...reported, mission }, ctx);
     }
     case 'escaped':
       return failMission(afterFight, ctx, 'You retreated from the fight.');

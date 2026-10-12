@@ -268,7 +268,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   to time once the player's record reaches `minMissionsCompleted`; set `standing: true` for
   jobs that are always available (every pack needs one a fresh genin can take — validated).
 - **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
-  fight as allies and each gains bond on success. Offer it at a mission hall as usual.
+  fight as allies and each gains bond on success. Offer it at a mission hall as usual. Give a
+  check approach a `role` (tracker, sensor, medic) when the best teammate should take it; from
+  C-rank (or a far-stronger foe) the sensei leads it and fights too (`game/missionTeam.ts`).
 - **Add foes to a mission:** use an `encounter` stage (recon, then an approach, then maybe a
   fight) with a shared template (`content/shared/encounters.ts`: which approaches and recon make
   sense, base alertness, flavour a stage may swap) and a `job` kind; how each way past pays per
