@@ -4,7 +4,7 @@ import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { findPerson, requirePerson } from '../people/cast';
 import { fitReasons } from '../people/senseis';
-import { fillNames } from '../people/talk';
+import { conversationValues, fillLine } from '../people/talk';
 import type { GameState } from '../state';
 import { capitalise } from './common';
 import { personCard, toneLabel, type PersonCard } from './people';
@@ -53,7 +53,8 @@ export function conversationScene(state: GameState, ctx: GameContext): Conversat
   const person = talking && findPerson(state, ctx, talking.personId);
   if (!talking || !person) return null;
   const def = ctx.content.conversations.require(talking.conversationId);
-  const fill = (text: string) => fillNames(text, { you: state.character.name, them: person.name });
+  const values = conversationValues(state, ctx, person, def);
+  const fill = (text: string) => fillLine(text, values);
   const picked = talking.answer && def.choices[talking.answer.choiceIndex];
   return {
     person: personCard(state, ctx, person),

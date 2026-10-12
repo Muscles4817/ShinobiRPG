@@ -10,6 +10,7 @@ import { JOB_ENEMIES, TEMPLATE_MISSIONS } from './jobs';
 import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
+import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
@@ -19,6 +20,7 @@ import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
 import { EXAM_ENEMIES, EXAM_MISSIONS, EXAMS } from './exam';
 import { ORIGINAL_CONVERSATIONS } from './conversations';
+import { CLAN_TOPICS } from './talk';
 import { CLAN_HEADS } from './clanHeads';
 import { VILLAGE_CHUNIN } from './chunin';
 import { GENIN } from './genin';
@@ -72,7 +74,13 @@ export const ORIGINAL_PACK: ContentPack = {
   ingredients: INGREDIENTS,
   recipes: RECIPES,
   people: [...SENSEIS_AND_ELDERS, ...GENIN, ...VILLAGE_JONIN, ...CLAN_HEADS, ...VILLAGE_CHUNIN],
-  conversations: [...GENERIC_CONVERSATIONS, ...ORIGINAL_CONVERSATIONS, ...ROSTER_CONVERSATIONS],
+  conversations: [
+    ...GENERIC_CONVERSATIONS,
+    ...TEMPLATE_CONVERSATIONS,
+    ...ORIGINAL_CONVERSATIONS,
+    ...ROSTER_CONVERSATIONS,
+  ],
+  conversationTopics: [...SHARED_TOPICS, ...CLAN_TOPICS],
   names: NAMES,
   team: TEAM,
   village: VILLAGE,

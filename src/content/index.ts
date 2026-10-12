@@ -2,7 +2,7 @@ export { CONTENT_PACKS } from './packs';
 export { buildContentDb, type ContentDb } from './db';
 export { validateContent } from './validate';
 export type { Catalog } from './catalog';
-export { TONES } from './people';
+export { TONES, TOPIC_KINDS } from './people';
 export { TEACHING_QUIRKS } from './teachers';
 export { GEAR_SLOTS, gearSlot } from './items';
 export { INJURY_SITE_LABELS, type InjuryCause, type InjuryDef, type InjurySite } from './injuries';
@@ -14,6 +14,7 @@ export type {
   ContentPack,
   ConversationChoice,
   ConversationDef,
+  ConversationTopic,
   EnemyDef,
   FestivalDef,
   FoodDef,
@@ -21,6 +22,7 @@ export type {
   GearKind,
   GearSlot,
   ToolDef,
+  TopicKind,
   IngredientDef,
   RecipeDef,
   RumourDef,

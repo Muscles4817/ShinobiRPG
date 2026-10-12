@@ -9,6 +9,7 @@ import type {
   ClanDef,
   ContentPack,
   ConversationDef,
+  ConversationTopic,
   GearDef,
   ToolDef,
   IngredientDef,
@@ -58,6 +59,7 @@ export interface ContentDb {
   readonly recipes: Catalog<RecipeDef>;
   readonly people: Catalog<PersonDef>;
   readonly conversations: Catalog<ConversationDef>;
+  readonly conversationTopics: readonly ConversationTopic[];
   readonly names: NamePools;
   readonly team: TeamText;
   readonly village: VillageLife;
@@ -92,6 +94,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     recipes: createCatalog('recipe', pack.recipes),
     people: createCatalog('person', pack.people),
     conversations: createCatalog('conversation', pack.conversations),
+    conversationTopics: pack.conversationTopics,
     names: pack.names,
     team: pack.team,
     village: pack.village,

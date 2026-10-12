@@ -8,7 +8,14 @@ import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 import type { BackdropId, IconId } from './art';
 import type { GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
 import type { InjuryDef } from './injuries';
-import type { ConversationDef, NamePools, PersonDef, TeamText, Tone } from './people';
+import type {
+  ConversationDef,
+  ConversationTopic,
+  NamePools,
+  PersonDef,
+  TeamText,
+  Tone,
+} from './people';
 import type { SettingText } from './settingText';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
@@ -26,6 +33,7 @@ export type {
 export type {
   ConversationChoice,
   ConversationDef,
+  ConversationTopic,
   NamePools,
   PersonDef,
   PersonRank,
@@ -33,6 +41,7 @@ export type {
   SenseiProfile,
   TeamText,
   Tone,
+  TopicKind,
 } from './people';
 export type { OpeningHours, Stall } from './stall';
 export type { AptitudeText, PromotedRank, PromotionText, SettingText } from './settingText';
@@ -265,6 +274,8 @@ export interface ContentPack {
   readonly recipes: readonly RecipeDef[];
   readonly people: readonly PersonDef[];
   readonly conversations: readonly ConversationDef[];
+  /** What templated conversations (`about`) are filled with, per specialty, trait, clan, role. */
+  readonly conversationTopics: readonly ConversationTopic[];
   readonly names: NamePools;
   readonly team: TeamText;
   readonly village: VillageLife;
