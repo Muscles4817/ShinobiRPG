@@ -1,3 +1,4 @@
+import { STAT_IDS } from '@/systems/stats';
 import { newGame } from '@/test/gameFixtures';
 
 import {
@@ -68,7 +69,7 @@ describe('pacing: a focused player', () => {
   });
 
   it('records a grade for every stat every day', () => {
-    for (const day of run.days) expect(Object.keys(day.grades)).toHaveLength(12);
+    for (const day of run.days) expect(Object.keys(day.grades)).toHaveLength(STAT_IDS.length);
     expect(dayReached(run, 'taijutsu', first.grades.taijutsu)).toBe(first.day);
   });
 

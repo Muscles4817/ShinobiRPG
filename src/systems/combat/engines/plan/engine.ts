@@ -228,6 +228,7 @@ export function createPlanEngine(): CombatEngine {
         items: itemsLeft(player),
         plan: player.loadout,
         costs: costsOwed(player),
+        chakraSpent: player.chakraSpent ?? 0,
       };
     },
   };

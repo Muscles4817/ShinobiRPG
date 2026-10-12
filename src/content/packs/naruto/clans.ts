@@ -87,7 +87,7 @@ export const CLANS: readonly ClanDef[] = [
     id: 'uzumaki',
     name: 'Uzumaki',
     description: 'Survivors of a fallen clan of sealing masters, with enormous life force.',
-    statBonuses: { stamina: 3, fuuinjutsu: 2, chakraControl: -2 },
+    statBonuses: { stamina: 2, reserves: 3, fuuinjutsu: 2, chakraControl: -2 },
     modifiers: { studyDiscipline: { fuuinjutsu: 1.4 } },
     startingTechniqueIds: ['uzumaki-chains'],
   },

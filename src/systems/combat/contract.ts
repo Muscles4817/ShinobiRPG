@@ -261,6 +261,8 @@ export interface CombatOutcome {
   readonly plan?: unknown;
   /** Trump costs the player incurred, one per trump used; absent from engines without trumps. */
   readonly costs?: readonly CombatCost[];
+  /** Chakra the player paid during the fight (it deepens reserves); absent from older engines. */
+  readonly chakraSpent?: number;
 }
 
 export interface CombatEngine {

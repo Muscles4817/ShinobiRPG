@@ -6,7 +6,7 @@ import { homeBand } from '../../rules/kit';
 import { RANGE_LABEL } from '../../rules/range';
 import { hasVerb, moveGoal, substitutable } from '../../rules/verbs';
 import type { Card } from './cards';
-import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 
 /**
  * Move and substitute in a planned fight. A move is footwork no one contests: its user is
@@ -66,7 +66,7 @@ export function substituted(round: Round, ready: readonly Card[], swap: Swap): R
   const cost = chakraCost(target, card.technique);
   if (target.chakra < cost) return null;
   const fighters = patch(round.fighters, target.id, {
-    chakra: target.chakra - cost,
+    ...paying(target, cost),
     substituteSpent: true,
   });
   return say(

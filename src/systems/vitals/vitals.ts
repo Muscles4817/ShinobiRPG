@@ -1,4 +1,4 @@
-import { clamp } from '@/core';
+import { clamp, round1 } from '@/core';
 import type { Stats } from '@/systems/stats';
 
 /**
@@ -31,8 +31,25 @@ export type HungerLevel = (typeof HUNGER_LEVELS)[number];
  */
 export const MAX_HEALTH = 100;
 
-export function maxChakra(stats: Stats): number {
-  return Math.round(30 + stats.chakraControl * 3 + stats.stamina * 1.5);
+/** Chakra everyone has before reserves and control add to it. */
+export const CHAKRA_BASE = 30;
+/** Chakra per point of reserves: the depth of the well. */
+export const CHAKRA_PER_RESERVES = 3.5;
+/** Chakra per point of control: a little more from wasting less. */
+export const CHAKRA_PER_CONTROL = 1;
+
+/** Maximum chakra: mostly reserves, a little control. Stamina feeds it only by growing reserves. */
+export function maxChakra(stats: Pick<Stats, 'reserves' | 'chakraControl'>): number {
+  return Math.round(
+    CHAKRA_BASE + stats.reserves * CHAKRA_PER_RESERVES + stats.chakraControl * CHAKRA_PER_CONTROL,
+  );
+}
+
+/** The reserves that give this maximum chakra at this control (never below zero). */
+export function reservesFor(chakra: number, chakraControl: number): number {
+  const reserves =
+    (chakra - CHAKRA_BASE - chakraControl * CHAKRA_PER_CONTROL) / CHAKRA_PER_RESERVES;
+  return Math.max(0, round1(reserves));
 }
 
 export function fullVitals(stats: Stats): Vitals {

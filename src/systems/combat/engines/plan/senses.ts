@@ -10,7 +10,7 @@ import {
   shakeOffChance,
 } from '../../rules/conditions';
 import { dulled } from '../../rules/verbs';
-import { patch, say, type PlanFighter, type Round } from './state';
+import { patch, paying, say, type PlanFighter, type Round } from './state';
 
 /**
  * Hidden and Confused in a planned fight. Illusionists slip back into hiding every few
@@ -79,9 +79,9 @@ export function search(round: Round, { actor, rng }: Turn): Round {
 }
 
 export function dispel(round: Round, { actor, rng }: Turn): Round {
-  const chakra = Math.max(0, actor.chakra - DISPEL_CHAKRA);
+  const change = { ...paying(actor, DISPEL_CHAKRA), confused: 0 };
   const paid = say(
-    { ...round, fighters: patch(round.fighters, actor.id, { chakra, confused: 0 }) },
+    { ...round, fighters: patch(round.fighters, actor.id, change) },
     `${actor.name} forms the seal to break illusions.`,
   );
   const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden);

@@ -51,6 +51,14 @@ describe('content validation', () => {
     );
   });
 
+  it('detects a drill for reserves, which only grow with stamina and jutsu use', () => {
+    const [first, ...rest] = ORIGINAL_PACK.training;
+    const drill = { ...first!, gains: { ...first!.gains, reserves: 1 } };
+    expect(validateContent({ ...ORIGINAL_PACK, training: [drill, ...rest] })).toContain(
+      `training "${first!.id}" drills reserves, which only grow with stamina and jutsu use`,
+    );
+  });
+
   it('detects activities no place offers', () => {
     const [home, ...rest] = ORIGINAL_PACK.locations;
     const withoutMarket = {

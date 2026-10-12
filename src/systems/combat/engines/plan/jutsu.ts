@@ -20,7 +20,7 @@ import { move } from './footwork';
 import { react, type Blow } from './react';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
-import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 
 /**
  * Using a technique in a planned fight: pay its chakra, see whether the target saw it coming,
@@ -38,9 +38,8 @@ interface Aimed extends Turn {
 type Wounding = EffectUse<'damage' | 'area' | 'break'>;
 
 function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
-  const chakra = Math.max(0, actor.chakra - chakraCost(actor, t));
   return say(
-    { ...round, fighters: patch(round.fighters, actor.id, { chakra }) },
+    { ...round, fighters: patch(round.fighters, actor.id, paying(actor, chakraCost(actor, t))) },
     `${actor.name} uses ${t.name}!`,
   );
 }

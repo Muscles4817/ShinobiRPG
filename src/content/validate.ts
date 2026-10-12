@@ -166,5 +166,8 @@ function numberProblems(pack: ContentPack): string[] {
     ...pack.training
       .filter((t) => Object.keys(t.gains).length === 0)
       .map((t) => `training "${t.id}" grants no gains`),
+    ...pack.training
+      .filter((t) => t.gains.reserves !== undefined)
+      .map((t) => `training "${t.id}" drills reserves, which only grow with stamina and jutsu use`),
   ];
 }

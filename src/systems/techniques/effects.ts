@@ -25,9 +25,10 @@ export type Verb = (typeof VERBS)[number];
 /**
  * A stat that scales a verb. Besides plain stats: `art` is the fighter's skill in the
  * technique's own discipline, and `guard` is what sees that art coming (willpower against
- * genjutsu, perception against the rest).
+ * genjutsu, perception against the rest). Reserves are not one: they size the chakra pool,
+ * they don't make a technique stronger.
  */
-export type ScalingStat = StatId | 'art' | 'guard';
+export type ScalingStat = Exclude<StatId, 'reserves'> | 'art' | 'guard';
 
 /** Overrides a verb's scaling profile for one technique; any part left out keeps the default. */
 export interface VerbScaling {

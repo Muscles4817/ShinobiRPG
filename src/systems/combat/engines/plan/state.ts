@@ -70,6 +70,17 @@ export interface PlanFighter extends Body, TrumpMemory {
   readonly openUntil?: number;
   /** Their substitution has swapped them out of a hit this round: it works once a round. */
   readonly substituteSpent?: boolean;
+  /** Chakra paid so far this fight (it deepens reserves); absent until they pay any. */
+  readonly chakraSpent?: number;
+}
+
+/** The change to a fighter who pays chakra: less left, more spent (never below empty). */
+export function paying(
+  f: Pick<PlanFighter, 'chakra' | 'chakraSpent'>,
+  cost: number,
+): Pick<PlanFighter, 'chakra' | 'chakraSpent'> {
+  const paid = Math.min(f.chakra, cost);
+  return { chakra: f.chakra - paid, chakraSpent: (f.chakraSpent ?? 0) + paid };
 }
 
 /** Dazed: about to lose a turn, or still reeling from one. */
@@ -183,6 +194,7 @@ export function patch(
       | 'openUntil'
       | 'trumpsUsed'
       | 'substituteSpent'
+      | 'chakraSpent'
     >
   >,
 ): PlanFighter[] {

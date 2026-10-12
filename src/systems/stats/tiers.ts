@@ -56,6 +56,10 @@ export function statTier(value: number): TierRead {
   };
 }
 
+/**
+ * Reserves are left out: they say how long someone can keep using jutsu, not how dangerous each
+ * exchange with them is, and an enemy's chakra is authored apart from their stats.
+ */
 const BODY_AND_MIND: readonly StatId[] = [
   'strength',
   'speed',

@@ -1,5 +1,7 @@
 import { round1 } from '@/core';
 
+import { withReserves } from './reserves';
+
 /**
  * Character attributes. Adding a stat = add it here and give it a label/group;
  * everything else (training, checks, UI) is driven off this list.
@@ -8,6 +10,7 @@ export const STAT_IDS = [
   'strength',
   'speed',
   'stamina',
+  'reserves',
   'chakraControl',
   'intellect',
   'perception',
@@ -26,6 +29,7 @@ export const STAT_INFO: Readonly<Record<StatId, { label: string; group: StatGrou
   strength: { label: 'Strength', group: 'body' },
   speed: { label: 'Speed', group: 'body' },
   stamina: { label: 'Stamina', group: 'body' },
+  reserves: { label: 'Chakra Reserves', group: 'body' },
   chakraControl: { label: 'Chakra Control', group: 'mind' },
   intellect: { label: 'Intellect', group: 'mind' },
   perception: { label: 'Perception', group: 'mind' },
@@ -55,10 +59,12 @@ export function trainingGain(current: number, baseGain: number, efficiency = 1):
   return round1((baseGain * efficiency) / (1 + current / 25));
 }
 
+/** Applies a session's gains; reserves grow alongside stamina (`withReserves`). */
 export function applyTraining(stats: Stats, gains: StatDelta, scale: StatScale = {}): Stats {
   const next: Record<StatId, number> = { ...stats };
+  const grown = withReserves(gains);
   for (const id of STAT_IDS) {
-    const base = gains[id];
+    const base = grown[id];
     if (base !== undefined) {
       next[id] = round1(stats[id] + trainingGain(stats[id], base, scale[id] ?? 1));
     }

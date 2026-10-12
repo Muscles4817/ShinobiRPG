@@ -769,6 +769,15 @@ These were folded into the D2 discussion. Where each landed:
   a brute it ends with 57–65% health (28–48%). A fragile fighter with a substitution lasts
   2.8 exchanges against a brute instead of 1.5 (it still loses: time, not invulnerability).
 
+**Phase 2 (in progress).**
+
+- 2.3: `reserves` ("Chakra Reserves", body group) is a stat. Max chakra is 30 + 3.5 per point
+  of reserves + 1 per point of control; stamina no longer feeds it. Reserves grow with half of
+  every stamina gain (`withReserves` inside `applyTraining`) and with chakra paid in fights
+  (Plan & Watch reports the player's `CombatOutcome.chakraSpent`; 0.02 base gain a point,
+  `game/fightGrowth.ts`). Save v16 seeds reserves from the old maximum (within one point).
+  An enemy's reserves are read back from its authored `maxChakra`.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -832,3 +841,10 @@ These were folded into the D2 discussion. Where each landed:
   against every foe in the bench) until their chakra ran out. It reacts after a Dodge has had
   its chance, costs its chakra each time, and never swaps out of a genjutsu. It is certain; its
   profile has no driving stats.
+- 2.3: reserves are not a combat attribute or a technique scaling stat (`ScalingStat`
+  excludes them): they size the chakra pool, which reaches the fight as `maxChakra`. Clone
+  counts and empower duration can add them to `CombatAttributes` when those verbs need them.
+  They are left out of `fightingPower` (an enemy's chakra is authored apart from its stats),
+  but sharp-eyed scouting lists them like any other standout stat. No drill may grant them
+  (validated). The "Huge chakra reserves" talent now gives reserves +4 instead of stamina +3,
+  and the fan pack's sealing clan trades one stamina for reserves +3.
