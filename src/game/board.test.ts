@@ -35,6 +35,18 @@ describe('the jobs board', () => {
     expect(everSeen.has('storehouse-ghost')).toBe(true);
   });
 
+  it('favours no job for where it sits in the pack', () => {
+    const trusted = veteran(onDay(1), 30);
+    const everSeen = new Set(
+      Array.from({ length: 14 }, (_, d) =>
+        titles({ ...trusted, time: { day: d + 1, slot: 0 } }),
+      ).flat(),
+    );
+    const jobs = ctx.content.missions.all.filter((m) => m.rank === 'D' && !m.standing);
+    const lastThird = jobs.slice(Math.floor((jobs.length * 2) / 3));
+    expect(lastThird.filter((m) => everSeen.has(m.id)).length).toBeGreaterThan(3);
+  });
+
   it('jobs come and go', () => {
     const veteranGame = veteran(onDay(1), 4);
     const boards = Array.from({ length: 12 }, (_, d) =>

@@ -12,6 +12,7 @@ import { validateSources } from './validateSources';
 import { validateTeachers } from './validateTeachers';
 import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
+import { placeholdersIn } from './missionTemplates';
 import type { ContentPack, Identified } from './types';
 
 /**
@@ -24,6 +25,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...uniqueIdProblems(pack),
     ...techniqueReferenceProblems(pack),
     ...missionProblems(pack),
+    ...placeholderProblems(pack),
     ...numberProblems(pack),
     ...validateWorld(pack),
     ...profileProblems(pack),
@@ -158,6 +160,15 @@ function missionProblems(pack: ContentPack): string[] {
       return problems;
     })
     .concat(board);
+}
+
+/** A mission filled from a template must have every `{slot}` filled. */
+function placeholderProblems(pack: ContentPack): string[] {
+  return pack.missions.flatMap((m) =>
+    [...new Set(placeholdersIn(JSON.stringify(m)))].map(
+      (name) => `mission "${m.id}" leaves placeholder "{${name}}" unfilled`,
+    ),
+  );
 }
 
 function numberProblems(pack: ContentPack): string[] {

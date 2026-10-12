@@ -2,6 +2,7 @@ import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
 import { TOOL_IDS } from '../../shared/tools';
 import { CHUNIN_MISSIONS } from './chuninMissions';
+import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
 
 export const ORIGINAL_TEXT: SettingText = {
@@ -47,6 +48,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'festival-haunting',
           'cold-kiln',
           ...CHUNIN_MISSIONS.map((m) => m.id),
+          ...TEMPLATE_MISSIONS.map((m) => m.id),
         ],
       },
       {

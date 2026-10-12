@@ -6,6 +6,7 @@ import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
+import { JOB_ENEMIES, TEMPLATE_MISSIONS } from './jobs';
 import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
@@ -48,10 +49,16 @@ export const ORIGINAL_PACK: ContentPack = {
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
   ],
-  missions: [...MISSIONS, ...TEAM_MISSIONS, ...CHUNIN_MISSIONS, ...EXAM_MISSIONS],
+  missions: [
+    ...MISSIONS,
+    ...TEAM_MISSIONS,
+    ...CHUNIN_MISSIONS,
+    ...TEMPLATE_MISSIONS,
+    ...EXAM_MISSIONS,
+  ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
-  enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...EXAM_ENEMIES],
+  enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...JOB_ENEMIES, ...EXAM_ENEMIES],
   training: TRAINING,
   foods: FOODS,
   clans: CLANS,

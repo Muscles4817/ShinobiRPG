@@ -36,6 +36,14 @@ function postingFor(board: Board, def: MissionDef, day: number): Posting {
   return { missionId: def.id, postedDay: day, expiresDay: day + daysUp - 1 };
 }
 
+/** Missions in the order of a key worked out once each (a hash is too dear for a comparator). */
+function byHash(missions: readonly MissionDef[], key: (m: MissionDef) => number): MissionDef[] {
+  return missions
+    .map((m) => ({ m, k: key(m) }))
+    .sort((a, b) => a.k - b.k)
+    .map(({ m }) => m);
+}
+
 /** Postings for one new day: expired ones come down, new ones go up. */
 function postDay(
   board: Board,
@@ -47,12 +55,15 @@ function postDay(
   const candidates = missions.filter(
     (m) => !m.standing && trusted(m, standing) && !kept.some((p) => p.missionId === m.id),
   );
-  const fresh = candidates.filter((m) => hashUnit(board.seed, day, m.id) < DAILY_POST_CHANCE);
-  const fillers = candidates
-    .filter((m) => !fresh.includes(m))
-    .sort(
-      (a, b) => hashUnit(board.seed, day, a.id, 'fill') - hashUnit(board.seed, day, b.id, 'fill'),
-    );
+  // Shuffled by the hash, so the cap on postings favours no job for where it sits in the pack.
+  const fresh = byHash(
+    candidates.filter((m) => hashUnit(board.seed, day, m.id) < DAILY_POST_CHANCE),
+    (m) => hashUnit(board.seed, day, m.id, 'order'),
+  );
+  const fillers = byHash(
+    candidates.filter((m) => !fresh.includes(m)),
+    (m) => hashUnit(board.seed, day, m.id, 'fill'),
+  );
   const shortfall = Math.max(0, MIN_POSTINGS - kept.length - fresh.length);
   const added = [...fresh, ...fillers.slice(0, shortfall)].map((m) => postingFor(board, m, day));
   return { ...board, refreshedDay: day, postings: [...kept, ...added].slice(0, MAX_POSTINGS) };
@@ -63,11 +74,31 @@ export function boardFor(state: GameState, ctx: GameContext): Board {
   const today = state.time.day;
   if (state.board.refreshedDay >= today) return state.board;
   const missions = ctx.content.missions.all;
+  const seen = caughtUp.get(state.board);
+  if (seen?.day === today && seen.standing === state.standing && seen.missions === missions) {
+    return seen.board;
+  }
   const from = Math.max(state.board.refreshedDay + 1, today - MAX_CATCH_UP_DAYS);
   let board = state.board;
   for (let day = from; day <= today; day++) board = postDay(board, day, missions, state.standing);
+  caughtUp.set(state.board, { day: today, standing: state.standing, missions, board });
   return board;
 }
+
+/**
+ * The last catch-up worked out from each stored board. A view asks for the board once per job
+ * on it, and with a hundred jobs catching up afresh each time is far too slow; boards are
+ * immutable, so the answer for the same board, day, record and jobs never changes.
+ */
+const caughtUp = new WeakMap<
+  Board,
+  {
+    readonly day: number;
+    readonly standing: Standing;
+    readonly missions: readonly MissionDef[];
+    readonly board: Board;
+  }
+>();
 
 export type Availability =
   | { readonly kind: 'standing'; readonly doneToday: boolean }
