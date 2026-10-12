@@ -141,7 +141,7 @@ Context, as of main @ 7e8f971:
   - Foes telegraph their next card. Insight shows their full loadout.
   - The loadout persists between fights. Allies use the default loadout.
 
-### D2. Ceilings and breakthroughs: agreed
+### D2. Ceilings and breakthroughs: limits agreed; triggers and pacing still under discussion
 
 **Decision: personal limits, separate from rank.** Power is capped by personal
 limits on each stat. Village `rank` is a separate social track. Rank exams _require_
@@ -170,7 +170,7 @@ Mechanics:
      breakthrough. The **gate** to enter: at least 3 stats past their first limit, plus
      the mission record.
   4. Bond and rival moments come later, with D11.
-- **Pacing target** (no preference was given, so this is my choice): a focused player
+- **Pacing target** (proposed, not yet discussed): a focused player
   reaches chūnin level, meaning first limits broken and exam eligibility, in about 60
   in-game days. Numbers are tuned against a **headless pacing harness**: a scripted
   "focused player" plays through days in a test and asserts milestone windows, so a
