@@ -10,6 +10,7 @@ import { bodyFrom, type Body } from '../../rules/body';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
 import type { ActiveField } from '../../rules/verbs';
+import type { CloneBody, EmpowerMemory, TrapMemory } from '../../rules/verbs';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -53,7 +54,7 @@ export function plainSlots(cards: readonly CardId[]): Slot[] {
   return cards.map((card) => ({ card }));
 }
 
-export interface PlanFighter extends Body, TrumpMemory {
+export interface PlanFighter extends Body, TrumpMemory, EmpowerMemory, CloneBody, TrapMemory {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;
@@ -86,6 +87,15 @@ export function paying(
 /** Dazed: about to lose a turn, or still reeling from one. */
 export function isDazed(f: Pick<PlanFighter, 'stunned' | 'openUntil'>): boolean {
   return f.stunned > 0 || f.openUntil !== undefined;
+}
+
+/**
+ * A fresh daze, dealt in exchange `exchange`: it costs one turn, and leaves its target open
+ * through the next exchange. Dazes don't stack: rounds play out on their own, so a chain of
+ * them would leave the player watching themselves lose.
+ */
+export function dazeIn(exchange: number): Pick<PlanFighter, 'stunned' | 'openUntil'> {
+  return { stunned: 1, openUntil: exchange + 1 };
 }
 
 /** At the end of an exchange: a daze whose last open exchange this was wears off. */
@@ -195,6 +205,7 @@ export function patch(
       | 'trumpsUsed'
       | 'substituteSpent'
       | 'chakraSpent'
+      | 'clones'
     >
   >,
 ): PlanFighter[] {

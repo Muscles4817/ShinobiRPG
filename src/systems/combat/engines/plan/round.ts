@@ -10,6 +10,8 @@ import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { afterUsing } from '../../rules/trumps';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
+import { cloneFollowUp } from './clones';
+import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
 import { intendedCard } from './intent';
 import { useJutsu } from './jutsu';
@@ -18,6 +20,7 @@ import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
 import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { react, type Blow } from './react';
+import { springTraps } from './traps';
 import {
   fighterIn,
   LOG_LIMIT,
@@ -33,7 +36,8 @@ import {
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
  * the current distance (the player by their plan's priorities, see `priority.ts`). Footwork is
- * contested by speed; defences react on their own.
+ * contested by speed; defences react on their own. A foe's trap springs as a turn begins where
+ * it waits, or when a step moves the fight onto it; empowers take their price as it ends.
  */
 
 const CHAKRA_REGEN = 2;
@@ -173,20 +177,26 @@ function attempt(round: Round, turn: Turn, card: Card): Round {
   }
   const lost = lostInField(round, actor, rng);
   if (lost) return revealed(say(round, lost), turn);
-  return revealed(play(round, turn, card), turn);
+  return cloneFollowUp(revealed(play(round, turn, card), turn), turn, card);
+}
+
+/** A step that moved the fight springs any foe's trap waiting where it now stands. */
+function afterStep(before: Round, after: Round, actorId: string, rng: Rng): Round {
+  return after.range === before.range ? after : springTraps(after, actorId, rng, true);
 }
 
 function turn(start: Round, actorId: string, rng: Rng): Round {
   const before = start.fighters.find((f) => f.id === actorId);
   if (!before || !alive(before) || decide(start.fighters)) return start;
-  const round = startOfTurn(start, before, rng);
+  const round = springTraps(startOfTurn(start, before, rng), actorId, rng, false);
   const actor = round.fighters.find((f) => f.id === actorId) ?? before;
+  if (!alive(actor)) return round;
   if (actor.stunned > 0) {
     const fighters = patch(round.fighters, actor.id, { stunned: actor.stunned - 1 });
     return say({ ...round, fighters }, `${actor.name} is dazed and loses the exchange.`);
   }
   const { card, target } = actor.isPlayer ? plannedPlay(actor, round) : instinct(round, actor, rng);
-  const played = attempt(round, { actor, target, rng }, card);
+  const played = afterStep(round, attempt(round, { actor, target, rng }, card), actor.id, rng);
   return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
 }
 
@@ -211,7 +221,10 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     intents: state.intents,
     ...(state.field ? { field: state.field } : {}),
   };
-  const end = order.reduce((round, { id }) => turn(round, id, rng), start);
+  const end = afterEmpowers(
+    order.reduce((round, { id }) => turn(round, id, rng), start),
+    state.round,
+  );
   const result = decide(end.fighters);
   const { field, lines: fading } = fieldAfter(end.field, state.round);
   const fighters = end.fighters.map((f) => ({

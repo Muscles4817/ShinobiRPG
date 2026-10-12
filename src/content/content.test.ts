@@ -59,6 +59,15 @@ describe('content validation', () => {
     );
   });
 
+  it('detects an empower that costs nothing', () => {
+    const [first, ...rest] = ORIGINAL_PACK.techniques;
+    const effects = [{ verb: 'empower', power: 10, boosts: ['strength'] }] as const;
+    const free = { ...ORIGINAL_PACK, techniques: [{ ...first!, effects }, ...rest] };
+    expect(validateContent(free)).toContain(
+      `technique "${first!.id}" has an empower with no price (it needs a health price or an after-cost)`,
+    );
+  });
+
   it('detects activities no place offers', () => {
     const [home, ...rest] = ORIGINAL_PACK.locations;
     const withoutMarket = {

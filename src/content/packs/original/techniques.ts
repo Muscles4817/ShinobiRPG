@@ -239,4 +239,44 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
     requirements: { taijutsu: 9, strength: 9 },
     difficulty: 55,
   },
+  {
+    id: 'kindled-pulse',
+    name: 'Kindled Pulse',
+    description:
+      'Light the body’s inner lanterns one by one. Every muscle burns brighter, and so does the bill.',
+    discipline: 'taijutsu',
+    effects: [
+      {
+        verb: 'empower',
+        power: 12,
+        boosts: ['strength', 'speed', 'taijutsu'],
+        healthPerExchange: 6,
+        afterCost: { kind: 'exhaustion', days: 1 },
+      },
+    ],
+    chakraCost: 8,
+    requirements: { taijutsu: 10, stamina: 9, willpower: 8 },
+    difficulty: 70,
+  },
+  {
+    id: 'lantern-shades',
+    name: 'Lantern Shades',
+    description: 'Cast your shadow from a dozen lanterns at once, and let each shadow fight.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'clone', power: 10, strikes: true }],
+    chakraCost: 14,
+    requirements: { ninjutsu: 9, chakraControl: 8 },
+    difficulty: 65,
+  },
+  {
+    id: 'snare-ward',
+    name: 'Snare Ward',
+    description:
+      'A ward pressed into the ground where you stand. The next foe to tread there regrets it.',
+    discipline: 'fuuinjutsu',
+    effects: [{ verb: 'trap', power: 8, dazes: true }],
+    chakraCost: 8,
+    requirements: { fuuinjutsu: 7, intellect: 6 },
+    difficulty: 50,
+  },
 ];

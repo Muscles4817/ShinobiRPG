@@ -178,6 +178,9 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'substitution-jutsu',
           'chakra-sensing',
           'dynamic-entry',
+          'gate-of-opening',
+          'shadow-clone',
+          'explosive-tag-trap',
         ],
       },
       {
