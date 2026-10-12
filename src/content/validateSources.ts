@@ -63,7 +63,7 @@ function sourcedIds(pack: ContentPack): Set<string> {
   return new Set([
     ...shelves(pack).flatMap((p) => p.techniqueIds),
     ...clanTaught(pack),
-    ...pack.people.flatMap((p) => p.sensei?.teaches ?? []),
+    ...pack.people.flatMap((p) => p.teacher?.teaches ?? []),
     ...pack.missions.flatMap((m) => (m.reward.scrollId ? [m.reward.scrollId] : [])),
     ...pack.academyTechniques,
     ...Object.values(pack.disciplineStarters),

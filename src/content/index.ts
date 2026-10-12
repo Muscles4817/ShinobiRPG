@@ -3,6 +3,7 @@ export { buildContentDb, type ContentDb } from './db';
 export { validateContent } from './validate';
 export type { Catalog } from './catalog';
 export { CLAN_TEACHER_RANKS, TONES } from './people';
+export { TEACHING_QUIRKS } from './teachers';
 export { GEAR_SLOTS } from './items';
 export { INJURY_SITE_LABELS, type InjuryCause, type InjuryDef, type InjurySite } from './injuries';
 export type {
@@ -32,11 +33,16 @@ export type {
   PersonRole,
   PlaceDef,
   PlaceKind,
+  PriceTemplate,
   SenseiProfile,
   SettingText,
   SightDef,
+  SimplePrice,
+  Steering,
   Stall,
   TalentDef,
+  TeacherProfile,
+  TeachingQuirk,
   TeamText,
   Tone,
   TrainingDef,

@@ -6,6 +6,7 @@ import {
   slotName,
   slotsUntilNextMorning,
   START_TIME,
+  weekOf,
 } from './time';
 
 describe('time', () => {
@@ -40,5 +41,11 @@ describe('time', () => {
 
   it('names slots', () => {
     expect(slotName({ day: 1, slot: 3 })).toBe('night');
+  });
+
+  it('counts weeks of seven days from day one', () => {
+    expect(weekOf(1)).toBe(0);
+    expect(weekOf(7)).toBe(0);
+    expect(weekOf(8)).toBe(1);
   });
 });

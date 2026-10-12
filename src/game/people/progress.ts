@@ -7,22 +7,23 @@ import {
   type Aptitude,
   type Growth,
   type StatDelta,
+  type StatId,
   type Stats,
 } from '@/systems/stats';
-import type { Discipline } from '@/systems/techniques';
 
 import { rollCharacterAptitude } from '../aptitude';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import { everyone, findPerson } from './cast';
-import { dailyRegimen, isLessonDay, lessonGains, LESSON_TEACHER } from './regimen';
+import { dailyRegimen, isLessonDay, lessonGains } from './regimen';
+import { teachingFactor } from './teachingFactor';
 import type { People, PersonProgress } from './state';
 
 /**
  * People's real stats, and how genin grow on their own. Everyone starts from the stats on
  * their `PersonDef`; genin then train every day (`dailyRegimen`) through the same formula as
  * the player (solo efficiency by grade × aptitude × their traits), and your teammates also get
- * your sensei's weekly lesson. Days are caught up lazily, like the jobs board, from a hash of
+ * your sensei's weekly lesson (the teacher rule, as yours). Days are caught up lazily, like the jobs board, from a hash of
  * the save's seed: growing never touches the game's dice.
  */
 
@@ -50,7 +51,7 @@ export function personAptitude(person: PersonDef, ctx: GameContext): Aptitude {
   return rollCharacterAptitude(createRng(hashString(person.id)), clan);
 }
 
-function growthOf(person: PersonDef, ctx: GameContext, teacher: number): Growth {
+function growthOf(person: PersonDef, ctx: GameContext, teacher = 1): Growth {
   const traits = person.traitIds.flatMap((id) => ctx.content.traits.get(id) ?? []);
   const mods = combine(traits.map((t) => t.modifiers));
   const aptitude = personAptitude(person, ctx);
@@ -60,11 +61,26 @@ function growthOf(person: PersonDef, ctx: GameContext, teacher: number): Growth 
   return { scale, floors: mods.soloFloors };
 }
 
-/** The specialty of the sensei who teaches this person every week, if anyone does. */
-function lessonSpecialty(state: GameState, ctx: GameContext, person: PersonDef): Discipline | null {
+/** The weekly lesson this person gets from your sensei, if they are your teammate. */
+interface WeeklyLesson {
+  readonly gains: StatDelta;
+  readonly growth: Growth;
+}
+
+/**
+ * Your teammates' lesson: the sensei's specialty, grown by the teacher rule against the
+ * sensei's own stats and teaching factor, as yours is.
+ */
+function weeklyLesson(state: GameState, ctx: GameContext, person: PersonDef): WeeklyLesson | null {
   const team = state.people.team;
   if (!team?.senseiId || !team.teammateIds.includes(person.id)) return null;
-  return findPerson(state, ctx, team.senseiId)?.sensei?.specialty ?? null;
+  const sensei = findPerson(state, ctx, team.senseiId);
+  const specialty = sensei?.sensei?.specialty;
+  if (!sensei || !specialty) return null;
+  const gains = lessonGains(specialty);
+  const theirs = personStats(sensei, state);
+  const teachers = Object.fromEntries(Object.keys(gains).map((id) => [id, theirs[id as StatId]]));
+  return { gains, growth: { ...growthOf(person, ctx, teachingFactor(sensei)), teachers } };
 }
 
 function caughtUp(
@@ -75,15 +91,14 @@ function caughtUp(
 ): PersonProgress {
   const through = state.time.day - 1;
   const { seed } = state.board;
-  const solo = growthOf(person, ctx, 1);
-  const taught = growthOf(person, ctx, LESSON_TEACHER);
-  const lesson = lessonSpecialty(state, ctx, person);
+  const solo = growthOf(person, ctx);
+  const lesson = weeklyLesson(state, ctx, person);
   let stats = from.stats;
   const first = Math.max(from.lastGrownDay + 1, through - MAX_CATCH_UP_DAYS + 1);
   for (let day = first; day <= through; day++) {
     stats = applyTraining(stats, dailyRegimen(person, seed, day), solo);
     if (lesson && isLessonDay(person.id, seed, day)) {
-      stats = applyTraining(stats, lessonGains(lesson), taught);
+      stats = applyTraining(stats, lesson.gains, lesson.growth);
     }
   }
   return { stats, lastGrownDay: through };
@@ -117,7 +132,7 @@ export function trainPerson(
   gains: StatDelta,
 ): People {
   const entry = state.people.progress[person.id];
-  const stats = applyTraining(personStats(person, state), gains, growthOf(person, ctx, 1));
+  const stats = applyTraining(personStats(person, state), gains, growthOf(person, ctx));
   const lastGrownDay = entry?.lastGrownDay ?? state.time.day - 1;
   return {
     ...state.people,

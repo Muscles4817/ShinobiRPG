@@ -8,6 +8,8 @@ export {
   formatDate,
   calendarDay,
   daysUntil,
+  weekOf,
+  DAYS_PER_WEEK,
   DAYS_PER_SEASON,
   SEASONS,
   type CalendarDay,

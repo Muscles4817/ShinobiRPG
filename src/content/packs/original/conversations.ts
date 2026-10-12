@@ -137,4 +137,29 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
       },
     ],
   },
+  {
+    id: 'yomi-grave',
+    personId: 'yomi',
+    minStage: 0,
+    opener:
+      'Yomi is looking past you. "There is a grave on the hill with no lantern. Someone is waiting there."',
+    choices: [
+      {
+        label: '“I’ll light one for them tonight.”',
+        tone: 'kind',
+        reply: 'She smiles at the empty air beside you. "They heard you. So did I."',
+        favour: 'yomi-grave-lantern',
+      },
+      {
+        label: '“Who is it?”',
+        tone: 'curious',
+        reply: '"Nobody remembers," she says. "That is the trouble."',
+      },
+      {
+        label: '“That’s a bit creepy.”',
+        tone: 'tease',
+        reply: 'She tilts her head, as if someone else just laughed.',
+      },
+    ],
+  },
 ];

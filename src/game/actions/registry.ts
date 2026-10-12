@@ -4,12 +4,12 @@ import { missionChoose, missionContinue, startMission } from './mission';
 import { payRent, treat } from './services';
 import { hostDinner } from './dinner';
 import { cook } from './kitchen';
-import { lesson } from './lesson';
 import { setCombatStyle } from './settings';
 import { buyIntel } from './intel';
 import { buyGear, buyIngredient, buyTool, equipGear, unequipGear } from './shop';
 import { spar } from './spar';
 import { study } from './study';
+import { trainWith } from './trainWith';
 import { buyRound } from './tavern';
 import { endConversation, reply, talk } from './talk';
 import { assignTeam, chooseSensei } from './team';
@@ -39,7 +39,7 @@ export const HANDLERS: Registry = {
   talk,
   reply,
   endConversation,
-  lesson,
+  trainWith,
   spar,
   setCombatStyle,
   buyGear,

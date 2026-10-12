@@ -134,7 +134,7 @@ describe('persistence', () => {
     const game = newGame();
     const known = [...game.techniques.known, 'crescent-drop', 'ember-breath'];
     const { unstable: _u, ...oldBook } = { ...game.techniques, known };
-    const raw = JSON.stringify({ version: 19, state: { ...game, techniques: oldBook } });
+    const raw = JSON.stringify({ version: 20, state: { ...game, techniques: oldBook } });
     const loaded = deserialize(raw);
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.techniques.known).toEqual(known);
