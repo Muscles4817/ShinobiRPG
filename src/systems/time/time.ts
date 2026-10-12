@@ -63,3 +63,10 @@ export function daysUntil(day: number, date: CalendarDay): number {
   const target = date.season * DAYS_PER_SEASON + date.day - 1;
   return (target - today + DAYS_PER_YEAR) % DAYS_PER_YEAR;
 }
+
+export const DAYS_PER_WEEK = 7;
+
+/** The week a day falls in, counting from 0 for days 1–7: weekly allowances reset with it. */
+export function weekOf(day: number): number {
+  return Math.floor((day - 1) / DAYS_PER_WEEK);
+}

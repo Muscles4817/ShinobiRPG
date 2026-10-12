@@ -618,6 +618,41 @@ These were folded into the D2 discussion. Where each landed:
 - Record the totals as the village baseline.
 - Size the original pack's Tōrōgakure from it (authored plus generated).
 
+### Village baseline
+
+Recorded in step 3.5 from the Naruto pack's Konoha, set in Part 1 between graduation and the
+Chūnin Exams (the Third Hokage leads; Team Guy is a year ahead of the player's class). The
+Sannin, Shizune and Yamato are away in that era and Mizuki is gone on graduation night, so none
+of them are in the village. "Best" is a person's highest stat, "specialty" their grade in it.
+
+| Rank          | Konoha (authored)                              | Best stat   | Specialty             | Teacher profiles                    |
+| ------------- | ---------------------------------------------- | ----------- | --------------------- | ----------------------------------- |
+| Genin         | 12, plus 6 generated classmates and the player | D ×12       | D ×12                 | none (they teach by default)        |
+| Chūnin        | 4                                              | C ×4        | C ×3 (Iruka has none) | 4                                   |
+| Jōnin         | 18: 5 senseis, 7 without a team, 6 clan heads  | A ×12, B ×6 | A ×10, B ×8           | 18                                  |
+| Legend (kage) | 1, the Hokage                                  | S           | none                  | none (never at the training ground) |
+| Civilians     | 2                                              | E           | none                  | none                                |
+
+So a village is roughly **one legend, about twenty jōnin, a handful of named chūnin and a
+genin year or two of about a dozen authored plus the generated class**. Jōnin are two-thirds
+A at their best, special jōnin and the less famous B; every jōnin teaches something. Chūnin
+sit at C. The canon gives few named chūnin; the generated population is where the rank fills
+out later (Phase 6).
+
+**Tōrōgakure, sized from it.** Its clans are four to Konoha's eight, and its authored genin
+six to twelve, so it has a smaller authored roster in the same shape:
+
+| Rank          | Tōrōgakure (authored)                            | Best stat   | Specialty           | Teacher profiles |
+| ------------- | ------------------------------------------------ | ----------- | ------------------- | ---------------- |
+| Genin         | 6, plus 6 generated and the player               | D ×6        | D ×6                | none             |
+| Chūnin        | 4: Rin and three more                            | C ×4        | C ×3 (Rin has none) | 3                |
+| Jōnin         | 14: 5 senseis, 5 without a team, 4 clan heads    | A ×11, B ×3 | A ×8, B ×6          | 14               |
+| Legend (kage) | 2: the Tōrokage and a retired legend who teaches | S ×2        | S ×1                | 1                |
+| Civilians     | 1                                                | D           | none                | none             |
+
+Unlike Konoha in its era, Tōrōgakure keeps one legend at home (Kōun, the Ash Lantern), so the
+legend tier has a teacher in the original pack.
+
 ### Phase 4: Techniques and gear
 
 **4.1 Technique ranks.**
@@ -885,6 +920,50 @@ These were folded into the D2 discussion. Where each landed:
   ones a rank and talent. Pacing: over a month, the focused player's fighting power goes 6.6 to
   8.7 and taijutsu 8 to 11.5; teammates go about 7.2 to 9.5, their specialty about +3.5
   (asserted: more than 1.5, and within 25% of the player's fighting power).
+- 3.3/3.4: teachers and "train with". `PersonDef.teacher` (`TeacherProfile`, `content/teachers.ts`):
+  a `quirk` (patient 1.1, harsh 1.2 with half the bond, natural 1.3, distracted 0.8), optional
+  `steers` (`focus` specialty or weakest, `freeAtStage`), `teaches` (moved from
+  `SenseiProfile`), optional `sessionsPerWeek` (by rank: genin 7, chūnin 2, jōnin and kage 1) and
+  a `price` (`PriceTemplate`: bond stage, ryo a session, a mission finished once, a favour, or
+  `all` of distinct kinds; each with the teacher's own `line`). A favour is done by a
+  conversation reply carrying its id (`ConversationChoice.favour`). `validateTeachers` checks
+  techniques, missions, favours both ways, stages, sessions and that every sensei has a profile;
+  every sensei in both packs has one (one of each price kind per pack). `trainWith { personId,
+statId }` (`game/actions/trainWith.ts`): at a training place, anyone ranked shinobi who is
+  there offers the stats they are ahead of you in (by value; reserves excepted); a session is
+  `sessionGains` (1.5 in the stat, plus 0.6 in an art's support stat) through `growCharacter`
+  with their values as `teachers` (the 2.4 grade-gap rule) and `teacher` = rank factor (genin
+  0.6, chūnin 0.85, jōnin 1, kage 1.2) × quirk (`game/people/teachingFactor.ts`); aptitude and
+  condition come from `growthFor` as for any session. 30 energy, two slots, +3 bond (+6 with your
+  sensei; a harsh teacher half), ryo paid; a genin practises the same gains (`trainPerson`).
+  Sessions are counted per teacher per calendar week (`people.taught`, `weekOf`), one a day.
+  Profile-less shinobi ask a bond stage by rank above yours (same rank 1, +1 2, +2 3, +3 4). The
+  `lesson` action is gone: your sensei is a teacher with no price, once a week, who comes to the
+  training ground for you by day, and whose session keeps the lesson report card; teammates'
+  weekly lessons use the same rule against the sensei's stats (`LESSON_TEACHER` is gone). The
+  training page's "Train with someone here" lists who's present (sensei first, then by teaching
+  factor; three shown, the rest folded): manner, price slip with met/not-yet stamps, a tile per
+  stat with their grade over yours, the one shared reason when something stops every tile, and
+  the stats they won't teach yet folded with why. Save v20 turns `team.lastLessonDay` into the
+  sensei's `people.taught` entry and adds `people.favours` and `board.completed` (jobs finished at
+  least once, recorded from now on). Pacing: the focused player trains with the sensei whenever
+  it's on offer and with any genin ahead in their focus; taijutsu reaches C on day 59 (drilling
+  alone, day 73). The window is now 60 ± 10, and a new assertion holds the teacher run at least
+  seven days ahead of the solo one.
+- 3.5: the village's people. The Naruto pack gains seven jōnin without a team (Ibiki, Genma,
+  Raidō, Aoba, Hayate, Yūgao, Ebisu; `naruto/jonin.ts`), six clan heads (Hiashi, Inoichi,
+  Shikaku, Chōza, Tsume, Shibi; `naruto/clanHeads.ts`) and three chūnin (Izumo, Kotetsu, Hana;
+  `naruto/chunin.ts`), each with rank, stats, schedule, bio and a teacher profile (quirk, price,
+  `teaches`); Iruka gets a profile too and stays late at the training ground at night. Five new
+  signature techniques (`naruto/rosterTechniques.ts`) and the favours Ibiki and Shikaku ask
+  (`naruto/rosterConversations.ts`). The original pack is sized from the baseline (see "Village
+  baseline"): five jōnin and a retired legend (`original/jonin.ts`), four clan heads
+  (`original/clanHeads.ts`), three chūnin (`original/chunin.ts`), three techniques and two
+  favours. A new `PersonRole`, `shinobi` (chūnin, jōnin or kage with no post the game models);
+  clan heads are `leader`s. A teacher's clan techniques go only to members of that clan
+  (`nextSignature`), and `validateTeachers` now checks that a teacher who isn't a sensei comes to
+  a training place at some hour and teaches only their own clan's techniques. Release markers
+  add Ibiki, Hiashi and Shikaku. No save change.
 
 **Phase 5 (in progress).**
 
@@ -1090,6 +1169,40 @@ These were folded into the D2 discussion. Where each landed:
   ahead (asserted in `peerGrowth.test.ts`).
 - 3.2: the support stat per discipline and the lesson's gains moved from `actions/lesson.ts` to
   `people/regimen.ts`, shared by your lesson and your teammates'.
+- 3.3: a profile's `price` is waived for your own sensei, not optional; a teacher with no profile
+  uses defaults (no quirk, no steering, sessions and a bond price by rank). Civilians never teach.
+- 3.3: a favour is a flag set by a conversation reply; the pack's person-specific conversations
+  come first, so the ask comes up the first time you talk. "Bring an item" waits for items that
+  can be given.
+- 3.3: no record of finished jobs existed, so `board.completed` starts empty on old saves: a
+  mission price counts jobs finished from v20 on.
+- 3.4: "ahead of you" is by value, not grade (an equal-grade teacher a little ahead gives the
+  1.25 × solo of the rule). A steering teacher picks their specialty when they're ahead in it,
+  else (or with `focus: 'weakest'`) your lowest stat among those they're ahead in, skipping a
+  known void art.
+- 3.4: your sensei makes time for you: they count as at the training ground whenever they are in
+  the village from morning to evening, so a sensei whose schedule never passes the ground (Yomi,
+  Ito, Asuma) can still give the weekly lesson. Others must actually be there.
+- 3.4: weekly allowances use calendar weeks (days 1–7, 8–14…), not seven days since the last
+  session, so "Your next lesson is in N days" counts to the week's turn.
+- 3.4: a session is two slots and 30 energy, like the lesson was; the support-stat gain uses the
+  teacher's value there too, so a specialist who is weaker in it teaches it almost nothing.
+- 3.5: the era is Part 1 before the Chūnin Exams, matching the pack's senseis and genin: no
+  Sannin, Shizune or Yamato (away), no Mizuki (gone on graduation night), Hayate alive. The
+  Hokage has no teacher profile and keeps to the mission desk; the legend tier is taught in the
+  original pack only, by a retired legend.
+- 3.5: people with a rank but no post (examiners, guards, ANBU, gate chūnin) get a new role,
+  `shinobi`, rather than `sensei` (which would offer them at team assignment) or `instructor`.
+  Clan heads are `leader`s; Shikaku is titled Jōnin Commander but is a jōnin (S is kage-only).
+- 3.5: clan heads teach their clan's techniques, but signatures were taught to anyone; a clan's
+  techniques now go only to its members (an outsider can still train stats with the head). This
+  is the "Clan: the clan's people" source from D2.
+- 3.5: a teacher must be reachable to count as "learnable in principle": validation asks every
+  non-sensei teacher to be at a training place in some slot (senseis come to their own team).
+  New teachers' schedules each pass the training ground once, spread over the slots.
+- 3.5: Rin (original) has no teacher profile, as before: her schedule never reaches the training
+  ground and the tavern's regulars depend on it. Iruka's does (his night slot), since Konoha's
+  academy instructor was the obvious first teacher.
 - 5.1: an eliminate job's foes slipped past leave the job undone: the mission ends at once,
   unpaid and unrecorded but without the reputation loss (a quiet exit beats being seen running).
   A negotiated surrender (talk or a threat that lands) pays ×0.6 ryo and ×1.5 reputation; a

@@ -15,7 +15,12 @@ import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
 import { ORIGINAL_CONVERSATIONS } from './conversations';
+import { CLAN_HEADS } from './clanHeads';
+import { VILLAGE_CHUNIN } from './chunin';
 import { GENIN } from './genin';
+import { VILLAGE_JONIN } from './jonin';
+import { ROSTER_CONVERSATIONS } from './rosterConversations';
+import { ROSTER_TECHNIQUES } from './rosterTechniques';
 import { SENSEIS_AND_ELDERS } from './people';
 import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
 import { SENSEI_TECHNIQUES } from './senseiTechniques';
@@ -33,7 +38,13 @@ export const ORIGINAL_PACK: ContentPack = {
   startingRyo: 300,
   text: ORIGINAL_TEXT,
   locations: ORIGINAL_LOCATIONS,
-  techniques: [...TECHNIQUES, ...CLAN_TECHNIQUES, ...SENSEI_TECHNIQUES, ...COMBO_TECHNIQUES],
+  techniques: [
+    ...TECHNIQUES,
+    ...CLAN_TECHNIQUES,
+    ...SENSEI_TECHNIQUES,
+    ...ROSTER_TECHNIQUES,
+    ...COMBO_TECHNIQUES,
+  ],
   missions: [...MISSIONS, ...TEAM_MISSIONS],
   encounters: ENCOUNTERS,
   enemies: ENEMIES,
@@ -49,8 +60,8 @@ export const ORIGINAL_PACK: ContentPack = {
   injuries: INJURIES,
   ingredients: INGREDIENTS,
   recipes: RECIPES,
-  people: [...SENSEIS_AND_ELDERS, ...GENIN],
-  conversations: [...GENERIC_CONVERSATIONS, ...ORIGINAL_CONVERSATIONS],
+  people: [...SENSEIS_AND_ELDERS, ...GENIN, ...VILLAGE_JONIN, ...CLAN_HEADS, ...VILLAGE_CHUNIN],
+  conversations: [...GENERIC_CONVERSATIONS, ...ORIGINAL_CONVERSATIONS, ...ROSTER_CONVERSATIONS],
   names: NAMES,
   team: TEAM,
   village: VILLAGE,

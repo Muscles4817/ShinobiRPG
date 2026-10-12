@@ -2,6 +2,7 @@ import { CONTENT_PACKS } from './packs';
 import { ORIGINAL_PACK } from './packs/original';
 import { talent } from './statLine';
 import { validateContent } from './validate';
+import type { PersonDef } from './types';
 
 describe.each(CONTENT_PACKS.map((p) => [p.id, p] as const))('content pack "%s"', (_id, pack) => {
   it('is internally consistent', () => {
@@ -94,6 +95,62 @@ describe('content validation', () => {
     expect(problems).toContain('person "goran" is a sensei but ranked chunin');
     expect(problems).toContain('sensei "akari" must be B or A in ninjutsu');
     expect(problems).toContain('person "tsune" has an aptitude outside 0–1.8 in intellect');
+  });
+
+  it('detects teachers with broken signatures, prices and favours', () => {
+    const people = ORIGINAL_PACK.people.map((p): PersonDef => {
+      if (p.id === 'goran' && p.teacher) {
+        const parts = [
+          { kind: 'mission', missionId: 'no-such-job' },
+          { kind: 'ryo', perSession: 0 },
+          { kind: 'ryo', perSession: 5 },
+        ] as const;
+        return {
+          ...p,
+          teacher: { ...p.teacher, teaches: ['nope'], price: { kind: 'all' as const, parts } },
+        };
+      }
+      if (p.id === 'akari') {
+        const { teacher: _t, ...rest } = p;
+        return rest;
+      }
+      if (p.id === 'yomi' && p.teacher) {
+        const price = { kind: 'favour', favourId: 'never-asked', ask: 'Something.' } as const;
+        return {
+          ...p,
+          teacher: { ...p.teacher, price, steers: { focus: 'weakest', freeAtStage: 9 } },
+        };
+      }
+      if (p.id === 'tsune') {
+        return {
+          ...p,
+          teacher: {
+            quirk: 'patient',
+            teaches: ['forge-cut'],
+            price: { kind: 'bond', minStage: 1 },
+          },
+        };
+      }
+      return p;
+    });
+    const problems = validateContent({ ...ORIGINAL_PACK, people });
+    expect(problems).toContain('teacher "goran" teaches unknown technique "nope"');
+    expect(problems).toContain('teacher "goran" asks for unknown mission "no-such-job"');
+    expect(problems).toContain('teacher "goran" must charge more than nothing a session');
+    expect(problems).toContain('teacher "goran" has a combined price that repeats a kind');
+    expect(problems).toContain('sensei "akari" needs a teacher profile');
+    expect(problems).toContain(
+      'teacher "yomi" asks for favour "never-asked" that no conversation reply does',
+    );
+    expect(problems).toContain('teacher "yomi" lets you choose at a stage outside 1–4');
+    expect(problems).toContain(
+      'favour "yomi-grave-lantern" is done in conversation but no teacher asks for it',
+    );
+    expect(problems).toContain('teacher "tsune" is a civilian and can’t teach');
+    expect(problems).toContain('teacher "tsune" never comes to a training place');
+    expect(problems).toContain(
+      'teacher "tsune" teaches "forge-cut" but isn’t of the kurogane clan',
+    );
   });
 
   it('detects an empower that costs nothing', () => {

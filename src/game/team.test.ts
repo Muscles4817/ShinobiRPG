@@ -32,51 +32,6 @@ describe('team missions', () => {
   });
 });
 
-describe('sensei lessons', () => {
-  it('a weekly lesson grows your sensei’s specialty and your bond', () => {
-    const state = newGame();
-    const after = act(state, { type: 'lesson' });
-    expect(after.character.stats.taijutsu).toBeGreaterThan(state.character.stats.taijutsu);
-    expect(after.people.bonds.goran?.points).toBe(16);
-    expect(after.reports.at(-1)).toMatchObject({
-      kind: 'lesson',
-      sensei: 'Gōran',
-      technique: null,
-    });
-    expect(blockerFor(after, { type: 'lesson' }, ctx)).toBe('Your next lesson is in 7 days.');
-  });
-
-  it('friends are taught their sensei’s signature technique', () => {
-    const state = newGame();
-    const friends = {
-      ...state,
-      people: {
-        ...state.people,
-        bonds: { ...state.people.bonds, goran: { points: 30, lastTalkDay: null, heard: [] } },
-      },
-    };
-    const after = act(friends, { type: 'lesson' });
-    expect(after.techniques.progress['iron-gate-palm']).toBeGreaterThan(0);
-    expect(trainingView(after, ctx)?.lesson?.signature).toMatchObject({
-      name: 'Iron Gate Palm',
-      locked: null,
-    });
-  });
-
-  it('says what unlocks the signature technique', () => {
-    expect(trainingView(newGame(), ctx)?.lesson?.signature?.locked).toBe(
-      'Taught once you and Gōran are friends.',
-    );
-  });
-
-  it('needs your sensei to be on the training ground', () => {
-    const night = { ...newGame(), time: { day: 1, slot: 3 } };
-    expect(blockerFor(night, { type: 'lesson' }, ctx)).toBe(
-      'Gōran is at The Paper Lantern right now.',
-    );
-  });
-});
-
 describe('sparring', () => {
   it('a won spar teaches you something and brings you closer, without hospital', () => {
     const strong = withAllStats(newGame(), 40);
@@ -126,14 +81,14 @@ describe('sparring', () => {
 });
 
 describe('saves', () => {
-  it('a version 4 save gets lesson and sparring fields', () => {
+  it('a version 4 save gets sparring and teaching fields', () => {
     const state = newGame();
-    const { lastLessonDay: _l, ...team } = state.people.team!;
-    const { sparringWith: _s, ...people } = state.people;
-    const v4 = { version: 4, state: { ...state, people: { ...people, team } } };
+    const { sparringWith: _s, taught: _t, favours: _f, ...people } = state.people;
+    const v4 = { version: 4, state: { ...state, people } };
     const loaded = deserialize(JSON.stringify(v4));
     if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.people.team?.lastLessonDay).toBeNull();
     expect(loaded.value.people.sparringWith).toBeNull();
+    expect(loaded.value.people.taught).toEqual({});
+    expect(loaded.value.people.favours).toEqual([]);
   });
 });

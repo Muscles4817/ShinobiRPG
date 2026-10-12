@@ -209,6 +209,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
         label: 'Sit nearby and wait.',
         tone: 'quiet',
         reply: 'Eventually he closes the book. "Patient. That’s rarer than talent."',
+        favour: 'kakashi-patience',
       },
     ],
   },

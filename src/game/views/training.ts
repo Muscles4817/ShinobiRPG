@@ -8,7 +8,8 @@ import { assumedAptitude } from '../growth';
 import { growthFor } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
-import { lessonCard, sparOptions, type LessonCard, type SparOption } from './team';
+import { sparOptions, type SparOption } from './team';
+import { teacherOffers, type TeacherOffer } from './teachers';
 
 export type DrillGroup = Discipline | 'body' | 'mind';
 
@@ -37,8 +38,8 @@ export interface TrainingView {
   /** How many more drills of typical cost today's energy covers. */
   readonly drillsLeft: number;
   readonly drills: readonly Drill[];
-  /** Your sensei's weekly lesson; null before you have a sensei. */
-  readonly lesson: LessonCard | null;
+  /** People here who could train with you: your sensei first. */
+  readonly teachers: readonly TeacherOffer[];
   readonly sparring: readonly SparOption[];
 }
 
@@ -84,7 +85,7 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
     energy: Math.round(vitals.energy),
     drillsLeft: Math.floor(vitals.energy / typical),
     drills,
-    lesson: lessonCard(state, ctx),
+    teachers: teacherOffers(state, ctx),
     sparring: sparOptions(state, ctx),
   };
 }

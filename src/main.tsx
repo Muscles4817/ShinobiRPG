@@ -16,6 +16,7 @@ import '@/ui/styles/scenes.css';
 import '@/ui/styles/encounter.css';
 import '@/ui/styles/creation.css';
 import '@/ui/styles/people.css';
+import '@/ui/styles/teachers.css';
 
 // Composition root for the app: choose the platform adapters here.
 const root = document.getElementById('root');

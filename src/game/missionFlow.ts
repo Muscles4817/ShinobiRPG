@@ -69,6 +69,9 @@ export function completeIfFinished(state: GameState, ctx: GameContext): GameStat
     mission: null,
     wallet: earn(state.wallet, earned.ryo),
     standing,
+    board: state.board.completed.includes(def.id)
+      ? state.board
+      : { ...state.board, completed: [...state.board.completed, def.id] },
   };
   const logged = log(next, {
     heading: `${def.title} complete`,

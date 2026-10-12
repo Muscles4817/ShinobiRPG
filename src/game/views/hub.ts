@@ -9,7 +9,7 @@ import { availability } from '../board';
 import { closedSign } from '../village';
 import { tavernCrowd } from '../actions/tavern';
 import { choice } from './common';
-import { lessonCard } from './team';
+import { teacherOffers } from './teachers';
 import { facesByPlace, type PersonFace } from './people';
 
 /** A place on the village screen, with one live line about it. */
@@ -97,7 +97,8 @@ function badgeFor(place: PlaceDef, state: GameState, ctx: GameContext): string |
     return fresh > 0 ? `${fresh} new` : null;
   }
   if (place.kind === 'training') {
-    return lessonCard(state, ctx)?.blocker === null ? 'Lesson ready' : null;
+    const sensei = teacherOffers(state, ctx).find((t) => t.isSensei);
+    return sensei?.blocker === null && sensei.open.length > 0 ? 'Lesson ready' : null;
   }
   return null;
 }

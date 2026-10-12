@@ -23,9 +23,11 @@ import {
 /** Target: a focused player is ready for the chūnin exam after about this many days… */
 const CHUNIN_READY_DAYS = 60;
 /** …give or take this many. */
-const CHUNIN_READY_WINDOW = 15;
+const CHUNIN_READY_WINDOW = 10;
 /** What "ready" means for now: the focused stat at the chūnin grade. */
 const CHUNIN_GRADE = 'C';
+/** Training with the sensei every week gets the focus to C at least this many days sooner. */
+const TEACHERS_LEAD_DAYS = 7;
 /** Long enough to see the window close. */
 const DAYS = CHUNIN_READY_DAYS + CHUNIN_READY_WINDOW;
 /** After reaching C, a month alone fills less than this share of the C band (13 to 20). */
@@ -41,7 +43,11 @@ const TAIJUTSU_FOCUS: FocusPlan = {
   focus: 'taijutsu',
   drillId: 'post-kicks',
   missionEveryDays: 2,
+  withTeachers: true,
 };
+
+/** The same player, drilling alone: no sensei, no better genin. */
+const SOLO_FOCUS: FocusPlan = { ...TAIJUTSU_FOCUS, withTeachers: false };
 
 const REPORT = import.meta.env.VITE_BENCH_REPORT === 'true';
 
@@ -69,7 +75,8 @@ describe('pacing: a focused player', () => {
     expect(run.days).toHaveLength(DAYS + 1);
     expect(last.day).toBe(first.day + DAYS);
     expect(last.missionsCompleted).toBeGreaterThan(0);
-    expect(run.state.people.team?.lastLessonDay).not.toBeNull();
+    const senseiId = run.state.people.team?.senseiId ?? '';
+    expect(run.state.people.taught[senseiId]).toBeDefined();
   });
 
   it('plays the same days for the same game', () => {
@@ -107,7 +114,7 @@ describe('pacing: a focused player', () => {
 
   it('solo drilling stalls in C: a month alone barely dents the band', () => {
     expect(last.grades.taijutsu).toBe(CHUNIN_GRADE);
-    const later = playFocused(run.state, TAIJUTSU_FOCUS, MONTH).days.at(-1)!;
+    const later = playFocused(run.state, SOLO_FOCUS, MONTH).days.at(-1)!;
     expect(later.stats.taijutsu - last.stats.taijutsu).toBeLessThan(C_BAND * C_STALL_SHARE);
   });
 
@@ -115,6 +122,14 @@ describe('pacing: a focused player', () => {
     'solo drilling alone stalls in D: without a teacher C is far off (Phase 3: today the ' +
       'weekly lesson adds little, so a drilling player reaches C mostly alone and stalls there)',
   );
-  it.todo('training with someone a grade or two higher is what carries a stat into C (Phase 2)');
+  it('training with someone a grade or two higher carries a stat into C well ahead of drilling', () => {
+    const reached = dayReached(run, 'taijutsu', CHUNIN_GRADE) ?? 0;
+    const solo = dayReached(
+      playFocused(ordinaryTalent(), SOLO_FOCUS, DAYS),
+      'taijutsu',
+      CHUNIN_GRADE,
+    );
+    expect(solo ?? Infinity).toBeGreaterThanOrEqual(reached + TEACHERS_LEAD_DAYS);
+  });
   it.todo('the focused player is nominated for the chūnin exam inside the window (Phase 6)');
 });
