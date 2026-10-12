@@ -3,15 +3,14 @@ import { createStats, evenAptitude, type StatId, type Stats } from '@/systems/st
 import {
   act,
   ctx,
-  fightOut,
   newGame,
   postEverything,
+  pressOn,
   veteran,
   withAllStats,
 } from '@/test/gameFixtures';
 
 import { PLAYER_COMBATANT_ID } from './combatants';
-import { dispatch } from './dispatch';
 import { growFromFight, type FightLessons } from './fightGrowth';
 import { growCharacter } from './growth';
 import type { GameState } from './state';
@@ -84,13 +83,7 @@ describe('fights teach', () => {
   it('says what the fight taught in a journal line and on the fight’s card', () => {
     const start = postEverything(veteran(fighterAt(9), 3));
     let s = act(start, { type: 'startMission', missionId: 'storehouse-ghost' });
-    for (let i = 0; i < 50 && (s.mission || s.combat); i++) {
-      if (s.combat) s = fightOut(s);
-      else if (s.mission?.encounter) s = act(s, { type: 'encounterApproach', approach: 'head-on' });
-      else if (dispatch(s, { type: 'missionContinue' }, ctx).ok)
-        s = act(s, { type: 'missionContinue' });
-      else s = act(s, { type: 'missionChoose', approachIndex: 0 });
-    }
+    for (let i = 0; i < 50 && (s.mission || s.combat); i++) s = pressOn(s);
     const card = s.reports.find((r) => r.kind === 'fight' || r.kind === 'defeat');
     const taught = card?.kind === 'fight' || card?.kind === 'defeat' ? card.taught : undefined;
     expect(taught?.length).toBeGreaterThan(0);
