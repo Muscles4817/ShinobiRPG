@@ -248,6 +248,7 @@
 .flee {
   position: sticky;
   bottom: 0;
+  min-height: 40px;
   padding: 6px var(--gutter) calc(10px + env(safe-area-inset-bottom));
   font-size: 0.8rem;
   color: var(--muted);
@@ -453,7 +454,9 @@ button.foe {
 .plan-slot .plan-card {
   min-width: 0;
 }
-.plan-move {
+/* Fight controls are tapped mid-fight: every one is a full-size target. */
+.combat-controls .btn.small,
+.plan-slot .btn.small.plan-move {
   min-height: 40px;
 }
 .plan-settings {
@@ -497,16 +500,16 @@ button.foe {
 .order-group .plan-setting small {
   white-space: normal;
 }
-.order-locked {
-  margin: 0;
+.order-locked b {
   font-size: 0.85rem;
   color: var(--ink);
 }
 .order-locked small {
-  color: var(--muted);
+  white-space: normal;
 }
 .plan-owners {
   flex-wrap: wrap;
+  padding: 0 var(--gutter);
 }
 .plan-heading {
   margin: 4px 0 0;
@@ -526,6 +529,10 @@ button.foe {
   justify-content: center;
   gap: 6px;
   padding: 0 var(--gutter);
+}
+/* The turn-ending choice (begin, next exchange) is the main act of a turn: give it the row. */
+.action-bar .btn:not(.ghost) {
+  flex: 1 1 0;
 }
 /* Fight tools: compact buttons (name and count) that wrap like the action bar. */
 .pouch {

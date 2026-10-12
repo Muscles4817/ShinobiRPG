@@ -224,7 +224,7 @@ export function createPlanEngine(): CombatEngine {
       const insight = hasPerk(playerOf(plan), 'insight');
       const meter = fieldMeter(plan);
       return {
-        round: plan.round,
+        round: plan.bout,
         combatants: plan.fighters.map((f) => ({
           ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
           row: f.row,
@@ -244,7 +244,7 @@ export function createPlanEngine(): CombatEngine {
       const player = playerOf(plan);
       return {
         result,
-        rounds: plan.round,
+        rounds: plan.bout,
         player: { health: player.health, chakra: player.chakra },
         items: itemsLeft(player),
         plan: player.loadout,

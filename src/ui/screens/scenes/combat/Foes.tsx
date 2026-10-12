@@ -36,8 +36,10 @@ function foeClass(flags: { down: boolean; hidden: boolean; targeted: boolean }):
   return ['foe', ...Object.entries(flags).flatMap(([name, on]) => (on ? [name] : []))].join(' ');
 }
 
-interface FoeCardProps extends Omit<FoesProps, 'foes'> {
+interface FoeCardProps extends Omit<FoesProps, 'foes' | 'round'> {
   readonly foe: CombatantView;
+  /** The round, on the first card only: one fight has one round. */
+  readonly round: number | null;
 }
 
 /** One enemy: health, conditions, what they seem about to do. Tap to target. */
@@ -67,7 +69,7 @@ function FoeCard({ foe: e, round, targetId, onTarget, reads }: FoeCardProps) {
         <span>
           {e.health} / {e.maxHealth}
         </span>
-        <span>Round {round}</span>
+        {round !== null && <span>Round {round}</span>}
       </span>
     </>
   );
@@ -95,7 +97,10 @@ function FoeCard({ foe: e, round, targetId, onTarget, reads }: FoeCardProps) {
 export function Foes(props: FoesProps) {
   const { foes } = props;
   const className = foes.length > 1 ? 'foes many' : 'foes';
-  const card = (e: CombatantView) => <FoeCard key={e.id} {...props} foe={e} />;
+  const first = (foes.find((e) => e.row === 'back') ?? foes[0])?.id;
+  const card = (e: CombatantView) => (
+    <FoeCard key={e.id} {...props} foe={e} round={e.id === first ? props.round : null} />
+  );
   if (!foes.some((e) => e.row === 'back'))
     return <header className={className}>{foes.map(card)}</header>;
   const rows = [
