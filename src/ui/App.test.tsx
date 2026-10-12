@@ -104,10 +104,11 @@ describe('App (smoke test)', () => {
     render(<App store={memoryStore()} />);
     await startGame(user);
     await user.click(place(/Mission Hall/));
-    await user.click(screen.getByRole('button', { name: /Lantern-Keeper/ }));
+    // The standing patrol is always up; other postings depend on the day's board.
+    await user.click(screen.getByRole('button', { name: /Lantern Patrol/ }));
     await user.click(screen.getByRole('button', { name: 'Accept the job' }));
     await user.click(screen.getByRole('button', { name: 'Continue' }));
-    await user.click(screen.getByRole('button', { name: /Chase her down/ }));
+    await user.click(screen.getByRole('button', { name: /Relight them/ }));
     const dialog = screen.getByRole('dialog');
     expect(within(dialog).getByText(/^\+\d+ ryo$/)).toBeInTheDocument();
     await user.click(within(dialog).getByRole('button', { name: 'Continue' }));
