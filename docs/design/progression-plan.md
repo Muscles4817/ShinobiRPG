@@ -1003,6 +1003,27 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   85%, plate 93%; against an archer 43% bare, 3% in plate; with strength 30, 98% either way. A
   kenjutsu-peak fighter wins 0% bare-handed, 80% with a D blade. The 1v1 bench is unchanged.
 
+- 4.2: sources. The academy holds rank E–D only and no clan techniques; a new `library` place
+  kind (`techniqueIds`, rank C–B, no clan techniques; both validated in `validateSources`) is
+  open to chūnin and above ("The restricted stacks are for chūnin and above.") and studied at a
+  new source quality, `library` 1.1 (scroll 1, teacher 1.5). Each pack's start location has one
+  (the Village Archives, the Lantern Archive) with hours; its page shows a lattice with the
+  reason while you're shut out, then a bay of shelves per art with what you're reading on the
+  desk (`game/shelves.ts`, `views/library.ts`, `LibraryPage`). Clan techniques come from clan
+  people through 3.3's `teacher.teaches` (3.5's clan heads, plus Sasuke and Naruto for the
+  clans without a head, and Akari and Yomi for the clan trumps); `TeacherProfile.quirk` and
+  `price` became optional so a teacher can be just a `teaches` list. Scroll items:
+  `inventory.scrolls` (technique id → true), read with `studyScroll { techniqueId }` at home or
+  in a library you may use, at the scroll's pace and by the same gate (`studyFrom` is shared with
+  `study`); the home page has a reading desk and a "Read scrolls" hotspot when you own unread
+  ones. Missions hand over `reward.scrollId` and `reward.gearId` once (`game/missionRewards.ts`),
+  shown as chips and on the debrief. The general C techniques moved to the library; Gate of
+  Opening and Kindled Pulse (the taijutsu trumps) are scroll rewards only, from the hardest team
+  job, which also hands over a named weapon (Samehada, the Hungry Lantern); two more C scrolls per
+  pack ride on mid-rank jobs. Every technique needs a source (shelf, teacher, scroll reward or
+  starting kit; validated). Grade-up "What this opens" now includes the library once you may use
+  it and your own scrolls. Save v23 adds the empty scroll case.
+
 ### Decisions made during the run
 
 - 0.1: shelved engines live in a separate `shelvedEngines` list, not in `engines`
@@ -1239,3 +1260,15 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
 - 4.3: unique weapons are in the packs but not obtainable yet (no reward hook); 4.2/4.4 hand
   them out. The issued blade is the cheapest D blade the start location sells; the v22 migration
   uses the pack's content (as v18 does) to find it.
+- 4.2: no general B technique exists in either pack yet, so the libraries hold C only until 4.4
+  adds B content; validation already allows B.
+- 4.2: the trumps 1.5 placed at the academy were not library material: Gate of Opening and
+  Kindled Pulse became mission scrolls, the clan trumps clan teachings.
+- 4.2: a clan technique is taught through the existing signature path, so it needs the bond stage
+  any signature does, and a train-with session with someone ahead of you in a stat. A clan with no
+  clan head is taught by its genin (Sasuke, Naruto) until the roster has elders for them.
+- 4.2: reading your own scroll in a library obeys the library's rank and hours; at home it is
+  always possible. A scroll you own stays in the case after you learn it; the desk hides it. A
+  repeated job doesn't hand over a scroll or weapon you already own.
+- 4.2: 3.5's roster techniques were converted to ranks by the 4.1 rule (12–13 → C, 8–10 → D),
+  Black Blade Draw needing a blade and Water Syrup Capture Field D control.

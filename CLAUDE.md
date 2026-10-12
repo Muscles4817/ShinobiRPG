@@ -273,6 +273,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a mission:** add a `MissionDef` and list it at a mission hall. It is posted from time
   to time once the player's record reaches `minMissionsCompleted`; set `standing: true` for
   jobs that are always available (every pack needs one a fresh genin can take — validated).
+  `reward.scrollId` / `reward.gearId` hand over a technique scroll or a named weapon once.
+- **Add a technique:** give it a source (validated): the academy (rank E–D), a library (C–B,
+  chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
+  scroll reward.
 - **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
   fight as allies and each gains bond on success. Offer it at a mission hall as usual.
 - **Add a combination technique:** two `TechniqueDef`s whose `combo.partnerTechniqueId` name
