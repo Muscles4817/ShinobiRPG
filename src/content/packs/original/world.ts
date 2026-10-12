@@ -1,6 +1,8 @@
 import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
 import { TOOL_IDS } from '../../shared/tools';
+import { CHUNIN_MISSIONS } from './chuninMissions';
+import { PROMOTIONS } from './exam';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -16,6 +18,7 @@ export const ORIGINAL_TEXT: SettingText = {
   sleepLockedOut: 'The landlord has locked your door over unpaid rent. You sleep in the stairwell.',
   hospitalWake: 'You wake in the village hospital, under lantern light and clean sheets.',
   aptitude: APTITUDE_TEXT,
+  promotions: PROMOTIONS,
 };
 
 export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
@@ -43,6 +46,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'river-road-bandits',
           'festival-haunting',
           'cold-kiln',
+          ...CHUNIN_MISSIONS.map((m) => m.id),
         ],
       },
       {

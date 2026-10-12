@@ -15,6 +15,9 @@ import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
+import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
+import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
+import { EXAM_ENEMIES, EXAM_MISSIONS, EXAMS } from './exam';
 import { NARUTO_CONVERSATIONS } from './conversations';
 import { CANON_GENIN } from './genin';
 import { CLAN_HEADS } from './clanHeads';
@@ -53,9 +56,16 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
   ],
-  missions: [...MISSIONS, ...TEAM_MISSIONS, ...ELITE_MISSIONS],
-  encounters: ENCOUNTERS,
-  enemies: ENEMIES,
+  missions: [
+    ...MISSIONS,
+    ...TEAM_MISSIONS,
+    ...ELITE_MISSIONS,
+    ...CHUNIN_MISSIONS,
+    ...EXAM_MISSIONS,
+  ],
+  exams: EXAMS,
+  encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
+  enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...EXAM_ENEMIES],
   training: TRAINING,
   foods: FOODS,
   clans: CLANS,

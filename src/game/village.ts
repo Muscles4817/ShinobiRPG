@@ -4,6 +4,7 @@ import { calendarDay, daysUntil, slotName, TIME_SLOTS } from '@/systems/time';
 
 import { newPostingsTomorrow } from './board';
 import type { GameContext } from './context';
+import { examRumours } from './exam/calendar';
 import { placeHere, placesHere } from './ops';
 import type { GameState } from './state';
 
@@ -129,6 +130,8 @@ interface Earful {
 
 function gossip(state: GameState, ctx: GameContext, { maxJobs, total }: Earful): RumourDef[] {
   const { rumours } = ctx.content.village;
+  // A coming exam is what everyone talks about.
+  const exam = examRumours(state, ctx);
   const tomorrow = new Set(newPostingsTomorrow(state, ctx));
   const jobs = rumours
     .filter((r) => r.missionId !== undefined && tomorrow.has(r.missionId))
@@ -137,11 +140,11 @@ function gossip(state: GameState, ctx: GameContext, { maxJobs, total }: Earful):
   const talk = rumours
     .filter((r) => r.missionId === undefined)
     .sort(byHash(state, 'rumour'))
-    .slice(0, Math.max(0, total - jobs.length));
-  return [...jobs, ...talk];
+    .slice(0, Math.max(0, total - jobs.length - exam.length));
+  return [...exam, ...jobs, ...talk];
 }
 
-/** Today's gossip: hints at tomorrow's new jobs first, then talk about people and the village. */
+/** Today's gossip: a coming exam, hints at tomorrow's new jobs, then talk about people and the village. */
 export function rumoursToday(state: GameState, ctx: GameContext): RumourDef[] {
   return gossip(state, ctx, { maxJobs: MAX_JOB_RUMOURS, total: RUMOURS_PER_DAY });
 }

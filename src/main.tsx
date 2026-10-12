@@ -14,6 +14,7 @@ import '@/ui/styles/board.css';
 import '@/ui/styles/you.css';
 import '@/ui/styles/scenes.css';
 import '@/ui/styles/encounter.css';
+import '@/ui/styles/exam.css';
 import '@/ui/styles/creation.css';
 import '@/ui/styles/people.css';
 import '@/ui/styles/teachers.css';

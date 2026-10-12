@@ -11,16 +11,20 @@ import { personCard, toneLabel, type PersonCard } from './people';
 
 /** The full-screen scenes for people: a conversation, and team assignment. */
 
-export type SceneKind = 'combat' | 'encounter' | 'mission' | 'conversation' | 'team';
+export type SceneKind =
+  'combat' | 'encounter' | 'mission' | 'exam' | 'promotion' | 'conversation' | 'team';
 
 /**
  * Which scene takes over the screen, if any. Fights win over encounters (sizing foes up on a
- * mission) win over missions win over talk.
+ * mission) win over missions (an exam's forest is one) win over the exam, then a promotion
+ * ceremony, then talk.
  */
 export function activeScene(state: GameState): SceneKind | null {
   if (state.combat) return 'combat';
   if (state.mission?.encounter) return 'encounter';
   if (state.mission) return 'mission';
+  if (state.exams.run) return 'exam';
+  if (state.exams.ceremony) return 'promotion';
   if (state.people.conversation) return 'conversation';
   if (!state.people.team?.senseiId) return 'team';
   return null;

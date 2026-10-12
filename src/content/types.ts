@@ -1,13 +1,15 @@
 import type { CombatTrait } from '@/systems/combat';
 import type { EncounterTemplate, MissionDef } from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
-import type { AptitudeBand, StatDelta, StatId } from '@/systems/stats';
+import type { StatDelta, StatId } from '@/systems/stats';
+import type { ExamDef } from '@/systems/exams';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 
 import type { BackdropId, IconId } from './art';
 import type { GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
 import type { InjuryDef } from './injuries';
 import type { ConversationDef, NamePools, PersonDef, TeamText, Tone } from './people';
+import type { SettingText } from './settingText';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
 
@@ -33,6 +35,7 @@ export type {
   Tone,
 } from './people';
 export type { OpeningHours, Stall } from './stall';
+export type { AptitudeText, PromotedRank, PromotionText, SettingText } from './settingText';
 export type {
   PriceTemplate,
   SimplePrice,
@@ -232,35 +235,6 @@ export interface LocationDef {
   };
 }
 
-/** Setting-specific wording the engine and UI need. Keeps names out of code. */
-export interface SettingText {
-  readonly nation: string;
-  readonly leaderTitle: string;
-  readonly currency: string;
-  /** Intro shown on the new-game screen and as the first record entry. */
-  readonly intro: string;
-  /** Button on the new-game screen. */
-  readonly graduate: string;
-  readonly sleepWell: string;
-  readonly sleepHungry: string;
-  readonly sleepLockedOut: string;
-  readonly hospitalWake: string;
-  /** How talent shows itself as you train. */
-  readonly aptitude: AptitudeText;
-}
-
-/** Words for aptitude, which players only ever learn as rough reads (never numbers). */
-export interface AptitudeText {
-  /** Journal line when the first sessions in a stat give a rough read, by band. */
-  readonly reads: Readonly<Record<AptitudeBand, string>>;
-  /** Short phrase for the Shinobi screen, by band. */
-  readonly senses: Readonly<Record<AptitudeBand, string>>;
-  /** Shinobi screen phrase before any read. */
-  readonly unknown: string;
-  /** Why a drill or scroll in an art you have no talent for is refused, once you know it. */
-  readonly blocked: string;
-}
-
 export interface ContentPack {
   readonly id: string;
   /** Shown when choosing a world. */
@@ -272,6 +246,8 @@ export interface ContentPack {
   readonly locations: readonly LocationDef[];
   readonly techniques: readonly TechniqueDef[];
   readonly missions: readonly MissionDef[];
+  /** Promotion exams, held on their dates (the chūnin exam). */
+  readonly exams: readonly ExamDef[];
   /** Kinds of encounter the missions' encounter stages are built on. */
   readonly encounters: readonly EncounterTemplate[];
   readonly enemies: readonly EnemyDef[];

@@ -13,6 +13,7 @@ import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
 
 import type { Board } from './boardState';
+import type { Exams } from './exam/state';
 import type { People } from './people/state';
 import type { Report } from './reports';
 
@@ -51,6 +52,8 @@ export interface GameState {
   readonly inventory: Inventory;
   /** Village life you have taken part in. */
   readonly village: VillageMemory;
+  /** The exam you are sitting, and a promotion waiting to be held. */
+  readonly exams: Exams;
 }
 
 /** What the village remembers of you: the last night you followed a spirit or stood a round. */
