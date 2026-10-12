@@ -20,6 +20,7 @@ import { rollCharacterAptitude } from './aptitude';
 import type { GameContext } from './context';
 import { chip, log, placeHere } from './ops';
 import { newBoard } from './boardState';
+import { NO_EXAMS } from './exam/state';
 import { defaultSettings } from './fightStyle';
 import { withIssuedBlade } from './gear';
 import { NO_PEOPLE } from './people/state';
@@ -167,6 +168,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     board: newBoard(seed),
     inventory: withIssuedBlade(EMPTY_INVENTORY, known, content),
     village: { lastSightDay: null, lastRoundDay: null },
+    exams: NO_EXAMS,
   };
   return logOpening(state, ctx, roll);
 }

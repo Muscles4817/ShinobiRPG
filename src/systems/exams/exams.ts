@@ -183,7 +183,10 @@ export function startExamRun(def: ExamDef, day: number, teamIds: readonly string
     teamIds: [...teamIds],
     stageIndex: 0,
     progress: progressFor(def.stages[0]),
-    notes: [{ kind: 'story', text: def.intro }],
+    notes: [
+      { kind: 'story', text: def.intro },
+      ...(def.stages[0] ? [{ kind: 'story' as const, text: def.stages[0].intro }] : []),
+    ],
     conduct: [],
     roundsWon: 0,
     exit: null,

@@ -1,6 +1,8 @@
 import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
 import { TOOL_IDS } from '../../shared/tools';
+import { CHUNIN_MISSIONS } from './chuninMissions';
+import { PROMOTIONS } from './exam';
 
 export const NARUTO_TEXT: SettingText = {
   nation: 'the Land of Fire',
@@ -16,6 +18,7 @@ export const NARUTO_TEXT: SettingText = {
   sleepLockedOut: 'Your landlady has locked the door over unpaid rent. You sleep on the stairs.',
   hospitalWake: 'You wake in Konoha Hospital, under clean sheets and a medic’s frown.',
   aptitude: APTITUDE_TEXT,
+  promotions: PROMOTIONS,
 };
 
 export const NARUTO_LOCATIONS: readonly LocationDef[] = [
@@ -42,6 +45,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'haunted-granary',
           'border-bandits',
           'missing-nin-forest',
+          ...CHUNIN_MISSIONS.map((m) => m.id),
         ],
       },
       {

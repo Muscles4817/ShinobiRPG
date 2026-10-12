@@ -2,6 +2,7 @@ import type { CheckApproach } from '@/systems/missions';
 import type { StatId } from '@/systems/stats';
 
 import type { GameContext } from './context';
+import { fieldTeamIds } from './exam/state';
 import { activeMission } from './missionFlow';
 import { requirePerson } from './people/cast';
 import { personStats } from './people/progress';
@@ -25,7 +26,7 @@ export interface Hand {
 export function bestHandFor(state: GameState, ctx: GameContext, stat: StatId): Hand {
   const you: Hand = { personId: null, name: 'You', value: state.character.stats[stat] };
   if (!activeMission(state, ctx)?.withTeam) return you;
-  return (state.people.team?.teammateIds ?? []).reduce<Hand>((best, id) => {
+  return fieldTeamIds(state).reduce<Hand>((best, id) => {
     const person = requirePerson(state, ctx, id);
     const value = personStats(person, state)[stat];
     return value > best.value ? { personId: id, name: person.name, value } : best;
@@ -44,7 +45,7 @@ export function checkHand(state: GameState, ctx: GameContext, approach: CheckApp
  */
 export function slowestAlong(state: GameState, ctx: GameContext): Hand | null {
   if (!activeMission(state, ctx)?.withTeam) return null;
-  return (state.people.team?.teammateIds ?? []).reduce<Hand | null>((slowest, id) => {
+  return fieldTeamIds(state).reduce<Hand | null>((slowest, id) => {
     const person = requirePerson(state, ctx, id);
     if (!ordersFor(state, person).stanceLocked) return slowest;
     const value = personStats(person, state).speed;

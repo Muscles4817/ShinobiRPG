@@ -168,6 +168,19 @@ describe('persistence', () => {
     expect(loaded.value.inventory).toEqual({ ...oldInventory, scrolls: {} });
   });
 
+  it('gives a save from before exams no exam, no ceremony and an empty senior record', () => {
+    const game = newGame();
+    const { exams: _e, ...old } = game;
+    const { seniorMissionsCompleted: _s, ...oldStanding } = game.standing;
+    for (const version of [23, 24]) {
+      const raw = JSON.stringify({ version, state: { ...old, standing: oldStanding } });
+      const loaded = deserialize(raw);
+      if (!loaded.ok) throw new Error(loaded.error);
+      expect(loaded.value.exams).toEqual({ run: null, lastSatDay: null, ceremony: null });
+      expect(loaded.value.standing).toEqual({ ...oldStanding, seniorMissionsCompleted: 0 });
+    }
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);
