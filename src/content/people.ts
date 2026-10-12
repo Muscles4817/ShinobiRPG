@@ -23,6 +23,9 @@ export type PersonRole = 'genin' | 'sensei' | 'instructor' | 'leader' | 'village
 /** A person's shinobi rank (as the player's standing names them); villagers are civilians. */
 export type PersonRank = 'civilian' | Exclude<Rank, 'academy'>;
 
+/** Who can pass on their clan's arts to a clan-mate: any member who is a shinobi. */
+export const CLAN_TEACHER_RANKS: readonly PersonRank[] = ['genin', 'chunin', 'jonin', 'kage'];
+
 /** What a jōnin is like as a sensei; used to offer the two best fits at team assignment. */
 export interface SenseiProfile {
   readonly specialty: Discipline;

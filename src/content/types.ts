@@ -181,7 +181,10 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'training'; readonly trainingIds: readonly string[] })
   | (PlaceBase & { readonly kind: 'market'; readonly stalls: readonly Stall[] })
   | (PlaceBase & { readonly kind: 'missions'; readonly missionIds: readonly string[] })
+  /** Scrolls a fresh genin can study: rank E and D only. */
   | (PlaceBase & { readonly kind: 'academy'; readonly techniqueIds: readonly string[] })
+  /** The restricted stacks: C and some B, open to chūnin and above. */
+  | (PlaceBase & { readonly kind: 'library'; readonly techniqueIds: readonly string[] })
   | (PlaceBase & { readonly kind: 'home'; readonly rentPerWeek: number; readonly lodging: string })
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
   | (PlaceBase & {

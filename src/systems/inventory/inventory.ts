@@ -1,8 +1,9 @@
 import { err, ok, type Result } from '@/core';
 
 /**
- * What the character owns: gear (and which piece fills each slot), the pouch of fight tools
- * and the pantry of ingredients. Ids are opaque here; content decides what they mean.
+ * What the character owns: gear (and which piece fills each slot), the pouch of fight tools,
+ * the pantry of ingredients and technique scrolls. Ids are opaque here; content decides what
+ * they mean.
  */
 
 export interface Inventory {
@@ -13,6 +14,8 @@ export interface Inventory {
   readonly pantry: Readonly<Record<string, number>>;
   /** Fight tool id → how many in the pouch. */
   readonly tools: Readonly<Record<string, number>>;
+  /** Technique id → a scroll of it you own (studied at home or in a library). */
+  readonly scrolls: Readonly<Record<string, true>>;
 }
 
 export interface Needed {
@@ -20,7 +23,13 @@ export interface Needed {
   readonly count: number;
 }
 
-export const EMPTY_INVENTORY: Inventory = { gear: [], equipped: {}, pantry: {}, tools: {} };
+export const EMPTY_INVENTORY: Inventory = {
+  gear: [],
+  equipped: {},
+  pantry: {},
+  tools: {},
+  scrolls: {},
+};
 
 /** How many of one tool fit in the pouch. */
 export const POUCH_LIMIT = 5;
@@ -86,4 +95,20 @@ export function useUp(inventory: Inventory, needs: readonly Needed[]): Result<In
       .filter(([, count]) => count > 0),
   );
   return ok({ ...inventory, pantry });
+}
+
+export function ownsScroll(inventory: Inventory, techniqueId: string): boolean {
+  return inventory.scrolls[techniqueId] === true;
+}
+
+/** Keeps a scroll; a second copy of one you own adds nothing. */
+export function addScroll(inventory: Inventory, techniqueId: string): Inventory {
+  return ownsScroll(inventory, techniqueId)
+    ? inventory
+    : { ...inventory, scrolls: { ...inventory.scrolls, [techniqueId]: true } };
+}
+
+/** The techniques you own scrolls of, in the order you got them. */
+export function scrollIds(inventory: Inventory): string[] {
+  return Object.keys(inventory.scrolls);
 }

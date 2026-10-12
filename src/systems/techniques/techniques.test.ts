@@ -1,6 +1,12 @@
 import { createStats } from '@/systems/stats';
 
-import { controlStudyFactor, gradeToAttempt, learnability, UNSTABLE_STUDY } from './learning';
+import {
+  controlStudyFactor,
+  gradeToAttempt,
+  learnability,
+  UNSTABLE_STUDY,
+  type StudySource,
+} from './learning';
 import {
   EMPTY_BOOK,
   learnBlocker,
@@ -140,6 +146,13 @@ describe('study speed', () => {
     expect(sessionStudyPoints(stats, fireball, { ...base, source: 'teacher' })).toBeGreaterThan(
       points,
     );
+  });
+
+  it('ranks the sources: teacher, then library, then a bare scroll', () => {
+    const stats = createStats(10);
+    const at = (source: StudySource) => sessionStudyPoints(stats, fireball, { ...base, source });
+    expect(at('library')).toBeCloseTo(at('scroll') * 1.1);
+    expect(at('teacher')).toBeGreaterThan(at('library'));
   });
 
   it('is slower a rank above your grade', () => {

@@ -46,7 +46,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     summary: 'A missing-nin from the Hidden Mist was sighted near the village. Track and capture.',
     slots: 4,
     energyCost: 30,
-    reward: { ryo: 340, reputation: 8 },
+    reward: { ryo: 340, reputation: 8, scrollId: 'gate-of-opening' },
     minMissionsCompleted: 4,
     withTeam: true,
     stages: [

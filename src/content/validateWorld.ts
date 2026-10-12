@@ -80,6 +80,7 @@ function placeRefs(place: PlaceDef): [RefKind, string][] {
     case 'missions':
       return place.missionIds.map((id) => ['mission', id]);
     case 'academy':
+    case 'library':
       return place.techniqueIds.map((id) => ['technique', id]);
     case 'home':
     case 'hospital':

@@ -12,10 +12,17 @@ export type Learnability = 'normal' | 'unstable' | 'impossible';
 /** A technique one rank above you is studied at this fraction of the usual pace. */
 export const UNSTABLE_STUDY = 0.5;
 
-/** Where study happens. A teacher beats a scroll (more sources arrive with libraries). */
-export const STUDY_SOURCES = ['scroll', 'teacher'] as const;
+/**
+ * Where study happens. A teacher beats the library's annotated copies, which beat a bare
+ * scroll (the academy's, or one of your own).
+ */
+export const STUDY_SOURCES = ['scroll', 'library', 'teacher'] as const;
 export type StudySource = (typeof STUDY_SOURCES)[number];
-export const SOURCE_QUALITY: Readonly<Record<StudySource, number>> = { scroll: 1, teacher: 1.5 };
+export const SOURCE_QUALITY: Readonly<Record<StudySource, number>> = {
+  scroll: 1,
+  library: 1.1,
+  teacher: 1.5,
+};
 
 /**
  * Chakra control's pull on studying a chakra art: steady control learns faster. 1 at about
