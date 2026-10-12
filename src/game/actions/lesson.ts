@@ -1,7 +1,6 @@
 import type { PersonDef } from '@/content';
 import { addPoints, stageOf } from '@/systems/bonds';
-import { diffStats, type StatDelta, type StatId } from '@/systems/stats';
-import type { Discipline } from '@/systems/techniques';
+import { diffStats } from '@/systems/stats';
 
 import type { GameContext } from '../context';
 import {
@@ -18,6 +17,7 @@ import {
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
 import { bondOf, findPerson, whereNow } from '../people/cast';
+import { lessonGains, LESSON_TEACHER } from '../people/regimen';
 import { growCharacter, logDiscoveries } from '../growth';
 import { learnBlockerFor, studySession } from '../learning';
 import { addReport } from '../reports';
@@ -32,25 +32,9 @@ import type { ActionHandler, ActionOf } from './types';
 export const LESSON_INTERVAL_DAYS = 7;
 export const LESSON_ENERGY = 30;
 const LESSON_SLOTS = 2;
-const LESSON_GAIN = 1.5;
-const SUPPORT_GAIN = 0.6;
 const LESSON_BOND = 6;
-/**
- * A lesson grows you like a drill, times this: someone better than you is watching. Phase 3
- * replaces it with the grade gap between you and the teacher.
- */
-export const LESSON_TEACHER = 3;
 /** Friendship stage at which a sensei starts teaching signature techniques. */
 export const TEACHES_AT_STAGE = 2;
-
-/** The body or mind stat each discipline's lessons also work. */
-const SUPPORT_STAT: Readonly<Record<Discipline, StatId>> = {
-  taijutsu: 'strength',
-  ninjutsu: 'chakraControl',
-  genjutsu: 'perception',
-  kenjutsu: 'speed',
-  fuuinjutsu: 'intellect',
-};
 
 export function yourSensei(state: GameState, ctx: GameContext): PersonDef | undefined {
   const id = state.people.team?.senseiId;
@@ -120,10 +104,9 @@ export const lesson: ActionHandler<ActionOf<'lesson'>> = {
     const team = state.people.team;
     const profile = sensei?.sensei;
     if (!sensei || !team || !profile) return state;
-    const { specialty } = profile;
-    const gains: StatDelta = { [specialty]: LESSON_GAIN, [SUPPORT_STAT[specialty]]: SUPPORT_GAIN };
+    const gains = lessonGains(profile.specialty);
     const before = state.character.stats;
-    const grown = growCharacter(state.character, gains, ctx, LESSON_TEACHER);
+    const grown = growCharacter(state.character, gains, ctx, { teacher: LESSON_TEACHER });
     const { stats } = grown.character;
     const bond = addPoints(bondOf(state, sensei.id), LESSON_BOND);
     const trained: GameState = {

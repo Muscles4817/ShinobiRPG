@@ -1,4 +1,6 @@
 import type { Appearance } from '@/systems/profile';
+import type { Rank } from '@/systems/standing';
+import type { Aptitude, Stats } from '@/systems/stats';
 import type { Discipline, Element } from '@/systems/techniques';
 import type { TimeSlot } from '@/systems/time';
 
@@ -17,6 +19,9 @@ export const TONES = [
 export type Tone = (typeof TONES)[number];
 
 export type PersonRole = 'genin' | 'sensei' | 'instructor' | 'leader' | 'villager';
+
+/** A person's shinobi rank (as the player's standing names them); villagers are civilians. */
+export type PersonRank = 'civilian' | Exclude<Rank, 'academy'>;
 
 /** What a jōnin is like as a sensei; used to offer the two best fits at team assignment. */
 export interface SenseiProfile {
@@ -41,6 +46,14 @@ export interface PersonDef {
   readonly name: string;
   readonly familyName: string;
   readonly role: PersonRole;
+  readonly rank: PersonRank;
+  /**
+   * Their stats as the game begins (authored with `statLine`). Genin grow from here; the save
+   * keeps how far (`people.progress`).
+   */
+  readonly stats: Stats;
+  /** Their talent. Left out, it is rolled from their id, like a classmate's (by clan). */
+  readonly aptitude?: Aptitude;
   /** Shown under the name, e.g. "Jōnin", "Ramen chef". */
   readonly title: string;
   readonly clanId?: string;

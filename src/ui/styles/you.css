@@ -286,10 +286,42 @@
   background: color-mix(in srgb, var(--g) 18%, transparent);
   overflow: hidden;
 }
+.grade-bar {
+  position: relative;
+}
 .grade-bar i {
   display: block;
   height: 100%;
   background: var(--g);
+}
+/* A tick within a grade: the stretch just gained is brushed in with ink, then settles. */
+.grade-bar .ink-stroke {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--ink);
+  transform-origin: left center;
+  animation: ink-stroke 0.9s ease-out both;
+}
+@keyframes ink-stroke {
+  from {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  45% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grade-bar .ink-stroke {
+    animation: none;
+    opacity: 0;
+  }
 }
 .disc-value {
   display: flex;

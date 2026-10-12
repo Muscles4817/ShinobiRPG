@@ -1,13 +1,16 @@
 import type { PersonDef } from '@/content';
 import type { Bond } from '@/systems/bonds';
+import type { Stats } from '@/systems/stats';
 
 /**
- * The people slice of GameState: generated classmates, your bonds with everyone, your team
- * and the conversation in progress. Authored people live in content; generated ones are
- * stored here in the same shape, so the rest of the game treats them alike.
+ * The people slice of GameState: generated classmates, your bonds with everyone, your team,
+ * the conversation in progress and how far genin have grown. Authored people live in content;
+ * generated ones are stored here in the same shape, so the rest of the game treats them alike.
  */
 export interface People {
   readonly generated: readonly PersonDef[];
+  /** How far genin have grown since they were made, keyed by person id. */
+  readonly progress: Readonly<Record<string, PersonProgress>>;
   /** Keyed by person id. Missing means you have never spoken. */
   readonly bonds: Readonly<Record<string, Bond>>;
   /** Null until teams are read out the morning after graduation. */
@@ -15,6 +18,12 @@ export interface People {
   readonly conversation: Conversation | null;
   /** The genin you are sparring with while a spar's fight is on. */
   readonly sparringWith: string | null;
+}
+
+/** A genin's stats now, and the last day whose training is in them. */
+export interface PersonProgress {
+  readonly stats: Stats;
+  readonly lastGrownDay: number;
 }
 
 export interface Team {
@@ -43,6 +52,7 @@ export interface Answer {
 
 export const NO_PEOPLE: People = {
   generated: [],
+  progress: {},
   bonds: {},
   team: null,
   conversation: null,

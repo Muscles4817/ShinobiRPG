@@ -107,8 +107,8 @@ export function studySession(
 
 /**
  * Steadies every unstable technique the character's grade has caught up with, with a journal
- * line each. Every action passes through it (see `dispatch`), so it follows growth from any
- * source.
+ * line each. Every action passes through it (`noteGradeUps`, from `dispatch`), so it follows
+ * growth from any source.
  */
 export function stabiliseTechniques(state: GameState, ctx: GameContext): GameState {
   if (state.techniques.unstable.length === 0) return state;

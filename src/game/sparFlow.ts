@@ -1,25 +1,28 @@
 import type { CombatOutcome } from '@/systems/combat';
 import { recordMeeting } from '@/systems/bonds';
-import { diffStats, type StatDelta } from '@/systems/stats';
+import type { StatDelta } from '@/systems/stats';
+import type { Discipline } from '@/systems/techniques';
 import { MAX_HEALTH } from '@/systems/vitals';
 
 import type { GameContext } from './context';
-import { adjust, chip, log, statChips } from './ops';
+import { adjust, chip, log } from './ops';
 import { bondOf, requirePerson } from './people/cast';
-import { growCharacter, logDiscoveries } from './growth';
+import { trainPerson } from './people/progress';
 import { addReport, type Report } from './reports';
 import type { GameState } from './state';
 
 /**
  * How a spar ends. Nobody goes to hospital: the fight stops before anyone is really hurt.
- * Win or lose, you learn from your partner's specialty and grow closer.
+ * Win or lose, you grow closer; what the spar teaches is any fight's lesson (`fightGrowth.ts`),
+ * written onto the spar's card afterwards. The bout is practice for your partner too.
  */
 
 /** Sparring stops before you drop below this share of your health. */
 const SPAR_HEALTH_FLOOR = 0.5;
+/** What a bout is worth to your partner: their own specialty, and footwork. */
+const PARTNER_LEARNING_GAIN = 0.5;
+const PARTNER_FOOTWORK_GAIN = 0.3;
 const BOND_FOR: Readonly<Record<SparResult, number>> = { won: 5, lost: 4, yielded: 1 };
-const LEARNING_GAIN = 0.5;
-const FOOTWORK_GAIN = 0.3;
 
 type SparResult = Extract<Report, { kind: 'spar' }>['result'];
 
@@ -28,6 +31,14 @@ const RESULT_OF: Readonly<Record<CombatOutcome['result'], SparResult>> = {
   defeat: 'lost',
   escaped: 'yielded',
 };
+
+function partnerPractice(result: SparResult, specialty: Discipline | undefined): StatDelta {
+  if (result === 'yielded') return {};
+  return {
+    ...(specialty ? { [specialty]: PARTNER_LEARNING_GAIN } : {}),
+    speed: PARTNER_FOOTWORK_GAIN,
+  };
+}
 
 function sparLine(result: SparResult, name: string): string {
   switch (result) {
@@ -45,29 +56,21 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
   if (!partnerId) return state;
   const partner = requirePerson(state, ctx, partnerId);
   const result = RESULT_OF[outcome.result];
-  const { vitals, stats } = state.character;
+  const { vitals } = state.character;
   const floor = Math.round(MAX_HEALTH * SPAR_HEALTH_FLOOR);
   const health = Math.max(outcome.player.health, Math.min(floor, vitals.health));
-  const gains: StatDelta =
-    result === 'yielded'
-      ? {}
-      : {
-          ...(partner.specialty ? { [partner.specialty]: LEARNING_GAIN } : {}),
-          speed: FOOTWORK_GAIN,
-        };
-  const growth = growCharacter(state.character, gains, ctx);
-  const grown = growth.character.stats;
+  // The same bout is practice in their own specialty, and footwork, for them.
+  const people = trainPerson(state, ctx, partner, partnerPractice(result, partner.specialty));
   const bond = BOND_FOR[result];
   const after = adjust(
     {
       ...state,
       combat: null,
-      character: growth.character,
       people: {
-        ...state.people,
+        ...people,
         sparringWith: null,
         bonds: {
-          ...state.people.bonds,
+          ...people.bonds,
           [partner.id]: recordMeeting(bondOf(state, partner.id), {
             day: state.time.day,
             delta: bond,
@@ -78,19 +81,11 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
     { health: health - vitals.health, chakra: outcome.player.chakra - vitals.chakra },
   );
   const text = sparLine(result, partner.name);
-  const gainLabels = statChips(diffStats(stats, grown)).map((c) => c.label);
   const logged = log(after, {
     heading: `Spar with ${partner.name}`,
     text,
     tone: result === 'won' ? 'success' : 'info',
-    chips: [...statChips(diffStats(stats, grown)), chip(`+${bond} bond`, 'gain')],
+    chips: [chip(`+${bond} bond`, 'gain')],
   });
-  return addReport(logDiscoveries(logged, growth.discovered, ctx), {
-    kind: 'spar',
-    opponent: partner.name,
-    result,
-    text,
-    gains: gainLabels,
-    bond,
-  });
+  return addReport(logged, { kind: 'spar', opponent: partner.name, result, text, gains: [], bond });
 }

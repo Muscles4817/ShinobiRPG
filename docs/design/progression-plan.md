@@ -842,6 +842,49 @@ These were folded into the D2 discussion. Where each landed:
   shows each stat's read in words. Pacing (an ordinary talent, taijutsu specialist): taijutsu
   reaches C on day 61 (was day 3), and a further month alone adds about one point of the C
   band's seven.
+- 2.4/2.5: fights teach, and grade-ups are a moment. The teacher rule is
+  `systems/stats/teaching.ts` (`teacherGap`, `teacherEfficiency`; solo efficiency moved to
+  `solo.ts`): the share a session keeps is your solo efficiency × 1.25 with an equal, × 1.6 one
+  grade up and × 2 two up (three counts as two), but never less than 0.35 one up or 0.6 two up;
+  someone below you gives a tenth of a solo session. `Growth.teachers` (their value per stat)
+  switches a stat to it, and `growCharacter` takes a `Session` (`teacher` multiplier for the
+  lesson, `teachers` for fights; Phase 3's "train with" passes its teacher here). After every
+  fight, missions and spars alike (`game/fightGrowth.ts`, read before the result is applied),
+  each art used grows by 1.5 base × `FIGHT_SCALE` (0.3) against the foes' best value in it: a
+  technique's discipline, and plain strikes as taijutsu. Strikes also work strength, steps
+  speed, and losing a tenth of your health stamina (0.5 base each, same rule). The plan engine
+  now counts `blows` and `footwork` in `CombatUsage`. Spars no longer have their own growth.
+  The journal line is "What the fight taught you", and the same gains are listed on the
+  fight's, defeat's or spar's card. Grade-ups are found once per action in `dispatch`
+  (`noteGradeUps`), whatever grew the stat: a `grade` report card stamped with the letter in
+  its colour and a "What this opens" list (academy techniques whose requirements the new
+  stats meet and the old didn't), plus a journal line. The stat sheet rolls a grown number up
+  and brushes an ink stroke over the stretch gained since it was last shown (off under
+  reduced motion). Stat values are cut to one decimal, not rounded, so 7.98 no longer reads
+  "8.0 E". The discipline tiles now show their talent read too. No save change.
+
+**Phase 3 (in progress).**
+
+- 3.1/3.2: people have real stats; peers grow. `PersonDef` has a `rank` (`PersonRank`: the
+  standing ranks without `academy`, plus `civilian`), `stats` (authored with the new
+  `statLine(base, marks)` helper: a grade or exact value for everything, then exceptions) and an
+  optional `aptitude` (`talent(base, marks)`). Every person in both packs has them: senseis are
+  jōnin, A in their specialty (Ito and Anko B), the instructors chūnin C, the leaders kage
+  (A–S), villagers civilians, genin E–D (the original pack's genin sit on the old 5/9/6 line).
+  `validateRanks` checks role against rank, the best stat against the rank's band and a
+  sensei's specialty at B–A. Generated genin get a graduate's line (5, +4 specialty, +1 body,
+  each stat ±1) and a clanless aptitude from `createRng(hashString(seed|id))`, so the game's
+  dice are untouched. `companionStats` is gone: fights and scouting read `personStats` (the
+  stored stats, else the `PersonDef`'s). Genin grow every day (`game/people/regimen.ts`: four
+  sessions of specialty, its support stat and one body stat, a day off in about seven) through
+  `applyTraining` with their aptitude and traits; teammates also get the sensei's weekly lesson
+  (× 3, the sensei's specialty) on their own weekday. `peopleGrown` catches up every ended day
+  on each new day (`spendTime`), into `people.progress` (stats plus `lastGrownDay`); a spar
+  trains the partner with the same gains as you. Save v19 snapshots the old derivation at the
+  save's mission record for every genin (authored ones into `progress`), and gives generated
+  ones a rank and talent. Pacing: over a month, the focused player's fighting power goes 6.6 to
+  8.7 and taijutsu 8 to 11.5; teammates go about 7.2 to 9.5, their specialty about +3.5
+  (asserted: more than 1.5, and within 25% of the player's fighting power).
 
 **Phase 4 (in progress).**
 
@@ -853,7 +896,7 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   ("Needs D ninjutsu; you're E."). Study speed (`sessionStudyPoints`, through
   `game/learning.ts`) is the old study points × aptitude in the art × a chakra-control factor
   (chakra arts only) × the source (scroll 1, teacher 1.5; the old lesson boost) × identity
-  modifiers. The sensei's signatures pass the same gate. `TechniqueBook.unstable` (save v19
+  modifiers. The sensei's signatures pass the same gate. `TechniqueBook.unstable` (save v20
   marks known techniques ranked above the character's grade). In fights an unstable technique
   costs ×1.5 chakra (`rules/unstable.ts`, read by `chakraCost`, so every engine) and misfires
   25% of the time in Plan & Watch (chakra spent, nothing done). Every action passes through
@@ -1004,17 +1047,49 @@ control? }` (`clan` stays its own field). The rules live in `systems/techniques/
   none has been read, so they don't give talent away.
 - 2.2: the 60-day target holds now, mostly by drilling: the weekly lesson adds little. So the
   stall is in C (asserted), not D; "solo stalls in D" waits for Phase 3 teachers.
+- 2.4: thrown kunai teach no art (they are a tool; throwing weapons may map to an art once gear
+  shapes the throw card). Kenjutsu is learned through kenjutsu techniques until a blade turns
+  Strike into a cut (Phase 4).
+- 2.4: each art used counts once per fight, however often it was used; the body counts if
+  the work was done at all (one strike, one step, a tenth of your health lost). The teacher is
+  the foe with the best value in that stat, so a group with one strong fighter teaches like
+  that fighter. Teammates' grades don't teach in a fight.
+- 2.4: fights teach win, lose or yield; spars use the partner's derived stats as the foe (an
+  even match, so a spar teaches like a fight with an equal). Reserves from chakra spent stay
+  solo practice (no teacher, no fight scale).
+- 2.4: an equal teacher multiplies solo efficiency rather than replacing it, and better
+  teachers set a floor, so at E (where solo is already 1) a better partner still helps.
+- 2.5: grade-ups are noted in `dispatch` rather than in each growth path, so every source
+  (drills, lessons, fights, sights, future ones) fires one card per stat per action, and
+  reserves rising with stamina in a fight can't fire twice. A grade falling (a permanent
+  trump cost) shows nothing. "What this opens" lists only academy techniques newly within
+  reach, on the first card when several stats cross at once; teachers and the tree join the
+  list when they exist.
+- 2.5: the tick plays on the Shinobi screen for whatever grew since it was last shown in this
+  session (remembered in the UI only); the first visit after loading plays nothing.
+- 3.1: villagers have a `civilian` rank rather than none; a leader may be jōnin or kage, an
+  instructor chūnin or jōnin. A grade in `statLine` stands for a typical value in its band (E 5,
+  D 10, C 16, B 23, A 32, S 44). Authored people without an `aptitude` roll one from their id
+  with their clan's odds, the same in every save.
+- 3.1: generated genin's stats and talent come from a hash-seeded Rng (seed and id), not the
+  game's dice, so the class, the scenes and every later roll stay as they were.
+- 3.2: only genin grow (adults stay as written). Someone with no `progress` entry starts
+  growing from the next day; nobody grows for days before the save knew them. Catch-up is
+  capped at 60 days. A teammate's weekly lesson is in the sensei's specialty (as yours is), not
+  their own. Rivals are not a separate kind: a classmate with a better aptitude simply pulls
+  ahead (asserted in `peerGrowth.test.ts`).
+- 3.2: the support stat per discipline and the lesson's gains moved from `actions/lesson.ts` to
+  `people/regimen.ts`, shared by your lesson and your teammates'.
 - 4.1: ranks came from the old requirement in the art (5 or less E, 6–10 D, 11–14 C) with
   judgement for the rest: trumps A or S, sensei signatures D–C (Lightning Blade A, Front Lotus
   B). Physical needs kept: medical and the fine water jutsu need D control, the clone techniques
   8 reserves, Lightning Blade a lightning nature. Other old minor stat requirements (strength,
   speed, willpower) were dropped. No `weapon` need yet: gear kinds arrive with 4.3.
 - 4.1: unstable means "rank above your grade", for migration and new learning alike, so the
-  v19 migration marks known techniques a rank above too (not only two or more above). A
+  v20 migration marks known techniques a rank above too (not only two or more above). A
   stabilised technique stays stable even if a stat later drops.
 - 4.1: chakra control's study factor (0.75 + 0.02 a point, at most 1.5) applies to ninjutsu,
   genjutsu and fūinjutsu only; taijutsu and kenjutsu study ignores it. The misfire chance is
   flat (25%), not scaled by control.
-- 4.1: stabilisation runs after every action in `dispatch` (like 2.5's `noteGradeUps`, which
-  belongs beside it once merged). A sensei teaches the first signature you could learn; the
+- 4.1: stabilisation runs after every action in `dispatch`, beside 2.5's `noteGradeUps`. A sensei teaches the first signature you could learn; the
   lesson card shows the next blocked one with its reason.

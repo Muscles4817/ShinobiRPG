@@ -1,4 +1,5 @@
-import { evenAptitude, STAT_IDS } from '@/systems/stats';
+import { personStats } from '@/game/people/progress';
+import { evenAptitude, fightingPower, STAT_IDS } from '@/systems/stats';
 import { newGame } from '@/test/gameFixtures';
 
 import {
@@ -31,6 +32,10 @@ const DAYS = CHUNIN_READY_DAYS + CHUNIN_READY_WINDOW;
 const C_STALL_SHARE = 0.25;
 const C_BAND = 7;
 const MONTH = 30;
+/** Over a month, a teammate's specialty grows at least this much on their own… */
+const PEER_MONTHLY_GROWTH = 1.5;
+/** …and their fighting power stays within this share of the player's, either way. */
+const PEER_BAND = 0.25;
 
 const TAIJUTSU_FOCUS: FocusPlan = {
   focus: 'taijutsu',
@@ -55,6 +60,7 @@ function ordinaryTalent() {
 
 describe('pacing: a focused player', () => {
   const run = playFocused(ordinaryTalent(), TAIJUTSU_FOCUS, DAYS);
+  const month = playFocused(ordinaryTalent(), TAIJUTSU_FOCUS, MONTH);
   report(run, TAIJUTSU_FOCUS);
   const first = run.days[0]!;
   const last = run.days.at(-1)!;
@@ -67,9 +73,22 @@ describe('pacing: a focused player', () => {
   });
 
   it('plays the same days for the same game', () => {
-    expect(playFocused(ordinaryTalent(), TAIJUTSU_FOCUS, MONTH).days).toEqual(
-      run.days.slice(0, MONTH + 1),
+    expect(month.days).toEqual(run.days.slice(0, MONTH + 1));
+  });
+
+  it('teammates grow alongside: a month on, they are still a fair match', () => {
+    const { state } = month;
+    const mates = state.people.generated.filter((p) =>
+      state.people.team?.teammateIds.includes(p.id),
     );
+    const yours = fightingPower(state.character.stats);
+    expect(mates).toHaveLength(2);
+    for (const mate of mates) {
+      const specialty = mate.specialty ?? 'taijutsu';
+      const now = personStats(mate, state);
+      expect(now[specialty] - mate.stats[specialty]).toBeGreaterThan(PEER_MONTHLY_GROWTH);
+      expect(Math.abs(fightingPower(now) / yours - 1)).toBeLessThan(PEER_BAND);
+    }
   });
 
   it('records a grade for every stat every day', () => {

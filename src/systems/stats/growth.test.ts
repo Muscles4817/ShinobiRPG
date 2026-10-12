@@ -1,12 +1,7 @@
 import { round2 } from '@/core';
 
-import {
-  applyTraining,
-  SESSION_PACE,
-  SOLO_EFFICIENCY,
-  soloEfficiency,
-  trainingGain,
-} from './growth';
+import { applyTraining, SESSION_PACE, trainingGain } from './growth';
+import { SOLO_EFFICIENCY, soloEfficiency } from './solo';
 import { createStats, diffStats } from './stats';
 import { STAT_TIERS } from './tiers';
 
