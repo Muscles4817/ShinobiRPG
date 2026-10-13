@@ -97,6 +97,7 @@ export {
   type SceneLine,
   type SceneChoice,
   type ThreadView,
+  type RouteMark,
 } from './views/missionScene';
 export { combatLog, type CombatLogLine } from './views/combatLog';
 export { fightReplay, storyEnd, type FightBeat } from './views/fightReplay';

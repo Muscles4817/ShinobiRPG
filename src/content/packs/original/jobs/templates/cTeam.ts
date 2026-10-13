@@ -8,15 +8,17 @@ export const C_TEAM_ROAD: readonly MissionTemplate[] = [
   {
     id: 'c-team-caravan',
     rank: 'C',
-    slots: 4,
+    slots: 1,
     energyCost: 30,
-    reward: { ryo: 300, reputation: 7 },
+    reward: { ryo: 450, reputation: 7 },
     minMissionsCompleted: 2,
     placeholders: {
       title: 'the job’s title, e.g. The Salt Caravan',
       client: 'who hires the team, e.g. the Shiomachi Salt Guild',
       caravan: 'what the team guards, mid-sentence, e.g. six salt carts and their drovers',
       road: 'the route, mid-sentence, e.g. the coast road to Port Shiomachi',
+      region:
+        'the kind of road: hill-road, river-road, coast-road, forest-track, mountain-pass or dune-road',
       departure: 'a sentence: setting out, the sensei’s word, and the caravan’s mood',
       signs: 'a sentence: the sign on the road that someone is lying in wait',
       ambush: 'a sentence: the attackers, sprung or spotted',
@@ -28,8 +30,65 @@ export const C_TEAM_ROAD: readonly MissionTemplate[] = [
     title: '{title}',
     client: '{client}',
     summary: 'Guard {caravan} along {road}. Raiders have hit the last two that went.',
+    threads: [
+      {
+        id: 'caravan',
+        label: 'The caravan',
+        levels: ['Scattered', 'Shaken', 'Steady', 'In good heart'],
+        start: 2,
+      },
+    ],
     stages: [
       { kind: 'narrative', text: '{departure}' },
+      {
+        kind: 'leg',
+        text: 'The carts creak along {road} from dawn to dusk.',
+        days: 1,
+        region: '{region}',
+      },
+      {
+        kind: 'decision',
+        text: 'At midday the drovers want to stop at a teahouse by the road. The carts would be out of your sight for an hour.',
+        options: [
+          {
+            label: 'Let them rest',
+            tone: 'kind',
+            reply: 'The drovers come back singing, and the carts move faster for it.',
+            effects: [{ kind: 'thread', thread: 'caravan', by: 1 }],
+            ledger: 'Let the drovers rest at a teahouse.',
+          },
+          {
+            label: 'Keep the carts moving',
+            tone: 'earnest',
+            reply: 'The drovers grumble, but the carts keep rolling, and nobody leaves them.',
+          },
+        ],
+      },
+      {
+        kind: 'camp',
+        text: 'The carts are drawn into a ring for the night, and the drovers’ fires burn low.',
+        picks: 2,
+        activities: [
+          { kind: 'crew', label: 'Sit with your team', when: { crew: 'team' } },
+          {
+            kind: 'watch',
+            label: 'Walk the ring of carts',
+            stat: 'perception',
+            difficulty: 9,
+            role: 'sensor',
+            success:
+              'Past midnight you feel it: chakra on the ridge, watching the carts, then gone.',
+            failure: 'The night passes with nothing but the beasts shifting in their traces.',
+            onSuccess: {
+              effects: [{ kind: 'mark', mark: 'saw-scouts' }],
+              ledger: 'Felt their scout on the ridge the night before.',
+            },
+          },
+          { kind: 'drill', label: 'Drill by the fire' },
+          { kind: 'rest', label: 'Sleep properly' },
+        ],
+      },
+      { kind: 'leg', text: 'A second day on {road}, slower than the first.', days: 1 },
       {
         kind: 'check',
         text: '{signs}',
@@ -51,7 +110,19 @@ export const C_TEAM_ROAD: readonly MissionTemplate[] = [
         enemyIds: ['{foe}', '{second}', '{third}'],
         canFlee: false,
       },
-      { kind: 'narrative', text: '{ending}' },
+      {
+        kind: 'ending',
+        endings: [
+          {
+            when: { thread: 'caravan', atLeast: 3 },
+            text: '{ending} The drovers pass round a jar of something strong, and insist you have the first cup.',
+            effects: [{ kind: 'pay', share: 0.1 }],
+            ledger: 'The drovers were in good heart all the way, and the client tipped for it.',
+          },
+          { text: '{ending}' },
+        ],
+      },
+      { kind: 'leg', text: 'The road home, with empty hands and light feet.', days: 1 },
     ],
   },
   {

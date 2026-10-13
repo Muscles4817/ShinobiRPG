@@ -10,6 +10,7 @@ export const EXEMPLARS_TEAM: readonly MissionFill[] = [
       client: 'The Shiomachi Salt Guild',
       caravan: 'six salt carts and their drovers',
       road: 'the coast road to Port Shiomachi',
+      region: 'coast-road',
       departure:
         'The drovers are sullen and the oxen are worse. Your sensei walks at the back of the line. “Watch the carts, not me. I’m not the one they want.”',
       signs:

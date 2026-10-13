@@ -11,6 +11,7 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
       client: 'The Kiln Pass Potters’ Guild',
       caravan: 'four ox-carts of porcelain packed in straw',
       road: 'the switchback road down from Kiln Pass',
+      region: 'mountain-pass',
       departure:
         'The potters have packed every bowl like a newborn, and they flinch at every rut. “Porcelain doesn’t bleed,” your sensei says. “That’s what makes it worth stealing.”',
       signs:
@@ -28,12 +29,13 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
     id: 'glass-from-the-dunes',
     templateId: 'c-team-caravan',
     minMissionsCompleted: 6,
-    reward: { ryo: 360, reputation: 8 },
+    reward: { ryo: 480, reputation: 8 },
     values: {
       title: 'Glass from the Dunes',
       client: 'The Sakyūgakure Glass Traders',
       caravan: 'a string of camels laden with desert glass',
       road: 'the dune road from the border to the village',
+      region: 'dune-road',
       departure:
         'The traders wrap their faces against the sand and their camels spit at you. “Walk where they walk,” your sensei says. “The dunes move. The camels know where.”',
       signs:
@@ -51,12 +53,13 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
     id: 'lantern-oil-convoy',
     templateId: 'c-team-caravan',
     minMissionsCompleted: 9,
-    reward: { ryo: 340, reputation: 8 },
+    reward: { ryo: 460, reputation: 8 },
     values: {
       title: 'The Lantern Oil Convoy',
       client: 'The Hibana Lamplighters’ Guild',
       caravan: 'three barrel-carts of lantern oil for the coming festival',
       road: 'the coast road and the river road from Port Shiomachi',
+      region: 'coast-road',
       departure:
         'The barrels slosh and stink, and every one of them is enough to light a street for a year. “One spark,” your sensei says, “and we all go up with it. So nobody fights near the carts.”',
       signs:
@@ -74,12 +77,13 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
     id: 'first-tea-of-spring',
     templateId: 'c-team-caravan',
     minMissionsCompleted: 14,
-    reward: { ryo: 320, reputation: 8 },
+    reward: { ryo: 450, reputation: 8 },
     values: {
       title: 'The First Tea of Spring',
       client: 'Tea Grower Oshima',
       caravan: 'the first picking of the spring tea, bound for the capital',
       road: 'the hill road over the eastern ridges',
+      region: 'hill-road',
       departure:
         'Oshima rides on the lead cart with her chests of tea like a general with her treasure. “This tea goes to a prince,” she says. “If it arrives wet, I’ll sell you all to the circus.”',
       signs:
