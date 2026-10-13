@@ -1,6 +1,24 @@
 import type { CombatResult } from '@/systems/combat';
 import type { StatGrade } from '@/systems/stats';
 
+/** A line of how a job went, for its debrief: what happened, and the pay it moved. */
+export interface DebriefLine {
+  readonly text: string;
+  readonly tone: 'gain' | 'cost' | 'plain';
+  /** The pay it moved, as a chip ("−25% pay"), or null. */
+  readonly pay: string | null;
+}
+
+/** Someone who went with you: how much closer you came, and the last thing they said. */
+export interface DebriefCrew {
+  readonly name: string;
+  readonly bond: number;
+  readonly quote: string | null;
+}
+
+/** How cleanly a job went: nothing lost, something lost, or too much lost. */
+export type JobGrade = 'clean' | 'rough' | 'botched';
+
 /**
  * Result cards: moments the player should stop and see (a fight's end, a mission's
  * debrief). Stored in state so they survive closing the app, shown oldest first and
@@ -38,12 +56,20 @@ export type Report =
       readonly scroll?: string;
       /** The gear the client handed over (a named weapon), by name. */
       readonly gear?: string;
+      /** How the job went, line by line (absent on reports from before the ledger). */
+      readonly road?: readonly DebriefLine[];
+      readonly crew?: readonly DebriefCrew[];
+      readonly grade?: JobGrade;
     }
   | {
       readonly kind: 'mission-failed';
       readonly title: string;
       readonly reason: string;
       readonly reputationLost: number;
+      /** How the job went until it failed. */
+      readonly road?: readonly DebriefLine[];
+      /** What would have helped, read from what you faced. */
+      readonly helped?: string;
     }
   | {
       readonly kind: 'defeat';
@@ -53,6 +79,8 @@ export type Report =
       readonly text: string;
       /** The injury the beating left, by name. */
       readonly injury?: string;
+      /** On a job: what would have helped, read from who beat you. */
+      readonly helped?: string;
       /** What the fight taught you, even in defeat, as display labels. */
       readonly taught?: readonly string[];
     }

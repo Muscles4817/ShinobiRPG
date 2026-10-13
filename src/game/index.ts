@@ -1,6 +1,6 @@
 // Public API of the game layer. This is the only module the UI and platform may import.
 export type { GameState, Character } from './state';
-export type { Report } from './reports';
+export type { DebriefCrew, DebriefLine, JobGrade, Report } from './reports';
 export {
   createGameContext,
   contextForPack,
