@@ -2,6 +2,7 @@ import { clamp, type Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
 import { alive } from '../../rules/body';
+import { turnLine } from '../../rules/narration';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
@@ -198,6 +199,23 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
 }
 
+/**
+ * A fighter's turn, with every line it wrote tagged as theirs, the first with the distance the
+ * turn began at and the last with the new one if the turn moved the fight, so the screen can
+ * stage who did what, where. The tags are narration only: the turn plays exactly as untagged.
+ */
+function stagedTurn(round: Round, id: string, rng: Rng): Round {
+  const after = turn(round, id, rng);
+  const added = after.lines.slice(round.lines.length);
+  const last = added.length - 1;
+  const rangeAt = (i: number) => {
+    if (i === last && after.range !== round.range) return after.range;
+    return i === 0 ? round.range : undefined;
+  };
+  const tagged = added.map((line, i) => turnLine(line, id, rangeAt(i)));
+  return { ...after, lines: [...round.lines, ...tagged] };
+}
+
 /** Resolves one exchange. */
 export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   // Whoever moved first (the fight's opening) acts first in the first exchange.
@@ -221,7 +239,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...(state.mark ? { mark: state.mark } : {}),
   };
   const end = afterEmpowers(
-    order.reduce((round, { id }) => turn(round, id, rng), start),
+    order.reduce((round, { id }) => stagedTurn(round, id, rng), start),
     state.round,
   );
   const result = decide(end.fighters);

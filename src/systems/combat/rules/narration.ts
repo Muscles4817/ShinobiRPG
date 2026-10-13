@@ -3,9 +3,13 @@
  * shows them as chips), so a line that reports damage or healing carries its amount in a
  * marker: engines write it with `harmLine`/`healLine`. A line where a defence reacted (a
  * Dodge, a Guard, a Counter, a substitution) carries that too, via `reactionLine`, so the
- * screen can show the defence at work whoever acted first. `splitNarration` reads both back
- * out of the sentence. Lines without a marker (older saves) pass through unchanged.
+ * screen can show the defence at work whoever acted first. A line written during a fighter's
+ * turn says whose turn it was (and, if the turn moved the fight, the new distance) via
+ * `turnLine`, so the screen can stage it. `splitNarration` reads all of it back out of the
+ * sentence. Lines without a marker (older saves) pass through unchanged.
  */
+
+import type { RangeBand } from '../contract';
 
 export type NarrationAmountKind = 'harm' | 'heal';
 
@@ -29,10 +33,16 @@ export interface Narration {
   readonly text: string;
   readonly amounts: readonly NarrationAmount[];
   readonly reactions: readonly NarrationReaction[];
+  /** Whose turn the line was written in (a combatant id), when an engine says. */
+  readonly actorId?: string;
+  /** The distance the fight stands at as of this line, when the engine says. */
+  readonly range?: RangeBand;
 }
 
 const MARKER = /\s*⟦([+-])(\d+)⟧/g;
 const REACTION_MARKER = /\s*⟦r:([a-z-]+)⟧/g;
+const ACTOR_MARKER = /\s*⟦by:([^⟧]+)⟧/;
+const RANGE_MARKER = /\s*⟦at:(close|mid|far)⟧/;
 
 function isReaction(word: string | undefined): word is NarrationReaction {
   return NARRATION_REACTIONS.some((r) => r === word);
@@ -53,13 +63,34 @@ export function reactionLine(text: string, ...reactions: readonly NarrationReact
   return [text, ...reactions.map((r) => `⟦r:${r}⟧`)].join(' ');
 }
 
+/** A line written in `actorId`'s turn; `range` is where the fight stands as of it, if said. */
+export function turnLine(text: string, actorId: string, range?: RangeBand): string {
+  return `${text} ⟦by:${actorId}⟧${range ? ` ⟦at:${range}⟧` : ''}`;
+}
+
+function isRange(word: string | undefined): word is RangeBand {
+  return word === 'close' || word === 'mid' || word === 'far';
+}
+
 export function splitNarration(line: string): Narration {
   const amounts = [...line.matchAll(MARKER)].map((m): NarrationAmount => ({
     kind: m[1] === '+' ? 'heal' : 'harm',
     amount: Number(m[2]),
   }));
   const reactions = [...line.matchAll(REACTION_MARKER)].map((m) => m[1]).filter(isReaction);
-  return { text: line.replace(MARKER, '').replace(REACTION_MARKER, ''), amounts, reactions };
+  const actorId = ACTOR_MARKER.exec(line)?.[1];
+  const range = RANGE_MARKER.exec(line)?.[1];
+  const text = [MARKER, REACTION_MARKER, ACTOR_MARKER, RANGE_MARKER].reduce(
+    (rest, marker) => rest.replace(marker, ''),
+    line,
+  );
+  return {
+    text,
+    amounts,
+    reactions,
+    ...(actorId ? { actorId } : {}),
+    ...(isRange(range) ? { range } : {}),
+  };
 }
 
 /**

@@ -4,6 +4,7 @@ import {
   combatLog,
   combatScene,
   combatScouting,
+  fightReplay,
   type CombatantView,
   type CombatOption,
   type CombatView,
@@ -16,6 +17,7 @@ import { Foes } from './combat/Foes';
 import { Pouch } from './combat/Pouch';
 import { HealthBar } from './combat/HealthBar';
 import { PlanScreen } from './combat/PlanScreen';
+import { WatchScreen } from './combat/WatchScreen';
 import { RangeStrip } from './combat/RangeStrip';
 import { PlansByOwner, TeamOrders } from './combat/TeamOrders';
 import { useHealthPulses, type HealthPulse } from './combat/useHealthPulses';
@@ -157,23 +159,59 @@ function FightScreen({ ctx, state, perform, view }: ScreenProps & { readonly vie
   );
 }
 
+/** Where watching stands: the log line the shown beats start at, how far you have watched,
+ * and whether the watch screen is holding the stage until you go back to plan. */
+interface Watching {
+  readonly from: number;
+  readonly seen: number;
+  readonly holding: boolean;
+}
+
+/** A style played on a stage (Plan & Watch) offers no hand of cards to play turn by turn. */
+function isStaged(view: CombatView): boolean {
+  return !view.options.some((o) => o.kind === 'basic' || o.kind === 'technique');
+}
+
 /**
- * One scene for every fight style. Between rounds of a planned fight the card table takes the
- * screen (the plan screen); otherwise the fight as it plays.
+ * One scene for every fight style. A staged fight is two screens: the card table between
+ * rounds (the plan screen) and the stage that plays out what you chose (the watch screen),
+ * which holds after a round until you go back to plan. Turn-by-turn styles keep one screen.
  */
 export function CombatScene(props: ScreenProps) {
   const view = combatScene(props.state, props.ctx);
+  const length = view?.log.length ?? 0;
+  const [watch, setWatch] = useState<Watching>({ from: length, seen: length, holding: false });
   if (!view) return null;
-  if (view.options.some((o) => o.kind === 'plan')) {
-    return (
-      <PlanScreen
-        view={view}
-        reads={combatScouting(props.state, props.ctx)}
-        onPick={(o) => {
-          props.perform({ type: 'combatAct', optionId: o.id });
-        }}
-      />
-    );
-  }
-  return <FightScreen {...props} view={view} />;
+  if (!isStaged(view)) return <FightScreen {...props} view={view} />;
+  const act = (o: CombatOption) => {
+    // Playing on (begin, the next exchange, the round, flight) stages what follows; changing
+    // your cards or orders just changes the table.
+    if (o.kind === 'continue' || o.kind === 'escape') {
+      setWatch((w) => ({ ...w, from: length, holding: true }));
+    }
+    props.perform({ type: 'combatAct', optionId: o.id });
+  };
+  const reads = combatScouting(props.state, props.ctx);
+  const planning = view.options.some((o) => o.kind === 'plan');
+  if (planning && !watch.holding) return <PlanScreen view={view} reads={reads} onPick={act} />;
+  return (
+    <WatchScreen
+      key={watch.from}
+      view={view}
+      beats={fightReplay(view, watch.from)}
+      fresh={length > watch.seen}
+      reads={reads}
+      onPick={act}
+      onWatched={() => {
+        setWatch((w) => (w.seen === length ? w : { ...w, seen: length }));
+      }}
+      onPlan={
+        planning
+          ? () => {
+              setWatch((w) => ({ ...w, holding: false }));
+            }
+          : null
+      }
+    />
+  );
 }

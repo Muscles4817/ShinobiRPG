@@ -9,6 +9,7 @@ import type {
 } from '../../contract';
 import { createPlanEngine } from './engine';
 import { decode, encode } from './state';
+import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 5,
@@ -69,6 +70,9 @@ function bandit(engine: CombatEngine, state: CombatState) {
   return engine.view(state).combatants.find((c) => c.id === 'bandit');
 }
 
+/** The log as the player reads it: the sentences, without the screen's markers. */
+const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
+
 describe('plan & watch openings', () => {
   const engine = createPlanEngine();
 
@@ -91,7 +95,7 @@ describe('plan & watch openings', () => {
   it('a foe dazed by the opening loses the first exchange, then recovers', () => {
     const state = engine.start(setup({ opening: { dazed: ['bandit'] } }), createRng(1));
     const first = act(engine, act(engine, state, 'begin'), 'next');
-    expect(engine.view(first).log).toContain('bandit is dazed and loses the exchange.');
+    expect(said(engine.view(first).log)).toContain('bandit is dazed and loses the exchange.');
     expect(bandit(engine, first)?.statuses).not.toContain('Dazed');
   });
 
@@ -125,7 +129,7 @@ describe('plan & watch trump cards', () => {
     let state = act(engine, engine.start(fight, createRng(3)), 'begin');
     for (let round = 0; round < 3; round++)
       state = act(engine, act(engine, state, 'round'), 'begin');
-    const uses = engine.view(state).log.filter((line) => line === 'hero uses Blaze!');
+    const uses = said(engine.view(state).log).filter((line) => line === 'hero uses Blaze!');
     expect(uses).toHaveLength(1);
     const plan = decode(state);
     const beaten = plan.fighters.map((f) => (f.side === 'enemy' ? { ...f, health: 0 } : f));

@@ -1,0 +1,119 @@
+import {
+  splitNarration,
+  type CombatantView,
+  type CombatView,
+  type Narration,
+  type RangeBand,
+} from '@/systems/combat';
+import type { JournalChip } from '@/systems/journal';
+
+import { combatLog, type CombatLogLine } from './combatLog';
+
+/**
+ * The watch screen's beats: the fight log from a point on, one beat per line, each saying who
+ * acted, on whom, where the fight stood and everyone's health once it had played. Engines tag
+ * whose turn a line was written in (`turnLine`); who it was aimed at is the other fighter the
+ * line names. Health is rebuilt backwards from the fight as it stands now, so the last beat
+ * always matches the screen; in between, an amount goes to the fighter the line is about.
+ */
+
+/** "— Second exchange —": dividers between exchanges and rounds. */
+const DIVIDER = '—';
+
+export interface FightBeat {
+  /** A divider ("Second exchange") or a line of the fight. */
+  readonly kind: 'divider' | 'line';
+  readonly text: string;
+  readonly chips: readonly JournalChip[];
+  readonly actorId: string | null;
+  readonly targetId: string | null;
+  readonly range: RangeBand | null;
+  /** Every fighter's health once this beat has played, by combatant id. */
+  readonly health: Readonly<Record<string, number>>;
+}
+
+interface Named {
+  readonly id: string;
+  readonly name: string;
+}
+
+/** The fighter (other than the actor) the line names first: who it is aimed at. */
+function namedIn(text: string, fighters: readonly Named[], actorId: string | null): string | null {
+  // Longest names first, so "Bandit Archer" is not read as a "Bandit".
+  const byLength = [...fighters].sort((a, b) => b.name.length - a.name.length);
+  let found: { id: string; at: number } | null = null;
+  let rest = text;
+  for (const f of byLength) {
+    const at = rest.indexOf(f.name);
+    if (at < 0) continue;
+    rest = rest.replaceAll(f.name, ' '.repeat(f.name.length));
+    if (f.id !== actorId && (!found || at < found.at)) found = { id: f.id, at };
+  }
+  return found?.id ?? null;
+}
+
+/** Whose health a line's amounts move: a counter hurts the attacker; a lone heal is the actor. */
+function amountOwner(said: Narration, targetId: string | null): string | null {
+  const actor = said.actorId ?? null;
+  if (said.reactions.includes('countered')) return actor;
+  return targetId ?? actor;
+}
+
+function healthChange(said: Narration): number {
+  return said.amounts.reduce((sum, a) => sum + (a.kind === 'harm' ? -a.amount : a.amount), 0);
+}
+
+interface Parsed {
+  readonly said: Narration;
+  /** The line as the screen tells it (a divider, or a sentence with its chips). */
+  readonly shown: CombatLogLine;
+  readonly targetId: string | null;
+}
+
+type Health = Readonly<Record<string, number>>;
+
+/** Health before a line played, given health after it. */
+function undo(after: Health, { said, targetId }: Parsed, max: Health): Health {
+  const owner = amountOwner(said, targetId);
+  const change = healthChange(said);
+  const now = owner === null ? undefined : after[owner];
+  if (owner === null || now === undefined || change === 0) return after;
+  return { ...after, [owner]: Math.min(max[owner] ?? now, Math.max(0, now - change)) };
+}
+
+/** Health after each line, walking back from the fight as it stands now. */
+function healthAfterEach(parsed: readonly Parsed[], fighters: readonly CombatantView[]): Health[] {
+  const max = Object.fromEntries(fighters.map((f) => [f.id, f.maxHealth]));
+  const now: Health = Object.fromEntries(fighters.map((f) => [f.id, f.health]));
+  const after: Health[] = [];
+  parsed.reduceRight((current, line) => {
+    after.unshift(current);
+    return undo(current, line, max);
+  }, now);
+  return after;
+}
+
+/** The beats of the fight from log line `from` on. */
+export function fightReplay(view: CombatView, from: number): FightBeat[] {
+  const parsed = view.log.slice(Math.max(0, from)).flatMap((line): Parsed[] => {
+    const said = splitNarration(line);
+    const targetId = namedIn(said.text, view.combatants, said.actorId ?? null);
+    return combatLog([line]).map((shown) => ({ said, shown, targetId }));
+  });
+  const health = healthAfterEach(parsed, view.combatants);
+  // Until a line says where the fight stands, it stands where the first such line says.
+  let range = parsed.find((p) => p.said.range)?.said.range ?? view.range ?? null;
+  return parsed.map(({ said, shown, targetId }, i): FightBeat => {
+    range = said.range ?? range;
+    const divider = shown.kind === 'round' || said.text.startsWith(DIVIDER);
+    return {
+      kind: divider ? 'divider' : 'line',
+      text: shown.text,
+      chips: shown.kind === 'story' ? shown.chips : [],
+      actorId: said.actorId ?? null,
+      targetId,
+      range,
+      health: health[i] ?? {},
+    };
+  });
+}

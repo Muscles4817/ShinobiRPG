@@ -5,6 +5,7 @@ import {
   reactionLine,
   splitNarration,
   squareUpLine,
+  turnLine,
 } from './narration';
 
 describe('fight narration', () => {
@@ -37,6 +38,23 @@ describe('fight narration', () => {
       reactions: ['dodge-missed', 'guarded'],
     });
     expect(splitNarration(reactionLine('Aoi slips past.', 'dodged')).text).toBe('Aoi slips past.');
+  });
+
+  it('says whose turn a line was written in, and where the fight stood', () => {
+    const line = harmLine(turnLine('Goro hits Aoi.', 'goro#0', 'close'), 6);
+    expect(splitNarration(line)).toEqual({
+      text: 'Goro hits Aoi.',
+      amounts: [{ kind: 'harm', amount: 6 }],
+      reactions: [],
+      actorId: 'goro#0',
+      range: 'close',
+    });
+    expect(splitNarration(turnLine('Aoi waits.', 'player'))).toEqual({
+      text: 'Aoi waits.',
+      amounts: [],
+      reactions: [],
+      actorId: 'player',
+    });
   });
 
   it('numbers fighters who share a name, in the order they stand', () => {

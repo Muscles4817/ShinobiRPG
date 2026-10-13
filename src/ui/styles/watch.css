@@ -1,0 +1,129 @@
+/*
+ * The watch screen: the formation strip as a stage. Whoever acts is lit in lantern, whoever
+ * they act on is ringed in harm, and a dotted line of ink runs between them. The beat is told
+ * below, with the two before it fading above.
+ */
+.formation {
+  position: relative;
+}
+.stage-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.stage-line line {
+  stroke: var(--gold);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1 7;
+}
+.token.acting .token-seal {
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--lantern),
+    0 0 16px color-mix(in srgb, var(--lantern) 60%, transparent);
+}
+.token.struck .token-seal {
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--harm);
+}
+
+.watch-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 24px;
+}
+.watch-head h1 {
+  font-size: 1.2rem;
+}
+
+.acting-order {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.acting-order .token-seal.done {
+  opacity: 0.35;
+}
+.acting-order .token-seal.now {
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 3.5px var(--lantern);
+}
+
+.beat-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 112px;
+}
+.beat-text .earlier {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.beat-text .now {
+  font-size: 1.1rem;
+  line-height: 1.4;
+  animation: rise 0.3s ease-out both;
+}
+
+.stopped-for-you {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  color: var(--gold);
+  border: 1px solid var(--cost);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--cost) 12%, transparent);
+}
+
+.playback {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.playback-buttons {
+  display: flex;
+  gap: 6px;
+}
+.playback-buttons .btn {
+  min-height: 44px;
+  min-width: 44px;
+}
+.playback-buttons .btn:nth-child(2) {
+  flex: 1;
+}
+.stop-toggle {
+  min-height: 40px;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.stop-toggle[aria-pressed='true'] {
+  color: var(--story);
+}
+
+.watch-next {
+  flex-direction: row;
+}
+.watch-next .choice {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beat-text .now {
+    animation: none;
+  }
+}

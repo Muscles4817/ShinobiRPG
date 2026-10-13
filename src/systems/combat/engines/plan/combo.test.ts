@@ -7,6 +7,7 @@ import { useJutsu } from './jutsu';
 import { plannedPlay } from './priority';
 import { resolveExchange } from './round';
 import { decode, initialFighters, type PlanFighter, type Round } from './state';
+import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 5,
@@ -79,6 +80,9 @@ function cast(round: Round, by: string, t: CombatTechnique): Round {
 
 const lost = (before: Round, after: Round) =>
   who(before, 'bandit').health - who(after, 'bandit').health;
+
+/** The log as the player reads it: the sentences, without the screen's markers. */
+const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
 
 describe('plan & watch combos: elements', () => {
   it('wind then fire on one foe in one exchange: the fire lands harder', () => {
@@ -161,7 +165,7 @@ describe('plan & watch combos: combination techniques', () => {
       fighters: state.fighters.map((f) => (f.id === 'kiba' ? { ...f, joined: true } : f)),
     };
     const after = resolveExchange(joined, createRng(3));
-    expect(after.log).toContain('kiba gathers themself after the combination.');
+    expect(said(after.log)).toContain('kiba gathers themself after the combination.');
     expect(after.fighters.find((f) => f.id === 'kiba')?.joined).toBe(false);
   });
 });

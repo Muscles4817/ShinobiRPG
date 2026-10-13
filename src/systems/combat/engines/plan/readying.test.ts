@@ -20,6 +20,7 @@ import {
   type Round,
 } from './state';
 import { springTraps } from './traps';
+import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 10,
@@ -135,6 +136,9 @@ function until(wanted: RegExp, act: (seed: number) => Round): Round {
   }
   throw new Error(`no seed narrates ${wanted.source}`);
 }
+
+/** The log as the player reads it: the sentences, without the screen's markers. */
+const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
 
 describe('plan & watch verbs: empower', () => {
   it('raises the boosted stats at once, takes its price each exchange, then ends', () => {
@@ -269,7 +273,7 @@ describe('plan & watch verbs: trap', () => {
     });
     const rng = createRng(4);
     const first = resolveExchange(stateOf(round), rng);
-    expect(first.log).toContain('hero sets a trap at close range.');
+    expect(said(first.log)).toContain('hero sets a trap at close range.');
     const second = resolveExchange(first, rng);
     const fresh = second.log.slice(first.log.length);
     expect(fresh.some((l) => /hero's trap hits foe|spots hero's trap/.test(l))).toBe(true);

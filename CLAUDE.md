@@ -253,7 +253,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   in the fight-style picker automatically (shown once more than one style is offered). No
   other code changes. Shelving an engine moves it to `shelvedEngines()` (if saves may be
   mid-fight in it) and migrates saves that chose it. Narrate damage and healing
-  with `harmLine`/`healLine` (`rules/narration.ts`) so the amount shows as a chip, never in the story. Removing an engine or
+  with `harmLine`/`healLine` (`rules/narration.ts`) so the amount shows as a chip, never in the story.
+  A staged engine (one that offers plans, not a hand) tags each turn's lines with `turnLine` (whose
+  turn, and where the fight stands) and defences with `reactionLine`; the watch screen stages the
+  log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. Removing an engine or
   changing its id needs a migration for saves that are mid-fight in it or have it chosen.
 - **Add a player action:** add a variant to `GameAction` (`game/actions/types.ts`), write a
   handler (`check` + `perform`), register it in `game/actions/registry.ts` (the compiler
