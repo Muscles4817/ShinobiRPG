@@ -64,3 +64,23 @@ export {
   type Clones,
 } from './clones';
 export { springs, spotChance, trapAt, type SetTrap, type TrapMemory } from './trap';
+export {
+  ABSORB_SHARE,
+  AFFLICT_EXCHANGES,
+  afflicted,
+  afflictionFrom,
+  afflictionsTick,
+  drainAmount,
+  isPinned,
+  MAX_BLEEDS,
+  PIN_SLIP,
+  POISON_SAP,
+  poisonSap,
+  riposteFrom,
+  riposteTechnique,
+  withSap,
+  type Affliction,
+  type Sap,
+  type LingeringMemory,
+  type Riposte,
+} from './lingering';

@@ -24,6 +24,11 @@ export const VERBS = [
   'empower',
   'clone',
   'trap',
+  'knock',
+  'pin',
+  'drain',
+  'afflict',
+  'counter',
 ] as const;
 export type Verb = (typeof VERBS)[number];
 
@@ -57,6 +62,14 @@ export type FieldId = (typeof FIELD_IDS)[number];
 
 /** A distance a move effect takes its user to (the combat system's range bands). */
 export type MoveDistance = 'close' | 'mid' | 'far';
+
+/**
+ * Lingering harm an afflict effect leaves: a burn (fire), a bleed (blades; it stacks) or a
+ * poison (needles; it saps strength and speed too). Their rules live once in the combat
+ * system's `rules/verbs/afflict.ts`.
+ */
+export const AFFLICTIONS = ['burn', 'bleed', 'poison'] as const;
+export type AfflictionKind = (typeof AFFLICTIONS)[number];
 
 interface EffectBase<V extends Verb> {
   readonly verb: V;
@@ -97,6 +110,12 @@ interface VerbExtras {
   readonly clone: { readonly strikes?: true };
   /** A trap that also dazes whoever springs it. */
   readonly trap: { readonly dazes?: true };
+  /** Where a throw or a pull leaves the distance: away to mid or far, or dragged in close. */
+  readonly knock: { readonly to: MoveDistance };
+  /** A leech: part of the chakra taken flows back to the user. */
+  readonly drain: { readonly absorb?: true };
+  /** Which lingering harm it leaves. */
+  readonly afflict: { readonly harm: AfflictionKind };
 }
 
 type ExtrasOf<V extends Verb> = V extends keyof VerbExtras ? VerbExtras[V] : unknown;
@@ -104,7 +123,7 @@ type ExtrasOf<V extends Verb> = V extends keyof VerbExtras ? VerbExtras[V] : unk
 export type TechniqueEffect = { readonly [V in Verb]: EffectBase<V> & ExtrasOf<V> }[Verb];
 
 /** Verbs whose effects need nothing beyond their power. */
-export type PlainVerb = Exclude<Verb, 'field' | 'empower'>;
+export type PlainVerb = Exclude<Verb, 'field' | 'empower' | 'knock' | 'afflict'>;
 
 /** How many blows a wounding effect lands as: a flurry's count, or one. */
 export function blowsOf(effect: TechniqueEffect): number {
@@ -117,6 +136,9 @@ export type EffectOf<V extends Verb> = Extract<TechniqueEffect, { readonly verb:
 export type EmpowerEffect = EffectOf<'empower'>;
 export type CloneEffect = EffectOf<'clone'>;
 export type TrapEffect = EffectOf<'trap'>;
+
+const DISTANCES: readonly string[] = ['close', 'mid', 'far'];
+const harms: readonly string[] = AFFLICTIONS;
 
 /** Most blows a flurry splits into. */
 export const MAX_HITS = 5;
@@ -134,6 +156,12 @@ function hitsProblem(hits: number | undefined): string | null {
  */
 export function effectProblem(effect: TechniqueEffect): string | null {
   if (effect.verb === 'damage') return hitsProblem(effect.hits);
+  if (effect.verb === 'knock' && !DISTANCES.includes(effect.to)) {
+    return `a throw to an unknown distance "${effect.to}"`;
+  }
+  if (effect.verb === 'afflict' && !harms.includes(effect.harm)) {
+    return `an unknown lingering harm "${effect.harm}"`;
+  }
   if (effect.verb !== 'empower') return null;
   if (effect.boosts.length === 0) return 'an empower that raises nothing';
   if (effect.afterCost && !costIsSane(effect.afterCost)) {

@@ -39,11 +39,19 @@ const VERB_WORD: Readonly<Record<Verb, string>> = {
   empower: 'Push past your limits, at a price',
   clone: 'Clones take hits for you',
   trap: 'Set a trap where you stand',
+  knock: 'Throw them to another distance',
+  pin: 'Pin them where they stand',
+  drain: 'Drain their chakra',
+  afflict: 'Leave a wound that lingers',
+  counter: 'Answer the next blow at once',
 };
 
 /** One effect in words; a move that names its distance says so. */
 function effectWords(effect: TechniqueEffect): string {
   if (effect.verb === 'move' && effect.to) return `Go straight to ${effect.to} range`;
+  if (effect.verb === 'knock') {
+    return effect.to === 'close' ? 'Drag them in close' : `Throw them to ${effect.to} range`;
+  }
   return VERB_WORD[effect.verb];
 }
 

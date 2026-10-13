@@ -6,6 +6,7 @@ import { turnLine } from '../../rules/narration';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
+import { isPinned } from '../../rules/verbs';
 import { afterUsing } from '../../rules/trumps';
 import { strike } from './arms';
 import { cardId, isOffence, needsAim, type Card } from './cards';
@@ -15,6 +16,7 @@ import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
 import { intendedCard } from './intent';
 import { useJutsu } from './jutsu';
+import { lingerAfter } from './lingering';
 import { useTool } from './pouch';
 import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
@@ -82,6 +84,7 @@ export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
 }
 
 function step(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' | 'back') {
+  if (isPinned(actor)) return say(round, `${actor.name} strains against the hold.`);
   const to = direction === 'in' ? stepIn(round.range) : stepBack(round.range);
   const speedGap = actor.attributes.speed - (foe?.attributes.speed ?? 0);
   const chance = foe ? clamp(STEP_BASE + speedGap * STEP_PER_SPEED, 0.25, 0.85) : 1;
@@ -238,8 +241,11 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...(state.field ? { field: state.field } : {}),
     ...(state.mark ? { mark: state.mark } : {}),
   };
-  const end = afterEmpowers(
-    order.reduce((round, { id }) => stagedTurn(round, id, rng), start),
+  const end = lingerAfter(
+    afterEmpowers(
+      order.reduce((round, { id }) => stagedTurn(round, id, rng), start),
+      state.round,
+    ),
     state.round,
   );
   const result = decide(end.fighters);

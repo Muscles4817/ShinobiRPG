@@ -48,6 +48,11 @@ const VERB_FOCUS: Readonly<Record<Verb, string>> = {
   empower: 'Empowering',
   clone: 'Clones',
   trap: 'Traps',
+  knock: 'Throws',
+  pin: 'Holds',
+  drain: 'Chakra drains',
+  afflict: 'Lingering harm',
+  counter: 'Ripostes',
 };
 
 /** "Blade", "Flak jacket", "Focus": what kind of piece this is. */

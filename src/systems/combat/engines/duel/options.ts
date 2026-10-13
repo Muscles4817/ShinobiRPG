@@ -34,6 +34,11 @@ const EFFECT_DETAIL: Readonly<Record<Verb, (power: number) => string>> = {
   empower: () => 'empowers',
   clone: () => 'clones',
   trap: () => 'sets a trap',
+  knock: () => 'throws',
+  pin: () => 'pins',
+  drain: () => 'drains chakra',
+  afflict: () => 'leaves lingering harm',
+  counter: () => 'readies a riposte',
 };
 
 /**

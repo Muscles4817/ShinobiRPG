@@ -1,3 +1,4 @@
+import type { TechniqueDef } from '@/systems/techniques';
 import { ctx, newGame, withAllStats } from '@/test/gameFixtures';
 
 import { academyView } from './academy';
@@ -46,6 +47,22 @@ describe('the technique sheet', () => {
     expect(kicks.strikes).toBe('Three blows');
     expect(kicks.reach.filter((r) => r.reaches).map((r) => r.band)).toEqual(['Close', 'Mid']);
     expect(sheet('paper-veil').lands).toBeNull();
+  });
+
+  it('says what throws, holds, drains, lingering harms and ripostes do', () => {
+    const palm = ctx.content.techniques.require('palm-strike');
+    const read = (effects: TechniqueDef['effects']) =>
+      techniqueSheet(state, ctx, { ...palm, effects }).effects;
+    expect(read([{ verb: 'knock', power: 6, to: 'far' }])[0]?.text).toBe(
+      'Throws them to far range',
+    );
+    expect(read([{ verb: 'pin', power: 12 }])[0]).toEqual({
+      text: 'Pins them: no stepping or fleeing, and slower to dodge',
+      chip: '2 turns',
+    });
+    expect(read([{ verb: 'drain', power: 8, absorb: true }])[0]?.chip).toBe('8 chakra');
+    expect(read([{ verb: 'afflict', power: 8, harm: 'bleed' }])[0]?.text).toMatch(/bleeds stack/);
+    expect(read([{ verb: 'counter', power: 8 }])[0]?.text).toMatch(/^Readies a riposte/);
   });
 
   it('says what a hit takes from an equal, in words', () => {

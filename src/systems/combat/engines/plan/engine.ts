@@ -14,13 +14,14 @@ import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
 import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
-import { empowerCostsOwed } from '../../rules/verbs';
+import { empowerCostsOwed, isPinned } from '../../rules/verbs';
 import { slotLimit } from './cards';
 import { defaultLoadout } from './defaults';
 import { withoutLoneCombos } from './combo';
 import { fieldMeter, fieldStatuses } from './field';
 import { substitutionsReady } from './footwork';
 import { intentLine, rollIntents } from './intent';
+import { lingeringStatuses } from './lingering';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { rememberedLoadout } from './memory';
 import { prepStatuses } from './prep';
@@ -64,6 +65,7 @@ function statuses(state: PlanState, f: PlanFighter): string[] {
   return [
     ...(isDazed(f) ? ['Dazed'] : []),
     ...(f.sealed > 0 ? ['Sealed'] : []),
+    ...lingeringStatuses(f),
     ...(alive(f) && screened(f, state.fighters) ? ['Screened'] : []),
     ...fieldStatuses(state, f),
     ...prepStatuses(f),
@@ -72,10 +74,17 @@ function statuses(state: PlanState, f: PlanFighter): string[] {
   ];
 }
 
+function fleeBlocker(state: PlanState): { disabledReason?: string } {
+  if (!state.canFlee) return { disabledReason: 'You cannot flee this fight' };
+  return isPinned(playerOf(state))
+    ? { disabledReason: 'You are pinned. Wait for the hold to loosen.' }
+    : {};
+}
+
 function options(state: PlanState): CombatOption[] {
   if (state.result) return [];
   const flee: CombatOption = { id: 'flee', label: 'Flee', detail: 'Try to escape', kind: 'escape' };
-  const escape = state.canFlee ? flee : { ...flee, disabledReason: 'You cannot flee this fight' };
+  const escape = { ...flee, ...fleeBlocker(state) };
   if (state.phase === 'loadout') {
     const player = playerOf(state);
     const begin = state.bout === 1 ? 'Begin the fight' : `Begin round ${state.bout}`;

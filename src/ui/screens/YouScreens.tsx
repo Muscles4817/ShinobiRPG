@@ -22,6 +22,11 @@ const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => strin
   empower: () => 'Pushes past your limits, at a price',
   clone: () => 'Makes clones that take hits',
   trap: (power) => `Sets a trap of power ${power}`,
+  knock: () => 'Throws them to another distance',
+  pin: () => 'Pins them',
+  drain: () => 'Drains chakra',
+  afflict: () => 'Leaves a lingering wound',
+  counter: () => 'Readies a riposte',
 };
 
 /** Each effect in order: "Power 12, then dazes". */

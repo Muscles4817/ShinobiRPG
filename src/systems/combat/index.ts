@@ -55,6 +55,7 @@ export { weaponNumbers, type WeaponNumbers } from './rules/weapons';
 export { splitNarration } from './rules/narration';
 export { RANGE_BANDS, RANGE_LABEL, reachOf } from './rules/range';
 export { potencyOf as fieldPotencyOf } from './rules/verbs/field';
+export { AFFLICT_EXCHANGES } from './rules/verbs/lingering';
 export type {
   Narration,
   NarrationAmount,

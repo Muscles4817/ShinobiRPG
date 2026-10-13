@@ -5,6 +5,7 @@ import { alive, targetable } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
 import { RANGE_LABEL } from '../../rules/range';
 import { isTrump } from '../../rules/trumps';
+import { hasVerb } from '../../rules/verbs';
 import { cardId, findCard, fitsBand, isOffence, playable, type Card } from './cards';
 import { chooseCard, desperate } from './choose';
 import { ownField } from './field';
@@ -104,7 +105,9 @@ function telegraph(card: Card, precise: boolean): string {
     case 'dispel':
       return 'Gathering chakra to break the illusion';
     case 'jutsu':
-      return precise ? `Readying ${card.technique.name}` : 'Readying a technique';
+      if (precise) return `Readying ${card.technique.name}`;
+      // A stance shows whatever your eyes: you can see they mean to answer.
+      return hasVerb(card.technique, 'counter') ? 'Settling into a stance' : 'Readying a technique';
     case 'item':
       return precise ? `Reaching for a ${card.item.name.toLowerCase()}` : 'Reaching into a pouch';
     case 'guard':

@@ -10,15 +10,16 @@ import {
   hasTrait,
   kitDamageScale,
   packScale,
-  shouldFlee,
   SWIFT_DODGE,
   type AttackKind,
 } from '../../rules/kit';
 import { harmLine, reactionLine, type NarrationReaction } from '../../rules/narration';
-import { brokenScale, covered, dulled } from '../../rules/verbs';
+import { brokenScale, covered, dulled, isPinned, PIN_SLIP } from '../../rules/verbs';
 import { slotted } from './cards';
 import { throughClones } from './decoys';
 import { substituted } from './footwork';
+import { riposteFirst } from './lingering';
+import { wound } from './wound';
 import { canHit } from './rows';
 import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
 
@@ -74,7 +75,7 @@ export interface Hit {
 function avoidChance(hit: Hit, target: PlanFighter, dodging: boolean): number {
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE : 0;
   const chance = dodging ? dodgeChance(hit.attacker, target) + swift : swift * SWIFT_INSTINCT;
-  return slipChance(chance, hit.blow.accuracy);
+  return slipChance(chance * (isPinned(target) ? PIN_SLIP : 1), hit.blow.accuracy);
 }
 
 /**
@@ -93,16 +94,6 @@ function kitNote(defender: PlanFighter, kind: AttackKind): string[] {
   const scale = kitDamageScale(defender, kind);
   if (scale < 1) return [`Much of it glances off ${defender.name}.`];
   return scale > 1 ? [`The seal bites deep into ${defender.name}.`] : [];
-}
-
-/** Takes damage off a fighter; a coward who is now badly hurt runs and counts as beaten. */
-function wound(round: Round, id: string, damage: number): Round {
-  const struck = fighterIn(round, id);
-  if (!struck) return round;
-  const hurt = { ...struck, health: Math.max(0, struck.health - damage) };
-  const fighters = patch(round.fighters, id, { health: hurt.health });
-  if (!shouldFlee(hurt)) return { ...round, fighters };
-  return say({ ...round, fighters: patch(fighters, id, { health: 0 }) }, `${struck.name} flees!`);
 }
 
 function confuse(round: Round, { attacker, target, rng }: Hit): Round {
@@ -200,7 +191,10 @@ function canCounterBack(round: Round, { attacker, target, blow }: Hit, has: Read
 }
 
 /** Lands a blow on the target, letting their clones, slotted defences and kit react. */
-export function react(before: Round, hit: Hit): Round {
+export function react(start: Round, hit: Hit): Round {
+  const answered = riposteFirst(start, hit);
+  if (answered.stopped) return answered.round;
+  const before = answered.round;
   const { attacker, target, blow, rng } = hit;
   const area = blow.area === true;
   const decoyed = throughClones(before, { attacker, target, what: blow.what, area, rng });
