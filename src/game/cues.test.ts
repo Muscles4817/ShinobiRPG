@@ -2,21 +2,49 @@ import { act, ctx, newGame } from '@/test/gameFixtures';
 
 import { cueAfter } from './cues';
 import { dispatch } from './dispatch';
+import type { GameState } from './state';
 import { animationSetting } from './views/settings';
+
+/** The state with one person's bond set to `points`. */
+function withBond(state: GameState, personId: string, points: number): GameState {
+  const bond = { points, lastTalkDay: null, heard: [] };
+  return {
+    ...state,
+    people: { ...state.people, bonds: { ...state.people.bonds, [personId]: bond } },
+  };
+}
 
 describe('action cues', () => {
   it('play for everyday actions while animations are on', () => {
     const state = newGame();
-    expect(cueAfter({ type: 'sleep' }, state)).toBe('sleep');
-    expect(cueAfter({ type: 'eat', foodId: 'any' }, state)).toBe('eat');
-    expect(cueAfter({ type: 'treat' }, state)).toBe('heal');
-    expect(cueAfter({ type: 'travel', locationId: 'any' }, state)).toBeNull();
+    const cue = (action: Parameters<typeof cueAfter>[0]) => cueAfter(action, state, state);
+    expect(cue({ type: 'sleep' })).toBe('sleep');
+    expect(cue({ type: 'eat', foodId: 'any' })).toBe('eat');
+    expect(cue({ type: 'treat' })).toBe('heal');
+    expect(cue({ type: 'buyTool', toolId: 'any' })).toBe('coins');
+    expect(cue({ type: 'equipGear', gearId: 'any' })).toBe('gear');
+    expect(cue({ type: 'buyRound' })).toBe('toast');
+    expect(cue({ type: 'followSight' })).toBe('sight');
+    expect(cue({ type: 'travel', locationId: 'any' })).toBeNull();
+  });
+
+  it('mark a bond reaching a new stage over the action’s own cue', () => {
+    const before = withBond(newGame(), 'kaen', 28);
+    const friends = withBond(before, 'kaen', 31);
+    const closer = withBond(before, 'kaen', 29);
+    expect(cueAfter({ type: 'hostDinner', recipeId: 'r', guestId: 'kaen' }, before, friends)).toBe(
+      'bond',
+    );
+    expect(cueAfter({ type: 'hostDinner', recipeId: 'r', guestId: 'kaen' }, before, closer)).toBe(
+      'cook',
+    );
+    expect(cueAfter({ type: 'talk', personId: 'kaen' }, before, closer)).toBeNull();
   });
 
   it('stay still once the player turns animations off, and come back on', () => {
     const off = act(newGame(), { type: 'setAnimations', on: false });
     expect(off.settings.animations).toBe(false);
-    expect(cueAfter({ type: 'sleep' }, off)).toBeNull();
+    expect(cueAfter({ type: 'sleep' }, off, off)).toBeNull();
     expect(animationSetting(off, ctx)).toMatchObject({
       on: false,
       action: { type: 'setAnimations', on: true },

@@ -210,31 +210,3 @@
     transform: scale(2.6);
   }
 }
-
-/* With animations off in settings, the rest of the screen holds still too. */
-.app[data-motion='off'] *,
-.app[data-motion='off'] *::before,
-.app[data-motion='off'] *::after {
-  animation: none !important;
-  transition: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cue-layer,
-  .cue-night {
-    display: none;
-  }
-}
-
-/* The settings block on the Shinobi tab. */
-.settings {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.settings-heading {
-  font-family: var(--font-story);
-  font-size: 1rem;
-  font-weight: normal;
-  color: var(--story);
-}

@@ -1,0 +1,69 @@
+/*
+ * Motion beyond the action cues: fight health bars that flash when they move, the animations
+ * switch in settings, and what holds still when it is off or the device asks for less motion.
+ */
+/* In a fight, a health bar that just moved flashes: a jolt for a hit, a glow for healing. */
+.hp[data-pulse='hurt'] {
+  animation: hp-hurt 0.6s ease-out;
+}
+.hp[data-pulse='healed'] {
+  animation: hp-healed 0.8s ease-out;
+}
+@keyframes hp-hurt {
+  0% {
+    box-shadow: 0 0 0 2px var(--harm);
+    transform: translateX(-3px);
+  }
+  25% {
+    transform: translateX(3px);
+  }
+  50% {
+    transform: translateX(-2px);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    transform: none;
+  }
+}
+@keyframes hp-healed {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  35% {
+    box-shadow: 0 0 6px 2px var(--good);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* With animations off in settings, the rest of the screen holds still too. */
+.app[data-motion='off'] *,
+.app[data-motion='off'] *::before,
+.app[data-motion='off'] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cue-layer,
+  .cue-night {
+    display: none;
+  }
+  .hp[data-pulse] {
+    animation: none;
+  }
+}
+
+/* The settings block on the Shinobi tab. */
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.settings-heading {
+  font-family: var(--font-story);
+  font-size: 1rem;
+  font-weight: normal;
+  color: var(--story);
+}
