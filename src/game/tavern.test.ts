@@ -62,6 +62,6 @@ describe('the izakaya', () => {
     const v10 = { ...state, village: { lastSightDay: null } };
     const loaded = deserialize(JSON.stringify({ version: 10, state: v10 }));
     if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.village).toEqual({ lastSightDay: null, lastRoundDay: null });
+    expect(loaded.value.village).toMatchObject({ lastSightDay: null, lastRoundDay: null });
   });
 });

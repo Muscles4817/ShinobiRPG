@@ -121,6 +121,16 @@ export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSh
           </p>
         )}
         {p.reveal && <p className="muted small">{p.reveal}</p>}
+        {p.memories.length > 0 && (
+          <section className="person-memories" aria-label="What you’ve been through">
+            <h3 className="label">What you’ve been through</h3>
+            <ul>
+              {p.memories.map((m, i) => (
+                <li key={i}>{m}</li>
+              ))}
+            </ul>
+          </section>
+        )}
         <PersonActions sheet={p} perform={perform} onClose={onClose} />
       </section>
     </div>

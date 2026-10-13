@@ -180,9 +180,13 @@ function gossip(state: GameState, ctx: GameContext, { maxJobs, total }: Earful):
     .filter((r) => r.missionId !== undefined && tomorrow.has(r.missionId))
     .sort(byHash(state, 'rumour'))
     .slice(0, maxJobs);
+  // Talk about what you did is fresher than anything else, once the village remembers it.
+  const known = (r: RumourDef) =>
+    r.worldMark === undefined || state.village.marks.includes(r.worldMark);
   const talk = rumours
-    .filter((r) => r.missionId === undefined)
+    .filter((r) => r.missionId === undefined && known(r))
     .sort(byHash(state, 'rumour'))
+    .sort((a, b) => Number(b.worldMark !== undefined) - Number(a.worldMark !== undefined))
     .slice(0, Math.max(0, total - jobs.length - exam.length));
   return [...exam, ...jobs, ...talk];
 }

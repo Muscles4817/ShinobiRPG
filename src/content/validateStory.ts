@@ -164,6 +164,26 @@ function voiceProblems(pack: ContentPack): string[] {
   );
 }
 
+/** Every world mark a job or a rumour waits for is one some job can leave behind. */
+function worldProblems(pack: ContentPack): string[] {
+  const left = new Set(
+    pack.missions
+      .flatMap((m) => m.stages.flatMap(effectsOf))
+      .flatMap((e) => (e.kind === 'world' ? [e.mark] : [])),
+  );
+  return [
+    ...pack.missions
+      .filter((m) => m.needsWorldMark !== undefined && !left.has(m.needsWorldMark))
+      .map(
+        (m) =>
+          `mission "${m.id}" waits for "${m.needsWorldMark ?? ''}", which no job leaves behind`,
+      ),
+    ...pack.village.rumours
+      .filter((r) => r.worldMark !== undefined && !left.has(r.worldMark))
+      .map((r) => `rumour "${r.id}" waits for "${r.worldMark ?? ''}", which no job leaves behind`),
+  ];
+}
+
 export function validateStory(pack: ContentPack): string[] {
   const roadMarks = new Set(
     pack.roadEvents
@@ -174,5 +194,6 @@ export function validateStory(pack: ContentPack): string[] {
     ...pack.missions.flatMap((m) => storyProblems(m, roadMarks)),
     ...eventProblems(pack),
     ...voiceProblems(pack),
+    ...worldProblems(pack),
   ];
 }

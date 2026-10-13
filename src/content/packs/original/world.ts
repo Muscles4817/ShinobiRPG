@@ -48,6 +48,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'river-road-bandits',
           'festival-haunting',
           'cold-kiln',
+          'boy-from-the-boulders',
           ...CHUNIN_MISSIONS.map((m) => m.id),
           ...TEMPLATE_MISSIONS.map((m) => m.id),
         ],

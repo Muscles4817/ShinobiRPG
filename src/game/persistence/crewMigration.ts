@@ -36,3 +36,11 @@ export function v28ToV29(state: RawState): RawState {
   if (state.mission === null || state.mission === undefined) return state;
   return { ...state, mission: { marks: [], threads: {}, ledger: [], ...asRecord(state.mission) } };
 }
+
+/** v29 → v30: the village remembers what your jobs left behind; nothing yet. */
+export function v29ToV30(state: RawState): RawState {
+  return {
+    ...state,
+    village: { marks: [], memories: [], clients: {}, ...asRecord(state.village) },
+  };
+}

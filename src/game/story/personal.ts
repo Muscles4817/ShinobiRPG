@@ -11,7 +11,8 @@ import type { GameState } from '../state';
 
 /**
  * What a story's outcome does to you and the people with you: harm and energy to you, bond
- * with everyone along (not whoever leads). Returned with the chips that show it, since story
+ * with everyone along (not whoever leads), moments they will remember, and what the village
+ * will remember of the job. Returned with the chips that show it, since story
  * text never carries numbers.
  */
 
@@ -58,11 +59,32 @@ function feelOne(felt: Felt, effect: Effect): Felt {
               ),
             ],
           };
+    case 'world':
+      return { ...felt, state: remember(felt.state, effect.mark) };
+    case 'memory':
+      return { ...felt, state: shareMemory(felt.state, effect.text) };
     case 'mark':
     case 'thread':
     case 'pay':
       return felt;
   }
+}
+
+/** The village remembers something you did (once). */
+function remember(state: GameState, mark: string): GameState {
+  const { village } = state;
+  if (village.marks.includes(mark)) return state;
+  return { ...state, village: { ...village, marks: [...village.marks, mark] } };
+}
+
+/** Everyone along will remember this moment with you. */
+function shareMemory(state: GameState, text: string): GameState {
+  const ids = crewOf(state).memberIds;
+  const memories = ids.map((personId) => ({ personId, text, day: state.time.day }));
+  return {
+    ...state,
+    village: { ...state.village, memories: [...state.village.memories, ...memories] },
+  };
 }
 
 export function feel(state: GameState, effects: readonly Effect[]): Felt {

@@ -25,17 +25,29 @@ const MAX_DAYS_UP = 4;
 /** After a long absence, only the last few weeks of postings matter. */
 const MAX_CATCH_UP_DAYS = 28;
 
-function trusted(def: MissionDef, standing: Standing, ctx: GameContext): boolean {
+/** Who the board is for: your record, and what the village remembers of your jobs. */
+interface Reader {
+  readonly standing: Standing;
+  readonly marks: readonly string[];
+}
+
+function readerOf(state: GameState): Reader {
+  return { standing: state.standing, marks: state.village.marks };
+}
+
+function trusted(def: MissionDef, who: Reader, ctx: GameContext): boolean {
+  const { standing } = who;
   return (
     def.examOnly !== true &&
     def.minMissionsCompleted <= standing.missionsCompleted &&
+    (def.needsWorldMark === undefined || who.marks.includes(def.needsWorldMark)) &&
     crewOptions(jobOf(ctx, def), assigneeOf(standing)).length > 0
   );
 }
 
 /** The chance a job goes up on a given day: jōnin are seldom offered chores. */
-function postChance(def: MissionDef, standing: Standing, ctx: GameContext): number {
-  return DAILY_POST_CHANCE * postingShare(jobOf(ctx, def), assigneeOf(standing));
+function postChance(def: MissionDef, who: Reader, ctx: GameContext): number {
+  return DAILY_POST_CHANCE * postingShare(jobOf(ctx, def), assigneeOf(who.standing));
 }
 
 function postingFor(board: Board, def: MissionDef, day: number): Posting {
@@ -53,14 +65,14 @@ function byHash(missions: readonly MissionDef[], key: (m: MissionDef) => number)
 }
 
 /** Postings for one new day: expired ones come down, new ones go up. */
-function postDay(board: Board, day: number, ctx: GameContext, standing: Standing): Board {
+function postDay(board: Board, day: number, ctx: GameContext, who: Reader): Board {
   const kept = board.postings.filter((p) => p.expiresDay >= day);
   const candidates = ctx.content.missions.all.filter(
-    (m) => !m.standing && trusted(m, standing, ctx) && !kept.some((p) => p.missionId === m.id),
+    (m) => !m.standing && trusted(m, who, ctx) && !kept.some((p) => p.missionId === m.id),
   );
   // Shuffled by the hash, so the cap on postings favours no job for where it sits in the pack.
   const fresh = byHash(
-    candidates.filter((m) => hashUnit(board.seed, day, m.id) < postChance(m, standing, ctx)),
+    candidates.filter((m) => hashUnit(board.seed, day, m.id) < postChance(m, who, ctx)),
     (m) => hashUnit(board.seed, day, m.id, 'order'),
   );
   const fillers = byHash(
@@ -78,13 +90,19 @@ export function boardFor(state: GameState, ctx: GameContext): Board {
   if (state.board.refreshedDay >= today) return state.board;
   const missions = ctx.content.missions.all;
   const seen = caughtUp.get(state.board);
-  if (seen?.day === today && seen.standing === state.standing && seen.missions === missions) {
+  if (
+    seen?.day === today &&
+    seen.standing === state.standing &&
+    seen.marks === state.village.marks &&
+    seen.missions === missions
+  ) {
     return seen.board;
   }
   const from = Math.max(state.board.refreshedDay + 1, today - MAX_CATCH_UP_DAYS);
   let board = state.board;
-  for (let day = from; day <= today; day++) board = postDay(board, day, ctx, state.standing);
-  caughtUp.set(state.board, { day: today, standing: state.standing, missions, board });
+  const who = readerOf(state);
+  for (let day = from; day <= today; day++) board = postDay(board, day, ctx, who);
+  caughtUp.set(state.board, { day: today, ...who, missions, board });
   return board;
 }
 
@@ -98,6 +116,7 @@ const caughtUp = new WeakMap<
   {
     readonly day: number;
     readonly standing: Standing;
+    readonly marks: readonly string[];
     readonly missions: readonly MissionDef[];
     readonly board: Board;
   }
@@ -116,7 +135,7 @@ function postedDay(state: GameState, ctx: GameContext, def: MissionDef): number 
 
 /** Who goes with you on a job on the board today; null when it isn't yours to take. */
 export function crewFor(state: GameState, ctx: GameContext, def: MissionDef): Crew | null {
-  if (!trusted(def, state.standing, ctx)) return null;
+  if (!trusted(def, readerOf(state), ctx)) return null;
   const day = postedDay(state, ctx, def);
   return day === null ? null : crewOn(state, ctx, def, day);
 }
@@ -149,6 +168,6 @@ export function takeJob(state: GameState, ctx: GameContext, def: MissionDef): Bo
 /** Jobs that will go up tomorrow (if nothing changes before then), for the village gossip. */
 export function newPostingsTomorrow(state: GameState, ctx: GameContext): string[] {
   const tomorrow = state.time.day + 1;
-  const next = postDay(boardFor(state, ctx), tomorrow, ctx, state.standing);
+  const next = postDay(boardFor(state, ctx), tomorrow, ctx, readerOf(state));
   return next.postings.filter((p) => p.postedDay === tomorrow).map((p) => p.missionId);
 }

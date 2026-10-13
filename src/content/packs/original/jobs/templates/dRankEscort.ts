@@ -21,6 +21,8 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
       client: 'who hires you, e.g. the Matsuda household',
       charge: 'who or what you guard, mid-sentence, e.g. a bride’s dowry chest and its porter',
       chargeName: 'the one you look after, by name, e.g. Sister Kohaku',
+      storyKey:
+        'a short id for what this job leaves behind, e.g. kohaku: the village remembers "kohaku-spared" and "kohaku-trusted"',
       likes:
         'a tone the charge warms to: praise, challenge, joke, earnest, kind, tease, curious or quiet',
       alsoLikes: 'another tone the charge warms to',
@@ -198,7 +200,10 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
             label: 'Talk them out of it',
             tone: 'kind',
             reply: '{spared}',
-            effects: [{ kind: 'mark', mark: 'spared' }],
+            effects: [
+              { kind: 'mark', mark: 'spared' },
+              { kind: 'world', mark: '{storyKey}-spared' },
+            ],
             ledger: 'Talked hungry men out of a robbery.',
           },
           {
@@ -230,7 +235,11 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
           {
             when: { all: [{ has: 'knows-why' }, { thread: 'trust', atLeast: 3 }] },
             text: '{trusted}',
-            effects: [{ kind: 'pay', share: 0.2 }],
+            effects: [
+              { kind: 'pay', share: 0.2 },
+              { kind: 'world', mark: '{storyKey}-trusted' },
+              { kind: 'memory', text: 'the road with {chargeName}' },
+            ],
             ledger: '{chargeName} pressed a gift on you at the end of the road.',
           },
           { text: '{ending}' },

@@ -263,6 +263,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`game/debrief.ts`) reads it all back: the ledger line by line with the pay each moved,
     each crew member's bond since the start and last word, a grade (clean, rough, botched), and
     on a failure what would have helped (the best approach to the check, or the foe's trick).
+24. **Jobs leave something behind.** Outcomes can make the village remember (`world` effect →
+    `village.marks`) and give everyone along a shared memory (`memory` → `village.memories`).
+    A job with `needsWorldMark` is posted only once the village remembers it (a follow-up);
+    a rumour with `worldMark` goes round only then, ahead of other talk. Memories show on the
+    person's sheet and come up by the fire. Clients count the jobs you've done for them
+    (`village.clients`, `game/clients.ts`); one you've worked for asks for you by name and
+    pays `CLIENT_RETURN_SHARE` more (not on standing jobs). `validateStory` checks every world
+    mark waited for is one some job leaves behind.
 
 ### Content packs
 

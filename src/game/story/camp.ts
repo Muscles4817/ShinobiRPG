@@ -72,7 +72,10 @@ function sitWithCrew(state: GameState, ctx: GameContext): GameState {
     (a, b) => (state.people.bonds[a.id]?.points ?? 0) - (state.people.bonds[b.id]?.points ?? 0),
   );
   if (!person) return told(state, { kind: 'story', text: 'You sit alone with the fire.' });
-  const voice = voiceOf(state, ctx, { person, moment: 'camp' });
+  const memory = state.village.memories.findLast((m) => m.personId === person.id);
+  const voice: MissionNote | null = memory
+    ? { kind: 'voice', speaker: person.name, text: `Remember ${memory.text}?` }
+    : voiceOf(state, ctx, { person, moment: 'camp' });
   const closer = bondWithOne(state, person.id, CAMP_TALK_BOND);
   const line: MissionNote = { kind: 'story', text: `You sit with ${person.name} by the fire.` };
   const logged = log(closer, {

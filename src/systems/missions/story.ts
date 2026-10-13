@@ -40,7 +40,11 @@ export type Effect =
   | { readonly kind: 'harm'; readonly health: number }
   | { readonly kind: 'energy'; readonly by: number }
   /** A share of the posted pay won or lost (-0.25 docks a quarter), with the reason. */
-  | { readonly kind: 'pay'; readonly share: number };
+  | { readonly kind: 'pay'; readonly share: number }
+  /** Something the village will remember after the job: follow-up jobs and gossip read it. */
+  | { readonly kind: 'world'; readonly mark: string }
+  /** A moment everyone along will remember, as a phrase ("the night below the pass"). */
+  | { readonly kind: 'memory'; readonly text: string };
 
 /** How a ledger line reads in the debrief: something gained, something lost, or what happened. */
 export type LedgerTone = 'gain' | 'cost' | 'plain';

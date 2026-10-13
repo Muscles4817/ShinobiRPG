@@ -113,6 +113,8 @@ export interface MissionDef {
   readonly standing?: boolean;
   /** Never posted: an exam stage runs it (the survival forest). */
   readonly examOnly?: boolean;
+  /** Posted only once the village remembers this (a world mark): a follow-up to another job. */
+  readonly needsWorldMark?: string;
   /** Counters the story keeps (a charge's trust, the day's light). */
   readonly threads?: readonly ThreadDef[];
   /** Who you look after, if anyone. */

@@ -184,7 +184,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     settings: defaultSettings(ctx),
     board: newBoard(seed),
     inventory: withIssuedBlade(EMPTY_INVENTORY, known, content),
-    village: { lastSightDay: null, lastRoundDay: null },
+    village: { lastSightDay: null, lastRoundDay: null, marks: [], memories: [], clients: {} },
     exams: NO_EXAMS,
   };
   return logOpening(state, ctx, roll);
