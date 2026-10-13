@@ -65,6 +65,7 @@ export const SHOPPING_DISTRICT: PlaceDef = {
         'spices',
         'eggs',
         'tofu',
+        'travel-rations',
         'bamboo-shoots',
         'cucumbers',
         'chestnuts',

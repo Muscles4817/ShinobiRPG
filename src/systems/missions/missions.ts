@@ -42,6 +42,15 @@ export type MissionStage =
       readonly failureDamage?: number;
     }
   | {
+      /**
+       * Days on the road with nothing worth a choice: the line sums them up, and the days pass
+       * (meals from your pack, nights in camp).
+       */
+      readonly kind: 'leg';
+      readonly text: string;
+      readonly days: number;
+    }
+  | {
       readonly kind: 'combat';
       readonly text: string;
       readonly enemyIds: readonly string[];
@@ -123,6 +132,17 @@ export function advance(run: MissionRun, ...notes: MissionNote[]): MissionRun {
     ...(run.pay ? { pay: run.pay } : {}),
   };
 }
+
+/** Days a job keeps you on the road: every leg's days. Zero for a job done within a day. */
+export function daysAway(def: Pick<MissionDef, 'stages'>): number {
+  return def.stages.reduce((days, s) => days + (s.kind === 'leg' ? s.days : 0), 0);
+}
+
+/**
+ * The least a job should pay for each day it keeps you on the road, so a week away competes
+ * with a week of training and errands at home (checked by the pacing bench).
+ */
+export const MIN_RYO_PER_DAY_AWAY = 120;
 
 /** The enemies a stage may make you fight: a combat's, or the foes of an encounter. */
 export function stageFoes(stage: MissionStage): readonly string[] {

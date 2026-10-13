@@ -79,6 +79,8 @@ export interface IngredientDef {
   readonly icon: IconId;
   /** Only at the grocer in these seasons; absent means all year. */
   readonly seasons?: readonly Season[];
+  /** Keeps on the road: a day's meal there, filling you this much. */
+  readonly road?: number;
 }
 
 export interface IngredientCount {

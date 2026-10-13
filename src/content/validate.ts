@@ -1,5 +1,5 @@
 import { costIsSane, effectProblem } from '@/systems/techniques';
-import { canGoWithCrew } from '@/systems/missions';
+import { canGoWithCrew, daysAway, MIN_RYO_PER_DAY_AWAY } from '@/systems/missions';
 
 import { duplicateIds } from './catalog';
 import { validateGear } from './validateGear';
@@ -49,9 +49,20 @@ export function validateContent(pack: ContentPack): string[] {
   ];
 }
 
-/** Recipes cook from ingredients the pack sells, and actually fill you up. */
+/**
+ * Recipes cook from ingredients the pack sells, and actually fill you up; something sold keeps
+ * on the road, so a long job can be packed for.
+ */
 function recipeProblems(pack: ContentPack): string[] {
   const known = new Set(pack.ingredients.map((i) => i.id));
+  const roadFood = pack.ingredients.some((i) => (i.road ?? 0) > 0);
+  return [
+    ...(roadFood ? [] : ['pack sells no food that keeps on the road']),
+    ...recipeLines(pack, known),
+  ];
+}
+
+function recipeLines(pack: ContentPack, known: ReadonlySet<string>): string[] {
   return pack.recipes.flatMap((r) => [
     ...r.ingredients
       .filter((i) => !known.has(i.id))
@@ -179,6 +190,25 @@ function placeholderProblems(pack: ContentPack): string[] {
   );
 }
 
+/**
+ * Days on the road come in whole days, and a job that keeps you away pays for them: at least
+ * `MIN_RYO_PER_DAY_AWAY` a day, so a week out competes with a week at home.
+ */
+function roadProblems(pack: ContentPack): string[] {
+  return pack.missions.flatMap((m) => {
+    const legs = m.stages.flatMap((s) => (s.kind === 'leg' ? [s] : []));
+    const days = daysAway(m);
+    return [
+      ...(legs.some((l) => !Number.isInteger(l.days) || l.days < 1)
+        ? [`mission "${m.id}" has a leg that isn’t a whole number of days`]
+        : []),
+      ...(m.reward.ryo < days * MIN_RYO_PER_DAY_AWAY
+        ? [`mission "${m.id}" pays too little for ${days} days away`]
+        : []),
+    ];
+  });
+}
+
 function numberProblems(pack: ContentPack): string[] {
   return [
     ...pack.techniques
@@ -203,6 +233,7 @@ function numberProblems(pack: ContentPack): string[] {
       .filter((e) => e.healthScale !== undefined && e.healthScale <= 0)
       .map((e) => `enemy "${e.id}" needs a positive health scale`),
     ...pack.foods.filter((f) => f.cost <= 0).map((f) => `food "${f.id}" must cost something`),
+    ...roadProblems(pack),
     ...pack.training
       .filter((t) => Object.keys(t.gains).length === 0)
       .map((t) => `training "${t.id}" grants no gains`),

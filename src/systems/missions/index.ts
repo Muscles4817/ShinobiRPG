@@ -1,5 +1,7 @@
 export {
   CHECK_FAILURE_PENALTY,
+  MIN_RYO_PER_DAY_AWAY,
+  daysAway,
   MISSION_ROLES,
   startRun,
   currentStage,

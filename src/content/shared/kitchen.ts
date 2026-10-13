@@ -9,6 +9,8 @@ export const INGREDIENTS: readonly IngredientDef[] = [
   { id: 'spices', name: 'Spices', cost: 12, icon: 'leaf' },
   { id: 'eggs', name: 'Eggs', cost: 9, icon: 'bowl' },
   { id: 'tofu', name: 'Tofu', cost: 7, icon: 'veg' },
+  // Dried rice cakes and salted fish, wrapped for the road: a day's meal away from home.
+  { id: 'travel-rations', name: 'Travel Rations', cost: 12, icon: 'rice', road: 25 },
   // The grocer only has these in their season.
   { id: 'bamboo-shoots', name: 'Bamboo Shoots', cost: 10, icon: 'leaf', seasons: ['Spring'] },
   { id: 'cucumbers', name: 'Cucumbers', cost: 6, icon: 'veg', seasons: ['Summer'] },
