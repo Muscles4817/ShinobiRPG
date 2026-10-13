@@ -1,4 +1,13 @@
-import { gradesFromQuickPick, pointsSpent, type Discipline, type Grade } from '@/game';
+import {
+  pickFromGrades,
+  pointsSpent,
+  quickGrades,
+  roleGrade,
+  topDisciplines,
+  type ClassStanding,
+  type Discipline,
+  type Grade,
+} from '@/game';
 
 import type { StepProps } from './types';
 
@@ -11,39 +20,38 @@ interface ReportCardProps extends StepProps {
 
 type Role = 'specialty' | 'strength' | 'weakness';
 const ROLES: readonly Role[] = ['specialty', 'strength', 'weakness'];
-/** Each pick as the instructors would write it on the card. */
-const ROLE_LABEL: Readonly<Record<Role, string>> = {
-  specialty: 'Your specialty gets an A',
-  strength: 'Your strength gets a B',
-  weakness: 'Your weakness gets a D',
+const ROLE_NAME: Readonly<Record<Role, string>> = {
+  specialty: 'specialty',
+  strength: 'strength',
+  weakness: 'weakness',
 };
 
-/** Reads the current quick pick back out of the grades (falls back to a valid default). */
-function currentPick(grades: Readonly<Record<Discipline, Grade>>, order: readonly Discipline[]) {
-  const find = (g: Grade, fallback: Discipline) => order.find((d) => grades[d] === g) ?? fallback;
-  return {
-    specialty: find('A', 'taijutsu'),
-    strength: find('B', 'ninjutsu'),
-    weakness: find('D', 'genjutsu'),
-  };
+/** Each pick as the instructors would write it on the card: "Your specialty gets an A". */
+function roleLabel(role: Role, standing: ClassStanding): string {
+  const grade: Grade = roleGrade(role, standing);
+  return `Your ${ROLE_NAME[role]} gets ${grade === 'A' ? 'an' : 'a'} ${grade}`;
 }
 
 function QuickPick({ view, draft, update }: StepProps) {
-  const order = view.disciplines.map((d) => d.id);
-  const pick = currentPick(draft.grades, order);
+  const pick = pickFromGrades(draft.grades, draft.standing);
   const choose = (role: Role, discipline: Discipline) => {
     // Picking a discipline already used by another role swaps the two.
     const next = { ...pick };
     const clash = ROLES.find((r) => r !== role && next[r] === discipline);
     if (clash) next[clash] = next[role];
     next[role] = discipline;
-    update({ grades: gradesFromQuickPick(next) });
+    update({ grades: quickGrades(next, draft.standing) });
   };
   return (
     <div className="quick-pick">
       {ROLES.map((role) => (
-        <div key={role} className="swatch-row" role="group" aria-label={ROLE_LABEL[role]}>
-          <span className="label">{ROLE_LABEL[role]}</span>
+        <div
+          key={role}
+          className="swatch-row"
+          role="group"
+          aria-label={roleLabel(role, draft.standing)}
+        >
+          <span className="label">{roleLabel(role, draft.standing)}</span>
           <span className="segments">
             {view.disciplines.map((d) => (
               <button
@@ -65,12 +73,19 @@ function QuickPick({ view, draft, update }: StepProps) {
   );
 }
 
+/** The budget said plainly: a dead-last file owes points back rather than having any to spend. */
+function budgetText(spent: number, budget: number): string {
+  if (budget >= 0) return `Points spent ${spent} of ${budget}.`;
+  return `Your standing asks for ${-budget} points back; you have given ${Math.max(0, -spent)}.`;
+}
+
 function PointBuy({ view, draft, update }: StepProps) {
   const spent = pointsSpent(draft.grades);
+  const budget = view.standings.find((s) => s.id === draft.standing)?.budget ?? 0;
   return (
     <div className="point-buy">
-      <p className={spent > view.pointBudget ? 'blocker' : 'muted small'}>
-        Points spent {spent} of {view.pointBudget}. A costs 3, B costs 1, D gives 1 back.
+      <p className={spent > budget ? 'blocker' : 'muted small'}>
+        {budgetText(spent, budget)} A costs 3, B costs 1, D gives 1 back.
       </p>
       {view.disciplines.map((d) => (
         <div key={d.id} className="swatch-row" role="group" aria-label={d.name}>
@@ -99,6 +114,7 @@ function PointBuy({ view, draft, update }: StepProps) {
 /** The report card: grades per discipline, by quick pick or point buy. */
 export function ReportCardStep(props: ReportCardProps) {
   const { view, draft, mode, setMode } = props;
+  const starters = topDisciplines(draft.grades);
   return (
     <div className="step">
       <div className="segments mode" role="group" aria-label="Grading">
@@ -139,7 +155,7 @@ export function ReportCardStep(props: ReportCardProps) {
                   {info && info.pacePct !== 0
                     ? `, learns ${Math.abs(info.pacePct)}% ${info.pacePct > 0 ? 'faster' : 'slower'}`
                     : ''}
-                  {grade === 'A' ? `, starts with ${d.starter}` : ''}
+                  {starters.includes(d.id) ? `, starts with ${d.starter}` : ''}
                 </td>
               </tr>
             );

@@ -3,16 +3,20 @@ import { freeLodging, newTenancy } from '@/systems/housing';
 import { EMPTY_INVENTORY } from '@/systems/inventory';
 import { EMPTY_JOURNAL } from '@/systems/journal';
 import {
+  budgetOf,
+  GRADES,
   gradeStatBonuses,
   gradesProblem,
+  STANDING_INFO,
   topDisciplines,
   type Appearance,
+  type ClassStanding,
   type Grades,
   type Pronouns,
 } from '@/systems/profile';
 import { NEW_GENIN } from '@/systems/standing';
 import { checkChance, createStats, nothingKnown, STAT_INFO, sumDeltas } from '@/systems/stats';
-import type { Element } from '@/systems/techniques';
+import { DISCIPLINES, type Discipline, type Element } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
 import { fullVitals } from '@/systems/vitals';
 
@@ -41,6 +45,10 @@ export interface CreationDraft {
   readonly pronouns: Pronouns;
   readonly appearance: Appearance;
   readonly clanId: string;
+  /** Where they stood in their class; with fate, what the file turned out to say. */
+  readonly standing: ClassStanding;
+  /** The player let fate decide the standing (the file revealed it). */
+  readonly fated?: boolean;
   readonly grades: Grades;
   readonly nature: Element;
   readonly traitIds: readonly string[];
@@ -91,7 +99,7 @@ export function draftProblems(draft: CreationDraft, ctx: GameContext): string[] 
     first?.opposite === second?.id &&
       first !== undefined &&
       'Those two traits contradict each other.',
-    gradesProblem(draft.grades),
+    gradesProblem(draft.grades, budgetOf(draft.standing)),
   ];
   return problems.filter((p): p is string => typeof p === 'string');
 }
@@ -101,6 +109,12 @@ function startingTechniques(draft: CreationDraft, ctx: GameContext): string[] {
   const clan = content.clans.require(draft.clanId);
   const starters = topDisciplines(draft.grades).map((d) => content.disciplineStarters[d]);
   return [...new Set([...content.academyTechniques, ...clan.startingTechniqueIds, ...starters])];
+}
+
+/** The arts graded highest on the file: the roll never voids them, and a genius's are gifted. */
+function bestArts(grades: Grades): Discipline[] {
+  const best = GRADES.find((g) => DISCIPLINES.some((d) => grades[d] === g));
+  return DISCIPLINES.filter((d) => grades[d] === best);
 }
 
 function housingFor(draft: CreationDraft, ctx: GameContext, homeId: string, rent: number) {
@@ -125,7 +139,8 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
   if (!home) throw new Error(`Start location "${content.startLocationId}" has no home`);
   const roll = rollBreakIn(ctx, draft.breakInApproachId, seed);
   const dice = createRng(roll.rngState);
-  const aptitude = rollCharacterAptitude(dice, clan, talent);
+  const shape = { band: STANDING_INFO[draft.standing].talent, specialties: bestArts(draft.grades) };
+  const aptitude = rollCharacterAptitude(dice, clan, talent, shape);
   const known = startingTechniques(draft, ctx);
 
   const state: GameState = {
@@ -140,6 +155,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       appearance: draft.appearance,
       clanId: clan.id,
       grades: draft.grades,
+      classStanding: draft.standing,
       nature: draft.nature,
       traitIds: draft.traitIds,
       talentId: talent.id,

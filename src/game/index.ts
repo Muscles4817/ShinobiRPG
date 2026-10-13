@@ -22,6 +22,7 @@ export {
   type CreationView,
   type ClanOption,
   type TraitOption,
+  type StandingOption,
   type ProfileOption,
 } from './views/creation';
 export type { GameAction, GameActionType } from './actions/types';
@@ -150,6 +151,14 @@ export type {
   HairStyle,
   HeadbandPlace,
 } from '@/systems/profile';
-export { gradesFromQuickPick, pointsSpent } from '@/systems/profile';
+export {
+  fateStanding,
+  pickFromGrades,
+  pointsSpent,
+  quickGrades,
+  roleGrade,
+  topDisciplines,
+  type ClassStanding,
+} from '@/systems/profile';
 export type { Element } from '@/systems/techniques';
 export type { EffectLine } from '@/systems/modifiers';

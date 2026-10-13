@@ -1,6 +1,6 @@
 import { combine, type ModifierSpec, type Modifiers } from '@/systems/modifiers';
 import { STAT_IDS, type Growth, type StatScale } from '@/systems/stats';
-import { gradeModifiers } from '@/systems/profile';
+import { gradeModifiers, STANDING_INFO } from '@/systems/profile';
 import { ELEMENTS, type Element } from '@/systems/techniques';
 
 import { withoutGrowth } from './aptitude';
@@ -40,6 +40,7 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
     withoutGrowth(talent?.modifiers ?? {}),
     ...traits.map((t) => t.modifiers),
     gradeModifiers(character.grades),
+    STANDING_INFO[character.classStanding].modifiers,
     natureModifiers(character.nature, clan?.nature),
     (character.meal ? content.recipes.get(character.meal)?.buff : undefined) ?? {},
     hungerEffect(character.vitals).spec,

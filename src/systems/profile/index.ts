@@ -27,3 +27,17 @@ export {
   type HeadbandPlace,
   type Pronouns,
 } from './appearance';
+export {
+  CLASS_STANDINGS,
+  DEFAULT_STANDING,
+  STANDING_INFO,
+  budgetOf,
+  fateStanding,
+  pickFromGrades,
+  quickGrades,
+  roleGrade,
+  type ClassStanding,
+  type QuickGrades,
+  type StandingInfo,
+  type TalentBand,
+} from './standing';

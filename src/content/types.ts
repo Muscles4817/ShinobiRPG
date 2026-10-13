@@ -143,6 +143,8 @@ export interface TalentDef {
   readonly description: string;
   readonly statBonuses: StatDelta;
   readonly modifiers: ModifierSpec;
+  /** Fixes the hidden talent in these stats, whatever the roll; 0 means it will never take. */
+  readonly aptitude?: Readonly<Partial<Record<StatId, number>>>;
 }
 
 /** A personality trait. Opposites can't be taken together. */

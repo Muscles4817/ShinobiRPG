@@ -20,16 +20,27 @@ import { CaughtStep } from './CaughtStep';
 import { NatureStep, NindoStep, TalentStep, TraitsStep } from './ChoiceSteps';
 import { RecordStep } from './RecordStep';
 import { ReportCardStep, type GradeMode } from './ReportCardStep';
+import { StandingStep } from './StandingStep';
 import type { StepProps } from './types';
 import { WorldStep } from './WorldStep';
 
 type StepId =
-  'world' | 'breakin' | 'record' | 'grades' | 'nature' | 'traits' | 'talent' | 'nindo' | 'caught';
+  | 'world'
+  | 'breakin'
+  | 'record'
+  | 'standing'
+  | 'grades'
+  | 'nature'
+  | 'traits'
+  | 'talent'
+  | 'nindo'
+  | 'caught';
 
 const TITLES: Readonly<Record<StepId, string>> = {
   world: 'Choose a world',
   breakin: 'The night before graduation',
   record: 'Student record',
+  standing: 'Class standing',
   grades: 'Report card',
   nature: 'Chakra assessment',
   traits: 'Instructor’s notes',
@@ -44,25 +55,24 @@ interface BlockerInput {
   readonly problems: readonly string[];
 }
 
-/** Why the player can't turn the page yet, or null. */
-function stepBlocker(step: StepId, { draft, roll, problems }: BlockerInput): string | null {
-  switch (step) {
-    case 'breakin':
-      return roll === null ? 'Choose how to get in.' : null;
-    case 'record':
-      return draft.name.trim() ? null : 'Write your name.';
-    case 'traits':
-      return draft.traitIds.length < 2 ? 'Choose two traits.' : null;
-    case 'grades':
-      return problems.find((p) => p.includes('points')) ?? null;
-    case 'caught':
-      return problems[0] ?? null;
-    case 'world':
-    case 'nature':
-    case 'talent':
-    case 'nindo':
-      return null;
-  }
+const NO_BLOCKER = (): string | null => null;
+
+/** Why the player can't turn each page yet, or null. */
+const BLOCKERS: Readonly<Record<StepId, (input: BlockerInput) => string | null>> = {
+  world: NO_BLOCKER,
+  breakin: ({ roll }) => (roll === null ? 'Choose how to get in.' : null),
+  record: ({ draft }) => (draft.name.trim() ? null : 'Write your name.'),
+  standing: NO_BLOCKER,
+  grades: ({ problems }) => problems.find((p) => p.includes('points')) ?? null,
+  nature: NO_BLOCKER,
+  traits: ({ draft }) => (draft.traitIds.length < 2 ? 'Choose two traits.' : null),
+  talent: NO_BLOCKER,
+  nindo: NO_BLOCKER,
+  caught: ({ problems }) => problems[0] ?? null,
+};
+
+function stepBlocker(step: StepId, input: BlockerInput): string | null {
+  return BLOCKERS[step](input);
 }
 
 interface StepBodyProps extends StepProps {
@@ -74,6 +84,7 @@ interface StepBodyProps extends StepProps {
   readonly onAttempt: (approachId: string) => void;
   readonly mode: GradeMode;
   readonly setMode: (mode: GradeMode) => void;
+  readonly seed: number;
 }
 
 function StepBody({
@@ -85,6 +96,7 @@ function StepBody({
   onAttempt,
   mode,
   setMode,
+  seed,
   ...props
 }: StepBodyProps) {
   switch (step) {
@@ -101,6 +113,8 @@ function StepBody({
       );
     case 'record':
       return <RecordStep {...props} />;
+    case 'standing':
+      return <StandingStep {...props} seed={seed} />;
     case 'grades':
       return <ReportCardStep {...props} mode={mode} setMode={setMode} />;
     case 'nature':
@@ -127,6 +141,7 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
   const steps: StepId[] = [
     'breakin',
     'record',
+    'standing',
     'grades',
     'nature',
     'traits',
@@ -185,6 +200,7 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
           }}
           mode={mode}
           setMode={setMode}
+          seed={seed}
         />
       </main>
       <nav className="file-nav">

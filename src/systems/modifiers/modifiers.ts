@@ -114,19 +114,25 @@ function studyLines(study: Partial<Record<Discipline, number>>): EffectLine[] {
   );
 }
 
-/** One line per hard-work floor grade, naming the stats it holds up. */
+/** A floor at least this high keeps solo training paying; a lower one only helps a little. */
+const STRONG_FLOOR = 0.3;
+
+/** One line per hard-work floor (its grade and strength), naming the stats it holds up. */
 function floorLines(floors: Partial<Record<StatId, SoloFloor>>): EffectLine[] {
-  const byGrade = new Map<string, string[]>();
+  const byFloor = new Map<string, { floor: SoloFloor; labels: string[] }>();
   for (const [stat, floor] of Object.entries(floors) as [StatId, SoloFloor][]) {
-    byGrade.set(floor.throughGrade, [
-      ...(byGrade.get(floor.throughGrade) ?? []),
-      STAT_INFO[stat].label,
-    ]);
+    const key = `${floor.throughGrade}|${floor.floor >= STRONG_FLOOR}`;
+    const entry = byFloor.get(key) ?? { floor, labels: [] };
+    byFloor.set(key, { ...entry, labels: [...entry.labels, STAT_INFO[stat].label] });
   }
-  return [...byGrade].map(([grade, labels]) => ({
-    label: `Training alone keeps paying off up to grade ${grade} in ${listed(labels)}`,
-    tone: 'gain',
-  }));
+  return [...byFloor.values()].map(({ floor, labels }) => {
+    const pays = floor.floor >= STRONG_FLOOR ? 'keeps paying off' : 'pays off a little longer';
+    const which = labels.length === STAT_IDS.length ? 'every stat' : listed(labels);
+    return {
+      label: `Training alone ${pays} up to grade ${floor.throughGrade} in ${which}`,
+      tone: 'gain',
+    };
+  });
 }
 
 function listed(labels: readonly string[]): string {

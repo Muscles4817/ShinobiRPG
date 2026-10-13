@@ -88,6 +88,9 @@ export function ShinobiScreen({
             <span className="label">Traits</span> {view.traits.join(', ')}
           </p>
         )}
+        <p>
+          <span className="label">Class standing</span> {view.standing}
+        </p>
         {view.talent && (
           <p>
             <span className="label">Talent</span> {view.talent}
