@@ -1,6 +1,7 @@
 import { stageFoes, type MissionDef } from '@/systems/missions';
 
 import { INTEL_FEE } from '../actions/intel';
+import { awayFor, examClash } from '../awayNotes';
 import { availability, crewFor } from '../board';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
@@ -38,6 +39,10 @@ export interface Notice extends Choice {
     /** Buying the report, while you don't have it. */
     readonly intel: (Choice & { readonly fee: number }) | null;
   } | null;
+  /** How long it keeps you away ("3 days away"), or null for a job done within a day. */
+  readonly away: string | null;
+  /** An exam it would make you miss, or null. */
+  readonly examClash: string | null;
   /** Who the village sends with you; null when you go alone. */
   readonly crew: CrewWords | null;
   /** "Standing job" or how long the posting stays up, e.g. "Gone after tomorrow". */
@@ -119,6 +124,8 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         fightLikely: m.stages.some((s) => stageFoes(s).length > 0),
         opposition: oppositionOf(state, ctx, m),
         crew: crewOf(state, ctx, m),
+        away: awayFor(m),
+        examClash: examClash(state, ctx, m)?.text ?? null,
         standing: on.kind === 'standing',
         posted: on.kind === 'standing' ? 'Standing job' : postedFor(on.daysLeft),
       };

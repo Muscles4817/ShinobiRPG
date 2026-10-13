@@ -8,6 +8,7 @@ import { combatFinaleView } from '../combatFinale';
 import { engineFor } from '../fightStyle';
 import { activeMission, activeStage } from '../missionFlow';
 import { checkHand } from '../missionRoles';
+import { rationDays } from '../road';
 import { scoutOpponents, type ScoutingRead } from '../scouting';
 import type { GameState } from '../state';
 
@@ -52,6 +53,13 @@ function checkDetail(state: GameState, ctx: GameContext, approach: CheckApproach
   return hand.personId && approach.role ? `${odds}, ${hand.name} the ${approach.role}` : odds;
 }
 
+/** What a stretch of road asks of you: "2 days on the road, food for 1 in your pack". */
+function roadDetail(days: number, rations: number): string {
+  const road = days === 1 ? 'A day on the road' : `${days} days on the road`;
+  if (rations === 0) return `${road}, and nothing in your pack`;
+  return `${road}, food for ${rations} in your pack`;
+}
+
 export function missionScene(state: GameState, ctx: GameContext): MissionScene | null {
   const def = activeMission(state, ctx);
   if (!def || !state.mission || state.combat) return null;
@@ -71,6 +79,19 @@ export function missionScene(state: GameState, ctx: GameContext): MissionScene |
         ...base,
         prompt: stage.text,
         choices: [{ label: 'Continue', detail: '', primary: true, action: CONTINUE }],
+      };
+    case 'leg':
+      return {
+        ...base,
+        prompt: stage.text,
+        choices: [
+          {
+            label: 'Travel on',
+            detail: roadDetail(stage.days, rationDays(state, ctx)),
+            primary: true,
+            action: CONTINUE,
+          },
+        ],
       };
     case 'combat':
       return {

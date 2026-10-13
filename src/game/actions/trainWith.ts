@@ -130,10 +130,12 @@ interface Session {
   readonly teaching: Teaching;
   readonly bond: number;
   readonly taught: Taught | null;
+  /** Energy the session took (none for a lesson given on the road). */
+  readonly energy: number;
 }
 
 function report(state: GameState, before: GameState, session: Session): GameState {
-  const { teaching, bond, taught } = session;
+  const { teaching, bond, taught, energy } = session;
   const { person } = teaching;
   const ryo = ryoPerSession(teaching.price);
   const statLines = statChips(diffStats(before.character.stats, state.character.stats));
@@ -154,7 +156,7 @@ function report(state: GameState, before: GameState, session: Session): GameStat
           ]
         : []),
       ...(taught?.unstable ? [chip(`${taught.name} unstable`, 'cost')] : []),
-      chip(`−${TRAIN_WITH_ENERGY} energy`, 'cost'),
+      ...(energy > 0 ? [chip(`−${energy} energy`, 'cost')] : []),
       ...(ryo > 0 ? [chip(`−${ryo} ryo`, 'cost')] : []),
     ],
   });
@@ -167,6 +169,67 @@ function report(state: GameState, before: GameState, session: Session): GameStat
     bond,
     technique: taught && { name: taught.name, mastered: taught.mastered, percent: taught.percent },
   });
+}
+
+interface Taken {
+  readonly state: GameState;
+  readonly teaching: Teaching;
+  readonly bond: number;
+  readonly taught: Taught | null;
+  readonly discovered: ReturnType<typeof growCharacter>['discovered'];
+}
+
+/** One session with a teacher, without the time or energy it takes: growth, bond and pay. */
+function teachSession(
+  state: GameState,
+  ctx: GameContext,
+  teaching: Teaching,
+  statId: StatId,
+): Taken {
+  const { person } = teaching;
+  const gains = sessionGains(statId);
+  const theirs = personStats(person, state);
+  const teachers = Object.fromEntries(Object.keys(gains).map((id) => [id, theirs[id as StatId]]));
+  const grown = growCharacter(state.character, gains, ctx, {
+    teacher: teaching.factor,
+    teachers,
+  });
+  const quirk = person.teacher?.quirk;
+  const base = teaching.isSensei ? SENSEI_BOND : TRAIN_WITH_BOND;
+  const bond = Math.max(1, Math.round(base * (quirk ? QUIRK_BOND[quirk] : 1)));
+  // A genin practises alongside you: the session is theirs too.
+  const people = person.rank === 'genin' ? trainPerson(state, ctx, person, gains) : state.people;
+  const trained: GameState = {
+    ...state,
+    character: grown.character,
+    wallet: { ryo: state.wallet.ryo - ryoPerSession(teaching.price) },
+    people: {
+      ...people,
+      taught: withSession(state, person.id),
+      bonds: { ...people.bonds, [person.id]: addPoints(bondOf(state, person.id), bond) },
+    },
+  };
+  const taught = teachSignature(trained, ctx, teaching);
+  const after = taught ? { ...trained, techniques: taught.book } : trained;
+  return { state: after, teaching, bond, taught, discovered: grown.discovered };
+}
+
+/**
+ * Your sensei's weekly lesson, given wherever you are together (on the road, at camp): in the
+ * stat they steer you to, or the first they are ahead of you in. Null when it isn't due.
+ */
+export function lessonAway(
+  state: GameState,
+  ctx: GameContext,
+  sensei: PersonDef,
+): GameState | null {
+  const teaching = teachingOf(state, sensei);
+  if (!teaching?.isSensei || weekBlocker(state, teaching)) return null;
+  const statId = TEACHABLE_STATS.find((stat) => !statBlocker(state, ctx, teaching, stat));
+  if (!statId) return null;
+  const session = teachSession(state, ctx, teaching, statId);
+  const logged = report(session.state, state, { ...session, energy: 0 });
+  return logDiscoveries(logged, session.discovered, ctx);
 }
 
 export const trainWith: ActionHandler<TrainWith> = {
@@ -184,34 +247,11 @@ export const trainWith: ActionHandler<TrainWith> = {
     const person = requirePerson(state, ctx, action.personId);
     const teaching = teachingOf(state, person);
     if (!teaching) return state;
-    const gains = sessionGains(action.statId);
-    const theirs = personStats(person, state);
-    const teachers = Object.fromEntries(Object.keys(gains).map((id) => [id, theirs[id as StatId]]));
-    const grown = growCharacter(state.character, gains, ctx, {
-      teacher: teaching.factor,
-      teachers,
+    const session = teachSession(state, ctx, teaching, action.statId);
+    const next = adjust(spendTime(session.state, TRAIN_WITH_SLOTS, ctx), {
+      energy: -TRAIN_WITH_ENERGY,
     });
-    const quirk = person.teacher?.quirk;
-    const base = teaching.isSensei ? SENSEI_BOND : TRAIN_WITH_BOND;
-    const bond = Math.max(1, Math.round(base * (quirk ? QUIRK_BOND[quirk] : 1)));
-    // A genin practises alongside you: the session is theirs too.
-    const people = person.rank === 'genin' ? trainPerson(state, ctx, person, gains) : state.people;
-    const trained: GameState = {
-      ...state,
-      character: grown.character,
-      wallet: { ryo: state.wallet.ryo - ryoPerSession(teaching.price) },
-      people: {
-        ...people,
-        taught: withSession(state, person.id),
-        bonds: { ...people.bonds, [person.id]: addPoints(bondOf(state, person.id), bond) },
-      },
-    };
-    const taught = teachSignature(trained, ctx, teaching);
-    const next = adjust(
-      spendTime(taught ? { ...trained, techniques: taught.book } : trained, TRAIN_WITH_SLOTS, ctx),
-      { energy: -TRAIN_WITH_ENERGY },
-    );
-    const logged = report(next, state, { teaching, bond, taught });
-    return logDiscoveries(logged, grown.discovered, ctx);
+    const logged = report(next, state, { ...session, energy: TRAIN_WITH_ENERGY });
+    return logDiscoveries(logged, session.discovered, ctx);
   },
 };

@@ -1,5 +1,6 @@
-import { advance, resolveCheck, SOLO, startRun } from '@/systems/missions';
+import { advance, resolveCheck, SOLO, startRun, type MissionDef } from '@/systems/missions';
 
+import { examClash } from '../awayNotes';
 import { availability, crewFor, takeJob } from '../board';
 
 import { activeMission, activeStage, beginCombat, afterStage, failMission } from '../missionFlow';
@@ -16,9 +17,18 @@ import { enterEncounter } from '../encounter/spotted';
 import { checkHand } from '../missionRoles';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
+import { travel } from '../road';
+import type { GameContext } from '../context';
+import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
 
 const MIN_HEALTH_FOR_MISSION = 0.4;
+
+/** Your sensei's refusal to sign you out for a job that would make you miss your exam. */
+function senseiForbids(state: GameState, ctx: GameContext, def: MissionDef): string | null {
+  const clash = examClash(state, ctx, def);
+  return clash?.blocks ? clash.text : null;
+}
 
 export const startMission: ActionHandler<ActionOf<'startMission'>> = {
   check(state, action, ctx) {
@@ -34,6 +44,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
       on.kind === 'standing' && on.doneToday && 'You’ve done that today. Come back tomorrow.',
       state.character.vitals.energy < def.energyCost && `Needs ${def.energyCost} energy.`,
       healthFraction(state) < MIN_HEALTH_FOR_MISSION && 'You are too injured to take a mission.',
+      senseiForbids(state, ctx, def),
     );
   },
   perform(state, action, ctx) {
@@ -84,6 +95,12 @@ export const missionContinue: ActionHandler<ActionOf<'missionContinue'>> = {
     if (!state.mission || !stage) return afterStage(state, ctx);
     if (stage.kind === 'combat') return beginCombat(state, ctx, rng);
     if (stage.kind === 'encounter') return enterEncounter(state, ctx, rng);
+    if (stage.kind === 'leg') {
+      const travelled = travel(state, ctx, stage.days, stage.text);
+      if (!travelled.mission) return travelled;
+      const mission = advance(travelled.mission, { kind: 'story', text: stage.text });
+      return afterStage({ ...travelled, mission }, ctx);
+    }
     if (stage.kind === 'narrative') {
       const mission = advance(state.mission, { kind: 'story', text: stage.text });
       return afterStage({ ...state, mission }, ctx);

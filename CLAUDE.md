@@ -240,6 +240,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     as their senior record grows. The board, the start action and `validateCrews` all enforce
     them. The run keeps its `crew`; allies, orders, the medic, check roles and bond all read it
     (`game/missionTeam.ts`), never your genin team directly.
+22. **Jobs can keep you away for days.** A `leg` stage is days on the road (`game/road.ts`):
+    each day passes to the next morning through the same `spendTime` as home (hunger,
+    healing, peers and the board catch up), with an evening meal from your pack (ingredients
+    with `road`, sold at the grocer) and a night in camp (`CAMP_HEALTH_SHARE` of a bed's
+    healing). Your sensei, leading your team out, gives the week's lesson by the fire
+    (`lessonAway`). A job's days away (`daysAway`) show on its notice, it must pay at least
+    `MIN_RYO_PER_DAY_AWAY` a day (validated), and your sensei won't sign you out for one that
+    would make you miss an exam they'd nominate you for (`game/awayNotes.ts`).
 
 ### Content packs
 

@@ -67,6 +67,7 @@ export const MARKET_STREET: PlaceDef = {
         'spices',
         'eggs',
         'tofu',
+        'travel-rations',
         'bamboo-shoots',
         'cucumbers',
         'chestnuts',

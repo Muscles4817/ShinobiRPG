@@ -3,10 +3,9 @@ import { useState } from 'react';
 import { headerView, missionBoardView } from '@/game';
 
 import { ExamNotice } from './ExamNotice';
-import { Opposition } from './Opposition';
+import { NoticeSheet } from './NoticeSheet';
 
 import { Banner } from '../../components/Banner';
-import { ThreatChip } from '../../components/ThreatChip';
 import { Icon } from '../../art/Icon';
 import type { PlaceProps } from '../types';
 
@@ -62,52 +61,13 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
         ))}
       </main>
       {open && (
-        <div
-          className="sheet-backdrop"
-          onClick={() => {
+        <NoticeSheet
+          notice={open}
+          perform={perform}
+          onClose={() => {
             setOpenId(null);
           }}
-        >
-          <section
-            className="sheet paper-sheet enter"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            aria-label={open.title}
-          >
-            <span className="rank">{open.rank}</span>
-            <h2>{open.title}</h2>
-            <p className="client">From {open.client}</p>
-            <p className="story dark">{open.summary}</p>
-            <span className="chips">
-              <span className="chip gain">{open.ryo} ryo</span>
-              <span className="chip gain">+{open.reputation} rep</span>
-              <span className="chip cost">−{open.energyCost} energy</span>
-              <span className="chip">{open.slots} slots</span>
-              <span className="chip">{open.posted}</span>
-              {open.opposition ? (
-                <ThreatChip threat={open.opposition.threat} label={open.opposition.label} />
-              ) : (
-                open.fightLikely && <span className="chip harm">Fight likely</span>
-              )}
-              {open.crew && <span className="chip gain">{open.crew.line}</span>}
-            </span>
-            {open.opposition?.handicap && <p className="handicap">{open.opposition.handicap}</p>}
-            {open.opposition && <Opposition opposition={open.opposition} perform={perform} />}
-            {open.blocker && <p className="blocker">{open.blocker}</p>}
-            <button
-              type="button"
-              className="btn wide"
-              disabled={open.blocker !== null}
-              onClick={() => {
-                perform(open.action);
-                setOpenId(null);
-              }}
-            >
-              Accept the job
-            </button>
-          </section>
-        </div>
+        />
       )}
     </>
   );
