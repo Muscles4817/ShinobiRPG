@@ -59,10 +59,26 @@ export interface GameState {
   readonly exams: Exams;
 }
 
-/** What the village remembers of you: the last night you followed a spirit or stood a round. */
+/**
+ * What the village remembers of you: the last night you followed a spirit or stood a round,
+ * what your jobs left behind (world marks, which follow-up jobs and gossip read), moments the
+ * people you went with remember, and the clients you have worked for.
+ */
 export interface VillageMemory {
   readonly lastSightDay: number | null;
   readonly lastRoundDay: number | null;
+  readonly marks: readonly string[];
+  readonly memories: readonly SharedMemory[];
+  /** Jobs done for each client, by the client's name. */
+  readonly clients: Readonly<Record<string, number>>;
+}
+
+/** A moment someone remembers from a job with you. */
+export interface SharedMemory {
+  readonly personId: string;
+  /** As a phrase: "the night below the pass". */
+  readonly text: string;
+  readonly day: number;
 }
 
 /** Player preferences stored with the save. */

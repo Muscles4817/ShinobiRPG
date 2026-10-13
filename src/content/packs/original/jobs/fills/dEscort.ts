@@ -6,6 +6,7 @@ export const D_ESCORT: readonly MissionFill[] = [
     id: 'brides-chest',
     templateId: 'd-short-escort',
     values: {
+      storyKey: 'saburo',
       chargeName: 'Old Saburō',
       likes: 'joke',
       alsoLikes: 'praise',
@@ -58,6 +59,7 @@ export const D_ESCORT: readonly MissionFill[] = [
     templateId: 'd-short-escort',
     minMissionsCompleted: 2,
     values: {
+      storyKey: 'kohaku',
       chargeName: 'Sister Kohaku',
       likes: 'kind',
       alsoLikes: 'earnest',
@@ -108,6 +110,7 @@ export const D_ESCORT: readonly MissionFill[] = [
     templateId: 'd-short-escort',
     minMissionsCompleted: 4,
     values: {
+      storyKey: 'yasuke',
       chargeName: 'Potter Yasuke',
       likes: 'curious',
       alsoLikes: 'praise',
@@ -158,6 +161,7 @@ export const D_ESCORT: readonly MissionFill[] = [
     templateId: 'd-short-escort',
     minMissionsCompleted: 5,
     values: {
+      storyKey: 'akebono',
       chargeName: 'Doctor Akebono',
       likes: 'earnest',
       alsoLikes: 'quiet',
@@ -208,6 +212,7 @@ export const D_ESCORT: readonly MissionFill[] = [
     minMissionsCompleted: 7,
     reward: { ryo: 400, reputation: 5 },
     values: {
+      storyKey: 'tsuru',
       chargeName: 'Master Tsuru',
       likes: 'joke',
       alsoLikes: 'curious',

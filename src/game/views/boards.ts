@@ -3,6 +3,7 @@ import { stageFoes, type MissionDef } from '@/systems/missions';
 import { INTEL_FEE } from '../actions/intel';
 import { awayFor, examClash } from '../awayNotes';
 import { availability, crewFor } from '../board';
+import { asksForYou } from '../clients';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import { missionThreat, traitNotes, type Threat, type TraitNote } from '../scouting';
@@ -43,6 +44,8 @@ export interface Notice extends Choice {
   readonly away: string | null;
   /** An exam it would make you miss, or null. */
   readonly examClash: string | null;
+  /** A client you've worked for before, who asks for you by name. */
+  readonly returning: boolean;
   /** Who the village sends with you; null when you go alone. */
   readonly crew: CrewWords | null;
   /** "Standing job" or how long the posting stays up, e.g. "Gone after tomorrow". */
@@ -124,6 +127,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         fightLikely: m.stages.some((s) => stageFoes(s).length > 0),
         opposition: oppositionOf(state, ctx, m),
         crew: crewOf(state, ctx, m),
+        returning: asksForYou(state, m),
         away: awayFor(m),
         examClash: examClash(state, ctx, m)?.text ?? null,
         standing: on.kind === 'standing',

@@ -48,6 +48,8 @@ export interface PersonSheet extends PersonCard {
   readonly dislikes: readonly string[] | null;
   /** What getting closer will reveal next, if anything. */
   readonly reveal: string | null;
+  /** Moments from jobs together that they remember, newest first. */
+  readonly memories: readonly string[];
 }
 
 export interface BondsView {
@@ -140,6 +142,10 @@ export function personSheet(
     likes: knowsTastes ? tastes((t) => t.likes) : null,
     dislikes: knowsTastes ? tastes((t) => t.dislikes) : null,
     reveal: revealHint(knowsTraits, knowsTastes),
+    memories: state.village.memories
+      .filter((m) => m.personId === person.id)
+      .map((m) => m.text)
+      .reverse(),
   };
 }
 

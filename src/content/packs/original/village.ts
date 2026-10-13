@@ -3,6 +3,32 @@ import type { VillageLife } from '../../types';
 /** Gossip, night sights and festivals of Tōrōgakure. */
 export const VILLAGE: VillageLife = {
   rumours: [
+    // Talk about what you did: it goes round once the village remembers it.
+    {
+      id: 'kohaku-lantern',
+      worldMark: 'kohaku-trusted',
+      text: 'Sister Kohaku is telling everyone at the temple that a young shinobi lit her brother’s lantern at the foot shrine.',
+    },
+    {
+      id: 'kohaku-boy',
+      worldMark: 'kohaku-spared',
+      text: 'A boy from the hill farms has been seen at the academy gate, asking after the shinobi who let his brothers go.',
+    },
+    {
+      id: 'saburo-chest',
+      worldMark: 'saburo-trusted',
+      text: 'Old Saburō sings a new verse at every wedding now, about a young shinobi who carried the bride’s chest the last steps.',
+    },
+    {
+      id: 'yasuke-bowl',
+      worldMark: 'yasuke-trusted',
+      text: 'Potter Yasuke has started on a new blue. He says he owes it to a shinobi who listened.',
+    },
+    {
+      id: 'tsuru-monk',
+      worldMark: 'tsuru-trusted',
+      text: 'The Wandering Moon Puppet Troupe has a new puppet in its show: a young shinobi, very serious, who saves a fox princess.',
+    },
     {
       id: 'cat-again',
       missionId: 'lantern-keepers-cat',

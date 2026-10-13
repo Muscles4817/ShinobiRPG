@@ -11,6 +11,7 @@ import { recordMissionFailure, recordMissionSuccess } from '@/systems/standing';
 import { earn } from '@/systems/wallet';
 
 import type { GameContext } from './context';
+import { workedFor } from './clients';
 import { crewDebrief, debriefLines, gradeOf, helpedOf } from './debrief';
 import { forestCleared, forestLost } from './exam/forest';
 import { chip, log, placeHere } from './ops';
@@ -69,7 +70,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
   const gifts = handedOver(state, ctx, def);
   const ending = endingLine(def, state.mission);
   const next: GameState = {
-    ...withTeamBond(state, teamBond),
+    ...workedFor(withTeamBond(state, teamBond), def.client),
     mission: null,
     wallet: earn(state.wallet, earned.ryo),
     standing,

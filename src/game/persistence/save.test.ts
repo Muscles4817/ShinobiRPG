@@ -230,6 +230,20 @@ describe('persistence', () => {
     expect(loaded.value.mission).toEqual({ ...run, marks: [], threads: {}, ledger: [] });
   });
 
+  it('gives a save from before the village remembered your jobs nothing remembered', () => {
+    const game = newGame();
+    const old = { ...game, village: { lastSightDay: null, lastRoundDay: null } };
+    const loaded = deserialize(JSON.stringify({ version: 29, state: old }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.village).toEqual({
+      lastSightDay: null,
+      lastRoundDay: null,
+      marks: [],
+      memories: [],
+      clients: {},
+    });
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

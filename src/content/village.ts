@@ -16,6 +16,8 @@ export interface RumourDef {
   readonly text: string;
   readonly missionId?: string;
   readonly personId?: string;
+  /** Talk about something you did: goes round only once the village remembers it. */
+  readonly worldMark?: string;
 }
 
 /**

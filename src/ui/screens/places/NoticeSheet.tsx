@@ -24,6 +24,7 @@ function NoticeChips({ notice: n }: { readonly notice: Notice }) {
         n.fightLikely && <span className="chip harm">Fight likely</span>
       )}
       {n.crew && <span className="chip gain">{n.crew.line}</span>}
+      {n.returning && <span className="chip gain">Asks for you by name</span>}
     </span>
   );
 }
