@@ -1,6 +1,6 @@
-import { advance, resolveCheck, startRun } from '@/systems/missions';
+import { advance, resolveCheck, SOLO, startRun } from '@/systems/missions';
 
-import { availability, takeJob } from '../board';
+import { availability, crewFor, takeJob } from '../board';
 
 import { activeMission, activeStage, beginCombat, afterStage, failMission } from '../missionFlow';
 import {
@@ -38,7 +38,9 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
   },
   perform(state, action, ctx) {
     const def = ctx.content.missions.require(action.missionId);
-    const taken = { ...state, board: takeJob(state, ctx, def), mission: startRun(def) };
+    // `check` saw the job on the board, so the village has a crew for it.
+    const crew = crewFor(state, ctx, def) ?? SOLO;
+    const taken = { ...state, board: takeJob(state, ctx, def), mission: startRun(def, crew) };
     const started = adjust(spendTime(taken, def.slots, ctx), {
       energy: -def.energyCost,
     });

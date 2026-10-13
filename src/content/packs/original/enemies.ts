@@ -4,6 +4,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'feral-tanuki',
     kind: 'Beast',
+    danger: 'petty',
     name: 'Feral Tanuki',
     description: 'Fat, furious, and far quicker than it looks.',
     baseStat: 3,
@@ -16,6 +17,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'bandit-thug',
     kind: 'Bandit',
+    danger: 'armed',
     name: 'Bandit Thug',
     description: 'A road-bandit with a club and no patience.',
     baseStat: 5,
@@ -27,6 +29,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'academy-dropout',
     kind: 'Rogue',
+    danger: 'petty',
     name: 'Academy Dropout',
     description: 'Washed out of the academy two years ago and bitter about it.',
     baseStat: 6,
@@ -39,6 +42,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'storehouse-wraith',
     kind: 'Spirit',
+    danger: 'petty',
     name: 'Storehouse Wraith',
     description: 'The cold remnant of a merchant who died counting his rice.',
     baseStat: 6,
@@ -51,6 +55,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'bandit-chief',
     kind: 'Bandit',
+    danger: 'armed',
     name: 'Bandit Chief',
     description: 'Ran away from a ninja academy once. Learned just enough to be dangerous.',
     baseStat: 8,
@@ -62,6 +67,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'hungry-ghost',
     kind: 'Spirit',
+    danger: 'armed',
     name: 'Hungry Ghost',
     description: 'A festival-goer nobody remembered to light a lantern for.',
     baseStat: 7,
@@ -74,6 +80,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'bandit-archer',
     kind: 'Bandit',
+    danger: 'armed',
     name: 'Bandit Archer',
     description: 'Shoots from the treeline and runs the moment anyone gets close.',
     baseStat: 5,

@@ -44,7 +44,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
             }}
           >
             <span className="rank">{n.rank}</span>
-            {n.withTeam && <span className="team-stamp">班 Team</span>}
+            {n.crew && <span className="team-stamp">班 {n.crew.youLead ? 'Lead' : 'Team'}</span>}
             <b>
               {n.title}
               {n.fightLikely && (
@@ -90,8 +90,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
               ) : (
                 open.fightLikely && <span className="chip harm">Fight likely</span>
               )}
-              {open.withTeam && <span className="chip gain">With your team</span>}
-              {open.sensei && <span className="chip gain">{open.sensei} leads it</span>}
+              {open.crew && <span className="chip gain">{open.crew.line}</span>}
             </span>
             {open.opposition?.handicap && <p className="handicap">{open.opposition.handicap}</p>}
             {open.opposition && <Opposition opposition={open.opposition} perform={perform} />}

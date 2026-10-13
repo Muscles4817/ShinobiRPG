@@ -67,12 +67,12 @@ function newlyUnlocked(state: GameState, ctx: GameContext, completed: number): s
 export function afterStage(state: GameState, ctx: GameContext): GameState {
   const def = activeMission(state, ctx);
   if (!def || !state.mission) return state;
-  if (currentStage(def, state.mission)) return tendWounds(state, ctx, def);
+  if (currentStage(def, state.mission)) return tendWounds(state, ctx);
   if (def.examOnly) return forestCleared(state, ctx);
   const earned = reward(def, state.mission);
   const senior = isSeniorMission(def.rank);
   const standing = recordMissionSuccess(state.standing, earned.reputation, senior);
-  const teamBond = def.withTeam ? TEAM_MISSION_BOND : 0;
+  const teamBond = state.mission.crew.memberIds.length > 0 ? TEAM_MISSION_BOND : 0;
   const gifts = handedOver(state, ctx, def);
   const ending = endingLine(def, state.mission);
   const next: GameState = {
@@ -117,9 +117,9 @@ function endingLine(def: MissionDef, run: MissionRun): string | undefined {
   return run.notes.findLast((n) => n.kind === 'story')?.text;
 }
 
-/** Adds bond with every teammate. */
+/** Adds bond with everyone who went with you (not whoever led). */
 function withTeamBond(state: GameState, points: number): GameState {
-  const ids = state.people.team?.teammateIds ?? [];
+  const ids = state.mission?.crew.memberIds ?? [];
   if (points === 0 || ids.length === 0) return state;
   const raised = Object.fromEntries(ids.map((id) => [id, addPoints(bondOf(state, id), points)]));
   return { ...state, people: { ...state.people, bonds: { ...state.people.bonds, ...raised } } };
@@ -198,7 +198,7 @@ export function beginCombat(
     ctx,
     {
       player: playerCombatant(state, ctx),
-      allies: teamAllies(state, ctx, activeMission(state, ctx)),
+      allies: teamAllies(state, ctx),
       enemies,
       canFlee: stage.canFlee,
       ...(start.opening ? { opening: start.opening } : {}),

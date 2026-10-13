@@ -1,8 +1,5 @@
 export {
   CHECK_FAILURE_PENALTY,
-  RANK_FOR_MISSION,
-  isSeniorMission,
-  rankForMission,
   MISSION_ROLES,
   startRun,
   currentStage,
@@ -11,7 +8,6 @@ export {
   reward,
   stageFoes,
   withStagePay,
-  type MissionRank,
   type MissionRole,
   type CheckApproach,
   type MissionStage,
@@ -51,3 +47,27 @@ export {
   type ReconOption,
 } from './encounter';
 export { stagePay, type EncounterEnd, type StagePay } from './encounterPay';
+export { isSeniorMission, type MissionRank } from './missionRank';
+export {
+  CHUNIN_C_CREWS,
+  CREW_KINDS,
+  DANGERS,
+  JONIN_D_POST_SHARE,
+  JONIN_EXPERIENCED_RECORD,
+  MAX_SOLO_A_SHARE,
+  SOLO,
+  canGoWithCrew,
+  crewOptions,
+  dangerAtLeast,
+  lowestRankFor,
+  pickCrewKind,
+  postingShare,
+  soloAShare,
+  worstDanger,
+  type Assignee,
+  type Crew,
+  type CrewKind,
+  type CrewOption,
+  type Danger,
+  type JobProfile,
+} from './crew';

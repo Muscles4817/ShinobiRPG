@@ -13,7 +13,6 @@ import type { MissionDef, MissionStage } from '@/systems/missions';
 export interface MissionTemplate {
   readonly id: string;
   readonly rank: MissionDef['rank'];
-  readonly withTeam?: boolean;
   readonly slots: number;
   readonly energyCost: number;
   readonly reward: { readonly ryo: number; readonly reputation: number };
@@ -80,7 +79,6 @@ export function missionFromFill(template: MissionTemplate, fill: MissionFill): M
     energyCost: template.energyCost,
     reward: fill.reward ?? template.reward,
     minMissionsCompleted: fill.minMissionsCompleted ?? template.minMissionsCompleted,
-    ...(template.withTeam ? { withTeam: true } : {}),
     stages: template.stages.map((s) => fillDeep(s, values)),
   };
 }

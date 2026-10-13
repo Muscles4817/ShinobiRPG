@@ -1,7 +1,8 @@
 import type { ExamDef, ExamStageDef, MindStageDef, TournamentStageDef } from '@/systems/exams';
-import { rankForMission, type MissionDef } from '@/systems/missions';
+import { lowestRankFor, type MissionDef } from '@/systems/missions';
 import { DAYS_PER_SEASON, SEASONS } from '@/systems/time';
 
+import { jobProfile } from './jobProfile';
 import type { ContentPack } from './types';
 
 /**
@@ -17,7 +18,10 @@ export function validateExams(pack: ContentPack): string[] {
       e.stages.flatMap((s) => (s.kind === 'survival' ? [s.missionId] : [])),
     ),
   );
-  const chuninJobs = pack.missions.some((m) => !m.examOnly && rankForMission(m) === 'chunin');
+  const enemies = new Map(pack.enemies.map((e) => [e.id, e]));
+  const chuninJobs = pack.missions.some(
+    (m) => !m.examOnly && lowestRankFor(jobProfile(m, (id) => enemies.get(id))) === 'chunin',
+  );
   return [
     ...(pack.exams.length > 0 ? [] : ['pack needs a chūnin exam']),
     ...(chuninJobs ? [] : ['pack needs jobs for chūnin (B- or A-rank)']),
@@ -50,9 +54,9 @@ function stageProblems(stage: ExamStageDef, missions: ReadonlyMap<string, Missio
     case 'survival': {
       const mission = missions.get(stage.missionId);
       if (!mission) return [`survival references unknown mission "${stage.missionId}"`];
-      return mission.examOnly && mission.withTeam
+      return mission.examOnly
         ? []
-        : [`survival mission "${stage.missionId}" must be an exam-only team mission`];
+        : [`survival mission "${stage.missionId}" must be an exam-only mission`];
     }
     case 'tournament':
       return tournamentProblems(stage);

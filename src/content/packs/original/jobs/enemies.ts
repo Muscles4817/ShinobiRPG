@@ -10,6 +10,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     // Feral Tanuki's numbers.
     id: 'reikon-macaque',
     kind: 'Beast',
+    danger: 'petty',
     name: 'Reikon Macaque',
     description: 'A grey mountain monkey with clever hands, a red face and no shame at all.',
     baseStat: 3,
@@ -23,6 +24,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     // Ash Wood Boar's numbers.
     id: 'ash-fell-bear',
     kind: 'Beast',
+    danger: 'armed',
     name: 'Ash Fell Bear',
     description: 'A black bear grown huge on charcoal-burners’ scraps, grey with ash to the eyes.',
     baseStat: 6,
@@ -36,6 +38,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     // Bandit Thug's numbers.
     id: 'river-pirate',
     kind: 'Bandit',
+    danger: 'armed',
     name: 'River Pirate',
     description: 'A boat-hook, a stolen skiff and a habit of cutting other people’s nets.',
     baseStat: 5,
@@ -48,6 +51,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     // Storehouse Wraith's numbers.
     id: 'canal-drowned',
     kind: 'Spirit',
+    danger: 'petty',
     name: 'Canal Drowned',
     description: 'Someone the canal took, still reaching up for the lanterns floating overhead.',
     baseStat: 6,
@@ -61,6 +65,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     // Ember Missing-nin's numbers.
     id: 'kurogane-renegade',
     kind: 'Rogue',
+    danger: 'deadly',
     name: 'Kurogane Renegade',
     description: 'A clan swordsman who sold his blade and his name. He kept the clan’s footwork.',
     baseStat: 11,
@@ -74,6 +79,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     // Kiln Wraith's numbers.
     id: 'reikon-shade',
     kind: 'Spirit',
+    danger: 'deadly',
     name: 'Reikon Shade',
     description: 'A pilgrim who died on the mountain path and forgot which way was home.',
     baseStat: 11,

@@ -1,4 +1,5 @@
 import { v17ToV18 } from './aptitudeMigration';
+import { v27ToV28 } from './crewMigration';
 import { v23ToV24 } from './examMigration';
 import { v24ToV25 } from './standingMigration';
 import { v21ToV22 } from './gearMigration';
@@ -298,4 +299,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   24: v24ToV25,
   25: v25ToV26,
   26: v26ToV27,
+  27: v27ToV28,
 };

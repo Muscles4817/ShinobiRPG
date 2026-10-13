@@ -40,7 +40,7 @@ describe('the chūnin ceremony', () => {
     expect(scene?.gear).toBe('Flak Vest');
     const opens = Object.fromEntries((scene?.unlocks ?? []).map((u) => [u.heading, u.items]));
     expect(opens['The library']).toEqual(['The Lantern Archive: the restricted stacks']);
-    expect(opens['Jobs on the board']).toContain('B-rank: Smugglers at the Weir, alone');
+    expect(opens['Jobs on the board']).toContain('B-rank: Smugglers at the Weir');
     expect(opens['Gear the shops will sell you']).toContain('B-rank Flak Vest');
   });
 

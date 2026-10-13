@@ -92,6 +92,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'rival-genin-blade',
     kind: 'Genin',
+    danger: 'armed',
     name: 'Ashfield Blade',
     description: 'A quick genin from a farming village, with a short sword and a long grudge.',
     baseStat: 7,
@@ -103,6 +104,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'rival-genin-thrower',
     kind: 'Genin',
+    danger: 'armed',
     name: 'Ashfield Thrower',
     description: 'Keeps to the branches and throws everything she carries.',
     baseStat: 7,
@@ -114,6 +116,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'rival-genin-weaver',
     kind: 'Genin',
+    danger: 'armed',
     name: 'Ashfield Weaver',
     description: 'Hangs back and fills the clearing with moths that aren’t there.',
     baseStat: 7,
@@ -125,6 +128,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'ash-wood-boar',
     kind: 'Beast',
+    danger: 'armed',
     name: 'Ash Wood Boar',
     description: 'Old, scarred and bigger than a cart. It has eaten exam tokens before.',
     baseStat: 6,
@@ -148,7 +152,6 @@ export const EXAM_MISSIONS: readonly MissionDef[] = [
     energyCost: 30,
     reward: { ryo: 0, reputation: 0 },
     minMissionsCompleted: 0,
-    withTeam: true,
     examOnly: true,
     stages: [
       {

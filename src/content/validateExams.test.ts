@@ -45,7 +45,7 @@ describe('exam validation', () => {
     const problems = validateExams(withExam({ stages }));
     expect(problems).toContain('exam "lantern-trials" has a pass mark nobody can reach');
     expect(problems).toContain(
-      'exam "lantern-trials" survival mission "lantern-patrol" must be an exam-only team mission',
+      'exam "lantern-trials" survival mission "lantern-patrol" must be an exam-only mission',
     );
     expect(problems).toContain('exam "lantern-trials" has rivals who get weaker round by round');
     expect(problems).toContain('exam-only mission "exam-ash-wood" is not run by any exam');

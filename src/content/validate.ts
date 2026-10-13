@@ -1,4 +1,5 @@
 import { costIsSane, effectProblem } from '@/systems/techniques';
+import { canGoWithCrew } from '@/systems/missions';
 
 import { duplicateIds } from './catalog';
 import { validateGear } from './validateGear';
@@ -13,6 +14,8 @@ import { validateSources } from './validateSources';
 import { validateTeachers } from './validateTeachers';
 import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
+import { validateCrews } from './validateCrews';
+import { jobProfile } from './jobProfile';
 import { placeholdersIn } from './missionTemplates';
 import type { ContentPack, Identified } from './types';
 
@@ -26,6 +29,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...uniqueIdProblems(pack),
     ...techniqueReferenceProblems(pack),
     ...missionProblems(pack),
+    ...validateCrews(pack),
     ...placeholderProblems(pack),
     ...numberProblems(pack),
     ...validateWorld(pack),
@@ -137,17 +141,19 @@ function techniqueReferenceProblems(pack: ContentPack): string[] {
 
 function missionProblems(pack: ContentPack): string[] {
   const enemyIds = new Set(pack.enemies.map((e) => e.id));
+  const enemies = new Map(pack.enemies.map((e) => [e.id, e]));
   const always = pack.missions.some((m) => m.standing && m.minMissionsCompleted === 0);
   const board = always ? [] : ['pack needs a standing job a fresh genin can always take'];
   return pack.missions
     .flatMap((m) => {
       const problems = m.stages.length === 0 ? [`mission "${m.id}" has no stages`] : [];
+      const teamable = m.examOnly === true || canGoWithCrew(jobProfile(m, (id) => enemies.get(id)));
       for (const stage of m.stages) {
         if (stage.kind === 'check' && stage.approaches.length === 0) {
           problems.push(`mission "${m.id}" has a check with no approaches`);
         }
-        if (stage.kind === 'check' && !m.withTeam && stage.approaches.some((a) => a.role)) {
-          problems.push(`mission "${m.id}" gives a check a team role but goes without the team`);
+        if (stage.kind === 'check' && !teamable && stage.approaches.some((a) => a.role)) {
+          problems.push(`mission "${m.id}" gives a check a team role but always goes alone`);
         }
         if (stage.kind === 'combat' && stage.enemyIds.length === 0) {
           problems.push(`mission "${m.id}" has a combat with no enemies`);

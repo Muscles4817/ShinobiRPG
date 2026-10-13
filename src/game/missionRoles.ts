@@ -2,16 +2,15 @@ import type { CheckApproach } from '@/systems/missions';
 import type { StatId } from '@/systems/stats';
 
 import type { GameContext } from './context';
-import { fieldTeamIds } from './exam/fieldTeam';
-import { activeMission } from './missionFlow';
+import { crewOf } from './crew';
 import { requirePerson } from './people/cast';
 import { personStats } from './people/progress';
 import { ordersFor } from './people/teamOrders';
 import type { GameState } from './state';
 
 /**
- * Mission roles: on a team mission, a check falls to whoever on the team is best at it (the
- * tracker follows the trail, the sensor feels for chakra). Alone, it is always you. Sneaking,
+ * Mission roles: with a crew, a check falls to whoever in it is best at it (the tracker
+ * follows the trail, the sensor feels for chakra). Alone, it is always you. Sneaking,
  * the team moves only as quietly as its slowest member who won't hang back when you ask.
  */
 
@@ -25,8 +24,7 @@ export interface Hand {
 
 export function bestHandFor(state: GameState, ctx: GameContext, stat: StatId): Hand {
   const you: Hand = { personId: null, name: 'You', value: state.character.stats[stat] };
-  if (!activeMission(state, ctx)?.withTeam) return you;
-  return fieldTeamIds(state).reduce<Hand>((best, id) => {
+  return crewOf(state).memberIds.reduce<Hand>((best, id) => {
     const person = requirePerson(state, ctx, id);
     const value = personStats(person, state)[stat];
     return value > best.value ? { personId: id, name: person.name, value } : best;
@@ -44,8 +42,7 @@ export function checkHand(state: GameState, ctx: GameContext, approach: CheckApp
  * orders (those who do hang back when told). Null when nobody holds you back.
  */
 export function slowestAlong(state: GameState, ctx: GameContext): Hand | null {
-  if (!activeMission(state, ctx)?.withTeam) return null;
-  return fieldTeamIds(state).reduce<Hand | null>((slowest, id) => {
+  return crewOf(state).memberIds.reduce<Hand | null>((slowest, id) => {
     const person = requirePerson(state, ctx, id);
     if (!ordersFor(state, person).stanceLocked) return slowest;
     const value = personStats(person, state).speed;

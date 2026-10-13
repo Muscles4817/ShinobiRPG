@@ -1,8 +1,9 @@
 import type { Rng } from '@/core';
-import type { Rank } from '@/systems/standing';
 import { rollCheck, type StatId, type Stats } from '@/systems/stats';
 
+import type { Crew } from './crew';
 import type { EncounterRun, EncounterStage } from './encounter';
+import type { MissionRank } from './missionRank';
 import type { StagePay } from './encounterPay';
 
 /**
@@ -11,29 +12,7 @@ import type { StagePay } from './encounterPay';
  * a combat stage just names enemies, and the game layer reports back win/lose. An encounter
  * stage (`encounter.ts`) puts recon and a choice of approach before any fight.
  */
-export type MissionRank = 'D' | 'C' | 'B' | 'A' | 'S';
 
-/** The shinobi rank each rank of job is given to: B and A to chūnin, S to jōnin. */
-export const RANK_FOR_MISSION: Readonly<Record<MissionRank, Rank>> = {
-  D: 'genin',
-  C: 'genin',
-  B: 'chunin',
-  A: 'chunin',
-  S: 'jonin',
-};
-
-/**
- * The rank a job is given to. Team jobs go out under the sensei, so a genin team takes them at
- * any rank; a job done alone goes by its rank (`RANK_FOR_MISSION`).
- */
-export function rankForMission(def: Pick<MissionDef, 'rank' | 'withTeam'>): Rank {
-  return def.withTeam === true ? 'genin' : RANK_FOR_MISSION[def.rank];
-}
-
-/** B-rank and harder jobs: the record a jōnin nomination reads. */
-export function isSeniorMission(rank: MissionRank): boolean {
-  return rank !== 'D' && rank !== 'C';
-}
 /**
  * Jobs on a team mission that fall to whoever on the team is best at them: the tracker follows
  * a trail, the sensor feels for chakra, the medic patches people up.
@@ -88,8 +67,6 @@ export interface MissionDef {
     readonly gearId?: string;
   };
   readonly minMissionsCompleted: number;
-  /** Your teammates come along and fight beside you. */
-  readonly withTeam?: boolean;
   /** Always on the board (patrols, watches); otherwise jobs are posted for a few days at a time. */
   readonly standing?: boolean;
   /** Never posted: an exam stage runs it (the survival forest). */
@@ -111,6 +88,8 @@ export type MissionNote =
 
 export interface MissionRun {
   readonly missionId: string;
+  /** Who went with you; set when the job is taken. */
+  readonly crew: Crew;
   readonly stageIndex: number;
   /** Starts at 1; each penalised check reduces it. */
   readonly rewardMultiplier: number;
@@ -124,8 +103,8 @@ export interface MissionRun {
 
 export const CHECK_FAILURE_PENALTY = 0.25;
 
-export function startRun(def: MissionDef): MissionRun {
-  return { missionId: def.id, stageIndex: 0, rewardMultiplier: 1, notes: [] };
+export function startRun(def: MissionDef, crew: Crew): MissionRun {
+  return { missionId: def.id, crew, stageIndex: 0, rewardMultiplier: 1, notes: [] };
 }
 
 /** The stage awaiting the player, or undefined when every stage is done. */
@@ -137,6 +116,7 @@ export function currentStage(def: MissionDef, run: MissionRun): MissionStage | u
 export function advance(run: MissionRun, ...notes: MissionNote[]): MissionRun {
   return {
     missionId: run.missionId,
+    crew: run.crew,
     stageIndex: run.stageIndex + 1,
     rewardMultiplier: run.rewardMultiplier,
     notes: [...run.notes, ...notes],

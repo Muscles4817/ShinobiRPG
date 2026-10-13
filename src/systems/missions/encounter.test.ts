@@ -9,6 +9,7 @@ import {
   type EncounterStage,
   type EncounterTemplate,
 } from './encounter';
+import { SOLO } from './crew';
 import { stagePay } from './encounterPay';
 import { advance, reward, startRun, withStagePay, type MissionDef } from './missions';
 
@@ -117,12 +118,12 @@ describe('encounter pay on the mission', () => {
   };
 
   it('a surrender pays less ryo and more reputation', () => {
-    const run = withStagePay(advance(startRun(def)), stagePay('eliminate', 'talked-down'));
+    const run = withStagePay(advance(startRun(def, SOLO)), stagePay('eliminate', 'talked-down'));
     expect(reward(def, run)).toEqual({ ryo: 60, reputation: 15 });
   });
 
   it('moving on leaves the encounter behind but keeps the pay', () => {
-    const met = { ...startRun(def), encounter: startEncounter(camp, [], 0) };
+    const met = { ...startRun(def, SOLO), encounter: startEncounter(camp, [], 0) };
     const paid = withStagePay(met, stagePay('patrol', 'slipped-past'));
     const next = advance(paid);
     expect(next.encounter).toBeUndefined();

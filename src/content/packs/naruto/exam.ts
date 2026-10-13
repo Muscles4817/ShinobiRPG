@@ -92,6 +92,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'rain-genin-blade',
     kind: 'Genin',
+    danger: 'armed',
     name: 'Rain Genin',
     description: 'Wears a rebreather and carries an umbrella with a blade in the handle.',
     baseStat: 7,
@@ -103,6 +104,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'grass-genin-thrower',
     kind: 'Genin',
+    danger: 'armed',
     name: 'Grass Genin',
     description: 'Throws from the treetops and is gone before the kunai land.',
     baseStat: 7,
@@ -114,6 +116,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'rain-genin-illusionist',
     kind: 'Genin',
+    danger: 'armed',
     name: 'Rain Illusionist',
     description: 'Makes the forest look emptier than it is.',
     baseStat: 7,
@@ -125,6 +128,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'forest-tiger',
     kind: 'Beast',
+    danger: 'armed',
     name: 'Forest Tiger',
     description: 'Training Ground 44 grows its animals big. This one has eaten genin before.',
     baseStat: 6,
@@ -148,7 +152,6 @@ export const EXAM_MISSIONS: readonly MissionDef[] = [
     energyCost: 30,
     reward: { ryo: 0, reputation: 0 },
     minMissionsCompleted: 0,
-    withTeam: true,
     examOnly: true,
     stages: [
       {

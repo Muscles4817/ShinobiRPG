@@ -46,9 +46,9 @@ export function classmateIds(state: GameState): string[] {
   return [...authored, ...state.people.generated.map((p) => p.id)];
 }
 
-/** The foes a genin meets alone on D-rank jobs. */
+/** The foes a genin meets on D-rank jobs (alone or, for armed ones, with their team). */
 export function dRankFoeIds(): string[] {
-  const jobs = ctx.content.missions.all.filter((m) => m.rank === 'D' && !m.withTeam);
+  const jobs = ctx.content.missions.all.filter((m) => m.rank === 'D');
   return [...new Set(jobs.flatMap((m) => m.stages.flatMap(stageFoes)))];
 }
 

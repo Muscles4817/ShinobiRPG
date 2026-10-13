@@ -12,7 +12,6 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     energyCost: 30,
     reward: { ryo: 280, reputation: 7, scrollId: 'riverbank-draw', gearId: 'ashen-needles' },
     minMissionsCompleted: 2,
-    withTeam: true,
     stages: [
       {
         kind: 'narrative',
@@ -50,7 +49,6 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     energyCost: 30,
     reward: { ryo: 320, reputation: 8, scrollId: 'kindled-pulse', gearId: 'hungry-lantern' },
     minMissionsCompleted: 4,
-    withTeam: true,
     stages: [
       {
         kind: 'narrative',
@@ -95,7 +93,6 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     energyCost: 30,
     reward: { ryo: 360, reputation: 9, scrollId: 'old-lamp-dawn', gearId: 'inkwell-blade' },
     minMissionsCompleted: 6,
-    withTeam: true,
     stages: [
       {
         kind: 'narrative',

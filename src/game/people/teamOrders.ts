@@ -46,8 +46,16 @@ export function leadsTeam(state: GameState): boolean {
 
 /** What you may change about this teammate in a fight, and why not when you can't. */
 export function ordersFor(state: GameState, person: PersonDef): CombatOrders {
+  return bondOrders(state, person, leadsTeam(state));
+}
+
+/** What a fellow shinobi you lead lets you change in a fight: as far as your bond goes. */
+export function peerOrders(state: GameState, person: PersonDef): CombatOrders {
+  return bondOrders(state, person, false);
+}
+
+function bondOrders(state: GameState, person: PersonDef, leader: boolean): CombatOrders {
   const stage = stageWith(state, person.id);
-  const leader = leadsTeam(state);
   const cards = leader || stage >= CARD_ORDERS_STAGE;
   const stance = cards || stage >= STANCE_ORDERS_STAGE;
   return {

@@ -1,15 +1,18 @@
 import { hashUnit } from '@/core';
-import { rankForMission, type MissionDef } from '@/systems/missions';
-import { rankAtLeast, type Standing } from '@/systems/standing';
+import { crewOptions, postingShare, type Crew, type MissionDef } from '@/systems/missions';
+import type { Standing } from '@/systems/standing';
 
 import type { GameContext } from './context';
 import type { Board, Posting } from './boardState';
+import { assigneeOf, crewOn, jobOf } from './crew';
 import type { GameState } from './state';
 
 /**
  * The jobs board. Standing jobs (patrols, watches) are always there, once a day. Everything
  * else is posted for a few days and then gone, and only jobs you are trusted with are posted
- * at all: your record must reach a job's mark, and your rank its rank (a B-rank job done alone goes to chūnin).
+ * at all: your record must reach a job's mark, and the village must be willing to send someone
+ * of your rank on it, with some crew (`systems/missions/crew.ts`). Each posting's crew is
+ * decided by the day it went up (`crew.ts`).
  * Exam-only missions are never posted. Which jobs go up is a hash of the save's seed and the day: varied per save,
  * reproducible, and computable at any time without consuming the game's dice.
  */
@@ -22,12 +25,17 @@ const MAX_DAYS_UP = 4;
 /** After a long absence, only the last few weeks of postings matter. */
 const MAX_CATCH_UP_DAYS = 28;
 
-function trusted(def: MissionDef, standing: Standing): boolean {
+function trusted(def: MissionDef, standing: Standing, ctx: GameContext): boolean {
   return (
     def.examOnly !== true &&
     def.minMissionsCompleted <= standing.missionsCompleted &&
-    rankAtLeast(standing.rank, rankForMission(def))
+    crewOptions(jobOf(ctx, def), assigneeOf(standing)).length > 0
   );
+}
+
+/** The chance a job goes up on a given day: jōnin are seldom offered chores. */
+function postChance(def: MissionDef, standing: Standing, ctx: GameContext): number {
+  return DAILY_POST_CHANCE * postingShare(jobOf(ctx, def), assigneeOf(standing));
 }
 
 function postingFor(board: Board, def: MissionDef, day: number): Posting {
@@ -45,19 +53,14 @@ function byHash(missions: readonly MissionDef[], key: (m: MissionDef) => number)
 }
 
 /** Postings for one new day: expired ones come down, new ones go up. */
-function postDay(
-  board: Board,
-  day: number,
-  missions: readonly MissionDef[],
-  standing: Standing,
-): Board {
+function postDay(board: Board, day: number, ctx: GameContext, standing: Standing): Board {
   const kept = board.postings.filter((p) => p.expiresDay >= day);
-  const candidates = missions.filter(
-    (m) => !m.standing && trusted(m, standing) && !kept.some((p) => p.missionId === m.id),
+  const candidates = ctx.content.missions.all.filter(
+    (m) => !m.standing && trusted(m, standing, ctx) && !kept.some((p) => p.missionId === m.id),
   );
   // Shuffled by the hash, so the cap on postings favours no job for where it sits in the pack.
   const fresh = byHash(
-    candidates.filter((m) => hashUnit(board.seed, day, m.id) < DAILY_POST_CHANCE),
+    candidates.filter((m) => hashUnit(board.seed, day, m.id) < postChance(m, standing, ctx)),
     (m) => hashUnit(board.seed, day, m.id, 'order'),
   );
   const fillers = byHash(
@@ -80,7 +83,7 @@ export function boardFor(state: GameState, ctx: GameContext): Board {
   }
   const from = Math.max(state.board.refreshedDay + 1, today - MAX_CATCH_UP_DAYS);
   let board = state.board;
-  for (let day = from; day <= today; day++) board = postDay(board, day, missions, state.standing);
+  for (let day = from; day <= today; day++) board = postDay(board, day, ctx, state.standing);
   caughtUp.set(state.board, { day: today, standing: state.standing, missions, board });
   return board;
 }
@@ -105,9 +108,22 @@ export type Availability =
   | { readonly kind: 'posted'; readonly daysLeft: number; readonly isNew: boolean }
   | { readonly kind: 'absent' };
 
+/** The day a job's posting went up (today for a standing job), or null when it isn't up. */
+function postedDay(state: GameState, ctx: GameContext, def: MissionDef): number | null {
+  if (def.standing) return state.time.day;
+  return boardFor(state, ctx).postings.find((p) => p.missionId === def.id)?.postedDay ?? null;
+}
+
+/** Who goes with you on a job on the board today; null when it isn't yours to take. */
+export function crewFor(state: GameState, ctx: GameContext, def: MissionDef): Crew | null {
+  if (!trusted(def, state.standing, ctx)) return null;
+  const day = postedDay(state, ctx, def);
+  return day === null ? null : crewOn(state, ctx, def, day);
+}
+
 /** Whether a job is on the board today, and how. */
 export function availability(state: GameState, ctx: GameContext, def: MissionDef): Availability {
-  if (!trusted(def, state.standing)) return { kind: 'absent' };
+  if (!crewFor(state, ctx, def)) return { kind: 'absent' };
   const board = boardFor(state, ctx);
   if (def.standing) {
     return { kind: 'standing', doneToday: board.lastTaken[def.id] === state.time.day };
@@ -133,6 +149,6 @@ export function takeJob(state: GameState, ctx: GameContext, def: MissionDef): Bo
 /** Jobs that will go up tomorrow (if nothing changes before then), for the village gossip. */
 export function newPostingsTomorrow(state: GameState, ctx: GameContext): string[] {
   const tomorrow = state.time.day + 1;
-  const next = postDay(boardFor(state, ctx), tomorrow, ctx.content.missions.all, state.standing);
+  const next = postDay(boardFor(state, ctx), tomorrow, ctx, state.standing);
   return next.postings.filter((p) => p.postedDay === tomorrow).map((p) => p.missionId);
 }
