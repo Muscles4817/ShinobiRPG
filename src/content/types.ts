@@ -1,5 +1,11 @@
 import type { CombatTrait } from '@/systems/combat';
-import type { Danger, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
+import type {
+  ArcDef,
+  Danger,
+  EncounterTemplate,
+  MissionDef,
+  RoadEventDef,
+} from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta, StatId } from '@/systems/stats';
 import type { ExamDef } from '@/systems/exams';
@@ -269,6 +275,8 @@ export interface ContentPack {
   readonly encounters: readonly EncounterTemplate[];
   /** Things that may happen on a stretch of road, by region. */
   readonly roadEvents: readonly RoadEventDef[];
+  /** Long stories: chains of jobs in acts. */
+  readonly arcs: readonly ArcDef[];
   /** What crew say on a job, by moment and trait. */
   readonly voices: readonly VoiceDef[];
   readonly enemies: readonly EnemyDef[];

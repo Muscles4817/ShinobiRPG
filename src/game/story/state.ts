@@ -13,7 +13,12 @@ import {
  */
 
 export function storyOf(run: MissionRun): StoryState {
-  return { marks: run.marks, threads: run.threads, crew: run.crew };
+  return {
+    marks: run.marks,
+    threads: run.threads,
+    crew: run.crew,
+    remembered: run.remembered ?? [],
+  };
 }
 
 /** The run moved past every stage ahead of it that doesn't apply. */

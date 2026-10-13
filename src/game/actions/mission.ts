@@ -73,7 +73,11 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
     const twist = def.twists ? pickTwist(def, rng.next()) : null;
     const begun = startRun(def, crew, twist ? [twist] : []);
     const known = welcomeBack(state, def, begun);
-    const run = settle(def, { ...known, bondsAtStart: bondsNow(state, crew.memberIds) });
+    const run = settle(def, {
+      ...known,
+      bondsAtStart: bondsNow(state, crew.memberIds),
+      remembered: state.village.marks,
+    });
     const taken = { ...state, board: takeJob(state, ctx, def), mission: run };
     const started = adjust(spendTime(taken, def.slots, ctx), {
       energy: -def.energyCost,

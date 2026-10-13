@@ -171,7 +171,16 @@ function worldProblems(pack: ContentPack): string[] {
       .flatMap((m) => m.stages.flatMap(effectsOf))
       .flatMap((e) => (e.kind === 'world' ? [e.mark] : [])),
   );
+  const remembered = pack.missions.flatMap((m) =>
+    m.stages
+      .flatMap(conditions)
+      .flatMap((c) => conditionRefs(c).world)
+      .map((mark) => [m.id, mark] as const),
+  );
   return [
+    ...remembered
+      .filter(([, mark]) => !left.has(mark))
+      .map(([id, mark]) => `mission "${id}" remembers "${mark}", which no job leaves behind`),
     ...pack.missions
       .filter((m) => m.needsWorldMark !== undefined && !left.has(m.needsWorldMark))
       .map(
@@ -181,6 +190,31 @@ function worldProblems(pack: ContentPack): string[] {
     ...pack.village.rumours
       .filter((r) => r.worldMark !== undefined && !left.has(r.worldMark))
       .map((r) => `rumour "${r.id}" waits for "${r.worldMark ?? ''}", which no job leaves behind`),
+  ];
+}
+
+/** Every arc's acts have jobs that exist, and no job belongs to two arcs. */
+function arcProblems(pack: ContentPack): string[] {
+  const ids = new Set(pack.missions.map((m) => m.id));
+  const jobs = pack.arcs.flatMap((a) =>
+    a.acts.flatMap((act) => act.jobs.map((id) => [a.id, id] as const)),
+  );
+  const seen = new Map<string, number>();
+  jobs.forEach(([, id]) => seen.set(id, (seen.get(id) ?? 0) + 1));
+  return [
+    ...pack.arcs
+      .filter(
+        (a) =>
+          a.acts.length === 0 ||
+          a.acts.some((act) => act.jobs.length === 0 || act.beats.length === 0),
+      )
+      .map((a) => `arc "${a.id}" has an act with no jobs or no place in the story circle`),
+    ...jobs
+      .filter(([, id]) => !ids.has(id))
+      .map(([arc, id]) => `arc "${arc}" names unknown mission "${id}"`),
+    ...[...seen]
+      .filter(([, n]) => n > 1)
+      .map(([id]) => `mission "${id}" belongs to more than one arc`),
   ];
 }
 
@@ -195,5 +229,6 @@ export function validateStory(pack: ContentPack): string[] {
     ...eventProblems(pack),
     ...voiceProblems(pack),
     ...worldProblems(pack),
+    ...arcProblems(pack),
   ];
 }

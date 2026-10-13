@@ -163,6 +163,8 @@ export interface MissionRun {
   readonly roadEvent?: string;
   /** Bond with each crew member when the job began, so the debrief can say how it grew. */
   readonly bondsAtStart?: Readonly<Record<string, number>>;
+  /** What the village remembered when the job began (world marks), for `remembers`. */
+  readonly remembered?: readonly string[];
 }
 
 export function startRun(def: MissionDef, crew: Crew, marks: readonly string[] = []): MissionRun {

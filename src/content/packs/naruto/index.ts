@@ -70,6 +70,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
   roadEvents: ROAD_EVENTS,
+  arcs: [],
   voices: VOICES,
   enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...EXAM_ENEMIES],
   training: TRAINING,

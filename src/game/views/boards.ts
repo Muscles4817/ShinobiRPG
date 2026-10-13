@@ -2,12 +2,13 @@ import { stageFoes, type MissionDef } from '@/systems/missions';
 
 import { INTEL_FEE } from '../actions/intel';
 import { awayFor, examClash } from '../awayNotes';
-import { availability, crewFor } from '../board';
+import { availability, crewFor, type Availability } from '../board';
 import { asksForYou } from '../clients';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import { missionThreat, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
+import { arcsView, type ArcView } from './arcs';
 import { choice, type Choice } from './common';
 import { crewWords, type CrewWords } from './crewWords';
 
@@ -56,6 +57,8 @@ export interface Notice extends Choice {
 export interface MissionBoardView {
   readonly name: string;
   readonly completed: number;
+  /** Long stories under way, pinned above the notices. */
+  readonly arcs: readonly ArcView[];
   readonly notices: readonly Notice[];
 }
 
@@ -95,6 +98,17 @@ function crewOf(state: GameState, ctx: GameContext, def: MissionDef): CrewWords 
   return crew ? crewWords(state, ctx, crew) : null;
 }
 
+function postedLine(on: Exclude<Availability, { kind: 'absent' }>): string {
+  switch (on.kind) {
+    case 'standing':
+      return 'Standing job';
+    case 'arc':
+      return `Part of ${on.arc}`;
+    case 'posted':
+      return postedFor(on.daysLeft);
+  }
+}
+
 /** How long a posting stays up, in words. */
 function postedFor(daysLeft: number): string {
   if (daysLeft <= 1) return 'Last day';
@@ -109,6 +123,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
   return {
     name: place.name,
     completed,
+    arcs: arcsView(state, ctx),
     notices: place.missionIds.flatMap((id) => {
       const m = ctx.content.missions.require(id);
       const on = availability(state, ctx, m);
@@ -131,7 +146,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         away: awayFor(m),
         examClash: examClash(state, ctx, m)?.text ?? null,
         standing: on.kind === 'standing',
-        posted: on.kind === 'standing' ? 'Standing job' : postedFor(on.daysLeft),
+        posted: postedLine(on),
       };
     }),
   };

@@ -5,6 +5,21 @@ export const VILLAGE: VillageLife = {
   rumours: [
     // Talk about what you did: it goes round once the village remembers it.
     {
+      id: 'tobi-forgiven',
+      worldMark: 'tobi-forgiven',
+      text: 'The lamplighter’s boy is lighting the wall again, with his mother watching him like a hawk.',
+    },
+    {
+      id: 'tobi-turned-in',
+      worldMark: 'tobi-turned-in',
+      text: 'The Watch has the lamplighter’s boy scrubbing the barracks floors. He sings while he does it.',
+    },
+    {
+      id: 'lantern-wall-lit',
+      worldMark: 'lantern-kiln-burned',
+      text: 'They say someone burned out a smugglers’ kiln in the reeds. The old wall has been bright ever since.',
+    },
+    {
       id: 'kohaku-lantern',
       worldMark: 'kohaku-trusted',
       text: 'Sister Kohaku is telling everyone at the temple that a young shinobi lit her brother’s lantern at the foot shrine.',

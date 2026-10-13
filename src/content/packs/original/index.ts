@@ -36,6 +36,7 @@ import { SENSEI_TECHNIQUES } from './senseiTechniques';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
 import { VILLAGE } from './village';
+import { LANTERN_THIEF, LANTERN_THIEF_JOBS } from './arcs/lanternThief';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
 
 /** The game's own setting: Tōrōgakure in the Land of Embers. Safe to ship publicly. */
@@ -56,6 +57,7 @@ export const ORIGINAL_PACK: ContentPack = {
   ],
   missions: [
     ...MISSIONS,
+    ...LANTERN_THIEF_JOBS,
     ...TEAM_MISSIONS,
     ...CHUNIN_MISSIONS,
     ...TEMPLATE_MISSIONS,
@@ -64,6 +66,7 @@ export const ORIGINAL_PACK: ContentPack = {
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
   roadEvents: ROAD_EVENTS,
+  arcs: [LANTERN_THIEF],
   voices: VOICES,
   enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...JOB_ENEMIES, ...EXAM_ENEMIES],
   training: TRAINING,
