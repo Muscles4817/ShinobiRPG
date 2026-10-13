@@ -19,14 +19,14 @@ function Shelf({ stack, perform }: { stack: Stack; perform: PlaceProps['perform'
   );
 }
 
-/** The lattice across the stacks while your rank keeps you out, and what lets you in. */
+/** The lattice across the stacks while you have no permit, and what lets you in. */
 function Lattice({ view }: { view: LibraryView }) {
   return (
-    <section className="lattice" aria-label="Restricted stacks">
+    <section className="lattice" aria-label="The stacks">
       <span className="lattice-seal" aria-hidden="true">
         禁
       </span>
-      <h2>Restricted stacks</h2>
+      <h2>No permit, no stacks</h2>
       <p className="story">
         An archivist looks up from her ledger and shakes her head before you reach the lattice.
       </p>
@@ -40,7 +40,10 @@ function Lattice({ view }: { view: LibraryView }) {
   );
 }
 
-/** The library: shelves of restricted scrolls by art, and a desk for the ones you own. */
+/**
+ * The library: shelves of scrolls by art (the open shelves for a genin with a permit, every
+ * stack for chūnin), the restricted stacks folded away, and a desk for the scrolls you own.
+ */
 export function LibraryPage({ ctx, state, perform, onBack }: PlaceProps) {
   const view = libraryView(state, ctx);
   const header = headerView(state, ctx);
@@ -74,6 +77,16 @@ export function LibraryPage({ ctx, state, perform, onBack }: PlaceProps) {
             ))}
             {view.unread === 0 && (
               <p className="story">You have read every scroll the stacks keep.</p>
+            )}
+            {view.restricted > 0 && (
+              <section className="lattice folded" aria-label="Restricted stacks">
+                <h2>Restricted stacks</h2>
+                <p className="muted small">
+                  {view.restricted === 1
+                    ? 'One more scroll waits behind the lattice, for chūnin and above.'
+                    : `${view.restricted} more scrolls wait behind the lattice, for chūnin and above.`}
+                </p>
+              </section>
             )}
             <ScrollDesk desk={view.desk} perform={perform} />
           </>

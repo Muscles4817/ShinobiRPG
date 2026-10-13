@@ -63,7 +63,7 @@ export const study: ActionHandler<ActionOf<'study'>> = {
     if (!def || !shelf) return 'That scroll isn’t kept here.';
     return firstBlocker(
       busyReason(state),
-      shelfBlocker(state, shelf),
+      shelfBlocker(state, shelf, def),
       studyBlocker(state, def, ctx),
     );
   },

@@ -22,6 +22,8 @@ export interface People {
   readonly taught: Readonly<Record<string, TaughtSessions>>;
   /** Favours you have done for teachers who asked (`SimplePrice` favour ids). */
   readonly favours: readonly string[];
+  /** Slips your sensei has signed for you (`game/permits.ts`), by id. */
+  readonly permits: readonly string[];
 }
 
 /** How much of a teacher's time you have had: sessions in `week`, and the last day. */
@@ -68,4 +70,5 @@ export const NO_PEOPLE: People = {
   sparringWith: null,
   taught: {},
   favours: [],
+  permits: [],
 };

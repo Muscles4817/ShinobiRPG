@@ -94,3 +94,7 @@
   right: 3%;
   top: 24%;
 }
+.lattice.folded {
+  padding: 10px 14px;
+  border-width: 4px;
+}

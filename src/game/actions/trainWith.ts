@@ -4,6 +4,7 @@ import { diffStats, STAT_INFO, type StatId } from '@/systems/stats';
 import { DAYS_PER_WEEK } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { permitAfterLesson } from '../permits';
 import { growCharacter, logDiscoveries, noTalentReason } from '../growth';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
@@ -229,7 +230,7 @@ export function lessonAway(
   if (!statId) return null;
   const session = teachSession(state, ctx, teaching, statId);
   const logged = report(session.state, state, { ...session, energy: 0 });
-  return logDiscoveries(logged, session.discovered, ctx);
+  return permitAfterLesson(logDiscoveries(logged, session.discovered, ctx), ctx, sensei);
 }
 
 export const trainWith: ActionHandler<TrainWith> = {
@@ -252,6 +253,7 @@ export const trainWith: ActionHandler<TrainWith> = {
       energy: -TRAIN_WITH_ENERGY,
     });
     const logged = report(next, state, { ...session, energy: TRAIN_WITH_ENERGY });
-    return logDiscoveries(logged, session.discovered, ctx);
+    const grown = logDiscoveries(logged, session.discovered, ctx);
+    return teaching.isSensei ? permitAfterLesson(grown, ctx, person) : grown;
   },
 };

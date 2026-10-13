@@ -13,7 +13,7 @@ import type { GameContext } from './context';
 import { learnerOf, stabiliseTechniques } from './learning';
 import { chip, log } from './ops';
 import { addReport, type Report } from './reports';
-import { libraryAccess } from './shelves';
+import { libraryScrollAccess } from './permits';
 import type { GameState } from './state';
 
 /**
@@ -41,20 +41,25 @@ export function gradeUpsBetween(before: Stats, after: Stats): StatId[] {
 /** Name for your own scrolls in "What this opens". */
 const YOUR_SCROLLS = 'Your scrolls';
 
+/** Whether you may read this scroll where it is kept (a library's rules, or anyone's rack). */
+function mayRead(state: GameState, ctx: GameContext, kind: string, id: string): boolean {
+  const def = ctx.content.techniques.get(id);
+  return kind !== 'library' || (def !== undefined && libraryScrollAccess(state, def) === null);
+}
+
 /**
- * Where each technique can be studied, by id: the first academy (or, once your rank lets you
- * in, library) that keeps its scroll, else your own scrolls.
+ * Where each technique can be studied, by id: the first academy (or library shelf you may
+ * read) that keeps its scroll, else your own scrolls.
  */
 function teachingPlaces(state: GameState, ctx: GameContext): Map<string, string> {
   const where = new Map<string, string>();
-  const stacksOpen = libraryAccess(state) === null;
   const shelves = ctx.content.locations.all.flatMap((l) =>
-    l.places.flatMap((p) =>
-      p.kind === 'academy' || (p.kind === 'library' && stacksOpen) ? [p] : [],
-    ),
+    l.places.flatMap((p) => (p.kind === 'academy' || p.kind === 'library' ? [p] : [])),
   );
   for (const place of shelves) {
-    for (const id of place.techniqueIds) if (!where.has(id)) where.set(id, place.name);
+    for (const id of place.techniqueIds) {
+      if (!where.has(id) && mayRead(state, ctx, place.kind, id)) where.set(id, place.name);
+    }
   }
   for (const id of scrollIds(state.inventory)) if (!where.has(id)) where.set(id, YOUR_SCROLLS);
   return where;
