@@ -1,6 +1,9 @@
 import type { SceneLine, ThreadView } from '@/game';
 
-/** A job's story feed: what happened, what you chose, the rolls, and what the crew said. */
+/**
+ * A job's story feed: what happened, what you chose, the rolls (an ink stamp, 成 or 失, with the
+ * stat), and what the crew said.
+ */
 export function StoryLines({ lines }: { readonly lines: readonly SceneLine[] }) {
   return (
     <>
@@ -9,7 +12,9 @@ export function StoryLines({ lines }: { readonly lines: readonly SceneLine[] }) 
           case 'roll':
             return (
               <p key={i} className={`roll ${line.success ? 'pass' : 'fail'}`}>
-                <i aria-hidden="true">{line.success ? '✓' : '✗'}</i>
+                <i role="img" aria-label={line.success ? 'Passed' : 'Failed'}>
+                  {line.success ? '成' : '失'}
+                </i>
                 {line.text}
               </p>
             );

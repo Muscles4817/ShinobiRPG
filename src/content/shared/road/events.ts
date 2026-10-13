@@ -55,7 +55,7 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
   },
   {
     id: 'peddler-with-news',
-    regions: ['hill-road', 'coast-road', 'river-road'],
+    regions: ['hill-road', 'coast-road', 'river-road', 'dune-road'],
     text: 'A peddler with a pack taller than he is falls into step with you, eager for company and full of gossip.',
     options: [
       {
@@ -118,7 +118,7 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
   },
   {
     id: 'rival-team',
-    regions: ['hill-road', 'river-road', 'forest-track', 'mountain-pass'],
+    regions: ['hill-road', 'river-road', 'forest-track', 'mountain-pass', 'dune-road'],
     text: 'Another team of shinobi is coming the other way, travel-stained and cocky, and their leader wants to know who you think you are.',
     options: [
       {

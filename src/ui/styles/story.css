@@ -86,3 +86,64 @@
   margin: 0;
   font-size: 0.92rem;
 }
+
+/* The route: a row of stamps, the stages behind you inked, where you are lit, ahead outlined. */
+.route {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  position: relative;
+}
+.route li {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-story);
+  font-size: 0.78rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--muted);
+  background: rgb(8 6 12 / 0.45);
+}
+.route li.route-done {
+  color: var(--ink);
+  border-color: var(--muted);
+}
+.route li.route-now {
+  color: var(--bg);
+  background: var(--lantern);
+  border-color: var(--lantern);
+  font-weight: 800;
+}
+
+/* What happened before your last choice, folded away. */
+.story-so-far summary {
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.story-so-far[open] {
+  opacity: 0.75;
+}
+
+/* The situation now, on a slip of paper near the thumb. */
+.beat-card {
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+.beat-card .story {
+  color: var(--paper-ink);
+  margin: 0;
+}
+
+/* A roll's stamp: 成 or 失 in ink. */
+.roll i {
+  font-family: var(--font-story);
+  font-weight: 800;
+}
