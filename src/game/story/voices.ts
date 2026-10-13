@@ -12,9 +12,23 @@ import { crewPeople } from './personal';
  * game's dice.
  */
 
-function linesFor(ctx: GameContext, person: PersonDef, moment: VoiceMoment): readonly string[] {
+/**
+ * Their lines for the moment. Reacting to a tone, only the traits that care about it speak:
+ * the kind one approves of kindness in a kind voice, not a proud one.
+ */
+function linesFor(
+  ctx: GameContext,
+  person: PersonDef,
+  moment: VoiceMoment,
+  tone?: string,
+): readonly string[] {
+  const caring = person.traitIds.filter((id) => {
+    if (!tone) return true;
+    const trait = ctx.content.traits.get(id);
+    return trait ? [...trait.likes, ...trait.dislikes].some((t) => t === tone) : false;
+  });
   return ctx.content.voices
-    .filter((v) => v.moment === moment && person.traitIds.includes(v.trait))
+    .filter((v) => v.moment === moment && caring.includes(v.trait))
     .flatMap((v) => v.lines);
 }
 
@@ -27,10 +41,10 @@ function roll(state: GameState, what: string): number {
 export function voiceOf(
   state: GameState,
   ctx: GameContext,
-  person: PersonDef,
-  moment: VoiceMoment,
+  said: { readonly person: PersonDef; readonly moment: VoiceMoment; readonly tone?: string },
 ): MissionNote | null {
-  const lines = linesFor(ctx, person, moment);
+  const { person, moment } = said;
+  const lines = linesFor(ctx, person, moment, said.tone);
   const line = lines[Math.floor(roll(state, person.id) * lines.length)];
   return line ? { kind: 'voice', speaker: person.name, text: line } : null;
 }
@@ -43,5 +57,5 @@ export function crewVoice(
 ): MissionNote | null {
   const people = crewPeople(state, ctx).filter((p) => linesFor(ctx, p, moment).length > 0);
   const speaker = people[Math.floor(roll(state, moment) * people.length)];
-  return speaker ? voiceOf(state, ctx, speaker, moment) : null;
+  return speaker ? voiceOf(state, ctx, { person: speaker, moment }) : null;
 }

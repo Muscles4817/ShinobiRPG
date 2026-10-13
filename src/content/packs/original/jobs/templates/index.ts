@@ -4,6 +4,7 @@ import { B_RANK_JOBS } from './chunin';
 import { C_TEAM_ROAD } from './cTeam';
 import { C_TEAM_FIELD } from './cTeamField';
 import { D_RANK_CHORES } from './dRankChores';
+import { D_RANK_ESCORT } from './dRankEscort';
 import { D_RANK_ROAD } from './dRankRoad';
 import { D_RANK_TOWN } from './dRankTown';
 import { D_RANK_TROUBLE } from './dRankTrouble';
@@ -14,6 +15,7 @@ export const MISSION_TEMPLATES: readonly MissionTemplate[] = [
   ...D_RANK_TOWN,
   ...D_RANK_TROUBLE,
   ...D_RANK_ROAD,
+  ...D_RANK_ESCORT,
   ...C_TEAM_ROAD,
   ...C_TEAM_FIELD,
   ...B_RANK_JOBS,

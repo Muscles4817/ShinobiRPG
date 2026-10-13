@@ -44,7 +44,14 @@ export {
   type ReconId,
   type ReconOption,
 } from './encounter';
-export { stagePay, type EncounterEnd, type StagePay } from './encounterPay';
+export {
+  END_MARKS,
+  RULE_MARKS,
+  SAW_SCOUTS,
+  stagePay,
+  type EncounterEnd,
+  type StagePay,
+} from './encounterPay';
 export { isSeniorMission, MISSION_ROLES, type MissionRank, type MissionRole } from './missionRank';
 export { addLedger, applyOutcome, type Applied, type StoryDef } from './outcomes';
 export {

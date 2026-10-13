@@ -40,11 +40,14 @@ describe('story validation', () => {
       ...STORY_JOB,
       stages: [
         { kind: 'ending', endings: [{ when: { has: 'knows-why' }, text: 'Only sometimes.' }] },
+        { kind: 'narrative', text: 'And then?' },
         { kind: 'leg', text: 'Nowhere.', days: 1, region: 'the-void' },
       ],
     };
     const problems = validateContent(withJob(job));
-    expect(problems).toContain(`mission "${job.id}" has an ending that isn’t its last stage`);
+    expect(problems).toContain(
+      `mission "${job.id}" has an ending with more than the road home after it`,
+    );
     expect(problems).toContain(`mission "${job.id}" has no ending for every case`);
     expect(problems).toContain(
       `mission "${job.id}" goes by "the-void", where nothing ever happens`,

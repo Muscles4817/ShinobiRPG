@@ -31,9 +31,9 @@ export function MissionScene({ ctx, state, perform }: ScreenProps) {
           </p>
           <h1>{scene.title}</h1>
         </div>
-        <Threads threads={scene.threads} />
         <Vitals meters={header.meters} />
       </header>
+      <Threads threads={scene.threads} />
       <main className="page feed scene-feed">
         <StoryLines lines={scene.lines} />
         {scene.prompt && <p className="story prompt enter">{scene.prompt}</p>}

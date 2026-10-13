@@ -3,6 +3,8 @@ import type { CombatOpening, CombatOutcome } from '@/systems/combat';
 import {
   addLedger,
   advance,
+  END_MARKS,
+  withMark,
   currentStage,
   isSeniorMission,
   reward,
@@ -121,9 +123,10 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
  * stage, or the last story line of a job that ends on a check.
  */
 function endingLine(def: MissionDef, run: MissionRun): string | undefined {
-  const last = def.stages.at(-1)?.kind;
-  if (last === 'ending') return run.notes.findLast((n) => n.kind === 'outcome')?.text;
-  if (last !== 'check') return undefined;
+  if (def.stages.some((s) => s.kind === 'ending')) {
+    return run.notes.findLast((n) => n.kind === 'outcome')?.text;
+  }
+  if (def.stages.at(-1)?.kind !== 'check') return undefined;
   return run.notes.findLast((n) => n.kind === 'story')?.text;
 }
 
@@ -221,7 +224,8 @@ export function beginCombat(
 
 /** A won fight moves the mission on; an encounter's fight pays as its job says. */
 function afterVictory(run: MissionRun, stage: MissionStage | null, enemies: string): MissionRun {
-  const won = addLedger(run, { text: `Beat ${enemies} in a fight.`, tone: 'plain' });
+  const fought = { ...run, marks: withMark(run.marks, END_MARKS.fought) };
+  const won = addLedger(fought, { text: `Beat ${enemies} in a fight.`, tone: 'plain' });
   const next = advance(won, { kind: 'outcome', text: `You defeated ${enemies}.` });
   return stage?.kind === 'encounter' ? withStagePay(next, stagePay(stage.job, 'fought')) : next;
 }

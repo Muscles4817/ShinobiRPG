@@ -1,5 +1,6 @@
 import type { EnemyDef } from '@/content';
 import {
+  SAW_SCOUTS,
   encounterFlavour,
   startEncounter,
   type EncounterFact,
@@ -64,7 +65,12 @@ export function beginEncounter(state: GameState, ctx: GameContext): GameState {
   const def = activeMission(state, ctx);
   const at = encounterStageHere(state, ctx);
   if (!def || !at || !state.mission) return state;
-  const known = state.board.intel.includes(def.id) ? REPORT_FACTS : [];
+  const reported = state.board.intel.includes(def.id) ? REPORT_FACTS : [];
+  // Whoever kept watch the night before already saw how many there are, and where.
+  const scouted: EncounterFact[] = state.mission.marks.includes(SAW_SCOUTS)
+    ? ['count', 'terrain']
+    : [];
+  const known = [...new Set([...reported, ...scouted])];
   const notesFrom = state.mission.notes.length;
   const encounter = startEncounter(at.template, known, notesFrom);
   const opening: MissionNote = { kind: 'story', text: at.stage.text };

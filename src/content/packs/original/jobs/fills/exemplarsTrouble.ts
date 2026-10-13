@@ -62,31 +62,6 @@ export const EXEMPLARS_TROUBLE: readonly MissionFill[] = [
     },
   },
   {
-    id: 'brides-chest',
-    templateId: 'd-short-escort',
-    values: {
-      title: 'The Bride’s Chest',
-      client: 'The Matsuda household',
-      charge: 'a bride’s dowry chest and its porter, Old Saburō',
-      destination: 'the hill village of Kayano',
-      chatter:
-        'Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.',
-      fuss: 'At the halfway shrine Saburō sits down and declares that his knees have retired, and the chest is too heavy to carry another step.',
-      fussSettled:
-        'You rig a sling from your spare rope and take half the weight. Saburō walks on, singing again.',
-      fussCostly:
-        'You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.',
-      ambush:
-        'Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.',
-      foe: 'bandit-thug',
-      lookout: 'bandit-archer',
-      slipped:
-        'You take Saburō and the chest down a goat path round the ridge. Behind you, robbers wait at their log for nobody.',
-      ending:
-        'In Kayano the bride’s family open the chest to check it. Saburō is already asleep against the shrine wall, snoring a wedding song.',
-    },
-  },
-  {
     id: 'willow-bridge-toll',
     templateId: 'd-toll-gang',
     values: {

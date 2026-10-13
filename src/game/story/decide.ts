@@ -43,7 +43,11 @@ function crewTakesIt(state: GameState, ctx: GameContext, tone: string): Reaction
     .filter((f) => f.delta !== 0)
     .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))[0];
   const voice = strongest
-    ? voiceOf(state, ctx, strongest.person, strongest.delta > 0 ? 'approve' : 'disapprove')
+    ? voiceOf(state, ctx, {
+        person: strongest.person,
+        moment: strongest.delta > 0 ? 'approve' : 'disapprove',
+        tone,
+      })
     : null;
   return { state: moved, voice };
 }

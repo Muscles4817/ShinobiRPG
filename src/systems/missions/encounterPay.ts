@@ -49,3 +49,22 @@ const PAY: Readonly<Record<JobKind, Readonly<Record<EncounterEnd, StagePay>>>> =
 export function stagePay(job: JobKind, end: EncounterEnd): StagePay {
   return PAY[job][end];
 }
+
+/**
+ * The mark each way past leaves on the run, so the story can tell how it went ("fought-past"
+ * makes a frightened charge's injury possible; "talked-down" an ending where nobody was hurt).
+ */
+export const END_MARKS: Readonly<Record<EncounterEnd, string>> = {
+  fought: 'fought-past',
+  'slipped-past': 'slipped-past',
+  'talked-down': 'talked-down',
+  'paid-off': 'paid-off',
+};
+
+/**
+ * Marks the rules set themselves, which a story may read without setting: the ways past an
+ * encounter, and `saw-scouts`, which (set by a watch, say) lets an encounter begin with the
+ * count and the lie of the land known.
+ */
+export const SAW_SCOUTS = 'saw-scouts';
+export const RULE_MARKS: readonly string[] = [...Object.values(END_MARKS), SAW_SCOUTS];

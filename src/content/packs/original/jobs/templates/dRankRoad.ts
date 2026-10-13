@@ -1,61 +1,10 @@
 import type { MissionTemplate } from '../../../../missionTemplates';
 
 /**
- * D-rank jobs on the roads and walls just outside the village: a short escort, a toll gang on
- * a bridge, a night on watch. Each ends with someone to get past.
+ * D-rank jobs on the roads and walls just outside the village: a toll gang on a bridge, a night
+ * on watch. Each ends with someone to get past. (The escort, days on the road, is `dRankEscort`.)
  */
 export const D_RANK_ROAD: readonly MissionTemplate[] = [
-  {
-    id: 'd-short-escort',
-    rank: 'D',
-    slots: 4,
-    energyCost: 30,
-    reward: { ryo: 210, reputation: 5 },
-    minMissionsCompleted: 2,
-    placeholders: {
-      title: 'the job’s title, e.g. The Bride’s Chest',
-      client: 'who hires you, e.g. the Matsuda household',
-      charge: 'who or what you guard, mid-sentence, e.g. a bride’s dowry chest and its porter',
-      destination: 'where to, mid-sentence, e.g. the hill village of Kayano',
-      chatter: 'a sentence: the first hour of the road, and the charge’s character',
-      fuss: 'a sentence: the charge causes trouble on the road',
-      fussSettled: 'a sentence: you settle the trouble and keep moving',
-      fussCostly: 'a sentence: the trouble costs you time and temper',
-      ambush: 'a sentence: the place on the road where robbers wait',
-      foe: 'an enemy id: a D-rank bandit, such as bandit-thug',
-      lookout: 'an enemy id: a second D-rank bandit, such as bandit-archer',
-      slipped: 'a sentence: you lead the charge round the robbers unseen',
-      ending: 'a sentence: arrival, and what the charge says or does',
-    },
-    title: '{title}',
-    client: '{client}',
-    summary: 'See {charge} safely to {destination}. The road has a bad name lately.',
-    stages: [
-      { kind: 'narrative', text: '{chatter}' },
-      {
-        kind: 'check',
-        text: '{fuss}',
-        approaches: [
-          { label: 'Keep your patience', stat: 'willpower', difficulty: 8 },
-          { label: 'Find a clever fix', stat: 'intellect', difficulty: 8 },
-          { label: 'Do the heavy work yourself', stat: 'strength', difficulty: 9 },
-        ],
-        success: '{fussSettled}',
-        failure: '{fussCostly}',
-        onFailure: 'penalty',
-      },
-      {
-        kind: 'encounter',
-        template: 'bandit-camp',
-        job: 'escort',
-        text: '{ambush}',
-        enemyIds: ['{foe}', '{lookout}'],
-        canFlee: false,
-        flavour: { slipped: '{slipped}' },
-      },
-      { kind: 'narrative', text: '{ending}' },
-    ],
-  },
   {
     id: 'd-toll-gang',
     rank: 'D',
