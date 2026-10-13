@@ -18,6 +18,7 @@ import {
   type PlanState,
   type Round,
 } from './state';
+import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 5,
@@ -104,6 +105,9 @@ function damageTo(defender: PlanFighter, kind: 'blow' | 'jutsu'): number {
   return defender.health - (hitOn(defender, blow).fighters[1]?.health ?? 0);
 }
 
+/** The log as the player reads it: the sentences, without the screen's markers. */
+const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
+
 describe('plan & watch kits: reach', () => {
   it('an archer never attacks up close and backs away instead', () => {
     const [, archer] = pair(['archer']);
@@ -175,7 +179,7 @@ describe('plan & watch kits: illusions', () => {
     const [hero, ghost] = pair(['illusionist'], { perks: ['insight'] });
     const seeker = { ...hero!, loadout: { ...NO_CARDS, mid: plainSlots(['search', 'throw']) } };
     const after = resolveExchange(stateOf([seeker, ghost!]), createRng(3));
-    expect(after.log).toContain('hero spots foe!');
+    expect(said(after.log)).toContain('hero spots foe!');
     expect(after.fighters[1]?.hidden).toBe(false);
   });
 
@@ -188,7 +192,7 @@ describe('plan & watch kits: illusions', () => {
     const dazedGhost = { ...ghost!, stunned: 1 };
     const after = resolveExchange(stateOf([caster, dazedGhost]), createRng(3));
     const player = after.fighters[0]!;
-    expect(after.log).toContain('hero forms the seal to break illusions.');
+    expect(said(after.log)).toContain('hero forms the seal to break illusions.');
     expect(player.chakra).toBe(30 - DISPEL_CHAKRA + 2);
     expect(player.confused).toBe(0);
   });

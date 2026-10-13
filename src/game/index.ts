@@ -99,6 +99,7 @@ export {
   type SceneChoice,
 } from './views/scene';
 export { combatLog, type CombatLogLine } from './views/combatLog';
+export { fightReplay, type FightBeat } from './views/fightReplay';
 export {
   examScene,
   type ConductLine,

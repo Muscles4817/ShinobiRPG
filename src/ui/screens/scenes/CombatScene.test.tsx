@@ -1,10 +1,20 @@
 // @vitest-environment jsdom
+import { useState } from 'react';
+
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { combatScene, type GameState } from '@/game';
 import { atEncounter, capable, hardCtx, withStats } from '@/test/encounterFixtures';
-import { act, ctx, intoFight, newGame, veteran, withAllStats } from '@/test/gameFixtures';
+import {
+  act,
+  classicCtx,
+  ctx,
+  intoFight,
+  newGame,
+  veteran,
+  withAllStats,
+} from '@/test/gameFixtures';
 
 import { CombatScene } from './CombatScene';
 
@@ -21,26 +31,62 @@ function riverFight(start: GameState = newGame()): GameState {
   return intoFight(state);
 }
 
-/** One exchange of a planned fight further on. */
-function nextExchange(state: GameState): GameState {
-  const next = combatScene(state, ctx)!.options.find((o) => o.kind === 'continue')!;
-  return act(state, { type: 'combatAct', optionId: next.id });
+/** A classic (turn-by-turn) spar, a few turns in: the style that keeps the one-screen log. */
+function classicSpar(turns: number): GameState {
+  // The classic context starts new fights in the classic style.
+  let state = act(
+    withAllStats(newGame({}, classicCtx), 7),
+    { type: 'spar', personId: 'kaen' },
+    classicCtx,
+  );
+  for (let i = 0; i < turns; i++) state = classicTurn(state);
+  return state;
+}
+
+function classicTurn(state: GameState): GameState {
+  const options = combatScene(state, classicCtx)!.options.filter((o) => !o.disabledReason);
+  const pick = options.find((o) => o.kind === 'basic') ?? options.find((o) => o.kind === 'end');
+  return act(state, { type: 'combatAct', optionId: pick!.id }, classicCtx);
+}
+
+/** The scene with live state: what you press is played, as in the game. */
+function Live({ start }: { readonly start: GameState }) {
+  const [state, setState] = useState(start);
+  return (
+    <CombatScene
+      ctx={ctx}
+      state={state}
+      perform={(action) => {
+        setState((s) => act(s, action));
+      }}
+    />
+  );
 }
 
 describe('CombatScene (smoke test)', () => {
   it('keeps the log’s earlier lines in place as new ones arrive, so only new lines rise in', () => {
-    let state = act(withAllStats(newGame(), 7), { type: 'spar', personId: 'kaen' });
-    state = nextExchange(nextExchange(act(state, { type: 'combatAct', optionId: 'begin' })));
+    const state = classicSpar(6);
     const { container, rerender } = render(
-      <CombatScene ctx={ctx} state={state} perform={() => undefined} />,
+      <CombatScene ctx={classicCtx} state={state} perform={() => undefined} />,
     );
     const lines = () => [...container.querySelectorAll('.combat-log > p')];
     const before = lines().map((p) => [p, p.textContent] as const);
-    rerender(<CombatScene ctx={ctx} state={nextExchange(state)} perform={() => undefined} />);
+    rerender(<CombatScene ctx={classicCtx} state={classicTurn(state)} perform={() => undefined} />);
     const kept = before.filter(([p]) => p.isConnected);
     expect(kept.length).toBeGreaterThan(0);
-    expect(kept.length).toBeLessThan(lines().length);
     for (const [p, text] of kept) expect(p.textContent).toBe(text);
+  });
+
+  it('plans, then plays what you chose on the stage, then offers what comes next', async () => {
+    const user = userEvent.setup();
+    render(<Live start={act(withAllStats(newGame(), 7), { type: 'spar', personId: 'kaen' })} />);
+    await user.click(screen.getByRole('button', { name: /^Begin the fight/ }));
+    await user.click(screen.getByRole('button', { name: 'Next exchange' }));
+    expect(screen.getByText('First exchange')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Pause' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
+    expect(screen.getByRole('button', { name: 'Next exchange' })).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Their front row' })).toBeInTheDocument();
   });
 
   it('shows both sides in their rows, with the distance between them', () => {

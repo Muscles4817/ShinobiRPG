@@ -45,6 +45,12 @@ function place(name: RegExp) {
   return screen.getByRole('button', { name });
 }
 
+/** Skips to the end of what the watch screen is playing, if it is playing anything. */
+async function skipWatching(user: ReturnType<typeof userEvent.setup>) {
+  const skip = screen.queryByRole('button', { name: 'Skip' });
+  if (skip) await user.click(skip);
+}
+
 describe('App (smoke test)', () => {
   it('starts in the chosen world’s village and autosaves', async () => {
     const user = userEvent.setup();
@@ -193,10 +199,15 @@ describe('App (smoke test)', () => {
       .find((b) => !(b as HTMLButtonElement).disabled)!;
     await user.click(spar);
     expect(screen.getByText('Sparring')).toBeInTheDocument();
-    // The default style plays out on your cards: begin each round, then watch it, to the end.
-    for (let i = 0; i < 60 && !screen.queryByRole('dialog'); i++) {
-      const begin = screen.queryByRole('button', { name: /^Begin (the fight|round)/ });
-      await user.click(begin ?? screen.getByRole('button', { name: /^Watch the round/ }));
+    // The default style plays out on your cards: begin each round, skip through watching it
+    // (as an impatient player would), go back to plan, and on to the end.
+    for (let i = 0; i < 120 && !screen.queryByRole('dialog'); i++) {
+      const next =
+        screen.queryByRole('button', { name: 'Skip' }) ??
+        screen.queryByRole('button', { name: /^Begin (the fight|round)/ }) ??
+        screen.queryByRole('button', { name: 'Plan the next round' }) ??
+        screen.getByRole('button', { name: /^Watch the round/ });
+      await user.click(next);
     }
     expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
   });
@@ -230,7 +241,9 @@ describe('App (smoke test)', () => {
       );
     }
     await user.click(screen.getByRole('button', { name: /^Begin the fight/ }));
+    await skipWatching(user);
     await user.click(screen.getByRole('button', { name: /^Watch the round/ }));
+    await skipWatching(user);
     expect(screen.queryByText(/The round is over/) ?? screen.queryByRole('dialog')).not.toBeNull();
   });
 
@@ -262,6 +275,7 @@ describe('App (smoke test)', () => {
       'A foe is hidden',
     );
     await user.click(screen.getByRole('button', { name: /^Begin the fight/ }));
+    await skipWatching(user);
     expect(screen.getByRole('button', { name: /^Watch the round/ })).toBeInTheDocument();
   });
 

@@ -18,6 +18,7 @@ import {
   type PlanState,
   type Round,
 } from './state';
+import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 5,
@@ -90,6 +91,9 @@ function roundOf(fighters: PlanFighter[]): Round {
 
 const heroOf = (s: Pick<PlanState, 'fighters'>) => s.fighters.find((f) => f.id === 'hero')!;
 const foeOf = (s: Pick<PlanState, 'fighters'>) => s.fighters.find((f) => f.id === 'foe')!;
+
+/** The log as the player reads it: the sentences, without the screen's markers. */
+const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
 
 describe('plan & watch tools: cards', () => {
   it('offers each carried tool as a card at every distance, never in a default plan', () => {
@@ -214,7 +218,7 @@ describe('plan & watch tools: smoke and flash', () => {
     const first = resolveExchange(stateOf([hero!, foe!]), createRng(1));
     expect(heroOf(first).hidden).toBe(true);
     expect(heroOf(first).health).toBe(50);
-    expect(first.log).toContain('foe searches, but finds no one.');
+    expect(said(first.log)).toContain('foe searches, but finds no one.');
     const second = resolveExchange(first, createRng(4));
     expect(second.log.some((l) => l.includes('hero') && l.includes('kunai'))).toBe(true);
     expect(heroOf(second).hidden).toBe(false);
