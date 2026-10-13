@@ -18,6 +18,9 @@ import { RangeStrip } from './combat/RangeStrip';
 import { PlansByOwner, TeamOrders } from './combat/TeamOrders';
 import { useHealthPulses, type HealthPulse } from './combat/useHealthPulses';
 
+/** The last lines of the fight log on screen. */
+const SHOWN_LINES = 6;
+
 /** Which row one of yours stands in, shown once your side has a back row. */
 function RowMark({ fighter, shown }: { readonly fighter: CombatantView; readonly shown: boolean }) {
   if (!shown || !fighter.row) return null;
@@ -59,6 +62,8 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
   const [chosen, setChosen] = useState<string | null>(null);
   const pulses = useHealthPulses(view?.combatants);
   if (!view) return null;
+  // Lines keep their place in the whole log as their key, so only new ones mount (and rise in).
+  const firstShown = Math.max(0, view.log.length - SHOWN_LINES);
   const enemies = view.combatants.filter((c) => c.side === 'enemy');
   const living = enemies.filter((e) => e.health > 0 && e.targetable !== false);
   const targetId = living.find((e) => e.id === chosen)?.id ?? living[0]?.id ?? null;
@@ -88,14 +93,14 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
         pulses={pulses}
       />
       {view.range && <RangeStrip range={view.range} />}
-      <main className="page feed combat-log" aria-live="polite">
-        {combatLog(view.log.slice(-6)).map((line, i) =>
+      <main className="page feed combat-log scene-feed" aria-live="polite">
+        {combatLog(view.log.slice(-SHOWN_LINES)).map((line, i) =>
           line.kind === 'round' ? (
-            <p key={`${view.round}-${i}`} className="divider">
+            <p key={firstShown + i} className="divider">
               {line.text}
             </p>
           ) : (
-            <p key={`${view.round}-${i}`} className="story log-line">
+            <p key={firstShown + i} className="story log-line">
               {line.text} <Chips chips={line.chips} />
             </p>
           ),

@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { render, screen, within } from '@testing-library/react';
 
-import type { GameState } from '@/game';
+import { combatScene, type GameState } from '@/game';
 import { atEncounter, capable, hardCtx, withStats } from '@/test/encounterFixtures';
-import { act, ctx, intoFight, newGame, veteran } from '@/test/gameFixtures';
+import { act, ctx, intoFight, newGame, veteran, withAllStats } from '@/test/gameFixtures';
 
 import { CombatScene } from './CombatScene';
 
@@ -20,7 +20,28 @@ function riverFight(start: GameState = newGame()): GameState {
   return intoFight(state);
 }
 
+/** One exchange of a planned fight further on. */
+function nextExchange(state: GameState): GameState {
+  const next = combatScene(state, ctx)!.options.find((o) => o.kind === 'continue')!;
+  return act(state, { type: 'combatAct', optionId: next.id });
+}
+
 describe('CombatScene (smoke test)', () => {
+  it('keeps the log’s earlier lines in place as new ones arrive, so only new lines rise in', () => {
+    let state = act(withAllStats(newGame(), 7), { type: 'spar', personId: 'kaen' });
+    state = nextExchange(nextExchange(act(state, { type: 'combatAct', optionId: 'begin' })));
+    const { container, rerender } = render(
+      <CombatScene ctx={ctx} state={state} perform={() => undefined} />,
+    );
+    const lines = () => [...container.querySelectorAll('.combat-log > p')];
+    const before = lines().map((p) => [p, p.textContent] as const);
+    rerender(<CombatScene ctx={ctx} state={nextExchange(state)} perform={() => undefined} />);
+    const kept = before.filter(([p]) => p.isConnected);
+    expect(kept.length).toBeGreaterThan(0);
+    expect(kept.length).toBeLessThan(lines().length);
+    for (const [p, text] of kept) expect(p.textContent).toBe(text);
+  });
+
   it('shows both sides in their rows', () => {
     const state = riverFight();
     render(<CombatScene ctx={ctx} state={state} perform={() => undefined} />);

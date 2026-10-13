@@ -32,7 +32,7 @@ export function EncounterScene({ ctx, state, perform }: ScreenProps) {
         <Vitals meters={header.meters} />
       </header>
       <main className="page encounter">
-        <div className="feed">
+        <div className="feed scene-feed">
           {scene.lines.map((line, i) =>
             line.kind === 'roll' ? (
               <p key={i} className={`roll ${line.success ? 'pass' : 'fail'}`}>

@@ -120,7 +120,7 @@ export function ExamScene({ ctx, state, perform }: ScreenProps) {
         <StageStrip scene={scene} />
         <Vitals meters={header.meters} />
       </header>
-      <main className="page feed">
+      <main className="page feed scene-feed">
         {scene.lines.map((line, i) =>
           line.kind === 'roll' ? (
             <p key={i} className={`roll ${line.success ? 'pass' : 'fail'}`}>
