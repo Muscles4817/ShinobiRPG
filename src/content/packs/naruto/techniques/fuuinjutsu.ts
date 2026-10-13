@@ -132,7 +132,7 @@ export const FUUINJUTSU: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     effects: [
       { verb: 'area', power: 18 },
-      { verb: 'break', power: 8 },
+      { verb: 'knock', power: 10, to: 'far' },
     ],
     chakraCost: 16,
     rank: 'B',

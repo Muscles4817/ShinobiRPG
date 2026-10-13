@@ -8,7 +8,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     description: 'A volley of small fireballs, each hiding a shuriken.',
     discipline: 'ninjutsu',
     element: 'fire',
-    effects: [{ verb: 'damage', power: 12 }],
+    effects: [{ verb: 'damage', power: 12, hits: 3 }],
     chakraCost: 8,
     rank: 'E',
     difficulty: 40,
@@ -40,7 +40,10 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     description: 'A gale blown from the lungs that flattens everything in front of you.',
     discipline: 'ninjutsu',
     element: 'wind',
-    effects: [{ verb: 'area', power: 10 }],
+    effects: [
+      { verb: 'area', power: 10 },
+      { verb: 'knock', power: 8, to: 'far' },
+    ],
     chakraCost: 13,
     rank: 'D',
     difficulty: 60,
@@ -105,7 +108,10 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     description: 'Spit a pressurised ball of water hard enough to crack stone.',
     discipline: 'ninjutsu',
     element: 'water',
-    effects: [{ verb: 'damage', power: 22 }],
+    effects: [
+      { verb: 'damage', power: 20 },
+      { verb: 'knock', power: 8, to: 'far' },
+    ],
     chakraCost: 15,
     rank: 'C',
     needs: { control: 'D' },
@@ -145,6 +151,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     name: 'Lightning Style: False Darkness',
     description: 'A spear of lightning thrown from the mouth, straight through a raised guard.',
     discipline: 'ninjutsu',
+    accuracy: 'sure',
     element: 'lightning',
     effects: [
       { verb: 'damage', power: 12 },
@@ -164,6 +171,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     effects: [
       { verb: 'damage', power: 20 },
       { verb: 'area', power: 8 },
+      { verb: 'afflict', power: 6, harm: 'burn' },
     ],
     chakraCost: 16,
     rank: 'B',
@@ -177,7 +185,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'water',
     effects: [
-      { verb: 'daze', power: 16 },
+      { verb: 'pin', power: 16 },
       { verb: 'seal', power: 8 },
     ],
     chakraCost: 16,

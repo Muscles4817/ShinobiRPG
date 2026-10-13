@@ -306,6 +306,21 @@ Same structure, Leaf names. In summary:
 
 ---
 
+### Decisions on review
+
+- **Library:** genin read the open shelves (standard techniques to rank C) only with a permit
+  their sensei signs at a lesson, once friends and with an art at C (`game/permits.ts`).
+- **Teachers:** Lantern Wind is Gōran's; Iron Gate is Masaru's (a new chūnin, captain of the
+  bridge watch); Moth Needle Suzu's; River Draw Gen's; Twin Cut Tetsu's. In the fan pack,
+  Strong Fist is Guy's and Lee's (Lee only once you are bonded: lots of sparring and
+  closeness); Leaf Sword (Crescent Moon Dance, the iaido stance) is Hayate's and Yūgao's;
+  Asuma's Wind Blade style needs knuckles (his trench knives): Trench Knife Rush, Flying
+  Swallow, Wind Blade Flurry, with Ash Pile Burning on the side.
+- **Starters:** the fan pack's taijutsu starter is now Basic Strike Combination; Leaf Whirlwind
+  belongs to the Strong Fist. Gale Heel stays the original pack's starter.
+
+---
+
 ## Part 7: Build plan
 
 Each step is its own pull request.

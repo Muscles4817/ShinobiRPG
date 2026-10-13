@@ -6,7 +6,7 @@ import type { BreakInScene, NamePools, NindoDef, TeamText } from '../../types';
 export const ACADEMY_TECHNIQUES: readonly string[] = ['shuriken-jutsu', 'clone-jutsu'];
 
 export const DISCIPLINE_STARTERS: Readonly<Record<Discipline, string>> = {
-  taijutsu: 'leaf-whirlwind',
+  taijutsu: 'basic-strike-combination',
   ninjutsu: 'phoenix-flower',
   genjutsu: 'hell-viewing',
   kenjutsu: 'iaido-draw',

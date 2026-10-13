@@ -1,9 +1,12 @@
 import type { TechniqueDef } from '@/systems/techniques';
 
+import { LEAF_ELEMENTS } from './elements';
 import { FUUINJUTSU } from './fuuinjutsu';
 import { GENJUTSU } from './genjutsu';
 import { KENJUTSU } from './kenjutsu';
 import { NINJUTSU } from './ninjutsu';
+import { SCHOOL_TECHNIQUES } from './schools';
+import { LEAF_STANDARD } from './standard';
 import { TAIJUTSU } from './taijutsu';
 
 /**
@@ -17,4 +20,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...GENJUTSU,
   ...KENJUTSU,
   ...FUUINJUTSU,
+  ...LEAF_STANDARD,
+  ...LEAF_ELEMENTS,
+  ...SCHOOL_TECHNIQUES,
 ])();
