@@ -17,6 +17,8 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     name: 'Leaf Whirlwind',
     description: 'Konoha Senpū. A low spinning kick that sweeps the legs out from under you.',
     discipline: 'taijutsu',
+    school: 'Strong Fist',
+    accuracy: 'sure',
     effects: [{ verb: 'damage', power: 13 }],
     chakraCost: 5,
     rank: 'E',
@@ -27,7 +29,12 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     name: 'Dynamic Entry',
     description: 'A flying kick thrown with the whole body, straight through whatever guard is up.',
     discipline: 'taijutsu',
-    effects: [{ verb: 'break', power: 14 }],
+    school: 'Strong Fist',
+    reach: ['close', 'mid'],
+    effects: [
+      { verb: 'move', to: 'close', power: 6 },
+      { verb: 'break', power: 14 },
+    ],
     chakraCost: 6,
     rank: 'D',
     difficulty: 55,
@@ -52,6 +59,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'A secret finger technique of the Leaf, delivered from behind. Mostly it ruins their dignity.',
     discipline: 'taijutsu',
+    school: 'Strong Fist',
     effects: [
       { verb: 'daze', power: 6 },
       { verb: 'confuse', power: 6, scaling: { drive: ['taijutsu', 'intellect'] } },
@@ -65,7 +73,12 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     name: 'Leaf Rising Wind',
     description: 'Konoha Shōfū. A rising kick that launches the enemy into the air.',
     discipline: 'taijutsu',
-    effects: [{ verb: 'damage', power: 18 }],
+    school: 'Strong Fist',
+    effects: [
+      { verb: 'damage', power: 15 },
+      { verb: 'knock', power: 8, to: 'mid' },
+      { verb: 'daze', power: 6 },
+    ],
     chakraCost: 7,
     rank: 'C',
     difficulty: 70,
@@ -76,6 +89,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Force open the first of the body’s chakra gates. Strength floods in; the muscles pay for it.',
     discipline: 'taijutsu',
+    school: 'Strong Fist',
     effects: [
       {
         verb: 'empower',
@@ -94,6 +108,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     name: 'Leaf Strong Whirlwind',
     description: 'Konoha Gōriki Senpū. A full-power spinning kick that clears a ring around you.',
     discipline: 'taijutsu',
+    school: 'Strong Fist',
     effects: [{ verb: 'area', power: 14 }],
     chakraCost: 9,
     rank: 'C',
@@ -104,6 +119,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     name: 'Drunken Fist',
     description: 'Suiken. Sway, stumble, and strike from angles no sober fighter would try.',
     discipline: 'taijutsu',
+    accuracy: 'wild',
     effects: [
       { verb: 'damage', power: 14 },
       { verb: 'confuse', power: 8, scaling: { drive: ['taijutsu', 'speed'] } },
@@ -118,7 +134,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description: 'Shishi Rendan. Kick them up, follow them into the air and drive a heel down.',
     discipline: 'taijutsu',
     effects: [
-      { verb: 'damage', power: 18 },
+      { verb: 'damage', power: 18, hits: 3 },
       { verb: 'break', power: 10 },
     ],
     chakraCost: 13,
@@ -131,6 +147,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Through the second gate to the third. The skin flushes red, the wounds stop mattering, for now.',
     discipline: 'taijutsu',
+    school: 'Strong Fist',
     effects: [
       { verb: 'heal', power: 10, scaling: { drive: ['willpower', 'stamina'] } },
       {
@@ -166,6 +183,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Ura Renge. The fifth gate open, a body juggled in the air, a last blow nobody walks off.',
     discipline: 'taijutsu',
+    school: 'Strong Fist',
     effects: [
       { verb: 'damage', power: 30 },
       { verb: 'daze', power: 12 },
@@ -182,6 +200,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Gate of Wonder. Punches so fast the air catches fire, fanning out like a peacock’s tail.',
     discipline: 'taijutsu',
+    school: 'Strong Fist',
     effects: [
       { verb: 'area', power: 22 },
       { verb: 'daze', power: 6 },
@@ -197,6 +216,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Hirudora. The seventh gate open, a single compressed fist of air in the shape of a tiger.',
     discipline: 'taijutsu',
+    school: 'Strong Fist',
     effects: [
       { verb: 'break', power: 34 },
       { verb: 'daze', power: 10 },

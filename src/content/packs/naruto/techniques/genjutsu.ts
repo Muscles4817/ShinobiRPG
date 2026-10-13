@@ -61,7 +61,10 @@ export const GENJUTSU: readonly TechniqueDef[] = [
     name: 'Demonic Illusion: Tree Binding',
     description: 'Roots that are not there bind the target while you strike.',
     discipline: 'genjutsu',
-    effects: [{ verb: 'damage', power: 16 }],
+    effects: [
+      { verb: 'pin', power: 12, scaling: { resist: ['willpower'] } },
+      { verb: 'damage', power: 10 },
+    ],
     chakraCost: 11,
     rank: 'C',
     difficulty: 75,
@@ -137,7 +140,7 @@ export const GENJUTSU: readonly TechniqueDef[] = [
     description: 'The roots hold for real this time, and you step out of the bark with a kunai.',
     discipline: 'genjutsu',
     effects: [
-      { verb: 'daze', power: 14 },
+      { verb: 'pin', power: 16, scaling: { resist: ['willpower'] } },
       { verb: 'damage', power: 20 },
     ],
     chakraCost: 16,

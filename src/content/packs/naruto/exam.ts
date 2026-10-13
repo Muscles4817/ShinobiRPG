@@ -98,7 +98,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
     baseStat: 7,
     statBonuses: { kenjutsu: 4, speed: 2 },
     maxChakra: 40,
-    techniqueIds: ['iaido-draw', 'crescent-moon-dance'],
+    techniqueIds: ['iaido-draw', 'bleeding-slash'],
     traits: ['swift'],
   },
   {
@@ -110,7 +110,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
     baseStat: 7,
     statBonuses: { perception: 3, speed: 1 },
     maxChakra: 40,
-    techniqueIds: ['shuriken-jutsu'],
+    techniqueIds: ['shuriken-jutsu', 'air-bullet'],
     traits: ['archer'],
   },
   {

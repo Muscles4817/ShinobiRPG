@@ -60,7 +60,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     baseStat: 8,
     statBonuses: { strength: 2, taijutsu: 2, stamina: 2 },
     maxChakra: 30,
-    techniqueIds: ['shuriken-jutsu', 'leaf-whirlwind'],
+    techniqueIds: ['shuriken-jutsu', 'shoulder-throw'],
     traits: ['armoured'],
   },
   {
@@ -72,7 +72,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     baseStat: 8,
     statBonuses: { ninjutsu: 3, speed: 2 },
     maxChakra: 60,
-    techniqueIds: ['water-bullet', 'shuriken-jutsu'],
+    techniqueIds: ['water-bullet', 'water-gun', 'shuriken-jutsu'],
     traits: ['swift'],
     nature: 'water',
   },
@@ -153,7 +153,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     baseStat: 11,
     statBonuses: { taijutsu: 3, genjutsu: 2, stamina: 2 },
     maxChakra: 60,
-    techniqueIds: ['hell-viewing', 'leaf-rising-wind'],
+    techniqueIds: ['hell-viewing', 'rising-knee'],
     traits: ['brawler'],
   },
   {

@@ -35,7 +35,13 @@ export const CLAN_HEADS: readonly PersonDef[] = [
     teacher: {
       quirk: 'harsh',
       steers: { focus: 'specialty', freeAtStage: 4 },
-      teaches: ['gentle-fist', 'sixty-four-palms'],
+      teaches: [
+        'gentle-fist',
+        'air-palm',
+        'sixty-four-palms',
+        'eight-trigrams-rotation',
+        'hundred-twenty-eight-palms',
+      ],
       price: { kind: 'bond', minStage: 3, line: '“The Hyūga do not instruct strangers.”' },
     },
   },

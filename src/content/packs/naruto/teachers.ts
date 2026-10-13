@@ -17,7 +17,13 @@ export const GUY_TEACHER: TeacherProfile = {
   quirk: 'natural',
   steers: { focus: 'specialty', freeAtStage: 4 },
   teaches: [
+    'leaf-whirlwind',
+    'dynamic-entry',
     'leaf-hurricane',
+    'thousand-years-of-death',
+    'leaf-rising-wind',
+    'leaf-strong-whirlwind',
+    'gate-of-opening',
     'front-lotus',
     'gate-of-life',
     'reverse-lotus',
@@ -43,7 +49,13 @@ export const KURENAI_TEACHER: TeacherProfile = {
 
 export const ASUMA_TEACHER: TeacherProfile = {
   quirk: 'patient',
-  teaches: ['flying-swallow', 'seven-swords-dance'],
+  teaches: [
+    'trench-knife-rush',
+    'flying-swallow',
+    'ash-pile-burning',
+    'wind-blade-flurry',
+    'seven-swords-dance',
+  ],
   price: { kind: 'ryo', perSession: 30, line: '“You’re buying the cigarettes. Kidding. Mostly.”' },
 };
 
@@ -66,5 +78,19 @@ export const ANKO_TEACHER: TeacherProfile = {
         line: '“Bring back some stolen scrolls first. Then I might bother.”',
       },
     ],
+  },
+};
+
+/**
+ * Lee teaches the Strong Fist too, but only to someone who has sparred with him until they are
+ * bonded: he won't hand Guy-sensei's style to anyone who hasn't earned it with sweat.
+ */
+export const LEE_TEACHER: TeacherProfile = {
+  quirk: 'natural',
+  teaches: ['leaf-whirlwind', 'leaf-hurricane', 'leaf-rising-wind', 'front-lotus'],
+  price: {
+    kind: 'bond',
+    minStage: 4,
+    line: '“Guy-sensei’s style is not for show! Spar with me until we are true rivals.”',
   },
 };
