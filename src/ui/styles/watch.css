@@ -14,6 +14,10 @@
   pointer-events: none;
   overflow: visible;
 }
+/* The fighters and the distance sit over the line, so it never covers a name or a label. */
+.formation > :not(.stage-line) {
+  position: relative;
+}
 .stage-line line {
   stroke: var(--gold);
   stroke-width: 3;

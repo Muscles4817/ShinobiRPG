@@ -153,6 +153,8 @@ export interface PlanState {
   /** The card each foe has announced for the next exchange (see `intent.ts`). */
   readonly intents: Readonly<Record<string, CardId>>;
   readonly log: readonly string[];
+  /** Lines let go from the front of `log` to keep it to `LOG_LIMIT` (absent: none). */
+  readonly logDropped?: number;
   readonly result: CombatResult | null;
   readonly canFlee: boolean;
   /** The side that moved first (from the fight's opening) acts first in exchange 1. */

@@ -178,6 +178,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     journal: EMPTY_JOURNAL,
     mission: null,
     combat: null,
+    combatFinale: null,
     reports: [],
     people: NO_PEOPLE,
     settings: defaultSettings(ctx),

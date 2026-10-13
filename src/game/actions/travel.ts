@@ -35,6 +35,16 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
   },
 };
 
+/** Done watching a fight end: the scene closes and its result card (if any) shows. */
+export const leaveFight: ActionHandler<ActionOf<'leaveFight'>> = {
+  check(state) {
+    return state.combatFinale ? null : 'There is no finished fight to leave.';
+  },
+  perform(state) {
+    return { ...state, combatFinale: null };
+  },
+};
+
 export const dismissReport: ActionHandler<ActionOf<'dismissReport'>> = {
   check(state) {
     return state.reports.length > 0 ? null : 'Nothing to dismiss.';

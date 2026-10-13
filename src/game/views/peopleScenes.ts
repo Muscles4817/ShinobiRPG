@@ -20,7 +20,7 @@ export type SceneKind =
  * ceremony, then talk.
  */
 export function activeScene(state: GameState): SceneKind | null {
-  if (state.combat) return 'combat';
+  if (state.combat || state.combatFinale) return 'combat';
   if (state.mission?.encounter) return 'encounter';
   if (state.mission) return 'mission';
   if (state.exams.run) return 'exam';

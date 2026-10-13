@@ -1,5 +1,6 @@
 import type { CombatOutcome, CombatView } from '@/systems/combat';
 
+import { finaleOf } from '../combatFinale';
 import { afterPouch, PLAYER_COMBATANT_ID } from '../combatants';
 import type { GameContext } from '../context';
 import { noteForestFight } from '../exam/forest';
@@ -59,6 +60,8 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const sparring = state.people.sparringWith !== null || inBout(state);
     const resolved = resolveFight(ended, outcome, view, ctx);
     const end = { outcome, view, sparring };
-    return growFromFight(applyFightToll(resolved, end, ctx, rng), lessons, ctx);
+    const settled = growFromFight(applyFightToll(resolved, end, ctx, rng), lessons, ctx);
+    // The watch screen stages the last exchange before the result card.
+    return { ...settled, combatFinale: finaleOf(view) };
   },
 };

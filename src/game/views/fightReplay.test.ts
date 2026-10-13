@@ -1,7 +1,7 @@
 import { act, ctx, newGame, withAllStats } from '@/test/gameFixtures';
 
 import type { GameState } from '../state';
-import { fightReplay } from './fightReplay';
+import { fightReplay, storyEnd } from './fightReplay';
 import { combatScene } from './scene';
 
 /** A spar against Kaen, the cards set and the fight begun. */
@@ -51,5 +51,23 @@ describe('the watch screen’s beats', () => {
       'person:kaen': kaen!.health + 5,
     });
     expect(beats[2]!.health).toMatchObject({ 'person:kaen': kaen!.health });
+  });
+
+  it('keeps its place in a long fight, after the engine lets its oldest lines go', () => {
+    let state = begun();
+    let end = storyEnd(combatScene(state, ctx)!);
+    let dropped = false;
+    for (let i = 0; i < 200 && state.combat; i++) {
+      const options = combatScene(state, ctx)!.options;
+      const next = options.find((o) => o.id === 'next') ?? options.find((o) => o.id === 'begin');
+      state = act(state, { type: 'combatAct', optionId: next!.id });
+      const view = combatScene(state, ctx);
+      if (!view) break;
+      expect(storyEnd(view)).toBeGreaterThan(end);
+      expect(fightReplay(view, end)).toHaveLength(storyEnd(view) - end);
+      dropped ||= (view.logOffset ?? 0) > 0;
+      end = storyEnd(view);
+    }
+    expect(dropped).toBe(true);
   });
 });

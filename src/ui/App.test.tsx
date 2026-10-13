@@ -201,14 +201,20 @@ describe('App (smoke test)', () => {
     expect(screen.getByText('Sparring')).toBeInTheDocument();
     // The default style plays out on your cards: begin each round, skip through watching it
     // (as an impatient player would), go back to plan, and on to the end.
+    // The last exchange plays on the stage before the result card, behind a Continue.
+    let finale = false;
     for (let i = 0; i < 120 && !screen.queryByRole('dialog'); i++) {
+      const leave = screen.queryByRole('button', { name: 'Continue' });
+      finale ||= leave !== null;
       const next =
+        leave ??
         screen.queryByRole('button', { name: 'Skip' }) ??
         screen.queryByRole('button', { name: /^Begin (the fight|round)/ }) ??
         screen.queryByRole('button', { name: 'Plan the next round' }) ??
         screen.getByRole('button', { name: /^Watch the round/ });
       await user.click(next);
     }
+    expect(finale).toBe(true);
     expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
   });
 

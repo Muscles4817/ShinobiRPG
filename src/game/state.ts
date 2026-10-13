@@ -13,6 +13,7 @@ import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
 
 import type { Board } from './boardState';
+import type { CombatFinale } from './combatFinale';
 import type { Exams } from './exam/state';
 import type { People } from './people/state';
 import type { Report } from './reports';
@@ -40,6 +41,8 @@ export interface GameState {
   readonly mission: MissionRun | null;
   /** The fight in progress, if any. Opaque: only the combat engine reads it. */
   readonly combat: CombatState | null;
+  /** A fight that just ended, kept for the watch screen until you move on. */
+  readonly combatFinale: CombatFinale | null;
   /** Result cards waiting to be shown, oldest first. */
   readonly reports: readonly Report[];
   /** Classmates, bonds, your team and any conversation in progress. */

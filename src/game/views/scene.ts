@@ -4,6 +4,7 @@ import { checkChance, STAT_INFO } from '@/systems/stats';
 
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
+import { combatFinaleView } from '../combatFinale';
 import { engineFor } from '../fightStyle';
 import { activeMission, activeStage } from '../missionFlow';
 import { checkHand } from '../missionRoles';
@@ -115,12 +116,17 @@ export function combatScene(state: GameState, ctx: GameContext): CombatView | nu
   return state.combat ? engineFor(state, ctx).view(state.combat) : null;
 }
 
+/** A fight that has just ended, as a view with nothing left to choose, until you leave it. */
+export function finishedFightScene(state: GameState): CombatView | null {
+  return state.combatFinale ? combatFinaleView(state.combatFinale) : null;
+}
+
 /** How each opponent in the current fight sizes up against you. */
 export function combatScouting(
   state: GameState,
   ctx: GameContext,
 ): Readonly<Record<string, ScoutingRead>> {
-  const view = combatScene(state, ctx);
+  const view = combatScene(state, ctx) ?? finishedFightScene(state);
   if (!view) return {};
   const foes = view.combatants.filter((c) => c.side === 'enemy').map((c) => c.id);
   return scoutOpponents(state, ctx, foes);
