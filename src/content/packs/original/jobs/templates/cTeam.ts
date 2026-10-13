@@ -8,7 +8,6 @@ export const C_TEAM_ROAD: readonly MissionTemplate[] = [
   {
     id: 'c-team-caravan',
     rank: 'C',
-    withTeam: true,
     slots: 4,
     energyCost: 30,
     reward: { ryo: 300, reputation: 7 },
@@ -58,7 +57,6 @@ export const C_TEAM_ROAD: readonly MissionTemplate[] = [
   {
     id: 'c-team-rescue',
     rank: 'C',
-    withTeam: true,
     slots: 4,
     energyCost: 30,
     reward: { ryo: 320, reputation: 8 },
@@ -119,7 +117,6 @@ export const C_TEAM_ROAD: readonly MissionTemplate[] = [
   {
     id: 'c-team-haunting',
     rank: 'C',
-    withTeam: true,
     slots: 4,
     energyCost: 30,
     reward: { ryo: 330, reputation: 8 },

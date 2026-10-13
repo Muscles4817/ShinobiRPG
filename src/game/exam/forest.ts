@@ -8,7 +8,7 @@ import {
   type ExamExit,
   type SurvivalStageDef,
 } from '@/systems/exams';
-import { startRun } from '@/systems/missions';
+import { startRun, type Crew } from '@/systems/missions';
 
 import type { GameContext } from '../context';
 import { adjust, log, spendTime } from '../ops';
@@ -33,8 +33,10 @@ export function enterForest(state: GameState, ctx: GameContext): GameState {
   if (!here || here.run.progress?.kind !== 'survival') return state;
   const def = ctx.content.missions.require(here.stage.missionId);
   const run = { ...here.run, progress: { kind: 'survival' as const, started: true } };
+  // The genin sitting the exam together go in together; no sensei follows them.
+  const examCrew: Crew = { kind: 'exam-team', leaderId: null, memberIds: here.run.teamIds };
   const started = adjust(
-    spendTime({ ...withRun(state, run), mission: startRun(def) }, def.slots, ctx),
+    spendTime({ ...withRun(state, run), mission: startRun(def, examCrew) }, def.slots, ctx),
     {
       energy: -def.energyCost,
     },

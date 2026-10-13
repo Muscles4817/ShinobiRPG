@@ -4,14 +4,14 @@ import { createStats } from '@/systems/stats';
 import {
   advance,
   currentStage,
-  isSeniorMission,
-  rankForMission,
   resolveCheck,
   reward,
   startRun,
   type MissionDef,
   type CheckStage,
 } from './missions';
+import { SOLO } from './crew';
+import { isSeniorMission } from './missionRank';
 
 const check: CheckStage = {
   kind: 'check',
@@ -40,14 +40,14 @@ const approach = check.approaches[0]!;
 
 describe('missions', () => {
   it('walks through stages', () => {
-    const run = advance(startRun(mission), { kind: 'story', text: 'started' });
+    const run = advance(startRun(mission, SOLO), { kind: 'story', text: 'started' });
     expect(currentStage(mission, run)).toBe(check);
     expect(currentStage(mission, advance(run))).toBeUndefined();
   });
 
   it('advances on a successful check', () => {
     const r = resolveCheck(
-      startRun(mission),
+      startRun(mission, SOLO),
       { stage: check, approach },
       createStats(100),
       createRng(1),
@@ -61,7 +61,7 @@ describe('missions', () => {
 
   it('penalises the reward on a failed penalty check', () => {
     const r = resolveCheck(
-      startRun(mission),
+      startRun(mission, SOLO),
       { stage: check, approach },
       createStats(-100),
       createRng(1),
@@ -76,7 +76,7 @@ describe('missions', () => {
 
   it('a teammate who takes the check rolls with their own value and is named', () => {
     const r = resolveCheck(
-      startRun(mission),
+      startRun(mission, SOLO),
       { stage: check, approach, hand: { name: 'Kaen', value: 100 } },
       createStats(-100),
       createRng(1),
@@ -88,7 +88,7 @@ describe('missions', () => {
   it('aborts on a failed abort check', () => {
     const abortCheck = { ...check, onFailure: 'abort' as const };
     const r = resolveCheck(
-      startRun(mission),
+      startRun(mission, SOLO),
       { stage: abortCheck, approach },
       createStats(-100),
       createRng(1),
@@ -98,12 +98,8 @@ describe('missions', () => {
   });
 });
 
-describe('who a job is given to', () => {
-  it('gives B-rank and harder jobs done alone to chūnin, team jobs to any genin team', () => {
-    expect(rankForMission({ rank: 'C' })).toBe('genin');
-    expect(rankForMission({ rank: 'B' })).toBe('chunin');
-    expect(rankForMission({ rank: 'S' })).toBe('jonin');
-    expect(rankForMission({ rank: 'B', withTeam: true })).toBe('genin');
+describe('senior jobs', () => {
+  it('counts B-rank and harder towards a jōnin’s record', () => {
     expect(isSeniorMission('B')).toBe(true);
     expect(isSeniorMission('C')).toBe(false);
   });

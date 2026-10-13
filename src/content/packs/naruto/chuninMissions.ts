@@ -93,6 +93,7 @@ export const CHUNIN_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'leaf-missing-nin',
     kind: 'Rogue',
+    danger: 'deadly',
     name: 'Missing-nin',
     description:
       'Left the Leaf with its secrets and a grudge. Fights like a chūnin, because he was one.',

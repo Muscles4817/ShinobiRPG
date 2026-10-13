@@ -5,6 +5,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     id: 'wild-boar',
     name: 'Wild Boar',
     kind: 'Beast',
+    danger: 'petty',
     description: 'A tusked brute from the forests outside the walls.',
     baseStat: 3,
     statBonuses: { speed: 3, strength: 1 },
@@ -17,6 +18,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     id: 'bandit-thug',
     name: 'Bandit Thug',
     kind: 'Bandit',
+    danger: 'armed',
     description: 'A road-bandit with a club and no patience.',
     baseStat: 5,
     statBonuses: { strength: 2, taijutsu: 1 },
@@ -28,6 +30,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     id: 'academy-dropout',
     name: 'Academy Dropout',
     kind: 'Rogue',
+    danger: 'petty',
     description: 'Failed the graduation exam twice and blames everyone but himself.',
     baseStat: 6,
     statBonuses: { ninjutsu: 1 },
@@ -39,6 +42,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     id: 'restless-spirit',
     name: 'Restless Spirit',
     kind: 'Spirit',
+    danger: 'petty',
     description: 'The cold remnant of a merchant who died counting his grain.',
     baseStat: 6,
     statBonuses: { genjutsu: 3, willpower: 3, stamina: -2 },
@@ -50,6 +54,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'bandit-chief',
     kind: 'Bandit',
+    danger: 'armed',
     name: 'Bandit Chief',
     description: 'A hulking ex-mercenary with a chipped sword and twenty loyal thugs.',
     baseStat: 8,
@@ -61,6 +66,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'missing-nin',
     kind: 'Missing-nin',
+    danger: 'deadly',
     name: 'Missing-nin',
     description: 'A chūnin who fled the Hidden Mist with a slashed headband.',
     baseStat: 8,
@@ -73,6 +79,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'bandit-archer',
     kind: 'Bandit',
+    danger: 'armed',
     name: 'Bandit Archer',
     description: 'A poacher with a hunting bow who would rather not be seen.',
     baseStat: 5,
@@ -84,6 +91,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'gozu',
     kind: 'Chūnin of the Mist',
+    danger: 'deadly',
     name: 'Gōzu',
     description:
       'One of the Demon Brothers: a clawed gauntlet, a shared chain, poison on the claws.',
@@ -97,6 +105,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'meizu',
     kind: 'Chūnin of the Mist',
+    danger: 'deadly',
     name: 'Meizu',
     description:
       'The other Demon Brother. Hid in a puddle on a road that hasn’t seen rain in days.',
@@ -110,6 +119,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'zabuza',
     kind: 'Missing-nin',
+    danger: 'elite',
     name: 'Zabuza Momochi',
     description: 'The Demon of the Hidden Mist, with a cleaver as tall as he is.',
     baseStat: 14,
@@ -122,6 +132,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'haku',
     kind: 'Hunter-nin',
+    danger: 'elite',
     name: 'Haku',
     description:
       'A masked hunter-nin who never misses a nerve point, and never kills if he can help it.',
@@ -135,6 +146,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'dosu',
     kind: 'Sound Genin',
+    danger: 'deadly',
     name: 'Dosu Kinuta',
     description:
       'Bandaged from head to foot. His gauntlet turns a missed punch into a ringing ear.',
@@ -147,6 +159,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'kin',
     kind: 'Sound Genin',
+    danger: 'deadly',
     name: 'Kin Tsuchi',
     description: 'Bells on her needles. By the time you hear them, it is already too late.',
     baseStat: 10,
@@ -158,6 +171,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'raiga',
     kind: 'Swordsman of the Mist',
+    danger: 'elite',
     name: 'Raiga Kurosuki',
     description: 'A swordsman who weeps at the funerals he arranges. His twin blades crackle.',
     baseStat: 15,
@@ -170,6 +184,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'traitor-chunin',
     kind: 'Traitor',
+    danger: 'elite',
     name: 'Traitor Chūnin',
     description: 'A Leaf chūnin with the Scroll of Seals on his back and tags up both sleeves.',
     baseStat: 13,

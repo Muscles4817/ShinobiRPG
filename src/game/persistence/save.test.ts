@@ -197,6 +197,24 @@ describe('persistence', () => {
     expect(loaded.value.combatFinale).toBeNull();
   });
 
+  it('sends a job under way before crews on with your team, or alone without one', () => {
+    const game = newGame();
+    const run = { missionId: 'lantern-patrol', stageIndex: 0, rewardMultiplier: 1, notes: [] };
+    const team = { teammateIds: ['a', 'b'], senseiOptions: [], senseiId: null };
+    const withTeam = { ...game, mission: run, people: { ...game.people, team } };
+    const loaded = deserialize(JSON.stringify({ version: 27, state: withTeam }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.mission?.crew).toEqual({
+      kind: 'old-team',
+      leaderId: null,
+      memberIds: ['a', 'b'],
+    });
+    const teamless = { ...game, mission: run, people: { ...game.people, team: null } };
+    const alone = deserialize(JSON.stringify({ version: 27, state: teamless }));
+    if (!alone.ok) throw new Error(alone.error);
+    expect(alone.value.mission?.crew.kind).toBe('solo');
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

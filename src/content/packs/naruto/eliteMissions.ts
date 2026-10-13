@@ -16,7 +16,6 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
     energyCost: 30,
     reward: { ryo: 380, reputation: 9, scrollId: 'multiple-shadow-clone' },
     minMissionsCompleted: 5,
-    withTeam: true,
     stages: [
       {
         kind: 'narrative',
@@ -61,7 +60,6 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
       gearId: 'kubikiribocho',
     },
     minMissionsCompleted: 7,
-    withTeam: true,
     stages: [
       {
         kind: 'narrative',
@@ -143,7 +141,6 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
       gearId: 'kiba-blades',
     },
     minMissionsCompleted: 11,
-    withTeam: true,
     stages: [
       {
         kind: 'narrative',

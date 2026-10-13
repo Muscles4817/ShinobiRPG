@@ -8,7 +8,6 @@ export const C_TEAM_FIELD: readonly MissionTemplate[] = [
   {
     id: 'c-team-hunt',
     rank: 'C',
-    withTeam: true,
     slots: 4,
     energyCost: 30,
     reward: { ryo: 290, reputation: 7 },
@@ -71,7 +70,6 @@ export const C_TEAM_FIELD: readonly MissionTemplate[] = [
   {
     id: 'c-team-raid',
     rank: 'C',
-    withTeam: true,
     slots: 4,
     energyCost: 30,
     reward: { ryo: 350, reputation: 9 },
@@ -134,7 +132,6 @@ export const C_TEAM_FIELD: readonly MissionTemplate[] = [
   {
     id: 'c-team-border-sweep',
     rank: 'C',
-    withTeam: true,
     slots: 4,
     energyCost: 30,
     reward: { ryo: 310, reputation: 8 },

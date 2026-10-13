@@ -1,13 +1,13 @@
 import { stageFoes, type MissionDef } from '@/systems/missions';
 
 import { INTEL_FEE } from '../actions/intel';
-import { availability } from '../board';
+import { availability, crewFor } from '../board';
 import type { GameContext } from '../context';
-import { senseiAlong } from '../missionTeam';
 import { placeHere } from '../ops';
 import { missionThreat, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
+import { crewWords, type CrewWords } from './crewWords';
 
 /** One kind of foe on a job, from the client's report. */
 export interface Foe {
@@ -38,10 +38,8 @@ export interface Notice extends Choice {
     /** Buying the report, while you don't have it. */
     readonly intel: (Choice & { readonly fee: number }) | null;
   } | null;
-  /** Your teammates come along. */
-  readonly withTeam: boolean;
-  /** Your sensei's name, when the job is serious enough for them to lead it. */
-  readonly sensei: string | null;
+  /** Who the village sends with you; null when you go alone. */
+  readonly crew: CrewWords | null;
   /** "Standing job" or how long the posting stays up, e.g. "Gone after tomorrow". */
   readonly posted: string;
   readonly standing: boolean;
@@ -84,6 +82,11 @@ function oppositionOf(
   };
 }
 
+function crewOf(state: GameState, ctx: GameContext, def: MissionDef): CrewWords | null {
+  const crew = crewFor(state, ctx, def);
+  return crew ? crewWords(state, ctx, crew) : null;
+}
+
 /** How long a posting stays up, in words. */
 function postedFor(daysLeft: number): string {
   if (daysLeft <= 1) return 'Last day';
@@ -115,8 +118,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         energyCost: m.energyCost,
         fightLikely: m.stages.some((s) => stageFoes(s).length > 0),
         opposition: oppositionOf(state, ctx, m),
-        withTeam: m.withTeam ?? false,
-        sensei: senseiAlong(state, ctx, m)?.name ?? null,
+        crew: crewOf(state, ctx, m),
         standing: on.kind === 'standing',
         posted: on.kind === 'standing' ? 'Standing job' : postedFor(on.daysLeft),
       };

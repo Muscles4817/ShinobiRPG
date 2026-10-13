@@ -12,7 +12,6 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     energyCost: 30,
     reward: { ryo: 280, reputation: 7 },
     minMissionsCompleted: 2,
-    withTeam: true,
     stages: [
       {
         kind: 'narrative',
@@ -50,7 +49,6 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     energyCost: 30,
     reward: { ryo: 340, reputation: 8, scrollId: 'gate-of-opening', gearId: 'samehada' },
     minMissionsCompleted: 4,
-    withTeam: true,
     stages: [
       {
         kind: 'narrative',

@@ -54,3 +54,4 @@ export type {
   TraitDef,
   VillageLife,
 } from './types';
+export { jobProfile } from './jobProfile';

@@ -2,6 +2,7 @@ import { act, ctx, fightOut } from '@/test/gameFixtures';
 import {
   atEncounter,
   capable,
+  closeToTeam,
   hardCtx,
   keenEyed,
   spying,
@@ -90,7 +91,8 @@ describe('going in to fight', () => {
 
 describe('ways past without a fight', () => {
   it('slipping past an escort’s foes is full pay', () => {
-    const s = atEncounter(ESCORT);
+    // The team goes on an armed escort; friends hang back when told, so you go at your pace.
+    const s = atEncounter(ESCORT, closeToTeam(capable()));
     const done = approach(s, 'sneak');
     expect(done.mission).toBeNull();
     expect(done.wallet.ryo).toBe(s.wallet.ryo + ESCORT_PAY);

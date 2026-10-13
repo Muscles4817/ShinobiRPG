@@ -229,8 +229,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     bouts against rivals generated from the seed. Every stage records conduct marks
     (`conduct.ts`), and the verdict weighs conduct with results. A promotion is its own scene
     (`exams.ceremony`): the rank, the vest, and unlocks derived from data (`exam/unlocks.ts`).
-    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it. A job done
-    alone goes to its rank (`rankForMission`: B and A to chūnin); team jobs to any genin team.
+    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it.
+21. **Crews are assigned per job.** Who goes with you is decided for each posting
+    (`systems/missions/crew.ts` for the rules, `game/crew.ts` for the people, both hashing the
+    seed and the day it went up): alone, your old team (the sensei leads it from C-rank),
+    genin you lead, a chūnin squad, or under a jōnin. The rules read the job's rank, its
+    **danger** (its worst foe's `EnemyDef.danger`: petty, armed, deadly, elite) and your rank
+    and record: a genin goes alone only against petty foes and never on B or A; a chūnin takes
+    only safe B-rank work and A-rank only under a jōnin; a jōnin's A-rank work goes to them alone
+    as their senior record grows. The board, the start action and `validateCrews` all enforce
+    them. The run keeps its `crew`; allies, orders, the medic, check roles and bond all read it
+    (`game/missionTeam.ts`), never your genin team directly.
 
 ### Content packs
 
@@ -290,8 +299,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   technique ids, price); at least two specialties must exist for the team choice (validated).
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).
-- **Add an enemy:** add an `EnemyDef` (stats, techniques, optional `nature`, `traits`, and
-  `healthScale` for a creature bigger or smaller than a person) to the
+- **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,
+  optional `nature`, `traits`, and `healthScale` for a creature bigger or smaller than a person) to the
   pack's `enemies` and use it in a mission's combat stage. A new trait goes in
   `COMBAT_TRAITS`, its rule in `rules/kit.ts` or `rules/conditions.ts`, its counter text in
   `game/scouting.ts`, and every engine must honour it.
@@ -314,10 +323,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a technique:** give it a source (validated): the academy (rank E–D), a library (C–B,
   chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
   scroll reward.
-- **Add a team mission:** set `withTeam: true` on a `MissionDef`; teammates join every
-  fight as allies and each gains bond on success. Offer it at a mission hall as usual. Give a
-  check approach a `role` (tracker, sensor, medic) when the best teammate should take it; from
-  C-rank (or a far-stronger foe) the sensei leads it and fights too (`game/missionTeam.ts`).
+- **Decide who goes on a mission:** nothing to set. A job's rank and its foes' danger decide
+  the crews it may get (decision 21); a crew joins every fight as allies and each member gains
+  bond on success. Give a check approach a `role` (tracker, sensor, medic) when the best crew
+  member should take it (validated: only on jobs someone takes with a crew).
 - **Add an exam stage kind:** add a variant to `ExamStageDef` and `StageProgress`
   (`systems/exams/exams.ts`), its play in `game/exam/`, its choices in `views/exam.ts` and its
   checks in `validateExams.ts` (the compiler lists the switches). Exam text (the paper's

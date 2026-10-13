@@ -1,5 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
-import type { EncounterTemplate, MissionDef } from '@/systems/missions';
+import type { Danger, EncounterTemplate, MissionDef } from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta, StatId } from '@/systems/stats';
 import type { ExamDef } from '@/systems/exams';
@@ -99,6 +99,8 @@ export interface EnemyDef {
   readonly description: string;
   /** Short tag shown on the enemy's banner in a fight, e.g. "Spirit", "Beast". */
   readonly kind: string;
+  /** Who may be sent against them (`Danger`); validated against their strength. */
+  readonly danger: Danger;
   readonly baseStat: number;
   readonly statBonuses: StatDelta;
   /**

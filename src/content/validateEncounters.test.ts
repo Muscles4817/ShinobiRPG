@@ -37,7 +37,7 @@ describe('mission role validation', () => {
       ),
     };
     expect(validateContent(solo)).toContain(
-      'mission "academy-dropout" gives a check a team role but goes without the team',
+      'mission "academy-dropout" gives a check a team role but always goes alone',
     );
   });
 });

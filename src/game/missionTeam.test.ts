@@ -6,7 +6,8 @@ import { atEncounter, capable, spying, withStats } from '@/test/encounterFixture
 import { attributesOf } from './combatants';
 import { approachPlans } from './encounter/approaches';
 import { encounterHere } from './encounter/current';
-import { MEDIC_CONTROL, seriousJob, senseiAlong } from './missionTeam';
+import { crewOn, seriousJob } from './crew';
+import { MEDIC_CONTROL } from './missionTeam';
 import { requirePerson } from './people/cast';
 import { personStats } from './people/progress';
 import { STANCE_ORDERS_STAGE } from './people/teamOrders';
@@ -16,7 +17,7 @@ import { encounterScene } from './views/encounter';
 import { missionScene } from './views/scene';
 
 const TEAM_JOB = 'river-road-bandits';
-const SOLO_JOB = 'tea-merchant-escort';
+const ESCORT_JOB = 'tea-merchant-escort';
 
 /** A teammate's stats set outright (their grown stats, as the save keeps them). */
 function teammateWith(
@@ -48,7 +49,7 @@ describe('the sensei joins serious team missions', () => {
     const start = withAllStats(veteran(newGame({}, spy.context), 2), 40);
     const sensei = requirePerson(start, ctx, start.people.team!.senseiId!);
     const notice = missionBoardView(start, ctx)!.notices.find((n) => n.id === TEAM_JOB);
-    expect(notice?.sensei).toBe(sensei.name);
+    expect(notice?.crew?.line).toBe(`With your team, ${sensei.name} leading`);
 
     let s = act(start, { type: 'startMission', missionId: TEAM_JOB }, spy.context);
     s = act(s, { type: 'missionContinue' }, spy.context);
@@ -64,14 +65,22 @@ describe('the sensei joins serious team missions', () => {
     expect(theirs.techniques.map((t) => t.id)).toEqual(expect.arrayContaining([...signatures]));
   });
 
-  it('stays home on easy jobs and solo ones, but comes when the foes far outclass you', () => {
+  it('stays home on easy jobs, but comes when the foes far outclass you', () => {
     const state = newGame();
     const team = ctx.content.missions.require(TEAM_JOB);
     const easy = { ...team, rank: 'D' as const };
+    const day = state.time.day;
     expect(seriousJob(withAllStats(state, 60), ctx, easy)).toBe(false);
-    expect(senseiAlong(withAllStats(state, 60), ctx, easy)).toBeNull();
+    expect(crewOn(withAllStats(state, 60), ctx, easy, day)?.leaderId).toBeNull();
     expect(seriousJob(withAllStats(state, 1), ctx, easy)).toBe(true);
-    expect(senseiAlong(state, ctx, ctx.content.missions.require(SOLO_JOB))).toBeNull();
+    // An armed D-rank job: the team goes, but the sensei leaves it to them.
+    const escort = crewOn(
+      withAllStats(state, 60),
+      ctx,
+      ctx.content.missions.require(ESCORT_JOB),
+      day,
+    );
+    expect(escort).toMatchObject({ kind: 'old-team', leaderId: null });
   });
 });
 

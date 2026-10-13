@@ -7,6 +7,7 @@ import {
   type GameState,
 } from '@/game';
 import type { CombatEngine, CombatSetup } from '@/systems/combat';
+import { BOND_STAGES, bondWith } from '@/systems/bonds';
 import type { StatId } from '@/systems/stats';
 
 import { act, ctx, newGame, veteran, withAllStats } from './gameFixtures';
@@ -85,4 +86,12 @@ export function atEncounter(
 export function withStats(state: GameState, stats: Partial<Record<StatId, number>>): GameState {
   const { character } = state;
   return { ...state, character: { ...character, stats: { ...character.stats, ...stats } } };
+}
+
+/** Your teammates count you close friends, so they hang back and follow your lead. */
+export function closeToTeam(state: GameState): GameState {
+  const close = bondWith(BOND_STAGES[3].min);
+  const ids = state.people.team?.teammateIds ?? [];
+  const bonds = { ...state.people.bonds, ...Object.fromEntries(ids.map((id) => [id, close])) };
+  return { ...state, people: { ...state.people, bonds } };
 }

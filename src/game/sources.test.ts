@@ -1,4 +1,5 @@
 import { addScroll } from '@/systems/inventory';
+import { SOLO } from '@/systems/missions';
 import type { StudySource } from '@/systems/techniques';
 import { act, ctx, newGame, withAllStats } from '@/test/gameFixtures';
 
@@ -27,7 +28,13 @@ function ready(): GameState {
 
 function finished(state: GameState, missionId: string): GameState {
   const def = ctx.content.missions.require(missionId);
-  const mission = { missionId, stageIndex: def.stages.length, rewardMultiplier: 1, notes: [] };
+  const mission = {
+    missionId,
+    crew: SOLO,
+    stageIndex: def.stages.length,
+    rewardMultiplier: 1,
+    notes: [],
+  };
   return afterStage({ ...state, mission }, ctx);
 }
 

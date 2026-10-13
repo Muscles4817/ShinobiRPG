@@ -97,6 +97,7 @@ export const CHUNIN_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'ember-missing-nin',
     kind: 'Rogue',
+    danger: 'deadly',
     name: 'Ember Missing-nin',
     description:
       'Left the village with its secrets and a grudge. Fights like a chūnin, because he was one.',
@@ -110,6 +111,7 @@ export const CHUNIN_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'kiln-wraith',
     kind: 'Spirit',
+    danger: 'deadly',
     name: 'Kiln Wraith',
     description: 'A potter who fell into his own fire, and has been hungry for light ever since.',
     baseStat: 11,

@@ -335,9 +335,13 @@ goes: _"Lead three genin"_, _"With Hotaru and Gen"_, _"Under Jōnin Ise, with tw
 #### Danger
 
 Each `EnemyDef` gets a danger class: **petty** (a pickpocket, a drunk, a goose), **armed**
-(bandits, beasts), **shinobi** (rogue ninja), **elite**. Petty foes are validated against their
-stats. A job's danger is its worst foe, **twist foes included**, so nobody has to remember to
-mark a job dangerous. A **safe** job has nothing beyond armed.
+(bandits, beasts), **deadly** (rogue ninja and spirits a match for a chūnin), **elite**
+(jōnin-level). Every class is validated against the foe's stats. A job's danger is its worst
+foe, **twist foes included**, so nobody has to remember to mark a job dangerous.
+
+A **safe** B-rank job has no elite foe. (Built as: chūnin-level rogues are what chūnin squads
+are sent against; holding chūnin to armed foes would have left them almost no B-rank work,
+since nearly every B-rank job in the packs has a rogue shinobi or a strong spirit in it.)
 
 #### Who gets what
 
