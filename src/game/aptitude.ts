@@ -1,5 +1,6 @@
 import type { Rng } from '@/core';
 import type { ClanDef, TalentDef } from '@/content';
+import type { TalentBand } from '@/systems/profile';
 import type { ModifierSpec } from '@/systems/modifiers';
 import {
   APTITUDE_MAX,
@@ -9,15 +10,26 @@ import {
   type AptitudeOdds,
   type StatId,
 } from '@/systems/stats';
-import { DISCIPLINES } from '@/systems/techniques';
+import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 
 /**
  * Where a character's talent comes from. Clan shinobi have a high floor and a narrow spread in
  * their clan's arts and are ordinary elsewhere; the clanless gamble on a wide spread (a few
  * prodigies, a few holes, sometimes an art that will never take). The talent on your academy
  * file sets a floor in the stats it raises, and the clan's and talent's growth multipliers
- * tilt the roll: aptitude is where those multipliers now act.
+ * tilt the roll: aptitude is where those multipliers now act. Where you stood in your class
+ * shifts the whole roll (`TalentBand`): the dead last draw low, a genius high and is never less
+ * than gifted in their A-graded arts. A talent may fix some stats outright (0: never).
  */
+
+/** Where a character stood, as the roll needs it; classmates and the cast roll as the middle. */
+export interface TalentShape {
+  readonly band: TalentBand;
+  /** The arts graded highest on their file: never voided, and gifted in a genius. */
+  readonly specialties: readonly Discipline[];
+}
+
+const MIDDLE: TalentShape = { band: { scale: 1, prodigy: 0, hole: 0 }, specialties: [] };
 
 /** A clan member's aptitude in the clan's arts. */
 const CLAN_ART_ODDS = { floor: 1.1, ceiling: 1.4 } as const;
@@ -25,6 +37,11 @@ const CLAN_ART_ODDS = { floor: 1.1, ceiling: 1.4 } as const;
 const CLAN_OTHER_ODDS = { floor: 0.75, ceiling: 1.2, hole: 0.03 } as const;
 /** The clanless: anything can happen. */
 const CLANLESS_ODDS = { floor: 0.6, ceiling: 1.35, prodigy: 0.08, hole: 0.1 } as const;
+/**
+ * The arts graded best on your file are never a hole: they roll at least this (scaled by where
+ * you stood), so an A in taijutsu never sits on no talent for it.
+ */
+const BEST_ART_FLOOR = 0.8;
 /** Stats the talent on your file raises never roll below this. */
 const TALENT_FLOOR = 1;
 /** Chance a clanless character has one art (discipline) that will never take. */
@@ -42,17 +59,39 @@ export function withoutGrowth({ growth: _g, training: _t, ...rest }: ModifierSpe
   return rest;
 }
 
-function oddsFor(clan: ClanDef, talent: TalentDef | undefined): (stat: StatId) => AptitudeOdds {
+function baseOdds(clan: ClanDef, stat: StatId): AptitudeOdds {
+  if (clan.arts.length === 0) return CLANLESS_ODDS;
+  return clan.arts.includes(stat) ? CLAN_ART_ODDS : CLAN_OTHER_ODDS;
+}
+
+/** The odds shifted by where they stood: ranges scaled, prodigies and holes likelier or not. */
+function shifted(odds: AptitudeOdds, band: TalentBand): AptitudeOdds {
+  return {
+    ...odds,
+    floor: odds.floor * band.scale,
+    ceiling: odds.ceiling * band.scale,
+    prodigy: Math.max(0, (odds.prodigy ?? 0) + band.prodigy),
+    hole: Math.max(0, (odds.hole ?? 0) + band.hole),
+  };
+}
+
+function oddsFor(
+  clan: ClanDef,
+  talent: TalentDef | undefined,
+  shape: TalentShape,
+): (stat: StatId) => AptitudeOdds {
   const tilt = identityTilt([clan.modifiers, talent?.modifiers ?? {}]);
+  const specialty = (stat: StatId) => shape.specialties.some((d) => d === stat);
   return (stat) => {
-    const base =
-      clan.arts.length === 0
-        ? CLANLESS_ODDS
-        : clan.arts.includes(stat)
-          ? CLAN_ART_ODDS
-          : CLAN_OTHER_ODDS;
     const raised = (talent?.statBonuses[stat] ?? 0) > 0;
-    return { ...base, tilt: tilt[stat], ...(raised ? { atLeast: TALENT_FLOOR } : {}) };
+    const best = shape.band.specialtyAtLeast ?? BEST_ART_FLOOR * shape.band.scale;
+    const floors = [raised ? TALENT_FLOOR : 0, specialty(stat) ? best : 0];
+    const atLeast = Math.max(...floors);
+    return {
+      ...shifted(baseOdds(clan, stat), shape.band),
+      tilt: tilt[stat],
+      ...(atLeast > 0 ? { atLeast } : {}),
+    };
   };
 }
 
@@ -61,13 +100,18 @@ function oddsFor(clan: ClanDef, talent: TalentDef | undefined): (stat: StatId) =
  * for a void art, so the sequence after it doesn't depend on the clan. Classmates and other
  * people are rolled the same way, with no talent on file.
  */
-export function rollCharacterAptitude(rng: Rng, clan: ClanDef, talent?: TalentDef): Aptitude {
-  const rolled: Record<StatId, number> = { ...rollAptitude(rng, oddsFor(clan, talent)) };
+export function rollCharacterAptitude(
+  rng: Rng,
+  clan: ClanDef,
+  talent?: TalentDef,
+  shape: TalentShape = MIDDLE,
+): Aptitude {
+  const rolled: Record<StatId, number> = { ...rollAptitude(rng, oddsFor(clan, talent, shape)) };
   const luck = rng.next();
   const art = rng.pick(DISCIPLINES);
-  const raised = (talent?.statBonuses[art] ?? 0) > 0;
-  if (clan.arts.length === 0 && luck < VOID_ART_CHANCE && !raised) rolled[art] = 0;
-  return rolled;
+  const kept = (talent?.statBonuses[art] ?? 0) > 0 || shape.specialties.includes(art);
+  if (clan.arts.length === 0 && luck < VOID_ART_CHANCE && !kept) rolled[art] = 0;
+  return { ...rolled, ...talent?.aptitude };
 }
 
 /**

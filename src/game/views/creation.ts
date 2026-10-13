@@ -5,15 +5,19 @@ import {
   EYE_COLOURS,
   GRADE_INFO,
   GRADES,
-  gradesFromQuickPick,
   HAIR_COLOURS,
   HAIR_STYLES,
   HEADBAND_PLACES,
   OUTFIT_COLOURS,
-  POINT_BUDGET,
+  CLASS_STANDINGS,
+  DEFAULT_STANDING,
   PRONOUNS,
+  quickGrades,
   SKIN_TONES,
+  STANDING_INFO,
+  type ClassStanding,
   type Grade,
+  type QuickGrades,
 } from '@/systems/profile';
 import { checkChance, STAT_INFO, type StatDelta, type StatId } from '@/systems/stats';
 import { DISCIPLINES, ELEMENTS, type Discipline, type Element } from '@/systems/techniques';
@@ -46,6 +50,13 @@ export interface TraitOption extends ProfileOption {
   readonly opposite: string | null;
 }
 
+/** A place in the class: its grades and its talent, said as the file would say them. */
+export interface StandingOption extends ProfileOption {
+  readonly id: ClassStanding;
+  readonly budget: number;
+  readonly quick: QuickGrades;
+}
+
 export interface CreationView {
   readonly world: {
     readonly village: string;
@@ -59,6 +70,7 @@ export interface CreationView {
   readonly caught: string;
   readonly approaches: readonly { id: string; label: string; stat: string; chance: number }[];
   readonly clans: readonly ClanOption[];
+  readonly standings: readonly StandingOption[];
   readonly talents: readonly ProfileOption[];
   readonly traits: readonly TraitOption[];
   readonly nindos: readonly ProfileOption[];
@@ -71,7 +83,6 @@ export interface CreationView {
     pacePct: number;
     cost: number;
   }[];
-  readonly pointBudget: number;
   readonly palettes: {
     readonly hairStyles: readonly string[];
     readonly hairColours: readonly string[];
@@ -98,6 +109,37 @@ function statEffects(delta: StatDelta): EffectLine[] {
       label: `${STAT_INFO[id].label} ${v > 0 ? '+' : '−'}${Math.abs(v)}`,
       tone: v > 0 ? 'gain' : 'cost',
     }));
+}
+
+/** How a standing's talent roll reads on its card, never as numbers; nothing for the middle. */
+function talentLines(standing: ClassStanding): EffectLine[] {
+  const { scale, specialtyAtLeast } = STANDING_INFO[standing].talent;
+  if (specialtyAtLeast !== undefined) {
+    return [{ label: 'Gifted in your best arts, whatever the dice', tone: 'gain' }];
+  }
+  if (scale > 1) return [{ label: 'Talent runs high', tone: 'gain' }];
+  return scale < 1 ? [{ label: 'Talent runs low', tone: 'cost' }] : [];
+}
+
+/** The quick pick's grades, as a gain above the middle of the class and a cost below it. */
+function gradesLines(standing: ClassStanding): EffectLine[] {
+  const { quick, budget } = STANDING_INFO[standing];
+  const middle = STANDING_INFO[DEFAULT_STANDING].budget;
+  if (budget === middle) return [];
+  const label = `Grades ${quick.specialty}, ${quick.strength} and ${quick.weakness}, the rest ${quick.rest}`;
+  return [{ label, tone: budget > middle ? 'gain' : 'cost' }];
+}
+
+function standingOption(standing: ClassStanding): StandingOption {
+  const info = STANDING_INFO[standing];
+  return {
+    id: standing,
+    name: info.label,
+    description: info.note,
+    effects: [...gradesLines(standing), ...talentLines(standing), ...describeSpec(info.modifiers)],
+    budget: info.budget,
+    quick: info.quick,
+  };
 }
 
 export function creationView(ctx: GameContext): CreationView {
@@ -131,6 +173,7 @@ export function creationView(ctx: GameContext): CreationView {
       techniques: c.startingTechniqueIds.map((id) => content.techniques.require(id).name),
       lodging: c.lodging ?? null,
     })),
+    standings: CLASS_STANDINGS.map(standingOption),
     talents: content.talents.all.map((t) => ({
       id: t.id,
       name: t.name,
@@ -163,7 +206,6 @@ export function creationView(ctx: GameContext): CreationView {
       pacePct: Math.round((GRADE_INFO[g].pace - 1) * 100),
       cost: GRADE_INFO[g].cost,
     })),
-    pointBudget: POINT_BUDGET,
     palettes: {
       hairStyles: HAIR_STYLES,
       hairColours: HAIR_COLOURS,
@@ -187,11 +229,11 @@ export function defaultDraft(ctx: GameContext): CreationDraft {
     pronouns: 'they',
     appearance: DEFAULT_APPEARANCE,
     clanId: 'none',
-    grades: gradesFromQuickPick({
-      specialty: 'taijutsu',
-      strength: 'ninjutsu',
-      weakness: 'genjutsu',
-    }),
+    standing: DEFAULT_STANDING,
+    grades: quickGrades(
+      { specialty: 'taijutsu', strength: 'ninjutsu', weakness: 'genjutsu' },
+      DEFAULT_STANDING,
+    ),
     nature: 'fire',
     traitIds: [first?.id, second?.id].filter((id): id is string => id !== undefined),
     talentId: content.talents.all[0]?.id ?? '',

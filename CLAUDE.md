@@ -106,7 +106,14 @@ ui ──► game ──► content ──► systems ──► core
     (× a teacher); hard-work traits set a `soloEfficiencyFloor`. Players see reads, never numbers.
 12. **Character creation is the opening scene.** The academy break-in collects a
     `CreationDraft`; `draftProblems` validates it and `createNewGame` builds the first state.
-    The break-in roll is seeded, so the scene and the game agree on the outcome.
+    The break-in roll is seeded, so the scene and the game agree on the outcome. **Class
+    standing** (`systems/profile/standing.ts`: dead last to genius, or fate, read from the seed
+    as your file says it) is the one creation choice that isn't a trade-off: it is the difficulty.
+    It sets the grade budget and the quick pick's grades, the band the hidden talent is rolled in
+    (`TalentShape` in `game/aptitude.ts`; your best-graded arts are never a hole, a genius's are
+    gifted) and, at the bottom, a hard-work floor so solo training keeps paying through C. Talents
+    may be one-sided (`TalentDef.aptitude` fixes a stat, 0 = never) or blank. The pacing bench
+    (`src/test/pacing/standing.test.ts`) checks the spread and that the dead last can climb.
 13. **People are data, wherever they come from.** Authored people (`PersonDef`) live in the
     pack; generated genin are built from the pack's name pools by `game/people/generator.ts`
     and stored in `GameState.people.generated` in the same shape, so every view and action

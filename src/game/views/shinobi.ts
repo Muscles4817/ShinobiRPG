@@ -1,5 +1,11 @@
 import { round1 } from '@/core';
-import { GRADE_INFO, type Appearance, type Grade, type Pronouns } from '@/systems/profile';
+import {
+  GRADE_INFO,
+  STANDING_INFO,
+  type Appearance,
+  type Grade,
+  type Pronouns,
+} from '@/systems/profile';
 import { RANK_LABELS } from '@/systems/standing';
 import {
   aptitudeBand,
@@ -44,6 +50,8 @@ export interface ShinobiView {
   readonly nature: string;
   readonly traits: readonly string[];
   readonly talent: string | null;
+  /** Where they stood in their academy class. */
+  readonly standing: string;
   readonly nindo: string | null;
   readonly grades: readonly {
     readonly discipline: Discipline;
@@ -101,6 +109,7 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
     nature: character.nature.charAt(0).toUpperCase() + character.nature.slice(1),
     traits: character.traitIds.map((id) => content.traits.get(id)?.name ?? id),
     talent: character.talentId ? (content.talents.get(character.talentId)?.name ?? null) : null,
+    standing: STANDING_INFO[character.classStanding].label,
     nindo: character.nindoId ? (content.nindos.get(character.nindoId)?.name ?? null) : null,
     grades: DISCIPLINES.map((d) => ({
       discipline: d,

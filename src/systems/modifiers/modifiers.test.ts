@@ -1,3 +1,4 @@
+import { STAT_IDS } from '@/systems/stats';
 import { combine, describeSpec, NEUTRAL, studyMultiplier } from './modifiers';
 
 describe('modifiers', () => {
@@ -46,6 +47,17 @@ describe('modifiers', () => {
     expect(mods.soloFloors.taijutsu).toEqual([floor, lower]);
     expect(mods.soloFloors.speed).toEqual([floor]);
     expect(mods.soloFloors.ninjutsu).toBeUndefined();
+  });
+
+  it('says when a floor holds up every stat, and when it only helps a little', () => {
+    const weak = { floor: 0.2, throughGrade: 'C' } as const;
+    const everyStat = Object.fromEntries(STAT_IDS.map((id) => [id, weak]));
+    expect(describeSpec({ soloEfficiencyFloor: everyStat })).toEqual([
+      {
+        label: 'Training alone pays off a little longer up to grade C in every stat',
+        tone: 'gain',
+      },
+    ]);
   });
 
   it('describes a hard-work floor as one line per grade', () => {

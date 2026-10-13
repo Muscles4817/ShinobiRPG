@@ -28,7 +28,7 @@ async function startGame(user: User, world = /Land of Embers/) {
   await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
   await user.click(screen.getByRole('button', { name: 'Find your file' }));
   await user.type(screen.getByLabelText('Given name'), 'Aoi');
-  for (let page = 0; page < 6; page++) {
+  for (let page = 0; page < 7; page++) {
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
   }
   await user.click(screen.getByRole('button', { name: /forehead protector/i }));
@@ -301,6 +301,30 @@ describe('App (smoke test)', () => {
     expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
   });
 
+  it('lets you start dead last, and your file and sheet say so', async () => {
+    const user = userEvent.setup();
+    const store = memoryStore();
+    render(<App store={store} />);
+    await user.click(screen.getByRole('button', { name: /Land of Embers/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
+    await user.click(screen.getByRole('button', { name: 'Find your file' }));
+    await user.type(screen.getByLabelText('Given name'), 'Aoi');
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getByRole('button', { name: /^Dead last/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    expect(screen.getByText('Your specialty gets a C')).toBeInTheDocument();
+    for (let page = 0; page < 5; page++) {
+      await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    }
+    expect(screen.getByText('Dead last')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /forehead protector/i }));
+    expect(store.data).toContain('"classStanding":"dead-last"');
+    await formTeam(user);
+    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
+    expect(screen.getByText('Dead last')).toBeInTheDocument();
+  });
+
   it('creates a clan character with point-buy grades', async () => {
     const user = userEvent.setup();
     const store = memoryStore();
@@ -311,6 +335,7 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: 'Find your file' }));
     await user.type(screen.getByLabelText('Given name'), 'Itachi');
     await user.click(screen.getByRole('button', { name: /^Uchiha/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     await user.click(screen.getByRole('button', { name: 'Point buy' }));
     const kenjutsu = screen.getByRole('group', { name: 'Kenjutsu' });

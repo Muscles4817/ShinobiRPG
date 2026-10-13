@@ -3,7 +3,7 @@ import type { Housing } from '@/systems/housing';
 import type { Exhaustion, Injury } from '@/systems/injuries';
 import type { Inventory } from '@/systems/inventory';
 import type { Journal } from '@/systems/journal';
-import type { Appearance, Grades, Pronouns } from '@/systems/profile';
+import type { Appearance, ClassStanding, Grades, Pronouns } from '@/systems/profile';
 import type { MissionRun } from '@/systems/missions';
 import type { Standing } from '@/systems/standing';
 import type { Aptitude, AptitudeKnown, StatId, Stats } from '@/systems/stats';
@@ -81,6 +81,8 @@ export interface Character {
   readonly appearance: Appearance;
   readonly clanId: string;
   readonly grades: Grades;
+  /** Where they stood in their academy class: their grade budget and talent band. */
+  readonly classStanding: ClassStanding;
   readonly nature: Element;
   readonly traitIds: readonly string[];
   /** Null for characters from saves made before talents existed. */

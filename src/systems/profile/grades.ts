@@ -50,10 +50,11 @@ export function pointsSpent(grades: Grades): number {
 }
 
 /** Why a set of grades isn't allowed, or null. */
-export function gradesProblem(grades: Grades): string | null {
+export function gradesProblem(grades: Grades, budget = POINT_BUDGET): string | null {
   const spent = pointsSpent(grades);
-  if (spent > POINT_BUDGET) return `That costs ${spent} points; you have ${POINT_BUDGET}.`;
-  return null;
+  if (spent <= budget) return null;
+  if (budget < 0) return `Your standing gives back ${-budget} points: take more Ds or fewer Bs.`;
+  return `That costs ${spent} points; you have ${budget}.`;
 }
 
 export function gradeStatBonuses(grades: Grades): StatDelta {
@@ -65,7 +66,12 @@ export function gradeModifiers(grades: Grades): ModifierSpec {
   return { growth: pace, studyDiscipline: pace };
 }
 
-/** Disciplines graded A, in discipline order: these earn a starting technique. */
+/**
+ * Disciplines that earn a starting technique, in discipline order: those graded A, or with no
+ * A, those graded B. A student with neither starts with the academy's techniques alone.
+ */
 export function topDisciplines(grades: Grades): Discipline[] {
-  return DISCIPLINES.filter((d) => grades[d] === 'A');
+  const graded = (g: Grade) => DISCIPLINES.filter((d) => grades[d] === g);
+  const top = graded('A');
+  return top.length > 0 ? top : graded('B');
 }

@@ -1,7 +1,18 @@
 import type { TalentDef } from '../types';
 
-/** Special talents noted on the academy file. Each comes with a cost. */
+/**
+ * Special notes on the academy file. Most are trade-offs, a gift with a cost; a few are
+ * one-sided, for building someone who really is hopeless at something or good at everything,
+ * and a file can say nothing special at all.
+ */
 export const TALENTS: readonly TalentDef[] = [
+  {
+    id: 'unremarkable',
+    name: 'Nothing special',
+    description: 'The instructors left this part of the file blank.',
+    statBonuses: {},
+    modifiers: {},
+  },
   {
     id: 'prodigy',
     name: 'Prodigy',
@@ -62,5 +73,20 @@ export const TALENTS: readonly TalentDef[] = [
     description: 'Can go a day on one rice ball. Built for comfort, not speed.',
     statBonuses: {},
     modifiers: { hungerRate: 0.7, growth: { speed: 0.9 } },
+  },
+  {
+    id: 'no-chakra',
+    name: 'Can’t mould chakra',
+    description: 'Can’t make a single hand seal take. Ninjutsu and genjutsu will never come.',
+    statBonuses: { ninjutsu: -2, genjutsu: -2 },
+    modifiers: {},
+    aptitude: { ninjutsu: 0, genjutsu: 0 },
+  },
+  {
+    id: 'all-rounder',
+    name: 'Good at everything',
+    description: 'Never top in any one art, never behind in any. Annoying to share a class with.',
+    statBonuses: { taijutsu: 1, ninjutsu: 1, genjutsu: 1, kenjutsu: 1, fuuinjutsu: 1 },
+    modifiers: {},
   },
 ];
