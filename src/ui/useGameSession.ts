@@ -3,9 +3,11 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   contextForPack,
   createNewGame,
+  cueAfter,
   deserialize,
   dispatch,
   serialize,
+  type ActionCue,
   type CreationDraft,
   type GameAction,
   type GameContext,
@@ -18,11 +20,20 @@ interface Loaded {
   readonly ctx: GameContext;
 }
 
+/** An animation to play for the last action; `id` tells two of the same kind apart. */
+export interface ShownCue {
+  readonly kind: ActionCue;
+  readonly id: number;
+}
+
 export interface GameSession {
   readonly game: Loaded | null;
   /** The most recent refusal or load problem, for a dismissible notice. */
   readonly notice: string | null;
   readonly perform: (action: GameAction) => void;
+  /** The animation for the action just done, until it has played. */
+  readonly cue: ShownCue | null;
+  readonly clearCue: () => void;
   readonly start: (packId: string, draft: CreationDraft, seed: number) => void;
   readonly abandon: () => void;
   readonly dismissNotice: () => void;
@@ -48,6 +59,7 @@ export function useGameSession(store: SaveStore): GameSession {
   const [initial] = useState(() => loadInitial(store));
   const [game, setGame] = useState<Loaded | null>(initial.game);
   const [notice, setNotice] = useState<string | null>(initial.notice);
+  const [cue, setCue] = useState<ShownCue | null>(null);
 
   useEffect(() => {
     if (game) store.save(serialize(game.game));
@@ -60,6 +72,8 @@ export function useGameSession(store: SaveStore): GameSession {
       if (result.ok) {
         setGame({ ...game, game: result.value });
         setNotice(null);
+        const kind = cueAfter(action, result.value);
+        setCue((shown) => (kind ? { kind, id: (shown?.id ?? 0) + 1 } : shown));
       } else {
         setNotice(result.error);
       }
@@ -83,5 +97,9 @@ export function useGameSession(store: SaveStore): GameSession {
     setNotice(null);
   }, []);
 
-  return { game, notice, perform, start, abandon, dismissNotice };
+  const clearCue = useCallback(() => {
+    setCue(null);
+  }, []);
+
+  return { game, notice, perform, cue, clearCue, start, abandon, dismissNotice };
 }

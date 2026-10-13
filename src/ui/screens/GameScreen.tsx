@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { activeScene, hubView, type GameContext, type GameState, type SceneKind } from '@/game';
 
+import { CueLayer } from '../components/CueLayer';
 import { Dock, type DockTab } from '../components/Dock';
 import { Notice } from '../components/Notice';
 import { PersonSheet } from '../components/PersonSheet';
@@ -115,7 +116,7 @@ export function GameScreen({ session, ctx, state }: GameScreenProps) {
   const scene = activeScene(state);
 
   return (
-    <div className="app">
+    <div className="app" data-motion={state.settings.animations ? 'on' : 'off'}>
       {session.notice && <Notice text={session.notice} onDismiss={session.dismissNotice} />}
       {scene ? (
         <Scene {...props} kind={scene} />
@@ -144,6 +145,9 @@ export function GameScreen({ session, ctx, state }: GameScreenProps) {
             setPersonId(null);
           }}
         />
+      )}
+      {session.cue && state.settings.animations && (
+        <CueLayer cue={session.cue} onDone={session.clearCue} />
       )}
       {report && (
         <ReportCard

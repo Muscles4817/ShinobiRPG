@@ -42,6 +42,7 @@ export type GameAction =
   | { readonly type: 'trainWith'; readonly personId: string; readonly statId: StatId }
   | { readonly type: 'spar'; readonly personId: string }
   | { readonly type: 'setCombatStyle'; readonly style: string }
+  | { readonly type: 'setAnimations'; readonly on: boolean }
   | { readonly type: 'buyGear'; readonly gearId: string }
   | { readonly type: 'buyTool'; readonly toolId: string }
   | { readonly type: 'buyIntel'; readonly missionId: string }

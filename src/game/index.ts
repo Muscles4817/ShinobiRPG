@@ -59,6 +59,8 @@ export {
 } from './views/library';
 export { travelView, type Destination } from './views/travel';
 export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
+export { animationSetting, type AnimationSetting } from './views/settings';
+export { ACTION_CUES, cueAfter, type ActionCue } from './cues';
 export {
   gearShopView,
   loadoutView,
