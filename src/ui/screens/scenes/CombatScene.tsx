@@ -6,6 +6,7 @@ import {
   combatScouting,
   type CombatantView,
   type CombatOption,
+  type CombatView,
 } from '@/game';
 
 import { Chips } from '../../components/Chips';
@@ -14,6 +15,7 @@ import { ActionBar, Hand } from './combat/Choices';
 import { Foes } from './combat/Foes';
 import { Pouch } from './combat/Pouch';
 import { HealthBar } from './combat/HealthBar';
+import { PlanScreen } from './combat/PlanScreen';
 import { RangeStrip } from './combat/RangeStrip';
 import { PlansByOwner, TeamOrders } from './combat/TeamOrders';
 import { useHealthPulses, type HealthPulse } from './combat/useHealthPulses';
@@ -54,14 +56,12 @@ function Allies({ allies, inRows, pulses }: AlliesProps) {
 }
 
 /**
- * One screen for every fight style: enemies above (tap one to target it), the exchange in the
- * middle, your side and resources below, and the engine's options laid out by kind.
+ * The fight as it plays: enemies above (tap one to target it), the exchange in the middle,
+ * your side and resources below, and the engine's options laid out by kind.
  */
-export function CombatScene({ ctx, state, perform }: ScreenProps) {
-  const view = combatScene(state, ctx);
+function FightScreen({ ctx, state, perform, view }: ScreenProps & { readonly view: CombatView }) {
   const [chosen, setChosen] = useState<string | null>(null);
-  const pulses = useHealthPulses(view?.combatants);
-  if (!view) return null;
+  const pulses = useHealthPulses(view.combatants);
   // Lines keep their place in the whole log as their key, so only new ones mount (and rise in).
   const firstShown = Math.max(0, view.log.length - SHOWN_LINES);
   const enemies = view.combatants.filter((c) => c.side === 'enemy');
@@ -155,4 +155,25 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
       </div>
     </>
   );
+}
+
+/**
+ * One scene for every fight style. Between rounds of a planned fight the card table takes the
+ * screen (the plan screen); otherwise the fight as it plays.
+ */
+export function CombatScene(props: ScreenProps) {
+  const view = combatScene(props.state, props.ctx);
+  if (!view) return null;
+  if (view.options.some((o) => o.kind === 'plan')) {
+    return (
+      <PlanScreen
+        view={view}
+        reads={combatScouting(props.state, props.ctx)}
+        onPick={(o) => {
+          props.perform({ type: 'combatAct', optionId: o.id });
+        }}
+      />
+    );
+  }
+  return <FightScreen {...props} view={view} />;
 }

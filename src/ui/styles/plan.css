@@ -1,0 +1,264 @@
+/*
+ * The plan screen: the card table between rounds of a planned fight. Both sides stand in a
+ * formation strip (rows and the distance between them), your side in lantern, foes in crimson.
+ */
+.plan-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 24px;
+}
+.plan-head h1 {
+  font-size: 1.3rem;
+}
+
+.formation {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 10px 4px 8px;
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.formation-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 54px;
+}
+.formation-row {
+  font-family: var(--font-story);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.formation-gap {
+  flex: 1;
+  min-width: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 4px;
+}
+.gap-label {
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  color: var(--story);
+  text-align: center;
+}
+.gap-ruler {
+  display: flex;
+  gap: 3px;
+  width: 100%;
+}
+.gap-ruler i {
+  flex: 1;
+  height: 2px;
+  background: var(--line);
+}
+.gap-ruler i.on {
+  background: var(--story);
+}
+
+.token {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-height: 44px;
+  padding: 2px;
+  font-size: 0.7rem;
+  color: var(--ink);
+  background: none;
+  border: 0;
+}
+.token .hp {
+  width: 40px;
+}
+.token-seal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font-family: var(--font-story);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--lantern);
+  border: 1.5px solid var(--lantern);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--lantern) 12%, var(--bg));
+}
+.token.enemy .token-seal,
+.token-seal.enemy {
+  color: var(--foe);
+  border-color: var(--foe);
+  background: color-mix(in srgb, var(--foe) 12%, var(--bg));
+}
+.token[aria-pressed='true'] .token-seal {
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 3.5px var(--gold);
+}
+.token.hidden .token-seal {
+  border-style: dashed;
+}
+.token.down {
+  opacity: 0.4;
+}
+.token-seal.small {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  font-size: 0.75rem;
+}
+.pace {
+  position: absolute;
+  top: -8px;
+  right: -12px;
+  padding: 0 3px;
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 13px;
+  border-radius: 2px;
+}
+.pace.faster {
+  color: var(--on-lantern);
+  background: var(--gold);
+}
+.pace.slower {
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.plan-reserves {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.fighter-read {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.fighter-read-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fighter-read-name .num {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.fighter-read .intent {
+  margin-top: 0;
+}
+
+.foe-moves ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px 0;
+  padding: 0;
+  list-style: none;
+}
+.foe-moves li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  background: var(--grain), var(--surface);
+  border-radius: var(--radius-sm);
+}
+.foe-moves li span:last-child {
+  margin-left: auto;
+  font-style: italic;
+  color: var(--gold);
+  text-align: right;
+}
+
+.plan-when {
+  grid-column: 2 / -1;
+}
+.plan-when summary {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--story);
+  cursor: pointer;
+}
+.plan-when[open] summary {
+  color: var(--gold);
+}
+
+.team-panel summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-story);
+  color: var(--story);
+  cursor: pointer;
+}
+
+.plan-go {
+  flex-direction: row;
+}
+.plan-go .choice {
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+.plan-go .choice.primary {
+  flex: 2;
+  align-items: center;
+}
+
+.how-it-went {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.how-it-went summary {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-story);
+  color: var(--story);
+  cursor: pointer;
+}
+.how-it-went .log-line {
+  font-size: 0.9rem;
+  margin: 2px 0;
+}
+
+/* Four or more on one side's row: two tokens abreast, the row's name across the top. */
+.formation-col.paired {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  align-content: center;
+  gap: 8px 2px;
+}
+.formation-col.paired .formation-row {
+  grid-column: 1 / -1;
+  text-align: center;
+}

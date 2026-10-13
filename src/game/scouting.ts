@@ -75,6 +75,23 @@ export interface ScoutingRead {
   readonly details: readonly StatCompare[];
   /** Why the read is worse than your stats alone make it (hunger, injuries), or null. */
   readonly handicap: string | null;
+  /** Whether they usually act before you in an exchange (speed decides who goes first). */
+  readonly pace: Pace;
+}
+
+/** Faster: likely to act before you; slower: likely after; even: it could go either way. */
+export type Pace = 'faster' | 'even' | 'slower';
+
+/**
+ * How far speeds must differ before one side usually acts first. Initiative is speed plus a
+ * small roll each exchange (`engines/plan/round.ts`), so a closer gap is a coin toss.
+ */
+const PACE_MARGIN = 2;
+
+function paceOf(theirs: Stats, yours: Stats): Pace {
+  const gap = theirs.speed - yours.speed;
+  if (gap >= PACE_MARGIN) return 'faster';
+  return gap <= -PACE_MARGIN ? 'slower' : 'even';
 }
 
 const ARTS: readonly Discipline[] = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'];
@@ -142,6 +159,7 @@ export function scout(
     style: styleOf(theirs),
     details: sharp ? standouts(theirs, yours) : [],
     handicap: null,
+    pace: paceOf(theirs, yours),
   };
 }
 

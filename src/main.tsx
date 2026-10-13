@@ -19,6 +19,7 @@ import '@/ui/styles/creation.css';
 import '@/ui/styles/people.css';
 import '@/ui/styles/teachers.css';
 import '@/ui/styles/library.css';
+import '@/ui/styles/plan.css';
 import '@/ui/styles/cues.css';
 import '@/ui/styles/cues-village.css';
 import '@/ui/styles/motion.css';

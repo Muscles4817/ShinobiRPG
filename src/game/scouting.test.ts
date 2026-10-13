@@ -7,6 +7,15 @@ import { combatScouting } from './views/scene';
 import { shinobiView } from './views/shinobi';
 
 describe('sizing up an opponent', () => {
+  it('says who usually acts first, from speed, calling a near tie even', () => {
+    const yours = createStats(10);
+    const pace = (speed: number) => scout({ ...yours, speed }, yours, false).pace;
+    expect(pace(13)).toBe('faster');
+    expect(pace(11)).toBe('even');
+    expect(pace(9)).toBe('even');
+    expect(pace(7)).toBe('slower');
+  });
+
   it('says when hunger makes a job read worse than your stats alone', () => {
     const fed = newGame();
     const job = ctx.content.missions.require('academy-dropout');

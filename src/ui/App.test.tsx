@@ -245,12 +245,16 @@ describe('App (smoke test)', () => {
         .getAllByRole('button', { name: 'Spar' })
         .find((b) => !(b as HTMLButtonElement).disabled)!,
     );
+    // The cards open at the distance you are fighting at; this test works on Close.
+    await user.click(screen.getByRole('tab', { name: /^Close/ }));
     const order = () => within(screen.getByRole('list', { name: /^Close: first to last/ }));
     const second = order().getAllByRole('listitem')[1]!;
     const name = within(second).getAllByRole('button')[0]!.querySelector('b')!.textContent;
     await user.click(within(second).getByRole('button', { name: /^Move up/ }));
     const first = order().getAllByRole('listitem')[0]!;
     expect(first.textContent).toContain(name);
+    // How a card plays reads as a sentence; tapping it opens the pickers.
+    await user.click(first.querySelector('.plan-when summary')!);
     const when = within(first).getByRole('combobox', { name: /^When for/ });
     await user.selectOptions(when, 'A foe is hidden');
     const now = order().getAllByRole('listitem')[0]!;
