@@ -259,7 +259,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (pick a few activities before the fire burns down) and `ending` (the first that fits). A
     `leg` with a `region` may bring a road event (`content.roadEvents`, drawn by hash). A job
     may have a `charge` (whose trust is a thread) and `twists` (a hidden mark rolled at the
-    start). What the crew say comes from `content.voices` by moment and trait.
+    start). What the crew say comes from `content.voices` by moment and trait. The **debrief**
+    (`game/debrief.ts`) reads it all back: the ledger line by line with the pay each moved,
+    each crew member's bond since the start and last word, a grade (clean, rough, botched), and
+    on a failure what would have helped (the best approach to the check, or the foe's trick).
 
 ### Content packs
 

@@ -1,5 +1,6 @@
 import type { Report } from '@/game';
 
+import { DebriefSections } from './Debrief';
 import { gainRow, peopleCardContent, type CardContent, type CardList } from './peopleReports';
 
 /** What a fight taught, as a list on its card (absent when it taught nothing visible). */
@@ -51,8 +52,10 @@ function missionNote(report: Extract<Report, { kind: 'mission-complete' }>): str
 function missionCompleteCard(report: Extract<Report, { kind: 'mission-complete' }>): CardContent {
   return {
     title: report.title,
-    subtitle: `For ${report.client}`,
-    seal: '完',
+    subtitle: report.grade
+      ? `For ${report.client}, ${GRADE_WORDS[report.grade]}`
+      : `For ${report.client}`,
+    seal: report.grade ? GRADE_SEAL[report.grade] : '完',
     tone: 'good',
     rows: [
       { label: 'Reward', value: `+${report.ryo} ryo`, tone: 'gain' },
@@ -152,6 +155,24 @@ function ReportList({ list }: { readonly list: CardList }) {
   );
 }
 
+function isJob(
+  report: Report,
+): report is Extract<Report, { kind: 'mission-complete' | 'mission-failed' | 'defeat' }> {
+  return (
+    report.kind === 'mission-complete' ||
+    report.kind === 'mission-failed' ||
+    report.kind === 'defeat'
+  );
+}
+
+/** The seal a job's grade stamps on its debrief. */
+const GRADE_SEAL = { clean: '良', rough: '並', botched: '拙' } as const;
+const GRADE_WORDS = {
+  clean: 'a clean job',
+  rough: 'a rough road',
+  botched: 'a botched job',
+} as const;
+
 interface ReportCardProps {
   readonly report: Report;
   readonly onContinue: () => void;
@@ -160,9 +181,11 @@ interface ReportCardProps {
 /** A result card shown over everything until the player continues. */
 export function ReportCard({ report, onContinue }: ReportCardProps) {
   const c = content(report);
+  // A job's debrief tells how it ended first, then the pay, then the road.
+  const job = isJob(report);
   return (
     <div className="report-backdrop" role="dialog" aria-modal="true" aria-labelledby="report-title">
-      <div className={`report enter tone-${c.tone}`}>
+      <div className={`report enter tone-${c.tone}${job ? ' debrief' : ''}`}>
         {c.seal && (
           <span className="seal" aria-hidden="true">
             {c.seal}
@@ -177,6 +200,7 @@ export function ReportCard({ report, onContinue }: ReportCardProps) {
         <h2 id="report-title" className="report-title">
           {c.title}
         </h2>
+        {job && c.note && <p className="story report-note">{c.note}</p>}
         <dl className="report-rows">
           {c.rows.map((r, i) => (
             <div key={`${r.label}-${i}`}>
@@ -186,7 +210,8 @@ export function ReportCard({ report, onContinue }: ReportCardProps) {
           ))}
         </dl>
         {c.list && <ReportList list={c.list} />}
-        {c.note && <p className="story report-note">{c.note}</p>}
+        {job && <DebriefSections report={report} />}
+        {!job && c.note && <p className="story report-note">{c.note}</p>}
         <button type="button" className="btn wide" onClick={onContinue} autoFocus>
           Continue
         </button>

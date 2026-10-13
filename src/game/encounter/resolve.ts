@@ -16,7 +16,8 @@ import {
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
-import { beginCombat, afterStage, failMission, type FightStart } from '../missionFlow';
+import { beginCombat, type FightStart } from '../missionFight';
+import { afterStage, failMission } from '../missionFlow';
 import type { GameState } from '../state';
 import { approachPlans, bribeCost, type ApproachPlan } from './approaches';
 import { encounterHere, withEncounter, type EncounterHere } from './current';

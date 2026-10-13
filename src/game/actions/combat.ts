@@ -8,7 +8,7 @@ import { inBout, resolveBout } from '../exam/tournament';
 import { fightLessons, growFromFight } from '../fightGrowth';
 import { applyFightToll } from '../fightToll';
 import { engineFor, rememberPlan } from '../fightStyle';
-import { resolveCombat } from '../missionFlow';
+import { resolveCombat } from '../missionFight';
 import { resolveSpar } from '../sparFlow';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';

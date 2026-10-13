@@ -41,3 +41,48 @@
   color: var(--lantern);
   letter-spacing: 1px;
 }
+
+/* The debrief: the road as a list of moments, the crew, and what would have helped. */
+.report.debrief {
+  max-height: calc(100dvh - 2 * var(--gutter));
+  overflow-y: auto;
+}
+.debrief-road ol,
+.debrief-crew ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.debrief-road li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.92rem;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 4px;
+}
+.debrief-road li.road-cost span:first-child {
+  color: var(--muted);
+}
+.debrief-road .chip {
+  flex: none;
+}
+.debrief-crew li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+}
+.debrief-crew q {
+  flex-basis: 100%;
+  font-family: var(--font-story);
+  color: var(--muted);
+  quotes: '“' '”';
+}
+.debrief-helped p {
+  margin: 0;
+  font-size: 0.92rem;
+}

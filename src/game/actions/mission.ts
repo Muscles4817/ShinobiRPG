@@ -13,7 +13,8 @@ import {
 import { examClash } from '../awayNotes';
 import { availability, crewFor, takeJob } from '../board';
 
-import { activeMission, activeStage, beginCombat, afterStage, failMission } from '../missionFlow';
+import { beginCombat } from '../missionFight';
+import { activeMission, activeStage, afterStage, failMission } from '../missionFlow';
 import {
   adjust,
   busyReason,
@@ -27,6 +28,7 @@ import { enterEncounter } from '../encounter/spotted';
 import { checkHand } from '../missionRoles';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
+import { bondsNow } from '../debrief';
 import { travel } from '../road';
 import { playEnding } from '../story/ending';
 import { feel } from '../story/personal';
@@ -68,7 +70,8 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
     const crew = crewFor(state, ctx, def) ?? SOLO;
     // The twist is rolled now and kept hidden: the story finds it out when it gets there.
     const twist = def.twists ? pickTwist(def, rng.next()) : null;
-    const run = settle(def, startRun(def, crew, twist ? [twist] : []));
+    const begun = startRun(def, crew, twist ? [twist] : []);
+    const run = settle(def, { ...begun, bondsAtStart: bondsNow(state, crew.memberIds) });
     const taken = { ...state, board: takeJob(state, ctx, def), mission: run };
     const started = adjust(spendTime(taken, def.slots, ctx), {
       energy: -def.energyCost,

@@ -5,7 +5,7 @@ import { checkChance } from '@/systems/stats';
 
 import { enemyStatLine, PLAYER_COMBATANT_ID } from '../combatants';
 import type { GameContext } from '../context';
-import { beginCombat } from '../missionFlow';
+import { beginCombat } from '../missionFight';
 import { bestHandFor, type Hand } from '../missionRoles';
 import type { GameState } from '../state';
 import { ALERT_STEP } from './approaches';

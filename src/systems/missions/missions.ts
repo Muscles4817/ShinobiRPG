@@ -159,6 +159,8 @@ export interface MissionRun {
   readonly camp?: { readonly done: readonly string[] };
   /** On a leg: the road event that came up, waiting on your choice. */
   readonly roadEvent?: string;
+  /** Bond with each crew member when the job began, so the debrief can say how it grew. */
+  readonly bondsAtStart?: Readonly<Record<string, number>>;
 }
 
 export function startRun(def: MissionDef, crew: Crew, marks: readonly string[] = []): MissionRun {
