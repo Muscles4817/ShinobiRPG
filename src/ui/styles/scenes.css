@@ -692,6 +692,14 @@ button.foe {
   margin-left: 2px;
 }
 
+/* A defence that reacted is an ink stamp, set apart from the amounts beside it. */
+.log-line .chip.info {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: var(--story);
+  font-family: var(--font-story);
+}
+
 /* A threat read made worse by hunger or a wound: said beside the read, in the cost colour. */
 .handicap {
   font-size: 0.8rem;

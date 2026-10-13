@@ -1,6 +1,7 @@
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
+import { splitNarration } from '../../rules/narration';
 import { UNSTABLE_MISFIRE } from '../../rules/unstable';
 import { chooseCard } from './choose';
 import { useJutsu } from './jutsu';
@@ -161,6 +162,19 @@ describe('plan & watch techniques', () => {
         expect(after.lines.join(' ')).toMatch(/through a guard/);
       }
     }
+  });
+
+  it('stamp the defences that reacted, so the screen can show them', () => {
+    const both = { close: plainSlots(['dodge', 'guard']), mid: [], far: [] };
+    const round = roundWith({}, both);
+    const [hero, bandit] = round.fighters;
+    const reactions = Array.from({ length: 40 }, (_, seed) =>
+      useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed + 1) }, jab).lines.map(
+        (l) => splitNarration(l).reactions,
+      ),
+    ).flat();
+    expect(reactions).toContainEqual(['dodged']);
+    expect(reactions).toContainEqual(['dodge-missed', 'guarded']);
   });
 
   it('add what they cost to the chakra spent in the fight, hit or miss', () => {

@@ -1,8 +1,10 @@
 /**
  * The fight log as the screen shows it: round markers set apart, and each line's damage or
- * healing taken out of the sentence into a chip, since story text never shows numbers.
+ * healing taken out of the sentence into a chip, since story text never shows numbers. A
+ * defence that reacted (Dodge, Guard, Counter, a substitution) gets a stamp of its own, so
+ * the player sees it working whoever acted first in the exchange.
  */
-import { splitNarration, type NarrationAmount } from '@/systems/combat';
+import { splitNarration, type NarrationAmount, type NarrationReaction } from '@/systems/combat';
 import type { JournalChip } from '@/systems/journal';
 
 /** Engines mark a new round with a line like "— Round 3 —". */
@@ -11,6 +13,19 @@ const ROUND_MARK = '—';
 export type CombatLogLine =
   | { readonly kind: 'round'; readonly text: string }
   | { readonly kind: 'story'; readonly text: string; readonly chips: readonly JournalChip[] };
+
+const REACTION_LABEL: Readonly<Record<NarrationReaction, string>> = {
+  dodged: 'Dodged',
+  'dodge-missed': 'Dodge missed',
+  guarded: 'Guarded',
+  'guard-broken': 'Guard broken',
+  countered: 'Countered',
+  swapped: 'Swapped out',
+};
+
+function reactionChip(reaction: NarrationReaction): JournalChip {
+  return { label: REACTION_LABEL[reaction], tone: 'info' };
+}
 
 function chipFor({ kind, amount }: NarrationAmount): JournalChip {
   return kind === 'harm'
@@ -23,7 +38,11 @@ export function combatLog(log: readonly string[]): CombatLogLine[] {
     if (line.startsWith(ROUND_MARK)) {
       return { kind: 'round', text: line.replaceAll(ROUND_MARK, '').trim() };
     }
-    const { text, amounts } = splitNarration(line);
-    return { kind: 'story', text, chips: amounts.map(chipFor) };
+    const { text, amounts, reactions } = splitNarration(line);
+    return {
+      kind: 'story',
+      text,
+      chips: [...reactions.map(reactionChip), ...amounts.map(chipFor)],
+    };
   });
 }
