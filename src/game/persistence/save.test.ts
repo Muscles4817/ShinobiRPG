@@ -181,6 +181,15 @@ describe('persistence', () => {
     }
   });
 
+  it('turns animations on for a save from before the setting', () => {
+    const game = newGame();
+    const { animations: _a, ...oldSettings } = game.settings;
+    const raw = JSON.stringify({ version: 25, state: { ...game, settings: oldSettings } });
+    const loaded = deserialize(raw);
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.settings).toEqual({ ...oldSettings, animations: true });
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

@@ -11,7 +11,7 @@ import type { GameState, Settings } from './state';
  */
 
 export function defaultSettings(ctx: GameContext): Settings {
-  return { combatStyle: ctx.engines[0]?.id ?? '', combatPlans: {} };
+  return { combatStyle: ctx.engines[0]?.id ?? '', combatPlans: {}, animations: true };
 }
 
 function firstEngine(ctx: GameContext): CombatEngine {

@@ -71,6 +71,11 @@ export interface Settings {
    * next fight starts from it. Opaque: only that engine reads it.
    */
   readonly combatPlans: Readonly<Record<string, unknown>>;
+  /**
+   * Small animations for everyday actions (eating, training, sleeping…) and the screen's other
+   * motion. Off keeps the screen still; the device's reduced-motion setting always wins.
+   */
+  readonly animations: boolean;
 }
 
 export interface Character {

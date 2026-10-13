@@ -10,3 +10,14 @@ export const setCombatStyle: ActionHandler<ActionOf<'setCombatStyle'>> = {
     return { ...state, settings: { ...state.settings, combatStyle: action.style } };
   },
 };
+
+/** Turning the everyday animations on or off. Never busy: it changes nothing in the world. */
+export const setAnimations: ActionHandler<ActionOf<'setAnimations'>> = {
+  check(state, action) {
+    if (state.settings.animations !== action.on) return null;
+    return action.on ? 'Animations are already on.' : 'Animations are already off.';
+  },
+  perform(state, action) {
+    return { ...state, settings: { ...state.settings, animations: action.on } };
+  },
+};

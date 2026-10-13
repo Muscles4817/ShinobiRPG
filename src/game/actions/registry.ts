@@ -6,7 +6,7 @@ import { missionChoose, missionContinue, startMission } from './mission';
 import { payRent, treat } from './services';
 import { hostDinner } from './dinner';
 import { cook } from './kitchen';
-import { setCombatStyle } from './settings';
+import { setAnimations, setCombatStyle } from './settings';
 import { buyIntel } from './intel';
 import { buyGear, buyIngredient, buyTool, equipGear, unequipGear } from './shop';
 import { spar } from './spar';
@@ -48,6 +48,7 @@ export const HANDLERS: Registry = {
   trainWith,
   spar,
   setCombatStyle,
+  setAnimations,
   buyGear,
   buyTool,
   buyIntel,

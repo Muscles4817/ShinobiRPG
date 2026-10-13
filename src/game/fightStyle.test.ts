@@ -123,17 +123,26 @@ describe('fight styles', () => {
     expect(load(13, { ...state, settings }).settings).toEqual({
       combatStyle: 'plan-v1',
       combatPlans: { 'plan-v1': 2 },
+      animations: true,
     });
   });
 
   it('a version 5 save gets settings, on today’s style', () => {
     const { settings: _settings, ...v5state } = newGame();
-    expect(load(5, v5state).settings).toEqual({ combatStyle: 'plan-v1', combatPlans: {} });
+    expect(load(5, v5state).settings).toEqual({
+      combatStyle: 'plan-v1',
+      combatPlans: {},
+      animations: true,
+    });
   });
 
   it('a version 8 save remembers no plans yet', () => {
     const v8 = { ...newGame(), settings: { combatStyle: 'plan-v1' } };
-    expect(load(8, v8).settings).toEqual({ combatStyle: 'plan-v1', combatPlans: {} });
+    expect(load(8, v8).settings).toEqual({
+      combatStyle: 'plan-v1',
+      combatPlans: {},
+      animations: true,
+    });
   });
 
   it.each(['mind-v1', 'deck-v1'])('a version 12 save on retired %s drops its plans', (style) => {
@@ -141,6 +150,7 @@ describe('fight styles', () => {
     expect(load(12, { ...newGame(), settings }).settings).toEqual({
       combatStyle: 'plan-v1',
       combatPlans: { 'plan-v1': 2 },
+      animations: true,
     });
   });
 
