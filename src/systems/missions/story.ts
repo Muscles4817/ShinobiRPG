@@ -28,6 +28,8 @@ export type Condition =
   | { readonly thread: string; readonly atLeast: number }
   | { readonly thread: string; readonly below: number }
   | { readonly crew: CrewCondition }
+  /** The village remembers this from an earlier job (a world mark). */
+  | { readonly remembers: string }
   | { readonly all: readonly Condition[] }
   | { readonly any: readonly Condition[] };
 
@@ -63,6 +65,8 @@ export interface StoryState {
   readonly marks: readonly string[];
   readonly threads: Readonly<Record<string, number>>;
   readonly crew: Crew;
+  /** What the village remembered when the job began (world marks). */
+  readonly remembered: readonly string[];
 }
 
 function crewHolds(crew: Crew, want: CrewCondition): boolean {
@@ -84,6 +88,7 @@ export function holds(story: StoryState, condition: Condition | undefined): bool
   if ('has' in condition) return story.marks.includes(condition.has);
   if ('lacks' in condition) return !story.marks.includes(condition.lacks);
   if ('crew' in condition) return crewHolds(story.crew, condition.crew);
+  if ('remembers' in condition) return story.remembered.includes(condition.remembers);
   if ('all' in condition) return condition.all.every((c) => holds(story, c));
   if ('any' in condition) return condition.any.some((c) => holds(story, c));
   const level = story.threads[condition.thread] ?? 0;
@@ -124,17 +129,21 @@ export function withMark(marks: readonly string[], mark: string): readonly strin
 export function conditionRefs(condition: Condition | undefined): {
   readonly marks: string[];
   readonly threads: string[];
+  readonly world: string[];
 } {
-  if (!condition) return { marks: [], threads: [] };
-  if ('has' in condition) return { marks: [condition.has], threads: [] };
-  if ('lacks' in condition) return { marks: [condition.lacks], threads: [] };
-  if ('crew' in condition) return { marks: [], threads: [] };
+  const none = { marks: [], threads: [], world: [] };
+  if (!condition) return none;
+  if ('has' in condition) return { ...none, marks: [condition.has] };
+  if ('lacks' in condition) return { ...none, marks: [condition.lacks] };
+  if ('crew' in condition) return none;
+  if ('remembers' in condition) return { ...none, world: [condition.remembers] };
   if ('all' in condition || 'any' in condition) {
     const parts = ('all' in condition ? condition.all : condition.any).map(conditionRefs);
     return {
       marks: parts.flatMap((p) => p.marks),
       threads: parts.flatMap((p) => p.threads),
+      world: parts.flatMap((p) => p.world),
     };
   }
-  return { marks: [], threads: [condition.thread] };
+  return { ...none, threads: [condition.thread] };
 }

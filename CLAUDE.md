@@ -271,6 +271,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`village.clients`, `game/clients.ts`); one you've worked for asks for you by name and
     pays `CLIENT_RETURN_SHARE` more (not on standing jobs). `validateStory` checks every world
     mark waited for is one some job leaves behind.
+25. **Long stories are arcs of jobs.** An `ArcDef` (`content.arcs`, `systems/missions/arcs.ts`)
+    is acts of jobs following Harmon's circle; an act's jobs are open together once every job
+    of the act before is done, never posted at random (`Availability` kind `arc`). Jobs read
+    earlier acts through world marks (`remembers`, a snapshot taken when a job starts). The
+    board pins each arc under way (`views/arcs.ts`). Base locations wait on travel
+    (`docs/design/missions-plan.md` 3.9).
 
 ### Content packs
 
@@ -352,6 +358,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   with a `region`, a check that fails forward, a camp, a twist with a decision, an encounter
   and an `ending`, then the road home. A template's `threads`, `charge` and `twists` are filled
   like its stages.
+- **Add a long story:** write its jobs (any tier), list them at a mission hall, and add an
+  `ArcDef` to the pack's `arcs` with its acts (beats, a line, the jobs). Leave world marks in
+  outcomes for later acts to `remember` (validated: every remembered mark is left by some job).
 - **Add many jobs of one shape:** write a `MissionTemplate` (`content/missionTemplates.ts`) with
   `{slot}` placeholders and their meanings in `placeholders`, then add `MissionFill`s giving every
   slot a value (`packs/original/jobs/`). Fills become ordinary missions on the board; validation

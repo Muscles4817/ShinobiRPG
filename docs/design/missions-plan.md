@@ -404,23 +404,40 @@ fresh genin down the same road.
 - **Clients remember you** and ask for you by name.
 - **Memories** on people come back in conversation and in how they treat you.
 
-### 3.9 Long arcs (sketch)
+### 3.9 Long arcs
 
-One authored arc around Harmon's circle:
+A long arc is a story told over weeks, between everything else. The design pass split it in
+two, by what the game can do today and what waits on milestone 4 (world and travel).
 
-1. **You → Need:** the village and the briefing.
-2. **Go:** the journey to the base, built from medium legs.
-3. **Search:** a temporary **base location**, an ordinary `LocationDef` with places (an inn, a
-   camp, a foreign village's market or training ground), so place pages work there. An
-   **objectives list** (main and side), days passing, bonding, watch and rest, and short
-   excursions built like medium jobs.
-4. **Find:** the midpoint discovery.
-5. **Take:** the price. Something goes wrong; someone is hurt; the low point.
-6. **Return:** the climax and the road back.
-7. **Change:** the debrief and a changed world.
+**Built now: arcs as acts of jobs** (`systems/missions/arcs.ts`, `content.arcs`).
 
-Acts advance on objectives done or deadlines passed. This needs its own design pass after
-medium jobs work.
+- An `ArcDef` is a list of **acts**; each act names its place in Harmon's circle (`beats`), a
+  line on what is going on, and its **jobs** (ordinary missions, any tier).
+- An act's jobs are open **together, in any order**, once every job of the act before is done
+  (`actReached` over `board.completed`): the "search" half can hold several objectives at once.
+  Arc jobs are never posted at random; they stay up while their act is open, and a failed one
+  can be tried again.
+- Jobs read what earlier acts found through the village's memory: an outcome leaves a world
+  mark, and a later job's `remembers` condition (a snapshot taken when it starts) reads it.
+  Within one job, its own marks (`has`) do the same.
+- The board pins each arc under way above the notices: its title, "Act 2 of 4: …", what is
+  going on, and the act's jobs, done or not.
+- **The Lantern Thief** (original pack), four acts and five jobs: the dark wall (you, need);
+  asking along the river and the night market, in either order (go, search); the kiln in the
+  reeds, where the thief is the lamplighter's son and getting him out first decides whether he
+  is hurt (find, take); and the wall relit, where you tell the Watch the truth or vouch for him
+  (return, change). It ends in gossip, memories and a world that remembers.
+
+**Waits on milestone 4: a base location.** When travel is real, an act can move you to
+another location for its "search" half:
+
+- The arc's act names a `baseLocationId`: an ordinary `LocationDef` with places (an inn to
+  sleep in, a market, a training ground, a board of the act's jobs), so place pages work there.
+- Arriving is the "go" act's journey (a medium job's legs); leaving is the "return" act's.
+- Days at the base pass as at home (sleep at the inn, hunger, healing), with the crew present
+  for conversations and spars, and deadlines (`ArcAct.deadlineDays`) that move the story on
+  if you dawdle (the "take" beat: the price of being slow).
+- Nothing in today's arcs needs to change for it: a base is where an act's jobs are offered.
 
 ---
 
@@ -454,3 +471,27 @@ migration and a previous-version save test wherever the save shape changes.
    jobs and tidying the short errands.
 7. **Consequences:** world marks, follow-up jobs, memories, returning clients.
 8. **Long arcs:** a design pass, then the first arc.
+
+---
+
+## Part 5: What was built
+
+Each step went out as its own pull request, merged on green CI.
+
+1. **Crews and assignment** (#49). As planned, with one change: "safe" B-rank work means no
+   **elite** foe (not "nothing beyond armed"), so chūnin squads still have B-rank work.
+2. **Days on the road** (#50). Legs, rations (Travel Rations at the grocer), camp nights,
+   the sensei's lesson by the fire, exam clashes, and pay per day validated per job. Drilling
+   by the fire arrived with the camp (step 3).
+3. **The building blocks** (#51). Marks, threads, conditions, outcomes, the ledger; decision,
+   camp and ending stages; road events; charges and twists; voices; `validateStory`.
+4. **The Pilgrim Nun** (#52). The escort template rebuilt as a three-day journey with five
+   fills. Encounter endings leave marks; a watch that spots the lookout reveals the ground.
+5. **The debrief** (#53). The road line by line, the crew's bond and last words, a grade
+   stamp, and what would have helped on a failure.
+6. **The field screen** (#54). Route stamps, the story in beats, a beat card, rolls as ink
+   stamps. The C-rank caravan template became a journey too; the other road and trouble
+   templates stay short jobs (they already explain their debriefs).
+7. **Consequences** (#55). World marks, shared memories, follow-up jobs (the boy from the
+   boulders), gossip about what you did, and returning clients.
+8. **Long arcs** (this step). The design pass above, the arc engine, and The Lantern Thief.

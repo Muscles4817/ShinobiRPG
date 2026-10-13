@@ -49,6 +49,7 @@ export { marketView, type MarketView, type MarketItem, type IngredientItem } fro
 export { homeView, hospitalView, type HomeView, type HospitalView } from './views/home';
 export type { ConditionView, InjuryLine } from './views/condition';
 export { missionBoardView, type MissionBoardView, type Notice, type Foe } from './views/boards';
+export type { ArcView } from './views/arcs';
 export { academyView, type AcademyView, type Scroll } from './views/academy';
 export {
   libraryView,

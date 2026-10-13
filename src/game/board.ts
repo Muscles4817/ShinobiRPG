@@ -1,5 +1,13 @@
 import { hashUnit } from '@/core';
-import { crewOptions, postingShare, type Crew, type MissionDef } from '@/systems/missions';
+import {
+  arcJobOpen,
+  arcPlace,
+  crewOptions,
+  postingShare,
+  type ArcDef,
+  type Crew,
+  type MissionDef,
+} from '@/systems/missions';
 import type { Standing } from '@/systems/standing';
 
 import type { GameContext } from './context';
@@ -45,6 +53,11 @@ function trusted(def: MissionDef, who: Reader, ctx: GameContext): boolean {
   );
 }
 
+/** A job that is part of a long story: up while its act is open, never posted at random. */
+function inArc(ctx: GameContext, def: MissionDef): boolean {
+  return arcPlace(ctx.content.arcs.all, def.id) !== null;
+}
+
 /** The chance a job goes up on a given day: jōnin are seldom offered chores. */
 function postChance(def: MissionDef, who: Reader, ctx: GameContext): number {
   return DAILY_POST_CHANCE * postingShare(jobOf(ctx, def), assigneeOf(who.standing));
@@ -68,7 +81,11 @@ function byHash(missions: readonly MissionDef[], key: (m: MissionDef) => number)
 function postDay(board: Board, day: number, ctx: GameContext, who: Reader): Board {
   const kept = board.postings.filter((p) => p.expiresDay >= day);
   const candidates = ctx.content.missions.all.filter(
-    (m) => !m.standing && trusted(m, who, ctx) && !kept.some((p) => p.missionId === m.id),
+    (m) =>
+      !m.standing &&
+      !inArc(ctx, m) &&
+      trusted(m, who, ctx) &&
+      !kept.some((p) => p.missionId === m.id),
   );
   // Shuffled by the hash, so the cap on postings favours no job for where it sits in the pack.
   const fresh = byHash(
@@ -124,12 +141,25 @@ const caughtUp = new WeakMap<
 
 export type Availability =
   | { readonly kind: 'standing'; readonly doneToday: boolean }
+  /** Part of a long story, up while its act is open. */
+  | { readonly kind: 'arc'; readonly arc: string }
   | { readonly kind: 'posted'; readonly daysLeft: number; readonly isNew: boolean }
   | { readonly kind: 'absent' };
 
-/** The day a job's posting went up (today for a standing job), or null when it isn't up. */
+/** An arc's job, while its act is open: the arc it belongs to. */
+function openArc(state: GameState, ctx: GameContext, def: MissionDef): ArcDef | null {
+  const arcs = ctx.content.arcs.all;
+  const place = arcPlace(arcs, def.id);
+  return place && arcJobOpen(arcs, def.id, state.board.completed) ? place.arc : null;
+}
+
+/**
+ * The day a job's posting went up (today for a standing job or an open arc's), or null when it
+ * isn't up.
+ */
 function postedDay(state: GameState, ctx: GameContext, def: MissionDef): number | null {
   if (def.standing) return state.time.day;
+  if (inArc(ctx, def)) return openArc(state, ctx, def) ? state.time.day : null;
   return boardFor(state, ctx).postings.find((p) => p.missionId === def.id)?.postedDay ?? null;
 }
 
@@ -147,6 +177,8 @@ export function availability(state: GameState, ctx: GameContext, def: MissionDef
   if (def.standing) {
     return { kind: 'standing', doneToday: board.lastTaken[def.id] === state.time.day };
   }
+  const arc = openArc(state, ctx, def);
+  if (arc) return { kind: 'arc', arc: arc.title };
   const posting = board.postings.find((p) => p.missionId === def.id);
   if (!posting) return { kind: 'absent' };
   return {

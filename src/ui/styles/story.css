@@ -155,3 +155,40 @@
   font-family: var(--font-story);
   font-size: 0.92rem;
 }
+
+/* A long story pinned to the board: a slip of paper wider than a notice, nailed above them. */
+.arc-card {
+  grid-column: 1 / -1;
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  border-top: 3px double var(--paper-muted);
+}
+.arc-card h2 {
+  font-family: var(--font-story);
+  font-size: 1.15rem;
+  margin: 0;
+}
+.arc-card .arc-act {
+  margin: 2px 0 6px;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+.arc-card ul {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 0.92rem;
+}
+.arc-card li span {
+  display: inline-block;
+  width: 1.4em;
+  font-family: var(--font-story);
+}
+.arc-card li.done {
+  color: var(--paper-muted);
+  text-decoration: line-through;
+}

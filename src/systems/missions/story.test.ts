@@ -29,7 +29,7 @@ const job: MissionDef = {
   stages: [{ kind: 'narrative', text: 'Off you go.' }],
 };
 
-const story = { marks: ['lost-light'], threads: { trust: 2 }, crew: SOLO };
+const story = { marks: ['lost-light'], threads: { trust: 2 }, crew: SOLO, remembered: ['spared'] };
 
 describe('what a mission remembers', () => {
   it('reads marks, threads, who went, and combinations of them', () => {
@@ -42,6 +42,8 @@ describe('what a mission remembers', () => {
     expect(holds(story, { all: [{ has: 'lost-light' }, { crew: 'you-lead' }] })).toBe(true);
     expect(holds(story, { any: [{ has: 'nope' }, { crew: 'led' }] })).toBe(false);
     expect(holds(story, undefined)).toBe(true);
+    expect(holds(story, { remembers: 'spared' })).toBe(true);
+    expect(holds(story, { remembers: 'trusted' })).toBe(false);
   });
 
   it('tells the first variant that holds, or the plain text', () => {
@@ -66,6 +68,7 @@ describe('what a mission remembers', () => {
     ).toEqual({
       marks: ['a', 'b'],
       threads: ['t'],
+      world: [],
     });
   });
 });

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { headerView, missionBoardView } from '@/game';
 
 import { ExamNotice } from './ExamNotice';
+import { ArcCard } from './ArcCard';
 import { NoticeSheet } from './NoticeSheet';
 
 import { Banner } from '../../components/Banner';
@@ -30,6 +31,9 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
       />
       <main className="board">
         <ExamNotice ctx={ctx} state={state} perform={perform} />
+        {view.arcs.map((arc) => (
+          <ArcCard key={arc.id} arc={arc} />
+        ))}
         {view.notices.length === 0 && (
           <p className="board-empty">Nothing posted today. Check back tomorrow.</p>
         )}
