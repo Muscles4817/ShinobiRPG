@@ -1,5 +1,5 @@
 import { clamp } from '@/core';
-import type { EffectOf, TechniqueEffect } from '@/systems/techniques';
+import { blowsOf, type EffectOf, type TechniqueEffect } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatantSetup, CombatTechnique } from '../contract';
 import { elementMultiplier } from './elements';
@@ -37,6 +37,8 @@ const TECHNIQUE_BASE = 0.5;
 const TECHNIQUE_PER_POWER = 1 / 16;
 /** A heal restores its power, plus this fraction more per point of healing skill. */
 const HEAL_PER_SKILL = 1 / 20;
+/** A wild technique, easier to slip (`defence.ts`), hits this much harder when it lands. */
+export const WILD_DAMAGE = 1.2;
 
 /** Anyone with a stat line: the ratings below read nothing else. */
 interface Rated {
@@ -146,7 +148,8 @@ export function techniqueDamage(
   const scale = gapScale(effectPower(attacker, use), defenceAgainst(defender, use));
   const weight = TECHNIQUE_BASE + effect.power * TECHNIQUE_PER_POWER;
   const elements = elementMultiplier(technique, attacker.nature, defender.nature);
-  return Math.max(1, Math.round(BLOW_DAMAGE * weight * scale * elements * variance(roll)));
+  const wild = technique.accuracy === 'wild' ? WILD_DAMAGE : 1;
+  return Math.max(1, Math.round(BLOW_DAMAGE * weight * scale * elements * wild * variance(roll)));
 }
 
 /** A heal restores its power, more in skilled hands (ninjutsu and chakra control by default). */
@@ -169,7 +172,8 @@ function isWoundingEffect(e: TechniqueEffect): e is EffectOf<'damage' | 'area' |
 export function equalHitShare(fighter: Natured, technique: CombatTechnique): number | null {
   const hits = technique.effects.filter(isWoundingEffect).map((effect) => {
     const damage = techniqueDamage(fighter, fighter, { technique, effect }, 0.5);
-    return cappedHit(damage, EQUAL_HEALTH);
+    const blows = blowsOf(effect);
+    return cappedHit(damage / blows, EQUAL_HEALTH) * blows;
   });
   if (hits.length === 0) return null;
   return Math.min(1, hits.reduce((sum, h) => sum + h, 0) / EQUAL_HEALTH);

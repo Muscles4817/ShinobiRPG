@@ -1,4 +1,5 @@
 import { clamp, logistic } from '@/core';
+import type { Accuracy } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatTechnique } from '../contract';
 import { blowPower, gapRatio } from './damage';
@@ -28,6 +29,10 @@ const GUARD_WORST = 0.85;
 const COUNTER_BASE = 0.4;
 const COUNTER_MIN = 0.15;
 const COUNTER_MAX = 0.65;
+/** How a technique's accuracy scales the chance of slipping it (a Dodge, or swift instinct). */
+const ACCURACY_EVASION: Readonly<Record<Accuracy, number>> = { sure: 0.5, steady: 1, wild: 1.6 };
+/** However wild the swing, some blows still land. */
+const SLIP_MAX = 0.75;
 /** Resistance never rises above this, nor falls below the floor. */
 const RESIST_MAX = 0.6;
 const RESIST_FLOOR = 0.05;
@@ -58,6 +63,11 @@ export function dodgeChance(attacker: Rated, defender: Rated): number {
 export function guardScale(attacker: Rated, defender: Rated): number {
   const ratio = gapRatio(blowPower(attacker), guardRating(defender));
   return clamp(GUARD_SCALE * ratio ** GUARD_GAP_EXPONENT, GUARD_BEST, GUARD_WORST);
+}
+
+/** The chance of slipping a blow, scaled by how sure it is to land. */
+export function slipChance(chance: number, accuracy: Accuracy | undefined): number {
+  return clamp(chance * ACCURACY_EVASION[accuracy ?? 'steady'], 0, SLIP_MAX);
 }
 
 /** Chance a Counter answers a blow up close: taijutsu against taijutsu. */

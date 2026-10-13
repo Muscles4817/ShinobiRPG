@@ -324,6 +324,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a technique:** give it a `rank` (E–S, the letters of ability grades): one rank above the
   learner's grade in its discipline is slow and arrives unstable, two is impossible from any
   source. Physical needs (nature, reserves, control grade) go in `needs`. Starters must be rank E.
+  Its shape in a fight: `reach` (bands, when not its art's usual reach; ask `reachOf`),
+  `accuracy` (sure, steady, wild: a multiplier on slipping it, and wild hits harder; `slipChance`
+  in `rules/defence.ts`) and a damage effect's `hits` (a flurry: the power split over 2–5 blows,
+  each dodged alone; a Guard or Counter meets only the first). The academy's technique sheet
+  (`views/techniqueSheet.ts`) reads all of it, so what the player is told is what the fight does.
 - **Add a clan, talent or trait:** add it to the pack's `clans` (or the shared `talents`/
   `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack

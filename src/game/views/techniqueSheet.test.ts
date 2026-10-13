@@ -32,6 +32,22 @@ describe('the technique sheet', () => {
     expect(sheet('mending-glow').effects[0]).toEqual({ text: 'Heals you', chip: '18 health' });
   });
 
+  it('says how surely it lands, and how many blows a flurry strikes', () => {
+    const palm = ctx.content.techniques.require('palm-strike');
+    expect(sheet('palm-strike').lands).toBe('Steady');
+    expect(sheet('palm-strike').strikes).toBeNull();
+    const kicks = techniqueSheet(state, ctx, {
+      ...palm,
+      accuracy: 'sure',
+      reach: ['close', 'mid'],
+      effects: [{ verb: 'damage', power: 12, hits: 3 }],
+    });
+    expect(kicks.lands).toBe('Sure: hard to slip');
+    expect(kicks.strikes).toBe('Three blows');
+    expect(kicks.reach.filter((r) => r.reaches).map((r) => r.band)).toEqual(['Close', 'Mid']);
+    expect(sheet('paper-veil').lands).toBeNull();
+  });
+
   it('says what a hit takes from an equal, in words', () => {
     expect(sheet('palm-strike').inYourHands).toMatch(/of an equal’s health$/);
     expect(sheet('paper-veil').inYourHands).toBeNull();

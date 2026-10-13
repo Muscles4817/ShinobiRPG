@@ -75,6 +75,8 @@ interface EffectBase<V extends Verb> {
  * raises and what it costs, whether clones fight, whether a trap dazes.
  */
 interface VerbExtras {
+  /** A flurry: the power split over this many blows (2–5, validated), each defended alone. */
+  readonly damage: { readonly hits?: number };
   readonly field: { readonly field: FieldId };
   /** Where the move goes; without it, wherever its user fights best. */
   readonly move: { readonly to?: MoveDistance };
@@ -104,6 +106,11 @@ export type TechniqueEffect = { readonly [V in Verb]: EffectBase<V> & ExtrasOf<V
 /** Verbs whose effects need nothing beyond their power. */
 export type PlainVerb = Exclude<Verb, 'field' | 'empower'>;
 
+/** How many blows a wounding effect lands as: a flurry's count, or one. */
+export function blowsOf(effect: TechniqueEffect): number {
+  return effect.verb === 'damage' ? (effect.hits ?? 1) : 1;
+}
+
 /** The effect variant for one verb. */
 export type EffectOf<V extends Verb> = Extract<TechniqueEffect, { readonly verb: V }>;
 
@@ -111,11 +118,22 @@ export type EmpowerEffect = EffectOf<'empower'>;
 export type CloneEffect = EffectOf<'clone'>;
 export type TrapEffect = EffectOf<'trap'>;
 
+/** Most blows a flurry splits into. */
+export const MAX_HITS = 5;
+
+function hitsProblem(hits: number | undefined): string | null {
+  if (hits === undefined) return null;
+  return Number.isInteger(hits) && hits >= 2 && hits <= MAX_HITS
+    ? null
+    : `a flurry of ${hits} blows (it needs 2 to ${MAX_HITS})`;
+}
+
 /**
  * Why an effect's data can't work as written, or null. An empower must raise something and
  * must cost something (a health price, an after-cost, or both), and any after-cost must be real.
  */
 export function effectProblem(effect: TechniqueEffect): string | null {
+  if (effect.verb === 'damage') return hitsProblem(effect.hits);
   if (effect.verb !== 'empower') return null;
   if (effect.boosts.length === 0) return 'an empower that raises nothing';
   if (effect.afterCost && !costIsSane(effect.afterCost)) {

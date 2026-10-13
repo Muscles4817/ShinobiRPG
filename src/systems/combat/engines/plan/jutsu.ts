@@ -1,4 +1,4 @@
-import type { EffectOf, TechniqueEffect, Verb } from '@/systems/techniques';
+import { blowsOf, type EffectOf, type TechniqueEffect, type Verb } from '@/systems/techniques';
 
 import type { CombatTechnique } from '../../contract';
 import { alive, chakraCost, holdTurns } from '../../rules/body';
@@ -104,26 +104,47 @@ function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
   return say(healed, healLine(`${actor.name} recovers.`, health - actor.health));
 }
 
-/**
- * A wounding effect: harder on a foe left open by a daze or held by a seal (set-up and
- * payoff), in an element combo, and in a combination technique.
- */
-function damage(round: Round, { actor, target, rng, boost }: Aimed, use: Wounding): Round {
+/** The blows a wounding effect lands as: one, or a flurry's share of it each. */
+function blowsFor(aimed: Aimed, use: Wounding, scale: number): Blow[] {
+  const { actor, target, rng } = aimed;
   const t = use.technique;
-  const open = isDazed(target) || target.sealed > 0;
-  const combo = elementBoost(round, actor, target.id, t);
-  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1);
-  const blow: Blow = {
-    raw: techniqueDamage(actor, target, use, rng.next()) * scale,
+  const count = blowsOf(use.effect);
+  const raw = (techniqueDamage(actor, target, use, rng.next()) * scale) / count;
+  const first: Blow = {
+    raw,
     what: t.name,
     dodgeable: t.discipline !== 'genjutsu',
     physical: physical(t),
     kind: attackKindOf(t),
     discipline: t.discipline,
+    ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     ...(use.effect.verb === 'break' ? { breaks: true } : {}),
     ...(use.effect.verb === 'area' ? { area: true } : {}),
   };
-  const hit = react(round, { attacker: actor, target, blow, rng });
+  return Array.from({ length: count }, (_, i) => (i === 0 ? first : { ...first, followUp: true }));
+}
+
+/** Each blow in turn, while the target still stands. */
+function strike(round: Round, aimed: Aimed, blows: readonly Blow[]): Round {
+  return blows.reduce((now, blow) => {
+    const target = fighterIn(now, aimed.target.id);
+    if (!target || !alive(target)) return now;
+    return react(now, { attacker: aimed.actor, target, blow, rng: aimed.rng });
+  }, round);
+}
+
+/**
+ * A wounding effect: harder on a foe left open by a daze or held by a seal (set-up and
+ * payoff), in an element combo, and in a combination technique. A flurry lands as several
+ * blows, each dodged on its own.
+ */
+function damage(round: Round, aimed: Aimed, use: Wounding): Round {
+  const { actor, target, boost } = aimed;
+  const t = use.technique;
+  const open = isDazed(target) || target.sealed > 0;
+  const combo = elementBoost(round, actor, target.id, t);
+  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1);
+  const hit = strike(round, aimed, blowsFor(aimed, use, scale));
   const landed = fighterIn(hit, target.id)?.health !== target.health;
   const element = matchupLine(matchup(t.element, target.nature), target.name);
   const lines = [...(landed && combo ? [combo.line] : []), ...(element ? [element] : [])];

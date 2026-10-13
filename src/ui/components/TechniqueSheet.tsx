@@ -30,6 +30,18 @@ export function TechniqueSheet({ sheet }: { readonly sheet: Sheet }) {
           </dd>
         </div>
       )}
+      {sheet.lands && (
+        <div>
+          <dt>Lands</dt>
+          <dd>{sheet.lands}</dd>
+        </div>
+      )}
+      {sheet.strikes && (
+        <div>
+          <dt>Strikes</dt>
+          <dd>{sheet.strikes}</dd>
+        </div>
+      )}
       <div>
         <dt>Does</dt>
         <dd>

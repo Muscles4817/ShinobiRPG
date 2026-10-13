@@ -28,7 +28,9 @@ export const RANGE_LABEL: Readonly<Record<RangeBand, string>> = {
   far: 'Far',
 };
 
+/** Where a technique works: its own reach if it has one, else its art's (anywhere, if harmless). */
 export function reachOf(technique: CombatTechnique): readonly RangeBand[] {
+  if (technique.reach) return technique.reach;
   return isHarmful(technique) ? REACH[technique.discipline] : RANGE_BANDS;
 }
 

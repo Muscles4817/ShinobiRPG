@@ -1,9 +1,9 @@
 import type { Rng } from '@/core';
-import type { Discipline } from '@/systems/techniques';
+import type { Accuracy, Discipline } from '@/systems/techniques';
 
 import { alive } from '../../rules/body';
 import { cappedHit, strikeDamage } from '../../rules/damage';
-import { counterChance, dodgeChance, guardScale } from '../../rules/defence';
+import { counterChance, dodgeChance, guardScale, slipChance } from '../../rules/defence';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import {
   canAttackFrom,
@@ -55,6 +55,13 @@ export interface Blow {
   readonly area?: boolean;
   /** Share of a guard it goes through (knuckles, a sundering weapon: `rules/weapons.ts`). */
   readonly pierce?: number;
+  /** How hard it is to slip (a technique's accuracy; steady when unset). */
+  readonly accuracy?: Accuracy;
+  /**
+   * A later blow of a flurry: a Guard or a Counter has already met the first, so only a Dodge
+   * (each blow on its own) stands in its way.
+   */
+  readonly followUp?: true;
 }
 
 export interface Hit {
@@ -64,9 +71,10 @@ export interface Hit {
   readonly rng: Rng;
 }
 
-function avoidChance(attacker: PlanFighter, target: PlanFighter, dodging: boolean): number {
+function avoidChance(hit: Hit, target: PlanFighter, dodging: boolean): number {
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE : 0;
-  return dodging ? dodgeChance(attacker, target) + swift : swift * SWIFT_INSTINCT;
+  const chance = dodging ? dodgeChance(hit.attacker, target) + swift : swift * SWIFT_INSTINCT;
+  return slipChance(chance, hit.blow.accuracy);
 }
 
 /**
@@ -172,7 +180,7 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const { attacker, target, blow, rng } = hit;
   const able = blow.dodgeable && !isDazed(target);
   const tried = able && has('dodge');
-  const avoid = able ? avoidChance(attacker, dulled(round.field, target), has('dodge')) : 0;
+  const avoid = able ? avoidChance(hit, dulled(round.field, target), has('dodge')) : 0;
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
   const line = `${target.name} slips past ${attacker.name}'s ${blow.what}.`;
   // A swift fighter slips some blows on instinct; only a slotted Dodge is shown reacting.
@@ -184,6 +192,7 @@ function canCounterBack(round: Round, { attacker, target, blow }: Hit, has: Read
   return (
     has('counter') &&
     blow.physical &&
+    !blow.followUp &&
     round.range === 'close' &&
     canAttackFrom(target, round.range) &&
     canHit({ kind: 'counter' }, attacker, round.fighters)
@@ -206,8 +215,9 @@ export function react(before: Round, hit: Hit): Round {
   const swap = { target, attacker, what: blow.what, discipline: blow.discipline };
   const swapped = substituted(round, ready, swap);
   if (swapped) return swapped;
-  const guarded = has('guard') && !blow.breaks;
-  const smashed = has('guard') && blow.breaks === true;
+  const guarding = has('guard') && !blow.followUp;
+  const guarded = guarding && !blow.breaks;
+  const smashed = guarding && blow.breaks === true;
   const damage = cappedHit(
     Math.max(
       1,
@@ -221,7 +231,7 @@ export function react(before: Round, hit: Hit): Round {
     round,
     harmLine(
       reactionLine(
-        `${attacker.name}'s ${blow.what} hits ${target.name}${guardWords(guarded, smashed)}.`,
+        `${attacker.name}'s ${blow.what} hits ${target.name}${blow.followUp ? ' again' : ''}${guardWords(guarded, smashed)}.`,
         ...reactionsTo({ dodgeTried: evasion.tried, guarded, smashed }),
       ),
       damage,
