@@ -4,6 +4,7 @@ import { TOOL_IDS } from '../../shared/tools';
 import { CHUNIN_MISSIONS } from './chuninMissions';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
+import { MARKET_STREET } from './market';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -71,43 +72,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'ward-writing',
         ],
       },
-      {
-        id: 'market-street',
-        kind: 'market',
-        name: 'Market Street',
-        icon: 'bowl',
-        blurb: 'Stalls open till night',
-        stalls: [
-          {
-            name: "Kenji's Noodle Stand",
-            blurb: 'Open till night',
-            icon: 'bowl',
-            foodIds: ['ember-noodles', 'teahouse-feast'],
-          },
-          {
-            name: 'Riverside Grill',
-            blurb: 'Cheap and quick',
-            hours: ['morning', 'afternoon', 'evening'],
-            icon: 'fish',
-            foodIds: ['grilled-fish', 'rice-ball'],
-          },
-          {
-            name: 'Apothecary',
-            blurb: 'Pills and salves',
-            hours: ['morning', 'afternoon', 'evening'],
-            icon: 'pill',
-            foodIds: ['soldier-pill'],
-          },
-          {
-            name: 'Sato’s Grocery',
-            blurb: 'Cook it yourself, save a fortune',
-            hours: ['morning', 'afternoon'],
-            icon: 'veg',
-            foodIds: [],
-            ingredientIds: ['rice', 'river-fish', 'vegetables', 'miso', 'spices'],
-          },
-        ],
-      },
+      MARKET_STREET,
       {
         id: 'kurogane-forge',
         kind: 'gear',
@@ -221,7 +186,14 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         blurb: 'An izakaya that opens at dusk',
         hours: ['evening', 'night'],
         keeper: 'Mama Sayo, who hears everything',
-        foodIds: ['lantern-yakitori', 'night-oden', 'roasted-barley-tea'],
+        foodIds: [
+          'lantern-yakitori',
+          'night-oden',
+          'roasted-barley-tea',
+          'salted-edamame',
+          'grilled-mushrooms',
+          'hot-yuzu-tea',
+        ],
         roundCost: 40,
       },
       {

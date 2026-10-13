@@ -104,6 +104,7 @@ export const GENIN: readonly PersonDef[] = [
   {
     id: 'kenji',
     name: 'Kenji',
+    favouriteRecipeId: 'chestnut-rice',
     familyName: 'Oda',
     role: 'genin',
     title: 'Genin',
@@ -127,6 +128,7 @@ export const GENIN: readonly PersonDef[] = [
   {
     id: 'mio',
     name: 'Mio',
+    favouriteRecipeId: 'cucumber-rice',
     familyName: 'Sakai',
     role: 'genin',
     title: 'Genin',

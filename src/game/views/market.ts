@@ -5,7 +5,7 @@ import { METER_MAX } from '@/systems/vitals';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import type { GameState } from '../state';
-import { closedSign, festivalToday, marketPrice, stallsHere } from '../village';
+import { closedSign, festivalToday, marketPrice, seasonNote, stallsHere } from '../village';
 import { choice, type Choice } from './common';
 
 export interface MarketItem extends Choice {
@@ -19,6 +19,8 @@ export interface MarketItem extends Choice {
   readonly slots: number;
   /** Fullness that would go to waste because you're already nearly full. */
   readonly wasted: number;
+  /** "Autumn only" for a seasonal dish, else null. */
+  readonly season: string | null;
 }
 
 /** A raw ingredient at the grocer, to cook at home. */
@@ -29,6 +31,8 @@ export interface IngredientItem extends Choice {
   readonly cost: number;
   /** How many you already have in the pantry. */
   readonly inPantry: number;
+  /** "Winter only" for a seasonal ingredient, else null. */
+  readonly season: string | null;
 }
 
 export interface MarketView {
@@ -66,6 +70,7 @@ export function foodItem(state: GameState, ctx: GameContext, id: string): Market
     energy: food.energy,
     slots: food.slots,
     wasted: Math.max(0, fullness + food.satiety - METER_MAX),
+    season: seasonNote(food),
   };
 }
 
@@ -95,6 +100,7 @@ export function marketView(state: GameState, ctx: GameContext): MarketView | nul
           icon: item.icon,
           cost: marketPrice(item.cost, state, ctx),
           inPantry: pantryCount(state.inventory, id),
+          season: seasonNote(item),
         };
       }),
     })),

@@ -86,6 +86,18 @@ export const VILLAGE: VillageLife = {
       text: 'An envoy from the desert village came and went without a word to anyone.',
     },
     {
+      id: 'seasons-cart',
+      text: 'The cook on the Four Seasons Cart changes his menu by the weather, not the calendar.',
+    },
+    {
+      id: 'kasumi-notices',
+      text: 'Kasumi wraps her buns in old mission notices. Someone found a sealed one inside.',
+    },
+    {
+      id: 'eel-secret',
+      text: 'The Riverside Grill won’t say where its eels come from. Nobody has seen them caught.',
+    },
+    {
       id: 'forge-blade',
       text: 'Old Hagane at the forge is working on a blade he won’t talk about.',
     },

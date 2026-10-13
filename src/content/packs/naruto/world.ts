@@ -2,6 +2,7 @@ import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
 import { TOOL_IDS } from '../../shared/tools';
 import { PROMOTIONS } from './exam';
+import { SHOPPING_DISTRICT } from './market';
 
 export const NARUTO_TEXT: SettingText = {
   nation: 'the Land of Fire',
@@ -74,50 +75,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'seal-calligraphy',
         ],
       },
-      {
-        id: 'shopping-district',
-        kind: 'market',
-        name: 'Shopping District',
-        icon: 'bowl',
-        blurb: 'Ichiraku is open',
-        stalls: [
-          {
-            name: 'Ichiraku Ramen',
-            blurb: 'Teuchi and Ayame',
-            icon: 'bowl',
-            foodIds: ['miso-ramen', 'pork-ramen'],
-          },
-          {
-            name: 'Yakiniku Q',
-            blurb: 'Barbecue, take your time',
-            hours: ['afternoon', 'evening', 'night'],
-            icon: 'grill',
-            foodIds: ['yakiniku'],
-          },
-          {
-            name: 'Amaguriama',
-            blurb: 'Sweets and tea',
-            hours: ['morning', 'afternoon'],
-            icon: 'dango',
-            foodIds: ['dango'],
-          },
-          {
-            name: 'Konoha Pharmacy',
-            blurb: 'Pills and salves',
-            hours: ['morning', 'afternoon', 'evening'],
-            icon: 'pill',
-            foodIds: ['soldier-pill'],
-          },
-          {
-            name: 'Konoha Grocer',
-            blurb: 'Ingredients for home cooking',
-            hours: ['morning', 'afternoon'],
-            icon: 'veg',
-            foodIds: [],
-            ingredientIds: ['rice', 'river-fish', 'vegetables', 'miso', 'spices'],
-          },
-        ],
-      },
+      SHOPPING_DISTRICT,
       {
         id: 'weapon-shop',
         kind: 'gear',

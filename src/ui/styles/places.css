@@ -289,6 +289,12 @@
 .item .muted {
   color: var(--paper-muted);
 }
+/* Seasonal produce: stamped like a market slip, in sentence case. */
+.item .badge {
+  align-self: flex-start;
+  color: var(--ink-gain);
+  text-transform: none;
+}
 .item .blocker {
   color: var(--ink-cost);
 }

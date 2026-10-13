@@ -3,6 +3,7 @@ import {
   calendarDay,
   daysUntil,
   formatDate,
+  seasonOf,
   slotName,
   slotsUntilNextMorning,
   START_TIME,
@@ -37,6 +38,14 @@ describe('time', () => {
     expect(daysUntil(1, { season: 0, day: 1 })).toBe(0);
     expect(daysUntil(1, { season: 0, day: 8 })).toBe(7);
     expect(daysUntil(30, { season: 0, day: 1 })).toBe(83);
+  });
+
+  it('names the season a day falls in, round the year', () => {
+    expect(seasonOf(1)).toBe('Spring');
+    expect(seasonOf(28)).toBe('Spring');
+    expect(seasonOf(29)).toBe('Summer');
+    expect(seasonOf(85)).toBe('Winter');
+    expect(seasonOf(113)).toBe('Spring');
   });
 
   it('names slots', () => {

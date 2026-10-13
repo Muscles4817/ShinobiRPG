@@ -7,6 +7,7 @@ import type {
   WeaponShape,
 } from '@/systems/combat';
 import type { ModifierSpec } from '@/systems/modifiers';
+import type { Season } from '@/systems/time';
 
 import type { IconId } from './art';
 
@@ -76,6 +77,8 @@ export interface IngredientDef {
   readonly name: string;
   readonly cost: number;
   readonly icon: IconId;
+  /** Only at the grocer in these seasons; absent means all year. */
+  readonly seasons?: readonly Season[];
 }
 
 export interface IngredientCount {

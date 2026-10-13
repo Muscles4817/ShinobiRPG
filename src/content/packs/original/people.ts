@@ -137,6 +137,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
   {
     id: 'tetsu',
     name: 'Tetsu',
+    favouriteRecipeId: 'radish-stew',
     familyName: 'Kurogane',
     role: 'sensei',
     title: 'Jōnin',
@@ -186,6 +187,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
   {
     id: 'ito',
     name: 'Ito',
+    favouriteRecipeId: 'egg-over-rice',
     familyName: 'Shimenawa',
     role: 'sensei',
     title: 'Special Jōnin',
@@ -224,6 +226,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
   {
     id: 'rin',
     name: 'Rin',
+    favouriteRecipeId: 'simmered-tofu',
     familyName: 'Asagiri',
     role: 'instructor',
     title: 'Academy instructor',
