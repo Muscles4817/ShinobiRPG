@@ -217,7 +217,7 @@ function needLines(def: TechniqueDef): string[] {
 
 function schoolOf(def: TechniqueDef, ctx: GameContext): string {
   if (def.clan) return `${ctx.content.clans.get(def.clan)?.name ?? 'A clan'} clan art`;
-  return 'Standard technique';
+  return def.school ? `The ${def.school} school` : 'Standard technique';
 }
 
 const WOUNDING = new Set(['damage', 'area', 'break']);

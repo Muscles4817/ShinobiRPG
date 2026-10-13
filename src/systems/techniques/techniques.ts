@@ -36,6 +36,11 @@ export interface TechniqueDef {
   readonly difficulty: number;
   /** Only members of this clan may learn it. */
   readonly clan?: string;
+  /**
+   * The style it belongs to ("Lantern Wind"), taught by that school's teachers rather than
+   * shelved for everyone. Absent for standard techniques.
+   */
+  readonly school?: string;
   /** A trump card: usable once per fight. */
   readonly oncePerFight?: true;
   /** What using it costs its user once the fight is over (validated: trump cards only). */

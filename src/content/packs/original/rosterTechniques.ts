@@ -17,6 +17,8 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Moth Needle',
     description: 'A grey needle that flutters like a moth and lands like a hornet.',
     discipline: 'taijutsu',
+    school: 'Moth Needle',
+    accuracy: 'sure',
     effects: [{ verb: 'damage', power: 12 }],
     chakraCost: 4,
     rank: 'D',

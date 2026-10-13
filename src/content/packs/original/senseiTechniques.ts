@@ -7,6 +7,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Iron Gate Palm',
     description: 'One step, one palm, all your weight behind it. Doors have been known to give.',
     discipline: 'taijutsu',
+    school: 'Iron Gate',
     effects: [{ verb: 'damage', power: 20 }],
     chakraCost: 8,
     rank: 'D',

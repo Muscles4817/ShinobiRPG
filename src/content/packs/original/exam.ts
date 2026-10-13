@@ -98,7 +98,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
     baseStat: 7,
     statBonuses: { kenjutsu: 4, speed: 2 },
     maxChakra: 40,
-    techniqueIds: ['lantern-cut', 'moonfall-slash'],
+    techniqueIds: ['draw-cut', 'lantern-cut', 'moonfall-slash'],
     traits: ['swift'],
   },
   {
@@ -110,7 +110,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
     baseStat: 7,
     statBonuses: { perception: 3, speed: 1 },
     maxChakra: 40,
-    techniqueIds: ['pebble-volley'],
+    techniqueIds: ['pebble-volley', 'gust-palm'],
     traits: ['archer'],
   },
   {
