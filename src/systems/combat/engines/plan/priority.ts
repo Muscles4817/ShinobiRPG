@@ -1,7 +1,7 @@
-import type { CombatTechnique } from '../../contract';
+import type { CombatTechnique, RangeBand } from '../../contract';
 import { alive, hasPerk } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
-import { hasVerb, isHindering, isWounding } from '../../rules/verbs';
+import { effectsOf, hasVerb, isHindering, isPinned, isWounding } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
 import { improvise } from './choose';
 import { partnered } from './combo';
@@ -124,10 +124,23 @@ export function aimAt(
 /**
  * No healing at full health, no sensing with no one hidden (or foes already read), no hiding
  * twice, no raising a field while yours is up, no move to where you already are, no
- * combination without a partner ready to join it.
+ * combination without a partner ready to join it, no riposte while one is ready, no throw
+ * that only moves a foe to where they already are.
  */
+/** Where a technique's throw or pull leaves the distance, if it has one. */
+function knockTo(t: CombatTechnique): RangeBand | undefined {
+  return effectsOf(t, 'knock')[0]?.to;
+}
+
+/** A riposte while one is ready, or a throw that only moves a foe to where they are. */
+function wasted(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
+  if (hasVerb(t, 'counter') && self.riposte) return true;
+  return !isWounding(t) && knockTo(t) === round.range;
+}
+
 function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
   const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
+  if (wasted(self, t, round)) return false;
   if (hasVerb(t, 'heal') && self.health >= self.maxHealth) return false;
   if (hasVerb(t, 'sense') && (!hiddenFoe || hasPerk(self, 'insight'))) return false;
   if (hasVerb(t, 'field') && ownField(round.field, self)) return false;
@@ -184,11 +197,12 @@ function holdsOnly(card: Card): boolean {
   return card.kind === 'jutsu' && isHindering(card.technique) && !isWounding(card.technique);
 }
 
-/** Not dazed, sealed or confused; for a daze, not steady after one either. */
+/** Not dazed, sealed or confused; for a daze, not steady after one; for a pin, not pinned. */
 function free(foe: PlanFighter, card: Card, exchange: number): boolean {
-  const steady =
-    card.kind === 'jutsu' && hasVerb(card.technique, 'daze') && !canDaze(foe, exchange);
-  return !dazed(foe) && foe.confused === 0 && !steady;
+  const has = (verb: 'daze' | 'pin') => card.kind === 'jutsu' && hasVerb(card.technique, verb);
+  const steady = has('daze') && !canDaze(foe, exchange);
+  const held = has('pin') && isPinned(foe);
+  return !dazed(foe) && foe.confused === 0 && !steady && !held;
 }
 
 function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {

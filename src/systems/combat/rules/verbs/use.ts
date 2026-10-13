@@ -66,10 +66,10 @@ export function isWounding(technique: CombatTechnique): boolean {
   );
 }
 
-/** Holds a foe back without wounding them: dazes, seals or confuses them. */
+/** Holds a foe back without wounding them: dazes, seals, confuses or pins them. */
 export function isHindering(technique: CombatTechnique): boolean {
   return technique.effects.some(
-    (e) => e.verb === 'daze' || e.verb === 'seal' || e.verb === 'confuse',
+    (e) => e.verb === 'daze' || e.verb === 'seal' || e.verb === 'confuse' || e.verb === 'pin',
   );
 }
 

@@ -1,4 +1,5 @@
 import {
+  AFFLICT_EXCHANGES,
   chakraCost,
   equalHitShare,
   holdTurns,
@@ -10,6 +11,7 @@ import type { CombatantSetup } from '@/systems/combat';
 import { STAT_INFO } from '@/systems/stats';
 import {
   blowsOf,
+  type AfflictionKind,
   type Accuracy,
   type TechniqueDef,
   type TechniqueEffect,
@@ -109,10 +111,26 @@ const PLAIN_WORDS: Readonly<Record<PlainSheetVerb, string>> = {
   conceal: 'Hides you until you attack',
   sense: 'Finds the hidden and reads their plans',
   substitute: 'Swaps you out of the first hit each round',
+  counter: 'Readies a riposte: the next blow at you is answered first',
 };
 
+const HARM_WORDS: Readonly<Record<AfflictionKind, string>> = {
+  burn: 'Sets them burning',
+  bleed: 'Opens a wound that bleeds (bleeds stack)',
+  poison: 'Poisons them: weaker and slower while it lasts',
+};
+
+/** Verbs that leave something on a foe, whose line reads where, how long or how much. */
+type LingeringVerb = 'knock' | 'pin' | 'drain' | 'afflict';
 type DetailedVerb = 'seal' | 'heal' | 'field' | 'move' | 'empower' | 'clone' | 'trap';
-type PlainSheetVerb = Exclude<TechniqueEffect['verb'], DetailedVerb>;
+type PlainSheetVerb = Exclude<TechniqueEffect['verb'], DetailedVerb | LingeringVerb>;
+const LINGERING_VERBS: readonly TechniqueEffect['verb'][] = ['knock', 'pin', 'drain', 'afflict'];
+
+function isLingering(
+  effect: TechniqueEffect,
+): effect is Extract<TechniqueEffect, { verb: LingeringVerb }> {
+  return LINGERING_VERBS.includes(effect.verb);
+}
 
 function isPlain(
   effect: TechniqueEffect,
@@ -157,8 +175,33 @@ function detailedLine(effect: Extract<TechniqueEffect, { verb: DetailedVerb }>):
   }
 }
 
+function lingeringLine(effect: Extract<TechniqueEffect, { verb: LingeringVerb }>): SheetLine {
+  switch (effect.verb) {
+    case 'knock':
+      return {
+        text: effect.to === 'close' ? 'Drags them in close' : `Throws them to ${effect.to} range`,
+        chip: null,
+      };
+    case 'pin':
+      return {
+        text: 'Pins them: no stepping or fleeing, and slower to dodge',
+        chip: turns(effect.power),
+      };
+    case 'drain':
+      return {
+        text: effect.absorb
+          ? 'Drains their chakra, and some flows into you'
+          : 'Drains their chakra',
+        chip: `${effect.power} chakra`,
+      };
+    case 'afflict':
+      return { text: HARM_WORDS[effect.harm], chip: `${AFFLICT_EXCHANGES} turns` };
+  }
+}
+
 function effectLine(effect: TechniqueEffect): SheetLine {
-  return isPlain(effect) ? { text: PLAIN_WORDS[effect.verb], chip: null } : detailedLine(effect);
+  if (isPlain(effect)) return { text: PLAIN_WORDS[effect.verb], chip: null };
+  return isLingering(effect) ? lingeringLine(effect) : detailedLine(effect);
 }
 
 function needLines(def: TechniqueDef): string[] {

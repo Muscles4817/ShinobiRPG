@@ -10,7 +10,13 @@ import { bodyFrom, type Body } from '../../rules/body';
 import { numberedNames } from '../../rules/narration';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
-import type { ActiveField, CloneBody, EmpowerMemory, TrapMemory } from '../../rules/verbs';
+import type {
+  ActiveField,
+  CloneBody,
+  EmpowerMemory,
+  LingeringMemory,
+  TrapMemory,
+} from '../../rules/verbs';
 import type { CombatOrders, CombatStance } from '../../teamContract';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -55,7 +61,8 @@ export function plainSlots(cards: readonly CardId[]): Slot[] {
   return cards.map((card) => ({ card }));
 }
 
-export interface PlanFighter extends Body, TrumpMemory, EmpowerMemory, CloneBody, TrapMemory {
+export interface PlanFighter
+  extends Body, TrumpMemory, EmpowerMemory, CloneBody, TrapMemory, LingeringMemory {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;

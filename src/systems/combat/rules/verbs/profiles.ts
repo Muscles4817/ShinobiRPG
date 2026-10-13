@@ -48,6 +48,16 @@ export const VERB_PROFILES: Readonly<Record<Verb, VerbProfile>> = {
   clone: { aim: 'self', drive: ['art'], resist: ['perception'] },
   // Set by sealing craft and cunning; a foe who notices it steps around (`rules/verbs/trap.ts`).
   trap: { aim: 'self', drive: ['fuuinjutsu', 'intellect'], resist: ['perception'] },
+  // A throw or a pull: art and strength against the target's footing (`rules/verbs/hold.ts`).
+  knock: { aim: 'foe', drive: ['art', 'strength'], resist: ['strength', 'speed'] },
+  // A hold: art against strength (an illusory one overrides the resist with willpower).
+  pin: { aim: 'foe', drive: ['art'], resist: ['strength'] },
+  // Chakra drawn out: art against chakra control (`rules/verbs/drain.ts`).
+  drain: { aim: 'foe', drive: ['art'], resist: ['chakraControl'] },
+  // Lingering harm: art against stamina (`rules/verbs/afflict.ts`).
+  afflict: { aim: 'foe', drive: ['art'], resist: ['stamina'] },
+  // A readied riposte, struck with the art when the next blow comes (`rules/verbs/riposte.ts`).
+  counter: { aim: 'self', drive: ['art'], resist: [] },
 };
 
 /** The profile an effect scales by: its verb's, with the effect's own overrides on top. */

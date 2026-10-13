@@ -43,6 +43,8 @@ export {
   blowsOf,
   MAX_HITS,
   FIELD_IDS,
+  AFFLICTIONS,
+  type AfflictionKind,
   type FieldId,
   type MoveDistance,
   type Verb,

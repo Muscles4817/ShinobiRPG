@@ -350,7 +350,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (`systems/techniques/effects.ts`). A new verb goes in `VERBS` with its scaling profile
   (which user stats drive it, which target stats resist it) in `rules/verbs/profiles.ts`;
   Plan & Watch applies it in `engines/plan/jutsu.ts`. Shelved engines read a technique
-  through `primaryEffect`.
+  through `primaryEffect`. Verbs that leave something behind (knock, pin, drain, afflict:
+  burn, bleed, poison; counter, a readied riposte) keep their rules in
+  `rules/verbs/lingering.ts` and their play in `engines/plan/lingering.ts`, which wears them
+  down at the end of each exchange.
 - **Add a fight tool:** add a `ToolDef` to `shared/tools.ts` (or a pack's own list) with an
   existing `effect` and list it in a gear place's `toolIds`. A new effect goes in
   `COMBAT_ITEM_EFFECTS` with its rule in `rules/items.ts`; every engine must offer it.

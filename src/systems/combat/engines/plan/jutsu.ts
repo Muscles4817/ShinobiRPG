@@ -1,13 +1,10 @@
-import { blowsOf, type EffectOf, type TechniqueEffect, type Verb } from '@/systems/techniques';
+import type { EffectOf, TechniqueEffect, Verb } from '@/systems/techniques';
 
 import type { CombatTechnique } from '../../contract';
 import { alive, chakraCost, holdTurns } from '../../rules/body';
-import { healAmount, techniqueDamage } from '../../rules/damage';
+import { healAmount } from '../../rules/damage';
 import { resistChance } from '../../rules/defence';
-import { matchup, matchupLine } from '../../rules/elements';
-import { attackKindOf } from '../../rules/kit';
 import { healLine } from '../../rules/narration';
-import { finisherScale } from '../../rules/team';
 import { misfireChance } from '../../rules/unstable';
 import { breakRating } from '../../rules/conditions';
 import {
@@ -20,18 +17,18 @@ import {
   type EffectUse,
 } from '../../rules/verbs';
 import { makeClones } from './clones';
-import { combination, comboPartner, elementBoost, recordHit } from './combo';
+import { combination, comboPartner } from './combo';
 import { empowerSelf } from './empower';
 import { castField } from './field';
 import { move } from './footwork';
-import { react, type Blow } from './react';
+import { afflict, drain, knock, pin, readyRiposte } from './lingering';
+import { damage, type Aimed } from './wounding';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
 import {
   canDaze,
   dazeIn,
   fighterIn,
-  isDazed,
   patch,
   paying,
   say,
@@ -47,14 +44,6 @@ import { setTrap } from './traps';
  * dodging and guarding on their own; effects aimed at the user happen once.
  */
 
-/** A technique aimed at one foe, as the fighters stand now. */
-interface Aimed extends Turn {
-  readonly target: PlanFighter;
-}
-
-/** The effects that wound. */
-type Wounding = EffectUse<'damage' | 'area' | 'break'>;
-
 /** Pays the chakra, and notes the technique and the chakra for the outcome's usage report. */
 function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
   const known = actor.used ?? [];
@@ -66,10 +55,6 @@ function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): 
     { ...round, fighters: patch(round.fighters, actor.id, change) },
     `${actor.name} uses ${t.name}!`,
   );
-}
-
-function physical(t: CombatTechnique): boolean {
-  return t.discipline === 'taijutsu' || t.discipline === 'kenjutsu';
 }
 
 function daze(round: Round, target: PlanFighter): Round {
@@ -104,56 +89,19 @@ function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
   return say(healed, healLine(`${actor.name} recovers.`, health - actor.health));
 }
 
-/** The blows a wounding effect lands as: one, or a flurry's share of it each. */
-function blowsFor(aimed: Aimed, use: Wounding, scale: number): Blow[] {
-  const { actor, target, rng } = aimed;
-  const t = use.technique;
-  const count = blowsOf(use.effect);
-  const raw = (techniqueDamage(actor, target, use, rng.next()) * scale) / count;
-  const first: Blow = {
-    raw,
-    what: t.name,
-    dodgeable: t.discipline !== 'genjutsu',
-    physical: physical(t),
-    kind: attackKindOf(t),
-    discipline: t.discipline,
-    ...(t.accuracy ? { accuracy: t.accuracy } : {}),
-    ...(use.effect.verb === 'break' ? { breaks: true } : {}),
-    ...(use.effect.verb === 'area' ? { area: true } : {}),
-  };
-  return Array.from({ length: count }, (_, i) => (i === 0 ? first : { ...first, followUp: true }));
-}
-
-/** Each blow in turn, while the target still stands. */
-function strike(round: Round, aimed: Aimed, blows: readonly Blow[]): Round {
-  return blows.reduce((now, blow) => {
-    const target = fighterIn(now, aimed.target.id);
-    if (!target || !alive(target)) return now;
-    return react(now, { attacker: aimed.actor, target, blow, rng: aimed.rng });
-  }, round);
-}
-
-/**
- * A wounding effect: harder on a foe left open by a daze or held by a seal (set-up and
- * payoff), in an element combo, and in a combination technique. A flurry lands as several
- * blows, each dodged on its own.
- */
-function damage(round: Round, aimed: Aimed, use: Wounding): Round {
-  const { actor, target, boost } = aimed;
-  const t = use.technique;
-  const open = isDazed(target) || target.sealed > 0;
-  const combo = elementBoost(round, actor, target.id, t);
-  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1);
-  const hit = strike(round, aimed, blowsFor(aimed, use, scale));
-  const landed = fighterIn(hit, target.id)?.health !== target.health;
-  const element = matchupLine(matchup(t.element, target.nature), target.name);
-  const lines = [...(landed && combo ? [combo.line] : []), ...(element ? [element] : [])];
-  const told = lines.length > 0 ? say(hit, ...lines) : hit;
-  return landed ? recordHit(told, actor, target.id, t) : told;
-}
-
 /** The verbs that land on a foe; every other verb happens to the user. */
-const FOE_VERBS = ['damage', 'area', 'break', 'daze', 'seal', 'confuse'] as const;
+const FOE_VERBS = [
+  'damage',
+  'area',
+  'break',
+  'daze',
+  'seal',
+  'confuse',
+  'knock',
+  'pin',
+  'drain',
+  'afflict',
+] as const;
 type FoeVerb = (typeof FOE_VERBS)[number];
 const foeVerbs: readonly Verb[] = FOE_VERBS;
 
@@ -175,6 +123,14 @@ function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): R
       return seal(round, aimed.target, { technique, effect });
     case 'confuse':
       return confuse(round, aimed, { technique, effect });
+    case 'knock':
+      return knock(round, aimed.target, { technique, effect });
+    case 'pin':
+      return pin(round, aimed.target, { technique, effect });
+    case 'drain':
+      return drain(round, aimed, { technique, effect });
+    case 'afflict':
+      return afflict(round, aimed, { technique, effect });
   }
 }
 
@@ -207,6 +163,8 @@ function onSelf(round: Round, turn: Turn, { technique, effect }: EffectUse): Rou
       return castField(round, actor, { technique, effect });
     case 'move':
       return move(round, actor, technique);
+    case 'counter':
+      return readyRiposte(round, actor, { technique, effect });
     // A substitution reacts when hit (`footwork.ts`); it is never played on a turn.
     case 'substitute':
       return round;
