@@ -2,7 +2,7 @@ import { round1 } from '@/core';
 import type { StatGrade, Stats } from '@/systems/stats';
 
 import type { CostTemplate } from './costs';
-import type { TechniqueEffect } from './effects';
+import type { MoveDistance, TechniqueEffect } from './effects';
 import {
   controlStudyFactor,
   gradeIndex,
@@ -45,7 +45,19 @@ export interface TechniqueDef {
    * technique (and isn't dazed); both go off together, harder than either alone.
    */
   readonly combo?: { readonly partnerTechniqueId: string };
+  /** The distances it works at, when not its art's usual reach (a throw: close only). */
+  readonly reach?: readonly MoveDistance[];
+  /** How hard it is to slip: sure, steady (the default) or wild (`ACCURACIES`). */
+  readonly accuracy?: Accuracy;
 }
+
+/**
+ * How surely a technique lands. Sure ones (lightning, iaido, pressure points) are harder to
+ * dodge; wild ones (big swings) are easier to slip but hit harder when they land. The numbers
+ * live once in the combat system's `rules/defence.ts`.
+ */
+export const ACCURACIES = ['sure', 'steady', 'wild'] as const;
+export type Accuracy = (typeof ACCURACIES)[number];
 
 /** Weapons a technique can need in hand: a blade for the sword arts, knuckles for some fists. */
 export const NEEDED_WEAPONS = ['blade', 'knuckles'] as const;

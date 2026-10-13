@@ -1,5 +1,11 @@
 import { STAT_GRADES } from '@/systems/stats';
-import { DISCIPLINES, ELEMENTS, NEEDED_WEAPONS, type TechniqueDef } from '@/systems/techniques';
+import {
+  ACCURACIES,
+  DISCIPLINES,
+  ELEMENTS,
+  NEEDED_WEAPONS,
+  type TechniqueDef,
+} from '@/systems/techniques';
 
 import type { ContentPack } from './types';
 
@@ -11,6 +17,7 @@ import type { ContentPack } from './types';
 export function validateTechniques(pack: ContentPack): string[] {
   return [
     ...pack.techniques.flatMap(rankProblems),
+    ...pack.techniques.flatMap(shapeProblems),
     ...starterProblems(pack),
     ...beginnerProblems(pack),
   ];
@@ -19,6 +26,24 @@ export function validateTechniques(pack: ContentPack): string[] {
 const grades: readonly string[] = STAT_GRADES;
 const elements: readonly string[] = ELEMENTS;
 const weapons: readonly string[] = NEEDED_WEAPONS;
+const accuracies: readonly string[] = ACCURACIES;
+const BANDS: readonly string[] = ['close', 'mid', 'far'];
+
+/** A reach of real, distinct bands, and a known accuracy. */
+function shapeProblems(t: TechniqueDef): string[] {
+  const reach = t.reach;
+  const badReach =
+    reach !== undefined &&
+    (reach.length === 0 ||
+      new Set(reach).size !== reach.length ||
+      reach.some((b) => !BANDS.includes(b)));
+  return [
+    ...(badReach ? [`technique "${t.id}" has a reach that isn't distinct, real bands`] : []),
+    ...(t.accuracy !== undefined && !accuracies.includes(t.accuracy)
+      ? [`technique "${t.id}" has unknown accuracy "${t.accuracy}"`]
+      : []),
+  ];
+}
 
 function rankProblems(t: TechniqueDef): string[] {
   const problems: string[] = [];

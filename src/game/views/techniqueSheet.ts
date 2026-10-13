@@ -8,7 +8,12 @@ import {
 } from '@/systems/combat';
 import type { CombatantSetup } from '@/systems/combat';
 import { STAT_INFO } from '@/systems/stats';
-import type { TechniqueDef, TechniqueEffect } from '@/systems/techniques';
+import {
+  blowsOf,
+  type Accuracy,
+  type TechniqueDef,
+  type TechniqueEffect,
+} from '@/systems/techniques';
 
 import { playerCombatant } from '../combatants';
 import type { GameContext } from '../context';
@@ -36,6 +41,10 @@ export interface TechniqueSheet {
   readonly reach: readonly SheetReach[];
   /** "Heavy", with its power, for a technique that wounds; null otherwise. */
   readonly strength: { readonly word: string; readonly power: number } | null;
+  /** How surely it lands, for a technique that can be slipped. */
+  readonly lands: string | null;
+  /** "Three blows", for a flurry. */
+  readonly strikes: string | null;
   readonly effects: readonly SheetLine[];
   /** Chakra it costs you today (control and steadiness counted). */
   readonly chakra: number;
@@ -70,6 +79,19 @@ export function shareRead(share: number): string {
   if (share >= 0.13) return 'about a sixth';
   if (share >= 0.08) return 'about a tenth';
   return 'a scratch';
+}
+
+const LANDS: Readonly<Record<Accuracy, string>> = {
+  sure: 'Sure: hard to slip',
+  steady: 'Steady',
+  wild: 'Wild: easy to slip, hits hard',
+};
+
+const COUNT_WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five'];
+
+function strikesOf(def: TechniqueDef): string | null {
+  const most = Math.max(1, ...def.effects.map(blowsOf));
+  return most > 1 ? `${COUNT_WORDS[most] ?? most} blows` : null;
 }
 
 function turns(power: number): string {
@@ -174,6 +196,10 @@ export function techniqueSheet(
   return {
     reach: RANGE_BANDS.map((band) => ({ band: RANGE_LABEL[band], reaches: reach.includes(band) })),
     strength: wounding.length > 0 ? { word: strengthWord(power), power } : null,
+    // Genjutsu can't be dodged, so how surely it lands only matters for the rest.
+    lands:
+      wounding.length > 0 && def.discipline !== 'genjutsu' ? LANDS[def.accuracy ?? 'steady'] : null,
+    strikes: strikesOf(def),
     effects: def.effects.map(effectLine),
     chakra: chakraCost(you, { chakraCost: def.chakraCost, ...(unstable ? { unstable } : {}) }),
     costs: [

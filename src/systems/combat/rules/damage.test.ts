@@ -12,7 +12,9 @@ import {
   strikeDamage,
   techniqueDamage,
   variance,
+  WILD_DAMAGE,
 } from './damage';
+import { reachOf } from './range';
 
 const STATS = [
   'strength',
@@ -74,6 +76,14 @@ describe('gap damage', () => {
     expect(variance(1)).toBeCloseTo(1 + DAMAGE_VARIANCE);
   });
 
+  it('a wild technique hits harder when it lands', () => {
+    const [caster, target] = [even(10), even(10)];
+    const wild = { ...fireball, technique: { ...fireballTechnique, accuracy: 'wild' } } as const;
+    expect(
+      techniqueDamage(caster, target, wild, 0.5) / techniqueDamage(caster, target, fireball, 0.5),
+    ).toBeCloseTo(WILD_DAMAGE, 1);
+  });
+
   it('techniques hit harder than blows, through the defence they meet', () => {
     const [caster, target] = [even(10), even(10)];
     expect(techniqueDamage(caster, target, fireball, 0.5)).toBeGreaterThan(BLOW_DAMAGE);
@@ -117,5 +127,12 @@ describe('skill in defence', () => {
     expect(cappedHit(200, 100)).toBe(100 * MAX_HIT_SHARE);
     expect(cappedHit(20, 100)).toBe(20);
     expect(cappedHit(200, 50)).toBe(50 * MAX_HIT_SHARE);
+  });
+});
+
+describe('reach', () => {
+  it('a technique’s own reach overrides its art’s', () => {
+    expect(reachOf(fireballTechnique)).toEqual(['mid', 'far']);
+    expect(reachOf({ ...fireballTechnique, reach: ['far'] })).toEqual(['far']);
   });
 });

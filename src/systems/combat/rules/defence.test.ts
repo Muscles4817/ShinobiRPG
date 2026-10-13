@@ -1,5 +1,12 @@
 import type { CombatAttributes, CombatTechnique } from '../contract';
-import { counterChance, dodgeChance, GUARD_SCALE, guardScale, resistChance } from './defence';
+import {
+  counterChance,
+  dodgeChance,
+  GUARD_SCALE,
+  guardScale,
+  resistChance,
+  slipChance,
+} from './defence';
 
 const BASE: CombatAttributes = {
   strength: 10,
@@ -55,5 +62,16 @@ describe('defence layers', () => {
     const low = { attributes: { ...BASE, speed: 5, perception: 5 } };
     const high = { attributes: { ...BASE, speed: 30, perception: 30 } };
     expect(dodgeChance(low, low)).toBeCloseTo(dodgeChance(high, high));
+  });
+});
+
+describe('accuracy', () => {
+  it('a sure technique is harder to slip, a wild one easier, and nothing is always slipped', () => {
+    const chance = dodgeChance(at(), at());
+    expect(slipChance(chance, 'sure')).toBeLessThan(chance);
+    expect(slipChance(chance, 'steady')).toBe(chance);
+    expect(slipChance(chance, undefined)).toBe(chance);
+    expect(slipChance(chance, 'wild')).toBeGreaterThan(chance);
+    expect(slipChance(0.9, 'wild')).toBeLessThan(0.9);
   });
 });
