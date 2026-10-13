@@ -17,7 +17,7 @@ interface FoesProps {
 }
 
 /** The threat, how they fight and, for sharp eyes, where they outclass you. */
-function Read({ read }: { readonly read: ScoutingRead }) {
+export function Read({ read }: { readonly read: ScoutingRead }) {
   return (
     <span className="foe-read">
       <ThreatChip threat={read.threat} label={read.threatLabel} />

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { combatScene, type GameState } from '@/game';
 import { atEncounter, capable, hardCtx, withStats } from '@/test/encounterFixtures';
@@ -42,16 +43,24 @@ describe('CombatScene (smoke test)', () => {
     for (const [p, text] of kept) expect(p.textContent).toBe(text);
   });
 
-  it('shows both sides in their rows', () => {
+  it('shows both sides in their rows, with the distance between them', () => {
     const state = riverFight();
     render(<CombatScene ctx={ctx} state={state} perform={() => undefined} />);
-    const back = screen.getByRole('region', { name: 'Their back row' });
-    expect(within(back).getByText('Bandit Archer')).toBeInTheDocument();
-    const front = screen.getByRole('region', { name: 'Their front row' });
-    expect(within(front).queryByText('Bandit Archer')).not.toBeInTheDocument();
-    const team = screen.getByRole('region', { name: 'Your team' });
-    expect(within(team).getByText('Back row')).toBeInTheDocument();
-    expect(screen.getAllByText('Front row').length).toBeGreaterThan(0);
+    const back = screen.getByRole('group', { name: 'Their back row' });
+    expect(within(back).getByRole('button', { name: 'Bandit Archer' })).toBeInTheDocument();
+    const front = screen.getByRole('group', { name: 'Their front row' });
+    expect(within(front).queryByRole('button', { name: 'Bandit Archer' })).toBeNull();
+    expect(screen.getByRole('group', { name: 'Your back row' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /^Fighting at \w+ range$/ })).toBeInTheDocument();
+  });
+
+  it('reads the foe you tap, and lists every foe’s next move', async () => {
+    const user = userEvent.setup();
+    render(<CombatScene ctx={ctx} state={riverFight()} perform={() => undefined} />);
+    await user.click(screen.getByRole('button', { name: 'Bandit Archer' }));
+    expect(screen.getByRole('region', { name: 'About Bandit Archer' })).toBeInTheDocument();
+    const moves = screen.getByRole('region', { name: 'Their next moves' });
+    expect(within(moves).getAllByRole('listitem').length).toBeGreaterThan(1);
   });
 
   it('shows the team mark and each teammate’s stance, locked until they trust you', () => {
@@ -67,8 +76,8 @@ describe('CombatScene (smoke test)', () => {
     const state = riverFight();
     const sensei = ctx.content.people.require(state.people.team!.senseiId!);
     render(<CombatScene ctx={ctx} state={state} perform={() => undefined} />);
-    const team = screen.getByRole('region', { name: 'Your team' });
-    expect(within(team).getByText(sensei.name)).toBeInTheDocument();
+    const ours = screen.getByRole('group', { name: 'Your front row' });
+    expect(within(ours).getByRole('button', { name: sensei.name })).toBeInTheDocument();
     const orders = screen.getByRole('region', { name: 'Orders' });
     expect(within(orders).getAllByText(/leads this mission/).length).toBeGreaterThan(0);
   });
@@ -84,7 +93,7 @@ describe('CombatScene (smoke test)', () => {
   it('says once why the cards you could add are blocked, and the round once', () => {
     render(<CombatScene ctx={ctx} state={riverFight()} perform={() => undefined} />);
     expect(screen.getAllByText('Slots full. Take a card out first.')).toHaveLength(1);
-    expect(screen.getAllByText(/^Round \d+$/)).toHaveLength(1);
+    expect(screen.getAllByRole('heading', { name: /^Plan round \d+$/ })).toHaveLength(1);
   });
 
   it('lets you set a friend’s stance and cards', () => {

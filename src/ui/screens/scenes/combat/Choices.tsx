@@ -91,15 +91,19 @@ function PlanChoice({
 /** Plans to set up before (or between rounds of) a planned fight, by group when grouped. */
 export function PlanPicker({
   options,
+  here,
   onPick,
 }: {
   readonly options: readonly CombatOption[];
+  /** The distance the fight is at ("mid"): its group opens first and is marked. */
+  readonly here?: string | undefined;
   readonly onPick: Pick;
 }) {
   const groups = groupsOf(options);
   const [tab, setTab] = useState<string | null>(null);
   if (options.length === 0) return null;
-  const shown = tab ?? groups[0];
+  const isHere = (group: string) => group.toLowerCase() === here;
+  const shown = tab ?? groups.find(isHere) ?? groups[0];
   const inGroup = groups.length > 0 ? options.filter((o) => o.group === shown) : options;
   const adjustments = inGroup.filter((o) => o.adjusts !== undefined);
   const entries = inGroup.filter((o) => o.adjusts === undefined);
@@ -124,7 +128,9 @@ export function PlanPicker({
             >
               {g}{' '}
               <small>
-                {options.filter((o) => o.group === g && o.selected && !o.adjusts).length}
+                {isHere(g)
+                  ? 'You are here'
+                  : options.filter((o) => o.group === g && o.selected && !o.adjusts).length}
               </small>
             </button>
           ))}

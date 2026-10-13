@@ -66,6 +66,16 @@ function Setting({
   );
 }
 
+/**
+ * How a slotted card plays, as a sentence from its current settings, in the engine's order
+ * (when, then whom): "Whenever it can, at the weakest foe". Tap it to change them.
+ */
+function playsAs(pickers: readonly [string, CombatOption[]][]): string {
+  const [when, whom] = pickers.map(([, choices]) => choices.find((c) => c.selected)?.label);
+  const aim = whom ? `at the ${whom.charAt(0).toLowerCase()}${whom.slice(1)}` : '';
+  return [when, aim].filter(Boolean).join(', ') || 'Choose when it plays';
+}
+
 /** One slotted entry: its place, the card (tap to take it out) and how it plays. */
 function SlotRow({
   entry,
@@ -101,11 +111,14 @@ function SlotRow({
         <Setting key={name} name={name} choices={choices} entry={entry} onPick={onPick} />
       ))}
       {pickers.length > 0 && (
-        <div className="plan-settings">
-          {pickers.map(([name, choices]) => (
-            <Setting key={name} name={name} choices={choices} entry={entry} onPick={onPick} />
-          ))}
-        </div>
+        <details className="plan-when">
+          <summary>{playsAs(pickers)}</summary>
+          <div className="plan-settings">
+            {pickers.map(([name, choices]) => (
+              <Setting key={name} name={name} choices={choices} entry={entry} onPick={onPick} />
+            ))}
+          </div>
+        </details>
       )}
     </li>
   );
