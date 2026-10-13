@@ -14,7 +14,7 @@ import {
   SWIFT_DODGE,
   type AttackKind,
 } from '../../rules/kit';
-import { harmLine } from '../../rules/narration';
+import { harmLine, reactionLine, type NarrationReaction } from '../../rules/narration';
 import { brokenScale, covered, dulled } from '../../rules/verbs';
 import { slotted } from './cards';
 import { throughClones } from './decoys';
@@ -124,7 +124,11 @@ function counter(round: Round, { attacker, target, rng }: Hit): Round {
     Math.max(1, Math.round(kitted(round, struck, attacker, blow))),
     attacker.maxHealth,
   );
-  return wound(say(round, harmLine(`${target.name} counters!`, damage)), attacker.id, damage);
+  return wound(
+    say(round, harmLine(reactionLine(`${target.name} counters!`, 'countered'), damage)),
+    attacker.id,
+    damage,
+  );
 }
 
 /** What a Guard lets through of this blow: a piercing weapon goes partly through it. */
@@ -138,6 +142,54 @@ function guardWords(guarded: boolean, smashed: boolean): string {
   return guarded ? ' through a guard' : '';
 }
 
+interface Defended {
+  /** A Dodge was slotted and tried for this blow. */
+  readonly dodgeTried: boolean;
+  readonly guarded: boolean;
+  readonly smashed: boolean;
+}
+
+/** Which slotted defences reacted to a blow that landed anyway, for the fight screen. */
+function reactionsTo({ dodgeTried, guarded, smashed }: Defended): NarrationReaction[] {
+  return [
+    ...(dodgeTried ? (['dodge-missed'] as const) : []),
+    ...(guarded ? (['guarded'] as const) : []),
+    ...(smashed ? (['guard-broken'] as const) : []),
+  ];
+}
+
+type Ready = (kind: 'guard' | 'dodge' | 'counter') => boolean;
+
+interface Evasion {
+  /** The round with the blow slipped, or null when it still lands. */
+  readonly slipped: Round | null;
+  /** A slotted Dodge tried for it. */
+  readonly tried: boolean;
+}
+
+/** A Dodge (or a swift fighter's instinct) against one blow. */
+function evade(round: Round, hit: Hit, has: Ready): Evasion {
+  const { attacker, target, blow, rng } = hit;
+  const able = blow.dodgeable && !isDazed(target);
+  const tried = able && has('dodge');
+  const avoid = able ? avoidChance(attacker, dulled(round.field, target), has('dodge')) : 0;
+  if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
+  const line = `${target.name} slips past ${attacker.name}'s ${blow.what}.`;
+  // A swift fighter slips some blows on instinct; only a slotted Dodge is shown reacting.
+  return { slipped: say(round, tried ? reactionLine(line, 'dodged') : line), tried };
+}
+
+/** A Counter answers a hand-to-hand blow up close, if the attacker is in reach. */
+function canCounterBack(round: Round, { attacker, target, blow }: Hit, has: Ready): boolean {
+  return (
+    has('counter') &&
+    blow.physical &&
+    round.range === 'close' &&
+    canAttackFrom(target, round.range) &&
+    canHit({ kind: 'counter' }, attacker, round.fighters)
+  );
+}
+
 /** Lands a blow on the target, letting their clones, slotted defences and kit react. */
 export function react(before: Round, hit: Hit): Round {
   const { attacker, target, blow, rng } = hit;
@@ -148,12 +200,9 @@ export function react(before: Round, hit: Hit): Round {
   // Reeling from a daze, a fighter can still put a guard up, but not dodge, counter or swap out.
   const reeling = isDazed(target);
   const ready = slotted(target, round.range).filter((c) => !reeling || c.kind === 'guard');
-  const has = (kind: 'guard' | 'dodge' | 'counter') => ready.some((c) => c.kind === kind);
-  const evading = dulled(round.field, target);
-  const avoid = blow.dodgeable && !reeling ? avoidChance(attacker, evading, has('dodge')) : 0;
-  if (avoid > 0 && rng.chance(avoid)) {
-    return say(round, `${target.name} slips past ${attacker.name}'s ${blow.what}.`);
-  }
+  const has: Ready = (kind) => ready.some((c) => c.kind === kind);
+  const evasion = evade(round, hit, has);
+  if (evasion.slipped) return evasion.slipped;
   const swap = { target, attacker, what: blow.what, discipline: blow.discipline };
   const swapped = substituted(round, ready, swap);
   if (swapped) return swapped;
@@ -171,17 +220,14 @@ export function react(before: Round, hit: Hit): Round {
   const told = say(
     round,
     harmLine(
-      `${attacker.name}'s ${blow.what} hits ${target.name}${guardWords(guarded, smashed)}.`,
+      reactionLine(
+        `${attacker.name}'s ${blow.what} hits ${target.name}${guardWords(guarded, smashed)}.`,
+        ...reactionsTo({ dodgeTried: evasion.tried, guarded, smashed }),
+      ),
       damage,
     ),
     ...kitNote(target, blow.kind),
   );
   const landed = confuse(wound(told, target.id, damage), hit);
-  const canCounter =
-    has('counter') &&
-    blow.physical &&
-    round.range === 'close' &&
-    canAttackFrom(target, round.range) &&
-    canHit({ kind: 'counter' }, attacker, round.fighters);
-  return canCounter ? counter(landed, hit) : landed;
+  return canCounterBack(round, hit, has) ? counter(landed, hit) : landed;
 }

@@ -42,6 +42,19 @@ describe('combat log view', () => {
     expect(combatLog(['— Round 2 —'])).toEqual([{ kind: 'round', text: 'Round 2' }]);
   });
 
+  it('stamps the defences that reacted beside the damage', () => {
+    expect(combatLog(['Goro hits Aoi through a guard. ⟦r:guarded⟧ ⟦-4⟧'])).toEqual([
+      {
+        kind: 'story',
+        text: 'Goro hits Aoi through a guard.',
+        chips: [
+          { label: 'Guarded', tone: 'info' },
+          { label: '−4', tone: 'harm' },
+        ],
+      },
+    ]);
+  });
+
   it.each(STYLES)('keeps numbers out of the story and its dividers in %s, as chips', (style, c) => {
     const lines = combatLog(sparLog(style, c));
     const story = lines.flatMap((l) => (l.kind === 'story' ? [l] : []));

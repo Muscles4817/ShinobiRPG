@@ -3,6 +3,7 @@ import type { Discipline } from '@/systems/techniques';
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { chakraCost } from '../../rules/body';
 import { homeBand } from '../../rules/kit';
+import { reactionLine } from '../../rules/narration';
 import { RANGE_LABEL } from '../../rules/range';
 import { hasVerb, moveGoal, substitutable } from '../../rules/verbs';
 import type { Card } from './cards';
@@ -71,6 +72,9 @@ export function substituted(round: Round, ready: readonly Card[], swap: Swap): R
   });
   return say(
     { ...round, fighters },
-    `${target.name} swaps out of ${attacker.name}'s ${swap.what} with ${card.technique.name}.`,
+    reactionLine(
+      `${target.name} swaps out of ${attacker.name}'s ${swap.what} with ${card.technique.name}.`,
+      'swapped',
+    ),
   );
 }

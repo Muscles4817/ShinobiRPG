@@ -35,7 +35,7 @@ const VERB_WORD: Readonly<Record<Verb, string>> = {
   break: 'Smash through a guard',
   field: 'Blind foes in a field',
   move: 'Go straight to where you fight best',
-  substitute: 'Reacts, swaps you out of a hit once a round',
+  substitute: 'Always ready, swaps you out of a hit once a round',
   empower: 'Push past your limits, at a price',
   clone: 'Clones take hits for you',
   trap: 'Set a trap where you stand',
@@ -112,11 +112,11 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
     case 'step':
       return card.direction === 'in' ? 'Try to get closer' : 'Try to open distance';
     case 'guard':
-      return 'Reacts, take less damage';
+      return 'Always ready, takes the edge off every hit';
     case 'dodge':
-      return 'Reacts, may avoid a hit';
+      return 'Always ready, may slip any hit';
     case 'counter':
-      return 'Reacts, hit back up close';
+      return 'Always ready, hits back up close';
     case 'search':
       return 'Find hidden foes, perception';
     case 'dispel':
