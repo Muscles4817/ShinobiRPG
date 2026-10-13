@@ -2,6 +2,8 @@ import type { Rng } from '@/core';
 import type { RangeBand } from '@/systems/combat';
 import {
   addLedger,
+  END_MARKS,
+  withMark,
   advance,
   afterFailedApproach,
   raiseAlertness,
@@ -67,7 +69,8 @@ function getPast(
   const pay = stagePay(here.stage.job, ending.end);
   if (!pay.jobDone) return failMission(state, ctx, UNDONE_REASON, 0);
   const share = pay.ryo - 1;
-  const told = addLedger(here.run, {
+  const marked = { ...here.run, marks: withMark(here.run.marks, END_MARKS[ending.end]) };
+  const told = addLedger(marked, {
     text: END_LINES[ending.end],
     tone: share < 0 ? 'cost' : 'plain',
     ...(share !== 0 ? { pay: share } : {}),

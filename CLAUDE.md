@@ -336,6 +336,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   to time once the player's record reaches `minMissionsCompleted`; set `standing: true` for
   jobs that are always available (every pack needs one a fresh genin can take — validated).
   `reward.scrollId` / `reward.gearId` hand over a technique scroll or a named weapon once.
+- **Add a journey (a medium job):** fill the escort template (`jobs/templates/dRankEscort.ts`,
+  the reference: `docs/design/missions-plan.md`), or write one like it: a charge, a few legs
+  with a `region`, a check that fails forward, a camp, a twist with a decision, an encounter
+  and an `ending`, then the road home. A template's `threads`, `charge` and `twists` are filled
+  like its stages.
 - **Add many jobs of one shape:** write a `MissionTemplate` (`content/missionTemplates.ts`) with
   `{slot}` placeholders and their meanings in `placeholders`, then add `MissionFill`s giving every
   slot a value (`packs/original/jobs/`). Fills become ordinary missions on the board; validation

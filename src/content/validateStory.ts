@@ -1,5 +1,6 @@
 import {
   conditionRefs,
+  RULE_MARKS,
   type CampActivity,
   type Condition,
   type DecisionOption,
@@ -83,7 +84,10 @@ function shapeProblems(m: MissionDef): string[] {
   const problems: string[] = [];
   m.stages.forEach((stage, i) => {
     if (stage.kind === 'ending') {
-      if (i !== m.stages.length - 1) problems.push('has an ending that isn’t its last stage');
+      // Only the road home may follow how a job ends.
+      if (m.stages.slice(i + 1).some((s) => s.kind !== 'leg')) {
+        problems.push('has an ending with more than the road home after it');
+      }
       if (stage.endings.at(-1)?.when !== undefined) problems.push('has no ending for every case');
     }
     if (stage.kind === 'camp' && (stage.picks < 1 || stage.picks > stage.activities.length)) {
@@ -102,6 +106,7 @@ function storyProblems(m: MissionDef, roadMarks: ReadonlySet<string>): string[] 
     ...m.stages.flatMap(effectsOf).flatMap((e) => (e.kind === 'mark' ? [e.mark] : [])),
     ...(m.twists ?? []).map((t) => t.mark),
     ...roadMarks,
+    ...RULE_MARKS,
   ]);
   const refs = m.stages.flatMap(conditions).map(conditionRefs);
   const named = [

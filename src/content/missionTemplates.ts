@@ -23,6 +23,10 @@ export interface MissionTemplate {
   readonly title: string;
   readonly client: string;
   readonly summary: string;
+  /** The story's threads, charge and twists, filled like everything else. */
+  readonly threads?: MissionDef['threads'];
+  readonly charge?: MissionDef['charge'];
+  readonly twists?: MissionDef['twists'];
   readonly stages: readonly MissionStage[];
 }
 
@@ -79,6 +83,9 @@ export function missionFromFill(template: MissionTemplate, fill: MissionFill): M
     energyCost: template.energyCost,
     reward: fill.reward ?? template.reward,
     minMissionsCompleted: fill.minMissionsCompleted ?? template.minMissionsCompleted,
+    ...(template.threads ? { threads: fillDeep(template.threads, values) } : {}),
+    ...(template.charge ? { charge: fillDeep(template.charge, values) } : {}),
+    ...(template.twists ? { twists: template.twists } : {}),
     stages: template.stages.map((s) => fillDeep(s, values)),
   };
 }
