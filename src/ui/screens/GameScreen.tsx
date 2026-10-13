@@ -149,7 +149,7 @@ export function GameScreen({ session, ctx, state }: GameScreenProps) {
       {session.cue && state.settings.animations && (
         <CueLayer cue={session.cue} onDone={session.clearCue} />
       )}
-      {report && (
+      {report && !state.combatFinale && (
         <ReportCard
           report={report}
           onContinue={() => {

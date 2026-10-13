@@ -2,7 +2,7 @@ import { v17ToV18 } from './aptitudeMigration';
 import { v23ToV24 } from './examMigration';
 import { v24ToV25 } from './standingMigration';
 import { v21ToV22 } from './gearMigration';
-import { v25ToV26 } from './settingsMigration';
+import { v25ToV26, v26ToV27 } from './settingsMigration';
 import { v18ToV19 } from './peopleMigration';
 import { v22ToV23 } from './scrollMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
@@ -297,4 +297,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   23: v23ToV24,
   24: v24ToV25,
   25: v25ToV26,
+  26: v26ToV27,
 };

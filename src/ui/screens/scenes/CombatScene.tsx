@@ -4,7 +4,9 @@ import {
   combatLog,
   combatScene,
   combatScouting,
+  finishedFightScene,
   fightReplay,
+  storyEnd,
   type CombatantView,
   type CombatOption,
   type CombatView,
@@ -178,11 +180,16 @@ function isStaged(view: CombatView): boolean {
  * which holds after a round until you go back to plan. Turn-by-turn styles keep one screen.
  */
 export function CombatScene(props: ScreenProps) {
-  const view = combatScene(props.state, props.ctx);
-  const length = view?.log.length ?? 0;
+  const live = combatScene(props.state, props.ctx);
+  const view = live ?? finishedFightScene(props.state);
+  const length = view ? storyEnd(view) : 0;
   const [watch, setWatch] = useState<Watching>({ from: length, seen: length, holding: false });
   if (!view) return null;
-  if (!isStaged(view)) return <FightScreen {...props} view={view} />;
+  if (!isStaged(view)) {
+    // Turn by turn, the log is the screen; keep up so a finished fight stages only its end.
+    if (watch.from !== length) setWatch({ from: length, seen: length, holding: false });
+    return <FightScreen {...props} view={view} />;
+  }
   const act = (o: CombatOption) => {
     // Playing on (begin, the next exchange, the round, flight) stages what follows; changing
     // your cards or orders just changes the table.
@@ -211,6 +218,13 @@ export function CombatScene(props: ScreenProps) {
               setWatch((w) => ({ ...w, holding: false }));
             }
           : null
+      }
+      onLeave={
+        live
+          ? null
+          : () => {
+              props.perform({ type: 'leaveFight' });
+            }
       }
     />
   );

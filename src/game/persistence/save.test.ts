@@ -190,6 +190,13 @@ describe('persistence', () => {
     expect(loaded.value.settings).toEqual({ ...oldSettings, animations: true });
   });
 
+  it('gives a save from before the watch screen no finished fight waiting', () => {
+    const { combatFinale: _f, ...old } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 26, state: old }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.combatFinale).toBeNull();
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

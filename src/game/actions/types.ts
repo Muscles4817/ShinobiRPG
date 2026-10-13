@@ -22,6 +22,7 @@ export type GameAction =
   | { readonly type: 'treat' }
   | { readonly type: 'travel'; readonly locationId: string }
   | { readonly type: 'dismissReport' }
+  | { readonly type: 'leaveFight' }
   | { readonly type: 'study'; readonly techniqueId: string }
   | { readonly type: 'studyScroll'; readonly techniqueId: string }
   | { readonly type: 'startMission'; readonly missionId: string }

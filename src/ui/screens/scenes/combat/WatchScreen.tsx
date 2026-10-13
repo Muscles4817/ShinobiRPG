@@ -18,6 +18,8 @@ interface WatchScreenProps {
   readonly onWatched: () => void;
   /** Between rounds: back to the card table once you have watched; null mid-round. */
   readonly onPlan: (() => void) | null;
+  /** The fight is over: leave the scene (to its result) once you have watched it end. */
+  readonly onLeave: (() => void) | null;
 }
 
 const EARLIER_SHOWN = 2;
@@ -64,13 +66,22 @@ function ActingOrder({
   );
 }
 
-/** What comes next once the beats have played: the card table, the next exchange, or flight. */
-function NextSteps({ view, onPick, onPlan }: Pick<WatchScreenProps, 'view' | 'onPick' | 'onPlan'>) {
-  if (onPlan) {
+/**
+ * What comes next once the beats have played: leaving a finished fight, the card table, the
+ * next exchange, or flight.
+ */
+function NextSteps({
+  view,
+  onPick,
+  onPlan,
+  onLeave,
+}: Pick<WatchScreenProps, 'view' | 'onPick' | 'onPlan' | 'onLeave'>) {
+  const only = onLeave ?? onPlan;
+  if (only) {
     return (
       <nav className="choices watch-next" aria-label="What next">
-        <button type="button" className="choice primary" onClick={onPlan}>
-          Plan the next round
+        <button type="button" className="choice primary" onClick={only}>
+          {onLeave ? 'Continue' : 'Plan the next round'}
         </button>
       </nav>
     );
@@ -207,7 +218,14 @@ export function WatchScreen(props: WatchScreenProps) {
         )}
         <PlaybackBar play={play} />
       </main>
-      {play.done && <NextSteps view={view} onPick={props.onPick} onPlan={props.onPlan} />}
+      {play.done && (
+        <NextSteps
+          view={view}
+          onPick={props.onPick}
+          onPlan={props.onPlan}
+          onLeave={props.onLeave}
+        />
+      )}
     </>
   );
 }

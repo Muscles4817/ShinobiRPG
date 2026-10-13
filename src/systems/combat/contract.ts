@@ -230,6 +230,11 @@ export interface CombatView {
   readonly combatants: readonly CombatantView[];
   /** Narration, oldest first. */
   readonly log: readonly string[];
+  /**
+   * How many earlier lines the engine has let go (it keeps only the latest), so a line's place
+   * in the whole story is `logOffset` plus its index. Absent: none dropped.
+   */
+  readonly logOffset?: number;
   readonly options: readonly CombatOption[];
   /** Current distance, for engines that track range. */
   readonly range?: RangeBand;

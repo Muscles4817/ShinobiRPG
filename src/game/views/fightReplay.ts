@@ -93,9 +93,15 @@ function healthAfterEach(parsed: readonly Parsed[], fighters: readonly Combatant
   return after;
 }
 
-/** The beats of the fight from log line `from` on. */
+/** Where the story has reached: its place after the last line, counting lines let go. */
+export function storyEnd(view: CombatView): number {
+  return (view.logOffset ?? 0) + view.log.length;
+}
+
+/** The beats of the fight from story line `from` on (a place as `storyEnd` counts them). */
 export function fightReplay(view: CombatView, from: number): FightBeat[] {
-  const parsed = view.log.slice(Math.max(0, from)).flatMap((line): Parsed[] => {
+  const start = Math.max(0, from - (view.logOffset ?? 0));
+  const parsed = view.log.slice(start).flatMap((line): Parsed[] => {
     const said = splitNarration(line);
     const targetId = namedIn(said.text, view.combatants, said.actorId ?? null);
     return combatLog([line]).map((shown) => ({ said, shown, targetId }));

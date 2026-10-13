@@ -256,7 +256,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   with `harmLine`/`healLine` (`rules/narration.ts`) so the amount shows as a chip, never in the story.
   A staged engine (one that offers plans, not a hand) tags each turn's lines with `turnLine` (whose
   turn, and where the fight stands) and defences with `reactionLine`; the watch screen stages the
-  log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. Removing an engine or
+  log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. A fight that ends
+  is kept as `combatFinale` (its last view) so the stage plays the final exchange before the
+  result card; like a report, it never blocks play, and `leaveFight` closes it. Removing an engine or
   changing its id needs a migration for saves that are mid-fight in it or have it chosen.
 - **Add a player action:** add a variant to `GameAction` (`game/actions/types.ts`), write a
   handler (`check` + `perform`), register it in `game/actions/registry.ts` (the compiler

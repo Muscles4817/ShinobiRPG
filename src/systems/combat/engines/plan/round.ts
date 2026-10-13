@@ -250,6 +250,8 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     chakra: alive(f) ? Math.min(f.maxChakra, f.chakra + CHAKRA_REGEN) : f.chakra,
   }));
   const { field: _old, ...rest } = state;
+  const story = [...state.log, ...end.lines, ...(result ? [] : fading)];
+  const dropped = (state.logDropped ?? 0) + Math.max(0, story.length - LOG_LIMIT);
   return {
     ...rest,
     round: result ? state.round : state.round + 1,
@@ -257,7 +259,8 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     fighters,
     range: end.range,
     seen: end.seen,
-    log: [...state.log, ...end.lines, ...(result ? [] : fading)].slice(-LOG_LIMIT),
+    log: story.slice(-LOG_LIMIT),
+    ...(dropped > 0 ? { logDropped: dropped } : {}),
     result,
     ...(field ? { field } : {}),
   };

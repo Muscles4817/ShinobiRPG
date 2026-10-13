@@ -252,6 +252,7 @@ export function createPlanEngine(): CombatEngine {
           row: f.row,
         })),
         log: plan.log,
+        ...(plan.logDropped ? { logOffset: plan.logDropped } : {}),
         options: options(plan),
         range: plan.range,
         prompt: prompt(plan),
