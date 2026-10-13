@@ -1,12 +1,13 @@
 // @vitest-environment jsdom
-import { act as settle, render, screen } from '@testing-library/react';
+import { act as settle, render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { GameAction } from '@/game';
+import type { CombatantView, GameAction } from '@/game';
 import { act, ctx, newGame } from '@/test/gameFixtures';
 
 import { CueLayer } from './components/CueLayer';
 import { AnimationToggle } from './screens/AnimationToggle';
+import { useHealthPulses } from './screens/scenes/combat/useHealthPulses';
 
 /** The animations switch on the Shinobi tab, and the cue that plays after an action. */
 
@@ -44,5 +45,30 @@ describe('animations (smoke test)', () => {
     });
     expect(cleared).toEqual(['done']);
     vi.useRealTimers();
+  });
+
+  it('flashes a fighter’s bar each time their health moves in a fight', () => {
+    const fighter = (health: number): CombatantView => ({
+      id: 'foe',
+      name: 'Bandit',
+      side: 'enemy',
+      health,
+      maxHealth: 100,
+      chakra: 0,
+      maxChakra: 0,
+      statuses: [],
+    });
+    const { result, rerender } = renderHook(({ hp }) => useHealthPulses([fighter(hp)]), {
+      initialProps: { hp: 100 },
+    });
+    expect(result.current).toEqual({});
+    rerender({ hp: 80 });
+    expect(result.current.foe).toEqual({ kind: 'hurt', n: 1 });
+    rerender({ hp: 80 });
+    expect(result.current.foe).toEqual({ kind: 'hurt', n: 1 });
+    rerender({ hp: 70 });
+    expect(result.current.foe).toEqual({ kind: 'hurt', n: 2 });
+    rerender({ hp: 85 });
+    expect(result.current.foe).toEqual({ kind: 'healed', n: 3 });
   });
 });

@@ -20,6 +20,8 @@ import '@/ui/styles/people.css';
 import '@/ui/styles/teachers.css';
 import '@/ui/styles/library.css';
 import '@/ui/styles/cues.css';
+import '@/ui/styles/cues-village.css';
+import '@/ui/styles/motion.css';
 
 // Composition root for the app: choose the platform adapters here.
 const root = document.getElementById('root');

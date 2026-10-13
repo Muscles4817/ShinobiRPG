@@ -13,14 +13,40 @@ import type { ScreenProps } from '../types';
 import { ActionBar, Hand } from './combat/Choices';
 import { Foes } from './combat/Foes';
 import { Pouch } from './combat/Pouch';
+import { HealthBar } from './combat/HealthBar';
 import { RangeStrip } from './combat/RangeStrip';
 import { PlansByOwner, TeamOrders } from './combat/TeamOrders';
+import { useHealthPulses, type HealthPulse } from './combat/useHealthPulses';
 
 /** Which row one of yours stands in, shown once your side has a back row. */
 function RowMark({ fighter, shown }: { readonly fighter: CombatantView; readonly shown: boolean }) {
   if (!shown || !fighter.row) return null;
   return (
     <span className="badge row-mark">{fighter.row === 'back' ? 'Back row' : 'Front row'}</span>
+  );
+}
+
+interface AlliesProps {
+  readonly allies: readonly CombatantView[];
+  readonly inRows: boolean;
+  readonly pulses: Readonly<Record<string, HealthPulse>>;
+}
+
+/** Your teammates, each with their row, health and condition. */
+function Allies({ allies, inRows, pulses }: AlliesProps) {
+  if (allies.length === 0) return null;
+  return (
+    <section className="allies" aria-label="Your team">
+      {allies.map((a) => (
+        <div key={a.id} className={a.health > 0 ? 'ally' : 'ally down'}>
+          <b>
+            {a.name} <RowMark fighter={a} shown={inRows} />
+          </b>
+          <HealthBar fighter={a} pulse={pulses[a.id]} mine />
+          <small>{a.statuses.join(', ') || a.tag}</small>
+        </div>
+      ))}
+    </section>
   );
 }
 
@@ -31,6 +57,7 @@ function RowMark({ fighter, shown }: { readonly fighter: CombatantView; readonly
 export function CombatScene({ ctx, state, perform }: ScreenProps) {
   const view = combatScene(state, ctx);
   const [chosen, setChosen] = useState<string | null>(null);
+  const pulses = useHealthPulses(view?.combatants);
   if (!view) return null;
   const enemies = view.combatants.filter((c) => c.side === 'enemy');
   const living = enemies.filter((e) => e.health > 0 && e.targetable !== false);
@@ -58,6 +85,7 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
         targetId={targetId}
         onTarget={living.length > 1 ? setChosen : null}
         reads={combatScouting(state, ctx)}
+        pulses={pulses}
       />
       {view.range && <RangeStrip range={view.range} />}
       <main className="page feed combat-log" aria-live="polite">
@@ -74,29 +102,13 @@ export function CombatScene({ ctx, state, perform }: ScreenProps) {
         )}
       </main>
       {view.prompt && <p className="combat-prompt">{view.prompt}</p>}
-      {allies.length > 0 && (
-        <section className="allies" aria-label="Your team">
-          {allies.map((a) => (
-            <div key={a.id} className={a.health > 0 ? 'ally' : 'ally down'}>
-              <b>
-                {a.name} <RowMark fighter={a} shown={inRows} />
-              </b>
-              <span className="hp mine">
-                <i style={{ width: `${(a.health / a.maxHealth) * 100}%` }} />
-              </span>
-              <small>{a.statuses.join(', ') || a.tag}</small>
-            </div>
-          ))}
-        </section>
-      )}
+      <Allies allies={allies} inRows={inRows} pulses={pulses} />
       {player && (
         <div className="me">
           <b>
             {player.name} <RowMark fighter={player} shown={inRows} />
           </b>
-          <span className="hp mine">
-            <i style={{ width: `${(player.health / player.maxHealth) * 100}%` }} />
-          </span>
+          <HealthBar fighter={player} pulse={pulses[player.id]} mine />
           <span className="num">
             {player.health}/{player.maxHealth}
           </span>

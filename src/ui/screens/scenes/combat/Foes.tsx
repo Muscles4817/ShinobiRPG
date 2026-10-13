@@ -1,6 +1,8 @@
 import type { CombatantView, ScoutingRead } from '@/game';
 
 import { ThreatChip } from '../../../components/ThreatChip';
+import { HealthBar } from './HealthBar';
+import type { HealthPulse } from './useHealthPulses';
 
 interface FoesProps {
   readonly foes: readonly CombatantView[];
@@ -10,6 +12,8 @@ interface FoesProps {
   readonly onTarget: ((id: string) => void) | null;
   /** How each foe sizes up against you, by combatant id. */
   readonly reads: Readonly<Record<string, ScoutingRead>>;
+  /** Whose health just moved, for the bar's flash. */
+  readonly pulses: Readonly<Record<string, HealthPulse>>;
 }
 
 /** The threat, how they fight and, for sharp eyes, where they outclass you. */
@@ -44,7 +48,7 @@ interface FoeCardProps extends Omit<FoesProps, 'foes' | 'round'> {
 }
 
 /** One enemy: health, conditions, what they seem about to do. Tap to target. */
-function FoeCard({ foe: e, round, targetId, onTarget, reads }: FoeCardProps) {
+function FoeCard({ foe: e, round, targetId, onTarget, reads, pulses }: FoeCardProps) {
   const down = e.health <= 0;
   const hidden = e.targetable === false;
   const read = reads[e.id];
@@ -61,9 +65,7 @@ function FoeCard({ foe: e, round, targetId, onTarget, reads }: FoeCardProps) {
           </span>
         ))}
       </div>
-      <span className="hp">
-        <i style={{ width: `${(e.health / e.maxHealth) * 100}%` }} />
-      </span>
+      <HealthBar fighter={e} pulse={pulses[e.id]} />
       {e.intent && !down && <span className="intent">{e.intent}</span>}
       {!down && read && <Read read={read} />}
       <span className="foe-foot num">

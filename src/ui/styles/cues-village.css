@@ -1,0 +1,133 @@
+/*
+ * Village cues: buying (coins into a purse), gear (a glint down a blade), a round at the
+ * tavern (cups clink), tonight's sight (fireflies) and a deepening bond (a red thread between
+ * two lanterns). The layer they play in is in cues.css.
+ */
+/* A purchase: mon coins drop into the purse. */
+.cue-coin {
+  fill: var(--gold);
+  stroke: var(--ema-ink);
+  stroke-width: 2;
+  animation: cue-drop-in 0.45s ease-in both;
+}
+.cue-coin rect {
+  fill: var(--surface);
+}
+.cue-coin:nth-of-type(2) {
+  animation-delay: 0.15s;
+}
+.cue-coin:nth-of-type(3) {
+  animation-delay: 0.3s;
+}
+
+/* Gear: a glint runs down the blade. */
+.cue-blade {
+  fill: var(--kenjutsu);
+  stroke: var(--ema-ink);
+}
+.cue-glint {
+  stroke: var(--paper);
+  stroke-width: 3;
+  animation: cue-glint 0.9s ease-in-out 0.2s both;
+}
+
+/* A round at the tavern: two cups clink. */
+.cue-cup-left,
+.cue-cup-right {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.cue-cup-left {
+  animation: cue-clink-left 0.5s ease-out 0.15s both;
+}
+.cue-cup-right {
+  animation: cue-clink-right 0.5s ease-out 0.15s both;
+}
+.cue-drop {
+  fill: var(--paper);
+  stroke: none;
+  animation: cue-splash 0.5s ease-out 0.55s both;
+}
+
+/* Tonight's sight: fireflies drift along a trail. */
+.cue-trail {
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 6;
+}
+.cue-firefly {
+  fill: var(--gold);
+  stroke: none;
+  filter: drop-shadow(0 0 4px var(--gold));
+  animation: cue-twinkle 0.5s ease-in-out infinite alternate;
+}
+.cue-firefly:nth-of-type(2) {
+  animation-delay: 0.2s;
+}
+.cue-firefly:nth-of-type(3) {
+  animation-delay: 0.35s;
+}
+
+/* A bond deepens: a red thread ties two lanterns, and they light. */
+.cue-thread {
+  stroke: var(--seal);
+  stroke-width: 3;
+  stroke-dasharray: 70;
+  stroke-dashoffset: 70;
+  animation: cue-draw 0.5s ease-out 0.1s forwards;
+}
+.cue-lantern {
+  fill: var(--surface);
+  stroke: var(--ema-ink);
+  animation: cue-light 0.5s ease-out 0.55s forwards;
+}
+
+@keyframes cue-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+@keyframes cue-glint {
+  from {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(32px);
+    opacity: 0;
+  }
+}
+@keyframes cue-clink-left {
+  from {
+    transform: translateX(-10px) rotate(-12deg);
+  }
+  to {
+    transform: rotate(10deg);
+  }
+}
+@keyframes cue-clink-right {
+  from {
+    transform: translateX(10px) rotate(12deg);
+  }
+  to {
+    transform: rotate(-10deg);
+  }
+}
+@keyframes cue-splash {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cue-light {
+  to {
+    fill: var(--lantern);
+  }
+}

@@ -70,6 +70,57 @@ const CUE_ART: Readonly<Record<ActionCue, ReactElement>> = {
       <path className="cue-leaf" d="M60 78 Q40 60 60 40 Q80 60 60 78 Z M60 78 V46" />
     </>
   ),
+  coins: (
+    <>
+      <g className="cue-coin">
+        <circle cx="48" cy="60" r="9" />
+        <rect x="45" y="57" width="6" height="6" />
+      </g>
+      <g className="cue-coin">
+        <circle cx="62" cy="54" r="9" />
+        <rect x="59" y="51" width="6" height="6" />
+      </g>
+      <g className="cue-coin">
+        <circle cx="74" cy="61" r="9" />
+        <rect x="71" y="58" width="6" height="6" />
+      </g>
+      <path className="cue-ware" d="M36 64 Q30 96 60 98 Q90 96 84 64 Z" />
+      <path className="cue-rim" d="M40 64 Q60 56 80 64" />
+    </>
+  ),
+  gear: (
+    <>
+      <path className="cue-blade" d="M60 18 L70 64 H50 Z" />
+      <path className="cue-rim" d="M44 66 H76 M60 68 V92" />
+      <circle className="cue-rim" cx="60" cy="98" r="6" />
+      <path className="cue-glint" d="M54 26 L66 26" />
+    </>
+  ),
+  toast: (
+    <>
+      <path className="cue-ware cue-cup-left" d="M26 50 H52 L48 80 H30 Z" />
+      <path className="cue-ware cue-cup-right" d="M68 50 H94 L90 80 H72 Z" />
+      <circle className="cue-drop" cx="56" cy="40" r="2.5" />
+      <circle className="cue-drop" cx="62" cy="34" r="2" />
+      <circle className="cue-drop" cx="66" cy="42" r="2.5" />
+    </>
+  ),
+  sight: (
+    <>
+      <path className="cue-trail" d="M18 90 Q40 40 62 64 T104 28" />
+      <circle className="cue-firefly" cx="30" cy="70" r="3.5" />
+      <circle className="cue-firefly" cx="62" cy="62" r="3" />
+      <circle className="cue-firefly" cx="92" cy="38" r="4" />
+    </>
+  ),
+  bond: (
+    <>
+      <path className="cue-thread" d="M40 34 Q60 10 80 34" />
+      <rect className="cue-lantern" x="26" y="36" width="28" height="34" rx="10" />
+      <rect className="cue-lantern" x="66" y="36" width="28" height="34" rx="10" />
+      <path className="cue-rim" d="M34 34 H46 M74 34 H86 M34 72 H46 M74 72 H86" />
+    </>
+  ),
 };
 
 export function CueArt({ kind }: { readonly kind: ActionCue }) {

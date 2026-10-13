@@ -72,7 +72,7 @@ export function useGameSession(store: SaveStore): GameSession {
       if (result.ok) {
         setGame({ ...game, game: result.value });
         setNotice(null);
-        const kind = cueAfter(action, result.value);
+        const kind = cueAfter(action, game.game, result.value);
         setCue((shown) => (kind ? { kind, id: (shown?.id ?? 0) + 1 } : shown));
       } else {
         setNotice(result.error);
