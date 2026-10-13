@@ -78,6 +78,14 @@ describe('training with your sensei (the weekly lesson)', () => {
     expect(offer.steering).toBe('Gōran decides what you work on until you are close friends.');
   });
 
+  it('signs a library permit at a lesson once you are friends and an art is at C', () => {
+    const friends = withBond(newGame(), 'goran', 30);
+    expect(act(friends, goranTaijutsu).people.permits).toEqual([]);
+    const after = act(withAllStats(friends, 14), goranTaijutsu);
+    expect(after.people.permits).toEqual(['library']);
+    expect(after.journal.entries.at(-1)?.heading).toBe('A library permit');
+  });
+
   it('teaches friends their signature technique', () => {
     const after = act(withBond(newGame(), 'goran', 30), goranTaijutsu);
     expect(after.techniques.progress['iron-gate-palm']).toBeGreaterThan(0);

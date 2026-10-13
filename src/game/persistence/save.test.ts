@@ -244,6 +244,14 @@ describe('persistence', () => {
     });
   });
 
+  it('gives a save from before sensei signed permits none signed', () => {
+    const game = newGame();
+    const { permits: _permits, ...people } = game.people;
+    const loaded = deserialize(JSON.stringify({ version: 30, state: { ...game, people } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.people.permits).toEqual([]);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

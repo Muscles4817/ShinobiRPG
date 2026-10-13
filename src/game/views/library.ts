@@ -4,7 +4,8 @@ import { STAT_INFO } from '@/systems/stats';
 import { STUDY_ENERGY_COST } from '../actions/study';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
-import { libraryAccess, readingBlocker } from '../shelves';
+import { libraryEntry, libraryScrollAccess } from '../permits';
+import { readingBlocker } from '../shelves';
 import type { GameState } from '../state';
 import { scrollOf, sortScrolls, type Scroll } from './academy';
 import type { Discipline } from './common';
@@ -24,8 +25,10 @@ export interface Stack {
 export interface LibraryView {
   readonly name: string;
   readonly energyCost: number;
-  /** Why the stacks are shut to you ("for chūnin and above"), or null. */
+  /** Why the library is shut to you (no permit yet), or null. */
   readonly locked: string | null;
+  /** Scrolls kept in the restricted stacks, for chūnin, that you can't read yet. */
+  readonly restricted: number;
   /** How many scrolls the stacks keep that you don't know yet. */
   readonly unread: number;
   readonly studying: readonly Scroll[];
@@ -69,15 +72,18 @@ export function libraryView(state: GameState, ctx: GameContext): LibraryView | n
   if (!place) return null;
   const you = playerCombatant(state, ctx);
   const reading = { action: 'study', source: 'library' } as const;
-  const scrolls = place.techniqueIds
+  const unread = place.techniqueIds
     .filter((id) => !state.techniques.known.includes(id))
-    .map((id) => scrollOf(state, ctx, ctx.content.techniques.require(id), { reading, you }));
+    .map((id) => ctx.content.techniques.require(id));
+  const open = unread.filter((def) => libraryScrollAccess(state, def) === null);
+  const scrolls = open.map((def) => scrollOf(state, ctx, def, { reading, you }));
   const sorted = sortScrolls(scrolls);
   return {
     name: place.name,
     energyCost: STUDY_ENERGY_COST,
-    locked: libraryAccess(state),
-    unread: scrolls.length,
+    locked: libraryEntry(state),
+    restricted: unread.length - open.length,
+    unread: unread.length,
     studying: sorted.studying,
     stacks: shelve([...sorted.ready, ...sorted.comingUp]),
     desk: scrollDesk(state, ctx),

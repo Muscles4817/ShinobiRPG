@@ -22,16 +22,23 @@ function chunin(state: GameState): GameState {
 }
 
 describe('sources (smoke test)', () => {
-  it('bars the stacks with a lattice until chūnin, then shelves them by art', async () => {
+  it('bars the stacks with a lattice until your sensei signs a permit, then shelves them by art', async () => {
     const { unmount } = render(
       <LibraryPage ctx={ctx} state={ready()} perform={ignore} onBack={ignore} />,
     );
-    const lattice = screen.getByRole('region', { name: 'Restricted stacks' });
-    expect(
-      within(lattice).getByText('The restricted stacks are for chūnin and above.'),
-    ).toBeInTheDocument();
+    const lattice = screen.getByRole('region', { name: 'The stacks' });
+    expect(within(lattice).getByText(/need a permit from their sensei/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Study' })).toBeNull();
     unmount();
+
+    const permit = { ...ready(), people: { ...ready().people, permits: ['library'] } };
+    const shelves = render(
+      <LibraryPage ctx={ctx} state={permit} perform={ignore} onBack={ignore} />,
+    );
+    const restricted = screen.getByRole('region', { name: 'Restricted stacks' });
+    expect(within(restricted).getByText(/for chūnin and above/)).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: 'Study' }).length).toBeGreaterThan(0);
+    shelves.unmount();
 
     const user = userEvent.setup();
     const done: GameAction[] = [];

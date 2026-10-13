@@ -6,7 +6,7 @@ import type { GameContext } from '../context';
 import { currentLocation, healthFraction } from '../ops';
 import type { GameState } from '../state';
 import { availability } from '../board';
-import { libraryAccess } from '../shelves';
+import { libraryEntry, libraryScrollAccess } from '../permits';
 import { closedSign } from '../village';
 import { examToday } from '../exam/calendar';
 import { tavernCrowd } from '../actions/tavern';
@@ -55,9 +55,9 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
     case 'academy':
       return academyLine(place.techniqueIds, state, ctx);
     case 'library':
-      return libraryAccess(state)
-        ? 'For chūnin and above'
-        : academyLine(place.techniqueIds, state, ctx);
+      return libraryEntry(state)
+        ? 'Needs a permit from your sensei'
+        : academyLine(readableIds(place.techniqueIds, state, ctx), state, ctx);
     case 'home':
       return homeLine(state, place.blurb);
     case 'gear':
@@ -69,6 +69,13 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
         ? `Treatment ${place.treatmentCost} ryo`
         : 'You’re healthy';
   }
+}
+
+/** The library's scrolls you may read: the open shelves with a permit, all of them as chūnin. */
+function readableIds(ids: readonly string[], state: GameState, ctx: GameContext): string[] {
+  return ids.filter(
+    (id) => libraryScrollAccess(state, ctx.content.techniques.require(id)) === null,
+  );
 }
 
 function tavernLine(inside: number, blurb: string): string {

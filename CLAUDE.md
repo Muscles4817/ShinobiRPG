@@ -373,8 +373,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `{slot}` placeholders and their meanings in `placeholders`, then add `MissionFill`s giving every
   slot a value (`packs/original/jobs/`). Fills become ordinary missions on the board; validation
   reports any slot left unfilled, and tests check each fill gives exactly what its template asks.
-- **Add a technique:** give it a source (validated): the academy (rank E–D), a library (C–B,
-  chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
+- **Add a technique:** give it a source (validated): the academy (rank E–D), a library (its open
+  shelves keep standard techniques to C, for genin once their sensei signs the permit at a
+  lesson, `game/permits.ts`; the rest is the restricted stacks, chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
   scroll reward.
 - **Decide who goes on a mission:** nothing to set. A job's rank and its foes' danger decide
   the crews it may get (decision 21); a crew joins every fight as allies and each member gains

@@ -1,3 +1,4 @@
+import { bondWith } from '@/systems/bonds';
 import { addScroll } from '@/systems/inventory';
 import { SOLO } from '@/systems/missions';
 import type { StudySource } from '@/systems/techniques';
@@ -7,6 +8,7 @@ import { dispatch } from './dispatch';
 import { noteGradeUps } from './gradeUps';
 import { studyPointsFor } from './learning';
 import { afterStage } from './missionFlow';
+import { LIBRARY_LOCKED, PERMIT_NEEDED, permitAfterLesson, permitDue } from './permits';
 import type { GameState } from './state';
 import { hubView } from './views/hub';
 import { libraryView, scrollDesk } from './views/library';
@@ -14,6 +16,12 @@ import { libraryView, scrollDesk } from './views/library';
 /** Where techniques come from: the library's stacks, scrolls you own, and missions' gifts. */
 
 const LIBRARY_SCROLL = 'tide-lash';
+/** A rank B scroll, kept in the restricted stacks. */
+const RESTRICTED_SCROLL = 'ash-whirlwind';
+
+function permitted(state: GameState): GameState {
+  return { ...state, people: { ...state.people, permits: ['library'] } };
+}
 /** The festival job hands over Kindled Pulse's scroll and the Hungry Lantern. */
 const GIFT_MISSION = 'festival-haunting';
 
@@ -42,14 +50,17 @@ function finished(state: GameState, missionId: string): GameState {
 }
 
 describe('the library', () => {
-  it('keeps its stacks for chūnin and above', () => {
+  it('opens its open shelves to a genin with a permit, and its restricted stacks to chūnin', () => {
     const study = { type: 'study', techniqueId: LIBRARY_SCROLL } as const;
-    expect(dispatch(ready(), study, ctx)).toEqual({
-      ok: false,
-      error: 'The restricted stacks are for chūnin and above.',
-    });
-    const after = act(chunin(ready()), study);
+    expect(dispatch(ready(), study, ctx)).toEqual({ ok: false, error: PERMIT_NEEDED });
+    const after = act(permitted(ready()), study);
     expect(after.techniques.progress[LIBRARY_SCROLL]).toBeGreaterThan(0);
+    const restricted = { type: 'study', techniqueId: RESTRICTED_SCROLL } as const;
+    expect(dispatch(withAllStats(permitted(newGame()), 16), restricted, ctx)).toEqual({
+      ok: false,
+      error: LIBRARY_LOCKED,
+    });
+    expect(act(chunin(ready()), study).techniques.progress[LIBRARY_SCROLL]).toBeGreaterThan(0);
   });
 
   it('closes at night', () => {
@@ -69,16 +80,37 @@ describe('the library', () => {
     expect(at('teacher')).toBeGreaterThan(at('library'));
   });
 
-  it('shows the lattice to a genin and the shelves by art to a chūnin', () => {
+  it('shows the lattice without a permit, the open shelves with one, and all to a chūnin', () => {
     const genin = libraryView(ready(), ctx)!;
-    expect(genin.locked).toBe('The restricted stacks are for chūnin and above.');
+    expect(genin.locked).toBe(PERMIT_NEEDED);
     expect(genin.unread).toBeGreaterThan(0);
-    const open = libraryView(chunin(ready()), ctx)!;
-    expect(open.locked).toBeNull();
-    const ninjutsu = open.stacks.find((s) => s.discipline === 'ninjutsu');
-    expect(ninjutsu?.scrolls.map((s) => s.id)).toContain(LIBRARY_SCROLL);
     const card = hubView(ready(), ctx).places.find((p) => p.kind === 'library');
-    expect(card?.line).toBe('For chūnin and above');
+    expect(card?.line).toBe('Needs a permit from your sensei');
+    const shelves = libraryView(permitted(ready()), ctx)!;
+    expect(shelves.locked).toBeNull();
+    const ids = shelves.stacks.flatMap((s) => s.scrolls.map((x) => x.id));
+    expect(ids).toContain(LIBRARY_SCROLL);
+    expect(ids).not.toContain(RESTRICTED_SCROLL);
+    expect(shelves.restricted).toBeGreaterThan(0);
+    const open = libraryView(chunin(ready()), ctx)!;
+    expect(open.restricted).toBe(0);
+    const all = open.stacks.flatMap((s) => s.scrolls.map((x) => x.id));
+    expect(all).toContain(RESTRICTED_SCROLL);
+  });
+
+  it('is signed for by your sensei at a lesson, once you are friends with an art at C', () => {
+    const sensei = ctx.content.people.require('goran');
+    const friendly = (state: GameState): GameState => ({
+      ...state,
+      people: { ...state.people, bonds: { ...state.people.bonds, goran: bondWith(40) } },
+    });
+    expect(permitDue(friendly(ready()), sensei)).toBe(false);
+    const able = friendly(withAllStats(newGame(), 16));
+    expect(permitDue(able, sensei)).toBe(true);
+    expect(permitDue(withAllStats(newGame(), 16), sensei)).toBe(false);
+    const signed = permitAfterLesson(able, ctx, sensei);
+    expect(signed.people.permits).toEqual(['library']);
+    expect(permitDue(signed, sensei)).toBe(false);
   });
 });
 
