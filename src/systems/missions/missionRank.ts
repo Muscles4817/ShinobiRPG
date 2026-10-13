@@ -5,3 +5,10 @@ export type MissionRank = 'D' | 'C' | 'B' | 'A' | 'S';
 export function isSeniorMission(rank: MissionRank): boolean {
   return rank !== 'D' && rank !== 'C';
 }
+
+/**
+ * Jobs on a team mission that fall to whoever on the team is best at them: the tracker follows
+ * a trail, the sensor feels for chakra, the medic patches people up.
+ */
+export const MISSION_ROLES = ['tracker', 'sensor', 'medic'] as const;
+export type MissionRole = (typeof MISSION_ROLES)[number];

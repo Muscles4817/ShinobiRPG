@@ -1,15 +1,8 @@
 import { createRng } from '@/core';
 import { createStats } from '@/systems/stats';
 
-import {
-  advance,
-  currentStage,
-  resolveCheck,
-  reward,
-  startRun,
-  type MissionDef,
-  type CheckStage,
-} from './missions';
+import { advance, currentStage, reward, startRun, type MissionDef } from './missions';
+import { resolveCheck, type CheckStage } from './checks';
 import { SOLO } from './crew';
 import { isSeniorMission } from './missionRank';
 
@@ -48,7 +41,7 @@ describe('missions', () => {
   it('advances on a successful check', () => {
     const r = resolveCheck(
       startRun(mission, SOLO),
-      { stage: check, approach },
+      { stage: check, approach, story: mission },
       createStats(100),
       createRng(1),
     );
@@ -62,7 +55,7 @@ describe('missions', () => {
   it('penalises the reward on a failed penalty check', () => {
     const r = resolveCheck(
       startRun(mission, SOLO),
-      { stage: check, approach },
+      { stage: check, approach, story: mission },
       createStats(-100),
       createRng(1),
     );
@@ -77,7 +70,7 @@ describe('missions', () => {
   it('a teammate who takes the check rolls with their own value and is named', () => {
     const r = resolveCheck(
       startRun(mission, SOLO),
-      { stage: check, approach, hand: { name: 'Kaen', value: 100 } },
+      { stage: check, approach, hand: { name: 'Kaen', value: 100 }, story: mission },
       createStats(-100),
       createRng(1),
     );
@@ -89,7 +82,7 @@ describe('missions', () => {
     const abortCheck = { ...check, onFailure: 'abort' as const };
     const r = resolveCheck(
       startRun(mission, SOLO),
-      { stage: abortCheck, approach },
+      { stage: abortCheck, approach, story: mission },
       createStats(-100),
       createRng(1),
     );

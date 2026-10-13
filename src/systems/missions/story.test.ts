@@ -1,0 +1,120 @@
+import { SOLO } from './crew';
+import { addLedger, applyOutcome } from './outcomes';
+import { advance, pickTwist, startRun, type MissionDef } from './missions';
+import { conditionRefs, holds, moveThread, variantText, type ThreadDef } from './story';
+
+const trust: ThreadDef = {
+  id: 'trust',
+  label: 'Her trust',
+  levels: ['Doubtful', 'Polite', 'At ease', 'Trusts you'],
+  start: 1,
+};
+
+const job: MissionDef = {
+  id: 'job',
+  title: 'Job',
+  rank: 'D',
+  client: 'Client',
+  summary: '',
+  slots: 1,
+  energyCost: 0,
+  reward: { ryo: 100, reputation: 4 },
+  minMissionsCompleted: 0,
+  threads: [trust],
+  charge: { name: 'Ume', thread: 'trust', likes: ['kind'], dislikes: ['tease'] },
+  twists: [
+    { mark: 'desperate', weight: 3 },
+    { mark: 'followed', weight: 1 },
+  ],
+  stages: [{ kind: 'narrative', text: 'Off you go.' }],
+};
+
+const story = { marks: ['lost-light'], threads: { trust: 2 }, crew: SOLO };
+
+describe('what a mission remembers', () => {
+  it('reads marks, threads, who went, and combinations of them', () => {
+    expect(holds(story, { has: 'lost-light' })).toBe(true);
+    expect(holds(story, { lacks: 'lost-light' })).toBe(false);
+    expect(holds(story, { thread: 'trust', atLeast: 2 })).toBe(true);
+    expect(holds(story, { thread: 'trust', below: 2 })).toBe(false);
+    expect(holds(story, { crew: 'solo' })).toBe(true);
+    expect(holds(story, { crew: 'team' })).toBe(false);
+    expect(holds(story, { all: [{ has: 'lost-light' }, { crew: 'you-lead' }] })).toBe(true);
+    expect(holds(story, { any: [{ has: 'nope' }, { crew: 'led' }] })).toBe(false);
+    expect(holds(story, undefined)).toBe(true);
+  });
+
+  it('tells the first variant that holds, or the plain text', () => {
+    const variants = [
+      { when: { has: 'knows-why' }, text: 'She smiles.' },
+      { when: { has: 'lost-light' }, text: 'Dusk.' },
+    ];
+    expect(variantText(story, 'Plain.', variants)).toBe('Dusk.');
+    expect(variantText({ ...story, marks: [] }, 'Plain.', variants)).toBe('Plain.');
+  });
+
+  it('keeps a thread within its levels', () => {
+    expect(moveThread({ trust: 3 }, trust, 2)).toEqual({ trust: 3 });
+    expect(moveThread({}, trust, -5)).toEqual({ trust: 0 });
+  });
+
+  it('lists what a condition reads', () => {
+    expect(
+      conditionRefs({
+        all: [{ has: 'a' }, { any: [{ thread: 't', atLeast: 1 }, { lacks: 'b' }] }],
+      }),
+    ).toEqual({
+      marks: ['a', 'b'],
+      threads: ['t'],
+    });
+  });
+});
+
+describe('outcomes', () => {
+  it('set marks, move threads (the charge by name), dock pay, and write the ledger', () => {
+    const run = startRun(job, SOLO);
+    const applied = applyOutcome(run, job, {
+      effects: [
+        { kind: 'mark', mark: 'lost-light' },
+        { kind: 'thread', thread: 'charge', by: 1 },
+        { kind: 'thread', thread: 'daylight', by: -1 },
+        { kind: 'pay', share: -0.25 },
+        { kind: 'harm', health: 3 },
+      ],
+      ledger: 'Lost the light at the spring.',
+    });
+    expect(applied.run.marks).toEqual(['lost-light']);
+    expect(applied.run.threads).toEqual({ trust: 2 });
+    expect(applied.run.rewardMultiplier).toBe(0.75);
+    expect(applied.run.ledger).toEqual([
+      { stageIndex: 0, text: 'Lost the light at the spring.', tone: 'cost', pay: -0.25 },
+    ]);
+    expect(applied.personal).toEqual([{ kind: 'harm', health: 3 }]);
+  });
+
+  it('writes nothing without a ledger line, and lines can be added directly', () => {
+    const run = startRun(job, SOLO);
+    expect(applyOutcome(run, job, { effects: [{ kind: 'mark', mark: 'x' }] }).run.ledger).toEqual(
+      [],
+    );
+    expect(addLedger(run, { text: 'Fought them.', tone: 'plain' }).ledger).toHaveLength(1);
+  });
+
+  it('leaves the finished stage’s camp and road event behind on moving on', () => {
+    const run = { ...startRun(job, SOLO), camp: { done: ['0'] }, roadEvent: 'x', marks: ['m'] };
+    const next = advance(run);
+    expect(next.camp).toBeUndefined();
+    expect(next.roadEvent).toBeUndefined();
+    expect(next.marks).toEqual(['m']);
+  });
+});
+
+describe('twists', () => {
+  it('are rolled by weight, and a job without any has none', () => {
+    expect(pickTwist(job, 0)).toBe('desperate');
+    expect(pickTwist(job, 0.74)).toBe('desperate');
+    expect(pickTwist(job, 0.76)).toBe('followed');
+    expect(pickTwist({ ...job, twists: [] }, 0.5)).toBeNull();
+    expect(startRun(job, SOLO, ['followed']).marks).toEqual(['followed']);
+  });
+});

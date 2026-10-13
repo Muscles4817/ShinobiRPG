@@ -1,3 +1,4 @@
+import { SOLO } from '@/systems/missions';
 import { act, intoFight, newGame, veteran } from '@/test/gameFixtures';
 
 import { deserialize, SAVE_VERSION, serialize } from './save';
@@ -213,6 +214,20 @@ describe('persistence', () => {
     const alone = deserialize(JSON.stringify({ version: 27, state: teamless }));
     if (!alone.ok) throw new Error(alone.error);
     expect(alone.value.mission?.crew.kind).toBe('solo');
+  });
+
+  it('gives a job under way before stories nothing to remember yet', () => {
+    const game = newGame();
+    const run = {
+      missionId: 'lantern-patrol',
+      crew: SOLO,
+      stageIndex: 0,
+      rewardMultiplier: 1,
+      notes: [],
+    };
+    const loaded = deserialize(JSON.stringify({ version: 28, state: { ...game, mission: run } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.mission).toEqual({ ...run, marks: [], threads: {}, ledger: [] });
   });
 
   it('rejects corrupted data', () => {

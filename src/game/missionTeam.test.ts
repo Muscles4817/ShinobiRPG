@@ -14,7 +14,7 @@ import { STANCE_ORDERS_STAGE } from './people/teamOrders';
 import type { GameState } from './state';
 import { missionBoardView } from './views/boards';
 import { encounterScene } from './views/encounter';
-import { missionScene } from './views/scene';
+import { missionScene } from './views/missionScene';
 
 const TEAM_JOB = 'river-road-bandits';
 const ESCORT_JOB = 'tea-merchant-escort';

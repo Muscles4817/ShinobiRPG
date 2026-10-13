@@ -1,10 +1,11 @@
-import type { Rng } from '@/core';
-import { rollCheck, type StatId, type Stats } from '@/systems/stats';
+import type { StatId } from '@/systems/stats';
 
 import type { Crew } from './crew';
 import type { EncounterRun, EncounterStage } from './encounter';
-import type { MissionRank } from './missionRank';
+import type { MissionRank, MissionRole } from './missionRank';
 import type { StagePay } from './encounterPay';
+import { startThreads, type Condition, type LedgerLine, type ThreadDef } from './story';
+import type { CampStage, DecisionStage, EndingStage, Outcome, TextVariant } from './storyStages';
 
 /**
  * Missions are a linear sequence of stages. This module tracks progress through them
@@ -13,42 +14,52 @@ import type { StagePay } from './encounterPay';
  * stage (`encounter.ts`) puts recon and a choice of approach before any fight.
  */
 
-/**
- * Jobs on a team mission that fall to whoever on the team is best at them: the tracker follows
- * a trail, the sensor feels for chakra, the medic patches people up.
- */
-export const MISSION_ROLES = ['tracker', 'sensor', 'medic'] as const;
-export type MissionRole = (typeof MISSION_ROLES)[number];
-
 export interface CheckApproach {
   readonly label: string;
   readonly stat: StatId;
   readonly difficulty: number;
   /** On a team mission, the teammate best at the stat may take it for you. */
   readonly role?: MissionRole;
+  /** Only offered when this holds. */
+  readonly when?: Condition;
+  /** What succeeding this way does besides moving on (raising trust, say). */
+  readonly onSuccess?: Outcome;
+  /** What failing this way does (a mark the story picks up later). */
+  readonly onFailure?: Outcome;
 }
 
-export type MissionStage =
-  | { readonly kind: 'narrative'; readonly text: string }
+type StageBody =
+  | {
+      readonly kind: 'narrative';
+      readonly text: string;
+      readonly variants?: readonly TextVariant[];
+    }
   | {
       readonly kind: 'check';
       readonly text: string;
+      readonly variants?: readonly TextVariant[];
       /** The player picks one approach; each tests a different stat. */
       readonly approaches: readonly CheckApproach[];
       readonly success: string;
       readonly failure: string;
-      /** 'penalty' docks the reward and continues; 'abort' fails the mission. */
-      readonly onFailure: 'penalty' | 'abort';
+      /**
+       * 'penalty' docks the reward and continues; 'abort' fails the mission; 'forward' moves on
+       * with no pay docked, leaving the approach's `onFailure` to change the story.
+       */
+      readonly onFailure: 'penalty' | 'abort' | 'forward';
       readonly failureDamage?: number;
     }
   | {
       /**
        * Days on the road with nothing worth a choice: the line sums them up, and the days pass
-       * (meals from your pack, nights in camp).
+       * (meals from your pack, nights in camp). On a road with a `region`, something may happen
+       * (a road event, drawn by the day).
        */
       readonly kind: 'leg';
       readonly text: string;
+      readonly variants?: readonly TextVariant[];
       readonly days: number;
+      readonly region?: string;
     }
   | {
       readonly kind: 'combat';
@@ -56,7 +67,29 @@ export type MissionStage =
       readonly enemyIds: readonly string[];
       readonly canFlee: boolean;
     }
-  | EncounterStage;
+  | EncounterStage
+  | DecisionStage
+  | CampStage
+  | EndingStage;
+
+/** A stage, played only when its condition holds (and skipped otherwise). */
+export type MissionStage = StageBody & { readonly when?: Condition };
+
+/** Someone you look after on a job: their trust is one of its threads, moved by your tone. */
+export interface ChargeDef {
+  readonly name: string;
+  /** The thread that is their trust in you. */
+  readonly thread: string;
+  /** Tones they warm to and bristle at, as a trait's tastes. */
+  readonly likes: readonly string[];
+  readonly dislikes: readonly string[];
+}
+
+/** A turn the story may take, rolled when the job begins: a hidden mark, by weight. */
+export interface TwistDef {
+  readonly mark: string;
+  readonly weight: number;
+}
 
 export interface MissionDef {
   readonly id: string;
@@ -80,6 +113,12 @@ export interface MissionDef {
   readonly standing?: boolean;
   /** Never posted: an exam stage runs it (the survival forest). */
   readonly examOnly?: boolean;
+  /** Counters the story keeps (a charge's trust, the day's light). */
+  readonly threads?: readonly ThreadDef[];
+  /** Who you look after, if anyone. */
+  readonly charge?: ChargeDef;
+  /** Turns the story may take; one is rolled when the job begins (a mark of weight 0: none). */
+  readonly twists?: readonly TwistDef[];
   readonly stages: readonly MissionStage[];
 }
 
@@ -93,7 +132,9 @@ export type MissionNote =
       readonly chance: number;
       readonly success: boolean;
     }
-  | { readonly kind: 'outcome'; readonly text: string };
+  | { readonly kind: 'outcome'; readonly text: string }
+  /** Someone along says something. */
+  | { readonly kind: 'voice'; readonly speaker: string; readonly text: string };
 
 export interface MissionRun {
   readonly missionId: string;
@@ -108,12 +149,41 @@ export interface MissionRun {
   readonly encounter?: EncounterRun;
   /** What encounters' endings did to the pay (multipliers); absent means full pay. */
   readonly pay?: { readonly ryo: number; readonly reputation: number };
+  /** What has happened that the story remembers (and the twist, from the start). */
+  readonly marks: readonly string[];
+  /** Each thread's level, by id. */
+  readonly threads: Readonly<Record<string, number>>;
+  /** The job as it went, for the debrief. */
+  readonly ledger: readonly LedgerLine[];
+  /** At a camp: the activities done so far. */
+  readonly camp?: { readonly done: readonly string[] };
+  /** On a leg: the road event that came up, waiting on your choice. */
+  readonly roadEvent?: string;
 }
 
-export const CHECK_FAILURE_PENALTY = 0.25;
+export function startRun(def: MissionDef, crew: Crew, marks: readonly string[] = []): MissionRun {
+  return {
+    missionId: def.id,
+    crew,
+    stageIndex: 0,
+    rewardMultiplier: 1,
+    notes: [],
+    marks,
+    threads: startThreads(def.threads ?? []),
+    ledger: [],
+  };
+}
 
-export function startRun(def: MissionDef, crew: Crew): MissionRun {
-  return { missionId: def.id, crew, stageIndex: 0, rewardMultiplier: 1, notes: [] };
+/** The twist a job's story takes, by a roll in [0, 1); null for none. */
+export function pickTwist(def: MissionDef, roll: number): string | null {
+  const twists = def.twists ?? [];
+  const total = twists.reduce((sum, t) => sum + t.weight, 0);
+  let left = roll * total;
+  for (const twist of twists) {
+    left -= twist.weight;
+    if (left < 0) return twist.mark;
+  }
+  return null;
 }
 
 /** The stage awaiting the player, or undefined when every stage is done. */
@@ -123,14 +193,9 @@ export function currentStage(def: MissionDef, run: MissionRun): MissionStage | u
 
 /** Moves to the next stage, adding any notes describing what just happened. */
 export function advance(run: MissionRun, ...notes: MissionNote[]): MissionRun {
-  return {
-    missionId: run.missionId,
-    crew: run.crew,
-    stageIndex: run.stageIndex + 1,
-    rewardMultiplier: run.rewardMultiplier,
-    notes: [...run.notes, ...notes],
-    ...(run.pay ? { pay: run.pay } : {}),
-  };
+  // What belonged to the stage just finished (an encounter, a camp, a road event) is left behind.
+  const { encounter: _encounter, camp: _camp, roadEvent: _event, ...kept } = run;
+  return { ...kept, stageIndex: run.stageIndex + 1, notes: [...run.notes, ...notes] };
 }
 
 /** Days a job keeps you on the road: every leg's days. Zero for a job done within a day. */
@@ -154,45 +219,6 @@ export function withStagePay(run: MissionRun, pay: StagePay): MissionRun {
   const ryo = (run.pay?.ryo ?? 1) * pay.ryo;
   const reputation = (run.pay?.reputation ?? 1) * pay.reputation;
   return { ...run, pay: { ryo, reputation } };
-}
-
-export type CheckStage = Extract<MissionStage, { kind: 'check' }>;
-
-/** The check being attempted and the approach the player picked for it. */
-export interface CheckChoice {
-  readonly stage: CheckStage;
-  readonly approach: CheckApproach;
-  /** A teammate who takes the check for you (a mission role), and what they roll with. */
-  readonly hand?: { readonly name: string; readonly value: number };
-}
-
-export interface CheckResolution {
-  readonly run: MissionRun;
-  readonly aborted: boolean;
-  readonly damage: number;
-}
-
-export function resolveCheck(
-  run: MissionRun,
-  { stage, approach, hand }: CheckChoice,
-  stats: Stats,
-  rng: Rng,
-): CheckResolution {
-  const value = hand?.value ?? stats[approach.stat];
-  const { success, chance } = rollCheck(value, approach.difficulty, rng);
-  const notes: MissionNote[] = [
-    { kind: 'choice', text: hand ? `${approach.label} (${hand.name})` : approach.label },
-    { kind: 'roll', stat: approach.stat, chance, success },
-    { kind: 'story', text: success ? stage.success : stage.failure },
-  ];
-  if (success) return { run: advance(run, ...notes), aborted: false, damage: 0 };
-
-  const damage = stage.failureDamage ?? 0;
-  if (stage.onFailure === 'abort') {
-    return { run: { ...run, notes: [...run.notes, ...notes] }, aborted: true, damage };
-  }
-  const rewardMultiplier = Math.max(0, run.rewardMultiplier - CHECK_FAILURE_PENALTY);
-  return { run: advance({ ...run, rewardMultiplier }, ...notes), aborted: false, damage };
 }
 
 export function reward(def: MissionDef, run: MissionRun): { ryo: number; reputation: number } {

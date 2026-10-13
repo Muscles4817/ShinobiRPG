@@ -55,3 +55,4 @@ export type {
   VillageLife,
 } from './types';
 export { jobProfile } from './jobProfile';
+export { VOICE_MOMENTS, type VoiceDef, type VoiceMoment } from './voices';

@@ -5,6 +5,7 @@ import { Vitals } from '../../components/Vitals';
 import type { ScreenProps } from '../types';
 import { FieldNotes } from './encounter/FieldNotes';
 import { ScoutFirst, WaysIn } from './encounter/WaysIn';
+import { StoryLines } from './StoryLines';
 
 /**
  * Foes ahead on a mission: what you've learned, ways to learn more, and how to go in. Head-on
@@ -33,18 +34,7 @@ export function EncounterScene({ ctx, state, perform }: ScreenProps) {
       </header>
       <main className="page encounter">
         <div className="feed scene-feed">
-          {scene.lines.map((line, i) =>
-            line.kind === 'roll' ? (
-              <p key={i} className={`roll ${line.success ? 'pass' : 'fail'}`}>
-                <i aria-hidden="true">{line.success ? '✓' : '✗'}</i>
-                {line.text}
-              </p>
-            ) : (
-              <p key={i} className={line.kind === 'choice' ? 'you' : 'story'}>
-                {line.text}
-              </p>
-            ),
-          )}
+          <StoryLines lines={scene.lines} />
         </div>
         <FieldNotes scene={scene} />
         <ScoutFirst scene={scene} perform={perform} />

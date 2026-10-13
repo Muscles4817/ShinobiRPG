@@ -17,6 +17,8 @@ import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
+import { ROAD_EVENTS } from '../../shared/road/events';
+import { VOICES } from '../../shared/talk/voices';
 import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
 import { EXAM_ENEMIES, EXAM_MISSIONS, EXAMS } from './exam';
@@ -67,6 +69,8 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
+  roadEvents: ROAD_EVENTS,
+  voices: VOICES,
   enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...EXAM_ENEMIES],
   training: TRAINING,
   foods: [...FOODS, ...SEASONAL_FOODS],

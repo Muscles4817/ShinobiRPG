@@ -1,6 +1,7 @@
 import type { Rng } from '@/core';
 import type { CombatOpening, CombatOutcome } from '@/systems/combat';
 import {
+  addLedger,
   advance,
   currentStage,
   isSeniorMission,
@@ -27,6 +28,7 @@ import { handedOver } from './missionRewards';
 import { teamAllies, tendWounds } from './missionTeam';
 import { bondOf } from './people/cast';
 import { addReport } from './reports';
+import { settle } from './story/state';
 import type { GameState } from './state';
 
 /**
@@ -64,10 +66,13 @@ function newlyUnlocked(state: GameState, ctx: GameContext, completed: number): s
  * After a stage is cleared: completes the mission if every stage is done; otherwise the team's
  * medic (on a team mission) patches you up for the next one.
  */
-export function afterStage(state: GameState, ctx: GameContext): GameState {
-  const def = activeMission(state, ctx);
-  if (!def || !state.mission) return state;
-  if (currentStage(def, state.mission)) return tendWounds(state, ctx);
+export function afterStage(before: GameState, ctx: GameContext): GameState {
+  const def = activeMission(before, ctx);
+  if (!def || !before.mission) return before;
+  // Stages that don't apply to the story so far are passed over.
+  const run = settle(def, before.mission);
+  const state = { ...before, mission: run };
+  if (currentStage(def, run)) return tendWounds(state, ctx);
   if (def.examOnly) return forestCleared(state, ctx);
   const earned = reward(def, state.mission);
   const senior = isSeniorMission(def.rank);
@@ -111,9 +116,14 @@ export function afterStage(state: GameState, ctx: GameContext): GameState {
   });
 }
 
-/** The last story line, when the job ended on a check (its outcome is otherwise never seen). */
+/**
+ * How the job ended, when the scene closes before it can show it: the outcome of an ending
+ * stage, or the last story line of a job that ends on a check.
+ */
 function endingLine(def: MissionDef, run: MissionRun): string | undefined {
-  if (def.stages.at(-1)?.kind !== 'check') return undefined;
+  const last = def.stages.at(-1)?.kind;
+  if (last === 'ending') return run.notes.findLast((n) => n.kind === 'outcome')?.text;
+  if (last !== 'check') return undefined;
   return run.notes.findLast((n) => n.kind === 'story')?.text;
 }
 
@@ -211,7 +221,8 @@ export function beginCombat(
 
 /** A won fight moves the mission on; an encounter's fight pays as its job says. */
 function afterVictory(run: MissionRun, stage: MissionStage | null, enemies: string): MissionRun {
-  const next = advance(run, { kind: 'outcome', text: `You defeated ${enemies}.` });
+  const won = addLedger(run, { text: `Beat ${enemies} in a fight.`, tone: 'plain' });
+  const next = advance(won, { kind: 'outcome', text: `You defeated ${enemies}.` });
   return stage?.kind === 'encounter' ? withStagePay(next, stagePay(stage.job, 'fought')) : next;
 }
 

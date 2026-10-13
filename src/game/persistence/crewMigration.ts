@@ -1,4 +1,6 @@
 /**
+ * Migrations for what a job under way remembers.
+ *
  * v27 → v28: a job remembers who went on it (`MissionRun.crew`). A job already under way goes
  * on with the people who would have gone before crews: the exam's team in an exam, otherwise
  * your genin team if you have one (their sensei stays home), otherwise nobody.
@@ -24,4 +26,13 @@ function crewFor(state: RawState): RawState {
 export function v27ToV28(state: RawState): RawState {
   if (state.mission === null || state.mission === undefined) return state;
   return { ...state, mission: { ...asRecord(state.mission), crew: crewFor(state) } };
+}
+
+/**
+ * v28 → v29: a job remembers its story (marks, threads, a ledger). A job under way starts with
+ * none: the jobs written before had nothing to remember.
+ */
+export function v28ToV29(state: RawState): RawState {
+  if (state.mission === null || state.mission === undefined) return state;
+  return { ...state, mission: { marks: [], threads: {}, ledger: [], ...asRecord(state.mission) } };
 }
