@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { jutsuDeck, type Discipline, type JutsuCard, type JutsuEffect } from '@/game';
 
 import { TechniqueCard } from '../components/TechniqueCard';
+import { TechniqueSheet } from '../components/TechniqueSheet';
 import type { ScreenProps } from './types';
 
 const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => string>> = {
@@ -133,6 +134,7 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
             </b>
             {selected.status !== 'unknown' && <p className="story">{selected.description}</p>}
             <p className="muted small">{cardDetail(selected)}</p>
+            {selected.status !== 'unknown' && <TechniqueSheet sheet={selected.sheet} />}
             {selected.unstable && (
               <p className="muted small">
                 Beyond your grade: it costs more chakra and can misfire. It steadies once your{' '}

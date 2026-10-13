@@ -13,7 +13,9 @@ import { assumedAptitude } from '../growth';
 import { learnBlockerFor, learnBlockerText, studyPointsFor, wouldBeUnstable } from '../learning';
 import { placeHere } from '../ops';
 import type { GameState } from '../state';
+import { playerCombatant } from '../combatants';
 import { choice, type Choice, type Discipline } from './common';
+import { techniqueSheet, type Reader, type TechniqueSheet } from './techniqueSheet';
 
 /**
  * The academy's scroll rack: what you're studying, what you could start, and what is folded
@@ -38,6 +40,8 @@ export interface Scroll extends Choice {
   readonly unstable: boolean;
   /** How far you are from being able to start it; Coming up lists the closest first. */
   readonly shortfall: number;
+  /** What it does, read before you study it. */
+  readonly sheet: TechniqueSheet;
 }
 
 export interface AcademyView {
@@ -80,14 +84,22 @@ export interface Reading {
   readonly source: StudySource;
 }
 
+/** How and by whom a scroll is read: the reading, and you as a fighter (worked out once). */
+export interface ScrollReading {
+  readonly reading?: Reading;
+  readonly you?: Reader;
+}
+
 const ACADEMY_READING: Reading = { action: 'study', source: 'scroll' };
 
 export function scrollOf(
   state: GameState,
   ctx: GameContext,
   def: TechniqueDef,
-  reading: Reading = ACADEMY_READING,
+  how: ScrollReading = {},
 ): Scroll {
+  const reading = how.reading ?? ACADEMY_READING;
+  const you = how.you ?? playerCombatant(state, ctx);
   const { character } = state;
   const progress = state.techniques.progress[def.id] ?? 0;
   const blocker = learnBlockerFor(state, def, ctx);
@@ -107,16 +119,18 @@ export function scrollOf(
     locked: blocker && learnBlockerText(blocker, def),
     unstable: wouldBeUnstable(character, def),
     shortfall: shortfallOf(blocker, def, state),
+    sheet: techniqueSheet(state, ctx, def, you),
   };
 }
 
 export function academyView(state: GameState, ctx: GameContext): AcademyView | null {
   const place = placeHere(state, ctx, 'academy');
   if (!place) return null;
+  const you = playerCombatant(state, ctx);
   const scrolls = place.techniqueIds
     .map((id) => ctx.content.techniques.require(id))
     .filter((t) => !state.techniques.known.includes(t.id))
-    .map((t) => scrollOf(state, ctx, t));
+    .map((t) => scrollOf(state, ctx, t, { you }));
   return { name: place.name, energyCost: STUDY_ENERGY_COST, ...sortScrolls(scrolls) };
 }
 

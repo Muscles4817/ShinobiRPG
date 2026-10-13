@@ -1,5 +1,6 @@
 import type { Discipline, Scroll } from '@/game';
 
+import { TechniqueSheet } from '../../components/TechniqueSheet';
 import type { PlaceProps } from '../types';
 
 /** The short mark on a scroll's badge, spelled as the rest of the game spells the art. */
@@ -50,6 +51,10 @@ export function ScrollRow({
           )}
         </b>
         <small>{scroll.locked ?? scroll.description}</small>
+        <details className="sheet-fold">
+          <summary>What it does</summary>
+          <TechniqueSheet sheet={scroll.sheet} />
+        </details>
         {!locked && (
           <>
             <span className="unroll">

@@ -8,6 +8,7 @@ import { playerCombatant } from '../combatants';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import type { Discipline } from './common';
+import { techniqueSheet, type TechniqueSheet } from './techniqueSheet';
 
 export interface JutsuEffect {
   readonly verb: Verb;
@@ -28,13 +29,16 @@ export interface JutsuCard {
   readonly unstable: boolean;
   readonly status: 'known' | 'studying' | 'unknown';
   readonly progressPct: number;
+  /** What it does, in full: the back of the card. */
+  readonly sheet: TechniqueSheet;
 }
 
 /** Every technique in the setting: known ones first, then those being studied. */
 export function jutsuDeck(state: GameState, ctx: GameContext): readonly JutsuCard[] {
   const order = { known: 0, studying: 1, unknown: 2 } as const;
   // The cost a fight would charge you today: chakra control (and anything weighing on it) counts.
-  const you = { attributes: playerCombatant(state, ctx).attributes };
+  const fighter = playerCombatant(state, ctx);
+  const you = { attributes: fighter.attributes };
   return ctx.content.techniques.all
     .map((t): JutsuCard => {
       const progress = state.techniques.progress[t.id] ?? 0;
@@ -55,6 +59,7 @@ export function jutsuDeck(state: GameState, ctx: GameContext): readonly JutsuCar
         unstable,
         status: known ? 'known' : progress > 0 ? 'studying' : 'unknown',
         progressPct: known ? 100 : Math.round((progress / t.difficulty) * 100),
+        sheet: techniqueSheet(state, ctx, t, fighter),
       };
     })
     .sort((a, b) => order[a.status] - order[b.status]);

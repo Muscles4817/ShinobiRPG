@@ -1,4 +1,5 @@
 import { clamp } from '@/core';
+import type { EffectOf, TechniqueEffect } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatantSetup, CombatTechnique } from '../contract';
 import { elementMultiplier } from './elements';
@@ -151,4 +152,25 @@ export function techniqueDamage(
 /** A heal restores its power, more in skilled hands (ninjutsu and chakra control by default). */
 export function healAmount(user: Rated, use: EffectUse<'heal'>): number {
   return Math.round(use.effect.power * (1 + driveOf(user, use) * HEAL_PER_SKILL));
+}
+
+/** Health every human has (`MAX_HEALTH`), for reads against an equal. */
+const EQUAL_HEALTH = 100;
+
+function isWoundingEffect(e: TechniqueEffect): e is EffectOf<'damage' | 'area' | 'break'> {
+  return e.verb === 'damage' || e.verb === 'area' || e.verb === 'break';
+}
+
+/**
+ * The share of an equal's health one use of a technique takes (a copy of the fighter, the
+ * middle of the damage roll, every wounding effect summed, each capped as a hit is): what the
+ * academy tells you a technique does in your hands. Null for a technique that doesn't wound.
+ */
+export function equalHitShare(fighter: Natured, technique: CombatTechnique): number | null {
+  const hits = technique.effects.filter(isWoundingEffect).map((effect) => {
+    const damage = techniqueDamage(fighter, fighter, { technique, effect }, 0.5);
+    return cappedHit(damage, EQUAL_HEALTH);
+  });
+  if (hits.length === 0) return null;
+  return Math.min(1, hits.reduce((sum, h) => sum + h, 0) / EQUAL_HEALTH);
 }

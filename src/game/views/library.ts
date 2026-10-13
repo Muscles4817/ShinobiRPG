@@ -8,6 +8,7 @@ import { libraryAccess, readingBlocker } from '../shelves';
 import type { GameState } from '../state';
 import { scrollOf, sortScrolls, type Scroll } from './academy';
 import type { Discipline } from './common';
+import { playerCombatant } from '../combatants';
 
 /**
  * The library's stacks, shelved by art (with what you're reading pulled out), and the reading
@@ -44,7 +45,9 @@ export function scrollDesk(state: GameState, ctx: GameContext): ScrollDesk {
   const scrolls = scrollIds(state.inventory)
     .filter((id) => !state.techniques.known.includes(id))
     .map((id) => ctx.content.techniques.require(id))
-    .map((def) => scrollOf(state, ctx, def, { action: 'studyScroll', source: 'scroll' }));
+    .map((def) =>
+      scrollOf(state, ctx, def, { reading: { action: 'studyScroll', source: 'scroll' } }),
+    );
   const sorted = sortScrolls(scrolls);
   return {
     scrolls: [...sorted.studying, ...sorted.ready, ...sorted.comingUp],
@@ -64,14 +67,11 @@ function shelve(scrolls: readonly Scroll[]): Stack[] {
 export function libraryView(state: GameState, ctx: GameContext): LibraryView | null {
   const place = placeHere(state, ctx, 'library');
   if (!place) return null;
+  const you = playerCombatant(state, ctx);
+  const reading = { action: 'study', source: 'library' } as const;
   const scrolls = place.techniqueIds
     .filter((id) => !state.techniques.known.includes(id))
-    .map((id) =>
-      scrollOf(state, ctx, ctx.content.techniques.require(id), {
-        action: 'study',
-        source: 'library',
-      }),
-    );
+    .map((id) => scrollOf(state, ctx, ctx.content.techniques.require(id), { reading, you }));
   const sorted = sortScrolls(scrolls);
   return {
     name: place.name,
