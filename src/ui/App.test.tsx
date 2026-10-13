@@ -153,6 +153,9 @@ describe('App (smoke test)', () => {
     expect(
       within(comingUp).getAllByText(/^Needs [A-S] [\w ū]+; you're [A-S]\.$/).length,
     ).toBeGreaterThan(0);
+    await user.click(screen.getAllByText('What it does')[0]!);
+    expect(screen.getAllByText('Reach').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/of an equal’s health$/).length).toBeGreaterThan(0);
     await user.click(screen.getByRole('button', { name: /Jutsu/ }));
     expect(screen.getAllByLabelText('Rank E').length).toBeGreaterThan(0);
   });

@@ -51,6 +51,7 @@ export type { ConditionView, InjuryLine } from './views/condition';
 export { missionBoardView, type MissionBoardView, type Notice, type Foe } from './views/boards';
 export type { ArcView } from './views/arcs';
 export { academyView, type AcademyView, type Scroll } from './views/academy';
+export type { SheetLine, SheetReach, TechniqueSheet } from './views/techniqueSheet';
 export {
   libraryView,
   scrollDesk,

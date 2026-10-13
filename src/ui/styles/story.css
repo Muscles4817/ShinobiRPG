@@ -192,3 +192,80 @@
   color: var(--paper-muted);
   text-decoration: line-through;
 }
+
+/* A technique read in full: label on the left, what it does on the right, numbers in chips. */
+.tsheet {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  font-size: 0.86rem;
+}
+.tsheet > div {
+  display: grid;
+  grid-template-columns: 6.5em 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+.tsheet dt {
+  color: var(--muted);
+}
+.tsheet dd {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: baseline;
+}
+.tsheet-effect {
+  display: inline-flex;
+  gap: 4px;
+  align-items: baseline;
+  flex-basis: 100%;
+}
+.tsheet-reach span {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0 6px;
+  color: var(--muted);
+}
+.tsheet-reach span.on {
+  color: var(--ink);
+  border-color: var(--lantern);
+}
+.paper-strip .tsheet dt {
+  color: var(--paper-muted);
+}
+.paper-strip .tsheet-reach span.on {
+  color: var(--paper-ink);
+}
+.sheet-fold summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.sheet-fold summary {
+  list-style: none;
+  gap: 6px;
+}
+
+.sheet-fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.sheet-fold summary::after {
+  content: '▸';
+  transition: transform 0.15s;
+}
+
+.sheet-fold[open] summary::after {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-fold summary::after {
+    transition: none;
+  }
+}
