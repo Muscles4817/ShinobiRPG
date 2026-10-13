@@ -134,6 +134,7 @@ export const KENJUTSU: readonly TechniqueDef[] = [
     name: 'Lantern-Gate Edge',
     description: 'A draw so bright the village gate could light its lantern from it.',
     discipline: 'kenjutsu',
+    school: 'River Draw',
     needs: { weapon: 'blade' },
     effects: [
       { verb: 'damage', power: 26 },
@@ -149,6 +150,7 @@ export const KENJUTSU: readonly TechniqueDef[] = [
     description:
       'Every blade in the forge yard swung at once, or so it seems to whoever is standing in it.',
     discipline: 'kenjutsu',
+    school: 'Twin Cut',
     needs: { weapon: 'blade' },
     effects: [
       { verb: 'area', power: 20 },
@@ -174,5 +176,31 @@ export const KENJUTSU: readonly TechniqueDef[] = [
     difficulty: 180,
     oncePerFight: true,
     afterCost: { kind: 'injury', stat: 'strength', amount: 3, days: 10 },
+  },
+  {
+    id: 'draw-cut',
+    name: 'Draw Cut',
+    description: 'The plainest cut in the art: out of the scabbard and through, in one motion.',
+    discipline: 'kenjutsu',
+    accuracy: 'sure',
+    needs: { weapon: 'blade' },
+    effects: [{ verb: 'damage', power: 10 }],
+    chakraCost: 4,
+    rank: 'E',
+    difficulty: 35,
+  },
+  {
+    id: 'bleeding-cut',
+    name: 'Bleeding Cut',
+    description: 'A shallow, deliberate cut where the blood runs freely.',
+    discipline: 'kenjutsu',
+    needs: { weapon: 'blade' },
+    effects: [
+      { verb: 'damage', power: 9 },
+      { verb: 'afflict', power: 8, harm: 'bleed' },
+    ],
+    chakraCost: 7,
+    rank: 'D',
+    difficulty: 55,
   },
 ];

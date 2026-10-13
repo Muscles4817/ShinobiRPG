@@ -3,7 +3,9 @@ import type { TechniqueDef } from '@/systems/techniques';
 import { FUUINJUTSU } from './fuuinjutsu';
 import { GENJUTSU } from './genjutsu';
 import { KENJUTSU } from './kenjutsu';
+import { ELEMENTAL_NINJUTSU } from './elements';
 import { NINJUTSU } from './ninjutsu';
+import { SCHOOL_TECHNIQUES } from './schools';
 import { TAIJUTSU } from './taijutsu';
 
 /**
@@ -13,7 +15,9 @@ import { TAIJUTSU } from './taijutsu';
 export const TECHNIQUES: readonly TechniqueDef[] = [
   ...TAIJUTSU,
   ...NINJUTSU,
+  ...ELEMENTAL_NINJUTSU,
   ...GENJUTSU,
   ...KENJUTSU,
   ...FUUINJUTSU,
+  ...SCHOOL_TECHNIQUES,
 ];

@@ -104,7 +104,7 @@ export const CHUNIN_ENEMIES: readonly EnemyDef[] = [
     baseStat: 11,
     statBonuses: { ninjutsu: 4, speed: 2, kenjutsu: 2 },
     maxChakra: 70,
-    techniqueIds: ['ember-breath', 'tide-lash', 'moonfall-slash'],
+    techniqueIds: ['ember-breath', 'tide-lash', 'moonfall-slash', 'still-water'],
     traits: ['swift'],
     nature: 'fire',
   },
@@ -118,7 +118,7 @@ export const CHUNIN_ENEMIES: readonly EnemyDef[] = [
     statBonuses: { genjutsu: 5, willpower: 4, stamina: -2 },
     healthScale: 1.2,
     maxChakra: 80,
-    techniqueIds: ['whispering-dread', 'moth-dance', 'shadow-feint'],
+    techniqueIds: ['whispering-dread', 'moth-dance', 'shadow-feint', 'sap-the-will'],
     traits: ['spirit', 'illusionist'],
   },
 ];

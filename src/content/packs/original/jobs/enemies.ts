@@ -44,7 +44,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     baseStat: 5,
     statBonuses: { strength: 2, taijutsu: 1 },
     maxChakra: 10,
-    techniqueIds: [],
+    techniqueIds: ['ferrymans-shove', 'post-sweep'],
     traits: ['brawler'],
   },
   {
@@ -58,7 +58,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     statBonuses: { genjutsu: 3, willpower: 3, stamina: -2 },
     healthScale: 0.7,
     maxChakra: 40,
-    techniqueIds: ['shadow-feint', 'whispering-dread'],
+    techniqueIds: ['shadow-feint', 'whispering-dread', 'river-grip'],
     traits: ['spirit', 'illusionist'],
   },
   {
@@ -71,7 +71,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     baseStat: 11,
     statBonuses: { ninjutsu: 4, speed: 2, kenjutsu: 2 },
     maxChakra: 70,
-    techniqueIds: ['ember-breath', 'tide-lash', 'moonfall-slash'],
+    techniqueIds: ['ember-breath', 'tide-lash', 'moonfall-slash', 'bleeding-cut'],
     traits: ['swift'],
     nature: 'fire',
   },

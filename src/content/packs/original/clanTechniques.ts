@@ -75,9 +75,13 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
   {
     id: 'binding-rope',
     name: 'Binding Rope',
-    description: 'A sacred rope of chakra that wraps the enemy’s flow tight.',
+    description:
+      'A sacred rope of chakra that wraps the enemy’s flow tight, and their legs with it.',
     discipline: 'fuuinjutsu',
-    effects: [{ verb: 'seal', power: 10 }],
+    effects: [
+      { verb: 'seal', power: 10 },
+      { verb: 'pin', power: 6 },
+    ],
     chakraCost: 8,
     rank: 'E',
     difficulty: 35,

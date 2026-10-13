@@ -61,7 +61,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     baseStat: 8,
     statBonuses: { strength: 2, taijutsu: 2, stamina: 2 },
     maxChakra: 30,
-    techniqueIds: ['palm-strike', 'crescent-drop'],
+    techniqueIds: ['palm-strike', 'crescent-drop', 'shoulder-throw'],
     traits: ['armoured'],
   },
   {

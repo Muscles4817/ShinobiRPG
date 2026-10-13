@@ -399,6 +399,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   job lives once in `systems/missions/encounterPay.ts`. Keep a plain `combat` stage only where a
   straight fight is the point (a duel, a surprise attack). On team jobs a check falls to the best
   teammate for it (`bestHandFor`, `game/missionRoles.ts`).
+- **Add a school technique:** a fighting style (Lantern Wind, River Draw…) is techniques with
+  the same `school`, taught by that school's teachers (`teaches`), never shelved. Standard
+  techniques (no `school`, no `clan`) go on the academy rack (E–D) and the library (C open
+  shelves, B restricted), so every art has plain moves at every grade before any style.
 - **Add a combination technique:** two `TechniqueDef`s whose `combo.partnerTechniqueId` name
   each other (validated); offer them at the academy. A teammate knows the half in their
   specialty, and a half plays only beside someone on your side who knows the other.

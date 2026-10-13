@@ -127,9 +127,10 @@ describe('unstable techniques', () => {
 describe('a teacher’s signature techniques', () => {
   /** A sensei whose signature is rank C, with you as their close student. */
   function withRankCSensei(value: number) {
-    const sensei = ctx.content.people.all.find((p) =>
-      p.teacher?.teaches.some((id) => ctx.content.techniques.require(id).rank === 'C'),
-    )!;
+    const sensei = ctx.content.people.all.find((p) => {
+      const first = p.teacher?.teaches[0];
+      return first !== undefined && ctx.content.techniques.require(first).rank === 'C';
+    })!;
     const def = ctx.content.techniques.require(sensei.teacher!.teaches[0]!);
     const state = withStat(newGame(), def.discipline, value);
     const team = { ...state.people.team!, senseiId: sensei.id };

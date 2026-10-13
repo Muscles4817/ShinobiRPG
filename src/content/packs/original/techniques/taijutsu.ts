@@ -18,6 +18,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description: 'A spinning kick riding a gust of wind chakra.',
     discipline: 'taijutsu',
     element: 'wind',
+    accuracy: 'sure',
     effects: [{ verb: 'damage', power: 13 }],
     chakraCost: 5,
     rank: 'E',
@@ -38,6 +39,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     name: 'Crescent Drop',
     description: 'Leap, flip, and bring the heel down like a falling moon.',
     discipline: 'taijutsu',
+    accuracy: 'wild',
     effects: [{ verb: 'damage', power: 18 }],
     chakraCost: 7,
     rank: 'C',
@@ -49,6 +51,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Light the body’s inner lanterns one by one. Every muscle burns brighter, and so does the bill.',
     discipline: 'taijutsu',
+    school: 'Lantern Wind',
     effects: [
       {
         verb: 'empower',
@@ -118,7 +121,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
       'Too many blows from too many angles: how the masked watch end a brawl before anyone sees it.',
     discipline: 'taijutsu',
     effects: [
-      { verb: 'damage', power: 16, scaling: { drive: ['speed', 'art'] } },
+      { verb: 'damage', power: 16, hits: 3, scaling: { drive: ['speed', 'art'] } },
       { verb: 'daze', power: 8 },
     ],
     chakraCost: 12,
@@ -131,6 +134,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Breathe slow and hot, like coals banked for the night. Wounds close and the body hardens, and tomorrow you sleep like a stone.',
     discipline: 'taijutsu',
+    school: 'Lantern Wind',
     effects: [
       { verb: 'heal', power: 14, scaling: { drive: ['stamina', 'willpower'] } },
       {
@@ -150,6 +154,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'The palm that held the east bridge. It goes through the guard, the armour and the nerve behind them.',
     discipline: 'taijutsu',
+    school: 'Iron Gate',
     effects: [
       { verb: 'break', power: 20 },
       { verb: 'daze', power: 12 },
@@ -164,6 +169,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Light every inner lantern at once and burn as one bright thing. The hospital keeps a bed for those who learn it.',
     discipline: 'taijutsu',
+    school: 'Lantern Wind',
     effects: [
       {
         verb: 'empower',
@@ -178,5 +184,73 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     difficulty: 175,
     oncePerFight: true,
     afterCost: { kind: 'hospital', days: 3 },
+  },
+  {
+    id: 'post-sweep',
+    name: 'Post Sweep',
+    description: 'A low sweep that takes the weight off their front foot for a moment.',
+    discipline: 'taijutsu',
+    effects: [
+      { verb: 'damage', power: 5 },
+      { verb: 'pin', power: 6 },
+    ],
+    chakraCost: 3,
+    rank: 'E',
+    difficulty: 25,
+  },
+  {
+    id: 'ferrymans-shove',
+    name: 'Ferryman’s Shove',
+    description: 'Both palms to the chest, the way a ferryman pushes off the bank.',
+    discipline: 'taijutsu',
+    effects: [
+      { verb: 'damage', power: 6 },
+      { verb: 'knock', power: 6, to: 'mid' },
+    ],
+    chakraCost: 3,
+    rank: 'E',
+    difficulty: 25,
+  },
+  {
+    id: 'shoulder-throw',
+    name: 'Shoulder Throw',
+    description: 'Duck in, load them on your back, and drop them hard a few strides away.',
+    discipline: 'taijutsu',
+    reach: ['close'],
+    effects: [
+      { verb: 'damage', power: 11 },
+      { verb: 'knock', power: 6, to: 'mid' },
+      { verb: 'daze', power: 6 },
+    ],
+    chakraCost: 7,
+    rank: 'D',
+    difficulty: 60,
+  },
+  {
+    id: 'watchmans-rush',
+    name: 'Watchman’s Rush',
+    description: 'The night watch’s charge: cross the gap at a run and arrive shoulder first.',
+    discipline: 'taijutsu',
+    reach: ['close', 'mid'],
+    effects: [
+      { verb: 'move', to: 'close', power: 6 },
+      { verb: 'damage', power: 11 },
+    ],
+    chakraCost: 7,
+    rank: 'D',
+    difficulty: 60,
+  },
+  {
+    id: 'arm-lock',
+    name: 'Arm Lock',
+    description: 'Catch the wrist, turn the elbow the wrong way, and lean.',
+    discipline: 'taijutsu',
+    effects: [
+      { verb: 'damage', power: 6 },
+      { verb: 'pin', power: 12 },
+    ],
+    chakraCost: 8,
+    rank: 'C',
+    difficulty: 75,
   },
 ];

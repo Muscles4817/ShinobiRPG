@@ -1,5 +1,6 @@
 import { allDay, look } from '../../look';
 import { statLine } from '../../statLine';
+import { LANTERN_WIND, TWIN_CUT } from './techniques/schools';
 import type { PersonDef } from '../../types';
 
 /** Jōnin who may take on a team, plus the village figures every genin knows. */
@@ -36,7 +37,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     teacher: {
       quirk: 'harsh',
       steers: { focus: 'specialty', freeAtStage: 3 },
-      teaches: ['iron-gate-palm', 'kiln-door-kick', 'banked-coals'],
+      teaches: ['iron-gate-palm', ...LANTERN_WIND],
       price: {
         kind: 'all',
         parts: [
@@ -168,13 +169,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     teacher: {
       quirk: 'patient',
       steers: { focus: 'specialty', freeAtStage: 2 },
-      teaches: [
-        'forge-flash-cut',
-        'smiths-hammer',
-        'lantern-gate-edge',
-        'forge-yard-storm',
-        'last-light-of-the-forge',
-      ],
+      teaches: ['forge-flash-cut', 'smiths-hammer', ...TWIN_CUT, 'last-light-of-the-forge'],
       price: {
         kind: 'all',
         parts: [

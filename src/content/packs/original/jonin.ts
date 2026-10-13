@@ -100,7 +100,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'natural',
-      teaches: ['moth-needle', 'snuffed-wick-step', 'night-watch-flurry'],
+      teaches: ['moth-needle', 'moth-wing-strike', 'hundred-moths', 'snuffed-wick-step'],
       price: { kind: 'bond', minStage: 2 },
     },
   },
