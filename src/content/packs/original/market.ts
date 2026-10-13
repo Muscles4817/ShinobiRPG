@@ -1,0 +1,77 @@
+import type { PlaceDef } from '../../types';
+
+/** Tōrōgakure's market: noodles, the grill, a tea shop, the seasonal cart and the grocer. */
+export const MARKET_STREET: PlaceDef = {
+  id: 'market-street',
+  kind: 'market',
+  name: 'Market Street',
+  icon: 'bowl',
+  blurb: 'Stalls open till night',
+  stalls: [
+    {
+      name: "Kenji's Noodle Stand",
+      blurb: 'Open till night',
+      icon: 'bowl',
+      foodIds: ['ember-noodles', 'lamplighters-curry', 'teahouse-feast'],
+    },
+    {
+      name: 'Riverside Grill',
+      blurb: 'Cheap and quick',
+      hours: ['morning', 'afternoon', 'evening'],
+      icon: 'fish',
+      foodIds: ['grilled-fish', 'rice-ball', 'tofu-skewers', 'charcoal-eel-rice'],
+    },
+    {
+      name: 'The Four Seasons Cart',
+      blurb: 'The menu changes with the weather',
+      hours: ['afternoon', 'evening'],
+      icon: 'cart',
+      foodIds: [
+        'bamboo-shoot-rice',
+        'blossom-mochi',
+        'chilled-soba',
+        'syrup-ice',
+        'grilled-corn',
+        'salt-grilled-saury',
+        'stone-roasted-sweet-potato',
+        'roasted-chestnuts',
+        'clay-pot-udon',
+        'ginger-amazake',
+      ],
+    },
+    {
+      name: 'Kasumi’s Tea Shop',
+      blurb: 'Buns and tea by the canal',
+      hours: ['morning', 'afternoon', 'evening'],
+      icon: 'tea',
+      foodIds: ['red-bean-bun', 'canal-sencha'],
+    },
+    {
+      name: 'Apothecary',
+      blurb: 'Pills and salves',
+      hours: ['morning', 'afternoon', 'evening'],
+      icon: 'pill',
+      foodIds: ['soldier-pill'],
+    },
+    {
+      name: 'Sato’s Grocery',
+      blurb: 'Cook it yourself, save a fortune',
+      hours: ['morning', 'afternoon'],
+      icon: 'veg',
+      foodIds: [],
+      ingredientIds: [
+        'rice',
+        'river-fish',
+        'vegetables',
+        'miso',
+        'spices',
+        'eggs',
+        'tofu',
+        'bamboo-shoots',
+        'cucumbers',
+        'chestnuts',
+        'winter-radish',
+      ],
+    },
+  ],
+};

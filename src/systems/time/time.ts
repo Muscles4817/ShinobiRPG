@@ -7,6 +7,7 @@ export type TimeSlot = (typeof TIME_SLOTS)[number];
 export const SLOTS_PER_DAY = TIME_SLOTS.length;
 export const DAYS_PER_SEASON = 28;
 export const SEASONS = ['Spring', 'Summer', 'Autumn', 'Winter'] as const;
+export type Season = (typeof SEASONS)[number];
 
 export interface GameTime {
   /** 1-based day count since the game began. */
@@ -55,6 +56,13 @@ export function calendarDay(day: number): CalendarDay {
     season: Math.floor(dayOfYear / DAYS_PER_SEASON),
     day: (dayOfYear % DAYS_PER_SEASON) + 1,
   };
+}
+
+/** The season a day falls in. */
+export function seasonOf(day: number): Season {
+  const season = SEASONS[calendarDay(day).season];
+  if (season === undefined) throw new Error(`No season for day ${day}`);
+  return season;
 }
 
 /** Days from `day` until the next time the calendar shows `date` (0 when it is today). */

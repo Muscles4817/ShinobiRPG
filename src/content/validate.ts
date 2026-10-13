@@ -8,6 +8,7 @@ import { validateInjuries } from './validateInjuries';
 import { validatePeople } from './validatePeople';
 import { validateTechniques } from './validateTechniques';
 import { validateRanks } from './validateRanks';
+import { validateSeasons } from './validateSeasons';
 import { validateSources } from './validateSources';
 import { validateTeachers } from './validateTeachers';
 import { validateVillage } from './validateVillage';
@@ -36,6 +37,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateRanks(pack),
     ...validateTeachers(pack),
     ...validateVillage(pack),
+    ...validateSeasons(pack),
     ...validateInjuries(pack),
     ...validateGear(pack),
     ...validateEncounters(pack),

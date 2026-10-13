@@ -10,6 +10,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
   {
     id: 'kagero',
     name: 'Kagerō',
+    favouriteRecipeId: 'radish-stew',
     familyName: 'Usui',
     role: 'shinobi',
     title: 'Special Jōnin',
@@ -76,6 +77,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
   {
     id: 'suzu',
     name: 'Suzu',
+    favouriteRecipeId: 'bamboo-rice',
     familyName: 'Kanade',
     role: 'shinobi',
     title: 'Night Watch',

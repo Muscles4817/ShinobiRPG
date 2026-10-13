@@ -4,6 +4,7 @@ import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta, StatId } from '@/systems/stats';
 import type { ExamDef } from '@/systems/exams';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
+import type { Season } from '@/systems/time';
 
 import type { BackdropId, IconId } from './art';
 import type { GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
@@ -88,6 +89,8 @@ export interface FoodDef {
   readonly satiety: number;
   readonly energy: number;
   readonly slots: number;
+  /** Only on the menu in these seasons; absent means all year. */
+  readonly seasons?: readonly Season[];
 }
 
 export interface EnemyDef {

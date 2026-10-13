@@ -1,0 +1,75 @@
+import type { PlaceDef } from '../../types';
+
+/** The village's shopping street: ramen, barbecue, sweets, the seasonal stand and the grocer. */
+export const SHOPPING_DISTRICT: PlaceDef = {
+  id: 'shopping-district',
+  kind: 'market',
+  name: 'Shopping District',
+  icon: 'bowl',
+  blurb: 'Ichiraku is open',
+  stalls: [
+    {
+      name: 'Ichiraku Ramen',
+      blurb: 'Teuchi and Ayame',
+      icon: 'bowl',
+      foodIds: ['miso-ramen', 'pork-ramen'],
+    },
+    {
+      name: 'Yakiniku Q',
+      blurb: 'Barbecue, take your time',
+      hours: ['afternoon', 'evening', 'night'],
+      icon: 'grill',
+      foodIds: ['yakiniku'],
+    },
+    {
+      name: 'Amaguriama',
+      blurb: 'Sweets and tea',
+      hours: ['morning', 'afternoon'],
+      icon: 'dango',
+      foodIds: ['dango'],
+    },
+    {
+      name: 'Konoha Pharmacy',
+      blurb: 'Pills and salves',
+      hours: ['morning', 'afternoon', 'evening'],
+      icon: 'pill',
+      foodIds: ['soldier-pill'],
+    },
+    {
+      name: 'Seasonal Stand',
+      blurb: 'Whatever the season brings',
+      hours: ['afternoon', 'evening'],
+      icon: 'cart',
+      foodIds: [
+        'sakura-mochi',
+        'takenoko-rice',
+        'zaru-soba',
+        'grilled-corn',
+        'sanma',
+        'yaki-imo',
+        'nabeyaki-udon',
+        'amazake',
+      ],
+    },
+    {
+      name: 'Konoha Grocer',
+      blurb: 'Ingredients for home cooking',
+      hours: ['morning', 'afternoon'],
+      icon: 'veg',
+      foodIds: [],
+      ingredientIds: [
+        'rice',
+        'river-fish',
+        'vegetables',
+        'miso',
+        'spices',
+        'eggs',
+        'tofu',
+        'bamboo-shoots',
+        'cucumbers',
+        'chestnuts',
+        'winter-radish',
+      ],
+    },
+  ],
+};

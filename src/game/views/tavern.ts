@@ -2,7 +2,7 @@ import { ROUND_BOND, tavernCrowd } from '../actions/tavern';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import type { GameState } from '../state';
-import { closedSign, rumoursOverheard } from '../village';
+import { closedSign, menuToday, rumoursOverheard } from '../village';
 import { choice, type Choice } from './common';
 import { foodItem, type MarketItem } from './market';
 import { personFace, type PersonFace } from './people';
@@ -35,7 +35,7 @@ export function tavernView(state: GameState, ctx: GameContext): TavernView | nul
       cost: tavern.roundCost,
       bond: ROUND_BOND,
     },
-    menu: tavern.foodIds.map((id) => foodItem(state, ctx, id)),
+    menu: menuToday(tavern.foodIds, state, ctx).map((id) => foodItem(state, ctx, id)),
     overheard: closed ? [] : rumoursOverheard(state, ctx).map((r) => r.text),
   };
 }

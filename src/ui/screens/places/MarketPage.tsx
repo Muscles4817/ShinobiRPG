@@ -70,6 +70,7 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
                       <Icon id={item.icon} size={18} />
                       {item.name}
                     </b>
+                    {item.season && <span className="badge">{item.season}</span>}
                     <small className={item.blocker ? 'blocker' : 'muted'}>
                       {item.blocker ??
                         (item.inPantry > 0 ? `${item.inPantry} at home` : 'For cooking at home')}

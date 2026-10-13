@@ -25,6 +25,7 @@ export function FoodCard({ item, perform }: FoodCardProps) {
         <Icon id={item.icon} size={18} />
         {item.name}
       </b>
+      {item.season && <span className="badge">{item.season}</span>}
       <span className="chips">
         <span className="chip gain">Hunger −{item.satiety}</span>
         {item.energy > 0 && <span className="chip gain">Energy +{item.energy}</span>}

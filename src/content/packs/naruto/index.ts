@@ -7,6 +7,7 @@ import { COMBO_TECHNIQUES } from './comboTechniques';
 import { ELITE_MISSIONS } from './eliteMissions';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
+import { SEASONAL_FOODS } from './seasonalFood';
 import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
@@ -68,7 +69,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
   enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...EXAM_ENEMIES],
   training: TRAINING,
-  foods: FOODS,
+  foods: [...FOODS, ...SEASONAL_FOODS],
   clans: CLANS,
   talents: TALENTS,
   traits: TRAITS,

@@ -1,6 +1,13 @@
 import { hashUnit } from '@/core';
 import type { FestivalDef, OpeningHours, RumourDef, SightDef, Stall } from '@/content';
-import { calendarDay, daysUntil, slotName, TIME_SLOTS } from '@/systems/time';
+import {
+  calendarDay,
+  daysUntil,
+  type Season,
+  seasonOf,
+  slotName,
+  TIME_SLOTS,
+} from '@/systems/time';
 
 import { newPostingsTomorrow } from './board';
 import type { GameContext } from './context';
@@ -10,7 +17,7 @@ import type { GameState } from './state';
 
 /**
  * Village life, derived from the calendar and the save's seed: what is open at this hour,
- * whether today is a festival, what people are gossiping about, and what drifts through the
+ * what is in season, whether today is a festival, what people are gossiping about, and what drifts through the
  * streets tonight. Like the jobs board, it is a hash of the day, so it never uses the dice.
  */
 
@@ -84,6 +91,42 @@ export function marketPrice(cost: number, state: GameState, ctx: GameContext): n
   return Math.max(1, Math.round(cost * factor));
 }
 
+/** Whether a dish or ingredient sold only in some seasons is on sale today. */
+export function inSeason(
+  goods: { readonly seasons?: readonly Season[] },
+  state: Pick<GameState, 'time'>,
+): boolean {
+  return goods.seasons === undefined || goods.seasons.includes(seasonOf(state.time.day));
+}
+
+/** "Autumn only" for a dish or ingredient sold only in some seasons, else null. */
+export function seasonNote(goods: { readonly seasons?: readonly Season[] }): string | null {
+  return goods.seasons ? `${goods.seasons.join(' and ')} only` : null;
+}
+
+/** The dishes on a menu that are in season today. */
+export function menuToday(
+  foodIds: readonly string[],
+  state: GameState,
+  ctx: GameContext,
+): string[] {
+  return foodIds.filter((id) => inSeason(ctx.content.foods.require(id), state));
+}
+
+/** A stall as it is today: out-of-season dishes and ingredients come off the counter. */
+function inSeasonStall<S extends Stall>(stall: S, state: GameState, ctx: GameContext): S {
+  const { ingredientIds } = stall;
+  return {
+    ...stall,
+    foodIds: menuToday(stall.foodIds, state, ctx),
+    ...(ingredientIds && {
+      ingredientIds: ingredientIds.filter((id) =>
+        inSeason(ctx.content.ingredients.require(id), state),
+      ),
+    }),
+  };
+}
+
 /** A stall in the market here; festival stalls only set up on their day. */
 export interface MarketStall extends Stall {
   readonly festival: boolean;
@@ -95,8 +138,8 @@ export function stallsHere(state: GameState, ctx: GameContext): MarketStall[] {
   if (!market) return [];
   const festive = festivalToday(state, ctx)?.stalls ?? [];
   return [
-    ...festive.map((stall) => ({ ...stall, festival: true })),
-    ...market.stalls.map((stall) => ({ ...stall, festival: false })),
+    ...festive.map((stall) => ({ ...inSeasonStall(stall, state, ctx), festival: true })),
+    ...market.stalls.map((stall) => ({ ...inSeasonStall(stall, state, ctx), festival: false })),
   ];
 }
 
@@ -106,7 +149,7 @@ export function foodSellersHere(state: GameState, ctx: GameContext): Stall[] {
     name: t.name,
     blurb: t.blurb,
     icon: t.icon,
-    foodIds: t.foodIds,
+    foodIds: menuToday(t.foodIds, state, ctx),
     ...(t.hours ? { hours: t.hours } : {}),
   }));
   return [...stallsHere(state, ctx), ...taverns];
