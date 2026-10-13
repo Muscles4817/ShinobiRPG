@@ -34,6 +34,9 @@ function finished(state: GameState, missionId: string): GameState {
     stageIndex: def.stages.length,
     rewardMultiplier: 1,
     notes: [],
+    marks: [],
+    threads: {},
+    ledger: [],
   };
   return afterStage({ ...state, mission }, ctx);
 }

@@ -5,6 +5,7 @@ import { examScene, headerView, type ExamChoice, type ExamScene as Scene } from 
 import { ThreatChip } from '../../components/ThreatChip';
 import { Vitals } from '../../components/Vitals';
 import type { ScreenProps } from '../types';
+import { StoryLines } from './StoryLines';
 
 /** The stages as stamps along the top: done, under way, still ahead. */
 function StageStrip({ scene }: { readonly scene: Scene }) {
@@ -121,23 +122,7 @@ export function ExamScene({ ctx, state, perform }: ScreenProps) {
         <Vitals meters={header.meters} />
       </header>
       <main className="page feed scene-feed">
-        {scene.lines.map((line, i) =>
-          line.kind === 'roll' ? (
-            <p key={i} className={`roll ${line.success ? 'pass' : 'fail'}`}>
-              <i aria-hidden="true">{line.success ? '✓' : '✗'}</i>
-              {line.text}
-            </p>
-          ) : (
-            <p
-              key={i}
-              className={
-                line.kind === 'choice' ? 'you' : line.kind === 'outcome' ? 'story outcome' : 'story'
-              }
-            >
-              {line.text}
-            </p>
-          ),
-        )}
+        <StoryLines lines={scene.lines} />
         {scene.prompt && <p className="story prompt enter">{scene.prompt}</p>}
         {scene.rival && (
           <p className="exam-rival enter">

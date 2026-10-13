@@ -90,15 +90,14 @@ export {
   type TierRead,
 } from './views/shinobi';
 export type { Pace, ScoutingRead, StatCompare, Threat, TraitNote } from './scouting';
+export { combatScene, finishedFightScene, combatScouting } from './views/scene';
 export {
   missionScene,
-  combatScene,
-  finishedFightScene,
-  combatScouting,
   type MissionScene,
   type SceneLine,
   type SceneChoice,
-} from './views/scene';
+  type ThreadView,
+} from './views/missionScene';
 export { combatLog, type CombatLogLine } from './views/combatLog';
 export { fightReplay, storyEnd, type FightBeat } from './views/fightReplay';
 export {

@@ -3,6 +3,7 @@ import { eat, rest, sleep, train } from './daily';
 import { encounterApproach, encounterRecon } from './encounter';
 import { acceptPromotion, enterExam, examAnswer, examContinue, examFinal } from './exam';
 import { missionChoose, missionContinue, startMission } from './mission';
+import { missionCamp, missionDecide } from './missionStory';
 import { payRent, treat } from './services';
 import { hostDinner } from './dinner';
 import { cook } from './kitchen';
@@ -37,6 +38,8 @@ export const HANDLERS: Registry = {
   startMission,
   missionChoose,
   missionContinue,
+  missionDecide,
+  missionCamp,
   encounterRecon,
   encounterApproach,
   combatAct,

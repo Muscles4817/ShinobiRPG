@@ -1,5 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
-import type { Danger, EncounterTemplate, MissionDef } from '@/systems/missions';
+import type { Danger, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta, StatId } from '@/systems/stats';
 import type { ExamDef } from '@/systems/exams';
@@ -20,6 +20,7 @@ import type {
 import type { SettingText } from './settingText';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
+import type { VoiceDef } from './voices';
 
 export type { BackdropId, IconId } from './art';
 export type {
@@ -266,6 +267,10 @@ export interface ContentPack {
   readonly exams: readonly ExamDef[];
   /** Kinds of encounter the missions' encounter stages are built on. */
   readonly encounters: readonly EncounterTemplate[];
+  /** Things that may happen on a stretch of road, by region. */
+  readonly roadEvents: readonly RoadEventDef[];
+  /** What crew say on a job, by moment and trait. */
+  readonly voices: readonly VoiceDef[];
   readonly enemies: readonly EnemyDef[];
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];

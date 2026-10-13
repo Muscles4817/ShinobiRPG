@@ -8,7 +8,7 @@ import { blockerFor } from './dispatch';
 import { CAMP_HEALTH_SHARE, rationDays } from './road';
 import type { GameState } from './state';
 import { missionBoardView } from './views/boards';
-import { missionScene } from './views/scene';
+import { missionScene } from './views/missionScene';
 
 const ctx = roadCtx;
 const RATION = 'travel-rations';

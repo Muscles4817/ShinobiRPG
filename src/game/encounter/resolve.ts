@@ -1,6 +1,7 @@
 import type { Rng } from '@/core';
 import type { RangeBand } from '@/systems/combat';
 import {
+  addLedger,
   advance,
   afterFailedApproach,
   raiseAlertness,
@@ -34,6 +35,14 @@ const UNDONE_REASON = 'You got past them, but the job was to deal with them. Nob
 const WITHDRAW_REASON =
   'You pulled back before it came to blows. The job will wait for someone else.';
 
+/** The debrief's line for each way past the foes. */
+const END_LINES: Readonly<Record<EncounterEnd, string>> = {
+  fought: 'Fought your way past them.',
+  'slipped-past': 'Slipped past them unseen.',
+  'talked-down': 'Talked them down without a fight.',
+  'paid-off': 'Paid them to go.',
+};
+
 interface Played {
   readonly here: EncounterHere;
   readonly plan: ApproachPlan;
@@ -57,7 +66,13 @@ function getPast(
 ): GameState {
   const pay = stagePay(here.stage.job, ending.end);
   if (!pay.jobDone) return failMission(state, ctx, UNDONE_REASON, 0);
-  const run = withStagePay(advance(here.run, ...ending.notes), pay);
+  const share = pay.ryo - 1;
+  const told = addLedger(here.run, {
+    text: END_LINES[ending.end],
+    tone: share < 0 ? 'cost' : 'plain',
+    ...(share !== 0 ? { pay: share } : {}),
+  });
+  const run = withStagePay(advance(told, ...ending.notes), pay);
   return afterStage({ ...state, mission: run }, ctx);
 }
 

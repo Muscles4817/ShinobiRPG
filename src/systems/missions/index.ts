@@ -1,24 +1,20 @@
 export {
-  CHECK_FAILURE_PENALTY,
+  pickTwist,
   MIN_RYO_PER_DAY_AWAY,
   daysAway,
-  MISSION_ROLES,
   startRun,
   currentStage,
   advance,
-  resolveCheck,
   reward,
   stageFoes,
   withStagePay,
-  type MissionRole,
   type CheckApproach,
   type MissionStage,
+  type ChargeDef,
+  type TwistDef,
   type MissionDef,
   type MissionRun,
   type MissionNote,
-  type CheckStage,
-  type CheckChoice,
-  type CheckResolution,
 } from './missions';
 export {
   ALERTNESS,
@@ -49,7 +45,34 @@ export {
   type ReconOption,
 } from './encounter';
 export { stagePay, type EncounterEnd, type StagePay } from './encounterPay';
-export { isSeniorMission, type MissionRank } from './missionRank';
+export { isSeniorMission, MISSION_ROLES, type MissionRank, type MissionRole } from './missionRank';
+export { addLedger, applyOutcome, type Applied, type StoryDef } from './outcomes';
+export {
+  conditionRefs,
+  holds,
+  moveThread,
+  startThreads,
+  variantText,
+  withMark,
+  type Condition,
+  type CrewCondition,
+  type Effect,
+  type LedgerLine,
+  type LedgerTone,
+  type StoryState,
+  type ThreadDef,
+} from './story';
+export type {
+  CampActivity,
+  CampStage,
+  DecisionOption,
+  DecisionStage,
+  Ending,
+  EndingStage,
+  Outcome,
+  RoadEventDef,
+  TextVariant,
+} from './storyStages';
 export {
   CHUNIN_C_CREWS,
   CREW_KINDS,
@@ -73,3 +96,10 @@ export {
   type Danger,
   type JobProfile,
 } from './crew';
+export {
+  CHECK_FAILURE_PENALTY,
+  resolveCheck,
+  type CheckChoice,
+  type CheckResolution,
+  type CheckStage,
+} from './checks';

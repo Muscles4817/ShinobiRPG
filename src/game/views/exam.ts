@@ -10,7 +10,7 @@ import { combatStats } from '../gear';
 import { scout, type Threat } from '../scouting';
 import type { GameState } from '../state';
 import { choice } from './common';
-import { noteLine, type SceneLine } from './scene';
+import { noteLine, type SceneLine } from './missionScene';
 
 /** The exam scene: the stage strip, the story so far, and what you can do next. */
 

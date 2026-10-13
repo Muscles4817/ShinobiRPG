@@ -5,6 +5,7 @@ import { headerView, missionScene } from '@/game';
 import { Backdrop } from '../../art/Backdrop';
 import { Vitals } from '../../components/Vitals';
 import type { ScreenProps } from '../types';
+import { StoryLines, Threads } from './StoryLines';
 
 /** A mission plays as a story feed; the dock becomes your choices. */
 export function MissionScene({ ctx, state, perform }: ScreenProps) {
@@ -30,25 +31,11 @@ export function MissionScene({ ctx, state, perform }: ScreenProps) {
           </p>
           <h1>{scene.title}</h1>
         </div>
+        <Threads threads={scene.threads} />
         <Vitals meters={header.meters} />
       </header>
       <main className="page feed scene-feed">
-        {scene.lines.map((line, i) =>
-          line.kind === 'roll' ? (
-            <p key={i} className={`roll ${line.success ? 'pass' : 'fail'}`}>
-              <i aria-hidden="true">{line.success ? '✓' : '✗'}</i>
-              {line.text}
-            </p>
-          ) : line.kind === 'choice' ? (
-            <p key={i} className="you">
-              {line.text}
-            </p>
-          ) : (
-            <p key={i} className={line.kind === 'outcome' ? 'story outcome' : 'story'}>
-              {line.text}
-            </p>
-          ),
-        )}
+        <StoryLines lines={scene.lines} />
         {scene.prompt && <p className="story prompt enter">{scene.prompt}</p>}
         <div ref={end} />
       </main>

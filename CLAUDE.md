@@ -248,6 +248,18 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`lessonAway`). A job's days away (`daysAway`) show on its notice, it must pay at least
     `MIN_RYO_PER_DAY_AWAY` a day (validated), and your sensei won't sign you out for one that
     would make you miss an exam they'd nominate you for (`game/awayNotes.ts`).
+23. **Missions remember.** A run keeps **marks** (flags), **threads** (counters shown as a word
+    and dots, `ThreadDef`) and a **ledger** (what changed the outcome, and why, for the debrief)
+    (`systems/missions/story.ts`, `outcomes.ts`). Any stage can carry a `when` `Condition`
+    (marks, threads, who is along); one that doesn't hold is passed over (`game/story/state.ts`
+    `settle`), so a story branches by stages appearing, not by a graph. Results carry
+    `Outcome`s (effects plus a ledger line): failing forward (`onFailure: 'forward'`) sets marks
+    rather than docking pay. Story stages are `decision` (options with a `Tone`: the crew's bond
+    and the charge's trust move by their tastes, and whoever felt it most says so), `camp`
+    (pick a few activities before the fire burns down) and `ending` (the first that fits). A
+    `leg` with a `region` may bring a road event (`content.roadEvents`, drawn by hash). A job
+    may have a `charge` (whose trust is a thread) and `twists` (a hidden mark rolled at the
+    start). What the crew say comes from `content.voices` by moment and trait.
 
 ### Content packs
 
@@ -340,6 +352,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   checks in `validateExams.ts` (the compiler lists the switches). Exam text (the paper's
   questions, the forest mission, the bouts' lines) lives in the pack's `exam.ts`; ceremony words
   in `SettingText.promotions`.
+- **Write a mission's story:** declare its `threads`, an optional `charge` and `twists`; gate
+  stages, approaches and options with `when`; give results `Outcome`s with a `ledger` line; end
+  on an `ending` stage whose last ending has no `when`. `validateStory` checks every mark read
+  is set somewhere, every thread named is kept, tones are real and every region has road
+  events. **Add a road event or a voice line:** `content/shared/road/events.ts` (effects may
+  name only `daylight` and `charge` threads) or `content/shared/talk/voices.ts` (every trait
+  needs a line for every moment).
 - **Add foes to a mission:** use an `encounter` stage (recon, then an approach, then maybe a
   fight) with a shared template (`content/shared/encounters.ts`: which approaches and recon make
   sense, base alertness, flavour a stage may swap) and a `job` kind; how each way past pays per

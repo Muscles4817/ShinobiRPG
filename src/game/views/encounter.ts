@@ -19,7 +19,7 @@ import { encounterHere, type EncounterHere } from '../encounter/current';
 import { reconPlans, type ReconCost, type ReconPlan } from '../encounter/recon';
 import { handicapOf, scoutOpponents, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
-import { noteLine, type SceneLine } from './scene';
+import { noteLine, type SceneLine } from './missionScene';
 
 /**
  * The encounter scene: what you know of the foes, the ways to learn more, and the ways in.

@@ -28,6 +28,8 @@ export type GameAction =
   | { readonly type: 'startMission'; readonly missionId: string }
   | { readonly type: 'missionChoose'; readonly approachIndex: number }
   | { readonly type: 'missionContinue' }
+  | { readonly type: 'missionDecide'; readonly optionIndex: number }
+  | { readonly type: 'missionCamp'; readonly activityIndex: number }
   | { readonly type: 'encounterRecon'; readonly recon: ReconId }
   | {
       readonly type: 'encounterApproach';

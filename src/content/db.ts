@@ -1,9 +1,10 @@
 import type { ExamDef } from '@/systems/exams';
-import type { EncounterTemplate, MissionDef } from '@/systems/missions';
+import type { EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
 import type { TechniqueDef } from '@/systems/techniques';
 
 import { createCatalog, type Catalog } from './catalog';
 import type { InjuryDef } from './injuries';
+import type { VoiceDef } from './voices';
 import type {
   BreakInScene,
   ClanDef,
@@ -44,6 +45,8 @@ export interface ContentDb {
   readonly missions: Catalog<MissionDef>;
   readonly exams: Catalog<ExamDef>;
   readonly encounters: Catalog<EncounterTemplate>;
+  readonly roadEvents: Catalog<RoadEventDef>;
+  readonly voices: readonly VoiceDef[];
   readonly enemies: Catalog<EnemyDef>;
   readonly training: Catalog<TrainingDef>;
   readonly foods: Catalog<FoodDef>;
@@ -79,6 +82,8 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     missions: createCatalog('mission', pack.missions),
     exams: createCatalog('exam', pack.exams),
     encounters: createCatalog('encounter', pack.encounters),
+    roadEvents: createCatalog('road event', pack.roadEvents),
+    voices: pack.voices,
     enemies: createCatalog('enemy', pack.enemies),
     training: createCatalog('training', pack.training),
     foods: createCatalog('food', pack.foods),

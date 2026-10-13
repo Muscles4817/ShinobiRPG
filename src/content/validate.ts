@@ -15,6 +15,7 @@ import { validateTeachers } from './validateTeachers';
 import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
 import { validateCrews } from './validateCrews';
+import { validateStory } from './validateStory';
 import { jobProfile } from './jobProfile';
 import { placeholdersIn } from './missionTemplates';
 import type { ContentPack, Identified } from './types';
@@ -30,6 +31,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...techniqueReferenceProblems(pack),
     ...missionProblems(pack),
     ...validateCrews(pack),
+    ...validateStory(pack),
     ...placeholderProblems(pack),
     ...numberProblems(pack),
     ...validateWorld(pack),
