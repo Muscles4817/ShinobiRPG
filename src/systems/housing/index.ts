@@ -8,5 +8,6 @@ export {
   payWeek,
   ownsHouse,
   buyHouse,
+  type HomeRef,
   type Housing,
 } from './housing';

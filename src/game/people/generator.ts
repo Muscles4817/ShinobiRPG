@@ -35,6 +35,8 @@ export interface GeneratorInput {
   readonly firstNumber: number;
   /** The save's seed: stats and talent come from it and the id. */
   readonly seed: number;
+  /** The village they belong to and hang around in. Absent: the pack's start village. */
+  readonly villageId?: string;
 }
 
 export function generateGenin(ctx: GameContext, rng: Rng, input: GeneratorInput): PersonDef[] {
@@ -47,7 +49,8 @@ export function generateGenin(ctx: GameContext, rng: Rng, input: GeneratorInput)
     taken.add(name);
     families.add(familyName);
     const id = `${GENERATED_ID_PREFIX}${input.firstNumber + i}`;
-    people.push(generateOne(ctx, rng, { id, name, familyName, seed: input.seed }));
+    const village = input.villageId ?? ctx.content.startLocationId;
+    people.push(generateOne(ctx, rng, { id, name, familyName, seed: input.seed, village }));
   }
   return people;
 }
@@ -62,6 +65,7 @@ interface Identity {
   readonly name: string;
   readonly familyName: string;
   readonly seed: number;
+  readonly village: string;
 }
 
 function generateOne(ctx: GameContext, rng: Rng, who: Identity): PersonDef {
@@ -83,7 +87,8 @@ function generateOne(ctx: GameContext, rng: Rng, who: Identity): PersonDef {
     appearance,
     specialty,
     bio: notes.join(' '),
-    schedule: randomSchedule(ctx, rng),
+    schedule: randomSchedule(ctx, rng, who.village),
+    ...(who.village === ctx.content.startLocationId ? {} : { homeLocationId: who.village }),
   };
 }
 
@@ -106,9 +111,13 @@ function randomAppearance(rng: Rng): Appearance {
   };
 }
 
-function randomSchedule(ctx: GameContext, rng: Rng): Record<TimeSlot, string | null> {
-  const start = ctx.content.locations.require(ctx.content.startLocationId);
-  const haunts = start.places.filter((p) => HAUNTS.includes(p.kind)).map((p) => p.id);
+function randomSchedule(
+  ctx: GameContext,
+  rng: Rng,
+  villageId: string,
+): Record<TimeSlot, string | null> {
+  const village = ctx.content.locations.require(villageId);
+  const haunts = village.places.filter((p) => HAUNTS.includes(p.kind)).map((p) => p.id);
   const slotPlace = (slot: TimeSlot): string | null =>
     slot === 'night' || haunts.length === 0 || rng.chance(AWAY_CHANCE) ? null : rng.pick(haunts);
   return Object.fromEntries(TIME_SLOTS.map((slot) => [slot, slotPlace(slot)])) as Record<

@@ -14,6 +14,7 @@ import { newPostingsTomorrow } from './board';
 import type { GameContext } from './context';
 import { examRumours } from './exam/calendar';
 import { placeHere, placesHere } from './ops';
+import { atHomeVillage } from './homeVillage';
 import type { GameState } from './state';
 
 /**
@@ -212,7 +213,7 @@ export function rumoursToday(state: GameState, ctx: GameContext): RumourDef[] {
 
 /** Whether you are in the village itself, where its talk and its night sights are. */
 function atHome(state: GameState, ctx: GameContext): boolean {
-  return state.locationId === ctx.content.startLocationId;
+  return atHomeVillage(state, ctx);
 }
 
 /** What you overhear at the izakaya counter: every job tip going round, and more besides. */

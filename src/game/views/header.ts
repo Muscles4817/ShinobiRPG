@@ -14,6 +14,7 @@ import {
 import type { GameContext } from '../context';
 import { currentLocation } from '../ops';
 import { hungerEffect, hungerLines } from '../hunger';
+import { atHomeVillage } from '../homeVillage';
 import type { GameState } from '../state';
 
 export interface Meter {
@@ -66,7 +67,7 @@ export function headerView(state: GameState, ctx: GameContext): HeaderView {
     location: location.name,
     epithet: location.epithet,
     backdrop: location.backdrop,
-    visiting: location.id !== ctx.content.startLocationId,
+    visiting: !atHomeVillage(state, ctx),
     meters: [
       { label: 'Health', value: Math.round(vitals.health), max: MAX_HEALTH },
       { label: 'Chakra', value: Math.round(vitals.chakra), max: maxChakra(stats) },

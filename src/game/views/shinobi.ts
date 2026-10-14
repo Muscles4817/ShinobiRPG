@@ -24,6 +24,7 @@ import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { formatDate } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { homeVillageId } from '../homeVillage';
 import type { GameState } from '../state';
 import { naturalLimits } from '../profile';
 import { conditionView, type ConditionView } from './condition';
@@ -124,7 +125,7 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
     pronouns: character.pronouns,
     appearance: character.appearance,
     rank: RANK_LABELS[state.standing.rank],
-    village: content.locations.require(content.startLocationId).name,
+    village: content.locations.require(homeVillageId(state, ctx)).name,
     clan: clan?.name ?? 'No clan',
     kekkeiGenkai: clan?.kekkeiGenkai
       ? { name: clan.kekkeiGenkai.name, dormant: clan.kekkeiGenkai.dormant }

@@ -4,26 +4,31 @@
  */
 export const DAYS_PER_RENT_PERIOD = 7;
 
-export interface Housing {
-  /** The home place (in the home location) this tenancy is for. */
+/** Where a home is: the home place, and the village (a location id) it is in. */
+export interface HomeRef {
+  /** Absent: the pack's start village (every save made before there was another). */
+  readonly villageId?: string;
   readonly placeId: string;
+}
+
+export interface Housing extends HomeRef {
   readonly rentPerWeek: number;
   /** Last day covered by rent already paid. */
   readonly paidThroughDay: number;
   /** Where you actually live, when it isn't the home place's own lodging (e.g. a clan compound). */
   readonly lodging?: string;
-  /** Houses you own elsewhere (place ids): bought outright, no rent. */
+  /** Houses you own in towns (place ids): bought outright, no rent. */
   readonly owned: readonly string[];
 }
 
-export function newTenancy(placeId: string, rentPerWeek: number, today: number): Housing {
+export function newTenancy(home: HomeRef, rentPerWeek: number, today: number): Housing {
   // The first week comes paid as part of graduating.
-  return { placeId, rentPerWeek, paidThroughDay: today + DAYS_PER_RENT_PERIOD - 1, owned: [] };
+  return { ...home, rentPerWeek, paidThroughDay: today + DAYS_PER_RENT_PERIOD - 1, owned: [] };
 }
 
 /** Rent-free lodging, such as a room in your clan's compound. */
-export function freeLodging(placeId: string, lodging: string, today: number): Housing {
-  return { placeId, rentPerWeek: 0, paidThroughDay: today, lodging, owned: [] };
+export function freeLodging(home: HomeRef, lodging: string, today: number): Housing {
+  return { ...home, rentPerWeek: 0, paidThroughDay: today, lodging, owned: [] };
 }
 
 export function isRentFree(housing: Housing): boolean {

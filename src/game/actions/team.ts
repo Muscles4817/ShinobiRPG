@@ -3,6 +3,7 @@ import { bondWith } from '@/systems/bonds';
 import { chip, log } from '../ops';
 import { fullName, requirePerson } from '../people/cast';
 import { generateGenin } from '../people/generator';
+import { homeVillageId } from '../homeVillage';
 import { offerSenseis } from '../people/senseis';
 import { addReport } from '../reports';
 import type { ActionHandler, ActionOf } from './types';
@@ -24,6 +25,7 @@ export const assignTeam: ActionHandler<ActionOf<'assignTeam'>> = {
       takenNames: [state.character.name, ...ctx.content.people.all.map((p) => p.name)],
       firstNumber: state.people.generated.length + 1,
       seed: state.board.seed,
+      villageId: homeVillageId(state, ctx),
     });
     const teammateIds = classmates.slice(0, TEAMMATES).map((p) => p.id);
     const next = {

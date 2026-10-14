@@ -13,6 +13,7 @@ describe('new game', () => {
     expect(state.housing).toEqual({
       owned: [],
       placeId: 'home',
+      villageId: 'torogakure',
       rentPerWeek: 30,
       paidThroughDay: 7,
     });
