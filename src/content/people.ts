@@ -78,7 +78,12 @@ export interface PersonDef {
   readonly appearance: Appearance;
   readonly specialty?: Discipline;
   readonly bio: string;
-  /** Where they are in each time slot: a place id in the start location, or null (away). */
+  /**
+   * Where they live, when not in the start village: a town they are met in, never sent on your
+   * village's jobs or teams. Only `shinobi` and `villager` roles live elsewhere (validated).
+   */
+  readonly homeLocationId?: string;
+  /** Where they are in each time slot: a place id in their home location, or null (away). */
   readonly schedule: Readonly<Record<TimeSlot, string | null>>;
   readonly sensei?: SenseiProfile;
   /** How they teach and what they ask. Every sensei has one (their signatures live here). */

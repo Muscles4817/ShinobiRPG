@@ -26,9 +26,19 @@ export function bondOf(state: GameState, personId: string): Bond {
   return state.people.bonds[personId] ?? NEW_BOND;
 }
 
-/** The place id where this person is now, or null if they are away. */
+/** Whether they live in the village (not a town elsewhere): crews, teams and dinners at home. */
+export function isVillager(person: PersonDef, ctx: GameContext): boolean {
+  return (person.homeLocationId ?? ctx.content.startLocationId) === ctx.content.startLocationId;
+}
+
+/** Everyone who lives in the village. */
+export function villagers(state: GameState, ctx: GameContext): readonly PersonDef[] {
+  return everyone(state, ctx).filter((p) => isVillager(p, ctx));
+}
+
+/** The place id where this person is now, or null if they are away (or you are). */
 export function whereNow(state: GameState, ctx: GameContext, person: PersonDef): string | null {
-  if (state.locationId !== ctx.content.startLocationId) return null;
+  if (state.locationId !== (person.homeLocationId ?? ctx.content.startLocationId)) return null;
   return person.schedule[slotName(state.time)];
 }
 

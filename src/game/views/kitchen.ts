@@ -6,7 +6,7 @@ import { stageName, stageOf } from '@/systems/bonds';
 
 import { dinnerBlocker, INVITE_STAGE } from '../actions/dinner';
 import type { GameContext } from '../context';
-import { bondOf, everyone } from '../people/cast';
+import { bondOf, villagers } from '../people/cast';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 
@@ -57,7 +57,7 @@ export interface KitchenView {
 }
 
 function guestsOf(state: GameState, ctx: GameContext) {
-  return everyone(state, ctx)
+  return villagers(state, ctx)
     .map((person) => ({ person, points: bondOf(state, person.id).points }))
     .filter((g) => stageOf(g.points) >= INVITE_STAGE)
     .sort((a, b) => b.points - a.points);

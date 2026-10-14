@@ -223,6 +223,8 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'library'; readonly techniqueIds: readonly string[] })
   | (PlaceBase & { readonly kind: 'home'; readonly rentPerWeek: number; readonly lodging: string })
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
+  /** Somewhere to sleep away from home: a room by the night. */
+  | (PlaceBase & { readonly kind: 'inn'; readonly keeper: string; readonly roomCost: number })
   | (PlaceBase & {
       /** An izakaya: open evenings and nights, with a menu and whoever drops in. */
       readonly kind: 'tavern';

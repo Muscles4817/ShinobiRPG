@@ -18,6 +18,8 @@ export type GameAction =
   | { readonly type: 'eat'; readonly foodId: string }
   | { readonly type: 'rest' }
   | { readonly type: 'sleep' }
+  /** A night at the inn here. */
+  | { readonly type: 'takeRoom' }
   | { readonly type: 'payRent' }
   | { readonly type: 'treat' }
   /** `quick`: walk on without stopping to camp; only a road event halts you. */

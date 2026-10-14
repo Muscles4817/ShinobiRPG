@@ -64,6 +64,8 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
       return place.blurb;
     case 'tavern':
       return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
+    case 'inn':
+      return `A room for ${place.roomCost} ryo`;
     case 'hospital':
       return state.character.vitals.health < MAX_HEALTH
         ? `Treatment ${place.treatmentCost} ryo`
@@ -126,6 +128,7 @@ function suggestion(state: GameState, places: readonly PlaceDef[]): PlaceKind | 
     [isRentOverdue(state.housing, state.time.day), 'home'],
     [isHungry(vitals), 'market'],
     [vitals.energy < 20 || state.time.slot === 3, 'home'],
+    [vitals.energy < 20 || state.time.slot === 3, 'inn'],
     [true, 'missions'],
   ];
   return order.find(([when, kind]) => when && has(kind))?.[1] ?? null;

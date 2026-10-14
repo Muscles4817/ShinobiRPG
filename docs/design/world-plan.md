@@ -322,3 +322,10 @@ migration and a previous-version save test wherever the save shape changes.
    rations, nowhere to sleep and an exam you'd miss. Not yet: **turning back** at a camp (left
    for step 6, with companions), and the sensei's view on a trip (step 5, leave). No save
    migration: a run without `journey` is a job as before.
+3. **The inn and residents** (this step). The `inn` place kind (a keeper and a room price),
+   `takeRoom` (pay at the desk, sleep till dawn at `INN_HEALTH_SHARE` of your own bed's
+   healing; the night's sleep is shared with home as `sleepTillDawn`), its page (a room slip)
+   and its line on the village screen. People may live elsewhere (`homeLocationId`, shinobi and
+   villagers only, validated; schedules and teaching places read their home), are met only
+   there, and stay off your village's crews, exam replacements and dinner invites. The Travel
+   tab's "nowhere to sleep" warning counts an inn.

@@ -18,13 +18,25 @@ export function validatePeople(pack: ContentPack): string[] {
   ];
 }
 
+/** Roles that may live outside the start village: everyone else serves it. */
+const RESIDENT_ROLES: readonly PersonDef['role'][] = ['shinobi', 'villager'];
+
 function personProblems(pack: ContentPack, person: PersonDef): string[] {
-  const start = pack.locations.find((l) => l.id === pack.startLocationId);
-  const placeIds = new Set(start?.places.map((p) => p.id));
+  const homeId = person.homeLocationId ?? pack.startLocationId;
+  const home = pack.locations.find((l) => l.id === homeId);
+  const placeIds = new Set(home?.places.map((p) => p.id));
   const traitIds = new Set(pack.traits.map((t) => t.id));
-  const problems = Object.values(person.schedule)
-    .filter((placeId): placeId is string => placeId !== null && !placeIds.has(placeId))
-    .map((placeId) => `person "${person.id}" is scheduled at unknown place "${placeId}"`);
+  const problems = [
+    ...(home ? [] : [`person "${person.id}" lives in unknown location "${homeId}"`]),
+    ...(homeId !== pack.startLocationId && !RESIDENT_ROLES.includes(person.role)
+      ? [`person "${person.id}" is a ${person.role}, so lives in the start village`]
+      : []),
+  ];
+  problems.push(
+    ...Object.values(person.schedule)
+      .filter((placeId): placeId is string => placeId !== null && !placeIds.has(placeId))
+      .map((placeId) => `person "${person.id}" is scheduled at unknown place "${placeId}"`),
+  );
   for (const id of [...person.traitIds, ...(person.sensei?.favouredTraits ?? [])]) {
     if (!traitIds.has(id)) problems.push(`person "${person.id}" references unknown trait "${id}"`);
   }

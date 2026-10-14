@@ -90,6 +90,7 @@ function placeRefs(place: PlaceDef): [RefKind, string][] {
       return place.techniqueIds.map((id) => ['technique', id]);
     case 'home':
     case 'hospital':
+    case 'inn':
       return [];
   }
 }

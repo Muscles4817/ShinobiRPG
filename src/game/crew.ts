@@ -14,7 +14,7 @@ import {
 import type { Standing } from '@/systems/standing';
 
 import type { GameContext } from './context';
-import { everyone } from './people/cast';
+import { villagers } from './people/cast';
 import { missionThreat } from './scouting';
 import type { GameState } from './state';
 
@@ -81,7 +81,7 @@ function shuffled(pick: CrewPick, people: readonly PersonDef[]): PersonDef[] {
 function pool(pick: CrewPick, rank: PersonDef['rank'], roles: readonly PersonDef['role'][]) {
   const team = new Set(pick.state.people.team?.teammateIds ?? []);
   const senseiId = pick.state.people.team?.senseiId;
-  const fits = everyone(pick.state, pick.ctx).filter(
+  const fits = villagers(pick.state, pick.ctx).filter(
     (p) => p.rank === rank && roles.includes(p.role) && !team.has(p.id) && p.id !== senseiId,
   );
   return shuffled(pick, fits);

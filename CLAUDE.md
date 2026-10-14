@@ -118,7 +118,9 @@ ui ──► game ──► content ──► systems ──► core
     pack; generated genin are built from the pack's name pools by `game/people/generator.ts`
     and stored in `GameState.people.generated` in the same shape, so every view and action
     treats them alike (look people up with `findPerson`, never `content.people` alone).
-    Schedules place people at places in the start location by time slot. Bonds (points,
+    Schedules place people at places in their home location by time slot: the start village,
+    or a town they live in (`homeLocationId`, only `shinobi` and `villager` roles; `villagers`
+    keeps them off your village's crews, teams and dinner table). Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
     (fight › encounter › mission › conversation › team assignment). Anything that must happen before
@@ -337,7 +339,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
   needs a `none` clan (validated).
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
-  schedule of place ids in the start location, a `rank` and `stats` via `statLine()`, and
+  schedule of place ids in the start location, or in their `homeLocationId` if they live elsewhere, a `rank` and `stats` via `statLine()`, and
   optionally an `aptitude` via `talent()`). Their best stat must fit their rank (genin E–D,
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`

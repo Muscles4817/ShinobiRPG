@@ -57,7 +57,9 @@ function warningsFor(
             : `Your pack holds food for ${food} of the ${journey.days} days.`,
         ]
       : []),
-    ...(destination.places.some((p) => p.kind === 'home') ? [] : ['Nowhere to sleep there yet.']),
+    ...(destination.places.some((p) => p.kind === 'inn' || p.id === state.housing.placeId)
+      ? []
+      : ['Nowhere to sleep there yet.']),
     ...(clash ? [clash.text] : []),
   ];
 }

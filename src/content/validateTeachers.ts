@@ -67,8 +67,9 @@ function teacherProblems(
  */
 function reachProblems(pack: ContentPack, person: PersonDef): string[] {
   const problems: string[] = [];
-  const start = pack.locations.find((l) => l.id === pack.startLocationId);
-  const training = new Set(start?.places.filter((p) => p.kind === 'training').map((p) => p.id));
+  const homeId = person.homeLocationId ?? pack.startLocationId;
+  const home = pack.locations.find((l) => l.id === homeId);
+  const training = new Set(home?.places.filter((p) => p.kind === 'training').map((p) => p.id));
   const visits = Object.values(person.schedule).some((id) => id !== null && training.has(id));
   if (!person.sensei && !visits) problems.push('never comes to a training place');
   for (const id of person.teacher?.teaches ?? []) {
