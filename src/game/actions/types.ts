@@ -21,6 +21,8 @@ export type GameAction =
   | { readonly type: 'sleep' }
   /** A night at the inn here. */
   | { readonly type: 'takeRoom' }
+  /** A session of a chakra control exercise (tree-walking) at a training place. */
+  | { readonly type: 'practise'; readonly exerciseId: string }
   /** Buy the house for sale here. */
   | { readonly type: 'buyHouse' }
   | { readonly type: 'payRent' }

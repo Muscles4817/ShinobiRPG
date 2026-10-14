@@ -162,6 +162,11 @@ export interface Character {
   readonly snack?: Snack;
   /** Injuries you carry; each heals on its own morning. */
   readonly injuries: readonly Injury[];
+  /**
+   * Progress on chakra control exercises, out of 100, by exercise id (`game/exercises.ts`).
+   * Absent: none begun (saves from before exercises). A mastered one is also a breakthrough.
+   */
+  readonly exercises?: Readonly<Record<string, number>>;
   /** Chakra exhaustion: nights' sleep refill only part of your chakra until it passes. */
   readonly exhaustion: Exhaustion | null;
 }

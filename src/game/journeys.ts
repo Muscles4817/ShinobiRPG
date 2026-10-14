@@ -1,10 +1,11 @@
 import { startRun, type JourneyPlan, type MissionDef, type MissionStage } from '@/systems/missions';
-import { findJourney, type Journey } from '@/systems/travel';
+import { findJourney, type Journey, type RouteDef } from '@/systems/travel';
 
 import type { GameContext } from './context';
 import { chip, log } from './ops';
 import { endsOpen, roadOpen } from './routeNeeds';
 import { settle } from './story/state';
+import { keepsToSafeRoads } from './leave';
 import { arriving, leaving, tripCrew } from './trips';
 import type { GameState } from './state';
 
@@ -21,11 +22,18 @@ import type { GameState } from './state';
 const CAMP_PICKS = 1;
 const CAMP_TEXT = 'You make camp off the road as the light goes.';
 
-/** The quickest open way there, or null if no open road goes there. */
+/**
+ * The quickest open way there, or null if no open road goes there. A genin on a pass keeps to
+ * safe roads where a safe way exists, even when a quicker one has bandits on it.
+ */
 export function journeyTo(state: GameState, ctx: GameContext, locationId: string): Journey | null {
-  return findJourney(ctx.content.routes.all, state.locationId, locationId, (r) =>
-    roadOpen(state, ctx, r),
-  );
+  const routes = ctx.content.routes.all;
+  const open = (r: RouteDef) => roadOpen(state, ctx, r);
+  const quickest = findJourney(routes, state.locationId, locationId, open);
+  if (!quickest || quickest.danger === 'petty' || !keepsToSafeRoads(state, ctx, locationId))
+    return quickest;
+  const safe = (r: RouteDef) => open(r) && r.danger === 'petty';
+  return findJourney(routes, state.locationId, locationId, safe) ?? quickest;
 }
 
 /** The way there if you met every road's needs: what a closed shortcut would give you. */

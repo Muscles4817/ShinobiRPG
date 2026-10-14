@@ -5,6 +5,7 @@ import type { TechniqueDef } from '@/systems/techniques';
 import type { RouteDef } from '@/systems/travel';
 
 import { createCatalog, type Catalog } from './catalog';
+import type { ExerciseDef } from './exercises';
 import type { InjuryDef } from './injuries';
 import type { BuildDef, UpbringingDef } from './upbringing';
 import type { VoiceDef } from './voices';
@@ -46,6 +47,7 @@ export interface ContentDb {
   readonly text: SettingText;
   readonly locations: Catalog<LocationDef>;
   readonly routes: Catalog<RouteDef>;
+  readonly exercises: Catalog<ExerciseDef>;
   readonly techniques: Catalog<TechniqueDef>;
   readonly missions: Catalog<MissionDef>;
   readonly exams: Catalog<ExamDef>;
@@ -89,6 +91,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     text: pack.text,
     locations: createCatalog('location', pack.locations),
     routes: createCatalog('route', pack.routes),
+    exercises: createCatalog('exercise', pack.exercises),
     techniques: createCatalog('technique', pack.techniques),
     missions: createCatalog('mission', pack.missions),
     exams: createCatalog('exam', pack.exams),

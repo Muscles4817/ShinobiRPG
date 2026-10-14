@@ -333,8 +333,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     you were away; people who live in a town (`homeLocationId`) are met there, its festivals
     (`FestivalDef.locationId`) are held there, and the village's street talk stays at home.
     **Leave is strict** (`game/leave.ts`, the `leave` slice): a genin goes only on the pass
-    their sensei signs at the weekly lesson, by safe roads; a chūnin spends a season's days of
-    leave; a jōnin comes and goes; going home never needs leave, and jobs need none.
+    their sensei signs at the weekly lesson, by safe roads (the quickest safe way, where there
+    is one); a chūnin spends a season's days of leave; a jōnin comes and goes; going home never
+    needs leave, and jobs need none. Walking on water or up trees is a **control exercise**
+    mastered (`docs/design/milestone3-plan.md`): `ExerciseDef`s practised at training places
+    (`practise`, `game/exercises.ts`), some started by your sensei at a lesson; mastering one is
+    a breakthrough, and `canWalk` (`game/walking.ts`) is the only place that reads it for roads.
 
 ### Content packs
 
@@ -380,6 +384,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `systems/travel` finds the quickest open way, validated so every location has a road). Leave
   `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road
   passes through it.
+- **Add a control exercise:** an `ExerciseDef` (grade, pace, energy, `startedBy: 'sensei'` with a
+  `start` line if the sensei begins it, an optional `walk` surface, a `limitBonus`, practice and
+  fall lines) in `shared/exercises.ts` or a pack's own list, offered at a training place's
+  `exerciseIds` (validated).
 - **Add a wild place:** a `wilds` `PlaceDef` with a `biome`, `finds` and optional fishing
   `spots` (reuse the shared lists in `shared/wilds.ts` where the country is the same).
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
