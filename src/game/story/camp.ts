@@ -15,13 +15,15 @@ import { growCharacter, logDiscoveries } from '../growth';
 import { bestHandFor, yourCheckValue, yourHand } from '../missionRoles';
 import { adjust, chip, log, statChips } from '../ops';
 import type { GameState } from '../state';
+import { cookForCamp, forageCamp } from './campKitchen';
 import { bondWithOne, crewPeople, feel } from './personal';
 import { storyOf } from './state';
 import { voiceOf } from './voices';
 
 /**
  * A night around the fire: a few things to do before it burns down. Sit with the charge (they
- * open up once they trust you), sit with someone in the crew, keep watch, drill, or sleep.
+ * open up once they trust you), sit with someone in the crew, keep watch, drill, sleep, forage
+ * or cook for everyone (`campKitchen.ts`).
  */
 
 /** Bond for an evening by the fire with someone. */
@@ -164,6 +166,14 @@ export function campActivity(
         return drill(choice, ctx);
       case 'rest':
         return rest(choice);
+      case 'forage': {
+        const foraged = forageCamp(choice, ctx, rng);
+        return told(foraged.state, ...foraged.notes);
+      }
+      case 'cook': {
+        const cooked = cookForCamp(choice, ctx);
+        return told(cooked.state, ...cooked.notes);
+      }
     }
   })();
   const run = after.mission;

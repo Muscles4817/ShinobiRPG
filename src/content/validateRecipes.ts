@@ -13,6 +13,9 @@ export function validateRecipes(pack: ContentPack): string[] {
     ...recipeLines(pack),
     ...sourceReferenceProblems(pack),
     ...unlearnable(pack),
+    ...pack.campFinds
+      .filter((f) => !pack.ingredients.some((i) => i.id === f.ingredientId))
+      .map((f) => `camp find "${f.ingredientId}" is not an ingredient`),
   ];
 }
 

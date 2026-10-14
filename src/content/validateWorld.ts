@@ -44,7 +44,14 @@ export function validateWorld(pack: ContentPack): string[] {
       stallRefs(s).map(([kind, id]) => ({ place: { id: `festival ${f.id}` }, kind, id })),
     ),
   );
-  for (const { place, kind, id } of [...placeLinks, ...festivalLinks]) {
+  const dropLinks = pack.enemies.flatMap((e) =>
+    (e.drops ?? []).map((id) => ({
+      place: { id: `enemy ${e.id}` },
+      kind: 'ingredient' as const,
+      id,
+    })),
+  );
+  for (const { place, kind, id } of [...placeLinks, ...festivalLinks, ...dropLinks]) {
     if (!refs[kind].has(id))
       problems.push(`place "${place.id}" references unknown ${kind} "${id}"`);
     if (kind !== 'technique') reached[kind].add(id);

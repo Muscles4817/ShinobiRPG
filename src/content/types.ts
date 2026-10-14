@@ -125,6 +125,8 @@ export interface EnemyDef {
   readonly nature?: Element;
   /** How they fight: archer, brawler, illusionist… Every fight style honours these. */
   readonly traits?: readonly CombatTrait[];
+  /** Ingredients a beaten foe leaves (a beast's meat), one of each, into your pack. */
+  readonly drops?: readonly string[];
 }
 
 /** A family the character can be born into. Clans shape growth and give techniques. */
@@ -318,6 +320,8 @@ export interface ContentPack {
   readonly ingredients: readonly IngredientDef[];
   readonly recipes: readonly RecipeDef[];
   readonly cookbooks: readonly CookbookDef[];
+  /** What can be foraged around a camp on the road. */
+  readonly campFinds: readonly Find[];
   readonly people: readonly PersonDef[];
   readonly conversations: readonly ConversationDef[];
   /** What templated conversations (`about`) are filled with, per specialty, trait, clan, role. */
