@@ -6,6 +6,7 @@ import { LANTERN_THIEF_JOBS } from './arcs/lanternThief';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
 import { MARKET_STREET } from './market';
+import { TOROGAKURE_WILDS } from './wilds';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -248,6 +249,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         blurb: 'Healers on call',
         treatmentCost: 60,
       },
+      ...TOROGAKURE_WILDS,
     ],
   },
   {

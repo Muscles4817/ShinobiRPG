@@ -10,6 +10,7 @@ import { libraryEntry, libraryScrollAccess } from '../permits';
 import { closedSign } from '../village';
 import { examToday } from '../exam/calendar';
 import { tavernCrowd } from '../actions/tavern';
+import { wildsLine } from './wilds';
 import { choice } from './common';
 import { teacherOffers } from './teachers';
 import { facesByPlace, type PersonFace } from './people';
@@ -64,6 +65,8 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
       return place.blurb;
     case 'tavern':
       return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
+    case 'wilds':
+      return wildsLine(state, ctx, place.id);
     case 'hospital':
       return state.character.vitals.health < MAX_HEALTH
         ? `Treatment ${place.treatmentCost} ryo`

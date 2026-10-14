@@ -262,6 +262,15 @@ describe('persistence', () => {
     expect(loaded.value.cooking.known['spicy-hot-pot']).toBe(0);
   });
 
+  it('gives a save from before gathering no gathered places', () => {
+    const game = newGame();
+    const { gathered: _gathered, ...cooking } = game.cooking;
+    const loaded = deserialize(JSON.stringify({ version: 32, state: { ...game, cooking } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.cooking.gathered).toEqual({});
+    expect(loaded.value.cooking.known).toEqual(game.cooking.known);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

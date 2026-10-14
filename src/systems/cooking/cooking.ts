@@ -11,9 +11,11 @@ export interface Cooking {
   readonly xp: number;
   /** Recipes you know, by id, with how many times you've cooked each. */
   readonly known: Readonly<Record<string, number>>;
+  /** The day each wild place (or fishing spot, `place:spot`) last gave you something. */
+  readonly gathered: Readonly<Record<string, number>>;
 }
 
-export const NO_COOKING: Cooking = { xp: 0, known: {} };
+export const NO_COOKING: Cooking = { xp: 0, known: {}, gathered: {} };
 
 /** Experience needed for each grade, E first. */
 export const GRADE_XP: Readonly<Record<StatGrade, number>> = {
@@ -100,6 +102,7 @@ export function xpFor(rank: StatGrade, times: number): number {
 export function cookedOnce(cooking: Cooking, recipeId: string, rank: StatGrade): Cooking {
   const times = timesCooked(cooking, recipeId);
   return {
+    ...cooking,
     xp: cooking.xp + xpFor(rank, times),
     known: { ...cooking.known, [recipeId]: times + 1 },
   };

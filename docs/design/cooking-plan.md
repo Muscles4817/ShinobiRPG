@@ -392,5 +392,19 @@ Each phase ships on its own and keeps `npm run check` green.
   your grade teaches it (`tryCombination`); otherwise the pot hints how close you came.
 - The stove sheet and the "Try something new" pot in the kitchen.
 
+**Phase 4, gathering at home.**
+
+- A `wilds` place kind (`biome`, `finds`, fishing `spots`), with finds and spots shared in
+  `content/shared/wilds.ts`: Lantern Woods and the river below the canal in Tōrōgakure, the
+  village forest and the river in the fan pack.
+- `systems/cooking/gathering.ts`: what can turn up (season, time of day, and whether your
+  cooking grade knows it for food) and a weighted draw. Each place and each spot gives once a
+  day (`cooking.gathered`, save v33).
+- `forage` (perception finds a second handful) and `fish` (willpower decides whether anything
+  bites), both hard work.
+- Seven wild ingredients, never sold, and seven dishes made from them, taught by two new
+  cookbooks (A Forager's Notes, The River Cook).
+- Camp foraging and cooking, and beast drops, are still to come.
+
 Not yet built: gathering (phase 4), provisions in fights (phase 5),
 the library (phase 7) and other regions (phase 8).

@@ -1,4 +1,5 @@
 import type { RecipeDef } from '../types';
+import { WILD_RECIPES } from './wildRecipes';
 
 /**
  * Home cooking shared by every pack. Each dish has one job (its role) and at most one more:
@@ -282,4 +283,5 @@ export const RECIPES: readonly RecipeDef[] = [
   ...SEASONS,
   ...ROAD,
   ...TAUGHT,
+  ...WILD_RECIPES,
 ];

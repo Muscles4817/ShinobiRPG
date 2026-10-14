@@ -2,6 +2,10 @@
 
 type RawState = Record<string, unknown>;
 
+function asRecord(value: unknown): RawState {
+  return typeof value === 'object' && value !== null ? (value as RawState) : {};
+}
+
 /** Every recipe a save could cook before recipes had to be learned (shared by both packs). */
 const RECIPES_BEFORE_LEARNING = [
   'rice-ball-bento',
@@ -26,4 +30,9 @@ const GRADE_D_XP = 12;
 export function v31ToV32(state: RawState): RawState {
   const known = Object.fromEntries(RECIPES_BEFORE_LEARNING.map((id) => [id, 0]));
   return { ...state, cooking: { xp: GRADE_D_XP, known } };
+}
+
+/** v32 → v33: wild places and fishing spots remember the day they last gave; none yet. */
+export function v32ToV33(state: RawState): RawState {
+  return { ...state, cooking: { gathered: {}, ...asRecord(state.cooking) } };
 }

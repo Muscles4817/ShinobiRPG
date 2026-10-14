@@ -47,4 +47,20 @@ export const COOKBOOKS: readonly CookbookDef[] = [
     icon: 'scroll',
     recipeIds: ['hunters-skewers', 'tofu-congee'],
   },
+  {
+    id: 'foragers-notes',
+    name: 'A Forager’s Notes',
+    description: 'Pressed leaves, sketches of mushrooms, and which ones killed whom.',
+    cost: 80,
+    icon: 'scroll',
+    recipeIds: ['mushroom-rice', 'greens-miso', 'ginger-broth'],
+  },
+  {
+    id: 'river-cook',
+    name: 'The River Cook',
+    description: 'A fisherman’s recipes, written in pencil that has run in the damp.',
+    cost: 100,
+    icon: 'scroll',
+    recipeIds: ['salt-grilled-sweetfish', 'grilled-eel', 'crayfish-boil', 'watercress-soup'],
+  },
 ];

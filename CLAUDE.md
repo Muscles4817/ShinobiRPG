@@ -214,7 +214,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     checks sharper (`checks`, `yourCheckValue`); `health`/`chakra` come back as you eat.
     Dishes are cooked by hand at the stove (`game/stove.ts`: three beats against the recipe's
     `method`, giving a `mealQuality` that scales the dish through `buffAt`/`amountAt`) or as
-    usual; `experiment` puts pantry ingredients together to discover recipes.
+    usual; `experiment` puts pantry ingredients together to discover recipes. Ingredients
+    are bought or gathered: `wilds` places (woods, river) are foraged (`forage`) and fished
+    (`fish`, by spot) once a day each, drawing from `finds` by season, hour and cooking grade.
     Hunger works the same way: the player sees a Hunger meter (100 − satiety), and each
     stage (`hungerLevel`: peckish, hungry, starving) is a `ModifierSpec` plus a fight-strength
     multiplier in `game/hunger.ts`; starving also blocks hard work (`weakFromHunger`).
@@ -328,6 +330,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   pack complete; packs don't inherit from each other.
 - **Add a location:** add a `LocationDef` with a backdrop and places. Leave `travel.lockedReason`
   set until it is playable; the Travel tab shows it as coming soon.
+- **Add a wild place:** a `wilds` `PlaceDef` with a `biome`, `finds` and optional fishing
+  `spots` (reuse the shared lists in `shared/wilds.ts` where the country is the same).
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
   model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
   compiler lists every switch you missed).
@@ -419,7 +423,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add gear:** add a `GearDef` (`kind` weapon/armour/focus with its shape, level or boosts,
   `rank`, cost) to the pack's `gear` and list it at a `gear` place (a smith, an outfitter);
   `unique` pieces are never listed. **Add an ingredient or recipe:** ingredients go in
-  `shared/kitchen.ts` and must be sold at a market stall's `ingredientIds`; recipes go in
+  `shared/kitchen.ts` (sold at a market stall's `ingredientIds`) or `shared/wilds.ts` (found
+  in a `wilds` place's `finds` or a fishing spot's `catches`), and must be one or the other
+  (validated); recipes go in
   `shared/recipes.ts` (or a pack's own list) with a `rank`, one role (don't make a bigger copy
   of another dish's buff) and a way to learn it: a cookbook (`CookbookDef`, sold at a stall's
   `cookbookIds`), a person's `recipes`, or a job's `reward.recipeId` (validated). **Add a meal

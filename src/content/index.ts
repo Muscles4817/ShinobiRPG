@@ -26,6 +26,8 @@ export type {
   IngredientDef,
   RecipeDef,
   CookbookDef,
+  Biome,
+  FishingSpot,
   RecipeLesson,
   RumourDef,
   IconId,

@@ -9,6 +9,7 @@ import { MarketPage } from './MarketPage';
 import { MissionHallPage } from './MissionHallPage';
 import { TavernPage } from './TavernPage';
 import { TrainingPage } from './TrainingPage';
+import { WildsPage } from './WildsPage';
 
 /** Each kind of place has its own page design. */
 interface PlacePageProps extends PlaceProps {
@@ -36,5 +37,7 @@ export function PlacePage({ kind, placeId, ...props }: PlacePageProps) {
       return <GearShopPage {...props} placeId={placeId} />;
     case 'tavern':
       return <TavernPage {...props} />;
+    case 'wilds':
+      return <WildsPage {...props} placeId={placeId} />;
   }
 }

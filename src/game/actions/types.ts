@@ -56,6 +56,8 @@ export type GameAction =
   /** Cooked by hand at the stove when `steps` are given, else as usual. */
   | { readonly type: 'cook'; readonly recipeId: string; readonly steps?: CookingSteps }
   | { readonly type: 'experiment'; readonly ingredientIds: readonly string[] }
+  | { readonly type: 'forage'; readonly placeId: string }
+  | { readonly type: 'fish'; readonly placeId: string; readonly spotId: string }
   | { readonly type: 'buyCookbook'; readonly cookbookId: string }
   | { readonly type: 'learnRecipe'; readonly personId: string }
   | { readonly type: 'followSight' }
