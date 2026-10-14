@@ -42,7 +42,14 @@ describe('the jobs board', () => {
         titles({ ...trusted, time: { day: d + 1, slot: 0 } }),
       ).flat(),
     );
-    const jobs = ctx.content.missions.all.filter((m) => m.rank === 'D' && !m.standing);
+    // The village hall's jobs: a town's own office posts its own.
+    const hall = ctx.content.locations
+      .require(ctx.content.startLocationId)
+      .places.find((p) => p.kind === 'missions');
+    const posted = new Set(hall?.kind === 'missions' ? hall.missionIds : []);
+    const jobs = ctx.content.missions.all.filter(
+      (m) => m.rank === 'D' && !m.standing && posted.has(m.id),
+    );
     const lastThird = jobs.slice(Math.floor((jobs.length * 2) / 3));
     expect(lastThird.filter((m) => everSeen.has(m.id)).length).toBeGreaterThan(3);
   });

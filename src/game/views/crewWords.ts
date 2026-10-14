@@ -35,6 +35,8 @@ function lineFor(crew: Crew, leader: string | null, members: string): string {
       return members ? `${leader} leads, with ${members}` : `Under ${leader}`;
     case 'jonin-led':
       return `Under ${RANK_LABELS.jonin} ${leader ?? ''}, with ${members}`;
+    case 'companion':
+      return `With ${members}`;
   }
 }
 

@@ -65,6 +65,7 @@ export {
   type CookbookItem,
 } from './views/market';
 export { homeView, hospitalView, type HomeView, type HospitalView } from './views/home';
+export { innView, type InnView } from './views/inn';
 export type { ConditionView, InjuryLine } from './views/condition';
 export { missionBoardView, type MissionBoardView, type Notice, type Foe } from './views/boards';
 export type { ArcView } from './views/arcs';
@@ -77,7 +78,12 @@ export {
   type ScrollDesk,
   type Stack,
 } from './views/library';
-export { travelView, type Destination } from './views/travel';
+export {
+  travelView,
+  type CompanionOption,
+  type Destination,
+  type TravelView,
+} from './views/travel';
 export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
 export { animationSetting, type AnimationSetting } from './views/settings';
 export { ACTION_CUES, cueAfter, type ActionCue } from './cues';

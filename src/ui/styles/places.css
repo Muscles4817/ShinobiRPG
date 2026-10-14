@@ -698,6 +698,37 @@
   font-size: 0.86rem;
   line-height: 1.35;
 }
+
+/* The inn's front desk: a room slip on paper, the price stamped in ink. */
+.room-slip {
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border-radius: var(--radius-sm);
+  padding: 16px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.35);
+}
+.room-slip h2 {
+  font-family: var(--font-story);
+  font-size: 1.1rem;
+}
+.room-slip .story {
+  color: var(--paper-ink);
+}
+.room-price {
+  align-self: flex-start;
+  border: 1.5px solid var(--seal);
+  color: var(--seal);
+  border-radius: 2px;
+  padding: 0 8px;
+  font-weight: 800;
+  transform: rotate(-2deg);
+}
+.room-slip .muted {
+  color: var(--paper-muted);
+}
 .stove-beat {
   display: grid;
   gap: 6px;

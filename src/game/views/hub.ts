@@ -43,12 +43,8 @@ export interface HubView {
 
 function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
   switch (place.kind) {
-    case 'missions': {
-      const open = place.missionIds.filter(
-        (id) => choice(state, ctx, { type: 'startMission', missionId: id }).blocker === null,
-      ).length;
-      return open > 0 ? `${open} jobs you can take` : 'No jobs you can take now';
-    }
+    case 'missions':
+      return hallLine(place.missionIds, state, ctx);
     case 'training':
       return `${place.trainingIds.length} drills`;
     case 'market':
@@ -65,13 +61,27 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
       return place.blurb;
     case 'tavern':
       return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
+    case 'inn':
+      return `A room for ${place.roomCost} ryo`;
     case 'wilds':
       return wildsLine(state, ctx, place.id);
     case 'hospital':
-      return state.character.vitals.health < MAX_HEALTH
-        ? `Treatment ${place.treatmentCost} ryo`
-        : 'You’re healthy';
+      return hospitalLine(state, place.treatmentCost);
   }
+}
+
+/** How many of the hall's jobs you could take now. */
+function hallLine(missionIds: readonly string[], state: GameState, ctx: GameContext): string {
+  const open = missionIds.filter(
+    (id) => choice(state, ctx, { type: 'startMission', missionId: id }).blocker === null,
+  ).length;
+  return open > 0 ? `${open} jobs you can take` : 'No jobs you can take now';
+}
+
+function hospitalLine(state: GameState, treatmentCost: number): string {
+  return state.character.vitals.health < MAX_HEALTH
+    ? `Treatment ${treatmentCost} ryo`
+    : 'You’re healthy';
 }
 
 /** The library's scrolls you may read: the open shelves with a permit, all of them as chūnin. */
@@ -129,6 +139,7 @@ function suggestion(state: GameState, places: readonly PlaceDef[]): PlaceKind | 
     [isRentOverdue(state.housing, state.time.day), 'home'],
     [isHungry(vitals), 'market'],
     [vitals.energy < 20 || state.time.slot === 3, 'home'],
+    [vitals.energy < 20 || state.time.slot === 3, 'inn'],
     [true, 'missions'],
   ];
   return order.find(([when, kind]) => when && has(kind))?.[1] ?? null;

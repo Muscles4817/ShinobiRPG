@@ -12,6 +12,7 @@ import type { StatDelta, StatId } from '@/systems/stats';
 import type { ExamDef } from '@/systems/exams';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 import type { Season } from '@/systems/time';
+import type { RouteDef } from '@/systems/travel';
 
 import type { BackdropId, IconId } from './art';
 import type { CookbookDef, GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
@@ -240,6 +241,8 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'library'; readonly techniqueIds: readonly string[] })
   | (PlaceBase & { readonly kind: 'home'; readonly rentPerWeek: number; readonly lodging: string })
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
+  /** Somewhere to sleep away from home: a room by the night. */
+  | (PlaceBase & { readonly kind: 'inn'; readonly keeper: string; readonly roomCost: number })
   /** Woods, a river bank, a shore: forage what's in season, and fish its spots. */
   | (PlaceBase & {
       readonly kind: 'wilds';
@@ -274,13 +277,8 @@ export interface LocationDef {
   readonly backdrop: BackdropId;
   /** Empty for places you can't visit yet. */
   readonly places: readonly PlaceDef[];
-  readonly travel: {
-    readonly days: number;
-    readonly cost: number;
-    readonly danger: string;
-    /** Why it can't be visited yet; absent when travel is possible. */
-    readonly lockedReason?: string;
-  };
+  /** Why it can't be visited yet; absent when travel is possible. The way there is a route. */
+  readonly lockedReason?: string;
 }
 
 export interface ContentPack {
@@ -292,6 +290,8 @@ export interface ContentPack {
   readonly startingRyo: number;
   readonly text: SettingText;
   readonly locations: readonly LocationDef[];
+  /** The roads between locations. */
+  readonly routes: readonly RouteDef[];
   readonly techniques: readonly TechniqueDef[];
   readonly missions: readonly MissionDef[];
   /** Promotion exams, held on their dates (the chūnin exam). */

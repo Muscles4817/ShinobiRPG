@@ -30,7 +30,6 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
     name: 'Konohagakure',
     epithet: 'Village Hidden in the Leaves',
     backdrop: 'leaf-village',
-    travel: { days: 0, cost: 0, danger: 'Home' },
     places: [
       {
         id: 'mission-desk',
@@ -251,7 +250,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
     epithet: 'Village Hidden in the Sand',
     backdrop: 'dunes',
     places: [],
-    travel: { days: 3, cost: 120, danger: 'Desert heat', lockedReason: 'Coming soon' },
+    lockedReason: 'Coming soon',
   },
   {
     id: 'kirigakure',
@@ -259,7 +258,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
     epithet: 'Village Hidden in the Mist',
     backdrop: 'mist',
     places: [],
-    travel: { days: 4, cost: 150, danger: 'Hostile village', lockedReason: 'Coming soon' },
+    lockedReason: 'Coming soon',
   },
   {
     id: 'land-of-waves',
@@ -267,7 +266,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
     epithet: 'Fishing islands and a great bridge',
     backdrop: 'coast',
     places: [],
-    travel: { days: 2, cost: 40, danger: 'Bandits', lockedReason: 'Coming soon' },
+    lockedReason: 'Coming soon',
   },
   {
     id: 'mount-myoboku',
@@ -275,6 +274,6 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
     epithet: 'Where the toads train sages',
     backdrop: 'mountain',
     places: [],
-    travel: { days: 5, cost: 0, danger: 'Unknown', lockedReason: 'Needs a summoning contract' },
+    lockedReason: 'Needs a summoning contract',
   },
 ];

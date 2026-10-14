@@ -35,7 +35,7 @@ src/
   core/       Game-agnostic utilities: seeded Rng, Result, math. Knows nothing about the game.
   systems/    Self-contained domain modules. Pure functions over their own slice of state.
     time/ stats/ vitals/ wallet/ housing/ techniques/ missions/ combat/ standing/ journal/
-    modifiers/ profile/ bonds/ inventory/ cooking/
+    modifiers/ profile/ bonds/ inventory/ cooking/ travel/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
@@ -141,7 +141,9 @@ ui ──► game ──► content ──► systems ──► core
     pack; generated genin are built from the pack's name pools by `game/people/generator.ts`
     and stored in `GameState.people.generated` in the same shape, so every view and action
     treats them alike (look people up with `findPerson`, never `content.people` alone).
-    Schedules place people at places in the start location by time slot. Bonds (points,
+    Schedules place people at places in their home location by time slot: the start village,
+    or a town they live in (`homeLocationId`, only `shinobi` and `villager` roles; `villagers`
+    keeps them off your village's crews, teams and dinner table). Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
     (fight › encounter › mission › conversation › team assignment › chakra paper). Anything that must happen before
@@ -317,6 +319,19 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     earlier acts through world marks (`remembers`, a snapshot taken when a job starts). The
     board pins each arc under way (`views/arcs.ts`). Base locations wait on travel
     (`docs/design/missions-plan.md` 3.9).
+26. **Travel is a journey along routes, on leave** (`docs/design/world-plan.md`). A pack's
+    `routes` join its locations (legs of days through road-event regions, a `danger`, a
+    passage `cost`); `systems/travel` finds the quickest open way (a road through a place still
+    locked is closed). Setting out (`travel`) starts a mission run carrying a `journey` plan, so
+    the road plays as on a job (`game/journeys.ts`: a leg per stretch, a camp between, road
+    events); `quick` hurries on until a road event needs a choice. Away from home you sleep at
+    an `inn`; a friend may come along (`game/trips.ts`, a `companion` crew, found at your
+    lodging), you may turn back at a camp, and coming home shows what the village did while
+    you were away; people who live in a town (`homeLocationId`) are met there, its festivals
+    (`FestivalDef.locationId`) are held there, and the village's street talk stays at home.
+    **Leave is strict** (`game/leave.ts`, the `leave` slice): a genin goes only on the pass
+    their sensei signs at the weekly lesson, by safe roads; a chūnin spends a season's days of
+    leave; a jōnin comes and goes; going home never needs leave, and jobs need none.
 
 ### Content packs
 
@@ -356,8 +371,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   catches broken references and anything no place offers.
 - **Add a content pack:** copy `packs/original/`, change ids/names, register it. Keep every
   pack complete; packs don't inherit from each other.
-- **Add a location:** add a `LocationDef` with a backdrop and places. Leave `travel.lockedReason`
-  set until it is playable; the Travel tab shows it as coming soon.
+- **Add a location:** add a `LocationDef` with a backdrop and places, and a `RouteDef` to it in
+  the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`;
+  `systems/travel` finds the quickest open way, validated so every location has a road). Leave
+  `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road
+  passes through it.
 - **Add a wild place:** a `wilds` `PlaceDef` with a `biome`, `finds` and optional fishing
   `spots` (reuse the shared lists in `shared/wilds.ts` where the country is the same).
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
@@ -376,7 +394,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
   needs a `none` clan (validated).
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
-  schedule of place ids in the start location, a `rank` and `stats` via `statLine()`, and
+  schedule of place ids in the start location, or in their `homeLocationId` if they live elsewhere, a `rank` and `stats` via `statLine()`, and
   optionally an `aptitude` via `talent()`). Their best stat must fit their rank (genin E–C,
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`

@@ -41,6 +41,7 @@ import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
+import { NARUTO_ROUTES } from './routes';
 
 /**
  * Fan setting using Naruto names, for personal play only. Never ship it in a public
@@ -57,6 +58,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   startingRyo: 300,
   text: NARUTO_TEXT,
   locations: NARUTO_LOCATIONS,
+  routes: NARUTO_ROUTES,
   techniques: [
     ...TECHNIQUES,
     ...CLAN_TECHNIQUES,

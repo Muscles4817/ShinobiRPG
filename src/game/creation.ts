@@ -21,6 +21,7 @@ import { NEW_GENIN } from '@/systems/standing';
 import { checkChance, nothingKnown, STAT_INFO } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
+import { NO_LEAVE } from '@/systems/travel';
 import { fullVitals } from '@/systems/vitals';
 
 import { rollCharacterAptitude } from './aptitude';
@@ -212,6 +213,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     inventory: withIssuedBlade(EMPTY_INVENTORY, known, content),
     village: { lastSightDay: null, lastRoundDay: null, marks: [], memories: [], clients: {} },
     exams: NO_EXAMS,
+    leave: NO_LEAVE,
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),

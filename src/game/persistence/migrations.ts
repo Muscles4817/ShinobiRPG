@@ -11,6 +11,7 @@ import { v31ToV32, v34ToV35 } from './cookingMigration';
 import { v32ToV33 } from './creationMigration';
 import { v33ToV34 } from './breakthroughMigration';
 import { v35ToV36 } from './natureMigration';
+import { v36ToV37 } from './leaveMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
 import { v19ToV20 as v20ToV21 } from './rankMigration';
 import { v19ToV20 } from './teachingMigration';
@@ -313,4 +314,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   33: v33ToV34,
   34: v34ToV35,
   35: v35ToV36,
+  36: v36ToV37,
 };

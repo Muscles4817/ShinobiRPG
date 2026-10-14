@@ -19,9 +19,22 @@ export type GameAction =
   | { readonly type: 'eat'; readonly foodId: string }
   | { readonly type: 'rest' }
   | { readonly type: 'sleep' }
+  /** A night at the inn here. */
+  | { readonly type: 'takeRoom' }
   | { readonly type: 'payRent' }
   | { readonly type: 'treat' }
-  | { readonly type: 'travel'; readonly locationId: string }
+  /**
+   * `quick`: walk on without stopping to camp; only a road event halts you. `companionId`: a
+   * friend you ask along.
+   */
+  | {
+      readonly type: 'travel';
+      readonly locationId: string;
+      readonly quick?: boolean;
+      readonly companionId?: string;
+    }
+  /** At a camp on a trip of your own: walk back the way you came. */
+  | { readonly type: 'turnBack' }
   | { readonly type: 'dismissReport' }
   | { readonly type: 'leaveFight' }
   | { readonly type: 'study'; readonly techniqueId: string }

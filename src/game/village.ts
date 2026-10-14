@@ -64,11 +64,17 @@ export function closedReason(
   return opens && `${name} is closed. ${opens}`;
 }
 
+/** The festivals held where you are: the village's own, or a town's. */
+function festivalsHere(state: GameState, ctx: GameContext): readonly FestivalDef[] {
+  return ctx.content.village.festivals.filter(
+    (f) => (f.locationId ?? ctx.content.startLocationId) === state.locationId,
+  );
+}
+
 export function festivalToday(state: GameState, ctx: GameContext): FestivalDef | null {
   const today = calendarDay(state.time.day);
   return (
-    ctx.content.village.festivals.find((f) => f.season === today.season && f.day === today.day) ??
-    null
+    festivalsHere(state, ctx).find((f) => f.season === today.season && f.day === today.day) ?? null
   );
 }
 
@@ -80,7 +86,7 @@ export interface FestivalNotice {
 
 /** Today's festival, or the next one if it is close enough to announce. */
 export function festivalNotice(state: GameState, ctx: GameContext): FestivalNotice | null {
-  const next = ctx.content.village.festivals
+  const next = festivalsHere(state, ctx)
     .map((festival) => ({ festival, daysAway: daysUntil(state.time.day, festival) }))
     .sort((a, b) => a.daysAway - b.daysAway)[0];
   return next && next.daysAway <= FESTIVAL_NOTICE_DAYS ? next : null;
@@ -199,7 +205,14 @@ function gossip(state: GameState, ctx: GameContext, { maxJobs, total }: Earful):
 
 /** Today's gossip: a coming exam, hints at tomorrow's new jobs, then talk about people and the village. */
 export function rumoursToday(state: GameState, ctx: GameContext): RumourDef[] {
+  // The street talks about the village; away, only a tavern's counter carries it that far.
+  if (!atHome(state, ctx)) return [];
   return gossip(state, ctx, { maxJobs: MAX_JOB_RUMOURS, total: RUMOURS_PER_DAY });
+}
+
+/** Whether you are in the village itself, where its talk and its night sights are. */
+function atHome(state: GameState, ctx: GameContext): boolean {
+  return state.locationId === ctx.content.startLocationId;
 }
 
 /** What you overhear at the izakaya counter: every job tip going round, and more besides. */
@@ -219,6 +232,6 @@ export function isNight(state: Pick<GameState, 'time'>): boolean {
 
 /** What drifts through the village tonight, if it is night and the pack has any. */
 export function sightTonight(state: GameState, ctx: GameContext): SightDef | null {
-  if (!isNight(state)) return null;
+  if (!isNight(state) || !atHome(state, ctx)) return null;
   return [...ctx.content.village.sights].sort(byHash(state, 'sight'))[0] ?? null;
 }

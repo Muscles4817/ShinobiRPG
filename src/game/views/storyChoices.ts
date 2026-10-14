@@ -87,7 +87,22 @@ function campPrompt(
     ];
   });
   const time = left === 1 ? 'Time for one more thing' : `Time for ${left} more things`;
-  return [...activities, onward('Turn in', time)];
+  return [...activities, onward('Turn in', time), ...turnBackChoice(state, ctx)];
+}
+
+/** On a trip of your own, a camp is where you can still change your mind. */
+function turnBackChoice(state: GameState, ctx: GameContext): SceneChoice[] {
+  const plan = state.mission?.journey;
+  if (!plan) return [];
+  const home = ctx.content.locations.require(plan.from).name;
+  return [
+    {
+      label: 'Turn back',
+      detail: `The road back to ${home}`,
+      primary: false,
+      action: { type: 'turnBack' },
+    },
+  ];
 }
 
 function checkChoices(

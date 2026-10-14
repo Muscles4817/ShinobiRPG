@@ -24,11 +24,13 @@ export const CREW_KINDS = [
   'chunin-squad',
   'jonin-led',
   'exam-team',
+  'companion',
 ] as const;
 /**
  * `old-team` is your genin team (the sensei leads it from C-rank); `genin-squad` is genin you
  * lead; `chunin-squad` is you and other chūnin; `jonin-led` is a jōnin leading you and two
- * chūnin; `exam-team` is the team sitting an exam with you.
+ * chūnin; `exam-team` is the team sitting an exam with you; `companion` is a friend on a trip
+ * of your own (never a job's).
  */
 export type CrewKind = (typeof CREW_KINDS)[number];
 

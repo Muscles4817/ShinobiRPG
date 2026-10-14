@@ -320,6 +320,21 @@ describe('persistence', () => {
     expect(loaded.value.character.nature).toBe(game.character.nature);
   });
 
+  it('gives a save from before leave and trips no pass, no leave taken, nobody along', () => {
+    const game = newGame();
+    const { leave: _leave, ...rest } = game;
+    const { companionId: _companion, ...people } = game.people;
+    const loaded = deserialize(JSON.stringify({ version: 36, state: { ...rest, people } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.leave).toEqual({
+      passUntil: null,
+      season: 0,
+      daysTaken: 0,
+      awaySince: null,
+    });
+    expect(loaded.value.people.companionId).toBeNull();
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

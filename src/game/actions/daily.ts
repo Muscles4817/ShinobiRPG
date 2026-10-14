@@ -157,28 +157,43 @@ export const sleep: ActionHandler<ActionOf<'sleep'>> = {
     const { text } = ctx.content;
     const lockedOut = isRentOverdue(state.housing, state.time.day);
     const hungry = isHungry(state.character.vitals);
-    const night = sleepChakra(state);
-    const full = nightsRest(state, ctx);
-    const recovery = lockedOut
-      ? { ...full, health: Math.round((full.health ?? 0) * LOCKED_OUT_RECOVERY) }
-      : full;
-    const before = state.character.vitals.health;
-    const mended = mendedOvernight(state, characterModifiers(state.character, ctx).injuryNights);
-    const rested = adjust(spendTime(mended, slotsUntilNextMorning(state.time), ctx), recovery);
     const story = lockedOut ? text.sleepLockedOut : hungry ? text.sleepHungry : text.sleepWell;
-    const next = log(rested, {
-      heading: 'Sleep till dawn',
+    const next = sleepTillDawn(state, ctx, {
+      healthShare: lockedOut ? LOCKED_OUT_RECOVERY : 1,
       text: story,
-      tone: lockedOut || hungry ? 'warning' : 'info',
-      chips: [
-        chip(night.partial ? 'Energy restored' : 'Energy & chakra restored', 'gain'),
-        ...(night.partial ? [chip('Chakra only partly back', 'cost')] : []),
-        chip(`Health +${Math.max(0, rested.character.vitals.health - before)}`, 'gain'),
-      ],
+      uneasy: lockedOut || hungry,
     });
     return rentReminder(state, next);
   },
 };
+
+/** How a night went: how much of a night in your own bed it heals, and the line for it. */
+export interface Night {
+  readonly healthShare: number;
+  readonly text: string;
+  /** A rough night (hungry, locked out): the log says so. */
+  readonly uneasy: boolean;
+}
+
+/** To the next morning in a bed: energy and chakra back, and some health. */
+export function sleepTillDawn(state: GameState, ctx: GameContext, night: Night): GameState {
+  const chakra = sleepChakra(state);
+  const full = nightsRest(state, ctx);
+  const recovery = { ...full, health: Math.round((full.health ?? 0) * night.healthShare) };
+  const before = state.character.vitals.health;
+  const mended = mendedOvernight(state, characterModifiers(state.character, ctx).injuryNights);
+  const rested = adjust(spendTime(mended, slotsUntilNextMorning(state.time), ctx), recovery);
+  return log(rested, {
+    heading: 'Sleep till dawn',
+    text: night.text,
+    tone: night.uneasy ? 'warning' : 'info',
+    chips: [
+      chip(chakra.partial ? 'Energy restored' : 'Energy & chakra restored', 'gain'),
+      ...(chakra.partial ? [chip('Chakra only partly back', 'cost')] : []),
+      chip(`Health +${Math.max(0, rested.character.vitals.health - before)}`, 'gain'),
+    ],
+  });
+}
 
 /**
  * What a night in your own bed gives back: energy, health (more after a restful meal) and

@@ -1,9 +1,10 @@
 import type { CookbookDef, IngredientDef, Stall } from '../../../types';
 
 /**
- * Travelling merchants from places you can't travel to yet: the Shiomachi fish cart, the dune
- * caravan and a pilgrim herbalist down from Mount Reikon. Each sets up on Market Street every
- * few days with its home's larder and a cookbook of its dishes (`recipes.ts`).
+ * Travelling merchants from the places around the village: the Shiomachi fish cart (the port
+ * sells the same at its own market), the dune caravan and a pilgrim herbalist down from Mount
+ * Reikon. Each sets up on Market Street every few days with its home's larder and a cookbook
+ * of its dishes (`recipes.ts`).
  */
 
 export const REGIONAL_INGREDIENTS: readonly IngredientDef[] = [
@@ -24,7 +25,7 @@ export const REGIONAL_COOKBOOKS: readonly CookbookDef[] = [
       'A fishwife’s book, swollen with sea air. Every recipe starts “first, buy it fresh”.',
     cost: 110,
     icon: 'scroll',
-    recipeIds: ['sea-bream-rice', 'clam-miso', 'kelp-broth', 'grilled-bream'],
+    recipeIds: ['sea-bream-rice', 'clam-miso', 'kelp-broth', 'grilled-bream', 'kelp-fish-broth'],
   },
   {
     id: 'caravan-cook',

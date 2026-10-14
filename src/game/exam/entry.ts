@@ -3,7 +3,7 @@ import { stageForPair, stageOf } from '@/systems/bonds';
 import { STAT_GRADES, STAT_IDS, statTier, type StatGrade, type Stats } from '@/systems/stats';
 
 import type { GameContext } from '../context';
-import { bondOf, everyone, findPerson, requirePerson } from '../people/cast';
+import { bondOf, findPerson, requirePerson, villagers } from '../people/cast';
 import { personStats } from '../people/progress';
 import type { GameState } from '../state';
 
@@ -88,7 +88,7 @@ export function toleratesReplacement(state: GameState, ctx: GameContext): boolea
 /** Genin who could sit in for a teammate: ready, friends with you, and not on your team. */
 export function replacementCandidates(state: GameState, ctx: GameContext): PersonDef[] {
   const team = new Set(state.people.team?.teammateIds ?? []);
-  return everyone(state, ctx).filter(
+  return villagers(state, ctx).filter(
     (p) =>
       p.role === 'genin' &&
       !team.has(p.id) &&

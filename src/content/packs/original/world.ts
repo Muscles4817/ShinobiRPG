@@ -7,6 +7,7 @@ import { LANTERN_THIEF_JOBS } from './arcs/lanternThief';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
 import { MARKET_STREET } from './market';
+import { PORT_SHIOMACHI } from './shiomachi';
 import { TOROGAKURE_WILDS } from './wilds';
 
 export const ORIGINAL_TEXT: SettingText = {
@@ -33,7 +34,6 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     name: 'Tōrōgakure',
     epithet: 'Village Hidden Among Lanterns',
     backdrop: 'lantern-rooftops',
-    travel: { days: 0, cost: 0, danger: 'Home' },
     places: [
       {
         id: 'mission-hall',
@@ -255,27 +255,28 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     ],
   },
   {
+    id: 'kiri-ford',
+    name: 'Kiri Ford',
+    epithet: 'River city',
+    backdrop: 'mist',
+    places: [],
+    lockedReason: 'Coming soon',
+  },
+  {
     id: 'sakyugakure',
     name: 'Sakyūgakure',
     epithet: 'Village Hidden in the Dunes',
     backdrop: 'dunes',
     places: [],
-    travel: { days: 3, cost: 120, danger: 'Bandits: low', lockedReason: 'Coming soon' },
+    lockedReason: 'Coming soon',
   },
-  {
-    id: 'port-shiomachi',
-    name: 'Port Shiomachi',
-    epithet: 'Fishing town',
-    backdrop: 'coast',
-    places: [],
-    travel: { days: 1, cost: 0, danger: 'Safe road', lockedReason: 'Coming soon' },
-  },
+  PORT_SHIOMACHI,
   {
     id: 'mount-reikon',
     name: 'Mount Reikon',
     epithet: 'Where spirits gather',
     backdrop: 'mountain',
     places: [],
-    travel: { days: 4, cost: 0, danger: 'Spirits', lockedReason: 'Needs Chūnin rank' },
+    lockedReason: 'Needs Chūnin rank',
   },
 ];

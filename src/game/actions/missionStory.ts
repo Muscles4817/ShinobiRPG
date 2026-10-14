@@ -6,6 +6,7 @@ import { campActivity, campChoices, campOver } from '../story/camp';
 import { decide } from '../story/decide';
 import { storyOf } from '../story/state';
 import type { GameState } from '../state';
+import { walkOn } from './travel';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
@@ -29,13 +30,14 @@ export const missionDecide: ActionHandler<ActionOf<'missionDecide'>> = {
     if (!state.mission || !option) return 'There is no decision to make right now.';
     return holds(storyOf(state.mission), option.when) ? null : 'That isn’t open to you here.';
   },
-  perform(state, action, ctx) {
+  perform(state, action, ctx, rng) {
     const def = activeMission(state, ctx);
     const option = openOptions(state, ctx)[action.optionIndex];
     if (!def || !option) return state;
     const decided = decide(state, ctx, def, option);
     if (!decided.mission) return decided;
-    return afterStage({ ...decided, mission: advance(decided.mission) }, ctx);
+    // On a quick trip, the road event dealt with, you hurry on.
+    return walkOn(afterStage({ ...decided, mission: advance(decided.mission) }, ctx), ctx, rng);
   },
 };
 

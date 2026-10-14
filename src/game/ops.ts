@@ -66,7 +66,8 @@ export function statChips(delta: StatDelta, tone: ChipTone = 'gain'): JournalChi
 /** Reason the character can't start a new activity, or null if they're free. */
 export function busyReason(state: GameState): string | null {
   if (state.combat) return 'You are in the middle of a fight.';
-  if (state.mission) return 'You are on a mission.';
+  if (state.mission)
+    return state.mission.journey ? 'You are on the road.' : 'You are on a mission.';
   if (state.exams.run) return 'You are sitting an exam.';
   if (state.exams.ceremony) return 'Your promotion ceremony is waiting.';
   if (state.people.conversation) return 'You are in the middle of a conversation.';

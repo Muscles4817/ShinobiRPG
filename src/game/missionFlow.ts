@@ -14,6 +14,7 @@ import type { GameContext } from './context';
 import { workedFor } from './clients';
 import { crewDebrief, debriefLines, gradeOf, helpedOf } from './debrief';
 import { forestCleared, forestLost } from './exam/forest';
+import { arrive, journeyMission } from './journeys';
 import { chip, log, placeHere } from './ops';
 import { handedOver } from './missionRewards';
 import { tendWounds } from './missionTeam';
@@ -34,7 +35,11 @@ export const TEAM_MISSION_BOND = 6;
 export const BEATEN = 'You were beaten unconscious.';
 
 export function activeMission(state: GameState, ctx: GameContext): MissionDef | null {
-  return state.mission ? ctx.content.missions.require(state.mission.missionId) : null;
+  const run = state.mission;
+  if (!run) return null;
+  return run.journey
+    ? journeyMission(run.journey, ctx)
+    : ctx.content.missions.require(run.missionId);
 }
 
 export function activeStage(state: GameState, ctx: GameContext): MissionStage | null {
@@ -62,6 +67,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
   const run = settle(def, before.mission);
   const state = { ...before, mission: run };
   if (currentStage(def, run)) return tendWounds(state, ctx);
+  if (run.journey) return arrive(state, ctx, run.journey);
   if (def.examOnly) return forestCleared(state, ctx);
   const earned = reward(def, state.mission);
   const senior = isSeniorMission(def.rank);

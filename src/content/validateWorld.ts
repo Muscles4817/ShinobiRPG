@@ -124,6 +124,7 @@ function placeRefs(place: PlaceDef): [RefKind, string][] {
       ]);
     case 'home':
     case 'hospital':
+    case 'inn':
       return [];
   }
 }

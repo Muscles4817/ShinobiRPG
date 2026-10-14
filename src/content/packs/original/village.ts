@@ -223,6 +223,26 @@ export const VILLAGE: VillageLife = {
       ],
     },
     {
+      id: 'boat-lanterns',
+      name: 'Night of the Boat Lanterns',
+      description:
+        'Shiomachi floats a paper boat for everyone lost at sea, and eats grilled eel on the jetty.',
+      locationId: 'port-shiomachi',
+      season: 1,
+      day: 20,
+      marketPrices: 0.7,
+      bondBonus: 3,
+      stalls: [
+        {
+          name: 'Jetty Eel Grill',
+          blurb: 'Only on the night of the boats',
+          icon: 'grill',
+          foodIds: ['jetty-eel'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
+    },
+    {
       id: 'lantern-festival',
       name: 'Festival of Lanterns',
       description:

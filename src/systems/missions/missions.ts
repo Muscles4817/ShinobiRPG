@@ -167,6 +167,21 @@ export interface MissionRun {
   readonly bondsAtStart?: Readonly<Record<string, number>>;
   /** What the village remembered when the job began (world marks), for `remembers`. */
   readonly remembered?: readonly string[];
+  /** Set when this is a trip of your own along the roads, not a job (`game/journeys.ts`). */
+  readonly journey?: JourneyPlan;
+}
+
+/** A trip along the roads: where from and to, the way as legs, and whether to hurry. */
+export interface JourneyPlan {
+  readonly from: string;
+  readonly to: string;
+  readonly legs: readonly {
+    readonly region: string;
+    readonly days: number;
+    readonly text: string;
+  }[];
+  /** Walk on without stopping to camp; only a road event halts you. */
+  readonly quick: boolean;
 }
 
 export function startRun(def: MissionDef, crew: Crew, marks: readonly string[] = []): MissionRun {

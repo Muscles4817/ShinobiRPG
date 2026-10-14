@@ -119,6 +119,18 @@ export type Report =
       readonly opens: readonly { readonly name: string; readonly where: string }[];
     }
   | {
+      /** Home from a trip of your own: what the village did while you were gone. */
+      readonly kind: 'home-again';
+      readonly place: string;
+      readonly days: number;
+      readonly news: readonly {
+        readonly label: string;
+        readonly value: string;
+        readonly tone?: 'gain' | 'cost' | 'harm';
+      }[];
+      readonly text: string;
+    }
+  | {
       /** The chakra paper showed your nature. */
       readonly kind: 'nature';
       readonly nature: Element;
