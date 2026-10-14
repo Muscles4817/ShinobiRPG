@@ -107,6 +107,13 @@ export interface Breakthrough {
   readonly limits: StatDelta;
 }
 
+/** A snack you ate: its buff works through slot `untilSlot` (counted from the first morning). */
+export interface Snack {
+  readonly recipeId: string;
+  readonly quality: MealQuality;
+  readonly untilSlot: number;
+}
+
 export interface Character {
   readonly name: string;
   /** Family name; for clan members, the clan's name. */
@@ -145,6 +152,8 @@ export interface Character {
   readonly meal: string | null;
   /** How well today's meal turned out; absent means good (saves from before the stove). */
   readonly mealQuality?: MealQuality;
+  /** A snack's short buff, alongside the meal; absent when none is working. */
+  readonly snack?: Snack;
   /** Injuries you carry; each heals on its own morning. */
   readonly injuries: readonly Injury[];
   /** Chakra exhaustion: nights' sleep refill only part of your chakra until it passes. */

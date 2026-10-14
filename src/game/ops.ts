@@ -9,6 +9,7 @@ import type { GameContext } from './context';
 import { healInjuries } from './injuries';
 import { peopleGrown } from './people/progress';
 import { characterModifiers } from './profile';
+import { snackAt } from './snacks';
 import type { GameState } from './state';
 
 /**
@@ -21,14 +22,17 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
   const { character } = state;
   const { hungerRate } = characterModifiers(character, ctx);
   const time = advanceSlots(state.time, slots);
+  const { snack: _snack, ...rest } = character;
+  const snack = snackAt(character.snack, time);
   const passed: GameState = {
     ...state,
     time,
     character: {
-      ...character,
+      ...rest,
       vitals: passTime(character.vitals, slots, character.stats, hungerRate),
-      // A home-cooked meal's buff lasts until the day ends.
+      // A home-cooked meal's buff lasts until the day ends; a snack's only a little while.
       meal: time.day === state.time.day ? character.meal : null,
+      ...(snack ? { snack } : {}),
     },
   };
   const newDay = time.day !== state.time.day;

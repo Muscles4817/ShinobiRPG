@@ -19,6 +19,7 @@ import type { JournalChip } from '@/systems/journal';
 import type { GameContext } from '../context';
 import { adjust, busyReason, chip, firstBlocker, log, spendTime } from '../ops';
 import type { GameState } from '../state';
+import { snackFrom } from '../snacks';
 import { cookedAsUsual, cookedByHand, type StoveResult } from '../stove';
 import { homeBlocker } from './daily';
 import type { ActionHandler, ActionOf } from './types';
@@ -93,12 +94,11 @@ export function cookMeal(
   );
   if (!used.ok) return { state, chips: [] };
   const cooking = cookedOnce(state.cooking, recipe.id, recipe.rank);
-  const cooked = {
-    ...state,
-    inventory: used.value,
-    cooking,
-    character: { ...state.character, meal: recipe.id, mealQuality: quality },
-  };
+  const character =
+    recipe.kind === 'snack'
+      ? { ...state.character, snack: snackFrom(recipe.id, quality, state.time) }
+      : { ...state.character, meal: recipe.id, mealQuality: quality };
+  const cooked = { ...state, inventory: used.value, cooking, character };
   const fed = adjust(spendTime(cooked, COOK_SLOTS, ctx), {
     satiety: amountAt(recipe.satiety, quality, true),
     energy: amountAt(recipe.energy, quality),

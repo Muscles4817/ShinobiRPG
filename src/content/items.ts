@@ -100,6 +100,11 @@ export interface RecipeDef {
   readonly rank: StatGrade;
   /** Everyone knows it from the start (validated: rank E). */
   readonly starter?: boolean;
+  /**
+   * A snack (tea, a sweet) sits beside the day's meal: its buff lasts only through the next
+   * stretch of the day, and a new snack replaces it. Absent: a meal.
+   */
+  readonly kind?: 'snack';
   /** How it's cooked: the method sets the right cut, heat and finish at the stove. */
   readonly method: CookingMethod;
   /** Where this dish goes against its method (a gentle fry for a rolled omelette). */

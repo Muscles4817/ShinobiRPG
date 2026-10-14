@@ -37,6 +37,7 @@ export function dinnerBlocker(
     busyReason(state),
     homeBlocker(state, ctx),
     recipeBlocker(state, recipe),
+    recipe.kind === 'snack' && 'Guests come round for a meal, not a snack.',
     state.time.slot !== DINNER_SLOT && 'Guests come round in the evening.',
     missing && `Cooking for two. ${missing}`,
   );

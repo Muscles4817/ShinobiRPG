@@ -40,6 +40,18 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
           </span>
         </p>
       )}
+      {view.snack && (
+        <p className="meal-today">
+          A snack of <b>{view.snack.name}</b> is keeping you going
+          <span className="chips">
+            {view.snack.effects.map((e) => (
+              <span key={e.label} className="chip gain">
+                {e.label}
+              </span>
+            ))}
+          </span>
+        </p>
+      )}
       <p className="pantry">
         {view.pantry.length === 0
           ? 'The pantry is empty. The grocer at the market sells ingredients.'
@@ -58,6 +70,7 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
               <b>{r.name}</b>
               <GradeBadge grade={r.rank} />
               {r.mastery && <span className="badge">{r.mastery}</span>}
+              {r.snack && <span className="badge">Snack</span>}
             </div>
             <span className="chips">
               <span className="chip gain">Hunger −{r.satiety}</span>

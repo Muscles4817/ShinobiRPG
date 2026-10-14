@@ -238,6 +238,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`fish`, by spot) once a day each, drawing from `finds` by season, hour and cooking grade.
     A dish cooked well brings its `provision` into the day's fights (`CombatantSetup.provisions`,
     rules in `rules/provisions.ts`: fortified, steady, antidote, second wind); never a stat.
+    A `snack` (tea, sweets) sits beside the meal for the next stretch of the day (`snacks.ts`).
+    A pack's own dishes live in `packs/<id>/recipes.ts`, taught by its people and books.
     Hunger works the same way: the player sees a Hunger meter (100 − satiety), and each
     stage (`hungerLevel`: peckish, hungry, starving) is a `ModifierSpec` plus a fight-strength
     multiplier in `game/hunger.ts`; starving also blocks hard work (`weakFromHunger`).

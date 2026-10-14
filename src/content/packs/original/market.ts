@@ -45,6 +45,7 @@ export const MARKET_STREET: PlaceDef = {
       hours: ['morning', 'afternoon', 'evening'],
       icon: 'tea',
       foodIds: ['red-bean-bun', 'canal-sencha'],
+      ingredientIds: ['tea-leaves'],
     },
     {
       name: 'Apothecary',
@@ -72,6 +73,11 @@ export const MARKET_STREET: PlaceDef = {
         'cucumbers',
         'chestnuts',
         'winter-radish',
+        'buckwheat',
+        'sesame',
+        'red-beans',
+        'lotus-root',
+        'pickled-plums',
       ],
       cookbookIds: [
         'everyday-kitchen',
@@ -79,6 +85,7 @@ export const MARKET_STREET: PlaceDef = {
         'food-for-the-road',
         'foragers-notes',
         'river-cook',
+        'lantern-village-kitchen',
       ],
     },
   ],
