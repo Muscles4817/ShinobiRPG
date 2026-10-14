@@ -23,14 +23,14 @@ function needMet(state: GameState, ctx: GameContext, need: RouteNeed): boolean {
 }
 
 /** What a need asks, as a phrase after "needs". */
-function needPhrase(need: RouteNeed): string {
+function needPhrase(ctx: GameContext, need: RouteNeed): string {
   switch (need.kind) {
     case 'rank':
       return `${RANK_LABELS[need.rank]} rank`;
     case 'worldMark':
       return need.text;
     case 'walk':
-      return walkingTakes(need.surface);
+      return walkingTakes(ctx, need.surface);
   }
 }
 
@@ -53,10 +53,10 @@ export function roadOpen(state: GameState, ctx: GameContext, route: RouteDef): b
 
 /**
  * Why a road whose ends are open is closed to you, as a sentence ("The bay crossing needs
- * water-walking: chakra control at grade C."), or null when nothing you lack closes it.
+ * water-walking."), or null when nothing you lack closes it.
  */
 export function closedBy(state: GameState, ctx: GameContext, route: RouteDef): string | null {
   const need = unmetBy(state, ctx, route);
   if (need === null || !endsOpen(route, ctx)) return null;
-  return `${route.name ?? 'The road'} needs ${needPhrase(need)}.`;
+  return `${route.name ?? 'The road'} needs ${needPhrase(ctx, need)}.`;
 }

@@ -4,6 +4,7 @@ import { diffStats, STAT_INFO, type StatId } from '@/systems/stats';
 import { DAYS_PER_WEEK } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { dueAtLesson, startedAtLesson } from '../exercises';
 import { passAfterLesson } from '../leave';
 import { permitAfterLesson } from '../permits';
 import { growCharacter, logDiscoveries, noTalentReason } from '../growth';
@@ -236,9 +237,23 @@ export function lessonAway(
   return slipsAfterLesson(logDiscoveries(logged, session.discovered, ctx), ctx, sensei);
 }
 
-/** What your sensei signs after a lesson: the library permit, and the week's travel pass. */
+/**
+ * What comes after a lesson with your sensei: the library permit and the week's travel pass
+ * they sign, and an exercise they start with you once you're ready (tree-walking).
+ */
 function slipsAfterLesson(state: GameState, ctx: GameContext, sensei: PersonDef): GameState {
-  return passAfterLesson(permitAfterLesson(state, ctx, sensei), sensei);
+  return exerciseAfterLesson(passAfterLesson(permitAfterLesson(state, ctx, sensei), sensei), ctx);
+}
+
+function exerciseAfterLesson(state: GameState, ctx: GameContext): GameState {
+  const exercise = dueAtLesson(state, ctx);
+  if (!exercise) return state;
+  return log(startedAtLesson(state, exercise), {
+    heading: exercise.name,
+    text: exercise.lines.start ?? exercise.description,
+    tone: 'success',
+    chips: [chip(`${exercise.name} begun`, 'gain')],
+  });
 }
 
 export const trainWith: ActionHandler<TrainWith> = {

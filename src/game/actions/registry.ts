@@ -8,6 +8,7 @@ import { payRent, treat } from './services';
 import { hostDinner } from './dinner';
 import { takeRoom } from './inn';
 import { buyHouse } from './house';
+import { practise } from './practise';
 import { turnBack } from './turnBack';
 import { cook } from './kitchen';
 import { experiment } from './experiment';
@@ -38,6 +39,7 @@ export const HANDLERS: Registry = {
   sleep,
   takeRoom,
   buyHouse,
+  practise,
   payRent,
   treat,
   travel,

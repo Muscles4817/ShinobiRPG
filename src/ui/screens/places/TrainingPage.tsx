@@ -5,6 +5,7 @@ import { headerView, hubView, trainingView, type DrillGroup, type StatPreview } 
 import { Icon } from '../../art/Icon';
 import { Chips } from '../../components/Chips';
 import { Banner } from '../../components/Banner';
+import { ControlExercises } from './ControlExercises';
 import { PeopleHere } from './PeopleHere';
 import { TeamCorner } from './TeamCorner';
 import type { PlaceProps } from '../types';
@@ -64,6 +65,7 @@ export function TrainingPage({ ctx, state, perform, onBack }: PlaceProps) {
         </section>
         <PeopleHere teachers={view.teachers} perform={perform} />
         <TeamCorner sparring={view.sparring} perform={perform} />
+        <ControlExercises exercises={view.exercises} perform={perform} />
         <div className="filters" role="group" aria-label="Filter drills">
           {FILTERS.map((f) => (
             <button

@@ -244,8 +244,8 @@ and housing read the save's home village, not `content.startLocationId`).
 
 ### 3.8 Chakra control in the world
 
-Tree-walking and water-walking become **milestones** on the character (learned by drill,
-as the progression plan describes). A route or a place may need one:
+Tree-walking and water-walking are **control exercises** learned by drill and mastered as
+breakthroughs (`docs/design/milestone3-plan.md`). A route or a place may need one:
 
 - Water-walking opens the bay crossing and the breakwater's tide drill.
 - Tree-walking opens a forest shortcut and a hidden training ground at home.

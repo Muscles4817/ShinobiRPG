@@ -1,36 +1,32 @@
-import { STAT_GRADES, statTier, type StatGrade } from '@/systems/stats';
+import type { ExerciseDef } from '@/content';
 import type { WalkSurface } from '@/systems/travel';
 
 import type { GameContext } from './context';
+import { hasMastered } from './exercises';
 import type { GameState } from './state';
 
 /**
  * Whether a character can walk on water or up trees with chakra: the one place the game asks.
- *
- * Stand-in: until milestone 3 makes tree- and water-walking milestones learned by drill, the
- * answer is a chakra control grade. Replace this file's rule with the milestone when it lands;
- * nothing else reads chakra control for walking.
+ * It is the control exercise for that surface, mastered (`exercises.ts`); a pack without one
+ * has no way across.
  */
 
-/** Chakra control grade that stands in for tree-walking. */
-export const TREE_WALKING_GRADE: StatGrade = 'D';
-/** Chakra control grade that stands in for water-walking. */
-export const WATER_WALKING_GRADE: StatGrade = 'C';
+const SURFACE_WORDS: Readonly<Record<WalkSurface, string>> = {
+  trees: 'walking up trees',
+  water: 'walking on water',
+};
 
-const WALKING: Readonly<Record<WalkSurface, { readonly name: string; readonly grade: StatGrade }>> =
-  {
-    trees: { name: 'tree-walking', grade: TREE_WALKING_GRADE },
-    water: { name: 'water-walking', grade: WATER_WALKING_GRADE },
-  };
-
-/** Can this character walk on `surface`? (`ctx` is for the milestone that replaces the rule.) */
-export function canWalk(state: GameState, _ctx: GameContext, surface: WalkSurface): boolean {
-  const grade = statTier(state.character.stats.chakraControl).grade;
-  return STAT_GRADES.indexOf(grade) >= STAT_GRADES.indexOf(WALKING[surface].grade);
+function exerciseFor(ctx: GameContext, surface: WalkSurface): ExerciseDef | undefined {
+  return ctx.content.exercises.all.find((e) => e.walk === surface);
 }
 
-/** What walking on `surface` takes, as a phrase after "needs": "water-walking: chakra control at grade C". */
-export function walkingTakes(surface: WalkSurface): string {
-  const { name, grade } = WALKING[surface];
-  return `${name}: chakra control at grade ${grade}`;
+/** Can this character walk on `surface`? */
+export function canWalk(state: GameState, ctx: GameContext, surface: WalkSurface): boolean {
+  const exercise = exerciseFor(ctx, surface);
+  return exercise !== undefined && hasMastered(state, exercise);
+}
+
+/** What walking on `surface` takes, as a phrase after "needs": "water-walking". */
+export function walkingTakes(ctx: GameContext, surface: WalkSurface): string {
+  return exerciseFor(ctx, surface)?.name.toLowerCase() ?? SURFACE_WORDS[surface];
 }

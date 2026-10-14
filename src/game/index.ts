@@ -55,6 +55,7 @@ export {
   type TrainingView,
   type Drill,
   type DrillGroup,
+  type ExerciseCard,
   type StatPreview,
 } from './views/training';
 export {

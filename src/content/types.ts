@@ -15,6 +15,7 @@ import type { Season } from '@/systems/time';
 import type { RouteDef } from '@/systems/travel';
 
 import type { BackdropId, IconId } from './art';
+import type { ExerciseDef } from './exercises';
 import type { CookbookDef, GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
 import type { InjuryDef } from './injuries';
 import type { BuildDef, UpbringingDef } from './upbringing';
@@ -233,7 +234,12 @@ interface PlaceBase {
  * are possible there; the kind-specific fields say what is on offer.
  */
 export type PlaceDef =
-  | (PlaceBase & { readonly kind: 'training'; readonly trainingIds: readonly string[] })
+  | (PlaceBase & {
+      readonly kind: 'training';
+      readonly trainingIds: readonly string[];
+      /** Chakra control exercises practised here (`ExerciseDef`). */
+      readonly exerciseIds?: readonly string[];
+    })
   | (PlaceBase & { readonly kind: 'market'; readonly stalls: readonly Stall[] })
   | (PlaceBase & { readonly kind: 'missions'; readonly missionIds: readonly string[] })
   /** Scrolls a fresh genin can study: rank E and D only. */
@@ -297,6 +303,8 @@ export interface ContentPack {
   readonly locations: readonly LocationDef[];
   /** The roads between locations. */
   readonly routes: readonly RouteDef[];
+  /** Chakra control exercises (tree-walking, water-walking). */
+  readonly exercises: readonly ExerciseDef[];
   readonly techniques: readonly TechniqueDef[];
   readonly missions: readonly MissionDef[];
   /** Promotion exams, held on their dates (the chūnin exam). */

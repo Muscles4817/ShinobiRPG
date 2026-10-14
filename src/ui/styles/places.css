@@ -760,3 +760,37 @@
   margin: 0;
   font-family: var(--font-story);
 }
+
+/* Chakra control exercises: a plaque each, with how far you've got. */
+.exercises {
+  display: grid;
+  gap: 8px;
+}
+.exercises h2 {
+  font-family: var(--font-story);
+  font-size: 1rem;
+}
+.exercise {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--grain), var(--surface);
+}
+.exercise h3 {
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+}
+.exercise .btn {
+  justify-self: start;
+  min-height: 40px;
+}
+.budget-bar.control i {
+  background: var(--chakra);
+}
+.exercise-done {
+  color: var(--good);
+  font-family: var(--font-story);
+  font-weight: 700;
+}

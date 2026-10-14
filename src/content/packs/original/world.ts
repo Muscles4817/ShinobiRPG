@@ -81,6 +81,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'blade-forms',
           'ward-writing',
         ],
+        exerciseIds: ['tree-walking'],
       },
       MARKET_STREET,
       {
