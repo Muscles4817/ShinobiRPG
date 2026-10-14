@@ -64,4 +64,44 @@ export const CANON_SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     rank: 'D',
     difficulty: 55,
   },
+  {
+    id: 'hiding-in-surface',
+    name: 'Hiding in Surface Technique',
+    description: 'You sink into a wall or a tree trunk and step out of it somewhere else.',
+    discipline: 'ninjutsu',
+    effects: [
+      { verb: 'conceal', power: 12, scaling: { drive: ['ninjutsu'] } },
+      { verb: 'move', power: 6 },
+    ],
+    chakraCost: 10,
+    rank: 'C',
+    difficulty: 75,
+  },
+  {
+    id: 'string-bean-binding',
+    name: 'String Bean Binding Illusion',
+    description:
+      'Bean vines that are not there wind round the target and lift them off their feet.',
+    discipline: 'genjutsu',
+    effects: [
+      { verb: 'pin', power: 13, scaling: { resist: ['willpower'] } },
+      { verb: 'daze', power: 6 },
+    ],
+    chakraCost: 11,
+    rank: 'C',
+    difficulty: 75,
+  },
+  {
+    id: 'sealed-binding-formation',
+    name: 'Sealed Binding Formation',
+    description: 'A sealing formation thrown round the target that holds them where they stand.',
+    discipline: 'fuuinjutsu',
+    effects: [
+      { verb: 'pin', power: 11 },
+      { verb: 'seal', power: 6 },
+    ],
+    chakraCost: 9,
+    rank: 'D',
+    difficulty: 60,
+  },
 ];

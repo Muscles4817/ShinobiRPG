@@ -2,6 +2,8 @@ import { look } from '../../../look';
 import { statLine, talent } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
+import { NARUTO_TEACHER, SAKURA_TEACHER } from '../teachers';
+
 import {
   HINATA_ARSENAL,
   KIBA_ARSENAL,
@@ -46,20 +48,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Loud, stubborn and impossible to discourage. Says he will be Hokage. Eats only ramen.',
-    teacher: {
-      teaches: [
-        'adamantine-chains',
-        'sexy-technique',
-        'uzumaki-combo',
-        'two-thousand-combo',
-        'all-directions-shuriken',
-        'clone-body-blow',
-        'harem-technique',
-        'shuriken-shadow-clone',
-        'spiralling-serial-spheres',
-        'food-cart-destroyer',
-      ],
-    },
+    teacher: NARUTO_TEACHER,
     schedule: {
       morning: 'training-grounds',
       afternoon: 'mission-desk',
@@ -135,7 +124,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       evening: 'shopping-district',
       night: null,
     },
-    teacher: { teaches: ['chakra-scalpel', 'chakra-enhanced-strength', 'creation-rebirth'] },
+    teacher: SAKURA_TEACHER,
   },
   {
     id: 'hinata',

@@ -93,4 +93,19 @@ export const CANON_AKIMICHI: readonly TechniqueDef[] = [
     oncePerFight: true,
     afterCost: { kind: 'hospital', days: 2 },
   },
+  {
+    id: 'ballistic-waterwheel',
+    name: 'Ballistic Waterwheel',
+    description: 'Swell up with swallowed water and roll at them as a heavy, sloshing ball.',
+    discipline: 'taijutsu',
+    clan: 'akimichi',
+    reach: ['close', 'mid'],
+    effects: [
+      { verb: 'break', power: 16 },
+      { verb: 'knock', power: 8, to: 'mid' },
+    ],
+    chakraCost: 11,
+    rank: 'C',
+    difficulty: 80,
+  },
 ];
