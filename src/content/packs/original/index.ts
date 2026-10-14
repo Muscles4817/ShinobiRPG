@@ -38,6 +38,7 @@ import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { LANTERN_THIEF, LANTERN_THIEF_JOBS } from './arcs/lanternThief';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
+import { ORIGINAL_ROUTES } from './routes';
 
 /** The game's own setting: Tōrōgakure in the Land of Embers. Safe to ship publicly. */
 export const ORIGINAL_PACK: ContentPack = {
@@ -48,6 +49,7 @@ export const ORIGINAL_PACK: ContentPack = {
   startingRyo: 300,
   text: ORIGINAL_TEXT,
   locations: ORIGINAL_LOCATIONS,
+  routes: ORIGINAL_ROUTES,
   techniques: [
     ...TECHNIQUES,
     ...CLAN_TECHNIQUES,

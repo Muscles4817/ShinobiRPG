@@ -309,4 +309,8 @@ migration and a previous-version save test wherever the save shape changes.
 
 ## Part 5: What was built
 
-Nothing yet.
+1. **Routes** (this step). `systems/travel` (routes, the quickest open journey, what can be
+   reached), `ContentPack.routes` for both packs, `LocationDef.travel` replaced by
+   `lockedReason` alone, `validateRoutes`, Kiri Ford as a locked waypoint, and the Travel tab
+   showing days, ryo, the worst of the road and the places passed. Travel still jumps; step 2
+   makes it a journey.

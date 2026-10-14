@@ -1,6 +1,7 @@
 import type { ExamDef } from '@/systems/exams';
 import type { ArcDef, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
 import type { TechniqueDef } from '@/systems/techniques';
+import type { RouteDef } from '@/systems/travel';
 
 import { createCatalog, type Catalog } from './catalog';
 import type { InjuryDef } from './injuries';
@@ -41,6 +42,7 @@ export interface ContentDb {
   readonly startingRyo: number;
   readonly text: SettingText;
   readonly locations: Catalog<LocationDef>;
+  readonly routes: Catalog<RouteDef>;
   readonly techniques: Catalog<TechniqueDef>;
   readonly missions: Catalog<MissionDef>;
   readonly exams: Catalog<ExamDef>;
@@ -79,6 +81,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     startingRyo: pack.startingRyo,
     text: pack.text,
     locations: createCatalog('location', pack.locations),
+    routes: createCatalog('route', pack.routes),
     techniques: createCatalog('technique', pack.techniques),
     missions: createCatalog('mission', pack.missions),
     exams: createCatalog('exam', pack.exams),

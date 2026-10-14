@@ -35,7 +35,7 @@ src/
   core/       Game-agnostic utilities: seeded Rng, Result, math. Knows nothing about the game.
   systems/    Self-contained domain modules. Pure functions over their own slice of state.
     time/ stats/ vitals/ wallet/ housing/ techniques/ missions/ combat/ standing/ journal/
-    modifiers/ profile/ bonds/ inventory/
+    modifiers/ profile/ bonds/ inventory/ travel/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
@@ -316,8 +316,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   catches broken references and anything no place offers.
 - **Add a content pack:** copy `packs/original/`, change ids/names, register it. Keep every
   pack complete; packs don't inherit from each other.
-- **Add a location:** add a `LocationDef` with a backdrop and places. Leave `travel.lockedReason`
-  set until it is playable; the Travel tab shows it as coming soon.
+- **Add a location:** add a `LocationDef` with a backdrop and places, and a `RouteDef` to it in
+  the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`;
+  `systems/travel` finds the quickest open way, validated so every location has a road). Leave
+  `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road
+  passes through it.
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
   model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
   compiler lists every switch you missed).

@@ -1,6 +1,7 @@
 import { SLOTS_PER_DAY } from '@/systems/time';
 import { spend } from '@/systems/wallet';
 
+import { journeyTo } from '../journeys';
 import { busyReason, chip, firstBlocker, log, spendTime } from '../ops';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -8,17 +9,22 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
   check(state, action, ctx) {
     const destination = ctx.content.locations.get(action.locationId);
     if (!destination) return 'Unknown destination.';
+    const journey = journeyTo(state, ctx, destination.id);
     return firstBlocker(
       busyReason(state),
       destination.id === state.locationId && 'You are already here.',
-      destination.travel.lockedReason ?? null,
-      state.wallet.ryo < destination.travel.cost &&
-        `The journey costs ${destination.travel.cost} ryo.`,
+      destination.lockedReason ?? null,
+      !journey && 'No open road goes there yet.',
+      journey !== null &&
+        state.wallet.ryo < journey.cost &&
+        `The journey costs ${journey.cost} ryo.`,
     );
   },
   perform(state, action, ctx) {
     const destination = ctx.content.locations.require(action.locationId);
-    const { days, cost } = destination.travel;
+    const journey = journeyTo(state, ctx, destination.id);
+    if (!journey) return state;
+    const { days, cost } = journey;
     const paid = spend(state.wallet, cost);
     if (!paid.ok) return state;
     const arrived = spendTime(

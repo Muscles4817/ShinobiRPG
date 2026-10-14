@@ -30,7 +30,6 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     name: 'Tōrōgakure',
     epithet: 'Village Hidden Among Lanterns',
     backdrop: 'lantern-rooftops',
-    travel: { days: 0, cost: 0, danger: 'Home' },
     places: [
       {
         id: 'mission-hall',
@@ -251,12 +250,20 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     ],
   },
   {
+    id: 'kiri-ford',
+    name: 'Kiri Ford',
+    epithet: 'River city',
+    backdrop: 'mist',
+    places: [],
+    lockedReason: 'Coming soon',
+  },
+  {
     id: 'sakyugakure',
     name: 'Sakyūgakure',
     epithet: 'Village Hidden in the Dunes',
     backdrop: 'dunes',
     places: [],
-    travel: { days: 3, cost: 120, danger: 'Bandits: low', lockedReason: 'Coming soon' },
+    lockedReason: 'Coming soon',
   },
   {
     id: 'port-shiomachi',
@@ -264,7 +271,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     epithet: 'Fishing town',
     backdrop: 'coast',
     places: [],
-    travel: { days: 1, cost: 0, danger: 'Safe road', lockedReason: 'Coming soon' },
+    lockedReason: 'Coming soon',
   },
   {
     id: 'mount-reikon',
@@ -272,6 +279,6 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     epithet: 'Where spirits gather',
     backdrop: 'mountain',
     places: [],
-    travel: { days: 4, cost: 0, danger: 'Spirits', lockedReason: 'Needs Chūnin rank' },
+    lockedReason: 'Needs Chūnin rank',
   },
 ];

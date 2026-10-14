@@ -32,6 +32,7 @@ export function TravelScreen({ ctx, state, perform }: ScreenProps) {
                   <span>{d.days === 1 ? '1 day' : `${d.days} days`}</span>
                   <span>{d.cost > 0 ? `${d.cost} ryo` : 'Free on foot'}</span>
                   <span>{d.danger}</span>
+                  {d.via && <span>{d.via}</span>}
                   {d.lockedReason && <span className="dest-lock">{d.lockedReason}</span>}
                 </span>
               )}
