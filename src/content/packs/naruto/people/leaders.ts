@@ -3,9 +3,19 @@ import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
 import {
+  CHOZA_TEACHER,
+  HIASHI_TEACHER,
+  INOICHI_TEACHER,
+  SHIBI_TEACHER,
+  SHIKAKU_TEACHER,
+  TSUME_TEACHER,
+} from '../leaderTeachers';
+
+import {
   CHOZA_ARSENAL,
   HIASHI_ARSENAL,
   HIRUZEN_ARSENAL,
+  INOICHI_ARSENAL,
   SHIBI_ARSENAL,
   SHIKAKU_ARSENAL,
   TSUME_ARSENAL,
@@ -65,23 +75,7 @@ export const LEADERS: readonly PersonDef[] = [
     specialty: 'taijutsu',
     bio: 'Master of the main house. Measures everyone, his own daughters first, and rarely approves.',
     schedule: { morning: 'training-grounds', afternoon: null, evening: null, night: null },
-    teacher: {
-      quirk: 'harsh',
-      steers: { focus: 'specialty', freeAtStage: 4 },
-      teaches: [
-        'gentle-fist',
-        'air-palm',
-        'sixty-four-palms',
-        'eight-trigrams-rotation',
-        'hundred-twenty-eight-palms',
-        'palm-bottom',
-        'one-blow-body',
-        'protecting-sixty-four-palms',
-        'vacuum-wall-palm',
-        'twin-lion-fists',
-      ],
-      price: { kind: 'bond', minStage: 3, line: '“The Hyūga do not instruct strangers.”' },
-    },
+    teacher: HIASHI_TEACHER,
     arsenal: HIASHI_ARSENAL,
   },
   {
@@ -108,21 +102,8 @@ export const LEADERS: readonly PersonDef[] = [
       evening: 'training-grounds',
       night: 'izakaya',
     },
-    teacher: {
-      quirk: 'patient',
-      teaches: ['mind-body-switch', 'mind-destruction', 'mind-clone-switch'],
-      price: {
-        kind: 'all',
-        parts: [
-          { kind: 'bond', minStage: 1 },
-          {
-            kind: 'mission',
-            missionId: 'yamanaka-weeding',
-            line: '“Help with the flower beds first. A mind is a garden too.”',
-          },
-        ],
-      },
-    },
+    teacher: INOICHI_TEACHER,
+    arsenal: INOICHI_ARSENAL,
   },
   {
     id: 'shikaku',
@@ -148,22 +129,7 @@ export const LEADERS: readonly PersonDef[] = [
       evening: 'mission-desk',
       night: 'izakaya',
     },
-    teacher: {
-      quirk: 'natural',
-      teaches: [
-        'shadow-possession',
-        'shadow-neck-bind',
-        'shadow-clutch',
-        'shadow-gathering',
-        'shadow-imitation-shuriken',
-        'shadow-sewing',
-      ],
-      price: {
-        kind: 'favour',
-        favourId: 'shikaku-shogi',
-        ask: 'Shikaku wants a game of shōgi first. He doesn’t care if you win; he cares how you lose.',
-      },
-    },
+    teacher: SHIKAKU_TEACHER,
     arsenal: SHIKAKU_ARSENAL,
   },
   {
@@ -190,25 +156,7 @@ export const LEADERS: readonly PersonDef[] = [
       evening: 'shopping-district',
       night: 'izakaya',
     },
-    teacher: {
-      quirk: 'patient',
-      teaches: [
-        'partial-expansion',
-        'human-bullet-tank',
-        'multi-size',
-        'spiked-human-bullet-tank',
-        'super-multi-size',
-        'butterfly-mode',
-        'butterfly-bullet-bombing',
-        'ballistic-waterwheel',
-        'super-open-hand-slap',
-      ],
-      price: {
-        kind: 'bond',
-        minStage: 1,
-        line: '“Eat with me once and we’re friends. Then we train.”',
-      },
-    },
+    teacher: CHOZA_TEACHER,
     arsenal: CHOZA_ARSENAL,
   },
   {
@@ -235,32 +183,7 @@ export const LEADERS: readonly PersonDef[] = [
       evening: 'shopping-district',
       night: null,
     },
-    teacher: {
-      quirk: 'harsh',
-      steers: { focus: 'specialty', freeAtStage: 3 },
-      teaches: [
-        'fang-over-fang',
-        'passing-fang',
-        'four-legs',
-        'beast-human-clone',
-        'double-headed-wolf',
-        'fang-wolf-fang',
-        'fang-rotating-fang',
-        'three-headed-wolf',
-        'tail-chasing-rotating-fang',
-      ],
-      price: {
-        kind: 'all',
-        parts: [
-          { kind: 'bond', minStage: 2 },
-          {
-            kind: 'mission',
-            missionId: 'border-bandits',
-            line: '“Bring me back some bandit scent off the border. Then we’ll see.”',
-          },
-        ],
-      },
-    },
+    teacher: TSUME_TEACHER,
     arsenal: TSUME_ARSENAL,
   },
   {
@@ -282,20 +205,7 @@ export const LEADERS: readonly PersonDef[] = [
     specialty: 'ninjutsu',
     bio: 'Shino’s father, and the reason Shino talks the way he does. Logical to the last insect.',
     schedule: { morning: null, afternoon: null, evening: 'training-grounds', night: null },
-    teacher: {
-      quirk: 'patient',
-      teaches: [
-        'insect-swarm',
-        'insect-jar',
-        'insect-clone',
-        'insect-rope',
-        'insect-wall',
-        'insect-jamming',
-        'bug-bite',
-        'insect-sphere',
-      ],
-      price: { kind: 'bond', minStage: 2 },
-    },
+    teacher: SHIBI_TEACHER,
     arsenal: SHIBI_ARSENAL,
   },
 ];

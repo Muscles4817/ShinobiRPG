@@ -141,7 +141,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'distracted',
-      teaches: ['crow-scatter', 'false-surroundings', 'bringer-of-darkness'],
+      teaches: ['crow-scatter', 'false-surroundings', 'bringer-of-darkness', 'stone-needles'],
       price: { kind: 'bond', minStage: 2, line: '“I don’t waste my crows on strangers.”' },
     },
     arsenal: AOBA_ARSENAL,

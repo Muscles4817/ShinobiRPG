@@ -119,4 +119,6 @@ export const ARCHIVE_SHELF: readonly string[] = [
   'lightning-flash',
   'moonlight-kick',
   'five-release-great-combo',
+  'earth-wave',
+  'multiple-earth-wall',
 ];

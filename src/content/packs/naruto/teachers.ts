@@ -47,6 +47,10 @@ export const GUY_TEACHER: TeacherProfile = {
     'evening-elephant',
     'eight-gates-released',
     'night-guy',
+    'dynamic-action',
+    'leaf-coiling-wind',
+    'leaf-great-flash',
+    'leaf-gust',
   ],
   price: { kind: 'bond', minStage: 1, line: '“Anyone who burns with youth may join me!”' },
 };
@@ -87,6 +91,7 @@ export const ASUMA_TEACHER: TeacherProfile = {
     'wind-blade-flurry',
     'seven-swords-dance',
     'dust-cloud',
+    'thousand-armed-murder',
   ],
   price: { kind: 'ryo', perSession: 30, line: '“You’re buying the cigarettes. Kidding. Mostly.”' },
 };
@@ -102,6 +107,7 @@ export const ANKO_TEACHER: TeacherProfile = {
     'hidden-shadow-snake-hands',
     'twin-snakes-mutual-death',
     'many-snake-hands',
+    'snake-clone',
   ],
   price: {
     kind: 'all',
@@ -164,6 +170,11 @@ export const NARUTO_TEACHER: TeacherProfile = {
     'rasenshuriken',
     'ultra-big-ball-rasengan',
     'ultra-big-ball-rasenshuriken',
+    'new-sexy-technique',
+    'turning-into-a-frog',
+    'toad-gun',
+    'toad-oil-bullet',
+    'runt-ball-rasengan',
   ],
 };
 
