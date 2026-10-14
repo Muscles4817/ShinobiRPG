@@ -2,6 +2,8 @@ import { look } from '../../../look';
 import { statLine, talent } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
+import { NARUTO_ARSENAL, SASUKE_ARSENAL } from './arsenals';
+
 /** The genin of your graduating year. Friends, rivals, nuisances. */
 export const CANON_GENIN: readonly PersonDef[] = [
   {
@@ -38,13 +40,24 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Loud, stubborn and impossible to discourage. Says he will be Hokage. Eats only ramen.',
-    teacher: { teaches: ['adamantine-chains'] },
+    teacher: {
+      teaches: [
+        'adamantine-chains',
+        'sexy-technique',
+        'uzumaki-combo',
+        'two-thousand-combo',
+        'all-directions-shuriken',
+        'clone-body-blow',
+        'harem-technique',
+      ],
+    },
     schedule: {
       morning: 'training-grounds',
       afternoon: 'mission-desk',
       evening: 'shopping-district',
       night: null,
     },
+    arsenal: NARUTO_ARSENAL,
   },
   {
     id: 'sasuke',
@@ -80,6 +93,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       evening: null,
       night: null,
     },
+    arsenal: SASUKE_ARSENAL,
   },
   {
     id: 'sakura',

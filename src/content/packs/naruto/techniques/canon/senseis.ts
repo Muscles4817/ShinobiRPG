@@ -1,0 +1,46 @@
+import type { TechniqueDef } from '@/systems/techniques';
+
+/** Canon techniques of the senseis and their schools, taught by them (`teachers.ts`). */
+export const CANON_SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
+  {
+    id: 'leaf-gale',
+    name: 'Leaf Gale',
+    description: 'Konoha Reppū. A spinning low kick from behind that knocks them off their feet.',
+    discipline: 'taijutsu',
+    school: 'Strong Fist',
+    effects: [
+      { verb: 'damage', power: 11 },
+      { verb: 'daze', power: 5 },
+    ],
+    chakraCost: 6,
+    rank: 'D',
+    difficulty: 50,
+  },
+  {
+    id: 'hidden-shadow-snake-hands',
+    name: 'Hidden Shadow Snake Hands',
+    description: 'Snakes shoot from the sleeve to bite the target and coil round them.',
+    discipline: 'ninjutsu',
+    reach: ['close'],
+    effects: [
+      { verb: 'damage', power: 10 },
+      { verb: 'pin', power: 12 },
+    ],
+    chakraCost: 11,
+    rank: 'C',
+    difficulty: 75,
+  },
+  {
+    id: 'twin-snakes-mutual-death',
+    name: 'Twin Snakes Mutual Death Technique',
+    description: 'A forbidden seal made with the victim’s own hand. The snakes take both of you.',
+    discipline: 'ninjutsu',
+    reach: ['close'],
+    effects: [{ verb: 'damage', power: 32 }],
+    chakraCost: 20,
+    rank: 'A',
+    difficulty: 140,
+    oncePerFight: true,
+    afterCost: { kind: 'hospital', days: 5 },
+  },
+];

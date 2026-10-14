@@ -1,0 +1,88 @@
+import type { TechniqueDef } from '@/systems/techniques';
+
+/** Naruto's own inventions, mostly built on crowds of shadow clones; he teaches them. */
+export const CANON_NARUTO_TECHNIQUES: readonly TechniqueDef[] = [
+  {
+    id: 'sexy-technique',
+    name: 'Sexy Technique',
+    description:
+      'A transformation into an alluring woman. The target forgets to fight for a moment.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'daze', power: 7 }],
+    chakraCost: 4,
+    rank: 'E',
+    difficulty: 30,
+  },
+  {
+    id: 'uzumaki-combo',
+    name: 'Naruto Uzumaki Combo',
+    description: 'Four shadow clones kick the target into the air and you drive them back down.',
+    discipline: 'ninjutsu',
+    reach: ['close'],
+    needs: { minReserves: 10 },
+    effects: [
+      { verb: 'damage', power: 20, hits: 4 },
+      { verb: 'daze', power: 6 },
+    ],
+    chakraCost: 15,
+    rank: 'B',
+    difficulty: 110,
+  },
+  {
+    id: 'two-thousand-combo',
+    name: 'Naruto Uzumaki Two Thousand Combo',
+    description: 'The Uzumaki Combo again, with a thousand clones doing the kicking.',
+    discipline: 'ninjutsu',
+    reach: ['close'],
+    needs: { minReserves: 18 },
+    effects: [
+      { verb: 'damage', power: 26, hits: 5 },
+      { verb: 'daze', power: 8 },
+    ],
+    chakraCost: 22,
+    rank: 'A',
+    difficulty: 140,
+  },
+  {
+    id: 'all-directions-shuriken',
+    name: 'All Directions Shuriken',
+    description: 'A ring of shadow clones throws shuriken from every side at once.',
+    discipline: 'ninjutsu',
+    reach: ['close', 'mid'],
+    accuracy: 'sure',
+    needs: { minReserves: 16 },
+    effects: [{ verb: 'area', power: 22 }],
+    chakraCost: 22,
+    rank: 'A',
+    difficulty: 135,
+  },
+  {
+    id: 'clone-body-blow',
+    name: 'Clone Body Blow',
+    description: 'A few shadow clones improvise a way to land your blow from out of reach.',
+    discipline: 'ninjutsu',
+    reach: ['close', 'mid'],
+    needs: { minReserves: 14 },
+    effects: [
+      { verb: 'clone', power: 8, strikes: true },
+      { verb: 'damage', power: 22 },
+    ],
+    chakraCost: 20,
+    rank: 'A',
+    difficulty: 135,
+  },
+  {
+    id: 'harem-technique',
+    name: 'Harem Technique',
+    description: 'A crowd of shadow clones, every one of them a Sexy Technique, swarms the target.',
+    discipline: 'ninjutsu',
+    needs: { minReserves: 16 },
+    effects: [
+      { verb: 'daze', power: 14 },
+      { verb: 'confuse', power: 12, scaling: { drive: ['ninjutsu'] } },
+    ],
+    chakraCost: 20,
+    rank: 'A',
+    difficulty: 135,
+  },
+];
