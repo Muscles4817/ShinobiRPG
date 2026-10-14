@@ -149,4 +149,16 @@ export const CANON_RASENGAN: readonly TechniqueDef[] = [
     oncePerFight: true,
     afterCost: { kind: 'exhaustion', days: 3 },
   },
+  {
+    id: 'runt-ball-rasengan',
+    name: 'Runt Ball Rasengan',
+    description: 'A Rasengan no bigger than a marble, from the last scraps of chakra.',
+    discipline: 'ninjutsu',
+    reach: ['close'],
+    needs: { control: 'B' },
+    effects: [{ verb: 'break', power: 18, scaling: { drive: ['ninjutsu', 'chakraControl'] } }],
+    chakraCost: 8,
+    rank: 'B',
+    difficulty: 110,
+  },
 ];

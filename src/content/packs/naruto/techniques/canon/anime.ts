@@ -1,0 +1,114 @@
+import type { TechniqueDef } from '@/systems/techniques';
+
+/**
+ * Canon jutsu the senseis and jōnin use only in the anime: Guy's extra kicks, Asuma's Fire
+ * Temple art, Anko's snake clone, Aoba's needles and Inoichi's water sphere. Each is taught by
+ * the one who uses it.
+ */
+export const CANON_ANIME_TECHNIQUES: readonly TechniqueDef[] = [
+  {
+    id: 'dynamic-action',
+    name: 'Dynamic Action',
+    description: 'A flip into the target and a flurry of punches and kicks as you land.',
+    discipline: 'taijutsu',
+    school: 'Strong Fist',
+    effects: [{ verb: 'damage', power: 18, hits: 4 }],
+    chakraCost: 10,
+    rank: 'C',
+    difficulty: 80,
+  },
+  {
+    id: 'leaf-coiling-wind',
+    name: 'Leaf Coiling Wind',
+    description: 'A handstand spin with the legs out, fast enough to blow the mist away.',
+    discipline: 'taijutsu',
+    school: 'Strong Fist',
+    effects: [{ verb: 'area', power: 12 }],
+    chakraCost: 9,
+    rank: 'C',
+    difficulty: 75,
+  },
+  {
+    id: 'leaf-great-flash',
+    name: 'Leaf Great Flash',
+    description: 'A charging side kick to the head that sends them flying.',
+    discipline: 'taijutsu',
+    school: 'Strong Fist',
+    reach: ['close', 'mid'],
+    effects: [
+      { verb: 'move', power: 6, to: 'close' },
+      { verb: 'damage', power: 18 },
+      { verb: 'knock', power: 8, to: 'far' },
+    ],
+    chakraCost: 11,
+    rank: 'C',
+    difficulty: 80,
+  },
+  {
+    id: 'leaf-gust',
+    name: 'Leaf Gust',
+    description: 'A quick spin that rises into a high, turning kick.',
+    discipline: 'taijutsu',
+    school: 'Strong Fist',
+    effects: [
+      { verb: 'damage', power: 15 },
+      { verb: 'daze', power: 4 },
+    ],
+    chakraCost: 6,
+    rank: 'D',
+    difficulty: 55,
+  },
+  {
+    id: 'thousand-armed-murder',
+    name: 'Welcoming Approach: Thousand-Armed Murder',
+    description: 'A Fire Temple art: a thousand-armed figure of chakra rises and pummels the foe.',
+    discipline: 'ninjutsu',
+    reach: ['mid', 'far'],
+    needs: { minReserves: 18 },
+    effects: [
+      { verb: 'area', power: 22 },
+      { verb: 'daze', power: 8 },
+    ],
+    chakraCost: 24,
+    rank: 'A',
+    difficulty: 140,
+  },
+  {
+    id: 'snake-clone',
+    name: 'Snake Clone Technique',
+    description: 'A clone made of snakes; hurt it and it falls apart into them.',
+    discipline: 'ninjutsu',
+    effects: [
+      { verb: 'clone', power: 9, strikes: true },
+      { verb: 'substitute', power: 6 },
+    ],
+    chakraCost: 12,
+    rank: 'C',
+    difficulty: 80,
+  },
+  {
+    id: 'stone-needles',
+    name: 'Secret Technique Stone Needles',
+    description: 'Kunai on strings; chakra sent down the string locks up whoever they hit.',
+    discipline: 'ninjutsu',
+    reach: ['mid'],
+    effects: [
+      { verb: 'damage', power: 10 },
+      { verb: 'daze', power: 10 },
+    ],
+    chakraCost: 11,
+    rank: 'C',
+    difficulty: 80,
+  },
+  {
+    id: 'sensing-water-sphere',
+    name: 'Sensing Water Sphere',
+    description: 'A sphere of water in which every chakra nearby shows as a bubble.',
+    discipline: 'ninjutsu',
+    element: 'water',
+    effects: [{ verb: 'sense', power: 14 }],
+    chakraCost: 9,
+    rank: 'C',
+    difficulty: 75,
+  },
+];

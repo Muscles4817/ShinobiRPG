@@ -26,6 +26,8 @@ export const KAKASHI_ARSENAL: PersonArsenal = {
     'peregrine-falcon-drop',
     'lightning-transmission',
     'rending-drill-fang',
+    'earth-wave',
+    'multiple-earth-wall',
   ],
   perks: ['insight'],
 };
@@ -58,6 +60,10 @@ export const GUY_ARSENAL: PersonArsenal = {
     'reverse-lotus',
     'intersection-method',
     'leaf-rock-destroying-rise',
+    'dynamic-action',
+    'leaf-coiling-wind',
+    'leaf-great-flash',
+    'leaf-gust',
   ],
 };
 
@@ -69,6 +75,7 @@ export const ANKO_ARSENAL: PersonArsenal = {
     'sly-mind-affect',
     'substitution-jutsu',
     'many-snake-hands',
+    'snake-clone',
   ],
 };
 
@@ -81,6 +88,7 @@ export const NARUTO_ARSENAL: PersonArsenal = {
     'sexy-technique',
     'thousand-years-of-death',
     'sexy-reverse-harem',
+    'new-sexy-technique',
   ],
 };
 
@@ -226,10 +234,20 @@ export const EBISU_ARSENAL: PersonArsenal = {
 
 /** Fire, and a flock of crows to vanish into. */
 export const AOBA_ARSENAL: PersonArsenal = {
-  techniqueIds: ['fire-dragon-bullet', 'crow-scatter', 'substitution-jutsu'],
+  techniqueIds: ['fire-dragon-bullet', 'crow-scatter', 'substitution-jutsu', 'stone-needles'],
 };
 
 /** The Nara shadow arts, from holding a foe to stitching them in place. */
 export const SHIKAKU_ARSENAL: PersonArsenal = {
   techniqueIds: ['shadow-possession', 'shadow-neck-bind', 'shadow-sewing', 'substitution-jutsu'],
+};
+
+/** The Yamanaka mind arts, and the water sphere he senses with. */
+export const INOICHI_ARSENAL: PersonArsenal = {
+  techniqueIds: [
+    'mind-body-switch',
+    'mind-destruction',
+    'sensing-water-sphere',
+    'substitution-jutsu',
+  ],
 };
