@@ -39,6 +39,7 @@ export const GUY_TEACHER: TeacherProfile = {
     'morning-peacock',
     'daytime-tiger',
     'leaf-gale',
+    'intersection-method',
   ],
   price: { kind: 'bond', minStage: 1, line: '“Anyone who burns with youth may join me!”' },
 };
@@ -101,7 +102,14 @@ export const ANKO_TEACHER: TeacherProfile = {
  */
 export const LEE_TEACHER: TeacherProfile = {
   quirk: 'natural',
-  teaches: ['leaf-whirlwind', 'leaf-hurricane', 'leaf-rising-wind', 'front-lotus', 'leaf-gale'],
+  teaches: [
+    'leaf-whirlwind',
+    'leaf-hurricane',
+    'leaf-rising-wind',
+    'front-lotus',
+    'leaf-gale',
+    'leaf-drop',
+  ],
   price: {
     kind: 'bond',
     minStage: 4,

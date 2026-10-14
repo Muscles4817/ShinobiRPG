@@ -2,7 +2,7 @@ import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
-import { HIASHI_ARSENAL, TSUME_ARSENAL } from './arsenals';
+import { CHOZA_ARSENAL, HIASHI_ARSENAL, HIRUZEN_ARSENAL, TSUME_ARSENAL } from './arsenals';
 
 /**
  * The heads of the village's clans, all jōnin. Each keeps the clan's own techniques and
@@ -31,6 +31,7 @@ export const LEADERS: readonly PersonDef[] = [
     ),
     bio: 'The Professor. Leads the village from behind a pipe and a mountain of paperwork.',
     schedule: { morning: 'mission-desk', afternoon: null, evening: null, night: null },
+    arsenal: HIRUZEN_ARSENAL,
   },
   {
     id: 'hiashi',
@@ -67,6 +68,7 @@ export const LEADERS: readonly PersonDef[] = [
         'eight-trigrams-rotation',
         'hundred-twenty-eight-palms',
         'palm-bottom',
+        'one-blow-body',
       ],
       price: { kind: 'bond', minStage: 3, line: '“The Hyūga do not instruct strangers.”' },
     },
@@ -172,13 +174,22 @@ export const LEADERS: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'patient',
-      teaches: ['partial-expansion', 'human-bullet-tank'],
+      teaches: [
+        'partial-expansion',
+        'human-bullet-tank',
+        'multi-size',
+        'spiked-human-bullet-tank',
+        'super-multi-size',
+        'butterfly-mode',
+        'butterfly-bullet-bombing',
+      ],
       price: {
         kind: 'bond',
         minStage: 1,
         line: '“Eat with me once and we’re friends. Then we train.”',
       },
     },
+    arsenal: CHOZA_ARSENAL,
   },
   {
     id: 'tsume',

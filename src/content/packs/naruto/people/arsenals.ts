@@ -23,6 +23,7 @@ export const KAKASHI_ARSENAL: PersonArsenal = {
     'hiding-like-a-mole',
     'water-clone',
     'water-shark-bullet',
+    'peregrine-falcon-drop',
   ],
   perks: ['insight'],
 };
@@ -52,6 +53,7 @@ export const GUY_ARSENAL: PersonArsenal = {
     'gate-of-life',
     'front-lotus',
     'reverse-lotus',
+    'intersection-method',
   ],
 };
 
@@ -88,12 +90,13 @@ export const SASUKE_ARSENAL: PersonArsenal = {
     'substitution-jutsu',
     'windmill-triple-blades',
     'surging-fire-wild-dance',
+    'peregrine-falcon-drop',
   ],
 };
 
 /** Guy's kicks, as far as a genin's taijutsu reaches. */
 export const LEE_ARSENAL: PersonArsenal = {
-  techniqueIds: ['leaf-whirlwind', 'leaf-gale', 'dynamic-entry'],
+  techniqueIds: ['leaf-whirlwind', 'leaf-gale', 'dynamic-entry', 'leaf-drop'],
 };
 
 /** The Gentle Fist as far as she has it: points closed, and the palm that shakes the body. */
@@ -103,7 +106,13 @@ export const HINATA_ARSENAL: PersonArsenal = {
 
 /** The branch house’s Gentle Fist, at a genin’s grade. */
 export const NEJI_ARSENAL: PersonArsenal = {
-  techniqueIds: ['gentle-fist', 'palm-bottom', 'shuriken-jutsu', 'substitution-jutsu'],
+  techniqueIds: [
+    'gentle-fist',
+    'palm-bottom',
+    'shuriken-jutsu',
+    'substitution-jutsu',
+    'one-blow-body',
+  ],
 };
 
 /** The head of the Hyūga: the Gentle Fist whole. */
@@ -135,4 +144,24 @@ export const HANA_ARSENAL: PersonArsenal = {
 /** The swarm, and the copy of himself it makes. */
 export const SHINO_ARSENAL: PersonArsenal = {
   techniqueIds: ['insect-swarm', 'insect-clone', 'shuriken-jutsu', 'substitution-jutsu'],
+};
+
+/** The Akimichi size arts as the clan head fights with them. */
+export const CHOZA_ARSENAL: PersonArsenal = {
+  techniqueIds: ['partial-expansion', 'multi-size', 'human-bullet-tank', 'substitution-jutsu'],
+};
+
+/** The Professor: every element he fought Orochimaru with, and his clones. */
+export const HIRUZEN_ARSENAL: PersonArsenal = {
+  techniqueIds: [
+    'fire-dragon-flame-bullet',
+    'phoenix-flower',
+    'earth-flow-wall',
+    'earth-dragon-bullet',
+    'earth-flow-river',
+    'headhunter',
+    'shadow-clone',
+    'shuriken-shadow-clone',
+    'substitution-jutsu',
+  ],
 };

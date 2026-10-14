@@ -87,4 +87,18 @@ export const CANON_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     rank: 'D',
     difficulty: 55,
   },
+  {
+    id: 'one-blow-body',
+    name: 'Gentle Fist Art One Blow Body',
+    description: 'Chakra let out of the whole body in one blast that throws the attacker off.',
+    discipline: 'taijutsu',
+    clan: 'hyuga',
+    effects: [
+      { verb: 'damage', power: 10 },
+      { verb: 'knock', power: 8, to: 'mid' },
+    ],
+    chakraCost: 7,
+    rank: 'D',
+    difficulty: 55,
+  },
 ];
