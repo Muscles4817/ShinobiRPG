@@ -130,6 +130,13 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /Travel/ }));
     expect(screen.getByText('You are here')).toBeInTheDocument();
     expect(screen.getAllByText('Coming soon').length).toBeGreaterThan(0);
+    // Tap a place on the map: just its card, until you ask for every place again.
+    const map = screen.getByRole('region', { name: 'Map' });
+    await user.click(within(map).getByRole('button', { name: 'Port Shiomachi' }));
+    expect(screen.queryByRole('heading', { name: 'Mount Reikon' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Port Shiomachi' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Every place' }));
+    expect(screen.getByRole('heading', { name: 'Mount Reikon' })).toBeInTheDocument();
   });
 
   it('walks the road to the coast and takes a room at the inn', async () => {

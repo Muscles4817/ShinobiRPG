@@ -5,6 +5,7 @@ export type { Catalog } from './catalog';
 export { TONES, TOPIC_KINDS } from './people';
 export { TEACHING_QUIRKS } from './teachers';
 export { GEAR_SLOTS, gearSlot } from './items';
+export { MAP_SIZE } from './art';
 export { INJURY_SITE_LABELS, type InjuryCause, type InjuryDef, type InjurySite } from './injuries';
 export type {
   BackdropId,

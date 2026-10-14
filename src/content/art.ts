@@ -36,3 +36,6 @@ export type IconId =
   | 'pot'
   | 'veg'
   | 'sake';
+
+/** Every pack's map is this many units across and down; locations sit at points inside it. */
+export const MAP_SIZE = { width: 100, height: 70 } as const;

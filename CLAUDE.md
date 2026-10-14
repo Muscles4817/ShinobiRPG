@@ -371,7 +371,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   catches broken references and anything no place offers.
 - **Add a content pack:** copy `packs/original/`, change ids/names, register it. Keep every
   pack complete; packs don't inherit from each other.
-- **Add a location:** add a `LocationDef` with a backdrop and places, and a `RouteDef` to it in
+- **Add a location:** add a `LocationDef` with a backdrop, a `map` point and places, and a `RouteDef` to it in
   the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`;
   `systems/travel` finds the quickest open way, validated so every location has a road). Leave
   `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road

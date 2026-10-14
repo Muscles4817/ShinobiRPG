@@ -349,3 +349,8 @@ migration and a previous-version save test wherever the save shape changes.
    **home-again** card: days away, jobs posted meanwhile, festivals missed, rent overdue.
    Save v33. Turning back has no camp to show on today's open roads (Shiomachi is one leg);
    it appears once the longer roads open.
+7. **The map** (this step). Every location has a point on its pack's map (`LocationDef.map`,
+   within `MAP_SIZE`, validated). The Travel tab opens on the region on paper: routes as ink
+   lines (dotted while either end is locked, red where the road is deadly), places as seals,
+   a red seal where you stand. Tapping a place shows only its card; "Every place" brings the
+   list back. The map is drawn from data, so a pack needs only its points, not a drawing.

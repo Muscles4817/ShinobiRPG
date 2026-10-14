@@ -275,6 +275,8 @@ export interface LocationDef {
   /** e.g. "Village Hidden in the Leaves". */
   readonly epithet: string;
   readonly backdrop: BackdropId;
+  /** Where it sits on the pack's map (`MAP_SIZE`): x from the west edge, y from the north. */
+  readonly map: { readonly x: number; readonly y: number };
   /** Empty for places you can't visit yet. */
   readonly places: readonly PlaceDef[];
   /** Why it can't be visited yet; absent when travel is possible. The way there is a route. */

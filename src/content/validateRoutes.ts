@@ -2,6 +2,7 @@ import { DANGERS } from '@/systems/missions';
 import { reachableFrom, type RouteDef } from '@/systems/travel';
 
 import { duplicateIds } from './catalog';
+import { MAP_SIZE } from './art';
 import type { ContentPack } from './types';
 
 /**
@@ -19,7 +20,15 @@ export function validateRoutes(pack: ContentPack): string[] {
     ...pack.locations
       .filter((l) => !reached.has(l.id))
       .map((l) => `location "${l.id}" has no road to it from the start`),
+    ...pack.locations
+      .filter((l) => !onTheMap(l.map))
+      .map((l) => `location "${l.id}" is off the map`),
   ];
+}
+
+/** A place sits inside the map. */
+function onTheMap(at: { readonly x: number; readonly y: number }): boolean {
+  return at.x >= 0 && at.x <= MAP_SIZE.width && at.y >= 0 && at.y <= MAP_SIZE.height;
 }
 
 function routeProblems(

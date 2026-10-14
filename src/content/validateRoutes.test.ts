@@ -40,4 +40,14 @@ describe('route validation', () => {
       'route "odd" crosses region "sea-floor", which has no road events',
     ]);
   });
+
+  it('reports a place off the map', () => {
+    const pack = {
+      ...ORIGINAL_PACK,
+      locations: ORIGINAL_PACK.locations.map((l) =>
+        l.id === 'kiri-ford' ? { ...l, map: { x: 140, y: 20 } } : l,
+      ),
+    };
+    expect(validateContent(pack)).toContain('location "kiri-ford" is off the map');
+  });
 });

@@ -33,6 +33,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     id: 'torogakure',
     name: 'Tōrōgakure',
     epithet: 'Village Hidden Among Lanterns',
+    map: { x: 46, y: 36 },
     backdrop: 'lantern-rooftops',
     places: [
       {
@@ -258,6 +259,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     id: 'kiri-ford',
     name: 'Kiri Ford',
     epithet: 'River city',
+    map: { x: 66, y: 38 },
     backdrop: 'mist',
     places: [],
     lockedReason: 'Coming soon',
@@ -266,6 +268,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     id: 'sakyugakure',
     name: 'Sakyūgakure',
     epithet: 'Village Hidden in the Dunes',
+    map: { x: 88, y: 28 },
     backdrop: 'dunes',
     places: [],
     lockedReason: 'Coming soon',
@@ -275,6 +278,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     id: 'mount-reikon',
     name: 'Mount Reikon',
     epithet: 'Where spirits gather',
+    map: { x: 40, y: 10 },
     backdrop: 'mountain',
     places: [],
     lockedReason: 'Needs Chūnin rank',
