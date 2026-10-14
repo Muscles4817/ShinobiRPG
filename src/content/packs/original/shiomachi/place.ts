@@ -1,5 +1,6 @@
 import type { LocationDef } from '../../../types';
 import { TOOL_IDS } from '../../../shared/tools';
+import { SALT_LANTERNS_PORT_JOBS } from '../arcs/saltLanterns';
 import { SHIOMACHI_JOB_IDS } from './jobs';
 
 /**
@@ -12,6 +13,7 @@ export const PORT_SHIOMACHI: LocationDef = {
   id: 'port-shiomachi',
   name: 'Port Shiomachi',
   epithet: 'Fishing town',
+  map: { x: 20, y: 54 },
   backdrop: 'coast',
   places: [
     {
@@ -99,7 +101,7 @@ export const PORT_SHIOMACHI: LocationDef = {
       name: 'The Harbour Office',
       icon: 'board',
       blurb: 'Civilian work for an outsider',
-      missionIds: SHIOMACHI_JOB_IDS,
+      missionIds: [...SHIOMACHI_JOB_IDS, ...SALT_LANTERNS_PORT_JOBS],
     },
   ],
 };

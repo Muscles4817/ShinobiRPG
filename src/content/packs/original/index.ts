@@ -46,6 +46,7 @@ import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { LANTERN_THIEF, LANTERN_THIEF_JOBS } from './arcs/lanternThief';
+import { SALT_LANTERNS, SALT_LANTERNS_JOBS } from './arcs/saltLanterns';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
 import { ORIGINAL_ROUTES } from './routes';
 import {
@@ -80,6 +81,7 @@ export const ORIGINAL_PACK: ContentPack = {
   missions: [
     ...MISSIONS,
     ...LANTERN_THIEF_JOBS,
+    ...SALT_LANTERNS_JOBS,
     ...TEAM_MISSIONS,
     ...CHUNIN_MISSIONS,
     ...TEMPLATE_MISSIONS,
@@ -89,7 +91,7 @@ export const ORIGINAL_PACK: ContentPack = {
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
   roadEvents: ROAD_EVENTS,
-  arcs: [LANTERN_THIEF],
+  arcs: [LANTERN_THIEF, SALT_LANTERNS],
   voices: VOICES,
   enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...JOB_ENEMIES, ...EXAM_ENEMIES],
   training: [...TRAINING, ...SHIOMACHI_TRAINING],

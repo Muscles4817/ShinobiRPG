@@ -4,17 +4,20 @@ import { headerView, travelView, type CompanionOption } from '@/game';
 
 import { Backdrop } from '../art/Backdrop';
 import { Banner } from '../components/Banner';
+import { TravelMapCard } from '../components/TravelMapCard';
 import type { ScreenProps } from './types';
 
 /**
  * Destination cards: the way there, what to know before you go, and two ways to set out
- * (camping between legs, or hurrying on until the road stops you). The map replaces the list
- * later (world plan, step 7).
+ * (camping between legs, or hurrying on until the road stops you). The map above shows the
+ * roads; tap a place on it to see just its card.
  */
 export function TravelScreen({ ctx, state, perform }: ScreenProps) {
   const header = headerView(state, ctx);
   const [asked, setAsked] = useState<string | null>(null);
-  const { leave, companions, along, destinations } = travelView(state, ctx, asked);
+  const [picked, setPicked] = useState<string | null>(null);
+  const { leave, companions, along, destinations, map } = travelView(state, ctx, asked);
+  const shown = picked === null ? destinations : destinations.filter((d) => d.id === picked);
   return (
     <>
       <Banner
@@ -26,7 +29,25 @@ export function TravelScreen({ ctx, state, perform }: ScreenProps) {
         {leave && <p className="leave-slip">{leave}</p>}
         {along && <p className="leave-slip">{along} is travelling with you.</p>}
         <CompanionPicker companions={companions} onAsk={setAsked} />
-        {destinations.map((d) => (
+        <TravelMapCard
+          map={map}
+          selected={picked}
+          onSelect={(id) => {
+            setPicked(id === picked ? null : id);
+          }}
+        />
+        {picked !== null && (
+          <button
+            type="button"
+            className="btn small ghost map-all"
+            onClick={() => {
+              setPicked(null);
+            }}
+          >
+            Every place
+          </button>
+        )}
+        {shown.map((d) => (
           <article
             key={d.id}
             className={`dest sky${d.lockedReason && !d.here ? ' locked' : ''}`}

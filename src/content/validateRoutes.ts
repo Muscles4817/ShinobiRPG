@@ -1,7 +1,8 @@
-import { DANGERS } from '@/systems/missions';
+import { DANGERS, type MissionDef } from '@/systems/missions';
 import { reachableFrom, type RouteDef } from '@/systems/travel';
 
 import { duplicateIds } from './catalog';
+import { MAP_SIZE } from './art';
 import type { ContentPack } from './types';
 
 /**
@@ -19,7 +20,31 @@ export function validateRoutes(pack: ContentPack): string[] {
     ...pack.locations
       .filter((l) => !reached.has(l.id))
       .map((l) => `location "${l.id}" has no road to it from the start`),
+    ...pack.missions.flatMap((m) => endsAtProblems(pack, m)),
+    ...pack.locations
+      .filter((l) => !onTheMap(l.map))
+      .map((l) => `location "${l.id}" is off the map`),
   ];
+}
+
+/** A job that leaves you somewhere else walks you there, to a place you can be. */
+function endsAtProblems(pack: ContentPack, job: MissionDef): string[] {
+  if (job.endsAt === undefined) return [];
+  const place = pack.locations.find((l) => l.id === job.endsAt);
+  if (!place) return [`mission "${job.id}" ends at unknown location "${job.endsAt}"`];
+  return [
+    ...(place.lockedReason !== undefined
+      ? [`mission "${job.id}" ends somewhere still locked`]
+      : []),
+    ...(job.stages.some((s) => s.kind === 'leg')
+      ? []
+      : [`mission "${job.id}" ends elsewhere without a road`]),
+  ];
+}
+
+/** A place sits inside the map. */
+function onTheMap(at: { readonly x: number; readonly y: number }): boolean {
+  return at.x >= 0 && at.x <= MAP_SIZE.width && at.y >= 0 && at.y <= MAP_SIZE.height;
 }
 
 function routeProblems(

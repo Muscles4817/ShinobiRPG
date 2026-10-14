@@ -84,6 +84,7 @@ export {
   type Destination,
   type TravelView,
 } from './views/travel';
+export type { MapPlace, MapRoad, TravelMap } from './views/travelMap';
 export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
 export { animationSetting, type AnimationSetting } from './views/settings';
 export { ACTION_CUES, cueAfter, type ActionCue } from './cues';

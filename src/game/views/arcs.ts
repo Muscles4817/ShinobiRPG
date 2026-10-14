@@ -15,6 +15,8 @@ export interface ArcView {
   /** "Act 2 of 4: Following the glass". */
   readonly act: string;
   readonly text: string;
+  /** "Based in Port Shiomachi": where the act's jobs are posted, when not the village. */
+  readonly base: string | null;
   readonly jobs: readonly { readonly title: string; readonly done: boolean }[];
 }
 
@@ -31,6 +33,9 @@ function viewOf(state: GameState, ctx: GameContext, arc: ArcDef): ArcView | null
     title: arc.title,
     act: `Act ${reached + 1} of ${arc.acts.length}: ${act.title}`,
     text: act.text,
+    base: act.baseLocationId
+      ? `Based in ${ctx.content.locations.require(act.baseLocationId).name}`
+      : null,
     jobs: act.jobs.map((id) => ({
       title: ctx.content.missions.require(id).title,
       done: state.board.completed.includes(id),

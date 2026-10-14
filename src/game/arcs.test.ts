@@ -87,7 +87,7 @@ describe('a long story', () => {
     expect(relit.village.marks).toContain('tobi-forgiven');
     const report = relit.reports.find((r) => r.kind === 'mission-complete');
     expect(report?.kind === 'mission-complete' && report.ending).toMatch(/arm round her son/);
-    expect(missionBoardView(relit, ctx)!.arcs).toEqual([]);
+    expect(missionBoardView(relit, ctx)!.arcs.map((a) => a.id)).not.toContain('the-lantern-thief');
     expect(rumoursToday(relit, ctx).map((r) => r.id)).toContain('tobi-forgiven');
   });
 });

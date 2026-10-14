@@ -361,3 +361,83 @@
   color: var(--paper-ink);
   border-color: rgb(0 0 0 / 0.25);
 }
+
+/* The map: the region on paper, roads in ink, places as seals. */
+.map-paper {
+  position: relative;
+  width: 100%;
+  background: var(--grain-ink), var(--paper);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.35);
+  overflow: hidden;
+}
+.map-paper svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.map-road {
+  stroke: var(--paper-ink);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+.map-road.closed {
+  stroke-dasharray: 1.2 2;
+  opacity: 0.45;
+}
+.map-road.deadly {
+  stroke: var(--seal);
+}
+.map-place {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 4px;
+  background: none;
+  border: 0;
+  color: var(--paper-ink);
+  font-family: var(--font-story);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.1;
+  cursor: pointer;
+}
+.map-name {
+  text-shadow:
+    0 0 3px var(--paper),
+    0 0 2px var(--paper);
+}
+.map-seal {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--paper-ink);
+  border: 2px solid var(--paper);
+  box-shadow: 0 0 0 1.5px var(--paper-ink);
+}
+.map-place.here .map-seal {
+  background: var(--seal);
+  box-shadow: 0 0 0 1.5px var(--seal);
+}
+.map-place.locked {
+  color: var(--paper-muted);
+}
+.map-place.locked .map-seal {
+  background: var(--paper);
+  box-shadow: 0 0 0 1.5px var(--paper-muted);
+}
+.map-place.selected .map-name {
+  text-decoration: underline;
+  text-decoration-color: var(--seal);
+  text-decoration-thickness: 2px;
+}
+.map-all {
+  align-self: flex-start;
+}

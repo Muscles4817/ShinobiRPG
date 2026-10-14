@@ -11,6 +11,7 @@ import { companionsOnOffer } from '../trips';
 import { rationDays } from '../road';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
+import { travelMap, type TravelMap } from './travelMap';
 
 /**
  * The Travel tab: every location with the way there (days, passage, the worst of the road,
@@ -83,6 +84,7 @@ export interface TravelView {
   /** The friend already travelling with you, by name. */
   readonly along: string | null;
   readonly destinations: readonly Destination[];
+  readonly map: TravelMap;
 }
 
 /** The Travel tab, with `companionId` the friend you are asking along (or nobody). */
@@ -99,6 +101,7 @@ export function travelView(
     companions: offered.map((p) => ({ id: p.id, name: p.name, asked: p.id === asked })),
     along: along === null ? null : (findPerson(state, ctx, along)?.name ?? null),
     destinations: destinationsFrom(state, ctx, asked),
+    map: travelMap(state, ctx),
   };
 }
 

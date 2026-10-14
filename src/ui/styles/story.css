@@ -175,6 +175,12 @@
   font-size: 0.85rem;
   color: var(--paper-muted);
 }
+.arc-card .arc-base {
+  margin: 4px 0;
+  font-family: var(--font-story);
+  font-size: 0.85rem;
+  color: var(--paper-ink);
+}
 .arc-card ul {
   list-style: none;
   margin: 8px 0 0;
