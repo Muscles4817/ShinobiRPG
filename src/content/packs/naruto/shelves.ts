@@ -45,6 +45,8 @@ export const ACADEMY_SHELF: readonly string[] = [
   'headhunter',
   'mist-servant',
   'shadow-shuriken',
+  'surging-fire-wild-dance',
+  'booby-trap',
 ];
 
 /** The Village Archives. */
@@ -88,4 +90,5 @@ export const ARCHIVE_SHELF: readonly string[] = [
   'hiding-like-a-mole',
   'water-clone',
   'water-shark-bullet',
+  'windmill-triple-blades',
 ];

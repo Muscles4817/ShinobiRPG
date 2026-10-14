@@ -2,6 +2,8 @@ import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
+import { HANA_ARSENAL } from './arsenals';
+
 /** The village's chūnin (besides Iruka, who teaches at the academy): desk, gate and clinic. */
 export const VILLAGE_CHUNIN: readonly PersonDef[] = [
   {
@@ -90,5 +92,6 @@ export const VILLAGE_CHUNIN: readonly PersonDef[] = [
       teaches: ['mystical-palm', 'passing-fang', 'cherry-blossom-impact'],
       price: { kind: 'bond', minStage: 1 },
     },
+    arsenal: HANA_ARSENAL,
   },
 ];
