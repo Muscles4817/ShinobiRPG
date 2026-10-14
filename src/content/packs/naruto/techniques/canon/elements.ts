@@ -112,4 +112,20 @@ export const CANON_ELEMENTS: readonly TechniqueDef[] = [
     rank: 'B',
     difficulty: 115,
   },
+  {
+    id: 'rending-drill-fang',
+    name: 'Earth Style: Rending Drill Fang',
+    description: 'You burst up out of the ground beneath them, striking as you come.',
+    discipline: 'ninjutsu',
+    element: 'earth',
+    reach: ['close'],
+    needs: { nature: 'earth' },
+    effects: [
+      { verb: 'damage', power: 20 },
+      { verb: 'knock', power: 6, to: 'mid' },
+    ],
+    chakraCost: 15,
+    rank: 'B',
+    difficulty: 110,
+  },
 ];

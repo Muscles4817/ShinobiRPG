@@ -15,6 +15,7 @@ export const KAKASHI_TEACHER: TeacherProfile = {
     'thousand-years-of-death',
     'great-waterfall',
     'evil-sealing-method',
+    'lightning-transmission',
   ],
   price: {
     kind: 'favour',
@@ -40,6 +41,12 @@ export const GUY_TEACHER: TeacherProfile = {
     'daytime-tiger',
     'leaf-gale',
     'intersection-method',
+    'leaf-rock-destroying-rise',
+    'adamantine-strength-whirlwind',
+    'little-toe-attack',
+    'evening-elephant',
+    'eight-gates-released',
+    'night-guy',
   ],
   price: { kind: 'bond', minStage: 1, line: '“Anyone who burns with youth may join me!”' },
 };

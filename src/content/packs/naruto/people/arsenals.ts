@@ -24,6 +24,8 @@ export const KAKASHI_ARSENAL: PersonArsenal = {
     'water-clone',
     'water-shark-bullet',
     'peregrine-falcon-drop',
+    'lightning-transmission',
+    'rending-drill-fang',
   ],
   perks: ['insight'],
 };
@@ -54,6 +56,7 @@ export const GUY_ARSENAL: PersonArsenal = {
     'front-lotus',
     'reverse-lotus',
     'intersection-method',
+    'leaf-rock-destroying-rise',
   ],
 };
 
@@ -171,6 +174,7 @@ export const HIRUZEN_ARSENAL: PersonArsenal = {
     'substitution-jutsu',
     'fire-dragon-bullet',
     'earth-shadow-clone',
+    'roof-tile-shuriken',
   ],
 };
 
