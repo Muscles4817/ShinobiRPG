@@ -6,7 +6,8 @@ import type { ContentPack, PlaceDef } from './types';
  * Where techniques come from. The academy holds rank E–D, the library C–B, and neither holds a
  * clan's techniques (clan members teach those, through `teacher.teaches`; `validateTeachers`
  * keeps them in the clan). Every technique must be reachable from at least one source: a shelf,
- * a teacher, a mission's scroll, or a starting kit.
+ * a teacher, a mission's scroll, or a starting kit; or be someone's own, fought with in their
+ * arsenal and never taught.
  */
 export function validateSources(pack: ContentPack): string[] {
   return [...shelfProblems(pack), ...scrollRewardProblems(pack), ...unsourcedProblems(pack)];
@@ -65,6 +66,7 @@ function sourcedIds(pack: ContentPack): Set<string> {
     ...pack.academyTechniques,
     ...Object.values(pack.disciplineStarters),
     ...pack.clans.flatMap((c) => c.startingTechniqueIds),
+    ...pack.people.flatMap((p) => p.arsenal?.techniqueIds ?? []),
   ]);
 }
 

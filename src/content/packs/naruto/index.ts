@@ -33,6 +33,7 @@ import { VILLAGE_CHUNIN } from './chunin';
 import { VILLAGE_JONIN } from './jonin';
 import { ROSTER_CONVERSATIONS } from './rosterConversations';
 import { ROSTER_TECHNIQUES } from './rosterTechniques';
+import { ARSENAL_TECHNIQUES } from './arsenalTechniques';
 import { SENIOR_GENIN } from './seniorGenin';
 import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
 import { SENSEIS_AND_ELDERS } from './senseis';
@@ -64,6 +65,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...CLAN_TECHNIQUES,
     ...SENSEI_TECHNIQUES,
     ...ROSTER_TECHNIQUES,
+    ...ARSENAL_TECHNIQUES,
     ...COMBO_TECHNIQUES,
   ],
   missions: [

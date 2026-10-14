@@ -36,6 +36,7 @@ export type {
   NamePools,
   NindoDef,
   OpeningHours,
+  PersonArsenal,
   PersonDef,
   PersonRank,
   PersonRole,

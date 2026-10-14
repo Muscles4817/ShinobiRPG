@@ -2,6 +2,7 @@ import { allDay, look } from '../../look';
 import { statLine } from '../../statLine';
 import type { PersonDef } from '../../types';
 
+import { KAKASHI_ARSENAL } from './arsenals';
 import {
   ANKO_TEACHER,
   ASUMA_TEACHER,
@@ -55,6 +56,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
         'Kakashi turns up late, closes his book, and runs you ragged through every drill you thought you knew.',
     },
     teacher: KAKASHI_TEACHER,
+    arsenal: KAKASHI_ARSENAL,
   },
   {
     id: 'guy',

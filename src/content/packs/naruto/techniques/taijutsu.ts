@@ -7,6 +7,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     name: 'Shuriken Jutsu',
     description: 'A practised flick of the wrist. Every academy student learns it first.',
     discipline: 'taijutsu',
+    reach: ['mid', 'far'],
     effects: [{ verb: 'damage', power: 8 }],
     chakraCost: 3,
     rank: 'E',

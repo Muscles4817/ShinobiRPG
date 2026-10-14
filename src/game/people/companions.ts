@@ -34,11 +34,12 @@ export function companionTraits(person: PersonDef): readonly CombatTrait[] {
 }
 
 /**
- * What a genin knows: the academy's techniques, their specialty's starter, their clan's, and
- * the half of each combination technique in their specialty (no clan's), so a teammate can
- * join yours.
+ * What a person fights with: their own arsenal when they have one, else what a genin knows:
+ * the academy's techniques, their specialty's starter, their clan's, and the half of each
+ * combination technique in their specialty (no clan's), so a teammate can join yours.
  */
-function companionTechniques(person: PersonDef, ctx: GameContext): string[] {
+function companionTechniques(person: PersonDef, ctx: GameContext): readonly string[] {
+  if (person.arsenal) return person.arsenal.techniqueIds;
   const { content } = ctx;
   const specialty: Discipline | undefined = person.specialty;
   const clan = person.clanId ? content.clans.get(person.clanId) : undefined;
@@ -74,6 +75,7 @@ export function companionCombatant(
     maxChakra: maxChakra(stats),
     techniques: companionTechniques(person, ctx).map((id) => ctx.content.techniques.require(id)),
     traits: companionTraits(person),
+    ...(person.arsenal?.perks ? { perks: person.arsenal.perks } : {}),
   };
 }
 

@@ -48,6 +48,7 @@ export type {
   ConversationDef,
   ConversationTopic,
   NamePools,
+  PersonArsenal,
   PersonDef,
   PersonRank,
   PersonRole,

@@ -2,6 +2,7 @@ import { costIsSane, effectProblem } from '@/systems/techniques';
 import { canGoWithCrew, daysAway, MIN_RYO_PER_DAY_AWAY } from '@/systems/missions';
 
 import { duplicateIds } from './catalog';
+import { validateArsenals } from './validateArsenals';
 import { validateGear } from './validateGear';
 import { validateEncounters } from './validateEncounters';
 import { validateExams } from './validateExams';
@@ -44,6 +45,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateSources(pack),
     ...validateRecipes(pack),
     ...validatePeople(pack),
+    ...validateArsenals(pack),
     ...validateRanks(pack),
     ...validateTeachers(pack),
     ...validateVillage(pack),

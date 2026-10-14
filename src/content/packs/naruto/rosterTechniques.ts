@@ -17,6 +17,7 @@ export const ROSTER_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Senbon Needles',
     description: 'A thin needle spat or flicked into a nerve point. Small, quiet and very rude.',
     discipline: 'taijutsu',
+    reach: ['close', 'mid'],
     accuracy: 'sure',
     effects: [
       { verb: 'damage', power: 10 },

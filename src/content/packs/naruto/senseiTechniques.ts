@@ -18,6 +18,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     description: 'Chakra gathered in one hand until it shrieks like a thousand birds.',
     discipline: 'ninjutsu',
     element: 'lightning',
+    reach: ['close'],
     effects: [{ verb: 'damage', power: 26 }],
     chakraCost: 18,
     rank: 'A',

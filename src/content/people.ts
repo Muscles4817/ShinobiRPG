@@ -1,3 +1,4 @@
+import type { CombatPerk } from '@/systems/combat';
 import type { Appearance } from '@/systems/profile';
 import type { Rank } from '@/systems/standing';
 import type { Aptitude, Stats } from '@/systems/stats';
@@ -93,6 +94,19 @@ export interface PersonDef {
   readonly favouriteRecipeId?: string;
   /** Recipes they teach, in order, once you are close enough. */
   readonly recipes?: readonly RecipeLesson[];
+  /** How they fight, when it is their own and not their specialty's generic kit. */
+  readonly arsenal?: PersonArsenal;
+}
+
+/**
+ * A person's own way of fighting: the techniques they bring to every fight (in place of the
+ * academy's and their specialty's starter) and the perks they fight with (a transplanted eye's
+ * insight). Arsenal techniques need not be taught anywhere; each fits its owner's grade in its
+ * art (validated).
+ */
+export interface PersonArsenal {
+  readonly techniqueIds: readonly string[];
+  readonly perks?: readonly CombatPerk[];
 }
 
 export interface ConversationChoice {
