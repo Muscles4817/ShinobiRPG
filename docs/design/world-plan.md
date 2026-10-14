@@ -361,8 +361,16 @@ migration and a previous-version save test wherever the save shape changes.
    Lanterns**: a letter from the harbour; the coast road down (ending in the port); the wreck's
    drowned lantern and what Umi saw, in the port; and the light given back, then home.
    Deadlines on acts (`deadlineDays`) are left for later: nothing yet needs to hurry you.
-9. **Chakra-control routes**: not yet. Tree-walking and water-walking don't exist until the
-   progression work (milestone 3) builds them; the bay crossing waits for that.
+9. **Chakra-control routes** (this step). A route may have `needs` (a rank, a world mark, or
+   walking on water or trees) and a `name` to say it by (validated: real ranks and surfaces,
+   marks some job leaves behind). A road whose needs you don't meet is closed: journeys go the
+   long way round, the map dots it, and the destination card says what opens it and how much
+   quicker it would be (`game/routeNeeds.ts`). Whether you can walk on a surface is asked in
+   one place, `game/walking.ts`; until milestone 3 builds the milestones it stands in with
+   chakra control (trees at grade D, water at C). The original pack has **the bay crossing**,
+   Port Shiomachi to Kiri Ford across the water in a day instead of two. The forest shortcut
+   is left out: on today's map the only road it could shorten is the one to Mount Reikon,
+   which would draw over the pass.
 10. **Kiri Ford and property** (this step). The river city opens: the Ferryman's Rest (inn),
     the Ford Market, the Ferry Office's two jobs, and a house for sale on Reed Row (a `house`
     place kind: bought outright, then a second home to sleep and nap in, with no rent; the

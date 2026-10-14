@@ -1,3 +1,5 @@
+import type { RouteNeed } from '@/systems/travel';
+
 import { ORIGINAL_PACK } from './packs/original';
 import { validateContent } from './validate';
 
@@ -79,5 +81,36 @@ describe('route validation', () => {
     expect(validateContent(pack)).toContain(
       'arc "salt-in-the-lanterns" job "arc-salt-letter" isn’t posted at its base, Port Shiomachi',
     );
+  });
+
+  it('reports needs that can’t be met or told: unknown ranks, marks and surfaces, no name', () => {
+    const bay = ORIGINAL_PACK.routes.find((r) => r.id === 'bay-crossing')!;
+    const { name: _unnamed, ...nameless } = bay;
+    const pack = {
+      ...ORIGINAL_PACK,
+      routes: [
+        ...ORIGINAL_PACK.routes.filter((r) => r.id !== 'bay-crossing'),
+        {
+          ...bay,
+          // Deliberately bad data, as a pack typed loosely might hold.
+          needs: [
+            { kind: 'rank', rank: 'shogun' },
+            { kind: 'worldMark', mark: 'never-left', text: 'a ghost’s leave' },
+            { kind: 'worldMark', mark: 'salt-shrine-lit', text: ' ' },
+            { kind: 'walk', surface: 'lava' },
+          ] as unknown as RouteNeed[],
+        },
+        { ...nameless, id: 'nameless' },
+        { ...nameless, id: 'needless', needs: [] },
+      ],
+    };
+    expect(validateContent(pack)).toEqual([
+      'route "bay-crossing" needs unknown rank "shogun"',
+      'route "bay-crossing" needs "never-left", which no job leaves behind',
+      'route "bay-crossing" needs world mark "salt-shrine-lit" with no words for it',
+      'route "bay-crossing" needs walking on unknown surface "lava"',
+      'route "nameless" has needs but no name to tell the player',
+      'route "needless" has an empty needs list',
+    ]);
   });
 });

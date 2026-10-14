@@ -4,9 +4,10 @@ import type { Journey } from '@/systems/travel';
 
 import { examClash } from '../awayNotes';
 import type { GameContext } from '../context';
-import { journeyMission, journeyTo, plannedJourneyTo } from '../journeys';
+import { journeyMission, journeyTo, plannedJourneyTo, shortcutTo } from '../journeys';
 import { leaveLine } from '../leave';
 import { findPerson } from '../people/cast';
+import { closedBy } from '../routeNeeds';
 import { companionsOnOffer } from '../trips';
 import { rationDays } from '../road';
 import type { GameState } from '../state';
@@ -15,7 +16,8 @@ import { travelMap, type TravelMap } from './travelMap';
 
 /**
  * The Travel tab: every location with the way there (days, passage, the worst of the road,
- * the places passed) and, for a trip you could take, what to know before setting out.
+ * the places passed), for a trip you could take, what to know before setting out, and the
+ * roads to it still closed to you with what opens them.
  */
 
 export interface Destination extends Choice {
@@ -34,6 +36,8 @@ export interface Destination extends Choice {
   readonly quick: Choice;
   /** Before you go: short food, nowhere to sleep, an exam you'd miss. */
   readonly warnings: readonly string[];
+  /** Roads there closed to you, each with what opens it (and what a shortcut would save). */
+  readonly closedRoads: readonly string[];
 }
 
 /** How the worst of the road reads on a destination card. */
@@ -69,6 +73,35 @@ function warningsFor(
       : ['Nowhere to sleep there yet.']),
     ...(clash ? [clash.text] : []),
   ];
+}
+
+function daysWord(days: number): string {
+  return days === 1 ? 'a day' : `${days} days`;
+}
+
+/**
+ * The roads closed to you that end at the destination or would shorten the way there, each
+ * as what opens it; the one on a quicker way says how much quicker.
+ */
+function closedRoadsTo(
+  state: GameState,
+  ctx: GameContext,
+  destinationId: string,
+  open: Journey | null,
+): string[] {
+  if (destinationId === state.locationId) return [];
+  const quickest = shortcutTo(state, ctx, destinationId);
+  const shortcut = quickest?.routeIds ?? [];
+  const saved = open && quickest ? open.days - quickest.days : 0;
+  return ctx.content.routes.all
+    .filter((r) => r.from === destinationId || r.to === destinationId || shortcut.includes(r.id))
+    .flatMap((r) => {
+      const why = closedBy(state, ctx, r);
+      if (why === null) return [];
+      return [
+        saved > 0 && shortcut.includes(r.id) ? `${why} It would save ${daysWord(saved)}.` : why,
+      ];
+    });
 }
 
 /** A friend who would come with you, and whether they are the one you've asked. */
@@ -133,6 +166,7 @@ function destinationsFrom(
       lockedReason: l.lockedReason ?? null,
       quick: choice(state, ctx, { type: 'travel', locationId: l.id, quick: true, ...asking }),
       warnings: open && !here ? warningsFor(state, ctx, l, open) : [],
+      closedRoads: closedRoadsTo(state, ctx, l.id, open),
     };
   });
 }

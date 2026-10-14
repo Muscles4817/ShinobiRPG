@@ -1,8 +1,9 @@
 import { startRun, type JourneyPlan, type MissionDef, type MissionStage } from '@/systems/missions';
-import { findJourney, type Journey, type RouteDef } from '@/systems/travel';
+import { findJourney, type Journey } from '@/systems/travel';
 
 import type { GameContext } from './context';
 import { chip, log } from './ops';
+import { endsOpen, roadOpen } from './routeNeeds';
 import { settle } from './story/state';
 import { arriving, leaving, tripCrew } from './trips';
 import type { GameState } from './state';
@@ -10,7 +11,8 @@ import type { GameState } from './state';
 /**
  * Trips of your own along the roads. The way is the quickest open journey over the pack's
  * routes; a road is open when neither end is locked (a waypoint still "coming soon" closes the
- * road through it). A trip plays as a mission run with no client and no pay, built from the
+ * road through it) and you meet what it needs (`routeNeeds.ts`), so a closed shortcut means
+ * the long way round. A trip plays as a mission run with no client and no pay, built from the
  * journey's legs, so the road works as it does on a job: days with meals from your pack and
  * nights in camp, road events by region, and a camp between legs unless you hurry.
  */
@@ -19,15 +21,16 @@ import type { GameState } from './state';
 const CAMP_PICKS = 1;
 const CAMP_TEXT = 'You make camp off the road as the light goes.';
 
-function isOpen(route: RouteDef, ctx: GameContext): boolean {
-  return [route.from, route.to].every(
-    (id) => ctx.content.locations.get(id)?.lockedReason === undefined,
+/** The quickest open way there, or null if no open road goes there. */
+export function journeyTo(state: GameState, ctx: GameContext, locationId: string): Journey | null {
+  return findJourney(ctx.content.routes.all, state.locationId, locationId, (r) =>
+    roadOpen(state, ctx, r),
   );
 }
 
-/** The quickest open way there, or null if no open road goes there. */
-export function journeyTo(state: GameState, ctx: GameContext, locationId: string): Journey | null {
-  return findJourney(ctx.content.routes.all, state.locationId, locationId, (r) => isOpen(r, ctx));
+/** The way there if you met every road's needs: what a closed shortcut would give you. */
+export function shortcutTo(state: GameState, ctx: GameContext, locationId: string): Journey | null {
+  return findJourney(ctx.content.routes.all, state.locationId, locationId, (r) => endsOpen(r, ctx));
 }
 
 /** The way there once every road is open: what the Travel tab shows for a place still locked. */

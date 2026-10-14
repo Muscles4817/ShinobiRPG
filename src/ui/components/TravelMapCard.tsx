@@ -11,7 +11,7 @@ interface TravelMapProps {
 
 /**
  * The region on paper: roads as brush lines (dotted while a place at either end is still
- * coming soon, red where the road is deadly), places as ink seals you can tap, and a stamp
+ * coming soon or the road needs what you lack, red where the road is deadly), places as ink seals you can tap, and a stamp
  * where you stand.
  */
 export function TravelMapCard({ map, selected, onSelect }: TravelMapProps) {
