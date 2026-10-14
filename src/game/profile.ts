@@ -1,3 +1,4 @@
+import { buffAt } from '@/systems/cooking';
 import { combine, type ModifierSpec, type Modifiers } from '@/systems/modifiers';
 import { STAT_IDS, type Growth, type StatScale } from '@/systems/stats';
 import { gradeModifiers, STANDING_INFO } from '@/systems/profile';
@@ -30,6 +31,12 @@ export function natureModifiers(nature: Element, clanNature: Element | undefined
   return { studyElement };
 }
 
+/** Today's meal's buff, at the quality it was cooked. */
+function mealBuff(character: Character, ctx: GameContext): ModifierSpec {
+  const recipe = character.meal ? ctx.content.recipes.get(character.meal) : undefined;
+  return recipe ? buffAt(recipe.buff, character.mealQuality ?? 'good') : {};
+}
+
 export function characterModifiers(character: Character, ctx: GameContext): Modifiers {
   const { content } = ctx;
   const clan = content.clans.get(character.clanId);
@@ -42,7 +49,7 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
     gradeModifiers(character.grades),
     STANDING_INFO[character.classStanding].modifiers,
     natureModifiers(character.nature, clan?.nature),
-    (character.meal ? content.recipes.get(character.meal)?.buff : undefined) ?? {},
+    mealBuff(character, ctx),
     hungerEffect(character.vitals).spec,
     ...injurySpecs(character, ctx),
   ]);

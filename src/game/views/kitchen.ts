@@ -3,6 +3,7 @@ import { cookingGrade, knowsRecipe, masteryOf, timesCooked } from '@/systems/coo
 import { describeSpec, type EffectLine } from '@/systems/modifiers';
 import { pantryCount } from '@/systems/inventory';
 import type { StatGrade } from '@/systems/stats';
+import type { CookingSteps } from '@/systems/cooking';
 
 import { stageName, stageOf } from '@/systems/bonds';
 
@@ -10,7 +11,9 @@ import { dinnerBlocker, INVITE_STAGE } from '../actions/dinner';
 import type { GameContext } from '../context';
 import { bondOf, everyone } from '../people/cast';
 import type { GameState } from '../state';
+import { knownSteps } from '../stove';
 import { choice, type Choice } from './common';
+import { METHOD_WORDS, stepsHint } from './stove';
 
 /** The kitchen at home: what's in the pantry, what you can cook, and who could come to dinner. */
 
@@ -32,6 +35,12 @@ export interface RecipeCard extends Choice {
   readonly description: string;
   readonly icon: IconId;
   readonly rank: StatGrade;
+  /** How it's cooked, e.g. "Grilled": the method sets the right steps at the stove. */
+  readonly method: string;
+  /** What mastery has taught you of its steps, in words, or null. */
+  readonly hint: string | null;
+  /** The steps you already know, to set the stove for you. */
+  readonly knownSteps: Partial<CookingSteps>;
   /** "Practised" or "Mastered" once you have cooked it enough, else null. */
   readonly mastery: string | null;
   readonly satiety: number;
@@ -104,6 +113,9 @@ export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
         description: r.description,
         icon: r.icon,
         rank: r.rank,
+        method: METHOD_WORDS[r.method],
+        hint: stepsHint(knownSteps(state, r)),
+        knownSteps: knownSteps(state, r),
         mastery: mastery === 'new' ? null : MASTERY_WORDS[mastery],
         satiety: r.satiety,
         energy: r.energy,

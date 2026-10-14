@@ -698,3 +698,18 @@
   font-size: 0.86rem;
   line-height: 1.35;
 }
+.stove-beat {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.stove-beat legend {
+  font-family: var(--font-story);
+  margin-bottom: 4px;
+}
+.experiment {
+  display: grid;
+  gap: 8px;
+}

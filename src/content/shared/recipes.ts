@@ -23,6 +23,7 @@ const STARTERS: readonly RecipeDef[] = [
     description: 'Two rice balls wrapped for the road. Filling, plain, reliable.',
     icon: 'rice',
     rank: 'E',
+    method: 'steam',
     starter: true,
     ingredients: [{ id: 'rice', count: 2 }],
     satiety: 40,
@@ -35,6 +36,8 @@ const STARTERS: readonly RecipeDef[] = [
     description: 'A raw egg beaten into hot rice with a splash of soy. Breakfast in a minute.',
     icon: 'rice',
     rank: 'E',
+    method: 'steam',
+    steps: { finish: 'early' },
     starter: true,
     ingredients: [
       { id: 'rice', count: 1 },
@@ -50,6 +53,7 @@ const STARTERS: readonly RecipeDef[] = [
     description: 'A warm bowl that clears the head before a day of scrolls.',
     icon: 'bowl',
     rank: 'E',
+    method: 'boil',
     starter: true,
     ingredients: [
       { id: 'miso', count: 1 },
@@ -68,6 +72,7 @@ const EVERYDAY: readonly RecipeDef[] = [
     description: 'Fish, rice and pickles. What every sensei tells you to eat.',
     icon: 'fish',
     rank: 'D',
+    method: 'grill',
     ingredients: [
       { id: 'river-fish', count: 1 },
       { id: 'rice', count: 1 },
@@ -83,6 +88,7 @@ const EVERYDAY: readonly RecipeDef[] = [
     description: 'Soft tofu warmed through in miso and greens. Calm food for a careful day.',
     icon: 'pot',
     rank: 'D',
+    method: 'simmer',
     ingredients: [
       { id: 'tofu', count: 1 },
       { id: 'miso', count: 1 },
@@ -98,6 +104,8 @@ const EVERYDAY: readonly RecipeDef[] = [
     description: 'The bones and head simmered for hours. It mends what a bandage only covers.',
     icon: 'bowl',
     rank: 'D',
+    method: 'simmer',
+    steps: { cut: 'whole' },
     ingredients: [
       { id: 'river-fish', count: 1 },
       { id: 'vegetables', count: 1 },
@@ -117,6 +125,8 @@ const SEASONS: readonly RecipeDef[] = [
       'Rice cooked with the season’s first shoots. It tastes of wind and new beginnings.',
     icon: 'rice',
     rank: 'D',
+    method: 'steam',
+    steps: { cut: 'fine' },
     ingredients: [
       { id: 'rice', count: 1 },
       { id: 'bamboo-shoots', count: 1 },
@@ -131,6 +141,8 @@ const SEASONS: readonly RecipeDef[] = [
     description: 'Cucumber ribbons and a pinch of chilli over rice cooled in the well bucket.',
     icon: 'bowl',
     rank: 'D',
+    method: 'steam',
+    steps: { cut: 'fine', finish: 'early' },
     ingredients: [
       { id: 'cucumbers', count: 1 },
       { id: 'rice', count: 1 },
@@ -147,6 +159,7 @@ const SEASONS: readonly RecipeDef[] = [
       'Sticky rice studded with peeled chestnuts. Heavy, sweet, and the best sleep of the year.',
     icon: 'rice',
     rank: 'D',
+    method: 'steam',
     ingredients: [
       { id: 'rice', count: 1 },
       { id: 'chestnuts', count: 1 },
@@ -161,6 +174,7 @@ const SEASONS: readonly RecipeDef[] = [
     description: 'Thick rounds of radish simmered all afternoon. Old medics swear it knits bone.',
     icon: 'pot',
     rank: 'D',
+    method: 'simmer',
     ingredients: [
       { id: 'winter-radish', count: 1 },
       { id: 'miso', count: 1 },
@@ -180,6 +194,7 @@ const ROAD: readonly RecipeDef[] = [
     description: 'Fish rubbed with pepper and charred on green sticks. You eat quietly and listen.',
     icon: 'fish',
     rank: 'C',
+    method: 'grill',
     ingredients: [
       { id: 'river-fish', count: 1 },
       { id: 'spices', count: 1 },
@@ -194,6 +209,8 @@ const ROAD: readonly RecipeDef[] = [
     description: 'Rice cooked down to silk with tofu. It settles the chakra like a deep breath.',
     icon: 'bowl',
     rank: 'D',
+    method: 'simmer',
+    steps: { cut: 'fine' },
     ingredients: [
       { id: 'rice', count: 1 },
       { id: 'tofu', count: 1 },
@@ -213,6 +230,8 @@ const TAUGHT: readonly RecipeDef[] = [
     description: 'Sweet egg rolled in thin layers and sliced for sharing. Nobody eats it alone.',
     icon: 'bowl',
     rank: 'D',
+    method: 'fry',
+    steps: { heat: 'gentle' },
     ingredients: [
       { id: 'eggs', count: 2 },
       { id: 'rice', count: 1 },
@@ -227,6 +246,8 @@ const TAUGHT: readonly RecipeDef[] = [
     description: 'Everything in one pot, with enough chilli to wake the dead.',
     icon: 'pot',
     rank: 'C',
+    method: 'boil',
+    steps: { cut: 'chunky' },
     ingredients: [
       { id: 'river-fish', count: 1 },
       { id: 'vegetables', count: 1 },
@@ -244,6 +265,7 @@ const TAUGHT: readonly RecipeDef[] = [
       'Rice fried with dried chilli until the pan smokes. Fire users eat it by the bowl.',
     icon: 'rice',
     rank: 'D',
+    method: 'fry',
     ingredients: [
       { id: 'rice', count: 1 },
       { id: 'spices', count: 1 },

@@ -7,6 +7,7 @@ import { missionCamp, missionDecide } from './missionStory';
 import { payRent, treat } from './services';
 import { hostDinner } from './dinner';
 import { cook } from './kitchen';
+import { experiment } from './experiment';
 import { buyCookbook, learnRecipe } from './recipes';
 import { setAnimations, setCombatStyle } from './settings';
 import { buyIntel } from './intel';
@@ -61,6 +62,7 @@ export const HANDLERS: Registry = {
   unequipGear,
   buyIngredient,
   cook,
+  experiment,
   buyCookbook,
   learnRecipe,
   followSight,

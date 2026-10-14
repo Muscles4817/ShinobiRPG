@@ -378,5 +378,19 @@ Each phase ships on its own and keeps `npm run check` green.
 - The cookbook on the Shinobi screen (`views/cookbook.ts`): your grade, known dishes with
   mastery and effects, and sealed dishes with where to learn them.
 
-Not yet built: the stove step (phase 3), gathering (phase 4), provisions in fights (phase 5),
+**Phase 3, the stove.**
+
+- Recipes have a `method` (grill, simmer, steam, fry, boil) and may override a beat (`steps`).
+  `systems/cooking/stove.ts`: the right steps, beats landed, quality (burnt, plain, good, fine;
+  your grade above or below the dish's rank nudges it a step) and `buffAt`/`amountAt`, which
+  scale everything a dish does by quality. No chance: the stove is learned, not rolled.
+- `cook` takes optional `steps` (by hand); without them it is cooked as usual (plain, good once
+  mastered). Dinners are cooked as usual. Misses are told which way they went ("The fire was too
+  low for it."); practised dishes show their heat, mastered ones every step.
+- `character.mealQuality` (optional; absent reads as good, so no save version).
+- `experiment`: two to four pantry ingredients, one each. The same set as an unknown dish within
+  your grade teaches it (`tryCombination`); otherwise the pot hints how close you came.
+- The stove sheet and the "Try something new" pot in the kitchen.
+
+Not yet built: gathering (phase 4), provisions in fights (phase 5),
 the library (phase 7) and other regions (phase 8).

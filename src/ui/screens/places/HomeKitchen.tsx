@@ -1,8 +1,12 @@
+import { useState } from 'react';
+
 import { kitchenView, type GameContext, type GameState } from '@/game';
 
 import { Icon } from '../../art/Icon';
 import { GradeBadge } from '../../components/Grade';
 import { DinnerInvites } from './DinnerInvites';
+import { ExperimentPot } from './ExperimentPot';
+import { Stove } from './Stove';
 import type { PlaceProps } from '../types';
 
 interface HomeKitchenProps {
@@ -14,6 +18,8 @@ interface HomeKitchenProps {
 /** The stove: your pantry, and recipes you can cook from it for a day-long buff. */
 export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
   const view = kitchenView(state, ctx);
+  const [atStove, setAtStove] = useState<string | null>(null);
+  const stoveRecipe = view.recipes.find((r) => r.id === atStove);
   return (
     <section id="kitchen" className="kitchen" aria-label="Kitchen">
       <h2 className="label">Kitchen</h2>
@@ -64,6 +70,7 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
                 </span>
               ))}
             </span>
+            <small className="muted">{r.hint ?? r.method}</small>
             <small className="muted">
               {r.needs.map((n) => `${n.name} ${Math.min(n.have, n.need)}/${n.need}`).join(', ')}
             </small>
@@ -73,10 +80,20 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
               className="btn small"
               disabled={r.blocker !== null}
               onClick={() => {
+                setAtStove(r.id);
+              }}
+            >
+              At the stove
+            </button>
+            <button
+              type="button"
+              className="btn small ghost"
+              disabled={r.blocker !== null}
+              onClick={() => {
                 perform(r.action);
               }}
             >
-              Cook
+              Cook as usual
             </button>
             {!view.noGuests && (
               <DinnerInvites invites={r.invites} blocker={r.inviteBlocker} perform={perform} />
@@ -84,6 +101,18 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
           </article>
         ))}
       </div>
+      <ExperimentPot ctx={ctx} state={state} pantry={view.pantry} perform={perform} />
+      {stoveRecipe && (
+        <Stove
+          ctx={ctx}
+          state={state}
+          recipe={stoveRecipe}
+          perform={perform}
+          onClose={() => {
+            setAtStove(null);
+          }}
+        />
+      )}
     </section>
   );
 }

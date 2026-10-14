@@ -6,6 +6,7 @@ import { stageForPair } from '@/systems/bonds';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { METHOD_WORDS } from './stove';
 
 /**
  * Your cookbook: your cooking grade, the dishes you know (how well, and what each does), and the
@@ -20,6 +21,8 @@ export interface CookbookEntry {
   readonly description: string;
   readonly icon: IconId;
   readonly rank: StatGrade;
+  /** How it's cooked, e.g. "Simmered". */
+  readonly method: string;
   /** What eating it does: as you eat, then for the rest of the day. */
   readonly effects: readonly EffectLine[];
   /** "New", "Practised" or "Mastered". */
@@ -99,6 +102,7 @@ export function cookbookView(state: GameState, ctx: GameContext): CookbookView {
         description: r.description,
         icon: r.icon,
         rank: r.rank,
+        method: METHOD_WORDS[r.method],
         effects: mealEffects(r),
         mastery: MASTERY_WORDS[masteryOf(times)],
         timesCooked: times,
