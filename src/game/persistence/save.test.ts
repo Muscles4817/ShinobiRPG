@@ -285,6 +285,23 @@ describe('persistence', () => {
     expect(clan.ok && clan.value.character.upbringingId).toBe('clan-branch');
   });
 
+  it('gives a chūnin from before breakthroughs the one their promotion brings', () => {
+    const game = newGame();
+    const { breakthroughs: _b, ...character } = game.character;
+    const old = (rank: string) =>
+      JSON.stringify({
+        version: 33,
+        state: { ...game, character, standing: { ...game.standing, rank } },
+      });
+    const chunin = deserialize(old('chunin'));
+    if (!chunin.ok) throw new Error(chunin.error);
+    expect(chunin.value.character.breakthroughs).toEqual([
+      { source: 'promotion:chunin', limits: { reserves: 4 } },
+    ]);
+    const genin = deserialize(old('genin'));
+    expect(genin.ok && genin.value.character.breakthroughs).toEqual([]);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);
