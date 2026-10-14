@@ -45,7 +45,7 @@ export const COOKBOOKS: readonly CookbookDef[] = [
     description: 'Written by a courier who never stopped walking. Short recipes, long margins.',
     cost: 90,
     icon: 'scroll',
-    recipeIds: ['hunters-skewers', 'tofu-congee'],
+    recipeIds: ['hunters-skewers', 'tofu-congee', 'boar-hot-pot'],
   },
   {
     id: 'foragers-notes',

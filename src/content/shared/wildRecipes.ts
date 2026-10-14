@@ -6,6 +6,23 @@ import type { RecipeDef } from '../types';
  */
 export const WILD_RECIPES: readonly RecipeDef[] = [
   {
+    id: 'boar-hot-pot',
+    name: 'Boar Hot Pot',
+    description: 'Wild game simmered with miso and greens, the way hunters eat after a long chase.',
+    icon: 'pot',
+    rank: 'C',
+    method: 'simmer',
+    ingredients: [
+      { id: 'wild-game', count: 1 },
+      { id: 'miso', count: 1 },
+      { id: 'vegetables', count: 1 },
+    ],
+    satiety: 75,
+    energy: 20,
+    buff: { growth: { strength: 1.25 } },
+    provision: 'fortified',
+  },
+  {
     id: 'mushroom-rice',
     name: 'Forest Mushroom Rice',
     description: 'Rice steamed over a fistful of mushrooms. It smells of leaf mould and rain.',

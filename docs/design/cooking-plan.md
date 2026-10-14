@@ -406,7 +406,9 @@ Each phase ships on its own and keeps `npm run check` green.
   cookbooks (A Forager's Notes, The River Cook).
 - Camp: `forage` (around the camp, from the pack's `campFinds`) and `cook` (the best dish you
   know that your pack covers for everyone: bond with each of the crew) activities, offered in
-  the escort and team-job camps (`game/story/campKitchen.ts`). Beast drops are still to come.
+  the escort and team-job camps (`game/story/campKitchen.ts`).
+- Beast drops: `EnemyDef.drops` (every beast leaves Wild Game, `game/spoils.ts`) for the Boar
+  Hot Pot, taught by Food for the Road.
 
 **Phase 5, provisions in fights.**
 

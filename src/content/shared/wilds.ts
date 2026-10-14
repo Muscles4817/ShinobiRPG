@@ -16,6 +16,8 @@ export const WILD_INGREDIENTS: readonly IngredientDef[] = [
   { id: 'river-eel', name: 'River Eel', cost: 30, icon: 'fish' },
   { id: 'crayfish', name: 'Crayfish', cost: 12, icon: 'fish' },
   { id: 'watercress', name: 'Watercress', cost: 8, icon: 'leaf' },
+  // Only from a beast you've beaten (`EnemyDef.drops`).
+  { id: 'wild-game', name: 'Wild Game', cost: 25, icon: 'pot' },
 ];
 
 /** The woods: greens in the warm months, mushrooms and chestnuts in autumn, ginger if you know it. */

@@ -31,6 +31,7 @@ import {
 import { teamAllies } from './missionTeam';
 import { adjust, chip, log, spendTime } from './ops';
 import { addReport } from './reports';
+import { takeSpoils } from './spoils';
 import type { GameState } from './state';
 
 /**
@@ -135,7 +136,7 @@ export function resolveCombat(
 
   switch (outcome.result) {
     case 'victory': {
-      const reported = addReport(afterFight, {
+      const reported = addReport(takeSpoils(afterFight, ctx, foes), {
         kind: 'fight',
         result: 'victory',
         enemies,
