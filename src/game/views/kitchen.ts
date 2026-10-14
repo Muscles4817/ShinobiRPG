@@ -1,6 +1,8 @@
 import type { IconId } from '@/content';
+import { cookingGrade, knowsRecipe, masteryOf, timesCooked } from '@/systems/cooking';
 import { describeSpec, type EffectLine } from '@/systems/modifiers';
 import { pantryCount } from '@/systems/inventory';
+import type { StatGrade } from '@/systems/stats';
 
 import { stageName, stageOf } from '@/systems/bonds';
 
@@ -11,6 +13,8 @@ import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 
 /** The kitchen at home: what's in the pantry, what you can cook, and who could come to dinner. */
+
+const MASTERY_WORDS = { practised: 'Practised', mastered: 'Mastered' } as const;
 
 /** Someone you could have round for dinner with this recipe. */
 export interface DinnerInvite extends Choice {
@@ -27,8 +31,14 @@ export interface RecipeCard extends Choice {
   readonly name: string;
   readonly description: string;
   readonly icon: IconId;
+  readonly rank: StatGrade;
+  /** "Practised" or "Mastered" once you have cooked it enough, else null. */
+  readonly mastery: string | null;
   readonly satiety: number;
   readonly energy: number;
+  /** Health and chakra it gives back as you eat it (0 for most dishes). */
+  readonly health: number;
+  readonly chakra: number;
   /** The day-long buff, worded by `describeSpec`. */
   readonly effects: readonly EffectLine[];
   readonly needs: readonly {
@@ -49,7 +59,12 @@ export interface KitchenView {
     readonly icon: IconId;
     readonly count: number;
   }[];
+  /** The recipes you know; the cookbook shows the rest. */
   readonly recipes: readonly RecipeCard[];
+  /** Your cooking grade, E–S. */
+  readonly grade: StatGrade;
+  /** Recipes you haven't learned yet. */
+  readonly unlearned: number;
   /** Today's meal and what it's doing for you, if you've cooked today. */
   readonly meal: { readonly name: string; readonly effects: readonly EffectLine[] } | null;
   /** Why nobody can be invited at all yet, or null. */
@@ -67,7 +82,10 @@ export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
   const { content } = ctx;
   const meal = state.character.meal ? content.recipes.get(state.character.meal) : undefined;
   const guests = guestsOf(state, ctx);
+  const known = content.recipes.all.filter((r) => knowsRecipe(state.cooking, r.id));
   return {
+    grade: cookingGrade(state.cooking.xp),
+    unlearned: content.recipes.all.length - known.length,
     pantry: content.ingredients.all
       .map((i) => ({
         id: i.id,
@@ -76,16 +94,21 @@ export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
         count: pantryCount(state.inventory, i.id),
       }))
       .filter((i) => i.count > 0),
-    recipes: content.recipes.all.map((r) => {
+    recipes: known.map((r) => {
       const inviteBlocker = dinnerBlocker(state, ctx, r);
+      const mastery = masteryOf(timesCooked(state.cooking, r.id));
       return {
         ...choice(state, ctx, { type: 'cook', recipeId: r.id }),
         id: r.id,
         name: r.name,
         description: r.description,
         icon: r.icon,
+        rank: r.rank,
+        mastery: mastery === 'new' ? null : MASTERY_WORDS[mastery],
         satiety: r.satiety,
         energy: r.energy,
+        health: r.health ?? 0,
+        chakra: r.chakra ?? 0,
         effects: describeSpec(r.buff),
         needs: r.ingredients.map((i) => ({
           name: content.ingredients.get(i.id)?.name ?? i.id,

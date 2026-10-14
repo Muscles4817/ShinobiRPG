@@ -1,4 +1,5 @@
 import type { CombatState } from '@/systems/combat';
+import type { Cooking } from '@/systems/cooking';
 import type { Housing } from '@/systems/housing';
 import type { Exhaustion, Injury } from '@/systems/injuries';
 import type { Inventory } from '@/systems/inventory';
@@ -57,6 +58,8 @@ export interface GameState {
   readonly village: VillageMemory;
   /** The exam you are sitting, and a promotion waiting to be held. */
   readonly exams: Exams;
+  /** The recipes you know, how often you've cooked each, and your cooking grade. */
+  readonly cooking: Cooking;
 }
 
 /**

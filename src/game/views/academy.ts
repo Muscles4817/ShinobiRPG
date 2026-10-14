@@ -14,6 +14,7 @@ import { learnBlockerFor, learnBlockerText, studyPointsFor, wouldBeUnstable } fr
 import { placeHere } from '../ops';
 import type { GameState } from '../state';
 import { playerCombatant } from '../combatants';
+import { hardWorkEnergy } from '../profile';
 import { choice, type Choice, type Discipline } from './common';
 import { techniqueSheet, type Reader, type TechniqueSheet } from './techniqueSheet';
 
@@ -131,7 +132,8 @@ export function academyView(state: GameState, ctx: GameContext): AcademyView | n
     .map((id) => ctx.content.techniques.require(id))
     .filter((t) => !state.techniques.known.includes(t.id))
     .map((t) => scrollOf(state, ctx, t, { you }));
-  return { name: place.name, energyCost: STUDY_ENERGY_COST, ...sortScrolls(scrolls) };
+  const energyCost = hardWorkEnergy(state.character, ctx, STUDY_ENERGY_COST);
+  return { name: place.name, energyCost, ...sortScrolls(scrolls) };
 }
 
 /** Studying first, then ready to start, then what is folded away (closest first). */

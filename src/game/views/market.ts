@@ -6,6 +6,7 @@ import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import type { GameState } from '../state';
 import { closedSign, festivalToday, marketPrice, seasonNote, stallsHere } from '../village';
+import { newInBook } from '../actions/recipes';
 import { choice, type Choice } from './common';
 
 export interface MarketItem extends Choice {
@@ -35,6 +36,19 @@ export interface IngredientItem extends Choice {
   readonly season: string | null;
 }
 
+/** A cookbook at the grocer: buy it once and it teaches every dish in it. */
+export interface CookbookItem extends Choice {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly icon: IconId;
+  readonly cost: number;
+  /** The dishes it teaches, by name. */
+  readonly recipes: readonly string[];
+  /** How many of them you don't know yet. */
+  readonly fresh: number;
+}
+
 export interface MarketView {
   readonly name: string;
   /** Today's festival, when prices are down. */
@@ -52,6 +66,7 @@ export interface MarketView {
     readonly closed: string | null;
     readonly items: readonly MarketItem[];
     readonly ingredients: readonly IngredientItem[];
+    readonly cookbooks: readonly CookbookItem[];
   }[];
 }
 
@@ -71,6 +86,20 @@ export function foodItem(state: GameState, ctx: GameContext, id: string): Market
     slots: food.slots,
     wasted: Math.max(0, fullness + food.satiety - METER_MAX),
     season: seasonNote(food),
+  };
+}
+
+function cookbookItem(state: GameState, ctx: GameContext, id: string): CookbookItem {
+  const book = ctx.content.cookbooks.require(id);
+  return {
+    ...choice(state, ctx, { type: 'buyCookbook', cookbookId: id }),
+    id,
+    name: book.name,
+    description: book.description,
+    icon: book.icon,
+    cost: marketPrice(book.cost, state, ctx),
+    recipes: book.recipeIds.map((r) => ctx.content.recipes.require(r).name),
+    fresh: newInBook(state, book).length,
   };
 }
 
@@ -103,6 +132,7 @@ export function marketView(state: GameState, ctx: GameContext): MarketView | nul
           season: seasonNote(item),
         };
       }),
+      cookbooks: (stall.cookbookIds ?? []).map((id) => cookbookItem(state, ctx, id)),
     })),
   };
 }

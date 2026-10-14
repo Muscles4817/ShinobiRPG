@@ -4,6 +4,7 @@ import { headerView, shinobiView } from '@/game';
 
 import { Portrait } from '../art/Portrait';
 import { ConditionPanel } from './Condition';
+import { Cookbook } from './Cookbook';
 import { AnimationToggle } from './AnimationToggle';
 import { FightStylePicker } from './FightStylePicker';
 import { StatSheet } from './StatSheet';
@@ -113,6 +114,7 @@ export function ShinobiScreen({
       </section>
       <ConditionPanel condition={view.condition} />
       <StatSheet view={view} />
+      <Cookbook ctx={ctx} state={state} />
       <FightStylePicker ctx={ctx} state={state} perform={perform} />
       <AnimationToggle ctx={ctx} state={state} perform={perform} />
       <p className="muted small">

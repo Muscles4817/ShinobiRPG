@@ -14,5 +14,7 @@ export interface Stall {
   readonly foodIds: readonly string[];
   /** Raw ingredients to cook at home (a grocer). */
   readonly ingredientIds?: readonly string[];
+  /** Cookbooks for sale: each teaches its recipes. */
+  readonly cookbookIds?: readonly string[];
   readonly hours?: OpeningHours;
 }

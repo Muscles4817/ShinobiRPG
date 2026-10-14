@@ -13,7 +13,7 @@ import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 import type { Season } from '@/systems/time';
 
 import type { BackdropId, IconId } from './art';
-import type { GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
+import type { CookbookDef, GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
 import type { InjuryDef } from './injuries';
 import type {
   ConversationDef,
@@ -30,12 +30,14 @@ import type { VoiceDef } from './voices';
 
 export type { BackdropId, IconId } from './art';
 export type {
+  CookbookDef,
   GearDef,
   GearKind,
   GearSlot,
   IngredientCount,
   IngredientDef,
   RecipeDef,
+  RecipeLesson,
   ToolDef,
 } from './items';
 export type {
@@ -292,6 +294,7 @@ export interface ContentPack {
   readonly injuries: readonly InjuryDef[];
   readonly ingredients: readonly IngredientDef[];
   readonly recipes: readonly RecipeDef[];
+  readonly cookbooks: readonly CookbookDef[];
   readonly people: readonly PersonDef[];
   readonly conversations: readonly ConversationDef[];
   /** What templated conversations (`about`) are filled with, per specialty, trait, clan, role. */

@@ -6,6 +6,7 @@ import { crewOf } from './crew';
 import { requirePerson } from './people/cast';
 import { personStats } from './people/progress';
 import { ordersFor } from './people/teamOrders';
+import { characterModifiers } from './profile';
 import type { GameState } from './state';
 
 /**
@@ -22,8 +23,18 @@ export interface Hand {
   readonly value: number;
 }
 
+/** Your own stat when you take a check: a sharp-eyed meal (`checks`) makes it count for more. */
+export function yourCheckValue(state: GameState, ctx: GameContext, stat: StatId): number {
+  return state.character.stats[stat] * characterModifiers(state.character, ctx).checks[stat];
+}
+
+/** You, taking a check yourself. */
+export function yourHand(state: GameState, ctx: GameContext, stat: StatId): Hand {
+  return { personId: null, name: 'You', value: yourCheckValue(state, ctx, stat) };
+}
+
 export function bestHandFor(state: GameState, ctx: GameContext, stat: StatId): Hand {
-  const you: Hand = { personId: null, name: 'You', value: state.character.stats[stat] };
+  const you = yourHand(state, ctx, stat);
   return crewOf(state).memberIds.reduce<Hand>((best, id) => {
     const person = requirePerson(state, ctx, id);
     const value = personStats(person, state)[stat];
@@ -34,7 +45,7 @@ export function bestHandFor(state: GameState, ctx: GameContext, stat: StatId): H
 /** Who takes a mission check: a role's best teammate, or you when the check names no role. */
 export function checkHand(state: GameState, ctx: GameContext, approach: CheckApproach): Hand {
   if (approach.role) return bestHandFor(state, ctx, approach.stat);
-  return { personId: null, name: 'You', value: state.character.stats[approach.stat] };
+  return yourHand(state, ctx, approach.stat);
 }
 
 /**

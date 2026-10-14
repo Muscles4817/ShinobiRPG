@@ -20,6 +20,7 @@ import {
   statChips,
 } from '../ops';
 import { bondOf, findPerson, requirePerson, whereNow } from '../people/cast';
+import { warmed } from '../people/warmth';
 import { readPrice, ryoPerSession } from '../people/price';
 import { personStats, trainPerson } from '../people/progress';
 import { sessionGains } from '../people/regimen';
@@ -37,6 +38,7 @@ import {
 } from '../people/teachers';
 import { QUIRK_BOND } from '../people/teachingFactor';
 import { addReport } from '../reports';
+import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -197,7 +199,7 @@ function teachSession(
   });
   const quirk = person.teacher?.quirk;
   const base = teaching.isSensei ? SENSEI_BOND : TRAIN_WITH_BOND;
-  const bond = Math.max(1, Math.round(base * (quirk ? QUIRK_BOND[quirk] : 1)));
+  const bond = warmed(state, ctx, Math.max(1, Math.round(base * (quirk ? QUIRK_BOND[quirk] : 1))));
   // A genin practises alongside you: the session is theirs too.
   const people = person.rank === 'genin' ? trainPerson(state, ctx, person, gains) : state.people;
   const trained: GameState = {
@@ -235,24 +237,23 @@ export function lessonAway(
 
 export const trainWith: ActionHandler<TrainWith> = {
   check(state, action, ctx) {
+    const energy = hardWorkEnergy(state.character, ctx, TRAIN_WITH_ENERGY);
     return firstBlocker(
       busyReason(state),
       weakFromHunger(state),
       laidUp(state, ctx),
       teachingBlocker(state, ctx, action),
-      state.character.vitals.energy < TRAIN_WITH_ENERGY &&
-        `Needs ${TRAIN_WITH_ENERGY} energy. Nap or eat first.`,
+      state.character.vitals.energy < energy && `Needs ${energy} energy. Nap or eat first.`,
     );
   },
   perform(state, action, ctx) {
     const person = requirePerson(state, ctx, action.personId);
     const teaching = teachingOf(state, person);
     if (!teaching) return state;
+    const energy = hardWorkEnergy(state.character, ctx, TRAIN_WITH_ENERGY);
     const session = teachSession(state, ctx, teaching, action.statId);
-    const next = adjust(spendTime(session.state, TRAIN_WITH_SLOTS, ctx), {
-      energy: -TRAIN_WITH_ENERGY,
-    });
-    const logged = report(next, state, { ...session, energy: TRAIN_WITH_ENERGY });
+    const next = adjust(spendTime(session.state, TRAIN_WITH_SLOTS, ctx), { energy: -energy });
+    const logged = report(next, state, { ...session, energy });
     const grown = logDiscoveries(logged, session.discovered, ctx);
     return teaching.isSensei ? permitAfterLesson(grown, ctx, person) : grown;
   },

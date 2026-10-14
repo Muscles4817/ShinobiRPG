@@ -10,6 +10,7 @@ import type { GameState } from '../state';
 import { scrollOf, sortScrolls, type Scroll } from './academy';
 import type { Discipline } from './common';
 import { playerCombatant } from '../combatants';
+import { hardWorkEnergy } from '../profile';
 
 /**
  * The library's stacks, shelved by art (with what you're reading pulled out), and the reading
@@ -80,7 +81,7 @@ export function libraryView(state: GameState, ctx: GameContext): LibraryView | n
   const sorted = sortScrolls(scrolls);
   return {
     name: place.name,
-    energyCost: STUDY_ENERGY_COST,
+    energyCost: hardWorkEnergy(state.character, ctx, STUDY_ENERGY_COST),
     locked: libraryEntry(state),
     restricted: unread.length - open.length,
     unread: unread.length,

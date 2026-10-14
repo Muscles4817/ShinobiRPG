@@ -1,3 +1,4 @@
+import { cookingGrade } from '@/systems/cooking';
 import { SOLO } from '@/systems/missions';
 import { act, intoFight, newGame, veteran } from '@/test/gameFixtures';
 
@@ -250,6 +251,15 @@ describe('persistence', () => {
     const loaded = deserialize(JSON.stringify({ version: 30, state: { ...game, people } }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.people.permits).toEqual([]);
+  });
+
+  it('lets a save from before recipes were learned keep every recipe it could cook', () => {
+    const { cooking: _cooking, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 31, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(cookingGrade(loaded.value.cooking.xp)).toBe('D');
+    expect(Object.keys(loaded.value.cooking.known)).toHaveLength(10);
+    expect(loaded.value.cooking.known['spicy-hot-pot']).toBe(0);
   });
 
   it('rejects corrupted data', () => {

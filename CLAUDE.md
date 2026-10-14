@@ -35,7 +35,7 @@ src/
   core/       Game-agnostic utilities: seeded Rng, Result, math. Knows nothing about the game.
   systems/    Self-contained domain modules. Pure functions over their own slice of state.
     time/ stats/ vitals/ wallet/ housing/ techniques/ missions/ combat/ standing/ journal/
-    modifiers/ profile/ bonds/ inventory/
+    modifiers/ profile/ bonds/ inventory/ cooking/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
@@ -204,7 +204,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. Gear has
     ranks D–A: shops sell D and C, B to chūnin; A and `unique` named weapons are never sold. A home-cooked recipe sets
     `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
-    `spendTime` clears it when the day ends.
+    `spendTime` clears it when the day ends. **Cooking is a skill** (`systems/cooking`,
+    `GameState.cooking`): recipes are learned (three `starter`s, cookbooks at a grocer, people's
+    `recipes` lessons, a job's `reward.recipeId`), each has a `rank` (a cook manages one above
+    their grade) and a mastery from times cooked, and every dish has one role
+    (`docs/design/cooking-plan.md`): its buff may also make hard work cheaper (`energyCost`,
+    read through `hardWorkEnergy`), sleep heal more (`sleepHealing`), injuries mend sooner
+    (`injuryNights`), time with people count for more (`bondGain`, `warmed`) or your own job
+    checks sharper (`checks`, `yourCheckValue`); `health`/`chakra` come back as you eat.
     Hunger works the same way: the player sees a Hunger meter (100 − satiety), and each
     stage (`hungerLevel`: peckish, hungry, starving) is a `ModifierSpec` plus a fight-strength
     multiplier in `game/hunger.ts`; starving also blocks hard work (`weakFromHunger`).
@@ -408,9 +415,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   specialty, and a half plays only beside someone on your side who knows the other.
 - **Add gear:** add a `GearDef` (`kind` weapon/armour/focus with its shape, level or boosts,
   `rank`, cost) to the pack's `gear` and list it at a `gear` place (a smith, an outfitter);
-  `unique` pieces are never listed. **Add an ingredient or recipe:** add it to
-  `shared/kitchen.ts` (or a pack's own list); ingredients must be sold at a market stall's
-  `ingredientIds`, and recipes may only use known ingredients (validated).
+  `unique` pieces are never listed. **Add an ingredient or recipe:** ingredients go in
+  `shared/kitchen.ts` and must be sold at a market stall's `ingredientIds`; recipes go in
+  `shared/recipes.ts` (or a pack's own list) with a `rank`, one role (don't make a bigger copy
+  of another dish's buff) and a way to learn it: a cookbook (`CookbookDef`, sold at a stall's
+  `cookbookIds`), a person's `recipes`, or a job's `reward.recipeId` (validated). **Add a meal
+  effect:** a field on `ModifierSpec` combined in `combine`, worded in `describeSpec`, read at
+  one hook in `game/`.
 - **Add village life:** rumours (`missionId` for a job hint, `personId` for gossip), night
   sights (with a small stat `reward`) and festivals (season, day, `marketPrices`,
   `bondBonus`, optional `stalls` of festival-only food) go in the pack's `village`. Give a

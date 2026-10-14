@@ -10,6 +10,7 @@ import {
   type GameState,
 } from '@/game';
 import { createDuelEngine } from '@/systems/combat';
+import { GRADE_XP } from '@/systems/cooking';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 /** Tests use the original pack: its ids are stable and it always ships. */
@@ -46,9 +47,17 @@ export function postEverything(state: GameState, context: GameContext = ctx): Ga
   return { ...state, board: { ...state.board, refreshedDay: state.time.day, postings } };
 }
 
-/** A game ready to play, with its team formed and every job posted. */
+/** Knows every recipe in the pack, never cooked, as a grade D cook: any rank C dish is in reach. */
+export function knowEveryRecipe(state: GameState, context: GameContext = ctx): GameState {
+  const known = Object.fromEntries(context.content.recipes.all.map((r) => [r.id, 0]));
+  return { ...state, cooking: { xp: GRADE_XP.D, known } };
+}
+
+/** A game ready to play, with its team formed, every job posted and every recipe known. */
 export function newGame(overrides: Partial<GameState> = {}, context: GameContext = ctx): GameState {
-  return { ...postEverything(formTeam(freshGame(context), context), context), ...overrides };
+  const posted = postEverything(formTeam(freshGame(context), context), context);
+  const ready = knowEveryRecipe(posted, context);
+  return { ...ready, ...overrides };
 }
 
 /** Dispatches an action, failing the test if it is refused. */

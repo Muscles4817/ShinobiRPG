@@ -19,6 +19,16 @@ export interface ModifierSpec {
   readonly hungerRate?: number;
   /** Hard work: solo training in these stats keeps at least this efficiency up to a grade. */
   readonly soloEfficiencyFloor?: Readonly<Partial<Record<StatId, SoloFloor>>>;
+  /** Energy that hard work (drills, study, sparring, lessons) costs. */
+  readonly energyCost?: number;
+  /** Health a night's sleep heals, and chakra it refills while you are exhausted. */
+  readonly sleepHealing?: number;
+  /** Extra days a night's sleep takes off every injury (adds up, not multiplied). */
+  readonly injuryNights?: number;
+  /** Bond gained from time with people (talk, dinner, training together, a round). */
+  readonly bondGain?: number;
+  /** Your stat when you take a check on a job, per stat. */
+  readonly checks?: Readonly<Partial<Record<StatId, number>>>;
 }
 
 export interface Modifiers {
@@ -28,6 +38,11 @@ export interface Modifiers {
   readonly hungerRate: number;
   /** Every hard-work floor on each stat's solo efficiency (the best one that applies wins). */
   readonly soloFloors: SoloFloors;
+  readonly energyCost: number;
+  readonly sleepHealing: number;
+  readonly injuryNights: number;
+  readonly bondGain: number;
+  readonly checks: Readonly<Record<StatId, number>>;
 }
 
 function filled<K extends string>(keys: readonly K[]): Record<K, number> {
@@ -40,6 +55,11 @@ export const NEUTRAL: Modifiers = {
   studyElement: filled(ELEMENTS),
   hungerRate: 1,
   soloFloors: {},
+  energyCost: 1,
+  sleepHealing: 1,
+  injuryNights: 0,
+  bondGain: 1,
+  checks: filled(STAT_IDS),
 };
 
 function scaleAll<K extends string>(
@@ -68,6 +88,11 @@ export function combine(specs: readonly ModifierSpec[]): Modifiers {
       studyElement: scaleAll(acc.studyElement, spec.studyElement),
       hungerRate: acc.hungerRate * (spec.hungerRate ?? 1),
       soloFloors: withFloors(acc.soloFloors, spec.soloEfficiencyFloor),
+      energyCost: acc.energyCost * (spec.energyCost ?? 1),
+      sleepHealing: acc.sleepHealing * (spec.sleepHealing ?? 1),
+      injuryNights: acc.injuryNights + (spec.injuryNights ?? 0),
+      bondGain: acc.bondGain * (spec.bondGain ?? 1),
+      checks: scaleAll(acc.checks, spec.checks),
     }),
     NEUTRAL,
   );
@@ -140,6 +165,29 @@ function listed(labels: readonly string[]): string {
   return labels.length > 1 ? `${labels.slice(0, -1).join(', ')} and ${last}` : last;
 }
 
+/** Lines for the effects of a day's food and rest: hard work, sleep, injuries, bonds, checks. */
+function dayLines(spec: ModifierSpec): EffectLine[] {
+  const lines: EffectLine[] = [];
+  if (spec.energyCost !== undefined) {
+    lines.push(line('Hard work tires you', 2 - spec.energyCost, 'less', 'more'));
+  }
+  if (spec.sleepHealing !== undefined) {
+    lines.push(line('Sleep heals', spec.sleepHealing, 'more', 'less'));
+  }
+  const nights = spec.injuryNights ?? 0;
+  if (nights > 0) {
+    const days = nights === 1 ? 'a day' : `${nights} days`;
+    lines.push({ label: `Tonight's sleep heals injuries ${days} sooner`, tone: 'gain' });
+  }
+  if (spec.bondGain !== undefined) {
+    lines.push(line('Time with people counts', spec.bondGain, 'more', 'less'));
+  }
+  for (const [stat, m] of Object.entries(spec.checks ?? {}) as [StatId, number][]) {
+    lines.push(line(`${STAT_INFO[stat].label} in job checks`, m, 'sharper', 'duller'));
+  }
+  return lines;
+}
+
 export function describeSpec(spec: ModifierSpec): EffectLine[] {
   const lines: EffectLine[] = [];
   if (spec.training !== undefined)
@@ -159,5 +207,6 @@ export function describeSpec(spec: ModifierSpec): EffectLine[] {
         : { label: `Get hungry ${pct(spec.hungerRate)} slower`, tone: 'gain' },
     );
   }
+  lines.push(...dayLines(spec));
   return lines;
 }

@@ -7,6 +7,7 @@ import { MAX_HEALTH } from '@/systems/vitals';
 import type { GameContext } from './context';
 import { adjust, chip, log } from './ops';
 import { bondOf, requirePerson } from './people/cast';
+import { warmed } from './people/warmth';
 import { trainPerson } from './people/progress';
 import { addReport, type Report } from './reports';
 import type { GameState } from './state';
@@ -61,7 +62,7 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
   const health = Math.max(outcome.player.health, Math.min(floor, vitals.health));
   // The same bout is practice in their own specialty, and footwork, for them.
   const people = trainPerson(state, ctx, partner, partnerPractice(result, partner.specialty));
-  const bond = BOND_FOR[result];
+  const bond = warmed(state, ctx, BOND_FOR[result]);
   const after = adjust(
     {
       ...state,

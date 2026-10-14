@@ -286,6 +286,11 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     }),
     traitIds: ['kind', 'cunning'],
     favouriteRecipeId: 'miso-soup',
+    recipes: [
+      { recipeId: 'rolled-omelette', minStage: 1 },
+      { recipeId: 'spicy-hot-pot', minStage: 2 },
+      { recipeId: 'pepper-rice', minStage: 3 },
+    ],
     appearance: look(
       'buns',
       { hair: '#e8e0d0', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3e6b3a' },
