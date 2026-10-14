@@ -130,6 +130,23 @@ describe('App (smoke test)', () => {
     expect(screen.getAllByText('Coming soon').length).toBeGreaterThan(0);
   });
 
+  it('walks the road to the coast and takes a room at the inn', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(screen.getByRole('button', { name: /Travel/ }));
+    const port = screen.getByRole('heading', { name: 'Port Shiomachi' }).closest('article')!;
+    await user.click(within(port).getByRole('button', { name: 'Set out' }));
+    // On the road: take the first way on until you arrive.
+    for (let step = 0; step < 6 && screen.queryByRole('navigation', { name: 'Choices' }); step++) {
+      const choices = screen.getByRole('navigation', { name: 'Choices' });
+      await user.click(within(choices).getAllByRole('button')[0]!);
+    }
+    await user.click(screen.getByRole('button', { name: /Here/ }));
+    await user.click(place(/Gull/));
+    expect(screen.getByRole('button', { name: 'Take a room and sleep till dawn' })).toBeEnabled();
+  });
+
   it('opens every dock tab and place without crashing', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

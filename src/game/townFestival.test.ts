@@ -2,7 +2,13 @@ import { CONTENT_PACKS } from '@/content';
 import { newGame } from '@/test/gameFixtures';
 
 import { createGameContext } from './context';
-import { festivalNotice, festivalToday, stallsHere } from './village';
+import {
+  festivalNotice,
+  festivalToday,
+  rumoursOverheard,
+  rumoursToday,
+  stallsHere,
+} from './village';
 
 const original = CONTENT_PACKS.find((p) => p.id === 'original')!;
 const ctx = createGameContext(original);
@@ -33,5 +39,12 @@ describe('a town’s own festival', () => {
       time: { day: 7, slot: 1 },
     };
     expect(festivalToday(kiteDay, ctx)).toBeNull();
+  });
+
+  it('leaves the village’s street talk at home; only a tavern counter carries it', () => {
+    const atPort = { ...newGame({}, ctx), locationId: 'port-shiomachi', time: { day: 5, slot: 3 } };
+    expect(rumoursToday(atPort, ctx)).toEqual([]);
+    expect(rumoursToday({ ...atPort, locationId: 'torogakure' }, ctx).length).toBeGreaterThan(0);
+    expect(rumoursOverheard(atPort, ctx).length).toBeGreaterThan(0);
   });
 });

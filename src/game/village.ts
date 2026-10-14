@@ -199,7 +199,14 @@ function gossip(state: GameState, ctx: GameContext, { maxJobs, total }: Earful):
 
 /** Today's gossip: a coming exam, hints at tomorrow's new jobs, then talk about people and the village. */
 export function rumoursToday(state: GameState, ctx: GameContext): RumourDef[] {
+  // The street talks about the village; away, only a tavern's counter carries it that far.
+  if (!atHome(state, ctx)) return [];
   return gossip(state, ctx, { maxJobs: MAX_JOB_RUMOURS, total: RUMOURS_PER_DAY });
+}
+
+/** Whether you are in the village itself, where its talk and its night sights are. */
+function atHome(state: GameState, ctx: GameContext): boolean {
+  return state.locationId === ctx.content.startLocationId;
 }
 
 /** What you overhear at the izakaya counter: every job tip going round, and more besides. */
@@ -219,6 +226,6 @@ export function isNight(state: Pick<GameState, 'time'>): boolean {
 
 /** What drifts through the village tonight, if it is night and the pack has any. */
 export function sightTonight(state: GameState, ctx: GameContext): SightDef | null {
-  if (!isNight(state)) return null;
+  if (!isNight(state) || !atHome(state, ctx)) return null;
   return [...ctx.content.village.sights].sort(byHash(state, 'sight'))[0] ?? null;
 }
