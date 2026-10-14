@@ -76,6 +76,8 @@ export const LEADERS: readonly PersonDef[] = [
         'palm-bottom',
         'one-blow-body',
         'protecting-sixty-four-palms',
+        'vacuum-wall-palm',
+        'twin-lion-fists',
       ],
       price: { kind: 'bond', minStage: 3, line: '“The Hyūga do not instruct strangers.”' },
     },
