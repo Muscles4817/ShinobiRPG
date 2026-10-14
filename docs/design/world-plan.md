@@ -63,7 +63,7 @@ The missions overhaul built most of a journey, just not for travel:
 
 ## Part 2: Decisions
 
-Decisions 7 to 9 are agreed. The rest are proposed until you say otherwise.
+Decisions 4 and 7 to 9 are agreed. The rest are proposed until you say otherwise.
 
 1. **Travel is a journey.** Going somewhere plays like a mission with no client: legs through
    regions, road events, a camp each night, rations from your pack. It reuses the mission
@@ -101,12 +101,8 @@ Decisions 7 to 9 are agreed. The rest are proposed until you say otherwise.
 
 ### Open questions
 
-- **How strict is leave?** The proposal (decision 4) is strict: a genin can't leave the
-  village on their own time without a pass. A looser version: genin may go to safe places
-  (the coast) freely and need a pass only for dangerous roads.
-
-Settled from the first round: foreign villages have no visitor's board (decision 7), you
-can't move home but can buy property (8), and quick travel is an option (9).
+None left. Settled: foreign villages have no visitor's board (decision 7), you can't move
+home but can buy property (8), quick travel is an option (9), and leave is strict (4).
 
 ---
 
@@ -329,3 +325,12 @@ migration and a previous-version save test wherever the save shape changes.
    villagers only, validated; schedules and teaching places read their home), are met only
    there, and stay off your village's crews, exam replacements and dinner invites. The Travel
    tab's "nowhere to sleep" warning counts an inn.
+4. **Port Shiomachi** (this step). The first real destination, as sketched in 3.5: the Gull's
+   Rest (inn), the fish market (coastal food, dried fish for the road, kelp and sea salt, and a
+   broth to cook from them), the net-mender's (fishhook darts, gutting needles, an oilskin
+   coat, a cork float charm that sharpens a pin), the breakwater (three drills), the Salt
+   Lantern, and the harbour office's three civilian jobs. People: Nagi, a retired chūnin who
+   teaches **Tidewire** (wire that binds, hauls and nets) for a bond and the drowned nets job;
+   Kai the harbourmaster; Umi, a fisher's daughter who wants to be a shinobi. Festivals can now
+   belong to a town (`FestivalDef.locationId`): the Night of the Boat Lanterns. Open to anyone
+   until step 5 adds leave.

@@ -39,6 +39,16 @@ import { VILLAGE } from './village';
 import { LANTERN_THIEF, LANTERN_THIEF_JOBS } from './arcs/lanternThief';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
 import { ORIGINAL_ROUTES } from './routes';
+import {
+  SHIOMACHI_FOODS,
+  SHIOMACHI_GEAR,
+  SHIOMACHI_INGREDIENTS,
+  SHIOMACHI_JOBS,
+  SHIOMACHI_PEOPLE,
+  SHIOMACHI_RECIPES,
+  SHIOMACHI_TRAINING,
+  TIDEWIRE_TECHNIQUES,
+} from './shiomachi';
 
 /** The game's own setting: Tōrōgakure in the Land of Embers. Safe to ship publicly. */
 export const ORIGINAL_PACK: ContentPack = {
@@ -56,6 +66,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...SENSEI_TECHNIQUES,
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
+    ...TIDEWIRE_TECHNIQUES,
   ],
   missions: [
     ...MISSIONS,
@@ -64,6 +75,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...CHUNIN_MISSIONS,
     ...TEMPLATE_MISSIONS,
     ...EXAM_MISSIONS,
+    ...SHIOMACHI_JOBS,
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
@@ -71,19 +83,26 @@ export const ORIGINAL_PACK: ContentPack = {
   arcs: [LANTERN_THIEF],
   voices: VOICES,
   enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...JOB_ENEMIES, ...EXAM_ENEMIES],
-  training: TRAINING,
-  foods: [...FOODS, ...SEASONAL_FOODS],
+  training: [...TRAINING, ...SHIOMACHI_TRAINING],
+  foods: [...FOODS, ...SEASONAL_FOODS, ...SHIOMACHI_FOODS],
   clans: CLANS,
   talents: TALENTS,
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,
-  gear: GEAR,
+  gear: [...GEAR, ...SHIOMACHI_GEAR],
   tools: TOOLS,
   injuries: INJURIES,
-  ingredients: INGREDIENTS,
-  recipes: RECIPES,
-  people: [...SENSEIS_AND_ELDERS, ...GENIN, ...VILLAGE_JONIN, ...CLAN_HEADS, ...VILLAGE_CHUNIN],
+  ingredients: [...INGREDIENTS, ...SHIOMACHI_INGREDIENTS],
+  recipes: [...RECIPES, ...SHIOMACHI_RECIPES],
+  people: [
+    ...SENSEIS_AND_ELDERS,
+    ...GENIN,
+    ...VILLAGE_JONIN,
+    ...CLAN_HEADS,
+    ...VILLAGE_CHUNIN,
+    ...SHIOMACHI_PEOPLE,
+  ],
   conversations: [
     ...GENERIC_CONVERSATIONS,
     ...TEMPLATE_CONVERSATIONS,

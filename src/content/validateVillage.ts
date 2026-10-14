@@ -18,6 +18,11 @@ export function validateVillage(pack: ContentPack): string[] {
       .filter((s) => Object.keys(s.reward).length === 0)
       .map((s) => `sight "${s.id}" rewards nothing`),
     ...festivals.flatMap((f) => festivalProblems(f)),
+    ...festivals
+      .filter(
+        (f) => f.locationId !== undefined && !pack.locations.some((l) => l.id === f.locationId),
+      )
+      .map((f) => `festival "${f.id}" is held at unknown location "${f.locationId}"`),
     ...hoursProblems(pack),
   ];
 }

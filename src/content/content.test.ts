@@ -181,7 +181,7 @@ describe('content validation', () => {
       locations: [{ ...home!, places: home!.places.filter((p) => p.kind !== 'market') }, ...rest],
     };
     expect(validateContent(withoutMarket)).toContain(
-      'food "rice-ball" is not offered at any place',
+      'food "ember-noodles" is not offered at any place',
     );
   });
 

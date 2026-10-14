@@ -63,11 +63,17 @@ export function closedReason(
   return opens && `${name} is closed. ${opens}`;
 }
 
+/** The festivals held where you are: the village's own, or a town's. */
+function festivalsHere(state: GameState, ctx: GameContext): readonly FestivalDef[] {
+  return ctx.content.village.festivals.filter(
+    (f) => (f.locationId ?? ctx.content.startLocationId) === state.locationId,
+  );
+}
+
 export function festivalToday(state: GameState, ctx: GameContext): FestivalDef | null {
   const today = calendarDay(state.time.day);
   return (
-    ctx.content.village.festivals.find((f) => f.season === today.season && f.day === today.day) ??
-    null
+    festivalsHere(state, ctx).find((f) => f.season === today.season && f.day === today.day) ?? null
   );
 }
 
@@ -79,7 +85,7 @@ export interface FestivalNotice {
 
 /** Today's festival, or the next one if it is close enough to announce. */
 export function festivalNotice(state: GameState, ctx: GameContext): FestivalNotice | null {
-  const next = ctx.content.village.festivals
+  const next = festivalsHere(state, ctx)
     .map((festival) => ({ festival, daysAway: daysUntil(state.time.day, festival) }))
     .sort((a, b) => a.daysAway - b.daysAway)[0];
   return next && next.daysAway <= FESTIVAL_NOTICE_DAYS ? next : null;

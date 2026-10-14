@@ -51,6 +51,8 @@ export interface FestivalDef {
   readonly bondBonus: number;
   /** Stalls that set up in the market only on the day. */
   readonly stalls?: readonly Stall[];
+  /** Where it is held: a town's own festival. Absent means the start village. */
+  readonly locationId?: string;
 }
 
 export interface VillageLife {

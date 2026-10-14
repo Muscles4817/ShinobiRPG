@@ -6,6 +6,7 @@ import { LANTERN_THIEF_JOBS } from './arcs/lanternThief';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
 import { MARKET_STREET } from './market';
+import { PORT_SHIOMACHI } from './shiomachi';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -265,14 +266,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     places: [],
     lockedReason: 'Coming soon',
   },
-  {
-    id: 'port-shiomachi',
-    name: 'Port Shiomachi',
-    epithet: 'Fishing town',
-    backdrop: 'coast',
-    places: [],
-    lockedReason: 'Coming soon',
-  },
+  PORT_SHIOMACHI,
   {
     id: 'mount-reikon',
     name: 'Mount Reikon',
