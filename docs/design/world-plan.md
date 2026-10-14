@@ -63,7 +63,7 @@ The missions overhaul built most of a journey, just not for travel:
 
 ## Part 2: Decisions
 
-Proposed. Each moves here once we agree it.
+Decisions 7 to 9 are agreed. The rest are proposed until you say otherwise.
 
 1. **Travel is a journey.** Going somewhere plays like a mission with no client: legs through
    regions, road events, a camp each night, rations from your pack. It reuses the mission
@@ -86,20 +86,27 @@ Proposed. Each moves here once we agree it.
 6. **People travel too.** Some people live elsewhere (authored residents with schedules in
    their own location); your crew comes with you on a job; a companion may come on a trip
    if your bond allows it.
-7. **Order:** milestone 4 starts once the technique work in progress (T-series) lands; the
-   rest of milestone 3 (ranks, elements, spirits) can go on alongside, since Mount Reikon
-   waits on spirits anyway.
+7. **Civilian towns and cities are where you go.** They are the common destinations, on
+   your own time or on a job. **Foreign hidden villages** are not places you visit for the
+   day: you reach one on a mission, you defect to one once you have a name (milestone 5),
+   or you **start there**, playing the core game in another village's culture.
+8. **Property, not moving.** Your home stays in your village. You can **buy property** in
+   a civilian city (a house of your own there, with no rent). A defector has no village
+   home and **makes camp in the wild** (milestone 5).
+9. **Quick travel.** A route can be taken quickly: the days pass in one go, and only a road
+   event stops you. The full journey (a camp each night) stays the default.
+10. **Order:** milestone 4 starts once the technique work in progress (T-series) lands; the
+    rest of milestone 3 (ranks, elements, spirits) can go on alongside, since Mount Reikon
+    waits on spirits anyway.
 
 ### Open questions
 
-- **How strict is leave?** The proposal above is strict. A looser version: genin may go to
-  safe places (the coast) freely and need a pass only for dangerous roads.
-- **Do foreign villages have boards?** Proposed: outsiders get a small board of civilian
-  work (no village secrets), and a hidden village's own work only through politics later.
-- **Can you move home?** Proposed: not in milestone 4. Your home is the start location; an
-  inn is a room, not a home.
-- **Fast travel?** Proposed: a road you've walked can be taken as one summary line (days
-  still pass, events still roll, but only notable ones stop you).
+- **How strict is leave?** The proposal (decision 4) is strict: a genin can't leave the
+  village on their own time without a pass. A looser version: genin may go to safe places
+  (the coast) freely and need a pass only for dangerous roads.
+
+Settled from the first round: foreign villages have no visitor's board (decision 7), you
+can't move home but can buy property (8), and quick travel is an option (9).
 
 ---
 
@@ -125,13 +132,14 @@ The original pack's map, first pass:
 ```
                   Mount Reikon
                        │ mountain-pass ×4  (chūnin)
- Port Shiomachi ── Tōrōgakure ── forest-track ×1 ── Kiri Ford ── dune-road ×2 ── Sakyūgakure
-   coast-road ×1                                   │
+ Port Shiomachi ── Tōrōgakure ── forest-track ×1 ── Kiri Ford ┈┈ dune-road ×2 ┈┈ Sakyūgakure
+   coast-road ×1                                   │                         (missions only)
         └──── water-walking: across the bay ───────┘  (saves a day)
 ```
 
-Kiri Ford is a new waypoint, a ferry town, so the dunes are "on the way" past somewhere.
-Names are placeholders.
+Kiri Ford is a new river city, the first place you can buy property, and the way to the
+dunes. The road on to Sakyūgakure is open only to jobs that go there (dotted). Names are
+placeholders.
 
 The Travel tab becomes a map: an ink drawing of the region, routes as brush lines, locked
 routes dotted with what opens them, and your position as a stamp. It is inline SVG like
@@ -148,6 +156,10 @@ the route's legs. Everything the run already does applies:
 - A camp stage each night (talk, watch, train, rest, cook), with whoever is along.
 - The field screen shows the route stamps; there is no debrief card, only an arrival line
   and anything the road left behind (memories, marks).
+
+**Quick travel** is offered on every route: the legs run back to back without camp scenes
+(meals and nights still happen, as one line each), and the trip stops only when a road
+event is drawn. After the event you carry on quickly or slow down.
 
 What differs from a job:
 
@@ -183,6 +195,13 @@ need no pass; a job's route counts as orders.
   unchanged. Generated people stay in the start location.
 - **Companions**: a person with a high enough bond (and free days) may come on a trip;
   they join camp scenes and are present at the destination as if they lived there.
+- **Property**: a city may sell a house (a `home` place with a price instead of rent, bought
+  once). It is a second home: sleep, rest and cook there as at your own. Your village home
+  stays where it is. Later, a property may earn something (a lodger, a shop) — not in
+  milestone 4.
+- **Camp in the wild** (milestone 5): a defector's home is a camp they set up on a route,
+  with what they carry. It is noted here so the inn and the property don't assume a home is
+  always in a town.
 - **Your sensei** gives the week's lesson only at home or by the fire on a job. A trip that
   spans the lesson day misses it, and the route sheet says so.
 
@@ -208,16 +227,26 @@ Festival: a boat-lantern night once a year, the coast's answer to home's lantern
 
 ### 3.6 The other destinations
 
-- **Kiri Ford** (waypoint): a ferry town with an inn, a market and a road board. Most of its
-  point is being between places, and the water-walking shortcut across the bay.
-- **Sakyūgakure**: another hidden village. You are a guest: some places refuse you, a
-  minder may follow you, and the board is outsider work only. Dune schools, desert gear,
-  and the first taste of the politics milestone 5 needs (standing with another village).
+- **Kiri Ford**: see 3.1. Its inn, market, smith and city board are open to anyone; a
+  house there is for sale.
+- **Sakyūgakure**: another hidden village, and not somewhere you visit. You go there on
+  jobs (an escort to its gate, a message, a joint mission), when you defect to it with a
+  reputation it wants, or as your **starting village**. Its places on a job are only what
+  the job needs.
 - **Mount Reikon**: spirits. Chūnin only, four days up a pass where the road events are
   spirit encounters. It waits on milestone 3's spirit work; its shrines are where spirit
   contracts and the spirit discipline are found.
 
-### 3.7 Chakra control in the world
+### 3.7 Other starting villages
+
+Starting in Sakyūgakure means the whole core game there: its own academy, sensei, genin
+classmates, clans, board, festivals, exam and culture. The pack's `startLocationId` becomes
+a list of **start villages**, each a complete home (validated like a pack is today); the
+creation scene asks which village. This is a large content job per village and does not
+block the rest of milestone 4: the plan's code steps don't assume one start village (people
+and housing read the save's home village, not `content.startLocationId`).
+
+### 3.8 Chakra control in the world
 
 Tree-walking and water-walking become **milestones** on the character (learned by drill,
 as the progression plan describes). A route or a place may need one:
@@ -227,14 +256,14 @@ as the progression plan describes). A route or a place may need one:
 
 They are checked by `needs` like rank, so the map shows the dotted line and what opens it.
 
-### 3.8 Arc bases
+### 3.9 Arc bases
 
 Missions plan 3.9 lands here unchanged: an `ArcAct` names a `baseLocationId`, the "go" act's
 job is the journey there, the act's jobs are offered at the base's `missions` place, days at
 the base pass at the inn with the crew present, and `deadlineDays` moves the story on. A
 crew on an arc is your company at the base (they count as residents while the act lasts).
 
-### 3.9 Presentation
+### 3.10 Presentation
 
 - **The map** (3.1) replaces the Travel list. A route sheet opens from a line on the map.
 - **Away from home** the village screen says so: the backdrop and sky of the place, a
@@ -263,14 +292,18 @@ migration and a previous-version save test wherever the save shape changes.
    original pack. Unlocked behind no rule yet (step 5 adds it).
 5. **Leave.** Passes signed at the sensei's lesson, chūnin leave, `travelBlocker`, the
    away-without-leave flag. A CLAUDE.md decision for travel and leave.
-6. **Companions on trips** and the "while you were away" card.
+6. **Companions on trips**, the "while you were away" card, and quick travel.
 7. **The map screen.** Ink map per pack, route sheet, coming-soon routes.
 8. **Arc bases.** `baseLocationId`, `deadlineDays`, a first arc act at Shiomachi.
 9. **Chakra-control routes.** Milestones as `needs`; the bay crossing and the forest track.
-10. **Kiri Ford and Sakyūgakure.** The waypoint, then the guest village.
-11. **Mount Reikon**, once milestone 3's spirits exist.
-12. **The fan pack** gets its own routes and at least one destination (validation requires
+10. **Kiri Ford and property.** The river city, houses for sale, a second home.
+11. **Home village in the save.** Read the home village from the save, not the pack's start,
+    everywhere (people, housing, the board), so a second start village is only content.
+12. **Mount Reikon**, once milestone 3's spirits exist.
+13. **The fan pack** gets its own routes and at least one destination (validation requires
     every pack to stay complete).
+14. **Sakyūgakure as a start village** (later; big content). Jobs that go there can come
+    sooner, as ordinary journeys whose end is its gate.
 
 ---
 
