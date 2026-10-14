@@ -1,5 +1,5 @@
-import type { IconId } from '@/content';
-import { cookingGrade, knowsRecipe, masteryOf, timesCooked } from '@/systems/cooking';
+import type { IconId, RecipeDef } from '@/content';
+import { buffAt, cookingGrade, knowsRecipe, masteryOf, timesCooked } from '@/systems/cooking';
 import { describeSpec, type EffectLine } from '@/systems/modifiers';
 import { pantryCount } from '@/systems/inventory';
 import type { StatGrade } from '@/systems/stats';
@@ -12,7 +12,9 @@ import type { GameContext } from '../context';
 import { bondOf, everyone } from '../people/cast';
 import type { GameState } from '../state';
 import { knownSteps } from '../stove';
+import { mealProvisions } from '../combatants';
 import { choice, type Choice } from './common';
+import { provisionLine } from './provisions';
 import { METHOD_WORDS, stepsHint } from './stove';
 
 /** The kitchen at home: what's in the pantry, what you can cook, and who could come to dinner. */
@@ -87,6 +89,13 @@ function guestsOf(state: GameState, ctx: GameContext) {
     .sort((a, b) => b.points - a.points);
 }
 
+/** What today's meal is doing for you, at the quality it was cooked. */
+function todaysMeal(state: GameState, ctx: GameContext, meal: RecipeDef): EffectLine[] {
+  const quality = state.character.mealQuality ?? 'good';
+  const provisions = mealProvisions(state, ctx);
+  return [...describeSpec(buffAt(meal.buff, quality)), ...provisionLine(provisions[0])];
+}
+
 export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
   const { content } = ctx;
   const meal = state.character.meal ? content.recipes.get(state.character.meal) : undefined;
@@ -121,7 +130,7 @@ export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
         energy: r.energy,
         health: r.health ?? 0,
         chakra: r.chakra ?? 0,
-        effects: describeSpec(r.buff),
+        effects: [...describeSpec(r.buff), ...provisionLine(r.provision)],
         needs: r.ingredients.map((i) => ({
           name: content.ingredients.get(i.id)?.name ?? i.id,
           have: pantryCount(state.inventory, i.id),
@@ -140,7 +149,7 @@ export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
             : [],
       };
     }),
-    meal: meal ? { name: meal.name, effects: describeSpec(meal.buff) } : null,
+    meal: meal ? { name: meal.name, effects: todaysMeal(state, ctx, meal) } : null,
     noGuests:
       guests.length === 0 ? 'Get to know people first: friends will come round for dinner.' : null,
   };

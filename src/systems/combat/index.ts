@@ -19,13 +19,14 @@ export type {
   CombatChoice,
   CombatMeter,
   CombatPerk,
+  CombatProvision,
   CombatTrait,
   CombatItem,
   CombatItemEffect,
   RangeBand,
   CombatRow,
 } from './contract';
-export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS } from './contract';
+export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS, COMBAT_PROVISIONS } from './contract';
 export type { CombatOrders, CombatStance, CombatUsage, StanceKind } from './teamContract';
 export { STANCE_KINDS } from './teamContract';
 export type {

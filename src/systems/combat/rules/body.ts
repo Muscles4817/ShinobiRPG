@@ -5,6 +5,7 @@ import type {
   CombatantView,
   CombatItem,
   CombatPerk,
+  CombatProvision,
   CombatSide,
   CombatTechnique,
   CombatTrait,
@@ -44,6 +45,8 @@ export interface Body {
   readonly items: readonly CombatItem[];
   /** Equipped gear; absent for fighters armed as their kit suggests (`gearContract.ts`). */
   readonly gear?: CombatGear;
+  /** What a meal brought into the fight (`provisions.ts`); absent for most. */
+  readonly provisions?: readonly CombatProvision[];
 }
 
 export function bodyFrom(setup: CombatantSetup, side: CombatSide, isPlayer = false): Body {

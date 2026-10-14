@@ -406,5 +406,15 @@ Each phase ships on its own and keeps `npm run check` green.
   cookbooks (A Forager's Notes, The River Cook).
 - Camp foraging and cooking, and beast drops, are still to come.
 
+**Phase 5, provisions in fights.**
+
+- `CombatantSetup.provisions` (`COMBAT_PROVISIONS`): fortified (chakra topped up a quarter as
+  the fight opens), steady (no daze takes hold through the second exchange), antidote (a fresh
+  burn, bleed or poison lasts an exchange less) and second wind (once a fight, health back when
+  below a quarter). Rules once in `rules/provisions.ts`; Plan & Watch applies them as fighters
+  are made, where a harm lands, and at the end of each exchange (`engines/plan/provisions.ts`).
+- `RecipeDef.provision`: today's meal brings it into fights when cooked good or fine
+  (`mealProvisions`). Eight dishes have one; the kitchen and cookbook word it.
+
 Not yet built: gathering (phase 4), provisions in fights (phase 5),
 the library (phase 7) and other regions (phase 8).

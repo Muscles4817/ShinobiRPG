@@ -66,7 +66,7 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
               {r.chakra > 0 && <span className="chip gain">Chakra +{r.chakra}</span>}
               {r.effects.map((e) => (
                 <span key={e.label} className="chip gain">
-                  {e.label} today
+                  {e.label}
                 </span>
               ))}
             </span>

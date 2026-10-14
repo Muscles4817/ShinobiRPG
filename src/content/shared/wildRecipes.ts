@@ -52,6 +52,7 @@ export const WILD_RECIPES: readonly RecipeDef[] = [
     energy: 10,
     health: 15,
     buff: { injuryNights: 1, sleepHealing: 1.15 },
+    provision: 'antidote',
   },
   {
     id: 'salt-grilled-sweetfish',
@@ -69,6 +70,7 @@ export const WILD_RECIPES: readonly RecipeDef[] = [
     satiety: 35,
     energy: 15,
     buff: { growth: { speed: 1.2, perception: 1.1 } },
+    provision: 'steady',
   },
   {
     id: 'grilled-eel',
@@ -85,6 +87,7 @@ export const WILD_RECIPES: readonly RecipeDef[] = [
     satiety: 70,
     energy: 25,
     buff: { growth: { stamina: 1.2 }, energyCost: 0.85 },
+    provision: 'second-wind',
   },
   {
     id: 'crayfish-boil',
@@ -119,5 +122,6 @@ export const WILD_RECIPES: readonly RecipeDef[] = [
     energy: 10,
     chakra: 15,
     buff: { checks: { chakraControl: 1.15, intellect: 1.1 } },
+    provision: 'fortified',
   },
 ];

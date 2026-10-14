@@ -82,6 +82,7 @@ const EVERYDAY: readonly RecipeDef[] = [
     satiety: 65,
     energy: 10,
     buff: { training: 1.1 },
+    provision: 'second-wind',
   },
   {
     id: 'simmered-tofu',
@@ -98,6 +99,7 @@ const EVERYDAY: readonly RecipeDef[] = [
     satiety: 40,
     energy: 15,
     buff: { growth: { chakraControl: 1.15, willpower: 1.15 } },
+    provision: 'steady',
   },
   {
     id: 'fish-bone-broth',
@@ -220,6 +222,7 @@ const ROAD: readonly RecipeDef[] = [
     energy: 5,
     chakra: 20,
     buff: { hungerRate: 0.9 },
+    provision: 'fortified',
   },
 ];
 
@@ -258,6 +261,7 @@ const TAUGHT: readonly RecipeDef[] = [
     satiety: 75,
     energy: 20,
     buff: { growth: { strength: 1.2, stamina: 1.2 }, energyCost: 0.9 },
+    provision: 'second-wind',
   },
   {
     id: 'pepper-rice',

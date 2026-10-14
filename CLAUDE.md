@@ -217,6 +217,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     usual; `experiment` puts pantry ingredients together to discover recipes. Ingredients
     are bought or gathered: `wilds` places (woods, river) are foraged (`forage`) and fished
     (`fish`, by spot) once a day each, drawing from `finds` by season, hour and cooking grade.
+    A dish cooked well brings its `provision` into the day's fights (`CombatantSetup.provisions`,
+    rules in `rules/provisions.ts`: fortified, steady, antidote, second wind); never a stat.
     Hunger works the same way: the player sees a Hunger meter (100 − satiety), and each
     stage (`hungerLevel`: peckish, hungry, starving) is a `ModifierSpec` plus a fight-strength
     multiplier in `game/hunger.ts`; starving also blocks hard work (`weakFromHunger`).

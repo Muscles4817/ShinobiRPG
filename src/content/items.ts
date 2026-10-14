@@ -1,5 +1,6 @@
 import type {
   ArmourLevel,
+  CombatProvision,
   CombatItemEffect,
   FocusTarget,
   GearRank,
@@ -112,6 +113,8 @@ export interface RecipeDef {
   readonly chakra?: number;
   /** "Well fed": lasts until the end of the day you eat it. Shown via `describeSpec`. */
   readonly buff: ModifierSpec;
+  /** What it brings into the day's fights when cooked well (good or fine). */
+  readonly provision?: CombatProvision;
 }
 
 /** A cookbook: bought once at a stall, it teaches every recipe in it. */

@@ -6,6 +6,7 @@ import { stageForPair } from '@/systems/bonds';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { provisionLine } from './provisions';
 import { METHOD_WORDS } from './stove';
 
 /**
@@ -53,6 +54,7 @@ export function mealEffects(recipe: RecipeDef): EffectLine[] {
     ...(recipe.health ? [{ label: `Health +${recipe.health}`, tone: 'gain' as const }] : []),
     ...(recipe.chakra ? [{ label: `Chakra +${recipe.chakra}`, tone: 'gain' as const }] : []),
     ...describeSpec(recipe.buff),
+    ...provisionLine(recipe.provision),
   ];
 }
 
