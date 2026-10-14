@@ -47,3 +47,12 @@ export {
   type Dish,
   type ExperimentResult,
 } from './experiment';
+export {
+  inSeason,
+  recognised,
+  findsNow,
+  drawFind,
+  gatheredToday,
+  type Find,
+  type GatherMoment,
+} from './gathering';

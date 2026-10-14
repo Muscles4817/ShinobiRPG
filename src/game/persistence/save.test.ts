@@ -302,6 +302,15 @@ describe('persistence', () => {
     expect(genin.ok && genin.value.character.breakthroughs).toEqual([]);
   });
 
+  it('gives a save from before gathering no gathered places', () => {
+    const game = newGame();
+    const { gathered: _gathered, ...cooking } = game.cooking;
+    const loaded = deserialize(JSON.stringify({ version: 34, state: { ...game, cooking } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.cooking.gathered).toEqual({});
+    expect(loaded.value.cooking.known).toEqual(game.cooking.known);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

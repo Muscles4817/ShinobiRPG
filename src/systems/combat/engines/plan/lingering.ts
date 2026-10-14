@@ -16,9 +16,11 @@ import {
   riposteFrom,
   riposteTechnique,
   withSap,
+  type Affliction,
   type EffectUse,
   type LingeringMemory,
 } from '../../rules/verbs';
+import { withAntidote } from '../../rules/provisions';
 import { canHit } from './rows';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { wound } from './wound';
@@ -78,9 +80,15 @@ const LINGERS: Readonly<Record<AfflictionKind, (name: string) => string>> = {
   poison: (name) => `The poison gnaws at ${name}.`,
 };
 
+/** The harm just landed (always last) wears off sooner on a fighter with an antidote in them. */
+function withAntidoteOn(target: PlanFighter, list: readonly Affliction[]): Affliction[] {
+  const fresh = list.at(-1);
+  return fresh ? [...list.slice(0, -1), withAntidote(target, fresh)] : [...list];
+}
+
 export function afflict(round: Round, { actor, target }: Aim, use: EffectUse<'afflict'>): Round {
   const fresh = afflictionFrom(actor, target, use);
-  const afflictions = afflicted(target.afflictions ?? [], fresh);
+  const afflictions = withAntidoteOn(target, afflicted(target.afflictions ?? [], fresh));
   const sapping = fresh.harm === 'poison' && !target.sapped;
   const sapped = sapping ? poisonSap(target.attributes) : undefined;
   const change = sapped

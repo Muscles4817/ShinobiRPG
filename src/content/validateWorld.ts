@@ -101,6 +101,11 @@ function placeRefs(place: PlaceDef): [RefKind, string][] {
     case 'academy':
     case 'library':
       return place.techniqueIds.map((id) => ['technique', id]);
+    case 'wilds':
+      return [...place.finds, ...(place.spots ?? []).flatMap((s) => s.catches)].map((f) => [
+        'ingredient',
+        f.ingredientId,
+      ]);
     case 'home':
     case 'hospital':
       return [];

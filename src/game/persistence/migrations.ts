@@ -7,7 +7,7 @@ import { v25ToV26, v26ToV27 } from './settingsMigration';
 import { v18ToV19 } from './peopleMigration';
 import { v22ToV23 } from './scrollMigration';
 import { v30ToV31 } from './permitMigration';
-import { v31ToV32 } from './cookingMigration';
+import { v31ToV32, v34ToV35 } from './cookingMigration';
 import { v32ToV33 } from './creationMigration';
 import { v33ToV34 } from './breakthroughMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
@@ -310,4 +310,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   31: v31ToV32,
   32: v32ToV33,
   33: v33ToV34,
+  34: v34ToV35,
 };

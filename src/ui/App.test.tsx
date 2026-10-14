@@ -353,6 +353,19 @@ describe('App (smoke test)', () => {
     expect(screen.getByText(/Today you ate/)).toBeInTheDocument();
   });
 
+  it('forages in the woods and casts a line on the river', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Lantern Woods/));
+    expect(screen.getByText(/About now/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Search' }));
+    expect(screen.getByText(/already searched Lantern Woods today/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Here/ }));
+    await user.click(place(/River Below the Canal/));
+    expect(screen.getAllByRole('button', { name: 'Cast a line' })).toHaveLength(3);
+  });
+
   it('resumes a saved game', async () => {
     const user = userEvent.setup();
     const store = memoryStore();

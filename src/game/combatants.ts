@@ -5,8 +5,10 @@ import type {
   CombatItem,
   CombatOutcome,
   CombatPerk,
+  CombatProvision,
   CombatTechnique,
 } from '@/systems/combat';
+import type { MealQuality } from '@/systems/cooking';
 import { restockPouch } from '@/systems/inventory';
 import { createStats, type Stats } from '@/systems/stats';
 import { maxChakra, MAX_HEALTH, reservesFor } from '@/systems/vitals';
@@ -88,7 +90,19 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     perks: perksOf(state, ctx),
     items: pouchOf(state, ctx),
     gear: combatGear(state, ctx),
+    provisions: mealProvisions(state, ctx),
   };
+}
+
+/** Qualities of a meal good enough to bring its provision into a fight. */
+const PROVISIONING: readonly MealQuality[] = ['good', 'fine'];
+
+/** What today's meal brings into a fight, when it was cooked well. */
+export function mealProvisions(state: GameState, ctx: GameContext): CombatProvision[] {
+  const { meal, mealQuality } = state.character;
+  const recipe = meal ? ctx.content.recipes.get(meal) : undefined;
+  if (!recipe?.provision || !PROVISIONING.includes(mealQuality ?? 'good')) return [];
+  return [recipe.provision];
 }
 
 /** A human's 100 health, scaled for creatures bigger or smaller than one. */

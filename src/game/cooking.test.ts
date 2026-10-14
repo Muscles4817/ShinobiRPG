@@ -45,6 +45,8 @@ describe('learning recipes', () => {
       'everyday-kitchen',
       'year-of-rice',
       'food-for-the-road',
+      'foragers-notes',
+      'river-cook',
     ]);
     const bought = act(state, { type: 'buyCookbook', cookbookId: 'everyday-kitchen' });
     expect(bought.wallet.ryo).toBe(1000 - 60);

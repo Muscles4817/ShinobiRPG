@@ -1,5 +1,6 @@
 import { act, ctx, lastEntry, newGame } from '@/test/gameFixtures';
 
+import { mealProvisions, playerCombatant } from './combatants';
 import { yourCheckValue } from './missionRoles';
 import { warmed } from './people/warmth';
 import type { GameState } from './state';
@@ -83,5 +84,16 @@ describe('what a meal does as you eat it', () => {
     const cooked = act(stocked, { type: 'cook', recipeId: 'fish-bone-broth' });
     expect(cooked.character.vitals.health).toBe(52);
     expect(lastEntry(cooked)?.chips).toContainEqual({ label: 'Health +12', tone: 'gain' });
+  });
+});
+
+describe('what a meal brings into a fight', () => {
+  it('a well-cooked dish brings its provision; a plain one does not', () => {
+    const good = fed('tofu-congee');
+    expect(mealProvisions(good, ctx)).toEqual(['fortified']);
+    expect(playerCombatant(good, ctx).provisions).toEqual(['fortified']);
+    const plain = { ...good, character: { ...good.character, mealQuality: 'plain' as const } };
+    expect(mealProvisions(plain, ctx)).toEqual([]);
+    expect(mealProvisions(fed('miso-soup'), ctx)).toEqual([]);
   });
 });

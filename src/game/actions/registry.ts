@@ -8,6 +8,7 @@ import { payRent, treat } from './services';
 import { hostDinner } from './dinner';
 import { cook } from './kitchen';
 import { experiment } from './experiment';
+import { fish, forage } from './gather';
 import { buyCookbook, learnRecipe } from './recipes';
 import { setAnimations, setCombatStyle } from './settings';
 import { buyIntel } from './intel';
@@ -63,6 +64,8 @@ export const HANDLERS: Registry = {
   buyIngredient,
   cook,
   experiment,
+  forage,
+  fish,
   buyCookbook,
   learnRecipe,
   followSight,

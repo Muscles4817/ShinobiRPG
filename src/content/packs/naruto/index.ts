@@ -16,6 +16,7 @@ import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
 import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
+import { WILD_INGREDIENTS } from '../../shared/wilds';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
@@ -88,7 +89,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   gear: GEAR,
   tools: TOOLS,
   injuries: INJURIES,
-  ingredients: INGREDIENTS,
+  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS],
   recipes: RECIPES,
   cookbooks: COOKBOOKS,
   people: [

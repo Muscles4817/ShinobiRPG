@@ -55,7 +55,7 @@ export function postEverything(state: GameState, context: GameContext = ctx): Ga
 /** Knows every recipe in the pack, never cooked, as a grade D cook: any rank C dish is in reach. */
 export function knowEveryRecipe(state: GameState, context: GameContext = ctx): GameState {
   const known = Object.fromEntries(context.content.recipes.all.map((r) => [r.id, 0]));
-  return { ...state, cooking: { xp: GRADE_XP.D, known } };
+  return { ...state, cooking: { ...state.cooking, xp: GRADE_XP.D, known } };
 }
 
 /** A game ready to play, with its team formed, every job posted and every recipe known. */

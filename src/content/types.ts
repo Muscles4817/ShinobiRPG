@@ -1,4 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
+import type { Find } from '@/systems/cooking';
 import type {
   ArcDef,
   Danger,
@@ -201,6 +202,18 @@ export interface BreakInScene {
   readonly caught: string;
 }
 
+/** The kind of country a wild place is: what grows and swims there. */
+export type Biome = 'woods' | 'river' | 'shore' | 'mountain' | 'marsh';
+
+/** Somewhere to cast a line: what bites there, and when. */
+export interface FishingSpot {
+  readonly id: string;
+  readonly name: string;
+  /** What it looks like, for the choice. No numbers. */
+  readonly description: string;
+  readonly catches: readonly Find[];
+}
+
 interface PlaceBase {
   readonly id: string;
   readonly name: string;
@@ -225,6 +238,13 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'library'; readonly techniqueIds: readonly string[] })
   | (PlaceBase & { readonly kind: 'home'; readonly rentPerWeek: number; readonly lodging: string })
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
+  /** Woods, a river bank, a shore: forage what's in season, and fish its spots. */
+  | (PlaceBase & {
+      readonly kind: 'wilds';
+      readonly biome: Biome;
+      readonly finds: readonly Find[];
+      readonly spots?: readonly FishingSpot[];
+    })
   | (PlaceBase & {
       /** An izakaya: open evenings and nights, with a menu and whoever drops in. */
       readonly kind: 'tavern';
