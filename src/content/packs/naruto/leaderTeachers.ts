@@ -16,6 +16,9 @@ export const HIASHI_TEACHER: TeacherProfile = {
     'protecting-sixty-four-palms',
     'vacuum-wall-palm',
     'twin-lion-fists',
+    'thirty-two-palms',
+    'mountain-crusher',
+    'tenketsu-needle',
   ],
   price: { kind: 'bond', minStage: 3, line: '“The Hyūga do not instruct strangers.”' },
 };
@@ -86,6 +89,7 @@ export const TSUME_TEACHER: TeacherProfile = {
     'fang-rotating-fang',
     'three-headed-wolf',
     'tail-chasing-rotating-fang',
+    'super-fang-wolf-fang',
   ],
   price: {
     kind: 'all',
@@ -111,6 +115,10 @@ export const SHIBI_TEACHER: TeacherProfile = {
     'insect-jamming',
     'bug-bite',
     'insect-sphere',
+    'human-cocoon',
+    'iron-mountain-leaning',
+    'insect-tornado',
+    'spindle-formation',
   ],
   price: { kind: 'bond', minStage: 2 },
 };

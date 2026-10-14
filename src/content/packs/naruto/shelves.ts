@@ -121,4 +121,7 @@ export const ARCHIVE_SHELF: readonly string[] = [
   'five-release-great-combo',
   'earth-wave',
   'multiple-earth-wall',
+  'exploding-dragon-strike',
+  'heavenly-chain-disaster',
+  'segmented-iron-dome',
 ];

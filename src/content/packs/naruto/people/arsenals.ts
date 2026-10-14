@@ -122,7 +122,13 @@ export const LEE_ARSENAL: PersonArsenal = {
 
 /** The Gentle Fist as far as she has it: points closed, and the palm that shakes the body. */
 export const HINATA_ARSENAL: PersonArsenal = {
-  techniqueIds: ['gentle-fist', 'palm-bottom', 'shuriken-jutsu', 'substitution-jutsu'],
+  techniqueIds: [
+    'gentle-fist',
+    'palm-bottom',
+    'shuriken-jutsu',
+    'substitution-jutsu',
+    'thirty-two-palms',
+  ],
 };
 
 /** The branch house’s Gentle Fist, at a genin’s grade. */
@@ -133,6 +139,7 @@ export const NEJI_ARSENAL: PersonArsenal = {
     'shuriken-jutsu',
     'substitution-jutsu',
     'one-blow-body',
+    'tenketsu-needle',
   ],
 };
 

@@ -3,6 +3,7 @@ import type { TechniqueDef } from '@/systems/techniques';
 import { CANON_AKIMICHI } from './akimichi';
 import { CANON_ANIME_TECHNIQUES } from './anime';
 import { CANON_CLAN_TECHNIQUES } from './clans';
+import { CANON_ANIME_CLAN_TECHNIQUES } from './clansAnime';
 import { CANON_ELEMENTS } from './elements';
 import { CANON_GATES } from './gates';
 import { CANON_LIGHTNING } from './lightning';
@@ -13,6 +14,7 @@ import { CANON_RASENGAN } from './rasengan';
 import { CANON_SASUKE_TECHNIQUES } from './sasuke';
 import { CANON_SENSEI_TECHNIQUES } from './senseis';
 import { CANON_STANDARD } from './standard';
+import { CANON_TOOL_TECHNIQUES } from './tools';
 
 /**
  * Canon jutsu added from the Narutopedia research (`docs/research/naruto-jutsu.md`), a file per
@@ -32,4 +34,6 @@ export const CANON_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...CANON_LIGHTNING,
   ...CANON_GATES,
   ...CANON_ANIME_TECHNIQUES,
+  ...CANON_ANIME_CLAN_TECHNIQUES,
+  ...CANON_TOOL_TECHNIQUES,
 ])();
