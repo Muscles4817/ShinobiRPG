@@ -135,6 +135,9 @@ export const LEE_TEACHER: TeacherProfile = {
     'front-lotus',
     'leaf-gale',
     'leaf-drop',
+    'one-man-front-lotus',
+    'seasickness-fist',
+    'youth-full-power',
   ],
   price: {
     kind: 'bond',
@@ -175,6 +178,7 @@ export const NARUTO_TEACHER: TeacherProfile = {
     'toad-gun',
     'toad-oil-bullet',
     'runt-ball-rasengan',
+    'toad-oil-wind-flame-bullet',
   ],
 };
 

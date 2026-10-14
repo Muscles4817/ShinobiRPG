@@ -251,4 +251,19 @@ export const CANON_NARUTO_TECHNIQUES: readonly TechniqueDef[] = [
     rank: 'B',
     difficulty: 110,
   },
+  {
+    id: 'toad-oil-wind-flame-bullet',
+    name: 'Wind Style: Toad Oil Flame Bullet',
+    description: 'Toad oil on your wind, lit by a summoned toad’s fire into a raging torrent.',
+    discipline: 'ninjutsu',
+    element: 'wind',
+    needs: { nature: 'wind' },
+    effects: [
+      { verb: 'area', power: 20 },
+      { verb: 'afflict', power: 7, harm: 'burn' },
+    ],
+    chakraCost: 18,
+    rank: 'B',
+    difficulty: 115,
+  },
 ];
