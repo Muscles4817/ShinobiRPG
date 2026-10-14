@@ -6,6 +6,7 @@ import { CANON_CLAN_TECHNIQUES } from './clans';
 import { CANON_ANIME_CLAN_TECHNIQUES } from './clansAnime';
 import { CANON_ELEMENTS } from './elements';
 import { CANON_GATES } from './gates';
+import { CANON_JONIN_TECHNIQUES } from './jonin';
 import { CANON_LIGHTNING } from './lightning';
 import { CANON_LATER_CLAN_TECHNIQUES } from './clansLater';
 import { CANON_MEDICAL } from './medical';
@@ -36,4 +37,5 @@ export const CANON_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...CANON_ANIME_TECHNIQUES,
   ...CANON_ANIME_CLAN_TECHNIQUES,
   ...CANON_TOOL_TECHNIQUES,
+  ...CANON_JONIN_TECHNIQUES,
 ])();

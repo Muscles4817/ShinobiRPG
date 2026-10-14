@@ -2,7 +2,7 @@ import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
-import { AOBA_ARSENAL } from './arsenals';
+import { AOBA_ARSENAL, HAYATE_ARSENAL, YUGAO_ARSENAL } from './arsenals';
 
 /**
  * The village's jōnin and special jōnin who don't lead a team: examiners, guards, the
@@ -36,7 +36,13 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     teacher: {
       quirk: 'harsh',
       steers: { focus: 'weakest', freeAtStage: 3 },
-      teaches: ['interrogators-gaze', 'hell-viewing', 'shackling-stakes'],
+      teaches: [
+        'interrogators-gaze',
+        'hell-viewing',
+        'shackling-stakes',
+        'iron-maiden',
+        'torture-chamber',
+      ],
       price: {
         kind: 'favour',
         favourId: 'ibiki-silence',
@@ -172,6 +178,8 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
         'crescent-moon-dance',
         'shadow-clone-sword-dance',
         'iai-kamiari',
+        'secret-sword-moonlight',
+        'transparent-escape',
       ],
       price: {
         kind: 'all',
@@ -181,6 +189,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
         ],
       },
     },
+    arsenal: HAYATE_ARSENAL,
   },
   {
     id: 'yugao',
@@ -207,8 +216,10 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
         'crescent-moon-dance',
         'camouflage-concealment',
         'chidori-sword',
+        'hazy-moon-night',
       ],
       price: { kind: 'bond', minStage: 3, line: '“ANBU don’t teach. Friends sometimes do.”' },
     },
+    arsenal: YUGAO_ARSENAL,
   },
 ];

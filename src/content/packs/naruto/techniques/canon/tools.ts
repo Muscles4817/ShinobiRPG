@@ -37,4 +37,15 @@ export const CANON_TOOL_TECHNIQUES: readonly TechniqueDef[] = [
     rank: 'C',
     difficulty: 75,
   },
+  {
+    id: 'unsealing-shuriken',
+    name: 'Unsealing Technique: Shuriken',
+    description: 'Shuriken unsealed from a scroll and sent straight at the target.',
+    discipline: 'fuuinjutsu',
+    reach: ['close', 'mid'],
+    effects: [{ verb: 'damage', power: 12, hits: 3 }],
+    chakraCost: 6,
+    rank: 'D',
+    difficulty: 50,
+  },
 ];

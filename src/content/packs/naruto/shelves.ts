@@ -56,6 +56,7 @@ export const ACADEMY_SHELF: readonly string[] = [
   'bare-handed-blade-block',
   'manipulated-shuriken',
   'practice-brick',
+  'unsealing-shuriken',
 ];
 
 /** The Village Archives. */
