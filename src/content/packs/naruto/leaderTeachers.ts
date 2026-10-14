@@ -25,7 +25,13 @@ export const HIASHI_TEACHER: TeacherProfile = {
 
 export const INOICHI_TEACHER: TeacherProfile = {
   quirk: 'patient',
-  teaches: ['mind-body-switch', 'mind-destruction', 'mind-clone-switch', 'sensing-water-sphere'],
+  teaches: [
+    'mind-body-switch',
+    'mind-destruction',
+    'mind-clone-switch',
+    'sensing-water-sphere',
+    'mind-disturbance-dance',
+  ],
   price: {
     kind: 'all',
     parts: [
@@ -48,6 +54,7 @@ export const SHIKAKU_TEACHER: TeacherProfile = {
     'shadow-gathering',
     'shadow-imitation-shuriken',
     'shadow-sewing',
+    'black-spider-lily',
   ],
   price: {
     kind: 'favour',

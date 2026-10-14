@@ -246,7 +246,13 @@ export const AOBA_ARSENAL: PersonArsenal = {
 
 /** The Nara shadow arts, from holding a foe to stitching them in place. */
 export const SHIKAKU_ARSENAL: PersonArsenal = {
-  techniqueIds: ['shadow-possession', 'shadow-neck-bind', 'shadow-sewing', 'substitution-jutsu'],
+  techniqueIds: [
+    'shadow-possession',
+    'shadow-neck-bind',
+    'shadow-sewing',
+    'substitution-jutsu',
+    'black-spider-lily',
+  ],
 };
 
 /** The Yamanaka mind arts, and the water sphere he senses with. */
@@ -256,5 +262,22 @@ export const INOICHI_ARSENAL: PersonArsenal = {
     'mind-destruction',
     'sensing-water-sphere',
     'substitution-jutsu',
+    'mind-disturbance-dance',
   ],
+};
+
+/** The Dance of the Crescent Moon and its clones, and the Moonlight cut. */
+export const HAYATE_ARSENAL: PersonArsenal = {
+  techniqueIds: [
+    'crescent-moon-dance',
+    'secret-sword-moonlight',
+    'transparent-escape',
+    'shadow-clone',
+    'substitution-jutsu',
+  ],
+};
+
+/** Hazy Moon Night, with the clones and sensing of an ANBU. */
+export const YUGAO_ARSENAL: PersonArsenal = {
+  techniqueIds: ['hazy-moon-night', 'shadow-clone', 'chakra-sensing', 'substitution-jutsu'],
 };

@@ -123,7 +123,9 @@ names=Lightning Hound`. It is C-rank, Lightning Release, short to mid range, man
   Sasuke's, Shippuden), `false-darkness`
   ([Lightning Release: False Darkness](https://naruto.fandom.com/wiki/Lightning_Release:_False_Darkness),
   Kakuzu's, Shippuden, B-rank) and the invented `decapitating-sweep`. The wiki's Raiga entries are
-  all anime (anime-only pages, or marked `~anime`).
+  all anime (anime-only pages, or marked `~anime`). **Fixed in #87:** Raiga's kit is now his canon lightning (Fangs of
+  Lightning, Banquet of Lightning, Lightning Dragon Tornado, Lightning Strike Armour, Rock
+  Avalanche).
 - **Teachers' lists name techniques of people outside the pack** (each page linked in the full
   list below): Kurenai teaches Itachi's Sharingan illusion Mirror Heaven and Earth Change; Anko
   teaches the Eight Trigrams Sealing Style and Four Symbols Seal (Minato, Kushina, Obito); Raidō
@@ -136,7 +138,10 @@ names=Lightning Hound`. It is C-rank, Lightning Release, short to mid range, man
   and Shadow Senbon) and False Surroundings (Kotetsu's); Haku is not listed for Body Flicker or
   Mystical Palm; Gōzu is not listed for Hiding in Mist and Meizu not for Water Bullet (the
   brothers' one listed jutsu is
-  [Water Release: Hiding in Water Technique](https://naruto.fandom.com/wiki/Water_Release:_Hiding_in_Water_Technique)).
+  [Water Release: Hiding in Water Technique](https://naruto.fandom.com/wiki/Water_Release:_Hiding_in_Water_Technique)). **Fixed in #85 and #87:** Dosu uses the Resonating Echo Drill, Kin
+  Shadow Senbon and the Bell Sound Clone, Haku the Thousand Flying Water Needles and Silent
+  Killing, and the Demon Brothers Hiding in Water; Zabuza fights with Water Clone and Flying
+  Revolving Sword (#83) in place of the invented Decapitating Sweep.
 - **Discipline differences.** The wiki classes Clone Technique, Transformation Technique, Mind
   Body Switch, Mind Body Disturbance and Scattering Thousand Crows as ninjutsu (the game:
   genjutsu); Partial Multi-Size as ninjutsu (game: taijutsu); Flying Thunder God Slash as
@@ -1385,7 +1390,7 @@ Left out: Boruto-era jutsu, novel-, game- and movie-only jutsu, and these pages 
 
 Remember the era caveat above: a Part I jutsu may be one the character only uses later.
 
-Progress: `[x]` is added to the game (with its id and the PR), `[-]` is skipped with the reason. A skipped item doesn't count towards a batch of 15, so the game's batches run a few items past the headings below.
+Progress: `[x]` is added to the game (with its id and the PR), `[-]` is skipped with the reason. A skipped item doesn't count towards a batch of 15, so the game's batches run a few items past the headings below. All 275 items are now settled: 160 added as techniques, 115 skipped.
 
 ### Batch 1 (items 1–15)
 
@@ -1749,16 +1754,16 @@ _Shippuden, anime_
 265. [x] [Exploding Dragon Strike](https://naruto.fandom.com/wiki/Exploding_Dragon_Strike): Tenten releases a flaming dragon from a scroll that explodes on contact. Rank not stated, no nature, Ninjutsu, Fūinjutsu. In-game users: Tenten (anime). Added in #92 as `exploding-dragon-strike`.
 266. [x] [Manipulated Tools: Heavenly Chain Disaster](https://naruto.fandom.com/wiki/Manipulated_Tools:_Heavenly_Chain_Disaster): A stronger version of Twin Rising Dragons. Rank not stated, no nature, Ninjutsu, Fūinjutsu, Shurikenjutsu. In-game users: Tenten (anime). Added in #92 as `heavenly-chain-disaster`.
 267. [x] [Unsealing Technique: Segmented Iron Dome](https://naruto.fandom.com/wiki/Unsealing_Technique:_Segmented_Iron_Dome): An iron dome unsealed from a scroll as a shield. Rank not stated, no nature, Ninjutsu, Fūinjutsu. In-game users: Tenten (anime). Added in #92 as `segmented-iron-dome`.
-268. [ ] [Unsealing Technique: Shuriken](https://naruto.fandom.com/wiki/Unsealing_Technique:_Shuriken): Shuriken unsealed from a scroll straight at the target. Rank not stated, no nature, Ninjutsu, Fūinjutsu, Shurikenjutsu. In-game users: Tenten (anime).
-269. [ ] [Mind Disturbance Dance Performance Technique](https://naruto.fandom.com/wiki/Mind_Disturbance_Dance_Performance_Technique): Mind Body Disturbance cast over many people at once. Rank not stated, no nature, Ninjutsu. In-game users: Inoichi Yamanaka (anime).
-270. [ ] [Black Spider Lily](https://naruto.fandom.com/wiki/Black_Spider_Lily): Shadow Sewing tendrils reel captured targets in towards the user. Rank not stated, yin release, Ninjutsu. In-game users: Shikaku Nara (anime).
+268. [x] [Unsealing Technique: Shuriken](https://naruto.fandom.com/wiki/Unsealing_Technique:_Shuriken): Shuriken unsealed from a scroll straight at the target. Rank not stated, no nature, Ninjutsu, Fūinjutsu, Shurikenjutsu. In-game users: Tenten (anime). Added in #93 as `unsealing-shuriken`.
+269. [x] [Mind Disturbance Dance Performance Technique](https://naruto.fandom.com/wiki/Mind_Disturbance_Dance_Performance_Technique): Mind Body Disturbance cast over many people at once. Rank not stated, no nature, Ninjutsu. In-game users: Inoichi Yamanaka (anime). Added in #93 as `mind-disturbance-dance`.
+270. [x] [Black Spider Lily](https://naruto.fandom.com/wiki/Black_Spider_Lily): Shadow Sewing tendrils reel captured targets in towards the user. Rank not stated, yin release, Ninjutsu. In-game users: Shikaku Nara (anime). Added in #93 as `black-spider-lily`.
 
 ### Batch 19 (items 271–275)
 
 _Shippuden, anime_
 
-271. [ ] [Summoning: Iron Maiden](https://naruto.fandom.com/wiki/Summoning:_Iron_Maiden): Ibiki summons a giant split iron cat statue that clamps round the target and sinks. Rank not stated, no nature, Ninjutsu, Space–Time Ninjutsu. In-game users: Ibiki Morino (anime).
-272. [ ] [Summoning: Torture Chamber](https://naruto.fandom.com/wiki/Summoning:_Torture_Chamber): Ibiki summons an iron chamber that chains and boxes in the target. Rank not stated, no nature, Ninjutsu, Space–Time Ninjutsu. In-game users: Ibiki Morino (anime).
-273. [ ] [Secret Sword: Moonlight](https://naruto.fandom.com/wiki/Secret_Sword:_Moonlight): A blur of a dash ending in a swift sideways sword cut. Rank not stated, no nature, Kenjutsu. In-game users: Hayate Gekkō (anime).
-274. [ ] [Transparent Escape Technique](https://naruto.fandom.com/wiki/Transparent_Escape_Technique): Turning invisible to spy unseen. Rank not stated, no nature, Ninjutsu. In-game users: Hayate Gekkō (anime).
-275. [ ] [Hazy Moon Night](https://naruto.fandom.com/wiki/Hazy_Moon_Night): Yūgao swings in a circle leaving moon-like afterimages, then rushes in under cover of them. Rank not stated, no nature, Kenjutsu. In-game users: Yūgao Uzuki (anime).
+271. [x] [Summoning: Iron Maiden](https://naruto.fandom.com/wiki/Summoning:_Iron_Maiden): Ibiki summons a giant split iron cat statue that clamps round the target and sinks. Rank not stated, no nature, Ninjutsu, Space–Time Ninjutsu. In-game users: Ibiki Morino (anime). Added in #93 as `iron-maiden`.
+272. [x] [Summoning: Torture Chamber](https://naruto.fandom.com/wiki/Summoning:_Torture_Chamber): Ibiki summons an iron chamber that chains and boxes in the target. Rank not stated, no nature, Ninjutsu, Space–Time Ninjutsu. In-game users: Ibiki Morino (anime). Added in #93 as `torture-chamber`.
+273. [x] [Secret Sword: Moonlight](https://naruto.fandom.com/wiki/Secret_Sword:_Moonlight): A blur of a dash ending in a swift sideways sword cut. Rank not stated, no nature, Kenjutsu. In-game users: Hayate Gekkō (anime). Added in #93 as `secret-sword-moonlight`.
+274. [x] [Transparent Escape Technique](https://naruto.fandom.com/wiki/Transparent_Escape_Technique): Turning invisible to spy unseen. Rank not stated, no nature, Ninjutsu. In-game users: Hayate Gekkō (anime). Added in #93 as `transparent-escape`.
+275. [x] [Hazy Moon Night](https://naruto.fandom.com/wiki/Hazy_Moon_Night): Yūgao swings in a circle leaving moon-like afterimages, then rushes in under cover of them. Rank not stated, no nature, Kenjutsu. In-game users: Yūgao Uzuki (anime). Added in #93 as `hazy-moon-night`.
