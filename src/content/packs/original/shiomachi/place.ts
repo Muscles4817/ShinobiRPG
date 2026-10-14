@@ -83,6 +83,7 @@ export const PORT_SHIOMACHI: LocationDef = {
       icon: 'wave',
       blurb: 'Stone, spray and the tide',
       trainingIds: ['tide-runs', 'net-hauling', 'spray-stance'],
+      exerciseIds: ['water-walking'],
     },
     {
       id: 'salt-lantern',

@@ -14,6 +14,7 @@ import {
   SAFE_ROADS_ONLY,
 } from './leave';
 import type { GameState } from './state';
+import { journeyTo } from './journeys';
 import { travelView } from './views/travel';
 
 const original = CONTENT_PACKS.find((p) => p.id === 'original')!;
@@ -106,5 +107,21 @@ describe('leave from the village', () => {
     const jonin = ranked('jonin', fordOpen);
     expect(dispatch(jonin, { type: 'travel', locationId: 'kiri-ford' }, fordOpen).ok).toBe(true);
     expect(travelView(jonin, fordOpen).leave).toBeNull();
+  });
+
+  it('keeps a genin on a pass to safe roads when a safe way exists', () => {
+    const passed = withPass(newGame({}, ctx));
+    const walker = {
+      ...passed,
+      character: {
+        ...passed.character,
+        breakthroughs: [{ source: 'exercise:water-walking', limits: {} }],
+      },
+    };
+    expect(journeyTo(walker, ctx, 'kiri-ford')?.routeIds).toEqual(['coast-road', 'bay-crossing']);
+    expect(dispatch(walker, { type: 'travel', locationId: 'kiri-ford' }, ctx).ok).toBe(true);
+    // A chūnin takes the quickest road, bandits or not.
+    const chunin = { ...walker, standing: { ...walker.standing, rank: 'chunin' as const } };
+    expect(journeyTo(chunin, ctx, 'kiri-ford')?.routeIds).toEqual(['ford-track']);
   });
 });

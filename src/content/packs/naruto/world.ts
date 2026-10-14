@@ -77,6 +77,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'sword-kata',
           'seal-calligraphy',
         ],
+        exerciseIds: ['tree-walking', 'water-walking'],
       },
       SHOPPING_DISTRICT,
       {

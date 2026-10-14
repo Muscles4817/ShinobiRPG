@@ -6,6 +6,7 @@ import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import { assumedAptitude } from '../growth';
 import { growthFor, hardWorkEnergy } from '../profile';
+import { hasMastered, progressOf } from '../exercises';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { sparOptions, type SparOption } from './team';
@@ -41,6 +42,34 @@ export interface TrainingView {
   /** People here who could train with you: your sensei first. */
   readonly teachers: readonly TeacherOffer[];
   readonly sparring: readonly SparOption[];
+  /** Chakra control exercises practised here (tree-walking). */
+  readonly exercises: readonly ExerciseCard[];
+}
+
+/** An exercise as its card: how far along you are, and a session's choice (with why not). */
+export interface ExerciseCard extends Choice {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  /** Out of 100. */
+  readonly progress: number;
+  readonly mastered: boolean;
+  readonly energyCost: number;
+}
+
+function exerciseCards(state: GameState, ctx: GameContext, ids: readonly string[]): ExerciseCard[] {
+  return ids.map((id) => {
+    const def = ctx.content.exercises.require(id);
+    return {
+      ...choice(state, ctx, { type: 'practise', exerciseId: id }),
+      id,
+      name: def.name,
+      description: def.description,
+      progress: progressOf(state, id),
+      mastered: hasMastered(state, def),
+      energyCost: hardWorkEnergy(state.character, ctx, def.energyCost),
+    };
+  });
 }
 
 function groupOf(stats: readonly StatId[]): DrillGroup {
@@ -87,5 +116,6 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
     drills,
     teachers: teacherOffers(state, ctx),
     sparring: sparOptions(state, ctx),
+    exercises: exerciseCards(state, ctx, place.exerciseIds ?? []),
   };
 }

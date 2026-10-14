@@ -69,6 +69,19 @@ function onOrders(state: GameState, ctx: GameContext, destinationId: string): bo
   return arcBases(ctx.content.arcs.all, state.board.completed).includes(destinationId);
 }
 
+/** Whether this trip must keep to safe roads: a genin's, on a pass, away from home. */
+export function keepsToSafeRoads(
+  state: GameState,
+  ctx: GameContext,
+  destinationId: string,
+): boolean {
+  return (
+    !rankAtLeast(state, 'chunin') &&
+    destinationId !== homeVillageId(state, ctx) &&
+    !onOrders(state, ctx, destinationId)
+  );
+}
+
 /** Setting out: a chūnin's leave is spent by the days on the road. */
 export function spendLeave(
   state: GameState,

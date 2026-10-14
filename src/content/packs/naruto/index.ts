@@ -1,5 +1,6 @@
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
+import { EXERCISES } from '../../shared/exercises';
 import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
 import { UPBRINGINGS } from '../../shared/upbringings';
@@ -59,6 +60,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   text: NARUTO_TEXT,
   locations: NARUTO_LOCATIONS,
   routes: NARUTO_ROUTES,
+  exercises: EXERCISES,
   techniques: [
     ...TECHNIQUES,
     ...CLAN_TECHNIQUES,
