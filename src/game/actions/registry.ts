@@ -7,6 +7,7 @@ import { missionCamp, missionDecide } from './missionStory';
 import { payRent, treat } from './services';
 import { hostDinner } from './dinner';
 import { takeRoom } from './inn';
+import { turnBack } from './turnBack';
 import { cook } from './kitchen';
 import { setAnimations, setCombatStyle } from './settings';
 import { buyIntel } from './intel';
@@ -34,6 +35,7 @@ export const HANDLERS: Registry = {
   payRent,
   treat,
   travel,
+  turnBack,
   dismissReport,
   study,
   studyScroll,

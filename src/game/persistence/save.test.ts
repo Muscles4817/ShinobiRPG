@@ -256,7 +256,22 @@ describe('persistence', () => {
     const { leave: _leave, ...game } = newGame();
     const loaded = deserialize(JSON.stringify({ version: 31, state: game }));
     if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.leave).toEqual({ passUntil: null, season: 0, daysTaken: 0 });
+    expect(loaded.value.leave).toEqual({
+      passUntil: null,
+      season: 0,
+      daysTaken: 0,
+      awaySince: null,
+    });
+  });
+
+  it('gives a save from before trips with friends nobody along, and home', () => {
+    const game = newGame();
+    const { awaySince: _away, ...leave } = game.leave;
+    const { companionId: _companion, ...people } = game.people;
+    const loaded = deserialize(JSON.stringify({ version: 32, state: { ...game, leave, people } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.leave.awaySince).toBeNull();
+    expect(loaded.value.people.companionId).toBeNull();
   });
 
   it('rejects corrupted data', () => {

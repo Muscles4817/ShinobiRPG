@@ -160,6 +160,16 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /Here/ }));
     await user.click(place(/Gull/));
     expect(screen.getByRole('button', { name: 'Take a room and sleep till dawn' })).toBeEnabled();
+
+    // Home again: the village says what it did without you.
+    await user.click(screen.getByRole('button', { name: /Travel/ }));
+    const home = screen.getByRole('heading', { name: 'Tōrōgakure' }).closest('article')!;
+    await user.click(within(home).getByRole('button', { name: 'Set out' }));
+    for (let step = 0; step < 6 && screen.queryByRole('navigation', { name: 'Choices' }); step++) {
+      const choices = screen.getByRole('navigation', { name: 'Choices' });
+      await user.click(within(choices).getAllByRole('button')[0]!);
+    }
+    expect(within(screen.getByRole('dialog')).getByText('Home to Tōrōgakure')).toBeInTheDocument();
   });
 
   it('opens every dock tab and place without crashing', async () => {

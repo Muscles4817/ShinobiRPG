@@ -31,6 +31,12 @@ export function isVillager(person: PersonDef, ctx: GameContext): boolean {
   return (person.homeLocationId ?? ctx.content.startLocationId) === ctx.content.startLocationId;
 }
 
+/** Where a friend travelling with you is found: the inn here, or wherever you can find them. */
+function lodging(state: GameState, ctx: GameContext): string | null {
+  const { places } = ctx.content.locations.require(state.locationId);
+  return (places.find((p) => p.kind === 'inn') ?? places[0])?.id ?? null;
+}
+
 /** Everyone who lives in the village. */
 export function villagers(state: GameState, ctx: GameContext): readonly PersonDef[] {
   return everyone(state, ctx).filter((p) => isVillager(p, ctx));
@@ -38,6 +44,7 @@ export function villagers(state: GameState, ctx: GameContext): readonly PersonDe
 
 /** The place id where this person is now, or null if they are away (or you are). */
 export function whereNow(state: GameState, ctx: GameContext, person: PersonDef): string | null {
+  if (person.id === state.people.companionId && !state.mission) return lodging(state, ctx);
   if (state.locationId !== (person.homeLocationId ?? ctx.content.startLocationId)) return null;
   return person.schedule[slotName(state.time)];
 }

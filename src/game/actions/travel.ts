@@ -6,6 +6,7 @@ import { journeyTo, setOut } from '../journeys';
 import { leaveBlocker, spendLeave } from '../leave';
 import { busyReason, firstBlocker } from '../ops';
 import type { GameState } from '../state';
+import { companionBlocker } from '../trips';
 import { missionContinue } from './mission';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -32,6 +33,7 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
       destination.lockedReason ?? null,
       !journey && 'No open road goes there yet.',
       journey && leaveBlocker(state, ctx, destination.id, journey),
+      action.companionId !== undefined && companionBlocker(state, ctx, action.companionId),
       journey !== null &&
         state.wallet.ryo < journey.cost &&
         `The journey costs ${journey.cost} ryo.`,
@@ -49,7 +51,8 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
       quick: action.quick === true,
     };
     const onLeave = spendLeave({ ...state, wallet: paid.value }, ctx, action.locationId, journey);
-    return walkOn(setOut(onLeave, ctx, plan, journey.cost), ctx, rng);
+    const trip = { plan, passage: journey.cost, companionId: action.companionId ?? null };
+    return walkOn(setOut(onLeave, ctx, trip), ctx, rng);
   },
 };
 

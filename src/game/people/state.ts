@@ -24,6 +24,8 @@ export interface People {
   readonly favours: readonly string[];
   /** Slips your sensei has signed for you (`game/permits.ts`), by id. */
   readonly permits: readonly string[];
+  /** The friend travelling with you, while you are away on a trip of your own. */
+  readonly companionId: string | null;
 }
 
 /** How much of a teacher's time you have had: sessions in `week`, and the last day. */
@@ -71,4 +73,5 @@ export const NO_PEOPLE: People = {
   taught: {},
   favours: [],
   permits: [],
+  companionId: null,
 };

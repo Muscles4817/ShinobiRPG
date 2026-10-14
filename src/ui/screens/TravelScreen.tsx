@@ -1,4 +1,6 @@
-import { headerView, travelView } from '@/game';
+import { useState } from 'react';
+
+import { headerView, travelView, type CompanionOption } from '@/game';
 
 import { Backdrop } from '../art/Backdrop';
 import { Banner } from '../components/Banner';
@@ -11,7 +13,8 @@ import type { ScreenProps } from './types';
  */
 export function TravelScreen({ ctx, state, perform }: ScreenProps) {
   const header = headerView(state, ctx);
-  const { leave, destinations } = travelView(state, ctx);
+  const [asked, setAsked] = useState<string | null>(null);
+  const { leave, companions, along, destinations } = travelView(state, ctx, asked);
   return (
     <>
       <Banner
@@ -21,6 +24,8 @@ export function TravelScreen({ ctx, state, perform }: ScreenProps) {
       />
       <main className="page">
         {leave && <p className="leave-slip">{leave}</p>}
+        {along && <p className="leave-slip">{along} is travelling with you.</p>}
+        <CompanionPicker companions={companions} onAsk={setAsked} />
         {destinations.map((d) => (
           <article
             key={d.id}
@@ -80,5 +85,38 @@ export function TravelScreen({ ctx, state, perform }: ScreenProps) {
         ))}
       </main>
     </>
+  );
+}
+
+interface PickerProps {
+  readonly companions: readonly CompanionOption[];
+  readonly onAsk: (id: string | null) => void;
+}
+
+/** Friends who would come along: tap one to ask them, again to go alone. */
+function CompanionPicker({ companions, onAsk }: PickerProps) {
+  if (companions.length === 0) return null;
+  return (
+    <section className="companions" aria-label="Who’s coming">
+      <h2>Who’s coming?</h2>
+      <div className="companion-row">
+        {companions.map((c) => (
+          <button
+            key={c.id}
+            type="button"
+            className={c.asked ? 'btn small' : 'btn small ghost'}
+            aria-pressed={c.asked}
+            onClick={() => {
+              onAsk(c.asked ? null : c.id);
+            }}
+          >
+            {c.name}
+          </button>
+        ))}
+      </div>
+      <p className="muted small">
+        {companions.some((c) => c.asked) ? 'They’ll come with you.' : 'You’ll go alone.'}
+      </p>
+    </section>
   );
 }

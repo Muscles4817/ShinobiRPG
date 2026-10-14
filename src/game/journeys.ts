@@ -1,15 +1,10 @@
-import {
-  SOLO,
-  startRun,
-  type JourneyPlan,
-  type MissionDef,
-  type MissionStage,
-} from '@/systems/missions';
+import { startRun, type JourneyPlan, type MissionDef, type MissionStage } from '@/systems/missions';
 import { findJourney, type Journey, type RouteDef } from '@/systems/travel';
 
 import type { GameContext } from './context';
 import { chip, log } from './ops';
 import { settle } from './story/state';
+import { arriving, leaving, tripCrew } from './trips';
 import type { GameState } from './state';
 
 /**
@@ -49,6 +44,7 @@ const CAMP: MissionStage = {
   text: CAMP_TEXT,
   picks: CAMP_PICKS,
   activities: [
+    { kind: 'crew', label: 'Sit up talking by the fire', when: { crew: 'team' } },
     { kind: 'drill', label: 'Drill by the fire' },
     { kind: 'rest', label: 'Sleep properly' },
   ],
@@ -78,17 +74,22 @@ export function journeyMission(plan: JourneyPlan, ctx: GameContext): MissionDef 
   };
 }
 
+/** A trip about to start: the way, the passage paid, and a friend asked along. */
+export interface Departure {
+  readonly plan: JourneyPlan;
+  readonly passage: number;
+  readonly companionId: string | null;
+}
+
 /** Setting out (passage already paid): the trip becomes the run in progress. */
-export function setOut(
-  state: GameState,
-  ctx: GameContext,
-  plan: JourneyPlan,
-  passage: number,
-): GameState {
+export function setOut(state: GameState, ctx: GameContext, trip: Departure): GameState {
+  const { plan, passage } = trip;
   const def = journeyMission(plan, ctx);
-  const run = settle(def, { ...startRun(def, SOLO), journey: plan });
+  const going = leaving(state, ctx, plan, trip.companionId);
+  const crew = tripCrew(going.people.companionId);
+  const run = settle(def, { ...startRun(def, crew), journey: plan });
   return log(
-    { ...state, mission: run },
+    { ...going, mission: run },
     {
       heading: def.title,
       text: def.summary,
@@ -102,13 +103,10 @@ export function setOut(
 export function arrive(state: GameState, ctx: GameContext, plan: JourneyPlan): GameState {
   const destination = ctx.content.locations.require(plan.to);
   const days = plan.legs.reduce((sum, leg) => sum + leg.days, 0);
-  return log(
-    { ...state, mission: null, locationId: destination.id },
-    {
-      heading: `Arrived in ${destination.name}`,
-      text: `You walk into ${destination.name}, road-dusty and glad of it.`,
-      tone: 'success',
-      chips: [chip(days === 1 ? 'A day on the road' : `${days} days on the road`, 'info')],
-    },
-  );
+  return log(arriving({ ...state, mission: null, locationId: destination.id }, ctx, plan), {
+    heading: `Arrived in ${destination.name}`,
+    text: `You walk into ${destination.name}, road-dusty and glad of it.`,
+    tone: 'success',
+    chips: [chip(days === 1 ? 'A day on the road' : `${days} days on the road`, 'info')],
+  });
 }

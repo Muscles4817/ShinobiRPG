@@ -340,3 +340,12 @@ migration and a previous-version save test wherever the save shape changes.
    good for a week and for safe roads only; a chūnin's ten days of leave a season, spent by
    the days on the road out; a jōnin is free. Going home never needs leave. The Travel tab
    shows the pass or the days left on a slip. Leaving without leave waits for milestone 5.
+6. **Companions, turning back, home again** (this step). A friend (a villager, genin or
+   shinobi, bond stage 2, about in the village) can be asked along from the Travel tab: they
+   ride the journey as a `companion` crew (camp talk by the fire), are found at your inn,
+   gain bond and a shared memory ("the road to …") at each place reached, and go home when
+   you do (`people.companionId`). At a camp on a trip of your own you can **turn back**: the
+   legs walked so far, reversed. Coming home after a trip (`leave.awaySince`) shows a
+   **home-again** card: days away, jobs posted meanwhile, festivals missed, rent overdue.
+   Save v33. Turning back has no camp to show on today's open roads (Shiomachi is one leg);
+   it appears once the longer roads open.

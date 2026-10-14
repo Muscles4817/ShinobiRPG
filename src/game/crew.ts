@@ -137,7 +137,8 @@ function staff(pick: CrewPick, kind: CrewKind): Crew | null {
     case 'jonin-led':
       return joninLed(pick);
     case 'exam-team':
-      // Only an exam sends its own team, and never through the board.
+    case 'companion':
+      // Only an exam sends its own team, a friend comes on trips: never through the board.
       return null;
   }
 }

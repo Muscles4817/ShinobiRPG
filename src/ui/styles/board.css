@@ -277,6 +277,21 @@
 .dest.locked .backdrop {
   filter: grayscale(0.85) brightness(0.7);
 }
+/* Friends who would come along. */
+.companions h2 {
+  font-family: var(--font-story);
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+.companion-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.companion-row .btn {
+  min-height: 40px;
+}
+
 /* Your pass or leave days: a slip pinned above the destinations. */
 .leave-slip {
   background: var(--grain-ink), var(--paper);

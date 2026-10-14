@@ -108,6 +108,7 @@ function withTaught(card: Report, taught: readonly string[]): Report | null {
     case 'lesson':
     case 'team-formed':
     case 'grade':
+    case 'home-again':
       return null;
   }
 }

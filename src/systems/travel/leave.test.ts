@@ -14,6 +14,6 @@ describe('leave', () => {
     expect(leaveLeft(taken, 3, 10)).toBe(4);
     expect(leaveLeft(takeLeave(taken, 3, 9), 3, 10)).toBe(0);
     expect(leaveLeft(taken, 4, 10)).toBe(10);
-    expect(takeLeave(taken, 4, 1)).toEqual({ passUntil: null, season: 4, daysTaken: 1 });
+    expect(takeLeave(taken, 4, 1)).toMatchObject({ season: 4, daysTaken: 1 });
   });
 });

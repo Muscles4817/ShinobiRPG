@@ -92,7 +92,7 @@ describe('leave from the village', () => {
     );
     const spent = {
       ...chunin,
-      leave: { passUntil: null, season: 0, daysTaken: CHUNIN_LEAVE_DAYS },
+      leave: { ...chunin.leave, season: 0, daysTaken: CHUNIN_LEAVE_DAYS },
     };
     expect(dispatch(spent, toPort, ctx)).toEqual({
       ok: false,

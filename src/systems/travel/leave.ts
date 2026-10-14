@@ -12,9 +12,11 @@ export interface Leave {
   readonly season: number;
   /** Days of leave taken that season. */
   readonly daysTaken: number;
+  /** The day you last left home on a trip of your own, or null while you are home. */
+  readonly awaySince: number | null;
 }
 
-export const NO_LEAVE: Leave = { passUntil: null, season: 0, daysTaken: 0 };
+export const NO_LEAVE: Leave = { passUntil: null, season: 0, daysTaken: 0, awaySince: null };
 
 export function passValid(leave: Leave, day: number): boolean {
   return leave.passUntil !== null && day <= leave.passUntil;
