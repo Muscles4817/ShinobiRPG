@@ -63,6 +63,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     description: 'Wind chakra lengthens your blade’s edge beyond the steel.',
     discipline: 'taijutsu',
     school: 'Wind Blade',
+    reach: ['close', 'mid'],
     needs: { weapon: 'knuckles' },
     element: 'wind',
     effects: [{ verb: 'damage', power: 21 }],

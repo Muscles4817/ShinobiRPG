@@ -23,3 +23,16 @@ export const KAKASHI_ARSENAL: PersonArsenal = {
   ],
   perks: ['insight'],
 };
+
+/** The Wind Blade trench knives, Burning Ash, and the clones he fought the Akatsuki with. */
+export const ASUMA_ARSENAL: PersonArsenal = {
+  techniqueIds: [
+    'flying-swallow',
+    'trench-knife-rush',
+    'wind-blade-flurry',
+    'chakra-flow',
+    'ash-pile-burning',
+    'shadow-clone',
+    'substitution-jutsu',
+  ],
+};
