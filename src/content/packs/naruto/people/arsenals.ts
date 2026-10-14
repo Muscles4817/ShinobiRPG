@@ -39,6 +39,7 @@ export const ASUMA_ARSENAL: PersonArsenal = {
     'chakra-flow',
     'ash-pile-burning',
     'substitution-jutsu',
+    'dust-cloud',
   ],
 };
 
@@ -67,6 +68,7 @@ export const ANKO_ARSENAL: PersonArsenal = {
     'dragon-fire',
     'sly-mind-affect',
     'substitution-jutsu',
+    'many-snake-hands',
   ],
 };
 
@@ -78,6 +80,7 @@ export const NARUTO_ARSENAL: PersonArsenal = {
     'substitution-jutsu',
     'sexy-technique',
     'thousand-years-of-death',
+    'sexy-reverse-harem',
   ],
 };
 
@@ -99,7 +102,13 @@ export const SASUKE_ARSENAL: PersonArsenal = {
 
 /** Guy's kicks, as far as a genin's taijutsu reaches. */
 export const LEE_ARSENAL: PersonArsenal = {
-  techniqueIds: ['leaf-whirlwind', 'leaf-gale', 'dynamic-entry', 'leaf-drop'],
+  techniqueIds: [
+    'leaf-whirlwind',
+    'leaf-gale',
+    'dynamic-entry',
+    'leaf-drop',
+    'bare-handed-blade-block',
+  ],
 };
 
 /** The Gentle Fist as far as she has it: points closed, and the palm that shakes the body. */

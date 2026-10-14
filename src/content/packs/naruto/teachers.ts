@@ -81,6 +81,7 @@ export const ASUMA_TEACHER: TeacherProfile = {
     'trench-knife-rush',
     'wind-blade-flurry',
     'seven-swords-dance',
+    'dust-cloud',
   ],
   price: { kind: 'ryo', perSession: 30, line: '“You’re buying the cigarettes. Kidding. Mostly.”' },
 };
@@ -95,6 +96,7 @@ export const ANKO_TEACHER: TeacherProfile = {
     'four-symbols-seal',
     'hidden-shadow-snake-hands',
     'twin-snakes-mutual-death',
+    'many-snake-hands',
   ],
   price: {
     kind: 'all',
@@ -146,6 +148,17 @@ export const NARUTO_TEACHER: TeacherProfile = {
     'clone-spinning-heel-drop',
     'toad-oil-flame-bullet',
     'uzumaki-formation',
+    'parachute',
+    'sexy-reverse-harem',
+    'big-ball-rasengan',
+    'big-ball-serial-zone-spheres',
+    'planetary-rasengan',
+    'ultra-many-serial-spheres',
+    'wind-rasengan',
+    'mini-rasenshuriken',
+    'rasenshuriken',
+    'ultra-big-ball-rasengan',
+    'ultra-big-ball-rasenshuriken',
   ],
 };
 
