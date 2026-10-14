@@ -27,15 +27,19 @@ import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
 import { EXAM_ENEMIES, EXAM_MISSIONS, EXAMS } from './exam';
 import { NARUTO_CONVERSATIONS } from './conversations';
-import { CANON_GENIN } from './genin';
-import { CLAN_HEADS } from './clanHeads';
-import { VILLAGE_CHUNIN } from './chunin';
-import { VILLAGE_JONIN } from './jonin';
+import {
+  CANON_GENIN,
+  INSTRUCTORS,
+  LEADERS,
+  SENIOR_GENIN,
+  SENSEIS,
+  VILLAGE_CHUNIN,
+  VILLAGE_JONIN,
+  VILLAGERS,
+} from './people';
 import { ROSTER_CONVERSATIONS } from './rosterConversations';
 import { ROSTER_TECHNIQUES } from './rosterTechniques';
-import { SENIOR_GENIN } from './seniorGenin';
 import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
-import { SENSEIS_AND_ELDERS } from './senseis';
 import { SENSEI_TECHNIQUES } from './senseiTechniques';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
@@ -96,12 +100,14 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   cookbooks: COOKBOOKS,
   campFinds: CAMP_FINDS,
   people: [
-    ...SENSEIS_AND_ELDERS,
+    ...SENSEIS,
+    ...INSTRUCTORS,
+    ...LEADERS,
     ...VILLAGE_JONIN,
-    ...CLAN_HEADS,
     ...VILLAGE_CHUNIN,
     ...CANON_GENIN,
     ...SENIOR_GENIN,
+    ...VILLAGERS,
   ],
   conversations: [
     ...GENERIC_CONVERSATIONS,

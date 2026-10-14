@@ -1,19 +1,18 @@
-import { look } from '../../look';
-import { statLine } from '../../statLine';
-import type { PersonDef } from '../../types';
+import { look } from '../../../look';
+import { statLine } from '../../../statLine';
+import type { PersonDef } from '../../../types';
 
 import { ASUMA_ARSENAL, KAKASHI_ARSENAL } from './arsenals';
-import { VILLAGE_ELDERS } from './elders';
 import {
   ANKO_TEACHER,
   ASUMA_TEACHER,
   GUY_TEACHER,
   KAKASHI_TEACHER,
   KURENAI_TEACHER,
-} from './teachers';
+} from '../teachers';
 
-/** Jōnin who may take on a team, plus the village figures every genin knows. */
-export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
+/** Jōnin who may take on a team. */
+export const SENSEIS: readonly PersonDef[] = [
   {
     id: 'kakashi',
     name: 'Kakashi',
@@ -199,5 +198,4 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     },
     teacher: ANKO_TEACHER,
   },
-  ...VILLAGE_ELDERS,
 ];

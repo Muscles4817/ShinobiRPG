@@ -1,4 +1,4 @@
-import type { PersonArsenal } from '../../types';
+import type { PersonArsenal } from '../../../types';
 
 /** How the village's own fight: their canon techniques (all learnable in the pack) in place of a generic kit. */
 
