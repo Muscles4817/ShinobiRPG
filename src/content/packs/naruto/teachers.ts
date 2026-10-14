@@ -46,7 +46,7 @@ export const GUY_TEACHER: TeacherProfile = {
 
 export const IRUKA_TEACHER: TeacherProfile = {
   quirk: 'patient',
-  teaches: ['substitution-jutsu', 'clone-jutsu'],
+  teaches: ['substitution-jutsu', 'clone-jutsu', 'sealed-binding-formation'],
   sessionsPerWeek: 3,
   price: { kind: 'bond', minStage: 0, line: '“Come by after class. I’ll always make time.”' },
 };
@@ -54,7 +54,13 @@ export const IRUKA_TEACHER: TeacherProfile = {
 export const KURENAI_TEACHER: TeacherProfile = {
   quirk: 'patient',
   steers: { focus: 'specialty', freeAtStage: 2 },
-  teaches: ['petal-storm', 'tree-binding-death', 'mirror-heaven-earth'],
+  teaches: [
+    'petal-storm',
+    'tree-binding-death',
+    'mirror-heaven-earth',
+    'hiding-in-surface',
+    'string-bean-binding',
+  ],
   price: { kind: 'bond', minStage: 2 },
 };
 
@@ -115,4 +121,28 @@ export const LEE_TEACHER: TeacherProfile = {
     minStage: 4,
     line: '“Guy-sensei’s style is not for show! Spar with me until we are true rivals.”',
   },
+};
+
+/** Naruto passes on the clone tricks he invented, and the clan’s chains. */
+export const NARUTO_TEACHER: TeacherProfile = {
+  teaches: [
+    'adamantine-chains',
+    'sexy-technique',
+    'uzumaki-combo',
+    'two-thousand-combo',
+    'all-directions-shuriken',
+    'clone-body-blow',
+    'harem-technique',
+    'shuriken-shadow-clone',
+    'spiralling-serial-spheres',
+    'food-cart-destroyer',
+    'clone-spinning-heel-drop',
+    'toad-oil-flame-bullet',
+    'uzumaki-formation',
+  ],
+};
+
+/** Sakura teaches the medical arts that grow out of her chakra control. */
+export const SAKURA_TEACHER: TeacherProfile = {
+  teaches: ['chakra-scalpel', 'chakra-enhanced-strength', 'creation-rebirth'],
 };

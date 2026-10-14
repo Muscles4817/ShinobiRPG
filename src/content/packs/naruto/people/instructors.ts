@@ -2,6 +2,8 @@ import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
+import { EBISU_ARSENAL, IRUKA_ARSENAL } from './arsenals';
+
 import { IRUKA_TEACHER } from '../teachers';
 
 /** The academy's teachers and the village's elite tutor. */
@@ -30,6 +32,7 @@ export const INSTRUCTORS: readonly PersonDef[] = [
       night: 'training-grounds',
     },
     teacher: IRUKA_TEACHER,
+    arsenal: IRUKA_ARSENAL,
   },
   {
     id: 'ebisu',
@@ -64,5 +67,6 @@ export const INSTRUCTORS: readonly PersonDef[] = [
         line: '“The elite path is a paid path. My other pupil is the Honourable Grandson.”',
       },
     },
+    arsenal: EBISU_ARSENAL,
   },
 ];

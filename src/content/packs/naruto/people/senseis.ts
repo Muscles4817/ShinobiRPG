@@ -2,7 +2,13 @@ import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
-import { ANKO_ARSENAL, ASUMA_ARSENAL, GUY_ARSENAL, KAKASHI_ARSENAL } from './arsenals';
+import {
+  ANKO_ARSENAL,
+  ASUMA_ARSENAL,
+  GUY_ARSENAL,
+  KAKASHI_ARSENAL,
+  KURENAI_ARSENAL,
+} from './arsenals';
 import {
   ANKO_TEACHER,
   ASUMA_TEACHER,
@@ -130,6 +136,7 @@ export const SENSEIS: readonly PersonDef[] = [
         'Kurenai walks you through an illusion slowly, then again, until you can see the seams.',
     },
     teacher: KURENAI_TEACHER,
+    arsenal: KURENAI_ARSENAL,
   },
   {
     id: 'asuma',

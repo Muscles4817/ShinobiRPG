@@ -2,6 +2,8 @@ import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
+import { AOBA_ARSENAL } from './arsenals';
+
 /**
  * The village's jōnin and special jōnin who don't lead a team: examiners, guards, the
  * Hokage's own. Part 1, the months before the Chūnin Exams.
@@ -142,6 +144,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
       teaches: ['crow-scatter', 'false-surroundings', 'bringer-of-darkness'],
       price: { kind: 'bond', minStage: 2, line: '“I don’t waste my crows on strangers.”' },
     },
+    arsenal: AOBA_ARSENAL,
   },
   {
     id: 'hayate',

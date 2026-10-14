@@ -143,7 +143,13 @@ export const HANA_ARSENAL: PersonArsenal = {
 
 /** The swarm, and the copy of himself it makes. */
 export const SHINO_ARSENAL: PersonArsenal = {
-  techniqueIds: ['insect-swarm', 'insect-clone', 'shuriken-jutsu', 'substitution-jutsu'],
+  techniqueIds: [
+    'insect-swarm',
+    'insect-clone',
+    'shuriken-jutsu',
+    'substitution-jutsu',
+    'insect-rope',
+  ],
 };
 
 /** The Akimichi size arts as the clan head fights with them. */
@@ -163,5 +169,45 @@ export const HIRUZEN_ARSENAL: PersonArsenal = {
     'shadow-clone',
     'shuriken-shadow-clone',
     'substitution-jutsu',
+    'fire-dragon-bullet',
+    'earth-shadow-clone',
   ],
+};
+
+/** Illusions that bind, and the ways she slips out of sight. */
+export const KURENAI_ARSENAL: PersonArsenal = {
+  techniqueIds: [
+    'tree-binding-death',
+    'string-bean-binding',
+    'flower-petal-escape',
+    'hiding-in-surface',
+    'chakra-sensing',
+    'substitution-jutsu',
+  ],
+};
+
+/** The swarm, and the wall of it he raises round his team. */
+export const SHIBI_ARSENAL: PersonArsenal = {
+  techniqueIds: ['insect-swarm', 'insect-wall', 'substitution-jutsu'],
+};
+
+/** An academy teacher’s kit: a fright, a binding, and a sense for where his students are. */
+export const IRUKA_ARSENAL: PersonArsenal = {
+  techniqueIds: [
+    'hell-viewing',
+    'sealed-binding-formation',
+    'chakra-sensing',
+    'shuriken-jutsu',
+    'substitution-jutsu',
+  ],
+};
+
+/** The elite tutor’s clones and fire. */
+export const EBISU_ARSENAL: PersonArsenal = {
+  techniqueIds: ['shadow-clone', 'fire-dragon-bullet', 'substitution-jutsu'],
+};
+
+/** Fire, and a flock of crows to vanish into. */
+export const AOBA_ARSENAL: PersonArsenal = {
+  techniqueIds: ['fire-dragon-bullet', 'crow-scatter', 'substitution-jutsu'],
 };

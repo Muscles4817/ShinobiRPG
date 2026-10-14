@@ -2,7 +2,13 @@ import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
-import { CHOZA_ARSENAL, HIASHI_ARSENAL, HIRUZEN_ARSENAL, TSUME_ARSENAL } from './arsenals';
+import {
+  CHOZA_ARSENAL,
+  HIASHI_ARSENAL,
+  HIRUZEN_ARSENAL,
+  SHIBI_ARSENAL,
+  TSUME_ARSENAL,
+} from './arsenals';
 
 /**
  * The heads of the village's clans, all jōnin. Each keeps the clan's own techniques and
@@ -69,6 +75,7 @@ export const LEADERS: readonly PersonDef[] = [
         'hundred-twenty-eight-palms',
         'palm-bottom',
         'one-blow-body',
+        'protecting-sixty-four-palms',
       ],
       price: { kind: 'bond', minStage: 3, line: '“The Hyūga do not instruct strangers.”' },
     },
@@ -182,6 +189,7 @@ export const LEADERS: readonly PersonDef[] = [
         'super-multi-size',
         'butterfly-mode',
         'butterfly-bullet-bombing',
+        'ballistic-waterwheel',
       ],
       price: {
         kind: 'bond',
@@ -261,8 +269,9 @@ export const LEADERS: readonly PersonDef[] = [
     schedule: { morning: null, afternoon: null, evening: 'training-grounds', night: null },
     teacher: {
       quirk: 'patient',
-      teaches: ['insect-swarm', 'insect-jar', 'insect-clone'],
+      teaches: ['insect-swarm', 'insect-jar', 'insect-clone', 'insect-rope', 'insect-wall'],
       price: { kind: 'bond', minStage: 2 },
     },
+    arsenal: SHIBI_ARSENAL,
   },
 ];
