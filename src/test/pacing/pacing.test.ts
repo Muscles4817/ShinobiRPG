@@ -21,16 +21,21 @@ import {
  * Set VITE_BENCH_REPORT=true to print the day-by-day grades.
  */
 
-/** Target: a focused player is ready for the chūnin exam after about this many days… */
-const CHUNIN_READY_DAYS = 60;
+/**
+ * Target: a focused player is ready for the chūnin exam after about this many days… (A middle
+ * graduate starts with their art a solid D, so the climb to C is about a month.)
+ */
+const CHUNIN_READY_DAYS = 30;
 /** …give or take this many. */
 const CHUNIN_READY_WINDOW = 10;
 /** What "ready" means for now: the focused stat at the chūnin grade. */
 const CHUNIN_GRADE = 'C';
-/** The sensei puts the focused player forward for the chūnin exam within this many days of 60. */
+/** The sensei puts the focused player forward for the chūnin exam about this many days in… */
+const NOMINATION_DAYS = 45;
+/** …give or take this many. */
 const NOMINATION_WINDOW = 15;
 /** Training with the sensei every week gets the focus to C at least this many days sooner. */
-const TEACHERS_LEAD_DAYS = 7;
+const TEACHERS_LEAD_DAYS = 4;
 /** Long enough to see the window close. */
 const DAYS = CHUNIN_READY_DAYS + CHUNIN_READY_WINDOW;
 /** After reaching C, a month alone fills less than this share of the C band (13 to 20). */
@@ -134,15 +139,15 @@ describe('pacing: a focused player', () => {
     );
     expect(solo ?? Infinity).toBeGreaterThanOrEqual(reached + TEACHERS_LEAD_DAYS);
   });
-  it(`the focused player is nominated for the chūnin exam on day ${CHUNIN_READY_DAYS} ± ${NOMINATION_WINDOW}`, () => {
+  it(`the focused player is nominated for the chūnin exam on day ${NOMINATION_DAYS} ± ${NOMINATION_WINDOW}`, () => {
     let state = ordinaryTalent();
     const start = state.time.day;
     let nominated: number | null = null;
-    for (let day = 0; day <= CHUNIN_READY_DAYS + NOMINATION_WINDOW && nominated === null; day++) {
+    for (let day = 0; day <= NOMINATION_DAYS + NOMINATION_WINDOW && nominated === null; day++) {
       if (nominationBlocker(state, ctx) === null) nominated = state.time.day - start;
       else state = playFocused(state, TAIJUTSU_FOCUS, 1).state;
     }
     expect(nominated).not.toBeNull();
-    expect(Math.abs((nominated ?? 0) - CHUNIN_READY_DAYS)).toBeLessThanOrEqual(NOMINATION_WINDOW);
+    expect(Math.abs((nominated ?? 0) - NOMINATION_DAYS)).toBeLessThanOrEqual(NOMINATION_WINDOW);
   });
 });

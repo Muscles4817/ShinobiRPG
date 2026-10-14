@@ -1,4 +1,4 @@
-import type { AptitudeBand } from '@/systems/stats';
+import type { AptitudeBand, StatKind } from '@/systems/stats';
 
 /** Setting-specific wording: what the engine and UI say that belongs to the setting. */
 
@@ -44,4 +44,6 @@ export interface AptitudeText {
   readonly unknown: string;
   /** Why a drill or scroll in an art you have no talent for is refused, once you know it. */
   readonly blocked: string;
+  /** Shinobi screen phrase for a stat close to or at its natural limit, by kind of stat. */
+  readonly limits: Readonly<Record<StatKind, { readonly near: string; readonly reached: string }>>;
 }

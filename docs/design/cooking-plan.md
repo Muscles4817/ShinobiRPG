@@ -399,7 +399,7 @@ Each phase ships on its own and keeps `npm run check` green.
   village forest and the river in the fan pack.
 - `systems/cooking/gathering.ts`: what can turn up (season, time of day, and whether your
   cooking grade knows it for food) and a weighted draw. Each place and each spot gives once a
-  day (`cooking.gathered`, save v33).
+  day (`cooking.gathered`, save v34).
 - `forage` (perception finds a second handful) and `fish` (willpower decides whether anything
   bites), both hard work.
 - Seven wild ingredients, never sold, and seven dishes made from them, taught by two new

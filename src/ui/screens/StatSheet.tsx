@@ -36,11 +36,13 @@ function growthText(growth: number): string {
   return growth > 0 ? `+${growth}` : '';
 }
 
-/** Your read on your talent for a stat, once training has given you one. */
+/** Your read on your talent for a stat, once training has given you one, and how near its limit. */
 function TalentRead({ stat }: { readonly stat: StatLine }) {
+  const limit = stat.limit ? `, ${stat.limit.charAt(0).toLowerCase()}${stat.limit.slice(1)}` : '';
   return (
     <small className="talent-read" data-read={stat.talent.read}>
       {stat.talent.phrase}
+      {limit}
     </small>
   );
 }

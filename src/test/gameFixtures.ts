@@ -4,6 +4,7 @@ import {
   createNewGame,
   defaultDraft,
   dispatch,
+  reviseDraft,
   type CreationDraft,
   type GameAction,
   type GameContext,
@@ -19,12 +20,16 @@ export const ctx: GameContext = contextForPack('original')!;
 /** The same game with the shelved Classic style offered too, as the default. */
 export const classicCtx: GameContext = { ...ctx, engines: [createDuelEngine(), ...ctx.engines] };
 
-/** A clanless sensor, taijutsu specialist (A taijutsu, B ninjutsu, D genjutsu). */
+/**
+ * A clanless sensor from a civilian family, a steady taijutsu student in the middle of the
+ * class. Overrides go through `reviseDraft`, so a changed standing or quick pick refills the file.
+ */
 export function draft(
   overrides: Partial<CreationDraft> = {},
   context: GameContext = ctx,
 ): CreationDraft {
-  return { ...defaultDraft(context), name: 'Kaito', talentId: 'sensor', ...overrides };
+  const named = { name: 'Kaito', talentId: 'sensor', ...overrides };
+  return reviseDraft(defaultDraft(context), named, context);
 }
 
 /** A game straight out of character creation, before teams are read out. */

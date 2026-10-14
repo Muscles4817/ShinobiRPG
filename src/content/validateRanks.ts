@@ -5,8 +5,8 @@ import type { ContentPack } from './types';
 
 /**
  * Rank and grade sanity for the cast: each role holds a fitting rank, and a person's best
- * stat sits in the grades their rank belongs to (genin E–D, chūnin C–B, jōnin B–A, kage A–S;
- * civilians no better than a genin). A sensei is B or A in what they teach.
+ * stat sits in the grades their rank belongs to (genin E–C, a prodigy reaching C at graduation;
+ * chūnin C–B, jōnin B–A, kage A–S; civilians no better than D). A sensei is B or A in what they teach.
  */
 
 interface GradeBand {
@@ -16,7 +16,7 @@ interface GradeBand {
 
 const BEST_STAT_BAND: Readonly<Record<PersonRank, GradeBand>> = {
   civilian: { lowest: 'E', highest: 'D' },
-  genin: { lowest: 'E', highest: 'D' },
+  genin: { lowest: 'E', highest: 'C' },
   chunin: { lowest: 'C', highest: 'B' },
   jonin: { lowest: 'B', highest: 'A' },
   kage: { lowest: 'A', highest: 'S' },

@@ -16,4 +16,18 @@ export const APTITUDE_TEXT: AptitudeText = {
   },
   unknown: 'Not yet tried in earnest',
   blocked: 'You have tried. It will not take shape in you, however hard you push.',
+  limits: {
+    born: {
+      near: 'Close to all you were born with',
+      reached: 'As far as you were born to go',
+    },
+    frame: {
+      near: 'Close to what your frame can carry',
+      reached: 'All your frame will carry',
+    },
+    trained: {
+      near: 'Close to the edge of your talent',
+      reached: 'At the edge of your talent',
+    },
+  },
 };

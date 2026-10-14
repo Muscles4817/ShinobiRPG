@@ -1,6 +1,6 @@
 import { createRng } from '@/core';
-import { CLASS_STANDINGS, fateStanding, quickGrades, STANDING_INFO } from '@/systems/profile';
-import { STAT_IDS } from '@/systems/stats';
+import { CLASS_STANDINGS, fateStanding, STANDING_INFO } from '@/systems/profile';
+import { fightingPower, STAT_IDS, statTier } from '@/systems/stats';
 import { DISCIPLINES } from '@/systems/techniques';
 import { ctx, draft } from '@/test/gameFixtures';
 
@@ -9,10 +9,9 @@ import { createNewGame, draftProblems, type CreationDraft } from './creation';
 import { deserialize, serialize } from './persistence/save';
 import { characterModifiers } from './profile';
 
-const PICK = { specialty: 'taijutsu', strength: 'ninjutsu', weakness: 'genjutsu' } as const;
-
+/** A steady taijutsu student at this standing, the file filled by the quick pick. */
 function standingDraft(standing: CreationDraft['standing']): CreationDraft {
-  return draft({ standing, grades: quickGrades(PICK, standing) });
+  return draft({ standing });
 }
 
 function meanArtAptitude(standing: CreationDraft['standing'], seeds = 200): number {
@@ -27,38 +26,44 @@ function meanArtAptitude(standing: CreationDraft['standing'], seeds = 200): numb
 }
 
 describe('class standing', () => {
-  it('every standing’s quick pick fits its own budget, and not the one below it', () => {
+  it('every standing’s quick pick fits its own file, and not the one below it', () => {
     for (const standing of CLASS_STANDINGS) {
       expect(draftProblems(standingDraft(standing), ctx)).toEqual([]);
     }
-    const middleGradesAtTheBottom = {
+    const geniusFileAtTheBottom = {
       ...standingDraft('dead-last'),
-      grades: quickGrades(PICK, 'middle'),
+      file: standingDraft('genius').file,
     };
-    expect(draftProblems(middleGradesAtTheBottom, ctx)).toContain(
-      'Your standing gives back 3 points: take more Ds or fewer Bs.',
-    );
+    expect(draftProblems(geniusFileAtTheBottom, ctx)).toEqual([
+      'That training costs 20 points; you have 2.',
+      'Nobody in your standing graduates with a stat that far along.',
+      'Those gifts take 2; your file has room for 0.',
+    ]);
   });
 
   it('runs from dead last to genius: grades, starting arts and talent all rise', () => {
     const states = CLASS_STANDINGS.map((s) =>
       createNewGame({ draft: standingDraft(s), seed: 9 }, ctx),
     );
-    const [bottom, below, , , genius] = states;
-    expect(bottom!.character.stats.taijutsu).toBeLessThan(genius!.character.stats.taijutsu);
-    // The dead last start with the academy's techniques alone; below average, with their B's.
-    expect(bottom!.techniques.known).toEqual(ctx.content.academyTechniques);
+    const [bottom, below, middle, , genius] = states;
+    const power = (s: typeof bottom) => fightingPower(s!.character.stats);
+    expect(power(bottom)).toBeLessThan(power(below));
+    expect(power(middle)).toBeLessThan(power(genius));
+    // A genius graduates with their art at chūnin grade, and the report card says A.
+    expect(statTier(genius!.character.stats.taijutsu).grade).toBe('C');
+    expect(genius!.character.grades.taijutsu).toBe('A');
     expect(below!.techniques.known).toContain(ctx.content.disciplineStarters.taijutsu);
     expect(meanArtAptitude('dead-last')).toBeLessThan(meanArtAptitude('middle'));
     expect(meanArtAptitude('middle')).toBeLessThan(meanArtAptitude('genius'));
-    // A genius is gifted in their A-graded arts, whatever the dice.
-    expect(genius!.character.aptitude.taijutsu).toBeGreaterThanOrEqual(1.4);
-    expect(genius!.character.aptitude.ninjutsu).toBeGreaterThanOrEqual(1.4);
+    // The gift on the file is there, whatever the dice.
+    expect(genius!.character.aptitude.taijutsu).toBeGreaterThanOrEqual(1.3);
   });
 
   it('the bottom of the class gets the hard-work route: training alone keeps paying', () => {
     const bottom = createNewGame({ draft: standingDraft('dead-last'), seed: 9 }, ctx);
-    const middle = createNewGame({ draft: standingDraft('middle'), seed: 9 }, ctx);
+    // (Raised in a shinobi family, so no upbringing adds a floor of its own.)
+    const raised = draft({ standing: 'middle', upbringingId: 'shinobi-family' });
+    const middle = createNewGame({ draft: raised, seed: 9 }, ctx);
     const floors = characterModifiers(bottom.character, ctx).soloFloors;
     for (const id of STAT_IDS) expect(floors[id]?.length).toBeGreaterThan(0);
     expect(characterModifiers(middle.character, ctx).soloFloors.taijutsu ?? []).toEqual([]);

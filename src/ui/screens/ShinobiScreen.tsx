@@ -93,6 +93,16 @@ export function ShinobiScreen({
         <p>
           <span className="label">Class standing</span> {view.standing}
         </p>
+        {view.upbringing && (
+          <p>
+            <span className="label">Raised</span> {view.upbringing}
+          </p>
+        )}
+        {view.build && (
+          <p>
+            <span className="label">Build</span> {view.build}
+          </p>
+        )}
         {view.talent && (
           <p>
             <span className="label">Talent</span> {view.talent}

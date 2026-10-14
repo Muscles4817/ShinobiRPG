@@ -28,7 +28,7 @@ async function startGame(user: User, world = /Land of Embers/) {
   await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
   await user.click(screen.getByRole('button', { name: 'Find your file' }));
   await user.type(screen.getByLabelText('Given name'), 'Aoi');
-  for (let page = 0; page < 7; page++) {
+  for (let page = 0; page < 9; page++) {
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
   }
   await user.click(screen.getByRole('button', { name: /forehead protector/i }));
@@ -388,7 +388,12 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     await user.click(screen.getByRole('button', { name: /^Dead last/ }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
-    expect(screen.getByText('Your specialty gets a C')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^Civilian family/ })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Main house/ })).toBeNull();
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getByRole('button', { name: /^Slight/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    expect(screen.getByText(/0 gifts to give/)).toBeInTheDocument();
     for (let page = 0; page < 5; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
@@ -400,7 +405,7 @@ describe('App (smoke test)', () => {
     expect(screen.getByText('Dead last')).toBeInTheDocument();
   });
 
-  it('creates a clan character with point-buy grades', async () => {
+  it('creates a clan character, raised by the clan, with a file written by hand', async () => {
     const user = userEvent.setup();
     const store = memoryStore();
     render(<App store={store} />);
@@ -412,17 +417,28 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /^Uchiha/ }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
-    await user.click(screen.getByRole('button', { name: 'Point buy' }));
+    await user.click(screen.getByRole('button', { name: /^Main house/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getByRole('button', { name: /^Heavy/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getByRole('button', { name: 'By hand' }));
+    await user.click(screen.getByRole('button', { name: 'Less training in Speed' }));
+    await user.click(screen.getByRole('button', { name: 'More training in Kenjutsu' }));
     const kenjutsu = screen.getByRole('group', { name: 'Kenjutsu' });
-    await user.click(within(kenjutsu).getByRole('button', { name: 'A' }));
-    expect(screen.getByText(/Points spent 6 of 3/)).toBeInTheDocument();
+    // A second gift is more than the middle of the class has room for…
+    await user.click(within(kenjutsu).getByRole('button', { name: 'Kenjutsu: no gift' }));
+    expect(screen.getAllByText(/Those gifts take 2/).length).toBeGreaterThan(0);
     expect(screen.getByRole('button', { name: 'Turn the page' })).toBeDisabled();
-    await user.click(within(kenjutsu).getByRole('button', { name: 'C' }));
+    // …so it becomes a flaw instead, which gives points back.
+    await user.click(within(kenjutsu).getByRole('button', { name: 'Kenjutsu: Gifted' }));
+    expect(within(kenjutsu).getByRole('button', { name: 'Kenjutsu: Flawed' })).toBeInTheDocument();
     for (let page = 0; page < 5; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     await user.click(screen.getByRole('button', { name: /forehead protector/i }));
     expect(store.data).toContain('"clanId":"uchiha"');
+    expect(store.data).toContain('"upbringingId":"clan-main"');
+    expect(store.data).toContain('"buildId":"heavy"');
     await formTeam(user);
     await user.click(screen.getByRole('button', { name: 'Shinobi' }));
     expect(screen.getByRole('heading', { name: 'Itachi Uchiha' })).toBeInTheDocument();

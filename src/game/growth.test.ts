@@ -1,5 +1,5 @@
 import { blockerFor, dispatch, shinobiView, trainingView, type GameState } from '@/game';
-import { aptitudeBand, evenAptitude, type StatId } from '@/systems/stats';
+import { aptitudeBand, evenAptitude, nothingKnown, type StatId } from '@/systems/stats';
 import { act, ctx, lastEntry, newGame, withAllStats } from '@/test/gameFixtures';
 
 import { growCharacter, SESSIONS_TO_SENSE } from './growth';
@@ -7,9 +7,10 @@ import { growCharacter, SESSIONS_TO_SENSE } from './growth';
 const text = ctx.content.text.aptitude;
 const drill = { type: 'train', trainingId: 'post-kicks' } as const;
 
+/** A character with this talent who has found none of it out yet (no gifts on the file). */
 function withAptitude(state: GameState, overrides: Partial<Record<StatId, number>>): GameState {
   const aptitude = { ...evenAptitude(1), ...overrides };
-  return { ...state, character: { ...state.character, aptitude } };
+  return { ...state, character: { ...state.character, aptitude, aptitudeKnown: nothingKnown() } };
 }
 
 function rested(state: GameState): GameState {

@@ -19,6 +19,8 @@ export interface ModifierSpec {
   readonly hungerRate?: number;
   /** Hard work: solo training in these stats keeps at least this efficiency up to a grade. */
   readonly soloEfficiencyFloor?: Readonly<Partial<Record<StatId, SoloFloor>>>;
+  /** Moves a stat's natural limit (a frame built for it, later a breakthrough); added up. */
+  readonly limitBonus?: Readonly<Partial<Record<StatId, number>>>;
   /** Energy that hard work (drills, study, sparring, lessons) costs. */
   readonly energyCost?: number;
   /** Health a night's sleep heals, and chakra it refills while you are exhausted. */
@@ -38,6 +40,8 @@ export interface Modifiers {
   readonly hungerRate: number;
   /** Every hard-work floor on each stat's solo efficiency (the best one that applies wins). */
   readonly soloFloors: SoloFloors;
+  /** How far each stat's natural limit is moved, summed over every source. */
+  readonly limitBonus: Readonly<Record<StatId, number>>;
   readonly energyCost: number;
   readonly sleepHealing: number;
   readonly injuryNights: number;
@@ -55,6 +59,7 @@ export const NEUTRAL: Modifiers = {
   studyElement: filled(ELEMENTS),
   hungerRate: 1,
   soloFloors: {},
+  limitBonus: Object.fromEntries(STAT_IDS.map((id) => [id, 0])) as Record<StatId, number>,
   energyCost: 1,
   sleepHealing: 1,
   injuryNights: 0,
@@ -80,6 +85,15 @@ function withFloors(floors: SoloFloors, added: ModifierSpec['soloEfficiencyFloor
   return next;
 }
 
+function addedLimits(
+  base: Readonly<Record<StatId, number>>,
+  by: ModifierSpec['limitBonus'],
+): Record<StatId, number> {
+  const next: Record<StatId, number> = { ...base };
+  for (const id of STAT_IDS) next[id] += by?.[id] ?? 0;
+  return next;
+}
+
 export function combine(specs: readonly ModifierSpec[]): Modifiers {
   return specs.reduce<Modifiers>(
     (acc, spec) => ({
@@ -88,6 +102,7 @@ export function combine(specs: readonly ModifierSpec[]): Modifiers {
       studyElement: scaleAll(acc.studyElement, spec.studyElement),
       hungerRate: acc.hungerRate * (spec.hungerRate ?? 1),
       soloFloors: withFloors(acc.soloFloors, spec.soloEfficiencyFloor),
+      limitBonus: addedLimits(acc.limitBonus, spec.limitBonus),
       energyCost: acc.energyCost * (spec.energyCost ?? 1),
       sleepHealing: acc.sleepHealing * (spec.sleepHealing ?? 1),
       injuryNights: acc.injuryNights + (spec.injuryNights ?? 0),
@@ -200,6 +215,14 @@ export function describeSpec(spec: ModifierSpec): EffectLine[] {
     lines.push(line(`${capital(e)} techniques learned`, m, 'faster', 'slower'));
   }
   lines.push(...floorLines(spec.soloEfficiencyFloor ?? {}));
+  for (const [stat, by] of Object.entries(spec.limitBonus ?? {}) as [StatId, number][]) {
+    const label = STAT_INFO[stat].label;
+    lines.push(
+      by > 0
+        ? { label: `${label} can go further`, tone: 'gain' }
+        : { label: `${label} tops out sooner`, tone: 'cost' },
+    );
+  }
   if (spec.hungerRate !== undefined) {
     lines.push(
       spec.hungerRate > 1

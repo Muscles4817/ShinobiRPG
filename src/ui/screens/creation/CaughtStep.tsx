@@ -18,10 +18,10 @@ export function CaughtStep({ view, draft }: StepProps) {
           <dd>{clan?.name}</dd>
           <dt>Standing</dt>
           <dd>{name(draft.standing, view.standings)}</dd>
-          <dt>Grades</dt>
-          <dd className="num">
-            {view.disciplines.map((d) => `${d.name.slice(0, 3)} ${draft.grades[d.id]}`).join(', ')}
-          </dd>
+          <dt>Raised</dt>
+          <dd>{name(draft.upbringingId, view.upbringings)}</dd>
+          <dt>Build</dt>
+          <dd>{name(draft.buildId, view.builds)}</dd>
           <dt>Nature</dt>
           <dd>{name(draft.nature, view.natures)}</dd>
           <dt>Traits</dt>
