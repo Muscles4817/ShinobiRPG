@@ -430,5 +430,16 @@ plums) and 13 dishes (`packs/original/recipes.ts`): four teahouse snacks and nin
 (the canal teahouse) and Mama Sayo (the izakaya) teach theirs, Tsune adds Ember Noodles, a
 village cookbook covers four, and two jobs hand one over. 35 dishes in the original pack in all.
 
+**Phase 7, second batch: travelling merchants (phase 8's stand-in).** Market stalls may travel
+(`Stall.visits`: every few days, on a day of the cycle; `game/merchants.ts`), and the market
+says who's coming. Three come to Market Street from the places you can't reach yet: the
+Shiomachi fish cart (weekly), the dune caravan and a pilgrim herbalist from Mount Reikon, each
+with its home's ingredients (seven in all, `packs/original/regions/`) and a cookbook of its
+dishes (ten, among them the rank B Chakra Fruit Preserve). The original pack now has 47 dishes.
+
+**Balance bench.** `src/test/pacing/food.test.ts`: every dish in every pack, cooked fine, stays
+inside fixed ceilings (growth and study at most 1.4×, checks 1.25×, hard work at least 0.75 of
+its energy, and so on), so eating well never matters more than training.
+
 Not yet built: gathering (phase 4), provisions in fights (phase 5),
 the library (phase 7) and other regions (phase 8).

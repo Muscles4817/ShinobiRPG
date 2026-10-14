@@ -76,7 +76,16 @@ export function validateWorld(pack: ContentPack): string[] {
       if (!reached[kind].has(id)) problems.push(`${kind} "${id}" is not offered at any place`);
     });
   }
-  return problems;
+  return [...problems, ...visitProblems(pack)];
+}
+
+/** A travelling stall's visits must come round: every day or more, on a day of the cycle. */
+function visitProblems(pack: ContentPack): string[] {
+  return pack.locations
+    .flatMap((l) => l.places)
+    .flatMap((p) => (p.kind === 'market' ? p.stalls : []))
+    .filter(({ visits: v }) => v && !(v.every >= 1 && v.on >= 0 && v.on < v.every))
+    .map((s) => `stall "${s.name}" visits on a day its cycle never reaches`);
 }
 
 type RefKind =

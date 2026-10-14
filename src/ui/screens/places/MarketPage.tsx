@@ -67,6 +67,11 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
             </span>
           </span>
         </section>
+        {view.coming.map((line) => (
+          <p key={line} className="muted small">
+            {line}
+          </p>
+        ))}
         {view.festival && (
           <p className="festival-note">{view.festival}: festival prices on every stall.</p>
         )}
