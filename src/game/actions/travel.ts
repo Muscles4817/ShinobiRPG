@@ -1,9 +1,24 @@
-import { SLOTS_PER_DAY } from '@/systems/time';
+import type { Rng } from '@/core';
 import { spend } from '@/systems/wallet';
 
-import { journeyTo } from '../journeys';
-import { busyReason, chip, firstBlocker, log, spendTime } from '../ops';
+import type { GameContext } from '../context';
+import { journeyTo, setOut } from '../journeys';
+import { busyReason, firstBlocker } from '../ops';
+import type { GameState } from '../state';
+import { missionContinue } from './mission';
 import type { ActionHandler, ActionOf } from './types';
+
+/**
+ * Hurrying: walk leg after leg until you arrive or something on the road needs a choice.
+ * Each step is the road's own Continue, so a quick trip is the same trip, unstopped.
+ */
+export function walkOn(state: GameState, ctx: GameContext, rng: Rng): GameState {
+  let now = state;
+  while (now.mission?.journey?.quick === true && !now.mission.roadEvent) {
+    now = missionContinue.perform(now, { type: 'missionContinue' }, ctx, rng);
+  }
+  return now;
+}
 
 export const travel: ActionHandler<ActionOf<'travel'>> = {
   check(state, action, ctx) {
@@ -20,24 +35,18 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
         `The journey costs ${journey.cost} ryo.`,
     );
   },
-  perform(state, action, ctx) {
-    const destination = ctx.content.locations.require(action.locationId);
-    const journey = journeyTo(state, ctx, destination.id);
+  perform(state, action, ctx, rng) {
+    const journey = journeyTo(state, ctx, action.locationId);
     if (!journey) return state;
-    const { days, cost } = journey;
-    const paid = spend(state.wallet, cost);
+    const paid = spend(state.wallet, journey.cost);
     if (!paid.ok) return state;
-    const arrived = spendTime(
-      { ...state, wallet: paid.value, locationId: destination.id },
-      days * SLOTS_PER_DAY,
-      ctx,
-    );
-    return log(arrived, {
-      heading: `Travel to ${destination.name}`,
-      text: `After ${days === 1 ? 'a day' : `${days} days`} on the road, you arrive in ${destination.name}.`,
-      tone: 'info',
-      chips: [chip(`${days} days`, 'info'), ...(cost > 0 ? [chip(`−${cost} ryo`, 'cost')] : [])],
-    });
+    const plan = {
+      from: state.locationId,
+      to: action.locationId,
+      legs: journey.legs,
+      quick: action.quick === true,
+    };
+    return walkOn(setOut({ ...state, wallet: paid.value }, ctx, plan, journey.cost), ctx, rng);
   },
 };
 

@@ -20,7 +20,8 @@ export type GameAction =
   | { readonly type: 'sleep' }
   | { readonly type: 'payRent' }
   | { readonly type: 'treat' }
-  | { readonly type: 'travel'; readonly locationId: string }
+  /** `quick`: walk on without stopping to camp; only a road event halts you. */
+  | { readonly type: 'travel'; readonly locationId: string; readonly quick?: boolean }
   | { readonly type: 'dismissReport' }
   | { readonly type: 'leaveFight' }
   | { readonly type: 'study'; readonly techniqueId: string }

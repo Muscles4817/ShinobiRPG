@@ -9,21 +9,39 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
     id: 'coast-road',
     from: 'torogakure',
     to: 'port-shiomachi',
-    legs: [{ region: 'coast-road', days: 1 }],
+    legs: [
+      {
+        region: 'coast-road',
+        days: 1,
+        text: 'The coast road winds down through the terraces, the sea always just past the next bend.',
+      },
+    ],
     danger: 'petty',
   },
   {
     id: 'ford-track',
     from: 'torogakure',
     to: 'kiri-ford',
-    legs: [{ region: 'forest-track', days: 1 }],
+    legs: [
+      {
+        region: 'forest-track',
+        days: 1,
+        text: 'The track runs under old cedars, and the lanterns of home are soon out of sight.',
+      },
+    ],
     danger: 'armed',
   },
   {
     id: 'dune-crossing',
     from: 'kiri-ford',
     to: 'sakyugakure',
-    legs: [{ region: 'dune-road', days: 2 }],
+    legs: [
+      {
+        region: 'dune-road',
+        days: 2,
+        text: 'Caravan posts mark the way across the dunes, a day apart if the wind is kind.',
+      },
+    ],
     danger: 'armed',
     cost: 120,
   },
@@ -32,8 +50,16 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
     from: 'torogakure',
     to: 'mount-reikon',
     legs: [
-      { region: 'hill-road', days: 1 },
-      { region: 'mountain-pass', days: 3 },
+      {
+        region: 'hill-road',
+        days: 1,
+        text: 'The hill road climbs past shrines whose lanterns nobody tends any more.',
+      },
+      {
+        region: 'mountain-pass',
+        days: 3,
+        text: 'The pass climbs into cloud. Paper charms hang from the rocks, and something rustles behind them.',
+      },
     ],
     danger: 'deadly',
   },

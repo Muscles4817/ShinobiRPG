@@ -41,8 +41,8 @@ export interface RouteMark {
 
 export interface MissionScene {
   readonly title: string;
-  readonly rank: string;
-  readonly client: string;
+  /** What kind of trip this is, above the title: a job's rank and client, or a journey. */
+  readonly kicker: string;
   readonly lines: readonly SceneLine[];
   readonly threads: readonly ThreadView[];
   readonly route: readonly RouteMark[];
@@ -103,8 +103,9 @@ export function missionScene(state: GameState, ctx: GameContext): MissionScene |
   const stage = activeStage(state, ctx);
   const base = {
     title: def.title,
-    rank: def.rank,
-    client: def.client,
+    kicker: state.mission.journey
+      ? 'A journey of your own'
+      : `${def.rank}-rank mission for ${def.client}`,
     lines: state.mission.notes.map(noteLine),
     threads: threadViews(state, ctx),
     route: routeOf(def, state.mission),

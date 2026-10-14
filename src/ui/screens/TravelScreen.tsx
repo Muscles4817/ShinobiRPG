@@ -4,7 +4,11 @@ import { Backdrop } from '../art/Backdrop';
 import { Banner } from '../components/Banner';
 import type { ScreenProps } from './types';
 
-/** Destination cards. A map can replace this list once the world is big enough. */
+/**
+ * Destination cards: the way there, what to know before you go, and two ways to set out
+ * (camping between legs, or hurrying on until the road stops you). The map replaces the list
+ * later (world plan, step 7).
+ */
 export function TravelScreen({ ctx, state, perform }: ScreenProps) {
   const header = headerView(state, ctx);
   const destinations = travelView(state, ctx);
@@ -36,21 +40,41 @@ export function TravelScreen({ ctx, state, perform }: ScreenProps) {
                   {d.lockedReason && <span className="dest-lock">{d.lockedReason}</span>}
                 </span>
               )}
+              {d.warnings.length > 0 && (
+                <ul className="dest-notes">
+                  {d.warnings.map((w) => (
+                    <li key={w}>{w}</li>
+                  ))}
+                </ul>
+              )}
+              {!d.here && !d.lockedReason && (
+                <div className="dest-go">
+                  <button
+                    type="button"
+                    className="btn small"
+                    disabled={d.blocker !== null}
+                    title={d.blocker ?? undefined}
+                    onClick={() => {
+                      perform(d.action);
+                    }}
+                  >
+                    Set out
+                  </button>
+                  <button
+                    type="button"
+                    className="btn small ghost"
+                    disabled={d.quick.blocker !== null}
+                    title={d.quick.blocker ?? undefined}
+                    onClick={() => {
+                      perform(d.quick.action);
+                    }}
+                  >
+                    Hurry
+                  </button>
+                </div>
+              )}
             </div>
             {d.here && <span className="here">You are here</span>}
-            {!d.here && !d.lockedReason && (
-              <button
-                type="button"
-                className="btn small dest-go"
-                disabled={d.blocker !== null}
-                title={d.blocker ?? undefined}
-                onClick={() => {
-                  perform(d.action);
-                }}
-              >
-                Travel
-              </button>
-            )}
           </article>
         ))}
       </main>

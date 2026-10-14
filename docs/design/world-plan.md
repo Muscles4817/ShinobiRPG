@@ -314,3 +314,11 @@ migration and a previous-version save test wherever the save shape changes.
    `lockedReason` alone, `validateRoutes`, Kiri Ford as a locked waypoint, and the Travel tab
    showing days, ryo, the worst of the road and the places passed. Travel still jumps; step 2
    makes it a journey.
+2. **Journeys** (this step). A trip is a mission run carrying a `journey` plan (from, to, the
+   legs, whether to hurry); `game/journeys.ts` builds its stages (a leg per stretch, a camp
+   between them) and the run plays as on a job, arriving when the last leg is walked. Each leg
+   has a line of road text in the route. **Hurry** (`travel` with `quick`) walks on without
+   camping until a road event needs a choice, then carries on. The Travel tab warns of short
+   rations, nowhere to sleep and an exam you'd miss. Not yet: **turning back** at a camp (left
+   for step 6, with companions), and the sensei's view on a trip (step 5, leave). No save
+   migration: a run without `journey` is a job as before.

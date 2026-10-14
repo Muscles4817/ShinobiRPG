@@ -4,7 +4,7 @@ const road = (id: string, from: string, to: string, extra: Partial<RouteDef> = {
   id,
   from,
   to,
-  legs: [{ region: 'hill-road', days: 1 }],
+  legs: [{ region: 'hill-road', days: 1, text: 'hill-road' }],
   danger: 'petty',
   ...extra,
 });
@@ -12,16 +12,20 @@ const road = (id: string, from: string, to: string, extra: Partial<RouteDef> = {
 // home ── port (1 day), home ── ford (1) ── dunes (2, armed, 120 ryo), port ── ford (3)
 const routes: RouteDef[] = [
   road('coast', 'home', 'port'),
-  road('forest', 'home', 'ford', { legs: [{ region: 'forest-track', days: 1 }] }),
+  road('forest', 'home', 'ford', {
+    legs: [{ region: 'forest-track', days: 1, text: 'forest-track' }],
+  }),
   road('sands', 'ford', 'dunes', {
     legs: [
-      { region: 'river-road', days: 1 },
-      { region: 'dune-road', days: 1 },
+      { region: 'river-road', days: 1, text: 'river-road' },
+      { region: 'dune-road', days: 1, text: 'dune-road' },
     ],
     danger: 'armed',
     cost: 120,
   }),
-  road('long-way', 'port', 'ford', { legs: [{ region: 'coast-road', days: 3 }] }),
+  road('long-way', 'port', 'ford', {
+    legs: [{ region: 'coast-road', days: 3, text: 'coast-road' }],
+  }),
 ];
 
 describe('travel', () => {
@@ -29,9 +33,9 @@ describe('travel', () => {
     expect(findJourney(routes, 'home', 'dunes')).toEqual({
       via: ['ford'],
       legs: [
-        { region: 'forest-track', days: 1 },
-        { region: 'river-road', days: 1 },
-        { region: 'dune-road', days: 1 },
+        { region: 'forest-track', days: 1, text: 'forest-track' },
+        { region: 'river-road', days: 1, text: 'river-road' },
+        { region: 'dune-road', days: 1, text: 'dune-road' },
       ],
       days: 3,
       cost: 120,
@@ -56,7 +60,10 @@ describe('travel', () => {
   it('breaks a tie in days on ryo', () => {
     const tolls = [
       road('dear', 'a', 'b', { cost: 50 }),
-      road('cheap', 'a', 'b', { cost: 10, legs: [{ region: 'coast-road', days: 1 }] }),
+      road('cheap', 'a', 'b', {
+        cost: 10,
+        legs: [{ region: 'coast-road', days: 1, text: 'coast-road' }],
+      }),
     ];
     expect(findJourney(tolls, 'a', 'b')?.cost).toBe(10);
   });

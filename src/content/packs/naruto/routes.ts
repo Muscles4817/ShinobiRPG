@@ -10,8 +10,16 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     from: 'konohagakure',
     to: 'land-of-waves',
     legs: [
-      { region: 'forest-track', days: 1 },
-      { region: 'coast-road', days: 1 },
+      {
+        region: 'forest-track',
+        days: 1,
+        text: 'The road runs under the forest canopy, past the outposts at the edge of the Leaf’s land.',
+      },
+      {
+        region: 'coast-road',
+        days: 1,
+        text: 'The road leaves the trees for the coast, where fishing boats lie drawn up on the sand.',
+      },
     ],
     danger: 'armed',
     cost: 40,
@@ -20,7 +28,13 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     id: 'mist-crossing',
     from: 'land-of-waves',
     to: 'kirigakure',
-    legs: [{ region: 'coast-road', days: 2 }],
+    legs: [
+      {
+        region: 'coast-road',
+        days: 2,
+        text: 'A boatman takes you over the misty water, saying as little as he can.',
+      },
+    ],
     danger: 'deadly',
     cost: 110,
   },
@@ -29,8 +43,16 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     from: 'konohagakure',
     to: 'sunagakure',
     legs: [
-      { region: 'hill-road', days: 1 },
-      { region: 'dune-road', days: 2 },
+      {
+        region: 'hill-road',
+        days: 1,
+        text: 'The road crosses dry hills between the forest and the desert.',
+      },
+      {
+        region: 'dune-road',
+        days: 2,
+        text: 'Sand, and more sand. You walk at dawn and dusk, and shelter from the noon sun.',
+      },
     ],
     danger: 'armed',
     cost: 120,
@@ -40,8 +62,16 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     from: 'konohagakure',
     to: 'mount-myoboku',
     legs: [
-      { region: 'forest-track', days: 2 },
-      { region: 'mountain-pass', days: 3 },
+      {
+        region: 'forest-track',
+        days: 2,
+        text: 'An old path leads off the map, deeper into the forest than anyone sensible goes.',
+      },
+      {
+        region: 'mountain-pass',
+        days: 3,
+        text: 'The path climbs among wet rocks and strange, huge plants. Toads watch you from the ledges.',
+      },
     ],
     danger: 'deadly',
   },

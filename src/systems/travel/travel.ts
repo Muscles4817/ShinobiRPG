@@ -10,6 +10,8 @@ export interface RouteLeg {
   /** Road-event region, e.g. `coast-road`. */
   readonly region: string;
   readonly days: number;
+  /** The stretch in a line, true whichever way you walk it. */
+  readonly text: string;
 }
 
 export interface RouteDef {

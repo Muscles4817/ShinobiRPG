@@ -37,6 +37,7 @@ function routeProblems(
     ...route.legs
       .filter((leg) => !Number.isInteger(leg.days) || leg.days < 1)
       .map((leg) => `${at} has a leg through "${leg.region}" of under a day`),
+    ...(route.legs.some((leg) => leg.text.trim() === '') ? [`${at} has a leg with no text`] : []),
     ...route.legs
       .filter((leg) => !regions.has(leg.region))
       .map((leg) => `${at} crosses region "${leg.region}", which has no road events`),

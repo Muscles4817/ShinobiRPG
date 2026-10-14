@@ -26,7 +26,7 @@ describe('route validation', () => {
           id: 'odd',
           from: 'torogakure',
           to: 'atlantis',
-          legs: [{ region: 'sea-floor', days: 0 }],
+          legs: [{ region: 'sea-floor', days: 0, text: ' ' }],
           danger: 'petty' as const,
         },
       ],
@@ -36,6 +36,7 @@ describe('route validation', () => {
       'route "loop" has no legs',
       'route "odd" ends at unknown location "atlantis"',
       'route "odd" has a leg through "sea-floor" of under a day',
+      'route "odd" has a leg with no text',
       'route "odd" crosses region "sea-floor", which has no road events',
     ]);
   });
