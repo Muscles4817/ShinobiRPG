@@ -140,7 +140,7 @@ function ByHand({ file, ctx, draft, setDraft }: PartProps) {
 
 function QuickPicks({ file, view, ctx, draft, setDraft }: PartProps) {
   const pick = draft.quickPick ?? { archetype: 'steady', specialty: DEFAULT_SPECIALTY };
-  const offered = new Set(file.archetypes.filter((a) => a.offered).map((a) => a.id));
+  const offered = new Map(file.archetypes.filter((a) => a.offered).map((a) => [a.id, a.effects]));
   return (
     <>
       <div className="swatch-row" role="group" aria-label="Your best art">
@@ -169,6 +169,7 @@ function QuickPicks({ file, view, ctx, draft, setDraft }: PartProps) {
               key={a.id}
               name={a.name}
               description={a.description}
+              effects={offered.get(a.id) ?? []}
               selected={draft.quickPick?.archetype === a.id}
               onSelect={() => {
                 setDraft(chooseQuickPick(draft, { ...pick, archetype: a.id }, ctx));

@@ -61,6 +61,18 @@ describe('editing the academy file', () => {
     expect(markGift(twoGifts, 'speed', null, ctx).file.gifts.speed).toBeUndefined();
   });
 
+  it('says on each quick pick what it would give this student', () => {
+    const genius = draft({ standing: 'genius' });
+    const prodigy = fileView(genius, ctx).archetypes.find((a) => a.id === 'prodigy')!;
+    const labels = prodigy.effects.map((e) => e.label);
+    expect(labels).toContain('Taijutsu C');
+    expect(labels).toContain('A prodigy in taijutsu');
+    const athlete = fileView(genius, ctx).archetypes.find((a) => a.id === 'athlete')!;
+    expect(athlete.effects).toContainEqual({ label: 'Weak in intellect', tone: 'cost' });
+    const heir = fileView(genius, ctx).archetypes.find((a) => a.id === 'clan-heir')!;
+    expect(heir.effects).toEqual([]);
+  });
+
   it('offers each kind of student only where it fits', () => {
     const offered = (d: ReturnType<typeof draft>) =>
       fileView(d, ctx)
