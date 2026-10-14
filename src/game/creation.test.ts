@@ -1,5 +1,5 @@
 import { createRng } from '@/core';
-import { gradesFromQuickPick } from '@/systems/profile';
+import { STANDING_INFO, withGifts } from '@/systems/profile';
 import { act, ctx, draft, formTeam, freshGame, newGame } from '@/test/gameFixtures';
 
 import { rollCharacterAptitude } from './aptitude';
@@ -36,23 +36,49 @@ describe('character creation', () => {
     ]);
   });
 
-  it('refuses point buys over budget', () => {
-    const grades = {
-      ...gradesFromQuickPick({ specialty: 'taijutsu', strength: 'ninjutsu', weakness: 'genjutsu' }),
-      kenjutsu: 'A',
-    } as const;
-    expect(draftProblems(draft({ grades }), ctx)).toEqual(['That costs 6 points; you have 3.']);
+  it('refuses a file that spends more training than the standing gives', () => {
+    const file = {
+      development: { taijutsu: 3, speed: 3, stamina: 3 },
+      gifts: {},
+      bloom: 'on-time' as const,
+    };
+    expect(draftProblems(draft({ file }), ctx)).toEqual([
+      'That training costs 12 points; you have 10.',
+    ]);
+  });
+
+  it('raises a clan child in the clan, and holds the training to its arts', () => {
+    const heir = draft({ clanId: 'kurogane' });
+    expect(heir.upbringingId).toBe('clan-branch');
+    expect(draftProblems(heir, ctx)).toEqual([]);
+    const file = { development: { speed: 3 }, gifts: {}, bloom: 'on-time' as const };
+    expect(draftProblems(draft({ clanId: 'kurogane', file }), ctx)).toEqual([
+      'Your upbringing put at least 2 points of training into its arts.',
+    ]);
+    // Revising a draft keeps them in step; a draft written another way is still checked.
+    expect(draftProblems({ ...draft(), upbringingId: 'clan-main' }, ctx)).toContain(
+      'Only clan children are raised by a clan.',
+    );
   });
 
   it('starts with academy techniques plus a starter for each A grade', () => {
     expect(freshGame().techniques.known).toEqual(['palm-strike', 'shadow-feint', 'gale-heel']);
   });
 
-  it('grades shape starting stats', () => {
+  it('the file, the frame and the special note shape starting stats', () => {
+    // A steady taijutsu student: three steps in taijutsu and speed, two in stamina; a sensor.
     const s = newGame().character.stats;
-    expect(s.taijutsu).toBe(8);
-    expect(s.ninjutsu).toBe(6.5);
-    expect(s.genjutsu).toBe(4);
+    expect([s.taijutsu, s.speed, s.stamina, s.perception, s.strength]).toEqual([11, 11, 9, 8, 4]);
+    expect(newGame().character.grades.taijutsu).toBe('B');
+    const heavy = createNewGame({ draft: draft({ buildId: 'heavy' }), seed: 1 }, ctx);
+    expect(heavy.character.stats.strength).toBe(6);
+  });
+
+  it('a gift on the file is known from the first day', () => {
+    const { character } = newGame();
+    expect(character.aptitude.taijutsu).toBeGreaterThanOrEqual(1.3);
+    expect(character.aptitudeKnown.taijutsu).toBe('sense');
+    expect(character.aptitudeKnown.ninjutsu).toBe('unknown');
   });
 
   it('clans give their name, stats, techniques and a rent-free home', () => {
@@ -84,7 +110,9 @@ describe('character creation', () => {
     const dice = createRng(roll.rngState);
     const clan = ctx.content.clans.require(state.character.clanId);
     const talent = ctx.content.talents.require(state.character.talentId ?? '');
-    expect(state.character.aptitude).toEqual(rollCharacterAptitude(dice, clan, talent));
+    const shape = { band: STANDING_INFO.middle.talent, specialties: ['taijutsu' as const] };
+    const rolled = rollCharacterAptitude(dice, clan, talent, shape);
+    expect(state.character.aptitude).toEqual(withGifts(rolled, { taijutsu: 'gifted' }));
     expect(state.rngState).toBe(dice.state());
   });
 

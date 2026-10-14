@@ -1,6 +1,8 @@
 import type { ContentPack } from '../../types';
+import { BUILDS } from '../../shared/builds';
 import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
+import { UPBRINGINGS } from '../../shared/upbringings';
 import { CLAN_TECHNIQUES } from './clanTechniques';
 import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
@@ -73,6 +75,8 @@ export const ORIGINAL_PACK: ContentPack = {
   training: TRAINING,
   foods: [...FOODS, ...SEASONAL_FOODS],
   clans: CLANS,
+  builds: BUILDS,
+  upbringings: UPBRINGINGS,
   talents: TALENTS,
   traits: TRAITS,
   nindos: NINDOS,

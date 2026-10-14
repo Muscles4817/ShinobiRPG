@@ -15,6 +15,7 @@ import type { Season } from '@/systems/time';
 import type { BackdropId, IconId } from './art';
 import type { CookbookDef, GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
 import type { InjuryDef } from './injuries';
+import type { BuildDef, UpbringingDef } from './upbringing';
 import type {
   ConversationDef,
   ConversationTopic,
@@ -285,6 +286,8 @@ export interface ContentPack {
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];
   readonly clans: readonly ClanDef[];
+  readonly builds: readonly BuildDef[];
+  readonly upbringings: readonly UpbringingDef[];
   readonly talents: readonly TalentDef[];
   readonly traits: readonly TraitDef[];
   readonly nindos: readonly NindoDef[];

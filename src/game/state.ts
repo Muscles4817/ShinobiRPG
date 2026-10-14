@@ -107,9 +107,14 @@ export interface Character {
   readonly pronouns: Pronouns;
   readonly appearance: Appearance;
   readonly clanId: string;
+  /** The report card: a reading of the arts they graduated with. */
   readonly grades: Grades;
-  /** Where they stood in their academy class: their grade budget and talent band. */
+  /** Where they stood in their academy class: their early training budget and talent band. */
   readonly classStanding: ClassStanding;
+  /** How they were raised (`UpbringingDef`). */
+  readonly upbringingId: string;
+  /** Their frame (`BuildDef`): how far strength and speed can go, and what bulk costs. */
+  readonly buildId: string;
   readonly nature: Element;
   readonly traitIds: readonly string[];
   /** Null for characters from saves made before talents existed. */

@@ -1,7 +1,14 @@
 import { buffAt } from '@/systems/cooking';
 import { combine, type ModifierSpec, type Modifiers } from '@/systems/modifiers';
-import { STAT_IDS, type Growth, type StatScale } from '@/systems/stats';
-import { gradeModifiers, STANDING_INFO } from '@/systems/profile';
+import {
+  effectiveLimits,
+  limitsFor,
+  STAT_IDS,
+  type Growth,
+  type Limits,
+  type StatScale,
+} from '@/systems/stats';
+import { STANDING_INFO } from '@/systems/profile';
 import { ELEMENTS, type Element } from '@/systems/techniques';
 
 import { withoutGrowth } from './aptitude';
@@ -12,9 +19,11 @@ import type { Character } from './state';
 
 /**
  * Turns a character's identity into growth modifiers. Every source (clan, talent, traits,
- * academy grades, chakra nature, today's meal, hunger, injuries) contributes a ModifierSpec;
- * the result is their product. Clan and talent growth is not among them: it shaped the
- * character's aptitude when they were made, and aptitude multiplies every growth source.
+ * frame, upbringing, standing, chakra nature, today's meal, hunger, injuries) contributes a
+ * ModifierSpec; the result is their product. Clan and talent growth is not among them: it
+ * shaped the character's aptitude when they were made, and aptitude multiplies every growth
+ * source. Aptitude also sets each stat's natural limit, which the frame (and later,
+ * breakthroughs) move.
  */
 
 /** Techniques of your own nature are learned this much faster; others a little slower. */
@@ -43,10 +52,11 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
   const talent = character.talentId ? content.talents.get(character.talentId) : undefined;
   const traits = character.traitIds.flatMap((id) => content.traits.get(id) ?? []);
   return combine([
+    content.builds.get(character.buildId)?.modifiers ?? {},
+    content.upbringings.get(character.upbringingId)?.modifiers ?? {},
     withoutGrowth(clan?.modifiers ?? {}),
     withoutGrowth(talent?.modifiers ?? {}),
     ...traits.map((t) => t.modifiers),
-    gradeModifiers(character.grades),
     STANDING_INFO[character.classStanding].modifiers,
     natureModifiers(character.nature, clan?.nature),
     mealBuff(character, ctx),
@@ -68,10 +78,22 @@ export function trainingScale(character: Character, ctx: GameContext, teacher = 
   );
 }
 
+/** How far each stat can go today: talent, frame and breakthroughs, less any bulk on speed. */
+export function naturalLimits(character: Character, ctx: GameContext): Limits {
+  const mods = characterModifiers(character, ctx);
+  const build = ctx.content.builds.get(character.buildId);
+  const limits = limitsFor(character.aptitude, mods.limitBonus);
+  return effectiveLimits(limits, character.stats, build?.comfortStrength);
+}
+
 /** Everything that shapes this character's growth right now; `teacher` multiplies it. */
 export function growthFor(character: Character, ctx: GameContext, teacher = 1): Growth {
+  const mods = characterModifiers(character, ctx);
+  const build = ctx.content.builds.get(character.buildId);
   return {
     scale: trainingScale(character, ctx, teacher),
-    floors: characterModifiers(character, ctx).soloFloors,
+    floors: mods.soloFloors,
+    limits: limitsFor(character.aptitude, mods.limitBonus),
+    ...(build ? { comfortStrength: build.comfortStrength } : {}),
   };
 }

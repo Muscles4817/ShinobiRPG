@@ -24,7 +24,18 @@ export {
   type TraitOption,
   type StandingOption,
   type ProfileOption,
+  type UpbringingOption,
+  type ArchetypeOption,
 } from './views/creation';
+export { fileView, type BloomOption, type FileStatLine, type FileView } from './views/academyFile';
+export {
+  chooseQuickPick,
+  lowerStat,
+  markGift,
+  raiseStat,
+  reviseDraft,
+  setBloom,
+} from './creationDraft';
 export type { GameAction, GameActionType } from './actions/types';
 export { dispatch, blockerFor } from './dispatch';
 export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';
@@ -173,12 +184,12 @@ export type {
 } from '@/systems/profile';
 export {
   fateStanding,
-  pickFromGrades,
-  pointsSpent,
-  quickGrades,
-  roleGrade,
-  topDisciplines,
+  type ArchetypeId,
+  type Bloom,
   type ClassStanding,
+  type Gift,
+  type QuickPick,
 } from '@/systems/profile';
+export type { StatGroup, StatId, StatKind } from '@/systems/stats';
 export type { Element } from '@/systems/techniques';
 export type { EffectLine } from '@/systems/modifiers';

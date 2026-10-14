@@ -1,4 +1,4 @@
-import { fateStanding, pickFromGrades, quickGrades, type ClassStanding } from '@/game';
+import { fateStanding, type ClassStanding } from '@/game';
 
 import { OptionCard } from './OptionCard';
 import type { StepProps } from './types';
@@ -10,13 +10,12 @@ interface StandingStepProps extends StepProps {
 
 /**
  * Where you stood in your class, from dead last to the genius of the year, or left to fate (the
- * file you broke in to read already says). It sets your grades and how much talent you have to
- * find, so it is how hard the game will be.
+ * file you broke in to read already says). It sets your early training, your known gifts and how
+ * much talent you have to find, so it is how hard the game will be.
  */
 export function StandingStep({ view, draft, update, seed }: StandingStepProps) {
-  const pick = pickFromGrades(draft.grades, draft.standing);
   const choose = (standing: ClassStanding, fated: boolean) => {
-    update({ standing, fated, grades: quickGrades(pick, standing) });
+    update({ standing, fated });
   };
   const fated = view.standings.find((s) => s.id === fateStanding(seed));
   return (

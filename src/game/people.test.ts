@@ -59,7 +59,7 @@ describe('team assignment', () => {
     const scene = teamScene(assigned(), ctx)!;
     const [best, other] = scene.senseis;
     expect(best?.specialty?.id).toBe('taijutsu');
-    expect(best?.reasons[0]).toBe('Your A in Taijutsu');
+    expect(best?.reasons[0]).toBe('Your B in Taijutsu');
     expect(other?.specialty?.id).not.toBe('taijutsu');
   });
 

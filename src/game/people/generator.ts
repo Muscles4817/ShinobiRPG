@@ -1,4 +1,4 @@
-import { createRng, hashString, round1, type Rng } from '@/core';
+import { createRng, hashString, type Rng } from '@/core';
 import type { PersonDef, PlaceKind } from '@/content';
 import {
   EYE_COLOURS,
@@ -9,18 +9,17 @@ import {
   SKIN_TONES,
   type Appearance,
 } from '@/systems/profile';
-import { createStats, STAT_IDS, type StatId, type Stats } from '@/systems/stats';
-import { DISCIPLINES, type Discipline } from '@/systems/techniques';
+import { DISCIPLINES } from '@/systems/techniques';
 import { TIME_SLOTS, type TimeSlot } from '@/systems/time';
 
-import { rollCharacterAptitude } from '../aptitude';
 import type { GameContext } from '../context';
+import { graduate } from './graduates';
 
 /**
  * The genin generator: classmates built from the pack's name pools, its traits and the
  * appearance palettes. Deterministic for a given Rng, so the same seed makes the same class.
- * Their stats and talent come from the save's seed and their id (not the game's dice): a fresh
- * graduate's line, a little uneven, and an aptitude rolled like a clanless character's.
+ * Their stats and talent come from the save's seed and their id (not the game's dice), made
+ * the way the player's are (`graduates.ts`).
  */
 
 /** Where generated genin spend their days. */
@@ -28,16 +27,6 @@ const HAUNTS: readonly PlaceKind[] = ['training', 'market', 'missions', 'academy
 /** Chance a generated genin is out of the village in a given daytime slot. */
 const AWAY_CHANCE = 0.25;
 export const GENERATED_ID_PREFIX = 'genin-';
-/** A fresh graduate's stats, as old classmates were before they had stats of their own. */
-const GRADUATE_BASE = 5;
-/** A graduate's specialty and body work, level with the player's report card (A is +3). */
-const SPECIALTY_BONUS = 3;
-const BODY_BONUS = 0.5;
-const BODY_STATS: readonly StatId[] = ['strength', 'speed', 'stamina'];
-/** Each stat is off the line by up to this much either way. */
-const STAT_SPREAD = 1;
-const CLANLESS = 'none';
-
 export interface GeneratorInput {
   readonly count: number;
   /** Given names already taken (the player's, authored people's), never reused. */
@@ -80,7 +69,7 @@ function generateOne(ctx: GameContext, rng: Rng, who: Identity): PersonDef {
   const notes = traitIds.map((id) => ctx.content.traits.require(id).note);
   const appearance = randomAppearance(rng);
   const specialty = rng.pick(DISCIPLINES);
-  const talentRng = createRng(hashString(`${who.seed}|${who.id}`));
+  const start = graduate(ctx, createRng(hashString(`${who.seed}|${who.id}`)), specialty);
   return {
     id: who.id,
     name: who.name,
@@ -88,26 +77,14 @@ function generateOne(ctx: GameContext, rng: Rng, who: Identity): PersonDef {
     role: 'genin',
     title: 'Genin',
     rank: 'genin',
-    stats: graduateStats(specialty, talentRng),
-    aptitude: rollCharacterAptitude(talentRng, ctx.content.clans.require(CLANLESS)),
+    stats: start.stats,
+    aptitude: start.aptitude,
     traitIds,
     appearance,
     specialty,
     bio: notes.join(' '),
     schedule: randomSchedule(ctx, rng),
   };
-}
-
-/** A fresh graduate's line: a specialty, some body work, every stat a little off. */
-function graduateStats(specialty: Discipline, rng: Rng): Stats {
-  const line = createStats(GRADUATE_BASE, {
-    ...Object.fromEntries(BODY_STATS.map((id) => [id, BODY_BONUS])),
-    [specialty]: SPECIALTY_BONUS,
-  });
-  const varied = STAT_IDS.map(
-    (id) => [id, round1(line[id] + (rng.next() * 2 - 1) * STAT_SPREAD)] as const,
-  );
-  return Object.fromEntries(varied) as Record<StatId, number>;
 }
 
 /** Two traits that don't contradict each other. */

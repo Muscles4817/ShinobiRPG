@@ -94,8 +94,8 @@ ui ──► game ──► content ──► systems ──► core
 10. **Places decide what you can do.** Location → places (`PlaceDef`, discriminated by `kind`).
     Actions check the current location offers them (`placeHere`). Each place kind has its own
     view model and page.
-11. **Identity is modifiers.** Clan, talent, traits, academy grades and chakra nature each
-    declare a `ModifierSpec`; `characterModifiers` (`game/profile.ts`) multiplies them into one
+11. **Identity is modifiers.** Clan, talent, traits, build, upbringing, class standing and
+    chakra nature each declare a `ModifierSpec`; `characterModifiers` (`game/profile.ts`) multiplies them into one
     `Modifiers` value that training growth, study speed and hunger read. A new kind of identity
     (bloodline stage, gear, a sensei's teaching) is another spec, not new branches in actions.
     Option cards show `describeSpec` output, so what the player is told is what the code does.
@@ -104,14 +104,31 @@ ui ──► game ──► content ──► systems ──► core
     as tilts) and found out by training (`aptitudeKnown`). All growth goes through
     `growCharacter` (`game/growth.ts`): base × solo efficiency by grade × aptitude × modifiers
     (× a teacher); hard-work traits set a `soloEfficiencyFloor`. Players see reads, never numbers.
+    **Talent is also a limit** (`systems/stats/limits.ts`): each stat has a kind (speed and
+    reserves are born, strength is the frame's, the rest are trained) and aptitude sets how far
+    it can go; growth eases near the limit and trickles past it (`PAST_LIMIT_TRICKLE`), teachers
+    included. Only a `limitBonus` moves a limit (a build today, breakthroughs later). Strength
+    above the build's `comfortStrength` lowers the speed limit (bulk). The stat sheet says, in
+    words, when a stat whose talent you've read is near or at its limit (`naturalLimits`).
 12. **Character creation is the opening scene.** The academy break-in collects a
     `CreationDraft`; `draftProblems` validates it and `createNewGame` builds the first state.
-    The break-in roll is seeded, so the scene and the game agree on the outcome. **Class
-    standing** (`systems/profile/standing.ts`: dead last to genius, or fate, read from the seed
-    as your file says it) is the one creation choice that isn't a trade-off: it is the difficulty.
-    It sets the grade budget and the quick pick's grades, the band the hidden talent is rolled in
-    (`TalentShape` in `game/aptitude.ts`; your best-graded arts are never a hole, a genius's are
-    gifted) and, at the bottom, a hard-work floor so solo training keeps paying through C. Talents
+    The break-in roll is seeded, so the scene and the game agree on the outcome. Creation keeps
+    **development** (how trained you are at graduation) apart from **talent** (how fast and far
+    you can go). The **academy file** (`systems/profile/academyFile.ts`) is early training bought
+    with development points (`development.ts`: steps of +2, dearer as a stat climbs; most may
+    take a stat to a solid D, the best of the year a few to C), known **gifts and flaws**
+    (`gifts.ts`: laid over the hidden roll and known from day one; a flaw gives points back) and
+    when you bloomed (trade a gift for training or back). **Class standing**
+    (`systems/profile/standing.ts`: dead last to genius, or fate, read from the seed as your file
+    says it) is the one creation choice that isn't a trade-off: it is the difficulty. It sets the
+    file's budgets, the band the hidden talent is rolled in (`TalentShape` in `game/aptitude.ts`;
+    your best-graded arts are never a hole) and, at the bottom, a hard-work floor so solo training
+    keeps paying through C. The **upbringing** (`UpbringingDef`) adds early training, and a clan
+    child's must go into the clan's arts first (`focus`), so no clan child graduates with nothing
+    in them; the **build** (`BuildDef`) is the frame. Quick picks (`archetypes.ts`) fill the file
+    as a kind of student and follow later changes until it is edited by hand (`creationDraft.ts`).
+    `game/student.ts` turns a file into graduation stats for the player and generated classmates
+    alike. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. Talents
     may be one-sided (`TalentDef.aptitude` fixes a stat, 0 = never) or blank. The pacing bench
     (`src/test/pacing/standing.test.ts`) checks the spread and that the dead last can climb.
 13. **People are data, wherever they come from.** Authored people (`PersonDef`) live in the
@@ -345,7 +362,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   needs a `none` clan (validated).
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
   schedule of place ids in the start location, a `rank` and `stats` via `statLine()`, and
-  optionally an `aptitude` via `talent()`). Their best stat must fit their rank (genin E–D,
+  optionally an `aptitude` via `talent()`). Their best stat must fit their rank (genin E–C,
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
   technique ids, price); at least two specialties must exist for the team choice (validated).
@@ -430,6 +447,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `bondBonus`, optional `stalls` of festival-only food) go in the pack's `village`. Give a
   person a `favouriteRecipeId` to make dinner with them special. Give shops and stalls `hours` if they close.
   Validation checks references, real dates and that nothing is never open.
+- **Add a build or upbringing:** add a `BuildDef` (`shared/builds.ts`: starting bonuses, a
+  `ModifierSpec` whose `limitBonus` moves strength and speed limits, and `comfortStrength`) or an
+  `UpbringingDef` (`shared/upbringings.ts`: `family` clan or clanless, `earlyTraining` points,
+  an optional `focus` they must go into, and a spec). Every pack needs the defaults old saves are
+  given (`DEFAULT_BUILD_ID`, `DEFAULT_UPBRINGING`; validated).
+- **Add a kind of student (quick pick):** add an `Archetype` to `systems/profile/archetypes.ts`:
+  where its training goes (slots: a stat, `specialty`, `clan-arts`), its gifts in order, an
+  optional flaw and bloom. Tests check every quick pick spends the file and never more.
 - **Add a conversation:** add a `ConversationDef` (generic, or with `personId`) with a
   `minStage` and choices that each carry a `Tone`. Traits' `likes`/`dislikes` decide how a
   tone lands, so new tones need tastes on the traits that care.
