@@ -59,3 +59,4 @@ export {
   type TrapEffect,
 } from './effects';
 export { costIsSane, type CostTemplate } from './costs';
+export { renameInBook, type TechniqueRenames } from './renames';

@@ -2,8 +2,9 @@ import type { TechniqueDef } from '@/systems/techniques';
 
 /**
  * New moves of the village's fighting schools. Strong Fist's are Guy's (and Lee's, for a close
- * enough friend), Leaf Sword's Hayate's and Yūgao's, Wind Blade's Asuma's; the rest of each
- * school says so where it is defined.
+ * enough friend), Leaf Sword's Hayate's and Yūgao's. Wind Blade is the game's own knife school,
+ * not canon: Asuma teaches its drills, but fights with his canon jutsu (Flying Swallow and the
+ * rest, in `senseiTechniques.ts`).
  */
 export const SCHOOL_TECHNIQUES: readonly TechniqueDef[] = [
   {

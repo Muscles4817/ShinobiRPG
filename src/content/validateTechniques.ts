@@ -20,7 +20,17 @@ export function validateTechniques(pack: ContentPack): string[] {
     ...pack.techniques.flatMap(shapeProblems),
     ...starterProblems(pack),
     ...beginnerProblems(pack),
+    ...renameProblems(pack),
   ];
+}
+
+/** A merged technique's old id is no longer a technique, and the id it became is one. */
+function renameProblems(pack: ContentPack): string[] {
+  const ids = new Set(pack.techniques.map((t) => t.id));
+  return Object.entries(pack.renamedTechniques ?? {}).flatMap(([from, to]) => [
+    ...(ids.has(from) ? [`renamed technique "${from}" is still a technique`] : []),
+    ...(ids.has(to) ? [] : [`technique "${from}" is renamed to unknown "${to}"`]),
+  ]);
 }
 
 const grades: readonly string[] = STAT_GRADES;

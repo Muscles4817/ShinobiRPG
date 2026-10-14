@@ -19,12 +19,14 @@ describe('arsenals', () => {
     expect(fighter.perks).toEqual(['insight']);
   });
 
-  it('arms Asuma with his trench knives and Burning Ash', () => {
+  it('arms Asuma with his canon trench-knife jutsu and Burning Ash', () => {
     const asuma = naruto.content.people.require('asuma');
     const fighter = companionCombatant(asuma, state, naruto, 'Partner');
     expect(ids(fighter.techniques)).toEqual(
-      expect.arrayContaining(['flying-swallow', 'wind-blade-flurry', 'ash-pile-burning']),
+      expect.arrayContaining(['flying-swallow', 'chakra-blade-straight-line', 'ash-pile-burning']),
     );
+    expect(ids(fighter.techniques)).not.toContain('shadow-clone');
+    expect(ids(fighter.techniques)).not.toContain('wind-blade-flurry');
     expect(ids(fighter.techniques)).not.toContain('iaido-draw');
   });
 
@@ -41,6 +43,6 @@ describe('arsenals', () => {
     expect(reach('shuriken-jutsu')).toEqual(['mid', 'far']);
     expect(reach('lightning-blade')).toEqual(['close']);
     expect(reach('rasengan')).toEqual(['close']);
-    expect(reach('flying-swallow')).toEqual(['close', 'mid']);
+    expect(reach('flying-swallow')).toEqual(['close']);
   });
 });

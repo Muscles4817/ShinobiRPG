@@ -345,4 +345,9 @@ export interface ContentPack {
   readonly academyTechniques: readonly string[];
   /** The technique a graduate starts with for their specialty discipline. */
   readonly disciplineStarters: Readonly<Record<Discipline, string>>;
+  /**
+   * Techniques merged into another (old id → the id it became), so saves that knew the old one
+   * are moved over (`techniqueRenameMigration.ts`). Old ids are gone, new ones real (validated).
+   */
+  readonly renamedTechniques?: Readonly<Record<string, string>>;
 }
