@@ -103,4 +103,12 @@ export const ARCHIVE_SHELF: readonly string[] = [
   'binding-meteor',
   'manipulating-attack-blades',
   'earth-shadow-clone',
+  'roof-tile-shuriken',
+  'bell-sound-clone',
+  'rending-drill-fang',
+  'fangs-of-lightning',
+  'banquet-of-lightning',
+  'lightning-dragon-tornado',
+  'lightning-strike-armour',
+  'rock-avalanche',
 ];

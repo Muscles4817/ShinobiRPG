@@ -172,7 +172,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     baseStat: 10,
     statBonuses: { genjutsu: 4, speed: 2, strength: -1 },
     maxChakra: 60,
-    techniqueIds: ['senbon-needles', 'false-surroundings', 'shadow-senbon'],
+    techniqueIds: ['senbon-needles', 'shadow-senbon', 'bell-sound-clone'],
     traits: ['illusionist', 'archer'],
   },
   {
@@ -184,7 +184,13 @@ export const ENEMIES: readonly EnemyDef[] = [
     baseStat: 15,
     statBonuses: { kenjutsu: 6, ninjutsu: 3, willpower: 2 },
     maxChakra: 120,
-    techniqueIds: ['chidori-sword', 'false-darkness', 'decapitating-sweep'],
+    techniqueIds: [
+      'fangs-of-lightning',
+      'banquet-of-lightning',
+      'lightning-dragon-tornado',
+      'lightning-strike-armour',
+      'rock-avalanche',
+    ],
     traits: ['armoured'],
     nature: 'lightning',
   },
