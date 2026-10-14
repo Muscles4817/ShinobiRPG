@@ -35,7 +35,7 @@ src/
   core/       Game-agnostic utilities: seeded Rng, Result, math. Knows nothing about the game.
   systems/    Self-contained domain modules. Pure functions over their own slice of state.
     time/ stats/ vitals/ wallet/ housing/ techniques/ missions/ combat/ standing/ journal/
-    modifiers/ profile/ bonds/ inventory/ travel/
+    modifiers/ profile/ bonds/ inventory/ cooking/ travel/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
@@ -94,8 +94,8 @@ ui ──► game ──► content ──► systems ──► core
 10. **Places decide what you can do.** Location → places (`PlaceDef`, discriminated by `kind`).
     Actions check the current location offers them (`placeHere`). Each place kind has its own
     view model and page.
-11. **Identity is modifiers.** Clan, talent, traits, academy grades and chakra nature each
-    declare a `ModifierSpec`; `characterModifiers` (`game/profile.ts`) multiplies them into one
+11. **Identity is modifiers.** Clan, talent, traits, build, upbringing, class standing and
+    chakra nature each declare a `ModifierSpec`; `characterModifiers` (`game/profile.ts`) multiplies them into one
     `Modifiers` value that training growth, study speed and hunger read. A new kind of identity
     (bloodline stage, gear, a sensei's teaching) is another spec, not new branches in actions.
     Option cards show `describeSpec` output, so what the player is told is what the code does.
@@ -104,14 +104,37 @@ ui ──► game ──► content ──► systems ──► core
     as tilts) and found out by training (`aptitudeKnown`). All growth goes through
     `growCharacter` (`game/growth.ts`): base × solo efficiency by grade × aptitude × modifiers
     (× a teacher); hard-work traits set a `soloEfficiencyFloor`. Players see reads, never numbers.
+    **Talent is also a limit** (`systems/stats/limits.ts`): each stat has a kind (speed and
+    reserves are born, strength is the frame's, the rest are trained) and aptitude sets how far
+    it can go; growth eases near the limit and trickles past it (`PAST_LIMIT_TRICKLE`), teachers
+    included. Only a `limitBonus` moves a limit: a build, or a **breakthrough**
+    (`game/breakthroughs.ts`, stored in `character.breakthroughs` by source, once each; a
+    promotion deepens reserves, and the Gates or an awakening are the same kind of thing). Strength
+    above the build's `comfortStrength` lowers the speed limit (bulk). The stat sheet says, in
+    words, when a stat whose talent you've read is near or at its limit (`naturalLimits`).
 12. **Character creation is the opening scene.** The academy break-in collects a
     `CreationDraft`; `draftProblems` validates it and `createNewGame` builds the first state.
-    The break-in roll is seeded, so the scene and the game agree on the outcome. **Class
-    standing** (`systems/profile/standing.ts`: dead last to genius, or fate, read from the seed
-    as your file says it) is the one creation choice that isn't a trade-off: it is the difficulty.
-    It sets the grade budget and the quick pick's grades, the band the hidden talent is rolled in
-    (`TalentShape` in `game/aptitude.ts`; your best-graded arts are never a hole, a genius's are
-    gifted) and, at the bottom, a hard-work floor so solo training keeps paying through C. Talents
+    The break-in roll is seeded, so the scene and the game agree on the outcome. Creation keeps
+    **development** (how trained you are at graduation) apart from **talent** (how fast and far
+    you can go). The **academy file** (`systems/profile/academyFile.ts`) is early training bought
+    with development points (`development.ts`: steps of +2, dearer as a stat climbs; most may
+    take a stat to a solid D, the best of the year a few to C), known **gifts and flaws**
+    (`gifts.ts`: laid over the hidden roll and known from day one; a flaw gives points back) and
+    when you bloomed (trade a gift for training or back). **Class standing**
+    (`systems/profile/standing.ts`: dead last to genius, or fate, read from the seed as your file
+    says it) is the one creation choice that isn't a trade-off: it is the difficulty. It sets the
+    file's budgets, the band the hidden talent is rolled in (`TalentShape` in `game/aptitude.ts`;
+    your best-graded arts are never a hole) and, at the bottom, a hard-work floor so solo training
+    keeps paying through C. The **upbringing** (`UpbringingDef`) adds early training, and a clan
+    child's must go into the clan's arts first (`focus`), so no clan child graduates with nothing
+    in them; the **build** (`BuildDef`) is the frame. Quick picks (`archetypes.ts`) fill the file
+    as a kind of student and follow later changes until it is edited by hand (`creationDraft.ts`).
+    `game/student.ts` turns a file into graduation stats for the player and generated classmates
+    alike. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. Chakra
+    **nature is found, not picked** (`game/nature.ts`): read from the seed at creation (a clan's
+    nature most of the time) and hidden (`natureKnown`) until the chakra paper scene that follows
+    team assignment (`testChakraPaper`). Until then it counts in fights only: no study bonus, no
+    nature techniques, no sensei can see it. Talents
     may be one-sided (`TalentDef.aptitude` fixes a stat, 0 = never) or blank. The pacing bench
     (`src/test/pacing/standing.test.ts`) checks the spread and that the dead last can climb.
 13. **People are data, wherever they come from.** Authored people (`PersonDef`) live in the
@@ -123,7 +146,7 @@ ui ──► game ──► content ──► systems ──► core
     keeps them off your village's crews, teams and dinner table). Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
-    (fight › encounter › mission › conversation › team assignment). Anything that must happen before
+    (fight › encounter › mission › conversation › team assignment › chakra paper). Anything that must happen before
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
     derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`
@@ -206,7 +229,24 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. Gear has
     ranks D–A: shops sell D and C, B to chūnin; A and `unique` named weapons are never sold. A home-cooked recipe sets
     `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
-    `spendTime` clears it when the day ends.
+    `spendTime` clears it when the day ends. **Cooking is a skill** (`systems/cooking`,
+    `GameState.cooking`): recipes are learned (three `starter`s, cookbooks at a grocer, people's
+    `recipes` lessons, a job's `reward.recipeId`), each has a `rank` (a cook manages one above
+    their grade) and a mastery from times cooked, and every dish has one role
+    (`docs/design/cooking-plan.md`): its buff may also make hard work cheaper (`energyCost`,
+    read through `hardWorkEnergy`), sleep heal more (`sleepHealing`), injuries mend sooner
+    (`injuryNights`), time with people count for more (`bondGain`, `warmed`) or your own job
+    checks sharper (`checks`, `yourCheckValue`); `health`/`chakra` come back as you eat.
+    Dishes are cooked by hand at the stove (`game/stove.ts`: three beats against the recipe's
+    `method`, giving a `mealQuality` that scales the dish through `buffAt`/`amountAt`) or as
+    usual; `experiment` puts pantry ingredients together to discover recipes. Ingredients
+    are bought or gathered: `wilds` places (woods, river) are foraged (`forage`) and fished
+    (`fish`, by spot) once a day each, drawing from `finds` by season, hour and cooking grade.
+    A dish cooked well brings its `provision` into the day's fights (`CombatantSetup.provisions`,
+    rules in `rules/provisions.ts`: fortified, steady, antidote, second wind); never a stat.
+    A `snack` (tea, sweets) sits beside the meal for the next stretch of the day (`snacks.ts`).
+    A pack's own dishes live in `packs/<id>/recipes.ts`, taught by its people and books;
+    travelling merchants (`Stall.visits`, `game/merchants.ts`) bring other regions' food.
     Hunger works the same way: the player sees a Hunger meter (100 − satiety), and each
     stage (`hungerLevel`: peckish, hungry, starving) is a `ModifierSpec` plus a fight-strength
     multiplier in `game/hunger.ts`; starving also blocks hard work (`weakFromHunger`).
@@ -336,6 +376,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `systems/travel` finds the quickest open way, validated so every location has a road). Leave
   `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road
   passes through it.
+- **Add a wild place:** a `wilds` `PlaceDef` with a `biome`, `finds` and optional fishing
+  `spots` (reuse the shared lists in `shared/wilds.ts` where the country is the same).
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
   model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
   compiler lists every switch you missed).
@@ -353,7 +395,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   needs a `none` clan (validated).
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
   schedule of place ids in the start location, or in their `homeLocationId` if they live elsewhere, a `rank` and `stats` via `statLine()`, and
-  optionally an `aptitude` via `talent()`). Their best stat must fit their rank (genin E–D,
+  optionally an `aptitude` via `talent()`). Their best stat must fit their rank (genin E–C,
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
   technique ids, price); at least two specialties must exist for the team choice (validated).
@@ -426,14 +468,28 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   specialty, and a half plays only beside someone on your side who knows the other.
 - **Add gear:** add a `GearDef` (`kind` weapon/armour/focus with its shape, level or boosts,
   `rank`, cost) to the pack's `gear` and list it at a `gear` place (a smith, an outfitter);
-  `unique` pieces are never listed. **Add an ingredient or recipe:** add it to
-  `shared/kitchen.ts` (or a pack's own list); ingredients must be sold at a market stall's
-  `ingredientIds`, and recipes may only use known ingredients (validated).
+  `unique` pieces are never listed. **Add an ingredient or recipe:** ingredients go in
+  `shared/kitchen.ts` (sold at a market stall's `ingredientIds`) or `shared/wilds.ts` (found
+  in a `wilds` place's `finds` or a fishing spot's `catches`), and must be one or the other
+  (validated); recipes go in
+  `shared/recipes.ts` (or a pack's own list) with a `rank`, one role (don't make a bigger copy
+  of another dish's buff) and a way to learn it: a cookbook (`CookbookDef`, sold at a stall's
+  `cookbookIds`), a person's `recipes`, or a job's `reward.recipeId` (validated). **Add a meal
+  effect:** a field on `ModifierSpec` combined in `combine`, worded in `describeSpec`, read at
+  one hook in `game/`.
 - **Add village life:** rumours (`missionId` for a job hint, `personId` for gossip), night
   sights (with a small stat `reward`) and festivals (season, day, `marketPrices`,
   `bondBonus`, optional `stalls` of festival-only food) go in the pack's `village`. Give a
   person a `favouriteRecipeId` to make dinner with them special. Give shops and stalls `hours` if they close.
   Validation checks references, real dates and that nothing is never open.
+- **Add a build or upbringing:** add a `BuildDef` (`shared/builds.ts`: starting bonuses, a
+  `ModifierSpec` whose `limitBonus` moves strength and speed limits, and `comfortStrength`) or an
+  `UpbringingDef` (`shared/upbringings.ts`: `family` clan or clanless, `earlyTraining` points,
+  an optional `focus` they must go into, and a spec). Every pack needs the defaults old saves are
+  given (`DEFAULT_BUILD_ID`, `DEFAULT_UPBRINGING`; validated).
+- **Add a kind of student (quick pick):** add an `Archetype` to `systems/profile/archetypes.ts`:
+  where its training goes (slots: a stat, `specialty`, `clan-arts`), its gifts in order, an
+  optional flaw and bloom. Tests check every quick pick spends the file and never more.
 - **Add a conversation:** add a `ConversationDef` (generic, or with `personId`) with a
   `minStage` and choices that each carry a `Tone`. Traits' `likes`/`dislikes` decide how a
   tone lands, so new tones need tastes on the traits that care.

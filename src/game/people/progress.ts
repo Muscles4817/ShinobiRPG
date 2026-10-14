@@ -3,6 +3,7 @@ import type { PersonDef } from '@/content';
 import { combine } from '@/systems/modifiers';
 import {
   applyTraining,
+  limitsFor,
   STAT_IDS,
   type Aptitude,
   type Growth,
@@ -22,7 +23,7 @@ import type { People, PersonProgress } from './state';
 /**
  * People's real stats, and how genin grow on their own. Everyone starts from the stats on
  * their `PersonDef`; genin then train every day (`dailyRegimen`) through the same formula as
- * the player (solo efficiency by grade × aptitude × their traits), and your teammates also get
+ * the player (solo efficiency by grade × aptitude × their traits, up to their natural limits), and your teammates also get
  * your sensei's weekly lesson (the teacher rule, as yours). Days are caught up lazily, like the jobs board, from a hash of
  * the save's seed: growing never touches the game's dice.
  */
@@ -58,7 +59,7 @@ function growthOf(person: PersonDef, ctx: GameContext, teacher = 1): Growth {
   const scale = Object.fromEntries(
     STAT_IDS.map((id) => [id, aptitude[id] * mods.growth[id] * teacher]),
   );
-  return { scale, floors: mods.soloFloors };
+  return { scale, floors: mods.soloFloors, limits: limitsFor(aptitude, mods.limitBonus) };
 }
 
 /** The weekly lesson this person gets from your sensei, if they are your teammate. */

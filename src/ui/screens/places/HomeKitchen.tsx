@@ -1,7 +1,12 @@
+import { useState } from 'react';
+
 import { kitchenView, type GameContext, type GameState } from '@/game';
 
 import { Icon } from '../../art/Icon';
+import { GradeBadge } from '../../components/Grade';
 import { DinnerInvites } from './DinnerInvites';
+import { ExperimentPot } from './ExperimentPot';
+import { Stove } from './Stove';
 import type { PlaceProps } from '../types';
 
 interface HomeKitchenProps {
@@ -13,14 +18,33 @@ interface HomeKitchenProps {
 /** The stove: your pantry, and recipes you can cook from it for a day-long buff. */
 export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
   const view = kitchenView(state, ctx);
+  const [atStove, setAtStove] = useState<string | null>(null);
+  const stoveRecipe = view.recipes.find((r) => r.id === atStove);
   return (
     <section id="kitchen" className="kitchen" aria-label="Kitchen">
       <h2 className="label">Kitchen</h2>
+      <p className="muted small">
+        You cook like a grade {view.grade} hand.
+        {view.unlearned > 0 &&
+          ' There are dishes you have yet to learn: your cookbook, under Shinobi, says where.'}
+      </p>
       {view.meal && (
         <p className="meal-today">
           Today you ate <b>{view.meal.name}</b>
           <span className="chips">
             {view.meal.effects.map((e) => (
+              <span key={e.label} className="chip gain">
+                {e.label}
+              </span>
+            ))}
+          </span>
+        </p>
+      )}
+      {view.snack && (
+        <p className="meal-today">
+          A snack of <b>{view.snack.name}</b> is keeping you going
+          <span className="chips">
+            {view.snack.effects.map((e) => (
               <span key={e.label} className="chip gain">
                 {e.label}
               </span>
@@ -44,16 +68,22 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
             <div className="recipe-head">
               <Icon id={r.icon} size={24} />
               <b>{r.name}</b>
+              <GradeBadge grade={r.rank} />
+              {r.mastery && <span className="badge">{r.mastery}</span>}
+              {r.snack && <span className="badge">Snack</span>}
             </div>
             <span className="chips">
               <span className="chip gain">Hunger −{r.satiety}</span>
               {r.energy > 0 && <span className="chip gain">Energy +{r.energy}</span>}
+              {r.health > 0 && <span className="chip gain">Health +{r.health}</span>}
+              {r.chakra > 0 && <span className="chip gain">Chakra +{r.chakra}</span>}
               {r.effects.map((e) => (
                 <span key={e.label} className="chip gain">
-                  {e.label} today
+                  {e.label}
                 </span>
               ))}
             </span>
+            <small className="muted">{r.hint ?? r.method}</small>
             <small className="muted">
               {r.needs.map((n) => `${n.name} ${Math.min(n.have, n.need)}/${n.need}`).join(', ')}
             </small>
@@ -63,10 +93,20 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
               className="btn small"
               disabled={r.blocker !== null}
               onClick={() => {
+                setAtStove(r.id);
+              }}
+            >
+              At the stove
+            </button>
+            <button
+              type="button"
+              className="btn small ghost"
+              disabled={r.blocker !== null}
+              onClick={() => {
                 perform(r.action);
               }}
             >
-              Cook
+              Cook as usual
             </button>
             {!view.noGuests && (
               <DinnerInvites invites={r.invites} blocker={r.inviteBlocker} perform={perform} />
@@ -74,6 +114,18 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
           </article>
         ))}
       </div>
+      <ExperimentPot ctx={ctx} state={state} pantry={view.pantry} perform={perform} />
+      {stoveRecipe && (
+        <Stove
+          ctx={ctx}
+          state={state}
+          recipe={stoveRecipe}
+          perform={perform}
+          onClose={() => {
+            setAtStove(null);
+          }}
+        />
+      )}
     </section>
   );
 }

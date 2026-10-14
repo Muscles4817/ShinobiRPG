@@ -1,6 +1,8 @@
 import type { ContentPack } from '../../types';
+import { BUILDS } from '../../shared/builds';
 import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
+import { UPBRINGINGS } from '../../shared/upbringings';
 import { CLAN_TECHNIQUES } from './clanTechniques';
 import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
@@ -12,7 +14,14 @@ import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
 import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
-import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
+import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
+import { RECIPES } from '../../shared/recipes';
+import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
+import { TOROGAKURE_COOKBOOKS, TOROGAKURE_INGREDIENTS } from './kitchen';
+import { TOROGAKURE_RECIPES } from './recipes';
+import { REGIONAL_COOKBOOKS, REGIONAL_INGREDIENTS } from './regions/merchants';
+import { REGIONAL_RECIPES } from './regions/recipes';
+import { VILLAGE_COOKS } from './villagers';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
@@ -86,6 +95,8 @@ export const ORIGINAL_PACK: ContentPack = {
   training: [...TRAINING, ...SHIOMACHI_TRAINING],
   foods: [...FOODS, ...SEASONAL_FOODS, ...SHIOMACHI_FOODS],
   clans: CLANS,
+  builds: BUILDS,
+  upbringings: UPBRINGINGS,
   talents: TALENTS,
   traits: TRAITS,
   nindos: NINDOS,
@@ -93,9 +104,18 @@ export const ORIGINAL_PACK: ContentPack = {
   gear: [...GEAR, ...SHIOMACHI_GEAR],
   tools: TOOLS,
   injuries: INJURIES,
-  ingredients: [...INGREDIENTS, ...SHIOMACHI_INGREDIENTS],
-  recipes: [...RECIPES, ...SHIOMACHI_RECIPES],
+  ingredients: [
+    ...INGREDIENTS,
+    ...WILD_INGREDIENTS,
+    ...TOROGAKURE_INGREDIENTS,
+    ...REGIONAL_INGREDIENTS,
+    ...SHIOMACHI_INGREDIENTS,
+  ],
+  recipes: [...RECIPES, ...TOROGAKURE_RECIPES, ...REGIONAL_RECIPES, ...SHIOMACHI_RECIPES],
+  cookbooks: [...COOKBOOKS, ...TOROGAKURE_COOKBOOKS, ...REGIONAL_COOKBOOKS],
+  campFinds: CAMP_FINDS,
   people: [
+    ...VILLAGE_COOKS,
     ...SENSEIS_AND_ELDERS,
     ...GENIN,
     ...VILLAGE_JONIN,

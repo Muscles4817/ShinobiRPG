@@ -34,8 +34,11 @@ const CLASSMATES_FLOOR = 0.1;
 const CLASSMATE_EXCHANGES = 8;
 /** At most this share of fights sees a single hit take half the health. */
 const HEAVY_HITS = 0.05;
-/** Against D-rank foes, each specialty wins this share on average. */
-const D_FOES = { min: 0.35, max: 0.75 } as const;
+/**
+ * Against D-rank foes, each specialty wins this share on average. (A graduate has real early
+ * training now, so petty foes are beaten more often than not, but never as a formality.)
+ */
+const D_FOES = { min: 0.35, max: 0.8 } as const;
 
 const SEEDS = 40;
 

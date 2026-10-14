@@ -9,6 +9,7 @@ import {
   TIME_SLOTS,
 } from '@/systems/time';
 
+import { visitingOn } from './merchants';
 import { newPostingsTomorrow } from './board';
 import type { GameContext } from './context';
 import { examRumours } from './exam/calendar';
@@ -138,14 +139,19 @@ export interface MarketStall extends Stall {
   readonly festival: boolean;
 }
 
-/** The market's stalls here, with today's festival stalls set up in front. */
+/**
+ * The market's stalls here, with today's festival stalls set up in front; travelling merchants
+ * only on their days (`merchants.ts`).
+ */
 export function stallsHere(state: GameState, ctx: GameContext): MarketStall[] {
   const market = placeHere(state, ctx, 'market');
   if (!market) return [];
   const festive = festivalToday(state, ctx)?.stalls ?? [];
   return [
     ...festive.map((stall) => ({ ...inSeasonStall(stall, state, ctx), festival: true })),
-    ...market.stalls.map((stall) => ({ ...inSeasonStall(stall, state, ctx), festival: false })),
+    ...market.stalls
+      .filter((stall) => visitingOn(stall, state.time.day))
+      .map((stall) => ({ ...inSeasonStall(stall, state, ctx), festival: false })),
   ];
 }
 

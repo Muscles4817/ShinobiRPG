@@ -12,7 +12,14 @@ import { personCard, toneLabel, type PersonCard } from './people';
 /** The full-screen scenes for people: a conversation, and team assignment. */
 
 export type SceneKind =
-  'combat' | 'encounter' | 'mission' | 'exam' | 'promotion' | 'conversation' | 'team';
+  | 'combat'
+  | 'encounter'
+  | 'mission'
+  | 'exam'
+  | 'promotion'
+  | 'conversation'
+  | 'team'
+  | 'chakra-paper';
 
 /**
  * Which scene takes over the screen, if any. Fights win over encounters (sizing foes up on a
@@ -27,6 +34,7 @@ export function activeScene(state: GameState): SceneKind | null {
   if (state.exams.ceremony) return 'promotion';
   if (state.people.conversation) return 'conversation';
   if (!state.people.team?.senseiId) return 'team';
+  if (!state.character.natureKnown) return 'chakra-paper';
   return null;
 }
 

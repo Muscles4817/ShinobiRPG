@@ -4,7 +4,7 @@ import { checkChance, fightingPower, type StatId } from '@/systems/stats';
 import { enemyStatLine } from '../combatants';
 import type { GameContext } from '../context';
 import { combatStats } from '../gear';
-import { slowestAlong } from '../missionRoles';
+import { slowestAlong, yourCheckValue } from '../missionRoles';
 import { firstBlocker } from '../ops';
 import type { GameState } from '../state';
 import type { EncounterHere } from './current';
@@ -112,11 +112,12 @@ function intimidateOdds(state: GameState, ctx: GameContext, here: EncounterHere)
   return { stat: 'willpower', chance: checkChance(value, difficulty) };
 }
 
-function groundOdds(state: GameState, here: EncounterHere): Odds {
-  const { fuuinjutsu, intellect } = state.character.stats;
+function groundOdds(state: GameState, ctx: GameContext, here: EncounterHere): Odds {
+  const fuuinjutsu = yourCheckValue(state, ctx, 'fuuinjutsu');
+  const intellect = yourCheckValue(state, ctx, 'intellect');
   const stat: StatId = fuuinjutsu >= intellect ? 'fuuinjutsu' : 'intellect';
   const difficulty = SET_GROUND_DIFFICULTY + ALERT_STEP[here.encounter.alertness];
-  return { stat, chance: checkChance(state.character.stats[stat], difficulty) };
+  return { stat, chance: checkChance(Math.max(fuuinjutsu, intellect), difficulty) };
 }
 
 function oddsOf(state: GameState, ctx: GameContext, here: EncounterHere, id: ApproachId): Odds {
@@ -128,7 +129,7 @@ function oddsOf(state: GameState, ctx: GameContext, here: EncounterHere, id: App
     case 'intimidate':
       return intimidateOdds(state, ctx, here);
     case 'set-ground':
-      return groundOdds(state, here);
+      return groundOdds(state, ctx, here);
     case 'head-on':
     case 'ambush':
     case 'bribe':

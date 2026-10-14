@@ -18,14 +18,15 @@ import { DISCIPLINES, type Discipline } from '@/systems/techniques';
  * prodigies, a few holes, sometimes an art that will never take). The talent on your academy
  * file sets a floor in the stats it raises, and the clan's and talent's growth multipliers
  * tilt the roll: aptitude is where those multipliers now act. Where you stood in your class
- * shifts the whole roll (`TalentBand`): the dead last draw low, a genius high and is never less
- * than gifted in their A-graded arts. A talent may fix some stats outright (0: never).
+ * shifts the whole roll (`TalentBand`): the dead last draw low, a genius high. Gifts and flaws
+ * the player chose are laid over the roll afterwards (`withGifts`). A talent may fix some stats
+ * outright (0: never).
  */
 
 /** Where a character stood, as the roll needs it; classmates and the cast roll as the middle. */
 export interface TalentShape {
   readonly band: TalentBand;
-  /** The arts graded highest on their file: never voided, and gifted in a genius. */
+  /** The arts graded highest on their file: never voided. */
   readonly specialties: readonly Discipline[];
 }
 
@@ -84,7 +85,7 @@ function oddsFor(
   const specialty = (stat: StatId) => shape.specialties.some((d) => d === stat);
   return (stat) => {
     const raised = (talent?.statBonuses[stat] ?? 0) > 0;
-    const best = shape.band.specialtyAtLeast ?? BEST_ART_FLOOR * shape.band.scale;
+    const best = BEST_ART_FLOOR * shape.band.scale;
     const floors = [raised ? TALENT_FLOOR : 0, specialty(stat) ? best : 0];
     const atLeast = Math.max(...floors);
     return {

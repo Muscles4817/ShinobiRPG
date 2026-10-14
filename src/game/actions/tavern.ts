@@ -5,6 +5,7 @@ import { spend } from '@/systems/wallet';
 import type { GameContext } from '../context';
 import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
 import { bondOf, peopleHere } from '../people/cast';
+import { warmed } from '../people/warmth';
 import type { GameState } from '../state';
 import { closedReason } from '../village';
 import type { ActionHandler, ActionOf } from './types';
@@ -43,8 +44,9 @@ export const buyRound: ActionHandler<ActionOf<'buyRound'>> = {
     const paid = spend(state.wallet, tavern.roundCost);
     if (!paid.ok) return state;
     const crowd = tavernCrowd(state, ctx);
+    const warmth = warmed(state, ctx, ROUND_BOND);
     const bonds = Object.fromEntries(
-      crowd.map((p) => [p.id, addPoints(bondOf(state, p.id), ROUND_BOND)]),
+      crowd.map((p) => [p.id, addPoints(bondOf(state, p.id), warmth)]),
     );
     const next = {
       ...state,
@@ -59,7 +61,7 @@ export const buyRound: ActionHandler<ActionOf<'buyRound'>> = {
       tone: 'success',
       chips: [
         chip(`−${tavern.roundCost} ryo`, 'cost'),
-        ...names.map((name) => chip(`${name} +${ROUND_BOND}`, 'gain')),
+        ...names.map((name) => chip(`${name} +${warmth}`, 'gain')),
       ],
     });
   },

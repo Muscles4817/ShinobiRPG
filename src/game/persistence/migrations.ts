@@ -6,7 +6,12 @@ import { v21ToV22 } from './gearMigration';
 import { v25ToV26, v26ToV27 } from './settingsMigration';
 import { v18ToV19 } from './peopleMigration';
 import { v22ToV23 } from './scrollMigration';
-import { v30ToV31, v31ToV32, v32ToV33 } from './permitMigration';
+import { v30ToV31 } from './permitMigration';
+import { v31ToV32, v34ToV35 } from './cookingMigration';
+import { v32ToV33 } from './creationMigration';
+import { v33ToV34 } from './breakthroughMigration';
+import { v35ToV36 } from './natureMigration';
+import { v36ToV37 } from './leaveMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
 import { v19ToV20 as v20ToV21 } from './rankMigration';
 import { v19ToV20 } from './teachingMigration';
@@ -306,4 +311,8 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   30: v30ToV31,
   31: v31ToV32,
   32: v32ToV33,
+  33: v33ToV34,
+  34: v34ToV35,
+  35: v35ToV36,
+  36: v36ToV37,
 };

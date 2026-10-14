@@ -1,3 +1,4 @@
+import { cookingGrade } from '@/systems/cooking';
 import { SOLO } from '@/systems/missions';
 import { act, intoFight, newGame, veteran } from '@/test/gameFixtures';
 
@@ -114,7 +115,9 @@ describe('persistence', () => {
   it('gives a character from before aptitude the growth their clan and talent gave them', () => {
     const game = newGame();
     const { aptitude: _a, aptitudeKnown: _k, aptitudeSessions: _s, ...old } = game.character;
-    const hardWorker = { ...old, clanId: 'kurogane', talentId: 'hard-worker' };
+    // All Cs on the card, so the later grade-pace step leaves the arts as this one made them.
+    const grades = { taijutsu: 'C', ninjutsu: 'C', genjutsu: 'C', kenjutsu: 'C', fuuinjutsu: 'C' };
+    const hardWorker = { ...old, grades, clanId: 'kurogane', talentId: 'hard-worker' };
     const raw = JSON.stringify({ version: 17, state: { ...game, character: hardWorker } });
     const loaded = deserialize(raw);
     if (!loaded.ok) throw new Error(loaded.error);
@@ -252,9 +255,76 @@ describe('persistence', () => {
     expect(loaded.value.people.permits).toEqual([]);
   });
 
-  it('gives a save from before leave no pass and no leave taken', () => {
-    const { leave: _leave, ...game } = newGame();
+  it('lets a save from before recipes were learned keep every recipe it could cook', () => {
+    const { cooking: _cooking, ...game } = newGame();
     const loaded = deserialize(JSON.stringify({ version: 31, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(cookingGrade(loaded.value.cooking.xp)).toBe('D');
+    expect(Object.keys(loaded.value.cooking.known)).toHaveLength(10);
+    expect(loaded.value.cooking.known['spicy-hot-pot']).toBe(0);
+  });
+
+  it('gives a save from before builds and upbringings a balanced frame, and keeps its growth', () => {
+    const game = newGame();
+    const { buildId: _b, upbringingId: _u, ...character } = game.character;
+    const grades = { ...character.grades, taijutsu: 'A', genjutsu: 'D' } as const;
+    const aptitude = { ...character.aptitude, taijutsu: 1, genjutsu: 1, ninjutsu: 1.6 };
+    const old = { ...character, grades, aptitude };
+    const raw = (clanId: string) =>
+      JSON.stringify({ version: 32, state: { ...game, character: { ...old, clanId } } });
+    const loaded = deserialize(raw('none'));
+    if (!loaded.ok) throw new Error(loaded.error);
+    const loadedCharacter = loaded.value.character;
+    expect(loadedCharacter.buildId).toBe('balanced');
+    expect(loadedCharacter.upbringingId).toBe('civilian');
+    // The grade's old pace now lives in the talent for the art.
+    expect(loadedCharacter.aptitude.taijutsu).toBe(1.25);
+    expect(loadedCharacter.aptitude.genjutsu).toBe(0.85);
+    expect(loadedCharacter.aptitude.ninjutsu).toBe(1.6);
+    const clan = deserialize(raw('kurogane'));
+    expect(clan.ok && clan.value.character.upbringingId).toBe('clan-branch');
+  });
+
+  it('gives a chūnin from before breakthroughs the one their promotion brings', () => {
+    const game = newGame();
+    const { breakthroughs: _b, ...character } = game.character;
+    const old = (rank: string) =>
+      JSON.stringify({
+        version: 33,
+        state: { ...game, character, standing: { ...game.standing, rank } },
+      });
+    const chunin = deserialize(old('chunin'));
+    if (!chunin.ok) throw new Error(chunin.error);
+    expect(chunin.value.character.breakthroughs).toEqual([
+      { source: 'promotion:chunin', limits: { reserves: 4 } },
+    ]);
+    const genin = deserialize(old('genin'));
+    expect(genin.ok && genin.value.character.breakthroughs).toEqual([]);
+  });
+
+  it('gives a save from before gathering no gathered places', () => {
+    const game = newGame();
+    const { gathered: _gathered, ...cooking } = game.cooking;
+    const loaded = deserialize(JSON.stringify({ version: 34, state: { ...game, cooking } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.cooking.gathered).toEqual({});
+    expect(loaded.value.cooking.known).toEqual(game.cooking.known);
+  });
+
+  it('lets a character from before chakra paper keep the nature they chose, known', () => {
+    const game = newGame();
+    const { natureKnown: _n, ...character } = game.character;
+    const loaded = deserialize(JSON.stringify({ version: 35, state: { ...game, character } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.character.natureKnown).toBe(true);
+    expect(loaded.value.character.nature).toBe(game.character.nature);
+  });
+
+  it('gives a save from before leave and trips no pass, no leave taken, nobody along', () => {
+    const game = newGame();
+    const { leave: _leave, ...rest } = game;
+    const { companionId: _companion, ...people } = game.people;
+    const loaded = deserialize(JSON.stringify({ version: 36, state: { ...rest, people } }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.leave).toEqual({
       passUntil: null,
@@ -262,15 +332,6 @@ describe('persistence', () => {
       daysTaken: 0,
       awaySince: null,
     });
-  });
-
-  it('gives a save from before trips with friends nobody along, and home', () => {
-    const game = newGame();
-    const { awaySince: _away, ...leave } = game.leave;
-    const { companionId: _companion, ...people } = game.people;
-    const loaded = deserialize(JSON.stringify({ version: 32, state: { ...game, leave, people } }));
-    if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.leave.awaySince).toBeNull();
     expect(loaded.value.people.companionId).toBeNull();
   });
 

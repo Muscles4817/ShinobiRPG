@@ -69,7 +69,7 @@ export const MISSIONS: readonly MissionDef[] = [
     summary: 'The overgrown shrine garden must be cleared before the Festival of Returning.',
     slots: 3,
     energyCost: 25,
-    reward: { ryo: 110, reputation: 3 },
+    reward: { ryo: 110, reputation: 3, recipeId: 'shrine-rice' },
     minMissionsCompleted: 0,
     stages: [
       {
@@ -93,7 +93,7 @@ export const MISSIONS: readonly MissionDef[] = [
     summary: 'Carry fever medicine to an outlying farm before nightfall.',
     slots: 3,
     energyCost: 25,
-    reward: { ryo: 150, reputation: 4 },
+    reward: { ryo: 150, reputation: 4, recipeId: 'kuroda-farm-stew' },
     minMissionsCompleted: 1,
     stages: [
       {
@@ -129,7 +129,7 @@ export const MISSIONS: readonly MissionDef[] = [
     summary: 'Escort a nervous tea merchant to the river crossing.',
     slots: 4,
     energyCost: 30,
-    reward: { ryo: 220, reputation: 6 },
+    reward: { ryo: 220, reputation: 6, recipeId: 'hunters-skewers' },
     minMissionsCompleted: 2,
     stages: [
       { kind: 'narrative', text: 'Ōkubo talks about tea prices for the entire first hour.' },

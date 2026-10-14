@@ -1,4 +1,4 @@
-import type { IconId } from '@/content';
+import type { IconId, Stall } from '@/content';
 import { pantryCount } from '@/systems/inventory';
 import { METER_MAX } from '@/systems/vitals';
 
@@ -6,6 +6,8 @@ import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import type { GameState } from '../state';
 import { closedSign, festivalToday, marketPrice, seasonNote, stallsHere } from '../village';
+import { newInBook } from '../actions/recipes';
+import { daysUntilVisit } from '../merchants';
 import { choice, type Choice } from './common';
 
 export interface MarketItem extends Choice {
@@ -35,10 +37,25 @@ export interface IngredientItem extends Choice {
   readonly season: string | null;
 }
 
+/** A cookbook at the grocer: buy it once and it teaches every dish in it. */
+export interface CookbookItem extends Choice {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly icon: IconId;
+  readonly cost: number;
+  /** The dishes it teaches, by name. */
+  readonly recipes: readonly string[];
+  /** How many of them you don't know yet. */
+  readonly fresh: number;
+}
+
 export interface MarketView {
   readonly name: string;
   /** Today's festival, when prices are down. */
   readonly festival: string | null;
+  /** Travelling merchants due soon, e.g. "The Shiomachi Fish Cart comes in 3 days." */
+  readonly coming: readonly string[];
   readonly ryo: number;
   /** How hungry you are, 0 (full) to 100 (empty). */
   readonly hunger: number;
@@ -52,6 +69,7 @@ export interface MarketView {
     readonly closed: string | null;
     readonly items: readonly MarketItem[];
     readonly ingredients: readonly IngredientItem[];
+    readonly cookbooks: readonly CookbookItem[];
   }[];
 }
 
@@ -74,6 +92,32 @@ export function foodItem(state: GameState, ctx: GameContext, id: string): Market
   };
 }
 
+function cookbookItem(state: GameState, ctx: GameContext, id: string): CookbookItem {
+  const book = ctx.content.cookbooks.require(id);
+  return {
+    ...choice(state, ctx, { type: 'buyCookbook', cookbookId: id }),
+    id,
+    name: book.name,
+    description: book.description,
+    icon: book.icon,
+    cost: marketPrice(book.cost, state, ctx),
+    recipes: book.recipeIds.map((r) => ctx.content.recipes.require(r).name),
+    fresh: newInBook(state, book).length,
+  };
+}
+
+/** Travelling merchants not here today, soonest first. */
+function merchantsComing(state: GameState, ctx: GameContext): string[] {
+  const market = placeHere(state, ctx, 'market');
+  return (market?.stalls ?? [])
+    .map((stall) => ({ stall, days: daysUntilVisit(stall, state.time.day) }))
+    .filter((m): m is { stall: Stall; days: number } => m.days !== null && m.days > 0)
+    .sort((a, b) => a.days - b.days)
+    .map(({ stall, days }) =>
+      days === 1 ? `${stall.name} comes tomorrow.` : `${stall.name} comes in ${days} days.`,
+    );
+}
+
 export function marketView(state: GameState, ctx: GameContext): MarketView | null {
   const place = placeHere(state, ctx, 'market');
   if (!place) return null;
@@ -82,6 +126,7 @@ export function marketView(state: GameState, ctx: GameContext): MarketView | nul
   return {
     name: place.name,
     festival: festivalToday(state, ctx)?.name ?? null,
+    coming: merchantsComing(state, ctx),
     ryo: state.wallet.ryo,
     hunger,
     stalls: stallsHere(state, ctx).map((stall) => ({
@@ -103,6 +148,7 @@ export function marketView(state: GameState, ctx: GameContext): MarketView | nul
           season: seasonNote(item),
         };
       }),
+      cookbooks: (stall.cookbookIds ?? []).map((id) => cookbookItem(state, ctx, id)),
     })),
   };
 }

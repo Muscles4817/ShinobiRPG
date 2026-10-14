@@ -18,6 +18,7 @@ import { intendedCard } from './intent';
 import { useJutsu } from './jutsu';
 import { lingerAfter } from './lingering';
 import { useTool } from './pouch';
+import { secondWinds } from './provisions';
 import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
 import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
@@ -241,12 +242,14 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...(state.field ? { field: state.field } : {}),
     ...(state.mark ? { mark: state.mark } : {}),
   };
-  const end = lingerAfter(
-    afterEmpowers(
-      order.reduce((round, { id }) => stagedTurn(round, id, rng), start),
+  const end = secondWinds(
+    lingerAfter(
+      afterEmpowers(
+        order.reduce((round, { id }) => stagedTurn(round, id, rng), start),
+        state.round,
+      ),
       state.round,
     ),
-    state.round,
   );
   const result = decide(end.fighters);
   const { field, lines: fading } = fieldAfter(end.field, state.round);

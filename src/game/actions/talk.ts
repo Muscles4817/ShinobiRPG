@@ -2,6 +2,7 @@ import { reactionTo, recordTalk, stageName, stageOf, talkedToday } from '@/syste
 
 import { busyReason, chip, firstBlocker, log } from '../ops';
 import { bondOf, findPerson, requirePerson, tastesOf, whereNow } from '../people/cast';
+import { warmed } from '../people/warmth';
 import { pickConversation } from '../people/talk';
 import { festivalBondBonus } from '../village';
 import type { ActionHandler, ActionOf } from './types';
@@ -51,7 +52,11 @@ export const reply: ActionHandler<ActionOf<'reply'>> = {
     if (!talking || !choice) return state;
     const person = requirePerson(state, ctx, talking.personId);
     const before = bondOf(state, person.id);
-    const delta = reactionTo(tastesOf(person, ctx), choice.tone) + festivalBondBonus(state, ctx);
+    const delta = warmed(
+      state,
+      ctx,
+      reactionTo(tastesOf(person, ctx), choice.tone) + festivalBondBonus(state, ctx),
+    );
     const after = recordTalk(before, { day: state.time.day, delta, heard: talking.conversationId });
     const stage = stageOf(after.points);
     const newStage = stage > stageOf(before.points) ? stage : null;

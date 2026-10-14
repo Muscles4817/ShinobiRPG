@@ -395,3 +395,50 @@
 .ward .injury-list {
   margin-top: 4px;
 }
+
+.cookbook {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+.cook-grade {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.cook-pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.cook-page {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--grain), var(--surface);
+}
+.cook-page.sealed {
+  background: var(--grain-ink), var(--raise);
+}
+.cook-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cook-head b {
+  font-family: var(--font-story);
+}
+.cook-page .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.recipe-lesson {
+  display: grid;
+  gap: 4px;
+}

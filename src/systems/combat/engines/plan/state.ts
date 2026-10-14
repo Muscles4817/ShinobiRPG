@@ -8,6 +8,7 @@ import type {
 } from '../../contract';
 import { bodyFrom, type Body } from '../../rules/body';
 import { numberedNames } from '../../rules/narration';
+import { openingChakra, openingSteadiness } from '../../rules/provisions';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
 import type {
@@ -98,6 +99,8 @@ export interface PlanFighter
   readonly blows?: number;
   /** Steps played so far, for the outcome's usage report. */
   readonly footwork?: number;
+  /** A meal's second wind has come (`rules/provisions.ts`): it comes once a fight. */
+  readonly secondWindSpent?: boolean;
 }
 
 /** The change to a fighter who pays chakra: less left, more spent (never below empty). */
@@ -203,12 +206,16 @@ function fighterFrom(
   side: 'player' | 'enemy',
   isPlayer = false,
 ): PlanFighter {
+  const body = bodyFrom(setup, side, isPlayer);
+  const steady = openingSteadiness(body);
   return {
-    ...bodyFrom(setup, side, isPlayer),
+    ...body,
+    chakra: openingChakra(body),
     stunned: 0,
     sealed: 0,
     loadout: EMPTY_LOADOUT,
     row: preferredRow(setup),
+    ...(steady !== undefined ? { steadyUntil: steady } : {}),
   };
 }
 
@@ -267,6 +274,7 @@ export function patch(
       | 'clones'
       | 'blows'
       | 'footwork'
+      | 'secondWindSpent'
     >
   >,
 ): PlanFighter[] {

@@ -4,7 +4,6 @@ import { enemyCombatant, playerCombatant } from '@/game/combatants';
 import { findPerson } from '@/game/people/cast';
 import { companionCombatant } from '@/game/people/companions';
 import { stageFoes } from '@/systems/missions';
-import { gradesFromQuickPick } from '@/systems/profile';
 import { createPlanEngine, type CombatSetup, type CombatantSetup } from '@/systems/combat';
 import type { Discipline } from '@/systems/techniques';
 import { ctx, draft, formTeam } from '@/test/gameFixtures';
@@ -18,19 +17,17 @@ import { STALEMATE_EXCHANGES } from './runner';
  * specialise), and that is where balance breaks first.
  */
 
-/** A fresh character's specialty, with the other picks that follow from it. */
-const PICKS: Readonly<Record<Discipline, { strength: Discipline; weakness: Discipline }>> = {
-  taijutsu: { strength: 'ninjutsu', weakness: 'genjutsu' },
-  ninjutsu: { strength: 'taijutsu', weakness: 'kenjutsu' },
-  genjutsu: { strength: 'ninjutsu', weakness: 'taijutsu' },
-  kenjutsu: { strength: 'taijutsu', weakness: 'fuuinjutsu' },
-  fuuinjutsu: { strength: 'ninjutsu', weakness: 'kenjutsu' },
-};
+/** The nature every bench character has, so the bench measures plans and not the paper's roll. */
+const BENCH_NATURE = 'fire';
 
-/** A new game whose character specialises in `specialty`, team formed. */
+/**
+ * A new game whose character is a steady student of `specialty` in the middle of the class,
+ * team formed, with the bench's nature.
+ */
 export function freshCharacter(specialty: Discipline, talentId = 'sensor'): GameState {
-  const grades = gradesFromQuickPick({ specialty, ...PICKS[specialty] });
-  return formTeam(createNewGame({ draft: draft({ grades, talentId }), seed: 1234 }, ctx));
+  const quickPick = { archetype: 'steady', specialty } as const;
+  const game = createNewGame({ draft: draft({ quickPick, talentId }), seed: 1234 }, ctx);
+  return formTeam({ ...game, character: { ...game.character, nature: BENCH_NATURE } });
 }
 
 /** A genin of the cast (authored or generated) as a sparring opponent. */

@@ -4,12 +4,14 @@ import {
   createNewGame,
   defaultDraft,
   dispatch,
+  reviseDraft,
   type CreationDraft,
   type GameAction,
   type GameContext,
   type GameState,
 } from '@/game';
 import { createDuelEngine } from '@/systems/combat';
+import { GRADE_XP } from '@/systems/cooking';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 /** Tests use the original pack: its ids are stable and it always ships. */
@@ -18,12 +20,16 @@ export const ctx: GameContext = contextForPack('original')!;
 /** The same game with the shelved Classic style offered too, as the default. */
 export const classicCtx: GameContext = { ...ctx, engines: [createDuelEngine(), ...ctx.engines] };
 
-/** A clanless sensor, taijutsu specialist (A taijutsu, B ninjutsu, D genjutsu). */
+/**
+ * A clanless sensor from a civilian family, a steady taijutsu student in the middle of the
+ * class. Overrides go through `reviseDraft`, so a changed standing or quick pick refills the file.
+ */
 export function draft(
   overrides: Partial<CreationDraft> = {},
   context: GameContext = ctx,
 ): CreationDraft {
-  return { ...defaultDraft(context), name: 'Kaito', talentId: 'sensor', ...overrides };
+  const named = { name: 'Kaito', talentId: 'sensor', ...overrides };
+  return reviseDraft(defaultDraft(context), named, context);
 }
 
 /** A game straight out of character creation, before teams are read out. */
@@ -31,11 +37,15 @@ export function freshGame(context: GameContext = ctx): GameState {
   return createNewGame({ draft: draft({}, context), seed: 1234 }, context);
 }
 
-/** Reads out the teams and takes the first sensei offered, clearing the result card. */
+/**
+ * Reads out the teams, takes the first sensei offered and the chakra paper test they hand you,
+ * clearing the result cards.
+ */
 export function formTeam(state: GameState, context: GameContext = ctx): GameState {
   const assigned = act(state, { type: 'assignTeam' }, context);
   const senseiId = assigned.people.team?.senseiOptions[0] ?? '';
-  return { ...act(assigned, { type: 'chooseSensei', senseiId }, context), reports: [] };
+  const formed = act(assigned, { type: 'chooseSensei', senseiId }, context);
+  return { ...act(formed, { type: 'testChakraPaper' }, context), reports: [] };
 }
 
 /** Puts every job on the board, so tests can take any job they are trusted with. */
@@ -46,9 +56,17 @@ export function postEverything(state: GameState, context: GameContext = ctx): Ga
   return { ...state, board: { ...state.board, refreshedDay: state.time.day, postings } };
 }
 
-/** A game ready to play, with its team formed and every job posted. */
+/** Knows every recipe in the pack, never cooked, as a grade D cook: any rank C dish is in reach. */
+export function knowEveryRecipe(state: GameState, context: GameContext = ctx): GameState {
+  const known = Object.fromEntries(context.content.recipes.all.map((r) => [r.id, 0]));
+  return { ...state, cooking: { ...state.cooking, xp: GRADE_XP.D, known } };
+}
+
+/** A game ready to play, with its team formed, every job posted and every recipe known. */
 export function newGame(overrides: Partial<GameState> = {}, context: GameContext = ctx): GameState {
-  return { ...postEverything(formTeam(freshGame(context), context), context), ...overrides };
+  const posted = postEverything(formTeam(freshGame(context), context), context);
+  const ready = knowEveryRecipe(posted, context);
+  return { ...ready, ...overrides };
 }
 
 /** Dispatches an action, failing the test if it is refused. */

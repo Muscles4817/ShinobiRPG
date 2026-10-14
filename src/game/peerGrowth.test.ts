@@ -35,12 +35,16 @@ describe('generated genin', () => {
   it('are made with a rank, a graduate’s stats and a talent of their own', () => {
     for (const person of newGame().people.generated) {
       expect(person.rank).toBe('genin');
-      const specialty = person.specialty ?? 'taijutsu';
-      // An A on the report card, as the player's: the base and its bonus, give or take the spread.
-      expect(person.stats[specialty]).toBeGreaterThanOrEqual(7);
-      for (const id of STAT_IDS) expect(statTier(person.stats[id]).grade).toMatch(/[ED]/);
+      // Made like the player: early training on a file, nothing past C at graduation.
+      for (const id of STAT_IDS) expect(statTier(person.stats[id]).grade).toMatch(/[EDC]/);
+      expect(Math.max(...STAT_IDS.map((id) => person.stats[id]))).toBeGreaterThanOrEqual(6);
       expect(person.aptitude).toBeDefined();
     }
+    // A year is a spread: some of it has a stat well into D.
+    const best = newGame().people.generated.map((p) =>
+      Math.max(...STAT_IDS.map((id) => p.stats[id])),
+    );
+    expect(Math.max(...best)).toBeGreaterThanOrEqual(10);
     const talents = newGame().people.generated.map((p) => JSON.stringify(p.aptitude));
     expect(new Set(talents).size).toBeGreaterThan(1);
   });

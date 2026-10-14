@@ -91,7 +91,7 @@ describe('content validation', () => {
       return p;
     });
     const problems = validateContent({ ...ORIGINAL_PACK, people });
-    expect(problems).toContain('person "kaen" (genin) has a best stat at B, outside E–D');
+    expect(problems).toContain('person "kaen" (genin) has a best stat at B, outside E–C');
     expect(problems).toContain('person "goran" is a sensei but ranked chunin');
     expect(problems).toContain('sensei "akari" must be B or A in ninjutsu');
     expect(problems).toContain('person "tsune" has an aptitude outside 0–1.8 in intellect');

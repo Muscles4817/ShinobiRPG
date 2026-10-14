@@ -1,19 +1,22 @@
 import type {
   ArmourLevel,
+  CombatProvision,
   CombatItemEffect,
   FocusTarget,
   GearRank,
   WeaponEffect,
   WeaponShape,
 } from '@/systems/combat';
+import type { CookingMethod, CookingSteps } from '@/systems/cooking';
 import type { ModifierSpec } from '@/systems/modifiers';
+import type { StatGrade } from '@/systems/stats';
 import type { Season } from '@/systems/time';
 
 import type { IconId } from './art';
 
 /**
- * Content schemas for things you can own: gear to equip, tools to use up in fights, ingredients
- * and the recipes they make.
+ * Content schemas for things you can own: gear to equip, tools to use up in fights, ingredients,
+ * the recipes they make and the cookbooks that teach them.
  */
 
 /** Where a piece is worn: a held weapon, a thrown one, armour, and a focus charm. */
@@ -93,9 +96,44 @@ export interface RecipeDef {
   readonly name: string;
   readonly description: string;
   readonly icon: IconId;
+  /** E–S like a technique: a cook can manage one rank above their grade, never two. */
+  readonly rank: StatGrade;
+  /** Everyone knows it from the start (validated: rank E). */
+  readonly starter?: boolean;
+  /**
+   * A snack (tea, a sweet) sits beside the day's meal: its buff lasts only through the next
+   * stretch of the day, and a new snack replaces it. Absent: a meal.
+   */
+  readonly kind?: 'snack';
+  /** How it's cooked: the method sets the right cut, heat and finish at the stove. */
+  readonly method: CookingMethod;
+  /** Where this dish goes against its method (a gentle fry for a rolled omelette). */
+  readonly steps?: Partial<CookingSteps>;
   readonly ingredients: readonly IngredientCount[];
   readonly satiety: number;
   readonly energy: number;
+  /** Health it gives back as you eat it (a broth, not a hospital). */
+  readonly health?: number;
+  /** Chakra it gives back as you eat it (rare, chakra-rich food). */
+  readonly chakra?: number;
   /** "Well fed": lasts until the end of the day you eat it. Shown via `describeSpec`. */
   readonly buff: ModifierSpec;
+  /** What it brings into the day's fights when cooked well (good or fine). */
+  readonly provision?: CombatProvision;
+}
+
+/** A cookbook: bought once at a stall, it teaches every recipe in it. */
+export interface CookbookDef {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly cost: number;
+  readonly icon: IconId;
+  readonly recipeIds: readonly string[];
+}
+
+/** A recipe someone will teach you once you are close enough (a bond stage). */
+export interface RecipeLesson {
+  readonly recipeId: string;
+  readonly minStage: number;
 }

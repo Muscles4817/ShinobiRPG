@@ -1,10 +1,12 @@
 import { gearSlot, type GearDef, type PromotedRank } from '@/content';
 import { addGear, equip } from '@/systems/inventory';
 import { promote, RANK_LABELS } from '@/systems/standing';
-import { statTier, STAT_GRADES, type StatGrade } from '@/systems/stats';
+import { describeSpec } from '@/systems/modifiers';
+import { statTier, STAT_GRADES, type StatDelta, type StatGrade } from '@/systems/stats';
 import { DISCIPLINES } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
+import { withBreakthrough } from '../breakthroughs';
 import { busyReason, chip, log } from '../ops';
 import type { GameState } from '../state';
 import { examHere } from './current';
@@ -23,6 +25,15 @@ export const JONIN_SENIOR_MISSIONS = 5;
 export const JONIN_SPECIALTY_GRADE: StatGrade = 'B';
 /** …and this much reputation with the village. */
 export const JONIN_REPUTATION = 80;
+
+/**
+ * What a promotion does to the body's limits: the work and fights that earned the rank have
+ * deepened your reserves (a breakthrough, `breakthroughs.ts`).
+ */
+export const PROMOTION_LIMITS: Readonly<Record<PromotedRank, StatDelta>> = {
+  chunin: { reserves: 4 },
+  jonin: { reserves: 4 },
+};
 
 /** The vest a new chūnin is handed: the pack's plainest flak armour. */
 export function chuninVest(ctx: GameContext): GearDef | null {
@@ -105,8 +116,13 @@ export function acceptPromotion(state: GameState, ctx: GameContext): GameState {
   if (!ceremony) return state;
   const unlocks = unlocksFor(state, ctx, ceremony.rank);
   const vest = ceremony.rank === 'chunin' ? chuninVest(ctx) : null;
+  const breakthrough = {
+    source: `promotion:${ceremony.rank}`,
+    limits: PROMOTION_LIMITS[ceremony.rank],
+  };
   const raised: GameState = {
     ...withVest(state, ctx, ceremony.rank),
+    character: withBreakthrough(state.character, breakthrough),
     standing: promote(state.standing, ceremony.rank),
     exams: { ...state.exams, ceremony: null },
   };
@@ -117,6 +133,10 @@ export function acceptPromotion(state: GameState, ctx: GameContext): GameState {
         ? `It opens: ${unlocks.map((u) => u.heading.toLowerCase()).join(', ')}.`
         : 'A new rank.',
     tone: 'success',
-    chips: [chip(RANK_LABELS[ceremony.rank], 'gain'), ...(vest ? [chip(vest.name, 'gain')] : [])],
+    chips: [
+      chip(RANK_LABELS[ceremony.rank], 'gain'),
+      ...(vest ? [chip(vest.name, 'gain')] : []),
+      ...describeSpec({ limitBonus: breakthrough.limits }).map((l) => chip(l.label, l.tone)),
+    ],
   });
 }

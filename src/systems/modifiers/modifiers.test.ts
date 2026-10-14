@@ -37,6 +37,20 @@ describe('modifiers', () => {
     ]);
   });
 
+  it('adds up limit shifts from every source, and says which way they go', () => {
+    const mods = combine([
+      { limitBonus: { speed: 6, strength: -6 } },
+      { limitBonus: { speed: 3 } },
+    ]);
+    expect(mods.limitBonus.speed).toBe(9);
+    expect(mods.limitBonus.strength).toBe(-6);
+    expect(mods.limitBonus.stamina).toBe(0);
+    expect(describeSpec({ limitBonus: { speed: 6, strength: -6 } })).toEqual([
+      { label: 'Speed can go further', tone: 'gain' },
+      { label: 'Strength tops out sooner', tone: 'cost' },
+    ]);
+  });
+
   it('collects hard-work floors from every source', () => {
     const floor = { floor: 0.4, throughGrade: 'B' } as const;
     const lower = { floor: 0.2, throughGrade: 'C' } as const;
@@ -68,5 +82,36 @@ describe('modifiers', () => {
         tone: 'gain',
       },
     ]);
+  });
+
+  it('combines a day of food: energy, sleep, bonds and checks multiply, injury nights add', () => {
+    const mods = combine([
+      { energyCost: 0.9, sleepHealing: 1.2, injuryNights: 1, bondGain: 1.25 },
+      { energyCost: 0.9, injuryNights: 1, checks: { perception: 1.15 } },
+    ]);
+    expect(mods.energyCost).toBeCloseTo(0.81);
+    expect(mods.sleepHealing).toBeCloseTo(1.2);
+    expect(mods.injuryNights).toBe(2);
+    expect(mods.bondGain).toBeCloseTo(1.25);
+    expect(mods.checks.perception).toBeCloseTo(1.15);
+    expect(mods.checks.speed).toBe(1);
+  });
+
+  it('describes the effects of a day of food in words', () => {
+    const lines = describeSpec({
+      energyCost: 0.85,
+      sleepHealing: 1.3,
+      injuryNights: 1,
+      bondGain: 1.25,
+      checks: { perception: 1.15 },
+    });
+    expect(lines.map((l) => l.label)).toEqual([
+      'Hard work tires you 15% less',
+      'Sleep heals 30% more',
+      "Tonight's sleep heals injuries a day sooner",
+      'Time with people counts 25% more',
+      'Perception in job checks 15% sharper',
+    ]);
+    expect(lines.every((l) => l.tone === 'gain')).toBe(true);
   });
 });

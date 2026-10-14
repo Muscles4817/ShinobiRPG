@@ -14,5 +14,15 @@ export interface Stall {
   readonly foodIds: readonly string[];
   /** Raw ingredients to cook at home (a grocer). */
   readonly ingredientIds?: readonly string[];
+  /** Cookbooks for sale: each teaches its recipes. */
+  readonly cookbookIds?: readonly string[];
   readonly hours?: OpeningHours;
+  /** A travelling merchant: sets up only on its days (see `StallVisits`). Absent: always here. */
+  readonly visits?: StallVisits;
+}
+
+/** A visiting stall comes every `every` days, on the days where (day − 1) mod `every` is `on`. */
+export interface StallVisits {
+  readonly every: number;
+  readonly on: number;
 }

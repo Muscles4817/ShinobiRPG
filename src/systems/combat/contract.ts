@@ -68,6 +68,13 @@ export { COMBAT_ITEM_EFFECTS, type CombatItem, type CombatItemEffect } from './g
 export type CombatPerk = 'insight';
 
 /**
+ * What a good meal brings into a fight (`rules/provisions.ts`): chakra topped up, a steady
+ * opening, harms that wear off sooner, a second wind. Never a stat.
+ */
+export const COMBAT_PROVISIONS = ['fortified', 'steady', 'antidote', 'second-wind'] as const;
+export type CombatProvision = (typeof COMBAT_PROVISIONS)[number];
+
+/**
  * How a combatant fights, beyond their numbers. Every engine honours the same traits (see
  * `rules/kit.ts` and `rules/conditions.ts`), so an archer is an archer in every fight style.
  */
@@ -102,6 +109,8 @@ export interface CombatantSetup {
   readonly items?: readonly CombatItem[];
   /** Equipped gear (see `gearContract.ts`); absent for fighters armed as their kit suggests. */
   readonly gear?: CombatGear;
+  /** What today's meal brings into the fight (the player's). */
+  readonly provisions?: readonly CombatProvision[];
   /** A preferred row; when absent the engine places the fighter by their kit. */
   readonly row?: CombatRow;
   /** An ally's stance; when absent the engine picks one from their kit. */

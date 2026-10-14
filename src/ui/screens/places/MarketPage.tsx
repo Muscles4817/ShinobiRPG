@@ -1,4 +1,4 @@
-import { headerView, marketView } from '@/game';
+import { headerView, marketView, type CookbookItem, type GameAction } from '@/game';
 
 import { Icon } from '../../art/Icon';
 import { Banner } from '../../components/Banner';
@@ -6,6 +6,37 @@ import { FoodCard } from './FoodCard';
 import type { PlaceProps } from '../types';
 
 const CURTAINS = ['#a3361f', '#2b4f7a', '#4a6b3a', '#5a3a6e'];
+
+/** A cookbook on the grocer's shelf: what it teaches, and how much of it is new to you. */
+function CookbookButton({
+  book,
+  perform,
+}: {
+  readonly book: CookbookItem;
+  readonly perform: (action: GameAction) => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="item"
+      disabled={book.blocker !== null}
+      title={book.blocker ?? undefined}
+      onClick={() => {
+        perform(book.action);
+      }}
+    >
+      <span className="tag num">{book.cost}</span>
+      <b>
+        <Icon id={book.icon} size={18} />
+        {book.name}
+      </b>
+      <small className="muted">Teaches {book.recipes.join(', ')}</small>
+      <small className={book.blocker ? 'blocker' : 'muted'}>
+        {book.blocker ?? `${book.fresh} new to you`}
+      </small>
+    </button>
+  );
+}
 
 /** A street of stalls: shop curtains, product cards with price tags, and your purse. */
 export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
@@ -36,6 +67,11 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
             </span>
           </span>
         </section>
+        {view.coming.map((line) => (
+          <p key={line} className="muted small">
+            {line}
+          </p>
+        ))}
         {view.festival && (
           <p className="festival-note">{view.festival}: festival prices on every stall.</p>
         )}
@@ -76,6 +112,9 @@ export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
                         (item.inPantry > 0 ? `${item.inPantry} at home` : 'For cooking at home')}
                     </small>
                   </button>
+                ))}
+                {stall.cookbooks.map((book) => (
+                  <CookbookButton key={book.id} book={book} perform={perform} />
                 ))}
               </div>
             )}

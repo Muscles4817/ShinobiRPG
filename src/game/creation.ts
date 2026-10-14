@@ -1,22 +1,25 @@
 import { createRng } from '@/core';
+import { learnRecipes, NO_COOKING } from '@/systems/cooking';
 import { freeLodging, newTenancy } from '@/systems/housing';
 import { EMPTY_INVENTORY } from '@/systems/inventory';
 import { EMPTY_JOURNAL } from '@/systems/journal';
 import {
-  budgetOf,
   GRADES,
-  gradeStatBonuses,
-  gradesProblem,
+  gradesFor,
+  giftsKnown,
   STANDING_INFO,
   topDisciplines,
+  withGifts,
+  type AcademyFile,
   type Appearance,
   type ClassStanding,
   type Grades,
   type Pronouns,
+  type QuickPick,
 } from '@/systems/profile';
 import { NEW_GENIN } from '@/systems/standing';
-import { checkChance, createStats, nothingKnown, STAT_INFO, sumDeltas } from '@/systems/stats';
-import { DISCIPLINES, type Discipline, type Element } from '@/systems/techniques';
+import { checkChance, nothingKnown, STAT_INFO } from '@/systems/stats';
+import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
 import { NO_LEAVE } from '@/systems/travel';
 import { fullVitals } from '@/systems/vitals';
@@ -30,13 +33,14 @@ import { defaultSettings } from './fightStyle';
 import { withIssuedBlade } from './gear';
 import { NO_PEOPLE } from './people/state';
 import type { GameState } from './state';
+import { bornNature } from './nature';
+import { BASE_STAT, graduationStats, studentProblems, type StudentProfile } from './student';
 
 /**
  * Character creation. The UI collects a CreationDraft over the academy break-in scene;
  * `createNewGame` turns a valid draft into the first GameState.
  */
 
-export const BASE_STAT = 5;
 export const TRAIT_COUNT = 2;
 
 export interface CreationDraft {
@@ -50,8 +54,14 @@ export interface CreationDraft {
   readonly standing: ClassStanding;
   /** The player let fate decide the standing (the file revealed it). */
   readonly fated?: boolean;
-  readonly grades: Grades;
-  readonly nature: Element;
+  /** How they were raised (`UpbringingDef`): their early training. */
+  readonly upbringingId: string;
+  /** Their frame (`BuildDef`). */
+  readonly buildId: string;
+  /** Early training, known gifts and flaws, and when they bloomed. */
+  readonly file: AcademyFile;
+  /** The kind of student the file was filled for, or null when it was written by hand. */
+  readonly quickPick: QuickPick | null;
   readonly traitIds: readonly string[];
   readonly talentId: string;
   readonly nindoId: string;
@@ -100,15 +110,27 @@ export function draftProblems(draft: CreationDraft, ctx: GameContext): string[] 
     first?.opposite === second?.id &&
       first !== undefined &&
       'Those two traits contradict each other.',
-    gradesProblem(draft.grades, budgetOf(draft.standing)),
+    ...studentProblems(profileOf(draft), ctx),
   ];
   return problems.filter((p): p is string => typeof p === 'string');
 }
 
-function startingTechniques(draft: CreationDraft, ctx: GameContext): string[] {
+/** The draft as the student it describes. */
+export function profileOf(draft: CreationDraft): StudentProfile {
+  return {
+    clanId: draft.clanId,
+    talentId: draft.talentId,
+    buildId: draft.buildId,
+    upbringingId: draft.upbringingId,
+    standing: draft.standing,
+    file: draft.file,
+  };
+}
+
+function startingTechniques(draft: CreationDraft, grades: Grades, ctx: GameContext): string[] {
   const { content } = ctx;
   const clan = content.clans.require(draft.clanId);
-  const starters = topDisciplines(draft.grades).map((d) => content.disciplineStarters[d]);
+  const starters = topDisciplines(grades).map((d) => content.disciplineStarters[d]);
   return [...new Set([...content.academyTechniques, ...clan.startingTechniqueIds, ...starters])];
 }
 
@@ -131,18 +153,18 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
   const { content } = ctx;
   const clan = content.clans.require(draft.clanId);
   const talent = content.talents.require(draft.talentId);
-  const stats = createStats(
-    BASE_STAT,
-    sumDeltas(clan.statBonuses, talent.statBonuses, gradeStatBonuses(draft.grades)),
-  );
+  const stats = graduationStats(profileOf(draft), ctx);
+  const grades = gradesFor(stats);
   const location = { locationId: content.startLocationId };
   const home = placeHere(location, ctx, 'home');
   if (!home) throw new Error(`Start location "${content.startLocationId}" has no home`);
   const roll = rollBreakIn(ctx, draft.breakInApproachId, seed);
   const dice = createRng(roll.rngState);
-  const shape = { band: STANDING_INFO[draft.standing].talent, specialties: bestArts(draft.grades) };
-  const aptitude = rollCharacterAptitude(dice, clan, talent, shape);
-  const known = startingTechniques(draft, ctx);
+  const shape = { band: STANDING_INFO[draft.standing].talent, specialties: bestArts(grades) };
+  const rolled = rollCharacterAptitude(dice, clan, talent, shape);
+  // What the special note fixes (an art that never takes) stands over any gift.
+  const aptitude = { ...withGifts(rolled, draft.file.gifts), ...talent.aptitude };
+  const known = startingTechniques(draft, grades, ctx);
 
   const state: GameState = {
     packId: content.packId,
@@ -155,9 +177,13 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       pronouns: draft.pronouns,
       appearance: draft.appearance,
       clanId: clan.id,
-      grades: draft.grades,
+      grades,
       classStanding: draft.standing,
-      nature: draft.nature,
+      upbringingId: draft.upbringingId,
+      buildId: draft.buildId,
+      breakthroughs: [],
+      nature: bornNature(seed, clan),
+      natureKnown: false,
       traitIds: draft.traitIds,
       talentId: talent.id,
       nindoId: draft.nindoId,
@@ -165,7 +191,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       stats,
       startingStats: stats,
       aptitude,
-      aptitudeKnown: nothingKnown(),
+      aptitudeKnown: giftsKnown(nothingKnown(), draft.file.gifts),
       aptitudeSessions: {},
       vitals: fullVitals(stats),
       meal: null,
@@ -188,6 +214,10 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     village: { lastSightDay: null, lastRoundDay: null, marks: [], memories: [], clients: {} },
     exams: NO_EXAMS,
     leave: NO_LEAVE,
+    cooking: learnRecipes(
+      NO_COOKING,
+      content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),
+    ),
   };
   return logOpening(state, ctx, roll);
 }

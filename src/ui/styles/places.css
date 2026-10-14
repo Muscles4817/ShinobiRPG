@@ -729,3 +729,34 @@
 .room-slip .muted {
   color: var(--paper-muted);
 }
+.stove-beat {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.stove-beat legend {
+  font-family: var(--font-story);
+  margin-bottom: 4px;
+}
+.experiment {
+  display: grid;
+  gap: 8px;
+}
+.wilds {
+  display: grid;
+  gap: 10px;
+}
+.gather-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--grain), var(--surface);
+}
+.gather-card h3 {
+  margin: 0;
+  font-family: var(--font-story);
+}

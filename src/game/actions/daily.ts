@@ -1,7 +1,7 @@
 import { isRentOverdue } from '@/systems/housing';
 import { diffStats, type StatDelta, type StatId } from '@/systems/stats';
 import { slotsUntilNextMorning } from '@/systems/time';
-import { isHungry, METER_MAX, sleepRecovery } from '@/systems/vitals';
+import { isHungry, maxChakra, METER_MAX, sleepRecovery, type VitalsDelta } from '@/systems/vitals';
 import { spend } from '@/systems/wallet';
 
 import {
@@ -16,9 +16,10 @@ import {
   statChips,
 } from '../ops';
 import { weakFromHunger } from '../hunger';
-import { laidUp, sleepChakra } from '../injuries';
+import { laidUp, mendedOvernight, sleepChakra } from '../injuries';
 import type { GameContext } from '../context';
 import { growCharacter, logDiscoveries, noTalentReason } from '../growth';
+import { characterModifiers, hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { closedReason, foodSellersHere, isOpen, marketPrice } from '../village';
 import type { ActionHandler, ActionOf } from './types';
@@ -62,32 +63,33 @@ export const train: ActionHandler<ActionOf<'train'>> = {
     const def = ctx.content.training.get(action.trainingId);
     if (!def || !offeredHere(state, ctx).training(def.id)) return 'You can’t train that here.';
     const main = mainStat(def.gains);
+    const energy = hardWorkEnergy(state.character, ctx, def.energyCost);
     return firstBlocker(
       busyReason(state),
       main !== undefined && noTalentReason(state.character, main, ctx),
       weakFromHunger(state),
       laidUp(state, ctx),
-      state.character.vitals.energy < def.energyCost &&
-        `Needs ${def.energyCost} energy. Nap or eat first.`,
+      state.character.vitals.energy < energy && `Needs ${energy} energy. Nap or eat first.`,
       healthFraction(state) < MIN_HEALTH_TO_TRAIN && 'You are too injured to train.',
     );
   },
   perform(state, action, ctx) {
     const def = ctx.content.training.require(action.trainingId);
     const hungry = isHungry(state.character.vitals);
+    const energy = hardWorkEnergy(state.character, ctx, def.energyCost);
     const before = state.character.stats;
     const grown = growCharacter(state.character, def.gains, ctx);
     const { stats } = grown.character;
 
     let next: GameState = { ...state, character: grown.character };
-    next = adjust(spendTime(next, def.slots, ctx), { energy: -def.energyCost });
+    next = adjust(spendTime(next, def.slots, ctx), { energy: -energy });
     const logged = log(next, {
       heading: def.name,
       text: hungry
         ? `${def.description} Your rumbling stomach makes it hard to focus.`
         : def.description,
       tone: 'info',
-      chips: [...statChips(diffStats(before, stats)), chip(`−${def.energyCost} energy`, 'cost')],
+      chips: [...statChips(diffStats(before, stats)), chip(`−${energy} energy`, 'cost')],
     });
     return logDiscoveries(logged, grown.discovered, ctx);
   },
@@ -176,13 +178,11 @@ export interface Night {
 /** To the next morning in a bed: energy and chakra back, and some health. */
 export function sleepTillDawn(state: GameState, ctx: GameContext, night: Night): GameState {
   const chakra = sleepChakra(state);
-  const full = {
-    ...sleepRecovery(state.character.vitals, state.character.stats),
-    chakra: chakra.chakra,
-  };
+  const full = nightsRest(state, ctx);
   const recovery = { ...full, health: Math.round((full.health ?? 0) * night.healthShare) };
   const before = state.character.vitals.health;
-  const rested = adjust(spendTime(state, slotsUntilNextMorning(state.time), ctx), recovery);
+  const mended = mendedOvernight(state, characterModifiers(state.character, ctx).injuryNights);
+  const rested = adjust(spendTime(mended, slotsUntilNextMorning(state.time), ctx), recovery);
   return log(rested, {
     heading: 'Sleep till dawn',
     text: night.text,
@@ -193,6 +193,25 @@ export function sleepTillDawn(state: GameState, ctx: GameContext, night: Night):
       chip(`Health +${Math.max(0, rested.character.vitals.health - before)}`, 'gain'),
     ],
   });
+}
+
+/**
+ * What a night in your own bed gives back: energy, health (more after a restful meal) and
+ * chakra (only part of it while exhausted, though a restful meal eases that too).
+ */
+function nightsRest(state: GameState, ctx: GameContext): VitalsDelta {
+  const { vitals, stats } = state.character;
+  const { sleepHealing } = characterModifiers(state.character, ctx);
+  const base = sleepRecovery(vitals, stats);
+  const night = sleepChakra(state);
+  const emptied = maxChakra(stats) - vitals.chakra;
+  return {
+    ...base,
+    health: Math.round((base.health ?? 0) * sleepHealing),
+    chakra: night.partial
+      ? Math.min(emptied, Math.round(night.chakra * sleepHealing))
+      : night.chakra,
+  };
 }
 
 /** Warns once, on the morning the rent falls due. */

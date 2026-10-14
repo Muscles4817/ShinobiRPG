@@ -19,6 +19,7 @@ export function validateWorld(pack: ContentPack): string[] {
     gear: new Set(pack.gear.map((g) => g.id)),
     tool: new Set(pack.tools.map((t) => t.id)),
     ingredient: new Set(pack.ingredients.map((i) => i.id)),
+    cookbook: new Set(pack.cookbooks.map((c) => c.id)),
   };
   const reached = {
     training: new Set<string>(),
@@ -27,6 +28,7 @@ export function validateWorld(pack: ContentPack): string[] {
     gear: new Set<string>(),
     tool: new Set<string>(),
     ingredient: new Set<string>(),
+    cookbook: new Set<string>(),
   };
 
   for (const location of pack.locations) {
@@ -42,7 +44,14 @@ export function validateWorld(pack: ContentPack): string[] {
       stallRefs(s).map(([kind, id]) => ({ place: { id: `festival ${f.id}` }, kind, id })),
     ),
   );
-  for (const { place, kind, id } of [...placeLinks, ...festivalLinks]) {
+  const dropLinks = pack.enemies.flatMap((e) =>
+    (e.drops ?? []).map((id) => ({
+      place: { id: `enemy ${e.id}` },
+      kind: 'ingredient' as const,
+      id,
+    })),
+  );
+  for (const { place, kind, id } of [...placeLinks, ...festivalLinks, ...dropLinks]) {
     if (!refs[kind].has(id))
       problems.push(`place "${place.id}" references unknown ${kind} "${id}"`);
     if (kind !== 'technique') reached[kind].add(id);
@@ -51,22 +60,42 @@ export function validateWorld(pack: ContentPack): string[] {
   const unique = new Set(pack.gear.filter((g) => g.unique === true).map((g) => g.id));
   // Exam-only missions are run by an exam's stage, never offered (`validateExams.ts`).
   const examOnly = new Set(pack.missions.filter((m) => m.examOnly === true).map((m) => m.id));
-  for (const kind of ['training', 'food', 'mission', 'gear', 'tool', 'ingredient'] as const) {
+  const offered = [
+    'training',
+    'food',
+    'mission',
+    'gear',
+    'tool',
+    'ingredient',
+    'cookbook',
+  ] as const;
+  for (const kind of offered) {
     refs[kind].forEach((id) => {
       if (kind === 'gear' && unique.has(id)) return;
       if (kind === 'mission' && examOnly.has(id)) return;
       if (!reached[kind].has(id)) problems.push(`${kind} "${id}" is not offered at any place`);
     });
   }
-  return problems;
+  return [...problems, ...visitProblems(pack)];
 }
 
-type RefKind = 'training' | 'food' | 'mission' | 'technique' | 'gear' | 'tool' | 'ingredient';
+/** A travelling stall's visits must come round: every day or more, on a day of the cycle. */
+function visitProblems(pack: ContentPack): string[] {
+  return pack.locations
+    .flatMap((l) => l.places)
+    .flatMap((p) => (p.kind === 'market' ? p.stalls : []))
+    .filter(({ visits: v }) => v && !(v.every >= 1 && v.on >= 0 && v.on < v.every))
+    .map((s) => `stall "${s.name}" visits on a day its cycle never reaches`);
+}
+
+type RefKind =
+  'training' | 'food' | 'mission' | 'technique' | 'gear' | 'tool' | 'ingredient' | 'cookbook';
 
 function stallRefs(stall: Stall): [RefKind, string][] {
   return [
     ...stall.foodIds.map((id): [RefKind, string] => ['food', id]),
     ...(stall.ingredientIds ?? []).map((id): [RefKind, string] => ['ingredient', id]),
+    ...(stall.cookbookIds ?? []).map((id): [RefKind, string] => ['cookbook', id]),
   ];
 }
 
@@ -88,6 +117,11 @@ function placeRefs(place: PlaceDef): [RefKind, string][] {
     case 'academy':
     case 'library':
       return place.techniqueIds.map((id) => ['technique', id]);
+    case 'wilds':
+      return [...place.finds, ...(place.spots ?? []).flatMap((s) => s.catches)].map((f) => [
+        'ingredient',
+        f.ingredientId,
+      ]);
     case 'home':
     case 'hospital':
     case 'inn':

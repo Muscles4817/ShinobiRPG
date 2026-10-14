@@ -9,6 +9,7 @@ import { validateInjuries } from './validateInjuries';
 import { validatePeople } from './validatePeople';
 import { validateTechniques } from './validateTechniques';
 import { validateRanks } from './validateRanks';
+import { validateRecipes } from './validateRecipes';
 import { validateSeasons } from './validateSeasons';
 import { validateSources } from './validateSources';
 import { validateTeachers } from './validateTeachers';
@@ -20,6 +21,7 @@ import { validateStory } from './validateStory';
 import { jobProfile } from './jobProfile';
 import { placeholdersIn } from './missionTemplates';
 import type { ContentPack, Identified } from './types';
+import { DEFAULT_BUILD_ID, DEFAULT_UPBRINGING } from './upbringing';
 
 /**
  * Integrity checks for a content pack: unique ids, resolvable cross-references and sane
@@ -40,7 +42,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...profileProblems(pack),
     ...validateTechniques(pack),
     ...validateSources(pack),
-    ...recipeProblems(pack),
+    ...validateRecipes(pack),
     ...validatePeople(pack),
     ...validateRanks(pack),
     ...validateTeachers(pack),
@@ -53,30 +55,6 @@ export function validateContent(pack: ContentPack): string[] {
   ];
 }
 
-/**
- * Recipes cook from ingredients the pack sells, and actually fill you up; something sold keeps
- * on the road, so a long job can be packed for.
- */
-function recipeProblems(pack: ContentPack): string[] {
-  const known = new Set(pack.ingredients.map((i) => i.id));
-  const roadFood = pack.ingredients.some((i) => (i.road ?? 0) > 0);
-  return [
-    ...(roadFood ? [] : ['pack sells no food that keeps on the road']),
-    ...recipeLines(pack, known),
-  ];
-}
-
-function recipeLines(pack: ContentPack, known: ReadonlySet<string>): string[] {
-  return pack.recipes.flatMap((r) => [
-    ...r.ingredients
-      .filter((i) => !known.has(i.id))
-      .map((i) => `recipe "${r.id}" needs unknown ingredient "${i.id}"`),
-    ...(r.ingredients.length === 0 || r.satiety <= 0
-      ? [`recipe "${r.id}" needs ingredients and must feed you`]
-      : []),
-  ]);
-}
-
 /** Clans declare the arts their members are talented in; the clanless have none. */
 function clanArtProblems(pack: ContentPack): string[] {
   return pack.clans.flatMap((c) => {
@@ -86,12 +64,31 @@ function clanArtProblems(pack: ContentPack): string[] {
   });
 }
 
+/** The default build and upbringings old saves are given, and a way to raise everyone. */
+function upbringingProblems(pack: ContentPack): string[] {
+  const has = (id: string) => pack.upbringings.some((u) => u.id === id);
+  const families = ['clan', 'clanless'] as const;
+  return [
+    !pack.builds.some((b) => b.id === DEFAULT_BUILD_ID) &&
+      `pack needs the "${DEFAULT_BUILD_ID}" build`,
+    ...families.map(
+      (f) => !has(DEFAULT_UPBRINGING[f]) && `pack needs the "${DEFAULT_UPBRINGING[f]}" upbringing`,
+    ),
+    ...pack.upbringings.map(
+      (u) =>
+        (u.focus?.points ?? 0) > u.earlyTraining &&
+        `upbringing "${u.id}" asks for more focused training than it gives`,
+    ),
+  ].filter((p): p is string => typeof p === 'string');
+}
+
 /** Clans, traits and clan techniques must fit together. */
 function profileProblems(pack: ContentPack): string[] {
   const clanIds = new Set(pack.clans.map((c) => c.id));
   const problems: string[] = [];
   if (!clanIds.has('none')) problems.push('pack needs a "none" clan for clanless characters');
   if (pack.traits.length < 2) problems.push('pack needs at least two traits');
+  problems.push(...upbringingProblems(pack));
   problems.push(...clanArtProblems(pack));
   for (const t of pack.techniques) {
     if (t.clan !== undefined && !clanIds.has(t.clan)) {
@@ -118,6 +115,8 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['training', pack.training],
     ['food', pack.foods],
     ['clan', pack.clans],
+    ['build', pack.builds],
+    ['upbringing', pack.upbringings],
     ['talent', pack.talents],
     ['trait', pack.traits],
     ['nindo', pack.nindos],
@@ -126,6 +125,7 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['injury', pack.injuries],
     ['ingredient', pack.ingredients],
     ['recipe', pack.recipes],
+    ['cookbook', pack.cookbooks],
     ['person', pack.people],
     ['conversation', pack.conversations],
   ];

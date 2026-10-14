@@ -7,9 +7,11 @@ import type { GameContext } from '../context';
 import { busyReason, chip, firstBlocker, log } from '../ops';
 import { bondOf, findPerson, whereNow } from '../people/cast';
 import type { GameState } from '../state';
+import { cookedAsUsual } from '../stove';
 import { festivalBondBonus } from '../village';
+import { warmed } from '../people/warmth';
 import { homeBlocker } from './daily';
-import { cookMeal, missingFor } from './kitchen';
+import { cookMeal, missingFor, recipeBlocker } from './kitchen';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
@@ -34,6 +36,8 @@ export function dinnerBlocker(
   return firstBlocker(
     busyReason(state),
     homeBlocker(state, ctx),
+    recipeBlocker(state, recipe),
+    recipe.kind === 'snack' && 'Guests come round for a meal, not a snack.',
     state.time.slot !== DINNER_SLOT && 'Guests come round in the evening.',
     missing && `Cooking for two. ${missing}`,
   );
@@ -57,10 +61,13 @@ export const hostDinner: ActionHandler<ActionOf<'hostDinner'>> = {
     const guest = findPerson(state, ctx, action.guestId);
     if (!guest) return state;
     const favourite = guest.favouriteRecipeId === recipe.id;
-    const delta = DINNER_BOND + (favourite ? FAVOURITE_BONUS : 0) + festivalBondBonus(state, ctx);
+    // The dish is on the table before the talk starts: a convivial one warms this very evening.
+    const { quality } = cookedAsUsual(state, recipe);
+    const meal = cookMeal(state, ctx, recipe, { servings: SERVINGS, quality });
+    const base = DINNER_BOND + (favourite ? FAVOURITE_BONUS : 0) + festivalBondBonus(state, ctx);
+    const delta = warmed(meal.state, ctx, base);
     const before = bondOf(state, guest.id);
     const after = recordMeeting(before, { day: state.time.day, delta });
-    const meal = cookMeal(state, ctx, recipe, SERVINGS);
     const newStage = stageOf(after.points) > stageOf(before.points);
     const hosted = {
       ...meal.state,

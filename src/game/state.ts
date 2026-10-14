@@ -1,4 +1,5 @@
 import type { CombatState } from '@/systems/combat';
+import type { Cooking, MealQuality } from '@/systems/cooking';
 import type { Housing } from '@/systems/housing';
 import type { Exhaustion, Injury } from '@/systems/injuries';
 import type { Inventory } from '@/systems/inventory';
@@ -6,7 +7,7 @@ import type { Journal } from '@/systems/journal';
 import type { Appearance, ClassStanding, Grades, Pronouns } from '@/systems/profile';
 import type { MissionRun } from '@/systems/missions';
 import type { Standing } from '@/systems/standing';
-import type { Aptitude, AptitudeKnown, StatId, Stats } from '@/systems/stats';
+import type { Aptitude, AptitudeKnown, StatDelta, StatId, Stats } from '@/systems/stats';
 import type { Element, TechniqueBook } from '@/systems/techniques';
 import type { GameTime } from '@/systems/time';
 import type { Leave } from '@/systems/travel';
@@ -60,6 +61,8 @@ export interface GameState {
   readonly exams: Exams;
   /** Leave from the village for trips of your own: a genin's pass, a chūnin's days. */
   readonly leave: Leave;
+  /** The recipes you know, how often you've cooked each, and your cooking grade. */
+  readonly cooking: Cooking;
 }
 
 /**
@@ -100,6 +103,20 @@ export interface Settings {
   readonly animations: boolean;
 }
 
+/** An event that moved natural limits: where it came from, and how far each limit moved. */
+export interface Breakthrough {
+  /** What it was, unique per character (e.g. "promotion:chunin"). */
+  readonly source: string;
+  readonly limits: StatDelta;
+}
+
+/** A snack you ate: its buff works through slot `untilSlot` (counted from the first morning). */
+export interface Snack {
+  readonly recipeId: string;
+  readonly quality: MealQuality;
+  readonly untilSlot: number;
+}
+
 export interface Character {
   readonly name: string;
   /** Family name; for clan members, the clan's name. */
@@ -107,10 +124,20 @@ export interface Character {
   readonly pronouns: Pronouns;
   readonly appearance: Appearance;
   readonly clanId: string;
+  /** The report card: a reading of the arts they graduated with. */
   readonly grades: Grades;
-  /** Where they stood in their academy class: their grade budget and talent band. */
+  /** Where they stood in their academy class: their early training budget and talent band. */
   readonly classStanding: ClassStanding;
+  /** How they were raised (`UpbringingDef`). */
+  readonly upbringingId: string;
+  /** Their frame (`BuildDef`): how far strength and speed can go, and what bulk costs. */
+  readonly buildId: string;
+  /** Events that moved their natural limits (`breakthroughs.ts`), in the order they came. */
+  readonly breakthroughs: readonly Breakthrough[];
+  /** Their chakra nature, born with them (`nature.ts`)… */
   readonly nature: Element;
+  /** …and whether the chakra paper has told them yet. */
+  readonly natureKnown: boolean;
   readonly traitIds: readonly string[];
   /** Null for characters from saves made before talents existed. */
   readonly talentId: string | null;
@@ -129,6 +156,10 @@ export interface Character {
   readonly vitals: Vitals;
   /** Today's home-cooked meal (a recipe id): its buff lasts until the day ends. */
   readonly meal: string | null;
+  /** How well today's meal turned out; absent means good (saves from before the stove). */
+  readonly mealQuality?: MealQuality;
+  /** A snack's short buff, alongside the meal; absent when none is working. */
+  readonly snack?: Snack;
   /** Injuries you carry; each heals on its own morning. */
   readonly injuries: readonly Injury[];
   /** Chakra exhaustion: nights' sleep refill only part of your chakra until it passes. */

@@ -23,9 +23,9 @@ export const SHIOMACHI_FOODS: readonly FoodDef[] = [
     slots: 0,
   },
   {
-    id: 'clam-miso',
+    id: 'harbour-clam-soup',
     icon: 'bowl',
-    name: 'Clam Miso',
+    name: 'Harbour Clam Soup',
     description: 'Little clams opening in a cloudy broth. Warms you to the toes.',
     cost: 30,
     satiety: 30,
@@ -54,10 +54,12 @@ export const SHIOMACHI_FOODS: readonly FoodDef[] = [
   },
 ];
 
-/** Sold at the drying racks: dried fish keeps on the road better than the village’s rations. */
+/**
+ * Sold at the drying racks: dried fish keeps on the road better than the village’s rations.
+ * The port's fresh fish, clams and kelp are the regional larder (`regions/merchants.ts`).
+ */
 export const SHIOMACHI_INGREDIENTS: readonly IngredientDef[] = [
   { id: 'dried-fish', name: 'Dried Fish', cost: 15, icon: 'fish', road: 30 },
-  { id: 'kelp', name: 'Kelp', cost: 6, icon: 'leaf' },
   { id: 'sea-salt', name: 'Sea Salt', cost: 5, icon: 'rice' },
 ];
 
@@ -68,6 +70,8 @@ export const SHIOMACHI_RECIPES: readonly RecipeDef[] = [
     name: 'Kelp and Dried Fish Broth',
     description: 'Simmered slow, salted at the end. It keeps a body going through a cold watch.',
     icon: 'pot',
+    rank: 'D',
+    method: 'simmer',
     ingredients: [
       { id: 'dried-fish', count: 1 },
       { id: 'kelp', count: 1 },

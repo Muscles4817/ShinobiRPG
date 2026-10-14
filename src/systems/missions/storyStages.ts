@@ -67,8 +67,15 @@ export type CampActivity =
       readonly failure: string;
       readonly onSuccess?: Outcome;
     }
-  /** Sit with someone in the crew, drill by the fire, or sleep properly. */
-  | { readonly kind: 'crew' | 'drill' | 'rest'; readonly label: string; readonly when?: Condition };
+  /**
+   * Sit with someone in the crew, drill by the fire, sleep properly, forage near the camp, or
+   * cook for everyone from what you carry.
+   */
+  | {
+      readonly kind: 'crew' | 'drill' | 'rest' | 'forage' | 'cook';
+      readonly label: string;
+      readonly when?: Condition;
+    };
 
 export interface CampStage {
   readonly kind: 'camp';

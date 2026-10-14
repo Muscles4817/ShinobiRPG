@@ -1,5 +1,6 @@
 import { round3 } from '@/core';
 
+import { effectiveLimits, limitFactor, type Limits } from './limits';
 import { withReserves } from './reserves';
 import { soloEfficiency, type SoloFloor, type SoloFloors } from './solo';
 import { STAT_IDS, type StatDelta, type StatId, type Stats, type StatScale } from './stats';
@@ -10,7 +11,8 @@ import { teacherEfficiency } from './teaching';
  * is scaled by the pace, by how much the session still does at the stat's grade (practice alone,
  * `solo.ts`, or with someone better, `teaching.ts`), and by the character's own multipliers
  * (aptitude, identity, condition). Solo practice is effective at E, mild at D and far too slow
- * to fill C: the wall comes about naturally, and better people are the way over it.
+ * to fill C: the wall comes about naturally, and better people are the way over it. Above all of
+ * that sits the stat's natural limit (`limits.ts`): nobody, taught or not, outruns their talent.
  */
 
 /** Turns content's base gains (relative weights) into stat points per session. */
@@ -27,6 +29,10 @@ export interface Growth {
    * `teacherEfficiency` against it rather than by solo practice.
    */
   readonly teachers?: StatDelta;
+  /** How far each stat can go (`limits.ts`); missing, nothing holds it back. */
+  readonly limits?: Limits;
+  /** The strength the frame is built for: more than this pulls the speed limit down. */
+  readonly comfortStrength?: number;
 }
 
 /** One session's gain in a stat now at `current`, from a base gain and the trainee's multiplier. */
@@ -63,6 +69,7 @@ interface Teacher {
 export function applyTraining(stats: Stats, gains: StatDelta, growth: Growth = {}): Stats {
   const next: Record<StatId, number> = { ...stats };
   const grown = withReserves(gains);
+  const limits = growth.limits && effectiveLimits(growth.limits, stats, growth.comfortStrength);
   for (const id of STAT_IDS) {
     const base = grown[id];
     if (base === undefined) continue;
@@ -73,7 +80,8 @@ export function applyTraining(stats: Stats, gains: StatDelta, growth: Growth = {
       teacher === undefined
         ? trainingGain(stats[id], base, scale, floors)
         : taughtGain(stats[id], base, scale, { value: teacher, floors });
-    next[id] = round3(stats[id] + gain);
+    const held = limits ? limitFactor(stats[id], limits[id]) : 1;
+    next[id] = round3(stats[id] + gain * held);
   }
   return next;
 }

@@ -128,6 +128,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'forest-tiger',
     kind: 'Beast',
+    drops: ['wild-game'],
     danger: 'armed',
     name: 'Forest Tiger',
     description: 'Training Ground 44 grows its animals big. This one has eaten genin before.',

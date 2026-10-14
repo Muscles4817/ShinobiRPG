@@ -9,6 +9,9 @@ import { hostDinner } from './dinner';
 import { takeRoom } from './inn';
 import { turnBack } from './turnBack';
 import { cook } from './kitchen';
+import { experiment } from './experiment';
+import { fish, forage } from './gather';
+import { buyCookbook, learnRecipe } from './recipes';
 import { setAnimations, setCombatStyle } from './settings';
 import { buyIntel } from './intel';
 import { buyGear, buyIngredient, buyTool, equipGear, unequipGear } from './shop';
@@ -18,6 +21,7 @@ import { study } from './study';
 import { trainWith } from './trainWith';
 import { buyRound } from './tavern';
 import { endConversation, reply, talk } from './talk';
+import { testChakraPaper } from './chakraPaper';
 import { assignTeam, chooseSensei } from './team';
 import { dismissReport, leaveFight, travel } from './travel';
 import { followSight } from './village';
@@ -49,6 +53,7 @@ export const HANDLERS: Registry = {
   combatAct,
   assignTeam,
   chooseSensei,
+  testChakraPaper,
   talk,
   reply,
   endConversation,
@@ -64,6 +69,11 @@ export const HANDLERS: Registry = {
   unequipGear,
   buyIngredient,
   cook,
+  experiment,
+  forage,
+  fish,
+  buyCookbook,
+  learnRecipe,
   followSight,
   hostDinner,
   buyRound,

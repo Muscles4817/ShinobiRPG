@@ -5,7 +5,7 @@ import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import { assumedAptitude } from '../growth';
-import { growthFor } from '../profile';
+import { growthFor, hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { sparOptions, type SparOption } from './team';
@@ -68,7 +68,7 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
       spot: def.spot,
       icon: def.icon,
       group: groupOf(gained),
-      energyCost: def.energyCost,
+      energyCost: hardWorkEnergy(state.character, ctx, def.energyCost),
       isLast: lastHeading === def.name,
       previews: gained
         .map((stat) => ({

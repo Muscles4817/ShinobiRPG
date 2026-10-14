@@ -1,4 +1,5 @@
 import type { PlaceDef } from '../../types';
+import { TRAVELLING_STALLS } from './regions/merchants';
 
 /** Tōrōgakure's market: noodles, the grill, a tea shop, the seasonal cart and the grocer. */
 export const MARKET_STREET: PlaceDef = {
@@ -45,6 +46,7 @@ export const MARKET_STREET: PlaceDef = {
       hours: ['morning', 'afternoon', 'evening'],
       icon: 'tea',
       foodIds: ['red-bean-bun', 'canal-sencha'],
+      ingredientIds: ['tea-leaves'],
     },
     {
       name: 'Apothecary',
@@ -72,7 +74,21 @@ export const MARKET_STREET: PlaceDef = {
         'cucumbers',
         'chestnuts',
         'winter-radish',
+        'buckwheat',
+        'sesame',
+        'red-beans',
+        'lotus-root',
+        'pickled-plums',
+      ],
+      cookbookIds: [
+        'everyday-kitchen',
+        'year-of-rice',
+        'food-for-the-road',
+        'foragers-notes',
+        'river-cook',
+        'lantern-village-kitchen',
       ],
     },
+    ...TRAVELLING_STALLS,
   ],
 };

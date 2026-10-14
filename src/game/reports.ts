@@ -1,5 +1,6 @@
 import type { CombatResult } from '@/systems/combat';
 import type { StatGrade } from '@/systems/stats';
+import type { Element } from '@/systems/techniques';
 
 /** A line of how a job went, for its debrief: what happened, and the pay it moved. */
 export interface DebriefLine {
@@ -56,6 +57,8 @@ export type Report =
       readonly scroll?: string;
       /** The gear the client handed over (a named weapon), by name. */
       readonly gear?: string;
+      /** The recipe the client taught you, by name. */
+      readonly recipe?: string;
       /** How the job went, line by line (absent on reports from before the ledger). */
       readonly road?: readonly DebriefLine[];
       readonly crew?: readonly DebriefCrew[];
@@ -126,6 +129,18 @@ export type Report =
         readonly tone?: 'gain' | 'cost' | 'harm';
       }[];
       readonly text: string;
+    }
+  | {
+      /** The chakra paper showed your nature. */
+      readonly kind: 'nature';
+      readonly nature: Element;
+      /** "Fire nature". */
+      readonly name: string;
+      readonly text: string;
+      /** What the nature is like in a fight. */
+      readonly line: string;
+      /** What knowing it does, as display labels. */
+      readonly effects: readonly string[];
     }
   | {
       readonly kind: 'team-formed';

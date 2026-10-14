@@ -1,5 +1,6 @@
 import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
+import { CHAKRA_PAPER_TEXT } from '../../shared/chakraPaper';
 import { TOOL_IDS } from '../../shared/tools';
 import { CHUNIN_MISSIONS } from './chuninMissions';
 import { LANTERN_THIEF_JOBS } from './arcs/lanternThief';
@@ -7,6 +8,7 @@ import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
 import { MARKET_STREET } from './market';
 import { PORT_SHIOMACHI } from './shiomachi';
+import { TOROGAKURE_WILDS } from './wilds';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -22,6 +24,7 @@ export const ORIGINAL_TEXT: SettingText = {
   sleepLockedOut: 'The landlord has locked your door over unpaid rent. You sleep in the stairwell.',
   hospitalWake: 'You wake in the village hospital, under lantern light and clean sheets.',
   aptitude: APTITUDE_TEXT,
+  chakraPaper: CHAKRA_PAPER_TEXT,
   promotions: PROMOTIONS,
 };
 
@@ -248,6 +251,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         blurb: 'Healers on call',
         treatmentCost: 60,
       },
+      ...TOROGAKURE_WILDS,
     ],
   },
   {

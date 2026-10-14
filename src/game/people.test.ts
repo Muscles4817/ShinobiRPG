@@ -59,7 +59,7 @@ describe('team assignment', () => {
     const scene = teamScene(assigned(), ctx)!;
     const [best, other] = scene.senseis;
     expect(best?.specialty?.id).toBe('taijutsu');
-    expect(best?.reasons[0]).toBe('Your A in Taijutsu');
+    expect(best?.reasons[0]).toBe('Your B in Taijutsu');
     expect(other?.specialty?.id).not.toBe('taijutsu');
   });
 
@@ -69,7 +69,7 @@ describe('team assignment', () => {
     const formed = act(state, { type: 'chooseSensei', senseiId });
     expect(formed.people.team?.senseiId).toBe(senseiId);
     expect(formed.reports.at(-1)).toMatchObject({ kind: 'team-formed' });
-    expect(activeScene(formed)).toBeNull();
+    expect(activeScene(formed)).toBe('chakra-paper');
     expect(bondsView(formed, ctx).team.map((c) => c.relation)).toEqual([
       'sensei',
       'teammate',

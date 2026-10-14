@@ -4,6 +4,7 @@ import { headerView, shinobiView } from '@/game';
 
 import { Portrait } from '../art/Portrait';
 import { ConditionPanel } from './Condition';
+import { Cookbook } from './Cookbook';
 import { AnimationToggle } from './AnimationToggle';
 import { FightStylePicker } from './FightStylePicker';
 import { StatSheet } from './StatSheet';
@@ -92,6 +93,16 @@ export function ShinobiScreen({
         <p>
           <span className="label">Class standing</span> {view.standing}
         </p>
+        {view.upbringing && (
+          <p>
+            <span className="label">Raised</span> {view.upbringing}
+          </p>
+        )}
+        {view.build && (
+          <p>
+            <span className="label">Build</span> {view.build}
+          </p>
+        )}
         {view.talent && (
           <p>
             <span className="label">Talent</span> {view.talent}
@@ -113,6 +124,7 @@ export function ShinobiScreen({
       </section>
       <ConditionPanel condition={view.condition} />
       <StatSheet view={view} />
+      <Cookbook ctx={ctx} state={state} />
       <FightStylePicker ctx={ctx} state={state} perform={perform} />
       <AnimationToggle ctx={ctx} state={state} perform={perform} />
       <p className="muted small">

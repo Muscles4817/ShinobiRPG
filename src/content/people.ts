@@ -4,6 +4,7 @@ import type { Aptitude, Stats } from '@/systems/stats';
 import type { Discipline, Element } from '@/systems/techniques';
 import type { TimeSlot } from '@/systems/time';
 
+import type { RecipeLesson } from './items';
 import type { TeacherProfile } from './teachers';
 
 /** Content schemas for the cast: people, how they talk, and the names generated genin get. */
@@ -90,6 +91,8 @@ export interface PersonDef {
   readonly teacher?: TeacherProfile;
   /** A recipe they love: serve it at dinner and the evening means more to them. */
   readonly favouriteRecipeId?: string;
+  /** Recipes they teach, in order, once you are close enough. */
+  readonly recipes?: readonly RecipeLesson[];
 }
 
 export interface ConversationChoice {

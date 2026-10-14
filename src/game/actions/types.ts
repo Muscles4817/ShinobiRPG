@@ -1,5 +1,6 @@
 import type { Rng } from '@/core';
 import type { RangeBand } from '@/systems/combat';
+import type { CookingSteps } from '@/systems/cooking';
 import type { ApproachId, ReconId } from '@/systems/missions';
 import type { MindApproach } from '../exam/mind';
 import type { Replacement } from '../exam/entry';
@@ -52,6 +53,7 @@ export type GameAction =
   | { readonly type: 'combatAct'; readonly optionId: string; readonly targetId?: string }
   | { readonly type: 'assignTeam' }
   | { readonly type: 'chooseSensei'; readonly senseiId: string }
+  | { readonly type: 'testChakraPaper' }
   | { readonly type: 'talk'; readonly personId: string }
   | { readonly type: 'reply'; readonly choiceIndex: number }
   | { readonly type: 'endConversation' }
@@ -65,7 +67,13 @@ export type GameAction =
   | { readonly type: 'equipGear'; readonly gearId: string }
   | { readonly type: 'unequipGear'; readonly slot: string }
   | { readonly type: 'buyIngredient'; readonly ingredientId: string }
-  | { readonly type: 'cook'; readonly recipeId: string }
+  /** Cooked by hand at the stove when `steps` are given, else as usual. */
+  | { readonly type: 'cook'; readonly recipeId: string; readonly steps?: CookingSteps }
+  | { readonly type: 'experiment'; readonly ingredientIds: readonly string[] }
+  | { readonly type: 'forage'; readonly placeId: string }
+  | { readonly type: 'fish'; readonly placeId: string; readonly spotId: string }
+  | { readonly type: 'buyCookbook'; readonly cookbookId: string }
+  | { readonly type: 'learnRecipe'; readonly personId: string }
   | { readonly type: 'followSight' }
   | { readonly type: 'hostDinner'; readonly recipeId: string; readonly guestId: string }
   | { readonly type: 'buyRound' }

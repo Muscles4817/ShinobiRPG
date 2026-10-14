@@ -10,6 +10,8 @@ import { RANK_LABELS } from '@/systems/standing';
 import {
   aptitudeBand,
   fightingPower,
+  limitRead,
+  STAT_KIND,
   STAT_IDS,
   STAT_INFO,
   statTier,
@@ -23,6 +25,7 @@ import { formatDate } from '@/systems/time';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { naturalLimits } from '../profile';
 import { conditionView, type ConditionView } from './condition';
 
 export type { StatGrade, TierRead } from '@/systems/stats';
@@ -36,6 +39,8 @@ export interface StatLine {
   readonly tier: TierRead;
   /** What you have found out about your talent for it: a phrase, never a number. */
   readonly talent: { readonly read: AptitudeRead; readonly phrase: string };
+  /** Once the talent is read: how close the stat is to its natural limit, in words; else null. */
+  readonly limit: string | null;
 }
 
 export interface ShinobiView {
@@ -52,6 +57,9 @@ export interface ShinobiView {
   readonly talent: string | null;
   /** Where they stood in their academy class. */
   readonly standing: string;
+  /** Their frame and how they were raised. */
+  readonly build: string | null;
+  readonly upbringing: string | null;
   readonly nindo: string | null;
   readonly grades: readonly {
     readonly discipline: Discipline;
@@ -89,12 +97,27 @@ function talentRead(state: GameState, ctx: GameContext, id: StatId): StatLine['t
   };
 }
 
+function limitPhrase(state: GameState, ctx: GameContext, id: StatId, limit: number): string | null {
+  const { character } = state;
+  if (character.aptitudeKnown[id] === 'unknown' || character.aptitude[id] <= 0) return null;
+  const read = limitRead(character.stats[id], limit);
+  if (read === 'open') return null;
+  return ctx.content.text.aptitude.limits[STAT_KIND[id]][read];
+}
+
+/** Their nature as they know it: named once the chakra paper has shown it. */
+function natureLabel(character: GameState['character']): string {
+  if (!character.natureKnown) return 'Not yet tested';
+  return character.nature.charAt(0).toUpperCase() + character.nature.slice(1);
+}
+
 export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
   const { character } = state;
   const { content } = ctx;
   const { stats, startingStats } = character;
   const clan = content.clans.get(character.clanId);
   const groups: StatGroup[] = ['discipline', 'body', 'mind'];
+  const limits = naturalLimits(character, ctx);
   return {
     name: character.name,
     familyName: character.familyName,
@@ -106,10 +129,12 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
     kekkeiGenkai: clan?.kekkeiGenkai
       ? { name: clan.kekkeiGenkai.name, dormant: clan.kekkeiGenkai.dormant }
       : null,
-    nature: character.nature.charAt(0).toUpperCase() + character.nature.slice(1),
+    nature: natureLabel(character),
     traits: character.traitIds.map((id) => content.traits.get(id)?.name ?? id),
     talent: character.talentId ? (content.talents.get(character.talentId)?.name ?? null) : null,
     standing: STANDING_INFO[character.classStanding].label,
+    build: content.builds.get(character.buildId)?.name ?? null,
+    upbringing: content.upbringings.get(character.upbringingId)?.name ?? null,
     nindo: character.nindoId ? (content.nindos.get(character.nindoId)?.name ?? null) : null,
     grades: DISCIPLINES.map((d) => ({
       discipline: d,
@@ -130,6 +155,7 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
         growth: round1(stats[id] - startingStats[id]),
         tier: statTier(stats[id]),
         talent: talentRead(state, ctx, id),
+        limit: limitPhrase(state, ctx, id, limits[id]),
       })),
     })),
     // Cut, not rounded: a rating just under a grade line never reads as the line itself.

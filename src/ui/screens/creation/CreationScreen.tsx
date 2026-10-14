@@ -5,10 +5,13 @@ import {
   creationView,
   defaultDraft,
   draftProblems,
+  fileView,
   packChoices,
+  reviseDraft,
   rollBreakIn,
   type BreakInRoll,
   type CreationDraft,
+  type GameContext,
   type PackChoice,
 } from '@/game';
 
@@ -17,9 +20,10 @@ import { Notice } from '../../components/Notice';
 import { randomSeed } from '../../randomSeed';
 import { BreakInStep } from './BreakInStep';
 import { CaughtStep } from './CaughtStep';
-import { NatureStep, NindoStep, TalentStep, TraitsStep } from './ChoiceSteps';
+import { NindoStep, TalentStep, TraitsStep } from './ChoiceSteps';
+import { FileStep } from './FileStep';
+import { BuildStep, UpbringingStep } from './FrameSteps';
 import { RecordStep } from './RecordStep';
-import { ReportCardStep, type GradeMode } from './ReportCardStep';
 import { StandingStep } from './StandingStep';
 import type { StepProps } from './types';
 import { WorldStep } from './WorldStep';
@@ -29,8 +33,9 @@ type StepId =
   | 'breakin'
   | 'record'
   | 'standing'
-  | 'grades'
-  | 'nature'
+  | 'upbringing'
+  | 'build'
+  | 'file'
   | 'traits'
   | 'talent'
   | 'nindo'
@@ -41,8 +46,9 @@ const TITLES: Readonly<Record<StepId, string>> = {
   breakin: 'The night before graduation',
   record: 'Student record',
   standing: 'Class standing',
-  grades: 'Report card',
-  nature: 'Chakra assessment',
+  upbringing: 'Family history',
+  build: 'Medical record',
+  file: 'Training record',
   traits: 'Instructor’s notes',
   talent: 'Special notes',
   nindo: 'Application essay',
@@ -53,6 +59,8 @@ interface BlockerInput {
   readonly draft: CreationDraft;
   readonly roll: BreakInRoll | null;
   readonly problems: readonly string[];
+  /** What is wrong with the file itself (training, gifts, upbringing). */
+  readonly fileProblems: readonly string[];
 }
 
 const NO_BLOCKER = (): string | null => null;
@@ -63,8 +71,9 @@ const BLOCKERS: Readonly<Record<StepId, (input: BlockerInput) => string | null>>
   breakin: ({ roll }) => (roll === null ? 'Choose how to get in.' : null),
   record: ({ draft }) => (draft.name.trim() ? null : 'Write your name.'),
   standing: NO_BLOCKER,
-  grades: ({ problems }) => problems.find((p) => p.includes('points')) ?? null,
-  nature: NO_BLOCKER,
+  upbringing: NO_BLOCKER,
+  build: NO_BLOCKER,
+  file: ({ fileProblems }) => fileProblems[0] ?? null,
   traits: ({ draft }) => (draft.traitIds.length < 2 ? 'Choose two traits.' : null),
   talent: NO_BLOCKER,
   nindo: NO_BLOCKER,
@@ -82,9 +91,9 @@ interface StepBodyProps extends StepProps {
   readonly onPickPack: (id: string) => void;
   readonly roll: BreakInRoll | null;
   readonly onAttempt: (approachId: string) => void;
-  readonly mode: GradeMode;
-  readonly setMode: (mode: GradeMode) => void;
   readonly seed: number;
+  readonly ctx: GameContext;
+  readonly setDraft: (draft: CreationDraft) => void;
 }
 
 function StepBody({
@@ -94,9 +103,9 @@ function StepBody({
   onPickPack,
   roll,
   onAttempt,
-  mode,
-  setMode,
   seed,
+  ctx,
+  setDraft,
   ...props
 }: StepBodyProps) {
   switch (step) {
@@ -115,10 +124,12 @@ function StepBody({
       return <RecordStep {...props} />;
     case 'standing':
       return <StandingStep {...props} seed={seed} />;
-    case 'grades':
-      return <ReportCardStep {...props} mode={mode} setMode={setMode} />;
-    case 'nature':
-      return <NatureStep {...props} />;
+    case 'upbringing':
+      return <UpbringingStep {...props} />;
+    case 'build':
+      return <BuildStep {...props} />;
+    case 'file':
+      return <FileStep {...props} ctx={ctx} setDraft={setDraft} />;
     case 'traits':
       return <TraitsStep {...props} />;
     case 'talent':
@@ -142,8 +153,9 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
     'breakin',
     'record',
     'standing',
-    'grades',
-    'nature',
+    'upbringing',
+    'build',
+    'file',
     'traits',
     'talent',
     'nindo',
@@ -155,14 +167,13 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
   const [draft, setDraft] = useState<CreationDraft | null>(() => (ctx ? defaultDraft(ctx) : null));
   const [seed] = useState(randomSeed);
   const [roll, setRoll] = useState<BreakInRoll | null>(null);
-  const [mode, setMode] = useState<GradeMode>('quick');
   const [index, setIndex] = useState(0);
   if (!ctx || !draft) return null;
 
   const view = creationView(ctx);
   const step = steps[index] ?? 'caught';
   const update = (patch: Partial<CreationDraft>) => {
-    setDraft({ ...draft, ...patch });
+    setDraft(reviseDraft(draft, patch, ctx));
   };
   const choosePack = (id: string) => {
     const next = contextForPack(id);
@@ -171,7 +182,8 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
     setRoll(null);
   };
   const problems = draftProblems(draft, ctx);
-  const blocker = stepBlocker(step, { draft, roll, problems });
+  const fileProblems = fileView(draft, ctx).problems;
+  const blocker = stepBlocker(step, { draft, roll, problems, fileProblems });
   const props = { view, draft, update };
 
   return (
@@ -198,9 +210,9 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
             update({ breakInApproachId: id });
             setRoll(rollBreakIn(ctx, id, seed));
           }}
-          mode={mode}
-          setMode={setMode}
           seed={seed}
+          ctx={ctx}
+          setDraft={setDraft}
         />
       </main>
       <nav className="file-nav">

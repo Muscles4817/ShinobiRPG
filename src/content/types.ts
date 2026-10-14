@@ -1,4 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
+import type { Find } from '@/systems/cooking';
 import type {
   ArcDef,
   Danger,
@@ -14,8 +15,9 @@ import type { Season } from '@/systems/time';
 import type { RouteDef } from '@/systems/travel';
 
 import type { BackdropId, IconId } from './art';
-import type { GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
+import type { CookbookDef, GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
 import type { InjuryDef } from './injuries';
+import type { BuildDef, UpbringingDef } from './upbringing';
 import type {
   ConversationDef,
   ConversationTopic,
@@ -31,12 +33,14 @@ import type { VoiceDef } from './voices';
 
 export type { BackdropId, IconId } from './art';
 export type {
+  CookbookDef,
   GearDef,
   GearKind,
   GearSlot,
   IngredientCount,
   IngredientDef,
   RecipeDef,
+  RecipeLesson,
   ToolDef,
 } from './items';
 export type {
@@ -122,6 +126,8 @@ export interface EnemyDef {
   readonly nature?: Element;
   /** How they fight: archer, brawler, illusionist… Every fight style honours these. */
   readonly traits?: readonly CombatTrait[];
+  /** Ingredients a beaten foe leaves (a beast's meat), one of each, into your pack. */
+  readonly drops?: readonly string[];
 }
 
 /** A family the character can be born into. Clans shape growth and give techniques. */
@@ -199,6 +205,18 @@ export interface BreakInScene {
   readonly caught: string;
 }
 
+/** The kind of country a wild place is: what grows and swims there. */
+export type Biome = 'woods' | 'river' | 'shore' | 'mountain' | 'marsh';
+
+/** Somewhere to cast a line: what bites there, and when. */
+export interface FishingSpot {
+  readonly id: string;
+  readonly name: string;
+  /** What it looks like, for the choice. No numbers. */
+  readonly description: string;
+  readonly catches: readonly Find[];
+}
+
 interface PlaceBase {
   readonly id: string;
   readonly name: string;
@@ -225,6 +243,13 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
   /** Somewhere to sleep away from home: a room by the night. */
   | (PlaceBase & { readonly kind: 'inn'; readonly keeper: string; readonly roomCost: number })
+  /** Woods, a river bank, a shore: forage what's in season, and fish its spots. */
+  | (PlaceBase & {
+      readonly kind: 'wilds';
+      readonly biome: Biome;
+      readonly finds: readonly Find[];
+      readonly spots?: readonly FishingSpot[];
+    })
   | (PlaceBase & {
       /** An izakaya: open evenings and nights, with a menu and whoever drops in. */
       readonly kind: 'tavern';
@@ -283,6 +308,8 @@ export interface ContentPack {
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];
   readonly clans: readonly ClanDef[];
+  readonly builds: readonly BuildDef[];
+  readonly upbringings: readonly UpbringingDef[];
   readonly talents: readonly TalentDef[];
   readonly traits: readonly TraitDef[];
   readonly nindos: readonly NindoDef[];
@@ -292,6 +319,9 @@ export interface ContentPack {
   readonly injuries: readonly InjuryDef[];
   readonly ingredients: readonly IngredientDef[];
   readonly recipes: readonly RecipeDef[];
+  readonly cookbooks: readonly CookbookDef[];
+  /** What can be foraged around a camp on the road. */
+  readonly campFinds: readonly Find[];
   readonly people: readonly PersonDef[];
   readonly conversations: readonly ConversationDef[];
   /** What templated conversations (`about`) are filled with, per specialty, trait, clan, role. */

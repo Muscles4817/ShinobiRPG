@@ -24,9 +24,21 @@ export {
   type TraitOption,
   type StandingOption,
   type ProfileOption,
+  type UpbringingOption,
+  type ArchetypeOption,
 } from './views/creation';
+export { fileView, type BloomOption, type FileStatLine, type FileView } from './views/academyFile';
+export {
+  chooseQuickPick,
+  lowerStat,
+  markGift,
+  raiseStat,
+  reviseDraft,
+  setBloom,
+} from './creationDraft';
 export type { GameAction, GameActionType } from './actions/types';
 export { dispatch, blockerFor } from './dispatch';
+export { chakraPaperScene, type ChakraPaperScene } from './views/chakraPaper';
 export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';
 export type { Choice, Discipline } from './views/common';
 export { headerView, type HeaderView, type HungerNote, type Meter } from './views/header';
@@ -45,7 +57,13 @@ export {
   type DrillGroup,
   type StatPreview,
 } from './views/training';
-export { marketView, type MarketView, type MarketItem, type IngredientItem } from './views/market';
+export {
+  marketView,
+  type MarketView,
+  type MarketItem,
+  type IngredientItem,
+  type CookbookItem,
+} from './views/market';
 export { homeView, hospitalView, type HomeView, type HospitalView } from './views/home';
 export { innView, type InnView } from './views/inn';
 export type { ConditionView, InjuryLine } from './views/condition';
@@ -79,6 +97,15 @@ export {
   type LoadoutSlot,
 } from './views/shops';
 export { kitchenView, type DinnerInvite, type KitchenView, type RecipeCard } from './views/kitchen';
+export { STOVE_BEATS, EXPERIMENT_LIMIT, type StoveBeat } from './views/stove';
+export { wildsView, type WildsView, type FishingSpotView, type WhatsAbout } from './views/wilds';
+export type { CookingSteps } from '@/systems/cooking';
+export {
+  cookbookView,
+  type CookbookView,
+  type CookbookEntry,
+  type SealedRecipe,
+} from './views/cookbook';
 export type { SparOption } from './views/team';
 export type { TeacherOffer, TeachStat } from './views/teachers';
 export type { PricePart } from './people/price';
@@ -165,12 +192,12 @@ export type {
 } from '@/systems/profile';
 export {
   fateStanding,
-  pickFromGrades,
-  pointsSpent,
-  quickGrades,
-  roleGrade,
-  topDisciplines,
+  type ArchetypeId,
+  type Bloom,
   type ClassStanding,
+  type Gift,
+  type QuickPick,
 } from '@/systems/profile';
+export type { StatGroup, StatId, StatKind } from '@/systems/stats';
 export type { Element } from '@/systems/techniques';
 export type { EffectLine } from '@/systems/modifiers';

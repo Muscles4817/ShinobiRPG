@@ -1,3 +1,4 @@
+import type { Find } from '@/systems/cooking';
 import type { ExamDef } from '@/systems/exams';
 import type { ArcDef, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
 import type { TechniqueDef } from '@/systems/techniques';
@@ -5,6 +6,7 @@ import type { RouteDef } from '@/systems/travel';
 
 import { createCatalog, type Catalog } from './catalog';
 import type { InjuryDef } from './injuries';
+import type { BuildDef, UpbringingDef } from './upbringing';
 import type { VoiceDef } from './voices';
 import type {
   BreakInScene,
@@ -16,6 +18,7 @@ import type {
   ToolDef,
   IngredientDef,
   RecipeDef,
+  CookbookDef,
   EnemyDef,
   FoodDef,
   LocationDef,
@@ -54,6 +57,8 @@ export interface ContentDb {
   readonly training: Catalog<TrainingDef>;
   readonly foods: Catalog<FoodDef>;
   readonly clans: Catalog<ClanDef>;
+  readonly builds: Catalog<BuildDef>;
+  readonly upbringings: Catalog<UpbringingDef>;
   readonly talents: Catalog<TalentDef>;
   readonly traits: Catalog<TraitDef>;
   readonly nindos: Catalog<NindoDef>;
@@ -63,6 +68,8 @@ export interface ContentDb {
   readonly injuries: Catalog<InjuryDef>;
   readonly ingredients: Catalog<IngredientDef>;
   readonly recipes: Catalog<RecipeDef>;
+  readonly cookbooks: Catalog<CookbookDef>;
+  readonly campFinds: readonly Find[];
   readonly people: Catalog<PersonDef>;
   readonly conversations: Catalog<ConversationDef>;
   readonly conversationTopics: readonly ConversationTopic[];
@@ -93,6 +100,8 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     training: createCatalog('training', pack.training),
     foods: createCatalog('food', pack.foods),
     clans: createCatalog('clan', pack.clans),
+    builds: createCatalog('build', pack.builds),
+    upbringings: createCatalog('upbringing', pack.upbringings),
     talents: createCatalog('talent', pack.talents),
     traits: createCatalog('trait', pack.traits),
     nindos: createCatalog('nindo', pack.nindos),
@@ -102,6 +111,8 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     injuries: createCatalog('injury', pack.injuries),
     ingredients: createCatalog('ingredient', pack.ingredients),
     recipes: createCatalog('recipe', pack.recipes),
+    cookbooks: createCatalog('cookbook', pack.cookbooks),
+    campFinds: pack.campFinds,
     people: createCatalog('person', pack.people),
     conversations: createCatalog('conversation', pack.conversations),
     conversationTopics: pack.conversationTopics,
