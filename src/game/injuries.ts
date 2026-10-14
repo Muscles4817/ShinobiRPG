@@ -63,6 +63,20 @@ export function injuryFightEffect(
 }
 
 /**
+ * A healing meal's nights (`injuryNights`): each injury comes due that many days sooner, but
+ * never before tomorrow morning.
+ */
+export function mendedOvernight(state: GameState, nights: number): GameState {
+  if (nights <= 0 || state.character.injuries.length === 0) return state;
+  const tomorrow = state.time.day + 1;
+  const injuries = state.character.injuries.map((injury) => ({
+    ...injury,
+    until: Math.max(tomorrow, injury.until - nights),
+  }));
+  return { ...state, character: { ...state.character, injuries } };
+}
+
+/**
  * Tonight's chakra: a full refill, or only part of it while chakra exhaustion holds. Read
  * before the night passes, since the exhaustion may lift by morning.
  */

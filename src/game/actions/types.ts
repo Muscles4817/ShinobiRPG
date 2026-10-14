@@ -53,6 +53,8 @@ export type GameAction =
   | { readonly type: 'unequipGear'; readonly slot: string }
   | { readonly type: 'buyIngredient'; readonly ingredientId: string }
   | { readonly type: 'cook'; readonly recipeId: string }
+  | { readonly type: 'buyCookbook'; readonly cookbookId: string }
+  | { readonly type: 'learnRecipe'; readonly personId: string }
   | { readonly type: 'followSight' }
   | { readonly type: 'hostDinner'; readonly recipeId: string; readonly guestId: string }
   | { readonly type: 'buyRound' }

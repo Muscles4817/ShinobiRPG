@@ -12,7 +12,8 @@ import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
 import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
-import { INGREDIENTS, RECIPES } from '../../shared/kitchen';
+import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
+import { RECIPES } from '../../shared/recipes';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
@@ -85,6 +86,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   injuries: INJURIES,
   ingredients: INGREDIENTS,
   recipes: RECIPES,
+  cookbooks: COOKBOOKS,
   people: [
     ...SENSEIS_AND_ELDERS,
     ...VILLAGE_JONIN,

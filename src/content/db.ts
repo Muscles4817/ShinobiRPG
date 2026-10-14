@@ -15,6 +15,7 @@ import type {
   ToolDef,
   IngredientDef,
   RecipeDef,
+  CookbookDef,
   EnemyDef,
   FoodDef,
   LocationDef,
@@ -61,6 +62,7 @@ export interface ContentDb {
   readonly injuries: Catalog<InjuryDef>;
   readonly ingredients: Catalog<IngredientDef>;
   readonly recipes: Catalog<RecipeDef>;
+  readonly cookbooks: Catalog<CookbookDef>;
   readonly people: Catalog<PersonDef>;
   readonly conversations: Catalog<ConversationDef>;
   readonly conversationTopics: readonly ConversationTopic[];
@@ -99,6 +101,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     injuries: createCatalog('injury', pack.injuries),
     ingredients: createCatalog('ingredient', pack.ingredients),
     recipes: createCatalog('recipe', pack.recipes),
+    cookbooks: createCatalog('cookbook', pack.cookbooks),
     people: createCatalog('person', pack.people),
     conversations: createCatalog('conversation', pack.conversations),
     conversationTopics: pack.conversationTopics,

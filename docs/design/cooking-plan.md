@@ -57,30 +57,29 @@ Part 4 is the build plan. Nothing here is binding until it is in Part 2.
 
 ## Part 2: Decisions
 
-Open. Proposed answers are marked **(proposed)**.
+Agreed: every proposal below, except spoiling.
 
 1. **Recipes are learned, not given.** You start knowing a handful of home dishes. The rest
-   come from people, books, regions, jobs and experimenting at the stove. **(proposed)**
+   come from people, books, regions, jobs and experimenting at the stove. **(agreed)**
 2. **Cooking is a skill with grades E–S**, like an art, but kept out of `STAT_IDS` so it never
-   feeds `fightingPower` or teaching. It lives in its own slice. **(proposed)**
+   feeds `fightingPower` or teaching. It lives in its own slice. **(agreed)**
 3. **Every recipe has one role** from the effect catalogue (3.1). A better dish does its role
-   better or adds a secondary one. It never just multiplies the same number. **(proposed)**
+   better or adds a secondary one. It never just multiplies the same number. **(agreed)**
 4. **Cooking has a short hands-on step** (3.4: three beats, a few seconds on a phone) that
    decides quality. Players who don't want it can tap _Cook as usual_ for a safe Plain
-   result. **(proposed)** _Alternative: quality is a pure roll on skill and mastery._
+   result. **(agreed)**
 5. **Food may reach fights only as "provisions"** (3.1 C). They are set before the fight and
    carried in the `CombatSetup` like gear, with the rules once in `rules/provisions.ts`.
-   They never add stats. **(proposed)** _Alternative: food stays out of fights entirely._
+   They never add stats. **(agreed)**
 6. **Ingredients come from places.** Every ingredient names its sources: shops, gathering
-   spots (woods, river, shore, mountain), beasts, gardens and other villages. **(proposed)**
-7. **Fresh food spoils.** Perishables last a few days, dried and preserved goods keep.
-   Preserving (drying, salting, pickling) is a cooking method you learn. **(open: worth the
-   save-shape cost?)**
+   spots (woods, river, shore, mountain), beasts, gardens and other villages. **(agreed)**
+7. **Food does not spoil.** Rejected: no freshness, no save-shape cost. Preserving stays only
+   as a way to make road food (3.5), and phase 6 of the build plan is dropped.
 8. **One meal and one snack a day.** The meal is the day-long buff (as today). A snack or tea
-   is a smaller, short buff (until the next slot ends). Two meals never stack. **(open)**
+   is a smaller, short buff (until the next slot ends). Two meals never stack. **(agreed)**
 9. **The library is big, and most of it is regional.** Target: ~25 shared basics plus ~80
    per pack, spread across the pack's regions. Pack recipes carry setting names (decision 8
-   in CLAUDE.md). **(proposed)**
+   in CLAUDE.md). **(agreed)**
 
 ---
 
@@ -263,8 +262,6 @@ interface IngredientDef {
   tags: IngredientTag[];
   seasons?: Season[];
   road?: number; // keeps on the road
-  /** Days it stays fresh; absent = keeps (rice, miso, dried fish). */
-  freshDays?: number;
   rarity: 'common' | 'uncommon' | 'rare' | 'legendary';
   sources: IngredientSource[];
 }
@@ -303,10 +300,9 @@ Leaving the village depends on milestone 4 (world and travel). Until then, other
 reach Tōrōgakure through travelling merchants: a festival stall or a weekly market day sells
 a few foreign ingredients and a cookbook.
 
-**Spoiling** (if decision 7 holds). The pantry stores `{ count, freshUntil }` per ingredient
-and spends the oldest first. Spoiled food is thrown out at dawn with a ticker line.
-Preserving turns fresh into keeping (pickled radish, dried fish, salted plums) and doubles as
-road food.
+**Preserving.** Food never spoils (decision 7), but drying, salting and pickling still turn
+fresh ingredients into road food (pickled radish, dried fish, salted plums) with a `road`
+value.
 
 ### 3.6 Presentation
 
@@ -351,8 +347,36 @@ Each phase ships on its own and keeps `npm run check` green.
    tags and rarity, then the camp `forage` and `cook` activities and beast drops.
 5. **Provisions in fights.** Add `rules/provisions.ts` and the `CombatantSetup.provisions`
    contract, applied in Plan & Watch.
-6. **Spoiling and preserving** (if decision 7 holds).
+6. ~~Spoiling and preserving~~ Dropped (decision 7). Preserving for the road joins phase 4.
 7. **The library.** Write ~25 shared basics and Tōrōgakure's regional dishes, with travelling
    merchants as a stand-in for other regions.
 8. **Other regions** with milestone 4: each village's biomes, market, inn teacher and
    dishes.
+
+---
+
+## Part 5: What was built
+
+**Phase 1, roles and effects.**
+
+- `ModifierSpec` gained `energyCost` (drills, study, sparring and lessons through
+  `hardWorkEnergy`), `sleepHealing` (sleep's health, and chakra while exhausted),
+  `injuryNights` (`mendedOvernight`), `bondGain` (`warmed`: talk, dinner, lessons, sparring,
+  a round) and `checks` (`yourCheckValue` in mission, camp and encounter checks).
+  `describeSpec` words them all.
+- `RecipeDef` gained `health` and `chakra` (on eating) and a `rank`. The 10 old dishes and 6
+  new ones (`shared/recipes.ts`) each have one role.
+
+**Phase 2, learning.**
+
+- `systems/cooking`: grade from experience, mastery per recipe, reach (one rank above your
+  grade). `GameState.cooking`, save v32 (old saves keep their ten recipes as a grade D cook).
+- Three starters (`starter`). The rest: three cookbooks at the grocer (`CookbookDef`,
+  `Stall.cookbookIds`, `buyCookbook`), people who cook (`PersonDef.recipes`, `learnRecipe`:
+  Tsune, and Teuchi in the fan pack) and a job reward (`reward.recipeId`).
+  `validateRecipes` checks every recipe can be learned.
+- The cookbook on the Shinobi screen (`views/cookbook.ts`): your grade, known dishes with
+  mastery and effects, and sealed dishes with where to learn them.
+
+Not yet built: the stove step (phase 3), gathering (phase 4), provisions in fights (phase 5),
+the library (phase 7) and other regions (phase 8).

@@ -1,6 +1,7 @@
 import { kitchenView, type GameContext, type GameState } from '@/game';
 
 import { Icon } from '../../art/Icon';
+import { GradeBadge } from '../../components/Grade';
 import { DinnerInvites } from './DinnerInvites';
 import type { PlaceProps } from '../types';
 
@@ -16,6 +17,11 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
   return (
     <section id="kitchen" className="kitchen" aria-label="Kitchen">
       <h2 className="label">Kitchen</h2>
+      <p className="muted small">
+        You cook like a grade {view.grade} hand.
+        {view.unlearned > 0 &&
+          ' There are dishes you have yet to learn: your cookbook, under Shinobi, says where.'}
+      </p>
       {view.meal && (
         <p className="meal-today">
           Today you ate <b>{view.meal.name}</b>
@@ -44,10 +50,14 @@ export function HomeKitchen({ ctx, state, perform }: HomeKitchenProps) {
             <div className="recipe-head">
               <Icon id={r.icon} size={24} />
               <b>{r.name}</b>
+              <GradeBadge grade={r.rank} />
+              {r.mastery && <span className="badge">{r.mastery}</span>}
             </div>
             <span className="chips">
               <span className="chip gain">Hunger −{r.satiety}</span>
               {r.energy > 0 && <span className="chip gain">Energy +{r.energy}</span>}
+              {r.health > 0 && <span className="chip gain">Health +{r.health}</span>}
+              {r.chakra > 0 && <span className="chip gain">Chakra +{r.chakra}</span>}
               {r.effects.map((e) => (
                 <span key={e.label} className="chip gain">
                   {e.label} today

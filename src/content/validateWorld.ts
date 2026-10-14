@@ -19,6 +19,7 @@ export function validateWorld(pack: ContentPack): string[] {
     gear: new Set(pack.gear.map((g) => g.id)),
     tool: new Set(pack.tools.map((t) => t.id)),
     ingredient: new Set(pack.ingredients.map((i) => i.id)),
+    cookbook: new Set(pack.cookbooks.map((c) => c.id)),
   };
   const reached = {
     training: new Set<string>(),
@@ -27,6 +28,7 @@ export function validateWorld(pack: ContentPack): string[] {
     gear: new Set<string>(),
     tool: new Set<string>(),
     ingredient: new Set<string>(),
+    cookbook: new Set<string>(),
   };
 
   for (const location of pack.locations) {
@@ -51,7 +53,16 @@ export function validateWorld(pack: ContentPack): string[] {
   const unique = new Set(pack.gear.filter((g) => g.unique === true).map((g) => g.id));
   // Exam-only missions are run by an exam's stage, never offered (`validateExams.ts`).
   const examOnly = new Set(pack.missions.filter((m) => m.examOnly === true).map((m) => m.id));
-  for (const kind of ['training', 'food', 'mission', 'gear', 'tool', 'ingredient'] as const) {
+  const offered = [
+    'training',
+    'food',
+    'mission',
+    'gear',
+    'tool',
+    'ingredient',
+    'cookbook',
+  ] as const;
+  for (const kind of offered) {
     refs[kind].forEach((id) => {
       if (kind === 'gear' && unique.has(id)) return;
       if (kind === 'mission' && examOnly.has(id)) return;
@@ -61,12 +72,14 @@ export function validateWorld(pack: ContentPack): string[] {
   return problems;
 }
 
-type RefKind = 'training' | 'food' | 'mission' | 'technique' | 'gear' | 'tool' | 'ingredient';
+type RefKind =
+  'training' | 'food' | 'mission' | 'technique' | 'gear' | 'tool' | 'ingredient' | 'cookbook';
 
 function stallRefs(stall: Stall): [RefKind, string][] {
   return [
     ...stall.foodIds.map((id): [RefKind, string] => ['food', id]),
     ...(stall.ingredientIds ?? []).map((id): [RefKind, string] => ['ingredient', id]),
+    ...(stall.cookbookIds ?? []).map((id): [RefKind, string] => ['cookbook', id]),
   ];
 }
 

@@ -6,6 +6,7 @@ import { placeHere } from '../ops';
 import { everyone, whereNow } from '../people/cast';
 import { scoutPerson, type ScoutingRead } from '../scouting';
 import type { GameState } from '../state';
+import { hardWorkEnergy } from '../profile';
 import { choice, type Choice } from './common';
 import { personCard, personFace, type PersonFace } from './people';
 
@@ -37,7 +38,7 @@ export function sparOptions(state: GameState, ctx: GameContext): SparOption[] {
       person: personFace(state, person),
       where: card.where,
       specialty: card.specialty,
-      energyCost: SPAR_ENERGY,
+      energyCost: hardWorkEnergy(state.character, ctx, SPAR_ENERGY),
       read: scoutPerson(state, ctx, person.id),
     }))
     .sort((a, b) => Number(b.person.relation !== null) - Number(a.person.relation !== null));

@@ -48,6 +48,11 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
   ]);
 }
 
+/** The energy a piece of hard work (a drill, study, a spar, a lesson) costs you today. */
+export function hardWorkEnergy(character: Character, ctx: GameContext, base: number): number {
+  return Math.round(base * characterModifiers(character, ctx).energyCost);
+}
+
 /** Per-stat growth multipliers for this character right now: aptitude, identity, condition. */
 export function trainingScale(character: Character, ctx: GameContext, teacher = 1): StatScale {
   const { growth } = characterModifiers(character, ctx);

@@ -260,6 +260,11 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       fuuinjutsu: 0,
     }),
     traitIds: ['kind', 'focused'],
+    recipes: [
+      { recipeId: 'rolled-omelette', minStage: 1 },
+      { recipeId: 'spicy-hot-pot', minStage: 2 },
+      { recipeId: 'pepper-rice', minStage: 3 },
+    ],
     appearance: look(
       'shaved',
       { hair: '#8a5a2b', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#e8e0d0' },

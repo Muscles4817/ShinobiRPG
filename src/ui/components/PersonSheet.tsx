@@ -25,6 +25,34 @@ interface PersonActionsProps {
   readonly onClose: () => void;
 }
 
+/** For someone who cooks: their next dish, and why they won't show you yet. */
+function RecipeLesson({
+  recipe,
+  perform,
+  onClose,
+}: {
+  readonly recipe: NonNullable<Sheet['recipe']>;
+  readonly perform: (action: GameAction) => void;
+  readonly onClose: () => void;
+}) {
+  return (
+    <div className="recipe-lesson">
+      <button
+        type="button"
+        className="btn ghost"
+        disabled={recipe.blocker !== null}
+        onClick={() => {
+          perform(recipe.action);
+          onClose();
+        }}
+      >
+        Learn to cook {recipe.name}
+      </button>
+      {recipe.blocker && <p className="blocker">{recipe.blocker}</p>}
+    </div>
+  );
+}
+
 /** Talk (and, with genin, spar), each saying why not when it can't be done. */
 function PersonActions({ sheet: p, perform, onClose }: PersonActionsProps) {
   const { spar } = p;
@@ -61,6 +89,7 @@ function PersonActions({ sheet: p, perform, onClose }: PersonActionsProps) {
       {spar?.blocker && spar.blocker !== p.talk.blocker && (
         <p className="blocker">Spar: {spar.blocker}</p>
       )}
+      {p.recipe && <RecipeLesson recipe={p.recipe} perform={perform} onClose={onClose} />}
     </>
   );
 }

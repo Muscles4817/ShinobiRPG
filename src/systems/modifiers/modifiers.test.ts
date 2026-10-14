@@ -69,4 +69,35 @@ describe('modifiers', () => {
       },
     ]);
   });
+
+  it('combines a day of food: energy, sleep, bonds and checks multiply, injury nights add', () => {
+    const mods = combine([
+      { energyCost: 0.9, sleepHealing: 1.2, injuryNights: 1, bondGain: 1.25 },
+      { energyCost: 0.9, injuryNights: 1, checks: { perception: 1.15 } },
+    ]);
+    expect(mods.energyCost).toBeCloseTo(0.81);
+    expect(mods.sleepHealing).toBeCloseTo(1.2);
+    expect(mods.injuryNights).toBe(2);
+    expect(mods.bondGain).toBeCloseTo(1.25);
+    expect(mods.checks.perception).toBeCloseTo(1.15);
+    expect(mods.checks.speed).toBe(1);
+  });
+
+  it('describes the effects of a day of food in words', () => {
+    const lines = describeSpec({
+      energyCost: 0.85,
+      sleepHealing: 1.3,
+      injuryNights: 1,
+      bondGain: 1.25,
+      checks: { perception: 1.15 },
+    });
+    expect(lines.map((l) => l.label)).toEqual([
+      'Hard work tires you 15% less',
+      'Sleep heals 30% more',
+      "Tonight's sleep heals injuries a day sooner",
+      'Time with people counts 25% more',
+      'Perception in job checks 15% sharper',
+    ]);
+    expect(lines.every((l) => l.tone === 'gain')).toBe(true);
+  });
 });

@@ -129,7 +129,7 @@ export const MISSIONS: readonly MissionDef[] = [
     summary: 'Escort a nervous tea merchant to the river crossing.',
     slots: 4,
     energyCost: 30,
-    reward: { ryo: 220, reputation: 6 },
+    reward: { ryo: 220, reputation: 6, recipeId: 'hunters-skewers' },
     minMissionsCompleted: 2,
     stages: [
       { kind: 'narrative', text: 'Ōkubo talks about tea prices for the entire first hour.' },

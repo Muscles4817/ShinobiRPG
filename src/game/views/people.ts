@@ -4,6 +4,7 @@ import type { Appearance } from '@/systems/profile';
 import { STAT_INFO } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
+import { nextLesson } from '../actions/recipes';
 import type { GameContext } from '../context';
 import { currentLocation } from '../ops';
 import { bondOf, everyone, findPerson, fullName, peopleHere, whereNow } from '../people/cast';
@@ -50,6 +51,8 @@ export interface PersonSheet extends PersonCard {
   readonly reveal: string | null;
   /** Moments from jobs together that they remember, newest first. */
   readonly memories: readonly string[];
+  /** The next dish they would teach you, for people who cook; null otherwise. */
+  readonly recipe: (Choice & { readonly name: string }) | null;
 }
 
 export interface BondsView {
@@ -146,6 +149,16 @@ export function personSheet(
       .filter((m) => m.personId === person.id)
       .map((m) => m.text)
       .reverse(),
+    recipe: recipeOffer(state, ctx, person),
+  };
+}
+
+function recipeOffer(state: GameState, ctx: GameContext, person: PersonDef): PersonSheet['recipe'] {
+  const lesson = nextLesson(state, person);
+  if (!lesson) return null;
+  return {
+    ...choice(state, ctx, { type: 'learnRecipe', personId: person.id }),
+    name: ctx.content.recipes.require(lesson.recipeId).name,
   };
 }
 
