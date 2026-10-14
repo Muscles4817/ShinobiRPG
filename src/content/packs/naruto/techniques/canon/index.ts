@@ -1,5 +1,6 @@
 import type { TechniqueDef } from '@/systems/techniques';
 
+import { CANON_AKIMICHI } from './akimichi';
 import { CANON_CLAN_TECHNIQUES } from './clans';
 import { CANON_ELEMENTS } from './elements';
 import { CANON_MEDICAL } from './medical';
@@ -18,4 +19,5 @@ export const CANON_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...CANON_NARUTO_TECHNIQUES,
   ...CANON_MEDICAL,
   ...CANON_CLAN_TECHNIQUES,
+  ...CANON_AKIMICHI,
 ])();
