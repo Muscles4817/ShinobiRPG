@@ -3,6 +3,7 @@ import type { RouteDef } from '@/systems/travel';
 /**
  * The roads of the Land of Embers. The coast is a day down the hill; the dunes are past Kiri
  * Ford, where the caravans charge for the crossing; the mountain is four days of climbing.
+ * Across the bay from the port to the ford is a day on foot, for whoever can walk on water.
  */
 export const ORIGINAL_ROUTES: readonly RouteDef[] = [
   {
@@ -62,5 +63,20 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
       },
     ],
     danger: 'deadly',
+  },
+  {
+    id: 'bay-crossing',
+    name: 'The bay crossing',
+    from: 'port-shiomachi',
+    to: 'kiri-ford',
+    legs: [
+      {
+        region: 'coast-road',
+        days: 1,
+        text: 'You walk out across the bay on the swell, gulls overhead and nothing under your feet but chakra and green water.',
+      },
+    ],
+    danger: 'petty',
+    needs: [{ kind: 'walk', surface: 'water' }],
   },
 ];

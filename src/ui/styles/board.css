@@ -309,6 +309,10 @@
   font-size: 0.76rem;
   color: var(--cost);
 }
+.dest-notes.dest-ways {
+  color: var(--story);
+  font-style: italic;
+}
 .dest-go {
   display: flex;
   justify-content: flex-end;

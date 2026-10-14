@@ -1,4 +1,4 @@
-import { findJourney, reachableFrom, type RouteDef } from './travel';
+import { findJourney, reachableFrom, unmetNeed, type RouteDef, type RouteNeed } from './travel';
 
 const road = (id: string, from: string, to: string, extra: Partial<RouteDef> = {}): RouteDef => ({
   id,
@@ -32,6 +32,7 @@ describe('travel', () => {
   it('walks the quickest open way, adding up days, ryo and the worst danger', () => {
     expect(findJourney(routes, 'home', 'dunes')).toEqual({
       via: ['ford'],
+      routeIds: ['forest', 'sands'],
       legs: [
         { region: 'forest-track', days: 1, text: 'forest-track' },
         { region: 'river-road', days: 1, text: 'river-road' },
@@ -80,5 +81,33 @@ describe('travel', () => {
   it('knows what can be reached at all', () => {
     expect([...reachableFrom(routes, 'dunes')].sort()).toEqual(['dunes', 'ford', 'home', 'port']);
     expect([...reachableFrom([], 'home')]).toEqual(['home']);
+  });
+
+  describe('needs', () => {
+    const bay = road('bay', 'port', 'ford', {
+      name: 'The bay',
+      needs: [
+        { kind: 'rank', rank: 'genin' },
+        { kind: 'walk', surface: 'water' },
+      ],
+    });
+    const walksOnWater = (need: RouteNeed) => need.kind !== 'walk' || need.surface === 'water';
+    const walksNowhere = (need: RouteNeed) => need.kind !== 'walk';
+
+    it('names the first need not met, or none', () => {
+      expect(unmetNeed(bay, walksNowhere)).toEqual({ kind: 'walk', surface: 'water' });
+      expect(unmetNeed(bay, walksOnWater)).toBeNull();
+      expect(unmetNeed(routes[0]!, walksNowhere)).toBeNull();
+    });
+
+    it('takes a road with needs only when they are met, else goes round', () => {
+      const withBay = [...routes, bay];
+      const open = (met: (n: RouteNeed) => boolean) => (r: RouteDef) => unmetNeed(r, met) === null;
+      expect(findJourney(withBay, 'port', 'ford', open(walksOnWater))?.routeIds).toEqual(['bay']);
+      expect(findJourney(withBay, 'port', 'ford', open(walksNowhere))?.routeIds).toEqual([
+        'coast',
+        'forest',
+      ]);
+    });
   });
 });

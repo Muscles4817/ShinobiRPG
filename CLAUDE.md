@@ -324,7 +324,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 26. **Travel is a journey along routes, on leave** (`docs/design/world-plan.md`). A pack's
     `routes` join its locations (legs of days through road-event regions, a `danger`, a
     passage `cost`); `systems/travel` finds the quickest open way (a road through a place still
-    locked is closed). Setting out (`travel`) starts a mission run carrying a `journey` plan, so
+    locked is closed, as is one whose `needs` you don't meet: a rank, a world mark, or walking
+    on water or trees, asked only of `canWalk` in `game/walking.ts`). Setting out (`travel`) starts a mission run carrying a `journey` plan, so
     the road plays as on a job (`game/journeys.ts`: a leg per stretch, a camp between, road
     events); `quick` hurries on until a road event needs a choice. Away from home you sleep at
     an `inn`; a friend may come along (`game/trips.ts`, a `companion` crew, found at your
@@ -374,7 +375,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a content pack:** copy `packs/original/`, change ids/names, register it. Keep every
   pack complete; packs don't inherit from each other.
 - **Add a location:** add a `LocationDef` with a backdrop, a `map` point and places, and a `RouteDef` to it in
-  the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`;
+  the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`,
+  and for a road not everyone may walk, `needs` and a `name` to say it by;
   `systems/travel` finds the quickest open way, validated so every location has a road). Leave
   `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road
   passes through it.

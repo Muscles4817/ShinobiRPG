@@ -166,12 +166,17 @@ function voiceProblems(pack: ContentPack): string[] {
 }
 
 /** Every world mark a job or a rumour waits for is one some job can leave behind. */
-function worldProblems(pack: ContentPack): string[] {
-  const left = new Set(
+/** Every world mark some job's outcomes can leave behind. */
+export function worldMarksLeft(pack: ContentPack): Set<string> {
+  return new Set(
     pack.missions
       .flatMap((m) => m.stages.flatMap(effectsOf))
       .flatMap((e) => (e.kind === 'world' ? [e.mark] : [])),
   );
+}
+
+function worldProblems(pack: ContentPack): string[] {
+  const left = worldMarksLeft(pack);
   const remembered = pack.missions.flatMap((m) =>
     m.stages
       .flatMap(conditions)

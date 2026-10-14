@@ -1,4 +1,5 @@
 import { DANGERS, type Danger } from '@/systems/missions';
+import type { Rank } from '@/systems/standing';
 
 /**
  * The roads between locations, and the way from one to another. A route joins two locations
@@ -14,6 +15,25 @@ export interface RouteLeg {
   readonly text: string;
 }
 
+/** Surfaces a shinobi may learn to walk on with chakra, where a road crosses one. */
+export const WALK_SURFACES = ['water', 'trees'] as const;
+export type WalkSurface = (typeof WALK_SURFACES)[number];
+
+/**
+ * What a road asks of whoever walks it: a rank (a pass only officers use), something the
+ * village remembers (a ferry that runs once you've earned it) or a surface walked on chakra.
+ * Whether a traveller meets one is the game's question, not this module's.
+ */
+export type RouteNeed =
+  | { readonly kind: 'rank'; readonly rank: Rank }
+  | {
+      readonly kind: 'worldMark';
+      readonly mark: string;
+      /** What opens it, as a phrase after "needs": "the harbourmaster's trust". */
+      readonly text: string;
+    }
+  | { readonly kind: 'walk'; readonly surface: WalkSurface };
+
 export interface RouteDef {
   readonly id: string;
   readonly from: string;
@@ -24,11 +44,17 @@ export interface RouteDef {
   readonly danger: Danger;
   /** Ryo for passage (a ferry, a toll). */
   readonly cost?: number;
+  /** What it takes to walk it; a road with needs must have a `name`. */
+  readonly needs?: readonly RouteNeed[];
+  /** The road as the player hears of it, starting a sentence: "The bay crossing". */
+  readonly name?: string;
 }
 
 export interface Journey {
   /** Locations passed through on the way, not counting either end. */
   readonly via: readonly string[];
+  /** The routes walked, in order. */
+  readonly routeIds: readonly string[];
   /** Every leg in the order walked. */
   readonly legs: readonly RouteLeg[];
   readonly days: number;
@@ -59,6 +85,11 @@ function stepsFrom(routes: readonly RouteDef[], locationId: string): Step[] {
   });
 }
 
+/** The first of a route's needs that `met` says is unmet, or null when it is open to you. */
+export function unmetNeed(route: RouteDef, met: (need: RouteNeed) => boolean): RouteNeed | null {
+  return route.needs?.find((need) => !met(need)) ?? null;
+}
+
 /** Days first, ryo to break a tie. */
 function cheaper(a: Journey, b: Journey): boolean {
   return a.days < b.days || (a.days === b.days && a.cost < b.cost);
@@ -68,6 +99,7 @@ function extend(journey: Journey, step: Step, from: string): Journey {
   const legs = step.route.from === from ? step.route.legs : [...step.route.legs].reverse();
   return {
     via: journey.days === 0 ? [] : [...journey.via, from],
+    routeIds: [...journey.routeIds, step.route.id],
     legs: [...journey.legs, ...legs],
     days: journey.days + routeDays(step.route),
     cost: journey.cost + (step.route.cost ?? 0),
@@ -75,7 +107,7 @@ function extend(journey: Journey, step: Step, from: string): Journey {
   };
 }
 
-const STAY: Journey = { via: [], legs: [], days: 0, cost: 0, danger: 'petty' };
+const STAY: Journey = { via: [], routeIds: [], legs: [], days: 0, cost: 0, danger: 'petty' };
 
 /**
  * The quickest way from `from` to `to` over the routes `open` allows, or null if no open way

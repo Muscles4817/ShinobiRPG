@@ -2,11 +2,12 @@ import { MAP_SIZE } from '@/content';
 import type { Danger } from '@/systems/missions';
 
 import type { GameContext } from '../context';
+import { roadOpen } from '../routeNeeds';
 import type { GameState } from '../state';
 
 /**
  * The Travel tab's map: every location as a point, every route as a line between two of them
- * (closed while either end is locked), and where you stand. Positions come from the pack
+ * (closed while either end is locked or it needs what you lack), and where you stand. Positions come from the pack
  * (`LocationDef.map`), in the units of `MAP_SIZE`.
  */
 
@@ -27,7 +28,7 @@ export interface MapRoad {
   readonly id: string;
   readonly from: MapPoint;
   readonly to: MapPoint;
-  /** Both ends are open: a road you could walk. */
+  /** Both ends are open and you meet its needs: a road you could walk. */
   readonly open: boolean;
   readonly danger: Danger;
 }
@@ -42,7 +43,6 @@ export interface TravelMap {
 export function travelMap(state: GameState, ctx: GameContext): TravelMap {
   const { locations, routes } = ctx.content;
   const at = (id: string): MapPoint => locations.require(id).map;
-  const locked = (id: string) => locations.require(id).lockedReason !== undefined;
   return {
     ...MAP_SIZE,
     places: locations.all.map((l) => ({
@@ -56,7 +56,7 @@ export function travelMap(state: GameState, ctx: GameContext): TravelMap {
       id: r.id,
       from: at(r.from),
       to: at(r.to),
-      open: !locked(r.from) && !locked(r.to),
+      open: roadOpen(state, ctx, r),
       danger: r.danger,
     })),
   };

@@ -74,6 +74,13 @@ export function TravelScreen({ ctx, state, perform }: ScreenProps) {
                   ))}
                 </ul>
               )}
+              {d.closedRoads.length > 0 && (
+                <ul className="dest-notes dest-ways">
+                  {d.closedRoads.map((w) => (
+                    <li key={w}>{w}</li>
+                  ))}
+                </ul>
+              )}
               {!d.here && !d.lockedReason && (
                 <div className="dest-go">
                   <button
