@@ -3,6 +3,7 @@ import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
 import { journeyTo, setOut } from '../journeys';
+import { leaveBlocker, spendLeave } from '../leave';
 import { busyReason, firstBlocker } from '../ops';
 import type { GameState } from '../state';
 import { missionContinue } from './mission';
@@ -30,6 +31,7 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
       destination.id === state.locationId && 'You are already here.',
       destination.lockedReason ?? null,
       !journey && 'No open road goes there yet.',
+      journey && leaveBlocker(state, ctx, destination.id, journey),
       journey !== null &&
         state.wallet.ryo < journey.cost &&
         `The journey costs ${journey.cost} ryo.`,
@@ -46,7 +48,8 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
       legs: journey.legs,
       quick: action.quick === true,
     };
-    return walkOn(setOut({ ...state, wallet: paid.value }, ctx, plan, journey.cost), ctx, rng);
+    const onLeave = spendLeave({ ...state, wallet: paid.value }, ctx, action.locationId, journey);
+    return walkOn(setOut(onLeave, ctx, plan, journey.cost), ctx, rng);
   },
 };
 

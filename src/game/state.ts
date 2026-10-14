@@ -9,6 +9,7 @@ import type { Standing } from '@/systems/standing';
 import type { Aptitude, AptitudeKnown, StatId, Stats } from '@/systems/stats';
 import type { Element, TechniqueBook } from '@/systems/techniques';
 import type { GameTime } from '@/systems/time';
+import type { Leave } from '@/systems/travel';
 import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
 
@@ -57,6 +58,8 @@ export interface GameState {
   readonly village: VillageMemory;
   /** The exam you are sitting, and a promotion waiting to be held. */
   readonly exams: Exams;
+  /** Leave from the village for trips of your own: a genin's pass, a chūnin's days. */
+  readonly leave: Leave;
 }
 
 /**

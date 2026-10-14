@@ -4,6 +4,7 @@ import { diffStats, STAT_INFO, type StatId } from '@/systems/stats';
 import { DAYS_PER_WEEK } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { passAfterLesson } from '../leave';
 import { permitAfterLesson } from '../permits';
 import { growCharacter, logDiscoveries, noTalentReason } from '../growth';
 import { weakFromHunger } from '../hunger';
@@ -230,7 +231,12 @@ export function lessonAway(
   if (!statId) return null;
   const session = teachSession(state, ctx, teaching, statId);
   const logged = report(session.state, state, { ...session, energy: 0 });
-  return permitAfterLesson(logDiscoveries(logged, session.discovered, ctx), ctx, sensei);
+  return slipsAfterLesson(logDiscoveries(logged, session.discovered, ctx), ctx, sensei);
+}
+
+/** What your sensei signs after a lesson: the library permit, and the week's travel pass. */
+function slipsAfterLesson(state: GameState, ctx: GameContext, sensei: PersonDef): GameState {
+  return passAfterLesson(permitAfterLesson(state, ctx, sensei), sensei);
 }
 
 export const trainWith: ActionHandler<TrainWith> = {
@@ -254,6 +260,6 @@ export const trainWith: ActionHandler<TrainWith> = {
     });
     const logged = report(next, state, { ...session, energy: TRAIN_WITH_ENERGY });
     const grown = logDiscoveries(logged, session.discovered, ctx);
-    return teaching.isSensei ? permitAfterLesson(grown, ctx, person) : grown;
+    return teaching.isSensei ? slipsAfterLesson(grown, ctx, person) : grown;
   },
 };

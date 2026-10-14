@@ -252,6 +252,13 @@ describe('persistence', () => {
     expect(loaded.value.people.permits).toEqual([]);
   });
 
+  it('gives a save from before leave no pass and no leave taken', () => {
+    const { leave: _leave, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 31, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.leave).toEqual({ passUntil: null, season: 0, daysTaken: 0 });
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

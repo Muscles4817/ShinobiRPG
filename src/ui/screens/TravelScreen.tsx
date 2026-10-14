@@ -11,7 +11,7 @@ import type { ScreenProps } from './types';
  */
 export function TravelScreen({ ctx, state, perform }: ScreenProps) {
   const header = headerView(state, ctx);
-  const destinations = travelView(state, ctx);
+  const { leave, destinations } = travelView(state, ctx);
   return (
     <>
       <Banner
@@ -20,6 +20,7 @@ export function TravelScreen({ ctx, state, perform }: ScreenProps) {
         slot={header.slot}
       />
       <main className="page">
+        {leave && <p className="leave-slip">{leave}</p>}
         {destinations.map((d) => (
           <article
             key={d.id}

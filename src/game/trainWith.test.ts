@@ -83,7 +83,7 @@ describe('training with your sensei (the weekly lesson)', () => {
     expect(act(friends, goranTaijutsu).people.permits).toEqual([]);
     const after = act(withAllStats(friends, 14), goranTaijutsu);
     expect(after.people.permits).toEqual(['library']);
-    expect(after.journal.entries.at(-1)?.heading).toBe('A library permit');
+    expect(after.journal.entries.map((e) => e.heading)).toContain('A library permit');
   });
 
   it('teaches friends their signature technique', () => {

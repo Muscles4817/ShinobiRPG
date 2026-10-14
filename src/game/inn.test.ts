@@ -1,9 +1,11 @@
 import { CONTENT_PACKS, validateContent, type ContentPack } from '@/content';
+import { signPass } from '@/systems/travel';
 import { act, newGame } from '@/test/gameFixtures';
 
 import { createGameContext } from './context';
 import { dispatch } from './dispatch';
 import { INN_HEALTH_SHARE } from './actions/inn';
+import { PASS_DAYS } from './leave';
 import { peopleHere, villagers } from './people/cast';
 
 const original = CONTENT_PACKS.find((p) => p.id === 'original')!;
@@ -13,7 +15,9 @@ const inn = port.places.find((p) => p.kind === 'inn');
 const ROOM = inn?.kind === 'inn' ? inn.roomCost : 0;
 
 function atThePort() {
-  const start = newGame({}, ctx);
+  const genin = newGame({}, ctx);
+  // A genin goes on their sensei's pass.
+  const start = { ...genin, leave: signPass(genin.leave, genin.time.day, PASS_DAYS) };
   const going = act(start, { type: 'travel', locationId: 'port-shiomachi', quick: true }, ctx);
   // A road event may stop you; take its first way past.
   const there = going.mission ? act(going, { type: 'missionDecide', optionIndex: 0 }, ctx) : going;

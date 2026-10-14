@@ -5,6 +5,7 @@ import type { Journey } from '@/systems/travel';
 import { examClash } from '../awayNotes';
 import type { GameContext } from '../context';
 import { journeyMission, journeyTo, plannedJourneyTo } from '../journeys';
+import { leaveLine } from '../leave';
 import { rationDays } from '../road';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
@@ -64,7 +65,18 @@ function warningsFor(
   ];
 }
 
-export function travelView(state: GameState, ctx: GameContext): readonly Destination[] {
+/** The Travel tab: where you may go on leave, and every destination. */
+export interface TravelView {
+  /** Your pass or leave days, or null when you come and go as you please. */
+  readonly leave: string | null;
+  readonly destinations: readonly Destination[];
+}
+
+export function travelView(state: GameState, ctx: GameContext): TravelView {
+  return { leave: leaveLine(state), destinations: destinationsFrom(state, ctx) };
+}
+
+function destinationsFrom(state: GameState, ctx: GameContext): readonly Destination[] {
   return ctx.content.locations.all.map((l) => {
     const open = journeyTo(state, ctx, l.id);
     const journey = open ?? plannedJourneyTo(state, ctx, l.id);

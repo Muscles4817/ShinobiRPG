@@ -333,4 +333,10 @@ migration and a previous-version save test wherever the save shape changes.
    teaches **Tidewire** (wire that binds, hauls and nets) for a bond and the drowned nets job;
    Kai the harbourmaster; Umi, a fisher's daughter who wants to be a shinobi. Festivals can now
    belong to a town (`FestivalDef.locationId`): the Night of the Boat Lanterns. Open to anyone
-   until step 5 adds leave.
+   until step 5 adds leave. Checked at phone width: the village's street talk and night
+   sights now stay at home (a tavern counter still carries the talk).
+5. **Leave** (this step). A `leave` slice (`systems/travel/leave.ts`, save v32): a genin's
+   pass, signed after the sensei's weekly lesson once the sensei knows you (bond stage 1),
+   good for a week and for safe roads only; a chūnin's ten days of leave a season, spent by
+   the days on the road out; a jōnin is free. Going home never needs leave. The Travel tab
+   shows the pass or the days left on a slip. Leaving without leave waits for milestone 5.

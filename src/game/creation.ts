@@ -18,6 +18,7 @@ import { NEW_GENIN } from '@/systems/standing';
 import { checkChance, createStats, nothingKnown, STAT_INFO, sumDeltas } from '@/systems/stats';
 import { DISCIPLINES, type Discipline, type Element } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
+import { NO_LEAVE } from '@/systems/travel';
 import { fullVitals } from '@/systems/vitals';
 
 import { rollCharacterAptitude } from './aptitude';
@@ -186,6 +187,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     inventory: withIssuedBlade(EMPTY_INVENTORY, known, content),
     village: { lastSightDay: null, lastRoundDay: null, marks: [], memories: [], clients: {} },
     exams: NO_EXAMS,
+    leave: NO_LEAVE,
   };
   return logOpening(state, ctx, roll);
 }

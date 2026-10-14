@@ -134,9 +134,24 @@ describe('App (smoke test)', () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);
     await startGame(user);
-    await user.click(screen.getByRole('button', { name: /Travel/ }));
-    const port = screen.getByRole('heading', { name: 'Port Shiomachi' }).closest('article')!;
-    await user.click(within(port).getByRole('button', { name: 'Set out' }));
+    const toPort = async () => {
+      await user.click(screen.getByRole('button', { name: /Travel/ }));
+      const port = screen.getByRole('heading', { name: 'Port Shiomachi' }).closest('article')!;
+      return within(port).getByRole('button', { name: 'Set out' });
+    };
+    // A genin goes on their sensei's pass, signed at the weekly lesson.
+    expect(await toPort()).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: /Here/ }));
+    await user.click(place(/Training Grounds/));
+    const sensei = within(screen.getByRole('region', { name: 'People here' })).getAllByRole(
+      'article',
+    )[0]!;
+    const lesson = within(sensei)
+      .getAllByRole('button', { name: /^Train / })
+      .find((b) => !(b as HTMLButtonElement).disabled)!;
+    await user.click(lesson);
+    await user.click(within(screen.getByRole('dialog')).getAllByRole('button')[0]!);
+    await user.click(await toPort());
     // On the road: take the first way on until you arrive.
     for (let step = 0; step < 6 && screen.queryByRole('navigation', { name: 'Choices' }); step++) {
       const choices = screen.getByRole('navigation', { name: 'Choices' });

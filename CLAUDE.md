@@ -279,6 +279,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     earlier acts through world marks (`remembers`, a snapshot taken when a job starts). The
     board pins each arc under way (`views/arcs.ts`). Base locations wait on travel
     (`docs/design/missions-plan.md` 3.9).
+26. **Travel is a journey along routes, on leave** (`docs/design/world-plan.md`). A pack's
+    `routes` join its locations (legs of days through road-event regions, a `danger`, a
+    passage `cost`); `systems/travel` finds the quickest open way (a road through a place still
+    locked is closed). Setting out (`travel`) starts a mission run carrying a `journey` plan, so
+    the road plays as on a job (`game/journeys.ts`: a leg per stretch, a camp between, road
+    events); `quick` hurries on until a road event needs a choice. Away from home you sleep at
+    an `inn`; people who live in a town (`homeLocationId`) are met there, its festivals
+    (`FestivalDef.locationId`) are held there, and the village's street talk stays at home.
+    **Leave is strict** (`game/leave.ts`, the `leave` slice): a genin goes only on the pass
+    their sensei signs at the weekly lesson, by safe roads; a chūnin spends a season's days of
+    leave; a jōnin comes and goes; going home never needs leave, and jobs need none.
 
 ### Content packs
 

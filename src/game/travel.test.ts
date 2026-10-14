@@ -27,6 +27,12 @@ function opened(...ids: string[]) {
 
 const openRoads = opened('kiri-ford', 'sakyugakure');
 
+/** A jōnin comes and goes: these tests are about the road, not leave. */
+function jonin(context: GameContext = openRoads): GameState {
+  const state = newGame({}, context);
+  return { ...state, standing: { ...state.standing, rank: 'jonin' } };
+}
+
 describe('travel', () => {
   it('refuses destinations that are coming soon', () => {
     const ctx = createGameContext(original);
@@ -38,14 +44,14 @@ describe('travel', () => {
 
   it('won’t take a road through a place that is still coming soon', () => {
     const ctx = opened('sakyugakure');
-    expect(dispatch(newGame({}, ctx), { type: 'travel', locationId: 'sakyugakure' }, ctx)).toEqual({
+    expect(dispatch(jonin(ctx), { type: 'travel', locationId: 'sakyugakure' }, ctx)).toEqual({
       ok: false,
       error: 'No open road goes there yet.',
     });
   });
 
   it('sets out on the road: you are on the way, not there yet', () => {
-    const start = newGame({}, openRoads);
+    const start = jonin();
     const going = act(start, { type: 'travel', locationId: 'sakyugakure' }, openRoads);
     expect(going.locationId).toBe('torogakure');
     expect(going.wallet.ryo).toBe(start.wallet.ryo - 120);
@@ -56,7 +62,7 @@ describe('travel', () => {
   });
 
   it('walks the legs with a camp between them, and arrives', () => {
-    const start = newGame({}, openRoads);
+    const start = jonin();
     const { state, stages } = walk(
       act(start, { type: 'travel', locationId: 'sakyugakure' }, openRoads),
       openRoads,
@@ -73,7 +79,7 @@ describe('travel', () => {
   });
 
   it('hurries on without camping, stopping only for what the road brings', () => {
-    const start = newGame({}, openRoads);
+    const start = jonin();
     const hurrying = act(
       start,
       { type: 'travel', locationId: 'sakyugakure', quick: true },
@@ -89,7 +95,7 @@ describe('travel', () => {
 
   it('comes home the same way, legs reversed', () => {
     const there = walk(
-      act(newGame({}, openRoads), { type: 'travel', locationId: 'sakyugakure' }, openRoads),
+      act(jonin(), { type: 'travel', locationId: 'sakyugakure' }, openRoads),
       openRoads,
     ).state;
     const back = act(there, { type: 'travel', locationId: 'torogakure' }, openRoads);
@@ -98,7 +104,7 @@ describe('travel', () => {
   });
 
   it('shows the way, the worst of the road and the places passed', () => {
-    const dunes = travelView(newGame({}, openRoads), openRoads).find((d) => d.id === 'sakyugakure');
+    const dunes = travelView(jonin(), openRoads).destinations.find((d) => d.id === 'sakyugakure');
     expect(dunes).toMatchObject({
       days: 3,
       cost: 120,
@@ -111,7 +117,7 @@ describe('travel', () => {
 
   it('shows a locked place with the road it will have', () => {
     const ctx = createGameContext(original);
-    const mountain = travelView(newGame(), ctx).find((d) => d.id === 'mount-reikon');
+    const mountain = travelView(newGame(), ctx).destinations.find((d) => d.id === 'mount-reikon');
     expect(mountain).toMatchObject({
       days: 4,
       danger: 'Dangerous road',
