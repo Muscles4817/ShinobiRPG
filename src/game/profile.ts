@@ -61,7 +61,7 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
     withoutGrowth(talent?.modifiers ?? {}),
     ...traits.map((t) => t.modifiers),
     STANDING_INFO[character.classStanding].modifiers,
-    natureModifiers(character.nature, clan?.nature),
+    character.natureKnown ? natureModifiers(character.nature, clan?.nature) : {},
     mealBuff(character, ctx),
     snackBuff(character, ctx),
     hungerEffect(character.vitals).spec,

@@ -19,13 +19,12 @@ import {
   type ClassStanding,
 } from '@/systems/profile';
 import { checkChance, STAT_INFO, type StatDelta, type StatId } from '@/systems/stats';
-import { DISCIPLINES, ELEMENTS, type Discipline, type Element } from '@/systems/techniques';
+import { DISCIPLINES, type Discipline, type Element } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import type { CreationDraft } from '../creation';
 import { filledFile } from '../creationDraft';
 import { BASE_STAT } from '../student';
-import { capitalise } from './common';
 
 /** Everything the academy break-in scene offers, with effects spelled out as chips. */
 
@@ -88,7 +87,6 @@ export interface CreationView {
   readonly talents: readonly ProfileOption[];
   readonly traits: readonly TraitOption[];
   readonly nindos: readonly ProfileOption[];
-  readonly natures: readonly { id: Element; name: string; description: string }[];
   readonly disciplines: readonly { id: Discipline; name: string; starter: string }[];
   readonly palettes: {
     readonly hairStyles: readonly string[];
@@ -100,14 +98,6 @@ export interface CreationView {
     readonly pronouns: readonly string[];
   };
 }
-
-const NATURE_TEXT: Readonly<Record<Element, string>> = {
-  fire: 'Burning, relentless. Strong against wind.',
-  wind: 'Cutting, sharp. Strong against lightning.',
-  lightning: 'Piercing, fast. Strong against earth.',
-  earth: 'Solid, patient. Strong against water.',
-  water: 'Flowing, adaptable. Strong against fire.',
-};
 
 function statEffects(delta: StatDelta): EffectLine[] {
   return (Object.entries(delta) as [StatId, number][])
@@ -235,7 +225,6 @@ export function creationView(ctx: GameContext): CreationView {
       description: n.essay,
       effects: [],
     })),
-    natures: ELEMENTS.map((e) => ({ id: e, name: capitalise(e), description: NATURE_TEXT[e] })),
     disciplines: DISCIPLINES.map((d) => ({
       id: d,
       name: STAT_INFO[d].label,
@@ -272,7 +261,6 @@ export function defaultDraft(ctx: GameContext): CreationDraft {
     buildId: content.builds.all.find((b) => b.id === DEFAULT_BUILD_ID)?.id ?? '',
     file: BLANK_FILE,
     quickPick: FIRST_PICK,
-    nature: 'fire',
     traitIds: [first?.id, second?.id].filter((id): id is string => id !== undefined),
     talentId: content.talents.all[0]?.id ?? '',
     nindoId: content.nindos.all[0]?.id ?? '',

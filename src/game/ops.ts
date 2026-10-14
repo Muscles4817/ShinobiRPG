@@ -71,6 +71,7 @@ export function busyReason(state: GameState): string | null {
   if (state.exams.ceremony) return 'Your promotion ceremony is waiting.';
   if (state.people.conversation) return 'You are in the middle of a conversation.';
   if (!state.people.team?.senseiId) return 'Your team has not been assigned yet.';
+  if (!state.character.natureKnown) return 'Your sensei is waiting with the chakra paper.';
   return null;
 }
 

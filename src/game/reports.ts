@@ -1,5 +1,6 @@
 import type { CombatResult } from '@/systems/combat';
 import type { StatGrade } from '@/systems/stats';
+import type { Element } from '@/systems/techniques';
 
 /** A line of how a job went, for its debrief: what happened, and the pay it moved. */
 export interface DebriefLine {
@@ -116,6 +117,18 @@ export type Report =
       readonly rank: string;
       /** What the new grade opens: techniques now within reach, and where they are taught. */
       readonly opens: readonly { readonly name: string; readonly where: string }[];
+    }
+  | {
+      /** The chakra paper showed your nature. */
+      readonly kind: 'nature';
+      readonly nature: Element;
+      /** "Fire nature". */
+      readonly name: string;
+      readonly text: string;
+      /** What the nature is like in a fight. */
+      readonly line: string;
+      /** What knowing it does, as display labels. */
+      readonly effects: readonly string[];
     }
   | {
       readonly kind: 'team-formed';

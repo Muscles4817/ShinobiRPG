@@ -82,6 +82,25 @@ function missionCompleteCard(report: Extract<Report, { kind: 'mission-complete' 
   };
 }
 
+function defeatCard(report: Extract<Report, { kind: 'defeat' }>): CardContent {
+  return {
+    title: 'Defeated',
+    subtitle: report.title ?? 'You lost the fight',
+    seal: null,
+    tone: 'bad',
+    rows: [
+      ...(report.title ? [{ label: 'Mission', value: 'Failed', tone: 'harm' as const }] : []),
+      { label: 'Hospital bill', value: `${report.hospitalFee} ryo`, tone: 'cost' },
+      ...(report.injury ? [{ label: 'Injury', value: report.injury, tone: 'harm' as const }] : []),
+      ...(report.reputationLost > 0
+        ? [{ label: 'Reputation', value: `−${report.reputationLost}`, tone: 'harm' as const }]
+        : []),
+    ],
+    ...taughtList(report.taught),
+    note: report.text,
+  };
+}
+
 function content(report: Report): CardContent {
   switch (report.kind) {
     case 'fight':
@@ -114,29 +133,13 @@ function content(report: Report): CardContent {
         note: report.reason,
       };
     case 'defeat':
-      return {
-        title: 'Defeated',
-        subtitle: report.title ?? 'You lost the fight',
-        seal: null,
-        tone: 'bad',
-        rows: [
-          ...(report.title ? [{ label: 'Mission', value: 'Failed', tone: 'harm' as const }] : []),
-          { label: 'Hospital bill', value: `${report.hospitalFee} ryo`, tone: 'cost' },
-          ...(report.injury
-            ? [{ label: 'Injury', value: report.injury, tone: 'harm' as const }]
-            : []),
-          ...(report.reputationLost > 0
-            ? [{ label: 'Reputation', value: `−${report.reputationLost}`, tone: 'harm' as const }]
-            : []),
-        ],
-        ...taughtList(report.taught),
-        note: report.text,
-      };
+      return defeatCard(report);
     case 'grade':
       return gradeCard(report);
     case 'lesson':
     case 'spar':
     case 'team-formed':
+    case 'nature':
       return peopleCardContent(report);
   }
 }

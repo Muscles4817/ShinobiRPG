@@ -1,4 +1,5 @@
 import type { AptitudeBand, StatKind } from '@/systems/stats';
+import type { Element } from '@/systems/techniques';
 
 /** Setting-specific wording: what the engine and UI say that belongs to the setting. */
 
@@ -32,6 +33,21 @@ export interface SettingText {
   readonly aptitude: AptitudeText;
   /** The promotion ceremonies, by the rank you are raised to. */
   readonly promotions: Readonly<Record<PromotedRank, PromotionText>>;
+  /** The chakra paper test that tells you your nature. */
+  readonly chakraPaper: ChakraPaperText;
+}
+
+/** The chakra paper scene's words. `{sensei}` is your sensei's name. */
+export interface ChakraPaperText {
+  readonly heading: string;
+  /** What your sensei says, holding out the paper. */
+  readonly speech: string;
+  /** The button. */
+  readonly prompt: string;
+  /** What the paper does, by nature. */
+  readonly results: Readonly<Record<Element, string>>;
+  /** What your sensei says afterwards. */
+  readonly verdict: string;
 }
 
 /** Words for aptitude, which players only ever learn as rough reads (never numbers). */

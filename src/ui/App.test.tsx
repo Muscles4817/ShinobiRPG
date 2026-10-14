@@ -28,7 +28,7 @@ async function startGame(user: User, world = /Land of Embers/) {
   await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
   await user.click(screen.getByRole('button', { name: 'Find your file' }));
   await user.type(screen.getByLabelText('Given name'), 'Aoi');
-  for (let page = 0; page < 9; page++) {
+  for (let page = 0; page < 8; page++) {
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
   }
   await user.click(screen.getByRole('button', { name: /forehead protector/i }));
@@ -38,6 +38,8 @@ async function startGame(user: User, world = /Land of Embers/) {
 async function formTeam(user: User) {
   await user.click(screen.getByRole('button', { name: 'Hear the teams' }));
   await user.click(screen.getAllByRole('button', { name: /^Train under/ })[0]!);
+  await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Continue' }));
+  await user.click(screen.getByRole('button', { name: 'Push your chakra into the paper' }));
   await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Continue' }));
 }
 
@@ -394,7 +396,7 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /^Slight/ }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     expect(screen.getByText(/0 gifts to give/)).toBeInTheDocument();
-    for (let page = 0; page < 5; page++) {
+    for (let page = 0; page < 4; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     expect(screen.getByText('Dead last')).toBeInTheDocument();
@@ -403,6 +405,8 @@ describe('App (smoke test)', () => {
     await formTeam(user);
     await user.click(screen.getByRole('button', { name: 'Shinobi' }));
     expect(screen.getByText('Dead last')).toBeInTheDocument();
+    // The chakra paper has told you your nature.
+    expect(screen.queryByText('Not yet tested')).toBeNull();
   });
 
   it('creates a clan character, raised by the clan, with a file written by hand', async () => {
@@ -432,7 +436,7 @@ describe('App (smoke test)', () => {
     // …so it becomes a flaw instead, which gives points back.
     await user.click(within(kenjutsu).getByRole('button', { name: 'Kenjutsu: Gifted' }));
     expect(within(kenjutsu).getByRole('button', { name: 'Kenjutsu: Flawed' })).toBeInTheDocument();
-    for (let page = 0; page < 5; page++) {
+    for (let page = 0; page < 4; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     await user.click(screen.getByRole('button', { name: /forehead protector/i }));

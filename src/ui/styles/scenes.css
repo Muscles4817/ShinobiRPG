@@ -709,3 +709,14 @@ button.foe {
 .field-notes .handicap {
   color: #9a5c12;
 }
+
+/* The chakra paper: a pale slip held out to you */
+.paper-slip {
+  width: 96px;
+  height: 150px;
+  margin: 20px auto;
+  background: var(--grain), var(--paper);
+  border-radius: 2px;
+  box-shadow: var(--shadow, 0 6px 18px -8px var(--bg));
+  transform: rotate(-3deg);
+}

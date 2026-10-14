@@ -1,4 +1,4 @@
-import type { Report, StatGrade } from '@/game';
+import type { Element, Report, StatGrade } from '@/game';
 
 /** What a result card shows. Built per report kind; people-related kinds live here. */
 
@@ -34,7 +34,16 @@ export function gainRow(label: string): Row {
     : { label: label.slice(0, cut), value: label.slice(cut + 1), tone: 'gain' };
 }
 
-type PeopleReport = Extract<Report, { kind: 'lesson' | 'spar' | 'team-formed' }>;
+type PeopleReport = Extract<Report, { kind: 'lesson' | 'spar' | 'team-formed' | 'nature' }>;
+
+/** The seal stamped on a nature's card: the element's own character. */
+const NATURE_SEALS: Readonly<Record<Element, string>> = {
+  fire: '火',
+  wind: '風',
+  lightning: '雷',
+  earth: '土',
+  water: '水',
+};
 
 const SPAR_TITLE = { won: 'You won', lost: 'You lost', yielded: 'You yielded' } as const;
 
@@ -72,6 +81,15 @@ export function peopleCardContent(report: PeopleReport): CardContent {
           ? { list: { title: 'What the spar taught you', rows: report.gains.map(gainRow) } }
           : {}),
         note: report.text,
+      };
+    case 'nature':
+      return {
+        title: report.name,
+        subtitle: 'Chakra paper',
+        seal: NATURE_SEALS[report.nature],
+        tone: 'good',
+        rows: report.effects.map((e) => ({ label: 'Knowing it', value: e, tone: 'gain' as const })),
+        note: `${report.text} ${report.line}`,
       };
     case 'team-formed':
       return {

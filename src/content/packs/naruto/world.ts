@@ -1,5 +1,6 @@
 import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
+import { CHAKRA_PAPER_TEXT } from '../../shared/chakraPaper';
 import { TOOL_IDS } from '../../shared/tools';
 import { PROMOTIONS } from './exam';
 import { SHOPPING_DISTRICT } from './market';
@@ -19,6 +20,7 @@ export const NARUTO_TEXT: SettingText = {
   sleepLockedOut: 'Your landlady has locked the door over unpaid rent. You sleep on the stairs.',
   hospitalWake: 'You wake in Konoha Hospital, under clean sheets and a medic’s frown.',
   aptitude: APTITUDE_TEXT,
+  chakraPaper: CHAKRA_PAPER_TEXT,
   promotions: PROMOTIONS,
 };
 

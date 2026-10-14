@@ -37,11 +37,15 @@ export function freshGame(context: GameContext = ctx): GameState {
   return createNewGame({ draft: draft({}, context), seed: 1234 }, context);
 }
 
-/** Reads out the teams and takes the first sensei offered, clearing the result card. */
+/**
+ * Reads out the teams, takes the first sensei offered and the chakra paper test they hand you,
+ * clearing the result cards.
+ */
 export function formTeam(state: GameState, context: GameContext = ctx): GameState {
   const assigned = act(state, { type: 'assignTeam' }, context);
   const senseiId = assigned.people.team?.senseiOptions[0] ?? '';
-  return { ...act(assigned, { type: 'chooseSensei', senseiId }, context), reports: [] };
+  const formed = act(assigned, { type: 'chooseSensei', senseiId }, context);
+  return { ...act(formed, { type: 'testChakraPaper' }, context), reports: [] };
 }
 
 /** Puts every job on the board, so tests can take any job they are trusted with. */

@@ -19,6 +19,7 @@ import { study } from './study';
 import { trainWith } from './trainWith';
 import { buyRound } from './tavern';
 import { endConversation, reply, talk } from './talk';
+import { testChakraPaper } from './chakraPaper';
 import { assignTeam, chooseSensei } from './team';
 import { dismissReport, leaveFight, travel } from './travel';
 import { followSight } from './village';
@@ -48,6 +49,7 @@ export const HANDLERS: Registry = {
   combatAct,
   assignTeam,
   chooseSensei,
+  testChakraPaper,
   talk,
   reply,
   endConversation,

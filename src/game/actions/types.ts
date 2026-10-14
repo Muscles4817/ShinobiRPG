@@ -40,6 +40,7 @@ export type GameAction =
   | { readonly type: 'combatAct'; readonly optionId: string; readonly targetId?: string }
   | { readonly type: 'assignTeam' }
   | { readonly type: 'chooseSensei'; readonly senseiId: string }
+  | { readonly type: 'testChakraPaper' }
   | { readonly type: 'talk'; readonly personId: string }
   | { readonly type: 'reply'; readonly choiceIndex: number }
   | { readonly type: 'endConversation' }

@@ -1,33 +1,6 @@
 import { OptionCard } from './OptionCard';
 import type { StepProps } from './types';
 
-/** Chakra assessment: pick a nature. The clan's own nature is marked. */
-export function NatureStep({ view, draft, update }: StepProps) {
-  const clanNature = view.clans.find((c) => c.id === draft.clanId)?.nature ?? null;
-  return (
-    <div className="step opt-list">
-      {view.natures.map((n) => (
-        <OptionCard
-          key={n.id}
-          name={n.name}
-          description={n.description}
-          effects={[
-            { label: `${n.name} techniques learned 50% faster`, tone: 'gain' },
-            ...(n.id === clanNature
-              ? [{ label: 'Clan affinity: a further 20%', tone: 'gain' as const }]
-              : []),
-          ]}
-          selected={draft.nature === n.id}
-          onSelect={() => {
-            update({ nature: n.id });
-          }}
-        />
-      ))}
-      <p className="muted small">Other natures are learned 15% slower.</p>
-    </div>
-  );
-}
-
 /** Instructor's notes: two traits, never a pair of opposites. */
 export function TraitsStep({ view, draft, update }: StepProps) {
   const toggle = (id: string) => {

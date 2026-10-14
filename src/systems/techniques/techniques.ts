@@ -96,7 +96,8 @@ export const EMPTY_BOOK: TechniqueBook = { known: [], progress: {}, unstable: []
 export interface Learner {
   readonly stats: Stats;
   readonly clanId: string;
-  readonly nature: Element;
+  /** Null until the chakra paper has told them (nothing that needs a nature can be learned). */
+  readonly nature: Element | null;
   /** The held weapon's shape (null: empty hands); absent when gear isn't known. */
   readonly held?: string | null;
 }

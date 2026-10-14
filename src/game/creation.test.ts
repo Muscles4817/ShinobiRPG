@@ -146,7 +146,8 @@ describe('identity shapes play', () => {
   });
 
   it('nature and clan speed up matching study', () => {
-    const uchiha = leafGame({ clanId: 'uchiha', nature: 'fire' });
+    const born = leafGame({ clanId: 'uchiha' });
+    const uchiha = { ...born, character: { ...born.character, nature: 'fire' as const } };
     const mods = characterModifiers(uchiha.character, naruto);
     expect(mods.studyElement.fire).toBeCloseTo(1.3 * 1.5 * 1.2);
     expect(mods.studyElement.water).toBeCloseTo(0.85);

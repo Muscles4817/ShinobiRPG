@@ -107,6 +107,7 @@ function withTaught(card: Report, taught: readonly string[]): Report | null {
     case 'mission-failed':
     case 'lesson':
     case 'team-formed':
+    case 'nature':
     case 'grade':
       return null;
   }
