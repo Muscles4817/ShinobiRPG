@@ -53,7 +53,12 @@ export const GUY_TEACHER: TeacherProfile = {
 
 export const IRUKA_TEACHER: TeacherProfile = {
   quirk: 'patient',
-  teaches: ['substitution-jutsu', 'clone-jutsu', 'sealed-binding-formation'],
+  teaches: [
+    'substitution-jutsu',
+    'clone-jutsu',
+    'sealed-binding-formation',
+    'string-light-formation',
+  ],
   sessionsPerWeek: 3,
   price: { kind: 'bond', minStage: 0, line: '“Come by after class. I’ll always make time.”' },
 };

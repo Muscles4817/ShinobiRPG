@@ -7,6 +7,7 @@ import {
   HIASHI_ARSENAL,
   HIRUZEN_ARSENAL,
   SHIBI_ARSENAL,
+  SHIKAKU_ARSENAL,
   TSUME_ARSENAL,
 } from './arsenals';
 
@@ -109,7 +110,7 @@ export const LEADERS: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'patient',
-      teaches: ['mind-body-switch', 'mind-destruction'],
+      teaches: ['mind-body-switch', 'mind-destruction', 'mind-clone-switch'],
       price: {
         kind: 'all',
         parts: [
@@ -149,13 +150,21 @@ export const LEADERS: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'natural',
-      teaches: ['shadow-possession', 'shadow-neck-bind'],
+      teaches: [
+        'shadow-possession',
+        'shadow-neck-bind',
+        'shadow-clutch',
+        'shadow-gathering',
+        'shadow-imitation-shuriken',
+        'shadow-sewing',
+      ],
       price: {
         kind: 'favour',
         favourId: 'shikaku-shogi',
         ask: 'Shikaku wants a game of shōgi first. He doesn’t care if you win; he cares how you lose.',
       },
     },
+    arsenal: SHIKAKU_ARSENAL,
   },
   {
     id: 'choza',
@@ -192,6 +201,7 @@ export const LEADERS: readonly PersonDef[] = [
         'butterfly-mode',
         'butterfly-bullet-bombing',
         'ballistic-waterwheel',
+        'super-open-hand-slap',
       ],
       price: {
         kind: 'bond',
@@ -235,6 +245,9 @@ export const LEADERS: readonly PersonDef[] = [
         'beast-human-clone',
         'double-headed-wolf',
         'fang-wolf-fang',
+        'fang-rotating-fang',
+        'three-headed-wolf',
+        'tail-chasing-rotating-fang',
       ],
       price: {
         kind: 'all',
@@ -271,7 +284,16 @@ export const LEADERS: readonly PersonDef[] = [
     schedule: { morning: null, afternoon: null, evening: 'training-grounds', night: null },
     teacher: {
       quirk: 'patient',
-      teaches: ['insect-swarm', 'insect-jar', 'insect-clone', 'insect-rope', 'insect-wall'],
+      teaches: [
+        'insect-swarm',
+        'insect-jar',
+        'insect-clone',
+        'insect-rope',
+        'insect-wall',
+        'insect-jamming',
+        'bug-bite',
+        'insect-sphere',
+      ],
       price: { kind: 'bond', minStage: 2 },
     },
     arsenal: SHIBI_ARSENAL,
