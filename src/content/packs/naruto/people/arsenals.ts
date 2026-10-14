@@ -86,10 +86,53 @@ export const SASUKE_ARSENAL: PersonArsenal = {
     'dragon-fire',
     'area-scanning',
     'substitution-jutsu',
+    'windmill-triple-blades',
+    'surging-fire-wild-dance',
   ],
 };
 
 /** Guy's kicks, as far as a genin's taijutsu reaches. */
 export const LEE_ARSENAL: PersonArsenal = {
   techniqueIds: ['leaf-whirlwind', 'leaf-gale', 'dynamic-entry'],
+};
+
+/** The Gentle Fist as far as she has it: points closed, and the palm that shakes the body. */
+export const HINATA_ARSENAL: PersonArsenal = {
+  techniqueIds: ['gentle-fist', 'palm-bottom', 'shuriken-jutsu', 'substitution-jutsu'],
+};
+
+/** The branch house’s Gentle Fist, at a genin’s grade. */
+export const NEJI_ARSENAL: PersonArsenal = {
+  techniqueIds: ['gentle-fist', 'palm-bottom', 'shuriken-jutsu', 'substitution-jutsu'],
+};
+
+/** The head of the Hyūga: the Gentle Fist whole. */
+export const HIASHI_ARSENAL: PersonArsenal = {
+  techniqueIds: [
+    'gentle-fist',
+    'palm-bottom',
+    'sixty-four-palms',
+    'eight-trigrams-rotation',
+    'substitution-jutsu',
+  ],
+};
+
+/** Fang over fang with Akamaru; his ninjutsu is still too raw for the clan’s chakra arts. */
+export const KIBA_ARSENAL: PersonArsenal = {
+  techniqueIds: ['fang-over-fang', 'passing-fang', 'shuriken-jutsu', 'substitution-jutsu'],
+};
+
+/** On all fours beside Kuromaru. */
+export const TSUME_ARSENAL: PersonArsenal = {
+  techniqueIds: ['four-legs', 'fang-over-fang', 'passing-fang', 'substitution-jutsu'],
+};
+
+/** The Inuzuka beast stance beside her three dogs. */
+export const HANA_ARSENAL: PersonArsenal = {
+  techniqueIds: ['four-legs', 'shuriken-jutsu', 'substitution-jutsu'],
+};
+
+/** The swarm, and the copy of himself it makes. */
+export const SHINO_ARSENAL: PersonArsenal = {
+  techniqueIds: ['insect-swarm', 'insect-clone', 'shuriken-jutsu', 'substitution-jutsu'],
 };

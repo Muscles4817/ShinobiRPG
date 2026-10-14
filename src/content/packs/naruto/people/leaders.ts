@@ -2,6 +2,8 @@ import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
+import { HIASHI_ARSENAL, TSUME_ARSENAL } from './arsenals';
+
 /**
  * The heads of the village's clans, all jōnin. Each keeps the clan's own techniques and
  * teaches them only to their own (`nextSignature`); anyone may still train with them.
@@ -64,9 +66,11 @@ export const LEADERS: readonly PersonDef[] = [
         'sixty-four-palms',
         'eight-trigrams-rotation',
         'hundred-twenty-eight-palms',
+        'palm-bottom',
       ],
       price: { kind: 'bond', minStage: 3, line: '“The Hyūga do not instruct strangers.”' },
     },
+    arsenal: HIASHI_ARSENAL,
   },
   {
     id: 'inoichi',
@@ -203,7 +207,14 @@ export const LEADERS: readonly PersonDef[] = [
     teacher: {
       quirk: 'harsh',
       steers: { focus: 'specialty', freeAtStage: 3 },
-      teaches: ['fang-over-fang', 'passing-fang'],
+      teaches: [
+        'fang-over-fang',
+        'passing-fang',
+        'four-legs',
+        'beast-human-clone',
+        'double-headed-wolf',
+        'fang-wolf-fang',
+      ],
       price: {
         kind: 'all',
         parts: [
@@ -216,6 +227,7 @@ export const LEADERS: readonly PersonDef[] = [
         ],
       },
     },
+    arsenal: TSUME_ARSENAL,
   },
   {
     id: 'shibi',
@@ -238,7 +250,7 @@ export const LEADERS: readonly PersonDef[] = [
     schedule: { morning: null, afternoon: null, evening: 'training-grounds', night: null },
     teacher: {
       quirk: 'patient',
-      teaches: ['insect-swarm', 'insect-jar'],
+      teaches: ['insect-swarm', 'insect-jar', 'insect-clone'],
       price: { kind: 'bond', minStage: 2 },
     },
   },

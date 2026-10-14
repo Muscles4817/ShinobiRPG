@@ -2,7 +2,13 @@ import { look } from '../../../look';
 import { statLine, talent } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
-import { NARUTO_ARSENAL, SASUKE_ARSENAL } from './arsenals';
+import {
+  HINATA_ARSENAL,
+  KIBA_ARSENAL,
+  NARUTO_ARSENAL,
+  SASUKE_ARSENAL,
+  SHINO_ARSENAL,
+} from './arsenals';
 
 /** The genin of your graduating year. Friends, rivals, nuisances. */
 export const CANON_GENIN: readonly PersonDef[] = [
@@ -49,6 +55,9 @@ export const CANON_GENIN: readonly PersonDef[] = [
         'all-directions-shuriken',
         'clone-body-blow',
         'harem-technique',
+        'shuriken-shadow-clone',
+        'spiralling-serial-spheres',
+        'food-cart-destroyer',
       ],
     },
     schedule: {
@@ -126,6 +135,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       evening: 'shopping-district',
       night: null,
     },
+    teacher: { teaches: ['chakra-scalpel', 'chakra-enhanced-strength', 'creation-rebirth'] },
   },
   {
     id: 'hinata',
@@ -146,6 +156,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     specialty: 'taijutsu',
     bio: 'Quiet, gentle, and much stronger than her clan gives her credit for.',
     schedule: { morning: 'training-grounds', afternoon: 'academy', evening: null, night: null },
+    arsenal: HINATA_ARSENAL,
   },
   {
     id: 'kiba',
@@ -171,6 +182,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       evening: 'training-grounds',
       night: 'izakaya',
     },
+    arsenal: KIBA_ARSENAL,
   },
   {
     id: 'shino',
@@ -191,6 +203,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     specialty: 'ninjutsu',
     bio: 'Speaks in complete, logical sentences. Remembers every slight. Carries a colony.',
     schedule: { morning: 'academy', afternoon: 'training-grounds', evening: null, night: null },
+    arsenal: SHINO_ARSENAL,
   },
   {
     id: 'shikamaru',
