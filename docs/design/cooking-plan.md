@@ -416,5 +416,15 @@ Each phase ships on its own and keeps `npm run check` green.
 - `RecipeDef.provision`: today's meal brings it into fights when cooked good or fine
   (`mealProvisions`). Eight dishes have one; the kitchen and cookbook word it.
 
+**Snacks (decision 8).** `RecipeDef.kind: 'snack'`: eaten beside the day's meal, never
+replacing it, its buff working through the stretch of the day after (`game/snacks.ts`,
+`character.snack`, optional so no save version). Guests come for meals, not snacks.
+
+**Phase 7, the library (first batch: Tōrōgakure).** The original pack's own larder
+(`packs/original/kitchen.ts`: buckwheat, sesame, red beans, tea leaves, lotus root, pickled
+plums) and 13 dishes (`packs/original/recipes.ts`): four teahouse snacks and nine meals. Kasumi
+(the canal teahouse) and Mama Sayo (the izakaya) teach theirs, Tsune adds Ember Noodles, a
+village cookbook covers four, and two jobs hand one over. 35 dishes in the original pack in all.
+
 Not yet built: gathering (phase 4), provisions in fights (phase 5),
 the library (phase 7) and other regions (phase 8).

@@ -1,0 +1,112 @@
+import type { PersonDef } from '../../types';
+import { allDay, look } from '../../look';
+import { statLine } from '../../statLine';
+
+/**
+ * The people who feed Tōrōgakure and teach its dishes: Granny Tsune at her noodle stall, Kasumi at
+ * the canal teahouse and Mama Sayo at the izakaya.
+ */
+export const VILLAGE_COOKS: readonly PersonDef[] = [
+  {
+    id: 'tsune',
+    name: 'Tsune',
+    familyName: '',
+    role: 'villager',
+    title: 'Noodle-stall owner',
+    rank: 'civilian',
+    stats: statLine(4, {
+      intellect: 8,
+      perception: 9,
+      willpower: 9,
+      taijutsu: 1,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 1,
+      fuuinjutsu: 0,
+    }),
+    traitIds: ['kind', 'cunning'],
+    favouriteRecipeId: 'miso-soup',
+    recipes: [
+      { recipeId: 'rolled-omelette', minStage: 1 },
+      { recipeId: 'spicy-hot-pot', minStage: 2 },
+      { recipeId: 'pepper-rice', minStage: 3 },
+      { recipeId: 'ember-noodles-home', minStage: 4 },
+    ],
+    appearance: look(
+      'buns',
+      { hair: '#e8e0d0', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3e6b3a' },
+      'arm',
+    ),
+    bio: 'Granny Tsune has fed three generations of shinobi. Remembers every one who never paid.',
+    schedule: allDay('market-street'),
+  },
+  {
+    id: 'kasumi',
+    name: 'Kasumi',
+    familyName: 'Mizuno',
+    role: 'villager',
+    title: 'Tea-shop keeper',
+    rank: 'civilian',
+    stats: statLine(4, {
+      intellect: 9,
+      perception: 8,
+      willpower: 7,
+      taijutsu: 0,
+      ninjutsu: 0,
+      genjutsu: 1,
+      kenjutsu: 0,
+      fuuinjutsu: 1,
+    }),
+    traitIds: ['calm', 'curious'],
+    favouriteRecipeId: 'bean-dumplings',
+    recipes: [
+      { recipeId: 'canal-sencha-brew', minStage: 1 },
+      { recipeId: 'bean-dumplings', minStage: 2 },
+      { recipeId: 'sesame-crackers', minStage: 3 },
+    ],
+    appearance: look(
+      'ponytail',
+      { hair: '#3a2418', eyes: '#2a1d14', skin: '#e8c4a0', outfit: '#5b7a5a' },
+      'arm',
+    ),
+    bio: 'Keeps the teahouse by the canal and knows every regular’s cup. Hums while she pours.',
+    schedule: {
+      morning: 'market-street',
+      afternoon: 'market-street',
+      evening: 'market-street',
+      night: null,
+    },
+  },
+  {
+    id: 'mama-sayo',
+    name: 'Mama Sayo',
+    familyName: '',
+    role: 'villager',
+    title: 'Izakaya keeper',
+    rank: 'civilian',
+    stats: statLine(4, {
+      intellect: 8,
+      perception: 10,
+      willpower: 10,
+      taijutsu: 1,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 0,
+      fuuinjutsu: 0,
+    }),
+    traitIds: ['cunning', 'kind'],
+    favouriteRecipeId: 'sayo-oden',
+    recipes: [
+      { recipeId: 'plum-tea', minStage: 1 },
+      { recipeId: 'lotus-kinpira', minStage: 2 },
+      { recipeId: 'sayo-oden', minStage: 3 },
+    ],
+    appearance: look(
+      'buns',
+      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#d9a77c', outfit: '#7a2d2d' },
+      'arm',
+    ),
+    bio: 'Runs the Paper Lantern and hears everything said over its counter. Forgets nothing.',
+    schedule: { morning: null, afternoon: null, evening: 'izakaya', night: 'izakaya' },
+  },
+];

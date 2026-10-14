@@ -1,4 +1,4 @@
-import { allDay, look } from '../../look';
+import { look } from '../../look';
 import { statLine } from '../../statLine';
 import { LANTERN_WIND, TWIN_CUT } from './techniques/schools';
 import type { PersonDef } from '../../types';
@@ -266,37 +266,5 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     ),
     bio: 'The Old Lamp. Has led the village through two wars and a very long winter.',
     schedule: { morning: 'mission-hall', afternoon: null, evening: null, night: null },
-  },
-  {
-    id: 'tsune',
-    name: 'Tsune',
-    familyName: '',
-    role: 'villager',
-    title: 'Noodle-stall owner',
-    rank: 'civilian',
-    stats: statLine(4, {
-      intellect: 8,
-      perception: 9,
-      willpower: 9,
-      taijutsu: 1,
-      ninjutsu: 0,
-      genjutsu: 0,
-      kenjutsu: 1,
-      fuuinjutsu: 0,
-    }),
-    traitIds: ['kind', 'cunning'],
-    favouriteRecipeId: 'miso-soup',
-    recipes: [
-      { recipeId: 'rolled-omelette', minStage: 1 },
-      { recipeId: 'spicy-hot-pot', minStage: 2 },
-      { recipeId: 'pepper-rice', minStage: 3 },
-    ],
-    appearance: look(
-      'buns',
-      { hair: '#e8e0d0', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3e6b3a' },
-      'arm',
-    ),
-    bio: 'Granny Tsune has fed three generations of shinobi. Remembers every one who never paid.',
-    schedule: allDay('market-street'),
   },
 ];

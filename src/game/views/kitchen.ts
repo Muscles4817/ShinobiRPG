@@ -37,6 +37,8 @@ export interface RecipeCard extends Choice {
   readonly description: string;
   readonly icon: IconId;
   readonly rank: StatGrade;
+  /** A snack sits beside the day's meal for a little while; a meal lasts the day. */
+  readonly snack: boolean;
   /** How it's cooked, e.g. "Grilled": the method sets the right steps at the stove. */
   readonly method: string;
   /** What mastery has taught you of its steps, in words, or null. */
@@ -78,6 +80,8 @@ export interface KitchenView {
   readonly unlearned: number;
   /** Today's meal and what it's doing for you, if you've cooked today. */
   readonly meal: { readonly name: string; readonly effects: readonly EffectLine[] } | null;
+  /** The snack still working, and what it's doing for you. */
+  readonly snack: { readonly name: string; readonly effects: readonly EffectLine[] } | null;
   /** Why nobody can be invited at all yet, or null. */
   readonly noGuests: string | null;
 }
@@ -94,6 +98,13 @@ function todaysMeal(state: GameState, ctx: GameContext, meal: RecipeDef): Effect
   const quality = state.character.mealQuality ?? 'good';
   const provisions = mealProvisions(state, ctx);
   return [...describeSpec(buffAt(meal.buff, quality)), ...provisionLine(provisions[0])];
+}
+
+function snackNow(state: GameState, ctx: GameContext): KitchenView['snack'] {
+  const { snack } = state.character;
+  const recipe = snack ? ctx.content.recipes.get(snack.recipeId) : undefined;
+  if (!snack || !recipe) return null;
+  return { name: recipe.name, effects: describeSpec(buffAt(recipe.buff, snack.quality)) };
 }
 
 export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
@@ -122,6 +133,7 @@ export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
         description: r.description,
         icon: r.icon,
         rank: r.rank,
+        snack: r.kind === 'snack',
         method: METHOD_WORDS[r.method],
         hint: stepsHint(knownSteps(state, r)),
         knownSteps: knownSteps(state, r),
@@ -150,6 +162,7 @@ export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
       };
     }),
     meal: meal ? { name: meal.name, effects: todaysMeal(state, ctx, meal) } : null,
+    snack: snackNow(state, ctx),
     noGuests:
       guests.length === 0 ? 'Get to know people first: friends will come round for dinner.' : null,
   };

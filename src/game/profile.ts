@@ -16,6 +16,7 @@ import { breakthroughSpec } from './breakthroughs';
 import type { GameContext } from './context';
 import { hungerEffect } from './hunger';
 import { injurySpecs } from './injuries';
+import { snackBuff } from './snacks';
 import type { Character } from './state';
 
 /**
@@ -62,6 +63,7 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
     STANDING_INFO[character.classStanding].modifiers,
     natureModifiers(character.nature, clan?.nature),
     mealBuff(character, ctx),
+    snackBuff(character, ctx),
     hungerEffect(character.vitals).spec,
     ...injurySpecs(character, ctx),
   ]);

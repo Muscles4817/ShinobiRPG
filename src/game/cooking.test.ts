@@ -47,6 +47,7 @@ describe('learning recipes', () => {
       'food-for-the-road',
       'foragers-notes',
       'river-cook',
+      'lantern-village-kitchen',
     ]);
     const bought = act(state, { type: 'buyCookbook', cookbookId: 'everyday-kitchen' });
     expect(bought.wallet.ryo).toBe(1000 - 60);

@@ -17,6 +17,9 @@ import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
 import { WILD_INGREDIENTS } from '../../shared/wilds';
+import { TOROGAKURE_COOKBOOKS, TOROGAKURE_INGREDIENTS } from './kitchen';
+import { TOROGAKURE_RECIPES } from './recipes';
+import { VILLAGE_COOKS } from './villagers';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
@@ -85,10 +88,17 @@ export const ORIGINAL_PACK: ContentPack = {
   gear: GEAR,
   tools: TOOLS,
   injuries: INJURIES,
-  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS],
-  recipes: RECIPES,
-  cookbooks: COOKBOOKS,
-  people: [...SENSEIS_AND_ELDERS, ...GENIN, ...VILLAGE_JONIN, ...CLAN_HEADS, ...VILLAGE_CHUNIN],
+  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS, ...TOROGAKURE_INGREDIENTS],
+  recipes: [...RECIPES, ...TOROGAKURE_RECIPES],
+  cookbooks: [...COOKBOOKS, ...TOROGAKURE_COOKBOOKS],
+  people: [
+    ...VILLAGE_COOKS,
+    ...SENSEIS_AND_ELDERS,
+    ...GENIN,
+    ...VILLAGE_JONIN,
+    ...CLAN_HEADS,
+    ...VILLAGE_CHUNIN,
+  ],
   conversations: [
     ...GENERIC_CONVERSATIONS,
     ...TEMPLATE_CONVERSATIONS,
