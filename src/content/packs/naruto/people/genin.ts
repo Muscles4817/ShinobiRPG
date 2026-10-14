@@ -1,6 +1,6 @@
-import { look } from '../../look';
-import { statLine, talent } from '../../statLine';
-import type { PersonDef } from '../../types';
+import { look } from '../../../look';
+import { statLine, talent } from '../../../statLine';
+import type { PersonDef } from '../../../types';
 
 /** The genin of your graduating year. Friends, rivals, nuisances. */
 export const CANON_GENIN: readonly PersonDef[] = [

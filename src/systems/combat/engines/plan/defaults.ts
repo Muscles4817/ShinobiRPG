@@ -1,6 +1,7 @@
 import type { Verb } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
+import { hasPerk } from '../../rules/body';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, STRIKE_REACH } from '../../rules/range';
 import { isTrump, outmatched } from '../../rules/trumps';
@@ -136,8 +137,9 @@ function fitted(ordered: readonly Slot[], defences: readonly Slot[], limit: numb
  * fight best (when it's worth a turn; a move technique rather than a step), an empower or clones
  * and a trap where you can attack (the plan passes over them while they hold), your best attack,
  * a hold (see `holdSlot`), then plain blows, more attacks and a conceal; the last slot is always
- * a defence (a substitution, a Guard or a Dodge: see `fitted`). Attacks your kit can't make from
- * a distance (an archer up close) are left out.
+ * a defence (a substitution, a Guard or a Dodge: see `fitted`). Plain blows only fill in for a
+ * kit with one wounding jutsu at this distance or none: with a second, that goes in their place.
+ * Attacks your kit can't make from a distance (an archer up close) are left out.
  */
 function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand, facing: Facing) {
   const reaches = canAttackFrom(fighter, band);
@@ -158,6 +160,7 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand, faci
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const trump = reaches ? trumpSlot(trumps, facing) : [];
   const hold = holdSlot(pool, facing);
+  const blows = damage.length > 1 ? [] : [...has('strike'), ...has('throw')];
   // Reactions, best first: a substitution, then a Guard, then a Dodge.
   const defences = plain([...best('substitute'), ...has('guard'), ...has('dodge')]);
   const ordered: Slot[] = [
@@ -169,7 +172,7 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand, faci
     ...plain(reaches ? [...ready, ...best('trap')] : []),
     ...plain(damage.slice(0, 1)),
     ...hold.late,
-    ...plain([...has('strike'), ...has('throw'), ...at('after-attacks')]),
+    ...plain([...blows, ...at('after-attacks')]),
     ...plain([...damage.slice(1), ...best('conceal')]),
     ...defences,
   ];
@@ -196,7 +199,9 @@ export function defaultLoadout(
     foeJutsu: foes.length === 0 || foes.some((f) => f.techniques.some(isHarmful)),
     outmatched: outmatched(fighter, foes),
     support: shape.support ?? false,
-    foeHides: foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
+    // Insight sees through hiding, so it needs no Search.
+    foeHides:
+      !hasPerk(fighter, 'insight') && foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
   };
   const [close, mid, far] = RANGE_BANDS.map((band) => defaultFor(fighter, band, home, facing));
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };

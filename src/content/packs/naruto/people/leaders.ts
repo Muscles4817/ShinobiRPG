@@ -1,12 +1,35 @@
-import { look } from '../../look';
-import { statLine } from '../../statLine';
-import type { PersonDef } from '../../types';
+import { look } from '../../../look';
+import { statLine } from '../../../statLine';
+import type { PersonDef } from '../../../types';
 
 /**
  * The heads of the village's clans, all jōnin. Each keeps the clan's own techniques and
  * teaches them only to their own (`nextSignature`); anyone may still train with them.
  */
-export const CLAN_HEADS: readonly PersonDef[] = [
+export const LEADERS: readonly PersonDef[] = [
+  {
+    id: 'hiruzen',
+    name: 'Hiruzen',
+    familyName: 'Sarutobi',
+    role: 'leader',
+    title: 'Third Hokage',
+    rank: 'kage',
+    stats: statLine('A', {
+      ninjutsu: 'S',
+      intellect: 'S',
+      chakraControl: 'S',
+      stamina: 'C',
+      speed: 'B',
+    }),
+    traitIds: ['kind', 'calm'],
+    appearance: look(
+      'shaved',
+      { hair: '#e8e0d0', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#e8e0d0' },
+      'arm',
+    ),
+    bio: 'The Professor. Leads the village from behind a pipe and a mountain of paperwork.',
+    schedule: { morning: 'mission-desk', afternoon: null, evening: null, night: null },
+  },
   {
     id: 'hiashi',
     name: 'Hiashi',

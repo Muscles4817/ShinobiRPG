@@ -213,6 +213,9 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'decapitating-sweep',
           'mass-tag-detonation',
           'four-violet-flames',
+          'lightning-beast-running',
+          'water-wall',
+          'great-waterfall',
         ],
       },
       {

@@ -5,7 +5,14 @@ import type { TeacherProfile } from '../../types';
 export const KAKASHI_TEACHER: TeacherProfile = {
   quirk: 'distracted',
   steers: { focus: 'weakest', freeAtStage: 3 },
-  teaches: ['summoning-ninken', 'water-prison', 'lightning-blade', 'rasengan'],
+  teaches: [
+    'summoning-ninken',
+    'water-prison',
+    'lightning-clone',
+    'lightning-blade',
+    'lightning-hound',
+    'rasengan',
+  ],
   price: {
     kind: 'favour',
     favourId: 'kakashi-patience',

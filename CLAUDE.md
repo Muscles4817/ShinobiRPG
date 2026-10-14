@@ -407,7 +407,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   needs a `none` clan (validated).
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
   schedule of place ids in the start location, or in their `homeLocationId` if they live elsewhere, a `rank` and `stats` via `statLine()`, and
-  optionally an `aptitude` via `talent()`). Their best stat must fit their rank (genin E–C,
+  optionally an `aptitude` via `talent()`, and an `arsenal`: the techniques and perks they fight
+  with in place of the academy kit, each a pack technique with its own source and within their
+  grade in its art; validated). Their best stat must fit their rank (genin E–C,
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
   technique ids, price); at least two specialties must exist for the team choice (validated).
@@ -449,7 +451,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a technique:** give it a source (validated): the academy (rank E–D), a library (its open
   shelves keep standard techniques to C, for genin once their sensei signs the permit at a
   lesson, `game/permits.ts`; the rest is the restricted stacks, chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
-  scroll reward.
+  scroll reward. A person's `arsenal` is not a source.
 - **Decide who goes on a mission:** nothing to set. A job's rank and its foes' danger decide
   the crews it may get (decision 21); a crew joins every fight as allies and each member gains
   bond on success. Give a check approach a `role` (tracker, sensor, medic) when the best crew

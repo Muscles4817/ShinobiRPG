@@ -1,6 +1,6 @@
-import { look } from '../../look';
-import { statLine } from '../../statLine';
-import type { PersonDef } from '../../types';
+import { look } from '../../../look';
+import { statLine } from '../../../statLine';
+import type { PersonDef } from '../../../types';
 
 /** The village's chūnin (besides Iruka, who teaches at the academy): desk, gate and clinic. */
 export const VILLAGE_CHUNIN: readonly PersonDef[] = [
