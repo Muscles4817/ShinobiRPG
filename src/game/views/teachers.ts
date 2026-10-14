@@ -21,6 +21,7 @@ import {
   type Teaching,
 } from '../people/teachers';
 import type { GameState } from '../state';
+import { hardWorkEnergy } from '../profile';
 import { choice, type Choice } from './common';
 import { personFace, type PersonFace } from './people';
 
@@ -159,7 +160,7 @@ function offerOf(state: GameState, ctx: GameContext, teaching: Teaching): Teache
     blocker: shared,
     locked: stats.filter((s) => !isOpen(s)),
     signature: signatureOf(state, ctx, teaching),
-    energyCost: TRAIN_WITH_ENERGY,
+    energyCost: hardWorkEnergy(state.character, ctx, TRAIN_WITH_ENERGY),
     slots: TRAIN_WITH_SLOTS,
   };
 }

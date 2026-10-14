@@ -1,4 +1,5 @@
 import { createRng } from '@/core';
+import { learnRecipes, NO_COOKING } from '@/systems/cooking';
 import { freeLodging, newTenancy } from '@/systems/housing';
 import { EMPTY_INVENTORY } from '@/systems/inventory';
 import { EMPTY_JOURNAL } from '@/systems/journal';
@@ -209,6 +210,10 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     inventory: withIssuedBlade(EMPTY_INVENTORY, known, content),
     village: { lastSightDay: null, lastRoundDay: null, marks: [], memories: [], clients: {} },
     exams: NO_EXAMS,
+    cooking: learnRecipes(
+      NO_COOKING,
+      content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),
+    ),
   };
   return logOpening(state, ctx, roll);
 }

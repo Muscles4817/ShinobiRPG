@@ -5,6 +5,7 @@ import { discover, logDiscoveries, noTalentReason } from '../growth';
 import { learnBlockerFor, learnBlockerText, studySession, type Studied } from '../learning';
 import { adjust, busyReason, chip, firstBlocker, log, spendTime } from '../ops';
 import { shelfBlocker, shelfHolding, sourceOf } from '../shelves';
+import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -25,10 +26,11 @@ function masteryLine(name: string, result: Studied): string {
 /** What stops any scroll study of this technique, wherever the scroll comes from. */
 export function studyBlocker(state: GameState, def: TechniqueDef, ctx: GameContext): string | null {
   const blocker = learnBlockerFor(state, def, ctx);
+  const energy = hardWorkEnergy(state.character, ctx, STUDY_ENERGY_COST);
   return firstBlocker(
     noTalentReason(state.character, def.discipline, ctx),
     blocker && learnBlockerText(blocker, def),
-    state.character.vitals.energy < STUDY_ENERGY_COST && `Needs ${STUDY_ENERGY_COST} energy.`,
+    state.character.vitals.energy < energy && `Needs ${energy} energy.`,
   );
 }
 
@@ -40,9 +42,10 @@ export function studyFrom(
   source: StudySource,
 ): GameState {
   const result = studySession(state, def, ctx, source);
+  const energy = hardWorkEnergy(state.character, ctx, STUDY_ENERGY_COST);
   const practised = discover(state.character, { [def.discipline]: 1 });
   const studied = { ...state, techniques: result.book, character: practised.character };
-  const next = adjust(spendTime(studied, STUDY_SLOTS, ctx), { energy: -STUDY_ENERGY_COST });
+  const next = adjust(spendTime(studied, STUDY_SLOTS, ctx), { energy: -energy });
   const logged = log(next, {
     heading: `Study ${def.name}`,
     text: masteryLine(def.name, result),
@@ -50,7 +53,7 @@ export function studyFrom(
     chips: [
       chip(result.mastered ? 'Mastered' : `${result.percent}% learned`, 'gain'),
       ...(result.unstable ? [chip('Unstable', 'cost')] : []),
-      chip(`−${STUDY_ENERGY_COST} energy`, 'cost'),
+      chip(`−${energy} energy`, 'cost'),
     ],
   });
   return logDiscoveries(logged, practised.discovered, ctx);

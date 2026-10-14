@@ -71,6 +71,7 @@ export const SHOPPING_DISTRICT: PlaceDef = {
         'chestnuts',
         'winter-radish',
       ],
+      cookbookIds: ['everyday-kitchen', 'year-of-rice', 'food-for-the-road'],
     },
   ],
 };

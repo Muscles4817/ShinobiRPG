@@ -25,6 +25,8 @@ export type {
   TopicKind,
   IngredientDef,
   RecipeDef,
+  CookbookDef,
+  RecipeLesson,
   RumourDef,
   IconId,
   LocationDef,

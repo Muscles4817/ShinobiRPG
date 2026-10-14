@@ -107,6 +107,8 @@ export interface MissionDef {
     readonly scrollId?: string;
     /** A piece of gear the client hands over on success (a gear id), e.g. a named weapon. */
     readonly gearId?: string;
+    /** A recipe the client teaches you on success (a recipe id). */
+    readonly recipeId?: string;
   };
   readonly minMissionsCompleted: number;
   /** Always on the board (patrols, watches); otherwise jobs are posted for a few days at a time. */

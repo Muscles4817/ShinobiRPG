@@ -56,6 +56,8 @@ export type Report =
       readonly scroll?: string;
       /** The gear the client handed over (a named weapon), by name. */
       readonly gear?: string;
+      /** The recipe the client taught you, by name. */
+      readonly recipe?: string;
       /** How the job went, line by line (absent on reports from before the ledger). */
       readonly road?: readonly DebriefLine[];
       readonly crew?: readonly DebriefCrew[];

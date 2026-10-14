@@ -70,6 +70,7 @@ describe('pacing by class standing', () => {
     deadLast: daysToGrade('dead-last', 'C'),
     middle: daysToGrade('middle', 'C'),
     genius: daysToGrade('genius', 'C'),
+    geniusToJonin: daysToGrade('genius', 'B'),
   };
 
   it('the higher you stood, the sooner you make the chūnin grade in your art', () => {
@@ -79,7 +80,7 @@ describe('pacing by class standing', () => {
 
   it('a genius graduates at chūnin grade, and jōnin grade is still a long climb', () => {
     expect(days.genius).toBe(0);
-    expect(daysToGrade('genius', 'B')).toBeGreaterThanOrEqual(GENIUS_JONIN_FLOOR_DAYS);
+    expect(days.geniusToJonin).toBeGreaterThanOrEqual(GENIUS_JONIN_FLOOR_DAYS);
   });
 
   it(`the dead last make it within ${DEAD_LAST_CHUNIN_DAYS} days, by hard work`, () => {

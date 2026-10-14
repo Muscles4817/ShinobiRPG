@@ -9,6 +9,7 @@ import { validateInjuries } from './validateInjuries';
 import { validatePeople } from './validatePeople';
 import { validateTechniques } from './validateTechniques';
 import { validateRanks } from './validateRanks';
+import { validateRecipes } from './validateRecipes';
 import { validateSeasons } from './validateSeasons';
 import { validateSources } from './validateSources';
 import { validateTeachers } from './validateTeachers';
@@ -39,7 +40,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...profileProblems(pack),
     ...validateTechniques(pack),
     ...validateSources(pack),
-    ...recipeProblems(pack),
+    ...validateRecipes(pack),
     ...validatePeople(pack),
     ...validateRanks(pack),
     ...validateTeachers(pack),
@@ -50,30 +51,6 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateEncounters(pack),
     ...validateExams(pack),
   ];
-}
-
-/**
- * Recipes cook from ingredients the pack sells, and actually fill you up; something sold keeps
- * on the road, so a long job can be packed for.
- */
-function recipeProblems(pack: ContentPack): string[] {
-  const known = new Set(pack.ingredients.map((i) => i.id));
-  const roadFood = pack.ingredients.some((i) => (i.road ?? 0) > 0);
-  return [
-    ...(roadFood ? [] : ['pack sells no food that keeps on the road']),
-    ...recipeLines(pack, known),
-  ];
-}
-
-function recipeLines(pack: ContentPack, known: ReadonlySet<string>): string[] {
-  return pack.recipes.flatMap((r) => [
-    ...r.ingredients
-      .filter((i) => !known.has(i.id))
-      .map((i) => `recipe "${r.id}" needs unknown ingredient "${i.id}"`),
-    ...(r.ingredients.length === 0 || r.satiety <= 0
-      ? [`recipe "${r.id}" needs ingredients and must feed you`]
-      : []),
-  ]);
 }
 
 /** Clans declare the arts their members are talented in; the clanless have none. */
@@ -146,6 +123,7 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['injury', pack.injuries],
     ['ingredient', pack.ingredients],
     ['recipe', pack.recipes],
+    ['cookbook', pack.cookbooks],
     ['person', pack.people],
     ['conversation', pack.conversations],
   ];

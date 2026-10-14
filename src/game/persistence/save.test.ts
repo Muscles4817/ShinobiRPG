@@ -1,3 +1,4 @@
+import { cookingGrade } from '@/systems/cooking';
 import { SOLO } from '@/systems/missions';
 import { act, intoFight, newGame, veteran } from '@/test/gameFixtures';
 
@@ -254,6 +255,15 @@ describe('persistence', () => {
     expect(loaded.value.people.permits).toEqual([]);
   });
 
+  it('lets a save from before recipes were learned keep every recipe it could cook', () => {
+    const { cooking: _cooking, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 31, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(cookingGrade(loaded.value.cooking.xp)).toBe('D');
+    expect(Object.keys(loaded.value.cooking.known)).toHaveLength(10);
+    expect(loaded.value.cooking.known['spicy-hot-pot']).toBe(0);
+  });
+
   it('gives a save from before builds and upbringings a balanced frame, and keeps its growth', () => {
     const game = newGame();
     const { buildId: _b, upbringingId: _u, ...character } = game.character;
@@ -261,7 +271,7 @@ describe('persistence', () => {
     const aptitude = { ...character.aptitude, taijutsu: 1, genjutsu: 1, ninjutsu: 1.6 };
     const old = { ...character, grades, aptitude };
     const raw = (clanId: string) =>
-      JSON.stringify({ version: 31, state: { ...game, character: { ...old, clanId } } });
+      JSON.stringify({ version: 32, state: { ...game, character: { ...old, clanId } } });
     const loaded = deserialize(raw('none'));
     if (!loaded.ok) throw new Error(loaded.error);
     const loadedCharacter = loaded.value.character;

@@ -318,6 +318,19 @@ describe('App (smoke test)', () => {
     expect(screen.getByText(/Today you ate/)).toBeInTheDocument();
   });
 
+  it('buys a cookbook at the grocer, and the cookbook shows what it taught', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Market Street/));
+    await user.click(screen.getByRole('button', { name: /The Everyday Kitchen/ }));
+    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
+    const book = screen.getByRole('region', { name: 'Cookbook' });
+    expect(within(book).getByText('Grilled Fish Set')).toBeInTheDocument();
+    expect(within(book).getByText(/dishes you have yet to learn/)).toBeInTheDocument();
+    expect(within(book).getByText(/Tsune teaches it once you are friends/)).toBeInTheDocument();
+  });
+
   it('resumes a saved game', async () => {
     const user = userEvent.setup();
     const store = memoryStore();

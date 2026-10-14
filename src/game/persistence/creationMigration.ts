@@ -27,12 +27,12 @@ function withGradePace(aptitude: RawState, grades: RawState): RawState {
 }
 
 /**
- * v31 → v32: builds and upbringings, and grades that no longer set a pace. Characters made
+ * v32 → v33: builds and upbringings, and grades that no longer set a pace. Characters made
  * before have a balanced frame and were raised by their clan's branch line or a civilian
  * family. Their grades' pace is folded into their talent for each art, so nothing about how
  * they grow changes (beyond the natural limits everyone now has).
  */
-export function v31ToV32(state: RawState): RawState {
+export function v32ToV33(state: RawState): RawState {
   const character = asRecord(state.character);
   const clanless = character.clanId === 'none' || character.clanId === undefined;
   return {

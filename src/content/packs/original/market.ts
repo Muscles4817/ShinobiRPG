@@ -73,6 +73,7 @@ export const MARKET_STREET: PlaceDef = {
         'chestnuts',
         'winter-radish',
       ],
+      cookbookIds: ['everyday-kitchen', 'year-of-rice', 'food-for-the-road'],
     },
   ],
 };

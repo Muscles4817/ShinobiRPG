@@ -7,6 +7,7 @@ import type { FieldId, TechniqueDef, Verb } from '@/systems/techniques';
 import { hasInsight } from '../combatants';
 import type { GameContext } from '../context';
 import { combatStats } from '../gear';
+import { yourCheckValue } from '../missionRoles';
 import type { GameState } from '../state';
 
 /**
@@ -54,11 +55,12 @@ export function useTool(state: GameState, tool: ToolDef): GameState {
 
 /** How you'd slip past: your speed, or your genjutsu when you know how to hide in it. */
 export function stealthOf(state: GameState, ctx: GameContext): { stat: StatId; value: number } {
-  const { stats } = state.character;
   const hides = knownWith(state, ctx, 'conceal').length + knownWith(state, ctx, 'field').length;
-  return hides > 0 && stats.genjutsu > stats.speed
-    ? { stat: 'genjutsu', value: stats.genjutsu }
-    : { stat: 'speed', value: stats.speed };
+  const genjutsu = yourCheckValue(state, ctx, 'genjutsu');
+  const speed = yourCheckValue(state, ctx, 'speed');
+  return hides > 0 && genjutsu > speed
+    ? { stat: 'genjutsu', value: genjutsu }
+    : { stat: 'speed', value: speed };
 }
 
 /** What you'd set the ground with: a field to raise, a trap to lay, or a smoke bomb. */
