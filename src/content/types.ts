@@ -243,6 +243,8 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
   /** Somewhere to sleep away from home: a room by the night. */
   | (PlaceBase & { readonly kind: 'inn'; readonly keeper: string; readonly roomCost: number })
+  /** A house for sale in a town: bought once, then yours to sleep in, with no rent. */
+  | (PlaceBase & { readonly kind: 'house'; readonly seller: string; readonly price: number })
   /** Woods, a river bank, a shore: forage what's in season, and fish its spots. */
   | (PlaceBase & {
       readonly kind: 'wilds';

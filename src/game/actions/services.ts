@@ -6,7 +6,7 @@ import { spend } from '@/systems/wallet';
 import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
-import { homeBlocker } from './daily';
+import { atRentedHome } from './daily';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Paid services: rent for your home, treatment at the hospital. */
@@ -19,7 +19,7 @@ export const payRent: ActionHandler<ActionOf<'payRent'>> = {
     const { housing, time, wallet } = state;
     return firstBlocker(
       busyReason(state),
-      homeBlocker(state, ctx),
+      !atRentedHome(state, ctx) && 'Your home is not in this village.',
       isRentFree(housing) && 'You live here rent-free.',
       daysOfRentLeft(housing, time.day) >= PAY_AHEAD_WINDOW && 'Your rent is paid well ahead.',
       wallet.ryo < housing.rentPerWeek && `Rent is ${housing.rentPerWeek} ryo.`,

@@ -1,5 +1,5 @@
 import type { IconId, PlaceDef, PlaceKind } from '@/content';
-import { daysOfRentLeft, isRentFree, isRentOverdue } from '@/systems/housing';
+import { daysOfRentLeft, isRentFree, isRentOverdue, ownsHouse } from '@/systems/housing';
 import { isHungry, MAX_HEALTH } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
@@ -52,9 +52,7 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
     case 'academy':
       return academyLine(place.techniqueIds, state, ctx);
     case 'library':
-      return libraryEntry(state)
-        ? 'Needs a permit from your sensei'
-        : academyLine(readableIds(place.techniqueIds, state, ctx), state, ctx);
+      return libraryLine(place.techniqueIds, state, ctx);
     case 'home':
       return homeLine(state, place.blurb);
     case 'gear':
@@ -63,6 +61,8 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
       return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
     case 'inn':
       return `A room for ${place.roomCost} ryo`;
+    case 'house':
+      return ownsHouse(state.housing, place.id) ? 'Your house' : `For sale, ${place.price} ryo`;
     case 'wilds':
       return wildsLine(state, ctx, place.id);
     case 'hospital':
@@ -75,13 +75,20 @@ function hallLine(missionIds: readonly string[], state: GameState, ctx: GameCont
   const open = missionIds.filter(
     (id) => choice(state, ctx, { type: 'startMission', missionId: id }).blocker === null,
   ).length;
-  return open > 0 ? `${open} jobs you can take` : 'No jobs you can take now';
+  if (open === 0) return 'No jobs you can take now';
+  return open === 1 ? 'One job you can take' : `${open} jobs you can take`;
 }
 
 function hospitalLine(state: GameState, treatmentCost: number): string {
   return state.character.vitals.health < MAX_HEALTH
     ? `Treatment ${treatmentCost} ryo`
     : 'You’re healthy';
+}
+
+function libraryLine(ids: readonly string[], state: GameState, ctx: GameContext): string {
+  return libraryEntry(state)
+    ? 'Needs a permit from your sensei'
+    : academyLine(readableIds(ids, state, ctx), state, ctx);
 }
 
 /** The library's scrolls you may read: the open shelves with a permit, all of them as chūnin. */

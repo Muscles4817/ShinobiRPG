@@ -66,6 +66,7 @@ export {
 } from './views/market';
 export { homeView, hospitalView, type HomeView, type HospitalView } from './views/home';
 export { innView, type InnView } from './views/inn';
+export { houseView, type HouseView } from './views/house';
 export type { ConditionView, InjuryLine } from './views/condition';
 export { missionBoardView, type MissionBoardView, type Notice, type Foe } from './views/boards';
 export type { ArcView } from './views/arcs';

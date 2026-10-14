@@ -43,7 +43,13 @@ describe('travel', () => {
   });
 
   it('won’t take a road through a place that is still coming soon', () => {
-    const ctx = opened('sakyugakure');
+    // The dunes opened, but the ford on the way there still to come.
+    const ctx = createGameContext({
+      ...original,
+      locations: opened('sakyugakure').content.locations.all.map((l) =>
+        l.id === 'kiri-ford' ? { ...l, lockedReason: 'Coming soon' } : l,
+      ),
+    });
     expect(dispatch(jonin(ctx), { type: 'travel', locationId: 'sakyugakure' }, ctx)).toEqual({
       ok: false,
       error: 'No open road goes there yet.',

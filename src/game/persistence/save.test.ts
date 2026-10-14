@@ -335,6 +335,14 @@ describe('persistence', () => {
     expect(loaded.value.people.companionId).toBeNull();
   });
 
+  it('gives a save from before houses were sold none owned', () => {
+    const game = newGame();
+    const { owned: _owned, ...housing } = game.housing;
+    const loaded = deserialize(JSON.stringify({ version: 37, state: { ...game, housing } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.housing.owned).toEqual([]);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

@@ -10,7 +10,12 @@ describe('new game', () => {
     expect(state).toMatchObject({ packId: 'original', locationId: 'torogakure' });
     expect(state.techniques.known).toEqual(['palm-strike', 'shadow-feint', 'gale-heel']);
     expect(state.standing.rank).toBe('genin');
-    expect(state.housing).toEqual({ placeId: 'home', rentPerWeek: 30, paidThroughDay: 7 });
+    expect(state.housing).toEqual({
+      owned: [],
+      placeId: 'home',
+      rentPerWeek: 30,
+      paidThroughDay: 7,
+    });
   });
 
   it('can start in any shipped pack', () => {

@@ -361,3 +361,10 @@ migration and a previous-version save test wherever the save shape changes.
    Lanterns**: a letter from the harbour; the coast road down (ending in the port); the wreck's
    drowned lantern and what Umi saw, in the port; and the light given back, then home.
    Deadlines on acts (`deadlineDays`) are left for later: nothing yet needs to hurry you.
+9. **Chakra-control routes**: not yet. Tree-walking and water-walking don't exist until the
+   progression work (milestone 3) builds them; the bay crossing waits for that.
+10. **Kiri Ford and property** (this step). The river city opens: the Ferryman's Rest (inn),
+    the Ford Market, the Ferry Office's two jobs, and a house for sale on Reed Row (a `house`
+    place kind: bought outright, then a second home to sleep and nap in, with no rent; the
+    village landlord's lock and rent stay with the home you rent). `housing.owned`, save v38.
+    The road there has bandits, so a genin's pass doesn't cover it: it is a chūnin's trip.

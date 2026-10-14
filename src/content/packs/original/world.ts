@@ -8,6 +8,7 @@ import { SALT_LANTERNS_VILLAGE_JOBS } from './arcs/saltLanterns';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
 import { MARKET_STREET } from './market';
+import { KIRI_FORD } from './kiriFord';
 import { PORT_SHIOMACHI } from './shiomachi';
 import { TOROGAKURE_WILDS } from './wilds';
 
@@ -257,15 +258,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
       ...TOROGAKURE_WILDS,
     ],
   },
-  {
-    id: 'kiri-ford',
-    name: 'Kiri Ford',
-    epithet: 'River city',
-    map: { x: 66, y: 38 },
-    backdrop: 'mist',
-    places: [],
-    lockedReason: 'Coming soon',
-  },
+  KIRI_FORD,
   {
     id: 'sakyugakure',
     name: 'Sakyūgakure',
