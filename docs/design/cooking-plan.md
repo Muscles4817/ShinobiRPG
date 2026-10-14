@@ -437,5 +437,9 @@ Shiomachi fish cart (weekly), the dune caravan and a pilgrim herbalist from Moun
 with its home's ingredients (seven in all, `packs/original/regions/`) and a cookbook of its
 dishes (ten, among them the rank B Chakra Fruit Preserve). The original pack now has 47 dishes.
 
+**Balance bench.** `src/test/pacing/food.test.ts`: every dish in every pack, cooked fine, stays
+inside fixed ceilings (growth and study at most 1.4×, checks 1.25×, hard work at least 0.75 of
+its energy, and so on), so eating well never matters more than training.
+
 Not yet built: gathering (phase 4), provisions in fights (phase 5),
 the library (phase 7) and other regions (phase 8).
