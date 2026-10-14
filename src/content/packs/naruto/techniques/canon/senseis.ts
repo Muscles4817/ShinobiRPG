@@ -134,4 +134,14 @@ export const CANON_SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     rank: 'B',
     difficulty: 110,
   },
+  {
+    id: 'string-light-formation',
+    name: 'String Light Formation',
+    description: 'A barrier drawn on the ground; whoever steps inside can’t step out again.',
+    discipline: 'fuuinjutsu',
+    effects: [{ verb: 'trap', power: 12 }],
+    chakraCost: 10,
+    rank: 'C',
+    difficulty: 75,
+  },
 ];

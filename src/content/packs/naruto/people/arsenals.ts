@@ -152,7 +152,7 @@ export const TSUME_ARSENAL: PersonArsenal = {
 
 /** The Inuzuka beast stance beside her three dogs. */
 export const HANA_ARSENAL: PersonArsenal = {
-  techniqueIds: ['four-legs', 'shuriken-jutsu', 'substitution-jutsu'],
+  techniqueIds: ['four-legs', 'shuriken-jutsu', 'substitution-jutsu', 'fang-rotating-fang'],
 };
 
 /** The swarm, and the copy of himself it makes. */
@@ -187,6 +187,7 @@ export const HIRUZEN_ARSENAL: PersonArsenal = {
     'fire-dragon-bullet',
     'earth-shadow-clone',
     'roof-tile-shuriken',
+    'five-release-great-combo',
   ],
 };
 
@@ -204,7 +205,7 @@ export const KURENAI_ARSENAL: PersonArsenal = {
 
 /** The swarm, and the wall of it he raises round his team. */
 export const SHIBI_ARSENAL: PersonArsenal = {
-  techniqueIds: ['insect-swarm', 'insect-wall', 'substitution-jutsu'],
+  techniqueIds: ['insect-swarm', 'insect-wall', 'substitution-jutsu', 'insect-sphere'],
 };
 
 /** An academy teacher’s kit: a fright, a binding, and a sense for where his students are. */
@@ -226,4 +227,9 @@ export const EBISU_ARSENAL: PersonArsenal = {
 /** Fire, and a flock of crows to vanish into. */
 export const AOBA_ARSENAL: PersonArsenal = {
   techniqueIds: ['fire-dragon-bullet', 'crow-scatter', 'substitution-jutsu'],
+};
+
+/** The Nara shadow arts, from holding a foe to stitching them in place. */
+export const SHIKAKU_ARSENAL: PersonArsenal = {
+  techniqueIds: ['shadow-possession', 'shadow-neck-bind', 'shadow-sewing', 'substitution-jutsu'],
 };

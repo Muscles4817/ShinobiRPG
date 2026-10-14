@@ -5,6 +5,7 @@ import { CANON_CLAN_TECHNIQUES } from './clans';
 import { CANON_ELEMENTS } from './elements';
 import { CANON_GATES } from './gates';
 import { CANON_LIGHTNING } from './lightning';
+import { CANON_LATER_CLAN_TECHNIQUES } from './clansLater';
 import { CANON_MEDICAL } from './medical';
 import { CANON_NARUTO_TECHNIQUES } from './naruto';
 import { CANON_RASENGAN } from './rasengan';
@@ -26,6 +27,7 @@ export const CANON_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...CANON_MEDICAL,
   ...CANON_CLAN_TECHNIQUES,
   ...CANON_AKIMICHI,
+  ...CANON_LATER_CLAN_TECHNIQUES,
   ...CANON_LIGHTNING,
   ...CANON_GATES,
 ])();
