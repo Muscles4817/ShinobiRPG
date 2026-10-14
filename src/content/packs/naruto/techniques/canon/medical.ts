@@ -49,4 +49,15 @@ export const CANON_MEDICAL: readonly TechniqueDef[] = [
     oncePerFight: true,
     afterCost: { kind: 'exhaustion', days: 3 },
   },
+  {
+    id: 'illness-extraction',
+    name: 'Delicate Illness Extraction Technique',
+    description: 'Water and chakra drawn through the body pull poison and sickness out with them.',
+    discipline: 'ninjutsu',
+    needs: { control: 'B' },
+    effects: [{ verb: 'heal', power: 18 }],
+    chakraCost: 15,
+    rank: 'B',
+    difficulty: 110,
+  },
 ];

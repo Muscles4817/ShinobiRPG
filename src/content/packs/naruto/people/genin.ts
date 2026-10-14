@@ -2,7 +2,7 @@ import { look } from '../../../look';
 import { statLine, talent } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
-import { NARUTO_TEACHER, SAKURA_TEACHER } from '../teachers';
+import { NARUTO_TEACHER, SAKURA_TEACHER, SASUKE_TEACHER } from '../teachers';
 
 import {
   HINATA_ARSENAL,
@@ -84,7 +84,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Top of the class and knows it. Trains alone. Talks less than he should.',
-    teacher: { teaches: ['great-fireball', 'amaterasu'] },
+    teacher: SASUKE_TEACHER,
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',

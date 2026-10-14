@@ -164,5 +164,21 @@ export const NARUTO_TEACHER: TeacherProfile = {
 
 /** Sakura teaches the medical arts that grow out of her chakra control. */
 export const SAKURA_TEACHER: TeacherProfile = {
-  teaches: ['chakra-scalpel', 'chakra-enhanced-strength', 'creation-rebirth'],
+  teaches: ['chakra-scalpel', 'chakra-enhanced-strength', 'creation-rebirth', 'illness-extraction'],
+};
+
+/** Sasuke teaches the Uchiha fire and eyes to his clan, and the lightning and snakes he learned. */
+export const SASUKE_TEACHER: TeacherProfile = {
+  teaches: [
+    'great-fireball',
+    'amaterasu',
+    'binding-snake-glare',
+    'chidori-current',
+    'chidori-senbon',
+    'chidori-sharp-spear',
+    'coercion-sharingan',
+    'mirage-crow',
+    'kirin',
+    'orochimaru-body-replacement',
+  ],
 };

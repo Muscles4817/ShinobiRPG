@@ -128,4 +128,38 @@ export const CANON_ELEMENTS: readonly TechniqueDef[] = [
     rank: 'B',
     difficulty: 110,
   },
+  {
+    id: 'great-dragon-fire',
+    name: 'Fire Style: Great Dragon Fire Technique',
+    description: 'A huge fireball with a dragon’s head, steered at the enemy.',
+    discipline: 'ninjutsu',
+    element: 'fire',
+    reach: ['close', 'mid', 'far'],
+    needs: { nature: 'fire' },
+    effects: [
+      { verb: 'damage', power: 24 },
+      { verb: 'afflict', power: 6, harm: 'burn' },
+    ],
+    chakraCost: 17,
+    rank: 'B',
+    difficulty: 115,
+  },
+  {
+    id: 'lightning-flash',
+    name: 'Lightning Flash',
+    description:
+      'A fūma shuriken charged with lightning; whoever it hits is thrown back and stunned.',
+    discipline: 'ninjutsu',
+    element: 'lightning',
+    reach: ['mid', 'far'],
+    needs: { nature: 'lightning' },
+    effects: [
+      { verb: 'damage', power: 16 },
+      { verb: 'knock', power: 6, to: 'far' },
+      { verb: 'daze', power: 4 },
+    ],
+    chakraCost: 13,
+    rank: 'C',
+    difficulty: 85,
+  },
 ];

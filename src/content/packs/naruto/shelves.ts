@@ -54,6 +54,7 @@ export const ACADEMY_SHELF: readonly string[] = [
   'water-needle',
   'fire-dragon-bullet',
   'bare-handed-blade-block',
+  'manipulated-shuriken',
 ];
 
 /** The Village Archives. */
@@ -113,4 +114,7 @@ export const ARCHIVE_SHELF: readonly string[] = [
   'lightning-strike-armour',
   'rock-avalanche',
   'afterglow',
+  'great-dragon-fire',
+  'lightning-flash',
+  'moonlight-kick',
 ];

@@ -97,6 +97,7 @@ export const SASUKE_ARSENAL: PersonArsenal = {
     'windmill-triple-blades',
     'surging-fire-wild-dance',
     'peregrine-falcon-drop',
+    'manipulated-shuriken',
   ],
 };
 
@@ -135,6 +136,7 @@ export const HIASHI_ARSENAL: PersonArsenal = {
     'sixty-four-palms',
     'eight-trigrams-rotation',
     'substitution-jutsu',
+    'vacuum-wall-palm',
   ],
 };
 
@@ -161,6 +163,7 @@ export const SHINO_ARSENAL: PersonArsenal = {
     'shuriken-jutsu',
     'substitution-jutsu',
     'insect-rope',
+    'manipulated-shuriken',
   ],
 };
 

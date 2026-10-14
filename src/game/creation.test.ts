@@ -163,7 +163,9 @@ describe('identity shapes play', () => {
     const sasuke = naruto.content.people.require('sasuke');
     const next = (s: typeof plain) => nextSignature(s, teachingOf(s, sasuke)!, naruto);
     expect(next(strong(uchiha))).toBe('great-fireball');
-    expect(next(strong(plain))).toBeNull();
+    // Sasuke teaches his own lightning and snakes to anyone, but nothing of the clan's.
+    const offered = next(strong(plain));
+    expect(offered && naruto.content.techniques.require(offered).clan).toBeFalsy();
     const fireball = naruto.content.techniques.require('great-fireball');
     const blocker = learnBlockerFor(strong(plain), fireball, naruto);
     expect(blocker && learnBlockerText(blocker, fireball)).toBe('Only taught within its clan.');
