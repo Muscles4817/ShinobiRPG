@@ -170,4 +170,33 @@ export const CANON_NARUTO_TECHNIQUES: readonly TechniqueDef[] = [
     rank: 'C',
     difficulty: 85,
   },
+  {
+    id: 'parachute',
+    name: 'Parachute',
+    description: 'A punch sends them up; you come down knee first while clones hold them.',
+    discipline: 'ninjutsu',
+    reach: ['close'],
+    needs: { minReserves: 10 },
+    effects: [
+      { verb: 'clone', power: 6 },
+      { verb: 'break', power: 18 },
+    ],
+    chakraCost: 13,
+    rank: 'C',
+    difficulty: 85,
+  },
+  {
+    id: 'sexy-reverse-harem',
+    name: 'Sexy Reverse Harem Technique',
+    description: 'The Harem Technique again, every clone a handsome young man.',
+    discipline: 'ninjutsu',
+    needs: { minReserves: 10 },
+    effects: [
+      { verb: 'daze', power: 10 },
+      { verb: 'confuse', power: 8, scaling: { drive: ['ninjutsu'] } },
+    ],
+    chakraCost: 10,
+    rank: 'D',
+    difficulty: 60,
+  },
 ];
