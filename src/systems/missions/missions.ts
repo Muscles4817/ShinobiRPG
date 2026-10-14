@@ -117,6 +117,8 @@ export interface MissionDef {
   readonly examOnly?: boolean;
   /** Posted only once the village remembers this (a world mark): a follow-up to another job. */
   readonly needsWorldMark?: string;
+  /** Where the job leaves you, when it ends somewhere else (a long story's base, or home). */
+  readonly endsAt?: string;
   /** Counters the story keeps (a charge's trust, the day's light). */
   readonly threads?: readonly ThreadDef[];
   /** Who you look after, if anyone. */

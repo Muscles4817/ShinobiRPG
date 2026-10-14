@@ -354,3 +354,10 @@ migration and a previous-version save test wherever the save shape changes.
    lines (dotted while either end is locked, red where the road is deadly), places as seals,
    a red seal where you stand. Tapping a place shows only its card; "Every place" brings the
    list back. The map is drawn from data, so a pack needs only its points, not a drawing.
+8. **Arc bases** (this step). An act may name a `baseLocationId`: its jobs are posted at the
+   office there (validated), the arc's card says where it is based, and while the act is open
+   going there is orders (no pass, no leave days). A job may end somewhere else (`endsAt`,
+   validated to be walked there by its legs). The first such story is **Salt in the
+   Lanterns**: a letter from the harbour; the coast road down (ending in the port); the wreck's
+   drowned lantern and what Umi saw, in the port; and the light given back, then home.
+   Deadlines on acts (`deadlineDays`) are left for later: nothing yet needs to hurry you.

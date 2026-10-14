@@ -1,5 +1,5 @@
 import { stageOf } from '@/systems/bonds';
-import { dangerAtLeast } from '@/systems/missions';
+import { arcBases, dangerAtLeast } from '@/systems/missions';
 import { RANKS, type Rank } from '@/systems/standing';
 import { DAYS_PER_SEASON, formatDate } from '@/systems/time';
 import { leaveLeft, passValid, signPass, takeLeave, type Journey } from '@/systems/travel';
@@ -14,7 +14,8 @@ import type { GameState } from './state';
  * Who may leave the village on a trip of their own (decision 4 of the world plan; jobs need no
  * leave, their road is orders). A genin goes only on their sensei's pass, signed at the weekly
  * lesson once the sensei knows them, and only by safe roads; a chūnin spends days of leave,
- * a season's allowance; a jōnin comes and goes. Going home never needs leave.
+ * a season's allowance; a jōnin comes and goes. Going home never needs leave, nor going to
+ * the town a long story's current act is based in.
  */
 
 /** Days a pass is good for: until the next week's lesson. */
@@ -51,6 +52,7 @@ export function leaveBlocker(
   journey: Journey,
 ): string | null {
   if (destinationId === ctx.content.startLocationId || rankAtLeast(state, FREE_RANK)) return null;
+  if (onOrders(state, ctx, destinationId)) return null;
   if (rankAtLeast(state, 'chunin')) {
     const left = leaveDaysLeft(state);
     return journey.days > left
@@ -59,6 +61,11 @@ export function leaveBlocker(
   }
   if (!passValid(state.leave, state.time.day)) return PASS_NEEDED;
   return dangerAtLeast(journey.danger, 'armed') ? SAFE_ROADS_ONLY : null;
+}
+
+/** A town where a long story's current act is based: going there is orders, not leave. */
+function onOrders(state: GameState, ctx: GameContext, destinationId: string): boolean {
+  return arcBases(ctx.content.arcs.all, state.board.completed).includes(destinationId);
 }
 
 /** Setting out: a chūnin's leave is spent by the days on the road. */
@@ -70,6 +77,7 @@ export function spendLeave(
 ): GameState {
   const counted =
     destinationId !== ctx.content.startLocationId &&
+    !onOrders(state, ctx, destinationId) &&
     rankAtLeast(state, 'chunin') &&
     !rankAtLeast(state, FREE_RANK);
   if (!counted) return state;

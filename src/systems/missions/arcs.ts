@@ -25,6 +25,19 @@ export interface ArcAct {
   readonly text: string;
   /** The jobs of the act (mission ids), open together. */
   readonly jobs: readonly string[];
+  /**
+   * The town the act is lived in: its jobs are posted at the office there, and while the act
+   * is open, going there is orders (no leave needed). Absent: the village.
+   */
+  readonly baseLocationId?: string;
+}
+
+/** The towns where an arc's current act is based, across every arc. */
+export function arcBases(arcs: readonly ArcDef[], completed: readonly string[]): string[] {
+  return arcs.flatMap((arc) => {
+    const base = arc.acts[actReached(arc, completed)]?.baseLocationId;
+    return base === undefined ? [] : [base];
+  });
 }
 
 export interface ArcDef {

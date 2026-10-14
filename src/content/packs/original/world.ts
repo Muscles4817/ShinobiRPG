@@ -4,6 +4,7 @@ import { CHAKRA_PAPER_TEXT } from '../../shared/chakraPaper';
 import { TOOL_IDS } from '../../shared/tools';
 import { CHUNIN_MISSIONS } from './chuninMissions';
 import { LANTERN_THIEF_JOBS } from './arcs/lanternThief';
+import { SALT_LANTERNS_VILLAGE_JOBS } from './arcs/saltLanterns';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
 import { MARKET_STREET } from './market';
@@ -55,6 +56,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'cold-kiln',
           'boy-from-the-boulders',
           ...LANTERN_THIEF_JOBS.map((m) => m.id),
+          ...SALT_LANTERNS_VILLAGE_JOBS,
           ...CHUNIN_MISSIONS.map((m) => m.id),
           ...TEMPLATE_MISSIONS.map((m) => m.id),
         ],

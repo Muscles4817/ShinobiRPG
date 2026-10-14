@@ -1,6 +1,7 @@
 import {
   conditionRefs,
   RULE_MARKS,
+  type ArcAct,
   type CampActivity,
   type Condition,
   type DecisionOption,
@@ -215,7 +216,19 @@ function arcProblems(pack: ContentPack): string[] {
     ...[...seen]
       .filter(([, n]) => n > 1)
       .map(([id]) => `mission "${id}" belongs to more than one arc`),
+    ...pack.arcs.flatMap((a) => a.acts.flatMap((act) => baseProblems(pack, a.id, act))),
   ];
+}
+
+/** An act based in a town has its jobs posted at an office there. */
+function baseProblems(pack: ContentPack, arcId: string, act: ArcAct): string[] {
+  if (act.baseLocationId === undefined) return [];
+  const base = pack.locations.find((l) => l.id === act.baseLocationId);
+  if (!base) return [`arc "${arcId}" is based at unknown location "${act.baseLocationId}"`];
+  const posted = new Set(base.places.flatMap((p) => (p.kind === 'missions' ? p.missionIds : [])));
+  return act.jobs
+    .filter((id) => !posted.has(id))
+    .map((id) => `arc "${arcId}" job "${id}" isn’t posted at its base, ${base.name}`);
 }
 
 export function validateStory(pack: ContentPack): string[] {

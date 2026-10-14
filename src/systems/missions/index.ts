@@ -114,6 +114,7 @@ export {
 export {
   ARC_BEATS,
   actReached,
+  arcBases,
   arcJobOpen,
   arcPlace,
   type ArcAct,

@@ -317,8 +317,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     is acts of jobs following Harmon's circle; an act's jobs are open together once every job
     of the act before is done, never posted at random (`Availability` kind `arc`). Jobs read
     earlier acts through world marks (`remembers`, a snapshot taken when a job starts). The
-    board pins each arc under way (`views/arcs.ts`). Base locations wait on travel
-    (`docs/design/missions-plan.md` 3.9).
+    board pins each arc under way (`views/arcs.ts`). An act may be based in another town
+    (`ArcAct.baseLocationId`): its jobs are posted at the office there, and while it is open,
+    going there is orders, not leave. A job may leave you somewhere else (`MissionDef.endsAt`,
+    walked there by its legs): the "go" act's job takes you to the base, the last brings you home.
 26. **Travel is a journey along routes, on leave** (`docs/design/world-plan.md`). A pack's
     `routes` join its locations (legs of days through road-event regions, a `danger`, a
     passage `cost`); `systems/travel` finds the quickest open way (a road through a place still
@@ -427,7 +429,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   and an `ending`, then the road home. A template's `threads`, `charge` and `twists` are filled
   like its stages.
 - **Add a long story:** write its jobs (any tier), list them at a mission hall, and add an
-  `ArcDef` to the pack's `arcs` with its acts (beats, a line, the jobs). Leave world marks in
+  `ArcDef` to the pack's `arcs` with its acts (beats, a line, the jobs, and a `baseLocationId`
+  for an act lived in another town, with `endsAt` on the jobs that take you there and back). Leave world marks in
   outcomes for later acts to `remember` (validated: every remembered mark is left by some job).
 - **Add many jobs of one shape:** write a `MissionTemplate` (`content/missionTemplates.ts`) with
   `{slot}` placeholders and their meanings in `placeholders`, then add `MissionFill`s giving every

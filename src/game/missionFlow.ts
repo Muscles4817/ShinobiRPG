@@ -77,6 +77,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
   const ending = endingLine(def, state.mission);
   const next: GameState = {
     ...workedFor(withTeamBond(state, teamBond), def.client),
+    ...(def.endsAt ? { locationId: def.endsAt } : {}),
     mission: null,
     wallet: earn(state.wallet, earned.ryo),
     standing,
