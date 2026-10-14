@@ -285,10 +285,27 @@ describe('persistence', () => {
     expect(clan.ok && clan.value.character.upbringingId).toBe('clan-branch');
   });
 
+  it('gives a chūnin from before breakthroughs the one their promotion brings', () => {
+    const game = newGame();
+    const { breakthroughs: _b, ...character } = game.character;
+    const old = (rank: string) =>
+      JSON.stringify({
+        version: 33,
+        state: { ...game, character, standing: { ...game.standing, rank } },
+      });
+    const chunin = deserialize(old('chunin'));
+    if (!chunin.ok) throw new Error(chunin.error);
+    expect(chunin.value.character.breakthroughs).toEqual([
+      { source: 'promotion:chunin', limits: { reserves: 4 } },
+    ]);
+    const genin = deserialize(old('genin'));
+    expect(genin.ok && genin.value.character.breakthroughs).toEqual([]);
+  });
+
   it('gives a save from before gathering no gathered places', () => {
     const game = newGame();
     const { gathered: _gathered, ...cooking } = game.cooking;
-    const loaded = deserialize(JSON.stringify({ version: 33, state: { ...game, cooking } }));
+    const loaded = deserialize(JSON.stringify({ version: 34, state: { ...game, cooking } }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.cooking.gathered).toEqual({});
     expect(loaded.value.cooking.known).toEqual(game.cooking.known);

@@ -236,7 +236,10 @@ proposal:
   to 20 (heavy).
 - **The talent list is unchanged.** Gifts and flaws cover what some talents did, but the talents
   still work and old saves name them; trimming them is left for a later pass.
-- **Reserves don't creep with rank** yet: they are a born stat with a limit like speed.
+- **Reserves creep with rank** through the first breakthrough: each promotion (chūnin,
+  jōnin) moves the reserves limit up by 4 (`PROMOTION_LIMITS`). Breakthroughs are stored on the
+  character by source (`game/breakthroughs.ts`), so later ones (the Gates, an awakening, a
+  sensei's trial) add to the same list.
 - **Quick picks** (`systems/profile/archetypes.ts`): steady student, clan heir (clans only),
   natural athlete, bookworm, all-rounder, early bloomer, late bloomer, prodigy (genius only).
   Each fills the file from whatever the standing and upbringing allow, around the art you name.

@@ -107,7 +107,9 @@ ui ──► game ──► content ──► systems ──► core
     **Talent is also a limit** (`systems/stats/limits.ts`): each stat has a kind (speed and
     reserves are born, strength is the frame's, the rest are trained) and aptitude sets how far
     it can go; growth eases near the limit and trickles past it (`PAST_LIMIT_TRICKLE`), teachers
-    included. Only a `limitBonus` moves a limit (a build today, breakthroughs later). Strength
+    included. Only a `limitBonus` moves a limit: a build, or a **breakthrough**
+    (`game/breakthroughs.ts`, stored in `character.breakthroughs` by source, once each; a
+    promotion deepens reserves, and the Gates or an awakening are the same kind of thing). Strength
     above the build's `comfortStrength` lowers the speed limit (bulk). The stat sheet says, in
     words, when a stat whose talent you've read is near or at its limit (`naturalLimits`).
 12. **Character creation is the opening scene.** The academy break-in collects a

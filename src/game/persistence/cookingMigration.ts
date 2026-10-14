@@ -32,7 +32,7 @@ export function v31ToV32(state: RawState): RawState {
   return { ...state, cooking: { xp: GRADE_D_XP, known } };
 }
 
-/** v33 → v34: wild places and fishing spots remember the day they last gave; none yet. */
-export function v33ToV34(state: RawState): RawState {
+/** v34 → v35: wild places and fishing spots remember the day they last gave; none yet. */
+export function v34ToV35(state: RawState): RawState {
   return { ...state, cooking: { gathered: {}, ...asRecord(state.cooking) } };
 }

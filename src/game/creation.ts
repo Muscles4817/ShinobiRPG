@@ -180,6 +180,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       classStanding: draft.standing,
       upbringingId: draft.upbringingId,
       buildId: draft.buildId,
+      breakthroughs: [],
       nature: draft.nature,
       traitIds: draft.traitIds,
       talentId: talent.id,
