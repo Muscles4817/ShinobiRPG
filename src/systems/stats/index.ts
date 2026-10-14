@@ -11,6 +11,22 @@ export {
   type StatScale,
 } from './stats';
 export { SESSION_PACE, trainingGain, applyTraining, type Growth } from './growth';
+export {
+  BULK_SPEED_COST,
+  LIMIT_EASE,
+  PAST_LIMIT_TRICKLE,
+  STAT_KIND,
+  STAT_KINDS,
+  bulk,
+  effectiveLimits,
+  limitFactor,
+  limitOf,
+  limitRead,
+  limitsFor,
+  type LimitRead,
+  type Limits,
+  type StatKind,
+} from './limits';
 export { SOLO_EFFICIENCY, soloEfficiency, type SoloFloor, type SoloFloors } from './solo';
 export {
   MAX_TEACHER_GAP,

@@ -4,6 +4,7 @@ import type { TechniqueDef } from '@/systems/techniques';
 
 import { createCatalog, type Catalog } from './catalog';
 import type { InjuryDef } from './injuries';
+import type { BuildDef, UpbringingDef } from './upbringing';
 import type { VoiceDef } from './voices';
 import type {
   BreakInScene,
@@ -52,6 +53,8 @@ export interface ContentDb {
   readonly training: Catalog<TrainingDef>;
   readonly foods: Catalog<FoodDef>;
   readonly clans: Catalog<ClanDef>;
+  readonly builds: Catalog<BuildDef>;
+  readonly upbringings: Catalog<UpbringingDef>;
   readonly talents: Catalog<TalentDef>;
   readonly traits: Catalog<TraitDef>;
   readonly nindos: Catalog<NindoDef>;
@@ -90,6 +93,8 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     training: createCatalog('training', pack.training),
     foods: createCatalog('food', pack.foods),
     clans: createCatalog('clan', pack.clans),
+    builds: createCatalog('build', pack.builds),
+    upbringings: createCatalog('upbringing', pack.upbringings),
     talents: createCatalog('talent', pack.talents),
     traits: createCatalog('trait', pack.traits),
     nindos: createCatalog('nindo', pack.nindos),

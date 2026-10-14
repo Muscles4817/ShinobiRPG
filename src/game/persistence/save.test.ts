@@ -114,7 +114,9 @@ describe('persistence', () => {
   it('gives a character from before aptitude the growth their clan and talent gave them', () => {
     const game = newGame();
     const { aptitude: _a, aptitudeKnown: _k, aptitudeSessions: _s, ...old } = game.character;
-    const hardWorker = { ...old, clanId: 'kurogane', talentId: 'hard-worker' };
+    // All Cs on the card, so the later grade-pace step leaves the arts as this one made them.
+    const grades = { taijutsu: 'C', ninjutsu: 'C', genjutsu: 'C', kenjutsu: 'C', fuuinjutsu: 'C' };
+    const hardWorker = { ...old, grades, clanId: 'kurogane', talentId: 'hard-worker' };
     const raw = JSON.stringify({ version: 17, state: { ...game, character: hardWorker } });
     const loaded = deserialize(raw);
     if (!loaded.ok) throw new Error(loaded.error);
@@ -250,6 +252,27 @@ describe('persistence', () => {
     const loaded = deserialize(JSON.stringify({ version: 30, state: { ...game, people } }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.people.permits).toEqual([]);
+  });
+
+  it('gives a save from before builds and upbringings a balanced frame, and keeps its growth', () => {
+    const game = newGame();
+    const { buildId: _b, upbringingId: _u, ...character } = game.character;
+    const grades = { ...character.grades, taijutsu: 'A', genjutsu: 'D' } as const;
+    const aptitude = { ...character.aptitude, taijutsu: 1, genjutsu: 1, ninjutsu: 1.6 };
+    const old = { ...character, grades, aptitude };
+    const raw = (clanId: string) =>
+      JSON.stringify({ version: 31, state: { ...game, character: { ...old, clanId } } });
+    const loaded = deserialize(raw('none'));
+    if (!loaded.ok) throw new Error(loaded.error);
+    const loadedCharacter = loaded.value.character;
+    expect(loadedCharacter.buildId).toBe('balanced');
+    expect(loadedCharacter.upbringingId).toBe('civilian');
+    // The grade's old pace now lives in the talent for the art.
+    expect(loadedCharacter.aptitude.taijutsu).toBe(1.25);
+    expect(loadedCharacter.aptitude.genjutsu).toBe(0.85);
+    expect(loadedCharacter.aptitude.ninjutsu).toBe(1.6);
+    const clan = deserialize(raw('kurogane'));
+    expect(clan.ok && clan.value.character.upbringingId).toBe('clan-branch');
   });
 
   it('rejects corrupted data', () => {

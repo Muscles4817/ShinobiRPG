@@ -54,5 +54,11 @@ export type {
   TraitDef,
   VillageLife,
 } from './types';
+export {
+  DEFAULT_BUILD_ID,
+  DEFAULT_UPBRINGING,
+  type BuildDef,
+  type UpbringingDef,
+} from './upbringing';
 export { jobProfile } from './jobProfile';
 export { VOICE_MOMENTS, type VoiceDef, type VoiceMoment } from './voices';

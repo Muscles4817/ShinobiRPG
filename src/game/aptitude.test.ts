@@ -62,7 +62,9 @@ describe('aptitude at creation', () => {
     const a = createNewGame({ draft: draft(), seed: 7 }, ctx).character;
     const b = createNewGame({ draft: draft(), seed: 7 }, ctx).character;
     expect(a.aptitude).toEqual(b.aptitude);
-    expect(new Set(Object.values(a.aptitudeKnown))).toEqual(new Set(['unknown']));
+    // Only the gift on the file is known; everything else waits to be found out.
+    const known = Object.entries(a.aptitudeKnown).filter(([, read]) => read !== 'unknown');
+    expect(known).toEqual([['taijutsu', 'sense']]);
   });
 });
 

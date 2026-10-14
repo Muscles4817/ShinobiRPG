@@ -1,8 +1,8 @@
 # Character creation overhaul: development, talent and limits
 
-Working document. Part 1 says what is wrong today, Part 2 proposes the model, Part 3 the
-creation flow, Part 4 the build plan. Nothing here is binding until the open questions in
-Part 5 are answered.
+Working document. Part 1 says what was wrong, Part 2 the model, Part 3 the creation flow,
+Part 4 the build plan. Part 5 records what was decided, and Part 6 how the build came out
+(where the numbers moved from this proposal, Part 6 is right).
 
 ---
 
@@ -203,12 +203,59 @@ Each phase ships green and keeps saves loading.
    unchanged, since damage reads the gap.
 5. **Breakthroughs** (milestone 3): the first things that raise a limit.
 
-## Part 5: Open questions
+## Part 5: Decisions
 
-1. Are limits hard (only a breakthrough moves them) or soft (a trickle continues past them)?
-   _Proposed: a trickle of about 5%, so years of work still show, but no one outruns their
-   frame._
-2. Should gifts be known, or rolled like the rest? _Proposed: chosen gifts and flaws are
-   known; everything else stays hidden and is found out by training._
-3. Fold academy grades into the point-buy (2.8), or keep grades as a separate step?
-4. Is the speed–strength trade-off (bulk) wanted from phase 1, or later?
+1. **Limits are soft.** Past a limit, growth trickles at 5% (`PAST_LIMIT_TRICKLE`), teachers
+   included, so years of work still show but no one outruns their frame.
+2. **Chosen gifts and flaws are known** from the first day; everything else stays hidden and
+   is found out by training.
+3. **Academy grades are folded into the file** (2.8): the report card is a reading of the
+   starting arts, and a grade no longer sets a pace.
+4. **Bulk is in from the start.**
+
+## Part 6: As built
+
+All of Part 4 except breakthroughs (phase 5) shipped together. Where it differs from the
+proposal:
+
+- **Dead last has 2 development points, not 4.** With 4, the dead last bought a solid D in one
+  art and their hard-work floor then carried them past the middle of the class. With 2 they
+  graduate mostly at E, lose about three fights in four against their year, and climb to about
+  even in four months of focused work (`src/test/pacing/standing.test.ts`).
+- **Step costs** are 1, 1, 2, 2 (a D at 9 costs 2, a solid D at 11 costs 4, a C at 13 costs
+  6).
+- **Gifts** set talent to at least 1.3 (a prodigy's, 1.6: born limit about A); a flaw caps it at
+  0.65, starts the stat 1 lower and gives back 2 points. Blooming early or late trades a gift
+  for 3 points either way.
+- **Upbringings** are as in 2.5, except: the civilian family's hard-work floor is in the five
+  arts (0.25 through D, "nobody at home could teach you"), the shinobi family brings early
+  training only, and the main house asks for 3 focused points, the branch line 2. The parent who
+  teaches once and the clan's eye are left for later story.
+- **Builds** move the strength and speed limits by a grade (slight, heavy) or half a grade
+  (wiry, sturdy); heavy also costs stamina growth and food. Comfortable strength runs 9 (slight)
+  to 20 (heavy).
+- **The talent list is unchanged.** Gifts and flaws cover what some talents did, but the talents
+  still work and old saves name them; trimming them is left for a later pass.
+- **Reserves don't creep with rank** yet: they are a born stat with a limit like speed.
+- **Quick picks** (`systems/profile/archetypes.ts`): steady student, clan heir (clans only),
+  natural athlete, bookworm, all-rounder, early bloomer, late bloomer, prodigy (genius only).
+  Each fills the file from whatever the standing and upbringing allow, around the art you name.
+- **The world kept up.** Generated classmates are made the same way, from a fated standing, a
+  random upbringing, build and quick pick. The original pack's rookies were raised to clan-child
+  levels (Jin, top of his class, graduates at C in kenjutsu), and in the fan pack Sasuke is now
+  a prodigy's line. Genin may be E–C (validated).
+- **Pacing retuned.** A middle graduate now starts their art at a solid D, so the focused player
+  makes C in about 30 days (was 60) and is nominated for the chūnin exam around day 45. A genius
+  graduates at C, and B is still more than 120 days off. A fresh graduate beats D-rank foes up
+  to 80% of the time (was 75%).
+
+Starting fighting power (`fightingPower`), measured:
+
+| Character                                    | Fighting power |
+| -------------------------------------------- | -------------- |
+| Dead last, steady student                    | ~7             |
+| Middle of the class, steady student          | ~9             |
+| Top of the class, steady student             | ~10            |
+| Genius, steady student                       | ~10.5          |
+| Genius clan heir, prodigy (three stats at C) | ~10.5–11       |
+| Typical chūnin (`statLine('D', two Cs)`)     | ~14            |

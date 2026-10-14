@@ -20,7 +20,7 @@ export const SENSEI_OFFERS = 2;
 export function senseiFit(character: Character, sensei: PersonDef): number {
   const profile = sensei.sensei;
   if (!profile) return Number.NEGATIVE_INFINITY;
-  const grade = GRADE_INFO[character.grades[profile.specialty]].statBonus;
+  const grade = GRADE_INFO[character.grades[profile.specialty]].regard;
   const shared = profile.favouredTraits.filter((t) => character.traitIds.includes(t)).length;
   const nature = profile.nature === character.nature ? NATURE_MATCH : 0;
   return grade * GRADE_WEIGHT + shared * SHARED_TRAIT_WEIGHT + nature;

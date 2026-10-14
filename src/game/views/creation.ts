@@ -1,10 +1,11 @@
-import type { BackdropId } from '@/content';
+import { DEFAULT_BUILD_ID, type BackdropId } from '@/content';
 import { describeSpec, type EffectLine } from '@/systems/modifiers';
 import {
+  ARCHETYPE_IDS,
+  ARCHETYPES,
+  BLANK_FILE,
   DEFAULT_APPEARANCE,
   EYE_COLOURS,
-  GRADE_INFO,
-  GRADES,
   HAIR_COLOURS,
   HAIR_STYLES,
   HEADBAND_PLACES,
@@ -12,18 +13,18 @@ import {
   CLASS_STANDINGS,
   DEFAULT_STANDING,
   PRONOUNS,
-  quickGrades,
   SKIN_TONES,
   STANDING_INFO,
+  type ArchetypeId,
   type ClassStanding,
-  type Grade,
-  type QuickGrades,
 } from '@/systems/profile';
 import { checkChance, STAT_INFO, type StatDelta, type StatId } from '@/systems/stats';
 import { DISCIPLINES, ELEMENTS, type Discipline, type Element } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
-import { BASE_STAT, type CreationDraft } from '../creation';
+import type { CreationDraft } from '../creation';
+import { filledFile } from '../creationDraft';
+import { BASE_STAT } from '../student';
 import { capitalise } from './common';
 
 /** Everything the academy break-in scene offers, with effects spelled out as chips. */
@@ -50,11 +51,21 @@ export interface TraitOption extends ProfileOption {
   readonly opposite: string | null;
 }
 
-/** A place in the class: its grades and its talent, said as the file would say them. */
+/** A place in the class: its early training and its talent, said as the file would say them. */
 export interface StandingOption extends ProfileOption {
   readonly id: ClassStanding;
-  readonly budget: number;
-  readonly quick: QuickGrades;
+}
+
+/** How a child was raised; offered to clan children or to everyone else. */
+export interface UpbringingOption extends ProfileOption {
+  readonly family: 'clan' | 'clanless';
+}
+
+/** A kind of student a quick pick fills the file as. */
+export interface ArchetypeOption {
+  readonly id: ArchetypeId;
+  readonly name: string;
+  readonly description: string;
 }
 
 export interface CreationView {
@@ -71,18 +82,14 @@ export interface CreationView {
   readonly approaches: readonly { id: string; label: string; stat: string; chance: number }[];
   readonly clans: readonly ClanOption[];
   readonly standings: readonly StandingOption[];
+  readonly upbringings: readonly UpbringingOption[];
+  readonly builds: readonly ProfileOption[];
+  readonly archetypes: readonly ArchetypeOption[];
   readonly talents: readonly ProfileOption[];
   readonly traits: readonly TraitOption[];
   readonly nindos: readonly ProfileOption[];
   readonly natures: readonly { id: Element; name: string; description: string }[];
   readonly disciplines: readonly { id: Discipline; name: string; starter: string }[];
-  readonly grades: readonly {
-    grade: Grade;
-    label: string;
-    statBonus: number;
-    pacePct: number;
-    cost: number;
-  }[];
   readonly palettes: {
     readonly hairStyles: readonly string[];
     readonly hairColours: readonly string[];
@@ -113,21 +120,35 @@ function statEffects(delta: StatDelta): EffectLine[] {
 
 /** How a standing's talent roll reads on its card, never as numbers; nothing for the middle. */
 function talentLines(standing: ClassStanding): EffectLine[] {
-  const { scale, specialtyAtLeast } = STANDING_INFO[standing].talent;
-  if (specialtyAtLeast !== undefined) {
-    return [{ label: 'Gifted in your best arts, whatever the dice', tone: 'gain' }];
-  }
+  const { scale } = STANDING_INFO[standing].talent;
   if (scale > 1) return [{ label: 'Talent runs high', tone: 'gain' }];
   return scale < 1 ? [{ label: 'Talent runs low', tone: 'cost' }] : [];
 }
 
-/** The quick pick's grades, as a gain above the middle of the class and a cost below it. */
-function gradesLines(standing: ClassStanding): EffectLine[] {
-  const { quick, budget } = STANDING_INFO[standing];
-  const middle = STANDING_INFO[DEFAULT_STANDING].budget;
-  if (budget === middle) return [];
-  const label = `Grades ${quick.specialty}, ${quick.strength} and ${quick.weakness}, the rest ${quick.rest}`;
-  return [{ label, tone: budget > middle ? 'gain' : 'cost' }];
+function highLabel(count: number): string {
+  return count === 1 ? 'One stat may graduate at C' : `Up to ${count} stats may graduate at C`;
+}
+
+/** Early training and gifts, against the middle of the class. */
+function fileLines(standing: ClassStanding): EffectLine[] {
+  const { development, gifts } = STANDING_INFO[standing];
+  const middle = STANDING_INFO[DEFAULT_STANDING];
+  const points = development.points - middle.development.points;
+  const training: EffectLine = {
+    label: `${development.points} points of early training`,
+    tone: points >= 0 ? 'gain' : 'cost',
+  };
+  const reach: EffectLine[] =
+    development.highStats > 0 ? [{ label: highLabel(development.highStats), tone: 'gain' }] : [];
+  const known: EffectLine = {
+    label:
+      gifts.gifts === 0
+        ? 'No gifts on your file'
+        : `${gifts.gifts} known ${gifts.gifts === 1 ? 'gift' : 'gifts'}`,
+    tone: gifts.gifts >= middle.gifts.gifts ? 'gain' : 'cost',
+  };
+  const prodigy: EffectLine[] = gifts.prodigy ? [{ label: 'A prodigy’s gift', tone: 'gain' }] : [];
+  return [training, ...reach, known, ...prodigy];
 }
 
 function standingOption(standing: ClassStanding): StandingOption {
@@ -136,9 +157,7 @@ function standingOption(standing: ClassStanding): StandingOption {
     id: standing,
     name: info.label,
     description: info.note,
-    effects: [...gradesLines(standing), ...talentLines(standing), ...describeSpec(info.modifiers)],
-    budget: info.budget,
-    quick: info.quick,
+    effects: [...fileLines(standing), ...talentLines(standing), ...describeSpec(info.modifiers)],
   };
 }
 
@@ -174,6 +193,29 @@ export function creationView(ctx: GameContext): CreationView {
       lodging: c.lodging ?? null,
     })),
     standings: CLASS_STANDINGS.map(standingOption),
+    upbringings: content.upbringings.all.map((u) => ({
+      id: u.id,
+      name: u.name,
+      description: u.description,
+      family: u.family,
+      effects: [
+        ...(u.earlyTraining > 0
+          ? [{ label: `${u.earlyTraining} more points of early training`, tone: 'gain' as const }]
+          : []),
+        ...describeSpec(u.modifiers),
+      ],
+    })),
+    builds: content.builds.all.map((b) => ({
+      id: b.id,
+      name: b.name,
+      description: b.description,
+      effects: [...statEffects(b.statBonuses), ...describeSpec(b.modifiers)],
+    })),
+    archetypes: ARCHETYPE_IDS.map((id) => ({
+      id,
+      name: ARCHETYPES[id].label,
+      description: ARCHETYPES[id].note,
+    })),
     talents: content.talents.all.map((t) => ({
       id: t.id,
       name: t.name,
@@ -199,13 +241,6 @@ export function creationView(ctx: GameContext): CreationView {
       name: STAT_INFO[d].label,
       starter: content.techniques.require(content.disciplineStarters[d]).name,
     })),
-    grades: GRADES.map((g) => ({
-      grade: g,
-      label: GRADE_INFO[g].label,
-      statBonus: GRADE_INFO[g].statBonus,
-      pacePct: Math.round((GRADE_INFO[g].pace - 1) * 100),
-      cost: GRADE_INFO[g].cost,
-    })),
     palettes: {
       hairStyles: HAIR_STYLES,
       hairColours: HAIR_COLOURS,
@@ -218,26 +253,30 @@ export function creationView(ctx: GameContext): CreationView {
   };
 }
 
+/** The quick pick a new draft starts from. */
+const FIRST_PICK = { archetype: 'steady', specialty: 'taijutsu' } as const;
+
 /** A sensible starting draft for the creation screens. */
 export function defaultDraft(ctx: GameContext): CreationDraft {
   const { content } = ctx;
   const [first] = content.traits.all;
   const second = content.traits.all.find((t) => t.id !== first?.id && t.id !== first?.opposite);
-  return {
+  const blank: CreationDraft = {
     name: '',
     familyName: '',
     pronouns: 'they',
     appearance: DEFAULT_APPEARANCE,
     clanId: 'none',
     standing: DEFAULT_STANDING,
-    grades: quickGrades(
-      { specialty: 'taijutsu', strength: 'ninjutsu', weakness: 'genjutsu' },
-      DEFAULT_STANDING,
-    ),
+    upbringingId: content.upbringings.all.find((u) => u.family === 'clanless')?.id ?? '',
+    buildId: content.builds.all.find((b) => b.id === DEFAULT_BUILD_ID)?.id ?? '',
+    file: BLANK_FILE,
+    quickPick: FIRST_PICK,
     nature: 'fire',
     traitIds: [first?.id, second?.id].filter((id): id is string => id !== undefined),
     talentId: content.talents.all[0]?.id ?? '',
     nindoId: content.nindos.all[0]?.id ?? '',
     breakInApproachId: content.breakIn.approaches[0]?.id ?? '',
   };
+  return { ...blank, file: filledFile(blank, FIRST_PICK, ctx) };
 }

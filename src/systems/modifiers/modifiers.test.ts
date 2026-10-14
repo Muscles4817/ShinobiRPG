@@ -37,6 +37,20 @@ describe('modifiers', () => {
     ]);
   });
 
+  it('adds up limit shifts from every source, and says which way they go', () => {
+    const mods = combine([
+      { limitBonus: { speed: 6, strength: -6 } },
+      { limitBonus: { speed: 3 } },
+    ]);
+    expect(mods.limitBonus.speed).toBe(9);
+    expect(mods.limitBonus.strength).toBe(-6);
+    expect(mods.limitBonus.stamina).toBe(0);
+    expect(describeSpec({ limitBonus: { speed: 6, strength: -6 } })).toEqual([
+      { label: 'Speed can go further', tone: 'gain' },
+      { label: 'Strength tops out sooner', tone: 'cost' },
+    ]);
+  });
+
   it('collects hard-work floors from every source', () => {
     const floor = { floor: 0.4, throughGrade: 'B' } as const;
     const lower = { floor: 0.2, throughGrade: 'C' } as const;

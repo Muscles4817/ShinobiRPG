@@ -74,8 +74,9 @@ describe('scouting in play', () => {
 
   it('your stats come with what they mean', () => {
     const view = shinobiView(newGame(), ctx);
-    expect(view.overall.label).toBe('Genin E');
-    expect(view.overall.next).toEqual({ label: 'Genin D', at: 8 });
+    // A middle-of-the-class graduate with a solid art is already a D.
+    expect(view.overall.label).toBe('Genin D');
+    expect(view.overall.next).toEqual({ label: 'Chūnin C', at: 13 });
     expect(view.groups[0]?.stats[0]?.tier.label).toMatch(/ [EDCBAS]$/);
   });
 });
