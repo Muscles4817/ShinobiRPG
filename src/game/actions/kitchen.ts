@@ -1,5 +1,17 @@
 import type { RecipeDef } from '@/content';
-import { cookedOnce, cookingGrade, knowsRecipe, withinReach } from '@/systems/cooking';
+import {
+  amountAt,
+  buffAt,
+  cookedOnce,
+  cookingGrade,
+  CUTS,
+  FINISHES,
+  HEATS,
+  knowsRecipe,
+  withinReach,
+  type CookingSteps,
+  type MealQuality,
+} from '@/systems/cooking';
 import { describeSpec } from '@/systems/modifiers';
 import { useUp } from '@/systems/inventory';
 import type { JournalChip } from '@/systems/journal';
@@ -7,6 +19,7 @@ import type { JournalChip } from '@/systems/journal';
 import type { GameContext } from '../context';
 import { adjust, busyReason, chip, firstBlocker, log, spendTime } from '../ops';
 import type { GameState } from '../state';
+import { cookedAsUsual, cookedByHand, type StoveResult } from '../stove';
 import { homeBlocker } from './daily';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -40,23 +53,40 @@ export function recipeBlocker(state: GameState, recipe: RecipeDef): string | nul
     : `A rank ${recipe.rank} dish is beyond a grade ${grade} cook. Cook simpler dishes first.`;
 }
 
-/** What a meal gives as you eat it: fullness, energy, and for some dishes health or chakra. */
-function eatingChips(recipe: RecipeDef): JournalChip[] {
+/** What a meal gives as you eat it at this quality: fullness, energy, health, chakra. */
+function eatingChips(recipe: RecipeDef, quality: MealQuality): JournalChip[] {
+  const energy = amountAt(recipe.energy, quality);
+  const health = amountAt(recipe.health ?? 0, quality);
+  const chakra = amountAt(recipe.chakra ?? 0, quality);
   return [
-    chip(`Hunger −${recipe.satiety}`, 'gain'),
-    ...(recipe.energy > 0 ? [chip(`Energy +${recipe.energy}`, 'gain')] : []),
-    ...(recipe.health ? [chip(`Health +${recipe.health}`, 'gain')] : []),
-    ...(recipe.chakra ? [chip(`Chakra +${recipe.chakra}`, 'gain')] : []),
+    chip(`Hunger −${amountAt(recipe.satiety, quality, true)}`, 'gain'),
+    ...(energy > 0 ? [chip(`Energy +${energy}`, 'gain')] : []),
+    ...(health > 0 ? [chip(`Health +${health}`, 'gain')] : []),
+    ...(chakra > 0 ? [chip(`Chakra +${chakra}`, 'gain')] : []),
   ];
 }
 
-/** Cooks `servings` of a recipe and eats one: the pantry empties, the meal's buff starts. */
+const QUALITY_WORDS: Readonly<Record<MealQuality, string>> = {
+  burnt: 'Burnt',
+  plain: 'Plain',
+  good: 'Good',
+  fine: 'Fine',
+};
+
+/** How many servings to cook and how well they turned out. */
+export interface Serving {
+  readonly servings: number;
+  readonly quality: MealQuality;
+}
+
+/** Cooks servings of a recipe and eats one: the pantry empties, the meal's buff starts. */
 export function cookMeal(
   state: GameState,
   ctx: GameContext,
   recipe: RecipeDef,
-  servings: number,
+  serving: Serving,
 ): { readonly state: GameState; readonly chips: JournalChip[] } {
+  const { servings, quality } = serving;
   const used = useUp(
     state.inventory,
     recipe.ingredients.map((i) => ({ id: i.id, count: i.count * servings })),
@@ -67,22 +97,38 @@ export function cookMeal(
     ...state,
     inventory: used.value,
     cooking,
-    character: { ...state.character, meal: recipe.id },
+    character: { ...state.character, meal: recipe.id, mealQuality: quality },
   };
   const fed = adjust(spendTime(cooked, COOK_SLOTS, ctx), {
-    satiety: recipe.satiety,
-    energy: recipe.energy,
-    health: recipe.health ?? 0,
-    chakra: recipe.chakra ?? 0,
+    satiety: amountAt(recipe.satiety, quality, true),
+    energy: amountAt(recipe.energy, quality),
+    health: amountAt(recipe.health ?? 0, quality),
+    chakra: amountAt(recipe.chakra ?? 0, quality),
   });
   const before = cookingGrade(state.cooking.xp);
   const after = cookingGrade(cooking.xp);
   const chips = [
-    ...eatingChips(recipe),
-    ...describeSpec(recipe.buff).map((e) => chip(e.label, 'gain')),
+    chip(QUALITY_WORDS[quality], quality === 'burnt' ? 'cost' : 'gain'),
+    ...eatingChips(recipe, quality),
+    ...describeSpec(buffAt(recipe.buff, quality)).map((e) => chip(e.label, e.tone)),
     ...(after !== before ? [chip(`Cooking grade ${after}`, 'gain')] : []),
   ];
   return { state: fed, chips };
+}
+
+/** Why these steps can't be cooked (not one of the stove's choices), or null. */
+function stepsBlocker(steps: CookingSteps | undefined): string | null {
+  if (!steps) return null;
+  const valid =
+    CUTS.includes(steps.cut) && HEATS.includes(steps.heat) && FINISHES.includes(steps.finish);
+  return valid ? null : 'That isn’t a way to cook.';
+}
+
+/** The story line for a dish: its description, then what went wrong at the stove. */
+function cookLine(recipe: RecipeDef, result: StoveResult): string {
+  if (result.quality === 'burnt') return `${result.misses.join(' ')} It is edible. Just.`;
+  if (result.misses.length === 0) return recipe.description;
+  return `${recipe.description} ${result.misses.join(' ')}`;
 }
 
 export const cook: ActionHandler<ActionOf<'cook'>> = {
@@ -94,16 +140,20 @@ export const cook: ActionHandler<ActionOf<'cook'>> = {
       busyReason(state),
       homeBlocker(state, ctx),
       recipeBlocker(state, recipe),
+      stepsBlocker(action.steps),
       missing && `${missing} The grocer sells them.`,
     );
   },
   perform(state, action, ctx) {
     const recipe = ctx.content.recipes.require(action.recipeId);
-    const meal = cookMeal(state, ctx, recipe, 1);
+    const result = action.steps
+      ? cookedByHand(state, recipe, action.steps)
+      : cookedAsUsual(state, recipe);
+    const meal = cookMeal(state, ctx, recipe, { servings: 1, quality: result.quality });
     return log(meal.state, {
       heading: `Cooked ${recipe.name}`,
-      text: recipe.description,
-      tone: 'success',
+      text: cookLine(recipe, result),
+      tone: result.quality === 'burnt' ? 'warning' : 'success',
       chips: meal.chips,
     });
   },

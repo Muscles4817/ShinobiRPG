@@ -212,6 +212,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     read through `hardWorkEnergy`), sleep heal more (`sleepHealing`), injuries mend sooner
     (`injuryNights`), time with people count for more (`bondGain`, `warmed`) or your own job
     checks sharper (`checks`, `yourCheckValue`); `health`/`chakra` come back as you eat.
+    Dishes are cooked by hand at the stove (`game/stove.ts`: three beats against the recipe's
+    `method`, giving a `mealQuality` that scales the dish through `buffAt`/`amountAt`) or as
+    usual; `experiment` puts pantry ingredients together to discover recipes.
     Hunger works the same way: the player sees a Hunger meter (100 − satiety), and each
     stage (`hungerLevel`: peckish, hungry, starving) is a `ModifierSpec` plus a fight-strength
     multiplier in `game/hunger.ts`; starving also blocks hard work (`weakFromHunger`).

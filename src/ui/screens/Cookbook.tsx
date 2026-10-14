@@ -31,7 +31,9 @@ export function Cookbook({ ctx, state }: { readonly ctx: GameContext; readonly s
               <GradeBadge grade={r.rank} />
               <span className="badge">{r.mastery}</span>
             </span>
-            <small className="muted">{r.description}</small>
+            <small className="muted">
+              {r.method}. {r.description}
+            </small>
             <span className="chips">
               {r.effects.map((e) => (
                 <span key={e.label} className={`chip ${e.tone}`}>
@@ -45,6 +47,10 @@ export function Cookbook({ ctx, state }: { readonly ctx: GameContext; readonly s
       {view.sealed.length > 0 && (
         <details className="fold">
           <summary>{`${view.sealed.length} dishes you have yet to learn`}</summary>
+          <p className="muted small">
+            Any dish within your grade can also be worked out at home: put its ingredients together
+            and try.
+          </p>
           <ul className="cook-pages">
             {view.sealed.map((r) => (
               <li key={r.id} className="cook-page sealed">

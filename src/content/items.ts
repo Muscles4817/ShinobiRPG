@@ -6,6 +6,7 @@ import type {
   WeaponEffect,
   WeaponShape,
 } from '@/systems/combat';
+import type { CookingMethod, CookingSteps } from '@/systems/cooking';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatGrade } from '@/systems/stats';
 import type { Season } from '@/systems/time';
@@ -98,6 +99,10 @@ export interface RecipeDef {
   readonly rank: StatGrade;
   /** Everyone knows it from the start (validated: rank E). */
   readonly starter?: boolean;
+  /** How it's cooked: the method sets the right cut, heat and finish at the stove. */
+  readonly method: CookingMethod;
+  /** Where this dish goes against its method (a gentle fry for a rolled omelette). */
+  readonly steps?: Partial<CookingSteps>;
   readonly ingredients: readonly IngredientCount[];
   readonly satiety: number;
   readonly energy: number;

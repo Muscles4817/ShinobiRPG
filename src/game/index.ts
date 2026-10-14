@@ -79,6 +79,8 @@ export {
   type LoadoutSlot,
 } from './views/shops';
 export { kitchenView, type DinnerInvite, type KitchenView, type RecipeCard } from './views/kitchen';
+export { STOVE_BEATS, EXPERIMENT_LIMIT, type StoveBeat } from './views/stove';
+export type { CookingSteps } from '@/systems/cooking';
 export {
   cookbookView,
   type CookbookView,

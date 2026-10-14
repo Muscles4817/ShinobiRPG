@@ -59,12 +59,15 @@ describe('cooking', () => {
       ...state,
       character: { ...state.character, vitals: { ...state.character.vitals, satiety: 10 } },
     };
-    const cooked = act(hungry, { type: 'cook', recipeId: 'grilled-fish-set' });
+    const steps = { cut: 'chunky', heat: 'fierce', finish: 'early' } as const;
+    const cooked = act(hungry, { type: 'cook', recipeId: 'grilled-fish-set', steps });
     expect(cooked.inventory.pantry).toEqual({});
     expect(cooked.character.vitals.satiety).toBeGreaterThan(60);
     expect(cooked.character.meal).toBe('grilled-fish-set');
     const before = trainingScale(state.character, ctx).strength ?? 1;
-    expect(trainingScale(cooked.character, ctx).strength).toBeCloseTo(before * 1.1);
+    // Every beat right, by a cook of the dish's own grade: a fine dish, its buff at 1.4 strength.
+    expect(cooked.character.mealQuality).toBe('fine');
+    expect(trainingScale(cooked.character, ctx).strength).toBeCloseTo(before * 1.14);
     expect(kitchenView(cooked, ctx).meal?.name).toBe('Grilled Fish Set');
   });
 

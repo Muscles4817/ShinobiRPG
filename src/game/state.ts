@@ -1,5 +1,5 @@
 import type { CombatState } from '@/systems/combat';
-import type { Cooking } from '@/systems/cooking';
+import type { Cooking, MealQuality } from '@/systems/cooking';
 import type { Housing } from '@/systems/housing';
 import type { Exhaustion, Injury } from '@/systems/injuries';
 import type { Inventory } from '@/systems/inventory';
@@ -129,6 +129,8 @@ export interface Character {
   readonly vitals: Vitals;
   /** Today's home-cooked meal (a recipe id): its buff lasts until the day ends. */
   readonly meal: string | null;
+  /** How well today's meal turned out; absent means good (saves from before the stove). */
+  readonly mealQuality?: MealQuality;
   /** Injuries you carry; each heals on its own morning. */
   readonly injuries: readonly Injury[];
   /** Chakra exhaustion: nights' sleep refill only part of your chakra until it passes. */

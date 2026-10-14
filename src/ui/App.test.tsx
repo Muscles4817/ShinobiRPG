@@ -314,7 +314,7 @@ describe('App (smoke test)', () => {
     const bento = screen
       .getAllByRole('article')
       .find((a) => a.textContent.includes('Rice Ball Bento'))!;
-    await user.click(within(bento).getByRole('button', { name: 'Cook' }));
+    await user.click(within(bento).getByRole('button', { name: 'Cook as usual' }));
     expect(screen.getByText(/Today you ate/)).toBeInTheDocument();
   });
 
@@ -329,6 +329,28 @@ describe('App (smoke test)', () => {
     expect(within(book).getByText('Grilled Fish Set')).toBeInTheDocument();
     expect(within(book).getByText(/dishes you have yet to learn/)).toBeInTheDocument();
     expect(within(book).getByText(/Tsune teaches it once you are friends/)).toBeInTheDocument();
+  });
+
+  it('cooks by hand at the stove, three beats at a time', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Market Street/));
+    await user.click(screen.getByRole('button', { name: /^8\s*Rice\s*For cooking/ }));
+    await user.click(screen.getByRole('button', { name: /^8\s*Rice\s*1 at home/ }));
+    await user.click(screen.getByRole('button', { name: /Here/ }));
+    await user.click(place(/^Home/));
+    const bento = screen
+      .getAllByRole('article')
+      .find((a) => a.textContent.includes('Rice Ball Bento'))!;
+    await user.click(within(bento).getByRole('button', { name: 'At the stove' }));
+    const stove = screen.getByRole('region', { name: /at the stove/ });
+    expect(within(stove).getByRole('button', { name: 'Cook it' })).toBeDisabled();
+    await user.click(within(stove).getByRole('button', { name: 'Whole' }));
+    await user.click(within(stove).getByRole('button', { name: 'Steady' }));
+    await user.click(within(stove).getByRole('button', { name: 'On time' }));
+    await user.click(within(stove).getByRole('button', { name: 'Cook it' }));
+    expect(screen.getByText(/Today you ate/)).toBeInTheDocument();
   });
 
   it('resumes a saved game', async () => {

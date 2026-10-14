@@ -7,6 +7,7 @@ import type { GameContext } from '../context';
 import { busyReason, chip, firstBlocker, log } from '../ops';
 import { bondOf, findPerson, whereNow } from '../people/cast';
 import type { GameState } from '../state';
+import { cookedAsUsual } from '../stove';
 import { festivalBondBonus } from '../village';
 import { warmed } from '../people/warmth';
 import { homeBlocker } from './daily';
@@ -60,7 +61,8 @@ export const hostDinner: ActionHandler<ActionOf<'hostDinner'>> = {
     if (!guest) return state;
     const favourite = guest.favouriteRecipeId === recipe.id;
     // The dish is on the table before the talk starts: a convivial one warms this very evening.
-    const meal = cookMeal(state, ctx, recipe, SERVINGS);
+    const { quality } = cookedAsUsual(state, recipe);
+    const meal = cookMeal(state, ctx, recipe, { servings: SERVINGS, quality });
     const base = DINNER_BOND + (favourite ? FAVOURITE_BONUS : 0) + festivalBondBonus(state, ctx);
     const delta = warmed(meal.state, ctx, base);
     const before = bondOf(state, guest.id);

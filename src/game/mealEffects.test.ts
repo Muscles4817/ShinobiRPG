@@ -79,8 +79,9 @@ describe('what a meal does as you eat it', () => {
       ...state,
       inventory: { ...state.inventory, pantry: { 'river-fish': 1, vegetables: 1 } },
     };
+    // Cooked as usual, a dish you haven't mastered is plain: 0.6 of its health.
     const cooked = act(stocked, { type: 'cook', recipeId: 'fish-bone-broth' });
-    expect(cooked.character.vitals.health).toBe(60);
-    expect(lastEntry(cooked)?.chips).toContainEqual({ label: 'Health +20', tone: 'gain' });
+    expect(cooked.character.vitals.health).toBe(52);
+    expect(lastEntry(cooked)?.chips).toContainEqual({ label: 'Health +12', tone: 'gain' });
   });
 });
