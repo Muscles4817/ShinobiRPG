@@ -1,0 +1,279 @@
+# World and travel: review, decisions, plan
+
+Working document for milestone 4: other places to go, the roads between them, and who may
+leave the village. Part 1 reviews what the game has today. Part 2 records what we agree.
+Part 3 is the design that follows, with Port Shiomachi worked through as the reference
+destination. Part 4 is the build plan. Nothing here is binding until it is in Part 2.
+
+---
+
+## Part 1: The review
+
+### What travel is today
+
+1. **The Travel tab** lists the pack's locations with days, cost and a danger line. Three are
+   locked in the original pack: Port Shiomachi (a day, safe road, "Coming soon"), Sakyūgakure
+   (three days, 120 ryo, "Coming soon") and Mount Reikon (four days, "Needs Chūnin rank").
+   None has any places.
+2. **The `travel` action** (`game/actions/travel.ts`) pays the cost, skips the days with
+   `spendTime` and sets `locationId`. One journal line says you arrived.
+3. **Away from home, most of the game switches off.** `whereNow` returns no one outside the
+   start location, so there are no people, no talk, no training with anyone. `homeBlocker`
+   means you can't sleep or rest. The board, the gear shops and the library all live in
+   Tōrōgakure.
+
+### What already exists that travel can use
+
+The missions overhaul built most of a journey, just not for travel:
+
+- **Days on the road** (`game/road.ts`): each day passes to the next morning through the
+  same `spendTime` as home, with an evening meal from your pack (`IngredientDef.road`), a
+  night in camp (`CAMP_HEALTH_SHARE`), and the sensei's lesson by the fire (`lessonAway`).
+- **Legs with regions** and **road events** drawn by seed hash (`content/shared/road/`,
+  regions `hill-road`, `river-road`, `coast-road`, `forest-track`, `mountain-pass`,
+  `dune-road`).
+- **Camp stages**, **decisions with tones**, **voices**, **marks and threads**, and the
+  **field screen** with route stamps.
+- **Away notes** (`game/awayNotes.ts`): your sensei won't sign you out for something that
+  would make you miss an exam.
+- **Places decide what you can do** (decision 10). A location with places gets place pages
+  for free; every action checks `placeHere`.
+
+### What is waiting on this milestone
+
+- **Arc base locations** (missions plan 3.9): an act's "search" half spent somewhere else,
+  with `baseLocationId` and `deadlineDays`.
+- **Chakra control in the world** (progression plan, D13): tree-walking and water-walking as
+  milestones that open places and routes.
+- **The rogue path** (milestone 5) needs leaving to be something you can do without leave.
+
+### What is wrong with it
+
+- **Travel is a teleport.** Days pass with nothing in them, even though the road machinery
+  exists. A one-day walk to the coast and a four-day climb up a haunted mountain play the same.
+- **Destinations have no reason to exist.** Even unlocked, they would be an empty screen.
+- **You can strand yourself.** Away from home you can't sleep, and nothing tells you so
+  before you leave.
+- **Leaving costs nothing in-world.** A genin of a hidden village can wander off for a week
+  without anyone's say-so.
+- **The world is a star.** Every place is a fixed distance from home; there is no "on the
+  way", and no road you could open later.
+
+---
+
+## Part 2: Decisions
+
+Proposed. Each moves here once we agree it.
+
+1. **Travel is a journey.** Going somewhere plays like a mission with no client: legs through
+   regions, road events, a camp each night, rations from your pack. It reuses the mission
+   road and the field screen; it adds no second way of passing days.
+2. **The world is a map of routes.** Locations are joined by routes, each with days, a
+   region per leg, a danger, and optionally a requirement (rank, a chakra-control milestone,
+   a world mark). Travelling to a place walks the shortest open path.
+3. **Every destination has a reason to go.** At least three things you can't get at home: a
+   teacher or school, goods (gear, ingredients, tools), people, work, sights. A location with
+   no reason stays locked.
+4. **Leaving the village is earned.**
+   - **Genin** leave only on a job, or on a pass their sensei signs (a short trip, at a
+     lesson, like the library permit).
+   - **Chūnin** take leave on their own, within limits (days a season).
+   - **Jōnin** come and go.
+   - Leaving **without** leave is possible, and is the first step of the rogue path
+     (milestone 5). Until then, the Travel tab says why you can't.
+5. **Home keeps going while you're away**, as on a long job: peers grow, the board turns,
+   rent falls due. Abroad you sleep at an **inn** (a new place kind) or in camp.
+6. **People travel too.** Some people live elsewhere (authored residents with schedules in
+   their own location); your crew comes with you on a job; a companion may come on a trip
+   if your bond allows it.
+7. **Order:** milestone 4 starts once the technique work in progress (T-series) lands; the
+   rest of milestone 3 (ranks, elements, spirits) can go on alongside, since Mount Reikon
+   waits on spirits anyway.
+
+### Open questions
+
+- **How strict is leave?** The proposal above is strict. A looser version: genin may go to
+  safe places (the coast) freely and need a pass only for dangerous roads.
+- **Do foreign villages have boards?** Proposed: outsiders get a small board of civilian
+  work (no village secrets), and a hidden village's own work only through politics later.
+- **Can you move home?** Proposed: not in milestone 4. Your home is the start location; an
+  inn is a room, not a home.
+- **Fast travel?** Proposed: a road you've walked can be taken as one summary line (days
+  still pass, events still roll, but only notable ones stop you).
+
+---
+
+## Part 3: Design
+
+### 3.1 The map
+
+A pack declares **routes** beside its locations:
+
+| Field      | Meaning                                                                         |
+| ---------- | ------------------------------------------------------------------------------- |
+| `from, to` | Two location ids. Routes go both ways.                                          |
+| `legs`     | Days, each with a `region` (so road events fit) and an optional authored beat.  |
+| `danger`   | The worst foe a road event may bring (`petty` … `elite`, as `EnemyDef.danger`). |
+| `cost`     | Ryo for passage (a ferry, a toll), if any.                                      |
+| `needs`    | Optional: a rank, a chakra-control milestone, a world mark.                     |
+
+`LocationDef.travel` shrinks to what is true of the place itself (its danger line goes, the
+route says it). A location may say `lockedReason` while it has no places.
+
+The original pack's map, first pass:
+
+```
+                  Mount Reikon
+                       │ mountain-pass ×4  (chūnin)
+ Port Shiomachi ── Tōrōgakure ── forest-track ×1 ── Kiri Ford ── dune-road ×2 ── Sakyūgakure
+   coast-road ×1                                   │
+        └──── water-walking: across the bay ───────┘  (saves a day)
+```
+
+Kiri Ford is a new waypoint, a ferry town, so the dunes are "on the way" past somewhere.
+Names are placeholders.
+
+The Travel tab becomes a map: an ink drawing of the region, routes as brush lines, locked
+routes dotted with what opens them, and your position as a stamp. It is inline SVG like
+the backdrops, drawn per pack.
+
+### 3.2 The journey
+
+Travelling starts a **journey run**: a `MissionRun` with no client and no pay, built from
+the route's legs. Everything the run already does applies:
+
+- Each leg passes days through `game/road.ts` (meals from your pack, camp nights, hunger,
+  healing, the board catching up).
+- Each leg's region draws a road event; the route's `danger` caps which can come.
+- A camp stage each night (talk, watch, train, rest, cook), with whoever is along.
+- The field screen shows the route stamps; there is no debrief card, only an arrival line
+  and anything the road left behind (memories, marks).
+
+What differs from a job:
+
+- **No pay, no ledger of pay.** Events can still cost or give things (a lost pack, a found
+  herb) through their effects.
+- **You can turn back** at a camp: the run walks the legs done back home.
+- **Arrival** sets `locationId` when the last leg ends; leaving mid-route never leaves you
+  somewhere with no places.
+
+Before you set out, the route's sheet says what you need: days, rations you have against
+nights you'll camp, where you'll sleep on arrival, and any exam or lesson you'll miss
+(`awayNotes` extended to trips).
+
+### 3.3 Leave
+
+A new small slice, `travel` (or a field on an existing one), keeps:
+
+- `pass`: a signed pass (destination, days, the day it expires), from the sensei at a lesson.
+- `leaveUsed`: days of leave taken this season (chūnin).
+- `awayWithoutLeave`: set when you go anyway; read by milestone 5.
+
+`travelBlocker` (in `game/`) reads rank, pass, leave and the route's `needs`, and gives one
+reason the Travel tab can show ("Your sensei signs passes at your weekly lesson."). Jobs
+need no pass; a job's route counts as orders.
+
+### 3.4 Living away
+
+- **Inn** (new place kind `inn`): a room by the night, paid at the desk; sleeping, resting
+  and the morning routine work as at home, healing a little less than your own bed. Your
+  home's rent still falls due; a long trip with unpaid rent is the existing lock-out.
+- **Residents**: authored `PersonDef`s with a `homeLocationId`; `whereNow` reads their
+  schedule only when you are in their location. Bonds, talk, training and teaching apply
+  unchanged. Generated people stay in the start location.
+- **Companions**: a person with a high enough bond (and free days) may come on a trip;
+  they join camp scenes and are present at the destination as if they lived there.
+- **Your sensei** gives the week's lesson only at home or by the fire on a job. A trip that
+  spans the lesson day misses it, and the route sheet says so.
+
+### 3.5 The reference destination: Port Shiomachi
+
+A fishing town a day down the coast road. Safe, open to genin on a pass from the start, and
+the place that proves everything above.
+
+| Place              | Kind       | Why go                                                             |
+| ------------------ | ---------- | ------------------------------------------------------------------ |
+| The Gull's Rest    | `inn`      | Somewhere to sleep.                                                |
+| The fish market    | `market`   | Coastal ingredients (dried fish keeps on the road; seaweed; salt). |
+| The net-mender's   | `gear`     | Wire, fishhook senbon, a harpoon-style polearm (C).                |
+| The breakwater     | `training` | Drills against the tide (stamina, balance); later, water-walking.  |
+| The Salt Lantern   | `tavern`   | Sailors' gossip: rumours from other villages, ahead of home.       |
+| The harbour office | `missions` | Civilian work for an outsider: lost cargo, a smuggler, a wreck.    |
+
+People: a retired chūnin who teaches a water-and-wire style (a `school`, as in the
+techniques plan), the harbourmaster (a client who asks for you by name), and
+a fisher's child who wants to be a shinobi (memories, a follow-up).
+
+Festival: a boat-lantern night once a year, the coast's answer to home's lantern festival.
+
+### 3.6 The other destinations
+
+- **Kiri Ford** (waypoint): a ferry town with an inn, a market and a road board. Most of its
+  point is being between places, and the water-walking shortcut across the bay.
+- **Sakyūgakure**: another hidden village. You are a guest: some places refuse you, a
+  minder may follow you, and the board is outsider work only. Dune schools, desert gear,
+  and the first taste of the politics milestone 5 needs (standing with another village).
+- **Mount Reikon**: spirits. Chūnin only, four days up a pass where the road events are
+  spirit encounters. It waits on milestone 3's spirit work; its shrines are where spirit
+  contracts and the spirit discipline are found.
+
+### 3.7 Chakra control in the world
+
+Tree-walking and water-walking become **milestones** on the character (learned by drill,
+as the progression plan describes). A route or a place may need one:
+
+- Water-walking opens the bay crossing and the breakwater's tide drill.
+- Tree-walking opens a forest shortcut and a hidden training ground at home.
+
+They are checked by `needs` like rank, so the map shows the dotted line and what opens it.
+
+### 3.8 Arc bases
+
+Missions plan 3.9 lands here unchanged: an `ArcAct` names a `baseLocationId`, the "go" act's
+job is the journey there, the act's jobs are offered at the base's `missions` place, days at
+the base pass at the inn with the crew present, and `deadlineDays` moves the story on. A
+crew on an arc is your company at the base (they count as residents while the act lasts).
+
+### 3.9 Presentation
+
+- **The map** (3.1) replaces the Travel list. A route sheet opens from a line on the map.
+- **Away from home** the village screen says so: the backdrop and sky of the place, a
+  "Far from home" stamp in the header (the header already knows `visiting`), and the dock's
+  Here tab shows the place you're in.
+- **Coming back** is a line on the ticker and, if anything happened at home (a promotion
+  posted, rent due, a rumour about you), a short "while you were away" card, read from the
+  journal and the board like the debrief reads the ledger.
+
+---
+
+## Part 4: Build plan
+
+Each step lands green (`npm run check`, `npm run check:release`) with tests, and with a
+migration and a previous-version save test wherever the save shape changes.
+
+1. **Routes.** `RouteDef` in content, `validateWorld` checks (both ends exist, regions have
+   road events, every playable location reachable), a shortest-open-path function in
+   `game/`. `LocationDef.travel` slimmed. The Travel tab reads routes (still a list).
+2. **Journeys.** Travelling starts a journey run built from the route's legs; camp nights,
+   road events by danger, turning back, arrival. The route sheet (rations, sleep, missed
+   lesson or exam). Migration: a save away from home stays where it is.
+3. **The inn and residents.** `inn` place kind with its page; sleeping abroad; residents
+   with `homeLocationId`; `whereNow` by location. Fixes being stranded.
+4. **Port Shiomachi.** The places, people, food, gear, training and work in 3.5, in the
+   original pack. Unlocked behind no rule yet (step 5 adds it).
+5. **Leave.** Passes signed at the sensei's lesson, chūnin leave, `travelBlocker`, the
+   away-without-leave flag. A CLAUDE.md decision for travel and leave.
+6. **Companions on trips** and the "while you were away" card.
+7. **The map screen.** Ink map per pack, route sheet, coming-soon routes.
+8. **Arc bases.** `baseLocationId`, `deadlineDays`, a first arc act at Shiomachi.
+9. **Chakra-control routes.** Milestones as `needs`; the bay crossing and the forest track.
+10. **Kiri Ford and Sakyūgakure.** The waypoint, then the guest village.
+11. **Mount Reikon**, once milestone 3's spirits exist.
+12. **The fan pack** gets its own routes and at least one destination (validation requires
+    every pack to stay complete).
+
+---
+
+## Part 5: What was built
+
+Nothing yet.
