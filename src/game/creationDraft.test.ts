@@ -73,6 +73,22 @@ describe('editing the academy file', () => {
     expect(heir.effects).toEqual([]);
   });
 
+  it('never gifts or flaws a stat the special note already fixes', () => {
+    const quickPick = { archetype: 'steady', specialty: 'ninjutsu' } as const;
+    const sealed = draft({ talentId: 'no-chakra', quickPick });
+    expect(sealed.file.gifts.ninjutsu).toBeUndefined();
+    expect(draftProblems(sealed, ctx)).toEqual([]);
+    const forced = markGift(sealed, 'ninjutsu', 'gifted', ctx);
+    expect(draftProblems(forced, ctx)).toContain(
+      'Your special note already says how far that stat goes; it can’t be a gift or a flaw too.',
+    );
+  });
+
+  it('gives a deep well of chakra a reserves limit to match', () => {
+    const well = createNewGame({ draft: draft({ talentId: 'chakra-reserves' }), seed: 3 }, ctx);
+    expect(well.character.aptitude.reserves).toBe(1.5);
+  });
+
   it('offers each kind of student only where it fits', () => {
     const offered = (d: ReturnType<typeof draft>) =>
       fileView(d, ctx)

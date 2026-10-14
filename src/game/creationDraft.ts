@@ -45,7 +45,11 @@ function upbringingFits(draft: CreationDraft, ctx: GameContext): boolean {
 export function filledFile(draft: CreationDraft, pick: QuickPick, ctx: GameContext): AcademyFile {
   const student = studentOf(draft, ctx);
   const offered = archetypeOffered(pick.archetype, student);
-  return quickFile(offered ? pick : { ...pick, archetype: 'steady' }, student);
+  const file = quickFile(offered ? pick : { ...pick, archetype: 'steady' }, student);
+  // What the special note fixes (an art that never takes, a well of reserves) takes no gift or flaw.
+  const fixed = ctx.content.talents.get(draft.talentId)?.aptitude ?? {};
+  const gifts = Object.fromEntries(Object.entries(file.gifts).filter(([id]) => !(id in fixed)));
+  return { ...file, gifts };
 }
 
 /** Applies a change to the draft and keeps the rest of it in step. */
