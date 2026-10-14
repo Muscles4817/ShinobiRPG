@@ -1,6 +1,6 @@
 import { createRng } from '@/core';
 import { learnRecipes, NO_COOKING } from '@/systems/cooking';
-import { freeLodging, newTenancy } from '@/systems/housing';
+import { freeLodging, newTenancy, type HomeRef } from '@/systems/housing';
 import { EMPTY_INVENTORY } from '@/systems/inventory';
 import { EMPTY_JOURNAL } from '@/systems/journal';
 import {
@@ -140,11 +140,11 @@ function bestArts(grades: Grades): Discipline[] {
   return DISCIPLINES.filter((d) => grades[d] === best);
 }
 
-function housingFor(draft: CreationDraft, ctx: GameContext, homeId: string, rent: number) {
+function housingFor(draft: CreationDraft, ctx: GameContext, home: HomeRef, rent: number) {
   const lodging = ctx.content.clans.require(draft.clanId).lodging;
   return lodging
-    ? freeLodging(homeId, lodging, START_TIME.day)
-    : newTenancy(homeId, rent, START_TIME.day);
+    ? freeLodging(home, lodging, START_TIME.day)
+    : newTenancy(home, rent, START_TIME.day);
 }
 
 export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext): GameState {
@@ -199,7 +199,12 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       exhaustion: null,
     },
     wallet: { ryo: content.startingRyo },
-    housing: housingFor(draft, ctx, home.id, home.rentPerWeek),
+    housing: housingFor(
+      draft,
+      ctx,
+      { villageId: content.startLocationId, placeId: home.id },
+      home.rentPerWeek,
+    ),
     techniques: { known, progress: {}, unstable: [] },
     standing: NEW_GENIN,
     journal: EMPTY_JOURNAL,

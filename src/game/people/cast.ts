@@ -3,6 +3,7 @@ import { NEW_BOND, type Bond, type Taste } from '@/systems/bonds';
 import { slotName } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { homeVillageId } from '../homeVillage';
 import type { GameState } from '../state';
 
 /** Looking people up, wherever they are defined, and finding who is around right now. */
@@ -27,8 +28,8 @@ export function bondOf(state: GameState, personId: string): Bond {
 }
 
 /** Whether they live in the village (not a town elsewhere): crews, teams and dinners at home. */
-export function isVillager(person: PersonDef, ctx: GameContext): boolean {
-  return (person.homeLocationId ?? ctx.content.startLocationId) === ctx.content.startLocationId;
+export function isVillager(state: GameState, person: PersonDef, ctx: GameContext): boolean {
+  return (person.homeLocationId ?? ctx.content.startLocationId) === homeVillageId(state, ctx);
 }
 
 /** Where a friend travelling with you is found: the inn here, or wherever you can find them. */
@@ -39,7 +40,7 @@ function lodging(state: GameState, ctx: GameContext): string | null {
 
 /** Everyone who lives in the village. */
 export function villagers(state: GameState, ctx: GameContext): readonly PersonDef[] {
-  return everyone(state, ctx).filter((p) => isVillager(p, ctx));
+  return everyone(state, ctx).filter((p) => isVillager(state, p, ctx));
 }
 
 /** The place id where this person is now, or null if they are away (or you are). */

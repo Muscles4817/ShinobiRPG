@@ -8,6 +8,7 @@ import type { PersonDef } from '@/content';
 import type { GameContext } from './context';
 import { log } from './ops';
 import { bondOf } from './people/cast';
+import { homeVillageId } from './homeVillage';
 import type { GameState } from './state';
 
 /**
@@ -51,7 +52,7 @@ export function leaveBlocker(
   destinationId: string,
   journey: Journey,
 ): string | null {
-  if (destinationId === ctx.content.startLocationId || rankAtLeast(state, FREE_RANK)) return null;
+  if (destinationId === homeVillageId(state, ctx) || rankAtLeast(state, FREE_RANK)) return null;
   if (onOrders(state, ctx, destinationId)) return null;
   if (rankAtLeast(state, 'chunin')) {
     const left = leaveDaysLeft(state);
@@ -76,7 +77,7 @@ export function spendLeave(
   journey: Journey,
 ): GameState {
   const counted =
-    destinationId !== ctx.content.startLocationId &&
+    destinationId !== homeVillageId(state, ctx) &&
     !onOrders(state, ctx, destinationId) &&
     rankAtLeast(state, 'chunin') &&
     !rankAtLeast(state, FREE_RANK);

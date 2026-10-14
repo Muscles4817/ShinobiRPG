@@ -368,3 +368,10 @@ migration and a previous-version save test wherever the save shape changes.
     place kind: bought outright, then a second home to sleep and nap in, with no rent; the
     village landlord's lock and rent stay with the home you rent). `housing.owned`, save v38.
     The road there has bandits, so a genin's pass doesn't cover it: it is a chūnin's trip.
+11. **Home village in the save** (this step). A home says which village it is in
+    (`Housing.villageId`, absent for every save so far: the pack's start village), and
+    `homeVillageId` replaces the pack's start wherever the game means _your_ village: being
+    home or visiting, leave, trips and the home-again card, who counts as a villager, the
+    street talk, your Shinobi sheet, and where your generated classmates live. What content
+    means by "the village" (a person or festival with no location) stays the pack's start.
+    A second start village is now content plus a choice at creation (step 14).

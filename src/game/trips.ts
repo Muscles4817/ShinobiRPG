@@ -9,6 +9,7 @@ import type { GameContext } from './context';
 import { log } from './ops';
 import { bondOf, findPerson, isVillager, villagers, whereNow } from './people/cast';
 import { addReport } from './reports';
+import { atHomeVillage, homeVillageId } from './homeVillage';
 import type { GameState } from './state';
 
 /**
@@ -31,9 +32,9 @@ export function companionBlocker(
   personId: string,
 ): string | null {
   const person = findPerson(state, ctx, personId);
-  if (!person || !isVillager(person, ctx) || !COMPANION_ROLES.includes(person.role))
+  if (!person || !isVillager(state, person, ctx) || !COMPANION_ROLES.includes(person.role))
     return 'They can’t come with you.';
-  if (state.locationId !== ctx.content.startLocationId) return 'Friends come along from home.';
+  if (!atHomeVillage(state, ctx)) return 'Friends come along from home.';
   if (state.people.companionId !== null) return 'Someone is already coming with you.';
   if (stageOf(bondOf(state, person.id).points) < COMPANION_STAGE)
     return `You and ${person.name} aren’t close enough for that yet.`;
@@ -59,7 +60,7 @@ export function leaving(
   plan: JourneyPlan,
   companionId: string | null,
 ): GameState {
-  const fromHome = plan.from === ctx.content.startLocationId;
+  const fromHome = plan.from === homeVillageId(state, ctx);
   return {
     ...state,
     leave: fromHome ? { ...state.leave, awaySince: state.time.day } : state.leave,
@@ -69,7 +70,7 @@ export function leaving(
 
 /** Arriving: home again (your companion goes home too), or somewhere new together. */
 export function arriving(state: GameState, ctx: GameContext, plan: JourneyPlan): GameState {
-  if (plan.to === ctx.content.startLocationId) return homeAgain(state, ctx);
+  if (plan.to === homeVillageId(state, ctx)) return homeAgain(state, ctx);
   const friend = state.people.companionId;
   if (friend === null) return state;
   const place = ctx.content.locations.require(plan.to).name;
@@ -94,13 +95,13 @@ function festivalsMissed(state: GameState, ctx: GameContext, since: number): str
   const away = Math.max(0, state.time.day - since - 1);
   const held = Array.from({ length: away }, (_, i) => calendarDay(since + 1 + i));
   return ctx.content.village.festivals
-    .filter((f) => f.locationId === undefined || f.locationId === ctx.content.startLocationId)
+    .filter((f) => (f.locationId ?? ctx.content.startLocationId) === homeVillageId(state, ctx))
     .filter((f) => held.some((d) => d.season === f.season && d.day === f.day))
     .map((f) => f.name);
 }
 
 function newsSince(state: GameState, ctx: GameContext, since: number): HomeNews[] {
-  const home = ctx.content.locations.require(ctx.content.startLocationId);
+  const home = ctx.content.locations.require(homeVillageId(state, ctx));
   const hall = home.places.find((p) => p.kind === 'missions');
   const posted = boardFor(state, ctx).postings.filter(
     (p) =>
@@ -125,7 +126,7 @@ function homeAgain(state: GameState, ctx: GameContext): GameState {
     people: { ...state.people, companionId: null },
   };
   if (since === null) return back;
-  const home = ctx.content.locations.require(ctx.content.startLocationId).name;
+  const home = ctx.content.locations.require(homeVillageId(state, ctx)).name;
   const days = state.time.day - since;
   const parted = friend
     ? log(back, { text: `${friend.name} heads home. “Same again some time.”`, tone: 'info' })

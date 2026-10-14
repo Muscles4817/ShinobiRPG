@@ -8,7 +8,7 @@ import {
 } from './housing';
 
 describe('housing', () => {
-  const home = newTenancy('home', 30, 1);
+  const home = newTenancy({ villageId: 'village', placeId: 'home' }, 30, 1);
 
   it('starts with the first week paid', () => {
     expect(isRentOverdue(home, 7)).toBe(false);
@@ -22,7 +22,7 @@ describe('housing', () => {
   });
 
   it('never charges rent for free lodging', () => {
-    const compound = freeLodging('home', 'The clan compound', 1);
+    const compound = freeLodging({ villageId: 'village', placeId: 'home' }, 'The clan compound', 1);
     expect(isRentOverdue(compound, 100)).toBe(false);
     expect(isRentFree(compound)).toBe(true);
   });
