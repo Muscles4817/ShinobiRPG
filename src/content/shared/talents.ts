@@ -15,7 +15,7 @@ export const TALENTS: readonly TalentDef[] = [
   },
   {
     id: 'prodigy',
-    name: 'Prodigy',
+    name: 'Quick study',
     description: 'Learns everything fast. Pushes too hard, and the body pays for it.',
     statBonuses: { stamina: -2 },
     modifiers: {
@@ -45,6 +45,8 @@ export const TALENTS: readonly TalentDef[] = [
     description: 'More chakra than a jōnin, and very little idea how to steer it.',
     statBonuses: { reserves: 4, chakraControl: -2 },
     modifiers: { growth: { chakraControl: 0.85 } },
+    // Reserves are born: this deep a well keeps deepening long after anyone else's stops.
+    aptitude: { reserves: 1.5 },
   },
   {
     id: 'perfect-control',

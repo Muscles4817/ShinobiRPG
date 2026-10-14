@@ -96,16 +96,16 @@ export function studentProblems(profile: StudentProfile, ctx: GameContext): stri
   const { clan, upbringing } = parts;
   const family = clan.id === CLANLESS ? 'clanless' : 'clan';
   const talent = ctx.content.talents.get(profile.talentId);
-  const neverTakes = STAT_IDS.filter(
-    (id) =>
-      talent?.aptitude?.[id] === 0 && profile.file.gifts[id] && profile.file.gifts[id] !== 'flawed',
+  const fixed = STAT_IDS.filter(
+    (id) => talent?.aptitude?.[id] !== undefined && profile.file.gifts[id] !== undefined,
   );
   return [
     upbringing.family !== family &&
       (family === 'clan'
         ? 'A clan child is raised by the clan.'
         : 'Only clan children are raised by a clan.'),
-    neverTakes.length > 0 && 'Your special note says that art will never take; it can’t be a gift.',
+    fixed.length > 0 &&
+      'Your special note already says how far that stat goes; it can’t be a gift or a flaw too.',
     ...fileProblems(profile.file, profile.standing, earlyTraining(upbringing, clan)),
   ].filter((p): p is string => typeof p === 'string');
 }
