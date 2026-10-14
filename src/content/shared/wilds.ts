@@ -70,3 +70,13 @@ export const RIVER_SPOTS: readonly FishingSpot[] = [
     ],
   },
 ];
+
+/** Around any camp on the road: what a quick look along the verge and the stream turns up. */
+export const CAMP_FINDS: readonly Find[] = [
+  { ingredientId: 'mountain-greens', weight: 3, seasons: ['Spring', 'Summer'] },
+  { ingredientId: 'wild-mushrooms', weight: 3, seasons: ['Summer', 'Autumn'] },
+  { ingredientId: 'chestnuts', weight: 2, seasons: ['Autumn'] },
+  { ingredientId: 'watercress', weight: 2, seasons: ['Spring', 'Autumn', 'Winter'] },
+  { ingredientId: 'river-fish', weight: 2 },
+  { ingredientId: 'wild-ginger', weight: 1, minGrade: 'D' },
+];

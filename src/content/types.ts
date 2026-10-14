@@ -318,6 +318,8 @@ export interface ContentPack {
   readonly ingredients: readonly IngredientDef[];
   readonly recipes: readonly RecipeDef[];
   readonly cookbooks: readonly CookbookDef[];
+  /** What can be foraged around a camp on the road. */
+  readonly campFinds: readonly Find[];
   readonly people: readonly PersonDef[];
   readonly conversations: readonly ConversationDef[];
   /** What templated conversations (`about`) are filled with, per specialty, trait, clan, role. */

@@ -186,6 +186,8 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
               ledger: 'Spotted their lookout the night before.',
             },
           },
+          { kind: 'cook', label: 'Cook for everyone', when: { crew: 'team' } },
+          { kind: 'forage', label: 'Forage near the camp' },
           { kind: 'drill', label: 'Drill by the fire' },
           { kind: 'rest', label: 'Sleep properly' },
         ],

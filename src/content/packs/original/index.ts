@@ -16,7 +16,7 @@ import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
 import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
-import { WILD_INGREDIENTS } from '../../shared/wilds';
+import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
 import { TOROGAKURE_COOKBOOKS, TOROGAKURE_INGREDIENTS } from './kitchen';
 import { TOROGAKURE_RECIPES } from './recipes';
 import { VILLAGE_COOKS } from './villagers';
@@ -91,6 +91,7 @@ export const ORIGINAL_PACK: ContentPack = {
   ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS, ...TOROGAKURE_INGREDIENTS],
   recipes: [...RECIPES, ...TOROGAKURE_RECIPES],
   cookbooks: [...COOKBOOKS, ...TOROGAKURE_COOKBOOKS],
+  campFinds: CAMP_FINDS,
   people: [
     ...VILLAGE_COOKS,
     ...SENSEIS_AND_ELDERS,

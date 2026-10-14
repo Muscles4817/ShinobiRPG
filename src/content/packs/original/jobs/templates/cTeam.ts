@@ -84,6 +84,8 @@ export const C_TEAM_ROAD: readonly MissionTemplate[] = [
               ledger: 'Felt their scout on the ridge the night before.',
             },
           },
+          { kind: 'cook', label: 'Cook for everyone', when: { crew: 'team' } },
+          { kind: 'forage', label: 'Forage near the camp' },
           { kind: 'drill', label: 'Drill by the fire' },
           { kind: 'rest', label: 'Sleep properly' },
         ],
