@@ -42,6 +42,7 @@ import { ROSTER_CONVERSATIONS } from './rosterConversations';
 import { ROSTER_TECHNIQUES } from './rosterTechniques';
 import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
 import { SENSEI_TECHNIQUES } from './senseiTechniques';
+import { RENAMED_TECHNIQUES } from './techniques/renamed';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
 import { VILLAGE } from './village';
@@ -123,4 +124,5 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   village: VILLAGE,
   academyTechniques: ACADEMY_TECHNIQUES,
   disciplineStarters: DISCIPLINE_STARTERS,
+  renamedTechniques: RENAMED_TECHNIQUES,
 }))();

@@ -12,6 +12,9 @@ export const KAKASHI_TEACHER: TeacherProfile = {
     'lightning-blade',
     'lightning-hound',
     'rasengan',
+    'thousand-years-of-death',
+    'great-waterfall',
+    'evil-sealing-method',
   ],
   price: {
     kind: 'favour',
@@ -27,7 +30,6 @@ export const GUY_TEACHER: TeacherProfile = {
     'leaf-whirlwind',
     'dynamic-entry',
     'leaf-hurricane',
-    'thousand-years-of-death',
     'leaf-rising-wind',
     'leaf-strong-whirlwind',
     'gate-of-opening',
@@ -57,9 +59,11 @@ export const KURENAI_TEACHER: TeacherProfile = {
 export const ASUMA_TEACHER: TeacherProfile = {
   quirk: 'patient',
   teaches: [
-    'trench-knife-rush',
     'flying-swallow',
+    'chakra-blade-straight-line',
+    'verdant-mountain-gale',
     'ash-pile-burning',
+    'trench-knife-rush',
     'wind-blade-flurry',
     'seven-swords-dance',
   ],
