@@ -69,7 +69,7 @@ describe('team assignment', () => {
     const formed = act(state, { type: 'chooseSensei', senseiId });
     expect(formed.people.team?.senseiId).toBe(senseiId);
     expect(formed.reports.at(-1)).toMatchObject({ kind: 'team-formed' });
-    expect(activeScene(formed)).toBeNull();
+    expect(activeScene(formed)).toBe('chakra-paper');
     expect(bondsView(formed, ctx).team.map((c) => c.relation)).toEqual([
       'sensei',
       'teammate',

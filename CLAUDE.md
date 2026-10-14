@@ -130,7 +130,11 @@ ui ──► game ──► content ──► systems ──► core
     in them; the **build** (`BuildDef`) is the frame. Quick picks (`archetypes.ts`) fill the file
     as a kind of student and follow later changes until it is edited by hand (`creationDraft.ts`).
     `game/student.ts` turns a file into graduation stats for the player and generated classmates
-    alike. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. Talents
+    alike. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. Chakra
+    **nature is found, not picked** (`game/nature.ts`): read from the seed at creation (a clan's
+    nature most of the time) and hidden (`natureKnown`) until the chakra paper scene that follows
+    team assignment (`testChakraPaper`). Until then it counts in fights only: no study bonus, no
+    nature techniques, no sensei can see it. Talents
     may be one-sided (`TalentDef.aptitude` fixes a stat, 0 = never) or blank. The pacing bench
     (`src/test/pacing/standing.test.ts`) checks the spread and that the dead last can climb.
 13. **People are data, wherever they come from.** Authored people (`PersonDef`) live in the
@@ -140,7 +144,7 @@ ui ──► game ──► content ──► systems ──► core
     Schedules place people at places in the start location by time slot. Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
-    (fight › encounter › mission › conversation › team assignment). Anything that must happen before
+    (fight › encounter › mission › conversation › team assignment › chakra paper). Anything that must happen before
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
     derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`

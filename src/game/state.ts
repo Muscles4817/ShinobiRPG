@@ -131,7 +131,10 @@ export interface Character {
   readonly buildId: string;
   /** Events that moved their natural limits (`breakthroughs.ts`), in the order they came. */
   readonly breakthroughs: readonly Breakthrough[];
+  /** Their chakra nature, born with them (`nature.ts`)… */
   readonly nature: Element;
+  /** …and whether the chakra paper has told them yet. */
+  readonly natureKnown: boolean;
   readonly traitIds: readonly string[];
   /** Null for characters from saves made before talents existed. */
   readonly talentId: string | null;

@@ -105,6 +105,12 @@ function limitPhrase(state: GameState, ctx: GameContext, id: StatId, limit: numb
   return ctx.content.text.aptitude.limits[STAT_KIND[id]][read];
 }
 
+/** Their nature as they know it: named once the chakra paper has shown it. */
+function natureLabel(character: GameState['character']): string {
+  if (!character.natureKnown) return 'Not yet tested';
+  return character.nature.charAt(0).toUpperCase() + character.nature.slice(1);
+}
+
 export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
   const { character } = state;
   const { content } = ctx;
@@ -123,7 +129,7 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
     kekkeiGenkai: clan?.kekkeiGenkai
       ? { name: clan.kekkeiGenkai.name, dormant: clan.kekkeiGenkai.dormant }
       : null,
-    nature: character.nature.charAt(0).toUpperCase() + character.nature.slice(1),
+    nature: natureLabel(character),
     traits: character.traitIds.map((id) => content.traits.get(id)?.name ?? id),
     talent: character.talentId ? (content.talents.get(character.talentId)?.name ?? null) : null,
     standing: STANDING_INFO[character.classStanding].label,

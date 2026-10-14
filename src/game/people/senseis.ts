@@ -4,6 +4,7 @@ import { STAT_INFO } from '@/systems/stats';
 
 import type { GameContext } from '../context';
 
+import { knownNature } from '../nature';
 import type { Character } from '../state';
 
 /**
@@ -22,7 +23,7 @@ export function senseiFit(character: Character, sensei: PersonDef): number {
   if (!profile) return Number.NEGATIVE_INFINITY;
   const grade = GRADE_INFO[character.grades[profile.specialty]].regard;
   const shared = profile.favouredTraits.filter((t) => character.traitIds.includes(t)).length;
-  const nature = profile.nature === character.nature ? NATURE_MATCH : 0;
+  const nature = profile.nature === knownNature(character) ? NATURE_MATCH : 0;
   return grade * GRADE_WEIGHT + shared * SHARED_TRAIT_WEIGHT + nature;
 }
 
@@ -52,7 +53,7 @@ export function fitReasons(character: Character, sensei: PersonDef, ctx: GameCon
   const reasons = [
     (grade === 'A' || grade === 'B') && `Your ${grade} in ${STAT_INFO[profile.specialty].label}`,
     shared.length > 0 && `Likes that you are ${shared.join(' and ').toLowerCase()}`,
-    profile.nature === character.nature && `Shares your ${profile.nature} nature`,
+    profile.nature === knownNature(character) && `Shares your ${profile.nature} nature`,
   ];
   const found = reasons.filter((r): r is string => typeof r === 'string');
   return found.length > 0 ? found : ['Saw something in you nobody else did'];

@@ -19,7 +19,7 @@ import {
 } from '@/systems/profile';
 import { NEW_GENIN } from '@/systems/standing';
 import { checkChance, nothingKnown, STAT_INFO } from '@/systems/stats';
-import { DISCIPLINES, type Discipline, type Element } from '@/systems/techniques';
+import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
 import { fullVitals } from '@/systems/vitals';
 
@@ -32,6 +32,7 @@ import { defaultSettings } from './fightStyle';
 import { withIssuedBlade } from './gear';
 import { NO_PEOPLE } from './people/state';
 import type { GameState } from './state';
+import { bornNature } from './nature';
 import { BASE_STAT, graduationStats, studentProblems, type StudentProfile } from './student';
 
 /**
@@ -60,7 +61,6 @@ export interface CreationDraft {
   readonly file: AcademyFile;
   /** The kind of student the file was filled for, or null when it was written by hand. */
   readonly quickPick: QuickPick | null;
-  readonly nature: Element;
   readonly traitIds: readonly string[];
   readonly talentId: string;
   readonly nindoId: string;
@@ -181,7 +181,8 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       upbringingId: draft.upbringingId,
       buildId: draft.buildId,
       breakthroughs: [],
-      nature: draft.nature,
+      nature: bornNature(seed, clan),
+      natureKnown: false,
       traitIds: draft.traitIds,
       talentId: talent.id,
       nindoId: draft.nindoId,

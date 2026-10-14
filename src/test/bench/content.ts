@@ -17,10 +17,17 @@ import { STALEMATE_EXCHANGES } from './runner';
  * specialise), and that is where balance breaks first.
  */
 
-/** A new game whose character is a steady student of `specialty` in the middle of the class, team formed. */
+/** The nature every bench character has, so the bench measures plans and not the paper's roll. */
+const BENCH_NATURE = 'fire';
+
+/**
+ * A new game whose character is a steady student of `specialty` in the middle of the class,
+ * team formed, with the bench's nature.
+ */
 export function freshCharacter(specialty: Discipline, talentId = 'sensor'): GameState {
   const quickPick = { archetype: 'steady', specialty } as const;
-  return formTeam(createNewGame({ draft: draft({ quickPick, talentId }), seed: 1234 }, ctx));
+  const game = createNewGame({ draft: draft({ quickPick, talentId }), seed: 1234 }, ctx);
+  return formTeam({ ...game, character: { ...game.character, nature: BENCH_NATURE } });
 }
 
 /** A genin of the cast (authored or generated) as a sparring opponent. */

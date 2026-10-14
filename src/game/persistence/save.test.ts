@@ -311,6 +311,15 @@ describe('persistence', () => {
     expect(loaded.value.cooking.known).toEqual(game.cooking.known);
   });
 
+  it('lets a character from before chakra paper keep the nature they chose, known', () => {
+    const game = newGame();
+    const { natureKnown: _n, ...character } = game.character;
+    const loaded = deserialize(JSON.stringify({ version: 35, state: { ...game, character } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.character.natureKnown).toBe(true);
+    expect(loaded.value.character.nature).toBe(game.character.nature);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

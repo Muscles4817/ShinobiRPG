@@ -19,6 +19,7 @@ import {
 import type { GameContext } from './context';
 import { equippedIn } from './gear';
 import { chip, log } from './ops';
+import { knownNature } from './nature';
 import { characterModifiers } from './profile';
 import type { Character, GameState } from './state';
 
@@ -35,7 +36,7 @@ export function learnerOf(state: GameState, ctx: GameContext): Learner {
   return {
     stats: character.stats,
     clanId: character.clanId,
-    nature: character.nature,
+    nature: knownNature(character),
     held: held?.kind === 'weapon' ? held.shape : null,
   };
 }

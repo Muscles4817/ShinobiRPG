@@ -20,7 +20,7 @@ import { Notice } from '../../components/Notice';
 import { randomSeed } from '../../randomSeed';
 import { BreakInStep } from './BreakInStep';
 import { CaughtStep } from './CaughtStep';
-import { NatureStep, NindoStep, TalentStep, TraitsStep } from './ChoiceSteps';
+import { NindoStep, TalentStep, TraitsStep } from './ChoiceSteps';
 import { FileStep } from './FileStep';
 import { BuildStep, UpbringingStep } from './FrameSteps';
 import { RecordStep } from './RecordStep';
@@ -36,7 +36,6 @@ type StepId =
   | 'upbringing'
   | 'build'
   | 'file'
-  | 'nature'
   | 'traits'
   | 'talent'
   | 'nindo'
@@ -50,7 +49,6 @@ const TITLES: Readonly<Record<StepId, string>> = {
   upbringing: 'Family history',
   build: 'Medical record',
   file: 'Training record',
-  nature: 'Chakra assessment',
   traits: 'Instructor’s notes',
   talent: 'Special notes',
   nindo: 'Application essay',
@@ -76,7 +74,6 @@ const BLOCKERS: Readonly<Record<StepId, (input: BlockerInput) => string | null>>
   upbringing: NO_BLOCKER,
   build: NO_BLOCKER,
   file: ({ fileProblems }) => fileProblems[0] ?? null,
-  nature: NO_BLOCKER,
   traits: ({ draft }) => (draft.traitIds.length < 2 ? 'Choose two traits.' : null),
   talent: NO_BLOCKER,
   nindo: NO_BLOCKER,
@@ -133,8 +130,6 @@ function StepBody({
       return <BuildStep {...props} />;
     case 'file':
       return <FileStep {...props} ctx={ctx} setDraft={setDraft} />;
-    case 'nature':
-      return <NatureStep {...props} />;
     case 'traits':
       return <TraitsStep {...props} />;
     case 'talent':
@@ -161,7 +156,6 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
     'upbringing',
     'build',
     'file',
-    'nature',
     'traits',
     'talent',
     'nindo',
