@@ -1,4 +1,5 @@
 import type { PlaceDef } from '../../types';
+import { TRAVELLING_STALLS } from './regions/merchants';
 
 /** Tōrōgakure's market: noodles, the grill, a tea shop, the seasonal cart and the grocer. */
 export const MARKET_STREET: PlaceDef = {
@@ -88,5 +89,6 @@ export const MARKET_STREET: PlaceDef = {
         'lantern-village-kitchen',
       ],
     },
+    ...TRAVELLING_STALLS,
   ],
 };

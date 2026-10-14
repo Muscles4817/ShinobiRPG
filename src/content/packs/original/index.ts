@@ -19,6 +19,8 @@ import { RECIPES } from '../../shared/recipes';
 import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
 import { TOROGAKURE_COOKBOOKS, TOROGAKURE_INGREDIENTS } from './kitchen';
 import { TOROGAKURE_RECIPES } from './recipes';
+import { REGIONAL_COOKBOOKS, REGIONAL_INGREDIENTS } from './regions/merchants';
+import { REGIONAL_RECIPES } from './regions/recipes';
 import { VILLAGE_COOKS } from './villagers';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
@@ -88,9 +90,14 @@ export const ORIGINAL_PACK: ContentPack = {
   gear: GEAR,
   tools: TOOLS,
   injuries: INJURIES,
-  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS, ...TOROGAKURE_INGREDIENTS],
-  recipes: [...RECIPES, ...TOROGAKURE_RECIPES],
-  cookbooks: [...COOKBOOKS, ...TOROGAKURE_COOKBOOKS],
+  ingredients: [
+    ...INGREDIENTS,
+    ...WILD_INGREDIENTS,
+    ...TOROGAKURE_INGREDIENTS,
+    ...REGIONAL_INGREDIENTS,
+  ],
+  recipes: [...RECIPES, ...TOROGAKURE_RECIPES, ...REGIONAL_RECIPES],
+  cookbooks: [...COOKBOOKS, ...TOROGAKURE_COOKBOOKS, ...REGIONAL_COOKBOOKS],
   campFinds: CAMP_FINDS,
   people: [
     ...VILLAGE_COOKS,
