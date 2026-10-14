@@ -55,7 +55,7 @@ describe('route validation', () => {
     const pack = {
       ...ORIGINAL_PACK,
       missions: ORIGINAL_PACK.missions.map((m) =>
-        m.id === 'arc-salt-letter' ? { ...m, endsAt: 'kiri-ford' } : m,
+        m.id === 'arc-salt-letter' ? { ...m, endsAt: 'sakyugakure' } : m,
       ),
     };
     expect(validateContent(pack)).toEqual(

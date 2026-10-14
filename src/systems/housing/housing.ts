@@ -1,5 +1,5 @@
 /**
- * Where the character lives and whether the rent is paid. Rent is paid a week at a time;
+ * Where the character lives, whether the rent is paid, and the houses they own elsewhere. Rent is paid a week at a time;
  * once the paid-through day has passed, the landlord locks the door until you pay.
  */
 export const DAYS_PER_RENT_PERIOD = 7;
@@ -12,16 +12,18 @@ export interface Housing {
   readonly paidThroughDay: number;
   /** Where you actually live, when it isn't the home place's own lodging (e.g. a clan compound). */
   readonly lodging?: string;
+  /** Houses you own elsewhere (place ids): bought outright, no rent. */
+  readonly owned: readonly string[];
 }
 
 export function newTenancy(placeId: string, rentPerWeek: number, today: number): Housing {
   // The first week comes paid as part of graduating.
-  return { placeId, rentPerWeek, paidThroughDay: today + DAYS_PER_RENT_PERIOD - 1 };
+  return { placeId, rentPerWeek, paidThroughDay: today + DAYS_PER_RENT_PERIOD - 1, owned: [] };
 }
 
 /** Rent-free lodging, such as a room in your clan's compound. */
 export function freeLodging(placeId: string, lodging: string, today: number): Housing {
-  return { placeId, rentPerWeek: 0, paidThroughDay: today, lodging };
+  return { placeId, rentPerWeek: 0, paidThroughDay: today, lodging, owned: [] };
 }
 
 export function isRentFree(housing: Housing): boolean {
@@ -39,4 +41,13 @@ export function daysOfRentLeft(housing: Housing, today: number): number {
 
 export function payWeek(housing: Housing): Housing {
   return { ...housing, paidThroughDay: housing.paidThroughDay + DAYS_PER_RENT_PERIOD };
+}
+
+export function ownsHouse(housing: Housing, placeId: string): boolean {
+  return housing.owned.includes(placeId);
+}
+
+/** A house bought: it is yours from now on. */
+export function buyHouse(housing: Housing, placeId: string): Housing {
+  return ownsHouse(housing, placeId) ? housing : { ...housing, owned: [...housing.owned, placeId] };
 }

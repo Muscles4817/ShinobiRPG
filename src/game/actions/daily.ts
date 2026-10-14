@@ -1,4 +1,4 @@
-import { isRentOverdue } from '@/systems/housing';
+import { isRentOverdue, ownsHouse } from '@/systems/housing';
 import { diffStats, type StatDelta, type StatId } from '@/systems/stats';
 import { slotsUntilNextMorning } from '@/systems/time';
 import { isHungry, maxChakra, METER_MAX, sleepRecovery, type VitalsDelta } from '@/systems/vitals';
@@ -42,11 +42,22 @@ function foodStall(state: GameState, ctx: GameContext, foodId: string) {
   return stalls.find((s) => isOpen(s.hours, state)) ?? stalls[0];
 }
 
-/** Why the character can't use their home right now, or null. */
+/** Whether you are at the home you rent (where the rent, and the landlord, are). */
+export function atRentedHome(state: GameState, ctx: GameContext): boolean {
+  return placeHere(state, ctx, 'home')?.id === state.housing.placeId;
+}
+
+/** Why the character can't use a home here (the one they rent, or a house they own), or null. */
 export function homeBlocker(state: GameState, ctx: GameContext): string | null {
-  const home = placeHere(state, ctx, 'home');
-  if (home?.id !== state.housing.placeId) return 'Your home is not in this village.';
-  return null;
+  if (atRentedHome(state, ctx)) return null;
+  const house = placeHere(state, ctx, 'house');
+  if (house && ownsHouse(state.housing, house.id)) return null;
+  return 'Your home is not in this village.';
+}
+
+/** Locked out of the home you rent: only there, and only while the rent is overdue. */
+function lockedOut(state: GameState, ctx: GameContext): boolean {
+  return atRentedHome(state, ctx) && isRentOverdue(state.housing, state.time.day);
 }
 
 /** The stat a drill is mainly for: its largest gain. */
@@ -135,7 +146,7 @@ export const rest: ActionHandler<ActionOf<'rest'>> = {
     return firstBlocker(
       busyReason(state),
       homeBlocker(state, ctx),
-      isRentOverdue(state.housing, state.time.day) && 'The door is locked until you pay rent.',
+      lockedOut(state, ctx) && 'The door is locked until you pay rent.',
       state.character.vitals.energy >= METER_MAX && 'You are not tired.',
     );
   },
@@ -155,13 +166,13 @@ export const sleep: ActionHandler<ActionOf<'sleep'>> = {
   },
   perform(state, _action, ctx) {
     const { text } = ctx.content;
-    const lockedOut = isRentOverdue(state.housing, state.time.day);
+    const locked = lockedOut(state, ctx);
     const hungry = isHungry(state.character.vitals);
-    const story = lockedOut ? text.sleepLockedOut : hungry ? text.sleepHungry : text.sleepWell;
+    const story = locked ? text.sleepLockedOut : hungry ? text.sleepHungry : text.sleepWell;
     const next = sleepTillDawn(state, ctx, {
-      healthShare: lockedOut ? LOCKED_OUT_RECOVERY : 1,
+      healthShare: locked ? LOCKED_OUT_RECOVERY : 1,
       text: story,
-      uneasy: lockedOut || hungry,
+      uneasy: locked || hungry,
     });
     return rentReminder(state, next);
   },

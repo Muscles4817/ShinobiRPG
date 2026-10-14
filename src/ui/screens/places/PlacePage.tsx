@@ -4,6 +4,7 @@ import type { PlaceProps } from '../types';
 import { AcademyPage } from './AcademyPage';
 import { GearShopPage } from './GearShopPage';
 import { HomePage, HospitalPage } from './HomePages';
+import { HousePage } from './HousePage';
 import { InnPage } from './InnPage';
 import { LibraryPage } from './LibraryPage';
 import { MarketPage } from './MarketPage';
@@ -40,6 +41,8 @@ export function PlacePage({ kind, placeId, ...props }: PlacePageProps) {
       return <TavernPage {...props} />;
     case 'inn':
       return <InnPage {...props} />;
+    case 'house':
+      return <HousePage {...props} />;
     case 'wilds':
       return <WildsPage {...props} placeId={placeId} />;
   }

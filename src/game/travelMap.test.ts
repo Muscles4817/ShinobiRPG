@@ -13,7 +13,7 @@ describe('the travel map', () => {
     expect(map).toMatchObject(MAP_SIZE);
     expect(map.places).toHaveLength(original.locations.length);
     expect(map.places.find((p) => p.here)?.id).toBe('torogakure');
-    expect(map.places.find((p) => p.id === 'kiri-ford')?.locked).toBe(true);
+    expect(map.places.find((p) => p.id === 'sakyugakure')?.locked).toBe(true);
     expect(map.places.find((p) => p.id === 'port-shiomachi')?.locked).toBe(false);
   });
 

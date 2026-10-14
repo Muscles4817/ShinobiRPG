@@ -6,5 +6,7 @@ export {
   isRentOverdue,
   daysOfRentLeft,
   payWeek,
+  ownsHouse,
+  buyHouse,
   type Housing,
 } from './housing';

@@ -21,6 +21,8 @@ export type GameAction =
   | { readonly type: 'sleep' }
   /** A night at the inn here. */
   | { readonly type: 'takeRoom' }
+  /** Buy the house for sale here. */
+  | { readonly type: 'buyHouse' }
   | { readonly type: 'payRent' }
   | { readonly type: 'treat' }
   /**

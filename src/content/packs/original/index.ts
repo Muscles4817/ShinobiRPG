@@ -59,6 +59,7 @@ import {
   SHIOMACHI_TRAINING,
   TIDEWIRE_TECHNIQUES,
 } from './shiomachi';
+import { KIRI_FORD_FOODS, KIRI_FORD_JOBS } from './kiriFord';
 
 /** The game's own setting: Tōrōgakure in the Land of Embers. Safe to ship publicly. */
 export const ORIGINAL_PACK: ContentPack = {
@@ -82,6 +83,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...MISSIONS,
     ...LANTERN_THIEF_JOBS,
     ...SALT_LANTERNS_JOBS,
+    ...KIRI_FORD_JOBS,
     ...TEAM_MISSIONS,
     ...CHUNIN_MISSIONS,
     ...TEMPLATE_MISSIONS,
@@ -95,7 +97,7 @@ export const ORIGINAL_PACK: ContentPack = {
   voices: VOICES,
   enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...JOB_ENEMIES, ...EXAM_ENEMIES],
   training: [...TRAINING, ...SHIOMACHI_TRAINING],
-  foods: [...FOODS, ...SEASONAL_FOODS, ...SHIOMACHI_FOODS],
+  foods: [...FOODS, ...SEASONAL_FOODS, ...SHIOMACHI_FOODS, ...KIRI_FORD_FOODS],
   clans: CLANS,
   builds: BUILDS,
   upbringings: UPBRINGINGS,
