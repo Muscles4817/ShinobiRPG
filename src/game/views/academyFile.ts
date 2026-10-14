@@ -1,6 +1,4 @@
 import {
-  ARCHETYPE_IDS,
-  archetypeOffered,
   BLOOMS,
   BLOOM_POINTS,
   FLAW_REFUND,
@@ -10,7 +8,6 @@ import {
   STANDING_INFO,
   stepsIn,
   topDisciplines,
-  type ArchetypeId,
   type Bloom,
   type FileBalance,
   type Gift,
@@ -33,7 +30,8 @@ import type { GameContext } from '../context';
 import type { CreationDraft } from '../creation';
 import { canRaise } from '../creationDraft';
 import { profileOf } from '../creation';
-import { earlyTraining, graduationStats, studentOf } from '../student';
+import { earlyTraining, graduationStats } from '../student';
+import { quickPickOptions, type QuickPickOption } from './quickPicks';
 
 /**
  * The academy file page: every stat as it will graduate, what training it has had, any gift or
@@ -73,8 +71,8 @@ export interface FileView {
   readonly problems: readonly string[];
   /** Fighting grade at graduation, as the Shinobi screen will show it. */
   readonly fighting: { readonly grade: StatGrade; readonly power: number };
-  /** The quick picks this student may take, and the one the file follows (if any). */
-  readonly archetypes: readonly { readonly id: ArchetypeId; readonly offered: boolean }[];
+  /** The quick picks this student may take, each with what it would give them. */
+  readonly archetypes: readonly QuickPickOption[];
   readonly blooms: readonly BloomOption[];
   /** The report card it reads as, and which arts bring their starter technique. */
   readonly reportCard: readonly {
@@ -141,7 +139,6 @@ export function fileView(draft: CreationDraft, ctx: GameContext): FileView {
     };
   };
   const groups: StatGroup[] = ['body', 'mind', 'discipline'];
-  const student = upbringing && clan ? studentOf(draft, ctx) : null;
   const card = gradesFor(stats);
   return {
     groups: groups.map((group) => ({
@@ -154,10 +151,7 @@ export function fileView(draft: CreationDraft, ctx: GameContext): FileView {
       grade: statTier(fightingPower(stats)).grade,
       power: Math.floor(fightingPower(stats) * 10) / 10,
     },
-    archetypes: ARCHETYPE_IDS.map((id) => ({
-      id,
-      offered: student !== null && archetypeOffered(id, student),
-    })),
+    archetypes: quickPickOptions(draft, ctx),
     blooms: BLOOMS.map((id) => ({ id, ...BLOOM_TEXT[id], selected: draft.file.bloom === id })),
     reportCard: DISCIPLINES.map((d) => ({
       discipline: d,
