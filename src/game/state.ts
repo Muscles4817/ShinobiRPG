@@ -7,7 +7,7 @@ import type { Journal } from '@/systems/journal';
 import type { Appearance, ClassStanding, Grades, Pronouns } from '@/systems/profile';
 import type { MissionRun } from '@/systems/missions';
 import type { Standing } from '@/systems/standing';
-import type { Aptitude, AptitudeKnown, StatId, Stats } from '@/systems/stats';
+import type { Aptitude, AptitudeKnown, StatDelta, StatId, Stats } from '@/systems/stats';
 import type { Element, TechniqueBook } from '@/systems/techniques';
 import type { GameTime } from '@/systems/time';
 import type { Vitals } from '@/systems/vitals';
@@ -100,6 +100,13 @@ export interface Settings {
   readonly animations: boolean;
 }
 
+/** An event that moved natural limits: where it came from, and how far each limit moved. */
+export interface Breakthrough {
+  /** What it was, unique per character (e.g. "promotion:chunin"). */
+  readonly source: string;
+  readonly limits: StatDelta;
+}
+
 export interface Character {
   readonly name: string;
   /** Family name; for clan members, the clan's name. */
@@ -115,6 +122,8 @@ export interface Character {
   readonly upbringingId: string;
   /** Their frame (`BuildDef`): how far strength and speed can go, and what bulk costs. */
   readonly buildId: string;
+  /** Events that moved their natural limits (`breakthroughs.ts`), in the order they came. */
+  readonly breakthroughs: readonly Breakthrough[];
   readonly nature: Element;
   readonly traitIds: readonly string[];
   /** Null for characters from saves made before talents existed. */

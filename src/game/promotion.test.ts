@@ -1,9 +1,16 @@
 import { examDay, scriptedCtx } from '@/test/examFixtures';
-import { act, ctx } from '@/test/gameFixtures';
+import { act, ctx, lastEntry } from '@/test/gameFixtures';
 
 import { availability } from './board';
 import { blockerFor } from './dispatch';
-import { JONIN_REPUTATION, JONIN_SENIOR_MISSIONS, joninGap } from './exam/promotion';
+import { withBreakthrough } from './breakthroughs';
+import {
+  JONIN_REPUTATION,
+  JONIN_SENIOR_MISSIONS,
+  joninGap,
+  PROMOTION_LIMITS,
+} from './exam/promotion';
+import { naturalLimits } from './profile';
 import type { GameState } from './state';
 import { activeScene } from './views/peopleScenes';
 import { promotionScene } from './views/promotion';
@@ -59,6 +66,21 @@ describe('the chūnin ceremony', () => {
       board: { ...after.board, postings: [{ missionId: job.id, postedDay: 1, expiresDay: 9999 }] },
     };
     expect(availability(posted, ctx, job).kind).toBe('posted');
+  });
+
+  it('deepens your reserves: a breakthrough that moves the limit, once', () => {
+    const before = promoted();
+    const after = act(before, { type: 'acceptPromotion' });
+    expect(after.character.breakthroughs).toEqual([
+      { source: 'promotion:chunin', limits: PROMOTION_LIMITS.chunin },
+    ]);
+    const reserves = (s: GameState) => naturalLimits(s.character, ctx).reserves;
+    expect(reserves(after)).toBe(reserves(before) + (PROMOTION_LIMITS.chunin.reserves ?? 0));
+    expect(lastEntry(after)?.chips?.map((c) => c.label)).toContain(
+      'Chakra Reserves can go further',
+    );
+    const twice = withBreakthrough(after.character, after.character.breakthroughs[0]!);
+    expect(twice).toBe(after.character);
   });
 
   it('never posts the exam’s forest', () => {

@@ -12,6 +12,7 @@ import { STANDING_INFO } from '@/systems/profile';
 import { ELEMENTS, type Element } from '@/systems/techniques';
 
 import { withoutGrowth } from './aptitude';
+import { breakthroughSpec } from './breakthroughs';
 import type { GameContext } from './context';
 import { hungerEffect } from './hunger';
 import { injurySpecs } from './injuries';
@@ -54,6 +55,7 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
   return combine([
     content.builds.get(character.buildId)?.modifiers ?? {},
     content.upbringings.get(character.upbringingId)?.modifiers ?? {},
+    breakthroughSpec(character),
     withoutGrowth(clan?.modifiers ?? {}),
     withoutGrowth(talent?.modifiers ?? {}),
     ...traits.map((t) => t.modifiers),
