@@ -101,8 +101,8 @@ export interface PersonDef {
 /**
  * A person's own way of fighting: the techniques they bring to every fight (in place of the
  * academy's and their specialty's starter) and the perks they fight with (a transplanted eye's
- * insight). Arsenal techniques need not be taught anywhere; each fits its owner's grade in its
- * art (validated).
+ * insight). Every technique is one of the pack's, learnable somewhere like any other, and fits
+ * its owner's grade in its art (validated).
  */
 export interface PersonArsenal {
   readonly techniqueIds: readonly string[];

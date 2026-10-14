@@ -1,6 +1,6 @@
 import type { PersonArsenal } from '../../types';
 
-/** How the village's own fight: their canon techniques in place of a generic kit. */
+/** How the village's own fight: their canon techniques (all learnable in the pack) in place of a generic kit. */
 
 /** The Sharingan reads every foe; the rest is what the Copy Ninja fights with in canon. */
 export const KAKASHI_ARSENAL: PersonArsenal = {

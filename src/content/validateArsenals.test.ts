@@ -26,6 +26,17 @@ describe('arsenals', () => {
     );
   });
 
+  it('gives every technique in an arsenal a source of its own', () => {
+    const lost = { ...NARUTO_PACK.techniques.find((t) => t.id === 'lightning-blade')!, id: 'lost' };
+    const people = NARUTO_PACK.people.map((p) =>
+      p.id === 'kakashi' ? { ...p, arsenal: { techniqueIds: ['lost'] } } : p,
+    );
+    const pack = { ...NARUTO_PACK, techniques: [...NARUTO_PACK.techniques, lost], people };
+    expect(validateContent(pack)).toContain(
+      'technique "lost" can\'t be learned anywhere (no shelf, teacher or scroll)',
+    );
+  });
+
   it('keeps clan techniques in the clan', () => {
     expect(withKakashi({ techniqueIds: ['great-fireball'] })).toContain(
       'person "kakashi" fights with "great-fireball" of clan "uchiha"',
