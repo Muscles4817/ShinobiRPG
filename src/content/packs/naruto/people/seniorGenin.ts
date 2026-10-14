@@ -1,6 +1,8 @@
 import { look } from '../../../look';
 import { statLine, talent } from '../../../statLine';
 import type { PersonDef } from '../../../types';
+
+import { LEE_ARSENAL } from './arsenals';
 import { LEE_TEACHER } from '../teachers';
 
 /** The genin of the year above yours, a team a year into its missions. */
@@ -44,6 +46,7 @@ export const SENIOR_GENIN: readonly PersonDef[] = [
       night: null,
     },
     teacher: LEE_TEACHER,
+    arsenal: LEE_ARSENAL,
   },
   {
     id: 'neji',

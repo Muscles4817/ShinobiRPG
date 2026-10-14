@@ -38,6 +38,7 @@ export const GUY_TEACHER: TeacherProfile = {
     'reverse-lotus',
     'morning-peacock',
     'daytime-tiger',
+    'leaf-gale',
   ],
   price: { kind: 'bond', minStage: 1, line: '“Anyone who burns with youth may join me!”' },
 };
@@ -78,6 +79,8 @@ export const ANKO_TEACHER: TeacherProfile = {
     'chakra-absorbing-seal',
     'eight-trigrams-seal',
     'four-symbols-seal',
+    'hidden-shadow-snake-hands',
+    'twin-snakes-mutual-death',
   ],
   price: {
     kind: 'all',
@@ -98,7 +101,7 @@ export const ANKO_TEACHER: TeacherProfile = {
  */
 export const LEE_TEACHER: TeacherProfile = {
   quirk: 'natural',
-  teaches: ['leaf-whirlwind', 'leaf-hurricane', 'leaf-rising-wind', 'front-lotus'],
+  teaches: ['leaf-whirlwind', 'leaf-hurricane', 'leaf-rising-wind', 'front-lotus', 'leaf-gale'],
   price: {
     kind: 'bond',
     minStage: 4,

@@ -2,7 +2,7 @@ import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
-import { ASUMA_ARSENAL, KAKASHI_ARSENAL } from './arsenals';
+import { ANKO_ARSENAL, ASUMA_ARSENAL, GUY_ARSENAL, KAKASHI_ARSENAL } from './arsenals';
 import {
   ANKO_TEACHER,
   ASUMA_TEACHER,
@@ -96,6 +96,7 @@ export const SENSEIS: readonly PersonDef[] = [
         'Guy has you running laps on your hands before breakfast. He does twice as many, cheering.',
     },
     teacher: GUY_TEACHER,
+    arsenal: GUY_ARSENAL,
   },
   {
     id: 'kurenai',
@@ -197,5 +198,6 @@ export const SENSEIS: readonly PersonDef[] = [
         'Anko chases you through the training forest with snakes until your seals come out clean.',
     },
     teacher: ANKO_TEACHER,
+    arsenal: ANKO_ARSENAL,
   },
 ];

@@ -44,6 +44,7 @@ import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM 
 import { SENSEI_TECHNIQUES } from './senseiTechniques';
 import { RENAMED_TECHNIQUES } from './techniques/renamed';
 import { TECHNIQUES } from './techniques';
+import { CANON_TECHNIQUES } from './techniques/canon';
 import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
@@ -72,6 +73,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...SENSEI_TECHNIQUES,
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
+    ...CANON_TECHNIQUES,
   ],
   missions: [
     ...MISSIONS,
