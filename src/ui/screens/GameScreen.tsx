@@ -1,6 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { activeScene, hubView, type GameContext, type GameState, type SceneKind } from '@/game';
+import {
+  activeScene,
+  hubView,
+  reportSound,
+  type GameContext,
+  type GameState,
+  type SceneKind,
+} from '@/game';
+
+import { useSound } from '../audio/SoundProvider';
 
 import { CueLayer } from '../components/CueLayer';
 import { Dock, type DockTab } from '../components/Dock';
@@ -18,6 +27,7 @@ import { EncounterScene } from './scenes/EncounterScene';
 import { ExamScene } from './scenes/ExamScene';
 import { MissionScene } from './scenes/MissionScene';
 import { PromotionScene } from './scenes/PromotionScene';
+import { SettingsScreen } from './settings/SettingsScreen';
 import { ChakraPaperScene } from './scenes/ChakraPaperScene';
 import { SenseiTestScene } from './scenes/SenseiTestScene';
 import { TeamScene } from './scenes/TeamScene';
@@ -37,6 +47,8 @@ interface GameScreenProps {
 interface Nav {
   readonly tab: DockTab;
   readonly placeId: string | null;
+  /** The settings page, opened from the Shinobi tab. */
+  readonly settings?: boolean;
 }
 
 interface TabContentProps extends ScreenProps {
@@ -48,9 +60,21 @@ interface TabContentProps extends ScreenProps {
 }
 
 function TabContent({ nav, setNav, onAbandon, onMenu, onOpenPerson, ...props }: TabContentProps) {
+  const { play } = useSound();
   const openPlace = (placeId: string) => {
+    play('page');
     setNav({ tab: 'here', placeId });
   };
+  if (nav.settings) {
+    return (
+      <SettingsScreen
+        game={props}
+        onBack={() => {
+          setNav({ ...nav, settings: false });
+        }}
+      />
+    );
+  }
   switch (nav.tab) {
     case 'here': {
       const place = nav.placeId
@@ -83,7 +107,17 @@ function TabContent({ nav, setNav, onAbandon, onMenu, onOpenPerson, ...props }: 
     case 'bonds':
       return <BondsScreen {...props} onOpenPerson={onOpenPerson} />;
     case 'shinobi':
-      return <ShinobiScreen {...props} onAbandon={onAbandon} onMenu={onMenu} />;
+      return (
+        <ShinobiScreen
+          {...props}
+          onAbandon={onAbandon}
+          onMenu={onMenu}
+          onSettings={() => {
+            play('page');
+            setNav({ ...nav, settings: true });
+          }}
+        />
+      );
     case 'record':
       return <RecordScreen {...props} />;
   }
@@ -123,6 +157,11 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   const props: ScreenProps = { ctx, state, perform: session.perform };
   const report = state.reports[0];
   const scene = activeScene(state);
+  const showReport = report && !state.combatFinale ? report : null;
+  const { play } = useSound();
+  useEffect(() => {
+    if (showReport) play(reportSound(showReport));
+  }, [showReport, play]);
 
   return (
     <div className="app" data-motion={state.settings.animations ? 'on' : 'off'}>
@@ -159,9 +198,9 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
       {session.cue && state.settings.animations && (
         <CueLayer cue={session.cue} onDone={session.clearCue} />
       )}
-      {report && !state.combatFinale && (
+      {showReport && (
         <ReportCard
-          report={report}
+          report={showReport}
           onContinue={() => {
             session.perform({ type: 'dismissReport' });
           }}

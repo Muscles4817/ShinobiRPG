@@ -5,7 +5,6 @@ import { headerView, shinobiView } from '@/game';
 import { Portrait } from '../art/Portrait';
 import { ConditionPanel } from './Condition';
 import { Cookbook } from './Cookbook';
-import { SettingsPanel } from './SettingsPanel';
 import { FightStylePicker } from './FightStylePicker';
 import { StatSheet } from './StatSheet';
 import type { ScreenProps } from './types';
@@ -48,7 +47,12 @@ export function ShinobiScreen({
   perform,
   onAbandon,
   onMenu,
-}: ScreenProps & { readonly onAbandon: () => void; readonly onMenu: () => void }) {
+  onSettings,
+}: ScreenProps & {
+  readonly onAbandon: () => void;
+  readonly onMenu: () => void;
+  readonly onSettings: () => void;
+}) {
   const view = shinobiView(state, ctx);
   const header = headerView(state, ctx);
   return (
@@ -127,7 +131,15 @@ export function ShinobiScreen({
       <StatSheet view={view} />
       <Cookbook ctx={ctx} state={state} />
       <FightStylePicker ctx={ctx} state={state} perform={perform} />
-      <SettingsPanel ctx={ctx} state={state} perform={perform} />
+      <button type="button" className="menu-option" onClick={onSettings}>
+        <span className="menu-glyph" aria-hidden="true">
+          設
+        </span>
+        <span className="menu-words">
+          <b>Settings</b>
+          <small>Sound and music, animations, and how the map is inked.</small>
+        </span>
+      </button>
       <p className="muted small">
         {header.location}, {header.date}
       </p>
