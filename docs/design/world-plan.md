@@ -383,3 +383,16 @@ migration and a previous-version save test wherever the save shape changes.
     street talk, your Shinobi sheet, and where your generated classmates live. What content
     means by "the village" (a person or festival with no location) stays the pack's start.
     A second start village is now content plus a choice at creation (step 14).
+
+Step 12 (Mount Reikon) waits on milestone 3's spirits.
+
+13. **The fan pack's towns** (this step). Two destinations, written to the setting. The
+    **Land of Waves**, under the shipping tycoon's thumb: a room at Tazuna's house (Tsunami
+    keeps it), a waterfront market with more shutters than stalls, three jobs at the bridge
+    site, the unfinished bridge to practise water-walking on, and the forest behind the house
+    for tree-walking, where the canon learned it. Tazuna, Tsunami and Inari live there. Its
+    road has the tycoon's hired men on it, so a genin gets there on a job or with a crew, not
+    on a pass. **Tanzaku Town**, two days down a safe road: the gamblers' castle town, with an
+    inn, a festival street, a dice bar where Okichi deals, the constables' three jobs and a
+    townhouse for sale. This is where a genin with a pass goes first. The Mist, the Sand and
+    Mount Myōboku stay locked.

@@ -1,0 +1,96 @@
+import { allDay, look } from '../../../look';
+import { statLine } from '../../../statLine';
+import type { PersonDef } from '../../../types';
+
+/** The bridge builder's family: they live in the Land of Waves and are met only there. */
+export const WAVES_PEOPLE: readonly PersonDef[] = [
+  {
+    id: 'tazuna',
+    name: 'Tazuna',
+    familyName: '',
+    homeLocationId: 'land-of-waves',
+    role: 'villager',
+    title: 'Bridge builder',
+    rank: 'civilian',
+    stats: statLine(4, {
+      strength: 9,
+      stamina: 8,
+      intellect: 9,
+      taijutsu: 1,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 0,
+      fuuinjutsu: 0,
+    }),
+    traitIds: ['proud', 'brash'],
+    appearance: look(
+      'short',
+      { hair: '#9a9a9a', eyes: '#2a1d14', skin: '#c68e63', outfit: '#6a7a4a' },
+      'arm',
+    ),
+    bio: 'Drinks too much and lies about it, and is building a bridge to save his country anyway.',
+    schedule: {
+      morning: 'bridge-site',
+      afternoon: 'great-bridge',
+      evening: 'tazunas-house',
+      night: 'tazunas-house',
+    },
+  },
+  {
+    id: 'tsunami',
+    name: 'Tsunami',
+    familyName: '',
+    homeLocationId: 'land-of-waves',
+    role: 'villager',
+    title: 'Tazuna’s daughter',
+    rank: 'civilian',
+    stats: statLine(3, {
+      willpower: 10,
+      perception: 7,
+      taijutsu: 0,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 0,
+      fuuinjutsu: 0,
+    }),
+    traitIds: ['kind', 'diligent'],
+    favouriteRecipeId: 'grilled-fish-set',
+    appearance: look(
+      'long',
+      { hair: '#1a1a2a', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#d8c8a8' },
+      'arm',
+    ),
+    bio: 'Keeps the house, the boy and her father standing. Has stopped asking the tycoon’s men to leave.',
+    schedule: allDay('tazunas-house'),
+  },
+  {
+    id: 'inari',
+    name: 'Inari',
+    familyName: '',
+    homeLocationId: 'land-of-waves',
+    role: 'villager',
+    title: 'Tsunami’s son',
+    rank: 'civilian',
+    stats: statLine(2, {
+      willpower: 4,
+      taijutsu: 0,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 0,
+      fuuinjutsu: 0,
+    }),
+    traitIds: ['proud', 'curious'],
+    appearance: look(
+      'short',
+      { hair: '#1a1a2a', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3a5a7a' },
+      'arm',
+    ),
+    bio: 'Wears a fisherman’s hat too big for him and says heroes are fools. He watches the bridge every day.',
+    schedule: {
+      morning: 'waves-market',
+      afternoon: 'great-bridge',
+      evening: 'tazunas-house',
+      night: null,
+    },
+  },
+];
