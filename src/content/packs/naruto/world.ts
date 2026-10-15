@@ -8,6 +8,9 @@ import { ACADEMY_SHELF, ARCHIVE_SHELF } from './shelves';
 import { KONOHA_WILDS } from './wilds';
 import { LAND_OF_WAVES } from './landOfWaves';
 import { TANZAKU_TOWN } from './tanzaku';
+import { SHUKUBA_TOWN } from './shukuba';
+import { OTAFUKU_TOWN } from './otafuku';
+import { FIRE_TEMPLE } from './fireTemple';
 
 export const NARUTO_TEXT: SettingText = {
   nation: 'the Land of Fire',
@@ -193,6 +196,9 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
   },
   LAND_OF_WAVES,
   TANZAKU_TOWN,
+  SHUKUBA_TOWN,
+  OTAFUKU_TOWN,
+  FIRE_TEMPLE,
   {
     id: 'mount-myoboku',
     name: 'Mount Myōboku',

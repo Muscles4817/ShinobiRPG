@@ -16,6 +16,8 @@ const FAN_MARKERS = [
   'Forest of Death',
   'Tazuna',
   'Tanzaku',
+  'Chiriku',
+  'Otafuku',
 ];
 
 function files(dir) {

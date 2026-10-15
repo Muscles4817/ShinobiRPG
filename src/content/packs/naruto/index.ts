@@ -58,6 +58,14 @@ import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
 import { NARUTO_ROUTES } from './routes';
 import { WAVES_FOODS, WAVES_JOBS, WAVES_PEOPLE, WAVES_TRAINING } from './landOfWaves';
 import { TANZAKU_FOODS, TANZAKU_JOBS, TANZAKU_PEOPLE } from './tanzaku';
+import { SHUKUBA_FOODS, SHUKUBA_JOBS } from './shukuba';
+import { OTAFUKU_FOODS, OTAFUKU_JOBS, OTAFUKU_PEOPLE } from './otafuku';
+import {
+  FIRE_TEMPLE_FOODS,
+  FIRE_TEMPLE_JOBS,
+  FIRE_TEMPLE_PEOPLE,
+  FIRE_TEMPLE_TRAINING,
+} from './fireTemple';
 
 /**
  * Fan setting using Naruto names, for personal play only. Never ship it in a public
@@ -94,6 +102,9 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...EXAM_MISSIONS,
     ...WAVES_JOBS,
     ...TANZAKU_JOBS,
+    ...SHUKUBA_JOBS,
+    ...OTAFUKU_JOBS,
+    ...FIRE_TEMPLE_JOBS,
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
@@ -101,8 +112,16 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   arcs: [],
   voices: VOICES,
   enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...EXAM_ENEMIES],
-  training: [...TRAINING, ...WAVES_TRAINING],
-  foods: [...FOODS, ...SEASONAL_FOODS, ...WAVES_FOODS, ...TANZAKU_FOODS],
+  training: [...TRAINING, ...WAVES_TRAINING, ...FIRE_TEMPLE_TRAINING],
+  foods: [
+    ...FOODS,
+    ...SEASONAL_FOODS,
+    ...WAVES_FOODS,
+    ...TANZAKU_FOODS,
+    ...SHUKUBA_FOODS,
+    ...OTAFUKU_FOODS,
+    ...FIRE_TEMPLE_FOODS,
+  ],
   clans: CLANS,
   builds: BUILDS,
   upbringings: UPBRINGINGS,
@@ -128,6 +147,8 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...VILLAGERS,
     ...WAVES_PEOPLE,
     ...TANZAKU_PEOPLE,
+    ...OTAFUKU_PEOPLE,
+    ...FIRE_TEMPLE_PEOPLE,
   ],
   conversations: [
     ...GENERIC_CONVERSATIONS,

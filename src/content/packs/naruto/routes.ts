@@ -2,8 +2,8 @@ import type { RouteDef } from '@/systems/travel';
 
 /**
  * The roads out of the Leaf: south-east to the Land of Waves and across the water to the Mist,
- * west through the hills to the desert, south-west to Tanzaku Town, and the long way to the
- * toads.
+ * west through the hills to the desert, down the highway to Shukuba and Tanzaku, east to the
+ * pleasure quarter, up to the Fire Temple, and the long way to the toads.
  */
 export const NARUTO_ROUTES: readonly RouteDef[] = [
   {
@@ -40,19 +40,63 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     cost: 110,
   },
   {
-    id: 'tanzaku-road',
+    id: 'highway-north',
     from: 'konohagakure',
-    to: 'tanzaku-town',
+    to: 'shukuba-town',
     legs: [
       {
         region: 'forest-track',
         days: 1,
         text: 'The highway runs south through the Leaf’s forests, busy with carts and pilgrims.',
       },
+    ],
+    danger: 'petty',
+  },
+  {
+    id: 'highway-south',
+    from: 'shukuba-town',
+    to: 'tanzaku-town',
+    legs: [
       {
         region: 'river-road',
         days: 1,
         text: 'The road follows the river down to the plain, and the castle roofs show over the fields.',
+      },
+    ],
+    danger: 'petty',
+  },
+  {
+    id: 'quarter-road',
+    from: 'konohagakure',
+    to: 'otafuku-town',
+    legs: [
+      {
+        region: 'forest-track',
+        days: 1,
+        text: 'An easy road east under the trees, full of men who say they are travelling on business.',
+      },
+      {
+        region: 'hill-road',
+        days: 1,
+        text: 'Over the low hills, and at dusk the red lanterns of the quarter light up the valley.',
+      },
+    ],
+    danger: 'petty',
+  },
+  {
+    id: 'temple-stair',
+    from: 'konohagakure',
+    to: 'fire-temple',
+    legs: [
+      {
+        region: 'forest-track',
+        days: 1,
+        text: 'A pilgrims’ road north-west, with a shrine at every crossing and a prayer at most of them.',
+      },
+      {
+        region: 'mountain-pass',
+        days: 1,
+        text: 'The road becomes a stair, and the stair goes on into the clouds. A bell sounds somewhere above.',
       },
     ],
     danger: 'petty',
