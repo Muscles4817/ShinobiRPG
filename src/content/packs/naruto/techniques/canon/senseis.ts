@@ -113,7 +113,7 @@ export const CANON_SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     reach: ['close', 'mid', 'far'],
     needs: { nature: 'wind' },
     effects: [
-      { verb: 'area', power: 16 },
+      { verb: 'area', power: 16, size: 'wide' },
       { verb: 'afflict', power: 5, harm: 'bleed' },
     ],
     chakraCost: 16,

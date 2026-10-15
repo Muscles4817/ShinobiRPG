@@ -51,7 +51,7 @@ export const CANON_NARUTO_TECHNIQUES: readonly TechniqueDef[] = [
     reach: ['close', 'mid'],
     accuracy: 'sure',
     needs: { minReserves: 16 },
-    effects: [{ verb: 'area', power: 22 }],
+    effects: [{ verb: 'area', power: 22, size: 'wide' }],
     chakraCost: 22,
     rank: 'A',
     difficulty: 135,
@@ -92,7 +92,7 @@ export const CANON_NARUTO_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     reach: ['close', 'mid'],
     needs: { minReserves: 14 },
-    effects: [{ verb: 'area', power: 20 }],
+    effects: [{ verb: 'area', power: 20, size: 'wide' }],
     chakraCost: 20,
     rank: 'A',
     difficulty: 135,
@@ -119,7 +119,7 @@ export const CANON_NARUTO_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     reach: ['close', 'mid', 'far'],
     effects: [
-      { verb: 'area', power: 16 },
+      { verb: 'area', power: 16, size: 'wide' },
       { verb: 'pin', power: 10 },
     ],
     chakraCost: 17,
@@ -148,7 +148,7 @@ export const CANON_NARUTO_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'fire',
     effects: [
-      { verb: 'area', power: 20 },
+      { verb: 'area', power: 20, size: 'wide' },
       { verb: 'afflict', power: 6, harm: 'burn' },
     ],
     chakraCost: 18,
@@ -244,7 +244,7 @@ export const CANON_NARUTO_TECHNIQUES: readonly TechniqueDef[] = [
     element: 'wind',
     needs: { nature: 'wind' },
     effects: [
-      { verb: 'area', power: 14 },
+      { verb: 'area', power: 14, size: 'wide' },
       { verb: 'pin', power: 10 },
     ],
     chakraCost: 16,
@@ -259,7 +259,7 @@ export const CANON_NARUTO_TECHNIQUES: readonly TechniqueDef[] = [
     element: 'wind',
     needs: { nature: 'wind' },
     effects: [
-      { verb: 'area', power: 20 },
+      { verb: 'area', power: 20, size: 'wide' },
       { verb: 'afflict', power: 7, harm: 'burn' },
     ],
     chakraCost: 18,

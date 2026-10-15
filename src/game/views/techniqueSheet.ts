@@ -12,6 +12,8 @@ import { STAT_INFO } from '@/systems/stats';
 import {
   blowsOf,
   type AfflictionKind,
+  type AreaSize,
+  type FieldId,
   type Accuracy,
   type TechniqueDef,
   type TechniqueEffect,
@@ -104,7 +106,6 @@ function turns(power: number): string {
 /** What each verb does when it needs no detail beyond its name. */
 const PLAIN_WORDS: Readonly<Record<PlainSheetVerb, string>> = {
   damage: 'Strikes',
-  area: 'Hits every foe',
   break: 'Smashes through guards and armour',
   daze: 'Dazes: they lose their next turn',
   confuse: 'Confuses them: they may strike the wrong target',
@@ -112,6 +113,19 @@ const PLAIN_WORDS: Readonly<Record<PlainSheetVerb, string>> = {
   sense: 'Finds the hidden and reads their plans',
   substitute: 'Swaps you out of the first hit each round',
   counter: 'Readies a riposte: the next blow at you is answered first',
+};
+
+/** How an area reads by the ground it covers (`rules/verbs/area.ts`). */
+const AREA_WORDS: Readonly<Record<AreaSize, string>> = {
+  small: 'Hits every foe',
+  wide: 'Hits every foe: hard to slip, no plain Guard stops it, and it throws everyone apart',
+  vast: 'Hits every foe: no outrunning or guarding it, and it throws everyone far apart under dust that blinds both sides',
+};
+
+const FIELD_WORDS: Readonly<Record<FieldId, string>> = {
+  mist: 'a mist',
+  smoke: 'smoke',
+  dust: 'dust',
 };
 
 const HARM_WORDS: Readonly<Record<AfflictionKind, string>> = {
@@ -122,7 +136,7 @@ const HARM_WORDS: Readonly<Record<AfflictionKind, string>> = {
 
 /** Verbs that leave something on a foe, whose line reads where, how long or how much. */
 type LingeringVerb = 'knock' | 'pin' | 'drain' | 'afflict';
-type DetailedVerb = 'seal' | 'heal' | 'field' | 'move' | 'empower' | 'clone' | 'trap';
+type DetailedVerb = 'area' | 'seal' | 'heal' | 'field' | 'move' | 'empower' | 'clone' | 'trap';
 type PlainSheetVerb = Exclude<TechniqueEffect['verb'], DetailedVerb | LingeringVerb>;
 const LINGERING_VERBS: readonly TechniqueEffect['verb'][] = ['knock', 'pin', 'drain', 'afflict'];
 
@@ -141,13 +155,15 @@ function isPlain(
 /** Verbs whose line reads their data: how long, how much, where, what. */
 function detailedLine(effect: Extract<TechniqueEffect, { verb: DetailedVerb }>): SheetLine {
   switch (effect.verb) {
+    case 'area':
+      return { text: AREA_WORDS[effect.size ?? 'small'], chip: null };
     case 'seal':
       return { text: 'Seals their techniques', chip: turns(effect.power) };
     case 'heal':
       return { text: 'Heals you', chip: `${effect.power} health` };
     case 'field':
       return {
-        text: `Raises ${effect.field === 'mist' ? 'a mist' : 'smoke'} that blinds foes`,
+        text: `Raises ${FIELD_WORDS[effect.field]} that blinds foes`,
         chip: null,
       };
     case 'move':

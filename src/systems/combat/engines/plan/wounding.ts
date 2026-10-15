@@ -5,7 +5,7 @@ import { alive } from '../../rules/body';
 import { techniqueDamage } from '../../rules/damage';
 import { attackKindOf } from '../../rules/kit';
 import { finisherScale } from '../../rules/team';
-import type { EffectUse } from '../../rules/verbs';
+import { areaSize, type EffectUse } from '../../rules/verbs';
 import { elementBoost, recordHit } from './combo';
 import { react, type Blow } from './react';
 import type { Turn } from './senses';
@@ -45,7 +45,7 @@ function blowsFor(aimed: Aimed, use: Wounding, scale: number): Blow[] {
     ...(t.element ? { element: t.element } : {}),
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     ...(use.effect.verb === 'break' ? { breaks: true } : {}),
-    ...(use.effect.verb === 'area' ? { area: true } : {}),
+    ...(use.effect.verb === 'area' ? { area: true, areaSize: areaSize(use.effect) } : {}),
   };
   return Array.from({ length: count }, (_, i) => (i === 0 ? first : { ...first, followUp: true }));
 }

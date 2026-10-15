@@ -46,6 +46,8 @@ export {
   MAX_HITS,
   FIELD_IDS,
   AFFLICTIONS,
+  AREA_SIZES,
+  type AreaSize,
   type AfflictionKind,
   type FieldId,
   type MoveDistance,

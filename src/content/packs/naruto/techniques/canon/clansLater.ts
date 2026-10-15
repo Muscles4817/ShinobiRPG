@@ -43,7 +43,7 @@ export const CANON_LATER_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     clan: 'inuzuka',
     effects: [
-      { verb: 'area', power: 22 },
+      { verb: 'area', power: 22, size: 'wide' },
       { verb: 'knock', power: 8, to: 'mid' },
     ],
     chakraCost: 18,

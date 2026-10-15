@@ -146,7 +146,7 @@ export const CANON_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     clan: 'hyuga',
     reach: ['close', 'mid'],
     effects: [
-      { verb: 'area', power: 14 },
+      { verb: 'area', power: 14, size: 'wide' },
       { verb: 'knock', power: 8, to: 'mid' },
     ],
     chakraCost: 12,

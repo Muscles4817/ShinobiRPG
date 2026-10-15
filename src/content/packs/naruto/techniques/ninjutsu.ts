@@ -41,7 +41,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'wind',
     effects: [
-      { verb: 'area', power: 12 },
+      { verb: 'area', power: 12, size: 'wide' },
       { verb: 'knock', power: 8, to: 'far' },
     ],
     chakraCost: 14,
@@ -216,7 +216,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'water',
     effects: [
-      { verb: 'area', power: 18 },
+      { verb: 'area', power: 18, size: 'wide' },
       { verb: 'daze', power: 6 },
     ],
     chakraCost: 18,
@@ -231,7 +231,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
       'A wall of flame as wide as a battlefield. Nothing in front of you is left standing, or green.',
     discipline: 'ninjutsu',
     element: 'fire',
-    effects: [{ verb: 'area', power: 20 }],
+    effects: [{ verb: 'area', power: 20, size: 'vast' }],
     chakraCost: 20,
     rank: 'B',
     needs: { nature: 'fire', minReserves: 16 },

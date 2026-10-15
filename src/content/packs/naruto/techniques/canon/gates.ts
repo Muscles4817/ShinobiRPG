@@ -23,7 +23,7 @@ export const CANON_GATES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     school: 'Strong Fist',
     effects: [
-      { verb: 'area', power: 20 },
+      { verb: 'area', power: 20, size: 'wide' },
       { verb: 'knock', power: 8, to: 'mid' },
     ],
     chakraCost: 16,
@@ -51,7 +51,7 @@ export const CANON_GATES: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     school: 'Strong Fist',
     effects: [
-      { verb: 'area', power: 24 },
+      { verb: 'area', power: 24, size: 'wide' },
       { verb: 'knock', power: 10, to: 'far' },
     ],
     chakraCost: 24,

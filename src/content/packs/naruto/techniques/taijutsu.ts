@@ -203,7 +203,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     discipline: 'taijutsu',
     school: 'Strong Fist',
     effects: [
-      { verb: 'area', power: 22 },
+      { verb: 'area', power: 22, size: 'wide' },
       { verb: 'daze', power: 6 },
     ],
     chakraCost: 22,

@@ -57,8 +57,16 @@ export interface VerbScaling {
  * Fight-wide conditions a field effect raises (mist, smoke). What each does lives once in the
  * combat system's `rules/verbs/field.ts`.
  */
-export const FIELD_IDS = ['mist', 'smoke'] as const;
+export const FIELD_IDS = ['mist', 'smoke', 'dust'] as const;
 export type FieldId = (typeof FIELD_IDS)[number];
+
+/**
+ * How much ground an area technique covers: a small burst a plain Guard still blunts, a wide
+ * one only a barrier or a swap escapes, a vast one that can't be outrun and leaves the field
+ * changed. Its rules live once in the combat system's `rules/verbs/area.ts`.
+ */
+export const AREA_SIZES = ['small', 'wide', 'vast'] as const;
+export type AreaSize = (typeof AREA_SIZES)[number];
 
 /** A distance a move effect takes its user to (the combat system's range bands). */
 export type MoveDistance = 'close' | 'mid' | 'far';
@@ -90,6 +98,8 @@ interface EffectBase<V extends Verb> {
 interface VerbExtras {
   /** A flurry: the power split over this many blows (2–5, validated), each defended alone. */
   readonly damage: { readonly hits?: number };
+  /** How much ground it covers; small when unset. */
+  readonly area: { readonly size?: AreaSize };
   readonly field: { readonly field: FieldId };
   /** Where the move goes; without it, wherever its user fights best. */
   readonly move: { readonly to?: MoveDistance };
@@ -139,6 +149,7 @@ export type TrapEffect = EffectOf<'trap'>;
 
 const DISTANCES: readonly string[] = ['close', 'mid', 'far'];
 const harms: readonly string[] = AFFLICTIONS;
+const sizes: readonly string[] = AREA_SIZES;
 
 /** Most blows a flurry splits into. */
 export const MAX_HITS = 5;
@@ -150,12 +161,17 @@ function hitsProblem(hits: number | undefined): string | null {
     : `a flurry of ${hits} blows (it needs 2 to ${MAX_HITS})`;
 }
 
+function sizeProblem(size: string | undefined): string | null {
+  return size === undefined || sizes.includes(size) ? null : `an area of unknown size "${size}"`;
+}
+
 /**
  * Why an effect's data can't work as written, or null. An empower must raise something and
  * must cost something (a health price, an after-cost, or both), and any after-cost must be real.
  */
 export function effectProblem(effect: TechniqueEffect): string | null {
   if (effect.verb === 'damage') return hitsProblem(effect.hits);
+  if (effect.verb === 'area') return sizeProblem(effect.size);
   if (effect.verb === 'knock' && !DISTANCES.includes(effect.to)) {
     return `a throw to an unknown distance "${effect.to}"`;
   }
