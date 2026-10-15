@@ -1,23 +1,31 @@
 import type { Rng } from '@/core';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
-import { canAttackFrom, homeBand } from '../../rules/kit';
-import { RANGE_BANDS } from '../../rules/range';
+import { canAttackFrom } from '../../rules/kit';
 import { isTrump, lastDitch, outmatched } from '../../rules/trumps';
-import { hasVerb, isHarmful, isHindering, isWounding, techniquePower } from '../../rules/verbs';
+import {
+  hasVerb,
+  isHarmful,
+  isHindering,
+  isPinned,
+  isWounding,
+  techniquePower,
+} from '../../rules/verbs';
 import { isOffence, playable, slotted, type Card } from './cards';
 import { partnered } from './combo';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
 import { sightInstinct } from './sight';
+import { improvise, makingFor } from './stepping';
 import { canDaze, isDazed, type PlanFighter } from './state';
 
 /**
  * Which slotted card a fighter plays this exchange. Fighters follow a few instincts (heal when
  * hurt, daze a fresh foe, punish a dazed one, keep a trump for the last ditch or a far stronger
  * foe, seal only a foe who fights with jutsu); otherwise they pick among the cards slotted for
- * this distance, stronger ones more often. With nothing playable they improvise a basic blow,
+ * this distance, stronger ones more often. One fighting at a set distance makes for it first
+ * (`stepping.ts`). With nothing playable they improvise a basic blow,
  * or, when their kit can't attack from here, a step towards where it can. A fighter with Search
  * or Dispel slotted uses it first when a foe is hidden (Dispel also when confused); then a
  * slotted tool the moment calls for (see `pouch.ts`). A move technique is footwork, picked like
@@ -48,13 +56,6 @@ function weighted(cards: readonly Card[], rng: Rng): Card | undefined {
     if (roll < 0) return card;
   }
   return cards[cards.length - 1];
-}
-
-/** A basic blow when the kit reaches from here, else a step towards where it does. */
-export function improvise(self: PlanFighter, band: RangeBand): Card {
-  if (canAttackFrom(self, band)) return band === 'close' ? { kind: 'strike' } : { kind: 'throw' };
-  const further = RANGE_BANDS.indexOf(homeBand(self)) > RANGE_BANDS.indexOf(band);
-  return { kind: 'step', direction: further ? 'back' : 'in' };
 }
 
 /** A move technique that would take them somewhere else: footwork, like a step. */
@@ -133,7 +134,7 @@ function moves(self: PlanFighter, ready: readonly Card[], band: RangeBand): Card
  * a dazed one, else any of them, stronger ones more often.
  */
 function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, rng: Rng): Card {
-  const { band, foe } = moment;
+  const { foe } = moment;
   const trump = harmful.find(trumpCard);
   if (trump) return trump;
   const daze = jutsu(harmful, holdsBack(foe));
@@ -146,7 +147,12 @@ function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, 
   const finisher = jutsu(harmful, isWounding);
   if (finisher && foe && isDazed(foe)) return finisher;
   const usual = harmful.filter((c) => c !== daze || fresh);
-  return weighted(usual, rng) ?? improvise(self, band);
+  return weighted(usual, rng) ?? fallback(self, moment);
+}
+
+/** Nothing to play: look for a hidden foe when no one is in sight, else improvise. */
+function fallback(self: PlanFighter, { band, foe, hiddenFoe }: Moment): Card {
+  return foe === undefined && hiddenFoe === true ? { kind: 'search' } : improvise(self, band);
 }
 
 /**
@@ -171,5 +177,8 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   if (instinct) return instinct;
   const heal = jutsu(ready, (t) => hasVerb(t, 'heal'));
   if (heal && self.health < self.maxHealth * LOW_HEALTH) return heal;
+  // Someone fighting at a set distance makes for it before anything but an emergency.
+  const footwork = isPinned(self) ? null : makingFor(self, moment.band);
+  if (footwork) return footwork;
   return onTheMove(self, moves(self, ready, moment.band), moment, rng);
 }

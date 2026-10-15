@@ -16,14 +16,15 @@ import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed, isPinned } from '../../rules/verbs';
 import { slotLimit } from './cards';
-import { defaultLoadout } from './defaults';
+import { defaultLoadout, defaultReadiness } from './defaults';
 import { withoutLoneCombos } from './combo';
 import { fieldMeter, fieldStatuses } from './field';
 import { substitutionsReady } from './footwork';
 import { intentLine, rollIntents } from './intent';
 import { lingeringStatuses } from './lingering';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
-import { rememberedLoadout } from './memory';
+import { rememberedPlan, type PlanMemory } from './memory';
+import { defaultReactions } from './readiness';
 import { prepStatuses } from './prep';
 import { openFight } from './opening';
 import { decide, resolveExchange } from './round';
@@ -192,11 +193,28 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
 
 function prompt(state: PlanState): string {
   if (state.phase === 'loadout') {
-    const pick = `Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} cards for each distance. Higher cards play first.`;
+    const pick = `Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} actions for each distance, higher first, and the defence you keep ready there.`;
     const hidden = state.fighters.some((f) => f.side === 'enemy' && alive(f) && f.hidden);
     return hidden ? `${pick} Someone is hidden: Search or Dispel finds them.` : pick;
   }
   return `${RANGE_LABEL[state.range]} range, round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
+}
+
+/** Your remembered plan, or the default one: actions, defences and where to fight. */
+function planFor(f: PlanFighter, fighters: readonly PlanFighter[], plan: unknown): PlanFighter {
+  const remembered = f.isPlayer ? rememberedPlan(plan, f) : null;
+  if (remembered) return { ...f, ...remembered };
+  const loadout = defaultLoadout(withoutLoneCombos(f, fighters), fighters);
+  return { ...f, loadout, ...defaultReadiness(f) };
+}
+
+/** The plan to hand back for next time. */
+function planOf(player: PlanFighter): PlanMemory {
+  return {
+    loadout: player.loadout,
+    reactions: player.reactions ?? defaultReactions(player),
+    ...(player.keepAt === undefined ? {} : { keepAt: player.keepAt }),
+  };
 }
 
 export function createPlanEngine(): CombatEngine {
@@ -209,14 +227,7 @@ export function createPlanEngine(): CombatEngine {
     start(setup, rng) {
       const names = setup.enemies.map((e) => e.name);
       const { fighters, range, lines, field } = openFight(initialFighters(setup), setup.opening);
-      const planned = withStances(
-        fighters.map((f) => ({
-          ...f,
-          loadout:
-            (f.isPlayer ? rememberedLoadout(setup.plan, f) : null) ??
-            defaultLoadout(withoutLoneCombos(f, fighters), fighters),
-        })),
-      );
+      const planned = withStances(fighters.map((f) => planFor(f, fighters, setup.plan)));
       const table = {
         fighters: planned,
         range,
@@ -279,7 +290,7 @@ export function createPlanEngine(): CombatEngine {
         rounds: plan.bout,
         player: { health: player.health, chakra: player.chakra },
         items: itemsLeft(player),
-        plan: player.loadout,
+        plan: planOf(player),
         costs: [...costsOwed(player), ...empowerCostsOwed(player)],
         chakraSpent: player.chakraSpent ?? 0,
         used: usage(plan.fighters),

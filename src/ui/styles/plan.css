@@ -262,3 +262,11 @@
   grid-column: 1 / -1;
   text-align: center;
 }
+
+/* A distance's own settings (its defence, where you fight), above its slots. */
+.plan-range-settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}

@@ -29,7 +29,6 @@ import {
   LOG_LIMIT,
   patch,
   playerOf,
-  practise,
   say,
   type PlanFighter,
   type PlanState,
@@ -82,6 +81,12 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
   if (!alive(playerOf({ fighters }))) return 'defeat';
   return fighters.some((f) => f.side === 'enemy' && alive(f)) ? null : 'victory';
+}
+
+/** Counts a plain strike or a step towards the fighter's usage report. */
+function practise(round: Round, actor: PlanFighter, work: 'blows' | 'footwork'): Round {
+  const done = fighterIn(round, actor.id)?.[work] ?? 0;
+  return { ...round, fighters: patch(round.fighters, actor.id, { [work]: done + 1 }) };
 }
 
 function step(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' | 'back') {

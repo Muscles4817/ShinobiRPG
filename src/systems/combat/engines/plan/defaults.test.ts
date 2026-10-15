@@ -51,15 +51,19 @@ const bolt = (id: string, power: number): CombatTechnique => ({
 const cards = (f: PlanFighter, band: 'close' | 'mid' | 'far') =>
   defaultLoadout(f)[band].map((s) => s.card);
 
-describe('plan & watch default plan: plain blows', () => {
-  it('fills in with a plain throw when only one jutsu reaches', () => {
-    expect(cards(hero([bolt('bolt', 14)]), 'mid')).toContain('throw');
+describe('plan & watch default plan: actions only', () => {
+  it('slots techniques, never plain blows, footwork or defences', () => {
+    const mid = cards(hero([bolt('bolt', 14), bolt('spark', 10)]), 'mid');
+    expect(mid).toEqual(['jutsu:bolt', 'jutsu:spark']);
   });
 
-  it('slots a second jutsu instead of a plain throw', () => {
-    const mid = cards(hero([bolt('bolt', 14), bolt('spark', 10)]), 'mid');
-    expect(mid).toEqual(expect.arrayContaining(['jutsu:bolt', 'jutsu:spark']));
-    expect(mid).not.toContain('throw');
+  it('keeps its best attack when a small plan fills with emergencies', () => {
+    const mend: CombatTechnique = { ...bolt('mend', 0), effects: [{ verb: 'heal', power: 12 }] };
+    const sense: CombatTechnique = { ...bolt('sense', 0), effects: [{ verb: 'sense', power: 10 }] };
+    // Two slots at intellect E: heal and sense would fill them, but the attack stays.
+    const mid = cards(hero([mend, sense, bolt('bolt', 14)]), 'mid');
+    expect(mid).toHaveLength(2);
+    expect(mid).toContain('jutsu:bolt');
   });
 });
 

@@ -3,13 +3,13 @@ import { alive, hasPerk } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
 import { effectsOf, hasVerb, isHindering, isPinned, isWounding } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
-import { improvise } from './choose';
 import { partnered } from './combo';
 import { ownField } from './field';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepNeeded } from './prep';
 import { hittable } from './rows';
+import { improvise, makingFor } from './stepping';
 import { inSight, opponentsOf } from './senses';
 import {
   canDaze,
@@ -27,7 +27,8 @@ import {
  * aimed by the slot's target rule. A condition about a foe (dazed, readying a jutsu) also picks
  * whom the card goes for. An attack only aims at foes it can reach past their front row (see
  * `rows.ts`); a slot with none in reach is passed over. A daze, seal or confusion looks for a
- * foe not already held. When no slot qualifies, the player improvises a basic blow or a step.
+ * foe not already held. Someone fighting at a set distance steps towards it first (after an
+ * emergency slot). When no slot qualifies, the player improvises a basic blow or a step.
  * Teammates play their cards this way too (`team.ts`); foes follow their instincts
  * (`choose.ts`).
  */
@@ -217,13 +218,38 @@ function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {
   return needsAim(card) && !target ? null : { card, target };
 }
 
-/** The first slot at this distance that qualifies, else an improvised blow or step (at the mark). */
-export function plannedPlay(self: PlanFighter, round: Round): Play {
-  for (const slot of self.loadout[round.range]) {
+/** Slots that answer an emergency: healing when badly hurt, finding a hidden foe. */
+function urgent(slot: Slot): boolean {
+  return slot.when === 'low-health' || slot.when === 'foe-hidden';
+}
+
+function firstPlay(self: PlanFighter, round: Round, slots: readonly Slot[]): Play | null {
+  for (const slot of slots) {
     const play = fromSlot(self, round, slot);
     if (play) return play;
   }
+  return null;
+}
+
+/**
+ * An emergency slot that holds; else, for someone fighting at a set distance and elsewhere, a
+ * step towards it; else the first slot at this distance that qualifies; else an improvised
+ * blow or step (at the mark).
+ */
+export function plannedPlay(self: PlanFighter, round: Round): Play {
+  const slots = self.loadout[round.range];
+  const emergency = firstPlay(self, round, slots.filter(urgent));
+  if (emergency) return emergency;
+  const footwork = isPinned(self) ? null : makingFor(self, round.range);
+  if (footwork) return { card: footwork, target: undefined };
+  const play = firstPlay(self, round, slots);
+  if (play) return play;
+  const foes = opponentsOf(round.fighters, self);
+  const seen = foes.filter((f) => inSight(self, f));
+  // With no one to hit and someone hidden, looking for them beats walking about.
+  if (seen.length === 0 && foes.some((f) => f.hidden)) {
+    return { card: { kind: 'search' }, target: undefined };
+  }
   const card = improvise(self, round.range);
-  const seen = opponentsOf(round.fighters, self).filter((f) => inSight(self, f));
   return { card, target: aimAt(hittable(card, seen, round.fighters), 'marked', self, round) };
 }

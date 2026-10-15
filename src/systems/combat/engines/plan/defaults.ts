@@ -3,18 +3,13 @@ import type { Verb } from '@/systems/techniques';
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { hasPerk } from '../../rules/body';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
-import { inReach, RANGE_BANDS, STRIKE_REACH } from '../../rules/range';
+import { RANGE_BANDS } from '../../rules/range';
 import { isTrump, outmatched } from '../../rules/trumps';
-import {
-  hasVerb,
-  isHarmful,
-  isHindering,
-  isWounding,
-  moveGoal,
-  techniquePower,
-} from '../../rules/verbs';
+import { hasVerb, isHarmful, isHindering, isWounding, techniquePower } from '../../rules/verbs';
 import { cardBlocked, cardId, cardsFor, isOffence, slotLimit, type Card } from './cards';
 import { opponentsOf } from './senses';
+import { defaultReactions } from './readiness';
+import { fightsFromHome } from './stepping';
 import { plainSlots, type Loadout, type PlanFighter, type Slot } from './state';
 
 /**
@@ -32,35 +27,6 @@ function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean)
 
 function damageJutsu(cards: readonly Card[]): Card[] {
   return strongest(cards, isWounding);
-}
-
-/** How much a step towards home is worth: before attacking, after, or not at all. */
-type Footwork = 'first' | 'after-attacks' | 'none';
-
-/** A plain blow's weight against techniques' power, for weighing where to stand. */
-const STRIKE_POWER = 8;
-/** A step costs a turn and may fail: it goes first only for a clearly better attack. */
-const STEP_WORTH = 1.25;
-
-/** The hardest-hitting attack the kit has at a distance, as technique power. */
-function bestAttack(fighter: PlanFighter, band: RangeBand): number {
-  const jutsu = damageJutsu(cardsFor(fighter, band))[0];
-  const power = jutsu?.kind === 'jutsu' ? techniquePower(jutsu.technique) : 0;
-  return Math.max(power, inReach(STRIKE_REACH, band) ? STRIKE_POWER : 0);
-}
-
-/**
- * Whether a fighter should spend their turn moving towards home: first when their kit can't
- * attack from here or a clearly stronger attack waits at home; otherwise after their attacks
- * (a step hands the foe a free turn, so the plan fights with what reaches and lets a foe who
- * closes in come to it).
- */
-function footworkFor(fighter: PlanFighter, band: RangeBand, home: RangeBand): Footwork {
-  if (band === home) return 'none';
-  if (!canAttackFrom(fighter, band)) return 'first';
-  return bestAttack(fighter, home) > bestAttack(fighter, band) * STEP_WORTH
-    ? 'first'
-    : 'after-attacks';
 }
 
 /** Whom the plan is made against, as far as it is known. */
@@ -117,92 +83,95 @@ function trumpSlot(trumps: readonly Card[], facing: Facing): Slot[] {
 }
 
 /**
- * The slots that fit, always keeping a defence when the kit has one: a Guard or Dodge costs no
- * turn and no chakra, it reacts to every hit, and a plan without one loses to a plan with one
- * far more often than any third attack wins back (the content bench measures it).
+ * The slots that fit. A small plan (a dull mind holds two actions) keeps an attack: a plan of
+ * nothing but emergencies would leave its owner swinging plain blows.
  */
-function fitted(ordered: readonly Slot[], defences: readonly Slot[], limit: number): Slot[] {
+function fitted(ordered: readonly Slot[], attack: Slot | undefined, limit: number): Slot[] {
   const unique = ordered.filter((slot, i) => ordered.findIndex((s) => s.card === slot.card) === i);
   const kept = unique.slice(0, limit);
-  const isDefence = (slot: Slot) => defences.some((d) => d.card === slot.card);
-  const defence = unique.find(isDefence);
-  if (!defence || limit < 2 || kept.some(isDefence)) return kept;
-  return [...kept.slice(0, limit - 1), defence];
+  if (!attack || kept.some((s) => s.card === attack.card)) return kept;
+  return [...kept.slice(0, limit - 1), attack];
 }
 
 /**
  * A sensible starting plan, in priority order: a heal for when you're badly hurt, a trump for
  * the last ditch (or first, against a far stronger foe), a sense or Search for when a foe hides,
- * a field to set the ground (it plays only while none of yours is up), footwork towards where you
- * fight best (when it's worth a turn; a move technique rather than a step), an empower or clones
- * and a trap where you can attack (the plan passes over them while they hold), your best attack,
- * a hold (see `holdSlot`), then plain blows, more attacks and a conceal; the last slot is always
- * a defence (a substitution, a Guard or a Dodge: see `fitted`). Plain blows only fill in for a
- * kit with one wounding jutsu at this distance or none: with a second, that goes in their place.
- * Attacks your kit can't make from a distance (an archer up close) are left out.
+ * a field to set the ground (it plays only while none of yours is up), an empower or clones and
+ * a trap where you can attack (the plan passes over them while they hold), your best attack, a
+ * hold (see `holdSlot`), then more attacks and a conceal, as many as your slots hold, always
+ * keeping the best attack (see `fitted`). Defences and footwork aren't slotted
+ * (`readiness.ts`, `stepping.ts`). Attacks your kit can't make from a distance (an archer up
+ * close) are left out.
  */
-function defaultFor(fighter: PlanFighter, band: RangeBand, home: RangeBand, facing: Facing) {
+function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot[] {
   const reaches = canAttackFrom(fighter, band);
   const usable = cardsFor(fighter, band).filter(
     (c) => (reaches || !isOffence(c)) && cardBlocked(fighter, c) === null,
   );
   const trumps = usable.filter((c) => c.kind === 'jutsu' && isTrump(c.technique));
   const pool = usable.filter((c) => !trumps.includes(c));
-  const has = (kind: Card['kind']) => pool.filter((c) => c.kind === kind);
-  const towardsHome = RANGE_BANDS.indexOf(band) > RANGE_BANDS.indexOf(home) ? 'in' : 'back';
-  const footwork = footworkFor(fighter, band, home);
-  const step = has('step').filter((c) => c.kind === 'step' && c.direction === towardsHome);
-  const flicker = strongest(pool, (t) => moveGoal(t, home) === home).slice(0, 1);
-  const at = (when: Footwork) => (footwork === when ? [...flicker, ...step].slice(0, 1) : []);
   const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
   const damage = damageJutsu(pool);
   const ready = strongest(pool, (t) => hasVerb(t, 'empower') || hasVerb(t, 'clone')).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
-  const trump = reaches ? trumpSlot(trumps, facing) : [];
   const hold = holdSlot(pool, facing);
-  const blows = damage.length > 1 ? [] : [...has('strike'), ...has('throw')];
-  // Reactions, best first: a substitution, then a Guard, then a Dodge.
-  const defences = plain([...best('substitute'), ...has('guard'), ...has('dodge')]);
+  const search = pool.filter((c) => c.kind === 'search');
   const ordered: Slot[] = [
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
-    ...trump,
-    ...finding(best('sense'), has('search'), facing),
-    ...plain([...best('field'), ...at('first')]),
+    ...(reaches ? trumpSlot(trumps, facing) : []),
+    ...finding(best('sense'), search, facing),
+    ...plain(best('field')),
     ...hold.early,
     ...plain(reaches ? [...ready, ...best('trap')] : []),
     ...plain(damage.slice(0, 1)),
     ...hold.late,
-    ...plain([...blows, ...at('after-attacks')]),
     ...plain([...damage.slice(1), ...best('conceal')]),
-    ...defences,
   ];
-  return fitted(ordered, defences, slotLimit(fighter));
+  return fitted(ordered, plain(damage.slice(0, 1))[0], slotLimit(fighter));
 }
 
 /** How a teammate's stance bends the plan (`team.ts`). */
 export interface PlanShape {
-  /** Where to fight: a teammate pressing in plans around a closer distance than their kit's. */
+  /** Where to fight: a teammate pressing in makes for a closer distance than their kit's. */
   readonly home?: RangeBand;
   /** A teammate in support keeps a hold whatever the foe, to set the others up. */
   readonly support?: boolean;
 }
 
-/** The default plan, against the fighters in the fight when they're known. */
+function facingOf(fighter: PlanFighter, among: readonly PlanFighter[], support: boolean): Facing {
+  const foes = opponentsOf(among, fighter);
+  return {
+    foeJutsu: foes.length === 0 || foes.some((f) => f.techniques.some(isHarmful)),
+    outmatched: outmatched(fighter, foes),
+    support,
+    // Insight sees through hiding, so it needs no Search.
+    foeHides:
+      !hasPerk(fighter, 'insight') && foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
+  };
+}
+
+/** The default plan's actions, against the fighters in the fight when they're known. */
 export function defaultLoadout(
   fighter: PlanFighter,
   among: readonly PlanFighter[] = [],
   shape: PlanShape = {},
 ): Loadout {
-  const foes = opponentsOf(among, fighter);
-  const home = shape.home ?? homeBand(fighter);
-  const facing: Facing = {
-    foeJutsu: foes.length === 0 || foes.some((f) => f.techniques.some(isHarmful)),
-    outmatched: outmatched(fighter, foes),
-    support: shape.support ?? false,
-    // Insight sees through hiding, so it needs no Search.
-    foeHides:
-      !hasPerk(fighter, 'insight') && foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
-  };
-  const [close, mid, far] = RANGE_BANDS.map((band) => defaultFor(fighter, band, home, facing));
+  const facing = facingOf(fighter, among, shape.support ?? false);
+  const [close, mid, far] = RANGE_BANDS.map((band) => defaultFor(fighter, band, facing));
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };
+}
+
+/**
+ * What the default plan keeps ready: its defences, and a distance to make for when a stance
+ * sets one (a teammate pressing in) or the kit fights from one distance only (a brawler closes
+ * in first, `fightsFromHome`). Anyone else fights wherever they stand and steps home only when
+ * nothing they slotted does anything there (`stepping.ts`).
+ */
+export function defaultReadiness(
+  fighter: PlanFighter,
+  shape: PlanShape = {},
+): Pick<PlanFighter, 'reactions' | 'keepAt'> {
+  const home = shape.home ?? homeBand(fighter);
+  const makesFor = home !== homeBand(fighter) || fightsFromHome(fighter, home);
+  return { reactions: defaultReactions(fighter), ...(makesFor ? { keepAt: home } : {}) };
 }

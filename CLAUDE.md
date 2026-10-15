@@ -193,10 +193,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`SKILL_DEFENCE_SHARE`: skill defends, so specialists of a grade don't one-shot each other);
     no hit takes more than half the target's health (`cappedHit`). A daze costs the target their
     next turn and leaves them open (no dodge, a finisher target, though a Guard still works);
-    afterwards they are steady for an exchange (`canDaze`), so dazes can't be chained. Foes play
+    afterwards they are steady for an exchange (`canDaze`), so dazes can't be chained. A plan is
+    **actions** per distance, two to five by intellect grade (`slotLimit`: E 2, D 3, C 4, B+ 5):
+    techniques, tools, Search and Dispel. Defences and footwork take no slot
+    (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Counter or a
+    substitution; never stacked) that reacts on its own, and a plan may say where to **fight at**:
+    the fighter steps towards it first (after an emergency slot), and a step still costs the turn
+    (`plan/stepping.ts`); without one, they step home only when nothing slotted does anything
+    there, else throw a plain blow (never slotted). Foes play
     their default plan by priority, as the player does, most of the time (`PLANNED_CHANCE`), and
-    instinct otherwise; a default plan always keeps a defence and brings a Search against a foe
-    that hides. Healing is ninjutsu with chakra control; chakra control
+    instinct otherwise; a default plan keeps its best attack, brings a Search against a foe that
+    hides, and a kit that fights from one distance makes for it (`fightsFromHome`). Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
     foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
     lethality targets (equals fight two to three rounds and win about half) and the content bench

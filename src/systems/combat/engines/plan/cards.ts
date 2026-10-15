@@ -1,3 +1,5 @@
+import { statTier, type StatGrade } from '@/systems/stats';
+
 import type { CombatItem, CombatTechnique, RangeBand } from '../../contract';
 import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
@@ -9,14 +11,22 @@ import { hasVerb, isHarmful } from '../../rules/verbs';
 import type { CardId, PlanFighter } from './state';
 
 /**
- * The cards a fighter can slot for each distance, Punch Club style: a few slots per range,
- * filled with attacks, techniques that reach, defences that react on their own, and footwork
- * that tries to change the distance. Which cards sit where is the whole plan.
+ * The cards a fighter can slot for each distance, Punch Club style: a few action slots per
+ * range, filled with techniques that reach, tools, and Search or Dispel. Defences aren't slotted
+ * (each distance keeps one reaction ready, `readiness.ts`), nor is footwork (a fighter steps
+ * towards the distance they fight at on their own), nor plain blows (what anyone falls back on).
+ * Which actions sit where is the whole plan, and a sharper mind holds more of them.
  */
 
-/** Slots per distance; a sharp mind keeps one more option ready. */
-const BASE_SLOTS = 3;
-const EXTRA_SLOT_INTELLECT = 10;
+/** Action slots per distance by intellect grade: a strategist plans deeper than a brawler. */
+const SLOTS_BY_INTELLECT: Readonly<Record<StatGrade, number>> = {
+  E: 2,
+  D: 3,
+  C: 4,
+  B: 5,
+  A: 5,
+  S: 5,
+};
 const JUTSU_PREFIX = 'jutsu:';
 export const ITEM_PREFIX = 'item:';
 
@@ -48,7 +58,7 @@ const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
 ];
 
 export function slotLimit(fighter: Pick<PlanFighter, 'attributes'>): number {
-  return BASE_SLOTS + (fighter.attributes.intellect >= EXTRA_SLOT_INTELLECT ? 1 : 0);
+  return SLOTS_BY_INTELLECT[statTier(fighter.attributes.intellect).grade];
 }
 
 export function cardId(card: Card): CardId {
@@ -78,11 +88,37 @@ export function fitsBand(card: Card, band: RangeBand): boolean {
   }
 }
 
-/** Every card this fighter could slot at a distance: basics, then jutsu, then tools. */
-export function cardsFor(fighter: Kit, band: RangeBand): Card[] {
+/** Every card this fighter's kit holds at a distance, of any kind: basics, jutsu, tools. */
+export function kitCards(fighter: Kit, band: RangeBand): Card[] {
   const jutsu = fighter.techniques.map((technique): Card => ({ kind: 'jutsu', technique }));
   const tools = fighter.items.map((item): Card => ({ kind: 'item', item }));
   return [...BASIC_CARDS.map((b) => b.card), ...jutsu, ...tools].filter((c) => fitsBand(c, band));
+}
+
+/** Footwork: a step, or a technique that does nothing but move its user. */
+export function isFootwork(card: Card): boolean {
+  if (card.kind === 'jutsu') return card.technique.effects.every((e) => e.verb === 'move');
+  return card.kind === 'step';
+}
+
+/** A plain blow or throw: what anyone falls back on, never slotted. */
+function isPlainBlow(card: Card): boolean {
+  return card.kind === 'strike' || card.kind === 'throw';
+}
+
+/** An action for a slot: anything but a defence, footwork or a plain blow. */
+export function isAction(card: Card): boolean {
+  return !isReaction(card) && !isFootwork(card) && !isPlainBlow(card);
+}
+
+/** The actions this fighter could slot at a distance: jutsu, tools, Search and Dispel. */
+export function cardsFor(fighter: Kit, band: RangeBand): Card[] {
+  return kitCards(fighter, band).filter(isAction);
+}
+
+/** The defences this fighter could keep ready at a distance: one is chosen (`readiness.ts`). */
+export function reactionsFor(fighter: Kit, band: RangeBand): Card[] {
+  return kitCards(fighter, band).filter(isReaction);
 }
 
 export function findCard(fighter: Kit, id: CardId): Card | null {
@@ -103,7 +139,7 @@ export function findCard(fighter: Kit, id: CardId): Card | null {
 export function keepsInLoadout(fighter: Kit, band: RangeBand, id: CardId): boolean {
   if (id.startsWith(ITEM_PREFIX)) return true;
   const card = findCard(fighter, id);
-  return card !== null && fitsBand(card, band);
+  return card !== null && isAction(card) && fitsBand(card, band);
 }
 
 /** The cards slotted at a distance, resolved, in priority order. */

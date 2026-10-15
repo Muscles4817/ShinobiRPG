@@ -7,6 +7,7 @@ import { strike } from './arms';
 import { defaultLoadout } from './defaults';
 import { createPlanEngine } from './engine';
 import { initialFighters, plainSlots, type PlanFighter, type Round } from './state';
+import { cardLabel } from './wording';
 
 const attributes = {
   strength: 10,
@@ -113,10 +114,11 @@ describe('plan & watch weapons', () => {
     expect(loadout.close.map((s) => s.card)).toContain('jutsu:slash');
   });
 
-  it('a held blade makes the strike card a cut', () => {
-    const labels = tableOf({ held: weapon('blade') }).map((o) => o.label);
-    expect(labels).toContain('Cut');
-    expect(tableOf({}).map((o) => o.label)).toContain('Strike');
+  it('a held blade makes the plain strike a cut', () => {
+    const [armed] = duel({ held: weapon('blade') });
+    const [bare] = duel({});
+    expect(cardLabel({ kind: 'strike' }, armed)).toBe('Cut');
+    expect(cardLabel({ kind: 'strike' }, bare)).toBe('Strike');
     expect(hit({ held: weapon('blade') }).lines.join(' ')).toContain("hero's cut hits foe");
   });
 

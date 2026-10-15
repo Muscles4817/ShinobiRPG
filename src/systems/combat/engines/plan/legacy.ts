@@ -1,7 +1,7 @@
 import { withKit } from '../../rules/body';
 import { formed, preferredRow } from '../../rules/rows';
 import { upgradeTechnique } from '../../rules/verbs';
-import { defaultLoadout } from './defaults';
+import { defaultLoadout, defaultReadiness } from './defaults';
 import type { RangeBand } from '../../contract';
 import { EMPTY_LOADOUT, type CardId, type PlanFighter, type PlanState, type Slot } from './state';
 
@@ -51,7 +51,7 @@ export function upgradeLegacy(state: PlanState): PlanState {
   const fighters = raw.fighters.map((f) => {
     const { stunned, sealed } = f;
     const body: PlanFighter = { ...withKit(f), stunned, sealed, loadout: EMPTY_LOADOUT };
-    return { ...body, loadout: defaultLoadout(body) };
+    return { ...body, loadout: defaultLoadout(body), ...defaultReadiness(body) };
   });
   return {
     phase: 'loadout',

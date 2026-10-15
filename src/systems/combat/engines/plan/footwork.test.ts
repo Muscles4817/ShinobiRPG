@@ -2,10 +2,11 @@ import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { raiseField } from '../../rules/verbs';
-import { cardsFor, playable } from './cards';
-import { defaultLoadout } from './defaults';
+import { cardsFor, playable, reactionsFor } from './cards';
 import { createPlanEngine } from './engine';
-import { substitutionsReady } from './footwork';
+import { moveDestination, substitutionsReady } from './footwork';
+import { defaultReactions } from './readiness';
+import { footworkTowards, makingFor } from './stepping';
 import { useJutsu } from './jutsu';
 import { react, type Blow } from './react';
 import { resolveExchange } from './round';
@@ -213,11 +214,18 @@ describe('plan & watch verbs: move', () => {
     expect(useJutsu(round, turn, away).range).toBe('far');
   });
 
-  it('is the footwork of the default plan, and not played where you already are', () => {
+  it('is footwork, never slotted: the way to where you fight, and not played once there', () => {
     const round = roundOf({}, 'far');
-    const plan = defaultLoadout(hero(round));
-    expect(plan.far.map((s) => s.card)).toContain('jutsu:flicker');
-    expect(plan.close.map((s) => s.card)).not.toContain('jutsu:flicker');
+    const flickering = hero(round);
+    expect(
+      cardsFor(flickering, 'far').some((c) => c.kind === 'jutsu' && c.technique === flicker),
+    ).toBe(false);
+    const home = moveDestination(flickering, flicker)!;
+    expect(footworkTowards(flickering, 'far', home)).toEqual({
+      kind: 'jutsu',
+      technique: flicker,
+    });
+    expect(makingFor({ ...flickering, keepAt: home }, home)).toBeNull();
   });
 });
 
@@ -226,11 +234,12 @@ describe('plan & watch verbs: substitute', () => {
 
   it('is a defence: it reacts on its own and is never played on a turn', () => {
     const round = roundOf();
-    const card = cardsFor(hero(round), 'close').find(
+    const card = reactionsFor(hero(round), 'close').find(
       (c) => c.kind === 'jutsu' && c.technique === swap,
     );
     expect(card && playable(hero(round), card)).toBe(false);
-    expect(defaultLoadout(hero(round)).close.map((s) => s.card)).toContain('jutsu:swap');
+    expect(cardsFor(hero(round), 'close')).not.toContainEqual(card);
+    expect(defaultReactions(hero(round)).close).toBe('jutsu:swap');
   });
 
   it('swaps out of the first hit each round that would land, for chakra', () => {

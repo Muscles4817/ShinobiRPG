@@ -2,10 +2,11 @@ import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique, CombatTrait } from '../../contract';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
-import { defaultLoadout } from './defaults';
+import { defaultLoadout, defaultReadiness } from './defaults';
+import { plannedPlay } from './priority';
 import { chooseCard } from './choose';
 import { createPlanEngine } from './engine';
-import { rememberedLoadout } from './memory';
+import { rememberedPlan } from './memory';
 import { react, type Blow } from './react';
 import { decide, resolveExchange } from './round';
 import {
@@ -58,6 +59,11 @@ const blast: CombatTechnique = {
 };
 
 const NO_CARDS: Loadout = { close: [], mid: [], far: [] };
+
+/** An exchange about to be played at a distance, for asking what a fighter plays. */
+function roundAt(fighters: PlanFighter[], range: Round['range']): Round {
+  return { number: 1, fighters, range, lines: [], seen: {}, intents: {} };
+}
 const STRIKE: Blow = { raw: 5, what: 'strike', dodgeable: true, physical: true, kind: 'blow' };
 
 /** A hero and one enemy with the given traits. */
@@ -110,9 +116,13 @@ const said = (log: readonly string[]) => log.map((line) => splitNarration(line).
 
 describe('plan & watch kits: reach', () => {
   it('an archer never attacks up close and backs away instead', () => {
-    const [, archer] = pair(['archer']);
-    expect(defaultLoadout(archer!).close[0]?.card).toBe('step-back');
-    expect(defaultLoadout(archer!).close).not.toContainEqual({ card: 'strike' });
+    const [hero, archer] = pair(['archer']);
+    const planned = { ...archer!, loadout: defaultLoadout(archer!), ...defaultReadiness(archer!) };
+    expect(planned.loadout.close).toEqual([]);
+    expect(plannedPlay(planned, roundAt([hero!, planned], 'close')).card).toEqual({
+      kind: 'step',
+      direction: 'back',
+    });
     const slotted = {
       ...archer!,
       loadout: { ...NO_CARDS, close: plainSlots(['strike', 'guard']) },
@@ -124,8 +134,13 @@ describe('plan & watch kits: reach', () => {
   });
 
   it('a brawler closes in instead of throwing from afar', () => {
-    const [, brawler] = pair(['brawler']);
-    expect(defaultLoadout(brawler!).far[0]?.card).toBe('step-in');
+    const [hero, brawler] = pair(['brawler']);
+    const planned = { ...brawler!, ...defaultReadiness(brawler!) };
+    expect(planned.keepAt).toBe('close');
+    expect(plannedPlay(planned, roundAt([hero!, planned], 'far')).card).toEqual({
+      kind: 'step',
+      direction: 'in',
+    });
     const slotted = { ...brawler!, loadout: { ...NO_CARDS, far: plainSlots(['throw']) } };
     for (let seed = 1; seed <= 20; seed++) {
       const card = chooseCard(slotted, { band: 'far', foe: undefined }, createRng(seed));
@@ -166,12 +181,13 @@ describe('plan & watch kits: illusions', () => {
   it('a hidden foe cannot be attacked: with no one in sight, the attacker searches instead', () => {
     const [hero, ghost] = pair(['illusionist']);
     expect(ghost!.hidden).toBe(true);
-    const armed = { ...hero!, loadout: { ...NO_CARDS, mid: plainSlots(['throw']) } };
-    const after = resolveExchange(stateOf([armed, ghost!]), createRng(3));
+    // Up close, with nothing slotted, they'd strike: with no one in sight, they search.
+    const armed = { ...hero!, loadout: NO_CARDS };
+    const after = resolveExchange(stateOf([armed, ghost!], 'close'), createRng(3));
     expect(after.log.some((l) => l.startsWith('hero searches') || l === 'hero spots foe!')).toBe(
       true,
     );
-    expect(after.log.some((l) => l.includes("hero's kunai"))).toBe(false);
+    expect(after.log.some((l) => l.includes("hero's strike"))).toBe(false);
     expect(after.fighters[1]?.health).toBe(ghost!.health);
   });
 
@@ -228,7 +244,7 @@ describe('plan & watch kits: saves', () => {
       mid: plainSlots(['dispel', 'jutsu:blast']),
       far: [],
     };
-    expect(rememberedLoadout(plan, hero!)).toEqual(plan);
+    expect(rememberedPlan(plan, hero!)?.loadout).toEqual(plan);
   });
 
   it('a fight saved before kits and tools still views and plays', () => {

@@ -72,7 +72,8 @@ const intentOf = (s: PlanState, hero: Partial<CombatantSetup> = {}) =>
 describe('plan & watch telegraphs', () => {
   it('a foe announces its opening move at the card table, then plays it', () => {
     for (let seed = 1; seed <= 10; seed++) {
-      const state = start({}, { techniques: [blast] });
+      // A hero who fights from here, so the range holds and the foe's move still fits.
+      const state = start({ techniques: [blast] }, { techniques: [blast] });
       const announced = state.intents.bandit;
       expect(announced).toBeDefined();
       const fought = step(step(state, 'begin', seed), 'next', seed);

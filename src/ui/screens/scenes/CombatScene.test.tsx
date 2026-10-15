@@ -137,7 +137,23 @@ describe('CombatScene (smoke test)', () => {
   });
 
   it('says once why the cards you could add are blocked, and the round once', () => {
-    render(<CombatScene ctx={ctx} state={riverFight()} perform={() => undefined} />);
+    // Fill the slots where the fight is, so every card left to add is blocked the same way.
+    let state = riverFight();
+    for (let i = 0; i < 8; i++) {
+      const view = combatScene(state, ctx)!;
+      const here = view.options.find(
+        (o) =>
+          o.kind === 'plan' &&
+          o.group?.toLowerCase() === view.range &&
+          o.id.startsWith('slot:') &&
+          !o.selected &&
+          !o.adjusts &&
+          !o.disabledReason,
+      );
+      if (!here) break;
+      state = act(state, { type: 'combatAct', optionId: here.id });
+    }
+    render(<CombatScene ctx={ctx} state={state} perform={() => undefined} />);
     expect(screen.getAllByText('Slots full. Take a card out first.')).toHaveLength(1);
     expect(screen.getAllByRole('heading', { name: /^Plan round \d+$/ })).toHaveLength(1);
   });

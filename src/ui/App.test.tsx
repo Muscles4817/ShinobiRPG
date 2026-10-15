@@ -309,14 +309,11 @@ describe('App (smoke test)', () => {
         .find((b) => !(b as HTMLButtonElement).disabled)!,
     );
     await user.click(screen.getByRole('tab', { name: /^Far/ }));
-    const dodge = screen.getByRole('button', { name: /^Dodge/ });
-    const before = dodge.getAttribute('aria-pressed');
-    if (before === 'true' || !(dodge as HTMLButtonElement).disabled) {
-      await user.click(dodge);
-      expect(screen.getByRole('button', { name: /^Dodge/ }).getAttribute('aria-pressed')).not.toBe(
-        before,
-      );
-    }
+    const defence = screen.getByRole('combobox', { name: 'Defence' });
+    await user.selectOptions(defence, 'ready:far:dodge');
+    expect(screen.getByRole('combobox', { name: 'Defence' })).toHaveValue('ready:far:dodge');
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Fight at' }), 'keep:far:far');
+    expect(screen.getByText('Back off first whenever closer')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /^Begin the fight/ }));
     await skipWatching(user);
     await user.click(screen.getByRole('button', { name: /^Watch the round/ }));

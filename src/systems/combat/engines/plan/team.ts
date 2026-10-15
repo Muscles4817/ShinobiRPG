@@ -5,9 +5,9 @@ import { inReach, RANGE_BANDS, reachOf } from '../../rules/range';
 import { coverChance } from '../../rules/team';
 import { isHindering, isWounding } from '../../rules/verbs';
 import type { CombatStance } from '../../teamContract';
-import { findCard, isOffence, isReaction, needsAim, slotLimit, type Card } from './cards';
+import { findCard, isOffence, needsAim, type Card } from './cards';
 import { withoutLoneCombos } from './combo';
-import { defaultLoadout } from './defaults';
+import { defaultLoadout, defaultReadiness } from './defaults';
 import { canHit } from './rows';
 import type { Turn } from './senses';
 import { isDazed, say, type Loadout, type PlanFighter, type Round, type Slot } from './state';
@@ -16,10 +16,10 @@ import { isDazed, say, type Loadout, type PlanFighter, type Round, type Slot } f
  * Teammates in a planned fight. Each fights by a stance: their own cards (the default plan for
  * their kit) shaped by it, played in priority order like the player's.
  *  - press: closes in when their kit can fight up close, attacks aim at the team mark;
- *  - cover: keeps a guard slotted, goes for whoever threatens the back row, and may step in
+ *  - cover: keeps a guard ready, goes for whoever threatens the back row, and may step in
  *    front of a single attack aimed at the one they cover (`intercept`);
  *  - support: dazes, seals and confusion first (on foes not already held), to set up the rest;
- *  - hold: keeps to where their kit fights best and spares chakra, blows before jutsu.
+ *  - hold: keeps to where their kit fights best and spares chakra: emergencies, else blows.
  */
 
 /** A teammate with no stance given: an illusionist supports, anyone else presses. */
@@ -66,22 +66,11 @@ const supportFirst: Shaper = (f, slots) => {
   return [...freed].sort((a, b) => rank(a) - rank(b));
 };
 
-/** A guard in every distance's slots, taking the last slot when they are full. */
-const guarded: Shaper = (f, slots) => {
-  const threat = aimed(f, slots, 'threat');
-  if (threat.some((s) => s.card === 'guard')) return threat;
-  return [...threat.slice(0, slotLimit(f) - 1), { card: 'guard' }];
-};
+/** Goes for whoever threatens the back row; the guard is their ready defence (`withStances`). */
+const guarded: Shaper = (f, slots) => aimed(f, slots, 'threat');
 
-function holdRank(f: PlanFighter, s: Slot): number {
-  const card = cardOf(f, s);
-  if (conditional(s) || card === null) return 0;
-  if (card.kind === 'step' || isReaction(card)) return card.kind === 'step' ? 1 : 4;
-  return card.kind === 'jutsu' ? 3 : 2;
-}
-
-/** Footwork home first, then blows, then jutsu: chakra is kept for when it's needed. */
-const sparing: Shaper = (f, slots) => [...slots].sort((a, b) => holdRank(f, a) - holdRank(f, b));
+/** Only the emergencies: otherwise plain blows, so chakra is kept for when it's needed. */
+const sparing: Shaper = (_f, slots) => slots.filter(conditional);
 
 const pressing: Shaper = (f, slots) => aimed(f, slots, 'marked');
 
@@ -124,12 +113,32 @@ export function stanceLoadout(
   return { close: close ?? [], mid: mid ?? [], far: far ?? [] };
 }
 
-/** Every teammate takes up their stance (from the setup, else their kit) and its cards. */
+/**
+ * What a stance keeps ready: a cover keeps a Guard up at every distance, a teammate pressing
+ * in makes for close range, and anyone else keeps the default plan's defences.
+ */
+export function stanceReadiness(
+  f: PlanFighter,
+  stance: CombatStance,
+): Pick<PlanFighter, 'reactions' | 'keepAt'> {
+  const base = defaultReadiness(f, { home: homeFor(f, stance) });
+  return stance.kind === 'cover' ? { ...base, reactions: GUARD_READY } : base;
+}
+
+const GUARD_READY = { close: 'guard', mid: 'guard', far: 'guard' } as const;
+
+/** Every teammate takes up their stance (from the setup, else their kit), its cards and readiness. */
 export function withStances(fighters: readonly PlanFighter[]): PlanFighter[] {
   return fighters.map((f) => {
     if (!isTeammate(f)) return f;
     const stance = stanceOf(f);
-    return { ...f, stance, loadout: stanceLoadout(f, stance, fighters) };
+    const { keepAt: _was, ...rest } = f;
+    return {
+      ...rest,
+      stance,
+      loadout: stanceLoadout(f, stance, fighters),
+      ...stanceReadiness(f, stance),
+    };
   });
 }
 
