@@ -11,6 +11,7 @@ import {
   isWounding,
   techniquePower,
 } from '../../rules/verbs';
+import { beats, seenDefence, walksInto } from './adapt';
 import { isOffence, playable, slotted, type Card } from './cards';
 import { partnered } from './combo';
 import { moveDestination } from './footwork';
@@ -18,7 +19,8 @@ import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
 import { sightInstinct } from './sight';
 import { improvise, makingFor } from './stepping';
-import { canDaze, isDazed, type PlanFighter } from './state';
+import { canDaze, isDazed } from './daze';
+import type { DefenceKind, PlanFighter, Reads } from './state';
 
 /**
  * Which slotted card a fighter plays this exchange. Fighters follow a few instincts (heal when
@@ -36,6 +38,9 @@ const LOW_HEALTH = 0.35;
 const DAZE_FIRST_CHANCE = 0.6;
 const BASIC_WEIGHT = 5;
 const STEP_WEIGHT = 5;
+/** How much likelier an attack that beats the foe's seen defence is; one walking into it, less. */
+const BEATS_WEIGHT = 2;
+const WALKS_INTO_WEIGHT = 0.5;
 
 function jutsu(cards: readonly Card[], test: (t: CombatTechnique) => boolean): Card | undefined {
   return cards
@@ -43,16 +48,24 @@ function jutsu(cards: readonly Card[], test: (t: CombatTechnique) => boolean): C
     .sort((a, b) => techniquePower(b.technique) - techniquePower(a.technique))[0];
 }
 
-function weight(card: Card): number {
+function baseWeight(card: Card): number {
   if (card.kind === 'jutsu') return Math.max(BASIC_WEIGHT, techniquePower(card.technique) / 2);
   return card.kind === 'step' ? STEP_WEIGHT : BASIC_WEIGHT;
 }
 
-function weighted(cards: readonly Card[], rng: Rng): Card | undefined {
-  const total = cards.reduce((sum, c) => sum + weight(c), 0);
+/** Stronger cards more often; for a foe, ones that get past the defence it has seen more still. */
+function weight(card: Card, defence: DefenceKind | undefined): number {
+  const base = baseWeight(card);
+  if (!defence) return base;
+  if (beats(card, defence)) return base * BEATS_WEIGHT;
+  return walksInto(card, defence) ? base * WALKS_INTO_WEIGHT : base;
+}
+
+function weighted(cards: readonly Card[], rng: Rng, defence?: DefenceKind): Card | undefined {
+  const total = cards.reduce((sum, c) => sum + weight(c, defence), 0);
   let roll = rng.next() * total;
   for (const card of cards) {
-    roll -= weight(card);
+    roll -= weight(card, defence);
     if (roll < 0) return card;
   }
   return cards[cards.length - 1];
@@ -87,6 +100,8 @@ export interface Moment {
   readonly fighters?: readonly PlanFighter[];
   /** The exchange the card would be played in: a foe steady after a daze can't be dazed. */
   readonly exchange?: number;
+  /** What each fighter has been seen to do (`reads.ts`): foes lean on what beats it. */
+  readonly reads?: Reads;
 }
 
 /**
@@ -147,7 +162,8 @@ function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, 
   const finisher = jutsu(harmful, isWounding);
   if (finisher && foe && isDazed(foe)) return finisher;
   const usual = harmful.filter((c) => c !== daze || fresh);
-  return weighted(usual, rng) ?? fallback(self, moment);
+  const defence = self.side === 'enemy' ? seenDefence(moment.reads, foe, moment.band) : undefined;
+  return weighted(usual, rng, defence) ?? fallback(self, moment);
 }
 
 /** Nothing to play: look for a hidden foe when no one is in sight, else improvise. */

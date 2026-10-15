@@ -19,7 +19,7 @@ import { slotLimit } from './cards';
 import { defaultLoadout, defaultReadiness } from './defaults';
 import { withoutLoneCombos } from './combo';
 import { fieldMeter, fieldStatuses } from './field';
-import { substitutionsReady } from './footwork';
+import { betweenRounds } from './adapt';
 import { intentLine, rollIntents } from './intent';
 import { lingeringStatuses } from './lingering';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
@@ -28,11 +28,11 @@ import { defaultReactions } from './readiness';
 import { prepStatuses } from './prep';
 import { openFight } from './opening';
 import { decide, resolveExchange } from './round';
+import { isDazed } from './daze';
 import {
   decode,
   encode,
   initialFighters,
-  isDazed,
   PLAN_ENGINE_ID,
   playerOf,
   type PlanFighter,
@@ -143,7 +143,7 @@ function endOfRound(next: PlanState): PlanState {
     phase: 'loadout',
     bout: next.bout + 1,
     exchange: 0,
-    fighters: substitutionsReady(next.fighters),
+    fighters: betweenRounds(next.fighters, next.reads),
     log: [...next.log, '— The round is over. Change your cards if you like. —'],
   };
 }

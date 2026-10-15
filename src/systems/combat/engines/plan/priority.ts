@@ -3,7 +3,9 @@ import { alive, hasPerk } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
 import { effectsOf, hasVerb, isHindering, isPinned, isWounding } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
+import { beats, seenDefence, walksInto } from './adapt';
 import { partnered } from './combo';
+import { styleOf } from './reads';
 import { ownField } from './field';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
@@ -11,9 +13,8 @@ import { prepNeeded } from './prep';
 import { hittable } from './rows';
 import { improvise, makingFor } from './stepping';
 import { inSight, opponentsOf } from './senses';
+import { canDaze, isDazed } from './daze';
 import {
-  canDaze,
-  isDazed,
   type PlanFighter,
   type Round,
   type Slot,
@@ -231,6 +232,30 @@ function firstPlay(self: PlanFighter, round: Round, slots: readonly Slot[]): Pla
   return null;
 }
 
+/** How a play fares against the defence its target has shown: 1 beats it, -1 walks into it. */
+function against(play: Play, round: Round): number {
+  const defence = seenDefence(round.reads, play.target, round.range);
+  if (!defence) return 0;
+  if (beats(play.card, defence)) return 1;
+  return walksInto(play.card, defence) ? -1 : 0;
+}
+
+/**
+ * A foe's first choice, unless it runs into a defence it has seen you keep: then the first
+ * later slot that gets past it, or at least one that doesn't walk into it (`adapt.ts`).
+ */
+function counterPick(self: PlanFighter, round: Round, first: Play): Play {
+  const fares = against(first, round);
+  if (self.side !== 'enemy' || fares === 1 || styleOf(first.card) === null) return first;
+  const attacks = self.loadout[round.range].flatMap((slot) => {
+    const play = fromSlot(self, round, slot);
+    return play && styleOf(play.card) !== null ? [play] : [];
+  });
+  const beating = attacks.find((p) => against(p, round) === 1);
+  if (beating) return beating;
+  return fares < 0 ? (attacks.find((p) => against(p, round) === 0) ?? first) : first;
+}
+
 /**
  * An emergency slot that holds; else, for someone fighting at a set distance and elsewhere, a
  * step towards it; else the first slot at this distance that qualifies; else an improvised
@@ -243,7 +268,7 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   const footwork = isPinned(self) ? null : makingFor(self, round.range);
   if (footwork) return { card: footwork, target: undefined };
   const play = firstPlay(self, round, slots);
-  if (play) return play;
+  if (play) return counterPick(self, round, play);
   const foes = opponentsOf(round.fighters, self);
   const seen = foes.filter((f) => inSight(self, f));
   // With no one to hit and someone hidden, looking for them beats walking about.

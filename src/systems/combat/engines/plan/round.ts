@@ -21,9 +21,11 @@ import { useTool } from './pouch';
 import { secondWinds } from './provisions';
 import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
+import { noteAttack } from './reads';
 import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { intercept } from './team';
 import { springTraps } from './traps';
+import { wearOffDaze } from './daze';
 import {
   fighterIn,
   LOG_LIMIT,
@@ -33,7 +35,6 @@ import {
   type PlanFighter,
   type PlanState,
   type Round,
-  wearOffDaze,
 } from './state';
 
 /**
@@ -72,6 +73,7 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
     fieldUp: ownField(round.field, actor),
     fighters: round.fighters,
     exchange: round.number,
+    ...(round.reads ? { reads: round.reads } : {}),
   };
   const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
   if (!foe || !isOffence(card) || canHit(card, foe, round.fighters)) return { card, target: foe };
@@ -205,7 +207,8 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const aim = intercept(round, { actor, target: planned.target, rng }, card);
   const tried = attempt(aim.round, { actor, target: aim.target, rng }, card);
   const played = afterStep(aim.round, tried, actor.id, rng);
-  return { ...played, seen: remember(played.seen, actor.id, cardId(card)) };
+  const noted = noteAttack(played, actor.id, card);
+  return { ...noted, seen: remember(noted.seen, actor.id, cardId(card)) };
 }
 
 /**
@@ -244,6 +247,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     lines: [`— ${EXCHANGE_NAMES[state.exchange] ?? 'Another'} exchange —`],
     seen: state.seen,
     intents: state.intents,
+    ...(state.reads ? { reads: state.reads } : {}),
     ...(state.field ? { field: state.field } : {}),
     ...(state.mark ? { mark: state.mark } : {}),
   };
@@ -273,6 +277,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     fighters,
     range: end.range,
     seen: end.seen,
+    ...(end.reads ? { reads: end.reads } : {}),
     log: story.slice(-LOG_LIMIT),
     ...(dropped > 0 ? { logDropped: dropped } : {}),
     result,

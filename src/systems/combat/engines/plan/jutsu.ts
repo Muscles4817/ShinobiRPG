@@ -25,16 +25,8 @@ import { afflict, drain, knock, pin, readyRiposte } from './lingering';
 import { damage, type Aimed } from './wounding';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
-import {
-  canDaze,
-  dazeIn,
-  fighterIn,
-  patch,
-  paying,
-  say,
-  type PlanFighter,
-  type Round,
-} from './state';
+import { canDaze, dazeIn } from './daze';
+import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { setTrap } from './traps';
 
 /**

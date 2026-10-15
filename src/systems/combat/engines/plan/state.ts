@@ -60,6 +60,20 @@ export type Loadout = Readonly<Record<RangeBand, readonly Slot[]>>;
 /** The defence kept ready at each distance (`readiness.ts`), by card id; null keeps none. */
 export type Reactions = Readonly<Record<RangeBand, CardId | null>>;
 
+/** Kinds of attack, as an opponent sizes them up (`reads.ts`). */
+export type AttackStyle = 'blow' | 'flurry' | 'break' | 'sure' | 'illusion' | 'jutsu';
+/** A defence as an opponent sees it react. */
+export type DefenceKind = 'guard' | 'dodge' | 'counter' | 'swap';
+
+/** What a fighter has given away this fight: their defence at each distance, the attacks they throw. */
+export interface Read {
+  readonly defences: Partial<Record<RangeBand, DefenceKind>>;
+  readonly attacks: Partial<Record<AttackStyle, number>>;
+}
+
+/** Everyone's read, by fighter id: what their opponents have seen of them. */
+export type Reads = Readonly<Record<string, Read>>;
+
 /** Slots that always play and aim at the weakest, one per card, in order. */
 export function plainSlots(cards: readonly CardId[]): Slot[] {
   return cards.map((card) => ({ card }));
@@ -119,41 +133,6 @@ export function paying(
   return { chakra: f.chakra - paid, chakraSpent: (f.chakraSpent ?? 0) + paid };
 }
 
-/** Dazed: about to lose a turn, or still reeling from one. */
-export function isDazed(f: Pick<PlanFighter, 'stunned' | 'openUntil'>): boolean {
-  return f.stunned > 0 || f.openUntil !== undefined;
-}
-
-/** Exchanges a fighter stays steady (no fresh daze takes hold) after a daze wears off. */
-export const STEADY_EXCHANGES = 1;
-
-/**
- * Whether a daze can take hold of this fighter in exchange `exchange`: not while dazed, nor
- * while steady after one. Rounds play out on their own, so a chain of dazes would leave the
- * player watching themselves lose.
- */
-export function canDaze(
-  f: Pick<PlanFighter, 'stunned' | 'openUntil' | 'steadyUntil'>,
-  exchange: number,
-): boolean {
-  return !isDazed(f) && (f.steadyUntil === undefined || f.steadyUntil < exchange);
-}
-
-/**
- * A fresh daze, dealt in exchange `exchange`: it costs one turn, and leaves its target open
- * through the next exchange. Check `canDaze` first.
- */
-export function dazeIn(exchange: number): Pick<PlanFighter, 'stunned' | 'openUntil'> {
-  return { stunned: 1, openUntil: exchange + 1 };
-}
-
-/** At the end of an exchange: a daze whose last open exchange this was wears off. */
-export function wearOffDaze(f: PlanFighter, exchange: number): PlanFighter {
-  if (f.openUntil === undefined || f.openUntil > exchange) return f;
-  const { openUntil: _done, ...rest } = f;
-  return { ...rest, steadyUntil: exchange + STEADY_EXCHANGES };
-}
-
 export interface PlanState {
   /** Setting up cards between rounds, then watching the round play out. */
   readonly phase: 'loadout' | 'fight';
@@ -180,6 +159,8 @@ export interface PlanState {
   readonly field?: ActiveField;
   /** The team mark: the foe (by id) the player's side goes for. */
   readonly mark?: string;
+  /** What each fighter has given away so far (`reads.ts`); absent until anyone has. */
+  readonly reads?: Reads;
 }
 
 /** A hit with an element that landed this exchange, for element combos (`combo.ts`). */
@@ -202,6 +183,7 @@ export interface Round {
   readonly intents: PlanState['intents'];
   readonly field?: ActiveField;
   readonly mark?: string;
+  readonly reads?: Reads;
   /** Elemental hits landed this exchange. */
   readonly hits?: readonly ElementHit[];
 }

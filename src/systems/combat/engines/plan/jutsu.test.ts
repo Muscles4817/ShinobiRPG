@@ -5,16 +5,8 @@ import { splitNarration } from '../../rules/narration';
 import { UNSTABLE_MISFIRE } from '../../rules/unstable';
 import { chooseCard } from './choose';
 import { useJutsu } from './jutsu';
-import {
-  fighterIn,
-  initialFighters,
-  canDaze,
-  isDazed,
-  plainSlots,
-  wearOffDaze,
-  type PlanFighter,
-  type Round,
-} from './state';
+import { canDaze, isDazed, wearOffDaze } from './daze';
+import { fighterIn, initialFighters, plainSlots, type PlanFighter, type Round } from './state';
 
 const attributes = {
   strength: 5,

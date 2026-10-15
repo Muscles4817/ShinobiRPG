@@ -5,7 +5,8 @@ import { COMBINATION_BONUS } from '../../rules/team';
 import { trumpSpent } from '../../rules/trumps';
 import { hasVerb, isHarmful } from '../../rules/verbs';
 import type { Turn } from './senses';
-import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
+import { isDazed } from './daze';
+import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Fighting together. Element combos need no authoring: when a fighter's elemental hit lands on

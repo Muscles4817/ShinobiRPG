@@ -10,7 +10,8 @@ import { withoutLoneCombos } from './combo';
 import { defaultLoadout, defaultReadiness } from './defaults';
 import { canHit } from './rows';
 import type { Turn } from './senses';
-import { isDazed, say, type Loadout, type PlanFighter, type Round, type Slot } from './state';
+import { isDazed } from './daze';
+import { say, type Loadout, type PlanFighter, type Round, type Slot } from './state';
 
 /**
  * Teammates in a planned fight. Each fights by a stance: their own cards (the default plan for
