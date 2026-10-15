@@ -59,7 +59,7 @@ import { NARUTO_ROUTES } from './routes';
 import { NARUTO_ATLAS } from './atlas';
 import { WAVES_FOODS, WAVES_JOBS, WAVES_PEOPLE, WAVES_TRAINING } from './landOfWaves';
 import { TANZAKU_FOODS, TANZAKU_JOBS, TANZAKU_PEOPLE } from './tanzaku';
-import { SHUKUBA_FOODS, SHUKUBA_JOBS } from './shukuba';
+import { SHUKUBA_FOODS, SHUKUBA_JOBS, SHUKUBA_PEOPLE } from './shukuba';
 import { OTAFUKU_FOODS, OTAFUKU_JOBS, OTAFUKU_PEOPLE } from './otafuku';
 import {
   FIRE_TEMPLE_FOODS,
@@ -150,6 +150,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...WAVES_PEOPLE,
     ...TANZAKU_PEOPLE,
     ...OTAFUKU_PEOPLE,
+    ...SHUKUBA_PEOPLE,
     ...FIRE_TEMPLE_PEOPLE,
   ],
   conversations: [

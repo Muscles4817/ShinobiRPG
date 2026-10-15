@@ -155,6 +155,33 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         keeper: 'Old Tanuki, behind the counter',
         foodIds: ['tavern-yakitori', 'tavern-oden', 'barley-tea'],
         roundCost: 40,
+        cupCost: 12,
+        pastimes: [
+          {
+            id: 'shogi',
+            name: 'Shōgi at the back table',
+            scene:
+              'A shōgi board by the window, and a jōnin with a cigarette losing to a Nara who looks half asleep.',
+          },
+          {
+            id: 'hanafuda',
+            name: 'Hanafuda',
+            scene:
+              'Flower cards slapped down on the mat, and off-duty chūnin arguing over who owes whom.',
+          },
+        ],
+      },
+      {
+        id: 'bathhouse',
+        kind: 'onsen',
+        name: 'Konoha Bathhouse',
+        icon: 'spring',
+        blurb: 'Hot baths behind a tall bamboo fence, and a sign on it about peeping.',
+        hours: ['morning', 'afternoon', 'evening'],
+        keeper:
+          'The attendant at the counter, who has chased a white-haired peeper off the fence more than once',
+        waters: 'bathhouse',
+        soakCost: 10,
       },
       {
         id: 'apartment',

@@ -1,4 +1,6 @@
-import type { ContentPack, PlaceDef, Stall } from './types';
+import type { Find } from '@/systems/cooking';
+
+import type { ContentPack, FishingSpot, PlaceDef, Stall } from './types';
 import { duplicateIds } from './catalog';
 
 /**
@@ -99,6 +101,15 @@ function stallRefs(stall: Stall): [RefKind, string][] {
   ];
 }
 
+/** What grows and swims in a wild place: its finds and every spot's catches. */
+function wildsRefs(wilds: {
+  readonly finds: readonly Find[];
+  readonly spots?: readonly FishingSpot[];
+}): [RefKind, string][] {
+  const caught = (wilds.spots ?? []).flatMap((s) => s.catches);
+  return [...wilds.finds, ...caught].map((f) => ['ingredient', f.ingredientId]);
+}
+
 function placeRefs(place: PlaceDef): [RefKind, string][] {
   switch (place.kind) {
     case 'training':
@@ -118,14 +129,12 @@ function placeRefs(place: PlaceDef): [RefKind, string][] {
     case 'library':
       return place.techniqueIds.map((id) => ['technique', id]);
     case 'wilds':
-      return [...place.finds, ...(place.spots ?? []).flatMap((s) => s.catches)].map((f) => [
-        'ingredient',
-        f.ingredientId,
-      ]);
+      return wildsRefs(place);
     case 'home':
     case 'hospital':
     case 'inn':
     case 'house':
+    case 'onsen':
       return [];
   }
 }

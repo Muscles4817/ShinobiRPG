@@ -3,6 +3,7 @@ import type { MapStyle } from '../mapStyle';
 import type { RangeBand } from '@/systems/combat';
 import type { CookingSteps } from '@/systems/cooking';
 import type { ApproachId, ReconId } from '@/systems/missions';
+import type { DrinkWayId } from '../bar';
 import type { MindApproach } from '../exam/mind';
 import type { Replacement } from '../exam/entry';
 import type { StatId } from '@/systems/stats';
@@ -87,6 +88,8 @@ export type GameAction =
   | { readonly type: 'followSight' }
   | { readonly type: 'hostDinner'; readonly recipeId: string; readonly guestId: string }
   | { readonly type: 'buyRound' }
+  | { readonly type: 'drinkWith'; readonly personId: string; readonly way: DrinkWayId }
+  | { readonly type: 'soak'; readonly withId: string | null }
   | { readonly type: 'enterExam'; readonly replacements?: readonly Replacement[] }
   | { readonly type: 'examAnswer'; readonly approach: MindApproach }
   | { readonly type: 'examFinal'; readonly stay: boolean }

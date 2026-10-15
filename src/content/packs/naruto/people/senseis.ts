@@ -48,7 +48,7 @@ export const SENSEIS: readonly PersonDef[] = [
     specialty: 'ninjutsu',
     bio: 'The Copy Ninja. Always late, always reading, never actually unaware of anything.',
     schedule: {
-      morning: null,
+      morning: 'bathhouse',
       afternoon: 'training-grounds',
       evening: 'mission-desk',
       night: 'izakaya',
@@ -198,7 +198,7 @@ export const SENSEIS: readonly PersonDef[] = [
     schedule: {
       morning: 'shopping-district',
       afternoon: 'training-grounds',
-      evening: null,
+      evening: 'bathhouse',
       night: null,
     },
     sensei: {

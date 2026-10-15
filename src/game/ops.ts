@@ -23,8 +23,9 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
   const { character } = state;
   const { hungerRate } = characterModifiers(character, ctx);
   const time = advanceSlots(state.time, slots);
-  const { snack: _snack, ...rest } = character;
+  const { snack: _snack, soaked, ...rest } = character;
   const snack = snackAt(character.snack, time);
+  const newDay = time.day !== state.time.day;
   const passed: GameState = {
     ...state,
     time,
@@ -34,9 +35,10 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
       // A home-cooked meal's buff lasts until the day ends; a snack's only a little while.
       meal: time.day === state.time.day ? character.meal : null,
       ...(snack ? { snack } : {}),
+      // Like the meal, a soak's warmth lasts until the day ends.
+      ...(soaked && !newDay ? { soaked } : {}),
     },
   };
-  const newDay = time.day !== state.time.day;
   const healed = newDay ? healInjuries(passed, ctx) : passed;
   const grown = newDay ? { ...healed, people: peopleGrown(healed, ctx) } : healed;
   const mentored = newDay ? settleMentor(grown, ctx) : grown;

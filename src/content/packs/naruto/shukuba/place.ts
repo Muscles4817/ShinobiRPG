@@ -2,8 +2,8 @@ import type { LocationDef } from '../../../types';
 
 /**
  * Shukuba Town, the post town a day down the highway: every traveller between the Leaf and
- * Tanzaku sleeps here. Inns on every corner, a travellers' market, an outfitter for the road
- * and the post office's errands.
+ * Tanzaku sleeps here. Inns on every corner, a travellers' market, an outfitter for the road,
+ * the Waystation for a cup before bed, and the post office's errands.
  */
 export const SHUKUBA_TOWN: LocationDef = {
   id: 'shukuba-town',
@@ -54,6 +54,26 @@ export const SHUKUBA_TOWN: LocationDef = {
       hours: ['morning', 'afternoon'],
       keeper: 'A retired courier with one good knee',
       gearIds: ['tanto', 'weighted-kunai', 'mesh-shirt', 'shadow-cloak'],
+    },
+    {
+      id: 'waystation',
+      kind: 'tavern',
+      name: 'The Waystation',
+      icon: 'sake',
+      blurb: 'A drinking stand for travellers who aren’t sleepy yet',
+      hours: ['evening', 'night'],
+      keeper: 'Granny Ume, who has poured for every courier on the highway',
+      foodIds: ['post-town-soba', 'tavern-oden', 'barley-tea'],
+      roundCost: 30,
+      cupCost: 10,
+      pastimes: [
+        {
+          id: 'go',
+          name: 'The travellers’ go game',
+          scene:
+            'A go board left mid-game. Whoever sits down plays on from where the last traveller stopped, and leaves it for the next.',
+        },
+      ],
     },
     {
       id: 'post-office',

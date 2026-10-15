@@ -184,6 +184,8 @@ export interface Character {
   readonly mealQuality?: MealQuality;
   /** A snack's short buff, alongside the meal; absent when none is working. */
   readonly snack?: Snack;
+  /** Soaked at the baths today: warm through until the day ends; absent when not. */
+  readonly soaked?: true;
   /** Injuries you carry; each heals on its own morning. */
   readonly injuries: readonly Injury[];
   /**
