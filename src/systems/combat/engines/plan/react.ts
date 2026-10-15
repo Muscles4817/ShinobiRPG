@@ -14,14 +14,18 @@ import {
   type AttackKind,
 } from '../../rules/kit';
 import { harmLine, reactionLine, type NarrationReaction } from '../../rules/narration';
-import { brokenScale, covered, dulled, isPinned, PIN_SLIP } from '../../rules/verbs';
+import type { RangeBand } from '../../contract';
+import { brokenScale, covered, dulled, isPinned, PIN_SLIP, substitutable } from '../../rules/verbs';
+import type { Card } from './cards';
 import { reactionAt } from './readiness';
+import { defenceKind, noteDefence } from './reads';
 import { throughClones } from './decoys';
 import { substituted } from './footwork';
 import { riposteFirst } from './lingering';
 import { wound } from './wound';
 import { canHit } from './rows';
-import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
+import { isDazed } from './daze';
+import { fighterIn, patch, say, type DefenceKind, type PlanFighter, type Round } from './state';
 
 /**
  * The defence a fighter keeps ready at a distance (`readiness.ts`) reacts on its own when they
@@ -190,6 +194,24 @@ function canCounterBack(round: Round, { attacker, target, blow }: Hit, has: Read
   );
 }
 
+/** The defence a blow brings into play, as onlookers see it; none when it can't answer it. */
+function shown(ready: readonly Card[], blow: Blow, band: RangeBand): DefenceKind | null {
+  const [kept] = ready;
+  const kind = kept ? defenceKind(kept) : null;
+  switch (kind) {
+    case 'guard':
+      return blow.followUp ? null : kind;
+    case 'dodge':
+      return blow.dodgeable ? kind : null;
+    case 'counter':
+      return blow.physical && band === 'close' ? kind : null;
+    case 'swap':
+      return substitutable(blow.discipline) ? kind : null;
+    case null:
+      return null;
+  }
+}
+
 /** Lands a blow on the target, letting their clones, ready defence and kit react. */
 export function react(start: Round, hit: Hit): Round {
   const answered = riposteFirst(start, hit);
@@ -199,11 +221,13 @@ export function react(start: Round, hit: Hit): Round {
   const area = blow.area === true;
   const decoyed = throughClones(before, { attacker, target, what: blow.what, area, rng });
   if (decoyed.absorbed) return decoyed.round;
-  const { round } = decoyed;
   // Reeling from a daze, a fighter can still put a guard up, but not dodge, counter or swap out.
   const reeling = isDazed(target);
-  const kept = reactionAt(target, round.range);
+  const kept = reactionAt(target, decoyed.round.range);
   const ready = kept && (!reeling || kept.kind === 'guard') ? [kept] : [];
+  // A defence that comes into play gives itself away to everyone facing its owner.
+  const band = decoyed.round.range;
+  const round = noteDefence(decoyed.round, target.id, band, shown(ready, blow, band));
   const has: Ready = (kind) => ready.some((c) => c.kind === kind);
   const evasion = evade(round, hit, has);
   if (evasion.slipped) return evasion.slipped;

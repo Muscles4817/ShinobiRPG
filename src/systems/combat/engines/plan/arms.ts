@@ -4,7 +4,8 @@ import { alive } from '../../rules/body';
 import { strikeWith, throwWith, type Attack } from '../../rules/weapons';
 import { react, type Blow } from './react';
 import type { Turn } from './senses';
-import { canDaze, dazeIn, fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { canDaze, dazeIn } from './daze';
+import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * The strike and kunai cards, as the fighter's weapons make them (`rules/weapons.ts`): a blade's

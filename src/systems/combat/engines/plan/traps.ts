@@ -14,7 +14,8 @@ import {
   type EffectUse,
 } from '../../rules/verbs';
 import { react } from './react';
-import { canDaze, dazeIn, fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { canDaze, dazeIn } from './daze';
+import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Traps in a planned fight. A trap is set at the distance the fight stands at; the first foe of

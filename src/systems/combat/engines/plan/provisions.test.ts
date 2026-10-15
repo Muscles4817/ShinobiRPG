@@ -5,7 +5,8 @@ import type { CombatantSetup, CombatProvision, CombatTechnique } from '../../con
 import { SECOND_WIND_HEAL, STEADY_THROUGH_EXCHANGE } from '../../rules/provisions';
 import { useJutsu } from './jutsu';
 import { secondWinds } from './provisions';
-import { canDaze, fighterIn, initialFighters, patch, type Round } from './state';
+import { canDaze } from './daze';
+import { fighterIn, initialFighters, patch, type Round } from './state';
 
 const attributes = {
   strength: 10,

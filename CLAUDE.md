@@ -203,7 +203,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     there, else throw a plain blow (never slotted). Foes play
     their default plan by priority, as the player does, most of the time (`PLANNED_CHANCE`), and
     instinct otherwise; a default plan keeps its best attack, brings a Search against a foe that
-    hides, and a kit that fights from one distance makes for it (`fightsFromHome`). Healing is ninjutsu with chakra control; chakra control
+    hides, and a kit that fights from one distance makes for it (`fightsFromHome`). Fighters **read** each
+    other (`reads.ts`: defences seen per distance, attacks by style, public to opponents); foes
+    put it to use (`adapt.ts`): an attack that `beats` your seen defence comes first, a blow
+    that walks into a seen Counter is held back, and between rounds, after `ADAPT_AFTER` attacks,
+    a foe keeps the defence that best meets what you throw. Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
     foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
     lethality targets (equals fight two to three rounds and win about half) and the content bench

@@ -10,7 +10,8 @@ import type { EffectUse } from '../../rules/verbs';
 import { elementBoost, recordHit } from './combo';
 import { react, type Blow } from './react';
 import type { Turn } from './senses';
-import { fighterIn, isDazed, say, type PlanFighter, type Round } from './state';
+import { isDazed } from './daze';
+import { fighterIn, say, type PlanFighter, type Round } from './state';
 
 /**
  * A technique's wounding effects in a planned fight: one blow, or a flurry's several, each

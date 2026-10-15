@@ -25,7 +25,7 @@ import { playerOf, type CardId, type PlanFighter, type PlanState, type Round } f
 /** Each foe's next card, by fighter id. */
 export type Intents = Readonly<Record<string, CardId>>;
 
-type Table = Pick<PlanState, 'fighters' | 'range' | 'exchange' | 'field' | 'round'>;
+type Table = Pick<PlanState, 'fighters' | 'range' | 'exchange' | 'field' | 'round' | 'reads'>;
 
 /**
  * How often a foe plays its plan in priority order, as the player does (its default plan
@@ -44,6 +44,7 @@ function asRound(table: Table): Round {
     lines: [],
     seen: {},
     intents: {},
+    ...(table.reads ? { reads: table.reads } : {}),
     ...(table.field ? { field: table.field } : {}),
   };
 }
@@ -59,6 +60,7 @@ function intentOf(table: Table, self: PlanFighter, rng: Rng): CardId {
     opening: table.exchange === 0,
     fieldUp: ownField(table.field, self),
     exchange: table.round,
+    ...(table.reads ? { reads: table.reads } : {}),
   };
   return cardId(chooseCard(self, moment, rng));
 }
