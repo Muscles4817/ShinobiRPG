@@ -7,6 +7,7 @@ import { placeHere } from '../ops';
 import type { GameState } from '../state';
 import { closedSign, menuToday, rumoursOverheard } from '../village';
 import { choice, type Choice } from './common';
+import { diceTableView, type DiceTableView } from './diceTable';
 import { foodItem, type MarketItem } from './market';
 import { companion, toneRead, type Companion, type ToneRead } from './outings';
 
@@ -24,7 +25,7 @@ export interface TavernView {
   readonly seats: readonly BarSeat[];
   readonly cupCost: number;
   readonly round: Choice & { readonly cost: number; readonly bond: number };
-  /** What is played at the back tables: where small games will be dealt in. */
+  /** What is played at the back tables, and the tables you can sit down at. */
   readonly pastimes: readonly PastimeView[];
   readonly menu: readonly MarketItem[];
   readonly overheard: readonly string[];
@@ -46,6 +47,8 @@ export interface PastimeView {
   readonly id: string;
   readonly name: string;
   readonly scene: string;
+  /** A table you can sit down at, or null for one you only watch. */
+  readonly dice: DiceTableView | null;
 }
 
 function seat(state: GameState, ctx: GameContext, person: PersonDef): BarSeat {
@@ -77,7 +80,12 @@ export function tavernView(state: GameState, ctx: GameContext): TavernView | nul
       cost: tavern.roundCost,
       bond: ROUND_BOND,
     },
-    pastimes: (tavern.pastimes ?? []).map(({ id, name, scene }) => ({ id, name, scene })),
+    pastimes: (tavern.pastimes ?? []).map((p) => ({
+      id: p.id,
+      name: p.name,
+      scene: p.scene,
+      dice: closed ? null : diceTableView(state, ctx, tavern.id, p),
+    })),
     menu: menuToday(tavern.foodIds, state, ctx).map((id) => foodItem(state, ctx, id)),
     overheard: closed ? [] : rumoursOverheard(state, ctx).map((r) => r.text),
   };

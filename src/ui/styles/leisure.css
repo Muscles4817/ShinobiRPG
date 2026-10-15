@@ -181,3 +181,103 @@ button.crowd-face[aria-pressed='true'] {
 .bather .blocker {
   grid-column: 2 / -1;
 }
+
+/* Chō-han at the back table: the last cup, the stake, and a call of even or odd. */
+.dice-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgb(0 0 0 / 0.25);
+}
+.dice-last {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-story);
+}
+.dice-faces {
+  display: flex;
+  gap: 4px;
+}
+.die {
+  width: 28px;
+  height: 28px;
+}
+.die rect {
+  fill: var(--paper);
+  stroke: var(--ema-ink);
+  stroke-width: 1.5;
+}
+.die circle {
+  fill: var(--ema-ink);
+}
+.dice-heard {
+  margin: 0;
+  font-family: var(--font-story);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+.dice-stakes {
+  display: flex;
+  gap: 6px;
+}
+.dice-table .chip.gain {
+  color: var(--ink-gain);
+  background: color-mix(in srgb, var(--ink-gain) 12%, transparent);
+}
+.dice-table .chip.cost {
+  color: var(--ink-cost);
+  background: color-mix(in srgb, var(--ink-cost) 12%, transparent);
+}
+.dice-table .blocker {
+  color: var(--ink-cost);
+}
+.dice-stake {
+  flex: 1;
+  text-align: center;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgb(0 0 0 / 0.3);
+  background: transparent;
+  color: var(--ema-ink);
+  font-weight: 700;
+}
+.dice-stake.on {
+  background: var(--ema-ink);
+  color: var(--ema);
+}
+.dice-calls {
+  display: flex;
+  gap: 8px;
+}
+.dice-call {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.dice-call small {
+  font-weight: normal;
+}
+.dice-rules {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+}
+.dice-rounds {
+  display: flex;
+  gap: 4px;
+}
+.dice-rounds .pip {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ema-ink);
+}
+.dice-rounds .pip.on {
+  background: var(--ema-ink);
+}

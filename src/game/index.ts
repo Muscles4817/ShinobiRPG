@@ -63,6 +63,7 @@ export {
   type PastimeView,
   type TavernView,
 } from './views/tavern';
+export type { DiceBet, DiceStake, DiceTableView, LastCup } from './views/diceTable';
 export { onsenView, type Bather, type OnsenView } from './views/onsen';
 export type { Companion, ToneRead } from './views/outings';
 export {

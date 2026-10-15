@@ -4,14 +4,27 @@
  */
 
 /**
- * Something played at a bar's tables: dice, a board game, arm-wrestling. For now it is what
- * the room looks like; a mini-game will hang on its id.
+ * Something played at a bar's tables: dice, a board game, arm-wrestling. Most are what the
+ * room looks like; one with a `game` can be played.
  */
 export interface Pastime {
   readonly id: string;
   readonly name: string;
   /** What it looks like from the counter. No numbers. */
   readonly scene: string;
+  readonly game?: PastimeGame;
+}
+
+/** A table you can sit down at. One kind for now; more mini-games join the union. */
+export type PastimeGame = DiceTable;
+
+/** Chō-han: the cup is shaken, and you call the sum of the dice even or odd for a stake. */
+export interface DiceTable {
+  readonly kind: 'dice';
+  /** How many dice go in the cup. */
+  readonly dice: number;
+  /** The bets the house takes, smallest first. */
+  readonly stakes: readonly number[];
 }
 
 export interface TavernFields {
