@@ -47,7 +47,8 @@ export function ShinobiScreen({
   state,
   perform,
   onAbandon,
-}: ScreenProps & { readonly onAbandon: () => void }) {
+  onMenu,
+}: ScreenProps & { readonly onAbandon: () => void; readonly onMenu: () => void }) {
   const view = shinobiView(state, ctx);
   const header = headerView(state, ctx);
   return (
@@ -130,6 +131,9 @@ export function ShinobiScreen({
       <p className="muted small">
         {header.location}, {header.date}
       </p>
+      <button type="button" className="btn ghost wide" onClick={onMenu}>
+        Main menu
+      </button>
       <AbandonButton onAbandon={onAbandon} />
     </main>
   );

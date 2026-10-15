@@ -1,0 +1,173 @@
+/* The title menu and versus mode: paper slips on the night ground, serif headings. */
+
+.main-menu,
+.versus-setup,
+.versus-after {
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: 24px var(--gutter) 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.main-menu {
+  justify-content: center;
+}
+
+.menu-title {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.menu-title h1 {
+  font-family: var(--font-story);
+  font-weight: 800;
+  font-size: 2.6rem;
+  margin: 0;
+  color: var(--ink);
+}
+
+.menu-title p {
+  font-family: var(--font-story);
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+.menu-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 64px;
+  padding: 12px 14px;
+  text-align: left;
+  background: var(--surface) var(--grain);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.menu-option b {
+  font-family: var(--font-story);
+  font-size: 1.25rem;
+}
+
+.menu-option small {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.menu-option.primary {
+  background: var(--paper) var(--grain-ink);
+  color: var(--paper-ink);
+  border-color: var(--paper);
+}
+
+.menu-option.primary small {
+  color: var(--paper-muted);
+}
+
+.menu-confirm {
+  background: var(--surface) var(--grain);
+  border: 1px solid var(--harm);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-confirm p {
+  margin: 0;
+}
+
+.versus-setup header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.versus-setup h1,
+.versus-after h1 {
+  font-family: var(--font-story);
+  font-weight: 800;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.versus-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.versus-side label {
+  font-family: var(--font-story);
+  font-size: 1.1rem;
+}
+
+.versus-side select {
+  min-height: 44px;
+  padding: 0 10px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--raise);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.versus-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--paper) var(--grain-ink);
+  color: var(--paper-ink);
+  border-radius: var(--radius);
+}
+
+.versus-card div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.versus-card b {
+  font-family: var(--font-story);
+  font-size: 1.2rem;
+}
+
+.versus-card small {
+  color: var(--paper-muted);
+}
+
+.versus-power {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+  white-space: nowrap;
+}
+
+.versus-swap {
+  align-self: center;
+}
+
+.versus-after {
+  justify-content: center;
+  text-align: center;
+}

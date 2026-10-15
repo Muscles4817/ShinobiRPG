@@ -30,6 +30,8 @@ interface GameScreenProps {
   readonly session: GameSession;
   readonly ctx: GameContext;
   readonly state: GameState;
+  /** Back to the title menu (the game is saved after every change). */
+  readonly onMenu: () => void;
 }
 
 interface Nav {
@@ -41,10 +43,11 @@ interface TabContentProps extends ScreenProps {
   readonly nav: Nav;
   readonly setNav: (n: Nav) => void;
   readonly onAbandon: () => void;
+  readonly onMenu: () => void;
   readonly onOpenPerson: (personId: string) => void;
 }
 
-function TabContent({ nav, setNav, onAbandon, onOpenPerson, ...props }: TabContentProps) {
+function TabContent({ nav, setNav, onAbandon, onMenu, onOpenPerson, ...props }: TabContentProps) {
   const openPlace = (placeId: string) => {
     setNav({ tab: 'here', placeId });
   };
@@ -80,7 +83,7 @@ function TabContent({ nav, setNav, onAbandon, onOpenPerson, ...props }: TabConte
     case 'bonds':
       return <BondsScreen {...props} onOpenPerson={onOpenPerson} />;
     case 'shinobi':
-      return <ShinobiScreen {...props} onAbandon={onAbandon} />;
+      return <ShinobiScreen {...props} onAbandon={onAbandon} onMenu={onMenu} />;
     case 'record':
       return <RecordScreen {...props} />;
   }
@@ -114,7 +117,7 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
  * assignment) take the whole screen; otherwise the dock tab decides, and "Here" shows the village or a place.
  * A person's sheet can open over any tab.
  */
-export function GameScreen({ session, ctx, state }: GameScreenProps) {
+export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   const [nav, setNav] = useState<Nav>({ tab: 'here', placeId: null });
   const [personId, setPersonId] = useState<string | null>(null);
   const props: ScreenProps = { ctx, state, perform: session.perform };
@@ -132,6 +135,7 @@ export function GameScreen({ session, ctx, state }: GameScreenProps) {
           nav={nav}
           setNav={setNav}
           onAbandon={session.abandon}
+          onMenu={onMenu}
           onOpenPerson={setPersonId}
         />
       )}

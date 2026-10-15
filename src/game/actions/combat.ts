@@ -11,6 +11,7 @@ import { engineFor, rememberPlan } from '../fightStyle';
 import { resolveCombat } from '../missionFight';
 import { resolveSpar } from '../sparFlow';
 import type { GameState } from '../state';
+import { resolveVersus } from '../versus/resolve';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
@@ -53,6 +54,11 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const combat = next.value;
     const outcome = engine.outcome(combat);
     if (!outcome) return { ...state, combat };
+    // A versus bout only reports: no toll, no growth, nothing kept.
+    if (state.versus) {
+      const view = engine.view(combat);
+      return { ...resolveVersus({ ...state, combat }, outcome), combatFinale: finaleOf(view) };
+    }
     const lessons = fightLessons(state, outcome, ctx);
     const ended = afterPouch(rememberPlan({ ...state, combat }, engine.id, outcome), outcome);
     const view = engine.view(combat);
