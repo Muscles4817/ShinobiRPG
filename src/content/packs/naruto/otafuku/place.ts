@@ -9,7 +9,7 @@ export const OTAFUKU_TOWN: LocationDef = {
   id: 'otafuku-town',
   name: 'Otafuku Town',
   epithet: 'Pleasure quarter',
-  map: { x: 68, y: 26 },
+  map: { x: 52, y: 36.5 },
   backdrop: 'lantern-rooftops',
   places: [
     {

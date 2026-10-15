@@ -56,6 +56,7 @@ import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
 import { NARUTO_ROUTES } from './routes';
+import { NARUTO_ATLAS } from './atlas';
 import { WAVES_FOODS, WAVES_JOBS, WAVES_PEOPLE, WAVES_TRAINING } from './landOfWaves';
 import { TANZAKU_FOODS, TANZAKU_JOBS, TANZAKU_PEOPLE } from './tanzaku';
 import { SHUKUBA_FOODS, SHUKUBA_JOBS } from './shukuba';
@@ -83,6 +84,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   text: NARUTO_TEXT,
   locations: NARUTO_LOCATIONS,
   routes: NARUTO_ROUTES,
+  atlas: NARUTO_ATLAS,
   exercises: EXERCISES,
   senseiTests: SENSEI_TESTS,
   curriculum: CURRICULUM,

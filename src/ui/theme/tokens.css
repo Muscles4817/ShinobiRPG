@@ -49,6 +49,9 @@
   --paper-ink: #2a2118;
   --paper-muted: #6f6149;
   --seal: #c0392b;
+  /* The map's sea, a shade under the paper, and the home country's ember wash. */
+  --paper-sea: #e4d6b6;
+  --map-home: rgb(229 100 63 / 0.16);
   --wood: #4f3420;
   /* Pale cypress for ema, the wooden plaques hung at shrines. */
   --ema: #d9bb8a;

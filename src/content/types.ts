@@ -1,4 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
+import type { AtlasDef, MapLabelSide } from './atlas';
 import type { Find } from '@/systems/cooking';
 import type {
   ArcDef,
@@ -305,8 +306,11 @@ export interface LocationDef {
   /** e.g. "Village Hidden in the Leaves". */
   readonly epithet: string;
   readonly backdrop: BackdropId;
-  /** Where it sits on the pack's map (`MAP_SIZE`): x from the west edge, y from the north. */
-  readonly map: { readonly x: number; readonly y: number };
+  /**
+   * Where it sits on the pack's map (`MAP_SIZE`): x from the west edge, y from the north, and
+   * which side of its seal the name goes (below unless said).
+   */
+  readonly map: { readonly x: number; readonly y: number; readonly label?: MapLabelSide };
   /** Empty for places you can't visit yet. */
   readonly places: readonly PlaceDef[];
   /** Why it can't be visited yet; absent when travel is possible. The way there is a route. */
@@ -324,6 +328,8 @@ export interface ContentPack {
   readonly locations: readonly LocationDef[];
   /** The roads between locations. */
   readonly routes: readonly RouteDef[];
+  /** How the country looks on the Travel tab's map. */
+  readonly atlas: AtlasDef;
   /** Chakra control exercises (tree-walking, water-walking). */
   readonly exercises: readonly ExerciseDef[];
   /** The tests senseis set new teams, by kind (`SenseiWays.test`). */

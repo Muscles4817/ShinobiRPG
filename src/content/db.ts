@@ -1,4 +1,5 @@
 import type { Find } from '@/systems/cooking';
+import type { AtlasDef } from './atlas';
 import type { ExamDef } from '@/systems/exams';
 import type { ArcDef, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
 import type { TechniqueDef } from '@/systems/techniques';
@@ -49,6 +50,8 @@ export interface ContentDb {
   readonly text: SettingText;
   readonly locations: Catalog<LocationDef>;
   readonly routes: Catalog<RouteDef>;
+  /** How the country looks on the Travel tab's map. */
+  readonly atlas: AtlasDef;
   readonly exercises: Catalog<ExerciseDef>;
   readonly senseiTests: Catalog<SenseiTestDef>;
   readonly curriculum: Catalog<CurriculumBeat>;
@@ -95,6 +98,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     text: pack.text,
     locations: createCatalog('location', pack.locations),
     routes: createCatalog('route', pack.routes),
+    atlas: pack.atlas,
     exercises: createCatalog('exercise', pack.exercises),
     senseiTests: createCatalog('sensei test', pack.senseiTests),
     curriculum: createCatalog('curriculum beat', pack.curriculum),

@@ -23,4 +23,16 @@ describe('the travel map', () => {
     expect(roads.find((r) => r.id === 'coast-road')).toMatchObject({ open: true, danger: 'petty' });
     expect(roads.find((r) => r.id === 'dune-crossing')?.open).toBe(false);
   });
+
+  it('draws the country from the pack’s atlas, and roads through their bends', () => {
+    const map = travelMap(newGame({}, ctx), ctx);
+    expect(map.lands).toBe(original.atlas.lands);
+    expect(map.labels.map((l) => l.text)).toContain('Land of Embers');
+    const bay = original.routes.find((r) => r.id === 'bay-crossing')!;
+    const road = map.roads.find((r) => r.id === 'bay-crossing')!;
+    expect(road.path).toHaveLength((bay.trail?.length ?? 0) + 2);
+    expect(road.path[0]).toEqual({ x: 20, y: 54 });
+    expect(map.places.find((p) => p.id === 'kiri-ford')?.label).toBe('right');
+    expect(map.places.find((p) => p.id === 'torogakure')?.label).toBe('below');
+  });
 });

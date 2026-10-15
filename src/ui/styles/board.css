@@ -366,11 +366,11 @@
   border-color: rgb(0 0 0 / 0.25);
 }
 
-/* The map: the region on paper, roads in ink, places as seals. */
+/* The map: the country on paper like a printed chart, roads in ink, places as seals. */
 .map-paper {
   position: relative;
   width: 100%;
-  background: var(--grain-ink), var(--paper);
+  background: var(--paper-sea);
   border-radius: var(--radius-sm);
   box-shadow: 0 4px 8px rgb(0 0 0 / 0.35);
   overflow: hidden;
@@ -381,15 +381,63 @@
   width: 100%;
   height: 100%;
 }
-.map-road {
+.map-sea {
+  fill: var(--paper-sea);
+}
+.map-hatch {
+  stroke: var(--paper-muted);
+  stroke-width: 0.22;
+}
+.map-shore {
+  fill: none;
+  stroke-width: 5;
+}
+.map-land {
+  fill: var(--paper);
   stroke: var(--paper-ink);
-  stroke-width: 0.9;
+  stroke-width: 0.45;
+}
+.map-home {
+  fill: var(--map-home);
+  stroke: var(--paper-muted);
+  stroke-width: 0.35;
+  stroke-dasharray: 1 0.8;
+}
+.map-border {
+  fill: none;
+  stroke: var(--paper-muted);
+  stroke-width: 0.3;
+  stroke-dasharray: 1 0.8;
+}
+.map-river {
+  fill: none;
+  stroke: var(--paper-muted);
+  stroke-width: 0.4;
   stroke-linecap: round;
+}
+.map-label {
+  font-family: var(--font-story);
+  font-style: italic;
+  font-size: 2.2px;
+  text-anchor: middle;
+  fill: var(--paper-muted);
+}
+.map-label.land.large {
+  font-size: 2.7px;
+}
+.map-label.sea {
   opacity: 0.8;
 }
+.map-road {
+  fill: none;
+  stroke: var(--paper-ink);
+  stroke-width: 0.55;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
 .map-road.closed {
-  stroke-dasharray: 1.2 2;
-  opacity: 0.45;
+  stroke-dasharray: 1 1.4;
+  opacity: 0.5;
 }
 .map-road.deadly {
   stroke: var(--seal);
@@ -397,26 +445,38 @@
 .map-place {
   position: absolute;
   transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  min-width: 40px;
-  min-height: 40px;
-  padding: 4px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   background: none;
   border: 0;
   color: var(--paper-ink);
   font-family: var(--font-story);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   line-height: 1.1;
   cursor: pointer;
 }
 .map-name {
+  position: absolute;
+  white-space: nowrap;
   text-shadow:
     0 0 3px var(--paper),
     0 0 2px var(--paper);
+}
+.map-place.label-below .map-name {
+  top: calc(50% + 9px);
+}
+.map-place.label-above .map-name {
+  bottom: calc(50% + 9px);
+}
+.map-place.label-right .map-name {
+  left: calc(50% + 10px);
+}
+.map-place.label-left .map-name {
+  right: calc(50% + 10px);
 }
 .map-seal {
   width: 12px;

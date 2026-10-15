@@ -54,6 +54,7 @@ import { BROKEN_BLADE, BROKEN_BLADE_JOBS, KUROBANE } from './arcs/brokenBlade';
 import { SALT_LANTERNS, SALT_LANTERNS_JOBS } from './arcs/saltLanterns';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
 import { ORIGINAL_ROUTES } from './routes';
+import { ORIGINAL_ATLAS } from './atlas';
 import {
   SHIOMACHI_FOODS,
   SHIOMACHI_GEAR,
@@ -76,6 +77,7 @@ export const ORIGINAL_PACK: ContentPack = {
   text: ORIGINAL_TEXT,
   locations: ORIGINAL_LOCATIONS,
   routes: ORIGINAL_ROUTES,
+  atlas: ORIGINAL_ATLAS,
   exercises: EXERCISES,
   senseiTests: SENSEI_TESTS,
   curriculum: CURRICULUM,

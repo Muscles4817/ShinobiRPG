@@ -276,7 +276,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     id: 'mount-reikon',
     name: 'Mount Reikon',
     epithet: 'Where spirits gather',
-    map: { x: 40, y: 10 },
+    map: { x: 40, y: 10, label: 'right' },
     backdrop: 'mountain',
     places: [],
     lockedReason: 'Needs Chūnin rank',
