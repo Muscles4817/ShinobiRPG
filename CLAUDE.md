@@ -211,7 +211,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     a foe keeps the defence that best meets what you throw. Foes fight as a **team** when one of
     them reads a fight in the moment (`plan/foeTeam.ts`): stances like your teammates' (the
     sturdiest front-row foe covers the frailest back-row one, back-row casters with holds
-    support, the rest press) and a `foeMark` on whoever on your side would fall soonest. Healing is ninjutsu with chakra control; chakra control
+    support, the rest press) and a `foeMark` on whoever on your side would fall soonest. Left to their judgement, foes and
+    teammates go for whoever is most worth it (`plan/targeting.ts`: the harm they do over the hits
+    they'd take to fall), and a mind that reads the fight keeps chakra for its finisher
+    (`plan/pacing.ts`). Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
     foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
     lethality targets (equals fight two to three rounds and win about half) and the content bench

@@ -21,7 +21,9 @@ import { useTool } from './pouch';
 import { secondWinds } from './provisions';
 import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
+import { readsInTheMoment } from './judgement';
 import { noteAttack } from './reads';
+import { bestTarget } from './targeting';
 import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { intercept } from './team';
 import { springTraps } from './traps';
@@ -63,7 +65,9 @@ function targetFor(foes: readonly PlanFighter[], rng: Rng) {
  */
 function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
   const seen = opponentsOf(round.fighters, actor).filter((f) => inSight(actor, f));
-  const foe = targetFor(seen, rng);
+  // A mind that reads the fight picks whom to go for; a dull one goes for whoever is there.
+  const there = targetFor(seen, rng);
+  const foe = readsInTheMoment(actor) ? bestTarget(actor, seen) : there;
   const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
   const moment = {
     band: round.range,
