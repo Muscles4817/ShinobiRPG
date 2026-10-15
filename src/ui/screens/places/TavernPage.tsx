@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
-import { headerView, tavernView, type TavernView } from '@/game';
+import { headerView, tavernView, type GameAction, type TavernView } from '@/game';
 
 import { Icon } from '../../art/Icon';
 import { Banner } from '../../components/Banner';
 import { Avatar } from '../../components/Faces';
 import type { PlaceProps } from '../types';
+import { DiceTable } from './DiceTable';
 import { FoodCard } from './FoodCard';
 import { ToneStamp } from './ToneStamp';
 
@@ -33,7 +34,7 @@ export function TavernPage({ ctx, state, perform, onBack }: PlaceProps) {
         ) : (
           <>
             <Crowd view={view} perform={perform} />
-            <BackTables view={view} />
+            <BackTables view={view} perform={perform} />
             <section aria-label="Menu">
               <h2 className="label">Menu</h2>
               <div className="stall-items">
@@ -134,8 +135,14 @@ function Crowd({ view, perform }: { readonly view: TavernView; readonly perform:
   );
 }
 
-/** What is played at the back tables tonight: for now you watch. */
-function BackTables({ view }: { readonly view: TavernView }) {
+/** What is played at the back tables tonight: most you watch, a dice table you can join. */
+function BackTables({
+  view,
+  perform,
+}: {
+  readonly view: TavernView;
+  readonly perform: (action: GameAction) => void;
+}) {
   if (view.pastimes.length === 0) return null;
   return (
     <section className="back-tables" aria-label="At the back tables">
@@ -145,6 +152,7 @@ function BackTables({ view }: { readonly view: TavernView }) {
           <li key={p.id} className="pastime">
             <b>{p.name}</b>
             <p className="story">{p.scene}</p>
+            {p.dice && <DiceTable view={p.dice} perform={perform} />}
           </li>
         ))}
       </ul>

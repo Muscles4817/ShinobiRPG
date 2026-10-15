@@ -29,6 +29,7 @@ export const TOROGAKURE_LEISURE: readonly PlaceDef[] = [
         name: 'Lantern dice',
         scene:
           'Three dice in a paper cup, read by the light of the lantern hung over the table. Mama Sayo takes a cut of every pot.',
+        game: { kind: 'dice', dice: 3, stakes: [10, 30, 60] },
       },
       {
         id: 'shogi',

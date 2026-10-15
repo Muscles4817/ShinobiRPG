@@ -69,6 +69,7 @@ export const TANZAKU_TOWN: LocationDef = {
           name: 'Chō-han',
           scene:
             'Two dice under an upturned cup: even or odd. The house never seems to lose, and a blonde regular never seems to win.',
+          game: { kind: 'dice', dice: 2, stakes: [20, 60, 150] },
         },
       ],
     },

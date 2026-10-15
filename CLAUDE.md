@@ -268,7 +268,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `game/bar.ts`) or a soak beside someone at an `onsen` (`soak`, `game/onsen.ts`) is the
     day's time with them, like a talk or a dinner, worth what their traits make of its tone
     (`game/people/together.ts`: you pick the drink's tone; a soak is quiet). A bar's
-    `pastimes` are the hook for mini-games, keyed by id; today they are scenes. A soak costs
+    `pastimes` are scenes, and one with a `game` is played: **chō-han** (`playDice`,
+    `game/dice.ts`), a stake on the cup coming up even or odd, the house taking a cut of a
+    win, a few rounds a night; the cups hash the seed, day and round (never the Rng), so
+    perception can sometimes hear one settle before you bet. A soak costs
     ryo and a slot, gives energy and some health, and leaves you `soaked` (warm through: a
     `ModifierSpec` that `spendTime` clears at the day's end, like the meal); one a day, and
     the baths close at night (validated).

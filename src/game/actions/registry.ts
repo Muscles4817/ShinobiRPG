@@ -26,6 +26,7 @@ import { senseiTest } from './senseiTest';
 import { heedSensei } from './heedSensei';
 import { teamDay } from './teamDay';
 import { buyRound, drinkWith } from './tavern';
+import { playDice } from './dice';
 import { soak } from './onsen';
 import { endConversation, reply, talk } from './talk';
 import { testChakraPaper } from './chakraPaper';
@@ -91,6 +92,7 @@ export const HANDLERS: Registry = {
   followSight,
   hostDinner,
   buyRound,
+  playDice,
   drinkWith,
   soak,
   enterExam,

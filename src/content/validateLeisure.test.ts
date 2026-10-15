@@ -28,6 +28,28 @@ describe('bar and bath validation', () => {
     ]);
   });
 
+  it('reports a dice table with no sensible cup or stakes', () => {
+    const pack = withPlaces((p) =>
+      p.id === 'izakaya' && p.kind === 'tavern'
+        ? {
+            ...p,
+            pastimes: [
+              {
+                id: 'bad-dice',
+                name: 'Bad dice',
+                scene: 'A cup full of dice.',
+                game: { kind: 'dice', dice: 9, stakes: [30, 10] },
+              },
+            ],
+          }
+        : p,
+    );
+    expect(validateLeisure(pack)).toEqual([
+      'pastime "bad-dice" at "izakaya" has a cup of no sensible number of dice',
+      'pastime "bad-dice" at "izakaya" needs whole stakes over nothing, smallest first',
+    ]);
+  });
+
   it('reports a free soak and baths open at night', () => {
     const pack = withPlaces((p) =>
       p.kind === 'onsen' ? { ...p, soakCost: 0, hours: ['evening', 'night'] } : p,

@@ -82,7 +82,7 @@ export type {
   TopicKind,
 } from './people';
 export type { OpeningHours, Stall } from './stall';
-export type { OnsenFields, Pastime, TavernFields, Waters } from './leisure';
+export type { DiceTable, OnsenFields, Pastime, PastimeGame, TavernFields, Waters } from './leisure';
 export type { AptitudeText, PromotedRank, PromotionText, SettingText } from './settingText';
 export type {
   PriceTemplate,

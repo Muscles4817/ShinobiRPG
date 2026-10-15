@@ -22,11 +22,19 @@ An izakaya, a teahouse or a gambling house's front room, open evenings and night
 - **The counter hears more** (`rumoursOverheard`), including talk that carries to another
   town.
 - **The back tables** (`TavernFields.pastimes`). Each bar lists what is played there: lantern
-  dice, shōgi, knot races, chō-han, fan-tossing, a go game left for the next traveller. Today
-  a pastime is a scene on the page, a plaque with no numbers on it. **This is the mini-game
-  hook.** A future mini-game is keyed by pastime id: give `Pastime` a `game` id, add a
-  `playPastime` action and its scene, and the plaque gets a "Sit in" button. Nothing else on
-  the page has to move.
+  dice, shōgi, knot races, chō-han, fan-tossing, a go game left for the next traveller. A
+  pastime is a scene on the page, a plaque with no numbers on it. **This is the mini-game
+  hook:** a pastime with a `game` can be played on its plaque.
+- **Chō-han** (built: `game/dice.ts`, `playDice`). A `dice` game names how many dice go in
+  the cup and the stakes the house takes. You pick a stake and call even (chō) or odd (han);
+  a win pays the stake back and as much again less the house's tenth, a loss keeps it. The
+  dealer gives you three rounds a night. Each cup is a hash of the save's seed, the day and
+  the round, so it is settled before you bet, and perception sometimes hears it land ("You
+  think you heard them settle even."), which is always true. Without sharp ears the house
+  wins slowly; with them, it is a little money a night, never a living. Tables: the Paper
+  Lantern's lantern dice (three dice) and the Short Odds' chō-han in Tanzaku (two dice,
+  bigger stakes). Other games (knot races, arm-wrestling, hanafuda) join the `PastimeGame`
+  union the same way.
 
 Where the bars are:
 
