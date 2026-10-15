@@ -160,7 +160,8 @@ ui ──► game ──► content ──► systems ──► core
     anyone ranked shinobi offers the stats they are ahead of you in, grown by the teacher rule
     (`systems/stats/teaching.ts`, the grade gap) × their rank and quirk (`game/people/
 teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering (they pick
-    the stat until a bond stage), signature `teaches`, sessions a week and a templated price
+    the stat until a bond stage), signature `teaches` (taught only once the teacher can do them
+    at their current grades), sessions a week and a templated price
     (bond, ryo, a finished mission, a favour done in conversation, or `all` of them;
     `game/people/price.ts`); without one, defaults by rank apply. Sessions are counted per
     teacher per week (`people.taught`). Your sensei is the special case: no price, comes to the
@@ -408,8 +409,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
   schedule of place ids in the start location, or in their `homeLocationId` if they live elsewhere, a `rank` and `stats` via `statLine()`, and
   optionally an `aptitude` via `talent()`, and an `arsenal`: the techniques and perks they fight
-  with in place of the academy kit, each a pack technique with its own source and within their
-  grade in its art; validated). Their best stat must fit their rank (genin E–C,
+  with in place of the academy kit, each a pack technique with its own source; validated). List
+  their whole canon kit: they fight with, and teach, a technique only once their current
+  grades carry it (`canPerform`, `game/people/capable.ts`), so a genin grows into theirs. Their best stat must fit their rank (genin E–C,
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
   technique ids, price); at least two specialties must exist for the team choice (validated).
