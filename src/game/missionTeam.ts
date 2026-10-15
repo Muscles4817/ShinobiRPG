@@ -12,6 +12,7 @@ import { companionCombatant, senseiCombatant } from './people/companions';
 import { personStats } from './people/progress';
 import { defaultStance, ordersFor, peerOrders } from './people/teamOrders';
 import type { GameState } from './state';
+import { waysOf } from './sensei/generate';
 
 /**
  * Who is out on a job with you and what they do besides fight: the crew (with the orders your
@@ -41,7 +42,7 @@ const POSTURE_STANCE: Readonly<Record<MissionPosture, CombatStance['kind']>> = {
 };
 
 function leaderStance(leader: PersonDef, sensei: boolean): CombatStance {
-  const posture = sensei ? leader.sensei?.ways.onMissions : undefined;
+  const posture = sensei ? waysOf(leader)?.onMissions : undefined;
   if (!posture) return defaultStance(leader, PLAYER_COMBATANT_ID);
   const kind = POSTURE_STANCE[posture];
   return kind === 'cover' ? { kind, covers: PLAYER_COMBATANT_ID } : { kind };

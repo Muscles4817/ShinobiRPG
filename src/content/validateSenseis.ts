@@ -26,11 +26,31 @@ export function validateSenseis(pack: ContentPack): string[] {
         ways.test === 'none' || pack.senseiTests.some((t) => t.id === ways.test)
           ? []
           : [`sets the "${ways.test}" test, which the pack doesn’t have`];
-      return [...waysProblems(p, ways), ...test].map((problem) => `sensei "${p.id}" ${problem}`);
+      return [...senseiWaysProblems(p, ways), ...test, ...storyProblems(pack, p, ways)].map(
+        (problem) => `sensei "${p.id}" ${problem}`,
+      );
     }),
     ...testProblems(pack),
     ...curriculumProblems(pack),
   ];
+}
+
+/** Friendship stages a sensei's story is told over, one beat each: acquaintance to bonded. */
+const STORY_STAGES = 4;
+
+/** Their story is one personal conversation per stage, in order; their arc is real. */
+function storyProblems(pack: ContentPack, person: PersonDef, ways: SenseiWays): string[] {
+  const { beats, arcId } = ways.story;
+  const problems = beats.length === STORY_STAGES ? [] : [`needs ${STORY_STAGES} story beats`];
+  beats.forEach((id, i) => {
+    const talk = pack.conversations.find((c) => c.id === id);
+    if (talk?.personId !== person.id) problems.push(`tells unknown story beat "${id}"`);
+    else if (talk.minStage !== i + 1) problems.push(`tells story beat "${id}" at the wrong stage`);
+  });
+  if (arcId !== undefined && !pack.arcs.some((a) => a.id === arcId)) {
+    problems.push(`leads unknown arc "${arcId}"`);
+  }
+  return problems;
 }
 
 /** A test is rounds of real choices, each a known way of going at it. */
@@ -118,7 +138,8 @@ function rewardProblems(person: PersonDef, ways: SenseiWays): string[] {
   ];
 }
 
-function waysProblems(person: PersonDef, ways: SenseiWays): string[] {
+/** What is wrong with a set of ways for this person (their story aside). */
+export function senseiWaysProblems(person: PersonDef, ways: SenseiWays): string[] {
   return [
     ...shapeProblems(ways),
     ...coherenceProblems(person, ways),

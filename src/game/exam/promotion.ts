@@ -9,6 +9,7 @@ import type { GameContext } from '../context';
 import { withBreakthrough } from '../breakthroughs';
 import { busyReason, chip, log } from '../ops';
 import type { GameState } from '../state';
+import { farewellDue, partWays } from '../sensei/farewell';
 import { examHere } from './current';
 import { unlocksFor } from './unlocks';
 
@@ -120,9 +121,13 @@ export function acceptPromotion(state: GameState, ctx: GameContext): GameState {
     source: `promotion:${ceremony.rank}`,
     limits: PROMOTION_LIMITS[ceremony.rank],
   };
+  // The genin years end: your sensei's farewell comes before the rank that ends them.
+  const farewell = farewellDue(state, ctx);
+  const parted = farewell ? partWays(state, ctx, farewell) : null;
+  const before = parted?.state ?? state;
   const raised: GameState = {
-    ...withVest(state, ctx, ceremony.rank),
-    character: withBreakthrough(state.character, breakthrough),
+    ...withVest(before, ctx, ceremony.rank),
+    character: withBreakthrough(before.character, breakthrough),
     standing: promote(state.standing, ceremony.rank),
     exams: { ...state.exams, ceremony: null },
   };

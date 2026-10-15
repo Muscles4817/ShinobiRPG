@@ -22,6 +22,12 @@ export const GORAN_WAYS: SenseiWays = {
   test: 'spar',
   gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early' },
   classRegard: 'champions-last',
+  story: {
+    wound:
+      'He was a step too slow to save his teammate on the pass, and has run the stairs ever since.',
+    beats: ['goran-scar', 'goran-old-team', 'goran-daichi', 'goran-kurobane'],
+    arcId: 'the-broken-blade',
+  },
 };
 
 export const AKARI_WAYS: SenseiWays = {
@@ -43,6 +49,10 @@ export const AKARI_WAYS: SenseiWays = {
   test: 'survival',
   gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early' },
   classRegard: 'pushes-best',
+  story: {
+    wound: 'She pushed a student too hard once, and the student quit.',
+    beats: ['akari-gate-lantern', 'akari-brother', 'akari-hands', 'akari-promise'],
+  },
 };
 
 export const YOMI_WAYS: SenseiWays = {
@@ -64,6 +74,10 @@ export const YOMI_WAYS: SenseiWays = {
   test: 'interview',
   gatekeeping: { passStage: 2, permitStage: 2, nominates: 'late' },
   classRegard: 'even',
+  story: {
+    wound: 'Her teammate’s ghost has never come to his grave, and she keeps looking for him.',
+    beats: ['yomi-grandmother', 'yomi-sight', 'yomi-teammate-grave', 'yomi-lantern-promise'],
+  },
 };
 
 export const TETSU_WAYS: SenseiWays = {
@@ -86,6 +100,10 @@ export const TETSU_WAYS: SenseiWays = {
   test: 'none',
   gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual' },
   classRegard: 'even',
+  story: {
+    wound: 'A blade he forged killed his friend.',
+    beats: ['tetsu-forge', 'tetsu-master', 'tetsu-blade', 'tetsu-memory'],
+  },
 };
 
 export const ITO_WAYS: SenseiWays = {
@@ -107,4 +125,8 @@ export const ITO_WAYS: SenseiWays = {
   test: 'bells',
   gatekeeping: { passStage: 1, permitStage: 3, nominates: 'usual' },
   classRegard: 'even',
+  story: {
+    wound: 'A seal she wrote once failed, and what got out is still waiting.',
+    beats: ['ito-seal', 'ito-ropes', 'ito-failed-seal', 'ito-trust'],
+  },
 };

@@ -21,6 +21,10 @@ export const KAKASHI_WAYS: SenseiWays = {
   test: 'bells',
   gatekeeping: { passStage: 1, permitStage: 2, nominates: 'late' },
   classRegard: 'pushes-best',
+  story: {
+    wound: 'He lost both his teammates, and carries one of them in his eye.',
+    beats: ['kakashi-stone', 'kakashi-white-fang', 'kakashi-obito', 'kakashi-scum'],
+  },
 };
 
 export const GUY_WAYS: SenseiWays = {
@@ -43,6 +47,10 @@ export const GUY_WAYS: SenseiWays = {
   test: 'spar',
   gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early' },
   classRegard: 'champions-last',
+  story: {
+    wound: 'His father opened the last gate, and he would too.',
+    beats: ['guy-count', 'guy-father', 'guy-gates', 'guy-precious'],
+  },
 };
 
 export const KURENAI_WAYS: SenseiWays = {
@@ -64,6 +72,10 @@ export const KURENAI_WAYS: SenseiWays = {
   test: 'interview',
   gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual' },
   classRegard: 'even',
+  story: {
+    wound: 'Her father never told her she was good enough.',
+    beats: ['kurenai-care', 'kurenai-father', 'kurenai-asuma', 'kurenai-family'],
+  },
 };
 
 export const ASUMA_WAYS: SenseiWays = {
@@ -82,6 +94,10 @@ export const ASUMA_WAYS: SenseiWays = {
   test: 'survival',
   gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual' },
   classRegard: 'even',
+  story: {
+    wound: 'He left to be more than his father’s son, and came back fighting him still.',
+    beats: ['asuma-shogi', 'asuma-guardians', 'asuma-father', 'asuma-king'],
+  },
 };
 
 export const ANKO_WAYS: SenseiWays = {
@@ -98,4 +114,8 @@ export const ANKO_WAYS: SenseiWays = {
   test: 'survival',
   gatekeeping: { passStage: 2, permitStage: 2, nominates: 'early' },
   classRegard: 'pushes-best',
+  story: {
+    wound: 'Her teacher used her and threw her away, and left his mark on her neck.',
+    beats: ['anko-dango', 'anko-forest', 'anko-mark', 'anko-used'],
+  },
 };

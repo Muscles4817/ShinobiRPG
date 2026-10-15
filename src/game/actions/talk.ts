@@ -5,6 +5,7 @@ import { bondOf, findPerson, requirePerson, tastesOf, whereNow } from '../people
 import { warmed } from '../people/warmth';
 import { pickConversation } from '../people/talk';
 import { festivalBondBonus } from '../village';
+import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
 
 /** A reply that does a teacher's favour marks it done, once. */
@@ -35,6 +36,12 @@ export const talk: ActionHandler<ActionOf<'talk'>> = {
     };
   },
 };
+
+/** The village remembers what a reply leaves behind, once. */
+function remembering(village: GameState['village'], mark: string | undefined) {
+  if (!mark || village.marks.includes(mark)) return village;
+  return { ...village, marks: [...village.marks, mark] };
+}
 
 export const reply: ActionHandler<ActionOf<'reply'>> = {
   check(state, action, ctx) {
@@ -68,6 +75,7 @@ export const reply: ActionHandler<ActionOf<'reply'>> = {
         favours: withFavour(state.people.favours, choice.favour),
         conversation: { ...talking, answer: { choiceIndex: action.choiceIndex, delta, newStage } },
       },
+      village: remembering(state.village, choice.worldMark),
     };
     if (newStage === null) return next;
     return log(next, {

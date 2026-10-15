@@ -55,8 +55,8 @@ export interface SenseiProfile {
    * Left out, they refuse: a team is a team.
    */
   readonly toleratesReplacement?: boolean;
-  /** How they run your genin years. */
-  readonly ways: SenseiWays;
+  /** How they run your genin years. Left out, ways are generated from an archetype. */
+  readonly ways?: SenseiWays;
 }
 
 /**
@@ -118,6 +118,8 @@ export interface ConversationChoice {
   readonly reply: string;
   /** Picking this reply does the favour a teacher asked for (`SimplePrice` favour id). */
   readonly favour?: string;
+  /** The village remembers it (`village.marks`): a sensei's story opening their arc. */
+  readonly worldMark?: string;
 }
 
 /**

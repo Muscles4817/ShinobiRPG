@@ -10,6 +10,7 @@ import { log } from './ops';
 import { bondOf } from './people/cast';
 import { homeVillageId } from './homeVillage';
 import type { GameState } from './state';
+import { waysOf } from './sensei/generate';
 
 /**
  * Who may leave the village on a trip of their own (decision 4 of the world plan; jobs need no
@@ -114,7 +115,7 @@ export function leaveLine(state: GameState): string | null {
 /** After the weekly lesson: a genin your sensei knows gets a pass for the week. */
 export function passAfterLesson(state: GameState, sensei: PersonDef): GameState {
   if (rankAtLeast(state, 'chunin')) return state;
-  const stage = sensei.sensei?.ways.gatekeeping.passStage ?? PASS_BOND_STAGE;
+  const stage = waysOf(sensei)?.gatekeeping.passStage ?? PASS_BOND_STAGE;
   if (stageOf(bondOf(state, sensei.id).points) < stage) return state;
   const renewed = passValid(state.leave, state.time.day);
   const signed = { ...state, leave: signPass(state.leave, state.time.day, PASS_DAYS) };

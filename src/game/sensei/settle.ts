@@ -7,6 +7,7 @@ import { laidUp } from '../injuries';
 import type { GameState } from '../state';
 import { meetingOn, mentorOf, teamDayOf, teamKey, type Meeting } from './plan';
 import { withRegard, type MeetingOutcome, type Mentor } from './state';
+import { waysOf } from './generate';
 
 /**
  * Settles the planned meetings of the days that have ended, as each new day begins: a lesson
@@ -61,7 +62,7 @@ function settleDay(state: GameState, ctx: GameContext, sensei: PersonDef, day: n
   const meeting = meetingOn(state, sensei, day);
   if (!meeting) return state;
   const outcome: MeetingOutcome = outcomeOf(state, ctx, sensei, meeting);
-  const grip = sensei.sensei?.ways.grip ?? 'firm';
+  const grip = waysOf(sensei)?.grip ?? 'firm';
   const delta =
     outcome === 'missed'
       ? -MISSED_REGARD[grip]
@@ -89,7 +90,7 @@ function settleTeamDay(state: GameState, ctx: GameContext, sensei: PersonDef, da
   const key = teamKey(day);
   if (teamDay?.day !== day || state.mentor.outcomes[key] === 'kept') return state;
   const outcome: MeetingOutcome = excused(state, ctx) ? 'excused' : 'missed';
-  const grip = sensei.sensei?.ways.grip ?? 'firm';
+  const grip = waysOf(sensei)?.grip ?? 'firm';
   const delta = outcome === 'missed' ? -MISSED_REGARD[grip] : 0;
   const mentor = withRegard(
     { ...state.mentor, outcomes: { ...state.mentor.outcomes, [key]: outcome } },

@@ -12,6 +12,7 @@ import type { Character, GameState } from '../state';
 import { lensStat, senseiRead } from './read';
 import { rewardFor } from './rewards';
 import { withRegard, type Assignment } from './state';
+import { waysOf } from './generate';
 
 /**
  * What your sensei does at the end of each weekly lesson: judges last week's assignment
@@ -75,7 +76,7 @@ function hiddenGift(character: Character): StatId | null {
 }
 
 function reveal(state: GameState, ctx: GameContext, sensei: PersonDef): Coached {
-  const ways = sensei.sensei?.ways;
+  const ways = waysOf(sensei);
   const looks =
     ways?.lens === 'hidden-talent' || stageOf(bondOf(state, sensei.id).points) >= REVEAL_STAGE;
   const gift = looks ? hiddenGift(state.character) : null;
@@ -92,7 +93,7 @@ function reveal(state: GameState, ctx: GameContext, sensei: PersonDef): Coached 
 }
 
 function assign(state: GameState, ctx: GameContext, sensei: PersonDef): Coached {
-  const lens = sensei.sensei?.ways.lens ?? 'weakest-stat';
+  const lens = waysOf(sensei)?.lens ?? 'weakest-stat';
   const stat = lensStat(state, ctx, lens);
   const from = state.character.stats[stat];
   const assignment: Assignment = {
@@ -109,7 +110,7 @@ function assign(state: GameState, ctx: GameContext, sensei: PersonDef): Coached 
 
 function readAloud(state: GameState, sensei: PersonDef): readonly string[] {
   const read = senseiRead(state, sensei);
-  const lens = sensei.sensei?.ways.lens;
+  const lens = waysOf(sensei)?.lens;
   const order =
     lens === 'specialty' || lens === 'hidden-talent' ? [read.edge, read.danger] : [read.danger];
   return [...(read.beaten ? [read.beaten] : []), ...order];

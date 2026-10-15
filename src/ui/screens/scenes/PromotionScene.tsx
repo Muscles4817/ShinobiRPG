@@ -28,6 +28,7 @@ export function PromotionScene({ ctx, state, perform }: ScreenProps) {
             <span className="chip gain">{scene.gear}</span>
           </p>
         )}
+        {scene.farewell && <p className="story">{scene.farewell}</p>}
         {scene.unlocks.length > 0 && (
           <section className="promotion-opens" aria-label="What this opens">
             <h2>What this opens</h2>

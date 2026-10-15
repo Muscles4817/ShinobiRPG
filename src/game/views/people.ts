@@ -10,6 +10,7 @@ import { currentLocation } from '../ops';
 import { bondOf, everyone, findPerson, fullName, peopleHere, whereNow } from '../people/cast';
 import type { GameState } from '../state';
 import { capitalise, choice, type Choice } from './common';
+import { waysOf } from '../sensei/generate';
 
 /** Stage at which you learn someone's traits, and then what they like to hear. */
 const TRAITS_REVEALED_AT = 1;
@@ -40,6 +41,9 @@ export interface PersonCard extends PersonFace {
   readonly spar: Choice | null;
 }
 
+/** The beat of a sensei's story (the third, among friends) that tells what they carry. */
+const WOUND_BEAT = 2;
+
 export interface PersonSheet extends PersonCard {
   readonly bio: string;
   readonly clan: string | null;
@@ -51,6 +55,8 @@ export interface PersonSheet extends PersonCard {
   readonly reveal: string | null;
   /** Moments from jobs together that they remember, newest first. */
   readonly memories: readonly string[];
+  /** For a sensei: what they carry, once they have told you (their third story beat). */
+  readonly carries: string | null;
   /** The next dish they would teach you, for people who cook; null otherwise. */
   readonly recipe: (Choice & { readonly name: string }) | null;
 }
@@ -150,7 +156,16 @@ export function personSheet(
       .map((m) => m.text)
       .reverse(),
     recipe: recipeOffer(state, ctx, person),
+    carries: carriedWound(state, person),
   };
+}
+
+/** A sensei's wound, once you have heard the beat of their story that tells it. */
+function carriedWound(state: GameState, person: PersonDef): string | null {
+  const story = waysOf(person)?.story;
+  const told = story?.beats[WOUND_BEAT];
+  if (!story || !told) return null;
+  return state.people.bonds[person.id]?.heard.includes(told) ? story.wound : null;
 }
 
 function recipeOffer(state: GameState, ctx: GameContext, person: PersonDef): PersonSheet['recipe'] {

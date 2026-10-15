@@ -150,6 +150,12 @@ export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSh
           </p>
         )}
         {p.reveal && <p className="muted small">{p.reveal}</p>}
+        {p.carries && (
+          <section className="person-memories" aria-label="What they carry">
+            <h3 className="label">What they carry</h3>
+            <p>{p.carries}</p>
+          </section>
+        )}
         {p.memories.length > 0 && (
           <section className="person-memories" aria-label="What you’ve been through">
             <h3 className="label">What you’ve been through</h3>

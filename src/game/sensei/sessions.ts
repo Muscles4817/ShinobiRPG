@@ -3,6 +3,7 @@ import type { StatId } from '@/systems/stats';
 
 import type { GameState } from '../state';
 import type { Meeting } from './plan';
+import { waysOf } from './generate';
 
 /**
  * What a short session with your sensei works on and how it reads. Each format drills one
@@ -75,7 +76,7 @@ export function formatStat(format: SessionFormat, sensei: PersonDef): StatId {
 
 /** The session's story, in their manner; a late sensei is late. */
 export function sessionText(sensei: PersonDef, format: SessionFormat): string {
-  const ways = sensei.sensei?.ways;
+  const ways = waysOf(sensei);
   const late = ways?.cadence.punctuality === 'late' ? `${sensei.name} turns up late. ` : '';
   const said = ways ? ` ${FEEDBACK_LINES[ways.feedback]}` : '';
   return `${late}${FORMAT_LINES[format].replace('{name}', sensei.name)}${said}`;

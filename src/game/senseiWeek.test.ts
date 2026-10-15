@@ -66,7 +66,7 @@ describe('the week your sensei plans', () => {
       sensei: {
         ...mentorOf(state, ctx)!.sensei!,
         ways: {
-          ...mentorOf(state, ctx)!.sensei!.ways,
+          ...mentorOf(state, ctx)!.sensei!.ways!,
           cadence: { sessions: 2, slot: 'morning', punctuality: 'late' },
         },
       },
@@ -78,7 +78,7 @@ describe('the week your sensei plans', () => {
     const state = withSensei(newGame(), 'goran');
     const goran = mentorOf(state, ctx)!;
     expect(meetingsPerWeek(state, goran)).toBe(6);
-    expect(meetingsPerWeek(closeTo(state, goran.sensei!.ways.loosensAtStage), goran)).toBe(3);
+    expect(meetingsPerWeek(closeTo(state, goran.sensei!.ways!.loosensAtStage), goran)).toBe(3);
   });
 
   it('ends with the genin years', () => {
@@ -151,7 +151,7 @@ describe('a sensei’s first view of you', () => {
     const assigned = act(freshGame(), { type: 'assignTeam' });
     const senseiId = assigned.people.team!.senseiOptions[0]!;
     const formed = act(assigned, { type: 'chooseSensei', senseiId });
-    const ways = ctx.content.people.require(senseiId).sensei!.ways;
+    const ways = ctx.content.people.require(senseiId).sensei!.ways!;
     expect(formed.mentor.regard).toBe(
       startingRegard(ways.classRegard, formed.character.classStanding),
     );

@@ -105,6 +105,17 @@ export interface SenseiGatekeeping {
   readonly nominates: NominationHabit;
 }
 
+/**
+ * What they carry, and what they tell you of it: a line for the wound, and the personal
+ * conversations (by id) that tell their story at bond stages one to four, in order. The last
+ * may leave the world mark that opens their `arcId`, the long story they take you into.
+ */
+export interface SenseiStory {
+  readonly wound: string;
+  readonly beats: readonly string[];
+  readonly arcId?: string;
+}
+
 export interface SenseiWays {
   readonly philosophy: SenseiPhilosophy;
   readonly lens: SenseiLens;
@@ -122,4 +133,5 @@ export interface SenseiWays {
   readonly test: OpeningTest;
   readonly gatekeeping: SenseiGatekeeping;
   readonly classRegard: ClassRegard;
+  readonly story: SenseiStory;
 }

@@ -11,6 +11,7 @@ import { findPerson } from '../people/cast';
 import type { GameState, SharedMemory } from '../state';
 import { mentorOf } from './plan';
 import { withRegard, type Mentor } from './state';
+import { waysOf } from './generate';
 
 /**
  * The first meeting with your sensei, after the chakra paper: their test (bells, a night in
@@ -43,7 +44,7 @@ const SHOWN = '{sensei} nods. “Then we start from the beginning. I’ll show y
 const SKIPPED = '{sensei} raises an eyebrow. “We’ll see. Ask if you get lost.”';
 
 export function testOf(ctx: GameContext, sensei: PersonDef): SenseiTestDef | null {
-  const test = sensei.sensei?.ways.test;
+  const test = waysOf(sensei)?.test;
   return test && test !== 'none' ? (ctx.content.senseiTests.get(test) ?? null) : null;
 }
 
@@ -90,7 +91,7 @@ function testRound(
 ): GameState {
   const opening = state.mentor.opening;
   if (!opening) return state;
-  const philosophy = sensei.sensei?.ways.philosophy ?? 'fundamentals';
+  const philosophy = waysOf(sensei)?.philosophy ?? 'fundamentals';
   const mentor: Mentor = withRegard(
     {
       ...state.mentor,
