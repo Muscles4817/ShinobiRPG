@@ -5,6 +5,7 @@ import { effectsOf, hasVerb, isHindering, isPinned, isWounding } from '../../rul
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
 import { beats, seenDefence, walksInto } from './adapt';
 import { partnered } from './combo';
+import { readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
 import { ownField } from './field';
 import { moveDestination } from './footwork';
@@ -246,7 +247,8 @@ function against(play: Play, round: Round): number {
  */
 function counterPick(self: PlanFighter, round: Round, first: Play): Play {
   const fares = against(first, round);
-  if (self.side !== 'enemy' || fares === 1 || styleOf(first.card) === null) return first;
+  if (self.side !== 'enemy' || !readsInTheMoment(self)) return first;
+  if (fares === 1 || styleOf(first.card) === null) return first;
   const attacks = self.loadout[round.range].flatMap((slot) => {
     const play = fromSlot(self, round, slot);
     return play && styleOf(play.card) !== null ? [play] : [];
