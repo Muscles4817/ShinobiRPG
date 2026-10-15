@@ -14,26 +14,139 @@
 }
 
 .main-menu {
-  justify-content: center;
+  padding-top: 0;
+  gap: 18px;
+}
+
+/* The picture: lanterns over the village, the title set into its foot. */
+.menu-hero {
+  position: relative;
+  margin: 0 calc(-1 * var(--gutter));
+  padding-bottom: 6px;
+  text-align: center;
+}
+
+.title-scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 46dvh;
+  /* The village's foot fades into the page, so the picture has no edge. */
+  mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+}
+
+.lantern-glyph {
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', var(--font-story);
+  font-size: 34px;
+  font-weight: 700;
+  fill: #2a120b;
+  fill-opacity: 0.88;
+}
+
+/* Lanterns swing a little on the line, each in its own time, and their light breathes. */
+.lantern-sway {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: lantern-sway 6s ease-in-out infinite alternate;
+}
+.lantern-sway.sway-2 {
+  animation-duration: 7.4s;
+  animation-delay: -2s;
+}
+.lantern-sway.sway-3 {
+  animation-duration: 5.2s;
+  animation-delay: -4s;
+}
+.lantern-glow {
+  animation: lantern-glow 3.8s ease-in-out infinite alternate;
+}
+@keyframes lantern-sway {
+  from {
+    transform: rotate(-2.2deg);
+  }
+  to {
+    transform: rotate(2.2deg);
+  }
+}
+@keyframes lantern-glow {
+  from {
+    opacity: 0.75;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lantern-sway,
+  .lantern-glow {
+    animation: none;
+  }
+}
+
+/* Wider than a phone, the picture has sides too: let them fade, and give it room. */
+@media (min-width: 600px) {
+  .title-scene {
+    max-height: 62dvh;
+    mask-image: radial-gradient(ellipse 52% 60% at 50% 42%, #000 70%, transparent 100%);
+  }
+}
+
+/* The motto, brushed down the right edge the way a hanging scroll reads. */
+.menu-vertical {
+  position: absolute;
+  top: 18px;
+  right: calc(var(--gutter) + 4px);
+  margin: 0;
+  writing-mode: vertical-rl;
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', var(--font-story);
+  font-size: 0.82rem;
+  line-height: 1.2;
+  color: var(--story);
+  opacity: 0.55;
 }
 
 .menu-title {
-  text-align: center;
-  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: -6px;
 }
 
 .menu-title h1 {
   font-family: var(--font-story);
   font-weight: 800;
-  font-size: 2.6rem;
+  font-size: 2.9rem;
+  line-height: 1;
   margin: 0;
-  color: var(--ink);
+  color: var(--paper);
 }
 
-.menu-title p {
+.menu-title h1 span {
+  font-weight: 700;
+  font-size: 0.5em;
+  color: var(--lantern);
+  vertical-align: 0.55em;
+}
+
+.ink-seal {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  transform: rotate(-5deg);
+}
+
+.seal-glyph {
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', var(--font-story);
+  font-size: 18px;
+  font-weight: 700;
+  fill: var(--paper);
+}
+
+.menu-tagline {
   font-family: var(--font-story);
   color: var(--muted);
-  margin: 6px 0 0;
+  margin: 8px 0 0;
 }
 
 .menu-options {
@@ -44,9 +157,8 @@
 
 .menu-option {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+  align-items: center;
+  gap: 12px;
   min-height: 64px;
   padding: 12px 14px;
   text-align: left;
@@ -55,6 +167,21 @@
   border: 1px solid var(--line);
   border-radius: var(--radius);
   cursor: pointer;
+}
+
+.menu-option:hover {
+  border-color: var(--lantern);
+}
+
+.menu-option:active {
+  transform: translateY(1px);
+}
+
+.menu-words {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
 .menu-option b {
@@ -67,10 +194,28 @@
   font-size: 0.9rem;
 }
 
+/* Each choice carries its character, stamped like the dock's. */
+.menu-glyph {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid currentcolor;
+  border-radius: var(--radius-sm);
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', var(--font-story);
+  font-size: 1.3rem;
+  color: var(--lantern);
+}
+
 .menu-option.primary {
   background: var(--paper) var(--grain-ink);
   color: var(--paper-ink);
   border-color: var(--paper);
+}
+
+.menu-option.primary .menu-glyph {
+  color: var(--seal);
 }
 
 .menu-option.primary small {

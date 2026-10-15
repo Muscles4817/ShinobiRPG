@@ -61,6 +61,14 @@ async function skipWatching(user: ReturnType<typeof userEvent.setup>) {
 }
 
 describe('App (smoke test)', () => {
+  it('opens on the title: the lanterns, the name and what you can do', () => {
+    render(<App store={memoryStore()} />);
+    expect(screen.getByRole('heading', { name: 'Shinobi RPG' })).toBeInTheDocument();
+    const menu = screen.getByRole('navigation', { name: 'Main menu' });
+    expect(within(menu).getByRole('button', { name: /New game/ })).toBeInTheDocument();
+    expect(within(menu).getByRole('button', { name: /Versus/ })).toBeInTheDocument();
+  });
+
   it('starts in the chosen world’s village and autosaves', async () => {
     const user = userEvent.setup();
     const store = memoryStore();
