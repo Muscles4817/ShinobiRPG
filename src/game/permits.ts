@@ -8,6 +8,7 @@ import { log } from './ops';
 import { bondOf } from './people/cast';
 import type { PersonDef } from '@/content';
 import type { GameState } from './state';
+import { waysOf } from './sensei/generate';
 
 /**
  * Slips your sensei signs. The library permit opens its open shelves (the standard techniques
@@ -66,7 +67,7 @@ export function permitDue(state: GameState, sensei: PersonDef): boolean {
     !isChuninOrAbove(state) &&
     !hasLibraryPermit(state) &&
     stageOf(bondOf(state, sensei.id).points) >=
-      (sensei.sensei?.ways.gatekeeping.permitStage ?? PERMIT_BOND_STAGE) &&
+      (waysOf(sensei)?.gatekeeping.permitStage ?? PERMIT_BOND_STAGE) &&
     artAtGrade(state)
   );
 }

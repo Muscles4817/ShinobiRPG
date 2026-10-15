@@ -5,7 +5,7 @@ import { validateSenseis } from './validateSenseis';
 function withWays(id: string, change: Partial<SenseiWays>): typeof ORIGINAL_PACK {
   const people = ORIGINAL_PACK.people.map((p): PersonDef =>
     p.id === id && p.sensei
-      ? { ...p, sensei: { ...p.sensei, ways: { ...p.sensei.ways, ...change } } }
+      ? { ...p, sensei: { ...p.sensei, ways: { ...p.sensei.ways!, ...change } } }
       : p,
   );
   return { ...ORIGINAL_PACK, people };
@@ -72,7 +72,7 @@ describe('sensei ways validation', () => {
   });
 
   it('reports a story out of order, a beat that isn’t theirs and an unknown arc', () => {
-    const ways = ORIGINAL_PACK.people.find((p) => p.id === 'goran')!.sensei!.ways;
+    const ways = ORIGINAL_PACK.people.find((p) => p.id === 'goran')!.sensei!.ways!;
     const [scar, team, daichi, kurobane] = ways.story.beats;
     const pack = withWays('goran', {
       story: { ...ways.story, beats: [team!, scar!, daichi!, 'akari-brother'], arcId: 'nowhere' },

@@ -375,3 +375,22 @@ Part 5 entry.
    camp, then back to settle the debt, mercy or not; C-rank, so Gōran leads whoever's sensei he
    is). The fan pack's senseis have their stories and no arc yet. Talk "by moment and manner"
    is the manner lines already in sessions, praise and the first meeting; no separate pool.
+9. **The farewell.** At a genin's chūnin ceremony with a sensei (`farewellDue`,
+   `game/sensei/farewell.ts`) the scene carries their parting words in their manner, and
+   accepting the rank first keeps the farewell (`partWays`): the rest of their next signature
+   at once (up to a dozen sessions' worth), or failing that what they like to give; bond; the
+   memory "the day you made chūnin"; and the open assignment is done with. The rank then ends
+   the genin years on its own (`underSensei`), so the plan, sessions, coaching and curriculum
+   stop and the sensei is a teacher with no price.
+10. **Generated senseis.** `SenseiProfile.ways` is optional. `waysOf` (`game/sensei/generate.ts`)
+    is the one way the game reads a sensei's ways: the authored ones, or ways generated from the
+    person's id. Seven archetypes (`content/senseiArchetypes.ts`: drillmaster, strategist,
+    guardian, gourmand, prodigy, old hand, eccentric) fix what makes each kind (philosophy, lens,
+    grip, formats, manner, posture, test, rituals, wound); the rest is rolled (cadence within the
+    grip's range, slot, punctuality, loosening stage, gatekeeping, class regard, rewards they can
+    actually give), and a distracted teacher never gets the hidden-talent lens. A test rolls two
+    hundred and checks every one against `senseiWaysProblems`. Generated senseis have a wound and
+    no story beats. Nothing generates jōnin yet; when other villages or replacements do, their
+    senseis need no authored ways.
+
+All ten steps are built.

@@ -14,6 +14,7 @@ import { naturalLimits } from './profile';
 import type { GameState } from './state';
 import { activeScene } from './views/peopleScenes';
 import { promotionScene } from './views/promotion';
+import { mentorOf } from './sensei/plan';
 
 /** Promotion: the chūnin ceremony after the exam, its real unlocks, and a jōnin's nomination. */
 
@@ -66,6 +67,33 @@ describe('the chūnin ceremony', () => {
       board: { ...after.board, postings: [{ missionId: job.id, postedDay: 1, expiresDay: 9999 }] },
     };
     expect(availability(posted, ctx, job).kind).toBe('posted');
+  });
+
+  it('ends the genin years with your sensei’s farewell: their words, a gift, a memory', () => {
+    const before = promoted();
+    const set = {
+      ...before,
+      character: {
+        ...before.character,
+        assignment: { stat: 'speed' as const, from: 1, target: 2 },
+      },
+    };
+    const senseiId = set.people.team!.senseiId!;
+    const sensei = ctx.content.people.require(senseiId);
+    expect(promotionScene(set, ctx)?.farewell).toMatch(
+      new RegExp(`^${sensei.name} finds you after the ceremony`),
+    );
+    const after = act(set, { type: 'acceptPromotion' });
+    const word = after.journal.entries.find((e) => e.heading === `${sensei.name}’s farewell`);
+    expect(word?.chips?.length).toBe(2);
+    expect(after.character.assignment).toBeNull();
+    expect(after.village.memories).toContainEqual(
+      expect.objectContaining({ personId: senseiId, text: 'the day you made chūnin' }),
+    );
+    expect(after.people.bonds[senseiId]!.points).toBeGreaterThan(
+      set.people.bonds[senseiId]!.points,
+    );
+    expect(mentorOf(after, ctx)).toBeNull();
   });
 
   it('deepens your reserves: a breakthrough that moves the limit, once', () => {

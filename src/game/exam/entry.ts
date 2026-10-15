@@ -6,6 +6,7 @@ import type { GameContext } from '../context';
 import { bondOf, findPerson, requirePerson, villagers } from '../people/cast';
 import { personStats } from '../people/progress';
 import type { GameState } from '../state';
+import { waysOf } from '../sensei/generate';
 
 /**
  * Who may sit an exam. Your sensei nominates you: they must trust you (a bond stage) and judge
@@ -26,7 +27,7 @@ export const NOMINATION_MISSIONS: Readonly<Record<NominationHabit, number>> = {
 
 /** Jobs this sensei wants to see done before they nominate you. */
 export function nominationMissions(sensei: PersonDef): number {
-  return NOMINATION_MISSIONS[sensei.sensei?.ways.gatekeeping.nominates ?? 'usual'];
+  return NOMINATION_MISSIONS[waysOf(sensei)?.gatekeeping.nominates ?? 'usual'];
 }
 /** Your sensei must rate you at least this (`game/sensei/state.ts`): kept sessions earn it. */
 export const NOMINATION_REGARD = 40;

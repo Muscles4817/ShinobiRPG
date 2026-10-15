@@ -7,6 +7,7 @@ import { bondOf } from '../people/cast';
 import { hasLibraryPermit } from '../permits';
 import type { GameState } from '../state';
 import { mentorOf } from './plan';
+import { waysOf } from './generate';
 
 /**
  * The curriculum: what your sensei shows you, one thing a day at most, in the order their
@@ -128,7 +129,7 @@ function timely(state: GameState, sensei: PersonDef, id: CurriculumBeatId): bool
       return done >= 2;
     case 'pass':
       return (
-        stageOf(bondOf(state, sensei.id).points) >= (sensei.sensei?.ways.gatekeeping.passStage ?? 1)
+        stageOf(bondOf(state, sensei.id).points) >= (waysOf(sensei)?.gatekeeping.passStage ?? 1)
       );
     case 'permit':
       return hasLibraryPermit(state);
@@ -146,7 +147,7 @@ export function beatDue(state: GameState, ctx: GameContext): CurriculumBeat | nu
     return null;
   }
   const sensei = mentorOf(state, ctx);
-  const philosophy = sensei?.sensei?.ways.philosophy;
+  const philosophy = sensei ? waysOf(sensei)?.philosophy : undefined;
   if (!sensei || !philosophy) return null;
   const id = CURRICULUM_ORDER[philosophy].find(
     (beat) => !mentor.beats.includes(beat) && timely(state, sensei, beat),

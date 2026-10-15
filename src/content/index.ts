@@ -68,6 +68,8 @@ export {
   type UpbringingDef,
 } from './upbringing';
 export { jobProfile, postedAway } from './jobProfile';
+export { RITUAL_LINES, SENSEI_ARCHETYPES, type SenseiArchetype } from './senseiArchetypes';
+export { senseiWaysProblems } from './validateSenseis';
 export { CURRICULUM_BEATS, type CurriculumBeat, type CurriculumBeatId } from './curriculum';
 export {
   TEST_APPROACHES,

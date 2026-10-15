@@ -11,6 +11,7 @@ import { teachSignature } from '../people/signatures';
 import { teachingOf } from '../people/teachers';
 import { warmed } from '../people/warmth';
 import type { GameState } from '../state';
+import { waysOf } from './generate';
 
 /**
  * What your sensei gives for an assignment done, in the order they like to give it: praise
@@ -60,7 +61,7 @@ function giftGear(state: GameState, ctx: GameContext, sensei: PersonDef): GearDe
 function praise(state: GameState, ctx: GameContext, sensei: PersonDef): Given {
   const bond = warmed(state, ctx, PRAISE_BOND);
   const bonds = { ...state.people.bonds, [sensei.id]: addPoints(bondOf(state, sensei.id), bond) };
-  const said = PRAISE[sensei.sensei?.ways.feedback ?? 'warm'];
+  const said = PRAISE[waysOf(sensei)?.feedback ?? 'warm'];
   return {
     state: { ...state, people: { ...state.people, bonds } },
     line: `${sensei.name} looks at you a moment. ${said}`,
@@ -115,7 +116,7 @@ const GIVERS: Readonly<Record<SenseiReward, Giver>> = { praise, signature, gear,
 
 /** The first reward this sensei can give you now; praise if nothing else is left. */
 export function rewardFor(state: GameState, ctx: GameContext, sensei: PersonDef): Given {
-  for (const kind of sensei.sensei?.ways.rewards ?? []) {
+  for (const kind of waysOf(sensei)?.rewards ?? []) {
     const given = GIVERS[kind](state, ctx, sensei);
     if (given) return given;
   }

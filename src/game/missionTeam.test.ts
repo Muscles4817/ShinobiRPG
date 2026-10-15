@@ -64,7 +64,7 @@ describe('the sensei joins serious team missions', () => {
     expect(theirs.orders?.cardsLocked).toBeDefined();
     // They fight by their ways: shield covers you, watchful supports, lets-fail holds back.
     const kind = { shield: 'cover', watchful: 'support', 'lets-fail': 'hold' }[
-      sensei.sensei!.ways.onMissions
+      sensei.sensei!.ways!.onMissions
     ];
     expect(theirs.stance?.kind).toBe(kind);
     const signatures = sensei.teacher?.teaches ?? [];

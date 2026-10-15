@@ -10,6 +10,7 @@ import { currentLocation } from '../ops';
 import { bondOf, everyone, findPerson, fullName, peopleHere, whereNow } from '../people/cast';
 import type { GameState } from '../state';
 import { capitalise, choice, type Choice } from './common';
+import { waysOf } from '../sensei/generate';
 
 /** Stage at which you learn someone's traits, and then what they like to hear. */
 const TRAITS_REVEALED_AT = 1;
@@ -161,7 +162,7 @@ export function personSheet(
 
 /** A sensei's wound, once you have heard the beat of their story that tells it. */
 function carriedWound(state: GameState, person: PersonDef): string | null {
-  const story = person.sensei?.ways.story;
+  const story = waysOf(person)?.story;
   const told = story?.beats[WOUND_BEAT];
   if (!story || !told) return null;
   return state.people.bonds[person.id]?.heard.includes(told) ? story.wound : null;

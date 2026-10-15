@@ -369,7 +369,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     day on the sensei's slip, each once it makes sense; nothing is locked behind it. Once a
     week they keep a **team day** (one of their rituals) and pick a job off the board for the
     team. Their **story** (`ways.story`) is four personal conversations by bond stage; a reply's
-    `worldMark` may open their arc.
+    `worldMark` may open their arc. The chūnin ceremony carries their **farewell**
+    (`farewell.ts`: a parting gift, a memory), and the rank ends the years. Read a sensei's ways
+    only through `waysOf` (`generate.ts`): a pack may leave `ways` out, and they are generated
+    from an archetype (`content/senseiArchetypes.ts`), coherent by construction.
 
 ### Content packs
 

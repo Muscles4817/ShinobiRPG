@@ -26,7 +26,7 @@ export function validateSenseis(pack: ContentPack): string[] {
         ways.test === 'none' || pack.senseiTests.some((t) => t.id === ways.test)
           ? []
           : [`sets the "${ways.test}" test, which the pack doesn’t have`];
-      return [...waysProblems(p, ways), ...test, ...storyProblems(pack, p, ways)].map(
+      return [...senseiWaysProblems(p, ways), ...test, ...storyProblems(pack, p, ways)].map(
         (problem) => `sensei "${p.id}" ${problem}`,
       );
     }),
@@ -138,7 +138,8 @@ function rewardProblems(person: PersonDef, ways: SenseiWays): string[] {
   ];
 }
 
-function waysProblems(person: PersonDef, ways: SenseiWays): string[] {
+/** What is wrong with a set of ways for this person (their story aside). */
+export function senseiWaysProblems(person: PersonDef, ways: SenseiWays): string[] {
   return [
     ...shapeProblems(ways),
     ...coherenceProblems(person, ways),

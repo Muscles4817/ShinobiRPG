@@ -17,6 +17,7 @@ import { FORMAT_LABELS } from '../sensei/sessions';
 import { regardWord, type MeetingOutcome } from '../sensei/state';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
+import { waysOf } from '../sensei/generate';
 
 /**
  * The slip your sensei hands you at the weekly lesson: the week's days, what they planned on
@@ -108,7 +109,7 @@ function lessonToday(state: GameState, ctx: GameContext, name: string): SenseiWe
 
 export function senseiWeekView(state: GameState, ctx: GameContext): SenseiWeekView | null {
   const sensei = mentorOf(state, ctx);
-  const ways = sensei?.sensei?.ways;
+  const ways = sensei ? waysOf(sensei) : null;
   if (!sensei || !ways) return null;
   const week = weekOf(state.time.day);
   const plan = weekPlan(state, sensei, week);

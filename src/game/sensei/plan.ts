@@ -7,6 +7,7 @@ import type { GameContext } from '../context';
 import { findPerson, bondOf } from '../people/cast';
 import { underSensei } from '../mentorship';
 import type { GameState } from '../state';
+import { waysOf } from './generate';
 
 /**
  * The week your sensei plans for you: their cadence of meetings, spread over the week (or on
@@ -42,7 +43,7 @@ export function weekStart(week: number): number {
 
 /** Meetings a week, eased once you are close enough. */
 export function meetingsPerWeek(state: GameState, sensei: PersonDef): number {
-  const ways = sensei.sensei?.ways;
+  const ways = waysOf(sensei);
   if (!ways) return 0;
   const eased = stageOf(bondOf(state, sensei.id).points) >= ways.loosensAtStage;
   return eased ? Math.ceil(ways.cadence.sessions / 2) : ways.cadence.sessions;
@@ -50,7 +51,7 @@ export function meetingsPerWeek(state: GameState, sensei: PersonDef): number {
 
 /** The days of the week (0–6) they meet you on. */
 function offsets(state: GameState, sensei: PersonDef, week: number, count: number): number[] {
-  if (sensei.sensei?.ways.cadence.punctuality !== 'irregular') {
+  if (waysOf(sensei)?.cadence.punctuality !== 'irregular') {
     return Array.from({ length: count }, (_, i) => Math.floor((i * DAYS_PER_WEEK) / count));
   }
   return Array.from({ length: DAYS_PER_WEEK }, (_, offset) => offset)
@@ -63,7 +64,7 @@ function offsets(state: GameState, sensei: PersonDef, week: number, count: numbe
 
 /** The slot they turn up in: a late sensei comes a slot after they said, never after dark. */
 function arrival(sensei: PersonDef): TimeSlot {
-  const cadence = sensei.sensei?.ways.cadence;
+  const cadence = waysOf(sensei)?.cadence;
   if (!cadence) return LAST_MEETING_SLOT;
   const said = TIME_SLOTS.indexOf(cadence.slot);
   const last = TIME_SLOTS.indexOf(LAST_MEETING_SLOT);
@@ -73,7 +74,7 @@ function arrival(sensei: PersonDef): TimeSlot {
 
 /** The meetings your sensei plans for a week, in day order. */
 export function weekPlan(state: GameState, sensei: PersonDef, week: number): Meeting[] {
-  const ways = sensei.sensei?.ways;
+  const ways = waysOf(sensei);
   if (!ways) return [];
   const from = arrival(sensei);
   const days = offsets(state, sensei, week, meetingsPerWeek(state, sensei));
@@ -118,7 +119,7 @@ const RITUAL_FROM: Readonly<Record<RitualKind, TimeSlot>> = {
 
 /** The week's team day, if your sensei keeps any: their rituals in turn, week by week. */
 export function teamDayOf(state: GameState, sensei: PersonDef, week: number): TeamDay | null {
-  const rituals = sensei.sensei?.ways.rituals ?? [];
+  const rituals = waysOf(sensei)?.rituals ?? [];
   const ritual = rituals[week % Math.max(1, rituals.length)];
   if (!ritual) return null;
   const offset = Math.floor(hashUnit(state.board.seed, week, sensei.id, 'team') * DAYS_PER_WEEK);
