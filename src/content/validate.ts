@@ -17,6 +17,7 @@ import { validateSources } from './validateSources';
 import { validateTeachers } from './validateTeachers';
 import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
+import { validateLeisure } from './validateLeisure';
 import { validateRoutes } from './validateRoutes';
 import { validateAtlas } from './validateAtlas';
 import { validateExercises } from './validateExercises';
@@ -43,6 +44,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...placeholderProblems(pack),
     ...numberProblems(pack),
     ...validateWorld(pack),
+    ...validateLeisure(pack),
     ...validateRoutes(pack),
     ...validateAtlas(pack),
     ...validateExercises(pack),

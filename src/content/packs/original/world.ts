@@ -15,6 +15,7 @@ import { PROMOTIONS } from './exam';
 import { MARKET_STREET } from './market';
 import { KIRI_FORD } from './kiriFord';
 import { PORT_SHIOMACHI } from './shiomachi';
+import { TOROGAKURE_LEISURE } from './leisure';
 import { TOROGAKURE_WILDS } from './wilds';
 
 export const ORIGINAL_TEXT: SettingText = {
@@ -231,24 +232,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'blast-ring',
         ],
       },
-      {
-        id: 'izakaya',
-        kind: 'tavern',
-        name: 'The Paper Lantern',
-        icon: 'sake',
-        blurb: 'An izakaya that opens at dusk',
-        hours: ['evening', 'night'],
-        keeper: 'Mama Sayo, who hears everything',
-        foodIds: [
-          'lantern-yakitori',
-          'night-oden',
-          'roasted-barley-tea',
-          'salted-edamame',
-          'grilled-mushrooms',
-          'hot-yuzu-tea',
-        ],
-        roundCost: 40,
-      },
+      ...TOROGAKURE_LEISURE,
       {
         id: 'home',
         kind: 'home',

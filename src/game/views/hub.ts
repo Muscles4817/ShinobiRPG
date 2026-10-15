@@ -59,10 +59,12 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
       return place.blurb;
     case 'tavern':
       return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
+    case 'onsen':
+      return onsenLine(state, place.soakCost);
     case 'inn':
       return `A room for ${place.roomCost} ryo`;
     case 'house':
-      return ownsHouse(state.housing, place.id) ? 'Your house' : `For sale, ${place.price} ryo`;
+      return houseLine(state, place.id, place.price);
     case 'wilds':
       return wildsLine(state, ctx, place.id);
     case 'hospital':
@@ -96,6 +98,14 @@ function readableIds(ids: readonly string[], state: GameState, ctx: GameContext)
   return ids.filter(
     (id) => libraryScrollAccess(state, ctx.content.techniques.require(id)) === null,
   );
+}
+
+function houseLine(state: GameState, placeId: string, price: number): string {
+  return ownsHouse(state.housing, placeId) ? 'Your house' : `For sale, ${price} ryo`;
+}
+
+function onsenLine(state: GameState, soakCost: number): string {
+  return state.character.soaked ? 'You’re warm through' : `A soak for ${soakCost} ryo`;
 }
 
 function tavernLine(inside: number, blurb: string): string {

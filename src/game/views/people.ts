@@ -14,7 +14,7 @@ import { waysOf } from '../sensei/generate';
 
 /** Stage at which you learn someone's traits, and then what they like to hear. */
 const TRAITS_REVEALED_AT = 1;
-const TASTES_REVEALED_AT = 2;
+export const TASTES_REVEALED_AT = 2;
 
 export type Relation = 'sensei' | 'teammate' | null;
 

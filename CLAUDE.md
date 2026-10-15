@@ -260,9 +260,18 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `village.lastSightDay` is stored. Festivals can bring their own `stalls`, which
     `stallsHere` sets up in the market on the day. Dinner invites (`hostDinner`) cook a
     recipe for two in the evening; they count as the day's time with that person and are worth
-    more for their `favouriteRecipeId`. Night-only places are `tavern` places (an izakaya)
-    with `hours`; people's schedules bring regulars in at night, a round (`buyRound`) warms
-    everyone inside once a night, and the counter hears more gossip (`rumoursOverheard`).
+    more for their `favouriteRecipeId`. Night-only places are `tavern` places (a bar: an
+    izakaya, a teahouse, a gambling house) with `hours`; people's schedules bring regulars in
+    at night, a round (`buyRound`) warms everyone inside once a night, and the counter hears
+    more gossip (`rumoursOverheard`). **Off duty is where bonds are made**
+    (`docs/design/village-places-plan.md`): a drink with one of the crowd (`drinkWith`,
+    `game/bar.ts`) or a soak beside someone at an `onsen` (`soak`, `game/onsen.ts`) is the
+    day's time with them, like a talk or a dinner, worth what their traits make of its tone
+    (`game/people/together.ts`: you pick the drink's tone; a soak is quiet). A bar's
+    `pastimes` are the hook for mini-games, keyed by id; today they are scenes. A soak costs
+    ryo and a slot, gives energy and some health, and leaves you `soaked` (warm through: a
+    `ModifierSpec` that `spendTime` clears at the day's end, like the meal); one a day, and
+    the baths close at night (validated).
 20. **Ranks are earned in scenes.** The chūnin exam (`ExamDef`, `systems/exams`) is held on its
     calendar dates (twice a year; rumours and the sensei's word the week before) and entered at
     the mission hall with the sensei's nomination (bond, their judgement of your grades, a
@@ -536,6 +545,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `cookbookIds`), a person's `recipes`, or a job's `reward.recipeId` (validated). **Add a meal
   effect:** a field on `ModifierSpec` combined in `combine`, worded in `describeSpec`, read at
   one hook in `game/`.
+- **Add a bar or hot water:** a `tavern` place (`keeper`, `foodIds`, `roundCost`, `cupCost`,
+  evening/night `hours`, optional `pastimes` with unique ids) or an `onsen` place (`keeper`,
+  `waters` spring or bathhouse, `soakCost`, `hours` without night), validated in
+  `validateLeisure.ts`. Put people in it through their schedules; a town with no residents
+  needs one (a `homeLocationId` regular) or the room stays empty. Not every town gets one:
+  see `docs/design/village-places-plan.md` for which fit where.
 - **Add village life:** rumours (`missionId` for a job hint, `personId` for gossip), night
   sights (with a small stat `reward`) and festivals (season, day, `marketPrices`,
   `bondBonus`, optional `stalls` of festival-only food) go in the pack's `village`. Give a

@@ -17,12 +17,13 @@ import type { GameContext } from './context';
 import { hungerEffect } from './hunger';
 import { injurySpecs } from './injuries';
 import { assignmentSpec } from './sensei/state';
+import { soakSpec } from './onsen';
 import { snackBuff } from './snacks';
 import type { Character } from './state';
 
 /**
  * Turns a character's identity into growth modifiers. Every source (clan, talent, traits,
- * frame, upbringing, standing, chakra nature, today's meal, your sensei's assignment, hunger,
+ * frame, upbringing, standing, chakra nature, today's meal, a soak, your sensei's assignment, hunger,
  * injuries) contributes a
  * ModifierSpec; the result is their product. Clan and talent growth is not among them: it
  * shaped the character's aptitude when they were made, and aptitude multiplies every growth
@@ -67,6 +68,7 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
     mealBuff(character, ctx),
     assignmentSpec(character.assignment, character.stats),
     snackBuff(character, ctx),
+    soakSpec(character),
     hungerEffect(character.vitals).spec,
     ...injurySpecs(character, ctx),
   ]);

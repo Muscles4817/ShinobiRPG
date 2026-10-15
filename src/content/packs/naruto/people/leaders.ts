@@ -47,7 +47,7 @@ export const LEADERS: readonly PersonDef[] = [
       'arm',
     ),
     bio: 'The Professor. Leads the village from behind a pipe and a mountain of paperwork.',
-    schedule: { morning: 'mission-desk', afternoon: null, evening: null, night: null },
+    schedule: { morning: 'mission-desk', afternoon: 'bathhouse', evening: null, night: null },
     arsenal: HIRUZEN_ARSENAL,
   },
   {

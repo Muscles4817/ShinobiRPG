@@ -50,6 +50,7 @@ export type {
   SessionFormat,
 } from './senseis';
 import type { SettingText } from './settingText';
+import type { OnsenFields, TavernFields } from './leisure';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
 import type { VoiceDef } from './voices';
@@ -81,6 +82,7 @@ export type {
   TopicKind,
 } from './people';
 export type { OpeningHours, Stall } from './stall';
+export type { OnsenFields, Pastime, TavernFields, Waters } from './leisure';
 export type { AptitudeText, PromotedRank, PromotionText, SettingText } from './settingText';
 export type {
   PriceTemplate,
@@ -281,14 +283,8 @@ export type PlaceDef =
       readonly finds: readonly Find[];
       readonly spots?: readonly FishingSpot[];
     })
-  | (PlaceBase & {
-      /** An izakaya: open evenings and nights, with a menu and whoever drops in. */
-      readonly kind: 'tavern';
-      readonly keeper: string;
-      readonly foodIds: readonly string[];
-      /** What buying everyone inside a round costs. */
-      readonly roundCost: number;
-    })
+  | (PlaceBase & TavernFields)
+  | (PlaceBase & OnsenFields)
   | (PlaceBase & {
       readonly kind: 'gear';
       /** Who runs the shop, e.g. "Old Tetsuya, smith". */
