@@ -55,13 +55,17 @@ function bondRose(before: GameState, after: GameState): boolean {
   );
 }
 
-/** The cue for an action that went through, or null (none for it, or animations off). */
+/** The moment an action that went through makes, whether or not it is animated (sound reads it too). */
+export function cueFor(action: GameAction, before: GameState, after: GameState): ActionCue | null {
+  if (bondRose(before, after)) return 'bond';
+  return CUE_FOR[action.type] ?? null;
+}
+
+/** The cue to animate for an action that went through, or null (none for it, or animations off). */
 export function cueAfter(
   action: GameAction,
   before: GameState,
   after: GameState,
 ): ActionCue | null {
-  if (!after.settings.animations) return null;
-  if (bondRose(before, after)) return 'bond';
-  return CUE_FOR[action.type] ?? null;
+  return after.settings.animations ? cueFor(action, before, after) : null;
 }

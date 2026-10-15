@@ -13,6 +13,7 @@ export interface MainMenuProps {
   readonly onContinue: () => void;
   readonly onNewGame: () => void;
   readonly onVersus: () => void;
+  readonly onSettings: () => void;
 }
 
 /** Starting over replaces the save, so it asks first when there is one. */
@@ -59,7 +60,7 @@ function NewGame({ save, onNewGame }: Pick<MainMenuProps, 'save' | 'onNewGame'>)
   );
 }
 
-/** The title screen: carry on, begin again, or set up a versus bout. */
+/** The title screen: carry on, begin again, set up a versus bout, or change the settings. */
 export function MainMenu(props: MainMenuProps) {
   const { save, notice } = props;
   return (
@@ -100,6 +101,15 @@ export function MainMenu(props: MainMenuProps) {
           <span className="menu-words">
             <b>Versus</b>
             <small>Any two fighters, head to head. Nothing is saved.</small>
+          </span>
+        </button>
+        <button type="button" className="menu-option" onClick={props.onSettings}>
+          <span className="menu-glyph" aria-hidden="true">
+            設
+          </span>
+          <span className="menu-words">
+            <b>Settings</b>
+            <small>Sound and music.</small>
           </span>
         </button>
       </nav>

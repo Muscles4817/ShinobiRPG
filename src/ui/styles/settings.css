@@ -1,0 +1,55 @@
+/* The settings page: sound for the device, then what is kept with the save. */
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.settings-page-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.settings-page-head h2 {
+  margin: 0;
+  font-family: var(--font-story);
+  font-weight: normal;
+  color: var(--story);
+}
+
+/* A volume: its name and level above a slider on a paper track. */
+.volume {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+}
+.volume-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.volume output {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+.volume small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.volume input[type='range'] {
+  width: 100%;
+  min-height: 40px;
+  margin: 0;
+  accent-color: var(--lantern);
+  background: transparent;
+}
+.volume input[type='range']:disabled {
+  opacity: 0.4;
+}
+.volume:has(input:disabled) b {
+  color: var(--muted);
+}

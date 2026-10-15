@@ -13,14 +13,14 @@ interface SettingsPanelProps {
 }
 
 /**
- * The settings on the Shinobi tab: the switch for everyday animations (eating, training,
- * sleeping…) and how the Travel map is inked.
+ * The settings kept with the save, on the settings page: the switch for everyday animations
+ * (eating, training, sleeping…) and how the Travel map is inked.
  */
 export function SettingsPanel({ ctx, state, perform }: SettingsPanelProps) {
   const setting = animationSetting(state, ctx);
   return (
-    <section className="settings" aria-label="Settings">
-      <h3 className="settings-heading">Settings</h3>
+    <section className="settings" aria-label="This save">
+      <h3 className="settings-heading">This save</h3>
       <button
         type="button"
         className={setting.on ? 'style-option on' : 'style-option'}

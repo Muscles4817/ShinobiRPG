@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
 
-import { createLocalSaveStore } from '@/platform/localSaveStore';
+import { createLocalPrefsStore, createLocalSaveStore } from '@/platform/localSaveStore';
 import { App } from '@/ui/App';
 import '@/ui/theme/fonts.css';
 import '@/ui/theme/tokens.css';
@@ -28,6 +28,7 @@ import '@/ui/styles/cues.css';
 import '@/ui/styles/cues-village.css';
 import '@/ui/styles/motion.css';
 import '@/ui/styles/menu.css';
+import '@/ui/styles/settings.css';
 
 // Composition root for the app: choose the platform adapters here.
 const root = document.getElementById('root');
@@ -35,7 +36,7 @@ if (!root) throw new Error('Missing #root element');
 
 createRoot(root).render(
   <StrictMode>
-    <App store={createLocalSaveStore()} />
+    <App store={createLocalSaveStore()} prefs={createLocalPrefsStore()} />
   </StrictMode>,
 );
 
