@@ -357,6 +357,8 @@ describe('persistence', () => {
       curriculum: 'skipped',
       beats: [],
       lastBeatDay: null,
+      pickTaken: null,
+      pickKept: null,
     });
   });
 
@@ -374,7 +376,15 @@ describe('persistence', () => {
 
   it('gives a save from before first meetings no test to sit and no curriculum', () => {
     const game = newGame();
-    const { opening: _o, curriculum: _c, beats: _b, lastBeatDay: _l, ...mentor } = game.mentor;
+    const {
+      opening: _o,
+      curriculum: _c,
+      beats: _b,
+      lastBeatDay: _l,
+      pickKept: _p,
+      pickTaken: _t,
+      ...mentor
+    } = game.mentor;
     const loaded = deserialize(JSON.stringify({ version: 41, state: { ...game, mentor } }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.mentor).toMatchObject({ opening: null, curriculum: 'skipped', beats: [] });

@@ -353,3 +353,13 @@ Part 5 entry.
    memory shared with the sensei and the team. Save v42: a save that has met its sensei skips
    both. It came after the chakra paper rather than before, so the paper stays the sensei's
    first act.
+7. **Team days.** One a week (`teamDayOf`, `game/sensei/plan.ts`): the sensei's rituals in turn,
+   on a hashed day, a meal or tea from evening and a challenge, debrief or camp from afternoon.
+   `teamDay` (from the slip, at home) takes a slot: bond with each teammate (not the sensei,
+   whose bond comes from lessons and talk; with it the bench's nomination ran two weeks early),
+   regard, and the kind's own good (`game/sensei/teamDays.ts`: a meal feeds you, a challenge
+   works the sensei's art, tea is bond with them, a debrief more regard, a camp stamina).
+   Missed, it costs regard by grip like a meeting (outcomes keyed `t<day>`). **The sensei's
+   pick** (`game/sensei/pick.ts`): each week one posting at home they would lead, hashed by the
+   week, marked on its notice; taking it is remembered (`mentor.pickTaken`) and finishing it
+   earns regard, one a week (`pickKept`). The focused player keeps team days too.

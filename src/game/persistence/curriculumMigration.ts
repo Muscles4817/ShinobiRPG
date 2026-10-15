@@ -7,7 +7,7 @@ function asRecord(value: unknown): RawState {
 }
 
 /**
- * v41 → v42: senseis test new teams and show new genin the ropes. A save that has met its sensei
+ * v41 → v42: senseis test new teams, show new genin the ropes and pick the team's job. A save that has met its sensei
  * already knows its way round: no test, no curriculum. One from before the team was read out
  * meets its sensei as a new game would.
  */
@@ -22,6 +22,8 @@ export function v41ToV42(state: RawState): RawState {
       curriculum: met ? 'skipped' : 'on',
       beats: [],
       lastBeatDay: null,
+      pickTaken: null,
+      pickKept: null,
     },
   };
 }

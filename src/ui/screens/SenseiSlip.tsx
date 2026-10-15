@@ -26,7 +26,8 @@ export function SenseiSlip({ view, perform }: SenseiSlipProps) {
             aria-label={`Day ${d.label}: ${d.meeting ?? 'free'}${d.outcome ? `, ${OUTCOME_WORD[d.outcome]}` : ''}`}
           >
             <b className="num">{d.label}</b>
-            <small>{d.meeting ?? 'Free'}</small>
+            <small>{d.meeting ?? (d.team ? '' : 'Free')}</small>
+            {d.team && <small className="slip-team">{d.team}</small>}
             {d.outcome && (
               <span className={`slip-stamp ${d.outcome}`} aria-hidden="true">
                 {OUTCOME_STAMP[d.outcome]}
@@ -36,6 +37,24 @@ export function SenseiSlip({ view, perform }: SenseiSlipProps) {
         ))}
       </ol>
       {view.todayLine && <p className="slip-today">{view.todayLine}</p>}
+      {view.teamDay && (
+        <div className="slip-row">
+          <p className="slip-today">
+            {view.teamDay.what} with the team today, from {view.teamDay.from}.
+          </p>
+          {view.teamDay.join.blocker === null && (
+            <button
+              type="button"
+              className="btn small"
+              onClick={() => {
+                if (view.teamDay) perform(view.teamDay.join.action);
+              }}
+            >
+              Join them
+            </button>
+          )}
+        </div>
+      )}
       {view.assignment && (
         <p className="slip-today">
           Their assignment: your {view.assignment.stat.toLowerCase()}, {view.assignment.progress}.

@@ -115,3 +115,15 @@
   color: var(--paper-ink);
   border-color: var(--paper-ink);
 }
+.slip-team {
+  color: var(--ink-gain);
+  font-weight: 700;
+}
+.slip-row {
+  display: grid;
+  gap: 6px;
+}
+.slip-row .btn {
+  justify-self: start;
+  min-height: 40px;
+}

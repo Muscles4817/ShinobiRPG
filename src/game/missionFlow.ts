@@ -20,6 +20,7 @@ import { handedOver } from './missionRewards';
 import { tendWounds } from './missionTeam';
 import { bondOf } from './people/cast';
 import { addReport } from './reports';
+import { pickDone } from './sensei/pick';
 import { settle } from './story/state';
 import type { GameState } from './state';
 
@@ -87,7 +88,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
     inventory: gifts.inventory,
     cooking: gifts.cooking,
   };
-  const logged = log(next, {
+  const logged = log(pickDone(next, ctx, def), {
     heading: `${def.title} complete`,
     text: ending ?? `${def.client} thanks you.`,
     tone: 'success',

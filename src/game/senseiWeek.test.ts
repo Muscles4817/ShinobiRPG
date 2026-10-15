@@ -131,7 +131,7 @@ describe('settling the week', () => {
     const state = untilDay(withSensei(newGame(), 'goran'), 9);
     const today = state.journal.entries.filter((e) => e.day === 9).map((e) => e.text);
     expect(today).toContainEqual(expect.stringMatching(/^Gōran expects you at .+ this morning\.$/));
-    const days = Object.keys(state.mentor.outcomes).map(Number);
+    const days = Object.keys(state.mentor.outcomes).map((k) => Number(k.replace('t', '')));
     expect(days.every((d) => weekOf(d) === weekOf(9))).toBe(true);
   });
 });

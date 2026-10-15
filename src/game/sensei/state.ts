@@ -31,6 +31,10 @@ export interface Mentor {
   readonly beats: readonly string[];
   /** The day they last showed you one: one a day. */
   readonly lastBeatDay: number | null;
+  /** The job they picked for the team, once you have taken it. */
+  readonly pickTaken: string | null;
+  /** The week you did the job they picked for the team (one a week). */
+  readonly pickKept: number | null;
 }
 
 /** Where the first meeting stands: the round, and what came of the last one. */
@@ -84,6 +88,8 @@ export const NO_MENTOR: Mentor = {
   curriculum: 'on',
   beats: [],
   lastBeatDay: null,
+  pickTaken: null,
+  pickKept: null,
 };
 
 /**
