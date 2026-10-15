@@ -3,7 +3,6 @@ import { blowsOf } from '@/systems/techniques';
 import type { CombatTechnique } from '../../contract';
 import { alive } from '../../rules/body';
 import { techniqueDamage } from '../../rules/damage';
-import { matchup, matchupLine } from '../../rules/elements';
 import { attackKindOf } from '../../rules/kit';
 import { finisherScale } from '../../rules/team';
 import type { EffectUse } from '../../rules/verbs';
@@ -43,6 +42,7 @@ function blowsFor(aimed: Aimed, use: Wounding, scale: number): Blow[] {
     physical: physical(t),
     kind: attackKindOf(t),
     discipline: t.discipline,
+    ...(t.element ? { element: t.element } : {}),
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     ...(use.effect.verb === 'break' ? { breaks: true } : {}),
     ...(use.effect.verb === 'area' ? { area: true } : {}),
@@ -72,8 +72,6 @@ export function damage(round: Round, aimed: Aimed, use: Wounding): Round {
   const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1);
   const hit = strike(round, aimed, blowsFor(aimed, use, scale));
   const landed = fighterIn(hit, target.id)?.health !== target.health;
-  const element = matchupLine(matchup(t.element, target.nature), target.name);
-  const lines = [...(landed && combo ? [combo.line] : []), ...(element ? [element] : [])];
-  const told = lines.length > 0 ? say(hit, ...lines) : hit;
+  const told = landed && combo ? say(hit, combo.line) : hit;
   return landed ? recordHit(told, actor, target.id, t) : told;
 }

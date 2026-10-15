@@ -179,7 +179,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`).
+    styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`). A **nature** is an affinity, never a shield: it strengthens
+    techniques of its own element, and elements meet only where techniques meet (`rules/elements.ts`):
+    an elemental wall (a substitution with an element) holds against an element it overpowers and
+    breaks under one that overpowers it, and an elemental attack aimed at someone about to throw one
+    back is met in a **clash** (`plan/clash.ts`: if they see it and are quick enough), the
+    overpowering element carrying through; between even elements the clearly stronger technique.
     Each side stands in a front and a back **row** (`rules/rows.ts`, placed by kit or
     `CombatantSetup.row`): a blow up close can't reach the back row while the front stands;
     throws, longer-reach techniques and area effects can. Ask `canReach`, never test rows inline.

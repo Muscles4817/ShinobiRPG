@@ -187,6 +187,8 @@ export interface Round {
   readonly mark?: string;
   readonly foeMark?: string;
   readonly reads?: Reads;
+  /** Who has acted this exchange (a clash spends the answerer's turn early, `clash.ts`). */
+  readonly acted?: readonly string[];
   /** Elemental hits landed this exchange. */
   readonly hits?: readonly ElementHit[];
 }

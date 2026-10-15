@@ -14,11 +14,11 @@ import type { Character } from './state';
 
 /** What each nature is like in a fight, for the paper's verdict. */
 export const NATURE_LINES: Readonly<Record<Element, string>> = {
-  fire: 'Burning, relentless. Strong against wind.',
-  wind: 'Cutting, sharp. Strong against lightning.',
-  lightning: 'Piercing, fast. Strong against earth.',
-  earth: 'Solid, patient. Strong against water.',
-  water: 'Flowing, adaptable. Strong against fire.',
+  fire: 'Burning, relentless. Overpowers wind where techniques meet.',
+  wind: 'Cutting, sharp. Overpowers lightning where techniques meet.',
+  lightning: 'Piercing, fast. Overpowers earth where techniques meet.',
+  earth: 'Solid, patient. Overpowers water where techniques meet.',
+  water: 'Flowing, adaptable. Overpowers fire where techniques meet.',
 };
 
 /** How often a clan with a nature passes it on; otherwise any nature may come. */

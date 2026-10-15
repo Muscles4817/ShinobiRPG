@@ -193,7 +193,10 @@ function afterStep(before: Round, after: Round, actorId: string, rng: Rng): Roun
 
 function turn(start: Round, actorId: string, rng: Rng): Round {
   const before = start.fighters.find((f) => f.id === actorId);
-  if (!before || !alive(before) || decide(start.fighters)) return start;
+  // A fighter who met an attack in a clash has spent their turn already.
+  if (!before || !alive(before) || decide(start.fighters) || start.acted?.includes(actorId)) {
+    return start;
+  }
   const round = springTraps(startOfTurn(start, before, rng), actorId, rng, false);
   const actor = round.fighters.find((f) => f.id === actorId) ?? before;
   if (!alive(actor)) return round;
@@ -212,7 +215,8 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const tried = attempt(aim.round, { actor, target: aim.target, rng }, card);
   const played = afterStep(aim.round, tried, actor.id, rng);
   const noted = noteAttack(played, actor.id, card);
-  return { ...noted, seen: remember(noted.seen, actor.id, cardId(card)) };
+  const acted = [...(noted.acted ?? []), actor.id];
+  return { ...noted, acted, seen: remember(noted.seen, actor.id, cardId(card)) };
 }
 
 /**

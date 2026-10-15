@@ -16,6 +16,7 @@ import {
   profileOf,
   type EffectUse,
 } from '../../rules/verbs';
+import { clash } from './clash';
 import { makeClones } from './clones';
 import { combination, comboPartner } from './combo';
 import { empowerSelf } from './empower';
@@ -222,9 +223,15 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const seen = targets.filter((foe) => rng.chance(resistChance(actor, dulled(paid.field, foe), t)));
   const told = seen.reduce((r, foe) => say(r, `${foe.name} sees it coming.`), paid);
   if (isHarmful(t) && seen.length === targets.length) return told;
-  const start: Flight = { round: told, reaching: targets.filter((f) => !seen.includes(f)) };
+  // An elemental attack may be met by one coming back the other way.
+  const aimedAt = turn.target && !seen.includes(turn.target) ? clash(told, turn, t) : null;
+  if (aimedAt && !aimedAt.through) return aimedAt.round;
+  const flying = aimedAt?.round ?? told;
+  // Weakened by a clash it won, it lands with what it has left.
+  const carrying = aimedAt?.boost === undefined ? turn : { ...turn, boost: aimedAt.boost };
+  const start: Flight = { round: flying, reaching: targets.filter((f) => !seen.includes(f)) };
   const end = t.effects.reduce(
-    (flight, effect) => applyEffect(flight, turn, { technique: t, effect }),
+    (flight, effect) => applyEffect(flight, carrying, { technique: t, effect }),
     start,
   );
   return end.round;

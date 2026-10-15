@@ -3,8 +3,10 @@ import type { Element } from '@/systems/techniques';
 import type { CombatTechnique } from '../contract';
 
 /**
- * The elemental cycle: each nature overpowers the next. Using your own nature strengthens a
- * technique; hitting a nature your element beats strengthens it further.
+ * The elemental cycle: each element overpowers the next. A fighter's nature is their affinity:
+ * techniques of their own element come out stronger. It never shields them: elements meet only
+ * where techniques meet, when an elemental wall takes an attack or two elemental attacks clash
+ * (`plan/clash.ts`), and there the element that overpowers the other wins.
  */
 
 const BEATS: Readonly<Record<Element, Element>> = {
@@ -16,34 +18,23 @@ const BEATS: Readonly<Record<Element, Element>> = {
 };
 
 export const OWN_NATURE_BONUS = 1.15;
-export const ADVANTAGE = 1.3;
-export const DISADVANTAGE = 0.8;
 
+/** How one element fares against another where techniques meet. */
 export type Matchup = 'strong' | 'weak' | 'even';
 
-export function matchup(attack: Element | undefined, defender: Element | undefined): Matchup {
-  if (!attack || !defender) return 'even';
-  if (BEATS[attack] === defender) return 'strong';
-  if (BEATS[defender] === attack) return 'weak';
+export function matchup(element: Element | undefined, against: Element | undefined): Matchup {
+  if (!element || !against) return 'even';
+  if (BEATS[element] === against) return 'strong';
+  if (BEATS[against] === element) return 'weak';
   return 'even';
 }
 
+/** A technique of the user's own nature comes out stronger. */
 export function elementMultiplier(
   technique: Pick<CombatTechnique, 'element'>,
   attacker: Element | undefined,
-  defender: Element | undefined,
 ): number {
-  const own = technique.element !== undefined && technique.element === attacker;
-  const versus = matchup(technique.element, defender);
-  const edge = versus === 'strong' ? ADVANTAGE : versus === 'weak' ? DISADVANTAGE : 1;
-  return (own ? OWN_NATURE_BONUS : 1) * edge;
-}
-
-/** Narration for an elemental matchup, or null when it's even. */
-export function matchupLine(versus: Matchup, targetName: string): string | null {
-  if (versus === 'strong') return `The element overwhelms ${targetName}!`;
-  if (versus === 'weak') return `${targetName}'s nature blunts the attack.`;
-  return null;
+  return technique.element !== undefined && technique.element === attacker ? OWN_NATURE_BONUS : 1;
 }
 
 /**

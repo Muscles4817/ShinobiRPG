@@ -147,7 +147,7 @@ export function techniqueDamage(
   const { technique, effect } = use;
   const scale = gapScale(effectPower(attacker, use), defenceAgainst(defender, use));
   const weight = TECHNIQUE_BASE + effect.power * TECHNIQUE_PER_POWER;
-  const elements = elementMultiplier(technique, attacker.nature, defender.nature);
+  const elements = elementMultiplier(technique, attacker.nature);
   const wild = technique.accuracy === 'wild' ? WILD_DAMAGE : 1;
   return Math.max(1, Math.round(BLOW_DAMAGE * weight * scale * elements * wild * variance(roll)));
 }
