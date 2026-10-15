@@ -395,4 +395,10 @@ Step 12 (Mount Reikon) waits on milestone 3's spirits.
     on a pass. **Tanzaku Town**, two days down a safe road: the gamblers' castle town, with an
     inn, a festival street, a dice bar where Okichi deals, the constables' three jobs and a
     townhouse for sale. This is where a genin with a pass goes first. The Mist, the Sand and
-    Mount Myōboku stay locked.
+    Mount Myōboku stay locked. Three more towns followed, all on safe roads: **Shukuba Town**,
+    the post town halfway down the highway to Tanzaku (an inn, a travellers' market, an
+    outfitter and the post office's errands); **Otafuku Town**, the pleasure quarter east
+    over the hills (an inn, Lantern Row, the Willow Teahouse where Kotone plays, and the
+    quarter office); and **the Fire Temple** up its mountain stair (the pilgrims' hall, the
+    temple kitchen, the monks' courtyard drills, the steward's favours, and Chiriku, a jōnin
+    who trains anyone in the courtyard, with the novice Kei).
