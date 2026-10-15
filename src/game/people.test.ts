@@ -6,7 +6,8 @@ import { tastesOf } from './people/cast';
 import { deserialize, serialize } from './persistence/save';
 import type { GameState } from './state';
 import { hubView } from './views/hub';
-import { bondsView, personSheet } from './views/people';
+import { bondsView } from './views/people';
+import { personSheet } from './views/personSheet';
 import { activeScene, conversationScene, teamScene } from './views/peopleScenes';
 
 const assigned = () => act(freshGame(), { type: 'assignTeam' });
@@ -122,7 +123,10 @@ describe('talking', () => {
 
   it('getting closer reveals what someone is like', () => {
     const state = newGame();
-    expect(personSheet(state, ctx, 'tetsu')?.traits).toBeNull();
+    const stranger = personSheet(state, ctx, 'tetsu')!;
+    expect(stranger.traits).toBeNull();
+    // The sheet says what the next stage opens.
+    expect(stranger.path.next?.opens).toContain('You learn what they’re like.');
     const friendly = {
       ...state,
       people: { ...state.people, bonds: { tetsu: { points: 30, lastTalkDay: null, heard: [] } } },
@@ -130,7 +134,7 @@ describe('talking', () => {
     const sheet = personSheet(friendly, ctx, 'tetsu')!;
     expect(sheet.traits?.map((t) => t.name)).toEqual(['Focused', 'Humble']);
     expect(sheet.likes).toContain('Quiet');
-    expect(sheet.reveal).toBeNull();
+    expect(sheet.path.name).toBe('Friend');
   });
 
   it('records when a bond reaches a new stage', () => {

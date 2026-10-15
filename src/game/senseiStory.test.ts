@@ -3,7 +3,7 @@ import { act, ctx, newGame, veteran } from '@/test/gameFixtures';
 
 import { availability, crewFor } from './board';
 import type { GameState } from './state';
-import { personSheet } from './views/people';
+import { personSheet } from './views/personSheet';
 
 /** A sensei's story, told over the stages of a bond, and the arc it opens. */
 

@@ -8,7 +8,7 @@ import type { GameState } from './state';
 import { cookbookView } from './views/cookbook';
 import { kitchenView } from './views/kitchen';
 import { marketView } from './views/market';
-import { personSheet } from './views/people';
+import { personSheet } from './views/personSheet';
 
 /** A new genin, knowing only what everyone knows, with ryo to spend. */
 function beginner(): GameState {

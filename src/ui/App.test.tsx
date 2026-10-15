@@ -267,6 +267,9 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /Here/ }));
     const around = screen.getByRole('region', { name: 'Who’s here' });
     await user.click(within(around).getByRole('button', { name: /Kaen/ }));
+    // A stranger's profile is short: who they are, what knowing them opens, a read of them.
+    expect(screen.getByRole('region', { name: 'Between you' })).toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Where to find them' })).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Talk to Kaen' }));
     await user.click(screen.getByRole('button', { name: /Bet I can beat you anyway/ }));
     expect(screen.getByText(/^\+\d+ bond$/)).toBeInTheDocument();

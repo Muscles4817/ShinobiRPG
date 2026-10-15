@@ -438,7 +438,3 @@
   flex-wrap: wrap;
   gap: 4px;
 }
-.recipe-lesson {
-  display: grid;
-  gap: 4px;
-}
