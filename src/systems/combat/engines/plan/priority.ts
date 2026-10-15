@@ -116,8 +116,10 @@ export function aimAt(
       return byHealth(foes, true);
     case 'threat':
       return byHealth(nonEmpty(foes.filter((f) => threatening(f, self, round))) ?? foes, false);
-    case 'marked':
-      return foes.find((f) => f.id === round.mark) ?? byHealth(foes, false);
+    case 'marked': {
+      const mark = self.side === 'enemy' ? round.foeMark : round.mark;
+      return foes.find((f) => f.id === mark) ?? byHealth(foes, false);
+    }
     case 'weakest':
     case undefined:
       return byHealth(foes, false);
