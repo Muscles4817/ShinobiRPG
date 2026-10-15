@@ -11,12 +11,12 @@ import type { GameState } from './state';
 
 /**
  * Slips your sensei signs. The library permit opens its open shelves (the standard techniques
- * up to rank C) to a genin: your sensei signs it at a lesson once you are friends and one of
+ * up to rank C) to a genin: your sensei signs it at a lesson once they trust you (their `permitStage`) and one of
  * your arts has reached grade C. Chūnin need no slip; the restricted stacks stay theirs.
  */
 
 export const LIBRARY_PERMIT = 'library';
-/** Bond stage with your sensei before they sign it (2: friends). */
+/** Bond stage before a sensei signs it (2: friends), unless their ways say otherwise. */
 export const PERMIT_BOND_STAGE = 2;
 /** The grade one of your arts must reach first. */
 export const PERMIT_GRADE: StatGrade = 'C';
@@ -26,7 +26,7 @@ export const OPEN_SHELF_RANK: StatGrade = 'C';
 export const LIBRARY_RANK: Rank = 'chunin';
 
 export const PERMIT_NEEDED =
-  'Genin need a permit from their sensei for the open shelves. Yours signs one once you are friends and one of your arts has reached C.';
+  'Genin need a permit from their sensei for the open shelves. Yours signs one once they trust you and one of your arts has reached C.';
 export const LIBRARY_LOCKED = 'The restricted stacks are for chūnin and above.';
 
 export function isChuninOrAbove(state: GameState): boolean {
@@ -65,7 +65,8 @@ export function permitDue(state: GameState, sensei: PersonDef): boolean {
   return (
     !isChuninOrAbove(state) &&
     !hasLibraryPermit(state) &&
-    stageOf(bondOf(state, sensei.id).points) >= PERMIT_BOND_STAGE &&
+    stageOf(bondOf(state, sensei.id).points) >=
+      (sensei.sensei?.ways.gatekeeping.permitStage ?? PERMIT_BOND_STAGE) &&
     artAtGrade(state)
   );
 }

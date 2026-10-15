@@ -217,10 +217,11 @@ All in `content/senseis.ts` as `SenseiWays` on `SenseiProfile`. Every field is r
 | `classRegard` | champions the dead last, pushes the best, even                                      | starting regard, the read's wording        |
 | `story`       | beats by bond stage, a wound, a rival, a lost student, a closing arc                | talk, memories, the arc                    |
 
-**Coherence rules** (validated, and obeyed by the generator): a `shield` sensei is never
-`loose` with `lets you fail`; a `teamwork` sensei has a team ritual; a `lens` of hidden talent
-needs a `quirk` that isn't distracted, or a late `loosensAtStage`; a `tight` grip has at least
-three sessions.
+**Coherence rules** (validated, and obeyed by the generator): a `teamwork` sensei drills the
+team (`team-drill`) and keeps a team day; a `tight` grip has at least three sessions and a
+`loose` one at most three; a `shield` sensei is never `loose`; a `lens` of hidden talent needs a
+quirk that isn't distracted; a `signature` reward needs signatures to teach and a `recipe`
+reward a favourite recipe.
 
 **Archetypes** (`systems/profile`-style quick picks for senseis): the drillmaster, the
 strategist, the guardian, the gourmand, the prodigy, the old hand, the eccentric. Each fixes
@@ -289,3 +290,11 @@ Part 5 entry.
    serious ones. That covers the road escorts, the salt-lantern arc and the town jobs at
    Shiomachi and the ford. `validate.ts` reads a posted-away job as teamable. Decision 21 in
    `CLAUDE.md` amended. No save change.
+2. **Senseis as data.** `SenseiWays` (`content/senseis.ts`) on every `SenseiProfile`, with every
+   dimension of the pool but the story (step 8) and the extra quirks (the `feedback` list carries
+   `cryptic` instead). `validateSenseis` checks ranges, lists and the coherence rules. All ten
+   senseis are filled (`packs/original/senseiWays.ts`, `packs/naruto/people/senseiWays.ts`).
+   Three dimensions are read already: `gatekeeping` sets the bond stage for the travel pass and
+   the library permit and how many jobs a nomination wants (`nominationMissions`: early 7, usual
+   10, late 14); `onMissions` sets the sensei's stance in a job's fights (shield covers you,
+   watchful supports, lets-fail holds). No save change.

@@ -6,8 +6,9 @@ import { act, ctx } from '@/test/gameFixtures';
 import { blockerFor } from './dispatch';
 import { examAnnounced, examRumours, examToday, nextSitting } from './exam/calendar';
 import {
-  NOMINATION_MISSIONS,
+  nominationMissions,
   readinessGap,
+  senseiOf,
   REPLACEMENT_BOND_HIT,
   REPLACEMENT_STAGE,
 } from './exam/entry';
@@ -99,7 +100,14 @@ describe('nomination', () => {
       /doesn’t think you’re ready. You need a stat at chūnin grade/,
     );
     const fresh = { ...ready, standing: { ...ready.standing, missionsCompleted: 3 } };
-    expect(blockerFor(fresh, ENTER, ctx)).toMatch(`${NOMINATION_MISSIONS} jobs done, you have 3`);
+    const wanted = nominationMissions(senseiOf(fresh, ctx)!);
+    expect(blockerFor(fresh, ENTER, ctx)).toMatch(`${wanted} jobs done, you have 3`);
+  });
+
+  it('a sensei who puts students forward early wants fewer jobs than one who waits', () => {
+    const sensei = (id: string) => ctx.content.people.require(id);
+    expect(nominationMissions(sensei('goran'))).toBeLessThan(nominationMissions(sensei('tetsu')));
+    expect(nominationMissions(sensei('tetsu'))).toBeLessThan(nominationMissions(sensei('yomi')));
   });
 
   it('judges readiness on grades: some at C and a rounded base', () => {

@@ -1,5 +1,5 @@
-import type { PersonDef } from '@/content';
-import type { CombatantSetup, CombatOrders } from '@/systems/combat';
+import type { MissionPosture, PersonDef } from '@/content';
+import type { CombatantSetup, CombatOrders, CombatStance } from '@/systems/combat';
 import type { Crew, MissionNote } from '@/systems/missions';
 import { MAX_HEALTH } from '@/systems/vitals';
 
@@ -29,6 +29,23 @@ const LEADER_CARDS = 'They fight their own way.';
 export const MEDIC_CONTROL = 8;
 /** Health a medic restores between stages, per point of their chakra control. */
 export const MEDIC_HEAL_PER_CONTROL = 1;
+
+/**
+ * How your sensei fights beside you, by their ways: one who shields you covers you, a watchful
+ * one sets you up, and one who lets you fail keeps their place unless it goes badly wrong.
+ */
+const POSTURE_STANCE: Readonly<Record<MissionPosture, CombatStance['kind']>> = {
+  shield: 'cover',
+  watchful: 'support',
+  'lets-fail': 'hold',
+};
+
+function leaderStance(leader: PersonDef, sensei: boolean): CombatStance {
+  const posture = sensei ? leader.sensei?.ways.onMissions : undefined;
+  if (!posture) return defaultStance(leader, PLAYER_COMBATANT_ID);
+  const kind = POSTURE_STANCE[posture];
+  return kind === 'cover' ? { kind, covers: PLAYER_COMBATANT_ID } : { kind };
+}
 
 /** The people out with you besides whoever leads. */
 export function crewMembers(state: GameState, ctx: GameContext): PersonDef[] {
@@ -79,7 +96,7 @@ export function teamAllies(state: GameState, ctx: GameContext): CombatantSetup[]
     ...members,
     {
       ...senseiCombatant(leader, state, ctx, sensei ? SENSEI_TAG : LEADER_TAG),
-      stance: defaultStance(leader, PLAYER_COMBATANT_ID),
+      stance: leaderStance(leader, sensei),
       orders: { stanceLocked: leads, cardsLocked: LEADER_CARDS },
     },
   ];

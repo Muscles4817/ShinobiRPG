@@ -1,4 +1,4 @@
-import type { PersonDef } from '@/content';
+import type { NominationHabit, PersonDef } from '@/content';
 import { stageForPair, stageOf } from '@/systems/bonds';
 import { STAT_GRADES, STAT_IDS, statTier, type StatGrade, type Stats } from '@/systems/stats';
 
@@ -17,8 +17,17 @@ import type { GameState } from '../state';
 
 /** Your sensei must count you at least a friend before they put your name forward. */
 export const NOMINATION_BOND_STAGE = 2;
-/** Jobs done before a sensei will nominate you. */
-export const NOMINATION_MISSIONS = 10;
+/** Jobs done before a sensei will nominate you, by how soon they put students forward. */
+export const NOMINATION_MISSIONS: Readonly<Record<NominationHabit, number>> = {
+  early: 7,
+  usual: 10,
+  late: 14,
+};
+
+/** Jobs this sensei wants to see done before they nominate you. */
+export function nominationMissions(sensei: PersonDef): number {
+  return NOMINATION_MISSIONS[sensei.sensei?.ways.gatekeeping.nominates ?? 'usual'];
+}
 /** Readiness: at least this many stats at C (chūnin grade)… */
 export const READY_AT_C = 1;
 /** …and at least this many at D or better. */
@@ -64,8 +73,9 @@ export function nominationBlocker(state: GameState, ctx: GameContext): string | 
   const gap = readinessGap(state.character.stats);
   if (gap) return `${name} doesn’t think you’re ready. You need ${gap}.`;
   const done = state.standing.missionsCompleted;
-  if (done < NOMINATION_MISSIONS) {
-    return `${name} wants to see more of your work first: ${NOMINATION_MISSIONS} jobs done, you have ${done}.`;
+  const wanted = nominationMissions(sensei);
+  if (done < wanted) {
+    return `${name} wants to see more of your work first: ${wanted} jobs done, you have ${done}.`;
   }
   return null;
 }

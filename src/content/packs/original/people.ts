@@ -3,6 +3,8 @@ import { statLine } from '../../statLine';
 import { LANTERN_WIND, TWIN_CUT } from './techniques/schools';
 import type { PersonDef } from '../../types';
 
+import { AKARI_WAYS, GORAN_WAYS, ITO_WAYS, TETSU_WAYS, YOMI_WAYS } from './senseiWays';
+
 /** Jōnin who may take on a team, plus the village figures every genin knows. */
 export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
   {
@@ -33,6 +35,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       favouredTraits: ['brash', 'diligent', 'proud'],
       style: 'Up before dawn, running stairs until you can’t feel your legs. Loud about it.',
       lesson: 'Gōran has you hit the striking post until it splinters, then hands you a new one.',
+      ways: GORAN_WAYS,
     },
     teacher: {
       quirk: 'harsh',
@@ -84,6 +87,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       toleratesReplacement: true,
       lesson:
         'Akari makes you hold a flame in your palm until it stops flickering. It takes all afternoon.',
+      ways: AKARI_WAYS,
     },
     teacher: {
       quirk: 'natural',
@@ -123,6 +127,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Soft-spoken and strange. Teaches you to notice what you were not meant to.',
       lesson:
         'Yomi has you sit among the grave lanterns until you can tell which lights are lit by the living.',
+      ways: YOMI_WAYS,
     },
     teacher: {
       quirk: 'distracted',
@@ -165,6 +170,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       nature: 'earth',
       style: 'A thousand cuts a day, each one perfect. Silence is praise.',
       lesson: 'Tetsu watches you cut a thousand times and says one word. It is the right word.',
+      ways: TETSU_WAYS,
     },
     teacher: {
       quirk: 'patient',
@@ -211,6 +217,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       toleratesReplacement: true,
       lesson:
         'Ito sets traps around the training ground and makes you write a ward for each before dark.',
+      ways: ITO_WAYS,
     },
     teacher: {
       quirk: 'patient',
