@@ -9,7 +9,7 @@ export const SHUKUBA_TOWN: LocationDef = {
   id: 'shukuba-town',
   name: 'Shukuba Town',
   epithet: 'Post town on the highway',
-  map: { x: 38, y: 42 },
+  map: { x: 42, y: 32.5, label: 'right' },
   backdrop: 'lantern-rooftops',
   places: [
     {

@@ -10,7 +10,7 @@ export const LAND_OF_WAVES: LocationDef = {
   id: 'land-of-waves',
   name: 'Land of Waves',
   epithet: 'Fishing islands and a great bridge',
-  map: { x: 70, y: 52 },
+  map: { x: 76.6, y: 46 },
   backdrop: 'coast',
   places: [
     {

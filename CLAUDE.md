@@ -412,12 +412,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   catches broken references and anything no place offers.
 - **Add a content pack:** copy `packs/original/`, change ids/names, register it. Keep every
   pack complete; packs don't inherit from each other.
-- **Add a location:** add a `LocationDef` with a backdrop, a `map` point and places, and a `RouteDef` to it in
+- **Add a location:** add a `LocationDef` with a backdrop, a `map` point (and a `label` side if its name would
+  run into a neighbour's) and places, and a `RouteDef` to it in
   the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`,
   and for a road not everyone may walk, `needs` and a `name` to say it by;
   `systems/travel` finds the quickest open way, validated so every location has a road). Leave
   `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road
   passes through it.
+  A road may `trail` through bends so it follows the land. The country itself is the pack's
+  `atlas` (`content/atlas.ts`: coastlines, the home country, borders, rivers, names, in map
+  units; validated on the map), drawn on the Travel tab in the player's `settings.mapStyle`
+  (washi chart, lantern night or sumi-e brush: `game/mapStyle.ts`, inks set per style in CSS).
 - **Add a control exercise:** an `ExerciseDef` (grade, pace, energy, `startedBy: 'sensei'` with a
   `start` line if the sensei begins it, an optional `walk` surface, a `limitBonus`, practice and
   fall lines) in `shared/exercises.ts` or a pack's own list, offered at a training place's

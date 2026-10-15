@@ -22,6 +22,13 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         text: 'The road leaves the trees for the coast, where fishing boats lie drawn up on the sand.',
       },
     ],
+    trail: [
+      { x: 56, y: 34 },
+      { x: 63, y: 40 },
+      { x: 68, y: 43.5 },
+      { x: 71, y: 44.6 },
+      { x: 74.6, y: 45.8 },
+    ],
     danger: 'armed',
     cost: 40,
   },
@@ -35,6 +42,10 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         days: 2,
         text: 'A boatman takes you over the misty water, saying as little as he can.',
       },
+    ],
+    trail: [
+      { x: 82, y: 43 },
+      { x: 87, y: 39 },
     ],
     danger: 'deadly',
     cost: 110,
@@ -50,6 +61,7 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         text: 'The highway runs south through the Leaf’s forests, busy with carts and pilgrims.',
       },
     ],
+    trail: [{ x: 45, y: 31 }],
     danger: 'petty',
   },
   {
@@ -63,6 +75,7 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         text: 'The road follows the river down to the plain, and the castle roofs show over the fields.',
       },
     ],
+    trail: [{ x: 37, y: 35 }],
     danger: 'petty',
   },
   {
@@ -81,6 +94,7 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         text: 'Over the low hills, and at dusk the red lanterns of the quarter light up the valley.',
       },
     ],
+    trail: [{ x: 50, y: 33 }],
     danger: 'petty',
   },
   {
@@ -99,6 +113,7 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         text: 'The road becomes a stair, and the stair goes on into the clouds. A bell sounds somewhere above.',
       },
     ],
+    trail: [{ x: 43, y: 25 }],
     danger: 'petty',
   },
   {
@@ -116,6 +131,11 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         days: 2,
         text: 'Sand, and more sand. You walk at dawn and dusk, and shelter from the noon sun.',
       },
+    ],
+    trail: [
+      { x: 36, y: 30 },
+      { x: 26, y: 38 },
+      { x: 18, y: 46 },
     ],
     danger: 'armed',
     cost: 120,
@@ -136,6 +156,7 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         text: 'The path climbs among wet rocks and strange, huge plants. Toads watch you from the ledges.',
       },
     ],
+    trail: [{ x: 55, y: 25 }],
     danger: 'deadly',
   },
 ];

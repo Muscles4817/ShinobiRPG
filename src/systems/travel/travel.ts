@@ -48,6 +48,8 @@ export interface RouteDef {
   readonly needs?: readonly RouteNeed[];
   /** The road as the player hears of it, starting a sentence: "The bay crossing". */
   readonly name?: string;
+  /** Where it bends on the map between its ends (map units); straight when absent. */
+  readonly trail?: readonly { readonly x: number; readonly y: number }[];
 }
 
 export interface Journey {

@@ -17,6 +17,10 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
         text: 'The coast road winds down through the terraces, the sea always just past the next bend.',
       },
     ],
+    trail: [
+      { x: 36, y: 42 },
+      { x: 27, y: 49 },
+    ],
     danger: 'petty',
   },
   {
@@ -30,6 +34,7 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
         text: 'The track runs under old cedars, and the lanterns of home are soon out of sight.',
       },
     ],
+    trail: [{ x: 56, y: 35 }],
     danger: 'armed',
   },
   {
@@ -43,6 +48,7 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
         text: 'Caravan posts mark the way across the dunes, a day apart if the wind is kind.',
       },
     ],
+    trail: [{ x: 76, y: 34 }],
     danger: 'armed',
     cost: 120,
   },
@@ -62,6 +68,10 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
         text: 'The pass climbs into cloud. Paper charms hang from the rocks, and something rustles behind them.',
       },
     ],
+    trail: [
+      { x: 45, y: 24 },
+      { x: 41, y: 16 },
+    ],
     danger: 'deadly',
   },
   {
@@ -75,6 +85,11 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
         days: 1,
         text: 'You walk out across the bay on the swell, gulls overhead and nothing under your feet but chakra and green water.',
       },
+    ],
+    trail: [
+      { x: 33, y: 55 },
+      { x: 48, y: 50 },
+      { x: 60, y: 44 },
     ],
     danger: 'petty',
     needs: [{ kind: 'walk', surface: 'water' }],

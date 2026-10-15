@@ -9,7 +9,7 @@ export const FIRE_TEMPLE: LocationDef = {
   id: 'fire-temple',
   name: 'The Fire Temple',
   epithet: 'Monks of the Land of Fire',
-  map: { x: 28, y: 12 },
+  map: { x: 37, y: 22, label: 'left' },
   backdrop: 'mountain',
   places: [
     {

@@ -402,3 +402,12 @@ Step 12 (Mount Reikon) waits on milestone 3's spirits.
     quarter office); and **the Fire Temple** up its mountain stair (the pilgrims' hall, the
     temple kitchen, the monks' courtyard drills, the steward's favours, and Chiriku, a jōnin
     who trains anyone in the courtyard, with the novice Kei).
+
+**The map, redrawn.** The Travel tab's map is now a chart of the country, not dots and lines on
+blank paper. Each pack has an `atlas` (`content/atlas.ts`): coastlines, the home country
+washed in ember, borders, rivers and the names of lands, seas and features, all in map units
+and drawn as smooth hand-inked curves with hatched coasts. Roads `trail` through bends so they
+follow the land (the bay crossing now runs over the water), and each place says which side its
+name goes. The fan pack's map is zoomed on the Land of Fire after the setting's geography:
+Wind to the west, Earth and the small countries north-west, Lightning across the sea, Water's
+islands to the east, Tea to the south and the Land of Waves on its bridge.

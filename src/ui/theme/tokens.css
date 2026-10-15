@@ -49,6 +49,21 @@
   --paper-ink: #2a2118;
   --paper-muted: #6f6149;
   --seal: #c0392b;
+  /* The map's sea, a shade under the paper, and the home country's ember wash. */
+  --paper-sea: #e4d6b6;
+  --map-home: rgb(229 100 63 / 0.16);
+  /* The map at night: an indigo sea, lacquered land, gold-ink coasts. */
+  --map-night-sea: #141826;
+  --map-night-land: #2a2433;
+  --map-night-faint: #7a6a8a;
+  --map-night-hatch: #3a4466;
+  --map-night-home: rgb(240 160 80 / 0.13);
+  /* The map in sumi-e: a grey wash of sea, pale washi land, heavy ink. */
+  --map-brush-sea: #d8d2c4;
+  --map-brush-land: #f3ece0;
+  --map-brush-ink: #1d1a17;
+  --map-brush-faint: #9a907e;
+  --map-brush-home: rgb(192 57 43 / 0.08);
   --wood: #4f3420;
   /* Pale cypress for ema, the wooden plaques hung at shrines. */
   --ema: #d9bb8a;
