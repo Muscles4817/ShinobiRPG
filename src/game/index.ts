@@ -214,13 +214,14 @@ export {
 } from './views/encounter';
 export {
   bondsView,
-  personSheet,
   type BondsView,
   type PersonCard,
   type PersonFace,
-  type PersonSheet,
   type Relation,
 } from './views/people';
+export { personSheet, type PersonSheet } from './views/personSheet';
+export type { BondPath, BondStep } from './views/bondPath';
+export type { ArtChip, Arts, DaySlot, Growth } from './views/personFacts';
 export {
   activeScene,
   conversationScene,

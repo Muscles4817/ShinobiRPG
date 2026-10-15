@@ -19,6 +19,7 @@ import '@/ui/styles/encounter.css';
 import '@/ui/styles/exam.css';
 import '@/ui/styles/creation.css';
 import '@/ui/styles/people.css';
+import '@/ui/styles/profile.css';
 import '@/ui/styles/teachers.css';
 import '@/ui/styles/sensei.css';
 import '@/ui/styles/library.css';

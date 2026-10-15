@@ -165,6 +165,16 @@ function offerOf(state: GameState, ctx: GameContext, teaching: Teaching): Teache
   };
 }
 
+/** A person's next signature technique, or what holds it back; null if they teach none. */
+export function signatureFor(
+  state: GameState,
+  ctx: GameContext,
+  person: PersonDef,
+): TeacherOffer['signature'] {
+  const teaching = teachingOf(state, person);
+  return teaching ? signatureOf(state, ctx, teaching) : null;
+}
+
 /** Your sensei first, then teammates, then everyone else here by rank. */
 function order(a: Teaching, b: Teaching): number {
   return Number(b.isSensei) - Number(a.isSensei) || b.factor - a.factor;

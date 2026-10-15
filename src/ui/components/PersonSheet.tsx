@@ -7,7 +7,16 @@ import {
 } from '@/game';
 
 import { Portrait } from '../art/Portrait';
-import { BondMeter } from './BondMeter';
+import {
+  BetweenYou,
+  Remembered,
+  SinceTheAcademy,
+  SizingUp,
+  TheirArts,
+  TheirDay,
+  TheyTeach,
+  WhatTheyreLike,
+} from './PersonSections';
 
 interface PersonSheetProps {
   readonly ctx: GameContext;
@@ -19,153 +28,126 @@ interface PersonSheetProps {
 
 const RELATION_LABEL = { sensei: 'Your sensei', teammate: 'Your teammate' } as const;
 
-interface PersonActionsProps {
+interface ActionsProps {
   readonly sheet: Sheet;
   readonly perform: (action: GameAction) => void;
   readonly onClose: () => void;
 }
 
-/** For someone who cooks: their next dish, and why they won't show you yet. */
-function RecipeLesson({
-  recipe,
+/** A button that does its action and closes the sheet, disabled with its reason. */
+function Act({
+  label,
+  choice,
+  primary = false,
   perform,
   onClose,
 }: {
-  readonly recipe: NonNullable<Sheet['recipe']>;
-  readonly perform: (action: GameAction) => void;
-  readonly onClose: () => void;
-}) {
+  readonly label: string;
+  readonly choice: { readonly action: GameAction; readonly blocker: string | null };
+  readonly primary?: boolean;
+} & Omit<ActionsProps, 'sheet'>) {
   return (
-    <div className="recipe-lesson">
-      <button
-        type="button"
-        className="btn ghost"
-        disabled={recipe.blocker !== null}
-        onClick={() => {
-          perform(recipe.action);
-          onClose();
-        }}
-      >
-        Learn to cook {recipe.name}
-      </button>
-      {recipe.blocker && <p className="blocker">{recipe.blocker}</p>}
-    </div>
+    <button
+      type="button"
+      className={primary ? 'btn' : 'btn ghost'}
+      disabled={choice.blocker !== null}
+      title={choice.blocker ?? undefined}
+      onClick={() => {
+        perform(choice.action);
+        onClose();
+      }}
+    >
+      {label}
+    </button>
   );
 }
 
-/** Talk (and, with genin, spar), each saying why not when it can't be done. */
-function PersonActions({ sheet: p, perform, onClose }: PersonActionsProps) {
-  const { spar } = p;
+/** What you can do with them, kept at the thumb; each says why not when it can't be done. */
+function PersonActions({ sheet: p, perform, onClose }: ActionsProps) {
+  const reasons = [
+    p.talk.blocker,
+    p.spar?.blocker ? `Spar: ${p.spar.blocker}` : null,
+    p.recipe?.blocker ?? null,
+  ];
+  const shown = [...new Set(reasons.filter((r): r is string => r !== null))];
   return (
-    <>
-      {p.talk.blocker && <p className="blocker">{p.talk.blocker}</p>}
+    <footer className="profile-actions">
+      {shown.map((r) => (
+        <p key={r} className="blocker">
+          {r}
+        </p>
+      ))}
       <div className="row-buttons">
-        <button
-          type="button"
-          className="btn"
-          disabled={p.talk.blocker !== null}
-          onClick={() => {
-            perform(p.talk.action);
-            onClose();
-          }}
-        >
-          Talk to {p.name}
-        </button>
-        {spar && (
-          <button
-            type="button"
-            className="btn ghost"
-            disabled={spar.blocker !== null}
-            title={spar.blocker ?? undefined}
-            onClick={() => {
-              perform(spar.action);
-              onClose();
-            }}
-          >
-            Spar
-          </button>
-        )}
+        <Act
+          label={`Talk to ${p.name}`}
+          choice={p.talk}
+          primary
+          perform={perform}
+          onClose={onClose}
+        />
+        {p.spar && <Act label="Spar" choice={p.spar} perform={perform} onClose={onClose} />}
       </div>
-      {spar?.blocker && spar.blocker !== p.talk.blocker && (
-        <p className="blocker">Spar: {spar.blocker}</p>
+      {p.recipe && (
+        <Act
+          label={`Learn to cook ${p.recipe.name}`}
+          choice={p.recipe}
+          perform={perform}
+          onClose={onClose}
+        />
       )}
-      {p.recipe && <RecipeLesson recipe={p.recipe} perform={perform} onClose={onClose} />}
-    </>
+    </footer>
   );
 }
 
-/** Someone's page: who they are, how close you are, what they're like, and a way to talk. */
+/** Who they are, at a glance: face, name, rank and art, and where they are now. */
+function PersonHead({ p }: { readonly p: Sheet }) {
+  // A title that only repeats their rank says nothing the rank stamp doesn't.
+  const kicker = p.relation ? RELATION_LABEL[p.relation] : p.title === p.rank ? null : p.title;
+  return (
+    <header className="person-top">
+      <span className={p.relation ? 'person-photo team' : 'person-photo'}>
+        <Portrait appearance={p.appearance} size={84} />
+      </span>
+      <div>
+        {kicker && <p className="profile-kicker">{kicker}</p>}
+        <h2>{p.fullName}</h2>
+        <p className="person-tags">
+          {p.rank && <span className="badge">{p.rank}</span>}
+          {p.specialty && <span className={`badge d-${p.specialty.id}`}>{p.specialty.label}</span>}
+          {p.clan && <span className="chip">{p.clan}</span>}
+        </p>
+        <p className="profile-where">{p.where}</p>
+      </div>
+    </header>
+  );
+}
+
+/**
+ * Someone's page, on paper: it starts short for a stranger and grows as you get to know them,
+ * with what you can do together kept at the bottom.
+ */
 export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSheetProps) {
   const p = personSheet(state, ctx, personId);
   if (!p) return null;
   return (
     <div className="sheet-backdrop" onClick={onClose}>
       <section
-        className="sheet person-sheet enter"
+        className="sheet person-sheet paper-sheet enter"
         aria-label={p.fullName}
         onClick={(e) => {
           e.stopPropagation();
         }}
       >
-        <div className="person-top">
-          <span className={p.relation ? 'person-photo team' : 'person-photo'}>
-            <Portrait appearance={p.appearance} size={72} />
-          </span>
-          <div>
-            <p className="label">{p.relation ? RELATION_LABEL[p.relation] : p.title}</p>
-            <h2>{p.fullName}</h2>
-            <p className="person-tags">
-              {p.specialty && (
-                <span className={`badge d-${p.specialty.id}`}>{p.specialty.label}</span>
-              )}
-              {p.clan && <span className="chip">{p.clan}</span>}
-              <span className="chip">{p.where}</span>
-            </p>
-          </div>
-        </div>
-        <BondMeter stageName={p.stageName} progress={p.progress} />
+        <PersonHead p={p} />
         <p className="story">{p.bio}</p>
-        {p.traits && (
-          <dl className="person-traits">
-            {p.traits.map((t) => (
-              <div key={t.name}>
-                <dt>{t.name}</dt>
-                <dd>{t.note}</dd>
-              </div>
-            ))}
-          </dl>
-        )}
-        {p.likes && p.dislikes && (
-          <p className="chips">
-            {p.likes.map((t) => (
-              <span key={t} className="chip gain">
-                Likes {t.toLowerCase()}
-              </span>
-            ))}
-            {p.dislikes.map((t) => (
-              <span key={t} className="chip harm">
-                Dislikes {t.toLowerCase()}
-              </span>
-            ))}
-          </p>
-        )}
-        {p.reveal && <p className="muted small">{p.reveal}</p>}
-        {p.carries && (
-          <section className="person-memories" aria-label="What they carry">
-            <h3 className="label">What they carry</h3>
-            <p>{p.carries}</p>
-          </section>
-        )}
-        {p.memories.length > 0 && (
-          <section className="person-memories" aria-label="What you’ve been through">
-            <h3 className="label">What you’ve been through</h3>
-            <ul>
-              {p.memories.map((m, i) => (
-                <li key={i}>{m}</li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <BetweenYou p={p} />
+        <WhatTheyreLike p={p} />
+        {p.day && <TheirDay day={p.day} />}
+        {p.arts && <TheirArts arts={p.arts} />}
+        {p.teaches && <TheyTeach teaches={p.teaches} />}
+        {p.growth && <SinceTheAcademy growth={p.growth} />}
+        {p.sizing && <SizingUp sizing={p.sizing} />}
+        <Remembered p={p} />
         <PersonActions sheet={p} perform={perform} onClose={onClose} />
       </section>
     </div>

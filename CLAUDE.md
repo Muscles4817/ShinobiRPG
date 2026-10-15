@@ -145,6 +145,11 @@ ui ──► game ──► content ──► systems ──► core
     or a town they live in (`homeLocationId`, only `shinobi` and `villager` roles; `villagers`
     keeps them off your village's crews, teams and dinner table). Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
+    A person's **profile** (`views/personSheet.ts`) is one paper sheet that grows with the bond:
+    a stranger's shows who they are, a read of them and what the next stage opens
+    (`views/bondPath.ts`, read from the rules that open it); an acquaintance's (or a teammate's)
+    adds their day, what they can do and are growing into (`views/personFacts.ts`), what they'll
+    teach you and a genin's growth since the academy; tastes come with friendship.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
     (fight › encounter › mission › conversation › team assignment › chakra paper › the sensei's
     first meeting). Anything that must happen before

@@ -4,17 +4,13 @@ import type { Appearance } from '@/systems/profile';
 import { STAT_INFO } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
-import { nextLesson } from '../actions/recipes';
 import type { GameContext } from '../context';
 import { currentLocation } from '../ops';
-import { bondOf, everyone, findPerson, fullName, peopleHere, whereNow } from '../people/cast';
+import { bondOf, everyone, fullName, peopleHere, whereNow } from '../people/cast';
 import type { GameState } from '../state';
 import { capitalise, choice, type Choice } from './common';
-import { waysOf } from '../sensei/generate';
 
-/** Stage at which you learn someone's traits, and then what they like to hear. */
-const TRAITS_REVEALED_AT = 1;
-export const TASTES_REVEALED_AT = 2;
+export { TASTES_REVEALED_AT } from './bondPath';
 
 export type Relation = 'sensei' | 'teammate' | null;
 
@@ -39,26 +35,6 @@ export interface PersonCard extends PersonFace {
   readonly talk: Choice;
   /** Null for people who don't spar (anyone but genin). */
   readonly spar: Choice | null;
-}
-
-/** The beat of a sensei's story (the third, among friends) that tells what they carry. */
-const WOUND_BEAT = 2;
-
-export interface PersonSheet extends PersonCard {
-  readonly bio: string;
-  readonly clan: string | null;
-  /** Null until you know them well enough. */
-  readonly traits: readonly { readonly name: string; readonly note: string }[] | null;
-  readonly likes: readonly string[] | null;
-  readonly dislikes: readonly string[] | null;
-  /** What getting closer will reveal next, if anything. */
-  readonly reveal: string | null;
-  /** Moments from jobs together that they remember, newest first. */
-  readonly memories: readonly string[];
-  /** For a sensei: what they carry, once they have told you (their third story beat). */
-  readonly carries: string | null;
-  /** The next dish they would teach you, for people who cook; null otherwise. */
-  readonly recipe: (Choice & { readonly name: string }) | null;
 }
 
 export interface BondsView {
@@ -124,63 +100,6 @@ export function bondsView(state: GameState, ctx: GameContext): BondsView {
     known: others.filter(met).sort((a, b) => b.stage - a.stage || b.progress - a.progress),
     strangers: others.filter((c) => !met(c)),
   };
-}
-
-export function personSheet(
-  state: GameState,
-  ctx: GameContext,
-  personId: string,
-): PersonSheet | null {
-  const person = findPerson(state, ctx, personId);
-  if (!person) return null;
-  const card = personCard(state, ctx, person);
-  const traits = person.traitIds.flatMap((id) => {
-    const t = ctx.content.traits.get(id);
-    return t ? [t] : [];
-  });
-  const tastes = (pick: (t: (typeof traits)[number]) => readonly Tone[]) => [
-    ...new Set(traits.flatMap((t) => pick(t).map(toneLabel))),
-  ];
-  const knowsTraits = card.stage >= TRAITS_REVEALED_AT;
-  const knowsTastes = card.stage >= TASTES_REVEALED_AT;
-  return {
-    ...card,
-    bio: person.bio,
-    clan: person.clanId ? (ctx.content.clans.get(person.clanId)?.name ?? null) : null,
-    traits: knowsTraits ? traits.map((t) => ({ name: t.name, note: t.note })) : null,
-    likes: knowsTastes ? tastes((t) => t.likes) : null,
-    dislikes: knowsTastes ? tastes((t) => t.dislikes) : null,
-    reveal: revealHint(knowsTraits, knowsTastes),
-    memories: state.village.memories
-      .filter((m) => m.personId === person.id)
-      .map((m) => m.text)
-      .reverse(),
-    recipe: recipeOffer(state, ctx, person),
-    carries: carriedWound(state, person),
-  };
-}
-
-/** A sensei's wound, once you have heard the beat of their story that tells it. */
-function carriedWound(state: GameState, person: PersonDef): string | null {
-  const story = waysOf(person)?.story;
-  const told = story?.beats[WOUND_BEAT];
-  if (!story || !told) return null;
-  return state.people.bonds[person.id]?.heard.includes(told) ? story.wound : null;
-}
-
-function recipeOffer(state: GameState, ctx: GameContext, person: PersonDef): PersonSheet['recipe'] {
-  const lesson = nextLesson(state, person);
-  if (!lesson) return null;
-  return {
-    ...choice(state, ctx, { type: 'learnRecipe', personId: person.id }),
-    name: ctx.content.recipes.require(lesson.recipeId).name,
-  };
-}
-
-function revealHint(knowsTraits: boolean, knowsTastes: boolean): string | null {
-  if (!knowsTraits) return 'Talk more to learn what they are like.';
-  if (!knowsTastes) return 'Become friends to learn what they like to hear.';
-  return null;
 }
 
 /** Faces of everyone at each place right now, keyed by place id. */

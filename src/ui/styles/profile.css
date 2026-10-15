@@ -1,0 +1,203 @@
+/* Someone's profile: a sheet of paper over the place you're at, growing as you know them. */
+.person-sheet.paper-sheet {
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border-top: 1px solid var(--line);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding-bottom: 0;
+  gap: 14px;
+}
+.person-sheet .person-top {
+  align-items: flex-start;
+}
+.person-sheet .person-photo {
+  background: var(--ema);
+  border-color: var(--paper-ink);
+}
+.person-sheet .person-photo.team {
+  border-color: var(--seal);
+}
+.profile-kicker {
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+.profile-where {
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+  margin-top: 4px;
+}
+/* Ink stamps read darker on paper. */
+.person-sheet .badge {
+  color: color-mix(in srgb, var(--d, var(--paper-muted)) 55%, var(--paper-ink));
+}
+.person-sheet .story {
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+
+.profile-section {
+  border-top: 1px solid rgb(42 33 24 / 0.22);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.profile-section h3 {
+  font-family: var(--font-story);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.profile-section h4 {
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.profile-note {
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+
+.profile-bond {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.profile-bond .bond-meter {
+  flex: 1;
+}
+.person-sheet .bond-meter small {
+  color: var(--ink-cost);
+}
+.person-sheet .bond-bar {
+  background: rgb(42 33 24 / 0.14);
+}
+.person-sheet .bond-bar i {
+  background: var(--ink-cost);
+}
+.profile-bond > small {
+  font-size: 0.8rem;
+  color: var(--paper-muted);
+}
+.profile-opens {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.88rem;
+  display: grid;
+  gap: 2px;
+}
+
+.person-sheet .person-traits dd {
+  color: var(--paper-muted);
+}
+
+.profile-day {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.profile-day li {
+  border: 1px solid rgb(42 33 24 / 0.2);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.88rem;
+}
+.profile-day li small {
+  font-size: 0.75rem;
+  color: var(--paper-muted);
+}
+.profile-day li.now {
+  border: 2px solid var(--ink-cost);
+  padding: 5px 7px;
+}
+.profile-day li.now small {
+  color: var(--ink-cost);
+  font-weight: 700;
+}
+
+.profile-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.profile-teach {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+.profile-teach b {
+  font-family: var(--font-story);
+  font-size: 1rem;
+}
+
+.profile-growth {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.profile-growth li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.profile-grades {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-memories {
+  margin: 0;
+  padding-left: 18px;
+  font-family: var(--font-story);
+}
+
+/* What you can do together stays at the thumb, on wood under the paper. */
+.profile-actions {
+  position: sticky;
+  bottom: 0;
+  margin: 4px calc(-1 * var(--gutter)) 0;
+  padding: 10px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+  background: var(--grain), var(--wood);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.profile-actions .blocker {
+  color: var(--energy);
+}
+.profile-actions .row-buttons .btn {
+  flex: 1;
+}
+.person-sheet .story {
+  color: var(--paper-ink);
+}
+/* On a profile the cards are a glance, not a hand: short, the art's kanji small. */
+.profile-cards .tcard {
+  aspect-ratio: auto;
+  min-height: 72px;
+  gap: 6px;
+}
+.profile-cards .tglyph {
+  font-size: 1.5rem;
+  place-items: end end;
+  padding: 0 6px 2px 0;
+}
+/* A technique still out of reach says what it waits on; its kanji would sit on the words. */
+.profile-cards .tcard.ghost .tglyph {
+  display: none;
+}

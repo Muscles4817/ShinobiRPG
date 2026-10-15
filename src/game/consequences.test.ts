@@ -16,7 +16,7 @@ import { CLIENT_RETURN_SHARE } from './clients';
 import type { GameState } from './state';
 import { missionBoardView } from './views/boards';
 import { missionScene } from './views/missionScene';
-import { personSheet } from './views/people';
+import { personSheet } from './views/personSheet';
 import { rumoursToday } from './village';
 
 /** What a job leaves behind: what the village remembers, memories, follow-ups, clients. */
