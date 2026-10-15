@@ -70,4 +70,20 @@ describe('sensei ways validation', () => {
       ]),
     );
   });
+
+  it('reports a story out of order, a beat that isn’t theirs and an unknown arc', () => {
+    const ways = ORIGINAL_PACK.people.find((p) => p.id === 'goran')!.sensei!.ways;
+    const [scar, team, daichi, kurobane] = ways.story.beats;
+    const pack = withWays('goran', {
+      story: { ...ways.story, beats: [team!, scar!, daichi!, 'akari-brother'], arcId: 'nowhere' },
+    });
+    expect(validateSenseis(pack)).toEqual(
+      expect.arrayContaining([
+        `sensei "goran" tells story beat "${team!}" at the wrong stage`,
+        'sensei "goran" tells unknown story beat "akari-brother"',
+        'sensei "goran" leads unknown arc "nowhere"',
+      ]),
+    );
+    expect(kurobane).toBe('goran-kurobane');
+  });
 });

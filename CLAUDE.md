@@ -366,7 +366,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     their test from the pack's `senseiTests` (never failed: your approaches against their
     philosophy set regard) and one question: shown everything, or not. The **curriculum** (the
     pack's `curriculum`, ordered by philosophy in `curriculum.ts`) is the tutorial: one beat a
-    day on the sensei's slip, each once it makes sense; nothing is locked behind it.
+    day on the sensei's slip, each once it makes sense; nothing is locked behind it. Once a
+    week they keep a **team day** (one of their rituals) and pick a job off the board for the
+    team. Their **story** (`ways.story`) is four personal conversations by bond stage; a reply's
+    `worldMark` may open their arc.
 
 ### Content packs
 
@@ -441,7 +444,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   grades carry it (`canPerform`, `game/people/capable.ts`), so a genin grows into theirs. Their best stat must fit their rank (genin E–C,
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
-  technique ids, price) with its `ways` (how they run a team, `content/senseis.ts`); at least
+  technique ids, price) with its `ways` (how they run a team, `content/senseis.ts`, and their
+  story: four personal conversations at stages one to four, validated); at least
   two specialties must exist for the team choice (validated).
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).

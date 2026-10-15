@@ -44,6 +44,7 @@ export type {
   SenseiPhilosophy,
   SenseiReward,
   SenseiRitual,
+  SenseiStory,
   SenseiWays,
   SessionFormat,
 } from './senseis';

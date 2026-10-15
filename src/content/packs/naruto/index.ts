@@ -30,6 +30,11 @@ import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
 import { EXAM_ENEMIES, EXAM_MISSIONS, EXAMS } from './exam';
 import { NARUTO_CONVERSATIONS } from './conversations';
+import { ANKO_STORY } from './people/stories/anko';
+import { ASUMA_STORY } from './people/stories/asuma';
+import { GUY_STORY } from './people/stories/guy';
+import { KAKASHI_STORY } from './people/stories/kakashi';
+import { KURENAI_STORY } from './people/stories/kurenai';
 import {
   CANON_GENIN,
   INSTRUCTORS,
@@ -123,6 +128,11 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...TEMPLATE_CONVERSATIONS,
     ...NARUTO_CONVERSATIONS,
     ...ROSTER_CONVERSATIONS,
+    ...KAKASHI_STORY,
+    ...GUY_STORY,
+    ...KURENAI_STORY,
+    ...ASUMA_STORY,
+    ...ANKO_STORY,
   ],
   conversationTopics: SHARED_TOPICS,
   names: NAMES,

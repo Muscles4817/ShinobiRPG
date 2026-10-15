@@ -363,3 +363,15 @@ Part 5 entry.
    pick** (`game/sensei/pick.ts`): each week one posting at home they would lead, hashed by the
    week, marked on its notice; taking it is remembered (`mentor.pickTaken`) and finishing it
    earns regard, one a week (`pickKept`). The focused player keeps team days too.
+8. **Talk and story.** `SenseiWays.story` (`content/senseis.ts`): the wound in a line, four
+   personal conversations told at bond stages one to four, in order, and an optional `arcId`.
+   All ten senseis have their four beats (`packs/original/stories/`,
+   `packs/naruto/people/stories/`, one file a sensei; the fan pack spreads them in its own
+   builder so a release build drops them). The talk system already offers a friend's newest
+   stage first, so the beats come up as you grow close; once the third (the wound) is heard,
+   the person sheet shows what they carry. A conversation reply may leave a `worldMark`
+   (validated like a job's); Gōran's last beat leaves `goran-old-debt`, which opens his arc,
+   **The Broken Blade** (`packs/original/arcs/brokenBlade.ts`: up the pass to find Kurobane's
+   camp, then back to settle the debt, mercy or not; C-rank, so Gōran leads whoever's sensei he
+   is). The fan pack's senseis have their stories and no arc yet. Talk "by moment and manner"
+   is the manner lines already in sessions, praise and the first meeting; no separate pool.

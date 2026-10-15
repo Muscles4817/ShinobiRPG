@@ -103,6 +103,7 @@ export {
   type SenseiPhilosophy,
   type SenseiReward,
   type SenseiRitual,
+  type SenseiStory,
   type SenseiWays,
   type SessionFormat,
 } from './senseis';

@@ -118,6 +118,8 @@ export interface ConversationChoice {
   readonly reply: string;
   /** Picking this reply does the favour a teacher asked for (`SimplePrice` favour id). */
   readonly favour?: string;
+  /** The village remembers it (`village.marks`): a sensei's story opening their arc. */
+  readonly worldMark?: string;
 }
 
 /**

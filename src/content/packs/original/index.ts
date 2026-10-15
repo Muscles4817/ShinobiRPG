@@ -35,6 +35,7 @@ import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
 import { EXAM_ENEMIES, EXAM_MISSIONS, EXAMS } from './exam';
 import { ORIGINAL_CONVERSATIONS } from './conversations';
+import { SENSEI_STORIES } from './senseiStories';
 import { CLAN_TOPICS } from './talk';
 import { CLAN_HEADS } from './clanHeads';
 import { VILLAGE_CHUNIN } from './chunin';
@@ -49,6 +50,7 @@ import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { LANTERN_THIEF, LANTERN_THIEF_JOBS } from './arcs/lanternThief';
+import { BROKEN_BLADE, BROKEN_BLADE_JOBS, KUROBANE } from './arcs/brokenBlade';
 import { SALT_LANTERNS, SALT_LANTERNS_JOBS } from './arcs/saltLanterns';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
 import { ORIGINAL_ROUTES } from './routes';
@@ -88,6 +90,7 @@ export const ORIGINAL_PACK: ContentPack = {
   missions: [
     ...MISSIONS,
     ...LANTERN_THIEF_JOBS,
+    ...BROKEN_BLADE_JOBS,
     ...SALT_LANTERNS_JOBS,
     ...KIRI_FORD_JOBS,
     ...TEAM_MISSIONS,
@@ -99,9 +102,9 @@ export const ORIGINAL_PACK: ContentPack = {
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
   roadEvents: ROAD_EVENTS,
-  arcs: [LANTERN_THIEF, SALT_LANTERNS],
+  arcs: [LANTERN_THIEF, SALT_LANTERNS, BROKEN_BLADE],
   voices: VOICES,
-  enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...JOB_ENEMIES, ...EXAM_ENEMIES],
+  enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...JOB_ENEMIES, ...EXAM_ENEMIES, KUROBANE],
   training: [...TRAINING, ...SHIOMACHI_TRAINING],
   foods: [...FOODS, ...SEASONAL_FOODS, ...SHIOMACHI_FOODS, ...KIRI_FORD_FOODS],
   clans: CLANS,
@@ -138,6 +141,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...TEMPLATE_CONVERSATIONS,
     ...ORIGINAL_CONVERSATIONS,
     ...ROSTER_CONVERSATIONS,
+    ...SENSEI_STORIES,
   ],
   conversationTopics: [...SHARED_TOPICS, ...CLAN_TOPICS],
   names: NAMES,

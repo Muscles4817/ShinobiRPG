@@ -166,13 +166,15 @@ function voiceProblems(pack: ContentPack): string[] {
 }
 
 /** Every world mark a job or a rumour waits for is one some job can leave behind. */
-/** Every world mark some job's outcomes can leave behind. */
+/** Every world mark some job's outcomes, or a reply in conversation, can leave behind. */
 export function worldMarksLeft(pack: ContentPack): Set<string> {
-  return new Set(
-    pack.missions
+  return new Set([
+    ...pack.missions
       .flatMap((m) => m.stages.flatMap(effectsOf))
       .flatMap((e) => (e.kind === 'world' ? [e.mark] : [])),
-  );
+    // A sensei's story can open their arc.
+    ...pack.conversations.flatMap((c) => c.choices.flatMap((choice) => choice.worldMark ?? [])),
+  ]);
 }
 
 function worldProblems(pack: ContentPack): string[] {
