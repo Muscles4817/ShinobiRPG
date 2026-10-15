@@ -6,6 +6,7 @@ import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 import { attributesOf } from '../combatants';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { doableNow } from './capable';
 import { personStats } from './progress';
 
 /**
@@ -34,12 +35,18 @@ export function companionTraits(person: PersonDef): readonly CombatTrait[] {
 }
 
 /**
- * What a person fights with: their own arsenal when they have one, else what a genin knows:
- * the academy's techniques, their specialty's starter, their clan's, and the half of each
- * combination technique in their specialty (no clan's), so a teammate can join yours.
+ * What a person fights with: the part of their own arsenal they can do by now (`capable.ts`),
+ * else what a genin knows: the academy's techniques, their specialty's starter, their clan's,
+ * and the half of each combination technique in their specialty (no clan's), so a teammate can
+ * join yours.
  */
-function companionTechniques(person: PersonDef, ctx: GameContext): readonly string[] {
-  if (person.arsenal) return person.arsenal.techniqueIds;
+function companionTechniques(
+  person: PersonDef,
+  state: GameState,
+  ctx: GameContext,
+): readonly string[] {
+  const ready = person.arsenal ? doableNow(person, state, ctx, person.arsenal.techniqueIds) : [];
+  if (ready.length > 0) return ready;
   const { content } = ctx;
   const specialty: Discipline | undefined = person.specialty;
   const clan = person.clanId ? content.clans.get(person.clanId) : undefined;
@@ -73,7 +80,9 @@ export function companionCombatant(
     maxHealth: MAX_HEALTH,
     chakra: maxChakra(stats),
     maxChakra: maxChakra(stats),
-    techniques: companionTechniques(person, ctx).map((id) => ctx.content.techniques.require(id)),
+    techniques: companionTechniques(person, state, ctx).map((id) =>
+      ctx.content.techniques.require(id),
+    ),
     traits: companionTraits(person),
     ...(person.arsenal?.perks ? { perks: person.arsenal.perks } : {}),
   };
@@ -81,7 +90,7 @@ export function companionCombatant(
 
 /**
  * Your sensei beside you: their real stats, what a shinobi of their specialty knows, the
- * signature techniques they teach, and their chakra nature.
+ * signature techniques they teach (those they can do), and their chakra nature.
  */
 export function senseiCombatant(
   person: PersonDef,
@@ -91,7 +100,7 @@ export function senseiCombatant(
 ): CombatantSetup {
   const base = companionCombatant(person, state, ctx, tag);
   const known = new Set(base.techniques.map((t) => t.id));
-  const signatures = (person.teacher?.teaches ?? [])
+  const signatures = doableNow(person, state, ctx, person.teacher?.teaches ?? [])
     .filter((id) => !known.has(id))
     .map((id) => ctx.content.techniques.require(id));
   const nature = person.sensei?.nature;

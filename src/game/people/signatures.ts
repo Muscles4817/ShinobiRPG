@@ -3,6 +3,7 @@ import { stageOf } from '@/systems/bonds';
 import type { GameContext } from '../context';
 import { learnBlockerFor, studySession, type Studied } from '../learning';
 import type { GameState } from '../state';
+import { doableNow } from './capable';
 import { bondOf } from './cast';
 import type { Teaching } from './teachers';
 
@@ -19,6 +20,11 @@ export interface Taught extends Studied {
   readonly name: string;
 }
 
+/** The signatures this teacher can do by now, and so can teach: never one ahead of them. */
+export function teachesNow(state: GameState, teaching: Teaching, ctx: GameContext): string[] {
+  return doableNow(teaching.person, state, ctx, teaching.teaches);
+}
+
 /** The next signature technique this teacher will teach you: the first you could learn. */
 export function nextSignature(
   state: GameState,
@@ -26,7 +32,7 @@ export function nextSignature(
   ctx: GameContext,
 ): string | null {
   return (
-    teaching.teaches.find((id) => {
+    teachesNow(state, teaching, ctx).find((id) => {
       const def = ctx.content.techniques.require(id);
       return (
         learnBlockerFor(state, def, ctx) === null && state.character.aptitude[def.discipline] > 0

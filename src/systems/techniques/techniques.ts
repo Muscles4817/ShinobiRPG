@@ -150,6 +150,29 @@ export function learnBlocker(
   return def.needs ? needsBlocker(def.needs, learner) : null;
 }
 
+/** Someone using a technique: their grades and clan, and their nature when it is known. */
+export interface Performer {
+  readonly stats: Stats;
+  readonly clanId: string;
+  /** Left out when their nature isn't modelled: a nature need is then not held against them. */
+  readonly nature?: Element;
+}
+
+/**
+ * Whether someone can do a technique themselves, to fight with it or to teach it: steadily (its
+ * rank at or below their grade in its art, never a rank above), within its clan, and with the
+ * control and reserves it needs. A weapon need isn't held against them; they're armed for it.
+ */
+export function canPerform(def: TechniqueDef, performer: Performer): boolean {
+  if (def.clan !== undefined && def.clan !== performer.clanId) return false;
+  if (learnabilityFor(def, performer.stats) !== 'normal') return false;
+  if (!def.needs) return true;
+  const nature = performer.nature ?? def.needs.nature ?? null;
+  return (
+    needsBlocker(def.needs, { stats: performer.stats, clanId: performer.clanId, nature }) === null
+  );
+}
+
 /** Study points earned in one session — sharper minds and steadier chakra learn faster. */
 export function studyPoints(stats: Stats, def: TechniqueDef): number {
   const aptitude = stats[def.discipline] * 0.6 + stats.intellect * 0.4 + stats.chakraControl * 0.2;

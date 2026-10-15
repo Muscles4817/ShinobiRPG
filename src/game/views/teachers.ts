@@ -10,7 +10,7 @@ import { bondOf, everyone, fullName } from '../people/cast';
 import { readPrice, type PricePart } from '../people/price';
 import { personStats } from '../people/progress';
 import { learnBlockerFor, learnBlockerText } from '../learning';
-import { nextSignature, TEACHES_AT_STAGE } from '../people/signatures';
+import { nextSignature, teachesNow, TEACHES_AT_STAGE } from '../people/signatures';
 import {
   aheadIn,
   presentFor,
@@ -117,7 +117,7 @@ function academyWith(ctx: GameContext, techniqueId: string): string | null {
 function signatureOf(state: GameState, ctx: GameContext, teaching: Teaching) {
   const nextId =
     nextSignature(state, teaching, ctx) ??
-    teaching.teaches.find((id) => {
+    teachesNow(state, teaching, ctx).find((id) => {
       const kind = learnBlockerFor(state, ctx.content.techniques.require(id), ctx)?.kind;
       return kind !== 'already-known' && kind !== 'clan';
     });
