@@ -16,15 +16,11 @@ import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed, isPinned } from '../../rules/verbs';
 import { slotLimit } from './cards';
-import { defaultLoadout, defaultReadiness } from './defaults';
-import { withoutLoneCombos } from './combo';
 import { fieldMeter, fieldStatuses } from './field';
 import { betweenRounds } from './adapt';
 import { intentLine, rollIntents } from './intent';
 import { lingeringStatuses } from './lingering';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
-import { rememberedPlan, type PlanMemory } from './memory';
-import { defaultReactions } from './readiness';
 import { prepStatuses } from './prep';
 import { openFight } from './opening';
 import { decide, resolveExchange } from './round';
@@ -40,7 +36,9 @@ import {
 } from './state';
 import { editTeam, teamOptions } from './orders';
 import { editPlan, tableOptions } from './table';
-import { stanceStatus, withStances } from './team';
+import { stanceStatus } from './team';
+import { foeMarkFor } from './foeTeam';
+import { planOf, plannedFighters } from './planning';
 import { squareUpLine } from '../../rules/narration';
 
 /**
@@ -72,6 +70,7 @@ function statuses(state: PlanState, f: PlanFighter): string[] {
     ...prepStatuses(f),
     ...stanceStatus(f, state.fighters),
     ...(alive(f) && f.id === state.mark ? ['Marked'] : []),
+    ...(alive(f) && f.id === state.foeMark ? ['Targeted'] : []),
   ];
 }
 
@@ -144,6 +143,7 @@ function endOfRound(next: PlanState): PlanState {
     bout: next.bout + 1,
     exchange: 0,
     fighters: betweenRounds(next.fighters, next.reads),
+    ...foeMarkFor(next.fighters),
     log: [...next.log, '— The round is over. Change your cards if you like. —'],
   };
 }
@@ -200,23 +200,6 @@ function prompt(state: PlanState): string {
   return `${RANGE_LABEL[state.range]} range, round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
 }
 
-/** Your remembered plan, or the default one: actions, defences and where to fight. */
-function planFor(f: PlanFighter, fighters: readonly PlanFighter[], plan: unknown): PlanFighter {
-  const remembered = f.isPlayer ? rememberedPlan(plan, f) : null;
-  if (remembered) return { ...f, ...remembered };
-  const loadout = defaultLoadout(withoutLoneCombos(f, fighters), fighters);
-  return { ...f, loadout, ...defaultReadiness(f) };
-}
-
-/** The plan to hand back for next time. */
-function planOf(player: PlanFighter): PlanMemory {
-  return {
-    loadout: player.loadout,
-    reactions: player.reactions ?? defaultReactions(player),
-    ...(player.keepAt === undefined ? {} : { keepAt: player.keepAt }),
-  };
-}
-
 export function createPlanEngine(): CombatEngine {
   return {
     id: PLAN_ENGINE_ID,
@@ -227,9 +210,10 @@ export function createPlanEngine(): CombatEngine {
     start(setup, rng) {
       const names = setup.enemies.map((e) => e.name);
       const { fighters, range, lines, field } = openFight(initialFighters(setup), setup.opening);
-      const planned = withStances(fighters.map((f) => planFor(f, fighters, setup.plan)));
+      const planned = plannedFighters(fighters, setup.plan);
       const table = {
         fighters: planned,
+        ...foeMarkFor(planned),
         range,
         exchange: 0,
         round: 1,
@@ -244,6 +228,7 @@ export function createPlanEngine(): CombatEngine {
         fighters: planned,
         range,
         seen: {},
+        ...foeMarkFor(planned),
         intents: rollIntents(table, rng),
         log: [setup.intro ?? `${squareUpLine(names)} How will you fight?`, ...lines],
         result: null,

@@ -250,6 +250,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...(state.reads ? { reads: state.reads } : {}),
     ...(state.field ? { field: state.field } : {}),
     ...(state.mark ? { mark: state.mark } : {}),
+    ...(state.foeMark ? { foeMark: state.foeMark } : {}),
   };
   const end = secondWinds(
     lingerAfter(

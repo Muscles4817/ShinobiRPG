@@ -159,6 +159,8 @@ export interface PlanState {
   readonly field?: ActiveField;
   /** The team mark: the foe (by id) the player's side goes for. */
   readonly mark?: string;
+  /** The foes' mark, when they fight as a team (`foeTeam.ts`): whom on your side they go for. */
+  readonly foeMark?: string;
   /** What each fighter has given away so far (`reads.ts`); absent until anyone has. */
   readonly reads?: Reads;
 }
@@ -183,6 +185,7 @@ export interface Round {
   readonly intents: PlanState['intents'];
   readonly field?: ActiveField;
   readonly mark?: string;
+  readonly foeMark?: string;
   readonly reads?: Reads;
   /** Elemental hits landed this exchange. */
   readonly hits?: readonly ElementHit[];

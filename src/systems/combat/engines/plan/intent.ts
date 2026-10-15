@@ -26,7 +26,10 @@ import { playerOf, type CardId, type PlanFighter, type PlanState, type Round } f
 /** Each foe's next card, by fighter id. */
 export type Intents = Readonly<Record<string, CardId>>;
 
-type Table = Pick<PlanState, 'fighters' | 'range' | 'exchange' | 'field' | 'round' | 'reads'>;
+type Table = Pick<
+  PlanState,
+  'fighters' | 'range' | 'exchange' | 'field' | 'round' | 'reads' | 'foeMark'
+>;
 
 /** The table as a round about to be played, for a foe weighing its plan. */
 function asRound(table: Table): Round {
@@ -39,6 +42,7 @@ function asRound(table: Table): Round {
     seen: {},
     intents: {},
     ...(table.reads ? { reads: table.reads } : {}),
+    ...(table.foeMark ? { foeMark: table.foeMark } : {}),
     ...(table.field ? { field: table.field } : {}),
   };
 }

@@ -128,10 +128,13 @@ export function stanceReadiness(
 
 const GUARD_READY = { close: 'guard', mid: 'guard', far: 'guard' } as const;
 
-/** Every teammate takes up their stance (from the setup, else their kit), its cards and readiness. */
+/**
+ * Every teammate takes up their stance (from the setup, else their kit), its cards and
+ * readiness; so do foes given one as a team (`foeTeam.ts`).
+ */
 export function withStances(fighters: readonly PlanFighter[]): PlanFighter[] {
   return fighters.map((f) => {
-    if (!isTeammate(f)) return f;
+    if (!isTeammate(f) && f.stance === undefined) return f;
     const stance = stanceOf(f);
     const { keepAt: _was, ...rest } = f;
     return {
@@ -145,7 +148,7 @@ export function withStances(fighters: readonly PlanFighter[]): PlanFighter[] {
 
 /** A teammate's stance in a word or two, for the fight screen. */
 export function stanceStatus(f: PlanFighter, fighters: readonly PlanFighter[]): string[] {
-  if (!isTeammate(f) || !alive(f)) return [];
+  if (!alive(f) || (!isTeammate(f) && f.stance === undefined)) return [];
   const stance = stanceOf(f);
   switch (stance.kind) {
     case 'press':
