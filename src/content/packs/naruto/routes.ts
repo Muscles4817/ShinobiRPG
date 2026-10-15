@@ -2,7 +2,8 @@ import type { RouteDef } from '@/systems/travel';
 
 /**
  * The roads out of the Leaf: south-east to the Land of Waves and across the water to the Mist,
- * west through the hills to the desert, and the long way to the toads.
+ * west through the hills to the desert, south-west to Tanzaku Town, and the long way to the
+ * toads.
  */
 export const NARUTO_ROUTES: readonly RouteDef[] = [
   {
@@ -37,6 +38,24 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     ],
     danger: 'deadly',
     cost: 110,
+  },
+  {
+    id: 'tanzaku-road',
+    from: 'konohagakure',
+    to: 'tanzaku-town',
+    legs: [
+      {
+        region: 'forest-track',
+        days: 1,
+        text: 'The highway runs south through the Leaf’s forests, busy with carts and pilgrims.',
+      },
+      {
+        region: 'river-road',
+        days: 1,
+        text: 'The road follows the river down to the plain, and the castle roofs show over the fields.',
+      },
+    ],
+    danger: 'petty',
   },
   {
     id: 'desert-road',

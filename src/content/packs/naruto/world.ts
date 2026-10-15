@@ -6,6 +6,8 @@ import { PROMOTIONS } from './exam';
 import { SHOPPING_DISTRICT } from './market';
 import { ACADEMY_SHELF, ARCHIVE_SHELF } from './shelves';
 import { KONOHA_WILDS } from './wilds';
+import { LAND_OF_WAVES } from './landOfWaves';
+import { TANZAKU_TOWN } from './tanzaku';
 
 export const NARUTO_TEXT: SettingText = {
   nation: 'the Land of Fire',
@@ -189,15 +191,8 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
     places: [],
     lockedReason: 'Coming soon',
   },
-  {
-    id: 'land-of-waves',
-    name: 'Land of Waves',
-    epithet: 'Fishing islands and a great bridge',
-    map: { x: 70, y: 52 },
-    backdrop: 'coast',
-    places: [],
-    lockedReason: 'Coming soon',
-  },
+  LAND_OF_WAVES,
+  TANZAKU_TOWN,
   {
     id: 'mount-myoboku',
     name: 'Mount Myōboku',
