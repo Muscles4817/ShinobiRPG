@@ -5,7 +5,7 @@ import { findCard } from './cards';
 import { createPlanEngine } from './engine';
 import { plannedPlay } from './priority';
 import { decode, encode, type PlanFighter, type PlanState, type Round } from './state';
-import { intercept, stanceLoadout } from './team';
+import { intercept, stanceLoadout, stanceReadiness } from './team';
 
 const attributes = {
   strength: 5,
@@ -91,13 +91,13 @@ describe('plan & watch team: stances', () => {
     expect(ally(trickster).stance).toEqual({ kind: 'support' });
   });
 
-  it('shapes their cards: pressing aims at the mark, covering guards, support dazes first', () => {
+  it('shapes their cards: pressing aims at the mark, a cover keeps a guard up, support dazes first', () => {
     const kiba = ally(started());
     const fighters = [kiba];
     const press = stanceLoadout(kiba, { kind: 'press' }, fighters);
     expect(press.mid.find((s) => s.card === 'jutsu:bolt')?.target).toBe('marked');
-    const cover = stanceLoadout(kiba, { kind: 'cover', covers: 'hero' }, fighters);
-    expect(cover.close.map((s) => s.card)).toContain('guard');
+    const cover = stanceReadiness(kiba, { kind: 'cover', covers: 'hero' });
+    expect(cover.reactions).toEqual({ close: 'guard', mid: 'guard', far: 'guard' });
     const support = stanceLoadout(kiba, { kind: 'support' }, fighters);
     expect(support.mid[0]).toEqual({ card: 'jutsu:glare' });
   });
@@ -151,11 +151,13 @@ describe('plan & watch team: orders', () => {
     const state = started();
     const theirs = engine.view(encode(state)).options.filter((o) => o.owner === 'kiba');
     expect(theirs.length).toBeGreaterThan(0);
-    const slotted = theirs.find((o) => o.id === 'for:kiba|slot:close:strike');
+    const slotted = theirs.find((o) => o.id === 'for:kiba|slot:close:search');
     expect(slotted).toBeDefined();
-    const before = ally(state).loadout.close.some((s) => s.card === 'strike');
-    const after = choose(state, 'for:kiba|slot:close:strike');
-    expect(ally(after).loadout.close.some((s) => s.card === 'strike')).toBe(!before);
+    const before = ally(state).loadout.close.some((s) => s.card === 'search');
+    const after = choose(state, 'for:kiba|slot:close:search');
+    expect(ally(after).loadout.close.some((s) => s.card === 'search')).toBe(!before);
+    const dodging = choose(after, 'for:kiba|ready:close:dodge');
+    expect(ally(dodging).reactions?.close).toBe('dodge');
   });
 });
 

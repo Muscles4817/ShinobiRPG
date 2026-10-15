@@ -3,7 +3,7 @@ import type { PlainVerb } from '@/systems/techniques';
 
 import type { CombatantSetup, CombatEngine, CombatState, CombatTechnique } from '../../contract';
 import { createPlanEngine } from './engine';
-import { rememberedLoadout } from './memory';
+import { rememberedPlan } from './memory';
 import { plannedPlay } from './priority';
 import {
   decode,
@@ -177,34 +177,36 @@ describe('plan & watch priorities: targets', () => {
 describe('plan & watch priorities: memory', () => {
   const [hero] = table([]);
 
+  const loadoutOf = (plan: unknown) => rememberedPlan(plan, hero!)?.loadout ?? null;
+
   it('reads plans saved as card ids, and plans with conditions', () => {
-    const old = { close: ['strike'], mid: ['jutsu:blast', 'throw'], far: [] };
-    expect(rememberedLoadout(old, hero!)).toEqual({
-      close: [{ card: 'strike' }],
-      mid: [{ card: 'jutsu:blast' }, { card: 'throw' }],
+    const old = { close: ['search'], mid: ['jutsu:blast', 'dispel'], far: [] };
+    expect(loadoutOf(old)).toEqual({
+      close: [{ card: 'search' }],
+      mid: [{ card: 'jutsu:blast' }, { card: 'dispel' }],
       far: [],
     });
     const plan: Loadout = {
       close: [],
-      mid: [{ card: 'jutsu:blast', when: 'foe-dazed', target: 'threat' }, { card: 'throw' }],
+      mid: [{ card: 'jutsu:blast', when: 'foe-dazed', target: 'threat' }, { card: 'dispel' }],
       far: [],
     };
-    expect(rememberedLoadout(plan, hero!)).toEqual(plan);
+    expect(loadoutOf(plan)).toEqual(plan);
   });
 
   it('drops entries it cannot read and forgets unknown conditions', () => {
     const messy = {
-      close: [7, null, { card: 'strike', when: 'full-moon', target: 'nearest' }],
-      mid: ['throw', { when: 'foe-dazed' }, 'throw'],
+      close: [7, null, { card: 'search', when: 'full-moon', target: 'nearest' }],
+      mid: ['dispel', { when: 'foe-dazed' }, 'dispel'],
       far: [],
     };
-    expect(rememberedLoadout(messy, hero!)).toEqual({
-      close: [{ card: 'strike' }],
-      mid: [{ card: 'throw' }],
+    expect(loadoutOf(messy)).toEqual({
+      close: [{ card: 'search' }],
+      mid: [{ card: 'dispel' }],
       far: [],
     });
-    expect(rememberedLoadout({ close: [], mid: 'throw', far: [] }, hero!)).toBeNull();
-    expect(rememberedLoadout(3, hero!)).toBeNull();
+    expect(loadoutOf({ close: [], mid: 'dispel', far: [] })).toBeNull();
+    expect(loadoutOf(3)).toBeNull();
   });
 });
 
@@ -226,7 +228,7 @@ describe('plan & watch priorities: the engine', () => {
   const midOf = (state: CombatState) => decode(state).fighters[0]!.loadout.mid;
 
   it('reorders slots and sets when and whom each plays', () => {
-    const plan = { close: [], mid: ['throw', 'jutsu:blast'], far: [] };
+    const plan = { close: [], mid: ['dispel', 'jutsu:blast'], far: [] };
     const start = engine.start({ ...setup, plan }, createRng(1));
     const options = engine.view(start).options;
     const blastEntry = options.find((o) => o.id === 'slot:mid:jutsu:blast');
@@ -234,7 +236,7 @@ describe('plan & watch priorities: the engine', () => {
     const settings = options.filter((o) => o.adjusts === 'slot:mid:jutsu:blast');
     expect(new Set(settings.map((o) => o.setting))).toEqual(new Set(['Order', 'When', 'Target']));
     const raised = act(start, 'raise:mid:jutsu:blast');
-    expect(midOf(raised).map((s) => s.card)).toEqual(['jutsu:blast', 'throw']);
+    expect(midOf(raised).map((s) => s.card)).toEqual(['jutsu:blast', 'dispel']);
     const timed = act(
       act(raised, 'when:mid:foe-dazed:jutsu:blast'),
       'aim:mid:strongest:jutsu:blast',
@@ -250,21 +252,21 @@ describe('plan & watch priorities: the engine', () => {
     expect(midOf(reset)[0]).toEqual({ card: 'jutsu:blast', target: 'strongest' });
   });
 
-  it('offers no timing for defences, and no target for footwork', () => {
-    const plan = { close: [], mid: ['dodge', 'step-in'], far: [] };
+  it('offers when every action plays, and whom only for attacks', () => {
+    const plan = { close: [], mid: ['search', 'jutsu:blast'], far: [] };
     const options = engine.view(engine.start({ ...setup, plan }, createRng(1))).options;
     const of = (id: string) => options.filter((o) => o.adjusts === `slot:mid:${id}`);
-    expect(of('dodge').some((o) => o.setting === 'When')).toBe(false);
-    expect(of('step-in').some((o) => o.setting === 'Target')).toBe(false);
-    expect(of('step-in').some((o) => o.setting === 'When')).toBe(true);
+    expect(of('search').some((o) => o.setting === 'Target')).toBe(false);
+    expect(of('search').some((o) => o.setting === 'When')).toBe(true);
+    expect(of('jutsu:blast').some((o) => o.setting === 'Target')).toBe(true);
   });
 
   it('offers the back row and the team mark as targets only when a team fights', () => {
-    const plan = { close: [], mid: ['throw'], far: [] };
+    const plan = { close: [], mid: ['jutsu:blast'], far: [] };
     const targets = (allies: CombatantSetup[]) =>
       engine
         .view(engine.start({ ...setup, allies, plan }, createRng(1)))
-        .options.filter((o) => o.adjusts === 'slot:mid:throw' && o.setting === 'Target')
+        .options.filter((o) => o.adjusts === 'slot:mid:jutsu:blast' && o.setting === 'Target')
         .map((o) => o.label);
     expect(targets([])).toEqual(['Weakest foe', 'Strongest foe']);
     expect(targets([fighter('mate')])).toEqual([
@@ -284,7 +286,7 @@ describe('plan & watch priorities: the engine', () => {
     if (!fled.ok) throw new Error(fled.error);
     const plan = engine.outcome(fled.value)?.plan;
     if (plan)
-      expect(rememberedLoadout(plan, decode(begun).fighters[0]!)?.mid).toEqual(midOf(begun));
+      expect(rememberedPlan(plan, decode(begun).fighters[0]!)?.loadout.mid).toEqual(midOf(begun));
   });
 
   it('carries on a fight saved with card ids for slots', () => {

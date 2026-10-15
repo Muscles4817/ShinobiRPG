@@ -84,6 +84,16 @@ function roundWith(target: Partial<CombatantSetup> = {}, loadout?: PlanFighter['
   return round;
 }
 
+/** The bandit keeps one defence ready at every distance. */
+function readyWith(target: Partial<CombatantSetup>, kept: string): Round {
+  const round = roundWith(target);
+  const reactions = { close: kept, mid: kept, far: kept };
+  return {
+    ...round,
+    fighters: round.fighters.map((f) => (f.id === 'bandit' ? { ...f, reactions } : f)),
+  };
+}
+
 /** Uses Crush with each seed in turn until the narration matches. */
 function crushUntil(round: Round, wanted: RegExp): Round {
   for (let seed = 1; seed < 200; seed++) {
@@ -146,35 +156,42 @@ describe('plan & watch techniques', () => {
 
   it('a dazed fighter can still guard, but not dodge', () => {
     const nimble = { attributes: { ...attributes, speed: 60 }, traits: ['swift' as const] };
-    const both = { close: plainSlots(['dodge', 'guard']), mid: [], far: [] };
-    const round = roundWith(nimble, both);
-    const reeling = {
+    const reel = (round: Round): Round => ({
       ...round,
       fighters: round.fighters.map((f) =>
         f.id === 'bandit' ? { ...f, stunned: 1, openUntil: 2 } : f,
       ),
-    };
-    const [hero, bandit] = reeling.fighters;
-    for (let seed = 1; seed <= 30; seed++) {
-      const after = useJutsu(reeling, { actor: hero!, target: bandit, rng: createRng(seed) }, jab);
-      expect(after.lines.join(' ')).not.toMatch(/slips past/);
-      if (after.lines.some((l) => l.includes('hits bandit'))) {
-        expect(after.lines.join(' ')).toMatch(/through a guard/);
+    });
+    for (const kept of ['dodge', 'guard'] as const) {
+      const reeling = reel(readyWith(nimble, kept));
+      const [hero, bandit] = reeling.fighters;
+      for (let seed = 1; seed <= 30; seed++) {
+        const after = useJutsu(
+          reeling,
+          { actor: hero!, target: bandit, rng: createRng(seed) },
+          jab,
+        );
+        const told = after.lines.join(' ');
+        expect(told).not.toMatch(/slips past/);
+        if (kept === 'guard' && told.includes('hits bandit'))
+          expect(told).toMatch(/through a guard/);
       }
     }
   });
 
-  it('stamp the defences that reacted, so the screen can show them', () => {
-    const both = { close: plainSlots(['dodge', 'guard']), mid: [], far: [] };
-    const round = roundWith({}, both);
-    const [hero, bandit] = round.fighters;
-    const reactions = Array.from({ length: 40 }, (_, seed) =>
-      useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed + 1) }, jab).lines.map(
-        (l) => splitNarration(l).reactions,
-      ),
-    ).flat();
-    expect(reactions).toContainEqual(['dodged']);
-    expect(reactions).toContainEqual(['dodge-missed', 'guarded']);
+  it('stamp the defence that reacted, so the screen can show it', () => {
+    const stamps = (kept: 'dodge' | 'guard') => {
+      const round = readyWith({}, kept);
+      const [hero, bandit] = round.fighters;
+      return Array.from({ length: 40 }, (_, seed) =>
+        useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed + 1) }, jab).lines.map(
+          (l) => splitNarration(l).reactions,
+        ),
+      ).flat();
+    };
+    expect(stamps('dodge')).toContainEqual(['dodged']);
+    expect(stamps('dodge')).toContainEqual(['dodge-missed']);
+    expect(stamps('guard')).toContainEqual(['guarded']);
   });
 
   it('add what they cost to the chakra spent in the fight, hit or miss', () => {

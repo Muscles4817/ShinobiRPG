@@ -5,7 +5,7 @@ import { cardsFor } from './cards';
 import { defaultLoadout } from './defaults';
 import { chooseCard } from './choose';
 import { createPlanEngine } from './engine';
-import { rememberedLoadout } from './memory';
+import { rememberedPlan } from './memory';
 import { useTool } from './pouch';
 import { resolveExchange } from './round';
 import {
@@ -138,8 +138,8 @@ describe('plan & watch tools: cards', () => {
 
   it('keeps remembered tools you have none of, so they play again once restocked', () => {
     const [hero] = pair([], []);
-    const plan = { close: [], mid: ['item:smoke', 'throw'], far: [] };
-    expect(rememberedLoadout(plan, hero!)).toEqual({ ...plan, mid: plainSlots(plan.mid) });
+    const plan = { close: [], mid: ['item:smoke', 'search'], far: [] };
+    expect(rememberedPlan(plan, hero!)?.loadout).toEqual({ ...plan, mid: plainSlots(plan.mid) });
     const engine = createPlanEngine();
     const state = engine.start(
       { player: fighter('hero'), allies: [], enemies: [fighter('foe')], canFlee: true, plan },

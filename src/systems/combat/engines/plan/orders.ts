@@ -2,9 +2,9 @@ import type { CombatOption } from '../../contract';
 import { alive } from '../../rules/body';
 import type { CombatStance } from '../../teamContract';
 import { inSight } from './senses';
-import { patch, playerOf, type PlanFighter, type PlanState } from './state';
+import { playerOf, type PlanFighter, type PlanState } from './state';
 import { editLoadout, tableOptions } from './table';
-import { isTeammate, stanceLoadout } from './team';
+import { isTeammate, stanceLoadout, stanceReadiness } from './team';
 
 /**
  * Orders to the team at the card table: the team mark (a foe the player's side goes for), each
@@ -153,16 +153,20 @@ function parseStance(rest: string): { allyId: string; stance: CombatStance } | n
   return null;
 }
 
-/** A new stance brings the cards that go with it. */
+/** A new stance brings the cards and the readiness that go with it. */
 function setStance(state: PlanState, rest: string): PlanState | null {
   const parsed = parseStance(rest);
   const ally = parsed && state.fighters.find((f) => f.id === parsed.allyId);
   if (!parsed || !ally) return null;
   const loadout = stanceLoadout(ally, parsed.stance, state.fighters);
-  return {
-    ...state,
-    fighters: patch(state.fighters, ally.id, { stance: parsed.stance, loadout }),
+  const { keepAt: _was, ...unset } = ally;
+  const updated = {
+    ...unset,
+    stance: parsed.stance,
+    loadout,
+    ...stanceReadiness(ally, parsed.stance),
   };
+  return { ...state, fighters: state.fighters.map((f) => (f.id === ally.id ? updated : f)) };
 }
 
 function editAllyCards(state: PlanState, rest: string): PlanState | null {

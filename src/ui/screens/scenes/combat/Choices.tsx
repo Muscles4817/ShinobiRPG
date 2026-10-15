@@ -88,6 +88,49 @@ function PlanChoice({
   );
 }
 
+/**
+ * A distance's own settings, each a picker showing the current choice: the defence kept ready
+ * there, and where you fight.
+ */
+function RangeSettings({
+  settings,
+  onPick,
+}: {
+  readonly settings: readonly CombatOption[];
+  readonly onPick: Pick;
+}) {
+  if (settings.length === 0) return null;
+  const names = [...new Set(settings.map((o) => o.setting ?? ''))];
+  return (
+    <div className="plan-range-settings">
+      {names.map((name) => {
+        const choices = settings.filter((o) => o.setting === name);
+        const current = choices.find((c) => c.selected) ?? choices[0];
+        return (
+          <label key={name} className="plan-setting">
+            <span>{name}</span>
+            <select
+              aria-label={name}
+              value={current?.id ?? ''}
+              onChange={(event) => {
+                const chosen = choices.find((c) => c.id === event.target.value);
+                if (chosen) onPick(chosen);
+              }}
+            >
+              {choices.map((c) => (
+                <option key={c.id} value={c.id} disabled={c.disabledReason !== undefined}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+            {current?.detail && <small>{current.detail}</small>}
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
 /** Plans to set up before (or between rounds of) a planned fight, by group when grouped. */
 export function PlanPicker({
   options,
@@ -106,7 +149,9 @@ export function PlanPicker({
   const shown = tab ?? groups.find(isHere) ?? groups[0];
   const inGroup = groups.length > 0 ? options.filter((o) => o.group === shown) : options;
   const adjustments = inGroup.filter((o) => o.adjusts !== undefined);
-  const entries = inGroup.filter((o) => o.adjusts === undefined);
+  // A setting that belongs to the distance, not to a slot: its defence, where to fight.
+  const settings = inGroup.filter((o) => o.adjusts === undefined && o.setting !== undefined);
+  const entries = inGroup.filter((o) => o.adjusts === undefined && o.setting === undefined);
   const ordered = entries.filter((o) => o.rank !== undefined);
   const visible = entries.filter((o) => o.rank === undefined);
   const ranks = options.some((o) => o.rank !== undefined || o.adjusts !== undefined);
@@ -130,12 +175,14 @@ export function PlanPicker({
               <small>
                 {isHere(g)
                   ? 'You are here'
-                  : options.filter((o) => o.group === g && o.selected && !o.adjusts).length}
+                  : options.filter((o) => o.group === g && o.selected && !o.adjusts && !o.setting)
+                      .length}
               </small>
             </button>
           ))}
         </div>
       )}
+      <RangeSettings settings={settings} onPick={onPick} />
       {ranks && (
         <PlanSlots
           entries={ordered}

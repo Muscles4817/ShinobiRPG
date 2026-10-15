@@ -169,11 +169,13 @@ describe('fight styles', () => {
       combatScene(fight, ctx)!
         .options.filter((o) => o.group === 'Far' && o.selected)
         .map((o) => o.id);
-    const [first] = cards();
-    fight = act(fight, { type: 'combatAct', optionId: first! });
-    fight = act(fight, { type: 'combatAct', optionId: 'slot:far:dodge' });
+    const first = cards().find((id) => id.startsWith('slot:far:'));
+    if (first) fight = act(fight, { type: 'combatAct', optionId: first });
+    fight = act(fight, { type: 'combatAct', optionId: 'ready:far:dodge' });
+    fight = act(fight, { type: 'combatAct', optionId: 'keep:far:mid' });
     const chosen = cards();
-    expect(chosen).toContain('slot:far:dodge');
+    expect(chosen).toEqual(expect.arrayContaining(['ready:far:dodge', 'keep:far:mid']));
+    if (first) expect(chosen).not.toContain(first);
     const done = fightOut(fight);
     expect(done.settings.combatPlans['plan-v1']).toBeDefined();
     const nextDay = { ...done, time: { ...done.time, day: done.time.day + 1, slot: 1 } };

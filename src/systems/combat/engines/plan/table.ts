@@ -11,6 +11,7 @@ import {
   slotLimit,
   type Card,
 } from './cards';
+import { editReadiness, readinessOptions } from './readinessTable';
 import { cardDetail, cardLabel } from './wording';
 import {
   patch,
@@ -26,9 +27,10 @@ import {
 } from './state';
 
 /**
- * The card table between rounds: for each distance, every card you could slot (tap to put it
- * in or take it out) and, for the cards slotted, their order and how each plays: when (a
- * condition from `priority.ts`) and at whom. Every edit is an option the fight screen shows.
+ * The card table between rounds: for each distance, its defence and where you fight
+ * (`readinessTable.ts`), every action you could slot (tap to put it in or take it out) and,
+ * for the cards slotted, their order and how each plays: when (a condition from
+ * `priority.ts`) and at whom. Every edit is an option the fight screen shows.
  */
 
 const SLOT_PREFIX = 'slot:';
@@ -150,7 +152,12 @@ function slotOptions(player: PlanFighter, band: RangeBand, team: boolean): Comba
   const settings = player.loadout[band].flatMap((slot, rank) =>
     adjustments({ band, rank, team }, slot, findCard(player, slot.card)),
   );
-  return [...cards, ...emptyPouchOptions(player, band), ...settings];
+  return [
+    ...readinessOptions(player, band),
+    ...cards,
+    ...emptyPouchOptions(player, band),
+    ...settings,
+  ];
 }
 
 /** Every option at the card table, distance by distance; `team` when allies fight too. */
@@ -227,6 +234,8 @@ export function editLoadout(
   fighter: PlanFighter,
   optionId: string,
 ): PlanState | null {
+  const ready = editReadiness(state, fighter, optionId);
+  if (ready) return ready;
   const edit = parse(optionId);
   if (!edit) return null;
   const loadout = { ...fighter.loadout, [edit.band]: edited(fighter.loadout[edit.band], edit) };

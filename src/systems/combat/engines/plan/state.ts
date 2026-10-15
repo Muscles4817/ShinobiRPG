@@ -57,6 +57,9 @@ export interface Slot {
 /** The cards a fighter brings to each distance, in priority order: earlier slots play first. */
 export type Loadout = Readonly<Record<RangeBand, readonly Slot[]>>;
 
+/** The defence kept ready at each distance (`readiness.ts`), by card id; null keeps none. */
+export type Reactions = Readonly<Record<RangeBand, CardId | null>>;
+
 /** Slots that always play and aim at the weakest, one per card, in order. */
 export function plainSlots(cards: readonly CardId[]): Slot[] {
   return cards.map((card) => ({ card }));
@@ -68,6 +71,10 @@ export interface PlanFighter
   readonly stunned: number;
   readonly sealed: number;
   readonly loadout: Loadout;
+  /** The defence ready at each distance (`readiness.ts`); absent in fights saved before. */
+  readonly reactions?: Reactions;
+  /** The distance they make for; absent: wherever they stand. */
+  readonly keepAt?: RangeBand;
   /** Front or back row of their side (see `rules/rows.ts`); fixed for the fight. */
   readonly row: CombatRow;
   /** How hard they are to find while hidden, once a conceal set it (`concealmentOf`). */
@@ -259,6 +266,8 @@ export function patch(
       | 'stunned'
       | 'sealed'
       | 'loadout'
+      | 'reactions'
+      | 'keepAt'
       | 'hidden'
       | 'confused'
       | 'concealment'
@@ -279,12 +288,6 @@ export function patch(
   >,
 ): PlanFighter[] {
   return fighters.map((f) => (f.id === id ? { ...f, ...change } : f));
-}
-
-/** Counts a plain strike or a step towards the fighter's usage report. */
-export function practise(round: Round, actor: PlanFighter, work: 'blows' | 'footwork'): Round {
-  const done = fighterIn(round, actor.id)?.[work] ?? 0;
-  return { ...round, fighters: patch(round.fighters, actor.id, { [work]: done + 1 }) };
 }
 
 export function say(round: Round, ...lines: string[]): Round {

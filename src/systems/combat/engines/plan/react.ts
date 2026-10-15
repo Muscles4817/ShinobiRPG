@@ -15,7 +15,7 @@ import {
 } from '../../rules/kit';
 import { harmLine, reactionLine, type NarrationReaction } from '../../rules/narration';
 import { brokenScale, covered, dulled, isPinned, PIN_SLIP } from '../../rules/verbs';
-import { slotted } from './cards';
+import { reactionAt } from './readiness';
 import { throughClones } from './decoys';
 import { substituted } from './footwork';
 import { riposteFirst } from './lingering';
@@ -24,8 +24,8 @@ import { canHit } from './rows';
 import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './state';
 
 /**
- * Defence cards react on their own when their owner is hit at the distance they're slotted
- * for: Dodge may avoid the blow (evasion), Guard softens it (guard), Counter hits back up
+ * The defence a fighter keeps ready at a distance (`readiness.ts`) reacts on its own when they
+ * are hit there: Dodge may avoid the blow (evasion), Guard softens it (guard), Counter hits back up
  * close (taijutsu); see `rules/defence.ts`. A dazed fighter can only guard, and a break goes
  * straight through a guard. Kits shape every hit: armour and spirits shrug off some kinds of
  * attack (less of a break), packs hit harder together, hidden attackers harder still, swift
@@ -35,7 +35,7 @@ import { fighterIn, isDazed, patch, say, type PlanFighter, type Round } from './
  */
 
 const COUNTER_SCALE = 0.6;
-/** A swift fighter without a Dodge slotted still slips this much of the swift bonus. */
+/** A swift fighter without a Dodge ready still slips this much of the swift bonus. */
 const SWIFT_INSTINCT = 0.5;
 
 export interface Blow {
@@ -142,13 +142,13 @@ function guardWords(guarded: boolean, smashed: boolean): string {
 }
 
 interface Defended {
-  /** A Dodge was slotted and tried for this blow. */
+  /** A Dodge was ready and tried for this blow. */
   readonly dodgeTried: boolean;
   readonly guarded: boolean;
   readonly smashed: boolean;
 }
 
-/** Which slotted defences reacted to a blow that landed anyway, for the fight screen. */
+/** Which ready defence reacted to a blow that landed anyway, for the fight screen. */
 function reactionsTo({ dodgeTried, guarded, smashed }: Defended): NarrationReaction[] {
   return [
     ...(dodgeTried ? (['dodge-missed'] as const) : []),
@@ -162,7 +162,7 @@ type Ready = (kind: 'guard' | 'dodge' | 'counter') => boolean;
 interface Evasion {
   /** The round with the blow slipped, or null when it still lands. */
   readonly slipped: Round | null;
-  /** A slotted Dodge tried for it. */
+  /** A ready Dodge tried for it. */
   readonly tried: boolean;
 }
 
@@ -174,7 +174,7 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const avoid = able ? avoidChance(hit, dulled(round.field, target), has('dodge')) : 0;
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
   const line = `${target.name} slips past ${attacker.name}'s ${blow.what}.`;
-  // A swift fighter slips some blows on instinct; only a slotted Dodge is shown reacting.
+  // A swift fighter slips some blows on instinct; only a ready Dodge is shown reacting.
   return { slipped: say(round, tried ? reactionLine(line, 'dodged') : line), tried };
 }
 
@@ -190,7 +190,7 @@ function canCounterBack(round: Round, { attacker, target, blow }: Hit, has: Read
   );
 }
 
-/** Lands a blow on the target, letting their clones, slotted defences and kit react. */
+/** Lands a blow on the target, letting their clones, ready defence and kit react. */
 export function react(start: Round, hit: Hit): Round {
   const answered = riposteFirst(start, hit);
   if (answered.stopped) return answered.round;
@@ -202,7 +202,8 @@ export function react(start: Round, hit: Hit): Round {
   const { round } = decoyed;
   // Reeling from a daze, a fighter can still put a guard up, but not dodge, counter or swap out.
   const reeling = isDazed(target);
-  const ready = slotted(target, round.range).filter((c) => !reeling || c.kind === 'guard');
+  const kept = reactionAt(target, round.range);
+  const ready = kept && (!reeling || kept.kind === 'guard') ? [kept] : [];
   const has: Ready = (kind) => ready.some((c) => c.kind === kind);
   const evasion = evade(round, hit, has);
   if (evasion.slipped) return evasion.slipped;

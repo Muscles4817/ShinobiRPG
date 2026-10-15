@@ -1,6 +1,7 @@
 import type { RangeBand } from '../../contract';
 import { RANGE_BANDS } from '../../rules/range';
-import { keepsInLoadout, slotLimit } from './cards';
+import { cardId, keepsInLoadout, slotLimit } from './cards';
+import { cleanReactions, reactionAt, type Reactions } from './readiness';
 import {
   SLOT_CONDITIONS,
   TARGET_RULES,
@@ -17,8 +18,16 @@ import {
  * know or that don't fit a distance are dropped (tools stay, for when you restock), unknown
  * conditions and target rules are forgotten, and each distance is trimmed to your slots.
  * Plans saved before slots had conditions are plain card ids, and read as slots that always
- * play.
+ * play. Plans saved before readiness are bare loadouts whose defences sat in the slots: the
+ * first defence slotted at a distance becomes its reaction, and footwork and plain blows go.
  */
+
+/** A plan as the engine hands it back: its actions, its defences, and where it fights. */
+export interface PlanMemory {
+  readonly loadout: Loadout;
+  readonly reactions: Reactions;
+  readonly keepAt?: RangeBand;
+}
 
 function isCondition(value: unknown): value is SlotCondition {
   return SLOT_CONDITIONS.some((c) => c === value);
@@ -57,16 +66,53 @@ function cleaned(slots: readonly Slot[], fighter: PlanFighter, band: RangeBand):
   return unique.slice(0, slotLimit(fighter));
 }
 
-/** The remembered loadout, cleaned up for this fighter, or null when there is none. */
-export function rememberedLoadout(plan: unknown, fighter: PlanFighter): Loadout | null {
-  if (typeof plan !== 'object' || plan === null) return null;
-  // The plan comes from a save; each distance is checked by `slotsFor`.
-  const record = plan as Readonly<Record<string, unknown>>;
-  const [close, mid, far] = RANGE_BANDS.map((band) => slotsFor(record, band));
+function isBand(value: unknown): value is RangeBand {
+  return RANGE_BANDS.some((b) => b === value);
+}
+
+type Record_ = Readonly<Record<string, unknown>>;
+
+function asRecord(value: unknown): Record_ | null {
+  // Remembered plans come from a save; every field read from one is checked.
+  return typeof value === 'object' && value !== null ? (value as Record_) : null;
+}
+
+function reactionsFrom(value: unknown): Reactions {
+  const raw = asRecord(value) ?? {};
+  const pick = (band: RangeBand) => {
+    const id = raw[band];
+    return typeof id === 'string' ? id : null;
+  };
+  return { close: pick('close'), mid: pick('mid'), far: pick('far') };
+}
+
+/** The defence each distance of an old, bare loadout had slotted first. */
+function slottedReactions(loadout: Loadout, fighter: PlanFighter): Reactions {
+  const old = { loadout, techniques: fighter.techniques, items: fighter.items };
+  const pick = (band: RangeBand) => {
+    const card = reactionAt(old, band);
+    return card ? cardId(card) : null;
+  };
+  return { close: pick('close'), mid: pick('mid'), far: pick('far') };
+}
+
+/** The remembered plan, cleaned up for this fighter, or null when there is none. */
+export function rememberedPlan(plan: unknown, fighter: PlanFighter): PlanMemory | null {
+  const record = asRecord(plan);
+  if (!record) return null;
+  const shaped = asRecord(record.loadout);
+  const source = shaped ?? record;
+  const [close, mid, far] = RANGE_BANDS.map((band) => slotsFor(source, band));
   if (!close || !mid || !far) return null;
+  const raw = { close, mid, far };
+  const reactions = shaped ? reactionsFrom(record.reactions) : slottedReactions(raw, fighter);
   return {
-    close: cleaned(close, fighter, 'close'),
-    mid: cleaned(mid, fighter, 'mid'),
-    far: cleaned(far, fighter, 'far'),
+    loadout: {
+      close: cleaned(close, fighter, 'close'),
+      mid: cleaned(mid, fighter, 'mid'),
+      far: cleaned(far, fighter, 'far'),
+    },
+    reactions: cleanReactions(fighter, reactions),
+    ...(isBand(record.keepAt) ? { keepAt: record.keepAt } : {}),
   };
 }
