@@ -70,6 +70,7 @@ export const chooseSensei: ActionHandler<ActionOf<'chooseSensei'>> = {
       },
       // Their first view of you, by where you stood in class; their plan starts tomorrow.
       mentor: {
+        ...state.mentor,
         regard: sensei.sensei
           ? startingRegard(sensei.sensei.ways.classRegard, state.character.classStanding)
           : NEUTRAL_REGARD,

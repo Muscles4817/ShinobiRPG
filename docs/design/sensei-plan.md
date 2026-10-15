@@ -318,3 +318,19 @@ Part 5 entry.
    checks that keeping them puts you ahead by less than 15% fighting power after a month, and
    that skipping them costs the nomination. The early and late nomination habits are 8 and 13
    jobs.
+4. **The read and the assignment.** After each weekly lesson in the genin years
+   (`coachAfterLesson`, `game/sensei/coaching.ts`) the sensei judges last week's assignment
+   (done: regard and a reward of their kind, `game/sensei/rewards.ts`: praise as bond, a step
+   on their next signature, a D or C piece for their art, their favourite recipe or a meal on
+   them, falling to the next they can give; not done: regard lost), may name a gift you haven't
+   found (a sensei with the hidden-talent lens always looks, any other once you are close; the
+   stat's talent becomes sensed), reads you aloud (`game/sensei/read.ts`: your thinnest layer
+   of defence, from the fight's own layers; what beat you on a job since the last lesson, from
+   the debrief's advice; your edge, led with by a specialty or talent lens) and sets the next
+   assignment: the lens's stat (`lensStat`: weakest body or mind stat, the weaker stat of your
+   thinnest defence, your best art, the team stat nobody on your team is good at, or your
+   strongest untapped talent) to rise by a step that shrinks with its grade. While it is open
+   the assignment is a `ModifierSpec` on the character (`assignmentSpec`: growth ×1.2 on that
+   stat, but not on your best art, where the push isn't needed and the genius bench would run
+   ahead). The slip shows the assignment and how far along it is in words. Save v41 adds
+   `character.assignment` and `mentor.lastBeaten`.

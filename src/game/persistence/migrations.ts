@@ -15,6 +15,7 @@ import { v36ToV37 } from './leaveMigration';
 import { v37ToV38 } from './propertyMigration';
 import { v38ToV39 } from './techniqueRenameMigration';
 import { v39ToV40 } from './mentorMigration';
+import { v40ToV41 } from './assignmentMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
 import { v19ToV20 as v20ToV21 } from './rankMigration';
 import { v19ToV20 } from './teachingMigration';
@@ -321,4 +322,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   37: v37ToV38,
   38: v38ToV39,
   39: v39ToV40,
+  40: v40ToV41,
 };

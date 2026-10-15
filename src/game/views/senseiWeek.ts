@@ -1,3 +1,4 @@
+import { STAT_INFO } from '@/systems/stats';
 import { calendarDay, DAYS_PER_WEEK, TIME_SLOTS, weekOf } from '@/systems/time';
 
 import type { GameContext } from '../context';
@@ -35,6 +36,25 @@ export interface SenseiWeekView {
   readonly todayLine: string | null;
   /** Today's short session, with why not when it can't be had. */
   readonly session: Choice | null;
+  /** The work they set at the last lesson, and how far along it is, in words. */
+  readonly assignment: { readonly stat: string; readonly progress: string } | null;
+}
+
+function progressWord(share: number): string {
+  if (share >= 1) return 'done, show them at the lesson';
+  if (share >= 2 / 3) return 'nearly there';
+  if (share >= 1 / 3) return 'under way';
+  return 'barely started';
+}
+
+function assignmentLine(state: GameState): SenseiWeekView['assignment'] {
+  const work = state.character.assignment;
+  if (!work) return null;
+  const done = state.character.stats[work.stat] - work.from;
+  return {
+    stat: STAT_INFO[work.stat].label,
+    progress: progressWord(done / Math.max(1e-9, work.target - work.from)),
+  };
 }
 
 function meetingName(meeting: Meeting): string {
@@ -77,5 +97,6 @@ export function senseiWeekView(state: GameState, ctx: GameContext): SenseiWeekVi
     eased: meetingsPerWeek(state, sensei) < ways.cadence.sessions,
     todayLine: todayLine(state, today),
     session: today?.kind === 'session' ? choice(state, ctx, { type: 'senseiSession' }) : null,
+    assignment: assignmentLine(state),
   };
 }

@@ -16,12 +16,14 @@ import { breakthroughSpec } from './breakthroughs';
 import type { GameContext } from './context';
 import { hungerEffect } from './hunger';
 import { injurySpecs } from './injuries';
+import { assignmentSpec } from './sensei/state';
 import { snackBuff } from './snacks';
 import type { Character } from './state';
 
 /**
  * Turns a character's identity into growth modifiers. Every source (clan, talent, traits,
- * frame, upbringing, standing, chakra nature, today's meal, hunger, injuries) contributes a
+ * frame, upbringing, standing, chakra nature, today's meal, your sensei's assignment, hunger,
+ * injuries) contributes a
  * ModifierSpec; the result is their product. Clan and talent growth is not among them: it
  * shaped the character's aptitude when they were made, and aptitude multiplies every growth
  * source. Aptitude also sets each stat's natural limit, which the frame (and later,
@@ -63,6 +65,7 @@ export function characterModifiers(character: Character, ctx: GameContext): Modi
     STANDING_INFO[character.classStanding].modifiers,
     character.natureKnown ? natureModifiers(character.nature, clan?.nature) : {},
     mealBuff(character, ctx),
+    assignmentSpec(character.assignment, character.stats),
     snackBuff(character, ctx),
     hungerEffect(character.vitals).spec,
     ...injurySpecs(character, ctx),

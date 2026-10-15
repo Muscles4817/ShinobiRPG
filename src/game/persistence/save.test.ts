@@ -352,7 +352,20 @@ describe('persistence', () => {
       regard: 50,
       settledDay: game.time.day - 1,
       outcomes: {},
+      lastBeaten: null,
     });
+  });
+
+  it('gives a save from before assignments no work set and nothing remembered', () => {
+    const game = newGame();
+    const { assignment: _assignment, ...character } = game.character;
+    const { lastBeaten: _beaten, ...mentor } = game.mentor;
+    const loaded = deserialize(
+      JSON.stringify({ version: 40, state: { ...game, character, mentor } }),
+    );
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.character.assignment).toBeNull();
+    expect(loaded.value.mentor.lastBeaten).toBeNull();
   });
 
   it('rejects corrupted data', () => {

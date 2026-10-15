@@ -196,6 +196,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       aptitudeSessions: {},
       vitals: fullVitals(stats),
       meal: null,
+      assignment: null,
       injuries: [],
       exhaustion: null,
     },

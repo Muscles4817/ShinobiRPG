@@ -36,6 +36,11 @@ export function SenseiSlip({ view, perform }: SenseiSlipProps) {
         ))}
       </ol>
       {view.todayLine && <p className="slip-today">{view.todayLine}</p>}
+      {view.assignment && (
+        <p className="slip-today">
+          Their assignment: your {view.assignment.stat.toLowerCase()}, {view.assignment.progress}.
+        </p>
+      )}
       {view.eased && <p className="slip-note">You are close enough that they plan less.</p>}
       {session?.blocker === null && (
         <button
