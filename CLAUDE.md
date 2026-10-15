@@ -344,6 +344,21 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`practise`, `game/exercises.ts`), some started by your sensei at a lesson; mastering one is
     a breakthrough, and `canWalk` (`game/walking.ts`) is the only place that reads it for roads.
 
+27. **The genin years are sensei-led** (`docs/design/sensei-plan.md`). While you are a genin with
+    a sensei (`underSensei`, `game/mentorship.ts`) they run your week. How each sensei does it is
+    data: `SenseiWays` on the `SenseiProfile` (`content/senseis.ts`: philosophy, lens, grip,
+    cadence, formats, feedback, rituals, rewards, mission posture, opening test, gatekeeping,
+    class regard; validated for coherence in `validateSenseis`), and every dimension is read by a
+    rule, never only by text. The week (`game/sensei/plan.ts`) is drawn from the seed and the
+    week, never the Rng: their cadence of meetings, the first the full lesson, the rest short
+    sessions in their formats (`senseiSession`: energy, no time slot, a share of a lesson split
+    over the week). Your sensei's **regard** (`GameState.mentor`, `game/sensei/state.ts`) is
+    their judgement of you, apart from the bond: kept meetings raise it, missed ones lower it by
+    their grip as each day is settled (`settleMentor` in `spendTime`; excused on a job, away or
+    laid up), and the nomination reads it. Their gatekeeping sets the pass and permit bond stages
+    and how many jobs a nomination wants; their mission posture sets their stance in a job's
+    fights.
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -417,7 +432,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   grades carry it (`canPerform`, `game/people/capable.ts`), so a genin grows into theirs. Their best stat must fit their rank (genin E–C,
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
-  technique ids, price); at least two specialties must exist for the team choice (validated).
+  technique ids, price) with its `ways` (how they run a team, `content/senseis.ts`); at least
+  two specialties must exist for the team choice (validated).
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,

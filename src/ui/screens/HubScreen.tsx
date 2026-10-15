@@ -1,4 +1,4 @@
-import { headerView, hubView, villageView } from '@/game';
+import { headerView, hubView, senseiWeekView, villageView } from '@/game';
 
 import { Backdrop } from '../art/Backdrop';
 import { Icon } from '../art/Icon';
@@ -6,6 +6,7 @@ import { Chips } from '../components/Chips';
 import { Avatar, Faces } from '../components/Faces';
 import { DayStrip, HungerNote, Vitals } from '../components/Vitals';
 import type { ScreenProps } from './types';
+import { SenseiSlip } from './SenseiSlip';
 import { VillageLife } from './VillageLife';
 
 interface HubScreenProps extends ScreenProps {
@@ -26,6 +27,7 @@ export function HubScreen({
   const header = headerView(state, ctx);
   const hub = hubView(state, ctx);
   const village = villageView(state, ctx);
+  const week = senseiWeekView(state, ctx);
   const around = hub.places.flatMap((p) => p.people);
   return (
     <>
@@ -77,6 +79,7 @@ export function HubScreen({
           </div>
         </section>
       )}
+      {week && <SenseiSlip view={week} perform={perform} />}
       <VillageLife view={village} perform={perform} />
       <main className="street" aria-label="Places">
         {hub.places.map((p) => (

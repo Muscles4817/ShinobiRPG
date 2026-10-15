@@ -21,7 +21,7 @@ import type { GameState } from './state';
 
 /** Days a pass is good for: until the next week's lesson. */
 export const PASS_DAYS = 7;
-/** Bond stage with your sensei before they sign one (1: they know you). */
+/** Bond stage before a sensei signs one (1: they know you), unless their ways say otherwise. */
 export const PASS_BOND_STAGE = 1;
 /** A chūnin's days of leave each season, counted by the day on the road out. */
 export const CHUNIN_LEAVE_DAYS = 10;
@@ -114,7 +114,8 @@ export function leaveLine(state: GameState): string | null {
 /** After the weekly lesson: a genin your sensei knows gets a pass for the week. */
 export function passAfterLesson(state: GameState, sensei: PersonDef): GameState {
   if (rankAtLeast(state, 'chunin')) return state;
-  if (stageOf(bondOf(state, sensei.id).points) < PASS_BOND_STAGE) return state;
+  const stage = sensei.sensei?.ways.gatekeeping.passStage ?? PASS_BOND_STAGE;
+  if (stageOf(bondOf(state, sensei.id).points) < stage) return state;
   const renewed = passValid(state.leave, state.time.day);
   const signed = { ...state, leave: signPass(state.leave, state.time.day, PASS_DAYS) };
   if (renewed) return signed;

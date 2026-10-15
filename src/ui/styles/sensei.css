@@ -1,0 +1,93 @@
+/* Your sensei's slip for the week: a paper slip on the village screen. */
+.sensei-slip {
+  display: grid;
+  gap: 8px;
+  margin: 10px var(--gutter) 0;
+  padding: 10px 12px 12px;
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border-radius: 2px;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 0.3);
+}
+.slip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.slip-head h2 {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 1rem;
+  font-weight: 800;
+}
+.slip-head .badge {
+  color: var(--ink-gain);
+  border-color: currentcolor;
+  text-transform: none;
+}
+.slip-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.slip-days li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+  min-height: 46px;
+  padding: 4px 2px;
+  border: 1px solid rgb(0 0 0 / 0.12);
+  border-radius: 2px;
+  color: var(--paper-muted);
+}
+.slip-days li.planned {
+  color: var(--paper-ink);
+  border-color: rgb(0 0 0 / 0.3);
+}
+.slip-days li.today {
+  box-shadow: inset 0 0 0 2px var(--paper-ink);
+}
+.slip-days small {
+  font-size: 0.62rem;
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.slip-stamp {
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  opacity: 0.85;
+  transform: rotate(-8deg);
+}
+.slip-stamp.kept {
+  color: var(--ink-gain);
+}
+.slip-stamp.missed {
+  color: var(--ink-cost);
+}
+.slip-stamp.excused {
+  color: var(--paper-muted);
+}
+.slip-today,
+.slip-note {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+.slip-note {
+  color: var(--paper-muted);
+  font-style: italic;
+}
+.sensei-slip .btn {
+  justify-self: start;
+  min-height: 40px;
+}

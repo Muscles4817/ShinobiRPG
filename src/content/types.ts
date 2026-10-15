@@ -27,6 +27,24 @@ import type {
   TeamText,
   Tone,
 } from './people';
+export type {
+  ClassRegard,
+  MissionPosture,
+  NominationHabit,
+  OpeningTest,
+  Punctuality,
+  RitualKind,
+  SenseiCadence,
+  SenseiFeedback,
+  SenseiGatekeeping,
+  SenseiGrip,
+  SenseiLens,
+  SenseiPhilosophy,
+  SenseiReward,
+  SenseiRitual,
+  SenseiWays,
+  SessionFormat,
+} from './senseis';
 import type { SettingText } from './settingText';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';

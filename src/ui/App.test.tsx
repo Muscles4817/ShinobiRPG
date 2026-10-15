@@ -71,6 +71,15 @@ describe('App (smoke test)', () => {
     expect(place(/Ichiraku is open|Shopping District/)).toBeInTheDocument();
   });
 
+  it('hands you your sensei’s week on the village screen, planned from tomorrow', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    const slip = screen.getByRole('region', { name: /’s week$/ });
+    expect(within(slip).getAllByRole('listitem')).toHaveLength(7);
+    expect(within(slip).getByText(/Watching you|Rates you|Unconvinced/)).toBeInTheDocument();
+  });
+
   it('shows village talk and the next festival on the village screen', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

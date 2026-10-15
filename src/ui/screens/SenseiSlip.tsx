@@ -1,0 +1,53 @@
+import type { GameAction, SenseiWeekView } from '@/game';
+
+interface SenseiSlipProps {
+  readonly view: SenseiWeekView;
+  readonly perform: (action: GameAction) => void;
+}
+
+/** Ink stamps for how a planned meeting went: done, absent, excused. */
+const OUTCOME_STAMP = { kept: '済', missed: '欠', excused: '休' } as const;
+const OUTCOME_WORD = { kept: 'kept', missed: 'missed', excused: 'excused' } as const;
+
+/** Your sensei's slip for the week: their days, how each went, and today's session. */
+export function SenseiSlip({ view, perform }: SenseiSlipProps) {
+  const { session } = view;
+  return (
+    <section className="sensei-slip" aria-label={`${view.sensei}’s week`}>
+      <div className="slip-head">
+        <h2>{view.sensei}’s week</h2>
+        <span className="badge">{view.regard}</span>
+      </div>
+      <ol className="slip-days">
+        {view.days.map((d) => (
+          <li
+            key={d.day}
+            className={`${d.today ? 'today' : ''}${d.meeting ? ' planned' : ''}`}
+            aria-label={`Day ${d.label}: ${d.meeting ?? 'free'}${d.outcome ? `, ${OUTCOME_WORD[d.outcome]}` : ''}`}
+          >
+            <b className="num">{d.label}</b>
+            <small>{d.meeting ?? 'Free'}</small>
+            {d.outcome && (
+              <span className={`slip-stamp ${d.outcome}`} aria-hidden="true">
+                {OUTCOME_STAMP[d.outcome]}
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+      {view.todayLine && <p className="slip-today">{view.todayLine}</p>}
+      {view.eased && <p className="slip-note">You are close enough that they plan less.</p>}
+      {session?.blocker === null && (
+        <button
+          type="button"
+          className="btn small"
+          onClick={() => {
+            perform(session.action);
+          }}
+        >
+          Go to the session
+        </button>
+      )}
+    </section>
+  );
+}

@@ -16,6 +16,7 @@ import {
   KAKASHI_TEACHER,
   KURENAI_TEACHER,
 } from '../teachers';
+import { ANKO_WAYS, ASUMA_WAYS, GUY_WAYS, KAKASHI_WAYS, KURENAI_WAYS } from './senseiWays';
 
 /** Jōnin who may take on a team. */
 export const SENSEIS: readonly PersonDef[] = [
@@ -59,6 +60,7 @@ export const SENSEIS: readonly PersonDef[] = [
       style: 'Late, lazy-looking, and misses nothing. Teaches teamwork the hard way.',
       lesson:
         'Kakashi turns up late, closes his book, and runs you ragged through every drill you thought you knew.',
+      ways: KAKASHI_WAYS,
     },
     teacher: KAKASHI_TEACHER,
     arsenal: KAKASHI_ARSENAL,
@@ -100,6 +102,7 @@ export const SENSEIS: readonly PersonDef[] = [
       style: 'Shouts, runs, and never lets you quit. Ever.',
       lesson:
         'Guy has you running laps on your hands before breakfast. He does twice as many, cheering.',
+      ways: GUY_WAYS,
     },
     teacher: GUY_TEACHER,
     arsenal: GUY_ARSENAL,
@@ -134,6 +137,7 @@ export const SENSEIS: readonly PersonDef[] = [
       toleratesReplacement: true,
       lesson:
         'Kurenai walks you through an illusion slowly, then again, until you can see the seams.',
+      ways: KURENAI_WAYS,
     },
     teacher: KURENAI_TEACHER,
     arsenal: KURENAI_ARSENAL,
@@ -169,6 +173,7 @@ export const SENSEIS: readonly PersonDef[] = [
       toleratesReplacement: true,
       lesson:
         'Asuma teaches you to feel the wind along a blade, then beats you at shōgi to make a point.',
+      ways: ASUMA_WAYS,
     },
     teacher: ASUMA_TEACHER,
     arsenal: ASUMA_ARSENAL,
@@ -203,6 +208,7 @@ export const SENSEIS: readonly PersonDef[] = [
       toleratesReplacement: true,
       lesson:
         'Anko chases you through the training forest with snakes until your seals come out clean.',
+      ways: ANKO_WAYS,
     },
     teacher: ANKO_TEACHER,
     arsenal: ANKO_ARSENAL,

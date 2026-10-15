@@ -62,6 +62,11 @@ describe('the sensei joins serious team missions', () => {
     expect(theirs.attributes).toEqual(attributesOf(personStats(sensei, start)));
     expect(theirs.orders?.stanceLocked).toMatch(/doesn’t take orders|don’t take orders/);
     expect(theirs.orders?.cardsLocked).toBeDefined();
+    // They fight by their ways: shield covers you, watchful supports, lets-fail holds back.
+    const kind = { shield: 'cover', watchful: 'support', 'lets-fail': 'hold' }[
+      sensei.sensei!.ways.onMissions
+    ];
+    expect(theirs.stance?.kind).toBe(kind);
     const signatures = sensei.teacher?.teaches ?? [];
     expect(theirs.techniques.map((t) => t.id)).toEqual(expect.arrayContaining([...signatures]));
   });

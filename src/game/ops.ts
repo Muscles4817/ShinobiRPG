@@ -8,6 +8,7 @@ import { boardFor } from './board';
 import type { GameContext } from './context';
 import { healInjuries } from './injuries';
 import { peopleGrown } from './people/progress';
+import { settleMentor } from './sensei/settle';
 import { characterModifiers } from './profile';
 import { snackAt } from './snacks';
 import type { GameState } from './state';
@@ -38,7 +39,8 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
   const newDay = time.day !== state.time.day;
   const healed = newDay ? healInjuries(passed, ctx) : passed;
   const grown = newDay ? { ...healed, people: peopleGrown(healed, ctx) } : healed;
-  return { ...grown, board: boardFor(grown, ctx) };
+  const mentored = newDay ? settleMentor(grown, ctx) : grown;
+  return { ...mentored, board: boardFor(mentored, ctx) };
 }
 
 export function adjust(state: GameState, delta: VitalsDelta): GameState {

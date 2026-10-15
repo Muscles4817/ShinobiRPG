@@ -343,6 +343,18 @@ describe('persistence', () => {
     expect(loaded.value.housing.owned).toEqual([]);
   });
 
+  it('gives a save from before senseis planned the week a neutral view, planned from today', () => {
+    const game = newGame();
+    const { mentor: _mentor, ...rest } = game;
+    const loaded = deserialize(JSON.stringify({ version: 39, state: rest }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.mentor).toEqual({
+      regard: 50,
+      settledDay: game.time.day - 1,
+      outcomes: {},
+    });
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

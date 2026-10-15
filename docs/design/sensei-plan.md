@@ -88,8 +88,10 @@ Agreed.
 9. **The opening test never fails you.** It is a scare: you pass by what you did, not by
    winning, and what you did sets your starting regard.
 10. **One full lesson a week, plus short sessions.** However often a sensei trains you, the
-    week holds one full lesson (with its slips); the other sessions are short ones worth a
-    fraction of it, so a daily sensei doesn't outpace the pacing bench.
+    week holds one full lesson (with its slips); the other sessions are short ones that
+    together are worth one more lesson, split over however many there are, so a daily sensei
+    doesn't outpace the pacing bench. A short session takes energy but no time slot, so it adds
+    to a day's training instead of replacing a drill, and it earns regard, not bond.
 
 ---
 
@@ -217,10 +219,11 @@ All in `content/senseis.ts` as `SenseiWays` on `SenseiProfile`. Every field is r
 | `classRegard` | champions the dead last, pushes the best, even                                      | starting regard, the read's wording        |
 | `story`       | beats by bond stage, a wound, a rival, a lost student, a closing arc                | talk, memories, the arc                    |
 
-**Coherence rules** (validated, and obeyed by the generator): a `shield` sensei is never
-`loose` with `lets you fail`; a `teamwork` sensei has a team ritual; a `lens` of hidden talent
-needs a `quirk` that isn't distracted, or a late `loosensAtStage`; a `tight` grip has at least
-three sessions.
+**Coherence rules** (validated, and obeyed by the generator): a `teamwork` sensei drills the
+team (`team-drill`) and keeps a team day; a `tight` grip has at least three sessions and a
+`loose` one at most three; a `shield` sensei is never `loose`; a `lens` of hidden talent needs a
+quirk that isn't distracted; a `signature` reward needs signatures to teach and a `recipe`
+reward a favourite recipe.
 
 **Archetypes** (`systems/profile`-style quick picks for senseis): the drillmaster, the
 strategist, the guardian, the gourmand, the prodigy, the old hand, the eccentric. Each fixes
@@ -289,3 +292,29 @@ Part 5 entry.
    serious ones. That covers the road escorts, the salt-lantern arc and the town jobs at
    Shiomachi and the ford. `validate.ts` reads a posted-away job as teamable. Decision 21 in
    `CLAUDE.md` amended. No save change.
+2. **Senseis as data.** `SenseiWays` (`content/senseis.ts`) on every `SenseiProfile`, with every
+   dimension of the pool but the story (step 8) and the extra quirks (the `feedback` list carries
+   `cryptic` instead). `validateSenseis` checks ranges, lists and the coherence rules. All ten
+   senseis are filled (`packs/original/senseiWays.ts`, `packs/naruto/people/senseiWays.ts`).
+   Three dimensions are read already: `gatekeeping` sets the bond stage for the travel pass and
+   the library permit and how many jobs a nomination wants (`nominationMissions`: early 7, usual
+   10, late 14); `onMissions` sets the sensei's stance in a job's fights (shield covers you,
+   watchful supports, lets-fail holds). No save change.
+3. **The week.** The plan (`game/sensei/plan.ts`): `cadence.sessions` meetings a week (half,
+   rounded up, once the bond reaches `loosensAtStage`), spread evenly or, for an irregular
+   sensei, on hashed days; the first is the full lesson, the rest short sessions in the
+   sensei's formats; a late sensei comes a slot after they said. `senseiSession` drills the
+   format's stat (a drill is the sensei's specialty) at `WEEK_OF_SESSIONS` (one lesson) split
+   over the week's short sessions, by the teacher rule against the sensei, for energy and no
+   time slot, with regard and no bond (sessions with bond pulled the nomination far ahead of the
+   bench). `GameState.mentor` (save v40) keeps regard, the last settled day and this week's
+   outcomes; `settleMentor` runs as each day begins: a lesson is kept if had that week by its
+   day, a session if you came, excused if you were on a job, away or laid up, else missed (regard
+   down by grip, and a line); then a morning line says when they expect you. Choosing a sensei
+   sets their first view of you (`startingRegard`, by class standing). The nomination needs
+   regard 40. The village screen shows their slip (`views/senseiWeek.ts`, `SenseiSlip`): the
+   week's days with ink stamps, regard in a word, today's line and a button for today's
+   session. The focused player of the pacing bench keeps sessions; `pacing/sensei.test.ts`
+   checks that keeping them puts you ahead by less than 15% fighting power after a month, and
+   that skipping them costs the nomination. The early and late nomination habits are 8 and 13
+   jobs.

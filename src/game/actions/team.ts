@@ -6,6 +6,7 @@ import { generateGenin } from '../people/generator';
 import { homeVillageId } from '../homeVillage';
 import { offerSenseis } from '../people/senseis';
 import { addReport } from '../reports';
+import { NEUTRAL_REGARD, startingRegard } from '../sensei/state';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Classmates generated at team assignment: your two teammates and some faces around town. */
@@ -66,6 +67,14 @@ export const chooseSensei: ActionHandler<ActionOf<'chooseSensei'>> = {
         ...state.people,
         team: { ...team, senseiId: sensei.id },
         bonds: { ...state.people.bonds, [sensei.id]: bondWith(SENSEI_BOND) },
+      },
+      // Their first view of you, by where you stood in class; their plan starts tomorrow.
+      mentor: {
+        regard: sensei.sensei
+          ? startingRegard(sensei.sensei.ways.classRegard, state.character.classStanding)
+          : NEUTRAL_REGARD,
+        settledDay: state.time.day,
+        outcomes: {},
       },
     };
     const logged = log(next, {

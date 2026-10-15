@@ -6,6 +6,7 @@ import type { Discipline, Element } from '@/systems/techniques';
 import type { TimeSlot } from '@/systems/time';
 
 import type { RecipeLesson } from './items';
+import type { SenseiWays } from './senseis';
 import type { TeacherProfile } from './teachers';
 
 /** Content schemas for the cast: people, how they talk, and the names generated genin get. */
@@ -54,6 +55,8 @@ export interface SenseiProfile {
    * Left out, they refuse: a team is a team.
    */
   readonly toleratesReplacement?: boolean;
+  /** How they run your genin years. */
+  readonly ways: SenseiWays;
 }
 
 /**

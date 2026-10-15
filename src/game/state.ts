@@ -18,6 +18,7 @@ import type { Board } from './boardState';
 import type { CombatFinale } from './combatFinale';
 import type { Exams } from './exam/state';
 import type { People } from './people/state';
+import type { Mentor } from './sensei/state';
 import type { Report } from './reports';
 
 /**
@@ -63,6 +64,8 @@ export interface GameState {
   readonly leave: Leave;
   /** The recipes you know, how often you've cooked each, and your cooking grade. */
   readonly cooking: Cooking;
+  /** How your sensei rates you and how this week's meetings went (`game/sensei/`). */
+  readonly mentor: Mentor;
 }
 
 /**
