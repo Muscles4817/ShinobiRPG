@@ -5,6 +5,10 @@ import { TOOL_IDS } from '../../shared/tools';
 import { CHUNIN_MISSIONS } from './chuninMissions';
 import { LANTERN_THIEF_JOBS } from './arcs/lanternThief';
 import { BROKEN_BLADE_JOBS } from './arcs/brokenBlade';
+import { LANTERN_KEEPER_JOBS } from './arcs/lanternKeeper';
+import { UNFINISHED_JOBS } from './arcs/unfinished';
+import { FORGED_BLADE_JOBS } from './arcs/forgedBlade';
+import { PATIENT_THING_JOBS } from './arcs/patientThing';
 import { SALT_LANTERNS_VILLAGE_JOBS } from './arcs/saltLanterns';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
@@ -59,6 +63,10 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'boy-from-the-boulders',
           ...LANTERN_THIEF_JOBS.map((m) => m.id),
           ...BROKEN_BLADE_JOBS.map((m) => m.id),
+          ...LANTERN_KEEPER_JOBS.map((m) => m.id),
+          ...UNFINISHED_JOBS.map((m) => m.id),
+          ...FORGED_BLADE_JOBS.map((m) => m.id),
+          ...PATIENT_THING_JOBS.map((m) => m.id),
           ...SALT_LANTERNS_VILLAGE_JOBS,
           ...CHUNIN_MISSIONS.map((m) => m.id),
           ...TEMPLATE_MISSIONS.map((m) => m.id),

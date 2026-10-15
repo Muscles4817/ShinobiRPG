@@ -55,6 +55,11 @@ export interface SenseiProfile {
    * Left out, they refuse: a team is a team.
    */
   readonly toleratesReplacement?: boolean;
+  /**
+   * False for a sensei who already leads a team of their own (canon): team assignment never
+   * offers them, though a save made with them as its sensei keeps them. Left out, they take one.
+   */
+  readonly offered?: boolean;
   /** How they run your genin years. Left out, ways are generated from an archetype. */
   readonly ways?: SenseiWays;
 }

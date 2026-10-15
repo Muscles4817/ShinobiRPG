@@ -453,8 +453,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
   technique ids, price) with its `ways` (how they run a team, `content/senseis.ts`, and their
-  story: four personal conversations at stages one to four, validated); at least
-  two specialties must exist for the team choice (validated).
+  story: four personal conversations at stages one to four, validated, the last leaving the
+  world mark that opens their arc, tested for every sensei who takes a team); at least two
+  specialties must exist among senseis taking a team (validated). A sensei who already leads a
+  team of their own sets `offered: false`: never offered, kept by a save that chose them.
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,

@@ -117,5 +117,6 @@ export const ANKO_WAYS: SenseiWays = {
   story: {
     wound: 'Her teacher used her and threw her away, and left his mark on her neck.',
     beats: ['anko-dango', 'anko-forest', 'anko-mark', 'anko-used'],
+    arcId: 'the-white-snakes-den',
   },
 };
