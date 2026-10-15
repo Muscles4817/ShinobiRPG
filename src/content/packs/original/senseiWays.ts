@@ -52,6 +52,7 @@ export const AKARI_WAYS: SenseiWays = {
   story: {
     wound: 'She pushed a student too hard once, and the student quit.',
     beats: ['akari-gate-lantern', 'akari-brother', 'akari-hands', 'akari-promise'],
+    arcId: 'the-lantern-keepers-brother',
   },
 };
 
@@ -77,6 +78,7 @@ export const YOMI_WAYS: SenseiWays = {
   story: {
     wound: 'Her teammate’s ghost has never come to his grave, and she keeps looking for him.',
     beats: ['yomi-grandmother', 'yomi-sight', 'yomi-teammate-grave', 'yomi-lantern-promise'],
+    arcId: 'the-unfinished',
   },
 };
 
@@ -103,6 +105,7 @@ export const TETSU_WAYS: SenseiWays = {
   story: {
     wound: 'A blade he forged killed his friend.',
     beats: ['tetsu-forge', 'tetsu-master', 'tetsu-blade', 'tetsu-memory'],
+    arcId: 'the-forged-blade',
   },
 };
 
@@ -128,5 +131,6 @@ export const ITO_WAYS: SenseiWays = {
   story: {
     wound: 'A seal she wrote once failed, and what got out is still waiting.',
     beats: ['ito-seal', 'ito-ropes', 'ito-failed-seal', 'ito-trust'],
+    arcId: 'the-patient-thing',
   },
 };

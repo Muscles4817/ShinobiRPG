@@ -30,7 +30,7 @@ export function senseiFit(character: Character, sensei: PersonDef): number {
 /** The senseis to offer, best fit first. Ties keep the pack's order. */
 export function offerSenseis(character: Character, people: readonly PersonDef[]): string[] {
   const ranked = people
-    .filter((p) => p.sensei !== undefined)
+    .filter((p) => p.sensei !== undefined && p.sensei.offered !== false)
     .map((p) => ({ p, fit: senseiFit(character, p) }))
     .sort((a, b) => b.fit - a.fit)
     .map(({ p }) => p);

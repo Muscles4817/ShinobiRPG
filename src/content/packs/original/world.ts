@@ -5,12 +5,17 @@ import { TOOL_IDS } from '../../shared/tools';
 import { CHUNIN_MISSIONS } from './chuninMissions';
 import { LANTERN_THIEF_JOBS } from './arcs/lanternThief';
 import { BROKEN_BLADE_JOBS } from './arcs/brokenBlade';
+import { LANTERN_KEEPER_JOBS } from './arcs/lanternKeeper';
+import { UNFINISHED_JOBS } from './arcs/unfinished';
+import { FORGED_BLADE_JOBS } from './arcs/forgedBlade';
+import { PATIENT_THING_JOBS } from './arcs/patientThing';
 import { SALT_LANTERNS_VILLAGE_JOBS } from './arcs/saltLanterns';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTIONS } from './exam';
 import { MARKET_STREET } from './market';
 import { KIRI_FORD } from './kiriFord';
 import { PORT_SHIOMACHI } from './shiomachi';
+import { TOROGAKURE_LEISURE } from './leisure';
 import { TOROGAKURE_WILDS } from './wilds';
 
 export const ORIGINAL_TEXT: SettingText = {
@@ -59,6 +64,10 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'boy-from-the-boulders',
           ...LANTERN_THIEF_JOBS.map((m) => m.id),
           ...BROKEN_BLADE_JOBS.map((m) => m.id),
+          ...LANTERN_KEEPER_JOBS.map((m) => m.id),
+          ...UNFINISHED_JOBS.map((m) => m.id),
+          ...FORGED_BLADE_JOBS.map((m) => m.id),
+          ...PATIENT_THING_JOBS.map((m) => m.id),
           ...SALT_LANTERNS_VILLAGE_JOBS,
           ...CHUNIN_MISSIONS.map((m) => m.id),
           ...TEMPLATE_MISSIONS.map((m) => m.id),
@@ -223,24 +232,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'blast-ring',
         ],
       },
-      {
-        id: 'izakaya',
-        kind: 'tavern',
-        name: 'The Paper Lantern',
-        icon: 'sake',
-        blurb: 'An izakaya that opens at dusk',
-        hours: ['evening', 'night'],
-        keeper: 'Mama Sayo, who hears everything',
-        foodIds: [
-          'lantern-yakitori',
-          'night-oden',
-          'roasted-barley-tea',
-          'salted-edamame',
-          'grilled-mushrooms',
-          'hot-yuzu-tea',
-        ],
-        roundCost: 40,
-      },
+      ...TOROGAKURE_LEISURE,
       {
         id: 'home',
         kind: 'home',

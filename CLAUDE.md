@@ -267,9 +267,21 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `village.lastSightDay` is stored. Festivals can bring their own `stalls`, which
     `stallsHere` sets up in the market on the day. Dinner invites (`hostDinner`) cook a
     recipe for two in the evening; they count as the day's time with that person and are worth
-    more for their `favouriteRecipeId`. Night-only places are `tavern` places (an izakaya)
-    with `hours`; people's schedules bring regulars in at night, a round (`buyRound`) warms
-    everyone inside once a night, and the counter hears more gossip (`rumoursOverheard`).
+    more for their `favouriteRecipeId`. Night-only places are `tavern` places (a bar: an
+    izakaya, a teahouse, a gambling house) with `hours`; people's schedules bring regulars in
+    at night, a round (`buyRound`) warms everyone inside once a night, and the counter hears
+    more gossip (`rumoursOverheard`). **Off duty is where bonds are made**
+    (`docs/design/village-places-plan.md`): a drink with one of the crowd (`drinkWith`,
+    `game/bar.ts`) or a soak beside someone at an `onsen` (`soak`, `game/onsen.ts`) is the
+    day's time with them, like a talk or a dinner, worth what their traits make of its tone
+    (`game/people/together.ts`: you pick the drink's tone; a soak is quiet). A bar's
+    `pastimes` are scenes, and one with a `game` is played: **chō-han** (`playDice`,
+    `game/dice.ts`), a stake on the cup coming up even or odd, the house taking a cut of a
+    win, a few rounds a night; the cups hash the seed, day and round (never the Rng), so
+    perception can sometimes hear one settle before you bet. A soak costs
+    ryo and a slot, gives energy and some health, and leaves you `soaked` (warm through: a
+    `ModifierSpec` that `spendTime` clears at the day's end, like the meal); one a day, and
+    the baths close at night (validated).
 20. **Ranks are earned in scenes.** The chūnin exam (`ExamDef`, `systems/exams`) is held on its
     calendar dates (twice a year; rumours and the sensei's word the week before) and entered at
     the mission hall with the sensei's nomination (bond, their judgement of your grades, a
@@ -460,8 +472,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
   technique ids, price) with its `ways` (how they run a team, `content/senseis.ts`, and their
-  story: four personal conversations at stages one to four, validated); at least
-  two specialties must exist for the team choice (validated).
+  story: four personal conversations at stages one to four, validated, the last leaving the
+  world mark that opens their arc, tested for every sensei who takes a team); at least two
+  specialties must exist among senseis taking a team (validated). A sensei who already leads a
+  team of their own sets `offered: false`: never offered, kept by a save that chose them.
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,
@@ -541,6 +555,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `cookbookIds`), a person's `recipes`, or a job's `reward.recipeId` (validated). **Add a meal
   effect:** a field on `ModifierSpec` combined in `combine`, worded in `describeSpec`, read at
   one hook in `game/`.
+- **Add a bar or hot water:** a `tavern` place (`keeper`, `foodIds`, `roundCost`, `cupCost`,
+  evening/night `hours`, optional `pastimes` with unique ids) or an `onsen` place (`keeper`,
+  `waters` spring or bathhouse, `soakCost`, `hours` without night), validated in
+  `validateLeisure.ts`. Put people in it through their schedules; a town with no residents
+  needs one (a `homeLocationId` regular) or the room stays empty. Not every town gets one:
+  see `docs/design/village-places-plan.md` for which fit where.
 - **Add village life:** rumours (`missionId` for a job hint, `personId` for gossip), night
   sights (with a small stat `reward`) and festivals (season, day, `marketPrices`,
   `bondBonus`, optional `stalls` of festival-only food) go in the pack's `village`. Give a

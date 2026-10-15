@@ -51,6 +51,10 @@ import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { LANTERN_THIEF, LANTERN_THIEF_JOBS } from './arcs/lanternThief';
 import { BROKEN_BLADE, BROKEN_BLADE_JOBS, KUROBANE } from './arcs/brokenBlade';
+import { LANTERN_KEEPER_ARC, LANTERN_KEEPER_FOE, LANTERN_KEEPER_JOBS } from './arcs/lanternKeeper';
+import { UNFINISHED_ARC, UNFINISHED_FOE, UNFINISHED_JOBS } from './arcs/unfinished';
+import { FORGED_BLADE_ARC, FORGED_BLADE_FOE, FORGED_BLADE_JOBS } from './arcs/forgedBlade';
+import { PATIENT_THING_ARC, PATIENT_THING_FOE, PATIENT_THING_JOBS } from './arcs/patientThing';
 import { SALT_LANTERNS, SALT_LANTERNS_JOBS } from './arcs/saltLanterns';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
 import { ORIGINAL_ROUTES } from './routes';
@@ -65,7 +69,7 @@ import {
   SHIOMACHI_TRAINING,
   TIDEWIRE_TECHNIQUES,
 } from './shiomachi';
-import { KIRI_FORD_FOODS, KIRI_FORD_JOBS } from './kiriFord';
+import { KIRI_FORD_FOODS, KIRI_FORD_JOBS, KIRI_FORD_PEOPLE } from './kiriFord';
 
 /** The game's own setting: Tōrōgakure in the Land of Embers. Safe to ship publicly. */
 export const ORIGINAL_PACK: ContentPack = {
@@ -93,6 +97,10 @@ export const ORIGINAL_PACK: ContentPack = {
     ...MISSIONS,
     ...LANTERN_THIEF_JOBS,
     ...BROKEN_BLADE_JOBS,
+    ...LANTERN_KEEPER_JOBS,
+    ...UNFINISHED_JOBS,
+    ...FORGED_BLADE_JOBS,
+    ...PATIENT_THING_JOBS,
     ...SALT_LANTERNS_JOBS,
     ...KIRI_FORD_JOBS,
     ...TEAM_MISSIONS,
@@ -104,9 +112,27 @@ export const ORIGINAL_PACK: ContentPack = {
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
   roadEvents: ROAD_EVENTS,
-  arcs: [LANTERN_THIEF, SALT_LANTERNS, BROKEN_BLADE],
+  arcs: [
+    LANTERN_THIEF,
+    SALT_LANTERNS,
+    BROKEN_BLADE,
+    LANTERN_KEEPER_ARC,
+    UNFINISHED_ARC,
+    FORGED_BLADE_ARC,
+    PATIENT_THING_ARC,
+  ],
   voices: VOICES,
-  enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...JOB_ENEMIES, ...EXAM_ENEMIES, KUROBANE],
+  enemies: [
+    ...ENEMIES,
+    ...CHUNIN_ENEMIES,
+    ...JOB_ENEMIES,
+    ...EXAM_ENEMIES,
+    KUROBANE,
+    LANTERN_KEEPER_FOE,
+    UNFINISHED_FOE,
+    FORGED_BLADE_FOE,
+    PATIENT_THING_FOE,
+  ],
   training: [...TRAINING, ...SHIOMACHI_TRAINING],
   foods: [...FOODS, ...SEASONAL_FOODS, ...SHIOMACHI_FOODS, ...KIRI_FORD_FOODS],
   clans: CLANS,
@@ -137,6 +163,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...CLAN_HEADS,
     ...VILLAGE_CHUNIN,
     ...SHIOMACHI_PEOPLE,
+    ...KIRI_FORD_PEOPLE,
   ],
   conversations: [
     ...GENERIC_CONVERSATIONS,

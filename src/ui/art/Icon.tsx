@@ -108,6 +108,9 @@ const PATHS: Readonly<Record<IconId, ReactNode>> = {
     <path d="M16 28c-6-3-9-9-7-15 3 0 6 2 7 5 1-3 4-5 7-5 2 6-1 12-7 15zM16 13V4M12 6l4 3 4-3" />
   ),
   sake: <path d="M11 4h4v5c3 2 4 5 4 9v10H7V18c0-4 1-7 4-9zM7 18h12M22 20h6l-1 8h-4z" />,
+  spring: (
+    <path d="M4 22c3 0 3 2 6 2s3-2 6-2 3 2 6 2 3-2 6-2M4 27c3 0 3 2 6 2s3-2 6-2 3 2 6 2 3-2 6-2M11 17c-2-2 2-3 0-6s2-3 0-6M16 17c-2-2 2-3 0-6s2-3 0-6M21 17c-2-2 2-3 0-6s2-3 0-6" />
+  ),
 };
 
 interface IconProps {

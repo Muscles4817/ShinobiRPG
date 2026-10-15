@@ -1,0 +1,283 @@
+/* Off duty: a seat at the bar, its back tables, and the hot water. */
+
+/* The bar: tonight's faces are buttons; the chosen one is ringed in lantern light. */
+button.crowd-face {
+  min-width: 48px;
+  min-height: 40px;
+  padding: 4px 2px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+}
+button.crowd-face small {
+  max-width: 64px;
+  text-align: center;
+  line-height: 1.2;
+}
+button.crowd-face[aria-pressed='true'] {
+  border-color: var(--lantern);
+  color: var(--gold);
+}
+
+.bar-seat {
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+.bar-seat-head {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 0.98rem;
+  color: var(--story);
+}
+.drink-ways {
+  display: grid;
+  gap: 6px;
+}
+.drink-way {
+  min-height: 44px;
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+  padding: 7px 10px;
+  text-align: left;
+  color: var(--ink);
+  background: var(--grain), var(--raise);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.drink-way small {
+  color: var(--muted);
+}
+.drink-way:disabled {
+  opacity: 0.6;
+}
+.drink-way:not(:disabled):active {
+  border-color: var(--lantern);
+}
+.bar-seat .chip {
+  margin-right: 4px;
+}
+
+/* Whether a way of spending the hour suits them: a stamp in the colour of the outcome. */
+.tone-read {
+  text-transform: none;
+}
+.tone-read.likes {
+  color: var(--good);
+}
+.tone-read.dislikes {
+  color: var(--cost);
+}
+
+/* The back tables: what is played there, hung like wooden plaques. */
+.back-tables ul {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.pastime {
+  padding: 8px 12px;
+  background: var(--grain-ink), var(--ema);
+  color: var(--ema-ink);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 3px 6px rgb(0 0 0 / 0.3);
+}
+.pastime b {
+  font-family: var(--font-story);
+}
+.pastime .story {
+  margin: 2px 0 0;
+  color: var(--ema-ink);
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+/* The hot water. */
+.onsen {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.onsen-closed {
+  font-family: var(--font-story);
+  color: var(--muted);
+}
+
+/* The keeper's bath token: a slab of pale cypress, the price burnt into it. */
+.bath-token {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  background: var(--grain-ink), var(--ema);
+  color: var(--ema-ink);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.35);
+}
+.bath-token h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 1.1rem;
+}
+.bath-price {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--wood);
+}
+.bath-token .chip.gain {
+  color: var(--ink-gain);
+  background: color-mix(in srgb, var(--ink-gain) 12%, transparent);
+}
+.bath-note,
+.bath-blocker {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ema-ink);
+}
+.bath-blocker {
+  color: var(--ink-cost);
+}
+
+/* The water: who is in it, each with a seat on the rocks beside them. */
+.bath-water {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--grain), var(--surface);
+}
+.bath-water .story {
+  margin: 0;
+  font-size: 0.92rem;
+}
+.bathers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.bather {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+.bather-who {
+  display: grid;
+  justify-items: start;
+  gap: 1px;
+}
+.bather .blocker {
+  grid-column: 2 / -1;
+}
+
+/* Chō-han at the back table: the last cup, the stake, and a call of even or odd. */
+.dice-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgb(0 0 0 / 0.25);
+}
+.dice-last {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-story);
+}
+.dice-faces {
+  display: flex;
+  gap: 4px;
+}
+.die {
+  width: 28px;
+  height: 28px;
+}
+.die rect {
+  fill: var(--paper);
+  stroke: var(--ema-ink);
+  stroke-width: 1.5;
+}
+.die circle {
+  fill: var(--ema-ink);
+}
+.dice-heard {
+  margin: 0;
+  font-family: var(--font-story);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+.dice-stakes {
+  display: flex;
+  gap: 6px;
+}
+.dice-table .chip.gain {
+  color: var(--ink-gain);
+  background: color-mix(in srgb, var(--ink-gain) 12%, transparent);
+}
+.dice-table .chip.cost {
+  color: var(--ink-cost);
+  background: color-mix(in srgb, var(--ink-cost) 12%, transparent);
+}
+.dice-table .blocker {
+  color: var(--ink-cost);
+}
+.dice-stake {
+  flex: 1;
+  text-align: center;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgb(0 0 0 / 0.3);
+  background: transparent;
+  color: var(--ema-ink);
+  font-weight: 700;
+}
+.dice-stake.on {
+  background: var(--ema-ink);
+  color: var(--ema);
+}
+.dice-calls {
+  display: flex;
+  gap: 8px;
+}
+.dice-call {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.dice-call small {
+  font-weight: normal;
+}
+.dice-rules {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+}
+.dice-rounds {
+  display: flex;
+  gap: 4px;
+}
+.dice-rounds .pip {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ema-ink);
+}
+.dice-rounds .pip.on {
+  background: var(--ema-ink);
+}

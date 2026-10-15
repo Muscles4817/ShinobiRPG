@@ -62,6 +62,16 @@ export const TANZAKU_TOWN: LocationDef = {
       keeper: 'Madam Suzu, who keeps the tabs and the bouncers',
       foodIds: ['tavern-yakitori', 'tavern-oden', 'barley-tea'],
       roundCost: 50,
+      cupCost: 15,
+      pastimes: [
+        {
+          id: 'cho-han',
+          name: 'Chō-han',
+          scene:
+            'Two dice under an upturned cup: even or odd. The house never seems to lose, and a blonde regular never seems to win.',
+          game: { kind: 'dice', dice: 2, stakes: [20, 60, 150] },
+        },
+      ],
     },
     {
       id: 'castle-ward-office',

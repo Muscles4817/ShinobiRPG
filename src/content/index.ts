@@ -38,6 +38,9 @@ export type {
   NamePools,
   NindoDef,
   OpeningHours,
+  DiceTable,
+  Pastime,
+  PastimeGame,
   PersonArsenal,
   PersonDef,
   PersonRank,
@@ -61,6 +64,7 @@ export type {
   TrainingDef,
   TraitDef,
   VillageLife,
+  Waters,
 } from './types';
 export {
   DEFAULT_BUILD_ID,

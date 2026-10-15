@@ -54,6 +54,15 @@ export const OTAFUKU_TOWN: LocationDef = {
       keeper: 'The mistress of the house, in silk and patience',
       foodIds: ['tavern-oden', 'barley-tea', 'otafuku-manju'],
       roundCost: 60,
+      cupCost: 20,
+      pastimes: [
+        {
+          id: 'fan-toss',
+          name: 'Fan-tossing',
+          scene:
+            'Guests kneel and toss folded fans at a butterfly perched on a little box. Kotone keeps score on her shamisen.',
+        },
+      ],
     },
     {
       id: 'quarter-office',

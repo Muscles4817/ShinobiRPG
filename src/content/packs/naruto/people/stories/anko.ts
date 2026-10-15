@@ -1,5 +1,7 @@
 import type { ConversationDef } from '../../../../types';
 
+import { ANKO_DEN } from './marks';
+
 /** Anko’s story, a beat for each stage of closeness (`SenseiWays.story`). */
 export const ANKO_STORY: readonly ConversationDef[] = [
   {
@@ -67,18 +69,25 @@ export const ANKO_STORY: readonly ConversationDef[] = [
     personId: 'anko',
     minStage: 4,
     opener:
-      '“Listen,” Anko says, deadly serious for once. “Never let anyone use you. Not a teacher. Not me. Not the village. Promise.”',
+      '“Listen,” Anko says, deadly serious for once. “Never let anyone use you. Not a teacher. Not me. Not the village.” She looks away. “There’s an old den of his past Otafuku. I’m going to burn it out. Promise me, and come.”',
     choices: [
       {
         label: '“I promise.”',
         tone: 'earnest',
         reply: '“Good kid,” she says, and buys you dango.',
+        worldMark: ANKO_DEN,
       },
-      { label: '“Not even you?”', tone: 'tease', reply: '“Especially me,” she grins.' },
+      {
+        label: '“Not even you?”',
+        tone: 'tease',
+        reply: '“Especially me,” she grins.',
+        worldMark: ANKO_DEN,
+      },
       {
         label: '“Nobody uses you either.”',
         tone: 'kind',
         reply: 'She stares at you. Then she ruffles your hair, hard.',
+        worldMark: ANKO_DEN,
       },
     ],
   },

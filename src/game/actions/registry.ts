@@ -25,7 +25,9 @@ import { senseiSession } from './senseiSession';
 import { senseiTest } from './senseiTest';
 import { heedSensei } from './heedSensei';
 import { teamDay } from './teamDay';
-import { buyRound } from './tavern';
+import { buyRound, drinkWith } from './tavern';
+import { playDice } from './dice';
+import { soak } from './onsen';
 import { endConversation, reply, talk } from './talk';
 import { testChakraPaper } from './chakraPaper';
 import { assignTeam, chooseSensei } from './team';
@@ -90,6 +92,9 @@ export const HANDLERS: Registry = {
   followSight,
   hostDinner,
   buyRound,
+  playDice,
+  drinkWith,
+  soak,
   enterExam,
   examAnswer,
   examFinal,

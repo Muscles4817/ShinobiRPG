@@ -56,7 +56,16 @@ export { headerView, type HeaderView, type HungerNote, type Meter } from './view
 export { hubView, type HubView, type PlaceCard } from './views/hub';
 export { senseiWeekView, type SenseiWeekDay, type SenseiWeekView } from './views/senseiWeek';
 export { senseiTestScene, type SenseiTestScene } from './views/senseiTest';
-export { tavernView, type TavernView } from './views/tavern';
+export {
+  tavernView,
+  type BarSeat,
+  type DrinkChoice,
+  type PastimeView,
+  type TavernView,
+} from './views/tavern';
+export type { DiceBet, DiceStake, DiceTableView, LastCup } from './views/diceTable';
+export { onsenView, type Bather, type OnsenView } from './views/onsen';
+export type { Companion, ToneRead } from './views/outings';
 export {
   villageView,
   type FestivalBanner,

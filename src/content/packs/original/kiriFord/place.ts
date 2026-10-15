@@ -4,7 +4,8 @@ import { KIRI_FORD_JOB_IDS } from './jobs';
 /**
  * Kiri Ford, a river city a day east through the cedars, where the ferries cross to the dune
  * road. A crossroads more than a destination: an inn for the night, a river market, the
- * ferry office's work, and the first place a shinobi with money saved can buy a house.
+ * ferry office's work, the Low Water where the ferrymen drink, and the first place a shinobi
+ * with money saved can buy a house.
  */
 export const KIRI_FORD: LocationDef = {
   id: 'kiri-ford',
@@ -43,6 +44,26 @@ export const KIRI_FORD: LocationDef = {
           icon: 'veg',
           foodIds: [],
           ingredientIds: ['travel-rations', 'dried-fish', 'rice', 'river-fish'],
+        },
+      ],
+    },
+    {
+      id: 'low-water',
+      kind: 'tavern',
+      name: 'The Low Water',
+      icon: 'sake',
+      blurb: 'A ferrymen’s drinking house on stilts over the shallows',
+      hours: ['evening', 'night'],
+      keeper: 'Brother Ino, a ferryman who never got his boat back',
+      foodIds: ['river-eel-skewer', 'grilled-fish', 'roasted-barley-tea'],
+      roundCost: 35,
+      cupCost: 10,
+      pastimes: [
+        {
+          id: 'crossing-lots',
+          name: 'Drawing for the dawn crossing',
+          scene:
+            'Straws in a jar: whoever draws the short one rows the first ferry tomorrow. Nobody ever looks pleased to win.',
         },
       ],
     },

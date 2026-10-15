@@ -1,5 +1,7 @@
 import type { ConversationDef } from '../../../types';
 
+import { ITO_SEAL } from './marks';
+
 /** Ito’s story, a beat for each stage of closeness (`SenseiWays.story`). */
 export const ITO_STORY: readonly ConversationDef[] = [
   {
@@ -75,22 +77,25 @@ export const ITO_STORY: readonly ConversationDef[] = [
     personId: 'ito',
     minStage: 4,
     opener:
-      'Ito puts a sealed slip in your hand. “If anything happens to me, burn this. Don’t read it. I’m trusting you with that.”',
+      'Ito puts a sealed slip in your hand. “If anything happens to me, burn this. Don’t read it.” Her voice drops. “The thing that got out has started moving. I need someone I trust beside me.”',
     choices: [
       {
         label: '“I won’t read it.”',
         tone: 'earnest',
         reply: '“I know,” she says. “That’s why it’s you.”',
+        worldMark: ITO_SEAL,
       },
       {
         label: '“Nothing will happen to you.”',
         tone: 'kind',
         reply: '“Then you’ll never need it,” she says. “Good.”',
+        worldMark: ITO_SEAL,
       },
       {
         label: 'Tuck it away without a word.',
         tone: 'quiet',
         reply: 'She watches where you put it, and nods.',
+        worldMark: ITO_SEAL,
       },
     ],
   },

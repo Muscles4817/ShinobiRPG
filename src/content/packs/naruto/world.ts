@@ -62,6 +62,16 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'smugglers-of-tanzaku',
           'bridge-builders-debt',
           'border-outpost-orders',
+          'arc-kaname-bell-one',
+          'arc-kaname-bell-two',
+          'arc-hotaru-shore-one',
+          'arc-hotaru-shore-two',
+          'arc-shion-dice-one',
+          'arc-shion-dice-two',
+          'arc-masaru-school-one',
+          'arc-masaru-school-two',
+          'arc-anko-den-one',
+          'arc-anko-den-two',
         ],
       },
       {
@@ -155,6 +165,33 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         keeper: 'Old Tanuki, behind the counter',
         foodIds: ['tavern-yakitori', 'tavern-oden', 'barley-tea'],
         roundCost: 40,
+        cupCost: 12,
+        pastimes: [
+          {
+            id: 'shogi',
+            name: 'Shōgi at the back table',
+            scene:
+              'A shōgi board by the window, and a jōnin with a cigarette losing to a Nara who looks half asleep.',
+          },
+          {
+            id: 'hanafuda',
+            name: 'Hanafuda',
+            scene:
+              'Flower cards slapped down on the mat, and off-duty chūnin arguing over who owes whom.',
+          },
+        ],
+      },
+      {
+        id: 'bathhouse',
+        kind: 'onsen',
+        name: 'Konoha Bathhouse',
+        icon: 'spring',
+        blurb: 'Hot baths behind a tall bamboo fence, and a sign on it about peeping.',
+        hours: ['morning', 'afternoon', 'evening'],
+        keeper:
+          'The attendant at the counter, who has chased a white-haired peeper off the fence more than once',
+        waters: 'bathhouse',
+        soakCost: 10,
       },
       {
         id: 'apartment',

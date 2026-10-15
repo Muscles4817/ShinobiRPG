@@ -97,7 +97,28 @@ export interface VillageMemory {
   readonly memories: readonly SharedMemory[];
   /** Jobs done for each client, by the client's name. */
   readonly clients: Readonly<Record<string, number>>;
+  /** Tonight at the dice tables; absent until you first play (every older save). */
+  readonly dice?: DiceNight;
 }
+
+/** The dice played on one day: how many rounds, and how the last cup came up. */
+export interface DiceNight {
+  readonly day: number;
+  readonly rounds: number;
+  readonly last: DiceThrow;
+}
+
+export interface DiceThrow {
+  readonly pastimeId: string;
+  readonly faces: readonly number[];
+  readonly call: DiceCall;
+  readonly stake: number;
+  /** Ryo won after the house's cut; zero on a loss. */
+  readonly won: number;
+}
+
+/** Chō (even) or han (odd): what you say the dice add up to. */
+export type DiceCall = 'even' | 'odd';
 
 /** A moment someone remembers from a job with you. */
 export interface SharedMemory {
@@ -184,6 +205,8 @@ export interface Character {
   readonly mealQuality?: MealQuality;
   /** A snack's short buff, alongside the meal; absent when none is working. */
   readonly snack?: Snack;
+  /** Soaked at the baths today: warm through until the day ends; absent when not. */
+  readonly soaked?: true;
   /** Injuries you carry; each heals on its own morning. */
   readonly injuries: readonly Injury[];
   /**

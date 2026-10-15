@@ -1,5 +1,7 @@
 import type { ConversationDef } from '../../../types';
 
+import { YOMI_UNFINISHED } from './marks';
+
 /** Yomi’s story, a beat for each stage of closeness (`SenseiWays.story`). */
 export const YOMI_STORY: readonly ConversationDef[] = [
   {
@@ -79,22 +81,25 @@ export const YOMI_STORY: readonly ConversationDef[] = [
     personId: 'yomi',
     minStage: 4,
     opener:
-      '“When I’m gone,” Yomi says, “light a lantern for me. Not on the grave. Somewhere I liked. I’ll find it.”',
+      '“When I’m gone,” Yomi says, “light a lantern for me. Not on the grave. Somewhere I liked.” She pauses. “I found where he is. My teammate. On the old border hill. Come with me?”',
     choices: [
       {
         label: '“Where did you like?”',
         tone: 'curious',
         reply: 'She tells you. It is the bench where you first met.',
+        worldMark: YOMI_UNFINISHED,
       },
       {
         label: '“Don’t talk like that.”',
         tone: 'earnest',
         reply: '“Everyone goes,” she says gently. “I just know where.”',
+        worldMark: YOMI_UNFINISHED,
       },
       {
         label: '“I promise.”',
         tone: 'kind',
         reply: '“I know,” she says. “Grandmother says so too.”',
+        worldMark: YOMI_UNFINISHED,
       },
     ],
   },

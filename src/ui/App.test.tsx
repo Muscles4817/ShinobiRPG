@@ -61,6 +61,14 @@ async function skipWatching(user: ReturnType<typeof userEvent.setup>) {
 }
 
 describe('App (smoke test)', () => {
+  it('opens on the title: the lanterns, the name and what you can do', () => {
+    render(<App store={memoryStore()} />);
+    expect(screen.getByRole('heading', { name: 'Shinobi RPG' })).toBeInTheDocument();
+    const menu = screen.getByRole('navigation', { name: 'Main menu' });
+    expect(within(menu).getByRole('button', { name: /New game/ })).toBeInTheDocument();
+    expect(within(menu).getByRole('button', { name: /Versus/ })).toBeInTheDocument();
+  });
+
   it('starts in the chosen world’s village and autosaves', async () => {
     const user = userEvent.setup();
     const store = memoryStore();
@@ -111,6 +119,28 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /Stand everyone a round/ }));
     expect(screen.getByText('You’ve already stood a round tonight.')).toBeInTheDocument();
     expect(screen.getByText('Overheard at the counter')).toBeInTheDocument();
+    expect(screen.getByText('At the back tables')).toBeInTheDocument();
+    const seats = within(screen.getByRole('group', { name: 'Sit with' }));
+    await user.click(seats.getByRole('button', { name: /Kaen/ }));
+    await user.click(screen.getByRole('button', { name: /Cup for cup/ }));
+    expect(screen.getByText('You’ve already spent time with Kaen today.')).toBeInTheDocument();
+  });
+
+  it('soaks at the hot springs, alone or beside whoever is in the water', async () => {
+    const user = userEvent.setup();
+    const store = memoryStore();
+    const first = render(<App store={store} />);
+    await startGame(user);
+    first.unmount();
+    const save = JSON.parse(store.data ?? '{}') as { state: { time: unknown } };
+    save.state.time = { day: 2, slot: 0 };
+    render(<App store={memoryStore(JSON.stringify(save))} />);
+    await user.click(screen.getByRole('button', { name: /^Continue/ }));
+    await user.click(place(/The Ember Springs/));
+    expect(screen.getByText('In the water')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /^Soak beside / }).length).toBeGreaterThan(0);
+    await user.click(screen.getByRole('button', { name: 'Soak on your own' }));
+    expect(screen.getAllByText('You’ve already had your soak today.').length).toBeGreaterThan(0);
   });
 
   it('trains at the training grounds', async () => {
