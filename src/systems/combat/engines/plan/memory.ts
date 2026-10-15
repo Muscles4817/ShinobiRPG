@@ -1,7 +1,9 @@
 import type { RangeBand } from '../../contract';
 import { RANGE_BANDS } from '../../rules/range';
 import { cardId, keepsInLoadout, slotLimit } from './cards';
+import type { HoldOff } from './footing';
 import { cleanReactions, reactionAt, type Reactions } from './readiness';
+import { defaultHoldOff, holdOffChoices } from './zoning';
 import {
   SLOT_CONDITIONS,
   TARGET_RULES,
@@ -26,6 +28,7 @@ import {
 export interface PlanMemory {
   readonly loadout: Loadout;
   readonly reactions: Reactions;
+  readonly holdOff?: HoldOff;
   readonly keepAt?: RangeBand;
 }
 
@@ -86,6 +89,23 @@ function reactionsFrom(value: unknown): Reactions {
   return { close: pick('close'), mid: pick('mid'), far: pick('far') };
 }
 
+/**
+ * A remembered hold-off, kept where it is still something this fighter can fire from there;
+ * plans saved before it (or a card since forgotten) fall back to the default.
+ */
+function holdOffFrom(value: unknown, fighter: PlanFighter): HoldOff {
+  const raw = asRecord(value);
+  const fallback = defaultHoldOff(fighter);
+  if (!raw) return fallback;
+  const pick = (band: RangeBand): string | null => {
+    const id = raw[band];
+    if (id === null) return null;
+    const valid = holdOffChoices(fighter, band).some((c) => cardId(c) === id);
+    return typeof id === 'string' && valid ? id : fallback[band];
+  };
+  return { close: pick('close'), mid: pick('mid'), far: pick('far') };
+}
+
 /** The defence each distance of an old, bare loadout had slotted first. */
 function slottedReactions(loadout: Loadout, fighter: PlanFighter): Reactions {
   const old = { loadout, techniques: fighter.techniques, items: fighter.items };
@@ -113,6 +133,7 @@ export function rememberedPlan(plan: unknown, fighter: PlanFighter): PlanMemory 
       far: cleaned(far, fighter, 'far'),
     },
     reactions: cleanReactions(fighter, reactions),
+    holdOff: holdOffFrom(record.holdOff, fighter),
     ...(isBand(record.keepAt) ? { keepAt: record.keepAt } : {}),
   };
 }

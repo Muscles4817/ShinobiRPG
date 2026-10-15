@@ -1,14 +1,13 @@
-import { clamp, type Rng } from '@/core';
+import type { Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
 import { alive } from '../../rules/body';
 import { turnLine } from '../../rules/narration';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
-import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
-import { isPinned } from '../../rules/verbs';
 import { afterUsing } from '../../rules/trumps';
 import { strike } from './arms';
+import { step } from './steps';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
@@ -47,8 +46,6 @@ import {
  */
 
 const CHAKRA_REGEN = 2;
-const STEP_BASE = 0.55;
-const STEP_PER_SPEED = 0.04;
 /** Initiative the side that moved first gets in exchange 1: more than any speed gap. */
 const FIRST_MOVER_LEAD = 1000;
 /** How the log marks each exchange of a round: in words, since story text shows no numbers. */
@@ -93,20 +90,6 @@ export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
 function practise(round: Round, actor: PlanFighter, work: 'blows' | 'footwork'): Round {
   const done = fighterIn(round, actor.id)?.[work] ?? 0;
   return { ...round, fighters: patch(round.fighters, actor.id, { [work]: done + 1 }) };
-}
-
-function step(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' | 'back') {
-  if (isPinned(actor)) return say(round, `${actor.name} strains against the hold.`);
-  const to = direction === 'in' ? stepIn(round.range) : stepBack(round.range);
-  const speedGap = actor.attributes.speed - (foe?.attributes.speed ?? 0);
-  const chance = foe ? clamp(STEP_BASE + speedGap * STEP_PER_SPEED, 0.25, 0.85) : 1;
-  const where = RANGE_LABEL[to].toLowerCase();
-  return rng.chance(chance)
-    ? { ...say(round, `${actor.name} moves to ${where} range.`), range: to }
-    : say(
-        round,
-        `${actor.name} tries for ${where} range, but ${foe?.name ?? 'no one'} won't allow it.`,
-      );
 }
 
 function play(round: Round, turn: Turn, card: Card): Round {

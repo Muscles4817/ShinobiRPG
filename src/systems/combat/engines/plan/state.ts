@@ -19,6 +19,7 @@ import type {
   TrapMemory,
 } from '../../rules/verbs';
 import type { CombatOrders, CombatStance } from '../../teamContract';
+import type { Footing } from './footing';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -80,7 +81,7 @@ export function plainSlots(cards: readonly CardId[]): Slot[] {
 }
 
 export interface PlanFighter
-  extends Body, TrumpMemory, EmpowerMemory, CloneBody, TrapMemory, LingeringMemory {
+  extends Body, TrumpMemory, EmpowerMemory, CloneBody, TrapMemory, LingeringMemory, Footing {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;
@@ -255,6 +256,8 @@ export function patch(
       | 'loadout'
       | 'reactions'
       | 'keepAt'
+      | 'holdOff'
+      | 'movedAt'
       | 'hidden'
       | 'confused'
       | 'concealment'

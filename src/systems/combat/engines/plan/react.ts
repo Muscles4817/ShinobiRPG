@@ -25,7 +25,7 @@ import {
   substitutable,
 } from '../../rules/verbs';
 import type { Card } from './cards';
-import { reactionAt } from './readiness';
+import { readyDefences } from './readiness';
 import { defenceKind, noteDefence } from './reads';
 import { throughClones } from './decoys';
 import { substituted, type Swap } from './footwork';
@@ -256,10 +256,7 @@ export function react(start: Round, hit: Hit): Round {
   const area = blow.area === true;
   const decoyed = throughClones(before, { attacker, target, what: blow.what, area, rng });
   if (decoyed.absorbed) return decoyed.round;
-  // Reeling from a daze, a fighter can still put a guard up, but not dodge, counter or swap out.
-  const reeling = isDazed(target);
-  const kept = reactionAt(target, decoyed.round.range);
-  const ready = kept && (!reeling || kept.kind === 'guard') ? [kept] : [];
+  const ready = readyDefences(target, decoyed.round);
   // A defence that comes into play gives itself away to everyone facing its owner.
   const band = decoyed.round.range;
   const round = noteDefence(decoyed.round, target.id, band, shown(ready, blow, band));

@@ -4,19 +4,24 @@ import { cardId } from './cards';
 import { defaultReactions, reactionAt, reactionChoices } from './readiness';
 import type { PlanFighter, PlanState } from './state';
 import { cardDetail, cardLabel } from './wording';
+import { holdOffAt, holdOffChoices, NO_HOLD_OFF } from './zoning';
 
 /**
- * The card table's two settings for each distance that aren't slots: the defence kept ready
- * there, and where the fighter fights (one choice, shown with every distance). Each choice is
+ * The card table's settings for each distance that aren't slots: the defence kept ready
+ * there, what is fired at anyone closing in from there (mid and far only), and where the
+ * fighter fights (one choice, shown with every distance). Each choice is
  * an option the fight screen shows as a picker; picking one is an edit to the plan.
  */
 
 const READY_PREFIX = 'ready:';
 const KEEP_PREFIX = 'keep:';
+const HOLD_PREFIX = 'hold:';
 const ANYWHERE = 'any';
+const NOTHING = 'none';
 
 export const REACTION_SETTING = 'Defence';
 export const KEEP_SETTING = 'Fight at';
+export const HOLD_SETTING = 'Hold off';
 
 const KEEP_LABEL: Readonly<Record<RangeBand | typeof ANYWHERE, string>> = {
   any: 'Wherever I stand',
@@ -58,9 +63,41 @@ function keepOptions(fighter: PlanFighter, band: RangeBand): CombatOption[] {
   }));
 }
 
-/** A distance's settings beside its slots: its defence, and where to fight. */
+/** What to fire at anyone closing in from this distance (`zoning.ts`): nothing, kunai, a technique. */
+function holdOptions(fighter: PlanFighter, band: RangeBand): CombatOption[] {
+  const choices = holdOffChoices(fighter, band);
+  if (choices.length === 0) return [];
+  const current = holdOffAt(fighter, band);
+  const none: CombatOption = {
+    id: `${HOLD_PREFIX}${band}:${NOTHING}`,
+    label: 'Nothing',
+    detail: 'Let them come',
+    kind: 'plan',
+    group: RANGE_LABEL[band],
+    setting: HOLD_SETTING,
+    selected: current === null,
+  };
+  return [
+    none,
+    ...choices.map((card) => ({
+      id: `${HOLD_PREFIX}${band}:${cardId(card)}`,
+      label: cardLabel(card, fighter),
+      detail: 'Fired at anyone closing in on you',
+      kind: 'plan' as const,
+      group: RANGE_LABEL[band],
+      setting: HOLD_SETTING,
+      selected: current !== null && cardId(current) === cardId(card),
+    })),
+  ];
+}
+
+/** A distance's settings beside its slots: its defence, what holds foes off, where to fight. */
 export function readinessOptions(fighter: PlanFighter, band: RangeBand): CombatOption[] {
-  return [...reactionOptions(fighter, band), ...keepOptions(fighter, band)];
+  return [
+    ...reactionOptions(fighter, band),
+    ...holdOptions(fighter, band),
+    ...keepOptions(fighter, band),
+  ];
 }
 
 function isBand(value: string): value is RangeBand {
@@ -72,18 +109,23 @@ function withKeepAt(fighter: PlanFighter, value: string): PlanFighter {
   return isBand(value) ? { ...rest, keepAt: value } : rest;
 }
 
+function withHoldOff(fighter: PlanFighter, band: RangeBand, id: string): PlanFighter {
+  const holdOff = { ...(fighter.holdOff ?? NO_HOLD_OFF), [band]: id === NOTHING ? null : id };
+  return { ...fighter, holdOff };
+}
+
 function withReaction(fighter: PlanFighter, band: RangeBand, id: string): PlanFighter {
   const reactions = { ...(fighter.reactions ?? defaultReactions(fighter)), [band]: id };
   return { ...fighter, reactions };
 }
 
 /** Applies a settings option to a fighter, or null when the option isn't one. */
-export function editReadiness(
-  state: PlanState,
+export function editReadiness<S extends Pick<PlanState, 'fighters'>>(
+  state: S,
   fighter: PlanFighter,
   optionId: string,
-): PlanState | null {
-  const prefix = [READY_PREFIX, KEEP_PREFIX].find((p) => optionId.startsWith(p));
+): S | null {
+  const prefix = [READY_PREFIX, KEEP_PREFIX, HOLD_PREFIX].find((p) => optionId.startsWith(p));
   if (!prefix) return null;
   const rest = optionId.slice(prefix.length);
   const split = rest.indexOf(':');
@@ -91,6 +133,10 @@ export function editReadiness(
   const value = rest.slice(split + 1);
   if (!isBand(band)) return null;
   const changed =
-    prefix === KEEP_PREFIX ? withKeepAt(fighter, value) : withReaction(fighter, band, value);
+    prefix === KEEP_PREFIX
+      ? withKeepAt(fighter, value)
+      : prefix === HOLD_PREFIX
+        ? withHoldOff(fighter, band, value)
+        : withReaction(fighter, band, value);
   return { ...state, fighters: state.fighters.map((f) => (f.id === fighter.id ? changed : f)) };
 }

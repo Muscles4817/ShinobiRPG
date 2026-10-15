@@ -204,7 +204,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Counter or a
     substitution; never stacked) that reacts on its own, and a plan may say where to **fight at**:
     the fighter steps towards it first (after an emergency slot), and a step still costs the turn
-    (`plan/stepping.ts`); without one, they step home only when nothing slotted does anything
+    (`plan/stepping.ts`) and leaves them unable to set a Guard or a Counter that exchange
+    (`plan/steps.ts`). At mid and far a plan may **hold off** with kunai or a wounding
+    technique (`plan/zoning.ts`, `rules/zoning.ts`): whoever steps in on a holder who hasn't
+    acted yet meets that shot instead of the step's own contest (aim against speed, areas far
+    harder to get through, a vast one impossible), spending the holder's turn; without one, they step home only when nothing slotted does anything
     there, else throw a plain blow (never slotted). Foes play
     their default plan by priority, as the player does, as often as their judgement keeps them to
     it, and instinct otherwise (`plan/judgement.ts`: intellect grade sets plan adherence, whether

@@ -8,6 +8,7 @@ import { isTrump, outmatched } from '../../rules/trumps';
 import { hasVerb, isHarmful, isHindering, isWounding, techniquePower } from '../../rules/verbs';
 import { cardBlocked, cardId, cardsFor, isOffence, slotLimit, type Card } from './cards';
 import { opponentsOf } from './senses';
+import { defaultHoldOff } from './zoning';
 import { defaultReactions } from './readiness';
 import { fightsFromHome } from './stepping';
 import { plainSlots, type Loadout, type PlanFighter, type Slot } from './state';
@@ -170,8 +171,12 @@ export function defaultLoadout(
 export function defaultReadiness(
   fighter: PlanFighter,
   shape: PlanShape = {},
-): Pick<PlanFighter, 'reactions' | 'keepAt'> {
+): Pick<PlanFighter, 'reactions' | 'keepAt' | 'holdOff'> {
   const home = shape.home ?? homeBand(fighter);
   const makesFor = home !== homeBand(fighter) || fightsFromHome(fighter, home);
-  return { reactions: defaultReactions(fighter), ...(makesFor ? { keepAt: home } : {}) };
+  return {
+    reactions: defaultReactions(fighter),
+    holdOff: defaultHoldOff(fighter),
+    ...(makesFor ? { keepAt: home } : {}),
+  };
 }
