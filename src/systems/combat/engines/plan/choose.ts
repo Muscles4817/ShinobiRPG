@@ -14,6 +14,7 @@ import {
 import { beats, seenDefence, walksInto } from './adapt';
 import { isOffence, playable, slotted, type Card } from './cards';
 import { partnered } from './combo';
+import { spendsReserve } from './pacing';
 import { beatsWeight } from './judgement';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
@@ -197,6 +198,7 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   const ready = slotted(self, moment.band).filter(
     (c) =>
       playable(self, c) &&
+      !spendsReserve(self, c) &&
       (trumpNow || !trumpCard(c)) &&
       (c.kind !== 'jutsu' || partnered(fighters, self, c.technique)),
   );

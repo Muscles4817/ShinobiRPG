@@ -5,6 +5,8 @@ import { effectsOf, hasVerb, isHindering, isPinned, isWounding } from '../../rul
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
 import { beats, seenDefence, walksInto } from './adapt';
 import { partnered } from './combo';
+import { spendsReserve } from './pacing';
+import { bestTarget } from './targeting';
 import { readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
 import { ownField } from './field';
@@ -121,8 +123,10 @@ export function aimAt(
       return foes.find((f) => f.id === mark) ?? byHealth(foes, false);
     }
     case 'weakest':
-    case undefined:
       return byHealth(foes, false);
+    case undefined:
+      // Left to their judgement (foes, teammates), a fighter goes for whoever is most worth it.
+      return self.isPlayer ? byHealth(foes, false) : bestTarget(self, foes);
   }
 }
 
@@ -186,7 +190,7 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
 
 /** Whether a card would do something now: it can be played, it reaches, and it's needed. */
 function useful(self: PlanFighter, card: Card, round: Round): boolean {
-  if (!playable(self, card)) return false;
+  if (!playable(self, card) || spendsReserve(self, card)) return false;
   if (isOffence(card) && !canAttackFrom(self, round.range)) return false;
   return needed(self, card, round);
 }
