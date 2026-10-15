@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import type { SaveSummary } from '@/game';
 
+import { InkSeal, TitleScene } from '../../art/TitleScene';
 import { Notice } from '../../components/Notice';
 
 export interface MainMenuProps {
@@ -27,8 +28,13 @@ function NewGame({ save, onNewGame }: Pick<MainMenuProps, 'save' | 'onNewGame'>)
           else onNewGame();
         }}
       >
-        <b>New game</b>
-        <small>Break into the academy and graduate as a new genin.</small>
+        <span className="menu-glyph" aria-hidden="true">
+          新
+        </span>
+        <span className="menu-words">
+          <b>New game</b>
+          <small>Break into the academy and graduate as a new genin.</small>
+        </span>
       </button>
     );
   }
@@ -59,23 +65,42 @@ export function MainMenu(props: MainMenuProps) {
   return (
     <main className="main-menu">
       {notice && <Notice text={notice} onDismiss={props.onDismissNotice} />}
-      <header className="menu-title">
-        <h1>Shinobi RPG</h1>
-        <p>A shinobi’s life, one day at a time.</p>
+      <header className="menu-hero">
+        <TitleScene />
+        <p className="menu-vertical" lang="ja" aria-hidden="true">
+          忍の道を、一日ずつ。
+        </p>
+        <div className="menu-title">
+          <h1>
+            Shinobi <span>RPG</span>
+          </h1>
+          <InkSeal glyphs={['忍', '道']} />
+        </div>
+        <p className="menu-tagline">A shinobi’s life, one day at a time.</p>
       </header>
       <nav className="menu-options" aria-label="Main menu">
         {save && (
           <button type="button" className="menu-option primary" onClick={props.onContinue}>
-            <b>Continue</b>
-            <small>
-              {save.name}, {save.line}
-            </small>
+            <span className="menu-glyph" aria-hidden="true">
+              続
+            </span>
+            <span className="menu-words">
+              <b>Continue</b>
+              <small>
+                {save.name}, {save.line}
+              </small>
+            </span>
           </button>
         )}
         <NewGame save={save} onNewGame={props.onNewGame} />
         <button type="button" className="menu-option" onClick={props.onVersus}>
-          <b>Versus</b>
-          <small>Any two fighters, head to head. Nothing is saved.</small>
+          <span className="menu-glyph" aria-hidden="true">
+            対
+          </span>
+          <span className="menu-words">
+            <b>Versus</b>
+            <small>Any two fighters, head to head. Nothing is saved.</small>
+          </span>
         </button>
       </nav>
     </main>
