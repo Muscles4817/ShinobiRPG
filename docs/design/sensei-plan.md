@@ -55,7 +55,7 @@ The pieces exist, but they are separate rules that happen to name the sensei:
 
 ## Part 2: Decisions
 
-Proposed. Each moves to agreed when we say so.
+Agreed.
 
 1. **The mentorship lasts while you are a genin with a sensei.** `underSensei(state)` is the
    one question every rule asks (`game/mentorship.ts`). Promotion to chūnin ends it in a
@@ -82,15 +82,14 @@ Proposed. Each moves to agreed when we say so.
 7. **Every sensei has a story** told in beats by bond stage, ending in a personal arc that may
    come back for you later.
 
-## Open questions
-
-1. Should skipping cost **bond**, or a separate **regard** (the sensei's judgement of you,
-   which nomination reads)? Regard keeps "they like you" apart from "they rate you", which is
-   truer to the senseis we want. The cost is another number to explain. Leaning towards regard.
-2. Does the opening test (bells, survival) ever fail you? The canon answer is a scare, not a
-   fail: you pass by what you did, not by winning. Leaning towards no fail.
-3. How many sessions a week at most? Daily dawn sessions (Gōran, Guy) must not outpace the
-   pacing bench. Leaning towards one full lesson plus short sessions worth a fraction of one.
+8. **Skipping costs regard, not bond.** Regard is the sensei's judgement of you, apart from
+   how much they like you. Skipped sessions and missed team days lower it, kept assignments
+   raise it, and the exam nomination reads it alongside bond.
+9. **The opening test never fails you.** It is a scare: you pass by what you did, not by
+   winning, and what you did sets your starting regard.
+10. **One full lesson a week, plus short sessions.** However often a sensei trains you, the
+    week holds one full lesson (with its slips); the other sessions are short ones worth a
+    fraction of it, so a daily sensei doesn't outpace the pacing bench.
 
 ---
 
@@ -264,7 +263,7 @@ Part 5 entry.
    coherence rules; fill every sensei in both packs. Nothing reads it yet except validation.
 3. **The week.** The plan (sessions by cadence and formats, the full lesson kept), the
    `mentor` slice (save bump and migration: an existing genin gets a plan from next week),
-   attendance and skip costs (bond or regard, open question 1), the plan slip on the Shinobi tab,
+   attendance and regard (decision 8), the plan slip on the Shinobi tab,
    morning ticker lines. Pacing bench: a follower and an ignorer of the plan.
 4. **The read and the assignment.** `senseiRead`, the weakest defence layer from the fight
    rules' public functions, harm kept from recent fights, talent reads, assignment kinds and
@@ -282,4 +281,11 @@ Part 5 entry.
 
 ## Part 5: What was built
 
-Nothing yet.
+1. **The genin years and the road rule.** `underSensei` (`game/mentorship.ts`): a genin with a
+   sensei. `JobProfile.away` is set for a job with a `leg` stage or an `endsAt`, or one posted
+   only at halls outside the start village (`postedAway`, `content/jobProfile.ts`). A genin's
+   D-rank chore that is away goes to the old team instead of alone, and the sensei leads the
+   old team on every away job in the genin years (`senseiLeads`, `game/crew.ts`), as well as on
+   serious ones. That covers the road escorts, the salt-lantern arc and the town jobs at
+   Shiomachi and the ford. `validate.ts` reads a posted-away job as teamable. Decision 21 in
+   `CLAUDE.md` amended. No save change.

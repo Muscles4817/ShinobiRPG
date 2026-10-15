@@ -6,7 +6,8 @@ import { atEncounter, capable, spying, withStats } from '@/test/encounterFixture
 import { attributesOf } from './combatants';
 import { approachPlans } from './encounter/approaches';
 import { encounterHere } from './encounter/current';
-import { crewOn, seriousJob } from './crew';
+import { crewOn, jobOf, seriousJob } from './crew';
+import { underSensei } from './mentorship';
 import { MEDIC_CONTROL } from './missionTeam';
 import { requirePerson } from './people/cast';
 import { personStats } from './people/progress';
@@ -81,6 +82,42 @@ describe('the sensei joins serious team missions', () => {
       day,
     );
     expect(escort).toMatchObject({ kind: 'old-team', leaderId: null });
+  });
+});
+
+describe('in the genin years, the sensei takes you out of the village', () => {
+  const ROAD_CHORE = 'arc-salt-coast-road';
+  const PORT_CHORE = 'harbour-lost-cargo';
+  const chunin = (state: GameState): GameState => ({
+    ...state,
+    standing: { ...state.standing, rank: 'chunin' },
+  });
+
+  it('lasts while you are a genin with a sensei', () => {
+    const state = newGame();
+    expect(underSensei(state)).toBe(true);
+    expect(underSensei(chunin(state))).toBe(false);
+    expect(underSensei({ ...state, people: { ...state.people, team: null } })).toBe(false);
+  });
+
+  it('reads a job as away when it takes the road or is posted only in another town', () => {
+    const job = (id: string) => jobOf(ctx, ctx.content.missions.require(id));
+    expect(job(ROAD_CHORE).away).toBe(true);
+    expect(job(PORT_CHORE).away).toBe(true);
+    expect(job(ESCORT_JOB).away).toBe(false);
+  });
+
+  it('leads even a chore away from home, and leaves the chūnin to it alone', () => {
+    const state = withAllStats(newGame(), 60);
+    const senseiId = state.people.team!.senseiId;
+    for (const id of [ROAD_CHORE, PORT_CHORE]) {
+      const def = ctx.content.missions.require(id);
+      expect(crewOn(state, ctx, def, state.time.day)).toMatchObject({
+        kind: 'old-team',
+        leaderId: senseiId,
+      });
+      expect(crewOn(chunin(state), ctx, def, state.time.day)?.kind).toBe('solo');
+    }
   });
 });
 

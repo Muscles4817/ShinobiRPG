@@ -38,6 +38,12 @@ describe('who a genin is sent with', () => {
     expect(kinds({ rank: 'D', danger: 'petty' }, genin)).toEqual(['solo']);
   });
 
+  it('never goes out of the village alone: the sensei takes the old team', () => {
+    expect(kinds({ rank: 'D', danger: null, away: true }, genin)).toEqual(['old-team']);
+    expect(kinds({ rank: 'D', danger: 'petty', away: true }, genin)).toEqual(['old-team']);
+    expect(kinds({ rank: 'D', danger: 'petty', away: true }, chunin)).toEqual(['solo']);
+  });
+
   it('never goes alone against armed foes: the old team goes', () => {
     expect(kinds({ rank: 'D', danger: 'armed' }, genin)).toEqual(['old-team']);
     expect(kinds({ rank: 'C', danger: 'petty' }, genin)).toEqual(['old-team']);

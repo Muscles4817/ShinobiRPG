@@ -1,5 +1,5 @@
 import type { PersonDef } from '@/content';
-import { jobProfile } from '@/content';
+import { jobProfile, postedAway } from '@/content';
 import { hashUnit } from '@/core';
 import {
   crewOptions,
@@ -14,6 +14,7 @@ import {
 import type { Standing } from '@/systems/standing';
 
 import type { GameContext } from './context';
+import { underSensei } from './mentorship';
 import { villagers } from './people/cast';
 import { missionThreat } from './scouting';
 import type { GameState } from './state';
@@ -49,11 +50,12 @@ export function seriousJob(state: GameState, ctx: GameContext, def: MissionDef):
 
 const profiles = new WeakMap<MissionDef, JobProfile>();
 
-/** A job's rank and danger, worked out once per job. */
+/** A job's rank, danger and whether it leaves the village, worked out once per job. */
 export function jobOf(ctx: GameContext, def: MissionDef): JobProfile {
   const known = profiles.get(def);
   if (known) return known;
-  const profile = jobProfile(def, (id) => ctx.content.enemies.get(id));
+  const away = postedAway(ctx.content.locations.all, ctx.content.startLocationId, def.id);
+  const profile = jobProfile(def, (id) => ctx.content.enemies.get(id), away);
   profiles.set(def, profile);
   return profile;
 }
@@ -94,8 +96,14 @@ function roll(pick: CrewPick, what: string): number {
 function oldTeam(pick: CrewPick): Crew | null {
   const team = pick.state.people.team;
   if (!team || team.teammateIds.length === 0) return null;
-  const leads = team.senseiId !== null && seriousJob(pick.state, pick.ctx, pick.def);
+  const leads = team.senseiId !== null && senseiLeads(pick);
   return { kind: 'old-team', leaderId: leads ? team.senseiId : null, memberIds: team.teammateIds };
+}
+
+/** Your sensei leads serious jobs, and every job out of the village in your genin years. */
+function senseiLeads(pick: CrewPick): boolean {
+  const away = underSensei(pick.state) && jobOf(pick.ctx, pick.def).away === true;
+  return away || seriousJob(pick.state, pick.ctx, pick.def);
 }
 
 function geninSquad(pick: CrewPick): Crew | null {

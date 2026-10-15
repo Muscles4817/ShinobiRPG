@@ -27,10 +27,10 @@ export const CREW_KINDS = [
   'companion',
 ] as const;
 /**
- * `old-team` is your genin team (the sensei leads it from C-rank); `genin-squad` is genin you
- * lead; `chunin-squad` is you and other chūnin; `jonin-led` is a jōnin leading you and two
- * chūnin; `exam-team` is the team sitting an exam with you; `companion` is a friend on a trip
- * of your own (never a job's).
+ * `old-team` is your genin team (the sensei leads it from C-rank, and out of the village);
+ * `genin-squad` is genin you lead; `chunin-squad` is you and other chūnin; `jonin-led` is a
+ * jōnin leading you and two chūnin; `exam-team` is the team sitting an exam with you;
+ * `companion` is a friend on a trip of your own (never a job's).
  */
 export type CrewKind = (typeof CREW_KINDS)[number];
 
@@ -62,6 +62,8 @@ export function worstDanger(
 export interface JobProfile {
   readonly rank: MissionRank;
   readonly danger: Danger | null;
+  /** Whether it takes you out of the village (a road, or a post in another town). */
+  readonly away?: boolean;
 }
 
 /** What the rules need to know about the shinobi being sent. */
@@ -95,7 +97,8 @@ const only = (kind: CrewKind): CrewOption[] => [{ kind, weight: 1 }];
 
 function geninOptions(job: JobProfile): CrewOption[] {
   if (job.rank === 'D') {
-    if (job.danger === null || job.danger === 'petty') return only('solo');
+    // A genin does the village's chores alone; out of the village, the sensei comes too.
+    if (job.danger === null || job.danger === 'petty') return only(job.away ? 'old-team' : 'solo');
     return job.danger === 'armed' ? only('old-team') : [];
   }
   // A C-rank job goes out under the sensei, who stands between the genin and the worst of it.
