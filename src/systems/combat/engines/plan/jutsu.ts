@@ -3,6 +3,7 @@ import type { EffectOf, TechniqueEffect, Verb } from '@/systems/techniques';
 import type { CombatTechnique } from '../../contract';
 import { alive, chakraCost, holdTurns } from '../../rules/body';
 import { healAmount } from '../../rules/damage';
+import { groundRule } from '../../rules/ground';
 import { resistChance } from '../../rules/defence';
 import { healLine } from '../../rules/narration';
 import { misfireChance } from '../../rules/unstable';
@@ -37,6 +38,9 @@ import { setTrap } from './traps';
  * before it left them. An area technique does this to every foe, each seeing it coming,
  * dodging and guarding on their own; effects aimed at the user happen once.
  */
+
+/** Share of an area's strength that catches its user's own side in close quarters. */
+const FRIENDLY_AREA = 0.5;
 
 /** Pays the chakra, and notes the technique and the chakra for the outcome's usage report. */
 function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
@@ -178,7 +182,8 @@ function slipped(before: Round, after: Round, use: EffectUse, targetId: string):
  */
 function targetsOf(round: Round, turn: Turn, t: CombatTechnique): PlanFighter[] {
   if (!isHarmful(t)) return [];
-  if (hasVerb(t, 'area')) return opponentsOf(round.fighters, turn.actor);
+  if (hasVerb(t, 'area'))
+    return [...opponentsOf(round.fighters, turn.actor), ...caughtBy(round, turn)];
   return turn.target ? [turn.target] : [];
 }
 
@@ -188,12 +193,26 @@ interface Flight {
   readonly reaching: readonly PlanFighter[];
 }
 
+/** In close quarters, an area also catches its user's own side (never the user). */
+function caughtBy(round: Round, turn: Turn): PlanFighter[] {
+  if (!groundRule(round.ground).closeQuarters) return [];
+  return round.fighters.filter(
+    (f) => f.side === turn.actor.side && f.id !== turn.actor.id && alive(f),
+  );
+}
+
+/** Someone on the user's own side caught in it takes it softer, at the edge of it. */
+function aimedAt(turn: Turn, foe: PlanFighter): Aimed {
+  if (foe.side !== turn.actor.side) return { ...turn, target: foe };
+  return { ...turn, target: foe, boost: (turn.boost ?? 1) * FRIENDLY_AREA };
+}
+
 function applyEffect(flight: Flight, turn: Turn, use: EffectUse): Flight {
   if (profileOf(use.effect).aim === 'self') {
     return { ...flight, round: onSelf(flight.round, turn, use) };
   }
   return flight.reaching.reduce<Flight>(({ round, reaching }, foe) => {
-    const next = onFoe(round, { ...turn, target: foe }, use);
+    const next = onFoe(round, aimedAt(turn, foe), use);
     const missed = slipped(round, next, use, foe.id);
     return { round: next, reaching: missed ? reaching.filter((f) => f !== foe) : reaching };
   }, flight);

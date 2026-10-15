@@ -41,11 +41,13 @@ export { dispatch, blockerFor } from './dispatch';
 export { saveSummary, type SaveSummary } from './views/menu';
 export {
   createVersus,
+  VERSUS_GROUNDS,
   VERSUS_GROUPS,
   VERSUS_SIDE_MAX,
   versusProblem,
   versusRoster,
   type VersusFighter,
+  type VersusGround,
   type VersusGroup,
   type VersusPick,
 } from './versus';

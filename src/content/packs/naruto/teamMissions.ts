@@ -31,6 +31,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'forest',
         template: 'bandit-camp',
         job: 'eliminate',
         text: 'Smoke rises from a hollow off the road. The bandit chief is sharpening a chipped sword by the fire.',
@@ -68,6 +69,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'combat',
+        ground: 'forest',
         text: 'The missing-nin steps out of the mist with a hired bandit at their side.',
         enemyIds: ['missing-nin', 'bandit-thug'],
         canFlee: false,

@@ -47,6 +47,18 @@ describe('versus bouts', () => {
     expect(Object.keys(combatScouting(state, naruto))).toEqual([foe?.id]);
   });
 
+  it('is fought on the ground picked, which its opening names', () => {
+    const made = createVersus(naruto, {
+      side: ['person:kakashi'],
+      foes: ['person:guy'],
+      seed: 7,
+      ground: 'lake',
+    });
+    if (!made.ok) throw new Error(made.error);
+    const view = combatScene(made.value, naruto)!;
+    expect(view.log.join(' ')).toMatch(/Open water/);
+  });
+
   it('can face a foe from the pack, or play as one', () => {
     const foe = versusRoster(naruto).find((f) => f.group === 'Foes')!;
     expect(bout('person:kakashi', foe.id).combat).not.toBeNull();

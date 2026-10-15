@@ -161,6 +161,7 @@ export const EXAM_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'forest',
         template: 'rival-team',
         job: 'retrieve',
         text: 'Three Rain genin are resting in a hollow tree. One of them has an Earth scroll in his pouch.',
@@ -181,6 +182,7 @@ export const EXAM_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'forest',
         template: 'beast',
         job: 'deliver',
         text: 'The tower is in sight. A tiger the size of a horse lies across the path.',

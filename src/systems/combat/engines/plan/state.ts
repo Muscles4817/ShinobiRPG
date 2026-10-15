@@ -1,4 +1,5 @@
 import type {
+  CombatGround,
   CombatResult,
   CombatRow,
   CombatSetup,
@@ -158,6 +159,8 @@ export interface PlanState {
   readonly firstMover?: CombatSide;
   /** A field over the fight (mist, smoke), until it fades. */
   readonly field?: ActiveField;
+  /** Where the fight happens (`rules/ground.ts`); an open arena when absent. */
+  readonly ground?: CombatGround;
   /** The team mark: the foe (by id) the player's side goes for. */
   readonly mark?: string;
   /** The foes' mark, when they fight as a team (`foeTeam.ts`): whom on your side they go for. */
@@ -185,6 +188,7 @@ export interface Round {
   readonly seen: PlanState['seen'];
   readonly intents: PlanState['intents'];
   readonly field?: ActiveField;
+  readonly ground?: CombatGround;
   readonly mark?: string;
   readonly foeMark?: string;
   readonly reads?: Reads;

@@ -11,6 +11,7 @@ import {
   potencyOf,
   raiseField,
 } from '../../rules/verbs';
+import { movedTo } from './groundPlay';
 import type { Turn } from './senses';
 import { fighterIn, say, type Round } from './state';
 
@@ -45,6 +46,6 @@ export function aftermath(round: Round, turn: Turn, t: CombatTechnique): Round {
   if (!size) return round;
   const range = afterBlast(round.range, size);
   const thrown =
-    range === round.range ? round : say({ ...round, range }, 'The blast throws everyone apart.');
+    range === round.range ? round : movedTo(round, range, 'The blast throws everyone apart.');
   return AREA_RULES[size].dust ? dusted(thrown, turn, t) : thrown;
 }

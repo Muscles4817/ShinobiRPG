@@ -3,6 +3,7 @@ import { blowsOf } from '@/systems/techniques';
 import type { CombatTechnique } from '../../contract';
 import { alive } from '../../rules/body';
 import { techniqueDamage } from '../../rules/damage';
+import { groundElementScale } from '../../rules/ground';
 import { attackKindOf } from '../../rules/kit';
 import { finisherScale } from '../../rules/team';
 import { areaSize, type EffectUse } from '../../rules/verbs';
@@ -69,7 +70,8 @@ export function damage(round: Round, aimed: Aimed, use: Wounding): Round {
   const t = use.technique;
   const open = isDazed(target) || target.sealed > 0;
   const combo = elementBoost(round, actor, target.id, t);
-  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1);
+  const ground = groundElementScale(round.ground, t.element);
+  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1) * ground;
   const hit = strike(round, aimed, blowsFor(aimed, use, scale));
   const landed = fighterIn(hit, target.id)?.health !== target.health;
   const told = landed && combo ? say(hit, combo.line) : hit;

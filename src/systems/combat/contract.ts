@@ -64,8 +64,19 @@ export type CombatRow = 'front' | 'back';
 // Fight tools are part of what a fighter carries in (`gearContract.ts`).
 export { COMBAT_ITEM_EFFECTS, type CombatItem, type CombatItemEffect } from './gearContract';
 
-/** Special abilities a combatant brings (an awakened bloodline's eyes); others ignore it. */
-export type CombatPerk = 'insight';
+/**
+ * Special abilities a combatant brings: an awakened bloodline's eyes, or walking on water or up
+ * trees with chakra (which keep their footing on a lake, or the trees in a forest; see
+ * `rules/ground.ts`). Engines ignore what they don't use.
+ */
+export type CombatPerk = 'insight' | 'water-walking' | 'tree-walking';
+
+/**
+ * Where a fight happens (`rules/ground.ts`): an open arena, a forest, a town's streets and
+ * roofs, a room with no space to back away, or a lake only water-walkers stand on.
+ */
+export const COMBAT_GROUNDS = ['arena', 'forest', 'town', 'room', 'lake'] as const;
+export type CombatGround = (typeof COMBAT_GROUNDS)[number];
 
 /**
  * What a good meal brings into a fight (`rules/provisions.ts`): chakra topped up, a steady
@@ -157,6 +168,8 @@ export interface CombatSetup {
    */
   readonly plan?: unknown;
   readonly opening?: CombatOpening;
+  /** Where it happens; an open arena when absent. */
+  readonly ground?: CombatGround;
 }
 
 /**

@@ -112,6 +112,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'room',
         template: 'guarded-building',
         job: 'eliminate',
         text: 'Firelight spills from the biggest kiln. A deserter with a black blade holds court inside, his crew on watch.',

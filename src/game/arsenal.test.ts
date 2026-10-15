@@ -24,7 +24,8 @@ describe('arsenals', () => {
     );
     expect(ids(fighter.techniques)).toContain('lightning-blade');
     expect(ids(fighter.techniques)).not.toContain('shuriken-jutsu');
-    expect(fighter.perks).toEqual(['insight']);
+    // His arsenal's perk, and as a jōnin he walks on water and up trees.
+    expect(fighter.perks).toEqual(['insight', 'water-walking', 'tree-walking']);
   });
 
   it('arms Asuma with his canon trench-knife jutsu and Burning Ash', () => {

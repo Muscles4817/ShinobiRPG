@@ -2,6 +2,7 @@ import { clamp } from '@/core';
 
 import type { RangeBand } from '../../contract';
 import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
+import { footingOf, withinGround } from '../../rules/ground';
 import { isPinned } from '../../rules/verbs';
 import type { Turn } from './senses';
 import { patch, say, type Round } from './state';
@@ -28,8 +29,13 @@ function arrive(round: Round, { actor }: Turn, to: RangeBand): Round {
 /** The step's own contest, when nobody holds the fighter off. */
 function stride(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' | 'back'): Round {
   const to = direction === 'in' ? stepIn(round.range) : stepBack(round.range);
+  if (withinGround(round.ground, to) !== to) {
+    return say(round, `${actor.name} backs away, but there's a wall behind them.`);
+  }
   const speedGap = actor.attributes.speed - (foe?.attributes.speed ?? 0);
-  const chance = foe ? clamp(STEP_BASE + speedGap * STEP_PER_SPEED, STEP_MIN, STEP_MAX) : 1;
+  const contest = clamp(STEP_BASE + speedGap * STEP_PER_SPEED, STEP_MIN, STEP_MAX);
+  // Off their footing (on water they can't stand on), every step is harder.
+  const chance = foe ? contest * footingOf(round.ground, actor) : 1;
   const where = RANGE_LABEL[to].toLowerCase();
   return rng.chance(chance)
     ? arrive(round, { actor, target: foe, rng }, to)

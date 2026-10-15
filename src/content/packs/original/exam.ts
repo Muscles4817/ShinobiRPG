@@ -161,6 +161,7 @@ export const EXAM_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'forest',
         template: 'rival-team',
         job: 'retrieve',
         text: 'Three genin from Ashfield are filling their flasks at a stream. One of them wears a token on a cord.',
@@ -181,6 +182,7 @@ export const EXAM_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'forest',
         template: 'beast',
         job: 'deliver',
         text: 'The shrine is in sight. Between you and it, a boar the size of a cart roots in the ash.',

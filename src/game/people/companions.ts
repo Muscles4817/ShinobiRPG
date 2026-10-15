@@ -4,6 +4,7 @@ import type { Discipline } from '@/systems/techniques';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 import { attributesOf } from '../combatants';
+import { walkingByRank } from '../footing';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import { doableNow } from './capable';
@@ -84,8 +85,14 @@ export function companionCombatant(
       ctx.content.techniques.require(id),
     ),
     traits: companionTraits(person),
-    ...(person.arsenal?.perks ? { perks: person.arsenal.perks } : {}),
+    ...perksOf(person),
   };
+}
+
+/** A person's perks in a fight: their arsenal's, and walking on water and trees by rank. */
+function perksOf(person: PersonDef): Pick<CombatantSetup, 'perks'> {
+  const perks = [...new Set([...(person.arsenal?.perks ?? []), ...walkingByRank(person.rank)])];
+  return perks.length > 0 ? { perks } : {};
 }
 
 /**

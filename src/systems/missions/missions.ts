@@ -1,3 +1,4 @@
+import type { CombatGround } from '@/systems/combat';
 import type { StatId } from '@/systems/stats';
 
 import type { Crew } from './crew';
@@ -66,6 +67,8 @@ type StageBody =
       readonly text: string;
       readonly enemyIds: readonly string[];
       readonly canFlee: boolean;
+      /** Where the fight happens; an open arena when absent. */
+      readonly ground?: CombatGround;
     }
   | EncounterStage
   | DecisionStage

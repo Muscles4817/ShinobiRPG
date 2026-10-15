@@ -179,7 +179,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`). A **nature** is an affinity, never a shield: it strengthens
+    styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`). A fight has a **ground**
+    (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake; arena when unset):
+    the distances it has room for (a room has no far), cover for hiding, far attacks lost among
+    trees or walls, elements it feeds, and footing (on a lake only water-walkers keep theirs). In
+    a room an area catches its user's own side. Walking on water or trees reaches a fight as a
+    perk (`game/footing.ts`: what you've mastered, chūnin and up, deadly foes). A **nature** is an affinity, never a shield: it strengthens
     techniques of its own element, and elements meet only where techniques meet (`rules/elements.ts`):
     an elemental wall (a substitution with an element) holds against an element it overpowers and
     breaks under one that overpowers it, and an elemental attack aimed at someone about to throw one
@@ -567,7 +572,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add foes to a mission:** use an `encounter` stage (recon, then an approach, then maybe a
   fight) with a shared template (`content/shared/encounters.ts`: which approaches and recon make
   sense, base alertness, flavour a stage may swap) and a `job` kind; how each way past pays per
-  job lives once in `systems/missions/encounterPay.ts`. Keep a plain `combat` stage only where a
+  job lives once in `systems/missions/encounterPay.ts`. Give a fight stage a `ground` when it isn't open
+  ground (forest, town, room, lake). Keep a plain `combat` stage only where a
   straight fight is the point (a duel, a surprise attack). On team jobs a check falls to the best
   teammate for it (`bestHandFor`, `game/missionRoles.ts`).
 - **Add a school technique:** a fighting style (Lantern Wind, River Draw…) is techniques with

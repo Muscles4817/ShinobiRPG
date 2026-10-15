@@ -3,12 +3,14 @@ import { useMemo, useState } from 'react';
 import {
   contextForPack,
   packChoices,
+  VERSUS_GROUNDS,
   VERSUS_GROUPS,
   VERSUS_SIDE_MAX,
   versusProblem,
   versusRoster,
   type GameContext,
   type VersusFighter,
+  type VersusGround,
 } from '@/game';
 
 import { GradeBadge } from '../../components/Grade';
@@ -21,6 +23,8 @@ export interface VersusChoice {
   /** Your side by roster id, you first. */
   readonly side: readonly string[];
   readonly foes: readonly string[];
+  /** Where they fight. */
+  readonly ground: VersusGround['id'];
 }
 
 interface PickerProps {
@@ -139,6 +143,37 @@ function kept(ids: readonly string[], roster: readonly VersusFighter[], fallback
   return known.length > 0 ? known : first ? [first] : [];
 }
 
+/** Where the bout is fought, with what the ground changes. */
+function GroundPicker({
+  value,
+  onChange,
+}: {
+  readonly value: VersusGround['id'];
+  readonly onChange: (ground: VersusGround['id']) => void;
+}) {
+  const chosen = VERSUS_GROUNDS.find((g) => g.id === value);
+  return (
+    <section className="versus-slot">
+      <label htmlFor="versus-ground">Ground</label>
+      <select
+        id="versus-ground"
+        value={value}
+        onChange={(e) => {
+          const picked = VERSUS_GROUNDS.find((g) => g.id === e.target.value);
+          if (picked) onChange(picked.id);
+        }}
+      >
+        {VERSUS_GROUNDS.map((g) => (
+          <option key={g.id} value={g.id}>
+            {g.name}
+          </option>
+        ))}
+      </select>
+      {chosen && <p className="muted">{chosen.line}</p>}
+    </section>
+  );
+}
+
 interface VersusSetupProps {
   readonly initial: VersusChoice | null;
   readonly onFight: (choice: VersusChoice) => void;
@@ -153,6 +188,7 @@ export function VersusSetup({ initial, onFight, onBack }: VersusSetupProps) {
   const roster = useMemo(() => (ctx ? versusRoster(ctx) : []), [ctx]);
   const [sideIds, setSideIds] = useState<readonly string[]>(initial?.side ?? []);
   const [foeIds, setFoeIds] = useState<readonly string[]>(initial?.foes ?? []);
+  const [ground, setGround] = useState<VersusGround['id']>(initial?.ground ?? 'arena');
   const side = kept(sideIds, roster, 0);
   const foes = kept(foeIds, roster, 1);
   const problem = ctx ? versusProblem(ctx, side, foes) : 'Choose a world.';
@@ -210,13 +246,14 @@ export function VersusSetup({ initial, onFight, onBack }: VersusSetupProps) {
         ids={foes}
         onChange={setFoeIds}
       />
+      <GroundPicker value={ground} onChange={setGround} />
       {problem && <p className="versus-problem">{problem}</p>}
       <button
         type="button"
         className="btn wide"
         disabled={!ctx || problem !== null}
         onClick={() => {
-          if (ctx) onFight({ ctx, side, foes });
+          if (ctx) onFight({ ctx, side, foes, ground });
         }}
       >
         Fight

@@ -143,6 +143,7 @@ export const PATIENT_THING_ACT_TWO: MissionDef = {
     },
     {
       kind: 'encounter',
+      ground: 'forest',
       template: 'spirit',
       job: 'eliminate',
       text: 'It comes up out of the roots all at once, after all those years of patience.',

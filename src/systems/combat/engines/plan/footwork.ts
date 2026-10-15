@@ -8,6 +8,7 @@ import { reactionLine } from '../../rules/narration';
 import { RANGE_LABEL } from '../../rules/range';
 import { hasVerb, isPinned, moveGoal, substitutable } from '../../rules/verbs';
 import type { Card } from './cards';
+import { movedTo } from './groundPlay';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -37,7 +38,7 @@ export function move(round: Round, actor: PlanFighter, t: CombatTechnique): Roun
   if (isPinned(actor)) return say(round, `${actor.name} strains against the hold.`);
   const to = moveDestination(actor, t) ?? round.range;
   const where = RANGE_LABEL[to].toLowerCase();
-  return { ...say(round, `${actor.name} flickers to ${where} range.`), range: to };
+  return movedTo(round, to, `${actor.name} flickers to ${where} range.`);
 }
 
 /** A substitution among the defences ready to react. */

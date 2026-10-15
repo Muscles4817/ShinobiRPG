@@ -1,4 +1,5 @@
 import { createRng, err, ok, type Result } from '@/core';
+import type { CombatGround } from '@/systems/combat';
 import type { Stats } from '@/systems/stats';
 
 import { enemyStatLine } from '../combatants';
@@ -23,6 +24,8 @@ export interface VersusPick {
   /** The other side by roster id. */
   readonly foes: readonly string[];
   readonly seed: number;
+  /** Where they fight; an open arena when absent. */
+  readonly ground?: CombatGround;
 }
 
 function statsOf(contender: Contender): Stats {
@@ -51,6 +54,7 @@ export function createVersus(ctx: GameContext, pick: VersusPick): Result<GameSta
     allies: allySetups(allies, sandbox, ctx),
     enemies: foeSetups(foes.value, sandbox, ctx),
     canFlee: true,
+    ...(pick.ground ? { ground: pick.ground } : {}),
   };
   const vitals = { ...sandbox.character.vitals, health: player.health, chakra: player.chakra };
   const match = {

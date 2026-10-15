@@ -14,6 +14,7 @@ import { createStats, type Stats } from '@/systems/stats';
 import { maxChakra, MAX_HEALTH, reservesFor } from '@/systems/vitals';
 
 import type { GameContext } from './context';
+import { enemyWalking, playerWalking } from './footing';
 import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
 
@@ -45,7 +46,7 @@ export function hasInsight(state: GameState, ctx: GameContext): boolean {
 }
 
 function perksOf(state: GameState, ctx: GameContext): CombatPerk[] {
-  return hasInsight(state, ctx) ? ['insight'] : [];
+  return [...(hasInsight(state, ctx) ? ['insight' as const] : []), ...playerWalking(state, ctx)];
 }
 
 /** The tools in your pouch, as the fight sees them. */
@@ -125,6 +126,7 @@ export function enemyCombatantId(enemyId: string, index: number): string {
 }
 
 export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
+  const walking = enemyWalking(def);
   return {
     id: enemyCombatantId(def.id, index),
     name: def.name,
@@ -137,5 +139,6 @@ export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): 
     techniques: def.techniqueIds.map((id) => ctx.content.techniques.require(id)),
     ...(def.nature ? { nature: def.nature } : {}),
     ...(def.traits ? { traits: def.traits } : {}),
+    ...(walking.length > 0 ? { perks: walking } : {}),
   };
 }

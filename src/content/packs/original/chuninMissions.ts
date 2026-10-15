@@ -32,6 +32,7 @@ export const CHUNIN_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'lake',
         template: 'lone-rogue',
         job: 'eliminate',
         text: 'A hooded figure poles the boat in. Ember-oil, and a missing-nin’s forehead protector, scratched through.',
@@ -57,6 +58,7 @@ export const CHUNIN_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'room',
         template: 'spirit',
         job: 'eliminate',
         text: 'In the biggest kiln, a shape of cinders turns towards you and drinks the light.',

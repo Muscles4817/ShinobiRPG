@@ -1,3 +1,5 @@
+import type { CombatGround } from '@/systems/combat';
+
 /**
  * Encounters: a mission stage where foes stand between you and the job, played in three beats
  * (recon, approach, and the fight if there is one). This module owns the shapes (templates,
@@ -115,6 +117,8 @@ export interface EncounterStage {
   /** False when there is no getting past them (no sneaking). */
   readonly bypassable?: boolean;
   readonly flavour?: Partial<EncounterFlavour>;
+  /** Where a fight here happens; an open arena when absent. */
+  readonly ground?: CombatGround;
 }
 
 /** The encounter in progress: kept on the mission run while you size the foes up. */
