@@ -12,6 +12,7 @@ import {
 
 import { examClash } from '../awayNotes';
 import { availability, crewFor, takeJob } from '../board';
+import { pickTaken } from '../sensei/pick';
 
 import { beginCombat } from '../missionFight';
 import { activeMission, activeStage, afterStage, failMission } from '../missionFlow';
@@ -78,7 +79,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
       bondsAtStart: bondsNow(state, crew.memberIds),
       remembered: state.village.marks,
     });
-    const taken = { ...state, board: takeJob(state, ctx, def), mission: run };
+    const taken = { ...pickTaken(state, ctx, def), board: takeJob(state, ctx, def), mission: run };
     const started = adjust(spendTime(taken, def.slots, ctx), {
       energy: -def.energyCost,
     });

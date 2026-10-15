@@ -68,6 +68,14 @@ export {
   type UpbringingDef,
 } from './upbringing';
 export { jobProfile, postedAway } from './jobProfile';
+export { CURRICULUM_BEATS, type CurriculumBeat, type CurriculumBeatId } from './curriculum';
+export {
+  TEST_APPROACHES,
+  type SenseiTestDef,
+  type SenseiTestOption,
+  type SenseiTestRound,
+  type TestApproach,
+} from './senseiTests';
 export {
   CLASS_REGARDS,
   MISSION_POSTURES,

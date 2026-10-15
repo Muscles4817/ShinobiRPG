@@ -318,3 +318,48 @@ Part 5 entry.
    checks that keeping them puts you ahead by less than 15% fighting power after a month, and
    that skipping them costs the nomination. The early and late nomination habits are 8 and 13
    jobs.
+4. **The read and the assignment.** After each weekly lesson in the genin years
+   (`coachAfterLesson`, `game/sensei/coaching.ts`) the sensei judges last week's assignment
+   (done: regard and a reward of their kind, `game/sensei/rewards.ts`: praise as bond, a step
+   on their next signature, a D or C piece for their art, their favourite recipe or a meal on
+   them, falling to the next they can give; not done: regard lost), may name a gift you haven't
+   found (a sensei with the hidden-talent lens always looks, any other once you are close; the
+   stat's talent becomes sensed), reads you aloud (`game/sensei/read.ts`: your thinnest layer
+   of defence, from the fight's own layers; what beat you on a job since the last lesson, from
+   the debrief's advice; your edge, led with by a specialty or talent lens) and sets the next
+   assignment: the lens's stat (`lensStat`: weakest body or mind stat, the weaker stat of your
+   thinnest defence, your best art, the team stat nobody on your team is good at, or your
+   strongest untapped talent) to rise by a step that shrinks with its grade. While it is open
+   the assignment is a `ModifierSpec` on the character (`assignmentSpec`: growth ×1.2 on that
+   stat, but not on your best art, where the push isn't needed and the genius bench would run
+   ahead). The slip shows the assignment and how far along it is in words. Save v41 adds
+   `character.assignment` and `mentor.lastBeaten`.
+5. **The curriculum.** The pack's `curriculum` (`content/curriculum.ts`, the shared beats in
+   `shared/sensei/curriculum.ts`): drills, sparring, the jobs board, preparing tools, buying
+   intel, eating, cooking, the pass, the library, control exercises and the exam, each in the
+   sensei's words. `CURRICULUM_ORDER` (`game/sensei/curriculum.ts`) orders them by philosophy;
+   `beatDue` offers the first unseen beat that makes sense yet (the prep after a first job, the
+   library once the permit is signed, the exam halfway to a nomination), one a day, on the
+   sensei's slip, and `heedSensei` marks it seen for a little regard. The pass, permit and
+   exercise slips are still signed silently at the lesson; their beats explain them after.
+   Validated: every beat exactly once.
+6. **The opening test.** A scene after the chakra paper (`sensei-test`, with a `busyReason`):
+   the pack's `senseiTests` (`content/senseiTests.ts`, shared in `shared/sensei/tests.ts`:
+   bells, a night in the woods, a spar, an interview), two rounds of choices, each a way of
+   going at it (together, alone, cunning, patient). It never fails you: the way their
+   philosophy prefers earns regard, going with the team a little, going alone costs it with a
+   teamwork sensei (`game/sensei/opening.ts`). A sensei with no test just meets you. Either way
+   it ends with one question, shown everything (the curriculum) or not, and the day becomes a
+   memory shared with the sensei and the team. Save v42: a save that has met its sensei skips
+   both. It came after the chakra paper rather than before, so the paper stays the sensei's
+   first act.
+7. **Team days.** One a week (`teamDayOf`, `game/sensei/plan.ts`): the sensei's rituals in turn,
+   on a hashed day, a meal or tea from evening and a challenge, debrief or camp from afternoon.
+   `teamDay` (from the slip, at home) takes a slot: bond with each teammate (not the sensei,
+   whose bond comes from lessons and talk; with it the bench's nomination ran two weeks early),
+   regard, and the kind's own good (`game/sensei/teamDays.ts`: a meal feeds you, a challenge
+   works the sensei's art, tea is bond with them, a debrief more regard, a camp stamina).
+   Missed, it costs regard by grip like a meeting (outcomes keyed `t<day>`). **The sensei's
+   pick** (`game/sensei/pick.ts`): each week one posting at home they would lead, hashed by the
+   week, marked on its notice; taking it is remembered (`mentor.pickTaken`) and finishing it
+   earns regard, one a week (`pickKept`). The focused player keeps team days too.

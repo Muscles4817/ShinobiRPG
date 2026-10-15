@@ -1,5 +1,8 @@
 import type { ClassRegard } from '@/content';
+import type { ModifierSpec } from '@/systems/modifiers';
 import { CLASS_STANDINGS, type ClassStanding } from '@/systems/profile';
+import type { StatId, Stats } from '@/systems/stats';
+import { DISCIPLINES } from '@/systems/techniques';
 
 /**
  * The mentor slice of GameState: how your sensei rates you and how this week's planned
@@ -18,6 +21,56 @@ export interface Mentor {
   readonly settledDay: number;
   /** This week's planned meetings that are over, keyed by day. */
   readonly outcomes: Readonly<Record<string, MeetingOutcome>>;
+  /** What would have helped, from the last job you were beaten on, until the next lesson. */
+  readonly lastBeaten: string | null;
+  /** The first meeting (their test, then how much you want shown) while it is on. */
+  readonly opening: OpeningRun | null;
+  /** Whether they walk you through the game (`on`) or you told them you know it. */
+  readonly curriculum: 'on' | 'skipped';
+  /** Curriculum beats they have shown you (`CurriculumBeatId`s). */
+  readonly beats: readonly string[];
+  /** The day they last showed you one: one a day. */
+  readonly lastBeatDay: number | null;
+  /** The job they picked for the team, once you have taken it. */
+  readonly pickTaken: string | null;
+  /** The week you did the job they picked for the team (one a week). */
+  readonly pickKept: number | null;
+}
+
+/** Where the first meeting stands: the round, and what came of the last one. */
+export interface OpeningRun {
+  readonly round: number;
+  readonly lastResult: string | null;
+}
+
+/**
+ * The work your sensei set at the last lesson: a stat to raise to a mark by the next one. It
+ * lives on the character, because while it is open it is a `ModifierSpec` like a meal's.
+ */
+export interface Assignment {
+  readonly stat: StatId;
+  /** Where it stood when they set it, and where they want it by the next lesson. */
+  readonly from: number;
+  readonly target: number;
+}
+
+/**
+ * Growth on the assigned stat while the assignment is open: they're watching it. Only off
+ * your best art: work there you would do anyway, and the push is where you wouldn't go.
+ */
+export const ASSIGNMENT_GROWTH = 1.2;
+
+export function assignmentSpec(assignment: Assignment | null, stats: Stats): ModifierSpec {
+  if (!assignment || assignment.stat === bestArt(stats)) return {};
+  return { growth: { [assignment.stat]: ASSIGNMENT_GROWTH } };
+}
+
+/** Your best art. */
+export function bestArt(stats: Stats): StatId {
+  return DISCIPLINES.reduce<StatId>(
+    (best, art) => (stats[art] > stats[best] ? art : best),
+    'taijutsu',
+  );
 }
 
 export const MAX_REGARD = 100;
@@ -26,7 +79,18 @@ export const NEUTRAL_REGARD = 50;
 /** How far your class standing moves a sensei's first view of you, per step from the middle. */
 const REGARD_PER_STANDING = 5;
 
-export const NO_MENTOR: Mentor = { regard: NEUTRAL_REGARD, settledDay: 0, outcomes: {} };
+export const NO_MENTOR: Mentor = {
+  regard: NEUTRAL_REGARD,
+  settledDay: 0,
+  outcomes: {},
+  lastBeaten: null,
+  opening: null,
+  curriculum: 'on',
+  beats: [],
+  lastBeatDay: null,
+  pickTaken: null,
+  pickKept: null,
+};
 
 /**
  * A sensei's first view of you: one who champions the dead last starts warmer the lower you

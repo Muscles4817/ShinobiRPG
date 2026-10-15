@@ -18,7 +18,7 @@ import type { Board } from './boardState';
 import type { CombatFinale } from './combatFinale';
 import type { Exams } from './exam/state';
 import type { People } from './people/state';
-import type { Mentor } from './sensei/state';
+import type { Assignment, Mentor } from './sensei/state';
 import type { Report } from './reports';
 
 /**
@@ -159,6 +159,8 @@ export interface Character {
   readonly vitals: Vitals;
   /** Today's home-cooked meal (a recipe id): its buff lasts until the day ends. */
   readonly meal: string | null;
+  /** The work your sensei set at the last lesson, while it is open (`game/sensei/`). */
+  readonly assignment: Assignment | null;
   /** How well today's meal turned out; absent means good (saves from before the stove). */
   readonly mealQuality?: MealQuality;
   /** A snack's short buff, alongside the meal; absent when none is working. */

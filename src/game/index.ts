@@ -44,6 +44,7 @@ export type { Choice, Discipline } from './views/common';
 export { headerView, type HeaderView, type HungerNote, type Meter } from './views/header';
 export { hubView, type HubView, type PlaceCard } from './views/hub';
 export { senseiWeekView, type SenseiWeekDay, type SenseiWeekView } from './views/senseiWeek';
+export { senseiTestScene, type SenseiTestScene } from './views/senseiTest';
 export { tavernView, type TavernView } from './views/tavern';
 export {
   villageView,

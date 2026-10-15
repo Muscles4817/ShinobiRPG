@@ -1,4 +1,4 @@
-import type { PersonDef, SessionFormat } from '@/content';
+import type { PersonDef, RitualKind, SenseiRitual, SessionFormat } from '@/content';
 import { hashUnit } from '@/core';
 import { stageOf } from '@/systems/bonds';
 import { DAYS_PER_WEEK, TIME_SLOTS, weekOf, type TimeSlot } from '@/systems/time';
@@ -96,6 +96,46 @@ export function meetingOpen(state: GameState, meeting: Meeting): boolean {
   return (
     meeting.day === state.time.day &&
     slot >= TIME_SLOTS.indexOf(meeting.from) &&
+    slot <= TIME_SLOTS.indexOf(LAST_MEETING_SLOT)
+  );
+}
+
+/** A team day: one of their rituals, once a week, on a day of their choosing. */
+export interface TeamDay {
+  readonly day: number;
+  readonly ritual: SenseiRitual;
+  readonly from: TimeSlot;
+}
+
+/** When each kind of team day starts: work by day, eating and talking in the evening. */
+const RITUAL_FROM: Readonly<Record<RitualKind, TimeSlot>> = {
+  meal: 'evening',
+  challenge: 'afternoon',
+  tea: 'evening',
+  debrief: 'afternoon',
+  camp: 'afternoon',
+};
+
+/** The week's team day, if your sensei keeps any: their rituals in turn, week by week. */
+export function teamDayOf(state: GameState, sensei: PersonDef, week: number): TeamDay | null {
+  const rituals = sensei.sensei?.ways.rituals ?? [];
+  const ritual = rituals[week % Math.max(1, rituals.length)];
+  if (!ritual) return null;
+  const offset = Math.floor(hashUnit(state.board.seed, week, sensei.id, 'team') * DAYS_PER_WEEK);
+  return { day: weekStart(week) + offset, ritual, from: RITUAL_FROM[ritual.kind] };
+}
+
+/** The key a team day's outcome is kept under, apart from a meeting on the same day. */
+export function teamKey(day: number): string {
+  return `t${day}`;
+}
+
+/** Whether a team day is on now: its day, from its slot until the day's end. */
+export function teamDayOpen(state: GameState, teamDay: TeamDay): boolean {
+  const slot = state.time.slot;
+  return (
+    teamDay.day === state.time.day &&
+    slot >= TIME_SLOTS.indexOf(teamDay.from) &&
     slot <= TIME_SLOTS.indexOf(LAST_MEETING_SLOT)
   );
 }

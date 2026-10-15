@@ -7,6 +7,7 @@ import type { GameContext } from '../context';
 import { dueAtLesson, startedAtLesson } from '../exercises';
 import { passAfterLesson } from '../leave';
 import { permitAfterLesson } from '../permits';
+import { coachAfterLesson } from '../sensei/coaching';
 import { growCharacter, logDiscoveries, noTalentReason } from '../growth';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
@@ -239,10 +240,12 @@ export function lessonAway(
 
 /**
  * What comes after a lesson with your sensei: the library permit and the week's travel pass
- * they sign, and an exercise they start with you once you're ready (tree-walking).
+ * they sign, an exercise they start with you once you're ready (tree-walking), and in your
+ * genin years their word on last week's work and this week's.
  */
 function slipsAfterLesson(state: GameState, ctx: GameContext, sensei: PersonDef): GameState {
-  return exerciseAfterLesson(passAfterLesson(permitAfterLesson(state, ctx, sensei), sensei), ctx);
+  const signed = passAfterLesson(permitAfterLesson(state, ctx, sensei), sensei);
+  return coachAfterLesson(exerciseAfterLesson(signed, ctx), ctx, sensei);
 }
 
 function exerciseAfterLesson(state: GameState, ctx: GameContext): GameState {

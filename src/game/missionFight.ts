@@ -83,6 +83,9 @@ function afterVictory(run: MissionRun, stage: MissionStage | null, enemies: stri
   return stage?.kind === 'encounter' ? withStagePay(next, stagePay(stage.job, 'fought')) : next;
 }
 
+/** What a sensei says of a beating when nothing more particular would have helped. */
+const READ_THEM_FIRST = 'Next time, find out what you face before you fight it.';
+
 interface Beaten {
   readonly title: string | null;
   readonly helped: string | null;
@@ -156,7 +159,9 @@ export function resolveCombat(
       const def = activeMission(afterFight, ctx);
       const helped = def ? helpedOf(afterFight, ctx, def) : null;
       const ended = endMission(afterFight, ctx, BEATEN);
-      return hospitalise(ended.state, ctx, { title: ended.title, helped });
+      // Your sensei hears about it, and brings it up at the next lesson.
+      const mentor = { ...ended.state.mentor, lastBeaten: helped ?? READ_THEM_FIRST };
+      return hospitalise({ ...ended.state, mentor }, ctx, { title: ended.title, helped });
     }
   }
 }

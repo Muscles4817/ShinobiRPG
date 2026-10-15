@@ -70,11 +70,16 @@ export const chooseSensei: ActionHandler<ActionOf<'chooseSensei'>> = {
       },
       // Their first view of you, by where you stood in class; their plan starts tomorrow.
       mentor: {
+        ...state.mentor,
         regard: sensei.sensei
           ? startingRegard(sensei.sensei.ways.classRegard, state.character.classStanding)
           : NEUTRAL_REGARD,
         settledDay: state.time.day,
         outcomes: {},
+        // After the chakra paper, the first meeting: their test, then how much to show you.
+        opening: { round: 0, lastResult: null },
+        curriculum: 'on' as const,
+        beats: [],
       },
     };
     const logged = log(next, {

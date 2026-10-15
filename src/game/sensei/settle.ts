@@ -5,7 +5,7 @@ import { slotName, TIME_SLOTS, weekOf } from '@/systems/time';
 import type { GameContext } from '../context';
 import { laidUp } from '../injuries';
 import type { GameState } from '../state';
-import { meetingOn, mentorOf, type Meeting } from './plan';
+import { meetingOn, mentorOf, teamDayOf, teamKey, type Meeting } from './plan';
 import { withRegard, type MeetingOutcome, type Mentor } from './state';
 
 /**
@@ -81,11 +81,41 @@ function settleDay(state: GameState, ctx: GameContext, sensei: PersonDef, day: n
   });
 }
 
+const TEAM_MISSED = '{name} and the team went ahead without you.';
+
+/** A team day: kept if you came, excused or missed as a meeting is. */
+function settleTeamDay(state: GameState, ctx: GameContext, sensei: PersonDef, day: number) {
+  const teamDay = teamDayOf(state, sensei, weekOf(day));
+  const key = teamKey(day);
+  if (teamDay?.day !== day || state.mentor.outcomes[key] === 'kept') return state;
+  const outcome: MeetingOutcome = excused(state, ctx) ? 'excused' : 'missed';
+  const grip = sensei.sensei?.ways.grip ?? 'firm';
+  const delta = outcome === 'missed' ? -MISSED_REGARD[grip] : 0;
+  const mentor = withRegard(
+    { ...state.mentor, outcomes: { ...state.mentor.outcomes, [key]: outcome } },
+    delta,
+  );
+  if (outcome !== 'missed') return { ...state, mentor };
+  return logLine(
+    { ...state, mentor },
+    {
+      text: TEAM_MISSED.replace('{name}', sensei.name),
+      tone: 'warning',
+      chips: [{ label: `${sensei.name}’s regard falls`, tone: 'cost' }],
+    },
+  );
+}
+
+/** The day an outcome's key stands for: a meeting's day, or a team day's (`t12`). */
+function keyDay(key: string): number {
+  return Number(key.startsWith('t') ? key.slice(1) : key);
+}
+
 /** Only this week's outcomes are kept, for the slip. */
 function thisWeek(mentor: Mentor, day: number): Mentor {
   const week = weekOf(day);
   const outcomes = Object.fromEntries(
-    Object.entries(mentor.outcomes).filter(([d]) => weekOf(Number(d)) === week),
+    Object.entries(mentor.outcomes).filter(([key]) => weekOf(keyDay(key)) === week),
   );
   return { ...mentor, outcomes };
 }
@@ -111,7 +141,7 @@ export function settleMentor(state: GameState, ctx: GameContext): GameState {
   if (!sensei) return { ...state, mentor: { ...state.mentor, settledDay: today - 1 } };
   let settled = state;
   for (let day = state.mentor.settledDay + 1; day < today; day += 1) {
-    settled = settleDay(settled, ctx, sensei, day);
+    settled = settleTeamDay(settleDay(settled, ctx, sensei, day), ctx, sensei, day);
   }
   const mentor = thisWeek({ ...settled.mentor, settledDay: today - 1 }, today);
   const next = { ...settled, mentor };

@@ -7,6 +7,8 @@ import { asksForYou } from '../clients';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import { missionThreat, traitNotes, type Threat, type TraitNote } from '../scouting';
+import { senseiPick } from '../sensei/pick';
+import { mentorOf } from '../sensei/plan';
 import type { GameState } from '../state';
 import { arcsView, type ArcView } from './arcs';
 import { choice, type Choice } from './common';
@@ -49,6 +51,8 @@ export interface Notice extends Choice {
   readonly returning: boolean;
   /** Who the village sends with you; null when you go alone. */
   readonly crew: CrewWords | null;
+  /** "Gōran’s pick": the job your sensei chose for the team this week, or null. */
+  readonly picked: string | null;
   /** "Standing job" or how long the posting stays up, e.g. "Gone after tomorrow". */
   readonly posted: string;
   readonly standing: boolean;
@@ -120,6 +124,8 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
   const place = placeHere(state, ctx, 'missions');
   if (!place) return null;
   const completed = state.standing.missionsCompleted;
+  const pick = senseiPick(state, ctx)?.id;
+  const sensei = mentorOf(state, ctx);
   return {
     name: place.name,
     completed,
@@ -142,6 +148,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         fightLikely: m.stages.some((s) => stageFoes(s).length > 0),
         opposition: oppositionOf(state, ctx, m),
         crew: crewOf(state, ctx, m),
+        picked: sensei && pick === id ? `${sensei.name}’s pick for the team` : null,
         returning: asksForYou(state, m),
         away: awayFor(m),
         examClash: examClash(state, ctx, m)?.text ?? null,

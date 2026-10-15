@@ -54,4 +54,20 @@ describe('sensei ways validation', () => {
       'sensei "tetsu" shields you on jobs but lets you be the rest of the week',
     );
   });
+
+  it('reports a missing test, an empty round and a curriculum that skips a beat', () => {
+    const [bells, ...rest] = ORIGINAL_PACK.senseiTests;
+    const pack = {
+      ...ORIGINAL_PACK,
+      senseiTests: [{ ...bells!, rounds: [{ prompt: 'Go', options: [] }] }, ...rest.slice(1)],
+      curriculum: ORIGINAL_PACK.curriculum.filter((b) => b.id !== 'eat'),
+    };
+    expect(validateSenseis(pack)).toEqual(
+      expect.arrayContaining([
+        'sensei test "bells" round 1 needs choices',
+        'curriculum needs exactly one "eat" beat',
+        'sensei "akari" sets the "survival" test, which the pack doesn’t have',
+      ]),
+    );
+  });
 });

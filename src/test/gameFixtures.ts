@@ -38,14 +38,17 @@ export function freshGame(context: GameContext = ctx): GameState {
 }
 
 /**
- * Reads out the teams, takes the first sensei offered and the chakra paper test they hand you,
- * clearing the result cards.
+ * Reads out the teams, takes the first sensei offered, the chakra paper test they hand you and
+ * their own test (the first choice each round, and yes, show me everything), clearing the
+ * result cards.
  */
 export function formTeam(state: GameState, context: GameContext = ctx): GameState {
   const assigned = act(state, { type: 'assignTeam' }, context);
   const senseiId = assigned.people.team?.senseiOptions[0] ?? '';
   const formed = act(assigned, { type: 'chooseSensei', senseiId }, context);
-  return { ...act(formed, { type: 'testChakraPaper' }, context), reports: [] };
+  let met = act(formed, { type: 'testChakraPaper' }, context);
+  while (met.mentor.opening) met = act(met, { type: 'senseiTest', optionIndex: 0 }, context);
+  return { ...met, reports: [] };
 }
 
 /** Puts every job on the board, so tests can take any job they are trusted with. */
