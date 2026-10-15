@@ -23,6 +23,20 @@ export interface Mentor {
   readonly outcomes: Readonly<Record<string, MeetingOutcome>>;
   /** What would have helped, from the last job you were beaten on, until the next lesson. */
   readonly lastBeaten: string | null;
+  /** The first meeting (their test, then how much you want shown) while it is on. */
+  readonly opening: OpeningRun | null;
+  /** Whether they walk you through the game (`on`) or you told them you know it. */
+  readonly curriculum: 'on' | 'skipped';
+  /** Curriculum beats they have shown you (`CurriculumBeatId`s). */
+  readonly beats: readonly string[];
+  /** The day they last showed you one: one a day. */
+  readonly lastBeatDay: number | null;
+}
+
+/** Where the first meeting stands: the round, and what came of the last one. */
+export interface OpeningRun {
+  readonly round: number;
+  readonly lastResult: string | null;
 }
 
 /**
@@ -66,6 +80,10 @@ export const NO_MENTOR: Mentor = {
   settledDay: 0,
   outcomes: {},
   lastBeaten: null,
+  opening: null,
+  curriculum: 'on',
+  beats: [],
+  lastBeatDay: null,
 };
 
 /**

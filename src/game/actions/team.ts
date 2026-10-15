@@ -76,6 +76,10 @@ export const chooseSensei: ActionHandler<ActionOf<'chooseSensei'>> = {
           : NEUTRAL_REGARD,
         settledDay: state.time.day,
         outcomes: {},
+        // After the chakra paper, the first meeting: their test, then how much to show you.
+        opening: { round: 0, lastResult: null },
+        curriculum: 'on' as const,
+        beats: [],
       },
     };
     const logged = log(next, {

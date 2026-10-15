@@ -50,7 +50,8 @@ describe('chakra paper', () => {
     const after = act(before, { type: 'testChakraPaper' });
     const nature = after.character.nature;
     expect(after.character.natureKnown).toBe(true);
-    expect(activeScene(after)).toBeNull();
+    // Then the sensei's own first meeting.
+    expect(activeScene(after)).toBe('sensei-test');
     expect(after.reports.at(-1)).toMatchObject({ kind: 'nature', nature });
     expect(after.journal.entries.at(-1)?.text).toContain(
       ctx.content.text.chakraPaper.results[nature],

@@ -19,6 +19,7 @@ import { ExamScene } from './scenes/ExamScene';
 import { MissionScene } from './scenes/MissionScene';
 import { PromotionScene } from './scenes/PromotionScene';
 import { ChakraPaperScene } from './scenes/ChakraPaperScene';
+import { SenseiTestScene } from './scenes/SenseiTestScene';
 import { TeamScene } from './scenes/TeamScene';
 import { JutsuScreen } from './YouScreens';
 import { ShinobiScreen } from './ShinobiScreen';
@@ -103,6 +104,8 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
       return <TeamScene {...props} />;
     case 'chakra-paper':
       return <ChakraPaperScene {...props} />;
+    case 'sensei-test':
+      return <SenseiTestScene {...props} />;
   }
 }
 

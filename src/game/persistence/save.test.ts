@@ -353,6 +353,10 @@ describe('persistence', () => {
       settledDay: game.time.day - 1,
       outcomes: {},
       lastBeaten: null,
+      opening: null,
+      curriculum: 'skipped',
+      beats: [],
+      lastBeatDay: null,
     });
   });
 
@@ -366,6 +370,14 @@ describe('persistence', () => {
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.character.assignment).toBeNull();
     expect(loaded.value.mentor.lastBeaten).toBeNull();
+  });
+
+  it('gives a save from before first meetings no test to sit and no curriculum', () => {
+    const game = newGame();
+    const { opening: _o, curriculum: _c, beats: _b, lastBeatDay: _l, ...mentor } = game.mentor;
+    const loaded = deserialize(JSON.stringify({ version: 41, state: { ...game, mentor } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.mentor).toMatchObject({ opening: null, curriculum: 'skipped', beats: [] });
   });
 
   it('rejects corrupted data', () => {

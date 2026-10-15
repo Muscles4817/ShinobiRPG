@@ -146,7 +146,8 @@ ui ──► game ──► content ──► systems ──► core
     keeps them off your village's crews, teams and dinner table). Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
-    (fight › encounter › mission › conversation › team assignment › chakra paper). Anything that must happen before
+    (fight › encounter › mission › conversation › team assignment › chakra paper › the sensei's
+    first meeting). Anything that must happen before
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
     derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`
@@ -357,7 +358,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     their grip as each day is settled (`settleMentor` in `spendTime`; excused on a job, away or
     laid up), and the nomination reads it. Their gatekeeping sets the pass and permit bond stages
     and how many jobs a nomination wants; their mission posture sets their stance in a job's
-    fights.
+    fights. After each lesson they coach you (`game/sensei/coaching.ts`): judge last week's
+    **assignment** (a stat to raise a step, set by their lens; open, it is a `ModifierSpec` on
+    the character, off your best art) with a reward of their kind or lost regard, may name a
+    talent you haven't found, and read you aloud (`read.ts`: your thinnest defence, what beat
+    you, your edge). The **first meeting** (`opening.ts`, a scene after the chakra paper) is
+    their test from the pack's `senseiTests` (never failed: your approaches against their
+    philosophy set regard) and one question: shown everything, or not. The **curriculum** (the
+    pack's `curriculum`, ordered by philosophy in `curriculum.ts`) is the tutorial: one beat a
+    day on the sensei's slip, each once it makes sense; nothing is locked behind it.
 
 ### Content packs
 

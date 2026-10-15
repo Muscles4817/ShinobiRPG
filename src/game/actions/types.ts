@@ -63,6 +63,8 @@ export type GameAction =
   | { readonly type: 'endConversation' }
   | { readonly type: 'trainWith'; readonly personId: string; readonly statId: StatId }
   | { readonly type: 'senseiSession' }
+  | { readonly type: 'senseiTest'; readonly optionIndex: number }
+  | { readonly type: 'heedSensei' }
   | { readonly type: 'spar'; readonly personId: string }
   | { readonly type: 'setCombatStyle'; readonly style: string }
   | { readonly type: 'setAnimations'; readonly on: boolean }

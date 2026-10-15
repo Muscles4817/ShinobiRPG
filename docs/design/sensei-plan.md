@@ -334,3 +334,22 @@ Part 5 entry.
    stat, but not on your best art, where the push isn't needed and the genius bench would run
    ahead). The slip shows the assignment and how far along it is in words. Save v41 adds
    `character.assignment` and `mentor.lastBeaten`.
+5. **The curriculum.** The pack's `curriculum` (`content/curriculum.ts`, the shared beats in
+   `shared/sensei/curriculum.ts`): drills, sparring, the jobs board, preparing tools, buying
+   intel, eating, cooking, the pass, the library, control exercises and the exam, each in the
+   sensei's words. `CURRICULUM_ORDER` (`game/sensei/curriculum.ts`) orders them by philosophy;
+   `beatDue` offers the first unseen beat that makes sense yet (the prep after a first job, the
+   library once the permit is signed, the exam halfway to a nomination), one a day, on the
+   sensei's slip, and `heedSensei` marks it seen for a little regard. The pass, permit and
+   exercise slips are still signed silently at the lesson; their beats explain them after.
+   Validated: every beat exactly once.
+6. **The opening test.** A scene after the chakra paper (`sensei-test`, with a `busyReason`):
+   the pack's `senseiTests` (`content/senseiTests.ts`, shared in `shared/sensei/tests.ts`:
+   bells, a night in the woods, a spar, an interview), two rounds of choices, each a way of
+   going at it (together, alone, cunning, patient). It never fails you: the way their
+   philosophy prefers earns regard, going with the team a little, going alone costs it with a
+   teamwork sensei (`game/sensei/opening.ts`). A sensei with no test just meets you. Either way
+   it ends with one question, shown everything (the curriculum) or not, and the day becomes a
+   memory shared with the sensei and the team. Save v42: a save that has met its sensei skips
+   both. It came after the chakra paper rather than before, so the paper stays the sensei's
+   first act.

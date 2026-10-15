@@ -52,8 +52,9 @@ describe('what a job leaves behind', () => {
     const done = walk(ready(), KIND, 'plain-robbers');
     expect(done.village.marks).toContain('kohaku-trusted');
     const crew = done.people.team!.teammateIds;
-    expect(done.village.memories.map((m) => m.personId).sort()).toEqual([...crew].sort());
-    expect(personSheet(done, ctx, crew[0]!)?.memories).toEqual(['the road with Sister Kohaku']);
+    const road = done.village.memories.filter((m) => m.text === 'the road with Sister Kohaku');
+    expect(road.map((m) => m.personId).sort()).toEqual([...crew].sort());
+    expect(personSheet(done, ctx, crew[0]!)?.memories).toContain('the road with Sister Kohaku');
     expect(rumoursToday(done, ctx).map((r) => r.id)).toContain('kohaku-lantern');
   });
 

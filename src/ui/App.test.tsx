@@ -41,6 +41,12 @@ async function formTeam(user: User) {
   await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Continue' }));
   await user.click(screen.getByRole('button', { name: 'Push your chakra into the paper' }));
   await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Continue' }));
+  // The sensei's test: the first choice each round, until they ask how much to show you.
+  while (!screen.queryByRole('button', { name: 'Show me everything' })) {
+    const choices = within(screen.getByRole('navigation', { name: 'Choices' }));
+    await user.click(choices.getAllByRole('button')[0]!);
+  }
+  await user.click(screen.getByRole('button', { name: 'Show me everything' }));
 }
 
 function place(name: RegExp) {

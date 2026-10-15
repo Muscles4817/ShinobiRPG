@@ -42,6 +42,22 @@ export function SenseiSlip({ view, perform }: SenseiSlipProps) {
         </p>
       )}
       {view.eased && <p className="slip-note">You are close enough that they plan less.</p>}
+      {view.lesson && (
+        <div className="slip-lesson">
+          <h3>{view.lesson.title}</h3>
+          <p>{view.lesson.text}</p>
+          <button
+            type="button"
+            className="btn small ghost"
+            disabled={view.lesson.heed.blocker !== null}
+            onClick={() => {
+              if (view.lesson) perform(view.lesson.heed.action);
+            }}
+          >
+            Understood
+          </button>
+        </div>
+      )}
       {session?.blocker === null && (
         <button
           type="button"

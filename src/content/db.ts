@@ -6,6 +6,8 @@ import type { RouteDef } from '@/systems/travel';
 
 import { createCatalog, type Catalog } from './catalog';
 import type { ExerciseDef } from './exercises';
+import type { CurriculumBeat } from './curriculum';
+import type { SenseiTestDef } from './senseiTests';
 import type { InjuryDef } from './injuries';
 import type { BuildDef, UpbringingDef } from './upbringing';
 import type { VoiceDef } from './voices';
@@ -48,6 +50,8 @@ export interface ContentDb {
   readonly locations: Catalog<LocationDef>;
   readonly routes: Catalog<RouteDef>;
   readonly exercises: Catalog<ExerciseDef>;
+  readonly senseiTests: Catalog<SenseiTestDef>;
+  readonly curriculum: Catalog<CurriculumBeat>;
   readonly techniques: Catalog<TechniqueDef>;
   readonly missions: Catalog<MissionDef>;
   readonly exams: Catalog<ExamDef>;
@@ -92,6 +96,8 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     locations: createCatalog('location', pack.locations),
     routes: createCatalog('route', pack.routes),
     exercises: createCatalog('exercise', pack.exercises),
+    senseiTests: createCatalog('sensei test', pack.senseiTests),
+    curriculum: createCatalog('curriculum beat', pack.curriculum),
     techniques: createCatalog('technique', pack.techniques),
     missions: createCatalog('mission', pack.missions),
     exams: createCatalog('exam', pack.exams),

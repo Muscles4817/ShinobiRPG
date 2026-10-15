@@ -2,6 +2,7 @@ import { STAT_INFO } from '@/systems/stats';
 import { calendarDay, DAYS_PER_WEEK, TIME_SLOTS, weekOf } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { beatDue } from '../sensei/curriculum';
 import { meetingsPerWeek, mentorOf, weekPlan, weekStart, type Meeting } from '../sensei/plan';
 import { FORMAT_LABELS } from '../sensei/sessions';
 import { regardWord, type MeetingOutcome } from '../sensei/state';
@@ -38,6 +39,8 @@ export interface SenseiWeekView {
   readonly session: Choice | null;
   /** The work they set at the last lesson, and how far along it is, in words. */
   readonly assignment: { readonly stat: string; readonly progress: string } | null;
+  /** Something they want to show you today (the curriculum), and the choice to hear it. */
+  readonly lesson: { readonly title: string; readonly text: string; readonly heed: Choice } | null;
 }
 
 function progressWord(share: number): string {
@@ -71,6 +74,16 @@ function todayLine(state: GameState, meeting: Meeting | undefined): string | nul
     : `${what} now, at the training ground.`;
 }
 
+function lessonToday(state: GameState, ctx: GameContext, name: string): SenseiWeekView['lesson'] {
+  const beat = beatDue(state, ctx);
+  if (!beat) return null;
+  return {
+    title: beat.title,
+    text: beat.text.replaceAll('{sensei}', name),
+    heed: choice(state, ctx, { type: 'heedSensei' }),
+  };
+}
+
 export function senseiWeekView(state: GameState, ctx: GameContext): SenseiWeekView | null {
   const sensei = mentorOf(state, ctx);
   const ways = sensei?.sensei?.ways;
@@ -98,5 +111,6 @@ export function senseiWeekView(state: GameState, ctx: GameContext): SenseiWeekVi
     todayLine: todayLine(state, today),
     session: today?.kind === 'session' ? choice(state, ctx, { type: 'senseiSession' }) : null,
     assignment: assignmentLine(state),
+    lesson: lessonToday(state, ctx, sensei.name),
   };
 }

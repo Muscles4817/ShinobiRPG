@@ -1,6 +1,8 @@
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
+import { CURRICULUM } from '../../shared/sensei/curriculum';
+import { SENSEI_TESTS } from '../../shared/sensei/tests';
 import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
 import { UPBRINGINGS } from '../../shared/upbringings';
@@ -73,6 +75,8 @@ export const ORIGINAL_PACK: ContentPack = {
   locations: ORIGINAL_LOCATIONS,
   routes: ORIGINAL_ROUTES,
   exercises: EXERCISES,
+  senseiTests: SENSEI_TESTS,
+  curriculum: CURRICULUM,
   techniques: [
     ...TECHNIQUES,
     ...CLAN_TECHNIQUES,

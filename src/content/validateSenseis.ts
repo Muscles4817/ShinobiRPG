@@ -1,4 +1,6 @@
+import { CURRICULUM_BEATS } from './curriculum';
 import type { PersonDef } from './people';
+import { TEST_APPROACHES } from './senseiTests';
 import type { SenseiWays } from './senseis';
 import type { ContentPack } from './types';
 
@@ -16,10 +18,42 @@ const TIGHT_SESSIONS = 3;
 const LOOSE_SESSIONS = 3;
 
 export function validateSenseis(pack: ContentPack): string[] {
-  return pack.people.flatMap((p) => {
-    const ways = p.sensei?.ways;
-    return ways ? waysProblems(p, ways).map((problem) => `sensei "${p.id}" ${problem}`) : [];
-  });
+  return [
+    ...pack.people.flatMap((p) => {
+      const ways = p.sensei?.ways;
+      if (!ways) return [];
+      const test =
+        ways.test === 'none' || pack.senseiTests.some((t) => t.id === ways.test)
+          ? []
+          : [`sets the "${ways.test}" test, which the pack doesn’t have`];
+      return [...waysProblems(p, ways), ...test].map((problem) => `sensei "${p.id}" ${problem}`);
+    }),
+    ...testProblems(pack),
+    ...curriculumProblems(pack),
+  ];
+}
+
+/** A test is rounds of real choices, each a known way of going at it. */
+function testProblems(pack: ContentPack): string[] {
+  return pack.senseiTests.flatMap((test) => [
+    ...(test.rounds.length > 0 ? [] : [`sensei test "${test.id}" has no rounds`]),
+    ...test.rounds.flatMap((round, i) => [
+      ...(round.options.length >= 2
+        ? []
+        : [`sensei test "${test.id}" round ${i + 1} needs choices`]),
+      ...round.options
+        .filter((o) => !TEST_APPROACHES.includes(o.approach))
+        .map((o) => `sensei test "${test.id}" has an unknown approach "${o.approach}"`),
+    ]),
+  ]);
+}
+
+/** The curriculum teaches every beat, once. */
+function curriculumProblems(pack: ContentPack): string[] {
+  const ids = pack.curriculum.map((b) => b.id);
+  return CURRICULUM_BEATS.filter((id) => ids.filter((b) => b === id).length !== 1).map(
+    (id) => `curriculum needs exactly one "${id}" beat`,
+  );
 }
 
 function inStages(stage: number): boolean {
