@@ -1,5 +1,5 @@
 import type { Rng } from '@/core';
-import type { Accuracy, Discipline } from '@/systems/techniques';
+import type { Accuracy, Discipline, Element } from '@/systems/techniques';
 
 import { alive } from '../../rules/body';
 import { cappedHit, strikeDamage } from '../../rules/damage';
@@ -20,7 +20,7 @@ import type { Card } from './cards';
 import { reactionAt } from './readiness';
 import { defenceKind, noteDefence } from './reads';
 import { throughClones } from './decoys';
-import { substituted } from './footwork';
+import { substituted, type Swap } from './footwork';
 import { riposteFirst } from './lingering';
 import { wound } from './wound';
 import { canHit } from './rows';
@@ -56,6 +56,8 @@ export interface Blow {
   readonly breaks?: boolean;
   /** The art behind a technique's hit (a substitution can't swap out of a genjutsu). */
   readonly discipline?: Discipline;
+  /** The technique's element, which an elemental wall meets (`footwork.ts`). */
+  readonly element?: Element;
   /** An area hit: bursts every clone and still reaches its target (`decoys.ts`). */
   readonly area?: boolean;
   /** Share of a guard it goes through (knuckles, a sundering weapon: `rules/weapons.ts`). */
@@ -212,6 +214,22 @@ function shown(ready: readonly Card[], blow: Blow, band: RangeBand): DefenceKind
   }
 }
 
+/** What a substitution sees coming: who, what, its art and its element. */
+function swapOf({ attacker, target, blow }: Hit): Swap {
+  return {
+    target,
+    attacker,
+    what: blow.what,
+    discipline: blow.discipline,
+    ...(blow.element ? { element: blow.element } : {}),
+  };
+}
+
+/** A ready substitution's answer: escaped, or the round the hit lands in (a wall may break). */
+function throughSwap(round: Round, ready: readonly Card[], hit: Hit) {
+  return substituted(round, ready, swapOf(hit)) ?? { round, escaped: false };
+}
+
 /** Lands a blow on the target, letting their clones, ready defence and kit react. */
 export function react(start: Round, hit: Hit): Round {
   const answered = riposteFirst(start, hit);
@@ -231,9 +249,9 @@ export function react(start: Round, hit: Hit): Round {
   const has: Ready = (kind) => ready.some((c) => c.kind === kind);
   const evasion = evade(round, hit, has);
   if (evasion.slipped) return evasion.slipped;
-  const swap = { target, attacker, what: blow.what, discipline: blow.discipline };
-  const swapped = substituted(round, ready, swap);
-  if (swapped) return swapped;
+  const swap = throughSwap(round, ready, hit);
+  if (swap.escaped) return swap.round;
+  const shielded = swap.round;
   const guarding = has('guard') && !blow.followUp;
   const guarded = guarding && !blow.breaks;
   const smashed = guarding && blow.breaks === true;
@@ -241,13 +259,14 @@ export function react(start: Round, hit: Hit): Round {
     Math.max(
       1,
       Math.round(
-        kitted(round, attacker, target, blow) * (guarded ? guardLets(attacker, target, blow) : 1),
+        kitted(shielded, attacker, target, blow) *
+          (guarded ? guardLets(attacker, target, blow) : 1),
       ),
     ),
     target.maxHealth,
   );
   const told = say(
-    round,
+    shielded,
     harmLine(
       reactionLine(
         `${attacker.name}'s ${blow.what} hits ${target.name}${blow.followUp ? ' again' : ''}${guardWords(guarded, smashed)}.`,
@@ -258,5 +277,5 @@ export function react(start: Round, hit: Hit): Round {
     ...kitNote(target, blow.kind),
   );
   const landed = confuse(wound(told, target.id, damage), hit);
-  return canCounterBack(round, hit, has) ? counter(landed, hit) : landed;
+  return canCounterBack(shielded, hit, has) ? counter(landed, hit) : landed;
 }

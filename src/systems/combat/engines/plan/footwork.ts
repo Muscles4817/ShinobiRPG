@@ -1,7 +1,8 @@
-import type { Discipline } from '@/systems/techniques';
+import type { Discipline, Element } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { chakraCost } from '../../rules/body';
+import { matchup } from '../../rules/elements';
 import { homeBand } from '../../rules/kit';
 import { reactionLine } from '../../rules/narration';
 import { RANGE_LABEL } from '../../rules/range';
@@ -15,7 +16,9 @@ import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './s
  * reacts on its own, swapping its owner out of the first physical or ninjutsu hit in a round
  * that would land (after a Dodge has had its chance), as long as they have the chakra for it.
  * Once a round, not once an exchange: one foe strikes about once an exchange, so more would
- * make its owner untouchable for as long as their chakra lasts.
+ * make its owner untouchable for as long as their chakra lasts. A substitution with an element
+ * is a wall (Water Wall): against an attack its element overpowers it swallows the hit and still
+ * stands, ready again; against one that overpowers it, it breaks and the hit comes through.
  */
 
 /** Between rounds, every substitution is ready again. */
@@ -52,13 +55,23 @@ export interface Swap {
   readonly what: string;
   /** The art behind it; none for a plain blow or kunai. */
   readonly discipline: Discipline | undefined;
+  /** The attack's element, which an elemental wall meets. */
+  readonly element?: Element;
+}
+
+/** What a substitution made of a hit: escaped it, or (a broken wall) let it through. */
+export interface Swapped {
+  readonly round: Round;
+  readonly escaped: boolean;
 }
 
 /**
  * Swaps the target out of a hit that would land, when a substitution is ready, unspent this
- * round, affordable and the hit isn't an illusion; else null, and the hit lands.
+ * round, affordable and the hit isn't an illusion; else null, and the hit lands. An elemental
+ * wall meets the attack's element: it holds without being spent when it overpowers it, and
+ * breaks, spent, letting the hit through when it is overpowered.
  */
-export function substituted(round: Round, ready: readonly Card[], swap: Swap): Round | null {
+export function substituted(round: Round, ready: readonly Card[], swap: Swap): Swapped | null {
   const { attacker } = swap;
   const target = fighterIn(round, swap.target.id) ?? swap.target;
   const card = substitution(ready);
@@ -67,15 +80,22 @@ export function substituted(round: Round, ready: readonly Card[], swap: Swap): R
   }
   const cost = chakraCost(target, card.technique);
   if (target.chakra < cost) return null;
+  const wall = matchup(card.technique.element, swap.element);
   const fighters = patch(round.fighters, target.id, {
     ...paying(target, cost),
-    substituteSpent: true,
+    ...(wall === 'strong' ? {} : { substituteSpent: true }),
   });
-  return say(
-    { ...round, fighters },
-    reactionLine(
-      `${target.name} swaps out of ${attacker.name}'s ${swap.what} with ${card.technique.name}.`,
-      'swapped',
-    ),
-  );
+  const paid = { ...round, fighters };
+  const name = card.technique.name;
+  if (wall === 'weak') {
+    return {
+      round: say(paid, `${attacker.name}'s ${swap.what} smashes through ${name}.`),
+      escaped: false,
+    };
+  }
+  const line =
+    wall === 'strong'
+      ? `${name} swallows ${attacker.name}'s ${swap.what} and still stands.`
+      : `${target.name} swaps out of ${attacker.name}'s ${swap.what} with ${name}.`;
+  return { round: say(paid, reactionLine(line, 'swapped')), escaped: true };
 }

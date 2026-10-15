@@ -4,7 +4,6 @@ import type { CombatTechnique, RangeBand } from '../../contract';
 import { alive, chakraCost, holdTurns } from '../../rules/body';
 import { healAmount, strikeDamage, techniqueDamage } from '../../rules/damage';
 import { resistChance } from '../../rules/defence';
-import { matchup, matchupLine } from '../../rules/elements';
 import { attackKindOf } from '../../rules/kit';
 import { inReach, RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { harmLine, healLine } from '../../rules/narration';
@@ -152,16 +151,10 @@ function jutsuPlay(fighters: DeckFighter[], { user, target, card }: Aimed, rng: 
   if (lead.verb !== 'damage') return { fighters, lines: [opener] };
   const use = { technique: t, effect: lead };
   const damage = kitDamage(fighters, blow, techniqueDamage(user, target, use, rng.next()));
-  const element = matchupLine(matchup(t.element, target.nature), target.name);
   const landed = landHit(fighters, blow, damage, rng);
   return {
     fighters: landed.fighters,
-    lines: [
-      opener,
-      harmLine(`${target.name} takes the hit.`, damage),
-      ...(element ? [element] : []),
-      ...landed.lines,
-    ],
+    lines: [opener, harmLine(`${target.name} takes the hit.`, damage), ...landed.lines],
   };
 }
 
