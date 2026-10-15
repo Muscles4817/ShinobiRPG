@@ -1,5 +1,7 @@
 import { createRng } from '@/core';
 
+import { hitsOn } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
@@ -202,7 +204,7 @@ describe('plan & watch verbs: clone', () => {
     const round = edit(roundOf(), 'foe', {
       clones: { techniqueId: 'shades', count: 3, skill: 10, strikes: false },
     });
-    const after = until(/Sweep hits foe/, (seed) =>
+    const after = until(hitsOn('foe', 'Sweep'), (seed) =>
       useJutsu(round, { actor: hero(round), target: foe(round), rng: createRng(seed) }, sweep),
     );
     expect(foe(after).clones?.count).toBe(0);
@@ -211,7 +213,7 @@ describe('plan & watch verbs: clone', () => {
 
   it('solid clones throw a weak blow of their own when their maker attacks', () => {
     const cloned = cast(roundOf(), shades);
-    const after = until(/hero's clone hits foe/, (seed) =>
+    const after = until(hitsOn('foe', "hero's clone"), (seed) =>
       cloneFollowUp(
         cloned,
         { actor: hero(cloned), target: foe(cloned), rng: createRng(seed) },
@@ -241,7 +243,7 @@ describe('plan & watch verbs: trap', () => {
     const set = cast(roundOf(), snare);
     expect(springTraps(set, 'foe', createRng(1), false)).toEqual(set);
     const next = { ...set, number: 2 };
-    const sprung = until(/hero's trap hits foe/, (seed) =>
+    const sprung = until(hitsOn('foe', "hero's trap"), (seed) =>
       springTraps(next, 'foe', createRng(seed), false),
     );
     expect(foe(sprung).health).toBeLessThan(80);
@@ -251,7 +253,7 @@ describe('plan & watch verbs: trap', () => {
 
   it('springs at once on a foe who moves the fight into it', () => {
     const set = { ...cast(roundOf(), snare), range: 'close' as const };
-    const sprung = until(/hero's trap hits foe/, (seed) =>
+    const sprung = until(hitsOn('foe', "hero's trap"), (seed) =>
       springTraps(set, 'foe', createRng(seed), true),
     );
     expect(foe(sprung).health).toBeLessThan(80);
@@ -276,6 +278,8 @@ describe('plan & watch verbs: trap', () => {
     expect(said(first.log)).toContain('hero sets a trap at close range.');
     const second = resolveExchange(first, rng);
     const fresh = second.log.slice(first.log.length);
-    expect(fresh.some((l) => /hero's trap hits foe|spots hero's trap/.test(l))).toBe(true);
+    expect(
+      fresh.some((l) => hitsOn('foe', "hero's trap").test(l) || l.includes("spots hero's trap")),
+    ).toBe(true);
   });
 });

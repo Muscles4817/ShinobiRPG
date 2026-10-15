@@ -31,6 +31,7 @@ import { conceal, sense } from './sight';
 import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { setTrap } from './traps';
+import { castLine, dazeLine, momentOf, seenLine } from './voice';
 
 /**
  * Using a technique in a planned fight: pay its chakra, see whether the target saw it coming,
@@ -51,7 +52,7 @@ function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): 
   };
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, change) },
-    `${actor.name} uses ${t.name}!`,
+    castLine(momentOf(round, actor.id), actor.name, t),
   );
 }
 
@@ -59,7 +60,7 @@ function daze(round: Round, target: PlanFighter): Round {
   if (!canDaze(target, round.number)) return say(round, `${target.name} shakes it off.`);
   return say(
     { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number)) },
-    `${target.name} is dazed!`,
+    dazeLine(momentOf(round, target.id), target.name),
   );
 }
 
@@ -241,7 +242,7 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   if (isHarmful(t) && targets.length === 0) return paid;
   // A field dulls the perception of those it blinds: they see techniques coming later.
   const seen = targets.filter((foe) => rng.chance(resistChance(actor, dulled(paid.field, foe), t)));
-  const told = seen.reduce((r, foe) => say(r, `${foe.name} sees it coming.`), paid);
+  const told = seen.reduce((r, foe) => say(r, seenLine(momentOf(r, foe.id), foe.name)), paid);
   if (isHarmful(t) && seen.length === targets.length) return aftermath(told, turn, t);
   // An elemental attack may be met by one coming back the other way.
   const aimedAt = turn.target && !seen.includes(turn.target) ? clash(told, turn, t) : null;

@@ -1,5 +1,7 @@
 import { createRng } from '@/core';
 
+import { SLIPS, searchesInVain, spots } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique, CombatTrait } from '../../contract';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { defaultLoadout, defaultReadiness } from './defaults';
@@ -170,7 +172,7 @@ describe('plan & watch kits: hits', () => {
     const [, plain] = pair([]);
     const slips = (f: PlanFighter) =>
       Array.from({ length: 40 }, (_, seed) => hitOn(f, STRIKE, seed)).filter((r) =>
-        r.lines[0]?.includes('slips past'),
+        SLIPS.test(r.lines[0] ?? ''),
       ).length;
     expect(slips(swift!)).toBeGreaterThan(0);
     expect(slips(plain!)).toBe(0);
@@ -184,9 +186,9 @@ describe('plan & watch kits: illusions', () => {
     // Up close, with nothing slotted, they'd strike: with no one in sight, they search.
     const armed = { ...hero!, loadout: NO_CARDS };
     const after = resolveExchange(stateOf([armed, ghost!], 'close'), createRng(3));
-    expect(after.log.some((l) => l.startsWith('hero searches') || l === 'hero spots foe!')).toBe(
-      true,
-    );
+    expect(
+      after.log.some((l) => searchesInVain('hero').test(l) || spots('hero', 'foe').test(l)),
+    ).toBe(true);
     expect(after.log.some((l) => l.includes("hero's strike"))).toBe(false);
     expect(after.fighters[1]?.health).toBe(ghost!.health);
   });
@@ -195,7 +197,7 @@ describe('plan & watch kits: illusions', () => {
     const [hero, ghost] = pair(['illusionist'], { perks: ['insight'] });
     const seeker = { ...hero!, loadout: { ...NO_CARDS, mid: plainSlots(['search', 'throw']) } };
     const after = resolveExchange(stateOf([seeker, ghost!]), createRng(3));
-    expect(said(after.log)).toContain('hero spots foe!');
+    expect(said(after.log).some((l) => spots('hero', 'foe').test(l))).toBe(true);
     expect(after.fighters[1]?.hidden).toBe(false);
   });
 

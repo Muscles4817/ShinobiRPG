@@ -1,5 +1,7 @@
 import { createRng, type Rng } from '@/core';
 
+import { castsLine } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { FINISHER_BONUS } from '../../rules/team';
 import { createPlanEngine } from './engine';
@@ -139,7 +141,7 @@ describe('plan & watch combos: combination techniques', () => {
     const start = roundWith({ techniques: [snare] }, { techniques: [fall] });
     const both = cast(start, 'hero', snare);
     expect(both.lines).toContain('hero and kiba combine Snare and Fall!');
-    expect(both.lines).toContain('kiba uses Fall!');
+    expect(both.lines.some((l) => castsLine(l, 'kiba', 'Fall'))).toBe(true);
     expect(who(both, 'kiba').joined).toBe(true);
     expect(who(both, 'kiba').chakra).toBeLessThan(30);
     const single = cast(roundWith({ techniques: [flame] }, {}), 'hero', flame);

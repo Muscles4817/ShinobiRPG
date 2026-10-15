@@ -9,6 +9,7 @@ import { afterUsing } from '../../rules/trumps';
 import { strike } from './arms';
 import { step } from './steps';
 import { inCover, lostToGround } from './groundPlay';
+import { momentOf, reelingLine } from './voice';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
@@ -38,6 +39,7 @@ import {
   type PlanState,
   type Round,
 } from './state';
+import { tracedLine } from './sceneVoice';
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
@@ -149,7 +151,7 @@ function revealed(round: Round, { actor: before, target, rng }: Turn): Round {
   if (!victim || !alive(victim) || !rng.chance(searchChance(victim, hiding))) return round;
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) },
-    `${victim.name} traces the illusion back to ${actor.name}.`,
+    tracedLine(momentOf(round, victim.id), victim.name, actor.name),
   );
 }
 
@@ -187,7 +189,7 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   if (!alive(actor)) return round;
   if (actor.stunned > 0) {
     const fighters = patch(round.fighters, actor.id, { stunned: actor.stunned - 1 });
-    return say({ ...round, fighters }, `${actor.name} is dazed and loses the exchange.`);
+    return say({ ...round, fighters }, reelingLine(momentOf(round, actor.id), actor.name));
   }
   if (actor.joined) {
     const fighters = patch(round.fighters, actor.id, { joined: false });

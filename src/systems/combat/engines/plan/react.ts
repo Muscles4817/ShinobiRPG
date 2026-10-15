@@ -14,7 +14,7 @@ import {
   SWIFT_DODGE,
   type AttackKind,
 } from '../../rules/kit';
-import { harmLine, reactionLine, type NarrationReaction } from '../../rules/narration';
+import { harmLine, reactionLine } from '../../rules/narration';
 import type { RangeBand } from '../../contract';
 import {
   AREA_RULES,
@@ -34,7 +34,9 @@ import { riposteFirst } from './lingering';
 import { wound } from './wound';
 import { canHit } from './rows';
 import { isDazed } from './daze';
+import { counterLine, hitLine, momentOf, slipLine } from './voice';
 import { fighterIn, patch, say, type DefenceKind, type PlanFighter, type Round } from './state';
+import { confusedLine } from './sceneVoice';
 
 /**
  * The defence a fighter keeps ready at a distance (`readiness.ts`) reacts on its own when they
@@ -129,7 +131,7 @@ function confuse(round: Round, { attacker, target, rng }: Hit): Round {
       ...round,
       fighters: patch(round.fighters, target.id, { confused: confusionTurns(attacker, target) }),
     },
-    `${target.name}'s senses swim in ${attacker.name}'s illusion.`,
+    confusedLine(momentOf(round, target.id), target.name, attacker.name),
   );
 }
 
@@ -148,7 +150,13 @@ function counter(round: Round, { attacker, target, rng }: Hit): Round {
     attacker.maxHealth,
   );
   return wound(
-    say(round, harmLine(reactionLine(`${target.name} counters!`, 'countered'), damage)),
+    say(
+      round,
+      harmLine(
+        reactionLine(counterLine(momentOf(round, target.id), target.name), 'countered'),
+        damage,
+      ),
+    ),
     attacker.id,
     damage,
   );
@@ -158,27 +166,6 @@ function counter(round: Round, { attacker, target, rng }: Hit): Round {
 function guardLets(attacker: PlanFighter, target: PlanFighter, blow: Blow): number {
   const kept = guardScale(attacker, target);
   return kept + (1 - kept) * (blow.pierce ?? 0);
-}
-
-function guardWords(guarded: boolean, smashed: boolean): string {
-  if (smashed) return ', smashing through the guard';
-  return guarded ? ' through a guard' : '';
-}
-
-interface Defended {
-  /** A Dodge was ready and tried for this blow. */
-  readonly dodgeTried: boolean;
-  readonly guarded: boolean;
-  readonly smashed: boolean;
-}
-
-/** Which ready defence reacted to a blow that landed anyway, for the fight screen. */
-function reactionsTo({ dodgeTried, guarded, smashed }: Defended): NarrationReaction[] {
-  return [
-    ...(dodgeTried ? (['dodge-missed'] as const) : []),
-    ...(guarded ? (['guarded'] as const) : []),
-    ...(smashed ? (['guard-broken'] as const) : []),
-  ];
 }
 
 type Ready = (kind: 'guard' | 'dodge' | 'counter') => boolean;
@@ -198,7 +185,7 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const footing = footingOf(round.ground, target);
   const avoid = able ? avoidChance(hit, dulled(round.field, target), has('dodge')) * footing : 0;
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
-  const line = `${target.name} slips past ${attacker.name}'s ${blow.what}.`;
+  const line = slipLine(momentOf(round, target.id), target.name, attacker.name, blow.what);
   // A swift fighter slips some blows on instinct; only a ready Dodge is shown reacting.
   return { slipped: say(round, tried ? reactionLine(line, 'dodged') : line), tried };
 }
@@ -284,10 +271,14 @@ export function react(start: Round, hit: Hit): Round {
   const told = say(
     shielded,
     harmLine(
-      reactionLine(
-        `${attacker.name}'s ${blow.what} hits ${target.name}${blow.followUp ? ' again' : ''}${guardWords(guarded, smashed)}.`,
-        ...reactionsTo({ dodgeTried: evasion.tried, guarded, smashed }),
-      ),
+      hitLine(momentOf(shielded, attacker.id), {
+        attacker: attacker.name,
+        target: target.name,
+        blow,
+        guarded,
+        smashed,
+        dodgeTried: evasion.tried,
+      }),
       damage,
     ),
     ...kitNote(target, blow.kind),

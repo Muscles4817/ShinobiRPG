@@ -1,6 +1,8 @@
 import { createRng } from '@/core';
 import type { Accuracy } from '@/systems/techniques';
 
+import { GUARDED, SLIPS, hitsOn } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { useJutsu } from './jutsu';
 import { fighterIn, initialFighters, plainSlots, type PlanFighter, type Round } from './state';
@@ -69,7 +71,7 @@ describe('flurries, reach and accuracy in plan & watch', () => {
       const one = use(roundWith(), kick(), seed);
       const three = use(roundWith(), kick(3), seed);
       // A foe who sees it coming slips the whole technique; otherwise every blow lands.
-      expect([0, 3]).toContain(three.lines.filter((l) => l.includes('Kick hits bandit')).length);
+      expect([0, 3]).toContain(three.lines.filter((l) => hitsOn('bandit', 'Kick').test(l)).length);
       single += 100 - fighterIn(one, 'bandit')!.health;
       flurry += 100 - fighterIn(three, 'bandit')!.health;
     }
@@ -79,7 +81,7 @@ describe('flurries, reach and accuracy in plan & watch', () => {
 
   it('a guard meets only the first blow of a flurry', () => {
     const after = use(roundWith(['guard']), kick(3), 1);
-    const guarded = after.lines.filter((l) => l.includes('through a guard'));
+    const guarded = after.lines.filter((l) => GUARDED.test(l));
     expect(guarded).toHaveLength(1);
   });
 
@@ -98,7 +100,7 @@ describe('flurries, reach and accuracy in plan & watch', () => {
       let n = 0;
       for (let seed = 1; seed <= 300; seed++) {
         const after = use(roundWith(['dodge']), kick(undefined, accuracy), seed);
-        if (after.lines.some((l) => l.includes('slips past'))) n++;
+        if (after.lines.some((l) => SLIPS.test(l))) n++;
       }
       return n;
     };

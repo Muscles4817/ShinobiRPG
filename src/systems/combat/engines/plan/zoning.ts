@@ -16,8 +16,10 @@ import { cardId, findCard, fitsBand, kitCards, playable, type Card } from './car
 import { isDazed } from './daze';
 import type { HoldOff } from './footing';
 import { useJutsu } from './jutsu';
+import { heldOffLine, throughLine } from './sceneVoice';
 import { inSight, opponentsOf, type Turn } from './senses';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
+import { momentOf } from './voice';
 
 /**
  * Holding a foe off in a planned fight (`rules/zoning.ts`). At mid and far range a fighter may
@@ -130,12 +132,12 @@ export function holdOff(round: Round, turn: Turn): HeldOff {
     return {
       round: say(
         spent(marked, holder, card),
-        `${closer.name} slips through ${holder.name}'s fire.`,
+        throughLine(momentOf(marked, closer.id), closer.name, holder.name),
       ),
       outcome: 'through',
     };
   }
-  const told = say(marked, `${holder.name} keeps ${closer.name} off.`);
+  const told = say(marked, heldOffLine(momentOf(marked, holder.id), holder.name, closer.name));
   return {
     round: fire(told, { holder: fighterIn(told, holder.id) ?? holder, closer, card }, turn),
     outcome: 'stopped',

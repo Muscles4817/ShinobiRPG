@@ -1,5 +1,6 @@
 import { createRng } from '@/core';
 
+import { GETS_THROUGH, holdsOff } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { editReadiness, readinessOptions } from './readinessTable';
 import { readyDefences } from './readiness';
@@ -73,8 +74,8 @@ function stepIn(round: Round, seed: number): Round {
 describe('holding a foe off', () => {
   it('a step in meets the holder’s fire: held off and hit, or slipping through and closing in', () => {
     const results = Array.from({ length: 60 }, (_, i) => stepIn(atMid(), i + 1));
-    const held = results.filter((r) => r.lines.some((l) => l.includes('keeps hero off')));
-    const through = results.filter((r) => r.lines.some((l) => l.includes('slips through')));
+    const held = results.filter((r) => r.lines.some((l) => holdsOff('caster', 'hero').test(l)));
+    const through = results.filter((r) => r.lines.some((l) => GETS_THROUGH.test(l)));
     expect(held.length).toBeGreaterThan(0);
     expect(through.length).toBeGreaterThan(0);
     for (const r of held) expect(r.range).toBe('mid');
@@ -86,7 +87,9 @@ describe('holding a foe off', () => {
   it('a holder who has already acted this exchange can’t', () => {
     for (let seed = 1; seed <= 20; seed++) {
       const after = stepIn(atMid(['caster']), seed);
-      expect(after.lines.join(' ')).not.toMatch(/keeps hero off|slips through/);
+      expect(after.lines.join(' ')).not.toMatch(
+        new RegExp(`${holdsOff('caster', 'hero').source}|${GETS_THROUGH.source}`),
+      );
     }
   });
 
