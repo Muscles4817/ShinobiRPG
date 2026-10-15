@@ -66,6 +66,21 @@ export interface GameState {
   readonly cooking: Cooking;
   /** How your sensei rates you and how this week's meetings went (`game/sensei/`). */
   readonly mentor: Mentor;
+  /**
+   * Set only on a versus sandbox (`game/versus/`): who is fighting whom. A sandbox is never
+   * saved, so a real playthrough never carries it.
+   */
+  readonly versus?: VersusMatch;
+}
+
+/** A versus bout: the two sides' names and how your fighter came into it. */
+export interface VersusMatch {
+  readonly youId: string;
+  readonly foeId: string;
+  readonly foeName: string;
+  readonly startHealth: number;
+  readonly startChakra: number;
+  readonly maxHealth: number;
 }
 
 /**

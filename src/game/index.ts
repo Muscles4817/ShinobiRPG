@@ -38,6 +38,15 @@ export {
 } from './creationDraft';
 export type { GameAction, GameActionType } from './actions/types';
 export { dispatch, blockerFor } from './dispatch';
+export { saveSummary, type SaveSummary } from './views/menu';
+export {
+  createVersus,
+  VERSUS_GROUPS,
+  versusRoster,
+  type VersusFighter,
+  type VersusGroup,
+  type VersusPick,
+} from './versus';
 export { chakraPaperScene, type ChakraPaperScene } from './views/chakraPaper';
 export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';
 export type { Choice, Discipline } from './views/common';

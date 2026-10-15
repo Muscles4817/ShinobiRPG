@@ -23,6 +23,7 @@ function memoryStore(initial: string | null = null): SaveStore & { data: string 
 type User = ReturnType<typeof userEvent.setup>;
 
 async function startGame(user: User, world = /Land of Embers/) {
+  await user.click(screen.getByRole('button', { name: /^New game/ }));
   await user.click(screen.getByRole('button', { name: world }));
   await user.click(screen.getByRole('button', { name: 'Turn the page' }));
   await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
@@ -104,6 +105,7 @@ describe('App (smoke test)', () => {
     const save = JSON.parse(store.data ?? '{}') as { state: { time: unknown } };
     save.state.time = { day: 2, slot: 3 };
     render(<App store={memoryStore(JSON.stringify(save))} />);
+    await user.click(screen.getByRole('button', { name: /^Continue/ }));
     await user.click(place(/The Paper Lantern/));
     expect(screen.getByText('Tonight’s crowd')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Stand everyone a round/ }));
@@ -439,13 +441,41 @@ describe('App (smoke test)', () => {
     await startGame(user);
     first.unmount();
     render(<App store={store} />);
+    expect(screen.getByRole('button', { name: /^Continue.*Aoi/ })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /^Continue/ }));
     expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
+  });
+
+  it('goes back to the main menu from the game, and asks before replacing the save', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
+    await user.click(screen.getByRole('button', { name: 'Main menu' }));
+    await user.click(screen.getByRole('button', { name: /^New game/ }));
+    expect(screen.getByText(/A new game replaces Aoi/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /^Keep Aoi/ }));
+    await user.click(screen.getByRole('button', { name: /^Continue/ }));
+    expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
+  });
+
+  it('plays a versus bout between two of the pack’s fighters, and offers a rematch', async () => {
+    const user = userEvent.setup();
+    const store = memoryStore();
+    render(<App store={store} />);
+    await user.click(screen.getByRole('button', { name: /^Versus/ }));
+    await user.selectOptions(screen.getByLabelText('You fight as'), 'person:kakashi');
+    await user.selectOptions(screen.getByLabelText('Against'), 'person:guy');
+    await user.click(screen.getByRole('button', { name: 'Fight' }));
+    expect(screen.getAllByText(/Might Guy/).length).toBeGreaterThan(0);
+    expect(store.data).toBeNull();
   });
 
   it('lets you start dead last, and your file and sheet say so', async () => {
     const user = userEvent.setup();
     const store = memoryStore();
     render(<App store={store} />);
+    await user.click(screen.getByRole('button', { name: /^New game/ }));
     await user.click(screen.getByRole('button', { name: /Land of Embers/ }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
@@ -477,6 +507,7 @@ describe('App (smoke test)', () => {
     const user = userEvent.setup();
     const store = memoryStore();
     render(<App store={store} />);
+    await user.click(screen.getByRole('button', { name: /^New game/ }));
     await user.click(screen.getByRole('button', { name: /Hidden Leaf/ }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
