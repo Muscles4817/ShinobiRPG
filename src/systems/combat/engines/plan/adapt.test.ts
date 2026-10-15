@@ -1,10 +1,11 @@
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
-import { ADAPT_AFTER, beats, betweenRounds, walksInto } from './adapt';
+import { beats, betweenRounds, walksInto } from './adapt';
 import type { Card } from './cards';
 import { chooseCard } from './choose';
 import { useJutsu } from './jutsu';
+import { adaptsAfter } from './judgement';
 import { plannedPlay } from './priority';
 import { noteAttack, readOf, styleOf } from './reads';
 import { initialFighters, plainSlots, type PlanFighter, type Reads, type Round } from './state';
@@ -14,7 +15,8 @@ const attributes = {
   speed: 5,
   stamina: 20,
   chakraControl: 5,
-  intellect: 5,
+  // A C-grade mind: reads a defence in the moment, rethinks after a few attacks.
+  intellect: 16,
   perception: 5,
   willpower: 5,
   taijutsu: 20,
@@ -59,6 +61,8 @@ const smash: CombatTechnique = {
   effects: [{ verb: 'break', power: 12 }],
   chakraCost: 4,
 };
+
+const ADAPT_AFTER = adaptsAfter({ attributes });
 
 const card = (technique: CombatTechnique): Card => ({ kind: 'jutsu', technique });
 

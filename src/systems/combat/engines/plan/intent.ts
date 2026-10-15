@@ -9,6 +9,7 @@ import { hasVerb } from '../../rules/verbs';
 import { cardId, findCard, fitsBand, isOffence, playable, type Card } from './cards';
 import { chooseCard, desperate } from './choose';
 import { ownField } from './field';
+import { planAdherence } from './judgement';
 import { plannedPlay } from './priority';
 import { opponentsOf } from './senses';
 import { cardLabel } from './wording';
@@ -27,13 +28,6 @@ export type Intents = Readonly<Record<string, CardId>>;
 
 type Table = Pick<PlanState, 'fighters' | 'range' | 'exchange' | 'field' | 'round' | 'reads'>;
 
-/**
- * How often a foe plays its plan in priority order, as the player does (its default plan
- * already holds its instincts as slot conditions); otherwise it follows instinct, so a foe is
- * never wholly predictable.
- */
-export const PLANNED_CHANCE = 0.7;
-
 /** The table as a round about to be played, for a foe weighing its plan. */
 function asRound(table: Table): Round {
   return {
@@ -50,7 +44,9 @@ function asRound(table: Table): Round {
 }
 
 function intentOf(table: Table, self: PlanFighter, rng: Rng): CardId {
-  if (rng.chance(PLANNED_CHANCE)) return cardId(plannedPlay(self, asRound(table)).card);
+  // A foe plays its plan in priority order as often as its judgement keeps it to it (its
+  // default plan already holds its instincts as slot conditions); otherwise it follows instinct.
+  if (rng.chance(planAdherence(self))) return cardId(plannedPlay(self, asRound(table)).card);
   const foes = opponentsOf(table.fighters, self);
   const inSight = foes.filter(targetable);
   const moment = {

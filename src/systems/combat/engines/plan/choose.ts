@@ -14,6 +14,7 @@ import {
 import { beats, seenDefence, walksInto } from './adapt';
 import { isOffence, playable, slotted, type Card } from './cards';
 import { partnered } from './combo';
+import { beatsWeight } from './judgement';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
@@ -38,9 +39,14 @@ const LOW_HEALTH = 0.35;
 const DAZE_FIRST_CHANCE = 0.6;
 const BASIC_WEIGHT = 5;
 const STEP_WEIGHT = 5;
-/** How much likelier an attack that beats the foe's seen defence is; one walking into it, less. */
-const BEATS_WEIGHT = 2;
+/** How much likelier an attack that walks into the foe's seen defence is (`judgement.ts` sets the lean towards one that beats it). */
 const WALKS_INTO_WEIGHT = 0.5;
+
+/** The defence a fighter has seen its foe keep, and how hard it leans on what beats it. */
+interface Lean {
+  readonly defence: DefenceKind;
+  readonly beatsBy: number;
+}
 
 function jutsu(cards: readonly Card[], test: (t: CombatTechnique) => boolean): Card | undefined {
   return cards
@@ -54,18 +60,18 @@ function baseWeight(card: Card): number {
 }
 
 /** Stronger cards more often; for a foe, ones that get past the defence it has seen more still. */
-function weight(card: Card, defence: DefenceKind | undefined): number {
+function weight(card: Card, lean: Lean | undefined): number {
   const base = baseWeight(card);
-  if (!defence) return base;
-  if (beats(card, defence)) return base * BEATS_WEIGHT;
-  return walksInto(card, defence) ? base * WALKS_INTO_WEIGHT : base;
+  if (!lean) return base;
+  if (beats(card, lean.defence)) return base * lean.beatsBy;
+  return walksInto(card, lean.defence) ? base * WALKS_INTO_WEIGHT : base;
 }
 
-function weighted(cards: readonly Card[], rng: Rng, defence?: DefenceKind): Card | undefined {
-  const total = cards.reduce((sum, c) => sum + weight(c, defence), 0);
+function weighted(cards: readonly Card[], rng: Rng, lean?: Lean): Card | undefined {
+  const total = cards.reduce((sum, c) => sum + weight(c, lean), 0);
   let roll = rng.next() * total;
   for (const card of cards) {
-    roll -= weight(card, defence);
+    roll -= weight(card, lean);
     if (roll < 0) return card;
   }
   return cards[cards.length - 1];
@@ -162,8 +168,13 @@ function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, 
   const finisher = jutsu(harmful, isWounding);
   if (finisher && foe && isDazed(foe)) return finisher;
   const usual = harmful.filter((c) => c !== daze || fresh);
-  const defence = self.side === 'enemy' ? seenDefence(moment.reads, foe, moment.band) : undefined;
-  return weighted(usual, rng, defence) ?? fallback(self, moment);
+  return weighted(usual, rng, leanOf(self, moment)) ?? fallback(self, moment);
+}
+
+/** A foe's lean towards what beats the defence it has seen this one keep here. */
+function leanOf(self: PlanFighter, { reads, foe, band }: Moment): Lean | undefined {
+  const defence = self.side === 'enemy' ? seenDefence(reads, foe, band) : undefined;
+  return defence ? { defence, beatsBy: beatsWeight(self) } : undefined;
 }
 
 /** Nothing to play: look for a hidden foe when no one is in sight, else improvise. */

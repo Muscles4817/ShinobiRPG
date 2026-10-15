@@ -3,6 +3,7 @@ import { alive } from '../../rules/body';
 import { RANGE_BANDS } from '../../rules/range';
 import { cardId, type Card } from './cards';
 import { substitutionsReady } from './footwork';
+import { adaptsAfter } from './judgement';
 import { reactionAt, reactionChoices } from './readiness';
 import { defenceKind as kindOf, readOf, styleOf } from './reads';
 import type { AttackStyle, DefenceKind, PlanFighter, Reactions, Reads } from './state';
@@ -12,12 +13,9 @@ import type { AttackStyle, DefenceKind, PlanFighter, Reactions, Reads } from './
  * you keep at this distance comes first (a guard-breaker or flurry on a Guard, an illusion or a
  * sure technique on a Dodge, anything but a blow on a Counter, an illusion on a substitution),
  * and a blow that walks into a seen Counter is held back. Between rounds, once they've seen
- * enough of your attacks, a foe keeps the defence that best meets them. They only answer with
+ * enough of your attacks (more for a duller mind, `judgement.ts`), a foe keeps the defence that best meets them. They only answer with
  * cards they have, and only habits they've seen.
  */
-
-/** Attacks seen before a foe rethinks its defence between rounds. */
-export const ADAPT_AFTER = 3;
 
 /** How well each defence meets each style of attack, by the rules in `react.ts`. */
 const MEETS: Readonly<Record<DefenceKind, Readonly<Record<AttackStyle, number>>>> = {
@@ -105,7 +103,7 @@ function bestAt(self: PlanFighter, band: RangeBand, attacks: Partial<Record<Atta
 function rethink(self: PlanFighter, fighters: readonly PlanFighter[], reads: Reads): PlanFighter {
   const attacks = seenAttacks(fighters, self, reads);
   const total = Object.values(attacks).reduce((sum, n) => sum + n, 0);
-  if (total < ADAPT_AFTER) return self;
+  if (total < adaptsAfter(self)) return self;
   const [close = null, mid = null, far = null] = RANGE_BANDS.map((b) => bestAt(self, b, attacks));
   const reactions: Reactions = { close, mid, far };
   return { ...self, reactions };

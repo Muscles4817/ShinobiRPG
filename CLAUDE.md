@@ -201,12 +201,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     the fighter steps towards it first (after an emergency slot), and a step still costs the turn
     (`plan/stepping.ts`); without one, they step home only when nothing slotted does anything
     there, else throw a plain blow (never slotted). Foes play
-    their default plan by priority, as the player does, most of the time (`PLANNED_CHANCE`), and
-    instinct otherwise; a default plan keeps its best attack, brings a Search against a foe that
+    their default plan by priority, as the player does, as often as their judgement keeps them to
+    it, and instinct otherwise (`plan/judgement.ts`: intellect grade sets plan adherence, whether
+    they read you in the moment, how hard instinct leans on a read, and how soon they adapt); a default plan keeps its best attack, brings a Search against a foe that
     hides, and a kit that fights from one distance makes for it (`fightsFromHome`). Fighters **read** each
     other (`reads.ts`: defences seen per distance, attacks by style, public to opponents); foes
     put it to use (`adapt.ts`): an attack that `beats` your seen defence comes first, a blow
-    that walks into a seen Counter is held back, and between rounds, after `ADAPT_AFTER` attacks,
+    that walks into a seen Counter is held back, and between rounds, after enough attacks (`adaptsAfter`),
     a foe keeps the defence that best meets what you throw. Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
     foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
