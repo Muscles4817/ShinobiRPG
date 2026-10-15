@@ -25,6 +25,8 @@ import { movedTo } from './groundPlay';
 import { canHit } from './rows';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { wound } from './wound';
+import { knockLine } from './sceneVoice';
+import { momentOf } from './voice';
 
 /**
  * The verbs that leave something behind in a planned fight (`rules/verbs/lingering.ts`): a
@@ -41,10 +43,8 @@ interface Aim {
 export function knock(round: Round, target: PlanFighter, use: EffectUse<'knock'>): Round {
   const { to } = use.effect;
   if (round.range === to) return round;
-  const line =
-    to === 'close'
-      ? `${target.name} is dragged in close!`
-      : `${target.name} is thrown back to ${RANGE_LABEL[to].toLowerCase()} range!`;
+  const where = RANGE_LABEL[to].toLowerCase();
+  const line = knockLine(momentOf(round, target.id), target.name, where, to === 'close');
   return movedTo(round, to, line);
 }
 

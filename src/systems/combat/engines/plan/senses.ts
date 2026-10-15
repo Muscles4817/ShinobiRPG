@@ -12,6 +12,8 @@ import {
 import { dulled } from '../../rules/verbs';
 import { patch, paying, say, type PlanFighter, type Round } from './state';
 import { inCover } from './groundPlay';
+import { emptySearchLine, foundLine, momentOf } from './voice';
+import { clearHeadLine, rehideLine } from './sceneVoice';
 
 /**
  * Hidden and Confused in a planned fight. Illusionists slip back into hiding every few
@@ -41,7 +43,7 @@ function rehide(round: Round, actor: PlanFighter): Round {
   if (actor.hidden || !rehidesNow(actor, round.number)) return round;
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, { hidden: true }) },
-    `${actor.name} melts back into the illusion.`,
+    rehideLine(momentOf(round, actor.id), actor.name),
   );
 }
 
@@ -50,7 +52,7 @@ function clearHead(round: Round, actor: PlanFighter, rng: Rng): Round {
   if (rng.chance(shakeOffChance(actor))) {
     return say(
       { ...round, fighters: patch(round.fighters, actor.id, { confused: 0 }) },
-      `${actor.name} shakes off the illusion.`,
+      clearHeadLine(momentOf(round, actor.id), actor.name),
     );
   }
   return { ...round, fighters: patch(round.fighters, actor.id, { confused: actor.confused - 1 }) };
@@ -78,9 +80,10 @@ export function search(round: Round, { actor, rng }: Turn): Round {
   const found = hidden.filter((foe) =>
     rng.chance(searchChance(seeker, inCover(round.ground, foe))),
   );
-  if (found.length === 0) return say(round, `${actor.name} searches, but finds no one.`);
+  const moment = momentOf(round, actor.id);
+  if (found.length === 0) return say(round, emptySearchLine(moment, actor.name));
   const names = found.map((f) => f.name).join(' and ');
-  return say(reveal(round, found), `${actor.name} spots ${names}!`);
+  return say(reveal(round, found), foundLine(moment, actor.name, names));
 }
 
 export function dispel(round: Round, { actor, rng }: Turn): Round {

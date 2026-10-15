@@ -9,7 +9,9 @@ import { RANGE_LABEL } from '../../rules/range';
 import { hasVerb, isPinned, moveGoal, substitutable } from '../../rules/verbs';
 import type { Card } from './cards';
 import { movedTo } from './groundPlay';
+import { swapLine } from './sceneVoice';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
+import { momentOf } from './voice';
 
 /**
  * Move and substitute in a planned fight. A move is footwork no one contests: its user is
@@ -97,6 +99,11 @@ export function substituted(round: Round, ready: readonly Card[], swap: Swap): S
   const line =
     wall === 'strong'
       ? `${name} swallows ${attacker.name}'s ${swap.what} and still stands.`
-      : `${target.name} swaps out of ${attacker.name}'s ${swap.what} with ${name}.`;
+      : swapLine(momentOf(paid, target.id), {
+          target: target.name,
+          attacker: attacker.name,
+          what: swap.what,
+          jutsu: name,
+        });
   return { round: say(paid, reactionLine(line, 'swapped')), escaped: true };
 }

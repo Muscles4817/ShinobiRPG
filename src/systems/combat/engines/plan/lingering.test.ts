@@ -1,6 +1,8 @@
 import { createRng } from '@/core';
 import type { TechniqueEffect } from '@/systems/techniques';
 
+import { SLIPS } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique, RangeBand } from '../../contract';
 import { useJutsu } from './jutsu';
 import { lingerAfter, lingeringStatuses } from './lingering';
@@ -106,7 +108,7 @@ describe('verbs that leave something behind, in plan & watch', () => {
           { ...round, fighters },
           { attacker: hero!, target: target!, blow, rng: createRng(seed) },
         );
-        if (after.lines.some((l) => l.includes('slips past'))) n++;
+        if (after.lines.some((l) => SLIPS.test(l))) n++;
       }
       return n;
     };

@@ -16,6 +16,7 @@ import {
 import { react } from './react';
 import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { dazeLine, momentOf } from './voice';
 
 /**
  * Traps in a planned fight. A trap is set at the distance the fight stands at; the first foe of
@@ -75,7 +76,7 @@ function spring(start: Round, setter: PlanFighter, victim: PlanFighter, rng: Rng
   if (!canDaze(struck, hit.number)) return hit;
   return say(
     { ...hit, fighters: patch(hit.fighters, victim.id, dazeIn(hit.number)) },
-    `${victim.name} is dazed!`,
+    dazeLine(momentOf(hit, victim.id), victim.name),
   );
 }
 

@@ -1,6 +1,8 @@
 import { createRng } from '@/core';
 
 import type { CombatGround, CombatantSetup, CombatTechnique } from '../../contract';
+import { spots } from '@/test/fightLines';
+
 import { createPlanEngine } from './engine';
 import { useJutsu } from './jutsu';
 import { search } from './senses';
@@ -125,7 +127,7 @@ describe('the ground in a fight', () => {
         };
         const hero = hidden.fighters[0]!;
         const after = search(hidden, { actor: hero, target: undefined, rng: createRng(seed) });
-        if (after.lines.some((l) => l.includes('spots'))) hits++;
+        if (after.lines.some((l) => spots('hero', 'bandit').test(l))) hits++;
       }
       return hits;
     };

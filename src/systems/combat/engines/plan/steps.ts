@@ -1,12 +1,13 @@
 import { clamp } from '@/core';
 
 import type { RangeBand } from '../../contract';
-import { RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
+import { RANGE_BANDS, RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { footingOf, withinGround } from '../../rules/ground';
 import { isPinned } from '../../rules/verbs';
 import type { Turn } from './senses';
 import { patch, say, type Round } from './state';
 import { holdOff } from './zoning';
+import { blockedStepLine, momentOf, stepLine } from './voice';
 
 /**
  * A step: the fighter tries for the next distance in or out, contested by the foe's speed. A
@@ -20,8 +21,10 @@ const STEP_MIN = 0.25;
 const STEP_MAX = 0.85;
 
 function arrive(round: Round, { actor }: Turn, to: RangeBand): Round {
+  const closing = RANGE_BANDS.indexOf(to) < RANGE_BANDS.indexOf(round.range);
+  const where = RANGE_LABEL[to].toLowerCase();
   return {
-    ...say(round, `${actor.name} moves to ${RANGE_LABEL[to].toLowerCase()} range.`),
+    ...say(round, stepLine(momentOf(round, actor.id), actor.name, where, closing)),
     range: to,
   };
 }
@@ -41,7 +44,7 @@ function stride(round: Round, { actor, target: foe, rng }: Turn, direction: 'in'
     ? arrive(round, { actor, target: foe, rng }, to)
     : say(
         round,
-        `${actor.name} tries for ${where} range, but ${foe?.name ?? 'no one'} won't allow it.`,
+        blockedStepLine(momentOf(round, actor.id), actor.name, where, foe?.name ?? 'no one'),
       );
 }
 

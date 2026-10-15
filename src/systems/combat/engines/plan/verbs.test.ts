@@ -1,5 +1,7 @@
 import { createRng } from '@/core';
 
+import { A_HIT, SEES_IT_COMING, SMASHED, castsLine, hitsOn } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique, CombatTrait } from '../../contract';
 import { createPlanEngine } from './engine';
 import { useJutsu } from './jutsu';
@@ -100,11 +102,9 @@ describe('plan & watch verbs: area', () => {
     const foes: Partial<CombatantSetup>[] = [{}, {}, { traits: ['illusionist'] }];
     const round = roundOf({ foes });
     expect(fighterIn(round, 'foe3')?.hidden).toBe(true);
-    const after = useUntil(round, sweep, /sweep hits foe3/);
-    const hitLines = after.lines.filter((l) => l.startsWith("hero's sweep hits"));
-    expect(hitLines.length + after.lines.filter((l) => l.includes('sees it coming')).length).toBe(
-      3,
-    );
+    const after = useUntil(round, sweep, hitsOn('foe3', 'sweep'));
+    const hitLines = after.lines.filter((l) => l.startsWith("hero's sweep ") && A_HIT.test(l));
+    expect(hitLines.length + after.lines.filter((l) => SEES_IT_COMING.test(l)).length).toBe(3);
     expect(health(after, 'foe3')).toBeLessThan(80);
   });
 
@@ -117,7 +117,7 @@ describe('plan & watch verbs: area', () => {
     const fighters = [hero, fighterIn(round, 'foe1')!];
     const state = stateOf({ ...round, range: 'mid', fighters });
     const after = resolveExchange(state, createRng(2));
-    expect(said(after.log)).toContain('hero uses sweep!');
+    expect(said(after.log).some((l) => castsLine(l, 'hero', 'sweep'))).toBe(true);
   });
 });
 
@@ -179,12 +179,12 @@ describe('plan & watch verbs: break', () => {
   const guarding: Loadout = { close: plainSlots(['guard']), mid: [], far: [] };
   const hurt = (t: CombatTechnique, traits: CombatTrait[] = []) => {
     const round = roundOf({ foes: [{ traits }], foeCards: guarding });
-    return 80 - health(useUntil(round, t, new RegExp(`${t.name} hits`)), 'foe1');
+    return 80 - health(useUntil(round, t, hitsOn('foe1', t.name)), 'foe1');
   };
 
   it('smashes through a guard', () => {
     const round = roundOf({ foeCards: guarding });
-    const after = useUntil(round, smash, /smashing through the guard/);
+    const after = useUntil(round, smash, SMASHED);
     expect(health(after, 'foe1')).toBeLessThan(80);
     expect(hurt(smash)).toBeGreaterThan(hurt(punch));
   });

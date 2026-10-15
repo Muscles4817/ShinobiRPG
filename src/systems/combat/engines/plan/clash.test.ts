@@ -1,5 +1,7 @@
 import { createRng } from '@/core';
 
+import { hitsOn } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { useJutsu } from './jutsu';
 import { fighterIn, initialFighters, type Round } from './state';
@@ -114,7 +116,7 @@ describe('clashes', () => {
   });
 
   it('no clash without an elemental attack about to come back', () => {
-    const after = throwUntil(facing(waterBullet, false), fireball, /hits bandit/);
+    const after = throwUntil(facing(waterBullet, false), fireball, hitsOn('bandit'));
     expect(after.lines.join(' ')).not.toMatch(/meets it/);
   });
 });

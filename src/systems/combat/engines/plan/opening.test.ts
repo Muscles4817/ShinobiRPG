@@ -7,6 +7,8 @@ import type {
   CombatState,
   CombatTechnique,
 } from '../../contract';
+import { castsLine } from '@/test/fightLines';
+
 import { createPlanEngine } from './engine';
 import { decode, encode } from './state';
 import { splitNarration } from '../../rules/narration';
@@ -129,7 +131,7 @@ describe('plan & watch trump cards', () => {
     let state = act(engine, engine.start(fight, createRng(3)), 'begin');
     for (let round = 0; round < 3; round++)
       state = act(engine, act(engine, state, 'round'), 'begin');
-    const uses = said(engine.view(state).log).filter((line) => line === 'hero uses Blaze!');
+    const uses = said(engine.view(state).log).filter((line) => castsLine(line, 'hero', 'Blaze'));
     expect(uses).toHaveLength(1);
     const plan = decode(state);
     const beaten = plan.fighters.map((f) => (f.side === 'enemy' ? { ...f, health: 0 } : f));

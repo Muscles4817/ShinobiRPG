@@ -1,5 +1,7 @@
 import { createRng } from '@/core';
 
+import { searchesInVain, spots } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatItem, CombatItemEffect, CombatTrait } from '../../contract';
 import { cardsFor } from './cards';
 import { defaultLoadout } from './defaults';
@@ -218,7 +220,7 @@ describe('plan & watch tools: smoke and flash', () => {
     const first = resolveExchange(stateOf([hero!, foe!]), createRng(1));
     expect(heroOf(first).hidden).toBe(true);
     expect(heroOf(first).health).toBe(50);
-    expect(said(first.log)).toContain('foe searches, but finds no one.');
+    expect(said(first.log).some((l) => searchesInVain('foe').test(l))).toBe(true);
     const second = resolveExchange(first, createRng(4));
     expect(second.log.some((l) => l.includes('hero') && l.includes('kunai'))).toBe(true);
     expect(heroOf(second).hidden).toBe(false);
@@ -249,9 +251,9 @@ describe('plan & watch tools: explosive tags', () => {
   it('a blast is an attack that needs a target in sight, and is not spent without one', () => {
     const [hero, foe] = pair([tool('blast')], ['item:blast'], { foeTraits: ['illusionist'] });
     const next = resolveExchange(stateOf([hero!, foe!]), createRng(1));
-    expect(next.log.some((l) => l.startsWith('hero searches') || l.startsWith('hero spots'))).toBe(
-      true,
-    );
+    expect(
+      next.log.some((l) => searchesInVain('hero').test(l) || spots('hero', 'foe').test(l)),
+    ).toBe(true);
     expect(heroOf(next).items[0]?.count).toBe(2);
   });
 

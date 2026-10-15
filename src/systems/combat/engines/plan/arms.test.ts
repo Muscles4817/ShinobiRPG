@@ -1,5 +1,7 @@
 import { createRng, type Rng } from '@/core';
 
+import { hitsOn } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import type { CombatGear, CombatWeapon } from '../../gearContract';
 import { NEEDS_WEAPON } from '../../rules/weapons';
@@ -119,7 +121,7 @@ describe('plan & watch weapons', () => {
     const [bare] = duel({});
     expect(cardLabel({ kind: 'strike' }, armed)).toBe('Cut');
     expect(cardLabel({ kind: 'strike' }, bare)).toBe('Strike');
-    expect(hit({ held: weapon('blade') }).lines.join(' ')).toContain("hero's cut hits foe");
+    expect(hit({ held: weapon('blade') }).lines.join(' ')).toMatch(hitsOn('foe', "hero's cut"));
   });
 
   it('senbon land softer than kunai, and may daze', () => {

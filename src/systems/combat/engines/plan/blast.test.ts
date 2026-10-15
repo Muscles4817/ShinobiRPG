@@ -1,6 +1,8 @@
 import { createRng } from '@/core';
 import type { AreaSize } from '@/systems/techniques';
 
+import { GUARDED, SLIPS } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { useJutsu } from './jutsu';
 import { initialFighters, type Round } from './state';
@@ -66,7 +68,7 @@ describe('area techniques in a fight', () => {
   it('a plain Guard blunts a small one, not a wide one', () => {
     const guardedAt = (size: AreaSize) =>
       Array.from({ length: SEEDS }, (_, i) => cast(facing('guard'), size, i + 1)).filter((r) =>
-        r.lines.some((l) => l.includes('through a guard')),
+        r.lines.some((l) => GUARDED.test(l)),
       ).length;
     expect(guardedAt('small')).toBeGreaterThan(0);
     expect(guardedAt('wide')).toBe(0);
@@ -76,7 +78,7 @@ describe('area techniques in a fight', () => {
     const nimble = { attributes: { ...attributes, speed: 60 }, traits: ['swift' as const] };
     for (let seed = 1; seed <= SEEDS; seed++) {
       const after = cast(facing('dodge', nimble), 'vast', seed);
-      expect(after.lines.join(' ')).not.toMatch(/slips past/);
+      expect(after.lines.join(' ')).not.toMatch(SLIPS);
     }
   });
 

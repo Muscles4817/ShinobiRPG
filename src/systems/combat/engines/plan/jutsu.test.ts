@@ -1,5 +1,7 @@
 import { createRng } from '@/core';
 
+import { GUARDED, SEES_IT_COMING, SLIPS, dazes, hitsOn } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { splitNarration } from '../../rules/narration';
 import { UNSTABLE_MISFIRE } from '../../rules/unstable';
@@ -98,12 +100,12 @@ function crushUntil(round: Round, wanted: RegExp): Round {
 
 describe('plan & watch techniques', () => {
   it('apply their effects in order: the blow lands, then the daze', () => {
-    const after = crushUntil(roundWith(), /hits bandit/);
+    const after = crushUntil(roundWith(), hitsOn('bandit'));
     const bandit = fighterIn(after, 'bandit');
     expect(bandit?.health).toBeLessThan(80);
     expect(bandit?.stunned).toBe(1);
     const said = after.lines.join(' ');
-    expect(said.indexOf('hits bandit')).toBeLessThan(said.indexOf('bandit is dazed'));
+    expect(said.search(hitsOn('bandit'))).toBeLessThan(said.search(dazes('bandit')));
   });
 
   it('a daze leaves the target open until the dazer has had another turn', () => {
@@ -164,9 +166,8 @@ describe('plan & watch techniques', () => {
           jab,
         );
         const told = after.lines.join(' ');
-        expect(told).not.toMatch(/slips past/);
-        if (kept === 'guard' && told.includes('hits bandit'))
-          expect(told).toMatch(/through a guard/);
+        expect(told).not.toMatch(SLIPS);
+        if (kept === 'guard' && hitsOn('bandit').test(told)) expect(told).toMatch(GUARDED);
       }
     }
   });
@@ -187,7 +188,7 @@ describe('plan & watch techniques', () => {
   });
 
   it('add what they cost to the chakra spent in the fight, hit or miss', () => {
-    const once = crushUntil(roundWith(), /hits bandit/);
+    const once = crushUntil(roundWith(), hitsOn('bandit'));
     expect(fighterIn(once, 'hero')).toMatchObject({ chakra: 24, chakraSpent: 6 });
     const [hero, bandit] = once.fighters;
     const twice = useJutsu(once, { actor: hero!, target: bandit, rng: createRng(3) }, crush);
@@ -197,14 +198,14 @@ describe('plan & watch techniques', () => {
 
   it('miss entirely when the target sees them coming', () => {
     const watchful = { attributes: { ...attributes, perception: 60 } };
-    const after = crushUntil(roundWith(watchful), /sees it coming/);
+    const after = crushUntil(roundWith(watchful), SEES_IT_COMING);
     expect(fighterIn(after, 'bandit')).toMatchObject({ health: 80, stunned: 0 });
   });
 
   it('stop at a slipped blow: what follows it misses too', () => {
     const nimble = { attributes: { ...attributes, speed: 60 }, traits: ['swift' as const] };
     const dodging = { close: plainSlots(['dodge']), mid: [], far: [] };
-    const after = crushUntil(roundWith(nimble, dodging), /slips past/);
+    const after = crushUntil(roundWith(nimble, dodging), SLIPS);
     expect(fighterIn(after, 'bandit')).toMatchObject({ health: 80, stunned: 0 });
     expect(after.lines.join(' ')).not.toMatch(/dazed/);
   });

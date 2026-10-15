@@ -1,5 +1,7 @@
 import { createRng } from '@/core';
 
+import { castsLine, SWAPS } from '@/test/fightLines';
+
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { raiseField } from '../../rules/verbs';
 import { cardsFor, playable, reactionsFor } from './cards';
@@ -176,7 +178,7 @@ describe('plan & watch verbs: field', () => {
     let state = stateOf(withCards(roundOf(), 'hero', cards));
     const rng = createRng(2);
     for (let i = 0; i < 3 && !state.result; i++) state = resolveExchange(state, rng);
-    expect(said(state.log).filter((l) => l === 'hero uses fog!')).toHaveLength(1);
+    expect(said(state.log).filter((l) => castsLine(l, 'hero', 'fog'))).toHaveLength(1);
   });
 
   it('can be in place when the fight opens', () => {
@@ -249,7 +251,7 @@ describe('plan & watch verbs: substitute', () => {
     const first = hit(round);
     expect(hero(first).health).toBe(100);
     expect(hero(first).chakra).toBeLessThan(60);
-    expect(first.lines.some((l) => l.includes('swaps out of'))).toBe(true);
+    expect(first.lines.some((l) => SWAPS.test(l))).toBe(true);
     const second = hit({ ...first, number: 2 });
     expect(hero(second).health).toBeLessThan(100);
     const nextRound = { ...second, fighters: substitutionsReady(second.fighters) };
