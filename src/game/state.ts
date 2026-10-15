@@ -73,10 +73,11 @@ export interface GameState {
   readonly versus?: VersusMatch;
 }
 
-/** A versus bout: the two sides' names and how your fighter came into it. */
+/** A versus bout: who stood on each side (roster ids, you first) and how you came into it. */
 export interface VersusMatch {
-  readonly youId: string;
-  readonly foeId: string;
+  readonly side: readonly string[];
+  readonly foes: readonly string[];
+  /** The other side, named for the result card ("Zabuza Momochi and Haku"). */
   readonly foeName: string;
   readonly startHealth: number;
   readonly startChakra: number;

@@ -112,12 +112,38 @@
   gap: 8px;
 }
 
-.versus-side label {
+.versus-side {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.versus-side h2 {
+  font-family: var(--font-story);
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.versus-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.versus-remove {
+  align-self: flex-end;
+}
+
+.versus-problem {
+  margin: 0;
+  color: var(--cost);
+}
+
+.versus-slot label {
   font-family: var(--font-story);
   font-size: 1.1rem;
 }
 
-.versus-side select {
+.versus-slot select {
   min-height: 44px;
   padding: 0 10px;
   font: inherit;

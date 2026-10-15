@@ -4,6 +4,8 @@ import {
   contextForPack,
   packChoices,
   VERSUS_GROUPS,
+  VERSUS_SIDE_MAX,
+  versusProblem,
   versusRoster,
   type GameContext,
   type VersusFighter,
@@ -16,8 +18,9 @@ const PREFERRED_PACK = 'naruto';
 
 export interface VersusChoice {
   readonly ctx: GameContext;
-  readonly youId: string;
-  readonly foeId: string;
+  /** Your side by roster id, you first. */
+  readonly side: readonly string[];
+  readonly foes: readonly string[];
 }
 
 interface PickerProps {
@@ -25,14 +28,16 @@ interface PickerProps {
   readonly roster: readonly VersusFighter[];
   readonly value: string;
   readonly onChange: (id: string) => void;
+  /** Absent for the one slot a side can't do without. */
+  readonly onRemove?: () => void;
 }
 
-/** One side's fighter: a list grouped by rank, and the one chosen as a card. */
-function FighterPicker({ label, roster, value, onChange }: PickerProps) {
+/** One fighter: a list grouped by rank, and the one chosen as a card. */
+function FighterPicker({ label, roster, value, onChange, onRemove }: PickerProps) {
   const chosen = roster.find((f) => f.id === value);
   const id = `versus-${label.replace(/\s+/g, '-').toLowerCase()}`;
   return (
-    <section className="versus-side">
+    <div className="versus-slot">
       <label htmlFor={id}>{label}</label>
       <select
         id={id}
@@ -65,6 +70,59 @@ function FighterPicker({ label, roster, value, onChange }: PickerProps) {
           </span>
         </div>
       )}
+      {onRemove && (
+        <button type="button" className="btn ghost small versus-remove" onClick={onRemove}>
+          Remove {chosen?.name ?? 'this fighter'}
+        </button>
+      )}
+    </div>
+  );
+}
+
+interface SideProps {
+  readonly heading: string;
+  /** What each slot is called, by position: "You fight as", "Ally 2"… */
+  readonly slotLabel: (index: number) => string;
+  readonly addLabel: string;
+  readonly roster: readonly VersusFighter[];
+  readonly ids: readonly string[];
+  readonly onChange: (ids: readonly string[]) => void;
+}
+
+/** One side of the bout: one to four fighters. */
+function SideEditor({ heading, slotLabel, addLabel, roster, ids, onChange }: SideProps) {
+  const full = ids.length >= VERSUS_SIDE_MAX;
+  return (
+    <section className="versus-side" aria-label={heading}>
+      <h2>{heading}</h2>
+      {ids.map((value, i) => (
+        <FighterPicker
+          key={i}
+          label={slotLabel(i)}
+          roster={roster}
+          value={value}
+          onChange={(id) => {
+            onChange(ids.map((old, j) => (j === i ? id : old)));
+          }}
+          {...(i > 0
+            ? {
+                onRemove: () => {
+                  onChange(ids.filter((_, j) => j !== i));
+                },
+              }
+            : {})}
+        />
+      ))}
+      <button
+        type="button"
+        className="btn ghost"
+        disabled={full}
+        onClick={() => {
+          onChange([...ids, ids[ids.length - 1] ?? roster[0]?.id ?? '']);
+        }}
+      >
+        {full ? `A side fields at most ${VERSUS_SIDE_MAX}` : addLabel}
+      </button>
     </section>
   );
 }
@@ -74,23 +132,30 @@ function defaultPack(): string {
   return (packs.find((p) => p.id === PREFERRED_PACK) ?? packs[0])?.id ?? '';
 }
 
+/** Ids still in this world's roster; a side left empty gets the fallback fighter. */
+function kept(ids: readonly string[], roster: readonly VersusFighter[], fallback: number) {
+  const known = ids.filter((id) => roster.some((f) => f.id === id));
+  const first = roster[fallback]?.id ?? roster[0]?.id;
+  return known.length > 0 ? known : first ? [first] : [];
+}
+
 interface VersusSetupProps {
   readonly initial: VersusChoice | null;
   readonly onFight: (choice: VersusChoice) => void;
   readonly onBack: () => void;
 }
 
-/** Choose a world and two fighters, then fight. */
+/** Choose a world and the two sides, one to four fighters each, then fight. */
 export function VersusSetup({ initial, onFight, onBack }: VersusSetupProps) {
   const packs = useMemo(() => packChoices(), []);
   const [packId, setPackId] = useState(() => initial?.ctx.content.packId ?? defaultPack());
   const ctx = useMemo(() => contextForPack(packId), [packId]);
   const roster = useMemo(() => (ctx ? versusRoster(ctx) : []), [ctx]);
-  const [youId, setYouId] = useState(initial?.youId ?? '');
-  const [foeId, setFoeId] = useState(initial?.foeId ?? '');
-  const has = (id: string) => roster.some((f) => f.id === id);
-  const you = has(youId) ? youId : (roster[0]?.id ?? '');
-  const foe = has(foeId) ? foeId : (roster[1]?.id ?? you);
+  const [sideIds, setSideIds] = useState<readonly string[]>(initial?.side ?? []);
+  const [foeIds, setFoeIds] = useState<readonly string[]>(initial?.foes ?? []);
+  const side = kept(sideIds, roster, 0);
+  const foes = kept(foeIds, roster, 1);
+  const problem = ctx ? versusProblem(ctx, side, foes) : 'Choose a world.';
 
   return (
     <main className="versus-setup">
@@ -99,10 +164,10 @@ export function VersusSetup({ initial, onFight, onBack }: VersusSetupProps) {
           Main menu
         </button>
         <h1>Versus</h1>
-        <p className="muted">Two fighters as the world writes them, head to head.</p>
+        <p className="muted">Fighters as the world writes them, up to four a side.</p>
       </header>
       {packs.length > 1 && (
-        <section className="versus-side">
+        <section className="versus-slot">
           <label htmlFor="versus-world">World</label>
           <select
             id="versus-world"
@@ -119,24 +184,39 @@ export function VersusSetup({ initial, onFight, onBack }: VersusSetupProps) {
           </select>
         </section>
       )}
-      <FighterPicker label="You fight as" roster={roster} value={you} onChange={setYouId} />
+      <SideEditor
+        heading="Your side"
+        slotLabel={(i) => (i === 0 ? 'You fight as' : `Ally ${i + 1}`)}
+        addLabel="Add an ally"
+        roster={roster}
+        ids={side}
+        onChange={setSideIds}
+      />
       <button
         type="button"
         className="btn ghost versus-swap"
         onClick={() => {
-          setYouId(foe);
-          setFoeId(you);
+          setSideIds(foes);
+          setFoeIds(side);
         }}
       >
         Swap sides
       </button>
-      <FighterPicker label="Against" roster={roster} value={foe} onChange={setFoeId} />
+      <SideEditor
+        heading="The other side"
+        slotLabel={(i) => `Opponent ${i + 1}`}
+        addLabel="Add an opponent"
+        roster={roster}
+        ids={foes}
+        onChange={setFoeIds}
+      />
+      {problem && <p className="versus-problem">{problem}</p>}
       <button
         type="button"
         className="btn wide"
-        disabled={!ctx || !you || !foe}
+        disabled={!ctx || problem !== null}
         onClick={() => {
-          if (ctx) onFight({ ctx, youId: you, foeId: foe });
+          if (ctx) onFight({ ctx, side, foes });
         }}
       >
         Fight
