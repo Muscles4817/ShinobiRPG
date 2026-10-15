@@ -22,7 +22,8 @@ import { ctx as originalPack } from '@/test/gameFixtures';
  * THE PACING HARNESS
  *
  * A scripted "focused player" who lives day by day through real `dispatch` actions, the way a
- * keen player would: training with their sensei whenever they can and with any genin better
+ * keen player would: keeping the sessions their sensei plans, training with their sensei
+ * whenever they can and with any genin better
  * than them in their focus (unless the plan says to drill alone), the standing job every few
  * days for money, food when hungry, the hospital when badly hurt, and otherwise the one drill
  * they've chosen, napping when out of energy and sleeping at the end of the day. It records
@@ -42,6 +43,8 @@ export interface FocusPlan {
    * genin ahead of them in their focus. Off, they only drill (and fight).
    */
   readonly withTeachers: boolean;
+  /** Whether they skip the short sessions their sensei plans (the lesson they still take). */
+  readonly skipsSessions?: boolean;
 }
 
 export interface DayRecord {
@@ -154,6 +157,7 @@ function nextAction(state: GameState, today: Today): GameAction {
   const jobDay = state.time.day % plan.missionEveryDays === 0 && !today.jobDone;
   const work: GameAction[] = [
     { type: 'dismissReport' },
+    ...(plan.withTeachers && !plan.skipsSessions ? [{ type: 'senseiSession' } as const] : []),
     ...teacherSessions(state, today),
     ...(jobDay ? [{ type: 'startMission', missionId: today.jobId } as const] : []),
     { type: 'train', trainingId: plan.drillId },

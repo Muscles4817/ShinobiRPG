@@ -19,15 +19,17 @@ import type { GameState } from '../state';
 export const NOMINATION_BOND_STAGE = 2;
 /** Jobs done before a sensei will nominate you, by how soon they put students forward. */
 export const NOMINATION_MISSIONS: Readonly<Record<NominationHabit, number>> = {
-  early: 7,
+  early: 8,
   usual: 10,
-  late: 14,
+  late: 13,
 };
 
 /** Jobs this sensei wants to see done before they nominate you. */
 export function nominationMissions(sensei: PersonDef): number {
   return NOMINATION_MISSIONS[sensei.sensei?.ways.gatekeeping.nominates ?? 'usual'];
 }
+/** Your sensei must rate you at least this (`game/sensei/state.ts`): kept sessions earn it. */
+export const NOMINATION_REGARD = 40;
 /** Readiness: at least this many stats at C (chūnin grade)… */
 export const READY_AT_C = 1;
 /** …and at least this many at D or better. */
@@ -69,6 +71,9 @@ export function nominationBlocker(state: GameState, ctx: GameContext): string | 
   const name = sensei.name;
   if (stageOf(bondOf(state, sensei.id).points) < NOMINATION_BOND_STAGE) {
     return `${name} doesn’t know you well enough to vouch for you. Be at least ${stageForPair(NOMINATION_BOND_STAGE)}.`;
+  }
+  if (state.mentor.regard < NOMINATION_REGARD) {
+    return `${name} isn’t sure you take this seriously. Keep the sessions they set you.`;
   }
   const gap = readinessGap(state.character.stats);
   if (gap) return `${name} doesn’t think you’re ready. You need ${gap}.`;

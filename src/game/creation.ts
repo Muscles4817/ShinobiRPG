@@ -32,6 +32,7 @@ import { NO_EXAMS } from './exam/state';
 import { defaultSettings } from './fightStyle';
 import { withIssuedBlade } from './gear';
 import { NO_PEOPLE } from './people/state';
+import { NO_MENTOR } from './sensei/state';
 import type { GameState } from './state';
 import { bornNature } from './nature';
 import { BASE_STAT, graduationStats, studentProblems, type StudentProfile } from './student';
@@ -219,6 +220,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     village: { lastSightDay: null, lastRoundDay: null, marks: [], memories: [], clients: {} },
     exams: NO_EXAMS,
     leave: NO_LEAVE,
+    mentor: NO_MENTOR,
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),

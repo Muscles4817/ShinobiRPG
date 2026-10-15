@@ -21,6 +21,7 @@ import { spar } from './spar';
 import { studyScroll } from './scrollStudy';
 import { study } from './study';
 import { trainWith } from './trainWith';
+import { senseiSession } from './senseiSession';
 import { buyRound } from './tavern';
 import { endConversation, reply, talk } from './talk';
 import { testChakraPaper } from './chakraPaper';
@@ -62,6 +63,7 @@ export const HANDLERS: Registry = {
   reply,
   endConversation,
   trainWith,
+  senseiSession,
   spar,
   setCombatStyle,
   setAnimations,
