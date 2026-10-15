@@ -76,6 +76,8 @@ describe('a mission’s story', () => {
       'Take first watch',
       'Drill by the fire',
       'Sleep properly',
+      // A road job: your team and sensei are out here with you.
+      'Sit with the others',
       'Turn in',
     ]);
     s = choose(s, 'Sit with Sister Ume');

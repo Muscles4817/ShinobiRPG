@@ -20,7 +20,7 @@ import { validateRoutes } from './validateRoutes';
 import { validateExercises } from './validateExercises';
 import { validateCrews } from './validateCrews';
 import { validateStory } from './validateStory';
-import { jobProfile } from './jobProfile';
+import { jobProfile, postedAway } from './jobProfile';
 import { placeholdersIn } from './missionTemplates';
 import type { ContentPack, Identified } from './types';
 import { DEFAULT_BUILD_ID, DEFAULT_UPBRINGING } from './upbringing';
@@ -166,7 +166,9 @@ function missionProblems(pack: ContentPack): string[] {
   return pack.missions
     .flatMap((m) => {
       const problems = m.stages.length === 0 ? [`mission "${m.id}" has no stages`] : [];
-      const teamable = m.examOnly === true || canGoWithCrew(jobProfile(m, (id) => enemies.get(id)));
+      const away = postedAway(pack.locations, pack.startLocationId, m.id);
+      const job = jobProfile(m, (id) => enemies.get(id), away);
+      const teamable = m.examOnly === true || canGoWithCrew(job);
       for (const stage of m.stages) {
         if (stage.kind === 'check' && stage.approaches.length === 0) {
           problems.push(`mission "${m.id}" has a check with no approaches`);

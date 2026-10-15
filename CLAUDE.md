@@ -275,10 +275,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it.
 21. **Crews are assigned per job.** Who goes with you is decided for each posting
     (`systems/missions/crew.ts` for the rules, `game/crew.ts` for the people, both hashing the
-    seed and the day it went up): alone, your old team (the sensei leads it from C-rank),
-    genin you lead, a chūnin squad, or under a jōnin. The rules read the job's rank, its
-    **danger** (its worst foe's `EnemyDef.danger`: petty, armed, deadly, elite) and your rank
-    and record: a genin goes alone only against petty foes and never on B or A; a chūnin takes
+    seed and the day it went up): alone, your old team (the sensei leads it from C-rank, and
+    out of the village), genin you lead, a chūnin squad, or under a jōnin. The rules read the
+    job's rank, its **danger** (its worst foe's `EnemyDef.danger`: petty, armed, deadly, elite),
+    whether it is **away** (a road, an `endsAt`, or posted only in another town; `jobProfile`)
+    and your rank and record: a genin goes alone only on in-village chores against petty foes
+    and never on B or A, and in the genin years (`underSensei`, `game/mentorship.ts`) every job
+    out of the village is led by the sensei (`docs/design/sensei-plan.md`); a chūnin takes
     only safe B-rank work and A-rank only under a jōnin; a jōnin's A-rank work goes to them alone
     as their senior record grows. The board, the start action and `validateCrews` all enforce
     them. The run keeps its `crew`; allies, orders, the medic, check roles and bond all read it

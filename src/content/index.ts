@@ -67,5 +67,5 @@ export {
   type BuildDef,
   type UpbringingDef,
 } from './upbringing';
-export { jobProfile } from './jobProfile';
+export { jobProfile, postedAway } from './jobProfile';
 export { VOICE_MOMENTS, type VoiceDef, type VoiceMoment } from './voices';
