@@ -60,6 +60,8 @@ export const SENSEIS: readonly PersonDef[] = [
       style: 'Late, lazy-looking, and misses nothing. Teaches teamwork the hard way.',
       lesson:
         'Kakashi turns up late, closes his book, and runs you ragged through every drill you thought you knew.',
+      // Leads a team of their own already.
+      offered: false,
       ways: KAKASHI_WAYS,
     },
     teacher: KAKASHI_TEACHER,
@@ -102,6 +104,8 @@ export const SENSEIS: readonly PersonDef[] = [
       style: 'Shouts, runs, and never lets you quit. Ever.',
       lesson:
         'Guy has you running laps on your hands before breakfast. He does twice as many, cheering.',
+      // Leads a team of their own already.
+      offered: false,
       ways: GUY_WAYS,
     },
     teacher: GUY_TEACHER,
@@ -137,6 +141,8 @@ export const SENSEIS: readonly PersonDef[] = [
       toleratesReplacement: true,
       lesson:
         'Kurenai walks you through an illusion slowly, then again, until you can see the seams.',
+      // Leads a team of their own already.
+      offered: false,
       ways: KURENAI_WAYS,
     },
     teacher: KURENAI_TEACHER,
@@ -173,6 +179,8 @@ export const SENSEIS: readonly PersonDef[] = [
       toleratesReplacement: true,
       lesson:
         'Asuma teaches you to feel the wind along a blade, then beats you at shōgi to make a point.',
+      // Leads a team of their own already.
+      offered: false,
       ways: ASUMA_WAYS,
     },
     teacher: ASUMA_TEACHER,

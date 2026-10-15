@@ -1,5 +1,7 @@
 import type { ConversationDef } from '../../../types';
 
+import { TETSU_BLADE } from './marks';
+
 /** Tetsu’s story, a beat for each stage of closeness (`SenseiWays.story`). */
 export const TETSU_STORY: readonly ConversationDef[] = [
   {
@@ -73,19 +75,27 @@ export const TETSU_STORY: readonly ConversationDef[] = [
     id: 'tetsu-memory',
     personId: 'tetsu',
     minStage: 4,
-    opener: '“A blade remembers who made it,” Tetsu says, and looks at you. “So does a student.”',
+    opener:
+      '“A blade remembers who made it,” Tetsu says, and looks at you. “So does a student.” Then, after a long time: “My blade is on the pass. The one I sold. I am going for it.”',
     choices: [
       {
         label: '“I’ll remember.”',
         tone: 'earnest',
         reply: 'He grips your shoulder, once, hard. Then back to work.',
+        worldMark: TETSU_BLADE,
       },
       {
         label: '“Is that a compliment?”',
         tone: 'tease',
         reply: '“Yes,” he says. You will think about it for days.',
+        worldMark: TETSU_BLADE,
       },
-      { label: 'Bow.', tone: 'quiet', reply: 'He bows back. He has never bowed to you before.' },
+      {
+        label: 'Bow.',
+        tone: 'quiet',
+        reply: 'He bows back. He has never bowed to you before.',
+        worldMark: TETSU_BLADE,
+      },
     ],
   },
 ];

@@ -1,5 +1,7 @@
 import type { ConversationDef } from '../../../types';
 
+import { AKARI_BROTHER } from './marks';
+
 /** Akari’s story, a beat for each stage of closeness (`SenseiWays.story`). */
 export const AKARI_STORY: readonly ConversationDef[] = [
   {
@@ -75,22 +77,25 @@ export const AKARI_STORY: readonly ConversationDef[] = [
     personId: 'akari',
     minStage: 4,
     opener:
-      '“Promise me something,” Akari says. “If I push too hard, you tell me. Out loud. I don’t always hear it otherwise.”',
+      '“Promise me something,” Akari says. “If I push too hard, you tell me. Out loud.” She hesitates. “And come down the river road with me. Someone is selling fire there, without matches. I think it’s my brother.”',
     choices: [
       {
         label: '“I promise.”',
         tone: 'earnest',
         reply: '“Good.” She lights the lantern without looking. It burns steadier than ever.',
+        worldMark: AKARI_BROTHER,
       },
       {
         label: '“You’re pushing too hard right now.”',
         tone: 'tease',
         reply: 'She laughs, a real one. “Noted.”',
+        worldMark: AKARI_BROTHER,
       },
       {
         label: '“You’ll hear it. I’m loud.”',
         tone: 'joke',
         reply: '“That,” she says, “I believe.”',
+        worldMark: AKARI_BROTHER,
       },
     ],
   },

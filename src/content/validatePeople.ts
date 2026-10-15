@@ -53,10 +53,16 @@ function personProblems(pack: ContentPack, person: PersonDef): string[] {
   return problems;
 }
 
-/** Team assignment offers two senseis with different specialties. */
+/** Team assignment offers two senseis with different specialties, from those who take a team. */
 function senseiProblems(pack: ContentPack): string[] {
-  const specialties = new Set(pack.people.flatMap((p) => (p.sensei ? [p.sensei.specialty] : [])));
-  return specialties.size < 2 ? ['pack needs senseis with at least two different specialties'] : [];
+  const specialties = new Set(
+    pack.people.flatMap((p) =>
+      p.sensei && p.sensei.offered !== false ? [p.sensei.specialty] : [],
+    ),
+  );
+  return specialties.size < 2
+    ? ['pack needs senseis taking a team with at least two different specialties']
+    : [];
 }
 
 function conversationProblems(pack: ContentPack): string[] {

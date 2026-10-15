@@ -1,0 +1,207 @@
+import type { ArcDef, MissionDef } from '@/systems/missions';
+
+import type { EnemyDef } from '../../../types';
+import { MASARU_LETTER } from '../people/stories/marks';
+
+/**
+ * The Sword School: Masaru's story. A challenger is beating every student at his father's school on the post road; once Masaru trusts you enough to say so, the jobs go up. Go and see, then go back with Masaru to answer the challenge.
+ */
+
+const CLIENT = 'Masaru Hagane';
+export const SWORD_SCHOOL_FOUND = 'masaru-school-found';
+export const SWORD_SCHOOL_SETTLED = 'masaru-school-settled';
+
+export const SWORD_SCHOOL_FOE: EnemyDef = {
+  id: 'ronin-kiyomasa',
+  kind: 'Rōnin',
+  danger: 'deadly',
+  name: 'Kiyomasa the Rōnin',
+  description: 'A wandering swordsman who breaks schools for a living, and has never lost.',
+  baseStat: 11,
+  statBonuses: { kenjutsu: 4, strength: 2, speed: 1 },
+  maxChakra: 50,
+  techniqueIds: ['samurai-sabre', 'swallow-return', 'decapitating-sweep', 'iaido-draw'],
+  traits: ['armoured'],
+};
+
+export const SWORD_SCHOOL_ACT_ONE: MissionDef = {
+  id: 'arc-masaru-school-one',
+  title: 'The Challenge',
+  rank: 'C',
+  client: CLIENT,
+  summary: 'Masaru wants to see who has challenged his father’s school.',
+  slots: 1,
+  energyCost: 25,
+  reward: { ryo: 520, reputation: 5 },
+  minMissionsCompleted: 4,
+  needsWorldMark: MASARU_LETTER,
+  stages: [
+    {
+      kind: 'narrative',
+      text: 'Masaru polishes his sword three times before you leave, and still isn’t happy with it.',
+    },
+    {
+      kind: 'leg',
+      text: 'Two days on the post road to Shukuba. Masaru tells you every rule of the school, then which ones he broke.',
+      days: 2,
+      region: 'hill-road',
+    },
+    {
+      kind: 'check',
+      text: 'At the school, the students’ practice swords hang broken on the wall, one by one.',
+      approaches: [
+        {
+          label: 'Read the breaks in the swords',
+          stat: 'perception',
+          difficulty: 9,
+          onSuccess: {
+            effects: [{ kind: 'world', mark: SWORD_SCHOOL_FOUND }],
+            ledger: 'Read the challenger’s style in the breaks.',
+          },
+        },
+        {
+          label: 'Ask the students what they won’t tell their master',
+          stat: 'intellect',
+          difficulty: 9,
+          onSuccess: {
+            effects: [{ kind: 'world', mark: SWORD_SCHOOL_FOUND }],
+            ledger: 'Learned how the rōnin beats them.',
+          },
+        },
+      ],
+      success:
+        'Every sword broken the same way, at the same point. A rōnin called Kiyomasa, who wins by one cut.',
+      failure:
+        'The students say nothing in front of their master, but Masaru knows the breaks. He has seen that cut before.',
+      onFailure: 'forward',
+    },
+    {
+      kind: 'camp',
+      text: 'You sleep in the school’s hall. Masaru and his father sit at opposite ends of it, and neither speaks.',
+      picks: 2,
+      activities: [
+        { kind: 'crew', label: 'Sit with Masaru', when: { crew: 'team' } },
+        { kind: 'drill', label: 'Drill by the fire' },
+        { kind: 'rest', label: 'Sleep properly' },
+      ],
+    },
+    {
+      kind: 'ending',
+      endings: [
+        {
+          text: 'His father doesn’t thank him. He hands Masaru the school’s old practice sword instead. “Come back,” he says. It is enough.',
+        },
+      ],
+    },
+    { kind: 'leg', text: 'Back along the post road to the Leaf.', days: 2 },
+  ],
+};
+
+export const SWORD_SCHOOL_ACT_TWO: MissionDef = {
+  id: 'arc-masaru-school-two',
+  title: 'One Cut',
+  rank: 'C',
+  client: CLIENT,
+  summary: 'Back to the school with Masaru, to answer the rōnin’s challenge.',
+  slots: 1,
+  energyCost: 30,
+  reward: { ryo: 600, reputation: 8 },
+  minMissionsCompleted: 4,
+  needsWorldMark: SWORD_SCHOOL_FOUND,
+  stages: [
+    {
+      kind: 'leg',
+      text: 'The post road again. Masaru practises the school’s old forms, the ones he swore he’d never use.',
+      days: 2,
+      region: 'hill-road',
+    },
+    {
+      kind: 'decision',
+      text: 'The rōnin waits in the school yard. Masaru’s father stands in the doorway. Masaru asks you, quietly, “How do I fight him?”',
+      options: [
+        {
+          label: '“With your father’s style.”',
+          tone: 'earnest',
+          reply: 'Masaru’s father straightens in the doorway.',
+          effects: [{ kind: 'mark', mark: 'mercy' }],
+          ledger: 'Masaru fought in his father’s style.',
+        },
+        {
+          label: '“With yours. And ours.”',
+          tone: 'kind',
+          reply: 'Masaru grins. “Together, then.”',
+          effects: [{ kind: 'mark', mark: 'mercy' }],
+          ledger: 'Masaru fought as a shinobi, with the team.',
+        },
+        {
+          label: '“Just win.”',
+          tone: 'challenge',
+          reply: 'Masaru nods. His father says nothing.',
+          ledger: 'Told Masaru to just win.',
+        },
+      ],
+    },
+    {
+      kind: 'encounter',
+      template: 'lone-rogue',
+      job: 'eliminate',
+      text: 'Kiyomasa draws. One cut, the way he always wins. This time it meets steel.',
+      enemyIds: ['ronin-kiyomasa'],
+      canFlee: false,
+      bypassable: false,
+    },
+    {
+      kind: 'ending',
+      endings: [
+        {
+          when: { has: 'mercy' },
+          text: 'The rōnin bows and leaves the school yard. Masaru’s father bows to his son, and then, for a long moment, holds him.',
+          effects: [
+            { kind: 'world', mark: SWORD_SCHOOL_SETTLED },
+            { kind: 'memory', text: 'the day at the sword school' },
+          ],
+          ledger: 'Answered the challenge, and Masaru’s father bowed.',
+        },
+        {
+          text: 'The rōnin falls in the school yard. Masaru’s father writes the result in the school’s book, and adds his son’s name as its master. Masaru leaves it there.',
+          effects: [
+            { kind: 'world', mark: SWORD_SCHOOL_SETTLED },
+            { kind: 'memory', text: 'the duel in the school yard' },
+          ],
+          ledger: 'The rōnin fell in the school yard.',
+        },
+      ],
+    },
+    {
+      kind: 'leg',
+      text: 'Back along the post road. Masaru carries the old practice sword the whole way.',
+      days: 2,
+    },
+  ],
+};
+
+export const SWORD_SCHOOL_JOBS: readonly MissionDef[] = [
+  SWORD_SCHOOL_ACT_ONE,
+  SWORD_SCHOOL_ACT_TWO,
+];
+
+export const SWORD_SCHOOL_ARC: ArcDef = {
+  id: 'the-sword-school',
+  title: 'The Sword School',
+  summary:
+    'Someone has challenged Masaru’s father’s school on the post road, and his father wrote at last.',
+  acts: [
+    {
+      beats: ['you', 'need', 'go', 'search'],
+      title: 'The challenge',
+      text: 'Go and see who has challenged Masaru’s father’s school.',
+      jobs: ['arc-masaru-school-one'],
+    },
+    {
+      beats: ['find', 'take', 'return', 'change'],
+      title: 'One cut',
+      text: 'Go back with Masaru and answer the challenge.',
+      jobs: ['arc-masaru-school-two'],
+    },
+  ],
+};

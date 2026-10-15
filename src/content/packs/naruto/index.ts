@@ -30,6 +30,15 @@ import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
 import { EXAM_ENEMIES, EXAM_MISSIONS, EXAMS } from './exam';
 import { NARUTO_CONVERSATIONS } from './conversations';
+import { TEMPLE_BELL_ARC, TEMPLE_BELL_FOE, TEMPLE_BELL_JOBS } from './arcs/templeBell';
+import { DROWNED_SHORE_ARC, DROWNED_SHORE_FOE, DROWNED_SHORE_JOBS } from './arcs/drownedShore';
+import { LOADED_DICE_ARC, LOADED_DICE_FOE, LOADED_DICE_JOBS } from './arcs/loadedDice';
+import { SWORD_SCHOOL_ARC, SWORD_SCHOOL_FOE, SWORD_SCHOOL_JOBS } from './arcs/swordSchool';
+import { SNAKE_DEN_ARC, SNAKE_DEN_FOE, SNAKE_DEN_JOBS } from './arcs/snakeDen';
+import { KANAME_STORY } from './people/stories/kaname';
+import { HOTARU_STORY } from './people/stories/hotaru';
+import { SHION_STORY } from './people/stories/shion';
+import { MASARU_STORY } from './people/stories/masaru';
 import { ANKO_STORY } from './people/stories/anko';
 import { ASUMA_STORY } from './people/stories/asuma';
 import { GUY_STORY } from './people/stories/guy';
@@ -40,6 +49,7 @@ import {
   INSTRUCTORS,
   LEADERS,
   SENIOR_GENIN,
+  NEW_SENSEIS,
   SENSEIS,
   VILLAGE_CHUNIN,
   VILLAGE_JONIN,
@@ -105,13 +115,27 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...SHUKUBA_JOBS,
     ...OTAFUKU_JOBS,
     ...FIRE_TEMPLE_JOBS,
+    ...TEMPLE_BELL_JOBS,
+    ...DROWNED_SHORE_JOBS,
+    ...LOADED_DICE_JOBS,
+    ...SWORD_SCHOOL_JOBS,
+    ...SNAKE_DEN_JOBS,
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
   roadEvents: ROAD_EVENTS,
-  arcs: [],
+  arcs: [TEMPLE_BELL_ARC, DROWNED_SHORE_ARC, LOADED_DICE_ARC, SWORD_SCHOOL_ARC, SNAKE_DEN_ARC],
   voices: VOICES,
-  enemies: [...ENEMIES, ...CHUNIN_ENEMIES, ...EXAM_ENEMIES],
+  enemies: [
+    ...ENEMIES,
+    ...CHUNIN_ENEMIES,
+    ...EXAM_ENEMIES,
+    TEMPLE_BELL_FOE,
+    DROWNED_SHORE_FOE,
+    LOADED_DICE_FOE,
+    SWORD_SCHOOL_FOE,
+    SNAKE_DEN_FOE,
+  ],
   training: [...TRAINING, ...WAVES_TRAINING, ...FIRE_TEMPLE_TRAINING],
   foods: [
     ...FOODS,
@@ -138,6 +162,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   campFinds: CAMP_FINDS,
   people: [
     ...SENSEIS,
+    ...NEW_SENSEIS,
     ...INSTRUCTORS,
     ...LEADERS,
     ...VILLAGE_JONIN,
@@ -160,6 +185,10 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...KURENAI_STORY,
     ...ASUMA_STORY,
     ...ANKO_STORY,
+    ...KANAME_STORY,
+    ...HOTARU_STORY,
+    ...SHION_STORY,
+    ...MASARU_STORY,
   ],
   conversationTopics: SHARED_TOPICS,
   names: NAMES,

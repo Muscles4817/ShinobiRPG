@@ -10,5 +10,6 @@ export { INSTRUCTORS } from './instructors';
 export { VILLAGE_JONIN } from './jonin';
 export { LEADERS } from './leaders';
 export { SENIOR_GENIN } from './seniorGenin';
+export { NEW_SENSEIS } from './newSenseis';
 export { SENSEIS } from './senseis';
 export { VILLAGERS } from './villagers';

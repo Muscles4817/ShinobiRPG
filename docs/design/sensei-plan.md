@@ -394,3 +394,24 @@ Part 5 entry.
     senseis need no authored ways.
 
 All ten steps are built.
+
+## Part 6: After the plan
+
+1. **Every sensei who takes a team has an arc.** The Lantern village's: Gōran (The Broken
+   Blade), Akari (The Lantern Keeper's Brother), Yomi (The Unfinished), Tetsu (The Forged
+   Blade) and Ito (The Patient Thing). The fan pack's: Anko (The White Snake's Den) and its four
+   new senseis (below). Each is two C-rank acts (find, then settle, with a choice of mercy that
+   changes the ending), opened by the world mark the sensei's last story beat leaves
+   (`stories/marks.ts`), so the sensei leads it. A test (`game/senseiRoster.test.ts`) checks in
+   both packs that every sensei taking a team has four beats and an arc their last beat opens,
+   and that the five arts are covered.
+2. **The fan pack's famous senseis keep their teams.** `SenseiProfile.offered: false` keeps
+   Kakashi, Guy, Kurenai and Asuma out of team assignment (validation counts only those taking a
+   team for the two specialties); a save made with one of them keeps them, and their stories
+   stay as personal talk. In their place, four new jōnin with the same depth: Kaname Ōtori
+   (taijutsu, raised at the Fire Temple: The Temple Bell), Hotaru Shiranami (ninjutsu, out of the
+   Land of Waves: The Drowned Shore), Shion Ukiha (genjutsu, once the Leaf's eyes in Tanzaku
+   Town: The Loaded Dice) and Masaru Hagane (kenjutsu, a samurai's son from the post road: The
+   Sword School). Each has stats, an arsenal, signatures and a price, their ways, four story
+   beats and an arc. The fan pack's arc files use literal ids (no module-level reads), so a
+   release build drops them.
