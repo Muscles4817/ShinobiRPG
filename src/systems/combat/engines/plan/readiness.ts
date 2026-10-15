@@ -1,7 +1,8 @@
 import type { RangeBand } from '../../contract';
 import { RANGE_BANDS } from '../../rules/range';
 import { cardId, findCard, fitsBand, isReaction, reactionsFor, type Card } from './cards';
-import type { CardId, PlanFighter, Reactions } from './state';
+import { isDazed } from './daze';
+import type { CardId, PlanFighter, Reactions, Round } from './state';
 
 export type { Reactions } from './state';
 
@@ -63,4 +64,17 @@ export function cleanReactions(fighter: Ready, reactions: Reactions): Reactions 
   const keep = (band: RangeBand) =>
     fitting(fighter, reactions[band], band) ? reactions[band] : fallback[band];
   return { close: keep('close'), mid: keep('mid'), far: keep('far') };
+}
+
+/**
+ * The defence that can react: reeling from a daze, a fighter can still put a guard up, but not
+ * dodge, counter or swap out; on the move (they stepped this exchange), a Guard or a Counter
+ * can't be set, though a Dodge or a swap still works.
+ */
+export function readyDefences(target: PlanFighter, round: Pick<Round, 'range' | 'number'>): Card[] {
+  const kept = reactionAt(target, round.range);
+  if (!kept) return [];
+  if (isDazed(target) && kept.kind !== 'guard') return [];
+  const stance = kept.kind === 'guard' || kept.kind === 'counter';
+  return target.movedAt === round.number && stance ? [] : [kept];
 }

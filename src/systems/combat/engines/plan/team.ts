@@ -121,7 +121,7 @@ export function stanceLoadout(
 export function stanceReadiness(
   f: PlanFighter,
   stance: CombatStance,
-): Pick<PlanFighter, 'reactions' | 'keepAt'> {
+): Pick<PlanFighter, 'reactions' | 'keepAt' | 'holdOff'> {
   const base = defaultReadiness(f, { home: homeFor(f, stance) });
   return stance.kind === 'cover' ? { ...base, reactions: GUARD_READY } : base;
 }

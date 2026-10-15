@@ -5,6 +5,7 @@ import { rememberedPlan, type PlanMemory } from './memory';
 import { defaultReactions } from './readiness';
 import type { PlanFighter } from './state';
 import { withStances } from './team';
+import { NO_HOLD_OFF } from './zoning';
 
 /**
  * Everyone's plan as a fight starts: your remembered plan (or the default for your kit),
@@ -30,6 +31,7 @@ export function planOf(player: PlanFighter): PlanMemory {
   return {
     loadout: player.loadout,
     reactions: player.reactions ?? defaultReactions(player),
+    holdOff: player.holdOff ?? NO_HOLD_OFF,
     ...(player.keepAt === undefined ? {} : { keepAt: player.keepAt }),
   };
 }
