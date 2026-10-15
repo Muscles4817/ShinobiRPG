@@ -9,6 +9,7 @@ import { InnPage } from './InnPage';
 import { LibraryPage } from './LibraryPage';
 import { MarketPage } from './MarketPage';
 import { MissionHallPage } from './MissionHallPage';
+import { OnsenPage } from './OnsenPage';
 import { TavernPage } from './TavernPage';
 import { TrainingPage } from './TrainingPage';
 import { WildsPage } from './WildsPage';
@@ -39,6 +40,8 @@ export function PlacePage({ kind, placeId, ...props }: PlacePageProps) {
       return <GearShopPage {...props} placeId={placeId} />;
     case 'tavern':
       return <TavernPage {...props} />;
+    case 'onsen':
+      return <OnsenPage {...props} />;
     case 'inn':
       return <InnPage {...props} />;
     case 'house':

@@ -199,7 +199,12 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     ),
     specialty: 'taijutsu',
     bio: 'Held the east bridge alone in the last war. Retired now; sweeps the training ground at dawn.',
-    schedule: { morning: 'training-grounds', afternoon: null, evening: null, night: 'izakaya' },
+    schedule: {
+      morning: 'training-grounds',
+      afternoon: 'ember-springs',
+      evening: null,
+      night: 'izakaya',
+    },
     teacher: {
       quirk: 'natural',
       steers: { focus: 'weakest', freeAtStage: 4 },

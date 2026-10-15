@@ -56,7 +56,12 @@ export const GENIN: readonly PersonDef[] = [
     }),
     specialty: 'genjutsu',
     bio: 'Waves at empty corners. Leaves rice out for someone called "Grandfather".',
-    schedule: { morning: 'academy', afternoon: 'training-grounds', evening: null, night: null },
+    schedule: {
+      morning: 'academy',
+      afternoon: 'training-grounds',
+      evening: 'ember-springs',
+      night: null,
+    },
   },
   {
     id: 'jin',

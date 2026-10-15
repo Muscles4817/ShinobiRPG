@@ -72,3 +72,10 @@ export function tastesOf(person: PersonDef, ctx: GameContext): Taste[] {
 export function fullName(person: PersonDef): string {
   return person.familyName ? `${person.name} ${person.familyName}` : person.name;
 }
+
+/** Who is at this place here right now (a bar's crowd, the bathers in the water). */
+export function peopleAt(state: GameState, ctx: GameContext, placeId: string): PersonDef[] {
+  return peopleHere(state, ctx)
+    .filter((p) => p.placeId === placeId)
+    .map((p) => p.person);
+}

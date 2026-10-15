@@ -95,6 +95,21 @@ export const PORT_SHIOMACHI: LocationDef = {
       keeper: 'Captain Bo, retired from the sea and not happy about it',
       foodIds: ['harbour-clam-soup', 'fishermans-stew', 'roasted-barley-tea'],
       roundCost: 30,
+      cupCost: 10,
+      pastimes: [
+        {
+          id: 'knot-race',
+          name: 'Knot races',
+          scene:
+            'Two sailors race to tie a bowline round a post before the sand glass runs out. The loser buys.',
+        },
+        {
+          id: 'arm-wrestling',
+          name: 'Arm-wrestling',
+          scene:
+            'A barrel turned on end, two elbows on it and a ring of dock hands shouting. Captain Bo pretends not to watch.',
+        },
+      ],
     },
     {
       id: 'harbour-office',

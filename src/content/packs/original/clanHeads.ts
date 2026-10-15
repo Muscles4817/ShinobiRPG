@@ -66,7 +66,7 @@ export const CLAN_HEADS: readonly PersonDef[] = [
     specialty: 'genjutsu',
     bio: 'Old enough to have buried most of her friends, and still talks with all of them.',
     schedule: {
-      morning: null,
+      morning: 'ember-springs',
       afternoon: 'training-grounds',
       evening: 'market-street',
       night: null,

@@ -2,3 +2,4 @@
 export { SHUKUBA_TOWN } from './place';
 export { SHUKUBA_FOODS } from './food';
 export { SHUKUBA_JOBS } from './jobs';
+export { SHUKUBA_PEOPLE } from './people';

@@ -64,7 +64,7 @@ import {
   SHIOMACHI_TRAINING,
   TIDEWIRE_TECHNIQUES,
 } from './shiomachi';
-import { KIRI_FORD_FOODS, KIRI_FORD_JOBS } from './kiriFord';
+import { KIRI_FORD_FOODS, KIRI_FORD_JOBS, KIRI_FORD_PEOPLE } from './kiriFord';
 
 /** The game's own setting: Tōrōgakure in the Land of Embers. Safe to ship publicly. */
 export const ORIGINAL_PACK: ContentPack = {
@@ -135,6 +135,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...CLAN_HEADS,
     ...VILLAGE_CHUNIN,
     ...SHIOMACHI_PEOPLE,
+    ...KIRI_FORD_PEOPLE,
   ],
   conversations: [
     ...GENERIC_CONVERSATIONS,
