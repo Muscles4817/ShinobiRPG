@@ -40,7 +40,7 @@ function AfterBout({ choice, onRematch, onChangeFighters, onMenu }: VersusBoutPr
           type="button"
           className="btn ghost wide"
           onClick={() => {
-            onRematch({ ...choice, youId: choice.foeId, foeId: choice.youId });
+            onRematch({ ...choice, side: choice.foes, foes: choice.side });
           }}
         >
           Rematch with sides swapped

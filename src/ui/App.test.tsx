@@ -465,10 +465,27 @@ describe('App (smoke test)', () => {
     render(<App store={store} />);
     await user.click(screen.getByRole('button', { name: /^Versus/ }));
     await user.selectOptions(screen.getByLabelText('You fight as'), 'person:kakashi');
-    await user.selectOptions(screen.getByLabelText('Against'), 'person:guy');
+    await user.selectOptions(screen.getByLabelText('Opponent 1'), 'person:guy');
     await user.click(screen.getByRole('button', { name: 'Fight' }));
     expect(screen.getAllByText(/Might Guy/).length).toBeGreaterThan(0);
     expect(store.data).toBeNull();
+  });
+
+  it('sets up a team versus bout, and says why a side won’t do', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await user.click(screen.getByRole('button', { name: /^Versus/ }));
+    await user.selectOptions(screen.getByLabelText('You fight as'), 'person:kakashi');
+    await user.click(screen.getByRole('button', { name: 'Add an ally' }));
+    expect(screen.getByText('Kakashi Hatake can’t stand twice on one side.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Fight' })).toBeDisabled();
+    await user.selectOptions(screen.getByLabelText('Ally 2'), 'person:naruto');
+    await user.selectOptions(screen.getByLabelText('Opponent 1'), 'enemy:zabuza');
+    await user.click(screen.getByRole('button', { name: 'Add an opponent' }));
+    await user.selectOptions(screen.getByLabelText('Opponent 2'), 'enemy:haku');
+    await user.click(screen.getByRole('button', { name: 'Fight' }));
+    expect(screen.getAllByText(/Zabuza Momochi/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Haku/).length).toBeGreaterThan(0);
   });
 
   it('lets you start dead last, and your file and sheet say so', async () => {

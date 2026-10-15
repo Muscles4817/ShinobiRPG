@@ -9,8 +9,14 @@ import { versusRoster } from './roster';
 
 const naruto = contextForPack('naruto')!;
 
+function team(side: readonly string[], foes: readonly string[]) {
+  const made = createVersus(naruto, { side, foes, seed: 7 });
+  if (!made.ok) throw new Error(made.error);
+  return made.value;
+}
+
 function bout(youId: string, foeId: string) {
-  const made = createVersus(naruto, { youId, foeId, seed: 7 });
+  const made = createVersus(naruto, { side: [youId], foes: [foeId], seed: 7 });
   if (!made.ok) throw new Error(made.error);
   return made.value;
 }
@@ -63,8 +69,51 @@ describe('versus bouts', () => {
   });
 
   it('refuses a pick the pack doesn’t have', () => {
-    expect(createVersus(naruto, { youId: 'person:nobody', foeId: 'person:guy', seed: 1 }).ok).toBe(
-      false,
-    );
+    const made = createVersus(naruto, { side: ['person:nobody'], foes: ['person:guy'], seed: 1 });
+    expect(made.ok).toBe(false);
+  });
+});
+
+describe('versus team fights', () => {
+  const team7 = ['person:kakashi', 'person:naruto', 'person:sasuke', 'person:sakura'];
+
+  it('fields up to four a side, your allies under your orders', () => {
+    const state = team(team7, ['enemy:zabuza', 'enemy:haku']);
+    const view = combatScene(state, naruto)!;
+    const ours = view.combatants.filter((c) => c.side === 'player');
+    const theirs = view.combatants.filter((c) => c.side === 'enemy');
+    expect(ours.map((c) => c.name)).toEqual(['Kakashi', 'Naruto', 'Sasuke', 'Sakura']);
+    expect(theirs.map((c) => c.name)).toEqual(['Zabuza Momochi', 'Haku']);
+    expect(view.options.some((o) => o.kind === 'order')).toBe(true);
+    expect(state.versus?.foeName).toBe('Zabuza Momochi and Haku');
+  });
+
+  it('numbers a foe that stands more than once', () => {
+    const state = team(['person:kakashi'], ['enemy:gozu', 'enemy:gozu']);
+    const ids = combatScene(state, naruto)!
+      .combatants.filter((c) => c.side === 'enemy')
+      .map((c) => c.id);
+    expect(new Set(ids).size).toBe(2);
+  });
+
+  it('refuses a person twice on one side, or a side of more than four', () => {
+    const twice = createVersus(naruto, {
+      side: ['person:kakashi', 'person:kakashi'],
+      foes: ['person:guy'],
+      seed: 1,
+    });
+    expect(twice).toEqual({ ok: false, error: 'Kakashi Hatake can’t stand twice on one side.' });
+    const crowd = createVersus(naruto, {
+      side: [...team7, 'person:guy'],
+      foes: ['person:asuma'],
+      seed: 1,
+    });
+    expect(crowd.ok).toBe(false);
+  });
+
+  it('plays a team bout to its result card', () => {
+    const end = fightOut(team(team7, ['enemy:zabuza', 'enemy:haku']), naruto);
+    expect(end.combat).toBeNull();
+    expect(end.reports[0]?.kind).toBe('fight');
   });
 });

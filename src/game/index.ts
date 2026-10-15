@@ -42,6 +42,8 @@ export { saveSummary, type SaveSummary } from './views/menu';
 export {
   createVersus,
   VERSUS_GROUPS,
+  VERSUS_SIDE_MAX,
+  versusProblem,
   versusRoster,
   type VersusFighter,
   type VersusGroup,
