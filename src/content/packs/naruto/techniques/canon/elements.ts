@@ -62,7 +62,7 @@ export const CANON_ELEMENTS: readonly TechniqueDef[] = [
     reach: ['close', 'mid'],
     needs: { nature: 'fire' },
     effects: [
-      { verb: 'area', power: 18 },
+      { verb: 'area', power: 18, size: 'wide' },
       { verb: 'afflict', power: 6, harm: 'burn' },
     ],
     chakraCost: 18,
@@ -181,7 +181,7 @@ export const CANON_ELEMENTS: readonly TechniqueDef[] = [
     needs: { control: 'C', minReserves: 16 },
     effects: [
       { verb: 'clone', power: 6 },
-      { verb: 'area', power: 20 },
+      { verb: 'area', power: 20, size: 'wide' },
     ],
     chakraCost: 22,
     rank: 'B',

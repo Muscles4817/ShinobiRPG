@@ -14,7 +14,7 @@ export const CANON_LIGHTNING: readonly TechniqueDef[] = [
     reach: ['mid', 'far'],
     needs: { weapon: 'blade', nature: 'lightning' },
     effects: [
-      { verb: 'area', power: 18 },
+      { verb: 'area', power: 18, size: 'wide' },
       { verb: 'daze', power: 6 },
     ],
     chakraCost: 17,
@@ -45,7 +45,7 @@ export const CANON_LIGHTNING: readonly TechniqueDef[] = [
     element: 'lightning',
     needs: { weapon: 'blade', nature: 'lightning' },
     effects: [
-      { verb: 'area', power: 20 },
+      { verb: 'area', power: 20, size: 'wide' },
       { verb: 'knock', power: 8, to: 'mid' },
     ],
     chakraCost: 18,
@@ -74,7 +74,7 @@ export const CANON_LIGHTNING: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'lightning',
     effects: [
-      { verb: 'area', power: 14 },
+      { verb: 'area', power: 14, size: 'wide' },
       { verb: 'pin', power: 8 },
     ],
     chakraCost: 13,

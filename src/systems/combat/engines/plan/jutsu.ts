@@ -16,6 +16,7 @@ import {
   profileOf,
   type EffectUse,
 } from '../../rules/verbs';
+import { aftermath } from './blast';
 import { clash } from './clash';
 import { makeClones } from './clones';
 import { combination, comboPartner } from './combo';
@@ -222,7 +223,7 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   // A field dulls the perception of those it blinds: they see techniques coming later.
   const seen = targets.filter((foe) => rng.chance(resistChance(actor, dulled(paid.field, foe), t)));
   const told = seen.reduce((r, foe) => say(r, `${foe.name} sees it coming.`), paid);
-  if (isHarmful(t) && seen.length === targets.length) return told;
+  if (isHarmful(t) && seen.length === targets.length) return aftermath(told, turn, t);
   // An elemental attack may be met by one coming back the other way.
   const aimedAt = turn.target && !seen.includes(turn.target) ? clash(told, turn, t) : null;
   if (aimedAt && !aimedAt.through) return aimedAt.round;
@@ -234,5 +235,5 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
     (flight, effect) => applyEffect(flight, carrying, { technique: t, effect }),
     start,
   );
-  return end.round;
+  return aftermath(end.round, turn, t);
 }

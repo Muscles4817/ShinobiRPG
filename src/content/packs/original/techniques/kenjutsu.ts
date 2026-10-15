@@ -153,7 +153,7 @@ export const KENJUTSU: readonly TechniqueDef[] = [
     school: 'Twin Cut',
     needs: { weapon: 'blade' },
     effects: [
-      { verb: 'area', power: 20 },
+      { verb: 'area', power: 20, size: 'wide' },
       { verb: 'break', power: 10 },
     ],
     chakraCost: 20,

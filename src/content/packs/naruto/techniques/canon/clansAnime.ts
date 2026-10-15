@@ -88,7 +88,7 @@ export const CANON_ANIME_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     clan: 'aburame',
     effects: [
-      { verb: 'area', power: 14 },
+      { verb: 'area', power: 14, size: 'wide' },
       { verb: 'drain', power: 10, absorb: true },
     ],
     chakraCost: 16,

@@ -30,7 +30,7 @@ export const CANON_RASENGAN: readonly TechniqueDef[] = [
     needs: { control: 'B', minReserves: 20 },
     effects: [
       { verb: 'clone', power: 8 },
-      { verb: 'area', power: 26 },
+      { verb: 'area', power: 26, size: 'wide' },
     ],
     chakraCost: 26,
     rank: 'A',
@@ -58,7 +58,7 @@ export const CANON_RASENGAN: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     reach: ['close', 'mid'],
     needs: { control: 'B', minReserves: 20 },
-    effects: [{ verb: 'area', power: 26 }],
+    effects: [{ verb: 'area', power: 26, size: 'wide' }],
     chakraCost: 26,
     rank: 'A',
     difficulty: 150,
@@ -105,7 +105,7 @@ export const CANON_RASENGAN: readonly TechniqueDef[] = [
     reach: ['close'],
     needs: { nature: 'wind', control: 'A', minReserves: 22 },
     effects: [
-      { verb: 'area', power: 32 },
+      { verb: 'area', power: 32, size: 'wide' },
       { verb: 'afflict', power: 8, harm: 'bleed' },
     ],
     chakraCost: 30,
@@ -140,7 +140,7 @@ export const CANON_RASENGAN: readonly TechniqueDef[] = [
     reach: ['close', 'mid', 'far'],
     needs: { nature: 'wind', control: 'A', minReserves: 24 },
     effects: [
-      { verb: 'area', power: 36 },
+      { verb: 'area', power: 36, size: 'vast' },
       { verb: 'afflict', power: 8, harm: 'bleed' },
     ],
     chakraCost: 34,

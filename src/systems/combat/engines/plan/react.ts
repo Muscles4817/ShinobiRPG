@@ -1,5 +1,5 @@
 import type { Rng } from '@/core';
-import type { Accuracy, Discipline, Element } from '@/systems/techniques';
+import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniques';
 
 import { alive } from '../../rules/body';
 import { cappedHit, strikeDamage } from '../../rules/damage';
@@ -15,7 +15,15 @@ import {
 } from '../../rules/kit';
 import { harmLine, reactionLine, type NarrationReaction } from '../../rules/narration';
 import type { RangeBand } from '../../contract';
-import { brokenScale, covered, dulled, isPinned, PIN_SLIP, substitutable } from '../../rules/verbs';
+import {
+  AREA_RULES,
+  brokenScale,
+  covered,
+  dulled,
+  isPinned,
+  PIN_SLIP,
+  substitutable,
+} from '../../rules/verbs';
 import type { Card } from './cards';
 import { reactionAt } from './readiness';
 import { defenceKind, noteDefence } from './reads';
@@ -60,6 +68,8 @@ export interface Blow {
   readonly element?: Element;
   /** An area hit: bursts every clone and still reaches its target (`decoys.ts`). */
   readonly area?: boolean;
+  /** How much ground an area hit covers: wider is harder to slip and beats a plain Guard. */
+  readonly areaSize?: AreaSize;
   /** Share of a guard it goes through (knuckles, a sundering weapon: `rules/weapons.ts`). */
   readonly pierce?: number;
   /** How hard it is to slip (a technique's accuracy; steady when unset). */
@@ -81,7 +91,14 @@ export interface Hit {
 function avoidChance(hit: Hit, target: PlanFighter, dodging: boolean): number {
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE : 0;
   const chance = dodging ? dodgeChance(hit.attacker, target) + swift : swift * SWIFT_INSTINCT;
-  return slipChance(chance * (isPinned(target) ? PIN_SLIP : 1), hit.blow.accuracy);
+  const area = hit.blow.areaSize ? AREA_RULES[hit.blow.areaSize].dodge : 1;
+  return slipChance(chance * (isPinned(target) ? PIN_SLIP : 1), hit.blow.accuracy) * area;
+}
+
+/** A Guard meets a blow's first hit, unless it is an area too wide to raise your arms against. */
+function guardMeets(blow: Blow): boolean {
+  if (blow.followUp) return false;
+  return blow.areaSize === undefined || AREA_RULES[blow.areaSize].guardHolds;
 }
 
 /**
@@ -252,7 +269,7 @@ export function react(start: Round, hit: Hit): Round {
   const swap = throughSwap(round, ready, hit);
   if (swap.escaped) return swap.round;
   const shielded = swap.round;
-  const guarding = has('guard') && !blow.followUp;
+  const guarding = has('guard') && guardMeets(blow);
   const guarded = guarding && !blow.breaks;
   const smashed = guarding && blow.breaks === true;
   const damage = cappedHit(

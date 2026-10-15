@@ -122,7 +122,7 @@ export const LEAF_ELEMENTS: readonly TechniqueDef[] = [
     element: 'fire',
     needs: { control: 'D' },
     effects: [
-      { verb: 'area', power: 15 },
+      { verb: 'area', power: 15, size: 'wide' },
       { verb: 'afflict', power: 7, harm: 'burn' },
     ],
     chakraCost: 17,
@@ -190,7 +190,7 @@ export const LEAF_ELEMENTS: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'water',
     effects: [
-      { verb: 'area', power: 22 },
+      { verb: 'area', power: 22, size: 'vast' },
       { verb: 'knock', power: 8, to: 'far' },
     ],
     chakraCost: 22,

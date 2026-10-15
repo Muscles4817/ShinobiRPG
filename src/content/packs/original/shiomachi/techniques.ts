@@ -48,7 +48,7 @@ export const TIDEWIRE_TECHNIQUES: readonly TechniqueDef[] = [
     school: 'Tidewire',
     reach: ['mid', 'far'],
     effects: [
-      { verb: 'area', power: 10 },
+      { verb: 'area', power: 10, size: 'wide' },
       { verb: 'pin', power: 12 },
     ],
     chakraCost: 14,

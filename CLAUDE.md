@@ -473,7 +473,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Its shape in a fight: `reach` (bands, when not its art's usual reach; ask `reachOf`),
   `accuracy` (sure, steady, wild: a multiplier on slipping it, and wild hits harder; `slipChance`
   in `rules/defence.ts`) and a damage effect's `hits` (a flurry: the power split over 2–5 blows,
-  each dodged alone; a Guard or Counter meets only the first). The academy's technique sheet
+  each dodged alone; a Guard or Counter meets only the first). An `area` effect has a `size` (small,
+  wide, vast; `rules/verbs/area.ts`): a wide one is hard to slip, beats a plain Guard (only a
+  swap or a wall escapes it) and throws the fight apart to mid; a vast one can't be outrun,
+  throws it to far and leaves dust that blinds both sides (`plan/blast.ts`). Keep vast rare. The academy's technique sheet
   (`views/techniqueSheet.ts`) reads all of it, so what the player is told is what the fight does.
 - **Add a clan, talent or trait:** add it to the pack's `clans` (or the shared `talents`/
   `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the

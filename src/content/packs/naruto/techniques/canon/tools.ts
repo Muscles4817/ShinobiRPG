@@ -9,7 +9,7 @@ export const CANON_TOOL_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     reach: ['mid', 'far'],
     effects: [
-      { verb: 'area', power: 18 },
+      { verb: 'area', power: 18, size: 'wide' },
       { verb: 'afflict', power: 6, harm: 'burn' },
     ],
     chakraCost: 16,

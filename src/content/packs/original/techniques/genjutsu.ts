@@ -85,7 +85,7 @@ export const GENJUTSU: readonly TechniqueDef[] = [
       'Fold the field into a hall of lanterns where every light is a door and none of them opens.',
     discipline: 'genjutsu',
     effects: [
-      { verb: 'area', power: 12 },
+      { verb: 'area', power: 12, size: 'wide' },
       { verb: 'confuse', power: 12 },
     ],
     chakraCost: 16,

@@ -85,7 +85,7 @@ export const FUUINJUTSU: readonly TechniqueDef[] = [
       'Paper walls fold up around the fight. Whatever is inside scorches, and moulds no chakra.',
     discipline: 'fuuinjutsu',
     effects: [
-      { verb: 'area', power: 10 },
+      { verb: 'area', power: 10, size: 'wide' },
       { verb: 'seal', power: 12 },
     ],
     chakraCost: 17,
@@ -134,7 +134,7 @@ export const FUUINJUTSU: readonly TechniqueDef[] = [
     description: 'A circle of ash written in one breath, wide enough to hold a whole fight.',
     discipline: 'fuuinjutsu',
     effects: [
-      { verb: 'area', power: 14 },
+      { verb: 'area', power: 14, size: 'wide' },
       { verb: 'seal', power: 20 },
     ],
     chakraCost: 22,
@@ -149,7 +149,7 @@ export const FUUINJUTSU: readonly TechniqueDef[] = [
     discipline: 'fuuinjutsu',
     effects: [
       { verb: 'seal', power: 24 },
-      { verb: 'area', power: 16 },
+      { verb: 'area', power: 16, size: 'vast' },
       { verb: 'trap', power: 16, dazes: true },
     ],
     chakraCost: 28,

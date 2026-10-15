@@ -4,8 +4,9 @@ import type { CombatAttributes, CombatPerk, CombatSide } from '../../contract';
 import type { EffectUse } from './use';
 
 /**
- * Fields: fight-wide conditions that last a few exchanges (mist, smoke). A field belongs to the
- * side that raised it. Everyone else inside it is blinded, unless they read foes anyway
+ * Fields: fight-wide conditions that last a few exchanges (mist, smoke, the dust a vast technique
+ * leaves). A field belongs to the side that raised it. Everyone else inside it (everyone at all,
+ * in dust) is blinded, unless they read foes anyway
  * (insight, or a sense this fight) or their perception rises above the field's potency:
  * a blinded fighter's attacks may go wide and their perception (dodging, spotting a technique,
  * searching) is dulled. In a field that gives cover, the owning side strikes the blinded as if
@@ -23,6 +24,8 @@ export interface FieldRule {
   readonly perception: number;
   /** The owning side strikes the blinded as if from hiding. */
   readonly cover: boolean;
+  /** It blinds its own side too (the dust a vast technique leaves). */
+  readonly blindsAll?: true;
   readonly rises: string;
   readonly fades: string;
 }
@@ -47,6 +50,17 @@ export const FIELD_RULES: Readonly<Record<FieldId, FieldRule>> = {
     cover: false,
     rises: 'Smoke billows over the field.',
     fades: 'The smoke clears.',
+  },
+  // The dust and steam a vast technique leaves: nobody, its maker included, sees much.
+  dust: {
+    name: 'Dust',
+    exchanges: 2,
+    miss: 0.45,
+    perception: 0.5,
+    cover: false,
+    blindsAll: true,
+    rises: 'Dust and debris hang over the field. Nobody can see a thing.',
+    fades: 'The dust settles.',
   },
 };
 
@@ -110,9 +124,13 @@ export function fieldLeft(field: ActiveField, exchange: number): number {
   return Math.max(0, field.until - exchange + 1);
 }
 
-/** Whether a fighter is blinded by the field: not its owners, nor anyone who sees through it. */
+/**
+ * Whether a fighter is blinded by the field: not its owners (unless it blinds everyone), nor
+ * anyone who sees through it.
+ */
 export function blinds(field: ActiveField | undefined, f: Watcher): boolean {
-  if (!field || f.side === field.side || f.perks.includes('insight')) return false;
+  if (!field || f.perks.includes('insight')) return false;
+  if (f.side === field.side && FIELD_RULES[field.id].blindsAll !== true) return false;
   return f.attributes.perception <= field.potency;
 }
 

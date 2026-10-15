@@ -80,7 +80,7 @@ export const ELEMENTAL_NINJUTSU: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'earth',
     effects: [
-      { verb: 'area', power: 12 },
+      { verb: 'area', power: 12, size: 'wide' },
       { verb: 'pin', power: 10 },
     ],
     chakraCost: 18,
@@ -134,7 +134,7 @@ export const ELEMENTAL_NINJUTSU: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'wind',
     effects: [
-      { verb: 'area', power: 12 },
+      { verb: 'area', power: 12, size: 'wide' },
       { verb: 'knock', power: 10, to: 'far' },
     ],
     chakraCost: 18,

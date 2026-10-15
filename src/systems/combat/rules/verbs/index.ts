@@ -23,12 +23,14 @@ export {
   fieldLeft,
   fieldMissChance,
   fieldPotency,
+  potencyOf,
   raiseField,
   type ActiveField,
   type FieldRule,
   type FieldSource,
 } from './field';
 export { moveGoal, substitutable } from './footwork';
+export { AREA_RULES, afterBlast, areaSize, type AreaRule } from './area';
 export {
   BREAK_ARMOUR,
   BREAK_TOUGHNESS,

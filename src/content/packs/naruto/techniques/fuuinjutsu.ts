@@ -131,7 +131,7 @@ export const FUUINJUTSU: readonly TechniqueDef[] = [
     description: 'Hundreds of tags pasted on every tree in sight, and one word to set them off.',
     discipline: 'fuuinjutsu',
     effects: [
-      { verb: 'area', power: 18 },
+      { verb: 'area', power: 18, size: 'wide' },
       { verb: 'knock', power: 10, to: 'far' },
     ],
     chakraCost: 16,

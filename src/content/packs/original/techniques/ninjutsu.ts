@@ -150,7 +150,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'fire',
     effects: [
-      { verb: 'area', power: 16 },
+      { verb: 'area', power: 16, size: 'wide' },
       { verb: 'afflict', power: 6, harm: 'burn' },
     ],
     chakraCost: 18,
@@ -226,7 +226,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
       'The light the Old Lamp raised in the long winter, bright as morning on every foe at once. It burns its maker hollow for days.',
     discipline: 'ninjutsu',
     effects: [
-      { verb: 'area', power: 24 },
+      { verb: 'area', power: 24, size: 'vast' },
       { verb: 'daze', power: 10 },
     ],
     chakraCost: 28,

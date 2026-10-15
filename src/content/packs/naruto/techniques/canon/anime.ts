@@ -66,7 +66,7 @@ export const CANON_ANIME_TECHNIQUES: readonly TechniqueDef[] = [
     reach: ['mid', 'far'],
     needs: { minReserves: 18 },
     effects: [
-      { verb: 'area', power: 22 },
+      { verb: 'area', power: 22, size: 'wide' },
       { verb: 'daze', power: 8 },
     ],
     chakraCost: 24,
