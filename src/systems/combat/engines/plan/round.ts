@@ -8,6 +8,7 @@ import { revealOnAttack } from '../../rules/items';
 import { afterUsing } from '../../rules/trumps';
 import { strike } from './arms';
 import { step } from './steps';
+import { inCover, lostToGround } from './groundPlay';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
@@ -144,7 +145,8 @@ function revealed(round: Round, { actor: before, target, rng }: Turn): Round {
     return { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) };
   }
   const victim = target && fighterIn(round, target.id);
-  if (!victim || !alive(victim) || !rng.chance(searchChance(victim, actor))) return round;
+  const hiding = inCover(round.ground, actor);
+  if (!victim || !alive(victim) || !rng.chance(searchChance(victim, hiding))) return round;
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) },
     `${victim.name} traces the illusion back to ${actor.name}.`,
@@ -164,7 +166,7 @@ function attempt(round: Round, turn: Turn, card: Card): Round {
     const whose = actor.isPlayer ? 'Your senses lie to you.' : `${actor.name}'s senses lie.`;
     return revealed(say(round, `${whose} The attack goes wide.`), turn);
   }
-  const lost = lostInField(round, actor, rng);
+  const lost = lostInField(round, actor, rng) ?? lostToGround(round, actor, rng);
   if (lost) return revealed(say(round, lost), turn);
   return cloneFollowUp(revealed(play(round, turn, card), turn), turn, card);
 }
@@ -240,6 +242,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     intents: state.intents,
     ...(state.reads ? { reads: state.reads } : {}),
     ...(state.field ? { field: state.field } : {}),
+    ...(state.ground ? { ground: state.ground } : {}),
     ...(state.mark ? { mark: state.mark } : {}),
     ...(state.foeMark ? { foeMark: state.foeMark } : {}),
   };

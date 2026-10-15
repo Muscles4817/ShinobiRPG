@@ -144,6 +144,7 @@ export const SNAKE_DEN_ACT_TWO: MissionDef = {
     },
     {
       kind: 'encounter',
+      ground: 'room',
       template: 'guarded-building',
       job: 'eliminate',
       text: 'The Den-Keeper comes out of the dark like a snake out of a drain, fast and wrong.',

@@ -197,6 +197,7 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'forest',
         template: 'lone-rogue',
         job: 'retrieve',
         text: 'A lamp burns in a woodcutter’s hut. Inside, a chūnin bends over a great scroll, mouthing the seals.',

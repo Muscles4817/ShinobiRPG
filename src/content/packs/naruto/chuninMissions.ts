@@ -32,6 +32,7 @@ export const CHUNIN_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'room',
         template: 'lone-rogue',
         job: 'eliminate',
         text: 'In the boathouse, a missing-nin with a scratched Leaf headband is packing crates.',

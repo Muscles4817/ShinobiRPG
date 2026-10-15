@@ -146,6 +146,7 @@ export const MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'forest',
         template: 'bandit-camp',
         job: 'escort',
         text: 'Where the road narrows, a bowstring creaks somewhere in the trees. They are waiting for the cart.',
@@ -184,6 +185,7 @@ export const MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'forest',
         template: 'lone-rogue',
         job: 'eliminate',
         text: 'A thin figure with a scratched-out headband is practising seals, alone, scrolls spread around him.',
@@ -217,6 +219,7 @@ export const MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
+        ground: 'room',
         template: 'spirit',
         job: 'eliminate',
         text: 'A grey figure hunches over the grain sacks at the back, muttering. "Mine. All of it. Mine."',

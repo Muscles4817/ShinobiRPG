@@ -143,6 +143,7 @@ export const LOADED_DICE_ACT_TWO: MissionDef = {
     },
     {
       kind: 'encounter',
+      ground: 'room',
       template: 'guarded-building',
       job: 'eliminate',
       text: 'The room tilts. The walls are cards. Gonzō’s men come out of them.',

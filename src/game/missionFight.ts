@@ -67,6 +67,7 @@ export function beginCombat(
       allies: teamAllies(state, ctx),
       enemies,
       canFlee: stage.canFlee,
+      ...(stage.ground ? { ground: stage.ground } : {}),
       ...(start.opening ? { opening: start.opening } : {}),
       ...(start.intro ? { intro: start.intro } : {}),
     },

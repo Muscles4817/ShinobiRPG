@@ -25,8 +25,9 @@ export type {
   CombatItemEffect,
   RangeBand,
   CombatRow,
+  CombatGround,
 } from './contract';
-export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS, COMBAT_PROVISIONS } from './contract';
+export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS, COMBAT_PROVISIONS, COMBAT_GROUNDS } from './contract';
 export type { CombatOrders, CombatStance, CombatUsage, StanceKind } from './teamContract';
 export { STANCE_KINDS } from './teamContract';
 export type {
@@ -55,6 +56,7 @@ export { focusScale } from './rules/focus';
 export { weaponNumbers, type WeaponNumbers } from './rules/weapons';
 export { splitNarration } from './rules/narration';
 export { RANGE_BANDS, RANGE_LABEL, reachOf } from './rules/range';
+export { GROUND_RULES, type GroundRule } from './rules/ground';
 export { potencyOf as fieldPotencyOf } from './rules/verbs/field';
 export { AFFLICT_EXCHANGES } from './rules/verbs/lingering';
 export type {

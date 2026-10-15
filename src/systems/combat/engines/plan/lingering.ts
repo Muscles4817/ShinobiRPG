@@ -21,6 +21,7 @@ import {
   type LingeringMemory,
 } from '../../rules/verbs';
 import { withAntidote } from '../../rules/provisions';
+import { movedTo } from './groundPlay';
 import { canHit } from './rows';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { wound } from './wound';
@@ -44,7 +45,7 @@ export function knock(round: Round, target: PlanFighter, use: EffectUse<'knock'>
     to === 'close'
       ? `${target.name} is dragged in close!`
       : `${target.name} is thrown back to ${RANGE_LABEL[to].toLowerCase()} range!`;
-  return { ...say(round, line), range: to };
+  return movedTo(round, to, line);
 }
 
 export function pin(round: Round, target: PlanFighter, use: EffectUse<'pin'>): Round {

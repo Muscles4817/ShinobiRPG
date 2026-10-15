@@ -146,6 +146,7 @@ export const DROWNED_SHORE_ACT_TWO: MissionDef = {
     },
     {
       kind: 'encounter',
+      ground: 'lake',
       template: 'bandit-camp',
       job: 'eliminate',
       text: 'The smugglers come down the jetty behind Nagi, and the sea comes up to meet them.',

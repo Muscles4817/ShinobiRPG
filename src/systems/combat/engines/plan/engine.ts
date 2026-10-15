@@ -23,6 +23,8 @@ import { lingeringStatuses } from './lingering';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { prepStatuses } from './prep';
 import { openFight } from './opening';
+import { groundLines } from './groundPlay';
+import { withinGround } from '../../rules/ground';
 import { decide, resolveExchange } from './round';
 import { isDazed } from './daze';
 import {
@@ -209,7 +211,9 @@ export function createPlanEngine(): CombatEngine {
 
     start(setup, rng) {
       const names = setup.enemies.map((e) => e.name);
-      const { fighters, range, lines, field } = openFight(initialFighters(setup), setup.opening);
+      const opened = openFight(initialFighters(setup), setup.opening);
+      const { fighters, lines, field } = opened;
+      const range = withinGround(setup.ground, opened.range);
       const planned = plannedFighters(fighters, setup.plan);
       const table = {
         fighters: planned,
@@ -230,7 +234,12 @@ export function createPlanEngine(): CombatEngine {
         seen: {},
         ...foeMarkFor(planned),
         intents: rollIntents(table, rng),
-        log: [setup.intro ?? `${squareUpLine(names)} How will you fight?`, ...lines],
+        log: [
+          setup.intro ?? `${squareUpLine(names)} How will you fight?`,
+          ...groundLines(setup.ground),
+          ...lines,
+        ],
+        ...(setup.ground ? { ground: setup.ground } : {}),
         result: null,
         canFlee: setup.canFlee,
         ...(firstMover === undefined ? {} : { firstMover }),

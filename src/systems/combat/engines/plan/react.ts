@@ -3,6 +3,7 @@ import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniqu
 
 import { alive } from '../../rules/body';
 import { cappedHit, strikeDamage } from '../../rules/damage';
+import { footingOf } from '../../rules/ground';
 import { counterChance, dodgeChance, guardScale, slipChance } from '../../rules/defence';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import {
@@ -194,7 +195,8 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const { attacker, target, blow, rng } = hit;
   const able = blow.dodgeable && !isDazed(target);
   const tried = able && has('dodge');
-  const avoid = able ? avoidChance(hit, dulled(round.field, target), has('dodge')) : 0;
+  const footing = footingOf(round.ground, target);
+  const avoid = able ? avoidChance(hit, dulled(round.field, target), has('dodge')) * footing : 0;
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
   const line = `${target.name} slips past ${attacker.name}'s ${blow.what}.`;
   // A swift fighter slips some blows on instinct; only a ready Dodge is shown reacting.
