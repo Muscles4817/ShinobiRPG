@@ -2,6 +2,7 @@ import type { CombatantView, CombatOption, CombatView, FightBeat, ScoutingRead }
 
 import { Chips } from '../../../components/Chips';
 import { Formation, shortName } from './Formation';
+import { useBeatSounds } from './useBeatSounds';
 import { usePlayback } from './usePlayback';
 import { useHealthPulses } from './useHealthPulses';
 
@@ -192,6 +193,7 @@ export function WatchScreen(props: WatchScreenProps) {
   const you = view.combatants.find((c) => c.side === 'player');
   const play = usePlayback({ beats, youId: you?.id ?? null, fresh, onDone: onWatched });
   const beat = play.beat;
+  useBeatSounds(beat, you?.id ?? null, fresh);
   const fighters = view.combatants.map((c) => ({ ...c, health: beat?.health[c.id] ?? c.health }));
   const pulses = useHealthPulses(fighters);
   // The heading names the stretch you are in; a divider being told now is the beat itself.

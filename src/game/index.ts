@@ -126,6 +126,23 @@ export {
 export type { MapStyle } from './mapStyle';
 export { ACTION_CUES, cueAfter, type ActionCue } from './cues';
 export {
+  DEFAULT_AUDIO_SETTINGS,
+  MAX_VOLUME,
+  MUSIC_MOODS,
+  SOUNDS,
+  VOLUME_STEP,
+  beatSound,
+  clampVolume,
+  musicMood,
+  readAudioSettings,
+  reportSound,
+  soundAfter,
+  writeAudioSettings,
+  type AudioSettings,
+  type MusicMood,
+  type Sound,
+} from './sound';
+export {
   gearShopView,
   loadoutView,
   type GearShopView,

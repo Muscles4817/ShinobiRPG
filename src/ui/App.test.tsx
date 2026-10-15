@@ -319,6 +319,20 @@ describe('App (smoke test)', () => {
     expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
   });
 
+  it('opens the settings from the Shinobi tab, with the save’s own settings', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
+    await user.click(screen.getByRole('button', { name: /^Settings/ }));
+    expect(screen.getByRole('region', { name: 'Sound' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'This save' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Animations on/ }));
+    expect(screen.getByRole('button', { name: /Animations off/ })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Back' }));
+    expect(screen.getByRole('button', { name: 'Main menu' })).toBeInTheDocument();
+  });
+
   it('has no fight-style switch while only one style is offered', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

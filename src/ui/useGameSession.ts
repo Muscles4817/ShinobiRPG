@@ -7,6 +7,7 @@ import {
   deserialize,
   dispatch,
   serialize,
+  soundAfter,
   type ActionCue,
   type CreationDraft,
   type GameAction,
@@ -14,6 +15,8 @@ import {
   type GameState,
   type SaveStore,
 } from '@/game';
+
+import { useSound } from './audio/SoundProvider';
 
 interface Loaded {
   readonly game: GameState;
@@ -60,6 +63,7 @@ export function useGameSession(store: SaveStore): GameSession {
   const [game, setGame] = useState<Loaded | null>(initial.game);
   const [notice, setNotice] = useState<string | null>(initial.notice);
   const [cue, setCue] = useState<ShownCue | null>(null);
+  const { play } = useSound();
 
   useEffect(() => {
     if (game) store.save(serialize(game.game));
@@ -74,11 +78,14 @@ export function useGameSession(store: SaveStore): GameSession {
         setNotice(null);
         const kind = cueAfter(action, game.game, result.value);
         setCue((shown) => (kind ? { kind, id: (shown?.id ?? 0) + 1 } : shown));
+        const sound = soundAfter(action, game.game, result.value);
+        if (sound) play(sound);
       } else {
         setNotice(result.error);
+        play('refused');
       }
     },
-    [game],
+    [game, play],
   );
 
   const start = useCallback((packId: string, draft: CreationDraft, seed: number) => {

@@ -39,8 +39,8 @@ src/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
-  platform/   Browser adapters (localStorage save store).
-  ui/         React. theme/ (tokens), art/ (SVG icons & backdrops), components/, screens/.
+  platform/   Browser adapters (localStorage save and device-settings stores).
+  ui/         React. theme/ (tokens), art/ (SVG icons & backdrops), audio/ (synth & music), components/, screens/.
   main.tsx    App composition root: picks platform adapters and the game context.
 ```
 
@@ -409,6 +409,16 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     only through `waysOf` (`generate.ts`): a pack may leave `ways` out, and they are generated
     from an archetype (`content/senseiArchetypes.ts`), coherent by construction.
 
+28. **Sound is synthesised, decided by the game, played by the UI.** No audio files: every
+    sound and loop is built on the Web Audio graph (`ui/audio/voices.ts`: koto, flute, taiko,
+    bell, clappers…), so it works offline and costs nothing to ship. The game names the moment
+    (`game/sound/`: `soundAfter` for an action, `reportSound`, `beatSound` for a fight's beats,
+    `musicMood` from the scene, clock and calendar); `ui/audio/effects.ts` says what each
+    `Sound` is made of and `loops.ts` how each `MusicMood` goes (bars of scale degrees, read by
+    `score.ts`, varied by hash after the first time round, never `Math.random`). Volumes
+    (`AudioSettings`) belong to the device, not the save: a second `SaveStore` (`prefs`) holds
+    them. Audio starts on the first tap, as browsers require; every enabled button taps.
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -604,6 +614,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a discipline:** add it to `STAT_IDS` and `DISCIPLINES`, a colour token, a card glyph,
   starter technique in every pack's `disciplineStarters`, drills, and a save migration that
   gives existing characters the base value.
+- **Add a sound or a music mood:** add the id to `SOUNDS` or `MUSIC_MOODS` (`game/sound/`), have
+  the game pick it, and give it a recipe in `ui/audio/effects.ts` or a loop in `loops.ts` (both
+  `Record`s keyed by id, so a missing one is a type error). Keep effects short and in the music's
+  keys; check levels stay under the limiter.
 - **Add a backdrop or icon:** add the id to `BackdropId`/`IconId` in `content/art.ts` and the
   drawing to `ui/art/` (a `Record` keyed by id, so a missing drawing is a type error).
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
