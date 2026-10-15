@@ -97,7 +97,13 @@ export type {
   TravelMap,
 } from './views/travelMap';
 export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
-export { animationSetting, type AnimationSetting } from './views/settings';
+export {
+  animationSetting,
+  mapStyleOptions,
+  type AnimationSetting,
+  type MapStyleOption,
+} from './views/settings';
+export type { MapStyle } from './mapStyle';
 export { ACTION_CUES, cueAfter, type ActionCue } from './cues';
 export {
   gearShopView,

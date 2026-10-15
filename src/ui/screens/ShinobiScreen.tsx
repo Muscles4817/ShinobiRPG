@@ -5,7 +5,7 @@ import { headerView, shinobiView } from '@/game';
 import { Portrait } from '../art/Portrait';
 import { ConditionPanel } from './Condition';
 import { Cookbook } from './Cookbook';
-import { AnimationToggle } from './AnimationToggle';
+import { SettingsPanel } from './SettingsPanel';
 import { FightStylePicker } from './FightStylePicker';
 import { StatSheet } from './StatSheet';
 import type { ScreenProps } from './types';
@@ -126,7 +126,7 @@ export function ShinobiScreen({
       <StatSheet view={view} />
       <Cookbook ctx={ctx} state={state} />
       <FightStylePicker ctx={ctx} state={state} perform={perform} />
-      <AnimationToggle ctx={ctx} state={state} perform={perform} />
+      <SettingsPanel ctx={ctx} state={state} perform={perform} />
       <p className="muted small">
         {header.location}, {header.date}
       </p>

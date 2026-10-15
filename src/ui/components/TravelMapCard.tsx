@@ -23,6 +23,7 @@ export function TravelMapCard({ map, selected, onSelect }: TravelMapProps) {
   return (
     <section
       className="map-paper"
+      data-style={map.style}
       aria-label="Map"
       style={{ aspectRatio: `${map.width} / ${map.height}` }}
     >

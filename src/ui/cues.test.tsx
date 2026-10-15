@@ -6,28 +6,40 @@ import type { CombatantView, GameAction } from '@/game';
 import { act, ctx, newGame } from '@/test/gameFixtures';
 
 import { CueLayer } from './components/CueLayer';
-import { AnimationToggle } from './screens/AnimationToggle';
+import { SettingsPanel } from './screens/SettingsPanel';
 import { useHealthPulses } from './screens/scenes/combat/useHealthPulses';
 
-/** The animations switch on the Shinobi tab, and the cue that plays after an action. */
+/** The settings on the Shinobi tab, and the cue that plays after an action. */
 
 describe('animations (smoke test)', () => {
   it('switches animations off, and offers them back once off', async () => {
     const user = userEvent.setup();
     const done: GameAction[] = [];
     const { unmount } = render(
-      <AnimationToggle ctx={ctx} state={newGame()} perform={(a) => done.push(a)} />,
+      <SettingsPanel ctx={ctx} state={newGame()} perform={(a) => done.push(a)} />,
     );
     await user.click(screen.getByRole('button', { name: /Animations on/ }));
     expect(done).toEqual([{ type: 'setAnimations', on: false }]);
     unmount();
 
     const off = act(newGame(), { type: 'setAnimations', on: false });
-    render(<AnimationToggle ctx={ctx} state={off} perform={(a) => done.push(a)} />);
+    render(<SettingsPanel ctx={ctx} state={off} perform={(a) => done.push(a)} />);
     expect(screen.getByRole('button', { name: /Animations off/ })).toHaveAttribute(
       'aria-pressed',
       'false',
     );
+  });
+
+  it('offers the map styles, with the washi chart in use on a fresh game', async () => {
+    const user = userEvent.setup();
+    const done: GameAction[] = [];
+    render(<SettingsPanel ctx={ctx} state={newGame()} perform={(a) => done.push(a)} />);
+    expect(screen.getByRole('button', { name: /Washi chart/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await user.click(screen.getByRole('button', { name: /Lantern night/ }));
+    expect(done).toEqual([{ type: 'setMapStyle', style: 'night' }]);
   });
 
   it('draws the cue for the action and clears it when it has played', () => {

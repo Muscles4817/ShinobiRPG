@@ -2,6 +2,7 @@ import { MAP_SIZE, type AtlasLabel, type MapLabelSide, type MapPoint } from '@/c
 import type { Danger } from '@/systems/missions';
 
 import type { GameContext } from '../context';
+import { DEFAULT_MAP_STYLE, type MapStyle } from '../mapStyle';
 import { roadOpen } from '../routeNeeds';
 import type { GameState } from '../state';
 
@@ -33,6 +34,8 @@ export interface MapRoad {
 }
 
 export interface TravelMap {
+  /** How the player chose to have it inked. */
+  readonly style: MapStyle;
   readonly width: number;
   readonly height: number;
   readonly lands: readonly (readonly MapPoint[])[];
@@ -53,6 +56,7 @@ export function travelMap(state: GameState, ctx: GameContext): TravelMap {
   return {
     ...MAP_SIZE,
     ...atlas,
+    style: state.settings.mapStyle ?? DEFAULT_MAP_STYLE,
     places: locations.all.map((l) => ({
       id: l.id,
       name: l.name,

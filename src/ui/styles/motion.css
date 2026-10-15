@@ -58,6 +58,19 @@
   font-weight: normal;
   color: var(--story);
 }
+.map-styles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+.settings-subheading {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: var(--muted);
+}
 
 /*
  * Scene feeds (missions, encounters, exams, fights): a new line rises in as it arrives, and a

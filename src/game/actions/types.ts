@@ -1,4 +1,5 @@
 import type { Rng } from '@/core';
+import type { MapStyle } from '../mapStyle';
 import type { RangeBand } from '@/systems/combat';
 import type { CookingSteps } from '@/systems/cooking';
 import type { ApproachId, ReconId } from '@/systems/missions';
@@ -69,6 +70,7 @@ export type GameAction =
   | { readonly type: 'spar'; readonly personId: string }
   | { readonly type: 'setCombatStyle'; readonly style: string }
   | { readonly type: 'setAnimations'; readonly on: boolean }
+  | { readonly type: 'setMapStyle'; readonly style: MapStyle }
   | { readonly type: 'buyGear'; readonly gearId: string }
   | { readonly type: 'buyTool'; readonly toolId: string }
   | { readonly type: 'buyIntel'; readonly missionId: string }

@@ -421,7 +421,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   passes through it.
   A road may `trail` through bends so it follows the land. The country itself is the pack's
   `atlas` (`content/atlas.ts`: coastlines, the home country, borders, rivers, names, in map
-  units; validated on the map), drawn on the Travel tab as a printed chart.
+  units; validated on the map), drawn on the Travel tab in the player's `settings.mapStyle`
+  (washi chart, lantern night or sumi-e brush: `game/mapStyle.ts`, inks set per style in CSS).
 - **Add a control exercise:** an `ExerciseDef` (grade, pace, energy, `startedBy: 'sensei'` with a
   `start` line if the sensei begins it, an optional `walk` surface, a `limitBonus`, practice and
   fall lines) in `shared/exercises.ts` or a pack's own list, offered at a training place's

@@ -1,4 +1,5 @@
 import type { CombatState } from '@/systems/combat';
+import type { MapStyle } from './mapStyle';
 import type { Cooking, MealQuality } from '@/systems/cooking';
 import type { Housing } from '@/systems/housing';
 import type { Exhaustion, Injury } from '@/systems/injuries';
@@ -104,6 +105,8 @@ export interface Settings {
    * motion. Off keeps the screen still; the device's reduced-motion setting always wins.
    */
   readonly animations: boolean;
+  /** How the Travel map is inked; absent (every save from before the choice) is the washi chart. */
+  readonly mapStyle?: MapStyle;
 }
 
 /** An event that moved natural limits: where it came from, and how far each limit moved. */

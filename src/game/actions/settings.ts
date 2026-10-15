@@ -1,3 +1,4 @@
+import { DEFAULT_MAP_STYLE, MAP_STYLES } from '../mapStyle';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Choosing the fight style for new fights. A fight in progress finishes in its own style. */
@@ -19,5 +20,17 @@ export const setAnimations: ActionHandler<ActionOf<'setAnimations'>> = {
   },
   perform(state, action) {
     return { ...state, settings: { ...state.settings, animations: action.on } };
+  },
+};
+
+/** Choosing how the Travel map is inked. Never busy: it changes nothing in the world. */
+export const setMapStyle: ActionHandler<ActionOf<'setMapStyle'>> = {
+  check(state, action) {
+    if (!MAP_STYLES.includes(action.style)) return 'Unknown map style.';
+    const current = state.settings.mapStyle ?? DEFAULT_MAP_STYLE;
+    return current === action.style ? 'The map is already drawn this way.' : null;
+  },
+  perform(state, action) {
+    return { ...state, settings: { ...state.settings, mapStyle: action.style } };
   },
 };
