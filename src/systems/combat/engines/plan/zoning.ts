@@ -10,13 +10,14 @@ import {
   primaryEffect,
   techniquePower,
 } from '../../rules/verbs';
-import { holdOffChance, throwingAim } from '../../rules/zoning';
+import { turnLine } from '../../rules/narration';
+import { holdOffChance, holdOffReason, throwingAim } from '../../rules/zoning';
 import { strike } from './arms';
 import { cardId, findCard, fitsBand, kitCards, playable, type Card } from './cards';
 import { isDazed } from './daze';
 import type { HoldOff } from './footing';
 import { useJutsu } from './jutsu';
-import { heldOffLine, throughLine } from './sceneVoice';
+import { heldOffLine, heldOffWhy, throughLine } from './sceneVoice';
 import { inSight, opponentsOf, type Turn } from './senses';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
@@ -78,6 +79,10 @@ function aimWith(holder: PlanFighter, card: Card): number {
   return driveOf(holder, { technique: card.technique, effect: primaryEffect(card.technique) });
 }
 
+function nameOf(card: Card): string {
+  return card.kind === 'jutsu' ? card.technique.name : 'kunai';
+}
+
 function areaOf(card: Card) {
   const [area] = card.kind === 'jutsu' ? effectsOf(card.technique, 'area') : [];
   return area ? areaSize(area) : undefined;
@@ -98,6 +103,12 @@ interface Shot {
   readonly holder: PlanFighter;
   readonly closer: PlanFighter;
   readonly card: Card;
+}
+
+/** The holder's lines from `from` on: the holder acts in the closer's turn. */
+function holdersLines(round: Round, from: number, holderId: string): Round {
+  const theirs = round.lines.slice(from).map((line) => turnLine(line, holderId));
+  return { ...round, lines: [...round.lines.slice(0, from), ...theirs] };
 }
 
 /** The holder's attack meeting the closer, as any attack would. */
@@ -127,7 +138,8 @@ export function holdOff(round: Round, turn: Turn): HeldOff {
   const { holder, card } = found;
   // Holding someone off is the holder's turn this exchange.
   const marked = { ...round, acted: [...(round.acted ?? []), holder.id] };
-  const chance = holdOffChance(aimWith(holder, card), closer.attributes.speed, areaOf(card));
+  const aim = aimWith(holder, card);
+  const chance = holdOffChance(aim, closer.attributes.speed, areaOf(card));
   if (!turn.rng.chance(chance)) {
     return {
       round: say(
@@ -137,9 +149,12 @@ export function holdOff(round: Round, turn: Turn): HeldOff {
       outcome: 'through',
     };
   }
-  const told = say(marked, heldOffLine(momentOf(marked, holder.id), holder.name, closer.name));
-  return {
-    round: fire(told, { holder: fighterIn(told, holder.id) ?? holder, closer, card }, turn),
-    outcome: 'stopped',
-  };
+  const moment = momentOf(marked, holder.id);
+  const why = holdOffReason(aim, closer.attributes.speed, areaOf(card));
+  const told = say(
+    say(marked, heldOffLine(moment, holder.name, closer.name)),
+    heldOffWhy(moment, { holder: holder.name, closer: closer.name, what: nameOf(card), why }),
+  );
+  const fired = fire(told, { holder: fighterIn(told, holder.id) ?? holder, closer, card }, turn);
+  return { round: holdersLines(fired, round.lines.length, holder.id), outcome: 'stopped' };
 }

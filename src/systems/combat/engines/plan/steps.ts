@@ -4,10 +4,13 @@ import type { RangeBand } from '../../contract';
 import { RANGE_BANDS, RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { footingOf, withinGround } from '../../rules/ground';
 import { isPinned } from '../../rules/verbs';
+import type { Card } from './cards';
 import type { Turn } from './senses';
-import { patch, say, type Round } from './state';
+import { isEntry } from './stepping';
+import { chakraCost } from '../../rules/body';
+import { fighterIn, patch, paying, say, type Round } from './state';
 import { holdOff } from './zoning';
-import { blockedStepLine, momentOf, stepLine } from './voice';
+import { blockedStepLine, chargeLine, momentOf, stepLine } from './voice';
 
 /**
  * A step: the fighter tries for the next distance in or out, contested by the foe's speed. A
@@ -65,4 +68,26 @@ export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round 
     case 'unopposed':
       return stride(met.round, turn, direction);
   }
+}
+
+/**
+ * A charge: an entry played from further off meets a hold-off as a step does. Stopped, the
+ * technique is lost (`round` is what became of it); otherwise it goes on to land.
+ */
+export function charge(round: Round, turn: Turn, card: Card): { round: Round; stopped: boolean } {
+  if (!isEntry(turn.actor, card, round.range) || isPinned(turn.actor)) {
+    return { round, stopped: false };
+  }
+  const met = holdOff(round, turn);
+  if (met.outcome !== 'stopped' || card.kind !== 'jutsu')
+    return { round: met.round, stopped: false };
+  // Stopped, the charge is told before the fire that met it, and its chakra is spent.
+  const { actor } = turn;
+  const told = chargeLine(momentOf(round, actor.id), actor.name, card.technique.name);
+  const lines = [...round.lines, told, ...met.round.lines.slice(round.lines.length)];
+  const paid = paying(fighterIn(met.round, actor.id) ?? actor, chakraCost(actor, card.technique));
+  return {
+    round: { ...met.round, lines, fighters: patch(met.round.fighters, actor.id, paid) },
+    stopped: true,
+  };
 }

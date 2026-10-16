@@ -7,7 +7,7 @@ import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
 import { afterUsing } from '../../rules/trumps';
 import { strike } from './arms';
-import { step } from './steps';
+import { charge, step } from './steps';
 import { inCover, lostToGround } from './groundPlay';
 import { momentOf, reelingLine } from './voice';
 import { cardId, isOffence, needsAim, type Card } from './cards';
@@ -170,7 +170,9 @@ function attempt(round: Round, turn: Turn, card: Card): Round {
   }
   const lost = lostInField(round, actor, rng) ?? lostToGround(round, actor, rng);
   if (lost) return revealed(say(round, lost), turn);
-  return cloneFollowUp(revealed(play(round, turn, card), turn), turn, card);
+  const charged = charge(round, turn, card);
+  if (charged.stopped) return charged.round;
+  return cloneFollowUp(revealed(play(charged.round, turn, card), turn), turn, card);
 }
 
 /** A step that moved the fight springs any foe's trap waiting where it now stands. */

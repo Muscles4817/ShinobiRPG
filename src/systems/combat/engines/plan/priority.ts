@@ -1,6 +1,5 @@
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { alive, hasPerk } from '../../rules/body';
-import { canAttackFrom } from '../../rules/kit';
 import { effectsOf, hasVerb, isHindering, isPinned, isWounding } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
 import { beats, seenDefence, walksInto } from './adapt';
@@ -14,7 +13,7 @@ import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepNeeded } from './prep';
 import { hittable } from './rows';
-import { improvise, makingFor } from './stepping';
+import { attacksFrom, improvise, makingFor, readiesTheCharge } from './stepping';
 import { inSight, opponentsOf } from './senses';
 import { canDaze, isDazed } from './daze';
 import {
@@ -191,7 +190,7 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
 /** Whether a card would do something now: it can be played, it reaches, and it's needed. */
 function useful(self: PlanFighter, card: Card, round: Round): boolean {
   if (!playable(self, card) || spendsReserve(self, card)) return false;
-  if (isOffence(card) && !canAttackFrom(self, round.range)) return false;
+  if (isOffence(card) && !attacksFrom(self, card, round.range)) return false;
   return needed(self, card, round);
 }
 
@@ -274,7 +273,14 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   const emergency = firstPlay(self, round, slots.filter(urgent));
   if (emergency) return emergency;
   const footwork = isPinned(self) ? null : makingFor(self, round.range);
-  if (footwork) return { card: footwork, target: undefined };
+  if (footwork) {
+    // Ready the charge first: power up or make clones, or go in with an entry.
+    const charging = slots.filter((s) => {
+      const card = findCard(self, s.card);
+      return card !== null && readiesTheCharge(self, card, round.range);
+    });
+    return firstPlay(self, round, charging) ?? { card: footwork, target: undefined };
+  }
   const play = firstPlay(self, round, slots);
   if (play) return counterPick(self, round, play);
   const foes = opponentsOf(round.fighters, self);

@@ -20,7 +20,7 @@ import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
 import { sightInstinct } from './sight';
-import { improvise, makingFor } from './stepping';
+import { improvise, isEntry, makingFor, readiesTheCharge } from './stepping';
 import { canDaze, isDazed } from './daze';
 import type { DefenceKind, PlanFighter, Reads } from './state';
 
@@ -147,7 +147,10 @@ function holdsBack(foe: PlanFighter | undefined) {
 function moves(self: PlanFighter, ready: readonly Card[], band: RangeBand): Card[] {
   const reaches = canAttackFrom(self, band);
   return ready.filter(
-    (c) => c.kind === 'step' || flickers(self, c, band) || (isOffence(c) && reaches),
+    (c) =>
+      c.kind === 'step' ||
+      flickers(self, c, band) ||
+      (isOffence(c) && (reaches || isEntry(self, c, band))),
   );
 }
 
@@ -206,8 +209,12 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   if (instinct) return instinct;
   const heal = jutsu(ready, (t) => hasVerb(t, 'heal'));
   if (heal && self.health < self.maxHealth * LOW_HEALTH) return heal;
-  // Someone fighting at a set distance makes for it before anything but an emergency.
+  // Someone fighting at a set distance makes for it before anything but an emergency, going in
+  // with an entry when they have one.
   const footwork = isPinned(self) ? null : makingFor(self, moment.band);
-  if (footwork) return footwork;
+  const entry = ready.find(
+    (c) => readiesTheCharge(self, c, moment.band) && isEntry(self, c, moment.band),
+  );
+  if (footwork) return entry ?? footwork;
   return onTheMove(self, moves(self, ready, moment.band), moment, rng);
 }

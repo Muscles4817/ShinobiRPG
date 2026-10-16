@@ -218,7 +218,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`plan/steps.ts`). At mid and far a plan may **hold off** with kunai or a wounding
     technique (`plan/zoning.ts`, `rules/zoning.ts`): whoever steps in on a holder who hasn't
     acted yet meets that shot instead of the step's own contest (aim against speed, areas far
-    harder to get through, a vast one impossible), spending the holder's turn; without one, they step home only when nothing slotted does anything
+    harder to get through, a vast one impossible, and short of vast never certain), spending the holder's turn, and the
+    fire is told as the holder's (with why it worked). A fighter making for a distance readies the
+    charge first (an empower, clones) and goes in with an **entry** where they have one (a technique
+    that moves them in to strike, `isEntry` in `plan/stepping.ts`), which meets a hold-off as a step
+    does (`charge` in `plan/steps.ts`); without one, they step home only when nothing slotted does anything
     there, else throw a plain blow (never slotted). Foes play
     their default plan by priority, as the player does, as often as their judgement keeps them to
     it, and instinct otherwise (`plan/judgement.ts`: intellect grade sets plan adherence, whether
