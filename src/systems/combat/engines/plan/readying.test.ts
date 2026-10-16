@@ -150,7 +150,7 @@ describe('plan & watch verbs: empower', () => {
     const paid = afterEmpowers(empowered, 1);
     expect(hero(paid).health).toBeLessThan(80);
     expect(paid.lines.some((l) => l.includes('The strain tells'))).toBe(true);
-    const until = hero(empowered).empowered!.until;
+    const until = hero(empowered).empowered!.until!;
     const over = afterEmpowers(paid, until);
     expect(hero(over).empowered).toBeUndefined();
     expect(hero(over).attributes).toEqual(attributes);

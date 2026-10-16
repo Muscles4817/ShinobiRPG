@@ -47,6 +47,7 @@ export type CombatTechnique = Pick<
   | 'needs'
   | 'reach'
   | 'accuracy'
+  | 'needsOpen'
 > & {
   /** Learned a rank above its user's grade: costlier and may misfire (`rules/unstable.ts`). */
   readonly unstable?: true;

@@ -3,6 +3,7 @@ import type { StatGrade, Stats } from '@/systems/stats';
 
 import type { CostTemplate } from './costs';
 import type { MoveDistance, TechniqueEffect } from './effects';
+import type { LadderStep } from './ladders';
 import {
   controlStudyFactor,
   gradeIndex,
@@ -54,6 +55,8 @@ export interface TechniqueDef {
   readonly reach?: readonly MoveDistance[];
   /** How hard it is to slip: sure, steady (the default) or wild (`ACCURACIES`). */
   readonly accuracy?: Accuracy;
+  /** A step of a ladder that must be open in the fight to use it (`ladders.ts`): a gate. */
+  readonly needsOpen?: LadderStep;
 }
 
 /**

@@ -46,6 +46,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Front Lotus',
     description: 'Kick them skyward, wrap them up, and drive them into the ground. Hurts you too.',
     discipline: 'taijutsu',
+    needsOpen: { ladder: 'gates', step: 1 },
     school: 'Strong Fist',
     effects: [{ verb: 'damage', power: 27 }],
     chakraCost: 14,

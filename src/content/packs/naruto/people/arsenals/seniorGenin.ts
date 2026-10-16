@@ -12,6 +12,7 @@ export const LEE_ARSENAL: PersonArsenal = {
     'bare-handed-blade-block',
     'leaf-hurricane',
     'leaf-rising-wind',
+    'gate-of-opening',
     'front-lotus',
     'one-man-front-lotus',
     'seasickness-fist',

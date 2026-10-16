@@ -55,6 +55,18 @@ export {
   type EmpowerMemory,
 } from './empower';
 export {
+  CHAKRA_SURGE_PER_STEP,
+  GIVE_OUT_SHARE,
+  canOpen,
+  givesOut,
+  isOpenFor,
+  openStep,
+  opensOf,
+  stepShare,
+  worthOpening,
+  type ClimbReasons,
+} from './ladders';
+export {
   CLONE_BLOW_SCALE,
   cloneCount,
   clonesFrom,

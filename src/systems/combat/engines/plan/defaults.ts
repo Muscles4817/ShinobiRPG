@@ -1,11 +1,18 @@
-import type { Verb } from '@/systems/techniques';
+import { canClimb, LADDER_TOP, type Verb } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { hasPerk } from '../../rules/body';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
 import { isTrump, outmatched } from '../../rules/trumps';
-import { hasVerb, isHarmful, isHindering, isWounding, techniquePower } from '../../rules/verbs';
+import {
+  hasVerb,
+  isHarmful,
+  isHindering,
+  isWounding,
+  opensOf,
+  techniquePower,
+} from '../../rules/verbs';
 import { cardBlocked, cardId, cardsFor, isOffence, slotLimit, type Card } from './cards';
 import { opponentsOf } from './senses';
 import { defaultHoldOff } from './zoning';
@@ -28,6 +35,43 @@ function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean)
 
 function damageJutsu(cards: readonly Card[]): Card[] {
   return strongest(cards, isWounding);
+}
+
+/** How many of a ladder's openings a default plan slots: enough to climb, not crowd out attacks. */
+const LADDER_SLOTS = 2;
+
+function lastStep(card: Card): boolean {
+  const opens = card.kind === 'jutsu' ? opensOf(card.technique) : undefined;
+  return opens !== undefined && opens.step >= LADDER_TOP[opens.ladder];
+}
+
+function stepOf(card: Card): number {
+  return card.kind === 'jutsu' ? (opensOf(card.technique)?.step ?? 0) : 0;
+}
+
+/**
+ * A ladder's openings in the order they climb, each the deepest within reach of the last (the
+ * third gate, then the sixth): the plan opens them as the fight calls for (`prep.ts`).
+ */
+function ladderChain(pool: readonly Card[]): Card[] {
+  // The last step kills its user: never a plan's default, only a choice made by hand.
+  const openers = pool.filter((c) => stepOf(c) > 0 && !lastStep(c));
+  const chain: Card[] = [];
+  let at = 0;
+  for (;;) {
+    const from = at;
+    const next = openers
+      .filter((c) => canClimb(from, stepOf(c)))
+      .sort((a, b) => stepOf(b) - stepOf(a))[0];
+    if (!next) return chain;
+    chain.push(next);
+    at = stepOf(next);
+  }
+}
+
+/** A technique that needs a step deeper than the plan's openings climb is left out. */
+function withinClimb(top: number) {
+  return (c: Card) => c.kind !== 'jutsu' || (c.technique.needsOpen?.step ?? 0) <= top;
 }
 
 /** Whom the plan is made against, as far as it is known. */
@@ -110,11 +154,14 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     (c) =>
       (reaches || !isOffence(c) || isEntry(fighter, c, band)) && cardBlocked(fighter, c) === null,
   );
-  const trumps = usable.filter((c) => c.kind === 'jutsu' && isTrump(c.technique));
-  const pool = usable.filter((c) => !trumps.includes(c));
+  const chain = ladderChain(usable).slice(0, LADDER_SLOTS);
+  const climbable = usable.filter(withinClimb(Math.max(0, ...chain.map(stepOf))));
+  const trumps = climbable.filter((c) => c.kind === 'jutsu' && isTrump(c.technique));
+  const pool = climbable.filter((c) => !trumps.includes(c) && stepOf(c) === 0);
   const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
   const damage = damageJutsu(pool);
-  const ready = strongest(pool, (t) => hasVerb(t, 'empower') || hasVerb(t, 'clone')).slice(0, 1);
+  const readies = (t: CombatTechnique) => hasVerb(t, 'empower') || hasVerb(t, 'clone');
+  const ready = chain.length > 0 ? chain : strongest(pool, readies).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const hold = holdSlot(pool, facing);
   const search = pool.filter((c) => c.kind === 'search');
@@ -130,7 +177,8 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     ...hold.late,
     ...plain([...damage.slice(1), ...best('conceal')]),
   ];
-  return fitted(ordered, plain(damage.slice(0, 1))[0], slotLimit(fighter));
+  const unlocked = damage.find((c) => c.kind === 'jutsu' && !c.technique.needsOpen);
+  return fitted(ordered, plain(unlocked ? [unlocked] : damage.slice(0, 1))[0], slotLimit(fighter));
 }
 
 /** How a teammate's stance bends the plan (`team.ts`). */

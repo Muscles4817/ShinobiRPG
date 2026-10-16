@@ -90,8 +90,8 @@ describe('empower', () => {
 
   it('gives the stats back when it ends', () => {
     const raised = { ...fighter, ...empower(fighter, surgeUse, { drive: 10, exchange: 1 }) };
-    expect(empowerEnds(raised, raised.empowered.until - 1)).toBe(false);
-    expect(empowerEnds(raised, raised.empowered.until)).toBe(true);
+    expect(empowerEnds(raised, raised.empowered.until! - 1)).toBe(false);
+    expect(empowerEnds(raised, raised.empowered.until!)).toBe(true);
     expect(attributesAfterEmpower(raised)).toEqual(stats(10));
   });
 

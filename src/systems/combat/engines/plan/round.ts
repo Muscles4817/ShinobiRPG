@@ -7,7 +7,7 @@ import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
 import { afterUsing } from '../../rules/trumps';
 import { strike } from './arms';
-import { charge, step } from './steps';
+import { charge, step, type Charged } from './steps';
 import { inCover, lostToGround } from './groundPlay';
 import { momentOf, reelingLine } from './voice';
 import { cardId, isOffence, needsAim, type Card } from './cards';
@@ -172,7 +172,15 @@ function attempt(round: Round, turn: Turn, card: Card): Round {
   if (lost) return revealed(say(round, lost), turn);
   const charged = charge(round, turn, card);
   if (charged.stopped) return charged.round;
-  return cloneFollowUp(revealed(play(charged.round, turn, card), turn), turn, card);
+  const played = afterTheCast(play(charged.round, turn, card), charged);
+  return cloneFollowUp(revealed(played, turn), turn, card);
+}
+
+/** Lines a charge saved for after its technique is announced (slipping through the fire). */
+function afterTheCast(played: Round, { round, after }: Charged): Round {
+  if (after.length === 0) return played;
+  const at = round.lines.length + 1;
+  return { ...played, lines: [...played.lines.slice(0, at), ...after, ...played.lines.slice(at)] };
 }
 
 /** A step that moved the fight springs any foe's trap waiting where it now stands. */

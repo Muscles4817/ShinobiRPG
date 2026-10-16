@@ -533,7 +533,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a technique verb:** a technique's `effects` is a list of verbs applied in order
   (`systems/techniques/effects.ts`). A new verb goes in `VERBS` with its scaling profile
   (which user stats drive it, which target stats resist it) in `rules/verbs/profiles.ts`;
-  Plan & Watch applies it in `engines/plan/jutsu.ts`. Shelved engines read a technique
+  Plan & Watch applies it in `engines/plan/jutsu.ts`. An empower may open a step of a
+  **ladder** (`opens`, `systems/techniques/ladders.ts`: the Eight Gates), climbing at most
+  `LADDER_REACH` steps past the one open and holding until the body gives out; a technique may
+  need a step open (`needsOpen`). Each step's lift, the chakra surge and when a deep step is worth
+  opening live in `rules/verbs/ladders.ts`; validation checks every needed step can be climbed to
+  by the pack and by each arsenal that holds it. Shelved engines read a technique
   through `primaryEffect`. Verbs that leave something behind (knock, pin, drain, afflict:
   burn, bleed, poison; counter, a readied riposte) keep their rules in
   `rules/verbs/lingering.ts` and their play in `engines/plan/lingering.ts`, which wears them
