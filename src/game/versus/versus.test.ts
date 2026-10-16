@@ -47,6 +47,22 @@ describe('versus bouts', () => {
     expect(Object.keys(combatScouting(state, naruto))).toEqual([foe?.id]);
   });
 
+  it('can be only watched: both sides fight on their own and the card names who won', () => {
+    const made = createVersus(naruto, {
+      side: ['person:kakashi'],
+      foes: ['person:guy'],
+      seed: 7,
+      watch: true,
+    });
+    if (!made.ok) throw new Error(made.error);
+    const view = combatScene(made.value, naruto)!;
+    expect(view.log[0]).toBe('Kakashi Hatake against Might Guy.');
+    expect(view.options.some((o) => o.kind === 'plan' || o.kind === 'escape')).toBe(false);
+    const done = fightOut(made.value, naruto);
+    const report = done.reports[0];
+    expect(report?.kind === 'fight' && report.verdict).toMatch(/^(Kakashi Hatake|Might Guy) wins$/);
+  });
+
   it('is fought on the ground picked, which its opening names', () => {
     const made = createVersus(naruto, {
       side: ['person:kakashi'],

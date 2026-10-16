@@ -203,7 +203,8 @@ export function CombatScene(props: ScreenProps) {
   if (planning && !watch.holding) return <PlanScreen view={view} reads={reads} onPick={act} />;
   return (
     <WatchScreen
-      key={watch.from}
+      // New lines restage it, even when it was already up (a watched fight opens on it).
+      key={`${watch.from}:${length}`}
       view={view}
       beats={fightReplay(view, watch.from)}
       fresh={length > watch.seen}

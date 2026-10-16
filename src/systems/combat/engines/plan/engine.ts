@@ -54,6 +54,18 @@ import { squareUpLine } from '../../rules/narration';
 /** Exchanges per round; the cards can be changed between rounds. */
 export const ROUND_EXCHANGES = 4;
 
+/** The most rounds one "watch to the end" plays, so a fight no one can win still hands back. */
+const WATCHED_ROUNDS_MAX = 20;
+
+/** A fight only watched: play on, a round, or to the end. */
+const WATCH_OPTIONS: readonly CombatOption[] = [
+  { id: 'next', label: 'Next exchange', detail: '', kind: 'continue' },
+  { id: 'round', label: 'Watch the round', detail: '', kind: 'continue' },
+  { id: 'finish', label: 'Watch to the end', detail: '', kind: 'continue' },
+];
+
+const FIGHT_BEGINS = '— The fight begins —';
+
 function read(state: CombatState): PlanState {
   return withRows(withIntents(withSlots(upgradeLegacy(withKits(decode(state))))));
 }
@@ -83,8 +95,9 @@ function fleeBlocker(state: PlanState): { disabledReason?: string } {
     : {};
 }
 
-function options(state: PlanState): CombatOption[] {
+function options(state: PlanState): readonly CombatOption[] {
   if (state.result) return [];
+  if (state.watching) return WATCH_OPTIONS;
   const flee: CombatOption = { id: 'flee', label: 'Flee', detail: 'Try to escape', kind: 'escape' };
   const escape = { ...flee, ...fleeBlocker(state) };
   if (state.phase === 'loadout') {
@@ -139,20 +152,38 @@ function exchange(state: PlanState, rng: Rng): PlanState {
 /** When the round is over, back to the card table. */
 function endOfRound(next: PlanState): PlanState {
   if (next.result || next.exchange < ROUND_EXCHANGES) return next;
+  const watching = next.watching ?? false;
   return {
     ...next,
-    phase: 'loadout',
+    phase: watching ? 'fight' : 'loadout',
     bout: next.bout + 1,
     exchange: 0,
-    fighters: betweenRounds(next.fighters, next.reads),
+    fighters: betweenRounds(next.fighters, next.reads, watching),
     ...foeMarkFor(next.fighters),
-    log: [...next.log, '— The round is over. Change your cards if you like. —'],
+    log: [
+      ...next.log,
+      watching
+        ? '— The next round begins —'
+        : '— The round is over. Change your cards if you like. —',
+    ],
   };
 }
 
 function watchRound(state: PlanState, rng: Rng): PlanState {
   let current = state;
-  while (current.phase === 'fight' && !current.result) current = exchange(current, rng);
+  const bout = state.bout;
+  while (current.phase === 'fight' && current.bout === bout && !current.result) {
+    current = exchange(current, rng);
+  }
+  return current;
+}
+
+/** A watched fight played to its end, or for as many rounds as one press plays. */
+function watchToTheEnd(state: PlanState, rng: Rng): PlanState {
+  let current = state;
+  while (!current.result && current.bout < state.bout + WATCHED_ROUNDS_MAX) {
+    current = watchRound(current, rng);
+  }
   return current;
 }
 
@@ -181,13 +212,15 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   switch (optionId) {
     case 'begin': {
       // Dividers are story text too: no numbers (the round number shows above the log).
-      const divider = state.bout === 1 ? '— The fight begins —' : '— The next round begins —';
+      const divider = state.bout === 1 ? FIGHT_BEGINS : '— The next round begins —';
       return ok({ ...state, phase: 'fight', log: [...state.log, divider] });
     }
     case 'flee':
       return ok(flee(state, rng));
     case 'round':
       return ok(watchRound(state, rng));
+    case 'finish':
+      return ok(watchToTheEnd(state, rng));
     default:
       return ok(exchange(state, rng));
   }
@@ -224,8 +257,11 @@ export function createPlanEngine(): CombatEngine {
         ...(field ? { field } : {}),
       };
       const firstMover = setup.opening?.firstMover;
+      const watching = setup.watch ?? false;
+      const intro =
+        setup.intro ?? `${squareUpLine(names)}${watching ? '' : ' How will you fight?'}`;
       const state: PlanState = {
-        phase: 'loadout',
+        phase: watching ? 'fight' : 'loadout',
         round: 1,
         bout: 1,
         exchange: 0,
@@ -234,14 +270,11 @@ export function createPlanEngine(): CombatEngine {
         seen: {},
         ...foeMarkFor(planned),
         intents: rollIntents(table, rng),
-        log: [
-          setup.intro ?? `${squareUpLine(names)} How will you fight?`,
-          ...groundLines(setup.ground),
-          ...lines,
-        ],
+        log: [intro, ...groundLines(setup.ground), ...lines, ...(watching ? [FIGHT_BEGINS] : [])],
         ...(setup.ground ? { ground: setup.ground } : {}),
         result: null,
-        canFlee: setup.canFlee,
+        canFlee: setup.canFlee && !watching,
+        ...(watching ? { watching: true as const } : {}),
         ...(firstMover === undefined ? {} : { firstMover }),
         ...(field ? { field } : {}),
       };
@@ -271,6 +304,7 @@ export function createPlanEngine(): CombatEngine {
         range: plan.range,
         prompt: prompt(plan),
         ...(meter ? { meters: [meter] } : {}),
+        ...(plan.watching ? { watched: true as const } : {}),
       };
     },
 

@@ -121,9 +121,22 @@ function defeatCard(report: Extract<Report, { kind: 'defeat' }>): CardContent {
   };
 }
 
+/** A bout you only watched: who won, and how long it took. */
+function watchedCard(report: Extract<Report, { kind: 'fight' }>, verdict: string): CardContent {
+  return {
+    title: verdict,
+    subtitle: `Against ${report.enemies}`,
+    seal: null,
+    tone: 'good',
+    rows: [{ label: 'Rounds', value: String(report.rounds) }],
+    note: null,
+  };
+}
+
 function content(report: Report): CardContent {
   switch (report.kind) {
     case 'fight':
+      if (report.verdict) return watchedCard(report, report.verdict);
       return {
         title: report.result === 'victory' ? 'Victory' : 'Fight over',
         subtitle: `Against ${report.enemies}`,

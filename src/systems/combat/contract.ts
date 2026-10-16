@@ -170,6 +170,11 @@ export interface CombatSetup {
   readonly opening?: CombatOpening;
   /** Where it happens; an open arena when absent. */
   readonly ground?: CombatGround;
+  /**
+   * The player only watches: their side fights on its own, as the foes do, and the fight plays
+   * on round after round with no planning between. Engines that can't stage a fight ignore it.
+   */
+  readonly watch?: boolean;
 }
 
 /**
@@ -265,6 +270,8 @@ export interface CombatView {
   /** One line telling the player what to do now, e.g. "Pick your cards". */
   readonly prompt?: string;
   readonly meters?: readonly CombatMeter[];
+  /** The player only watches (`CombatSetup.watch`): nothing is aimed at "you". */
+  readonly watched?: true;
 }
 
 /** What the player chose: an option and, for targeted options, which enemy. */

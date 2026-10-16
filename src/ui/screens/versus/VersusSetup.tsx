@@ -25,6 +25,8 @@ export interface VersusChoice {
   readonly foes: readonly string[];
   /** Where they fight. */
   readonly ground: VersusGround['id'];
+  /** Only watch: your side fights on its own too. */
+  readonly watch: boolean;
 }
 
 interface PickerProps {
@@ -248,16 +250,29 @@ export function VersusSetup({ initial, onFight, onBack }: VersusSetupProps) {
       />
       <GroundPicker value={ground} onChange={setGround} />
       {problem && <p className="versus-problem">{problem}</p>}
-      <button
-        type="button"
-        className="btn wide"
-        disabled={!ctx || problem !== null}
-        onClick={() => {
-          if (ctx) onFight({ ctx, side, foes, ground });
-        }}
-      >
-        Fight
-      </button>
+      <nav className="menu-options" aria-label="Start the bout">
+        <button
+          type="button"
+          className="btn wide"
+          disabled={!ctx || problem !== null}
+          onClick={() => {
+            if (ctx) onFight({ ctx, side, foes, ground, watch: false });
+          }}
+        >
+          Fight
+        </button>
+        <button
+          type="button"
+          className="btn ghost wide"
+          disabled={!ctx || problem !== null}
+          onClick={() => {
+            if (ctx) onFight({ ctx, side, foes, ground, watch: true });
+          }}
+        >
+          Watch them fight
+        </button>
+      </nav>
+      <p className="muted">Watching, both sides fight on their own, round after round.</p>
     </main>
   );
 }

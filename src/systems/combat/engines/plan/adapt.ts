@@ -109,12 +109,17 @@ function rethink(self: PlanFighter, fighters: readonly PlanFighter[], reads: Rea
   return { ...self, reactions };
 }
 
-/** Between rounds: substitutions are ready again, and foes rethink their defences. */
+/**
+ * Between rounds: substitutions are ready again, and foes rethink their defences (in a fight
+ * that is only watched, both sides do: no one is planning for yours).
+ */
 export function betweenRounds(
   fighters: readonly PlanFighter[],
   reads: Reads | undefined,
+  bothSides = false,
 ): PlanFighter[] {
   const ready = substitutionsReady(fighters);
   if (!reads) return ready;
-  return ready.map((f) => (f.side === 'enemy' && alive(f) ? rethink(f, ready, reads) : f));
+  const rethinks = (f: PlanFighter) => alive(f) && (bothSides || f.side === 'enemy');
+  return ready.map((f) => (rethinks(f) ? rethink(f, ready, reads) : f));
 }

@@ -15,7 +15,8 @@ import { allySetups, foeSetups, nameOf, namesOf, playerSetup, sideOf } from './s
 /**
  * A versus bout: one to four of the pack's fighters a side, for playtesting. It runs in a
  * sandbox game that is never saved: its character mirrors your fighter (so scouting and the
- * fight screen read them), the fight starts at once, and only the fight is ever played.
+ * fight screen read them), the fight starts at once, and only the fight is ever played. A
+ * watched bout is the same fight with no one at the card table: your side fights on its own.
  */
 
 export interface VersusPick {
@@ -26,6 +27,8 @@ export interface VersusPick {
   readonly seed: number;
   /** Where they fight; an open arena when absent. */
   readonly ground?: CombatGround;
+  /** Only watch: both sides fight on their own, round after round. */
+  readonly watch?: boolean;
 }
 
 function statsOf(contender: Contender): Stats {
@@ -49,18 +52,23 @@ export function createVersus(ctx: GameContext, pick: VersusPick): Result<GameSta
   if (!you) return err('Choose who you will fight as.');
   const sandbox = sandboxFor(you, ctx, pick.seed);
   const player = playerSetup(you, sandbox, ctx);
+  const watching = pick.watch === true;
+  const sideName = namesOf(side.value);
+  const foeName = namesOf(foes.value);
   const setup = {
     player,
     allies: allySetups(allies, sandbox, ctx),
     enemies: foeSetups(foes.value, sandbox, ctx),
-    canFlee: true,
+    canFlee: !watching,
     ...(pick.ground ? { ground: pick.ground } : {}),
+    ...(watching ? { watch: true, intro: `${sideName} against ${foeName}.` } : {}),
   };
   const vitals = { ...sandbox.character.vitals, health: player.health, chakra: player.chakra };
   const match = {
     side: pick.side,
     foes: pick.foes,
-    foeName: namesOf(foes.value),
+    foeName,
+    ...(watching ? { watched: { sideName } } : {}),
     startHealth: player.health,
     startChakra: player.chakra,
     maxHealth: player.maxHealth,
