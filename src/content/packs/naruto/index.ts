@@ -2,6 +2,7 @@ import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
 import { CURRICULUM } from '../../shared/sensei/curriculum';
+import { senseiParts } from '../../shared/sensei/parts';
 import { SENSEI_TESTS } from '../../shared/sensei/tests';
 import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
@@ -71,6 +72,7 @@ import { WAVES_FOODS, WAVES_JOBS, WAVES_PEOPLE, WAVES_TRAINING } from './landOfW
 import { TANZAKU_FOODS, TANZAKU_JOBS, TANZAKU_PEOPLE } from './tanzaku';
 import { SHUKUBA_FOODS, SHUKUBA_JOBS, SHUKUBA_PEOPLE } from './shukuba';
 import { OTAFUKU_FOODS, OTAFUKU_JOBS, OTAFUKU_PEOPLE } from './otafuku';
+import { SENSEI_GROUNDS, SENSEI_NAMES } from './senseiGrounds';
 import {
   FIRE_TEMPLE_FOODS,
   FIRE_TEMPLE_JOBS,
@@ -98,6 +100,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   exercises: EXERCISES,
   senseiTests: SENSEI_TESTS,
   curriculum: CURRICULUM,
+  senseiParts: senseiParts(SENSEI_GROUNDS, SENSEI_NAMES),
   techniques: [
     ...TECHNIQUES,
     ...CLAN_TECHNIQUES,

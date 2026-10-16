@@ -135,3 +135,15 @@ export interface SenseiWays {
   readonly classRegard: ClassRegard;
   readonly story: SenseiStory;
 }
+
+/** How they speak at the moments that are theirs alone. Story text, no numbers. */
+export interface SenseiVoice {
+  /** When the work they set you is done. */
+  readonly praise: string;
+  /** When it isn't. */
+  readonly scold: string;
+  /** Something they say often enough that you'd know it was them. */
+  readonly catchphrase: string;
+  /** What they talk about by the fire on a job (at least two, so evenings differ). */
+  readonly fireside: readonly string[];
+}

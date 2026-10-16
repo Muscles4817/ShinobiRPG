@@ -27,19 +27,23 @@ export function senseiFit(character: Character, sensei: PersonDef): number {
   return grade * GRADE_WEIGHT + shared * SHARED_TRAIT_WEIGHT + nature;
 }
 
-/** The senseis to offer, best fit first. Ties keep the pack's order. */
+/**
+ * The senseis to offer, best fit first. Ties keep the pack's order. The second is the best fit
+ * in another art from the other side of the roster: someone new (a generated sensei, `pooled`)
+ * beside one of the pack's own, or the other way round, so every save may meet someone new.
+ */
 export function offerSenseis(character: Character, people: readonly PersonDef[]): string[] {
   const ranked = people
     .filter((p) => p.sensei !== undefined && p.sensei.offered !== false)
     .map((p) => ({ p, fit: senseiFit(character, p) }))
     .sort((a, b) => b.fit - a.fit)
     .map(({ p }) => p);
-  const offers: PersonDef[] = [];
-  for (const sensei of ranked) {
-    if (offers.length >= SENSEI_OFFERS) break;
-    if (!offers.some((o) => o.sensei?.specialty === sensei.sensei?.specialty)) offers.push(sensei);
-  }
-  return offers.map((p) => p.id);
+  const [best] = ranked;
+  if (!best) return [];
+  const otherArt = ranked.filter((s) => s.sensei?.specialty !== best.sensei?.specialty);
+  const isNew = (p: PersonDef) => p.sensei?.pooled !== undefined;
+  const second = otherArt.find((s) => isNew(s) !== isNew(best)) ?? otherArt[0];
+  return [best, ...(second ? [second] : [])].slice(0, SENSEI_OFFERS).map((p) => p.id);
 }
 
 /** Why a sensei asked for you, in words, best reason first. */

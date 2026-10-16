@@ -1,19 +1,11 @@
 import { createRng, hashString, type Rng } from '@/core';
 import type { PersonDef, PlaceKind } from '@/content';
-import {
-  EYE_COLOURS,
-  HAIR_COLOURS,
-  HAIR_STYLES,
-  HEADBAND_PLACES,
-  OUTFIT_COLOURS,
-  SKIN_TONES,
-  type Appearance,
-} from '@/systems/profile';
 import { DISCIPLINES } from '@/systems/techniques';
 import { TIME_SLOTS, type TimeSlot } from '@/systems/time';
 
 import type { GameContext } from '../context';
 import { graduate } from './graduates';
+import { randomAppearance } from './looks';
 
 /**
  * The genin generator: classmates built from the pack's name pools, its traits and the
@@ -98,17 +90,6 @@ function pickTraits(ctx: GameContext, rng: Rng): string[] {
   const first = rng.pick(traits);
   const second = rng.pick(traits.filter((t) => t.id !== first.id && t.id !== first.opposite));
   return [first.id, second.id];
-}
-
-function randomAppearance(rng: Rng): Appearance {
-  return {
-    hairStyle: rng.pick(HAIR_STYLES),
-    hairColour: rng.pick(HAIR_COLOURS),
-    eyeColour: rng.pick(EYE_COLOURS),
-    skinTone: rng.pick(SKIN_TONES),
-    outfitColour: rng.pick(OUTFIT_COLOURS),
-    headband: rng.pick(HEADBAND_PLACES),
-  };
 }
 
 function randomSchedule(

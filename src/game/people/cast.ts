@@ -5,6 +5,7 @@ import { slotName } from '@/systems/time';
 import type { GameContext } from '../context';
 import { homeVillageId } from '../homeVillage';
 import type { GameState } from '../state';
+import { inThisWorld } from './pooled';
 
 /** Looking people up, wherever they are defined, and finding who is around right now. */
 
@@ -20,7 +21,8 @@ export function requirePerson(state: GameState, ctx: GameContext, id: string): P
 
 /** Authored people first, then generated classmates. */
 export function everyone(state: GameState, ctx: GameContext): readonly PersonDef[] {
-  return [...ctx.content.people.all, ...state.people.generated];
+  const here = ctx.content.people.all.filter((p) => inThisWorld(state, ctx, p));
+  return [...here, ...state.people.generated];
 }
 
 export function bondOf(state: GameState, personId: string): Bond {

@@ -64,7 +64,9 @@ function enemyEntry(def: EnemyDef): VersusFighter {
 
 /** Everyone who can fight, by group, strongest first within each. */
 export function versusRoster(ctx: GameContext): VersusFighter[] {
-  const people = ctx.content.people.all.flatMap((p) => personEntry(p) ?? []);
+  // Generated senseis are a pool a save draws from, not the world's cast: they stay out.
+  const cast = ctx.content.people.all.filter((p) => !p.sensei?.pooled);
+  const people = cast.flatMap((p) => personEntry(p) ?? []);
   const foes = ctx.content.enemies.all.map(enemyEntry);
   return [...people, ...foes].sort(
     (a, b) => VERSUS_GROUPS.indexOf(a.group) - VERSUS_GROUPS.indexOf(b.group) || b.power - a.power,

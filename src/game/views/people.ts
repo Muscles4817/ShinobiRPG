@@ -66,7 +66,9 @@ export function personFace(state: GameState, person: PersonDef): PersonFace {
 function whereLabel(state: GameState, ctx: GameContext, person: PersonDef): string {
   const placeId = whereNow(state, ctx, person);
   const place = placeId && currentLocation(state, ctx).places.find((p) => p.id === placeId);
-  return place ? `At the ${place.name}` : 'Away';
+  // A place named "The Paper Lantern" is "At The Paper Lantern", not "At the The…".
+  if (!place) return 'Away';
+  return place.name.startsWith('The ') ? `At ${place.name}` : `At the ${place.name}`;
 }
 
 export function personCard(state: GameState, ctx: GameContext, person: PersonDef): PersonCard {

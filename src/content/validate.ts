@@ -13,6 +13,7 @@ import { validateTechniques } from './validateTechniques';
 import { validateRanks } from './validateRanks';
 import { validateRecipes } from './validateRecipes';
 import { validateSeasons } from './validateSeasons';
+import { validateSenseiParts } from './validateSenseiParts';
 import { validateSenseis } from './validateSenseis';
 import { validateSources } from './validateSources';
 import { validateTeachers } from './validateTeachers';
@@ -41,6 +42,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...missionProblems(pack),
     ...validateCrews(pack),
     ...validateSenseis(pack),
+    ...validateSenseiParts(pack),
     ...validateStory(pack),
     ...placeholderProblems(pack),
     ...numberProblems(pack),

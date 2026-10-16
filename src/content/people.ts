@@ -6,7 +6,7 @@ import type { Discipline, Element } from '@/systems/techniques';
 import type { TimeSlot } from '@/systems/time';
 
 import type { RecipeLesson } from './items';
-import type { SenseiWays } from './senseis';
+import type { SenseiVoice, SenseiWays } from './senseis';
 import type { TeacherProfile } from './teachers';
 
 /** Content schemas for the cast: people, how they talk, and the names generated genin get. */
@@ -62,6 +62,13 @@ export interface SenseiProfile {
   readonly offered?: boolean;
   /** How they run your genin years. Left out, ways are generated from an archetype. */
   readonly ways?: SenseiWays;
+  /** How they speak at the moments that are theirs (`senseiParts.ts`). */
+  readonly voice?: SenseiVoice;
+  /**
+   * Made from parts (`game/sensei/pool/`): one of a pool of senseis a save draws a few from,
+   * present only in the saves that drew them. Says which temperament and past they are made of.
+   */
+  readonly pooled?: { readonly temperament: string; readonly past: string };
 }
 
 /**

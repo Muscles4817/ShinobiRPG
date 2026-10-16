@@ -1,6 +1,8 @@
 import { buildContentDb, CONTENT_PACKS, type ContentDb, type ContentPack } from '@/content';
 import { createDuelEngine, createPlanEngine, type CombatEngine } from '@/systems/combat';
 
+import { withSenseiPool } from './sensei/pool/pool';
+
 /**
  * Dependencies the game logic needs but should not hard-code. This is the composition
  * root: to add or swap a combat engine or load a different content pack, change it here —
@@ -38,7 +40,12 @@ export function createGameContext(
   pack: ContentPack,
   engines: readonly CombatEngine[] = defaultEngines(),
 ): GameContext {
-  return { content: buildContentDb(pack), engines, shelvedEngines: shelvedEngines() };
+  // Generated senseis join the pack's own people as ordinary content (`sensei/pool/`).
+  return {
+    content: buildContentDb(withSenseiPool(pack)),
+    engines,
+    shelvedEngines: shelvedEngines(),
+  };
 }
 
 export interface PackChoice {
