@@ -126,6 +126,8 @@ interface VerbExtras {
   readonly clone: { readonly strikes?: true };
   /** A trap that also dazes whoever springs it. */
   readonly trap: { readonly dazes?: true };
+  /** A pin its caster must keep holding: their turns go on it, and hurting them breaks it. */
+  readonly pin: { readonly channelled?: true };
   /** Where a throw or a pull leaves the distance: away to mid or far, or dragged in close. */
   readonly knock: { readonly to: MoveDistance };
   /** A leech: part of the chakra taken flows back to the user. */

@@ -128,6 +128,8 @@ export interface PlanFighter
   readonly uses?: Readonly<Record<string, number>>;
   /** The card played last turn, and how many turns running it has been. */
   readonly streak?: { readonly card: CardId; readonly turns: number };
+  /** The fighter (by id) they are holding in a channelled pin (`holding.ts`). */
+  readonly holding?: string;
   /** Techniques copied this fight by watching (`mimicry.ts`). */
   readonly copied?: readonly string[];
 }

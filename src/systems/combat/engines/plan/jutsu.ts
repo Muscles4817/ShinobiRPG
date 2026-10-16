@@ -4,6 +4,7 @@ import type { CombatTechnique } from '../../contract';
 import { alive, chakraCost, holdTurns } from '../../rules/body';
 import { healAmount } from '../../rules/damage';
 import { groundRule } from '../../rules/ground';
+import { escapeScale, HOLD_ESCAPE_CEILING, holdsOnly } from '../../rules/catching';
 import { resistChance } from '../../rules/defence';
 import { FORESIGHT_SEES, foreseen } from '../../rules/eyes';
 import { familiarScale } from '../../rules/familiarity';
@@ -136,7 +137,7 @@ function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): R
     case 'knock':
       return knock(round, aimed.target, { technique, effect });
     case 'pin':
-      return pin(round, aimed.target, { technique, effect });
+      return pin(round, aimed, { technique, effect });
     case 'drain':
       return drain(round, aimed, { technique, effect });
     case 'afflict':
@@ -258,10 +259,11 @@ function seenChance(
 ): number {
   // Only a mind that reads the fight picks up on a technique leaned on.
   const familiar = readsInTheMoment(foe) ? familiarScale(actor.uses?.[t.id] ?? 0) : 1;
-  const chance = Math.min(
-    FAMILIAR_RESIST_MAX,
-    resistChance(actor, dulled(field, foe), t) * familiar,
-  );
+  const base = resistChance(actor, dulled(field, foe), t) * familiar;
+  // A hold needs its target caught: wits and speed slip it (`rules/catching.ts`).
+  const chance = holdsOnly(t)
+    ? Math.min(HOLD_ESCAPE_CEILING, base * escapeScale(actor, foe))
+    : Math.min(FAMILIAR_RESIST_MAX, base);
   return foreseen(chance, foe, FORESEES_TECHNIQUE);
 }
 

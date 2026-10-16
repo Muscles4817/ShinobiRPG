@@ -52,17 +52,21 @@ function daysToGrade(standing: ClassStanding, grade: StatGrade, days = DAYS): nu
 }
 
 /** Win rate against every genin of their year, rested and fed. */
+/** Fights against each classmate. */
+const FIGHTS_EACH = 20;
+
 function againstTheirYear(state: GameState): number {
   const rested = {
     ...state,
     character: { ...state.character, injuries: [], vitals: fullVitals(state.character.stats) },
   };
   const ids = classmateIds(rested);
-  const total = ids.reduce(
-    (sum, id) => sum + contentBench(against(rested, classmate(rested, id)), 20).winRate,
-    0,
-  );
-  return total / ids.length;
+  // Count whole wins, so the rate is exact (summing fractions drifts below a target it meets).
+  const wins = ids.reduce((sum, id) => {
+    const report = contentBench(against(rested, classmate(rested, id)), FIGHTS_EACH);
+    return sum + Math.round(report.winRate * FIGHTS_EACH);
+  }, 0);
+  return wins / (ids.length * FIGHTS_EACH);
 }
 
 describe('pacing by class standing', () => {

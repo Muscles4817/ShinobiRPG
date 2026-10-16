@@ -73,7 +73,8 @@ export function cleanReactions(fighter: Ready, reactions: Reactions): Reactions 
  */
 export function readyDefences(target: PlanFighter, round: Pick<Round, 'range' | 'number'>): Card[] {
   const kept = reactionAt(target, round.range);
-  if (!kept) return [];
+  // Hands on a channelled hold leave none for a defence.
+  if (!kept || target.holding) return [];
   if (isDazed(target) && kept.kind !== 'guard') return [];
   const stance = kept.kind === 'guard' || kept.kind === 'counter';
   return target.movedAt === round.number && stance ? [] : [kept];
