@@ -24,6 +24,7 @@ import { withAntidote } from '../../rules/provisions';
 import { movedTo } from './groundPlay';
 import { canHit } from './rows';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { startHolding } from './holding';
 import { wound } from './wound';
 import { knockLine } from './sceneVoice';
 import { momentOf } from './voice';
@@ -48,10 +49,15 @@ export function knock(round: Round, target: PlanFighter, use: EffectUse<'knock'>
   return movedTo(round, to, line);
 }
 
-export function pin(round: Round, target: PlanFighter, use: EffectUse<'pin'>): Round {
+export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>): Round {
   // The target counts an exchange down as it ends, the one it was pinned in too: hold one more.
   const pinned = Math.max(target.pinned ?? 0, holdTurns(use.effect) + 1);
-  return say(relinger(round, target.id, { pinned }), `${target.name} is pinned where they stand!`);
+  const caught = say(
+    relinger(round, target.id, { pinned }),
+    `${target.name} is pinned where they stand!`,
+  );
+  // A channelled pin keeps its caster's hands on it (`holding.ts`).
+  return use.effect.channelled ? startHolding(caught, actor.id, target.id) : caught;
 }
 
 export function drain(round: Round, { actor, target }: Aim, use: EffectUse<'drain'>): Round {

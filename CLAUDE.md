@@ -245,7 +245,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     they'd take to fall), and a mind that reads the fight keeps chakra for its finisher
     (`plan/pacing.ts`). Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
     covers (wide ×1.5, vast ×2.2), and each exchange gives back a little, or a share of deep
-    reserves. Healing is ninjutsu with chakra control; chakra control
+    reserves. A hold (a technique that pins, seals or dazes without wounding) needs its target caught: a target
+    sharper and quicker than the caster slips it more often (`rules/catching.ts`), and a
+    `channelled` pin keeps its caster's turns and hands on it until they are hurt or dazed, when it
+    breaks and frees its target of it and its seal (`plan/holding.ts`). Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
     foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
     lethality targets (equals fight two to three rounds and win about half) and the content bench

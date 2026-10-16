@@ -169,7 +169,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'water',
     effects: [
-      { verb: 'pin', power: 14 },
+      { verb: 'pin', power: 14, channelled: true },
       { verb: 'seal', power: 6 },
     ],
     chakraCost: 13,

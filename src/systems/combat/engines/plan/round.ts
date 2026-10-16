@@ -9,8 +9,10 @@ import { revealOnAttack } from '../../rules/items';
 import { afterUsing } from '../../rules/trumps';
 import { strike } from './arms';
 import { charge, step, type Charged } from './steps';
+import { keepHolding } from './holding';
+import { lostTurn } from './lostTurn';
 import { inCover, lostToGround } from './groundPlay';
-import { momentOf, reelingLine } from './voice';
+import { momentOf } from './voice';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
@@ -194,17 +196,15 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   if (!before || !alive(before) || decide(start.fighters) || start.acted?.includes(actorId)) {
     return start;
   }
-  const round = springTraps(startOfTurn(start, before, rng), actorId, rng, false);
+  const sprung = springTraps(startOfTurn(start, before, rng), actorId, rng, false);
+  // A channelled hold takes the turn while it holds (`holding.ts`).
+  const held = keepHolding(sprung, sprung.fighters.find((f) => f.id === actorId) ?? before);
+  if (held.spent) return held.round;
+  const round = held.round;
   const actor = round.fighters.find((f) => f.id === actorId) ?? before;
   if (!alive(actor)) return round;
-  if (actor.stunned > 0) {
-    const fighters = patch(round.fighters, actor.id, { stunned: actor.stunned - 1 });
-    return say({ ...round, fighters }, reelingLine(momentOf(round, actor.id), actor.name));
-  }
-  if (actor.joined) {
-    const fighters = patch(round.fighters, actor.id, { joined: false });
-    return say({ ...round, fighters }, `${actor.name} gathers themself after the combination.`);
-  }
+  const lost = lostTurn(round, actor);
+  if (lost) return lost;
   // The player and their teammates play their cards in priority order; foes on instinct.
   const planned = actor.side === 'player' ? plannedPlay(actor, round) : instinct(round, actor, rng);
   const { card } = planned;
