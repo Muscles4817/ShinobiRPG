@@ -2,6 +2,7 @@ import type { Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
 import { alive } from '../../rules/body';
+import { reachLead } from '../../rules/blades';
 import { gathered } from '../../rules/chakra';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
@@ -245,7 +246,12 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     .filter(alive)
     .map((f) => ({
       id: f.id,
-      initiative: f.attributes.speed + rng.next() * 4 + (f.side === ahead ? FIRST_MOVER_LEAD : 0),
+      initiative:
+        f.attributes.speed +
+        rng.next() * 4 +
+        (f.side === ahead ? FIRST_MOVER_LEAD : 0) +
+        // A drawn blade's reach strikes first up close (`blades.ts`).
+        reachLead(f, opponentsOf(state.fighters, f), state.range),
     }))
     .sort((a, b) => b.initiative - a.initiative);
   const start: Round = {

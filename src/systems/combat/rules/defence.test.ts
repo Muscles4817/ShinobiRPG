@@ -46,7 +46,9 @@ describe('defence layers', () => {
     expect(guardScale(at(), at())).toBeCloseTo(GUARD_SCALE);
     expect(guardScale(at(), at({ taijutsu: 16, strength: 16 }))).toBeLessThan(GUARD_SCALE);
     expect(guardScale(at({ taijutsu: 16, strength: 16 }), at())).toBeGreaterThan(GUARD_SCALE);
-    expect(counterChance(at(), at({ taijutsu: 16 }))).toBeGreaterThan(counterChance(at(), at()));
+    expect(counterChance({ attack: 10, answer: 16 })).toBeGreaterThan(
+      counterChance({ attack: 10, answer: 10 }),
+    );
   });
 
   it('resistance: willpower against genjutsu, perception against the rest', () => {

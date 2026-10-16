@@ -1,6 +1,6 @@
 import type { Accuracy, AreaSize, Discipline } from '@/systems/techniques';
 
-import type { CombatTechnique } from '../../contract';
+import type { CombatTechnique, RangeBand } from '../../contract';
 import {
   AVOID_MAX,
   avoidChance,
@@ -12,6 +12,7 @@ import {
 } from '../../rules/avoidance';
 import { FORESIGHT_SEES, FORESIGHT_SLIP, foreseen } from '../../rules/eyes';
 import { familiarScale } from '../../rules/familiarity';
+import { handsFull, HANDS_FULL_ARRIVAL, HANDS_FULL_READ } from '../../rules/blades';
 import { footingOf } from '../../rules/ground';
 import { hasTrait, SWIFT_DODGE, type AttackKind } from '../../rules/kit';
 import {
@@ -85,19 +86,22 @@ export function techniqueIncoming(
   attacker: PlanFighter,
   target: PlanFighter,
   t: CombatTechnique,
+  band: RangeBand,
 ): Incoming | null {
   const use = landingUse(t);
   if (!use) return null;
   const [area] = effectsOf(t, 'area');
   // Only a mind that reads the fight picks up on a technique leaned on.
   const familiar = readsInTheMoment(target) ? familiarScale(attacker.uses?.[t.id] ?? 0) : 1;
+  // Signs made around a drawn blade come slower and give more away (`blades.ts`).
+  const full = handsFull(attacker, t.discipline, band);
   return {
     form: 'technique',
     attacker,
     target,
-    skill: driveOf(attacker, use),
+    skill: driveOf(attacker, use) * (full ? HANDS_FULL_ARRIVAL : 1),
     discipline: t.discipline,
-    familiar,
+    familiar: familiar * (full ? HANDS_FULL_READ : 1),
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     ...(area ? { areaSize: areaSize(area) } : {}),
   };

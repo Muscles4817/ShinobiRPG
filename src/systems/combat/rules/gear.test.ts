@@ -82,7 +82,7 @@ describe('weapons', () => {
   it('a better blade cuts deeper', () => {
     const d = strikeWith(armed({ held: weapon('blade', 'D') }), plain, 0.5).raw;
     const b = strikeWith(armed({ held: weapon('blade', 'B') }), plain, 0.5).raw;
-    expect(b).toBeCloseTo(d * 1.2);
+    expect(b).toBeCloseTo(d * (1.45 / 1.25));
   });
 
   it('knuckles hit harder and go partly through a guard', () => {
