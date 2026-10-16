@@ -273,7 +273,7 @@ function misfired(turn: Turn, t: CombatTechnique): boolean {
 
 /** Whether one foe slips a technique: the avoid roll (`avoid.ts`). */
 function slips(round: Round, turn: Turn, foe: PlanFighter, t: CombatTechnique): boolean {
-  const incoming = techniqueIncoming(turn.actor, foe, t);
+  const incoming = techniqueIncoming(turn.actor, foe, t, round.range);
   return incoming !== null && turn.rng.chance(avoidOdds(round, incoming));
 }
 

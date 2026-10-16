@@ -291,7 +291,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     specific job use `postEverything` (the default `newGame` fixture does).
 18. **Gear counts in fights; meals count for a day.** Equipped gear (`inventory` system,
     `game/gear.ts`) never adds to stats: it rides in as `CombatantSetup.gear` (`gearContract.ts`)
-    and changes the cards (a blade's cut, needed for kenjutsu; knuckles; thrown steel and senbon;
+    and changes the cards (a blade's cut, needed for kenjutsu, harder than a fist, first to
+    strike up close unless a foe's hands are well clear of it, open to counters in an unskilled
+    hand, and in the way of hand signs short of far: `rules/blades.ts`; knuckles; thrown steel and senbon;
     armour levels that trade protection for speed, eased by strength; a focus that sharpens a
     verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. Gear has
     ranks D–A: shops sell D and C, B to chūnin; A and `unique` named weapons are never sold. A home-cooked recipe sets

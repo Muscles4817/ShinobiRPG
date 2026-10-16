@@ -19,7 +19,8 @@ import type { AttackKind } from './kit';
 /**
  * What weapons do, in every fight style. Gear never adds to stats: a weapon changes a card.
  *  - A blade turns Strike into a cut, driven by kenjutsu (with strength and footwork behind
- *    it, as for kenjutsu techniques); kenjutsu techniques can't be used without one.
+ *    it, as for kenjutsu techniques), clearly harder than a fist; kenjutsu techniques can't be
+ *    used without one. What else a blade changes (reach, openness, full hands) is `blades.ts`.
  *  - Knuckles put more into a blow, and part of it goes through a guard.
  *  - Throwing steel makes the kunai card hit harder; senbon hit softer but may daze, more so
  *    for sharp eyes against dull ones.
@@ -39,7 +40,7 @@ interface ShapeRule {
 }
 
 const SHAPE_RULES: Readonly<Record<WeaponShape, ShapeRule>> = {
-  blade: { scale: 1, scalePerRank: 0.1, pierce: 0, piercePerRank: 0, daze: 0, dazePerRank: 0 },
+  blade: { scale: 1.25, scalePerRank: 0.1, pierce: 0, piercePerRank: 0, daze: 0, dazePerRank: 0 },
   knuckles: {
     scale: 1.1,
     scalePerRank: 0.06,

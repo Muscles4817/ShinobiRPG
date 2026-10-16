@@ -71,10 +71,12 @@ describe('gear', () => {
     expect(tanto).toMatchObject({ kind: 'Blade', rank: 'D', unique: false });
     expect(tanto.effects.map((c) => c.label)).toEqual([
       'Strike becomes a cut',
+      'Strikes first up close',
       'Needed for kenjutsu',
+      'Cuts +25%',
     ]);
     const wakizashi = items.find((i) => i.id === 'forge-wakizashi')!;
-    expect(wakizashi.effects).toContainEqual({ label: 'Cuts +10%', tone: 'gain' });
+    expect(wakizashi.effects).toContainEqual({ label: 'Cuts +35%', tone: 'gain' });
     const needles = items.find((i) => i.id === 'needle-case')!;
     expect(needles.effects.map((c) => c.tone)).toEqual(['info', 'cost', 'gain']);
     const racks = at('kurogane-forge')(rich()).racks.map((r) => r.label);

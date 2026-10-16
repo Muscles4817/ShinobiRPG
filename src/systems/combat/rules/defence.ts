@@ -66,9 +66,13 @@ export function slipChance(chance: number, accuracy: Accuracy | undefined): numb
   return clamp(chance * ACCURACY_EVASION[accuracy ?? 'steady'], 0, SLIP_MAX);
 }
 
-/** Chance a Counter answers a blow up close: taijutsu against taijutsu. */
-export function counterChance(attacker: Rated, defender: Rated): number {
-  const ratio = gapRatio(defender.attributes.taijutsu, attacker.attributes.taijutsu);
+/**
+ * Chance a Counter answers a blow up close: the skill it is answered with (taijutsu, or a
+ * blade's kenjutsu) against the skill behind the blow (taijutsu, or kenjutsu for a cut, so an
+ * unskilled swing leaves its wielder open: `blades.ts`).
+ */
+export function counterChance({ attack, answer }: { attack: number; answer: number }): number {
+  const ratio = gapRatio(answer, attack);
   return clamp(COUNTER_BASE * ratio, COUNTER_MIN, COUNTER_MAX);
 }
 

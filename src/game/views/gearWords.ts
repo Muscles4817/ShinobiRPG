@@ -86,7 +86,9 @@ function weaponChips(def: Extract<GearDef, { kind: 'weapon' }>): JournalChip[] {
   const effects = def.effects ?? [];
   const what = def.shape === 'blade' ? 'Cuts' : def.shape === 'knuckles' ? 'Blows' : 'Kunai';
   return [
-    ...(def.shape === 'blade' ? [info('Strike becomes a cut'), info('Needed for kenjutsu')] : []),
+    ...(def.shape === 'blade'
+      ? [info('Strike becomes a cut'), info('Strikes first up close'), info('Needed for kenjutsu')]
+      : []),
     ...(def.shape === 'senbon' ? [info('Kunai become senbon')] : []),
     ...(n.scale === 1 ? [] : [(n.scale > 1 ? gain : cost)(`${what} ${change(n.scale)}`)]),
     ...(n.pierce >= 1 ? [gain('Through any guard')] : []),

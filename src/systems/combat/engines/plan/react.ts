@@ -4,6 +4,7 @@ import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniqu
 import { alive, hasPerk } from '../../rules/body';
 import { cappedHit, strikeDamage } from '../../rules/damage';
 import { counterChance, guardScale } from '../../rules/defence';
+import { counterSkill, cutSkill } from '../../rules/blades';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import { FORESIGHT_COUNTER, foreseen } from '../../rules/eyes';
 import { canAttackFrom, kitDamageScale, packScale, type AttackKind } from '../../rules/kit';
@@ -117,9 +118,16 @@ function confuse(round: Round, { attacker, target, rng }: Hit): Round {
   );
 }
 
-function counter(round: Round, { attacker, target, rng }: Hit): Round {
+/** The skill behind a blow a Counter answers: a cut's kenjutsu, else taijutsu. */
+function skillBehind(attacker: PlanFighter, blow: Blow): number {
+  const cut = blow.kind === 'weapon' || blow.discipline === 'kenjutsu';
+  return cut ? cutSkill(attacker) : attacker.attributes.taijutsu;
+}
+
+function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round {
   const struck = fighterIn(round, target.id);
-  const chance = foreseen(counterChance(attacker, target), target, FORESEES_OPENING);
+  const skills = { attack: skillBehind(attacker, met), answer: counterSkill(target) };
+  const chance = foreseen(counterChance(skills), target, FORESEES_OPENING);
   if (!struck || !alive(struck) || !rng.chance(chance)) return round;
   const blow: Blow = {
     raw: strikeDamage(target, attacker, rng.next()) * COUNTER_SCALE,
