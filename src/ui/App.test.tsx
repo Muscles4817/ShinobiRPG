@@ -67,6 +67,9 @@ describe('App (smoke test)', () => {
     const menu = screen.getByRole('navigation', { name: 'Main menu' });
     expect(within(menu).getByRole('button', { name: /New game/ })).toBeInTheDocument();
     expect(within(menu).getByRole('button', { name: /Versus/ })).toBeInTheDocument();
+    const share = within(menu).getByRole('link', { name: /Share on WhatsApp/ });
+    expect(share.getAttribute('href')).toMatch(/^https:\/\/wa\.me\/\?text=Shinobi%20RPG/);
+    expect(share.getAttribute('href')).toContain(encodeURIComponent('http://localhost'));
   });
 
   it('starts in the chosen world’s village and autosaves', async () => {

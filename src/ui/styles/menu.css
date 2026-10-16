@@ -169,6 +169,11 @@
   cursor: pointer;
 }
 
+/* The share option is a link out, dressed as the others. */
+a.menu-option {
+  text-decoration: none;
+}
+
 .menu-option:hover {
   border-color: var(--lantern);
 }
