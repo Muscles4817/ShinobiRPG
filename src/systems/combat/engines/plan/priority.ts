@@ -1,6 +1,6 @@
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { alive, hasPerk } from '../../rules/body';
-import { effectsOf, hasVerb, isHindering, isPinned, isWounding } from '../../rules/verbs';
+import { effectsOf, hasVerb, isHindering, isPinned, isWounding, opensOf } from '../../rules/verbs';
 import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
 import { beats, seenDefence, walksInto } from './adapt';
 import { partnered } from './combo';
@@ -149,13 +149,14 @@ function wasted(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
 function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
   const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
   if (wasted(self, t, round)) return false;
-  if (hasVerb(t, 'heal') && self.health >= self.maxHealth) return false;
+  // A gate that also heals is opened for the gate, not the healing.
+  if (hasVerb(t, 'heal') && !opensOf(t) && self.health >= self.maxHealth) return false;
   if (hasVerb(t, 'sense') && (!hiddenFoe || hasPerk(self, 'insight'))) return false;
   if (hasVerb(t, 'field') && ownField(round.field, self)) return false;
   if (moveDestination(self, t) === round.range) return false;
   if (!partnered(round.fighters, self, t)) return false;
-  const foeInSight = opponentsOf(round.fighters, self).some((f) => inSight(self, f));
-  if (!prepNeeded(self, t, foeInSight)) return false;
+  const foes = opponentsOf(round.fighters, self);
+  if (!prepNeeded(self, t, { foeInSight: foes.some((f) => inSight(self, f)), foes })) return false;
   return !(hasVerb(t, 'conceal') && self.hidden);
 }
 

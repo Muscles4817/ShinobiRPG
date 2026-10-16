@@ -85,6 +85,8 @@ function confuse(round: Round, { actor, target }: Aimed, use: EffectUse<'confuse
 function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
   const health = Math.min(actor.maxHealth, actor.health + healAmount(actor, use));
   const healed = { ...round, fighters: patch(round.fighters, actor.id, { health }) };
+  // Nothing to mend (a gate that also heals, opened unhurt): nothing to tell.
+  if (health === actor.health) return healed;
   return say(healed, healLine(`${actor.name} recovers.`, health - actor.health));
 }
 

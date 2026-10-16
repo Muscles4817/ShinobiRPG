@@ -98,6 +98,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
         boosts: ['strength', 'speed', 'taijutsu'],
         healthPerExchange: 3,
         afterCost: { kind: 'injury', stat: 'strength', amount: 1, days: 2 },
+        opens: { ladder: 'gates', step: 1 },
       },
     ],
     chakraCost: 8,
@@ -154,9 +155,10 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
       {
         verb: 'empower',
         power: 16,
-        boosts: ['strength', 'speed', 'taijutsu'],
+        boosts: ['strength', 'speed', 'taijutsu', 'stamina'],
         healthPerExchange: 4,
         afterCost: { kind: 'injury', stat: 'strength', amount: 2, days: 3 },
+        opens: { ladder: 'gates', step: 3 },
       },
     ],
     chakraCost: 11,
@@ -184,6 +186,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Ura Renge. The fifth gate open, a body juggled in the air, a last blow nobody walks off.',
     discipline: 'taijutsu',
+    needsOpen: { ladder: 'gates', step: 5 },
     school: 'Strong Fist',
     effects: [
       { verb: 'damage', power: 30 },
@@ -201,6 +204,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Asakujaku. The sixth gate open: punches so fast the air catches fire, fanning out like a peacock’s tail.',
     discipline: 'taijutsu',
+    needsOpen: { ladder: 'gates', step: 6 },
     school: 'Strong Fist',
     reach: ['close', 'mid'],
     effects: [
@@ -218,6 +222,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Hirudora. The seventh gate open, a single compressed fist of air in the shape of a tiger, fired across the field.',
     discipline: 'taijutsu',
+    needsOpen: { ladder: 'gates', step: 7 },
     school: 'Strong Fist',
     reach: ['close', 'mid', 'far'],
     effects: [

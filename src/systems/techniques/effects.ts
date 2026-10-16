@@ -1,6 +1,7 @@
 import type { StatId } from '@/systems/stats';
 
 import { costIsSane, type CostTemplate } from './costs';
+import { ladderStepProblem, type LadderStep } from './ladders';
 
 /**
  * What a technique does, as a list of verbs applied in order (damage, then daze). Each verb's
@@ -115,6 +116,11 @@ interface VerbExtras {
     readonly healthPerExchange?: number;
     /** What it takes out of its user once the fight is over, each time it is used. */
     readonly afterCost?: CostTemplate;
+    /**
+     * A step of a ladder it opens (the third gate): it climbs there from the step already open
+     * (`ladders.ts`) and holds until the fight ends or the body gives out.
+     */
+    readonly opens?: LadderStep;
   };
   /** Solid clones that throw a weak blow of their own when their maker attacks. */
   readonly clone: { readonly strikes?: true };
@@ -178,8 +184,14 @@ export function effectProblem(effect: TechniqueEffect): string | null {
   if (effect.verb === 'afflict' && !harms.includes(effect.harm)) {
     return `an unknown lingering harm "${effect.harm}"`;
   }
-  if (effect.verb !== 'empower') return null;
+  return effect.verb === 'empower' ? empowerProblem(effect) : null;
+}
+
+/** An empower must raise something, open a real step if any, and cost something real. */
+function empowerProblem(effect: EffectOf<'empower'>): string | null {
   if (effect.boosts.length === 0) return 'an empower that raises nothing';
+  const step = effect.opens ? ladderStepProblem(effect.opens) : null;
+  if (step) return `an empower that opens ${step}`;
   if (effect.afterCost && !costIsSane(effect.afterCost)) {
     return 'an empower whose after-cost is not positive';
   }

@@ -7,7 +7,7 @@ import { carried } from '../../rules/items';
 import { inReach, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { trumpSpent } from '../../rules/trumps';
 import { weaponMissing } from '../../rules/weapons';
-import { hasVerb, isHarmful } from '../../rules/verbs';
+import { hasVerb, isHarmful, isOpenFor } from '../../rules/verbs';
 import type { CardId, PlanFighter } from './state';
 
 /**
@@ -183,6 +183,6 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
-  if (trumpSpent(fighter, card.technique)) return false;
+  if (trumpSpent(fighter, card.technique) || !isOpenFor(fighter, card.technique)) return false;
   return fighter.sealed === 0 && chakraCost(fighter, card.technique) <= fighter.chakra;
 }

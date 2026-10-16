@@ -1,6 +1,8 @@
 import { clamp, round1 } from '@/core';
+import type { LadderStep } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatCost, CombatTechnique } from '../../contract';
+import { stepShare } from './ladders';
 import type { EffectUse } from './use';
 
 /**
@@ -32,8 +34,10 @@ export interface Empowerment {
   readonly techniqueId: string;
   /** What it added to each boosted stat, taken back when it ends. */
   readonly added: Readonly<Partial<Record<Stat, number>>>;
-  /** The last exchange it holds. */
-  readonly until: number;
+  /** The last exchange it holds; absent for a ladder, open until the body gives out. */
+  readonly until?: number;
+  /** The ladder step it opened (a gate), when it is a ladder's. */
+  readonly opened?: LadderStep;
   /** Health paid at the end of each exchange it holds. */
   readonly healthPerExchange: number;
 }
@@ -92,18 +96,19 @@ export function empower(
   use: EffectUse<'empower'>,
   { drive, exchange }: { readonly drive: number; readonly exchange: number },
 ): Empowered {
-  const share = empowerShare(drive, use);
+  const { opens } = use.effect;
+  // A ladder step's share is the step's own; climbing replaces the step below, not stacks on it.
+  const share = opens ? stepShare(opens) : empowerShare(drive, use);
+  const base = attributesAfterEmpower(fighter);
   const boosts: readonly Stat[] = use.effect.boosts;
-  const added = Object.fromEntries(
-    boosts.map((stat) => [stat, round1(fighter.attributes[stat] * share)]),
-  );
+  const added = Object.fromEntries(boosts.map((stat) => [stat, round1(base[stat] * share)]));
   const empowered: Empowerment = {
     techniqueId: use.technique.id,
     added,
-    until: exchange + empowerExchanges(fighter.maxChakra),
+    ...(opens ? { opened: opens } : { until: exchange + empowerExchanges(fighter.maxChakra) }),
     healthPerExchange: empowerPrice(fighter.attributes.willpower, use),
   };
-  const attributes = addTo(fighter.attributes, added, 1);
+  const attributes = addTo(base, added, 1);
   if (!use.effect.afterCost) return { attributes, empowered };
   return {
     attributes,
@@ -121,7 +126,8 @@ export function healthAfterPrice(fighter: Empowerable): number {
 
 /** Whether an empower in force ends with this exchange. */
 export function empowerEnds(fighter: Empowerable, exchange: number): boolean {
-  return fighter.empowered !== undefined && fighter.empowered.until <= exchange;
+  const until = fighter.empowered?.until;
+  return until !== undefined && until <= exchange;
 }
 
 /** The stats once an empower in force is over: what it added, taken back. */

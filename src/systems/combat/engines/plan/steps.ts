@@ -70,24 +70,32 @@ export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round 
   }
 }
 
+/** A charge met: what became of the round, whether it was stopped, and lines told after it. */
+export interface Charged {
+  readonly round: Round;
+  readonly stopped: boolean;
+  /** Getting through a hold-off, told once the charge itself has been. */
+  readonly after: readonly string[];
+}
+
 /**
  * A charge: an entry played from further off meets a hold-off as a step does. Stopped, the
  * technique is lost (`round` is what became of it); otherwise it goes on to land.
  */
-export function charge(round: Round, turn: Turn, card: Card): { round: Round; stopped: boolean } {
+export function charge(round: Round, turn: Turn, card: Card): Charged {
   if (!isEntry(turn.actor, card, round.range) || isPinned(turn.actor)) {
-    return { round, stopped: false };
+    return { round, stopped: false, after: [] };
   }
   const met = holdOff(round, turn);
-  if (met.outcome !== 'stopped' || card.kind !== 'jutsu')
-    return { round: met.round, stopped: false };
+  if (met.outcome !== 'stopped' || card.kind !== 'jutsu') {
+    const after = met.round.lines.slice(round.lines.length);
+    return { round: { ...met.round, lines: round.lines }, stopped: false, after };
+  }
   // Stopped, the charge is told before the fire that met it, and its chakra is spent.
   const { actor } = turn;
   const told = chargeLine(momentOf(round, actor.id), actor.name, card.technique.name);
   const lines = [...round.lines, told, ...met.round.lines.slice(round.lines.length)];
   const paid = paying(fighterIn(met.round, actor.id) ?? actor, chakraCost(actor, card.technique));
-  return {
-    round: { ...met.round, lines, fighters: patch(met.round.fighters, actor.id, paid) },
-    stopped: true,
-  };
+  const fighters = patch(met.round.fighters, actor.id, paid);
+  return { round: { ...met.round, lines, fighters }, stopped: true, after: [] };
 }

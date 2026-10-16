@@ -11,6 +11,7 @@ import type { CombatantSetup } from '@/systems/combat';
 import { STAT_INFO } from '@/systems/stats';
 import {
   blowsOf,
+  stepWords,
   type AfflictionKind,
   type AreaSize,
   type FieldId,
@@ -175,7 +176,9 @@ function detailedLine(effect: Extract<TechniqueEffect, { verb: DetailedVerb }>):
       };
     case 'empower':
       return {
-        text: `Raises ${effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()).join(' and ')}, at a price`,
+        text: effect.opens
+          ? `Opens ${stepWords(effect.opens)}: raises ${effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()).join(' and ')} until the body gives out`
+          : `Raises ${effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()).join(' and ')}, at a price`,
         chip: effect.healthPerExchange ? `−${effect.healthPerExchange} health a turn` : null,
       };
     case 'clone':
@@ -221,9 +224,11 @@ function effectLine(effect: TechniqueEffect): SheetLine {
 }
 
 function needLines(def: TechniqueDef): string[] {
+  const open = def.needsOpen ? [`${capital(stepWords(def.needsOpen))} open`] : [];
   const n = def.needs;
-  if (!n) return [];
+  if (!n) return open;
   return [
+    ...open,
     ...(n.nature ? [`${n.nature[0]?.toUpperCase() ?? ''}${n.nature.slice(1)} nature`] : []),
     ...(n.control ? [`Chakra control ${n.control}`] : []),
     ...(n.weapon ? [n.weapon === 'blade' ? 'A blade in hand' : 'Knuckles on'] : []),
