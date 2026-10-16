@@ -35,8 +35,22 @@ const slash: CombatTechnique = {
   chakraCost: 4,
 };
 
-/** Every roll lands: nothing is dodged, every chance comes up. */
-const sure: Rng = { ...createRng(1), next: () => 0, chance: (p) => p > 0 };
+/**
+ * Every blow lands: the first roll (the target's avoid roll, which anyone makes) misses, and
+ * every chance after it comes up.
+ */
+function landing(): Rng {
+  let rolled = false;
+  return {
+    ...createRng(1),
+    next: () => 0,
+    chance: (p) => {
+      if (rolled) return p > 0;
+      rolled = true;
+      return false;
+    },
+  };
+}
 
 function fighter(id: string, overrides: Partial<CombatantSetup> = {}): CombatantSetup {
   return {
@@ -75,7 +89,7 @@ function roundOf(fighters: PlanFighter[]): Round {
 
 function hit(gear: CombatGear, thrown = false, foe: Partial<CombatantSetup> = {}): Round {
   const [hero, other] = duel(gear, foe);
-  return strike(roundOf([hero, other]), { actor: hero, target: other, rng: sure }, thrown);
+  return strike(roundOf([hero, other]), { actor: hero, target: other, rng: landing() }, thrown);
 }
 
 const foeAfter = (round: Round) => round.fighters.find((f) => f.id === 'foe')!;
@@ -140,7 +154,7 @@ describe('plan & watch weapons', () => {
       const [hero] = duel(gear, guarding);
       const after = strike(
         roundOf([hero, guarded]),
-        { actor: hero, target: guarded, rng: sure },
+        { actor: hero, target: guarded, rng: landing() },
         false,
       );
       return 100 - foeAfter(after).health;

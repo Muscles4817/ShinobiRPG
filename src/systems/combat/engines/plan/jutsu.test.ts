@@ -202,6 +202,20 @@ describe('plan & watch techniques', () => {
     expect(fighterIn(after, 'bandit')).toMatchObject({ health: 80, stunned: 0 });
   });
 
+  it('a daze that lands may still be shaken off, more often by the hardy', () => {
+    const shaken = (stamina: number) =>
+      Array.from({ length: 60 }, (_, seed) => {
+        const round = roundWith({ attributes: { ...attributes, stamina } });
+        const [hero, bandit] = round.fighters;
+        return useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed + 1) }, crush);
+      }).filter((r) => r.lines.some((l) => l.includes('shakes it off'))).length;
+    const hardy = crushUntil(roundWith({ attributes: { ...attributes, stamina: 60 } }), /shakes/);
+    // It landed (the blow hurt) but the daze didn't take.
+    expect(fighterIn(hardy, 'bandit')).toMatchObject({ stunned: 0 });
+    expect(fighterIn(hardy, 'bandit')!.health).toBeLessThan(80);
+    expect(shaken(60)).toBeGreaterThan(shaken(attributes.stamina));
+  });
+
   it('stop at a slipped blow: what follows it misses too', () => {
     const nimble = { attributes: { ...attributes, speed: 60 }, traits: ['swift' as const] };
     const dodging = { close: plainSlots(['dodge']), mid: [], far: [] };

@@ -167,15 +167,15 @@ describe('plan & watch kits: hits', () => {
     expect(decide(after.fighters)).toBe('victory');
   });
 
-  it('a swift fighter slips some blows even without Dodge', () => {
+  it('a swift fighter slips more blows than anyone, even without Dodge', () => {
     const [, swift] = pair(['swift']);
     const [, plain] = pair([]);
     const slips = (f: PlanFighter) =>
-      Array.from({ length: 40 }, (_, seed) => hitOn(f, STRIKE, seed)).filter((r) =>
+      Array.from({ length: 200 }, (_, seed) => hitOn(f, STRIKE, seed)).filter((r) =>
         SLIPS.test(r.lines[0] ?? ''),
       ).length;
-    expect(slips(swift!)).toBeGreaterThan(0);
-    expect(slips(plain!)).toBe(0);
+    expect(slips(plain!)).toBeGreaterThan(0);
+    expect(slips(swift!)).toBeGreaterThan(slips(plain!) * 1.5);
   });
 });
 

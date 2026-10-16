@@ -1,4 +1,10 @@
-import type { EffectOf, ScalingStat, TechniqueEffect, Verb } from '@/systems/techniques';
+import type {
+  Discipline,
+  EffectOf,
+  ScalingStat,
+  TechniqueEffect,
+  Verb,
+} from '@/systems/techniques';
 
 import type { CombatAttributes, CombatTechnique } from '../../contract';
 import type { CombatGear } from '../../gearContract';
@@ -21,11 +27,29 @@ interface Fighter {
   readonly gear?: CombatGear;
 }
 
+/** What breaks a hold of this art: will an illusion, control chakra, strength hands and wire. */
+function bindBreaker(attributes: CombatAttributes, discipline: Discipline): number {
+  switch (discipline) {
+    case 'genjutsu':
+      return attributes.willpower;
+    case 'ninjutsu':
+    case 'fuuinjutsu':
+      return attributes.chakraControl;
+    case 'taijutsu':
+    case 'kenjutsu':
+      return attributes.strength;
+  }
+}
+
 function statValue(fighter: Fighter, stat: ScalingStat, technique: CombatTechnique): number {
   const { attributes } = fighter;
   if (stat === 'art') return attributes[technique.discipline];
   if (stat === 'guard') {
     return technique.discipline === 'genjutsu' ? attributes.willpower : attributes.perception;
+  }
+  if (stat === 'bind') return bindBreaker(attributes, technique.discipline);
+  if (stat === 'poise') {
+    return technique.discipline === 'genjutsu' ? attributes.willpower : attributes.stamina;
   }
   return attributes[stat];
 }

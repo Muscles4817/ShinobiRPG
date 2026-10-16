@@ -95,13 +95,29 @@ describe('verbs', () => {
     expect(driveOf(fighter, use('area'))).toBe(attributes.taijutsu);
   });
 
-  it('a technique is driven by its art and seen coming by the matching guard', () => {
+  it('a technique is driven by its art; a daze takes hold against poise, a blow meets the guard', () => {
     const daze = { technique: mirage, effect: primaryEffect(mirage) };
     expect(driveOf(fighter, daze)).toBe(attributes.genjutsu);
     expect(resistOf(fighter, daze)).toBe(attributes.willpower);
+    const knockout = {
+      technique: { ...mirage, discipline: 'taijutsu' as const },
+      effect: daze.effect,
+    };
+    expect(resistOf(fighter, knockout)).toBe(attributes.stamina);
     const blow = { technique: crush, effect: primaryEffect(crush) };
     expect(driveOf(fighter, blow)).toBe(attributes.taijutsu);
     expect(resistOf(fighter, blow)).toBe(attributes.perception);
+  });
+
+  it('a hold is broken by what fights its art: will, chakra control or strength', () => {
+    const bind = (discipline: CombatTechnique['discipline']) => {
+      const effect = { verb: 'pin' as const, power: 10 };
+      return resistOf(fighter, { technique: { ...crush, discipline, effects: [effect] }, effect });
+    };
+    expect(bind('genjutsu')).toBe(attributes.willpower);
+    expect(bind('ninjutsu')).toBe(attributes.chakraControl);
+    expect(bind('fuuinjutsu')).toBe(attributes.chakraControl);
+    expect(bind('taijutsu')).toBe(attributes.strength);
   });
 
   it('healing grows with ninjutsu and chakra control, and nothing resists it', () => {

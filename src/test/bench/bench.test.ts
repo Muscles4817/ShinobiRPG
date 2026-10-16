@@ -289,8 +289,9 @@ describe('fields, moves and substitutions find their niche (step 1.4c)', () => {
     );
   });
 
-  it.each(SCALES)('a %s fragile fighter lasts longer with a substitution', (scale) => {
-    // The versatile build is short on stamina; a substitution buys it time, not invulnerability.
+  it.each(SCALES)('a %s fragile fighter takes less punishment with a substitution', (scale) => {
+    // The versatile build is short on stamina; a substitution spares it blows, not all of them.
+    // (It beats the brute either way, so how much it is left with is what the swap changes.)
     const versatile = archetype('versatile', scale);
     const plain: FighterSpec = {
       ...versatile,
@@ -311,7 +312,7 @@ describe('fields, moves and substitutions find their niche (step 1.4c)', () => {
       },
     };
     const brute = foe('brute', scale);
-    expect(head(swapping, brute).avgExchanges).toBeGreaterThan(head(plain, brute).avgExchanges);
+    expect(head(swapping, brute).avgHealthLeft).toBeGreaterThan(head(plain, brute).avgHealthLeft);
   });
 });
 

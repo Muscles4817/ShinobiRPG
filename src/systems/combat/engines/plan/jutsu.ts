@@ -1,27 +1,24 @@
 import type { EffectOf, TechniqueEffect, Verb } from '@/systems/techniques';
 
 import type { CombatTechnique } from '../../contract';
-import { alive, chakraCost, holdTurns } from '../../rules/body';
+import { alive, chakraCost, hasPerk, holdTurns } from '../../rules/body';
 import { healAmount } from '../../rules/damage';
 import { groundRule } from '../../rules/ground';
-import { escapeScale, HOLD_ESCAPE_CEILING, holdsOnly } from '../../rules/catching';
-import { resistChance } from '../../rules/defence';
-import { FORESIGHT_SEES, foreseen } from '../../rules/eyes';
-import { familiarScale } from '../../rules/familiarity';
-import { readsInTheMoment } from './judgement';
-import { healLine } from '../../rules/narration';
+import { conditionResist } from '../../rules/avoidance';
+import { healLine, reactionLine } from '../../rules/narration';
 import { misfireChance } from '../../rules/unstable';
 import { breakRating } from '../../rules/conditions';
 import {
   confuseTurns,
   driveOf,
-  dulled,
   hasVerb,
   isHarmful,
   profileOf,
   type EffectUse,
 } from '../../rules/verbs';
 import { aftermath } from './blast';
+import { avoidOdds, dodgesHere, techniqueIncoming } from './avoid';
+import { noteDefence } from './reads';
 import { clash } from './clash';
 import { makeClones } from './clones';
 import { watchedBy } from './mimicry';
@@ -36,17 +33,14 @@ import { conceal, sense } from './sight';
 import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { setTrap } from './traps';
-import { castLine, dazeLine, momentOf, seenLine } from './voice';
+import { castLine, dazeLine, foresightSlipLine, momentOf, seenLine, slipLine } from './voice';
 
-/** However familiar a technique, it is seen coming no more often than this. */
-const FAMILIAR_RESIST_MAX = 0.75;
-/** Foresight sees a technique coming more often, though never surely. */
-const FORESEES_TECHNIQUE = { scale: FORESIGHT_SEES, ceiling: 0.75 };
 /**
- * Using a technique in a planned fight: pay its chakra, see whether the target saw it coming,
- * then apply its effects in order (damage, then daze…), each on the fighters as the effects
- * before it left them. An area technique does this to every foe, each seeing it coming,
- * dodging and guarding on their own; effects aimed at the user happen once.
+ * Using a technique in a planned fight: pay its chakra, see whether each target slips it (the
+ * avoid roll, `avoid.ts`), then apply its effects in order (damage, then daze…), each on the
+ * fighters as the effects before it left them; a condition that reaches its target may still
+ * fail to take hold (`conditionResist`). An area technique does this to every foe, each slipping
+ * and guarding on their own; effects aimed at the user happen once.
  */
 
 /** Share of an area's strength that catches its user's own side in close quarters. */
@@ -120,9 +114,39 @@ function landsOnFoe(effect: TechniqueEffect): effect is EffectOf<FoeVerb> {
   return foeVerbs.includes(effect.verb);
 }
 
+/** What it looks like when a condition that reached its target fails to take hold. */
+type ConditionVerb = Exclude<FoeVerb, 'damage' | 'area' | 'break'>;
+
+const SHAKEN_OFF: Readonly<Record<ConditionVerb, string>> = {
+  daze: 'shakes it off',
+  seal: 'pushes the seals back before they close',
+  confuse: 'sees through the illusion',
+  knock: 'stands firm',
+  pin: 'tears free before it can hold',
+  drain: 'keeps a grip on their chakra',
+  afflict: 'shrugs it off',
+};
+
+/** The condition an effect brings, if it lands on a foe without wounding them. */
+function conditionOf(effect: TechniqueEffect): ConditionVerb | null {
+  if (!landsOnFoe(effect)) return null;
+  const { verb } = effect;
+  return verb === 'damage' || verb === 'area' || verb === 'break' ? null : verb;
+}
+
+/** A condition reached its target; whether it takes hold is its verb's resist (`avoidance.ts`). */
+function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse): Round | null {
+  const verb = conditionOf(use.effect);
+  if (!verb) return null;
+  if (!rng.chance(conditionResist(actor, target, use))) return null;
+  return say(round, `${target.name} ${SHAKEN_OFF[verb]}.`);
+}
+
 /** One effect landing on a foe who is standing. Effects aimed at the user happen in `onSelf`. */
 function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): Round {
   if (!landsOnFoe(effect)) return round;
+  const resisted = shakenOff(round, aimed, { technique, effect });
+  if (resisted) return resisted;
   switch (effect.verb) {
     case 'damage':
     case 'area':
@@ -216,8 +240,8 @@ function caughtBy(round: Round, turn: Turn): PlanFighter[] {
 
 /** Someone on the user's own side caught in it takes it softer, at the edge of it. */
 function aimedAt(turn: Turn, foe: PlanFighter): Aimed {
-  if (foe.side !== turn.actor.side) return { ...turn, target: foe };
-  return { ...turn, target: foe, boost: (turn.boost ?? 1) * FRIENDLY_AREA };
+  if (foe.side !== turn.actor.side) return { ...turn, target: foe, reached: true };
+  return { ...turn, target: foe, reached: true, boost: (turn.boost ?? 1) * FRIENDLY_AREA };
 }
 
 function applyEffect(flight: Flight, turn: Turn, use: EffectUse): Flight {
@@ -247,38 +271,37 @@ function misfired(turn: Turn, t: CombatTechnique): boolean {
   return chance > 0 && turn.rng.chance(chance);
 }
 
-/**
- * The chance a foe sees a technique coming: their resistance, likelier (to a foe who reads the
- * fight) for each use of it this fight past the first few (`rules/familiarity.ts`), and likelier
- * still with foresight.
- */
-function seenChance(
-  actor: PlanFighter,
-  foe: PlanFighter,
-  { t, field }: { readonly t: CombatTechnique; readonly field: Round['field'] },
-): number {
-  // Only a mind that reads the fight picks up on a technique leaned on.
-  const familiar = readsInTheMoment(foe) ? familiarScale(actor.uses?.[t.id] ?? 0) : 1;
-  const base = resistChance(actor, dulled(field, foe), t) * familiar;
-  // A hold needs its target caught: wits and speed slip it (`rules/catching.ts`).
-  const chance = holdsOnly(t)
-    ? Math.min(HOLD_ESCAPE_CEILING, base * escapeScale(actor, foe))
-    : Math.min(FAMILIAR_RESIST_MAX, base);
-  return foreseen(chance, foe, FORESEES_TECHNIQUE);
+/** Whether one foe slips a technique: the avoid roll (`avoid.ts`). */
+function slips(round: Round, turn: Turn, foe: PlanFighter, t: CombatTechnique): boolean {
+  const incoming = techniqueIncoming(turn.actor, foe, t);
+  return incoming !== null && turn.rng.chance(avoidOdds(round, incoming));
+}
+
+/** Tells a foe slipping a technique: read and ready for it, or (a ready Dodge) clear of it. */
+function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
+  const moment = momentOf(round, foe.id);
+  if (!dodgesHere(round, foe)) return say(round, seenLine(moment, foe.name));
+  const slip = hasPerk(foe, 'foresight') ? foresightSlipLine : slipLine;
+  const noted = noteDefence(round, foe.id, round.range, 'dodge');
+  return say(noted, reactionLine(slip(moment, foe.name, actor.name, t.name), 'dodged'));
+}
+
+interface Slipped {
+  readonly actor: PlanFighter;
+  readonly foe: PlanFighter;
+  readonly t: CombatTechnique;
 }
 
 function single(round: Round, turn: Turn, t: CombatTechnique): Round {
-  const { actor, rng } = turn;
+  const { actor } = turn;
   const paid = withChakraSpent(round, actor, t);
   if (misfired(turn, t)) {
     return say(paid, `${t.name} comes apart in ${actor.name}'s hands. It isn't steady yet.`);
   }
   const targets = targetsOf(paid, turn, t);
   if (isHarmful(t) && targets.length === 0) return paid;
-  // A field dulls the perception of those it blinds: they see techniques coming later.
-  const sees = (foe: PlanFighter) => seenChance(actor, foe, { t, field: paid.field });
-  const seen = targets.filter((foe) => rng.chance(sees(foe)));
-  const told = seen.reduce((r, foe) => say(r, seenLine(momentOf(r, foe.id), foe.name)), paid);
+  const seen = targets.filter((foe) => slips(paid, turn, foe, t));
+  const told = seen.reduce((r, foe) => toldSlip(r, { actor, foe, t }), paid);
   if (isHarmful(t) && seen.length === targets.length) return aftermath(told, turn, t);
   // An elemental attack may be met by one coming back the other way.
   const aimedAt = turn.target && !seen.includes(turn.target) ? clash(told, turn, t) : null;
