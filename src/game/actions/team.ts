@@ -1,7 +1,7 @@
 import { bondWith } from '@/systems/bonds';
 
 import { chip, log } from '../ops';
-import { fullName, requirePerson } from '../people/cast';
+import { everyone, fullName, requirePerson } from '../people/cast';
 import { generateGenin } from '../people/generator';
 import { homeVillageId } from '../homeVillage';
 import { offerSenseis } from '../people/senseis';
@@ -24,7 +24,7 @@ export const assignTeam: ActionHandler<ActionOf<'assignTeam'>> = {
   perform(state, _action, ctx, rng) {
     const classmates = generateGenin(ctx, rng, {
       count: CLASSMATES,
-      takenNames: [state.character.name, ...ctx.content.people.all.map((p) => p.name)],
+      takenNames: [state.character.name, ...everyone(state, ctx).map((p) => p.name)],
       firstNumber: state.people.generated.length + 1,
       seed: state.board.seed,
       villageId: homeVillageId(state, ctx),
@@ -41,7 +41,8 @@ export const assignTeam: ActionHandler<ActionOf<'assignTeam'>> = {
         },
         team: {
           teammateIds,
-          senseiOptions: offerSenseis(state.character, ctx.content.people.all),
+          // The pack's own senseis and the generated ones this save drew, best fit first.
+          senseiOptions: offerSenseis(state.character, everyone(state, ctx)),
           senseiId: null,
         },
       },

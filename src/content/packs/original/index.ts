@@ -2,6 +2,7 @@ import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
 import { CURRICULUM } from '../../shared/sensei/curriculum';
+import { senseiParts } from '../../shared/sensei/parts';
 import { SENSEI_TESTS } from '../../shared/sensei/tests';
 import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
@@ -70,6 +71,7 @@ import {
   TIDEWIRE_TECHNIQUES,
 } from './shiomachi';
 import { KIRI_FORD_FOODS, KIRI_FORD_JOBS, KIRI_FORD_PEOPLE } from './kiriFord';
+import { SENSEI_GROUNDS, SENSEI_NAMES } from './senseiGrounds';
 
 /** The game's own setting: Tōrōgakure in the Land of Embers. Safe to ship publicly. */
 export const ORIGINAL_PACK: ContentPack = {
@@ -85,6 +87,7 @@ export const ORIGINAL_PACK: ContentPack = {
   exercises: EXERCISES,
   senseiTests: SENSEI_TESTS,
   curriculum: CURRICULUM,
+  senseiParts: senseiParts(SENSEI_GROUNDS, SENSEI_NAMES),
   techniques: [
     ...TECHNIQUES,
     ...CLAN_TECHNIQUES,

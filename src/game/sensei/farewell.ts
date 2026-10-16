@@ -42,9 +42,12 @@ export function farewellDue(state: GameState, ctx: GameContext): Farewell | null
   const sensei = mentorOf(state, ctx);
   const feedback = sensei ? waysOf(sensei)?.feedback : undefined;
   if (!sensei || !feedback) return null;
+  // A sensei with a voice of their own ends on the thing they always said.
+  const catchphrase = sensei.sensei?.voice?.catchphrase;
+  const last = catchphrase ? ` And then, one last time: “${catchphrase}”` : '';
   return {
     sensei,
-    words: `${sensei.name} finds you after the ceremony. ${FAREWELL_WORDS[feedback]}`,
+    words: `${sensei.name} finds you after the ceremony. ${FAREWELL_WORDS[feedback]}${last}`,
   };
 }
 

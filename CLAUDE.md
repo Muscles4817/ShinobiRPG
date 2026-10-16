@@ -459,7 +459,26 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     only through `waysOf` (`generate.ts`): a pack may leave `ways` out, and they are generated
     from an archetype (`content/senseiArchetypes.ts`), coherent by construction.
 
-28. **Sound is synthesised, decided by the game, played by the UI.** No audio files: every
+28. **Senseis can be composed from hand-written parts** (`docs/design/sensei-generation-plan.md`).
+    A pack's `senseiParts` (`content/senseiParts.ts`) are **temperaments** (how they talk and
+    teach: an archetype for their ways, a style, a lesson, a bio, traits, a haunt and a voice
+    kit), **pasts** (a wound, four story conversations with slots, a foe and the text of a
+    two-job arc, plus which temperaments, arts, nature and regions fit them and how they bend
+    the ways) and the pack's **grounds** (where a past is settled) and grown-up **names**. When
+    the context is built, `withSenseiPool` (`game/sensei/pool/`) composes one sensei for every
+    past and every temperament that can carry it, from the pack and the sensei's id alone
+    (`pool-<past>-<temperament>`, so adding parts never renames anyone): a `PersonDef` with
+    `sensei.pooled`, `voice` and concrete `ways` (bent by the past only as far as
+    `senseiWaysProblems` allows), their four conversations, their foe, their arc's jobs (posted at
+    the home hall) and the arc. They are ordinary content, so every system reads them and
+    validation checks them (`senseiPool.test.ts` validates the expanded packs). A save meets only
+    the few its seed draws (`game/people/pooled.ts`: `POOL_IN_VILLAGE`, different pasts,
+    temperaments, arts and names; `everyone` leaves the rest out) and its own sensei; team
+    assignment offers the best fit and the best fit in another art from the other side of the
+    roster (one authored, one generated). A sensei's `voice` speaks in coaching, by the fire and
+    at the farewell; authored senseis may have one too.
+
+29. **Sound is synthesised, decided by the game, played by the UI.** No audio files: every
     sound and loop is built on the Web Audio graph (`ui/audio/voices.ts`: koto, flute, taiko,
     bell, clappers…), so it works offline and costs nothing to ship. The game names the moment
     (`game/sound/`: `soundAfter` for an action, `reportSound`, `beatSound` for a fight's beats,
@@ -561,6 +580,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   team of their own sets `offered: false`: never offered, kept by a save that chose them.
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).
+- **Add a sensei temperament or past:** a `SenseiTemperament` in
+  `content/shared/sensei/temperaments.ts` (an existing archetype, traits, a haunt, a full
+  voice kit) or a `SenseiPast` in `content/shared/sensei/pasts/` (the temperaments that can carry
+  it, at least three; regions some ground of every pack has; a foe and its encounter; four beats;
+  the arc's text), using only the slots `{name}`, `{art}`, `{lost}`, `{foe}`, `{keepsake}`,
+  `{place}`, `{you}` and `{them}` (validated). Write it gender-neutral: names are drawn. The pool
+  grows by itself; `senseiPool.test.ts` checks every new sensei is valid content.
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,
   optional `nature`, `traits`, and `healthScale` for a creature bigger or smaller than a person) to the
   pack's `enemies` and use it in a mission's combat stage. A new trait goes in

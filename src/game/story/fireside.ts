@@ -64,7 +64,8 @@ export function senseiAlong(state: GameState, ctx: GameContext): PersonDef | nul
 function talkOf(state: GameState, sensei: PersonDef): string | null {
   const philosophy = waysOf(sensei)?.philosophy;
   if (!philosophy) return null;
-  const lines = FIRESIDE_TALK[philosophy];
+  // Their own fireside talk, when they have a voice; else what their philosophy talks about.
+  const lines = sensei.sensei?.voice?.fireside ?? FIRESIDE_TALK[philosophy];
   const pick = Math.floor(hashUnit(state.board.seed, state.time.day, sensei.id) * lines.length);
   return lines[pick]?.replaceAll('{sensei}', sensei.name) ?? null;
 }

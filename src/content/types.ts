@@ -18,6 +18,7 @@ import type { RouteDef } from '@/systems/travel';
 import type { BackdropId, IconId } from './art';
 import type { ExerciseDef } from './exercises';
 import type { CurriculumBeat } from './curriculum';
+import type { SenseiParts } from './senseiParts';
 import type { SenseiTestDef } from './senseiTests';
 import type { CookbookDef, GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
 import type { InjuryDef } from './injuries';
@@ -337,6 +338,8 @@ export interface ContentPack {
   readonly senseiTests: readonly SenseiTestDef[];
   /** What a sensei shows a new genin, one thing at a time (the tutorial). */
   readonly curriculum: readonly CurriculumBeat[];
+  /** What generated senseis are made from (`senseiParts.ts`). */
+  readonly senseiParts: SenseiParts;
   readonly techniques: readonly TechniqueDef[];
   readonly missions: readonly MissionDef[];
   /** Promotion exams, held on their dates (the chūnin exam). */

@@ -81,9 +81,9 @@ export const EXAMS: readonly ExamDef[] = [
     ],
     spectators: {
       invitation:
-        '{them} finds you at the training ground. "The Trials are this week. You won’t sit them this time, {you}, and that’s my call. But come and watch the finals in the Lantern Ring. You’ll learn more in one afternoon in the stands than in a month at the posts."',
+        '{them} finds you at the training ground. “The Trials are this week. You won’t sit them this time, {you}, and that’s my call. But come and watch the finals in the Lantern Ring. You’ll learn more in one afternoon in the stands than in a month at the posts.”',
       hearsay:
-        '{them} catches you by the canal, out of breath. "The Trials are this week! Nobody’s told us anything, but everyone’s going to watch the finals in the Lantern Ring. We’re going, right?"',
+        '{them} catches you by the canal, out of breath. “The Trials are this week! Nobody’s told us anything, but everyone’s going to watch the finals in the Lantern Ring. We’re going, right?”',
       finals:
         'The stands of the Lantern Ring are packed to the eaves, and the Tōrokage watches from the balcony. Two genin from other villages are left: {a} and {b}. The lanterns flare, and the proctor steps back.',
       won: '{winner} is still standing when the lanterns gutter. The stands are on their feet, and {loser} is carried out to the loudest cheer of the day.',

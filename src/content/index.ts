@@ -74,6 +74,17 @@ export {
 } from './upbringing';
 export { jobProfile, postedAway } from './jobProfile';
 export { RITUAL_LINES, SENSEI_ARCHETYPES, type SenseiArchetype } from './senseiArchetypes';
+export {
+  HAUNTS,
+  type Haunt,
+  type SenseiGround,
+  type SenseiPast,
+  type SenseiPastArc,
+  type SenseiPastBeat,
+  type SenseiPastFoe,
+  type SenseiParts,
+  type SenseiTemperament,
+} from './senseiParts';
 export { senseiWaysProblems } from './validateSenseis';
 export { CURRICULUM_BEATS, type CurriculumBeat, type CurriculumBeatId } from './curriculum';
 export {
@@ -111,6 +122,7 @@ export {
   type SenseiReward,
   type SenseiRitual,
   type SenseiStory,
+  type SenseiVoice,
   type SenseiWays,
   type SessionFormat,
 } from './senseis';

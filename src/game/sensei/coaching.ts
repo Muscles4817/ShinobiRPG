@@ -53,14 +53,21 @@ function judge(state: GameState, ctx: GameContext, sensei: PersonDef): Coached {
   if (state.character.stats[work.stat] < work.target) {
     return {
       state: { ...cleared, mentor: withRegard(cleared.mentor, -ASSIGNMENT_MISSED_REGARD) },
-      lines: [`${sensei.name} checks your ${label(work.stat)}. Not enough. They don’t hide it.`],
+      lines: [
+        `${sensei.name} checks your ${label(work.stat)}.`,
+        sensei.sensei?.voice?.scold ?? 'Not enough. They don’t hide it.',
+      ],
       chips: [chip(`${sensei.name}’s regard falls`, 'cost')],
     };
   }
   const given = rewardFor(cleared, ctx, sensei);
   return {
     state: { ...given.state, mentor: withRegard(given.state.mentor, ASSIGNMENT_DONE_REGARD) },
-    lines: [`You did the work on your ${label(work.stat)}.`, given.line],
+    lines: [
+      `You did the work on your ${label(work.stat)}.`,
+      ...(sensei.sensei?.voice ? [sensei.sensei.voice.praise] : []),
+      given.line,
+    ],
     chips: [chip('Assignment done', 'gain'), given.chip],
   };
 }

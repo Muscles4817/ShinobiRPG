@@ -58,7 +58,11 @@ function archetypeOf(person: PersonDef): SenseiArchetype {
 }
 
 export function generatedWays(person: PersonDef): SenseiWays {
-  const kind = archetypeOf(person);
+  return waysFor(person, archetypeOf(person));
+}
+
+/** Ways of a given kind for this person: the kind fixed, the rest rolled from their id. */
+export function waysFor(person: PersonDef, kind: SenseiArchetype): SenseiWays {
   const name = person.name;
   return {
     philosophy: kind.philosophy,
