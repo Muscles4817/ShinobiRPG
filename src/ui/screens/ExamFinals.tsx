@@ -14,9 +14,7 @@ export function ExamFinals({ view, perform }: ExamFinalsProps) {
         <h2>{view.name}</h2>
         <span className="badge">{view.when}</span>
       </div>
-      {view.word && (
-        <p className="slip-today">{view.word.text}</p>
-      )}
+      {view.word && <p className="slip-today">{view.word.text}</p>}
       {watch && (
         <div className="slip-row">
           <button
