@@ -1,3 +1,4 @@
+import type { HoldOffReason } from '../../rules/zoning';
 import { pick } from './voice';
 
 /**
@@ -95,4 +96,35 @@ export function heldOffLine(moment: string, holder: string, closer: string): str
     `${holder} won't let ${closer} close.`,
     `${holder} meets ${closer}'s rush head on.`,
   ]);
+}
+
+/** Why a hold-off stopped someone: what the holder fired, and what beat the one closing in. */
+export interface HeldOffTold {
+  readonly holder: string;
+  readonly closer: string;
+  readonly what: string;
+  readonly why: HoldOffReason;
+}
+
+const WHY: Readonly<Record<HoldOffReason, readonly ((t: HeldOffTold) => string)[]>> = {
+  wide: [
+    (t) => `${t.holder}'s ${t.what} is too wide to slip, however fast ${t.closer} moves.`,
+    (t) => `There is no gap in ${t.holder}'s ${t.what} for ${t.closer} to slip through.`,
+  ],
+  vast: [
+    (t) => `Nothing outruns ${t.holder}'s ${t.what}, ${t.closer} included.`,
+    (t) => `${t.holder}'s ${t.what} fills the field; ${t.closer} has nowhere to go.`,
+  ],
+  aim: [
+    (t) => `${t.holder} reads ${t.closer}'s rush and puts the ${t.what} right in its path.`,
+    (t) => `${t.holder} has ${t.closer}'s line before they take it.`,
+  ],
+  timing: [
+    (t) => `${t.closer} is the quicker, but ${t.holder} times the ${t.what} perfectly.`,
+    (t) => `${t.holder} waits for ${t.closer} to commit, then fires.`,
+  ],
+};
+
+export function heldOffWhy(moment: string, told: HeldOffTold): string {
+  return pick(`${moment}:why`, WHY[told.why])(told);
 }

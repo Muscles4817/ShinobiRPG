@@ -233,3 +233,12 @@ export function counterLine(moment: string, target: string): string {
     `${target} turns the attack back on its owner!`,
   ]);
 }
+
+/** Someone charging in with an entry (it may yet be met by a hold-off). */
+export function chargeLine(moment: string, actor: string, technique: string): string {
+  return pick(moment, [
+    `${actor} charges in with ${technique}!`,
+    `${actor} launches into ${technique}!`,
+    `${actor} hurls themself forward: ${technique}!`,
+  ]);
+}

@@ -75,4 +75,12 @@ describe('squareUpLine', () => {
       'Bandit Thug, Bandit Archer square up.',
     );
   });
+
+  it('keeps the owner a line already has when a turn tags it', () => {
+    const theirs = turnLine('Kai fires.', 'kai');
+    expect(splitNarration(turnLine(theirs, 'aoi', 'mid'))).toMatchObject({
+      actorId: 'kai',
+      range: 'mid',
+    });
+  });
 });

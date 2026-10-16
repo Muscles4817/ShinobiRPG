@@ -199,9 +199,10 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     id: 'morning-peacock',
     name: 'Morning Peacock',
     description:
-      'Gate of Wonder. Punches so fast the air catches fire, fanning out like a peacock’s tail.',
+      'Asakujaku. The sixth gate open: punches so fast the air catches fire, fanning out like a peacock’s tail.',
     discipline: 'taijutsu',
     school: 'Strong Fist',
+    reach: ['close', 'mid'],
     effects: [
       { verb: 'area', power: 22, size: 'wide' },
       { verb: 'daze', power: 6 },
@@ -215,9 +216,10 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     id: 'daytime-tiger',
     name: 'Daytime Tiger',
     description:
-      'Hirudora. The seventh gate open, a single compressed fist of air in the shape of a tiger.',
+      'Hirudora. The seventh gate open, a single compressed fist of air in the shape of a tiger, fired across the field.',
     discipline: 'taijutsu',
     school: 'Strong Fist',
+    reach: ['close', 'mid', 'far'],
     effects: [
       { verb: 'break', power: 31 },
       { verb: 'daze', power: 10 },

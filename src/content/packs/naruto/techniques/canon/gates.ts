@@ -50,6 +50,7 @@ export const CANON_GATES: readonly TechniqueDef[] = [
     description: 'Sekizō. The seventh gate open: five punches, each a cannon of air.',
     discipline: 'taijutsu',
     school: 'Strong Fist',
+    reach: ['close', 'mid'],
     effects: [
       { verb: 'area', power: 24, size: 'wide' },
       { verb: 'knock', power: 10, to: 'far' },

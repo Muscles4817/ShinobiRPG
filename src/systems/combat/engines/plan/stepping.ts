@@ -1,7 +1,7 @@
 import type { RangeBand } from '../../contract';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS, STRIKE_REACH } from '../../rules/range';
-import { isWounding, techniquePower } from '../../rules/verbs';
+import { hasVerb, isHarmful, isWounding, techniquePower } from '../../rules/verbs';
 import { cardsFor, isFootwork, playable, type Card } from './cards';
 import { moveDestination } from './footwork';
 import type { PlanFighter } from './state';
@@ -41,6 +41,34 @@ export function footworkTowards(fighter: PlanFighter, band: RangeBand, goal: Ran
     );
   });
   return flicker ? { kind: 'jutsu', technique: flicker } : stepTowards(band, goal);
+}
+
+/**
+ * An entry: a technique that carries its user in to strike (a flying kick), so it attacks from
+ * where it lands. Played from further off it is a charge, and meets a hold-off as a step does.
+ */
+export function isEntry(fighter: PlanFighter, card: Card, band: RangeBand): boolean {
+  if (card.kind !== 'jutsu' || !isHarmful(card.technique)) return false;
+  const to = moveDestination(fighter, card.technique);
+  if (to === null || RANGE_BANDS.indexOf(to) >= RANGE_BANDS.indexOf(band)) return false;
+  return canAttackFrom(fighter, to);
+}
+
+/** Whether a card attacks from here: the kit reaches from this distance, or it is an entry. */
+export function attacksFrom(fighter: PlanFighter, card: Card, band: RangeBand): boolean {
+  return canAttackFrom(fighter, band) || isEntry(fighter, card, band);
+}
+
+/**
+ * What a fighter making for another distance plays before the footwork: a preparation (an
+ * empower, clones) while none holds, or an entry that takes them where they are going.
+ */
+export function readiesTheCharge(fighter: PlanFighter, card: Card, band: RangeBand): boolean {
+  const goal = fighter.keepAt;
+  if (goal === undefined || goal === band || card.kind !== 'jutsu') return false;
+  const prepares = hasVerb(card.technique, 'empower') || hasVerb(card.technique, 'clone');
+  const lands = moveDestination(fighter, card.technique) === goal;
+  return prepares || (isEntry(fighter, card, band) && lands);
 }
 
 /** The footwork a fighter plays before their slots: towards where they fight, if elsewhere. */

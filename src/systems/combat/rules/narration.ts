@@ -63,9 +63,14 @@ export function reactionLine(text: string, ...reactions: readonly NarrationReact
   return [text, ...reactions.map((r) => `⟦r:${r}⟧`)].join(' ');
 }
 
-/** A line written in `actorId`'s turn; `range` is where the fight stands as of it, if said. */
+/**
+ * A line written in `actorId`'s turn; `range` is where the fight stands as of it, if said. A
+ * line already given to someone keeps them: one fighter may act inside another's turn (a
+ * holder firing on someone closing in).
+ */
 export function turnLine(text: string, actorId: string, range?: RangeBand): string {
-  return `${text} ⟦by:${actorId}⟧${range ? ` ⟦at:${range}⟧` : ''}`;
+  const owner = ACTOR_MARKER.test(text) ? '' : ` ⟦by:${actorId}⟧`;
+  return `${text}${owner}${range ? ` ⟦at:${range}⟧` : ''}`;
 }
 
 function isRange(word: string | undefined): word is RangeBand {

@@ -19,6 +19,8 @@ export const HOLD_OFF_BASE = 0.45;
 const HOLD_OFF_PER_POINT = 0.04;
 const HOLD_OFF_MIN = 0.1;
 const HOLD_OFF_MAX = 0.85;
+/** Short of a vast area, nothing holds someone off every time: there's always a gap. */
+const HOLD_OFF_CEILING = 0.9;
 
 /** How much an area adds to holding someone off, by the ground it covers. */
 export const AREA_HOLD_OFF: Readonly<Record<AreaSize, number>> = {
@@ -33,6 +35,17 @@ export function throwingAim(a: CombatAttributes): number {
 }
 
 /**
+ * Why a hold-off stopped someone, for the story: an area too wide to slip (or too vast to
+ * outrun), aim that outmatches their speed, or (with neither) a shot simply well timed.
+ */
+export type HoldOffReason = 'wide' | 'vast' | 'aim' | 'timing';
+
+export function holdOffReason(aim: number, closerSpeed: number, area?: AreaSize): HoldOffReason {
+  if (area === 'vast' || area === 'wide') return area;
+  return aim > closerSpeed ? 'aim' : 'timing';
+}
+
+/**
  * The chance an attack kept ready stops someone closing in: the holder's aim (their throwing,
  * or their skill with the technique) against the closer's speed, plus what an area adds.
  */
@@ -42,5 +55,6 @@ export function holdOffChance(aim: number, closerSpeed: number, area?: AreaSize)
     HOLD_OFF_MIN,
     HOLD_OFF_MAX,
   );
-  return Math.min(1, contest + (area ? AREA_HOLD_OFF[area] : 0));
+  const ceiling = area === 'vast' ? 1 : HOLD_OFF_CEILING;
+  return Math.min(ceiling, contest + (area ? AREA_HOLD_OFF[area] : 0));
 }

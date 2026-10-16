@@ -10,7 +10,7 @@ import { cardBlocked, cardId, cardsFor, isOffence, slotLimit, type Card } from '
 import { opponentsOf } from './senses';
 import { defaultHoldOff } from './zoning';
 import { defaultReactions } from './readiness';
-import { fightsFromHome } from './stepping';
+import { fightsFromHome, isEntry } from './stepping';
 import { plainSlots, type Loadout, type PlanFighter, type Slot } from './state';
 
 /**
@@ -107,7 +107,8 @@ function fitted(ordered: readonly Slot[], attack: Slot | undefined, limit: numbe
 function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot[] {
   const reaches = canAttackFrom(fighter, band);
   const usable = cardsFor(fighter, band).filter(
-    (c) => (reaches || !isOffence(c)) && cardBlocked(fighter, c) === null,
+    (c) =>
+      (reaches || !isOffence(c) || isEntry(fighter, c, band)) && cardBlocked(fighter, c) === null,
   );
   const trumps = usable.filter((c) => c.kind === 'jutsu' && isTrump(c.technique));
   const pool = usable.filter((c) => !trumps.includes(c));
@@ -123,7 +124,8 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     ...finding(best('sense'), search, facing),
     ...plain(best('field')),
     ...hold.early,
-    ...plain(reaches ? [...ready, ...best('trap')] : []),
+    // Readying (an empower, clones) is worth it anywhere: before a charge most of all.
+    ...plain([...ready, ...(reaches ? best('trap') : [])]),
     ...plain(damage.slice(0, 1)),
     ...hold.late,
     ...plain([...damage.slice(1), ...best('conceal')]),
