@@ -68,6 +68,8 @@ export {
 } from './ladders';
 export {
   CLONE_BLOW_SCALE,
+  drawFireChance,
+  cloneStepBonus,
   cloneCount,
   clonesFrom,
   clonesLeft,

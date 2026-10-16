@@ -18,6 +18,7 @@ import { isDazed } from './daze';
 import type { HoldOff } from './footing';
 import { useJutsu } from './jutsu';
 import { heldOffLine, heldOffWhy, throughLine } from './sceneVoice';
+import { drawnByClones } from './screening';
 import { inSight, opponentsOf, type Turn } from './senses';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
@@ -27,7 +28,8 @@ import { momentOf } from './voice';
  * keep a kunai or a wounding technique ready; when someone steps in on them, the first who
  * hasn't acted yet this exchange fires it, spending their turn, and that contest takes the place of the step's own. If it stops
  * them, the step fails and the attack meets them as any attack would; if they slip through,
- * they close in. Either way the holder paid for it. A move technique (a body flicker) is never held off.
+ * they close in. Either way the holder paid for it. Clones running ahead of the one closing in may
+ * draw the shot first (`screening.ts`). A move technique (a body flicker) is never held off.
  */
 
 export const NO_HOLD_OFF: HoldOff = { close: null, mid: null, far: null };
@@ -138,6 +140,13 @@ export function holdOff(round: Round, turn: Turn): HeldOff {
   const { holder, card } = found;
   // Holding someone off is the holder's turn this exchange.
   const marked = { ...round, acted: [...(round.acted ?? []), holder.id] };
+  const screened = drawnByClones(spent(marked, holder, card), {
+    holder,
+    closer,
+    card,
+    rng: turn.rng,
+  });
+  if (screened) return { round: screened, outcome: 'through' };
   const aim = aimWith(holder, card);
   const chance = holdOffChance(aim, closer.attributes.speed, areaOf(card));
   if (!turn.rng.chance(chance)) {

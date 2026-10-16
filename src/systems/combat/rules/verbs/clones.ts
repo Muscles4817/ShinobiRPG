@@ -7,7 +7,10 @@ import type { EffectUse } from './use';
  * technique's power and the maker's reserves (max chakra, until reserves are a stat of their
  * own). A single-target hit that reaches the maker may strike a clone instead, which bursts;
  * the better the maker's art against the attacker's eyes, the more often. An area hit bursts
- * them all. Solid clones also throw a weak blow of their own when their maker attacks.
+ * them all. Solid clones also throw a weak blow of their own when their maker attacks. Clones
+ * running ahead of a charge (their maker's, or a teammate's) may draw a holder's fire, so the
+ * one behind them gets through: solid ones as often as they'd take a hit, illusions half as
+ * often (a shot passes through them and the holder knows it sooner).
  */
 
 /** Clones made: power × max chakra over this… */
@@ -76,6 +79,25 @@ export function decoyChance(clones: Clones, resist: number, insight: boolean): n
     DECOY_SKILL_MAX,
   );
   return clamp(crowd * skill * (insight ? INSIGHT_SCALE : 1), 0, DECOY_MAX);
+}
+
+/** Each clone crowding round a fighter adds this to their chance of stepping where they want… */
+const CLONE_STEP_PER = 0.05;
+/** …up to this much. */
+const CLONE_STEP_MAX = 0.15;
+
+/** What clones crowding round add to their maker's step: a foe can't watch them all. */
+export function cloneStepBonus(f: CloneBody): number {
+  return Math.min(CLONE_STEP_MAX, clonesLeft(f) * CLONE_STEP_PER);
+}
+
+/** An illusory clone draws fire this much as often as a solid one. */
+const ILLUSION_DRAW = 0.5;
+
+/** Chance clones ahead of a charge draw the holder's fire, by the holder's eyes against them. */
+export function drawFireChance(clones: Clones, resist: number, insight: boolean): number {
+  const chance = decoyChance(clones, resist, insight);
+  return clones.strikes ? chance : chance * ILLUSION_DRAW;
 }
 
 /** The clones after one bursts. */

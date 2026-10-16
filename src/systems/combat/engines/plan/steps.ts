@@ -3,7 +3,7 @@ import { clamp } from '@/core';
 import type { RangeBand } from '../../contract';
 import { RANGE_BANDS, RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
 import { footingOf, withinGround } from '../../rules/ground';
-import { isPinned } from '../../rules/verbs';
+import { cloneStepBonus, isPinned } from '../../rules/verbs';
 import type { Card } from './cards';
 import type { Turn } from './senses';
 import { isEntry } from './stepping';
@@ -39,7 +39,9 @@ function stride(round: Round, { actor, target: foe, rng }: Turn, direction: 'in'
     return say(round, `${actor.name} backs away, but there's a wall behind them.`);
   }
   const speedGap = actor.attributes.speed - (foe?.attributes.speed ?? 0);
-  const contest = clamp(STEP_BASE + speedGap * STEP_PER_SPEED, STEP_MIN, STEP_MAX);
+  // Clones crowding round the one stepping make them harder to cut off.
+  const contest =
+    clamp(STEP_BASE + speedGap * STEP_PER_SPEED, STEP_MIN, STEP_MAX) + cloneStepBonus(actor);
   // Off their footing (on water they can't stand on), every step is harder.
   const chance = foe ? contest * footingOf(round.ground, actor) : 1;
   const where = RANGE_LABEL[to].toLowerCase();
