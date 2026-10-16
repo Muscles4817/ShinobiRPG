@@ -6,6 +6,8 @@ import { healAmount } from '../../rules/damage';
 import { groundRule } from '../../rules/ground';
 import { resistChance } from '../../rules/defence';
 import { FORESIGHT_SEES, foreseen } from '../../rules/eyes';
+import { familiarScale } from '../../rules/familiarity';
+import { readsInTheMoment } from './judgement';
 import { healLine } from '../../rules/narration';
 import { misfireChance } from '../../rules/unstable';
 import { breakRating } from '../../rules/conditions';
@@ -35,6 +37,8 @@ import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './s
 import { setTrap } from './traps';
 import { castLine, dazeLine, momentOf, seenLine } from './voice';
 
+/** However familiar a technique, it is seen coming no more often than this. */
+const FAMILIAR_RESIST_MAX = 0.75;
 /** Foresight sees a technique coming more often, though never surely. */
 const FORESEES_TECHNIQUE = { scale: FORESIGHT_SEES, ceiling: 0.75 };
 /**
@@ -53,6 +57,7 @@ function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): 
   const change = {
     ...paying(actor, chakraCost(actor, t)),
     used: known.includes(t.id) ? known : [...known, t.id],
+    uses: { ...actor.uses, [t.id]: (actor.uses?.[t.id] ?? 0) + 1 },
   };
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, change) },
@@ -241,6 +246,25 @@ function misfired(turn: Turn, t: CombatTechnique): boolean {
   return chance > 0 && turn.rng.chance(chance);
 }
 
+/**
+ * The chance a foe sees a technique coming: their resistance, likelier (to a foe who reads the
+ * fight) for each use of it this fight past the first few (`rules/familiarity.ts`), and likelier
+ * still with foresight.
+ */
+function seenChance(
+  actor: PlanFighter,
+  foe: PlanFighter,
+  { t, field }: { readonly t: CombatTechnique; readonly field: Round['field'] },
+): number {
+  // Only a mind that reads the fight picks up on a technique leaned on.
+  const familiar = readsInTheMoment(foe) ? familiarScale(actor.uses?.[t.id] ?? 0) : 1;
+  const chance = Math.min(
+    FAMILIAR_RESIST_MAX,
+    resistChance(actor, dulled(field, foe), t) * familiar,
+  );
+  return foreseen(chance, foe, FORESEES_TECHNIQUE);
+}
+
 function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const { actor, rng } = turn;
   const paid = withChakraSpent(round, actor, t);
@@ -250,8 +274,7 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const targets = targetsOf(paid, turn, t);
   if (isHarmful(t) && targets.length === 0) return paid;
   // A field dulls the perception of those it blinds: they see techniques coming later.
-  const sees = (foe: PlanFighter) =>
-    foreseen(resistChance(actor, dulled(paid.field, foe), t), foe, FORESEES_TECHNIQUE);
+  const sees = (foe: PlanFighter) => seenChance(actor, foe, { t, field: paid.field });
   const seen = targets.filter((foe) => rng.chance(sees(foe)));
   const told = seen.reduce((r, foe) => say(r, seenLine(momentOf(r, foe.id), foe.name)), paid);
   if (isHarmful(t) && seen.length === targets.length) return aftermath(told, turn, t);

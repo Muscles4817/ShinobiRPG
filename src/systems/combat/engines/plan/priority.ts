@@ -1,7 +1,8 @@
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { alive, hasPerk } from '../../rules/body';
 import { effectsOf, hasVerb, isHindering, isPinned, isWounding, opensOf } from '../../rules/verbs';
-import { findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
+import { cardId, findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
+import { CHANGE_UP_AFTER } from '../../rules/familiarity';
 import { beats, seenDefence, walksInto } from './adapt';
 import { partnered } from './combo';
 import { spendsReserve } from './pacing';
@@ -265,6 +266,31 @@ function counterPick(self: PlanFighter, round: Round, first: Play): Play {
 }
 
 /**
+ * Someone who reads the fight changes up an attack they've played turns running, before their
+ * foes have it read (`rules/familiarity.ts`): the next attack in their plan that qualifies.
+ */
+function changeUp(self: PlanFighter, round: Round, play: Play): Play {
+  const streak = self.streak;
+  const leaning = streak !== undefined && streak.turns >= CHANGE_UP_AFTER;
+  // Only worth it against a foe who'd pick up on the pattern (`rules/familiarity.ts`).
+  const read = play.target !== undefined && readsInTheMoment(play.target);
+  // The player's own plan is theirs to vary, unless the fight is only watched.
+  const planned = self.isPlayer && round.watching !== true;
+  if (
+    !leaning ||
+    !read ||
+    planned ||
+    !readsInTheMoment(self) ||
+    cardId(play.card) !== streak.card
+  ) {
+    return play;
+  }
+  const others = self.loadout[round.range].filter((s) => s.card !== streak.card && !urgent(s));
+  const other = firstPlay(self, round, others);
+  return other && isOffence(other.card) ? other : play;
+}
+
+/**
  * An emergency slot that holds; else, for someone fighting at a set distance and elsewhere, a
  * step towards it; else the first slot at this distance that qualifies; else an improvised
  * blow or step (at the mark).
@@ -283,7 +309,7 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
     return firstPlay(self, round, charging) ?? { card: footwork, target: undefined };
   }
   const play = firstPlay(self, round, slots);
-  if (play) return counterPick(self, round, play);
+  if (play) return changeUp(self, round, counterPick(self, round, play));
   const foes = opponentsOf(round.fighters, self);
   const seen = foes.filter((f) => inSight(self, f));
   // With no one to hit and someone hidden, looking for them beats walking about.

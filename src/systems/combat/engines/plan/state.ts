@@ -124,6 +124,10 @@ export interface PlanFighter
   readonly footwork?: number;
   /** A meal's second wind has come (`rules/provisions.ts`): it comes once a fight. */
   readonly secondWindSpent?: boolean;
+  /** How often each technique has been used this fight (`rules/familiarity.ts`). */
+  readonly uses?: Readonly<Record<string, number>>;
+  /** The card played last turn, and how many turns running it has been. */
+  readonly streak?: { readonly card: CardId; readonly turns: number };
   /** Techniques copied this fight by watching (`mimicry.ts`). */
   readonly copied?: readonly string[];
 }
@@ -200,6 +204,8 @@ export interface Round {
   readonly acted?: readonly string[];
   /** Elemental hits landed this exchange. */
   readonly hits?: readonly ElementHit[];
+  /** Only watched: no one plans for the player's fighter, who fights on their own. */
+  readonly watching?: true;
 }
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
@@ -266,6 +272,7 @@ export function patch(
       | 'keepAt'
       | 'holdOff'
       | 'movedAt'
+      | 'streak'
       | 'hidden'
       | 'confused'
       | 'concealment'
