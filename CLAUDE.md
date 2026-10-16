@@ -230,7 +230,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     their default plan by priority, as the player does, as often as their judgement keeps them to
     it, and instinct otherwise (`plan/judgement.ts`: intellect grade sets plan adherence, whether
     they read you in the moment, how hard instinct leans on a read, and how soon they adapt); a default plan keeps its best attack, brings a Search against a foe that
-    hides, and a kit that fights from one distance makes for it (`fightsFromHome`). Fighters **read** each
+    hides, leads with a pure hold when every foe outclasses its owner's best art and a teammate
+    still has a matchup worth fighting (`plan/roles.ts`: set them up rather than trade head-on), and a kit that fights from one distance makes for it (`fightsFromHome`). Fighters **read** each
     other (`reads.ts`: defences seen per distance, attacks by style, public to opponents); foes
     put it to use (`adapt.ts`): an attack that `beats` your seen defence comes first, a blow
     that walks into a seen Counter is held back, and between rounds, after enough attacks (`adaptsAfter`),

@@ -8,6 +8,7 @@ import type { CombatStance } from '../../teamContract';
 import { findCard, isOffence, needsAim, type Card } from './cards';
 import { withoutLoneCombos } from './combo';
 import { defaultLoadout, defaultReadiness } from './defaults';
+import { setsOthersUp } from './roles';
 import { canHit } from './rows';
 import type { Turn } from './senses';
 import { isDazed } from './daze';
@@ -107,7 +108,7 @@ export function stanceLoadout(
 ): Loadout {
   const base = defaultLoadout(withoutLoneCombos(f, fighters), fighters, {
     home: homeFor(f, stance),
-    support: stance.kind === 'support',
+    support: stance.kind === 'support' || setsOthersUp(f, fighters),
   });
   const shape = shaperFor(stance);
   const [close, mid, far] = RANGE_BANDS.map((band) => shape(f, base[band]));

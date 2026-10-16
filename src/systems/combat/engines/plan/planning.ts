@@ -1,6 +1,7 @@
 import { withoutLoneCombos } from './combo';
 import { defaultLoadout, defaultReadiness } from './defaults';
 import { foeStances } from './foeTeam';
+import { setsOthersUp } from './roles';
 import { rememberedPlan, type PlanMemory } from './memory';
 import { defaultReactions } from './readiness';
 import type { PlanFighter } from './state';
@@ -17,7 +18,10 @@ import { NO_HOLD_OFF } from './zoning';
 function planFor(f: PlanFighter, fighters: readonly PlanFighter[], plan: unknown): PlanFighter {
   const remembered = f.isPlayer ? rememberedPlan(plan, f) : null;
   if (remembered) return { ...f, ...remembered };
-  const loadout = defaultLoadout(withoutLoneCombos(f, fighters), fighters);
+  // Outclassed with a teammate who isn't, they set that teammate up (`roles.ts`).
+  const loadout = defaultLoadout(withoutLoneCombos(f, fighters), fighters, {
+    support: setsOthersUp(f, fighters),
+  });
   return { ...f, loadout, ...defaultReadiness(f) };
 }
 
