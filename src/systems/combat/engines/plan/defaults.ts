@@ -96,7 +96,7 @@ interface Hold {
  * A hold (daze, seal or confusion) to spoil a telegraphed jutsu, when some foe fights with
  * jutsu: against blows alone the slot would never play. Only then: a hold played at any moment
  * costs a turn that a blow would have used better. Every hold waits behind the best wounding
- * jutsu: a daze trades your turn for theirs, may be seen coming, and can't be chained (the
+ * jutsu: a daze trades your turn for theirs, may be slipped or shaken off, and can't be chained (the
  * target is steady after one), so leading with it loses fights; a teammate in support, whose
  * job is setting the others up, is the exception.
  */
@@ -108,7 +108,7 @@ function holdSlot(pool: readonly Card[], facing: Facing): Hold {
   if (hold?.kind !== 'jutsu') return { early: [], late: [] };
   const slot: Slot = { card: cardId(hold), when: 'foe-readying' };
   // Only a teammate in support leads with the hold: a daze trades your turn for theirs and
-  // may be seen coming, so on your own it follows your best attack.
+  // may be slipped or shaken off, so on your own it follows your best attack.
   return facing.support ? { early: [slot], late: [] } : { early: [], late: [slot] };
 }
 

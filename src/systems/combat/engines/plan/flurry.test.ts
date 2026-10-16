@@ -67,15 +67,20 @@ describe('flurries, reach and accuracy in plan & watch', () => {
   it('a flurry lands as several blows, about as hard in all as one', () => {
     let single = 0;
     let flurry = 0;
+    const landed = new Set<number>();
     for (let seed = 1; seed <= 40; seed++) {
       const one = use(roundWith(), kick(), seed);
       const three = use(roundWith(), kick(3), seed);
-      // A foe who sees it coming slips the whole technique; otherwise every blow lands.
-      expect([0, 3]).toContain(three.lines.filter((l) => hitsOn('bandit', 'Kick').test(l)).length);
+      // A foe may slip the whole technique; once it reaches them, each later blow may be
+      // slipped on its own.
+      landed.add(three.lines.filter((l) => hitsOn('bandit', 'Kick').test(l)).length);
       single += 100 - fighterIn(one, 'bandit')!.health;
       flurry += 100 - fighterIn(three, 'bandit')!.health;
     }
-    expect(flurry / single).toBeGreaterThan(0.85);
+    expect([...landed].every((n) => n <= 3)).toBe(true);
+    expect(landed).toContain(3);
+    expect(landed.has(1) || landed.has(2)).toBe(true);
+    expect(flurry / single).toBeGreaterThan(0.8);
     expect(flurry / single).toBeLessThan(1.15);
   });
 

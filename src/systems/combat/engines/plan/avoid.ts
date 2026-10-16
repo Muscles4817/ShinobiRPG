@@ -1,0 +1,109 @@
+import type { Accuracy, AreaSize, Discipline } from '@/systems/techniques';
+
+import type { CombatTechnique } from '../../contract';
+import {
+  AVOID_MAX,
+  avoidChance,
+  avoidRating,
+  readRating,
+  readScale,
+  tellRating,
+  type AttackForm,
+} from '../../rules/avoidance';
+import { FORESIGHT_SEES, FORESIGHT_SLIP, foreseen } from '../../rules/eyes';
+import { familiarScale } from '../../rules/familiarity';
+import { footingOf } from '../../rules/ground';
+import { hasTrait, SWIFT_DODGE, type AttackKind } from '../../rules/kit';
+import {
+  areaSize,
+  driveOf,
+  dulled,
+  effectsOf,
+  isPinned,
+  landingUse,
+  PIN_SLIP,
+} from '../../rules/verbs';
+import { isDazed } from './daze';
+import { readsInTheMoment } from './judgement';
+import { readyDefences } from './readiness';
+import type { PlanFighter, Round } from './state';
+
+/**
+ * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
+ * ready Dodge, a daze (no slipping anything), a pin, footing on this ground, a field dulling the
+ * defender's eyes, a swift kit, a technique leaned on (read more easily by a mind that reads
+ * the fight) and foresight.
+ */
+
+/** A swift fighter slips this much more with a Dodge ready, half of it without. */
+const SWIFT_INSTINCT = 0.5;
+
+/** One attack on its way to one defender. */
+export interface Incoming {
+  readonly form: AttackForm;
+  readonly attacker: PlanFighter;
+  readonly target: PlanFighter;
+  /** The attacker's skill behind it: their drive for a technique, their art for a blow. */
+  readonly skill: number;
+  readonly discipline?: Discipline;
+  readonly accuracy?: Accuracy;
+  readonly areaSize?: AreaSize;
+  /** How much more easily it is read for having been leaned on (`familiarScale`). */
+  readonly familiar?: number;
+}
+
+/** A Dodge is the target's ready defence here. */
+export function dodgesHere(round: Round, target: PlanFighter): boolean {
+  return readyDefences(target, round).some((c) => c.kind === 'dodge');
+}
+
+/** The chance this attack doesn't reach its target. */
+export function avoidOdds(round: Round, incoming: Incoming): number {
+  const { attacker, form } = incoming;
+  const target = dulled(round.field, incoming.target);
+  if (isDazed(target)) return 0;
+  const dodging = dodgesHere(round, target);
+  const swift = hasTrait(target, 'swift') ? SWIFT_DODGE * (dodging ? 1 : SWIFT_INSTINCT) : 0;
+  const read = readScale(readRating(target), tellRating(attacker, incoming.skill), form);
+  const chance = avoidChance({
+    form,
+    rating: avoidRating(target, incoming.discipline),
+    arrival: form === 'technique' ? incoming.skill : attacker.attributes.speed,
+    read: read * (incoming.familiar ?? 1),
+    dodging,
+    bonus: swift,
+    ...(incoming.accuracy ? { accuracy: incoming.accuracy } : {}),
+    ...(incoming.areaSize ? { areaSize: incoming.areaSize } : {}),
+  });
+  const held = chance * (isPinned(target) ? PIN_SLIP : 1) * footingOf(round.ground, target);
+  const scale = form === 'technique' ? FORESIGHT_SEES : FORESIGHT_SLIP;
+  return foreseen(held, target, { scale, ceiling: AVOID_MAX });
+}
+
+/** A technique on its way to one foe; null when nothing in it is aimed at a foe. */
+export function techniqueIncoming(
+  attacker: PlanFighter,
+  target: PlanFighter,
+  t: CombatTechnique,
+): Incoming | null {
+  const use = landingUse(t);
+  if (!use) return null;
+  const [area] = effectsOf(t, 'area');
+  // Only a mind that reads the fight picks up on a technique leaned on.
+  const familiar = readsInTheMoment(target) ? familiarScale(attacker.uses?.[t.id] ?? 0) : 1;
+  return {
+    form: 'technique',
+    attacker,
+    target,
+    skill: driveOf(attacker, use),
+    discipline: t.discipline,
+    familiar,
+    ...(t.accuracy ? { accuracy: t.accuracy } : {}),
+    ...(area ? { areaSize: areaSize(area) } : {}),
+  };
+}
+
+/** The art behind a plain blow: a blade's kenjutsu, else taijutsu. */
+export function blowSkill(attacker: PlanFighter, kind: AttackKind): number {
+  return kind === 'weapon' ? attacker.attributes.kenjutsu : attacker.attributes.taijutsu;
+}

@@ -41,10 +41,13 @@ export type FightStat = Exclude<StatId, 'reserves'>;
 
 /**
  * A stat that scales a verb. Besides plain stats: `art` is the fighter's skill in the
- * technique's own discipline, and `guard` is what sees that art coming (willpower against
- * genjutsu, perception against the rest).
+ * technique's own discipline, `guard` is what sees that art coming (willpower against
+ * genjutsu, perception against the rest), `bind` is what breaks a hold made with it
+ * (willpower against an illusion, chakra control against chakra, strength against hands and
+ * wire), and `poise` is what keeps someone on their feet against it (willpower against an
+ * illusion, stamina against the rest).
  */
-export type ScalingStat = FightStat | 'art' | 'guard';
+export type ScalingStat = FightStat | 'art' | 'guard' | 'bind' | 'poise';
 
 /** Overrides a verb's scaling profile for one technique; any part left out keeps the default. */
 export interface VerbScaling {

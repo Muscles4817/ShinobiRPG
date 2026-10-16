@@ -201,9 +201,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     **Health is 100 for every human** (`MAX_HEALTH`); creatures scale it with
     `EnemyDef.healthScale`. Damage comes from the **gap** between attacker power and defender
     defence (`rules/damage.ts`: a ratio of ratings, narrow variance), so equals trade the same
-    blows at every grade and each grade of difference is decisive. Defence has layers:
-    evasion (speed, perception), guard and counter (taijutsu, strength) and resistance
-    (willpower against genjutsu, perception against the rest) in `rules/defence.ts`; toughness
+    blows at every grade and each grade of difference is decisive. **Whether an attack
+    reaches** is one avoid roll for every attack, technique or plain blow
+    (`rules/avoidance.ts`, `plan/avoid.ts`, `docs/design/hittability-plan.md`): a read (eyes
+    and wits against the attacker's speed and skill; hand signs give a technique away more than
+    a fist), the defender's avoid rating against how fast it arrives (speed with perception;
+    a genjutsu is noticed, willpower with perception), a stance (anyone slips some, a ready Dodge
+    many more), accuracy and an area's size (wide hard to get clear of, vast impossible). A hit
+    that lands is not yet a hold: each condition rolls against its verb's resist (a pin against
+    what breaks a hold of its art: strength, chakra control or willpower; a daze against poise;
+    a seal against chakra control; `conditionResist`). Then guard and counter (taijutsu,
+    strength) in `rules/defence.ts`; toughness
     is stamina (plus `armoured` kit), and toughness and will both blend in the fighter's best art
     (`SKILL_DEFENCE_SHARE`: skill defends, so specialists of a grade don't one-shot each other);
     no hit takes more than half the target's health (`cappedHit`). A daze costs the target their
@@ -238,16 +246,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     a foe keeps the defence that best meets what you throw. Foes fight as a **team** when one of
     them reads a fight in the moment (`plan/foeTeam.ts`): stances like your teammates' (the
     sturdiest front-row foe covers the frailest back-row one, back-row casters with holds
-    support, the rest press) and a `foeMark` on whoever on your side would fall soonest. A technique leaned on is read: past its first uses, a foe who reads the fight sees it coming
-    more often each time, and a mind that reads the fight reaches less for one played turns
+    support, the rest press) and a `foeMark` on whoever on your side would fall soonest. A technique leaned on is read: past its first uses, a foe who reads the fight reads it
+    more easily each time, and a mind that reads the fight reaches less for one played turns
     running and changes up a slotted attack against such a foe (`rules/familiarity.ts`). Left to their judgement, foes and
     teammates go for whoever is most worth it (`plan/targeting.ts`: the harm they do over the hits
     they'd take to fall), and a mind that reads the fight keeps chakra for its finisher
     (`plan/pacing.ts`). Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
     covers (wide ×1.5, vast ×2.2), and each exchange gives back a little, or a share of deep
-    reserves. A hold (a technique that pins, seals or dazes without wounding) needs its target caught: a target
-    sharper and quicker than the caster slips it more often (`rules/catching.ts`), and a
-    `channelled` pin keeps its caster's turns and hands on it until they are hurt or dazed, when it
+    reserves. A `channelled` pin keeps its caster's turns and hands on it until they are hurt or dazed, when it
     breaks and frees its target of it and its seal (`plan/holding.ts`). Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
     foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the

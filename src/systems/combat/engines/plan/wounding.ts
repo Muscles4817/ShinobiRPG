@@ -15,12 +15,16 @@ import { fighterIn, say, type PlanFighter, type Round } from './state';
 
 /**
  * A technique's wounding effects in a planned fight: one blow, or a flurry's several, each
- * meeting the target's clones, defences and kit on its own (`react.ts`).
+ * meeting the target's clones, defences and kit on its own (`react.ts`). The first has already
+ * reached the target (the technique's avoid roll, `avoid.ts`); a flurry's later blows may each
+ * be slipped like any blow.
  */
 
 /** A technique aimed at one foe, as the fighters stand now. */
 export interface Aimed extends Turn {
   readonly target: PlanFighter;
+  /** It already made the avoid roll and reached the target: its first blow isn't slipped again. */
+  readonly reached?: true;
 }
 
 /** The effects that wound. */
@@ -48,7 +52,10 @@ function blowsFor(aimed: Aimed, use: Wounding, scale: number): Blow[] {
     ...(use.effect.verb === 'break' ? { breaks: true } : {}),
     ...(use.effect.verb === 'area' ? { area: true, areaSize: areaSize(use.effect) } : {}),
   };
-  return Array.from({ length: count }, (_, i) => (i === 0 ? first : { ...first, followUp: true }));
+  const opening = aimed.reached ? { ...first, reached: true as const } : first;
+  return Array.from({ length: count }, (_, i) =>
+    i === 0 ? opening : { ...first, followUp: true as const },
+  );
 }
 
 /** Each blow in turn, while the target still stands. */
