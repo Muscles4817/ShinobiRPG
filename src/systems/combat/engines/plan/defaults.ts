@@ -101,7 +101,10 @@ interface Hold {
  * job is setting the others up, is the exception.
  */
 function holdSlot(pool: readonly Card[], facing: Facing): Hold {
-  const [hold] = facing.foeJutsu || facing.support ? strongest(pool, isHindering) : [];
+  // Setting others up is a pure hold (a pin, a seal), when there is one, not a wounding daze.
+  const pure = facing.support ? strongest(pool, (t) => isHindering(t) && !isWounding(t)) : [];
+  const [hold] =
+    facing.foeJutsu || facing.support ? [...pure, ...strongest(pool, isHindering)] : [];
   if (hold?.kind !== 'jutsu') return { early: [], late: [] };
   const slot: Slot = { card: cardId(hold), when: 'foe-readying' };
   // Only a teammate in support leads with the hold: a daze trades your turn for theirs and
