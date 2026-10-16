@@ -208,6 +208,8 @@ export interface Round {
   readonly hits?: readonly ElementHit[];
   /** Only watched: no one plans for the player's fighter, who fights on their own. */
   readonly watching?: true;
+  /** The card the turn just taken played, for its narration's force (`force.ts`). */
+  readonly played?: CardId;
 }
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };

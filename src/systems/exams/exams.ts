@@ -99,6 +99,23 @@ export interface ExamDef {
   /** The opening of the exam scene. */
   readonly intro: string;
   readonly verdict: { readonly promoted: string; readonly passedOver: string };
+  readonly spectators: ExamSpectators;
+}
+
+/**
+ * The exam for those not sitting it: who tells you it is coming, and the finals you may go and
+ * watch on the day. Placeholders: `{them}` and `{you}` are names; `{a}` and `{b}` the two
+ * finalists; `{winner}` and `{loser}` how it came out.
+ */
+export interface ExamSpectators {
+  /** Your sensei's word in the week before, when they won't put you forward this time. */
+  readonly invitation: string;
+  /** The same news from a teammate, when your sensei keeps too loose a grip to say it. */
+  readonly hearsay: string;
+  /** The stands as the two finalists step out. */
+  readonly finals: string;
+  /** How the crowd takes the end of it. */
+  readonly won: string;
 }
 
 /** Why a run ended before the last stage was done. */

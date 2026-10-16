@@ -1,4 +1,5 @@
 import {
+  forceLine,
   harmLine,
   healLine,
   numberedNames,
@@ -55,6 +56,16 @@ describe('fight narration', () => {
       reactions: [],
       actorId: 'player',
     });
+  });
+
+  it('says how big a turn was, out of the sentence, and keeps the first size given', () => {
+    const fire = { grade: 4, size: 'wide', element: 'fire' } as const;
+    const line = forceLine(turnLine(harmLine('A wall of flame.', 30), 'goran'), fire);
+    expect(splitNarration(line)).toMatchObject({ text: 'A wall of flame.', force: fire });
+    const plain = { grade: 0, size: null, element: null };
+    expect(splitNarration(forceLine('A punch.', plain)).force).toEqual(plain);
+    expect(splitNarration(forceLine(line, plain)).force).toEqual(fire);
+    expect(splitNarration('A punch.').force).toBeUndefined();
   });
 
   it('numbers fighters who share a name, in the order they stand', () => {

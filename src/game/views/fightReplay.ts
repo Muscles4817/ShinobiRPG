@@ -3,6 +3,7 @@ import {
   type CombatantView,
   type CombatView,
   type Narration,
+  type NarrationForce,
   type RangeBand,
 } from '@/systems/combat';
 import type { JournalChip } from '@/systems/journal';
@@ -28,6 +29,8 @@ export interface FightBeat {
   readonly actorId: string | null;
   readonly targetId: string | null;
   readonly range: RangeBand | null;
+  /** How big the turn the beat belongs to was (who threw it, how wide, what element). */
+  readonly force: NarrationForce | null;
   /** Every fighter's health once this beat has played, by combatant id. */
   readonly health: Readonly<Record<string, number>>;
 }
@@ -119,6 +122,7 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
       actorId: said.actorId ?? null,
       targetId,
       range,
+      force: said.force ?? null,
       health: health[i] ?? {},
     };
   });

@@ -1,4 +1,10 @@
-import type { ExamDef, ExamStageDef, MindStageDef, TournamentStageDef } from '@/systems/exams';
+import type {
+  ExamDef,
+  ExamSpectators,
+  ExamStageDef,
+  MindStageDef,
+  TournamentStageDef,
+} from '@/systems/exams';
 import { lowestRankFor, type MissionDef } from '@/systems/missions';
 import { DAYS_PER_SEASON, SEASONS } from '@/systems/time';
 
@@ -8,7 +14,8 @@ import type { ContentPack } from './types';
 /**
  * Exams are sat twice a year on real days, every stage makes sense (a pass mark that can be
  * reached, rivals that get stronger, a forest that is a team mission only the exam runs), every
- * exam-only mission belongs to an exam, and the pack has a chūnin exam and jobs for chūnin
+ * exam-only mission belongs to an exam, there is a tournament to watch and its spectators'
+ * lines fill their slots, and the pack has a chūnin exam and jobs for chūnin
  * (what a promotion opens on the board).
  */
 export function validateExams(pack: ContentPack): string[] {
@@ -44,7 +51,24 @@ function examProblems(exam: ExamDef, missions: ReadonlyMap<string, MissionDef>):
   }
   if (exam.stages.length === 0) problems.push('has no stages');
   problems.push(...exam.stages.flatMap((s) => stageProblems(s, missions)));
+  problems.push(...spectatorProblems(exam.spectators));
+  if (!exam.stages.some((s) => s.kind === 'tournament')) {
+    problems.push('has no tournament for spectators to watch');
+  }
   return problems.map((p) => `exam "${exam.id}" ${p}`);
+}
+
+/** Each spectator line fills its own slots. */
+function spectatorProblems(lines: ExamSpectators): string[] {
+  const slots: readonly (readonly [string, string, readonly string[]])[] = [
+    ['invitation', lines.invitation, ['{them}']],
+    ['hearsay', lines.hearsay, ['{them}']],
+    ['finals', lines.finals, ['{a}', '{b}']],
+    ['won', lines.won, ['{winner}', '{loser}']],
+  ];
+  return slots.flatMap(([key, line, wanted]) =>
+    wanted.filter((slot) => !line.includes(slot)).map((slot) => `spectators.${key} misses ${slot}`),
+  );
 }
 
 function stageProblems(stage: ExamStageDef, missions: ReadonlyMap<string, MissionDef>): string[] {

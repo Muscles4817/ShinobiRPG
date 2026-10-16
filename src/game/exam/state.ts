@@ -9,6 +9,10 @@ export interface Exams {
   readonly run: ExamRun | null;
   readonly lastSatDay: number | null;
   readonly ceremony: Ceremony | null;
+  /** The day you last watched an exam's finals from the stands (`exam/spectators.ts`). */
+  readonly watchedDay: number | null;
+  /** True while the fight under way is the finals you are watching. */
+  readonly spectating: boolean;
 }
 
 /** A promotion waiting for its scene: the rank you are being raised to. */
@@ -16,4 +20,10 @@ export interface Ceremony {
   readonly rank: PromotedRank;
 }
 
-export const NO_EXAMS: Exams = { run: null, lastSatDay: null, ceremony: null };
+export const NO_EXAMS: Exams = {
+  run: null,
+  lastSatDay: null,
+  ceremony: null,
+  watchedDay: null,
+  spectating: false,
+};

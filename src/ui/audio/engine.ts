@@ -1,4 +1,4 @@
-import type { AudioSettings, MusicMood, Sound } from '@/game';
+import type { AudioSettings, MusicMood, Sound, SoundForce } from '@/game';
 
 import { playSound } from './effects';
 import { LOOPS } from './loops';
@@ -15,7 +15,8 @@ import { bass, bell, clack, flute, koto, pad, shaker, taiko, type Note, type Out
 export interface AudioEngine {
   /** Call from a user gesture: builds or resumes the audio graph. */
   readonly unlock: () => void;
-  readonly play: (sound: Sound) => void;
+  /** Plays a sound now; a fight's sound with the force of the turn behind it. */
+  readonly play: (sound: Sound, force?: SoundForce) => void;
   /** The music to play (null for none); a change fades one loop into the next. */
   readonly setMood: (mood: MusicMood | null) => void;
   readonly setLevels: (settings: AudioSettings) => void;
@@ -213,13 +214,13 @@ export function createAudioEngine(initial: AudioSettings): AudioEngine {
       }
       if (graph.ctx.state === 'suspended') void graph.ctx.resume();
     },
-    play: (sound) => {
+    play: (sound, force) => {
       if (!graph || !settings.sound || settings.effectsVolume === 0) return;
       const now = graph.ctx.currentTime;
       if (graph.ctx.state !== 'running') return;
       if (sound === 'tap' && now - lastSoundAt < TAP_MASKED_S) return;
       lastSoundAt = now;
-      playSound(graph.effects, sound, now + 0.005);
+      playSound(graph.effects, sound, now + 0.005, force);
     },
     setMood: (next) => {
       mood = next;

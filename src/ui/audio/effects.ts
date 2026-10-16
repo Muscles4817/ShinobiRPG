@@ -1,5 +1,6 @@
-import type { Sound } from '@/game';
+import type { Sound, SoundForce } from '@/game';
 
+import { forceGain, playForce } from './force';
 import { midiToFreq, YO } from './score';
 import { bell, clack, flute, koto, shaker, taiko, whoosh, type Out } from './voices';
 
@@ -10,6 +11,9 @@ import { bell, clack, flute, koto, shaker, taiko, whoosh, type Out } from './voi
  */
 
 type Recipe = (out: Out, at: number) => void;
+
+/** The fight's sounds, which grow with the turn behind them (`force.ts`). */
+const FIGHT_SOUNDS: ReadonlySet<Sound> = new Set<Sound>(['strike', 'hurt', 'swish', 'mend']);
 
 const C5 = 72;
 const A4 = 69;
@@ -139,7 +143,24 @@ const RECIPES: Readonly<Record<Sound, Recipe>> = {
   },
 };
 
-/** Plays `sound` into `out` at `at` (context seconds). */
-export function playSound(out: Out, sound: Sound, at: number): void {
-  RECIPES[sound](out, at);
+/** A node that makes everything played into it louder by `gain`. */
+function louder(out: Out, gain: number): Out {
+  if (gain === 1) return out;
+  const boost = out.ctx.createGain();
+  boost.gain.value = gain;
+  boost.connect(out.dest);
+  return { ...out, dest: boost };
+}
+
+/**
+ * Plays `sound` into `out` at `at` (context seconds); a fight's sound with the `force` of the
+ * turn behind it comes out bigger, with the layers its grade, area and element bring.
+ */
+export function playSound(out: Out, sound: Sound, at: number, force?: SoundForce): void {
+  if (!force || !FIGHT_SOUNDS.has(sound)) {
+    RECIPES[sound](out, at);
+    return;
+  }
+  RECIPES[sound](louder(out, forceGain(force)), at);
+  playForce(out, at, force);
 }

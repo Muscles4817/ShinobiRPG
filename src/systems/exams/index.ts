@@ -13,6 +13,7 @@ export {
   withNotes,
   type ExamDate,
   type ExamDef,
+  type ExamSpectators,
   type ExamExit,
   type ExamRank,
   type ExamRun,

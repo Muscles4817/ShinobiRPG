@@ -121,7 +121,7 @@ function defeatCard(report: Extract<Report, { kind: 'defeat' }>): CardContent {
   };
 }
 
-/** A bout you only watched: who won, and how long it took. */
+/** A bout you only watched: who won, how long it took, and what watching taught you. */
 function watchedCard(report: Extract<Report, { kind: 'fight' }>, verdict: string): CardContent {
   return {
     title: verdict,
@@ -129,6 +129,7 @@ function watchedCard(report: Extract<Report, { kind: 'fight' }>, verdict: string
     seal: null,
     tone: 'good',
     rows: [{ label: 'Rounds', value: String(report.rounds) }],
+    ...taughtList(report.taught),
     note: null,
   };
 }

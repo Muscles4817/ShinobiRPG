@@ -1,4 +1,4 @@
-import { act, ctx, intoFight, newGame } from '@/test/gameFixtures';
+import { act, ctx, fightOut, intoFight, newGame } from '@/test/gameFixtures';
 
 import type { FightBeat } from '../views/fightReplay';
 import {
@@ -23,6 +23,7 @@ function beat(overrides: Partial<FightBeat>): FightBeat {
     actorId: 'you',
     targetId: 'foe',
     range: null,
+    force: null,
     health: {},
     ...overrides,
   };
@@ -46,11 +47,33 @@ describe('sounds', () => {
 
   it('hear a fight from your side: blows on you hurt, blows by anyone else strike', () => {
     const harm = [{ label: '12', tone: 'harm' } as const];
-    expect(beatSound(beat({ chips: harm }), 'you')).toBe('strike');
-    expect(beatSound(beat({ chips: harm, actorId: 'foe', targetId: 'you' }), 'you')).toBe('hurt');
-    expect(beatSound(beat({ chips: [{ label: '8', tone: 'gain' }] }), 'you')).toBe('mend');
-    expect(beatSound(beat({}), 'you')).toBe('swish');
-    expect(beatSound(beat({ kind: 'divider', actorId: null }), 'you')).toBe('exchange');
+    const heard = (b: FightBeat) => beatSound(b, 'you')?.sound;
+    expect(heard(beat({ chips: harm }))).toBe('strike');
+    expect(heard(beat({ chips: harm, actorId: 'foe', targetId: 'you' }))).toBe('hurt');
+    expect(heard(beat({ chips: [{ label: '8', tone: 'gain' }] }))).toBe('mend');
+    expect(heard(beat({}))).toBe('swish');
+    expect(heard(beat({ kind: 'divider', actorId: null }))).toBe('exchange');
+  });
+
+  it('carry the force of the turn behind a blow, so a jōnin’s fire sounds like one', () => {
+    const force = { grade: 4, size: 'wide', element: 'fire' } as const;
+    expect(beatSound(beat({ force, chips: [{ label: '20', tone: 'harm' }] }), 'you')).toEqual({
+      sound: 'strike',
+      force,
+    });
+    expect(beatSound(beat({ kind: 'divider', force }), 'you')).toEqual({ sound: 'exchange' });
+  });
+
+  it('come out of a real fight tagged with each turn’s force', () => {
+    let state = act(newGame({ standing: { ...newGame().standing, missionsCompleted: 5 } }), {
+      type: 'startMission',
+      missionId: 'tea-merchant-escort',
+    });
+    state = act(state, { type: 'missionContinue' });
+    state = act(state, { type: 'missionChoose', approachIndex: 0 });
+    const done = fightOut(intoFight(state));
+    const log = done.combatFinale?.log ?? [];
+    expect(log.some((line) => /⟦fx:\d:[a-z-]+:[a-z-]+⟧/.test(line))).toBe(true);
   });
 });
 

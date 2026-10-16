@@ -337,7 +337,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     bouts against rivals generated from the seed. Every stage records conduct marks
     (`conduct.ts`), and the verdict weighs conduct with results. A promotion is its own scene
     (`exams.ceremony`): the rank, the vest, and unlocks derived from data (`exam/unlocks.ts`).
-    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it.
+    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it. Those not
+    sitting it are **spectators** (`exam/spectators.ts`, the exam's `spectators` lines): in the
+    week before, your sensei invites you to watch when they won't put you forward (a teammate
+    tells you instead when your sensei's grip is loose), and on the day anyone at home may spend
+    an afternoon watching the finals (`watchFinals`): two finalists from the seed, above the
+    last round's rival, in a watched fight (`exams.spectating` routes its end to
+    `resolveFinals`: a card, a little perception and intellect, nothing else).
 21. **Crews are assigned per job.** Who goes with you is decided for each posting
     (`systems/missions/crew.ts` for the rules, `game/crew.ts` for the people, both hashing the
     seed and the day it went up): alone, your old team (the sensei leads it from C-rank, and
@@ -448,7 +454,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`game/sound/`: `soundAfter` for an action, `reportSound`, `beatSound` for a fight's beats,
     `musicMood` from the scene, clock and calendar); `ui/audio/effects.ts` says what each
     `Sound` is made of and `loops.ts` how each `MusicMood` goes (bars of scale degrees, read by
-    `score.ts`, varied by hash after the first time round, never `Math.random`). Volumes
+    `score.ts`, varied by hash after the first time round, never `Math.random`). A
+    fight's sounds grow with the turn behind them: the plan engine tags each turn's lines with
+    its **force** (`forceLine`, `plan/staging.ts`: the maker's grade in the art, an area's
+    size, the element), `beatSound` passes it on, and `ui/audio/force.ts` layers an echo, a
+    boom and a roll by grade, a swell by area and a colour by element over the plain recipe. Volumes
     (`AudioSettings`) belong to the device, not the save: a second `SaveStore` (`prefs`) holds
     them. Audio starts on the first tap, as browsers require; every enabled button taps.
 

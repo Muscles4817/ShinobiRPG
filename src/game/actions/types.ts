@@ -101,6 +101,7 @@ export type GameAction =
   | { readonly type: 'examAnswer'; readonly approach: MindApproach }
   | { readonly type: 'examFinal'; readonly stay: boolean }
   | { readonly type: 'examContinue' }
+  | { readonly type: 'watchFinals' }
   | { readonly type: 'acceptPromotion' };
 
 export type GameActionType = GameAction['type'];

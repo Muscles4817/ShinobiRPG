@@ -38,6 +38,12 @@ const EXAM: ExamDef = {
   rumour: 'Soon.',
   announcement: 'Sign.',
   intro: 'The hall.',
+  spectators: {
+    invitation: '{them} says to come and watch.',
+    hearsay: '{them} says everyone is going.',
+    finals: '{a} faces {b}.',
+    won: '{winner} beats {loser}.',
+  },
   verdict: { promoted: 'Yes.', passedOver: 'No.' },
   stages: [
     {

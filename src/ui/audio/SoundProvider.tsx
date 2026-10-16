@@ -7,6 +7,7 @@ import {
   type MusicMood,
   type SaveStore,
   type Sound,
+  type SoundForce,
 } from '@/game';
 
 import { createAudioEngine, type AudioEngine } from './engine';
@@ -20,7 +21,7 @@ import { createAudioEngine, type AudioEngine } from './engine';
 export interface SoundApi {
   readonly settings: AudioSettings;
   readonly change: (next: AudioSettings) => void;
-  readonly play: (sound: Sound) => void;
+  readonly play: (sound: Sound, force?: SoundForce) => void;
   readonly setMood: (mood: MusicMood | null) => void;
 }
 
