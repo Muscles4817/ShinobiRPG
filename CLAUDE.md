@@ -235,7 +235,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     does (`charge` in `plan/steps.ts`). Clones on the closer's side (theirs or a teammate's) run
     ahead and may draw the shot (`plan/screening.ts`: solid ones as often as they'd take a hit,
     illusions half that; an area bursts them all), clones crowding round a fighter help their
-    step, and a hit heavy enough tears through the clone it strikes into its maker with half its force (`carriesThrough`); without one, they step home only when nothing slotted does anything
+    step, and a hit heavy enough tears through the clone it strikes into its maker with half its force (`carriesThrough`).
+    Clones come in **kinds** (`rules/verbs/cloneKinds.ts`: illusion, water, wind, earth,
+    lightning, fire, shadow; named on the clone effect or following the technique's element),
+    each with its blow, its upkeep paid every exchange (`plan/cloneUpkeep.ts`: clones the maker
+    can't pay for fade) and its trick: earth may stand a hit and rebuilds, lightning shocks a
+    blow that bursts it up close, wind screens a charge best, fire feeds itself, shadow clones
+    strike hardest and cost most; without one, they step home only when nothing slotted does anything
     there, else throw a plain blow (never slotted). Foes play
     their default plan by priority, as the player does, as often as their judgement keeps them to
     it, and instinct otherwise (`plan/judgement.ts`: intellect grade sets plan adherence, whether

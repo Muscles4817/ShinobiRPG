@@ -33,6 +33,7 @@ import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn 
 import { intercept } from './team';
 import { springTraps } from './traps';
 import { aid, struggleFree } from './struggle';
+import { clonesAfter } from './cloneUpkeep';
 import { wearOffDaze } from './daze';
 import {
   fighterIn,
@@ -272,9 +273,11 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const end = secondWinds(
     lingerAfter(
       struggleFree(
-        afterEmpowers(
-          order.reduce((round, { id }) => stagedTurn(round, id, rng), start),
-          state.round,
+        clonesAfter(
+          afterEmpowers(
+            order.reduce((round, { id }) => stagedTurn(round, id, rng), start),
+            state.round,
+          ),
         ),
         rng,
       ),

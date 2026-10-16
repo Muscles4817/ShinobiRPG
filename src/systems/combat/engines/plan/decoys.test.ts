@@ -47,9 +47,16 @@ function round(): Round {
   return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
 }
 
-function strike(raw: number, breaks: boolean) {
+function ofKind(r: Round, kind: NonNullable<Clones['kind']>): Round {
+  const fighters = r.fighters.map((f) =>
+    f.id === 'maker' ? { ...f, clones: { ...clones, kind } } : f,
+  );
+  return { ...r, fighters };
+}
+
+function strike(raw: number, breaks: boolean, kind?: Clones['kind'], physical = false) {
   return Array.from({ length: 40 }, (_, i) => {
-    const r = round();
+    const r = kind ? ofKind(round(), kind) : round();
     const [maker, striker] = r.fighters;
     const hit: Incoming = {
       attacker: striker!,
@@ -58,6 +65,7 @@ function strike(raw: number, breaks: boolean) {
       area: false,
       raw,
       breaks,
+      physical,
       rng: createRng(i + 1),
     };
     return throughClones(r, hit);
@@ -83,5 +91,33 @@ describe('a hit meeting clones', () => {
     expect(carriesThrough(55, 100, true)).toBe(true);
     expect(carriesThrough(55, 100, false)).toBe(false);
     expect(carriesThrough(85, 100, false)).toBe(true);
+  });
+
+  it('an earth clone may take a light hit and stand', () => {
+    const lines = Array.from({ length: 40 }, (_, i) => {
+      const r = ofKind(round(), 'earth');
+      const [maker, striker] = r.fighters;
+      const hit: Incoming = {
+        attacker: striker!,
+        target: maker!,
+        what: 'Tiger',
+        area: false,
+        raw: 10,
+        breaks: false,
+        rng: createRng(i + 1),
+      };
+      return throughClones(r, hit).round.lines.join(' ');
+    });
+    expect(lines.some((l) => l.includes('takes it and stands'))).toBe(true);
+    expect(lines.some((l) => l.includes('which bursts'))).toBe(true);
+  });
+
+  it('a lightning clone burst by a blow up close shocks the striker', () => {
+    const met = strike(10, false, 'lightning', true);
+    const striker = met.round.fighters.find((f) => f.id === 'striker')!;
+    expect(met.round.lines.join(' ')).toMatch(/lightning leaps into striker/);
+    expect(striker.health).toBeLessThan(100);
+    const thrown = strike(10, false, 'lightning', false);
+    expect(thrown.round.lines.join(' ')).not.toMatch(/lightning leaps/);
   });
 });

@@ -67,7 +67,7 @@ export {
   type ClimbReasons,
 } from './ladders';
 export {
-  CLONE_BLOW_SCALE,
+  cloneBlowScale,
   drawFireChance,
   carriesThrough,
   CLONE_CARRY_SCALE,
@@ -103,3 +103,4 @@ export {
   type LingeringMemory,
   type Riposte,
 } from './lingering';
+export { CLONE_RULES, cloneKindFor, cloneUpkeep, kindOf, type CloneRule } from './cloneKinds';

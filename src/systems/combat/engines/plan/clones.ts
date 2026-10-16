@@ -1,11 +1,14 @@
 import { alive } from '../../rules/body';
 import { strikeDamage } from '../../rules/damage';
 import { attackKindOf } from '../../rules/kit';
+import type { CloneKind } from '@/systems/techniques';
+
 import {
-  CLONE_BLOW_SCALE,
+  cloneBlowScale,
   clonesFrom,
   clonesLeft,
   driveOf,
+  kindOf,
   type EffectUse,
 } from '../../rules/verbs';
 import { isOffence, type Card } from './cards';
@@ -16,16 +19,27 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Clones in a planned fight: a clone technique sets clones beside its user (replacing any left
- * from before); hits on them are `decoys.ts`. Solid clones join their maker's attacks with a
- * weak blow of their own, up close or thrown from further off, and only at a foe that blow can
- * reach past the rows.
+ * from before); hits on them are `decoys.ts`, their upkeep `cloneUpkeep.ts`. Solid clones join
+ * their maker's attacks with a blow of their own, as hard as their kind allows, up close or
+ * thrown from further off, and only at a foe that blow can reach past the rows.
  */
+
+/** How each kind of clone comes into the fight. */
+const ENTRANCES: Readonly<Record<CloneKind, (name: string) => string>> = {
+  illusion: (name) => `Copies of ${name} shimmer into being beside them.`,
+  water: (name) => `Clones of ${name} rise out of running water.`,
+  wind: (name) => `Clones of ${name} spin up out of the wind.`,
+  earth: (name) => `Clones of ${name} heave up out of the ground.`,
+  lightning: (name) => `Clones of ${name} crackle into being.`,
+  fire: (name) => `Clones of ${name} step out of the flames.`,
+  shadow: (name) => `Clones of ${name} burst out of the smoke beside them.`,
+};
 
 export function makeClones(round: Round, actor: PlanFighter, use: EffectUse<'clone'>): Round {
   const clones = clonesFrom(driveOf(actor, use), actor.maxChakra, use);
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, { clones }) },
-    `Clones of ${actor.name} step out beside them.`,
+    ENTRANCES[kindOf(clones)](actor.name),
   );
 }
 
@@ -38,7 +52,7 @@ export function cloneFollowUp(round: Round, { actor, target, rng }: Turn, card: 
   const thrown = round.range !== 'close';
   if (!canHit({ kind: thrown ? 'throw' : 'strike' }, foe, round.fighters)) return round;
   const blow: Blow = {
-    raw: strikeDamage(self, foe, rng.next()) * CLONE_BLOW_SCALE,
+    raw: strikeDamage(self, foe, rng.next()) * cloneBlowScale(self.clones),
     what: 'clone',
     dodgeable: true,
     physical: false,
