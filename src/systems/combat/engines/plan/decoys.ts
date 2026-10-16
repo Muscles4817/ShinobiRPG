@@ -23,7 +23,7 @@ export interface Incoming {
 }
 
 /** The attacker's eyes against the clones' maker, by the clone technique's profile. */
-function eyes(attacker: PlanFighter, maker: PlanFighter): number {
+export function eyes(attacker: PlanFighter, maker: PlanFighter): number {
   const technique = maker.techniques.find((t) => t.id === maker.clones?.techniqueId);
   const [effect] = technique ? effectsOf(technique, 'clone') : [];
   if (!technique || !effect) return attacker.attributes.perception;
