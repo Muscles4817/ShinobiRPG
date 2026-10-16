@@ -265,7 +265,11 @@ export function techniqueSheet(
       wounding.length > 0 && def.discipline !== 'genjutsu' ? LANDS[def.accuracy ?? 'steady'] : null,
     strikes: strikesOf(def),
     effects: def.effects.map(effectLine),
-    chakra: chakraCost(you, { chakraCost: def.chakraCost, ...(unstable ? { unstable } : {}) }),
+    chakra: chakraCost(you, {
+      chakraCost: def.chakraCost,
+      effects: def.effects,
+      ...(unstable ? { unstable } : {}),
+    }),
     costs: [
       ...(def.oncePerFight ? ['Once a fight'] : []),
       ...(def.afterCost ? ['Leaves you paying for it after the fight'] : []),

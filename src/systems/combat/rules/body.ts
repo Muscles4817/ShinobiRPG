@@ -12,6 +12,7 @@ import type {
 } from '../contract';
 import type { CombatGear } from '../gearContract';
 import { armouredAttributes } from './armour';
+import { areaCostScale } from './chakra';
 import { startsHidden } from './conditions';
 import { unstableCostScale } from './unstable';
 import type { EffectUse } from './verbs';
@@ -120,14 +121,16 @@ export function holdTurns(effect: Pick<EffectUse['effect'], 'power'>): number {
 }
 
 /**
- * Chakra a technique costs, after the user's chakra control (up to a third off), and more for
- * an unstable one.
+ * Chakra a technique costs, after the user's chakra control (up to a third off), more for an
+ * unstable one, and more for one that covers more ground (`chakra.ts`).
  */
 export function chakraCost(
   user: Pick<Body, 'attributes'>,
-  technique: Pick<CombatTechnique, 'chakraCost' | 'unstable'>,
+  technique: Pick<CombatTechnique, 'chakraCost' | 'unstable'> & {
+    readonly effects?: CombatTechnique['effects'];
+  },
 ): number {
   const discount = clamp(user.attributes.chakraControl / 60, 0, 1 / 3);
-  const base = technique.chakraCost * unstableCostScale(technique);
+  const base = technique.chakraCost * unstableCostScale(technique) * areaCostScale(technique);
   return Math.max(1, Math.round(base * (1 - discount)));
 }

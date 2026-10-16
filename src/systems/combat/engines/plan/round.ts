@@ -3,6 +3,7 @@ import type { Rng } from '@/core';
 import type { CombatResult } from '../../contract';
 import { alive } from '../../rules/body';
 import { turnLine } from '../../rules/narration';
+import { gathered } from '../../rules/chakra';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
 import { afterUsing } from '../../rules/trumps';
@@ -48,7 +49,6 @@ import { tracedLine } from './sceneVoice';
  * it waits, or when a step moves the fight onto it; empowers take their price as it ends.
  */
 
-const CHAKRA_REGEN = 2;
 /** Initiative the side that moved first gets in exchange 1: more than any speed gap. */
 const FIRST_MOVER_LEAD = 1000;
 /** How the log marks each exchange of a round: in words, since story text shows no numbers. */
@@ -276,7 +276,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const fighters = end.fighters.map((f) => ({
     ...wearOffDaze(f, state.round),
     sealed: Math.max(0, f.sealed - 1),
-    chakra: alive(f) ? Math.min(f.maxChakra, f.chakra + CHAKRA_REGEN) : f.chakra,
+    chakra: alive(f) ? gathered(f) : f.chakra,
   }));
   const { field: _old, ...rest } = state;
   const story = [...state.log, ...end.lines, ...(result ? [] : fading)];
