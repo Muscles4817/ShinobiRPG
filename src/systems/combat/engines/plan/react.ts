@@ -252,7 +252,9 @@ export function react(start: Round, hit: Hit): Round {
   const before = answered.round;
   const { attacker, target, blow, rng } = hit;
   const area = blow.area === true;
-  const decoyed = throughClones(before, { attacker, target, what: blow.what, area, rng });
+  const breaks = blow.breaks === true;
+  const incoming = { attacker, target, what: blow.what, area, raw: blow.raw, breaks, rng };
+  const decoyed = throughClones(before, incoming);
   if (decoyed.absorbed) return decoyed.round;
   const ready = readyDefences(target, decoyed.round);
   // A defence that comes into play gives itself away to everyone facing its owner.

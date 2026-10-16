@@ -69,6 +69,7 @@ export {
 export {
   CLONE_BLOW_SCALE,
   drawFireChance,
+  carriesThrough,
   cloneStepBonus,
   cloneCount,
   clonesFrom,

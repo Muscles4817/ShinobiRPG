@@ -1,14 +1,15 @@
 import type { Rng } from '@/core';
 
 import { hasPerk } from '../../rules/body';
-import { decoyChance, effectsOf, oneBurst, resistOf } from '../../rules/verbs';
+import { carriesThrough, decoyChance, effectsOf, oneBurst, resistOf } from '../../rules/verbs';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * Clones taking hits in a planned fight. A hit only gets here once it has reached its target
  * past the rows, so clones stand in their maker's row: a screened back-row maker's clones are
  * screened with them. A single-target hit may strike a clone instead (it bursts, and that is
- * the end of the hit); an area hit bursts every clone and still reaches the maker.
+ * the end of the hit, unless it is heavy enough to carry on through it); an area hit bursts
+ * every clone and still reaches the maker.
  */
 
 /** A hit about to land, as clones see it. */
@@ -19,6 +20,9 @@ export interface Incoming {
   readonly what: string;
   /** An area hit washes over the clones and the maker alike. */
   readonly area: boolean;
+  /** How hard it would land, and whether it breaks: a heavy hit carries through a clone. */
+  readonly raw: number;
+  readonly breaks: boolean;
   readonly rng: Rng;
 }
 
@@ -48,6 +52,10 @@ export function throughClones(
   const chance = decoyChance(clones, eyes(hit.attacker, maker), hasPerk(hit.attacker, 'insight'));
   if (!hit.rng.chance(chance)) return { round, absorbed: false };
   const fighters = patch(round.fighters, maker.id, { clones: oneBurst(clones) });
+  if (carriesThrough(hit.raw, maker.maxHealth, hit.breaks)) {
+    const line = `${hit.attacker.name}'s ${hit.what} tears straight through a clone of ${maker.name}.`;
+    return { round: say({ ...round, fighters }, line), absorbed: false };
+  }
   return {
     round: say(
       { ...round, fighters },

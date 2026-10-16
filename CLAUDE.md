@@ -224,8 +224,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     that moves them in to strike, `isEntry` in `plan/stepping.ts`), which meets a hold-off as a step
     does (`charge` in `plan/steps.ts`). Clones on the closer's side (theirs or a teammate's) run
     ahead and may draw the shot (`plan/screening.ts`: solid ones as often as they'd take a hit,
-    illusions half that; an area bursts them all), and clones crowding round a fighter help their
-    step; without one, they step home only when nothing slotted does anything
+    illusions half that; an area bursts them all), clones crowding round a fighter help their
+    step, and a hit heavy enough tears through the clone it strikes into its maker (`carriesThrough`); without one, they step home only when nothing slotted does anything
     there, else throw a plain blow (never slotted). Foes play
     their default plan by priority, as the player does, as often as their judgement keeps them to
     it, and instinct otherwise (`plan/judgement.ts`: intellect grade sets plan adherence, whether
