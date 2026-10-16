@@ -213,7 +213,10 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const played = afterStep(aim.round, tried, actor.id, rng);
   const noted = noteAttack(played, actor.id, card);
   const acted = [...(noted.acted ?? []), actor.id];
-  return { ...noted, acted, seen: remember(noted.seen, actor.id, cardId(card)) };
+  const id = cardId(card);
+  const turns = actor.streak?.card === id ? actor.streak.turns + 1 : 1;
+  const fighters = patch(noted.fighters, actor.id, { streak: { card: id, turns } });
+  return { ...noted, fighters, acted, seen: remember(noted.seen, actor.id, id) };
 }
 
 /**
@@ -257,6 +260,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...(state.ground ? { ground: state.ground } : {}),
     ...(state.mark ? { mark: state.mark } : {}),
     ...(state.foeMark ? { foeMark: state.foeMark } : {}),
+    ...(state.watching ? { watching: true as const } : {}),
   };
   const end = secondWinds(
     lingerAfter(

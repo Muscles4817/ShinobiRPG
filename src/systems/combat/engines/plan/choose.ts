@@ -11,11 +11,12 @@ import {
   isWounding,
   techniquePower,
 } from '../../rules/verbs';
+import { repeatWeight } from '../../rules/familiarity';
 import { beats, seenDefence, walksInto } from './adapt';
-import { isOffence, playable, slotted, type Card } from './cards';
+import { cardId, isOffence, playable, slotted, type Card } from './cards';
 import { partnered } from './combo';
 import { spendsReserve } from './pacing';
-import { beatsWeight } from './judgement';
+import { beatsWeight, readsInTheMoment } from './judgement';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
@@ -61,18 +62,27 @@ function baseWeight(card: Card): number {
 }
 
 /** Stronger cards more often; for a foe, ones that get past the defence it has seen more still. */
-function weight(card: Card, lean: Lean | undefined): number {
-  const base = baseWeight(card);
+function weight(card: Card, lean: Lean | undefined, self: PlanFighter): number {
+  // A mind that reads the fight reaches less for a technique played turns running.
+  const streak = self.streak;
+  const leaning = card.kind === 'jutsu' && streak?.card === cardId(card) && readsInTheMoment(self);
+  const running = leaning ? streak.turns : 0;
+  const base = baseWeight(card) * repeatWeight(running);
   if (!lean) return base;
   if (beats(card, lean.defence)) return base * lean.beatsBy;
   return walksInto(card, lean.defence) ? base * WALKS_INTO_WEIGHT : base;
 }
 
-function weighted(cards: readonly Card[], rng: Rng, lean?: Lean): Card | undefined {
-  const total = cards.reduce((sum, c) => sum + weight(c, lean), 0);
+function weighted(
+  self: PlanFighter,
+  cards: readonly Card[],
+  rng: Rng,
+  lean?: Lean,
+): Card | undefined {
+  const total = cards.reduce((sum, c) => sum + weight(c, lean, self), 0);
   let roll = rng.next() * total;
   for (const card of cards) {
-    roll -= weight(card, lean);
+    roll -= weight(card, lean, self);
     if (roll < 0) return card;
   }
   return cards[cards.length - 1];
@@ -172,7 +182,7 @@ function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, 
   const finisher = jutsu(harmful, isWounding);
   if (finisher && foe && isDazed(foe)) return finisher;
   const usual = harmful.filter((c) => c !== daze || fresh);
-  return weighted(usual, rng, leanOf(self, moment)) ?? fallback(self, moment);
+  return weighted(self, usual, rng, leanOf(self, moment)) ?? fallback(self, moment);
 }
 
 /** A foe's lean towards what beats the defence it has seen this one keep here. */
