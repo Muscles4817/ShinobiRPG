@@ -31,6 +31,7 @@ import { bestTarget } from './targeting';
 import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { intercept } from './team';
 import { springTraps } from './traps';
+import { aid, struggleFree } from './struggle';
 import { wearOffDaze } from './daze';
 import {
   fighterIn,
@@ -190,6 +191,18 @@ function afterStep(before: Round, after: Round, actorId: string, rng: Rng): Roun
   return after.range === before.range ? after : springTraps(after, actorId, rng, true);
 }
 
+/**
+ * What a fighter plays: the player and their teammates their cards in priority order, foes on
+ * instinct; but a teammate caught in a hold comes first (`struggle.ts`), whether that means
+ * aiming at its caster or spending the turn pulling them free.
+ */
+function choosePlay(round: Round, actor: PlanFighter, rng: Rng): Play | { spent: Round } {
+  const planned = actor.side === 'player' ? plannedPlay(actor, round) : instinct(round, actor, rng);
+  const helping = aid(round, { actor, rng }, planned.card);
+  if (helping.kind === 'spent') return { spent: helping.round };
+  return helping.kind === 'strike' ? { ...planned, target: helping.at } : planned;
+}
+
 function turn(start: Round, actorId: string, rng: Rng): Round {
   const before = start.fighters.find((f) => f.id === actorId);
   // A fighter who met an attack in a clash has spent their turn already.
@@ -205,10 +218,10 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   if (!alive(actor)) return round;
   const lost = lostTurn(round, actor);
   if (lost) return lost;
-  // The player and their teammates play their cards in priority order; foes on instinct.
-  const planned = actor.side === 'player' ? plannedPlay(actor, round) : instinct(round, actor, rng);
-  const { card } = planned;
-  const aim = intercept(round, { actor, target: planned.target, rng }, card);
+  const chosen = choosePlay(round, actor, rng);
+  if ('spent' in chosen) return chosen.spent;
+  const { card, target } = chosen;
+  const aim = intercept(round, { actor, target, rng }, card);
   const tried = attempt(aim.round, { actor, target: aim.target, rng }, card);
   const played = afterStep(aim.round, tried, actor.id, rng);
   const noted = noteAttack(played, actor.id, card);
@@ -264,9 +277,12 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   };
   const end = secondWinds(
     lingerAfter(
-      afterEmpowers(
-        order.reduce((round, { id }) => stagedTurn(round, id, rng), start),
-        state.round,
+      struggleFree(
+        afterEmpowers(
+          order.reduce((round, { id }) => stagedTurn(round, id, rng), start),
+          state.round,
+        ),
+        rng,
       ),
       state.round,
     ),

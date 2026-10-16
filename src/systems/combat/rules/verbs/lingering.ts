@@ -1,5 +1,5 @@
 import { clamp } from '@/core';
-import type { AfflictionKind, Discipline } from '@/systems/techniques';
+import type { AfflictionKind, Discipline, ScalingStat } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatTechnique } from '../../contract';
 import { driveOf, resistOf, type EffectUse } from './use';
@@ -54,10 +54,22 @@ export interface Riposte {
   readonly until: number;
 }
 
+/** What a pin remembers of how it was cast, for breaking it (`rules/escape.ts`). */
+export interface HoldGrip {
+  /** The caster's drive behind it. */
+  readonly drive: number;
+  /** The art it was cast with, which decides what breaks it. */
+  readonly discipline: Discipline;
+  /** The stats that break it (the pin's resist). */
+  readonly resist: readonly ScalingStat[];
+}
+
 /** What a fighter carries of these. Absent in fights saved before they existed. */
 export interface LingeringMemory {
-  /** Exchanges a pin still holds. */
+  /** Exchanges a pin still holds at most. */
   readonly pinned?: number;
+  /** How the pin was cast: absent on pins from before holds could be broken. */
+  readonly grip?: HoldGrip;
   readonly afflictions?: readonly Affliction[];
   /** What a poison took from strength and speed, given back when the last poison wears off. */
   readonly sapped?: Sap;

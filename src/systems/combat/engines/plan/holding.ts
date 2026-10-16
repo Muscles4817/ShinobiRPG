@@ -18,7 +18,7 @@ function letGo(f: PlanFighter): PlanFighter {
 
 /** Out of the hold, and out of whatever else it kept on them (the seal of a water prison). */
 function freed(f: PlanFighter): PlanFighter {
-  const { pinned: _pin, ...rest } = f;
+  const { pinned: _pin, grip: _grip, ...rest } = f;
   return { ...rest, sealed: 0 };
 }
 
