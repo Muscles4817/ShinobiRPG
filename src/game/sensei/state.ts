@@ -109,8 +109,20 @@ export function startingRegard(classRegard: ClassRegard, standing: ClassStanding
   }
 }
 
+/**
+ * As high as turning up alone can take their view of you: below "Proud of you". Past it, only
+ * what you do counts (the work they set done, the job they picked, how you met their test).
+ */
+export const ATTENDANCE_CEILING = 75;
+
 export function withRegard(mentor: Mentor, delta: number): Mentor {
   return { ...mentor, regard: Math.max(0, Math.min(MAX_REGARD, mentor.regard + delta)) };
+}
+
+/** Regard for showing up: it rises only to `ATTENDANCE_CEILING`, and never lowers it. */
+export function withAttendance(mentor: Mentor, delta: number): Mentor {
+  const ceiling = Math.max(mentor.regard, ATTENDANCE_CEILING);
+  return { ...mentor, regard: Math.min(ceiling, mentor.regard + delta) };
 }
 
 /** Regard in words, as your sensei's manner shows it. */

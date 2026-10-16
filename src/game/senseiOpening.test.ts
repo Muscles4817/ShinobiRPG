@@ -51,7 +51,7 @@ describe('the first meeting', () => {
     expect(shown.mentor.curriculum).toBe('on');
     const ids = [...shown.people.team!.teammateIds, 'ito'];
     expect(shown.village.memories.map((m) => m.personId).sort()).toEqual([...ids].sort());
-    expect(shown.village.memories[0]?.text).toBe('the day of the bells');
+    expect(shown.village.memories[0]?.text).toBe('the bells');
     expect(act(state, PICK(1)).mentor.curriculum).toBe('skipped');
   });
 
@@ -75,20 +75,29 @@ describe('the curriculum', () => {
 
   it('shows one thing a day, in the order their philosophy puts first', () => {
     const state = shown('goran');
-    expect(beatDue(state, ctx)?.id).toBe(CURRICULUM_ORDER.body[0]);
+    // Every sensei starts with the slip itself.
+    expect(beatDue(state, ctx)?.id).toBe('week');
     const heard = act(state, { type: 'heedSensei' });
-    expect(heard.mentor.beats).toEqual(['spar']);
+    expect(heard.mentor.beats).toEqual(['week']);
     expect(heard.mentor.regard).toBe(state.mentor.regard + HEEDED_REGARD);
-    expect(heard.journal.entries.at(-1)?.heading).toBe('Sparring');
+    expect(heard.journal.entries.at(-1)?.heading).toBe('Your week');
     expect(beatDue(heard, ctx)).toBeNull();
     const tomorrow = act(heard, { type: 'sleep' });
-    expect(beatDue(tomorrow, ctx)?.id).toBe('drills');
-    expect(senseiWeekView(tomorrow, ctx)?.lesson?.title).toBe('Drills');
+    expect(beatDue(tomorrow, ctx)?.id).toBe(CURRICULUM_ORDER.body[0]);
+    expect(senseiWeekView(tomorrow, ctx)?.lesson?.title).toBe('Sparring');
+  });
+
+  it('puts food first once you go hungry, whatever their order', () => {
+    const heard = act(shown('goran'), { type: 'heedSensei' });
+    const tomorrow = act(heard, { type: 'sleep' });
+    const vitals = { ...tomorrow.character.vitals, satiety: 30 };
+    const hungry = { ...tomorrow, character: { ...tomorrow.character, vitals } };
+    expect(beatDue(hungry, ctx)?.id).toBe('eat');
   });
 
   it('waits until a thing makes sense: job preparation after the first job', () => {
     let state = shown('goran');
-    for (const _ of ['spar', 'drills', 'eat', 'board']) {
+    for (const _ of ['week', 'spar', 'drills', 'eat', 'board']) {
       state = act(act(state, { type: 'heedSensei' }), { type: 'sleep' });
     }
     expect(beatDue(state, ctx)?.id).toBe('cooking');

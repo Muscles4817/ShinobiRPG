@@ -26,6 +26,8 @@ export interface SenseiTestRound {
 export interface SenseiTestDef {
   readonly id: Exclude<OpeningTest, 'none'>;
   readonly title: string;
+  /** How the team remembers the day, after "Remember" (e.g. "the bells"). */
+  readonly memory: string;
   readonly intro: string;
   readonly rounds: readonly SenseiTestRound[];
   /** Their last word on it, before they ask how much you want shown. */

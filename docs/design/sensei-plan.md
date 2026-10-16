@@ -415,3 +415,24 @@ All ten steps are built.
    Sword School). Each has stats, an arsenal, signatures and a price, their ways, four story
    beats and an arc. The fan pack's arc files use literal ids (no module-level reads), so a
    release build drops them.
+
+### The first playthrough
+
+The genin opening was played through in the real app as a new player (Gōran, middle of the
+class, "show me everything"), from creation to an out-of-village escort on day eight. What it
+turned up, and what changed:
+
+- **Nothing explained the slip.** The numbered days, "Rates you", "March", the stamps and what
+  a missed day costs were never said. A `week` beat now comes first for every sensei.
+- **New players starved by day four.** Nothing said to eat until the `eat` beat, which some
+  senseis hold back to sixth. It now jumps the queue once you go hungry.
+- **The lesson didn't show as done.** The slip still said "Your lesson now" after it, and the
+  team-forming day was never settled, so the first lesson earned no regard. Both fixed.
+- **Regard topped out in a week.** Attendance alone took Gōran to "Proud of you" by day five.
+  Turning up now rises only to `ATTENDANCE_CEILING` ("Rates you"); past it, only done work,
+  the picked job and the opening test count.
+- **The sensei was all but silent on the road.** On the escort Gōran said one line. An evening
+  with your sensei is now a camp choice of its own, offered on every job they lead: a fireside
+  line by their philosophy, then their read of you (what beat you, or the hole in your defence).
+- Smaller: "A challenge" broke mid-word in a slip cell (cells now use short ritual names), and
+  the shared memory of the opening test read "the day of show me" (tests carry a `memory`).

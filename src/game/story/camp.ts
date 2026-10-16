@@ -16,6 +16,7 @@ import { bestHandFor, yourCheckValue, yourHand } from '../missionRoles';
 import { adjust, chip, log, statChips } from '../ops';
 import type { GameState } from '../state';
 import { cookForCamp, forageCamp } from './campKitchen';
+import { SENSEI_FIRESIDE, senseiAlong, sitWithSensei } from './fireside';
 import { bondWithOne, crewPeople, feel } from './personal';
 import { storyOf } from './state';
 import { voiceOf } from './voices';
@@ -34,14 +35,22 @@ export const CAMP_DRILL_ENERGY = 15;
 /** Energy back from turning in early and sleeping properly. */
 export const CAMP_REST_ENERGY = 30;
 
-/** The camp activities on offer now: their indexes, those not done and whose condition holds. */
-export function campChoices(state: GameState, stage: CampStage): number[] {
+/**
+ * The camp activities on offer now: their indexes, those not done and whose condition holds,
+ * and an evening with your sensei (`SENSEI_FIRESIDE`) first when they are along.
+ */
+export function campChoices(state: GameState, ctx: GameContext, stage: CampStage): number[] {
   const run = state.mission;
   if (!run) return [];
   const done = run.camp?.done ?? [];
-  return stage.activities.flatMap((a, i) =>
-    done.includes(String(i)) || !holds(storyOf(run), a.when) ? [] : [i],
-  );
+  const fireside =
+    senseiAlong(state, ctx) && !done.includes(String(SENSEI_FIRESIDE)) ? [SENSEI_FIRESIDE] : [];
+  return [
+    ...fireside,
+    ...stage.activities.flatMap((a, i) =>
+      done.includes(String(i)) || !holds(storyOf(run), a.when) ? [] : [i],
+    ),
+  ];
 }
 
 /** Whether the fire has burned down: every pick used. */
@@ -70,7 +79,11 @@ function sitWithCharge(
 
 /** An evening with the crew member you're least close to: bond, and what they talk about. */
 function sitWithCrew(state: GameState, ctx: GameContext): GameState {
-  const [person] = crewPeople(state, ctx).sort(
+  // Your sensei has an evening of their own; the crew is everyone else, when there is anyone.
+  const sensei = senseiAlong(state, ctx);
+  const crew = crewPeople(state, ctx);
+  const others = crew.filter((p) => p.id !== sensei?.id);
+  const [person] = (others.length > 0 ? others : crew).sort(
     (a, b) => (state.people.bonds[a.id]?.points ?? 0) - (state.people.bonds[b.id]?.points ?? 0),
   );
   if (!person) return told(state, { kind: 'story', text: 'You sit alone with the fire.' });
@@ -143,6 +156,18 @@ interface CampTurn {
   readonly def: MissionDef;
   readonly activity: CampActivity;
   readonly index: number;
+}
+
+/** An evening with your sensei, marked done like any other thing by the fire. */
+export function campWithSensei(state: GameState, ctx: GameContext): GameState {
+  const sensei = senseiAlong(state, ctx);
+  if (!sensei) return state;
+  const choice = told(state, { kind: 'choice', text: `Sit with ${sensei.name}` });
+  const after = sitWithSensei(choice, sensei);
+  const run = after.mission;
+  if (!run) return after;
+  const done = [...(run.camp?.done ?? []), String(SENSEI_FIRESIDE)];
+  return { ...after, mission: { ...run, camp: { done } } };
 }
 
 /** One thing done by the fire, and marked done. */

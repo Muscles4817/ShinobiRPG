@@ -2,7 +2,8 @@ import { advance, holds, type DecisionOption } from '@/systems/missions';
 
 import type { GameContext } from '../context';
 import { activeMission, activeStage, afterStage } from '../missionFlow';
-import { campActivity, campChoices, campOver } from '../story/camp';
+import { campActivity, campChoices, campOver, campWithSensei } from '../story/camp';
+import { SENSEI_FIRESIDE } from '../story/fireside';
 import { decide } from '../story/decide';
 import { storyOf } from '../story/state';
 import type { GameState } from '../state';
@@ -46,7 +47,7 @@ export const missionCamp: ActionHandler<ActionOf<'missionCamp'>> = {
     if (state.combat) return 'You are in the middle of a fight.';
     const stage = activeStage(state, ctx);
     if (stage?.kind !== 'camp') return 'You aren’t in camp.';
-    return campChoices(state, stage).includes(action.activityIndex)
+    return campChoices(state, ctx, stage).includes(action.activityIndex)
       ? null
       : 'There’s no time for that tonight.';
   },
@@ -54,9 +55,13 @@ export const missionCamp: ActionHandler<ActionOf<'missionCamp'>> = {
     const def = activeMission(state, ctx);
     const stage = activeStage(state, ctx);
     const activity = stage?.kind === 'camp' ? stage.activities[action.activityIndex] : undefined;
-    if (!def || stage?.kind !== 'camp' || !activity) return state;
-    const turn = { def, activity, index: action.activityIndex };
-    const done = campActivity(state, ctx, rng, turn);
+    if (!def || stage?.kind !== 'camp') return state;
+    const fireside = action.activityIndex === SENSEI_FIRESIDE;
+    if (!fireside && !activity) return state;
+    const done =
+      fireside || !activity
+        ? campWithSensei(state, ctx)
+        : campActivity(state, ctx, rng, { def, activity, index: action.activityIndex });
     if (!done.mission || !campOver(done, stage)) return done;
     const burnedDown = advance(done.mission, {
       kind: 'story',

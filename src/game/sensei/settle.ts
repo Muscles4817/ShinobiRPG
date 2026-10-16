@@ -6,7 +6,7 @@ import type { GameContext } from '../context';
 import { laidUp } from '../injuries';
 import type { GameState } from '../state';
 import { meetingOn, mentorOf, teamDayOf, teamKey, type Meeting } from './plan';
-import { withRegard, type MeetingOutcome, type Mentor } from './state';
+import { withAttendance, withRegard, type MeetingOutcome, type Mentor } from './state';
 import { waysOf } from './generate';
 
 /**
@@ -45,12 +45,15 @@ function excused(state: GameState, ctx: GameContext): boolean {
   );
 }
 
+/** Whether you have kept a planned meeting yet: had the week's lesson by then, or come. */
+export function meetingKept(state: GameState, sensei: PersonDef, meeting: Meeting): boolean {
+  return meeting.kind === 'lesson'
+    ? lessonHad(state, sensei, meeting.day)
+    : state.mentor.outcomes[meeting.day] === 'kept';
+}
+
 function outcomeOf(state: GameState, ctx: GameContext, sensei: PersonDef, meeting: Meeting) {
-  const kept =
-    meeting.kind === 'lesson'
-      ? lessonHad(state, sensei, meeting.day)
-      : state.mentor.outcomes[meeting.day] === 'kept';
-  if (kept) return 'kept';
+  if (meetingKept(state, sensei, meeting)) return 'kept';
   return excused(state, ctx) ? 'excused' : 'missed';
 }
 
@@ -69,10 +72,8 @@ function settleDay(state: GameState, ctx: GameContext, sensei: PersonDef, day: n
       : outcome === 'kept' && meeting.kind === 'lesson'
         ? LESSON_KEPT_REGARD
         : 0;
-  const mentor: Mentor = withRegard(
-    { ...state.mentor, outcomes: { ...state.mentor.outcomes, [day]: outcome } },
-    delta,
-  );
+  const recorded = { ...state.mentor, outcomes: { ...state.mentor.outcomes, [day]: outcome } };
+  const mentor: Mentor = delta > 0 ? withAttendance(recorded, delta) : withRegard(recorded, delta);
   const settled = { ...state, mentor };
   if (outcome !== 'missed') return settled;
   return logLine(settled, {

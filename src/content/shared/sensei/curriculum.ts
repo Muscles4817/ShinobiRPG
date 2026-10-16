@@ -3,6 +3,11 @@ import type { CurriculumBeat } from '../../curriculum';
 /** What every sensei shows a new genin; the order is theirs. */
 export const CURRICULUM: readonly CurriculumBeat[] = [
   {
+    id: 'week',
+    title: 'Your week',
+    text: '{sensei} hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”',
+  },
+  {
     id: 'drills',
     title: 'Drills',
     text: '{sensei} walks you round the training ground. “A drill grows what it works, a little each time, and less as you get good. Pick the one for what you need and do it until you can’t. Eat and sleep, and do it again.”',

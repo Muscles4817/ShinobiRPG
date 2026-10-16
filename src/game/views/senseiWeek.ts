@@ -1,4 +1,4 @@
-import type { RitualKind } from '@/content';
+import type { PersonDef, RitualKind } from '@/content';
 import { STAT_INFO } from '@/systems/stats';
 import { calendarDay, DAYS_PER_WEEK, TIME_SLOTS, weekOf } from '@/systems/time';
 
@@ -14,6 +14,7 @@ import {
   type Meeting,
 } from '../sensei/plan';
 import { FORMAT_LABELS } from '../sensei/sessions';
+import { meetingKept } from '../sensei/settle';
 import { regardWord, type MeetingOutcome } from '../sensei/state';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
@@ -83,13 +84,22 @@ const RITUAL_LABELS: Readonly<Record<RitualKind, string>> = {
   camp: 'A camp',
 };
 
+/** The same, short enough for a day's cell on the slip. */
+const RITUAL_CELLS: Readonly<Record<RitualKind, string>> = {
+  meal: 'Meal',
+  challenge: 'Contest',
+  tea: 'Tea',
+  debrief: 'Debrief',
+  camp: 'Camp',
+};
+
 function meetingName(meeting: Meeting): string {
   return meeting.kind === 'lesson' ? 'Lesson' : FORMAT_LABELS[meeting.format];
 }
 
-function todayLine(state: GameState, meeting: Meeting | undefined): string | null {
+function todayLine(state: GameState, sensei: PersonDef, meeting: Meeting | undefined) {
   if (!meeting) return null;
-  if (state.mentor.outcomes[meeting.day] === 'kept') return 'Done for today.';
+  if (meetingKept(state, sensei, meeting)) return 'Done for today.';
   const slot = TIME_SLOTS.indexOf(meeting.from);
   const what = meeting.kind === 'lesson' ? 'Your lesson' : meetingName(meeting);
   return state.time.slot < slot
@@ -124,8 +134,11 @@ export function senseiWeekView(state: GameState, ctx: GameContext): SenseiWeekVi
       today: day === state.time.day,
       meeting: meeting ? meetingName(meeting) : null,
       from: meeting?.from ?? null,
-      outcome: state.mentor.outcomes[day] ?? null,
-      team: team?.day === day ? RITUAL_LABELS[team.ritual.kind] : null,
+      // Today's meeting shows as kept as soon as it is; the rest are settled as days end.
+      outcome:
+        state.mentor.outcomes[day] ??
+        (meeting && day === state.time.day && meetingKept(state, sensei, meeting) ? 'kept' : null),
+      team: team?.day === day ? RITUAL_CELLS[team.ritual.kind] : null,
       teamOutcome: state.mentor.outcomes[teamKey(day)] ?? null,
     };
   });
@@ -134,7 +147,7 @@ export function senseiWeekView(state: GameState, ctx: GameContext): SenseiWeekVi
     regard: regardWord(state.mentor.regard),
     days,
     eased: meetingsPerWeek(state, sensei) < ways.cadence.sessions,
-    todayLine: todayLine(state, today),
+    todayLine: todayLine(state, sensei, today),
     session: today?.kind === 'session' ? choice(state, ctx, { type: 'senseiSession' }) : null,
     assignment: assignmentLine(state),
     lesson: lessonToday(state, ctx, sensei.name),
