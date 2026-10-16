@@ -100,6 +100,22 @@ export function drawFireChance(clones: Clones, resist: number, insight: boolean)
   return clones.strikes ? chance : chance * ILLUSION_DRAW;
 }
 
+/** What a hit that tears through a clone still carries into its maker: the clone took the rest. */
+export const CLONE_CARRY_SCALE = 0.5;
+/** A break that would take this share of the maker's health goes through the clone it strikes… */
+const BREAK_THROUGH_SHARE = 0.5;
+/** …as does any hit that would take this much. */
+const OVERWHELM_SHARE = 0.8;
+
+/**
+ * Whether a hit that strikes a clone carries on into its maker: one heavy enough (a break that
+ * would land hard, or anything that would take a big share of their health) bursts the clone
+ * on its way through, rather than being spent on it, and lands with half its force.
+ */
+export function carriesThrough(raw: number, maxHealth: number, breaks: boolean): boolean {
+  return raw >= maxHealth * (breaks ? BREAK_THROUGH_SHARE : OVERWHELM_SHARE);
+}
+
 /** The clones after one bursts. */
 export function oneBurst(clones: Clones): Clones {
   return { ...clones, count: Math.max(0, clones.count - 1) };
