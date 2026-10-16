@@ -80,6 +80,8 @@ export interface VersusMatch {
   readonly foes: readonly string[];
   /** The other side, named for the result card ("Zabuza Momochi and Haku"). */
   readonly foeName: string;
+  /** Set when the bout is only watched: your side named, for the verdict. */
+  readonly watched?: { readonly sideName: string };
   readonly startHealth: number;
   readonly startChakra: number;
   readonly maxHealth: number;

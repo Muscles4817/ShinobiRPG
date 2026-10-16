@@ -37,6 +37,8 @@ export type Report =
       readonly maxHealth: number;
       /** What the fight taught you, as display labels ("Taijutsu +0.05"). */
       readonly taught?: readonly string[];
+      /** A bout only watched (versus): who won, as the card's title ("Haku wins"). */
+      readonly verdict?: string;
     }
   | {
       readonly kind: 'mission-complete';

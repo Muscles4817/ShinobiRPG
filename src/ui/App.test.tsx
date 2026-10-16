@@ -515,6 +515,17 @@ describe('App (smoke test)', () => {
     expect(store.data).toBeNull();
   });
 
+  it('lets you watch a versus bout play itself out', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await user.click(screen.getByRole('button', { name: /^Versus/ }));
+    await user.selectOptions(screen.getByLabelText('You fight as'), 'person:kakashi');
+    await user.selectOptions(screen.getByLabelText('Opponent 1'), 'person:guy');
+    await user.click(screen.getByRole('button', { name: 'Watch them fight' }));
+    expect(screen.getByRole('button', { name: 'Watch to the end' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Begin the fight/ })).toBeNull();
+  });
+
   it('sets up a team versus bout, and says why a side won’t do', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

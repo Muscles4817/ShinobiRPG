@@ -111,7 +111,7 @@ function NextSteps({
 type Playback = ReturnType<typeof usePlayback>;
 
 /** Back, play or pause, on, speed and skip; and whether it stops when something comes at you. */
-function PlaybackBar({ play }: { readonly play: Playback }) {
+function PlaybackBar({ play, watched }: { readonly play: Playback; readonly watched: boolean }) {
   return (
     <div className="playback">
       {!play.done && (
@@ -147,14 +147,16 @@ function PlaybackBar({ play }: { readonly play: Playback }) {
           </button>
         </div>
       )}
-      <button
-        type="button"
-        className="stop-toggle"
-        aria-pressed={play.stopForYou}
-        onClick={play.toggleStopForYou}
-      >
-        {play.stopForYou ? 'Stops when something comes at you' : 'Plays straight through'}
-      </button>
+      {!watched && (
+        <button
+          type="button"
+          className="stop-toggle"
+          aria-pressed={play.stopForYou}
+          onClick={play.toggleStopForYou}
+        >
+          {play.stopForYou ? 'Stops when something comes at you' : 'Plays straight through'}
+        </button>
+      )}
     </div>
   );
 }
@@ -190,10 +192,12 @@ function BeatText({ beats, at }: { readonly beats: readonly FightBeat[]; readonl
  */
 export function WatchScreen(props: WatchScreenProps) {
   const { view, beats, fresh, reads, onWatched } = props;
-  const you = view.combatants.find((c) => c.side === 'player');
-  const play = usePlayback({ beats, youId: you?.id ?? null, fresh, onDone: onWatched });
+  // Watching only, no one on the stage is you: nothing stops the play for you.
+  const you = view.watched ? undefined : view.combatants.find((c) => c.side === 'player');
+  const youId = you?.id ?? null;
+  const play = usePlayback({ beats, youId, fresh, onDone: onWatched });
   const beat = play.beat;
-  useBeatSounds(beat, you?.id ?? null, fresh);
+  useBeatSounds(beat, youId, fresh);
   const fighters = view.combatants.map((c) => ({ ...c, health: beat?.health[c.id] ?? c.health }));
   const pulses = useHealthPulses(fighters);
   // The heading names the stretch you are in; a divider being told now is the beat itself.
@@ -218,7 +222,7 @@ export function WatchScreen(props: WatchScreenProps) {
         {play.stoppedForYou && (
           <p className="stopped-for-you">That one was aimed at you. Press play to carry on.</p>
         )}
-        <PlaybackBar play={play} />
+        <PlaybackBar play={play} watched={view.watched ?? false} />
       </main>
       {play.done && (
         <NextSteps

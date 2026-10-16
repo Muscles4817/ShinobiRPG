@@ -167,6 +167,8 @@ export interface PlanState {
   readonly foeMark?: string;
   /** What each fighter has given away so far (`reads.ts`); absent until anyone has. */
   readonly reads?: Reads;
+  /** Only watched (`CombatSetup.watch`): no card table between rounds, both sides adapt. */
+  readonly watching?: true;
 }
 
 /** A hit with an element that landed this exchange, for element combos (`combo.ts`). */
