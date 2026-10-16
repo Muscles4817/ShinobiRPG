@@ -47,6 +47,21 @@ export type FightStat = Exclude<StatId, 'reserves'>;
  * wire), and `poise` is what keeps someone on their feet against it (willpower against an
  * illusion, stamina against the rest).
  */
+/**
+ * What a clone is made of, which decides what it costs and what it is worth in a fight
+ * (`docs/design/hittability-plan.md`, Part 4; the rules live in the combat system).
+ */
+export const CLONE_KINDS = [
+  'illusion',
+  'water',
+  'wind',
+  'earth',
+  'lightning',
+  'fire',
+  'shadow',
+] as const;
+export type CloneKind = (typeof CLONE_KINDS)[number];
+
 export type ScalingStat = FightStat | 'art' | 'guard' | 'bind' | 'poise';
 
 /** Overrides a verb's scaling profile for one technique; any part left out keeps the default. */
@@ -125,8 +140,12 @@ interface VerbExtras {
      */
     readonly opens?: LadderStep;
   };
-  /** Solid clones that throw a weak blow of their own when their maker attacks. */
-  readonly clone: { readonly strikes?: true };
+  /**
+   * Solid clones that throw a weak blow of their own when their maker attacks, and the kind of
+   * clone they are (when left out: illusions, or for solid ones, the technique's element, or
+   * shadow clones).
+   */
+  readonly clone: { readonly strikes?: true; readonly kind?: CloneKind };
   /** A trap that also dazes whoever springs it. */
   readonly trap: { readonly dazes?: true };
   /** A pin its caster must keep holding: their turns go on it, and hurting them breaks it. */
@@ -160,6 +179,7 @@ export type TrapEffect = EffectOf<'trap'>;
 
 const DISTANCES: readonly string[] = ['close', 'mid', 'far'];
 const harms: readonly string[] = AFFLICTIONS;
+const cloneKinds: readonly string[] = CLONE_KINDS;
 const sizes: readonly string[] = AREA_SIZES;
 
 /** Most blows a flurry splits into. */
@@ -189,7 +209,18 @@ export function effectProblem(effect: TechniqueEffect): string | null {
   if (effect.verb === 'afflict' && !harms.includes(effect.harm)) {
     return `an unknown lingering harm "${effect.harm}"`;
   }
+  if (effect.verb === 'clone') return cloneProblem(effect);
   return effect.verb === 'empower' ? empowerProblem(effect) : null;
+}
+
+/** Illusions can't strike, and solid clones aren't illusions. */
+function cloneProblem(effect: EffectOf<'clone'>): string | null {
+  if (effect.kind === undefined) return null;
+  if (!cloneKinds.includes(effect.kind)) {
+    return `an unknown kind of clone "${effect.kind}"`;
+  }
+  const illusion = effect.kind === 'illusion';
+  return illusion === (effect.strikes === true) ? 'a clone whose kind and strikes disagree' : null;
 }
 
 /** An empower must raise something, open a real step if any, and cost something real. */

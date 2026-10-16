@@ -1,14 +1,20 @@
 import type { Rng } from '@/core';
 
 import { hasPerk } from '../../rules/body';
+import { cappedHit, strikeDamage } from '../../rules/damage';
+import { harmLine } from '../../rules/narration';
 import {
   carriesThrough,
   CLONE_CARRY_SCALE,
+  CLONE_RULES,
   decoyChance,
   effectsOf,
+  kindOf,
   oneBurst,
   resistOf,
+  type Clones,
 } from '../../rules/verbs';
+import { wound } from './wound';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -16,7 +22,8 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
  * past the rows, so clones stand in their maker's row: a screened back-row maker's clones are
  * screened with them. A single-target hit may strike a clone instead (it bursts, and that is
  * the end of the hit, unless it is heavy enough to carry on through it); an area hit bursts
- * every clone and still reaches the maker.
+ * every clone and still reaches the maker. What a struck clone does depends on its kind
+ * (`cloneKinds.ts`): earth may stand, lightning shocks a blow that bursts it up close.
  */
 
 /** A hit about to land, as clones see it. */
@@ -30,6 +37,8 @@ export interface Incoming {
   /** How hard it would land, and whether it breaks: a heavy hit carries through a clone. */
   readonly raw: number;
   readonly breaks: boolean;
+  /** A blow or a blade, which bursting a lightning clone up close shocks. */
+  readonly physical?: boolean;
   readonly rng: Rng;
 }
 
@@ -58,8 +67,8 @@ export function throughClones(
   }
   const chance = decoyChance(clones, eyes(hit.attacker, maker), hasPerk(hit.attacker, 'insight'));
   if (!hit.rng.chance(chance)) return { round, absorbed: false };
-  const fighters = patch(round.fighters, maker.id, { clones: oneBurst(clones) });
   if (carriesThrough(hit.raw, maker.maxHealth, hit.breaks)) {
+    const fighters = patch(round.fighters, maker.id, { clones: oneBurst(clones) });
     const line = `${hit.attacker.name}'s ${hit.what} tears straight through a clone of ${maker.name}.`;
     return {
       round: say({ ...round, fighters }, line),
@@ -67,11 +76,31 @@ export function throughClones(
       carried: CLONE_CARRY_SCALE,
     };
   }
-  return {
-    round: say(
-      { ...round, fighters },
-      `${hit.attacker.name}'s ${hit.what} strikes a clone of ${maker.name}, which bursts.`,
-    ),
-    absorbed: true,
-  };
+  return { round: struckClone(round, { hit, maker, clones }), absorbed: true };
+}
+
+interface Struck {
+  readonly hit: Incoming;
+  readonly maker: PlanFighter;
+  readonly clones: Clones;
+}
+
+/**
+ * A clone taking a hit that stops at it: an earth clone may shrug it off and stand; any other
+ * bursts, and a lightning clone burst by a blow up close shocks whoever struck it.
+ */
+function struckClone(round: Round, { hit, maker, clones }: Struck): Round {
+  const rule = CLONE_RULES[kindOf(clones)];
+  const at = `${hit.attacker.name}'s ${hit.what} strikes a clone of ${maker.name}`;
+  if (hit.rng.chance(rule.sturdy)) return say(round, `${at}, which takes it and stands.`);
+  const burst = say(
+    { ...round, fighters: patch(round.fighters, maker.id, { clones: oneBurst(clones) }) },
+    `${at}, which bursts.`,
+  );
+  const close = hit.physical === true && round.range === 'close';
+  if (rule.shock <= 0 || !close) return burst;
+  const raw = strikeDamage(maker, hit.attacker, hit.rng.next()) * rule.shock;
+  const damage = cappedHit(Math.max(1, Math.round(raw)), hit.attacker.maxHealth);
+  const line = harmLine(`The clone's lightning leaps into ${hit.attacker.name}.`, damage);
+  return wound(say(burst, line), hit.attacker.id, damage);
 }

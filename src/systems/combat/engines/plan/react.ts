@@ -248,7 +248,14 @@ export function react(start: Round, struck: Hit): Round {
   const answered = riposteFirst(start, struck);
   if (answered.stopped) return answered.round;
   const { what, area, raw, breaks } = struck.blow;
-  const incoming = { ...struck, what, area: area === true, raw, breaks: breaks === true };
+  const incoming = {
+    ...struck,
+    what,
+    area: area === true,
+    raw,
+    breaks: breaks === true,
+    physical: struck.blow.physical,
+  };
   const decoyed = throughClones(answered.round, incoming);
   if (decoyed.absorbed) return decoyed.round;
   // A hit that tore through a clone lands with what it has left.
