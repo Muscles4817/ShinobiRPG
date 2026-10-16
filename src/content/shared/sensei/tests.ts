@@ -5,6 +5,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
   {
     id: 'bells',
     title: 'The bells',
+    memory: 'the bells',
     intro:
       '{sensei} ties two bells to their belt. “Take one by sundown, or go back to the academy. There are three of you. Think about that.”',
     rounds: [
@@ -55,6 +56,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
   {
     id: 'survival',
     title: 'A night in the woods',
+    memory: 'that first night in the woods',
     intro:
       '{sensei} walks the team out past the last lantern. “You’re here till morning. No fire unless you make it. I’ll be watching.”',
     rounds: [
@@ -105,6 +107,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
   {
     id: 'spar',
     title: 'Show me',
+    memory: 'the first day, flat on our backs',
     intro:
       '{sensei} rolls their shoulders. “Hit me. All three of you. Don’t hold back, you can’t hurt me.”',
     rounds: [
@@ -154,6 +157,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
   {
     id: 'interview',
     title: 'Tell me about yourselves',
+    memory: 'the first day, when we had to say who we were',
     intro:
       '{sensei} sits on the steps with the three of you. “Before anything else, I want to know who I’m teaching.”',
     rounds: [

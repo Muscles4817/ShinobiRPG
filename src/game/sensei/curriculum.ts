@@ -1,5 +1,6 @@
 import type { CurriculumBeat, CurriculumBeatId, PersonDef, SenseiPhilosophy } from '@/content';
 import { stageOf } from '@/systems/bonds';
+import { hungerLevel } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import { nominationMissions } from '../exam/entry';
@@ -113,31 +114,37 @@ export const CURRICULUM_ORDER: Readonly<Record<SenseiPhilosophy, readonly Curric
 /** Regard for hearing them out. */
 export const HEEDED_REGARD = 1;
 
-/** Whether a beat makes sense yet. */
-function timely(state: GameState, sensei: PersonDef, id: CurriculumBeatId): boolean {
-  const done = state.standing.missionsCompleted;
-  switch (id) {
-    case 'drills':
-    case 'spar':
-    case 'board':
-    case 'eat':
-    case 'cooking':
-      return true;
-    case 'prep':
-      return done >= 1;
-    case 'intel':
-      return done >= 2;
-    case 'pass':
-      return (
-        stageOf(bondOf(state, sensei.id).points) >= (waysOf(sensei)?.gatekeeping.passStage ?? 1)
-      );
-    case 'permit':
-      return hasLibraryPermit(state);
-    case 'exercise':
-      return Object.keys(state.character.exercises ?? {}).length > 0;
-    case 'exam':
-      return done * 2 >= nominationMissions(sensei);
-  }
+type Timely = (state: GameState, sensei: PersonDef) => boolean;
+
+const always: Timely = () => true;
+const jobsDone =
+  (n: number): Timely =>
+  (state) =>
+    state.standing.missionsCompleted >= n;
+
+/** Whether each beat makes sense yet. */
+const TIMELY: Readonly<Record<CurriculumBeatId, Timely>> = {
+  week: always,
+  drills: always,
+  spar: always,
+  board: always,
+  eat: always,
+  cooking: always,
+  prep: jobsDone(1),
+  intel: jobsDone(2),
+  pass: (state, sensei) =>
+    stageOf(bondOf(state, sensei.id).points) >= (waysOf(sensei)?.gatekeeping.passStage ?? 1),
+  permit: (state) => hasLibraryPermit(state),
+  exercise: (state) => Object.keys(state.character.exercises ?? {}).length > 0,
+  exam: (state, sensei) => state.standing.missionsCompleted * 2 >= nominationMissions(sensei),
+};
+
+/**
+ * The beats every sensei puts first, whatever their order: the slip itself, since everything
+ * else comes through it, and food once you go hungry, before hunger slows everything down.
+ */
+function firstBeats(state: GameState): CurriculumBeatId[] {
+  return hungerLevel(state.character.vitals) === 'satisfied' ? ['week'] : ['week', 'eat'];
 }
 
 /** What your sensei has to show you today, if anything. */
@@ -149,8 +156,8 @@ export function beatDue(state: GameState, ctx: GameContext): CurriculumBeat | nu
   const sensei = mentorOf(state, ctx);
   const philosophy = sensei ? waysOf(sensei)?.philosophy : undefined;
   if (!sensei || !philosophy) return null;
-  const id = CURRICULUM_ORDER[philosophy].find(
-    (beat) => !mentor.beats.includes(beat) && timely(state, sensei, beat),
+  const id = [...firstBeats(state), ...CURRICULUM_ORDER[philosophy]].find(
+    (beat) => !mentor.beats.includes(beat) && TIMELY[beat](state, sensei),
   );
   return id ? (ctx.content.curriculum.get(id) ?? null) : null;
 }

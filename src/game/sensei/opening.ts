@@ -72,9 +72,7 @@ export function approachRegard(philosophy: SenseiPhilosophy, approach: TestAppro
 
 function remembered(state: GameState, ctx: GameContext, sensei: PersonDef): GameState {
   const test = testOf(ctx, sensei);
-  const text = test
-    ? `the day of ${test.title.toLowerCase()}`
-    : `the first day with ${sensei.name}`;
+  const text = test?.memory ?? 'our first day as a team';
   const ids = [sensei.id, ...(state.people.team?.teammateIds ?? [])];
   const memories: SharedMemory[] = ids.map((personId) => ({ personId, text, day: state.time.day }));
   return {

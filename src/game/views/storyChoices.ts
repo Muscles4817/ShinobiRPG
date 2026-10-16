@@ -7,6 +7,7 @@ import type { GameContext } from '../context';
 import { checkHand } from '../missionRoles';
 import { rationDays } from '../road';
 import { campChoices, watchOdds } from '../story/camp';
+import { SENSEI_FIRESIDE, senseiAlong } from '../story/fireside';
 import { endingFor } from '../story/ending';
 import { storyOf } from '../story/state';
 import type { GameState } from '../state';
@@ -69,7 +70,13 @@ function campPrompt(
   stage: Extract<MissionStage, { kind: 'camp' }>,
 ): SceneChoice[] {
   const left = stage.picks - (state.mission?.camp?.done.length ?? 0);
-  const activities = campChoices(state, stage).flatMap((activityIndex): SceneChoice[] => {
+  const sensei = senseiAlong(state, ctx);
+  const activities = campChoices(state, ctx, stage).flatMap((activityIndex): SceneChoice[] => {
+    if (activityIndex === SENSEI_FIRESIDE && sensei) {
+      const detail = 'They might tell you something';
+      const action = { type: 'missionCamp' as const, activityIndex };
+      return [{ label: `Sit with ${sensei.name}`, detail, primary: false, action }];
+    }
     const activity = stage.activities[activityIndex];
     if (!activity) return [];
     const odds = watchOdds(state, ctx, activity);

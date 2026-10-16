@@ -5,6 +5,7 @@
  */
 
 export const CURRICULUM_BEATS = [
+  'week',
   'drills',
   'spar',
   'board',

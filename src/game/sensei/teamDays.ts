@@ -13,7 +13,7 @@ import { teachingFactor } from '../people/teachingFactor';
 import { warmed } from '../people/warmth';
 import type { GameState } from '../state';
 import { SENSEI_MEAL_SATIETY } from './rewards';
-import { withRegard } from './state';
+import { withAttendance } from './state';
 
 /**
  * What a team day does, by its kind. Every one brings the team together (bond with each
@@ -72,7 +72,10 @@ function kindEffect(
     case 'tea':
       return { state: bonded(state, ctx, sensei.id, TEA_BOND), chips: [] };
     case 'debrief':
-      return { state: { ...state, mentor: withRegard(state.mentor, DEBRIEF_REGARD) }, chips: [] };
+      return {
+        state: { ...state, mentor: withAttendance(state.mentor, DEBRIEF_REGARD) },
+        chips: [],
+      };
     case 'camp':
       return grown(state, ctx, sensei, sessionGains('stamina'));
   }
@@ -87,7 +90,7 @@ export function spendTeamDay(
 ): Effect {
   const mates = state.people.team?.teammateIds ?? [];
   const together = mates.reduce((s, id) => bonded(s, ctx, id, TEAMMATE_DAY_BOND), state);
-  const rated = { ...together, mentor: withRegard(together.mentor, TEAM_DAY_REGARD) };
+  const rated = { ...together, mentor: withAttendance(together.mentor, TEAM_DAY_REGARD) };
   const effect = kindEffect(rated, ctx, sensei, kind);
   return {
     state: effect.state,

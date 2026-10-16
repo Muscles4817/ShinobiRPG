@@ -1,7 +1,7 @@
 import { log } from '../ops';
 import { beatDue, HEEDED_REGARD } from '../sensei/curriculum';
 import { mentorOf } from '../sensei/plan';
-import { withRegard } from '../sensei/state';
+import { withAttendance } from '../sensei/state';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Hears out what your sensei has to show you today (the curriculum). */
@@ -13,7 +13,7 @@ export const heedSensei: ActionHandler<ActionOf<'heedSensei'>> = {
     const beat = beatDue(state, ctx);
     const sensei = mentorOf(state, ctx);
     if (!beat || !sensei) return state;
-    const mentor = withRegard(
+    const mentor = withAttendance(
       { ...state.mentor, beats: [...state.mentor.beats, beat.id], lastBeatDay: state.time.day },
       HEEDED_REGARD,
     );

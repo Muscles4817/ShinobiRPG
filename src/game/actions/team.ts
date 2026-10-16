@@ -69,14 +69,14 @@ export const chooseSensei: ActionHandler<ActionOf<'chooseSensei'>> = {
         team: { ...team, senseiId: sensei.id },
         bonds: { ...state.people.bonds, [sensei.id]: bondWith(SENSEI_BOND) },
       },
-      // Their first view of you, by where you stood in class; their plan starts tomorrow.
+      // Their first view of you, by where you stood in class; their plan starts today.
       mentor: {
         ...state.mentor,
         regard: startingRegard(
           waysOf(sensei)?.classRegard ?? 'even',
           state.character.classStanding,
         ),
-        settledDay: state.time.day,
+        settledDay: state.time.day - 1,
         outcomes: {},
         // After the chakra paper, the first meeting: their test, then how much to show you.
         opening: { round: 0, lastResult: null },

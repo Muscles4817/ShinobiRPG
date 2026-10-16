@@ -419,7 +419,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     their test from the pack's `senseiTests` (never failed: your approaches against their
     philosophy set regard) and one question: shown everything, or not. The **curriculum** (the
     pack's `curriculum`, ordered by philosophy in `curriculum.ts`) is the tutorial: one beat a
-    day on the sensei's slip, each once it makes sense; nothing is locked behind it. Once a
+    day on the sensei's slip, each once it makes sense (the slip itself always first, food
+    first once you go hungry); nothing is locked behind it. Turning up raises regard only to
+    `ATTENDANCE_CEILING`; past it, only what you do counts. On a job they lead, an evening
+    with them is a camp choice of its own (`story/fireside.ts`): a little of who they are, and
+    what they saw of you. Once a
     week they keep a **team day** (one of their rituals) and pick a job off the board for the
     team. Their **story** (`ways.story`) is four personal conversations by bond stage; a reply's
     `worldMark` may open their arc. The chūnin ceremony carries their **farewell**

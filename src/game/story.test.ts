@@ -5,6 +5,7 @@ import { STORY_JOB, storyCtx, storyPack } from '@/test/storyFixtures';
 import { blockerFor } from './dispatch';
 import type { GameState } from './state';
 import { decide } from './story/decide';
+import { FIRESIDE_BOND, SENSEI_FIRESIDE } from './story/fireside';
 import { missionScene } from './views/missionScene';
 
 const ctx = storyCtx;
@@ -72,6 +73,8 @@ describe('a mission’s story', () => {
     s = pastTheRoad(s);
     const labels = missionScene(s, ctx)!.choices.map((c) => c.label);
     expect(labels).toEqual([
+      // Your sensei leads a road job, and has an evening of their own by the fire.
+      'Sit with Gōran',
       'Sit with Sister Ume',
       'Take first watch',
       'Drill by the fire',
@@ -98,6 +101,19 @@ describe('a mission’s story', () => {
       ryo: 500,
       ending: 'She hands you the taper and asks you to light her brother’s lantern.',
     });
+  });
+
+  it('your sensei, leading the job, has an evening of their own by the fire', () => {
+    let s = choose(choose(choose(onJob(), '“Not yet, actually.”'), 'Hurry her along'), 'Continue');
+    s = pastTheRoad(s);
+    const before = s.people.bonds.goran?.points ?? 0;
+    s = choose(s, 'Sit with Gōran');
+    expect(s.people.bonds.goran?.points).toBe(before + FIRESIDE_BOND);
+    // They talk, and then tell you what they saw of you.
+    expect(s.mission?.notes.at(-1)).toMatchObject({ kind: 'voice', speaker: 'Gōran' });
+    const labels = missionScene(s, ctx)!.choices.map((c) => c.label);
+    expect(labels).not.toContain('Sit with Gōran');
+    expect(s.mission?.camp?.done).toEqual([String(SENSEI_FIRESIDE)]);
   });
 
   it('a guarded charge says something else, and the plain ending plays', () => {

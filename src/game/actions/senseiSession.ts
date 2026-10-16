@@ -28,7 +28,7 @@ import {
   sessionShare,
   SHORT_SESSION_SLOTS,
 } from '../sensei/sessions';
-import { withRegard } from '../sensei/state';
+import { withAttendance } from '../sensei/state';
 import type { GameState } from '../state';
 import type { GameContext } from '../context';
 import type { ActionHandler, ActionOf } from './types';
@@ -90,7 +90,7 @@ export const senseiSession: ActionHandler<SenseiSession> = {
     const trained: GameState = {
       ...state,
       character: grown.character,
-      mentor: withRegard(
+      mentor: withAttendance(
         { ...state.mentor, outcomes: { ...state.mentor.outcomes, [meeting.day]: 'kept' } },
         SESSION_KEPT_REGARD,
       ),

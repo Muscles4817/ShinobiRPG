@@ -4,10 +4,11 @@ import { act, ctx, freshGame, newGame } from '@/test/gameFixtures';
 
 import { blockerFor } from './dispatch';
 import { meetingOn, meetingsPerWeek, mentorOf, weekPlan } from './sensei/plan';
-import { MISSED_REGARD, settleMentor } from './sensei/settle';
+import { LESSON_KEPT_REGARD, MISSED_REGARD, settleMentor } from './sensei/settle';
 import { SESSION_KEPT_REGARD } from './sensei/sessions';
-import { startingRegard } from './sensei/state';
+import { ATTENDANCE_CEILING, startingRegard, withAttendance, withRegard } from './sensei/state';
 import type { GameState } from './state';
+import { senseiWeekView } from './views/senseiWeek';
 
 /** The week your sensei plans: meetings, short sessions, and the regard they keep. */
 
@@ -147,7 +148,7 @@ describe('a sensei’s first view of you', () => {
     expect(startingRegard('even', 'genius')).toBe(startingRegard('even', 'dead-last'));
   });
 
-  it('is set when you choose them, and their plan starts the next day', () => {
+  it('is set when you choose them, and their plan starts that day', () => {
     const assigned = act(freshGame(), { type: 'assignTeam' });
     const senseiId = assigned.people.team!.senseiOptions[0]!;
     const formed = act(assigned, { type: 'chooseSensei', senseiId });
@@ -155,6 +156,38 @@ describe('a sensei’s first view of you', () => {
     expect(formed.mentor.regard).toBe(
       startingRegard(ways.classRegard, formed.character.classStanding),
     );
-    expect(formed.mentor.settledDay).toBe(formed.time.day);
+    expect(formed.mentor.settledDay).toBe(formed.time.day - 1);
+  });
+});
+
+describe('the first day with your sensei', () => {
+  const LESSON = { type: 'trainWith', personId: 'goran', statId: 'taijutsu' } as const;
+
+  it('stamps the lesson kept on the slip as soon as you have it', () => {
+    const taught = act(newGame(), LESSON);
+    const view = senseiWeekView(taught, ctx)!;
+    expect(view.todayLine).toBe('Done for today.');
+    expect(view.days[0]?.outcome).toBe('kept');
+  });
+
+  it('is settled like any other: the lesson kept, or missed', () => {
+    const start = newGame();
+    const kept = act(act(start, LESSON), { type: 'sleep' });
+    expect(kept.mentor.outcomes[1]).toBe('kept');
+    const missed = act(start, { type: 'sleep' });
+    expect(missed.mentor.outcomes[1]).toBe('missed');
+    // Gōran keeps a tight grip: a lesson kept is worth its regard, one missed costs more.
+    expect(kept.mentor.regard - missed.mentor.regard).toBe(
+      LESSON_KEPT_REGARD + MISSED_REGARD.tight,
+    );
+  });
+});
+
+describe('regard for turning up', () => {
+  it('rises only so far; past it, only what you do counts', () => {
+    const mentor = { ...newGame().mentor, regard: ATTENDANCE_CEILING - 1 };
+    expect(withAttendance(mentor, 10).regard).toBe(ATTENDANCE_CEILING);
+    expect(withAttendance({ ...mentor, regard: 90 }, 10).regard).toBe(90);
+    expect(withRegard({ ...mentor, regard: 90 }, 5).regard).toBe(95);
   });
 });
