@@ -30,6 +30,8 @@ import {
  */
 const MIRROR = { min: 0.4, max: 0.7 } as const;
 const MIRROR_SEEDS = 1000;
+/** A thousand fights take a while on a slow runner. */
+const MIRROR_TIMEOUT_MS = 60_000;
 /** Against the genin of their year, a fresh character wins this often on average… */
 const CLASSMATES_AVERAGE = 0.25;
 /** …and no specialty falls below this. */
@@ -65,11 +67,15 @@ const builds = DISCIPLINES.map((specialty) => {
 });
 
 describe('a fresh character in the fights the game gives them', () => {
-  it.each(DISCIPLINES)('a %s specialist and an AI copy each win about half', (specialty) => {
-    const report = contentBench(mirror(freshCharacter(specialty)), MIRROR_SEEDS);
-    expect(report.winRate).toBeGreaterThanOrEqual(MIRROR.min);
-    expect(report.winRate).toBeLessThanOrEqual(MIRROR.max);
-  });
+  it.each(DISCIPLINES)(
+    'a %s specialist and an AI copy each win about half',
+    (specialty) => {
+      const report = contentBench(mirror(freshCharacter(specialty)), MIRROR_SEEDS);
+      expect(report.winRate).toBeGreaterThanOrEqual(MIRROR.min);
+      expect(report.winRate).toBeLessThanOrEqual(MIRROR.max);
+    },
+    MIRROR_TIMEOUT_MS,
+  );
 
   it('holds their own against the genin of their year', () => {
     const all = builds.flatMap((b) => b.classmates);

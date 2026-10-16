@@ -58,6 +58,8 @@ function daysToGrade(standing: ClassStanding, grade: StatGrade, days = DAYS): nu
 /** Win rate against every genin of their year, rested and fed. */
 /** Fights against each classmate. */
 const FIGHTS_EACH = 50;
+/** Four months of play and hundreds of fights take a while on a slow runner. */
+const CLIMB_TIMEOUT_MS = 60_000;
 
 function againstTheirYear(state: GameState): number {
   const rested = {
@@ -95,12 +97,16 @@ describe('pacing by class standing', () => {
     expect(days.deadLast).toBeLessThanOrEqual(DEAD_LAST_CHUNIN_DAYS);
   });
 
-  it('the dead last start beaten by their year, and climb', () => {
-    const game = start('dead-last', SEEDS[0]);
-    expect(againstTheirYear(game)).toBeLessThanOrEqual(DEAD_LAST_START_WIN_RATE);
-    const later = playFocused(game, FOCUS, CLIMB_DAYS).state;
-    expect(againstTheirYear(later)).toBeGreaterThanOrEqual(CLIMB_WIN_RATE);
-  });
+  it(
+    'the dead last start beaten by their year, and climb',
+    () => {
+      const game = start('dead-last', SEEDS[0]);
+      expect(againstTheirYear(game)).toBeLessThanOrEqual(DEAD_LAST_START_WIN_RATE);
+      const later = playFocused(game, FOCUS, CLIMB_DAYS).state;
+      expect(againstTheirYear(later)).toBeGreaterThanOrEqual(CLIMB_WIN_RATE);
+    },
+    CLIMB_TIMEOUT_MS,
+  );
 
   it('a genius starts ahead of the middle of the class against their year', () => {
     expect(againstTheirYear(start('genius', SEEDS[0]))).toBeGreaterThan(
