@@ -253,8 +253,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     they'd take to fall), and a mind that reads the fight keeps chakra for its finisher
     (`plan/pacing.ts`). Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
     covers (wide ×1.5, vast ×2.2), and each exchange gives back a little, or a share of deep
-    reserves. A `channelled` pin keeps its caster's turns and hands on it until they are hurt or dazed, when it
-    breaks and frees its target of it and its seal (`plan/holding.ts`). Healing is ninjutsu with chakra control; chakra control
+    reserves. Holds are fought, not waited out (`rules/escape.ts`, `plan/struggle.ts`): a pin
+    keeps its `grip` (how strongly it was cast, what breaks it), the held struggle against it at
+    the end of each exchange, and a teammate may spend their turn pulling them free (the player's
+    teammates always; otherwise a mind that reads the fight). A `channelled` pin keeps its
+    caster's turns and hands on it, is far harder to break while they hold it (a teammate goes
+    for the caster instead), and breaks when they are hurt or dazed, freeing its target of it and
+    its seal (`plan/holding.ts`). Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
     foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
     lethality targets (equals fight two to three rounds and win about half) and the content bench

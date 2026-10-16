@@ -99,6 +99,7 @@ export {
   withSap,
   type Affliction,
   type Sap,
+  type HoldGrip,
   type LingeringMemory,
   type Riposte,
 } from './lingering';

@@ -11,7 +11,9 @@ import {
   afflictionFrom,
   afflictionsTick,
   drainAmount,
+  driveOf,
   isPinned,
+  profileOf,
   poisonSap,
   riposteFrom,
   riposteTechnique,
@@ -52,8 +54,14 @@ export function knock(round: Round, target: PlanFighter, use: EffectUse<'knock'>
 export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>): Round {
   // The target counts an exchange down as it ends, the one it was pinned in too: hold one more.
   const pinned = Math.max(target.pinned ?? 0, holdTurns(use.effect) + 1);
+  // What it takes to break it, struggling or pulled out (`struggle.ts`).
+  const grip = {
+    drive: driveOf(actor, use),
+    discipline: use.technique.discipline,
+    resist: profileOf(use.effect).resist,
+  };
   const caught = say(
-    relinger(round, target.id, { pinned }),
+    relinger(round, target.id, { pinned, grip }),
     `${target.name} is pinned where they stand!`,
   );
   // A channelled pin keeps its caster's hands on it (`holding.ts`).
@@ -130,7 +138,7 @@ type LingeringChange = {
 function relinger(round: Round, id: string, change: LingeringChange): Round {
   const fighters = round.fighters.map((f) => {
     if (f.id !== id) return f;
-    const { pinned: _p, afflictions: _a, sapped: _s, riposte: _r, ...rest } = f;
+    const { pinned: _p, grip: _g, afflictions: _a, sapped: _s, riposte: _r, ...rest } = f;
     const pick = <K extends keyof LingeringMemory>(key: K) => {
       const value = (key in change ? change[key] : f[key]) ?? null;
       return value === null ? {} : { [key]: value };
@@ -139,6 +147,7 @@ function relinger(round: Round, id: string, change: LingeringChange): Round {
       ...rest,
       ...(change.attributes ? { attributes: change.attributes } : {}),
       ...pick('pinned'),
+      ...pick('grip'),
       ...pick('afflictions'),
       ...pick('sapped'),
       ...pick('riposte'),
@@ -180,15 +189,20 @@ export function riposteFirst(round: Round, hit: Incoming): { round: Round; stopp
   return { round: after, stopped: !standing || !alive(standing) };
 }
 
+/** A pin an exchange looser: gone, with what it remembered, once it runs out. */
+function pinLoosened(f: PlanFighter): LingeringChange {
+  const pinned = Math.max(0, (f.pinned ?? 0) - 1);
+  return pinned > 0 ? { pinned } : { pinned: null, grip: null };
+}
+
 /** Lingering harm on one fighter at the end of an exchange, and what wears off. */
 function lingerOn(round: Round, f: PlanFighter, exchange: number): Round {
-  const pinned = Math.max(0, (f.pinned ?? 0) - 1);
   const riposte = f.riposte && f.riposte.until >= exchange ? f.riposte : undefined;
   const { harm, left } = afflictionsTick(f.afflictions ?? []);
   const poisoned = left.some((a) => a.harm === 'poison');
   const restore = f.sapped && !poisoned ? f.sapped : undefined;
   const kept = relinger(round, f.id, {
-    pinned: pinned > 0 ? pinned : null,
+    ...pinLoosened(f),
     riposte: riposte ?? null,
     afflictions: left.length > 0 ? left : null,
     ...(restore ? { sapped: null, attributes: withSap(f.attributes, restore, 1) } : {}),
