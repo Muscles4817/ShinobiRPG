@@ -4,6 +4,7 @@ import type { SaveSummary } from '@/game';
 
 import { InkSeal, TitleScene } from '../../art/TitleScene';
 import { Notice } from '../../components/Notice';
+import { ShareLink } from './ShareLink';
 
 export interface MainMenuProps {
   /** The saved game, when there is one. */
@@ -60,7 +61,10 @@ function NewGame({ save, onNewGame }: Pick<MainMenuProps, 'save' | 'onNewGame'>)
   );
 }
 
-/** The title screen: carry on, begin again, set up a versus bout, or change the settings. */
+/**
+ * The title screen: carry on, begin again, set up a versus bout, change the settings, or share
+ * the game.
+ */
 export function MainMenu(props: MainMenuProps) {
   const { save, notice } = props;
   return (
@@ -112,6 +116,7 @@ export function MainMenu(props: MainMenuProps) {
             <small>Sound and music.</small>
           </span>
         </button>
+        <ShareLink />
       </nav>
     </main>
   );
