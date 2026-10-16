@@ -124,6 +124,8 @@ export interface PlanFighter
   readonly footwork?: number;
   /** A meal's second wind has come (`rules/provisions.ts`): it comes once a fight. */
   readonly secondWindSpent?: boolean;
+  /** Techniques copied this fight by watching (`mimicry.ts`). */
+  readonly copied?: readonly string[];
 }
 
 /** The change to a fighter who pays chakra: less left, more spent (never below empty). */

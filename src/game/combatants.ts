@@ -46,7 +46,13 @@ export function hasInsight(state: GameState, ctx: GameContext): boolean {
 }
 
 function perksOf(state: GameState, ctx: GameContext): CombatPerk[] {
-  return [...(hasInsight(state, ctx) ? ['insight' as const] : []), ...playerWalking(state, ctx)];
+  const eyes = hasInsight(state, ctx)
+    ? [
+        'insight' as const,
+        ...(ctx.content.clans.get(state.character.clanId)?.kekkeiGenkai?.perks ?? []),
+      ]
+    : [];
+  return [...eyes, ...playerWalking(state, ctx)];
 }
 
 /** The tools in your pouch, as the fight sees them. */

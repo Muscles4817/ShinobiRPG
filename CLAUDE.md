@@ -184,7 +184,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`). A fight has a **ground**
+    styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan: `rules/eyes.ts`, `plan/mimicry.ts`). A fight has a **ground**
     (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake; arena when unset):
     the distances it has room for (a room has no far), cover for hiding, far attacks lost among
     trees or walls, elements it feeds, and footing (on a lake only water-walkers keep theirs). In

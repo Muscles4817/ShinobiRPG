@@ -153,6 +153,20 @@ export function slipLine(moment: string, target: string, attacker: string, what:
   ]);
 }
 
+/** Someone whose eyes read the blow before it comes. */
+export function foresightSlipLine(
+  moment: string,
+  target: string,
+  attacker: string,
+  what: string,
+): string {
+  return pick(moment, [
+    `${target} reads ${attacker}'s ${what} before it comes and slips past.`,
+    `${target}'s eyes see the ${what} coming; they are already elsewhere.`,
+    `${target} moves before ${attacker} does, and the ${what} slips past.`,
+  ]);
+}
+
 /** Someone reads a technique coming and isn't there for it. */
 export function seenLine(moment: string, foe: string): string {
   return pick(moment, [

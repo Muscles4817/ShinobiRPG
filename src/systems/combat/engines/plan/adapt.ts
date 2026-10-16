@@ -1,5 +1,5 @@
 import type { RangeBand } from '../../contract';
-import { alive } from '../../rules/body';
+import { alive, hasPerk } from '../../rules/body';
 import { RANGE_BANDS } from '../../rules/range';
 import { cardId, type Card } from './cards';
 import { substitutionsReady } from './footwork';
@@ -120,6 +120,8 @@ export function betweenRounds(
 ): PlanFighter[] {
   const ready = substitutionsReady(fighters);
   if (!reads) return ready;
-  const rethinks = (f: PlanFighter) => alive(f) && (bothSides || f.side === 'enemy');
+  // Foresight reads what comes at it as a foe does, on either side.
+  const rethinks = (f: PlanFighter) =>
+    alive(f) && (bothSides || f.side === 'enemy' || hasPerk(f, 'foresight'));
   return ready.map((f) => (rethinks(f) ? rethink(f, ready, reads) : f));
 }

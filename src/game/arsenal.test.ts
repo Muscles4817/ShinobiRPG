@@ -2,6 +2,7 @@ import { reachOf } from '@/systems/combat';
 import { STAT_IDS, type Stats } from '@/systems/stats';
 import { freshGame } from '@/test/gameFixtures';
 
+import { playerCombatant } from './combatants';
 import { contextForPack } from './context';
 import { canDoNow, doableNow } from './people/capable';
 import { companionCombatant, senseiCombatant } from './people/companions';
@@ -24,8 +25,14 @@ describe('arsenals', () => {
     );
     expect(ids(fighter.techniques)).toContain('lightning-blade');
     expect(ids(fighter.techniques)).not.toContain('shuriken-jutsu');
-    // His arsenal's perk, and as a jōnin he walks on water and up trees.
-    expect(fighter.perks).toEqual(['insight', 'water-walking', 'tree-walking']);
+    // His Sharingan's perks, and as a jōnin he walks on water and up trees.
+    expect(fighter.perks).toEqual([
+      'insight',
+      'foresight',
+      'mimicry',
+      'water-walking',
+      'tree-walking',
+    ]);
   });
 
   it('arms Asuma with his canon trench-knife jutsu and Burning Ash', () => {
@@ -81,5 +88,23 @@ describe('arsenals', () => {
     expect(teachesNow(grown, teachingOf(grown, genin)!, naruto)).toEqual(
       expect.arrayContaining(toTeach),
     );
+  });
+});
+
+describe('a bloodline’s eyes in a fight', () => {
+  it('an awakened bloodline brings its perks with insight; a dormant one brings nothing', () => {
+    const awake = naruto.content.clans.all.map((c) =>
+      c.id === 'uchiha' && c.kekkeiGenkai
+        ? { ...c, kekkeiGenkai: { ...c.kekkeiGenkai, dormant: false } }
+        : c,
+    );
+    const find = (id: string) => awake.find((c) => c.id === id);
+    const clans = { all: awake, get: find, require: (id: string) => find(id)! };
+    const ctx = { ...naruto, content: { ...naruto.content, clans } };
+    const uchiha = { ...state, character: { ...state.character, clanId: 'uchiha' } };
+    expect(playerCombatant(uchiha, ctx).perks).toEqual(
+      expect.arrayContaining(['insight', 'foresight', 'mimicry']),
+    );
+    expect(playerCombatant(uchiha, naruto).perks).not.toContain('foresight');
   });
 });

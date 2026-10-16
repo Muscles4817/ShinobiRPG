@@ -1,4 +1,4 @@
-import type { CombatTrait } from '@/systems/combat';
+import type { CombatPerk, CombatTrait } from '@/systems/combat';
 import type { AtlasDef, MapLabelSide } from './atlas';
 import type { Find } from '@/systems/cooking';
 import type {
@@ -178,6 +178,11 @@ export interface ClanDef {
     readonly description: string;
     /** Dormant bloodlines awaken through later events. */
     readonly dormant: boolean;
+    /**
+     * What the awakened eyes bring to a fight beyond reading foes (`insight`): reading movement
+     * before it happens (`foresight`), copying techniques watched (`mimicry`).
+     */
+    readonly perks?: readonly CombatPerk[];
   };
 }
 
