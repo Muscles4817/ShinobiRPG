@@ -1,7 +1,7 @@
 import { createRng } from '@/core';
 
 import type { CombatantSetup } from '../../contract';
-import { carriesThrough, type Clones } from '../../rules/verbs';
+import { carriesThrough, CLONE_CARRY_SCALE, type Clones } from '../../rules/verbs';
 import { throughClones, type Incoming } from './decoys';
 import { initialFighters, type PlanFighter, type Round } from './state';
 
@@ -72,15 +72,16 @@ describe('a hit meeting clones', () => {
   });
 
   it('a heavy one bursts the clone on its way through and still reaches the maker', () => {
-    const met = strike(60, true);
+    const met = strike(70, true);
     expect(met.absorbed).toBe(false);
+    expect(met.carried).toBe(CLONE_CARRY_SCALE);
     expect(met.round.lines.at(-1)).toMatch(/tears straight through a clone of maker/);
     expect(met.round.fighters.find((f) => f.id === 'maker')!.clones?.count).toBe(4);
   });
 
   it('a break carries through sooner than anything else', () => {
-    expect(carriesThrough(35, 100, true)).toBe(true);
-    expect(carriesThrough(35, 100, false)).toBe(false);
-    expect(carriesThrough(50, 100, false)).toBe(true);
+    expect(carriesThrough(55, 100, true)).toBe(true);
+    expect(carriesThrough(55, 100, false)).toBe(false);
+    expect(carriesThrough(85, 100, false)).toBe(true);
   });
 });

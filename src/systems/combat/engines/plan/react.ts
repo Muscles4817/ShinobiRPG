@@ -246,16 +246,17 @@ function throughSwap(round: Round, ready: readonly Card[], hit: Hit) {
 }
 
 /** Lands a blow on the target, letting their clones, ready defence and kit react. */
-export function react(start: Round, hit: Hit): Round {
-  const answered = riposteFirst(start, hit);
+export function react(start: Round, struck: Hit): Round {
+  const answered = riposteFirst(start, struck);
   if (answered.stopped) return answered.round;
-  const before = answered.round;
-  const { attacker, target, blow, rng } = hit;
-  const area = blow.area === true;
-  const breaks = blow.breaks === true;
-  const incoming = { attacker, target, what: blow.what, area, raw: blow.raw, breaks, rng };
-  const decoyed = throughClones(before, incoming);
+  const { what, area, raw, breaks } = struck.blow;
+  const incoming = { ...struck, what, area: area === true, raw, breaks: breaks === true };
+  const decoyed = throughClones(answered.round, incoming);
   if (decoyed.absorbed) return decoyed.round;
+  // A hit that tore through a clone lands with what it has left.
+  const kept = decoyed.carried ?? 1;
+  const hit = { ...struck, blow: { ...struck.blow, raw: raw * kept } };
+  const { attacker, target, blow } = hit;
   const ready = readyDefences(target, decoyed.round);
   // A defence that comes into play gives itself away to everyone facing its owner.
   const band = decoyed.round.range;

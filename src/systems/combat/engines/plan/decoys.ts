@@ -1,7 +1,14 @@
 import type { Rng } from '@/core';
 
 import { hasPerk } from '../../rules/body';
-import { carriesThrough, decoyChance, effectsOf, oneBurst, resistOf } from '../../rules/verbs';
+import {
+  carriesThrough,
+  CLONE_CARRY_SCALE,
+  decoyChance,
+  effectsOf,
+  oneBurst,
+  resistOf,
+} from '../../rules/verbs';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -38,7 +45,7 @@ export function eyes(attacker: PlanFighter, maker: PlanFighter): number {
 export function throughClones(
   round: Round,
   hit: Incoming,
-): { readonly round: Round; readonly absorbed: boolean } {
+): { readonly round: Round; readonly absorbed: boolean; readonly carried?: number } {
   const maker = fighterIn(round, hit.target.id);
   const clones = maker?.clones;
   if (!maker || !clones || clones.count <= 0) return { round, absorbed: false };
@@ -54,7 +61,11 @@ export function throughClones(
   const fighters = patch(round.fighters, maker.id, { clones: oneBurst(clones) });
   if (carriesThrough(hit.raw, maker.maxHealth, hit.breaks)) {
     const line = `${hit.attacker.name}'s ${hit.what} tears straight through a clone of ${maker.name}.`;
-    return { round: say({ ...round, fighters }, line), absorbed: false };
+    return {
+      round: say({ ...round, fighters }, line),
+      absorbed: false,
+      carried: CLONE_CARRY_SCALE,
+    };
   }
   return {
     round: say(
