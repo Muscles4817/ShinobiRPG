@@ -5,6 +5,7 @@ import {
   cappedHit,
   MAX_HIT_SHARE,
   SKILL_DEFENCE_SHARE,
+  physicalDefence,
   toughness,
   DAMAGE_VARIANCE,
   gapScale,
@@ -127,6 +128,35 @@ describe('skill in defence', () => {
     expect(cappedHit(200, 100)).toBe(100 * MAX_HIT_SHARE);
     expect(cappedHit(20, 100)).toBe(20);
     expect(cappedHit(200, 50)).toBe(50 * MAX_HIT_SHARE);
+  });
+});
+
+describe('guard against blows', () => {
+  // A seal scholar: toughness from their art, little hand-to-hand.
+  const scholar = even(10, { fuuinjutsu: 20, taijutsu: 5, strength: 5 });
+  // As tough, but a brawler's hands and frame.
+  const brawler = even(10, { fuuinjutsu: 20, taijutsu: 20, strength: 20 });
+
+  it('hand-to-hand skill and strength catch a blow better than toughness alone', () => {
+    expect(physicalDefence(brawler)).toBeGreaterThan(toughness(brawler));
+    expect(strikeDamage(even(15), brawler, 0.5)).toBeLessThan(strikeDamage(even(15), scholar, 0.5));
+  });
+
+  it('never leaves anyone worse off against a blow than their toughness', () => {
+    expect(physicalDefence(scholar)).toBe(toughness(scholar));
+  });
+
+  it('counts against physical arts only', () => {
+    const palm: CombatTechnique = { ...fireballTechnique, id: 'palm', discipline: 'taijutsu' };
+    const hit = (t: CombatTechnique, target: ReturnType<typeof even>) =>
+      techniqueDamage(
+        even(15),
+        target,
+        { technique: t, effect: { verb: 'damage', power: 10 } },
+        0.5,
+      );
+    expect(hit(palm, brawler)).toBeLessThan(hit(palm, scholar));
+    expect(hit(fireballTechnique, brawler)).toBe(hit(fireballTechnique, scholar));
   });
 });
 

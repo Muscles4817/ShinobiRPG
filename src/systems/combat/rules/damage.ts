@@ -24,6 +24,13 @@ export const GAP_EXPONENT = 1.8;
  * specialise in) met only stamina (which few train), and equals one-shot each other.
  */
 export const SKILL_DEFENCE_SHARE = 0.7;
+/**
+ * Share of the defence against a physical attack (a blow, a blade, a taijutsu or kenjutsu
+ * technique) that guard can make up: everyone catches and rolls with blows (the skill share of
+ * toughness), and hand-to-hand skill and strength catch them better still. A ready Guard is a
+ * boost on top (`defence.ts`).
+ */
+export const BASE_GUARD_SHARE = 0.3;
 /** No single hit takes more than this share of the target's health: a fight is never one blow. */
 export const MAX_HIT_SHARE = 0.5;
 /** Ratios are taken on ratings plus this, so tiny stat values don't make wild gaps. */
@@ -92,6 +99,20 @@ export function toughness(f: Rated): number {
   return withSkill(f, f.attributes.stamina);
 }
 
+/** Guard: how well blows are caught and rolled with, mostly taijutsu, some strength. */
+export function guardRating(f: Rated): number {
+  return f.attributes.taijutsu * 0.6 + f.attributes.strength * 0.4;
+}
+
+/**
+ * What a physical attack meets: toughness, or better where a fighter's guard is better (a
+ * brawler catches a punch a scholar of seals only rolls with).
+ */
+export function physicalDefence(f: Rated): number {
+  const body = toughness(f);
+  return Math.max(body, body * (1 - BASE_GUARD_SHARE) + guardRating(f) * BASE_GUARD_SHARE);
+}
+
 /** What a hit may take at most from a fighter with this much health. */
 export function cappedHit(damage: number, maxHealth: number): number {
   return Math.min(damage, Math.max(1, Math.round(maxHealth * MAX_HIT_SHARE)));
@@ -118,19 +139,19 @@ function effectPower(attacker: Rated, use: EffectUse): number {
 }
 
 /**
- * What a technique meets: a genjutsu meets the will, everything else the body (less of it
- * against a break).
+ * What a technique meets: a genjutsu meets the will, a physical art the body and its guard,
+ * everything else the body (less of either against a break).
  */
 function defenceAgainst(defender: Rated, use: EffectUse): number {
-  if (use.technique.discipline === 'genjutsu') {
-    return withSkill(defender, defender.attributes.willpower);
-  }
-  return toughness(defender) * toughnessKept(use);
+  const { discipline } = use.technique;
+  if (discipline === 'genjutsu') return withSkill(defender, defender.attributes.willpower);
+  const physical = BODY_POWER[discipline] !== null;
+  return (physical ? physicalDefence(defender) : toughness(defender)) * toughnessKept(use);
 }
 
-/** A plain blow: strength and taijutsu against toughness. */
+/** A plain blow: strength and taijutsu against toughness and guard. */
 export function strikeDamage(attacker: Rated, defender: Rated, roll: number): number {
-  const scale = gapScale(blowPower(attacker), toughness(defender));
+  const scale = gapScale(blowPower(attacker), physicalDefence(defender));
   return Math.max(1, Math.round(BLOW_DAMAGE * scale * variance(roll)));
 }
 

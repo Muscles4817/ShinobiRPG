@@ -10,7 +10,7 @@ import {
   gapRatio,
   gapScale,
   strikeDamage,
-  toughness,
+  physicalDefence,
   variance,
 } from './damage';
 import { rankStep } from './gearRank';
@@ -141,7 +141,7 @@ function attackWith(
 ): Omit<Attack, 'what' | 'kind'> {
   const n = weaponNumbers(weapon);
   return {
-    raw: BLOW_DAMAGE * gapScale(power, toughness(defender)) * n.scale * variance(roll),
+    raw: BLOW_DAMAGE * gapScale(power, physicalDefence(defender)) * n.scale * variance(roll),
     pierce: n.pierce,
     daze: dazeAgainst(n.daze, attacker, defender),
     drain: n.drain,

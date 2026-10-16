@@ -211,7 +211,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     that lands is not yet a hold: each condition rolls against its verb's resist (a pin against
     what breaks a hold of its art: strength, chakra control or willpower; a daze against poise;
     a seal against chakra control; `conditionResist`). Then guard and counter (taijutsu,
-    strength) in `rules/defence.ts`; toughness
+    strength) in `rules/defence.ts`: everyone guards against physical attacks, a blow meeting
+    toughness or, where it is better, a blend with hand-to-hand guard (`physicalDefence` in
+    `rules/damage.ts`), and a ready Guard catches much more; toughness
     is stamina (plus `armoured` kit), and toughness and will both blend in the fighter's best art
     (`SKILL_DEFENCE_SHARE`: skill defends, so specialists of a grade don't one-shot each other);
     no hit takes more than half the target's health (`cappedHit`). A daze costs the target their

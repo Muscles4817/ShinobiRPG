@@ -105,9 +105,16 @@ turn.
 
 ### 2.6 Guard for everyone
 
-Everyone guards to a degree. The baseline is folded into toughness (taijutsu and strength
-against blows) so it isn't counted twice; a ready Guard is a clear boost on top, and still
-breaks under a smash and loses to a wide or vast area.
+Everyone guards to a degree. Toughness already carries it: its skill share (the fighter's best
+art) is how a trained fighter rolls with any hit. Against a physical attack (a blow, a blade, a
+taijutsu or kenjutsu technique) hand-to-hand skill and strength do better still: the defence a
+blow meets is toughness, or a blend with guard where guard is the better of the two
+(`physicalDefence`), so a brawler catches a punch a seal scholar only rolls with, and no one is
+worse off than before. A ready Guard is a clear boost on top, and still breaks under a smash
+and loses to a wide or vast area.
+
+(Built this way rather than as a straight blend: blending guard into everyone's defence lowered
+it for every fighter whose best art isn't hand-to-hand, and shortened their fights.)
 
 ### 2.7 Balance
 

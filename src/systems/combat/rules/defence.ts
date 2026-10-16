@@ -2,13 +2,14 @@ import { clamp, logistic } from '@/core';
 import type { Accuracy } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatTechnique } from '../contract';
-import { blowPower, gapRatio } from './damage';
+import { blowPower, gapRatio, guardRating } from './damage';
 import { driveOf, landingUse, resistOf } from './verbs';
 
 /**
  * The layers of defence every fighter has, besides toughness (`damage.ts`) and kit:
  *  - Evasion: speed, and perception to see the blow coming. A Dodge reads it.
- *  - Guard: taijutsu and strength, how well blows are caught. A Guard reads it.
+ *  - Guard: taijutsu and strength, how well blows are caught. Everyone keeps some up against
+ *    physical attacks (`physicalDefence` in `damage.ts`); a ready Guard reads it for much more.
  *  - Resistance: willpower against a genjutsu taking hold, perception against seeing any other
  *    technique too late. (Breaking a genjutsu once it holds is chakra control: `conditions.ts`.)
  *  - Healing: medical skill, ninjutsu with chakra control (`healAmount` in `damage.ts`).
@@ -46,11 +47,6 @@ interface Rated {
 /** Evasion: mostly speed, some perception. */
 export function evasion(f: Rated): number {
   return f.attributes.speed * 0.7 + f.attributes.perception * 0.3;
-}
-
-/** Guard: mostly taijutsu, some strength. */
-export function guardRating(f: Rated): number {
-  return f.attributes.taijutsu * 0.6 + f.attributes.strength * 0.4;
 }
 
 /** Chance a Dodge slips an attack: the defender's evasion against the attacker's speed. */
