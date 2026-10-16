@@ -5,9 +5,12 @@
  * Dodge, a Guard, a Counter, a substitution) carries that too, via `reactionLine`, so the
  * screen can show the defence at work whoever acted first. A line written during a fighter's
  * turn says whose turn it was (and, if the turn moved the fight, the new distance) via
- * `turnLine`, so the screen can stage it. `splitNarration` reads all of it back out of the
- * sentence. Lines without a marker (older saves) pass through unchanged.
+ * `turnLine`, so the screen can stage it, and how big the turn was (`forceLine`: its maker's
+ * grade in the art, the ground an area covered, its element), so the screen can make a jōnin's
+ * fire sound like one. `splitNarration` reads all of it back out of the sentence. Lines without a marker (older saves) pass through unchanged.
  */
+
+import { AREA_SIZES, ELEMENTS, type AreaSize, type Element } from '@/systems/techniques';
 
 import type { RangeBand } from '../contract';
 
@@ -37,7 +40,19 @@ export interface Narration {
   readonly actorId?: string;
   /** The distance the fight stands at as of this line, when the engine says. */
   readonly range?: RangeBand;
+  /** How big the turn it was written in was, when the engine says. */
+  readonly force?: NarrationForce;
 }
+
+/** How big a turn was: its maker's grade in the art (0 for E up to 5 for S), area, element. */
+export interface NarrationForce {
+  readonly grade: number;
+  readonly size: AreaSize | null;
+  readonly element: Element | null;
+}
+
+const FORCE_MARKER = /\s*⟦fx:(\d):([a-z-]+):([a-z-]+)⟧/;
+const NONE = '-';
 
 const MARKER = /\s*⟦([+-])(\d+)⟧/g;
 const REACTION_MARKER = /\s*⟦r:([a-z-]+)⟧/g;
@@ -73,6 +88,20 @@ export function turnLine(text: string, actorId: string, range?: RangeBand): stri
   return `${text}${owner}${range ? ` ⟦at:${range}⟧` : ''}`;
 }
 
+/** A line from a turn of this size; a line that already says its size keeps it. */
+export function forceLine(text: string, force: NarrationForce): string {
+  if (FORCE_MARKER.test(text)) return text;
+  return `${text} ⟦fx:${force.grade}:${force.size ?? NONE}:${force.element ?? NONE}⟧`;
+}
+
+function forceOf(line: string): NarrationForce | null {
+  const found = FORCE_MARKER.exec(line);
+  if (!found) return null;
+  const size = AREA_SIZES.find((s) => s === found[2]) ?? null;
+  const element = ELEMENTS.find((e) => e === found[3]) ?? null;
+  return { grade: Number(found[1]), size, element };
+}
+
 function isRange(word: string | undefined): word is RangeBand {
   return word === 'close' || word === 'mid' || word === 'far';
 }
@@ -85,7 +114,8 @@ export function splitNarration(line: string): Narration {
   const reactions = [...line.matchAll(REACTION_MARKER)].map((m) => m[1]).filter(isReaction);
   const actorId = ACTOR_MARKER.exec(line)?.[1];
   const range = RANGE_MARKER.exec(line)?.[1];
-  const text = [MARKER, REACTION_MARKER, ACTOR_MARKER, RANGE_MARKER].reduce(
+  const force = forceOf(line);
+  const text = [MARKER, REACTION_MARKER, ACTOR_MARKER, RANGE_MARKER, FORCE_MARKER].reduce(
     (rest, marker) => rest.replace(marker, ''),
     line,
   );
@@ -95,6 +125,7 @@ export function splitNarration(line: string): Narration {
     reactions,
     ...(actorId ? { actorId } : {}),
     ...(isRange(range) ? { range } : {}),
+    ...(force ? { force } : {}),
   };
 }
 

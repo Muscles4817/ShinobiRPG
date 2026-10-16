@@ -2,7 +2,6 @@ import type { Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
 import { alive } from '../../rules/body';
-import { turnLine } from '../../rules/narration';
 import { gathered } from '../../rules/chakra';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
@@ -19,6 +18,7 @@ import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
 import { intendedCard } from './intent';
+import { staged } from './staging';
 import { useJutsu } from './jutsu';
 import { lingerAfter } from './lingering';
 import { useTool } from './pouch';
@@ -229,24 +229,12 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const id = cardId(card);
   const turns = actor.streak?.card === id ? actor.streak.turns + 1 : 1;
   const fighters = patch(noted.fighters, actor.id, { streak: { card: id, turns } });
-  return { ...noted, fighters, acted, seen: remember(noted.seen, actor.id, id) };
+  return { ...noted, fighters, acted, seen: remember(noted.seen, actor.id, id), played: id };
 }
 
-/**
- * A fighter's turn, with every line it wrote tagged as theirs, the first with the distance the
- * turn began at and the last with the new one if the turn moved the fight, so the screen can
- * stage who did what, where. The tags are narration only: the turn plays exactly as untagged.
- */
+/** A fighter's turn, its lines tagged for the screen (`staging.ts`). */
 function stagedTurn(round: Round, id: string, rng: Rng): Round {
-  const after = turn(round, id, rng);
-  const added = after.lines.slice(round.lines.length);
-  const last = added.length - 1;
-  const rangeAt = (i: number) => {
-    if (i === last && after.range !== round.range) return after.range;
-    return i === 0 ? round.range : undefined;
-  };
-  const tagged = added.map((line, i) => turnLine(line, id, rangeAt(i)));
-  return { ...after, lines: [...round.lines, ...tagged] };
+  return staged(round, turn(round, id, rng), id);
 }
 
 /** Resolves one exchange. */

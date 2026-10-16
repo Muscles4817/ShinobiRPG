@@ -13,6 +13,8 @@ export interface CombatFinale {
   /** Lines the engine had let go before `log` (see `CombatView.logOffset`). */
   readonly logOffset: number;
   readonly combatants: readonly CombatantView[];
+  /** A fight only watched (versus, an exam's finals): nobody on the stage is you. */
+  readonly watched?: true;
 }
 
 export function finaleOf(view: CombatView): CombatFinale {
@@ -22,6 +24,7 @@ export function finaleOf(view: CombatView): CombatFinale {
     log: view.log,
     logOffset: view.logOffset ?? 0,
     combatants: view.combatants,
+    ...(view.watched ? { watched: true as const } : {}),
   };
 }
 
@@ -34,5 +37,6 @@ export function combatFinaleView(finale: CombatFinale): CombatView {
     combatants: finale.combatants,
     options: [],
     ...(finale.range ? { range: finale.range } : {}),
+    ...(finale.watched ? { watched: true as const } : {}),
   };
 }

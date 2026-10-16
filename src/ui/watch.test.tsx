@@ -15,6 +15,7 @@ function beat(over: Partial<FightBeat>): FightBeat {
     actorId: null,
     targetId: null,
     range: 'mid',
+    force: null,
     health: {},
     ...over,
   };

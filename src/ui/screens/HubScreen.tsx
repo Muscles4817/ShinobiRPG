@@ -1,4 +1,4 @@
-import { headerView, hubView, senseiWeekView, villageView } from '@/game';
+import { examFinalsView, headerView, hubView, senseiWeekView, villageView } from '@/game';
 
 import { Backdrop } from '../art/Backdrop';
 import { Icon } from '../art/Icon';
@@ -6,6 +6,7 @@ import { Chips } from '../components/Chips';
 import { Avatar, Faces } from '../components/Faces';
 import { DayStrip, HungerNote, Vitals } from '../components/Vitals';
 import type { ScreenProps } from './types';
+import { ExamFinals } from './ExamFinals';
 import { SenseiSlip } from './SenseiSlip';
 import { VillageLife } from './VillageLife';
 
@@ -28,6 +29,7 @@ export function HubScreen({
   const hub = hubView(state, ctx);
   const village = villageView(state, ctx);
   const week = senseiWeekView(state, ctx);
+  const finals = examFinalsView(state, ctx);
   const around = hub.places.flatMap((p) => p.people);
   return (
     <>
@@ -80,6 +82,7 @@ export function HubScreen({
         </section>
       )}
       {week && <SenseiSlip view={week} perform={perform} />}
+      {finals && <ExamFinals view={finals} perform={perform} />}
       <VillageLife view={village} perform={perform} />
       <main className="street" aria-label="Places">
         {hub.places.map((p) => (

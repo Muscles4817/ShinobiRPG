@@ -180,7 +180,7 @@ describe('persistence', () => {
       const raw = JSON.stringify({ version, state: { ...old, standing: oldStanding } });
       const loaded = deserialize(raw);
       if (!loaded.ok) throw new Error(loaded.error);
-      expect(loaded.value.exams).toEqual({ run: null, lastSatDay: null, ceremony: null });
+      expect(loaded.value.exams).toMatchObject({ run: null, lastSatDay: null, ceremony: null });
       expect(loaded.value.standing).toEqual({ ...oldStanding, seniorMissionsCompleted: 0 });
     }
   });
@@ -388,6 +388,14 @@ describe('persistence', () => {
     const loaded = deserialize(JSON.stringify({ version: 41, state: { ...game, mentor } }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.mentor).toMatchObject({ opening: null, curriculum: 'skipped', beats: [] });
+  });
+
+  it('gives a save from before spectators no finals watched', () => {
+    const game = newGame();
+    const { watchedDay: _w, spectating: _s, ...exams } = game.exams;
+    const loaded = deserialize(JSON.stringify({ version: 42, state: { ...game, exams } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.exams).toMatchObject({ watchedDay: null, spectating: false });
   });
 
   it('rejects corrupted data', () => {

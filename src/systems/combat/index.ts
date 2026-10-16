@@ -63,6 +63,7 @@ export type {
   Narration,
   NarrationAmount,
   NarrationAmountKind,
+  NarrationForce,
   NarrationReaction,
 } from './rules/narration';
 export { createDuelEngine } from './engines/duel/engine';

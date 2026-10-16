@@ -4,6 +4,7 @@ import { finaleOf } from '../combatFinale';
 import { afterPouch, PLAYER_COMBATANT_ID } from '../combatants';
 import type { GameContext } from '../context';
 import { noteForestFight } from '../exam/forest';
+import { resolveFinals } from '../exam/spectators';
 import { inBout, resolveBout } from '../exam/tournament';
 import { fightLessons, growFromFight } from '../fightGrowth';
 import { applyFightToll } from '../fightToll';
@@ -54,6 +55,11 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const combat = next.value;
     const outcome = engine.outcome(combat);
     if (!outcome) return { ...state, combat };
+    // Finals watched from the stands: a card, and what watching taught. Nobody was you.
+    if (state.exams.spectating) {
+      const view = engine.view(combat);
+      return { ...resolveFinals({ ...state, combat }, outcome, ctx), combatFinale: finaleOf(view) };
+    }
     // A versus bout only reports: no toll, no growth, nothing kept.
     if (state.versus) {
       const view = engine.view(combat);

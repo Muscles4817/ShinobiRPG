@@ -80,6 +80,15 @@ export const EXAMS: readonly ExamDef[] = [
         champion: 'The stands are on their feet. You won the finals.',
       },
     ],
+    spectators: {
+      invitation:
+        '{them} stops you outside the academy. "The Chūnin Exams are this week. I’m not putting you forward this time, {you}. But go and watch the finals in the arena. You’ll learn more from one afternoon in the stands than from a month of drills."',
+      hearsay:
+        '{them} drops down beside you, grinning. "The Chūnin Exams are this week! Our sensei hasn’t said a word, but the whole village is going to watch the finals in the arena. We’re going, right?"',
+      finals:
+        'The arena stands are packed with half the Land of Fire, and the Hokage watches from the Kage box. Two genin from other villages are left: {a} and {b}. The proctor drops his hand.',
+      won: '{winner} is still standing when the dust settles. The stands roar, and the medics carry {loser} out to the loudest cheer of the day.',
+    },
     verdict: {
       promoted: 'Your name is read out with the few who made chūnin. The Hokage puffs his pipe.',
       passedOver: 'The names are read out. Yours isn’t one. Your sensei says only, "Next time."',
