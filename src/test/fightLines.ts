@@ -49,7 +49,8 @@ export function hitsOn(target: string, what?: string): RegExp {
 export const A_HIT = new RegExp(`'s .+? (?:${HIT_VERBS.join('|')}) `);
 
 /** An attack slipped. */
-export const SLIPS = /slips past|twists clear of|cuts only air as|is already elsewhere when/;
+export const SLIPS =
+  /slips past|twists clear of|cuts only air as|is already elsewhere when|are already elsewhere/;
 
 /** A substitution taking a hit. */
 export const SWAPS = /swaps out of|splinters a log where|is somewhere else when/;

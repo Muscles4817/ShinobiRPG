@@ -4,7 +4,7 @@ import type { PersonArsenal } from '../../../../types';
 
 /** How the village's own fight: their canon techniques (all learnable in the pack) in place of a generic kit. */
 
-/** The Sharingan reads every foe; the rest is what the Copy Ninja fights with in canon. */
+/** The Sharingan reads every foe, sees each move coming and copies what it watches; the rest is what the Copy Ninja fights with in canon. */
 export const KAKASHI_ARSENAL: PersonArsenal = {
   techniqueIds: [
     'lightning-blade',
@@ -33,7 +33,7 @@ export const KAKASHI_ARSENAL: PersonArsenal = {
     'rasengan',
     'evil-sealing-method',
   ],
-  perks: ['insight'],
+  perks: ['insight', 'foresight', 'mimicry'],
 };
 
 /** His canon trench-knife jutsu (wind chakra flowed through the blades) and Burning Ash. */

@@ -48,6 +48,7 @@ export type CombatTechnique = Pick<
   | 'reach'
   | 'accuracy'
   | 'needsOpen'
+  | 'clan'
 > & {
   /** Learned a rank above its user's grade: costlier and may misfire (`rules/unstable.ts`). */
   readonly unstable?: true;
@@ -66,11 +67,12 @@ export type CombatRow = 'front' | 'back';
 export { COMBAT_ITEM_EFFECTS, type CombatItem, type CombatItemEffect } from './gearContract';
 
 /**
- * Special abilities a combatant brings: an awakened bloodline's eyes, or walking on water or up
- * trees with chakra (which keep their footing on a lake, or the trees in a forest; see
+ * Special abilities a combatant brings: an awakened bloodline's eyes (`insight` reads every foe
+ * and card, `foresight` reads movement before it happens, `mimicry` copies techniques watched;
+ * `rules/eyes.ts`), or walking on water or up trees with chakra (which keep their footing on a lake, or the trees in a forest; see
  * `rules/ground.ts`). Engines ignore what they don't use.
  */
-export type CombatPerk = 'insight' | 'water-walking' | 'tree-walking';
+export type CombatPerk = 'insight' | 'foresight' | 'mimicry' | 'water-walking' | 'tree-walking';
 
 /**
  * Where a fight happens (`rules/ground.ts`): an open arena, a forest, a town's streets and

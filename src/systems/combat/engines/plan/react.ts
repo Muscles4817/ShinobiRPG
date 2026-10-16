@@ -1,11 +1,12 @@
 import type { Rng } from '@/core';
 import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniques';
 
-import { alive } from '../../rules/body';
+import { alive, hasPerk } from '../../rules/body';
 import { cappedHit, strikeDamage } from '../../rules/damage';
 import { footingOf } from '../../rules/ground';
 import { counterChance, dodgeChance, guardScale, slipChance } from '../../rules/defence';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
+import { FORESIGHT_COUNTER, FORESIGHT_SLIP, foreseen } from '../../rules/eyes';
 import {
   canAttackFrom,
   hasTrait,
@@ -34,10 +35,13 @@ import { riposteFirst } from './lingering';
 import { wound } from './wound';
 import { canHit } from './rows';
 import { isDazed } from './daze';
-import { counterLine, hitLine, momentOf, slipLine } from './voice';
+import { counterLine, foresightSlipLine, hitLine, momentOf, slipLine } from './voice';
 import { fighterIn, patch, say, type DefenceKind, type PlanFighter, type Round } from './state';
 import { confusedLine } from './sceneVoice';
 
+/** Foresight slips a blow, and finds a Counter's moment, more often. */
+const FORESEES_BLOW = { scale: FORESIGHT_SLIP, ceiling: 1 };
+const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
 /**
  * The defence a fighter keeps ready at a distance (`readiness.ts`) reacts on its own when they
  * are hit there: Dodge may avoid the blow (evasion), Guard softens it (guard), Counter hits back up
@@ -95,7 +99,8 @@ function avoidChance(hit: Hit, target: PlanFighter, dodging: boolean): number {
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE : 0;
   const chance = dodging ? dodgeChance(hit.attacker, target) + swift : swift * SWIFT_INSTINCT;
   const area = hit.blow.areaSize ? AREA_RULES[hit.blow.areaSize].dodge : 1;
-  return slipChance(chance * (isPinned(target) ? PIN_SLIP : 1), hit.blow.accuracy) * area;
+  const pinned = chance * (isPinned(target) ? PIN_SLIP : 1);
+  return slipChance(foreseen(pinned, target, FORESEES_BLOW), hit.blow.accuracy) * area;
 }
 
 /** A Guard meets a blow's first hit, unless it is an area too wide to raise your arms against. */
@@ -137,7 +142,8 @@ function confuse(round: Round, { attacker, target, rng }: Hit): Round {
 
 function counter(round: Round, { attacker, target, rng }: Hit): Round {
   const struck = fighterIn(round, target.id);
-  if (!struck || !alive(struck) || !rng.chance(counterChance(attacker, target))) return round;
+  const chance = foreseen(counterChance(attacker, target), target, FORESEES_OPENING);
+  if (!struck || !alive(struck) || !rng.chance(chance)) return round;
   const blow: Blow = {
     raw: strikeDamage(target, attacker, rng.next()) * COUNTER_SCALE,
     what: 'counter',
@@ -185,7 +191,10 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const footing = footingOf(round.ground, target);
   const avoid = able ? avoidChance(hit, dulled(round.field, target), has('dodge')) * footing : 0;
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
-  const line = slipLine(momentOf(round, target.id), target.name, attacker.name, blow.what);
+  const moment = momentOf(round, target.id);
+  const line = hasPerk(target, 'foresight')
+    ? foresightSlipLine(moment, target.name, attacker.name, blow.what)
+    : slipLine(moment, target.name, attacker.name, blow.what);
   // A swift fighter slips some blows on instinct; only a ready Dodge is shown reacting.
   return { slipped: say(round, tried ? reactionLine(line, 'dodged') : line), tried };
 }

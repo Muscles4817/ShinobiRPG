@@ -24,6 +24,7 @@ export const CLANS: readonly ClanDef[] = [
       name: 'Sharingan',
       description: 'The copy wheel eye. Dormant until something awakens it.',
       dormant: true,
+      perks: ['foresight', 'mimicry'],
     },
   },
   {

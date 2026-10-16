@@ -5,6 +5,7 @@ import { alive, chakraCost, holdTurns } from '../../rules/body';
 import { healAmount } from '../../rules/damage';
 import { groundRule } from '../../rules/ground';
 import { resistChance } from '../../rules/defence';
+import { FORESIGHT_SEES, foreseen } from '../../rules/eyes';
 import { healLine } from '../../rules/narration';
 import { misfireChance } from '../../rules/unstable';
 import { breakRating } from '../../rules/conditions';
@@ -20,6 +21,7 @@ import {
 import { aftermath } from './blast';
 import { clash } from './clash';
 import { makeClones } from './clones';
+import { watchedBy } from './mimicry';
 import { combination, comboPartner } from './combo';
 import { empowerSelf } from './empower';
 import { castField } from './field';
@@ -33,6 +35,8 @@ import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './s
 import { setTrap } from './traps';
 import { castLine, dazeLine, momentOf, seenLine } from './voice';
 
+/** Foresight sees a technique coming more often, though never surely. */
+const FORESEES_TECHNIQUE = { scale: FORESIGHT_SEES, ceiling: 0.75 };
 /**
  * Using a technique in a planned fight: pay its chakra, see whether the target saw it coming,
  * then apply its effects in order (damage, then daze…), each on the fighters as the effects
@@ -225,7 +229,10 @@ function applyEffect(flight: Flight, turn: Turn, use: EffectUse): Flight {
 export function useJutsu(round: Round, turn: Turn, t: CombatTechnique): Round {
   const partner =
     turn.boost === undefined ? comboPartner(round.fighters, turn.actor, t) : undefined;
-  return partner ? combination(round, turn, { lead: t, partner }, single) : single(round, turn, t);
+  const used = partner
+    ? combination(round, turn, { lead: t, partner }, single)
+    : single(round, turn, t);
+  return watchedBy(used, turn.actor, t);
 }
 
 /** An unstable technique falling apart: the chakra is spent, nothing else happens. */
@@ -243,7 +250,9 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const targets = targetsOf(paid, turn, t);
   if (isHarmful(t) && targets.length === 0) return paid;
   // A field dulls the perception of those it blinds: they see techniques coming later.
-  const seen = targets.filter((foe) => rng.chance(resistChance(actor, dulled(paid.field, foe), t)));
+  const sees = (foe: PlanFighter) =>
+    foreseen(resistChance(actor, dulled(paid.field, foe), t), foe, FORESEES_TECHNIQUE);
+  const seen = targets.filter((foe) => rng.chance(sees(foe)));
   const told = seen.reduce((r, foe) => say(r, seenLine(momentOf(r, foe.id), foe.name)), paid);
   if (isHarmful(t) && seen.length === targets.length) return aftermath(told, turn, t);
   // An elemental attack may be met by one coming back the other way.
