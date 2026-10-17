@@ -252,9 +252,35 @@ bonus), so a new kind is a row, never a branch.
 A wild kind's orders come a stage or two later. The bond grows with daily care (feed, walk,
 play), training together, and fights and jobs done together; neglect only lets it drift.
 
-**Care.** Fed once a day from the pantry (meat, fish, by diet); hungry, it fights weaker (your
-hunger stages); a favourite food gives more bond. Beaten in a fight, it is injured and stays
-home until it heals (sooner at a vet, or a clan's kennels). It fights beside you in every
+**Care** (slice 2b, agreed):
+
+- **Feeding:** one meal a day keeps it fed; its hunger is settled each morning. A missed day
+  is only peckish; two days hungry (fights weaker by your hunger stages, its routine stops);
+  three or more starving (much weaker, and the bond drifts down). It never dies of it. A
+  **stray** starved long enough wanders back to the streets (and may be won back); a bred or
+  born companion never leaves.
+- **What it eats, in tiers:** scraps (free once a day after you've eaten at home: fed, no
+  bond); plain food (meat, fish: fed, a little bond); a treat (its favourite, or a dish cooked
+  for it at the stove, better for a better meal quality: more bond and a small lift for the
+  day); **medicine** from the vet, hidden in a treat or given plainly (it may spit it out, and
+  minds). Each animal's favourite is drawn from the seed and found out by feeding it, like your
+  own talents. On the road it eats from your pack at camp.
+- **Play:** once a day, a little energy, no time slot; you pick how (rough and tumble, fetch,
+  hide-and-seek by scent, a quiet walk) and each kind has tastes, like people's traits.
+- **Training together:** at a training place, you drill it as its **teacher** (the teacher rule:
+  the grade gap between you), in a stat you pick; your slot and energy, some bond.
+- **Health and injuries:** its health carries between fights and heals overnight, like yours
+  (the fight's outcome reports each ally's health). Knocked down, it is injured for some days
+  (a light injury fights weakened, a bad one stays home).
+- **The vet:** an authored person in each pack with a clinic (treatment once per injury,
+  medicine, boarding while it heals); in Konoha the clinic is in the Inuzuka compound
+  (`compounds-plan.md`), free to the clan's own.
+- **Where (the screens):** daily care (feed, play, medicine) is on the companion itself,
+  anywhere it is with you: a strip on the village screen (name, health, hunger, a stamp when it
+  needs you) opens its sheet. Deliberate things stay at places: training together at a training
+  ground, treatment at the vet.
+
+It fights beside you in every
 fight you are in, on jobs and in spars; it is yours, not a crew member, so crew rules don't
 change. In the fight it is an ally whose orders the bond opens; the `master` link returns
 when something first reads it (a combination between you, the outcome's `units`).
@@ -274,7 +300,8 @@ when something first reads it (a combination between you, the outcome's `units`)
 - **2a, the companion:** the system and slice (with a save migration), kinds (validated), the
   born and stray paths, the companion beside you in every fight (an ally,
   orders by bond stage), its routine, and its sheet on the Bonds tab.
-- **2b, care:** feeding and hunger, walks and play, training together, injuries and the vet.
+- **2b, care:** feeding and hunger, play, training together, health, injuries and the vet
+  (after the clan compounds, `compounds-plan.md`).
 - **2c, finding them:** wild kinds sought on purpose in wilds places (the wolf), breeders and
   kennels, job rewards.
 - **2d, what the bond opens:** kind techniques, traits (a check role), combinations.
