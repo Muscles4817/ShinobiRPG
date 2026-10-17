@@ -130,6 +130,12 @@ export {
   type MapStyleOption,
 } from './views/settings';
 export { dayEndView, type DayEndView } from './views/dayEnd';
+export {
+  classHonoursView,
+  type ClassHonoursView,
+  type Classmate,
+  type Honour,
+} from './views/classHonours';
 export type { DayHook } from './views/dayHooks';
 export type { DayFind, DayGrowth, DayHurt, DayMoment, DayPerson } from './views/dayEndRows';
 export { openDay } from './daybook/open';

@@ -37,6 +37,7 @@ async function startGame(user: User, world = /Land of Embers/) {
 }
 
 async function formTeam(user: User) {
+  await user.click(screen.getByRole('button', { name: 'Hear the honours' }));
   await user.click(screen.getByRole('button', { name: 'Hear the teams' }));
   await user.click(screen.getAllByRole('button', { name: /^Train under/ })[0]!);
   await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Continue' }));
@@ -330,6 +331,27 @@ describe('App (smoke test)', () => {
     }
     expect(finale).toBe(true);
     expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
+  });
+
+  it('reads out the year’s honours before the teams', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await user.click(screen.getByRole('button', { name: /^New game/ }));
+    await user.click(screen.getByRole('button', { name: /Land of Embers/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
+    await user.click(screen.getByRole('button', { name: 'Find your file' }));
+    await user.type(screen.getByLabelText('Given name'), 'Aoi');
+    for (let page = 0; page < 8; page++) {
+      await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    }
+    await user.click(screen.getByRole('button', { name: /forehead protector/i }));
+    await user.click(screen.getByRole('button', { name: 'Hear the honours' }));
+    const honours = screen.getByRole('region', { name: 'Honours' });
+    expect(within(honours).getByText('Top of the year')).toBeInTheDocument();
+    expect(within(honours).getByText('You')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Hear the teams' }));
+    expect(screen.getAllByRole('button', { name: /^Train under/ }).length).toBeGreaterThan(0);
   });
 
   it('closes the day at bedtime with a sheet of what happened, and the day ahead', async () => {

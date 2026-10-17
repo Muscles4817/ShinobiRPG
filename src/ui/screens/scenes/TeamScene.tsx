@@ -1,7 +1,10 @@
-import { teamScene, type PersonCard, type SenseiOffer } from '@/game';
+import { useState } from 'react';
+
+import { classHonoursView, teamScene, type PersonCard, type SenseiOffer } from '@/game';
 
 import { Portrait } from '../../art/Portrait';
 import type { ScreenProps } from '../types';
+import { ClassHonours } from './ClassHonours';
 
 function Teammate({ card }: { readonly card: PersonCard }) {
   return (
@@ -52,10 +55,26 @@ function SenseiCard({ offer, onChoose }: SenseiCardProps) {
   );
 }
 
-/** The morning after graduation: hear your team, then choose between two senseis. */
+/**
+ * Graduation, then the morning after: hear the year's honours, then your team, then choose
+ * between two senseis. The honours are a page to read before the teams, not a step the game
+ * waits on.
+ */
 export function TeamScene({ ctx, state, perform }: ScreenProps) {
+  const [heardHonours, setHeardHonours] = useState(false);
   const scene = teamScene(state, ctx);
+  const honours = classHonoursView(state, ctx);
   if (!scene) return null;
+  if (honours && !heardHonours && !state.people.team?.senseiId) {
+    return (
+      <ClassHonours
+        view={honours}
+        onTeams={() => {
+          setHeardHonours(true);
+        }}
+      />
+    );
+  }
   const { assign } = scene;
   return (
     <>
@@ -94,7 +113,7 @@ export function TeamScene({ ctx, state, perform }: ScreenProps) {
               perform(assign);
             }}
           >
-            <b>Hear the teams</b>
+            <b>Hear the honours</b>
           </button>
         </nav>
       )}

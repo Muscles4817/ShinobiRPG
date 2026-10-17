@@ -130,7 +130,12 @@ ui ──► game ──► content ──► systems ──► core
     in them; the **build** (`BuildDef`) is the frame. Quick picks (`archetypes.ts`) fill the file
     as a kind of student and follow later changes until it is edited by hand (`creationDraft.ts`).
     `game/student.ts` turns a file into graduation stats for the player and generated classmates
-    alike. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. Chakra
+    alike. A year's generated classmates include a varying number of **clan children**
+    (`people/yearClans.ts`, from the seed: none in a thin year, several in a strong one), raised
+    in their clan like a clan-born player; graduation day reads out the year's **honours**
+    (`views/classHonours.ts`: the year in order by real standing, your place kept in your
+    standing's band, top of the year, the clear best in each art, honours by trait, dead last,
+    and how strong a year it was) before the teams. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. Chakra
     **nature is found, not picked** (`game/nature.ts`): read from the seed at creation (a clan's
     nature most of the time) and hidden (`natureKnown`) until the chakra paper scene that follows
     team assignment (`testChakraPaper`). Until then it counts in fights only: no study bonus, no

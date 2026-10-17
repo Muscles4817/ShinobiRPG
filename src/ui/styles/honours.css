@@ -1,0 +1,75 @@
+/* Graduation day's honours (`scenes/ClassHonours.tsx`): names read out, then the whole year. */
+.honours {
+  padding: 4px 14px 14px;
+  border-radius: var(--radius);
+  background: var(--grain), var(--paper);
+  color: var(--paper-ink);
+}
+.honours h2 {
+  margin: 12px 0 6px;
+  font-family: var(--font-story);
+  font-size: 1.02rem;
+  font-weight: normal;
+}
+.honour {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 0;
+}
+.honour.you {
+  margin: 0 -14px;
+  padding: 6px 14px;
+  background: rgb(240 160 80 / 0.18);
+  box-shadow: inset 0 0 0 1.5px var(--lantern);
+}
+.honour-face,
+.year-roll .portrait {
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--raise);
+}
+.honour-face {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+.honour-who b {
+  display: block;
+  font-size: 0.9rem;
+}
+.honour-who small {
+  color: var(--paper-muted);
+  font-size: 0.78rem;
+}
+.honour-title {
+  max-width: 7.5em;
+  font-family: var(--font-story);
+  font-size: 0.84rem;
+  line-height: 1.2;
+  text-align: right;
+}
+.year-roll {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.year-roll li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 56px;
+  color: var(--paper-muted);
+  font-size: 0.68rem;
+  text-align: center;
+}
+.year-roll li b {
+  color: var(--paper-ink);
+}
+.year-roll li.you .portrait {
+  box-shadow: 0 0 0 2px var(--lantern);
+}
