@@ -66,9 +66,9 @@ export function graduate(
   const upbringingId = rng.pick(upbringings).id;
   const who = { clanId, standing, buildId, upbringingId };
   const file = quickFile({ archetype, specialty }, studentOf(who, ctx));
-  const stats = graduationStats({ ...who, talentId: '', file }, ctx);
+  const stats = graduationStats({ ...who, talentIds: [], file }, ctx);
   const clan = content.clans.require(clanId);
   const band = STANDING_INFO[standing].talent;
-  const rolled = rollCharacterAptitude(rng, clan, undefined, { band, specialties: [specialty] });
+  const rolled = rollCharacterAptitude(rng, clan, [], { band, specialties: [specialty] });
   return { stats: varied(stats, rng), aptitude: withGifts(rolled, file.gifts) };
 }

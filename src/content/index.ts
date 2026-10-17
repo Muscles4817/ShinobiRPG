@@ -56,6 +56,7 @@ export type {
   SimplePrice,
   Steering,
   Stall,
+  QuirkDef,
   TalentDef,
   TeacherProfile,
   TeachingQuirk,

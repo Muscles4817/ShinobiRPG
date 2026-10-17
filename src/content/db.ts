@@ -30,6 +30,7 @@ import type {
   NindoDef,
   PersonDef,
   SettingText,
+  QuirkDef,
   TalentDef,
   TeamText,
   TrainingDef,
@@ -69,6 +70,7 @@ export interface ContentDb {
   readonly builds: Catalog<BuildDef>;
   readonly upbringings: Catalog<UpbringingDef>;
   readonly talents: Catalog<TalentDef>;
+  readonly quirks: Catalog<QuirkDef>;
   readonly traits: Catalog<TraitDef>;
   readonly nindos: Catalog<NindoDef>;
   readonly breakIn: BreakInScene;
@@ -116,6 +118,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     builds: createCatalog('build', pack.builds),
     upbringings: createCatalog('upbringing', pack.upbringings),
     talents: createCatalog('talent', pack.talents),
+    quirks: createCatalog('quirk', pack.quirks),
     traits: createCatalog('trait', pack.traits),
     nindos: createCatalog('nindo', pack.nindos),
     breakIn: pack.breakIn,

@@ -82,7 +82,8 @@ describe('persistence', () => {
       grades: _g,
       nature: _n,
       traitIds: _t,
-      talentId: _ta,
+      talentIds: _ta,
+      quirkIds: _q,
       nindoId: _ni,
       breakIn: _b,
       ...oldCharacter
@@ -106,7 +107,8 @@ describe('persistence', () => {
       clanId: 'none',
       grades: { ninjutsu: 'A', taijutsu: 'C' },
       traitIds: [],
-      talentId: null,
+      talentIds: [],
+      quirkIds: [],
       stats: { kenjutsu: 5, fuuinjutsu: 5 },
     });
     expect('aptitudeId' in loaded.value.character).toBe(false);
@@ -437,6 +439,20 @@ describe('persistence', () => {
       race: null,
       challenge: { contest: 'spar' },
     });
+  });
+
+  it('gives a save from before notes stacked its one note as a list, and no habits', () => {
+    const game = newGame();
+    const { talentIds: _t, quirkIds: _q, ...character } = game.character;
+    const old = (talentId: string | null) => ({ ...game, character: { ...character, talentId } });
+    const load = (talentId: string | null) => {
+      const loaded = deserialize(JSON.stringify({ version: 46, state: old(talentId) }));
+      if (!loaded.ok) throw new Error(loaded.error);
+      return loaded.value.character;
+    };
+    expect(load('sensor')).toMatchObject({ talentIds: ['sensor'], quirkIds: [] });
+    expect(load('unremarkable').talentIds).toEqual([]);
+    expect(load(null).talentIds).toEqual([]);
   });
 
   it('rejects corrupted data', () => {

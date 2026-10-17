@@ -101,7 +101,7 @@ export interface CreationView {
   };
 }
 
-function statEffects(delta: StatDelta): EffectLine[] {
+export function statEffects(delta: StatDelta): EffectLine[] {
   return (Object.entries(delta) as [StatId, number][])
     .filter(([, v]) => v !== 0)
     .map(([id, v]) => ({
@@ -265,7 +265,8 @@ export function defaultDraft(ctx: GameContext): CreationDraft {
     file: BLANK_FILE,
     quickPick: FIRST_PICK,
     traitIds: [first?.id, second?.id].filter((id): id is string => id !== undefined),
-    talentId: content.talents.all[0]?.id ?? '',
+    talentIds: [],
+    quirkIds: [],
     nindoId: content.nindos.all[0]?.id ?? '',
     breakInApproachId: content.breakIn.approaches[0]?.id ?? '',
   };

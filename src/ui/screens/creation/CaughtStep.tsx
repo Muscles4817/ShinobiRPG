@@ -24,8 +24,10 @@ export function CaughtStep({ view, draft }: StepProps) {
           <dd>{name(draft.buildId, view.builds)}</dd>
           <dt>Traits</dt>
           <dd>{draft.traitIds.map((id) => name(id, view.traits)).join(', ')}</dd>
-          <dt>Note</dt>
-          <dd>{name(draft.talentId, view.talents)}</dd>
+          <dt>Notes</dt>
+          <dd>
+            {draft.talentIds.map((id) => name(id, view.talents)).join(', ') || 'Nothing special'}
+          </dd>
           <dt>Dream</dt>
           <dd>{name(draft.nindoId, view.nindos)}</dd>
         </dl>

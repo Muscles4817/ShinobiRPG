@@ -262,3 +262,39 @@ Starting fighting power (`fightingPower`), measured:
 | Genius, steady student                       | ~10.5          |
 | Genius clan heir, prodigy (three stats at C) | ~10.5–11       |
 | Typical chūnin (`statLine('D', two Cs)`)     | ~14            |
+
+## The notes pass: stacking, habits and the file read back
+
+Class standing is the difficulty, and stacking is how a player chooses easy or hard within it.
+There is **no cap**: a file filled to the brim plays easier, one left bare plays harder, and
+the game holds together through its own rules (talent limits, the trickle past them, damage from
+the gap between fighters), not a ceiling on what stacks.
+
+- **Special notes** (`TalentDef`, `shared/talents.ts`) are several picks, each weighed `major`,
+  `minor` or `flaw`. The standing's room (`STANDING_INFO.notes`):
+
+  | Standing       | Major | Minor |
+  | -------------- | ----- | ----- |
+  | Dead last      | 0     | 1     |
+  | Below average  | 0     | 2     |
+  | Middle         | 1     | 1     |
+  | Among the best | 1     | 2     |
+  | Genius         | 2     | 2     |
+
+  Every flaw makes room for one more minor note, and an empty major slot takes a minor one
+  (`systems/profile/notes.ts`). Notes that contradict each other name an `opposite` (validated
+  mutual); picking one drops the other. Most new notes are double-edged and run on existing
+  modifier hooks; **Night owl** adds one (`afterDark`, read by drills in `byTheClock`). The
+  blank "Nothing special" note is gone: a file with no notes is a bare file (old saves migrate).
+
+- **Habits** (`QuirkDef`, `shared/quirks.ts`) are free, as many as fit. They change nothing in
+  a fight: good time with someone whose traits a habit `warms` counts for more, with someone it
+  `cools` for less (`QUIRK_TILT` each, in `warmed`).
+- **The file, read back** (`views/fileReadBack.ts`) is the page before the essay: a five-step
+  road (Hard road to Easy going: the standing, a step easier for a file that is full and gifted),
+  then what comes easy and hard (every identity spec on the file combined, read as words: what
+  holds for most stats, then only what stands out), what people will think (the habits) and
+  where known talent stops.
+
+Mocked up but not built yet, for want of a rule to hang them on: Grudge-holder (grows faster after
+a defeat), Glass jaw (dazed more easily) and Stage fright (worse in watched fights).

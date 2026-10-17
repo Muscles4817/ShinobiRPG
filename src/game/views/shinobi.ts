@@ -56,7 +56,8 @@ export interface ShinobiView {
   readonly kekkeiGenkai: { readonly name: string; readonly dormant: boolean } | null;
   readonly nature: string;
   readonly traits: readonly string[];
-  readonly talent: string | null;
+  /** The special notes on your file, as a phrase; null when it carries none. */
+  readonly notes: string | null;
   /** Where they stood in their academy class. */
   readonly standing: string;
   /** Their frame and how they were raised. */
@@ -87,6 +88,13 @@ function registryNumber(name: string): string {
   let hash = 0;
   for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) % 9000;
   return String(1000 + hash);
+}
+
+/** "Quick study", "Quick study and Night owl", "A, B and C"; null for none. */
+function notesPhrase(names: readonly string[]): string | null {
+  if (names.length === 0) return null;
+  const last = names.at(-1) ?? '';
+  return names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${last}` : last;
 }
 
 function talentRead(state: GameState, ctx: GameContext, id: StatId): StatLine['talent'] {
@@ -134,7 +142,7 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
       : null,
     nature: natureLabel(character),
     traits: character.traitIds.map((id) => content.traits.get(id)?.name ?? id),
-    talent: character.talentId ? (content.talents.get(character.talentId)?.name ?? null) : null,
+    notes: notesPhrase(character.talentIds.flatMap((id) => content.talents.get(id)?.name ?? [])),
     standing: STANDING_INFO[character.classStanding].label,
     build: content.builds.get(character.buildId)?.name ?? null,
     upbringing: content.upbringings.get(character.upbringingId)?.name ?? null,
