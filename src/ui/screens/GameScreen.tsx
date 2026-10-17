@@ -29,6 +29,8 @@ import { EncounterScene } from './scenes/EncounterScene';
 import { ExamScene } from './scenes/ExamScene';
 import { MissionScene } from './scenes/MissionScene';
 import { PromotionScene } from './scenes/PromotionScene';
+import { RaceScene } from './scenes/RaceScene';
+import { RivalScene } from './scenes/RivalScene';
 import { SettingsScreen } from './settings/SettingsScreen';
 import { ChakraPaperScene } from './scenes/ChakraPaperScene';
 import { SenseiTestScene } from './scenes/SenseiTestScene';
@@ -145,6 +147,10 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
       return <ChakraPaperScene {...props} />;
     case 'sensei-test':
       return <SenseiTestScene {...props} />;
+    case 'rival':
+      return <RivalScene {...props} />;
+    case 'race':
+      return <RaceScene {...props} />;
   }
 }
 

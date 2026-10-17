@@ -7,10 +7,10 @@ function asRecord(value: unknown): RawState {
 }
 
 /**
- * v44 → v45: a ceremony says which route earned it. One already waiting was earned the only
+ * v47 → v48: a ceremony says which route earned it. One already waiting was earned the only
  * ways there were: a chūnin's by the exam, a jōnin's by nomination.
  */
-export function v44ToV45(state: RawState): RawState {
+export function v47ToV48(state: RawState): RawState {
   const exams = asRecord(state.exams);
   const ceremony = exams.ceremony;
   if (ceremony === null || ceremony === undefined) return state;

@@ -98,7 +98,7 @@ export function dayEndView(state: GameState, ctx: GameContext): DayEndView | nul
   const mode = state.settings.dayEnd ?? 'full';
   if (!ended || mode === 'off') return null;
   const sections: Sections = {
-    moments: momentRows(ended, ctx),
+    moments: momentRows(ended, state, ctx),
     hurts: hurtRows(ended, state, ctx),
     growth: growthRows(ended),
     people: peopleRows(ended, state, ctx),

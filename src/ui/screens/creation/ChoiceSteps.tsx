@@ -36,25 +36,6 @@ export function TraitsStep({ view, draft, update }: StepProps) {
   );
 }
 
-export function TalentStep({ view, draft, update }: StepProps) {
-  return (
-    <div className="step opt-list">
-      {view.talents.map((t) => (
-        <OptionCard
-          key={t.id}
-          name={t.name}
-          description={t.description}
-          effects={t.effects}
-          selected={draft.talentId === t.id}
-          onSelect={() => {
-            update({ talentId: t.id });
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 /** Your application essay: the dream you wrote down. */
 export function NindoStep({ view, draft, update }: StepProps) {
   return (

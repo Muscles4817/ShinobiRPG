@@ -1,7 +1,14 @@
 import type { IconId } from '@/content';
 import { stageForPair, stageOf } from '@/systems/bonds';
 import { RANK_LABELS } from '@/systems/standing';
-import { STAT_INFO, statTier, type StatGrade, type StatId } from '@/systems/stats';
+import {
+  STAT_GRADES,
+  STAT_IDS,
+  STAT_INFO,
+  statTier,
+  type StatGrade,
+  type StatId,
+} from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { hungerLevel } from '@/systems/vitals';
 
@@ -24,6 +31,8 @@ export interface DayMoment {
   readonly title: string;
   /** A technique's art and rank, shown as a tag in its colour. */
   readonly tag: { readonly label: string; readonly discipline: Discipline } | null;
+  /** A moment in the race with your rival, inked in the rival's colour. */
+  readonly rival?: true;
 }
 
 export interface DayHurt {
@@ -102,7 +111,25 @@ export function growthRows(ended: DayEnd): DayGrowth[] {
   });
 }
 
-export function momentRows(ended: DayEnd, ctx: GameContext): DayMoment[] {
+/** Grades reached first today in the race with your rival, either way. */
+function raceRows(ended: DayEnd, state: GameState, ctx: GameContext): DayMoment[] {
+  const rival = state.rival && findPerson(state, ctx, state.rival.personId);
+  if (!rival) return [];
+  return (ended.rivalFirsts ?? []).flatMap(({ key, who }) => {
+    const [name, index] = key.split(':');
+    const stat = STAT_IDS.find((id) => id === name);
+    const grade = STAT_GRADES[Number(index)];
+    if (!grade || !stat) return [];
+    const what = `${STAT_INFO[stat].label} ${grade}`;
+    const title =
+      who === 'you'
+        ? `You reached ${what} before ${rival.name}`
+        : `${rival.name} reached ${what} before you`;
+    return [{ seal: '競', title, tag: null, rival: true as const }];
+  });
+}
+
+export function momentRows(ended: DayEnd, state: GameState, ctx: GameContext): DayMoment[] {
   const rank = ended.rank
     ? [{ seal: '昇', title: `Promoted to ${RANK_LABELS[ended.rank]}`, tag: null }]
     : [];
@@ -122,7 +149,7 @@ export function momentRows(ended: DayEnd, ctx: GameContext): DayMoment[] {
       tag: null,
     }));
   const jobs = ended.jobs.map((title) => ({ seal: '良', title: `${title}, done`, tag: null }));
-  return [...rank, ...learned, ...grades, ...jobs];
+  return [...rank, ...learned, ...grades, ...raceRows(ended, state, ctx), ...jobs];
 }
 
 function nights(n: number): string {

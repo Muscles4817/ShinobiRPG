@@ -69,10 +69,21 @@ function purse(start: DayStart, state: GameState): DayEnd['purse'] {
   return lines.length === 0 ? null : { lines, left: state.wallet.ryo };
 }
 
+function rivalFirsts(start: DayStart, state: GameState): DayEnd['rivalFirsts'] {
+  const firsts = state.rival?.firsts ?? {};
+  const before = new Set(start.rivalFirsts ?? []);
+  const fresh = Object.entries(firsts).flatMap(([key, who]) =>
+    before.has(key) ? [] : [{ key, who }],
+  );
+  return fresh.length > 0 ? fresh : undefined;
+}
+
 /** What changed between `start` and now, for a day that has just ended. */
 export function closeDay(start: DayStart, state: GameState, slept: boolean): DayEnd {
   const injuries = state.character.injuries.filter((i) => !start.injuries.includes(injuryKey(i)));
+  const raced = rivalFirsts(start, state);
   return {
+    ...(raced ? { rivalFirsts: raced } : {}),
     day: start.day,
     days: Math.max(1, state.time.day - start.day),
     slept,

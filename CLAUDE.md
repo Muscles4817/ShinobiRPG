@@ -139,8 +139,13 @@ ui ──► game ──► content ──► systems ──► core
     **nature is found, not picked** (`game/nature.ts`): read from the seed at creation (a clan's
     nature most of the time) and hidden (`natureKnown`) until the chakra paper scene that follows
     team assignment (`testChakraPaper`). Until then it counts in fights only: no study bonus, no
-    nature techniques, no sensei can see it. Talents
-    may be one-sided (`TalentDef.aptitude` fixes a stat, 0 = never) or blank. The pacing bench
+    nature techniques, no sensei can see it. **Special notes** (`TalentDef`) stack: each is
+    weighed major, minor or a flaw, the standing sets the room (`STANDING_INFO.notes`; a flaw
+    makes room for a minor note, `systems/profile/notes.ts`), and there is no other cap: a full
+    file is an easier game. Notes may be one-sided (`TalentDef.aptitude` fixes a stat, 0 =
+    never). **Habits** (`QuirkDef`) are free and tilt how fast people of the traits they name
+    warm to you (`warmed`). The file is **read back** in words before the essay
+    (`views/fileReadBack.ts`: how hard the road looks, what comes easy and hard). The pacing bench
     (`src/test/pacing/standing.test.ts`) checks the spread and that the dead last can climb.
 13. **People are data, wherever they come from.** Authored people (`PersonDef`) live in the
     pack; generated genin are built from the pack's name pools by `game/people/generator.ts`
@@ -524,6 +529,20 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     day ahead as plaques (`views/dayHooks.ts`). `settings.dayEnd` picks the full sheet, a morning
     slip or nothing.
 
+31. **You have a rival** (`docs/design/rival-plan.md`, `game/rival/`). Once your team is settled,
+    `chooseRival` takes a classmate on another team by a **shape** rolled from the seed (prodigy,
+    neck, chaser, fallen: the gap is never evened out) and a temperament from their traits. The
+    `rival` slice keeps their **heat** (Bitter to Sworn; replies move it by tone and their
+    tastes, and your team and sensei lean by theirs: `replies.ts`), the **tally** (spars, races;
+    first to each grade, scored by `noteRival` in `dispatch`), at most one **challenge** (theirs
+    on the day's turn, on the ground that suits them, lapsing after the next; or yours from
+    their sheet, once a day, for pride or a purse) and one **beat** (a moment waiting for your
+    reply, a provocation among them: a scene with a `busyReason`). A **race** (`race.ts`) is
+    three legs of steady, push or the roofs, each answering another, with their move read by
+    perception. The **cruel** tone needs knowing them; barbed replies leave them `rattled` for
+    the next race. A rival behind you trains harder (`drive.ts`), the one open exception to
+    peers growing by the same rules. Their ink is `--rival`, never a gain or cost colour.
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -594,7 +613,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   throws it to far and leaves dust that blinds both sides (`plan/blast.ts`). Keep vast rare. The academy's technique sheet
   (`views/techniqueSheet.ts`) reads all of it, so what the player is told is what the fight does.
 - **Add a clan, talent or trait:** add it to the pack's `clans` (or the shared `talents`/
-  `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
+  `traits`) with stat bonuses and a `ModifierSpec`. A talent (special note) has a `weight`
+  (major, minor or flaw) and, if it contradicts another, a mutual `opposite`. **Add a habit:** a
+  `QuirkDef` in `shared/quirks.ts` with the traits it `warms` and `cools` (validated real, never
+  both). Clan-only techniques set `clan` on the
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
   needs a `none` clan (validated).
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, whose

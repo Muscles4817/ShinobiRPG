@@ -18,6 +18,7 @@ import type { StatId } from '@/systems/stats';
 
 import type { GameContext } from './context';
 import type { CreationDraft } from './creation';
+import { notesAptitude, notesOf } from './notes';
 import { earlyTraining, studentOf } from './student';
 
 /**
@@ -47,7 +48,7 @@ export function filledFile(draft: CreationDraft, pick: QuickPick, ctx: GameConte
   const offered = archetypeOffered(pick.archetype, student);
   const file = quickFile(offered ? pick : { ...pick, archetype: 'steady' }, student);
   // What the special note fixes (an art that never takes, a well of reserves) takes no gift or flaw.
-  const fixed = ctx.content.talents.get(draft.talentId)?.aptitude ?? {};
+  const fixed = notesAptitude(notesOf(draft.talentIds, ctx));
   const gifts = Object.fromEntries(Object.entries(file.gifts).filter(([id]) => !(id in fixed)));
   return { ...file, gifts };
 }

@@ -16,6 +16,8 @@ import { experiment } from './experiment';
 import { fish, forage } from './gather';
 import { buyCookbook, learnRecipe } from './recipes';
 import { dismissDay, setAnimations, setCombatStyle, setDayEnd, setMapStyle } from './settings';
+import { acceptChallenge, answerRival, declineChallenge } from './rival';
+import { challengeRival, runRaceLeg } from './rivalContest';
 import { buyIntel } from './intel';
 import { buyGear, buyIngredient, buyTool, equipGear, unequipGear } from './shop';
 import { spar } from './spar';
@@ -79,6 +81,11 @@ export const HANDLERS: Registry = {
   setMapStyle,
   setDayEnd,
   dismissDay,
+  answerRival,
+  acceptChallenge,
+  declineChallenge,
+  challengeRival,
+  runRaceLeg,
   leaveFight,
   buyGear,
   buyTool,

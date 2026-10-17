@@ -10,6 +10,7 @@ import { bondOf, requirePerson } from './people/cast';
 import { warmed } from './people/warmth';
 import { trainPerson } from './people/progress';
 import { addReport, type Report } from './reports';
+import { settlePurse } from './rival/contest';
 import type { GameState } from './state';
 
 /**
@@ -62,7 +63,7 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
   const health = Math.max(outcome.player.health, Math.min(floor, vitals.health));
   // The same bout is practice in their own specialty, and footwork, for them.
   const people = trainPerson(state, ctx, partner, partnerPractice(result, partner.specialty));
-  const bond = warmed(state, ctx, BOND_FOR[result]);
+  const bond = warmed(state, ctx, BOND_FOR[result], partner);
   const after = adjust(
     {
       ...state,
@@ -88,5 +89,28 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
     tone: result === 'won' ? 'success' : 'info',
     chips: [chip(`+${bond} bond`, 'gain')],
   });
-  return addReport(logged, { kind: 'spar', opponent: partner.name, result, text, gains: [], bond });
+  const reported = addReport(logged, {
+    kind: 'spar',
+    opponent: partner.name,
+    result,
+    text,
+    gains: [],
+    bond,
+  });
+  return rivalSpar(reported, partner.id, result);
+}
+
+/**
+ * A spar with your rival goes in the tally, any purse on it changes hands (yielding forfeits
+ * it), and they'll want a word after (unless you yielded).
+ */
+function rivalSpar(state: GameState, partnerId: string, result: SparResult): GameState {
+  const rival = state.rival;
+  if (rival?.personId !== partnerId) return state;
+  const won = result === 'won';
+  const paid = settlePurse(state, rival.sparStakes ?? 'pride', won ? 'won' : 'lost');
+  const settled = { ...rival, sparStakes: null };
+  if (result === 'yielded') return { ...paid, rival: settled };
+  const spars = { you: rival.spars.you + (won ? 1 : 0), them: rival.spars.them + (won ? 0 : 1) };
+  return { ...paid, rival: { ...settled, spars, beat: { kind: 'after-spar', won } } };
 }

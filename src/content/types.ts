@@ -10,6 +10,7 @@ import type {
 } from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta, StatId } from '@/systems/stats';
+import type { NoteWeight } from '@/systems/profile';
 import type { ExamDef } from '@/systems/exams';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 import type { Season } from '@/systems/time';
@@ -84,13 +85,7 @@ export type {
 } from './people';
 export type { OpeningHours, Stall } from './stall';
 export type { DiceTable, OnsenFields, Pastime, PastimeGame, TavernFields, Waters } from './leisure';
-export type {
-  AptitudeText,
-  PromotedRank,
-  PromotionRouteText,
-  PromotionText,
-  SettingText,
-} from './settingText';
+export type { AptitudeText, PromotedRank, PromotionText, SettingText } from './settingText';
 export type {
   PriceTemplate,
   SimplePrice,
@@ -197,11 +192,29 @@ export interface ClanDef {
 export interface TalentDef {
   readonly id: string;
   readonly name: string;
+  /** How much of the file's room it takes (`STANDING_INFO.notes`); a flaw makes room. */
+  readonly weight: NoteWeight;
   readonly description: string;
   readonly statBonuses: StatDelta;
   readonly modifiers: ModifierSpec;
   /** Fixes the hidden talent in these stats, whatever the roll; 0 means it will never take. */
   readonly aptitude?: Readonly<Partial<Record<StatId, number>>>;
+  /** A note that contradicts this one: never on the same file. */
+  readonly opposite?: string;
+}
+
+/**
+ * A small habit people notice (`docs/design/creation-plan.md`). It changes nothing in a fight:
+ * people with these traits warm to you faster, or more slowly, than they otherwise would.
+ */
+export interface QuirkDef {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  /** Traits whose people warm to you faster for it. */
+  readonly warms: readonly string[];
+  /** Traits whose people warm to you more slowly for it. */
+  readonly cools: readonly string[];
 }
 
 /** A personality trait. Opposites can't be taken together. */
@@ -365,6 +378,7 @@ export interface ContentPack {
   readonly builds: readonly BuildDef[];
   readonly upbringings: readonly UpbringingDef[];
   readonly talents: readonly TalentDef[];
+  readonly quirks: readonly QuirkDef[];
   readonly traits: readonly TraitDef[];
   readonly nindos: readonly NindoDef[];
   readonly breakIn: BreakInScene;

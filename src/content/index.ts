@@ -49,7 +49,6 @@ export type {
   PlaceKind,
   PriceTemplate,
   PromotedRank,
-  PromotionRouteText,
   PromotionText,
   SenseiProfile,
   SettingText,
@@ -57,6 +56,7 @@ export type {
   SimplePrice,
   Steering,
   Stall,
+  QuirkDef,
   TalentDef,
   TeacherProfile,
   TeachingQuirk,
@@ -67,6 +67,7 @@ export type {
   VillageLife,
   Waters,
 } from './types';
+export type { PromotionRouteText } from './settingText';
 export {
   DEFAULT_BUILD_ID,
   DEFAULT_UPBRINGING,

@@ -18,6 +18,7 @@ import { hungerEffect } from './hunger';
 import { injurySpecs } from './injuries';
 import { assignmentSpec } from './sensei/state';
 import { soakSpec } from './onsen';
+import { notesOf } from './notes';
 import { snackBuff } from './snacks';
 import type { Character } from './state';
 
@@ -54,14 +55,14 @@ function mealBuff(character: Character, ctx: GameContext): ModifierSpec {
 export function characterModifiers(character: Character, ctx: GameContext): Modifiers {
   const { content } = ctx;
   const clan = content.clans.get(character.clanId);
-  const talent = character.talentId ? content.talents.get(character.talentId) : undefined;
+  const notes = notesOf(character.talentIds, ctx);
   const traits = character.traitIds.flatMap((id) => content.traits.get(id) ?? []);
   return combine([
     content.builds.get(character.buildId)?.modifiers ?? {},
     content.upbringings.get(character.upbringingId)?.modifiers ?? {},
     breakthroughSpec(character),
     withoutGrowth(clan?.modifiers ?? {}),
-    withoutGrowth(talent?.modifiers ?? {}),
+    ...notes.map((n) => withoutGrowth(n.modifiers)),
     ...traits.map((t) => t.modifiers),
     STANDING_INFO[character.classStanding].modifiers,
     character.natureKnown ? natureModifiers(character.nature, clan?.nature) : {},

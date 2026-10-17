@@ -29,5 +29,6 @@ export function openDay(state: GameState): DayStart {
     injuries: character.injuries.map(injuryKey),
     satiety: character.vitals.satiety,
     journalFrom: state.journal.nextId,
+    ...(state.rival ? { rivalFirsts: Object.keys(state.rival.firsts) } : {}),
   };
 }

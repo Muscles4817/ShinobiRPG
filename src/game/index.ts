@@ -27,6 +27,10 @@ export {
   type UpbringingOption,
   type ArchetypeOption,
 } from './views/creation';
+export { notesProblems } from './notes';
+export { notesPage, toggledNotes, type NoteCard } from './views/creationNotes';
+export { quirkCards } from './views/creationQuirks';
+export { fileReadBack } from './views/fileReadBack';
 export type { FacePalettes } from './views/facePalettes';
 export { fileView, type BloomOption, type FileStatLine, type FileView } from './views/academyFile';
 export {
@@ -130,6 +134,9 @@ export {
   type MapStyleOption,
 } from './views/settings';
 export { dayEndView, type DayEndView } from './views/dayEnd';
+export { rivalChallengeView, rivalScene, type RivalChallengeView } from './views/rival';
+export { rivalryView, type ContestOffer, type RivalryView } from './views/rivalry';
+export { raceView } from './views/race';
 export {
   classHonoursView,
   type ClassHonoursView,

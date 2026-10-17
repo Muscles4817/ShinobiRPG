@@ -33,7 +33,7 @@ export function outingWarmth(
   outing: Outing,
 ): number {
   const reaction = toneReaction(ctx, person, outing.tone);
-  return warmed(state, ctx, reaction + outing.bonus + festivalBondBonus(state, ctx));
+  return warmed(state, ctx, reaction + outing.bonus + festivalBondBonus(state, ctx), person);
 }
 
 /** Records the time together: the bond moves and today's time with them is spent. */

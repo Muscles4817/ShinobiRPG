@@ -82,7 +82,8 @@ describe('persistence', () => {
       grades: _g,
       nature: _n,
       traitIds: _t,
-      talentId: _ta,
+      talentIds: _ta,
+      quirkIds: _q,
       nindoId: _ni,
       breakIn: _b,
       ...oldCharacter
@@ -106,7 +107,8 @@ describe('persistence', () => {
       clanId: 'none',
       grades: { ninjutsu: 'A', taijutsu: 'C' },
       traitIds: [],
-      talentId: null,
+      talentIds: [],
+      quirkIds: [],
       stats: { kenjutsu: 5, fuuinjutsu: 5 },
     });
     expect('aptitudeId' in loaded.value.character).toBe(false);
@@ -408,11 +410,56 @@ describe('persistence', () => {
     expect(played.daybook.ended).toBeNull();
   });
 
+  it('gives a save from before rivals none, chosen with the next action', () => {
+    const { rival: _r, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 44, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.rival).toBeNull();
+    const played = act(loaded.value, { type: 'setDayEnd', mode: 'brief' });
+    expect(played.rival?.personId).toBeTruthy();
+  });
+
+  it('gives a rival from before races none run, and a standing challenge to a spar', () => {
+    const game = newGame();
+    const {
+      races: _r,
+      rattled: _t,
+      sparStakes: _s,
+      race: _x,
+      lastProvocationDay: _p,
+      ...rival
+    } = game.rival!;
+    const old = { ...game, rival: { ...rival, challenge: { day: 1, line: 'Spar.' } } };
+    const loaded = deserialize(JSON.stringify({ version: 45, state: old }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.rival).toMatchObject({
+      races: { you: 0, them: 0 },
+      rattled: false,
+      sparStakes: null,
+      race: null,
+      challenge: { contest: 'spar' },
+    });
+  });
+
+  it('gives a save from before notes stacked its one note as a list, and no habits', () => {
+    const game = newGame();
+    const { talentIds: _t, quirkIds: _q, ...character } = game.character;
+    const old = (talentId: string | null) => ({ ...game, character: { ...character, talentId } });
+    const load = (talentId: string | null) => {
+      const loaded = deserialize(JSON.stringify({ version: 46, state: old(talentId) }));
+      if (!loaded.ok) throw new Error(loaded.error);
+      return loaded.value.character;
+    };
+    expect(load('sensor')).toMatchObject({ talentIds: ['sensor'], quirkIds: [] });
+    expect(load('unremarkable').talentIds).toEqual([]);
+    expect(load(null).talentIds).toEqual([]);
+  });
+
   it('gives a ceremony waiting in a save from before promotion routes the route it was earned by', () => {
     const game = newGame();
     const waiting = (rank: 'chunin' | 'jonin') =>
       JSON.stringify({
-        version: 44,
+        version: 47,
         state: { ...game, exams: { ...game.exams, ceremony: { rank } } },
       });
     const chunin = deserialize(waiting('chunin'));
@@ -420,7 +467,7 @@ describe('persistence', () => {
     if (!chunin.ok || !jonin.ok) throw new Error('Did not load.');
     expect(chunin.value.exams.ceremony).toEqual({ rank: 'chunin', route: 'exam' });
     expect(jonin.value.exams.ceremony).toEqual({ rank: 'jonin', route: 'nomination' });
-    const none = deserialize(JSON.stringify({ version: 44, state: game }));
+    const none = deserialize(JSON.stringify({ version: 47, state: game }));
     if (!none.ok) throw new Error(none.error);
     expect(none.value.exams.ceremony).toBeNull();
   });

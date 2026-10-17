@@ -203,7 +203,8 @@ function teachSession(
   });
   const quirk = person.teacher?.quirk;
   const base = teaching.isSensei ? SENSEI_BOND : TRAIN_WITH_BOND;
-  const bond = warmed(state, ctx, Math.max(1, Math.round(base * (quirk ? QUIRK_BOND[quirk] : 1))));
+  const lesson = Math.max(1, Math.round(base * (quirk ? QUIRK_BOND[quirk] : 1)));
+  const bond = warmed(state, ctx, lesson, person);
   // A genin practises alongside you: the session is theirs too.
   const people = person.rank === 'genin' ? trainPerson(state, ctx, person, gains) : state.people;
   const trained: GameState = {

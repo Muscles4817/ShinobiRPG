@@ -4,6 +4,7 @@ import { EXERCISES } from '../../shared/exercises';
 import { CURRICULUM } from '../../shared/sensei/curriculum';
 import { senseiParts } from '../../shared/sensei/parts';
 import { SENSEI_TESTS } from '../../shared/sensei/tests';
+import { QUIRKS } from '../../shared/quirks';
 import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
 import { UPBRINGINGS } from '../../shared/upbringings';
@@ -155,6 +156,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   builds: BUILDS,
   upbringings: UPBRINGINGS,
   talents: TALENTS,
+  quirks: QUIRKS,
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,

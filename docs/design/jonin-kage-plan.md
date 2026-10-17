@@ -223,12 +223,12 @@ Questions to settle before the steps that need them:
 
 ## Part 5: What was built
 
-**Step 1: more routes to chūnin** (`game/exam/routes.ts`, save v45).
+**Step 1: more routes to chūnin** (`game/exam/routes.ts`, save v48).
 
 - Every ceremony keeps the `route` that earned it (`exam`, `nomination`, `field`, `arc`,
   `sensei`; `exam/state.ts`), and the ceremony's speech follows it (`views/promotion.ts`): the
   rank's own words after the exam or a nomination, otherwise `SettingText.promotionRoutes` (the
-  field and the sensei, in each pack's `exam.ts`) or the arc's own `recommends.words`. The v45
+  field and the sensei, in each pack's `exam.ts`) or the arc's own `recommends.words`. The v48
   migration gives a ceremony already waiting the route it could only have had.
 - All three need a genin who is **ready** (`readinessGap`, the sensei's own test: a stat at C,
   three at D), with no ceremony waiting and no exam under way.

@@ -59,7 +59,7 @@ function giftGear(state: GameState, ctx: GameContext, sensei: PersonDef): GearDe
 }
 
 function praise(state: GameState, ctx: GameContext, sensei: PersonDef): Given {
-  const bond = warmed(state, ctx, PRAISE_BOND);
+  const bond = warmed(state, ctx, PRAISE_BOND, sensei);
   const bonds = { ...state.people.bonds, [sensei.id]: addPoints(bondOf(state, sensei.id), bond) };
   const said = PRAISE[waysOf(sensei)?.feedback ?? 'warm'];
   return {

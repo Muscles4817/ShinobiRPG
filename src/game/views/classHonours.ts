@@ -160,6 +160,15 @@ function yearLine(heirs: number, size: number): string {
   return `A strong year, the kind the village talks about: ${count} clan heirs among you.`;
 }
 
+/** The year's ids top first, `you` among them, as the honours read it; empty before the teams. */
+export function yearOrder(state: GameState, ctx: GameContext): readonly string[] {
+  if (!state.people.team) return [];
+  const others = yearOf(state, ctx).map((p) => memberOf(p, state));
+  return ordered(others, you(state), state.character.classStanding).map((m) => m.id);
+}
+
+export const YOU_IN_ORDER = YOU;
+
 /** The year's honours, or null before the year is known (teams not yet read). */
 export function classHonoursView(state: GameState, ctx: GameContext): ClassHonoursView | null {
   if (!state.people.team) return null;

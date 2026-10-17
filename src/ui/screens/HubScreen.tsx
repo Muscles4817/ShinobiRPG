@@ -1,6 +1,7 @@
 import {
   dayEndView,
   examFinalsView,
+  rivalChallengeView,
   headerView,
   hubView,
   senseiWeekView,
@@ -15,6 +16,7 @@ import { DayStrip, HungerNote, Vitals } from '../components/Vitals';
 import type { ScreenProps } from './types';
 import { ExamFinals } from './ExamFinals';
 import { MorningSlip } from './MorningSlip';
+import { RivalSlip } from './RivalSlip';
 import { SenseiSlip } from './SenseiSlip';
 import { VillageLife } from './VillageLife';
 
@@ -40,6 +42,7 @@ export function HubScreen({
   const finals = examFinalsView(state, ctx);
   const around = hub.places.flatMap((p) => p.people);
   const day = dayEndView(state, ctx);
+  const challenge = rivalChallengeView(state, ctx);
   return (
     <>
       <header className="hub-hero sky" data-slot={header.slot} data-land={header.backdrop}>
@@ -71,6 +74,7 @@ export function HubScreen({
       </header>
       <HungerNote note={header.hunger} />
       {day?.mode === 'brief' && <MorningSlip view={day} perform={perform} />}
+      {challenge && <RivalSlip view={challenge} perform={perform} />}
       {around.length > 0 && (
         <section className="around" aria-label="Who’s here">
           <span className="label">Who’s here</span>

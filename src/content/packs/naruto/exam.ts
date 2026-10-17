@@ -1,7 +1,8 @@
 import type { ExamDef } from '@/systems/exams';
 import type { MissionDef } from '@/systems/missions';
 
-import type { EnemyDef, PromotedRank, PromotionRouteText, PromotionText } from '../../types';
+import type { PromotionRouteText } from '../../settingText';
+import type { EnemyDef, PromotedRank, PromotionText } from '../../types';
 
 /**
  * Konoha's Chūnin Exams, hosted in turn by the allied villages and held here twice a year: the
