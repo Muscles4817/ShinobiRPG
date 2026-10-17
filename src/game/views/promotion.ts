@@ -1,4 +1,6 @@
 import { RANK_LABELS } from '@/systems/standing';
+import { STAT_INFO, statTier } from '@/systems/stats';
+import { DISCIPLINES } from '@/systems/techniques';
 
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
@@ -21,8 +23,8 @@ export interface PromotionScene {
   readonly gift: string;
   /** The gear handed over, if any (the flak vest at chūnin). */
   readonly gear: string | null;
-  /** Small: a jōnin's nomination; full: a chūnin's ceremony after the exam. */
-  readonly scale: 'full' | 'small';
+  /** What a nomination read back from your record, as chips; empty for other routes. */
+  readonly record: readonly string[];
   readonly unlocks: readonly Unlock[];
   /** Your sensei's parting words, at the end of the genin years; null otherwise. */
   readonly farewell: string | null;
@@ -60,6 +62,18 @@ function speechFor(ceremony: Ceremony, state: GameState, ctx: GameContext): stri
   }
 }
 
+/** The record a jōnin's nomination reads back: senior jobs, the best art, the village's regard. */
+function nominationRecord(state: GameState): string[] {
+  const { stats } = state.character;
+  const best = DISCIPLINES.reduce((a, b) => (stats[b] > stats[a] ? b : a));
+  const { seniorMissionsCompleted, reputation } = state.standing;
+  return [
+    `${seniorMissionsCompleted} B- and A-rank jobs`,
+    `${STAT_INFO[best].label} at ${statTier(stats[best]).grade}`,
+    `${reputation} reputation`,
+  ];
+}
+
 export function promotionScene(state: GameState, ctx: GameContext): PromotionScene | null {
   const ceremony = state.exams.ceremony;
   if (!ceremony) return null;
@@ -73,7 +87,7 @@ export function promotionScene(state: GameState, ctx: GameContext): PromotionSce
     speech: fill(speechFor(ceremony, state, ctx), state, ctx),
     gift: fill(words.gift, state, ctx),
     gear: ceremony.rank === 'chunin' ? (chuninVest(ctx)?.name ?? null) : null,
-    scale: ceremony.rank === 'chunin' ? 'full' : 'small',
+    record: ceremony.route === 'nomination' ? nominationRecord(state) : [],
     unlocks: unlocksFor(state, ctx, ceremony.rank),
     farewell: farewellDue(state, ctx)?.words ?? null,
     accept: { type: 'acceptPromotion' },

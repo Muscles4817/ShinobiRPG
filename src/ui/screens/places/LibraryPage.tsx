@@ -42,7 +42,8 @@ function Lattice({ view }: { view: LibraryView }) {
 
 /**
  * The library: shelves of scrolls by art (the open shelves for a genin with a permit, every
- * stack for chūnin), the restricted stacks folded away, and a desk for the scrolls you own.
+ * stack for chūnin), the restricted stacks and the sealed archive (for jōnin) folded away, and a
+ * desk for the scrolls you own.
  */
 export function LibraryPage({ ctx, state, perform, onBack }: PlaceProps) {
   const view = libraryView(state, ctx);
@@ -85,6 +86,16 @@ export function LibraryPage({ ctx, state, perform, onBack }: PlaceProps) {
                   {view.restricted === 1
                     ? 'One more scroll waits behind the lattice, for chūnin and above.'
                     : `${view.restricted} more scrolls wait behind the lattice, for chūnin and above.`}
+                </p>
+              </section>
+            )}
+            {view.sealed > 0 && (
+              <section className="lattice folded" aria-label="Sealed archive">
+                <h2>Sealed archive</h2>
+                <p className="muted small">
+                  {view.sealed === 1
+                    ? 'One scroll is kept under seal, for jōnin and above.'
+                    : `${view.sealed} scrolls are kept under seal, for jōnin and above.`}
                 </p>
               </section>
             )}

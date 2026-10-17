@@ -246,3 +246,23 @@ Questions to settle before the steps that need them:
   exam days away instead. A sensei whose gatekeeping `nominates: 'late'` never does.
 - The pacing bench's focused player now accepts a promotion when one waits; it never sat the
   exam, so it is raised on its sensei's word in the second year. The benches still hold.
+
+**Step 2: the jōnin rank, delivered.**
+
+- **The nomination ceremony** is the full scene now (the `small` scale is gone), and reads your
+  record back as chips (`nominationRecord` in `views/promotion.ts`): the B- and A-rank jobs, your
+  best art's grade and your reputation. The words stay the pack's `promotions.jonin`.
+- **The sealed archive** (`game/permits.ts`: `SEALED_SHELF_RANK` A, `SEALED_RANK` jōnin): the
+  library may now hold rank A (`validateSources`: C–A), and A is jōnin only. The library view
+  counts sealed scrolls apart from the restricted stacks and the page folds them behind their
+  own lattice; the jōnin ceremony's unlocks name it. In `original`, five new plain A-rank
+  techniques, one per art (`techniques/sealedArchive.ts`). The pack's existing A-rank techniques
+  are all someone's signature, so they stay with their teachers.
+- **S-rank jobs in `original`**: an `s-hunt` template (`jobs/templates/joninS.ts`: a hard trail,
+  then a jōnin-grade rogue and a second, no fleeing and no slipping past) with three fills (The
+  Hollow Lantern, The Warlord's Blade, The Salt Widow), each against a new elite rogue
+  (`jobs/eliteEnemies.ts`). The crew rules already send S-rank work to a jōnin with a chūnin
+  squad and never to a chūnin.
+- **Not built: the forbidden S shelf.** Every standard S-rank technique in `original` is a
+  signature, so a forbidden shelf would have nothing on it but new legend-grade techniques. It
+  waits for the kage's story (steps 7 and 8), where the kage's permission is a scene.

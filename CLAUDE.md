@@ -368,7 +368,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     field for a clean B-rank or deadly job, at the end of an arc with `recommends` (its patron's
     words), or on their sensei's word at a lesson after a year (high regard, no exam days away,
     never a sensei who holds students back).
-    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it. Those not
+    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it, in a ceremony
+    that reads the record back; S-rank hunts for jōnin-grade rogues are theirs. Those not
     sitting it are **spectators** (`exam/spectators.ts`, the exam's `spectators` lines): in the
     week before, your sensei invites you to watch when they won't put you forward (a teammate
     tells you instead when your sensei's grip is loose), and on the day anyone at home may spend
@@ -660,7 +661,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   reports any slot left unfilled, and tests check each fill gives exactly what its template asks.
 - **Add a technique:** give it a source (validated): the academy (rank E–D), a library (its open
   shelves keep standard techniques to C, for genin once their sensei signs the permit at a
-  lesson, `game/permits.ts`; the rest is the restricted stacks, chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
+  lesson, `game/permits.ts`; B is the restricted stacks, chūnin only; A is the sealed archive,
+  jōnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
   scroll reward. A person's `arsenal` is not a source.
 - **Decide who goes on a mission:** nothing to set. A job's rank and its foes' danger decide
   the crews it may get (decision 21); a crew joins every fight as allies and each member gains
@@ -688,7 +690,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a school technique:** a fighting style (Lantern Wind, River Draw…) is techniques with
   the same `school`, taught by that school's teachers (`teaches`), never shelved. Standard
   techniques (no `school`, no `clan`) go on the academy rack (E–D) and the library (C open
-  shelves, B restricted), so every art has plain moves at every grade before any style.
+  shelves, B restricted, A sealed), so every art has plain moves at every grade before any style.
 - **Add a combination technique:** two `TechniqueDef`s whose `combo.partnerTechniqueId` name
   each other (validated); offer them at the academy. A teammate knows the half in their
   specialty, and a half plays only beside someone on your side who knows the other.

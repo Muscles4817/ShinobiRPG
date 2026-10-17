@@ -2,6 +2,7 @@ import { missionsFromTemplates } from '../../../missionTemplates';
 import { MISSION_FILLS } from './fills';
 import { MISSION_TEMPLATES } from './templates';
 
+export { ELITE_ENEMIES } from './eliteEnemies';
 export { JOB_ENEMIES } from './enemies';
 export { MISSION_FILLS } from './fills';
 export { MISSION_TEMPLATES } from './templates';

@@ -4,7 +4,7 @@ import { STAT_INFO } from '@/systems/stats';
 import { STUDY_ENERGY_COST } from '../actions/study';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
-import { libraryEntry, libraryScrollAccess } from '../permits';
+import { inSealedArchive, libraryEntry, libraryScrollAccess } from '../permits';
 import { readingBlocker } from '../shelves';
 import type { GameState } from '../state';
 import { scrollOf, sortScrolls, type Scroll } from './academy';
@@ -30,6 +30,8 @@ export interface LibraryView {
   readonly locked: string | null;
   /** Scrolls kept in the restricted stacks, for chūnin, that you can't read yet. */
   readonly restricted: number;
+  /** Scrolls kept in the sealed archive, for jōnin, that you can't read yet. */
+  readonly sealed: number;
   /** How many scrolls the stacks keep that you don't know yet. */
   readonly unread: number;
   readonly studying: readonly Scroll[];
@@ -77,13 +79,15 @@ export function libraryView(state: GameState, ctx: GameContext): LibraryView | n
     .filter((id) => !state.techniques.known.includes(id))
     .map((id) => ctx.content.techniques.require(id));
   const open = unread.filter((def) => libraryScrollAccess(state, def) === null);
+  const sealed = unread.filter((def) => inSealedArchive(def) && !open.includes(def)).length;
   const scrolls = open.map((def) => scrollOf(state, ctx, def, { reading, you }));
   const sorted = sortScrolls(scrolls);
   return {
     name: place.name,
     energyCost: hardWorkEnergy(state.character, ctx, STUDY_ENERGY_COST),
     locked: libraryEntry(state),
-    restricted: unread.length - open.length,
+    restricted: unread.length - open.length - sealed,
+    sealed,
     unread: unread.length,
     studying: sorted.studying,
     stacks: shelve([...sorted.ready, ...sorted.comingUp]),

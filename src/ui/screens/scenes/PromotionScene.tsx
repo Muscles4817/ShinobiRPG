@@ -4,7 +4,8 @@ import type { ScreenProps } from '../types';
 
 /**
  * A promotion: the ceremony in the setting's words, your new title in ink, what you are handed,
- * and everything the new rank opens. A jōnin's nomination is the same scene, smaller.
+ * and everything the new rank opens. A jōnin's nomination is the same scene, with your record
+ * read back to you.
  */
 export function PromotionScene({ ctx, state, perform }: ScreenProps) {
   const scene = promotionScene(state, ctx);
@@ -14,8 +15,17 @@ export function PromotionScene({ ctx, state, perform }: ScreenProps) {
       <header className="scene-head">
         <h1>{scene.heading}</h1>
       </header>
-      <main className={`page feed promotion ${scene.scale}`}>
+      <main className="page feed promotion">
         <p className="story enter">{scene.speech}</p>
+        {scene.record.length > 0 && (
+          <p className="chips" aria-label="Your record">
+            {scene.record.map((line) => (
+              <span key={line} className="chip gain">
+                {line}
+              </span>
+            ))}
+          </p>
+        )}
         <div className="promotion-title enter" aria-label="Your new title">
           <span className="promotion-seal" aria-hidden="true">
             昇
