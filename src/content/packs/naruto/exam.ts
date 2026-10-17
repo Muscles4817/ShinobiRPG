@@ -1,7 +1,7 @@
 import type { ExamDef } from '@/systems/exams';
 import type { MissionDef } from '@/systems/missions';
 
-import type { EnemyDef, PromotedRank, PromotionText } from '../../types';
+import type { EnemyDef, PromotedRank, PromotionRouteText, PromotionText } from '../../types';
 
 /**
  * Konoha's Chūnin Exams, hosted in turn by the allied villages and held here twice a year: the
@@ -216,4 +216,12 @@ export const PROMOTIONS: Readonly<Record<PromotedRank, PromotionText>> = {
       'The {leader} looks up from a pile of reports, most of them yours. "Your record speaks for itself, {you}. From today you are a jōnin of the Leaf."',
     gift: 'He slides a jōnin’s papers across the desk, already stamped.',
   },
+};
+
+/** What the {leader} says to a genin raised without the exam. */
+export const PROMOTION_ROUTES: PromotionRouteText = {
+  field:
+    'The {leader} taps the mission report from {job}. "That was no genin’s job, {you}, and you saw it through. The exams test for exactly that. I don’t see the need to wait for them."',
+  sensei:
+    'The {leader} sets down a letter in {sensei}’s hand. "It isn’t often a sensei skips the exams for a student. A year of your work says they’re right, {you}. Congratulations."',
 };

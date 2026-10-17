@@ -1,7 +1,7 @@
 import type { ExamDef } from '@/systems/exams';
 import type { MissionDef } from '@/systems/missions';
 
-import type { EnemyDef, PromotedRank, PromotionText } from '../../types';
+import type { EnemyDef, PromotedRank, PromotionRouteText, PromotionText } from '../../types';
 
 /**
  * Tōrōgakure's chūnin exam: the Lantern Trials, held at the turn of autumn and of spring. A
@@ -216,4 +216,12 @@ export const PROMOTIONS: Readonly<Record<PromotedRank, PromotionText>> = {
       'Late, by one lantern, the {leader} pushes a single sheet across the desk. "Your record speaks for you, {you}. From tomorrow you are a jōnin of this village. Sign it."',
     gift: 'Under the sheet lies a lacquered tag with your name in the village’s hand.',
   },
+};
+
+/** What the {leader} says to a genin raised without the exam. */
+export const PROMOTION_ROUTES: PromotionRouteText = {
+  field:
+    'The {leader} has the report from {job} open on the desk. "No exam asks more than that job did, {you}, and you came back with all of it done. Kneel, and stand up a chūnin."',
+  sensei:
+    'The {leader} turns a page of {sensei}’s close hand over and over. "Your sensei has never asked me for anything, {you}. A year of your work, on one page. Kneel, and stand up a chūnin."',
 };

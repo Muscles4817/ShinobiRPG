@@ -2,7 +2,9 @@ import { RANK_LABELS } from '@/systems/standing';
 
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
+import { senseiOf } from '../exam/entry';
 import { chuninVest } from '../exam/promotion';
+import type { Ceremony } from '../exam/state';
 import { unlocksFor, type Unlock } from '../exam/unlocks';
 import { farewellDue } from '../sensei/farewell';
 import type { GameState } from '../state';
@@ -33,6 +35,31 @@ function fill(text: string, state: GameState, ctx: GameContext): string {
     .replaceAll('{leader}', ctx.content.text.leaderTitle);
 }
 
+/**
+ * What is said to you: the rank's own speech after the exam or a nomination, or, raised another
+ * way, why you are being raised (the job, the arc's patron, your sensei's letter).
+ */
+function speechFor(ceremony: Ceremony, state: GameState, ctx: GameContext): string {
+  const { text } = ctx.content;
+  switch (ceremony.route) {
+    case 'exam':
+    case 'nomination':
+      return text.promotions[ceremony.rank].speech;
+    case 'field':
+      return text.promotionRoutes.field.replaceAll(
+        '{job}',
+        ctx.content.missions.require(ceremony.missionId).title,
+      );
+    case 'arc':
+      return (
+        ctx.content.arcs.require(ceremony.arcId).recommends?.words ??
+        text.promotions[ceremony.rank].speech
+      );
+    case 'sensei':
+      return text.promotionRoutes.sensei.replaceAll('{sensei}', senseiOf(state, ctx)?.name ?? '');
+  }
+}
+
 export function promotionScene(state: GameState, ctx: GameContext): PromotionScene | null {
   const ceremony = state.exams.ceremony;
   if (!ceremony) return null;
@@ -43,7 +70,7 @@ export function promotionScene(state: GameState, ctx: GameContext): PromotionSce
     rank,
     title: `${rank} ${name}${familyName ? ` ${familyName}` : ''}`,
     heading: fill(words.title, state, ctx),
-    speech: fill(words.speech, state, ctx),
+    speech: fill(speechFor(ceremony, state, ctx), state, ctx),
     gift: fill(words.gift, state, ctx),
     gear: ceremony.rank === 'chunin' ? (chuninVest(ctx)?.name ?? null) : null,
     scale: ceremony.rank === 'chunin' ? 'full' : 'small',

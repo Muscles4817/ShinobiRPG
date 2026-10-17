@@ -35,7 +35,7 @@ describe('the chūnin ceremony', () => {
   it('follows a promoted verdict as its own scene', () => {
     const state = promoted();
     expect(state.exams.run).toBeNull();
-    expect(state.exams.ceremony).toEqual({ rank: 'chunin' });
+    expect(state.exams.ceremony).toEqual({ rank: 'chunin', route: 'exam' });
     expect(activeScene(state)).toBe('promotion');
     expect(blockerFor(state, { type: 'rest' }, ctx)).toBe('Your promotion ceremony is waiting.');
   });
@@ -152,7 +152,7 @@ describe('a jōnin’s nomination', () => {
       { ...state, standing, character: { ...state.character, stats } },
       { type: 'sleep' },
     );
-    expect(earned.exams.ceremony).toEqual({ rank: 'jonin' });
+    expect(earned.exams.ceremony).toEqual({ rank: 'jonin', route: 'nomination' });
     expect(promotionScene(earned, ctx)).toMatchObject({
       scale: 'small',
       gear: null,

@@ -84,7 +84,13 @@ export type {
 } from './people';
 export type { OpeningHours, Stall } from './stall';
 export type { DiceTable, OnsenFields, Pastime, PastimeGame, TavernFields, Waters } from './leisure';
-export type { AptitudeText, PromotedRank, PromotionText, SettingText } from './settingText';
+export type {
+  AptitudeText,
+  PromotedRank,
+  PromotionRouteText,
+  PromotionText,
+  SettingText,
+} from './settingText';
 export type {
   PriceTemplate,
   SimplePrice,

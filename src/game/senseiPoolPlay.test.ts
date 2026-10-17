@@ -110,7 +110,7 @@ describe('a generated sensei’s voice', () => {
     expect(word?.text).toContain(voice.scold);
     const ceremony = {
       ...theirs,
-      exams: { ...theirs.exams, ceremony: { rank: 'chunin' as const } },
+      exams: { ...theirs.exams, ceremony: { rank: 'chunin' as const, route: 'exam' as const } },
     };
     expect(farewellDue(ceremony, ctx)?.words).toContain(voice.catchphrase);
   });

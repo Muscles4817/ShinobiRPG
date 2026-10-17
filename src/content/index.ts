@@ -49,6 +49,7 @@ export type {
   PlaceKind,
   PriceTemplate,
   PromotedRank,
+  PromotionRouteText,
   PromotionText,
   SenseiProfile,
   SettingText,

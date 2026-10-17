@@ -56,4 +56,9 @@ export const SALT_LANTERNS: ArcDef = {
       baseLocationId: 'port-shiomachi',
     },
   ],
+  recommends: {
+    personId: 'torokage',
+    words:
+      'The {leader} has the harbourmaster’s second letter open on the desk. "The first asked for help, {you}. This one asks for you by name. A village that is thanked by another town’s harbour has a chūnin it hadn’t counted. Kneel, and stand up one."',
+  },
 };

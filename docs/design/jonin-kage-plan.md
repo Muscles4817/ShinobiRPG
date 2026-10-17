@@ -215,8 +215,6 @@ Each step ships on its own and keeps `npm run check` green.
 
 Questions to settle before the steps that need them:
 
-- Step 1: what makes a result "outstanding" for a field promotion (a debrief grade, a ledger
-  line, a foe above the crew's rank)?
 - Step 3: which deeds are seen in which regions, and how fast renown fades, if at all?
 - Step 9: the clan's requirements beyond jōnin, and what a clan gives its members.
 - Decision 7: one life or a line.
@@ -225,4 +223,26 @@ Questions to settle before the steps that need them:
 
 ## Part 5: What was built
 
-Nothing yet.
+**Step 1: more routes to chūnin** (`game/exam/routes.ts`, save v45).
+
+- Every ceremony keeps the `route` that earned it (`exam`, `nomination`, `field`, `arc`,
+  `sensei`; `exam/state.ts`), and the ceremony's speech follows it (`views/promotion.ts`): the
+  rank's own words after the exam or a nomination, otherwise `SettingText.promotionRoutes` (the
+  field and the sensei, in each pack's `exam.ts`) or the arc's own `recommends.words`. The v45
+  migration gives a ceremony already waiting the route it could only have had.
+- All three need a genin who is **ready** (`readinessGap`, the sensei's own test: a stat at C,
+  three at D), with no ceremony waiting and no exam under way.
+- **A field promotion** (`afterFieldWork`, from `afterStage`): a job graded clean that no genin is
+  sent on lightly, B-rank or harder, or with a deadly or elite foe. Decided: the debrief grade
+  and the job's danger, not a ledger line.
+- **An arc's recommendation** (`arcRecommendation`, checked with the jōnin nomination in
+  `notePromotions`, which now takes the context): an arc with `recommends` (a person and their
+  words, validated in `validateStory`) once all its acts are done. Derived from state, so it also
+  comes later to a genin who finished the arc before they were ready. In `original`, Salt in the
+  Lanterns: the Tōrokage, holding the harbourmaster's second letter.
+- **A sensei's recommendation** (`afterLessonRecommendation`, after the weekly lesson): more than
+  a year as a genin (`SENSEI_RECOMMENDATION_DAYS`), regard at 80 or more (past what turning up
+  earns), the nomination itself met, and no exam announced: a sensei puts you forward for an
+  exam days away instead. A sensei whose gatekeeping `nominates: 'late'` never does.
+- The pacing bench's focused player now accepts a promotion when one waits; it never sat the
+  exam, so it is raised on its sensei's word in the second year. The benches still hold.

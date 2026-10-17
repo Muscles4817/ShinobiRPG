@@ -408,6 +408,23 @@ describe('persistence', () => {
     expect(played.daybook.ended).toBeNull();
   });
 
+  it('gives a ceremony waiting in a save from before promotion routes the route it was earned by', () => {
+    const game = newGame();
+    const waiting = (rank: 'chunin' | 'jonin') =>
+      JSON.stringify({
+        version: 44,
+        state: { ...game, exams: { ...game.exams, ceremony: { rank } } },
+      });
+    const chunin = deserialize(waiting('chunin'));
+    const jonin = deserialize(waiting('jonin'));
+    if (!chunin.ok || !jonin.ok) throw new Error('Did not load.');
+    expect(chunin.value.exams.ceremony).toEqual({ rank: 'chunin', route: 'exam' });
+    expect(jonin.value.exams.ceremony).toEqual({ rank: 'jonin', route: 'nomination' });
+    const none = deserialize(JSON.stringify({ version: 44, state: game }));
+    if (!none.ok) throw new Error(none.error);
+    expect(none.value.exams.ceremony).toBeNull();
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

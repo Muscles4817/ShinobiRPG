@@ -363,6 +363,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     bouts against rivals generated from the seed. Every stage records conduct marks
     (`conduct.ts`), and the verdict weighs conduct with results. A promotion is its own scene
     (`exams.ceremony`): the rank, the vest, and unlocks derived from data (`exam/unlocks.ts`).
+    The exam is the main road to chūnin, not the only one (`exam/routes.ts`; each ceremony keeps
+    its `route`, which picks what is said): a genin who is ready (`readinessGap`) is raised in the
+    field for a clean B-rank or deadly job, at the end of an arc with `recommends` (its patron's
+    words), or on their sensei's word at a lesson after a year (high regard, no exam days away,
+    never a sensei who holds students back).
     Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it. Those not
     sitting it are **spectators** (`exam/spectators.ts`, the exam's `spectators` lines): in the
     week before, your sensei invites you to watch when they won't put you forward (a teammate
