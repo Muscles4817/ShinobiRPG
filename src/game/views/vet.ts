@@ -1,6 +1,7 @@
 import type { PlaceDef, VetFields } from '@/content';
 import { laidUp } from '@/systems/companions';
 
+import { pupPrice } from '../actions/finding';
 import { treatmentFee } from '../actions/vet';
 import { yourCompanion } from '../companions/care';
 import type { GameContext } from '../context';
@@ -24,6 +25,28 @@ export interface VetView {
   readonly medicineCost: number;
   readonly doses: number;
   readonly buyMedicine: Choice;
+  /** The kennel's litter, for someone without a companion. */
+  readonly pups: PupsView | null;
+}
+
+export interface PupsView {
+  readonly line: string;
+  /** Their kind: "Ninken". */
+  readonly kind: string;
+  /** What one costs you; 0 when the vet would give you one. */
+  readonly price: number;
+  readonly take: Choice;
+}
+
+function pupsView(state: GameState, ctx: GameContext, vet: VetFields): PupsView | null {
+  const price = pupPrice(state, ctx);
+  if (!vet.pups || price === null || yourCompanion(state, ctx)) return null;
+  return {
+    line: vet.pups.line,
+    kind: ctx.content.companionKinds.require(vet.pups.kindId).name,
+    price,
+    take: choice(state, ctx, { type: 'takePup' }),
+  };
 }
 
 export function vetView(state: GameState, ctx: GameContext): VetView | null {
@@ -46,6 +69,7 @@ export function vetView(state: GameState, ctx: GameContext): VetView | null {
     medicineCost: vet.medicineCost,
     doses: state.companions.medicine,
     buyMedicine: choice(state, ctx, { type: 'buyMedicine' }),
+    pups: pupsView(state, ctx, vet),
   };
 }
 

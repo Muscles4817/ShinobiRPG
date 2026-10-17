@@ -11,6 +11,8 @@ import type { ContentPack } from './types';
 
 /** A companion starts no better than a fresh genin's best (a pup, an untrained stray). */
 const MOST_BASE = 6;
+/** The deepest bond stage. */
+const MOST_STAGE = 4;
 
 function haunts(pack: ContentPack): ReadonlySet<string> {
   const home = pack.locations.find((l) => l.id === pack.startLocationId);
@@ -28,6 +30,50 @@ function strayProblems(kind: CompanionKindDef, places: ReadonlySet<string>): str
       .map((id) => `${at} haunts "${id}", not a place of the start village`),
     ...(stray.chance <= 0 || stray.chance > 1 ? [`${at} has a stray chance outside 0–1`] : []),
   ];
+}
+
+/** A wild one lives in some wild place of the pack, and only a wild kind lives wild. */
+function wildProblems(kind: CompanionKindDef, biomes: ReadonlySet<string>): string[] {
+  const wild = kind.wild;
+  const at = `companion kind "${kind.id}"`;
+  return [
+    ...(kind.stray && kind.temperament !== 'stray'
+      ? [`${at} is a stray but not stray-tempered`]
+      : []),
+    ...(wild && kind.temperament !== 'wild' ? [`${at} lives wild but is not wild-tempered`] : []),
+    ...(wild && !biomes.has(wild.biome) ? [`${at} lives in ${wild.biome}, and no place is`] : []),
+    ...(wild && (wild.chance <= 0 || wild.chance > 1)
+      ? [`${at} has a wild chance outside 0–1`]
+      : []),
+  ];
+}
+
+/** A kennel breeds a bred kind of the pack, for a price, and gives one at a real bond stage. */
+function pupProblems(pack: ContentPack): string[] {
+  return pack.locations
+    .flatMap((l) => l.places)
+    .flatMap((place) => {
+      if (place.kind !== 'vet' || !place.pups) return [];
+      const { kindId, price, giftStage } = place.pups;
+      const kind = pack.companionKinds.find((k) => k.id === kindId);
+      const at = `vet "${place.id}"`;
+      return [
+        ...(kind ? [] : [`${at} breeds unknown kind "${kindId}"`]),
+        ...(kind && kind.temperament !== 'bred'
+          ? [`${at} breeds "${kindId}", not a bred kind`]
+          : []),
+        ...(price > 0 ? [] : [`${at} gives pups away to anyone`]),
+        ...(giftStage >= 1 && giftStage <= MOST_STAGE ? [] : [`${at} gifts at no real stage`]),
+      ];
+    });
+}
+
+/** An animal a job hands over is a kind of the pack. */
+function rewardProblems(pack: ContentPack, kinds: ReadonlySet<string>): string[] {
+  return pack.missions.flatMap((m) => {
+    const kindId = m.reward.companionKindId;
+    return kindId && !kinds.has(kindId) ? [`mission "${m.id}" gives unknown kind "${kindId}"`] : [];
+  });
 }
 
 function dietProblems(kind: CompanionKindDef, ingredients: ReadonlySet<string>): string[] {
@@ -78,7 +124,13 @@ export function validateCompanions(pack: ContentPack): string[] {
   const kinds = new Set(pack.companionKinds.map((k) => k.id));
   const places = haunts(pack);
   const ingredients = new Set(pack.ingredients.map((i) => i.id));
+  const biomes = new Set(
+    pack.locations.flatMap((l) => l.places).flatMap((p) => (p.kind === 'wilds' ? [p.biome] : [])),
+  );
   return [
+    ...pack.companionKinds.flatMap((kind) => wildProblems(kind, biomes)),
+    ...pupProblems(pack),
+    ...rewardProblems(pack, kinds),
     ...pack.companionKinds.flatMap((kind) => kindProblems(kind, places)),
     ...pack.companionKinds.flatMap((kind) => dietProblems(kind, ingredients)),
     ...vetProblems(pack),

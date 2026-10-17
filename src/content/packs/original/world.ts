@@ -54,6 +54,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         missionIds: [
           'lantern-patrol',
           'lantern-keepers-cat',
+          'pup-in-the-culvert',
           'shrine-weeding',
           'kuroda-medicine',
           'tea-merchant-escort',

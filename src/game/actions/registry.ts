@@ -37,6 +37,7 @@ import { assignTeam, chooseSensei } from './team';
 import { dismissReport, leaveFight, travel } from './travel';
 import { followSight } from './village';
 import { befriendStray } from './companions';
+import { takePup, trackWild } from './finding';
 import { doseCompanion, feedCompanion, playWithCompanion } from './companionCare';
 import { trainCompanion } from './companionTraining';
 import { buyMedicine, treatCompanion } from './vet';
@@ -105,6 +106,8 @@ export const HANDLERS: Registry = {
   learnRecipe,
   followSight,
   befriendStray,
+  trackWild,
+  takePup,
   feedCompanion,
   playWithCompanion,
   doseCompanion,

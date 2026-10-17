@@ -1,4 +1,5 @@
 import type { CompanionKindDef } from '../../companions';
+import { FOREST_WOLF, HOUND_DIET } from '../../shared/wildKinds';
 
 /** Creatures that may become a companion in the Hidden Leaf. */
 export const COMPANION_KINDS: readonly CompanionKindDef[] = [
@@ -23,15 +24,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       kenjutsu: 0,
       fuuinjutsu: 0,
     },
-    diet: [
-      'river-fish',
-      'eggs',
-      'wild-game',
-      'sweetfish',
-      'river-eel',
-      'crayfish',
-      'travel-rations',
-    ],
+    diet: HOUND_DIET,
     plays: { likes: ['rough', 'scent'], dislikes: [] },
     names: ['Akamaru', 'Kuromaru', 'Haimaru', 'Shiromaru', 'Kogemaru', 'Tsumemaru'],
   },
@@ -56,15 +49,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       kenjutsu: 0,
       fuuinjutsu: 0,
     },
-    diet: [
-      'river-fish',
-      'eggs',
-      'wild-game',
-      'sweetfish',
-      'river-eel',
-      'crayfish',
-      'travel-rations',
-    ],
+    diet: HOUND_DIET,
     plays: { likes: ['fetch', 'scent'], dislikes: ['walk'] },
     names: ['Pochi', 'Kuro', 'Shiro', 'Hachi', 'Goro', 'Taro'],
     stray: {
@@ -77,4 +62,5 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
         'This morning the brown hound is sitting outside your door. When you set off, it falls in at your heel.',
     },
   },
+  FOREST_WOLF,
 ];

@@ -57,6 +57,7 @@ import type { OnsenFields, TavernFields } from './leisure';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
 import type { VoiceDef } from './voices';
+import type { Biome } from './biomes';
 
 export type { BackdropId, IconId } from './art';
 export type {
@@ -246,7 +247,7 @@ export interface BreakInScene {
 }
 
 /** The kind of country a wild place is: what grows and swims there. */
-export type Biome = 'woods' | 'river' | 'shore' | 'mountain' | 'marsh';
+export type { Biome };
 
 /** Somewhere to cast a line: what bites there, and when. */
 export interface FishingSpot {

@@ -1,6 +1,6 @@
 import { act, ctx, draft, formTeam, newGame } from '@/test/gameFixtures';
 import { dispatch } from '@/game';
-import { PLAYER_OWNER, STRAY_START_BOND, STRAY_VISITS_NEEDED } from '@/systems/companions';
+import { daysToWin, PLAYER_OWNER, STRAY_START_BOND } from '@/systems/companions';
 
 import { contextForPack } from '../context';
 import { createNewGame } from '../creation';
@@ -58,9 +58,9 @@ describe('companions', () => {
 
   it('a stray comes home after a few days’ visits, one a day', () => {
     let state = withStrayAbout();
-    for (let visit = 1; visit <= STRAY_VISITS_NEEDED; visit++) {
+    for (let visit = 1; visit <= daysToWin('stray'); visit++) {
       state = act(state, { type: 'befriendStray' });
-      if (visit < STRAY_VISITS_NEEDED) {
+      if (visit < daysToWin('stray')) {
         expect(dispatch(state, { type: 'befriendStray' }, ctx).ok).toBe(false);
         expect(playerCompanion(state)).toBeNull();
         state = nextStrayDay(state);

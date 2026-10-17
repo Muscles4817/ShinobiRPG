@@ -48,6 +48,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         missionIds: [
           'border-patrol',
           'catch-tora',
+          'pup-in-the-well',
           'yamanaka-weeding',
           'farm-medicine',
           'merchant-escort',

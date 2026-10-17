@@ -98,6 +98,8 @@ export type GameAction =
   | { readonly type: 'learnRecipe'; readonly personId: string }
   | { readonly type: 'followSight' }
   | { readonly type: 'befriendStray' }
+  | { readonly type: 'trackWild'; readonly placeId: string }
+  | { readonly type: 'takePup' }
   | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
   | { readonly type: 'playWithCompanion'; readonly play: PlayKind }
   | { readonly type: 'doseCompanion'; readonly hidden: boolean }

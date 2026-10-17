@@ -77,21 +77,37 @@ interface TemperamentRules {
   readonly bondRate: number;
   /** How many bond stages later than a bred animal it takes orders. */
   readonly ordersLater: number;
+  /** How far past (or short of) its talent's limits it can grow, in stat points. */
+  readonly limitShift: number;
+  /** Days spent winning it over before it is yours (strays befriended, wild ones tracked). */
+  readonly daysToWin: number;
 }
 
 const TEMPERAMENT_RULES: Readonly<Record<CompanionTemperament, TemperamentRules>> = {
-  bred: { bondRate: 1.2, ordersLater: 0 },
-  stray: { bondRate: 1, ordersLater: 0 },
-  wild: { bondRate: 0.6, ordersLater: 1 },
+  bred: { bondRate: 1.2, ordersLater: 0, limitShift: 0, daysToWin: 0 },
+  stray: { bondRate: 1, ordersLater: 0, limitShift: -2, daysToWin: 3 },
+  wild: { bondRate: 0.6, ordersLater: 1, limitShift: 4, daysToWin: 5 },
 };
 
 /** The bond stage a bred companion takes stance orders at, and card orders. */
 const STANCE_ORDERS_STAGE = 1;
 const CARD_ORDERS_STAGE = 2;
 
-/** Days spent with a stray before it follows you home, and the bond it starts with. */
-export const STRAY_VISITS_NEEDED = 3;
+/** The bond each starts with: a stray that follows you home, a wild one, a pup or a rescue. */
 export const STRAY_START_BOND = 5;
+export const WILD_START_BOND = 0;
+export const PUP_START_BOND = 10;
+export const RESCUED_START_BOND = 10;
+
+/** Days of winning over a stray or tracking a wild one before it is yours. */
+export function daysToWin(temperament: CompanionTemperament): number {
+  return TEMPERAMENT_RULES[temperament].daysToWin;
+}
+
+/** How far a companion of this temperament grows past its talent's limits (wild far, a stray less). */
+export function limitShift(temperament: CompanionTemperament): number {
+  return TEMPERAMENT_RULES[temperament].limitShift;
+}
 
 /** Bond points for some time together, by temperament. */
 export function bondGain(base: number, temperament: CompanionTemperament): number {
@@ -132,7 +148,17 @@ export function visitStray(
   return { kindId, visits, lastVisitDay: day };
 }
 
-/** Whether a stray now trusts you enough to come home. */
-export function strayWon(befriending: StrayFriendship): boolean {
-  return befriending.visits >= STRAY_VISITS_NEEDED;
+/** A day spent tracking a wild one that slipped you: the day counts as tried, not as won. */
+export function lostTrail(
+  befriending: StrayFriendship | null,
+  kindId: string,
+  day: number,
+): StrayFriendship {
+  const visits = befriending?.kindId === kindId ? befriending.visits : 0;
+  return { kindId, visits, lastVisitDay: day };
+}
+
+/** Whether it now trusts you enough to come home. */
+export function wonOver(befriending: StrayFriendship, temperament: CompanionTemperament): boolean {
+  return befriending.visits >= daysToWin(temperament);
 }

@@ -1,8 +1,8 @@
 import { stageForPair, stageName, stageOf, stageProgress } from '@/systems/bonds';
 import {
+  daysToWin,
   ordersOpen,
   ordersStages,
-  STRAY_VISITS_NEEDED,
   type CompanionTemperament,
 } from '@/systems/companions';
 import { STAT_IDS, STAT_INFO, statTier } from '@/systems/stats';
@@ -80,7 +80,7 @@ export function strayNotice(state: GameState, ctx: GameContext): StrayNotice | n
     text: stray.kind.stray.line,
     where: place ? `Near the ${place.name.replace(/^The /, '')}` : 'In the streets',
     visits: befriending?.kindId === stray.kind.id ? befriending.visits : 0,
-    needed: STRAY_VISITS_NEEDED,
+    needed: daysToWin(stray.kind.temperament),
     befriend: choice(state, ctx, { type: 'befriendStray' }),
   };
 }

@@ -1,4 +1,5 @@
 import type { CompanionKindDef } from '../../companions';
+import { FOREST_WOLF, HOUND_DIET } from '../../shared/wildKinds';
 
 /** Creatures that may become a companion in Tōrōgakure. */
 export const COMPANION_KINDS: readonly CompanionKindDef[] = [
@@ -23,15 +24,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       kenjutsu: 0,
       fuuinjutsu: 0,
     },
-    diet: [
-      'river-fish',
-      'eggs',
-      'wild-game',
-      'sweetfish',
-      'river-eel',
-      'crayfish',
-      'travel-rations',
-    ],
+    diet: HOUND_DIET,
     plays: { likes: ['fetch', 'scent'], dislikes: ['walk'] },
     names: ['Ash', 'Soot', 'Ember', 'Wick', 'Tallow', 'Cinder', 'Moth', 'Dusk'],
     stray: {
@@ -44,4 +37,31 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
         'This morning the grey hound is sitting outside your door. When you set off, it falls in at your heel.',
     },
   },
+  {
+    id: 'kennel-hound',
+    name: 'Kennel hound',
+    description:
+      'A pup from the clinic’s own line of working dogs: steady, keen-nosed and eager to please.',
+    temperament: 'bred',
+    baseStat: 4,
+    statBonuses: { speed: 2, perception: 3, stamina: 1, taijutsu: 1, intellect: -1 },
+    healthScale: 0.6,
+    maxChakra: 10,
+    traits: ['brawler'],
+    aptitude: {
+      speed: 1.2,
+      perception: 1.3,
+      taijutsu: 1.1,
+      intellect: 0.6,
+      chakraControl: 0.5,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 0,
+      fuuinjutsu: 0,
+    },
+    diet: HOUND_DIET,
+    plays: { likes: ['fetch', 'walk'], dislikes: [] },
+    names: ['Lantern', 'Tsuki', 'Hoshi', 'Kibi', 'Mame', 'Kuri'],
+  },
+  FOREST_WOLF,
 ];

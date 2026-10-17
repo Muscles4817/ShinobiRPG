@@ -1,8 +1,8 @@
 import {
   PLAYER_OWNER,
   STRAY_START_BOND,
-  strayWon,
   visitStray,
+  wonOver,
   type Companions,
 } from '@/systems/companions';
 
@@ -36,7 +36,7 @@ function adopted(state: GameState, stray: StrayToday): Companions {
 
 function visited(state: GameState, stray: StrayToday): GameState {
   const friendship = visitStray(state.companions.befriending, stray.kind.id, state.time.day);
-  if (!strayWon(friendship)) {
+  if (!wonOver(friendship, stray.kind.temperament)) {
     const companions = { ...state.companions, befriending: friendship };
     return log({ ...state, companions }, { text: stray.kind.stray.visit, tone: 'info' });
   }

@@ -2,13 +2,14 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { villageView, type GameAction, type GameState } from '@/game';
+import { villageView, wildsView, type GameAction, type GameState } from '@/game';
 import { ctx, newGame, withHound } from '@/test/gameFixtures';
 
 import { BondsScreen } from './screens/BondsScreen';
 import { VillageLife } from './screens/VillageLife';
 import { CompanionSheet } from './components/CompanionSheet';
 import { VetPage } from './screens/places/VetPage';
+import { WildsPage } from './screens/places/WildsPage';
 
 /** A game whose seed meets a stray on its first day. */
 function withStray(): GameState {
@@ -18,6 +19,16 @@ function withStray(): GameState {
     if (villageView(seeded, ctx).stray) return seeded;
   }
   throw new Error('no seed meets a stray');
+}
+
+/** A game whose seed has a wolf living in the woods. */
+function withWolf(): GameState {
+  for (let seed = 1; seed < 200; seed++) {
+    const game = newGame();
+    const seeded = { ...game, board: { ...game.board, seed } };
+    if (wildsView(seeded, ctx, 'lantern-woods')?.wild) return seeded;
+  }
+  throw new Error('no seed has a wolf in the woods');
 }
 
 /** A stray in the village, and the companion it becomes (smoke test). */
@@ -73,5 +84,35 @@ describe('companions (smoke test)', () => {
     expect(screen.getByText(/Ash is in good health/)).toBeTruthy();
     await user.click(screen.getByRole('button', { name: 'Buy a dose' }));
     expect(done).toEqual([{ type: 'buyMedicine' }]);
+  });
+
+  it('takes a pup home from the clinic’s litter', async () => {
+    const user = userEvent.setup();
+    const done: GameAction[] = [];
+    const state = newGame({ wallet: { ryo: 1000 } });
+    render(
+      <VetPage ctx={ctx} state={state} perform={(a) => done.push(a)} onBack={() => undefined} />,
+    );
+    expect(screen.getByRole('heading', { name: 'The litter' })).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: 'Take a pup home' }));
+    expect(done).toEqual([{ type: 'takePup' }]);
+  });
+
+  it('follows a wild one’s trail in the woods', async () => {
+    const user = userEvent.setup();
+    const done: GameAction[] = [];
+    const state = withWolf();
+    render(
+      <WildsPage
+        ctx={ctx}
+        state={state}
+        perform={(a) => done.push(a)}
+        onBack={() => undefined}
+        placeId="lantern-woods"
+      />,
+    );
+    expect(screen.getByRole('heading', { name: 'Signs of a forest wolf' })).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: 'Follow the trail' }));
+    expect(done).toEqual([{ type: 'trackWild', placeId: 'lantern-woods' }]);
   });
 });

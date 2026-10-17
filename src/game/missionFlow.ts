@@ -88,6 +88,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
       : { ...state.board, completed: [...state.board.completed, def.id] },
     inventory: gifts.inventory,
     cooking: gifts.cooking,
+    companions: gifts.companions,
   };
   const logged = log(pickDone(next, ctx, def), {
     heading: jobDoneHeading(def.title),

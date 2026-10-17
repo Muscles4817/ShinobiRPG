@@ -446,3 +446,31 @@ Each step proves one property and is its own PR.
   the Bonds tab opens the sheet too; the clinic is a counter of two slips.
 - **Left for later:** boarding at the vet, dishes cooked for it at the stove, a light injury
   that fights weakened, and the wild limit bonus (2c).
+
+### Step 2c: finding them
+
+- **Temperament rules** (`systems/companions`) gain a limit shift and the days to win one:
+  bred 0 and none (it is given), stray −2 and three days, wild +4 and five good days.
+  `companionGrowth` (`game/companions/routine.ts`) moves every limit by the shift, so a wolf
+  grows past what its talent alone would allow and a stray stops a little short; an art it can
+  never learn stays at 0.
+- **Wild kinds** (`CompanionKindDef.wild`: a biome, the share of its wild places that have one,
+  and its lines) live in some `wilds` places of their biome, read from the seed and the place
+  (`game/companions/wild.ts`), and leave signs there for anyone without a companion. Tracking
+  (`trackWild`) is two slots and hard-work energy, once a day and never at night; a day gets
+  closer by a chance perception raises (never past 85%) and otherwise goes cold without losing
+  ground. Five good days and it comes to you at no bond, slow to bond and a stage late to take
+  orders. Both packs have the forest wolf (`shared/wildKinds.ts`) in their woods: a stronger
+  body than a hound (base 5, health ×0.8, brawler and swift).
+- **Kennels** (`VetFields.pups`: a bred kind, a price, the bond stage with the vet at which a pup
+  is a gift): `takePup` at the clinic for anyone without a companion. Tōrōgakure's clinic breeds
+  kennel hounds (600 ryo); the Inuzuka clinic sells ninken to outsiders (1,500 ryo); either vet
+  gives one to a close friend. A pup starts as an acquaintance.
+- **Rescues** (`MissionDef.reward.companionKindId`): an animal the job saves follows you home if
+  you have none (otherwise the client keeps it); the debrief names it. The Pup in the Culvert
+  (Tōrōgakure) and the Pup in the Old Well (Konoha) are D-rank chores after the first job.
+- **Validation:** a wild kind is wild-tempered and its biome is some wild place's; a stray kind
+  is stray-tempered; a kennel breeds a bred kind of the pack, for a price, gifting at a real
+  stage; a job's animal is a kind of the pack.
+- **Left for later:** boarding at the vet, dishes cooked for it, a light injury, wild kinds of
+  other biomes (a hawk on the mountain, a river otter) and a second companion.

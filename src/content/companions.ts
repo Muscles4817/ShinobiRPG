@@ -2,6 +2,8 @@ import type { CombatTrait } from '@/systems/combat';
 import type { CompanionTemperament, PlayKind } from '@/systems/companions';
 import type { StatDelta, StatId } from '@/systems/stats';
 
+import type { Biome } from './biomes';
+
 /**
  * Bodies that fight beside someone (`docs/design/retinue-plan.md`): a foe's retinue, and the
  * kinds of creature that may become a companion.
@@ -35,6 +37,24 @@ export interface StrayHaunt {
   readonly follows: string;
 }
 
+/**
+ * Where a wild one of a kind lives: some wild places of its biome, read from the seed (not
+ * every woods has a wolf in it), and tracked there on purpose over days until it comes to you.
+ */
+export interface WildHaunt {
+  readonly biome: Biome;
+  /** The share of wild places of its biome where one lives, in a save. */
+  readonly chance: number;
+  /** What you notice of it there, e.g. "Prints the size of your hand in the mud by the stream." */
+  readonly sign: string;
+  /** A day's tracking that brings you closer. */
+  readonly closer: string;
+  /** A day the trail goes cold. */
+  readonly lost: string;
+  /** The day it comes to you. */
+  readonly comes: string;
+}
+
 /** A kind of creature that may become a companion: a breed of ninken, a stray hound. */
 export interface CompanionKindDef {
   readonly id: string;
@@ -59,6 +79,8 @@ export interface CompanionKindDef {
   readonly names: readonly string[];
   /** Where a stray of this kind may be found, for kinds that live on the streets. */
   readonly stray?: StrayHaunt;
+  /** Where a wild one lives, for kinds tracked in the wilds. */
+  readonly wild?: WildHaunt;
 }
 
 /** The companion a clan's children grow up with, and the bond they start with. */
@@ -76,4 +98,17 @@ export interface VetFields {
   readonly medicineCost: number;
   /** A clan whose own are treated free (the clan's kennels). */
   readonly freeForClanId?: string;
+  /** Pups bred here, for someone without a companion. */
+  readonly pups?: KennelPups;
+}
+
+/** A kennel's pups: given to a friend of the vet, or sold to anyone else. */
+export interface KennelPups {
+  /** A bred kind of the pack. */
+  readonly kindId: string;
+  readonly price: number;
+  /** The bond stage with the vet at which a pup is a gift. */
+  readonly giftStage: number;
+  /** What you see of the litter. */
+  readonly line: string;
 }

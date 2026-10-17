@@ -55,5 +55,11 @@ export const TOROGAKURE_COMPOUNDS: readonly PlaceDef[] = [
     keeperId: 'kaori',
     treatmentCost: 40,
     medicineCost: 15,
+    pups: {
+      kindId: 'kennel-hound',
+      price: 600,
+      giftStage: 3,
+      line: 'A litter of the clinic’s working pups tumbles about a pen by the counter.',
+    },
   },
 ];

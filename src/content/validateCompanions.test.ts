@@ -5,7 +5,14 @@ import { validateCompanions } from './validateCompanions';
 const hound = ORIGINAL_PACK.companionKinds[0]!;
 
 function withKind(kind: CompanionKindDef) {
-  return { ...ORIGINAL_PACK, companionKinds: [kind] };
+  const kept = ORIGINAL_PACK.companionKinds.filter((k) => k.id !== kind.id);
+  return { ...ORIGINAL_PACK, companionKinds: [kind, ...kept] };
+}
+
+function kind(id: string): CompanionKindDef {
+  const found = ORIGINAL_PACK.companionKinds.find((k) => k.id === id);
+  if (!found) throw new Error(`no kind ${id}`);
+  return found;
 }
 
 describe('companion validation', () => {
@@ -25,6 +32,27 @@ describe('companion validation', () => {
       'companion kind "stray-hound" starts too strong',
       'companion kind "stray-hound" haunts "nowhere", not a place of the start village',
       'companion kind "stray-hound" has a stray chance outside 0–1',
+    ]);
+  });
+
+  it('reports a wild one living nowhere, or a tame one living wild', () => {
+    const wolf = kind('forest-wolf');
+    expect(
+      validateCompanions(withKind({ ...wolf, wild: { ...wolf.wild!, biome: 'marsh' } })),
+    ).toEqual(['companion kind "forest-wolf" lives in marsh, and no place is']);
+    expect(validateCompanions(withKind({ ...wolf, temperament: 'bred' }))).toEqual([
+      'companion kind "forest-wolf" lives wild but is not wild-tempered',
+    ]);
+  });
+
+  it('reports a kennel breeding a kind that is not bred, and a job giving an unknown kind', () => {
+    const pack = withKind({ ...kind('kennel-hound'), temperament: 'stray' });
+    const missions = ORIGINAL_PACK.missions.map((m, i) =>
+      i === 0 ? { ...m, reward: { ...m.reward, companionKindId: 'dragon' } } : m,
+    );
+    expect(validateCompanions({ ...pack, missions })).toEqual([
+      'vet "animal-clinic" breeds "kennel-hound", not a bred kind',
+      `mission "${ORIGINAL_PACK.missions[0]!.id}" gives unknown kind "dragon"`,
     ]);
   });
 

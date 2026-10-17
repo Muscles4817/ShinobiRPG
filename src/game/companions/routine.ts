@@ -4,17 +4,20 @@ import {
   hungerOf,
   keepsRoutine,
   laidUp,
+  limitShift,
   mended,
   PLAYER_OWNER,
   STARVING_BOND_DRIFT,
   STRAY_LEAVES_AFTER,
   withBond,
   type Companion,
+  type CompanionTemperament,
 } from '@/systems/companions';
 import { write } from '@/systems/journal';
 import {
   applyTraining,
   limitsFor,
+  STAT_IDS,
   type Growth,
   type StatDelta,
   type StatId,
@@ -50,14 +53,20 @@ function routineOn(companion: Companion, seed: number, day: number): StatDelta {
   return hashUnit(seed, day, companion.id, 'idle') < IDLE_DAY_CHANCE ? {} : ROUTINE;
 }
 
-/** How a companion grows: its talent, within the limits that talent sets. */
-export function companionGrowth(companion: Companion): Growth {
-  return { scale: companion.aptitude, limits: limitsFor(companion.aptitude) };
+/**
+ * How a companion grows: its talent, within the limits that talent sets, moved by its
+ * temperament (a wild one goes further than its talent alone would take it, a stray less far).
+ */
+export function companionGrowth(companion: Companion, temperament: CompanionTemperament): Growth {
+  const shift = limitShift(temperament);
+  const bonus = Object.fromEntries(STAT_IDS.map((id) => [id, shift]));
+  return { scale: companion.aptitude, limits: limitsFor(companion.aptitude, bonus) };
 }
 
 interface DayContext {
   readonly seed: number;
   readonly maxHealth: number;
+  readonly temperament: CompanionTemperament;
   /** On a job or the road: it eats from your pack at camp. */
   readonly onTheRoad: boolean;
 }
@@ -66,12 +75,16 @@ interface DayContext {
 function lived(
   today: Companion,
   day: number,
-  { seed, maxHealth, onTheRoad }: DayContext,
+  { seed, maxHealth, temperament, onTheRoad }: DayContext,
 ): Companion {
   const companion = onTheRoad ? { ...today, lastFedDay: day } : today;
   const hunger = hungerOf(companion, day);
   const stats = keepsRoutine(hunger, laidUp(companion, day))
-    ? applyTraining(companion.stats, routineOn(companion, seed, day), companionGrowth(companion))
+    ? applyTraining(
+        companion.stats,
+        routineOn(companion, seed, day),
+        companionGrowth(companion, temperament),
+      )
     : companion.stats;
   const healed = companion.injury && companion.injury.until <= day + 1 ? null : companion.injury;
   const rested = {
@@ -117,6 +130,7 @@ export function companionsDayPassed(state: GameState, ctx: GameContext): GameSta
   const days = {
     seed: state.board.seed,
     maxHealth: maxHealthOf(kind),
+    temperament: kind.temperament,
     onTheRoad: state.mission !== null,
   };
   let now: Companion = companion;

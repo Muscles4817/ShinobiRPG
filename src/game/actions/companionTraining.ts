@@ -64,7 +64,10 @@ export const trainCompanion: ActionHandler<ActionOf<'trainCompanion'>> = {
     if (!yours) return state;
     const { companion, kind } = yours;
     const teacher = state.character.stats[stat];
-    const growth = { ...companionGrowth(companion), teachers: { [stat]: teacher } };
+    const growth = {
+      ...companionGrowth(companion, kind.temperament),
+      teachers: { [stat]: teacher },
+    };
     const stats = applyTraining(companion.stats, { [stat]: SESSION_GAIN }, growth);
     const trained = { ...warmed(companion, kind, SESSION_BOND), stats };
     const energy = hardWorkEnergy(state.character, ctx, TRAIN_ENERGY);

@@ -90,5 +90,11 @@ export const KONOHA_COMPOUNDS: readonly PlaceDef[] = [
     treatmentCost: 40,
     medicineCost: 15,
     freeForClanId: 'inuzuka',
+    pups: {
+      kindId: 'ninken',
+      price: 1500,
+      giftStage: 3,
+      line: 'Ninken pups wrestle in the straw of the kennel run, watched by a mother twice their size.',
+    },
   },
 ];

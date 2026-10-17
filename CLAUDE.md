@@ -304,8 +304,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     rates a foe with what it sees (`opponentPower`, `partyPower`). The player may have a
     **companion** (`systems/companions`, `game/companions/`): a bonded creature of a
     `CompanionKindDef` (temperament bred, stray or wild: how fast it bonds and how late it takes
-    orders), born to a clan (`ClanDef.companion`) or a stray won over in the village
-    (`befriendStray`, drawn from the seed and day). It grows by a light routine caught up each
+    orders), born to a clan (`ClanDef.companion`), a stray won over in the village
+    (`befriendStray`, drawn from the seed and day), a wild one tracked over days in a wild place of
+    its biome (`trackWild`, `game/companions/wild.ts`; perception raises the odds), a kennel's pup
+    (`VetFields.pups`, `takePup`: a gift to a close friend of the vet) or an animal a job rescues
+    (`reward.companionKindId`). Its temperament moves its limits (wild past its talent, a stray
+    short of it: `companionGrowth`). It grows by a light routine caught up each
     morning like peers', fights beside you in every mission fight and spar, and takes stance and
     then card orders only as the bond opens them (`ordersOpen`). It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
@@ -678,7 +682,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a companion kind:** a `CompanionKindDef` in the pack's `companions.ts` (temperament, a
   starting body no better than a fresh genin's best, `healthScale`, traits, a talent shape with
   0 for arts it never learns, names, and a `stray` haunt for kinds found on the streets, at
-  places of the start village); give a clan one with `ClanDef.companion`. Validated in
+  places of the start village, or a `wild` haunt by biome for wild kinds; shared wild kinds live
+  in `shared/wildKinds.ts`); give a clan one with `ClanDef.companion`, breed a bred kind at a
+  vet (`pups`) or hand one over from a job (`reward.companionKindId`). Validated in
   `validateCompanions.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`

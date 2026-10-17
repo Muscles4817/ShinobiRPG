@@ -36,6 +36,26 @@ export function VetPage({ ctx, state, perform, onBack }: PlaceProps) {
           </button>
           {view.treat.blocker && <p className="muted small">{view.treat.blocker}</p>}
         </section>
+        {view.pups && (
+          <section className="room-slip">
+            <h2>The litter</h2>
+            <p className="story">{view.pups.line}</p>
+            <p className="room-price num">
+              {view.pups.price === 0 ? 'A gift, for a friend' : `${view.pups.price} ryo`}
+            </p>
+            <button
+              type="button"
+              className="btn wide"
+              disabled={view.pups.take.blocker !== null}
+              onClick={() => {
+                if (view.pups) perform(view.pups.take.action);
+              }}
+            >
+              Take a pup home
+            </button>
+            {view.pups.take.blocker && <p className="muted small">{view.pups.take.blocker}</p>}
+          </section>
+        )}
         <section className="room-slip">
           <h2>Medicine</h2>
           <p className="muted small num">

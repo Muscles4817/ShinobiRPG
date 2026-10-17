@@ -112,6 +112,8 @@ export interface MissionDef {
     readonly gearId?: string;
     /** A recipe the client teaches you on success (a recipe id). */
     readonly recipeId?: string;
+    /** An animal that follows you home on success, if you have none (a companion kind id). */
+    readonly companionKindId?: string;
   };
   readonly minMissionsCompleted: number;
   /** Always on the board (patrols, watches); otherwise jobs are posted for a few days at a time. */

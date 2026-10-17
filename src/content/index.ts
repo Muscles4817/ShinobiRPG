@@ -132,8 +132,10 @@ export type {
   CompanionKindDef,
   RetinueEntry,
   RetinueTell,
+  KennelPups,
   StrayHaunt,
   VetFields,
+  WildHaunt,
 } from './companions';
 export {
   OUTSIDER_STANCES,

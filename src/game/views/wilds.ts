@@ -1,6 +1,9 @@
 import type { Biome } from '@/content';
 import { gatheredToday, inSeason, recognised, type Find } from '@/systems/cooking';
 
+import { daysToWin } from '@/systems/companions';
+
+import { trackingChance, wildHere } from '../companions/wild';
 import type { GameContext } from '../context';
 import { gatherMoment, wildsHere } from '../gathering';
 import type { GameState } from '../state';
@@ -25,12 +28,49 @@ export interface FishingSpotView extends Choice {
   readonly bites: WhatsAbout;
 }
 
+/** Signs of a wild one living here, for someone without a companion, and tracking it. */
+export interface WildSign {
+  readonly kind: string;
+  readonly sign: string;
+  /** Good days of tracking so far, and how many it takes. */
+  readonly days: number;
+  readonly needed: number;
+  /** How a day's tracking is likely to go, by your eyes, in words. */
+  readonly odds: string;
+  readonly track: Choice;
+}
+
 export interface WildsView {
   readonly name: string;
   readonly blurb: string;
   readonly biome: Biome;
   readonly forage: Choice & { readonly about: WhatsAbout };
   readonly spots: readonly FishingSpotView[];
+  readonly wild: WildSign | null;
+}
+
+/** Below this a day's tracking more often goes cold than not; above the next, it mostly gets closer. */
+const ODDS_POOR = 0.4;
+const ODDS_GOOD = 0.65;
+
+function oddsLine(chance: number): string {
+  if (chance < ODDS_POOR) return 'Your eyes lose the trail more often than not.';
+  if (chance < ODDS_GOOD) return 'Some days you’ll keep the trail, some days not.';
+  return 'Your eyes keep the trail more often than not.';
+}
+
+function wildSign(state: GameState, ctx: GameContext, placeId: string): WildSign | null {
+  const kind = wildHere(state, ctx, placeId);
+  if (!kind) return null;
+  const befriending = state.companions.befriending;
+  return {
+    kind: kind.name,
+    sign: kind.wild.sign,
+    days: befriending?.kindId === kind.id ? befriending.visits : 0,
+    needed: daysToWin(kind.temperament),
+    odds: oddsLine(trackingChance(state)),
+    track: choice(state, ctx, { type: 'trackWild', placeId }),
+  };
 }
 
 function whatsAbout(state: GameState, ctx: GameContext, finds: readonly Find[]): WhatsAbout {
@@ -63,6 +103,7 @@ export function wildsView(state: GameState, ctx: GameContext, placeId: string): 
       description: spot.description,
       bites: whatsAbout(state, ctx, spot.catches),
     })),
+    wild: wildSign(state, ctx, placeId),
   };
 }
 

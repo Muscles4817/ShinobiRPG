@@ -4,9 +4,11 @@ import {
   bondGain,
   ordersOpen,
   ordersStages,
-  STRAY_VISITS_NEEDED,
-  strayWon,
+  daysToWin,
+  limitShift,
+  lostTrail,
   visitStray,
+  wonOver,
   withBond,
   type Companion,
 } from './companions';
@@ -47,11 +49,23 @@ describe('companions', () => {
 
   it('a stray comes home after enough days together, starting over for another', () => {
     let friendship = visitStray(null, 'hound', 1);
-    for (let day = 2; day <= STRAY_VISITS_NEEDED; day++) {
-      expect(strayWon(friendship)).toBe(false);
+    for (let day = 2; day <= daysToWin('stray'); day++) {
+      expect(wonOver(friendship, 'stray')).toBe(false);
       friendship = visitStray(friendship, 'hound', day);
     }
-    expect(strayWon(friendship)).toBe(true);
+    expect(wonOver(friendship, 'stray')).toBe(true);
     expect(visitStray(friendship, 'cat', 9).visits).toBe(1);
+  });
+
+  it('a wild one takes longer to win, and a day it slips you counts for nothing', () => {
+    expect(daysToWin('wild')).toBeGreaterThan(daysToWin('stray'));
+    const tracked = visitStray(null, 'wolf', 1);
+    expect(lostTrail(tracked, 'wolf', 2)).toEqual({ kindId: 'wolf', visits: 1, lastVisitDay: 2 });
+    expect(lostTrail(tracked, 'bear', 2).visits).toBe(0);
+  });
+
+  it('a wild one grows furthest past its talent, a stray least', () => {
+    expect(limitShift('wild')).toBeGreaterThan(limitShift('bred'));
+    expect(limitShift('stray')).toBeLessThan(limitShift('bred'));
   });
 });
