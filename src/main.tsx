@@ -32,6 +32,7 @@ import '@/ui/styles/motion.css';
 import '@/ui/styles/menu.css';
 import '@/ui/styles/settings.css';
 import '@/ui/styles/dayend.css';
+import '@/ui/styles/honours.css';
 
 // Composition root for the app: choose the platform adapters here.
 const root = document.getElementById('root');

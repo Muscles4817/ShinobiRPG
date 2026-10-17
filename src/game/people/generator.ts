@@ -1,6 +1,6 @@
 import { createRng, hashString, type Rng } from '@/core';
 import type { PersonDef, PlaceKind } from '@/content';
-import { DISCIPLINES } from '@/systems/techniques';
+import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { TIME_SLOTS, type TimeSlot } from '@/systems/time';
 
 import type { GameContext } from '../context';
@@ -29,6 +29,8 @@ export interface GeneratorInput {
   readonly seed: number;
   /** The village they belong to and hang around in. Absent: the pack's start village. */
   readonly villageId?: string;
+  /** Each one's clan by position (`yearClans`); absent or null: clanless. */
+  readonly clanIds?: readonly (string | null)[];
 }
 
 export function generateGenin(ctx: GameContext, rng: Rng, input: GeneratorInput): PersonDef[] {
@@ -42,7 +44,8 @@ export function generateGenin(ctx: GameContext, rng: Rng, input: GeneratorInput)
     families.add(familyName);
     const id = `${GENERATED_ID_PREFIX}${input.firstNumber + i}`;
     const village = input.villageId ?? ctx.content.startLocationId;
-    people.push(generateOne(ctx, rng, { id, name, familyName, seed: input.seed, village }));
+    const clanId = input.clanIds?.[i] ?? null;
+    people.push(generateOne(ctx, rng, { id, name, familyName, seed: input.seed, village, clanId }));
   }
   return people;
 }
@@ -58,18 +61,31 @@ interface Identity {
   readonly familyName: string;
   readonly seed: number;
   readonly village: string;
+  readonly clanId: string | null;
+}
+
+/** A clan child works at the clan's own art (its first art that is a discipline), if it has one. */
+function clanSpecialty(ctx: GameContext, clanId: string | null): Discipline | null {
+  if (!clanId) return null;
+  const arts = ctx.content.clans.require(clanId).arts;
+  return DISCIPLINES.find((d) => arts.includes(d)) ?? null;
 }
 
 function generateOne(ctx: GameContext, rng: Rng, who: Identity): PersonDef {
   const traitIds = pickTraits(ctx, rng);
   const notes = traitIds.map((id) => ctx.content.traits.require(id).note);
   const appearance = randomAppearance(rng);
-  const specialty = rng.pick(DISCIPLINES);
-  const start = graduate(ctx, createRng(hashString(`${who.seed}|${who.id}`)), specialty);
+  // Drawn for everyone, so a clan child leaves the rest of the year's draws as they were.
+  const drawn = rng.pick(DISCIPLINES);
+  const specialty = clanSpecialty(ctx, who.clanId) ?? drawn;
+  const clan = who.clanId ? ctx.content.clans.require(who.clanId) : null;
+  const dice = createRng(hashString(`${who.seed}|${who.id}`));
+  const start = graduate(ctx, dice, specialty, clan?.id);
   return {
     id: who.id,
     name: who.name,
-    familyName: who.familyName,
+    familyName: clan?.name ?? who.familyName,
+    ...(clan ? { clanId: clan.id } : {}),
     role: 'genin',
     title: 'Genin',
     rank: 'genin',
