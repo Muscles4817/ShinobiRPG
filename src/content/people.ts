@@ -20,6 +20,7 @@ export const TONES = [
   'tease',
   'curious',
   'quiet',
+  'cruel',
 ] as const;
 export type Tone = (typeof TONES)[number];
 

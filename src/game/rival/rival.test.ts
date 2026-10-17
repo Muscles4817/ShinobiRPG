@@ -7,7 +7,8 @@ import { openDay } from '../daybook/open';
 import { draft, formTeam } from '@/test/gameFixtures';
 import type { GameState } from '../state';
 import { momentRows } from '../views/dayEndRows';
-import { rivalChallengeView, rivalryView } from '../views/rival';
+import { rivalChallengeView } from '../views/rival';
+import { rivalryView } from '../views/rivalry';
 import { newFirsts } from './grades';
 import { noteRival } from './record';
 import { RIVAL_SHAPES, type Rival } from './state';
@@ -61,7 +62,9 @@ describe('answering your rival', () => {
 
 describe('challenges', () => {
   it('are taken up as a spar that goes in the tally, with words after', () => {
-    const challenged = withRival(newGame(), { challenge: { day: 1, line: 'Spar.' } });
+    const challenged = withRival(newGame(), {
+      challenge: { day: 1, line: 'Spar.', contest: 'spar' },
+    });
     expect(rivalChallengeView(challenged, ctx)?.accept.blocker).toBeNull();
     const fought = fightOut(act(challenged, { type: 'acceptChallenge' }));
     const rival = fought.rival!;
@@ -71,7 +74,10 @@ describe('challenges', () => {
   });
 
   it('cost a proud rival’s goodwill more than a kind one’s when turned down', () => {
-    const base = withRival(newGame(), { heat: 50, challenge: { day: 1, line: 'Spar.' } });
+    const base = withRival(newGame(), {
+      heat: 50,
+      challenge: { day: 1, line: 'Spar.', contest: 'spar' },
+    });
     const proud = act(withRival(base, { temperament: 'proud' }), { type: 'declineChallenge' });
     const kind = act(withRival(base, { temperament: 'kind' }), { type: 'declineChallenge' });
     expect(proud.rival!.heat).toBeLessThan(kind.rival!.heat);
@@ -89,7 +95,10 @@ describe('challenges', () => {
   });
 
   it('lapse when left standing, and that cools things a little', () => {
-    const game = withRival(newGame(), { heat: 50, challenge: { day: 1, line: 'Spar.' } });
+    const game = withRival(newGame(), {
+      heat: 50,
+      challenge: { day: 1, line: 'Spar.', contest: 'spar' },
+    });
     const later = { ...game, time: { day: 3, slot: 0 } };
     const next = noteRival(game, later, ctx).rival!;
     expect(next.challenge).toBeNull();

@@ -104,11 +104,16 @@ export function chooseRival(state: GameState, ctx: GameContext): Rival | null {
     temperament: temperamentOf(best.person, state.board.seed),
     heat: START_HEAT,
     spars: { you: 0, them: 0 },
+    races: { you: 0, them: 0 },
     firsts: {},
     startGrades: gradeMarks(state.character.stats, personStats(best.person, state)),
     challenge: null,
     lastChallengeDay: state.time.day,
     beat: { kind: 'meeting' },
+    lastProvocationDay: state.time.day,
+    rattled: false,
+    sparStakes: null,
+    race: null,
   };
 }
 

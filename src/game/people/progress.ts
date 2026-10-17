@@ -14,6 +14,7 @@ import {
 
 import { rollCharacterAptitude } from '../aptitude';
 import type { GameContext } from '../context';
+import { driven } from '../rival/drive';
 import type { GameState } from '../state';
 import { everyone, findPerson } from './cast';
 import { dailyRegimen, isLessonDay, lessonGains } from './regimen';
@@ -97,7 +98,8 @@ function caughtUp(
   let stats = from.stats;
   const first = Math.max(from.lastGrownDay + 1, through - MAX_CATCH_UP_DAYS + 1);
   for (let day = first; day <= through; day++) {
-    stats = applyTraining(stats, dailyRegimen(person, seed, day), solo);
+    const regimen = driven(state, person.id, stats, dailyRegimen(person, seed, day));
+    stats = applyTraining(stats, regimen, solo);
     if (lesson && isLessonDay(person.id, seed, day)) {
       stats = applyTraining(stats, lesson.gains, lesson.growth);
     }
