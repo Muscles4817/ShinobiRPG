@@ -1,5 +1,6 @@
 import type { CombatPerk, CombatTrait } from '@/systems/combat';
 import type { AtlasDef, MapLabelSide } from './atlas';
+import type { ClanCompanion, CompanionKindDef, RetinueEntry } from './companions';
 import type { Find } from '@/systems/cooking';
 import type {
   ArcDef,
@@ -159,20 +160,6 @@ export interface EnemyDef {
   readonly retinue?: readonly RetinueEntry[];
 }
 
-/**
- * How plainly a retinue shows before the fight: `open` (a hound at heel, anyone sees it),
- * `kept` (out of sight but carried: a sharp look may catch it) or `hidden` (inside the body:
- * even the sharpest eyes rarely see it). In the fight every body on the field is seen.
- */
-export const RETINUE_TELLS = ['open', 'kept', 'hidden'] as const;
-export type RetinueTell = (typeof RETINUE_TELLS)[number];
-
-/** One body in a foe's retinue: another enemy, fighting beside them. */
-export interface RetinueEntry {
-  readonly enemyId: string;
-  readonly tell: RetinueTell;
-}
-
 /** A family the character can be born into. Clans shape growth and give techniques. */
 export interface ClanDef {
   readonly id: string;
@@ -190,6 +177,8 @@ export interface ClanDef {
   readonly startingTechniqueIds: readonly string[];
   /** Clan members live rent-free here instead of renting. */
   readonly lodging?: string;
+  /** The companion a child of the clan grows up with (`companions.ts`). */
+  readonly companion?: ClanCompanion;
   readonly kekkeiGenkai?: {
     readonly name: string;
     readonly description: string;
@@ -369,6 +358,8 @@ export interface ContentPack {
   /** What crew say on a job, by moment and trait. */
   readonly voices: readonly VoiceDef[];
   readonly enemies: readonly EnemyDef[];
+  /** Kinds of creature that may become someone's companion. */
+  readonly companionKinds: readonly CompanionKindDef[];
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];
   readonly clans: readonly ClanDef[];

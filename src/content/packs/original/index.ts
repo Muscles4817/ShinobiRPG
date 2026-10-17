@@ -10,6 +10,7 @@ import { UPBRINGINGS } from '../../shared/upbringings';
 import { CLAN_TECHNIQUES } from './clanTechniques';
 import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
+import { COMPANION_KINDS } from './companions';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { SEASONAL_FOODS } from './seasonalFood';
@@ -125,6 +126,7 @@ export const ORIGINAL_PACK: ContentPack = {
     PATIENT_THING_ARC,
   ],
   voices: VOICES,
+  companionKinds: COMPANION_KINDS,
   enemies: [
     ...ENEMIES,
     ...CHUNIN_ENEMIES,

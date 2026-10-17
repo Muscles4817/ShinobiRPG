@@ -19,8 +19,6 @@ export type {
   ConversationDef,
   ConversationTopic,
   EnemyDef,
-  RetinueEntry,
-  RetinueTell,
   FestivalDef,
   FoodDef,
   GearDef,
@@ -129,3 +127,10 @@ export {
   type SessionFormat,
 } from './senseis';
 export { VOICE_MOMENTS, type VoiceDef, type VoiceMoment } from './voices';
+export type {
+  ClanCompanion,
+  CompanionKindDef,
+  RetinueEntry,
+  RetinueTell,
+  StrayHaunt,
+} from './companions';

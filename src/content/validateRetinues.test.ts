@@ -1,5 +1,6 @@
 import { ORIGINAL_PACK } from './packs/original';
-import type { EnemyDef, RetinueEntry } from './types';
+import type { RetinueEntry } from './companions';
+import type { EnemyDef } from './types';
 import { validateRetinues } from './validateRetinues';
 
 /** The original pack with the poacher's retinue replaced. */

@@ -1,0 +1,64 @@
+import type { CombatTrait } from '@/systems/combat';
+import type { CompanionTemperament } from '@/systems/companions';
+import type { StatDelta, StatId } from '@/systems/stats';
+
+/**
+ * Bodies that fight beside someone (`docs/design/retinue-plan.md`): a foe's retinue, and the
+ * kinds of creature that may become a companion.
+ */
+
+/**
+ * How plainly a retinue shows before the fight: `open` (a hound at heel, anyone sees it),
+ * `kept` (out of sight but carried: a sharp look may catch it) or `hidden` (inside the body:
+ * even the sharpest eyes rarely see it). In the fight every body on the field is seen.
+ */
+export const RETINUE_TELLS = ['open', 'kept', 'hidden'] as const;
+export type RetinueTell = (typeof RETINUE_TELLS)[number];
+
+/** One body in a foe's retinue: another enemy, fighting beside them. */
+export interface RetinueEntry {
+  readonly enemyId: string;
+  readonly tell: RetinueTell;
+}
+
+/** Where a stray of a kind turns up in the start village, and how likely a save meets one. */
+export interface StrayHaunt {
+  /** Places in the start village it may be found at, one a day. */
+  readonly placeIds: readonly string[];
+  /** The share of saves in which one ever turns up. */
+  readonly chance: number;
+  /** What you see of it, e.g. "A thin grey hound noses through the scraps by the stalls." */
+  readonly line: string;
+  /** What spending time with it looks like, for the journal. */
+  readonly visit: string;
+  /** The day it follows you home. */
+  readonly follows: string;
+}
+
+/** A kind of creature that may become a companion: a breed of ninken, a stray hound. */
+export interface CompanionKindDef {
+  readonly id: string;
+  /** What it is, shown on its banner and sheet: "Ninken", "Stray hound". */
+  readonly name: string;
+  readonly description: string;
+  /** How it takes to people (`systems/companions`): bred, stray or wild. */
+  readonly temperament: CompanionTemperament;
+  readonly baseStat: number;
+  readonly statBonuses: StatDelta;
+  /** Health as a multiple of a human's 100. */
+  readonly healthScale: number;
+  readonly maxChakra: number;
+  readonly traits?: readonly CombatTrait[];
+  /** Its talent per stat, 1 when left out; 0 is an art it can never learn. */
+  readonly aptitude: Partial<Readonly<Record<StatId, number>>>;
+  /** Names one may be given, one drawn from the seed. */
+  readonly names: readonly string[];
+  /** Where a stray of this kind may be found, for kinds that live on the streets. */
+  readonly stray?: StrayHaunt;
+}
+
+/** The companion a clan's children grow up with, and the bond they start with. */
+export interface ClanCompanion {
+  readonly kindId: string;
+  readonly bond: number;
+}

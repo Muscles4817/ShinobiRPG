@@ -91,6 +91,7 @@ export const CLANS: readonly ClanDef[] = [
     arts: ['speed', 'taijutsu'],
     startingTechniqueIds: ['fang-over-fang'],
     lodging: 'Your room in the Inuzuka kennels',
+    companion: { kindId: 'ninken', bond: 30 },
   },
   {
     id: 'uzumaki',

@@ -2,6 +2,7 @@ import { talkedToday } from '@/systems/bonds';
 
 import { playerCombatant } from '../combatants';
 import { startFight } from '../fightStyle';
+import { companionAllies } from '../companions/combatant';
 import { adjust, busyReason, firstBlocker, healthFraction, placeHere, spendTime } from '../ops';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
@@ -46,7 +47,7 @@ export const spar: ActionHandler<ActionOf<'spar'>> = {
       ctx,
       {
         player: playerCombatant(ready, ctx),
-        allies: [],
+        allies: companionAllies(ready, ctx),
         enemies: [companionCombatant(partner, ready, ctx, PARTNER_TAG)],
         canFlee: true,
         intro: `${partner.name} squares up. "Don’t hold back."`,

@@ -1,4 +1,4 @@
-import { bondsView, type PersonCard } from '@/game';
+import { bondsView, type CompanionCard, type PersonCard } from '@/game';
 
 import { Avatar } from '../components/Faces';
 import { BondMeter } from '../components/BondMeter';
@@ -31,7 +31,23 @@ function BondCard({ card, onOpen }: { readonly card: PersonCard; readonly onOpen
   );
 }
 
-/** 縁 Bonds: your team first, then everyone you know, closest first; strangers fold away. */
+/** Your companion: what it is, how close you are, what it takes from you in a fight. */
+function CompanionSlip({ card }: { readonly card: CompanionCard }) {
+  return (
+    <article className="bond-card companion-card">
+      <span className="bond-main">
+        <b>{card.name}</b>
+        <small>{card.description}</small>
+        <BondMeter stageName={card.stageName} progress={card.progress} />
+        <small>{card.orders}</small>
+        <small>Best at {card.standouts.join(', ')}.</small>
+      </span>
+      <span className="badge">{card.kind}</span>
+    </article>
+  );
+}
+
+/** 縁 Bonds: your companion and your team first, then everyone you know, closest first; strangers fold away. */
 export function BondsScreen({ ctx, state, onOpenPerson }: BondsScreenProps) {
   const view = bondsView(state, ctx);
   const card = (c: PersonCard) => (
@@ -49,6 +65,12 @@ export function BondsScreen({ ctx, state, onOpenPerson }: BondsScreenProps) {
         <p className="label">縁 Bonds</p>
         <h1>The people in your life</h1>
       </header>
+      {view.companion && (
+        <section className="bond-group">
+          <h2 className="label">At your side</h2>
+          <CompanionSlip card={view.companion} />
+        </section>
+      )}
       {view.team.length > 0 && (
         <section className="bond-group">
           <h2 className="label">Your team</h2>

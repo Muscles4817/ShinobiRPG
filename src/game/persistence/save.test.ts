@@ -398,6 +398,13 @@ describe('persistence', () => {
     expect(loaded.value.exams).toMatchObject({ watchedDay: null, spectating: false });
   });
 
+  it('gives a save from before companions none, and no stray being won over', () => {
+    const { companions: _c, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 43, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.companions).toEqual({ owned: {}, befriending: null });
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

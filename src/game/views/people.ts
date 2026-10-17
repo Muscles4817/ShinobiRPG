@@ -9,6 +9,7 @@ import { currentLocation } from '../ops';
 import { bondOf, everyone, fullName, peopleHere, whereNow } from '../people/cast';
 import type { GameState } from '../state';
 import { capitalise, choice, type Choice } from './common';
+import { companionCard, type CompanionCard } from './companion';
 
 export { TASTES_REVEALED_AT } from './bondPath';
 
@@ -38,6 +39,8 @@ export interface PersonCard extends PersonFace {
 }
 
 export interface BondsView {
+  /** Your companion, first of all, if you have one. */
+  readonly companion: CompanionCard | null;
   readonly team: readonly PersonCard[];
   /** People you have talked to, closest first. */
   readonly known: readonly PersonCard[];
@@ -98,6 +101,7 @@ export function bondsView(state: GameState, ctx: GameContext): BondsView {
   const others = cards.filter((c) => !teamIds.includes(c.id));
   const met = (c: PersonCard) => state.people.bonds[c.id] !== undefined;
   return {
+    companion: companionCard(state, ctx),
     team: teamIds.flatMap((id) => cards.filter((c) => c.id === id)),
     known: others.filter(met).sort((a, b) => b.stage - a.stage || b.progress - a.progress),
     strangers: others.filter((c) => !met(c)),

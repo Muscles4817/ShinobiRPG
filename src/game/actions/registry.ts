@@ -34,6 +34,7 @@ import { testChakraPaper } from './chakraPaper';
 import { assignTeam, chooseSensei } from './team';
 import { dismissReport, leaveFight, travel } from './travel';
 import { followSight } from './village';
+import { befriendStray } from './companions';
 import type { ActionHandler, ActionOf, GameActionType } from './types';
 
 type Registry = { readonly [T in GameActionType]: ActionHandler<ActionOf<T>> };
@@ -91,6 +92,7 @@ export const HANDLERS: Registry = {
   buyCookbook,
   learnRecipe,
   followSight,
+  befriendStray,
   hostDinner,
   buyRound,
   playDice,

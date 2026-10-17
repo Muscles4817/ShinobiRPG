@@ -1,4 +1,5 @@
 import type { CombatState } from '@/systems/combat';
+import type { Companions } from '@/systems/companions';
 import type { MapStyle } from './mapStyle';
 import type { Cooking, MealQuality } from '@/systems/cooking';
 import type { Housing } from '@/systems/housing';
@@ -67,6 +68,8 @@ export interface GameState {
   readonly cooking: Cooking;
   /** How your sensei rates you and how this week's meetings went (`game/sensei/`). */
   readonly mentor: Mentor;
+  /** Bonded creatures by owner (yours under `PLAYER_OWNER`), and a stray being won over. */
+  readonly companions: Companions;
   /**
    * Set only on a versus sandbox (`game/versus/`): who is fighting whom. A sandbox is never
    * saved, so a real playthrough never carries it.

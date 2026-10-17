@@ -29,6 +29,7 @@ import {
   FAILURE_REPUTATION_LOSS,
 } from './missionFlow';
 import { teamAllies } from './missionTeam';
+import { companionAllies } from './companions/combatant';
 import { adjust, chip, log, spendTime } from './ops';
 import { addReport } from './reports';
 import { takeSpoils } from './spoils';
@@ -64,7 +65,7 @@ export function beginCombat(
     ctx,
     {
       player: playerCombatant(state, ctx),
-      allies: teamAllies(state, ctx),
+      allies: [...teamAllies(state, ctx), ...companionAllies(state, ctx)],
       enemies,
       canFlee: stage.canFlee,
       ...(stage.ground ? { ground: stage.ground } : {}),

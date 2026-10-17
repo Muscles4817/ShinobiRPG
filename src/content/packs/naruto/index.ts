@@ -11,6 +11,7 @@ import { CLAN_TECHNIQUES } from './clanTechniques';
 import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
 import { ELITE_MISSIONS } from './eliteMissions';
+import { COMPANION_KINDS } from './companions';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { SEASONAL_FOODS } from './seasonalFood';
@@ -131,6 +132,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   roadEvents: ROAD_EVENTS,
   arcs: [TEMPLE_BELL_ARC, DROWNED_SHORE_ARC, LOADED_DICE_ARC, SWORD_SCHOOL_ARC, SNAKE_DEN_ARC],
   voices: VOICES,
+  companionKinds: COMPANION_KINDS,
   enemies: [
     ...ENEMIES,
     ...CHUNIN_ENEMIES,

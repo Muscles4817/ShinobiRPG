@@ -291,7 +291,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `EnemyDef.retinue` is expanded by `enemyParty`; each body has
     a `tell` (open, kept, hidden) that sets how likely a glance is to see it before the fight
     (`game/retinueSight.ts`: perception, by hash, never certain short of open), and scouting
-    rates a foe with what it sees (`opponentPower`, `partyPower`).
+    rates a foe with what it sees (`opponentPower`, `partyPower`). The player may have a
+    **companion** (`systems/companions`, `game/companions/`): a bonded creature of a
+    `CompanionKindDef` (temperament bred, stray or wild: how fast it bonds and how late it takes
+    orders), born to a clan (`ClanDef.companion`) or a stray won over in the village
+    (`befriendStray`, drawn from the seed and day). It grows by a light routine caught up each
+    morning like peers', fights beside you in every mission fight and spar, and takes stance and
+    then card orders only as the bond opens them (`ordersOpen`).
     **Preparation** happens before the fight: fight tools (`ToolDef`, sold by the piece at
     `gear` places' `toolIds`, kept in `inventory.tools`) ride in as `CombatantSetup.items`;
     what they do lives once in `rules/items.ts`, every engine offers them, and
@@ -623,6 +629,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   burn, bleed, poison; counter, a readied riposte) keep their rules in
   `rules/verbs/lingering.ts` and their play in `engines/plan/lingering.ts`, which wears them
   down at the end of each exchange.
+- **Add a companion kind:** a `CompanionKindDef` in the pack's `companions.ts` (temperament, a
+  starting body no better than a fresh genin's best, `healthScale`, traits, a talent shape with
+  0 for arts it never learns, names, and a `stray` haunt for kinds found on the streets, at
+  places of the start village); give a clan one with `ClanDef.companion`. Validated in
+  `validateCompanions.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

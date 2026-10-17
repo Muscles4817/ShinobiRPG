@@ -1,0 +1,17 @@
+export {
+  bondGain,
+  COMPANION_TEMPERAMENTS,
+  NO_COMPANIONS,
+  ordersOpen,
+  ordersStages,
+  PLAYER_OWNER,
+  STRAY_START_BOND,
+  STRAY_VISITS_NEEDED,
+  strayWon,
+  visitStray,
+  withBond,
+  type Companion,
+  type Companions,
+  type CompanionTemperament,
+  type StrayFriendship,
+} from './companions';

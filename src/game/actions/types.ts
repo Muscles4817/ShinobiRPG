@@ -87,6 +87,7 @@ export type GameAction =
   | { readonly type: 'buyCookbook'; readonly cookbookId: string }
   | { readonly type: 'learnRecipe'; readonly personId: string }
   | { readonly type: 'followSight' }
+  | { readonly type: 'befriendStray' }
   | { readonly type: 'hostDinner'; readonly recipeId: string; readonly guestId: string }
   | { readonly type: 'buyRound' }
   | {

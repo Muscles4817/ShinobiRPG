@@ -256,7 +256,8 @@ play), training together, and fights and jobs done together; neglect only lets i
 hunger stages); a favourite food gives more bond. Beaten in a fight, it is injured and stays
 home until it heals (sooner at a vet, or a clan's kennels). It fights beside you in every
 fight you are in, on jobs and in spars; it is yours, not a crew member, so crew rules don't
-change. In the fight it is an ally with `master` (the link returns: orders by bond read it).
+change. In the fight it is an ally whose orders the bond opens; the `master` link returns
+when something first reads it (a combination between you, the outcome's `units`).
 
 **Acquisition sources** (data, so each grows by content):
 
@@ -271,7 +272,7 @@ change. In the fight it is an ally with `master` (the link returns: orders by bo
 **Slices** (step 2 is four PRs):
 
 - **2a, the companion:** the system and slice (with a save migration), kinds (validated), the
-  born and stray paths, the companion beside you in every fight (an ally with `master`,
+  born and stray paths, the companion beside you in every fight (an ally,
   orders by bond stage), its routine, and its sheet on the Bonds tab.
 - **2b, care:** feeding and hunger, walks and play, training together, injuries and the vet.
 - **2c, finding them:** wild kinds sought on purpose in wilds places (the wolf), breeders and
@@ -359,3 +360,31 @@ Each step proves one property and is its own PR.
   own); a hound's nose in the encounter's stealth approaches; group threat for foes who are not
   a retinue (three bandits still read as their toughest), which moves crews on existing jobs and
   wants its own calibration.
+
+### Step 2a: the companion
+
+- **The system** (`systems/companions`): the `Companion` record (id, kind, name, stats, a
+  rolled aptitude, bond points, `lastGrownDay`), the slice `GameState.companions` (`owned` by
+  owner, yours under `PLAYER_OWNER`, and a stray being won over), and the temperament table
+  (bred bonds ×1.2, stray ×1, wild ×0.6 and takes orders a stage later). Save v44 gives older
+  saves none (a clan child of an older save meets no pup).
+- **Content** (`content/companions.ts`, validated in `validateCompanions.ts`): `CompanionKindDef`
+  (temperament, a starting body no better than a fresh genin's best, `healthScale`, traits,
+  a talent shape with 0 for arts it never learns, names, and for street kinds a `stray` haunt:
+  places of the start village, the share of saves that meet one, its lines) and
+  `ClanDef.companion`. Naruto: the Inuzuka grow up with a bred ninken (bond 30, friends);
+  both packs have a stray hound.
+- **The game** (`game/companions/`): `newCompanion` rolls talent (±15% around the kind's) and a
+  name from the seed and its id; the born pup is given at creation; its routine (`routine.ts`:
+  light running, sniffing, scuffles, a quarter of days idle) is caught up each morning like
+  peers'; `stray.ts` decides, from the seed and day, whether a save meets a stray and when it is
+  about (40% of days, at one of its haunts), for anyone without a companion in their village.
+  `befriendStray` spends a slot with it once a day; on the third day it follows you home (bond
+  5, an acquaintance soon).
+- **In fights** (`companions/combatant.ts`): your companion is an ally in every mission fight and
+  spar, by its own judgement, taking stance orders and then card orders as the bond opens them
+  (the order screen says why not yet). The forest exam's "teammate down" doesn't count it.
+- **Views:** the companion's card heads the Bonds tab ("At your side": what it is, the bond, what
+  it takes from you, its best grades); a stray about shows on the hub's village life.
+- **Waiting for 2b:** it fights at full health every time (injuries are care), it isn't fed yet,
+  and training together, walks and play are care too. The wild limit bonus comes with 2c.
