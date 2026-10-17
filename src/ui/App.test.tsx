@@ -60,6 +60,9 @@ async function skipWatching(user: ReturnType<typeof userEvent.setup>) {
   if (skip) await user.click(skip);
 }
 
+/** Opening every tab and place draws dozens of portraits; jsdom builds SVG slowly. */
+const VISIT_EVERYTHING_TIMEOUT = 15_000;
+
 describe('App (smoke test)', () => {
   it('opens on the title: the lanterns, the name and what you can do', () => {
     render(<App store={memoryStore()} />);
@@ -231,19 +234,23 @@ describe('App (smoke test)', () => {
     expect(within(screen.getByRole('dialog')).getByText('Home to Tōrōgakure')).toBeInTheDocument();
   });
 
-  it('opens every dock tab and place without crashing', async () => {
-    const user = userEvent.setup();
-    render(<App store={memoryStore()} />);
-    await startGame(user);
-    for (const name of [/Market Street/, /Academy/, /^Home/, /Hospital/]) {
-      await user.click(screen.getByRole('button', { name: /Here/ }));
-      await user.click(place(name));
-    }
-    for (const tab of [/Jutsu/, /Bonds/, /Shinobi/, /Record/]) {
-      await user.click(screen.getByRole('button', { name: tab }));
-    }
-    expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument();
-  });
+  it(
+    'opens every dock tab and place without crashing',
+    async () => {
+      const user = userEvent.setup();
+      render(<App store={memoryStore()} />);
+      await startGame(user);
+      for (const name of [/Market Street/, /Academy/, /^Home/, /Hospital/]) {
+        await user.click(screen.getByRole('button', { name: /Here/ }));
+        await user.click(place(name));
+      }
+      for (const tab of [/Jutsu/, /Bonds/, /Shinobi/, /Record/]) {
+        await user.click(screen.getByRole('button', { name: tab }));
+      }
+      expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument();
+    },
+    VISIT_EVERYTHING_TIMEOUT,
+  );
 
   it('stamps technique ranks, and folds away scrolls you can’t study yet', async () => {
     const user = userEvent.setup();

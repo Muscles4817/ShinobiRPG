@@ -1,12 +1,13 @@
 import type { PersonDef, Tone } from '@/content';
 import { stageName, stageOf, stageProgress } from '@/systems/bonds';
-import type { Appearance } from '@/systems/profile';
+import type { Look } from '@/systems/profile';
 import { STAT_INFO } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import { currentLocation } from '../ops';
 import { bondOf, everyone, fullName, peopleHere, whereNow } from '../people/cast';
+import { personLook } from '../people/looks';
 import type { GameState } from '../state';
 import { capitalise, choice, type Choice } from './common';
 
@@ -18,7 +19,7 @@ export type Relation = 'sensei' | 'teammate' | null;
 export interface PersonFace {
   readonly id: string;
   readonly name: string;
-  readonly appearance: Appearance;
+  readonly appearance: Look;
   readonly relation: Relation;
 }
 
@@ -58,7 +59,7 @@ export function personFace(state: GameState, person: PersonDef): PersonFace {
   return {
     id: person.id,
     name: person.name,
-    appearance: person.appearance,
+    appearance: personLook(person),
     relation: relationTo(state, person.id),
   };
 }

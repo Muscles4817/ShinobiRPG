@@ -24,12 +24,17 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
       stamina: 'B',
     }),
     traitIds: ['calm', 'cunning'],
-    appearance: look('shaved', {
-      hair: '#1b1a22',
-      eyes: '#2a1d14',
-      skin: '#e2b48c',
-      outfit: '#2a2a32',
-    }),
+    appearance: look(
+      'shaved',
+      {
+        hair: '#1b1a22',
+        eyes: '#2a1d14',
+        skin: '#e2b48c',
+        outfit: '#2a2a32',
+      },
+      'forehead',
+      { shape: 'square', figure: 'broad', mark: 'scar', expression: 'stern', age: 'grown' },
+    ),
     specialty: 'genjutsu',
     bio: 'Head of Torture and Interrogation. The scars under his bandana are the short version.',
     schedule: { morning: null, afternoon: 'academy', evening: 'training-grounds', night: null },

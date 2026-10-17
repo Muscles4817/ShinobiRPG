@@ -11,9 +11,9 @@ import {
   topDisciplines,
   withGifts,
   type AcademyFile,
-  type Appearance,
   type ClassStanding,
   type Grades,
+  type Look,
   type Pronouns,
   type QuickPick,
 } from '@/systems/profile';
@@ -51,7 +51,7 @@ export interface CreationDraft {
   /** Used only when clanless; clan members take the clan's name. */
   readonly familyName: string;
   readonly pronouns: Pronouns;
-  readonly appearance: Appearance;
+  readonly appearance: Look;
   readonly clanId: string;
   /** Where they stood in their class; with fate, what the file turned out to say. */
   readonly standing: ClassStanding;

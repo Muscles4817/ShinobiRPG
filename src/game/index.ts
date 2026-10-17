@@ -27,6 +27,7 @@ export {
   type UpbringingOption,
   type ArchetypeOption,
 } from './views/creation';
+export type { FacePalettes } from './views/facePalettes';
 export { fileView, type BloomOption, type FileStatLine, type FileView } from './views/academyFile';
 export {
   chooseQuickPick,
@@ -251,9 +252,21 @@ export type {
 export type { BackdropId, IconId, PlaceKind } from '@/content';
 export type { TimeSlot } from '@/systems/time';
 export type {
+  Age,
   Appearance,
+  BrowShape,
+  EarShape,
+  Expression,
+  EyeShape,
+  FaceParts,
+  FaceShape,
+  FacialHair,
+  Figure,
   Grade,
   Grades,
+  Look,
+  Mark,
+  NoseShape,
   Pronouns,
   HairStyle,
   HeadbandPlace,

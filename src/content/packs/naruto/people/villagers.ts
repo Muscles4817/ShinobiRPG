@@ -29,6 +29,7 @@ export const VILLAGERS: readonly PersonDef[] = [
       'shaved',
       { hair: '#8a5a2b', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#e8e0d0' },
       'arm',
+      { eyes: 'hooded', expression: 'smile', age: 'old' },
     ),
     bio: 'Owner of Ichiraku Ramen. Has fed every hungry genin in the village at least once.',
     schedule: allDay('shopping-district'),
