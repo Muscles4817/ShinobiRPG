@@ -133,12 +133,12 @@ export { dayEndView, type DayEndView } from './views/dayEnd';
 export {
   rivalChallengeView,
   rivalScene,
-  rivalryView,
   type RivalChallengeView,
+  type RivalReply,
   type RivalSceneView,
-  type RivalryView,
-  type SideBySide,
 } from './views/rival';
+export { rivalryView, type ContestOffer, type RivalryView, type SideBySide } from './views/rivalry';
+export { raceView, type RaceView } from './views/race';
 export {
   classHonoursView,
   type ClassHonoursView,

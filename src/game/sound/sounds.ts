@@ -40,8 +40,17 @@ export const SOUNDS = [
 ] as const;
 export type Sound = (typeof SOUNDS)[number];
 
+/** A leg of a race: a rush of air, and at the finish, how it went. */
+function raceSound(before: GameState, after: GameState): Sound {
+  if (after.rival?.race) return 'swish';
+  const races = after.rival?.races;
+  if (races && races.you > (before.rival?.races.you ?? 0)) return 'victory';
+  return races && races.them > (before.rival?.races.them ?? 0) ? 'defeat' : 'paper';
+}
+
 /** The sound of an action that went through, or null when the tap was enough. */
 export function soundAfter(action: GameAction, before: GameState, after: GameState): Sound | null {
+  if (action.type === 'runRaceLeg') return raceSound(before, after);
   return cueFor(action, before, after);
 }
 

@@ -9,7 +9,7 @@ interface RivalSlipProps {
 
 /** A challenge from your rival, standing above the village until you answer or it lapses. */
 export function RivalSlip({ view, perform }: RivalSlipProps) {
-  const { face, spars } = view;
+  const { face, score } = view;
   return (
     <section className="rival-slip" aria-label={`${face.name}’s challenge`}>
       <div className="rival-slip-top">
@@ -18,15 +18,15 @@ export function RivalSlip({ view, perform }: RivalSlipProps) {
         </span>
         <span>
           <b>{face.name}’s challenge</b>
-          <small>A spar, today or tomorrow</small>
+          <small>{view.contest}, today or tomorrow</small>
         </span>
         <span
           className="rival-score"
-          aria-label={`Spars: you ${spars.you}, ${face.name} ${spars.them}`}
+          aria-label={`So far: you ${score.you}, ${face.name} ${score.them}`}
         >
-          <small>Spars</small>
+          <small>So far</small>
           <b>
-            {spars.you}–{spars.them}
+            {score.you}–{score.them}
           </b>
         </span>
       </div>

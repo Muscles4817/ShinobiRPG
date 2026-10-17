@@ -3,7 +3,10 @@ import { rivalScene } from '@/game';
 import { Portrait } from '../../art/Portrait';
 import type { ScreenProps } from '../types';
 
-/** A moment with your rival that waits for your answer: meeting them, or the words after a spar. */
+/**
+ * A moment with your rival that waits for your answer: meeting them, the words after a contest,
+ * or something they did to needle you. Each answer says who on your team would like it.
+ */
 export function RivalScene({ ctx, state, perform }: ScreenProps) {
   const scene = rivalScene(state, ctx);
   if (!scene) return null;
@@ -37,7 +40,10 @@ export function RivalScene({ ctx, state, perform }: ScreenProps) {
               perform(c.action);
             }}
           >
-            <b>{c.label}</b>
+            <span className="rival-reply">
+              <b>{c.label}</b>
+              {c.heard && <small className="rival-heard">{c.heard}</small>}
+            </span>
             <small>{c.tone}</small>
           </button>
         ))}

@@ -1,9 +1,69 @@
-import type { RivalryView } from '@/game';
+import type { Choice, ContestOffer, GameAction, RivalryView } from '@/game';
 
 const pct = (share: number) => `${Math.round(share * 100)}%`;
 
-/** The rivalry on your rival's sheet: who they are to you, the tally, side by side, the heat. */
-export function RivalrySection({ view }: { readonly view: RivalryView }) {
+interface RivalrySectionProps {
+  readonly view: RivalryView;
+  readonly perform: (action: GameAction) => void;
+  readonly onClose: () => void;
+}
+
+interface StakeButtonProps {
+  readonly label: string;
+  readonly choice: Choice;
+  readonly go: (action: GameAction) => void;
+}
+
+function StakeButton({ label, choice, go }: StakeButtonProps) {
+  return (
+    <button
+      type="button"
+      className="btn ghost"
+      disabled={choice.blocker !== null}
+      title={choice.blocker ?? undefined}
+      onClick={() => {
+        go(choice.action);
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function Offer({
+  offer,
+  purse,
+  go,
+}: {
+  readonly offer: ContestOffer;
+  readonly purse: number;
+  readonly go: (action: GameAction) => void;
+}) {
+  return (
+    <li className="rival-offer">
+      <span className="rival-offer-head">
+        <b>{offer.name}</b>
+        <span className="rival-shape">{offer.edge}</span>
+      </span>
+      <small>{offer.note}</small>
+      <span className="rival-offer-acts">
+        <StakeButton label="For pride" choice={offer.pride} go={go} />
+        <StakeButton label={`For a purse of ${purse} ryo`} choice={offer.purse} go={go} />
+      </span>
+    </li>
+  );
+}
+
+/**
+ * The rivalry on your rival's sheet: who they are to you, the tally, side by side, the heat,
+ * settling it on your terms, and the ways to close the gap.
+ */
+export function RivalrySection({ view, perform, onClose }: RivalrySectionProps) {
+  const go = (action: GameAction) => {
+    perform(action);
+    onClose();
+  };
+  const blocker = view.offers[0]?.pride.blocker ?? view.offers[0]?.purse.blocker ?? null;
   return (
     <section className="rivalry" aria-label="Rivalry">
       <h3>
@@ -50,7 +110,21 @@ export function RivalrySection({ view }: { readonly view: RivalryView }) {
           </li>
         ))}
       </ol>
+      {view.driven && <p className="story">{view.driven}</p>}
       {view.next && <p className="story rival-next">{view.next}</p>}
+      <h4>Settle it</h4>
+      <ul className="rival-offers">
+        {view.offers.map((o) => (
+          <Offer key={o.contest} offer={o} purse={view.purse} go={go} />
+        ))}
+      </ul>
+      {blocker && <small className="rival-slip-why">{blocker}</small>}
+      <h4>Closing the gap</h4>
+      <ul className="rival-ways">
+        {view.ways.map((w) => (
+          <li key={w}>{w}</li>
+        ))}
+      </ul>
     </section>
   );
 }

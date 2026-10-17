@@ -153,7 +153,7 @@ export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSh
       >
         <PersonHead p={p} />
         <p className="story">{p.bio}</p>
-        {rivalry && <RivalrySection view={rivalry} />}
+        {rivalry && <RivalrySection view={rivalry} perform={perform} onClose={onClose} />}
         <BetweenYou p={p} />
         <WhatTheyreLike p={p} />
         {p.day && <TheirDay day={p.day} />}
