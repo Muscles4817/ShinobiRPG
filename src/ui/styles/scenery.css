@@ -1,0 +1,73 @@
+/*
+ * The painted backdrops (ui/art/scenery) take their inks from the sky they sit in: each
+ * class reads a --bd-* token that tokens.css sets per time slot. Stars and the moon show
+ * only in the evening and at night; the sun only by day.
+ */
+.backdrop .bd-far {
+  fill: var(--bd-far);
+}
+.backdrop .bd-mid {
+  fill: var(--bd-mid);
+}
+.backdrop .bd-near {
+  fill: var(--bd-near);
+}
+.backdrop .bd-front {
+  fill: var(--bd-front);
+}
+.backdrop .bd-front-stroke {
+  stroke: var(--bd-front);
+}
+.backdrop .bd-roof {
+  fill: var(--bd-roof);
+}
+.backdrop .bd-tile {
+  stroke: var(--bd-tile);
+}
+.backdrop .bd-dark {
+  fill: var(--bd-dark);
+}
+.backdrop .bd-rim {
+  stroke: var(--bd-rim);
+}
+.backdrop .bd-pine {
+  fill: var(--bd-pine);
+}
+.backdrop .bd-leaf {
+  fill: var(--bd-leaf);
+}
+.backdrop .bd-leaf-lit {
+  fill: var(--bd-leaf-lit);
+}
+.backdrop .bd-cloud {
+  fill: var(--bd-cloud);
+}
+.backdrop .bd-sea {
+  fill: var(--bd-sea);
+}
+.backdrop .bd-dusk {
+  fill: var(--bd-dusk);
+}
+.backdrop .bd-mist-stop {
+  stop-color: var(--bd-mist);
+}
+.backdrop .bd-near-stop {
+  stop-color: var(--bd-near);
+}
+.backdrop .bd-front-stop {
+  stop-color: var(--bd-front);
+}
+.backdrop .bd-lit {
+  opacity: var(--bd-lit);
+}
+.backdrop .bd-lamp {
+  opacity: var(--bd-lamp);
+}
+
+.sky[data-slot='morning'] .backdrop .bd-night,
+.sky[data-slot='afternoon'] .backdrop .bd-night,
+.sky[data-slot='evening'] .backdrop .bd-day,
+.sky[data-slot='night'] .backdrop .bd-day,
+.sky:not([data-slot]) .backdrop .bd-day {
+  display: none;
+}
