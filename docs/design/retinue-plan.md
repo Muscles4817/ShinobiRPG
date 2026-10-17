@@ -83,6 +83,10 @@ stay valid; the retinue gives them bodies when content is ready.
    scavenged eye). Each scenario is planned on its own.
 6. **Big questions get their own planning discussion and PR:** companion depth, puppetry (a
    discipline or not, design, the workshop), and the original pack's equivalents.
+7. **Shamans come to both settings** (naruto and the lantern village), loosely after Shaman
+   King: people who see and deal with spirits and seal them into things and people to empower
+   them. They reach combat through this framework but are a progression path of their own,
+   with their own planning discussion and PR.
 
 ---
 
@@ -180,6 +184,30 @@ world (never the Rng), as a nature is found rather than picked:
 Every gate is a system that exists already; acquisition is mostly content and a few checks.
 Each scenario gets its own plan before it is built.
 
+### Shamans: spirits seen, bound and sealed
+
+A shaman sees spirits, deals with them, and seals them into items and people to empower them.
+It is the retinue's most open-ended user, and it adds two things the five properties don't
+cover:
+
+- **Sight.** A spirit unit is a full body only some can see. Those who can't, can't target it
+  or read it, and the `spirit` trait already makes plain blows barely touch it. Seeing
+  spirits is a perk (beside `insight`), so it also lets a shaman follow the night sights that
+  today only an awakened bloodline can (`game/village.ts`).
+- **Binding.** A spirit does not have to fight beside you. Sealed into an **item**, it becomes
+  part of the gear: a focus-like boost, a perk, or an own-mind spirit acting through the
+  weapon (Shaman King's over soul). Sealed into a **person**, it is a `ModifierSpec` plus
+  combat perks, in yourself or in someone else (decision 11: identity is modifiers). A tailed
+  beast's host is the same thing at its largest scale, so the naruto pack's jinchūriki can come
+  later by this road.
+
+Outside the fight: spirits are met (at places, at night, on the road), befriended or bargained
+with (the bonds system, or a price), carried and released. Sealing is fūinjutsu's to do; the
+spirit art (only a reserved teal colour token today, `--spirit`) may become the shaman's own
+discipline. Both settings get shamans, each with its own spirits: the lantern village is the
+natural home for them. Every one of these points is for the shamans' own planning
+discussion; this section only fixes how they plug in.
+
 ---
 
 ## Part 4: The build plan
@@ -201,6 +229,8 @@ Each step proves one property and is its own PR.
 7. **The original pack's equivalents** (planning discussion first). Until then each PR ships
    engine rules with a plain placeholder in the original pack and its fan content in the fan
    pack, so `check:release` stays honest.
+8. **Shamans** (planning discussion first): seeing spirits, spirit units, binding into items
+   and people, the spirits of each setting, and how one becomes a shaman.
 
 ---
 
