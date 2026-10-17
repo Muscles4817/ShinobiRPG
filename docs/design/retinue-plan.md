@@ -99,6 +99,19 @@ stay valid; the retinue gives them bodies when content is ready.
     King: people who see and deal with spirits and seal them into things and people to empower
     them. They reach combat through this framework but are a progression path of their own,
     with their own planning discussion and PR.
+11. **Companions** (the companions discussion; design in Part 3, "Companions"):
+    - A companion is a **bonded creature**, its own system (`systems/companions`), built from
+      the pure functions people use: stats, limits and growth, the bond's points and stages,
+      injuries, the pantry. Not a `PersonDef`.
+    - **No death by default.** Beaten means injured. A death may come only as a story beat.
+    - **One companion at a time** for now (packs of creatures come with summons).
+    - **The player's first.** The record is keyed by owner, so people's companions (a clan
+      teammate's dog) follow without a reshape.
+    - **Acquisition grows by data.** Born (a clan), a stray (in the village), and later found
+      **on purpose** and in **particular places**: a wolf in the forest makes a stronger
+      companion than a stray, but is harder to tame, train and bond with.
+    - The original pack's first kind is a plain trained hound, until its own equivalents are
+      discussed.
 
 ---
 
@@ -200,6 +213,71 @@ world (never the Rng), as a nature is found rather than picked:
 Every gate is a system that exists already; acquisition is mostly content and a few checks.
 Each scenario gets its own plan before it is built.
 
+### Companions
+
+**The record** (`GameState.companions`, keyed by owner; the player's only for now): a stable
+id, its kind, a name, stats and aptitude (rolled from the seed within its kind's shape, found
+out by training, like yours), the bond, injuries, unlocks, hunger and `lastGrownDay`.
+
+**The kind** (`CompanionKindDef`, pack content): starting stats and a talent shape (arts it
+can never learn have aptitude 0: a hound has no genjutsu), `healthScale`, traits (`brawler`,
+`swift`), a diet, what the bond unlocks, and a **temperament**:
+
+| Temperament | Where from                  | Limits   | Bond and orders                         |
+| ----------- | --------------------------- | -------- | --------------------------------------- |
+| **bred**    | a clan's kennels, a breeder | ordinary | quick to bond, takes orders early       |
+| **stray**   | the village streets         | lower    | slow to trust at first, then ordinary   |
+| **wild**    | the forest, the mountains   | high     | slow to tame and bond, orders come late |
+
+Temperament is data on the kind (a bond rate, how many stages later orders come, a limit
+bonus), so a new kind is a row, never a branch.
+
+**Growing stronger** (agreement 6: no free power). Each body trains on its own:
+
+- **Its routine:** a light daily regimen, caught up lazily per day like peers (hashing the
+  seed, never the Rng). It keeps it from falling behind; it won't climb much.
+- **Training together:** at a training place, a drill with your partner costs your slot and
+  energy, grows you as usual, and grows it in a stat you pick, far more than its routine.
+- **Fights teach it**, as they teach you.
+
+**The bond** (the bonds system's points and stages) opens what is earned:
+
+| Stage | Opens                                                                                   |
+| ----- | --------------------------------------------------------------------------------------- |
+| 1     | It takes your stance orders in a fight                                                  |
+| 2     | Its first kind technique; it takes card orders                                          |
+| 3     | A trait (e.g. `tracker`: it may take a job's tracking check); its half of a combination |
+| 4     | Its deeper technique; a combination that fires with yours (you learn your half as ever) |
+
+A wild kind's orders come a stage or two later. The bond grows with daily care (feed, walk,
+play), training together, and fights and jobs done together; neglect only lets it drift.
+
+**Care.** Fed once a day from the pantry (meat, fish, by diet); hungry, it fights weaker (your
+hunger stages); a favourite food gives more bond. Beaten in a fight, it is injured and stays
+home until it heals (sooner at a vet, or a clan's kennels). It fights beside you in every
+fight you are in, on jobs and in spars; it is yours, not a crew member, so crew rules don't
+change. In the fight it is an ally with `master` (the link returns: orders by bond read it).
+
+**Acquisition sources** (data, so each grows by content):
+
+| Source     | How                                                                                                            | Odds and gates                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| **born**   | a clan grants a kind (`ClanDef.companion`): a pup at graduation, some bond                                     | near certain for the clan                       |
+| **stray**  | a stray turns up at some village places on days drawn from the seed; befriend it over days of feeding          | not every save; kind and odds vary              |
+| **wild**   | sought on purpose in a `wilds` place of the kind's biome (a wolf in the forest); tracked over days, then tamed | rare; perception and patience; wild temperament |
+| **bred**   | a breeder or a clan's kennels, as a gift at a high bond or for a price                                         | a person's bond, ryo                            |
+| **reward** | a job's `reward.companionKindId`: a rescued animal that follows you home                                       | once, by story                                  |
+
+**Slices** (step 2 is four PRs):
+
+- **2a, the companion:** the system and slice (with a save migration), kinds (validated), the
+  born and stray paths, the companion beside you in every fight (an ally with `master`,
+  orders by bond stage), its routine, and its sheet on the Bonds tab.
+- **2b, care:** feeding and hunger, walks and play, training together, injuries and the vet.
+- **2c, finding them:** wild kinds sought on purpose in wilds places (the wolf), breeders and
+  kennels, job rewards.
+- **2d, what the bond opens:** kind techniques, traits (a check role), combinations.
+
 ### Shamans: spirits seen, bound and sealed
 
 A shaman sees spirits, deals with them, and seals them into items and people to empower them.
@@ -234,8 +312,8 @@ Each step proves one property and is its own PR.
    retinues; the combined rating; the bench. One plain companion (the original pack's poacher
    and hound) proves it end to end. The `master` link, the outcome's `units`, the vital rule
    and the view's `controller` wait for the step that first reads them.
-2. **Companions in depth** (planning discussion first): growth, bond, injuries, meals, the
-   born and adopted paths.
+2. **Companions** (designed, Part 3): four slices, 2a the companion, 2b care, 2c finding them,
+   2d what the bond opens.
 3. **Summons and contracts:** called bodies, the `summon` verb, chakra upkeep, one huge or
    many small, the signed path.
 4. **Swarms:** pools, kinds, swarm costs, area and fire against them, the born path for hosts.
