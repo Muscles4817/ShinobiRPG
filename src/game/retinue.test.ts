@@ -10,11 +10,10 @@ const JOB = 'watch-over-the-smokehouse';
 const poacher = ctx.content.enemies.require('poacher');
 
 describe('a foe’s retinue', () => {
-  it('joins the fight beside them, linked to them', () => {
+  it('joins the fight beside them, as a fighter of its own', () => {
     const [master, hound, ...rest] = enemyParty(poacher, 0, ctx);
     expect(rest).toEqual([]);
     expect(hound?.name).toBe('Poacher’s Hound');
-    expect(hound?.master).toBe(master?.id);
     expect(hound?.id).not.toBe(master?.id);
   });
 

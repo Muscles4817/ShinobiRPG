@@ -80,7 +80,7 @@ export interface CompanionNote {
 }
 
 const COMPANION_COUNTER =
-  'Fights beside them, and the two hit harder together. Daze or hold one, or bring one down first.';
+  'Fights beside them: two bodies to beat, not one. Bring the weaker down first, or outlast both.';
 
 export interface ScoutingRead {
   /** How they compare with you, counting every body you can tell fights beside them. */

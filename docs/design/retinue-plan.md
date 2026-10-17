@@ -83,17 +83,22 @@ stay valid; the retinue gives them bodies when content is ready.
    client's report, a recon of their kit or the fight itself shows everything.
 5. **A loyal companion fights on** when its master falls; the fight is won only once it is
    beaten too. (Summons, which go home, come later.)
-6. **Foes first.** The framework ships with foes who have retinues; the player's own companions
+6. **By default a companion is just a second body on your side.** It hits no harder for being
+   theirs; there must be reasons to train and get stronger. Each body is trained and
+   strengthened on its own; harder hits are earned: **combination techniques** learned together
+   (the existing combo rule), and **traits and techniques the bond unlocks** as it is trained
+   (the companions step).
+7. **Foes first.** The framework ships with foes who have retinues; the player's own companions
    come with the companions discussion.
-7. **Everything can be had, but the odds vary hugely.** Each kind of retinue has acquisition
+8. **Everything can be had, but the odds vary hugely.** Each kind of retinue has acquisition
    paths with gates and odds, from near-certain (a clan rite) to an arc of its own (a
    scavenged eye). Each scenario is planned on its own.
-8. **Big questions get their own planning discussion and PR:** companion depth, puppetry (a
+9. **Big questions get their own planning discussion and PR:** companion depth, puppetry (a
    discipline or not, design, the workshop), and the original pack's equivalents.
-9. **Shamans come to both settings** (naruto and the lantern village), loosely after Shaman
-   King: people who see and deal with spirits and seal them into things and people to empower
-   them. They reach combat through this framework but are a progression path of their own,
-   with their own planning discussion and PR.
+10. **Shamans come to both settings** (naruto and the lantern village), loosely after Shaman
+    King: people who see and deal with spirits and seal them into things and people to empower
+    them. They reach combat through this framework but are a progression path of their own,
+    with their own planning discussion and PR.
 
 ---
 
@@ -120,7 +125,7 @@ budget, sand is a pool kind, spare hearts are shared-mind bodies inside one fram
 
 | Style       | What its opponent must solve                                                                      |
 | ----------- | ------------------------------------------------------------------------------------------------- |
-| Handler     | Two bodies and combination pressure: separate them, or take the weaker one out first.             |
+| Handler     | Two bodies, and combination techniques once learned: take the weaker out first, or outlast both.  |
 | Swarm       | A pool that drains and senses: areas and fire thin it; don't let it settle on you.                |
 | Puppeteer   | A frail master behind sturdy bodies: reach the back row, or cut the strings by hurting or dazing. |
 | Summoner    | A heavy chakra bill: outlast the summon, or strike the summoner while it is out.                  |
@@ -131,12 +136,13 @@ bodies, and a default plan brings an area against a swarm.
 
 ### The contract
 
-The framework (step 1) needs only one field: `CombatantSetup.master?: string`, the fighter (on
-the same side) a body belongs to. The game expands a foe into their party (master first, then
-each body, linked by `master`), so the engine sees ordinary fighters with a link. What later
-steps add, as they need it (in a `systems/combat/unitContract.ts` beside `teamContract.ts` and
-`gearContract.ts` once there is more than a field):
+The framework (step 1) needs no contract change: the game expands a foe into their party
+(master first, then each body), and the engine sees ordinary fighters on one side. What later
+steps add, as they first need it (in a `systems/combat/unitContract.ts` beside
+`teamContract.ts` and `gearContract.ts`):
 
+- `master` on a body: whose it is, once something reads the link (a companion's orders by
+  bond, a combo between master and companion, the outcome's `units`).
 - `mind` on a linked body (own, driven, shared) and its `upkeep`.
 - `CombatantSetup.calls?: readonly UnitSetup[]`: what this fighter can call in, by id; a new
   `summon` technique verb names one.
@@ -224,10 +230,10 @@ discussion; this section only fixes how they plug in.
 
 Each step proves one property and is its own PR.
 
-1. **The framework** (built, Part 5): own-mind full bodies from the start, linked by `master`;
-   the tandem; tiered scouting of retinues; the combined rating; the bench. One plain companion
-   (the original pack's poacher and hound) proves it end to end. The outcome's `units`, the
-   vital rule and the view's `controller` wait for the step that first reads them.
+1. **The framework** (built, Part 5): own-mind full bodies from the start; tiered scouting of
+   retinues; the combined rating; the bench. One plain companion (the original pack's poacher
+   and hound) proves it end to end. The `master` link, the outcome's `units`, the vital rule
+   and the view's `controller` wait for the step that first reads them.
 2. **Companions in depth** (planning discussion first): growth, bond, injuries, meals, the
    born and adopted paths.
 3. **Summons and contracts:** called bodies, the `summon` verb, chakra upkeep, one huge or
@@ -248,11 +254,10 @@ Each step proves one property and is its own PR.
 
 ### Step 1: the framework
 
-- **Contract:** `CombatantSetup.master` (and `Body.master`): a body belonging to another
-  fighter on its side. It fights by its own judgement and fights on when its master falls.
-- **The tandem** (`rules/retinue.ts`, applied in `plan/react.ts`): while master and companion
-  both stand free (not dazed, not held), each hits `TANDEM_BONUS` (15%) harder. The answer is to
-  break them up: daze or hold one, or bring one down first.
+- **In the fight:** a companion is one more fighter on its master's side, by its own judgement,
+  and fights on when its master falls. It hits no harder for being theirs (agreement 6). A
+  tandem bonus was tried first (15% while both stood free of dazes and holds) and taken out:
+  harder hits are to be earned through combination techniques and the bond.
 - **Content:** `EnemyDef.retinue` (entries of `enemyId` and a `tell`), validated in
   `validateRetinues.ts` (a real enemy, not themselves, no retinue of its own, no more dangerous
   than its master). The game expands a foe with `enemyParty` (`game/combatants.ts`), in mission
@@ -270,8 +275,8 @@ Each step proves one property and is its own PR.
   (`opponentPower`), the notice counts them, the report and the encounter's field notes name
   them, and the fight's read says how to answer the pair.
 - **Bench** (`src/test/bench/retinueBench.test.ts`): an even fight becomes a rare win against
-  the pair; the pair rates beyond even; linked, the same two bodies are much worse to face
-  (a fighter who won two in three against them apart wins one in three); a fighter who dazes keeps far less of that against them.
+  the pair; the pair rates beyond even; a companion is worth its own grade (a grown hound is
+  worse to face than a pup).
 - **Left for later:** the naruto pack's handler (with the companions step, beside the player's
   own); a hound's nose in the encounter's stealth approaches; group threat for foes who are not
   a retinue (three bandits still read as their toughest), which moves crews on existing jobs and

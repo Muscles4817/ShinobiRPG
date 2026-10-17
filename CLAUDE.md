@@ -284,11 +284,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and `rules/conditions.ts` (Hidden and Confused, Search and Dispel chances); every engine
     applies them, so an archer is an archer in every fight style. Scouting names each trait
     with its counter. Genin get traits from their specialty (`companionTraits`).
-    Some fighters bring more than one body (**retinues**, `docs/design/retinue-plan.md`): a
-    body with `CombatantSetup.master` belongs to that fighter, fights by its own judgement,
-    fights on if they fall, and the two hit harder while both stand free of dazes and holds
-    (`rules/retinue.ts`). A retinue is a real advantage, never balanced away; what answers it is
-    breaking the pair up. A foe's `EnemyDef.retinue` is expanded by `enemyParty`; each body has
+    Some fighters bring more than one body (**retinues**, `docs/design/retinue-plan.md`). By
+    default a companion is just one more fighter on their side, by its own judgement, fighting
+    on if they fall; it hits no harder for being theirs (combination techniques and what a bond
+    unlocks are earned). A retinue is a real advantage, never balanced away. A foe's
+    `EnemyDef.retinue` is expanded by `enemyParty`; each body has
     a `tell` (open, kept, hidden) that sets how likely a glance is to see it before the fight
     (`game/retinueSight.ts`: perception, by hash, never certain short of open), and scouting
     rates a foe with what it sees (`opponentPower`, `partyPower`).

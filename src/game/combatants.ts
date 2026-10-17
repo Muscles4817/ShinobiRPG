@@ -155,15 +155,13 @@ export function retinueCombatantId(unitId: string, index: number, k: number): st
 }
 
 /**
- * The `index`th enemy of a fight and the bodies fighting beside them (`EnemyDef.retinue`),
- * each linked to them as its master.
+ * The `index`th enemy of a fight and the bodies fighting beside them (`EnemyDef.retinue`):
+ * by default a companion is simply one more fighter on their side.
  */
 export function enemyParty(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup[] {
-  const master = enemyCombatant(def, index, ctx);
   const units = (def.retinue ?? []).map((entry, k) => ({
     ...enemyCombatant(ctx.content.enemies.require(entry.enemyId), index, ctx),
     id: retinueCombatantId(entry.enemyId, index, k),
-    master: master.id,
   }));
-  return [master, ...units];
+  return [enemyCombatant(def, index, ctx), ...units];
 }

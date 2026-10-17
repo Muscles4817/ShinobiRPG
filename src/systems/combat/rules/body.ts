@@ -48,8 +48,6 @@ export interface Body {
   readonly gear?: CombatGear;
   /** What a meal brought into the fight (`provisions.ts`); absent for most. */
   readonly provisions?: readonly CombatProvision[];
-  /** The fighter this one belongs to (`retinue.ts`); absent for most. */
-  readonly master?: string;
 }
 
 export function bodyFrom(setup: CombatantSetup, side: CombatSide, isPlayer = false): Body {
