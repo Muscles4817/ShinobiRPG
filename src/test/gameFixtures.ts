@@ -4,6 +4,7 @@ import {
   createNewGame,
   defaultDraft,
   dispatch,
+  openDay,
   reviseDraft,
   type CreationDraft,
   type GameAction,
@@ -65,11 +66,15 @@ export function knowEveryRecipe(state: GameState, context: GameContext = ctx): G
   return { ...state, cooking: { ...state.cooking, xp: GRADE_XP.D, known } };
 }
 
-/** A game ready to play, with its team formed, every job posted and every recipe known. */
+/**
+ * A game ready to play, with its team formed, every job posted and every recipe known, at the
+ * start of a day: the day's record begins from the game as set up.
+ */
 export function newGame(overrides: Partial<GameState> = {}, context: GameContext = ctx): GameState {
   const posted = postEverything(formTeam(freshGame(context), context), context);
-  const ready = knowEveryRecipe(posted, context);
-  return { ...ready, ...overrides };
+  const ready: GameState = { ...knowEveryRecipe(posted, context), ...overrides };
+  if (overrides.daybook) return ready;
+  return { ...ready, daybook: { start: openDay(ready), ended: null } };
 }
 
 /** Dispatches an action, failing the test if it is refused. */

@@ -502,6 +502,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`AudioSettings`) belong to the device, not the save: a second `SaveStore` (`prefs`) holds
     them. Audio starts on the first tap, as browsers require; every enabled button taps.
 
+30. **Days end with a sheet** (`docs/design/day-end-plan.md`). The day's record
+    (`GameState.daybook`, `game/daybook/`) is a snapshot taken at dawn (`openDay`) and compared
+    at the next (`closeDay`) by `noteDayEnd` in `dispatch`, so a day ends the same way whether you
+    slept (`sleep`, `takeRoom`) or pushed on through the night, and no action logs anything for
+    it. Days on a job, a journey or an exam aren't kept (the debrief tells them). The sheet
+    (`views/dayEnd.ts`) shows only the sections something happened in, each kind of change with
+    its own look (moments sealed, growth as a grade bar, people with what getting closer opens
+    next, finds as tiles, the purse as ledger lines read from the record's ryo chips), and the
+    day ahead as plaques (`views/dayHooks.ts`). `settings.dayEnd` picks the full sheet, a morning
+    slip or nothing.
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -710,6 +721,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a discipline:** add it to `STAT_IDS` and `DISCIPLINES`, a colour token, a card glyph,
   starter technique in every pack's `disciplineStarters`, drills, and a save migration that
   gives existing characters the base value.
+- **Add something to the end-of-day sheet:** a change the dawn snapshot can see goes in
+  `DayStart`/`DayEnd` (`game/daybook/state.ts`, with a save migration) and its row in
+  `views/dayEndRows.ts`; a reason to come back tomorrow is a hook in `views/dayHooks.ts`, read
+  from the rule that makes it true.
 - **Add a sound or a music mood:** add the id to `SOUNDS` or `MUSIC_MOODS` (`game/sound/`), have
   the game pick it, and give it a recipe in `ui/audio/effects.ts` or a loop in `loops.ts` (both
   `Record`s keyed by id, so a missing one is a type error). Keep effects short and in the music's

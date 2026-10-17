@@ -1,5 +1,6 @@
 import type { Rng } from '@/core';
 import type { MapStyle } from '../mapStyle';
+import type { DayEndMode } from '../daybook/state';
 import type { RangeBand } from '@/systems/combat';
 import type { CookingSteps } from '@/systems/cooking';
 import type { ApproachId, ReconId } from '@/systems/missions';
@@ -73,6 +74,8 @@ export type GameAction =
   | { readonly type: 'setCombatStyle'; readonly style: string }
   | { readonly type: 'setAnimations'; readonly on: boolean }
   | { readonly type: 'setMapStyle'; readonly style: MapStyle }
+  | { readonly type: 'setDayEnd'; readonly mode: DayEndMode }
+  | { readonly type: 'dismissDay' }
   | { readonly type: 'buyGear'; readonly gearId: string }
   | { readonly type: 'buyTool'; readonly toolId: string }
   | { readonly type: 'buyIntel'; readonly missionId: string }

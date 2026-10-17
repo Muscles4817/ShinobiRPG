@@ -15,7 +15,7 @@ import { cook } from './kitchen';
 import { experiment } from './experiment';
 import { fish, forage } from './gather';
 import { buyCookbook, learnRecipe } from './recipes';
-import { setAnimations, setCombatStyle, setMapStyle } from './settings';
+import { dismissDay, setAnimations, setCombatStyle, setDayEnd, setMapStyle } from './settings';
 import { buyIntel } from './intel';
 import { buyGear, buyIngredient, buyTool, equipGear, unequipGear } from './shop';
 import { spar } from './spar';
@@ -77,6 +77,8 @@ export const HANDLERS: Registry = {
   setCombatStyle,
   setAnimations,
   setMapStyle,
+  setDayEnd,
+  dismissDay,
   leaveFight,
   buyGear,
   buyTool,
