@@ -715,7 +715,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `Record`s keyed by id, so a missing one is a type error). Keep effects short and in the music's
   keys; check levels stay under the limiter.
 - **Add a backdrop or icon:** add the id to `BackdropId`/`IconId` in `content/art.ts` and the
-  drawing to `ui/art/` (a `Record` keyed by id, so a missing drawing is a type error).
+  drawing to `ui/art/` (a `Record` keyed by id, so a missing drawing is a type error). A
+  backdrop is a scene in `ui/art/scenery/` (400×240, bottom-anchored), built from the kit there
+  (ridges, lanterns, townhouses, pines) and painted with the `bd-*` classes, whose inks
+  `tokens.css` sets per time slot; glows are gradients, never blur filters.
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.
 

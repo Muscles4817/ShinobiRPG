@@ -88,6 +88,86 @@
   color-scheme: dark;
 }
 
+/*
+ * Backdrop inks by time slot (styles/scenery.css applies them): far hills to the nearest
+ * walls, roof and tile, the rim of light on eaves, valley mist, foliage, cloud, and how
+ * strongly lamps and lit paper show. Evening is the default.
+ */
+.sky {
+  --bd-far: #3a2c4c;
+  --bd-mid: #2c2240;
+  --bd-near: #221a30;
+  --bd-front: #17121d;
+  --bd-roof: #241c2c;
+  --bd-tile: #3b3044;
+  --bd-dark: #2a2230;
+  --bd-rim: rgb(230 145 78 / 0.6);
+  --bd-mist: rgb(185 120 154 / 0.32);
+  --bd-pine: #1a2420;
+  --bd-leaf: #1f3a2a;
+  --bd-leaf-lit: rgb(240 160 80 / 0.25);
+  --bd-cloud: rgb(138 106 142 / 0.5);
+  --bd-sea: #3a3a6a;
+  --bd-dusk: rgb(60 30 70 / 0.35);
+  --bd-lit: 1;
+  --bd-lamp: 1;
+}
+.sky[data-slot='night'] {
+  --bd-far: #262240;
+  --bd-mid: #1c1932;
+  --bd-near: #161326;
+  --bd-front: #0f0c16;
+  --bd-roof: #1c1724;
+  --bd-tile: #2c2638;
+  --bd-dark: #1e1a26;
+  --bd-rim: rgb(255 210 160 / 0.35);
+  --bd-mist: rgb(120 110 170 / 0.22);
+  --bd-pine: #121a18;
+  --bd-leaf: #142a1e;
+  --bd-leaf-lit: rgb(200 210 255 / 0.12);
+  --bd-cloud: rgb(80 70 120 / 0.45);
+  --bd-sea: #1d2244;
+  --bd-dusk: rgb(10 10 35 / 0.6);
+}
+.sky[data-slot='morning'] {
+  --bd-far: #8d8fb6;
+  --bd-mid: #6a6a92;
+  --bd-near: #4a4566;
+  --bd-front: #2c2738;
+  --bd-roof: #3a3248;
+  --bd-tile: #4e4560;
+  --bd-dark: #3e3850;
+  --bd-rim: rgb(255 210 170 / 0.6);
+  --bd-mist: rgb(255 225 205 / 0.4);
+  --bd-pine: #2c3a30;
+  --bd-leaf: #3f6a46;
+  --bd-leaf-lit: rgb(255 220 170 / 0.35);
+  --bd-cloud: rgb(255 230 215 / 0.55);
+  --bd-sea: #6a7aa8;
+  --bd-dusk: transparent;
+  --bd-lit: 0.35;
+  --bd-lamp: 0.5;
+}
+.sky[data-slot='afternoon'] {
+  --bd-far: #8fb0cf;
+  --bd-mid: #6f8fb0;
+  --bd-near: #4f6680;
+  --bd-front: #2e3a4c;
+  --bd-roof: #3c4a5e;
+  --bd-tile: #52627a;
+  --bd-dark: #44526a;
+  --bd-rim: rgb(255 255 240 / 0.45);
+  --bd-mist: rgb(255 255 255 / 0.32);
+  --bd-pine: #2e4434;
+  --bd-leaf: #4a7a4e;
+  --bd-leaf-lit: rgb(255 250 200 / 0.35);
+  --bd-cloud: rgb(255 255 255 / 0.6);
+  --bd-sea: #4a7aa8;
+  --bd-dusk: transparent;
+  --bd-lit: 0.2;
+  --bd-lamp: 0.4;
+}
+
 /* Skies by time slot; a backdrop may refine them with data-land. */
 .sky[data-slot='morning'] {
   background: linear-gradient(180deg, #5d7fb8 0%, #e8a96a 100%);
@@ -109,4 +189,10 @@
 }
 .sky[data-land='mist'] {
   background: linear-gradient(180deg, #5a6878 0%, #a8b6c2 100%);
+}
+.sky[data-land='mist'][data-slot='evening'] {
+  background: linear-gradient(180deg, #2e2c48 0%, #6a6280 60%, #a8949a 100%);
+}
+.sky[data-land='mist'][data-slot='night'] {
+  background: linear-gradient(180deg, #12142a 0%, #2c3248 100%);
 }
