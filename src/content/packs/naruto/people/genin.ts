@@ -93,7 +93,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       { shape: 'angular', eyes: 'narrow', brows: 'thin', expression: 'stern' },
     ),
     specialty: 'ninjutsu',
-    bio: 'Top of the class and knows it. Trains alone. Talks less than he should.',
+    bio: 'One of the best of the year, and knows it. Trains alone. Talks less than he should.',
     teacher: SASUKE_TEACHER,
     schedule: {
       morning: 'training-grounds',
