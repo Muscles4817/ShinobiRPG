@@ -11,9 +11,9 @@ import {
   topDisciplines,
   withGifts,
   type AcademyFile,
-  type Appearance,
   type ClassStanding,
   type Grades,
+  type Look,
   type Pronouns,
   type QuickPick,
 } from '@/systems/profile';
@@ -33,6 +33,8 @@ import { defaultSettings } from './fightStyle';
 import { withIssuedBlade } from './gear';
 import { NO_PEOPLE } from './people/state';
 import { NO_MENTOR } from './sensei/state';
+import { openDay } from './daybook/open';
+import { NO_DAYBOOK } from './daybook/state';
 import { bornCompanions, kindOf, playerCompanion } from './companions/make';
 import type { GameState } from './state';
 import { bornNature } from './nature';
@@ -50,7 +52,7 @@ export interface CreationDraft {
   /** Used only when clanless; clan members take the clan's name. */
   readonly familyName: string;
   readonly pronouns: Pronouns;
-  readonly appearance: Appearance;
+  readonly appearance: Look;
   readonly clanId: string;
   /** Where they stood in their class; with fate, what the file turned out to say. */
   readonly standing: ClassStanding;
@@ -223,13 +225,16 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     exams: NO_EXAMS,
     leave: NO_LEAVE,
     mentor: NO_MENTOR,
+    daybook: NO_DAYBOOK,
+    rival: null,
     companions: bornCompanions(clan, seed, ctx),
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),
     ),
   };
-  return logOpening(state, ctx, roll);
+  const opened = logOpening(state, ctx, roll);
+  return { ...opened, daybook: { start: openDay(opened), ended: null } };
 }
 
 function logOpening(state: GameState, ctx: GameContext, roll: BreakInRoll): GameState {

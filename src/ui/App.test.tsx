@@ -37,6 +37,7 @@ async function startGame(user: User, world = /Land of Embers/) {
 }
 
 async function formTeam(user: User) {
+  await user.click(screen.getByRole('button', { name: 'Hear the honours' }));
   await user.click(screen.getByRole('button', { name: 'Hear the teams' }));
   await user.click(screen.getAllByRole('button', { name: /^Train under/ })[0]!);
   await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Continue' }));
@@ -48,6 +49,9 @@ async function formTeam(user: User) {
     await user.click(choices.getAllByRole('button')[0]!);
   }
   await user.click(screen.getByRole('button', { name: 'Show me everything' }));
+  // Then your rival comes to find you: answer, and the day begins.
+  const replies = screen.queryByRole('navigation', { name: 'Replies' });
+  if (replies) await user.click(within(replies).getAllByRole('button')[1]!);
 }
 
 function place(name: RegExp) {
@@ -59,6 +63,9 @@ async function skipWatching(user: ReturnType<typeof userEvent.setup>) {
   const skip = screen.queryByRole('button', { name: 'Skip' });
   if (skip) await user.click(skip);
 }
+
+/** Opening every tab and place draws dozens of portraits; jsdom builds SVG slowly. */
+const VISIT_EVERYTHING_TIMEOUT = 15_000;
 
 describe('App (smoke test)', () => {
   it('opens on the title: the lanterns, the name and what you can do', () => {
@@ -231,19 +238,23 @@ describe('App (smoke test)', () => {
     expect(within(screen.getByRole('dialog')).getByText('Home to Tōrōgakure')).toBeInTheDocument();
   });
 
-  it('opens every dock tab and place without crashing', async () => {
-    const user = userEvent.setup();
-    render(<App store={memoryStore()} />);
-    await startGame(user);
-    for (const name of [/Market Street/, /Academy/, /^Home/, /Hospital/]) {
-      await user.click(screen.getByRole('button', { name: /Here/ }));
-      await user.click(place(name));
-    }
-    for (const tab of [/Jutsu/, /Bonds/, /Shinobi/, /Record/]) {
-      await user.click(screen.getByRole('button', { name: tab }));
-    }
-    expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument();
-  });
+  it(
+    'opens every dock tab and place without crashing',
+    async () => {
+      const user = userEvent.setup();
+      render(<App store={memoryStore()} />);
+      await startGame(user);
+      for (const name of [/Market Street/, /Academy/, /^Home/, /Hospital/]) {
+        await user.click(screen.getByRole('button', { name: /Here/ }));
+        await user.click(place(name));
+      }
+      for (const tab of [/Jutsu/, /Bonds/, /Shinobi/, /Record/]) {
+        await user.click(screen.getByRole('button', { name: tab }));
+      }
+      expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument();
+    },
+    VISIT_EVERYTHING_TIMEOUT,
+  );
 
   it('stamps technique ranks, and folds away scrolls you can’t study yet', async () => {
     const user = userEvent.setup();
@@ -337,6 +348,40 @@ describe('App (smoke test)', () => {
     }
     expect(finale).toBe(true);
     expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
+  });
+
+  it('reads out the year’s honours before the teams', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await user.click(screen.getByRole('button', { name: /^New game/ }));
+    await user.click(screen.getByRole('button', { name: /Land of Embers/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
+    await user.click(screen.getByRole('button', { name: 'Find your file' }));
+    await user.type(screen.getByLabelText('Given name'), 'Aoi');
+    for (let page = 0; page < 8; page++) {
+      await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    }
+    await user.click(screen.getByRole('button', { name: /forehead protector/i }));
+    await user.click(screen.getByRole('button', { name: 'Hear the honours' }));
+    const honours = screen.getByRole('region', { name: 'Honours' });
+    expect(within(honours).getByText('Top of the year')).toBeInTheDocument();
+    expect(within(honours).getByText('You')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Hear the teams' }));
+    expect(screen.getAllByRole('button', { name: /^Train under/ }).length).toBeGreaterThan(0);
+  });
+
+  it('closes the day at bedtime with a sheet of what happened, and the day ahead', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Home/));
+    await user.click(screen.getAllByRole('button', { name: 'Sleep till dawn' })[0]!);
+    const sheet = screen.getByRole('dialog');
+    expect(within(sheet).getByText(/draws to a close/)).toBeInTheDocument();
+    expect(within(sheet).getByRole('region', { name: 'Tomorrow' })).toBeInTheDocument();
+    await user.click(within(sheet).getByRole('button', { name: 'Sleep' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('opens the settings from the Shinobi tab, with the save’s own settings', async () => {

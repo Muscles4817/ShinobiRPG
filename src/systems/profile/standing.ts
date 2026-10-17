@@ -76,7 +76,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     fateWeight: 0.4,
   },
   top: {
-    label: 'Top of the class',
+    label: 'Among the best',
     note: 'The one the instructors point to. No weak subject worth the name.',
     development: { points: 14, highStats: 1 },
     gifts: { gifts: 2, prodigy: false, flaws: 1 },

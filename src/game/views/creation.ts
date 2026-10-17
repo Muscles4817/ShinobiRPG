@@ -25,6 +25,7 @@ import type { GameContext } from '../context';
 import type { CreationDraft } from '../creation';
 import { filledFile } from '../creationDraft';
 import { BASE_STAT } from '../student';
+import { FACE_PALETTES, type FacePalettes } from './facePalettes';
 
 /** Everything the academy break-in scene offers, with effects spelled out as chips. */
 
@@ -96,6 +97,7 @@ export interface CreationView {
     readonly outfitColours: readonly string[];
     readonly headbandPlaces: readonly string[];
     readonly pronouns: readonly string[];
+    readonly face: FacePalettes;
   };
 }
 
@@ -238,6 +240,7 @@ export function creationView(ctx: GameContext): CreationView {
       outfitColours: OUTFIT_COLOURS,
       headbandPlaces: HEADBAND_PLACES,
       pronouns: PRONOUNS,
+      face: FACE_PALETTES,
     },
   };
 }

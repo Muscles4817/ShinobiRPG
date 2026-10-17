@@ -130,7 +130,12 @@ ui ──► game ──► content ──► systems ──► core
     in them; the **build** (`BuildDef`) is the frame. Quick picks (`archetypes.ts`) fill the file
     as a kind of student and follow later changes until it is edited by hand (`creationDraft.ts`).
     `game/student.ts` turns a file into graduation stats for the player and generated classmates
-    alike. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. Chakra
+    alike. A year's generated classmates include a varying number of **clan children**
+    (`people/yearClans.ts`, from the seed: none in a thin year, several in a strong one), raised
+    in their clan like a clan-born player; graduation day reads out the year's **honours**
+    (`views/classHonours.ts`: the year in order by real standing, your place kept in your
+    standing's band, top of the year, the clear best in each art, honours by trait, dead last,
+    and how strong a year it was) before the teams. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. Chakra
     **nature is found, not picked** (`game/nature.ts`): read from the seed at creation (a clan's
     nature most of the time) and hidden (`natureKnown`) until the chakra paper scene that follows
     team assignment (`testChakraPaper`). Until then it counts in fights only: no study bonus, no
@@ -521,6 +526,26 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`AudioSettings`) belong to the device, not the save: a second `SaveStore` (`prefs`) holds
     them. Audio starts on the first tap, as browsers require; every enabled button taps.
 
+30. **Days end with a sheet** (`docs/design/day-end-plan.md`). The day's record
+    (`GameState.daybook`, `game/daybook/`) is a snapshot taken at dawn (`openDay`) and compared
+    at the next (`closeDay`) by `noteDayEnd` in `dispatch`, so a day ends the same way whether you
+    slept (`sleep`, `takeRoom`) or pushed on through the night, and no action logs anything for
+    it. Days on a job, a journey or an exam aren't kept (the debrief tells them). The sheet
+    (`views/dayEnd.ts`) shows only the sections something happened in, each kind of change with
+    its own look (moments sealed, growth as a grade bar, people with what getting closer opens
+    next, finds as tiles, the purse as ledger lines read from the record's ryo chips), and the
+    day ahead as plaques (`views/dayHooks.ts`). `settings.dayEnd` picks the full sheet, a morning
+    slip or nothing.
+
+31. **You have a rival** (`docs/design/rival-plan.md`, `game/rival/`). Once your team is settled,
+    `chooseRival` takes a classmate on another team by a **shape** rolled from the seed (prodigy,
+    neck, chaser, fallen: the gap is never evened out) and a temperament from their traits. The
+    `rival` slice keeps their **heat** (Bitter to Sworn; replies move it by tone and their
+    tastes), the **tally** (spars; first to each grade, scored by `noteRival` in `dispatch`) and
+    at most one **challenge** (issued on the day's turn, lapsing after the next) and one **beat**
+    (a moment waiting for your reply: a scene with a `busyReason`). Their ink is `--rival`, never
+    a gain or cost colour.
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -594,7 +619,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
   needs a `none` clan (validated).
-- **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
+- **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, whose
+  last argument pins the face parts that make them themselves; every part left out is read from
+  their id by `faceFromKey`, so nobody shares a face, and facial hair is never handed out; a
   schedule of place ids in the start location, or in their `homeLocationId` if they live elsewhere, a `rank` and `stats` via `statLine()`, and
   optionally an `aptitude` via `talent()`, and an `arsenal`: the techniques and perks they fight
   with in place of the academy kit, each a pack technique with its own source; validated). List
@@ -742,6 +769,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a discipline:** add it to `STAT_IDS` and `DISCIPLINES`, a colour token, a card glyph,
   starter technique in every pack's `disciplineStarters`, drills, and a save migration that
   gives existing characters the base value.
+- **Add something to the end-of-day sheet:** a change the dawn snapshot can see goes in
+  `DayStart`/`DayEnd` (`game/daybook/state.ts`, with a save migration) and its row in
+  `views/dayEndRows.ts`; a reason to come back tomorrow is a hook in `views/dayHooks.ts`, read
+  from the rule that makes it true.
 - **Add a sound or a music mood:** add the id to `SOUNDS` or `MUSIC_MOODS` (`game/sound/`), have
   the game pick it, and give it a recipe in `ui/audio/effects.ts` or a loop in `loops.ts` (both
   `Record`s keyed by id, so a missing one is a type error). Keep effects short and in the music's
@@ -752,7 +783,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (ridges, lanterns, townhouses, pines) and painted with the `bd-*` classes, whose inks
   `tokens.css` sets per time slot; glows are gradients, never blur filters. An icon
   (`ui/art/icons/`) is two-tone: its outline is `currentColor`, so it takes the ink of where it
-  sits, over fills from the icon palette; discipline signs fill with a tint of that ink.
+  sits, over fills from the icon palette; discipline signs fill with a tint of that ink. A
+  portrait (`ui/art/portrait/`) is put together from an appearance's `FaceParts` (shape, figure,
+  eyes, brows, nose, ears, expression, age, facial hair, a mark): a new part is a union member in
+  `systems/profile/face.ts` and a drawing in the matching `Record`.
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.
 

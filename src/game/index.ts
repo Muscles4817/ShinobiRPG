@@ -27,6 +27,7 @@ export {
   type UpbringingOption,
   type ArchetypeOption,
 } from './views/creation';
+export type { FacePalettes } from './views/facePalettes';
 export { fileView, type BloomOption, type FileStatLine, type FileView } from './views/academyFile';
 export {
   chooseQuickPick,
@@ -55,7 +56,7 @@ export { chakraPaperScene, type ChakraPaperScene } from './views/chakraPaper';
 export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';
 export type { Choice, Discipline } from './views/common';
 export { headerView, type HeaderView, type HungerNote, type Meter } from './views/header';
-export { hubView, type HubView, type PlaceCard } from './views/hub';
+export { hubView, isRestKind, type HubView, type PlaceCard, type RestKind } from './views/hub';
 export { senseiWeekView, type SenseiWeekDay, type SenseiWeekView } from './views/senseiWeek';
 export { examFinalsView, type ExamFinalsView } from './views/examFinals';
 export { senseiTestScene, type SenseiTestScene } from './views/senseiTest';
@@ -122,10 +123,32 @@ export type {
 export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
 export {
   animationSetting,
+  dayEndOptions,
   mapStyleOptions,
   type AnimationSetting,
+  type DayEndOption,
   type MapStyleOption,
 } from './views/settings';
+export { dayEndView, type DayEndView } from './views/dayEnd';
+export {
+  rivalChallengeView,
+  rivalScene,
+  rivalryView,
+  type RivalChallengeView,
+  type RivalSceneView,
+  type RivalryView,
+  type SideBySide,
+} from './views/rival';
+export {
+  classHonoursView,
+  type ClassHonoursView,
+  type Classmate,
+  type Honour,
+} from './views/classHonours';
+export type { DayHook } from './views/dayHooks';
+export type { DayFind, DayGrowth, DayHurt, DayMoment, DayPerson } from './views/dayEndRows';
+export { openDay } from './daybook/open';
+export type { DayEndMode, PurseLine } from './daybook/state';
 export type { MapStyle } from './mapStyle';
 export { ACTION_CUES, cueAfter, type ActionCue } from './cues';
 export {
@@ -244,9 +267,21 @@ export type {
 export type { BackdropId, IconId, PlaceKind } from '@/content';
 export type { TimeSlot } from '@/systems/time';
 export type {
+  Age,
   Appearance,
+  BrowShape,
+  EarShape,
+  Expression,
+  EyeShape,
+  FaceParts,
+  FaceShape,
+  FacialHair,
+  Figure,
   Grade,
   Grades,
+  Look,
+  Mark,
+  NoseShape,
   Pronouns,
   HairStyle,
   HeadbandPlace,
@@ -263,11 +298,4 @@ export type { StatGroup, StatId, StatKind } from '@/systems/stats';
 export type { Element } from '@/systems/techniques';
 export type { EffectLine } from '@/systems/modifiers';
 export type { CompanionCard, StrayNotice } from './views/companion';
-export {
-  compoundView,
-  quarterView,
-  type CompoundCard,
-  type CompoundView,
-  type QuarterView,
-} from './views/compounds';
-export { isRestKind, type RestKind } from './views/hub';
+export { compoundView, quarterView, type CompoundView, type QuarterView } from './views/compounds';

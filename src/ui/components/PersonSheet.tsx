@@ -1,5 +1,6 @@
 import {
   personSheet,
+  rivalryView,
   type GameAction,
   type GameContext,
   type GameState,
@@ -7,6 +8,7 @@ import {
 } from '@/game';
 
 import { Portrait } from '../art/Portrait';
+import { RivalrySection } from './RivalrySection';
 import {
   BetweenYou,
   Remembered,
@@ -26,7 +28,11 @@ interface PersonSheetProps {
   readonly onClose: () => void;
 }
 
-const RELATION_LABEL = { sensei: 'Your sensei', teammate: 'Your teammate' } as const;
+const RELATION_LABEL = {
+  sensei: 'Your sensei',
+  teammate: 'Your teammate',
+  rival: 'Your rival',
+} as const;
 
 interface ActionsProps {
   readonly sheet: Sheet;
@@ -99,13 +105,19 @@ function PersonActions({ sheet: p, perform, onClose }: ActionsProps) {
   );
 }
 
+/** A face ringed for who they are to you: lantern for your team, the rival's ink for your rival. */
+function photoClass(relation: Sheet['relation']): string {
+  if (relation === 'rival') return 'person-photo rival';
+  return relation ? 'person-photo team' : 'person-photo';
+}
+
 /** Who they are, at a glance: face, name, rank and art, and where they are now. */
 function PersonHead({ p }: { readonly p: Sheet }) {
   // A title that only repeats their rank says nothing the rank stamp doesn't.
   const kicker = p.relation ? RELATION_LABEL[p.relation] : p.title === p.rank ? null : p.title;
   return (
     <header className="person-top">
-      <span className={p.relation ? 'person-photo team' : 'person-photo'}>
+      <span className={photoClass(p.relation)}>
         <Portrait appearance={p.appearance} size={84} />
       </span>
       <div>
@@ -128,6 +140,7 @@ function PersonHead({ p }: { readonly p: Sheet }) {
  */
 export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSheetProps) {
   const p = personSheet(state, ctx, personId);
+  const rivalry = rivalryView(state, ctx, personId);
   if (!p) return null;
   return (
     <div className="sheet-backdrop" onClick={onClose}>
@@ -140,6 +153,7 @@ export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSh
       >
         <PersonHead p={p} />
         <p className="story">{p.bio}</p>
+        {rivalry && <RivalrySection view={rivalry} />}
         <BetweenYou p={p} />
         <WhatTheyreLike p={p} />
         {p.day && <TheirDay day={p.day} />}

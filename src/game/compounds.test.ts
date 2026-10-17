@@ -60,7 +60,8 @@ describe('clan compounds', () => {
     expect(hub.inner.every((p) => p.parentId === 'clan-quarter')).toBe(true);
     const state = at(leafGame(), MORNING);
     const team = state.people.team!;
-    const known = new Set([team.senseiId, ...team.teammateIds]);
+    // Your team and your rival count as people you know.
+    const known = new Set([team.senseiId, ...team.teammateIds, state.rival?.personId]);
     expect(hub.around.every((f) => known.has(f.id) || state.people.bonds[f.id])).toBe(true);
   });
 });

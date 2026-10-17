@@ -398,9 +398,28 @@ describe('persistence', () => {
     expect(loaded.value.exams).toMatchObject({ watchedDay: null, spectating: false });
   });
 
+  it('gives a save from before the day’s record none, begun with the next action', () => {
+    const { daybook: _d, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 43, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.daybook).toEqual({ start: null, ended: null });
+    const played = act(loaded.value, { type: 'setDayEnd', mode: 'brief' });
+    expect(played.daybook.start?.day).toBe(played.time.day);
+    expect(played.daybook.ended).toBeNull();
+  });
+
+  it('gives a save from before rivals none, chosen with the next action', () => {
+    const { rival: _r, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 44, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.rival).toBeNull();
+    const played = act(loaded.value, { type: 'setDayEnd', mode: 'brief' });
+    expect(played.rival?.personId).toBeTruthy();
+  });
+
   it('gives a save from before companions none, and no stray being won over', () => {
     const { companions: _c, ...game } = newGame();
-    const loaded = deserialize(JSON.stringify({ version: 43, state: game }));
+    const loaded = deserialize(JSON.stringify({ version: 45, state: game }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.companions).toEqual({ owned: {}, befriending: null });
   });

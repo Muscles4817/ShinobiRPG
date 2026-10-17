@@ -1,25 +1,26 @@
 import type { PersonDef, Tone } from '@/content';
 import { stageName, stageOf, stageProgress } from '@/systems/bonds';
-import type { Appearance } from '@/systems/profile';
+import type { Look } from '@/systems/profile';
 import { STAT_INFO } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import { currentLocation } from '../ops';
 import { bondOf, everyone, fullName, peopleHere, whereNow } from '../people/cast';
+import { personLook } from '../people/looks';
 import type { GameState } from '../state';
 import { capitalise, choice, type Choice } from './common';
 import { companionCard, type CompanionCard } from './companion';
 
 export { TASTES_REVEALED_AT } from './bondPath';
 
-export type Relation = 'sensei' | 'teammate' | null;
+export type Relation = 'sensei' | 'teammate' | 'rival' | null;
 
 /** Just enough to draw someone's face. */
 export interface PersonFace {
   readonly id: string;
   readonly name: string;
-  readonly appearance: Appearance;
+  readonly appearance: Look;
   readonly relation: Relation;
 }
 
@@ -54,14 +55,15 @@ export function toneLabel(tone: Tone): string {
 export function relationTo(state: GameState, personId: string): Relation {
   const team = state.people.team;
   if (team?.senseiId === personId) return 'sensei';
-  return team?.teammateIds.includes(personId) ? 'teammate' : null;
+  if (team?.teammateIds.includes(personId)) return 'teammate';
+  return state.rival?.personId === personId ? 'rival' : null;
 }
 
 export function personFace(state: GameState, person: PersonDef): PersonFace {
   return {
     id: person.id,
     name: person.name,
-    appearance: person.appearance,
+    appearance: personLook(person),
     relation: relationTo(state, person.id),
   };
 }

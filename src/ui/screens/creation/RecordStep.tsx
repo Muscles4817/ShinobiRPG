@@ -1,7 +1,9 @@
-import type { Appearance, ClanOption, HairStyle, HeadbandPlace, Pronouns } from '@/game';
+import type { ClanOption, HairStyle, HeadbandPlace, Look, Pronouns } from '@/game';
 
 import { Portrait } from '../../art/Portrait';
+import { FacePicker } from './FacePicker';
 import { OptionCard } from './OptionCard';
+import { Segments } from './Segments';
 import type { StepProps } from './types';
 
 interface SwatchRowProps {
@@ -34,39 +36,6 @@ function SwatchRow({ label, colours, value, onPick }: SwatchRowProps) {
   );
 }
 
-function Segments<T extends string>({
-  label,
-  values,
-  value,
-  onPick,
-}: {
-  label: string;
-  values: readonly T[];
-  value: T;
-  onPick: (v: T) => void;
-}) {
-  return (
-    <div className="swatch-row" role="group" aria-label={label}>
-      <span className="label">{label}</span>
-      <span className="segments">
-        {values.map((v) => (
-          <button
-            key={v}
-            type="button"
-            className={v === value ? 'seg on' : 'seg'}
-            aria-pressed={v === value}
-            onClick={() => {
-              onPick(v);
-            }}
-          >
-            {v}
-          </button>
-        ))}
-      </span>
-    </div>
-  );
-}
-
 /** Student record: name, pronouns, family and appearance. */
 /** The full detail of the chosen clan; the others stay folded to keep the page short. */
 function ClanDetails({ clan: c }: { readonly clan: ClanOption }) {
@@ -88,7 +57,7 @@ function ClanDetails({ clan: c }: { readonly clan: ClanOption }) {
 
 export function RecordStep({ view, draft, update }: StepProps) {
   const { palettes } = view;
-  const look = (patch: Partial<Appearance>) => {
+  const look = (patch: Partial<Look>) => {
     update({ appearance: { ...draft.appearance, ...patch } });
   };
   const clanless = draft.clanId === 'none';
@@ -203,6 +172,13 @@ export function RecordStep({ view, draft, update }: StepProps) {
         value={draft.appearance.headband}
         onPick={(v) => {
           look({ headband: v });
+        }}
+      />
+      <FacePicker
+        palettes={palettes.face}
+        look={draft.appearance}
+        onChange={(face) => {
+          look({ face });
         }}
       />
     </div>

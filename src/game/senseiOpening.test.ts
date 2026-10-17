@@ -47,7 +47,8 @@ describe('the first meeting', () => {
     let state = metBy('ito');
     while (senseiTestScene(state, ctx)!.choices.length !== 2) state = act(state, PICK(0));
     const shown = act(state, PICK(0));
-    expect(activeScene(shown)).toBeNull();
+    // The sensei's day is done; next, word gets round and your rival comes to find you.
+    expect(activeScene(shown)).toBe('rival');
     expect(shown.mentor.curriculum).toBe('on');
     const ids = [...shown.people.team!.teammateIds, 'ito'];
     expect(shown.village.memories.map((m) => m.personId).sort()).toEqual([...ids].sort());
@@ -70,7 +71,7 @@ describe('the curriculum', () => {
   function shown(senseiId: string): GameState {
     let state = metBy(senseiId);
     while (state.mentor.opening) state = act(state, PICK(0));
-    return state;
+    return state.rival?.beat ? act(state, { type: 'answerRival', choiceIndex: 1 }) : state;
   }
 
   it('shows one thing a day, in the order their philosophy puts first', () => {

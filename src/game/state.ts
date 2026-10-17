@@ -17,6 +17,8 @@ import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
 
 import type { Board } from './boardState';
+import type { Daybook, DayEndMode } from './daybook/state';
+import type { Rival } from './rival/state';
 import type { CombatFinale } from './combatFinale';
 import type { Exams } from './exam/state';
 import type { People } from './people/state';
@@ -68,6 +70,10 @@ export interface GameState {
   readonly cooking: Cooking;
   /** How your sensei rates you and how this week's meetings went (`game/sensei/`). */
   readonly mentor: Mentor;
+  /** The day's record: where you stood at dawn, and the last day that ended (`daybook/`). */
+  readonly daybook: Daybook;
+  /** Your rival from the year (`rival/`), once your team is settled; null before. */
+  readonly rival: Rival | null;
   /** Bonded creatures by owner (yours under `PLAYER_OWNER`), and a stray being won over. */
   readonly companions: Companions;
   /**
@@ -149,6 +155,8 @@ export interface Settings {
   readonly animations: boolean;
   /** How the Travel map is inked; absent (every save from before the choice) is the washi chart. */
   readonly mapStyle?: MapStyle;
+  /** What the end of a day shows; absent (every save from before the choice) is the full sheet. */
+  readonly dayEnd?: DayEndMode;
 }
 
 /** An event that moved natural limits: where it came from, and how far each limit moved. */

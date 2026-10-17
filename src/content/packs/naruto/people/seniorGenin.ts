@@ -36,6 +36,7 @@ export const SENIOR_GENIN: readonly PersonDef[] = [
       'short',
       { hair: '#1b1a22', eyes: '#2a1d14', skin: '#f3d2b3', outfit: '#3e6b3a' },
       'belt',
+      { shape: 'square', eyes: 'round', brows: 'bushy', expression: 'grin' },
     ),
     specialty: 'taijutsu',
     bio: 'Cannot use ninjutsu or genjutsu at all. Has decided this will not stop him.',

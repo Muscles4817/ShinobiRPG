@@ -17,6 +17,8 @@ import { graduationStats, studentOf } from '../student';
  * A generated classmate's start: made like the player's, from a standing (dealt as fate deals
  * them, so most are in the middle and one in ten is a genius), an upbringing, a frame and a
  * quick pick around their specialty. Their year is a real spread, not a row of identical fives.
+ * A clan child is raised in the clan (a clan upbringing, whose training goes into the clan's
+ * arts first) and gets the clan's bonuses and talent, as a clan-born player does.
  */
 
 const CLANLESS = 'none';
@@ -45,21 +47,27 @@ function varied(stats: Stats, rng: Rng): Stats {
   return Object.fromEntries(entries) as Record<StatId, number>;
 }
 
-/** A clanless classmate specialising in `specialty`, drawn from `rng` (the save's seed and their id). */
-export function graduate(ctx: GameContext, rng: Rng, specialty: Discipline): Graduate {
+/** A classmate specialising in `specialty`, drawn from `rng` (the save's seed and their id). */
+export function graduate(
+  ctx: GameContext,
+  rng: Rng,
+  specialty: Discipline,
+  clanId: string = CLANLESS,
+): Graduate {
   const { content } = ctx;
+  const family = clanId === CLANLESS ? 'clanless' : 'clan';
   const standing = standingFromRoll(rng.next());
   const kinds = STANDING_INFO[standing].gifts.prodigy
     ? [...CLASSMATE_KINDS, 'prodigy' as const]
     : CLASSMATE_KINDS;
   const archetype = rng.pick(kinds);
   const buildId = rng.pick(content.builds.all).id;
-  const upbringings = content.upbringings.all.filter((u) => u.family === 'clanless');
+  const upbringings = content.upbringings.all.filter((u) => u.family === family);
   const upbringingId = rng.pick(upbringings).id;
-  const who = { clanId: CLANLESS, standing, buildId, upbringingId };
+  const who = { clanId, standing, buildId, upbringingId };
   const file = quickFile({ archetype, specialty }, studentOf(who, ctx));
   const stats = graduationStats({ ...who, talentId: '', file }, ctx);
-  const clan = content.clans.require(CLANLESS);
+  const clan = content.clans.require(clanId);
   const band = STANDING_INFO[standing].talent;
   const rolled = rollCharacterAptitude(rng, clan, undefined, { band, specialties: [specialty] });
   return { stats: varied(stats, rng), aptitude: withGifts(rolled, file.gifts) };

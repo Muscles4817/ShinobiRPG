@@ -20,6 +20,10 @@
 
   /* Semantic chips: gains, costs, harm. */
   --good: #7fd6a0;
+
+  /* Your rival's ink: on dark ground, and on paper. Used for nothing else. */
+  --rival: #9aa8ff;
+  --rival-ink: #3d4a8f;
   --cost: #e8b25a;
   --harm: #ff6f61;
 
