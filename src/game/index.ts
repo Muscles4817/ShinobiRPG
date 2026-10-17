@@ -263,3 +263,11 @@ export type { StatGroup, StatId, StatKind } from '@/systems/stats';
 export type { Element } from '@/systems/techniques';
 export type { EffectLine } from '@/systems/modifiers';
 export type { CompanionCard, StrayNotice } from './views/companion';
+export {
+  compoundView,
+  quarterView,
+  type CompoundCard,
+  type CompoundView,
+  type QuarterView,
+} from './views/compounds';
+export { isRestKind, type RestKind } from './views/hub';

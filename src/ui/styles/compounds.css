@@ -1,0 +1,39 @@
+/* The clans' quarter: a lacquered gate for each clan; a shut one is dimmed. */
+.quarter,
+.compound {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gate {
+  display: grid;
+  gap: 2px;
+  min-height: 56px;
+  padding: 12px 14px;
+  text-align: left;
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+}
+.gate b {
+  font-family: var(--font-story);
+  font-size: 1.05rem;
+}
+.gate small {
+  color: var(--muted);
+}
+.gate.shut {
+  opacity: 0.7;
+}
+.gate:active {
+  background: var(--raise);
+}
+.gate-note {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-story);
+  color: var(--story);
+}

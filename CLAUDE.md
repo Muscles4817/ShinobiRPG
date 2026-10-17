@@ -145,6 +145,11 @@ ui ──► game ──► content ──► systems ──► core
     or a town they live in (`homeLocationId`, only `shinobi` and `villager` roles; `villagers`
     keeps them off your village's crews, teams and dinner table). Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
+    Clans live in **compounds** (`docs/design/compounds-plan.md`): a `compound` place per clan
+    behind one `quarter` card, entered by an outsider only as the clan's `outsiders` stance
+    allows (welcoming, reserved, guarded: the bond needed with anyone of the clan by day; bonded
+    at night; `game/compounds.ts`), and someone home behind a shut gate can't be talked to. The
+    village screen's Who's here shows only people you know out and about.
     A person's **profile** (`views/personSheet.ts`) is one paper sheet that grows with the bond:
     a stranger's shows who they are, a read of them and what the next stage opens
     (`views/bondPath.ts`, read from the rules that open it); an acquaintance's (or a teammate's)
@@ -629,6 +634,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   burn, bleed, poison; counter, a readied riposte) keep their rules in
   `rules/verbs/lingering.ts` and their play in `engines/plan/lingering.ts`, which wears them
   down at the end of each exchange.
+- **Add a clan compound:** a `compound` place (`clanId`, optional `headId`) in the clan's
+  village, listed in that village's `quarter`, an `outsiders` stance on the `ClanDef`, and
+  schedules that bring its people home for a slot or two (and out for others, so they can be
+  met). Validated in `validateCompounds.ts`.
 - **Add a companion kind:** a `CompanionKindDef` in the pack's `companions.ts` (temperament, a
   starting body no better than a fresh genin's best, `healthScale`, traits, a talent shape with
   0 for arts it never learns, names, and a `stray` haunt for kinds found on the streets, at

@@ -134,3 +134,9 @@ export type {
   RetinueTell,
   StrayHaunt,
 } from './companions';
+export {
+  OUTSIDER_STANCES,
+  type CompoundFields,
+  type OutsiderStance,
+  type QuarterFields,
+} from './compounds';

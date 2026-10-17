@@ -86,7 +86,12 @@ export const VILLAGE_CHUNIN: readonly PersonDef[] = [
     }),
     specialty: 'taijutsu',
     bio: 'Kiba’s older sister and the clan’s vet. Patches up dogs and genin with the same brisk hands.',
-    schedule: { morning: 'hospital', afternoon: 'training-grounds', evening: null, night: null },
+    schedule: {
+      morning: 'hospital',
+      afternoon: 'training-grounds',
+      evening: 'inuzuka-compound',
+      night: null,
+    },
     teacher: {
       quirk: 'patient',
       teaches: ['mystical-palm', 'passing-fang', 'cherry-blossom-impact'],

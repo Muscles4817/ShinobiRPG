@@ -28,7 +28,7 @@ export const CLAN_HEADS: readonly PersonDef[] = [
     schedule: {
       morning: 'training-grounds',
       afternoon: 'mission-hall',
-      evening: null,
+      evening: 'hibana-compound',
       night: 'izakaya',
     },
     teacher: {
@@ -68,7 +68,7 @@ export const CLAN_HEADS: readonly PersonDef[] = [
     schedule: {
       morning: 'ember-springs',
       afternoon: 'training-grounds',
-      evening: 'market-street',
+      evening: 'tokaku-compound',
       night: null,
     },
     teacher: {
@@ -132,7 +132,12 @@ export const CLAN_HEADS: readonly PersonDef[] = [
     }),
     specialty: 'fuuinjutsu',
     bio: 'Keeps the shrine ropes, the clan ledger and a list of every spirit the village owes.',
-    schedule: { morning: 'academy', afternoon: null, evening: 'training-grounds', night: null },
+    schedule: {
+      morning: 'academy',
+      afternoon: 'shimenawa-compound',
+      evening: 'training-grounds',
+      night: null,
+    },
     teacher: {
       quirk: 'natural',
       teaches: ['binding-rope', 'sacred-rope-ward'],

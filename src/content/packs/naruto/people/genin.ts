@@ -88,7 +88,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',
-      evening: null,
+      evening: 'uchiha-compound',
       night: null,
     },
     arsenal: SASUKE_ARSENAL,
@@ -144,7 +144,12 @@ export const CANON_GENIN: readonly PersonDef[] = [
     ),
     specialty: 'taijutsu',
     bio: 'Quiet, gentle, and much stronger than her clan gives her credit for.',
-    schedule: { morning: 'training-grounds', afternoon: 'academy', evening: null, night: null },
+    schedule: {
+      morning: 'training-grounds',
+      afternoon: 'academy',
+      evening: 'hyuga-compound',
+      night: null,
+    },
     arsenal: HINATA_ARSENAL,
   },
   {
@@ -167,7 +172,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     bio: 'Never seen without Akamaru on his head. Picks fights he’s sure he can win.',
     schedule: {
       morning: 'training-grounds',
-      afternoon: 'shopping-district',
+      afternoon: 'inuzuka-compound',
       evening: 'training-grounds',
       night: 'izakaya',
     },
@@ -191,7 +196,12 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Speaks in complete, logical sentences. Remembers every slight. Carries a colony.',
-    schedule: { morning: 'academy', afternoon: 'training-grounds', evening: null, night: null },
+    schedule: {
+      morning: 'academy',
+      afternoon: 'training-grounds',
+      evening: 'aburame-compound',
+      night: null,
+    },
     arsenal: SHINO_ARSENAL,
   },
   {
@@ -212,7 +222,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     specialty: 'ninjutsu',
     bio: 'Genius, if he could be bothered. Would rather watch clouds than do almost anything.',
     schedule: {
-      morning: null,
+      morning: 'nara-compound',
       afternoon: 'training-grounds',
       evening: 'shopping-district',
       night: null,
@@ -239,7 +249,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     schedule: {
       morning: 'shopping-district',
       afternoon: 'training-grounds',
-      evening: 'shopping-district',
+      evening: 'akimichi-compound',
       night: null,
     },
   },
@@ -263,7 +273,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     schedule: {
       morning: 'shopping-district',
       afternoon: 'mission-desk',
-      evening: 'shopping-district',
+      evening: 'yamanaka-compound',
       night: null,
     },
   },

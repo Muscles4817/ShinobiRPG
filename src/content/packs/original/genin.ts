@@ -33,7 +33,7 @@ export const GENIN: readonly PersonDef[] = [
     schedule: {
       morning: 'training-grounds',
       afternoon: 'mission-hall',
-      evening: 'market-street',
+      evening: 'hibana-compound',
       night: 'izakaya',
     },
   },
@@ -57,7 +57,7 @@ export const GENIN: readonly PersonDef[] = [
     specialty: 'genjutsu',
     bio: 'Waves at empty corners. Leaves rice out for someone called "Grandfather".',
     schedule: {
-      morning: 'academy',
+      morning: 'tokaku-compound',
       afternoon: 'training-grounds',
       evening: 'ember-springs',
       night: null,
@@ -90,7 +90,7 @@ export const GENIN: readonly PersonDef[] = [
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',
-      evening: 'market-street',
+      evening: 'kurogane-compound',
       night: null,
     },
   },
@@ -115,7 +115,7 @@ export const GENIN: readonly PersonDef[] = [
     schedule: {
       morning: 'academy',
       afternoon: 'mission-hall',
-      evening: 'market-street',
+      evening: 'shimenawa-compound',
       night: null,
     },
   },

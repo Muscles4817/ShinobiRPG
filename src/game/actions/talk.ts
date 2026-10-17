@@ -2,6 +2,7 @@ import { reactionTo, recordTalk, stageName, stageOf, talkedToday } from '@/syste
 
 import { busyReason, chip, firstBlocker, log } from '../ops';
 import { bondOf, findPerson, requirePerson, tastesOf, whereNow } from '../people/cast';
+import { behindGate } from '../compounds';
 import { warmed } from '../people/warmth';
 import { pickConversation } from '../people/talk';
 import { festivalBondBonus } from '../village';
@@ -20,6 +21,7 @@ export const talk: ActionHandler<ActionOf<'talk'>> = {
     return firstBlocker(
       busyReason(state),
       whereNow(state, ctx, person) === null && `${person.name} isn’t around right now.`,
+      behindGate(state, ctx, person),
       talkedToday(bondOf(state, person.id), state.time.day) &&
         `You’ve already talked with ${person.name} today. Try tomorrow.`,
     );

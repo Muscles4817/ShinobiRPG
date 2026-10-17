@@ -74,7 +74,12 @@ export const LEADERS: readonly PersonDef[] = [
     }),
     specialty: 'taijutsu',
     bio: 'Master of the main house. Measures everyone, his own daughters first, and rarely approves.',
-    schedule: { morning: 'training-grounds', afternoon: null, evening: null, night: null },
+    schedule: {
+      morning: 'training-grounds',
+      afternoon: 'hyuga-compound',
+      evening: 'hyuga-compound',
+      night: null,
+    },
     teacher: HIASHI_TEACHER,
     arsenal: HIASHI_ARSENAL,
   },
@@ -98,7 +103,7 @@ export const LEADERS: readonly PersonDef[] = [
     bio: 'Reads minds for the Interrogation Corps and arranges flowers for his daughter’s shop.',
     schedule: {
       morning: 'shopping-district',
-      afternoon: null,
+      afternoon: 'yamanaka-compound',
       evening: 'training-grounds',
       night: 'izakaya',
     },
@@ -124,7 +129,7 @@ export const LEADERS: readonly PersonDef[] = [
     specialty: 'ninjutsu',
     bio: 'Head of the Nara and of every jōnin in the village. Thinks two hundred moves ahead, then naps.',
     schedule: {
-      morning: null,
+      morning: 'nara-compound',
       afternoon: 'training-grounds',
       evening: 'mission-desk',
       night: 'izakaya',
@@ -151,7 +156,7 @@ export const LEADERS: readonly PersonDef[] = [
     specialty: 'taijutsu',
     bio: 'A giant of a man with a giant laugh. Treats every genin like one of his own.',
     schedule: {
-      morning: 'shopping-district',
+      morning: 'akimichi-compound',
       afternoon: 'training-grounds',
       evening: 'shopping-district',
       night: 'izakaya',
@@ -179,7 +184,7 @@ export const LEADERS: readonly PersonDef[] = [
     bio: 'Kiba’s mother, and louder than him. Her partner Kuromaru has one eye and no patience.',
     schedule: {
       morning: 'training-grounds',
-      afternoon: null,
+      afternoon: 'inuzuka-compound',
       evening: 'shopping-district',
       night: null,
     },
@@ -204,7 +209,12 @@ export const LEADERS: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Shino’s father, and the reason Shino talks the way he does. Logical to the last insect.',
-    schedule: { morning: null, afternoon: null, evening: 'training-grounds', night: null },
+    schedule: {
+      morning: 'aburame-compound',
+      afternoon: 'aburame-compound',
+      evening: 'training-grounds',
+      night: null,
+    },
     teacher: SHIBI_TEACHER,
     arsenal: SHIBI_ARSENAL,
   },

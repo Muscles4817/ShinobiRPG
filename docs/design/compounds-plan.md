@@ -102,4 +102,25 @@ and a screenshot at 390px. No save change: compounds are content and the rule is
 
 ## Part 5: What was built
 
-Nothing yet.
+- **Content** (`content/compounds.ts`, validated in `validateCompounds.ts`): place kinds
+  `compound` (`clanId`, `headId`) and `quarter` (`compoundIds`), and `ClanDef.outsiders`.
+  Naruto: a Clan Quarter with the Uchiha and Hyūga (guarded), Nara, Yamanaka, Aburame and
+  Inuzuka (reserved) and Akimichi (welcoming) compounds, each with its head where the pack has
+  one. Original: the Hibana (welcoming), Kurogane and Shimenawa (reserved) and Tōkaku (guarded).
+  Clan members spend a slot or two at home; every one is out and about at some hour, so even a
+  guarded clan can be got to know.
+- **The gate** (`game/compounds.ts`): an outsider needs a bond with anyone of the clan, by day
+  none (welcoming), an acquaintance (reserved) or a close friend (guarded); at night every clan
+  wants you bonded. Members are always let in. Someone home behind a shut gate can't be talked
+  to (`behindGate`, read by the talk action).
+- **The screens:** the village screen shows one Clan Quarter card for the compounds; its page
+  is a gate per clan (stance, shut or not, who's home), and a compound's page has the clan, its
+  head, why the gate is shut, or who's home with a Talk button each. Back from a compound goes
+  to the quarter. **Who's here** now shows only people you know (and your team) out and about,
+  not every stranger in the village and not those home in a compound; place cards already
+  capped their faces at four.
+- **Housekeeping:** three switches over place kinds outgrew the complexity limit and now group
+  the bare kinds (`validateWorld`) and the places to rest (`REST_KINDS` in `views/hub.ts`,
+  `RestPage`) behind type guards, so the compiler still lists every switch a new kind misses.
+- **Left for later:** clan training, an audience with the head, standing with a clan, marriage,
+  and the clans' ties to the village's trades.

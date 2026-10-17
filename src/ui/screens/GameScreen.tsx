@@ -77,16 +77,16 @@ function TabContent({ nav, setNav, onAbandon, onMenu, onOpenPerson, ...props }: 
   }
   switch (nav.tab) {
     case 'here': {
-      const place = nav.placeId
-        ? hubView(props.state, props.ctx).places.find((p) => p.id === nav.placeId)
-        : null;
+      const hub = nav.placeId ? hubView(props.state, props.ctx) : null;
+      const place = hub && [...hub.places, ...hub.inner].find((p) => p.id === nav.placeId);
       return place ? (
         <PlacePage
           {...props}
           kind={place.kind}
           placeId={place.id}
+          onOpenPlace={openPlace}
           onBack={() => {
-            setNav({ tab: 'here', placeId: null });
+            setNav({ tab: 'here', placeId: place.parentId });
           }}
         />
       ) : (

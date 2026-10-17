@@ -52,6 +52,7 @@ export type {
   SessionFormat,
 } from './senseis';
 import type { SettingText } from './settingText';
+import type { CompoundFields, OutsiderStance, QuarterFields } from './compounds';
 import type { OnsenFields, TavernFields } from './leisure';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
@@ -179,6 +180,8 @@ export interface ClanDef {
   readonly lodging?: string;
   /** The companion a child of the clan grows up with (`companions.ts`). */
   readonly companion?: ClanCompanion;
+  /** How the clan treats outsiders at its compound's gate (`compounds.ts`). */
+  readonly outsiders?: OutsiderStance;
   readonly kekkeiGenkai?: {
     readonly name: string;
     readonly description: string;
@@ -295,6 +298,8 @@ export type PlaceDef =
       readonly spots?: readonly FishingSpot[];
     })
   | (PlaceBase & TavernFields)
+  | (PlaceBase & CompoundFields)
+  | (PlaceBase & QuarterFields)
   | (PlaceBase & OnsenFields)
   | (PlaceBase & {
       readonly kind: 'gear';

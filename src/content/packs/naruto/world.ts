@@ -6,6 +6,7 @@ import { PROMOTIONS } from './exam';
 import { SHOPPING_DISTRICT } from './market';
 import { ACADEMY_SHELF, ARCHIVE_SHELF } from './shelves';
 import { KONOHA_WILDS } from './wilds';
+import { KONOHA_COMPOUNDS } from './compounds';
 import { LAND_OF_WAVES } from './landOfWaves';
 import { TANZAKU_TOWN } from './tanzaku';
 import { SHUKUBA_TOWN } from './shukuba';
@@ -210,6 +211,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         blurb: 'Medical ninja on call',
         treatmentCost: 60,
       },
+      ...KONOHA_COMPOUNDS,
       ...KONOHA_WILDS,
     ],
   },

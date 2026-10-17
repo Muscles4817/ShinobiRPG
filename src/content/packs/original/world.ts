@@ -17,6 +17,7 @@ import { KIRI_FORD } from './kiriFord';
 import { PORT_SHIOMACHI } from './shiomachi';
 import { TOROGAKURE_LEISURE } from './leisure';
 import { TOROGAKURE_WILDS } from './wilds';
+import { TOROGAKURE_COMPOUNDS } from './compounds';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -250,6 +251,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         blurb: 'Healers on call',
         treatmentCost: 60,
       },
+      ...TOROGAKURE_COMPOUNDS,
       ...TOROGAKURE_WILDS,
     ],
   },

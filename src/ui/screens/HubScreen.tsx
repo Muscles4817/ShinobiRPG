@@ -30,7 +30,7 @@ export function HubScreen({
   const village = villageView(state, ctx);
   const week = senseiWeekView(state, ctx);
   const finals = examFinalsView(state, ctx);
-  const around = hub.places.flatMap((p) => p.people);
+  const around = hub.around;
   return (
     <>
       <header className="hub-hero sky" data-slot={header.slot} data-land={header.backdrop}>

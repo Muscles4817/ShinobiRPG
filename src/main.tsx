@@ -11,6 +11,7 @@ import '@/ui/styles/shell.css';
 import '@/ui/styles/hub.css';
 import '@/ui/styles/scenery.css';
 import '@/ui/styles/places.css';
+import '@/ui/styles/compounds.css';
 import '@/ui/styles/leisure.css';
 import '@/ui/styles/board.css';
 import '@/ui/styles/you.css';

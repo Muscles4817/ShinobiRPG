@@ -1,7 +1,8 @@
-import type { PlaceKind } from '@/game';
+import { isRestKind, type PlaceKind, type RestKind } from '@/game';
 
 import type { PlaceProps } from '../types';
 import { AcademyPage } from './AcademyPage';
+import { CompoundPage, QuarterPage } from './CompoundPages';
 import { GearShopPage } from './GearShopPage';
 import { HomePage, HospitalPage } from './HomePages';
 import { HousePage } from './HousePage';
@@ -18,26 +19,17 @@ import { WildsPage } from './WildsPage';
 interface PlacePageProps extends PlaceProps {
   readonly kind: PlaceKind;
   readonly placeId: string;
+  /** Opens another place from this one (a compound from the clans' quarter). */
+  readonly onOpenPlace: (placeId: string) => void;
 }
 
-export function PlacePage({ kind, placeId, ...props }: PlacePageProps) {
+/** Places to rest, eat and sleep. */
+function RestPage({ kind, ...props }: PlaceProps & { readonly kind: RestKind }) {
   switch (kind) {
-    case 'training':
-      return <TrainingPage {...props} />;
-    case 'market':
-      return <MarketPage {...props} />;
     case 'home':
       return <HomePage {...props} />;
     case 'hospital':
       return <HospitalPage {...props} />;
-    case 'missions':
-      return <MissionHallPage {...props} />;
-    case 'academy':
-      return <AcademyPage {...props} />;
-    case 'library':
-      return <LibraryPage {...props} />;
-    case 'gear':
-      return <GearShopPage {...props} placeId={placeId} />;
     case 'tavern':
       return <TavernPage {...props} />;
     case 'onsen':
@@ -46,7 +38,29 @@ export function PlacePage({ kind, placeId, ...props }: PlacePageProps) {
       return <InnPage {...props} />;
     case 'house':
       return <HousePage {...props} />;
+  }
+}
+
+export function PlacePage({ kind, placeId, onOpenPlace, ...props }: PlacePageProps) {
+  if (isRestKind(kind)) return <RestPage {...props} kind={kind} />;
+  switch (kind) {
+    case 'training':
+      return <TrainingPage {...props} />;
+    case 'market':
+      return <MarketPage {...props} />;
+    case 'missions':
+      return <MissionHallPage {...props} />;
+    case 'academy':
+      return <AcademyPage {...props} />;
+    case 'library':
+      return <LibraryPage {...props} />;
+    case 'gear':
+      return <GearShopPage {...props} placeId={placeId} />;
     case 'wilds':
       return <WildsPage {...props} placeId={placeId} />;
+    case 'quarter':
+      return <QuarterPage {...props} onOpenPlace={onOpenPlace} />;
+    case 'compound':
+      return <CompoundPage {...props} placeId={placeId} />;
   }
 }

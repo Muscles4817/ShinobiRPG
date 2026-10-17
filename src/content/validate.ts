@@ -26,6 +26,7 @@ import { validateExercises } from './validateExercises';
 import { validateCrews } from './validateCrews';
 import { validateRetinues } from './validateRetinues';
 import { validateCompanions } from './validateCompanions';
+import { validateCompounds } from './validateCompounds';
 import { validateStory } from './validateStory';
 import { jobProfile, postedAway } from './jobProfile';
 import { placeholdersIn } from './missionTemplates';
@@ -45,6 +46,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateCrews(pack),
     ...validateRetinues(pack),
     ...validateCompanions(pack),
+    ...validateCompounds(pack),
     ...validateSenseis(pack),
     ...validateSenseiParts(pack),
     ...validateStory(pack),
