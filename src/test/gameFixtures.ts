@@ -43,7 +43,8 @@ export function freshGame(context: GameContext = ctx): GameState {
 /**
  * Reads out the teams, takes the first sensei offered, the chakra paper test they hand you and
  * their own test (the first choice each round, and yes, show me everything), answers your
- * rival when they come to find you, and clears the result cards.
+ * rival when they come to find you, and clears the result cards. The rival never needles you
+ * (a provocation holds play up until answered); tests of provocations set the day themselves.
  */
 export function formTeam(state: GameState, context: GameContext = ctx): GameState {
   const assigned = act(state, { type: 'assignTeam' }, context);
@@ -53,7 +54,8 @@ export function formTeam(state: GameState, context: GameContext = ctx): GameStat
   while (met.mentor.opening) met = act(met, { type: 'senseiTest', optionIndex: 0 }, context);
   // Word gets round: your rival comes to find you. Answer kindly and get on with the day.
   if (met.rival?.beat) met = act(met, { type: 'answerRival', choiceIndex: 1 }, context);
-  return { ...met, reports: [] };
+  const calm = met.rival && { ...met.rival, lastProvocationDay: Number.MAX_SAFE_INTEGER };
+  return { ...met, rival: calm, reports: [] };
 }
 
 /** Puts every job on the board, so tests can take any job they are trusted with. */

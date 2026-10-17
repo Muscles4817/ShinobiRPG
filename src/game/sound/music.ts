@@ -35,6 +35,7 @@ export function musicMood(state: GameState, ctx: GameContext): MusicMood {
       return 'fight';
     case 'encounter':
     case 'exam':
+    case 'race':
       return 'tension';
     case 'mission':
       return 'road';

@@ -9,7 +9,7 @@ const TIRELESS_FLOOR: SoloFloor = { floor: 0.4, throughGrade: 'B' };
 export const TRAITS: readonly TraitDef[] = [
   {
     id: 'brash',
-    likes: ['challenge', 'joke'],
+    likes: ['challenge', 'joke', 'cruel'],
     dislikes: ['quiet'],
     name: 'Brash',
     note: 'Charges in before the bell has finished ringing.',
@@ -19,7 +19,7 @@ export const TRAITS: readonly TraitDef[] = [
   {
     id: 'calm',
     likes: ['quiet', 'earnest'],
-    dislikes: ['tease'],
+    dislikes: ['tease', 'cruel'],
     name: 'Calm',
     note: 'Never raises their voice. Never misses a detail.',
     opposite: 'brash',
@@ -28,7 +28,7 @@ export const TRAITS: readonly TraitDef[] = [
   {
     id: 'diligent',
     likes: ['earnest', 'challenge'],
-    dislikes: ['joke'],
+    dislikes: ['joke', 'cruel'],
     name: 'Diligent',
     note: 'First to arrive, last to leave. Forgets to eat.',
     opposite: 'lazy',
@@ -46,7 +46,7 @@ export const TRAITS: readonly TraitDef[] = [
   {
     id: 'kind',
     likes: ['kind', 'earnest'],
-    dislikes: ['tease'],
+    dislikes: ['tease', 'cruel'],
     name: 'Kind',
     note: 'Shares lunch with whoever forgot theirs.',
     opposite: 'cunning',
@@ -54,7 +54,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'cunning',
-    likes: ['tease', 'curious'],
+    likes: ['tease', 'curious', 'cruel'],
     dislikes: ['earnest'],
     name: 'Cunning',
     note: 'Has never once been caught. We suspect plenty.',

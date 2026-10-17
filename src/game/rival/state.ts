@@ -23,15 +23,47 @@ export interface Score {
   readonly them: number;
 }
 
-/** A moment waiting for your answer: meeting them, or the words after a spar. */
+/** A moment waiting for your answer: meeting them, the words after a contest, or a provocation. */
 export type RivalBeat =
-  { readonly kind: 'meeting' } | { readonly kind: 'after-spar'; readonly won: boolean };
+  | { readonly kind: 'meeting' }
+  | { readonly kind: 'after-spar'; readonly won: boolean }
+  | { readonly kind: 'after-race'; readonly won: boolean }
+  | { readonly kind: 'provocation'; readonly id: string };
+
+/** The two ways to settle it: a spar (a real fight) or a race (three legs, read as you run). */
+export const CONTESTS = ['spar', 'race'] as const;
+export type Contest = (typeof CONTESTS)[number];
+
+/** What rides on it: only pride, or a purse each side puts up. */
+export const STAKES = ['pride', 'purse'] as const;
+export type Stakes = (typeof STAKES)[number];
 
 export interface Challenge {
   /** The day it was made; it stands until the end of the next. */
   readonly day: number;
   /** Why now, in their words. */
   readonly line: string;
+  readonly contest: Contest;
+}
+
+/** How you run a leg of a race. */
+export const RACE_MOVES = ['steady', 'push', 'gamble'] as const;
+export type RaceMove = (typeof RACE_MOVES)[number];
+
+/** A race under way: which leg, how far ahead you are (negative: behind), and their next move. */
+export interface RaceRun {
+  readonly leg: number;
+  readonly margin: number;
+  readonly stakes: Stakes;
+  /** What they mean to do on this leg, chosen as it begins, so a sharp eye can read it. */
+  readonly theirMove: RaceMove;
+  /** Whether you read them this leg: rolled as it begins, so the screen and the run agree. */
+  readonly read: boolean;
+  /** Legs each of you has pushed: it tells on the next. */
+  readonly yourStrain: number;
+  readonly theirStrain: number;
+  /** What happened on each leg so far, in words. */
+  readonly told: readonly string[];
 }
 
 export interface Rival {
@@ -40,6 +72,7 @@ export interface Rival {
   readonly temperament: Temperament;
   readonly heat: number;
   readonly spars: Score;
+  readonly races: Score;
   /** Who reached each grade first, keyed `stat:grade`, from the day they were chosen on. */
   readonly firsts: Readonly<Record<string, 'you' | 'them'>>;
   /** Grades each of you already had when chosen: not a race. */
@@ -48,6 +81,13 @@ export interface Rival {
   /** The last day they challenged you. */
   readonly lastChallengeDay: number;
   readonly beat: RivalBeat | null;
+  /** The last day they needled you. */
+  readonly lastProvocationDay: number;
+  /** Thrown off by something you said: worse at the next contest, then over it. */
+  readonly rattled: boolean;
+  /** What rides on the spar under way with them, if one is. */
+  readonly sparStakes: Stakes | null;
+  readonly race: RaceRun | null;
 }
 
 export function heatStage(heat: number): number {

@@ -546,10 +546,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `chooseRival` takes a classmate on another team by a **shape** rolled from the seed (prodigy,
     neck, chaser, fallen: the gap is never evened out) and a temperament from their traits. The
     `rival` slice keeps their **heat** (Bitter to Sworn; replies move it by tone and their
-    tastes), the **tally** (spars; first to each grade, scored by `noteRival` in `dispatch`) and
-    at most one **challenge** (issued on the day's turn, lapsing after the next) and one **beat**
-    (a moment waiting for your reply: a scene with a `busyReason`). Their ink is `--rival`, never
-    a gain or cost colour.
+    tastes, and your team and sensei lean by theirs: `replies.ts`), the **tally** (spars, races;
+    first to each grade, scored by `noteRival` in `dispatch`), at most one **challenge** (theirs
+    on the day's turn, on the ground that suits them, lapsing after the next; or yours from
+    their sheet, once a day, for pride or a purse) and one **beat** (a moment waiting for your
+    reply, a provocation among them: a scene with a `busyReason`). A **race** (`race.ts`) is
+    three legs of steady, push or the roofs, each answering another, with their move read by
+    perception. The **cruel** tone needs knowing them; barbed replies leave them `rattled` for
+    the next race. A rival behind you trains harder (`drive.ts`), the one open exception to
+    peers growing by the same rules. Their ink is `--rival`, never a gain or cost colour.
 
 ### Content packs
 

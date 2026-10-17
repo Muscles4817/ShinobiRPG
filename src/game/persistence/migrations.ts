@@ -19,8 +19,8 @@ import { v40ToV41 } from './assignmentMigration';
 import { v41ToV42 } from './curriculumMigration';
 import { v42ToV43 } from './spectatorMigration';
 import { v43ToV44 } from './daybookMigration';
-import { v44ToV45 } from './rivalMigration';
-import { v45ToV46 } from './companionMigration';
+import { v44ToV45, v45ToV46 } from './rivalMigration';
+import { v46ToV47 } from './companionMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
 import { v19ToV20 as v20ToV21 } from './rankMigration';
 import { v19ToV20 } from './teachingMigration';
@@ -333,4 +333,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   43: v43ToV44,
   44: v44ToV45,
   45: v45ToV46,
+  46: v46ToV47,
 };

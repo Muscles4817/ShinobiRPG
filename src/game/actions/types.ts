@@ -1,6 +1,7 @@
 import type { Rng } from '@/core';
 import type { MapStyle } from '../mapStyle';
 import type { DayEndMode } from '../daybook/state';
+import type { Contest, RaceMove, Stakes } from '../rival/state';
 import type { RangeBand } from '@/systems/combat';
 import type { PlayKind } from '@/systems/companions';
 import type { CookingSteps } from '@/systems/cooking';
@@ -80,6 +81,8 @@ export type GameAction =
   | { readonly type: 'answerRival'; readonly choiceIndex: number }
   | { readonly type: 'acceptChallenge' }
   | { readonly type: 'declineChallenge' }
+  | { readonly type: 'challengeRival'; readonly contest: Contest; readonly stakes: Stakes }
+  | { readonly type: 'runRaceLeg'; readonly move: RaceMove }
   | { readonly type: 'buyGear'; readonly gearId: string }
   | { readonly type: 'buyTool'; readonly toolId: string }
   | { readonly type: 'buyIntel'; readonly missionId: string }

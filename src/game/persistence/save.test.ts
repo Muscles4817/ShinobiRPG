@@ -417,9 +417,31 @@ describe('persistence', () => {
     expect(played.rival?.personId).toBeTruthy();
   });
 
+  it('gives a rival from before races none run, and a standing challenge to a spar', () => {
+    const game = newGame();
+    const {
+      races: _r,
+      rattled: _t,
+      sparStakes: _s,
+      race: _x,
+      lastProvocationDay: _p,
+      ...rival
+    } = game.rival!;
+    const old = { ...game, rival: { ...rival, challenge: { day: 1, line: 'Spar.' } } };
+    const loaded = deserialize(JSON.stringify({ version: 45, state: old }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.rival).toMatchObject({
+      races: { you: 0, them: 0 },
+      rattled: false,
+      sparStakes: null,
+      race: null,
+      challenge: { contest: 'spar' },
+    });
+  });
+
   it('gives a save from before companions none, and no stray being won over', () => {
     const { companions: _c, ...game } = newGame();
-    const loaded = deserialize(JSON.stringify({ version: 45, state: game }));
+    const loaded = deserialize(JSON.stringify({ version: 46, state: game }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.companions).toEqual({
       owned: {},
