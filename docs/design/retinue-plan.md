@@ -76,14 +76,21 @@ stay valid; the retinue gives them bodies when content is ready.
    - **Each style poses its own problem, and the answer works** (Part 3, counters).
 3. **The bench checks honesty and counters, not parity.** A unit's power matches its grade;
    each style's counter measurably swings its matchup.
-4. **Threat counts the retinue.** `fightingPower`, scouting and a job's danger read a fighter
-   with what they bring.
-5. **Everything can be had, but the odds vary hugely.** Each kind of retinue has acquisition
+4. **Threat counts the retinue, as far as you can tell it is there.** Scouting reads a fighter
+   with the companions you can see. Retinues are scoutable to different levels: a hound at heel
+   is plain to anyone, but a puppeteer or a hive-host often can't be told for what they are out
+   of a fight. A sharp eye (perception) or a lucky look can catch it, never for certain; the
+   client's report, a recon of their kit or the fight itself shows everything.
+5. **A loyal companion fights on** when its master falls; the fight is won only once it is
+   beaten too. (Summons, which go home, come later.)
+6. **Foes first.** The framework ships with foes who have retinues; the player's own companions
+   come with the companions discussion.
+7. **Everything can be had, but the odds vary hugely.** Each kind of retinue has acquisition
    paths with gates and odds, from near-certain (a clan rite) to an arc of its own (a
    scavenged eye). Each scenario is planned on its own.
-6. **Big questions get their own planning discussion and PR:** companion depth, puppetry (a
+8. **Big questions get their own planning discussion and PR:** companion depth, puppetry (a
    discipline or not, design, the workshop), and the original pack's equivalents.
-7. **Shamans come to both settings** (naruto and the lantern village), loosely after Shaman
+9. **Shamans come to both settings** (naruto and the lantern village), loosely after Shaman
    King: people who see and deal with spirits and seal them into things and people to empower
    them. They reach combat through this framework but are a progression path of their own,
    with their own planning discussion and PR.
@@ -124,10 +131,13 @@ bodies, and a default plan brings an area against a swarm.
 
 ### The contract
 
-A new `systems/combat/unitContract.ts`, beside `teamContract.ts` and `gearContract.ts`:
+The framework (step 1) needs only one field: `CombatantSetup.master?: string`, the fighter (on
+the same side) a body belongs to. The game expands a foe into their party (master first, then
+each body, linked by `master`), so the engine sees ordinary fighters with a link. What later
+steps add, as they need it (in a `systems/combat/unitContract.ts` beside `teamContract.ts` and
+`gearContract.ts` once there is more than a field):
 
-- `CombatantSetup.retinue?: readonly UnitSetup[]`: bodies on the field from the start. A
-  `UnitSetup` is a combatant's stats and kit plus its `mind` and `upkeep`.
+- `mind` on a linked body (own, driven, shared) and its `upkeep`.
 - `CombatantSetup.calls?: readonly UnitSetup[]`: what this fighter can call in, by id; a new
   `summon` technique verb names one.
 - `CombatantSetup.swarm?: SwarmSetup`: a pool's `kind`, size, cap and regrowth. Techniques may
@@ -214,10 +224,10 @@ discussion; this section only fixes how they plug in.
 
 Each step proves one property and is its own PR.
 
-1. **The framework.** `unitContract.ts`; own-mind full bodies from the start; the outcome's
-   `units`; the vital rule; scouting and `fightingPower` counting the retinue; bench tests that
-   units are graded honestly and that separating or felling a partner swings the fight. One
-   plain companion proves it end to end (in the original pack, so the release build has it).
+1. **The framework** (built, Part 5): own-mind full bodies from the start, linked by `master`;
+   the tandem; tiered scouting of retinues; the combined rating; the bench. One plain companion
+   (the original pack's poacher and hound) proves it end to end. The outcome's `units`, the
+   vital rule and the view's `controller` wait for the step that first reads them.
 2. **Companions in depth** (planning discussion first): growth, bond, injuries, meals, the
    born and adopted paths.
 3. **Summons and contracts:** called bodies, the `summon` verb, chakra upkeep, one huge or
@@ -236,4 +246,33 @@ Each step proves one property and is its own PR.
 
 ## Part 5: What was built
 
-Nothing yet.
+### Step 1: the framework
+
+- **Contract:** `CombatantSetup.master` (and `Body.master`): a body belonging to another
+  fighter on its side. It fights by its own judgement and fights on when its master falls.
+- **The tandem** (`rules/retinue.ts`, applied in `plan/react.ts`): while master and companion
+  both stand free (not dazed, not held), each hits `TANDEM_BONUS` (15%) harder. The answer is to
+  break them up: daze or hold one, or bring one down first.
+- **Content:** `EnemyDef.retinue` (entries of `enemyId` and a `tell`), validated in
+  `validateRetinues.ts` (a real enemy, not themselves, no retinue of its own, no more dangerous
+  than its master). The game expands a foe with `enemyParty` (`game/combatants.ts`), in mission
+  fights and watched matches. The original pack's poacher keeps a hound at heel, met on the
+  night watch over the smokehouse.
+- **Tiered scouting** (`game/retinueSight.ts`): a `tell` is `open` (always seen), `kept`
+  (perception 5 up gives a first chance, at most 80%) or `hidden` (perception 9 up, at most
+  35%), drawn from the seed and the foe, never the Rng, so a notice reads the same each time and
+  grows clearer with your eyes. The report, a recon of their kit and the fight show everything.
+- **The combined rating** (`partyPower`, `systems/stats/tiers.ts`): (Σ powerᵏ)^(1/k) with
+  k = 1.5, each companion weighted by its `healthScale`. Measured on the bench: fights are steep
+  (a plain fighter one point up on every stat wins every time), so even an E-grade hound beside
+  an even foe turns a fair fight into a rare win; the rating reads that pair as stronger than
+  you, and an equal pair as far stronger. Scouting reads every foe with the companions seen
+  (`opponentPower`), the notice counts them, the report and the encounter's field notes name
+  them, and the fight's read says how to answer the pair.
+- **Bench** (`src/test/bench/retinueBench.test.ts`): an even fight becomes a rare win against
+  the pair; the pair rates beyond even; linked, the same two bodies are much worse to face
+  (a fighter who won two in three against them apart wins one in three); a fighter who dazes keeps far less of that against them.
+- **Left for later:** the naruto pack's handler (with the companions step, beside the player's
+  own); a hound's nose in the encounter's stealth approaches; group threat for foes who are not
+  a retinue (three bandits still read as their toughest), which moves crews on existing jobs and
+  wants its own calibration.

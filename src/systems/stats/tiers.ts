@@ -86,3 +86,19 @@ export function fightingPower(stats: FightingStats): number {
   const best = Math.max(...ARTS.map((id) => stats[id]));
   return (rounded + best) / 2;
 }
+
+/**
+ * How strongly extra bodies add up, measured on the bench (`retinueBench.test.ts`): fights are
+ * steep, so even a weak second body is a real threat, but two bodies are not twice one.
+ */
+const PARTY_EXPONENT = 1.5;
+
+/**
+ * One rating for several bodies fighting as one (a fighter and their companions), on the same
+ * scale as `fightingPower`: the strongest alone is their own rating, and each body beside them
+ * adds to it.
+ */
+export function partyPower(powers: readonly number[]): number {
+  const sum = powers.reduce((total, p) => total + Math.max(0, p) ** PARTY_EXPONENT, 0);
+  return sum ** (1 / PARTY_EXPONENT);
+}

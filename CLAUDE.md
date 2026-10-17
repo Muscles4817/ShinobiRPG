@@ -284,6 +284,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and `rules/conditions.ts` (Hidden and Confused, Search and Dispel chances); every engine
     applies them, so an archer is an archer in every fight style. Scouting names each trait
     with its counter. Genin get traits from their specialty (`companionTraits`).
+    Some fighters bring more than one body (**retinues**, `docs/design/retinue-plan.md`): a
+    body with `CombatantSetup.master` belongs to that fighter, fights by its own judgement,
+    fights on if they fall, and the two hit harder while both stand free of dazes and holds
+    (`rules/retinue.ts`). A retinue is a real advantage, never balanced away; what answers it is
+    breaking the pair up. A foe's `EnemyDef.retinue` is expanded by `enemyParty`; each body has
+    a `tell` (open, kept, hidden) that sets how likely a glance is to see it before the fight
+    (`game/retinueSight.ts`: perception, by hash, never certain short of open), and scouting
+    rates a foe with what it sees (`opponentPower`, `partyPower`).
     **Preparation** happens before the fight: fight tools (`ToolDef`, sold by the piece at
     `gear` places' `toolIds`, kept in `inventory.tools`) ride in as `CombatantSetup.items`;
     what they do lives once in `rules/items.ts`, every engine offers them, and
@@ -615,6 +623,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   burn, bleed, poison; counter, a readied riposte) keep their rules in
   `rules/verbs/lingering.ts` and their play in `engines/plan/lingering.ts`, which wears them
   down at the end of each exchange.
+- **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
+  worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
+  with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation
+  checks the link; the fight, scouting and the notice pick it up.
 - **Add a fight tool:** add a `ToolDef` to `shared/tools.ts` (or a pack's own list) with an
   existing `effect` and list it in a gear place's `toolIds`. A new effect goes in
   `COMBAT_ITEM_EFFECTS` with its rule in `rules/items.ts`; every engine must offer it.

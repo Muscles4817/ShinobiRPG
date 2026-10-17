@@ -131,6 +131,12 @@ export interface CombatantSetup {
   readonly stance?: CombatStance;
   /** What the player may change about this ally (see `teamContract.ts`). */
   readonly orders?: CombatOrders;
+  /**
+   * The fighter (by id, on the same side) this one belongs to: a companion at its handler's
+   * heel. It fights on its own judgement, fights on if they fall, and the two hit harder
+   * together while both stand free (`rules/retinue.ts`).
+   */
+  readonly master?: string;
 }
 
 /**

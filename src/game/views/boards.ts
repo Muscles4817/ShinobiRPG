@@ -6,6 +6,7 @@ import { availability, crewFor, type Availability } from '../board';
 import { asksForYou } from '../clients';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
+import { retinueSeen } from '../retinueSight';
 import { missionThreat, traitNotes, type Threat, type TraitNote } from '../scouting';
 import { senseiPick } from '../sensei/pick';
 import { mentorOf } from '../sensei/plan';
@@ -75,17 +76,31 @@ function foesOf(ctx: GameContext, enemyIds: readonly string[]): Foe[] {
   });
 }
 
+/** Each foe followed by what you can tell fights beside them (all of it, with the report). */
+function withRetinues(
+  state: GameState,
+  ctx: GameContext,
+  enemyIds: readonly string[],
+  known: boolean,
+): string[] {
+  return enemyIds.flatMap((id) => {
+    const def = ctx.content.enemies.get(id);
+    const seen = def ? retinueSeen(state, def, known ? 'full' : 'glance') : [];
+    return [id, ...seen.map((entry) => entry.enemyId)];
+  });
+}
+
 /** The toughest enemy a job can throw at you, read against you, and (with the report) who. */
 function oppositionOf(
   state: GameState,
   ctx: GameContext,
   mission: MissionDef,
 ): Notice['opposition'] {
-  const enemies = mission.stages.flatMap(stageFoes);
+  const known = state.board.intel.includes(mission.id);
+  const enemies = withRetinues(state, ctx, mission.stages.flatMap(stageFoes), known);
   const read = missionThreat(state, ctx, mission);
   if (!read) return null;
   const many = enemies.length > 1 ? ` (${enemies.length} foes)` : '';
-  const known = state.board.intel.includes(mission.id);
   return {
     threat: read.threat,
     label: `${read.threatLabel}${many}`,

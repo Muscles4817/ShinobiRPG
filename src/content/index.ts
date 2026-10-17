@@ -19,6 +19,8 @@ export type {
   ConversationDef,
   ConversationTopic,
   EnemyDef,
+  RetinueEntry,
+  RetinueTell,
   FestivalDef,
   FoodDef,
   GearDef,

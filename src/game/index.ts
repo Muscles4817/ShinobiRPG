@@ -184,7 +184,7 @@ export {
   type StatLine,
   type TierRead,
 } from './views/shinobi';
-export type { Pace, ScoutingRead, StatCompare, Threat, TraitNote } from './scouting';
+export type { CompanionNote, Pace, ScoutingRead, StatCompare, Threat, TraitNote } from './scouting';
 export { combatScene, finishedFightScene, combatScouting } from './views/scene';
 export {
   missionScene,

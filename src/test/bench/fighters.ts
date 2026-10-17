@@ -67,6 +67,8 @@ export interface FighterSpec {
   readonly stance?: CombatStance;
   /** What they wear into the fight (step 4.3); absent: armed as their kit suggests. */
   readonly gear?: CombatGear;
+  /** The fighter (by bench id) this one belongs to: a companion at its master's heel. */
+  readonly master?: string;
 }
 
 export type StatProfile = Partial<Readonly<Record<StatId, Emphasis>>>;
@@ -104,5 +106,6 @@ export function toSetup(spec: FighterSpec, id: string): CombatantSetup {
     ...(spec.row ? { row: spec.row } : {}),
     ...(spec.stance ? { stance: spec.stance } : {}),
     ...(spec.gear ? { gear: spec.gear } : {}),
+    ...(spec.master ? { master: spec.master } : {}),
   };
 }

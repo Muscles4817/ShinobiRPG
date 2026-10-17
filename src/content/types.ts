@@ -155,6 +155,22 @@ export interface EnemyDef {
   readonly traits?: readonly CombatTrait[];
   /** Ingredients a beaten foe leaves (a beast's meat), one of each, into your pack. */
   readonly drops?: readonly string[];
+  /** Bodies that fight beside them (`docs/design/retinue-plan.md`): a hound at heel. */
+  readonly retinue?: readonly RetinueEntry[];
+}
+
+/**
+ * How plainly a retinue shows before the fight: `open` (a hound at heel, anyone sees it),
+ * `kept` (out of sight but carried: a sharp look may catch it) or `hidden` (inside the body:
+ * even the sharpest eyes rarely see it). In the fight every body on the field is seen.
+ */
+export const RETINUE_TELLS = ['open', 'kept', 'hidden'] as const;
+export type RetinueTell = (typeof RETINUE_TELLS)[number];
+
+/** One body in a foe's retinue: another enemy, fighting beside them. */
+export interface RetinueEntry {
+  readonly enemyId: string;
+  readonly tell: RetinueTell;
 }
 
 /** A family the character can be born into. Clans shape growth and give techniques. */

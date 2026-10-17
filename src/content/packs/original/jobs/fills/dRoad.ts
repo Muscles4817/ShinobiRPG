@@ -171,4 +171,25 @@ export const D_ROAD: readonly MissionFill[] = [
         'At dawn Hagane unwraps the blade to check it and lets you look, just once. Then he wraps it up again and tells you to forget what you saw.',
     },
   },
+  {
+    id: 'watch-over-the-smokehouse',
+    templateId: 'd-night-watch',
+    minMissionsCompleted: 2,
+    values: {
+      title: 'Watch over the Smokehouse',
+      client: 'Butcher Okada',
+      post: 'the smokehouse behind Okada’s shop, hung with the autumn hams',
+      setup:
+        'Two hams went missing last week, and the paw prints in the ash were as big as your hand. Okada leaves you a lantern and a stool and bolts the shop door behind him.',
+      vigil:
+        'The smoke is warm and sweet, the hams turn slowly on their hooks, and the stool is far too comfortable for a night like this.',
+      intruder:
+        'The back shutter lifts. A grey hound slips in first, nose down, and a man in a hunter’s coat follows it with a sack over his shoulder.',
+      foe: 'poacher',
+      parley:
+        '“Easy, easy,” the poacher says, a hand on the hound’s neck. “We were only hungry, the two of us.” The dog keeps its eyes on you all the way out.',
+      ending:
+        'At dawn Okada counts his hams, finds them all, and wraps the end of one in paper for you. He says he will buy a dog of his own.',
+    },
+  },
 ];

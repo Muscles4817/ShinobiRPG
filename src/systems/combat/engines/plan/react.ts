@@ -10,7 +10,8 @@ import { FORESIGHT_COUNTER, foreseen } from '../../rules/eyes';
 import { canAttackFrom, kitDamageScale, packScale, type AttackKind } from '../../rules/kit';
 import { harmLine, reactionLine } from '../../rules/narration';
 import type { RangeBand } from '../../contract';
-import { AREA_RULES, brokenScale, covered, substitutable } from '../../rules/verbs';
+import { tandemScale } from '../../rules/retinue';
+import { AREA_RULES, brokenScale, covered, isPinned, substitutable } from '../../rules/verbs';
 import { avoidOdds, blowSkill, type Incoming } from './avoid';
 import type { Card } from './cards';
 import { readyDefences } from './readiness';
@@ -33,7 +34,7 @@ const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
  * (`readiness.ts`) reacts on its own: a substitution escapes it, Guard softens it (guard),
  * Counter hits back up close (taijutsu); see `rules/defence.ts`. A dazed fighter can only
  * guard, and a break goes straight through a guard. Kits shape every hit: armour and spirits
- * shrug off some kinds of attack (less of a break), packs hit harder together, hidden attackers
+ * shrug off some kinds of attack (less of a break), packs and partners hit harder together, hidden attackers
  * harder still, illusionists' hits confuse, and cowards run. A
  * counter is a blow up close, so it can't reach an attacker standing behind their front row.
  * Before any of it, a clone may take the blow instead (`decoys.ts`).
@@ -87,14 +88,20 @@ function guardMeets(blow: Blow): boolean {
   return blow.areaSize === undefined || AREA_RULES[blow.areaSize].guardHolds;
 }
 
+/** A fighter free to fight beside their partner: not dazed, not held. */
+function freeToFight(f: PlanFighter): boolean {
+  return !isDazed(f) && !isPinned(f);
+}
+
 /**
- * Damage after the defender's kit, the attacker's pack and whether they strike from hiding (or
- * from a field that covers them).
+ * Damage after the defender's kit, the attacker's pack (or partner) and whether they strike
+ * from hiding (or from a field that covers them).
  */
 function kitted(round: Round, attacker: PlanFighter, defender: PlanFighter, blow: Blow): number {
   const unseen = attacker.hidden || covered(round.field, attacker, defender);
   const hidden = unseen ? HIDDEN_DAMAGE : 1;
-  const pack = packScale(attacker, round.fighters);
+  const pack =
+    packScale(attacker, round.fighters) * tandemScale(attacker, round.fighters, freeToFight);
   const kit = kitDamageScale(defender, blow.kind);
   return blow.raw * (blow.breaks ? brokenScale(kit) : kit) * pack * hidden;
 }

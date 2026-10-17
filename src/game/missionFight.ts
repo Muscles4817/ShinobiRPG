@@ -15,7 +15,7 @@ import { slotsUntilNextMorning } from '@/systems/time';
 import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct } from '@/systems/wallet';
 
-import { enemyCombatant, playerCombatant } from './combatants';
+import { enemyParty, playerCombatant } from './combatants';
 import type { GameContext } from './context';
 import { startFight } from './fightStyle';
 import { helpedOf } from './debrief';
@@ -56,8 +56,8 @@ export function beginCombat(
 ): GameState {
   const stage = activeStage(state, ctx);
   if (stage?.kind !== 'combat' && stage?.kind !== 'encounter') return state;
-  const enemies = stage.enemyIds.map((id, i) =>
-    enemyCombatant(ctx.content.enemies.require(id), i, ctx),
+  const enemies = stage.enemyIds.flatMap((id, i) =>
+    enemyParty(ctx.content.enemies.require(id), i, ctx),
   );
   const combat = startFight(
     state,
