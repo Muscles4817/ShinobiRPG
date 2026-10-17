@@ -3,6 +3,7 @@ import { createRng, err, ok, type Result } from '@/core';
 import { HANDLERS } from './actions/registry';
 import type { ActionHandler, GameAction } from './actions/types';
 import type { GameContext } from './context';
+import { noteDayEnd } from './daybook/record';
 import { notePromotions } from './exam/promotion';
 import { noteGradeUps } from './gradeUps';
 import type { GameState } from './state';
@@ -22,7 +23,8 @@ export function blockerFor(state: GameState, action: GameAction, ctx: GameContex
  * action and context always produce the same result (randomness comes from `state.rngState`).
  * Whatever grew a stat into a new grade, the moment is noted here, once (`noteGradeUps`), and
  * unstable techniques the new grades have caught up with steady (see `gradeUps.ts`), and a
- * jōnin's nomination arrives once it is earned (`exam/promotion.ts`).
+ * jōnin's nomination arrives once it is earned (`exam/promotion.ts`), and a day that ended is
+ * closed into the day's record (`daybook/record.ts`).
  */
 export function dispatch(
   state: GameState,
@@ -34,6 +36,7 @@ export function dispatch(
   if (blocker) return err(blocker);
 
   const rng = createRng(state.rngState);
-  const next = notePromotions(noteGradeUps(state, handler.perform(state, action, ctx, rng), ctx));
+  const performed = handler.perform(state, action, ctx, rng);
+  const next = noteDayEnd(state, notePromotions(noteGradeUps(state, performed, ctx)), action);
   return ok({ ...next, rngState: rng.state() });
 }

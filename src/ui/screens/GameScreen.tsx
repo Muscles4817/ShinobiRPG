@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import {
   activeScene,
+  dayEndView,
   hubView,
   reportSound,
   type GameContext,
@@ -12,6 +13,7 @@ import {
 import { useSound } from '../audio/SoundProvider';
 
 import { CueLayer } from '../components/CueLayer';
+import { DaySheet } from '../components/day/DaySheet';
 import { Dock, type DockTab } from '../components/Dock';
 import { Notice } from '../components/Notice';
 import { PersonSheet } from '../components/PersonSheet';
@@ -147,6 +149,18 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
 }
 
 /**
+ * The cards over play: a report waits for a fight's last exchange; the end-of-day sheet waits
+ * for scenes and reports (and shows only in the full setting).
+ */
+function cardsOver(state: GameState, ctx: GameContext, scene: SceneKind | null) {
+  const report = state.reports[0];
+  const showReport = report && !state.combatFinale ? report : null;
+  const day = dayEndView(state, ctx);
+  const quiet = !scene && !showReport && !state.combatFinale;
+  return { showReport, showDay: day?.mode === 'full' && quiet ? day : null };
+}
+
+/**
  * Routes between the three layers: scenes (fights, missions, exams, ceremonies, talks, team
  * assignment) take the whole screen; otherwise the dock tab decides, and "Here" shows the village or a place.
  * A person's sheet can open over any tab.
@@ -155,9 +169,8 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   const [nav, setNav] = useState<Nav>({ tab: 'here', placeId: null });
   const [personId, setPersonId] = useState<string | null>(null);
   const props: ScreenProps = { ctx, state, perform: session.perform };
-  const report = state.reports[0];
   const scene = activeScene(state);
-  const showReport = report && !state.combatFinale ? report : null;
+  const { showReport, showDay } = cardsOver(state, ctx, scene);
   const { play } = useSound();
   useEffect(() => {
     if (showReport) play(reportSound(showReport));
@@ -198,6 +211,7 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
       {session.cue && state.settings.animations && (
         <CueLayer cue={session.cue} onDone={session.clearCue} />
       )}
+      {showDay && <DaySheet view={showDay} perform={session.perform} />}
       {showReport && (
         <ReportCard
           report={showReport}

@@ -122,10 +122,17 @@ export type {
 export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
 export {
   animationSetting,
+  dayEndOptions,
   mapStyleOptions,
   type AnimationSetting,
+  type DayEndOption,
   type MapStyleOption,
 } from './views/settings';
+export { dayEndView, type DayEndView } from './views/dayEnd';
+export type { DayHook } from './views/dayHooks';
+export type { DayFind, DayGrowth, DayHurt, DayMoment, DayPerson } from './views/dayEndRows';
+export { openDay } from './daybook/open';
+export type { DayEndMode, PurseLine } from './daybook/state';
 export type { MapStyle } from './mapStyle';
 export { ACTION_CUES, cueAfter, type ActionCue } from './cues';
 export {

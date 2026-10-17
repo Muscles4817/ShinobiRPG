@@ -1,5 +1,6 @@
 import {
   animationSetting,
+  dayEndOptions,
   mapStyleOptions,
   type GameAction,
   type GameContext,
@@ -14,7 +15,7 @@ interface SettingsPanelProps {
 
 /**
  * The settings kept with the save, on the settings page: the switch for everyday animations
- * (eating, training, sleeping…) and how the Travel map is inked.
+ * (eating, training, sleeping…), what the end of a day shows, and how the Travel map is inked.
  */
 export function SettingsPanel({ ctx, state, perform }: SettingsPanelProps) {
   const setting = animationSetting(state, ctx);
@@ -37,6 +38,7 @@ export function SettingsPanel({ ctx, state, perform }: SettingsPanelProps) {
             : 'The screen holds still. Tap to bring the small moments back.'}
         </small>
       </button>
+      <DayEndPicker ctx={ctx} state={state} perform={perform} />
       <MapStylePicker ctx={ctx} state={state} perform={perform} />
     </section>
   );
@@ -50,6 +52,30 @@ function MapStylePicker({ ctx, state, perform }: SettingsPanelProps) {
       {mapStyleOptions(state, ctx).map((o) => (
         <button
           key={o.style}
+          type="button"
+          className={o.on ? 'style-option on' : 'style-option'}
+          aria-pressed={o.on}
+          disabled={o.blocker !== null && !o.on}
+          onClick={() => {
+            if (o.blocker === null) perform(o.action);
+          }}
+        >
+          <b>{o.name}</b>
+          <small>{o.blurb}</small>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** What the end of a day shows: the full sheet, a morning slip, or nothing. */
+function DayEndPicker({ ctx, state, perform }: SettingsPanelProps) {
+  return (
+    <div className="map-styles" role="group" aria-label="End of the day">
+      <h4 className="settings-subheading">End of the day</h4>
+      {dayEndOptions(state, ctx).map((o) => (
+        <button
+          key={o.mode}
           type="button"
           className={o.on ? 'style-option on' : 'style-option'}
           aria-pressed={o.on}

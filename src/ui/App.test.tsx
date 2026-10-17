@@ -325,6 +325,19 @@ describe('App (smoke test)', () => {
     expect(within(screen.getByRole('dialog')).getByText(/^Spar with/)).toBeInTheDocument();
   });
 
+  it('closes the day at bedtime with a sheet of what happened, and the day ahead', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Home/));
+    await user.click(screen.getAllByRole('button', { name: 'Sleep till dawn' })[0]!);
+    const sheet = screen.getByRole('dialog');
+    expect(within(sheet).getByText(/draws to a close/)).toBeInTheDocument();
+    expect(within(sheet).getByRole('region', { name: 'Tomorrow' })).toBeInTheDocument();
+    await user.click(within(sheet).getByRole('button', { name: 'Sleep' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
   it('opens the settings from the Shinobi tab, with the save’s own settings', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);

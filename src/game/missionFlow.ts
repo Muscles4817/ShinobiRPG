@@ -12,6 +12,7 @@ import { earn } from '@/systems/wallet';
 
 import type { GameContext } from './context';
 import { workedFor } from './clients';
+import { jobDoneHeading } from './daybook/jobs';
 import { crewDebrief, debriefLines, gradeOf, helpedOf } from './debrief';
 import { forestCleared, forestLost } from './exam/forest';
 import { arrive, journeyMission } from './journeys';
@@ -89,7 +90,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
     cooking: gifts.cooking,
   };
   const logged = log(pickDone(next, ctx, def), {
-    heading: `${def.title} complete`,
+    heading: jobDoneHeading(def.title),
     text: ending ?? `${def.client} thanks you.`,
     tone: 'success',
     chips: [

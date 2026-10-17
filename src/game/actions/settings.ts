@@ -1,3 +1,4 @@
+import { DAY_END_MODES } from '../daybook/state';
 import { DEFAULT_MAP_STYLE, MAP_STYLES } from '../mapStyle';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -32,5 +33,26 @@ export const setMapStyle: ActionHandler<ActionOf<'setMapStyle'>> = {
   },
   perform(state, action) {
     return { ...state, settings: { ...state.settings, mapStyle: action.style } };
+  },
+};
+
+/** Choosing what the end of a day shows. Never busy: it changes nothing in the world. */
+export const setDayEnd: ActionHandler<ActionOf<'setDayEnd'>> = {
+  check(state, action) {
+    if (!DAY_END_MODES.includes(action.mode)) return 'Unknown setting.';
+    return (state.settings.dayEnd ?? 'full') === action.mode ? 'Already set this way.' : null;
+  },
+  perform(state, action) {
+    return { ...state, settings: { ...state.settings, dayEnd: action.mode } };
+  },
+};
+
+/** Putting away the end-of-day sheet (or the morning slip): it has been read. */
+export const dismissDay: ActionHandler<ActionOf<'dismissDay'>> = {
+  check(state) {
+    return state.daybook.ended ? null : 'There is no day to put away.';
+  },
+  perform(state) {
+    return { ...state, daybook: { ...state.daybook, ended: null } };
   },
 };
