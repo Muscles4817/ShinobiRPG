@@ -8,6 +8,7 @@ import { currentLocation } from '../ops';
 import { everyone } from '../people/cast';
 import { readPrice } from '../people/price';
 import { teachingOf } from '../people/teachers';
+import { inSealedArchive, libraryScrollAccess } from '../permits';
 import { libraryAccess } from '../shelves';
 import type { GameState } from '../state';
 
@@ -26,11 +27,35 @@ function atRank(state: GameState, rank: PromotedRank): GameState {
   return { ...state, standing: { ...state.standing, rank } };
 }
 
+/** Whether `at` may read any of these library scrolls that `before` may not. */
+function opens(
+  ctx: GameContext,
+  before: GameState,
+  at: GameState,
+  ids: readonly string[],
+): boolean {
+  return ids
+    .map((id) => ctx.content.techniques.require(id))
+    .some(
+      (def) => libraryScrollAccess(before, def) !== null && libraryScrollAccess(at, def) === null,
+    );
+}
+
 function libraries(state: GameState, ctx: GameContext, raised: GameState): Unlock[] {
-  if (libraryAccess(raised) !== null || libraryAccess(state) === null) return [];
-  const items = currentLocation(state, ctx)
-    .places.filter((p) => p.kind === 'library')
-    .map((p) => `${p.name}: the restricted stacks`);
+  const items = currentLocation(state, ctx).places.flatMap((p) => {
+    if (p.kind !== 'library') return [];
+    const stacks = libraryAccess(state) !== null && libraryAccess(raised) === null;
+    const sealed = opens(
+      ctx,
+      state,
+      raised,
+      p.techniqueIds.filter((id) => inSealedArchive(ctx.content.techniques.require(id))),
+    );
+    return [
+      ...(stacks ? [`${p.name}: the restricted stacks`] : []),
+      ...(sealed ? [`${p.name}: the sealed archive`] : []),
+    ];
+  });
   return items.length > 0 ? [{ heading: 'The library', items }] : [];
 }
 

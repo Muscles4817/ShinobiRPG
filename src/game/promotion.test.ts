@@ -35,7 +35,7 @@ describe('the chūnin ceremony', () => {
   it('follows a promoted verdict as its own scene', () => {
     const state = promoted();
     expect(state.exams.run).toBeNull();
-    expect(state.exams.ceremony).toEqual({ rank: 'chunin' });
+    expect(state.exams.ceremony).toEqual({ rank: 'chunin', route: 'exam' });
     expect(activeScene(state)).toBe('promotion');
     expect(blockerFor(state, { type: 'rest' }, ctx)).toBe('Your promotion ceremony is waiting.');
   });
@@ -144,7 +144,7 @@ describe('a jōnin’s nomination', () => {
     ).toBeNull();
   });
 
-  it('arrives as a smaller ceremony once earned, and makes you a jōnin', () => {
+  it('arrives as a ceremony once earned, reads your record back, and makes you a jōnin', () => {
     const state = chunin();
     const stats = { ...state.character.stats, taijutsu: 21 };
     const standing = { ...state.standing, seniorMissionsCompleted: 5, reputation: 90 };
@@ -152,12 +152,17 @@ describe('a jōnin’s nomination', () => {
       { ...state, standing, character: { ...state.character, stats } },
       { type: 'sleep' },
     );
-    expect(earned.exams.ceremony).toEqual({ rank: 'jonin' });
+    expect(earned.exams.ceremony).toEqual({ rank: 'jonin', route: 'nomination' });
     expect(promotionScene(earned, ctx)).toMatchObject({
-      scale: 'small',
+      record: ['5 B- and A-rank jobs', 'Taijutsu at B', '90 reputation'],
       gear: null,
       rank: 'Jōnin',
     });
+    const opens = Object.fromEntries(
+      (promotionScene(earned, ctx)?.unlocks ?? []).map((u) => [u.heading, u.items]),
+    );
+    expect(opens['The library']).toEqual(['The Lantern Archive: the sealed archive']);
+    expect(opens['Jobs on the board']).toContain('S-rank: The Hollow Lantern');
     const jonin = act(earned, { type: 'acceptPromotion' });
     expect(jonin.standing.rank).toBe('jonin');
     expect(act(jonin, { type: 'sleep' }).exams.ceremony).toBeNull();

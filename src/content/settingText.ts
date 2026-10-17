@@ -16,6 +16,17 @@ export interface PromotionText {
   readonly gift: string;
 }
 
+/**
+ * Why a genin is raised without the exam, said before the ceremony's words. `{you}` is your
+ * name and `{leader}` the leader's title, as in `PromotionText`.
+ */
+export interface PromotionRouteText {
+  /** A field promotion for one job; `{job}` is its title. */
+  readonly field: string;
+  /** Your sensei's recommendation; `{sensei}` is their name. */
+  readonly sensei: string;
+}
+
 /** Setting-specific wording the engine and UI need. Keeps names out of code. */
 export interface SettingText {
   readonly nation: string;
@@ -33,6 +44,8 @@ export interface SettingText {
   readonly aptitude: AptitudeText;
   /** The promotion ceremonies, by the rank you are raised to. */
   readonly promotions: Readonly<Record<PromotedRank, PromotionText>>;
+  /** Why a genin is raised without sitting the exam (an arc says its own words). */
+  readonly promotionRoutes: PromotionRouteText;
   /** The chakra paper test that tells you your nature. */
   readonly chakraPaper: ChakraPaperText;
 }

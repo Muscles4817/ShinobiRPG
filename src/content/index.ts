@@ -67,6 +67,7 @@ export type {
   VillageLife,
   Waters,
 } from './types';
+export type { PromotionRouteText } from './settingText';
 export {
   DEFAULT_BUILD_ID,
   DEFAULT_UPBRINGING,

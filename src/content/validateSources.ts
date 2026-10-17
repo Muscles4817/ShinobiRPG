@@ -3,7 +3,8 @@ import { STAT_GRADES, type StatGrade } from '@/systems/stats';
 import type { ContentPack, PlaceDef } from './types';
 
 /**
- * Where techniques come from. The academy holds rank E–D, the library C–B, and neither holds a
+ * Where techniques come from. The academy holds rank E–D, the library C–A (its sealed archive
+ * keeps A for jōnin), and neither holds a
  * clan's techniques (clan members teach those, through `teacher.teaches`; `validateTeachers`
  * keeps them in the clan). Every technique must be reachable from at least one source: a shelf,
  * a teacher, a mission's scroll, or a starting kit.
@@ -16,7 +17,7 @@ type ShelfKind = Extract<PlaceDef, { techniqueIds: readonly string[] }>['kind'];
 
 const SHELF_RANKS: Readonly<Record<ShelfKind, readonly StatGrade[]>> = {
   academy: ['E', 'D'],
-  library: ['C', 'B'],
+  library: ['C', 'B', 'A'],
 };
 
 function shelves(pack: ContentPack) {
@@ -35,7 +36,9 @@ function shelfProblems(pack: ContentPack): string[] {
       const ranks: readonly string[] = SHELF_RANKS[place.kind];
       return ranks.includes(t.rank) || !grades.includes(t.rank)
         ? []
-        : [`${place.kind} "${place.id}" holds "${id}" of rank ${t.rank} (${ranks.join('–')} only)`];
+        : [
+            `${place.kind} "${place.id}" holds "${id}" of rank ${t.rank} (${ranks[0]}–${ranks.at(-1)} only)`,
+          ];
     }),
   );
 }

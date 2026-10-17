@@ -120,4 +120,5 @@ export {
   type ArcAct,
   type ArcBeat,
   type ArcDef,
+  type ArcRecommendation,
 } from './arcs';

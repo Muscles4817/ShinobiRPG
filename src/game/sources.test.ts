@@ -8,7 +8,13 @@ import { dispatch } from './dispatch';
 import { noteGradeUps } from './gradeUps';
 import { studyPointsFor } from './learning';
 import { afterStage } from './missionFlow';
-import { LIBRARY_LOCKED, PERMIT_NEEDED, permitAfterLesson, permitDue } from './permits';
+import {
+  LIBRARY_LOCKED,
+  PERMIT_NEEDED,
+  permitAfterLesson,
+  permitDue,
+  SEALED_LOCKED,
+} from './permits';
 import type { GameState } from './state';
 import { hubView } from './views/hub';
 import { libraryView, scrollDesk } from './views/library';
@@ -18,6 +24,8 @@ import { libraryView, scrollDesk } from './views/library';
 const LIBRARY_SCROLL = 'tide-lash';
 /** A rank B scroll, kept in the restricted stacks. */
 const RESTRICTED_SCROLL = 'ash-whirlwind';
+/** A rank A scroll, kept in the sealed archive. */
+const SEALED_SCROLL = 'lamp-black-hammer';
 
 function permitted(state: GameState): GameState {
   return { ...state, people: { ...state.people, permits: ['library'] } };
@@ -61,6 +69,18 @@ describe('the library', () => {
       error: LIBRARY_LOCKED,
     });
     expect(act(chunin(ready()), study).techniques.progress[LIBRARY_SCROLL]).toBeGreaterThan(0);
+  });
+
+  it('keeps its sealed archive, rank A, for jōnin', () => {
+    const sealed = { type: 'study', techniqueId: SEALED_SCROLL } as const;
+    const seasoned = withAllStats(newGame(), 24);
+    expect(dispatch(chunin(seasoned), sealed, ctx)).toEqual({ ok: false, error: SEALED_LOCKED });
+    const jonin = { ...seasoned, standing: { ...seasoned.standing, rank: 'jonin' as const } };
+    expect(act(jonin, sealed).techniques.progress[SEALED_SCROLL]).toBeGreaterThan(0);
+    const toChunin = libraryView(chunin(ready()), ctx)!;
+    expect(toChunin.restricted).toBe(0);
+    expect(toChunin.sealed).toBe(5);
+    expect(libraryView(jonin, ctx)!.sealed).toBe(0);
   });
 
   it('closes at night', () => {
