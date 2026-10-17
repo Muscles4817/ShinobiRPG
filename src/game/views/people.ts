@@ -13,7 +13,7 @@ import { capitalise, choice, type Choice } from './common';
 
 export { TASTES_REVEALED_AT } from './bondPath';
 
-export type Relation = 'sensei' | 'teammate' | null;
+export type Relation = 'sensei' | 'teammate' | 'rival' | null;
 
 /** Just enough to draw someone's face. */
 export interface PersonFace {
@@ -52,7 +52,8 @@ export function toneLabel(tone: Tone): string {
 export function relationTo(state: GameState, personId: string): Relation {
   const team = state.people.team;
   if (team?.senseiId === personId) return 'sensei';
-  return team?.teammateIds.includes(personId) ? 'teammate' : null;
+  if (team?.teammateIds.includes(personId)) return 'teammate';
+  return state.rival?.personId === personId ? 'rival' : null;
 }
 
 export function personFace(state: GameState, person: PersonDef): PersonFace {

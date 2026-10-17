@@ -20,7 +20,8 @@ export type SceneKind =
   | 'conversation'
   | 'team'
   | 'chakra-paper'
-  | 'sensei-test';
+  | 'sensei-test'
+  | 'rival';
 
 /**
  * Which scene takes over the screen, if any. Fights win over encounters (sizing foes up on a
@@ -37,6 +38,7 @@ export function activeScene(state: GameState): SceneKind | null {
   if (!state.people.team?.senseiId) return 'team';
   if (!state.character.natureKnown) return 'chakra-paper';
   if (state.mentor.opening) return 'sensei-test';
+  if (state.rival?.beat) return 'rival';
   return null;
 }
 

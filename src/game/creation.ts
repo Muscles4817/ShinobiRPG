@@ -225,6 +225,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     leave: NO_LEAVE,
     mentor: NO_MENTOR,
     daybook: NO_DAYBOOK,
+    rival: null,
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),

@@ -76,6 +76,9 @@ export type GameAction =
   | { readonly type: 'setMapStyle'; readonly style: MapStyle }
   | { readonly type: 'setDayEnd'; readonly mode: DayEndMode }
   | { readonly type: 'dismissDay' }
+  | { readonly type: 'answerRival'; readonly choiceIndex: number }
+  | { readonly type: 'acceptChallenge' }
+  | { readonly type: 'declineChallenge' }
   | { readonly type: 'buyGear'; readonly gearId: string }
   | { readonly type: 'buyTool'; readonly toolId: string }
   | { readonly type: 'buyIntel'; readonly missionId: string }

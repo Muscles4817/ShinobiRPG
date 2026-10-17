@@ -88,5 +88,22 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
     tone: result === 'won' ? 'success' : 'info',
     chips: [chip(`+${bond} bond`, 'gain')],
   });
-  return addReport(logged, { kind: 'spar', opponent: partner.name, result, text, gains: [], bond });
+  const reported = addReport(logged, {
+    kind: 'spar',
+    opponent: partner.name,
+    result,
+    text,
+    gains: [],
+    bond,
+  });
+  return rivalSpar(reported, partner.id, result);
+}
+
+/** A spar with your rival goes in the tally, and they'll want a word after (unless you yielded). */
+function rivalSpar(state: GameState, partnerId: string, result: SparResult): GameState {
+  const rival = state.rival;
+  if (rival?.personId !== partnerId || result === 'yielded') return state;
+  const won = result === 'won';
+  const spars = { you: rival.spars.you + (won ? 1 : 0), them: rival.spars.them + (won ? 0 : 1) };
+  return { ...state, rival: { ...rival, spars, beat: { kind: 'after-spar', won } } };
 }

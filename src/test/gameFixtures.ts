@@ -40,8 +40,8 @@ export function freshGame(context: GameContext = ctx): GameState {
 
 /**
  * Reads out the teams, takes the first sensei offered, the chakra paper test they hand you and
- * their own test (the first choice each round, and yes, show me everything), clearing the
- * result cards.
+ * their own test (the first choice each round, and yes, show me everything), answers your
+ * rival when they come to find you, and clears the result cards.
  */
 export function formTeam(state: GameState, context: GameContext = ctx): GameState {
   const assigned = act(state, { type: 'assignTeam' }, context);
@@ -49,6 +49,8 @@ export function formTeam(state: GameState, context: GameContext = ctx): GameStat
   const formed = act(assigned, { type: 'chooseSensei', senseiId }, context);
   let met = act(formed, { type: 'testChakraPaper' }, context);
   while (met.mentor.opening) met = act(met, { type: 'senseiTest', optionIndex: 0 }, context);
+  // Word gets round: your rival comes to find you. Answer kindly and get on with the day.
+  if (met.rival?.beat) met = act(met, { type: 'answerRival', choiceIndex: 1 }, context);
   return { ...met, reports: [] };
 }
 

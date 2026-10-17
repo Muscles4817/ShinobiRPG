@@ -17,6 +17,7 @@ import type { Wallet } from '@/systems/wallet';
 
 import type { Board } from './boardState';
 import type { Daybook, DayEndMode } from './daybook/state';
+import type { Rival } from './rival/state';
 import type { CombatFinale } from './combatFinale';
 import type { Exams } from './exam/state';
 import type { People } from './people/state';
@@ -70,6 +71,8 @@ export interface GameState {
   readonly mentor: Mentor;
   /** The day's record: where you stood at dawn, and the last day that ended (`daybook/`). */
   readonly daybook: Daybook;
+  /** Your rival from the year (`rival/`), once your team is settled; null before. */
+  readonly rival: Rival | null;
   /**
    * Set only on a versus sandbox (`game/versus/`): who is fighting whom. A sandbox is never
    * saved, so a real playthrough never carries it.

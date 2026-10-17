@@ -7,7 +7,7 @@ import { Avatar } from '../Faces';
 
 export function Moment({ m }: { readonly m: DayMoment }) {
   return (
-    <div className="day-moment">
+    <div className={m.rival ? 'day-moment rival' : 'day-moment'}>
       <span className="day-moment-seal" aria-hidden="true">
         {m.seal}
       </span>

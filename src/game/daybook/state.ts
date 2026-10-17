@@ -29,6 +29,8 @@ export interface DayStart {
   readonly satiety: number;
   /** The journal's next entry id: entries from here on are the day's. */
   readonly journalFrom: number;
+  /** Grades already raced to with your rival (`stat:grade`); absent before a rival. */
+  readonly rivalFirsts?: readonly string[];
 }
 
 export const FIND_KINDS = ['ingredient', 'tool', 'gear', 'scroll', 'recipe'] as const;
@@ -69,6 +71,8 @@ export interface DayEnd {
   readonly injuries: readonly string[];
   /** Hunger grew to a stage that costs you (satiety at the start and end). */
   readonly satiety: readonly [number, number];
+  /** Grades reached first today in the race with your rival; absent when none. */
+  readonly rivalFirsts?: readonly { readonly key: string; readonly who: 'you' | 'them' }[];
 }
 
 /** What the end of a day shows: the sheet at night, a slip next morning, or nothing. */
