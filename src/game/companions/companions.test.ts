@@ -7,7 +7,7 @@ import { createNewGame } from '../creation';
 import type { GameState } from '../state';
 import { companionAllies } from './combatant';
 import { playerCompanion } from './make';
-import { companionsGrown } from './routine';
+import { companionsDayPassed } from './routine';
 import { strayToday } from './stray';
 
 const naruto = contextForPack('naruto')!;
@@ -50,7 +50,7 @@ describe('companions', () => {
     const state = inuzuka();
     const pup = playerCompanion(state)!;
     const later = { ...state, time: { ...state.time, day: state.time.day + 10 } };
-    const grown = companionsGrown(later).owned[PLAYER_OWNER]!;
+    const grown = companionsDayPassed(later, naruto).companions.owned[PLAYER_OWNER]!;
     expect(grown.stats.speed).toBeGreaterThan(pup.stats.speed);
     expect(grown.stats.speed - pup.stats.speed).toBeLessThan(3);
     expect(grown.stats.genjutsu).toBe(pup.stats.genjutsu);

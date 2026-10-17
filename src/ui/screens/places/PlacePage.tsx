@@ -3,6 +3,7 @@ import { isRestKind, type PlaceKind, type RestKind } from '@/game';
 import type { PlaceProps } from '../types';
 import { AcademyPage } from './AcademyPage';
 import { CompoundPage, QuarterPage } from './CompoundPages';
+import { VetPage } from './VetPage';
 import { GearShopPage } from './GearShopPage';
 import { HomePage, HospitalPage } from './HomePages';
 import { HousePage } from './HousePage';
@@ -62,5 +63,7 @@ export function PlacePage({ kind, placeId, onOpenPlace, ...props }: PlacePagePro
       return <QuarterPage {...props} onOpenPlace={onOpenPlace} />;
     case 'compound':
       return <CompoundPage {...props} placeId={placeId} />;
+    case 'vet':
+      return <VetPage {...props} />;
   }
 }

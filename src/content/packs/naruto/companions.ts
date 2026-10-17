@@ -23,6 +23,16 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       kenjutsu: 0,
       fuuinjutsu: 0,
     },
+    diet: [
+      'river-fish',
+      'eggs',
+      'wild-game',
+      'sweetfish',
+      'river-eel',
+      'crayfish',
+      'travel-rations',
+    ],
+    plays: { likes: ['rough', 'scent'], dislikes: [] },
     names: ['Akamaru', 'Kuromaru', 'Haimaru', 'Shiromaru', 'Kogemaru', 'Tsumemaru'],
   },
   {
@@ -46,6 +56,16 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       kenjutsu: 0,
       fuuinjutsu: 0,
     },
+    diet: [
+      'river-fish',
+      'eggs',
+      'wild-game',
+      'sweetfish',
+      'river-eel',
+      'crayfish',
+      'travel-rations',
+    ],
+    plays: { likes: ['fetch', 'scent'], dislikes: ['walk'] },
     names: ['Pochi', 'Kuro', 'Shiro', 'Hachi', 'Goro', 'Taro'],
     stray: {
       placeIds: ['shopping-district', 'mission-desk', 'training-grounds'],

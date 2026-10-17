@@ -3,6 +3,7 @@ import type { ClanDef, CompanionKindDef } from '@/content';
 import { NO_COMPANIONS, PLAYER_OWNER, type Companion, type Companions } from '@/systems/companions';
 import { createStats, STAT_IDS, type Aptitude } from '@/systems/stats';
 import { START_TIME } from '@/systems/time';
+import { MAX_HEALTH } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
@@ -43,7 +44,17 @@ export function newCompanion(kind: CompanionKindDef, start: CompanionStart): Com
     aptitude: rolledAptitude(kind, start.seed, start.id),
     bond: start.bond,
     lastGrownDay: start.day,
+    health: maxHealthOf(kind),
+    lastFedDay: start.day,
+    lastPlayDay: null,
+    injury: null,
+    favouriteKnown: false,
   };
+}
+
+/** A companion's full health: a human's, scaled by its kind. */
+export function maxHealthOf(kind: Pick<CompanionKindDef, 'healthScale'>): number {
+  return Math.round(MAX_HEALTH * kind.healthScale);
 }
 
 /** A clan child's companion, raised with them, there from the first day (`ClanDef.companion`). */

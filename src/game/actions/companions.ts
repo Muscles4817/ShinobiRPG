@@ -20,9 +20,17 @@ const VISIT_SLOTS = 1;
 function adopted(state: GameState, stray: StrayToday): Companions {
   const id = `${stray.kind.id}-${state.time.day}`;
   const start = { id, seed: state.board.seed, day: state.time.day, bond: STRAY_START_BOND };
+  // One of yours that went back to the streets comes home as itself, fed and forgiven.
+  const back = state.companions.strayed;
+  const companion =
+    back?.kindId === stray.kind.id
+      ? { ...back, bond: STRAY_START_BOND, lastFedDay: state.time.day }
+      : newCompanion(stray.kind, start);
   return {
-    owned: { ...state.companions.owned, [PLAYER_OWNER]: newCompanion(stray.kind, start) },
+    ...state.companions,
+    owned: { ...state.companions.owned, [PLAYER_OWNER]: companion },
     befriending: null,
+    strayed: null,
   };
 }
 

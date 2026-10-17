@@ -17,6 +17,7 @@ import { DaySheet } from '../components/day/DaySheet';
 import { Dock, type DockTab } from '../components/Dock';
 import { Notice } from '../components/Notice';
 import { PersonSheet } from '../components/PersonSheet';
+import { CompanionSheet } from '../components/CompanionSheet';
 import { ReportCard } from '../components/ReportCard';
 import type { GameSession } from '../useGameSession';
 import { BondsScreen } from './BondsScreen';
@@ -60,9 +61,18 @@ interface TabContentProps extends ScreenProps {
   readonly onAbandon: () => void;
   readonly onMenu: () => void;
   readonly onOpenPerson: (personId: string) => void;
+  readonly onOpenCompanion: () => void;
 }
 
-function TabContent({ nav, setNav, onAbandon, onMenu, onOpenPerson, ...props }: TabContentProps) {
+function TabContent({
+  nav,
+  setNav,
+  onAbandon,
+  onMenu,
+  onOpenPerson,
+  onOpenCompanion,
+  ...props
+}: TabContentProps) {
   const { play } = useSound();
   const openPlace = (placeId: string) => {
     play('page');
@@ -97,6 +107,7 @@ function TabContent({ nav, setNav, onAbandon, onMenu, onOpenPerson, ...props }: 
           {...props}
           onOpenPlace={openPlace}
           onOpenPerson={onOpenPerson}
+          onOpenCompanion={onOpenCompanion}
           onOpenRecord={() => {
             setNav({ tab: 'record', placeId: null });
           }}
@@ -108,7 +119,9 @@ function TabContent({ nav, setNav, onAbandon, onMenu, onOpenPerson, ...props }: 
     case 'jutsu':
       return <JutsuScreen {...props} />;
     case 'bonds':
-      return <BondsScreen {...props} onOpenPerson={onOpenPerson} />;
+      return (
+        <BondsScreen {...props} onOpenPerson={onOpenPerson} onOpenCompanion={onOpenCompanion} />
+      );
     case 'shinobi':
       return (
         <ShinobiScreen
@@ -171,6 +184,7 @@ function cardsOver(state: GameState, ctx: GameContext, scene: SceneKind | null) 
 export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   const [nav, setNav] = useState<Nav>({ tab: 'here', placeId: null });
   const [personId, setPersonId] = useState<string | null>(null);
+  const [companionOpen, setCompanionOpen] = useState(false);
   const props: ScreenProps = { ctx, state, perform: session.perform };
   const scene = activeScene(state);
   const { showReport, showDay } = cardsOver(state, ctx, scene);
@@ -192,6 +206,9 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
           onAbandon={session.abandon}
           onMenu={onMenu}
           onOpenPerson={setPersonId}
+          onOpenCompanion={() => {
+            setCompanionOpen(true);
+          }}
         />
       )}
       {!scene && (
@@ -208,6 +225,14 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
           personId={personId}
           onClose={() => {
             setPersonId(null);
+          }}
+        />
+      )}
+      {companionOpen && !scene && (
+        <CompanionSheet
+          {...props}
+          onClose={() => {
+            setCompanionOpen(false);
           }}
         />
       )}

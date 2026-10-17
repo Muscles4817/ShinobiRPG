@@ -307,7 +307,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     orders), born to a clan (`ClanDef.companion`) or a stray won over in the village
     (`befriendStray`, drawn from the seed and day). It grows by a light routine caught up each
     morning like peers', fights beside you in every mission fight and spar, and takes stance and
-    then card orders only as the bond opens them (`ordersOpen`).
+    then card orders only as the bond opens them (`ordersOpen`). It is cared for
+    (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
+    a favourite found by feeding), a game by its tastes, training together as its teacher at a
+    training ground; hunger weakens it and a starved stray leaves; its health carries between
+    fights (`CombatOutcome.allies`), and knocked down it is laid up until mended, sooner at a
+    `vet` place or with medicine.
     **Preparation** happens before the fight: fight tools (`ToolDef`, sold by the piece at
     `gear` places' `toolIds`, kept in `inventory.tools`) ride in as `CombatantSetup.items`;
     what they do lives once in `rules/items.ts`, every engine offers them, and

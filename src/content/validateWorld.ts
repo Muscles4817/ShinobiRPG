@@ -111,7 +111,16 @@ function wildsRefs(wilds: {
 }
 
 /** Places that refer to nothing in the pack's lists (a compound's links are `validateCompounds`'s). */
-const BARE_KINDS = ['home', 'hospital', 'inn', 'house', 'onsen', 'compound', 'quarter'] as const;
+const BARE_KINDS = [
+  'home',
+  'hospital',
+  'inn',
+  'house',
+  'onsen',
+  'compound',
+  'quarter',
+  'vet',
+] as const;
 type BarePlace = Extract<PlaceDef, { readonly kind: (typeof BARE_KINDS)[number] }>;
 
 function isBare(place: PlaceDef): place is BarePlace {

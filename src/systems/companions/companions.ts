@@ -27,6 +27,25 @@ export interface Companion {
   readonly bond: number;
   /** The last day its routine has been caught up through. */
   readonly lastGrownDay: number;
+  /** Its health now, out of its kind's maximum; it carries between fights and mends overnight. */
+  readonly health: number;
+  /** The last day it was given a meal (`care.ts`). */
+  readonly lastFedDay: number;
+  /** The last day you played with it. */
+  readonly lastPlayDay: number | null;
+  /** Knocked down in a fight: home until this day dawns, and not treated by a vet yet. */
+  readonly injury: CompanionInjury | null;
+  /** Whether you have found out its favourite food. */
+  readonly favouriteKnown: boolean;
+}
+
+/** A companion laid up after a fight. */
+export interface CompanionInjury {
+  readonly until: number;
+  /** A vet has seen to it (once per injury). */
+  readonly treated: boolean;
+  /** The last day it was given medicine (once a day). */
+  readonly dosedDay: number | null;
 }
 
 /** A stray you are winning over: how many days you've spent with it, and the last. */
@@ -40,9 +59,18 @@ export interface Companions {
   /** Each owner's companion (one each, for now), by owner id. */
   readonly owned: Readonly<Record<string, Companion>>;
   readonly befriending: StrayFriendship | null;
+  /** A stray of yours that went back to the streets, kept to come home again if won back. */
+  readonly strayed: Companion | null;
+  /** Doses of medicine you carry for it. */
+  readonly medicine: number;
 }
 
-export const NO_COMPANIONS: Companions = { owned: {}, befriending: null };
+export const NO_COMPANIONS: Companions = {
+  owned: {},
+  befriending: null,
+  strayed: null,
+  medicine: 0,
+};
 
 interface TemperamentRules {
   /** Bond gained, as a multiple of what a person would give. */

@@ -1,5 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
-import type { CompanionTemperament } from '@/systems/companions';
+import type { CompanionTemperament, PlayKind } from '@/systems/companions';
 import type { StatDelta, StatId } from '@/systems/stats';
 
 /**
@@ -51,6 +51,10 @@ export interface CompanionKindDef {
   readonly traits?: readonly CombatTrait[];
   /** Its talent per stat, 1 when left out; 0 is an art it can never learn. */
   readonly aptitude: Partial<Readonly<Record<StatId, number>>>;
+  /** Ingredients it eats; one is each animal's favourite, drawn from the seed. */
+  readonly diet: readonly string[];
+  /** The games it loves and the ones it can't stand. */
+  readonly plays: { readonly likes: readonly PlayKind[]; readonly dislikes: readonly PlayKind[] };
   /** Names one may be given, one drawn from the seed. */
   readonly names: readonly string[];
   /** Where a stray of this kind may be found, for kinds that live on the streets. */
@@ -61,4 +65,15 @@ export interface CompanionKindDef {
 export interface ClanCompanion {
   readonly kindId: string;
   readonly bond: number;
+}
+
+/** An animal clinic: its vet treats an injured companion and sells medicine. */
+export interface VetFields {
+  readonly kind: 'vet';
+  /** The vet, a person of the pack. */
+  readonly keeperId: string;
+  readonly treatmentCost: number;
+  readonly medicineCost: number;
+  /** A clan whose own are treated free (the clan's kennels). */
+  readonly freeForClanId?: string;
 }

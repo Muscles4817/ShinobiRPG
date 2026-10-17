@@ -3,10 +3,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { villageView, type GameAction, type GameState } from '@/game';
-import { ctx, newGame } from '@/test/gameFixtures';
+import { ctx, newGame, withHound } from '@/test/gameFixtures';
 
 import { BondsScreen } from './screens/BondsScreen';
 import { VillageLife } from './screens/VillageLife';
+import { CompanionSheet } from './components/CompanionSheet';
+import { VetPage } from './screens/places/VetPage';
 
 /** A game whose seed meets a stray on its first day. */
 function withStray(): GameState {
@@ -29,17 +31,7 @@ describe('companions (smoke test)', () => {
   });
 
   it('shows your companion first on the Bonds tab', () => {
-    const game = newGame();
-    const hound = {
-      id: 'stray-hound-1',
-      kindId: 'stray-hound',
-      name: 'Ash',
-      stats: game.character.stats,
-      aptitude: game.character.aptitude,
-      bond: 5,
-      lastGrownDay: 0,
-    };
-    const state = { ...game, companions: { owned: { player: hound }, befriending: null } };
+    const state = withHound(newGame(), { bond: 5 });
     const opened: string[] = [];
     render(
       <BondsScreen
@@ -47,9 +39,39 @@ describe('companions (smoke test)', () => {
         state={state}
         perform={() => undefined}
         onOpenPerson={(id) => opened.push(id)}
+        onOpenCompanion={() => opened.push('companion')}
       />,
     );
     expect(screen.getByRole('heading', { name: 'At your side' })).toBeTruthy();
     expect(screen.getByText(/Ash fights its own way until you are acquaintances/)).toBeTruthy();
+  });
+
+  it('feeds your companion scraps from its sheet', async () => {
+    const user = userEvent.setup();
+    const done: GameAction[] = [];
+    const state = withHound(newGame(), { lastFedDay: 0 });
+    render(
+      <CompanionSheet
+        ctx={ctx}
+        state={state}
+        perform={(a) => done.push(a)}
+        onClose={() => undefined}
+      />,
+    );
+    expect(screen.getByRole('img', { name: 'Health 60 of 60' })).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: /Scraps/ }));
+    expect(done).toEqual([{ type: 'feedCompanion', ingredientId: null }]);
+  });
+
+  it('buys medicine at the animal clinic', async () => {
+    const user = userEvent.setup();
+    const done: GameAction[] = [];
+    const state = withHound(newGame({ wallet: { ryo: 100 } }));
+    render(
+      <VetPage ctx={ctx} state={state} perform={(a) => done.push(a)} onBack={() => undefined} />,
+    );
+    expect(screen.getByText(/Ash is in good health/)).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: 'Buy a dose' }));
+    expect(done).toEqual([{ type: 'buyMedicine' }]);
   });
 });

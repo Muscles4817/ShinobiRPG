@@ -6,6 +6,7 @@ import type { ScreenProps } from './types';
 
 interface BondsScreenProps extends ScreenProps {
   readonly onOpenPerson: (personId: string) => void;
+  readonly onOpenCompanion: () => void;
 }
 
 /** "At the Forge" reads "Jōnin, at the Forge" after their rank. */
@@ -32,9 +33,15 @@ function BondCard({ card, onOpen }: { readonly card: PersonCard; readonly onOpen
 }
 
 /** Your companion: what it is, how close you are, what it takes from you in a fight. */
-function CompanionSlip({ card }: { readonly card: CompanionCard }) {
+function CompanionSlip({
+  card,
+  onOpen,
+}: {
+  readonly card: CompanionCard;
+  readonly onOpen: () => void;
+}) {
   return (
-    <article className="bond-card companion-card">
+    <button type="button" className="bond-card companion-card" onClick={onOpen}>
       <span className="bond-main">
         <b>{card.name}</b>
         <small>{card.description}</small>
@@ -43,12 +50,12 @@ function CompanionSlip({ card }: { readonly card: CompanionCard }) {
         <small>Best at {card.standouts.join(', ')}.</small>
       </span>
       <span className="badge">{card.kind}</span>
-    </article>
+    </button>
   );
 }
 
 /** 縁 Bonds: your companion and your team first, then everyone you know, closest first; strangers fold away. */
-export function BondsScreen({ ctx, state, onOpenPerson }: BondsScreenProps) {
+export function BondsScreen({ ctx, state, onOpenPerson, onOpenCompanion }: BondsScreenProps) {
   const view = bondsView(state, ctx);
   const card = (c: PersonCard) => (
     <BondCard
@@ -68,7 +75,7 @@ export function BondsScreen({ ctx, state, onOpenPerson }: BondsScreenProps) {
       {view.companion && (
         <section className="bond-group">
           <h2 className="label">At your side</h2>
-          <CompanionSlip card={view.companion} />
+          <CompanionSlip card={view.companion} onOpen={onOpenCompanion} />
         </section>
       )}
       {view.team.length > 0 && (

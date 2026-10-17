@@ -415,3 +415,34 @@ Each step proves one property and is its own PR.
   it takes from you, its best grades); a stray about shows on the hub's village life.
 - **Waiting for 2b:** it fights at full health every time (injuries are care), it isn't fed yet,
   and training together, walks and play are care too. The wild limit bonus comes with 2c.
+
+### Step 2b: care
+
+- **The record** gains `health` (carried between fights, mended half its maximum each night),
+  `lastFedDay`, `lastPlayDay`, an `injury` (home until a day, treated once, dosed once a day) and
+  whether you've found its favourite; the slice gains a `strayed` companion and the doses of
+  `medicine` you carry. Rules in `systems/companions/care.ts`. The companions save step (v45 →
+  v46, after main's daybook and rival) gives all of it.
+- **Feeding** (`feedCompanion`): one meal a day: scraps (free: fed, no bond), plain food from its
+  kind's `diet` in your pantry (a little bond), or its favourite (drawn from the seed, found out
+  by feeding it: more bond). Hunger counts days without a meal (fed, peckish, hungry, starving):
+  hungry or worse it fights weaker and skips its routine; starving, the bond drifts; a **stray**
+  starved for days goes back to the streets (`strayed`), and winning it back brings it home as
+  itself. On a job it eats from your pack.
+- **Play** (`playWithCompanion`): once a day, a little energy, four games (rough and tumble,
+  fetch, hide-and-seek by scent, a quiet walk) worth more or less by its kind's `plays` tastes.
+- **Training together** (`trainCompanion`, a "Train with" section on the training ground's
+  board): you drill it in a stat it has talent for, as its teacher (the teacher rule: your
+  grade over its own), for your slot and energy and some bond. Not while laid up or hungry.
+- **Injuries:** the fight's outcome now reports each ally's health (`CombatOutcome.allies`), so
+  a companion keeps its wounds; knocked down in earnest it is laid up for days and stays home
+  (a spar stops before anyone is hurt).
+- **The vet** (a `vet` place: `keeperId`, `treatmentCost`, `medicineCost`, `freeForClanId`):
+  treatment once per injury (half the days left, its strength back), medicine by the dose, given
+  at home hidden in food or plainly (it may spit it out). Konoha's is the Inuzuka Animal Clinic,
+  run by Hana and free to the clan; Tōrōgakure's is Kaori Kiyose's clinic.
+- **Screens:** a strip on the village screen (name, a health bar, hunger, a stamp when it needs
+  you) opens its sheet over any tab (feed, play, medicine, each saying why not); its card on
+  the Bonds tab opens the sheet too; the clinic is a counter of two slips.
+- **Left for later:** boarding at the vet, dishes cooked for it at the stove, a light injury
+  that fights weakened, and the wild limit bonus (2c).

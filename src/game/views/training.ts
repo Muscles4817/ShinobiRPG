@@ -11,6 +11,7 @@ import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { sparOptions, type SparOption } from './team';
 import { teacherOffers, type TeacherOffer } from './teachers';
+import { companionDrills } from './companionCare';
 
 export type DrillGroup = Discipline | 'body' | 'mind';
 
@@ -44,6 +45,8 @@ export interface TrainingView {
   readonly sparring: readonly SparOption[];
   /** Chakra control exercises practised here (tree-walking). */
   readonly exercises: readonly ExerciseCard[];
+  /** Training together with your companion, when you have one. */
+  readonly companion: ReturnType<typeof companionDrills>;
 }
 
 /** An exercise as its card: how far along you are, and a session's choice (with why not). */
@@ -117,5 +120,6 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
     teachers: teacherOffers(state, ctx),
     sparring: sparOptions(state, ctx),
     exercises: exerciseCards(state, ctx, place.exerciseIds ?? []),
+    companion: companionDrills(state, ctx),
   };
 }

@@ -1,6 +1,6 @@
 import type { CombatPerk, CombatTrait } from '@/systems/combat';
 import type { AtlasDef, MapLabelSide } from './atlas';
-import type { ClanCompanion, CompanionKindDef, RetinueEntry } from './companions';
+import type { ClanCompanion, CompanionKindDef, RetinueEntry, VetFields } from './companions';
 import type { Find } from '@/systems/cooking';
 import type {
   ArcDef,
@@ -300,6 +300,7 @@ export type PlaceDef =
   | (PlaceBase & TavernFields)
   | (PlaceBase & CompoundFields)
   | (PlaceBase & QuarterFields)
+  | (PlaceBase & VetFields)
   | (PlaceBase & OnsenFields)
   | (PlaceBase & {
       readonly kind: 'gear';

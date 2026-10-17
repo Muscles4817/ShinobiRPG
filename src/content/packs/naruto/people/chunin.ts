@@ -87,7 +87,7 @@ export const VILLAGE_CHUNIN: readonly PersonDef[] = [
     specialty: 'taijutsu',
     bio: 'Kiba’s older sister and the clan’s vet. Patches up dogs and genin with the same brisk hands.',
     schedule: {
-      morning: 'hospital',
+      morning: 'inuzuka-clinic',
       afternoon: 'training-grounds',
       evening: 'inuzuka-compound',
       night: null,

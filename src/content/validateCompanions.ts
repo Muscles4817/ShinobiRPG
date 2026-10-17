@@ -1,4 +1,4 @@
-import { COMPANION_TEMPERAMENTS } from '@/systems/companions';
+import { COMPANION_TEMPERAMENTS, PLAY_KINDS } from '@/systems/companions';
 
 import type { CompanionKindDef } from './companions';
 import type { ContentPack } from './types';
@@ -30,6 +30,38 @@ function strayProblems(kind: CompanionKindDef, places: ReadonlySet<string>): str
   ];
 }
 
+function dietProblems(kind: CompanionKindDef, ingredients: ReadonlySet<string>): string[] {
+  const at = `companion kind "${kind.id}"`;
+  const plays = [...kind.plays.likes, ...kind.plays.dislikes];
+  return [
+    ...(kind.diet.length === 0 ? [`${at} eats nothing`] : []),
+    ...kind.diet.filter((id) => !ingredients.has(id)).map((id) => `${at} eats unknown "${id}"`),
+    ...plays.filter((p) => !PLAY_KINDS.includes(p)).map((p) => `${at} plays unknown "${p}"`),
+    ...kind.plays.likes
+      .filter((p) => kind.plays.dislikes.includes(p))
+      .map((p) => `${at} both likes and dislikes "${p}"`),
+  ];
+}
+
+/** Every clinic has a vet of the pack, and a clan it treats free is real. */
+function vetProblems(pack: ContentPack): string[] {
+  return pack.locations
+    .flatMap((l) => l.places)
+    .flatMap((place) => {
+      if (place.kind !== 'vet') return [];
+      const at = `vet "${place.id}"`;
+      const free = place.freeForClanId;
+      return [
+        ...(pack.people.some((p) => p.id === place.keeperId)
+          ? []
+          : [`${at} has unknown vet "${place.keeperId}"`]),
+        ...(free && !pack.clans.some((c) => c.id === free)
+          ? [`${at} is free to unknown clan "${free}"`]
+          : []),
+      ];
+    });
+}
+
 function kindProblems(kind: CompanionKindDef, places: ReadonlySet<string>): string[] {
   const at = `companion kind "${kind.id}"`;
   return [
@@ -45,8 +77,11 @@ function kindProblems(kind: CompanionKindDef, places: ReadonlySet<string>): stri
 export function validateCompanions(pack: ContentPack): string[] {
   const kinds = new Set(pack.companionKinds.map((k) => k.id));
   const places = haunts(pack);
+  const ingredients = new Set(pack.ingredients.map((i) => i.id));
   return [
     ...pack.companionKinds.flatMap((kind) => kindProblems(kind, places)),
+    ...pack.companionKinds.flatMap((kind) => dietProblems(kind, ingredients)),
+    ...vetProblems(pack),
     ...pack.clans.flatMap((clan) =>
       clan.companion && !kinds.has(clan.companion.kindId)
         ? [`clan "${clan.id}" grows up with unknown companion "${clan.companion.kindId}"`]

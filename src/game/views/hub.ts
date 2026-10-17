@@ -13,6 +13,8 @@ import { tavernCrowd } from '../actions/tavern';
 import { wildsLine } from './wilds';
 import { choice } from './common';
 import { aroundYou, compoundLine, quarterLine, quartered } from './compounds';
+import { companionStrip, type CompanionStrip } from './companionCare';
+import { vetLine } from './vet';
 import { teacherOffers } from './teachers';
 import { facesByPlace, type PersonFace } from './people';
 
@@ -42,6 +44,8 @@ export interface HubView {
   readonly inner: readonly PlaceCard[];
   /** People you know who are out and about. */
   readonly around: readonly PersonFace[];
+  /** Your companion at your side, when you have one. */
+  readonly companion: CompanionStrip | null;
   /** The latest record entry, for the ticker above the dock. */
   readonly latest: {
     readonly heading: string;
@@ -100,6 +104,8 @@ function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
       return compoundLine(state, ctx, place);
     case 'quarter':
       return quarterLine(place);
+    case 'vet':
+      return vetLine(state, ctx, place);
   }
 }
 
@@ -215,6 +221,7 @@ export function hubView(state: GameState, ctx: GameContext): HubView {
     places: cards.filter((c) => c.parentId === null),
     inner: cards.filter((c) => c.parentId !== null),
     around: aroundYou(state, ctx),
+    companion: companionStrip(state, ctx),
     latest: last ? { heading: last.heading ?? last.text, chips: last.chips ?? [] } : null,
   };
 }

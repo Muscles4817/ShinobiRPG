@@ -421,7 +421,12 @@ describe('persistence', () => {
     const { companions: _c, ...game } = newGame();
     const loaded = deserialize(JSON.stringify({ version: 45, state: game }));
     if (!loaded.ok) throw new Error(loaded.error);
-    expect(loaded.value.companions).toEqual({ owned: {}, befriending: null });
+    expect(loaded.value.companions).toEqual({
+      owned: {},
+      befriending: null,
+      strayed: null,
+      medicine: 0,
+    });
   });
 
   it('rejects corrupted data', () => {

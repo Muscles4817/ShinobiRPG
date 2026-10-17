@@ -8,6 +8,7 @@ import { Banner } from '../../components/Banner';
 import { ControlExercises } from './ControlExercises';
 import { PeopleHere } from './PeopleHere';
 import { TeamCorner } from './TeamCorner';
+import { TrainTogether } from './TrainTogether';
 import type { PlaceProps } from '../types';
 
 const FILTERS: readonly { id: DrillGroup | 'all'; label: string }[] = [
@@ -65,6 +66,7 @@ export function TrainingPage({ ctx, state, perform, onBack }: PlaceProps) {
         </section>
         <PeopleHere teachers={view.teachers} perform={perform} />
         <TeamCorner sparring={view.sparring} perform={perform} />
+        <TrainTogether view={view.companion} perform={perform} />
         <ControlExercises exercises={view.exercises} perform={perform} />
         <div className="filters" role="group" aria-label="Filter drills">
           {FILTERS.map((f) => (

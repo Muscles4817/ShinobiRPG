@@ -80,4 +80,15 @@ export const KONOHA_COMPOUNDS: readonly PlaceDef[] = [
     clanId: 'inuzuka',
     headId: 'tsume',
   },
+  {
+    id: 'inuzuka-clinic',
+    kind: 'vet',
+    name: 'Inuzuka Animal Clinic',
+    icon: 'heal',
+    blurb: 'The clan’s kennels, open to any ninken',
+    keeperId: 'hana',
+    treatmentCost: 40,
+    medicineCost: 15,
+    freeForClanId: 'inuzuka',
+  },
 ];

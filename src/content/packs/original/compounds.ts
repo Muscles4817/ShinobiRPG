@@ -46,4 +46,14 @@ export const TOROGAKURE_COMPOUNDS: readonly PlaceDef[] = [
     clanId: 'shimenawa',
     headId: 'kazane',
   },
+  {
+    id: 'animal-clinic',
+    kind: 'vet',
+    name: 'Kiyose Animal Clinic',
+    icon: 'heal',
+    blurb: 'Paws, hooves and wings mended',
+    keeperId: 'kaori',
+    treatmentCost: 40,
+    medicineCost: 15,
+  },
 ];

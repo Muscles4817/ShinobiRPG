@@ -23,6 +23,16 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       kenjutsu: 0,
       fuuinjutsu: 0,
     },
+    diet: [
+      'river-fish',
+      'eggs',
+      'wild-game',
+      'sweetfish',
+      'river-eel',
+      'crayfish',
+      'travel-rations',
+    ],
+    plays: { likes: ['fetch', 'scent'], dislikes: ['walk'] },
     names: ['Ash', 'Soot', 'Ember', 'Wick', 'Tallow', 'Cinder', 'Moth', 'Dusk'],
     stray: {
       placeIds: ['market-street', 'mission-hall', 'training-grounds'],

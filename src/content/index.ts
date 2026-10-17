@@ -133,6 +133,7 @@ export type {
   RetinueEntry,
   RetinueTell,
   StrayHaunt,
+  VetFields,
 } from './companions';
 export {
   OUTSIDER_STANCES,

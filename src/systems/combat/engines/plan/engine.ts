@@ -120,6 +120,15 @@ function options(state: PlanState): readonly CombatOption[] {
   ];
 }
 
+/** How each fighter on the player's side but the player ends the fight. */
+function alliesAfter(fighters: readonly PlanFighter[]): Record<string, { health: number }> {
+  return Object.fromEntries(
+    fighters
+      .filter((f) => f.side === 'player' && !f.isPlayer)
+      .map((f) => [f.id, { health: Math.max(0, f.health) }]),
+  );
+}
+
 /** What each fighter used, for the outcome. */
 function usage(fighters: readonly PlanFighter[]): Record<string, CombatUsage> {
   return Object.fromEntries(
@@ -322,6 +331,7 @@ export function createPlanEngine(): CombatEngine {
         costs: [...costsOwed(player), ...empowerCostsOwed(player)],
         chakraSpent: player.chakraSpent ?? 0,
         used: usage(plan.fighters),
+        allies: alliesAfter(plan.fighters),
       };
     },
   };

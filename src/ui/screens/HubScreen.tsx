@@ -19,10 +19,12 @@ import { MorningSlip } from './MorningSlip';
 import { RivalSlip } from './RivalSlip';
 import { SenseiSlip } from './SenseiSlip';
 import { VillageLife } from './VillageLife';
+import { CompanionStrip } from '../components/CompanionSheet';
 
 interface HubScreenProps extends ScreenProps {
   readonly onOpenPlace: (placeId: string) => void;
   readonly onOpenPerson: (personId: string) => void;
+  readonly onOpenCompanion: () => void;
   readonly onOpenRecord: () => void;
 }
 
@@ -33,6 +35,7 @@ export function HubScreen({
   perform,
   onOpenPlace,
   onOpenPerson,
+  onOpenCompanion,
   onOpenRecord,
 }: HubScreenProps) {
   const header = headerView(state, ctx);
@@ -73,6 +76,7 @@ export function HubScreen({
         <Vitals meters={header.meters} />
       </header>
       <HungerNote note={header.hunger} />
+      {hub.companion && <CompanionStrip strip={hub.companion} onOpen={onOpenCompanion} />}
       {day?.mode === 'brief' && <MorningSlip view={day} perform={perform} />}
       {challenge && <RivalSlip view={challenge} perform={perform} />}
       {around.length > 0 && (

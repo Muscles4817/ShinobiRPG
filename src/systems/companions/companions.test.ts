@@ -19,6 +19,11 @@ const pup: Companion = {
   aptitude: createStats(1),
   bond: 0,
   lastGrownDay: 0,
+  health: 60,
+  lastFedDay: 0,
+  lastPlayDay: null,
+  injury: null,
+  favouriteKnown: false,
 };
 
 describe('companions', () => {
