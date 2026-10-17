@@ -390,3 +390,16 @@
   text-align: left;
   padding-bottom: 4px;
 }
+
+/* The face being put together, kept in view beside its choices. */
+.face-preview {
+  position: sticky;
+  top: 8px;
+  z-index: 1;
+  width: max-content;
+  margin: 4px 0 8px auto;
+  line-height: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.25);
+}

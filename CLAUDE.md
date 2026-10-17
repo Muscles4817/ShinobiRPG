@@ -575,7 +575,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
   needs a `none` clan (validated).
-- **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, a
+- **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, whose
+  last argument pins the face parts that make them themselves; every part left out is read from
+  their id by `faceFromKey`, so nobody shares a face, and facial hair is never handed out; a
   schedule of place ids in the start location, or in their `homeLocationId` if they live elsewhere, a `rank` and `stats` via `statLine()`, and
   optionally an `aptitude` via `talent()`, and an `arsenal`: the techniques and perks they fight
   with in place of the academy kit, each a pack technique with its own source; validated). List
@@ -720,7 +722,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (ridges, lanterns, townhouses, pines) and painted with the `bd-*` classes, whose inks
   `tokens.css` sets per time slot; glows are gradients, never blur filters. An icon
   (`ui/art/icons/`) is two-tone: its outline is `currentColor`, so it takes the ink of where it
-  sits, over fills from the icon palette; discipline signs fill with a tint of that ink.
+  sits, over fills from the icon palette; discipline signs fill with a tint of that ink. A
+  portrait (`ui/art/portrait/`) is put together from an appearance's `FaceParts` (shape, figure,
+  eyes, brows, nose, ears, expression, age, facial hair, a mark): a new part is a union member in
+  `systems/profile/face.ts` and a drawing in the matching `Record`.
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.
 

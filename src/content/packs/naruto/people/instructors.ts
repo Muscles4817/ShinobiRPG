@@ -18,12 +18,17 @@ export const INSTRUCTORS: readonly PersonDef[] = [
     stats: statLine('D', { ninjutsu: 'C', taijutsu: 'C', intellect: 'C' }),
     traitIds: ['kind', 'diligent'],
     favouriteRecipeId: 'miso-soup',
-    appearance: look('ponytail', {
-      hair: '#4a2f1d',
-      eyes: '#2a1d14',
-      skin: '#c68e63',
-      outfit: '#2f4f7a',
-    }),
+    appearance: look(
+      'ponytail',
+      {
+        hair: '#4a2f1d',
+        eyes: '#2a1d14',
+        skin: '#c68e63',
+        outfit: '#2f4f7a',
+      },
+      'forehead',
+      { mark: 'scar', expression: 'smile', age: 'grown' },
+    ),
     bio: 'Taught you everything you know. Hands out missions in the afternoons. Pays for ramen too often.',
     schedule: {
       morning: 'academy',

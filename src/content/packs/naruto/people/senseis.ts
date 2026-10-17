@@ -39,12 +39,17 @@ export const SENSEIS: readonly PersonDef[] = [
     }),
     traitIds: ['calm', 'lazy'],
     favouriteRecipeId: 'grilled-fish-set',
-    appearance: look('spiky', {
-      hair: '#e8e0d0',
-      eyes: '#2a1d14',
-      skin: '#f3d2b3',
-      outfit: '#2f4f7a',
-    }),
+    appearance: look(
+      'spiky',
+      {
+        hair: '#e8e0d0',
+        eyes: '#2a1d14',
+        skin: '#f3d2b3',
+        outfit: '#2f4f7a',
+      },
+      'forehead',
+      { eyes: 'hooded', expression: 'calm', age: 'grown' },
+    ),
     specialty: 'ninjutsu',
     bio: 'The Copy Ninja. Always late, always reading, never actually unaware of anything.',
     schedule: {
@@ -89,6 +94,14 @@ export const SENSEIS: readonly PersonDef[] = [
       'short',
       { hair: '#1b1a22', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3e6b3a' },
       'belt',
+      {
+        shape: 'square',
+        figure: 'broad',
+        eyes: 'round',
+        brows: 'bushy',
+        expression: 'grin',
+        age: 'grown',
+      },
     ),
     specialty: 'taijutsu',
     bio: 'The Green Beast of the Hidden Leaf. Believes in hard work, youth, and five hundred laps.',
@@ -157,12 +170,17 @@ export const SENSEIS: readonly PersonDef[] = [
     rank: 'jonin',
     stats: statLine('C', { kenjutsu: 'A', taijutsu: 'B', ninjutsu: 'B', strength: 'B' }),
     traitIds: ['lazy', 'kind'],
-    appearance: look('short', {
-      hair: '#1b1a22',
-      eyes: '#2a1d14',
-      skin: '#e2b48c',
-      outfit: '#2f4f7a',
-    }),
+    appearance: look(
+      'short',
+      {
+        hair: '#1b1a22',
+        eyes: '#2a1d14',
+        skin: '#e2b48c',
+        outfit: '#2f4f7a',
+      },
+      'forehead',
+      { shape: 'square', figure: 'broad', facialHair: 'beard', expression: 'smirk', age: 'grown' },
+    ),
     specialty: 'kenjutsu',
     bio: 'The Third Hokage’s son. Fights with wind-wrapped trench knives and a cigarette.',
     schedule: {

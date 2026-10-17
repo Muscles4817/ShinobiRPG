@@ -1,8 +1,20 @@
+import { DEFAULT_FACE, faceFromKey, type Age, type FaceParts } from './face';
+
 /**
  * How a character looks. Stored as choices from fixed palettes so portraits can be drawn
  * (and later generated) without image files.
  */
-export const HAIR_STYLES = ['spiky', 'short', 'long', 'ponytail', 'buns', 'shaved'] as const;
+export const HAIR_STYLES = [
+  'spiky',
+  'short',
+  'long',
+  'ponytail',
+  'buns',
+  'shaved',
+  'bob',
+  'topknot',
+  'shaggy',
+] as const;
 export type HairStyle = (typeof HAIR_STYLES)[number];
 
 export const HAIR_COLOURS = [
@@ -42,15 +54,29 @@ export interface Appearance {
   readonly skinTone: string;
   readonly outfitColour: string;
   readonly headband: HeadbandPlace;
+  /**
+   * The face itself. Any part left out is read from the person's key (`faceFromKey`), so an
+   * author pins only what makes someone themselves.
+   */
+  readonly face?: Partial<FaceParts>;
 }
 
-export const DEFAULT_APPEARANCE: Appearance = {
+/** An appearance with its face settled: what a portrait draws. */
+export type Look = Appearance & { readonly face: FaceParts };
+
+/** Settles an appearance's face: its own parts, the rest read from `key`. */
+export function lookOf(appearance: Appearance, key: string, age: Age): Look {
+  return { ...appearance, face: { ...faceFromKey(key, age), ...appearance.face } };
+}
+
+export const DEFAULT_APPEARANCE: Look = {
   hairStyle: 'spiky',
   hairColour: HAIR_COLOURS[1],
   eyeColour: EYE_COLOURS[0],
   skinTone: SKIN_TONES[1],
   outfitColour: OUTFIT_COLOURS[0],
   headband: 'forehead',
+  face: DEFAULT_FACE,
 };
 
 export const PRONOUNS = ['he', 'she', 'they'] as const;

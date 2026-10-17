@@ -1,4 +1,4 @@
-import type { Appearance, HairStyle, HeadbandPlace } from '@/systems/profile';
+import type { Appearance, FaceParts, HairStyle, HeadbandPlace } from '@/systems/profile';
 import type { TimeSlot } from '@/systems/time';
 
 /**
@@ -10,8 +10,10 @@ export function look(
   hairStyle: HairStyle,
   colours: { hair: string; eyes: string; skin: string; outfit: string },
   headband: HeadbandPlace = 'forehead',
+  face?: Partial<FaceParts>,
 ): Appearance {
   return {
+    ...(face && { face }),
     hairStyle,
     hairColour: colours.hair,
     eyeColour: colours.eyes,
