@@ -238,8 +238,10 @@ Questions to settle before the steps that need them:
 - **An arc's recommendation** (`arcRecommendation`, checked with the jōnin nomination in
   `notePromotions`, which now takes the context): an arc with `recommends` (a person and their
   words, validated in `validateStory`) once all its acts are done. Derived from state, so it also
-  comes later to a genin who finished the arc before they were ready. In `original`, Salt in the
-  Lanterns: the Tōrokage, holding the harbourmaster's second letter.
+  comes later to a genin who finished the arc before they were ready. In `original`, The Lantern
+  Thief, the longest village arc (two C-rank jobs and a fight at the kiln): Suzu of the Night
+  Watch puts the genin forward. (It was first on Salt in the Lanterns, all D-rank jobs: too easy
+  a road to the rank.)
 - **A sensei's recommendation** (`afterLessonRecommendation`, after the weekly lesson): more than
   a year as a genin (`SENSEI_RECOMMENDATION_DAYS`), regard at 80 or more (past what turning up
   earns), the nomination itself met, and no exam announced: a sensei puts you forward for an

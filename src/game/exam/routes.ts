@@ -20,7 +20,8 @@ import type { Ceremony } from './state';
  * The other roads to chūnin. The exam is the main one; beside it, a genin who is ready (some
  * grades at chūnin level, `readinessGap`) can be raised for one outstanding job (a field
  * promotion), at the end of an arc whose patron puts them forward, or on their sensei's word
- * after a year of good work, when no exam is days away. Each sets the same ceremony as the exam, marked with its route.
+ * after a year of good work, when no exam is days away. Each sets the same ceremony as the exam,
+ * marked with its route.
  */
 
 /** A sensei puts a student forward without the exam only after this many days as a genin. */

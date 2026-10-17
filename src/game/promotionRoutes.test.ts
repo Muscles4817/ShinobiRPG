@@ -56,7 +56,7 @@ describe('a field promotion', () => {
 });
 
 describe('an arc’s recommendation', () => {
-  const arc = ctx.content.arcs.require('salt-in-the-lanterns');
+  const arc = ctx.content.arcs.require('the-lantern-thief');
   const allDone = arc.acts.flatMap((a) => a.jobs);
 
   function finished(state: GameState): GameState {
@@ -66,7 +66,7 @@ describe('an arc’s recommendation', () => {
   it('puts a ready genin forward once the arc is done, in its patron’s words', () => {
     const after = act(finished(ready(newGame())), { type: 'setDayEnd', mode: 'brief' });
     expect(after.exams.ceremony).toEqual({ rank: 'chunin', route: 'arc', arcId: arc.id });
-    expect(promotionScene(after, ctx)?.speech).toContain('harbourmaster');
+    expect(promotionScene(after, ctx)?.speech).toContain('Night Watch');
     const raised = act(after, { type: 'acceptPromotion' });
     expect(raised.standing.rank).toBe('chunin');
   });
