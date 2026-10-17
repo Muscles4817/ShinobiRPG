@@ -718,7 +718,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   drawing to `ui/art/` (a `Record` keyed by id, so a missing drawing is a type error). A
   backdrop is a scene in `ui/art/scenery/` (400×240, bottom-anchored), built from the kit there
   (ridges, lanterns, townhouses, pines) and painted with the `bd-*` classes, whose inks
-  `tokens.css` sets per time slot; glows are gradients, never blur filters.
+  `tokens.css` sets per time slot; glows are gradients, never blur filters. An icon
+  (`ui/art/icons/`) is two-tone: its outline is `currentColor`, so it takes the ink of where it
+  sits, over fills from the icon palette; discipline signs fill with a tint of that ink.
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.
 
