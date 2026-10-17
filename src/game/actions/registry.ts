@@ -18,6 +18,8 @@ import { buyCookbook, learnRecipe } from './recipes';
 import { dismissDay, setAnimations, setCombatStyle, setDayEnd, setMapStyle } from './settings';
 import { acceptChallenge, answerRival, declineChallenge } from './rival';
 import { challengeRival, runRaceLeg } from './rivalContest';
+import { buyFurnishing, moveHome, placeFurnishing } from './home';
+import { inviteGuest, pickBed, plantBed, sendGuestHome } from './homeRooms';
 import { buyIntel } from './intel';
 import { buyGear, buyIngredient, buyTool, equipGear, unequipGear } from './shop';
 import { spar } from './spar';
@@ -86,6 +88,13 @@ export const HANDLERS: Registry = {
   declineChallenge,
   challengeRival,
   runRaceLeg,
+  moveHome,
+  buyFurnishing,
+  placeFurnishing,
+  plantBed,
+  pickBed,
+  inviteGuest,
+  sendGuestHome,
   leaveFight,
   buyGear,
   buyTool,

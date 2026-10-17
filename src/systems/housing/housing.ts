@@ -19,16 +19,47 @@ export interface Housing extends HomeRef {
   readonly lodging?: string;
   /** Houses you own in towns (place ids): bought outright, no rent. */
   readonly owned: readonly string[];
+  /** The home you moved into up the ladder (`HomeDef`), or null for the one you started in. */
+  readonly homeId: string | null;
+  /** Furniture you own (`FurnishingDef` ids): it moves house with you. */
+  readonly furniture: readonly string[];
+  /** What stands in each spot of the home (spot → furnishing id). */
+  readonly placed: Readonly<Record<string, string>>;
+  /** The garden's beds, empty or planted. */
+  readonly beds: readonly (Planting | null)[];
+  /** A friend staying in your guest room. */
+  readonly guestId: string | null;
 }
+
+/** A bed planted with something that comes up as an ingredient. */
+export interface Planting {
+  readonly ingredientId: string;
+  readonly plantedDay: number;
+}
+
+/** A start with no furniture, no garden and nobody staying. */
+export const UNFURNISHED = {
+  homeId: null,
+  furniture: [],
+  placed: {},
+  beds: [],
+  guestId: null,
+} as const satisfies Partial<Housing>;
 
 export function newTenancy(home: HomeRef, rentPerWeek: number, today: number): Housing {
   // The first week comes paid as part of graduating.
-  return { ...home, rentPerWeek, paidThroughDay: today + DAYS_PER_RENT_PERIOD - 1, owned: [] };
+  return {
+    ...home,
+    rentPerWeek,
+    paidThroughDay: today + DAYS_PER_RENT_PERIOD - 1,
+    owned: [],
+    ...UNFURNISHED,
+  };
 }
 
 /** Rent-free lodging, such as a room in your clan's compound. */
 export function freeLodging(home: HomeRef, lodging: string, today: number): Housing {
-  return { ...home, rentPerWeek: 0, paidThroughDay: today, lodging, owned: [] };
+  return { ...home, rentPerWeek: 0, paidThroughDay: today, lodging, owned: [], ...UNFURNISHED };
 }
 
 export function isRentFree(housing: Housing): boolean {

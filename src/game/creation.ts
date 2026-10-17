@@ -1,6 +1,12 @@
 import { createRng } from '@/core';
 import { learnRecipes, NO_COOKING } from '@/systems/cooking';
-import { freeLodging, newTenancy, type HomeRef } from '@/systems/housing';
+import {
+  addFurniture,
+  freeLodging,
+  newTenancy,
+  placeFurniture,
+  type HomeRef,
+} from '@/systems/housing';
 import { EMPTY_INVENTORY } from '@/systems/inventory';
 import { EMPTY_JOURNAL } from '@/systems/journal';
 import {
@@ -148,9 +154,13 @@ function bestArts(grades: Grades): Discipline[] {
 
 function housingFor(draft: CreationDraft, ctx: GameContext, home: HomeRef, rent: number) {
   const lodging = ctx.content.clans.require(draft.clanId).lodging;
-  return lodging
+  const housing = lodging
     ? freeLodging(home, lodging, START_TIME.day)
     : newTenancy(home, rent, START_TIME.day);
+  // Every new home has the starter furniture laid out (a futon, at least).
+  return ctx.content.furnishings.all
+    .filter((f) => f.starter)
+    .reduce((h, f) => placeFurniture(addFurniture(h, f.id), f.spot, f.id), housing);
 }
 
 export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext): GameState {

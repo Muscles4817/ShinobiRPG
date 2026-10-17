@@ -537,6 +537,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     the next race. A rival behind you trains harder (`drive.ts`), the one open exception to
     peers growing by the same rules. Their ink is `--rival`, never a gain or cost colour.
 
+32. **Homes are a ladder you furnish** (`docs/design/home-plan.md`, `game/home/`). A pack's
+    `homes` (`HomeDef`: rent and/or price, `needs`, spots, rooms) are let at a `lettings` place;
+    you start in your rented room (or your clan's) with `FIRST_HOME_SPOTS`. The housing slice
+    keeps `homeId`, owned `furniture`, what is `placed` in each spot, the garden's `beds` and a
+    `guestId`; moving (`moveHome`) keeps your furniture. A piece (`FurnishingDef`) does one thing,
+    read at one hook while you are at home (`comforts`: sleep, nap, study, guests; decor is
+    comfort only), and comfort warms dinners at home. The finest pieces are gifts from new close
+    friends (`noteHomeGifts` in `dispatch`). Rooms: a garden (`GardenCrop` from seed), a yard
+    (cheaper drills) and a guest room (the guest is home every evening). The keepsake shelf is
+    read from memories, rival wins and ranks, never stored.
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -720,6 +731,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `cookbookIds`), a person's `recipes`, or a job's `reward.recipeId` (validated). **Add a meal
   effect:** a field on `ModifierSpec` combined in `combine`, worded in `describeSpec`, read at
   one hook in `game/`.
+- **Add a home or a piece of furniture:** a `HomeDef` in the pack's `homes.ts` (rent and/or
+  price, `needs`, spots, rooms; a yard needs `yardTrainingIds`, a garden `beds`; `lockedReason`
+  until it is playable) listed at a `lettings` place's `homeIds`; a `FurnishingDef` in
+  `shared/furnishings.ts` with one `effect` (a new kind is a case in `comforts`), listed at a
+  lettings place's `furnishingIds` unless it has no `cost` (a gift). Validated in
+  `validateHomes.ts`.
 - **Add a bar or hot water:** a `tavern` place (`keeper`, `foodIds`, `roundCost`, `cupCost`,
   evening/night `hours`, optional `pastimes` with unique ids) or an `onsen` place (`keeper`,
   `waters` spring or bathhouse, `soakCost`, `hours` without night), validated in
