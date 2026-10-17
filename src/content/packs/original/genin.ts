@@ -86,7 +86,7 @@ export const GENIN: readonly PersonDef[] = [
       'belt',
     ),
     specialty: 'kenjutsu',
-    bio: 'Top of the class. Sleeps with his sword. Has not smiled since he was nine.',
+    bio: 'The instructors’ pride. Sleeps with his sword. Has not smiled since he was nine.',
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',
