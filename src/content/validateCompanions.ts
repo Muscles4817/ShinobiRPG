@@ -1,4 +1,4 @@
-import { COMPANION_TEMPERAMENTS, PLAY_KINDS } from '@/systems/companions';
+import { BODY_STATS, COMPANION_TEMPERAMENTS, PLAY_KINDS } from '@/systems/companions';
 
 import type { CompanionKindDef } from './companions';
 import type { ContentPack } from './types';
@@ -11,6 +11,8 @@ import type { ContentPack } from './types';
 
 /** A companion starts no better than a fresh genin's best (a pup, an untrained stray). */
 const MOST_BASE = 6;
+/** The strongest any companion body may grow (a kage's grade): nothing natural goes past it. */
+const MOST_ADULT = 40;
 /** The deepest bond stage. */
 const MOST_STAGE = 4;
 
@@ -68,12 +70,32 @@ function pupProblems(pack: ContentPack): string[] {
     });
 }
 
-/** An animal a job hands over is a kind of the pack. */
+/** An animal a job rescues is a kind of the pack, and waits at a vet the pack has. */
 function rewardProblems(pack: ContentPack, kinds: ReadonlySet<string>): string[] {
+  const hasVet = pack.locations.some((l) => l.places.some((p) => p.kind === 'vet'));
   return pack.missions.flatMap((m) => {
     const kindId = m.reward.companionKindId;
-    return kindId && !kinds.has(kindId) ? [`mission "${m.id}" gives unknown kind "${kindId}"`] : [];
+    if (!kindId) return [];
+    return [
+      ...(kinds.has(kindId) ? [] : [`mission "${m.id}" gives unknown kind "${kindId}"`]),
+      ...(hasVet ? [] : [`mission "${m.id}" rescues an animal with no vet to keep it`]),
+    ];
   });
+}
+
+/** A grown body in every body stat, a real time to grow into it, and skills that leave it alone. */
+function bodyProblems(kind: CompanionKindDef): string[] {
+  const at = `companion kind "${kind.id}"`;
+  const { adult, maturesInDays } = kind.body;
+  return [
+    ...BODY_STATS.filter((stat) => !(adult[stat] > 0 && adult[stat] <= MOST_ADULT)).map(
+      (stat) => `${at} has no sane grown ${stat}`,
+    ),
+    ...(maturesInDays > 0 ? [] : [`${at} never grows up`]),
+    ...BODY_STATS.filter((stat) => kind.statBonuses[stat] !== undefined).map(
+      (stat) => `${at} sets ${stat} by bonus; its body decides it`,
+    ),
+  ];
 }
 
 function dietProblems(kind: CompanionKindDef, ingredients: ReadonlySet<string>): string[] {
@@ -117,6 +139,7 @@ function kindProblems(kind: CompanionKindDef, places: ReadonlySet<string>): stri
     ...(kind.baseStat > MOST_BASE ? [`${at} starts too strong`] : []),
     ...(Object.values(kind.aptitude).some((a) => a < 0) ? [`${at} has a negative talent`] : []),
     ...strayProblems(kind, places),
+    ...bodyProblems(kind),
   ];
 }
 

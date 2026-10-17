@@ -2,7 +2,10 @@ import type { GameAction, TrainingView } from '@/game';
 
 import { GradeBadge } from '../../components/Grade';
 
-/** Training together: drill your companion in a stat, you its teacher, your grade over its own. */
+/**
+ * Training together: drill your companion in one of its skills, you its handler. Its body
+ * (strength, speed, stamina) comes with time, so only skills are drilled here.
+ */
 export function TrainTogether({
   view,
   perform,
@@ -11,10 +14,14 @@ export function TrainTogether({
   readonly perform: (action: GameAction) => void;
 }) {
   if (!view) return null;
-  const why = view.drills.every((d) => d.blocker !== null) ? view.drills[0]?.blocker : null;
+  const why = view.drills.find((d) => d.blocker !== null)?.blocker ?? null;
   return (
     <section className="people-here" aria-label={`Train with ${view.name}`}>
       <h2 className="label">Train with {view.name}</h2>
+      <p className="muted small">
+        You handle, it learns: its skills grow with drills, its body with time.{' '}
+        <span className="chip cost num">−{view.energy} energy</span>
+      </p>
       <div className="teach-stats">
         {view.drills.map((d) => (
           <button
@@ -22,7 +29,6 @@ export function TrainTogether({
             type="button"
             className="teach-stat"
             disabled={d.blocker !== null}
-            title={d.blocker ?? undefined}
             aria-label={`Drill ${view.name} in ${d.label}`}
             onClick={() => {
               perform(d.action);
@@ -30,8 +36,6 @@ export function TrainTogether({
           >
             <span className="teach-label">{d.label}</span>
             <span className="teach-grades" aria-hidden="true">
-              <GradeBadge grade={d.yours} />
-              <small>over</small>
               <GradeBadge grade={d.theirs} />
             </span>
           </button>

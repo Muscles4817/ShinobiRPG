@@ -1,6 +1,6 @@
 import { cookingGrade } from '@/systems/cooking';
 import { SOLO } from '@/systems/missions';
-import { act, intoFight, newGame, veteran } from '@/test/gameFixtures';
+import { act, intoFight, newGame, veteran, withHound } from '@/test/gameFixtures';
 
 import { deserialize, SAVE_VERSION, serialize } from './save';
 
@@ -446,9 +446,32 @@ describe('persistence', () => {
     expect(loaded.value.companions).toEqual({
       owned: {},
       befriending: null,
+      tracking: null,
+      waiting: null,
       strayed: null,
       medicine: 0,
     });
+  });
+
+  it('grows up a companion from before growing up, losing nothing it has', () => {
+    const game = withHound(newGame());
+    const {
+      grownDays: _g,
+      lastTrainedDay: _t,
+      lastCaredDay: _c,
+      ...old
+    } = game.companions.owned.player!;
+    const { tracking: _k, waiting: _w, ...slice } = game.companions;
+    const saved = { ...game, companions: { ...slice, owned: { player: old } } };
+    const loaded = deserialize(JSON.stringify({ version: 47, state: saved }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    const hound = loaded.value.companions.owned.player!;
+    expect(hound.grownDays).toBeGreaterThan(100);
+    expect(hound.lastCaredDay).toBe(old.lastFedDay);
+    expect(hound.stats).toEqual(old.stats);
+    expect(loaded.value.companions.tracking).toBeNull();
+    const played = act(loaded.value, { type: 'trainCompanion', stat: 'taijutsu' });
+    expect(played.companions.owned.player!.stats.strength).toBeGreaterThan(old.stats.strength);
   });
 
   it('rejects corrupted data', () => {

@@ -5,7 +5,8 @@ import type { Aptitude, Stats } from '@/systems/stats';
  * Companions: bonded creatures that fight beside someone (`docs/design/retinue-plan.md`). A
  * companion's record is its own (stats, talent, the bond), kept by owner so anyone may have
  * one; the player's is under `PLAYER_OWNER`. How a kind takes to people is its temperament,
- * read from one table: how fast the bond grows and how many stages later it takes orders.
+ * read from one table: how fast the bond grows, how many stages later it takes orders and how
+ * many days it takes to win over. Its body grows with time (`growth.ts`), its skills by training.
  * Befriending a stray is a few days' visits; once it trusts you, it comes home.
  */
 
@@ -37,6 +38,12 @@ export interface Companion {
   readonly injury: CompanionInjury | null;
   /** Whether you have found out its favourite food. */
   readonly favouriteKnown: boolean;
+  /** Days of growing it has had (`growth.ts`): fed days count whole, hungry ones half. */
+  readonly grownDays: number;
+  /** The last day training together counted towards the bond (once a day). */
+  readonly lastTrainedDay: number | null;
+  /** The last day it was shown real care (a game, a proper meal, training); neglect drifts. */
+  readonly lastCaredDay: number;
 }
 
 /** A companion laid up after a fight. */
@@ -48,7 +55,7 @@ export interface CompanionInjury {
   readonly dosedDay: number | null;
 }
 
-/** A stray you are winning over: how many days you've spent with it, and the last. */
+/** A stray you are winning over, or a wild one you are tracking: the good days so far, and the last tried. */
 export interface StrayFriendship {
   readonly kindId: string;
   readonly visits: number;
@@ -58,7 +65,12 @@ export interface StrayFriendship {
 export interface Companions {
   /** Each owner's companion (one each, for now), by owner id. */
   readonly owned: Readonly<Record<string, Companion>>;
+  /** A stray you are winning over in the village. */
   readonly befriending: StrayFriendship | null;
+  /** A wild one you are tracking in the wilds (kept apart, so neither undoes the other). */
+  readonly tracking: StrayFriendship | null;
+  /** An animal a job rescued, waiting at the animal clinic for you to take it home. */
+  readonly waiting: Companion | null;
   /** A stray of yours that went back to the streets, kept to come home again if won back. */
   readonly strayed: Companion | null;
   /** Doses of medicine you carry for it. */
@@ -68,6 +80,8 @@ export interface Companions {
 export const NO_COMPANIONS: Companions = {
   owned: {},
   befriending: null,
+  tracking: null,
+  waiting: null,
   strayed: null,
   medicine: 0,
 };
@@ -77,16 +91,14 @@ interface TemperamentRules {
   readonly bondRate: number;
   /** How many bond stages later than a bred animal it takes orders. */
   readonly ordersLater: number;
-  /** How far past (or short of) its talent's limits it can grow, in stat points. */
-  readonly limitShift: number;
   /** Days spent winning it over before it is yours (strays befriended, wild ones tracked). */
   readonly daysToWin: number;
 }
 
 const TEMPERAMENT_RULES: Readonly<Record<CompanionTemperament, TemperamentRules>> = {
-  bred: { bondRate: 1.2, ordersLater: 0, limitShift: 0, daysToWin: 0 },
-  stray: { bondRate: 1, ordersLater: 0, limitShift: -2, daysToWin: 3 },
-  wild: { bondRate: 0.6, ordersLater: 1, limitShift: 4, daysToWin: 5 },
+  bred: { bondRate: 1.2, ordersLater: 0, daysToWin: 0 },
+  stray: { bondRate: 1, ordersLater: 0, daysToWin: 3 },
+  wild: { bondRate: 0.6, ordersLater: 1, daysToWin: 5 },
 };
 
 /** The bond stage a bred companion takes stance orders at, and card orders. */
@@ -102,11 +114,6 @@ export const RESCUED_START_BOND = 10;
 /** Days of winning over a stray or tracking a wild one before it is yours. */
 export function daysToWin(temperament: CompanionTemperament): number {
   return TEMPERAMENT_RULES[temperament].daysToWin;
-}
-
-/** How far a companion of this temperament grows past its talent's limits (wild far, a stray less). */
-export function limitShift(temperament: CompanionTemperament): number {
-  return TEMPERAMENT_RULES[temperament].limitShift;
 }
 
 /** Bond points for some time together, by temperament. */

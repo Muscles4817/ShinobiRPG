@@ -1,6 +1,7 @@
 import {
   companionSheet,
   type Choice,
+  type CompanionSheet as CompanionSheetView,
   type CompanionStrip as Strip,
   type GameAction,
   type GameContext,
@@ -8,6 +9,8 @@ import {
 } from '@/game';
 
 import { BondMeter } from './BondMeter';
+
+type CompanionGrowingView = CompanionSheetView['growing'];
 
 interface CompanionSheetProps {
   readonly ctx: GameContext;
@@ -33,7 +36,6 @@ function Care({
       type="button"
       className="care-option"
       disabled={choice.blocker !== null}
-      title={choice.blocker ?? undefined}
       onClick={() => {
         perform(choice.action);
       }}
@@ -44,10 +46,29 @@ function Care({
   );
 }
 
-/** The first reason a group of care buttons is shut, said once under them. */
+/** Why any of a group of care buttons is shut, said once under them (a phone has no hover). */
 function Why({ choices }: { readonly choices: readonly Choice[] }) {
-  const why = choices.every((c) => c.blocker !== null) ? choices[0]?.blocker : null;
+  const why = choices.find((c) => c.blocker !== null)?.blocker ?? null;
   return why ? <p className="blocker">{why}</p> : null;
+}
+
+/** How it is growing: its stage, its body (time) and its skills (training), in words. */
+function Growing({ growing }: { readonly growing: CompanionGrowingView }) {
+  return (
+    <section className="companion-growing" aria-label="Growing">
+      <p className="story">{growing.stageLine}</p>
+      <p className="muted small">
+        {growing.builtFor}
+        {growing.genes && ` ${growing.genes}`}
+      </p>
+      <h3>Body</h3>
+      <p className="muted small">
+        {growing.body.join(', ')}. {growing.grown ? 'Grown as it will grow.' : 'Still growing.'}
+      </p>
+      <h3>Learned</h3>
+      <p className="muted small">{growing.learned.join(', ')}. Drilled at a training ground.</p>
+    </section>
+  );
 }
 
 /** Your companion's sheet: how it is, and feeding, play and medicine, wherever it is with you. */
@@ -68,15 +89,19 @@ export function CompanionSheet({ ctx, state, perform, onClose }: CompanionSheetP
             <h2>{c.name}</h2>
             <p className="person-tags">
               <span className="badge">{c.kind}</span>
+              <span className="badge">{c.growing.stage}</span>
             </p>
           </div>
         </header>
         <p className="companion-vitals">
+          <small>Health</small>
           <HealthBar health={c.health} maxHealth={c.maxHealth} />
-          <small>{c.hunger}</small>
+          {c.hunger && <small>{c.hunger}</small>}
+          {c.stamp && <span className="place-badge">{c.stamp}</span>}
         </p>
         <BondMeter stageName={c.stageName} progress={c.progress} />
         {c.laidUp && <p className="story">{c.laidUp}</p>}
+        <Growing growing={c.growing} />
         <h3>Feed</h3>
         <div className="care-row">
           {c.foods.map((f) => (
@@ -94,8 +119,10 @@ export function CompanionSheet({ ctx, state, perform, onClose }: CompanionSheetP
         {c.medicine && (
           <>
             <h3>Medicine</h3>
-            <p className="muted small num">
-              {c.medicine.doses} {c.medicine.doses === 1 ? 'dose' : 'doses'} carried
+            <p className="chips">
+              <span className="chip num">
+                {c.medicine.doses} {c.medicine.doses === 1 ? 'dose' : 'doses'} carried
+              </span>
             </p>
             <div className="care-row">
               <Care label="Hide it in food" choice={c.medicine.hidden} perform={perform} />
@@ -133,8 +160,10 @@ export function CompanionStrip({
   return (
     <button type="button" className="companion-strip" onClick={onOpen}>
       <b>{strip.name}</b>
+      {strip.stage && <span className="badge">{strip.stage}</span>}
+      <small>Health</small>
       <HealthBar health={strip.health} maxHealth={strip.maxHealth} />
-      <small>{strip.hunger}</small>
+      {strip.hunger && <small>{strip.hunger}</small>}
       {strip.stamp && <span className="place-badge">{strip.stamp}</span>}
     </button>
   );

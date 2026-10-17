@@ -100,6 +100,8 @@ export type GameAction =
   | { readonly type: 'befriendStray' }
   | { readonly type: 'trackWild'; readonly placeId: string }
   | { readonly type: 'takePup' }
+  | { readonly type: 'takeRescued' }
+  | { readonly type: 'rehomeCompanion' }
   | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
   | { readonly type: 'playWithCompanion'; readonly play: PlayKind }
   | { readonly type: 'doseCompanion'; readonly hidden: boolean }

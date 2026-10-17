@@ -35,13 +35,7 @@ export function QuarterPage({ ctx, state, onBack, onOpenPlace }: QuarterProps) {
           >
             <b>{c.name}</b>
             <small>{c.stance}</small>
-            <small>
-              {c.shut
-                ? 'The gate is shut to you.'
-                : c.home === 0
-                  ? 'Nobody home'
-                  : `${c.home} home`}
-            </small>
+            <small>{c.shut ?? (c.home === 0 ? 'Nobody home' : `${c.home} home`)}</small>
           </button>
         ))}
       </main>

@@ -6,7 +6,8 @@ import type { Companion } from './companions';
  * Looking after a companion (`docs/design/retinue-plan.md`, slice 2b): its hunger counted in
  * days without a meal, what a meal of each kind is worth, play by its tastes, and mending after
  * a fight. One meal a day keeps it fed; a missed day is only peckish; it never dies of hunger,
- * but a starving stray goes back to the streets.
+ * but a starving stray goes back to the streets. Scraps keep it fed and nothing more: without a
+ * game, a proper meal or training now and then, the bond slowly drifts.
  */
 
 export const COMPANION_HUNGER = ['fed', 'peckish', 'hungry', 'starving'] as const;
@@ -19,6 +20,15 @@ const HUNGER_FIGHT: Readonly<Record<CompanionHunger, number>> = {
   hungry: 0.85,
   starving: 0.7,
 };
+
+/** Days without a game, a proper meal or training before the bond starts to drift, and how much. */
+export const NEGLECT_AFTER = 3;
+export const NEGLECT_DRIFT = 1;
+
+/** Whether it has gone long enough without real care for the bond to drift today. */
+export function neglected(companion: Pick<Companion, 'lastCaredDay'>, today: number): boolean {
+  return today - companion.lastCaredDay > NEGLECT_AFTER;
+}
 
 /** Bond lost each day it starves. */
 export const STARVING_BOND_DRIFT = 2;

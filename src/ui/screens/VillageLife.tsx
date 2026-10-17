@@ -1,5 +1,7 @@
 import type { GameAction, StrayNotice, VillageView } from '@/game';
 
+import { ProgressDots } from '../components/ProgressDots';
+
 interface VillageLifeProps {
   readonly view: VillageView;
   readonly perform: (action: GameAction) => void;
@@ -56,8 +58,8 @@ function StrayCard({
       </button>
       {stray.visits > 0 && (
         <small>
-          It knows you a little now: <span className="num">{stray.visits}</span> of{' '}
-          <span className="num">{stray.needed}</span> days.
+          It knows you a little now <ProgressDots done={stray.visits} of={stray.needed} />. Come
+          back tomorrow; it moves about the village.
         </small>
       )}
       {stray.befriend.blocker && <small className="blocker">{stray.befriend.blocker}</small>}

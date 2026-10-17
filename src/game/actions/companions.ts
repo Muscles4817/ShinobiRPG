@@ -19,12 +19,27 @@ const VISIT_SLOTS = 1;
 /** The companions once a stray you have won over comes home with you. */
 function adopted(state: GameState, stray: StrayToday): Companions {
   const id = `${stray.kind.id}-${state.time.day}`;
-  const start = { id, seed: state.board.seed, day: state.time.day, bond: STRAY_START_BOND };
-  // One of yours that went back to the streets comes home as itself, fed and forgiven.
+  const day = state.time.day;
+  const start = {
+    id,
+    seed: state.board.seed,
+    day,
+    bond: STRAY_START_BOND,
+    arrival: 'stray' as const,
+  };
+  // One of yours that went back to the streets comes home as itself, fed and forgiven; its
+  // days on the streets aren't lived again as if it had been fed through them.
   const back = state.companions.strayed;
   const companion =
     back?.kindId === stray.kind.id
-      ? { ...back, bond: STRAY_START_BOND, lastFedDay: state.time.day }
+      ? {
+          ...back,
+          bond: STRAY_START_BOND,
+          lastFedDay: day,
+          lastGrownDay: day,
+          lastCaredDay: day,
+          injury: null,
+        }
       : newCompanion(stray.kind, start);
   return {
     ...state.companions,

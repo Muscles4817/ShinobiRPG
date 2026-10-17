@@ -8,8 +8,12 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     name: 'Stray hound',
     description: 'Lean, wary and quick, with a nose for trouble and for anything left unguarded.',
     temperament: 'stray',
+    body: {
+      adult: { strength: 9, speed: 12, stamina: 10, perception: 13 },
+      maturesInDays: 56,
+    },
     baseStat: 4,
-    statBonuses: { speed: 2, perception: 3, strength: 1, intellect: -2 },
+    statBonuses: { intellect: -2 },
     healthScale: 0.6,
     maxChakra: 10,
     traits: ['brawler'],
@@ -43,8 +47,12 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     description:
       'A pup from the clinic’s own line of working dogs: steady, keen-nosed and eager to please.',
     temperament: 'bred',
+    body: {
+      adult: { strength: 9, speed: 12, stamina: 11, perception: 14 },
+      maturesInDays: 56,
+    },
     baseStat: 4,
-    statBonuses: { speed: 2, perception: 3, stamina: 1, taijutsu: 1, intellect: -1 },
+    statBonuses: { taijutsu: 1, intellect: -1 },
     healthScale: 0.6,
     maxChakra: 10,
     traits: ['brawler'],

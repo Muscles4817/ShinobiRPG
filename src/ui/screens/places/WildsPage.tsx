@@ -1,6 +1,7 @@
 import { headerView, wildsView, type GameAction, type WhatsAbout, type WildsView } from '@/game';
 
 import { Banner } from '../../components/Banner';
+import { ProgressDots } from '../../components/ProgressDots';
 import type { PlaceProps } from '../types';
 
 /** "Wild Mushrooms and Chestnuts, and something you don't know." */
@@ -43,11 +44,12 @@ function TrackCard({
     <article className="gather-card">
       <h3>Signs of a {wild.kind.toLowerCase()}</h3>
       <p className="story">{wild.sign}</p>
-      <p className="muted small">{wild.odds}</p>
+      <p className="muted small">
+        {wild.odds} <span className="chip cost num">−{wild.energy} energy</span>
+      </p>
       {wild.days > 0 && (
         <p className="small">
-          It knows your scent now: <span className="num">{wild.days}</span> of{' '}
-          <span className="num">{wild.needed}</span> good days.
+          It knows your scent now <ProgressDots done={wild.days} of={wild.needed} />
         </p>
       )}
       {wild.track.blocker && <p className="blocker">{wild.track.blocker}</p>}

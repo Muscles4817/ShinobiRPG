@@ -73,7 +73,7 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const view = engine.view(combat);
     // Spars and exam bouts stop before anyone is really hurt.
     const sparring = state.people.sparringWith !== null || inBout(state);
-    const tended = afterCompanionFight(ended, outcome, ctx, sparring);
+    const tended = sparring ? ended : afterCompanionFight(ended, outcome, ctx);
     const resolved = resolveFight(tended, outcome, view, ctx);
     const end = { outcome, view, sparring };
     const settled = growFromFight(applyFightToll(resolved, end, ctx, rng), lessons, ctx);

@@ -1,12 +1,10 @@
 import { act, ctx, newGame, pressOn, withAllStats, withHound } from '@/test/gameFixtures';
 import { BOND_STAGES } from '@/systems/bonds';
-import { daysToWin, PLAYER_OWNER, RESCUED_START_BOND, WILD_START_BOND } from '@/systems/companions';
-import { limitsFor } from '@/systems/stats';
+import { daysToWin, RESCUED_START_BOND, WILD_START_BOND } from '@/systems/companions';
 
 import { blockerFor } from '../dispatch';
 import type { GameState } from '../state';
 import { playerCompanion } from './make';
-import { companionGrowth } from './routine';
 import { wildHere } from './wild';
 
 const WOODS = 'lantern-woods';
@@ -71,13 +69,10 @@ describe('finding a companion', () => {
     expect(blockerFor(night, { type: 'trackWild', placeId: WOODS }, ctx)).toMatch(/dark/);
   });
 
-  it('a wild one grows further past its talent than a bred one', () => {
-    const hound = playerCompanion(withHound(newGame()))!;
-    const wild = companionGrowth(hound, 'wild').limits!;
-    const bred = companionGrowth(hound, 'bred').limits!;
-    expect(bred).toEqual(limitsFor(hound.aptitude));
-    expect(wild.speed).toBeGreaterThan(bred.speed);
-    expect(wild.genjutsu).toBe(0);
+  it('tracking a wild one and winning over a stray keep their own records', () => {
+    const state = act(wolfInTheWoods(), { type: 'trackWild', placeId: WOODS });
+    expect(state.companions.tracking?.kindId).toBe('forest-wolf');
+    expect(state.companions.befriending).toBeNull();
   });
 
   it('the clinic sells a pup, and gives one to a close friend of the vet', () => {
@@ -98,20 +93,23 @@ describe('finding a companion', () => {
     expect(given.wallet.ryo).toBe(0);
   });
 
-  it('a rescued pup follows you home from the job, unless you have one already', () => {
+  it('a rescued pup waits at the clinic for you, taken home only once you have room', () => {
     const start = withAllStats(newGame(), 30);
     const veteran = { ...start, standing: { ...start.standing, missionsCompleted: 1 } };
-    const done = playMission(veteran, 'pup-in-the-culvert');
-    const pup = playerCompanion(done);
+    const owner = withHound(veteran);
+    const done = playMission(owner, 'pup-in-the-culvert');
+    const pup = done.companions.waiting;
     expect(pup?.kindId).toBe('stray-hound');
+    expect(pup?.name).not.toBe('Ash');
     expect(pup?.bond).toBe(RESCUED_START_BOND);
     expect(done.reports.at(-1)).toMatchObject({ kind: 'mission-complete', companion: pup?.name });
+    expect(blockerFor(done, { type: 'takeRescued' }, ctx)).toMatch(/Rehome Ash first/);
 
-    const owner = withHound(veteran);
-    const kept = playMission(owner, 'pup-in-the-culvert');
-    expect(kept.companions.owned[PLAYER_OWNER]?.kindId).toBe(
-      owner.companions.owned[PLAYER_OWNER]?.kindId,
-    );
-    expect(kept.reports.at(-1)).not.toHaveProperty('companion');
+    const rehomed = act(done, { type: 'rehomeCompanion' });
+    expect(playerCompanion(rehomed)).toBeNull();
+    expect(rehomed.companions.strayed?.name).toBe('Ash');
+    const taken = act(rehomed, { type: 'takeRescued' });
+    expect(playerCompanion(taken)?.name).toBe(pup?.name);
+    expect(taken.companions.waiting).toBeNull();
   });
 });

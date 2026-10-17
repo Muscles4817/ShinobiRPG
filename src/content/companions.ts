@@ -1,5 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
-import type { CompanionTemperament, PlayKind } from '@/systems/companions';
+import type { BodyStat, CompanionTemperament, PlayKind } from '@/systems/companions';
 import type { StatDelta, StatId } from '@/systems/stats';
 
 import type { Biome } from './biomes';
@@ -63,6 +63,9 @@ export interface CompanionKindDef {
   readonly description: string;
   /** How it takes to people (`systems/companions`): bred, stray or wild. */
   readonly temperament: CompanionTemperament;
+  /** Its grown body, and how long a pup takes to grow into it (`systems/companions/growth.ts`). */
+  readonly body: CompanionBody;
+  /** Where its skills start (taijutsu, wits, will); the body stats come from `body`. */
   readonly baseStat: number;
   readonly statBonuses: StatDelta;
   /** Health as a multiple of a human's 100. */
@@ -81,6 +84,12 @@ export interface CompanionKindDef {
   readonly stray?: StrayHaunt;
   /** Where a wild one lives, for kinds tracked in the wilds. */
   readonly wild?: WildHaunt;
+}
+
+/** A kind's grown body: the adult value of each body stat, and days of growing to reach it. */
+export interface CompanionBody {
+  readonly adult: Readonly<Record<BodyStat, number>>;
+  readonly maturesInDays: number;
 }
 
 /** The companion a clan's children grow up with, and the bond they start with. */

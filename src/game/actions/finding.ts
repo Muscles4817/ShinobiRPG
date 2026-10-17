@@ -31,11 +31,11 @@ export const TRACK_ENERGY = 15;
 
 function tracked(state: GameState, kind: WildKind, closer: boolean): GameState {
   const day = state.time.day;
-  const befriending = closer
-    ? visitStray(state.companions.befriending, kind.id, day)
-    : lostTrail(state.companions.befriending, kind.id, day);
-  if (closer && wonOver(befriending, kind.temperament)) {
-    const tamed = withNewCompanion(state, kind, WILD_START_BOND);
+  const tracking = closer
+    ? visitStray(state.companions.tracking, kind.id, day)
+    : lostTrail(state.companions.tracking, kind.id, day);
+  if (closer && wonOver(tracking, kind.temperament)) {
+    const tamed = withNewCompanion(state, kind, { bond: WILD_START_BOND, arrival: 'wild' });
     const name = playerCompanion(tamed)?.name ?? kind.name;
     return log(tamed, {
       heading: `${name} comes to you`,
@@ -43,7 +43,7 @@ function tracked(state: GameState, kind: WildKind, closer: boolean): GameState {
       tone: 'success',
     });
   }
-  const companions = { ...state.companions, befriending };
+  const companions = { ...state.companions, tracking };
   return log(
     { ...state, companions },
     { text: closer ? kind.wild.closer : kind.wild.lost, tone: closer ? 'info' : 'warning' },
@@ -60,7 +60,7 @@ export const trackWild: ActionHandler<ActionOf<'trackWild'>> = {
       weakFromHunger(state),
       laidUp(state, ctx),
       slotName(state.time) === 'night' && 'Too dark to follow a trail. Come back by day.',
-      state.companions.befriending?.lastVisitDay === state.time.day &&
+      state.companions.tracking?.lastVisitDay === state.time.day &&
         'You’ve tracked enough for one day.',
       state.character.vitals.energy < energy && `Needs ${energy} energy. Nap or eat first.`,
     );
@@ -99,7 +99,7 @@ export const takePup: ActionHandler<ActionOf<'takePup'>> = {
     if (!vet?.pups || price === null) return state;
     const kind = ctx.content.companionKinds.require(vet.pups.kindId);
     const paid = { ...state, wallet: deduct(state.wallet, price) };
-    const joined = withNewCompanion(paid, kind, PUP_START_BOND);
+    const joined = withNewCompanion(paid, kind, { bond: PUP_START_BOND, arrival: 'kennel' });
     const name = playerCompanion(joined)?.name ?? kind.name;
     const giver = findPerson(state, ctx, vet.keeperId)?.name ?? 'The vet';
     return log(joined, {

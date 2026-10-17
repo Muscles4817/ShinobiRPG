@@ -95,39 +95,26 @@ describe('play and training together', () => {
     expect(fetch.character.vitals.energy).toBeLessThan(state.character.vitals.energy);
     expect(dispatch(fetch, { type: 'playWithCompanion', play: 'rough' }, ctx).ok).toBe(false);
   });
-
-  it('a strong handler raises a strong partner', () => {
-    const state = withHound(newGame());
-    const weak = {
-      ...state,
-      character: { ...state.character, stats: { ...state.character.stats, speed: 6 } },
-    };
-    const strong = {
-      ...state,
-      character: { ...state.character, stats: { ...state.character.stats, speed: 20 } },
-    };
-    const fromWeak = hound(act(weak, { type: 'trainCompanion', stat: 'speed' })).stats.speed;
-    const fromStrong = hound(act(strong, { type: 'trainCompanion', stat: 'speed' })).stats.speed;
-    expect(fromStrong).toBeGreaterThan(fromWeak);
-    expect(fromWeak).toBeGreaterThan(hound(state).stats.speed);
-    expect(dispatch(state, { type: 'trainCompanion', stat: 'genjutsu' }, ctx).ok).toBe(false);
-  });
 });
 
 describe('injuries and the vet', () => {
-  it('knocked down in earnest, it is laid up and stays home; in a spar it is not', () => {
+  it('knocked down, it is laid up and stays home', () => {
     const state = withHound(newGame());
-    const hurt = afterCompanionFight(state, downed(state), ctx, false);
+    const hurt = afterCompanionFight(state, downed(state), ctx);
     expect(hound(hurt).injury?.until).toBe(state.time.day + KNOCKED_DOWN_DAYS);
     expect(companionAllies(hurt, ctx)).toEqual([]);
-    const sparred = afterCompanionFight(state, downed(state), ctx, true);
-    expect(hound(sparred).injury).toBeNull();
     expect(companionAllies(state, ctx)).toHaveLength(1);
+  });
+
+  it('stays out of spars: a spar is one against one', () => {
+    const sparring = act(withHound(newGame()), { type: 'spar', personId: 'kaen' });
+    const view = ctx.engines[0]!.view(sparring.combat!);
+    expect(view.combatants.some((c) => c.name === 'Ash')).toBe(false);
   });
 
   it('the vet treats it once, medicine helps a day at a time', () => {
     const state = withHound(newGame({ wallet: { ryo: 500 } }));
-    const hurt = afterCompanionFight(state, downed(state), ctx, false);
+    const hurt = afterCompanionFight(state, downed(state), ctx);
     const treated = act(hurt, { type: 'treatCompanion' });
     expect(hound(treated).injury!.until).toBeLessThan(hound(hurt).injury!.until);
     expect(treated.wallet.ryo).toBeLessThan(hurt.wallet.ryo);
@@ -144,7 +131,7 @@ describe('injuries and the vet', () => {
       createNewGame({ draft: draft({ clanId: 'inuzuka' }, naruto), seed: 1 }, naruto),
       naruto,
     );
-    const hurt = afterCompanionFight(game, downed(game), naruto, false);
+    const hurt = afterCompanionFight(game, downed(game), naruto);
     const treated = act(hurt, { type: 'treatCompanion' }, naruto);
     expect(treated.wallet.ryo).toBe(hurt.wallet.ryo);
   });

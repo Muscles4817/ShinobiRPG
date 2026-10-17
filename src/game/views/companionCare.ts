@@ -4,17 +4,21 @@ import {
   laidUp,
   PLAY_KINDS,
   type CompanionHunger,
+  type CompanionInjury,
   type PlayKind,
 } from '@/systems/companions';
 import { pantryCount } from '@/systems/inventory';
 import { STAT_INFO, statTier, type StatGrade } from '@/systems/stats';
 
+import { stageOfLife } from '../companions/body';
 import { favouriteOf, yourCompanion } from '../companions/care';
 import { maxHealthOf } from '../companions/make';
-import { trainableStats } from '../actions/companionTraining';
+import { trainableStats, TRAIN_ENERGY } from '../actions/companionTraining';
 import type { GameContext } from '../context';
+import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
+import { companionGrowing, type CompanionGrowing } from './companionGrowing';
 
 /**
  * Your companion's care, wherever it is with you: a strip on the village screen (health,
@@ -23,7 +27,7 @@ import { choice, type Choice } from './common';
  */
 
 const HUNGER_WORDS: Readonly<Record<CompanionHunger, string>> = {
-  fed: 'Fed',
+  fed: 'Not hungry',
   peckish: 'Peckish',
   hungry: 'Hungry',
   starving: 'Starving',
@@ -40,7 +44,10 @@ export interface CompanionStrip {
   readonly name: string;
   readonly health: number;
   readonly maxHealth: number;
-  readonly hunger: string;
+  /** How hungry it is, in a word; null when the stamp already says it. */
+  readonly hunger: string | null;
+  /** Its stage of life while it is still growing ("Pup", "Young"), or null once grown. */
+  readonly stage: string | null;
   /** What needs you now ("Ash is hungry", "Ash is limping"), or null. */
   readonly stamp: string | null;
 }
@@ -53,6 +60,8 @@ export interface FoodOption extends Choice {
 
 export interface CompanionSheet extends CompanionStrip {
   readonly kind: string;
+  /** Its body and skills, and how it is growing (`companionGrowing.ts`). */
+  readonly growing: CompanionGrowing;
   readonly stageName: string;
   readonly progress: number;
   /** Why it is laid up and until when, in words, or null. */
@@ -86,12 +95,15 @@ export function companionStrip(state: GameState, ctx: GameContext): CompanionStr
   const today = state.time.day;
   const hunger = hungerOf(companion, today);
   const fed = companion.lastFedDay === today;
+  const stamp = stampFor(companion.name, hunger, laidUp(companion, today), fed);
+  const stage = stageOfLife(companion, kind);
   return {
     name: companion.name,
     health: Math.round(companion.health),
     maxHealth: maxHealthOf(kind),
-    hunger: fed ? 'Fed today' : HUNGER_WORDS[hunger],
-    stamp: stampFor(companion.name, hunger, laidUp(companion, today), fed),
+    hunger: stamp ? null : fed ? 'Fed today' : HUNGER_WORDS[hunger],
+    stage: stage === 'grown' ? null : companionGrowing(companion, kind, state.board.seed).stage,
+    stamp,
   };
 }
 
@@ -117,6 +129,17 @@ function foods(state: GameState, ctx: GameContext): FoodOption[] {
   return [scraps, ...pantry];
 }
 
+/** How long it is laid up, in words, and what would shorten it. */
+function laidUpLine(injury: CompanionInjury, today: number): string {
+  const left = injury.until - today;
+  const when =
+    left <= 1 ? 'until tomorrow' : left === 2 ? 'for two more days' : 'for a few more days';
+  const help = injury.treated
+    ? 'The vet has bandaged it; a dose of medicine would still help.'
+    : 'A dose of medicine or a visit to the vet would shorten it.';
+  return `Laid up and resting ${when}. ${help}`;
+}
+
 export function companionSheet(state: GameState, ctx: GameContext): CompanionSheet | null {
   const strip = companionStrip(state, ctx);
   const yours = yourCompanion(state, ctx);
@@ -126,9 +149,10 @@ export function companionSheet(state: GameState, ctx: GameContext): CompanionShe
   return {
     ...strip,
     kind: kind.name,
+    growing: companionGrowing(companion, kind, state.board.seed),
     stageName: stageName(stageOf(companion.bond)),
     progress: stageProgress(companion.bond),
-    laidUp: injury ? `Laid up and resting${injury.treated ? ', bandaged by the vet' : ''}.` : null,
+    laidUp: injury ? laidUpLine(injury, state.time.day) : null,
     fedToday: companion.lastFedDay === state.time.day,
     foods: foods(state, ctx),
     plays: PLAY_KINDS.map((play) => ({
@@ -147,26 +171,30 @@ export function companionSheet(state: GameState, ctx: GameContext): CompanionShe
 
 export interface CompanionDrill extends Choice {
   readonly label: string;
-  /** Its grade in the stat, and yours: you teach it best where you are well ahead. */
+  /** Its grade in the skill. */
   readonly theirs: StatGrade;
-  readonly yours: StatGrade;
 }
 
 /** Training together at a training ground: a drill per stat it can learn. */
 export function companionDrills(
   state: GameState,
   ctx: GameContext,
-): { readonly name: string; readonly drills: readonly CompanionDrill[] } | null {
+): {
+  readonly name: string;
+  /** What a session costs you in energy. */
+  readonly energy: number;
+  readonly drills: readonly CompanionDrill[];
+} | null {
   const yours = yourCompanion(state, ctx);
   if (!yours) return null;
   const { companion } = yours;
   return {
     name: companion.name,
+    energy: hardWorkEnergy(state.character, ctx, TRAIN_ENERGY),
     drills: trainableStats(companion).map((stat) => ({
       ...choice(state, ctx, { type: 'trainCompanion', stat }),
       label: STAT_INFO[stat].label,
       theirs: statTier(companion.stats[stat]).grade,
-      yours: statTier(state.character.stats[stat]).grade,
     })),
   };
 }

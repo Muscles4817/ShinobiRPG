@@ -5,7 +5,6 @@ import {
   ordersOpen,
   ordersStages,
   daysToWin,
-  limitShift,
   lostTrail,
   visitStray,
   wonOver,
@@ -26,6 +25,9 @@ const pup: Companion = {
   lastPlayDay: null,
   injury: null,
   favouriteKnown: false,
+  grownDays: 0,
+  lastTrainedDay: null,
+  lastCaredDay: 0,
 };
 
 describe('companions', () => {
@@ -62,10 +64,5 @@ describe('companions', () => {
     const tracked = visitStray(null, 'wolf', 1);
     expect(lostTrail(tracked, 'wolf', 2)).toEqual({ kindId: 'wolf', visits: 1, lastVisitDay: 2 });
     expect(lostTrail(tracked, 'bear', 2).visits).toBe(0);
-  });
-
-  it('a wild one grows furthest past its talent, a stray least', () => {
-    expect(limitShift('wild')).toBeGreaterThan(limitShift('bred'));
-    expect(limitShift('stray')).toBeLessThan(limitShift('bred'));
   });
 });

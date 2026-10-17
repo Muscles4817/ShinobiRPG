@@ -308,10 +308,19 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`befriendStray`, drawn from the seed and day), a wild one tracked over days in a wild place of
     its biome (`trackWild`, `game/companions/wild.ts`; perception raises the odds), a kennel's pup
     (`VetFields.pups`, `takePup`: a gift to a close friend of the vet) or an animal a job rescues
-    (`reward.companionKindId`). Its temperament moves its limits (wild past its talent, a stray
-    short of it: `companionGrowth`). It grows by a light routine caught up each
-    morning like peers', fights beside you in every mission fight and spar, and takes stance and
-    then card orders only as the bond opens them (`ordersOpen`). It is cared for
+    (`reward.companionKindId`: it waits at the vet until you take it; one companion at a time, so
+    a vet also rehomes yours, `rehomeCompanion`). **Its body grows with time, its skills with
+    training** (`systems/companions/growth.ts`, `game/companions/body.ts`): a kind's `body` is an
+    adult strength, speed, stamina and perception and the days a pup takes to grow into them; each
+    animal's genes roll that body (a kennel line never below its kind, a stray rougher), each day
+    grows it (half when hungry, not at all starving), and nothing passes its ceiling (a dog is
+    never as strong as a bear). Strength, speed and stamina are never drilled; skills are, by the
+    handler rule (`trainCompanion`: how you handle it, not your own grades). It arrives as old as
+    its way of coming (`ARRIVES_AT`: a kennel or rescued pup small, a stray or wild one grown); a
+    pup is too young to fight and stays home. Its light routine is caught up each morning like
+    peers', it fights beside you in every mission fight (never a spar: those are one against
+    one), and takes stance and then card orders only as the bond opens them (`ordersOpen`); the
+    bond grows from a game, a proper meal and the day's first training, and drifts on scraps alone. It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -680,7 +689,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   schedules that bring its people home for a slot or two (and out for others, so they can be
   met). Validated in `validateCompounds.ts`.
 - **Add a companion kind:** a `CompanionKindDef` in the pack's `companions.ts` (temperament, a
-  starting body no better than a fresh genin's best, `healthScale`, traits, a talent shape with
+  grown `body` (adult strength, speed, stamina and perception, and `maturesInDays`; the body
+  decides those stats, never `statBonuses`), skills that start no better than a fresh genin's
+  best, `healthScale`, traits, a talent shape with
   0 for arts it never learns, names, and a `stray` haunt for kinds found on the streets, at
   places of the start village, or a `wild` haunt by biome for wild kinds; shared wild kinds live
   in `shared/wildKinds.ts`); give a clan one with `ClanDef.companion`, breed a bred kind at a

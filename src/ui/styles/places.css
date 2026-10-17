@@ -719,12 +719,16 @@
 }
 .room-price {
   align-self: flex-start;
-  border: 1.5px solid var(--seal);
-  color: var(--seal);
+  border: 1.5px solid var(--paper-cost);
+  color: var(--paper-cost);
   border-radius: 2px;
   padding: 0 8px;
   font-weight: 800;
   transform: rotate(-2deg);
+}
+.room-price.free {
+  border-color: var(--paper-gain);
+  color: var(--paper-gain);
 }
 .room-slip .muted {
   color: var(--paper-muted);

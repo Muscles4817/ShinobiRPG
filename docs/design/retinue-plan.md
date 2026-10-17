@@ -223,11 +223,11 @@ out by training, like yours), the bond, injuries, unlocks, hunger and `lastGrown
 can never learn have aptitude 0: a hound has no genjutsu), `healthScale`, traits (`brawler`,
 `swift`), a diet, what the bond unlocks, and a **temperament**:
 
-| Temperament | Where from                  | Limits   | Bond and orders                         |
-| ----------- | --------------------------- | -------- | --------------------------------------- |
-| **bred**    | a clan's kennels, a breeder | ordinary | quick to bond, takes orders early       |
-| **stray**   | the village streets         | lower    | slow to trust at first, then ordinary   |
-| **wild**    | the forest, the mountains   | high     | slow to tame and bond, orders come late |
+| Temperament | Where from                  | Genes | Bond and orders                         |
+| ----------- | --------------------------- | ----- | --------------------------------------- |
+| **bred**    | a clan's kennels, a breeder | true  | quick to bond, takes orders early       |
+| **stray**   | the village streets         | rough | slow to trust at first, then ordinary   |
+| **wild**    | the forest, the mountains   | wide  | slow to tame and bond, orders come late |
 
 Temperament is data on the kind (a bond rate, how many stages later orders come, a limit
 bonus), so a new kind is a row, never a branch.
@@ -474,3 +474,80 @@ Each step proves one property and is its own PR.
   stage; a job's animal is a kind of the pack.
 - **Left for later:** boarding at the vet, dishes cooked for it, a light injury, wild kinds of
   other biomes (a hawk on the mountain, a river otter) and a second companion.
+
+### Review fixes and growing up (after 2c)
+
+A UX review and a game-design review of 2a–2c found five bugs, two design risks and a set of
+screen problems. The designer then set a new fundamental: **a companion's body grows with time
+and its genes, its skills with training**, and every kind has its own ceiling.
+
+- **Bugs fixed:**
+  - Companions stay out of spars, which are one against one; before, a rival spar was two against one.
+  - Wild tracking has its own record (`tracking`), apart from stray befriending.
+  - A stray won back is caught up from that day, and its old injury is cleared.
+  - On the road a companion forages at camp, so a job never starves it.
+  - Befriending a stray from anywhere in the village is kept: the card says where it is.
+- **Choice:**
+  - A rescued animal waits at the vet (`companions.waiting`, `takeRescued`) instead of joining
+    you automatically.
+  - A vet rehomes your companion (`rehomeCompanion`): a bred one back to the kennel, a stray
+    back to the streets (it may be won back), a wild one back to the wild.
+- **Bond pacing:**
+  - Training gives bond from the day's first session only.
+  - The bond drifts a point a day after `NEGLECT_AFTER` days without a game, a proper meal or
+    training. Scraps keep it fed and nothing more.
+- **Growing up** (`systems/companions/growth.ts`, `game/companions/body.ts`):
+  - **The body:** a kind's `body` gives adult strength, speed, stamina and perception, plus
+    `maturesInDays` (hounds 56, the wolf 70).
+  - **Genes:** each animal's genes roll every body stat around its kind's adult value, seeded by
+    its id:
+    - bred ×1–1.15;
+    - stray ×0.8–1.05;
+    - wild ×0.85–1.15.
+  - **The growth curve:** a newborn starts at 40% of its adult body. It grows fast early and
+    eases out. A hungry day counts half; a starving day counts nothing.
+  - **Senses:** perception grows to 70% on its own, and scent work trains the rest.
+  - **The ceiling:** nothing passes 1.2 × the adult body.
+  - **Life stages:**
+    - pup (under 40% grown): too young to fight, stays home;
+    - young: fights;
+    - grown.
+
+    The journal marks each new stage.
+
+  - **Age at arrival:**
+
+    | Way of coming | Arrives         |
+    | ------------- | --------------- |
+    | Clan-born     | half grown      |
+    | Kennel pup    | a quarter grown |
+    | Rescue        | 15% grown       |
+    | Stray         | grown           |
+    | Wild one      | grown           |
+
+- **Training: the handler rule.** Strength, speed and stamina are never drilled. Skills (and
+  perception) are drilled under the handler rule: a fixed D-grade pace held through B,
+  whatever your own grades. This replaces the human teacher rule and the 2c limit shifts.
+- **Save v48:** every kept companion is grown (its body catches up as soon as time passes, and it
+  loses nothing). Wild tracking starts fresh, and nothing is waiting at the vet.
+- **Screens:**
+  - **The strip:** health is labelled, there is one hunger word or a stamp (never both), and a
+    stage badge shows while it grows.
+  - **The sheet:** the stage, a body line, "A stray hound is built for the nose and speed, never
+    for brute strength", big or slight for its kind, Body and Learned grades, how long it is laid
+    up and what would shorten it, and every blocker shown, not hovered.
+  - **Training and progress:** training tiles show its grade and the energy cost. Stray and wolf
+    progress show as dots. The woods' line on the village screen names the wild one's signs.
+  - **The clinic:** a Treatment slip, price stamps in amber and free ones in green, a litter
+    card that says what the pup will be and how one is had free, the waiting rescue, and
+    rehoming asked twice.
+  - **Gates:** each gate card says what opens it, and your own clan's compound is "Your family's
+    home".
+- **Next (2d, rebuilt around handlers):**
+  - Handler training at the vet (a kennel master) and with clan handlers (the Inuzuka), plus
+    handler scrolls.
+  - Check roles (a tracker uses its senses).
+  - Kind techniques taught by handlers and earned by bond.
+  - Combination moves last.
+  - Ageing past its prime, portraits per stage, and a "stay home" toggle with light injuries
+    come later.

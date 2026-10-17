@@ -4,17 +4,16 @@ import { addGear, addScroll, owns, ownsScroll, type Inventory } from '@/systems/
 import type { JournalChip } from '@/systems/journal';
 import type { MissionDef } from '@/systems/missions';
 
-import { withNewCompanion } from './companions/adopt';
-import { playerCompanion } from './companions/make';
+import { metToday } from './companions/adopt';
 import type { GameContext } from './context';
 import { chip } from './ops';
 import type { GameState } from './state';
 
 /**
  * What a client hands over besides ryo on success: a technique scroll (studied at home or in a
- * library), a piece of gear such as a named weapon, a family recipe, or an animal you rescued
- * that follows you home (only if you have no companion: otherwise the client keeps it). Nothing
- * you already own or know is given twice.
+ * library), a piece of gear such as a named weapon, a family recipe, or an animal you rescued,
+ * which waits at the animal clinic until you choose to take it home (one waits at a time).
+ * Nothing you already own or know is given twice.
  */
 
 export interface HandedOver {
@@ -47,7 +46,7 @@ function giftsOf(state: GameState, ctx: GameContext, def: MissionDef) {
         ? content.recipes.require(recipeId)
         : null,
     animal:
-      companionKindId !== undefined && !playerCompanion(state)
+      companionKindId !== undefined && state.companions.waiting === null
         ? content.companionKinds.require(companionKindId)
         : null,
   };
@@ -56,10 +55,11 @@ function giftsOf(state: GameState, ctx: GameContext, def: MissionDef) {
 export function handedOver(state: GameState, ctx: GameContext, def: MissionDef): HandedOver {
   const { scroll, gear, recipe, animal } = giftsOf(state, ctx, def);
   const withScroll = scroll ? addScroll(state.inventory, scroll.id) : state.inventory;
-  const companions = animal
-    ? withNewCompanion(state, animal, RESCUED_START_BOND).companions
-    : state.companions;
-  const companion = animal ? playerCompanion({ companions })?.name : undefined;
+  const rescued = animal
+    ? metToday(state, animal, { bond: RESCUED_START_BOND, arrival: 'rescue' })
+    : null;
+  const companions = rescued ? { ...state.companions, waiting: rescued } : state.companions;
+  const companion = rescued?.name;
   return {
     inventory: gear ? addGear(withScroll, gear.id) : withScroll,
     cooking: recipe ? learnRecipes(state.cooking, [recipe.id]) : state.cooking,
@@ -68,7 +68,7 @@ export function handedOver(state: GameState, ctx: GameContext, def: MissionDef):
       ...(scroll ? [chip(`${scroll.name} scroll`, 'gain')] : []),
       ...(gear ? [chip(gear.name, 'gain')] : []),
       ...(recipe ? [chip(`Learned ${recipe.name}`, 'gain')] : []),
-      ...(companion ? [chip(`${companion} follows you home`, 'gain')] : []),
+      ...(companion ? [chip(`${companion} is at the animal clinic`, 'gain')] : []),
     ],
     report: {
       ...(scroll ? { scroll: scroll.name } : {}),

@@ -25,7 +25,7 @@ export const treatCompanion: ActionHandler<ActionOf<'treatCompanion'>> = {
   check(state, _action, ctx) {
     const yours = yourCompanion(state, ctx);
     const fee = treatmentFee(state, ctx);
-    if (!yours) return 'You have no companion.';
+    if (!yours) return 'You have no companion. Take a pup home, or win over a stray.';
     const { companion } = yours;
     return firstBlocker(
       busyReason(state),

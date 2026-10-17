@@ -115,4 +115,34 @@ describe('companions (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: 'Follow the trail' }));
     expect(done).toEqual([{ type: 'trackWild', placeId: 'lantern-woods' }]);
   });
+
+  it('takes home an animal waiting at the clinic, and asks twice before rehoming', async () => {
+    const user = userEvent.setup();
+    const done: GameAction[] = [];
+    const owner = withHound(newGame());
+    const pup = { ...owner.companions.owned.player!, id: 'stray-hound-9', name: 'Mochi' };
+    const state = { ...owner, companions: { ...owner.companions, waiting: pup } };
+    render(
+      <VetPage ctx={ctx} state={state} perform={(a) => done.push(a)} onBack={() => undefined} />,
+    );
+    expect(screen.getByRole('heading', { name: 'Mochi is waiting' })).toBeTruthy();
+    expect(screen.getByText(/Rehome Ash first/)).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: 'Ask the vet to rehome Ash' }));
+    await user.click(screen.getByRole('button', { name: 'Yes, let Ash go' }));
+    expect(done).toEqual([{ type: 'rehomeCompanion' }]);
+  });
+
+  it('says how it is growing: its body with time, its skills with training', () => {
+    render(
+      <CompanionSheet
+        ctx={ctx}
+        state={withHound(newGame())}
+        perform={() => undefined}
+        onClose={() => undefined}
+      />,
+    );
+    expect(screen.getByText(/built for the nose/)).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Body' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Learned' })).toBeTruthy();
+  });
 });

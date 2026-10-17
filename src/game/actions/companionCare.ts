@@ -61,6 +61,8 @@ export const feedCompanion: ActionHandler<ActionOf<'feedCompanion'>> = {
     const fed: Companion = {
       ...warmed(yours.companion, yours.kind, MEAL_BOND[meal]),
       lastFedDay: state.time.day,
+      // Scraps keep it fed; a proper meal is care.
+      lastCaredDay: meal === 'scraps' ? yours.companion.lastCaredDay : state.time.day,
       favouriteKnown: yours.companion.favouriteKnown || meal === 'favourite',
     };
     const food = ingredientId ? ctx.content.ingredients.require(ingredientId).name : 'scraps';
@@ -101,7 +103,11 @@ export const playWithCompanion: ActionHandler<ActionOf<'playWithCompanion'>> = {
     const yours = yourCompanion(state, ctx);
     if (!yours) return state;
     const base = playBond(play, yours.kind.plays);
-    const played = { ...warmed(yours.companion, yours.kind, base), lastPlayDay: state.time.day };
+    const played = {
+      ...warmed(yours.companion, yours.kind, base),
+      lastPlayDay: state.time.day,
+      lastCaredDay: state.time.day,
+    };
     const loved = yours.kind.plays.likes.includes(play);
     const sulked = yours.kind.plays.dislikes.includes(play);
     const text = loved

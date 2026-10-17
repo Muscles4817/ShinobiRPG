@@ -1,9 +1,11 @@
 import type { PlaceDef, VetFields } from '@/content';
-import { laidUp } from '@/systems/companions';
+import { stageForPair } from '@/systems/bonds';
+import { laidUp, type CompanionTemperament } from '@/systems/companions';
 
 import { pupPrice } from '../actions/finding';
 import { treatmentFee } from '../actions/vet';
 import { yourCompanion } from '../companions/care';
+import { kindOf } from '../companions/make';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import { findPerson, fullName } from '../people/cast';
@@ -27,7 +29,23 @@ export interface VetView {
   readonly buyMedicine: Choice;
   /** The kennel's litter, for someone without a companion. */
   readonly pups: PupsView | null;
+  /** An animal a job rescued, waiting here for you. */
+  readonly rescued: RescuedView | null;
+  /** Rehoming the companion you have, here. */
+  readonly rehome: (Choice & { readonly name: string; readonly line: string }) | null;
 }
+
+export interface RescuedView {
+  readonly name: string;
+  readonly kind: string;
+  readonly take: Choice;
+}
+
+const REHOME_LINES: Readonly<Record<CompanionTemperament, string>> = {
+  bred: 'Back to the kennels, to be placed with someone new.',
+  stray: 'Let go to the streets it came from. It could be won back.',
+  wild: 'Taken back to the wild. It won’t come back.',
+};
 
 export interface PupsView {
   readonly line: string;
@@ -35,17 +53,48 @@ export interface PupsView {
   readonly kind: string;
   /** What one costs you; 0 when the vet would give you one. */
   readonly price: number;
+  /** What a pup will be: small now, grown in time. */
+  readonly future: string;
+  /** How a pup could be had free, while it still costs you, or null. */
+  readonly gift: string | null;
   readonly take: Choice;
 }
 
 function pupsView(state: GameState, ctx: GameContext, vet: VetFields): PupsView | null {
   const price = pupPrice(state, ctx);
   if (!vet.pups || price === null || yourCompanion(state, ctx)) return null;
+  const keeper = findPerson(state, ctx, vet.keeperId)?.name ?? 'The vet';
   return {
     line: vet.pups.line,
     kind: ctx.content.companionKinds.require(vet.pups.kindId).name,
     price,
+    future:
+      'Small now, and a while before it can fight beside you; grown, it is the best of its line. It takes to you quickly.',
+    gift:
+      price > 0
+        ? `${keeper} gives one to anyone ${stageForPair(vet.pups.giftStage)} with them.`
+        : null,
     take: choice(state, ctx, { type: 'takePup' }),
+  };
+}
+
+function rescuedView(state: GameState, ctx: GameContext): RescuedView | null {
+  const waiting = state.companions.waiting;
+  if (!waiting) return null;
+  return {
+    name: waiting.name,
+    kind: kindOf(waiting, ctx).name,
+    take: choice(state, ctx, { type: 'takeRescued' }),
+  };
+}
+
+function rehomeView(state: GameState, ctx: GameContext): VetView['rehome'] {
+  const yours = yourCompanion(state, ctx);
+  if (!yours) return null;
+  return {
+    ...choice(state, ctx, { type: 'rehomeCompanion' }),
+    name: yours.companion.name,
+    line: REHOME_LINES[yours.kind.temperament],
   };
 }
 
@@ -70,6 +119,8 @@ export function vetView(state: GameState, ctx: GameContext): VetView | null {
     doses: state.companions.medicine,
     buyMedicine: choice(state, ctx, { type: 'buyMedicine' }),
     pups: pupsView(state, ctx, vet),
+    rescued: rescuedView(state, ctx),
+    rehome: rehomeView(state, ctx),
   };
 }
 

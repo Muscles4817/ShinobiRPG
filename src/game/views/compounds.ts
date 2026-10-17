@@ -49,7 +49,9 @@ function homeAt(state: GameState, ctx: GameContext, placeId: string) {
   return peopleHere(state, ctx).filter((p) => p.placeId === placeId);
 }
 
-function stanceWords(ctx: GameContext, compound: Compound): string {
+/** Your own clan's compound is home; anyone else's, how its clan treats outsiders. */
+function stanceWords(state: GameState, ctx: GameContext, compound: Compound): string {
+  if (state.character.clanId === compound.clanId) return 'Your family’s home';
   return STANCE_WORDS[ctx.content.clans.require(compound.clanId).outsiders ?? 'reserved'];
 }
 
@@ -58,7 +60,7 @@ export function compoundCard(state: GameState, ctx: GameContext, compound: Compo
     id: compound.id,
     name: compound.name,
     clan: ctx.content.clans.require(compound.clanId).name,
-    stance: stanceWords(ctx, compound),
+    stance: stanceWords(state, ctx, compound),
     shut: compoundAccess(state, ctx, compound),
     home: homeAt(state, ctx, compound.id).length,
   };
@@ -109,7 +111,7 @@ export function compoundView(
     name: compound.name,
     clan: clan.name,
     description: clan.description,
-    stance: stanceWords(ctx, compound),
+    stance: stanceWords(state, ctx, compound),
     shut,
     head: head ? fullName(head) : null,
     home: shut

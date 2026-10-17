@@ -41,9 +41,11 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
     },
   };
   const healed = newDay ? healInjuries(passed, ctx) : passed;
-  const grown = newDay
-    ? companionsDayPassed({ ...healed, people: peopleGrown(healed, ctx) }, ctx)
-    : healed;
+  // A companion is caught up whenever time passes, so a body behind its age never lingers.
+  const grown = companionsDayPassed(
+    newDay ? { ...healed, people: peopleGrown(healed, ctx) } : healed,
+    ctx,
+  );
   const mentored = newDay ? settleMentor(grown, ctx) : grown;
   return { ...mentored, board: boardFor(mentored, ctx) };
 }

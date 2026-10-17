@@ -62,3 +62,31 @@
 .care-option:disabled {
   opacity: 0.5;
 }
+.progress-dots {
+  letter-spacing: 3px;
+  color: var(--good);
+}
+.companion-growing h3 {
+  margin-top: 8px;
+}
+/* Muted lines, chips and quiet buttons on paper (the sheet, the clinic's slips). */
+.companion-sheet .muted,
+.companion-sheet .companion-vitals small {
+  color: var(--paper-muted);
+}
+.companion-sheet .chip,
+.room-slip .chip {
+  background: rgb(0 0 0 / 0.08);
+  color: var(--paper-ink);
+}
+.room-slip .chip.cost {
+  color: var(--paper-cost);
+}
+.room-slip .btn.ghost {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+.room-slip .badge {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
