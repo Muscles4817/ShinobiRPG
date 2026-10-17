@@ -1,6 +1,7 @@
 import { daysOfRentLeft, isRentFree, isRentOverdue } from '@/systems/housing';
 
 import type { GameContext } from '../context';
+import { findPerson } from '../people/cast';
 import type { GameState } from '../state';
 import { festivalNotice, rumoursToday } from '../village';
 import { examNotice } from './examNotice';
@@ -38,6 +39,12 @@ const hook = (glyph: string, text: string, stamp: string | null = null, warm = f
   stamp,
   warm,
 });
+
+function rivalry(state: GameState, ctx: GameContext): DayHook[] {
+  const rival = state.rival;
+  const person = rival?.challenge && findPerson(state, ctx, rival.personId);
+  return person ? [hook('競', `${person.name} challenged you to a spar`, 'Rival', true)] : [];
+}
 
 function wounds(state: GameState): DayHook[] {
   return state.character.injuries.length > 0
@@ -92,6 +99,7 @@ const FREE_DAY = hook('道', 'A free day: train, cook or wander');
 /** The day ahead's plaques, most pressing first; never empty. */
 export function dayHooks(state: GameState, ctx: GameContext): DayHook[] {
   const all = [
+    ...rivalry(state, ctx),
     ...wounds(state),
     ...exam(state, ctx),
     ...sensei(state, ctx),

@@ -49,6 +49,9 @@ async function formTeam(user: User) {
     await user.click(choices.getAllByRole('button')[0]!);
   }
   await user.click(screen.getByRole('button', { name: 'Show me everything' }));
+  // Then your rival comes to find you: answer, and the day begins.
+  const replies = screen.queryByRole('navigation', { name: 'Replies' });
+  if (replies) await user.click(within(replies).getAllByRole('button')[1]!);
 }
 
 function place(name: RegExp) {

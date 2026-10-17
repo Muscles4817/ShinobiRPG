@@ -1,0 +1,200 @@
+/*
+ * Your rival: one ink of their own (`--rival`, `--rival-ink`) and the 競 mark, so nothing about
+ * them reads as a gain, a cost or harm. A ring on their face, a slip for their challenge, a
+ * section on their sheet, and their moments on the day's sheet.
+ */
+.face.rival,
+.avatar.rival,
+.person-photo.rival {
+  box-shadow: 0 0 0 2px var(--rival);
+}
+.rival-mark {
+  display: inline-block;
+  margin-top: 2px;
+  padding: 0 6px;
+  border: 1.5px solid var(--rival);
+  border-radius: var(--radius-sm);
+  color: var(--rival);
+  font-family: var(--font-story);
+  font-size: 0.82rem;
+}
+
+/* The challenge slip above the village. */
+.rival-slip {
+  margin: 12px 16px 0;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--grain), var(--paper);
+  color: var(--paper-ink);
+  box-shadow: 0 0 0 1.5px var(--rival-ink);
+}
+.rival-slip-top {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+.rival-slip-top .person-photo {
+  overflow: hidden;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+.rival-slip-top b {
+  display: block;
+  font-family: var(--font-story);
+  font-weight: normal;
+}
+.rival-slip-top small,
+.rival-slip-why {
+  color: var(--paper-muted);
+  font-size: 0.8rem;
+}
+.rival-score {
+  text-align: center;
+  line-height: 1.1;
+}
+.rival-score b {
+  font-family: var(--font-story);
+  font-size: 1.2rem;
+  color: var(--rival-ink);
+}
+.rival-slip p {
+  margin: 8px 0 0;
+  font-family: var(--font-story);
+  line-height: 1.4;
+}
+.rival-slip-acts {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.rival-slip-acts .btn {
+  flex: 1;
+}
+
+/* The Rivalry section on their sheet. */
+.rivalry {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgb(42 33 24 / 0.25);
+}
+.rivalry h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0;
+  font-family: var(--font-story);
+  font-weight: normal;
+}
+.rivalry h4 {
+  margin: 10px 0 4px;
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  font-weight: normal;
+}
+.rival-shape {
+  padding: 0 6px;
+  border: 1.5px solid var(--rival-ink);
+  border-radius: var(--radius-sm);
+  color: var(--rival-ink);
+  font-size: 0.8rem;
+  transform: rotate(-2deg);
+}
+.rival-tally {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+.rival-tally th {
+  color: var(--paper-muted);
+  font-size: 0.76rem;
+  font-weight: normal;
+}
+.rival-tally td + td,
+.rival-tally th + th {
+  width: 48px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.rival-tally .lead {
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 currentColor;
+}
+.rival-side {
+  display: grid;
+  grid-template-columns: 26px 1fr 72px 1fr 26px;
+  gap: 6px;
+  align-items: center;
+  margin: 4px 0;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.rival-grade {
+  display: grid;
+  place-items: center;
+  height: 26px;
+  border: 1.5px solid var(--paper-ink);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-story);
+  font-weight: 700;
+}
+.rival-grade.theirs {
+  border-color: var(--rival-ink);
+  color: var(--rival-ink);
+}
+.rival-bar {
+  position: relative;
+  height: 7px;
+  background: rgb(42 33 24 / 0.1);
+}
+.rival-bar i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+.rival-bar.mine i {
+  right: 0;
+  background: var(--paper-ink);
+  opacity: 0.6;
+}
+.rival-bar.theirs i {
+  left: 0;
+  background: var(--rival-ink);
+}
+.rival-heat {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rival-heat li {
+  padding: 6px 0;
+  border: 1px solid rgb(42 33 24 / 0.25);
+  border-radius: var(--radius-sm);
+  color: var(--paper-muted);
+  font-size: 0.76rem;
+  text-align: center;
+}
+.rival-heat li.on {
+  border: 2px solid var(--rival-ink);
+  color: var(--rival-ink);
+  font-weight: 700;
+}
+
+/* A moment in the race on the day's sheet. */
+.day-moment.rival {
+  box-shadow: 0 0 0 1px var(--rival-ink);
+}
+.day-moment.rival .day-moment-seal {
+  border-color: var(--rival-ink);
+  color: var(--rival-ink);
+}
+
+/* On paper the ghost button takes the paper's ink. */
+.rival-slip .btn.ghost {
+  border-color: var(--paper-ink);
+  color: var(--paper-ink);
+}

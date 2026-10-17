@@ -44,6 +44,7 @@ export function musicMood(state: GameState, ctx: GameContext): MusicMood {
     case 'team':
     case 'chakra-paper':
     case 'sensei-test':
+    case 'rival':
       return 'calm';
     case null:
       return villageMood(state, ctx);

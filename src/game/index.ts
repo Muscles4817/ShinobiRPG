@@ -131,6 +131,15 @@ export {
 } from './views/settings';
 export { dayEndView, type DayEndView } from './views/dayEnd';
 export {
+  rivalChallengeView,
+  rivalScene,
+  rivalryView,
+  type RivalChallengeView,
+  type RivalSceneView,
+  type RivalryView,
+  type SideBySide,
+} from './views/rival';
+export {
   classHonoursView,
   type ClassHonoursView,
   type Classmate,
