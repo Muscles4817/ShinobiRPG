@@ -10,6 +10,7 @@ import {
 import { createStats, STAT_IDS, sumDeltas, type Stats } from '@/systems/stats';
 
 import type { GameContext } from './context';
+import { notesAptitude, notesOf } from './notes';
 
 /**
  * A student as the academy file describes them, before the game begins: who raised them, what
@@ -26,7 +27,7 @@ const CLANLESS = 'none';
 /** What a file needs to know about who wrote it. */
 export interface StudentProfile {
   readonly clanId: string;
-  readonly talentId: string;
+  readonly talentIds: readonly string[];
   readonly buildId: string;
   readonly upbringingId: string;
   readonly standing: ClassStanding;
@@ -43,7 +44,7 @@ export function earlyTraining(upbringing: UpbringingDef, clan: ClanDef): EarlyTr
 
 /** The student a quick pick fills a file for. */
 export function studentOf(
-  profile: Omit<StudentProfile, 'file' | 'talentId'>,
+  profile: Omit<StudentProfile, 'file' | 'talentIds'>,
   ctx: GameContext,
 ): Student {
   const clan = ctx.content.clans.require(profile.clanId);
@@ -73,12 +74,12 @@ function partsOf(profile: StudentProfile, ctx: GameContext): Parts | null {
 /** Stats on graduation day: the base, then clan, special note, frame and the file. */
 export function graduationStats(profile: StudentProfile, ctx: GameContext): Stats {
   const parts = partsOf(profile, ctx);
-  const talent = ctx.content.talents.get(profile.talentId);
+  const notes = notesOf(profile.talentIds, ctx);
   const stats = createStats(
     BASE_STAT,
     sumDeltas(
       parts?.clan.statBonuses ?? {},
-      talent?.statBonuses ?? {},
+      ...notes.map((n) => n.statBonuses),
       parts?.build.statBonuses ?? {},
       fileStartBonuses(profile.file),
     ),
@@ -95,9 +96,9 @@ export function studentProblems(profile: StudentProfile, ctx: GameContext): stri
     return ctx.content.clans.get(profile.clanId) ? ['Choose your upbringing and build.'] : [];
   const { clan, upbringing } = parts;
   const family = clan.id === CLANLESS ? 'clanless' : 'clan';
-  const talent = ctx.content.talents.get(profile.talentId);
+  const fixes = notesAptitude(notesOf(profile.talentIds, ctx));
   const fixed = STAT_IDS.filter(
-    (id) => talent?.aptitude?.[id] !== undefined && profile.file.gifts[id] !== undefined,
+    (id) => fixes[id] !== undefined && profile.file.gifts[id] !== undefined,
   );
   return [
     upbringing.family !== family &&

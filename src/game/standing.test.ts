@@ -19,7 +19,7 @@ function meanArtAptitude(standing: CreationDraft['standing'], seeds = 200): numb
   const shape = { band: STANDING_INFO[standing].talent, specialties: [] };
   let sum = 0;
   for (let seed = 1; seed <= seeds; seed++) {
-    const aptitude = rollCharacterAptitude(createRng(seed), clan, undefined, shape);
+    const aptitude = rollCharacterAptitude(createRng(seed), clan, [], shape);
     sum += DISCIPLINES.reduce((s, d) => s + aptitude[d], 0) / DISCIPLINES.length;
   }
   return sum / seeds;
@@ -82,7 +82,7 @@ describe('class standing', () => {
   });
 
   it('a one-sided talent can shut an art for good', () => {
-    const state = createNewGame({ draft: draft({ talentId: 'no-chakra' }), seed: 9 }, ctx);
+    const state = createNewGame({ draft: draft({ talentIds: ['no-chakra'] }), seed: 9 }, ctx);
     expect(state.character.aptitude.ninjutsu).toBe(0);
     expect(state.character.aptitude.genjutsu).toBe(0);
   });

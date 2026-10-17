@@ -29,7 +29,7 @@ export function draft(
   overrides: Partial<CreationDraft> = {},
   context: GameContext = ctx,
 ): CreationDraft {
-  const named = { name: 'Kaito', talentId: 'sensor', ...overrides };
+  const named = { name: 'Kaito', talentIds: ['sensor'], quirkIds: [], ...overrides };
   return reviseDraft(defaultDraft(context), named, context);
 }
 

@@ -6,7 +6,7 @@ import type { StatDelta } from '@/systems/stats';
 import type { GameContext } from '../context';
 import { growCharacter } from '../growth';
 import { adjust, chip } from '../ops';
-import { bondOf } from '../people/cast';
+import { bondOf, findPerson } from '../people/cast';
 import { personStats } from '../people/progress';
 import { sessionGains } from '../people/regimen';
 import { teachingFactor } from '../people/teachingFactor';
@@ -51,7 +51,7 @@ function grown(state: GameState, ctx: GameContext, sensei: PersonDef, gains: Sta
 }
 
 function bonded(state: GameState, ctx: GameContext, id: string, points: number): GameState {
-  const bond = addPoints(bondOf(state, id), warmed(state, ctx, points));
+  const bond = addPoints(bondOf(state, id), warmed(state, ctx, points, findPerson(state, ctx, id)));
   return { ...state, people: { ...state.people, bonds: { ...state.people.bonds, [id]: bond } } };
 }
 

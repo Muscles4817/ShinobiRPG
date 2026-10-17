@@ -4,6 +4,7 @@ import { STAT_IDS, type SoloFloor, type StatId } from '@/systems/stats';
 
 import type { DevelopmentAllowance } from './development';
 import type { GiftAllowance } from './gifts';
+import type { NoteAllowance } from './notes';
 
 /**
  * Where a character stood in their academy class: dead last to the genius of the year. It is
@@ -33,6 +34,8 @@ export interface StandingInfo {
   readonly note: string;
   readonly development: DevelopmentAllowance;
   readonly gifts: GiftAllowance;
+  /** The special notes the file carries. */
+  readonly notes: NoteAllowance;
   readonly talent: TalentBand;
   readonly modifiers: ModifierSpec;
   /** How often fate deals this standing. */
@@ -53,6 +56,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     note: 'Passed on the third attempt. Nobody expects anything, which is its own kind of freedom.',
     development: { points: 2, highStats: 0 },
     gifts: { gifts: 0, prodigy: false, flaws: 1 },
+    notes: { major: 0, minor: 1 },
     talent: { scale: 0.75, prodigy: -1, hole: 0.1 },
     modifiers: { soloEfficiencyFloor: everyStat(DEAD_LAST_FLOOR) },
     fateWeight: 0.1,
@@ -62,6 +66,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     note: 'Scraped through. Works hard, mostly to keep up.',
     development: { points: 7, highStats: 0 },
     gifts: { gifts: 1, prodigy: false, flaws: 1 },
+    notes: { major: 0, minor: 2 },
     talent: { scale: 0.88, prodigy: 0, hole: 0.05 },
     modifiers: { soloEfficiencyFloor: everyStat(BELOW_AVERAGE_FLOOR) },
     fateWeight: 0.2,
@@ -71,6 +76,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     note: 'Good at one thing, fine at most, poor at one. Like nearly everyone.',
     development: { points: 10, highStats: 0 },
     gifts: { gifts: 1, prodigy: false, flaws: 1 },
+    notes: { major: 1, minor: 1 },
     talent: { scale: 1, prodigy: 0, hole: 0 },
     modifiers: {},
     fateWeight: 0.4,
@@ -80,6 +86,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     note: 'The one the instructors point to. No weak subject worth the name.',
     development: { points: 14, highStats: 1 },
     gifts: { gifts: 2, prodigy: false, flaws: 1 },
+    notes: { major: 1, minor: 2 },
     talent: { scale: 1.12, prodigy: 0.05, hole: 0 },
     modifiers: {},
     fateWeight: 0.2,
@@ -89,6 +96,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     note: 'Talked about in the staff room. Expected to make chūnin in a season.',
     development: { points: 20, highStats: 3 },
     gifts: { gifts: 2, prodigy: true, flaws: 2 },
+    notes: { major: 2, minor: 2 },
     talent: { scale: 1.25, prodigy: 0.1, hole: 0 },
     modifiers: {},
     fateWeight: 0.1,

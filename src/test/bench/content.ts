@@ -26,7 +26,10 @@ const BENCH_NATURE = 'fire';
  */
 export function freshCharacter(specialty: Discipline, talentId = 'sensor'): GameState {
   const quickPick = { archetype: 'steady', specialty } as const;
-  const game = createNewGame({ draft: draft({ quickPick, talentId }), seed: 1234 }, ctx);
+  const game = createNewGame(
+    { draft: draft({ quickPick, talentIds: [talentId] }), seed: 1234 },
+    ctx,
+  );
   return formTeam({ ...game, character: { ...game.character, nature: BENCH_NATURE } });
 }
 

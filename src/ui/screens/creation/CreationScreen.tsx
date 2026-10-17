@@ -6,6 +6,7 @@ import {
   defaultDraft,
   draftProblems,
   fileView,
+  notesProblems,
   packChoices,
   reviseDraft,
   rollBreakIn,
@@ -20,9 +21,10 @@ import { Notice } from '../../components/Notice';
 import { randomSeed } from '../../randomSeed';
 import { BreakInStep } from './BreakInStep';
 import { CaughtStep } from './CaughtStep';
-import { NindoStep, TalentStep, TraitsStep } from './ChoiceSteps';
+import { NindoStep, TraitsStep } from './ChoiceSteps';
 import { FileStep } from './FileStep';
 import { BuildStep, UpbringingStep } from './FrameSteps';
+import { NotesStep, QuirksStep, ReadBackStep } from './NotesSteps';
 import { RecordStep } from './RecordStep';
 import { StandingStep } from './StandingStep';
 import type { StepProps } from './types';
@@ -37,7 +39,9 @@ type StepId =
   | 'build'
   | 'file'
   | 'traits'
-  | 'talent'
+  | 'notes'
+  | 'quirks'
+  | 'readback'
   | 'nindo'
   | 'caught';
 
@@ -50,7 +54,9 @@ const TITLES: Readonly<Record<StepId, string>> = {
   build: 'Medical record',
   file: 'Training record',
   traits: 'Instructor’s notes',
-  talent: 'Special notes',
+  notes: 'Special notes',
+  quirks: 'What people notice',
+  readback: 'The file, read back',
   nindo: 'Application essay',
   caught: 'Caught',
 };
@@ -61,6 +67,8 @@ interface BlockerInput {
   readonly problems: readonly string[];
   /** What is wrong with the file itself (training, gifts, upbringing). */
   readonly fileProblems: readonly string[];
+  /** What is wrong with the special notes on it (too many for the standing). */
+  readonly noteProblems: readonly string[];
 }
 
 const NO_BLOCKER = (): string | null => null;
@@ -75,7 +83,9 @@ const BLOCKERS: Readonly<Record<StepId, (input: BlockerInput) => string | null>>
   build: NO_BLOCKER,
   file: ({ fileProblems }) => fileProblems[0] ?? null,
   traits: ({ draft }) => (draft.traitIds.length < 2 ? 'Choose two traits.' : null),
-  talent: NO_BLOCKER,
+  notes: ({ noteProblems }) => noteProblems[0] ?? null,
+  quirks: NO_BLOCKER,
+  readback: NO_BLOCKER,
   nindo: NO_BLOCKER,
   caught: ({ problems }) => problems[0] ?? null,
 };
@@ -132,8 +142,12 @@ function StepBody({
       return <FileStep {...props} ctx={ctx} setDraft={setDraft} />;
     case 'traits':
       return <TraitsStep {...props} />;
-    case 'talent':
-      return <TalentStep {...props} />;
+    case 'notes':
+      return <NotesStep {...props} ctx={ctx} />;
+    case 'quirks':
+      return <QuirksStep {...props} ctx={ctx} />;
+    case 'readback':
+      return <ReadBackStep {...props} ctx={ctx} />;
     case 'nindo':
       return <NindoStep {...props} />;
     case 'caught':
@@ -157,7 +171,9 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
     'build',
     'file',
     'traits',
-    'talent',
+    'notes',
+    'quirks',
+    'readback',
     'nindo',
     'caught',
   ];
@@ -183,7 +199,8 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
   };
   const problems = draftProblems(draft, ctx);
   const fileProblems = fileView(draft, ctx).problems;
-  const blocker = stepBlocker(step, { draft, roll, problems, fileProblems });
+  const noteProblems = notesProblems(draft, ctx);
+  const blocker = stepBlocker(step, { draft, roll, problems, fileProblems, noteProblems });
   const props = { view, draft, update };
 
   return (

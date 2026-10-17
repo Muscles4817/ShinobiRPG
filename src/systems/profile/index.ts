@@ -33,6 +33,13 @@ export {
   type Gifts,
 } from './gifts';
 export {
+  NOTE_WEIGHTS,
+  notesLeft,
+  notesProblem,
+  type NoteAllowance,
+  type NoteWeight,
+} from './notes';
+export {
   BLANK_FILE,
   fileAllowance,
   fileBalance,

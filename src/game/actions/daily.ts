@@ -18,7 +18,7 @@ import {
 import { weakFromHunger } from '../hunger';
 import { laidUp, mendedOvernight, sleepChakra } from '../injuries';
 import type { GameContext } from '../context';
-import { growCharacter, logDiscoveries, noTalentReason } from '../growth';
+import { byTheClock, growCharacter, logDiscoveries, noTalentReason } from '../growth';
 import { characterModifiers, hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { closedReason, foodSellersHere, isOpen, marketPrice } from '../village';
@@ -89,7 +89,7 @@ export const train: ActionHandler<ActionOf<'train'>> = {
     const hungry = isHungry(state.character.vitals);
     const energy = hardWorkEnergy(state.character, ctx, def.energyCost);
     const before = state.character.stats;
-    const grown = growCharacter(state.character, def.gains, ctx);
+    const grown = growCharacter(state.character, byTheClock(state, ctx, def.gains), ctx);
     const { stats } = grown.character;
 
     let next: GameState = { ...state, character: grown.character };

@@ -29,7 +29,7 @@ async function startGame(user: User, world = /Land of Embers/) {
   await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
   await user.click(screen.getByRole('button', { name: 'Find your file' }));
   await user.type(screen.getByLabelText('Given name'), 'Aoi');
-  for (let page = 0; page < 8; page++) {
+  for (let page = 0; page < 10; page++) {
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
   }
   await user.click(screen.getByRole('button', { name: /forehead protector/i }));
@@ -345,7 +345,7 @@ describe('App (smoke test)', () => {
     await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
     await user.click(screen.getByRole('button', { name: 'Find your file' }));
     await user.type(screen.getByLabelText('Given name'), 'Aoi');
-    for (let page = 0; page < 8; page++) {
+    for (let page = 0; page < 10; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     await user.click(screen.getByRole('button', { name: /forehead protector/i }));
@@ -610,7 +610,7 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /^Slight/ }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     expect(screen.getByText(/0 gifts to give/)).toBeInTheDocument();
-    for (let page = 0; page < 4; page++) {
+    for (let page = 0; page < 6; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     expect(screen.getByText('Dead last')).toBeInTheDocument();
@@ -651,7 +651,7 @@ describe('App (smoke test)', () => {
     // …so it becomes a flaw instead, which gives points back.
     await user.click(within(kenjutsu).getByRole('button', { name: 'Kenjutsu: Gifted' }));
     expect(within(kenjutsu).getByRole('button', { name: 'Kenjutsu: Flawed' })).toBeInTheDocument();
-    for (let page = 0; page < 4; page++) {
+    for (let page = 0; page < 6; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     await user.click(screen.getByRole('button', { name: /forehead protector/i }));

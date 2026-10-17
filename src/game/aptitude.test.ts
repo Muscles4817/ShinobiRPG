@@ -16,7 +16,7 @@ function rolls(clanId: string, talentId = 'sensor') {
   const clan = clans.require(clanId);
   const talent = ctx.content.talents.require(talentId);
   return Array.from({ length: SEEDS }, (_, seed) =>
-    rollCharacterAptitude(createRng(seed), clan, talent),
+    rollCharacterAptitude(createRng(seed), clan, [talent]),
   );
 }
 

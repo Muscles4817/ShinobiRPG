@@ -8,9 +8,11 @@ import {
   type StatId,
 } from '@/systems/stats';
 
+import { slotName } from '@/systems/time';
+
 import type { GameContext } from './context';
 import { log } from './ops';
-import { growthFor } from './profile';
+import { characterModifiers, growthFor } from './profile';
 import type { Character, GameState } from './state';
 
 /**
@@ -22,6 +24,18 @@ import type { Character, GameState } from './state';
 
 /** Sessions in a stat before its aptitude gives a rough read. */
 export const SESSIONS_TO_SENSE = 3;
+
+/**
+ * A drill's gains at this hour: a night owl's evening and night drills go further, and their
+ * mornings less far (`afterDark`).
+ */
+export function byTheClock(state: GameState, ctx: GameContext, gains: StatDelta): StatDelta {
+  const owl = characterModifiers(state.character, ctx).afterDark;
+  const slot = slotName(state.time);
+  const factor = slot === 'evening' || slot === 'night' ? owl : slot === 'morning' ? 2 - owl : 1;
+  if (factor === 1) return gains;
+  return Object.fromEntries(Object.entries(gains).map(([id, g]) => [id, g * factor]));
+}
 
 export interface Grown {
   readonly character: Character;
