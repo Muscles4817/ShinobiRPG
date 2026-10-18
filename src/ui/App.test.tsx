@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { SaveStore } from '@/game';
@@ -427,7 +427,13 @@ describe('App (smoke test)', () => {
     await skipWatching(user);
     await user.click(screen.getByRole('button', { name: /^Watch the round/ }));
     await skipWatching(user);
-    expect(screen.queryByText(/The round is over/) ?? screen.queryByRole('dialog')).not.toBeNull();
+    // The game's seed is random, so the spar may end in this round: then the result card comes
+    // up once the last exchange has played, a moment later.
+    await waitFor(() => {
+      expect(
+        screen.queryByText(/The round is over/) ?? screen.queryByRole('dialog'),
+      ).not.toBeNull();
+    });
   });
 
   it('orders the plan and sets when and at whom each card plays', async () => {
