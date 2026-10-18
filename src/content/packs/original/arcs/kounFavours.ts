@@ -16,7 +16,8 @@ export const EAST_BRIDGE: MissionDef = {
   title: 'The East Bridge',
   rank: 'C',
   client: KOUN,
-  summary: 'The third favour, at last: go to the east bridge at the new moon, and ask a question.',
+  summary:
+    'The third favour, at last, is to go to the east bridge at the new moon and ask a question.',
   slots: 1,
   energyCost: 30,
   reward: { ryo: 480, reputation: 8 },
@@ -24,7 +25,7 @@ export const EAST_BRIDGE: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: '“Tsugumi held the far end of the bridge,” Kōun says, not sweeping now. “I held the near end. When the order came to fall back, I stayed, and I never went back across for her. She walks there at the new moon. Ask her if she forgives me. I can’t.”',
+      text: '“Tsugumi held the far end of the bridge,” Kōun says, not sweeping now. “I held the near end. When the order came to fall back I stayed where I was, and never went back across for her. She walks there at the new moon. Ask her if she forgives me, because I can’t ask her myself.”',
     },
     {
       kind: 'leg',
@@ -46,7 +47,7 @@ export const EAST_BRIDGE: MissionDef = {
           unseen: 'You have nothing of hers to give her.',
           tone: 'kind',
           reply:
-            'You read it aloud: hold your end, whatever happens, and don’t you dare come back for me. She listens to her own words, and laughs. “The one order of mine he ever kept,” she says. “Of course it was that one.”',
+            'You read it aloud. Hold your end whatever happens, it says. And don’t you dare come back for me. She listens to her own words and laughs. “The one order of mine he ever kept,” she says. “Of course it was that one.”',
           effects: [
             { kind: 'mark', mark: 'at-peace' },
             { kind: 'mark', mark: 'letter-read' },
@@ -59,7 +60,7 @@ export const EAST_BRIDGE: MissionDef = {
           unseen: 'You don’t know him well enough yet to say.',
           tone: 'earnest',
           reply:
-            'You tell her about the sweeping at dawn, the wedding he couldn’t bear to be seen at, the sword he held like a weight. She listens, and nods. “Then he’s still holding the bridge,” she says. “Tell him he can stop.”',
+            'You tell her about the sweeping at dawn, the wedding he couldn’t bear to be seen at, the sword he held like a weight. She listens to all of it. “Then he’s still holding the bridge,” she says. “Tell him he can stop now.”',
           effects: [{ kind: 'mark', mark: 'at-peace' }],
           ledger: 'Told Tsugumi what Kōun has been since the war.',
         },
@@ -67,8 +68,8 @@ export const EAST_BRIDGE: MissionDef = {
           label: 'Ask her plainly, for him',
           tone: 'curious',
           reply:
-            '“Forgive him?” Her lantern flares. “He’s not even here.” The cold comes off the gorge like a wave.',
-          ledger: 'Asked Tsugumi plainly. She wasn’t ready to answer.',
+            '“Forgive him?” Her lantern flares. “He isn’t even here to ask me himself.” The cold comes up off the gorge like a wave.',
+          ledger: 'Asked Tsugumi plainly, before she was ready to answer.',
         },
       ],
     },
@@ -90,7 +91,7 @@ export const EAST_BRIDGE: MissionDef = {
       endings: [
         {
           when: { has: 'letter-read' },
-          text: 'Footsteps on the near end. Kōun has come after all, the sword at his hip. He walks out to the middle of the bridge, and she walks out to meet him, and when the lantern goes out there is only one old man there, laughing and weeping at once.',
+          text: 'There are footsteps at the near end. Kōun has come after all, with the sword at his hip, and he walks out to the middle of the bridge while she walks out to meet him. When the lantern goes out there is only one old man there, who is laughing and weeping at once.',
           effects: [
             { kind: 'world', mark: 'koun-favours-done' },
             { kind: 'memory', text: 'the night Kōun crossed the east bridge' },
@@ -99,7 +100,7 @@ export const EAST_BRIDGE: MissionDef = {
         },
         {
           when: { has: 'at-peace' },
-          text: 'Her lantern goes out gently, and the bridge is only a bridge. You carry her words down the pass for Kōun like something that might spill: he can stop.',
+          text: 'Her lantern goes out gently, and the bridge is only a bridge. You carry her words down the pass for Kōun as carefully as a full bowl. He can stop, she said.',
           effects: [{ kind: 'world', mark: 'koun-favours-done' }],
           ledger: 'Tsugumi forgave Kōun, and rests.',
         },
@@ -148,6 +149,6 @@ export const KOUN_FAVOURS: ArcDef = {
   recommends: {
     personId: 'koun',
     words:
-      'Kōun, the Ash Lantern, comes in from the training ground with the broom still in his hand. “{you} did three favours for an old man,” he says, “and the last was the one I couldn’t.” The {leader} looks at him a long while. “When did you last ask me for anything, Kōun?” “Never.” “Kneel, then, and stand up a chūnin.”',
+      'Kōun, the Ash Lantern, comes in from the training ground with the broom still in his hand. “{you} did three favours for an old man,” he says, “and the last was the one I couldn’t.” The {leader} looks at him for a while. “When did you last ask me for anything, Kōun?” “Never.” “Then kneel, and stand up a chūnin.”',
   },
 };

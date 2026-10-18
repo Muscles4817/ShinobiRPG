@@ -224,7 +224,7 @@ export const D_TOWN: readonly MissionFill[] = [
         'The last seal takes, and the whole boat seems to lift a little on its rollers, as if eager for the water.',
       frayed:
         'You lose count of the turns. Ayaori unwinds the rope and starts over, and tells you to count aloud like a child.',
-      pull: 'The river whispers to you, and for a moment you want to walk into it and see what it has kept all these years.',
+      pull: 'The river murmurs to you, and for a moment you want to walk into it and see what it has kept all these years.',
       ending:
         'The ferry slides into the water with the whole riverside cheering, and the river carries it out and back as gently as a cradle.',
     },

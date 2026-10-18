@@ -6,7 +6,8 @@ export const MISSIONS: readonly MissionDef[] = [
     title: 'Village Border Patrol',
     rank: 'D',
     client: 'Konoha Gate Guard',
-    summary: 'Walk the inner border of the village woods and report anything odd. Always needed.',
+    summary:
+      'Walk the inner border of the village woods and report anything odd. The village always needs someone on it.',
     slots: 2,
     energyCost: 15,
     reward: { ryo: 55, reputation: 1 },
@@ -36,7 +37,7 @@ export const MISSIONS: readonly MissionDef[] = [
     title: 'Catch Tora the Cat',
     rank: 'D',
     client: 'Madam Shijimi',
-    summary: 'The Fire Daimyō’s wife has lost her cat. Again.',
+    summary: 'The Fire Daimyō’s wife has lost her cat, again.',
     slots: 2,
     energyCost: 15,
     reward: { ryo: 90, reputation: 3 },
@@ -65,7 +66,8 @@ export const MISSIONS: readonly MissionDef[] = [
     title: 'Weeding at the Yamanaka Flower Shop',
     rank: 'D',
     client: 'Yamanaka Flowers',
-    summary: 'The back greenhouse is overgrown, and the staff say something in there whispers.',
+    summary:
+      'The back greenhouse is overgrown, and the staff say a voice in there mutters at them.',
     slots: 3,
     energyCost: 25,
     reward: { ryo: 110, reputation: 3 },
@@ -73,12 +75,13 @@ export const MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'check',
-        text: 'The weeds are waist-high, and something under the old pots keeps whispering your name.',
+        text: 'The weeds are waist-high, and a thin voice under the old pots keeps saying your name.',
         approaches: [
           { label: 'Work through the backache', stat: 'stamina', difficulty: 7 },
-          { label: 'Ignore the whispers', stat: 'willpower', difficulty: 8 },
+          { label: 'Ignore the voice', stat: 'willpower', difficulty: 8 },
         ],
-        success: 'By dusk the greenhouse is spotless. The whispering stops, as if satisfied.',
+        success:
+          'By dusk the greenhouse is spotless, and the voice under the pots goes quiet, as if satisfied.',
         failure: 'You finish, but Ino has to redo a corner you abandoned in a cold sweat.',
         onFailure: 'penalty',
       },
@@ -134,7 +137,7 @@ export const MISSIONS: readonly MissionDef[] = [
           { label: 'Take the treetop route', stat: 'speed', difficulty: 9 },
         ],
         success: 'You make excellent time, branch to branch.',
-        failure: 'You arrive late and mud-soaked. The farmer is not impressed.',
+        failure: 'You arrive late and soaked in mud, to a farmer who is not impressed.',
         onFailure: 'penalty',
       },
       {
@@ -165,7 +168,7 @@ export const MISSIONS: readonly MissionDef[] = [
       { kind: 'narrative', text: 'Ōkubo talks about tea prices for the entire first hour.' },
       {
         kind: 'check',
-        text: 'The road narrows between two rocky banks. Something feels wrong.',
+        text: 'The road narrows between two rocky banks, and the birds in the trees have gone quiet.',
         approaches: [
           { label: 'Scan the ridgeline', stat: 'perception', difficulty: 9 },
           { label: 'Recall where ambushes happen', stat: 'intellect', difficulty: 10 },
@@ -197,7 +200,8 @@ export const MISSIONS: readonly MissionDef[] = [
     title: 'The Stolen Practice Scrolls',
     rank: 'D',
     client: 'Iruka Umino',
-    summary: 'A washed-out academy student has been stealing practice scrolls. Bring him in.',
+    summary:
+      'A washed-out academy student has been stealing practice scrolls, and somebody has to bring him in.',
     slots: 3,
     energyCost: 25,
     reward: { ryo: 200, reputation: 5, scrollId: 'five-elements-seal' },
@@ -230,7 +234,7 @@ export const MISSIONS: readonly MissionDef[] = [
     title: 'The Haunted Granary',
     rank: 'D',
     client: 'Akimichi Grain Store',
-    summary: 'Something is spoiling the grain, and the workers refuse to go inside.',
+    summary: 'A cold presence is spoiling the grain, and the workers refuse to go inside.',
     slots: 3,
     energyCost: 30,
     reward: { ryo: 260, reputation: 8, scrollId: 'tree-binding' },
@@ -238,7 +242,7 @@ export const MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'check',
-        text: 'The granary is freezing. Ledgers flip their own pages. The lamp keeps going out.',
+        text: 'The granary is freezing. The ledgers turn their own pages while you watch, and the lamp keeps going out.',
         approaches: [
           { label: 'Steel your nerves and go in', stat: 'willpower', difficulty: 10 },
           { label: 'Release the illusion', stat: 'genjutsu', difficulty: 10 },

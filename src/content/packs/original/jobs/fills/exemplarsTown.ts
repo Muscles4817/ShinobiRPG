@@ -11,7 +11,7 @@ export const EXEMPLARS_TOWN: readonly MissionFill[] = [
       animal: 'a grey heron called Admiral',
       plea: 'Gonta wrings his straw hat. “He rides the prow and calls the fish. Without him the boat feels like a coffin. He likes shiny things, and he hates dogs.”',
       trail:
-        'A trail of stolen lantern tassels leads off the jetty, one glinting in the canal weed, another snagged on a washing line.',
+        'A trail of stolen lantern tassels leads off the jetty, one caught in the canal weed, another snagged on a washing line.',
       caught:
         'You find Admiral on a temple roof, guarding a hoard of tassels and a spoon. He lets himself be carried, glaring the whole way.',
       chase:
@@ -32,7 +32,7 @@ export const EXEMPLARS_TOWN: readonly MissionFill[] = [
       labour:
         'The silt is knee-deep and sucks at every step. Each rake-load weighs as much as you do.',
       twist:
-        'Your rake catches on something under the mud: a lacquered box, sealed with an old Tōkaku mark, cold enough to sting.',
+        'Your rake catches on a lacquered box under the mud, sealed with an old Tōkaku mark and cold enough to sting.',
       twistHandled:
         'You leave the seal be and carry the box to the wardens unopened. A Tōkaku elder collects it within the hour and thanks you very gravely.',
       twistBotched:
@@ -71,9 +71,9 @@ export const EXEMPLARS_TOWN: readonly MissionFill[] = [
         '“He swore he’d seen his grandfather’s ghost by the old wall,” Oume says. “I told him not to be stupid. Then he didn’t come home.”',
       rumour:
         'The children on the lane go quiet when you ask. One of them keeps glancing at the gap in the old wall.',
-      lead: 'A girl finally whispers that Tobi went through the gap with a lantern, to light it for his grandfather.',
+      lead: 'A girl finally admits, very quietly, that Tobi went through the gap with a lantern, to light it for his grandfather.',
       deadEnd:
-        'You lose the afternoon to shrugs and made-up stories before a girl whispers that Tobi went through the gap with a lantern.',
+        'You lose the afternoon to blank faces and made-up stories before a girl admits, very quietly, that Tobi went through the gap with a lantern.',
       search:
         'Beyond the gap the old wall runs into the ruined watch-houses, all broken stairs and roofs that sag underfoot.',
       found:
@@ -136,7 +136,7 @@ export const EXEMPLARS_TOWN: readonly MissionFill[] = [
         'The last knot closes and the hum moves from the old rope to the new, steady as a heartbeat under your palm.',
       frayed:
         'Your knot slips, and for one breath the well is unbound. Tsuzuri’s hands close over yours and finish it.',
-      pull: 'Something in the well breathes up at you, and for a moment you want very much to look over the edge.',
+      pull: 'A cold breath comes up out of the well at you, and for a moment you want very much to look over the edge.',
       ending:
         'The old rope is burned at the shrine. Women come to draw water again for the first time in a week, and one of them leaves a rice ball on the well’s lid.',
     },

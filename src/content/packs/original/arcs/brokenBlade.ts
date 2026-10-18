@@ -21,7 +21,8 @@ export const KUROBANE: EnemyDef = {
   name: 'Kurobane, the Black Wing',
   proper: true,
   pronouns: 'he',
-  description: 'A swordsman gone grey on the pass. He remembers Gōran’s arm, and his teammate.',
+  description:
+    'A swordsman gone grey on the pass, who still remembers Gōran’s arm and the teammate Gōran lost there.',
   baseStat: 11,
   statBonuses: { kenjutsu: 4, speed: 2, perception: 1 },
   maxChakra: 60,
@@ -34,7 +35,7 @@ export const UP_THE_PASS: MissionDef = {
   title: 'Up the Pass',
   rank: 'C',
   client: CLIENT,
-  summary: 'Gōran wants to find where Kurobane is camped. He wants you along.',
+  summary: 'Gōran wants to find where Kurobane is camped, and he wants you along when he does.',
   slots: 1,
   energyCost: 25,
   reward: { ryo: 520, reputation: 5 },
@@ -43,11 +44,11 @@ export const UP_THE_PASS: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'Gōran says nothing at the gate. He has his old forehead protector tied round his arm, over the scar.',
+      text: 'Gōran is quiet at the gate, which isn’t like him. He has tied his old forehead protector round his arm, over the scar.',
     },
     {
       kind: 'leg',
-      text: 'Two days of switchbacks and thin air. Gōran sets a pace nobody complains about.',
+      text: 'Two days of switchbacks and thin air, at a pace Gōran sets and nobody complains about.',
       days: 2,
       region: 'mountain-pass',
     },
@@ -77,12 +78,12 @@ export const UP_THE_PASS: MissionDef = {
       ],
       success: 'A cave mouth, a cold fire, and a sword-rack with one blade missing.',
       failure:
-        'The tracks fade into rock. Gōran finds the cave himself, by the old smell of the place.',
+        'The tracks fade into rock, but Gōran finds the cave anyway, by the old smell of the place.',
       onFailure: 'forward',
     },
     {
       kind: 'camp',
-      text: 'You camp out of sight of the cave. Gōran doesn’t sleep.',
+      text: 'You camp out of sight of the cave, and Gōran sits up all night without sleeping.',
       picks: 2,
       activities: [
         { kind: 'crew', label: 'Sit with Gōran', when: { crew: 'team' } },
@@ -94,7 +95,7 @@ export const UP_THE_PASS: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: '“Not yet,” Gōran says, looking at the cave. “Next time, we come to settle it.” He turns for home without another word.',
+          text: '“Not yet,” Gōran says, still looking at the cave. “Next time we come up here, we settle it.” Then he turns for home.',
         },
       ],
     },
@@ -116,7 +117,7 @@ export const BLACK_WING: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'The pass again. This time Gōran talks the whole way up, about Daichi.',
+      text: 'Up the pass again, and this time Gōran talks about Daichi the whole way.',
       days: 2,
       region: 'mountain-pass',
     },
@@ -127,21 +128,21 @@ export const BLACK_WING: MissionDef = {
         {
           label: '“Bring him in. Let the village judge.”',
           tone: 'earnest',
-          reply: 'Gōran breathes out, long. “Daichi would have said that.”',
+          reply: 'Gōran lets out a long breath. “That’s just what Daichi would have said.”',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Told Gōran to bring Kurobane in.',
         },
         {
           label: '“It’s your debt. Your choice.”',
           tone: 'quiet',
-          reply: '“Then I choose not to become him,” Gōran says.',
+          reply: '“Then I won’t turn into him,” Gōran says. “That much I can choose.”',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Left the choice to Gōran.',
         },
         {
           label: '“Finish it.”',
           tone: 'challenge',
-          reply: 'Gōran’s face goes hard. “Maybe,” he says.',
+          reply: 'Gōran’s face goes hard. “Maybe. We’ll see when I’m standing over him.”',
           ledger: 'Told Gōran to finish it.',
         },
       ],
@@ -150,7 +151,7 @@ export const BLACK_WING: MissionDef = {
       kind: 'encounter',
       template: 'bandit-camp',
       job: 'eliminate',
-      text: 'Kurobane steps out of the dark with his blade already drawn. “The arm,” he says. “I wondered when.”',
+      text: 'Kurobane steps out of the dark with his blade already drawn. “The arm,” he says. “I wondered when you’d come back for the rest of it.”',
       enemyIds: [KUROBANE.id],
       canFlee: false,
       bypassable: false,
@@ -160,7 +161,7 @@ export const BLACK_WING: MissionDef = {
       endings: [
         {
           when: { has: 'mercy' },
-          text: 'Gōran carries Kurobane down the pass himself. At the stone for the dead, he stops a long while. “Done,” he says. “Paid.”',
+          text: 'Gōran carries Kurobane down the pass himself, and stops for a while at the stone for the dead. “That’s it paid, Daichi,” he tells it.',
           effects: [
             { kind: 'world', mark: GORAN_DEBT_PAID },
             { kind: 'memory', text: 'the night the debt was paid' },
@@ -168,7 +169,7 @@ export const BLACK_WING: MissionDef = {
           ledger: 'Brought Kurobane down alive. Gōran’s debt is paid.',
         },
         {
-          text: 'Kurobane doesn’t get up. Gōran stands over him a long time, then cleans his hands in the snow. “Done,” he says. It doesn’t sound like peace.',
+          text: 'Kurobane doesn’t get up. Gōran stands over him until the cold gets into his hands, then cleans them in the snow and says it’s done, in a voice that doesn’t sound like peace.',
           effects: [
             { kind: 'world', mark: GORAN_DEBT_PAID },
             { kind: 'memory', text: 'the night on the pass' },

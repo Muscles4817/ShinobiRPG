@@ -31,8 +31,8 @@ export const SHIOMACHI_JOBS: readonly MissionDef[] = [
             difficulty: 8,
           },
         ],
-        success: 'You drag the crate up the slipway. Kai counts the jars twice.',
-        failure: 'You get it in at last, half drowned, and two jars short.',
+        success: 'You drag the crate up the slipway, and Kai counts the jars twice.',
+        failure: 'You get it in at last, half drowned and two jars short.',
         onFailure: 'penalty',
         failureDamage: 3,
       },
@@ -51,13 +51,13 @@ export const SHIOMACHI_JOBS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'check',
-        text: 'The dark boat ties up at the far jetty. Two men carry something long and heavy up the steps.',
+        text: 'The dark boat ties up at the far jetty. Two men carry a long, heavy bundle up the steps between them.',
         approaches: [
           { label: 'Follow them through the drying racks', stat: 'speed', difficulty: 9 },
           { label: 'Watch from the roof of the net store', stat: 'perception', difficulty: 9 },
         ],
         success:
-          'Rolled bolts of silk, untaxed. Kai is delighted: the fine pays the harbour for a month.',
+          'Rolled bolts of silk, untaxed. Kai is delighted, because the fine will pay for the harbour for a month.',
         failure: 'They spot you and scatter. Kai gets a description, and not much else.',
         onFailure: 'penalty',
         failureDamage: 2,
@@ -90,7 +90,7 @@ export const SHIOMACHI_JOBS: readonly MissionDef[] = [
             difficulty: 9,
           },
         ],
-        success: 'The nets come up whole. Something in the hull watches you go, and lets you.',
+        success: 'The nets come up whole. Whatever lives in the hull watches you go, and lets you.',
         failure: 'You come up gasping with half the nets. The crews say thank you anyway.',
         onFailure: 'penalty',
         failureDamage: 4,

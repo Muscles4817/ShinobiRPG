@@ -53,7 +53,7 @@ export const WAVES_JOBS: readonly MissionDef[] = [
       },
       {
         kind: 'check',
-        text: 'One kicks over a basket of clams. The stallholder doesn’t look up.',
+        text: 'One of them kicks over a basket of clams, and the stallholder doesn’t even look up.',
         approaches: [
           { label: 'Step between them and stare', stat: 'willpower', difficulty: 9 },
           { label: 'Pin his sleeve to the post with a kunai', stat: 'speed', difficulty: 9 },
@@ -87,7 +87,7 @@ export const WAVES_JOBS: readonly MissionDef[] = [
         success:
           'He is sitting on a rock where Kaiza used to tie up his boat, crying where no one can see. You sit with him a while.',
         failure:
-          'You find him after dark, cold and furious at being found. He won’t speak to you for a day.',
+          'You find him after dark, cold through and furious at being found. He won’t speak to you for a day.',
         onFailure: 'penalty',
         failureDamage: 1,
       },

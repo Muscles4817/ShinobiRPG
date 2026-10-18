@@ -25,12 +25,12 @@ export const BREWER_AFTER_JOBS: readonly MissionDef[] = [SECOND_WELL, OHARUS_CAS
 export const BREWER_GHOST: ArcDef = {
   id: 'the-brewers-ghost',
   title: 'The Brewer’s Ghost',
-  summary: 'Something cold walks the Mori brewery at night, souring the vats.',
+  summary: 'A cold ghost walks the Mori brewery at night, souring the vats.',
   acts: [
     {
       beats: ['you', 'need'],
       title: 'Sour vats',
-      text: 'The sake brewer Gensai Mori wants a ghost out of his cellar, quickly and without fuss.',
+      text: 'The sake brewer Gensai Mori wants a ghost out of his cellar quickly, and without any fuss.',
       jobs: [SOUR_VATS.id],
     },
     {

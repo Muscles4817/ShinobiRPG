@@ -9,7 +9,7 @@ export const SEALED_ARCHIVE: readonly TechniqueDef[] = [
   {
     id: 'falling-lintel',
     name: 'Falling Lintel',
-    description: 'The whole body brought down like a roof beam: the guard first, then the rest.',
+    description: 'The whole body brought down like a roof beam, the guard first and then the rest.',
     discipline: 'taijutsu',
     effects: [
       { verb: 'break', power: 16 },

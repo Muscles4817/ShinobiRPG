@@ -44,7 +44,8 @@ export const NEW_SENSEIS: readonly PersonDef[] = [
       specialty: 'taijutsu',
       favouredTraits: ['calm', 'humble', 'diligent'],
       nature: 'earth',
-      style: 'Quiet, patient and impossible to knock over. Asks more questions than he answers.',
+      style:
+        'Quiet and patient, and impossible to knock over. Asks more questions than he answers.',
       toleratesReplacement: true,
       lesson:
         'Kaname has you hold a stance until your legs shake, then shows you how to stop them shaking.',
@@ -94,7 +95,7 @@ export const NEW_SENSEIS: readonly PersonDef[] = [
       specialty: 'ninjutsu',
       favouredTraits: ['kind', 'diligent', 'curious'],
       nature: 'water',
-      style: 'Warm, organised and fierce about her team. Nobody gets left on the shore.',
+      style: 'Warm and organised, and fierce about her team. Nobody gets left on the shore.',
       lesson: 'Hotaru has the three of you pass a ball of water between you until nobody drops it.',
       ways: HOTARU_WAYS,
     },
@@ -142,7 +143,7 @@ export const NEW_SENSEIS: readonly PersonDef[] = [
       specialty: 'genjutsu',
       favouredTraits: ['cunning', 'curious', 'calm'],
       nature: 'fire',
-      style: 'Wry and watchful. Sees through people and tells them so.',
+      style: 'Wry and watchful, she sees through people and tells them so.',
       toleratesReplacement: true,
       lesson:
         'Shion deals you cards from a deck that keeps changing in your hands, until you see the trick.',
@@ -195,7 +196,8 @@ export const NEW_SENSEIS: readonly PersonDef[] = [
     sensei: {
       specialty: 'kenjutsu',
       favouredTraits: ['proud', 'tireless', 'brash'],
-      style: 'Loud, exacting and competitive. Every drill is a duel, and he keeps score.',
+      style:
+        'Loud and exacting, and competitive about everything. Every drill is a duel, and he keeps score.',
       lesson: 'Masaru has you draw and cut a thousand times, and counts every one out loud.',
       ways: MASARU_WAYS,
     },
@@ -215,7 +217,7 @@ export const NEW_SENSEIS: readonly PersonDef[] = [
         kind: 'all',
         parts: [
           { kind: 'bond', minStage: 1, line: '“Show me you can lose properly first.”' },
-          { kind: 'ryo', perSession: 30, line: 'He nods at the whetstones. They aren’t free.' },
+          { kind: 'ryo', perSession: 30, line: 'He points at the whetstones, which aren’t free.' },
         ],
       },
     },

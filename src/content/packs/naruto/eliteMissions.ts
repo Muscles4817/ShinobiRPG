@@ -11,7 +11,8 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
     title: 'A Puddle on a Dry Road',
     rank: 'C',
     client: 'Tazuna, bridge builder',
-    summary: 'Escort an old bridge builder home to the Land of Waves. He is hiding something.',
+    summary:
+      'Escort an old bridge builder home to the Land of Waves. He hasn’t told the hall why he needs the escort.',
     slots: 4,
     energyCost: 30,
     reward: { ryo: 380, reputation: 9, scrollId: 'multiple-shadow-clone' },
@@ -41,7 +42,7 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'narrative',
-        text: 'Tazuna confesses: a shipping tycoon wants him dead. He presses an old scroll on you for staying.',
+        text: 'Tazuna confesses that a shipping tycoon wants him dead, and presses an old scroll on you for staying.',
       },
     ],
   },
@@ -108,7 +109,7 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
           { label: 'Work out the pattern', stat: 'intellect', difficulty: 13 },
         ],
         success: 'You are standing in their camp before a single bell rings.',
-        failure: 'A bell rings. Then another. They are waiting for you.',
+        failure: 'A bell rings, and then another, and you understand they are waiting for you.',
         onFailure: 'penalty',
         failureDamage: 8,
       },
@@ -122,7 +123,7 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'narrative',
-        text: 'In their packs: maps of the village, and a scroll they stole from a mountain of toads.',
+        text: 'In their packs are maps of the village, and a scroll they stole from a mountain of toads.',
       },
     ],
   },
@@ -206,7 +207,7 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'narrative',
-        text: 'The Hokage takes the scroll back and looks at you a long time. He copies out one seal and hands it over. “Never, unless there is no other way.”',
+        text: 'The Hokage takes the scroll back and considers you for a while, then copies out one seal and hands it over. “Never, unless there is no other way.”',
       },
     ],
   },

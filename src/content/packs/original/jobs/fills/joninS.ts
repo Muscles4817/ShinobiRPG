@@ -10,9 +10,9 @@ export const JONIN_S_FILLS: readonly MissionFill[] = [
       client: 'The Tōrokage’s Office',
       quarry: 'the rogue jōnin they call the Hollow Lantern',
       briefing:
-        'Years ago an archivist walked out of the sealed stacks with a lantern no one was meant to light. Villages along the river have started losing their dead: the graves are open, the lanterns over them gone dark. The Tōrokage wants it ended, and wants the lantern back unopened.',
+        'Years ago an archivist walked out of the sealed stacks with a lantern no one was meant to light. Villages along the river have started losing their dead, the graves open and the lanterns over them gone dark. The Tōrokage wants it ended, and wants the lantern back unopened.',
       trail:
-        'The trail is ash and nothing else: every village the Lantern passed through has had its lamps go out the night after, and nobody remembers a stranger.',
+        'The trail is ash and nothing else. Every village the Lantern passed through has had its lamps go out the night after, and nobody remembers a stranger.',
       found:
         'You follow the dark lamps upriver to a burned-out shrine, and see one lantern burning inside it, before anyone there sees you.',
       cold: 'You find the burned-out shrine upriver, but the lamps along the path have been lit for you. They know you are coming.',
@@ -60,7 +60,7 @@ export const JONIN_S_FILLS: readonly MissionFill[] = [
       client: 'The Tōrokage’s Office',
       quarry: 'the Salt Widow, the water jōnin who leads the strait’s pirates',
       briefing:
-        'Port Shiomachi has lost three ships this season, and every captain who came back says a woman walked across the water to them. The village lost a water jōnin to the strait a long time ago. The harbourmaster has written to ask, very politely, whether she was ever found.',
+        'Port Shiomachi has lost three ships this season, and every captain who came back says a woman walked across the water to them. The village lost a water jōnin to the strait, years ago now. The harbourmaster has written to ask, very politely, whether she was ever found.',
       trail:
         'The strait is all reefs and fog, and the Widow’s ships hide among the islands where no chart is any good.',
       found:

@@ -8,7 +8,7 @@ export const HAUNTED_MISSIONS: readonly MissionDef[] = [
     rank: 'D',
     client: 'Rice Broker Hanada',
     summary:
-      'Something is spoiling the rice in Hanada’s storehouse, and the workers refuse to go in.',
+      'A cold presence is spoiling the rice in Hanada’s storehouse, and the workers refuse to go in.',
     slots: 3,
     energyCost: 30,
     reward: { ryo: 260, reputation: 8, scrollId: 'whispering-dread' },
@@ -16,7 +16,7 @@ export const HAUNTED_MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'check',
-        text: 'The storehouse is freezing. Ledgers flip their own pages. The lamp keeps going out.',
+        text: 'The storehouse is freezing. The ledgers turn their own pages while you watch, and the lamp keeps going out.',
         approaches: [
           {
             label: 'Steel your nerves and go in',
@@ -74,7 +74,7 @@ export const HAUNTED_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'check',
-        text: 'He throws like a farmer: all shoulder, eyes shut. He looks at you as if you might send him home.',
+        text: 'He throws like a farmer, all shoulder and with his eyes shut. He looks at you as if you might send him home.',
         approaches: [
           { label: 'Show him slowly, again and again', stat: 'willpower', difficulty: 6 },
           { label: 'Show him how you learned', stat: 'taijutsu', difficulty: 7 },

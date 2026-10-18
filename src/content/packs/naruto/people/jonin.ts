@@ -107,7 +107,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
       outfit: '#2f4f7a',
     }),
     specialty: 'kenjutsu',
-    bio: 'One of the Hokage’s guards. Quiet, scarred, and never more than a step from his post.',
+    bio: 'One of the Hokage’s guards, quiet and scarred, and never more than a step from his post.',
     schedule: {
       morning: 'mission-desk',
       afternoon: null,

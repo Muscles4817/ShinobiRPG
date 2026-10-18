@@ -18,7 +18,7 @@ export const HARBOUR_LETTER: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'The clerk hands you a letter that smells of tar. The harbourmaster writes in a hurry: every night the shrine lanterns on the breakwater go dark, and every morning they are full of seawater.',
+      text: 'The clerk hands you a letter that smells of tar. The harbourmaster has written in a hurry that every night the shrine lanterns on the breakwater go dark, and every morning they are full of seawater.',
     },
     {
       kind: 'decision',
@@ -35,9 +35,9 @@ export const HARBOUR_LETTER: MissionDef = {
           label: 'Ask what else they have seen',
           tone: 'curious',
           reply:
-            'The clerk adds a question at the bottom. The answer comes back on the next cart: lights under the water, out by the old wreck.',
+            'The clerk adds a question at the bottom, and the answer comes back on the next cart. People have seen lights under the water, out by the old wreck.',
           effects: [{ kind: 'world', mark: 'salt-wreck-lights' }],
-          ledger: 'Asked the port what else it had seen: lights under the water.',
+          ledger: 'Asked the port what else it had seen, and heard about lights under the water.',
         },
       ],
     },
@@ -73,7 +73,7 @@ export const DOWN_TO_THE_COAST: MissionDef = {
     },
     {
       kind: 'check',
-      text: 'Above the last bend you can see the whole harbour, the breakwater and its shrine. Out past the point, something pale moves just under the water.',
+      text: 'Above the last bend you can see the whole harbour, with the shrine on its breakwater. Out past the point, a pale shape moves just under the water.',
       approaches: [
         {
           label: 'Watch it until it sinks',

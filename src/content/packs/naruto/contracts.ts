@@ -53,7 +53,8 @@ export const CONTRACT_TECHNIQUES: readonly TechniqueDef[] = [
   {
     id: 'summoning-bull',
     name: 'Summoning: Bull',
-    description: 'The biggest of the ninken, a slab of a dog who says nothing and holds on.',
+    description:
+      'The biggest of the ninken, a slab of a dog who never makes a sound and never lets go.',
     discipline: 'ninjutsu',
     effects: [{ verb: 'summon', power: 1, call: 'bull' }],
     chakraCost: 14,
@@ -108,7 +109,8 @@ export const CONTRACT_TECHNIQUES: readonly TechniqueDef[] = [
   {
     id: 'summoning-great-snake',
     name: 'Summoning: Great Snake',
-    description: 'Blood on the tattoo and a palm to the ground: a snake as thick as a tree.',
+    description:
+      'Blood on the tattoo and a palm to the ground, and up comes a snake as thick as a tree.',
     discipline: 'ninjutsu',
     effects: [{ verb: 'summon', power: 1, call: 'great-snake' }],
     chakraCost: 18,
@@ -192,7 +194,7 @@ const TOADS: ContractDef = {
   ],
   tastes: ['wild-game', 'river-fish'],
   parting:
-    'A last puff of smoke and a toad’s voice from it: the mountain has crossed your name off. Don’t call again.',
+    'A last puff of smoke, and a toad’s voice from it says the mountain has crossed your name off. Don’t call again.',
 };
 
 const NINKEN: ContractDef = {
@@ -230,7 +232,7 @@ const NINKEN: ContractDef = {
   ],
   tastes: ['wild-game', 'eggs'],
   parting:
-    'Pakkun sniffs the torn scroll, sighs, and goes. The dogs won’t come to your call again.',
+    'Pakkun sniffs the torn scroll and goes without a word. The dogs won’t come to your call again.',
 };
 
 /** Snakes lent out by the Sannin who left, to the missing-nin who still serve him. */

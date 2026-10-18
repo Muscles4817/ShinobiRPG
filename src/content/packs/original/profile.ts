@@ -22,7 +22,7 @@ export const NINDOS: readonly NindoDef[] = [
   {
     id: 'clan',
     name: 'Restore my clan',
-    essay: 'My family’s name will mean something again. I will make sure of it.',
+    essay: 'My family’s name will be spoken with respect again. I will make sure of it.',
   },
   {
     id: 'protect',
@@ -73,7 +73,7 @@ export const BREAK_IN: BreakInScene = {
       stat: 'genjutsu',
       difficulty: 6,
       success: 'The watchman sees only a drifting lantern-light, and lets it drift past.',
-      failure: 'The mirage flickers. The watchman rubs his eyes and decides he needs more sleep.',
+      failure: 'The mirage wavers, and the watchman rubs his eyes and decides he needs more sleep.',
     },
   ],
   records:
@@ -81,7 +81,7 @@ export const BREAK_IN: BreakInScene = {
   instructor: 'Instructor Rin',
   caught:
     'A lantern flares in the doorway. “Reading your own file the night before graduation?” ' +
-    'Instructor Rin sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”',
+    'Instructor Rin looks more tired than angry. “Go home. Be on time tomorrow. And put the drawer back.”',
 };
 
 /** Names for generated genin: your classmates and teammates. */

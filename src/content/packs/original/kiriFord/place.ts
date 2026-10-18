@@ -64,7 +64,7 @@ export const KIRI_FORD: LocationDef = {
           id: 'crossing-lots',
           name: 'Drawing for the dawn crossing',
           scene:
-            'Straws in a jar: whoever draws the short one rows the first ferry tomorrow. Nobody ever looks pleased to win.',
+            'Straws in a jar, and whoever draws the short one rows the first ferry tomorrow. Nobody ever looks pleased to win.',
         },
       ],
     },

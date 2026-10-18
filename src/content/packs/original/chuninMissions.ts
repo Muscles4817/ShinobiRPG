@@ -46,7 +46,8 @@ export const CHUNIN_MISSIONS: readonly MissionDef[] = [
     title: 'The Wraith of Kiln Pass',
     rank: 'B',
     client: 'Kiln Pass Potters',
-    summary: 'Something in the old kilns burns travellers’ shadows off them. Put it to rest.',
+    summary:
+      'A spirit in the old kilns burns travellers’ shadows off them, and someone has to put it to rest.',
     slots: 4,
     energyCost: 35,
     reward: { ryo: 480, reputation: 11 },
@@ -86,7 +87,7 @@ export const CHUNIN_MISSIONS: readonly MissionDef[] = [
         kind: 'encounter',
         template: 'bandit-camp',
         job: 'deliver',
-        text: 'A camp on the ridge road: two rogues with their forehead protectors scratched through.',
+        text: 'A camp on the ridge road, with two rogues in it whose forehead protectors are scratched through.',
         enemyIds: ['ember-missing-nin', 'ember-missing-nin'],
         canFlee: true,
       },

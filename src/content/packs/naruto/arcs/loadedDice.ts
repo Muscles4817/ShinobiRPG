@@ -40,7 +40,7 @@ export const LOADED_DICE_ACT_ONE: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'Shion lets her hair down and becomes, somewhere on the road, someone else entirely.',
+      text: 'Shion lets her hair down, and somewhere on the road she becomes someone else entirely.',
     },
     {
       kind: 'leg',
@@ -73,13 +73,13 @@ export const LOADED_DICE_ACT_ONE: MissionDef = {
         },
       ],
       success:
-        'The dice are honest. The players’ eyes are not: a soft illusion on the whole room. And the croupier in the corner is Kenta, in chains under his sleeves.',
-      failure: 'You lose your stake, but Shion sees the croupier in the corner, and goes white.',
+        'The dice are honest, but the players’ eyes aren’t, because a soft illusion lies over the whole room. And the croupier in the corner is Kenta, with chains under his sleeves.',
+      failure: 'You lose your stake, but Shion sees the croupier in the corner and goes white.',
       onFailure: 'forward',
     },
     {
       kind: 'camp',
-      text: 'You sleep at the Lucky Cat. Shion sits by the window all night, dealing cards to nobody.',
+      text: 'You sleep at the Lucky Cat, while Shion sits up by the window all night dealing cards to nobody.',
       picks: 2,
       activities: [
         { kind: 'crew', label: 'Sit with Shion', when: { crew: 'team' } },
@@ -91,7 +91,7 @@ export const LOADED_DICE_ACT_ONE: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: '“Kenta’s alive,” Shion says. “Working off a debt that never ends.” She shuffles once, hard. “Next time, I collect.”',
+          text: '“Kenta’s alive,” Shion says, “and working off a debt that never ends.” She shuffles once, hard. “Next time we come, I collect.”',
         },
       ],
     },
@@ -113,32 +113,33 @@ export const LOADED_DICE_ACT_TWO: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'The hill road again. Shion is cheerful, which is how you know she is afraid.',
+      text: 'On the hill road again Shion is cheerful the whole way, which is how you know she is afraid.',
       days: 2,
       region: 'hill-road',
     },
     {
       kind: 'decision',
-      text: 'Gonzō spreads his hands over the table. “Play me for him,” he says. Shion glances at you. “Well?”',
+      text: 'Gonzō spreads his hands over the table. “Play me for him, then.” Shion glances at you. “Well? What do you think?”',
       options: [
         {
           label: '“Free Kenta first. Then deal with Gonzō.”',
           tone: 'kind',
-          reply: 'Shion nods. Kenta’s chains come off under the table.',
+          reply:
+            'Shion agrees, and while Gonzō watches her, Kenta’s chains come off under the table.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Freed Kenta first.',
         },
         {
           label: '“Play him, and cheat better.”',
           tone: 'joke',
-          reply: 'Shion grins. “Now you’re learning.”',
+          reply: '“Now you’re learning,” Shion says, delighted.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Out-cheated the house.',
         },
         {
           label: '“No games. Take him down.”',
           tone: 'challenge',
-          reply: 'Gonzō’s smile goes thin. The room changes.',
+          reply: 'Gonzō’s smile goes thin, and the room begins to change around you.',
           ledger: 'Took Gonzō on head-on.',
         },
       ],
@@ -148,7 +149,7 @@ export const LOADED_DICE_ACT_TWO: MissionDef = {
       ground: 'room',
       template: 'guarded-building',
       job: 'eliminate',
-      text: 'The room tilts. The walls are cards. Gonzō’s men come out of them.',
+      text: 'The room tilts and the walls turn to cards, and Gonzō’s men step out of them.',
       enemyIds: ['gonzo', 'bandit-thug'],
       canFlee: false,
       bypassable: false,
@@ -166,7 +167,7 @@ export const LOADED_DICE_ACT_TWO: MissionDef = {
           ledger: 'Settled Kenta’s debt and brought him out.',
         },
         {
-          text: 'Gonzō’s tables are kindling by morning. Kenta is gone before you can find him. Shion leaves a card on the bar for him. It is a queen.',
+          text: 'Gonzō’s tables are kindling by morning, and Kenta is gone before you can find him. Shion leaves a queen face up on the bar for him.',
           effects: [
             { kind: 'world', mark: LOADED_DICE_SETTLED },
             { kind: 'memory', text: 'the night in Tanzaku' },

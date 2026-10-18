@@ -66,7 +66,7 @@ export const TRAINING: readonly TrainingDef[] = [
     icon: 'eye',
     name: 'Lantern Watching',
     spot: 'Thousand Lantern Bridge',
-    description: 'Track every flickering light at once. Notice which ones are not lanterns.',
+    description: 'Track every moving light at once, and notice which of them are not lanterns.',
     slots: 1,
     energyCost: 10,
     gains: { perception: 1.5, genjutsu: 0.8 },

@@ -25,7 +25,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
           { label: 'Guess where they’ll strike next', stat: 'intellect', difficulty: 10 },
         ],
         success: 'You find their camp before they find you.',
-        failure: 'The trail goes cold. The bandits find you first.',
+        failure: 'The trail goes cold, and the bandits find you first.',
         onFailure: 'penalty',
         failureDamage: 6,
       },
@@ -52,16 +52,16 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Every third lantern on the shrine steps is dark, and the dark ones are whispering.',
+        text: 'Every third lantern on the shrine steps is dark, and the dark ones are murmuring.',
       },
       {
         kind: 'check',
-        text: 'The whispers reach for your team, one name at a time.',
+        text: 'The murmuring reaches for your team, one name at a time.',
         approaches: [
           { label: 'Hold your nerve', stat: 'willpower', difficulty: 10 },
           { label: 'See through the illusion', stat: 'genjutsu', difficulty: 10 },
           {
-            label: 'Feel where the whispers come from',
+            label: 'Feel where the voices come from',
             stat: 'perception',
             difficulty: 10,
             role: 'sensor',
@@ -106,13 +106,13 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'check',
-        text: 'Ash lies thick on the kiln road, and something has been dragged through it.',
+        text: 'Ash lies thick on the kiln road, and a furrow runs through it where a heavy load was dragged towards the kilns.',
         approaches: [
           { label: 'Read the marks in the ash', stat: 'perception', difficulty: 11 },
           { label: 'Work out what they are firing', stat: 'intellect', difficulty: 11 },
         ],
         success: 'You find the back way in, past a sleeping lookout.',
-        failure: 'A bell rings in the dark. They know you are coming.',
+        failure: 'A bell rings in the dark, and now they know you are coming.',
         onFailure: 'penalty',
         failureDamage: 8,
       },
@@ -121,7 +121,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
         ground: 'room',
         template: 'guarded-building',
         job: 'eliminate',
-        text: 'Firelight spills from the biggest kiln. A deserter with a black blade holds court inside, his crew on watch.',
+        text: 'Light from a fire spills out of the biggest kiln. A deserter with a black blade holds court inside, his crew on watch.',
         enemyIds: ['bandit-chief', 'academy-dropout', 'bandit-archer', 'bandit-thug'],
         canFlee: false,
       },
