@@ -1,4 +1,5 @@
-import { stageName } from '@/systems/bonds';
+import type { ConversationChoice } from '@/content';
+import { landingOf, stageName } from '@/systems/bonds';
 
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
@@ -67,6 +68,12 @@ export interface ConversationScene {
   readonly leave: GameAction;
 }
 
+/** Their answer, by how your reply landed: warm, flat or cool, else the plain one. */
+export function answerAsItLanded(choice: ConversationChoice, delta: number): string {
+  const landing = landingOf(delta);
+  return (landing === 'flat' ? undefined : choice[landing]) ?? choice.reply;
+}
+
 export function conversationScene(state: GameState, ctx: GameContext): ConversationScene | null {
   const talking = state.people.conversation;
   const person = talking && findPerson(state, ctx, talking.personId);
@@ -88,7 +95,7 @@ export function conversationScene(state: GameState, ctx: GameContext): Conversat
       talking.answer && picked
         ? {
             said: fill(picked.label),
-            reply: fill(picked.reply),
+            reply: fill(answerAsItLanded(picked, talking.answer.delta)),
             delta: talking.answer.delta,
             newStage: talking.answer.newStage === null ? null : stageName(talking.answer.newStage),
           }

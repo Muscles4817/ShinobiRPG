@@ -35,6 +35,24 @@ describe('templated talk validation', () => {
     expect(problems).not.toContain('conversation "chat" uses slot "{work}" it has no words for');
   });
 
+  it('asks every choice of a template for a warm and a cool answer, and authored talk for none', () => {
+    const plain = { label: 'Hm.', tone: 'quiet' as const, reply: 'Hm.' };
+    const problems = validateTalk({
+      ...ORIGINAL_PACK,
+      conversations: [
+        {
+          id: 'chat',
+          minStage: 1,
+          about: 'role',
+          opener: 'Hi.',
+          choices: [{ ...plain, warm: 'Ha.' }],
+        },
+        { id: 'own', minStage: 1, opener: 'Hi.', choices: [plain] },
+      ],
+    });
+    expect(problems).toEqual(['conversation "chat" choice 1 has no cool answer']);
+  });
+
   it('lets talk and topics speak of the person by pronoun, and no other way', () => {
     const problems = validateTalk({
       ...ORIGINAL_PACK,

@@ -88,6 +88,23 @@ export function recordMeeting(bond: Bond, meeting: { day: number; delta: number 
   return { ...addPoints(bond, meeting.delta), lastTalkDay: meeting.day };
 }
 
+/**
+ * How a reply landed, read from the points it earned: warmly (a tone they like), flat (plain
+ * time together) or cool (a tone that grated, earning nothing or less). People answer by it.
+ */
+export const LANDINGS = ['warm', 'flat', 'cool'] as const;
+export type Landing = (typeof LANDINGS)[number];
+
+/** A reply earning this much or more landed warmly: a liked tone, at the least. */
+export const WARM_LANDING_FROM = TALK_BASE + 3;
+/** A reply earning this much or less landed cool: a disliked tone outweighed the time spent. */
+export const COOL_LANDING_TO = 0;
+
+export function landingOf(delta: number): Landing {
+  if (delta >= WARM_LANDING_FROM) return 'warm';
+  return delta <= COOL_LANDING_TO ? 'cool' : 'flat';
+}
+
 /** Records a finished talk: points, the day, and what was said (kept newest last). */
 export function recordTalk(bond: Bond, talk: { day: number; delta: number; heard: string }): Bond {
   const met = recordMeeting(bond, talk);

@@ -1,6 +1,8 @@
 import {
   addPoints,
   bondWith,
+  COOL_LANDING_TO,
+  landingOf,
   MAX_BOND,
   NEW_BOND,
   reactionTo,
@@ -10,7 +12,24 @@ import {
   stageOf,
   stageProgress,
   talkedToday,
+  WARM_LANDING_FROM,
 } from './bonds';
+
+describe('how a reply landed', () => {
+  it('reads a liked tone as warm, plain time as flat and a disliked tone as cool', () => {
+    const brash = { likes: ['challenge'], dislikes: ['quiet'] };
+    expect(landingOf(reactionTo([brash], 'challenge'))).toBe('warm');
+    expect(landingOf(reactionTo([brash], 'kind'))).toBe('flat');
+    expect(landingOf(reactionTo([brash], 'quiet'))).toBe('cool');
+  });
+
+  it('turns at its named thresholds', () => {
+    expect(landingOf(WARM_LANDING_FROM)).toBe('warm');
+    expect(landingOf(WARM_LANDING_FROM - 1)).toBe('flat');
+    expect(landingOf(COOL_LANDING_TO + 1)).toBe('flat');
+    expect(landingOf(COOL_LANDING_TO)).toBe('cool');
+  });
+});
 
 describe('bonds', () => {
   it('climbs through named stages', () => {

@@ -314,7 +314,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mikoto squints at you. “You’ve been watching how I do things. Go on, say it.”
+  opener: Mikoto squints at you. “You’ve been watching how I do things. Go on, you can say it.”
   choices[0]:
     label: “You’re a creature of habit.”
   choices[1]:
@@ -342,7 +342,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mikoto squints at you. “You’ve been watching how I do things. Go on, say it.”
+  opener: Mikoto squints at you. “You’ve been watching how I do things. Go on, you can say it.”
   choices[0]:
     label: “You’re a creature of habit.”
   choices[1]:
@@ -351,7 +351,7 @@ view:
     label: Shake your head and smile.
   answer:
     said: “You’re a creature of habit.”
-    reply: “Guilty.” They show you: mending their own clothes badly rather than asking anyone to show them how. “See? Can’t help it.”
+    reply: “And you’re nosy.” Mikoto keeps it up anyway, a little pointedly.
   leave:
 
 >>> endConversation
@@ -522,7 +522,7 @@ view:
     label: “It suits you.”
   answer:
     said: “Why do you do that?”
-    reply: Mai thinks about it. “I don’t know. It feels wrong not to.”
+    reply: Mai actually stops to think, which nobody has asked her to do before. “I don’t know. It started when I was small, I think. Now the day feels wrong without it.”
   leave:
 
 >>> endConversation
@@ -663,7 +663,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mikoto barely looks up. “Sorry. Busy. It’s always the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+  opener: Mikoto barely looks up. “Sorry, I’m busy. It’s always lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
   choices[0]:
     label: “I’ll leave you to it.”
   choices[1]:
@@ -691,7 +691,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mikoto barely looks up. “Sorry. Busy. It’s always the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+  opener: Mikoto barely looks up. “Sorry, I’m busy. It’s always lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
   choices[0]:
     label: “I’ll leave you to it.”
   choices[1]:
@@ -700,7 +700,7 @@ view:
     label: “You could stand to slow down.”
   answer:
     said: “I’ll leave you to it.”
-    reply: “Thanks.” Mikoto sounds like they mean it.
+    reply: “Thank you,” Mikoto says, and sounds as if they mean it.
   leave:
 
 >>> endConversation

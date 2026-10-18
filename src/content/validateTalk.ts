@@ -21,7 +21,24 @@ const PERSON_SLOTS: readonly string[] = ['them', ...PRONOUN_FORMS.map((form) => 
 /** Slots any conversation may use: the names and the person's pronoun forms. */
 const SPEAKING_SLOTS: ReadonlySet<string> = new Set([...NAME_SLOTS, ...PERSON_SLOTS]);
 export function validateTalk(pack: ContentPack): string[] {
-  return [...topicProblems(pack), ...pack.conversations.flatMap(slotProblems)];
+  return [
+    ...topicProblems(pack),
+    ...pack.conversations.flatMap(slotProblems),
+    ...pack.conversations.flatMap(landingProblems),
+  ];
+}
+
+/**
+ * A template answers by how your reply landed, so each of its choices has a warm and a cool
+ * answer besides the plain one. Authored talk may leave them out: it answers plainly.
+ */
+function landingProblems(c: ConversationDef): string[] {
+  if (!c.about) return [];
+  return c.choices.flatMap((choice, i) =>
+    (['warm', 'cool'] as const)
+      .filter((landing) => !choice[landing])
+      .map((landing) => `conversation "${c.id}" choice ${i + 1} has no ${landing} answer`),
+  );
 }
 
 function keysOf(pack: ContentPack, kind: TopicKind): ReadonlySet<string> {

@@ -10,7 +10,7 @@ import { mentorOf } from '@/game/sensei/plan';
 import { voiceOf } from '@/game/story/voices';
 import { conversationScene } from '@/game/views/peopleScenes';
 import { VOICE_MOMENTS } from '@/content';
-import { bondWith } from '@/systems/bonds';
+import { bondWith, landingOf } from '@/systems/bonds';
 import { act, ctx, lastEntry, newGame } from '@/test/gameFixtures';
 
 import { recorder, type Recorder } from './recorder';
@@ -35,7 +35,7 @@ function talkThrough(r: Recorder, state: GameState, person: PersonDef, convId: s
     if (choiceIndex === 0) r.say(`opener: ${conversationScene(s, ctx)?.opener ?? ''}`);
     const answered = conversationScene(act(s, { type: 'reply', choiceIndex }), ctx)?.answer;
     r.say(`  you: ${answered?.said ?? ''}`);
-    r.say(`    ${answered?.reply ?? ''}`);
+    r.say(`    (${landingOf(answered?.delta ?? 0)}) ${answered?.reply ?? ''}`);
   });
 }
 

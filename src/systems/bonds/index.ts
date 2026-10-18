@@ -15,6 +15,11 @@ export {
   reactionTo,
   recordTalk,
   recordMeeting,
+  landingOf,
+  LANDINGS,
+  WARM_LANDING_FROM,
+  COOL_LANDING_TO,
+  type Landing,
   type Bond,
   type Taste,
 } from './bonds';

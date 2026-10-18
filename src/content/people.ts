@@ -133,7 +133,12 @@ export interface PersonArsenal {
 export interface ConversationChoice {
   readonly label: string;
   readonly tone: Tone;
+  /** Their answer when your reply lands plainly, and whenever it has no warm or cool one. */
   readonly reply: string;
+  /** Their answer when your reply lands well (a tone they like). Every template has one. */
+  readonly warm?: string;
+  /** Their answer when your reply grates (a tone they dislike). Every template has one. */
+  readonly cool?: string;
   /** Picking this reply does the favour a teacher asked for (`SimplePrice` favour id). */
   readonly favour?: string;
   /** The village remembers it (`village.marks`): a sensei's story opening their arc. */
