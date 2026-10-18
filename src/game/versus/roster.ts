@@ -6,7 +6,8 @@ import type { GameContext } from '../context';
 
 /**
  * Who can fight in versus mode: the pack's shinobi as written (genin to kage, with their
- * arsenals) and its foes, each read by fighting power so the strongest are easy to find.
+ * arsenals), its versus-only duelists among them by rank, and its foes, each read by fighting
+ * power so the strongest are easy to find.
  */
 
 /** Groups on the picker, strongest first. */
@@ -65,7 +66,10 @@ function enemyEntry(def: EnemyDef): VersusFighter {
 /** Everyone who can fight, by group, strongest first within each. */
 export function versusRoster(ctx: GameContext): VersusFighter[] {
   // Generated senseis are a pool a save draws from, not the world's cast: they stay out.
-  const cast = ctx.content.people.all.filter((p) => !p.sensei?.pooled);
+  const cast = [
+    ...ctx.content.people.all.filter((p) => !p.sensei?.pooled),
+    ...ctx.content.duelists.all,
+  ];
   const people = cast.flatMap((p) => personEntry(p) ?? []);
   const foes = ctx.content.enemies.all.map(enemyEntry);
   return [...people, ...foes].sort(
@@ -76,7 +80,8 @@ export function versusRoster(ctx: GameContext): VersusFighter[] {
 /** The person or foe behind a roster id, or null for one the pack doesn't have. */
 export function contenderOf(ctx: GameContext, id: string): Contender | null {
   if (id.startsWith(PERSON_KEY)) {
-    const def = ctx.content.people.get(id.slice(PERSON_KEY.length));
+    const personId = id.slice(PERSON_KEY.length);
+    const def = ctx.content.people.get(personId) ?? ctx.content.duelists.get(personId);
     return def && def.rank !== 'civilian' ? { kind: 'person', def } : null;
   }
   if (id.startsWith(ENEMY_KEY)) {

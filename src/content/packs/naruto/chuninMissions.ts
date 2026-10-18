@@ -81,7 +81,7 @@ export const CHUNIN_MISSIONS: readonly MissionDef[] = [
         kind: 'encounter',
         template: 'bandit-camp',
         job: 'deliver',
-        text: 'A camp on the ridge road: rogues with their headbands scratched through.',
+        text: 'A camp on the ridge road, full of rogues with their headbands scratched through.',
         enemyIds: ['leaf-missing-nin', 'leaf-missing-nin'],
         canFlee: true,
       },

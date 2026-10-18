@@ -92,7 +92,7 @@ export const D_CHORES: readonly MissionFill[] = [
       labour:
         'The lane is steep and cobbled, every sack sheds black dust down your neck, and there are more of them every time you come back down.',
       twist:
-        'One sack is warm. When you open it, a single coal is glowing inside, though the rest are cold and black, and it will not go out when you smother it.',
+        'One sack is warm. When you open it, a single coal is burning red inside, though the rest are cold and black, and it will not go out when you smother it.',
       twistHandled:
         'You carry the coal up in your bare cupped hands, because it does not burn you, and the master smith drops it into the furnace with a little bow.',
       twistBotched:
@@ -116,7 +116,7 @@ export const D_CHORES: readonly MissionFill[] = [
       twist:
         'Among the fallen stones is one with a name carved into it, worn almost smooth, and a little dish of rice set on top as if someone had left it this morning.',
       twistHandled:
-        'You set the carved stone back in the weir face first, where it was, and leave the rice. The warden nods and tells you the name is a lock-keeper drowned long ago.',
+        'You set the carved stone back in the weir face first, where it was, and leave the rice. The warden tells you the name belongs to a lock-keeper who drowned long ago.',
       twistBotched:
         'You heave the carved stone into the gap with the rest, face down. The warden makes you dig it out and set it right, and the river makes you pay for it.',
       ending:
@@ -138,7 +138,7 @@ export const D_CHORES: readonly MissionFill[] = [
       twist:
         'With the lanterns down and dark, one of them lights itself in the middle of the afternoon, with nobody near it and no oil in its cup.',
       twistHandled:
-        'You fetch a Tōkaku keeper instead of blowing it out. She sits with the lantern a while, then nods, and it goes out on its own.',
+        'You fetch a Tōkaku keeper instead of blowing it out. She sits with the lantern a while, talking to it under her breath, and it goes out on its own.',
       twistBotched:
         'You try to snuff it with your hat. The flame jumps to the hat, and the foreman has to throw a bucket over you both.',
       ending:
@@ -161,7 +161,7 @@ export const D_CHORES: readonly MissionFill[] = [
       twist:
         'Behind the old wall your spade rings on a clay jar, sealed with wax and heavy with coins, wrapped in a note in a child’s hand.',
       twistHandled:
-        'You read the note before anyone else does: it is Oshima’s own, from when she was small, saving for a pony. She goes very quiet and then laughs aloud.',
+        'You read the note before anyone else does. It is Oshima’s own, from when she was small and saving for a pony. She goes very quiet and then laughs aloud.',
       twistBotched:
         'You drop the jar and it splits, scattering old coins down the slope. Half the afternoon goes on picking them out of the tea bushes.',
       ending:

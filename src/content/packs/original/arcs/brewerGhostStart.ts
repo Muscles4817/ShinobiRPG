@@ -17,7 +17,7 @@ export const SOUR_VATS: MissionDef = {
   rank: 'D',
   client: BREWER,
   summary:
-    'Something cold walks the Mori brewery at night, and every vat it passes turns to vinegar.',
+    'A cold ghost walks the Mori brewery at night, and every vat it passes turns to vinegar.',
   slots: 2,
   energyCost: 15,
   reward: { ryo: 110, reputation: 3 },
@@ -31,13 +31,13 @@ export const SOUR_VATS: MissionDef = {
       kind: 'encounter',
       template: 'spirit',
       job: 'eliminate',
-      text: 'In the cellar the lamps burn blue. Between the vats, something pale drips on the floor.',
+      text: 'In the cellar the lamps burn blue, and between the vats a pale figure stands dripping on the floor.',
       enemyIds: ['storehouse-wraith'],
       canFlee: true,
     },
     {
       kind: 'check',
-      text: 'It is gone, for tonight. Where it stood there are footprints, small and wet, though nothing in the cellar is wet.',
+      text: 'It is gone for tonight. Where it stood there are small wet footprints, though nothing else in the cellar is wet.',
       approaches: [
         {
           label: 'Follow the wet footprints',
@@ -64,7 +64,8 @@ export const SOUR_VATS: MissionDef = {
           },
         },
       ],
-      success: 'They lead out of the cellar to a well in the yard, boarded over and nailed shut.',
+      success:
+        'They lead out of the cellar to a well in the yard that has been boarded over and nailed shut.',
       failure: 'The prints dry and vanish before you can follow them.',
       onFailure: 'forward',
     },
@@ -87,7 +88,7 @@ export const SOUR_VATS: MissionDef = {
           tone: 'curious',
           reply: '“Nobody,” Gensai says, much too fast. “A hungry ghost. They’re nobody.”',
           effects: [{ kind: 'world', mark: 'brewer-asked' }],
-          ledger: 'Asked who the ghost was. The brewer said nobody, too fast.',
+          ledger: 'Asked who the ghost was, and the brewer said nobody, too fast.',
         },
       ],
     },

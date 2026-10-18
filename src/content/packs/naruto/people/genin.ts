@@ -54,7 +54,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       { shape: 'round', eyes: 'round', expression: 'grin' },
     ),
     specialty: 'ninjutsu',
-    bio: 'Loud, stubborn and impossible to discourage. Says he will be Hokage. Eats only ramen.',
+    bio: 'Loud and stubborn, and impossible to discourage. Says he will be Hokage, and eats nothing but ramen.',
     teacher: NARUTO_TEACHER,
     schedule: {
       morning: 'training-grounds',
@@ -96,7 +96,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       { shape: 'angular', eyes: 'narrow', brows: 'thin', expression: 'stern' },
     ),
     specialty: 'ninjutsu',
-    bio: 'One of the best of the year, and knows it. Trains alone. Talks less than he should.',
+    bio: 'One of the best of the year, and knows it. Trains alone, and talks less than he should.',
     teacher: SASUKE_TEACHER,
     schedule: {
       morning: 'training-grounds',
@@ -164,7 +164,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       { shape: 'oval', eyes: 'round', expression: 'worried' },
     ),
     specialty: 'taijutsu',
-    bio: 'Quiet, gentle, and much stronger than her clan gives her credit for.',
+    bio: 'Quiet and gentle, and much stronger than her clan gives her credit for.',
     schedule: {
       morning: 'training-grounds',
       afternoon: 'academy',
@@ -223,7 +223,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       outfit: '#3e6b3a',
     }),
     specialty: 'ninjutsu',
-    bio: 'Speaks in complete, logical sentences. Remembers every slight. Carries a colony.',
+    bio: 'Speaks in complete, logical sentences and remembers every slight. Carries a colony.',
     schedule: {
       morning: 'academy',
       afternoon: 'training-grounds',

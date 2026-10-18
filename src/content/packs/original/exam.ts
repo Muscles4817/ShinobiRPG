@@ -44,8 +44,9 @@ export const EXAMS: readonly ExamDef[] = [
         ],
         passMark: 2,
         vigilance: 10,
-        caught: 'A brush taps your desk. “That is one.” The proctor writes something down.',
-        passed: 'Pens down. The proctor gathers the papers without a word, then nods at your row.',
+        caught: 'A brush taps your desk. “That is one.” The proctor makes a mark on the sheet.',
+        passed:
+          'Pens down. The proctor gathers the papers without a word, then beckons your row out.',
         failed: 'Pens down. Your paper is thinner than it should be. Your name is not read out.',
         disqualified: '“Two.” The proctor points at the door. Your team stands up with you.',
         final: {
@@ -163,7 +164,7 @@ export const EXAM_MISSIONS: readonly MissionDef[] = [
     title: 'The Ash Wood',
     rank: 'C',
     client: 'The exam proctors',
-    summary: 'Three days in the Ash Wood: bring a second token to the shrine at its heart.',
+    summary: 'Three days in the Ash Wood, to bring a second token to the shrine at its heart.',
     slots: 6,
     energyCost: 30,
     reward: { ryo: 0, reputation: 0 },

@@ -386,6 +386,12 @@ export interface ContentPack {
   /** What can be foraged around a camp on the road. */
   readonly campFinds: readonly Find[];
   readonly people: readonly PersonDef[];
+  /**
+   * Authored people who fight in versus mode but don't live in the world yet: no schedule, no
+   * teaching, no part in any job. Plumbing one in moves them to `people`, where every rule for
+   * the cast applies (their techniques then need a real source).
+   */
+  readonly duelists?: readonly PersonDef[];
   readonly conversations: readonly ConversationDef[];
   /** What templated conversations (`about`) are filled with, per specialty, trait, clan, role. */
   readonly conversationTopics: readonly ConversationTopic[];

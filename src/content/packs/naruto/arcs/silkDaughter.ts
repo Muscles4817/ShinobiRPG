@@ -22,7 +22,7 @@ export const BRING_HER_HOME: MissionDef = {
   title: 'Bring Her Home',
   rank: 'C',
   client: DANJURO,
-  summary: 'Do what you were paid for: take Ochō back to her father in Shukuba.',
+  summary: 'Do what you were paid for, and take Ochō back to her father in Shukuba.',
   slots: 1,
   energyCost: 25,
   reward: { ryo: 640, reputation: 2 },
@@ -51,14 +51,14 @@ export const BRING_HER_HOME: MissionDef = {
           unseen: 'You don’t know enough of what she ran from to say it.',
           tone: 'challenge',
           reply:
-            'His servants hear every word. So does the street. Danjūrō lets go of her wrist, and for once says nothing at all.',
+            'His servants hear every word. So does the street. Danjūrō lets go of her wrist, and for once in his life he has no answer.',
           effects: [{ kind: 'mark', mark: 'witnessed' }],
           ledger: 'Said before witnesses what Ochō had run from.',
         },
         {
           label: 'Take your fee and go',
           tone: 'quiet',
-          reply: 'He counts it out carefully. Ochō doesn’t look at you.',
+          reply: 'He counts it out carefully, and Ochō doesn’t look at you.',
           ledger: 'Handed Ochō back to her father.',
         },
       ],
@@ -110,7 +110,7 @@ export const WORD_OF_HER_DEATH: MissionDef = {
           label: 'Say nothing more',
           tone: 'quiet',
           reply: 'He pays you for the news, not a coin more, and sends you out.',
-          ledger: 'Told Danjūrō his daughter drowned. He paid for the news.',
+          ledger: 'Told Danjūrō his daughter drowned, and he paid for the news.',
         },
         {
           label: 'Tell him she drowned running from him',
@@ -182,7 +182,7 @@ export const BEFORE_THE_MAGISTRATE: MissionDef = {
       endings: [
         {
           when: { has: 'case-made' },
-          text: 'The magistrate frees Ochō from her father’s house and voids the marriage contract. Outside, she laughs, and can’t stop.',
+          text: 'The magistrate frees Ochō from her father’s house and voids the marriage contract. Outside on the steps she starts laughing and can’t stop.',
           effects: [
             { kind: 'world', mark: 'silk-daughter-done' },
             { kind: 'world', mark: 'ocho-free' },
@@ -193,7 +193,7 @@ export const BEFORE_THE_MAGISTRATE: MissionDef = {
         {
           text: 'The case is dismissed. Ochō goes back up to the temple, and Chiriku closes the gate behind her.',
           effects: [{ kind: 'world', mark: 'silk-daughter-done' }],
-          ledger: 'The magistrate dismissed the case. Ochō went back to the temple.',
+          ledger: 'The magistrate dismissed the case, and Ochō went back to the temple.',
         },
       ],
     },

@@ -3,6 +3,7 @@ import { canGoWithCrew, daysAway, MIN_RYO_PER_DAY_AWAY } from '@/systems/mission
 
 import { duplicateIds } from './catalog';
 import { validateArsenals } from './validateArsenals';
+import { validateDuelists } from './validateDuelists';
 import { validateLadders } from './validateLadders';
 import { validateGear } from './validateGear';
 import { validateEncounters } from './validateEncounters';
@@ -71,6 +72,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateRecipes(pack),
     ...validatePeople(pack),
     ...validateArsenals(pack),
+    ...validateDuelists(pack),
     ...validateLadders(pack),
     ...validateRanks(pack),
     ...validateTeachers(pack),
@@ -183,7 +185,7 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['ingredient', pack.ingredients],
     ['recipe', pack.recipes],
     ['cookbook', pack.cookbooks],
-    ['person', pack.people],
+    ['person', [...pack.people, ...(pack.duelists ?? [])]],
     ['conversation', pack.conversations],
   ];
   return collections.flatMap(([kind, items]) =>
@@ -278,7 +280,13 @@ function numberProblems(pack: ContentPack): string[] {
       .filter((t) => t.effects.length === 0)
       .map((t) => `technique "${t.id}" has no effects`),
     ...pack.techniques
-      .filter((t) => t.chakraCost < 0 || t.difficulty <= 0 || t.effects.some((e) => e.power <= 0))
+      .filter(
+        (t) =>
+          t.chakraCost < 0 ||
+          (t.swarmCost ?? 1) <= 0 ||
+          t.difficulty <= 0 ||
+          t.effects.some((e) => e.power <= 0),
+      )
       .map((t) => `technique "${t.id}" has non-positive numbers`),
     ...pack.techniques.flatMap((t) =>
       t.effects.flatMap((e) => {

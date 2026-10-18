@@ -22,7 +22,7 @@ export const GHOST_NIGHT: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'At midnight the yard goes cold. The boards on the well lift by themselves, and she climbs out: a woman in a brewer’s apron dark with well water, looking only at Gensai.',
+      text: 'At midnight the yard goes cold. The boards on the well lift by themselves, and a woman climbs out in a brewer’s apron dark with well water, looking only at Gensai.',
       variants: [
         {
           when: { remembers: 'brewer-wrong-man' },
@@ -32,7 +32,7 @@ export const GHOST_NIGHT: MissionDef = {
     },
     {
       kind: 'decision',
-      text: 'Gensai is behind you, gripping your sleeve. “Do it,” he whispers. “What I paid you for.”',
+      text: 'Gensai is behind you, gripping your sleeve. “Do it,” he hisses. “Do what I paid you for.”',
       options: [
         {
           when: { tally: BREWER_CLUES, atLeast: 2 },
@@ -40,7 +40,7 @@ export const GHOST_NIGHT: MissionDef = {
           unseen: 'You never learned enough about who she was.',
           tone: 'kind',
           reply:
-            'She stops at her name. You tell her everything you’ve pieced together, and what it means. She turns to Gensai, and he falls to his knees and says it all, to her and to the whole yard.',
+            'She stops at her name. You tell her everything you’ve pieced together, and what it means. When she turns to Gensai he falls to his knees and says all of it out loud, in front of her and the whole yard.',
           effects: [
             { kind: 'mark', mark: 'named-her' },
             { kind: 'tally', tally: MERCY, by: 1 },
@@ -53,9 +53,9 @@ export const GHOST_NIGHT: MissionDef = {
           unseen: 'You have nothing to make him.',
           tone: 'challenge',
           reply:
-            '“Confess what?” he says, and backs away. She follows him. You have to stand in her way.',
+            '“Confess what?” he says as he backs away, and she follows him until you have to step into her path.',
           effects: [{ kind: 'mark', mark: 'pressed' }],
-          ledger: 'Told the brewer to confess. He wouldn’t, yet.',
+          ledger: 'Told the brewer to confess, which he wouldn’t do yet.',
         },
         {
           label: 'Lay her by force, as you were paid to',
@@ -159,7 +159,7 @@ export const SECOND_WELL: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'Sachi meets you at the back gate, not the front. “It says get out,” she whispers. “Every night. And my husband says I’m tired.”',
+      text: 'Sachi meets you at the back gate, not the front. “It says get out,” she says, very low. “Every night it says it, and my husband tells me I’m only tired.”',
     },
     {
       kind: 'decision',
@@ -175,7 +175,7 @@ export const SECOND_WELL: MissionDef = {
             { kind: 'mark', mark: 'told-sachi' },
             { kind: 'tally', tally: MERCY, by: 1 },
           ],
-          ledger: 'Told Sachi what is in the well. She went to the Watch.',
+          ledger: 'Told Sachi what is in the well, and she went to the Watch.',
         },
         {
           label: 'Say it is only the wind',

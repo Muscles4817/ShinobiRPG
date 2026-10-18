@@ -63,9 +63,10 @@ export const SENSEIS: readonly PersonDef[] = [
       specialty: 'ninjutsu',
       favouredTraits: ['calm', 'cunning', 'focused'],
       nature: 'lightning',
-      style: 'Late, lazy-looking, and misses nothing. Teaches teamwork the hard way.',
+      style:
+        'Late and lazy-looking, and misses nothing all the same. Teaches teamwork the hard way.',
       lesson:
-        'Kakashi turns up late, closes his book, and runs you ragged through every drill you thought you knew.',
+        'Kakashi turns up late and closes his book, then runs you ragged through every drill you thought you knew.',
       // Leads a team of their own already.
       offered: false,
       ways: KAKASHI_WAYS,
@@ -106,7 +107,7 @@ export const SENSEIS: readonly PersonDef[] = [
       },
     ),
     specialty: 'taijutsu',
-    bio: 'The Green Beast of the Hidden Leaf. Believes in hard work, youth, and five hundred laps.',
+    bio: 'The Green Beast of the Hidden Leaf, who believes in hard work and youth and five hundred laps before breakfast.',
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',
@@ -116,9 +117,9 @@ export const SENSEIS: readonly PersonDef[] = [
     sensei: {
       specialty: 'taijutsu',
       favouredTraits: ['brash', 'diligent', 'proud'],
-      style: 'Shouts, runs, and never lets you quit. Ever.',
+      style: 'Shouts, runs everywhere he goes and never lets you quit, not even once.',
       lesson:
-        'Guy has you running laps on your hands before breakfast. He does twice as many, cheering.',
+        'Guy has you running laps on your hands before breakfast, and does twice as many himself, cheering you on the whole way.',
       // Leads a team of their own already.
       offered: false,
       ways: GUY_WAYS,
@@ -143,7 +144,7 @@ export const SENSEIS: readonly PersonDef[] = [
       outfit: '#9a2f2a',
     }),
     specialty: 'genjutsu',
-    bio: 'The village’s finest genjutsu user. Patient, precise, and protective of her students.',
+    bio: 'The village’s finest genjutsu user. She is patient and precise, and fiercely protective of her students.',
     schedule: {
       morning: 'academy',
       afternoon: 'training-grounds',
@@ -225,7 +226,7 @@ export const SENSEIS: readonly PersonDef[] = [
       outfit: '#2a2a32',
     }),
     specialty: 'fuuinjutsu',
-    bio: 'Snake techniques, a cursed seal, and a fondness for dango. Terrifying examiner.',
+    bio: 'Snake techniques and a cursed seal, and a fondness for dango that nobody dares to mention. The examiner every genin dreads.',
     schedule: {
       morning: 'shopping-district',
       afternoon: 'training-grounds',

@@ -40,7 +40,7 @@ export const TEMPLE_BELL_ACT_ONE: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'Kaname ties on an old prayer bead bracelet before you leave. You have never seen him wear it.',
+      text: 'Before you leave, Kaname ties on an old prayer-bead bracelet you have never seen him wear.',
     },
     {
       kind: 'leg',
@@ -50,7 +50,7 @@ export const TEMPLE_BELL_ACT_ONE: MissionDef = {
     },
     {
       kind: 'check',
-      text: 'In the bell tower, the great bell hangs silent. Its clapper is gone.',
+      text: 'In the bell tower the great bell hangs silent, because its clapper is gone.',
       approaches: [
         {
           label: 'Look for who took the clapper',
@@ -72,9 +72,10 @@ export const TEMPLE_BELL_ACT_ONE: MissionDef = {
           },
         },
       ],
-      success: 'Marks on the tower stairs, and a monk who finally says a name: Jōen.',
+      success:
+        'There are marks on the tower stairs, and at last one of the monks says a name, Jōen.',
       failure:
-        'The monks say nothing, but Kaname finds a prayer bead on the stairs and knows whose it is.',
+        'The monks won’t talk, but Kaname finds a prayer bead on the stairs and knows whose it is.',
       onFailure: 'forward',
     },
     {
@@ -91,7 +92,7 @@ export const TEMPLE_BELL_ACT_ONE: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: '“Jōen,” Kaname says. “My temple brother. We learned to fall together.” He bows to the abbot. “I will bring the bell’s voice back.”',
+          text: '“Jōen,” Kaname says. “My temple brother. We learned to fall together, he and I.” He bows to the abbot. “I will bring the bell’s voice back to you.”',
         },
       ],
     },
@@ -113,32 +114,32 @@ export const TEMPLE_BELL_ACT_TWO: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'The forest track again. Kaname is quiet, the way water is quiet before it falls.',
+      text: 'On the forest track again Kaname is quiet, the way a river goes quiet above a fall.',
       days: 2,
       region: 'forest-track',
     },
     {
       kind: 'decision',
-      text: 'In the hills above the temple, Jōen waits, the bell’s clapper at his feet. “The temple forgot us,” he says. Kaname asks you, “What do I say to him?”',
+      text: 'Jōen is waiting in the hills above the temple with the bell’s clapper at his feet. “The temple forgot us,” he says. Kaname asks you, quietly, “What do I say to him?”',
       options: [
         {
           label: '“That the temple didn’t forget. You came back.”',
           tone: 'kind',
-          reply: 'Jōen’s hands drop an inch.',
+          reply: 'Jōen’s guard drops an inch.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Reminded Jōen the temple had not forgotten him.',
         },
         {
           label: '“Nothing. Just fall together, like before.”',
           tone: 'quiet',
-          reply: 'Kaname smiles, sad. “Yes.”',
+          reply: '“Yes,” Kaname says, sadly. “Like before.”',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Told Kaname to meet Jōen as a brother.',
         },
         {
           label: '“That he’s a thief.”',
           tone: 'challenge',
-          reply: 'Jōen’s face hardens. Kaname sighs.',
+          reply: 'Jōen’s face hardens, and Kaname closes his eyes for a moment.',
           ledger: 'Called Jōen a thief.',
         },
       ],
@@ -147,7 +148,7 @@ export const TEMPLE_BELL_ACT_TWO: MissionDef = {
       kind: 'encounter',
       template: 'lone-rogue',
       job: 'eliminate',
-      text: 'Jōen comes at Kaname with the same soft style, made hard. It is like watching someone fight their reflection.',
+      text: 'Jōen comes at Kaname with the same soft style turned hard, and it is like watching a man fight his reflection.',
       enemyIds: ['joen'],
       canFlee: false,
       bypassable: false,
@@ -165,7 +166,7 @@ export const TEMPLE_BELL_ACT_TWO: MissionDef = {
           ledger: 'Brought Jōen and the bell’s voice home.',
         },
         {
-          text: 'Jōen goes down and stays down. Kaname carries the clapper back alone. The bell rings that evening. He doesn’t listen.',
+          text: 'Jōen goes down and stays down, and Kaname carries the clapper back alone. When the bell rings that evening he walks out of earshot.',
           effects: [
             { kind: 'world', mark: TEMPLE_BELL_SETTLED },
             { kind: 'memory', text: 'the evening of the bell' },
@@ -176,7 +177,7 @@ export const TEMPLE_BELL_ACT_TWO: MissionDef = {
     },
     {
       kind: 'leg',
-      text: 'Back along the forest track to the Leaf. You can hear the bell for a long way.',
+      text: 'Back along the forest track to the Leaf, with the bell still sounding behind you for the first few miles.',
       days: 2,
     },
   ],

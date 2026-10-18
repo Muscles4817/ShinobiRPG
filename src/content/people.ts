@@ -121,13 +121,18 @@ export interface PersonDef {
 
 /**
  * A person's own way of fighting: the techniques they bring to every fight (in place of the
- * academy's and their specialty's starter) and the perks they fight with (a transplanted eye's
- * insight). Every technique is one of the pack's, learnable somewhere like any other, and fits
- * its owner's grade in its art (validated).
+ * academy's and their specialty's starter), the perks they fight with (a transplanted eye's
+ * insight) and, for someone known by their kit, the gear they wear and the tools in their pouch.
+ * Every technique is one of the pack's, learnable somewhere like any other, and fits its owner's
+ * grade in its art (validated).
  */
 export interface PersonArsenal {
   readonly techniqueIds: readonly string[];
   readonly perks?: readonly CombatPerk[];
+  /** The pack's gear they fight in, a piece per slot (validated). Left out, armed as their kit. */
+  readonly gearIds?: readonly string[];
+  /** The pack's fight tools they carry into every fight, by id, and how many. */
+  readonly tools?: Readonly<Record<string, number>>;
 }
 
 /**

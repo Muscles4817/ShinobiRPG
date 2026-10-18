@@ -67,7 +67,7 @@ export const YOMI_WAYS: SenseiWays = {
   rituals: [
     {
       kind: 'tea',
-      line: 'Yomi pours tea for the team among the grave lanterns and says nothing for an hour.',
+      line: 'Yomi pours tea for the team among the grave lanterns, and for an hour hardly anyone says a word.',
     },
   ],
   rewards: ['praise', 'recipe', 'signature'],
@@ -103,7 +103,7 @@ export const TETSU_WAYS: SenseiWays = {
   gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual' },
   classRegard: 'even',
   story: {
-    wound: 'A blade he forged killed his friend.',
+    wound: 'A blade he forged and sold went on to kill a friend of his.',
     beats: ['tetsu-forge', 'tetsu-master', 'tetsu-blade', 'tetsu-memory'],
     arcId: 'the-forged-blade',
   },

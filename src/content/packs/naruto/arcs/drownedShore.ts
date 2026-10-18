@@ -46,13 +46,13 @@ export const DROWNED_SHORE_ACT_ONE: MissionDef = {
     },
     {
       kind: 'leg',
-      text: 'Two days down the coast road to the Waves. Hotaru stops talking when she smells the sea.',
+      text: 'Two days down the coast road to the Waves. Hotaru stops talking the moment she smells the sea.',
       days: 2,
       region: 'coast-road',
     },
     {
       kind: 'check',
-      text: 'The fishing village is half empty, its boats rotting on the shingle. Someone is watching from the nets.',
+      text: 'The fishing village is half empty, with its boats rotting on the shingle and a pair of eyes watching you from behind the nets.',
       approaches: [
         {
           label: 'Follow the one who’s watching',
@@ -82,7 +82,7 @@ export const DROWNED_SHORE_ACT_ONE: MissionDef = {
     },
     {
       kind: 'camp',
-      text: 'You camp on the shingle. Hotaru sits at the water’s edge all night, lifting the sea and letting it fall.',
+      text: 'You camp on the shingle, and Hotaru sits at the water’s edge all night, lifting the sea and letting it fall.',
       picks: 2,
       activities: [
         { kind: 'crew', label: 'Sit with Hotaru', when: { crew: 'team' } },
@@ -94,7 +94,7 @@ export const DROWNED_SHORE_ACT_ONE: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: '“He’s alive,” Hotaru says, and laughs, and cries, and laughs. “Next time we bring him home.”',
+          text: '“He’s alive,” Hotaru says, laughing and crying at once. “Next time we come, we bring him home.”',
         },
       ],
     },
@@ -116,32 +116,32 @@ export const DROWNED_SHORE_ACT_TWO: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'The coast road again. Hotaru doesn’t sleep, and doesn’t seem to need to.',
+      text: 'On the coast road again Hotaru doesn’t sleep, and doesn’t seem to need to.',
       days: 2,
       region: 'coast-road',
     },
     {
       kind: 'decision',
-      text: 'On the smugglers’ jetty, Nagi stands between you and the boats. He doesn’t know his sister. Hotaru asks you, “How do I make him see me?”',
+      text: 'Nagi stands on the smugglers’ jetty between you and the boats, and doesn’t know his own sister. Hotaru asks you, “How do I make him see me?”',
       options: [
         {
           label: '“Tell him about the nets.”',
           tone: 'kind',
-          reply: 'Nagi goes very still at the word.',
+          reply: 'At the word, Nagi goes very still.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Told Nagi about the nets.',
         },
         {
           label: '“Show him your water. It’s the same as his.”',
           tone: 'earnest',
-          reply: 'She lifts the sea. So does he, without meaning to.',
+          reply: 'She lifts the sea, and so does he, without meaning to.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Hotaru showed Nagi their water.',
         },
         {
           label: '“He chose the smugglers. Fight him.”',
           tone: 'challenge',
-          reply: 'Hotaru’s face falls. “If I have to.”',
+          reply: 'Hotaru’s face falls. “If I have to, then. If he makes me.”',
           ledger: 'Told Hotaru to fight her brother.',
         },
       ],
@@ -169,7 +169,7 @@ export const DROWNED_SHORE_ACT_TWO: MissionDef = {
           ledger: 'Brought Hotaru’s brother home.',
         },
         {
-          text: 'Nagi goes down in the shallows and won’t come. Hotaru leaves him a boat, and her address, and walks away without looking back.',
+          text: 'Nagi goes down in the shallows and won’t come with you. Hotaru leaves him a boat and her address, and walks away without looking back.',
           effects: [
             { kind: 'world', mark: DROWNED_SHORE_SETTLED },
             { kind: 'memory', text: 'the night on the jetty' },

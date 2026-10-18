@@ -48,7 +48,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     id: 'kennel-hound',
     name: 'Kennel hound',
     description:
-      'A pup from the clinic’s own line of working dogs: steady, keen-nosed and eager to please.',
+      'A pup from the clinic’s own line of working dogs, steady and keen-nosed and eager to please.',
     temperament: 'bred',
     body: {
       adult: { strength: 9, speed: 12, stamina: 11, perception: 14 },

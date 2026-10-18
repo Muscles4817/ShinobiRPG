@@ -346,7 +346,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`breakContract`) frees you to sign another, and its clan never takes you back
     (`GameState.brokenContracts`). Foes summon too (`EnemyDef.summons`, from a contract of the
     pack, with a `tell` read like a retinue's: `summonsSeen`). Nothing is locked by rank: the
-    price is the lock. It is cared for
+    price is the lock. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
+    `swarmContract.ts`: a strain's rules as data, a count and a cap; `rules/swarms.ts`,
+    `engines/plan/swarm.ts`): techniques with a `swarmCost` spend insects (a fighter without a
+    hive pays chakra alone), a swarm technique that reaches a foe leaves insects settled on them
+    that draw their chakra into the host and keep them from hiding until they drop off or a
+    feared element burns them off, areas and feared elements kill insects in the host's hive,
+    a hive helps its host find the hidden, and `CombatOutcome.swarm` reports how many came home. It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -744,6 +750,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   team of their own sets `offered: false`: never offered, kept by a save that chose them.
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).
+- **Add a versus-only fighter (a duelist):** a `PersonDef` in the pack's `duelists`
+  (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi rank, no
+  schedule, no teaching, and an `arsenal` (which may name `gearIds` and `tools`, carried into
+  every fight). They show in versus by rank and nowhere else; their arsenal sources their
+  techniques (validated in `validateDuelists.ts`). Plumbing one in moves them to `people`, where
+  their techniques then need a real source.
 - **Add a sensei temperament or past:** a `SenseiTemperament` in
   `content/shared/sensei/temperaments.ts` (an existing archetype, traits, a haunt, a full
   voice kit) or a `SenseiPast` in `content/shared/sensei/pasts/` (the temperaments that can carry

@@ -41,7 +41,7 @@ export const UNFINISHED_ACT_ONE: MissionDef = {
     { kind: 'narrative', text: 'Yomi brings a lantern from the grave nobody visits, unlit.' },
     {
       kind: 'leg',
-      text: 'Two days on the hill road. Yomi talks to the empty air beside her, and once it answers.',
+      text: 'Two days on the hill road. Yomi talks to the empty air beside her the whole way, and once you hear it answer.',
       days: 2,
       region: 'hill-road',
     },
@@ -69,7 +69,8 @@ export const UNFINISHED_ACT_ONE: MissionDef = {
           },
         },
       ],
-      success: 'At the centre of the ring, the cold never lifts. Yomi kneels there a long time.',
+      success:
+        'At the centre of the ring the cold never lifts, and Yomi kneels in it until her knees are soaked.',
       failure: 'You find nothing, but Yomi walks straight to the cold place as if she was called.',
       onFailure: 'forward',
     },
@@ -109,7 +110,7 @@ export const UNFINISHED_ACT_TWO: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'The hill road again. Yomi lights the lantern at last.',
+      text: 'On the hill road again, Yomi lights the lantern at last.',
       days: 2,
       region: 'hill-road',
     },
@@ -120,20 +121,20 @@ export const UNFINISHED_ACT_TWO: MissionDef = {
         {
           label: '“Tell him the war is over.”',
           tone: 'earnest',
-          reply: 'He hesitates. He has been waiting a long time to hear it.',
+          reply: 'He hesitates, as if he has been waiting years for someone to say it.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Told Sōma the war was over.',
         },
         {
           label: '“Let him finish the fight.”',
           tone: 'challenge',
-          reply: 'Yomi nods slowly. “Then we give him one.”',
+          reply: '“Then we give him one,” Yomi says slowly.',
           ledger: 'Gave Sōma his last fight.',
         },
         {
           label: '“Show him the lantern.”',
           tone: 'kind',
-          reply: 'The light finds his face. He knows it.',
+          reply: 'The light finds his face, and you see him recognise it.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Showed Sōma the lantern.',
         },
@@ -153,7 +154,7 @@ export const UNFINISHED_ACT_TWO: MissionDef = {
       endings: [
         {
           when: { has: 'mercy' },
-          text: 'When it is over Sōma lowers his kunai and looks at Yomi. “You got old,” he says, and smiles, and is gone. The cold lifts from the hill.',
+          text: 'When it is over Sōma lowers his kunai and looks at Yomi. “You got old,” he says, smiling, and then he is gone and the cold lifts from the hill.',
           effects: [
             { kind: 'world', mark: UNFINISHED_SETTLED },
             { kind: 'memory', text: 'the night Sōma rested' },
@@ -161,7 +162,7 @@ export const UNFINISHED_ACT_TWO: MissionDef = {
           ledger: 'Laid Sōma to rest.',
         },
         {
-          text: 'Sōma fights to the end and fades with the dawn. Yomi plants the lantern where he stood. “Finished,” she says.',
+          text: 'Sōma fights to the end and fades with the dawn, and Yomi plants the lantern where he stood and tells him he’s finished now.',
           effects: [
             { kind: 'world', mark: UNFINISHED_SETTLED },
             { kind: 'memory', text: 'the dawn on the hill' },

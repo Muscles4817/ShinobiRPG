@@ -23,6 +23,7 @@ import type {
 import type { CombatOrders, CombatStance } from '../../teamContract';
 import type { Caller, Summoned } from './calls';
 import type { Footing } from './footing';
+import type { Hive } from './hive';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -93,7 +94,8 @@ export interface PlanFighter
     LingeringMemory,
     Footing,
     Caller,
-    Summoned {
+    Summoned,
+    Hive {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;

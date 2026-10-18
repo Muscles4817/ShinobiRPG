@@ -31,7 +31,7 @@ export const STRONGROOM_SWORD: MissionDef = {
     { kind: 'leg', text: 'Down the river road to Kiri Ford.', days: 1, region: 'river-road' },
     {
       kind: 'decision',
-      text: 'The moneylender Hayase keeps a strongroom on the water, guarded day and night. You will need someone who knows the ford.',
+      text: 'The moneylender Hayase keeps a strongroom on the water with guards on it day and night, and you will need someone who knows the ford.',
       options: [
         {
           label: 'Brother Ino at the Low Water, who drinks with Hayase’s lockmaker',
@@ -44,7 +44,8 @@ export const STRONGROOM_SWORD: MissionDef = {
         {
           label: 'Tobei the pilot, who can row you in under the water-gate',
           tone: 'challenge',
-          reply: '“At night? Under Hayase’s nose?” Tobei grins. “Done.”',
+          reply:
+            '“At night? Under Hayase’s nose?” Tobei looks delighted. “I’ve wanted an excuse for years.”',
           effects: [{ kind: 'mark', mark: 'crewed' }],
           ledger: 'Brought in Tobei, to row you under the water-gate.',
         },
@@ -66,7 +67,7 @@ export const STRONGROOM_SWORD: MissionDef = {
     },
     {
       kind: 'check',
-      text: 'The sword hangs among pawned things, its scabbard cracked. Something is wound tight around the hilt under the old binding.',
+      text: 'The sword hangs among the pawned things with its scabbard cracked, and under the old binding a strip of paper is wound tight around the hilt.',
       approaches: [
         {
           label: 'Unwind the binding carefully',
@@ -80,7 +81,7 @@ export const STRONGROOM_SWORD: MissionDef = {
       ],
       success:
         'A letter, folded small, the ink faded brown. It is addressed to Kōun, in a hand that isn’t his.',
-      failure: 'There’s no time. Lamps are moving on the walk outside.',
+      failure: 'There’s no time, because lamps are already moving on the walk outside.',
       onFailure: 'forward',
     },
     {
@@ -91,7 +92,7 @@ export const STRONGROOM_SWORD: MissionDef = {
         {
           label: 'Take it back, and let them go',
           tone: 'kind',
-          reply: 'They hand it over, ashamed, and the buyer rows away empty.',
+          reply: 'They hand it over, ashamed of themselves, and the buyer rows away empty-handed.',
           effects: [{ kind: 'tally', tally: KOUN_GRACE, by: 1 }],
           ledger: 'Took the sword back from a crew that sold you out, and let them go.',
         },
@@ -106,7 +107,7 @@ export const STRONGROOM_SWORD: MissionDef = {
     {
       when: { all: [{ has: 'crewed' }, { has: 'helper-true' }] },
       kind: 'decision',
-      text: 'On the landing your helper hands you the sword and grins. They haven’t asked for anything.',
+      text: 'On the landing your helper hands you the sword, pleased with the night’s work, and never once asks for anything in return.',
       options: [
         {
           label: 'Split what Kōun pays with them',
@@ -130,7 +131,7 @@ export const STRONGROOM_SWORD: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: 'You wrap the sword for the road. When you put it in Kōun’s hands he holds it a long time, as if it were heavier than it looks.',
+          text: 'You wrap the sword for the road. When you put it in Kōun’s hands he holds it without moving, as if it were heavier than it looks.',
           effects: [{ kind: 'memory', text: 'the night at Hayase’s strongroom' }],
         },
       ],

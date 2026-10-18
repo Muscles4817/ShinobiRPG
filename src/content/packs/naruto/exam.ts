@@ -77,7 +77,7 @@ export const EXAMS: readonly ExamDef[] = [
         bout: '{them} walks into the arena and doesn’t bother to bow.',
         won: 'Genma steps between you, senbon in his teeth. “Winner.”',
         lost: 'The world tilts. Genma calls it before you hit the ground.',
-        yielded: 'You raise your hand. Genma nods and steps in.',
+        yielded: 'You raise your hand, and Genma steps in to call it.',
         champion: 'The stands are on their feet. You won the finals.',
       },
     ],

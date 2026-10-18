@@ -25,7 +25,7 @@ export const BARONS_BILL: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'Before dawn the ferry office door bangs open. Oki has hired pirates off the river to clear the landing for good: the ferrymen, the beaten blade, and you.',
+      text: 'Before dawn the ferry office door bangs open. Oki has hired pirates off the river to clear the landing for good, and that means the ferrymen and the beaten blade, and you.',
       variants: [
         {
           when: { remembers: 'ford-rogue-spared' },
@@ -33,7 +33,7 @@ export const BARONS_BILL: MissionDef = {
         },
         {
           when: { remembers: 'ford-rogue-bound' },
-          text: 'Before dawn a ferryman runs in: pirates are rowing for the lock-up boat where Ushio and Ren wait for the Watch. Oki doesn’t leave loose ends, or witnesses.',
+          text: 'Before dawn a ferryman runs in to say that pirates are rowing for the lock-up boat where Ushio and Ren wait for the Watch. Oki doesn’t leave loose ends, or witnesses.',
         },
       ],
     },
@@ -45,7 +45,7 @@ export const BARONS_BILL: MissionDef = {
         {
           label: 'Fight beside him',
           tone: 'earnest',
-          reply: 'Ushio nods once, as if you’d agreed on a price.',
+          reply: 'Ushio dips his head once, as if you had agreed on a price.',
           effects: [{ kind: 'mark', mark: 'ushio-along' }],
           ledger: 'Fought beside the blade you beat.',
         },
@@ -83,7 +83,7 @@ export const BARONS_BILL: MissionDef = {
       kind: 'encounter',
       template: 'bandit-camp',
       job: 'eliminate',
-      text: 'Three boats nose into the landing under the chain, hooks and bows ready.',
+      text: 'Three boats nose into the landing under the chain with their hooks and bows ready.',
       enemyIds: ['bandit-chief', 'river-pirate', 'bandit-archer'],
       canFlee: false,
       flavour: {
@@ -110,7 +110,8 @@ export const BARONS_BILL: MissionDef = {
           when: { any: [{ lacks: 'ushio-along' }, { lacks: 'fought-past' }] },
           label: 'Let the ferrymen give him a dunking under his chain first',
           tone: 'joke',
-          reply: 'He comes up spluttering three times. The whole landing cheers each one.',
+          reply:
+            'He comes up spluttering three times, and the whole landing cheers him every time.',
           effects: [
             { kind: 'world', mark: 'ford-oki-tried' },
             { kind: 'bond', by: 1 },
@@ -122,7 +123,7 @@ export const BARONS_BILL: MissionDef = {
           label: 'Let Ushio have a word with him',
           tone: 'quiet',
           reply:
-            'Ushio walks to the toll box on Ren’s arm and says something to Oki, too low for anyone else to hear. Oki hands the ferrymen the chain’s key and the deeds to the landing, and never charges anyone a toll again.',
+            'Ushio walks to the toll box on Ren’s arm and speaks to Oki too low for anyone else to hear. Oki hands the ferrymen the chain’s key and the deeds to the landing, and never charges anyone a toll again.',
           effects: [{ kind: 'world', mark: 'ford-oki-broken' }],
           ledger: 'Let the dying blade settle his bill with the baron.',
         },
@@ -139,7 +140,7 @@ export const BARONS_BILL: MissionDef = {
             { kind: 'world', mark: 'ford-ushio-fell' },
             { kind: 'memory', text: 'Ushio holding the landing steps' },
           ],
-          ledger: 'Cut the chain. Ushio fell holding the steps.',
+          ledger: 'Cut the chain, and Ushio fell holding the steps.',
         },
         {
           when: { any: [{ has: 'sent-clear' }, { has: 'ushio-along' }] },
@@ -238,7 +239,7 @@ export const REN_HEARING: MissionDef = {
         {
           label: 'Leave it to the Watch',
           tone: 'quiet',
-          reply: 'Suzu nods, and writes. Ren doesn’t look at you as they take him out.',
+          reply: 'Suzu writes it down. Ren doesn’t look at you as they take him out.',
           effects: [{ kind: 'world', mark: 'ren-to-the-forts' }],
           ledger: 'Left Ren to the Watch.',
         },
@@ -249,7 +250,7 @@ export const REN_HEARING: MissionDef = {
       endings: [
         {
           when: { all: [{ has: 'ren-stays' }, { remembers: 'ford-ushio-fell' }] },
-          text: 'Ren asks for one thing before he goes in: that Ushio’s blade hangs in the Watch house where he can see it. Suzu lets it.',
+          text: 'Ren asks for one thing before he goes in, that Ushio’s blade should hang in the Watch house where he can see it, and Suzu allows it.',
           effects: [{ kind: 'world', mark: 'ford-arc-done' }],
           ledger: 'Ren stays in the village, under the Watch.',
         },

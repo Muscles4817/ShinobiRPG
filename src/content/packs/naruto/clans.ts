@@ -23,7 +23,7 @@ export const CLANS: readonly ClanDef[] = [
     lodging: 'Your room in the Uchiha compound',
     kekkeiGenkai: {
       name: 'Sharingan',
-      description: 'The copy wheel eye. Dormant until something awakens it.',
+      description: 'The copy wheel eye, dormant until grief or danger awakens it.',
       dormant: true,
       perks: ['foresight', 'mimicry'],
     },

@@ -38,6 +38,7 @@ import {
 } from './state';
 import { editTeam, teamOptions } from './orders';
 import { summonFatesOf } from './summons';
+import { hiveMeter } from './swarmView';
 import { editPlan, tableOptions } from './table';
 import { stanceStatus } from './team';
 import { foeMarkFor } from './foeTeam';
@@ -304,7 +305,7 @@ export function createPlanEngine(): CombatEngine {
     view(state): CombatView {
       const plan = read(state);
       const insight = hasPerk(playerOf(plan), 'insight');
-      const meter = fieldMeter(plan);
+      const meters = [fieldMeter(plan), hiveMeter(playerOf(plan))].flatMap((m) => (m ? [m] : []));
       return {
         round: plan.bout,
         combatants: plan.fighters.map((f) => ({
@@ -316,7 +317,7 @@ export function createPlanEngine(): CombatEngine {
         options: options(plan),
         range: plan.range,
         prompt: prompt(plan),
-        ...(meter ? { meters: [meter] } : {}),
+        ...(meters.length > 0 ? { meters } : {}),
         ...(plan.watching ? { watched: true as const } : {}),
       };
     },
@@ -338,6 +339,7 @@ export function createPlanEngine(): CombatEngine {
         allies: alliesAfter(plan.fighters),
         summary: fightSummary(plan, result),
         summons: summonFatesOf(player),
+        ...(player.swarm ? { swarm: player.swarm.count } : {}),
       };
     },
   };

@@ -7,7 +7,8 @@ export const RESCUE_MISSIONS: readonly MissionDef[] = [
     title: 'The Pup in the Culvert',
     rank: 'D',
     client: 'Ferryman Gonta',
-    summary: 'Something has been crying in the storm culvert under the canal road for two days.',
+    summary:
+      'A small animal has been crying in the storm culvert under the canal road for two days.',
     slots: 2,
     energyCost: 15,
     reward: { ryo: 80, reputation: 3, companionKindId: 'stray-hound' },

@@ -44,7 +44,7 @@ export const FORGED_BLADE_ACT_ONE: MissionDef = {
     },
     {
       kind: 'leg',
-      text: 'Two days up the pass. Tetsu says even less than usual, which is to say nothing.',
+      text: 'Two days up the pass, during which Tetsu says even less than usual, which is to say nothing at all.',
       days: 2,
       region: 'mountain-pass',
     },
@@ -90,7 +90,7 @@ export const FORGED_BLADE_ACT_ONE: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: '“Mine,” Tetsu says, of the marks on the stone. Then: “Next time.” It is a whole speech, for him.',
+          text: '“Mine,” Tetsu says of the marks on the stone, and a little later, “Next time.” For Tetsu it amounts to a speech.',
         },
       ],
     },
@@ -112,32 +112,32 @@ export const FORGED_BLADE_ACT_TWO: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'The pass again. Tetsu speaks once: his friend’s name.',
+      text: 'Up the pass again. Tetsu speaks only once on the way, to say his friend’s name.',
       days: 2,
       region: 'mountain-pass',
     },
     {
       kind: 'decision',
-      text: 'The blade-bearer waits on the stone, sword across his knees. Tetsu looks at you. He wants to know what you think.',
+      text: 'The blade-bearer is waiting on the stone with the sword across his knees. Tetsu looks at you, and you understand he wants to know what you think.',
       options: [
         {
           label: '“Take the blade. Leave him his life.”',
           tone: 'earnest',
-          reply: 'Tetsu nods once.',
+          reply: 'Tetsu grunts, which means yes.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Told Tetsu to take only the blade.',
         },
         {
           label: '“Ask him how he came by it.”',
           tone: 'curious',
-          reply: 'The swordsman laughs. “I bought it. Like you sold it.” Tetsu flinches.',
+          reply: 'The swordsman laughs. “I bought it, the same way you sold it.” Tetsu flinches.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Asked how the blade was bought.',
         },
         {
           label: '“End it.”',
           tone: 'challenge',
-          reply: 'Tetsu says nothing, which is yes.',
+          reply: 'Tetsu doesn’t answer, which from him means yes.',
           ledger: 'Told Tetsu to end it.',
         },
       ],

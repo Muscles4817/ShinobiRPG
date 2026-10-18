@@ -16,7 +16,7 @@ export const EXEMPLARS_TEAM: readonly MissionFill[] = [
       signs:
         'At the cliff bend the gulls have gone quiet, and there are fresh hoofprints that come down to the road and stop.',
       ambush:
-        'Three figures rise from the salt grass on the cliff top: a broad man with a club, a skinny one with a bow, and their chief in a stolen guild coat.',
+        'Three figures rise from the salt grass on the cliff top, a broad man with a club and a skinny one with a bow, and between them their chief in a stolen guild coat.',
       foe: 'bandit-chief',
       second: 'bandit-thug',
       third: 'bandit-archer',
@@ -97,7 +97,7 @@ export const EXEMPLARS_TEAM: readonly MissionFill[] = [
         '“Every lantern for the festival,” your sensei says, “and the festival is in three days. The village can’t guide its dead home in the dark. So we get them back.”',
       count:
         'Smoke rises from the mill chimney and the waterwheel turns, but the shutters are nailed shut and nobody comes out.',
-      plan: 'There are three ways in: the millrace, the loading door and the roof. Everyone on the team has a favourite.',
+      plan: 'There are three ways in, by the millrace or the loading door or over the roof, and everyone on the team has a favourite.',
       guards:
         'Stacks of festival lanterns fill the drying floor. A woman with a black scarf counts them, and two of her crew watch the doors.',
       foe: 'bandit-chief',
@@ -128,7 +128,7 @@ export const EXEMPLARS_TEAM: readonly MissionFill[] = [
       parley:
         '“They pay me by the drawing,” he says, and gives up the map. “I don’t even know who they are.”',
       ending:
-        'Your sensei reads the map all the way home and says nothing. The next week, a jōnin team leaves by the north gate before dawn.',
+        'Your sensei reads the map all the way home without a word. The next week, a jōnin team leaves by the north gate before dawn.',
     },
   },
 ];

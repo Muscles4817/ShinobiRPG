@@ -10,7 +10,7 @@ export const ARC_RUMOURS: readonly RumourDef[] = [
   {
     id: 'ren-with-the-watch',
     worldMark: 'ren-with-the-watch',
-    text: 'There’s a new face training with the Night Watch: a thin lad from the river who throws needles like rain.',
+    text: 'There’s a new face training with the Night Watch, a thin lad from the river who throws needles like rain.',
   },
   {
     id: 'brewer-exposed',

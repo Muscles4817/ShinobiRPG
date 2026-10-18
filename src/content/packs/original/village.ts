@@ -44,7 +44,7 @@ export const VILLAGE: VillageLife = {
     {
       id: 'tsuru-monk',
       worldMark: 'tsuru-trusted',
-      text: 'The Wandering Moon Puppet Troupe has a new puppet in its show: a young shinobi, very serious, who saves a fox princess.',
+      text: 'The Wandering Moon Puppet Troupe has a new puppet in its show, a very serious young shinobi who saves a fox princess.',
     },
     {
       id: 'cat-again',
@@ -74,7 +74,7 @@ export const VILLAGE: VillageLife = {
     {
       id: 'storehouse-noises',
       missionId: 'storehouse-ghost',
-      text: 'Something knocks inside the rice storehouse after dark. The guards won’t go in.',
+      text: 'There is knocking inside the rice storehouse after dark, and the guards won’t go in.',
     },
     {
       id: 'river-road',
@@ -114,7 +114,7 @@ export const VILLAGE: VillageLife = {
     {
       id: 'tsune-hearing',
       personId: 'tsune',
-      text: 'Old Tsune hears every whisper in the village. Be careful what you say near her.',
+      text: 'Old Tsune hears every word said in the village. Be careful what you say near her.',
     },
     {
       id: 'lantern-count',
@@ -151,7 +151,7 @@ export const VILLAGE: VillageLife = {
       title: 'A small light by the canal',
       text: 'A child’s spirit sits on the canal steps, looking for a way home.',
       outcome: 'You walk it to the great lantern gate. It smiles once and is gone.',
-      unseen: 'The canal lanterns flicker, though there is no wind.',
+      unseen: 'The canal lanterns gutter, though there is no wind.',
       reward: { willpower: 1 },
     },
     {
@@ -165,8 +165,9 @@ export const VILLAGE: VillageLife = {
     {
       id: 'old-shinobi',
       title: 'An old shinobi on the wall',
-      text: 'A shinobi in an old uniform keeps watch on the wall, flickering.',
-      outcome: 'You stand watch beside him till he fades. He nods to you, one guard to another.',
+      text: 'A shinobi in an old uniform keeps watch on the wall, coming and going like a lamp in a draught.',
+      outcome:
+        'You stand watch beside him until he fades, and before he goes he salutes you, one guard to another.',
       unseen: 'A cold spot hangs over the east wall tonight.',
       reward: { perception: 1 },
     },
@@ -181,7 +182,7 @@ export const VILLAGE: VillageLife = {
     {
       id: 'weeping-lantern',
       title: 'A lantern that weeps',
-      text: 'One lantern on Market Street glows blue and drips light like tears.',
+      text: 'One lantern on Market Street burns blue and drips light like tears.',
       outcome: 'You sit with it and listen. Some grief only needs a witness.',
       unseen: 'One lantern on Market Street has gone strangely dim.',
       reward: { genjutsu: 1 },
@@ -248,7 +249,7 @@ export const VILLAGE: VillageLife = {
       id: 'lantern-festival',
       name: 'Festival of Lanterns',
       description:
-        'The great lantern festival: the dead are guided home on the river, and the living eat.',
+        'The great lantern festival, when the dead are guided home on the river and the living eat.',
       season: 2,
       day: 21,
       marketPrices: 0.5,

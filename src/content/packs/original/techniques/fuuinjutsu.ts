@@ -108,7 +108,7 @@ export const FUUINJUTSU: readonly TechniqueDef[] = [
   {
     id: 'stitch-seal',
     name: 'Stitch Seal',
-    description: 'Seal a wound shut the way you would seal a letter: firmly, and in ink.',
+    description: 'Seal a wound shut the way you would seal a letter, firmly and in ink.',
     discipline: 'fuuinjutsu',
     effects: [{ verb: 'heal', power: 20, scaling: { drive: ['fuuinjutsu', 'chakraControl'] } }],
     chakraCost: 14,

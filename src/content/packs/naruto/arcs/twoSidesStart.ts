@@ -37,7 +37,7 @@ export const TOWN_APART: MissionDef = {
           label: 'Ask what started it',
           tone: 'curious',
           reply:
-            '“Ropes cut on the bridge. Nets cut in the harbour. Same nights,” Inari says. “Everyone knows who did it. Everyone knows something different.”',
+            '“Ropes cut on the bridge and nets cut in the harbour, on the same nights,” Inari says. “Everyone knows who did it, and everyone knows a different answer.”',
           effects: [{ kind: 'mark', mark: 'same-nights' }],
           ledger: 'Inari told you the ropes and the nets were cut on the same nights.',
         },

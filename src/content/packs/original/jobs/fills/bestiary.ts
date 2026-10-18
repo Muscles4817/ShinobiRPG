@@ -38,7 +38,7 @@ export const BESTIARY_FILLS: readonly MissionFill[] = [
       quarry: 'a giant salamander, and the vipers the flooded fields have brought out',
       village: 'the marsh village of Numata, all dykes and reeds',
       harm: 'A water buffalo was pulled into the main ditch and never came out. The children are kept indoors.',
-      sign: 'Something broad and flat has slid through the mud of the dyke wall, and the reeds are flattened in a track as wide as a door.',
+      sign: 'A broad, flat body has slid through the mud of the dyke wall, and the reeds are flattened in a track as wide as a door.',
       ground:
         'It lies in the deep pool where the ditches meet. You have the afternoon to drain a channel and pick your footing.',
       lair: 'The pool heaves, and a head as flat and wide as a stool comes up out of the mud with its mouth already open.',
@@ -63,7 +63,7 @@ export const BESTIARY_FILLS: readonly MissionFill[] = [
       sign: 'Sideways tracks as wide as a cart’s come up the beach from the rocks, and go back down before dawn.',
       ground:
         'They come up with the night tide. You have the evening to choose which pans to give them.',
-      lair: 'A shell like a cart wheel rises out of the surf, and something with a long mouth comes up the rocks behind it.',
+      lair: 'A shell like a cart wheel rises out of the surf, and a long-mouthed head comes up the rocks behind it.',
       foe: 'shore-crab',
       second: 'moray-eel',
       terrain:
@@ -88,7 +88,7 @@ export const BESTIARY_FILLS: readonly MissionFill[] = [
       signs:
         'There is a rope across the road at the top, slack in the dust, tied off to a tree, and the snow by it has been swept.',
       ambush:
-        'They come out of the trees: a lieutenant in a padded coat with a real sword, a knife-man already running, and a scratched forehead protector on the third.',
+        'They come out of the trees, a lieutenant in a padded coat with a real sword and a knife-man already running, and the third wears a scratched forehead protector.',
       foe: 'bandit-lieutenant',
       second: 'bandit-knifeman',
       third: 'bandit-deserter',
@@ -106,7 +106,7 @@ export const BESTIARY_FILLS: readonly MissionFill[] = [
       hideout: 'a sea cave below the cliffs south of Sunagawa',
       loot: 'a season’s seized tax-salt, stolen back from the customs house',
       briefing:
-        'Your sensei unrolls a fisher’s sketch: one way in by the shingle at low tide, one way out by a ladder nobody has found.',
+        'Your sensei unrolls a fisher’s sketch that shows one way in by the shingle at low tide, and one way out by a ladder nobody has found.',
       count:
         'You lie on the cliff top in the wind and watch the cave mouth for lamps, and for the dog everyone in the village has heard bark.',
       plan: 'The tide will cover the shingle within the hour. You need a way in now.',
@@ -118,7 +118,7 @@ export const BESTIARY_FILLS: readonly MissionFill[] = [
       slipped:
         'You come up the ladder nobody found, behind the salt, and carry it out sack by sack while the dog sleeps.',
       ending:
-        'The customs house gets its salt back. The collector says nothing, and sends a barrel of pickled plums to the village by the next boat.',
+        'The customs house gets its salt back. The collector doesn’t say a word of thanks, but sends a barrel of pickled plums to the village by the next boat.',
     },
   },
   {
@@ -133,7 +133,7 @@ export const BESTIARY_FILLS: readonly MissionFill[] = [
       briefing:
         'The pirates come in with a fog on clear nights, your sensei says, and the fishers swear the fog follows one of them like a dog.',
       count:
-        'From the point you count shapes on the wreck’s deck by their pipes: one by the mast, one with something long and barbed, and one who never moves.',
+        'From the point you count the shapes on the wreck’s deck by their pipes. One sits by the mast, one carries a long barbed pole, and one never moves at all.',
       plan: 'The fog is already coming in off the sea. The team must choose a way across the reef before it arrives.',
       guards:
         'The tide-caller sits cross-legged on the deck with their hands in the water, and the fog pours off them; the harpooner stands at the rail, and a boarder with a cutlass walks the deck.',
@@ -158,7 +158,7 @@ export const BESTIARY_FILLS: readonly MissionFill[] = [
         'Travellers who stop at the shrine walk on in the wrong direction and are found days later, starving, sure they were nearly there. Your sensei says not to look at the lights.',
       pull: 'All four roads look like the road home, and the lights in the trees want you to choose one.',
       ghosts:
-        'The shrine’s god sits on its own broken roof, thin and grey, with blue fox-fires circling it like moths. It wants rice. It has wanted rice for a long time.',
+        'The shrine’s god sits on its own broken roof, thin and grey, with blue fox-fires circling it like moths. It wants rice, and from the look of it, it has wanted rice for years.',
       foe: 'shrine-spirit',
       second: 'fox-fire',
       ending:

@@ -17,7 +17,8 @@ export const TANZAKU_TOWN: LocationDef = {
       kind: 'inn',
       name: 'The Beckoning Cat',
       icon: 'house',
-      blurb: 'A gamblers’ inn: paper walls, loud neighbours, and a lucky cat in every window.',
+      blurb:
+        'A gamblers’ inn with paper walls and loud neighbours, and a lucky cat in every window.',
       keeper: 'Old Man Fuku, who has seen every kind of losing streak',
       roomCost: 35,
     },
@@ -68,7 +69,7 @@ export const TANZAKU_TOWN: LocationDef = {
           id: 'cho-han',
           name: 'Chō-han',
           scene:
-            'Two dice under an upturned cup: even or odd. The house never seems to lose, and a blonde regular never seems to win.',
+            'Two dice under an upturned cup, even or odd. The house never seems to lose, and a blonde regular never seems to win.',
           game: { kind: 'dice', dice: 2, stakes: [20, 60, 150] },
         },
       ],

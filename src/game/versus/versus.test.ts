@@ -3,7 +3,8 @@ import { fightOut } from '@/test/gameFixtures';
 
 import { contextForPack } from '../context';
 import { createVersus } from './match';
-import { versusRoster } from './roster';
+import { contenderOf, versusRoster } from './roster';
+import { playerSetup } from './sides';
 
 /** Versus mode: any two of the pack's fighters, head to head, in a sandbox. */
 
@@ -95,6 +96,24 @@ describe('versus bouts', () => {
     expect(report.taught).toBeUndefined();
     expect(end.character.stats).toEqual(start.character.stats);
     expect(end.character.injuries).toEqual(start.character.injuries);
+  });
+
+  it('fields a versus-only duelist in their own gear, with their pouch full', () => {
+    const tengen = versusRoster(naruto).find((f) => f.id === 'person:tengen');
+    expect(tengen?.group).toBe('Jōnin');
+    expect(naruto.content.people.get('tengen')).toBeUndefined();
+    const state = bout('person:tengen', 'person:kakashi');
+    const view = combatScene(state, naruto)!;
+    expect(view.combatants.find((c) => c.side === 'player')?.name).toBe('Tengen');
+    const as = playerSetup(contenderOf(naruto, 'person:tengen')!, state, naruto);
+    expect(as.gear?.held?.name).toBe('Chained Cleavers');
+    expect(as.items?.map((i) => [i.id, i.count])).toEqual([
+      ['smoke-bomb', 2],
+      ['explosive-tag', 4],
+    ]);
+    expect(as.perks).toContain('foresight');
+    expect(as.techniques.map((t) => t.id)).toContain('string-performance');
+    expect(fightOut(state, naruto).reports[0]?.kind).toBe('fight');
   });
 
   it('refuses a pick the pack doesn’t have', () => {

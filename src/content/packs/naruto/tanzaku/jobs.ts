@@ -45,7 +45,7 @@ export const TANZAKU_JOBS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Every barkeep tells the same story: she drank like a sailor, lost at everything, and laughed about it.',
+        text: 'Every barkeep tells the same story. She drank like a sailor and lost at everything, and laughed about it.',
       },
       {
         kind: 'check',

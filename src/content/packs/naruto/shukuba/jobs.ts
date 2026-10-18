@@ -57,7 +57,8 @@ export const SHUKUBA_JOBS: readonly MissionDef[] = [
           { label: 'Spot every sheet among the reeds', stat: 'perception', difficulty: 8 },
         ],
         success: 'Every letter, dried by the stove and only a little smudged.',
-        failure: 'You lose a few to the river. The postmaster sighs and writes the apologies.',
+        failure:
+          'You lose a few to the river, and the postmaster writes the apologies with a long face.',
         onFailure: 'penalty',
         failureDamage: 1,
       },
