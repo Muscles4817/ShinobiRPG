@@ -7,6 +7,7 @@ import { hasVerb, isHarmful } from '../../rules/verbs';
 import type { Turn } from './senses';
 import { isDazed } from './daze';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Fighting together. Element combos need no authoring: when a fighter's elemental hit lands on
@@ -113,7 +114,12 @@ export function combination(round: Round, turn: Turn, joint: Joint, single: Sing
   const { fighter, technique } = partner;
   const told = say(
     { ...round, fighters: patch(round.fighters, fighter.id, { joined: true }) },
-    `${turn.actor.name} and ${fighter.name} combine ${t.name} and ${technique.name}!`,
+    tell('{a} and {b} combine {what} and {with}.', {
+      a: turn.actor,
+      b: fighter,
+      what: t.name,
+      with: technique.name,
+    }),
   );
   const first = single(told, { ...turn, boost: COMBINATION_BONUS }, t);
   const joiner = fighterIn(first, fighter.id) ?? fighter;

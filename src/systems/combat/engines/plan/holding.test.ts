@@ -54,7 +54,7 @@ describe('channelled holds', () => {
     const r = held();
     const kept = keepHolding(r, who(r, 'caster'));
     expect(kept.spent).toBe(true);
-    expect(kept.round.lines.at(-1)).toMatch(/caster holds caught fast/);
+    expect(kept.round.lines.at(-1)).toMatch(/caster holds caught fast/i);
   });
 
   it('leave the holder no hands for a defence', () => {

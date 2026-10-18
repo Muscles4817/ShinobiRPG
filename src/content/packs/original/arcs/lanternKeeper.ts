@@ -16,6 +16,8 @@ export const LANTERN_KEEPER_FOE: EnemyDef = {
   kind: 'Rogue',
   danger: 'deadly',
   name: 'Hiro Hibana',
+  proper: true,
+  pronouns: 'he',
   description: 'Akari’s brother. The same fire, burning the wrong way.',
   baseStat: 11,
   statBonuses: { ninjutsu: 4, chakraControl: 2, speed: 1 },

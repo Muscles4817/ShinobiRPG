@@ -22,7 +22,6 @@ import {
   type PlanState,
   type Round,
 } from './state';
-import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 10,
@@ -112,7 +111,6 @@ const blow = (raw = 30, discipline?: Blow['discipline']): Blow => ({
 });
 
 /** The log as the player reads it: the sentences, without the screen's markers. */
-const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
 
 describe('plan & watch verbs: field', () => {
   it('raises a field over the fight that blinds the other side', () => {
@@ -164,9 +162,9 @@ describe('plan & watch verbs: field', () => {
     });
     const lines = fought.flatMap((s) => s.log);
     expect(
-      lines.filter((l) => l.startsWith('foe strikes at a shape in the mist')).length,
+      lines.filter((l) => l.startsWith('Foe strikes at a shape in the mist')).length,
     ).toBeGreaterThan(0);
-    expect(lines.some((l) => l.startsWith('hero strikes at a shape'))).toBe(false);
+    expect(lines.some((l) => l.startsWith('Hero strikes at a shape'))).toBe(false);
     for (const state of fought) {
       expect(state.log).toContain('The mist thins and lifts.');
       expect(state.field).toBeUndefined();
@@ -178,7 +176,7 @@ describe('plan & watch verbs: field', () => {
     let state = stateOf(withCards(roundOf(), 'hero', cards));
     const rng = createRng(2);
     for (let i = 0; i < 3 && !state.result; i++) state = resolveExchange(state, rng);
-    expect(said(state.log).filter((l) => castsLine(l, 'hero', 'fog'))).toHaveLength(1);
+    expect(state.log.filter((l) => castsLine(l, 'hero', 'fog'))).toHaveLength(1);
   });
 
   it('can be in place when the fight opens', () => {

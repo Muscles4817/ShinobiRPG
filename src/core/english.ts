@@ -8,6 +8,13 @@ export const PRONOUN_SETS = ['he', 'she', 'they'] as const;
 export type PronounSet = (typeof PRONOUN_SETS)[number];
 
 /**
+ * Whom a line speaks of, for narration that tells a fight to the player: a person's pronouns,
+ * the player ("you"), or a creature or spirit ("it").
+ */
+export const GRAMMARS = [...PRONOUN_SETS, 'you', 'it'] as const;
+export type Grammar = (typeof GRAMMARS)[number];
+
+/**
  * Every form a line may need of someone, and the verb endings that agree with them: "say{s}"
  * (says, or say for they), "go{es}", is, was, has, does, and "{'s}" for he's or they're.
  */
@@ -28,7 +35,7 @@ export const PRONOUN_FORMS = [
 export type PronounForm = (typeof PRONOUN_FORMS)[number];
 export type PronounForms = Readonly<Record<PronounForm, string>>;
 
-const FORMS: Readonly<Record<PronounSet, PronounForms>> = {
+const FORMS: Readonly<Record<Grammar, PronounForms>> = {
   he: {
     they: 'he',
     them: 'him',
@@ -71,9 +78,37 @@ const FORMS: Readonly<Record<PronounSet, PronounForms>> = {
     does: 'do',
     "'s": '’re',
   },
+  you: {
+    they: 'you',
+    them: 'you',
+    their: 'your',
+    theirs: 'yours',
+    themself: 'yourself',
+    s: '',
+    es: '',
+    is: 'are',
+    was: 'were',
+    has: 'have',
+    does: 'do',
+    "'s": '’re',
+  },
+  it: {
+    they: 'it',
+    them: 'it',
+    their: 'its',
+    theirs: 'its',
+    themself: 'itself',
+    s: 's',
+    es: 'es',
+    is: 'is',
+    was: 'was',
+    has: 'has',
+    does: 'does',
+    "'s": '’s',
+  },
 };
 
-export const pronounForms = (set: PronounSet): PronounForms => FORMS[set];
+export const pronounForms = (set: Grammar): PronounForms => FORMS[set];
 
 /** "A", "A and B", "A, B and C". */
 export function listed(words: readonly string[]): string {
@@ -115,6 +150,37 @@ export function numberWord(n: number): string {
 /** "a day", "two days", "no days". */
 export function counted(n: number, singular: string, plural = `${singular}s`): string {
   return n === 1 ? withArticle(singular) : `${numberWord(n)} ${plural}`;
+}
+
+const ORDINAL_WORDS = [
+  'first',
+  'second',
+  'third',
+  'fourth',
+  'fifth',
+  'sixth',
+  'seventh',
+  'eighth',
+  'ninth',
+  'tenth',
+] as const;
+
+/** "first", "second"… for telling apart things that share a name; past ten, "next". */
+export function ordinalWord(nth: number): string {
+  return ORDINAL_WORDS[nth - 1] ?? 'next';
+}
+
+/** Nouns whose plural is the same word: "two genin", "three samurai". */
+const UNCHANGED_PLURAL = /(nin|samurai|deer|sheep|fish|ronin|rōnin)$/i;
+
+/** A noun's plural, for the regular cases and the few that come up: "thugs", "wolves", "men". */
+export function plural(noun: string): string {
+  if (UNCHANGED_PLURAL.test(noun)) return noun;
+  if (/man$/i.test(noun)) return `${noun.slice(0, -3)}men`;
+  if (/[^aeiou]y$/i.test(noun)) return `${noun.slice(0, -1)}ies`;
+  if (/(lf|rf)$/i.test(noun)) return `${noun.slice(0, -1)}ves`;
+  if (/(s|sh|ch|x|z)$/i.test(noun)) return `${noun}es`;
+  return `${noun}s`;
 }
 
 export const capitalise = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1);

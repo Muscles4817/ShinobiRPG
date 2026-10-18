@@ -23,7 +23,7 @@ import { lingeringStatuses } from './lingering';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { prepStatuses } from './prep';
 import { openFight } from './opening';
-import { groundLines } from './groundPlay';
+import { groundNote } from './groundPlay';
 import { withinGround } from '../../rules/ground';
 import { decide, resolveExchange } from './round';
 import { isDazed } from './daze';
@@ -42,6 +42,7 @@ import { stanceStatus } from './team';
 import { foeMarkFor } from './foeTeam';
 import { planOf, plannedFighters } from './planning';
 import { squareUpLine } from '../../rules/narration';
+import { fightSummary } from './summary';
 
 /**
  * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
@@ -169,12 +170,8 @@ function endOfRound(next: PlanState): PlanState {
     exchange: 0,
     fighters: betweenRounds(next.fighters, next.reads, watching),
     ...foeMarkFor(next.fighters),
-    log: [
-      ...next.log,
-      watching
-        ? '— The next round begins —'
-        : '— The round is over. Change your cards if you like. —',
-    ],
+    // Between rounds the plan screen says what to do; the story only marks the new round.
+    log: watching ? [...next.log, '— The next round begins —'] : next.log,
   };
 }
 
@@ -200,14 +197,14 @@ function flee(state: PlanState, rng: Rng): PlanState {
   if (rng.chance(fleeChance(state))) {
     return {
       ...state,
-      log: [...state.log, 'You vanish in a swirl of leaves and escape!'],
+      log: [...state.log, 'You vanish in a swirl of leaves and get clean away.'],
       result: 'escaped',
     };
   }
   const failed = {
     ...state,
     phase: 'fight' as const,
-    log: [...state.log, 'You try to slip away, but you are cut off!'],
+    log: [...state.log, 'You try to slip away, but they cut you off.'],
   };
   return exchange(failed, rng);
 }
@@ -237,11 +234,18 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
 
 function prompt(state: PlanState): string {
   if (state.phase === 'loadout') {
-    const pick = `Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} actions for each distance, higher first, and the defence you keep ready there.`;
+    const over = state.bout > 1 ? 'The round is over. ' : '';
+    const pick = `${over}Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} actions for each distance, higher first, and the defence you keep ready there.`;
     const hidden = state.fighters.some((f) => f.side === 'enemy' && alive(f) && f.hidden);
-    return hidden ? `${pick} Someone is hidden: Search or Dispel finds them.` : pick;
+    const ground = groundNote(state.ground);
+    return [pick, hidden ? 'Someone is hidden: Search or Dispel finds them.' : null, ground]
+      .filter((part) => part !== null)
+      .join(' ');
   }
-  return `${RANGE_LABEL[state.range]} range, round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
+  const where = `${RANGE_LABEL[state.range]} range, round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
+  // A watched fight has no card table to show the ground on.
+  const ground = state.watching ? groundNote(state.ground) : null;
+  return ground ? `${where}. ${ground}` : where;
 }
 
 export function createPlanEngine(): CombatEngine {
@@ -252,7 +256,6 @@ export function createPlanEngine(): CombatEngine {
       'Slot cards for each distance, then watch each round play out. Re-plan between rounds.',
 
     start(setup, rng) {
-      const names = setup.enemies.map((e) => e.name);
       const opened = openFight(initialFighters(setup), setup.opening);
       const { fighters, lines, field } = opened;
       const range = withinGround(setup.ground, opened.range);
@@ -267,8 +270,7 @@ export function createPlanEngine(): CombatEngine {
       };
       const firstMover = setup.opening?.firstMover;
       const watching = setup.watch ?? false;
-      const intro =
-        setup.intro ?? `${squareUpLine(names)}${watching ? '' : ' How will you fight?'}`;
+      const intro = setup.intro ?? squareUpLine(setup.enemies);
       const state: PlanState = {
         phase: watching ? 'fight' : 'loadout',
         round: 1,
@@ -279,7 +281,7 @@ export function createPlanEngine(): CombatEngine {
         seen: {},
         ...foeMarkFor(planned),
         intents: rollIntents(table, rng),
-        log: [intro, ...groundLines(setup.ground), ...lines, ...(watching ? [FIGHT_BEGINS] : [])],
+        log: [intro, ...lines, ...(watching ? [FIGHT_BEGINS] : [])],
         ...(setup.ground ? { ground: setup.ground } : {}),
         result: null,
         canFlee: setup.canFlee && !watching,
@@ -332,6 +334,7 @@ export function createPlanEngine(): CombatEngine {
         chakraSpent: player.chakraSpent ?? 0,
         used: usage(plan.fighters),
         allies: alliesAfter(plan.fighters),
+        summary: fightSummary(plan, result),
       };
     },
   };

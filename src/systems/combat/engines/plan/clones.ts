@@ -15,6 +15,7 @@ import { isOffence, type Card } from './cards';
 import { react, type Blow } from './react';
 import { canHit } from './rows';
 import type { Turn } from './senses';
+import { tell } from '../../rules/telling';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -25,21 +26,21 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
  */
 
 /** How each kind of clone comes into the fight. */
-const ENTRANCES: Readonly<Record<CloneKind, (name: string) => string>> = {
-  illusion: (name) => `Copies of ${name} shimmer into being beside them.`,
-  water: (name) => `Clones of ${name} rise out of running water.`,
-  wind: (name) => `Clones of ${name} spin up out of the wind.`,
-  earth: (name) => `Clones of ${name} heave up out of the ground.`,
-  lightning: (name) => `Clones of ${name} crackle into being.`,
-  fire: (name) => `Clones of ${name} step out of the flames.`,
-  shadow: (name) => `Clones of ${name} burst out of the smoke beside them.`,
+const ENTRANCES: Readonly<Record<CloneKind, string>> = {
+  illusion: 'Copies of {a} shimmer into being beside {a.them}.',
+  water: 'Clones of {a} rise out of running water.',
+  wind: 'Clones of {a} spin up out of the wind.',
+  earth: 'Clones of {a} heave up out of the ground.',
+  lightning: 'Clones of {a} crackle into being.',
+  fire: 'Clones of {a} step out of the flames.',
+  shadow: 'Clones of {a} burst out of the smoke beside {a.them}.',
 };
 
 export function makeClones(round: Round, actor: PlanFighter, use: EffectUse<'clone'>): Round {
   const clones = clonesFrom(driveOf(actor, use), actor.maxChakra, use);
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, { clones }) },
-    ENTRANCES[kindOf(clones)](actor.name),
+    tell(ENTRANCES[kindOf(clones)], { a: actor }),
   );
 }
 

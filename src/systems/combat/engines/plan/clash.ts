@@ -3,6 +3,7 @@ import { clamp } from '@/core';
 import type { CombatTechnique } from '../../contract';
 import { alive, chakraCost } from '../../rules/body';
 import { elementMultiplier, matchup } from '../../rules/elements';
+import { tell } from '../../rules/telling';
 import { driveOf, effectsOf, isWounding, primaryEffect, techniquePower } from '../../rules/verbs';
 import { playable, type Card } from './cards';
 import { intendedCard } from './intent';
@@ -79,7 +80,8 @@ function thrown(round: Round, answerer: PlanFighter, answer: CombatTechnique): R
     used: used.includes(answer.id) ? used : [...used, answer.id],
   });
   const acted = [...(round.acted ?? []), answerer.id];
-  return say({ ...round, fighters, acted }, `${answerer.name} meets it with ${answer.name}!`);
+  const line = tell('{a} meet{a.s} it with {what}.', { a: answerer, what: answer.name });
+  return say({ ...round, fighters, acted }, line);
 }
 
 /** The winning answer carries on into the attacker, weakened. */
@@ -128,12 +130,12 @@ function evenClash(met: Round, turn: Turn, t: CombatTechnique, against: Answer):
   switch (stronger(turn, t, against)) {
     case 'attack':
       return {
-        round: say(met, `${t.name} drives through ${answer.name}!`),
+        round: say(met, `${t.name} drives through ${answer.name}.`),
         through: true,
         boost: CLASH_CARRY,
       };
     case 'answer': {
-      const driven = say(met, `${answer.name} drives through ${t.name}!`);
+      const driven = say(met, `${answer.name} drives through ${t.name}.`);
       return { round: carried(driven, turn, answerer, answer), through: false };
     }
     case null:
@@ -154,9 +156,9 @@ export function clash(round: Round, turn: Turn, t: CombatTechnique): Clash | nul
   const theirs = answer.technique;
   switch (matchup(t.element, theirs.element)) {
     case 'strong':
-      return { round: say(met, `${t.name} overwhelms ${theirs.name}!`), through: true };
+      return { round: say(met, `${t.name} overwhelms ${theirs.name}.`), through: true };
     case 'weak': {
-      const swallowed = say(met, `${theirs.name} swallows ${t.name} and keeps coming!`);
+      const swallowed = say(met, `${theirs.name} swallows ${t.name} and keeps coming.`);
       return { round: carried(swallowed, turn, target, theirs), through: false };
     }
     case 'even':

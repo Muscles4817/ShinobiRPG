@@ -1,4 +1,3 @@
-import { listed } from '@/core';
 import type { Rng } from '@/core';
 import type { CombatOpening, CombatOutcome } from '@/systems/combat';
 import {
@@ -17,6 +16,7 @@ import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct } from '@/systems/wallet';
 
 import { enemyParty, playerCombatant } from './combatants';
+import { foeList } from './foeNames';
 import type { GameContext } from './context';
 import { noteFight } from './fieldBook/record';
 import { startFight } from './fightStyle';
@@ -93,10 +93,11 @@ const READ_THEM_FIRST = 'Next time, find out what you face before you fight it.'
 interface Beaten {
   readonly title: string | null;
   readonly helped: string | null;
+  readonly summary: string | null;
 }
 
 function hospitalise(state: GameState, ctx: GameContext, beaten: Beaten): GameState {
-  const { title, helped } = beaten;
+  const { title, helped, summary } = beaten;
   const fee = Math.min(state.wallet.ryo, HOSPITAL_FEE);
   const recovered = spendTime(state, slotsUntilNextMorning(state.time), ctx);
   const health = Math.round(MAX_HEALTH * HOSPITAL_HEALTH_FRACTION);
@@ -117,6 +118,7 @@ function hospitalise(state: GameState, ctx: GameContext, beaten: Beaten): GameSt
     reputationLost: title ? FAILURE_REPUTATION_LOSS : 0,
     text,
     ...(helped ? { helped } : {}),
+    ...(summary ? { summary } : {}),
   });
 }
 
@@ -138,9 +140,7 @@ export function resolveCombat(
     },
   );
   const enemies =
-    foes.length > 0
-      ? listed(foes.map((id) => ctx.content.enemies.require(id).name))
-      : 'your opponent';
+    foes.length > 0 ? foeList(foes.map((id) => ctx.content.enemies.require(id))) : 'your opponent';
 
   switch (outcome.result) {
     case 'victory': {
@@ -153,6 +153,7 @@ export function resolveCombat(
         chakraSpent: Math.max(0, vitals.chakra - outcome.player.chakra),
         health: afterFight.character.vitals.health,
         maxHealth: MAX_HEALTH,
+        ...(outcome.summary ? { summary: outcome.summary } : {}),
       });
       if (!reported.mission) return reported;
       const mission = afterVictory(reported.mission, stage, enemies);
@@ -166,7 +167,8 @@ export function resolveCombat(
       const ended = endMission(afterFight, ctx, BEATEN);
       // Your sensei hears about it, and brings it up at the next lesson.
       const mentor = { ...ended.state.mentor, lastBeaten: helped ?? READ_THEM_FIRST };
-      return hospitalise({ ...ended.state, mentor }, ctx, { title: ended.title, helped });
+      const beaten = { title: ended.title, helped, summary: outcome.summary ?? null };
+      return hospitalise({ ...ended.state, mentor }, ctx, beaten);
     }
   }
 }

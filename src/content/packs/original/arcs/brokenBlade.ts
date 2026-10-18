@@ -19,6 +19,8 @@ export const KUROBANE: EnemyDef = {
   kind: 'Rogue',
   danger: 'deadly',
   name: 'Kurobane, the Black Wing',
+  proper: true,
+  pronouns: 'he',
   description: 'A swordsman gone grey on the pass. He remembers Gōran’s arm, and his teammate.',
   baseStat: 11,
   statBonuses: { kenjutsu: 4, speed: 2, perception: 1 },

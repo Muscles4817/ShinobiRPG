@@ -3,6 +3,7 @@ import { clamp } from '@/core';
 import type {
   CombatantSetup,
   CombatantView,
+  CombatGrammar,
   CombatItem,
   CombatPerk,
   CombatProvision,
@@ -26,6 +27,9 @@ import type { EffectUse } from './verbs';
 export interface Body {
   readonly id: string;
   readonly name: string;
+  /** What the story calls them (`CombatantSetup.called`). */
+  readonly called?: string;
+  readonly grammar?: CombatGrammar;
   readonly tag?: string;
   readonly side: CombatSide;
   readonly isPlayer: boolean;

@@ -13,6 +13,7 @@ import {
   type EffectUse,
 } from '../../rules/verbs';
 import { say, type PlanFighter, type PlanState, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Fields in a planned fight: a field technique raises one over the whole fight (replacing any
@@ -37,7 +38,11 @@ export function lostInField(round: Round, actor: PlanFighter, rng: Rng): string 
   const { field } = round;
   const chance = fieldMissChance(field, actor);
   if (!field || chance <= 0 || !rng.chance(chance)) return null;
-  return `${actor.name} strikes at a shape in the ${FIELD_RULES[field.id].name.toLowerCase()}, and finds no one.`;
+  const where = FIELD_RULES[field.id].name.toLowerCase();
+  return tell('{a} strike{a.s} at a shape in the {where} and find{a.s} no one.', {
+    a: actor,
+    where,
+  });
 }
 
 /** At the end of an exchange: a field whose last exchange this was fades. */

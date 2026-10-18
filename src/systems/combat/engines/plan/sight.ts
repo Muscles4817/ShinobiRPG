@@ -5,6 +5,7 @@ import type { Card } from './cards';
 import type { ToolMoment } from './pouch';
 import { opponentsOf, type Turn } from './senses';
 import { patch, say, type PlanFighter, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Conceal and sense in a planned fight. A conceal hides its user as a smoke bomb would, but
@@ -17,7 +18,7 @@ export function conceal(round: Round, actor: PlanFighter, use: EffectUse<'concea
   const concealment = concealmentFrom(driveOf(actor, use), use);
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, { hidden: true, concealment }) },
-    `${actor.name} fades from sight.`,
+    tell('{a} fade{a.s} from sight.', { a: actor }),
   );
 }
 
@@ -33,9 +34,10 @@ export function sense(round: Round, { actor, rng }: Turn, use: EffectUse<'sense'
     (all, foe) => patch(all, foe.id, { hidden: false }),
     patch(round.fighters, actor.id, { perks: sensed(actor) }),
   );
-  const reached = say({ ...round, fighters }, `${actor.name}'s senses spread across the field.`);
+  const spread = tell('{a.poss} senses spread across the field.', { a: actor });
+  const reached = say({ ...round, fighters }, spread);
   if (found.length > 0) {
-    return say(reached, `${found.map((f) => f.name).join(' and ')} can't hide from them.`);
+    return say(reached, tell('{found} can’t hide from {a.them}.', { found, a: actor }));
   }
   return hidden.length > 0 ? say(reached, 'Someone stays just out of reach.') : reached;
 }

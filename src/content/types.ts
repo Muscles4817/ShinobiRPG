@@ -1,4 +1,4 @@
-import type { CombatPerk, CombatTrait } from '@/systems/combat';
+import type { CombatGrammar, CombatPerk, CombatTrait } from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
 import type { AtlasDef, MapLabelSide } from './atlas';
 import type {
@@ -123,9 +123,21 @@ export interface Identified {
   readonly id: string;
 }
 
+/** How a fight's story speaks of a foe: a person's pronouns, or "it" for a creature. */
+export type FoePronouns = Exclude<CombatGrammar, 'you'>;
+
 export interface EnemyDef {
   readonly id: string;
   readonly name: string;
+  /**
+   * A foe with a name of their own (a rogue called Ren) is told by it; any other is "the
+   * bandit thug" in a fight's story, from `noun` or the name in lower case.
+   */
+  readonly proper?: boolean;
+  /** The common noun when the name in lower case won't do: "Reikon macaque". */
+  readonly noun?: string;
+  /** How the story speaks of them; creatures are "it", people he or she by their id. */
+  readonly pronouns?: FoePronouns;
   readonly description: string;
   /** Short tag shown on the enemy's banner in a fight, e.g. "Spirit", "Beast". */
   readonly kind: string;

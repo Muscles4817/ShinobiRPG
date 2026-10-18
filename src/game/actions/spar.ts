@@ -49,7 +49,7 @@ export const spar: ActionHandler<ActionOf<'spar'>> = {
         allies: [],
         enemies: [companionCombatant(partner, ready, ctx, PARTNER_TAG)],
         canFlee: true,
-        intro: `${partner.name} squares up. "Don’t hold back."`,
+        intro: `${partner.name} squares up. “Don’t hold back.”`,
       },
       rng,
     );

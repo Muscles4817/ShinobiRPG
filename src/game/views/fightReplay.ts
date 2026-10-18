@@ -106,7 +106,11 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
   const start = Math.max(0, from - (view.logOffset ?? 0));
   const parsed = view.log.slice(start).flatMap((line): Parsed[] => {
     const said = splitNarration(line);
-    const targetId = namedIn(said.text, view.combatants, said.actorId ?? null);
+    const actorId = said.actorId ?? null;
+    // Lines name fighters as the story calls them ("you"), so they say whom by id.
+    const targetId = said.named
+      ? (said.named.find((id) => id !== actorId) ?? null)
+      : namedIn(said.text, view.combatants, actorId);
     return combatLog([line]).map((shown) => ({ said, shown, targetId }));
   });
   const health = healthAfterEach(parsed, view.combatants);

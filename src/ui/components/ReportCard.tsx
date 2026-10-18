@@ -122,8 +122,19 @@ function defeatCard(report: Extract<Report, { kind: 'defeat' }>): CardContent {
         : []),
     ],
     ...taughtList(report.taught),
-    note: report.text,
+    note: report.summary ? `${report.summary} ${report.text}` : report.text,
   };
+}
+
+/** Below this share of health, the card says to rest. */
+const CLOSE_CALL = 0.25;
+
+/** What the fight came to, and a word to rest when it was close. */
+function fightNote(report: Extract<Report, { kind: 'fight' }>): string | null {
+  const close = report.health < report.maxHealth * CLOSE_CALL;
+  const parts = [report.summary, close ? 'That was close. Rest before your next fight.' : null];
+  const note = parts.filter((p) => p !== null && p !== undefined).join(' ');
+  return note === '' ? null : note;
 }
 
 /** A bout you only watched: who won, how long it took, and what watching taught you. */
@@ -135,7 +146,7 @@ function watchedCard(report: Extract<Report, { kind: 'fight' }>, verdict: string
     tone: 'good',
     rows: [{ label: 'Rounds', value: String(report.rounds) }],
     ...taughtList(report.taught),
-    note: null,
+    note: report.summary ?? null,
   };
 }
 
@@ -155,10 +166,7 @@ function content(report: Report): CardContent {
           { label: 'Health left', value: `${report.health} / ${report.maxHealth}` },
         ],
         ...taughtList(report.taught),
-        note:
-          report.health < report.maxHealth * 0.25
-            ? 'That was close. Rest before your next fight.'
-            : null,
+        note: fightNote(report),
       };
     case 'mission-complete':
       return missionCompleteCard(report);

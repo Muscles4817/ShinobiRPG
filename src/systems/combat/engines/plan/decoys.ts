@@ -16,6 +16,7 @@ import {
 } from '../../rules/verbs';
 import { wound } from './wound';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Clones taking hits in a planned fight. A hit only gets here once it has reached its target
@@ -61,7 +62,7 @@ export function throughClones(
   if (hit.area) {
     const burst = patch(round.fighters, maker.id, { clones: { ...clones, count: 0 } });
     return {
-      round: say({ ...round, fighters: burst }, `${maker.name}'s clones burst apart.`),
+      round: say({ ...round, fighters: burst }, tell('{m.poss} clones burst apart.', { m: maker })),
       absorbed: false,
     };
   }
@@ -69,7 +70,11 @@ export function throughClones(
   if (!hit.rng.chance(chance)) return { round, absorbed: false };
   if (carriesThrough(hit.raw, maker.maxHealth, hit.breaks)) {
     const fighters = patch(round.fighters, maker.id, { clones: oneBurst(clones) });
-    const line = `${hit.attacker.name}'s ${hit.what} tears straight through a clone of ${maker.name}.`;
+    const line = tell('{a.poss} {what} tears straight through a clone of {m}.', {
+      a: hit.attacker,
+      what: hit.what,
+      m: maker,
+    });
     return {
       round: say({ ...round, fighters }, line),
       absorbed: false,
@@ -91,16 +96,22 @@ interface Struck {
  */
 function struckClone(round: Round, { hit, maker, clones }: Struck): Round {
   const rule = CLONE_RULES[kindOf(clones)];
-  const at = `${hit.attacker.name}'s ${hit.what} strikes a clone of ${maker.name}`;
-  if (hit.rng.chance(rule.sturdy)) return say(round, `${at}, which takes it and stands.`);
+  const at = (end: string) =>
+    tell(`{a.poss} {what} strikes a clone of {m}, ${end}`, {
+      a: hit.attacker,
+      what: hit.what,
+      m: maker,
+    });
+  if (hit.rng.chance(rule.sturdy)) return say(round, at('which takes it and stands.'));
   const burst = say(
     { ...round, fighters: patch(round.fighters, maker.id, { clones: oneBurst(clones) }) },
-    `${at}, which bursts.`,
+    at('which bursts.'),
   );
   const close = hit.physical === true && round.range === 'close';
   if (rule.shock <= 0 || !close) return burst;
   const raw = strikeDamage(maker, hit.attacker, hit.rng.next()) * rule.shock;
   const damage = cappedHit(Math.max(1, Math.round(raw)), hit.attacker.maxHealth);
-  const line = harmLine(`The clone's lightning leaps into ${hit.attacker.name}.`, damage);
+  const leaps = tell('The clone’s lightning leaps into {t}.', { t: hit.attacker });
+  const line = harmLine(leaps, damage);
   return wound(say(burst, line), hit.attacker.id, damage);
 }

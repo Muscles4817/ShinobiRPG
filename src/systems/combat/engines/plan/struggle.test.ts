@@ -67,7 +67,7 @@ describe('struggling free', () => {
     const after = struggleFree(scene({ caught: 'hero' }), sure);
     expect(who(after, 'hero').pinned).toBeUndefined();
     expect(who(after, 'hero').grip).toBeUndefined();
-    expect(after.lines.at(-1)).toMatch(/hero struggles free/);
+    expect(after.lines.at(-1)).toMatch(/hero struggles free/i);
   });
 
   it('a hold that holds stays on', () => {
@@ -109,7 +109,7 @@ describe('coming to a teammate’s aid', () => {
     expect(helped.kind).toBe('spent');
     if (helped.kind !== 'spent') return;
     expect(who(helped.round, 'hero').pinned).toBeUndefined();
-    expect(helped.round.lines.at(-1)).toMatch(/mate pulls hero free/);
+    expect(helped.round.lines.at(-1)).toMatch(/mate pulls hero free/i);
   });
 
   it('against a channelled hold, they go for its caster instead', () => {

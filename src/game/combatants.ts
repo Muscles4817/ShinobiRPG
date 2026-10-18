@@ -14,6 +14,7 @@ import { createStats, type Stats } from '@/systems/stats';
 import { maxChakra, MAX_HEALTH, reservesFor } from '@/systems/vitals';
 
 import type { GameContext } from './context';
+import { foeCalled, foeGrammar } from './foeNames';
 import { enemyWalking, playerWalking } from './footing';
 import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
@@ -87,6 +88,9 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
   return {
     id: PLAYER_COMBATANT_ID,
     name,
+    // The fight is told to the player: "You close in."
+    called: 'you',
+    grammar: 'you',
     attributes: attributesOf(armed),
     health: vitals.health,
     maxHealth: MAX_HEALTH,
@@ -133,9 +137,12 @@ export function enemyCombatantId(enemyId: string, index: number): string {
 
 export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
   const walking = enemyWalking(def);
+  const id = enemyCombatantId(def.id, index);
   return {
-    id: enemyCombatantId(def.id, index),
+    id,
     name: def.name,
+    called: foeCalled(def),
+    grammar: foeGrammar(def, id),
     tag: def.kind,
     attributes: attributesOf(enemyStatLine(def)),
     health: enemyMaxHealth(def),
@@ -159,9 +166,10 @@ export function retinueCombatantId(unitId: string, index: number, k: number): st
  * by default a companion is simply one more fighter on their side.
  */
 export function enemyParty(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup[] {
-  const units = (def.retinue ?? []).map((entry, k) => ({
-    ...enemyCombatant(ctx.content.enemies.require(entry.enemyId), index, ctx),
-    id: retinueCombatantId(entry.enemyId, index, k),
-  }));
+  const units = (def.retinue ?? []).map((entry, k) => {
+    const unit = ctx.content.enemies.require(entry.enemyId);
+    const id = retinueCombatantId(entry.enemyId, index, k);
+    return { ...enemyCombatant(unit, index, ctx), id, grammar: foeGrammar(unit, id) };
+  });
   return [enemyCombatant(def, index, ctx), ...units];
 }
