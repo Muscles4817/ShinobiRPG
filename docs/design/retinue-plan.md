@@ -835,7 +835,7 @@ and its genes, its skills with training**, and every kind has its own ceiling.
     playable while its summon is out.
   - **Reporting.** `CombatOutcome.summons` reports each call's fate: stayed, fell or sent home.
   - **Default plans** call a summon early, right after a sense or Search for a hidden foe.
-- **Contracts** (`systems/contracts`, `GameState.contract`, save v55):
+- **Contracts** (`systems/contracts`, `GameState.contract`, save v56):
   - **One at a time.**
   - **Standing.** Standing with the whole clan is kept in bond points:
     - a summon kept to the end +3;
