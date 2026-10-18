@@ -102,7 +102,7 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
             difficulty: 8,
             onSuccess: {
               effects: [{ kind: 'thread', thread: 'trust', by: 1 }],
-              ledger: 'Kept your patience with {chargeName}, and they noticed.',
+              ledger: 'Kept your patience with {chargeName}, who noticed.',
             },
             onFailure: {
               effects: [{ kind: 'thread', thread: 'daylight', by: -2 }],

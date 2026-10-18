@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import type { CombatTrait } from '@/systems/combat';
 import type { EnemyDef } from '@/content';
 import { stageFoes, type MissionDef } from '@/systems/missions';
@@ -215,7 +216,7 @@ export function handicapOf(state: GameState, ctx: GameContext): string | null {
     ...(hunger.fightStrength < 1 ? [hunger.label.toLowerCase()] : []),
     ...(injured ? ['injured'] : []),
   ];
-  return reasons.length > 0 ? `Read against you as you are now: ${reasons.join(' and ')}.` : null;
+  return reasons.length > 0 ? `Read against you as you are now: ${listed(reasons)}.` : null;
 }
 
 /** Sharp eyes: enough perception, or a bloodline that sees chakra. */

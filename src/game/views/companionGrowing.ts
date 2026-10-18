@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import type { CompanionKindDef } from '@/content';
 import {
   BODY_STATS,
@@ -67,7 +68,7 @@ function builtFor(kind: CompanionKindDef): string {
     .map((s) => BUILT_WORDS[s]);
   const never = last ? `, never for ${BUILT_WORDS[last]}` : '';
   const a = aKind(kind);
-  return `${a.charAt(0).toUpperCase()}${a.slice(1)} is built for ${best.join(' and ')}${never}.`;
+  return `${a.charAt(0).toUpperCase()}${a.slice(1)} is built for ${listed(best)}${never}.`;
 }
 
 function genesLine(companion: Companion, kind: CompanionKindDef, seed: number): string | null {

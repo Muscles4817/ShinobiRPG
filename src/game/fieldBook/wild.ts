@@ -2,6 +2,7 @@ import type { Find } from '@/systems/cooking';
 import type { TimeSlot } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { placeInText } from '../placeName';
 
 /**
  * Where the field book's wild pages come from: every fish that takes a line at some spot and
@@ -36,7 +37,7 @@ export function fishWhere(ctx: GameContext): ReadonlyMap<string, readonly WildWh
     for (const place of location.places) {
       if (place.kind !== 'wilds') continue;
       for (const spot of place.spots ?? []) {
-        const where = `${spot.name} at ${place.name.replace(/^The /, 'the ')}`;
+        const where = `${spot.name} at ${placeInText(place.name)}`;
         spot.catches.forEach((find) => {
           add(map, { where, find });
         });

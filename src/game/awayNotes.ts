@@ -1,3 +1,4 @@
+import { capitalise, counted } from '@/core';
 import { daysAway, type MissionDef } from '@/systems/missions';
 
 import type { GameContext } from './context';
@@ -20,7 +21,7 @@ export interface ExamClash {
 
 function inDays(days: number): string {
   if (days === 0) return 'today';
-  return days === 1 ? 'tomorrow' : `in ${days} days`;
+  return days === 1 ? 'tomorrow' : `in ${counted(days, 'day')}`;
 }
 
 /** The exam a job would make you miss, or null when you'd be back in time. */
@@ -43,5 +44,5 @@ export function examClash(state: GameState, ctx: GameContext, def: MissionDef): 
 export function awayFor(def: MissionDef): string | null {
   const days = daysAway(def);
   if (days === 0) return null;
-  return days === 1 ? 'A day away' : `${days} days away`;
+  return capitalise(`${counted(days, 'day')} away`);
 }

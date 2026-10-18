@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import type { Crew } from '@/systems/missions';
 import { RANK_LABELS } from '@/systems/standing';
 
@@ -12,12 +13,6 @@ export interface CrewWords {
   readonly line: string;
   /** You lead it (decisions are yours, and so is everyone's safety). */
   readonly youLead: boolean;
-}
-
-/** Names in a list: "Aki", "Aki and Ren", "Aki, Ren and Gen". */
-export function namesList(names: readonly string[]): string {
-  if (names.length <= 1) return names[0] ?? '';
-  return `${names.slice(0, -1).join(', ')} and ${names.at(-1) ?? ''}`;
 }
 
 function lineFor(crew: Crew, leader: string | null, members: string): string {
@@ -45,6 +40,6 @@ export function crewWords(state: GameState, ctx: GameContext, crew: Crew): CrewW
   if (crew.kind === 'solo') return null;
   const name = (id: string) => requirePerson(state, ctx, id).name;
   const leader = crew.leaderId === null ? null : name(crew.leaderId);
-  const line = lineFor(crew, leader, namesList(crew.memberIds.map(name)));
+  const line = lineFor(crew, leader, listed(crew.memberIds.map(name)));
   return { line, youLead: leader === null };
 }

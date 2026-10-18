@@ -21,7 +21,7 @@ describe('person profiles', () => {
   it('keep a stranger short: no day, no arts, but what knowing them opens next', () => {
     const sheet = personSheet(newGame(), ctx, 'tetsu')!;
     expect(sheet.path.name).toBe('Stranger');
-    expect(sheet.path.next?.opens).toContain('You learn what they’re like.');
+    expect(sheet.path.next?.opens).toContain('You learn what he’s like.');
     expect(sheet.day).toBeNull();
     expect(sheet.arts).toBeNull();
     expect(sheet.traits).toBeNull();
@@ -66,6 +66,6 @@ describe('person profiles', () => {
     expect(arts?.growing.length).toBeLessThanOrEqual(6);
     expect(arts?.moreGrowing).toBeGreaterThan(0);
     // The nearest first, each saying what it waits on.
-    expect(arts?.growing[0]?.when).toMatch(/^When their/);
+    expect(arts?.growing[0]?.when).toMatch(/^When (his|her|their) /);
   });
 });

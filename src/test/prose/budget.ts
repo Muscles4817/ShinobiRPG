@@ -25,7 +25,7 @@ export const PROSE_BUDGET: {
     zeroChip: 6,
     fractionChip: 24,
     straightQuote: 16,
-    repeatedLine: 32,
+    repeatedLine: 28,
   },
   style: {
     original: {

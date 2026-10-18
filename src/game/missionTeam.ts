@@ -2,6 +2,7 @@ import type { MissionPosture, PersonDef } from '@/content';
 import type { CombatantSetup, CombatOrders, CombatStance } from '@/systems/combat';
 import type { Crew, MissionNote } from '@/systems/missions';
 import { MAX_HEALTH } from '@/systems/vitals';
+import { fillSlots } from '@/core';
 
 import { PLAYER_COMBATANT_ID } from './combatants';
 import type { GameContext } from './context';
@@ -10,6 +11,7 @@ import { adjust, chip, log } from './ops';
 import { requirePerson } from './people/cast';
 import { companionCombatant, senseiCombatant } from './people/companions';
 import { personStats } from './people/progress';
+import { personSlots } from './people/pronouns';
 import { defaultStance, ordersFor, peerOrders } from './people/teamOrders';
 import type { GameState } from './state';
 import { waysOf } from './sensei/generate';
@@ -23,8 +25,11 @@ import { waysOf } from './sensei/generate';
 const TEAMMATE_TAG = 'Teammate';
 const SENSEI_TAG = 'Sensei';
 const LEADER_TAG = 'Leader';
-const SENSEI_ORDERS = 'Your sensei leads this mission. They don’t take orders from you.';
-const LEADER_CARDS = 'They fight their own way.';
+const SENSEI_ORDERS =
+  'Your sensei leads this mission. {leader.they} {leader.does}n’t take orders from you.';
+const LEADER_ORDERS =
+  '{leader} leads this mission. {leader.they} {leader.does}n’t take orders from you.';
+const LEADER_CARDS = '{leader.they} fight{leader.s} {leader.their} own way.';
 
 /** Chakra control (grade D) a teammate needs to be any use as a medic. */
 export const MEDIC_CONTROL = 8;
@@ -90,15 +95,14 @@ export function teamAllies(state: GameState, ctx: GameContext): CombatantSetup[]
   }));
   if (!leader) return members;
   const sensei = crew.kind === 'old-team';
-  const leads = sensei
-    ? SENSEI_ORDERS
-    : `${leader.name} leads this mission. They don’t take orders from you.`;
+  const slots = personSlots('leader', leader);
+  const leads = fillSlots(sensei ? SENSEI_ORDERS : LEADER_ORDERS, slots);
   return [
     ...members,
     {
       ...senseiCombatant(leader, state, ctx, sensei ? SENSEI_TAG : LEADER_TAG),
       stance: leaderStance(leader, sensei),
-      orders: { stanceLocked: leads, cardsLocked: LEADER_CARDS },
+      orders: { stanceLocked: leads, cardsLocked: fillSlots(LEADER_CARDS, slots) },
     },
   ];
 }

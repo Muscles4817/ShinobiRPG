@@ -11,6 +11,7 @@ import { warmed } from '../people/warmth';
 import type { GameState } from '../state';
 import { closedReason } from '../village';
 import type { ActionHandler, ActionOf } from './types';
+import { placeInText } from '../placeName';
 
 /**
  * The bar at night: stand everyone inside a round and they all warm to you a little. That
@@ -56,7 +57,7 @@ export const buyRound: ActionHandler<ActionOf<'buyRound'>> = {
     };
     const names = crowd.map((p) => p.name);
     return log(next, {
-      heading: `A round at ${tavern.name}`,
+      heading: `A round at ${placeInText(tavern.name)}`,
       text: roundStory(crowd),
       tone: 'success',
       chips: [

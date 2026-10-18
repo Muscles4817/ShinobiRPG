@@ -1,3 +1,4 @@
+import { counted } from '@/core';
 import type { PersonDef } from '@/content';
 import { addPoints } from '@/systems/bonds';
 import { diffStats, STAT_INFO, type StatId } from '@/systems/stats';
@@ -45,6 +46,7 @@ import { addReport } from '../reports';
 import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
+import { placeInText } from '../placeName';
 
 /**
  * Training with someone better than you, where they are: a session in one stat (an art also
@@ -69,7 +71,7 @@ function elsewhere(state: GameState, ctx: GameContext, person: PersonDef): strin
   const placeId = whereNow(state, ctx, person);
   const place = currentLocation(state, ctx).places.find((p) => p.id === placeId);
   return place
-    ? `${person.name} is at ${place.name} right now.`
+    ? `${person.name} is at ${placeInText(place.name)} right now.`
     : `${person.name} is away right now.`;
 }
 
@@ -78,7 +80,7 @@ function weekBlocker(state: GameState, teaching: Teaching): string | null {
   if (taughtToday(state, person.id)) return `You’ve already trained with ${person.name} today.`;
   if (sessionsUsed(state, person.id) < teaching.sessionsPerWeek) return null;
   const days = DAYS_PER_WEEK - ((state.time.day - 1) % DAYS_PER_WEEK);
-  const when = days === 1 ? 'a day' : `${days} days`;
+  const when = counted(days, 'day');
   return teaching.isSensei
     ? `Your next lesson is in ${when}.`
     : `${person.name} has no more time for you until next week, in ${when}.`;

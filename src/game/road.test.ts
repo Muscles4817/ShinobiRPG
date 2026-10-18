@@ -25,11 +25,11 @@ describe('days on the road', () => {
   it('says how long a job keeps you away, on the notice and at the road', () => {
     const state = packed(newGame({}, ctx), 2);
     const notice = missionBoardView(state, ctx)!.notices.find((n) => n.id === ROAD_JOB.id);
-    expect(notice?.away).toBe('3 days away');
+    expect(notice?.away).toBe('Three days away');
     const scene = missionScene(onTheRoad(state), ctx)!;
     expect(scene.choices[0]).toMatchObject({
       label: 'Travel on',
-      detail: '3 days on the road, food for 2 in your pack',
+      detail: 'Three days on the road, food for 2 in your pack',
     });
   });
 

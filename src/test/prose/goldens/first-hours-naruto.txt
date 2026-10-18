@@ -387,18 +387,18 @@ view:
   people[1]:
     stage: Acquaintance
     stamp: Now acquaintances
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what she likes to hear.
   people[2]:
     stage: Acquaintance
     stamp: Now acquaintances
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what he likes to hear.
   purse:
     lines[0]:
       label: Miso Chashu Ramen
   aheadLabel: Tomorrow
   ahead[0]:
     text: The Chūnin Exams
-    stamp: In 5 days
+    stamp: In five days
   ahead[1]:
     text: Kaname sets meditation
     stamp: Morning
@@ -565,20 +565,20 @@ view:
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what he likes to hear.
   people[1]:
     stage: Acquaintance
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what she likes to hear.
   purse:
     lines[0]:
       label: Miso Chashu Ramen
   aheadLabel: Tomorrow
   ahead[0]:
     text: The Chūnin Exams
-    stamp: In 4 days
+    stamp: In four days
   ahead[1]:
     text: Cherry Blossom Viewing
-    stamp: In 7 days
+    stamp: In seven days
   ahead[2]:
     text: New work at the hall
     stamp: New
@@ -631,7 +631,7 @@ view:
   festival:
     name: Cherry Blossom Viewing
     description: The whole village picnics under the blossoms. The stalls cut their prices.
-    when: In 7 days
+    when: In seven days
     perks[0]: Market −30%
     perks[1]: Bonds +3 per talk
   rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
@@ -747,7 +747,7 @@ view:
     stamp: Rival
   ahead[1]:
     text: The Chūnin Exams
-    stamp: In 3 days
+    stamp: In three days
   ahead[2]:
     text: Kaname sets drills
     stamp: Morning

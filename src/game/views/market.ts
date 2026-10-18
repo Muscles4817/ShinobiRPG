@@ -1,3 +1,4 @@
+import { counted } from '@/core';
 import type { IconId, Stall } from '@/content';
 import { pantryCount } from '@/systems/inventory';
 import { METER_MAX } from '@/systems/vitals';
@@ -114,7 +115,9 @@ function merchantsComing(state: GameState, ctx: GameContext): string[] {
     .filter((m): m is { stall: Stall; days: number } => m.days !== null && m.days > 0)
     .sort((a, b) => a.days - b.days)
     .map(({ stall, days }) =>
-      days === 1 ? `${stall.name} comes tomorrow.` : `${stall.name} comes in ${days} days.`,
+      days === 1
+        ? `${stall.name} comes tomorrow.`
+        : `${stall.name} comes in ${counted(days, 'day')}.`,
     );
 }
 

@@ -1,4 +1,5 @@
 import type { PersonDef } from '@/content';
+import { fillSlots } from '@/core';
 import {
   fightingPower,
   STAT_GRADES,
@@ -13,6 +14,7 @@ import { DISCIPLINES } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import { personStats } from '../people/progress';
+import { personSlots } from '../people/pronouns';
 import { PURSE } from '../rival/contest';
 import { trailsYou } from '../rival/drive';
 import { rivalLine, SHAPE_NAME, WHO_THEY_ARE } from '../rival/lines';
@@ -123,13 +125,17 @@ const gradeOf = (value: number) => STAT_GRADES.indexOf(statTier(value).grade);
 
 function ways(rival: Rival, person: PersonDef, yours: Stats, theirs: Stats): string[] {
   const name = person.name;
+  const slots = personSlots('rival', person);
   const ahead = STAT_IDS.filter((id) => gradeOf(theirs[id]) > gradeOf(yours[id])).sort(
     (a, b) => theirs[b] - yours[b] - (theirs[a] - yours[a]),
   )[0];
   return [
     ...(ahead
       ? [
-          `Swallow your pride: ask ${name} to teach you ${STAT_INFO[ahead].label.toLowerCase()}. Anyone ahead of you can, at a training ground where they are.`,
+          fillSlots(
+            'Swallow your pride: ask {rival} to teach you {stat}. Anyone ahead of you can, at a training ground where {rival.they} {rival.is}.',
+            { ...slots, stat: STAT_INFO[ahead].label.toLowerCase() },
+          ),
         ]
       : []),
     ...(gradeOf(yours.perception) < gradeOf(theirs.perception)
