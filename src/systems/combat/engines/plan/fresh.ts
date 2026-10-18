@@ -1,6 +1,6 @@
 import { freshIndex, hashString } from '@/core';
 
-import { splitNarration, voiceLine } from '../../rules/narration';
+import { namedOf, voiceLine, voicesOf } from '../../rules/narration';
 import { tell, type Cast, type Told } from '../../rules/telling';
 import type { Round } from './state';
 
@@ -63,23 +63,21 @@ function repeated(moment: Moment, bank: Bank, cast: Cast): boolean {
   const who = subjectOf(cast);
   if (!bank.again || !who) return false;
   const what = typeof cast.what === 'string' ? cast.what : null;
+  // Once told as a repeat, a third time is a repeat too.
+  const ids = [`${bank.id}.`, `${bank.id}-again.`];
   return moment.recent.some((line) => {
-    const said = splitNarration(line);
-    // Once told as a repeat, a third time is a repeat too.
-    const ids = [`${bank.id}.`, `${bank.id}-again.`];
-    const from = said.voices?.some((v) => ids.some((id) => v.startsWith(id))) ?? false;
-    return from && said.named?.[0] === who.id && (what === null || said.text.includes(what));
+    const from = voicesOf(line).some((v) => ids.some((id) => v.startsWith(id)));
+    return from && namedOf(line)[0] === who.id && (what === null || line.includes(what));
   });
 }
 
 /** Templates of this bank used in the moment's recent lines, by index, oldest first. */
 function usedRecently(moment: Moment, id: string): number[] {
   const prefix = `${id}.`;
-  return moment.recent.flatMap(
-    (line) =>
-      splitNarration(line)
-        .voices?.filter((v) => v.startsWith(prefix))
-        .map((v) => Number(v.slice(prefix.length))) ?? [],
+  return moment.recent.flatMap((line) =>
+    voicesOf(line)
+      .filter((v) => v.startsWith(prefix))
+      .map((v) => Number(v.slice(prefix.length))),
   );
 }
 

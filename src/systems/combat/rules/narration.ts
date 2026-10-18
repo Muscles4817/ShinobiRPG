@@ -117,6 +117,18 @@ export function voiceLine(text: string, ...voices: readonly string[]): string {
   return [text, ...voices.map((v) => `⟦v:${v}⟧`)].join(' ');
 }
 
+/** The templates a line's words came from ("search.2"), without reading the rest of it. */
+export function voicesOf(line: string): readonly string[] {
+  if (!line.includes('⟦v:')) return [];
+  return [...line.matchAll(VOICE_MARKER)].map((m) => m[1] ?? '');
+}
+
+/** Whom a line names, by id, without reading the rest of it. */
+export function namedOf(line: string): readonly string[] {
+  if (!line.includes('⟦n:')) return [];
+  return [...line.matchAll(NAMED_MARKER)].flatMap((m) => (m[1] ?? '').split('|'));
+}
+
 function voicesIn(line: string): string[] | null {
   const found = [...line.matchAll(VOICE_MARKER)].map((m) => m[1] ?? '');
   return found.length > 0 ? found : null;
