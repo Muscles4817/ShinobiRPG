@@ -9,22 +9,24 @@ export const YOMI_STORY: readonly ConversationDef[] = [
     personId: 'yomi',
     minStage: 1,
     opener:
-      'Yomi finishes a sentence to the empty bench beside her and turns to you. “My grandmother. She likes you, I think.”',
+      'Yomi finishes what she was saying to the empty bench beside her and turns to you. “My grandmother. I think she likes you, though it’s hard to be sure with her.”',
     choices: [
       {
         label: 'Bow to the bench.',
         tone: 'kind',
-        reply: 'Yomi smiles properly for the first time. “She says you have manners.”',
+        reply:
+          'Yomi smiles properly for the first time since you’ve known her. “She says you have manners, at least.”',
       },
       {
         label: '“There’s nobody there.”',
         tone: 'challenge',
-        reply: '“Not for you,” Yomi says, without offence.',
+        reply: '“Not for you, no,” Yomi says, without any offence.',
       },
       {
         label: '“What does she say?”',
         tone: 'curious',
-        reply: '“That you don’t eat enough.” Yomi shrugs. “She says that to everyone.”',
+        reply:
+          '“That you don’t eat enough. Don’t take it to heart, she says that to everyone, me included.”',
       },
     ],
   },
@@ -33,22 +35,22 @@ export const YOMI_STORY: readonly ConversationDef[] = [
     personId: 'yomi',
     minStage: 2,
     opener:
-      '“The Tōkaku see the dead,” Yomi says. “Not by choosing. I can’t close my eyes to them. Genjutsu is the only quiet I know.”',
+      '“The Tōkaku see the dead,” Yomi says. “We don’t choose it, and I can’t close my eyes to them. Genjutsu is the only quiet I’ve ever found.”',
     choices: [
       {
         label: '“That sounds lonely.”',
         tone: 'kind',
-        reply: '“Crowded,” she says. “Which is worse.”',
+        reply: '“Crowded, I’d say. Which is worse, if you ask me.”',
       },
       {
         label: '“Teach me the quiet.”',
         tone: 'earnest',
-        reply: 'She considers you. “Perhaps. It isn’t easy to give.”',
+        reply: 'She considers you. “Perhaps. It isn’t an easy thing to hand to somebody.”',
       },
       {
         label: 'Sit in silence with her.',
         tone: 'quiet',
-        reply: 'After a while she breathes out, slowly. “Thank you.”',
+        reply: 'After a while she lets out a slow breath and thanks you.',
       },
     ],
   },
@@ -57,22 +59,22 @@ export const YOMI_STORY: readonly ConversationDef[] = [
     personId: 'yomi',
     minStage: 3,
     opener:
-      '“The grave nobody visits,” Yomi says, “is my teammate’s. I don’t go. He’s never there. That’s the worst part.”',
+      '“The grave nobody visits is my teammate’s,” Yomi says. “I don’t go either, because he’s never there, and I think that’s the worst of it.”',
     choices: [
       {
         label: '“Where is he, then?”',
         tone: 'curious',
-        reply: '“Somewhere he hasn’t finished,” she says. “I keep looking.”',
+        reply: '“Somewhere he hasn’t finished with yet. I keep looking for it.”',
       },
       {
         label: '“I’ll go with you.”',
         tone: 'kind',
-        reply: 'She looks at you a long moment. “One day. Maybe.”',
+        reply: 'She looks at you for some time before she answers. “One day, maybe.”',
       },
       {
         label: 'Say nothing.',
         tone: 'quiet',
-        reply: 'She nods, as if that were the right answer.',
+        reply: 'It seems to be the answer she wanted.',
       },
     ],
   },
@@ -81,24 +83,24 @@ export const YOMI_STORY: readonly ConversationDef[] = [
     personId: 'yomi',
     minStage: 4,
     opener:
-      '“When I’m gone,” Yomi says, “light a lantern for me. Not on the grave. Somewhere I liked.” She pauses. “I found where he is. My teammate. On the old border hill. Come with me?”',
+      '“When I’m gone,” Yomi says, “light a lantern for me, not on the grave but somewhere I liked.” She pauses. “I’ve found where he is, my teammate. On the old border hill. Will you come with me?”',
     choices: [
       {
         label: '“Where did you like?”',
         tone: 'curious',
-        reply: 'She tells you. It is the bench where you first met.',
+        reply: 'She tells you, and it is the bench where you first met.',
         worldMark: YOMI_UNFINISHED,
       },
       {
         label: '“Don’t talk like that.”',
         tone: 'earnest',
-        reply: '“Everyone goes,” she says gently. “I just know where.”',
+        reply: '“Everyone goes,” she says gently. “I just happen to know where.”',
         worldMark: YOMI_UNFINISHED,
       },
       {
         label: '“I promise.”',
         tone: 'kind',
-        reply: '“I know,” she says. “Grandmother says so too.”',
+        reply: '“I know you will. Grandmother says so too.”',
         worldMark: YOMI_UNFINISHED,
       },
     ],

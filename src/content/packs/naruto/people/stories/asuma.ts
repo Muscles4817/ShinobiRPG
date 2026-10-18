@@ -7,22 +7,23 @@ export const ASUMA_STORY: readonly ConversationDef[] = [
     personId: 'asuma',
     minStage: 1,
     opener:
-      'Asuma sets up a shōgi board. “Every piece matters. But one piece you protect above all. Guess which.”',
+      'Asuma sets up a shōgi board on the bench between you. “Every piece on here matters. But there’s one you protect above all the others. Go on, guess which.”',
     choices: [
       {
         label: '“The king.”',
         tone: 'earnest',
-        reply: '“Right,” he says. “And one day I’ll tell you what the king really is.”',
+        reply: '“Right. And one of these days I’ll tell you what the king really is.”',
       },
       {
         label: '“The strongest one.”',
         tone: 'challenge',
-        reply: '“Wrong,” he says cheerfully. “Play and find out.”',
+        reply: '“Wrong,” he says cheerfully. “Play a few games and you’ll work it out.”',
       },
       {
         label: 'Move a piece instead of answering.',
         tone: 'quiet',
-        reply: 'He grins and moves one back. You lose. Slowly.',
+        reply:
+          'He moves one back, looking amused, and then takes the rest of the afternoon to beat you, very slowly.',
       },
     ],
   },
@@ -31,22 +32,23 @@ export const ASUMA_STORY: readonly ConversationDef[] = [
     personId: 'asuma',
     minStage: 2,
     opener:
-      '“I left the village once,” Asuma says. “Guarded a lord in the capital. Twelve of us. I came back with these knives and fewer friends.”',
+      '“I left the village once,” Asuma says. “Went to guard the daimyō in the capital, twelve of us all told. I came back with these knives and fewer friends than I left with.”',
     choices: [
       {
         label: '“Why did you leave?”',
         tone: 'curious',
-        reply: '“To be someone other than my father’s son,” he says.',
+        reply: '“To be somebody other than my father’s son, I suppose.”',
       },
       {
         label: '“Why come back?”',
         tone: 'curious',
-        reply: '“Turned out I liked it here.” He lights a cigarette. “Don’t tell him.”',
+        reply:
+          '“Turned out I liked it here.” He lights a cigarette. “Don’t go telling my father that.”',
       },
       {
         label: '“Show me the knives.”',
         tone: 'challenge',
-        reply: 'He does. They hum when he puts chakra through them.',
+        reply: 'He does, and when he puts chakra through them the blades start to hum.',
       },
     ],
   },
@@ -55,14 +57,22 @@ export const ASUMA_STORY: readonly ConversationDef[] = [
     personId: 'asuma',
     minStage: 3,
     opener:
-      '“My father’s the Hokage,” Asuma says. “We fight every time we talk. Still. He taught me everything I didn’t want to learn.”',
+      '“My father’s the Hokage,” Asuma says. “We still fight every time we talk, even now. He taught me everything I didn’t want to learn from him.”',
     choices: [
-      { label: '“Maybe tell him that.”', tone: 'kind', reply: '“Maybe,” he says. “Someday.”' },
-      { label: '“Families are hard.”', tone: 'earnest', reply: '“Yeah,” he says. “They are.”' },
+      {
+        label: '“Maybe tell him that.”',
+        tone: 'kind',
+        reply: '“Maybe I will. Someday, when we’re both too tired to argue.”',
+      },
+      {
+        label: '“Families are hard.”',
+        tone: 'earnest',
+        reply: '“Yeah. They are, aren’t they.”',
+      },
       {
         label: 'Offer him the next shōgi move.',
         tone: 'quiet',
-        reply: 'He takes it gratefully. You don’t talk about it again.',
+        reply: 'He takes it gratefully, and neither of you brings it up again.',
       },
     ],
   },
@@ -71,7 +81,7 @@ export const ASUMA_STORY: readonly ConversationDef[] = [
     personId: 'asuma',
     minStage: 4,
     opener:
-      '“The king,” Asuma says. “It isn’t the Hokage. It’s the children of the village. The ones who come after. That’s you now.”',
+      '“The king,” Asuma says. “It isn’t the Hokage. It’s the children of the village, the ones who come after us. That means you, now.”',
     choices: [
       {
         label: '“Then I’ll protect the next ones.”',
@@ -81,12 +91,12 @@ export const ASUMA_STORY: readonly ConversationDef[] = [
       {
         label: '“So you’re protecting me?”',
         tone: 'tease',
-        reply: '“Don’t let it go to your head.”',
+        reply: '“Don’t let it go to your head, all right?”',
       },
       {
         label: 'Say nothing, and play.',
         tone: 'quiet',
-        reply: 'This time, you win. He lets you think he didn’t let you.',
+        reply: 'This time you win, and he lets you go on thinking he didn’t let you.',
       },
     ],
   },

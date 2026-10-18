@@ -76,7 +76,7 @@ view:
     where: At the Training Grounds
     talk:
       blocker: Your team has not been assigned yet.
-    style: Up before dawn, running stairs until you can’t feel your legs. Loud about it.
+    style: Up before dawn, running stairs until you can’t feel your legs, and loud about it the whole way up.
     reasons[0]: Your B in Taijutsu
     reasons[1]: Likes that you are brash and diligent
     choose:

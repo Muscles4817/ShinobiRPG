@@ -9,18 +9,22 @@ export const ANKO_STORY: readonly ConversationDef[] = [
     personId: 'anko',
     minStage: 1,
     opener:
-      'Anko is on her fourth stick of dango. “Sweet things,” she says, “because the rest of the job isn’t.”',
+      'Anko is on her fourth stick of dango. “Sweet things,” she says through a mouthful, “because the rest of this job sure isn’t.”',
     choices: [
-      { label: 'Take a stick.', tone: 'joke', reply: 'She lets you. Barely. “You owe me.”' },
+      {
+        label: 'Take a stick.',
+        tone: 'joke',
+        reply: 'She lets you, only just. “You owe me one now, and I always collect.”',
+      },
       {
         label: '“Is the job that bad?”',
         tone: 'curious',
-        reply: '“Worse,” she says cheerfully. “You’ll love it.”',
+        reply: '“Worse,” she says cheerfully. “You’re going to love it.”',
       },
       {
         label: '“You’ll rot your teeth.”',
         tone: 'tease',
-        reply: 'She bares them. They are perfect, and slightly alarming.',
+        reply: 'She bares them at you. They’re perfect, and slightly alarming.',
       },
     ],
   },
@@ -29,15 +33,24 @@ export const ANKO_STORY: readonly ConversationDef[] = [
     personId: 'anko',
     minStage: 2,
     opener:
-      '“Training Ground Forty-Four,” Anko says. “The Forest of Death. I’m the only one who walks in there for fun.”',
+      '“Training Ground Forty-Four,” Anko says. “The Forest of Death. I’m the only one round here who walks in there for fun.”',
     choices: [
-      { label: '“Take me with you.”', tone: 'challenge', reply: '“Ha! Bring a bandage. Several.”' },
+      {
+        label: '“Take me with you.”',
+        tone: 'challenge',
+        reply: '“Ha! Sure, if you bring a bandage. Bring several.”',
+      },
       {
         label: '“Why for fun?”',
         tone: 'curious',
-        reply: '“It’s honest,” she says. “Everything in there wants to eat you, and says so.”',
+        reply:
+          '“Because it’s honest. Everything in there wants to eat you, and it doesn’t pretend otherwise.”',
       },
-      { label: '“No thank you.”', tone: 'joke', reply: '“Smart,” she says. “Boring, but smart.”' },
+      {
+        label: '“No thank you.”',
+        tone: 'joke',
+        reply: '“Smart. Boring, but smart,” she says.',
+      },
     ],
   },
   {
@@ -45,22 +58,22 @@ export const ANKO_STORY: readonly ConversationDef[] = [
     personId: 'anko',
     minStage: 3,
     opener:
-      'Anko touches the mark on her neck. “My teacher left that. Orochimaru. He used me and threw me away. It still burns when he’s near.”',
+      'Anko touches the mark on her neck. “My teacher left me that. Orochimaru. He used me and threw me away, and it still burns when he’s anywhere near.”',
     choices: [
       {
         label: '“He was wrong to.”',
         tone: 'kind',
-        reply: '“I know,” she says. “Took me years to know it.”',
+        reply: '“I know he was. It took me years to actually believe it, though.”',
       },
       {
         label: '“I’d have stopped him.”',
         tone: 'earnest',
-        reply: 'She laughs, not unkindly. “Grow first.”',
+        reply: 'She laughs, not unkindly. “Grow a bit first, would you?”',
       },
       {
         label: 'Stay close a while.',
         tone: 'quiet',
-        reply: 'She doesn’t send you away. That says a lot.',
+        reply: 'She doesn’t send you away, and from Anko that says a lot.',
       },
     ],
   },
@@ -69,24 +82,24 @@ export const ANKO_STORY: readonly ConversationDef[] = [
     personId: 'anko',
     minStage: 4,
     opener:
-      '“Listen,” Anko says, deadly serious for once. “Never let anyone use you. Not a teacher. Not me. Not the village.” She looks away. “There’s an old den of his past Otafuku. I’m going to burn it out. Promise me, and come.”',
+      '“Listen,” Anko says, deadly serious for once. “Never let anyone use you. Not a teacher, not me, not the village.” She looks away. “There’s an old den of his past Otafuku, and I’m going to burn it out. Promise me, and then come with me.”',
     choices: [
       {
         label: '“I promise.”',
         tone: 'earnest',
-        reply: '“Good kid,” she says, and buys you dango.',
+        reply: '“Good kid,” she says, and buys you dango on the way.',
         worldMark: ANKO_DEN,
       },
       {
         label: '“Not even you?”',
         tone: 'tease',
-        reply: '“Especially me,” she grins.',
+        reply: '“Especially not me,” she says, showing all her teeth.',
         worldMark: ANKO_DEN,
       },
       {
         label: '“Nobody uses you either.”',
         tone: 'kind',
-        reply: 'She stares at you. Then she ruffles your hair, hard.',
+        reply: 'She stares at you, and then ruffles your hair, hard.',
         worldMark: ANKO_DEN,
       },
     ],

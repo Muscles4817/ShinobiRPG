@@ -76,7 +76,7 @@ view:
     where: At the Training Grounds
     talk:
       blocker: Your team has not been assigned yet.
-    style: Quiet, patient and impossible to knock over. Asks more questions than he answers.
+    style: Quiet and patient, and impossible to knock over. Asks more questions than he answers.
     nature: Earth
     reasons[0]: Your B in Taijutsu
     reasons[1]: Likes that you are diligent

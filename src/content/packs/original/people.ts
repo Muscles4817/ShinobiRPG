@@ -24,7 +24,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       'arm',
     ),
     specialty: 'taijutsu',
-    bio: 'Broke a mountain bandit’s blade with his forearm. Has the scar to prove it, and shows everyone.',
+    bio: 'Broke a mountain bandit’s blade with his forearm, and has the scar to prove it, which he shows to everyone.',
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',
@@ -34,7 +34,8 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     sensei: {
       specialty: 'taijutsu',
       favouredTraits: ['brash', 'diligent', 'proud'],
-      style: 'Up before dawn, running stairs until you can’t feel your legs. Loud about it.',
+      style:
+        'Up before dawn, running stairs until you can’t feel your legs, and loud about it the whole way up.',
       lesson: 'Gōran has you hit the striking post until it splinters, then hands you a new one.',
       ways: GORAN_WAYS,
     },
@@ -74,7 +75,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       outfit: '#2a2a32',
     }),
     specialty: 'ninjutsu',
-    bio: 'Lights the great lantern at the village gate every dusk. Has never once needed a match.',
+    bio: 'Lights the great lantern at the village gate every dusk, and has never once needed a match to do it.',
     schedule: {
       morning: 'academy',
       afternoon: 'mission-hall',
@@ -85,7 +86,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       specialty: 'ninjutsu',
       favouredTraits: ['proud', 'curious', 'brash'],
       nature: 'fire',
-      style: 'Demanding and dazzling. Expects you to burn as bright as she does.',
+      style: 'Demanding and dazzling, and expects you to burn as bright as she does.',
       toleratesReplacement: true,
       lesson:
         'Akari makes you hold a flame in your palm until it stops flickering. It takes all afternoon.',
@@ -121,7 +122,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       outfit: '#3a3a5e',
     }),
     specialty: 'genjutsu',
-    bio: 'Talks to people nobody else can see. Usually they answer.',
+    bio: 'Talks to people nobody else can see, and they usually answer her.',
     schedule: {
       morning: 'tokaku-compound',
       afternoon: 'academy',
@@ -166,7 +167,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       'belt',
     ),
     specialty: 'kenjutsu',
-    bio: 'Forged the Tōrokage’s sword. Says almost nothing; his blade says the rest.',
+    bio: 'Forged the Tōrokage’s sword. He says almost nothing and lets the blade say the rest.',
     schedule: {
       morning: 'training-grounds',
       afternoon: 'market-street',
@@ -177,8 +178,9 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       specialty: 'kenjutsu',
       favouredTraits: ['focused', 'humble', 'calm'],
       nature: 'earth',
-      style: 'A thousand cuts a day, each one perfect. Silence is praise.',
-      lesson: 'Tetsu watches you cut a thousand times and says one word. It is the right word.',
+      style: 'A thousand cuts a day, each one perfect, and silence is the only praise you get.',
+      lesson:
+        'Tetsu watches you cut a thousand times and then says one word, which turns out to be the right one.',
       ways: TETSU_WAYS,
     },
     teacher: {
@@ -189,7 +191,11 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
         kind: 'all',
         parts: [
           { kind: 'bond', minStage: 2 },
-          { kind: 'ryo', perSession: 25, line: 'He nods at the forge’s coal bin. It is empty.' },
+          {
+            kind: 'ryo',
+            perSession: 25,
+            line: 'He points at the forge’s coal bin, which is empty.',
+          },
         ],
       },
     },
@@ -223,7 +229,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       specialty: 'fuuinjutsu',
       favouredTraits: ['cunning', 'diligent', 'focused'],
       nature: 'wind',
-      style: 'Patient, precise, and always three moves ahead. Loves a good trap.',
+      style: 'Patient and precise, and always three moves ahead. Loves a good trap.',
       toleratesReplacement: true,
       lesson:
         'Ito sets traps around the training ground and makes you write a ward for each before dark.',

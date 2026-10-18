@@ -9,19 +9,24 @@ export const SHION_STORY: readonly ConversationDef[] = [
     personId: 'shion',
     minStage: 1,
     opener:
-      'Shion fans a deck of cards at you. “Pick one.” You do. It is blank. “Never trust a deck you didn’t shuffle,” she says.',
+      'Shion fans a deck of cards at you and tells you to pick one. You do, and it’s blank. “Never trust a deck you didn’t shuffle yourself,” she says.',
     choices: [
       {
         label: '“How did you do that?”',
         tone: 'curious',
-        reply: '“I didn’t. You did. You saw what you expected.”',
+        reply: '“I didn’t do anything. You saw what you expected to see, that’s all.”',
       },
       {
         label: 'Shuffle her deck yourself.',
         tone: 'challenge',
-        reply: 'Every card is now the same queen. She grins.',
+        reply:
+          'When you turn them over, every card is the same queen, and Shion looks very pleased with herself.',
       },
-      { label: '“That’s cheating.”', tone: 'tease', reply: '“That,” she says, “is the lesson.”' },
+      {
+        label: '“That’s cheating.”',
+        tone: 'tease',
+        reply: '“Yes. That’s the lesson,” she says.',
+      },
     ],
   },
   {
@@ -29,17 +34,17 @@ export const SHION_STORY: readonly ConversationDef[] = [
     personId: 'shion',
     minStage: 2,
     opener:
-      '“I spent years in Tanzaku Town,” Shion says. “Dealing cards, pouring sake, listening. Gamblers tell you everything when they’re losing.”',
+      '“I spent years in Tanzaku Town dealing cards and pouring sake and listening,” Shion says. “Gamblers will tell you anything at all when they’re losing.”',
     choices: [
       {
         label: '“Did you like it?”',
         tone: 'curious',
-        reply: '“I liked being good at it,” she says. “That isn’t the same.”',
+        reply: '“I liked being good at it. I’m not sure that’s the same thing.”',
       },
       {
         label: '“You were a spy.”',
         tone: 'earnest',
-        reply: '“I was a dealer who listened,” she says. “Spies get caught.”',
+        reply: '“I was a dealer who listened,” she says. “Spies are the ones who get caught.”',
       },
       {
         label: '“Teach me to listen like that.”',
@@ -53,19 +58,23 @@ export const SHION_STORY: readonly ConversationDef[] = [
     personId: 'shion',
     minStage: 3,
     opener:
-      '“There was a man who sold me secrets,” Shion says. “Kenta. A croupier. I made one mistake and his boss found out. Kenta paid for it, not me.”',
+      '“There was a croupier called Kenta who sold me secrets,” Shion says. “I made one mistake, and his boss found out, and it was Kenta who paid for it, not me.”',
     choices: [
       {
         label: '“That wasn’t your fault.”',
         tone: 'kind',
-        reply: '“It was,” she says. “I just survived it.”',
+        reply: '“It was. I just happened to survive it.”',
       },
       {
         label: '“What happened to him?”',
         tone: 'curious',
-        reply: '“Nobody knows. That is the worst of it.”',
+        reply: '“Nobody knows, and that’s the worst of it.”',
       },
-      { label: 'Say nothing.', tone: 'quiet', reply: 'She seems grateful you didn’t try.' },
+      {
+        label: 'Say nothing.',
+        tone: 'quiet',
+        reply: 'She seems grateful you didn’t try to make it better.',
+      },
     ],
   },
   {
@@ -73,12 +82,12 @@ export const SHION_STORY: readonly ConversationDef[] = [
     personId: 'shion',
     minStage: 4,
     opener:
-      '“Kenta’s boss is running the tables in Tanzaku again,” Shion says. “He has something of mine. And I owe Kenta. I’d like you there when I collect.”',
+      '“Kenta’s boss is running the tables in Tanzaku again,” Shion says. “He’s still holding a debt over Kenta, and I owe Kenta. I’d like you there when I collect.”',
     choices: [
       {
         label: '“I’ll watch your back.”',
         tone: 'earnest',
-        reply: '“I know,” she says. “That’s why it’s you.”',
+        reply: '“I know you will. That’s why it’s you I asked.”',
         worldMark: SHION_DEBT,
       },
       {
@@ -90,7 +99,7 @@ export const SHION_STORY: readonly ConversationDef[] = [
       {
         label: '“Is this revenge?”',
         tone: 'challenge',
-        reply: '“It’s settling up,” she says. “There’s a difference. I think.”',
+        reply: '“It’s settling up. There’s a difference, I think. Ask me afterwards.”',
         worldMark: SHION_DEBT,
       },
     ],
