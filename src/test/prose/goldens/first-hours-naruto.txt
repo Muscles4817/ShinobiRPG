@@ -11,13 +11,13 @@ view:
     steps[4]: Easy going
   verdict: Steady. Middle of the class. You start about where most of your year does.
   note: Your talent is still mostly hidden. Training will show you what it is.
-  easy[0]: Taijutsu, fast and far
-  easy[1]: Every stat grows quickly
-  easy[2]: Taijutsu, faster still
-  hard[0]: Genjutsu techniques, slower than the rest
-  hard[1]: Staying fed: you get hungry often
-  people[0]: Nothing stands out yet: people will take you as they find you.
-  limits[0]: Everything else is still hidden: training will tell you where it runs out.
+  easy[0]: Every stat grows quickly
+  easy[1]: Taijutsu comes very fast
+  hard[0]: Genjutsu techniques come slowly
+  hard[1]: You get hungry often
+  people[0]: Nothing stands out yet, so people will take you as they find you.
+  limits[0]: Taijutsu can go further than most.
+  limits[1]: Everything else is still hidden. Training will tell you where it runs out.
 instructor: Iruka-sensei
 caught: A lamp flares in the doorway. “Reading your own file the night before graduation?” Iruka-sensei sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”
 
