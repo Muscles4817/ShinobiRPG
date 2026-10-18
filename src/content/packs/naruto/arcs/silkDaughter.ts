@@ -1,0 +1,250 @@
+import type { ArcDef, MissionDef } from '@/systems/missions';
+
+import {
+  BANDITS_BLAMED,
+  DANJURO,
+  DAUGHTER_TAKEN,
+  HER_ROOM,
+  OCHO_CLUES,
+  PILGRIM_ROAD,
+} from './silkDaughterStart';
+
+/**
+ * The Silk Merchant's Daughter: the client is the villain, and the "kidnapping" was a flight
+ * from him. It ends in a fork of three roads, each its own job: take her home and be paid, lie
+ * to him and lose half, or take the truth to the magistrate in Tanzaku, where only what you
+ * found along the way makes the case. Taking one road closes the others.
+ */
+
+export const BRING_HER_HOME: MissionDef = {
+  id: 'arc-silk-bring-her-home',
+  title: 'Bring Her Home',
+  rank: 'C',
+  client: DANJURO,
+  summary: 'Do what you were paid for: take Ochō back to her father in Shukuba.',
+  slots: 1,
+  energyCost: 25,
+  reward: { ryo: 420, reputation: 3 },
+  minMissionsCompleted: 4,
+  endsAt: 'konohagakure',
+  stages: [
+    {
+      kind: 'leg',
+      text: 'Down the pilgrim road, Ochō silent beside you.',
+      days: 2,
+      region: 'mountain-pass',
+    },
+    {
+      kind: 'decision',
+      text: 'At his door Danjūrō takes his daughter by the wrist, and she flinches.',
+      options: [
+        {
+          when: { tally: OCHO_CLUES, atLeast: 2 },
+          label: 'Tell him, before his servants, that you know what she ran from',
+          tone: 'challenge',
+          reply:
+            'His servants hear every word. So does the street. Danjūrō lets go of her wrist, and for once says nothing at all.',
+          effects: [{ kind: 'mark', mark: 'witnessed' }],
+          ledger: 'Said before witnesses what Ochō had run from.',
+        },
+        {
+          label: 'Take your fee and go',
+          tone: 'quiet',
+          reply: 'He counts it out carefully. Ochō doesn’t look at you.',
+          ledger: 'Handed Ochō back to her father.',
+        },
+      ],
+    },
+    {
+      kind: 'ending',
+      endings: [
+        {
+          when: { has: 'witnessed' },
+          text: 'Word goes round Shukuba by evening. The creditor withdraws his suit, and the maid with the bruised wrist leaves Danjūrō’s house with Ochō a week later.',
+          effects: [{ kind: 'world', mark: 'silk-daughter-done' }],
+          ledger: 'Ochō went home, but the whole town knows why she left.',
+        },
+        {
+          text: 'You hear later that she was married to the creditor by the next new moon.',
+          effects: [{ kind: 'world', mark: 'silk-daughter-done' }],
+          ledger: 'Ochō went home to her father.',
+        },
+      ],
+    },
+    { kind: 'leg', text: 'Home down the post road.', days: 1 },
+  ],
+};
+
+export const WORD_OF_HER_DEATH: MissionDef = {
+  id: 'arc-silk-word-of-death',
+  title: 'Word of Her Death',
+  rank: 'C',
+  client: 'Ochō',
+  summary:
+    'Tell Danjūrō his daughter drowned crossing the river, and leave her at the temple. He will pay for the news, not for the job.',
+  slots: 1,
+  energyCost: 20,
+  reward: { ryo: 380, reputation: 2 },
+  minMissionsCompleted: 4,
+  endsAt: 'konohagakure',
+  stages: [
+    {
+      kind: 'leg',
+      text: 'Down the pilgrim road alone, with her comb wrapped in a cloth.',
+      days: 2,
+      region: 'mountain-pass',
+    },
+    {
+      kind: 'decision',
+      text: 'Danjūrō turns the comb over in his hands. “The river,” he says. “And the creditor’s money?”',
+      options: [
+        {
+          label: 'Say nothing more',
+          tone: 'quiet',
+          reply: 'He pays you for the news, not the job, and sends you out.',
+          effects: [{ kind: 'pay', share: -0.25 }],
+          ledger: 'Told Danjūrō his daughter drowned. He paid for the news.',
+        },
+      ],
+    },
+    {
+      kind: 'ending',
+      endings: [
+        {
+          text: 'At the Fire Temple a novice sweeps the courtyard every morning, and nobody on the post road ever asks her name.',
+          effects: [{ kind: 'world', mark: 'silk-daughter-done' }],
+          ledger: 'Ochō stays at the temple, dead to her father.',
+        },
+      ],
+    },
+    { kind: 'leg', text: 'Home down the post road.', days: 1 },
+  ],
+};
+
+export const BEFORE_THE_MAGISTRATE: MissionDef = {
+  id: 'arc-silk-magistrate',
+  title: 'Before the Magistrate',
+  rank: 'C',
+  client: 'Ochō',
+  summary:
+    'Take Ochō to the daimyō’s magistrate in Tanzaku and let her speak. Her father will be there, and so will his money.',
+  slots: 1,
+  energyCost: 30,
+  reward: { ryo: 640, reputation: 6 },
+  minMissionsCompleted: 4,
+  endsAt: 'konohagakure',
+  stages: [
+    {
+      kind: 'leg',
+      text: 'Down from the temple and along the post road.',
+      days: 2,
+      region: 'mountain-pass',
+    },
+    {
+      kind: 'leg',
+      text: 'On by the river to Tanzaku’s castle ward.',
+      days: 1,
+      region: 'river-road',
+    },
+    {
+      kind: 'check',
+      text: 'The magistrate is bored. Danjūrō’s lawyer is not. “A daughter’s tale,” he says, “against a man of standing.”',
+      approaches: [
+        {
+          when: { tally: OCHO_CLUES, atLeast: 2 },
+          label: 'Lay out what you found, piece by piece',
+          stat: 'intellect',
+          difficulty: 6,
+          onSuccess: {
+            effects: [{ kind: 'mark', mark: 'case-made' }],
+            ledger: 'Laid the case out: the bruise, the room, her story.',
+          },
+        },
+        {
+          label: 'Let Ochō speak, and stand beside her',
+          stat: 'willpower',
+          difficulty: 10,
+          onSuccess: {
+            effects: [{ kind: 'mark', mark: 'case-made' }],
+            ledger: 'Stood beside Ochō while she spoke, and the magistrate listened.',
+          },
+        },
+      ],
+      success: 'The magistrate stops looking bored.',
+      failure:
+        'The lawyer talks longer than anyone, and the magistrate believes the man who talks longest.',
+      onFailure: 'forward',
+    },
+    {
+      kind: 'ending',
+      endings: [
+        {
+          when: { has: 'case-made' },
+          text: 'The magistrate frees Ochō from her father’s house and voids the marriage contract. Outside, she laughs, and can’t stop.',
+          effects: [
+            { kind: 'world', mark: 'silk-daughter-done' },
+            { kind: 'world', mark: 'ocho-free' },
+            { kind: 'memory', text: 'the morning Ochō walked out of the castle ward free' },
+          ],
+          ledger: 'The magistrate set Ochō free of her father.',
+        },
+        {
+          text: 'The case is dismissed. Ochō goes back up to the temple, and Chiriku closes the gate behind her.',
+          effects: [
+            { kind: 'world', mark: 'silk-daughter-done' },
+            { kind: 'pay', share: -0.25 },
+          ],
+          ledger: 'The magistrate dismissed the case. Ochō went back to the temple.',
+        },
+      ],
+    },
+    { kind: 'leg', text: 'Home from Tanzaku.', days: 2 },
+  ],
+};
+
+export const SILK_DAUGHTER_JOBS: readonly MissionDef[] = [
+  DAUGHTER_TAKEN,
+  HER_ROOM,
+  BANDITS_BLAMED,
+  PILGRIM_ROAD,
+  BRING_HER_HOME,
+  WORD_OF_HER_DEATH,
+  BEFORE_THE_MAGISTRATE,
+];
+
+export const SILK_DAUGHTER_ARC: ArcDef = {
+  id: 'the-silk-merchants-daughter',
+  title: 'The Silk Merchant’s Daughter',
+  summary: 'A silk merchant of Shukuba says bandits took his daughter.',
+  acts: [
+    {
+      beats: ['you', 'need'],
+      title: 'A daughter taken',
+      text: 'Danjūrō of Shukuba wants his daughter found and brought home.',
+      jobs: ['arc-silk-daughter-taken'],
+    },
+    {
+      beats: ['go', 'search'],
+      title: 'Where she went',
+      text: 'Look at the room she last slept in, or go after the bandits her father blames.',
+      jobs: ['arc-silk-her-room', 'arc-silk-bandits'],
+      baseLocationId: 'shukuba-town',
+      pass: 'any',
+    },
+    {
+      beats: ['find'],
+      title: 'Sanctuary',
+      text: 'The trail leads up the pilgrim road to the Fire Temple.',
+      jobs: ['arc-silk-pilgrim-road'],
+      baseLocationId: 'shukuba-town',
+    },
+    {
+      beats: ['take', 'return', 'change'],
+      title: 'Three roads',
+      text: 'Take her home, lie for her, or take the truth to the magistrate in Tanzaku.',
+      jobs: ['arc-silk-bring-her-home', 'arc-silk-word-of-death', 'arc-silk-magistrate'],
+      baseLocationId: 'fire-temple',
+      pass: 'one',
+    },
+  ],
+};

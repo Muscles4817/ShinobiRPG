@@ -1,4 +1,5 @@
 import type { LocationDef } from '../../../types';
+import { FORD_CHAIN_FORD_JOBS } from '../arcs/fordChain';
 import { KIRI_FORD_JOB_IDS } from './jobs';
 
 /**
@@ -73,7 +74,7 @@ export const KIRI_FORD: LocationDef = {
       name: 'The Ferry Office',
       icon: 'board',
       blurb: 'Work for anyone with a strong back',
-      missionIds: KIRI_FORD_JOB_IDS,
+      missionIds: [...KIRI_FORD_JOB_IDS, ...FORD_CHAIN_FORD_JOBS],
     },
     {
       id: 'reed-row-house',

@@ -58,6 +58,10 @@ import { UNFINISHED_ARC, UNFINISHED_FOE, UNFINISHED_JOBS } from './arcs/unfinish
 import { FORGED_BLADE_ARC, FORGED_BLADE_FOE, FORGED_BLADE_JOBS } from './arcs/forgedBlade';
 import { PATIENT_THING_ARC, PATIENT_THING_FOE, PATIENT_THING_JOBS } from './arcs/patientThing';
 import { SALT_LANTERNS, SALT_LANTERNS_JOBS } from './arcs/saltLanterns';
+import { FORD_CHAIN, FORD_CHAIN_JOBS } from './arcs/fordChain';
+import { REN, USHIO } from './arcs/fordChainStart';
+import { BREWER_AFTER_JOBS, BREWER_GHOST, BREWER_GHOST_JOBS } from './arcs/brewerGhost';
+import { KOUN_FAVOURS, KOUN_FAVOURS_JOBS } from './arcs/kounFavours';
 import { ORIGINAL_LOCATIONS, ORIGINAL_TEXT } from './world';
 import { ORIGINAL_ROUTES } from './routes';
 import { ORIGINAL_ATLAS } from './atlas';
@@ -106,6 +110,10 @@ export const ORIGINAL_PACK: ContentPack = {
     ...FORGED_BLADE_JOBS,
     ...PATIENT_THING_JOBS,
     ...SALT_LANTERNS_JOBS,
+    ...FORD_CHAIN_JOBS,
+    ...BREWER_GHOST_JOBS,
+    ...BREWER_AFTER_JOBS,
+    ...KOUN_FAVOURS_JOBS,
     ...KIRI_FORD_JOBS,
     ...TEAM_MISSIONS,
     ...CHUNIN_MISSIONS,
@@ -119,6 +127,9 @@ export const ORIGINAL_PACK: ContentPack = {
   arcs: [
     LANTERN_THIEF,
     SALT_LANTERNS,
+    FORD_CHAIN,
+    BREWER_GHOST,
+    KOUN_FAVOURS,
     BROKEN_BLADE,
     LANTERN_KEEPER_ARC,
     UNFINISHED_ARC,
@@ -137,6 +148,8 @@ export const ORIGINAL_PACK: ContentPack = {
     UNFINISHED_FOE,
     FORGED_BLADE_FOE,
     PATIENT_THING_FOE,
+    USHIO,
+    REN,
   ],
   training: [...TRAINING, ...SHIOMACHI_TRAINING],
   foods: [...FOODS, ...SEASONAL_FOODS, ...SHIOMACHI_FOODS, ...KIRI_FORD_FOODS],

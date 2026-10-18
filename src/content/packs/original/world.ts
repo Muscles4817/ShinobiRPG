@@ -10,6 +10,9 @@ import { UNFINISHED_JOBS } from './arcs/unfinished';
 import { FORGED_BLADE_JOBS } from './arcs/forgedBlade';
 import { PATIENT_THING_JOBS } from './arcs/patientThing';
 import { SALT_LANTERNS_VILLAGE_JOBS } from './arcs/saltLanterns';
+import { PILOT_HOME } from './arcs/fordChainStart';
+import { BREWER_AFTER_JOBS, BREWER_GHOST_JOBS } from './arcs/brewerGhost';
+import { KOUN_FAVOURS_JOBS } from './arcs/kounFavours';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTION_ROUTES, PROMOTIONS } from './exam';
 import { MARKET_STREET } from './market';
@@ -70,6 +73,10 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           ...FORGED_BLADE_JOBS.map((m) => m.id),
           ...PATIENT_THING_JOBS.map((m) => m.id),
           ...SALT_LANTERNS_VILLAGE_JOBS,
+          PILOT_HOME.id,
+          ...BREWER_GHOST_JOBS.map((m) => m.id),
+          ...BREWER_AFTER_JOBS.map((m) => m.id),
+          ...KOUN_FAVOURS_JOBS.map((m) => m.id),
           ...CHUNIN_MISSIONS.map((m) => m.id),
           ...TEMPLATE_MISSIONS.map((m) => m.id),
         ],

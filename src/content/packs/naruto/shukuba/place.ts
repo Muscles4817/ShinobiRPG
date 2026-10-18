@@ -81,7 +81,13 @@ export const SHUKUBA_TOWN: LocationDef = {
       name: 'The Post Office',
       icon: 'board',
       blurb: 'Errands along the highway',
-      missionIds: ['shukuba-wrong-door', 'shukuba-lost-letters'],
+      missionIds: [
+        'shukuba-wrong-door',
+        'shukuba-lost-letters',
+        'arc-silk-her-room',
+        'arc-silk-bandits',
+        'arc-silk-pilgrim-road',
+      ],
     },
   ],
 };
