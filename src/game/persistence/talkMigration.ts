@@ -6,11 +6,11 @@ const isRecord = (value: unknown): value is RawState =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 /**
- * v56 → v57: a templated conversation keeps the facet it is about. One in progress from before
+ * v57 → v58: a templated conversation keeps the facet it is about. One in progress from before
  * has none, and is read as the person's first facet of its kind, as it was then. Bonds' `heard`
  * lists keep their bare ids, read the same way (`hasHeard`).
  */
-export function v56ToV57(state: RawState): RawState {
+export function v57ToV58(state: RawState): RawState {
   const people = state.people;
   if (!isRecord(people)) return state;
   const conversation = people.conversation;

@@ -50,7 +50,7 @@ export const PROSE_BUDGET: {
       per1k: {
         gesture: 1.7,
         triple: 1.9,
-        colon: 0.4,
+        colon: 0.5,
         vagueSomething: 0.9,
         stockAtmosphere: 0.1,
         notButReversal: 0,

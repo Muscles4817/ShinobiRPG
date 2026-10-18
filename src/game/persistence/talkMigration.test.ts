@@ -10,7 +10,7 @@ describe('the rotating talk migration', () => {
     const personId = state.people.team!.teammateIds[0]!;
     const conversation = { personId, conversationId: 'talk-trait-1-habit', answer: null };
     const older = { ...state, people: { ...state.people, conversation } };
-    const loaded = deserialize(JSON.stringify({ version: 56, state: older }));
+    const loaded = deserialize(JSON.stringify({ version: 57, state: older }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.people.conversation?.topicKey).toBeNull();
     expect(conversationScene(loaded.value, ctx)?.opener).not.toMatch(/\{/);
