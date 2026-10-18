@@ -616,18 +616,18 @@ coaching by Gōran, met: You did the work on your speed. Gōran takes you out to
 coaching by Gōran, missed: Gōran checks your speed. Not enough. He doesn’t hide it. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Gōran’s regard falls] [Assignment: Taijutsu]
 
 === crew voices ===
-Asuka, check-passed: Naturally.
-Asuka, check-failed: An off day. Nothing more.
-Asuka, approve: Good. Do it boldly.
-Asuka, disapprove: Is that really the best we can do?
-Asuka, camp: I’ll take the hard watch. Obviously.
+Asuka, check-passed: That is how it’s done where I come from.
+Asuka, check-failed: An off day, and nobody needs to hear about it back home.
+Asuka, approve: Good. If we’re doing it, we do it properly and in the open.
+Asuka, disapprove: Is that really the best our village can do?
+Asuka, camp: I’ll take the late watch. Somebody reliable should.
 Asuka, after-fight: They’ll think twice before they try that on anyone from our village.
 Asuka, grudge: I won’t pretend I agreed with you earlier. A shinobi of our village doesn’t do that.
-Goro, check-passed: Huh! It worked!
-Goro, check-failed: Interesting. Wrong, but interesting.
-Goro, approve: Ooh. Good.
-Goro, disapprove: Aw. I wanted to see.
-Goro, camp: What’s the strangest job you’ve ever heard of?
+Goro, check-passed: It worked! I wasn’t sure it would, were you?
+Goro, check-failed: Wrong, but I want to know why it was wrong.
+Goro, approve: I was hoping you’d pick that one.
+Goro, disapprove: Oh. I really wanted to see the other way.
+Goro, camp: What’s the strangest job anyone here has ever heard of?
 Goro, after-fight: I’ve never seen anyone hold a club like that. Do you think it’s a style, or just bad?
 Goro, grudge: I keep wondering how it would have gone if we’d done it differently today.
 

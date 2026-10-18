@@ -176,7 +176,8 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
           {
             label: 'Make camp where you are',
             tone: 'quiet',
-            reply: 'You find a hollow out of the wind and make the best of it.',
+            reply:
+              'You find a hollow out of the wind and get a fire going before the dark comes down.',
           },
         ],
       },
@@ -209,7 +210,8 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
             role: 'tracker',
             success:
               'Late in the watch you see a figure on the rocks ahead, gone when you look again.',
-            failure: 'Nothing but wind in the grass, all night long.',
+            failure:
+              'You sit up with your back to a rock until the stars have turned, and hear nothing but wind in the grass.',
             onSuccess: {
               effects: [{ kind: 'mark', mark: 'saw-scouts' }],
               ledger: 'Spotted their lookout the night before.',

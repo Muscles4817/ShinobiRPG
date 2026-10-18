@@ -45,7 +45,7 @@ export const HAUNTED_MISSIONS: readonly MissionDef[] = [
         ground: 'room',
         template: 'spirit',
         job: 'eliminate',
-        text: 'A grey figure hunches over the rice sacks at the back, muttering. "Mine. All of it. Mine."',
+        text: 'A grey figure hunches over the rice sacks at the back, muttering into its sleeve. “Mine. All of it, mine.”',
         enemyIds: ['storehouse-wraith'],
         canFlee: false,
       },

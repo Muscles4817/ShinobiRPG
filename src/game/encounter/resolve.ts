@@ -34,9 +34,10 @@ export const WITHDRAW_REPUTATION_LOSS = 1;
 /** Where an ambush or prepared ground starts when no distance was chosen. */
 const DEFAULT_RANGE: RangeBand = 'close';
 
-const UNDONE_REASON = 'You got past them, but the job was to deal with them. Nobody pays for that.';
+const UNDONE_REASON =
+  'You got past them, but the job was to deal with them, and nobody pays for a job left undone.';
 const WITHDRAW_REASON =
-  'You pulled back before it came to blows. The job will wait for someone else.';
+  'You pulled back before it came to blows, and left the job on the board for someone else.';
 
 /** The debrief's line for each way past the foes. */
 const END_LINES: Readonly<Record<EncounterEnd, string>> = {
@@ -124,10 +125,16 @@ function talk(state: GameState, ctx: GameContext, played: Played, rng: Rng): Gam
     return getPast(state, ctx, here, { end: 'talked-down', notes: [...notes, story] });
   }
   if (plan.id === 'intimidate') {
-    const story: MissionNote = { kind: 'story', text: 'They don’t scare. They come at you.' };
+    const story: MissionNote = {
+      kind: 'story',
+      text: 'They don’t scare, and they come at you instead.',
+    };
     return fight(state, ctx, rng, { notes: [...notes, story], start: { opening: CAUGHT_OPENING } });
   }
-  return stirred(state, played, [...notes, { kind: 'story', text: 'They laugh you off.' }]);
+  return stirred(state, played, [
+    ...notes,
+    { kind: 'story', text: 'They hear you out, and laugh, and tell you to go home.' },
+  ]);
 }
 
 function bribe(state: GameState, ctx: GameContext, played: Played): GameState {

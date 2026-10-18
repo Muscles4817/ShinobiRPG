@@ -32,13 +32,17 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
     talkable: true,
     resolve: 9,
     flavour: {
-      terrain: 'A cookfire in a hollow, packs piled by the path, one way in and two ways out.',
-      noticed: 'A dog barks. Voices drop, and someone kicks dirt over the fire.',
-      slipped: 'You pass close enough to smell their supper. Nobody looks up.',
-      caught: '“Oi! Who’s that?” A torch swings your way.',
-      parley: 'They grumble and spit, but they let you by and melt back into the brush.',
-      ambush: 'You drop on them before anyone reaches for a weapon.',
-      spotted: 'A lookout you never saw whistles. They come at you from the brush.',
+      terrain:
+        'A cookfire in a hollow below the path, packs piled beside it, one way in and two ways out.',
+      noticed:
+        'A dog starts barking. The voices round the fire drop, and someone kicks dirt over the flames.',
+      slipped: 'You pass close enough to smell their supper, and nobody looks up from the pot.',
+      caught: '“Oi! Who’s that?” A torch swings your way, and then another.',
+      parley:
+        'They grumble and spit and take their time about it, but in the end they let you by and melt back into the brush.',
+      ambush: 'You drop on them before anyone has reached for a weapon.',
+      spotted:
+        'A lookout you never saw whistles from the trees, and they come at you out of the brush.',
     },
   },
   {
@@ -56,13 +60,16 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
     talkable: false,
     resolve: 0,
     flavour: {
-      terrain: 'Trampled undergrowth, a den in the roots, and a gap where it bolts when scared.',
-      noticed: 'Its head comes up. It sniffs the air in your direction.',
+      terrain:
+        'Trampled undergrowth, a den dug in among the roots, and a gap in the thicket where it bolts when it’s scared.',
+      noticed:
+        'Its head comes up from the ground, and it tests the air in your direction for a long breath.',
       slipped: 'You keep the wind in your face and leave it rooting in the dirt.',
-      caught: 'It wheels round with a snarl and charges.',
-      parley: 'It backs away, hackles up, and slinks off.',
-      ambush: 'You are on it before it can turn.',
-      spotted: 'It caught your scent long ago. It bursts out of the undergrowth at you.',
+      caught: 'It wheels round with a snarl and comes straight at you.',
+      parley: 'It backs away with its hackles up, and slinks off into the thicket.',
+      ambush: 'You are on it before it can turn its head.',
+      spotted:
+        'It caught your scent long before you found it, and it comes bursting out of the undergrowth at you.',
     },
   },
   {
@@ -80,13 +87,15 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
     talkable: true,
     resolve: 10,
     flavour: {
-      terrain: 'Close walls, a single lane out, and good cover for whoever moves first.',
-      noticed: 'They glance over their shoulder, straight at where you were a moment ago.',
-      slipped: 'You let them pass beneath you and go on your way.',
-      caught: '“I see you. Come out, then.”',
-      parley: 'Their shoulders drop. They hold out their wrists.',
-      ambush: 'You strike before they know you are there.',
-      spotted: 'They were watching you all along. They strike first.',
+      terrain:
+        'Close walls on both sides, a single lane out, and good cover for whoever moves first.',
+      noticed:
+        'They glance over their shoulder, straight at the place where you were standing a moment ago.',
+      slipped: 'You let them pass beneath you and go on your way when they have turned the corner.',
+      caught: '“I can see you, you know. You may as well come out.”',
+      parley: 'Their shoulders drop, and after a while they hold out their wrists to be tied.',
+      ambush: 'You strike before they know you are anywhere near.',
+      spotted: 'They were watching you all along, and they strike first.',
     },
   },
   {
@@ -103,13 +112,15 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
     talkable: true,
     resolve: 10,
     flavour: {
-      terrain: 'A front gate, a back door, and a wall low enough to climb in the dark.',
-      noticed: 'A shutter opens upstairs. Someone stares out into the dark.',
-      slipped: 'You are over the wall and through before the next round.',
-      caught: 'A whistle shrills. Doors bang open all over the yard.',
-      parley: 'A few words, a nod, and the gate is opened for you.',
-      ambush: 'You take the guard at the gate before they can shout.',
-      spotted: 'A guard on the roof saw you coming. They rush you before you are ready.',
+      terrain:
+        'A front gate, a back door into the kitchen yard, and a wall low enough to climb in the dark.',
+      noticed: 'A shutter opens upstairs, and someone stands at it looking out into the dark.',
+      slipped: 'You are over the wall and through the yard before the guards come round again.',
+      caught: 'A whistle shrills, and doors bang open all round the yard.',
+      parley: 'You talk to the man on the gate for a while, and in the end he opens it for you.',
+      ambush: 'You take the guard on the gate before he can draw breath to shout.',
+      spotted:
+        'A guard on the roof saw you coming up the street, and they rush you before you are ready.',
     },
   },
   {
@@ -126,13 +137,15 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
     talkable: false,
     resolve: 0,
     flavour: {
-      terrain: 'Cold drafts, dark corners, and one place where the frost never lifts.',
-      noticed: 'The air goes still. Something has turned its attention to you.',
-      slipped: 'You hold your breath and walk through the cold. It does not stir.',
-      caught: 'The lamps gutter and die. It knows you are here.',
-      parley: 'It sighs and thins into the dark.',
-      ambush: 'You strike while it is still lost in its grief.',
-      spotted: 'The cold closes round you from behind. It found you first.',
+      terrain:
+        'Cold drafts, corners the lamp won’t reach, and one place where the frost never lifts.',
+      noticed:
+        'The air goes still and heavy, the way a room does when someone turns to look at you.',
+      slipped: 'You hold your breath and walk through the cold, and nothing stirs in it.',
+      caught: 'The lamps gutter and go out together. It knows you are here.',
+      parley: 'It lets out a long breath, and thins away into the dark.',
+      ambush: 'You strike while it is still bent over whatever it is grieving.',
+      spotted: 'The cold closes round you from behind, and you understand that it found you first.',
     },
   },
 ];

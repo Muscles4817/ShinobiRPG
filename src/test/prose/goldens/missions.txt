@@ -231,7 +231,7 @@ view:
   route[2]:
     label: Story
     state: ahead
-  prompt: A grey figure hunches over the rice sacks at the back, muttering. "Mine. All of it. Mine."
+  prompt: A grey figure hunches over the rice sacks at the back, muttering into its sleeve. “Mine. All of it, mine.”
   choices[0]:
     label: Size them up
     detail: Spirit
@@ -246,7 +246,7 @@ view:
   rank: D
   client: Rice Broker Hanada
   lines[0]:
-    text: A grey figure hunches over the rice sacks at the back, muttering. "Mine. All of it. Mine."
+    text: A grey figure hunches over the rice sacks at the back, muttering into its sleeve. “Mine. All of it, mine.”
   lines[1]:
     text: Perception
   facts[0]:
@@ -312,7 +312,7 @@ view:
   rank: D
   client: Rice Broker Hanada
   lines[0]:
-    text: A grey figure hunches over the rice sacks at the back, muttering. "Mine. All of it. Mine."
+    text: A grey figure hunches over the rice sacks at the back, muttering into its sleeve. “Mine. All of it, mine.”
   lines[1]:
     text: Perception
   lines[2]:
@@ -719,7 +719,7 @@ view:
     text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Again? Next time stand back and let me at it.
   threads[0]:
     label: Old Saburō’s trust
     word: At ease
@@ -788,14 +788,14 @@ view:
     text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Again? Next time stand back and let me at it.
   lines[9]:
     text: Push on in the dark
   lines[10]:
     text: You light a single lantern and go on, Old Saburō stumbling at your heels.
   lines[11]:
     speaker: Gōran
-    text: That’s the job done right.
+    text: That’s the job done right, by the book.
   threads[0]:
     label: Old Saburō’s trust
     word: Polite
@@ -862,14 +862,14 @@ view:
     text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Again? Next time stand back and let me at it.
   lines[9]:
     text: Push on in the dark
   lines[10]:
     text: You light a single lantern and go on, Old Saburō stumbling at your heels.
   lines[11]:
     speaker: Gōran
-    text: That’s the job done right.
+    text: That’s the job done right, by the book.
   lines[12]:
     text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
   threads[0]:
@@ -934,14 +934,14 @@ view:
     text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Again? Next time stand back and let me at it.
   lines[9]:
     text: Push on in the dark
   lines[10]:
     text: You light a single lantern and go on, Old Saburō stumbling at your heels.
   lines[11]:
     speaker: Gōran
-    text: That’s the job done right.
+    text: That’s the job done right, by the book.
   lines[12]:
     text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
   lines[13]:
@@ -1004,14 +1004,14 @@ view:
     text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Again? Next time stand back and let me at it.
   lines[9]:
     text: Push on in the dark
   lines[10]:
     text: You light a single lantern and go on, Old Saburō stumbling at your heels.
   lines[11]:
     speaker: Gōran
-    text: That’s the job done right.
+    text: That’s the job done right, by the book.
   lines[12]:
     text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
   lines[13]:
@@ -1090,7 +1090,7 @@ view:
     name: Asuka
   crew[1]:
     name: Goro
-    quote: Tch. Again.
+    quote: Again? Next time stand back and let me at it.
   grade: rough
 
 >>> dismissReport
