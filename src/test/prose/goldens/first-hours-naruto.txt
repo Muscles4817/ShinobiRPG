@@ -1,0 +1,760 @@
+intro: The night before graduation, the Academy is dark. Somewhere inside is your file, and the grades the instructors have refused to tell anyone.
+break-in: You are up the wall and through the window before the moon clears a cloud.
+
+=== file read back ===
+view:
+  road:
+    steps[0]: Hard road
+    steps[1]: Uphill
+    steps[2]: Steady
+    steps[3]: Smooth
+    steps[4]: Easy going
+  verdict: Steady. Middle of the class. You start about where most of your year does.
+  note: Your talent is still mostly hidden. Training will show you what it is.
+  easy[0]: Taijutsu, fast and far
+  easy[1]: Every stat grows quickly
+  easy[2]: Taijutsu, faster still
+  hard[0]: Genjutsu techniques, slower than the rest
+  hard[1]: Staying fed: you get hungry often
+  people[0]: Nothing stands out yet: people will take you as they find you.
+  limits[0]: Everything else is still hidden: training will tell you where it runs out.
+instructor: Iruka-sensei
+caught: A lamp flares in the doorway. "Reading your own file the night before graduation?" Iruka-sensei sighs, and almost smiles. "Go home. Be on time tomorrow. And put the drawer back."
+
+=== class honours ===
+
+--- team (day 1, slot 0) ---
+
+=== team ===
+view:
+  intro: The morning after graduation, Iruka reads the new teams aloud. Your name comes up, between two classmates you know only a little.
+  choose: Two jōnin have asked for your team. Lord Hokage lets you choose.
+  assign:
+
+>>> assignTeam
+  journal «Team assignment»: The morning after graduation, Iruka reads the new teams aloud. Your name comes up, between two classmates you know only a little.
+
+--- team (day 1, slot 0) ---
+
+=== team ===
+view:
+  intro: The morning after graduation, Iruka reads the new teams aloud. Your name comes up, between two classmates you know only a little.
+  choose: Two jōnin have asked for your team. Lord Hokage lets you choose.
+  teammates[0]:
+    name: Mikoto
+    relation: teammate
+    fullName: Mikoto Namikawa
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Acquaintance
+    where: At the Ninja Academy
+    talk:
+      blocker: Your team has not been assigned yet.
+    spar:
+      blocker: Your team has not been assigned yet.
+  teammates[1]:
+    name: Mai
+    relation: teammate
+    fullName: Mai Ueda
+    title: Genin
+    specialty:
+      label: Ninjutsu
+    stageName: Acquaintance
+    where: At the Ninja Academy
+    talk:
+      blocker: Your team has not been assigned yet.
+    spar:
+      blocker: Your team has not been assigned yet.
+  senseis[0]:
+    name: Kaname
+    fullName: Kaname Ōtori
+    title: Jōnin
+    specialty:
+      label: Taijutsu
+    stageName: Stranger
+    where: At the Training Grounds
+    talk:
+      blocker: Your team has not been assigned yet.
+    style: Quiet, patient and impossible to knock over. Asks more questions than he answers.
+    nature: Earth
+    reasons[0]: Your B in Taijutsu
+    reasons[1]: Likes that you are diligent
+    choose:
+  senseis[1]:
+    name: Ikuko
+    fullName: Ikuko Shimizu
+    title: Jōnin
+    specialty:
+      label: Ninjutsu
+    stageName: Stranger
+    where: At the Training Grounds
+    talk:
+      blocker: Your team has not been assigned yet.
+    style: A former academy instructor who still teaches like one: patiently, thoroughly, from the very beginning.
+    nature: Fire
+    reasons[0]: Likes that you are diligent
+    choose:
+
+>>> chooseSensei
+  journal «Team formed»: A new three-man cell of the Hidden Leaf. Your sensei is waiting on the roof. [Sensei: Kaname Ōtori]
+
+=== report card ===
+view:
+  sensei: Kaname Ōtori
+  senseiTitle: Jōnin
+  teammates[0]: Mikoto Namikawa
+  teammates[1]: Mai Ueda
+  text: A new three-man cell of the Hidden Leaf. Your sensei is waiting on the roof.
+
+--- chakra-paper (day 1, slot 0) ---
+
+=== chakra paper ===
+view:
+  heading: Chakra paper
+  speech: Kaname takes a slip of thin, pale paper from a pouch and holds it out to you. “Grown from trees fed on chakra. It answers to yours. Push your chakra into it, and we will both know what you are made of.”
+  prompt: Push your chakra into the paper
+  test:
+
+>>> testChakraPaper
+  journal «Chakra paper»: The paper crinkles all over in a hundred tiny folds, crackling as it goes. “So that is what you are,” Kaname says. “Good. Now we know what to work on.” [Lightning nature]
+
+=== report card ===
+view:
+  sensei: Kaname Ōtori
+  senseiTitle: Jōnin
+  teammates[0]: Mikoto Namikawa
+  teammates[1]: Mai Ueda
+  text: A new three-man cell of the Hidden Leaf. Your sensei is waiting on the roof.
+
+--- sensei-test (day 1, slot 0) ---
+
+=== sensei test ===
+view:
+  heading: Tell me about yourselves
+  lines[0]: Kaname sits on the steps with the three of you. “Before anything else, I want to know who I’m teaching.”
+  lines[1]: “What do you want to be?”
+  choices[0]:
+    label: The strongest in the village
+  choices[1]:
+    label: Someone the others can count on
+  choices[2]:
+    label: I want to understand things first
+
+>>> dismissReport
+
+=== report card ===
+view:
+  nature: lightning
+  name: Lightning nature
+  text: The paper crinkles all over in a hundred tiny folds, crackling as it goes. “So that is what you are,” Kaname says. “Good. Now we know what to work on.”
+  line: Piercing, fast. Overpowers earth where techniques meet.
+  effects[0]: Lightning techniques learned 50% faster
+
+--- sensei-test (day 1, slot 0) ---
+
+=== sensei test ===
+view:
+  heading: Tell me about yourselves
+  lines[0]: Kaname sits on the steps with the three of you. “Before anything else, I want to know who I’m teaching.”
+  lines[1]: “What do you want to be?”
+  choices[0]:
+    label: The strongest in the village
+  choices[1]:
+    label: Someone the others can count on
+  choices[2]:
+    label: I want to understand things first
+
+>>> dismissReport
+
+--- sensei-test (day 1, slot 0) ---
+
+=== sensei test ===
+view:
+  heading: Tell me about yourselves
+  lines[0]: Kaname sits on the steps with the three of you. “Before anything else, I want to know who I’m teaching.”
+  lines[1]: “What do you want to be?”
+  choices[0]:
+    label: The strongest in the village
+  choices[1]:
+    label: Someone the others can count on
+  choices[2]:
+    label: I want to understand things first
+
+>>> senseiTest
+
+--- sensei-test (day 1, slot 0) ---
+
+=== sensei test ===
+view:
+  heading: Tell me about yourselves
+  lines[0]: Kaname nods slowly. “Strong for what?” You don’t have an answer yet.
+  lines[1]: “What are you afraid of?”
+  choices[0]:
+    label: Being left behind
+  choices[1]:
+    label: Nothing
+  choices[2]:
+    label: Ask what they are afraid of
+
+>>> senseiTest
+
+--- sensei-test (day 1, slot 0) ---
+
+=== sensei test ===
+view:
+  heading: Tell me about yourselves
+  lines[0]: Mikoto says “me too” before they can stop themself.
+  lines[1]: “That’ll do,” Kaname says. “Tomorrow, we start.”
+  lines[2]: “Now. Do you want me to show you how things work here, or do you know?”
+  choices[0]:
+    label: Show me everything
+  choices[1]:
+    label: I paid attention at the academy
+
+>>> senseiTest
+  journal «Tell me about yourselves»: Kaname nods. “Then we start from the beginning. I’ll show you as we go.”
+
+--- rival (day 1, slot 0) ---
+
+=== rival ===
+view:
+  person:
+    name: Sasuke
+    relation: rival
+    fullName: Sasuke Uchiha
+    title: Genin
+    specialty:
+      label: Ninjutsu
+    stageName: Stranger
+    where: At the Training Grounds
+    talk:
+      blocker: Your rival is waiting for an answer.
+    spar:
+      blocker: Your rival is waiting for an answer.
+  kicker: Word gets round which team you landed on
+  title: Sasuke finds you
+  lines[0]: Sasuke has been watching you since the academy. Today they want you to know it.
+  lines[1]: “Congratulations on your team. Truly. Do try to keep up; it would be dull otherwise.”
+  choices[0]:
+    label: “Enjoy it while it lasts.”
+  choices[1]:
+    label: “Good luck to you too. I mean it.”
+  choices[2]:
+    label: “I’ll beat you, and you’ll know you were beaten.”
+  choices[3]:
+    label: Hold their look, and walk past.
+
+>>> answerRival
+  journal «Sasuke»: Sasuke looks at you a moment longer than usual. “Hm. Maybe you’re worth the trouble.”
+
+########## day 1 ##########
+
+=== sensei’s slip ===
+view:
+  sensei: Kaname
+  regard: Watching you
+  days[0]:
+    label: 1
+    meeting: Lesson
+    from: morning
+  days[1]:
+    label: 2
+    meeting: Meditation
+    from: morning
+  days[2]:
+    label: 3
+  days[3]:
+    label: 4
+    meeting: Drills
+    from: morning
+  days[4]:
+    label: 5
+  days[5]:
+    label: 6
+    meeting: Sparring
+    from: morning
+    team: Tea
+  days[6]:
+    label: 7
+  todayLine: Your lesson now, at the training ground.
+  lesson:
+    title: Your week
+    text: Kaname hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+    heed:
+
+=== village ===
+view:
+  rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
+  rumours[1]: Naruto ran up a tab at Ichiraku again. Teuchi pretends not to notice.
+  rumours[2]: Visitors from the Sand have been seen near the gates.
+
+>>> senseiSession
+  refused: Your sensei hasn’t set a session for today.
+
+>>> train
+  journal «Kicking the Posts»: You hammer the three old posts until your shins stop complaining. [Strength +0.13] [Taijutsu +0.07] [−20 energy]
+
+>>> talk
+
+--- conversation (day 1, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Mikoto
+    relation: teammate
+    fullName: Mikoto Namikawa
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Acquaintance
+    where: At the Mission Assignment Desk
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: Mikoto squints at you. “You’ve been watching how I do things. Go on, say it.”
+  choices[0]:
+    label: “You’re a creature of habit.”
+  choices[1]:
+    label: “You’re very much yourself. I like it.”
+  choices[2]:
+    label: Shake your head and smile.
+  leave:
+
+>>> reply
+
+--- conversation (day 1, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Mikoto
+    relation: teammate
+    fullName: Mikoto Namikawa
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Stranger
+    where: At the Mission Assignment Desk
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: Mikoto squints at you. “You’ve been watching how I do things. Go on, say it.”
+  choices[0]:
+    label: “You’re a creature of habit.”
+  choices[1]:
+    label: “You’re very much yourself. I like it.”
+  choices[2]:
+    label: Shake your head and smile.
+  answer:
+    said: “You’re a creature of habit.”
+    reply: “Guilty.” They show you: folding their hands and counting to five before answering anything that matters. “See? Can’t help it.”
+  leave:
+
+>>> endConversation
+
+>>> eat
+  journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
+
+>>> sleep
+  journal: Kaname waited at the training ground. You didn’t come. [Kaname’s regard falls]
+  journal: Kaname expects you at Training Grounds for a session, this morning.
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored] [Health +0]
+
+=== day end ===
+view:
+  mode: full
+  when: Spring 1 draws to a close
+  title: Closer to someone
+  growth[0]:
+    stat: strength
+    name: Strength
+    grade: E
+    tier: Genin E
+    words: Past halfway to Genin D
+  growth[1]:
+    stat: taijutsu
+    name: Taijutsu
+    grade: D
+    tier: Genin D
+    words: Past halfway to Chūnin C
+  people[0]:
+    stage: Stranger
+    next: At acquaintance: you learn what they’re like.
+  people[1]:
+    stage: Acquaintance
+    stamp: Now acquaintances
+    next: At friend: you learn what they like to hear.
+  people[2]:
+    stage: Acquaintance
+    stamp: Now acquaintances
+    next: At friend: you learn what they like to hear.
+  purse:
+    lines[0]:
+      label: Miso Chashu Ramen
+  aheadLabel: Tomorrow
+  ahead[0]:
+    text: The Chūnin Exams
+    stamp: In 5 days
+  ahead[1]:
+    text: Kaname sets meditation
+    stamp: Morning
+  ahead[2]:
+    text: Catch Tora the Cat
+    stamp: Soon
+  summary[0]: Mai: now acquaintances
+  summary[1]: Kaname: now acquaintances
+  summary[2]: Strength: past halfway to Genin D
+  button: Sleep
+  dismiss:
+
+>>> dismissDay
+
+########## day 2 ##########
+
+=== sensei’s slip ===
+view:
+  sensei: Kaname
+  regard: Watching you
+  days[0]:
+    label: 1
+    meeting: Lesson
+    from: morning
+    outcome: missed
+  days[1]:
+    label: 2
+    meeting: Meditation
+    from: morning
+  days[2]:
+    label: 3
+  days[3]:
+    label: 4
+    meeting: Drills
+    from: morning
+  days[4]:
+    label: 5
+  days[5]:
+    label: 6
+    meeting: Sparring
+    from: morning
+    team: Tea
+  days[6]:
+    label: 7
+  todayLine: Meditation now, at the training ground.
+  session:
+  lesson:
+    title: Your week
+    text: Kaname hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+    heed:
+
+=== village ===
+view:
+  rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
+  rumours[1]: The Daimyō’s wife was seen at the mission desk in tears. Tora has escaped again.
+  rumours[2]: Hinata trains alone by the river at dawn when she thinks nobody is looking.
+  stray:
+    text: A scruffy brown hound is sniffing round the ramen stand’s back door, ribs showing.
+    where: Near the Training Grounds
+    befriend:
+
+>>> senseiSession
+  journal «Meditation with Kaname»: Kaname has you sit still until your chakra settles like a pond. “Why did that work? Think about it tonight.” [Chakra Control +0.04] [Kaname’s regard rises] [−10 energy]
+
+>>> train
+  journal «Rooftop Runs»: You race across the rooftops, leaping the gaps between houses. [Speed +0.01] [Stamina +0.01] [Chakra Reserves +0.02] [−20 energy]
+
+>>> talk
+
+--- conversation (day 2, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Mai
+    relation: teammate
+    fullName: Mai Ueda
+    title: Genin
+    specialty:
+      label: Ninjutsu
+    stageName: Acquaintance
+    where: At the Mission Assignment Desk
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. They notice you noticing.
+  choices[0]:
+    label: “You always do that.”
+  choices[1]:
+    label: “Why do you do that?”
+  choices[2]:
+    label: “It suits you.”
+  leave:
+
+>>> reply
+
+--- conversation (day 2, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Mai
+    relation: teammate
+    fullName: Mai Ueda
+    title: Genin
+    specialty:
+      label: Ninjutsu
+    stageName: Acquaintance
+    where: At the Mission Assignment Desk
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. They notice you noticing.
+  choices[0]:
+    label: “You always do that.”
+  choices[1]:
+    label: “Why do you do that?”
+  choices[2]:
+    label: “It suits you.”
+  answer:
+    said: “Why do you do that?”
+    reply: Mai thinks about it. “I don’t know. It feels wrong not to.”
+  leave:
+
+>>> endConversation
+
+>>> eat
+  journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
+
+>>> sleep
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored] [Health +0]
+
+=== day end ===
+view:
+  mode: full
+  when: Spring 2 draws to a close
+  title: Hard work
+  growth[0]:
+    stat: chakraControl
+    name: Chakra Control
+    grade: E
+    tier: Genin E
+    words: Past halfway to Genin D
+  growth[1]:
+    stat: reserves
+    name: Chakra Reserves
+    grade: E
+    tier: Genin E
+    words: Past halfway to Genin D
+  growth[2]:
+    stat: stamina
+    name: Stamina
+    grade: D
+    tier: Genin D
+    words: Early in the grade
+  growth[3]:
+    stat: speed
+    name: Speed
+    grade: D
+    tier: Genin D
+    words: Past halfway to Chūnin C
+  people[0]:
+    stage: Acquaintance
+    stamp: Thinks better of you
+    next: At friend: you learn what they like to hear.
+  people[1]:
+    stage: Acquaintance
+    next: At friend: you learn what they like to hear.
+  purse:
+    lines[0]:
+      label: Miso Chashu Ramen
+  aheadLabel: Tomorrow
+  ahead[0]:
+    text: The Chūnin Exams
+    stamp: In 4 days
+  ahead[1]:
+    text: Cherry Blossom Viewing
+    stamp: In 7 days
+  ahead[2]:
+    text: New work at the hall
+    stamp: New
+  summary[0]: Kaname: thinks better of you
+  summary[1]: Chakra Control: past halfway to Genin D
+  summary[2]: Chakra Reserves: past halfway to Genin D
+  button: Sleep
+  dismiss:
+
+>>> dismissDay
+
+########## day 3 ##########
+
+=== sensei’s slip ===
+view:
+  sensei: Kaname
+  regard: Watching you
+  days[0]:
+    label: 1
+    meeting: Lesson
+    from: morning
+    outcome: missed
+  days[1]:
+    label: 2
+    meeting: Meditation
+    from: morning
+    outcome: kept
+  days[2]:
+    label: 3
+  days[3]:
+    label: 4
+    meeting: Drills
+    from: morning
+  days[4]:
+    label: 5
+  days[5]:
+    label: 6
+    meeting: Sparring
+    from: morning
+    team: Tea
+  days[6]:
+    label: 7
+  lesson:
+    title: Your week
+    text: Kaname hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+    heed:
+
+=== village ===
+view:
+  festival:
+    name: Cherry Blossom Viewing
+    description: The whole village picnics under the blossoms. The stalls cut their prices.
+    when: In 7 days
+    perks[0]: Market −30%
+    perks[1]: Bonds +3 per talk
+  rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
+  rumours[1]: Naruto ran up a tab at Ichiraku again. Teuchi pretends not to notice.
+  rumours[2]: Might Guy did five hundred laps of the village on his hands this morning.
+
+>>> senseiSession
+  refused: Your sensei hasn’t set a session for today.
+
+>>> train
+  journal «Laps of the Village Walls»: One lap, then another, the gate guards cheering you on with less enthusiasm each time. [Stamina +0.02] [Chakra Reserves +0.06] [Willpower +0.05] [−25 energy]
+
+>>> talk
+
+--- conversation (day 3, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Mikoto
+    relation: teammate
+    fullName: Mikoto Namikawa
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Stranger
+    where: At the Mission Assignment Desk
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: Mikoto barely looks up. “Sorry. Busy. It’s always the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+  choices[0]:
+    label: “I’ll leave you to it.”
+  choices[1]:
+    label: “Need a hand?”
+  choices[2]:
+    label: “You could stand to slow down.”
+  leave:
+
+>>> reply
+
+--- conversation (day 3, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Mikoto
+    relation: teammate
+    fullName: Mikoto Namikawa
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Stranger
+    where: At the Mission Assignment Desk
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: Mikoto barely looks up. “Sorry. Busy. It’s always the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+  choices[0]:
+    label: “I’ll leave you to it.”
+  choices[1]:
+    label: “Need a hand?”
+  choices[2]:
+    label: “You could stand to slow down.”
+  answer:
+    said: “I’ll leave you to it.”
+    reply: “Thanks.” Mikoto sounds like they mean it.
+  leave:
+
+>>> endConversation
+
+>>> eat
+  journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
+
+>>> sleep
+  journal: Kaname expects you at Training Grounds for a session, this morning.
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored] [Health +0]
+
+=== day end ===
+view:
+  mode: full
+  when: Spring 3 draws to a close
+  title: Hard work
+  growth[0]:
+    stat: reserves
+    name: Chakra Reserves
+    grade: E
+    tier: Genin E
+    words: Past halfway to Genin D
+  growth[1]:
+    stat: willpower
+    name: Willpower
+    grade: E
+    tier: Genin E
+    words: Past halfway to Genin D
+  growth[2]:
+    stat: stamina
+    name: Stamina
+    grade: D
+    tier: Genin D
+    words: Early in the grade
+  people[0]:
+    stage: Stranger
+    next: At acquaintance: you learn what they’re like.
+  purse:
+    lines[0]:
+      label: Miso Chashu Ramen
+  aheadLabel: Tomorrow
+  ahead[0]:
+    text: Sasuke challenged you to a spar
+    stamp: Rival
+  ahead[1]:
+    text: The Chūnin Exams
+    stamp: In 3 days
+  ahead[2]:
+    text: Kaname sets drills
+    stamp: Morning
+  summary[0]: Chakra Reserves: past halfway to Genin D
+  summary[1]: Willpower: past halfway to Genin D
+  summary[2]: Stamina: early in the grade
+  button: Sleep
+  dismiss:
+
+>>> dismissDay
