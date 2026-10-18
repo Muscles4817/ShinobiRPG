@@ -2,7 +2,10 @@
 
 type RawState = Record<string, unknown>;
 
-/** v54 → v55: summoning contracts arrive. Nobody holds one yet. */
-export function v54ToV55(state: RawState): RawState {
-  return { ...state, contract: null };
+/**
+ * v55 → v56: summoning contracts arrive. Nobody holds one yet. Contracts and the telling memory
+ * both first shipped as v55, so a v55 save may have either: keep what it has, add what it lacks.
+ */
+export function v55ToV56(state: RawState): RawState {
+  return { told: {}, ...state, contract: state.contract ?? null };
 }
