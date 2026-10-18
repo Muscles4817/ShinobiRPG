@@ -14,7 +14,7 @@ export const SENSEI_SPEECH: SenseiSpeech = {
       '{name} sets you a drill you learned at the academy and shows you how much of it you had wrong.',
     ],
     spar: [
-      '{name} spars with you and makes every opening you leave cost you something.',
+      '{name} spars with you and makes you pay for every opening you leave.',
       '{name} gives you a bout at half speed and then another at full, and your ribs notice the difference.',
       '{name} spars with one hand tucked behind {name.their} back and still puts you on the ground twice.',
     ],

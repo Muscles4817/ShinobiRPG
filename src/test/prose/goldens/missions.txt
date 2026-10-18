@@ -2,6 +2,7 @@
 ########## lantern-patrol ##########
 
 >>> startMission
+  journal «The jobs board»: Gōran stops you in front of the notices. “Chores inside the walls you do on your own. Anything past the gate, I’m coming with you. New work goes up every few days. Take what pays and what you can live through.”
   journal «Lantern Patrol»: Walk the wall at dusk and make sure every lantern is lit. The village never stops needing this.
 
 --- mission (day 1, slot 2) ---
@@ -185,6 +186,7 @@ view:
 ########## storehouse-ghost ##########
 
 >>> startMission
+  journal «Before a job»: Gōran checks your pouch before you set out. “You went out with empty pockets last time. Buy kunai, smoke, salve, whatever the job wants, before you go. What you don’t use comes home with you.”
   journal «The Storehouse Ghost»: Something is spoiling the rice in Hanada’s storehouse, and the workers refuse to go in.
 
 --- mission (day 2, slot 1) ---
@@ -429,6 +431,7 @@ view:
   journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves +0.02]
   journal: You missed the march yesterday. Gōran stood at the training ground for hours, and has already told two people about it. [Gōran’s regard falls]
   journal: Gōran has asked for you at the training ground this morning, for drills.
+  journal «Eat»: Gōran pushes a bowl in front of you. “Hungry shinobi train slowly and fight worse. Eat before you work. A meal you cook yourself does more for you than a snack off a stall.”
 
 === report card ===
 view:
@@ -467,6 +470,7 @@ view:
 ########## brides-chest ##########
 
 >>> startMission
+  journal «Know what you face»: Gōran taps the clerk’s counter before you take the job. “The client knows more than the notice says. Pay the clerk for the report and you’ll know every one of them and their tricks before you meet them. It costs less than the hospital.”
   journal «The Bride’s Chest»: See a bride’s dowry chest and its porter, Old Saburō safely to the hill village of Kayano. The road has a bad name lately.
 
 --- mission (day 3, slot 1) ---

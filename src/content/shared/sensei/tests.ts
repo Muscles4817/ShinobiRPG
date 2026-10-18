@@ -77,7 +77,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
             result: 'Cold and stiff, but you see everything that moves below.',
           },
           {
-            label: 'Go and find something to eat',
+            label: 'Go and find food',
             approach: 'alone',
             result:
               'You come back with a hare and scratches. {mate} looks impressed despite {mate.themself}.',
@@ -85,7 +85,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
         ],
       },
       {
-        prompt: 'Something is circling the camp. {sensei}, probably. Probably.',
+        prompt: 'A shape is circling the camp. {sensei}, probably. Probably.',
         options: [
           {
             label: 'Lay false tracks away from the camp',
@@ -178,7 +178,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
           {
             label: 'Someone the others can count on',
             approach: 'together',
-            result: '{mate2} glances at you. Something in {mate2.their} face eases.',
+            result: '{mate2} glances at you. The worry goes out of {mate2.their} face.',
           },
           {
             label: 'I want to understand things first',

@@ -77,7 +77,7 @@ export const SENSEI_COACHING: SenseiCoachingSpeech = {
     ],
     cryptic: [
       'Your {stat} is asleep. Wake it before we meet again.',
-      'Listen to your {stat} this week. It has been trying to tell you something.',
+      'Listen to your {stat} this week. It has been trying to get your attention.',
     ],
   },
   assignMore: {

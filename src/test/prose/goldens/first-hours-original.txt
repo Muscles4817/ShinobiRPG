@@ -282,7 +282,7 @@ view:
   todayLine: Your lesson now, at the training ground.
   lesson:
     title: Your week
-    text: Gōran hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+    text: Gōran hands you a slip with the days of the week marked on it. “Those are the days I want you at the training ground. One full lesson, the rest short. Come when I say and I’ll think better of you, and if you leave me standing there I’ll remember it. A job or a sickbed excuses you. Nothing else does.”
     heed:
   teamDay:
     what: A challenge
@@ -303,7 +303,7 @@ view:
   rumours[2]: The Riverside Grill won’t say where its eels come from. Nobody has seen them caught.
 
 >>> heedSensei
-  journal «Your week»: Gōran hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+  journal «Your week»: Gōran hands you a slip with the days of the week marked on it. “Those are the days I want you at the training ground. One full lesson, the rest short. Come when I say and I’ll think better of you, and if you leave me standing there I’ll remember it. A job or a sickbed excuses you. Nothing else does.”
 
 >>> trainWith
   journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength +0.19] [Taijutsu +0.2] [+3 bond] [−30 energy]
@@ -321,12 +321,14 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
+  journal «Drills»: Gōran catches you before you start and walks you along the drills. “A drill builds what it works, and the better you get the less each one gives you. Pick one for what you need and do it till you can’t. Then eat, sleep and do it again.”
   journal «Kicking Posts»: Hammer the old wrapped posts until your shins stop complaining. [Strength +0.13] [Taijutsu +0.06] [−20 energy]
 
 >>> talk
   refused: Asuka isn’t around right now.
 
 >>> eat
+  journal «Eat»: Gōran pushes a bowl in front of you. “Hungry shinobi train slowly and fight worse. Eat before you work. A meal you cook yourself does more for you than a snack off a stall.”
   journal «Ember Noodles»: A fiery broth the whole village swears by. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> dismissReport
@@ -428,7 +430,7 @@ view:
     progress: barely started
   lesson:
     title: Sparring
-    text: “Fights are planned, then watched,” Gōran says. “Set your cards, keep a defence, then see what happens. Spar a teammate at the training ground. Losing to a friend costs nothing but pride.”
+    text: Gōran stops you on your way out to talk about sparring. “Decide what you’ll do before it starts, close in and far off, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”
     heed:
 
 === village ===
@@ -448,7 +450,7 @@ view:
     befriend:
 
 >>> heedSensei
-  journal «Sparring»: “Fights are planned, then watched,” Gōran says. “Set your cards, keep a defence, then see what happens. Spar a teammate at the training ground. Losing to a friend costs nothing but pride.”
+  journal «Sparring»: Gōran stops you on your way out to talk about sparring. “Decide what you’ll do before it starts, close in and far off, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”
 
 >>> senseiSession
   journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaining allowed. “That’ll do for today. Go and eat before you fall over.” [Stamina +0.01] [Chakra Reserves +0.02] [Gōran’s regard rises] [−10 energy]
@@ -617,8 +619,8 @@ view:
     stat: Taijutsu
     progress: barely started
   lesson:
-    title: Drills
-    text: Gōran walks you round the training ground. “A drill grows what it works, a little each time, and less as you get good. Pick the one for what you need and do it until you can’t. Eat and sleep, and do it again.”
+    title: The jobs board
+    text: Gōran keeps you a moment to talk about the jobs board at the mission hall. “Chores inside the walls you do on your own. Anything past the gate, I’m coming with you. New work goes up every few days. Take what pays and what you can live through.”
     heed:
 
 === village ===
@@ -634,7 +636,7 @@ view:
   rumours[2]: The Riverside Grill won’t say where its eels come from. Nobody has seen them caught.
 
 >>> heedSensei
-  journal «Drills»: Gōran walks you round the training ground. “A drill grows what it works, a little each time, and less as you get good. Pick the one for what you need and do it until you can’t. Eat and sleep, and do it again.”
+  journal «The jobs board»: Gōran keeps you a moment to talk about the jobs board at the mission hall. “Chores inside the walls you do on your own. Anything past the gate, I’m coming with you. New work goes up every few days. Take what pays and what you can live through.”
 
 >>> senseiSession
   journal «Drills with Gōran»: Gōran drills you on the basics until they stop feeling like basics. “You dropped your elbow every time you got tired,” Gōran says. “Fix that before I see you next.” [Strength +0.04] [Taijutsu +0.03] [Gōran’s regard rises] [−10 energy]
@@ -818,8 +820,8 @@ view:
     stat: Taijutsu
     progress: barely started
   lesson:
-    title: Eat
-    text: Gōran pushes a bowl at you. “Hungry shinobi train slowly and fight worse. Eat before you work. A proper meal you cook yourself does more than a snack from a stall.”
+    title: Cooking
+    text: Gōran asks whether you can cook, and doesn’t seem surprised by the answer. “Learn to cook. A good dish carries you through the whole day, sharper and harder to kill. Grocers sell books of recipes, and friends teach theirs.”
     heed:
 
 === village ===
@@ -835,7 +837,7 @@ view:
   rumours[2]: Yomi-sensei talks to the lanterns. Some say the lanterns answer.
 
 >>> heedSensei
-  journal «Eat»: Gōran pushes a bowl at you. “Hungry shinobi train slowly and fight worse. Eat before you work. A proper meal you cook yourself does more than a snack from a stall.”
+  journal «Cooking»: Gōran asks whether you can cook, and doesn’t seem surprised by the answer. “Learn to cook. A good dish carries you through the whole day, sharper and harder to kill. Grocers sell books of recipes, and friends teach theirs.”
 
 >>> senseiSession
   journal «Sparring with Gōran»: Gōran gives you a bout at half speed and then another at full, and your ribs notice the difference. “Same again tomorrow, and I want it cleaner,” Gōran says, already walking off. [Strength +0.04] [Taijutsu +0.03] [Gōran’s regard rises] [−10 energy]
@@ -1012,8 +1014,8 @@ view:
     stat: Taijutsu
     progress: under way
   lesson:
-    title: The jobs board
-    text: Gōran taps the notices at the mission hall. “Chores in the village you do alone. Anything that takes you out the gate, I come with you. New work goes up every few days. Take what pays and what you can survive.”
+    title: Leaving the village
+    text: Gōran taps the pass he signed for you. “Genin go out the gate on a job or with my pass. It lasts a week and covers the safe roads. Get yourself in trouble out there and I’ll hear about it.”
     heed:
 
 === village ===
@@ -1033,7 +1035,7 @@ view:
     befriend:
 
 >>> heedSensei
-  journal «The jobs board»: Gōran taps the notices at the mission hall. “Chores in the village you do alone. Anything that takes you out the gate, I come with you. New work goes up every few days. Take what pays and what you can survive.”
+  journal «Leaving the village»: Gōran taps the pass he signed for you. “Genin go out the gate on a job or with my pass. It lasts a week and covers the safe roads. Get yourself in trouble out there and I’ll hear about it.”
 
 >>> senseiSession
   journal «March with Gōran»: Gōran sets a pace up the hill road that you can just about keep, and lifts it as soon as you can. “Better than yesterday,” Gōran says, as if that were the least anyone could ask of you. [Stamina +0.01] [Chakra Reserves +0.01] [Gōran’s regard rises] [−10 energy]
@@ -1210,10 +1212,6 @@ view:
   assignment:
     stat: Taijutsu
     progress: under way
-  lesson:
-    title: Cooking
-    text: “Learn to cook,” Gōran says. “A good dish carries you through a day: sharper, steadier, harder to kill. Grocers sell books of recipes. People teach theirs to friends.”
-    heed:
 
 === village ===
 view:
@@ -1230,9 +1228,6 @@ view:
     text: A thin grey hound noses through the scraps under the lanterns, ribs showing.
     where: Near the Training Grounds
     befriend:
-
->>> heedSensei
-  journal «Cooking»: “Learn to cook,” Gōran says. “A good dish carries you through a day: sharper, steadier, harder to kill. Grocers sell books of recipes. People teach theirs to friends.”
 
 >>> senseiSession
   journal «Drills with Gōran»: Gōran takes you through the same three forms over and over, fixing a wrist here and a heel there. Gōran tells you that you were slow on the last few, which you were, and lets you go. [Strength +0.04] [Taijutsu +0.03] [Gōran’s regard rises] [−10 energy]
@@ -1403,10 +1398,6 @@ view:
   assignment:
     stat: Taijutsu
     progress: under way
-  lesson:
-    title: Leaving the village
-    text: Gōran signs a slip. “Genin go out the gate on a job, or with my pass. It lasts a week and covers safe roads. Get yourself in trouble out there and I’ll hear about it.”
-    heed:
 
 === village ===
 view:
@@ -1419,9 +1410,6 @@ view:
   rumours[0]: Old Tsune hears every whisper in the village. Be careful what you say near her.
   rumours[1]: Gōran-sensei was seen running the lake before dawn. With a boulder.
   rumours[2]: Old Hagane at the forge is working on a blade he won’t talk about.
-
->>> heedSensei
-  journal «Leaving the village»: Gōran signs a slip. “Genin go out the gate on a job, or with my pass. It lasts a week and covers safe roads. Get yourself in trouble out there and I’ll hear about it.”
 
 >>> senseiSession
   refused: Your sensei hasn’t set a session for today.

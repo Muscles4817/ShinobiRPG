@@ -1,11 +1,9 @@
 import type { PersonDef, RitualKind } from '@/content';
-import { fillSlots } from '@/core';
 import { STAT_INFO } from '@/systems/stats';
 import { calendarDay, DAYS_PER_WEEK, TIME_SLOTS, weekOf } from '@/systems/time';
 
 import type { GameContext } from '../context';
-import { personSlots } from '../people/pronouns';
-import { beatDue } from '../sensei/curriculum';
+import { beatDue, beatText } from '../sensei/curriculum';
 import {
   meetingsPerWeek,
   mentorOf,
@@ -119,7 +117,7 @@ function lessonToday(
   if (!beat) return null;
   return {
     title: beat.title,
-    text: fillSlots(beat.text, personSlots('sensei', sensei)),
+    text: beatText(beat, sensei, ctx),
     heed: choice(state, ctx, { type: 'heedSensei' }),
   };
 }

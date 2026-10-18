@@ -82,7 +82,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     style: 'Worries about you out loud. Checks your bandages, your pack and whether you ate.',
     lesson:
       '{name} works you hard at {art}, then makes you stop, drink water and show your hands before you go home.',
-    bio: 'A jōnin the younger genin all run to with their scrapes. {name} always has a roll of bandages and something sweet in a pocket.',
+    bio: 'A jōnin the younger genin all run to with their scrapes. {name} always has a roll of bandages and a sweet bean bun in a pocket.',
     favouredTraits: ['kind', 'humble'],
     traits: ['kind', 'diligent'],
     quirk: 'patient',
@@ -101,7 +101,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
   {
     id: 'cook',
     archetype: 'gourmand',
-    style: 'Teaches the way a cook teaches: by feel, by taste, with something always on the boil.',
+    style: 'Teaches the way a cook teaches: by feel, by taste, with a pot always on the boil.',
     lesson:
       '{name} drills you at {art} between stirring a pot, and says a technique is like a broth: you know it is right by the smell.',
     bio: 'A jōnin who runs missions with a cooking pot strapped to the pack. Clients remember {name}’s food long after they forget the job.',
@@ -134,7 +134,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     voice: {
       praise: '“Not bad,” {name} says. “I did it younger, of course. But not bad at all.”',
       scold:
-        '“Boring,” {name} says. “If you’re going to fail, at least fail at something worth watching.”',
+        '“Boring,” {name} says. “If you’re going to fail, at least fail in a way worth watching.”',
       catchphrase: 'Watch closely. I won’t do it twice. I might do it three times.',
       fireside: [
         '{name} tells the crew about the time {name.they} beat three chūnin at once, blindfolded. The story is better every time. Nobody minds.',
@@ -148,7 +148,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     style: 'Late, asleep, or both. Then, once in a while, says the one thing you needed to hear.',
     lesson:
       '{name} turns up halfway through the {art} lesson with a fishing rod, watches for a minute, and fixes the one thing that was wrong.',
-    bio: 'A jōnin usually found asleep under a tree with a book over the face. The book is always about something nobody expected.',
+    bio: 'A jōnin usually found asleep under a tree with a book over the face. The book is never about what anyone expects: beekeeping, tides, the history of spoons.',
     favouredTraits: ['curious', 'lazy'],
     traits: ['lazy', 'cunning'],
     quirk: 'distracted',

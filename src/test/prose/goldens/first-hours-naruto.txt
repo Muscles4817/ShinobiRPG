@@ -280,7 +280,7 @@ view:
   todayLine: Your lesson now, at the training ground.
   lesson:
     title: Your week
-    text: Kaname hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+    text: Kaname hands you a slip with the days of the week marked on it. “Every mark on there is a day I’ll be at the training ground. One is the real lesson, the rest are short. Why do you suppose I care more that you come than how well you do?”
     heed:
 
 === village ===
@@ -290,7 +290,7 @@ view:
   rumours[2]: Visitors from the Sand have been seen near the gates.
 
 >>> heedSensei
-  journal «Your week»: Kaname hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+  journal «Your week»: Kaname hands you a slip with the days of the week marked on it. “Every mark on there is a day I’ll be at the training ground. One is the real lesson, the rest are short. Why do you suppose I care more that you come than how well you do?”
 
 >>> trainWith
   journal «Lesson with Kaname»: Kaname has you hold a stance until your legs shake, then shows you how to stop them shaking. [Strength +0.43] [+6 bond] [−30 energy]
@@ -307,12 +307,14 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
+  journal «Drills»: Kaname catches you before you start and walks you along the drills. “Look at what each one works before you choose. What do you need most right now? And why do you think the first weeks feel quicker than the later ones?”
   journal «Kicking the Posts»: You hammer the three old posts until your shins stop complaining. [Strength +0.16] [Taijutsu +0.07] [−20 energy]
 
 >>> talk
   refused: Mikoto isn’t around right now.
 
 >>> eat
+  journal «Eat»: Kaname pushes a bowl in front of you. “How did your last drill go on an empty stomach? Eat first and compare. And try cooking your own, then tell me which keeps you going longer.”
   journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> dismissReport
@@ -407,8 +409,8 @@ view:
     stat: Strength
     progress: barely started
   lesson:
-    title: Drills
-    text: Kaname walks you round the training ground. “A drill grows what it works, a little each time, and less as you get good. Pick the one for what you need and do it until you can’t. Eat and sleep, and do it again.”
+    title: Sparring
+    text: Kaname stops you on your way out to talk about sparring. “What will you do if they rush you? And if they hang back? Decide both before you start, then watch which of your guesses was wrong.”
     heed:
 
 === village ===
@@ -422,7 +424,7 @@ view:
     befriend:
 
 >>> heedSensei
-  journal «Drills»: Kaname walks you round the training ground. “A drill grows what it works, a little each time, and less as you get good. Pick the one for what you need and do it until you can’t. Eat and sleep, and do it again.”
+  journal «Sparring»: Kaname stops you on your way out to talk about sparring. “What will you do if they rush you? And if they hang back? Decide both before you start, then watch which of your guesses was wrong.”
 
 >>> senseiSession
   journal «Meditation with Kaname»: Kaname has you sit still until your chakra settles like a pond after rain. “Halfway through it got easier, and you felt it,” Kaname says. “What changed?” [Chakra Control +0.04] [Kaname’s regard rises] [−10 energy]
@@ -589,8 +591,8 @@ view:
     stat: Strength
     progress: barely started
   lesson:
-    title: Eat
-    text: Kaname pushes a bowl at you. “Hungry shinobi train slowly and fight worse. Eat before you work. A proper meal you cook yourself does more than a snack from a stall.”
+    title: The jobs board
+    text: Kaname keeps you a moment to talk about the jobs board at the mission hall. “Which jobs on the board could you do alone, and which would you want me along for? Anything past the gate, you’ll have me. Work changes every few days, so what would you choose today?”
     heed:
 
 === village ===
@@ -606,7 +608,7 @@ view:
   rumours[2]: Might Guy did five hundred laps of the village on his hands this morning.
 
 >>> heedSensei
-  journal «Eat»: Kaname pushes a bowl at you. “Hungry shinobi train slowly and fight worse. Eat before you work. A proper meal you cook yourself does more than a snack from a stall.”
+  journal «The jobs board»: Kaname keeps you a moment to talk about the jobs board at the mission hall. “Which jobs on the board could you do alone, and which would you want me along for? Anything past the gate, you’ll have me. Work changes every few days, so what would you choose today?”
 
 >>> senseiSession
   refused: Your sensei hasn’t set a session for today.
@@ -770,8 +772,8 @@ view:
     stat: Strength
     progress: barely started
   lesson:
-    title: Sparring
-    text: “Fights are planned, then watched,” Kaname says. “Set your cards, keep a defence, then see what happens. Spar a teammate at the training ground. Losing to a friend costs nothing but pride.”
+    title: Cooking
+    text: Kaname asks whether you can cook, and doesn’t seem surprised by the answer. “Why would a shinobi bother to cook well? Try a good dish before a hard day and you’ll have your answer. The grocer sells recipe books, and your friends know dishes you don’t.”
     heed:
 
 === village ===
@@ -787,7 +789,7 @@ view:
   rumours[2]: The jōnin are whispering about the next Chūnin Exams.
 
 >>> heedSensei
-  journal «Sparring»: “Fights are planned, then watched,” Kaname says. “Set your cards, keep a defence, then see what happens. Spar a teammate at the training ground. Losing to a friend costs nothing but pride.”
+  journal «Cooking»: Kaname asks whether you can cook, and doesn’t seem surprised by the answer. “Why would a shinobi bother to cook well? Try a good dish before a hard day and you’ll have your answer. The grocer sells recipe books, and your friends know dishes you don’t.”
 
 >>> senseiSession
   journal «Drills with Kaname»: Kaname sets you a drill you learned at the academy and shows you how much of it you had wrong. “Why did the last one work when the first ones didn’t?” Kaname asks. “Don’t tell me now. Tomorrow.” [Strength +0.07] [Taijutsu +0.06] [Kaname’s regard rises] [−10 energy]
@@ -956,8 +958,8 @@ view:
     stat: Strength
     progress: under way
   lesson:
-    title: The jobs board
-    text: Kaname taps the notices at the mission hall. “Chores in the village you do alone. Anything that takes you out the gate, I come with you. New work goes up every few days. Take what pays and what you can survive.”
+    title: Leaving the village
+    text: Kaname taps the pass he signed for you. “A pass for a week on the safe roads. Where will you go first, and what do you think you’ll find that you can’t find here?”
     heed:
 
 === village ===
@@ -977,7 +979,7 @@ view:
     befriend:
 
 >>> heedSensei
-  journal «The jobs board»: Kaname taps the notices at the mission hall. “Chores in the village you do alone. Anything that takes you out the gate, I come with you. New work goes up every few days. Take what pays and what you can survive.”
+  journal «Leaving the village»: Kaname taps the pass he signed for you. “A pass for a week on the safe roads. Where will you go first, and what do you think you’ll find that you can’t find here?”
 
 >>> senseiSession
   refused: Your sensei hasn’t set a session for today.
@@ -1135,10 +1137,6 @@ view:
   assignment:
     stat: Strength
     progress: under way
-  lesson:
-    title: Cooking
-    text: “Learn to cook,” Kaname says. “A good dish carries you through a day: sharper, steadier, harder to kill. Grocers sell books of recipes. People teach theirs to friends.”
-    heed:
   teamDay:
     what: Tea
     from: evening
@@ -1160,9 +1158,6 @@ view:
     text: A scruffy brown hound is sniffing round the ramen stand’s back door, ribs showing.
     where: Near the Training Grounds
     befriend:
-
->>> heedSensei
-  journal «Cooking»: “Learn to cook,” Kaname says. “A good dish carries you through a day: sharper, steadier, harder to kill. Grocers sell books of recipes. People teach theirs to friends.”
 
 >>> senseiSession
   journal «Sparring with Kaname»: Kaname spars with one hand tucked behind his back and still puts you on the ground twice. “What would you change if we did it again?” Kaname asks, and waits until you have an answer. [Strength +0.07] [Taijutsu +0.06] [Kaname’s regard rises] [−10 energy]
@@ -1299,6 +1294,10 @@ view:
     words: Past halfway to Genin D
   people[0]:
     stage: Acquaintance
+    stamp: Thinks less of you
+    next: At friend: you learn what he likes to hear.
+  people[1]:
+    stage: Acquaintance
     next: At friend: you learn what she likes to hear.
   purse:
     lines[0]:
@@ -1313,9 +1312,9 @@ view:
   ahead[2]:
     text: New work at the hall
     stamp: New
-  summary[0]: Intellect: past halfway to Genin D
-  summary[1]: Strength: past halfway to Genin D
-  summary[2]: Taijutsu: past halfway to Chūnin C
+  summary[0]: Kaname: thinks less of you
+  summary[1]: Intellect: past halfway to Genin D
+  summary[2]: Strength: past halfway to Genin D
   button: Sleep
   dismiss:
 
@@ -1388,10 +1387,6 @@ view:
   assignment:
     stat: Strength
     progress: under way
-  lesson:
-    title: Leaving the village
-    text: Kaname signs a slip. “Genin go out the gate on a job, or with my pass. It lasts a week and covers safe roads. Get yourself in trouble out there and I’ll hear about it.”
-    heed:
 
 === village ===
 view:
@@ -1404,39 +1399,6 @@ view:
   rumours[0]: Ichiraku is trying a new broth. Opinions are strong.
   rumours[1]: Visitors from the Sand have been seen near the gates.
   rumours[2]: Kakashi-sensei was three hours late to a meeting. He said a black cat crossed his path.
-
->>> heedSensei
-  journal «Leaving the village»: Kaname signs a slip. “Genin go out the gate on a job, or with my pass. It lasts a week and covers safe roads. Get yourself in trouble out there and I’ll hear about it.”
-
---- rival (day 7, slot 0) ---
-
-=== rival ===
-view:
-  person:
-    name: Sasuke
-    relation: rival
-    fullName: Sasuke Uchiha
-    title: Genin
-    specialty:
-      label: Ninjutsu
-    stageName: Stranger
-    where: At the Training Grounds
-    talk:
-      blocker: Your rival is waiting for an answer.
-    spar:
-      blocker: Your rival is waiting for an answer.
-  kicker: Word reaches you
-  title: Sasuke again
-  lines[0]: Sasuke took the job off the board you had been eyeing, and told the clerk you weren’t ready for it.
-  choices[0]:
-    label: Let it go.
-    heard: Mikoto and Kaname would like it; Mai wouldn’t.
-  choices[1]:
-    label: A dig back, where people can hear.
-    heard: Mikoto and Kaname wouldn’t.
-  choices[2]:
-    label: “Settle it, then. Pick the day.”
-    heard: Mikoto and Mai would like it.
 
 >>> senseiSession
   refused: Your sensei hasn’t set a session for today.
