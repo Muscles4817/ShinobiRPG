@@ -1,4 +1,5 @@
 import { RESCUED_START_BOND, type Companions } from '@/systems/companions';
+import { signed, type Contract } from '@/systems/contracts';
 import { knowsRecipe, learnRecipes, type Cooking } from '@/systems/cooking';
 import { addGear, addScroll, owns, ownsScroll, type Inventory } from '@/systems/inventory';
 import type { JournalChip } from '@/systems/journal';
@@ -20,6 +21,7 @@ export interface HandedOver {
   readonly inventory: Inventory;
   readonly cooking: Cooking;
   readonly companions: Companions;
+  readonly contract: Contract | null;
   readonly chips: readonly JournalChip[];
   /** For the debrief card, by name. */
   readonly report: {
@@ -27,6 +29,7 @@ export interface HandedOver {
     readonly gear?: string;
     readonly recipe?: string;
     readonly companion?: string;
+    readonly contract?: string;
   };
 }
 
@@ -52,29 +55,57 @@ function giftsOf(state: GameState, ctx: GameContext, def: MissionDef) {
   };
 }
 
+/** What was handed over, by name, for the chips and the debrief. */
+type Given = HandedOver['report'];
+
+/** The order the debrief and chips name them in. */
+const GIVEN_KINDS = ['scroll', 'gear', 'recipe', 'companion', 'contract'] as const;
+
+const GIVEN_CHIPS: Readonly<Record<keyof Given, (name: string) => string>> = {
+  scroll: (name) => `${name} scroll`,
+  gear: (name) => name,
+  recipe: (name) => `Learned ${name}`,
+  companion: (name) => `${name} is at the animal clinic`,
+  contract: (name) => `Signed ${name}`,
+};
+
+function namedOnly(names: Record<keyof Given, string | undefined>): Given {
+  return Object.fromEntries(Object.entries(names).filter(([, name]) => name !== undefined));
+}
+
+function chipsFor(given: Given): JournalChip[] {
+  return GIVEN_KINDS.flatMap((kind) => {
+    const name = given[kind];
+    return name ? [chip(GIVEN_CHIPS[kind](name), 'gain')] : [];
+  });
+}
+
+/** A contract the job offers, signed if you hold none yet (one at a time). */
+function contractOffered(state: GameState, ctx: GameContext, def: MissionDef) {
+  const offered = def.reward.contractId;
+  return offered && !state.contract ? ctx.content.contracts.require(offered) : null;
+}
+
 export function handedOver(state: GameState, ctx: GameContext, def: MissionDef): HandedOver {
   const { scroll, gear, recipe, animal } = giftsOf(state, ctx, def);
   const withScroll = scroll ? addScroll(state.inventory, scroll.id) : state.inventory;
   const rescued = animal
     ? metToday(state, animal, { bond: RESCUED_START_BOND, arrival: 'rescue' })
     : null;
-  const companions = rescued ? { ...state.companions, waiting: rescued } : state.companions;
-  const companion = rescued?.name;
+  const contractDef = contractOffered(state, ctx, def);
+  const given = namedOnly({
+    scroll: scroll?.name,
+    gear: gear?.name,
+    recipe: recipe?.name,
+    companion: rescued?.name,
+    contract: contractDef?.name,
+  });
   return {
     inventory: gear ? addGear(withScroll, gear.id) : withScroll,
     cooking: recipe ? learnRecipes(state.cooking, [recipe.id]) : state.cooking,
-    companions,
-    chips: [
-      ...(scroll ? [chip(`${scroll.name} scroll`, 'gain')] : []),
-      ...(gear ? [chip(gear.name, 'gain')] : []),
-      ...(recipe ? [chip(`Learned ${recipe.name}`, 'gain')] : []),
-      ...(companion ? [chip(`${companion} is at the animal clinic`, 'gain')] : []),
-    ],
-    report: {
-      ...(scroll ? { scroll: scroll.name } : {}),
-      ...(gear ? { gear: gear.name } : {}),
-      ...(recipe ? { recipe: recipe.name } : {}),
-      ...(companion ? { companion } : {}),
-    },
+    companions: rescued ? { ...state.companions, waiting: rescued } : state.companions,
+    contract: contractDef ? signed(contractDef.id, state.time.day) : state.contract,
+    chips: chipsFor(given),
+    report: given,
   };
 }

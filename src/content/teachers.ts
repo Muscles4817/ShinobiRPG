@@ -1,3 +1,5 @@
+import type { ContractOffer } from './contracts';
+
 /**
  * Content schema for teachers: how someone teaches when you train with them, and what they ask
  * in return. Anyone ranked shinobi can be trained with in a stat they are ahead of you in; a
@@ -49,4 +51,6 @@ export interface TeacherProfile {
   readonly sessionsPerWeek?: number;
   /** Your own sensei waives it. Left out, they ask a bond stage by rank, like someone with no profile. */
   readonly price?: PriceTemplate;
+  /** A summoning contract they may let you sign, once you are close enough. */
+  readonly contract?: ContractOffer;
 }

@@ -115,6 +115,7 @@ const PLAIN_WORDS: Readonly<Record<PlainSheetVerb, string>> = {
   sense: 'Finds the hidden and reads their plans',
   substitute: 'Swaps you out of the first hit each round',
   counter: 'Readies a riposte: the next blow at you is answered first',
+  summon: 'Calls a summon to fight beside you; you pay its upkeep in chakra while it stays',
 };
 
 /** How an area reads by the ground it covers (`rules/verbs/area.ts`). */

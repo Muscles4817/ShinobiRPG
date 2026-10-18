@@ -1,3 +1,4 @@
+import { canCall } from './calls';
 import { statTier, type StatGrade } from '@/systems/stats';
 
 import type { CombatItem, CombatTechnique, RangeBand } from '../../contract';
@@ -184,5 +185,6 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
   if (trumpSpent(fighter, card.technique) || !isOpenFor(fighter, card.technique)) return false;
+  if (!canCall(fighter, card.technique)) return false;
   return fighter.sealed === 0 && chakraCost(fighter, card.technique) <= fighter.chakra;
 }

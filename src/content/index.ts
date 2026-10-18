@@ -149,6 +149,7 @@ export {
   type SessionFormat,
 } from './senseis';
 export { VOICE_MOMENTS, type VoiceDef, type VoiceMoment } from './voices';
+export type { ContractDef, ContractOffer, SummonDef, SummonPrice } from './contracts';
 export type {
   ClanCompanion,
   CompanionKindDef,

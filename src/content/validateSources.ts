@@ -70,6 +70,8 @@ function sourcedIds(pack: ContentPack): Set<string> {
     ...pack.clans.flatMap((c) => c.startingTechniqueIds),
     // A companion kind's techniques are its own (`validateCompanions.ts` checks them).
     ...pack.companionKinds.flatMap((k) => (k.techniques ?? []).map((t) => t.techniqueId)),
+    // A contract's summoning techniques and what its summons fight with (`validateContracts.ts`).
+    ...pack.contracts.flatMap((c) => c.summons.flatMap((s) => [s.techniqueId, ...s.techniqueIds])),
   ]);
 }
 

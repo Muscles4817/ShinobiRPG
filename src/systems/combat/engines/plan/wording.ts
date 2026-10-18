@@ -44,6 +44,7 @@ const VERB_WORD: Readonly<Record<Verb, string>> = {
   drain: 'Drain their chakra',
   afflict: 'Leave a wound that lingers',
   counter: 'Answer the next blow at once',
+  summon: 'Call a summon to fight beside you',
 };
 
 /** One effect in words; a move that names its distance says so. */

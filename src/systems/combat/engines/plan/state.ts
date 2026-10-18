@@ -20,6 +20,7 @@ import type {
   TrapMemory,
 } from '../../rules/verbs';
 import type { CombatOrders, CombatStance } from '../../teamContract';
+import type { Caller, Summoned } from './calls';
 import type { Footing } from './footing';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -82,7 +83,16 @@ export function plainSlots(cards: readonly CardId[]): Slot[] {
 }
 
 export interface PlanFighter
-  extends Body, TrumpMemory, EmpowerMemory, CloneBody, TrapMemory, LingeringMemory, Footing {
+  extends
+    Body,
+    TrumpMemory,
+    EmpowerMemory,
+    CloneBody,
+    TrapMemory,
+    LingeringMemory,
+    Footing,
+    Caller,
+    Summoned {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;
@@ -213,6 +223,11 @@ export interface Round {
 }
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
+
+/** A summon's body as it is called (`summons.ts`): a fighter of its caller's side. */
+export function calledFighter(setup: CombatSetup['player'], side: 'player' | 'enemy'): PlanFighter {
+  return fighterFrom(setup, side);
+}
 
 function fighterFrom(
   setup: CombatSetup['player'],

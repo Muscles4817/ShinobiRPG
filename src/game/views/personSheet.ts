@@ -54,6 +54,8 @@ export interface PersonSheet extends PersonCard {
   readonly carries: string | null;
   /** The next dish they would teach you, for people who cook; null otherwise. */
   readonly recipe: (Choice & { readonly name: string }) | null;
+  /** The summoning contract they would let you sign, for teachers who hold one; null otherwise. */
+  readonly contract: (Choice & { readonly name: string }) | null;
 }
 
 /** A sensei's wound, once you have heard the beat of their story that tells it. */
@@ -62,6 +64,19 @@ function carriedWound(state: GameState, person: PersonDef): string | null {
   const told = story?.beats[WOUND_BEAT];
   if (!story || !told) return null;
   return state.people.bonds[person.id]?.heard.includes(told) ? story.wound : null;
+}
+
+function contractOffer(
+  state: GameState,
+  ctx: GameContext,
+  person: PersonDef,
+): PersonSheet['contract'] {
+  const offer = person.teacher?.contract;
+  if (!offer || state.contract?.contractId === offer.contractId) return null;
+  return {
+    ...choice(state, ctx, { type: 'signContract', personId: person.id }),
+    name: ctx.content.contracts.require(offer.contractId).name,
+  };
 }
 
 function recipeOffer(state: GameState, ctx: GameContext, person: PersonDef): PersonSheet['recipe'] {
@@ -134,6 +149,7 @@ export function personSheet(
       .map((m) => m.text)
       .reverse(),
     recipe: recipeOffer(state, ctx, person),
+    contract: contractOffer(state, ctx, person),
     carries: carriedWound(state, person),
   };
 }

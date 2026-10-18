@@ -32,6 +32,7 @@ import {
 } from './missionFlow';
 import { teamAllies } from './missionTeam';
 import { companionAllies } from './companions/combatant';
+import { withSummons } from './contracts/summons';
 import { adjust, chip, log, spendTime } from './ops';
 import { addReport } from './reports';
 import { takeSpoils } from './spoils';
@@ -66,7 +67,7 @@ export function beginCombat(
     state,
     ctx,
     {
-      player: playerCombatant(state, ctx),
+      player: withSummons(playerCombatant(state, ctx), state, ctx),
       allies: [...teamAllies(state, ctx), ...companionAllies(state, ctx)],
       enemies,
       canFlee: stage.canFlee,
