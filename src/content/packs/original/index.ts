@@ -1,3 +1,5 @@
+import { bestiary } from '../../shared/bestiary';
+import { ORIGINAL_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
@@ -148,6 +150,7 @@ export const ORIGINAL_PACK: ContentPack = {
   companionLore: COMPANION_LORE,
   enemies: [
     ...ENEMIES,
+    ...bestiary(ORIGINAL_FOE_KIT),
     ...CHUNIN_ENEMIES,
     ...JOB_ENEMIES,
     ...ELITE_ENEMIES,
