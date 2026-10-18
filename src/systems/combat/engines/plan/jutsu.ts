@@ -62,12 +62,12 @@ function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): 
   );
 }
 
-function daze(round: Round, target: PlanFighter): Round {
+function daze(round: Round, { actor, target }: Aimed): Round {
   if (!canDaze(target, round.number)) {
     return say(round, tell('{t} shake{t.s} it off.', { t: target }));
   }
   return say(
-    { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number)) },
+    { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number, actor.id)) },
     dazeLine(momentOf(round, target.id), target),
   );
 }
@@ -157,7 +157,7 @@ function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): R
     case 'break':
       return damage(round, aimed, { technique, effect });
     case 'daze':
-      return daze(round, aimed.target);
+      return daze(round, aimed);
     case 'seal':
       return seal(round, aimed.target, { technique, effect });
     case 'confuse':

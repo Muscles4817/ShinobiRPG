@@ -159,7 +159,7 @@ view:
   Your Gale Heel hurls aside the second grey wolf with everything behind it. [Guarded] [−35]
   The second grey wolf crumples and lies still.
   It goes quiet, and the fight is over.
-  summary: You won in two rounds. The second grey wolf was the last of them to go down.
+  summary: You won in two rounds. Once the first grey wolf went down in the first round, the second grey wolf didn’t last long.
 
 ########## a hornet swarm ##########
   The hornet swarm squares up.
@@ -280,4 +280,4 @@ view:
   Your Gale Heel hammers the second bandit thug, and tiles slide off the roof under him. [Guarded] [−28]
   The second bandit thug crumples in the street and doesn’t get up.
   You are still on your feet, and no one is left to face you.
-  summary: You won in three rounds. The second bandit thug was the last of them to go down.
+  summary: You won in three rounds. Once the first bandit thug went down in the second round, the second bandit thug didn’t last long.

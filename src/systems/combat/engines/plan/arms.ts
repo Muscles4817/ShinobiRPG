@@ -1,5 +1,3 @@
-import type { Rng } from '@/core';
-
 import { alive } from '../../rules/body';
 import { tell } from '../../rules/telling';
 import { strikeWith, throwWith, type Attack } from '../../rules/weapons';
@@ -34,13 +32,13 @@ function landed(before: PlanFighter, after: Round): number {
   return now ? before.health - now.health : 0;
 }
 
-function dazeOnHit(round: Round, target: PlanFighter, chance: number, rng: Rng): Round {
-  const struck = fighterIn(round, target.id);
+function dazeOnHit(round: Round, { actor, target, rng }: Turn, chance: number): Round {
+  const struck = target && fighterIn(round, target.id);
   if (chance <= 0 || !struck || !alive(struck) || !canDaze(struck, round.number)) return round;
   if (!rng.chance(chance)) return round;
   return say(
-    { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number)) },
-    tell('{t} reel{t.s} from the blow.', { t: target }),
+    { ...round, fighters: patch(round.fighters, struck.id, dazeIn(round.number, actor.id)) },
+    tell('{t} reel{t.s} from the blow.', { t: struck }),
   );
 }
 
@@ -66,6 +64,6 @@ export function strike(round: Round, turn: Turn, thrown: boolean): Round {
   const after = react(round, { attacker: actor, target, blow: blowOf(attack, thrown, actor), rng });
   const damage = landed(target, after);
   if (damage <= 0) return after;
-  const dazed = dazeOnHit(after, target, attack.daze, rng);
+  const dazed = dazeOnHit(after, turn, attack.daze);
   return attack.drain > 0 ? drainOnHit(dazed, turn, damage * attack.drain) : dazed;
 }
