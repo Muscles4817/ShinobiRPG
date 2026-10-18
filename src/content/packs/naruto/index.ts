@@ -1,6 +1,7 @@
 import { bestiary } from '../../shared/bestiary';
 import { NARUTO_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
+import { CONTRACT_TECHNIQUES, CONTRACTS, TOAD_MISSION } from './contracts';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
@@ -120,10 +121,12 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
     ...BEAST_TECHNIQUES,
+    ...CONTRACT_TECHNIQUES,
     ...CANON_TECHNIQUES,
   ],
   missions: [
     ...MISSIONS,
+    TOAD_MISSION,
     ...TEAM_MISSIONS,
     ...ELITE_MISSIONS,
     ...CHUNIN_MISSIONS,
@@ -158,6 +161,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   voices: VOICES,
   companionKinds: COMPANION_KINDS,
   companionLore: COMPANION_LORE,
+  contracts: CONTRACTS,
   enemies: [
     ...ENEMIES,
     ...bestiary(NARUTO_FOE_KIT),

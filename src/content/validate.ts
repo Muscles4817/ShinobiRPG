@@ -28,6 +28,7 @@ import { validateExercises } from './validateExercises';
 import { validateCrews } from './validateCrews';
 import { validateRetinues } from './validateRetinues';
 import { validateCompanionArts } from './validateCompanionArts';
+import { validateContracts } from './validateContracts';
 import { validateCompanions } from './validateCompanions';
 import { validateCompounds } from './validateCompounds';
 import { validateStory } from './validateStory';
@@ -50,6 +51,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateRetinues(pack),
     ...validateCompanions(pack),
     ...validateCompanionArts(pack),
+    ...validateContracts(pack),
     ...validateCompounds(pack),
     ...validateSenseis(pack),
     ...validateSenseiParts(pack),

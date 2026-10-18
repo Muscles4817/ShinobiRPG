@@ -22,6 +22,7 @@ export const KAKASHI_TEACHER: TeacherProfile = {
     favourId: 'kakashi-patience',
     ask: 'Kakashi only teaches people who can sit and wait while he finishes his chapter.',
   },
+  contract: { contractId: 'kakashi-ninken', minStage: 3 },
 };
 
 export const GUY_TEACHER: TeacherProfile = {

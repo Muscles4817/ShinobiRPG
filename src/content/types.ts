@@ -1,5 +1,6 @@
 import type { CombatGrammar, CombatPerk, CombatTrait } from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
+import type { ContractDef } from './contracts';
 import type { AtlasDef, MapLabelSide } from './atlas';
 import type {
   ClanCompanion,
@@ -359,6 +360,7 @@ export interface ContentPack {
   /** Kinds of creature that may become someone's companion. */
   readonly companionKinds: readonly CompanionKindDef[];
   readonly companionLore: readonly CompanionLoreDef[];
+  readonly contracts: readonly ContractDef[];
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];
   readonly clans: readonly ClanDef[];

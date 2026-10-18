@@ -144,7 +144,26 @@ export interface CombatantSetup {
   readonly stance?: CombatStance;
   /** What the player may change about this ally (see `teamContract.ts`). */
   readonly orders?: CombatOrders;
+  /** Bodies they can call into the fight with a summoning technique (the `summon` verb). */
+  readonly calls?: readonly CombatCall[];
 }
+
+/**
+ * A summon a fighter can call (`docs/design/retinue-plan.md`): the body that answers, by the id
+ * a technique's `summon` effect names. It fights by its own mind on its caller's side, and its
+ * caller pays its upkeep in chakra at the end of every exchange it stays; it goes home when they
+ * can't, when it falls, or when they do. Some ask blood too, paid from the caller's health.
+ */
+export interface CombatCall {
+  readonly id: string;
+  readonly body: CombatantSetup;
+  readonly upkeep: number;
+  readonly bloodPrice?: number;
+}
+
+/** How a summon's part in a fight ended: still there, beaten, or sent home unpaid. */
+export const SUMMON_FATES = ['stayed', 'fell', 'sent-home'] as const;
+export type SummonFate = (typeof SUMMON_FATES)[number];
 
 /**
  * A field already over the ground when the fight opens (the player set the ground with mist):
@@ -327,6 +346,8 @@ export interface CombatOutcome {
    * words with no numbers; absent from engines that don't tell one.
    */
   readonly summary?: string;
+  /** How each summon the player called ended its part, by call id (the last call of each). */
+  readonly summons?: Readonly<Record<string, SummonFate>>;
 }
 
 export interface CombatEngine {

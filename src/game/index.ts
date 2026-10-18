@@ -290,3 +290,4 @@ export type { CompanionCard, StrayNotice } from './views/companion';
 export { compoundView, quarterView, type CompoundView, type QuarterView } from './views/compounds';
 export { companionSheet, type CompanionSheet, type CompanionStrip } from './views/companionCare';
 export { vetView, type VetView } from './views/vet';
+export { contractCard, type ContractCard } from './views/contract';

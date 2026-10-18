@@ -51,6 +51,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'border-patrol',
           'catch-tora',
           'pup-in-the-well',
+          'toad-on-the-doorstep',
           'yamanaka-weeding',
           'farm-medicine',
           'merchant-escort',

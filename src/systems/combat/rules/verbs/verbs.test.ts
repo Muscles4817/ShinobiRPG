@@ -79,6 +79,7 @@ describe('verbs', () => {
       ['drain', 'foe'],
       ['afflict', 'foe'],
       ['counter', 'self'],
+      ['summon', 'self'],
     ]);
   });
 

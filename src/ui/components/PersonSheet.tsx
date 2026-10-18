@@ -74,6 +74,7 @@ function PersonActions({ sheet: p, perform, onClose }: ActionsProps) {
     p.talk.blocker,
     p.spar?.blocker ? `Spar: ${p.spar.blocker}` : null,
     p.recipe?.blocker ?? null,
+    p.contract?.blocker ? `Contract: ${p.contract.blocker}` : null,
   ];
   const shown = [...new Set(reasons.filter((r): r is string => r !== null))];
   return (
@@ -93,6 +94,14 @@ function PersonActions({ sheet: p, perform, onClose }: ActionsProps) {
         />
         {p.spar && <Act label="Spar" choice={p.spar} perform={perform} onClose={onClose} />}
       </div>
+      {p.contract && (
+        <Act
+          label={`Sign ${p.contract.name}`}
+          choice={p.contract}
+          perform={perform}
+          onClose={onClose}
+        />
+      )}
       {p.recipe && (
         <Act
           label={`Learn to cook ${p.recipe.name}`}

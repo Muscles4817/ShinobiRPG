@@ -1,6 +1,7 @@
 import { bestiary } from '../../shared/bestiary';
 import { ORIGINAL_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
+import { CONTRACT_TECHNIQUES, CONTRACTS } from './contracts';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
@@ -108,6 +109,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
     ...BEAST_TECHNIQUES,
+    ...CONTRACT_TECHNIQUES,
     ...TIDEWIRE_TECHNIQUES,
   ],
   missions: [
@@ -148,6 +150,7 @@ export const ORIGINAL_PACK: ContentPack = {
   voices: VOICES,
   companionKinds: COMPANION_KINDS,
   companionLore: COMPANION_LORE,
+  contracts: CONTRACTS,
   enemies: [
     ...ENEMIES,
     ...bestiary(ORIGINAL_FOE_KIT),

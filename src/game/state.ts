@@ -1,3 +1,4 @@
+import type { Contract } from '@/systems/contracts';
 import type { CombatState } from '@/systems/combat';
 import type { Companions } from '@/systems/companions';
 import type { MapStyle } from './mapStyle';
@@ -82,6 +83,8 @@ export interface GameState {
   readonly rival: Rival | null;
   /** Bonded creatures by owner (yours under `PLAYER_OWNER`), and a stray being won over. */
   readonly companions: Companions;
+  /** The summoning contract you hold, and your standing with its clan; null before you sign one. */
+  readonly contract: Contract | null;
   /**
    * Set only on a versus sandbox (`game/versus/`): who is fighting whom. A sandbox is never
    * saved, so a real playthrough never carries it.

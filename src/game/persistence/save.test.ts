@@ -562,6 +562,22 @@ describe('persistence', () => {
     expect(loaded.value.village).toMatchObject({ tallies: {}, marks: ['tobi-forgiven'] });
   });
 
+  it('gives a save from before summoning contracts none', () => {
+    const { contract: _c, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 55, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.contract).toBeNull();
+  });
+
+  it('keeps a contract and adds the telling memory to a v55 save made with contracts', () => {
+    const { told: _t, ...game } = newGame();
+    const contract = { contractId: 'kiln-salamanders', standing: 4, signedDay: 3 };
+    const loaded = deserialize(JSON.stringify({ version: 55, state: { ...game, contract } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.contract).toEqual(contract);
+    expect(loaded.value.told).toEqual({});
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);
