@@ -30,7 +30,7 @@ export const INSTRUCTORS: readonly PersonDef[] = [
       'forehead',
       { mark: 'scar', expression: 'smile', age: 'grown' },
     ),
-    bio: 'Taught you everything you know. Hands out missions in the afternoons. Pays for ramen too often.',
+    bio: 'Taught you everything you know, hands out missions in the afternoons, and pays for ramen far too often.',
     schedule: {
       morning: 'academy',
       afternoon: 'mission-desk',
@@ -57,7 +57,7 @@ export const INSTRUCTORS: readonly PersonDef[] = [
       outfit: '#2f4f7a',
     }),
     specialty: 'ninjutsu',
-    bio: 'Tutor to the Hokage’s grandson. Believes in shortcuts, strictly applied, and sunglasses.',
+    bio: 'Tutor to the Hokage’s grandson. Believes in shortcuts strictly applied, and in sunglasses.',
     schedule: {
       morning: 'academy',
       afternoon: 'training-grounds',

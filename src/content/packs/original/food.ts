@@ -75,7 +75,7 @@ export const FOODS: readonly FoodDef[] = [
     id: 'lantern-dango',
     icon: 'dango',
     name: 'Lantern Dango',
-    description: 'Three glowing-orange dumplings on a stick, one for each lantern you light.',
+    description: 'Three bright orange dumplings on a stick, one for each lantern you light.',
     cost: 12,
     satiety: 20,
     energy: 15,

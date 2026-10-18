@@ -89,7 +89,7 @@ export const KENJUTSU: readonly TechniqueDef[] = [
   {
     id: 'lantern-glint-ambush',
     name: 'Lantern-Glint Ambush',
-    description: 'Vanish into the glint of your own blade, then come out of it edge first.',
+    description: 'Vanish into the flash of your own blade, then come out of it edge first.',
     discipline: 'kenjutsu',
     needs: { weapon: 'blade' },
     effects: [
@@ -180,7 +180,7 @@ export const KENJUTSU: readonly TechniqueDef[] = [
   {
     id: 'draw-cut',
     name: 'Draw Cut',
-    description: 'The plainest cut in the art: out of the scabbard and through, in one motion.',
+    description: 'The plainest cut in the art, out of the scabbard and through in one motion.',
     discipline: 'kenjutsu',
     accuracy: 'sure',
     needs: { weapon: 'blade' },

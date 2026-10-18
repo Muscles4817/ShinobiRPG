@@ -76,7 +76,7 @@ export const VILLAGE: VillageLife = {
     },
     {
       id: 'chunin-exams',
-      text: 'The jōnin are whispering about the next Chūnin Exams.',
+      text: 'The jōnin are talking in low voices about the next Chūnin Exams.',
     },
     {
       id: 'ichiraku-new',
@@ -97,7 +97,7 @@ export const VILLAGE: VillageLife = {
       title: 'Someone on the monument',
       text: 'A figure sits on the Hokage Monument, chakra dimmed almost to nothing.',
       outcome: 'You climb up. It’s a jōnin on watch, who teaches you how she hides her chakra.',
-      unseen: 'You think you see something move on the monument. Probably nothing.',
+      unseen: 'You think you see a figure move on the monument, though it’s probably nothing.',
       reward: { chakraControl: 1 },
     },
     {

@@ -9,7 +9,7 @@ export const COMBO_TECHNIQUES: readonly TechniqueDef[] = [
     id: 'shrine-snare',
     name: 'Shrine Snare',
     description:
-      'A shrine rope thrown low and tied in one breath, so a partner’s blade has something to fall on.',
+      'A shrine rope thrown low and tied in one breath, so a partner’s blade has a held target to fall on.',
     discipline: 'fuuinjutsu',
     effects: [
       { verb: 'seal', power: 8 },

@@ -30,15 +30,15 @@ export const PROSE_BUDGET: {
   },
   style: {
     original: {
-      meanSentence: 9.4,
+      meanSentence: 9.5,
       shortShare: 0.25,
       quipShare: 0.22,
       per1k: {
-        gesture: 0.2,
+        gesture: 0.1,
         triple: 1.6,
-        colon: 0.3,
-        vagueSomething: 0.4,
-        stockAtmosphere: 0.2,
+        colon: 0.2,
+        vagueSomething: 0.3,
+        stockAtmosphere: 0.1,
         notButReversal: 0,
         emDash: 0,
       },
@@ -49,8 +49,8 @@ export const PROSE_BUDGET: {
       quipShare: 0.21,
       per1k: {
         gesture: 0.2,
-        triple: 1.2,
-        colon: 0.3,
+        triple: 1.1,
+        colon: 0.2,
         vagueSomething: 0.2,
         stockAtmosphere: 0.1,
         notButReversal: 0,

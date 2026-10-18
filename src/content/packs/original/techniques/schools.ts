@@ -79,7 +79,8 @@ export const SCHOOL_TECHNIQUES: readonly TechniqueDef[] = [
   {
     id: 'iron-hold',
     name: 'Iron Hold',
-    description: 'A hold the bridge watch teaches for smugglers: it tightens every time they move.',
+    description:
+      'A hold the bridge watch teaches for smugglers, which tightens every time they move.',
     discipline: 'taijutsu',
     school: 'Iron Gate',
     effects: [
@@ -125,7 +126,7 @@ export const SCHOOL_TECHNIQUES: readonly TechniqueDef[] = [
   {
     id: 'still-water',
     name: 'Still Water',
-    description: 'Hand on the hilt and nothing else moving, until something does.',
+    description: 'Hand on the hilt and nothing else moving, until the other one moves.',
     discipline: 'kenjutsu',
     school: 'River Draw',
     effects: [{ verb: 'counter', power: 12 }],

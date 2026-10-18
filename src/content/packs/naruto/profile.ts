@@ -22,7 +22,7 @@ export const NINDOS: readonly NindoDef[] = [
   {
     id: 'clan',
     name: 'Restore my clan',
-    essay: 'My family’s name will mean something again. I will make sure of it.',
+    essay: 'My family’s name will be spoken with respect again. I will make sure of it.',
   },
   {
     id: 'protect',
@@ -75,7 +75,7 @@ export const BREAK_IN: BreakInScene = {
       difficulty: 6,
       success: 'The guard scratches your ears and lets you in. Undignified, but effective.',
       failure:
-        'Your transformation leaves you with a human nose. The guard squints, shrugs, and lets you pass.',
+        'Your transformation leaves you with a human nose. The guard squints at you, decides it isn’t his problem, and lets you pass.',
     },
   ],
   records:
@@ -83,7 +83,7 @@ export const BREAK_IN: BreakInScene = {
   instructor: 'Iruka-sensei',
   caught:
     'A lamp flares in the doorway. “Reading your own file the night before graduation?” Iruka-sensei ' +
-    'sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”',
+    'looks more tired than angry. “Go home. Be on time tomorrow. And put the drawer back.”',
 };
 
 /** Names for generated genin: your classmates and teammates. */

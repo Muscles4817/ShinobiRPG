@@ -53,7 +53,7 @@ export const TEAM_TEN_GENIN: readonly PersonDef[] = [
       { shape: 'round', figure: 'broad', expression: 'smile' },
     ),
     specialty: 'taijutsu',
-    bio: 'Big-hearted, loyal, and always holding a bag of chips. Do not call him fat.',
+    bio: 'Big-hearted and loyal, and never without a bag of chips. Do not call him fat.',
     schedule: {
       morning: 'shopping-district',
       afternoon: 'training-grounds',

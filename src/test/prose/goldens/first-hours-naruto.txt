@@ -19,7 +19,7 @@ view:
   limits[0]: Taijutsu can go further than most.
   limits[1]: Everything else is still hidden. Training will tell you where it runs out.
 instructor: Iruka-sensei
-caught: A lamp flares in the doorway. “Reading your own file the night before graduation?” Iruka-sensei sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”
+caught: A lamp flares in the doorway. “Reading your own file the night before graduation?” Iruka-sensei looks more tired than angry. “Go home. Be on time tomorrow. And put the drawer back.”
 
 === class honours ===
 
@@ -786,7 +786,7 @@ view:
     perks[1]: Bonds +3 per talk
   rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
   rumours[1]: Hinata trains alone by the river at dawn when she thinks nobody is looking.
-  rumours[2]: The jōnin are whispering about the next Chūnin Exams.
+  rumours[2]: The jōnin are talking in low voices about the next Chūnin Exams.
 
 >>> heedSensei
   journal «Cooking»: Kaname asks whether you can cook, and doesn’t seem surprised by the answer. “Why would a shinobi bother to cook well? Try a good dish before a hard day and you’ll have your answer. The grocer sells recipe books, and your friends know dishes you don’t.”

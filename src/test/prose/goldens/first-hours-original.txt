@@ -19,7 +19,7 @@ view:
   limits[0]: Taijutsu can go further than most.
   limits[1]: Everything else is still hidden. Training will tell you where it runs out.
 instructor: Instructor Rin
-caught: A lantern flares in the doorway. “Reading your own file the night before graduation?” Instructor Rin sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”
+caught: A lantern flares in the doorway. “Reading your own file the night before graduation?” Instructor Rin looks more tired than angry. “Go home. Be on time tomorrow. And put the drawer back.”
 
 === class honours ===
 
@@ -1407,7 +1407,7 @@ view:
     when: Today
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
-  rumours[0]: Old Tsune hears every whisper in the village. Be careful what you say near her.
+  rumours[0]: Old Tsune hears every word said in the village. Be careful what you say near her.
   rumours[1]: Gōran-sensei was seen running the lake before dawn. With a boulder.
   rumours[2]: Old Hagane at the forge is working on a blade he won’t talk about.
 

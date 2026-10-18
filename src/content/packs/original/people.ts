@@ -89,7 +89,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
       style: 'Demanding and dazzling, and expects you to burn as bright as she does.',
       toleratesReplacement: true,
       lesson:
-        'Akari makes you hold a flame in your palm until it stops flickering. It takes all afternoon.',
+        'Akari makes you hold a flame in your palm until it burns perfectly still, which takes all afternoon.',
       ways: AKARI_WAYS,
     },
     teacher: {
