@@ -28,7 +28,7 @@ export const FORD_CHAIN: ArcDef = {
     {
       beats: ['you', 'need'],
       title: 'A simple job',
-      text: 'Tobei the ferry pilot has posted a cheap job at the hall: see him home to Kiri Ford.',
+      text: 'Tobei the ferry pilot has posted a cheap job at the hall, to see him home to Kiri Ford.',
       jobs: [PILOT_HOME.id],
     },
     {

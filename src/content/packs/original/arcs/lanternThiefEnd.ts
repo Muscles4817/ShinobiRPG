@@ -29,7 +29,7 @@ export const REED_KILN: MissionDef = {
     },
     {
       kind: 'narrative',
-      text: 'The old kiln squats in a clearing, its chimney breathing smoke. Through the doorway you see who is feeding the furnace with broken lanterns: a skinny boy with lamp-black on his hands.',
+      text: 'The old kiln squats in a clearing, its chimney breathing smoke. Through the doorway you can see who is feeding the furnace with broken lanterns, a skinny boy with lamp-black on his hands.',
       variants: [
         {
           when: { remembers: 'lantern-thief-named' },
@@ -39,7 +39,7 @@ export const REED_KILN: MissionDef = {
     },
     {
       kind: 'decision',
-      text: 'Three smugglers sit outside, drinking. The boy is inside with the fire.',
+      text: 'Three smugglers sit drinking outside, while the boy stays in with the fire.',
       options: [
         {
           label: 'Get the boy out first',
@@ -69,7 +69,7 @@ export const REED_KILN: MissionDef = {
       endings: [
         {
           when: { has: 'boy-safe' },
-          text: 'You break the kiln’s chimney and drown its fire. Tobi watches from the reeds, shaking. “They said they’d burn our house,” he says. “Mother’s house.”',
+          text: 'You break the kiln’s chimney and drown its fire while Tobi watches from the reeds, shaking. “They said they’d burn our house,” he says. “Mother’s house.”',
           effects: [
             { kind: 'world', mark: 'lantern-kiln-burned' },
             { kind: 'world', mark: 'tobi-safe' },
@@ -116,13 +116,13 @@ export const RELIT: MissionDef = {
     },
     {
       kind: 'decision',
-      text: '“The captain wants your report,” Oume says. “About Tobi.” She doesn’t ask you to lie. She doesn’t have to.',
+      text: '“The captain wants your report about Tobi,” Oume says. She doesn’t ask you to lie, and you can see what it costs her not to.',
       options: [
         {
           label: 'Tell the captain the whole truth',
           tone: 'earnest',
           reply:
-            'The captain hears you out and nods slowly. “He’ll scrub the barracks for a season,” he says. “It’s more than fair.”',
+            'The captain hears you out, and takes his time over it. “He’ll scrub the barracks for a season,” he says. “It’s more than fair.”',
           effects: [{ kind: 'world', mark: 'tobi-turned-in' }],
           ledger: 'Told the captain the whole truth about Tobi.',
         },
@@ -130,7 +130,7 @@ export const RELIT: MissionDef = {
           label: 'Say he was forced, and vouch for him',
           tone: 'kind',
           reply:
-            'The captain looks at you a long time. “On your word,” he says. “If he steals so much as a wick, it’s on you.”',
+            'The captain studies you before he answers. “On your word, then,” he says. “If he steals so much as a wick, it’s on you.”',
           effects: [
             { kind: 'world', mark: 'tobi-forgiven' },
             { kind: 'tally', tally: MERCY, by: 1 },
@@ -149,7 +149,7 @@ export const RELIT: MissionDef = {
           ledger: 'The old wall is lit again, end to end.',
         },
         {
-          text: 'At dusk the whole wall is lit. Oume sets the last lantern on its hook herself, and stays there a long time after you leave.',
+          text: 'At dusk the whole wall is lit. Oume sets the last lantern on its hook herself, and is still standing there when you leave.',
           effects: [{ kind: 'world', mark: 'lantern-arc-done' }],
           ledger: 'The old wall is lit again, end to end.',
         },

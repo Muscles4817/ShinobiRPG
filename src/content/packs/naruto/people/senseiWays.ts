@@ -38,9 +38,12 @@ export const GUY_WAYS: SenseiWays = {
   rituals: [
     {
       kind: 'challenge',
-      line: 'Guy challenges the whole team to a race around the village. On his hands.',
+      line: 'Guy challenges the whole team to a race around the village, which he runs on his hands.',
     },
-    { kind: 'meal', line: 'Guy treats the team to the hottest curry in the village and cries.' },
+    {
+      kind: 'meal',
+      line: 'Guy treats the team to the hottest curry in the village and cries his way through it.',
+    },
   ],
   rewards: ['praise', 'signature', 'gear'],
   onMissions: 'shield',

@@ -5,7 +5,7 @@ export const ARC_RUMOURS: readonly RumourDef[] = [
   {
     id: 'waves-two-sides-done',
     worldMark: 'waves-two-sides-done',
-    text: 'Word from the Land of Waves: the fishermen are rowing the bridge builders out to work every morning.',
+    text: 'Word from the Land of Waves is that the fishermen row the bridge builders out to work every morning now.',
   },
   {
     id: 'ocho-free',
@@ -15,6 +15,6 @@ export const ARC_RUMOURS: readonly RumourDef[] = [
   {
     id: 'ibiki-passed',
     worldMark: 'ibiki-passed',
-    text: 'Ibiki Morino was heard to say something almost kind about a genin. Nobody believes it.',
+    text: 'Ibiki Morino was heard to say a kind word, very nearly, about a genin, and nobody believes it.',
   },
 ];

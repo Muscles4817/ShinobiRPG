@@ -61,7 +61,7 @@ export const D_TROUBLE: readonly MissionFill[] = [
       steeled:
         'You wade into the dark water where the lanterns go out, step by step, until the cold is enough to stop your breath.',
       shaken:
-        'Something grips your ankle and drags you under, and you come up spluttering on the steps before you go back in.',
+        'A cold hand grips your ankle and drags you under, and you come up spluttering on the steps before you go back in.',
       ghost:
         'A grey shape rises from the water, reaching for the lantern in your hand. It is a young man with weed in his hair, and he wants the light so badly.',
       foe: 'canal-drowned',
@@ -223,7 +223,7 @@ export const D_TROUBLE: readonly MissionFill[] = [
       client: 'The Ferry Landing Fishers',
       stolen: 'every net from the ferry landing, and a morning’s catch',
       scene:
-        'The drying racks are empty, the boats are untouched, and there is a deep scrape on the jetty where something heavy was dragged to the water.',
+        'The drying racks are empty, the boats are untouched, and there is a deep scrape on the jetty where a heavy hull was dragged to the water.',
       lead: 'The scrape is from a skiff’s keel, and a stolen skiff has been seen tied up at the reed islands downstream, where the river pirates camp.',
       thief:
         'On the reed island a river pirate is spreading the stolen nets to dry, the catch smoking over his fire.',

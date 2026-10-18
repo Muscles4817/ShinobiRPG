@@ -97,7 +97,7 @@ export const MASARU_WAYS: SenseiWays = {
   rituals: [
     {
       kind: 'challenge',
-      line: 'Masaru has the team cut falling leaves, and keeps score on the fence. He wins.',
+      line: 'Masaru has the team cut falling leaves, keeping score on the fence, and wins by a long way.',
     },
     {
       kind: 'meal',

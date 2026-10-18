@@ -13,7 +13,8 @@ export const CONTRACT_TECHNIQUES: readonly TechniqueDef[] = [
   {
     id: 'summon-kiln-newt',
     name: 'Summoning: Kiln Newt',
-    description: 'A palm to the ground and a puff of hot smoke: a newt no bigger than a dog.',
+    description:
+      'A palm to the ground and a puff of hot smoke, and out comes a newt no bigger than a dog.',
     discipline: 'ninjutsu',
     effects: [{ verb: 'summon', power: 1, call: 'kiln-newt' }],
     chakraCost: 8,
@@ -34,7 +35,7 @@ export const CONTRACT_TECHNIQUES: readonly TechniqueDef[] = [
     id: 'summon-kiln-mother',
     name: 'Summoning: The Kiln Mother',
     description:
-      'An offering in the coals, and the oldest of them heaves up, glowing to the gills.',
+      'An offering in the coals, and the oldest of them heaves up, red-hot to the gills.',
     discipline: 'ninjutsu',
     effects: [{ verb: 'summon', power: 1, call: 'kiln-mother' }],
     chakraCost: 30,
@@ -44,7 +45,7 @@ export const CONTRACT_TECHNIQUES: readonly TechniqueDef[] = [
   {
     id: 'summon-undercroft-rat',
     name: 'Summoning: Undercroft Rat',
-    description: 'A smear of blood on a cellar stone, and something with yellow teeth comes up.',
+    description: 'A smear of blood on a cellar stone, and a thing with yellow teeth comes up.',
     discipline: 'ninjutsu',
     effects: [{ verb: 'summon', power: 1, call: 'undercroft-rat' }],
     chakraCost: 8,

@@ -22,7 +22,8 @@ export const FIRE_TEMPLE_JOBS: readonly MissionDef[] = [
           { label: 'Walk beside him, slowly, all the way', stat: 'willpower', difficulty: 8 },
         ],
         success: 'They reach the gate at dusk. The old man prays for you first, before himself.',
-        failure: 'They make it, bruised and soaked. You are both covered in mud.',
+        failure:
+          'They make it in the end, bruised and soaked through, and you are both covered in mud.',
         onFailure: 'penalty',
         failureDamage: 2,
       },
@@ -33,7 +34,8 @@ export const FIRE_TEMPLE_JOBS: readonly MissionDef[] = [
     title: 'The Bell Rope',
     rank: 'D',
     client: 'Novice Kei',
-    summary: 'The bell didn’t ring at dawn: somebody cut the rope. Kei is sure it was a monkey.',
+    summary:
+      'The bell didn’t ring at dawn because somebody cut the rope, and Kei is sure it was a monkey.',
     slots: 2,
     energyCost: 20,
     reward: { ryo: 40, reputation: 2 },
@@ -47,7 +49,8 @@ export const FIRE_TEMPLE_JOBS: readonly MissionDef[] = [
           { label: 'Leave fruit out and wait very still', stat: 'perception', difficulty: 8 },
         ],
         success: 'It was a monkey. Kei is unbearable about it for the rest of the day.',
-        failure: 'The monkey keeps the rope. The monks splice a new one, sighing.',
+        failure:
+          'The monkey keeps the rope, and the monks splice a new one, complaining all the while.',
         onFailure: 'penalty',
         failureDamage: 1,
       },

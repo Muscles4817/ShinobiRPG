@@ -211,7 +211,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         kind: 'library',
         name: 'The Lantern Archive',
         icon: 'stacks',
-        blurb: 'Scrolls kept by lamplight',
+        blurb: 'Scrolls kept under the lanterns',
         hours: ['morning', 'afternoon', 'evening'],
         techniqueIds: [
           'crescent-drop',

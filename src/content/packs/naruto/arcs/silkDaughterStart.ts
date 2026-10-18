@@ -27,7 +27,7 @@ export const DAUGHTER_TAKEN: MissionDef = {
     { kind: 'leg', text: 'A day up the post road to Shukuba.', days: 1, region: 'forest-track' },
     {
       kind: 'narrative',
-      text: 'Danjūrō receives you in a room full of silk, and shouts at the maid who brings the tea for bringing it slowly. “Bandits,” he says. “On the post road. My only daughter, and I am a man of standing.”',
+      text: 'Danjūrō receives you in a room full of silk, and shouts at the maid who brings the tea for bringing it slowly. “Bandits,” he says, “on the post road. My only daughter, and I am a man of standing in this town.”',
     },
     {
       kind: 'check',
@@ -75,7 +75,7 @@ export const HER_ROOM: MissionDef = {
   stages: [
     {
       kind: 'check',
-      text: 'The innkeeper kept the room as it was. The bed is made. Nothing is broken.',
+      text: 'The innkeeper kept the room as it was, with the bed made and nothing broken.',
       approaches: [
         {
           label: 'Search it properly',
@@ -86,7 +86,8 @@ export const HER_ROOM: MissionDef = {
               { kind: 'world', mark: 'ocho-fled' },
               { kind: 'tally', tally: OCHO_CLUES, by: 1 },
             ],
-            ledger: 'Her winter clothes were gone, and her mother’s comb. Nobody takes those.',
+            ledger:
+              'Her winter clothes were gone, and her mother’s comb, which no bandit would bother to take.',
             noted: true,
           },
         },
@@ -149,7 +150,7 @@ export const BANDITS_BLAMED: MissionDef = {
     {
       when: { lacks: 'slipped-past' },
       kind: 'decision',
-      text: 'Danjūrō has sent word ahead: bring the bandits to him, and there will be a bonus. He means to hang them for his daughter, whatever they did.',
+      text: 'Danjūrō has sent word ahead that there will be a bonus if you bring the bandits to him. He means to hang them for his daughter, whatever they did.',
       options: [
         {
           label: 'Hand them to Danjūrō',
@@ -159,14 +160,15 @@ export const BANDITS_BLAMED: MissionDef = {
             { kind: 'pay', share: 0.5 },
             { kind: 'world', mark: 'ocho-bandits-hanged' },
           ],
-          ledger: 'Handed the bandits to Danjūrō, for a bonus, for something they didn’t do.',
+          ledger: 'Handed the bandits to Danjūrō for a bonus, for a kidnapping they didn’t do.',
         },
         {
           label: 'Take their word, and send them off the post road',
           tone: 'curious',
           reply: 'The chief looks at you as if you’ve grown another head, then goes, fast.',
           effects: [{ kind: 'tally', tally: OCHO_CLUES, by: 1 }],
-          ledger: 'Believed the bandits: a girl walked past them alone, towards the temple.',
+          ledger:
+            'Believed the bandits, who said a girl walked past them alone towards the temple.',
           noted: true,
         },
       ],
@@ -217,7 +219,7 @@ export const PILGRIM_ROAD: MissionDef = {
         {
           label: 'Tell her you won’t drag her anywhere',
           tone: 'kind',
-          reply: 'She sits down on the temple steps, very suddenly, and Chiriku lets you through.',
+          reply: 'She sits down on the temple steps very suddenly, and Chiriku lets you through.',
           effects: [{ kind: 'world', mark: 'ocho-trusts' }],
           ledger: 'Promised Ochō you wouldn’t drag her home.',
         },

@@ -14,7 +14,8 @@ export const CUT_ROPES: MissionDef = {
   title: 'Cut Ropes',
   rank: 'D',
   client: 'Tazuna, bridge builder',
-  summary: 'Someone keeps cutting the scaffold ropes. Tazuna’s builders say it’s the fishermen.',
+  summary:
+    'Someone keeps cutting the scaffold ropes, and Tazuna’s builders say it’s the fishermen.',
   slots: 2,
   energyCost: 20,
   reward: { ryo: 120, reputation: 2 },
@@ -41,7 +42,7 @@ export const CUT_ROPES: MissionDef = {
               { kind: 'world', mark: 'waves-planted-blade' },
               { kind: 'tally', tally: TWO_SIDES_CLUES, by: 1 },
             ],
-            ledger: 'The fisherman’s blade was new, never used, and left to be found.',
+            ledger: 'The fisherman’s blade had never been used, and was left there to be found.',
             noted: true,
           },
         },
@@ -54,7 +55,7 @@ export const CUT_ROPES: MissionDef = {
               { kind: 'world', mark: 'waves-planted-blade' },
               { kind: 'tally', tally: TWO_SIDES_CLUES, by: 1 },
             ],
-            ledger: 'No fisherman owns the blade. It was bought at the tycoon’s store.',
+            ledger: 'No fisherman owns the blade, because it was bought at the tycoon’s store.',
             noted: true,
           },
         },
@@ -104,7 +105,7 @@ export const THIRD_HAND: MissionDef = {
         {
           label: 'Go to the warehouse alone, before he hears you’re coming',
           tone: 'challenge',
-          reply: 'Tsunami nods, and closes the shutters behind you.',
+          reply: 'Tsunami agrees, and closes the shutters behind you.',
           effects: [{ kind: 'pay', share: 0.25 }],
           ledger: 'Went for the warehouse before the town knew, and caught him with his ledger.',
         },
@@ -162,7 +163,7 @@ export const TWO_SIDES_ARC: ArcDef = {
     {
       beats: ['you', 'need'],
       title: 'A town coming apart',
-      text: 'Tsunami has written from the Waves: the builders and the fishermen are at war.',
+      text: 'Tsunami has written from the Waves to say the builders and the fishermen are at war.',
       jobs: ['arc-waves-town-apart'],
     },
     {
@@ -175,7 +176,7 @@ export const TWO_SIDES_ARC: ArcDef = {
     {
       beats: ['find', 'take', 'return', 'change'],
       title: 'The third hand',
-      text: 'Somebody is paying cutters on both sides. Find him, and go home.',
+      text: 'Somebody is paying cutters on both sides, so find him and go home.',
       jobs: ['arc-waves-third-hand'],
       baseLocationId: 'land-of-waves',
     },

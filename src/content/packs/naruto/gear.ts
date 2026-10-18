@@ -58,7 +58,7 @@ export const GEAR: readonly GearDef[] = [
   {
     id: 'weighted-kunai',
     name: 'Weighted Kunai',
-    description: 'Tenten’s favourite: heavier kunai, balanced at the ring. They hit hard.',
+    description: 'Tenten’s favourite, heavier kunai balanced at the ring, and they hit hard.',
     kind: 'weapon',
     shape: 'throwing',
     rank: 'D',

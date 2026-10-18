@@ -69,7 +69,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     id: 'lamplighters-ladder',
     name: 'Lamplighter’s Ladder',
     description:
-      'Climb the guard like a lamplighter climbs a pole: three quick steps in, and a knee at the top.',
+      'Climb the guard like a lamplighter climbs a pole, with three quick steps in and a knee at the top.',
     discipline: 'taijutsu',
     effects: [
       { verb: 'move', to: 'close', power: 6 },
@@ -118,7 +118,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     id: 'night-watch-flurry',
     name: 'Night Watch Flurry',
     description:
-      'Too many blows from too many angles: how the masked watch end a brawl before anyone sees it.',
+      'Too many blows from too many angles, the way the masked watch end a brawl before anyone sees it.',
     discipline: 'taijutsu',
     effects: [
       { verb: 'damage', power: 16, hits: 3, scaling: { drive: ['speed', 'art'] } },
@@ -229,7 +229,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
   {
     id: 'watchmans-rush',
     name: 'Watchman’s Rush',
-    description: 'The night watch’s charge: cross the gap at a run and arrive shoulder first.',
+    description: 'The night watch’s charge, crossing the gap at a run to arrive shoulder first.',
     discipline: 'taijutsu',
     reach: ['close', 'mid'],
     effects: [

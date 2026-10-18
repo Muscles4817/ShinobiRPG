@@ -89,7 +89,7 @@ export const GENIN: readonly PersonDef[] = [
       'belt',
     ),
     specialty: 'kenjutsu',
-    bio: 'The instructors’ pride. Sleeps with his sword. Has not smiled since he was nine.',
+    bio: 'The instructors’ pride, who sleeps with his sword and has not smiled since he was nine.',
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',
@@ -115,7 +115,7 @@ export const GENIN: readonly PersonDef[] = [
       'neck',
     ),
     specialty: 'fuuinjutsu',
-    bio: 'Frail, sharp, and always writing. Her seals are better than some jōnin’s.',
+    bio: 'Frail and sharp, and always writing. Her seals are better than some jōnin’s.',
     schedule: {
       morning: 'academy',
       afternoon: 'mission-hall',
@@ -166,7 +166,7 @@ export const GENIN: readonly PersonDef[] = [
       outfit: '#2f4f7a',
     }),
     specialty: 'taijutsu',
-    bio: 'Asks a question about everything. Has a notebook of the answers.',
+    bio: 'Asks a question about everything, and keeps a notebook of the answers.',
     schedule: {
       morning: 'training-grounds',
       afternoon: 'academy',

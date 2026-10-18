@@ -5,7 +5,7 @@ export const GENJUTSU: readonly TechniqueDef[] = [
   {
     id: 'shadow-feint',
     name: 'Shadow Feint',
-    description: 'A flicker of false movement that leaves the target swiping at nothing.',
+    description: 'A twitch of false movement that leaves the target swiping at nothing.',
     discipline: 'genjutsu',
     effects: [{ verb: 'daze', power: 6 }],
     chakraCost: 6,
@@ -37,7 +37,8 @@ export const GENJUTSU: readonly TechniqueDef[] = [
   {
     id: 'paper-veil',
     name: 'Paper Veil',
-    description: 'Fold the light around you like lantern paper, and be only a glow in the dark.',
+    description:
+      'Fold the light around you like lantern paper, and be only a faint light in the dark.',
     discipline: 'genjutsu',
     effects: [{ verb: 'conceal', power: 10 }],
     chakraCost: 9,
@@ -58,7 +59,8 @@ export const GENJUTSU: readonly TechniqueDef[] = [
   {
     id: 'whispering-dread',
     name: 'Whispering Dread',
-    description: 'Let the target hear what the restless dead whisper. The mind wounds the body.',
+    description:
+      'Let the target hear what the restless dead say to each other, and let the mind wound the body.',
     discipline: 'genjutsu',
     effects: [{ verb: 'damage', power: 16 }],
     chakraCost: 11,
@@ -109,7 +111,7 @@ export const GENJUTSU: readonly TechniqueDef[] = [
   {
     id: 'grave-lantern-walk',
     name: 'Grave-Lantern Walk',
-    description: 'Walk as the dead walk: unseen by the living, and seeing everything they hide.',
+    description: 'Walk as the dead walk, unseen by the living and seeing everything they hide.',
     discipline: 'genjutsu',
     effects: [
       { verb: 'conceal', power: 14 },
@@ -149,7 +151,7 @@ export const GENJUTSU: readonly TechniqueDef[] = [
     id: 'night-without-lanterns',
     name: 'Night Without Lanterns',
     description:
-      'Put out every light in the world for everyone but you. The dark takes something back.',
+      'Put out every light in the world for everyone but you. The dark takes a little of you back.',
     discipline: 'genjutsu',
     effects: [
       { verb: 'field', field: 'mist', power: 20 },
@@ -175,7 +177,7 @@ export const GENJUTSU: readonly TechniqueDef[] = [
   {
     id: 'sap-the-will',
     name: 'Sap the Will',
-    description: 'A long, tired sigh in the back of the mind, and the chakra goes slack.',
+    description: 'A long, tired breath let out in the back of the mind, and the chakra goes slack.',
     discipline: 'genjutsu',
     effects: [{ verb: 'drain', power: 12, scaling: { resist: ['willpower'] } }],
     chakraCost: 10,

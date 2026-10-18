@@ -10,7 +10,7 @@ export const EXEMPLARS_TROUBLE: readonly MissionFill[] = [
       client: 'Bathhouse Keeper Ume',
       place: 'the old bathhouse on Tallow Lane',
       signs:
-        'The baths steam even with the fires out. Wet footprints cross the tiles towards you and stop, and the water whispers when you lean over it.',
+        'The baths steam even with the fires out. Wet footprints cross the tiles towards you and stop, and the water murmurs when you lean over it.',
       steeled:
         'You follow the footprints through the steam to the last bath, where the water is ice-cold.',
       shaken:
@@ -34,7 +34,7 @@ export const EXEMPLARS_TROUBLE: readonly MissionFill[] = [
       damage:
         'Haruno walks you down rows of melons split open and scooped hollow. “Only the ripe ones,” he says. “Every night. It knows.”',
       spoor:
-        'Fat round prints in the mud, melon rind trailing towards the bamboo, and a smell like a wet dog that has rolled in something.',
+        'Fat round prints in the mud, melon rind trailing towards the bamboo, and a smell like a wet dog that has rolled in a midden.',
       beast:
         'In a hollow in the bamboo, a tanuki the size of a barrel lies on its back on a bed of rinds, belly up, snoring.',
       foe: 'feral-tanuki',
@@ -53,7 +53,7 @@ export const EXEMPLARS_TROUBLE: readonly MissionFill[] = [
       stolen: 'a whole season’s temple incense',
       scene:
         'The drying racks are bare. Whoever took the sticks left the door locked behind them, and a single bootprint dusted with ash on the sill.',
-      lead: 'The ash is kiln-ash, and only one place has fresh kiln-ash on its floor: the burnt-out pottery by the river, where somebody has been living.',
+      lead: 'The ash is kiln-ash, and only one place has fresh kiln-ash on its floor, the burnt-out pottery by the river, where somebody has been living.',
       thief:
         'In the old pottery a young man in a scratched-out headband is selling incense by the handful to a queue of nervous pilgrims.',
       foe: 'academy-dropout',

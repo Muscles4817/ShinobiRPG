@@ -18,7 +18,7 @@ export const PATIENT_THING_FOE: EnemyDef = {
   name: 'The Patient Thing',
   proper: true,
   pronouns: 'it',
-  description: 'It waited years for a seal to weaken. It is very good at waiting.',
+  description: 'It waited years for a seal to weaken, and would happily have waited years more.',
   baseStat: 11,
   statBonuses: { genjutsu: 4, willpower: 4, stamina: -2 },
   maxChakra: 90,
@@ -45,7 +45,7 @@ export const PATIENT_THING_ACT_ONE: MissionDef = {
     },
     {
       kind: 'leg',
-      text: 'Two days on the forest track. Every shrine you pass has a ward on its gate, torn.',
+      text: 'Two days on the forest track, and every shrine you pass has a torn ward on its gate.',
       days: 2,
       region: 'forest-track',
     },
@@ -73,13 +73,13 @@ export const PATIENT_THING_ACT_ONE: MissionDef = {
           },
         },
       ],
-      success: 'A hollow under the roots, and in it, something patient, breathing very slowly.',
+      success: 'A hollow under the roots, and in it the patient thing, breathing very slowly.',
       failure: 'You find nothing, but Ito follows the torn wards to the hollow, pale and certain.',
       onFailure: 'forward',
     },
     {
       kind: 'camp',
-      text: 'You camp with seals around the fire. Something circles outside them all night, and doesn’t try.',
+      text: 'You camp inside a ring of seals around the fire. All night a shape circles outside it, and never once tries to cross.',
       picks: 2,
       activities: [
         { kind: 'crew', label: 'Sit with Ito', when: { crew: 'team' } },
@@ -119,26 +119,26 @@ export const PATIENT_THING_ACT_TWO: MissionDef = {
     },
     {
       kind: 'decision',
-      text: 'At the roots, the thing uncoils, and speaks in Ito’s own voice. Ito asks you, “Seal it, or end it?”',
+      text: 'At the roots the thing uncoils and speaks to you in Ito’s own voice. Ito turns to you. “Seal it, or end it?”',
       options: [
         {
           label: '“Seal it. Gently.”',
           tone: 'kind',
-          reply: 'Ito nods. Her hands stop shaking.',
+          reply: 'Ito’s hands stop shaking, and she takes out the seal she wrote for this.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Chose to seal it gently.',
         },
         {
           label: '“Ask it what it wants.”',
           tone: 'curious',
-          reply: '“To be let out,” it says. “Only that.” Ito swallows.',
+          reply: '“To be let out,” it says. “Only that, ever.” Ito swallows hard.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Asked the thing what it wanted.',
         },
         {
           label: '“End it.”',
           tone: 'challenge',
-          reply: 'Ito’s jaw sets. “Yes.”',
+          reply: 'Ito’s jaw sets. “Yes. I think it has to be.”',
           ledger: 'Chose to end it.',
         },
       ],
@@ -158,7 +158,7 @@ export const PATIENT_THING_ACT_TWO: MissionDef = {
       endings: [
         {
           when: { has: 'mercy' },
-          text: 'Ito’s seal closes around it, soft as a shrine-rope. It goes still. “Rest,” she tells it. Back home she checks the seal only twice.',
+          text: 'Ito’s seal closes round it as softly as a shrine-rope, and it goes still. “Rest now,” she tells it, and back home she checks the seal only twice.',
           effects: [
             { kind: 'world', mark: PATIENT_THING_SETTLED },
             { kind: 'memory', text: 'the night the seal held' },
@@ -166,7 +166,7 @@ export const PATIENT_THING_ACT_TWO: MissionDef = {
           ledger: 'Sealed the patient thing away for good.',
         },
         {
-          text: 'It comes apart like smoke in rain. Ito burns the torn wards one by one. “Done,” she says. “Finally.”',
+          text: 'It comes apart like smoke in rain. Ito burns the torn wards one by one, and when the last is ash she says “Finally” to nobody in particular.',
           effects: [
             { kind: 'world', mark: PATIENT_THING_SETTLED },
             { kind: 'memory', text: 'the night in the roots' },
@@ -177,7 +177,7 @@ export const PATIENT_THING_ACT_TWO: MissionDef = {
     },
     {
       kind: 'leg',
-      text: 'Back along the forest track. The shrines’ wards are whole again.',
+      text: 'Back along the forest track, past shrines whose wards are whole again.',
       days: 2,
     },
   ],

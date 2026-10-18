@@ -26,7 +26,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
   {
     id: 'mystical-palm',
     name: 'Mystical Palm Technique',
-    description: 'The medical ninja’s green glow, closing wounds from the inside.',
+    description: 'The medical ninja’s green light, closing wounds from the inside.',
     discipline: 'ninjutsu',
     effects: [{ verb: 'heal', power: 18 }],
     chakraCost: 12,
@@ -73,7 +73,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
   {
     id: 'body-flicker',
     name: 'Body Flicker Technique',
-    description: 'A burst of chakra through the legs: you are simply somewhere else.',
+    description: 'A burst of chakra through the legs, and you are simply somewhere else.',
     discipline: 'ninjutsu',
     effects: [{ verb: 'move', power: 8 }],
     chakraCost: 5,
@@ -181,7 +181,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     id: 'multiple-shadow-clone',
     name: 'Multiple Shadow Clone Jutsu',
     description:
-      'A forbidden technique from the Scroll of Seals: not a handful of clones but a crowd.',
+      'A forbidden technique from the Scroll of Seals that makes not a handful of clones but a crowd.',
     discipline: 'ninjutsu',
     effects: [{ verb: 'clone', power: 20, strikes: true }],
     chakraCost: 24,

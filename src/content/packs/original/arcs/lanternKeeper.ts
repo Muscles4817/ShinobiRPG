@@ -18,7 +18,7 @@ export const LANTERN_KEEPER_FOE: EnemyDef = {
   name: 'Hiro Hibana',
   proper: true,
   pronouns: 'he',
-  description: 'Akari’s brother. The same fire, burning the wrong way.',
+  description: 'Akari’s brother, with the same fire as hers, burning the wrong way.',
   baseStat: 11,
   statBonuses: { ninjutsu: 4, chakraControl: 2, speed: 1 },
   maxChakra: 80,
@@ -120,26 +120,26 @@ export const LANTERN_KEEPER_ACT_TWO: MissionDef = {
     },
     {
       kind: 'decision',
-      text: 'At the camp, Hiro is waiting, hands already burning. Akari looks at you. “Help me reach him. How?”',
+      text: 'Hiro is waiting at the camp with his hands already burning. Akari turns to you. “Help me reach him. How do I do it?”',
       options: [
         {
           label: '“Tell him the lantern is still lit for him.”',
           tone: 'kind',
-          reply: 'Something in Hiro’s face breaks, just for a moment.',
+          reply: 'Hiro’s face crumples for a moment before he gets it back.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Told Hiro the lantern was kept lit for him.',
         },
         {
           label: '“Let him see you won’t fight.”',
           tone: 'quiet',
-          reply: 'Akari lowers her hands. Hiro doesn’t.',
+          reply: 'Akari lowers her hands, and Hiro keeps his up.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Akari offered not to fight.',
         },
         {
           label: '“Beat him first. Talk after.”',
           tone: 'challenge',
-          reply: 'Akari’s flame flares. “Fine,” she says.',
+          reply: 'Akari’s flame flares up in her palm. “Fine. We talk after, then.”',
           ledger: 'Told Akari to beat him first.',
         },
       ],
@@ -158,7 +158,7 @@ export const LANTERN_KEEPER_ACT_TWO: MissionDef = {
       endings: [
         {
           when: { has: 'mercy' },
-          text: 'Hiro walks back up the river road beside his sister, saying nothing. At the gate she hands him the taper. He lights the lantern.',
+          text: 'Hiro walks back up the river road beside his sister without a word, and at the gate she hands him the taper and he lights the lantern.',
           effects: [
             { kind: 'world', mark: LANTERN_KEEPER_SETTLED },
             { kind: 'memory', text: 'the night Hiro came home' },
@@ -175,7 +175,7 @@ export const LANTERN_KEEPER_ACT_TWO: MissionDef = {
         },
       ],
     },
-    { kind: 'leg', text: 'Back up the river road. Akari doesn’t look back.', days: 2 },
+    { kind: 'leg', text: 'Back up the river road, and Akari doesn’t look back once.', days: 2 },
   ],
 };
 

@@ -38,8 +38,8 @@ export const ASH_LANTERNS_BARGAIN: MissionDef = {
         {
           label: 'Ask what the third favour is',
           tone: 'curious',
-          reply: '“Something I couldn’t do myself,” he says. “That’s all favours are.”',
-          ledger: 'Asked about the third favour. Kōun wouldn’t say.',
+          reply: '“A thing I couldn’t do myself,” he says. “That’s all a favour ever is, really.”',
+          ledger: 'Asked about the third favour, which Kōun wouldn’t name.',
         },
         {
           label: 'Ask what it will cost you',
@@ -53,7 +53,7 @@ export const ASH_LANTERNS_BARGAIN: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: 'The first: dance at a wedding he promised fifty years ago to dance at. The second: bring home the sword the village sold in a lean year. “Either order,” he says, and goes back to his sweeping.',
+          text: 'The first is to dance at a wedding he promised fifty years ago to dance at, and the second to bring home the sword the village sold in a lean year. “In either order,” he says, and goes back to his sweeping.',
         },
       ],
     },
@@ -92,19 +92,20 @@ export const WEDDING_DANCE: MissionDef = {
     },
     {
       kind: 'decision',
-      text: 'Bunta’s son-in-law, red with sake, stands up and makes a speech about cowards who send children to keep their promises.',
+      text: 'Bunta’s son-in-law, red in the face with sake, stands up to make a speech about cowards who send children to keep their promises.',
       options: [
         {
           label: 'Make the whole lane laugh at him',
           tone: 'tease',
-          reply: 'They do. He sits down, purple. Bunta doesn’t laugh.',
+          reply:
+            'The whole lane laughs, and he sits down purple in the face, but Bunta doesn’t laugh with them.',
           ledger: 'Made a fool of Bunta’s son-in-law.',
         },
         {
           label: 'Let him finish, then give Bunta Kōun’s message',
           tone: 'kind',
           reply:
-            'When he runs out of breath you kneel by Bunta and tell him what Kōun said: that he can’t dance any more, and couldn’t stand to be seen not dancing. Bunta looks at the gate a long time. “Stubborn old fool,” he says, and pours you a cup.',
+            'When he runs out of breath you kneel by Bunta and tell him what Kōun said, that he can’t dance any more and couldn’t stand to be seen not dancing. Bunta looks out at the gate for a while. “Stubborn old fool,” he says, and pours you a cup.',
           effects: [{ kind: 'tally', tally: KOUN_GRACE, by: 1 }],
           ledger: 'Gave Bunta Kōun’s message, and the old man forgave him.',
         },
@@ -114,7 +115,7 @@ export const WEDDING_DANCE: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: 'You report back at dawn. Kōun listens, sweeping, and stops only once, at Bunta’s name.',
+          text: 'You report back at dawn. Kōun listens without putting down the broom, and stops sweeping only once, at Bunta’s name.',
           effects: [{ kind: 'memory', text: 'dancing the Ash Lantern’s dance at the wedding' }],
         },
       ],

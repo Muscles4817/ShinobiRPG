@@ -8,22 +8,25 @@ export const TETSU_STORY: readonly ConversationDef[] = [
     id: 'tetsu-forge',
     personId: 'tetsu',
     minStage: 1,
-    opener: 'Tetsu hands you a hammer and points at the anvil. That is the whole conversation.',
+    opener:
+      'Tetsu hands you a hammer and points at the anvil, and that is the whole of the conversation.',
     choices: [
       {
         label: 'Strike, carefully.',
         tone: 'quiet',
-        reply: 'He watches. Nods once. It feels like a medal.',
+        reply:
+          'He watches the blow land and gives you one short nod, which from Tetsu feels like a medal.',
       },
       {
         label: '“Show me first.”',
         tone: 'curious',
-        reply: 'He does. Every blow lands in the same place. You try to.',
+        reply:
+          'He does. Every blow lands in exactly the same place, and you spend the next hour trying to make yours do the same.',
       },
       {
         label: 'Strike as hard as you can.',
         tone: 'challenge',
-        reply: 'The anvil rings. He winces, then almost laughs.',
+        reply: 'The anvil rings, and he winces, and then very nearly laughs.',
       },
     ],
   },
@@ -32,18 +35,19 @@ export const TETSU_STORY: readonly ConversationDef[] = [
     personId: 'tetsu',
     minStage: 2,
     opener:
-      'Tetsu sets a cracked blade on the bench. “First one I made,” he says, which is more words than usual. “My master broke it. Rightly.”',
+      'Tetsu sets a cracked blade on the bench. “First one I made. My master broke it, and he was right to.” It is more than he usually says in a morning.',
     choices: [
       {
         label: '“Why did he break it?”',
         tone: 'curious',
-        reply: '“It would have broken in a fight. Better in the forge.”',
+        reply: '“It would have broken in a fight. Better it broke in the forge.”',
       },
       { label: '“You kept it.”', tone: 'kind', reply: '“To remember,” he says, and puts it away.' },
       {
         label: '“Would you break mine?”',
         tone: 'challenge',
-        reply: '“If it needed it.” He means it. It is a kindness.',
+        reply:
+          '“If it needed it.” He means it, and you understand after a moment that it’s meant kindly.',
       },
     ],
   },
@@ -52,22 +56,23 @@ export const TETSU_STORY: readonly ConversationDef[] = [
     personId: 'tetsu',
     minStage: 3,
     opener:
-      '“I sold a blade to a man who became our enemy,” Tetsu says. “It killed a friend of mine. I made it well.”',
+      '“I sold a blade to a man who became our enemy,” Tetsu says. “It killed a friend of mine. I’d made it well.”',
     choices: [
       {
         label: '“You couldn’t have known.”',
         tone: 'kind',
-        reply: '“A smith should know,” he says. “Now I ask who.”',
+        reply: '“A smith should know. Now I ask who it’s for, every time.”',
       },
       {
         label: '“Is that why you teach?”',
         tone: 'curious',
-        reply: 'He nods. “So the blades go to the right hands.”',
+        reply: '“Yes. So the blades end up in the right hands.”',
       },
       {
         label: 'Stand with him at the forge.',
         tone: 'quiet',
-        reply: 'Neither of you speaks. The fire speaks enough.',
+        reply:
+          'Neither of you speaks. You stand there until the coals settle, and he doesn’t send you away.',
       },
     ],
   },
@@ -76,24 +81,24 @@ export const TETSU_STORY: readonly ConversationDef[] = [
     personId: 'tetsu',
     minStage: 4,
     opener:
-      '“A blade remembers who made it,” Tetsu says, and looks at you. “So does a student.” Then, after a long time: “My blade is on the pass. The one I sold. I am going for it.”',
+      '“A blade remembers who made it,” Tetsu says, looking at you. “So does a student.” He works on in silence before he adds, “My blade is on the pass, the one I sold. I’m going up for it.”',
     choices: [
       {
         label: '“I’ll remember.”',
         tone: 'earnest',
-        reply: 'He grips your shoulder, once, hard. Then back to work.',
+        reply: 'He grips your shoulder once, hard, and goes back to work.',
         worldMark: TETSU_BLADE,
       },
       {
         label: '“Is that a compliment?”',
         tone: 'tease',
-        reply: '“Yes,” he says. You will think about it for days.',
+        reply: '“Yes,” he says, and you go on thinking about it for days.',
         worldMark: TETSU_BLADE,
       },
       {
         label: 'Bow.',
         tone: 'quiet',
-        reply: 'He bows back. He has never bowed to you before.',
+        reply: 'He bows back, which he has never done for you before.',
         worldMark: TETSU_BLADE,
       },
     ],

@@ -12,7 +12,7 @@ export const C_TEAM_FIELD_FILLS: readonly MissionFill[] = [
       quarry: 'a troop of bold mountain macaques',
       village: 'the tea village of Chaya on the shrine hill road',
       harm: 'Roofs are stripped of their tiles, storehouses are ransacked and a child has been bitten. The headwoman holds up a stolen sandal. “They threw this at me,” she says.',
-      sign: 'The troop’s trail goes up through the bamboo, littered with stolen things: a comb, a spoon, a whole kettle.',
+      sign: 'The troop’s trail goes up through the bamboo, littered with the things they stole, a comb here and a spoon there and at one point a whole kettle.',
       ground:
         'The troop sleeps in a stand of pines above a clearing. You have till dusk to make the clearing a trap.',
       lair: 'The troop wakes shrieking, and two big males drop out of the pines and come for you with their teeth bared.',
@@ -103,7 +103,7 @@ export const C_TEAM_FIELD_FILLS: readonly MissionFill[] = [
       hideout: 'an abandoned quarry in the hills, turned into a forge',
       loot: 'the Kurogane maker’s stamps, stolen to mark cheap blades as clan work',
       briefing:
-        '“Every blade they stamp is a lie with our name on it,” Tanzō says. “And they’ll break in the first fight that matters.” Your sensei nods. “Then we break them first.”',
+        '“Every blade they stamp is a lie with our name on it,” Tanzō says. “And they’ll break in the first fight that matters.” “Then we break them first,” your sensei says.',
       count:
         'Smoke rises from the quarry floor, and the ring of hammers echoes off the stone, but the forge is hidden under a rock overhang.',
       plan: 'The quarry has a cart track, a sheer face and a drainage tunnel. Each of you has a favourite, and none of them is easy.',
@@ -133,7 +133,7 @@ export const C_TEAM_FIELD_FILLS: readonly MissionFill[] = [
         'The cave mouth is hidden behind a waterfall, and every so often a figure steps out onto the rocks to look up and down the coast.',
       plan: 'The cave can be reached through the waterfall, along a ledge from the sea, or down a crack in the clifftop.',
       guards:
-        'The tablets are stacked in a corner of the cave, wrapped in fishing nets. The leader writes the ransom note by lamplight while a bowman and a thug keep guard.',
+        'The tablets are stacked in a corner of the cave, wrapped in fishing nets. The leader writes the ransom note by a shaded lamp while a bowman and a thug keep guard.',
       foe: 'bandit-chief',
       second: 'bandit-archer',
       third: 'bandit-thug',
@@ -161,7 +161,7 @@ export const C_TEAM_FIELD_FILLS: readonly MissionFill[] = [
         'A girl in a Sakyūgakure headband crouches in a hollow behind the marker, a map of the border posts on her knees and a look of pure panic on her face.',
       foe: 'academy-dropout',
       parley:
-        '“I failed their exam,” she says, holding out the map. “I thought if I brought back something useful they’d let me try again.”',
+        '“I failed their exam,” she says, holding out the map. “I thought if I brought back a proper map they’d let me try again.”',
       ending:
         'The Border Watch sends her home under escort with a polite letter. Your sensei writes a second letter, not polite, and does not say who it is for.',
     },

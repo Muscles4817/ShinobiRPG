@@ -44,7 +44,7 @@ export const SALT_LANTERNS: ArcDef = {
     {
       beats: ['search', 'find'],
       title: 'Lights under the water',
-      text: 'Something burns in the old wreck off the point, and Umi says she has seen who puts the lanterns out.',
+      text: 'A cold light burns in the old wreck off the point, and Umi says she has seen who puts the lanterns out.',
       jobs: [WRECK_LANTERN.id, WHAT_UMI_SAW.id],
       baseLocationId: 'port-shiomachi',
     },
