@@ -197,7 +197,7 @@ describe('plan & watch kits: illusions', () => {
     const [hero, ghost] = pair(['illusionist'], { perks: ['insight'] });
     const seeker = { ...hero!, loadout: { ...NO_CARDS, mid: plainSlots(['search', 'throw']) } };
     const after = resolveExchange(stateOf([seeker, ghost!]), createRng(3));
-    expect(said(after.log).some((l) => spots('hero', 'foe').test(l))).toBe(true);
+    expect(after.log.some((l) => spots('hero', 'foe').test(l))).toBe(true);
     expect(after.fighters[1]?.hidden).toBe(false);
   });
 

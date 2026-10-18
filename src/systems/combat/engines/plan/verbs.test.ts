@@ -16,7 +16,6 @@ import {
   type PlanState,
   type Round,
 } from './state';
-import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 10,
@@ -95,7 +94,6 @@ function useUntil(round: Round, t: CombatTechnique, wanted: RegExp, target = 'fo
 const health = (round: Round, id: string) => fighterIn(round, id)?.health ?? 0;
 
 /** The log as the player reads it: the sentences, without the screen's markers. */
-const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
 
 describe('plan & watch verbs: area', () => {
   it('hits every foe, hidden ones too, each reacting on their own', () => {
@@ -117,7 +115,7 @@ describe('plan & watch verbs: area', () => {
     const fighters = [hero, fighterIn(round, 'foe1')!];
     const state = stateOf({ ...round, range: 'mid', fighters });
     const after = resolveExchange(state, createRng(2));
-    expect(said(after.log).some((l) => castsLine(l, 'hero', 'sweep'))).toBe(true);
+    expect(after.log.some((l) => castsLine(l, 'hero', 'sweep'))).toBe(true);
   });
 });
 

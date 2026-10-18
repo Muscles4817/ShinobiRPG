@@ -1,32 +1,31 @@
-import { hashString } from '@/core';
 import type { Discipline, Element } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
-import type { AttackKind } from '../../rules/kit';
-import { reactionLine, type NarrationReaction } from '../../rules/narration';
-import { tell, type Told } from '../../rules/telling';
-import type { Round } from './state';
+import type { Told } from '../../rules/telling';
+import { told, type Bank, type Moment } from './fresh';
 
 /**
  * How a planned fight tells itself: the same beat in different words, so a long fight doesn't
- * read like a ledger. A line is picked from its bank by a hash of the moment (the exchange,
- * how far through it the log is, who acts), never by the fight's dice: the same fight always
- * reads the same, and choosing words never changes what happens. Lines are templates told
- * through `rules/telling.ts`, so the player is "you" and everyone else agrees with their own
- * grammar; what lands names the attacker and then the one it lands on, and no one else, so the
- * watch screen can tell who was hit (`views/fightReplay.ts`). Story text never carries numbers.
+ * read like a ledger. Lines are templates told through `rules/telling.ts`, so the player is
+ * "you" and everyone else agrees with their own grammar, and each is picked fresh by the moment
+ * (`fresh.ts`), never by the fight's dice: the same fight always reads the same, and choosing
+ * words never changes what happens. What lands names the attacker and then the one it lands
+ * on, so the watch screen can tell who was hit (`views/fightReplay.ts`); hits themselves are
+ * `hitVoice.ts`. Story text never carries numbers.
  */
 
-/** A moment in the log: picks a line from a bank, the same one each time for this moment. */
-export function momentOf(round: Round, who: string): string {
-  return `${round.number}:${round.lines.length}:${who}`;
-}
+export { momentOf, pick, type Moment } from './fresh';
+export { hitLine, type HitTold, type Landing } from './hitVoice';
 
-export function pick<T>(moment: string, bank: readonly T[]): T {
-  const line = bank[hashString(moment) % bank.length];
-  if (line === undefined) throw new Error('A narration bank is empty');
-  return line;
-}
+const bank = (id: string, lines: readonly string[], again?: readonly string[]): Bank =>
+  again ? { id, lines, again } : { id, lines };
+
+/** Using a technique the fighter used just now: told as going back to it. */
+const CAST_AGAIN = [
+  '{a} go{a.es} back to {what}.',
+  '{a} reach{a.es} for {what} again.',
+  '{a} use{a.s} {what} once more.',
+];
 
 const CAST_BY_ART: Readonly<Record<Discipline, readonly string[]>> = {
   ninjutsu: [
@@ -65,92 +64,13 @@ const CAST_BY_ELEMENT: Readonly<Record<Element, string>> = {
 };
 
 /** Someone uses a technique: in the words of its art, or its element. */
-export function castLine(moment: string, actor: Told, t: CombatTechnique): string {
-  const byArt = CAST_BY_ART[t.discipline];
+export function castLine(moment: Moment, actor: Told, t: CombatTechnique): string {
   const byElement = t.element ? [CAST_BY_ELEMENT[t.element]] : [];
-  return tell(pick(moment, [...byArt, ...byElement]), { a: actor, what: t.name });
-}
-
-/** What a hit lands as, for the verb that tells it (a blow, as `react.ts` lands it). */
-export interface Landing {
-  readonly what: string;
-  readonly kind: AttackKind;
-  readonly discipline?: Discipline;
-  readonly element?: Element;
-  /** Hand-to-hand and blades in hand; thrown steel isn't. */
-  readonly physical: boolean;
-  /** A later blow of a flurry. */
-  readonly followUp?: true;
-}
-
-const VERBS_BY_ELEMENT: Readonly<Record<Element, readonly string[]>> = {
-  fire: ['scorches', 'engulfs', 'sears'],
-  water: ['crashes over', 'slams into', 'batters'],
-  lightning: ['lances through', 'jolts', 'tears through'],
-  wind: ['rips into', 'slices across', 'hammers'],
-  earth: ['batters', 'crushes', 'pounds'],
-};
-
-function verbsFor(landing: Landing): readonly string[] {
-  if (landing.discipline === 'genjutsu') return ['takes hold of', 'grips', 'sinks into'];
-  if (landing.element) return VERBS_BY_ELEMENT[landing.element];
-  switch (landing.kind) {
-    case 'blow':
-      return ['hits', 'slams into', 'catches', 'crashes into'];
-    case 'weapon':
-      return landing.physical ? ['cuts', 'bites into', 'slashes'] : ['hits', 'catches', 'finds'];
-    case 'seal':
-      return ['binds', 'locks onto', 'burns into'];
-    case 'jutsu':
-      return ['hits', 'strikes', 'slams into'];
-  }
-}
-
-const AGAIN = [' again', ' once more', ' a second time'];
-/** A guard that held is the Guarded stamp's to say; one smashed is news, so the line says it. */
-const SMASHED = [', smashing through the guard', ', battering the guard aside'];
-
-/** A step that came off: who moved, where to, which way, and the foe they moved on. */
-export interface StepTold {
-  readonly actor: Told;
-  readonly to: RangeBand;
-  readonly closing: boolean;
-  readonly foe?: Told;
-}
-
-export interface HitTold {
-  readonly attacker: Told;
-  readonly target: Told;
-  readonly blow: Landing;
-  readonly guarded: boolean;
-  readonly smashed: boolean;
-  /** A Dodge was ready and tried for this blow. */
-  readonly dodgeTried: boolean;
-}
-
-/** Which ready defence reacted to a blow that landed anyway, for the fight screen. */
-function reactionsTo({ dodgeTried, guarded, smashed }: HitTold): NarrationReaction[] {
-  return [
-    ...(dodgeTried ? (['dodge-missed'] as const) : []),
-    ...(guarded ? (['guarded'] as const) : []),
-    ...(smashed ? (['guard-broken'] as const) : []),
-  ];
-}
-
-/**
- * A hit landing: the attacker's attack, a verb for what it is, and how the guard fared, tagged
- * with the defences that reacted.
- */
-export function hitLine(moment: string, hit: HitTold): string {
-  const verb = pick(moment, verbsFor(hit.blow));
-  const again = hit.blow.followUp ? pick(`${moment}:again`, AGAIN) : '';
-  const guard = hit.smashed ? pick(`${moment}:guard`, SMASHED) : '';
-  const line = tell(`{a.poss} {what} ${verb} {t}${again}${guard}.`, {
-    a: hit.attacker,
-    t: hit.target,
-    what: hit.blow.what,
+  const lines = [...CAST_BY_ART[t.discipline], ...byElement];
+  return told(moment, bank(`cast-${t.element ?? t.discipline}`, lines, CAST_AGAIN), {
+    a: actor,
+    what: t.name,
   });
-  return reactionLine(line, ...reactionsTo(hit));
 }
 
 /** Who slipped what: the one it was aimed at, whose attack, and what it was. */
@@ -160,55 +80,74 @@ export interface SlipTold {
   readonly what: string;
 }
 
-/** Someone slips an attack. */
-export function slipLine(moment: string, { target, attacker, what }: SlipTold): string {
-  return tell(
-    pick(moment, [
-      '{t} slip{t.s} past {a.poss} {what}.',
-      '{t} twist{t.s} clear of {a.poss} {what}.',
-      '{a.poss} {what} cuts only air as {t} sway{t.s} aside.',
-      '{t} {t.is} already elsewhere when {a.poss} {what} arrives.',
-    ]),
-    { t: target, a: attacker, what },
-  );
-}
+/** Why an attack missed: a ready Dodge, a wild attack, eyes that saw it coming, or plain luck. */
+export type MissWhy = 'dodged' | 'wide' | 'foreseen' | 'slipped';
 
-/** Someone whose eyes read the blow before it comes. */
-export function foresightSlipLine(moment: string, { target, attacker, what }: SlipTold): string {
-  return tell(
-    pick(moment, [
-      '{t} read{t.s} {a.poss} {what} before it comes and slip{t.s} past.',
-      "{t.poss} eyes see the {what} coming, and {t.they}{t.'s} already elsewhere.",
-      '{t} move{t.s} before {a} {a.does}, and the {what} slips past.',
-    ]),
-    { t: target, a: attacker, what },
-  );
-}
-
-/** Someone reads a technique coming and isn't there for it. */
-export function seenLine(moment: string, foe: Told): string {
-  return tell(
-    pick(moment, [
-      '{t} see{t.s} it coming.',
-      '{t} read{t.s} the first sign and {t.is} ready.',
-      '{t} {t.was} waiting for exactly that.',
-    ]),
-    { t: foe },
-  );
-}
-
-const STEPS: Readonly<Record<RangeBand, readonly string[]>> = {
-  close: ['{a} close{a.s} in.', '{a} dart{a.s} in close.', '{a} get{a.s} inside {f.poss} reach.'],
-  mid: ['{a} close{a.s} the gap to mid range.', '{a} come{a.s} in to mid range.'],
-  far: ['{a} fall{a.s} back out of reach.', '{a} spring{a.s} back to far range.'],
+const MISSES: Readonly<Record<MissWhy, Bank>> = {
+  dodged: bank('dodge', [
+    '{t} twist{t.s} clear of {a.poss} {what}.',
+    '{a.poss} {what} cuts only air as {t} sway{t.s} aside.',
+    '{t} duck{t.s} under {a.poss} {what}.',
+  ]),
+  wide: bank('wide', [
+    '{a.poss} {what} goes wide of {t}.',
+    '{a} overreach{a.es}, and the {what} sails past {t}.',
+  ]),
+  foreseen: bank('foreseen', [
+    '{t} read{t.s} {a.poss} {what} before it comes and slip{t.s} past.',
+    "{t.poss} eyes see the {what} coming, and {t.they}{t.'s} already elsewhere.",
+    '{t} move{t.s} before {a} {a.does}, and the {what} slips past.',
+  ]),
+  slipped: bank('slip', [
+    '{t} slip{t.s} past {a.poss} {what}.',
+    '{t} {t.is} already elsewhere when {a.poss} {what} arrives.',
+    '{a.poss} {what} finds only the space where {t} stood.',
+  ]),
 };
 
-const BACK_TO_MID = ['{a} fall{a.s} back to mid range.', '{a} give{a.s} ground to mid range.'];
+/** An attack that missed, told by why. */
+export function missLine(moment: Moment, why: MissWhy, slip: SlipTold): string {
+  return told(moment, MISSES[why], { t: slip.target, a: slip.attacker, what: slip.what });
+}
+
+const SEEN = bank('seen', [
+  '{t} see{t.s} it coming.',
+  '{t} read{t.s} the first sign and {t.is} ready.',
+  '{t} {t.was} waiting for exactly that.',
+]);
+
+/** Someone reads a technique coming and isn't there for it. */
+export function seenLine(moment: Moment, foe: Told): string {
+  return told(moment, SEEN, { t: foe });
+}
+
+const STEPS: Readonly<Record<RangeBand, Bank>> = {
+  close: bank(
+    'step-in',
+    ['{a} close{a.s} in.', '{a} dart{a.s} in close.', '{a} get{a.s} inside {f.poss} reach.'],
+    ['{a} close{a.s} in again.'],
+  ),
+  mid: bank('step-mid', ['{a} close{a.s} the gap to mid range.', '{a} come{a.s} in to mid range.']),
+  far: bank('step-far', ['{a} fall{a.s} back out of reach.', '{a} spring{a.s} back to far range.']),
+};
+
+const BACK_TO_MID = bank('step-back', [
+  '{a} fall{a.s} back to mid range.',
+  '{a} give{a.s} ground to mid range.',
+]);
+
+/** A step that came off: who moved, where to, which way, and the foe they moved on. */
+export interface StepTold {
+  readonly actor: Told;
+  readonly to: RangeBand;
+  readonly closing: boolean;
+  readonly foe?: Told;
+}
 
 /** A step that lands where it meant to: in close, the gap closed, or ground given. */
-export function stepLine(moment: string, step: StepTold): string {
-  const bank = step.to === 'mid' && !step.closing ? BACK_TO_MID : STEPS[step.to];
-  return tell(pick(moment, bank), { a: step.actor, f: step.foe ?? step.actor });
+export function stepLine(moment: Moment, step: StepTold): string {
+  const steps = step.to === 'mid' && !step.closing ? BACK_TO_MID : STEPS[step.to];
+  return told(moment, steps, { a: step.actor, f: step.foe ?? step.actor });
 }
 
 /** What a step was for, in words: "close in", "get back out of reach". */
@@ -218,86 +157,90 @@ const GOALS: Readonly<Record<RangeBand, string>> = {
   far: 'get back out of reach',
 };
 
+const BLOCKED = bank(
+  'blocked',
+  [
+    '{a} make{a.s} to {goal}, but {f} won’t allow it.',
+    '{f} cut{f.s} {a} off before {a.they} can {goal}.',
+    '{a} feint{a.s}, looking to {goal}, and {f} {f.does}n’t bite.',
+  ],
+  ['{a} make{a.s} another try, and {f} shut{f.s} it down again.'],
+);
+
 /** A step the foe won't allow. */
-export function blockedStepLine(moment: string, actor: Told, to: RangeBand, foe: Told): string {
-  return tell(
-    pick(moment, [
-      '{a} make{a.s} to {goal}, but {f} won’t allow it.',
-      '{f} cut{f.s} {a} off before {a.they} can {goal}.',
-      '{a} feint{a.s}, looking to {goal}, and {f} {f.does}n’t bite.',
-    ]),
-    { a: actor, f: foe, goal: GOALS[to] },
-  );
+export function blockedStepLine(moment: Moment, actor: Told, to: RangeBand, foe: Told): string {
+  return told(moment, BLOCKED, { a: actor, f: foe, goal: GOALS[to] });
 }
+
+const DAZED = bank('dazed', [
+  '{t} {t.is} dazed.',
+  '{t} reel{t.s}, the world spinning.',
+  '{t} stagger{t.s}, dazed.',
+]);
 
 /** A daze takes hold. */
-export function dazeLine(moment: string, target: Told): string {
-  return tell(
-    pick(moment, [
-      '{t} {t.is} dazed.',
-      '{t} reel{t.s}, the world spinning.',
-      '{t} stagger{t.s}, dazed.',
-    ]),
-    { t: target },
-  );
+export function dazeLine(moment: Moment, target: Told): string {
+  return told(moment, DAZED, { t: target });
 }
+
+const REELING = bank('reeling', [
+  '{a} {a.is} dazed and lose{a.s} the exchange.',
+  '{a} shake{a.s} {a.their} head, still reeling.',
+  '{a} can’t find {a.their} feet yet.',
+]);
 
 /** A dazed fighter's lost turn. */
-export function reelingLine(moment: string, actor: Told): string {
-  return tell(
-    pick(moment, [
-      '{a} {a.is} dazed and lose{a.s} the exchange.',
-      '{a} shake{a.s} {a.their} head, still reeling.',
-      '{a} can’t find {a.their} feet yet.',
-    ]),
-    { a: actor },
-  );
+export function reelingLine(moment: Moment, actor: Told): string {
+  return told(moment, REELING, { a: actor });
 }
+
+const EMPTY_SEARCH = bank(
+  'search',
+  [
+    '{a} search{a.es} the field and find{a.s} no one.',
+    '{a} scan{a.s} the field and see{a.s} nothing.',
+    '{a} look{a.s} hard and find{a.s} only shadows.',
+  ],
+  [
+    '{a} search{a.es} again, and still find{a.s} no one.',
+    '{a} look{a.s} again, with no more luck.',
+  ],
+);
 
 /** A search that finds no one. */
-export function emptySearchLine(moment: string, actor: Told): string {
-  return tell(
-    pick(moment, [
-      '{a} search{a.es}, but find{a.s} no one.',
-      '{a} scan{a.s} the field and see{a.s} nothing.',
-      '{a} look{a.s} hard and find{a.s} only shadows.',
-    ]),
-    { a: actor },
-  );
+export function emptySearchLine(moment: Moment, actor: Told): string {
+  return told(moment, EMPTY_SEARCH, { a: actor });
 }
+
+const FOUND = bank('found', [
+  '{a} spot{a.s} {found}.',
+  '{a.poss} eyes snap to {found}.',
+  '{a} pick{a.s} out {found}.',
+]);
 
 /** A search that finds someone. */
-export function foundLine(moment: string, actor: Told, found: readonly Told[]): string {
-  return tell(
-    pick(moment, [
-      '{a} spot{a.s} {found}.',
-      '{a.poss} eyes snap to {found}.',
-      '{a} pick{a.s} out {found}.',
-    ]),
-    { a: actor, found },
-  );
+export function foundLine(moment: Moment, actor: Told, found: readonly Told[]): string {
+  return told(moment, FOUND, { a: actor, found });
 }
+
+const COUNTER = bank('counter', [
+  '{t} counter{t.s}.',
+  '{t} answer{t.s} the blow with one of {t.their} own.',
+  '{t} turn{t.s} the attack back on its owner.',
+]);
 
 /** A counter landing on the one who struck. */
-export function counterLine(moment: string, target: Told): string {
-  return tell(
-    pick(moment, [
-      '{t} counter{t.s}.',
-      '{t} answer{t.s} the blow with one of {t.their} own.',
-      '{t} turn{t.s} the attack back on its owner.',
-    ]),
-    { t: target },
-  );
+export function counterLine(moment: Moment, target: Told): string {
+  return told(moment, COUNTER, { t: target });
 }
 
+const CHARGE = bank('charge', [
+  '{a} charge{a.s} in with {what}.',
+  '{a} launch{a.es} into {what}.',
+  '{a} hurl{a.s} {a.themself} forward into {what}.',
+]);
+
 /** Someone charging in with an entry (it may yet be met by a hold-off). */
-export function chargeLine(moment: string, actor: Told, technique: string): string {
-  return tell(
-    pick(moment, [
-      '{a} charge{a.s} in with {what}.',
-      '{a} launch{a.es} into {what}.',
-      '{a} hurl{a.s} {a.themself} forward into {what}.',
-    ]),
-    { a: actor, what: technique },
-  );
+export function chargeLine(moment: Moment, actor: Told, technique: string): string {
+  return told(moment, CHARGE, { a: actor, what: technique });
 }

@@ -45,6 +45,8 @@ export interface Narration {
   readonly force?: NarrationForce;
   /** The fighters the line names, in the order it names them, when the engine says. */
   readonly named?: readonly string[];
+  /** Which bank and template the words came from (`voiceLine`), when the engine says. */
+  readonly voices?: readonly string[];
 }
 
 /** How big a turn was: its maker's grade in the art (0 for E up to 5 for S), area, element. */
@@ -62,6 +64,7 @@ const REACTION_MARKER = /\s*⟦r:([a-z-]+)⟧/g;
 const ACTOR_MARKER = /\s*⟦by:([^⟧]+)⟧/;
 const RANGE_MARKER = /\s*⟦at:(close|mid|far)⟧/;
 const NAMED_MARKER = /\s*⟦n:([^⟧]+)⟧/g;
+const VOICE_MARKER = /\s*⟦v:([^⟧]+)⟧/g;
 
 function isReaction(word: string | undefined): word is NarrationReaction {
   return NARRATION_REACTIONS.some((r) => r === word);
@@ -106,6 +109,19 @@ export function namedLine(text: string, ids: readonly string[]): string {
   return ids.length === 0 ? text : `${text} ⟦n:${ids.join('|')}⟧`;
 }
 
+/**
+ * A line whose words came from these templates ("search.2"), so the engine can remember what
+ * it said lately and pass over it.
+ */
+export function voiceLine(text: string, ...voices: readonly string[]): string {
+  return [text, ...voices.map((v) => `⟦v:${v}⟧`)].join(' ');
+}
+
+function voicesIn(line: string): string[] | null {
+  const found = [...line.matchAll(VOICE_MARKER)].map((m) => m[1] ?? '');
+  return found.length > 0 ? found : null;
+}
+
 function namedIn(line: string): string[] | null {
   const found = [...line.matchAll(NAMED_MARKER)].flatMap((m) => (m[1] ?? '').split('|'));
   return found.length > 0 ? found : null;
@@ -133,8 +149,12 @@ export function splitNarration(line: string): Narration {
   const range = RANGE_MARKER.exec(line)?.[1];
   const force = forceOf(line);
   const named = namedIn(line);
+  const voices = voicesIn(line);
   const markers = [MARKER, REACTION_MARKER, ACTOR_MARKER, RANGE_MARKER, FORCE_MARKER];
-  const text = [...markers, NAMED_MARKER].reduce((rest, marker) => rest.replace(marker, ''), line);
+  const text = [...markers, NAMED_MARKER, VOICE_MARKER].reduce(
+    (rest, marker) => rest.replace(marker, ''),
+    line,
+  );
   return {
     text,
     amounts,
@@ -143,6 +163,7 @@ export function splitNarration(line: string): Narration {
     ...(isRange(range) ? { range } : {}),
     ...(force ? { force } : {}),
     ...(named ? { named } : {}),
+    ...(voices ? { voices } : {}),
   };
 }
 

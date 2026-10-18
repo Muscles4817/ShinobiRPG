@@ -395,22 +395,22 @@ view:
 
 --- combat (day 2, slot 1) ---
   —— First exchange ——
-  You search, but find no one.
+  You search the field and find no one.
   The storehouse wraith catches the eye and lets Whispering Dread unfold.
   You were waiting for exactly that.
   —— Second exchange ——
-  You scan the field and see nothing.
-  The air around the storehouse wraith wavers as Whispering Dread takes hold.
-  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−21]
+  You look again, with no more luck.
+  The storehouse wraith uses Whispering Dread once more.
+  The storehouse wraith’s Whispering Dread sinks deep into you, and it hurts. [Guarded] [−21]
   You blink, and the field is no longer where it was.
   —— Third exchange ——
-  You look hard and find only shadows.
-  The storehouse wraith catches the eye and lets Whispering Dread unfold.
-  The storehouse wraith’s Whispering Dread grips you. [Guarded] [−22]
+  You search again, and still find no one.
+  The storehouse wraith reaches for Whispering Dread again.
+  The storehouse wraith’s Whispering Dread floods you, and you feel it. [Guarded] [−22]
   —— Last exchange ——
   You pick out the storehouse wraith.
-  The storehouse wraith casts Whispering Dread.
-  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−14]
+  The storehouse wraith goes back to Whispering Dread.
+  The storehouse wraith lands its Whispering Dread on you. [Guarded] [−14]
   Your senses swim in the storehouse wraith’s illusion.
   prompt: The round is over. Round 2: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
 
@@ -439,24 +439,24 @@ view:
 --- combat (day 3, slot 0) ---
   —— First exchange ——
   You dart in close.
-  The storehouse wraith’s strike hits you. [−9]
+  The storehouse wraith’s strike catches you cleanly. [−9]
   —— Second exchange ——
   You send Gale Heel howling out.
   The storehouse wraith sees it coming.
   The storehouse wraith is gone again, and the air where it stood is empty.
   The air around the storehouse wraith wavers as Whispering Dread takes hold.
-  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−21]
+  The storehouse wraith’s Whispering Dread floods you, and it hurts. [Guarded] [−21]
   You catch the thread of the illusion and find the storehouse wraith.
   —— Third exchange ——
   You explode forward with Gale Heel.
-  Your Gale Heel slices across the storehouse wraith. [Guarded] [−7]
-  Little of it bites on the storehouse wraith.
-  The storehouse wraith’s strike hits you. [Guarded] [−4]
+  Your Gale Heel cuts into the storehouse wraith cleanly. [Guarded] [−7]
+  Much of it glances off the storehouse wraith.
+  The storehouse wraith’s strike clips you. [Guarded] [−4]
   —— Last exchange ——
-  You launch into Gale Heel.
-  Your Gale Heel slices across the storehouse wraith. [Guarded] [−6]
-  The storehouse wraith barely seems to feel it.
-  The storehouse wraith’s strike slams into you. [Guarded] [−4]
+  You go back to Gale Heel.
+  You land your Gale Heel on the storehouse wraith. [Guarded] [−6]
+  Little of it bites on the storehouse wraith.
+  You are a shade too slow, and the storehouse wraith’s strike glances off you. [Guarded] [−4]
 
 >>> leaveFight
 
@@ -1406,17 +1406,17 @@ view:
   —— First exchange ——
   You close in.
   Gōran explodes forward with Iron Gate Palm.
-  Gōran’s Iron Gate Palm crashes into the first bandit thug. [Guarded] [−50]
-  Goro explodes forward with Palm Strike.
-  Goro’s Palm Strike hits the first bandit thug. [Guarded] [−40]
+  Gōran’s Iron Gate Palm drives through the first bandit thug, and he’s nearly knocked off his feet. [Guarded] [−50]
+  Goro goes in with Palm Strike.
+  There is nothing the first bandit thug can do as Goro’s Palm Strike smashes into him. [Guarded] [−40]
   Asuka’s blade flows into Lantern Cut.
-  Asuka’s Lantern Cut slashes the first bandit thug. [Guarded] [−48]
-  You twist clear of the second bandit thug’s strike.
+  Asuka’s Lantern Cut tears through the first bandit thug with everything behind it. [Guarded] [−48]
+  You are already elsewhere when the second bandit thug’s strike arrives.
   —— Second exchange ——
   You send Gale Heel howling out.
-  Your Gale Heel slices across the second bandit thug. [Guarded] [−50]
+  Your Gale Heel hurls aside the second bandit thug, and he’s nearly knocked off his feet. [Guarded] [−50]
   Gōran launches into Iron Gate Palm.
-  Gōran’s Iron Gate Palm crashes into the second bandit thug. [Guarded] [−50]
+  There is nothing the second bandit thug can do as Gōran’s Iron Gate Palm smashes into him. [Guarded] [−50]
 
 >>> leaveFight
 

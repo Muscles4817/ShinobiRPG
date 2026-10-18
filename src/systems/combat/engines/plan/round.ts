@@ -12,7 +12,7 @@ import { charge, step, type Charged } from './steps';
 import { keepHolding } from './holding';
 import { lostTurn } from './lostTurn';
 import { inCover, lostToGround } from './groundPlay';
-import { momentOf } from './voice';
+import { momentOf, RECENT_LINES } from './fresh';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
@@ -263,6 +263,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     fighters: [...state.fighters],
     range: state.range,
     lines: [`— ${EXCHANGE_NAMES[state.exchange] ?? 'Another'} exchange —`],
+    recent: state.log.slice(-RECENT_LINES),
     seen: state.seen,
     intents: state.intents,
     ...(state.reads ? { reads: state.reads } : {}),

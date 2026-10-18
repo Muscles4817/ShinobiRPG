@@ -8,8 +8,9 @@ import { namedLine } from './narration';
  * forms that agree with each: `{a.poss}` (your, Gōran’s, the storehouse wraith’s), the pronouns
  * `{a.they}`, `{a.them}`, `{a.their}`, `{a.theirs}`, `{a.themself}`, and the verb endings
  * that agree with `{a}` as the subject: `{a.s}`, `{a.es}`, `{a.is}`, `{a.was}`, `{a.has}`,
- * `{a.does}`. So "{a} search{a.es} the field" is "You search the field" for the player and
- * "Gōran searches the field" for anyone else. A slot that opens a sentence is capitalised. The
+ * `{a.does}`; after the pronoun as the subject, `{a.ps}` ("he feels", "they feel"). So
+ * "{a} search{a.es} the field" is "You search the field" for the player and "Gōran searches
+ * the field" for anyone else. A slot that opens a sentence is capitalised. The
  * line carries the ids of the fighters it named, in order (`namedLine`), so the fight screen
  * can tell whom it was about without reading names.
  */
@@ -51,6 +52,7 @@ function slotsOf(key: string, f: Told): [string, string][] {
     [`${key}.poss`, possessive(f)],
     ...PRONOUNS.map((form): [string, string] => [`${key}.${form}`, pronouns[form]]),
     ...VERB_ENDINGS.map((form): [string, string] => [`${key}.${form}`, verbs[form]]),
+    [`${key}.ps`, pronouns.s],
   ];
 }
 

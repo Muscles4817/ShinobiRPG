@@ -34,7 +34,7 @@ import { conceal, sense } from './sight';
 import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { setTrap } from './traps';
-import { castLine, dazeLine, foresightSlipLine, momentOf, seenLine, slipLine } from './voice';
+import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 
 /**
  * Using a technique in a planned fight: pay its chakra, see whether each target slips it (the
@@ -284,9 +284,9 @@ function slips(round: Round, turn: Turn, foe: PlanFighter, t: CombatTechnique): 
 function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
   const moment = momentOf(round, foe.id);
   if (!dodgesHere(round, foe)) return say(round, seenLine(moment, foe));
-  const slip = hasPerk(foe, 'foresight') ? foresightSlipLine : slipLine;
+  const why = hasPerk(foe, 'foresight') ? 'foreseen' : 'dodged';
   const noted = noteDefence(round, foe.id, round.range, 'dodge');
-  const told = slip(moment, { target: foe, attacker: actor, what: t.name });
+  const told = missLine(moment, why, { target: foe, attacker: actor, what: t.name });
   return say(noted, reactionLine(told, 'dodged'));
 }
 

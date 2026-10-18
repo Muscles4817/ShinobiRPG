@@ -104,8 +104,9 @@ describe('plan & watch techniques', () => {
     const bandit = fighterIn(after, 'bandit');
     expect(bandit?.health).toBeLessThan(80);
     expect(bandit?.stunned).toBe(1);
-    const said = after.lines.join(' ');
-    expect(said.search(hitsOn('bandit'))).toBeLessThan(said.search(dazes('bandit')));
+    const hitAt = after.lines.findIndex((l) => hitsOn('bandit').test(l));
+    expect(hitAt).toBeGreaterThan(-1);
+    expect(hitAt).toBeLessThan(after.lines.findIndex((l) => dazes('bandit').test(l)));
   });
 
   it('a daze leaves the target open until the dazer has had another turn', () => {

@@ -210,6 +210,8 @@ export interface Round {
   readonly watching?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */
   readonly played?: CardId;
+  /** The story's last lines before this exchange, so words aren't picked twice running. */
+  readonly recent?: readonly string[];
 }
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
