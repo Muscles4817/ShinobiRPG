@@ -10,6 +10,8 @@ import { momentRows } from '../views/dayEndRows';
 import { rivalChallengeView } from '../views/rival';
 import { rivalryView } from '../views/rivalry';
 import { newFirsts } from './grades';
+import { rivalLine } from './lines';
+import { TELL } from './raceLines';
 import { noteRival } from './record';
 import { RIVAL_SHAPES, type Rival } from './state';
 
@@ -135,5 +137,23 @@ describe('the Rivalry tab', () => {
     expect(view.heat.stages).toHaveLength(4);
     expect(view.side.length).toBeGreaterThan(0);
     expect(rivalryView(game, ctx, game.people.team!.teammateIds[0]!)).toBeNull();
+  });
+});
+
+describe('what a rival says of themself', () => {
+  const kaen = ctx.content.people.require('kaen');
+  const shiori = ctx.content.people.require('shiori');
+  const sora = { ...kaen, id: 'sora', name: 'Sora', pronouns: 'they' as const };
+
+  it('agrees with their pronouns', () => {
+    expect(rivalLine(TELL.push, kaen)).toBe(
+      'Kaen is up on his toes, breathing fast. He means to go hard.',
+    );
+    expect(rivalLine(TELL.push, shiori)).toBe(
+      'Shiori is up on her toes, breathing fast. She means to go hard.',
+    );
+    expect(rivalLine(TELL.push, sora)).toBe(
+      'Sora is up on their toes, breathing fast. They mean to go hard.',
+    );
   });
 });

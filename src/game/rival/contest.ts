@@ -22,6 +22,7 @@ import {
   theirMoveFor,
   type Finish,
 } from './race';
+import { rivalLine } from './lines';
 import { legLines } from './raceLines';
 import type { RaceMove, RaceRun, Rival, Stakes } from './state';
 
@@ -115,7 +116,7 @@ function finishRace(
   );
   const logged = log(settled, {
     heading: `Race with ${person.name}`,
-    text: [...race.told, FINISH_LINE[finish]].join(' ').replaceAll('{name}', person.name),
+    text: rivalLine([...race.told, FINISH_LINE[finish]].join(' '), person),
     tone: finish === 'won' ? 'success' : 'info',
     chips: [
       ...statChips(diffStats(state.character.stats, grown.character.stats)),

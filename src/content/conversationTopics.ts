@@ -4,7 +4,9 @@ import type { TopicKind } from './people';
  * The words every topic of a kind supplies, and so the only `{slots}` a conversation about
  * that kind may use (besides `{you}` and `{them}`). A *phrase* goes mid-sentence and starts
  * in lower case; a *line* is one or two whole sentences; a *quote* is something the person
- * says, in their own voice, without quotation marks (the template adds them).
+ * says, in their own voice, without quotation marks (the template adds them). Words that speak
+ * of the person in narration use their pronoun slots (`{them.they}`, `{them.their}`, `{them.s}`…),
+ * never a bare "they", so a line agrees with whoever says it.
  */
 export const TOPIC_SLOTS: Readonly<Record<TopicKind, Readonly<Record<string, string>>>> = {
   specialty: {
@@ -39,5 +41,5 @@ export const TOPIC_SLOTS: Readonly<Record<TopicKind, Readonly<Record<string, str
   },
 };
 
-/** Slots any conversation may use. */
+/** Slots any conversation may use, besides the pronoun forms of `{them}` (`{them.their}`). */
 export const NAME_SLOTS: readonly string[] = ['you', 'them'];

@@ -6,7 +6,8 @@ export const TRAIT_DEEP_TALK: readonly ConversationDef[] = [
     id: 'talk-trait-3-cost',
     minStage: 3,
     about: 'trait',
-    opener: '{them} is quieter than usual today. When you ask, they tell you. {cost}',
+    opener:
+      '{them} is quieter than usual today. When you ask, {them.they} tell{them.s} you. {cost}',
     choices: [
       {
         label: '“That wasn’t your fault.”',
@@ -19,7 +20,7 @@ export const TRAIT_DEEP_TALK: readonly ConversationDef[] = [
         reply: '{them} considers it seriously. “Sometimes. Not today.”',
       },
       {
-        label: 'Stay beside them.',
+        label: 'Stay beside {them.them}.',
         tone: 'quiet',
         reply: '{them} lets out a slow breath. It seems to help that you stayed.',
       },
@@ -30,12 +31,13 @@ export const TRAIT_DEEP_TALK: readonly ConversationDef[] = [
     minStage: 3,
     about: 'trait',
     opener:
-      '{them} keeps their eyes on the ground. “Can I tell you something I don’t tell people?”',
+      '{them} keeps {them.their} eyes on the ground. “Can I tell you something I don’t tell people?”',
     choices: [
       {
         label: '“Anything.”',
         tone: 'earnest',
-        reply: '“{admission}” They glance up to see if you think less of them.',
+        reply:
+          '“{admission}” {them.they} glance{them.s} up to see if you think less of {them.them}.',
       },
       {
         label: '“Only if you want to.”',
@@ -45,7 +47,7 @@ export const TRAIT_DEEP_TALK: readonly ConversationDef[] = [
       {
         label: '“Is it that you ate my dumplings?”',
         tone: 'joke',
-        reply: '{them} laughs despite themselves, then sobers. “{admission}”',
+        reply: '{them} laughs despite {them.themself}, then sobers. “{admission}”',
       },
     ],
   },
@@ -126,7 +128,7 @@ export const TRAIT_DEEP_TALK: readonly ConversationDef[] = [
     opener: '“I’ve told you all my stories,” {them} says. “Tell me one of yours. Then we’re even.”',
     choices: [
       {
-        label: 'Tell them something you’ve never told anyone.',
+        label: 'Tell {them.them} something you’ve never told anyone.',
         tone: 'earnest',
         reply: '{them} listens to every word. “Thank you for trusting me with that.”',
       },

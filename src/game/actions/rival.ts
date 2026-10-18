@@ -6,7 +6,7 @@ import { hardWorkEnergy } from '../profile';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
 import { startRace } from '../rival/contest';
-import { ANSWER, DECLINED, type ReplyOption } from '../rival/lines';
+import { ANSWER, DECLINED, rivalLine, type ReplyOption } from '../rival/lines';
 import { groundFor } from '../rival/record';
 import { heard, repliesFor } from '../rival/replies';
 import { clampHeat, heatStage, HEAT_STAGES, type Rival } from '../rival/state';
@@ -92,10 +92,7 @@ export const answerRival: ActionHandler<ActionOf<'answerRival'>> = {
       { ...told, rival: next },
       {
         heading: person.name,
-        text: ANSWER[rival.temperament][warmer ? 'warmer' : 'cooler'].replaceAll(
-          '{name}',
-          person.name,
-        ),
+        text: rivalLine(ANSWER[rival.temperament][warmer ? 'warmer' : 'cooler'], person),
         tone: warmer ? 'success' : 'warning',
         chips: answerChips(rival, next),
       },
@@ -134,7 +131,7 @@ export const declineChallenge: ActionHandler<ActionOf<'declineChallenge'>> = {
       },
       {
         heading: `Turned down ${person.name}`,
-        text: declined.line.replaceAll('{name}', person.name),
+        text: rivalLine(declined.line, person),
         tone: 'info',
       },
     );

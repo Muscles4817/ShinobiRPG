@@ -1,5 +1,8 @@
 import type { PersonDef, Tone } from '@/content';
+import { fillSlots, listed } from '@/core';
 import { TALK_BASE } from '@/systems/bonds';
+
+import { personSlots } from './people/pronouns';
 
 /**
  * Sitting down with someone at the bar. A drink counts as your time together today, like a
@@ -16,7 +19,7 @@ export interface DrinkWay {
   readonly label: string;
   /** What the night is like, on the choice. No numbers. */
   readonly line: string;
-  /** For the record: how the night went, with `{name}` for who you sat with. */
+  /** For the record: how the night went, with `{them}` and its forms for who you sat with. */
   readonly liked: string;
   readonly plain: string;
   readonly disliked: string;
@@ -28,9 +31,9 @@ export const DRINK_WAYS = [
     tone: 'joke',
     label: 'Trade stories',
     line: 'Loud, and the cups keep coming.',
-    liked: '{name} laughs until the keeper asks you both to keep it down, then laughs at that.',
-    plain: 'You and {name} swap a few stories over a cup. A pleasant hour.',
-    disliked: '{name} smiles politely at your stories and finishes their cup early.',
+    liked: '{them} laughs until the keeper asks you both to keep it down, then laughs at that.',
+    plain: 'You and {them} swap a few stories over a cup. A pleasant hour.',
+    disliked: '{them} smiles politely at your stories and finishes {them.their} cup early.',
   },
   {
     id: 'quiet',
@@ -38,18 +41,18 @@ export const DRINK_WAYS = [
     label: 'A quiet cup',
     line: 'A corner seat and not much said.',
     liked:
-      '{name} lets out a long breath. Neither of you says much, and it is the best hour of the day.',
-    plain: 'You share a quiet cup with {name} in the corner.',
-    disliked: '{name} fidgets through the silence and keeps looking at the louder tables.',
+      '{them} lets out a long breath. Neither of you says much, and it is the best hour of the day.',
+    plain: 'You share a quiet cup with {them} in the corner.',
+    disliked: '{them} fidgets through the silence and keeps looking at the louder tables.',
   },
   {
     id: 'contest',
     tone: 'challenge',
     label: 'Cup for cup',
     line: 'Whoever puts their cup down first pays.',
-    liked: '{name} slams down the last cup, grinning, and demands a rematch next time.',
-    plain: 'You and {name} match each other cup for cup until the keeper cuts you both off.',
-    disliked: '{name} pushes your cup back across the counter. They came here to unwind.',
+    liked: '{them} slams down the last cup, grinning, and demands a rematch next time.',
+    plain: 'You and {them} match each other cup for cup until the keeper cuts you both off.',
+    disliked: '{them} pushes your cup back across the counter. {them.they} came here to unwind.',
   },
 ] as const satisfies readonly DrinkWay[];
 
@@ -62,5 +65,15 @@ export function drinkWay(id: DrinkWayId): DrinkWay {
 /** The record's line for the night, by how the tone landed (against a plain talk). */
 export function drinkStory(way: DrinkWay, person: PersonDef, reaction: number): string {
   const text = reaction > TALK_BASE ? way.liked : reaction < TALK_BASE ? way.disliked : way.plain;
-  return text.replaceAll('{name}', person.name);
+  return fillSlots(text, personSlots('them', person));
+}
+
+/** Standing the bar a round: one drinker raises their own cup, a crowd raise theirs. */
+export function roundStory(crowd: readonly PersonDef[]): string {
+  const [one] = crowd;
+  const raised =
+    crowd.length === 1 && one
+      ? fillSlots('{them} raise{them.s} {them.their} cup to you.', personSlots('them', one))
+      : `${listed(crowd.map((p) => p.name))} raise their cups to you.`;
+  return `You stand everyone a round. ${raised}`;
 }
