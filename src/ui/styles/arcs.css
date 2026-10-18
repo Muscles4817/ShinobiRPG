@@ -1,0 +1,88 @@
+/* A long story pinned to the board: a slip of paper wider than a notice, nailed above them. */
+.arc-card {
+  grid-column: 1 / -1;
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  border-top: 3px double var(--paper-muted);
+}
+.arc-card h2 {
+  font-family: var(--font-story);
+  font-size: 1.15rem;
+  margin: 0;
+}
+.arc-card .arc-act {
+  margin: 2px 0 6px;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+.arc-card details summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+.arc-card .arc-base {
+  margin: 4px 0;
+  font-family: var(--font-story);
+  font-size: 0.85rem;
+  color: var(--paper-ink);
+}
+
+/* The rule an act moves on by: an ink stamp, then the sentence in muted ink. */
+.arc-card .arc-rule {
+  margin: 6px 0 2px;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+.arc-card .arc-rule .badge {
+  color: var(--paper-ink);
+  margin-right: 6px;
+}
+.arc-card h3 {
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  margin: 10px 0 0;
+}
+.arc-card .arc-leads-note {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+.arc-card ul {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  font-size: 0.92rem;
+}
+.arc-card li span {
+  display: inline-block;
+  width: 1.4em;
+  font-family: var(--font-story);
+}
+.arc-card li.done {
+  color: var(--paper-muted);
+  text-decoration: line-through;
+}
+
+/* An open job on the card opens its notice: a full-width tap target in the paper's ink. */
+.arc-card li button {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 40px;
+  cursor: pointer;
+  text-decoration: underline dotted var(--paper-muted);
+  text-underline-offset: 3px;
+}
+.arc-card li button:focus-visible {
+  outline: 2px solid var(--paper-ink);
+  outline-offset: 2px;
+}

@@ -24,7 +24,12 @@ function payChip(share: number | undefined): string | null {
 }
 
 export function debriefLines(ledger: readonly LedgerLine[]): DebriefLine[] {
-  return ledger.map((l) => ({ text: l.text, tone: l.tone, pay: payChip(l.pay) }));
+  return ledger.map((l) => ({
+    text: l.text,
+    tone: l.tone,
+    pay: payChip(l.pay),
+    ...(l.noted ? { noted: true as const } : {}),
+  }));
 }
 
 /** The share of the posted pay the job came to. */

@@ -16,6 +16,11 @@ function Road({ lines }: { readonly lines: readonly DebriefLine[] }) {
       <ol>
         {lines.map((l, i) => (
           <li key={i} className={`road-${l.tone}`}>
+            {l.noted && (
+              <span className="badge noted" role="img" aria-label="Worth remembering">
+                記
+              </span>
+            )}
             <span>{l.text}</span>
             {l.pay && (
               <span className={`chip ${l.pay.startsWith('+') ? 'gain' : 'cost'}`}>{l.pay}</span>

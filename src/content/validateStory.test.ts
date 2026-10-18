@@ -20,6 +20,12 @@ describe('story validation', () => {
           text: 'Well?',
           options: [
             {
+              label: 'Explain',
+              tone: 'earnest',
+              unseen: 'You can’t.',
+              reply: 'You explain.',
+            },
+            {
               label: 'Shrug',
               tone: 'sulk',
               reply: 'You shrug.',
@@ -34,6 +40,9 @@ describe('story validation', () => {
     expect(problems).toContain(`mission "${job.id}" reads mark "ghost-mark" that nothing sets`);
     expect(problems).toContain(`mission "${job.id}" names thread "luck" it doesn’t keep`);
     expect(problems).toContain(`mission "${job.id}" uses unknown tone "sulk"`);
+    expect(problems).toContain(
+      `mission "${job.id}" says why "Explain" is closed, but it is never closed`,
+    );
     expect(problems).toContain(`mission "${job.id}" reads tally "kindness", which no job counts`);
   });
 

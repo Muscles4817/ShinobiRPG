@@ -84,12 +84,13 @@ export function MissionScene({ ctx, state, perform }: ScreenProps) {
             key={c.label}
             type="button"
             className={c.primary ? 'choice primary' : 'choice'}
+            disabled={c.closed !== undefined}
             onClick={() => {
               perform(c.action);
             }}
           >
             <b>{c.label}</b>
-            {c.detail && <small>{c.detail}</small>}
+            {(c.closed ?? c.detail) && <small>{c.closed ?? c.detail}</small>}
           </button>
         ))}
       </nav>
