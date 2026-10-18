@@ -7,7 +7,7 @@ import { availability, crewFor, type Availability } from '../board';
 import { asksForYou } from '../clients';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
-import { retinueSeen } from '../retinueSight';
+import { retinueSeen, summonsSeen } from '../retinueSight';
 import { missionThreat, traitNotes, type Threat, type TraitNote } from '../scouting';
 import { senseiPick } from '../sensei/pick';
 import { mentorOf } from '../sensei/plan';
@@ -79,6 +79,18 @@ function foesOf(ctx: GameContext, enemyIds: readonly string[]): Foe[] {
   });
 }
 
+/** What the foes can call into the fight, by the client's report. */
+function calledFoes(state: GameState, ctx: GameContext, enemyIds: readonly string[]): Foe[] {
+  return [...new Set(enemyIds)].flatMap((id) => {
+    const def = ctx.content.enemies.get(id);
+    return (def ? summonsSeen(state, def, 'full') : []).map(({ summonId }) => {
+      const summon = ctx.content.summons.require(summonId);
+      const name = `${summon.name}, summoned by ${def?.name ?? 'them'}`;
+      return { name, count: 1, traits: traitNotes(summon.traits ?? []) };
+    });
+  });
+}
+
 /** Each foe followed by what you can tell fights beside them (all of it, with the report). */
 function withRetinues(
   state: GameState,
@@ -108,7 +120,7 @@ function oppositionOf(
     threat: read.threat,
     label: `${read.threatLabel}${many}`,
     handicap: read.handicap,
-    foes: known ? foesOf(ctx, enemies) : null,
+    foes: known ? [...foesOf(ctx, enemies), ...calledFoes(state, ctx, enemies)] : null,
     intel: known
       ? null
       : { ...choice(state, ctx, { type: 'buyIntel', missionId: mission.id }), fee: INTEL_FEE },

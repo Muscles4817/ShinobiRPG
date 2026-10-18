@@ -64,6 +64,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     maxChakra: 30,
     techniqueIds: ['palm-strike', 'crescent-drop', 'shoulder-throw'],
     traits: ['armoured'],
+    summons: [{ summonId: 'undercroft-rat', tell: 'kept' }],
   },
   {
     id: 'hungry-ghost',

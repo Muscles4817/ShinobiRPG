@@ -1,7 +1,8 @@
-import type { EnemyDef } from '@/content';
+import type { EnemyDef, SummonDef } from '@/content';
 import type {
   CombatantSetup,
   CombatAttributes,
+  CombatCall,
   CombatItem,
   CombatOutcome,
   CombatPerk,
@@ -135,7 +136,56 @@ export function enemyCombatantId(enemyId: string, index: number): string {
   return `${enemyId}#${index}`;
 }
 
+/** A summon's body as it answers its caller. */
+function summonBody(summon: SummonDef, ctx: GameContext): CombatantSetup {
+  const health = Math.max(1, Math.round(MAX_HEALTH * summon.healthScale));
+  return {
+    id: summon.id,
+    name: summon.name,
+    tag: 'Summon',
+    attributes: attributesOf(summon.stats),
+    health,
+    maxHealth: health,
+    chakra: summon.maxChakra,
+    maxChakra: summon.maxChakra,
+    techniques: summon.techniqueIds.map((id) => ctx.content.techniques.require(id)),
+    ...(summon.traits ? { traits: summon.traits } : {}),
+  };
+}
+
+/** A summon as a call its caller carries into a fight. */
+export function summonCall(summon: SummonDef, ctx: GameContext): CombatCall {
+  return {
+    id: summon.id,
+    body: summonBody(summon, ctx),
+    upkeep: summon.upkeep,
+    ...(summon.price?.blood ? { bloodPrice: summon.price.blood } : {}),
+  };
+}
+
+/** A fighter with these summons to call: their summoning techniques and the calls. */
+export function withCalls(
+  fighter: CombatantSetup,
+  summons: readonly SummonDef[],
+  ctx: GameContext,
+): CombatantSetup {
+  if (summons.length === 0) return fighter;
+  return {
+    ...fighter,
+    techniques: [
+      ...fighter.techniques,
+      ...summons.map((s) => ctx.content.techniques.require(s.techniqueId)),
+    ],
+    calls: summons.map((s) => summonCall(s, ctx)),
+  };
+}
+
 export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
+  const summons = (def.summons ?? []).map((s) => ctx.content.summons.require(s.summonId));
+  return withCalls(enemyBody(def, index, ctx), summons, ctx);
+}
+
+function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
   const walking = enemyWalking(def);
   const id = enemyCombatantId(def.id, index);
   return {

@@ -578,6 +578,13 @@ describe('persistence', () => {
     expect(loaded.value.told).toEqual({});
   });
 
+  it('gives a save from before broken contracts none', () => {
+    const { brokenContracts: _b, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 56, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.brokenContracts).toEqual([]);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

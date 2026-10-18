@@ -1,4 +1,12 @@
-import { answers, signed, standingAfter, standingStage } from './contracts';
+import {
+  answers,
+  OFFERING_STANDING,
+  offeredToday,
+  signed,
+  standingAfter,
+  standingStage,
+  withOffering,
+} from './contracts';
 
 describe('contracts', () => {
   it('starts as strangers to the clan, so only its smallest answer', () => {
@@ -14,5 +22,14 @@ describe('contracts', () => {
     expect(kept.standing).toBeGreaterThan(contract.standing);
     expect(standingAfter(kept, ['fell']).standing).toBeLessThan(kept.standing);
     expect(standingAfter(contract, ['fell']).standing).toBe(0);
+  });
+
+  it('an offering raises the standing and is counted for the day', () => {
+    const contract = signed('toads', 3);
+    expect(offeredToday(contract, 5)).toBe(false);
+    const given = withOffering(contract, 5);
+    expect(given.standing).toBe(contract.standing + OFFERING_STANDING);
+    expect(offeredToday(given, 5)).toBe(true);
+    expect(offeredToday(given, 6)).toBe(false);
   });
 });

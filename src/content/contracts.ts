@@ -1,6 +1,8 @@
 import type { CombatTrait } from '@/systems/combat';
 import type { Stats } from '@/systems/stats';
 
+import type { RetinueTell } from './companions';
+
 /**
  * Summoning contracts (`docs/design/retinue-plan.md`, step 3): a clan of summons, signed through a
  * job or a teacher, one at a time. Each summon answers its own summoning technique once your
@@ -46,10 +48,26 @@ export interface ContractDef {
   readonly description: string;
   /** Its summons, smallest first. */
   readonly summons: readonly SummonDef[];
+  /**
+   * What the clan likes as an offering left out at home (ingredient ids). A contract no one
+   * can sign (a foe's own) needs none.
+   */
+  readonly tastes?: readonly string[];
+  /** What the clan says when you tear up your name on its scroll (no numbers). */
+  readonly parting?: string;
 }
 
 /** A teacher who may let you sign their contract, once you are close enough to them. */
 export interface ContractOffer {
   readonly contractId: string;
   readonly minStage: number;
+}
+
+/**
+ * A summon a foe can call (`EnemyDef.summons`), from any contract of the pack, and how plainly
+ * their contract shows before the fight (`game/retinueSight.ts`): a summoner rarely says so.
+ */
+export interface FoeSummon {
+  readonly summonId: string;
+  readonly tell: RetinueTell;
 }

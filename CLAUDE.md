@@ -341,8 +341,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `ContractDef`s), signed through a job (`reward.contractId`) or a teacher
     (`TeacherProfile.contract`, `signContract`); summons answer from the standing stage they ask,
     if you carry their offering, and ride into mission fights (`game/contracts/summons.ts`);
-    how they fare moves your standing with the clan. Nothing is locked by rank: the price is the
-    lock. It is cared for
+    how they fare moves your standing with the clan, as does an offering it likes left at home
+    once a day (`makeOffering`, `game/contracts/keeping.ts`). Breaking a contract
+    (`breakContract`) frees you to sign another, and its clan never takes you back
+    (`GameState.brokenContracts`). Foes summon too (`EnemyDef.summons`, from a contract of the
+    pack, with a `tell` read like a retinue's: `summonsSeen`). Nothing is locked by rank: the
+    price is the lock. It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -795,7 +799,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   body stats, `healthScale`, the techniques they fight with, the standing stage they answer
   from, `upkeep`, an optional `price` of blood or an offering) with a summoning technique per
   summon (a `summon` effect naming its id), offered by a job's `reward.contractId` or a
-  teacher's `contract`. Validated in `validateContracts.ts`.
+  teacher's `contract`, with the `tastes` it likes as offerings and its `parting` words. A
+  contract only foes hold needs neither: list its summons on an `EnemyDef.summons` with a
+  `tell`. Validated in `validateContracts.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

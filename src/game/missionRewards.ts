@@ -6,6 +6,7 @@ import type { JournalChip } from '@/systems/journal';
 import type { MissionDef } from '@/systems/missions';
 
 import { metToday } from './companions/adopt';
+import { signBlocker } from './contracts/summons';
 import type { GameContext } from './context';
 import { chip } from './ops';
 import type { GameState } from './state';
@@ -80,10 +81,12 @@ function chipsFor(given: Given): JournalChip[] {
   });
 }
 
-/** A contract the job offers, signed if you hold none yet (one at a time). */
+/** A contract the job offers, signed if you hold none yet (one at a time) and never broke it. */
 function contractOffered(state: GameState, ctx: GameContext, def: MissionDef) {
   const offered = def.reward.contractId;
-  return offered && !state.contract ? ctx.content.contracts.require(offered) : null;
+  return offered && signBlocker(state, offered) === null
+    ? ctx.content.contracts.require(offered)
+    : null;
 }
 
 export function handedOver(state: GameState, ctx: GameContext, def: MissionDef): HandedOver {
