@@ -8,12 +8,12 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
   {
     id: 'generic-training',
     minStage: 0,
-    opener: '{them} wipes sweat from their brow. "Been training since dawn. You?"',
+    opener: '{them} wipes sweat from {them.their} brow. “Been training since dawn. You?”',
     choices: [
       {
         label: '“Bet I could outlast you.”',
         tone: 'challenge',
-        reply: '{them} grins. "Is that so?"',
+        reply: '{them} grins. “Is that so?”',
       },
       {
         label: '“You look exhausted. Take a break.”',
@@ -30,7 +30,7 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
   {
     id: 'generic-food',
     minStage: 0,
-    opener: '"I could eat a whole pot of rice right now," {them} says.',
+    opener: '“I could eat a whole pot of rice right now,” {them} says.',
     choices: [
       {
         label: '“Only one pot?”',
@@ -40,7 +40,7 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“I know a good stall. My treat sometime.”',
         tone: 'kind',
-        reply: '"I’ll hold you to that," {them} says.',
+        reply: '“I’ll hold you to that,” {them} says.',
       },
       {
         label: 'Nod and say nothing.',
@@ -52,17 +52,17 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
   {
     id: 'generic-weather',
     minStage: 0,
-    opener: '{them} squints at the sky. "Rain later, I think."',
+    opener: '{them} squints at the sky. “Rain later, I think.”',
     choices: [
       {
         label: '“Good. Training in the rain builds character.”',
         tone: 'earnest',
-        reply: '{them} gives you a long look. "You really believe that."',
+        reply: '{them} gives you a long look. “You really believe that.”',
       },
       {
         label: '“You sound like an old fisherman.”',
         tone: 'tease',
-        reply: '"An old fisherman who is usually right," {them} says.',
+        reply: '“An old fisherman who is usually right,” {them} says.',
       },
       {
         label: '“How can you tell?”',
@@ -74,17 +74,17 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
   {
     id: 'generic-mission',
     minStage: 1,
-    opener: '"Heard you took a job from the mission desk," {them} says. "How did it go?"',
+    opener: '“Heard you took a job from the mission desk,” {them} says. “How did it go?”',
     choices: [
       {
         label: '“Easy. Next time I want something real.”',
         tone: 'challenge',
-        reply: '"Careful what you wish for," {them} says.',
+        reply: '“Careful what you wish for,” {them} says.',
       },
       {
         label: '“Honestly? I learned a lot.”',
         tone: 'earnest',
-        reply: '{them} nods slowly. "That’s the right answer."',
+        reply: '{them} nods slowly. “That’s the right answer.”',
       },
       {
         label: '“I chased a cat for two hours.”',
@@ -96,7 +96,7 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
   {
     id: 'generic-skill',
     minStage: 1,
-    opener: '{them} shows you a technique they have been practising. It is good.',
+    opener: '{them} shows you a technique {them.they} {them.has} been practising. It is good.',
     choices: [
       {
         label: '“That was incredible.”',
@@ -111,7 +111,7 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“Teach me?”',
         tone: 'curious',
-        reply: '"Maybe," {them} says, "if you can keep up."',
+        reply: '“Maybe,” {them} says, “if you can keep up.”',
       },
     ],
   },
@@ -119,7 +119,7 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'generic-dream',
     minStage: 2,
     opener:
-      '"Can I tell you something?" {them} says. "I want to be more than a genin who catches cats."',
+      '“Can I tell you something?” {them} says. “I want to be more than a genin who catches cats.”',
     choices: [
       {
         label: '“You will be. I’ve seen you train.”',
@@ -129,7 +129,7 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“Then race me there.”',
         tone: 'challenge',
-        reply: '"You’re on," {them} says, and means it.',
+        reply: '“You’re on,” {them} says, and means it.',
       },
       {
         label: 'Listen, and let them talk.',
@@ -141,17 +141,17 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
   {
     id: 'generic-worry',
     minStage: 2,
-    opener: '{them} is quieter than usual today. Something is on their mind.',
+    opener: '{them} is quieter than usual today. Something is on {them.their} mind.',
     choices: [
       {
         label: '“Whatever it is, I’ve got your back.”',
         tone: 'earnest',
-        reply: '"I know," {them} says. "That’s why I came to find you."',
+        reply: '“I know,” {them} says. “That’s why I came to find you.”',
       },
       {
         label: '“Want to go get noodles and not talk about it?”',
         tone: 'kind',
-        reply: '{them} laughs for the first time today. "Yes."',
+        reply: '{them} laughs for the first time today. “Yes.”',
       },
       {
         label: '“Spit it out.”',
@@ -163,17 +163,17 @@ export const GENERIC_CONVERSATIONS: readonly ConversationDef[] = [
   {
     id: 'generic-praise',
     minStage: 3,
-    opener: '"You’ve changed since the Academy," {them} says. "In a good way."',
+    opener: '“You’ve changed since the Academy,” {them} says. “In a good way.”',
     choices: [
       {
         label: '“So have you. I’m glad we’re friends.”',
         tone: 'kind',
-        reply: '{them} bumps your shoulder with theirs.',
+        reply: '{them} bumps your shoulder with {them.theirs}.',
       },
       {
         label: '“I’m still going to beat you, though.”',
         tone: 'challenge',
-        reply: '"Wouldn’t want it any other way," {them} says.',
+        reply: '“Wouldn’t want it any other way,” {them} says.',
       },
       {
         label: '“Took you long enough to notice.”',

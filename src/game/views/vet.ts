@@ -1,10 +1,12 @@
 import type { PlaceDef, VetFields } from '@/content';
+import { fillSlots } from '@/core';
 import { stageForPair } from '@/systems/bonds';
 import { laidUp, type CompanionTemperament } from '@/systems/companions';
 
 import { pupPrice } from '../actions/finding';
 import { treatmentFee } from '../actions/vet';
 import { yourCompanion } from '../companions/care';
+import { keeperSlots } from '../companions/keeper';
 import { kindOf } from '../companions/make';
 import type { GameContext } from '../context';
 import { placeHere } from '../ops';
@@ -66,7 +68,6 @@ export interface PupsView {
 function pupsView(state: GameState, ctx: GameContext, vet: VetFields): PupsView | null {
   const price = pupPrice(state, ctx);
   if (!vet.pups || price === null || yourCompanion(state, ctx)) return null;
-  const keeper = findPerson(state, ctx, vet.keeperId)?.name ?? 'The vet';
   return {
     line: vet.pups.line,
     kind: ctx.content.companionKinds.require(vet.pups.kindId).name,
@@ -75,7 +76,10 @@ function pupsView(state: GameState, ctx: GameContext, vet: VetFields): PupsView 
       'Small now, and a while before it can fight beside you; grown, it is the best of its line. It takes to you quickly.',
     gift:
       price > 0
-        ? `${keeper} gives one to anyone ${stageForPair(vet.pups.giftStage)} with them.`
+        ? fillSlots('{vet} gives one to anyone {pair} with {vet.them}.', {
+            ...keeperSlots(state, ctx, vet.keeperId),
+            pair: stageForPair(vet.pups.giftStage),
+          })
         : null,
     take: choice(state, ctx, { type: 'takePup' }),
   };

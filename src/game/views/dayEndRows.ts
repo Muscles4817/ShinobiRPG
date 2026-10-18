@@ -1,3 +1,4 @@
+import { counted } from '@/core';
 import type { IconId } from '@/content';
 import { stageForPair, stageOf } from '@/systems/bonds';
 import { RANK_LABELS } from '@/systems/standing';
@@ -188,7 +189,7 @@ export function momentRows(ended: DayEnd, state: GameState, ctx: GameContext): D
 }
 
 function nights(n: number): string {
-  return n === 1 ? 'Mends after one more night' : `Mends after ${n} more nights`;
+  return `Mends after ${counted(n, 'more night', 'more nights')}`;
 }
 
 export function hurtRows(ended: DayEnd, state: GameState, ctx: GameContext): DayHurt[] {

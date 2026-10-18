@@ -1,3 +1,4 @@
+import { counted } from '@/core';
 import { stageFoes, type MissionDef } from '@/systems/missions';
 
 import { INTEL_FEE } from '../actions/intel';
@@ -134,7 +135,7 @@ function postedLine(on: Exclude<Availability, { kind: 'absent' }>): string {
 function postedFor(daysLeft: number): string {
   if (daysLeft <= 1) return 'Last day';
   if (daysLeft === 2) return 'Gone after tomorrow';
-  return `Up for ${daysLeft} days`;
+  return `Up for ${counted(daysLeft, 'day')}`;
 }
 
 export function missionBoardView(state: GameState, ctx: GameContext): MissionBoardView | null {

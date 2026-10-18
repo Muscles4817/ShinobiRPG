@@ -1,11 +1,13 @@
 import type { CookbookDef, PersonDef, RecipeLesson } from '@/content';
 import { stageForPair, stageOf } from '@/systems/bonds';
+import { fillSlots } from '@/core';
 import { knowsRecipe, learnRecipes } from '@/systems/cooking';
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
 import { busyReason, chip, firstBlocker, log, spendTime } from '../ops';
 import { bondOf, findPerson, requirePerson, whereNow } from '../people/cast';
+import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
 import { closedReason, isOpen, marketPrice, stallsHere } from '../village';
 import type { ActionHandler, ActionOf } from './types';
@@ -71,7 +73,12 @@ export function lessonBlocker(
   person: PersonDef,
 ): string | null {
   const lesson = nextLesson(state, person);
-  if (!lesson) return `${person.name} has taught you everything they cook.`;
+  if (!lesson) {
+    return fillSlots(
+      '{cook} has taught you everything {cook.they} cook{cook.s}.',
+      personSlots('cook', person),
+    );
+  }
   return firstBlocker(
     busyReason(state),
     whereNow(state, ctx, person) === null && `${person.name} isn’t around right now.`,
@@ -83,7 +90,10 @@ export function lessonBlocker(
 export const learnRecipe: ActionHandler<ActionOf<'learnRecipe'>> = {
   check(state, action, ctx) {
     const person = findPerson(state, ctx, action.personId);
-    if (!person?.recipes?.length) return 'They don’t teach cooking.';
+    if (!person) return 'They don’t teach cooking.';
+    if (!person.recipes?.length) {
+      return fillSlots('{cook} {cook.does}n’t teach cooking.', personSlots('cook', person));
+    }
     return lessonBlocker(state, ctx, person);
   },
   perform(state, action, ctx) {

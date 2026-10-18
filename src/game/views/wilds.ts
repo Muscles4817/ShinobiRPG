@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import type { Biome } from '@/content';
 import { gatheredToday, inSeason, recognised, type Find } from '@/systems/cooking';
 
@@ -120,5 +121,5 @@ export function wildsLine(state: GameState, ctx: GameContext, placeId: string): 
   if (wild) return `Signs of a ${wild.name.toLowerCase()}`;
   if (gatheredToday(state.cooking.gathered, place.id, state.time.day)) return 'Searched today';
   const { known } = whatsAbout(state, ctx, place.finds);
-  return known.length > 0 ? `${known.slice(0, 2).join(' and ')} about` : place.blurb;
+  return known.length > 0 ? `${listed(known.slice(0, 2))} about` : place.blurb;
 }

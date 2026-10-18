@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import type { PersonDef } from '@/content';
 import { addPoints, talkedToday } from '@/systems/bonds';
 import { spend } from '@/systems/wallet';
@@ -11,6 +12,7 @@ import { warmed } from '../people/warmth';
 import type { GameState } from '../state';
 import { closedReason } from '../village';
 import type { ActionHandler, ActionOf } from './types';
+import { placeInText } from '../placeName';
 
 /**
  * The bar at night: stand everyone inside a round and they all warm to you a little. That
@@ -56,8 +58,8 @@ export const buyRound: ActionHandler<ActionOf<'buyRound'>> = {
     };
     const names = crowd.map((p) => p.name);
     return log(next, {
-      heading: `A round at ${tavern.name}`,
-      text: `You stand everyone a round. ${names.join(', ')} raise their cups to you.`,
+      heading: `A round at ${placeInText(tavern.name)}`,
+      text: `You stand everyone a round. ${listed(names)} raise their cups to you.`,
       tone: 'success',
       chips: [
         chip(`−${tavern.roundCost} ryo`, 'cost'),

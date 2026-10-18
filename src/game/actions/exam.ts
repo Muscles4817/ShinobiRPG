@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import { addPoints } from '@/systems/bonds';
 import { startExamRun } from '@/systems/exams';
 
@@ -28,7 +29,8 @@ const NOT_SITTING = 'You are not sitting an exam.';
 function whenNext(state: GameState, ctx: GameContext): string {
   const next = examAnnounced(state, ctx) ?? nextSitting(state, ctx);
   if (!next) return 'There is no exam for your rank.';
-  return `${next.exam.name} is held in ${next.daysAway} days.`;
+  const when = next.daysAway === 1 ? 'tomorrow' : `in ${next.daysAway} days`;
+  return `${next.exam.name} is held ${when}.`;
 }
 
 /** The left-out teammates lose bond with you; the record notes it. */
@@ -66,7 +68,7 @@ export const enterExam: ActionHandler<ActionOf<'enterExam'>> = {
     };
     return log(entered, {
       heading: exam.name,
-      text: `Your team signs the forms and goes in. ${team.map((id) => requirePerson(state, ctx, id).name).join(' and ')} at your side.`,
+      text: `Your team signs the forms and goes in. ${listed(team.map((id) => requirePerson(state, ctx, id).name))} at your side.`,
       tone: 'info',
       chips: left.map((name) => chip(`${name} −${REPLACEMENT_BOND_HIT} bond`, 'harm')),
     });

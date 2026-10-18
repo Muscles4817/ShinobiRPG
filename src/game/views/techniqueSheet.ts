@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import {
   AFFLICT_EXCHANGES,
   chakraCost,
@@ -177,8 +178,8 @@ function detailedLine(effect: Extract<TechniqueEffect, { verb: DetailedVerb }>):
     case 'empower':
       return {
         text: effect.opens
-          ? `Opens ${stepWords(effect.opens)}: raises ${effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()).join(' and ')} until the body gives out`
-          : `Raises ${effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()).join(' and ')}, at a price`,
+          ? `Opens ${stepWords(effect.opens)}: raises ${listed(effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()))} until the body gives out`
+          : `Raises ${listed(effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()))}, at a price`,
         chip: effect.healthPerExchange ? `−${effect.healthPerExchange} health a turn` : null,
       };
     case 'clone':

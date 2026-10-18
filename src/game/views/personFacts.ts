@@ -1,4 +1,5 @@
 import type { PersonDef } from '@/content';
+import { pronounForms } from '@/core';
 import { STAT_IDS, STAT_INFO, statTier, type StatGrade } from '@/systems/stats';
 import { gradeIndex, gradeOf, type Discipline, type TechniqueDef } from '@/systems/techniques';
 import { slotName, TIME_SLOTS, type TimeSlot } from '@/systems/time';
@@ -6,6 +7,7 @@ import { slotName, TIME_SLOTS, type TimeSlot } from '@/systems/time';
 import type { GameContext } from '../context';
 import { canDoNow } from '../people/capable';
 import { growsOnTheirOwn, personStats } from '../people/progress';
+import { pronounsOf } from '../people/pronouns';
 import type { GameState } from '../state';
 
 /**
@@ -81,14 +83,15 @@ function chipOf(def: TechniqueDef): ArtChip {
 /** What a technique still waits on in them, as a phrase. */
 function waitsOn(def: TechniqueDef, person: PersonDef, state: GameState): string {
   const stats = personStats(person, state);
+  const { their } = pronounForms(pronounsOf(person));
   if (gradeIndex(gradeOf(stats[def.discipline])) < gradeIndex(def.rank)) {
-    return `When their ${STAT_INFO[def.discipline].label.toLowerCase()} reaches ${def.rank}`;
+    return `When ${their} ${STAT_INFO[def.discipline].label.toLowerCase()} reaches ${def.rank}`;
   }
   const control = def.needs?.control;
   if (control && gradeIndex(gradeOf(stats.chakraControl)) < gradeIndex(control)) {
-    return `When their chakra control reaches ${control}`;
+    return `When ${their} chakra control reaches ${control}`;
   }
-  return 'When their reserves run deeper';
+  return `When ${their} reserves run deeper`;
 }
 
 /** Everything they'll ever fight with or teach: what they can do now, and what waits. */

@@ -295,7 +295,7 @@ view:
   festival:
     name: Kite Day
     description: Children fly paper kites over the lake and the stalls sell cheap sweets.
-    when: In 6 days
+    when: In six days
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
   rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
@@ -401,24 +401,24 @@ view:
   people[1]:
     stage: Acquaintance
     stamp: Now acquaintances
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what she likes to hear.
   people[2]:
     stage: Acquaintance
     stamp: Now acquaintances
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what he likes to hear.
   purse:
     lines[0]:
       label: Ember Noodles
   aheadLabel: Tomorrow
   ahead[0]:
     text: The Lantern Trials
-    stamp: In 5 days
+    stamp: In five days
   ahead[1]:
     text: Gōran sets march
     stamp: Morning
   ahead[2]:
     text: Kite Day
-    stamp: In 5 days
+    stamp: In five days
   summary[0]: Goro: now acquaintances
   summary[1]: Gōran: now acquaintances
   summary[2]: Strength: past halfway to Genin D
@@ -474,7 +474,7 @@ view:
   festival:
     name: Kite Day
     description: Children fly paper kites over the lake and the stalls sell cheap sweets.
-    when: In 5 days
+    when: In five days
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
   rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
@@ -585,23 +585,23 @@ view:
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what he likes to hear.
   people[1]:
     stage: Acquaintance
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what she likes to hear.
   purse:
     lines[0]:
       label: Ember Noodles
   aheadLabel: Tomorrow
   ahead[0]:
     text: The Lantern Trials
-    stamp: In 4 days
+    stamp: In four days
   ahead[1]:
     text: Gōran sets drills
     stamp: Morning
   ahead[2]:
     text: Kite Day
-    stamp: In 4 days
+    stamp: In four days
   summary[0]: Gōran: thinks better of you
   summary[1]: Chakra Reserves: past halfway to Genin D
   summary[2]: Stamina: early in the grade
@@ -658,7 +658,7 @@ view:
   festival:
     name: Kite Day
     description: Children fly paper kites over the lake and the stalls sell cheap sweets.
-    when: In 4 days
+    when: In four days
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
   rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
@@ -778,7 +778,7 @@ view:
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what he likes to hear.
   people[1]:
     stage: Stranger
     next: At acquaintance: you learn what they’re like.
@@ -788,13 +788,13 @@ view:
   aheadLabel: Tomorrow
   ahead[0]:
     text: The Lantern Trials
-    stamp: In 3 days
+    stamp: In three days
   ahead[1]:
     text: Gōran sets sparring
     stamp: Morning
   ahead[2]:
     text: Kite Day
-    stamp: In 3 days
+    stamp: In three days
   summary[0]: Gōran: thinks better of you
   summary[1]: Chakra Reserves: past halfway to Genin D
   summary[2]: Willpower: past halfway to Genin D

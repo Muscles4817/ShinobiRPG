@@ -35,7 +35,7 @@ describe('the exam for those not sitting it', () => {
     expect(word?.speaker).toBe('Gōran');
     expect(word?.text).toContain('come and watch the finals');
     expect(word?.text).toContain(state.character.name);
-    expect(examFinalsView(state, ctx)).toMatchObject({ when: 'In 3 days', watch: null });
+    expect(examFinalsView(state, ctx)).toMatchObject({ when: 'In three days', watch: null });
   });
 
   it('comes from a teammate when your sensei keeps too loose a grip to say it', () => {

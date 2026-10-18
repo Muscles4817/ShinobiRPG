@@ -1,4 +1,4 @@
-import { hashUnit } from '@/core';
+import { fillSlots, hashUnit } from '@/core';
 import type { CompanionKindDef } from '@/content';
 import {
   BODY_STATS,
@@ -141,7 +141,7 @@ function grewUp(
   if (stage === before) return state;
   const journal = write(state.journal, state.time, {
     heading: `${now.name} is growing up`,
-    text: GROWN_INTO[stage].replace('{name}', now.name),
+    text: fillSlots(GROWN_INTO[stage], { name: now.name }),
     tone: 'success',
   });
   return { ...state, journal };

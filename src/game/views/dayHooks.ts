@@ -1,3 +1,4 @@
+import { counted } from '@/core';
 import { daysOfRentLeft, isRentFree, isRentOverdue } from '@/systems/housing';
 
 import type { GameContext } from '../context';
@@ -60,7 +61,12 @@ function exam(state: GameState, ctx: GameContext): DayHook[] {
 function festival(state: GameState, ctx: GameContext): DayHook[] {
   const notice = festivalNotice(state, ctx);
   if (!notice || notice.daysAway > SOON_DAYS) return [];
-  const when = notice.daysAway === 0 ? 'Today' : `In ${notice.daysAway} days`;
+  const when =
+    notice.daysAway === 0
+      ? 'Today'
+      : notice.daysAway === 1
+        ? 'Tomorrow'
+        : `In ${counted(notice.daysAway, 'day')}`;
   return [hook('祭', notice.festival.name, when, notice.daysAway === 0)];
 }
 

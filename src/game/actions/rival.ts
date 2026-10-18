@@ -1,6 +1,9 @@
+import { fillSlots } from '@/core';
+
 import type { GameContext } from '../context';
 import { placeHere, busyReason, firstBlocker, healthFraction, log, chip } from '../ops';
 import { findPerson } from '../people/cast';
+import { personSlots } from '../people/pronouns';
 import { toneReaction } from '../people/together';
 import { hardWorkEnergy } from '../profile';
 import { weakFromHunger } from '../hunger';
@@ -24,6 +27,14 @@ import type { ActionHandler, ActionOf } from './types';
 
 const MIN_HEALTH_TO_CONTEST = 0.4;
 const SETTLE_IT = '“Tomorrow, then. Don’t be late.”';
+/** Your rival, when there is no telling who: lines still read. */
+const ANY_RIVAL = { id: 'rival', name: 'your rival', pronouns: 'they' } as const;
+
+/** `{name}` and its pronoun slots for your rival, for lines about them. */
+export function rivalSlots(state: GameState, ctx: GameContext): Readonly<Record<string, string>> {
+  const person = state.rival ? findPerson(state, ctx, state.rival.personId) : undefined;
+  return personSlots('name', person ?? ANY_RIVAL);
+}
 
 /** Why you can't settle it with them right now, if you can't. */
 export function contestBlocker(state: GameState, ctx: GameContext): string | null {
@@ -32,7 +43,8 @@ export function contestBlocker(state: GameState, ctx: GameContext): string | nul
     busyReason(state),
     weakFromHunger(state),
     laidUp(state, ctx),
-    !placeHere(state, ctx, 'training') && 'Meet them at a training ground.',
+    !placeHere(state, ctx, 'training') &&
+      fillSlots('Meet {name.them} at a training ground.', rivalSlots(state, ctx)),
     state.character.vitals.energy < energy && `Needs ${energy} energy. Nap or eat first.`,
     healthFraction(state) < MIN_HEALTH_TO_CONTEST && 'You are too hurt for that. Rest first.',
   );
@@ -92,9 +104,9 @@ export const answerRival: ActionHandler<ActionOf<'answerRival'>> = {
       { ...told, rival: next },
       {
         heading: person.name,
-        text: ANSWER[rival.temperament][warmer ? 'warmer' : 'cooler'].replaceAll(
-          '{name}',
-          person.name,
+        text: fillSlots(
+          ANSWER[rival.temperament][warmer ? 'warmer' : 'cooler'],
+          personSlots('name', person),
         ),
         tone: warmer ? 'success' : 'warning',
         chips: answerChips(rival, next),
@@ -134,7 +146,7 @@ export const declineChallenge: ActionHandler<ActionOf<'declineChallenge'>> = {
       },
       {
         heading: `Turned down ${person.name}`,
-        text: declined.line.replaceAll('{name}', person.name),
+        text: fillSlots(declined.line, personSlots('name', person)),
         tone: 'info',
       },
     );

@@ -1,4 +1,5 @@
 import type { ClanDef, CompoundFields, OutsiderStance, PersonDef, PlaceDef } from '@/content';
+import { fillSlots } from '@/core';
 import { stageForPair, stageOf } from '@/systems/bonds';
 
 import type { GameContext } from './context';
@@ -58,7 +59,7 @@ export function compoundAccess(
   if (night) {
     return `The ${clan.name} gate is shut for the night. After dark it opens only to those ${stageForPair(NIGHT_STAGE)} with one of the clan.`;
   }
-  return TURNED_AWAY[stance].replace('{clan}', clan.name).replace('{pair}', stageForPair(needed));
+  return fillSlots(TURNED_AWAY[stance], { clan: clan.name, pair: stageForPair(needed) });
 }
 
 /** The compound a place id names in your current location, if it is one. */

@@ -1,4 +1,5 @@
 import type { PersonDef } from '@/content';
+import { fillSlots } from '@/core';
 import {
   fightingPower,
   STAT_GRADES,
@@ -13,6 +14,7 @@ import { DISCIPLINES } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import { personStats } from '../people/progress';
+import { personSlots } from '../people/pronouns';
 import { PURSE } from '../rival/contest';
 import { trailsYou } from '../rival/drive';
 import { SHAPE_NAME, WHO_THEY_ARE } from '../rival/lines';
@@ -113,21 +115,28 @@ const gradeOf = (value: number) => STAT_GRADES.indexOf(statTier(value).grade);
 
 function ways(rival: Rival, person: PersonDef, yours: Stats, theirs: Stats): string[] {
   const name = person.name;
+  const slots = personSlots('rival', person);
   const ahead = STAT_IDS.filter((id) => gradeOf(theirs[id]) > gradeOf(yours[id])).sort(
     (a, b) => theirs[b] - yours[b] - (theirs[a] - yours[a]),
   )[0];
   return [
     ...(ahead
       ? [
-          `Swallow your pride: ask ${name} to teach you ${STAT_INFO[ahead].label.toLowerCase()}. Anyone ahead of you can, at a training ground where they are.`,
+          fillSlots(
+            'Swallow your pride: ask {rival} to teach you {stat}. Anyone ahead of you can, at a training ground where {rival.they} {rival.is}.',
+            { ...slots, stat: STAT_INFO[ahead].label.toLowerCase() },
+          ),
         ]
       : []),
     ...(gradeOf(yours.perception) < gradeOf(theirs.perception)
       ? [`Sharpen your eyes: with perception the equal of ${name}’s, you read every leg of a race.`]
       : []),
     rival.rattled
-      ? `${name} is rattled: they’ll run worse in your next race.`
-      : 'Get under their skin: a barbed word after a contest, or when they needle you, leaves them rattled for the next race.',
+      ? fillSlots('{rival} is rattled: {rival.they}’ll run worse in your next race.', slots)
+      : fillSlots(
+          'Get under {rival.their} skin: a barbed word after a contest, or when {rival.they} needle{rival.s} you, leaves {rival.them} rattled for the next race.',
+          slots,
+        ),
   ];
 }
 
@@ -170,7 +179,10 @@ export function rivalryView(
     heat: { stages: HEAT_STAGES, at: heatStage(rival.heat) },
     rattled: rival.rattled,
     driven: trailsYou(state, person.id, theirs)
-      ? `${person.name} has been at the grounds before dawn all week. Behind you, they train harder.`
+      ? fillSlots(
+          '{rival} has been at the grounds before dawn all week. Behind you, {rival.they} train{rival.s} harder.',
+          personSlots('rival', person),
+        )
       : null,
     offers: offers(state, ctx, theirs),
     purse: PURSE,

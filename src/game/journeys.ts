@@ -8,6 +8,7 @@ import { settle } from './story/state';
 import { keepsToSafeRoads } from './leave';
 import { arriving, leaving, tripCrew } from './trips';
 import type { GameState } from './state';
+import { placeInText } from './placeName';
 
 /**
  * Trips of your own along the roads. The way is the quickest open journey over the pack's
@@ -115,8 +116,8 @@ export function arrive(state: GameState, ctx: GameContext, plan: JourneyPlan): G
   const destination = ctx.content.locations.require(plan.to);
   const days = plan.legs.reduce((sum, leg) => sum + leg.days, 0);
   return log(arriving({ ...state, mission: null, locationId: destination.id }, ctx, plan), {
-    heading: `Arrived in ${destination.name}`,
-    text: `You walk into ${destination.name}, road-dusty and glad of it.`,
+    heading: `Arrived in ${placeInText(destination.name)}`,
+    text: `You walk into ${placeInText(destination.name)}, road-dusty and glad of it.`,
     tone: 'success',
     chips: [chip(days === 1 ? 'A day on the road' : `${days} days on the road`, 'info')],
   });

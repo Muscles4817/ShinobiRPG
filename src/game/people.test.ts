@@ -126,7 +126,7 @@ describe('talking', () => {
     const stranger = personSheet(state, ctx, 'tetsu')!;
     expect(stranger.traits).toBeNull();
     // The sheet says what the next stage opens.
-    expect(stranger.path.next?.opens).toContain('You learn what they’re like.');
+    expect(stranger.path.next?.opens).toContain('You learn what he’s like.');
     const friendly = {
       ...state,
       people: { ...state.people, bonds: { tetsu: { points: 30, lastTalkDay: null, heard: [] } } },

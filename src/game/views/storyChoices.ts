@@ -1,3 +1,4 @@
+import { capitalise, counted, fillSlots } from '@/core';
 import { holds, variantText, type CheckApproach, type MissionStage } from '@/systems/missions';
 import { checkChance, STAT_INFO } from '@/systems/stats';
 
@@ -11,6 +12,7 @@ import { SENSEI_FIRESIDE, senseiAlong } from '../story/fireside';
 import { endingFor } from '../story/ending';
 import { storyOf } from '../story/state';
 import type { GameState } from '../state';
+import { personSlots } from '../people/pronouns';
 
 /** What each kind of stage puts in front of you on a job: the situation, and your choices. */
 
@@ -43,7 +45,7 @@ function checkDetail(state: GameState, ctx: GameContext, approach: CheckApproach
 
 /** What a stretch of road asks of you: "2 days on the road, food for 1 in your pack". */
 function roadDetail(days: number, rations: number): string {
-  const road = days === 1 ? 'A day on the road' : `${days} days on the road`;
+  const road = capitalise(`${counted(days, 'day')} on the road`);
   if (rations === 0) return `${road}, and nothing in your pack`;
   return `${road}, food for ${rations} in your pack`;
 }
@@ -81,7 +83,10 @@ function campPrompt(
   const sensei = senseiAlong(state, ctx);
   const activities = campChoices(state, ctx, stage).flatMap((activityIndex): SceneChoice[] => {
     if (activityIndex === SENSEI_FIRESIDE && sensei) {
-      const detail = 'They might tell you something';
+      const detail = fillSlots(
+        '{sensei.they} might tell you something',
+        personSlots('sensei', sensei),
+      );
       const action = { type: 'missionCamp' as const, activityIndex };
       return [{ label: `Sit with ${sensei.name}`, detail, primary: false, action }];
     }
