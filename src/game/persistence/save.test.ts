@@ -493,6 +493,19 @@ describe('persistence', () => {
     });
   });
 
+  it('gives a save from before the field book an empty one', () => {
+    const { fieldBook: _book, ...state } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 52, state }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.fieldBook).toEqual({
+      catches: {},
+      finds: {},
+      sights: [],
+      foes: {},
+      rewarded: [],
+    });
+  });
+
   it('gives a save from before companions none, and no stray being won over', () => {
     const { companions: _c, ...game } = newGame();
     const loaded = deserialize(JSON.stringify({ version: 49, state: game }));

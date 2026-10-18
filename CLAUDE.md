@@ -35,7 +35,7 @@ src/
   core/       Game-agnostic utilities: seeded Rng, Result, math. Knows nothing about the game.
   systems/    Self-contained domain modules. Pure functions over their own slice of state.
     time/ stats/ vitals/ wallet/ housing/ techniques/ missions/ combat/ standing/ journal/
-    modifiers/ profile/ bonds/ inventory/ cooking/ travel/
+    modifiers/ profile/ bonds/ inventory/ cooking/ travel/ collections/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
@@ -598,6 +598,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (cheaper drills) and a guest room (the guest is home every evening). The keepsake shelf is
     read from memories, rival wins and ranks, never stored.
 
+33. **The field book collects what you find** (`docs/design/field-book-plan.md`,
+    `game/fieldBook/`). The `fieldBook` slice (`systems/collections`) keeps counts: catches (the
+    longest, measured from `IngredientDef.length` by hash, never the Rng), finds, sights followed,
+    foes fought and beaten, and pages rewarded; it is written at the action that causes it
+    (`fieldBook/record.ts`). The pages are read from content (every spot's fish, every wild find,
+    every recipe, every sight; foes you've met or a report named), so a new fish or sight is a
+    new slot with no code. Empty slots give a hint (where and when, the sight as unseen), never
+    the name. A full page leaves its `content.fieldBook` reward once (`noteFieldBook` in
+    `dispatch`): a furnishing only it gives, and a keepsake on the shelf. New entries make one
+    line on the day's sheet.
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -808,6 +819,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `shared/furnishings.ts` with one `effect` (a new kind is a case in `comforts`), listed at a
   lettings place's `furnishingIds` unless it has no `cost` (a gift). Validated in
   `validateHomes.ts`.
+- **Add to the field book:** a fish on a fishing spot needs a `length` (validated); a wild find,
+  a recipe or a night sight needs nothing more: its slot appears with a hint read from where it
+  is. A page's reward is in `shared/fieldBook.ts` (a furnishing with no cost, and a keepsake);
+  a new page is a `FIELD_BOOK_PAGES` id with a case in `pageCount`, its entries and its seal.
 - **Add a bar or hot water:** a `tavern` place (`keeper`, `foodIds`, `roundCost`, `cupCost`,
   evening/night `hours`, optional `pastimes` with unique ids) or an `onsen` place (`keeper`,
   `waters` spring or bathhouse, `soakCost`, `hours` without night), validated in

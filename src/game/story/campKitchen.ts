@@ -6,6 +6,7 @@ import type { MissionNote } from '@/systems/missions';
 import { STAT_GRADES } from '@/systems/stats';
 
 import type { GameContext } from '../context';
+import { noteFinds } from '../fieldBook/record';
 import { gatherMoment } from '../gathering';
 import { adjust, chip, log } from '../ops';
 import type { GameState } from '../state';
@@ -43,7 +44,7 @@ export function forageCamp(state: GameState, ctx: GameContext, rng: Rng): CampNo
   }
   const inventory = ids.reduce((inv, id) => stock(inv, id), state.inventory);
   const text = 'You look along the verge and down by the water, and find something for the pot.';
-  const found = adjust({ ...state, inventory }, { energy: -CAMP_FORAGE_ENERGY });
+  const found = adjust({ ...noteFinds(state, ids), inventory }, { energy: -CAMP_FORAGE_ENERGY });
   const logged = log(found, {
     text,
     tone: 'success',

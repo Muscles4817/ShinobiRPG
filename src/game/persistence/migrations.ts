@@ -21,6 +21,7 @@ import { v42ToV43 } from './spectatorMigration';
 import { v43ToV44 } from './daybookMigration';
 import { v47ToV48 } from './ceremonyMigration';
 import { v48ToV49 } from './homeMigration';
+import { v52ToV53 } from './fieldBookMigration';
 import { v46ToV47 } from './notesMigration';
 import { v44ToV45, v45ToV46 } from './rivalMigration';
 import { v49ToV50, v50ToV51, v51ToV52 } from './companionMigration';
@@ -342,4 +343,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   49: v49ToV50,
   50: v50ToV51,
   51: v51ToV52,
+  52: v52ToV53,
 };

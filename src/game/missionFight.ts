@@ -17,6 +17,7 @@ import { deduct } from '@/systems/wallet';
 
 import { enemyParty, playerCombatant } from './combatants';
 import type { GameContext } from './context';
+import { noteFight } from './fieldBook/record';
 import { startFight } from './fightStyle';
 import { helpedOf } from './debrief';
 import {
@@ -125,15 +126,16 @@ export function resolveCombat(
   ctx: GameContext,
 ): GameState {
   const { vitals } = state.character;
+  const stage = activeStage(state, ctx);
+  const foes = stage ? stageFoes(stage) : [];
+  const fought = noteFight(state, foes, outcome.result === 'victory');
   const afterFight = adjust(
-    { ...state, combat: null },
+    { ...fought, combat: null },
     {
       health: outcome.player.health - vitals.health,
       chakra: outcome.player.chakra - vitals.chakra,
     },
   );
-  const stage = activeStage(state, ctx);
-  const foes = stage ? stageFoes(stage) : [];
   const enemies =
     foes.length > 0
       ? foes.map((id) => ctx.content.enemies.require(id).name).join(' and ')

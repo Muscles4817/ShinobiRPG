@@ -1,3 +1,4 @@
+import { fieldBookKeys } from '../fieldBook/keys';
 import type { GameState } from '../state';
 import type { DayStart } from './state';
 
@@ -30,5 +31,6 @@ export function openDay(state: GameState): DayStart {
     satiety: character.vitals.satiety,
     journalFrom: state.journal.nextId,
     ...(state.rival ? { rivalFirsts: Object.keys(state.rival.firsts) } : {}),
+    fieldBook: fieldBookKeys(state.fieldBook),
   };
 }

@@ -12,9 +12,12 @@ export const WILD_INGREDIENTS: readonly IngredientDef[] = [
   { id: 'wild-mushrooms', name: 'Wild Mushrooms', cost: 14, icon: 'leaf' },
   { id: 'mountain-greens', name: 'Mountain Greens', cost: 8, icon: 'leaf' },
   { id: 'wild-ginger', name: 'Wild Ginger', cost: 20, icon: 'leaf' },
-  { id: 'sweetfish', name: 'Sweetfish', cost: 18, icon: 'fish' },
-  { id: 'river-eel', name: 'River Eel', cost: 30, icon: 'fish' },
-  { id: 'crayfish', name: 'Crayfish', cost: 12, icon: 'fish' },
+  { id: 'sweetfish', name: 'Sweetfish', cost: 18, icon: 'fish', length: [14, 28] },
+  { id: 'river-eel', name: 'River Eel', cost: 30, icon: 'fish', length: [40, 95] },
+  { id: 'crayfish', name: 'Crayfish', cost: 12, icon: 'fish', length: [7, 15] },
+  // Rare: the field book's fish page is not full without them.
+  { id: 'mountain-trout', name: 'Mountain Trout', cost: 26, icon: 'fish', length: [24, 48] },
+  { id: 'old-catfish', name: 'Old Whiskers Catfish', cost: 45, icon: 'fish', length: [60, 140] },
   { id: 'watercress', name: 'Watercress', cost: 8, icon: 'leaf' },
   // Only from a beast you've beaten (`EnemyDef.drops`).
   { id: 'wild-game', name: 'Wild Game', cost: 25, icon: 'pot' },
@@ -51,6 +54,7 @@ export const RIVER_SPOTS: readonly FishingSpot[] = [
         seasons: ['Summer'],
         slots: ['morning', 'afternoon'],
       },
+      { ingredientId: 'mountain-trout', weight: 1, seasons: ['Spring'], slots: ['morning'] },
     ],
   },
   {
@@ -69,6 +73,13 @@ export const RIVER_SPOTS: readonly FishingSpot[] = [
     catches: [
       { ingredientId: 'river-eel', weight: 2, slots: ['evening', 'night'], minGrade: 'D' },
       { ingredientId: 'river-fish', weight: 1, slots: ['evening', 'night'] },
+      {
+        ingredientId: 'old-catfish',
+        weight: 1,
+        seasons: ['Autumn', 'Winter'],
+        slots: ['night'],
+        minGrade: 'C',
+      },
     ],
   },
 ];

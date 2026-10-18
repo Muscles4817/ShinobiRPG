@@ -1,3 +1,4 @@
+import { FIELD_BOOK_PAGES } from '@/content';
 import { RANKS } from '@/systems/standing';
 import { formatDate } from '@/systems/time';
 
@@ -8,7 +9,7 @@ import type { GameState } from '../state';
 /**
  * The keepsake shelf: things you didn't buy, read from what already happened. A memory shared
  * with someone (`village.memories`), a race won against your rival, the vest of each rank you
- * have reached; and an empty space for what comes next. Nothing here does anything in a fight.
+ * have reached, each full page of the field book; and an empty space for what comes next. Nothing here does anything in a fight.
  */
 
 export interface Keepsake {
@@ -51,10 +52,23 @@ function rivalry(state: GameState, ctx: GameContext): Keepsake[] {
   ];
 }
 
+/** A keepsake for each full page of the field book, in the order the pages filled. */
+function fullPages(state: GameState, ctx: GameContext): Keepsake[] {
+  return state.fieldBook.rewarded.flatMap((id) => {
+    const page = FIELD_BOOK_PAGES.find((p) => p === id);
+    return page ? [ctx.content.fieldBook[page].keepsake] : [];
+  });
+}
+
 export function keepsakeShelf(state: GameState, ctx: GameContext): KeepsakeShelf {
   const reached = RANKS.slice(0, RANKS.indexOf(state.standing.rank) + 1);
   const vests = reached.flatMap((r) => VEST[r] ?? []);
-  const keepsakes = [...vests, ...rivalry(state, ctx), ...memories(state, ctx)];
+  const keepsakes = [
+    ...vests,
+    ...rivalry(state, ctx),
+    ...fullPages(state, ctx),
+    ...memories(state, ctx),
+  ];
   const next = VEST[RANKS[RANKS.indexOf(state.standing.rank) + 1] ?? 'kage'];
   return {
     keepsakes,

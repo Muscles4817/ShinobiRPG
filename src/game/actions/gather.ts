@@ -1,9 +1,11 @@
 import type { Rng } from '@/core';
 import { drawFind, gatheredToday, type Find } from '@/systems/cooking';
 import { stock } from '@/systems/inventory';
+import type { JournalChip } from '@/systems/journal';
 import { rollCheck } from '@/systems/stats';
 
 import type { GameContext } from '../context';
+import { landCatch, newEntryChips, noteFinds } from '../fieldBook/record';
 import { findsHereNow, spotKey, wildsHere } from '../gathering';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
@@ -48,9 +50,16 @@ function bring(
   });
 }
 
-function haulChips(ctx: GameContext, ids: readonly string[], energy: number) {
+/** What came home, then what the field book made of it (a length, a new entry), then the energy. */
+function haulChips(
+  ctx: GameContext,
+  haul: { readonly ids: readonly string[]; readonly energy: number },
+  noted: readonly JournalChip[] = [],
+) {
+  const { ids, energy } = haul;
   return [
     ...ids.map((id) => chip(ctx.content.ingredients.require(id).name, 'gain')),
+    ...noted,
     chip(`−${energy} energy`, 'cost'),
   ];
 }
@@ -81,13 +90,13 @@ export const forage: ActionHandler<ActionOf<'forage'>> = {
     const sharp = rollCheck(state.character.stats.perception, SHARP_EYE_DIFFICULTY, rng).success;
     const ids = draws(findsHereNow(state, place.finds), sharp ? 2 : 1, rng);
     const energy = hardWorkEnergy(state.character, ctx, FORAGE_ENERGY);
-    return log(bring(state, ctx, { key: place.id, ids, energy }), {
+    return log(bring(noteFinds(state, ids), ctx, { key: place.id, ids, energy }), {
       heading: `Foraging in ${place.name}`,
       text: sharp
         ? 'You go slowly and look closely, and the ground gives up more than most would see.'
         : 'You search until your knees are muddy and come back with a handful.',
       tone: 'info',
-      chips: haulChips(ctx, ids, energy),
+      chips: haulChips(ctx, { ids, energy }, newEntryChips(state, ids)),
     });
   },
 };
@@ -117,13 +126,18 @@ export const fish: ActionHandler<ActionOf<'fish'>> = {
     const bites = rollCheck(state.character.stats.willpower, PATIENCE_DIFFICULTY, rng).success;
     const ids = bites ? draws(findsHereNow(state, spot.catches), 1, rng) : [];
     const energy = hardWorkEnergy(state.character, ctx, FISH_ENERGY);
-    return log(bring(state, ctx, { key: spotKey(place.id, spot.id), ids, energy }), {
+    const key = spotKey(place.id, spot.id);
+    const [caught] = ids;
+    const landing = caught
+      ? landCatch(state, ctx, { ingredientId: caught, spotKey: key })
+      : { state, chips: [] };
+    return log(bring(landing.state, ctx, { key, ids, energy }), {
       heading: `Fishing ${spot.name.toLowerCase()}`,
       text: bites
         ? 'You sit still long enough for the river to forget you, and something takes the line.'
         : 'You fidget, the float never dips, and you go home with wet feet.',
       tone: bites ? 'success' : 'info',
-      chips: haulChips(ctx, ids, energy),
+      chips: haulChips(ctx, { ids, energy }, landing.chips),
     });
   },
 };
