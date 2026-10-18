@@ -3,6 +3,7 @@ import type { Stats } from '@/systems/stats';
 import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
 
 import type { CombatGear, CombatItem } from './gearContract';
+import type { CombatSwarm } from './swarmContract';
 import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
 
 /**
@@ -41,6 +42,7 @@ export type CombatTechnique = Pick<
   | 'element'
   | 'effects'
   | 'chakraCost'
+  | 'swarmCost'
   | 'oncePerFight'
   | 'afterCost'
   | 'combo'
@@ -146,6 +148,8 @@ export interface CombatantSetup {
   readonly orders?: CombatOrders;
   /** Bodies they can call into the fight with a summoning technique (the `summon` verb). */
   readonly calls?: readonly CombatCall[];
+  /** The hive in their body (`swarmContract.ts`). */
+  readonly swarm?: CombatSwarm;
 }
 
 /**
@@ -348,6 +352,8 @@ export interface CombatOutcome {
   readonly summary?: string;
   /** How each summon the player called ended its part, by call id (the last call of each). */
   readonly summons?: Readonly<Record<string, SummonFate>>;
+  /** Insects in the player's hive as the fight ended; absent without a hive. */
+  readonly swarm?: number;
 }
 
 export interface CombatEngine {

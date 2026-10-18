@@ -280,7 +280,13 @@ function numberProblems(pack: ContentPack): string[] {
       .filter((t) => t.effects.length === 0)
       .map((t) => `technique "${t.id}" has no effects`),
     ...pack.techniques
-      .filter((t) => t.chakraCost < 0 || t.difficulty <= 0 || t.effects.some((e) => e.power <= 0))
+      .filter(
+        (t) =>
+          t.chakraCost < 0 ||
+          (t.swarmCost ?? 1) <= 0 ||
+          t.difficulty <= 0 ||
+          t.effects.some((e) => e.power <= 0),
+      )
       .map((t) => `technique "${t.id}" has non-positive numbers`),
     ...pack.techniques.flatMap((t) =>
       t.effects.flatMap((e) => {

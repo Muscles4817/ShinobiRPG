@@ -29,6 +29,8 @@ export interface TechniqueDef {
   /** What it does, in order (damage, then daze…). Never empty (validated). */
   readonly effects: readonly TechniqueEffect[];
   readonly chakraCost: number;
+  /** Insects it spends from its user's hive (`CombatSwarm`), beside its chakra. */
+  readonly swarmCost?: number;
   /** How advanced it is, in the letters of ability grades (see `learning.ts`). */
   readonly rank: StatGrade;
   /** What the body must have to use it at all, whatever the learner's grade. */
