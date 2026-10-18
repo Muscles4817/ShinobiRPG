@@ -150,15 +150,14 @@ function fitted(ordered: readonly Slot[], attack: Slot | undefined, limit: numbe
 
 /**
  * A sensible starting plan, in priority order: a heal for when you're badly hurt, a trump for
- * the last ditch (or first, against a far stronger foe), tools that restore or clear the head
- * (they wait until needed), a sense, flash or Search for when a foe hides,
- * a summon to call, a field to set the ground (it plays only while none of yours is up), an empower or clones and
- * a trap where you can attack (the plan passes over them while they hold), your best attack, an
- * explosive tag, a hold (see `holdSlot`), then more attacks, a conceal and smoke, as many as
- * your slots hold, always
- * keeping the best attack (see `fitted`). Defences and footwork aren't slotted
- * (`readiness.ts`, `stepping.ts`). Attacks your kit can't make from a distance (an archer up
- * close) are left out.
+ * the last ditch (or first, against a far stronger foe), a sense, flash or Search for when a
+ * foe hides, a summon to call, a field to set the ground (it plays only while none of yours is
+ * up), an empower or clones and a trap where you can attack (the plan passes over them while
+ * they hold), your best attack, an explosive tag, tools that restore or clear the head (they
+ * wait until needed), a hold (see `holdSlot`), then more attacks, a conceal and smoke, as many
+ * as your slots hold, always keeping the best attack (see `fitted`). Defences and footwork
+ * aren't slotted (`readiness.ts`, `stepping.ts`). Attacks your kit can't make from a distance
+ * (an archer up close) are left out.
  */
 function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot[] {
   const reaches = canAttackFrom(fighter, band);
@@ -180,9 +179,6 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
   const search = [...tools(pool, 'flash'), ...pool.filter((c) => c.kind === 'search')].slice(0, 1);
   const ordered: Slot[] = [
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
-    // Tools play only when they help (`pouch.ts`): a salve or pill when running low, a charm
-    // when confused, so slotting them costs nothing while they wait.
-    ...plain([...tools(pool, 'heal'), ...tools(pool, 'clarity'), ...tools(pool, 'chakra')]),
     ...(reaches ? trumpSlot(trumps, facing) : []),
     ...finding(best('sense'), search, facing),
     // A summon is called first: it fights beside you from the next exchange (`summons.ts`).
@@ -194,6 +190,9 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     ...plain(damage.slice(0, 1)),
     // An explosive tag is a fixed blast: a strong attack beside a genin's jutsu, spent once.
     ...plain(reaches ? tools(pool, 'blast') : []),
+    // Tools that wait play only when they help (`pouch.ts`: a salve or pill when running low, a
+    // charm when confused), but they still take a slot, so a small plan keeps its attacks first.
+    ...plain([...tools(pool, 'heal'), ...tools(pool, 'clarity'), ...tools(pool, 'chakra')]),
     ...hold.late,
     ...plain([...damage.slice(1), ...best('conceal'), ...tools(pool, 'smoke')]),
   ];
