@@ -7,7 +7,7 @@ export const ROSTER_CONVERSATIONS: readonly ConversationDef[] = [
     personId: 'sayo',
     minStage: 0,
     opener:
-      'Sayo is talking to an empty bench. She stops. "My guest is hungry. Would you leave a little rice at the shrine for him?"',
+      'Sayo is talking to an empty bench. She stops. “My guest is hungry. Would you leave a little rice at the shrine for him?”',
     choices: [
       {
         label: '“Of course. Who is he?”',
@@ -18,7 +18,7 @@ export const ROSTER_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“There’s nobody there.”',
         tone: 'challenge',
-        reply: '"Not to you," she says, and goes back to her conversation.',
+        reply: '“Not to you,” she says, and goes back to her conversation.',
       },
     ],
   },
@@ -27,12 +27,12 @@ export const ROSTER_CONVERSATIONS: readonly ConversationDef[] = [
     personId: 'koun',
     minStage: 0,
     opener:
-      'Old Kōun sets down his broom and pours two cups of tea. "Sit, if you’re not in a hurry."',
+      'Old Kōun sets down his broom and pours two cups of tea. “Sit, if you’re not in a hurry.”',
     choices: [
       {
         label: 'Sit, drink, and say nothing.',
         tone: 'quiet',
-        reply: 'The tea goes cold before either of you speaks. "Good," he says. "Come again."',
+        reply: 'The tea goes cold before either of you speaks. “Good,” he says. “Come again.”',
         favour: 'koun-tea',
       },
       {

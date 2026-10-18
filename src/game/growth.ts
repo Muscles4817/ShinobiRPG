@@ -101,7 +101,7 @@ export function logDiscoveries(
   return discovered.reduce(
     (next, id) =>
       log(next, {
-        heading: `${STAT_INFO[id].label}: a first read`,
+        heading: `A feel for your ${STAT_INFO[id].label.toLowerCase()}`,
         text: reads[aptitudeBand(state.character.aptitude[id])],
         tone: 'info',
       }),

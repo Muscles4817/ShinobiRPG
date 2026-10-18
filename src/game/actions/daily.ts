@@ -1,4 +1,5 @@
 import { isRentOverdue, ownsHouse } from '@/systems/housing';
+import type { JournalChip } from '@/systems/journal';
 import { diffStats, type StatDelta, type StatId } from '@/systems/stats';
 import { slotsUntilNextMorning } from '@/systems/time';
 import { isHungry, maxChakra, METER_MAX, sleepRecovery, type VitalsDelta } from '@/systems/vitals';
@@ -6,6 +7,7 @@ import { spend } from '@/systems/wallet';
 
 import {
   adjust,
+  amountChip,
   busyReason,
   chip,
   firstBlocker,
@@ -23,6 +25,10 @@ import { byTheClock, growCharacter, logDiscoveries, noTalentReason } from '../gr
 import { characterModifiers, hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { closedReason, foodSellersHere, isOpen, marketPrice } from '../village';
+import { DRILL_LINES } from '../everyday/drillLines';
+import { NAP_LINES, nightLines } from '../everyday/restLines';
+import { MEAL_LINES } from '../everyday/tableLines';
+import { tellDaily } from '../everyday/tell';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Everyday life in a village: training, eating, napping and sleeping. */
@@ -104,19 +110,17 @@ export const train: ActionHandler<ActionOf<'train'>> = {
   },
   perform(state, action, ctx) {
     const def = ctx.content.training.require(action.trainingId);
-    const hungry = isHungry(state.character.vitals);
+    const said = tellDaily(state, ctx, DRILL_LINES, { key: def.id, firstOf: `drill:${def.id}` });
     const energy = drillEnergy(state, ctx, def.energyCost, action.yard === true);
     const before = state.character.stats;
     const grown = growCharacter(state.character, byTheClock(state, ctx, def.gains), ctx);
     const { stats } = grown.character;
 
-    let next: GameState = { ...state, character: grown.character };
+    let next: GameState = { ...state, character: grown.character, told: said.told };
     next = adjust(spendTime(next, def.slots, ctx), { energy: -energy });
     const logged = log(next, {
       heading: def.name,
-      text: hungry
-        ? `${def.description} Your rumbling stomach makes it hard to focus.`
-        : def.description,
+      text: said.text,
       tone: 'info',
       chips: [...statChips(diffStats(before, stats)), chip(`−${energy} energy`, 'cost')],
     });
@@ -142,13 +146,14 @@ export const eat: ActionHandler<ActionOf<'eat'>> = {
     const cost = marketPrice(def.cost, state, ctx);
     const paid = spend(state.wallet, cost);
     if (!paid.ok) return state;
+    const said = tellDaily(state, ctx, MEAL_LINES, { key: def.id, firstOf: `meal:${def.id}` });
     const fed = adjust(
-      { ...state, wallet: paid.value },
+      { ...state, wallet: paid.value, told: said.told },
       { satiety: def.satiety, energy: def.energy },
     );
     return log(spendTime(fed, def.slots, ctx), {
       heading: def.name,
-      text: def.description,
+      text: said.text,
       tone: 'info',
       chips: [
         chip(`Hunger −${def.satiety}`, 'gain'),
@@ -170,9 +175,10 @@ export const rest: ActionHandler<ActionOf<'rest'>> = {
   },
   perform(state, _action, ctx) {
     const energy = NAP_ENERGY + comforts(state, ctx).nap;
-    return log(adjust(spendTime(state, 1, ctx), { energy }), {
+    const said = tellDaily(state, ctx, NAP_LINES, { key: 'nap' });
+    return log(adjust(spendTime({ ...state, told: said.told }, 1, ctx), { energy }), {
       heading: 'Nap',
-      text: 'You put the kettle on and doze off before it boils.',
+      text: said.text,
       tone: 'info',
       chips: [chip(`Energy +${energy}`, 'gain')],
     });
@@ -187,10 +193,10 @@ export const sleep: ActionHandler<ActionOf<'sleep'>> = {
     const { text } = ctx.content;
     const locked = lockedOut(state, ctx);
     const hungry = isHungry(state.character.vitals);
-    const story = locked ? text.sleepLockedOut : hungry ? text.sleepHungry : text.sleepWell;
-    const next = sleepTillDawn(state, ctx, {
+    const said = locked ? null : tellDaily(state, ctx, nightLines(text), { key: 'sleep' });
+    const next = sleepTillDawn(said ? { ...state, told: said.told } : state, ctx, {
       healthShare: locked ? LOCKED_OUT_RECOVERY : 1,
-      text: story,
+      text: said?.text ?? text.sleepLockedOut,
       uneasy: locked || hungry,
     });
     return rentReminder(state, next);
@@ -203,6 +209,10 @@ export interface Night {
   readonly text: string;
   /** A rough night (hungry, locked out): the log says so. */
   readonly uneasy: boolean;
+  /** Where the night was spent, when not in your own bed. */
+  readonly heading?: string;
+  /** What the bed cost, on the same entry as the night. */
+  readonly chips?: readonly JournalChip[];
 }
 
 /** To the next morning in a bed: energy and chakra back, and some health. */
@@ -214,13 +224,14 @@ export function sleepTillDawn(state: GameState, ctx: GameContext, night: Night):
   const mended = mendedOvernight(state, characterModifiers(state.character, ctx).injuryNights);
   const rested = adjust(spendTime(mended, slotsUntilNextMorning(state.time), ctx), recovery);
   return log(rested, {
-    heading: 'Sleep till dawn',
+    heading: night.heading ?? 'Sleep till dawn',
     text: night.text,
     tone: night.uneasy ? 'warning' : 'info',
     chips: [
+      ...(night.chips ?? []),
       chip(chakra.partial ? 'Energy restored' : 'Energy & chakra restored', 'gain'),
       ...(chakra.partial ? [chip('Chakra only partly back', 'cost')] : []),
-      chip(`Health +${Math.max(0, rested.character.vitals.health - before)}`, 'gain'),
+      ...amountChip('Health', Math.max(0, rested.character.vitals.health - before), 'gain'),
     ],
   });
 }
@@ -251,7 +262,7 @@ function rentReminder(before: GameState, after: GameState): GameState {
   const wasOverdue = isRentOverdue(before.housing, before.time.day);
   if (wasOverdue || !isRentOverdue(after.housing, after.time.day)) return after;
   return log(after, {
-    text: 'A note is pinned to your door: the rent is due.',
+    text: 'A note pinned to your door says the rent is due.',
     tone: 'warning',
     chips: [chip(`${after.housing.rentPerWeek} ryo / week`, 'cost')],
   });

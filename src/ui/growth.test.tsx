@@ -38,12 +38,13 @@ describe('growth presentation (smoke test)', () => {
       chakraSpent: 8,
       health: 88,
       maxHealth: 100,
-      taught: ['Taijutsu +0.05', 'Strength +0.02'],
+      taught: ['Taijutsu, a little', 'Strength +1'],
     };
     render(<ReportCard report={report} onContinue={ignore} />);
     const taught = screen.getByRole('region', { name: 'What the fight taught you' });
     expect(within(taught).getByText('Taijutsu')).toBeInTheDocument();
-    expect(within(taught).getByText('+0.05')).toBeInTheDocument();
+    expect(within(taught).getByText('a little')).toBeInTheDocument();
+    expect(within(taught).getByText('+1')).toBeInTheDocument();
   });
 
   it('brushes in what a stat gained since the sheet was last shown', () => {

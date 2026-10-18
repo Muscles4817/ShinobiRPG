@@ -148,6 +148,6 @@ export const KOUN_FAVOURS: ArcDef = {
   recommends: {
     personId: 'koun',
     words:
-      'Kōun, the Ash Lantern, comes in from the training ground with the broom still in his hand. "{you} did three favours for an old man," he says, "and the last was the one I couldn’t." The {leader} looks at him a long while. "When did you last ask me for anything, Kōun?" "Never." "Kneel, then, and stand up a chūnin."',
+      'Kōun, the Ash Lantern, comes in from the training ground with the broom still in his hand. “{you} did three favours for an old man,” he says, “and the last was the one I couldn’t.” The {leader} looks at him a long while. “When did you last ask me for anything, Kōun?” “Never.” “Kneel, then, and stand up a chūnin.”',
   },
 };

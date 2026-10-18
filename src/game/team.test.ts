@@ -48,7 +48,7 @@ describe('sparring', () => {
     expect(done.character.stats.taijutsu).toBeGreaterThan(5);
     const card = done.reports.at(-1);
     const gains = card?.kind === 'spar' ? card.gains : [];
-    expect(gains.some((g) => g.startsWith('Taijutsu +'))).toBe(true);
+    expect(gains.some((g) => /^Taijutsu( \+|, )/.test(g))).toBe(true);
   });
 
   it('losing a spar stops before you are badly hurt', () => {

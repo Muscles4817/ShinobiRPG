@@ -32,7 +32,7 @@ describe('the day’s record', () => {
     const pushed = act(atNight(newGame()), { type: 'train', trainingId: 'rooftop-sprints' });
     const view = dayEndView(pushed, ctx)!;
     expect(pushed.daybook.ended?.slept).toBe(false);
-    expect(view.title).toBe('Dawn, and no sleep');
+    expect(view.title).toMatch(/^You never made it to bed, and you worked on your .+\.$/);
     expect(view.button).toBe('Carry on');
     expect(view.aheadLabel).toBe('Today');
     expect(view.hurts.map((h) => h.title)).toContain('No sleep');
@@ -41,7 +41,7 @@ describe('the day’s record', () => {
   it('shows only the sections something happened in', () => {
     // A day slept away: nothing grew, but the sensei's lesson was missed, and he noticed.
     const view = dayEndView(act(newGame(), { type: 'sleep' }), ctx)!;
-    expect(view.title).toBe('A quiet day');
+    expect(view.title).toBe('Gōran thinks less of you.');
     expect([view.moments, view.growth, view.finds, view.hurts]).toEqual([[], [], [], []]);
     expect(view.people.map((p) => p.stamp)).toEqual(['Thinks less of you']);
     expect(view.purse).toBeNull();
@@ -96,7 +96,7 @@ describe('the purse', () => {
     expect(lines).toEqual([
       { label: 'Rice', amount: -24 },
       { label: 'Patrol', amount: 50 },
-      { label: 'Other', amount: -6 },
+      { label: 'Odds and ends', amount: -6 },
     ]);
   });
 });

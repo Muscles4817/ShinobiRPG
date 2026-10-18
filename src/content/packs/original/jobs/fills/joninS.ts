@@ -20,7 +20,7 @@ export const JONIN_S_FILLS: readonly MissionFill[] = [
       foe: 'hollow-lantern',
       second: 'ember-missing-nin',
       surrender:
-        'The Lantern closes the lantern’s shutter with one finger. "Take it home, then. I have read enough."',
+        'The Lantern closes the lantern’s shutter with one finger. “Take it home, then. I have read enough.”',
       ending:
         'The lantern goes back into the sealed archive, still shut. The river villages light their graves again, and the archive’s records say the archivist died years ago.',
     },
@@ -45,7 +45,7 @@ export const JONIN_S_FILLS: readonly MissionFill[] = [
       foe: 'dune-warlords-blade',
       second: 'kurogane-renegade',
       surrender:
-        'The Blade lays his sword across the sand between you. "Tell the forge I kept the edge. It is all I kept."',
+        'The Blade lays his sword across the sand between you. “Tell the forge I kept the edge. It is all I kept.”',
       ending:
         'Without his blade the warlord’s raids fall off within a season. The forge takes back its sword and hangs it on the wall, and nobody asks whose it was.',
     },
@@ -70,7 +70,7 @@ export const JONIN_S_FILLS: readonly MissionFill[] = [
       foe: 'salt-widow',
       second: 'ember-missing-nin',
       surrender:
-        'The Widow lets the sea take her weight and sinks to her knees on the water. "Tell the harbour I am sorry about the ships. Not about the rest."',
+        'The Widow lets the sea take her weight and sinks to her knees on the water. “Tell the harbour I am sorry about the ships. Not about the rest.”',
       ending:
         'The strait is quiet by the next new moon. Port Shiomachi writes to thank the village, and the letter does not mention the Widow by any name.',
     },

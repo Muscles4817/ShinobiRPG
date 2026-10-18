@@ -15,7 +15,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Your sensei leads you out through the gate. "Look underneath the underneath. And stay together."',
+        text: 'Your sensei leads you out through the gate. “Look underneath the underneath. And stay together.”',
       },
       {
         kind: 'check',

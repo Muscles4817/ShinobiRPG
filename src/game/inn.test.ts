@@ -40,6 +40,10 @@ describe('the inn', () => {
     expect(slept.time.day).toBe(worn.time.day + 1);
     expect(slept.time.slot).toBe(0);
     expect(slept.character.vitals.energy).toBeGreaterThan(worn.character.vitals.energy);
+    // The key, the night and the price are one entry, not two.
+    const night = slept.journal.entries.filter((e) => e.id >= worn.journal.nextId);
+    expect(night.filter((e) => e.chips?.some((c) => c.label === `−${ROOM} ryo`))).toHaveLength(1);
+    expect(night.find((e) => e.heading?.startsWith('A room at'))?.text).toMatch(/hands you a key/);
 
     // Nearly as good as your own bed.
     const atHome = act({ ...worn, locationId: 'torogakure' }, { type: 'sleep' }, ctx);

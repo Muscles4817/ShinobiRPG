@@ -5,11 +5,11 @@ import type { PurseLine } from './state';
 /**
  * Where the day's ryo went, read back from the record: every entry that moved ryo carries a
  * chip for it ("−12 ryo", "+240 ryo"). Lines with the same name are added up, and anything the
- * entries don't account for is set down as "Other", so the lines always add up to the change.
+ * entries don't account for is set down as "Odds and ends", so the lines always add up to the change.
  */
 
 const RYO_CHIP = /^([+−-])(\d+) ryo$/;
-const OTHER = 'Other';
+const OTHER = 'Odds and ends';
 
 function ryoIn(entry: JournalEntry): number {
   return (entry.chips ?? []).reduce((sum, c) => {
