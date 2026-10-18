@@ -1,7 +1,7 @@
 import { SOLO } from './crew';
 import { addLedger, applyOutcome } from './outcomes';
 import { advance, pickTwist, startRun, type MissionDef } from './missions';
-import { conditionRefs, holds, moveThread, variantText, type ThreadDef } from './story';
+import { conditionRefs, holds, moveThread, onTheClock, variantText, type ThreadDef } from './story';
 
 const trust: ThreadDef = {
   id: 'trust',
@@ -71,6 +71,13 @@ describe('what a mission remembers', () => {
   it('keeps a thread within its levels', () => {
     expect(moveThread({ trust: 3 }, trust, 2)).toEqual({ trust: 3 });
     expect(moveThread({}, trust, -5)).toEqual({ trust: 0 });
+  });
+
+  it('sets the day’s light to the hour, and leaves other threads alone', () => {
+    const light: ThreadDef = { ...trust, id: 'daylight', clock: true };
+    expect(onTheClock({ trust: 2 }, [trust, light], 0)).toEqual({ trust: 2, daylight: 3 });
+    expect(onTheClock({}, [light], 2)).toEqual({ daylight: 1 });
+    expect(onTheClock({}, [light], 3)).toEqual({ daylight: 0 });
   });
 
   it('lists what a condition reads', () => {

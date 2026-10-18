@@ -29,11 +29,11 @@ export const PROSE_BUDGET: {
   },
   style: {
     original: {
-      meanSentence: 8.2,
-      shortShare: 0.31,
+      meanSentence: 8.3,
+      shortShare: 0.3,
       quipShare: 0.29,
       per1k: {
-        gesture: 2.1,
+        gesture: 2,
         triple: 2.3,
         colon: 1.1,
         vagueSomething: 1.5,

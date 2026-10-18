@@ -70,7 +70,7 @@ export function beginEncounter(state: GameState, ctx: GameContext): GameState {
   const scouted: EncounterFact[] = state.mission.marks.includes(SAW_SCOUTS)
     ? ['count', 'terrain']
     : [];
-  const known = [...new Set([...reported, ...scouted])];
+  const known = [...new Set([...reported, ...scouted, ...(at.stage.shows ?? [])])];
   const notesFrom = state.mission.notes.length;
   const encounter = startEncounter(at.template, known, notesFrom);
   const opening: MissionNote = { kind: 'story', text: at.stage.text };

@@ -59,6 +59,7 @@ export {
   conditionRefs,
   holds,
   moveThread,
+  onTheClock,
   startThreads,
   variantText,
   withMark,
@@ -107,6 +108,7 @@ export {
 export {
   CHECK_FAILURE_PENALTY,
   resolveCheck,
+  resultLine,
   type CheckChoice,
   type CheckResolution,
   type CheckStage,

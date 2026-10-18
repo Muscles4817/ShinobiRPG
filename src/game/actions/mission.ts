@@ -1,8 +1,10 @@
 import {
   advance,
   holds,
+  onTheClock,
   pickTwist,
   resolveCheck,
+  resultLine,
   SOLO,
   startRun,
   variantText,
@@ -81,9 +83,10 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
       tallied: state.village.tallies,
     });
     const taken = { ...pickTaken(state, ctx, def), board: takeJob(state, ctx, def), mission: run };
-    const started = adjust(spendTime(taken, def.slots, ctx), {
-      energy: -def.energyCost,
-    });
+    const started = lightOfDay(
+      adjust(spendTime(taken, def.slots, ctx), { energy: -def.energyCost }),
+      def,
+    );
     return log(started, { heading: def.title, text: def.summary, tone: 'info' });
   },
 };
@@ -113,7 +116,7 @@ export const missionChoose: ActionHandler<ActionOf<'missionChoose'>> = {
     const voiced = voice ? { ...result.run, notes: [...result.run.notes, voice] } : result.run;
     const felt = feel({ ...state, mission: voiced }, result.personal).state;
     const hurt = adjust(felt, { health: -result.damage });
-    if (result.aborted) return failMission(hurt, ctx, stage.failure);
+    if (result.aborted) return failMission(hurt, ctx, resultLine(stage, approach, false));
     return afterStage(hurt, ctx);
   },
 };
@@ -136,6 +139,14 @@ function continueBlocker(state: GameState, stage: MissionStage): string | null {
   }
 }
 
+/** The story's light set to the hour, for a job that keeps it. */
+function lightOfDay(state: GameState, def: MissionDef): GameState {
+  const run = state.mission;
+  if (!run || !def.threads?.some((t) => t.clock)) return state;
+  const threads = onTheClock(run.threads, def.threads, state.time.slot);
+  return { ...state, mission: { ...run, threads } };
+}
+
 /** Days on the road, and what comes up on them (a road event waits for your choice). */
 function onTheRoad(
   state: GameState,
@@ -144,7 +155,10 @@ function onTheRoad(
 ): GameState {
   if (!state.mission) return state;
   const line = variantText(storyOf(state.mission), stage.text, stage.variants);
-  const travelled = travel(state, ctx, stage.days, line);
+  const def = activeMission(state, ctx);
+  const walked = travel(state, ctx, stage.days, line);
+  // A new morning on the road: the light is back.
+  const travelled = def ? lightOfDay(walked, def) : walked;
   if (!travelled.mission) return travelled;
   const run = travelled.mission;
   const noted = { ...run, notes: [...run.notes, { kind: 'story' as const, text: line }] };

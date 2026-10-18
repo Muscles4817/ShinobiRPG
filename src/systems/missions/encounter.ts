@@ -117,6 +117,8 @@ export interface EncounterStage {
   /** False when there is no getting past them (no sneaking). */
   readonly bypassable?: boolean;
   readonly flavour?: Partial<EncounterFlavour>;
+  /** What the stage's own text already tells you ("two men with clubs": the count). */
+  readonly shows?: readonly EncounterFact[];
   /** Where a fight here happens; an open arena when absent. */
   readonly ground?: CombatGround;
 }

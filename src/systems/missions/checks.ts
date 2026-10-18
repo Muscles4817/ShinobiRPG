@@ -29,6 +29,11 @@ function fellShort(approach: Pick<CheckApproach, 'label'>): string {
 
 export type CheckStage = Extract<MissionStage, { kind: 'check' }>;
 
+/** How the check went, told for the way it was tried, else in the stage's own words. */
+export function resultLine(stage: CheckStage, approach: CheckApproach, success: boolean): string {
+  return success ? (approach.success ?? stage.success) : (approach.failure ?? stage.failure);
+}
+
 /** The check being attempted and the approach the player picked for it. */
 export interface CheckChoice {
   readonly stage: CheckStage;
@@ -58,7 +63,7 @@ export function resolveCheck(
   const notes: MissionNote[] = [
     { kind: 'choice', text: hand ? `${approach.label} (${hand.name})` : approach.label },
     { kind: 'roll', stat: approach.stat, chance, success },
-    { kind: 'story', text: success ? stage.success : stage.failure },
+    { kind: 'story', text: resultLine(stage, approach, success) },
   ];
   if (success) {
     const won = applyOutcome(run, story, approach.onSuccess, 'gain');

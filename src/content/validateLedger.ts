@@ -15,7 +15,12 @@ const POOLED_PREFIX = 'pool-';
 function storyLines(stage: MissionStage): string[] {
   switch (stage.kind) {
     case 'check':
-      return [stage.text, stage.success, stage.failure];
+      return [
+        stage.text,
+        stage.success,
+        stage.failure,
+        ...stage.approaches.flatMap((a) => [a.success ?? '', a.failure ?? '']),
+      ];
     case 'decision':
       return [stage.text, ...stage.options.map((o) => o.reply)];
     case 'ending':
