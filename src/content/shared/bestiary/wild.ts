@@ -1,0 +1,273 @@
+import type { EnemyDef } from '../../types';
+import type { FoeKit } from './kit';
+
+/**
+ * Animals by the country they live in, and the sea's pirates and ghosts. Animals are plain:
+ * no chakra and no techniques, only their kit (traits), their size (`healthScale`) and their
+ * meat. Beasts changed by chakra come later and are another thing (the content-pass plan).
+ */
+
+/** A beast's body, whatever its kind: no chakra, no techniques. */
+const PLAIN = { maxChakra: 0, techniqueIds: [] } as const;
+
+export const WILD_BEASTS: readonly EnemyDef[] = [
+  // Woods.
+  {
+    id: 'wild-dog',
+    kind: 'Beast',
+    danger: 'petty',
+    name: 'Wild Dog',
+    description: 'Ribs showing, ears flat, and never alone for long.',
+    baseStat: 4,
+    statBonuses: { speed: 2, perception: 2 },
+    healthScale: 0.6,
+    ...PLAIN,
+    traits: ['pack', 'coward'],
+  },
+  {
+    id: 'grey-wolf',
+    kind: 'Beast',
+    drops: ['wild-game'],
+    danger: 'petty',
+    name: 'Grey Wolf',
+    description: 'Lopes along beside you just out of sight, waiting for you to tire.',
+    baseStat: 5,
+    statBonuses: { speed: 3, perception: 2, strength: 1 },
+    healthScale: 0.7,
+    ...PLAIN,
+    traits: ['pack', 'swift'],
+  },
+  {
+    id: 'wolf-pack-leader',
+    kind: 'Beast',
+    drops: ['wild-game'],
+    danger: 'armed',
+    name: 'Wolf Pack Leader',
+    description: 'Scarred grey muzzle and two younger wolves who go where it looks.',
+    baseStat: 7,
+    statBonuses: { speed: 3, strength: 2, perception: 2 },
+    healthScale: 0.9,
+    ...PLAIN,
+    traits: ['pack'],
+    retinue: [
+      { enemyId: 'grey-wolf', tell: 'open' },
+      { enemyId: 'grey-wolf', tell: 'kept' },
+    ],
+  },
+  {
+    id: 'giant-centipede',
+    kind: 'Beast',
+    danger: 'armed',
+    name: 'Giant Centipede',
+    description:
+      'As long as a man is tall, red-legged, and fast in a way nothing that size should be.',
+    baseStat: 6,
+    statBonuses: { speed: 2, stamina: 2, strength: 1 },
+    healthScale: 0.8,
+    ...PLAIN,
+    traits: ['swift'],
+  },
+  {
+    id: 'hornet-swarm',
+    kind: 'Beast',
+    danger: 'petty',
+    name: 'Hornet Swarm',
+    description: 'A nest knocked out of a cedar, and every one of them angry with you.',
+    baseStat: 4,
+    statBonuses: { speed: 4, stamina: -2 },
+    healthScale: 0.4,
+    ...PLAIN,
+    traits: ['pack', 'swift'],
+  },
+  // Mountains.
+  {
+    id: 'mountain-eagle',
+    kind: 'Beast',
+    danger: 'petty',
+    name: 'Mountain Eagle',
+    description: 'Drops out of the sun on anything it thinks it can carry off.',
+    baseStat: 5,
+    statBonuses: { speed: 4, perception: 3, strength: -1 },
+    healthScale: 0.5,
+    ...PLAIN,
+    traits: ['swift', 'coward'],
+  },
+  {
+    id: 'old-cave-bear',
+    kind: 'Beast',
+    drops: ['wild-game'],
+    danger: 'deadly',
+    name: 'Old Cave Bear',
+    description: 'Has slept in the same cave for twenty winters and woken up angry for every one.',
+    baseStat: 9,
+    statBonuses: { strength: 5, stamina: 4, speed: -1 },
+    healthScale: 1.8,
+    ...PLAIN,
+    traits: ['brawler'],
+  },
+  // Marsh.
+  {
+    id: 'marsh-viper',
+    kind: 'Beast',
+    danger: 'petty',
+    name: 'Marsh Viper',
+    description: 'A brown coil in brown water. You find it by standing on it.',
+    baseStat: 4,
+    statBonuses: { speed: 3, perception: 1 },
+    healthScale: 0.3,
+    ...PLAIN,
+    traits: ['swift', 'coward'],
+  },
+  {
+    id: 'giant-salamander',
+    kind: 'Beast',
+    drops: ['wild-game'],
+    danger: 'armed',
+    name: 'Giant Salamander',
+    description: 'Older than the village, flat as a door, and it bites like one slamming.',
+    baseStat: 6,
+    statBonuses: { stamina: 4, strength: 2, speed: -2 },
+    healthScale: 1.3,
+    ...PLAIN,
+    traits: ['brawler'],
+  },
+  // The shore.
+  {
+    id: 'moray-eel',
+    kind: 'Beast',
+    danger: 'petty',
+    name: 'Moray Eel',
+    description: 'Lives in a hole in the rocks and objects to hands.',
+    baseStat: 5,
+    statBonuses: { speed: 2, strength: 1 },
+    healthScale: 0.5,
+    ...PLAIN,
+    traits: ['coward'],
+  },
+  {
+    id: 'shore-crab',
+    kind: 'Beast',
+    danger: 'armed',
+    name: 'Great Shore Crab',
+    description: 'A shell like a cart wheel. It walks sideways and does not stop.',
+    baseStat: 6,
+    statBonuses: { stamina: 4, strength: 2, speed: -2 },
+    healthScale: 0.9,
+    ...PLAIN,
+    traits: ['armoured'],
+  },
+  {
+    id: 'reef-shark',
+    kind: 'Beast',
+    danger: 'armed',
+    name: 'Reef Shark',
+    description: 'Comes in with the tide when the boats are gutting fish, and stays for more.',
+    baseStat: 7,
+    statBonuses: { strength: 3, speed: 2 },
+    healthScale: 1.2,
+    ...PLAIN,
+    traits: ['brawler'],
+  },
+];
+
+/*#__NO_SIDE_EFFECTS__*/
+export function seaRaiders(kit: FoeKit): EnemyDef[] {
+  return [
+    {
+      id: 'pirate-boarder',
+      kind: 'Pirate',
+      danger: 'armed',
+      name: 'Pirate Boarder',
+      description: 'First over the rail with a cutlass in their teeth. Literally.',
+      baseStat: 6,
+      statBonuses: { strength: 2, speed: 1, taijutsu: 2 },
+      maxChakra: 10,
+      techniqueIds: [kit.cut, kit.palm],
+      traits: ['brawler'],
+    },
+    {
+      id: 'harpoon-thrower',
+      kind: 'Pirate',
+      danger: 'armed',
+      name: 'Harpoon Thrower',
+      description:
+        'Throws a barbed iron as far as most people shoot, then hauls you in on the rope.',
+      baseStat: 6,
+      statBonuses: { strength: 2, perception: 2 },
+      maxChakra: 10,
+      techniqueIds: [kit.throw],
+      traits: ['archer'],
+    },
+    {
+      id: 'pirate-tide-caller',
+      kind: 'Pirate',
+      danger: 'armed',
+      name: 'Tide-Caller',
+      description:
+        'The crew’s luck: brings fog on a clear night and the sea over the side on command.',
+      baseStat: 8,
+      statBonuses: { ninjutsu: 3, chakraControl: 1 },
+      maxChakra: 50,
+      techniqueIds: [kit.waterShot, kit.waterLash, kit.fog],
+      nature: 'water',
+    },
+    {
+      id: 'pirate-captain',
+      kind: 'Pirate',
+      danger: 'deadly',
+      name: 'Pirate Captain',
+      description:
+        'Three ships, a price on their head in four ports, and no intention of paying it.',
+      baseStat: 11,
+      statBonuses: { kenjutsu: 3, strength: 3, willpower: 2, intellect: 1 },
+      maxChakra: 50,
+      techniqueIds: [kit.heavyCut, kit.bleedCut, kit.sweepCut, kit.smoke],
+      traits: ['armoured'],
+    },
+  ];
+}
+
+/*#__NO_SIDE_EFFECTS__*/
+export function restlessDead(kit: FoeKit): EnemyDef[] {
+  return [
+    {
+      id: 'fox-fire',
+      kind: 'Spirit',
+      danger: 'petty',
+      name: 'Fox-Fire',
+      description: 'A cold blue light over the fields at night. Follow it and you are lost.',
+      baseStat: 5,
+      statBonuses: { genjutsu: 3, speed: 2, stamina: -2 },
+      healthScale: 0.4,
+      maxChakra: 40,
+      techniqueIds: [kit.feint],
+      traits: ['spirit', 'illusionist', 'coward'],
+    },
+    {
+      id: 'shrine-spirit',
+      kind: 'Spirit',
+      danger: 'armed',
+      name: 'Forgotten Shrine Spirit',
+      description: 'A roadside god nobody leaves rice for any more. It has noticed.',
+      baseStat: 6,
+      statBonuses: { genjutsu: 3, willpower: 3, stamina: -2 },
+      healthScale: 0.7,
+      maxChakra: 50,
+      techniqueIds: [kit.feint, kit.dread],
+      traits: ['spirit', 'illusionist'],
+    },
+    {
+      id: 'drowned-sailor',
+      kind: 'Spirit',
+      danger: 'armed',
+      name: 'Drowned Sailor',
+      description: 'Walks up the beach on foggy nights, dripping, asking which ship you’re from.',
+      baseStat: 7,
+      statBonuses: { willpower: 3, genjutsu: 2, strength: 1 },
+      healthScale: 0.8,
+      maxChakra: 40,
+      techniqueIds: [kit.dread, kit.waterShot],
+      traits: ['spirit'],
+    },
+  ];
+}

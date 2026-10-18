@@ -8,6 +8,7 @@ import type {
   CombatState,
   CombatTrait,
 } from '../../contract';
+import { splitNarration } from '../../rules/narration';
 import { createDuelEngine } from './engine';
 
 const attributes = {
@@ -153,7 +154,8 @@ describe('duel engine: fight tools', () => {
     );
     for (let seed = 1; seed <= 10; seed++) {
       const next = act(dazed, { optionId: 'item:clarity' }, seed);
-      expect(engine.view(next).log).toContain('hero grips a charm. The fog lifts.');
+      const told = engine.view(next).log.map((l) => splitNarration(l).text);
+      expect(told).toContain('Hero grips a charm. The fog lifts.');
       expect(combatant(next, 'hero').statuses).not.toContain('Confused');
     }
   });

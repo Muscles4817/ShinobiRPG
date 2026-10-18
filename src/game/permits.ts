@@ -9,6 +9,7 @@ import { bondOf } from './people/cast';
 import type { PersonDef } from '@/content';
 import type { GameState } from './state';
 import { waysOf } from './sensei/generate';
+import { placeInText } from './placeName';
 
 /**
  * Slips your sensei signs. The library permit opens its open shelves (the standard techniques
@@ -102,7 +103,7 @@ export function permitAfterLesson(
   };
   return log(signed, {
     heading: 'A library permit',
-    text: `${sensei.name} signs a slip and hands it over. "Show them this at ${library?.name ?? 'the library'}. The open shelves are yours now. The rest waits until you've earned the vest."`,
+    text: `${sensei.name} signs a slip and hands it over. “Show them this at ${placeInText(library?.name ?? 'the library')}. The open shelves are yours now. The rest waits until you’ve earned the vest.”`,
     tone: 'success',
     chips: [{ label: 'Open shelves', tone: 'gain' }],
   });

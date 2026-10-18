@@ -1,7 +1,9 @@
+import { fillSlots } from '@/core';
 import { laidUp, treatedUntil } from '@/systems/companions';
 import { deduct } from '@/systems/wallet';
 
 import { withCompanion, yourCompanion } from '../companions/care';
+import { keeperSlots } from '../companions/keeper';
 import { maxHealthOf } from '../companions/make';
 import type { GameContext } from '../context';
 import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
@@ -31,7 +33,11 @@ export const treatCompanion: ActionHandler<ActionOf<'treatCompanion'>> = {
       busyReason(state),
       fee === null && 'Find an animal clinic.',
       !laidUp(companion, state.time.day) && `${companion.name} doesn’t need treating.`,
-      companion.injury?.treated === true && 'The vet has done all they can. Now it needs rest.',
+      companion.injury?.treated === true &&
+        fillSlots(
+          '{vet} {vet.has} done all {vet.they} can. Now it needs rest.',
+          keeperSlots(state, ctx, placeHere(state, ctx, 'vet')?.keeperId),
+        ),
       fee !== null && state.wallet.ryo < fee && `Needs ${fee} ryo.`,
     );
   },

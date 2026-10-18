@@ -53,6 +53,7 @@ const VERB_FOCUS: Readonly<Record<Verb, string>> = {
   drain: 'Chakra drains',
   afflict: 'Lingering harm',
   counter: 'Ripostes',
+  summon: 'Summons',
 };
 
 /** "Blade", "Flak jacket", "Focus": what kind of piece this is. */

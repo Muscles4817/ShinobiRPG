@@ -66,9 +66,32 @@ export function chip(label: string, tone: ChipTone): JournalChip {
   return { label, tone };
 }
 
+/** Growth below this reads "a touch"; up to a whole point, "a little". */
+const TOUCH_BELOW = 0.05;
+
+/**
+ * How much a change in a stat reads as, by one rule for every chip: a whole number when it
+ * rounds to one or more ("+2"), and a word when it is smaller ("a little", "a touch"), so a
+ * chip never shows a fraction or "+0". No change at all is no chip.
+ */
+export function amountWords(value: number): string | null {
+  const whole = Math.round(value);
+  if (whole !== 0) return `${whole > 0 ? '+' : '−'}${Math.abs(whole)}`;
+  if (value === 0) return null;
+  const size = Math.abs(value) < TOUCH_BELOW ? 'a touch' : 'a little';
+  return value > 0 ? size : `${size} less`;
+}
+
+/** A chip for an amount of something ("Health +12", "Strength, a little"); none for nothing. */
+export function amountChip(label: string, value: number, tone: ChipTone): JournalChip[] {
+  const words = amountWords(value);
+  if (words === null) return [];
+  return [chip(/^[+−]/.test(words) ? `${label} ${words}` : `${label}, ${words}`, tone)];
+}
+
 export function statChips(delta: StatDelta, tone: ChipTone = 'gain'): JournalChip[] {
-  return (Object.entries(delta) as [StatId, number][]).map(([id, value]) =>
-    chip(`${STAT_INFO[id].label} ${value >= 0 ? '+' : ''}${value}`, tone),
+  return (Object.entries(delta) as [StatId, number][]).flatMap(([id, value]) =>
+    amountChip(STAT_INFO[id].label, value, tone),
   );
 }
 

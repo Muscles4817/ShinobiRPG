@@ -41,6 +41,8 @@ export type Report =
       readonly taught?: readonly string[];
       /** A bout only watched (versus): who won, as the card's title ("Haku wins"). */
       readonly verdict?: string;
+      /** The fight in a sentence or two, from the engine (`CombatOutcome.summary`). */
+      readonly summary?: string;
     }
   | {
       readonly kind: 'mission-complete';
@@ -65,6 +67,8 @@ export type Report =
       readonly recipe?: string;
       /** The animal you rescued, waiting at the animal clinic, by the name you gave it. */
       readonly companion?: string;
+      /** The summoning contract you signed at the end of it, by name. */
+      readonly contract?: string;
       /** How the job went, line by line (absent on reports from before the ledger). */
       readonly road?: readonly DebriefLine[];
       readonly crew?: readonly DebriefCrew[];
@@ -92,6 +96,8 @@ export type Report =
       readonly helped?: string;
       /** What the fight taught you, even in defeat, as display labels. */
       readonly taught?: readonly string[];
+      /** The fight in a sentence or two, from the engine (`CombatOutcome.summary`). */
+      readonly summary?: string;
     }
   | {
       readonly kind: 'lesson';

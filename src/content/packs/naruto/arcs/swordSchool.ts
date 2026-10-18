@@ -16,6 +16,8 @@ export const SWORD_SCHOOL_FOE: EnemyDef = {
   kind: 'Rōnin',
   danger: 'deadly',
   name: 'Kiyomasa the Rōnin',
+  proper: true,
+  pronouns: 'he',
   description: 'A wandering swordsman who breaks schools for a living, and has never lost.',
   baseStat: 11,
   statBonuses: { kenjutsu: 4, strength: 2, speed: 1 },

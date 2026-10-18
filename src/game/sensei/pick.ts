@@ -1,10 +1,11 @@
 import type { MissionDef } from '@/systems/missions';
-import { hashUnit } from '@/core';
+import { fillSlots, hashUnit } from '@/core';
 import { weekOf } from '@/systems/time';
 
 import { boardFor, crewFor } from '../board';
 import type { GameContext } from '../context';
 import { chip, log } from '../ops';
+import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
 import { mentorOf } from './plan';
 import { withRegard } from './state';
@@ -16,6 +17,8 @@ import { withRegard } from './state';
  */
 
 export const PICK_REGARD = 4;
+const PICK_DONE =
+  '{name} picked that job for the team. {name.they} look{name.s} pleased it’s done.';
 
 export function senseiPick(state: GameState, ctx: GameContext): MissionDef | null {
   const sensei = mentorOf(state, ctx);
@@ -48,7 +51,7 @@ export function pickDone(state: GameState, ctx: GameContext, def: MissionDef): G
   return log(
     { ...state, mentor },
     {
-      text: `${sensei.name} picked that job for the team. They look pleased it’s done.`,
+      text: fillSlots(PICK_DONE, personSlots('name', sensei)),
       tone: 'success',
       chips: [chip(`${sensei.name}’s regard rises`, 'gain')],
     },

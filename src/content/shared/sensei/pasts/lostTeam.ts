@@ -4,7 +4,7 @@ import type { SenseiPast } from '../../../senseiParts';
 export const LOST_TEAM: SenseiPast = {
   id: 'lost-team',
   wound:
-    '{name} came home from {place} the only one of their old team. {lost} was the last to fall.',
+    '{name} came home from {place} the only one of {name.their} old team. {lost} was the last to fall.',
   temperaments: ['iron-bell', 'big-sibling', 'old-soldier', 'quiet-blade', 'scholar'],
   regions: ['mountain-pass', 'forest-track', 'hill-road'],
   nudge: { grip: 'tight', onMissions: 'shield' },
@@ -24,7 +24,7 @@ export const LOST_TEAM: SenseiPast = {
   beats: [
     {
       opener:
-        '{them} is turning {keepsake} over in their hands when you come by. It isn’t theirs. “Old habit,” {them} says. “Never mind it.”',
+        '{them} is turning {keepsake} over in {them.their} hands when you come by. It isn’t {them.theirs}. “Old habit,” {them} says. “Never mind it.”',
       choices: [
         {
           label: 'Ask whose it was',
@@ -32,7 +32,7 @@ export const LOST_TEAM: SenseiPast = {
           reply: '“A friend’s,” {them} says, and puts it away. “Another time.”',
         },
         {
-          label: 'Sit with them a while and say nothing',
+          label: 'Sit with {them.them} a while and say nothing',
           tone: 'quiet',
           reply: '{them} seems glad you didn’t ask.',
         },
@@ -58,7 +58,7 @@ export const LOST_TEAM: SenseiPast = {
           reply: '{them} looks at you oddly. “Luck,” {them} says. “Yes.”',
         },
         {
-          label: 'Ask if your team is as good as theirs',
+          label: 'Ask if your team is as good as {them.theirs}',
           tone: 'challenge',
           reply: '“Better,” {them} says. “You have a worse sensei to make up for.”',
         },
@@ -66,7 +66,7 @@ export const LOST_TEAM: SenseiPast = {
     },
     {
       opener:
-        '{them} tells it plainly, as if it happened to someone else: the job at {place}, the ambush in the rain, {lost} shouting for the others to run. “I ran,” {them} says. “I was the one who was meant to lead.”',
+        '{them} tells it plainly, as if it happened to someone else, the job at {place} and the ambush in the rain and {lost} shouting for the others to run. “I ran,” {them} says. “I was the one who was meant to lead.”',
       choices: [
         {
           label: 'Tell {them} running was what {lost} wanted',
@@ -118,7 +118,7 @@ export const LOST_TEAM: SenseiPast = {
       gate: '{name} says nothing at the gate. {keepsake} hangs from {name}’s belt.',
       road: 'The road to {place}. {name} sets a hard pace and doesn’t talk.',
       check:
-        'Near {place} the signs are old and new at once: a cold camp, a fresh one, a path someone wanted hidden.',
+        'Near {place} the signs are old and new at once, a cold camp beside a fresh one and a path someone wanted hidden.',
       found: 'A hollow under a rock face, a blade-rack, a fire banked for someone coming back.',
       lost: 'The trail runs out on wet stone. {name} finds the hollow anyway, as if {name} always knew.',
       camp: 'You camp out of sight of it. {name} sits up all night, facing the dark.',
@@ -134,7 +134,7 @@ export const LOST_TEAM: SenseiPast = {
       question:
         'At the edge of {place}, {name} stops. “I could end {foe} here,” {name} says. “Or bring {foe} home to answer for it. What would you do?”',
       mercy: {
-        label: '“Bring them home. Let the village judge.”',
+        label: '“Bring {foe.them} home. Let the village judge.”',
         reply: '{name} breathes out, long. “That is what {lost} would have said.”',
       },
       leave: {

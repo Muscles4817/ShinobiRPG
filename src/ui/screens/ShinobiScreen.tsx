@@ -1,3 +1,4 @@
+import { ContractCard } from '../components/ContractCard';
 import { useState } from 'react';
 
 import { headerView, shinobiView } from '@/game';
@@ -83,6 +84,7 @@ export function ShinobiScreen({
           Registry no. {view.registryNo}, issued {view.issued}. Pronouns: {view.pronouns}.
         </p>
       </section>
+      <ContractCard ctx={ctx} state={state} perform={perform} />
       <section className="identity">
         {view.kekkeiGenkai && (
           <p>

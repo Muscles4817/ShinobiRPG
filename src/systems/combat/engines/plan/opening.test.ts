@@ -91,13 +91,13 @@ describe('plan & watch openings', () => {
     expect(view.range).toBe('close');
     expect(view.combatants.find((c) => c.id === 'hero')?.statuses).toContain('Hidden');
     expect(bandit(engine, state)?.statuses).toContain('Dazed');
-    expect(view.log).toContain('bandit is caught off balance!');
+    expect(said(view.log)).toContain('Bandit is caught off balance.');
   });
 
   it('a foe dazed by the opening loses the first exchange, then recovers', () => {
     const state = engine.start(setup({ opening: { dazed: ['bandit'] } }), createRng(1));
     const first = act(engine, act(engine, state, 'begin'), 'next');
-    expect(said(engine.view(first).log)).toContain('bandit is dazed and loses the exchange.');
+    expect(said(engine.view(first).log)).toContain('Bandit is dazed and loses the exchange.');
     expect(bandit(engine, first)?.statuses).not.toContain('Dazed');
   });
 
@@ -113,7 +113,7 @@ describe('plan & watch openings', () => {
       const state = engine.start(fight, createRng(seed));
       const log = engine.view(act(engine, act(engine, state, 'begin'), 'next', seed)).log;
       const exchange = log.slice(log.indexOf('— First exchange —') + 1);
-      expect(exchange[0]).toMatch(/^bandit/);
+      expect(exchange[0]).toMatch(/^bandit/i);
     }
   });
 });
@@ -131,7 +131,7 @@ describe('plan & watch trump cards', () => {
     let state = act(engine, engine.start(fight, createRng(3)), 'begin');
     for (let round = 0; round < 3; round++)
       state = act(engine, act(engine, state, 'round'), 'begin');
-    const uses = said(engine.view(state).log).filter((line) => castsLine(line, 'hero', 'Blaze'));
+    const uses = engine.view(state).log.filter((line) => castsLine(line, 'hero', 'Blaze'));
     expect(uses).toHaveLength(1);
     const plan = decode(state);
     const beaten = plan.fighters.map((f) => (f.side === 'enemy' ? { ...f, health: 0 } : f));

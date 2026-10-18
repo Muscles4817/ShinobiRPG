@@ -1,8 +1,11 @@
+import { fillSlots } from '@/core';
+
 import { firstBlocker, log } from '../ops';
 import { findPerson } from '../people/cast';
+import { personSlots } from '../people/pronouns';
 import { PURSE, runRaceLeg as runLeg, startRace } from '../rival/contest';
 import { TAKEN_UP } from '../rival/lines';
-import { contestBlocker } from './rival';
+import { contestBlocker, rivalSlots } from './rival';
 import { spar } from './spar';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -15,9 +18,12 @@ export const challengeRival: ActionHandler<ActionOf<'challengeRival'>> = {
   check(state, action, ctx) {
     const rival = state.rival;
     if (!rival) return 'You have no rival yet.';
+    const slots = rivalSlots(state, ctx);
     return firstBlocker(
-      rival.challenge !== null && 'They have already challenged you. Answer that first.',
-      rival.lastChallengeDay === state.time.day && 'You’ve already had it out with them today.',
+      rival.challenge !== null &&
+        fillSlots('{name} {name.has} already challenged you. Answer that first.', slots),
+      rival.lastChallengeDay === state.time.day &&
+        fillSlots('You’ve already had it out with {name.them} today.', slots),
       action.stakes === 'purse' && state.wallet.ryo < PURSE && `A purse needs ${PURSE} ryo.`,
       contestBlocker(state, ctx),
     );
@@ -30,7 +36,7 @@ export const challengeRival: ActionHandler<ActionOf<'challengeRival'>> = {
       { ...state, rival: { ...rival, lastChallengeDay: state.time.day } },
       {
         heading: `You challenge ${person.name}`,
-        text: TAKEN_UP[rival.temperament].replaceAll('{name}', person.name),
+        text: fillSlots(TAKEN_UP[rival.temperament], personSlots('name', person)),
         tone: 'info',
       },
     );

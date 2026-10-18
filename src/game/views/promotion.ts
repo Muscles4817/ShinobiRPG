@@ -1,3 +1,4 @@
+import { fillSlots } from '@/core';
 import { RANK_LABELS } from '@/systems/standing';
 import { STAT_INFO, statTier } from '@/systems/stats';
 import { DISCIPLINES } from '@/systems/techniques';
@@ -8,6 +9,7 @@ import { senseiOf } from '../exam/entry';
 import { chuninVest } from '../exam/promotion';
 import type { Ceremony } from '../exam/state';
 import { unlocksFor, type Unlock } from '../exam/unlocks';
+import { personSlots } from '../people/pronouns';
 import { farewellDue } from '../sensei/farewell';
 import type { GameState } from '../state';
 
@@ -57,8 +59,11 @@ function speechFor(ceremony: Ceremony, state: GameState, ctx: GameContext): stri
         ctx.content.arcs.require(ceremony.arcId).recommends?.words ??
         text.promotions[ceremony.rank].speech
       );
-    case 'sensei':
-      return text.promotionRoutes.sensei.replaceAll('{sensei}', senseiOf(state, ctx)?.name ?? '');
+    case 'sensei': {
+      const sensei = senseiOf(state, ctx);
+      const said = text.promotionRoutes.sensei;
+      return fillSlots(said, sensei ? personSlots('sensei', sensei) : { sensei: '' });
+    }
   }
 }
 

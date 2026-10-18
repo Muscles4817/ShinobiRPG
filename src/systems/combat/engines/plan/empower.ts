@@ -15,6 +15,7 @@ import {
   type EffectUse,
 } from '../../rules/verbs';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Empower in a planned fight: the user's stats rise at once (every rule reads them raised), the
@@ -31,15 +32,18 @@ export function empowerSelf(round: Round, actor: PlanFighter, use: EffectUse<'em
   const { opens } = use.effect;
   const climbs = opens !== undefined && canOpen(actor, use.technique);
   if (actor.empowered && !climbs) {
-    return say(round, `${actor.name} is already pushing past their limits.`);
+    return say(round, tell('{a} {a.is} already pushing past {a.their} limits.', { a: actor }));
   }
   const change = empower(actor, use, { drive: driveOf(actor, use), exchange: round.number });
   const climbed = opens ? opens.step - openStep(actor, opens.ladder) : 0;
   const chakra = Math.min(actor.maxChakra, actor.chakra + climbed * CHAKRA_SURGE_PER_STEP);
   const fighters = round.fighters.map((f) => (f.id === actor.id ? { ...f, ...change, chakra } : f));
   const told = opens
-    ? `${actor.name} forces open ${stepWords(opens)}; chakra roars through their body.`
-    : `Chakra surges through ${actor.name}'s body.`;
+    ? tell('{a} force{a.s} open {gate}; chakra roars through {a.their} body.', {
+        a: actor,
+        gate: stepWords(opens),
+      })
+    : tell('Chakra surges through {a.poss} body.', { a: actor });
   return say({ ...round, fighters }, told);
 }
 
@@ -64,9 +68,9 @@ function tick(round: Round, id: string, exchange: number): Round {
   const fighters = round.fighters.map((g) => (g.id === id ? next : g));
   const price = f.health - health;
   const lines = [
-    ...(price > 0 ? [harmLine(`The strain tells on ${f.name}'s body.`, price)] : []),
-    ...(spent ? [`${f.name}'s body gives out, and the gates slam shut.`] : []),
-    ...(over && !spent ? [`${f.name}'s surge of strength fades.`] : []),
+    ...(price > 0 ? [harmLine(tell('The strain tells on {a.poss} body.', { a: f }), price)] : []),
+    ...(spent ? [tell('{a.poss} body gives out, and the gates slam shut.', { a: f })] : []),
+    ...(over && !spent ? [tell('{a.poss} surge of strength fades.', { a: f })] : []),
   ];
   return say({ ...round, fighters }, ...lines);
 }

@@ -1,3 +1,4 @@
+import { counted } from '@/core';
 import type { GameContext } from '../context';
 import { examAnnounced } from '../exam/calendar';
 import { examWord, finalsToday, type ExamWord } from '../exam/spectators';
@@ -20,7 +21,7 @@ export interface ExamFinalsView {
 
 function whenText(days: number): string {
   if (days === 0) return 'Today';
-  return days === 1 ? 'Tomorrow' : `In ${days} days`;
+  return days === 1 ? 'Tomorrow' : `In ${counted(days, 'day')}`;
 }
 
 export function examFinalsView(state: GameState, ctx: GameContext): ExamFinalsView | null {

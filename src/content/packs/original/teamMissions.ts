@@ -15,7 +15,7 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Your sensei leads the three of you out through the gate. "Stay together. That is the whole lesson."',
+        text: 'Your sensei leads the three of you out through the gate. “Stay together. That is the whole lesson.”',
       },
       {
         kind: 'check',
@@ -91,7 +91,13 @@ export const TEAM_MISSIONS: readonly MissionDef[] = [
       'Someone has lit the abandoned kilns above the falls. The Old Lamp wants a team to find out who.',
     slots: 4,
     energyCost: 30,
-    reward: { ryo: 360, reputation: 9, scrollId: 'old-lamp-dawn', gearId: 'inkwell-blade' },
+    reward: {
+      ryo: 360,
+      reputation: 9,
+      scrollId: 'old-lamp-dawn',
+      gearId: 'inkwell-blade',
+      contractId: 'kiln-salamanders',
+    },
     minMissionsCompleted: 6,
     stages: [
       {

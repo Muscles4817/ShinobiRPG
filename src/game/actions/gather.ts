@@ -13,6 +13,9 @@ import { adjust, busyReason, chip, firstBlocker, log, spendTime } from '../ops';
 import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
+import { placeInText } from '../placeName';
+import { tellDaily } from '../everyday/tell';
+import { FISH_BITE, FISH_NOTHING, FORAGE_PLAIN, FORAGE_SHARP } from '../everyday/wildLines';
 
 /**
  * Gathering: forage a wild place for what's in season, or cast a line at one of its spots for
@@ -90,11 +93,11 @@ export const forage: ActionHandler<ActionOf<'forage'>> = {
     const sharp = rollCheck(state.character.stats.perception, SHARP_EYE_DIFFICULTY, rng).success;
     const ids = draws(findsHereNow(state, place.finds), sharp ? 2 : 1, rng);
     const energy = hardWorkEnergy(state.character, ctx, FORAGE_ENERGY);
-    return log(bring(noteFinds(state, ids), ctx, { key: place.id, ids, energy }), {
-      heading: `Foraging in ${place.name}`,
-      text: sharp
-        ? 'You go slowly and look closely, and the ground gives up more than most would see.'
-        : 'You search until your knees are muddy and come back with a handful.',
+    const said = tellDaily(state, ctx, sharp ? FORAGE_SHARP : FORAGE_PLAIN, { key: place.id });
+    const found = noteFinds({ ...state, told: said.told }, ids);
+    return log(bring(found, ctx, { key: place.id, ids, energy }), {
+      heading: `Foraging in ${placeInText(place.name)}`,
+      text: said.text,
       tone: 'info',
       chips: haulChips(ctx, { ids, energy }, newEntryChips(state, ids)),
     });
@@ -128,14 +131,14 @@ export const fish: ActionHandler<ActionOf<'fish'>> = {
     const energy = hardWorkEnergy(state.character, ctx, FISH_ENERGY);
     const key = spotKey(place.id, spot.id);
     const [caught] = ids;
+    const said = tellDaily(state, ctx, bites ? FISH_BITE : FISH_NOTHING, { key });
+    const heard = { ...state, told: said.told };
     const landing = caught
-      ? landCatch(state, ctx, { ingredientId: caught, spotKey: key })
-      : { state, chips: [] };
+      ? landCatch(heard, ctx, { ingredientId: caught, spotKey: key })
+      : { state: heard, chips: [] };
     return log(bring(landing.state, ctx, { key, ids, energy }), {
       heading: `Fishing ${spot.name.toLowerCase()}`,
-      text: bites
-        ? 'You sit still long enough for the river to forget you, and something takes the line.'
-        : 'You fidget, the float never dips, and you go home with wet feet.',
+      text: said.text,
       tone: bites ? 'success' : 'info',
       chips: haulChips(ctx, { ids, energy }, landing.chips),
     });

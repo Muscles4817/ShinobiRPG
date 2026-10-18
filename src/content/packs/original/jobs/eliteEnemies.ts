@@ -10,6 +10,8 @@ export const ELITE_ENEMIES: readonly EnemyDef[] = [
     kind: 'Rogue',
     danger: 'elite',
     name: 'The Hollow Lantern',
+    proper: true,
+    pronouns: 'he',
     description:
       'A jōnin who walked out of the archive with a sealed lantern under one arm, and has been reading its seals aloud ever since.',
     baseStat: 14,
@@ -23,6 +25,8 @@ export const ELITE_ENEMIES: readonly EnemyDef[] = [
     kind: 'Rogue',
     danger: 'elite',
     name: 'The Warlord’s Blade',
+    proper: true,
+    pronouns: 'he',
     description:
       'Once the best sword the village had. Now the dune warlord’s, and paid in water and gold.',
     baseStat: 15,
@@ -36,6 +40,8 @@ export const ELITE_ENEMIES: readonly EnemyDef[] = [
     kind: 'Rogue',
     danger: 'elite',
     name: 'The Salt Widow',
+    proper: true,
+    pronouns: 'she',
     description:
       'A water jōnin who sank her own patrol boat and took to the strait. The pirates there call her mother.',
     baseStat: 14,

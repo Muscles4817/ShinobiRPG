@@ -30,6 +30,7 @@ export const VERBS = [
   'drain',
   'afflict',
   'counter',
+  'summon',
 ] as const;
 export type Verb = (typeof VERBS)[number];
 
@@ -156,6 +157,8 @@ interface VerbExtras {
   readonly drain: { readonly absorb?: true };
   /** Which lingering harm it leaves. */
   readonly afflict: { readonly harm: AfflictionKind };
+  /** Which of its user's summons it calls (`CombatCall.id`). */
+  readonly summon: { readonly call: string };
 }
 
 type ExtrasOf<V extends Verb> = V extends keyof VerbExtras ? VerbExtras[V] : unknown;
@@ -163,7 +166,7 @@ type ExtrasOf<V extends Verb> = V extends keyof VerbExtras ? VerbExtras[V] : unk
 export type TechniqueEffect = { readonly [V in Verb]: EffectBase<V> & ExtrasOf<V> }[Verb];
 
 /** Verbs whose effects need nothing beyond their power. */
-export type PlainVerb = Exclude<Verb, 'field' | 'empower' | 'knock' | 'afflict'>;
+export type PlainVerb = Exclude<Verb, 'field' | 'empower' | 'knock' | 'afflict' | 'summon'>;
 
 /** How many blows a wounding effect lands as: a flurry's count, or one. */
 export function blowsOf(effect: TechniqueEffect): number {

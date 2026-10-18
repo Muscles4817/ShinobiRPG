@@ -5,6 +5,7 @@ import { bondOf, findPerson, requirePerson, tastesOf, whereNow } from '../people
 import { behindGate } from '../compounds';
 import { warmed } from '../people/warmth';
 import { pickConversation } from '../people/talk';
+import { heardId, talkPick } from '../people/topics';
 import { festivalBondBonus } from '../village';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
@@ -28,12 +29,12 @@ export const talk: ActionHandler<ActionOf<'talk'>> = {
   },
   perform(state, action, ctx, rng) {
     const person = requirePerson(state, ctx, action.personId);
-    const conversation = pickConversation(state, ctx, person, rng);
+    const { def, topicKey } = pickConversation(state, ctx, person, rng);
     return {
       ...state,
       people: {
         ...state.people,
-        conversation: { personId: person.id, conversationId: conversation.id, answer: null },
+        conversation: { personId: person.id, conversationId: def.id, topicKey, answer: null },
       },
     };
   },
@@ -67,7 +68,8 @@ export const reply: ActionHandler<ActionOf<'reply'>> = {
       reactionTo(tastesOf(person, ctx), choice.tone) + festivalBondBonus(state, ctx),
       person,
     );
-    const after = recordTalk(before, { day: state.time.day, delta, heard: talking.conversationId });
+    const heard = heardId(talkPick(ctx, person, talking));
+    const after = recordTalk(before, { day: state.time.day, delta, heard });
     const stage = stageOf(after.points);
     const newStage = stage > stageOf(before.points) ? stage : null;
     const next = {

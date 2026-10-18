@@ -83,6 +83,13 @@ export interface EncounterFlavour {
   readonly spotted: string;
 }
 
+/** Another way a template's moments can read, fitting some jobs or grounds (any, when absent). */
+export interface FlavourSet {
+  readonly jobs?: readonly JobKind[];
+  readonly grounds?: readonly CombatGround[];
+  readonly flavour: EncounterFlavour;
+}
+
 /**
  * A kind of encounter (a bandit camp, a beast, a lone rogue, a guarded building, a spirit): the
  * approaches that make sense against it, its recon options, how alert it starts and how it is
@@ -99,6 +106,8 @@ export interface EncounterTemplate {
   /** How hard they are to talk round or frighten off, before alertness. */
   readonly resolve: number;
   readonly flavour: EncounterFlavour;
+  /** Other ways it can read, drawn when an encounter begins so the same camp rarely comes twice. */
+  readonly variants?: readonly FlavourSet[];
 }
 
 /** The encounter stage as a mission writes it. */
@@ -117,6 +126,8 @@ export interface EncounterStage {
   /** False when there is no getting past them (no sneaking). */
   readonly bypassable?: boolean;
   readonly flavour?: Partial<EncounterFlavour>;
+  /** What the stage's own text already tells you ("two men with clubs": the count). */
+  readonly shows?: readonly EncounterFact[];
   /** Where a fight here happens; an open arena when absent. */
   readonly ground?: CombatGround;
 }
@@ -131,6 +142,8 @@ export interface EncounterRun {
   readonly tried: readonly ApproachId[];
   /** Where in the mission's notes the encounter began, so its scene shows only its own lines. */
   readonly notesFrom: number;
+  /** Which of the template's `variants` it reads as; its own flavour when absent. */
+  readonly flavourSet?: number;
 }
 
 /** The approaches a stage offers: its own list or the template's, as the foes allow. */
@@ -148,20 +161,35 @@ export function encounterApproaches(
   );
 }
 
-/** The template's words with the stage's own swapped in. */
+/** The template's words (or the set drawn for this encounter) with the stage's own swapped in. */
 export function encounterFlavour(
   stage: EncounterStage,
   template: EncounterTemplate,
+  set?: number,
 ): EncounterFlavour {
-  return { ...template.flavour, ...stage.flavour };
+  const drawn = set === undefined ? undefined : template.variants?.[set]?.flavour;
+  return { ...(drawn ?? template.flavour), ...stage.flavour };
+}
+
+/**
+ * The ways this stage may read: the template's own (-1) and every set that fits its job and
+ * ground (an unset ground is open ground, the arena).
+ */
+export function flavourChoices(stage: EncounterStage, template: EncounterTemplate): number[] {
+  const ground = stage.ground ?? 'arena';
+  const fits = (set: FlavourSet) =>
+    (set.jobs?.includes(stage.job) ?? true) && (set.grounds?.includes(ground) ?? true);
+  return [-1, ...(template.variants ?? []).flatMap((set, i) => (fits(set) ? [i] : []))];
 }
 
 export function startEncounter(
   template: EncounterTemplate,
   known: readonly EncounterFact[],
   notesFrom: number,
+  flavourSet = -1,
 ): EncounterRun {
-  return { alertness: template.alertness, known: [...known], recons: 0, tried: [], notesFrom };
+  const run = { alertness: template.alertness, known: [...known], recons: 0, tried: [], notesFrom };
+  return flavourSet < 0 ? run : { ...run, flavourSet };
 }
 
 /** One step more alert: unaware → wary → alert. */

@@ -51,7 +51,7 @@ describe('training with your sensei (the weekly lesson)', () => {
     const after = act(newGame(), goranTaijutsu);
     expect(blockerFor(after, goranTaijutsu, ctx)).toBe('You’ve already trained with Gōran today.');
     expect(blockerFor(at(after, MORNING, 2), goranTaijutsu, ctx)).toBe(
-      'Your next lesson is in 6 days.',
+      'Your next lesson is in six days.',
     );
     expect(blockerFor(at(after, MORNING, 8), goranTaijutsu, ctx)).toBeNull();
   });
@@ -109,7 +109,7 @@ describe('training with your sensei (the weekly lesson)', () => {
   it('comes to the training ground for you by day, but not at night', () => {
     expect(blockerFor(at(newGame(), EVENING), goranTaijutsu, ctx)).toBeNull();
     expect(blockerFor(at(newGame(), NIGHT), goranTaijutsu, ctx)).toBe(
-      'Gōran is at The Paper Lantern right now.',
+      'Gōran is at the Paper Lantern right now.',
     );
   });
 
@@ -144,7 +144,7 @@ describe('training with other teachers', () => {
     expect(after.character.stats.ninjutsu).toBeGreaterThan(flush.character.stats.ninjutsu);
     expect(after.reports.some((r) => r.kind === 'lesson')).toBe(false);
     expect(blockerFor(at(after, EVENING, 2), akariNinjutsu, ctx)).toBe(
-      'Akari has no more time for you until next week, in 6 days.',
+      'Akari has no more time for you until next week, in six days.',
     );
   });
 

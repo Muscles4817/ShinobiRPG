@@ -87,8 +87,10 @@ export const senseiSession: ActionHandler<SenseiSession> = {
       teachers,
     });
     const energy = hardWorkEnergy(state.character, ctx, SHORT_SESSION_ENERGY);
+    const story = sessionText(state, ctx, sensei, meeting.format);
     const trained: GameState = {
       ...state,
+      told: story.told,
       character: grown.character,
       mentor: withAttendance(
         { ...state.mentor, outcomes: { ...state.mentor.outcomes, [meeting.day]: 'kept' } },
@@ -98,7 +100,7 @@ export const senseiSession: ActionHandler<SenseiSession> = {
     const next = adjust(spendTime(trained, SHORT_SESSION_SLOTS, ctx), { energy: -energy });
     const logged = log(next, {
       heading: `${FORMAT_LABELS[meeting.format]} with ${sensei.name}`,
-      text: sessionText(sensei, meeting.format),
+      text: story.line,
       tone: 'success',
       chips: [
         ...statChips(diffStats(state.character.stats, grown.character.stats)),

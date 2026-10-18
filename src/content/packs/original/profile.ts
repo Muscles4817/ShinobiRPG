@@ -80,8 +80,8 @@ export const BREAK_IN: BreakInScene = {
     'The records room smells of dust and lamp oil. Your file is in the third drawer, thicker than you expected.',
   instructor: 'Instructor Rin',
   caught:
-    'A lantern flares in the doorway. "Reading your own file the night before graduation?" ' +
-    'Instructor Rin sighs, and almost smiles. "Go home. Be on time tomorrow. And put the drawer back."',
+    'A lantern flares in the doorway. “Reading your own file the night before graduation?” ' +
+    'Instructor Rin sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”',
 };
 
 /** Names for generated genin: your classmates and teammates. */

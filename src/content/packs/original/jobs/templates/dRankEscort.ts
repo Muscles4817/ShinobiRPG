@@ -35,8 +35,12 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
       jokeReply: 'a sentence: what the charge does when you make a joke of it',
       chatter: 'a sentence: the first day of the road, and the charge’s character',
       fuss: 'a sentence: the charge causes trouble on the second day',
-      fussSettled: 'a sentence: you settle the trouble and keep moving',
-      fussCostly: 'a sentence: the trouble costs you the light',
+      fussWaited: 'a sentence: you wait the trouble out patiently, and it passes',
+      fussSettled: 'a sentence: a clever fix settles the trouble and you keep moving',
+      fussCarried: 'a sentence: you settle the trouble by main strength',
+      fussSnapped: 'a sentence: you lose your patience, and the trouble costs you the light',
+      fussStumped: 'a sentence: no clever fix works, and the trouble costs you the light',
+      fussCostly: 'a sentence: brute strength doesn’t do it, and the trouble costs you the light',
       camp: 'a sentence: where you make camp, and the night',
       confidence:
         'a sentence: what the charge tells you by the fire once they trust you, and why this journey matters',
@@ -69,6 +73,15 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
         label: 'Daylight',
         levels: ['Dark', 'Dusk', 'Afternoon', 'Morning'],
         start: 3,
+        ledger: {
+          fell: [
+            'It cost the light.',
+            'That cost more of it.',
+            'The last of the light went with it.',
+          ],
+          rose: 'It saved some light.',
+        },
+        clock: true,
       },
     ],
     charge: {
@@ -100,31 +113,41 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
             label: 'Keep your patience',
             stat: 'willpower',
             difficulty: 8,
+            success: '{fussWaited}',
+            failure: '{fussSnapped}',
             onSuccess: {
               effects: [{ kind: 'thread', thread: 'trust', by: 1 }],
-              ledger: 'Kept your patience with {chargeName}, and they noticed.',
+              ledger: 'Kept your patience with {chargeName}, who noticed.',
             },
             onFailure: {
-              effects: [{ kind: 'thread', thread: 'daylight', by: -2 }],
-              ledger: 'The trouble on the road cost the light.',
+              effects: [
+                { kind: 'thread', thread: 'daylight', by: -2 },
+                { kind: 'thread', thread: 'trust', by: -1 },
+                { kind: 'mark', mark: 'short-words' },
+              ],
+              ledger: 'Ran out of patience with {chargeName}.',
             },
           },
           {
             label: 'Find a clever fix',
             stat: 'intellect',
             difficulty: 8,
+            success: '{fussSettled}',
+            failure: '{fussStumped}',
             onFailure: {
               effects: [{ kind: 'thread', thread: 'daylight', by: -2 }],
-              ledger: 'The trouble on the road cost the light.',
+              ledger: 'Found no clever way round the trouble.',
             },
           },
           {
             label: 'Do the heavy work yourself',
             stat: 'strength',
             difficulty: 9,
+            success: '{fussCarried}',
+            failure: '{fussCostly}',
             onFailure: {
               effects: [{ kind: 'thread', thread: 'daylight', by: -2 }],
-              ledger: 'The trouble on the road cost the light.',
+              ledger: 'Carried the load the slow way.',
             },
           },
         ],
@@ -136,6 +159,12 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
         kind: 'decision',
         when: { thread: 'daylight', below: 2 },
         text: 'The light is going, and the road ahead is narrow and unfamiliar.',
+        variants: [
+          {
+            when: { has: 'short-words' },
+            text: 'The light is going. {chargeName} walks ahead without a word to you, and the road narrows into country none of you know.',
+          },
+        ],
         options: [
           {
             label: 'Push on in the dark',
@@ -147,7 +176,8 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
           {
             label: 'Make camp where you are',
             tone: 'quiet',
-            reply: 'You find a hollow out of the wind and make the best of it.',
+            reply:
+              'You find a hollow out of the wind and get a fire going before the dark comes down.',
           },
         ],
       },
@@ -180,7 +210,8 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
             role: 'tracker',
             success:
               'Late in the watch you see a figure on the rocks ahead, gone when you look again.',
-            failure: 'Nothing but wind in the grass, all night long.',
+            failure:
+              'You sit up with your back to a rock until the stars have turned, and hear nothing but wind in the grass.',
             onSuccess: {
               effects: [{ kind: 'mark', mark: 'saw-scouts' }],
               ledger: 'Spotted their lookout the night before.',

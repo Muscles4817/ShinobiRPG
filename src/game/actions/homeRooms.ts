@@ -1,3 +1,4 @@
+import { fillSlots } from '@/core';
 import { stageOf } from '@/systems/bonds';
 import { isRipe, plant, setGuest } from '@/systems/housing';
 import { stock } from '@/systems/inventory';
@@ -9,6 +10,7 @@ import { atHome, hasRoom } from '../home/home';
 import { homeVillageId } from '../homeVillage';
 import { busyReason, chip, firstBlocker, log } from '../ops';
 import { bondOf, findPerson } from '../people/cast';
+import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -91,7 +93,8 @@ export const inviteGuest: ActionHandler<ActionOf<'inviteGuest'>> = {
     const home = homeVillageId(state, ctx);
     return firstBlocker(
       busyReason(state),
-      !atHome(state, ctx) && 'Ask them round from home.',
+      !atHome(state, ctx) &&
+        fillSlots('Ask {guest.them} round from home.', personSlots('guest', person)),
       !hasRoom(state, ctx, 'guest') && 'Your home has no guest room.',
       state.housing.guestId !== null && 'Someone is already staying.',
       (person.homeLocationId ?? ctx.content.startLocationId) !== home &&

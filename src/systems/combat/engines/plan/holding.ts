@@ -1,5 +1,6 @@
 import { alive } from '../../rules/body';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Channelled holds in a planned fight: a pin its caster must keep holding (a hand in the water
@@ -45,7 +46,7 @@ export function keepHolding(round: Round, holder: PlanFighter): { round: Round; 
     f.id === held.id ? { ...f, pinned: Math.max(f.pinned ?? 0, HELD_PIN) } : f,
   );
   return {
-    round: say({ ...round, fighters }, `${holder.name} holds ${held.name} fast.`),
+    round: say({ ...round, fighters }, tell('{a} hold{a.s} {t} fast.', { a: holder, t: held })),
     spent: true,
   };
 }
@@ -61,6 +62,8 @@ export function breakHold(round: Round, holderId: string): Round {
   const held = fighterIn(round, heldId);
   return say(
     { ...round, fighters },
-    `${holder.name}'s hold breaks, and ${held?.name ?? 'their target'} is free.`,
+    held
+      ? tell('{a.poss} hold breaks, and {t} {t.is} free.', { a: holder, t: held })
+      : tell('{a.poss} hold breaks.', { a: holder }),
   );
 }

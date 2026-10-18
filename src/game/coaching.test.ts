@@ -27,6 +27,10 @@ function coach(state: GameState): GameState {
   return coachAfterLesson(state, ctx, sensei);
 }
 
+/** Work in speed, done or far from it. */
+const SPEED_DONE = { stat: 'speed' as const, from: 0, target: 0 };
+const SPEED_SHORT = { stat: 'speed' as const, from: 0, target: 999 };
+
 function withStat(state: GameState, stat: keyof GameState['character']['stats'], value: number) {
   const stats = { ...state.character.stats, [stat]: value };
   return { ...state, character: { ...state.character, stats } };
@@ -91,6 +95,37 @@ describe('the assignment your sensei sets', () => {
   });
 });
 
+/** How often the last word names a stat: each fact is said once. */
+function timesSaid(state: GameState, stat: string): number {
+  return (state.journal.entries.at(-1)?.text.toLowerCase().split(stat).length ?? 1) - 1;
+}
+
+describe('your sensei’s word, as one speech', () => {
+  it('names the work, the edge and the next work once each, with one attribution', () => {
+    const set = coach(under('goran'));
+    const working = (assignment: typeof SPEED_DONE) => ({
+      ...set,
+      character: { ...set.character, assignment },
+    });
+    for (const judged of [coach(working(SPEED_DONE)), coach(working(SPEED_SHORT))]) {
+      expect(timesSaid(judged, 'speed')).toBe(1);
+      expect(timesSaid(judged, 'taijutsu')).toBe(1);
+      expect(judged.journal.entries.at(-1)?.text.match(/ says\b/g)).toHaveLength(1);
+    }
+  });
+
+  it('says the art once when the work judged and the next are the same', () => {
+    const set = coach(under('goran'));
+    expect(set.character.assignment?.stat).toBe('taijutsu');
+    expect(timesSaid(coach(set), 'taijutsu')).toBe(1);
+  });
+
+  it('keeps the numbers in the chips', () => {
+    const set = coach(under('goran'));
+    expect(coach(set).journal.entries.at(-1)?.text).not.toMatch(/\d/);
+  });
+});
+
 describe('your sensei’s read', () => {
   it('a sensei who looks for hidden talent names one you haven’t found', () => {
     const start = under('akari');
@@ -103,6 +138,7 @@ describe('your sensei’s read', () => {
     const seen = coach(gifted);
     expect(seen.character.aptitudeKnown.fuuinjutsu).toBe('sense');
     expect(seen.character.assignment?.stat).toBe('fuuinjutsu');
+    expect(timesSaid(seen, 'fūinjutsu')).toBe(1);
   });
 
   it('brings up the job that beat you, once', () => {
@@ -112,7 +148,7 @@ describe('your sensei’s read', () => {
     };
     const told = coach(beaten);
     expect(told.journal.entries.at(-1)?.text).toMatch(
-      /You went down on that job. Archers: close in./,
+      /brings up the job you went down on\. Archers: close in\./,
     );
     expect(told.mentor.lastBeaten).toBeNull();
   });

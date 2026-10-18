@@ -1,4 +1,4 @@
-import { hashUnit } from '@/core';
+import { hashUnit, listed } from '@/core';
 import type { FestivalDef, OpeningHours, RumourDef, SightDef, Stall } from '@/content';
 import {
   calendarDay,
@@ -109,7 +109,7 @@ export function inSeason(
 
 /** "Autumn only" for a dish or ingredient sold only in some seasons, else null. */
 export function seasonNote(goods: { readonly seasons?: readonly Season[] }): string | null {
-  return goods.seasons ? `${goods.seasons.join(' and ')} only` : null;
+  return goods.seasons ? `${listed(goods.seasons)} only` : null;
 }
 
 /** The dishes on a menu that are in season today. */

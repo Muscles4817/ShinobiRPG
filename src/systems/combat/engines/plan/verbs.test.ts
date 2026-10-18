@@ -16,7 +16,6 @@ import {
   type PlanState,
   type Round,
 } from './state';
-import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 10,
@@ -95,7 +94,6 @@ function useUntil(round: Round, t: CombatTechnique, wanted: RegExp, target = 'fo
 const health = (round: Round, id: string) => fighterIn(round, id)?.health ?? 0;
 
 /** The log as the player reads it: the sentences, without the screen's markers. */
-const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
 
 describe('plan & watch verbs: area', () => {
   it('hits every foe, hidden ones too, each reacting on their own', () => {
@@ -103,7 +101,7 @@ describe('plan & watch verbs: area', () => {
     const round = roundOf({ foes });
     expect(fighterIn(round, 'foe3')?.hidden).toBe(true);
     const after = useUntil(round, sweep, hitsOn('foe3', 'sweep'));
-    const hitLines = after.lines.filter((l) => l.startsWith("hero's sweep ") && A_HIT.test(l));
+    const hitLines = after.lines.filter((l) => l.startsWith('Hero’s sweep ') && A_HIT.test(l));
     expect(hitLines.length + after.lines.filter((l) => SEES_IT_COMING.test(l)).length).toBe(3);
     expect(health(after, 'foe3')).toBeLessThan(80);
   });
@@ -117,7 +115,7 @@ describe('plan & watch verbs: area', () => {
     const fighters = [hero, fighterIn(round, 'foe1')!];
     const state = stateOf({ ...round, range: 'mid', fighters });
     const after = resolveExchange(state, createRng(2));
-    expect(said(after.log).some((l) => castsLine(l, 'hero', 'sweep'))).toBe(true);
+    expect(after.log.some((l) => castsLine(l, 'hero', 'sweep'))).toBe(true);
   });
 });
 
@@ -163,7 +161,7 @@ describe('plan & watch verbs: conceal', () => {
 describe('plan & watch verbs: sense', () => {
   it('pulls hidden foes into the open and reads foes for the rest of the fight', () => {
     const round = roundOf({ foes: [{ traits: ['illusionist'] }, { traits: ['illusionist'] }] });
-    const after = useUntil(round, reach, /can't hide/, 'none');
+    const after = useUntil(round, reach, /can’t hide/, 'none');
     expect(fighterIn(after, 'foe1')?.hidden).toBe(false);
     expect(fighterIn(after, 'foe2')?.hidden).toBe(false);
     expect(fighterIn(after, 'hero')?.perks).toContain('insight');

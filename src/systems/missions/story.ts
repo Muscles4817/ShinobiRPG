@@ -19,6 +19,20 @@ export interface ThreadDef {
   readonly levels: readonly string[];
   /** The level it starts at (an index into `levels`). */
   readonly start: number;
+  /**
+   * What the debrief adds to a ledger line when that line's outcome really moved the thread
+   * ("It cost the light."), so a line never claims a change that didn't happen.
+   */
+  readonly ledger?: {
+    /** Said again, it moves on to the next way of saying it (and stays on the last). */
+    readonly fell?: string | readonly string[];
+    readonly rose?: string | readonly string[];
+  };
+  /**
+   * The day's light, levels lowest first from dark to morning: set from the clock when the job
+   * begins and each morning on the road, so the story's light agrees with the hour.
+   */
+  readonly clock?: true;
 }
 
 /** Who must be along (or not) for a condition to hold. */
@@ -125,6 +139,21 @@ export function variantText(
 /** Threads at their starting levels. */
 export function startThreads(threads: readonly ThreadDef[]): Record<string, number> {
   return Object.fromEntries(threads.map((t) => [t.id, t.start]));
+}
+
+/**
+ * Threads that keep the day's light, set to the hour: the last level in the morning, one lower
+ * each part of the day after (`slot` counts from the morning).
+ */
+export function onTheClock(
+  levels: Readonly<Record<string, number>>,
+  threads: readonly ThreadDef[],
+  slot: number,
+): Record<string, number> {
+  const set = threads
+    .filter((t) => t.clock)
+    .map((t) => [t.id, Math.max(0, t.levels.length - 1 - slot)] as const);
+  return { ...levels, ...Object.fromEntries(set) };
 }
 
 /** A thread moved, kept within its levels. */

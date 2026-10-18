@@ -2,6 +2,7 @@ import {
   forceLine,
   harmLine,
   healLine,
+  namedLine,
   numberedNames,
   reactionLine,
   splitNarration,
@@ -77,13 +78,30 @@ describe('fight narration', () => {
     ]).map((f) => f.name);
     expect(names).toEqual(['Aoi', 'Hungry Ghost 1', 'Bandit', 'Hungry Ghost 2']);
   });
+
+  it('tells fighters who share a name apart in the story by their place', () => {
+    const ghost = { id: 'g', name: 'Hungry Ghost', called: 'the hungry ghost' };
+    const called = numberedNames([ghost, { ...ghost, id: 'h' }]).map((f) => f.called);
+    expect(called).toEqual(['the first hungry ghost', 'the second hungry ghost']);
+  });
+
+  it('carries the fighters a line names, in order, out of the sentence', () => {
+    const line = turnLine(namedLine('You hit the thug.', ['player', 'thug#0']), 'player');
+    expect(splitNarration(line)).toMatchObject({
+      text: 'You hit the thug.',
+      named: ['player', 'thug#0'],
+    });
+  });
 });
 
 describe('squareUpLine', () => {
   it('agrees with one foe or several', () => {
-    expect(squareUpLine(['Academy Dropout'])).toBe('Academy Dropout squares up.');
-    expect(squareUpLine(['Bandit Thug', 'Bandit Archer'])).toBe(
-      'Bandit Thug, Bandit Archer square up.',
+    const thug = { name: 'Bandit Thug', called: 'the bandit thug' };
+    const archer = { name: 'Bandit Archer', called: 'the bandit archer' };
+    expect(squareUpLine([{ name: 'Academy Dropout' }])).toBe('Academy Dropout squares up.');
+    expect(squareUpLine([thug, archer])).toBe('The bandit thug and the bandit archer square up.');
+    expect(squareUpLine([thug, thug, archer])).toBe(
+      'Two bandit thugs and the bandit archer square up.',
     );
   });
 

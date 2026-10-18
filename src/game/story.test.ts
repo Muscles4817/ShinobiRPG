@@ -88,10 +88,9 @@ describe('a mission’s story', () => {
     expect(missionScene(s, ctx)!.choices.map((c) => c.label)).not.toContain('Sit with Sister Ume');
     s = choose(s, 'Take first watch');
     expect(s.mission?.marks).toContain('saw-scouts');
-    expect(s.mission?.notes.at(-1)).toEqual({
-      kind: 'story',
-      text: 'The fire burns down to embers.',
-    });
+    // The fire burns down, told one of a few ways.
+    expect(s.mission?.notes.at(-1)?.kind).toBe('story');
+    expect(s.mission?.camp).toBeUndefined();
 
     // The ending that fits: she trusts you and you know why she walks.
     const done = choose(s, 'See it through');

@@ -16,6 +16,8 @@ export const FORGED_BLADE_FOE: EnemyDef = {
   kind: 'Rogue',
   danger: 'deadly',
   name: 'Shigure, the Blade-Bearer',
+  proper: true,
+  pronouns: 'he',
   description: 'A swordsman carrying Tetsu’s finest work, and using it well.',
   baseStat: 11,
   statBonuses: { kenjutsu: 4, speed: 2, strength: 1 },

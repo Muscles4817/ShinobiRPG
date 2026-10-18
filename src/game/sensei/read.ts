@@ -1,5 +1,6 @@
-import type { PersonDef, SenseiLens } from '@/content';
-import { STAT_IDS, STAT_INFO, statTier, type StatId, type Stats } from '@/systems/stats';
+import type { DefenceWarning, SenseiLens } from '@/content';
+import { capitalise } from '@/core';
+import { STAT_IDS, STAT_INFO, type StatId, type Stats } from '@/systems/stats';
 
 import type { GameContext } from '../context';
 import { findPerson } from '../people/cast';
@@ -16,20 +17,13 @@ import { bestArt } from './state';
  */
 
 export const DEFENCE_LAYERS = ['evasion', 'guard', 'will', 'toughness'] as const;
-export type DefenceLayer = (typeof DEFENCE_LAYERS)[number];
+export type DefenceLayer = (typeof DEFENCE_LAYERS)[number] & DefenceWarning;
 
 export const LAYER_STATS: Readonly<Record<DefenceLayer, readonly StatId[]>> = {
   evasion: ['speed', 'perception'],
   guard: ['taijutsu', 'strength'],
   will: ['willpower'],
   toughness: ['stamina'],
-};
-
-const LAYER_WARNINGS: Readonly<Record<DefenceLayer, string>> = {
-  evasion: 'You stand still too long. Anything quick will cut you down.',
-  guard: 'Your guard is paper. Anyone who gets close will break it.',
-  will: 'Anyone with an illusion walks straight through you.',
-  toughness: 'You can’t take a hit. One good blow and you’re finished.',
 };
 
 /** Stats a team leans on beyond fighting: who reads the trail, mends, plans and keeps up. */
@@ -112,22 +106,23 @@ export function lensStat(state: GameState, ctx: GameContext, lens: SenseiLens): 
 }
 
 export interface SenseiRead {
-  /** What will get you killed. */
+  /** The thinnest layer of your defence: what will get you killed. */
+  readonly layer: DefenceLayer;
+  /** The same, as they'd say it on its own. */
   readonly danger: string;
   /** What beat you since the last lesson, and what would have helped. */
   readonly beaten: string | null;
-  /** What you are good at. */
-  readonly edge: string;
+  /** What you are good at: your best art. */
+  readonly edge: StatId;
 }
 
-export function senseiRead(state: GameState, sensei: PersonDef): SenseiRead {
+export function senseiRead(state: GameState, ctx: GameContext): SenseiRead {
   const { stats } = state.character;
-  const art = bestArt(stats);
-  const grade = statTier(stats[art]).grade;
-  const lastBeaten = state.mentor.lastBeaten;
+  const layer = weakestLayer(stats);
   return {
-    danger: LAYER_WARNINGS[weakestLayer(stats)],
-    beaten: lastBeaten ? `You went down on that job. ${lastBeaten}` : null,
-    edge: `${STAT_INFO[art].label} is your edge: grade ${grade}, and ${sensei.name} wants more of it.`,
+    layer,
+    danger: `${capitalise(ctx.content.senseiSpeech.coaching.dangers[layer])}.`,
+    beaten: state.mentor.lastBeaten,
+    edge: bestArt(stats),
   };
 }

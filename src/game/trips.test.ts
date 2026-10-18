@@ -54,8 +54,8 @@ describe('a friend along', () => {
       `You and ${friend.name} aren’t close enough for that yet.`,
     );
     const sensei = ready.people.team!.senseiId!;
-    expect(companionBlocker(withBond(ready, sensei, FRIENDS), ctx, sensei)).toBe(
-      'They can’t come with you.',
+    expect(companionBlocker(withBond(ready, sensei, FRIENDS), ctx, sensei)).toMatch(
+      /can’t come with you\.$/,
     );
   });
 

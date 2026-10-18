@@ -4,7 +4,12 @@ import { act, ctx, freshGame, newGame } from '@/test/gameFixtures';
 
 import { blockerFor } from './dispatch';
 import { meetingOn, meetingsPerWeek, mentorOf, weekPlan } from './sensei/plan';
-import { LESSON_KEPT_REGARD, MISSED_REGARD, settleMentor } from './sensei/settle';
+import {
+  flushMentorNotices,
+  LESSON_KEPT_REGARD,
+  MISSED_REGARD,
+  settleMentor,
+} from './sensei/settle';
 import { SESSION_KEPT_REGARD } from './sensei/sessions';
 import { ATTENDANCE_CEILING, startingRegard, withAttendance, withRegard } from './sensei/state';
 import type { GameState } from './state';
@@ -26,6 +31,12 @@ function closeTo(state: GameState, stage: number): GameState {
     ...state,
     people: { ...state.people, bonds: { ...state.people.bonds, [id]: bondWith(points) } },
   };
+}
+
+/** Full and rested, so nothing but the plan stands in the way of a session. */
+function fed(state: GameState): GameState {
+  const vitals = { ...state.character.vitals, satiety: 100, energy: 100 };
+  return { ...state, character: { ...state.character, vitals } };
 }
 
 /** Sleeps until the morning of `day`. */
@@ -114,16 +125,46 @@ describe('settling the week', () => {
     const next = act(start, { type: 'sleep' });
     expect(next.mentor.regard).toBe(start.mentor.regard - MISSED_REGARD.tight);
     expect(next.mentor.outcomes['2']).toBe('missed');
-    expect(next.journal.entries.map((e) => e.text)).toContainEqual(
-      expect.stringMatching(/Gōran waited at the training ground until dark/),
-    );
+    const said = next.journal.entries.slice(start.journal.entries.length);
+    const missed = said.find((e) => e.tone === 'warning');
+    expect(missed?.text).toMatch(/Gōran/);
+    expect(missed?.chips).toEqual([{ label: 'Gōran’s regard falls', tone: 'cost' }]);
+  });
+
+  it('tells the morning after the night: the sleep, then what was missed, then today', () => {
+    const start = untilDay(withSensei(newGame(), 'goran'), 2);
+    const next = act(start, { type: 'sleep' });
+    const said = next.journal.entries.slice(start.journal.entries.length);
+    const missed = said.findIndex((e) => e.tone === 'warning');
+    const today = said.findIndex((e) => e.tone === 'info' && e.text.includes('Gōran'));
+    const slept = said.findIndex((e) => e.heading !== undefined);
+    expect(slept).toBeGreaterThanOrEqual(0);
+    expect(slept).toBeLessThan(missed);
+    expect(missed).toBeLessThan(today);
+    expect(next.mentor.notices).toBeUndefined();
+    expect(said.every((e) => !e.text.includes('Training Grounds'))).toBe(true);
+  });
+
+  it('never says the same sign-off twice in five sessions', () => {
+    let state = withSensei(newGame(), 'goran');
+    const signOffs: string[] = [];
+    for (let day = 2; day < 30 && signOffs.length < 5; day += 1) {
+      state = fed(untilDay(state, day));
+      if (blockerFor(state, SESSION, ctx)) continue;
+      const before = state.journal.entries.length;
+      state = act(state, SESSION);
+      const text = state.journal.entries.slice(before).find((e) => e.heading)?.text ?? '';
+      signOffs.push(text.slice(text.indexOf('“')));
+    }
+    expect(signOffs).toHaveLength(5);
+    expect(new Set(signOffs).size).toBe(5);
   });
 
   it('a kept session stays kept, and away from the village you are excused', () => {
     const start = untilDay(withSensei(newGame(), 'goran'), 2);
     expect(act(act(start, SESSION), { type: 'sleep' }).mentor.outcomes['2']).toBe('kept');
     const away = { ...start, locationId: 'port-shiomachi', time: { day: 3, slot: 0 } };
-    const next = settleMentor(away, ctx);
+    const next = flushMentorNotices(settleMentor(away, ctx));
     expect(next.mentor.outcomes['2']).toBe('excused');
     expect(next.mentor.regard).toBe(start.mentor.regard);
   });
@@ -131,7 +172,9 @@ describe('settling the week', () => {
   it('says in the morning when your sensei expects you, and keeps only this week', () => {
     const state = untilDay(withSensei(newGame(), 'goran'), 9);
     const today = state.journal.entries.filter((e) => e.day === 9).map((e) => e.text);
-    expect(today).toContainEqual(expect.stringMatching(/^Gōran expects you at .+ this morning\.$/));
+    expect(today).toContainEqual(
+      expect.stringMatching(/Gōran.* at the training ground this morning, .+\.$/),
+    );
     const days = Object.keys(state.mentor.outcomes).map((k) => Number(k.replace('t', '')));
     expect(days.every((d) => weekOf(d) === weekOf(9))).toBe(true);
   });

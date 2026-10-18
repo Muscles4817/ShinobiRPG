@@ -23,7 +23,11 @@ export const NARUTO_TEXT: SettingText = {
     'carved into the Hokage Rock. Spirits walk the old roads, and the elements answer to ' +
     'those who listen. Today you tied on your forehead protector for the first time.',
   graduate: 'Tie on your forehead protector',
-  sleepWell: 'You sleep soundly. Somewhere a cicada keeps time.',
+  sleepWell: [
+    'You sleep soundly. Somewhere a cicada keeps time.',
+    'A patrol crosses the rooftops some time after midnight, light-footed, and you’re asleep again before they’ve gone.',
+    'Across the village a dog barks at nothing for a while, then gives up, and so do you.',
+  ],
   sleepHungry: 'You sleep fitfully on an empty stomach.',
   sleepLockedOut: 'Your landlady has locked the door over unpaid rent. You sleep on the stairs.',
   hospitalWake: 'You wake in Konoha Hospital, under clean sheets and a medic’s frown.',
@@ -51,6 +55,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'border-patrol',
           'catch-tora',
           'pup-in-the-well',
+          'toad-on-the-doorstep',
           'yamanaka-weeding',
           'farm-medicine',
           'merchant-escort',
@@ -87,6 +92,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         id: 'training-grounds',
         kind: 'training',
         name: 'Training Grounds',
+        inText: 'the training ground',
         icon: 'post',
         blurb: 'Posts, trees and the falls',
         trainingIds: [

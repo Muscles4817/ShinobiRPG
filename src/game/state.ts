@@ -1,3 +1,4 @@
+import type { Contract } from '@/systems/contracts';
 import type { CombatState } from '@/systems/combat';
 import type { Companions } from '@/systems/companions';
 import type { MapStyle } from './mapStyle';
@@ -14,6 +15,7 @@ import type { Aptitude, AptitudeKnown, StatDelta, StatId, Stats } from '@/system
 import type { Element, TechniqueBook } from '@/systems/techniques';
 import type { GameTime } from '@/systems/time';
 import type { Leave } from '@/systems/travel';
+import type { Told } from '@/systems/telling';
 import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
 
@@ -73,12 +75,18 @@ export interface GameState {
   readonly fieldBook: FieldBook;
   /** How your sensei rates you and how this week's meetings went (`game/sensei/`). */
   readonly mentor: Mentor;
+  /** The lines said lately, per bank, so a pick passes over them (`game/telling.ts`). */
+  readonly told: Told;
   /** The day's record: where you stood at dawn, and the last day that ended (`daybook/`). */
   readonly daybook: Daybook;
   /** Your rival from the year (`rival/`), once your team is settled; null before. */
   readonly rival: Rival | null;
   /** Bonded creatures by owner (yours under `PLAYER_OWNER`), and a stray being won over. */
   readonly companions: Companions;
+  /** The summoning contract you hold, and your standing with its clan; null before you sign one. */
+  readonly contract: Contract | null;
+  /** Contracts you have torn up; their clans won't take your name again. */
+  readonly brokenContracts: readonly string[];
   /**
    * Set only on a versus sandbox (`game/versus/`): who is fighting whom. A sandbox is never
    * saved, so a real playthrough never carries it.

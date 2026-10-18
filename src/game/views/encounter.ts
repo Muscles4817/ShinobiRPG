@@ -1,3 +1,4 @@
+import { capitalise, numberWord } from '@/core';
 import { RANGE_BANDS, RANGE_LABEL, type RangeBand } from '@/systems/combat';
 import {
   MAX_RECON,
@@ -17,7 +18,7 @@ import type { GameContext } from '../context';
 import { approachPlans, type ApproachPlan } from '../encounter/approaches';
 import { encounterHere, type EncounterHere } from '../encounter/current';
 import { reconPlans, type ReconCost, type ReconPlan } from '../encounter/recon';
-import { retinueSeen } from '../retinueSight';
+import { retinueSeen, summonsSeen } from '../retinueSight';
 import { handicapOf, scoutOpponents, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
 import { noteLine, type SceneLine } from './missionScene';
@@ -120,7 +121,9 @@ const FIXED_DETAIL: Readonly<Record<ApproachId, string>> = {
 function factValue(here: EncounterHere, fact: EncounterFact): string {
   switch (fact) {
     case 'count':
-      return here.foes.length === 1 ? 'One, alone' : `${here.foes.length} of them`;
+      return here.foes.length === 1
+        ? 'One, alone'
+        : capitalise(`${numberWord(here.foes.length)} of them`);
     case 'identity':
       return [...new Set(here.foes.map((f) => f.name))].join(', ');
     case 'kit': {
@@ -138,11 +141,19 @@ function lowerFirst(text: string): string {
   return text.charAt(0).toLowerCase() + text.slice(1);
 }
 
+/** "A, B or C". */
+function eitherOf(words: readonly string[]): string {
+  return words.length <= 1
+    ? (words[0] ?? '')
+    : `${words.slice(0, -1).join(', ')} or ${words.at(-1) ?? ''}`;
+}
+
+/** How to find out what isn't known yet: the ways that would tell you, as one sentence. */
 function factHint(here: EncounterHere, fact: EncounterFact): string {
   const ways = here.template.recon.filter((r) => RECON_REVEALS[r.id].includes(fact));
   return ways.length > 0
-    ? `Unknown. ${ways.map((r, i) => (i === 0 ? r.label : lowerFirst(r.label))).join(' or ')}.`
-    : 'Unknown. You’ll find out when it starts.';
+    ? `Not yet known. ${eitherOf(ways.map((r, i) => (i === 0 ? r.label : lowerFirst(r.label))))} to find out.`
+    : 'Not yet known. You’ll find out when it starts.';
 }
 
 function factLines(here: EncounterHere): FactLine[] {
@@ -176,8 +187,13 @@ function foesOf(state: GameState, ctx: GameContext, here: EncounterHere): Encoun
       const traits = kit ? traitNotes(unit.traits ?? []) : null;
       return { name: unit.name, count, threat, threatLabel, traits, beside: def.name };
     });
+    const called = summonsSeen(state, def, knowledge).map(({ summonId }) => {
+      const summon = ctx.content.summons.require(summonId);
+      const traits = kit ? traitNotes(summon.traits ?? []) : null;
+      return { name: summon.name, count, threat, threatLabel, traits, beside: def.name };
+    });
     const foe = { name: def.name, count, threat, threatLabel, traits: kit ? read.traits : null };
-    return [foe, ...companions];
+    return [foe, ...companions, ...called];
   });
 }
 

@@ -64,7 +64,7 @@ describe('versus bouts', () => {
     expect(report?.kind === 'fight' && report.verdict).toMatch(/^(Kakashi Hatake|Might Guy) wins$/);
   });
 
-  it('is fought on the ground picked, which its opening names', () => {
+  it('is fought on the ground picked, which the screen names', () => {
     const made = createVersus(naruto, {
       side: ['person:kakashi'],
       foes: ['person:guy'],
@@ -73,7 +73,8 @@ describe('versus bouts', () => {
     });
     if (!made.ok) throw new Error(made.error);
     const view = combatScene(made.value, naruto)!;
-    expect(view.log.join(' ')).toMatch(/Open water/);
+    expect(view.prompt).toMatch(/Open water/);
+    expect(view.log.join(' ')).not.toMatch(/Open water/);
   });
 
   it('can face a foe from the pack, or play as one', () => {

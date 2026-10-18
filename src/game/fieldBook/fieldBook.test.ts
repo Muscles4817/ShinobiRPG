@@ -87,7 +87,7 @@ describe('writing in the field book', () => {
     const foraged = act(state, { type: 'forage', placeId: 'lantern-woods' });
     const slept = act(foraged, { type: 'sleep' });
     const titles = dayEndView(slept, ctx)!.moments.map((m) => m.title);
-    expect(titles.some((t) => t.startsWith('New in your field book:'))).toBe(true);
+    expect(titles.some((t) => t.startsWith('New in your field book, '))).toBe(true);
   });
 });
 

@@ -1,19 +1,14 @@
+import { counted } from '@/core';
 import type { IconId } from '@/content';
 import { stageForPair, stageOf } from '@/systems/bonds';
 import { RANK_LABELS } from '@/systems/standing';
-import {
-  STAT_GRADES,
-  STAT_IDS,
-  STAT_INFO,
-  statTier,
-  type StatGrade,
-  type StatId,
-} from '@/systems/stats';
-import { DISCIPLINES, type Discipline } from '@/systems/techniques';
+import { STAT_GRADES, STAT_IDS, STAT_INFO } from '@/systems/stats';
+import type { Discipline } from '@/systems/techniques';
 import { hungerLevel } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import type { DayEnd, Find } from '../daybook/state';
+import { growthRows } from './dayEndGrowth';
 import { entryOf } from '../fieldBook/keys';
 import { findPerson } from '../people/cast';
 import { mentorOf } from '../sensei/plan';
@@ -42,23 +37,6 @@ export interface DayHurt {
   readonly note: string;
 }
 
-export interface DayGrowth {
-  readonly stat: StatId;
-  readonly name: string;
-  readonly grade: StatGrade;
-  /** "Genin D". */
-  readonly tier: string;
-  /** Through the grade at dawn and now, 0–1: the bar's dim part and today's bright share. */
-  readonly from: number;
-  readonly to: number;
-  /** "Close to Genin D". */
-  readonly words: string;
-  /** A new grade today. */
-  readonly up: boolean;
-  /** An art's colour; null for body and mind. */
-  readonly discipline: Discipline | null;
-}
-
 export interface DayPerson {
   readonly face: PersonFace;
   readonly stage: string;
@@ -77,42 +55,8 @@ export interface DayFind {
   readonly fresh: boolean;
 }
 
-const MAX_GROWTH_ROWS = 5;
 /** The new field book entries named on the sheet; past these, "and others". */
 const FIELD_BOOK_NAMES = 3;
-
-function disciplineOf(stat: StatId): Discipline | null {
-  return DISCIPLINES.find((d) => d === stat) ?? null;
-}
-
-function growthWords(progress: number, up: boolean, next: string | null): string {
-  if (up) return 'A new grade today';
-  if (!next) return 'As high as it goes';
-  if (progress >= 0.85) return `Close to ${next}`;
-  if (progress >= 0.5) return `Past halfway to ${next}`;
-  return progress >= 0.25 ? `On the way to ${next}` : `Early in the grade`;
-}
-
-export function growthRows(ended: DayEnd): DayGrowth[] {
-  const rows = (Object.entries(ended.stats) as [StatId, readonly [number, number]][])
-    .filter(([, [before, after]]) => after > before)
-    .sort(([, a], [, b]) => b[1] - b[0] - (a[1] - a[0]));
-  return rows.slice(0, MAX_GROWTH_ROWS).map(([stat, [before, after]]) => {
-    const now = statTier(after);
-    const up = statTier(before).grade !== now.grade;
-    return {
-      stat,
-      name: STAT_INFO[stat].label,
-      grade: now.grade,
-      tier: now.label,
-      from: up ? 0 : statTier(before).progress,
-      to: now.progress,
-      words: growthWords(now.progress, up, now.next?.label ?? null),
-      up,
-      discipline: disciplineOf(stat),
-    };
-  });
-}
 
 /** Grades reached first today in the race with your rival, either way. */
 function raceRows(ended: DayEnd, state: GameState, ctx: GameContext): DayMoment[] {
@@ -154,7 +98,7 @@ function fieldBookRows(ended: DayEnd, ctx: GameContext): DayMoment[] {
   if (names.length === 0) return [];
   const shown = names.slice(0, FIELD_BOOK_NAMES).join(', ');
   const list = names.length > FIELD_BOOK_NAMES ? `${shown} and others` : shown;
-  return [{ seal: '記', title: `New in your field book: ${list}`, tag: null }];
+  return [{ seal: '記', title: `New in your field book, ${list}`, tag: null }];
 }
 
 export function momentRows(ended: DayEnd, state: GameState, ctx: GameContext): DayMoment[] {
@@ -188,7 +132,7 @@ export function momentRows(ended: DayEnd, state: GameState, ctx: GameContext): D
 }
 
 function nights(n: number): string {
-  return n === 1 ? 'Mends after one more night' : `Mends after ${n} more nights`;
+  return `Mends after ${counted(n, 'more night', 'more nights')}`;
 }
 
 export function hurtRows(ended: DayEnd, state: GameState, ctx: GameContext): DayHurt[] {

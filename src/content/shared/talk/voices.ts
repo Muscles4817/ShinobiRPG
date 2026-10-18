@@ -1,222 +1,183 @@
 import type { VoiceDef } from '../../voices';
+import { AFTER_VOICES } from './voicesAfter';
+import { CHOICE_VOICES } from './voicesChoice';
 
-/** The crew's lines on a job, for every trait and moment. Shared by every pack. */
-export const VOICES: readonly VoiceDef[] = [
-  // Brash
-  { moment: 'check-passed', trait: 'brash', lines: ['Told you. Easy.', 'That all it’s got?'] },
-  { moment: 'check-failed', trait: 'brash', lines: ['Should’ve let me do it.', 'Tch. Again.'] },
+/**
+ * The crew's lines on a job after a check, by trait, shared by every pack. People talk like
+ * people here: a half-sentence, a question back, their own turn of phrase, rarely a quip.
+ */
+const CHECK_VOICES: readonly VoiceDef[] = [
   {
-    moment: 'approve',
-    trait: 'brash',
-    lines: ['Now we’re talking.', 'Finally, something with teeth.'],
-  },
-  { moment: 'disapprove', trait: 'brash', lines: ['Boring.', 'We’re creeping about like mice.'] },
-  {
-    moment: 'camp',
+    moment: 'check-passed',
     trait: 'brash',
     lines: [
-      'Tomorrow I’m going first. Don’t argue.',
-      'One day they’ll write songs about this road. About me, mostly.',
+      'See? I said it would be easy, and nobody listens to me.',
+      'Is that all it had? I was just getting warmed up.',
     ],
   },
-  // Calm
-  { moment: 'check-passed', trait: 'calm', lines: ['Good. Steady.', 'There. No hurry needed.'] },
+  {
+    moment: 'check-failed',
+    trait: 'brash',
+    lines: [
+      'You should have let me go first. I keep saying so.',
+      'Again? Next time stand back and let me at it.',
+    ],
+  },
+  {
+    moment: 'check-passed',
+    trait: 'calm',
+    lines: [
+      'There, you see, no need to hurry it.',
+      'That was steady. Do it like that every time and we’ll be fine.',
+    ],
+  },
   {
     moment: 'check-failed',
     trait: 'calm',
-    lines: ['It happens. Breathe.', 'We go on all the same.'],
+    lines: [
+      'It happens to everyone. Take a breath before the next thing.',
+      'We go on all the same, it isn’t the end of the job.',
+    ],
   },
   {
-    moment: 'approve',
-    trait: 'calm',
-    lines: ['That was well judged.', 'Mm. I’d have done the same.'],
+    moment: 'check-passed',
+    trait: 'diligent',
+    lines: [
+      'Done properly, and on time. I’ll put that in the report.',
+      'Good. I had a second plan ready, but I’m glad we didn’t need it.',
+    ],
   },
-  { moment: 'disapprove', trait: 'calm', lines: ['That was hasty.', 'There was a quieter way.'] },
-  {
-    moment: 'camp',
-    trait: 'calm',
-    lines: ['Listen. You can hear the river from here.', 'Sleep. The fire will keep.'],
-  },
-  // Diligent
-  { moment: 'check-passed', trait: 'diligent', lines: ['Done properly.', 'Good. Next.'] },
   {
     moment: 'check-failed',
     trait: 'diligent',
-    lines: ['We’ll drill that when we’re home.', 'Sloppy. Mine too.'],
+    lines: [
+      'We should drill that when we get home, both of us.',
+      'That was sloppy, and I’m counting myself in that.',
+    ],
   },
-  {
-    moment: 'approve',
-    trait: 'diligent',
-    lines: ['That’s the job done right.', 'Agreed. Let’s get to it.'],
-  },
-  {
-    moment: 'disapprove',
-    trait: 'diligent',
-    lines: ['That’s not what we were sent for.', 'Cutting corners.'],
-  },
-  {
-    moment: 'camp',
-    trait: 'diligent',
-    lines: ['I checked the map twice. We’re on time.', 'I’ll oil the blades before I sleep.'],
-  },
-  // Lazy
   {
     moment: 'check-passed',
     trait: 'lazy',
-    lines: ['Look at that. Less work.', 'Great. Can we sit down?'],
-  },
-  { moment: 'check-failed', trait: 'lazy', lines: ['Well, that’s more walking.', 'Ugh.'] },
-  {
-    moment: 'approve',
-    trait: 'lazy',
-    lines: ['The easy way. I like it.', 'Sensible. Very sensible.'],
-  },
-  {
-    moment: 'disapprove',
-    trait: 'lazy',
-    lines: ['That sounds like effort.', 'Why do we always pick the hard way?'],
-  },
-  {
-    moment: 'camp',
-    trait: 'lazy',
     lines: [
-      'Best part of a job, this. The sitting.',
-      'Wake me if anything’s on fire. Besides the fire.',
+      'Oh good, that’s less work for everyone. Can we sit down a minute?',
+      'Look at that, and nobody even had to run.',
     ],
   },
-  // Kind
-  { moment: 'check-passed', trait: 'kind', lines: ['Well done! Truly.', 'You were wonderful.'] },
+  {
+    moment: 'check-failed',
+    trait: 'lazy',
+    lines: [
+      'Well, that means more walking, doesn’t it.',
+      'I was really hoping that would work the first time.',
+    ],
+  },
+  {
+    moment: 'check-passed',
+    trait: 'kind',
+    lines: [
+      'You did that so well. I mean it, I was watching.',
+      'Oh, that was lovely to see. Are you all right?',
+    ],
+  },
   {
     moment: 'check-failed',
     trait: 'kind',
-    lines: ['Are you hurt? Let me see.', 'It wasn’t your fault.'],
+    lines: [
+      'Are you hurt? Let me look before you say you’re fine.',
+      'That wasn’t your fault, whatever you’re telling yourself.',
+    ],
   },
-  { moment: 'approve', trait: 'kind', lines: ['Thank you for that.', 'That was the right thing.'] },
-  { moment: 'disapprove', trait: 'kind', lines: ['That felt cold.', 'Couldn’t we have helped?'] },
   {
-    moment: 'camp',
-    trait: 'kind',
-    lines: ['Here, take my blanket. I run warm.', 'I hope the people back home are eating well.'],
+    moment: 'check-passed',
+    trait: 'cunning',
+    lines: [
+      'Neatly done. Nobody will ever know how close that was.',
+      'I’d have done it the same way, only I’d have charged more.',
+    ],
   },
-  // Cunning
-  { moment: 'check-passed', trait: 'cunning', lines: ['Neatly done.', 'They’ll never know.'] },
   {
     moment: 'check-failed',
     trait: 'cunning',
-    lines: ['There was a trick to it. We missed it.', 'Hm. Noted.'],
-  },
-  {
-    moment: 'approve',
-    trait: 'cunning',
-    lines: ['Clever. I like you more already.', 'That’ll pay off later.'],
-  },
-  {
-    moment: 'disapprove',
-    trait: 'cunning',
-    lines: ['You played every card face up.', 'Honest. How quaint.'],
-  },
-  {
-    moment: 'camp',
-    trait: 'cunning',
     lines: [
-      'Did you see the client’s face when we mentioned the road? Interesting.',
-      'Everyone lies a little at night. Go on, your turn.',
+      'There was a trick to that and we both walked past it.',
+      'I’ll remember that one. It won’t catch me twice.',
     ],
   },
-  // Proud
-  { moment: 'check-passed', trait: 'proud', lines: ['As expected.', 'Naturally.'] },
+  {
+    moment: 'check-passed',
+    trait: 'proud',
+    lines: [
+      'Of course. What did anyone expect from us?',
+      'That is how it’s done where I come from.',
+    ],
+  },
   {
     moment: 'check-failed',
     trait: 'proud',
-    lines: ['That doesn’t count.', 'An off day. Nothing more.'],
-  },
-  {
-    moment: 'approve',
-    trait: 'proud',
-    lines: ['Finally, a decision worthy of us.', 'Good. Do it boldly.'],
-  },
-  {
-    moment: 'disapprove',
-    trait: 'proud',
-    lines: ['Beneath us.', 'Is that really the best we can do?'],
-  },
-  {
-    moment: 'camp',
-    trait: 'proud',
     lines: [
-      'My family walked this road before the village had walls.',
-      'I’ll take the hard watch. Obviously.',
+      'That doesn’t count, the ground was against us.',
+      'An off day, and nobody needs to hear about it back home.',
     ],
   },
-  // Humble
   {
     moment: 'check-passed',
     trait: 'humble',
-    lines: ['You made that look easy.', 'Lucky, I think.'],
+    lines: [
+      'You made that look easy. I don’t think I could have.',
+      'I think we were lucky there, weren’t we?',
+    ],
   },
   {
     moment: 'check-failed',
     trait: 'humble',
-    lines: ['I couldn’t have done better.', 'Next time, then.'],
+    lines: [
+      'I couldn’t have done better, honestly. Nobody could.',
+      'Next time, maybe. We’re still learning.',
+    ],
   },
-  { moment: 'approve', trait: 'humble', lines: ['I think that was right.', 'Yes. Thank you.'] },
-  {
-    moment: 'disapprove',
-    trait: 'humble',
-    lines: ['I’m not sure about that…', 'If you think so.'],
-  },
-  {
-    moment: 'camp',
-    trait: 'humble',
-    lines: ['I’m just glad to be out here with you all.', 'Teach me that trick you did today?'],
-  },
-  // Curious
   {
     moment: 'check-passed',
     trait: 'curious',
-    lines: ['How did you know to do that?', 'Huh! It worked!'],
+    lines: [
+      'How did you know to do that? Will you show me later?',
+      'It worked! I wasn’t sure it would, were you?',
+    ],
   },
   {
     moment: 'check-failed',
     trait: 'curious',
-    lines: ['Why didn’t that work, though?', 'Interesting. Wrong, but interesting.'],
-  },
-  { moment: 'approve', trait: 'curious', lines: ['Let’s see what happens!', 'Ooh. Good.'] },
-  {
-    moment: 'disapprove',
-    trait: 'curious',
-    lines: ['But we’ll never find out now.', 'Aw. I wanted to see.'],
-  },
-  {
-    moment: 'camp',
-    trait: 'curious',
     lines: [
-      'Do you think the stars look different from other villages?',
-      'What’s the strangest job you’ve ever heard of?',
+      'Why didn’t that work, though? It should have.',
+      'Wrong, but I want to know why it was wrong.',
     ],
   },
-  // Focused
-  { moment: 'check-passed', trait: 'focused', lines: ['Good.', 'Clean.'] },
-  { moment: 'check-failed', trait: 'focused', lines: ['Reset. Go again.', 'Shake it off.'] },
-  { moment: 'approve', trait: 'focused', lines: ['Right call.', 'Agreed.'] },
-  { moment: 'disapprove', trait: 'focused', lines: ['A distraction.', 'That’s not the job.'] },
   {
-    moment: 'camp',
+    moment: 'check-passed',
     trait: 'focused',
-    lines: ['First watch is mine.', 'Tomorrow, the road narrows. Be ready.'],
-  },
-  // Tireless
-  { moment: 'check-passed', trait: 'tireless', lines: ['Good! What’s next?', 'Again! No? Fine.'] },
-  { moment: 'check-failed', trait: 'tireless', lines: ['I’ll carry it, then.', 'We keep going.'] },
-  { moment: 'approve', trait: 'tireless', lines: ['Yes! Let’s go!', 'That’s the spirit.'] },
-  {
-    moment: 'disapprove',
-    trait: 'tireless',
-    lines: ['We could’ve pushed on.', 'Giving up already?'],
+    lines: ['Good, that’s done. Next.', 'Clean work. Keep your mind on the road now.'],
   },
   {
-    moment: 'camp',
+    moment: 'check-failed',
+    trait: 'focused',
+    lines: ['Shake it off and reset. We still have a job to do.', 'Forget it, it’s behind us.'],
+  },
+  {
+    moment: 'check-passed',
     trait: 'tireless',
-    lines: ['Two hundred push-ups before bed. Join me?', 'I’m not tired. You’re tired.'],
+    lines: [
+      'Good! What’s next? I could do that all day.',
+      'That felt good, didn’t it? Let’s keep going.',
+    ],
+  },
+  {
+    moment: 'check-failed',
+    trait: 'tireless',
+    lines: [
+      'Then I’ll carry it myself, it’s no trouble.',
+      'We keep going. We’ll make the time up somewhere.',
+    ],
   },
 ];
+
+/** Every crew line: at each moment of a job, and after what happened on it. */
+export const VOICES: readonly VoiceDef[] = [...CHECK_VOICES, ...CHOICE_VOICES, ...AFTER_VOICES];

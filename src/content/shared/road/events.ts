@@ -3,7 +3,8 @@ import type { RoadEventDef } from '@/systems/missions';
 /**
  * Things that happen on the road, drawn by the region and the day. Written once for every pack
  * and every job: effects name only threads a job may keep (`daylight`, and `charge` for whoever
- * you look after), so a job without them simply isn't moved by that part.
+ * you look after), so a job without them simply isn't moved by that part. A ledger line says
+ * only what was done; what it cost (the light) is added by the job's thread when it really moved.
  */
 
 const LOST_HOUR = { kind: 'thread', thread: 'daylight', by: -1 } as const;
@@ -22,7 +23,7 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
         reply:
           'It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.',
         effects: [LOST_HOUR, WARMS_CHARGE, { kind: 'energy', by: -10 }],
-        ledger: 'Pulled a carter out of the ditch. It cost the light.',
+        ledger: 'Pulled a carter out of the ditch.',
       },
       {
         label: 'Walk on. The job comes first',
@@ -42,14 +43,14 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
         label: 'Leave an offering and clean the roof',
         tone: 'earnest',
         reply:
-          'You scrape the moss away and leave a rice cake in the bowl. The road feels lighter afterwards.',
+          'You scrape the moss away and leave a rice cake in the bowl, and somebody says a word for the road ahead.',
         effects: [LOST_HOUR, WARMS_CHARGE],
         ledger: 'Tended a wayside shrine.',
       },
       {
         label: 'Bow as you pass',
         tone: 'quiet',
-        reply: 'You bow without stopping. The little shrine watches you go.',
+        reply: 'You bow to it without breaking step, and the road bends and takes it out of sight.',
       },
     ],
   },
@@ -62,7 +63,7 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
         label: 'Ask what he’s seen on the road ahead',
         tone: 'curious',
         reply:
-          'He talks for a mile about tolls, prices and a stretch of road where nobody likes to camp. Some of it may even be true.',
+          'He talks for a mile about tolls and prices and a stretch of road ahead where nobody likes to camp, and leaves you at a fork with half his gossip still untold.',
         effects: [{ kind: 'mark', mark: 'heard-the-road' }],
         ledger: 'Heard about the road ahead from a peddler.',
       },
@@ -81,17 +82,18 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
       {
         label: 'Shelter under the trees until it passes',
         tone: 'quiet',
-        reply: 'You wait it out under dripping cedar, and set off late and damp.',
+        reply:
+          'You wait it out under the dripping cedars, watching the road turn to a stream, and set off again late and damp.',
         effects: [LOST_HOUR],
-        ledger: 'Sheltered from a cloudburst. It cost the light.',
+        ledger: 'Sheltered from a cloudburst.',
       },
       {
         label: 'Push on through it',
         tone: 'challenge',
         reply:
-          'You march through it, soaked to the bone, and keep your time. Everyone is shivering by evening.',
+          'You march through it soaked to the bone and keep your time, though everyone is shivering by evening.',
         effects: [{ kind: 'energy', by: -15 }, COOLS_CHARGE],
-        ledger: 'Marched through a cloudburst to keep time.',
+        ledger: 'Marched through a cloudburst.',
       },
     ],
   },
@@ -104,7 +106,7 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
         label: 'Walk them home, however far it is',
         tone: 'kind',
         reply:
-          'Home turns out to be a farm an hour back the way you came. The mother cries too, and feeds you all.',
+          'Home turns out to be a farm an hour back the way you came, where the mother cries as well and then feeds you all.',
         effects: [LOST_HOUR, WARMS_CHARGE, { kind: 'bond', by: 2 }],
         ledger: 'Walked a lost child home.',
       },
@@ -112,7 +114,7 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
         label: 'Point them to the nearest farm and go on',
         tone: 'earnest',
         reply:
-          'You point out the smoke of a farmhouse and wait until they’re walking towards it. It will have to do.',
+          'You point out the smoke of a farmhouse and wait at the crossroads until they are walking towards it.',
       },
     ],
   },
@@ -132,7 +134,7 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
         label: 'Stare them down',
         tone: 'challenge',
         reply:
-          'Nobody blinks for a long moment. Then they shrug and walk on, and your crew stands a little taller.',
+          'Nobody gives way, and in the end it is their leader who laughs and waves his team on past you.',
         effects: [{ kind: 'bond', by: 1 }],
       },
     ],
@@ -145,14 +147,16 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
       {
         label: 'Take an hour to soak',
         tone: 'joke',
-        reply: 'It is the best hour of the whole job. You climb out pink, loose and a little late.',
+        reply:
+          'You lie in the hot water with your eyes shut while the steam drifts off over the rocks, and climb out pink and late.',
         effects: [LOST_HOUR, { kind: 'energy', by: 25 }, { kind: 'bond', by: 1 }],
-        ledger: 'Soaked in a hot spring. It cost the light.',
+        ledger: 'Soaked in a hot spring.',
       },
       {
         label: 'Promise yourself you’ll come back',
         tone: 'earnest',
-        reply: 'You note the place and walk on, the smell of sulphur following you for a mile.',
+        reply:
+          'You mark the place in your head and walk on, with the smell of sulphur following you for a mile.',
       },
     ],
   },
@@ -164,17 +168,19 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
       {
         label: 'Take the goat track',
         tone: 'challenge',
-        reply: 'It goes where it seems to, mostly. You arrive scratched, sore and early.',
+        reply:
+          'It goes more or less where it seemed to, and you come down the far side scratched and sore and well ahead of time.',
         effects: [
           { kind: 'thread', thread: 'daylight', by: 1 },
           { kind: 'harm', health: 4 },
         ],
-        ledger: 'Took a goat track over the hill and gained the light.',
+        ledger: 'Took a goat track over the hill.',
       },
       {
         label: 'Keep to the road',
         tone: 'quiet',
-        reply: 'The road winds on, safe and slow.',
+        reply:
+          'You keep to the road as it winds round the hill, and the goat track climbs away above you.',
       },
     ],
   },
@@ -194,7 +200,7 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
       {
         label: 'Wave and keep walking',
         tone: 'quiet',
-        reply: 'They wave back, and go on mending.',
+        reply: 'They wave back without looking up from the nets.',
       },
     ],
   },
@@ -206,14 +212,16 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
       {
         label: 'Ford it upstream where it’s wide',
         tone: 'earnest',
-        reply: 'It takes an hour to find a ford, and you cross up to your waists in cold water.',
+        reply:
+          'It takes an hour to find a ford upstream, and you cross it up to your waists in cold brown water.',
         effects: [LOST_HOUR, { kind: 'energy', by: -10 }],
-        ledger: 'Forded a river where the bridge had gone. It cost the light.',
+        ledger: 'Forded a river where the bridge had gone.',
       },
       {
         label: 'Cross on the rope',
         tone: 'challenge',
-        reply: 'Hand over hand across the rope. Everyone makes it. Nearly everyone stays dry.',
+        reply:
+          'You go across hand over hand on the rope, and everyone makes it, though not everyone makes it dry.',
         effects: [{ kind: 'harm', health: 6 }, COOLS_CHARGE],
         ledger: 'Crossed a flooded river on a rope.',
       },

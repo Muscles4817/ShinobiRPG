@@ -2,15 +2,16 @@ import type { PersonDef } from '@/content';
 import { addPoints, talkedToday } from '@/systems/bonds';
 import { spend } from '@/systems/wallet';
 
-import { DRINK_BONUS, drinkStory, drinkWay } from '../bar';
+import { DRINK_BONUS, drinkStory, drinkWay, roundStory } from '../bar';
 import type { GameContext } from '../context';
-import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
+import { amountChip, busyReason, chip, firstBlocker, log, placeHere } from '../ops';
 import { bondOf, findPerson, peopleAt, requirePerson } from '../people/cast';
 import { outingWarmth, timeTogether, toneReaction } from '../people/together';
 import { warmed } from '../people/warmth';
 import type { GameState } from '../state';
 import { closedReason } from '../village';
 import type { ActionHandler, ActionOf } from './types';
+import { placeInText } from '../placeName';
 
 /**
  * The bar at night: stand everyone inside a round and they all warm to you a little. That
@@ -56,12 +57,12 @@ export const buyRound: ActionHandler<ActionOf<'buyRound'>> = {
     };
     const names = crowd.map((p) => p.name);
     return log(next, {
-      heading: `A round at ${tavern.name}`,
-      text: `You stand everyone a round. ${names.join(', ')} raise their cups to you.`,
+      heading: `A round at ${placeInText(tavern.name)}`,
+      text: roundStory(crowd),
       tone: 'success',
       chips: [
         chip(`−${tavern.roundCost} ryo`, 'cost'),
-        ...names.map((name) => chip(`${name} +${warmth}`, 'gain')),
+        ...names.flatMap((name) => amountChip(name, warmth, 'gain')),
       ],
     });
   },

@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import type {
   FishFamily,
   IngredientCount,
@@ -126,5 +127,5 @@ export function shortFor(
 /** A dish's heading name: the recipe, and the fish it was cooked with where it takes any. */
 export function dishName(recipe: RecipeDef, fish: readonly string[]): string {
   const named = [...new Set(fish)];
-  return named.length > 0 ? `${recipe.name} with ${named.join(' and ')}` : recipe.name;
+  return named.length > 0 ? `${recipe.name} with ${listed(named)}` : recipe.name;
 }

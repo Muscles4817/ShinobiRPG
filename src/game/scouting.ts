@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import type { CombatTrait } from '@/systems/combat';
 import type { EnemyDef } from '@/content';
 import { stageFoes, type MissionDef } from '@/systems/missions';
@@ -19,7 +20,7 @@ import { injuryFightEffect } from './injuries';
 import { companionTraits, PERSON_PREFIX } from './people/companions';
 import { personStats } from './people/progress';
 import { findPerson } from './people/cast';
-import { retinueSeen, type RetinueKnowledge } from './retinueSight';
+import { retinueSeen, summonsSeen, type RetinueKnowledge } from './retinueSight';
 import type { GameState } from './state';
 
 /**
@@ -81,6 +82,8 @@ export interface CompanionNote {
 
 const COMPANION_COUNTER =
   'Fights beside them: two bodies to beat, not one. Bring the weaker down first, or outlast both.';
+const SUMMON_COUNTER =
+  'They can call it into the fight. It goes home when they fall or run dry of chakra.';
 
 export interface ScoutingRead {
   /** How they compare with you, counting every body you can tell fights beside them. */
@@ -172,6 +175,8 @@ export interface Companion {
   readonly stats: Stats;
   /** Its health as a multiple of a human's (`EnemyDef.healthScale`). */
   readonly healthScale: number;
+  /** Called into the fight by them, rather than at their side from the start. */
+  readonly called?: boolean;
 }
 
 /** Someone to size up: their stats, and what you can tell of their kit and companions. */
@@ -195,7 +200,10 @@ export function scout(them: Opponent, yours: Stats, sharp: boolean): ScoutingRea
     threat,
     threatLabel: THREAT_LABEL[threat],
     traits: traitNotes(them.traits ?? []),
-    companions: (them.companions ?? []).map((c) => ({ name: c.name, counter: COMPANION_COUNTER })),
+    companions: (them.companions ?? []).map((c) => ({
+      name: c.name,
+      counter: c.called ? SUMMON_COUNTER : COMPANION_COUNTER,
+    })),
     style: styleOf(theirs),
     details: sharp ? standouts(theirs, yours) : [],
     handicap: null,
@@ -215,7 +223,7 @@ export function handicapOf(state: GameState, ctx: GameContext): string | null {
     ...(hunger.fightStrength < 1 ? [hunger.label.toLowerCase()] : []),
     ...(injured ? ['injured'] : []),
   ];
-  return reasons.length > 0 ? `Read against you as you are now: ${reasons.join(' and ')}.` : null;
+  return reasons.length > 0 ? `Read against you as you are now: ${listed(reasons)}.` : null;
 }
 
 /** Sharp eyes: enough perception, or a bloodline that sees chakra. */
@@ -254,7 +262,16 @@ function enemyOpponent(
     const unit = ctx.content.enemies.require(enemyId);
     return { name: unit.name, stats: enemyStatLine(unit), healthScale: unit.healthScale ?? 1 };
   });
-  return { stats: enemyStatLine(def), traits: def.traits ?? [], companions };
+  const summons = summonsSeen(state, def, knowledge).map(({ summonId }) => {
+    const summon = ctx.content.summons.require(summonId);
+    const { name, stats, healthScale } = summon;
+    return { name, stats, healthScale, called: true };
+  });
+  return {
+    stats: enemyStatLine(def),
+    traits: def.traits ?? [],
+    companions: [...companions, ...summons],
+  };
 }
 
 /**

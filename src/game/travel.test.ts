@@ -109,6 +109,23 @@ describe('travel', () => {
     expect(walk(back, openRoads).state.locationId).toBe('torogakure');
   });
 
+  it('says which way a road runs, and the last day arrives by name', () => {
+    const going = act(jonin(), { type: 'travel', locationId: 'sakyugakure' }, openRoads);
+    expect(missionScene(going, openRoads)?.prompt).toMatch(
+      /The road runs [a-z-]+ from Tōrōgakure, towards [A-Z]/,
+    );
+    const there = walk(going, openRoads).state;
+    const roads = there.journal.entries.filter((e) => e.heading === 'On the road');
+    expect(roads.at(-1)?.text).toContain('Sakyūgakure');
+    const home = walk(
+      act(there, { type: 'travel', locationId: 'torogakure' }, openRoads),
+      openRoads,
+    );
+    const last = home.state.journal.entries.filter((e) => e.heading === 'On the road').at(-1);
+    expect(last?.text).toMatch(/Tōrōgakure/);
+    expect(home.state.journal.entries.some((e) => e.heading === 'Home in Tōrōgakure')).toBe(true);
+  });
+
   it('shows the way, the worst of the road and the places passed', () => {
     const dunes = travelView(jonin(), openRoads).destinations.find((d) => d.id === 'sakyugakure');
     expect(dunes).toMatchObject({

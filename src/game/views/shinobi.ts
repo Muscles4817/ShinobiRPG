@@ -1,4 +1,4 @@
-import { round1 } from '@/core';
+import { listed, round1 } from '@/core';
 import {
   GRADE_INFO,
   STANDING_INFO,
@@ -92,9 +92,7 @@ function registryNumber(name: string): string {
 
 /** "Quick study", "Quick study and Night owl", "A, B and C"; null for none. */
 function notesPhrase(names: readonly string[]): string | null {
-  if (names.length === 0) return null;
-  const last = names.at(-1) ?? '';
-  return names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${last}` : last;
+  return names.length === 0 ? null : listed(names);
 }
 
 function talentRead(state: GameState, ctx: GameContext, id: StatId): StatLine['talent'] {

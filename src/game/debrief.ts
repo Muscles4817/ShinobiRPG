@@ -3,14 +3,15 @@ import { stageFoes, type LedgerLine, type MissionDef, type MissionRun } from '@/
 
 import type { GameContext } from './context';
 import { requirePerson } from './people/cast';
+import { debriefStory } from './debriefStory';
 import type { DebriefCrew, DebriefLine, JobGrade } from './reports';
 import { traitNotes } from './scouting';
 import type { GameState } from './state';
 
 /**
- * The debrief, read from what the job remembered: the ledger line by line (with the pay each
- * moved), how much closer you came to each person who went, how cleanly it went, and on a
- * failure what would have helped.
+ * The debrief, read from what the job remembered: the ledger told as a paragraph with the pay
+ * each line moved (`debriefStory.ts`), how much closer you came to each person who went, how
+ * cleanly it went, and on a failure what would have helped.
  */
 
 /** Lost more than this share of the pay, and the job was botched. */
@@ -18,18 +19,9 @@ export const BOTCHED_BELOW = 0.75;
 /** This many setbacks, and the job was botched whatever the pay. */
 export const BOTCHED_SETBACKS = 3;
 
-function payChip(share: number | undefined): string | null {
-  if (share === undefined || share === 0) return null;
-  return `${share > 0 ? '+' : '−'}${Math.round(Math.abs(share) * 100)}% pay`;
-}
-
+/** The ledger, told as a short paragraph with the pay each line moved beside it. */
 export function debriefLines(ledger: readonly LedgerLine[]): DebriefLine[] {
-  return ledger.map((l) => ({
-    text: l.text,
-    tone: l.tone,
-    pay: payChip(l.pay),
-    ...(l.noted ? { noted: true as const } : {}),
-  }));
+  return debriefStory(ledger);
 }
 
 /** The share of the posted pay the job came to. */

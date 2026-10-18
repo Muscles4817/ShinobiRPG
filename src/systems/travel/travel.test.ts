@@ -34,9 +34,9 @@ describe('travel', () => {
       via: ['ford'],
       routeIds: ['forest', 'sands'],
       legs: [
-        { region: 'forest-track', days: 1, text: 'forest-track' },
-        { region: 'river-road', days: 1, text: 'river-road' },
-        { region: 'dune-road', days: 1, text: 'dune-road' },
+        { region: 'forest-track', days: 1, text: 'forest-track', toward: 'ford' },
+        { region: 'river-road', days: 1, text: 'river-road', toward: 'dunes' },
+        { region: 'dune-road', days: 1, text: 'dune-road', toward: 'dunes' },
       ],
       days: 3,
       cost: 120,

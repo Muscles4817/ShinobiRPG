@@ -78,15 +78,15 @@ describe('the Pilgrim Nun', () => {
 });
 
 describe('the debrief', () => {
-  it('tells the road line by line, who went and how it went', () => {
+  it('tells the road as a paragraph, who went and how it went', () => {
     const done = playThrough(ready(), KIND_ROAD);
     const report = done.reports.find((r) => r.kind === 'mission-complete');
     if (report?.kind !== 'mission-complete') throw new Error('No debrief');
-    expect(report.road?.map((l) => l.text)).toContain(
-      'Heard why Sister Kohaku makes this journey.',
+    expect(report.road?.map((l) => l.text).join('')).toContain(
+      'heard why Sister Kohaku makes this journey',
     );
     expect(report.road?.at(-1)).toEqual({
-      text: 'Sister Kohaku pressed a gift on you at the end of the road.',
+      text: ' Sister Kohaku pressed a gift on you at the end of the road.',
       tone: 'gain',
       pay: '+20% pay',
     });

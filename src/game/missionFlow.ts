@@ -23,8 +23,10 @@ import { tendWounds } from './missionTeam';
 import { bondOf } from './people/cast';
 import { addReport } from './reports';
 import { pickDone } from './sensei/pick';
+import { withCrewWords } from './story/crewSlots';
 import { releaseHeld } from './story/personal';
 import { settle } from './story/state';
+import { afterTheFight } from './story/voices';
 import type { GameState } from './state';
 
 /**
@@ -43,7 +45,7 @@ export function activeMission(state: GameState, ctx: GameContext): MissionDef | 
   if (!run) return null;
   return run.journey
     ? journeyMission(run.journey, ctx)
-    : ctx.content.missions.require(run.missionId);
+    : withCrewWords(ctx.content.missions.require(run.missionId), state, ctx);
 }
 
 export function activeStage(state: GameState, ctx: GameContext): MissionStage | null {
@@ -68,7 +70,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
   const def = activeMission(before, ctx);
   if (!def || !before.mission) return before;
   // Stages that don't apply to the story so far are passed over.
-  const run = settle(def, before.mission);
+  const run = afterTheFight(before, ctx, settle(def, before.mission));
   if (currentStage(def, run)) return tendWounds({ ...before, mission: run }, ctx);
   const state = releaseHeld(before, run);
   if (run.journey) return arrive(state, ctx, run.journey);
@@ -91,6 +93,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
     inventory: gifts.inventory,
     cooking: gifts.cooking,
     companions: gifts.companions,
+    contract: gifts.contract,
   };
   const logged = log(afterFieldWork(pickDone(next, ctx, def), ctx, def, state.mission), {
     heading: jobDoneHeading(def.title),

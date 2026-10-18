@@ -17,6 +17,7 @@ import { react } from './react';
 import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { dazeLine, momentOf } from './voice';
+import { tell } from '../../rules/telling';
 
 /**
  * Traps in a planned fight. A trap is set at the distance the fight stands at; the first foe of
@@ -31,7 +32,8 @@ export function setTrap(round: Round, actor: PlanFighter, use: EffectUse<'trap'>
   const trap = trapAt(use.technique.id, round.range, { craft, exchange: round.number });
   const fighters = round.fighters.map((f) => (f.id === actor.id ? { ...f, trap } : f));
   const where = RANGE_LABEL[round.range].toLowerCase();
-  return say({ ...round, fighters }, `${actor.name} sets a trap at ${where} range.`);
+  const line = tell('{a} set{a.s} a trap at {where} range.', { a: actor, where });
+  return say({ ...round, fighters }, line);
 }
 
 function disarmed(round: Round, setterId: string): Round {
@@ -56,7 +58,8 @@ function spring(start: Round, setter: PlanFighter, victim: PlanFighter, rng: Rng
   const round = disarmed(start, setter.id);
   if (!use || !trap) return round;
   if (rng.chance(spotChance(trap, resistOf(victim, use)))) {
-    return say(round, `${victim.name} spots ${setter.name}'s trap and steps around it.`);
+    const line = '{v} spot{v.s} {a.poss} trap and step{v.s} around it.';
+    return say(round, tell(line, { v: victim, a: setter }));
   }
   const hit = react(round, {
     attacker: setter,
@@ -76,7 +79,7 @@ function spring(start: Round, setter: PlanFighter, victim: PlanFighter, rng: Rng
   if (!canDaze(struck, hit.number)) return hit;
   return say(
     { ...hit, fighters: patch(hit.fighters, victim.id, dazeIn(hit.number)) },
-    dazeLine(momentOf(hit, victim.id), victim.name),
+    dazeLine(momentOf(hit, victim.id), victim),
   );
 }
 

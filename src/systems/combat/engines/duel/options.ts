@@ -39,6 +39,7 @@ const EFFECT_DETAIL: Readonly<Record<Verb, (power: number) => string>> = {
   drain: () => 'drains chakra',
   afflict: () => 'leaves lingering harm',
   counter: () => 'readies a riposte',
+  summon: () => 'calls a summon',
 };
 
 /**

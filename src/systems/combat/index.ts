@@ -4,6 +4,9 @@ export type {
   CombatAttributes,
   CombatTechnique,
   CombatantSetup,
+  CombatGrammar,
+  CombatCall,
+  SummonFate,
   CombatSetup,
   CombatState,
   CombatSide,
@@ -27,7 +30,13 @@ export type {
   CombatRow,
   CombatGround,
 } from './contract';
-export { COMBAT_TRAITS, COMBAT_ITEM_EFFECTS, COMBAT_PROVISIONS, COMBAT_GROUNDS } from './contract';
+export {
+  COMBAT_TRAITS,
+  COMBAT_ITEM_EFFECTS,
+  COMBAT_PROVISIONS,
+  COMBAT_GROUNDS,
+  SUMMON_FATES,
+} from './contract';
 export type { CombatOrders, CombatStance, CombatUsage, StanceKind } from './teamContract';
 export { STANCE_KINDS } from './teamContract';
 export type {

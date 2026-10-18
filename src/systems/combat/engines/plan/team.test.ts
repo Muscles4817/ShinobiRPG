@@ -207,7 +207,7 @@ describe('plan & watch team: cover', () => {
     const turn = { actor: bandit(round), target: hero(round), rng: always };
     const aim = intercept(round, turn, { kind: 'strike' });
     expect(aim.target?.id).toBe('kiba');
-    expect(aim.round.lines).toContain('kiba steps in front of you.');
+    expect(aim.round.lines.join(' ')).toContain('Kiba steps in front of hero.');
   });
 
   it('but not for anyone else, nor for an area technique', () => {

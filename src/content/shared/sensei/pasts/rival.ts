@@ -17,7 +17,7 @@ export const RIVAL: SenseiPast = {
     epithet: 'who was never second',
     kind: 'Missing-nin',
     description:
-      '{name}’s rival from the academy. Gone rogue to prove they were always the better one.',
+      '{name}’s rival from the academy. Gone rogue to prove {foe.they} {foe.was} always the better one.',
     art: 'theirs',
     encounter: 'lone-rogue',
     isLost: true,
@@ -38,9 +38,9 @@ export const RIVAL: SenseiPast = {
           reply: '“Yes,” {them} says, delighted. “Exactly like that.”',
         },
         {
-          label: 'Ask if they ever won',
+          label: 'Ask if {lost.they} ever won',
           tone: 'tease',
-          reply: '“Half the time,” {them} says. “The other half, I said I let them.”',
+          reply: '“Half the time,” {them} says. “The other half, I said I let {lost.them}.”',
         },
       ],
     },
@@ -70,7 +70,7 @@ export const RIVAL: SenseiPast = {
         '“The last jōnin place of our year came down to a bout,” {them} says. “{lost} and me. I won. That night {lost} took a headband, scratched a line through it, and walked out of the gate.”',
       choices: [
         {
-          label: 'Ask if {them} blames themself',
+          label: 'Ask if {them} blames {them.themself}',
           tone: 'earnest',
           reply:
             '“Every day,” {them} says. “And I would win again. That’s the part I can’t get past.”',
@@ -78,7 +78,7 @@ export const RIVAL: SenseiPast = {
         {
           label: 'Say {lost} chose to go',
           tone: 'kind',
-          reply: '“They did,” {them} says. “And I made the choice easy.”',
+          reply: '“{lost.they} did,” {them} says. “And I made the choice easy.”',
         },
         {
           label: 'Ask where {lost} went',
@@ -124,7 +124,7 @@ export const RIVAL: SenseiPast = {
         'Around {place} there are marks on trees and stones that only someone who kept score would make.',
       found:
         'A clearing worn flat by years of practice, a tally scratched into every tree around it.',
-      lost: 'The marks run out. {name} finds the clearing anyway: it is where they always fought as children.',
+      lost: 'The marks run out. {name} finds the clearing anyway, because it is where they always fought as children.',
       camp: 'You camp a ridge away. {name} practises the old forms in the dark until late.',
       ending:
         '“Not yet,” {name} says, looking at the clearing. “When I fight {lost}, I want to be ready to lose.”',
@@ -136,9 +136,9 @@ export const RIVAL: SenseiPast = {
       act: 'Go back with {name} for the last bout with {lost}.',
       road: 'The road again. {name} laughs more than usual, the way people do before something hard.',
       question:
-        '“If I win,” {name} says at the edge of the clearing, “what do I do with {lost}? Take them home in chains? Let them walk away again?”',
+        '“If I win,” {name} says at the edge of the clearing, “what do I do with {lost}? Take {lost.them} home in chains? Let {lost.them} walk away again?”',
       mercy: {
-        label: '“Ask them to come home.”',
+        label: '“Ask {lost.them} to come home.”',
         reply: '{name} stares at you. “Nobody ever tried that,” {name} says slowly.',
       },
       leave: {
@@ -146,8 +146,8 @@ export const RIVAL: SenseiPast = {
         reply: '“Spoken like a rival,” {name} says, and almost smiles.',
       },
       finish: {
-        label: '“They’re a missing-nin. Finish it.”',
-        reply: '“They’re {lost},” {name} says. “But you’re not wrong.”',
+        label: "“{lost.they}{lost.'s} a missing-nin. Finish it.”",
+        reply: "“{lost.they}{lost.'s} {lost},” {name} says. “But you’re not wrong.”",
       },
       appears:
         '{lost} is waiting in the clearing, older and harder, a new mark freshly cut on the nearest tree. “You came,” {lost} says. “Good. I hate an empty tally.”',

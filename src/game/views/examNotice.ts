@@ -1,3 +1,4 @@
+import { counted, listed } from '@/core';
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { examAnnounced } from '../exam/calendar';
@@ -54,7 +55,7 @@ export interface ExamNotice {
 
 function whenText(days: number): string {
   if (days === 0) return 'Today';
-  return days === 1 ? 'Tomorrow' : `In ${days} days`;
+  return days === 1 ? 'Tomorrow' : `In ${counted(days, 'day')}`;
 }
 
 function replacementSets(state: GameState, ctx: GameContext): Replacement[][] {
@@ -80,7 +81,7 @@ function entries(state: GameState, ctx: GameContext): ExamEntry[] {
   const plain = { label: 'Sign up as a team', ...choice(state, ctx, { type: 'enterExam' }) };
   if (!toleratesReplacement(state, ctx)) return [plain];
   const swaps = replacementSets(state, ctx).map((replacements) => ({
-    label: `Sit it with ${replacements.map((r) => requirePerson(state, ctx, r.joining).name).join(' and ')}`,
+    label: `Sit it with ${listed(replacements.map((r) => requirePerson(state, ctx, r.joining).name))}`,
     ...choice(state, ctx, { type: 'enterExam', replacements }),
   }));
   return [plain, ...swaps];
@@ -90,8 +91,7 @@ function senseiWords(state: GameState, ctx: GameContext, announcement: string) {
   const sensei = senseiOf(state, ctx);
   if (!sensei) return null;
   const blocker = nominationBlocker(state, ctx);
-  const words =
-    blocker ?? fillNames(announcement, { you: state.character.name, them: sensei.name });
+  const words = blocker ?? fillNames(announcement, { you: state.character.name, them: sensei });
   return { name: sensei.name, words, nominated: blocker === null };
 }
 

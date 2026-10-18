@@ -1,10 +1,12 @@
 import type { NominationHabit, PersonDef } from '@/content';
+import { fillSlots } from '@/core';
 import { stageForPair, stageOf } from '@/systems/bonds';
 import { STAT_GRADES, STAT_IDS, statTier, type StatGrade, type Stats } from '@/systems/stats';
 
 import type { GameContext } from '../context';
 import { bondOf, findPerson, requirePerson, villagers } from '../people/cast';
 import { personStats } from '../people/progress';
+import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
 import { waysOf } from '../sensei/generate';
 
@@ -74,7 +76,10 @@ export function nominationBlocker(state: GameState, ctx: GameContext): string | 
     return `${name} doesn’t know you well enough to vouch for you. Be at least ${stageForPair(NOMINATION_BOND_STAGE)}.`;
   }
   if (state.mentor.regard < NOMINATION_REGARD) {
-    return `${name} isn’t sure you take this seriously. Keep the sessions they set you.`;
+    return fillSlots(
+      '{sensei} isn’t sure you take this seriously. Keep the sessions {sensei.they} set{sensei.s} you.',
+      personSlots('sensei', sensei),
+    );
   }
   const gap = readinessGap(state.character.stats);
   if (gap) return `${name} doesn’t think you’re ready. You need ${gap}.`;
@@ -89,9 +94,10 @@ export function nominationBlocker(state: GameState, ctx: GameContext): string | 
 /** A teammate's standing for the exam: why they can't or won't sit it, or null when they will. */
 export function teammateBlocker(state: GameState, person: PersonDef): string | null {
   const gap = readinessGap(personStats(person, state));
-  if (gap) return `${person.name} isn’t ready: they need ${gap}.`;
+  const slots = { ...personSlots('mate', person), gap: gap ?? '' };
+  if (gap) return fillSlots('{mate} isn’t ready: {mate.they} need{mate.s} {gap}.', slots);
   if (stageOf(bondOf(state, person.id).points) < TEAMMATE_WILLING_STAGE) {
-    return `${person.name} won’t sit it with someone they barely know.`;
+    return fillSlots('{mate} won’t sit it with someone {mate.they} barely know{mate.s}.', slots);
   }
   return null;
 }
@@ -124,7 +130,8 @@ function replacementBlocker(state: GameState, ctx: GameContext, r: Replacement):
   const leaving = requirePerson(state, ctx, r.leaving);
   if (!teammateBlocker(state, leaving)) return `${leaving.name} is ready to sit it with you.`;
   if (!replacementCandidates(state, ctx).some((p) => p.id === r.joining)) {
-    return 'They can’t sit in for a teammate.';
+    const joining = findPerson(state, ctx, r.joining);
+    return `${joining?.name ?? 'They'} can’t sit in for a teammate.`;
   }
   return null;
 }

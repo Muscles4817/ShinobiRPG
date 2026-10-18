@@ -152,7 +152,7 @@ export const C_TEAM_FIELD_FILLS: readonly MissionFill[] = [
       client: 'The Border Watch',
       border: 'the dune line where the Land of Embers meets the sands of Sakyūgakure',
       orders:
-        '“Walk the marker stones from the oasis to the salt flats,” your sensei reads. “Count them. Note any that have moved.” She frowns. “Stones don’t move. People do.”',
+        '“Walk the marker stones from the oasis to the salt flats,” your sensei reads. “Count them. Note any that have moved.” {leader.they} frown{leader.s}. “Stones don’t move. People do.”',
       march:
         'The sand burns through your sandals, the wind fills your eyes, and the dunes shift so that every marker seems further off than the last.',
       trace:
@@ -175,7 +175,7 @@ export const C_TEAM_FIELD_FILLS: readonly MissionFill[] = [
       client: 'The Harbour Office',
       border: 'the coast road between the village and Port Shiomachi',
       orders:
-        '“Walk the coast road, check every cove,” your sensei reads aloud. “Smuggling, they say.” She looks out at the sea. “It’s always smuggling, until it isn’t.”',
+        '“Walk the coast road, check every cove,” your sensei reads aloud. “Smuggling, they say.” {leader.they} look{leader.s} out at the sea. “It’s always smuggling, until it isn’t.”',
       march:
         'The coast road climbs and dips along the cliffs, and at every cove the team must scramble down to the beach and back up again.',
       trace:
@@ -198,7 +198,7 @@ export const C_TEAM_FIELD_FILLS: readonly MissionFill[] = [
       client: 'The Border Watch',
       border: 'the high saddle between Mount Reikon and its northern neighbour',
       orders:
-        '“The saddle,” your sensei reads, and her face goes still. “Nobody crosses there. It is all spirits and rockfalls.” She folds the paper. “So somebody has.”',
+        '“The saddle,” your sensei reads, and {leader.their} face goes still. “Nobody crosses there. It is all spirits and rockfalls.” {leader.they} fold{leader.s} the paper. “So somebody has.”',
       march:
         'The saddle path is a knife-edge of rock and ice, the wind roars through it, and every step must be tested before you trust it.',
       trace:
@@ -209,7 +209,7 @@ export const C_TEAM_FIELD_FILLS: readonly MissionFill[] = [
       parley:
         '“Take them,” he says, pushing the charms at you. “Take them back. The dead won’t stop following me since I took them.”',
       ending:
-        'The temple takes back its charms, and the abbot says he will pray for the thief. Your sensei says nothing, but she looks behind her all the way home.',
+        'The temple takes back its charms, and the abbot says he will pray for the thief. Your sensei doesn’t answer, and looks back over {leader.their} shoulder all the way home.',
     },
   },
 ];

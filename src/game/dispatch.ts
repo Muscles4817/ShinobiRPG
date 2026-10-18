@@ -9,6 +9,8 @@ import { noteHomeGifts } from './home/gifts';
 import { noteRival } from './rival/record';
 import { notePromotions } from './exam/promotion';
 import { noteGradeUps } from './gradeUps';
+import { curriculumAfter, curriculumBefore } from './sensei/curriculum';
+import { flushMentorNotices } from './sensei/settle';
 import type { GameState } from './state';
 
 function handlerFor<A extends GameAction>(action: A): ActionHandler<A> {
@@ -28,7 +30,9 @@ export function blockerFor(state: GameState, action: GameAction, ctx: GameContex
  * unstable techniques the new grades have caught up with steady (see `gradeUps.ts`), and a
  * jōnin's nomination arrives once it is earned (`exam/promotion.ts`), and a day that ended is
  * closed into the day's record (`daybook/record.ts`), and a full page of the field book leaves
- * its reward (`fieldBook/rewards.ts`).
+ * its reward (`fieldBook/rewards.ts`). What your sensei made of the days that passed is told
+ * after the action that passed them (`sensei/settle.ts`), and what they want to show you before
+ * the first of a thing comes just before it (`sensei/curriculum.ts`).
  */
 export function dispatch(
   state: GameState,
@@ -40,7 +44,11 @@ export function dispatch(
   if (blocker) return err(blocker);
 
   const rng = createRng(state.rngState);
-  const performed = handler.perform(state, action, ctx, rng);
+  const shown = curriculumBefore(state, action, ctx);
+  const performed = curriculumAfter(
+    flushMentorNotices(handler.perform(shown, action, ctx, rng)),
+    ctx,
+  );
   const graded = notePromotions(noteGradeUps(state, performed, ctx), ctx);
   const gifted = noteHomeGifts(state, noteRival(state, graded, ctx), ctx);
   const next = noteDayEnd(state, noteFieldBook(state, gifted, ctx), action);

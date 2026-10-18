@@ -45,7 +45,7 @@ function partnerPractice(result: SparResult, specialty: Discipline | undefined):
 function sparLine(result: SparResult, name: string): string {
   switch (result) {
     case 'won':
-      return `${name} taps out, grinning. "Again tomorrow?"`;
+      return `${name} taps out, grinning. “Again tomorrow?”`;
     case 'lost':
       return `${name} pulls the last blow and offers you a hand up.`;
     case 'yielded':

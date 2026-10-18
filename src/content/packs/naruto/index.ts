@@ -1,8 +1,12 @@
+import { bestiary } from '../../shared/bestiary';
+import { NARUTO_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
+import { CONTRACT_TECHNIQUES, CONTRACTS, TOAD_MISSION } from './contracts';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
 import { CURRICULUM } from '../../shared/sensei/curriculum';
+import { SENSEI_SPEECH } from '../../shared/sensei/speech';
 import { senseiParts } from '../../shared/sensei/parts';
 import { SENSEI_TESTS } from '../../shared/sensei/tests';
 import { FIELD_BOOK_REWARDS } from '../../shared/fieldBook';
@@ -111,6 +115,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   exercises: EXERCISES,
   senseiTests: SENSEI_TESTS,
   curriculum: CURRICULUM,
+  senseiSpeech: SENSEI_SPEECH,
   senseiParts: senseiParts(SENSEI_GROUNDS, SENSEI_NAMES),
   techniques: [
     ...TECHNIQUES,
@@ -119,11 +124,13 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
     ...BEAST_TECHNIQUES,
+    ...CONTRACT_TECHNIQUES,
     ...CANON_TECHNIQUES,
     ...DUELIST_TECHNIQUES,
   ],
   missions: [
     ...MISSIONS,
+    TOAD_MISSION,
     ...TEAM_MISSIONS,
     ...ELITE_MISSIONS,
     ...CHUNIN_MISSIONS,
@@ -158,8 +165,10 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   voices: VOICES,
   companionKinds: COMPANION_KINDS,
   companionLore: COMPANION_LORE,
+  contracts: CONTRACTS,
   enemies: [
     ...ENEMIES,
+    ...bestiary(NARUTO_FOE_KIT),
     ...CHUNIN_ENEMIES,
     ...EXAM_ENEMIES,
     TEMPLE_BELL_FOE,

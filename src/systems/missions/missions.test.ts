@@ -2,7 +2,7 @@ import { createRng } from '@/core';
 import { createStats } from '@/systems/stats';
 
 import { advance, currentStage, reward, startRun, type MissionDef } from './missions';
-import { resolveCheck, type CheckStage } from './checks';
+import { resolveCheck, resultLine, type CheckStage } from './checks';
 import { SOLO } from './crew';
 import { isSeniorMission } from './missionRank';
 
@@ -65,6 +65,24 @@ describe('missions', () => {
       run: { stageIndex: 1, rewardMultiplier: 0.75 },
     });
     expect(reward(mission, r.run)).toEqual({ ryo: 75, reputation: 3 });
+  });
+
+  it('tells a check for the way it was tried, else in the stage’s words', () => {
+    const sneaking = { ...approach, success: 'You slip past.', failure: 'A board creaks.' };
+    expect(resultLine(check, sneaking, true)).toBe('You slip past.');
+    expect(resultLine(check, sneaking, false)).toBe('A board creaks.');
+    expect(resultLine(check, approach, false)).toBe(check.failure);
+  });
+
+  it('notes a docked check as what was tried, never the story’s failure again', () => {
+    const r = resolveCheck(
+      startRun(mission, SOLO),
+      { stage: check, approach, story: mission },
+      createStats(-100),
+      createRng(1),
+    );
+    expect(r.run.ledger.map((l) => l.text)).toEqual(['Tried to chase, and fell short.']);
+    expect(r.run.notes.some((n) => n.kind === 'story' && n.text === check.failure)).toBe(true);
   });
 
   it('a teammate who takes the check rolls with their own value and is named', () => {

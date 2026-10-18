@@ -10,6 +10,7 @@ import { arsenalGear } from '../gear';
 import type { GameState } from '../state';
 import { doableNow } from './capable';
 import { personStats } from './progress';
+import { pronounsOf } from './pronouns';
 
 /**
  * Genin who fight beside you (teammates) or against you (sparring partners), from their real
@@ -76,6 +77,7 @@ export function companionCombatant(
   return {
     id: `${PERSON_PREFIX}${person.id}`,
     name: person.name,
+    grammar: pronounsOf(person),
     tag,
     attributes: attributesOf(stats),
     health: MAX_HEALTH,

@@ -61,6 +61,8 @@ export const VERB_PROFILES: Readonly<Record<Verb, VerbProfile>> = {
   afflict: { aim: 'foe', drive: ['art'], resist: ['stamina'] },
   // A readied riposte, struck with the art when the next blow comes (`rules/verbs/riposte.ts`).
   counter: { aim: 'self', drive: ['art'], resist: [] },
+  // A summon is called, not driven: its body fights for itself (`engines/plan/summons.ts`).
+  summon: { aim: 'self', drive: [], resist: [] },
 };
 
 /** The profile an effect scales by: its verb's, with the effect's own overrides on top. */

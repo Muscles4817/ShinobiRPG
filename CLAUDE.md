@@ -332,7 +332,21 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     one is half of a combination with the academy's Pincer Strike; and at close friends it takes
     a crew job's checks in its kind's `roles` when its nose is best (`checkHand`). Handlers drill
     it better than you (`handlerSession`, their `quality` over yours), and handling lore bought
-    far from home (`companionLore`, a gear place's `loreIds`) makes your own sessions count more. It is cared for
+    far from home (`companionLore`, a gear place's `loreIds`) makes your own sessions count more.
+    **Summons** are called bodies (`CombatantSetup.calls`, the `summon` verb naming a call;
+    `engines/plan/summons.ts`): they join their caller's front row mid-fight with a plan of their
+    own (`summonPlans.ts`), the caller pays any blood price and chakra upkeep every exchange, and
+    they go home unpaid, beaten or when the caller falls (`CombatOutcome.summons`). The player
+    holds one **contract** at a time (`systems/contracts`, `GameState.contract`, a pack's
+    `ContractDef`s), signed through a job (`reward.contractId`) or a teacher
+    (`TeacherProfile.contract`, `signContract`); summons answer from the standing stage they ask,
+    if you carry their offering, and ride into mission fights (`game/contracts/summons.ts`);
+    how they fare moves your standing with the clan, as does an offering it likes left at home
+    once a day (`makeOffering`, `game/contracts/keeping.ts`). Breaking a contract
+    (`breakContract`) frees you to sign another, and its clan never takes you back
+    (`GameState.brokenContracts`). Foes summon too (`EnemyDef.summons`, from a contract of the
+    pack, with a `tell` read like a retinue's: `summonsSeen`). Nothing is locked by rank: the
+    price is the lock. It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -531,9 +545,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     you, your edge). The **first meeting** (`opening.ts`, a scene after the chakra paper) is
     their test from the pack's `senseiTests` (never failed: your approaches against their
     philosophy set regard) and one question: shown everything, or not. The **curriculum** (the
-    pack's `curriculum`, ordered by philosophy in `curriculum.ts`) is the tutorial: one beat a
-    day on the sensei's slip, each once it makes sense (the slip itself always first, food
-    first once you go hungry); nothing is locked behind it. Turning up raises regard only to
+    pack's `curriculum`, ordered by philosophy in `curriculum.ts`) is the tutorial: each beat is
+    told once, just before the thing it explains (the first drill, spar, job, meal, journey…;
+    `curriculumBefore`/`curriculumAfter` in `dispatch`), in the sensei's own words for their
+    feedback manner; what is left is offered on their slip, one a day; nothing is locked behind
+    it. What a sensei says at sessions, sign-offs and morning notes is the pack's
+    `senseiSpeech`, picked with `tellFresh` so it doesn't repeat. Turning up raises regard only to
     `ATTENDANCE_CEILING`; past it, only what you do counts. On a job they lead, an evening
     with them is a camp choice of its own (`story/fireside.ts`): a little of who they are, and
     what they saw of you. Once a
@@ -648,6 +665,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   other code changes. Shelving an engine moves it to `shelvedEngines()` (if saves may be
   mid-fight in it) and migrates saves that chose it. Narrate damage and healing
   with `harmLine`/`healLine` (`rules/narration.ts`) so the amount shows as a chip, never in the story.
+  Name fighters only through `tell` (`rules/telling.ts`): a template's slots (`{a}`, `{a.poss}`,
+  `{a.s}`, `{t.their}`…) are filled from each fighter's `called` and `grammar`
+  (`CombatantSetup`), so the player is "you", a spirit "it" and everyone's verbs agree, and the
+  line carries whom it named for the watch screen. Plan & Watch picks words fresh (`plan/fresh.ts`:
+  by hash, passing over templates used in the last few lines, "again" lines when a fighter
+  repeats themself), weighs hits by the share of health they took (`plan/hitVoice.ts`), tells
+  falls and the fight's close (`plan/falls.ts`) and sums the fight up for its card
+  (`CombatOutcome.summary`). Rules and instructions go in the view's `prompt`, never the log.
   A staged engine (one that offers plans, not a hand) tags each turn's lines with `turnLine` (whose
   turn, and where the fight stands) and defences with `reactionLine`; the watch screen stages the
   log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. A fight that ends
@@ -730,11 +755,21 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   voice kit) or a `SenseiPast` in `content/shared/sensei/pasts/` (the temperaments that can carry
   it, at least three; regions some ground of every pack has; a foe and its encounter; four beats;
   the arc's text), using only the slots `{name}`, `{art}`, `{lost}`, `{foe}`, `{keepsake}`,
-  `{place}`, `{you}` and `{them}` (validated). Write it gender-neutral: names are drawn. The pool
+  `{place}`, `{you}` and `{them}`, and the pronoun forms of the people among them (validated): names
+  and pronouns are drawn, so never write he, she or they for one person; write `{name.they}`,
+  `{lost.their}`, `{foe.them}` (or `{them.their}` in a beat) and agree verbs with `{name.s}`,
+  `{name.es}`, `{name.is}`, `{name.was}`, `{name.has}`, `{name.does}`, `{name.'s}`. The pool
   grows by itself; `senseiPool.test.ts` checks every new sensei is valid content.
+- **Add a bestiary foe:** a foe of a trade or country (bandits, samurai, pirates, beasts by
+  biome) rather than of one job goes in the shared bestiary (`content/shared/bestiary/`), which
+  every pack takes through its `FoeKit` (`packs/<id>/bestiaryKit.ts`: a technique of its own for
+  each `FOE_ROLES` role the foes ask for). Write it for the kind of place it lives, not today's
+  towns. Plain animals have no chakra or techniques. The bestiary bench
+  (`src/test/bench/bestiary.test.ts`) fights each at the scale its danger means.
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,
   optional `nature`, `traits`, and `healthScale` for a creature bigger or smaller than a person) to the
-  pack's `enemies` and use it in a mission's combat stage. A new trait goes in
+  pack's `enemies` (a foe with a name of their own is `proper`, with `pronouns`; a common one is
+  "the bandit thug" in the story, from its `noun` when lower case won't do: `game/foeNames.ts`) and use it in a mission's combat stage. A new trait goes in
   `COMBAT_TRAITS`, its rule in `rules/kit.ts` or `rules/conditions.ts`, its counter text in
   `game/scouting.ts`, and every engine must honour it.
 - **Add a technique verb:** a technique's `effects` is a list of verbs applied in order
@@ -766,6 +801,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (`reward.companionKindId`). Validated in `validateCompanions.ts`; a clinic's `handling`
   (quality, price, the bond stage with the vet) and handling lore (`companionLore`, sold through
   a gear place's `loreIds`) in `validateCompanionArts.ts`.
+- **Add a summoning contract:** a `ContractDef` in the pack's `contracts.ts` (its summons:
+  body stats, `healthScale`, the techniques they fight with, the standing stage they answer
+  from, `upkeep`, an optional `price` of blood or an offering) with a summoning technique per
+  summon (a `summon` effect naming its id), offered by a job's `reward.contractId` or a
+  teacher's `contract`, with the `tastes` it likes as offerings and its `parting` words. A
+  contract only foes hold needs neither: list its summons on an `EnemyDef.summons` with a
+  `tell`. Validated in `validateContracts.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation
@@ -937,6 +979,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - A bug fix comes with a test that would have caught it.
 - The UI has smoke tests (`ui/App.test.tsx`) for the core loop; keep them passing and add one
   for each new screen.
+- **Golden transcripts** (`src/test/prose/goldens/`) are the game's text as the player reads it
+  for fixed seeds (the first hours in each pack, a run of jobs, talk). A change to any player-facing
+  text changes them: run `npx vitest run src/test/prose -u` and read the diff before committing.
+  The **prose lint** (`src/test/prose/lint.test.ts`) holds the style measures and slips of
+  `docs/design/prose-plan.md` to `budget.ts`: they may only get better, and a pass that improves
+  them lowers the budget.
 
 ### UI design rules (the "Village Hub" design)
 

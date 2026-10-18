@@ -20,6 +20,7 @@ import type {
   TrapMemory,
 } from '../../rules/verbs';
 import type { CombatOrders, CombatStance } from '../../teamContract';
+import type { Caller, Summoned } from './calls';
 import type { Footing } from './footing';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -82,7 +83,16 @@ export function plainSlots(cards: readonly CardId[]): Slot[] {
 }
 
 export interface PlanFighter
-  extends Body, TrumpMemory, EmpowerMemory, CloneBody, TrapMemory, LingeringMemory, Footing {
+  extends
+    Body,
+    TrumpMemory,
+    EmpowerMemory,
+    CloneBody,
+    TrapMemory,
+    LingeringMemory,
+    Footing,
+    Caller,
+    Summoned {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;
@@ -132,6 +142,8 @@ export interface PlanFighter
   readonly holding?: string;
   /** Techniques copied this fight by watching (`mimicry.ts`). */
   readonly copied?: readonly string[];
+  /** The exchange they went down in, for the fight's summary (`falls.ts`). */
+  readonly fellAt?: number;
 }
 
 /** The change to a fighter who pays chakra: less left, more spent (never below empty). */
@@ -210,9 +222,16 @@ export interface Round {
   readonly watching?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */
   readonly played?: CardId;
+  /** The story's last lines before this exchange, so words aren't picked twice running. */
+  readonly recent?: readonly string[];
 }
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
+
+/** A summon's body as it is called (`summons.ts`): a fighter of its caller's side. */
+export function calledFighter(setup: CombatSetup['player'], side: 'player' | 'enemy'): PlanFighter {
+  return fighterFrom(setup, side);
+}
 
 function fighterFrom(
   setup: CombatSetup['player'],
@@ -293,6 +312,7 @@ export function patch(
       | 'blows'
       | 'footwork'
       | 'secondWindSpent'
+      | 'fellAt'
     >
   >,
 ): PlanFighter[] {

@@ -1,3 +1,4 @@
+import { counted } from '@/core';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import { festivalNotice, hasSight, rumoursToday, sightTonight } from '../village';
@@ -35,7 +36,7 @@ export interface VillageView {
 
 function whenLabel(daysAway: number): string {
   if (daysAway === 0) return 'Today';
-  return daysAway === 1 ? 'Tomorrow' : `In ${daysAway} days`;
+  return daysAway === 1 ? 'Tomorrow' : `In ${counted(daysAway, 'day')}`;
 }
 
 function banner(state: GameState, ctx: GameContext): FestivalBanner | null {

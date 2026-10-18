@@ -144,7 +144,7 @@ function fitted(ordered: readonly Slot[], attack: Slot | undefined, limit: numbe
 /**
  * A sensible starting plan, in priority order: a heal for when you're badly hurt, a trump for
  * the last ditch (or first, against a far stronger foe), a sense or Search for when a foe hides,
- * a field to set the ground (it plays only while none of yours is up), an empower or clones and
+ * a summon to call, a field to set the ground (it plays only while none of yours is up), an empower or clones and
  * a trap where you can attack (the plan passes over them while they hold), your best attack, a
  * hold (see `holdSlot`), then more attacks and a conceal, as many as your slots hold, always
  * keeping the best attack (see `fitted`). Defences and footwork aren't slotted
@@ -172,6 +172,8 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
     ...(reaches ? trumpSlot(trumps, facing) : []),
     ...finding(best('sense'), search, facing),
+    // A summon is called first: it fights beside you from the next exchange (`summons.ts`).
+    ...plain(best('summon')),
     ...plain(best('field')),
     ...hold.early,
     // Readying (an empower, clones) is worth it anywhere: before a charge most of all.

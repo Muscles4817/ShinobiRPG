@@ -47,7 +47,6 @@
   max-height: calc(100dvh - 2 * var(--gutter));
   overflow-y: auto;
 }
-.debrief-road ol,
 .debrief-crew ul {
   list-style: none;
   margin: 0;
@@ -55,27 +54,17 @@
   display: grid;
   gap: 6px;
 }
-.debrief-road li {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 10px;
-  font-size: 0.92rem;
-  border-bottom: 1px dashed var(--line);
-  padding-bottom: 4px;
+/* The road as a paragraph: each fact's pay chip sits beside its words. */
+.debrief-road p {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
-.debrief-road li.road-cost span:first-child {
-  color: var(--muted);
-}
-.debrief-road .chip {
-  flex: none;
-}
-/* A clue found: a small stamp before the line, which takes the room left. */
+.debrief-road .chip,
 .debrief-road .noted {
-  flex: none;
-}
-.debrief-road .noted + span {
-  flex: 1;
+  margin-left: 4px;
+  white-space: nowrap;
 }
 .debrief-crew li {
   display: flex;

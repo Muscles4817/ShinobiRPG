@@ -4,14 +4,15 @@ import type { SenseiTemperament } from '../../senseiParts';
  * How generated senseis talk and teach (`senseiParts.ts`). Each is one kind of person, written
  * so that every line could only be theirs: the style on the team card, the weekly lesson, who
  * they are before you know their past, and what they say when the work is done, or isn't, or
- * when there is only a fire to talk to. `{name}` is their given name, `{art}` their specialty.
+ * when there is only a fire to talk to. `{name}` is their given name (with every pronoun form: `{name.their}`,
+ * `{name.s}`), `{art}` their specialty.
  */
 export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
   {
     id: 'iron-bell',
     archetype: 'drillmaster',
     style:
-      'Counts everything out loud: laps, blows, breaths. Never loses count, never lets you stop short.',
+      'Counts every lap and blow and breath out loud, and never loses count or lets you stop short.',
     lesson:
       '{name} counts you through the {art} forms until the count is all there is, then starts again from one.',
     bio: 'A jōnin who rings a hand bell to start the day and another to end it. The village sets its clocks by {name}.',
@@ -20,12 +21,13 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     quirk: 'harsh',
     haunt: 'onsen',
     voice: {
-      praise: '“That was the number I asked for,” {name} says. “Not one short. Good.”',
+      praise:
+        '“That was the number I asked for, and not one short of it,” {name} says, and makes a mark in the little book {name.they} keep{name.s} for counts.',
       scold:
-        '“You stopped short,” {name} says. “Everyone stops short. That is why everyone is ordinary.”',
+        '“You stopped short,” {name} says. “Everyone stops short, and that is why everyone stays ordinary.”',
       catchphrase: 'Again, from one.',
       fireside: [
-        '{name} counts the stars over the fire under their breath, loses count, and starts again, and does not seem to mind.',
+        '{name} counts the stars over the fire under {name.their} breath, loses count, and starts again, and does not seem to mind.',
         '“I rang the bell for my own sensei every morning for a year,” {name} says. “He never once said thank you. I think that was the lesson.”',
       ],
     },
@@ -43,12 +45,13 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     haunt: 'home',
     voice: {
       praise:
-        '{name} looks at your work for a long moment, and nods once. From {name}, it is a speech.',
-      scold: '{name} says nothing at all, which is worse than anything {name} could have said.',
+        '{name} looks at your work for a while and then moves on to the next thing without a word, which from {name} is as good as a speech.',
+      scold:
+        '{name} doesn’t say a word about it, and lets you sit with that until you ask what went wrong.',
       catchphrase: 'Show me.',
       fireside: [
-        '{name} sharpens a kunai by the fire until it sings, and then, without looking up, tells you the name of the smith who made it, and that they are dead.',
-        'For a long time {name} only watches the fire. Then: “Talking is how people hide what they think.” Then nothing else all night.',
+        '{name} sharpens a kunai by the fire until it sings, and then, without looking up, tells you the name of the smith who made it, and that the smith is dead.',
+        'For a long time {name} only watches the fire, and when {name.they} finally speak{name.s} it is to tell you that talking is how people hide what they think. That is all you get from {name.them} until morning.',
       ],
     },
   },
@@ -70,7 +73,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
       scold: '“You did what was easy,” {name} says. “Now tell me why it was the wrong move.”',
       catchphrase: 'What is it for?',
       fireside: [
-        '{name} lays out a game of stones in the dirt by the fire and plays both sides. One side always wins. {name} says it is the side that waited.',
+        '{name} lays out a game of stones in the dirt by the fire and plays both sides, and the same side wins every time, the one that waited.',
         '“My sensei could see ten moves ahead,” {name} says. “It didn’t save her. She forgot that the board has people on it.”',
       ],
     },
@@ -81,7 +84,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     style: 'Worries about you out loud. Checks your bandages, your pack and whether you ate.',
     lesson:
       '{name} works you hard at {art}, then makes you stop, drink water and show your hands before you go home.',
-    bio: 'A jōnin the younger genin all run to with their scrapes. {name} always has a roll of bandages and something sweet in a pocket.',
+    bio: 'A jōnin the younger genin all run to with their scrapes. {name} always has a roll of bandages and a sweet bean bun in a pocket.',
     favouredTraits: ['kind', 'humble'],
     traits: ['kind', 'diligent'],
     quirk: 'patient',
@@ -100,9 +103,9 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
   {
     id: 'cook',
     archetype: 'gourmand',
-    style: 'Teaches the way a cook teaches: by feel, by taste, with something always on the boil.',
+    style: 'Teaches the way a cook does, going by feel and taste with a pot always on the boil.',
     lesson:
-      '{name} drills you at {art} between stirring a pot, and says a technique is like a broth: you know it is right by the smell.',
+      '{name} drills you at {art} between stirring a pot, and says a technique is like a broth, and you know it is right by the smell.',
     bio: 'A jōnin who runs missions with a cooking pot strapped to the pack. Clients remember {name}’s food long after they forget the job.',
     favouredTraits: ['brash', 'curious'],
     traits: ['kind', 'brash'],
@@ -131,12 +134,13 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     quirk: 'natural',
     haunt: 'tavern',
     voice: {
-      praise: '“Not bad,” {name} says. “I did it younger, of course. But not bad at all.”',
+      praise:
+        '“Not bad at all,” {name} says. “I was younger when I did it, of course, but still, not bad.”',
       scold:
-        '“Boring,” {name} says. “If you’re going to fail, at least fail at something worth watching.”',
+        '“Boring,” {name} says. “If you’re going to fail, at least fail in a way worth watching.”',
       catchphrase: 'Watch closely. I won’t do it twice. I might do it three times.',
       fireside: [
-        '{name} tells the crew about the time they beat three chūnin at once, blindfolded. The story is better every time. Nobody minds.',
+        '{name} tells the crew about the time {name.they} beat three chūnin at once, blindfolded. The story gets better every time {name.they} tell{name.s} it, and nobody minds in the least.',
         '“Everyone thinks I like being looked at,” {name} says, quieter than usual. “I just never learned what to do when nobody is.”',
       ],
     },
@@ -147,19 +151,19 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     style: 'Late, asleep, or both. Then, once in a while, says the one thing you needed to hear.',
     lesson:
       '{name} turns up halfway through the {art} lesson with a fishing rod, watches for a minute, and fixes the one thing that was wrong.',
-    bio: 'A jōnin usually found asleep under a tree with a book over the face. The book is always about something nobody expected.',
+    bio: 'A jōnin usually found asleep under a tree with a book over the face. The book is never about what anyone expects, and last week it was beekeeping.',
     favouredTraits: ['curious', 'lazy'],
     traits: ['lazy', 'cunning'],
     quirk: 'distracted',
     haunt: 'wilds',
     voice: {
       praise:
-        '{name} opens one eye. “Huh. You actually did it.” And then, after a while: “Well done.”',
+        '{name} opens one eye. “Huh. You actually did it,” {name.they} say{name.s}, and after a while, more quietly, “Well done.”',
       scold:
         '“I’m not going to tell you off,” {name} yawns. “You already know. That’s worse, isn’t it?”',
       catchphrase: 'Wake me when it matters.',
       fireside: [
-        '{name} falls asleep sitting up by the fire, and wakes the instant a twig snaps in the dark, kunai already in hand. Then goes back to sleep.',
+        '{name} falls asleep sitting up by the fire, wakes the instant a twig snaps in the dark with a kunai already in hand, and is asleep again before anyone has worked out what happened.',
         '“I worked very hard once,” {name} says, looking at the stars. “Harder than anyone. Then I found out what it was for. I’ve been resting since.”',
       ],
     },
@@ -177,13 +181,14 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     quirk: 'harsh',
     haunt: 'tavern',
     voice: {
-      praise: '“You’d have lived,” {name} says. From {name}, there is no higher praise.',
+      praise:
+        '“You’d have lived,” {name} says, which is the most {name.they} ever say{name.s} to anyone.',
       scold:
         '“In the war, that would have been the last thing you did,” {name} says. “Do it again.”',
       catchphrase: 'Stay alive first.',
       fireside: [
         '{name} builds the fire small and low and in a hollow, out of old habit, and tells you which way to run if anyone comes.',
-        '“We sang in the war,” {name} says. “Terrible songs. You’d think you’d forget them.” {name} hums a few bars, and stops.',
+        '“We sang in the war,” {name} says. “Terrible songs. You’d think you’d forget them.” {name.they} hum{name.s} a few bars under {name.their} breath and stop{name.s} partway through a line.',
       ],
     },
   },
@@ -204,7 +209,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
       scold: '“You were somewhere else,” {name} says. “Come back, and we will begin.”',
       catchphrase: 'Be where your feet are.',
       fireside: [
-        '{name} stares into the fire so long the crew stops talking. “Someone is thinking of us,” {name} says at last. Nobody asks who.',
+        '{name} stares into the fire so long the crew stops talking. “Someone is thinking of us,” {name.they} say{name.s} at last, and nobody asks who.',
         '“When I was small I could hear the trees,” {name} says. “I still can. They mostly complain about the weather.”',
       ],
     },
@@ -213,10 +218,10 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
     id: 'scholar',
     archetype: 'guardian',
     style:
-      'A former academy instructor who still teaches like one: patiently, thoroughly, from the very beginning.',
+      'A former academy instructor who still teaches as patiently as ever, from the very beginning.',
     lesson:
       '{name} takes the {art} technique apart into its smallest pieces and has you build it again, piece by piece, until you understand it.',
-    bio: 'A jōnin who taught at the academy for years and still corrects the grammar on mission reports. Has a notebook on every genin they ever taught.',
+    bio: 'A jōnin who taught at the academy for years and still corrects the grammar on mission reports. Has a notebook on every genin {name.they} ever taught.',
     favouredTraits: ['diligent', 'focused'],
     traits: ['humble', 'focused'],
     quirk: 'patient',

@@ -1,7 +1,8 @@
-import type { EnemyDef } from '@/content';
+import type { EnemyDef, SummonDef } from '@/content';
 import type {
   CombatantSetup,
   CombatAttributes,
+  CombatCall,
   CombatItem,
   CombatOutcome,
   CombatPerk,
@@ -14,6 +15,7 @@ import { createStats, type Stats } from '@/systems/stats';
 import { maxChakra, MAX_HEALTH, reservesFor } from '@/systems/vitals';
 
 import type { GameContext } from './context';
+import { foeCalled, foeGrammar } from './foeNames';
 import { enemyWalking, playerWalking } from './footing';
 import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
@@ -92,6 +94,9 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
   return {
     id: PLAYER_COMBATANT_ID,
     name,
+    // The fight is told to the player: "You close in."
+    called: 'you',
+    grammar: 'you',
     attributes: attributesOf(armed),
     health: vitals.health,
     maxHealth: MAX_HEALTH,
@@ -136,11 +141,63 @@ export function enemyCombatantId(enemyId: string, index: number): string {
   return `${enemyId}#${index}`;
 }
 
-export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
-  const walking = enemyWalking(def);
+/** A summon's body as it answers its caller. */
+function summonBody(summon: SummonDef, ctx: GameContext): CombatantSetup {
+  const health = Math.max(1, Math.round(MAX_HEALTH * summon.healthScale));
   return {
-    id: enemyCombatantId(def.id, index),
+    id: summon.id,
+    name: summon.name,
+    tag: 'Summon',
+    attributes: attributesOf(summon.stats),
+    health,
+    maxHealth: health,
+    chakra: summon.maxChakra,
+    maxChakra: summon.maxChakra,
+    techniques: summon.techniqueIds.map((id) => ctx.content.techniques.require(id)),
+    ...(summon.traits ? { traits: summon.traits } : {}),
+  };
+}
+
+/** A summon as a call its caller carries into a fight. */
+export function summonCall(summon: SummonDef, ctx: GameContext): CombatCall {
+  return {
+    id: summon.id,
+    body: summonBody(summon, ctx),
+    upkeep: summon.upkeep,
+    ...(summon.price?.blood ? { bloodPrice: summon.price.blood } : {}),
+  };
+}
+
+/** A fighter with these summons to call: their summoning techniques and the calls. */
+export function withCalls(
+  fighter: CombatantSetup,
+  summons: readonly SummonDef[],
+  ctx: GameContext,
+): CombatantSetup {
+  if (summons.length === 0) return fighter;
+  return {
+    ...fighter,
+    techniques: [
+      ...fighter.techniques,
+      ...summons.map((s) => ctx.content.techniques.require(s.techniqueId)),
+    ],
+    calls: summons.map((s) => summonCall(s, ctx)),
+  };
+}
+
+export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
+  const summons = (def.summons ?? []).map((s) => ctx.content.summons.require(s.summonId));
+  return withCalls(enemyBody(def, index, ctx), summons, ctx);
+}
+
+function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
+  const walking = enemyWalking(def);
+  const id = enemyCombatantId(def.id, index);
+  return {
+    id,
     name: def.name,
+    called: foeCalled(def),
+    grammar: foeGrammar(def, id),
     tag: def.kind,
     attributes: attributesOf(enemyStatLine(def)),
     health: enemyMaxHealth(def),
@@ -164,9 +221,10 @@ export function retinueCombatantId(unitId: string, index: number, k: number): st
  * by default a companion is simply one more fighter on their side.
  */
 export function enemyParty(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup[] {
-  const units = (def.retinue ?? []).map((entry, k) => ({
-    ...enemyCombatant(ctx.content.enemies.require(entry.enemyId), index, ctx),
-    id: retinueCombatantId(entry.enemyId, index, k),
-  }));
+  const units = (def.retinue ?? []).map((entry, k) => {
+    const unit = ctx.content.enemies.require(entry.enemyId);
+    const id = retinueCombatantId(entry.enemyId, index, k);
+    return { ...enemyCombatant(unit, index, ctx), id, grammar: foeGrammar(unit, id) };
+  });
   return [enemyCombatant(def, index, ctx), ...units];
 }

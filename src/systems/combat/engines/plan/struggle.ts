@@ -7,6 +7,7 @@ import { breakHold } from './holding';
 import { readsInTheMoment } from './judgement';
 import { canHit } from './rows';
 import { say, type PlanFighter, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Breaking holds in a planned fight (`rules/escape.ts`): at the end of each exchange the pinned
@@ -46,7 +47,7 @@ export function struggleFree(round: Round, rng: Rng): Round {
     if (!held?.grip || !caught(held) || held.stunned > 0) return now;
     const channelled = holderOf(now, held.id) !== undefined;
     if (!rng.chance(escapeChance(held, held.grip, channelled))) return now;
-    return loosed(now, held, `${held.name} struggles free of the hold!`);
+    return loosed(now, held, tell('{a} struggle{a.s} free of the hold.', { a: held }));
   }, round);
 }
 
@@ -80,8 +81,9 @@ export function aid(
   }
   const chance = rescueChance(actor, held.grip, holder !== undefined);
   if (!rng.chance(chance)) {
-    const line = `${actor.name} tries to pull ${held.name} free, but the hold stands.`;
+    const line = tell('{a} pull{a.s} at {t}, but the hold stands.', { a: actor, t: held });
     return { kind: 'spent', round: say(round, line) };
   }
-  return { kind: 'spent', round: loosed(round, held, `${actor.name} pulls ${held.name} free!`) };
+  const freed = tell('{a} pull{a.s} {t} free.', { a: actor, t: held });
+  return { kind: 'spent', round: loosed(round, held, freed) };
 }

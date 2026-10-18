@@ -36,7 +36,8 @@ describe('chō-han at the back table', () => {
     expect(won.wallet.ryo).toBe(300 + winnings(30));
     expect(winnings(30)).toBeLessThan(30);
     expect(won.village.dice).toMatchObject({ day: 2, rounds: 1, last: { stake: 30 } });
-    expect(won.journal.entries.at(-1)?.text).toMatch(/You called it/);
+    expect(won.journal.entries.at(-1)?.text).toMatch(/^The cup lifts/);
+    expect(won.journal.entries.at(-1)?.tone).toBe('success');
   });
 
   it('keeps the stake on a wrong call', () => {

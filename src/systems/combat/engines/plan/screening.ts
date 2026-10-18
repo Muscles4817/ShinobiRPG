@@ -6,6 +6,7 @@ import { clonesLeft, drawFireChance } from '../../rules/verbs';
 import type { Card } from './cards';
 import { eyes } from './decoys';
 import { patch, type PlanFighter, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Clones screening a charge in a planned fight (`rules/verbs/clones.ts`): when someone closes on
@@ -46,8 +47,13 @@ export function drawnByClones(round: Round, { holder, closer, card, rng }: Shot)
   if (!rng.chance(chance)) return null;
   const left = isArea(card) ? 0 : clones.count - 1;
   const fighters = patch(round.fighters, maker.id, { clones: { ...clones, count: left } });
-  const whose = maker.id === closer.id ? 'their own' : `${maker.name}'s`;
-  const line = `${holder.name}'s ${shotName(card)} tears into ${whose} clones, and ${closer.name} is through.`;
+  const own = maker.id === closer.id;
+  const line = tell(
+    own
+      ? '{h.poss} {what} tears into {c.poss} clones, and {c} {c.is} through.'
+      : '{h.poss} {what} tears into {m.poss} clones, and {c} {c.is} through.',
+    { h: holder, c: closer, m: maker, what: shotName(card) },
+  );
   // The shot is the holder's, told as theirs.
   return { ...round, fighters, lines: [...round.lines, turnLine(line, holder.id)] };
 }

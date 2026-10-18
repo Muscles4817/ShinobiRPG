@@ -8,6 +8,7 @@ export const TANZAKU_PEOPLE: readonly PersonDef[] = [
     id: 'okichi',
     name: 'Okichi',
     familyName: '',
+    pronouns: 'she',
     homeLocationId: 'tanzaku-town',
     role: 'villager',
     title: 'Dice dealer at the Short Odds',

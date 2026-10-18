@@ -8,6 +8,10 @@ export const VOICE_MOMENTS = [
   'approve',
   'disapprove',
   'camp',
+  /** The first quiet moment after a fight on the job. */
+  'after-fight',
+  /** By the fire, when a choice earlier sat badly with them. */
+  'grudge',
 ] as const;
 export type VoiceMoment = (typeof VOICE_MOMENTS)[number];
 

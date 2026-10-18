@@ -17,7 +17,7 @@ describe('EncounterScene (smoke test)', () => {
 
     const notes = screen.getByRole('region', { name: 'What you know' });
     expect(within(notes).getByText('How many')).toBeInTheDocument();
-    expect(within(notes).getAllByText(/^Unknown\./).length).toBeGreaterThan(0);
+    expect(within(notes).getAllByText(/^Not yet known\./).length).toBeGreaterThan(0);
 
     const scout = screen.getByRole('region', { name: 'Scout first' });
     await user.click(within(scout).getByRole('button', { name: /Watch them from cover/ }));

@@ -33,7 +33,11 @@ export const ORIGINAL_TEXT: SettingText = {
     'who listen. Tōrōgakure keeps ten thousand lanterns burning to guide wandering spirits ' +
     'home, and trains shinobi to deal with the ones that refuse to go.',
   graduate: 'Receive your forehead protector',
-  sleepWell: 'You sleep soundly. Somewhere a temple bell counts the hours.',
+  sleepWell: [
+    'You sleep soundly. Somewhere a temple bell counts the hours.',
+    'Out in the street the lantern-lighters call to each other on their last round, and then it’s quiet.',
+    'The river is loud tonight, high with rain from the hills, and you fall asleep listening to it.',
+  ],
   sleepHungry: 'You sleep fitfully on an empty stomach.',
   sleepLockedOut: 'The landlord has locked your door over unpaid rent. You sleep in the stairwell.',
   hospitalWake: 'You wake in the village hospital, under lantern light and clean sheets.',
@@ -89,6 +93,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         id: 'training-grounds',
         kind: 'training',
         name: 'Training Grounds',
+        inText: 'the training ground',
         icon: 'post',
         blurb: 'Posts, rooftops and the lake',
         trainingIds: [

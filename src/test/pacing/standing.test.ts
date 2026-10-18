@@ -58,6 +58,8 @@ function daysToGrade(standing: ClassStanding, grade: StatGrade, days = DAYS): nu
 /** Win rate against every genin of their year, rested and fed. */
 /** Fights against each classmate. */
 const FIGHTS_EACH = 50;
+/** Fights against the year for two starts take most of five seconds on a slow runner. */
+const YEAR_TIMEOUT_MS = 15_000;
 /** Four months of play and hundreds of fights take a while on a slow runner. */
 const CLIMB_TIMEOUT_MS = 60_000;
 
@@ -108,9 +110,13 @@ describe('pacing by class standing', () => {
     CLIMB_TIMEOUT_MS,
   );
 
-  it('a genius starts ahead of the middle of the class against their year', () => {
-    expect(againstTheirYear(start('genius', SEEDS[0]))).toBeGreaterThan(
-      againstTheirYear(start('middle', SEEDS[0])),
-    );
-  });
+  it(
+    'a genius starts ahead of the middle of the class against their year',
+    () => {
+      expect(againstTheirYear(start('genius', SEEDS[0]))).toBeGreaterThan(
+        againstTheirYear(start('middle', SEEDS[0])),
+      );
+    },
+    YEAR_TIMEOUT_MS,
+  );
 });

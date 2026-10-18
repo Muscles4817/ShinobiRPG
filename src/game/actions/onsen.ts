@@ -10,6 +10,11 @@ import { outingWarmth, timeTogether, type Outing } from '../people/together';
 import type { GameState } from '../state';
 import { closedReason } from '../village';
 import type { ActionHandler, ActionOf } from './types';
+import { placeInText } from '../placeName';
+import { fillSlots } from '@/core';
+import { personSlots } from '../people/pronouns';
+import { SOAK_ALONE, SOAK_WITH } from '../everyday/awayLines';
+import { tellDaily } from '../everyday/tell';
 
 /**
  * A soak at the hot spring or bathhouse: alone, or beside whoever is in the water, which
@@ -60,17 +65,18 @@ export const soak: ActionHandler<ActionOf<'soak'>> = {
     if (!onsen || !paid?.ok) return state;
     const companion =
       action.withId === null ? null : (findPerson(state, ctx, action.withId) ?? null);
-    const together = soakedWith({ ...state, wallet: paid.value }, ctx, companion);
+    const said = tellDaily(state, ctx, companion ? SOAK_WITH : SOAK_ALONE, {
+      key: companion?.id ?? onsen.id,
+    });
+    const together = soakedWith({ ...state, wallet: paid.value, told: said.told }, ctx, companion);
     const warm = adjust(spendTime(together.state, SOAK_SLOTS, ctx), {
       energy: SOAK_ENERGY,
       health: SOAK_HEALTH,
     });
     const soaked = { ...warm, character: { ...warm.character, soaked: true as const } };
     return log(soaked, {
-      heading: companion ? `A soak with ${companion.name}` : `A soak at ${onsen.name}`,
-      text: companion
-        ? `You sink into the water beside ${companion.name}. Steam, the drip from the eaves, and the odd word between you.`
-        : 'You sink into the water up to your chin and let the day go out of your shoulders.',
+      heading: companion ? `A soak with ${companion.name}` : `A soak at ${placeInText(onsen.name)}`,
+      text: companion ? fillSlots(said.text, personSlots('them', companion)) : said.text,
       tone: 'success',
       chips: [
         chip(`−${onsen.soakCost} ryo`, 'cost'),

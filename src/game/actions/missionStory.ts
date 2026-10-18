@@ -3,6 +3,7 @@ import { advance, holds, type DecisionOption } from '@/systems/missions';
 import type { GameContext } from '../context';
 import { activeMission, activeStage, afterStage } from '../missionFlow';
 import { campActivity, campChoices, campOver, campWithSensei } from '../story/camp';
+import { campLine } from '../story/campLines';
 import { SENSEI_FIRESIDE } from '../story/fireside';
 import { decide } from '../story/decide';
 import { storyOf } from '../story/state';
@@ -63,10 +64,8 @@ export const missionCamp: ActionHandler<ActionOf<'missionCamp'>> = {
         ? campWithSensei(state, ctx)
         : campActivity(state, ctx, rng, { def, activity, index: action.activityIndex });
     if (!done.mission || !campOver(done, stage)) return done;
-    const burnedDown = advance(done.mission, {
-      kind: 'story',
-      text: 'The fire burns down to embers.',
-    });
-    return afterStage({ ...done, mission: burnedDown }, ctx);
+    const embers = campLine(done, ctx, 'embers');
+    const burnedDown = advance(done.mission, { kind: 'story', text: embers.text });
+    return afterStage({ ...done, told: embers.told, mission: burnedDown }, ctx);
   },
 };

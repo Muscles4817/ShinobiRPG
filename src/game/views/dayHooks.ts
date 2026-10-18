@@ -1,3 +1,4 @@
+import { counted } from '@/core';
 import { daysOfRentLeft, isRentFree, isRentOverdue } from '@/systems/housing';
 
 import type { GameContext } from '../context';
@@ -60,7 +61,12 @@ function exam(state: GameState, ctx: GameContext): DayHook[] {
 function festival(state: GameState, ctx: GameContext): DayHook[] {
   const notice = festivalNotice(state, ctx);
   if (!notice || notice.daysAway > SOON_DAYS) return [];
-  const when = notice.daysAway === 0 ? 'Today' : `In ${notice.daysAway} days`;
+  const when =
+    notice.daysAway === 0
+      ? 'Today'
+      : notice.daysAway === 1
+        ? 'Tomorrow'
+        : `In ${counted(notice.daysAway, 'day')}`;
   return [hook('祭', notice.festival.name, when, notice.daysAway === 0)];
 }
 
@@ -69,9 +75,9 @@ function sensei(state: GameState, ctx: GameContext): DayHook[] {
   const today = week?.days.find((d) => d.today);
   if (!week || !today) return [];
   const meeting = today.meeting
-    ? [hook('師', `${week.sensei} sets ${today.meeting.toLowerCase()}`, capitalised(today.from))]
+    ? [hook('師', `${today.meeting} with ${week.sensei}`, capitalised(today.from))]
     : [];
-  const team = today.team ? [hook('班', `Team day: ${today.team.toLowerCase()}`)] : [];
+  const team = today.team ? [hook('班', `Team ${today.team.toLowerCase()}`)] : [];
   return [...meeting, ...team];
 }
 
@@ -94,7 +100,7 @@ function rent(state: GameState): DayHook[] {
     : [];
 }
 
-const FREE_DAY = hook('道', 'A free day: train, cook or wander');
+const FREE_DAY = hook('道', 'A free day to train, cook or wander');
 
 /** The day ahead's plaques, most pressing first; never empty. */
 export function dayHooks(state: GameState, ctx: GameContext): DayHook[] {

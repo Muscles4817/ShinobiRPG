@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import {
   actReached,
   arcJobOpen,
@@ -10,6 +11,7 @@ import {
 import { availability } from '../board';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { placeInText } from '../placeName';
 
 /**
  * Long stories on the board: each arc under way, as the act it stands at (what is going on,
@@ -63,15 +65,9 @@ const RULES: Readonly<Record<ActPass, ArcRule | null>> = {
 
 const titleOf = (ctx: GameContext, id: string): string => ctx.content.missions.require(id).title;
 
-/** "A", "A and B", "A, B and C". */
-function listed(words: readonly string[]): string {
-  if (words.length <= 1) return words[0] ?? '';
-  return `${words.slice(0, -1).join(', ')} and ${words.at(-1) ?? ''}`;
-}
-
 /** "Based in the Fire Temple": a place's name mid-sentence. */
 function basedIn(name: string): string {
-  return `Based in ${name.replace(/^The /, 'the ')}`;
+  return `Based in ${placeInText(name)}`;
 }
 
 function jobOf(state: GameState, ctx: GameContext, id: string): ArcJob {

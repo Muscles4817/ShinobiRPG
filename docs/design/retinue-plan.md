@@ -518,17 +518,20 @@ fighters, so this is new: a full fighter joining the field mid-fight.
 - **The original pack:** one Mount Reikon contract, the **lantern foxes**: spirit foxes in a
   ladder from kit to nine-tailed elder, with a shrine on Reikon to sign at.
 
-**Open questions:**
+**Decided** (with the designer):
 
-1. Should summoning in the original pack be the **spirit art**, opening the spirit discipline
-   now, or ninjutsu as in the fan pack (the spirit art left for shamans)?
-2. Should **Mount Reikon open** with this step (a place with a shrine, chūnin only), or should
-   signing come only through jobs and teachers for now?
-3. **Standing:** one bond with the whole clan, or a bond with each summon (the elder and the
-   small ones apart)?
-4. **One contract at a time**, or several with growing costs?
-5. Should **genin** be able to sign at all (a small summon only), or should contracts start at
-   chūnin like the mountain road?
+1. **Summoning is ninjutsu in both packs** for now. The spirit art, a new discipline, comes with
+   shamans, where it is the point.
+2. **Contracts come only from jobs and teachers.** Mount Reikon isn't a summoning mountain; only
+   the toads have a mountain (Myōboku, in the fan pack, reached by story, not by road).
+3. **Standing is with the whole clan** for now.
+4. **One contract at a time.**
+5. **No rank lock.** What you can call is limited by what it costs:
+   - chakra above all (to call it, and every exchange it stays);
+   - for some summons, more: an offering of food carried into the fight, blood (some of the
+     summoner's health), or a sacrifice.
+
+   A genin may sign; few can pay for more than the smallest.
 
 ### Shamans: spirits seen, bound and sealed
 
@@ -819,3 +822,71 @@ and its genes, its skills with training**, and every kind has its own ceiling.
   - A "For handlers" shelf at shops that sell lore.
 - **Later:** ageing, a "stay home" toggle and light injuries, portraits by stage, more kinds and
   their arts (summons, swarms, puppets come as their own steps).
+
+### Step 3: summons and contracts
+
+- **The engine** (`engines/plan/summons.ts`, `summonPlans.ts`, `calls.ts`):
+  - **Calling.** A `summon` verb names one of its user's `CombatantSetup.calls` (a body, an
+    upkeep, an optional blood price). It answers into the caller's front row at once and gets
+    a default plan as the exchange ends, so it acts from the next.
+  - **Paying.** Any blood price is paid at once, never the caller's last breath. Upkeep is paid
+    in chakra at the end of every exchange.
+  - **Going home.** When unpaid, beaten, or when its caller falls. A summoning card isn't
+    playable while its summon is out.
+  - **Reporting.** `CombatOutcome.summons` reports each call's fate: stayed, fell or sent home.
+  - **Default plans** call a summon early, right after a sense or Search for a hidden foe.
+- **Contracts** (`systems/contracts`, `GameState.contract`, save v55, renumbered v56 in #164):
+  - **One at a time.**
+  - **Standing.** Standing with the whole clan is kept in bond points:
+    - a summon kept to the end +3;
+    - one sent home +1;
+    - one beaten −3.
+  - **Who answers.** Summons answer from the stage they ask (0 at signing) if you carry their
+    offering, which is given up when they are called. Only mission fights take them, never a spar.
+  - **Signing.** Through a job's `reward.contractId` (if you hold none) or a teacher's
+    `contract` once you are close (`signContract`).
+- **Content:**
+  - **The original pack:** the Salamanders of the Old Kilns, signed at the end of the Cold
+    Kilns job.
+
+    | Summon           | Answers from | Asks                     |
+    | ---------------- | ------------ | ------------------------ |
+    | Kiln Newt        | signing      | —                        |
+    | Ember Salamander | friends      | blood                    |
+    | The Kiln Mother  | bonded       | an offering of chestnuts |
+
+  - **The Naruto pack:**
+    - The Toads of Mount Myōboku: Gamakichi, Gamaken (blood), Gamabunta (wild game). Signed
+      after the new job "A Toad on the Doorstep".
+    - Kakashi's Ninken: Pakkun and Bull, signed with him at close friends.
+- **Screens:**
+  - a contract card on the Shinobi tab: the clan, your standing, and each summon's grade,
+    whether it answers, and what it asks, in words;
+  - "Sign …" on a teacher's sheet;
+  - the debrief names a contract signed.
+
+  Summons show in fights as ordinary fighters tagged "Summon".
+
+- **Later:** the toads' mountain, reached by story.
+
+### Step 3e: keeping, breaking, and foes who summon
+
+- **Offerings.** A contract you can sign names its `tastes`. Once a day, at home, you may leave
+  one of them out on the scroll (`makeOffering`): it is used up and your standing rises by
+  `OFFERING_STANDING` (2), a little less than a summon kept to the end of a fight.
+- **Breaking.** `breakContract` tears up your name. The contract is gone, you may sign another,
+  and the clan's `parting` words are logged. The clan never takes you back: its id goes into
+  `GameState.brokenContracts` (save v57), and neither its job nor its teacher offers it again.
+  The card asks twice.
+- **Foes who summon.** `EnemyDef.summons` lists summons from any contract of the pack, each with
+  a `tell`. The foe goes into the fight with the call and its technique, the same way you do.
+  Before the fight, `summonsSeen` reads the contract by its tell, as a retinue is read. Scouting
+  counts a summon you can tell they hold in the threat, with its own counter ("goes home when
+  they fall or run dry"). A client's report names it on the notice.
+- **Content:**
+  - the original pack's bandit chief keeps a cellar contract, the Rats of the Undercroft
+    (`kept`);
+  - the Naruto pack's missing-nin carries the rogue Sannin's snakes (`hidden`), so a Great
+    Snake may come up out of nowhere.
+
+  Contracts held only by foes need no tastes or parting words, and no one offers them.

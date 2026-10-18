@@ -83,7 +83,7 @@ describe('clones screening a charge', () => {
     expect(drawn.length).toBeGreaterThan(0);
     expect(drawn.length).toBeLessThan(40);
     const line = splitNarration(drawn[0]!.lines.at(-1)!);
-    expect(line.text).toMatch(/Bolt tears into friend's clones, and runner is through/);
+    expect(line.text).toMatch(/Bolt tears into friend’s clones, and runner is through/);
     expect(line.actorId).toBe('holder');
   });
 

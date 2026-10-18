@@ -1,5 +1,5 @@
 import type { CombatPerk } from '@/systems/combat';
-import type { Appearance } from '@/systems/profile';
+import type { Appearance, Pronouns } from '@/systems/profile';
 import type { Rank } from '@/systems/standing';
 import type { Aptitude, Stats } from '@/systems/stats';
 import type { Discipline, Element } from '@/systems/techniques';
@@ -80,6 +80,11 @@ export interface PersonDef {
   readonly id: string;
   readonly name: string;
   readonly familyName: string;
+  /**
+   * How lines speak of them. Authored people declare theirs (validated); generated and composed
+   * people get theirs when they are made.
+   */
+  readonly pronouns?: Pronouns;
   readonly role: PersonRole;
   readonly rank: PersonRank;
   /**
@@ -130,10 +135,30 @@ export interface PersonArsenal {
   readonly tools?: Readonly<Record<string, number>>;
 }
 
+/**
+ * How someone talks, read from their traits (`TraitDef.register`): blunt, warm, wry or formal.
+ * A templated line may be phrased once per register, so two people never say the same words.
+ * Blunt and wry are the dry pair, warm and formal the courteous one; a line phrased for one of
+ * each pair reads right for everyone.
+ */
+export const REGISTERS = ['blunt', 'warm', 'wry', 'formal'] as const;
+export type Register = (typeof REGISTERS)[number];
+
+/** Phrasings of one line, by the register of whoever says it. */
+export type Phrasings = Partial<Readonly<Record<Register, string>>>;
+
+/** A line said the same way by everyone, or phrased by register. */
+export type Phrased = string | Phrasings;
+
 export interface ConversationChoice {
   readonly label: string;
   readonly tone: Tone;
-  readonly reply: string;
+  /** Their answer when your reply lands plainly, and whenever it has no warm or cool one. */
+  readonly reply: Phrased;
+  /** Their answer when your reply lands well (a tone they like). Every template has one. */
+  readonly warm?: Phrased;
+  /** Their answer when your reply grates (a tone they dislike). Every template has one. */
+  readonly cool?: Phrased;
   /** Picking this reply does the favour a teacher asked for (`SimplePrice` favour id). */
   readonly favour?: string;
   /** The village remembers it (`village.marks`): a sensei's story opening their arc. */
@@ -170,7 +195,8 @@ export interface ConversationDef {
   /** Minimum friendship stage (0 = stranger … 4 = bonded). */
   readonly minStage: number;
   readonly about?: TopicKind;
-  readonly opener: string;
+  /** Phrased by register in every template (validated). */
+  readonly opener: Phrased;
   readonly choices: readonly ConversationChoice[];
 }
 

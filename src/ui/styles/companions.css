@@ -108,3 +108,63 @@
   padding-top: 10px;
   border-top: 1px dashed var(--paper-muted);
 }
+/* A summoning contract on the Shinobi tab. */
+.contract-card {
+  margin: 12px var(--gutter);
+  padding: 14px;
+  border-radius: var(--radius);
+}
+.contract-card h2 {
+  margin: 0 0 4px;
+  font-family: var(--font-story);
+  font-size: 1.1rem;
+}
+.contract-card .muted {
+  color: var(--paper-muted);
+}
+.contract-card .badge {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+.contract-card .summons {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.contract-card .summon {
+  padding-top: 8px;
+  border-top: 1px dashed var(--paper-muted);
+  opacity: 0.6;
+}
+.contract-card .summon.answers {
+  opacity: 1;
+}
+.contract-card .summon p {
+  margin: 2px 0;
+}
+.contract-card .offerings {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--paper-muted);
+}
+.contract-card h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-story);
+  font-size: 1rem;
+}
+.contract-card > .btn,
+.contract-card .break-ask {
+  margin-top: 12px;
+}
+/* On paper the ghost button takes the paper's ink, and a closed one fades into it. */
+.contract-card .btn.ghost {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+.contract-card .btn:disabled {
+  background: transparent;
+  color: var(--paper-muted);
+  border: 1px dashed var(--paper-muted);
+}

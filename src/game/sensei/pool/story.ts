@@ -1,7 +1,9 @@
 import type { ContentPack, ConversationDef, EnemyDef, SenseiPast, SenseiPastFoe } from '@/content';
-import type { Rng } from '@/core';
+import { fillSlots, type Rng } from '@/core';
 import type { ArcDef, MissionDef, MissionStage } from '@/systems/missions';
 import type { Discipline } from '@/systems/techniques';
+
+import { rolledPronouns } from '../../people/pronouns';
 
 /**
  * A generated sensei's story, made from their past (`compose.ts`): the four conversations at
@@ -33,11 +35,9 @@ const FOE_RANKS = ['D', 'C'];
 /** What a sensei's lines are filled with. */
 export type Slots = Readonly<Record<string, string>>;
 
-const SLOT = /\{([a-zA-Z0-9-]+)\}/g;
-
 /** Fills a part's slots; `{you}` and `{them}` stay for conversations to fill. */
 export function fill(text: string, slots: Slots): string {
-  return text.replace(SLOT, (whole, name: string) => slots[name] ?? whole);
+  return fillSlots(text, slots);
 }
 
 export interface StoryIds {
@@ -101,6 +101,9 @@ export function foeFor(
     kind: past.foe.kind,
     danger: 'deadly',
     name: input.name,
+    // A past's foe has a name (or an epithet) of their own; a spirit is "it".
+    proper: true,
+    pronouns: past.foe.kind === 'Spirit' ? 'it' : rolledPronouns(input.id),
     description: fill(past.foe.description, input.slots),
     baseStat: FOE_BASE,
     statBonuses: { [input.art]: FOE_ART, speed: FOE_SPEED, perception: FOE_PERCEPTION },
@@ -138,7 +141,7 @@ function findStages(past: SenseiPast, input: ArcInput): MissionStage[] {
           onSuccess: { ...found, ledger: s(t.found) },
         },
         {
-          label: 'Think where they would be',
+          label: s('Think where {foe.they} would be'),
           stat: 'intellect',
           difficulty: FIND_DIFFICULTY,
           onSuccess: { ...found, ledger: s(t.found) },

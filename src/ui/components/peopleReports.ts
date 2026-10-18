@@ -26,8 +26,11 @@ export interface CardContent {
   readonly tone: 'good' | 'bad';
 }
 
-/** "Taijutsu +0.05" as a growth row: the stat, then the gain. */
+/** "Taijutsu +2" or "Taijutsu, a little" as a growth row: the stat, then the gain. */
 export function gainRow(label: string): Row {
+  const comma = label.indexOf(', ');
+  if (comma >= 0)
+    return { label: label.slice(0, comma), value: label.slice(comma + 2), tone: 'gain' };
   const cut = label.lastIndexOf(' ');
   return cut < 0
     ? { label, value: '', tone: 'gain' }
