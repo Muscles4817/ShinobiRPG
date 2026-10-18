@@ -43,7 +43,7 @@ export function watchedBy(round: Round, user: PlanFighter, t: CombatTechnique): 
     const watching = f.side !== user.side && alive(f) && !isDazed(f) && inSight(f, user);
     if (!watching || !canCopy(f, user, t)) return r;
     const fighters = r.fighters.map((g) => (g.id === f.id ? copied(g, t) : g));
-    const line = tell('{a.poss} eyes take in every seal of {what}. It is {a.theirs} now.', {
+    const line = tell('{a.poss} eyes take in every seal of {what}, and keep it.', {
       a: f,
       what: t.name,
     });

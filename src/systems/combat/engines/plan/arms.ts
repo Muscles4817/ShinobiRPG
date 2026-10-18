@@ -1,11 +1,10 @@
-import type { Rng } from '@/core';
-
 import { alive } from '../../rules/body';
 import { tell } from '../../rules/telling';
 import { strikeWith, throwWith, type Attack } from '../../rules/weapons';
 import { react, type Blow } from './react';
 import type { Turn } from './senses';
 import { canDaze, dazeIn } from './daze';
+import { blowWord } from './scene';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -15,10 +14,11 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
  * drinks the target's chakra.
  */
 
-function blowOf(attack: Attack, thrown: boolean): Blow {
+/** A plain strike goes by the striker's own word for it: a wolf's bite, a spirit's touch. */
+function blowOf(attack: Attack, thrown: boolean, striker: PlanFighter): Blow {
   return {
     raw: attack.raw,
-    what: attack.what,
+    what: attack.what === 'strike' ? blowWord(striker) : attack.what,
     dodgeable: true,
     physical: !thrown,
     kind: attack.kind,
@@ -32,13 +32,13 @@ function landed(before: PlanFighter, after: Round): number {
   return now ? before.health - now.health : 0;
 }
 
-function dazeOnHit(round: Round, target: PlanFighter, chance: number, rng: Rng): Round {
-  const struck = fighterIn(round, target.id);
+function dazeOnHit(round: Round, { actor, target, rng }: Turn, chance: number): Round {
+  const struck = target && fighterIn(round, target.id);
   if (chance <= 0 || !struck || !alive(struck) || !canDaze(struck, round.number)) return round;
   if (!rng.chance(chance)) return round;
   return say(
-    { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number)) },
-    tell('{t} reel{t.s} from the blow.', { t: target }),
+    { ...round, fighters: patch(round.fighters, struck.id, dazeIn(round.number, actor.id)) },
+    tell('{t} reel{t.s} from the blow.', { t: struck }),
   );
 }
 
@@ -61,9 +61,9 @@ export function strike(round: Round, turn: Turn, thrown: boolean): Round {
   const { actor, target, rng } = turn;
   if (!target) return round;
   const attack = (thrown ? throwWith : strikeWith)(actor, target, rng.next());
-  const after = react(round, { attacker: actor, target, blow: blowOf(attack, thrown), rng });
+  const after = react(round, { attacker: actor, target, blow: blowOf(attack, thrown, actor), rng });
   const damage = landed(target, after);
   if (damage <= 0) return after;
-  const dazed = dazeOnHit(after, target, attack.daze, rng);
+  const dazed = dazeOnHit(after, turn, attack.daze);
   return attack.drain > 0 ? drainOnHit(dazed, turn, damage * attack.drain) : dazed;
 }

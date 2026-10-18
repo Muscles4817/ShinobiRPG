@@ -78,7 +78,7 @@ function spring(start: Round, setter: PlanFighter, victim: PlanFighter, rng: Rng
   if (!use.effect.dazes || !struck || !alive(struck) || !shaken) return hit;
   if (!canDaze(struck, hit.number)) return hit;
   return say(
-    { ...hit, fighters: patch(hit.fighters, victim.id, dazeIn(hit.number)) },
+    { ...hit, fighters: patch(hit.fighters, victim.id, dazeIn(hit.number, setter.id)) },
     dazeLine(momentOf(hit, victim.id), victim),
   );
 }

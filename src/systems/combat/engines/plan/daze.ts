@@ -27,11 +27,15 @@ export function canDaze(
 }
 
 /**
- * A fresh daze, dealt in exchange `exchange`: it costs one turn, and leaves its target open
- * through the next exchange. Check `canDaze` first.
+ * A fresh daze, dealt in exchange `exchange` by the fighter `by` (an id): it costs one turn,
+ * and leaves its target open through the next exchange. Check `canDaze` first. Who dealt it is
+ * kept for the fight's summary only.
  */
-export function dazeIn(exchange: number): Pick<PlanFighter, 'stunned' | 'openUntil'> {
-  return { stunned: 1, openUntil: exchange + 1 };
+export function dazeIn(
+  exchange: number,
+  by: string,
+): Pick<PlanFighter, 'stunned' | 'openUntil' | 'dazedBy'> {
+  return { stunned: 1, openUntil: exchange + 1, dazedBy: { at: exchange, by } };
 }
 
 /** At the end of an exchange: a daze whose last open exchange this was wears off. */
