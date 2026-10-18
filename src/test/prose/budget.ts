@@ -22,9 +22,9 @@ export const PROSE_BUDGET: {
   slips: {
     unfilledSlot: 0,
     oneAsPlural: 0,
-    zeroChip: 6,
-    fractionChip: 24,
-    straightQuote: 16,
+    zeroChip: 0,
+    fractionChip: 0,
+    straightQuote: 0,
     repeatedLine: 28,
   },
   style: {

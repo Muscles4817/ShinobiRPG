@@ -7,12 +7,12 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
     personId: 'kaen',
     minStage: 0,
     opener:
-      'Kaen snaps his fingers and a flame dances on his thumb. "Bet you can’t do that, {you}."',
+      'Kaen snaps his fingers and a flame dances on his thumb. “Bet you can’t do that, {you}.”',
     choices: [
       {
         label: '“Bet I can beat you anyway.”',
         tone: 'challenge',
-        reply: '"Ha! Training ground. Tomorrow. Don’t be late."',
+        reply: '“Ha! Training ground. Tomorrow. Don’t be late.”',
       },
       {
         label: '“That’s actually really cool.”',
@@ -30,7 +30,7 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'shiori-grandfather',
     personId: 'shiori',
     minStage: 0,
-    opener: 'Shiori smiles at the empty space beside you. "Grandfather says you have a kind face."',
+    opener: 'Shiori smiles at the empty space beside you. “Grandfather says you have a kind face.”',
     choices: [
       {
         label: '“Tell him thank you.”',
@@ -53,26 +53,26 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'jin-blade',
     personId: 'jin',
     minStage: 0,
-    opener: 'Jin finishes a cut and sheathes his sword in one motion. "You’re in my light."',
+    opener: 'Jin finishes a cut and sheathes his sword in one motion. “You’re in my light.”',
     choices: [
       {
         label: '“Draw again. I’ll match you.”',
         tone: 'challenge',
-        reply: 'He almost smiles. Almost. "Fine."',
+        reply: 'He almost smiles. Almost. “Fine.”',
       },
       {
         label: 'Step aside and watch in silence.',
         tone: 'quiet',
         reply: 'He does a hundred more cuts. Afterwards he nods at you.',
       },
-      { label: '“Do you ever relax?”', tone: 'joke', reply: '"No," he says, and walks away.' },
+      { label: '“Do you ever relax?”', tone: 'joke', reply: '“No,” he says, and walks away.' },
     ],
   },
   {
     id: 'kenji-nap',
     personId: 'kenji',
     minStage: 0,
-    opener: 'Kenji opens one eye from under the noodle stall awning. "Oh. Hey. Got any snacks?"',
+    opener: 'Kenji opens one eye from under the noodle stall awning. “Oh. Hey. Got any snacks?”',
     choices: [
       {
         label: '“Share the shade and I might.”',
@@ -82,7 +82,7 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“Shouldn’t you be training?”',
         tone: 'earnest',
-        reply: '"Probably," he says, and closes the eye again.',
+        reply: '“Probably,” he says, and closes the eye again.',
       },
       {
         label: '“How did you really pass the exam?”',
@@ -95,12 +95,12 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'rin-file',
     personId: 'rin',
     minStage: 0,
-    opener: 'Instructor Rin raises an eyebrow. "Read any good files lately, {you}?"',
+    opener: 'Instructor Rin raises an eyebrow. “Read any good files lately, {you}?”',
     choices: [
       {
         label: '“I’m sorry. I had to know.”',
         tone: 'earnest',
-        reply: '"I know," she says. "I did the same thing, once."',
+        reply: '“I know,” she says. “I did the same thing, once.”',
       },
       {
         label: '“Only the interesting ones.”',
@@ -110,7 +110,7 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“Thank you for not reporting me.”',
         tone: 'kind',
-        reply: '"Make it worth it," she says.',
+        reply: '“Make it worth it,” she says.',
       },
     ],
   },
@@ -118,12 +118,12 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'torokage-lantern',
     personId: 'torokage',
     minStage: 0,
-    opener: 'The Tōrokage is watching the lanterns. "Do you know why we light them, young one?"',
+    opener: 'The Tōrokage is watching the lanterns. “Do you know why we light them, young one?”',
     choices: [
       {
         label: '“So the dead can find their way home.”',
         tone: 'earnest',
-        reply: '"And so the living remember them," the old man adds.',
+        reply: '“And so the living remember them,” the old man adds.',
       },
       {
         label: '“Tell me?”',
@@ -133,7 +133,7 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“One day I’ll light the first one of the year.”',
         tone: 'challenge',
-        reply: 'He chuckles. "I hope I am around to see it."',
+        reply: 'He chuckles. “I hope I am around to see it.”',
       },
     ],
   },
@@ -142,18 +142,18 @@ export const ORIGINAL_CONVERSATIONS: readonly ConversationDef[] = [
     personId: 'yomi',
     minStage: 0,
     opener:
-      'Yomi is looking past you. "There is a grave on the hill with no lantern. Someone is waiting there."',
+      'Yomi is looking past you. “There is a grave on the hill with no lantern. Someone is waiting there.”',
     choices: [
       {
         label: '“I’ll light one for them tonight.”',
         tone: 'kind',
-        reply: 'She smiles at the empty air beside you. "They heard you. So did I."',
+        reply: 'She smiles at the empty air beside you. “They heard you. So did I.”',
         favour: 'yomi-grave-lantern',
       },
       {
         label: '“Who is it?”',
         tone: 'curious',
-        reply: '"Nobody remembers," she says. "That is the trouble."',
+        reply: '“Nobody remembers,” she says. “That is the trouble.”',
       },
       {
         label: '“That’s a bit creepy.”',

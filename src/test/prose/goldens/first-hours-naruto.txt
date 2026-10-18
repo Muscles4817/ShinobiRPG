@@ -19,7 +19,7 @@ view:
   people[0]: Nothing stands out yet: people will take you as they find you.
   limits[0]: Everything else is still hidden: training will tell you where it runs out.
 instructor: Iruka-sensei
-caught: A lamp flares in the doorway. "Reading your own file the night before graduation?" Iruka-sensei sighs, and almost smiles. "Go home. Be on time tomorrow. And put the drawer back."
+caught: A lamp flares in the doorway. “Reading your own file the night before graduation?” Iruka-sensei sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”
 
 === class honours ===
 
@@ -293,7 +293,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Kicking the Posts»: You hammer the three old posts until your shins stop complaining. [Strength +0.13] [Taijutsu +0.07] [−20 energy]
+  journal «Kicking the Posts»: You hammer the three old posts until your shins stop complaining. [Strength, a little] [Taijutsu, a little] [−20 energy]
 
 >>> talk
 
@@ -362,7 +362,7 @@ view:
 >>> sleep
   journal: Kaname waited at the training ground. You didn’t come. [Kaname’s regard falls]
   journal: Kaname expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored]
 
 === day end ===
 view:
@@ -461,10 +461,10 @@ view:
     befriend:
 
 >>> senseiSession
-  journal «Meditation with Kaname»: Kaname has you sit still until your chakra settles like a pond. “Why did that work? Think about it tonight.” [Chakra Control +0.04] [Kaname’s regard rises] [−10 energy]
+  journal «Meditation with Kaname»: Kaname has you sit still until your chakra settles like a pond. “Why did that work? Think about it tonight.” [Chakra Control, a touch] [Kaname’s regard rises] [−10 energy]
 
 >>> train
-  journal «Rooftop Runs»: You race across the rooftops, leaping the gaps between houses. [Speed +0.01] [Stamina +0.01] [Chakra Reserves +0.02] [−20 energy]
+  journal «Rooftop Runs»: You race across the rooftops, leaping the gaps between houses. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
 
 >>> talk
 
@@ -531,7 +531,7 @@ view:
   journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored]
 
 === day end ===
 view:
@@ -642,7 +642,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Laps of the Village Walls»: One lap, then another, the gate guards cheering you on with less enthusiasm each time. [Stamina +0.02] [Chakra Reserves +0.06] [Willpower +0.05] [−25 energy]
+  journal «Laps of the Village Walls»: One lap, then another, the gate guards cheering you on with less enthusiasm each time. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
 
 >>> talk
 
@@ -710,7 +710,7 @@ view:
 
 >>> sleep
   journal: Kaname expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored]
 
 === day end ===
 view:

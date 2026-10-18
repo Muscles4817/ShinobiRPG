@@ -6,12 +6,12 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'naruto-ramen',
     personId: 'naruto',
     minStage: 0,
-    opener: '"Hey! You’re {you}, right? Wanna get ramen? I’m buying! …Actually, can you buy?"',
+    opener: '“Hey! You’re {you}, right? Wanna get ramen? I’m buying! …Actually, can you buy?”',
     choices: [
       {
         label: '“Only if you can keep up with me.”',
         tone: 'challenge',
-        reply: '"Believe it!" Naruto is already running.',
+        reply: '“Believe it!” Naruto is already running.',
       },
       {
         label: '“Sure. My treat.”',
@@ -21,7 +21,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“Do you eat anything else?”',
         tone: 'tease',
-        reply: '"Ramen has vegetables in it," he says, wounded.',
+        reply: '“Ramen has vegetables in it,” he says, wounded.',
       },
     ],
   },
@@ -29,7 +29,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'naruto-hokage',
     personId: 'naruto',
     minStage: 2,
-    opener: '"Everybody laughs when I say I’ll be Hokage," Naruto says. "You don’t."',
+    opener: '“Everybody laughs when I say I’ll be Hokage,” Naruto says. “You don’t.”',
     choices: [
       {
         label: '“Because I believe you.”',
@@ -39,7 +39,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“Because I’m going to beat you to it.”',
         tone: 'challenge',
-        reply: '"Ha! Bring it on, then!"',
+        reply: '“Ha! Bring it on, then!”',
       },
       {
         label: '“Because you’d never shut up about it if I did.”',
@@ -52,17 +52,17 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'sasuke-train',
     personId: 'sasuke',
     minStage: 0,
-    opener: 'Sasuke glances at you, then back at the target post. "What."',
+    opener: 'Sasuke glances at you, then back at the target post. “What.”',
     choices: [
       {
         label: '“Spar with me.”',
         tone: 'challenge',
-        reply: '"Hn." He drops into a stance. That is a yes.',
+        reply: '“Hn.” He drops into a stance. That is a yes.',
       },
       {
         label: '“That was a good throw.”',
         tone: 'praise',
-        reply: '"I know," he says. He does not throw again until you leave.',
+        reply: '“I know,” he says. He does not throw again until you leave.',
       },
       {
         label: 'Start training beside him without a word.',
@@ -76,7 +76,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     personId: 'sakura',
     minStage: 0,
     opener:
-      'Sakura is surrounded by scrolls. "Did you know chakra control matters more than reserves?"',
+      'Sakura is surrounded by scrolls. “Did you know chakra control matters more than reserves?”',
     choices: [
       {
         label: '“Explain it to me?”',
@@ -86,12 +86,12 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“You’re the smartest one in our year.”',
         tone: 'praise',
-        reply: '"I— well— thank you," she says, and turns pink.',
+        reply: '“I— well— thank you,” she says, and turns pink.',
       },
       {
         label: '“Bet you can’t punch harder than me, though.”',
         tone: 'challenge',
-        reply: 'Something dangerous flickers in her eyes. "Bet I can."',
+        reply: 'Something dangerous flickers in her eyes. “Bet I can.”',
       },
     ],
   },
@@ -99,7 +99,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'hinata-shy',
     personId: 'hinata',
     minStage: 0,
-    opener: 'Hinata startles when she sees you. "O-oh. Good morning, {you}."',
+    opener: 'Hinata startles when she sees you. “O-oh. Good morning, {you}.”',
     choices: [
       {
         label: '“Good morning! Training too?”',
@@ -123,12 +123,12 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     personId: 'shikamaru',
     minStage: 0,
     opener:
-      'Shikamaru is lying on his back watching clouds. "Troublesome. Are you going to make me get up?"',
+      'Shikamaru is lying on his back watching clouds. “Troublesome. Are you going to make me get up?”',
     choices: [
       {
         label: 'Lie down next to him.',
         tone: 'quiet',
-        reply: '"Huh. You get it." He points out a cloud shaped like a deer.',
+        reply: '“Huh. You get it.” He points out a cloud shaped like a deer.',
       },
       {
         label: '“Play me at shōgi.”',
@@ -138,7 +138,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“You could be a genius if you tried.”',
         tone: 'earnest',
-        reply: '"That sounds like a lot of effort," he says.',
+        reply: '“That sounds like a lot of effort,” he says.',
       },
     ],
   },
@@ -147,7 +147,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     personId: 'lee',
     minStage: 0,
     opener:
-      '"{you}! Your flames of youth burn brightly today! Will you run five hundred laps with me?"',
+      '“{you}! Your flames of youth burn brightly today! Will you run five hundred laps with me?”',
     choices: [
       {
         label: '“Make it six hundred.”',
@@ -157,12 +157,12 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“Your dedication is amazing, Lee.”',
         tone: 'praise',
-        reply: '"Guy-sensei says hard work beats genius!" He salutes.',
+        reply: '“Guy-sensei says hard work beats genius!” He salutes.',
       },
       {
         label: '“Five hundred? That’s insane.”',
         tone: 'joke',
-        reply: '"Then I shall run a thousand!" He is gone in a cloud of dust.',
+        reply: '“Then I shall run a thousand!” He is gone in a cloud of dust.',
       },
     ],
   },
@@ -170,7 +170,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'iruka-ramen',
     personId: 'iruka',
     minStage: 0,
-    opener: 'Iruka spots you and smiles. "Look at you, a real shinobi. Hungry?"',
+    opener: 'Iruka spots you and smiles. “Look at you, a real shinobi. Hungry?”',
     choices: [
       {
         label: '“Thank you, Iruka-sensei. For everything.”',
@@ -180,12 +180,12 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“Are you paying again?”',
         tone: 'tease',
-        reply: '"Apparently I always am," he laughs.',
+        reply: '“Apparently I always am,” he laughs.',
       },
       {
         label: '“How did you know I’d be hungry?”',
         tone: 'curious',
-        reply: '"Every genin is hungry," he says. "That’s how I know."',
+        reply: '“Every genin is hungry,” he says. “That’s how I know.”',
       },
     ],
   },
@@ -193,22 +193,22 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'kakashi-book',
     personId: 'kakashi',
     minStage: 0,
-    opener: 'Kakashi does not look up from his little orange book. "Yo."',
+    opener: 'Kakashi does not look up from his little orange book. “Yo.”',
     choices: [
       {
         label: '“What are you reading?”',
         tone: 'curious',
-        reply: '"Literature," he says, and turns a page. You are not convinced.',
+        reply: '“Literature,” he says, and turns a page. You are not convinced.',
       },
       {
         label: '“Teach me something.”',
         tone: 'challenge',
-        reply: 'He looks up for exactly one second. "Maybe. If you’re still here tomorrow."',
+        reply: 'He looks up for exactly one second. “Maybe. If you’re still here tomorrow.”',
       },
       {
         label: 'Sit nearby and wait.',
         tone: 'quiet',
-        reply: 'Eventually he closes the book. "Patient. That’s rarer than talent."',
+        reply: 'Eventually he closes the book. “Patient. That’s rarer than talent.”',
         favour: 'kakashi-patience',
       },
     ],
@@ -217,7 +217,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     id: 'guy-rival',
     personId: 'guy',
     minStage: 0,
-    opener: '"YOUNG {you}!" Might Guy strikes a pose. "Do you seek the path of hard work?"',
+    opener: '“YOUNG {you}!” Might Guy strikes a pose. “Do you seek the path of hard work?”',
     choices: [
       {
         label: '“I do!” (Strike the same pose.)',
@@ -232,7 +232,7 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
       {
         label: '“Is that jumpsuit comfortable?”',
         tone: 'curious',
-        reply: '"Incredibly!" he says, and offers to find you one.',
+        reply: '“Incredibly!” he says, and offers to find you one.',
       },
     ],
   },
@@ -241,17 +241,17 @@ export const NARUTO_CONVERSATIONS: readonly ConversationDef[] = [
     personId: 'hiruzen',
     minStage: 0,
     opener:
-      'The Hokage puffs on his pipe. "Ah. One of this year’s graduates. How do you find the life of a shinobi?"',
+      'The Hokage puffs on his pipe. “Ah. One of this year’s graduates. How do you find the life of a shinobi?”',
     choices: [
       {
         label: '“Hard. But I want to protect the village.”',
         tone: 'earnest',
-        reply: '"Then you already understand the Will of Fire," he says.',
+        reply: '“Then you already understand the Will of Fire,” he says.',
       },
       {
         label: '“I’ll have your hat one day.”',
         tone: 'challenge',
-        reply: 'He laughs until he coughs. "I look forward to it."',
+        reply: 'He laughs until he coughs. “I look forward to it.”',
       },
       {
         label: '“Lord Hokage, what was it like for you?”',

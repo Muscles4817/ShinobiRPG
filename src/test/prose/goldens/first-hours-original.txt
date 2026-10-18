@@ -19,7 +19,7 @@ view:
   people[0]: Nothing stands out yet: people will take you as they find you.
   limits[0]: Everything else is still hidden: training will tell you where it runs out.
 instructor: Instructor Rin
-caught: A lantern flares in the doorway. "Reading your own file the night before graduation?" Instructor Rin sighs, and almost smiles. "Go home. Be on time tomorrow. And put the drawer back."
+caught: A lantern flares in the doorway. “Reading your own file the night before graduation?” Instructor Rin sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”
 
 === class honours ===
 
@@ -306,7 +306,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Kicking Posts»: Hammer the old wrapped posts until your shins stop complaining. [Strength +0.13] [Taijutsu +0.07] [−20 energy]
+  journal «Kicking Posts»: Hammer the old wrapped posts until your shins stop complaining. [Strength, a little] [Taijutsu, a little] [−20 energy]
 
 >>> talk
 
@@ -376,7 +376,7 @@ view:
   journal: Gōran waited at the training ground until dark. You will hear about it. [Gōran’s regard falls]
   journal: Gōran and the team went ahead without you. [Gōran’s regard falls]
   journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored]
 
 === day end ===
 view:
@@ -486,10 +486,10 @@ view:
     befriend:
 
 >>> senseiSession
-  journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaints allowed. “Again. Tomorrow, better.” [Stamina +0.01] [Chakra Reserves +0.02] [Gōran’s regard rises] [−10 energy]
+  journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaints allowed. “Again. Tomorrow, better.” [Stamina, a touch] [Chakra Reserves, a touch] [Gōran’s regard rises] [−10 energy]
 
 >>> train
-  journal «Rooftop Sprints»: Race the lamplighters across the tiles. [Speed +0.01] [Stamina +0.01] [Chakra Reserves +0.02] [−20 energy]
+  journal «Rooftop Sprints»: Race the lamplighters across the tiles. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
 
 >>> talk
 
@@ -557,7 +557,7 @@ view:
 
 >>> sleep
   journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored]
 
 === day end ===
 view:
@@ -666,10 +666,10 @@ view:
   rumours[2]: The Riverside Grill won’t say where its eels come from. Nobody has seen them caught.
 
 >>> senseiSession
-  journal «Drills with Gōran»: Gōran drills you on the basics until they stop being basics. “Again. Tomorrow, better.” [Strength +0.04] [Taijutsu +0.04] [Gōran’s regard rises] [−10 energy]
+  journal «Drills with Gōran»: Gōran drills you on the basics until they stop being basics. “Again. Tomorrow, better.” [Strength, a touch] [Taijutsu, a touch] [Gōran’s regard rises] [−10 energy]
 
 >>> train
-  journal «Lake Laps»: Swim until your arms burn, then swim back. [Stamina +0.02] [Chakra Reserves +0.06] [Willpower +0.05] [−25 energy]
+  journal «Lake Laps»: Swim until your arms burn, then swim back. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
   journal «Stamina: a first read»: It fights you every step. Others seem to pick this up in half the time.
 
 >>> talk
@@ -738,7 +738,7 @@ view:
 
 >>> sleep
   journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored]
 
 === day end ===
 view:

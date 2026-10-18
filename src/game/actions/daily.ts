@@ -6,6 +6,7 @@ import { spend } from '@/systems/wallet';
 
 import {
   adjust,
+  amountChip,
   busyReason,
   chip,
   firstBlocker,
@@ -220,7 +221,7 @@ export function sleepTillDawn(state: GameState, ctx: GameContext, night: Night):
     chips: [
       chip(chakra.partial ? 'Energy restored' : 'Energy & chakra restored', 'gain'),
       ...(chakra.partial ? [chip('Chakra only partly back', 'cost')] : []),
-      chip(`Health +${Math.max(0, rested.character.vitals.health - before)}`, 'gain'),
+      ...amountChip('Health', Math.max(0, rested.character.vitals.health - before), 'gain'),
     ],
   });
 }

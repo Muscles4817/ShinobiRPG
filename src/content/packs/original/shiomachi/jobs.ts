@@ -18,7 +18,7 @@ export const SHIOMACHI_JOBS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Kai points at the grey water as if it owed him money. "Somewhere out there."',
+        text: 'Kai points at the grey water as if it owed him money. “Somewhere out there.”',
       },
       {
         kind: 'check',
