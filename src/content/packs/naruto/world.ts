@@ -11,6 +11,7 @@ import { TANZAKU_TOWN } from './tanzaku';
 import { SHUKUBA_TOWN } from './shukuba';
 import { OTAFUKU_TOWN } from './otafuku';
 import { FIRE_TEMPLE } from './fireTemple';
+import { NARUTO_LETTINGS } from './homes';
 
 export const NARUTO_TEXT: SettingText = {
   nation: 'the Land of Fire',
@@ -194,6 +195,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         waters: 'bathhouse',
         soakCost: 10,
       },
+      NARUTO_LETTINGS,
       {
         id: 'apartment',
         kind: 'home',

@@ -22,6 +22,7 @@ import { chip, log } from './ops';
 import { knownNature } from './nature';
 import { characterModifiers } from './profile';
 import type { Character, GameState } from './state';
+import { comforts } from './home/home';
 
 /**
  * Learning techniques, whatever the source (an academy scroll, a sensei): one gate (rank
@@ -110,7 +111,10 @@ export function studySession(
 ): Studied {
   const { character } = state;
   const aptitude = character.aptitude[def.discipline];
-  const points = aptitude > 0 ? studyPointsFor(character, def, ctx, { aptitude, source }) : 0;
+  // A scroll read at your own desk goes further (`comforts`).
+  const desk = source === 'scroll' ? comforts(state, ctx).study : 1;
+  const points =
+    aptitude > 0 ? studyPointsFor(character, def, ctx, { aptitude, source }) * desk : 0;
   const unstable = wouldBeUnstable(character, def);
   const result = study(state.techniques, def, points, unstable);
   return {

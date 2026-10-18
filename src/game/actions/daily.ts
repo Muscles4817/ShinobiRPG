@@ -18,6 +18,7 @@ import {
 import { weakFromHunger } from '../hunger';
 import { laidUp, mendedOvernight, sleepChakra } from '../injuries';
 import type { GameContext } from '../context';
+import { atHome, comforts, currentHome, hasRoom } from '../home/home';
 import { byTheClock, growCharacter, logDiscoveries, noTalentReason } from '../growth';
 import { characterModifiers, hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
@@ -30,10 +31,23 @@ const NAP_ENERGY = 30;
 const MIN_HEALTH_TO_TRAIN = 0.2;
 const LOCKED_OUT_RECOVERY = 0.4;
 
+/** Drills in your own yard cost this share of the energy: no walk there and back. */
+const YARD_ENERGY = 0.85;
+
 function offeredHere(state: GameState, ctx: GameContext) {
   return {
     training: (id: string) => placeHere(state, ctx, 'training')?.trainingIds.includes(id) ?? false,
+    yard: (id: string) =>
+      atHome(state, ctx) &&
+      hasRoom(state, ctx, 'yard') &&
+      (currentHome(state, ctx).def?.yardTrainingIds?.includes(id) ?? false),
   };
+}
+
+/** A drill's energy: as usual, or less in your own yard. */
+function drillEnergy(state: GameState, ctx: GameContext, base: number, yard: boolean): number {
+  const energy = hardWorkEnergy(state.character, ctx, base);
+  return yard ? Math.round(energy * YARD_ENERGY) : energy;
 }
 
 /** The stall or izakaya here selling this food, preferring one that is open now. */
@@ -72,9 +86,13 @@ export function mainStat(gains: StatDelta): StatId | undefined {
 export const train: ActionHandler<ActionOf<'train'>> = {
   check(state, action, ctx) {
     const def = ctx.content.training.get(action.trainingId);
-    if (!def || !offeredHere(state, ctx).training(def.id)) return 'You can’t train that here.';
+    const here = offeredHere(state, ctx);
+    const yard = action.yard === true;
+    if (!def || !(yard ? here.yard(def.id) : here.training(def.id))) {
+      return 'You can’t train that here.';
+    }
     const main = mainStat(def.gains);
-    const energy = hardWorkEnergy(state.character, ctx, def.energyCost);
+    const energy = drillEnergy(state, ctx, def.energyCost, yard);
     return firstBlocker(
       busyReason(state),
       main !== undefined && noTalentReason(state.character, main, ctx),
@@ -87,7 +105,7 @@ export const train: ActionHandler<ActionOf<'train'>> = {
   perform(state, action, ctx) {
     const def = ctx.content.training.require(action.trainingId);
     const hungry = isHungry(state.character.vitals);
-    const energy = hardWorkEnergy(state.character, ctx, def.energyCost);
+    const energy = drillEnergy(state, ctx, def.energyCost, action.yard === true);
     const before = state.character.stats;
     const grown = growCharacter(state.character, byTheClock(state, ctx, def.gains), ctx);
     const { stats } = grown.character;
@@ -151,11 +169,12 @@ export const rest: ActionHandler<ActionOf<'rest'>> = {
     );
   },
   perform(state, _action, ctx) {
-    return log(adjust(spendTime(state, 1, ctx), { energy: NAP_ENERGY }), {
+    const energy = NAP_ENERGY + comforts(state, ctx).nap;
+    return log(adjust(spendTime(state, 1, ctx), { energy }), {
       heading: 'Nap',
       text: 'You put the kettle on and doze off before it boils.',
       tone: 'info',
-      chips: [chip(`Energy +${NAP_ENERGY}`, 'gain')],
+      chips: [chip(`Energy +${energy}`, 'gain')],
     });
   },
 };
@@ -212,7 +231,9 @@ export function sleepTillDawn(state: GameState, ctx: GameContext, night: Night):
  */
 function nightsRest(state: GameState, ctx: GameContext): VitalsDelta {
   const { vitals, stats } = state.character;
-  const { sleepHealing } = characterModifiers(state.character, ctx);
+  // A good bed at home heals more on top of whatever else helps (`comforts`).
+  const sleepHealing =
+    characterModifiers(state.character, ctx).sleepHealing * comforts(state, ctx).sleep;
   const base = sleepRecovery(vitals, stats);
   const night = sleepChakra(state);
   const emptied = maxChakra(stats) - vitals.chakra;

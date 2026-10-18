@@ -90,7 +90,6 @@ export {
 } from './views/training';
 export {
   marketView,
-  type MarketView,
   type MarketItem,
   type IngredientItem,
   type CookbookItem,
@@ -137,6 +136,10 @@ export { dayEndView, type DayEndView } from './views/dayEnd';
 export { rivalChallengeView, rivalScene, type RivalChallengeView } from './views/rival';
 export { rivalryView, type ContestOffer, type RivalryView } from './views/rivalry';
 export { raceView } from './views/race';
+export { lettingsView, type FurnishingCard, type HomeCard } from './views/lettings';
+export { furnishView, type SpotView } from './views/homeFurnish';
+export { homeRoomsView, type HomeRoomsView } from './views/homeRooms';
+export { keepsakeShelf } from './views/keepsakes';
 export {
   classHonoursView,
   type ClassHonoursView,
@@ -171,7 +174,6 @@ export {
 export {
   gearShopView,
   loadoutView,
-  type GearShopView,
   type GearItem,
   type ToolItem,
   type LoadoutView,
@@ -181,12 +183,7 @@ export { kitchenView, type DinnerInvite, type KitchenView, type RecipeCard } fro
 export { STOVE_BEATS, EXPERIMENT_LIMIT, type StoveBeat } from './views/stove';
 export { wildsView, type WildsView, type FishingSpotView, type WhatsAbout } from './views/wilds';
 export type { CookingSteps } from '@/systems/cooking';
-export {
-  cookbookView,
-  type CookbookView,
-  type CookbookEntry,
-  type SealedRecipe,
-} from './views/cookbook';
+export { cookbookView, type CookbookEntry, type SealedRecipe } from './views/cookbook';
 export type { SparOption } from './views/team';
 export type { TeacherOffer, TeachStat } from './views/teachers';
 export type { PricePart } from './people/price';
@@ -236,13 +233,7 @@ export {
   type FactLine,
   type ReconCard,
 } from './views/encounter';
-export {
-  bondsView,
-  type BondsView,
-  type PersonCard,
-  type PersonFace,
-  type Relation,
-} from './views/people';
+export { bondsView, type PersonCard, type PersonFace, type Relation } from './views/people';
 export { personSheet, type PersonSheet } from './views/personSheet';
 export type { BondPath, BondStep } from './views/bondPath';
 export type { ArtChip, Arts, DaySlot, Growth } from './views/personFacts';

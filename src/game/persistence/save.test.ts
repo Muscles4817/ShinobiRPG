@@ -472,6 +472,27 @@ describe('persistence', () => {
     expect(none.value.exams.ceremony).toBeNull();
   });
 
+  it('gives a save from before the home ladder an unfurnished home where it started', () => {
+    const game = newGame();
+    const {
+      homeId: _h,
+      furniture: _f,
+      placed: _p,
+      beds: _b,
+      guestId: _g,
+      ...housing
+    } = game.housing;
+    const loaded = deserialize(JSON.stringify({ version: 48, state: { ...game, housing } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.housing).toMatchObject({
+      homeId: null,
+      furniture: [],
+      placed: {},
+      beds: [],
+      guestId: null,
+    });
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

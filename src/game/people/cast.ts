@@ -3,7 +3,7 @@ import { NEW_BOND, type Bond, type Taste } from '@/systems/bonds';
 import { slotName } from '@/systems/time';
 
 import type { GameContext } from '../context';
-import { homeVillageId } from '../homeVillage';
+import { atHomeVillage, homeVillageId } from '../homeVillage';
 import type { GameState } from '../state';
 import { inThisWorld } from './pooled';
 
@@ -46,8 +46,16 @@ export function villagers(state: GameState, ctx: GameContext): readonly PersonDe
 }
 
 /** The place id where this person is now, or null if they are away (or you are). */
+/** A friend in your guest room is at your home every evening and night you are in the village. */
+function stayingWithYou(state: GameState, ctx: GameContext, person: PersonDef): boolean {
+  if (person.id !== state.housing.guestId || !atHomeVillage(state, ctx)) return false;
+  const slot = slotName(state.time);
+  return slot === 'evening' || slot === 'night';
+}
+
 export function whereNow(state: GameState, ctx: GameContext, person: PersonDef): string | null {
   if (person.id === state.people.companionId && !state.mission) return lodging(state, ctx);
+  if (stayingWithYou(state, ctx, person)) return state.housing.placeId;
   if (state.locationId !== (person.homeLocationId ?? ctx.content.startLocationId)) return null;
   return person.schedule[slotName(state.time)];
 }

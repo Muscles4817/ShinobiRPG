@@ -17,6 +17,8 @@ import type { Season } from '@/systems/time';
 import type { RouteDef } from '@/systems/travel';
 
 import type { BackdropId, IconId } from './art';
+import type { QuirkDef } from './quirks';
+import type { FurnishingDef, GardenCrop, HomeDef, LettingsFields } from './homes';
 import type { ExerciseDef } from './exercises';
 import type { CurriculumBeat } from './curriculum';
 import type { SenseiParts } from './senseiParts';
@@ -203,20 +205,6 @@ export interface TalentDef {
   readonly opposite?: string;
 }
 
-/**
- * A small habit people notice (`docs/design/creation-plan.md`). It changes nothing in a fight:
- * people with these traits warm to you faster, or more slowly, than they otherwise would.
- */
-export interface QuirkDef {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  /** Traits whose people warm to you faster for it. */
-  readonly warms: readonly string[];
-  /** Traits whose people warm to you more slowly for it. */
-  readonly cools: readonly string[];
-}
-
 /** A personality trait. Opposites can't be taken together. */
 export interface TraitDef {
   readonly id: string;
@@ -299,6 +287,7 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
   /** Somewhere to sleep away from home: a room by the night. */
   | (PlaceBase & { readonly kind: 'inn'; readonly keeper: string; readonly roomCost: number })
+  | (PlaceBase & LettingsFields)
   /** A house for sale in a town: bought once, then yours to sleep in, with no rent. */
   | (PlaceBase & { readonly kind: 'house'; readonly seller: string; readonly price: number })
   /** Woods, a river bank, a shore: forage what's in season, and fish its spots. */
@@ -378,6 +367,9 @@ export interface ContentPack {
   readonly builds: readonly BuildDef[];
   readonly upbringings: readonly UpbringingDef[];
   readonly talents: readonly TalentDef[];
+  readonly homes: readonly HomeDef[];
+  readonly furnishings: readonly FurnishingDef[];
+  readonly gardenCrops: readonly GardenCrop[];
   readonly quirks: readonly QuirkDef[];
   readonly traits: readonly TraitDef[];
   readonly nindos: readonly NindoDef[];
