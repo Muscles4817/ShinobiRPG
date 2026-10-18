@@ -71,7 +71,7 @@ export const ROLE_TOPICS: readonly ConversationTopic[] = [
         'When shinobi go out, they are the ones left counting who comes back, without ever being told why some don’t.',
       memory:
         'On {them.their} first day of honest work {them.they} broke three bowls, and {them.their} master kept the pieces to tease {them.them} with for years.',
-      hope: 'That you come home for supper, every time. The village is only the village while people come home.',
+      hope: 'That you come home for supper, every time, even when it’s late and you’re tired and you’d rather sleep at the hall.',
     },
   },
 ];

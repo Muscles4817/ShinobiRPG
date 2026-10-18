@@ -15,9 +15,9 @@ export const CLAN_TOPICS: readonly ConversationTopic[] = [
         'my great-uncle, who lit the gate lantern every evening for sixty years and only missed it the night he died',
       rite: 'the first lighting, when a child breathes their own flame into a lantern while the whole clan waits in the dark',
       burden:
-        'Everyone expects {them.them} to have a temper, so the one time {them.they} lose{them.s} it, nobody is surprised. {them.they} hate{them.s} that most of all.',
+        'Everyone expects {them.them} to have a temper, so the one time {them.they} lose{them.s} it, nobody is surprised. Nobody asks what made {them.them} angry.',
       secret:
-        'Some nights the great lanterns burn a colour none of us can make. We don’t talk about it. We just light the next one.',
+        'Some nights the great lanterns burn a colour none of us can make. Nobody in the family talks about it, and we go on lighting the next one as if we hadn’t seen.',
     },
   },
   {

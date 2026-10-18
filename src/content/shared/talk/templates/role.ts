@@ -62,7 +62,7 @@ export const ROLE_TALK: readonly ConversationDef[] = [
         tone: 'curious',
         reply: {
           blunt: '“Most of it, I think. Ask me again at the end of the week.”',
-          warm: '“Most of it, I think. Ask me again at the end of the week and I might say something different.”',
+          warm: '“Most of it, I think. Ask me again at the end of the week and I might give you a different answer.”',
         },
         warm: '{them} thinks about it more than you expected. “I like the mornings best. Ask me again at the end of the week.”',
         cool: '“It doesn’t matter whether I like it.”',

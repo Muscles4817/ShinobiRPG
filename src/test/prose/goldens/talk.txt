@@ -362,11 +362,11 @@ opener: Goro is quieter than usual. When you ask, she tells you flat out, no sof
 === talk-trait-3-admission with Asuka (genin, kenjutsu, calm, proud; formal) ===
 opener: Asuka looks at the ground for some time. “There is something I don’t tell people. I would like to tell you, if I may.”
   you: “You can tell me anything.”
-    (warm) “I’m not calm inside. I just learned early that nobody listens to the one who shouts.” They glance up, and whatever they see in your face lets them breathe out.
+    (warm) “I’m not calm inside, not really. I learned early that nobody listens to whoever shouts, so I stopped shouting, and the rest of it stayed.” They glance up, and whatever they see in your face lets them breathe out.
   you: “Only if you want to.”
-    (flat) “I do want to.” There’s a long pause before the rest comes out. “I’m not calm inside. I just learned early that nobody listens to the one who shouts.”
+    (flat) “I do want to.” There’s a long pause before the rest comes out. “I’m not calm inside, not really. I learned early that nobody listens to whoever shouts, so I stopped shouting, and the rest of it stayed.”
   you: “Is it that you ate my dumplings?”
-    (flat) Asuka laughs despite themself, and it helps. “I’m not calm inside. I just learned early that nobody listens to the one who shouts.”
+    (flat) Asuka laughs despite themself, and it helps. “I’m not calm inside, not really. I learned early that nobody listens to whoever shouts, so I stopped shouting, and the rest of it stayed.”
 
 === talk-trait-3-admission with Goro (genin, ninjutsu, brash, curious; blunt) ===
 opener: Goro keeps her eyes on the ground. “I’m going to tell you something I don’t tell people. Don’t make it a thing.”
@@ -398,7 +398,7 @@ opener: “You ever get tired of being yourself?” Goro asks. She’s not jokin
 === talk-trait-4-worst with Asuka (genin, kenjutsu, calm, proud; formal) ===
 opener: “You have seen me at my worst,” Asuka says, “and you have stayed. I haven’t forgotten it.”
   you: “I’m not going anywhere.”
-    (warm) “Then you should know the rest.” Asuka takes a breath that goes on too long. “I’m not calm inside. I just learned early that nobody listens to the one who shouts.”
+    (warm) “Then you should know the rest.” Asuka takes a breath that goes on too long. “I’m not calm inside, not really. I learned early that nobody listens to whoever shouts, so I stopped shouting, and the rest of it stayed.”
   you: “Your worst isn’t that bad.”
     (flat) “That’s a lie, and a kind one, so thank you.”
   you: “Someone has to keep you honest.”
@@ -470,7 +470,7 @@ opener: Goro doesn’t look up. “Busy. It’s always lost cats, leaky roofs, l
 === talk-role-1-days with Asuka (genin, kenjutsu, calm, proud; formal) ===
 opener: Asuka stretches, carefully. “Most of my days are spent on lost cats, leaky roofs, long drills and the odd job that turns out to be a real one. One learns to find a rhythm in it.”
   you: “Do you like it?”
-    (flat) “Most of it, I think. Ask me again at the end of the week and I might say something different.”
+    (flat) “Most of it, I think. Ask me again at the end of the week and I might give you a different answer.”
   you: “Sounds thrilling.”
     (flat) “You have no idea,” Asuka says, and can’t quite keep a straight face.
   you: “Someone has to, and you do it well.”
@@ -634,15 +634,15 @@ coaching by Gōran, met: You did the work on your speed. Gōran takes you out to
 coaching by Gōran, missed: Gōran checks your speed. Not enough. He doesn’t hide it. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Gōran’s regard falls] [Assignment: Taijutsu]
 
 === crew voices ===
-Asuka, check-passed: Naturally.
-Asuka, check-failed: An off day. Nothing more.
-Asuka, approve: Good. Do it boldly.
+Asuka, check-passed: Naturally. Did anyone doubt it?
+Asuka, check-failed: An off day for me, nothing more.
+Asuka, approve: Good. Now do it boldly.
 Asuka, disapprove: Is that really the best we can do?
 Asuka, camp: I’ll take the hard watch. Obviously.
-Goro, check-passed: Huh! It worked!
-Goro, check-failed: Interesting. Wrong, but interesting.
-Goro, approve: Ooh. Good.
-Goro, disapprove: Aw. I wanted to see.
+Goro, check-passed: Huh! It actually worked!
+Goro, check-failed: Interesting. Wrong, but I’d like to know why.
+Goro, approve: Ooh, yes, let’s do that.
+Goro, disapprove: Aw. I wanted to see what was in there.
 Goro, camp: What’s the strangest job you’ve ever heard of?
 
 === drinks ===

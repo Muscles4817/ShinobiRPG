@@ -24,7 +24,7 @@ export const TRAIT_TOPICS: readonly ConversationTopic[] = [
         'When the academy kitchen caught fire, {them.they} finished {them.their} sentence, then fetched the right bucket.',
       cost: 'A friend once mistook {them.their} quiet for not caring, and stopped talking to {them.them} for a season.',
       admission:
-        'I’m not calm inside. I just learned early that nobody listens to the one who shouts.',
+        'I’m not calm inside, not really. I learned early that nobody listens to whoever shouts, so I stopped shouting, and the rest of it stayed.',
       wish: 'the people who laugh out loud without first checking who is watching',
     },
   },
@@ -48,7 +48,7 @@ export const TRAIT_TOPICS: readonly ConversationTopic[] = [
       habit: 'finding the one patch of shade on any training ground within moments of arriving',
       story:
         '{them.they} slept through an academy written test, woke for the last question, and still passed.',
-      cost: '{them.they} put off sharpening {them.their} kunai until the morning it mattered. It mattered.',
+      cost: '{them.they} put off sharpening {them.their} kunai until the morning a bandit came over the wall, and {them.they} still wince{them.s} at the memory of that blunt edge.',
       admission:
         'I could try harder. I’m just afraid that trying and failing would be worse than not trying.',
       wish: 'the people who get up before dawn and seem to enjoy it, somehow',
@@ -63,7 +63,7 @@ export const TRAIT_TOPICS: readonly ConversationTopic[] = [
         'At the academy {them.they} lost a sparring match on purpose, because the other child’s parents were watching.',
       cost: '{them.they} lent {them.their} savings to a friend in trouble. The friend left the village, and the money went too.',
       admission:
-        'Sometimes I’m kind because I can’t bear anyone being cross with me. That’s not the same thing.',
+        'Sometimes I’m kind because I can’t bear anyone being cross with me, and I’m not sure that counts as kindness at all.',
       wish: 'someone who can say no without spending the whole night feeling sorry about it',
     },
   },
@@ -90,7 +90,8 @@ export const TRAIT_TOPICS: readonly ConversationTopic[] = [
       story:
         '{them.they} lost a race at the academy by a hand’s width, then ran the course alone every night until {them.they} could beat the time.',
       cost: '{them.they} refused help on a climb and fell the last stretch. {them.they} still tell{them.s} people it was a jump.',
-      admission: 'Losing doesn’t frighten me. Being pitied does. I’d rather bleed than be pitied.',
+      admission:
+        'Losing doesn’t frighten me half as much as someone feeling sorry for me. I’d honestly rather bleed.',
       wish: 'the people who can say ‘I don’t know’ out loud and not flinch',
     },
   },

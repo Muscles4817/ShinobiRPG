@@ -720,7 +720,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   threads[0]:
     label: Old Saburō’s trust
     word: Trusts you
@@ -789,7 +789,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   lines[9]:
     text: Push on in the dark
   lines[10]:
@@ -863,7 +863,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   lines[9]:
     text: Push on in the dark
   lines[10]:
@@ -938,7 +938,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   lines[9]:
     text: Push on in the dark
   lines[10]:
@@ -1011,7 +1011,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   lines[9]:
     text: Push on in the dark
   lines[10]:
@@ -1107,7 +1107,7 @@ view:
     name: Asuka
   crew[1]:
     name: Goro
-    quote: Tch. Again.
+    quote: Tch. Give it here, I’ll have another go.
   grade: rough
 
 >>> dismissReport

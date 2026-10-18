@@ -140,7 +140,7 @@ export const ROLE_DEEP_TALK: readonly ConversationDef[] = [
     opener: {
       blunt: '“Whatever happens to me,” {them} says, “remember one thing.”',
       warm: '“Whatever happens to me,” {them} says, “there’s one thing I want you to remember.”',
-      wry: '“In case I’m ever flattened by something large,” {them} says, “there’s one thing I want you to remember.”',
+      wry: '“In case I’m ever flattened by a falling boulder,” {them} says, “there’s one thing I want you to remember.”',
       formal: '“Whatever becomes of me,” {them} says, “I would ask you to remember one thing.”',
     },
     choices: [

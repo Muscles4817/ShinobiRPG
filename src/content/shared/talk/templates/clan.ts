@@ -54,7 +54,7 @@ export const CLAN_TALK: readonly ConversationDef[] = [
     opener: {
       blunt: '“{clan} have a custom outsiders don’t get to see,” {them} says. “It’s {rite}.”',
       warm: '“Can I tell you about a custom we keep?” {them} says. “Among {clan}, it’s {rite}. Outsiders hardly ever see it.”',
-      wry: '“Want to hear something odd about {clan}?” {them} says. “It’s {rite}. Outsiders never see it, which is probably for the best.”',
+      wry: '“Want to hear the oddest thing about {clan}?” {them} says. “It’s {rite}. Outsiders never see it, which is probably for the best.”',
       formal:
         '“Among {clan} there is a custom that outsiders rarely see,” {them} says. “It is {rite}.”',
     },
