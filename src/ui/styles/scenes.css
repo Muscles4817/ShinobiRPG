@@ -194,6 +194,9 @@
 .hp.mine i {
   background: var(--good);
 }
+.hp.meter i {
+  background: var(--gold);
+}
 .hp.chakra i {
   background: var(--chakra);
 }

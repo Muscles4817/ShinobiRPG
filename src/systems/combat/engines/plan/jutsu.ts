@@ -34,6 +34,7 @@ import { conceal, sense } from './sight';
 import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { callSummon } from './summons';
+import { settleOn, swarmSpent } from './swarm';
 import { setTrap } from './traps';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 
@@ -53,6 +54,7 @@ function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): 
   const known = actor.used ?? [];
   const change = {
     ...paying(actor, chakraCost(actor, t)),
+    ...swarmSpent(actor, t),
     used: known.includes(t.id) ? known : [...known, t.id],
     uses: { ...actor.uses, [t.id]: (actor.uses?.[t.id] ?? 0) + 1 },
   };
@@ -322,5 +324,5 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
     (flight, effect) => applyEffect(flight, carrying, { technique: t, effect }),
     start,
   );
-  return aftermath(end.round, turn, t);
+  return aftermath(settleOn(end.round, actor.id, end.reaching, t), turn, t);
 }

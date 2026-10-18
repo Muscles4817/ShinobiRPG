@@ -274,6 +274,7 @@ export function techniqueSheet(
     }),
     costs: [
       ...(def.oncePerFight ? ['Once a fight'] : []),
+      ...(def.swarmCost ? ['Spends insects from your hive'] : []),
       ...(def.afterCost ? ['Leaves you paying for it after the fight'] : []),
     ],
     needs: needLines(def),
