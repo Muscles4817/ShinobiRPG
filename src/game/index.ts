@@ -149,7 +149,8 @@ export {
   type Honour,
 } from './views/classHonours';
 export type { DayHook } from './views/dayHooks';
-export type { DayFind, DayGrowth, DayHurt, DayMoment, DayPerson } from './views/dayEndRows';
+export type { DayFind, DayHurt, DayMoment, DayPerson } from './views/dayEndRows';
+export type { DayGrowth } from './views/dayEndGrowth';
 export { openDay } from './daybook/open';
 export type { DayEndMode, PurseLine } from './daybook/state';
 export type { MapStyle } from './mapStyle';

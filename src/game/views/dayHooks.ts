@@ -75,9 +75,9 @@ function sensei(state: GameState, ctx: GameContext): DayHook[] {
   const today = week?.days.find((d) => d.today);
   if (!week || !today) return [];
   const meeting = today.meeting
-    ? [hook('師', `${week.sensei} sets ${today.meeting.toLowerCase()}`, capitalised(today.from))]
+    ? [hook('師', `${today.meeting} with ${week.sensei}`, capitalised(today.from))]
     : [];
-  const team = today.team ? [hook('班', `Team day: ${today.team.toLowerCase()}`)] : [];
+  const team = today.team ? [hook('班', `Team ${today.team.toLowerCase()}`)] : [];
   return [...meeting, ...team];
 }
 
@@ -100,7 +100,7 @@ function rent(state: GameState): DayHook[] {
     : [];
 }
 
-const FREE_DAY = hook('道', 'A free day: train, cook or wander');
+const FREE_DAY = hook('道', 'A free day to train, cook or wander');
 
 /** The day ahead's plaques, most pressing first; never empty. */
 export function dayHooks(state: GameState, ctx: GameContext): DayHook[] {

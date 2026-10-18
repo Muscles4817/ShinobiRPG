@@ -382,19 +382,19 @@ view:
 view:
   mode: full
   when: Spring 1 draws to a close
-  title: Closer to someone
+  title: You worked on your strength and taijutsu, and Goro, Gōran and you are acquaintances now.
   growth[0]:
     stat: strength
     name: Strength
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[1]:
     stat: taijutsu
     name: Taijutsu
     grade: D
     tier: Genin D
-    words: Past halfway to Chūnin C
+    words: Over halfway to a C
   people[0]:
     stage: Stranger
     next: At acquaintance: you learn what they’re like.
@@ -414,14 +414,14 @@ view:
     text: The Lantern Trials
     stamp: In five days
   ahead[1]:
-    text: Gōran sets march
+    text: March with Gōran
     stamp: Morning
   ahead[2]:
     text: Kite Day
     stamp: In five days
-  summary[0]: Goro: now acquaintances
-  summary[1]: Gōran: now acquaintances
-  summary[2]: Strength: past halfway to Genin D
+  summary[0]: Now acquaintances with Goro and Gōran
+  summary[1]: Strength, over halfway to a D
+  summary[2]: Taijutsu, over halfway to a C
   button: Sleep
   dismiss:
 
@@ -563,25 +563,25 @@ view:
 view:
   mode: full
   when: Spring 2 draws to a close
-  title: Hard work
+  title: You worked on your chakra reserves and stamina, among other things, and Gōran thinks better of you.
   growth[0]:
     stat: reserves
     name: Chakra Reserves
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[1]:
     stat: stamina
     name: Stamina
     grade: D
     tier: Genin D
-    words: Early in the grade
+    words: Only just a D
   growth[2]:
     stat: speed
     name: Speed
     grade: D
     tier: Genin D
-    words: Past halfway to Chūnin C
+    words: Over halfway to a C
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -597,14 +597,14 @@ view:
     text: The Lantern Trials
     stamp: In four days
   ahead[1]:
-    text: Gōran sets drills
+    text: Drills with Gōran
     stamp: Morning
   ahead[2]:
     text: Kite Day
     stamp: In four days
-  summary[0]: Gōran: thinks better of you
-  summary[1]: Chakra Reserves: past halfway to Genin D
-  summary[2]: Stamina: early in the grade
+  summary[0]: Gōran thinks better of you
+  summary[1]: Chakra Reserves, over halfway to a D
+  summary[2]: Stamina, only just a D
   button: Sleep
   dismiss:
 
@@ -744,37 +744,37 @@ view:
 view:
   mode: full
   when: Spring 3 draws to a close
-  title: Hard work
+  title: You worked on your chakra reserves and willpower, among other things, and Gōran thinks better of you.
   growth[0]:
     stat: reserves
     name: Chakra Reserves
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[1]:
     stat: willpower
     name: Willpower
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[2]:
     stat: strength
     name: Strength
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[3]:
     stat: taijutsu
     name: Taijutsu
     grade: D
     tier: Genin D
-    words: Past halfway to Chūnin C
+    words: Over halfway to a C
   growth[4]:
     stat: stamina
     name: Stamina
     grade: D
     tier: Genin D
-    words: Early in the grade
+    words: Only just a D
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -790,14 +790,14 @@ view:
     text: The Lantern Trials
     stamp: In three days
   ahead[1]:
-    text: Gōran sets sparring
+    text: Sparring with Gōran
     stamp: Morning
   ahead[2]:
     text: Kite Day
     stamp: In three days
-  summary[0]: Gōran: thinks better of you
-  summary[1]: Chakra Reserves: past halfway to Genin D
-  summary[2]: Willpower: past halfway to Genin D
+  summary[0]: Gōran thinks better of you
+  summary[1]: Chakra Reserves, over halfway to a D
+  summary[2]: Willpower, over halfway to a D
   button: Sleep
   dismiss:
 
