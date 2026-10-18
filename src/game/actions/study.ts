@@ -20,7 +20,7 @@ export const STUDY_SLOTS = 1;
 function masteryLine(name: string, result: Studied): string {
   return result.unstable
     ? `${name} is yours, just. It is beyond your grade and fights your chakra; it will steady as you grow.`
-    : `It finally clicks. ${name} is yours.`;
+    : `It finally clicks, and ${name} is yours.`;
 }
 
 /** What stops any scroll study of this technique, wherever the scroll comes from. */

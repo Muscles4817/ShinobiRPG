@@ -262,7 +262,7 @@ function rentReminder(before: GameState, after: GameState): GameState {
   const wasOverdue = isRentOverdue(before.housing, before.time.day);
   if (wasOverdue || !isRentOverdue(after.housing, after.time.day)) return after;
   return log(after, {
-    text: 'A note is pinned to your door: the rent is due.',
+    text: 'A note pinned to your door says the rent is due.',
     tone: 'warning',
     chips: [chip(`${after.housing.rentPerWeek} ryo / week`, 'cost')],
   });

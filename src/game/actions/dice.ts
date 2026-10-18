@@ -59,7 +59,7 @@ export const playDice: ActionHandler<ActionOf<'playDice'>> = {
         },
       },
     };
-    const lifted = `The cup lifts: ${CALL_NAMES[came].toLowerCase()}.`;
+    const lifted = `The cup lifts on ${CALL_NAMES[came].toLowerCase()}.`;
     return log(next, {
       heading: here.pastime.name,
       tone: won > 0 ? 'success' : 'warning',

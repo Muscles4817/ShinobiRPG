@@ -10,7 +10,7 @@ view:
     steps[3]: Smooth
     steps[4]: Easy going
   verdict: Steady. Middle of the class. You start about where most of your year does.
-  note: Your talent is still mostly hidden. Training will show you what it is.
+  note: Your talent is still mostly hidden, and only training will show you what it is.
   easy[0]: Every stat grows quickly
   easy[1]: Taijutsu comes very fast
   hard[0]: Genjutsu techniques come slowly

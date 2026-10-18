@@ -36,10 +36,11 @@ const WHERE_YOU_START: readonly string[] = [
   'You’ll outgrow your year quickly.',
 ];
 const LOW_ROAD =
-  'Hard work still pays: training alone keeps its worth longer for you than for anyone else. You can climb; it just takes longer.';
+  'Hard work still pays, and training alone keeps its worth longer for you than for anyone else. You can climb, though it will take you longer than most.';
 const HIGH_ROAD =
-  'Fights at your own grade are still close: your edge is how fast you reach the next one, not winning every bout.';
-const MIDDLE_ROAD = 'Your talent is still mostly hidden. Training will show you what it is.';
+  'Fights at your own grade will still be close. Where you pull ahead is in how quickly you reach the next one, and you won’t win every bout on the way.';
+const MIDDLE_ROAD =
+  'Your talent is still mostly hidden, and only training will show you what it is.';
 
 /** A multiplier read as a pace: null when it is too small a change to mention. */
 function pace(by: number): { word: string; easy: boolean } | null {
@@ -149,7 +150,8 @@ export function fileReadBack(draft: CreationDraft, ctx: GameContext): FileReadBa
     road: { steps: ROAD_STEPS, at },
     verdict: `${step}. ${STANDING_INFO[draft.standing].label}. ${WHERE_YOU_START[at] ?? ''}`,
     note: at <= 1 ? LOW_ROAD : at >= 3 ? HIGH_ROAD : MIDDLE_ROAD,
-    easy: read.easy.length > 0 ? read.easy : ['Nothing yet. That’s the point.'],
+    easy:
+      read.easy.length > 0 ? read.easy : ['Nothing yet, and that’s how it should be at the start.'],
     hard: read.hard.length > 0 ? read.hard : ['Nothing in particular.'],
     people: peopleReads(draft, ctx),
     limits: [...arts.limits, LIMITS_HIDDEN],
