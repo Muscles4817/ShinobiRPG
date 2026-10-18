@@ -1009,3 +1009,28 @@ and its genes, its skills with training**, and every kind has its own ceiling.
     Snake may come up out of nowhere.
 
   Contracts held only by foes need no tastes or parting words, and no one offers them.
+
+### Step 4a: the hive in a fight
+
+- **The contract** (`swarmContract.ts`): `CombatantSetup.swarm` is a strain's rules (drain,
+  hardiness, feared elements, senses), a count and a cap. `TechniqueDef.swarmCost` is what a
+  technique spends. `CombatOutcome.swarm` is how many came home.
+- **The rules** (`rules/swarms.ts`):
+  - a fighter without a hive pays a swarm technique's chakra alone;
+  - an area that catches a host kills a share of the hive by its size (small, wide, vast),
+    twice as many of a feared element, less for a hardy strain;
+  - a feared hit kills insects as it hurts the host, never more than half at once;
+  - settled insects draw chakra by the technique's power and the strain's drain;
+  - a hive adds to its host's Search by how keen the strain is and how full the hive is.
+- **The play** (`engines/plan/swarm.ts`):
+  - a swarm card isn't playable without the insects it spends, and spends them;
+  - one that reaches a foe settles insects on them for a few exchanges. They draw the foe's
+    chakra each exchange, half of it into the host (`ABSORB_SHARE`), and keep the foe from
+    hiding. Fire, or anything the strain fears, burns them off;
+  - at the end of each exchange a host's hive may find hidden foes on its own;
+  - the plan screen shows the player's hive as a meter beside chakra.
+- **Content:** the fan pack's eight insect techniques have a `swarmCost`, and the technique
+  sheet says they spend insects. No one carries a hive until 4b, so today they still play on
+  chakra alone.
+- **Not yet:** foes and teammates don't yet aim areas or fire at a hive on purpose. That
+  comes with the hive at home (4b), when hives first appear in fights.

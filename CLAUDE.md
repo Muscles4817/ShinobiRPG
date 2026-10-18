@@ -346,7 +346,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`breakContract`) frees you to sign another, and its clan never takes you back
     (`GameState.brokenContracts`). Foes summon too (`EnemyDef.summons`, from a contract of the
     pack, with a `tell` read like a retinue's: `summonsSeen`). Nothing is locked by rank: the
-    price is the lock. It is cared for
+    price is the lock. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
+    `swarmContract.ts`: a strain's rules as data, a count and a cap; `rules/swarms.ts`,
+    `engines/plan/swarm.ts`): techniques with a `swarmCost` spend insects (a fighter without a
+    hive pays chakra alone), a swarm technique that reaches a foe leaves insects settled on them
+    that draw their chakra into the host and keep them from hiding until they drop off or a
+    feared element burns them off, areas and feared elements kill insects in the host's hive,
+    a hive helps its host find the hidden, and `CombatOutcome.swarm` reports how many came home. It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between

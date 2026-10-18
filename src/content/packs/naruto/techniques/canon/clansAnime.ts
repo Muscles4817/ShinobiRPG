@@ -92,6 +92,7 @@ export const CANON_ANIME_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
       { verb: 'drain', power: 10, absorb: true },
     ],
     chakraCost: 16,
+    swarmCost: 40,
     rank: 'B',
     difficulty: 115,
   },
