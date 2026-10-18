@@ -11,6 +11,9 @@ const MAX_STAGE = 4;
 export function validatePeople(pack: ContentPack): string[] {
   return [
     ...pack.people.flatMap((p) => personProblems(pack, p)),
+    ...pack.people
+      .filter((p) => !p.pronouns)
+      .map((p) => `person "${p.id}" needs pronouns, so lines about them agree`),
     ...senseiProblems(pack),
     ...conversationProblems(pack),
     ...validateTalk(pack),

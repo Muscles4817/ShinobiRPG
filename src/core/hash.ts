@@ -17,3 +17,17 @@ export function hashString(text: string): number {
 export function hashUnit(...parts: readonly (string | number)[]): number {
   return hashString(parts.join('|')) / 4294967296;
 }
+
+/**
+ * Picks an index into a bank of `size` lines for this key, passing over the ones said lately:
+ * the same key and memory always give the same pick, and a line comes back only once every
+ * other has had its turn.
+ */
+export function freshIndex(key: string, size: number, recent: readonly number[]): number {
+  const start = hashString(key) % size;
+  for (let step = 0; step < size; step++) {
+    const index = (start + step) % size;
+    if (!recent.includes(index)) return index;
+  }
+  return start;
+}

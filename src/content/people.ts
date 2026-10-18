@@ -1,5 +1,5 @@
 import type { CombatPerk } from '@/systems/combat';
-import type { Appearance } from '@/systems/profile';
+import type { Appearance, Pronouns } from '@/systems/profile';
 import type { Rank } from '@/systems/standing';
 import type { Aptitude, Stats } from '@/systems/stats';
 import type { Discipline, Element } from '@/systems/techniques';
@@ -80,6 +80,11 @@ export interface PersonDef {
   readonly id: string;
   readonly name: string;
   readonly familyName: string;
+  /**
+   * How lines speak of them. Authored people declare theirs (validated); generated and composed
+   * people get theirs when they are made.
+   */
+  readonly pronouns?: Pronouns;
   readonly role: PersonRole;
   readonly rank: PersonRank;
   /**

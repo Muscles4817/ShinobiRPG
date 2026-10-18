@@ -8,6 +8,7 @@ export const OTAFUKU_PEOPLE: readonly PersonDef[] = [
     id: 'kotone',
     name: 'Kotone',
     familyName: '',
+    pronouns: 'she',
     homeLocationId: 'otafuku-town',
     role: 'villager',
     title: 'Shamisen player at the Willow',
