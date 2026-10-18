@@ -54,7 +54,14 @@ export const LAND_OF_WAVES: LocationDef = {
       name: 'The Bridge Site',
       icon: 'board',
       blurb: 'Tazuna takes any help he can get',
-      missionIds: ['waves-bridge-night-watch', 'waves-market-shakedown', 'waves-inari-ran-off'],
+      missionIds: [
+        'waves-bridge-night-watch',
+        'waves-market-shakedown',
+        'waves-inari-ran-off',
+        'arc-waves-cut-nets',
+        'arc-waves-cut-ropes',
+        'arc-waves-third-hand',
+      ],
     },
     {
       id: 'waves-shore',

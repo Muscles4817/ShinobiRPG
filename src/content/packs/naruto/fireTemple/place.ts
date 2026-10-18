@@ -51,7 +51,13 @@ export const FIRE_TEMPLE: LocationDef = {
       name: 'The Steward’s Office',
       icon: 'board',
       blurb: 'The temple asks favours of passing shinobi',
-      missionIds: ['temple-pilgrim-road', 'temple-bell-thief'],
+      missionIds: [
+        'temple-pilgrim-road',
+        'temple-bell-thief',
+        'arc-silk-bring-her-home',
+        'arc-silk-word-of-death',
+        'arc-silk-magistrate',
+      ],
     },
   ],
 };

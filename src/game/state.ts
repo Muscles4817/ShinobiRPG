@@ -111,6 +111,8 @@ export interface VillageMemory {
   readonly memories: readonly SharedMemory[];
   /** Jobs done for each client, by the client's name. */
   readonly clients: Readonly<Record<string, number>>;
+  /** Counts kept across jobs, by name (mercy shown, clues found), read by later jobs. */
+  readonly tallies: Readonly<Record<string, number>>;
   /** Tonight at the dice tables; absent until you first play (every older save). */
   readonly dice?: DiceNight;
 }

@@ -76,6 +76,11 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'arc-masaru-school-two',
           'arc-anko-den-one',
           'arc-anko-den-two',
+          'arc-waves-town-apart',
+          'arc-silk-daughter-taken',
+          'arc-ibiki-interview',
+          'arc-ibiki-sealed-message',
+          'arc-ibiki-verdict',
         ],
       },
       {

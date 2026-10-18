@@ -1,5 +1,6 @@
 import type { MissionDef } from '@/systems/missions';
 
+import { MERCY } from './fordChainStart';
 import { WATCH } from './lanternThiefStart';
 
 /** The Lantern Thief, acts three and four: the kiln in the reeds, and the wall relit. */
@@ -130,7 +131,10 @@ export const RELIT: MissionDef = {
           tone: 'kind',
           reply:
             'The captain looks at you a long time. “On your word,” he says. “If he steals so much as a wick, it’s on you.”',
-          effects: [{ kind: 'world', mark: 'tobi-forgiven' }],
+          effects: [
+            { kind: 'world', mark: 'tobi-forgiven' },
+            { kind: 'tally', tally: MERCY, by: 1 },
+          ],
           ledger: 'Vouched for Tobi to the Watch.',
         },
       ],

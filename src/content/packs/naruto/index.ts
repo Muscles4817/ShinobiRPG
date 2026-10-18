@@ -43,6 +43,9 @@ import { DROWNED_SHORE_ARC, DROWNED_SHORE_FOE, DROWNED_SHORE_JOBS } from './arcs
 import { LOADED_DICE_ARC, LOADED_DICE_FOE, LOADED_DICE_JOBS } from './arcs/loadedDice';
 import { SWORD_SCHOOL_ARC, SWORD_SCHOOL_FOE, SWORD_SCHOOL_JOBS } from './arcs/swordSchool';
 import { SNAKE_DEN_ARC, SNAKE_DEN_FOE, SNAKE_DEN_JOBS } from './arcs/snakeDen';
+import { TWO_SIDES_ARC, TWO_SIDES_JOBS } from './arcs/twoSides';
+import { SILK_DAUGHTER_ARC, SILK_DAUGHTER_JOBS } from './arcs/silkDaughter';
+import { UNWRITTEN_RULE_ARC, UNWRITTEN_RULE_JOBS } from './arcs/unwrittenRule';
 import { KANAME_STORY } from './people/stories/kaname';
 import { HOTARU_STORY } from './people/stories/hotaru';
 import { SHION_STORY } from './people/stories/shion';
@@ -133,11 +136,23 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...LOADED_DICE_JOBS,
     ...SWORD_SCHOOL_JOBS,
     ...SNAKE_DEN_JOBS,
+    ...TWO_SIDES_JOBS,
+    ...SILK_DAUGHTER_JOBS,
+    ...UNWRITTEN_RULE_JOBS,
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
   roadEvents: ROAD_EVENTS,
-  arcs: [TEMPLE_BELL_ARC, DROWNED_SHORE_ARC, LOADED_DICE_ARC, SWORD_SCHOOL_ARC, SNAKE_DEN_ARC],
+  arcs: [
+    TEMPLE_BELL_ARC,
+    DROWNED_SHORE_ARC,
+    LOADED_DICE_ARC,
+    SWORD_SCHOOL_ARC,
+    SNAKE_DEN_ARC,
+    TWO_SIDES_ARC,
+    SILK_DAUGHTER_ARC,
+    UNWRITTEN_RULE_ARC,
+  ],
   voices: VOICES,
   companionKinds: COMPANION_KINDS,
   companionLore: COMPANION_LORE,

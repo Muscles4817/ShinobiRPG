@@ -29,7 +29,13 @@ const job: MissionDef = {
   stages: [{ kind: 'narrative', text: 'Off you go.' }],
 };
 
-const story = { marks: ['lost-light'], threads: { trust: 2 }, crew: SOLO, remembered: ['spared'] };
+const story = {
+  marks: ['lost-light'],
+  threads: { trust: 2 },
+  crew: SOLO,
+  remembered: ['spared'],
+  tallies: { mercy: 2 },
+};
 
 describe('what a mission remembers', () => {
   it('reads marks, threads, who went, and combinations of them', () => {
@@ -44,6 +50,13 @@ describe('what a mission remembers', () => {
     expect(holds(story, undefined)).toBe(true);
     expect(holds(story, { remembers: 'spared' })).toBe(true);
     expect(holds(story, { remembers: 'trusted' })).toBe(false);
+  });
+
+  it('reads the village’s tallies as they stood, an untouched one as none', () => {
+    expect(holds(story, { tally: 'mercy', atLeast: 2 })).toBe(true);
+    expect(holds(story, { tally: 'mercy', below: 2 })).toBe(false);
+    expect(holds(story, { tally: 'clues', below: 1 })).toBe(true);
+    expect(holds(story, { tally: 'clues', atLeast: 1 })).toBe(false);
   });
 
   it('tells the first variant that holds, or the plain text', () => {
@@ -63,12 +76,16 @@ describe('what a mission remembers', () => {
   it('lists what a condition reads', () => {
     expect(
       conditionRefs({
-        all: [{ has: 'a' }, { any: [{ thread: 't', atLeast: 1 }, { lacks: 'b' }] }],
+        all: [
+          { has: 'a' },
+          { any: [{ thread: 't', atLeast: 1 }, { lacks: 'b' }, { tally: 'mercy', atLeast: 2 }] },
+        ],
       }),
     ).toEqual({
       marks: ['a', 'b'],
       threads: ['t'],
       world: [],
+      tallies: ['mercy'],
     });
   });
 });
@@ -83,6 +100,7 @@ describe('outcomes', () => {
         { kind: 'thread', thread: 'daylight', by: -1 },
         { kind: 'pay', share: -0.25 },
         { kind: 'harm', health: 3 },
+        { kind: 'tally', tally: 'mercy', by: 1 },
       ],
       ledger: 'Lost the light at the spring.',
     });
@@ -92,7 +110,10 @@ describe('outcomes', () => {
     expect(applied.run.ledger).toEqual([
       { stageIndex: 0, text: 'Lost the light at the spring.', tone: 'cost', pay: -0.25 },
     ]);
-    expect(applied.personal).toEqual([{ kind: 'harm', health: 3 }]);
+    expect(applied.personal).toEqual([
+      { kind: 'harm', health: 3 },
+      { kind: 'tally', tally: 'mercy', by: 1 },
+    ]);
   });
 
   it('writes nothing without a ledger line, and lines can be added directly', () => {
