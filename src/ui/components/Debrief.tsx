@@ -1,33 +1,38 @@
 import type { DebriefCrew, DebriefLine, Report } from '@/game';
 
 /**
- * A job's debrief, beyond the pay: the road it took line by line (with the pay each moment
- * moved), the people who went (how much closer you came, and the last thing they said), and on
+ * A job's debrief, beyond the pay: the road it took as a short paragraph (with the pay each
+ * moment moved beside it), the people who went (how much closer you came, and the last thing they said), and on
  * a failure what would have helped.
  */
 
 type JobReport = Extract<Report, { kind: 'mission-complete' | 'mission-failed' | 'defeat' }>;
+
+/** A fragment as it runs on in the paragraph: older reports kept whole lines with no spacing. */
+function spaced(text: string, index: number): string {
+  return index === 0 || /^[\s,]/.test(text) ? text : ` ${text}`;
+}
 
 function Road({ lines }: { readonly lines: readonly DebriefLine[] }) {
   if (lines.length === 0) return null;
   return (
     <section className="debrief-road" aria-label="The road">
       <h3 className="report-list-title">The road</h3>
-      <ol>
+      <p>
         {lines.map((l, i) => (
-          <li key={i} className={`road-${l.tone}`}>
+          <span key={i} className={`road-${l.tone}`}>
+            {spaced(l.text, i)}
             {l.noted && (
               <span className="badge noted" role="img" aria-label="Worth remembering">
                 記
               </span>
             )}
-            <span>{l.text}</span>
             {l.pay && (
               <span className={`chip ${l.pay.startsWith('+') ? 'gain' : 'cost'}`}>{l.pay}</span>
             )}
-          </li>
+          </span>
         ))}
-      </ol>
+      </p>
     </section>
   );
 }

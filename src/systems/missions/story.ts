@@ -23,7 +23,11 @@ export interface ThreadDef {
    * What the debrief adds to a ledger line when that line's outcome really moved the thread
    * ("It cost the light."), so a line never claims a change that didn't happen.
    */
-  readonly ledger?: { readonly fell?: string; readonly rose?: string };
+  readonly ledger?: {
+    /** Said again, it moves on to the next way of saying it (and stays on the last). */
+    readonly fell?: string | readonly string[];
+    readonly rose?: string | readonly string[];
+  };
   /**
    * The day's light, levels lowest first from dark to morning: set from the clock when the job
    * begins and each morning on the road, so the story's light agrees with the hour.

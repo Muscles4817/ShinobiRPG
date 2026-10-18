@@ -155,6 +155,28 @@ describe('outcomes', () => {
     );
   });
 
+  it('says a thread’s change a new way each time the ledger says it again', () => {
+    const light: ThreadDef = {
+      id: 'daylight',
+      label: 'Daylight',
+      levels: ['Dark', 'Dusk', 'Afternoon', 'Morning'],
+      start: 3,
+      ledger: { fell: ['It cost the light.', 'That cost more of it.'] },
+    };
+    const lit = { ...job, threads: [light] };
+    const lost = {
+      effects: [{ kind: 'thread', thread: 'daylight', by: -1 }] as const,
+      ledger: 'Lost.',
+    };
+    let run = startRun(lit, SOLO);
+    for (let i = 0; i < 3; i++) run = applyOutcome(run, lit, lost).run;
+    expect(run.ledger.map((l) => l.text)).toEqual([
+      'Lost. It cost the light.',
+      'Lost. That cost more of it.',
+      'Lost. That cost more of it.',
+    ]);
+  });
+
   it('leaves the finished stage’s camp and road event behind on moving on', () => {
     const run = { ...startRun(job, SOLO), camp: { done: ['0'] }, roadEvent: 'x', marks: ['m'] };
     const next = advance(run);

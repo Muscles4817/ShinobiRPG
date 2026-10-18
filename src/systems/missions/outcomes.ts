@@ -73,9 +73,16 @@ function threadClauses(
     const thread = threadOf(def, e.thread);
     if (!thread?.ledger) return [];
     const moved = (after.threads[thread.id] ?? 0) - (before.threads[thread.id] ?? 0);
-    const clause = moved < 0 ? thread.ledger.fell : moved > 0 ? thread.ledger.rose : undefined;
-    return clause ? [clause] : [];
+    const said = moved < 0 ? thread.ledger.fell : moved > 0 ? thread.ledger.rose : undefined;
+    return said ? [nextTelling(before, said)] : [];
   });
+}
+
+/** The first of a thread's ways of saying it, then the next each time the ledger says it again. */
+function nextTelling(run: MissionRun, said: string | readonly string[]): string {
+  const ways = typeof said === 'string' ? [said] : said;
+  const before = run.ledger.filter((l) => ways.some((w) => l.text.endsWith(w))).length;
+  return ways[Math.min(before, ways.length - 1)] ?? '';
 }
 
 /** An outcome applied at the run's current stage. */

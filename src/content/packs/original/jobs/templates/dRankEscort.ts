@@ -73,7 +73,14 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
         label: 'Daylight',
         levels: ['Dark', 'Dusk', 'Afternoon', 'Morning'],
         start: 3,
-        ledger: { fell: 'It cost the light.', rose: 'It saved some light.' },
+        ledger: {
+          fell: [
+            'It cost the light.',
+            'That cost more of it.',
+            'The last of the light went with it.',
+          ],
+          rose: 'It saved some light.',
+        },
         clock: true,
       },
     ],

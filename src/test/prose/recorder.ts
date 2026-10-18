@@ -58,6 +58,17 @@ export interface Recorder {
   readonly text: () => string;
 }
 
+/** A debrief's road as the card shows it: one paragraph, each pay chip beside its words. */
+function asRead(report: unknown): unknown {
+  if (typeof report !== 'object' || report === null || !('road' in report)) return report;
+  const road = (report as { road?: readonly { text: string; pay: string | null }[] }).road ?? [];
+  const told = road.map((l, i) => {
+    const spaced = i === 0 || /^[\s,]/.test(l.text) ? l.text : ` ${l.text}`;
+    return l.pay ? `${spaced} [${l.pay}]` : spaced;
+  });
+  return { ...report, road: told.join('') };
+}
+
 export function recorder(ctx: GameContext): Recorder {
   const lines: string[] = [];
   const say = (line: string) => lines.push(line);
@@ -96,7 +107,9 @@ export function recorder(ctx: GameContext): Recorder {
     }
     journalSeen = state.journal.nextId;
     const reports = JSON.stringify(state.reports);
-    if (reports !== reportsSeen && state.reports.length > 0) dump('report card', state.reports[0]);
+    if (reports !== reportsSeen && state.reports.length > 0) {
+      dump('report card', asRead(state.reports[0]));
+    }
     reportsSeen = reports;
   }
 

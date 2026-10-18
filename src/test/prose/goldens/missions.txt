@@ -175,9 +175,7 @@ view:
   unlocked[121]: The Pit at the burned terraces above Kayano
   unlocked[122]: Enough
   ending: You are bent over the fourth lantern when something cold brushes the back of your neck. The taper gutters, and you finish the round shaken.
-  road[0]:
-    text: Tried to relight them one by one, eyes open, and fell short.
-    pay: −25% pay
+  road: You tried to relight them one by one, eyes open, and fell short. [−25% pay]
   grade: rough
 
 >>> dismissReport
@@ -1087,14 +1085,7 @@ view:
   unlocked[12]: The Toll on the Pass Road
   unlocked[13]: The Crossroads Shrine
   ending: In Kayano the bride’s family open the chest to check it. Saburō is already asleep against the shrine wall, snoring a wedding song.
-  road[0]:
-    text: Pulled a carter out of the ditch. It cost the light.
-  road[1]:
-    text: Ran out of patience with Old Saburō. It cost the light.
-  road[2]:
-    text: Pushed on through the dark instead of making camp.
-  road[3]:
-    text: Talked hungry men out of a robbery.
+  road: You pulled a carter out of the ditch. It cost the light. Then you ran out of patience with Old Saburō. That cost more of it. In the end you pushed on through the dark instead of making camp and talked hungry men out of a robbery.
   crew[0]:
     name: Asuka
   crew[1]:
@@ -1602,10 +1593,7 @@ view:
   unlocked[3]: Lost in the Salt Marsh
   unlocked[4]: The Shade on the Pilgrim Path
   ending: The thugs limp off towards Oki’s timber yard. Tobei gets you a room over the ferry office and says the office will want you in the morning.
-  road[0]:
-    text: Beat two bandit thugs in a fight.
-  road[1]:
-    text: Kept faith with the ferrymen, though they lied on the notice.
+  road: You beat two bandit thugs in a fight. Then you kept faith with the ferrymen, though they lied on the notice.
   crew[0]:
     name: Asuka
     quote: I didn’t need the help, for the record, but it was well timed.
