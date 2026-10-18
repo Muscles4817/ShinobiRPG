@@ -42,6 +42,7 @@ import { stanceStatus } from './team';
 import { foeMarkFor } from './foeTeam';
 import { planOf, plannedFighters } from './planning';
 import { squareUpLine } from '../../rules/narration';
+import { fightSummary } from './summary';
 
 /**
  * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
@@ -333,6 +334,7 @@ export function createPlanEngine(): CombatEngine {
         chakraSpent: player.chakraSpent ?? 0,
         used: usage(plan.fighters),
         allies: alliesAfter(plan.fighters),
+        summary: fightSummary(plan, result),
       };
     },
   };

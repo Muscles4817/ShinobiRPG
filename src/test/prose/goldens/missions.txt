@@ -433,6 +433,7 @@ view:
   title: The Storehouse Ghost
   text: You wake in the village hospital, under lantern light and clean sheets.
   helped: Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals.
+  summary: You lasted two rounds before going down. The storehouse wraith was still standing.
   injury: Torn shoulder
   taught[0]: Chakra Reserves +0.02
 
@@ -457,6 +458,8 @@ view:
   You land your Gale Heel on the storehouse wraith. [Guarded] [−6]
   Little of it bites on the storehouse wraith.
   You are a shade too slow, and the storehouse wraith’s strike glances off you. [Guarded] [−4]
+  You go down and stay down.
+  Everything goes dark.
 
 >>> leaveFight
 
@@ -1401,6 +1404,7 @@ view:
 view:
   result: victory
   enemies: two bandit thugs
+  summary: You won in a single round. The second bandit thug was the last of them to go down.
 
 --- combat (day 2, slot 0) ---
   —— First exchange ——
@@ -1411,12 +1415,15 @@ view:
   There is nothing the first bandit thug can do as Goro’s Palm Strike smashes into him. [Guarded] [−40]
   Asuka’s blade flows into Lantern Cut.
   Asuka’s Lantern Cut tears through the first bandit thug with everything behind it. [Guarded] [−48]
+  The first bandit thug goes down and stays down.
   You are already elsewhere when the second bandit thug’s strike arrives.
   —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel hurls aside the second bandit thug, and he’s nearly knocked off his feet. [Guarded] [−50]
   Gōran launches into Iron Gate Palm.
   There is nothing the second bandit thug can do as Gōran’s Iron Gate Palm smashes into him. [Guarded] [−50]
+  The second bandit thug hits the ground and doesn’t get up.
+  The last of them is down, and it is over.
 
 >>> leaveFight
 
@@ -1580,6 +1587,7 @@ view:
 view:
   result: victory
   enemies: two bandit thugs
+  summary: You won in a single round. The second bandit thug was the last of them to go down.
 
 >>> dismissReport
 

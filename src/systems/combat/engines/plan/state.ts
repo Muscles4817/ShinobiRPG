@@ -132,6 +132,8 @@ export interface PlanFighter
   readonly holding?: string;
   /** Techniques copied this fight by watching (`mimicry.ts`). */
   readonly copied?: readonly string[];
+  /** The exchange they went down in, for the fight's summary (`falls.ts`). */
+  readonly fellAt?: number;
 }
 
 /** The change to a fighter who pays chakra: less left, more spent (never below empty). */
@@ -295,6 +297,7 @@ export function patch(
       | 'blows'
       | 'footwork'
       | 'secondWindSpent'
+      | 'fellAt'
     >
   >,
 ): PlanFighter[] {

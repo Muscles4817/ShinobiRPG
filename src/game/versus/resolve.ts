@@ -25,6 +25,7 @@ export function resolveVersus(state: GameState, outcome: CombatOutcome): GameSta
       chakraSpent: Math.max(0, match.startChakra - outcome.player.chakra),
       health: outcome.player.health,
       maxHealth: match.maxHealth,
+      ...(outcome.summary ? { summary: outcome.summary } : {}),
       ...(watched && winners ? { verdict: `${winners} ${several ? 'win' : 'wins'}` } : {}),
     },
   );

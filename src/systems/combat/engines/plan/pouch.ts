@@ -1,5 +1,6 @@
 import type { CombatItem } from '../../contract';
 import { itemBlocker, useItem } from '../../rules/items';
+import { felled } from './falls';
 import { shouldFlee } from '../../rules/kit';
 import { harmLine } from '../../rules/narration';
 import type { Card } from './cards';
@@ -78,6 +79,6 @@ export function useTool(round: Round, { actor, target, rng }: Turn, item: Combat
   const struck = used.foes.find((f) => f.id === target?.id);
   const damage = struck && target ? target.health - struck.health : 0;
   if (!struck || damage <= 0) return told;
-  const hit = harmLine(tell('{t} take{t.s} the hit.', { t: struck }), damage);
-  return fleeIfBroken(say(told, hit), struck.id);
+  const hit = say(told, harmLine(tell('{t} take{t.s} the hit.', { t: struck }), damage));
+  return struck.health <= 0 ? felled(hit, struck) : fleeIfBroken(hit, struck.id);
 }

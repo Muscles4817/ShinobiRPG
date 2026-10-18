@@ -322,6 +322,11 @@ export interface CombatOutcome {
   readonly used?: Readonly<Record<string, CombatUsage>>;
   /** Each fighter on the player's side but the player, as they end it (by combatant id). */
   readonly allies?: Readonly<Record<string, { readonly health: number }>>;
+  /**
+   * The fight in a sentence or two, for its result card (how long, who fell, who stood), in
+   * words with no numbers; absent from engines that don't tell one.
+   */
+  readonly summary?: string;
 }
 
 export interface CombatEngine {

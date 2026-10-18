@@ -651,7 +651,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Name fighters only through `tell` (`rules/telling.ts`): a template's slots (`{a}`, `{a.poss}`,
   `{a.s}`, `{t.their}`…) are filled from each fighter's `called` and `grammar`
   (`CombatantSetup`), so the player is "you", a spirit "it" and everyone's verbs agree, and the
-  line carries whom it named for the watch screen.
+  line carries whom it named for the watch screen. Plan & Watch picks words fresh (`plan/fresh.ts`:
+  by hash, passing over templates used in the last few lines, "again" lines when a fighter
+  repeats themself), weighs hits by the share of health they took (`plan/hitVoice.ts`), tells
+  falls and the fight's close (`plan/falls.ts`) and sums the fight up for its card
+  (`CombatOutcome.summary`). Rules and instructions go in the view's `prompt`, never the log.
   A staged engine (one that offers plans, not a hand) tags each turn's lines with `turnLine` (whose
   turn, and where the fight stands) and defences with `reactionLine`; the watch screen stages the
   log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. A fight that ends

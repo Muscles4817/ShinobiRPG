@@ -46,6 +46,7 @@ import {
   type Round,
 } from './state';
 import { tracedLine } from './sceneVoice';
+import { closingLine } from './falls';
 import { tell } from '../../rules/telling';
 
 /**
@@ -295,7 +296,8 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     chakra: alive(f) ? gathered(f) : f.chakra,
   }));
   const { field: _old, ...rest } = state;
-  const story = [...state.log, ...end.lines, ...(result ? [] : fading)];
+  const closing = result ? [closingLine(end, result)] : fading;
+  const story = [...state.log, ...end.lines, ...closing];
   const dropped = (state.logDropped ?? 0) + Math.max(0, story.length - LOG_LIMIT);
   return {
     ...rest,
