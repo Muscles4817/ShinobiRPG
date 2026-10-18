@@ -1,4 +1,4 @@
-import { gearSlot, type GearDef, type PromotedRank } from '@/content';
+import { gearSlot, type PromotedRank } from '@/content';
 import { addGear, equip } from '@/systems/inventory';
 import { promote, RANK_LABELS } from '@/systems/standing';
 import { describeSpec } from '@/systems/modifiers';
@@ -14,6 +14,7 @@ import { examHere } from './current';
 import { arcRecommendation } from './routes';
 import type { Ceremony } from './state';
 import { unlocksFor } from './unlocks';
+import { chuninVest } from './vest';
 
 /**
  * Promotions. A chūnin exam ends with its verdict; a promoted genin's ceremony follows (the rank,
@@ -37,14 +38,6 @@ export const PROMOTION_LIMITS: Readonly<Record<PromotedRank, StatDelta>> = {
   chunin: { reserves: 4 },
   jonin: { reserves: 4 },
 };
-
-/** The vest a new chūnin is handed: the pack's plainest flak armour. */
-export function chuninVest(ctx: GameContext): GearDef | null {
-  const vests = ctx.content.gear.all.filter(
-    (g) => g.kind === 'armour' && g.level === 'flak' && g.unique !== true,
-  );
-  return [...vests].sort((a, b) => a.cost - b.cost)[0] ?? null;
-}
 
 /** The run is over and its verdict heard: leave the exam (into your ceremony, if promoted). */
 export function leaveExam(state: GameState, ctx: GameContext): GameState {
@@ -140,10 +133,7 @@ export function acceptPromotion(state: GameState, ctx: GameContext): GameState {
   };
   return log(raised, {
     heading: `Promoted to ${RANK_LABELS[ceremony.rank]}`,
-    text:
-      unlocks.length > 0
-        ? `It opens: ${unlocks.map((u) => u.heading.toLowerCase()).join(', ')}.`
-        : 'A new rank.',
+    text: unlocks.length > 0 ? unlocks.map((u) => u.text).join(' ') : 'A new rank.',
     tone: 'success',
     chips: [
       chip(RANK_LABELS[ceremony.rank], 'gain'),

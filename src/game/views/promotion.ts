@@ -6,7 +6,7 @@ import { DISCIPLINES } from '@/systems/techniques';
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { senseiOf } from '../exam/entry';
-import { chuninVest } from '../exam/promotion';
+import { chuninVest } from '../exam/vest';
 import type { Ceremony } from '../exam/state';
 import { unlocksFor, type Unlock } from '../exam/unlocks';
 import { personSlots } from '../people/pronouns';
@@ -27,6 +27,8 @@ export interface PromotionScene {
   readonly gear: string | null;
   /** What a nomination read back from your record, as chips; empty for other routes. */
   readonly record: readonly string[];
+  /** "What a chūnin may do": the heading over what the rank opens. */
+  readonly means: string;
   readonly unlocks: readonly Unlock[];
   /** Your sensei's parting words, at the end of the genin years; null otherwise. */
   readonly farewell: string | null;
@@ -93,6 +95,7 @@ export function promotionScene(state: GameState, ctx: GameContext): PromotionSce
     gift: fill(words.gift, state, ctx),
     gear: ceremony.rank === 'chunin' ? (chuninVest(ctx)?.name ?? null) : null,
     record: ceremony.route === 'nomination' ? nominationRecord(state) : [],
+    means: `What a ${rank.toLowerCase()} may do`,
     unlocks: unlocksFor(state, ctx, ceremony.rank),
     farewell: farewellDue(state, ctx)?.words ?? null,
     accept: { type: 'acceptPromotion' },

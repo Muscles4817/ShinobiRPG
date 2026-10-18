@@ -285,9 +285,9 @@ view:
 
 === village ===
 view:
-  rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
-  rumours[1]: Naruto ran up a tab at Ichiraku again. Teuchi pretends not to notice.
-  rumours[2]: Visitors from the Sand have been seen near the gates.
+  rumours[0]: Visitors from the Sand have been seen near the gates.
+  rumours[1]: Kakashi-sensei was three hours late to a meeting. He said a black cat crossed his path.
+  rumours[2]: Hinata trains alone by the river at dawn when she thinks nobody is looking.
 
 >>> heedSensei
   journal «Your week»: Kaname hands you a slip with the days of the week marked on it. “Every mark on there is a day I’ll be at the training ground. One is the real lesson, the rest are short. Why do you suppose I care more that you come than how well you do?”
@@ -417,7 +417,7 @@ view:
 view:
   rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
   rumours[1]: The Daimyō’s wife was seen at the mission desk in tears. Tora has escaped again.
-  rumours[2]: Hinata trains alone by the river at dawn when she thinks nobody is looking.
+  rumours[2]: Ichiraku is trying a new broth. Opinions are strong.
   stray:
     text: A scruffy brown hound is sniffing round the ramen stand’s back door, ribs showing.
     where: Near the Training Grounds
@@ -603,9 +603,9 @@ view:
     when: In seven days
     perks[0]: Market −30%
     perks[1]: Bonds +3 per talk
-  rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
-  rumours[1]: Naruto ran up a tab at Ichiraku again. Teuchi pretends not to notice.
-  rumours[2]: Might Guy did five hundred laps of the village on his hands this morning.
+  rumours[0]: Naruto ran up a tab at Ichiraku again. Teuchi pretends not to notice.
+  rumours[1]: Might Guy did five hundred laps of the village on his hands this morning.
+  rumours[2]: Visitors from the Sand have been seen near the gates.
 
 >>> heedSensei
   journal «The jobs board»: Kaname keeps you a moment to talk about the jobs board at the mission hall. “Which jobs on the board could you do alone, and which would you want me along for? Anything past the gate, you’ll have me. Work changes every few days, so what would you choose today?”
@@ -785,15 +785,15 @@ view:
     perks[0]: Market −30%
     perks[1]: Bonds +3 per talk
   rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
-  rumours[1]: Hinata trains alone by the river at dawn when she thinks nobody is looking.
-  rumours[2]: The jōnin are talking in low voices about the next Chūnin Exams.
+  rumours[1]: Kakashi-sensei was three hours late to a meeting. He said a black cat crossed his path.
+  rumours[2]: Hinata trains alone by the river at dawn when she thinks nobody is looking.
 
 >>> heedSensei
   journal «Cooking»: Kaname asks whether you can cook, and doesn’t seem surprised by the answer. “Why would a shinobi bother to cook well? Try a good dish before a hard day and you’ll have your answer. The grocer sells recipe books, and your friends know dishes you don’t.”
 
 >>> senseiSession
   journal «Drills with Kaname»: Kaname sets you a drill you learned at the academy and shows you how much of it you had wrong. “Why did the last one work when the first ones didn’t?” Kaname asks. “Don’t tell me now. Tomorrow.” [Strength, a little] [Taijutsu, a little] [Kaname’s regard rises] [−10 energy]
-  journal «A feel for your strength»: It comes naturally, as if your body remembered something it was never taught.
+  journal «Building strength»: It comes naturally, as if your body remembered something it was never taught.
 
 >>> train
   journal «Tree Climbing Practice»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Chakra Control, a little] [Willpower, a touch] [−10 energy]
@@ -970,9 +970,9 @@ view:
     when: In five days
     perks[0]: Market −30%
     perks[1]: Bonds +3 per talk
-  rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
-  rumours[1]: The Hokage’s pipe has been going all night. Paperwork, they say.
-  rumours[2]: Ichiraku is trying a new broth. Opinions are strong.
+  rumours[0]: The Hokage’s pipe has been going all night. Paperwork, they say.
+  rumours[1]: The jōnin are whispering about the next Chūnin Exams.
+  rumours[2]: Naruto ran up a tab at Ichiraku again. Teuchi pretends not to notice.
   stray:
     text: A scruffy brown hound is sniffing round the ramen stand’s back door, ribs showing.
     where: Near the Training Grounds
@@ -986,7 +986,7 @@ view:
 
 >>> train
   journal «Hand-Seal Drills»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Chakra Control, a touch] [Ninjutsu, a little] [−15 energy]
-  journal «A feel for your chakra control»: It fights you every step. Others seem to pick this up in half the time.
+  journal «Controlling your chakra»: It fights you every step. Others seem to pick this up in half the time.
 
 >>> talk
 
@@ -1396,9 +1396,9 @@ view:
     when: In three days
     perks[0]: Market −30%
     perks[1]: Bonds +3 per talk
-  rumours[0]: Ichiraku is trying a new broth. Opinions are strong.
-  rumours[1]: Visitors from the Sand have been seen near the gates.
-  rumours[2]: Kakashi-sensei was three hours late to a meeting. He said a black cat crossed his path.
+  rumours[0]: Hinata trains alone by the river at dawn when she thinks nobody is looking.
+  rumours[1]: Ichiraku is trying a new broth. Opinions are strong.
+  rumours[2]: The Hokage’s pipe has been going all night. Paperwork, they say.
 
 >>> senseiSession
   refused: Your sensei hasn’t set a session for today.
@@ -1463,9 +1463,9 @@ view:
     when: In three days
     perks[0]: Market −30%
     perks[1]: Bonds +3 per talk
-  rumours[0]: Ichiraku is trying a new broth. Opinions are strong.
-  rumours[1]: Visitors from the Sand have been seen near the gates.
-  rumours[2]: Kakashi-sensei was three hours late to a meeting. He said a black cat crossed his path.
+  rumours[0]: Hinata trains alone by the river at dawn when she thinks nobody is looking.
+  rumours[1]: Ichiraku is trying a new broth. Opinions are strong.
+  rumours[2]: The Hokage’s pipe has been going all night. Paperwork, they say.
 
 >>> senseiSession
   refused: Your sensei hasn’t set a session for today.

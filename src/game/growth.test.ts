@@ -2,7 +2,7 @@ import { blockerFor, dispatch, shinobiView, trainingView, type GameState } from 
 import { aptitudeBand, evenAptitude, nothingKnown, type StatId } from '@/systems/stats';
 import { act, ctx, lastEntry, newGame, withAllStats } from '@/test/gameFixtures';
 
-import { growCharacter, SESSIONS_TO_SENSE } from './growth';
+import { FIRST_READ_HEADINGS, growCharacter, SESSIONS_TO_SENSE } from './growth';
 
 const text = ctx.content.text.aptitude;
 const drill = { type: 'train', trainingId: 'post-kicks' } as const;
@@ -45,8 +45,14 @@ describe('growth and aptitude', () => {
     expect(state.character.aptitudeKnown.taijutsu).toBe('unknown');
     state = act(rested(state), drill);
     expect(state.character.aptitudeKnown.taijutsu).toBe('sense');
-    const reads = state.journal.entries.slice(-2).map((e) => e.text);
+    const found = state.journal.entries.slice(-2);
+    const reads = found.map((e) => e.text);
     expect(reads).toContain(text.reads.gifted);
+    // The heading names the work the read is about, so its "It" has something to point at.
+    expect(found.map((e) => e.heading)).toContain(FIRST_READ_HEADINGS.taijutsu);
+    expect(new Set(Object.values(FIRST_READ_HEADINGS)).size).toBe(
+      Object.keys(FIRST_READ_HEADINGS).length,
+    );
     for (const read of reads) expect(read).not.toMatch(/\d/);
   });
 

@@ -2,7 +2,6 @@ import {
   aptitudeBand,
   applyTraining,
   STAT_IDS,
-  STAT_INFO,
   type Aptitude,
   type StatDelta,
   type StatId,
@@ -91,6 +90,26 @@ export function growCharacter(
   return discover({ ...character, stats }, gains);
 }
 
+/**
+ * The heading over a first read of a talent, as the work feels from the inside: "Getting
+ * faster", "Learning genjutsu". The read that follows ("It comes naturally…") is about it.
+ */
+export const FIRST_READ_HEADINGS: Readonly<Record<StatId, string>> = {
+  strength: 'Building strength',
+  speed: 'Getting faster',
+  stamina: 'Building stamina',
+  reserves: 'Deepening your chakra',
+  chakraControl: 'Controlling your chakra',
+  intellect: 'Study',
+  perception: 'Sharpening your senses',
+  willpower: 'Hardening your will',
+  taijutsu: 'Learning taijutsu',
+  ninjutsu: 'Learning ninjutsu',
+  genjutsu: 'Learning genjutsu',
+  kenjutsu: 'Learning kenjutsu',
+  fuuinjutsu: 'Learning fūinjutsu',
+};
+
 /** Journal lines for the stats whose aptitude was just sensed. */
 export function logDiscoveries(
   state: GameState,
@@ -101,7 +120,7 @@ export function logDiscoveries(
   return discovered.reduce(
     (next, id) =>
       log(next, {
-        heading: `A feel for your ${STAT_INFO[id].label.toLowerCase()}`,
+        heading: FIRST_READ_HEADINGS[id],
         text: reads[aptitudeBand(state.character.aptitude[id])],
         tone: 'info',
       }),

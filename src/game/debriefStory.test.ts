@@ -41,11 +41,11 @@ describe('the debrief as a paragraph', () => {
 
   it('keeps each line’s pay beside its own words', () => {
     const told = debriefStory([
-      line('Beat two thugs in a fight.'),
+      line('Beat two bandit thugs.'),
       line('Paid them to go.', { tone: 'cost', pay: -0.2 }),
     ]);
     expect(told.map((f) => [f.text, f.pay])).toEqual([
-      ['You beat two thugs in a fight', null],
+      ['You beat two bandit thugs', null],
       [' and paid them to go.', '−20% pay'],
     ]);
   });

@@ -112,6 +112,7 @@ export {
   type SenseiTemperament,
 } from './senseiParts';
 export { senseiWaysProblems } from './validateSenseis';
+export { LEDGER_MAX_WORDS } from './validateLedger';
 export { CURRICULUM_BEATS, type CurriculumBeat, type CurriculumBeatId } from './curriculum';
 export type {
   DefenceWarning,

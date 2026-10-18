@@ -42,6 +42,19 @@ const BEATS_WEIGHT: Readonly<Record<StatGrade, number>> = {
   S: 3,
 };
 
+/**
+ * How hard instinct leans on what an attack is worth against this foe (`worth.ts`) over how
+ * strong it is on paper: a dull brawler swings by feel, a sharp mind picks what works.
+ */
+const WORTH_SHARPNESS: Readonly<Record<StatGrade, number>> = {
+  E: 0.5,
+  D: 0.75,
+  C: 1,
+  B: 1.5,
+  A: 2,
+  S: 2.5,
+};
+
 /** The lowest grade that turns a read into a planned counter-pick in the moment. */
 const READS_IN_THE_MOMENT: readonly StatGrade[] = ['D', 'C', 'B', 'A', 'S'];
 
@@ -59,6 +72,10 @@ export function adaptsAfter(fighter: Judged): number {
 
 export function beatsWeight(fighter: Judged): number {
   return BEATS_WEIGHT[gradeOf(fighter)];
+}
+
+export function worthSharpness(fighter: Judged): number {
+  return WORTH_SHARPNESS[gradeOf(fighter)];
 }
 
 export function readsInTheMoment(fighter: Judged): boolean {

@@ -86,6 +86,14 @@ import { NARUTO_ROUTES } from './routes';
 import { NARUTO_ATLAS } from './atlas';
 import { WAVES_FOODS, WAVES_JOBS, WAVES_PEOPLE, WAVES_TRAINING } from './landOfWaves';
 import { TANZAKU_FOODS, TANZAKU_JOBS, TANZAKU_PEOPLE } from './tanzaku';
+import {
+  KIRI_FOES,
+  KIRI_FOODS,
+  KIRI_GEAR,
+  KIRI_JOBS,
+  KIRI_PEOPLE,
+  KIRI_TRAINING,
+} from './kirigakure';
 import { SHUKUBA_FOODS, SHUKUBA_JOBS, SHUKUBA_PEOPLE } from './shukuba';
 import { OTAFUKU_FOODS, OTAFUKU_JOBS, OTAFUKU_PEOPLE } from './otafuku';
 import { SENSEI_GROUNDS, SENSEI_NAMES } from './senseiGrounds';
@@ -138,6 +146,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...EXAM_MISSIONS,
     ...WAVES_JOBS,
     ...TANZAKU_JOBS,
+    ...KIRI_JOBS,
     ...SHUKUBA_JOBS,
     ...OTAFUKU_JOBS,
     ...FIRE_TEMPLE_JOBS,
@@ -175,16 +184,18 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...EXAM_ENEMIES,
     TEMPLE_BELL_FOE,
     DROWNED_SHORE_FOE,
+    ...KIRI_FOES,
     LOADED_DICE_FOE,
     SWORD_SCHOOL_FOE,
     SNAKE_DEN_FOE,
   ],
-  training: [...TRAINING, ...WAVES_TRAINING, ...FIRE_TEMPLE_TRAINING],
+  training: [...TRAINING, ...WAVES_TRAINING, ...FIRE_TEMPLE_TRAINING, ...KIRI_TRAINING],
   foods: [
     ...FOODS,
     ...SEASONAL_FOODS,
     ...WAVES_FOODS,
     ...TANZAKU_FOODS,
+    ...KIRI_FOODS,
     ...SHUKUBA_FOODS,
     ...OTAFUKU_FOODS,
     ...FIRE_TEMPLE_FOODS,
@@ -201,7 +212,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,
-  gear: [...GEAR, ...DUELIST_GEAR],
+  gear: [...GEAR, ...DUELIST_GEAR, ...KIRI_GEAR],
   tools: TOOLS,
   injuries: INJURIES,
   ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS],
@@ -220,6 +231,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...VILLAGERS,
     ...WAVES_PEOPLE,
     ...TANZAKU_PEOPLE,
+    ...KIRI_PEOPLE,
     ...OTAFUKU_PEOPLE,
     ...SHUKUBA_PEOPLE,
     ...FIRE_TEMPLE_PEOPLE,

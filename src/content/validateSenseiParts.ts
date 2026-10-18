@@ -3,6 +3,7 @@ import { PRONOUN_FORMS } from '@/core';
 import { SENSEI_ARCHETYPES } from './senseiArchetypes';
 import type { SenseiPast, SenseiTemperament } from './senseiParts';
 import type { ContentPack } from './types';
+import { LEDGER_MAX_WORDS } from './validateLedger';
 
 /**
  * Checks the parts generated senseis are made from (`senseiParts.ts`): every reference is
@@ -51,6 +52,25 @@ function temperamentProblems(pack: ContentPack, t: SenseiTemperament): string[] 
   ].map((p) => `temperament "${t.id}" ${p}`);
 }
 
+const LEDGER_KEYS = ['found', 'mercy', 'leave', 'finish', 'spared', 'ended'] as const;
+
+/** An arc's ledger notes facts: short, no speech, each a sentence of its own. */
+function arcLedgerProblems(past: SenseiPast): string[] {
+  return LEDGER_KEYS.flatMap((key) => {
+    const line = past.arc.ledger[key];
+    return [
+      ...(line.split(/\s+/).length > LEDGER_MAX_WORDS
+        ? [`has a ledger line too long: ${key}`]
+        : []),
+      ...(/[“”"]/.test(line) ? [`quotes speech in its ledger: ${key}`] : []),
+      // A ground's place is a long phrase ("the oasis towns at the edge of…"): it would make
+      // the fact a sentence of its own.
+      ...(line.includes('{place}') ? [`names the place in its ledger: ${key}`] : []),
+      ...(/[.!?]$/.test(line) ? [] : [`has a ledger line without a full stop: ${key}`]),
+    ];
+  });
+}
+
 function pastProblems(pack: ContentPack, past: SenseiPast): string[] {
   const temperaments = new Set(pack.senseiParts.temperaments.map((t) => t.id));
   const known = past.temperaments.filter((id) => temperaments.has(id));
@@ -65,6 +85,7 @@ function pastProblems(pack: ContentPack, past: SenseiPast): string[] {
       ? []
       : [`meets its foe in an unknown encounter "${past.foe.encounter}"`]),
     ...(past.keepsakes.length === 0 ? ['needs a keepsake'] : []),
+    ...arcLedgerProblems(past),
     ...slotProblems(past),
   ].map((p) => `sensei past "${past.id}" ${p}`);
 }
