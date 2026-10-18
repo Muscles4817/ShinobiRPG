@@ -31,6 +31,8 @@ export interface DayStart {
   readonly journalFrom: number;
   /** Grades already raced to with your rival (`stat:grade`); absent before a rival. */
   readonly rivalFirsts?: readonly string[];
+  /** What the field book held (`kind:id`); absent on a day begun before it. */
+  readonly fieldBook?: readonly string[];
 }
 
 export const FIND_KINDS = ['ingredient', 'tool', 'gear', 'scroll', 'recipe'] as const;
@@ -73,6 +75,8 @@ export interface DayEnd {
   readonly satiety: readonly [number, number];
   /** Grades reached first today in the race with your rival; absent when none. */
   readonly rivalFirsts?: readonly { readonly key: string; readonly who: 'you' | 'them' }[];
+  /** New in the field book today (`kind:id`); absent when nothing is. */
+  readonly fieldBook?: readonly string[];
 }
 
 /** What the end of a day shows: the sheet at night, a slip next morning, or nothing. */

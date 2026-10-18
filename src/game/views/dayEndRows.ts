@@ -14,6 +14,7 @@ import { hungerLevel } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import type { DayEnd, Find } from '../daybook/state';
+import { entryOf } from '../fieldBook/keys';
 import { findPerson } from '../people/cast';
 import { mentorOf } from '../sensei/plan';
 import type { GameState } from '../state';
@@ -77,6 +78,8 @@ export interface DayFind {
 }
 
 const MAX_GROWTH_ROWS = 5;
+/** The new field book entries named on the sheet; past these, "and others". */
+const FIELD_BOOK_NAMES = 3;
 
 function disciplineOf(stat: StatId): Discipline | null {
   return DISCIPLINES.find((d) => d === stat) ?? null;
@@ -129,6 +132,31 @@ function raceRows(ended: DayEnd, state: GameState, ctx: GameContext): DayMoment[
   });
 }
 
+/** What a field book key names: the fish, the find, the sight's title, the foe. */
+function entryName(key: string, ctx: GameContext): string | null {
+  const entry = entryOf(key);
+  if (!entry) return null;
+  const { content } = ctx;
+  switch (entry.kind) {
+    case 'fish':
+    case 'find':
+      return content.ingredients.get(entry.id)?.name ?? null;
+    case 'sight':
+      return content.village.sights.find((s) => s.id === entry.id)?.title ?? null;
+    case 'foe':
+      return content.enemies.get(entry.id)?.name ?? null;
+  }
+}
+
+/** One line for the day's new entries, however many: the first few by name. */
+function fieldBookRows(ended: DayEnd, ctx: GameContext): DayMoment[] {
+  const names = (ended.fieldBook ?? []).flatMap((key) => entryName(key, ctx) ?? []);
+  if (names.length === 0) return [];
+  const shown = names.slice(0, FIELD_BOOK_NAMES).join(', ');
+  const list = names.length > FIELD_BOOK_NAMES ? `${shown} and others` : shown;
+  return [{ seal: '記', title: `New in your field book: ${list}`, tag: null }];
+}
+
 export function momentRows(ended: DayEnd, state: GameState, ctx: GameContext): DayMoment[] {
   const rank = ended.rank
     ? [{ seal: '昇', title: `Promoted to ${RANK_LABELS[ended.rank]}`, tag: null }]
@@ -149,7 +177,14 @@ export function momentRows(ended: DayEnd, state: GameState, ctx: GameContext): D
       tag: null,
     }));
   const jobs = ended.jobs.map((title) => ({ seal: '良', title: `${title}, done`, tag: null }));
-  return [...rank, ...learned, ...grades, ...raceRows(ended, state, ctx), ...jobs];
+  return [
+    ...rank,
+    ...learned,
+    ...grades,
+    ...raceRows(ended, state, ctx),
+    ...jobs,
+    ...fieldBookRows(ended, ctx),
+  ];
 }
 
 function nights(n: number): string {

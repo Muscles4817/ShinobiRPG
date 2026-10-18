@@ -7,6 +7,7 @@ import type { RouteDef } from '@/systems/travel';
 
 import { createCatalog, type Catalog } from './catalog';
 import type { ExerciseDef } from './exercises';
+import type { FieldBookRewards } from './fieldBook';
 import type { FurnishingDef, GardenCrop, HomeDef } from './homes';
 import type { QuirkDef } from './quirks';
 import type { CurriculumBeat } from './curriculum';
@@ -78,6 +79,7 @@ export interface ContentDb {
   readonly homes: Catalog<HomeDef>;
   readonly furnishings: Catalog<FurnishingDef>;
   readonly gardenCrops: readonly GardenCrop[];
+  readonly fieldBook: FieldBookRewards;
   readonly traits: Catalog<TraitDef>;
   readonly nindos: Catalog<NindoDef>;
   readonly breakIn: BreakInScene;
@@ -131,6 +133,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     homes: createCatalog('home', pack.homes),
     furnishings: createCatalog('furnishing', pack.furnishings),
     gardenCrops: pack.gardenCrops,
+    fieldBook: pack.fieldBook,
     traits: createCatalog('trait', pack.traits),
     nindos: createCatalog('nindo', pack.nindos),
     breakIn: pack.breakIn,

@@ -494,6 +494,19 @@ describe('persistence', () => {
     });
   });
 
+  it('gives a save from before the field book an empty one', () => {
+    const { fieldBook: _book, ...state } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 52, state }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.fieldBook).toEqual({
+      catches: {},
+      finds: {},
+      sights: [],
+      foes: {},
+      rewarded: [],
+    });
+  });
+
   it('gives a save from before companions none, and no stray being won over', () => {
     const { companions: _c, ...game } = newGame();
     const loaded = deserialize(JSON.stringify({ version: 49, state: game }));
@@ -544,7 +557,7 @@ describe('persistence', () => {
   it('gives a save from before village tallies nothing counted, and keeps what it remembered', () => {
     const game = newGame();
     const { tallies: _t, ...village } = { ...game.village, marks: ['tobi-forgiven'] };
-    const loaded = deserialize(JSON.stringify({ version: 52, state: { ...game, village } }));
+    const loaded = deserialize(JSON.stringify({ version: 53, state: { ...game, village } }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.village).toMatchObject({ tallies: {}, marks: ['tobi-forgiven'] });
   });

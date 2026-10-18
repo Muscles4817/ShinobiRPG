@@ -1,5 +1,6 @@
 import { STAT_IDS, type StatId } from '@/systems/stats';
 
+import { fieldBookKeys } from '../fieldBook/keys';
 import type { GameState } from '../state';
 import { jobDoneTitle } from './jobs';
 import { purseLines } from './purse';
@@ -78,12 +79,21 @@ function rivalFirsts(start: DayStart, state: GameState): DayEnd['rivalFirsts'] {
   return fresh.length > 0 ? fresh : undefined;
 }
 
+/** New in the field book since dawn; nothing for a day begun before there was one. */
+function written(start: DayStart, state: GameState): DayEnd['fieldBook'] {
+  if (!start.fieldBook) return undefined;
+  const fresh = newIds(start.fieldBook, fieldBookKeys(state.fieldBook));
+  return fresh.length > 0 ? fresh : undefined;
+}
+
 /** What changed between `start` and now, for a day that has just ended. */
 export function closeDay(start: DayStart, state: GameState, slept: boolean): DayEnd {
   const injuries = state.character.injuries.filter((i) => !start.injuries.includes(injuryKey(i)));
   const raced = rivalFirsts(start, state);
+  const fieldBook = written(start, state);
   return {
     ...(raced ? { rivalFirsts: raced } : {}),
+    ...(fieldBook ? { fieldBook } : {}),
     day: start.day,
     days: Math.max(1, state.time.day - start.day),
     slept,

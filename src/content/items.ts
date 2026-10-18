@@ -84,6 +84,8 @@ export interface IngredientDef {
   readonly seasons?: readonly Season[];
   /** Keeps on the road: a day's meal there, filling you this much. */
   readonly road?: number;
+  /** A fish's length in centimetres, shortest to longest: what the field book measures. */
+  readonly length?: readonly [number, number];
 }
 
 export interface IngredientCount {

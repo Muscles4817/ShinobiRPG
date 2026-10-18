@@ -1,5 +1,6 @@
 import { diffStats } from '@/systems/stats';
 
+import { noteSight } from '../fieldBook/record';
 import { growCharacter, logDiscoveries } from '../growth';
 import { adjust, busyReason, chip, firstBlocker, log, statChips } from '../ops';
 import { hasSight, isNight, sightTonight } from '../village';
@@ -28,7 +29,7 @@ export const followSight: ActionHandler<ActionOf<'followSight'>> = {
     const { stats } = grown.character;
     const followed = adjust(
       {
-        ...state,
+        ...noteSight(state, sight.id),
         character: grown.character,
         village: { ...state.village, lastSightDay: state.time.day },
       },

@@ -5,6 +5,7 @@ import { EXERCISES } from '../../shared/exercises';
 import { CURRICULUM } from '../../shared/sensei/curriculum';
 import { senseiParts } from '../../shared/sensei/parts';
 import { SENSEI_TESTS } from '../../shared/sensei/tests';
+import { FIELD_BOOK_REWARDS } from '../../shared/fieldBook';
 import { FURNISHINGS } from '../../shared/furnishings';
 import { GARDEN_CROPS } from '../../shared/garden';
 import { QUIRKS } from '../../shared/quirks';
@@ -169,6 +170,7 @@ export const ORIGINAL_PACK: ContentPack = {
   homes: ORIGINAL_HOMES,
   furnishings: FURNISHINGS,
   gardenCrops: GARDEN_CROPS,
+  fieldBook: FIELD_BOOK_REWARDS,
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,

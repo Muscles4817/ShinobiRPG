@@ -103,4 +103,20 @@ export const FURNISHINGS: readonly FurnishingDef[] = [
     comfort: 3,
     effect: { kind: 'guests', bond: 4 },
   },
+  {
+    id: 'gyotaku-print',
+    name: 'Gyotaku print',
+    description: 'Your biggest catch, inked and pressed onto paper. Earned, never sold.',
+    spot: 'wall',
+    comfort: 3,
+    effect: { kind: 'decor' },
+  },
+  {
+    id: 'drying-rack',
+    name: 'Forager’s drying rack',
+    description: 'Herbs, mushrooms and roots hung up to dry. Earned, never sold.',
+    spot: 'corner',
+    comfort: 2,
+    effect: { kind: 'decor' },
+  },
 ];

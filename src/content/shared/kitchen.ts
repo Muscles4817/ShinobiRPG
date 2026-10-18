@@ -6,7 +6,7 @@ import type { CookbookDef, IngredientDef } from '../types';
  */
 export const INGREDIENTS: readonly IngredientDef[] = [
   { id: 'rice', name: 'Rice', cost: 8, icon: 'rice' },
-  { id: 'river-fish', name: 'River Fish', cost: 14, icon: 'fish' },
+  { id: 'river-fish', name: 'River Fish', cost: 14, icon: 'fish', length: [18, 36] },
   { id: 'vegetables', name: 'Vegetables', cost: 10, icon: 'veg' },
   { id: 'miso', name: 'Miso', cost: 9, icon: 'bowl' },
   { id: 'spices', name: 'Spices', cost: 12, icon: 'leaf' },

@@ -1,4 +1,5 @@
 import { createRng } from '@/core';
+import { EMPTY_FIELD_BOOK } from '@/systems/collections';
 import { learnRecipes, NO_COOKING } from '@/systems/cooking';
 import {
   addFurniture,
@@ -248,6 +249,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     mentor: NO_MENTOR,
     daybook: NO_DAYBOOK,
     rival: null,
+    fieldBook: EMPTY_FIELD_BOOK,
     companions: bornCompanions(clan, seed, ctx),
     cooking: learnRecipes(
       NO_COOKING,
