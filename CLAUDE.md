@@ -464,7 +464,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     on a failure what would have helped (the best approach to the check, or the foe's trick).
 24. **Jobs leave something behind.** Outcomes can make the village remember (`world` effect →
     `village.marks`) and give everyone along a shared memory (`memory` → `village.memories`).
-    A job with `needsWorldMark` is posted only once the village remembers it (a follow-up);
+    What lasts (world marks, tallies, memories) is held on the run and kept only when the job
+    is done (`releaseHeld`), so a failed job leaves nothing behind. A job with `needsWorldMark`
+    is posted only once the village remembers it (a follow-up), one with `closedBy` no longer
+    once it remembers that, and a `once` job never after it is done (a job that counts a tally
+    must be `once` or an arc's, validated);
     a rumour with `worldMark` goes round only then, ahead of other talk. Memories show on the
     person's sheet and come up by the fire. Clients count the jobs you've done for them
     (`village.clients`, `game/clients.ts`); one you've worked for asks for you by name and

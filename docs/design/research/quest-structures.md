@@ -74,6 +74,21 @@ the `world` mark and read that within the job. The Lantern Thief already does th
 A second, for fan packs: name the jobs in a naruto arc's acts by literal id. `JOB.id` reads
 survive tree-shaking and kept the jobs' text in the release build until `check:release` caught it.
 
+**After review.** Three reviews (a game developer, a storyteller and a UI/UX pass) led to
+three more rule changes:
+
+- **Lasting effects wait for success.** World marks, tallies and memories are held on the run
+  and kept only when the job is done, so a failed and retaken job can't count anything twice
+  or leave a mark from a road it didn't finish.
+- **Follow-ups can be told once.** A job may be `once` (never posted again after it is done)
+  and `closedBy` a world mark (no longer posted once the story has moved past it). A job that
+  counts a tally must be one of these, or an arc's, so mercy can't be farmed off the board.
+- **A fork closes when one road is finished.** A fork job that is failed leaves all the roads
+  open, so the card says so.
+
+The fork warning on a job's notice, leads kept on the card, and options that show why they're
+closed are the next pass, along with giving forks and red herrings real costs.
+
 ## Devices from Naruto
 
 | Device                                      | Source                                                                                                                                                                                                                                    | Shape                                                                                                                                            | Our tools                                                                                                                                | Used in                                                        |
