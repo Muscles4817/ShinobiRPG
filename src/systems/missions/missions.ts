@@ -5,7 +5,13 @@ import type { Crew } from './crew';
 import type { EncounterRun, EncounterStage } from './encounter';
 import type { MissionRank, MissionRole } from './missionRank';
 import type { StagePay } from './encounterPay';
-import { startThreads, type Condition, type LedgerLine, type ThreadDef } from './story';
+import {
+  startThreads,
+  type Condition,
+  type Effect,
+  type LedgerLine,
+  type ThreadDef,
+} from './story';
 import type { CampStage, DecisionStage, EndingStage, Outcome, TextVariant } from './storyStages';
 
 /**
@@ -122,6 +128,10 @@ export interface MissionDef {
   readonly examOnly?: boolean;
   /** Posted only once the village remembers this (a world mark): a follow-up to another job. */
   readonly needsWorldMark?: string;
+  /** No longer posted once the village remembers this: the story it follows has moved on. */
+  readonly closedBy?: string;
+  /** Done once and never posted again (a follow-up that tells one moment). */
+  readonly once?: true;
   /** Where the job leaves you, when it ends somewhere else (a long story's base, or home). */
   readonly endsAt?: string;
   /** Counters the story keeps (a charge's trust, the day's light). */
@@ -174,6 +184,10 @@ export interface MissionRun {
   readonly bondsAtStart?: Readonly<Record<string, number>>;
   /** What the village remembered when the job began (world marks), for `remembers`. */
   readonly remembered?: readonly string[];
+  /** The village's tallies when the job began, for `tally` conditions. */
+  readonly tallied?: Readonly<Record<string, number>>;
+  /** What lasts beyond the job (world marks, tallies, memories), held until it is done. */
+  readonly held?: readonly Effect[];
   /** Set when this is a trip of your own along the roads, not a job (`game/journeys.ts`). */
   readonly journey?: JourneyPlan;
 }

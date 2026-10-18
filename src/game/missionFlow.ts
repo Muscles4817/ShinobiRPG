@@ -23,6 +23,7 @@ import { tendWounds } from './missionTeam';
 import { bondOf } from './people/cast';
 import { addReport } from './reports';
 import { pickDone } from './sensei/pick';
+import { releaseHeld } from './story/personal';
 import { settle } from './story/state';
 import type { GameState } from './state';
 
@@ -68,8 +69,8 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
   if (!def || !before.mission) return before;
   // Stages that don't apply to the story so far are passed over.
   const run = settle(def, before.mission);
-  const state = { ...before, mission: run };
-  if (currentStage(def, run)) return tendWounds(state, ctx);
+  if (currentStage(def, run)) return tendWounds({ ...before, mission: run }, ctx);
+  const state = releaseHeld(before, run);
   if (run.journey) return arrive(state, ctx, run.journey);
   if (def.examOnly) return forestCleared(state, ctx);
   const earned = reward(def, state.mission);

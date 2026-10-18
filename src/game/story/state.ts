@@ -18,6 +18,7 @@ export function storyOf(run: MissionRun): StoryState {
     threads: run.threads,
     crew: run.crew,
     remembered: run.remembered ?? [],
+    tallies: run.tallied ?? {},
   };
 }
 

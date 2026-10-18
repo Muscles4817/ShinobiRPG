@@ -49,6 +49,7 @@ function trusted(def: MissionDef, who: Reader, ctx: GameContext): boolean {
     def.examOnly !== true &&
     def.minMissionsCompleted <= standing.missionsCompleted &&
     (def.needsWorldMark === undefined || who.marks.includes(def.needsWorldMark)) &&
+    (def.closedBy === undefined || !who.marks.includes(def.closedBy)) &&
     crewOptions(jobOf(ctx, def), assigneeOf(standing)).length > 0
   );
 }
@@ -84,6 +85,7 @@ function postDay(board: Board, day: number, ctx: GameContext, who: Reader): Boar
     (m) =>
       !m.standing &&
       !inArc(ctx, m) &&
+      !(m.once && board.completed.includes(m.id)) &&
       trusted(m, who, ctx) &&
       !kept.some((p) => p.missionId === m.id),
   );

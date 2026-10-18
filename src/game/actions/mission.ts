@@ -78,6 +78,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
       ...known,
       bondsAtStart: bondsNow(state, crew.memberIds),
       remembered: state.village.marks,
+      tallied: state.village.tallies,
     });
     const taken = { ...pickTaken(state, ctx, def), board: takeJob(state, ctx, def), mission: run };
     const started = adjust(spendTime(taken, def.slots, ctx), {

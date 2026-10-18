@@ -8,6 +8,7 @@ export function ArcCard({ arc }: { readonly arc: ArcView }) {
       <p className="arc-act">{arc.act}</p>
       <p className="story dark">{arc.text}</p>
       {arc.base && <p className="arc-base">{arc.base}</p>}
+      {arc.pass && <p className="arc-base">{arc.pass}</p>}
       <ul>
         {arc.jobs.map((j) => (
           <li

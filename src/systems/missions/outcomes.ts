@@ -13,12 +13,12 @@ export type StoryDef = Pick<MissionDef, 'threads' | 'charge'>;
 
 export interface Applied {
   readonly run: MissionRun;
-  /** Effects for the game layer: bond, harm, energy, and what the village remembers. */
+  /** Effects for the game layer: bond, harm, energy, and what the village remembers or counts. */
   readonly personal: readonly Effect[];
 }
 
 /** Effects for the game layer: on you, the crew, or the village's memory. */
-const PERSONAL: readonly Effect['kind'][] = ['bond', 'harm', 'energy', 'world', 'memory'];
+const PERSONAL: readonly Effect['kind'][] = ['bond', 'harm', 'energy', 'world', 'memory', 'tally'];
 
 /** A thread named in an effect: `charge` is the charge's trust, whatever its thread's id. */
 function threadOf(def: StoryDef, id: string) {
@@ -42,6 +42,7 @@ function applyOne(run: MissionRun, def: StoryDef, effect: Effect): MissionRun {
     case 'energy':
     case 'world':
     case 'memory':
+    case 'tally':
       return run;
   }
 }

@@ -246,6 +246,7 @@ describe('persistence', () => {
       marks: [],
       memories: [],
       clients: {},
+      tallies: {},
     });
   });
 
@@ -551,6 +552,14 @@ describe('persistence', () => {
     expect(loaded.value.companions.tracking).toBeNull();
     const played = act(loaded.value, { type: 'trainCompanion', stat: 'taijutsu' });
     expect(played.companions.owned.player!.stats.strength).toBeGreaterThan(old.stats.strength);
+  });
+
+  it('gives a save from before village tallies nothing counted, and keeps what it remembered', () => {
+    const game = newGame();
+    const { tallies: _t, ...village } = { ...game.village, marks: ['tobi-forgiven'] };
+    const loaded = deserialize(JSON.stringify({ version: 53, state: { ...game, village } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.village).toMatchObject({ tallies: {}, marks: ['tobi-forgiven'] });
   });
 
   it('rejects corrupted data', () => {

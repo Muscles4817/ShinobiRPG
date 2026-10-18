@@ -113,11 +113,13 @@ export {
 } from './checks';
 export {
   ARC_BEATS,
+  actPassed,
   actReached,
   arcBases,
   arcJobOpen,
   arcPlace,
   type ArcAct,
+  type ActPass,
   type ArcBeat,
   type ArcDef,
   type ArcRecommendation,
