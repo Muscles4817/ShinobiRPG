@@ -127,6 +127,16 @@
   font-size: 0.8rem;
   white-space: nowrap;
 }
+/* A choice you can't take: its reason sits under the label, free to wrap. */
+.choice.closed {
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 2px;
+}
+.choice.closed small {
+  white-space: normal;
+}
 .choice.primary {
   background: var(--lantern);
   color: var(--on-lantern);

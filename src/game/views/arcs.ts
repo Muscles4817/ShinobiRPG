@@ -55,7 +55,7 @@ const RULES: Readonly<Record<ActPass, ArcRule | null>> = {
     text: 'Any one of these moves the story on. The rest stay open until you take the next step.',
   },
   one: {
-    stamp: '一',
+    stamp: '岐',
     label: 'One road only',
     text: 'Choose one road. Finishing one closes the others.',
   },

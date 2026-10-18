@@ -34,7 +34,7 @@ function JobList({
               }}
             >
               <span aria-hidden="true">・</span>
-              {j.title}
+              <span className="arc-job-title">{j.title}</span>
             </button>
           ) : (
             <>
@@ -59,10 +59,10 @@ export function ArcCard({ arc, onOpen, postedHere }: ArcCardProps) {
     <section className="arc-card" aria-labelledby={`${arc.id}-title`}>
       <h2 id={`${arc.id}-title`}>{arc.title}</h2>
       <p className="arc-act">{arc.act}</p>
+      {arc.base && <p className="arc-base">{arc.base}</p>}
       <details>
         <summary>The story so far</summary>
         <p className="story dark">{arc.text}</p>
-        {arc.base && <p className="arc-base">{arc.base}</p>}
       </details>
       {arc.rule && (
         <p className="arc-rule" id={ruleId}>

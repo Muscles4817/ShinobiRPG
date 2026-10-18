@@ -89,7 +89,7 @@ three more rule changes:
 A second pass, after that, carried the rules to where the player decides, and gave the
 choices costs:
 
-- **The board says it.** The arc card shows the act's rule as an ink stamp (一 one road only,
+- **The board says it.** The arc card shows the act's rule as an ink stamp (岐 one road only,
   手 any lead will do), its jobs open their notices, and leads of the act before stay listed
   ("Still to look into", done ones struck through) with what closes them. A job's notice says
   what finishing it closes: a fork's other roads, or the leads not followed.

@@ -83,7 +83,7 @@ export function MissionScene({ ctx, state, perform }: ScreenProps) {
           <button
             key={c.label}
             type="button"
-            className={c.primary ? 'choice primary' : 'choice'}
+            className={`choice${c.primary ? ' primary' : ''}${c.closed ? ' closed' : ''}`}
             disabled={c.closed !== undefined}
             onClick={() => {
               perform(c.action);
