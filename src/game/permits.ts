@@ -13,7 +13,8 @@ import { waysOf } from './sensei/generate';
 /**
  * Slips your sensei signs. The library permit opens its open shelves (the standard techniques
  * up to rank C) to a genin: your sensei signs it at a lesson once they trust you (their `permitStage`) and one of
- * your arts has reached grade C. Chūnin need no slip; the restricted stacks stay theirs.
+ * your arts has reached grade C. Chūnin need no slip; the restricted stacks stay theirs. The
+ * sealed archive (rank A and up) is for jōnin.
  */
 
 export const LIBRARY_PERMIT = 'library';
@@ -29,6 +30,11 @@ export const LIBRARY_RANK: Rank = 'chunin';
 export const PERMIT_NEEDED =
   'Genin need a permit from their sensei for the open shelves. Yours signs one once they trust you and one of your arts has reached C.';
 export const LIBRARY_LOCKED = 'The restricted stacks are for chūnin and above.';
+/** The lowest rank of technique kept in the sealed archive… */
+export const SEALED_SHELF_RANK: StatGrade = 'A';
+/** …and the lowest rank that may read it. */
+export const SEALED_RANK: Rank = 'jonin';
+export const SEALED_LOCKED = 'The sealed archive is for jōnin and above.';
 
 export function isChuninOrAbove(state: GameState): boolean {
   return RANKS.indexOf(state.standing.rank) >= RANKS.indexOf(LIBRARY_RANK);
@@ -43,8 +49,16 @@ export function onOpenShelf(def: TechniqueDef): boolean {
   return def.clan === undefined && gradeIndex(def.rank) <= gradeIndex(OPEN_SHELF_RANK);
 }
 
+/** A technique the library keeps in its sealed archive. */
+export function inSealedArchive(def: TechniqueDef): boolean {
+  return gradeIndex(def.rank) >= gradeIndex(SEALED_SHELF_RANK);
+}
+
 /** Why you can't read this library scroll, or null. */
 export function libraryScrollAccess(state: GameState, def: TechniqueDef): string | null {
+  if (inSealedArchive(def)) {
+    return RANKS.indexOf(state.standing.rank) >= RANKS.indexOf(SEALED_RANK) ? null : SEALED_LOCKED;
+  }
   if (isChuninOrAbove(state)) return null;
   if (!onOpenShelf(def)) return LIBRARY_LOCKED;
   return hasLibraryPermit(state) ? null : PERMIT_NEEDED;

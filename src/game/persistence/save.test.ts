@@ -455,6 +455,23 @@ describe('persistence', () => {
     expect(load(null).talentIds).toEqual([]);
   });
 
+  it('gives a ceremony waiting in a save from before promotion routes the route it was earned by', () => {
+    const game = newGame();
+    const waiting = (rank: 'chunin' | 'jonin') =>
+      JSON.stringify({
+        version: 47,
+        state: { ...game, exams: { ...game.exams, ceremony: { rank } } },
+      });
+    const chunin = deserialize(waiting('chunin'));
+    const jonin = deserialize(waiting('jonin'));
+    if (!chunin.ok || !jonin.ok) throw new Error('Did not load.');
+    expect(chunin.value.exams.ceremony).toEqual({ rank: 'chunin', route: 'exam' });
+    expect(jonin.value.exams.ceremony).toEqual({ rank: 'jonin', route: 'nomination' });
+    const none = deserialize(JSON.stringify({ version: 47, state: game }));
+    if (!none.ok) throw new Error(none.error);
+    expect(none.value.exams.ceremony).toBeNull();
+  });
+
   it('gives a save from before the home ladder an unfurnished home where it started', () => {
     const game = newGame();
     const {
@@ -465,7 +482,7 @@ describe('persistence', () => {
       guestId: _g,
       ...housing
     } = game.housing;
-    const loaded = deserialize(JSON.stringify({ version: 47, state: { ...game, housing } }));
+    const loaded = deserialize(JSON.stringify({ version: 48, state: { ...game, housing } }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.housing).toMatchObject({
       homeId: null,

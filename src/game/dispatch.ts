@@ -39,7 +39,7 @@ export function dispatch(
 
   const rng = createRng(state.rngState);
   const performed = handler.perform(state, action, ctx, rng);
-  const graded = notePromotions(noteGradeUps(state, performed, ctx));
+  const graded = notePromotions(noteGradeUps(state, performed, ctx), ctx);
   const gifted = noteHomeGifts(state, noteRival(state, graded, ctx), ctx);
   const next = noteDayEnd(state, gifted, action);
   return ok({ ...next, rngState: rng.state() });

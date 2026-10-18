@@ -17,7 +17,7 @@ import { COMBO_TECHNIQUES } from './comboTechniques';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { SEASONAL_FOODS } from './seasonalFood';
-import { JOB_ENEMIES, TEMPLATE_MISSIONS } from './jobs';
+import { ELITE_ENEMIES, JOB_ENEMIES, TEMPLATE_MISSIONS } from './jobs';
 import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
@@ -133,6 +133,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...ENEMIES,
     ...CHUNIN_ENEMIES,
     ...JOB_ENEMIES,
+    ...ELITE_ENEMIES,
     ...EXAM_ENEMIES,
     KUROBANE,
     LANTERN_KEEPER_FOE,

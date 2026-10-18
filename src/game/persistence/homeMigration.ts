@@ -3,10 +3,10 @@
 type RawState = Record<string, unknown>;
 
 /**
- * v47 → v48: a home that can be furnished and moved up from. An older save lives in the home
+ * v48 → v49: a home that can be furnished and moved up from. An older save lives in the home
  * it started in, owns no furniture, has no garden and nobody staying.
  */
-export function v47ToV48(state: RawState): RawState {
+export function v48ToV49(state: RawState): RawState {
   // An older save, read as it was written: a trust boundary.
   const housing = state.housing as RawState;
   return {

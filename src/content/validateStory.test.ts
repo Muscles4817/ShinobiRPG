@@ -61,4 +61,16 @@ describe('story validation', () => {
     };
     expect(validateContent(pack)).toContain('trait "calm" has nothing to say at "camp"');
   });
+
+  it('wants whoever recommends a genin at an arc’s end to be someone the pack has', () => {
+    const [arc, ...rest] = storyPack.arcs;
+    if (!arc) throw new Error('The story pack has no arc.');
+    const pack = {
+      ...storyPack,
+      arcs: [{ ...arc, recommends: { personId: 'nobody', words: 'Kneel.' } }, ...rest],
+    };
+    expect(validateContent(pack)).toContain(
+      `arc "${arc.id}" is recommended by unknown person "nobody"`,
+    );
+  });
 });

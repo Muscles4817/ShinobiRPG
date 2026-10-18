@@ -157,6 +157,7 @@ function nextAction(state: GameState, today: Today): GameAction {
   const jobDay = state.time.day % plan.missionEveryDays === 0 && !today.jobDone;
   const work: GameAction[] = [
     { type: 'dismissReport' },
+    { type: 'acceptPromotion' },
     ...(plan.withTeachers && !plan.skipsSessions ? [{ type: 'senseiSession' } as const] : []),
     ...(plan.withTeachers && !plan.skipsSessions ? [{ type: 'teamDay' } as const] : []),
     ...teacherSessions(state, today),

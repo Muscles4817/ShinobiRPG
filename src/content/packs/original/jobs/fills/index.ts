@@ -10,6 +10,7 @@ import { D_ROAD } from './dRoad';
 import { D_TOWN } from './dTown';
 import { D_TROUBLE } from './dTrouble';
 import { EXEMPLAR_FILLS } from './exemplars';
+import { JONIN_S_FILLS } from './joninS';
 
 /** Every filled job: a client, a place and foes poured into one of the templates. */
 export const MISSION_FILLS: readonly MissionFill[] = [
@@ -24,4 +25,5 @@ export const MISSION_FILLS: readonly MissionFill[] = [
   ...C_TEAM_FIELD_FILLS,
   ...CHUNIN_B_FILLS,
   ...CHUNIN_A_FILLS,
+  ...JONIN_S_FILLS,
 ];

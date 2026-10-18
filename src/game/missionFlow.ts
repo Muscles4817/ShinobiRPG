@@ -15,6 +15,7 @@ import { workedFor } from './clients';
 import { jobDoneHeading } from './daybook/jobs';
 import { crewDebrief, debriefLines, gradeOf, helpedOf } from './debrief';
 import { forestCleared, forestLost } from './exam/forest';
+import { afterFieldWork } from './exam/routes';
 import { arrive, journeyMission } from './journeys';
 import { chip, log, placeHere } from './ops';
 import { handedOver } from './missionRewards';
@@ -89,7 +90,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
     inventory: gifts.inventory,
     cooking: gifts.cooking,
   };
-  const logged = log(pickDone(next, ctx, def), {
+  const logged = log(afterFieldWork(pickDone(next, ctx, def), ctx, def, state.mission), {
     heading: jobDoneHeading(def.title),
     text: ending ?? `${def.client} thanks you.`,
     tone: 'success',

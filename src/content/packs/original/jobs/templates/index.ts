@@ -1,6 +1,7 @@
 import type { MissionTemplate } from '../../../../missionTemplates';
 import { A_RANK_JOBS } from './chuninA';
 import { B_RANK_JOBS } from './chunin';
+import { S_RANK_JOBS } from './joninS';
 import { C_TEAM_ROAD } from './cTeam';
 import { C_TEAM_FIELD } from './cTeamField';
 import { D_RANK_CHORES } from './dRankChores';
@@ -20,4 +21,5 @@ export const MISSION_TEMPLATES: readonly MissionTemplate[] = [
   ...C_TEAM_FIELD,
   ...B_RANK_JOBS,
   ...A_RANK_JOBS,
+  ...S_RANK_JOBS,
 ];
