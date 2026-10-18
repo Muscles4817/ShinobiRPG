@@ -1,10 +1,4 @@
-import { fillSlots } from '@/core';
-
-import { log } from '../ops';
-import { personSlots } from '../people/pronouns';
-import { beatDue, HEEDED_REGARD } from '../sensei/curriculum';
-import { mentorOf } from '../sensei/plan';
-import { withAttendance } from '../sensei/state';
+import { beatDue, hearBeat } from '../sensei/curriculum';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Hears out what your sensei has to show you today (the curriculum). */
@@ -14,19 +8,6 @@ export const heedSensei: ActionHandler<ActionOf<'heedSensei'>> = {
   },
   perform(state, _action, ctx) {
     const beat = beatDue(state, ctx);
-    const sensei = mentorOf(state, ctx);
-    if (!beat || !sensei) return state;
-    const mentor = withAttendance(
-      { ...state.mentor, beats: [...state.mentor.beats, beat.id], lastBeatDay: state.time.day },
-      HEEDED_REGARD,
-    );
-    return log(
-      { ...state, mentor },
-      {
-        heading: beat.title,
-        text: fillSlots(beat.text, personSlots('sensei', sensei)),
-        tone: 'info',
-      },
-    );
+    return beat ? hearBeat(state, ctx, beat, true) : state;
   },
 };

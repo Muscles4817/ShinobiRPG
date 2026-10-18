@@ -611,9 +611,13 @@ opener: “Whatever happens to me,” Goro says, “I want you to remember somet
   you: “Only if you promise me the same.”
     “Deal,” Goro says, and you both pretend it was a small thing.
 
-coaching by Gōran, met: You did the work on your speed. Gōran takes you out to eat, and won’t hear of you paying. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Assignment done] [A meal on him] [Assignment: Taijutsu]
+coaching by Gōran, met: The first thing Gōran checks is your speed. “That’ll do. That’s the work I wanted,” he says. “Your taijutsu is the best thing you have, but anyone with an illusion walks straight through you. I want more of it by the next lesson.” Afterwards Gōran takes you out to eat, and won’t hear of you paying. [Assignment done] [A meal on him] [Assignment: Taijutsu]
 
-coaching by Gōran, missed: Gōran checks your speed. Not enough. He doesn’t hide it. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Gōran’s regard falls] [Assignment: Taijutsu]
+coaching by Gōran, missed: Gōran checks your speed, and it isn’t where he wanted it. “Not enough, and you know it isn’t,” he says. “Your taijutsu is the best thing you have, but anyone with an illusion walks straight through you. I want more of it by the next lesson.” [Gōran’s regard falls] [Assignment: Taijutsu]
+
+farewell of Gōran: Gōran finds you after the ceremony, when the crowd has thinned, and stands beside you for a while without saying much. “I don’t say this often, so listen. You earned every bit of it.” Then he takes you out to eat one more time, and won’t hear of you paying. At last he leaves you to the people waiting to congratulate you.
+
+farewell of Fusako: Fusako finds you after the ceremony, when the crowd has thinned, and stands beside you for a while without saying much. “I don’t say this often, so listen. You earned every bit of it.” For once she doesn’t hurry off. “Again, from one,” she says one last time, and then she is gone into the crowd.
 
 === crew voices ===
 Asuka, check-passed: Naturally.

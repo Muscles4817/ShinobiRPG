@@ -1,4 +1,5 @@
 import type { ClassRegard } from '@/content';
+import type { NewEntry } from '@/systems/journal';
 import type { ModifierSpec } from '@/systems/modifiers';
 import { CLASS_STANDINGS, type ClassStanding } from '@/systems/profile';
 import type { StatId, Stats } from '@/systems/stats';
@@ -35,6 +36,11 @@ export interface Mentor {
   readonly pickTaken: string | null;
   /** The week you did the job they picked for the team (one a week). */
   readonly pickKept: number | null;
+  /**
+   * What settling the days brought (a missed meeting, today's plan), held only until the action
+   * that passed the night is written, then logged after it (`flushMentorNotices`). Never saved.
+   */
+  readonly notices?: readonly NewEntry[];
 }
 
 /** Where the first meeting stands: the round, and what came of the last one. */

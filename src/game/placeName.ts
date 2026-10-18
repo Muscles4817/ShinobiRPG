@@ -5,3 +5,11 @@
 export function placeInText(name: string): string {
   return name.replace(/^The /, 'the ');
 }
+
+/** A place mid-sentence: its own `inText` form where it has one ("the training ground"). */
+export function placeInSentence(place: {
+  readonly name: string;
+  readonly inText?: string;
+}): string {
+  return place.inText ?? placeInText(place.name);
+}

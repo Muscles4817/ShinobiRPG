@@ -124,7 +124,7 @@ export const RIVAL: SenseiPast = {
         'Around {place} there are marks on trees and stones that only someone who kept score would make.',
       found:
         'A clearing worn flat by years of practice, a tally scratched into every tree around it.',
-      lost: 'The marks run out. {name} finds the clearing anyway: it is where they always fought as children.',
+      lost: 'The marks run out. {name} finds the clearing anyway, because it is where they always fought as children.',
       camp: 'You camp a ridge away. {name} practises the old forms in the dark until late.',
       ending:
         '“Not yet,” {name} says, looking at the clearing. “When I fight {lost}, I want to be ready to lose.”',

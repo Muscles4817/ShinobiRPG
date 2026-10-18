@@ -121,7 +121,7 @@ export const DESERTER: SenseiPast = {
       gate: '{name} turns up at the gate without a headband, then goes back for it.',
       road: 'The road to {place}. {name} knows every inn on it, and which ones still owe {name} money.',
       check:
-        'Near {place} you find the signs of a disciplined camp: latrines dug properly, fires hidden, sentries rotated.',
+        'Near {place} you find the signs of a disciplined camp, its latrines dug properly and its fires hidden, the ground at the sentries’ posts worn by changing feet.',
       found:
         'A camp in a fold of the land, run tighter than most villages. {name} goes pale. “That’s {lost}’s work,” {name} says.',
       lost: 'You find nothing. {name} finds it anyway: “It’s where I’d camp,” {name} says. “It’s where we always camped.”',

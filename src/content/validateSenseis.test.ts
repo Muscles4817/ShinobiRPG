@@ -55,6 +55,22 @@ describe('sensei ways validation', () => {
     );
   });
 
+  it('reports too few sign-offs for a manner, and an empty bank', () => {
+    const speech = ORIGINAL_PACK.senseiSpeech;
+    const pack = {
+      ...ORIGINAL_PACK,
+      senseiSpeech: {
+        ...speech,
+        signOffs: { ...speech.signOffs, warm: speech.signOffs.warm.slice(0, 2) },
+        late: [],
+      },
+    };
+    expect(validateSenseis(pack)).toEqual([
+      'sensei speech needs at least 5 "warm" sign-offs',
+      'sensei speech has no late arrivals',
+    ]);
+  });
+
   it('reports a missing test, an empty round and a curriculum that skips a beat', () => {
     const [bells, ...rest] = ORIGINAL_PACK.senseiTests;
     const pack = {

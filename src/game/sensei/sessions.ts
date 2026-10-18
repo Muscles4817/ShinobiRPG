@@ -1,9 +1,11 @@
-import type { PersonDef, SenseiFeedback, SessionFormat } from '@/content';
+import type { PersonDef, SenseiFeedback, SenseiSpeech, SessionFormat } from '@/content';
 import { fillSlots } from '@/core';
 import type { StatId } from '@/systems/stats';
 
+import type { GameContext } from '../context';
 import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
+import { tellFresh, type Telling } from '../telling';
 import type { Meeting } from './plan';
 import { waysOf } from './generate';
 
@@ -46,24 +48,8 @@ export const FORMAT_LABELS: Readonly<Record<SessionFormat, string>> = {
   review: 'Review',
 };
 
-const FORMAT_LINES: Readonly<Record<SessionFormat, string>> = {
-  drill: '{name} drills you on the basics until they stop being basics.',
-  spar: '{name} spars with you, and makes every opening you leave sting.',
-  'team-drill': '{name} runs the team through formations until you move as one.',
-  field: '{name} takes you out past the walls to read the ground.',
-  theory: '{name} draws it in the dirt with a stick and makes you explain it back.',
-  meditation: '{name} has you sit still until your chakra settles like a pond.',
-  march: '{name} marches you over the hills with a full pack and no complaints allowed.',
-  review: '{name} goes through your last fight with you, blow by blow.',
-};
-
-const FEEDBACK_LINES: Readonly<Record<SenseiFeedback, string>> = {
-  blunt: '“Again. Tomorrow, better.”',
-  warm: '“That was good work. Truly.”',
-  socratic: '“Why did that work? Think about it tonight.”',
-  competitive: '“Not bad. I did it faster at your age.”',
-  cryptic: '“The river doesn’t argue with the stone.”',
-};
+/** Sign-offs remembered: none comes back within this many sessions after it. */
+export const SIGN_OFF_MEMORY = 4;
 
 /** One short session's growth against a full lesson's, for a week of `shortSessions`. */
 export function sessionShare(shortSessions: number): number {
@@ -76,12 +62,50 @@ export function formatStat(format: SessionFormat, sensei: PersonDef): StatId {
   return FORMAT_STAT[format];
 }
 
-/** The session's story, in their manner; a late sensei is late. */
-export function sessionText(sensei: PersonDef, format: SessionFormat): string {
+/** What they say as a session ends: their manner's lines, and what they always say. */
+function signOffs(sensei: PersonDef, speech: SenseiSpeech, feedback: SenseiFeedback) {
+  const catchphrase = sensei.sensei?.voice?.catchphrase;
+  return [...speech.signOffs[feedback], ...(catchphrase ? [`“${catchphrase}”`] : [])];
+}
+
+/**
+ * The session's story, in their manner: a late sensei is late, the session goes one of its
+ * ways, and they send you off with a line you haven't heard from them lately.
+ */
+export function sessionText(
+  state: GameState,
+  ctx: GameContext,
+  sensei: PersonDef,
+  format: SessionFormat,
+): Telling<string> {
+  const speech = ctx.content.senseiSpeech;
   const ways = waysOf(sensei);
-  const late = ways?.cadence.punctuality === 'late' ? `${sensei.name} turns up late. ` : '';
-  const said = ways ? ` ${FEEDBACK_LINES[ways.feedback]}` : '';
-  return `${late}${fillSlots(FORMAT_LINES[format], personSlots('name', sensei))}${said}`;
+  const key = `${state.board.seed}|${state.time.day}`;
+  const late =
+    ways?.cadence.punctuality === 'late'
+      ? tellFresh(state.told, { name: 'sensei-late', lines: speech.late }, key)
+      : null;
+  const session = tellFresh(
+    late?.told ?? state.told,
+    { name: `sensei-session-${format}`, lines: speech.sessions[format] },
+    key,
+  );
+  const said = ways
+    ? tellFresh(
+        session.told,
+        {
+          name: 'sensei-sign-off',
+          lines: signOffs(sensei, speech, ways.feedback),
+          memory: SIGN_OFF_MEMORY,
+        },
+        key,
+      )
+    : null;
+  const text = [late?.line, session.line, said?.line].filter((line) => line !== undefined);
+  return {
+    line: fillSlots(text.join(' '), personSlots('name', sensei)),
+    told: said?.told ?? session.told,
+  };
 }
 
 /** Whether you already came to this short session. */

@@ -93,6 +93,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         id: 'training-grounds',
         kind: 'training',
         name: 'Training Grounds',
+        inText: 'the training ground',
         icon: 'post',
         blurb: 'Posts, rooftops and the lake',
         trainingIds: [

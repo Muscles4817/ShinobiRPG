@@ -6,6 +6,7 @@ import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
 import { CURRICULUM } from '../../shared/sensei/curriculum';
+import { SENSEI_SPEECH } from '../../shared/sensei/speech';
 import { senseiParts } from '../../shared/sensei/parts';
 import { SENSEI_TESTS } from '../../shared/sensei/tests';
 import { FIELD_BOOK_REWARDS } from '../../shared/fieldBook';
@@ -113,6 +114,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   exercises: EXERCISES,
   senseiTests: SENSEI_TESTS,
   curriculum: CURRICULUM,
+  senseiSpeech: SENSEI_SPEECH,
   senseiParts: senseiParts(SENSEI_GROUNDS, SENSEI_NAMES),
   techniques: [
     ...TECHNIQUES,

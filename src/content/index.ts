@@ -110,6 +110,12 @@ export {
 } from './senseiParts';
 export { senseiWaysProblems } from './validateSenseis';
 export { CURRICULUM_BEATS, type CurriculumBeat, type CurriculumBeatId } from './curriculum';
+export type {
+  DefenceWarning,
+  SenseiCoachingSpeech,
+  SenseiFarewellSpeech,
+  SenseiSpeech,
+} from './senseiSpeech';
 export {
   TEST_APPROACHES,
   type SenseiTestDef,
