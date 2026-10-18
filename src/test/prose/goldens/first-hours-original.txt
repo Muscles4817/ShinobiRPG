@@ -186,8 +186,8 @@ view:
 === sensei test ===
 view:
   heading: Show me
-  lines[0]: You hit air, then the ground. You get up. You go again.
-  lines[1]: You are all on the ground. Gōran waits.
+  lines[0]: You hit air and then the ground, and you get up and go at him again.
+  lines[1]: You are all on the ground, and Gōran waits to see who gets up first.
   choices[0]:
     label: Get up first
   choices[1]:
@@ -202,8 +202,8 @@ view:
 === sensei test ===
 view:
   heading: Show me
-  lines[0]: You are up before the others. It hurts. You don’t show it.
-  lines[1]: “Again tomorrow,” Gōran says. “And every day after. You’ll do.”
+  lines[0]: You are up before the others. It hurts, and you don’t let it show.
+  lines[1]: “Again tomorrow,” Gōran says, “and every day after that. You’ll do.”
   lines[2]: “Now. Do you want me to show you how things work here, or do you know?”
   choices[0]:
     label: Show me everything
@@ -321,7 +321,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Drills»: Gōran catches you before you start and walks you along the drills. “A drill builds what it works, and the better you get the less each one gives you. Pick one for what you need and do it till you can’t. Then eat, sleep and do it again.”
+  journal «Drills»: Gōran catches you before you start and walks you along the drills. “A drill builds what it works, and the better you get the less each one gives you. Pick one for what you need and do it till you can’t. Then eat and sleep, and do it again.”
   journal «Kicking Posts»: Hammer the old wrapped posts until your shins stop complaining. [Strength +0.13] [Taijutsu +0.06] [−20 energy]
 
 >>> talk
@@ -430,7 +430,7 @@ view:
     progress: barely started
   lesson:
     title: Sparring
-    text: Gōran stops you on your way out to talk about sparring. “Decide what you’ll do before it starts, close in and far off, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”
+    text: Gōran stops you on your way out to talk about sparring. “Decide what you’ll do up close and far off before it starts, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”
     heed:
 
 === village ===
@@ -450,7 +450,7 @@ view:
     befriend:
 
 >>> heedSensei
-  journal «Sparring»: Gōran stops you on your way out to talk about sparring. “Decide what you’ll do before it starts, close in and far off, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”
+  journal «Sparring»: Gōran stops you on your way out to talk about sparring. “Decide what you’ll do up close and far off before it starts, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”
 
 >>> senseiSession
   journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaining allowed. “That’ll do for today. Go and eat before you fall over.” [Stamina +0.01] [Chakra Reserves +0.02] [Gōran’s regard rises] [−10 energy]
@@ -821,7 +821,7 @@ view:
     progress: barely started
   lesson:
     title: Cooking
-    text: Gōran asks whether you can cook, and doesn’t seem surprised by the answer. “Learn to cook. A good dish carries you through the whole day, sharper and harder to kill. Grocers sell books of recipes, and friends teach theirs.”
+    text: Gōran asks whether you can cook, and doesn’t seem surprised by the answer. “Learn to cook. A good dish keeps you sharper and harder to kill all day long. Grocers sell books of recipes, and friends teach theirs.”
     heed:
 
 === village ===
@@ -837,7 +837,7 @@ view:
   rumours[2]: Yomi-sensei talks to the lanterns. Some say the lanterns answer.
 
 >>> heedSensei
-  journal «Cooking»: Gōran asks whether you can cook, and doesn’t seem surprised by the answer. “Learn to cook. A good dish carries you through the whole day, sharper and harder to kill. Grocers sell books of recipes, and friends teach theirs.”
+  journal «Cooking»: Gōran asks whether you can cook, and doesn’t seem surprised by the answer. “Learn to cook. A good dish keeps you sharper and harder to kill all day long. Grocers sell books of recipes, and friends teach theirs.”
 
 >>> senseiSession
   journal «Sparring with Gōran»: Gōran gives you a bout at half speed and then another at full, and your ribs notice the difference. “Same again tomorrow, and I want it cleaner,” Gōran says, already walking off. [Strength +0.04] [Taijutsu +0.03] [Gōran’s regard rises] [−10 energy]

@@ -20,7 +20,7 @@ export const SENSEI_SPEECH: SenseiSpeech = {
     ],
     'team-drill': [
       '{name} runs the team through formations until the three of you stop getting in each other’s way.',
-      '{name} has the team pass a signal down the line at a run, again and again, until nobody drops it.',
+      '{name} has the team pass a signal down the line at a run until nobody drops it any more.',
       '{name} splits the team and sends you after the other two, then swaps the sides round when you catch them.',
     ],
     field: [

@@ -30,13 +30,13 @@ export const PROSE_BUDGET: {
   },
   style: {
     original: {
-      meanSentence: 8.3,
+      meanSentence: 8.4,
       shortShare: 0.3,
       quipShare: 0.28,
       per1k: {
-        gesture: 2,
+        gesture: 1.8,
         triple: 2.3,
-        colon: 1.1,
+        colon: 0.6,
         vagueSomething: 1.2,
         stockAtmosphere: 0.5,
         notButReversal: 0,
@@ -44,13 +44,13 @@ export const PROSE_BUDGET: {
       },
     },
     naruto: {
-      meanSentence: 7.7,
+      meanSentence: 7.8,
       shortShare: 0.33,
-      quipShare: 0.29,
+      quipShare: 0.28,
       per1k: {
-        gesture: 2.3,
-        triple: 2,
-        colon: 1.1,
+        gesture: 2.1,
+        triple: 1.9,
+        colon: 0.5,
         vagueSomething: 1.1,
         stockAtmosphere: 0.2,
         notButReversal: 0,

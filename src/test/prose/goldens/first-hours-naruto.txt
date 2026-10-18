@@ -91,7 +91,7 @@ view:
     where: At the Training Grounds
     talk:
       blocker: Your team has not been assigned yet.
-    style: A former academy instructor who still teaches like one: patiently, thoroughly, from the very beginning.
+    style: A former academy instructor who still teaches as patiently as ever, from the very beginning.
     nature: Fire
     reasons[0]: Likes that you are diligent
     choose:
@@ -188,7 +188,7 @@ view:
 === sensei test ===
 view:
   heading: Tell me about yourselves
-  lines[0]: Kaname nods slowly. “Strong for what?” You don’t have an answer yet.
+  lines[0]: “Strong for what?” Kaname asks, and you find you don’t have an answer yet.
   lines[1]: “What are you afraid of?”
   choices[0]:
     label: Being left behind
@@ -205,7 +205,7 @@ view:
 view:
   heading: Tell me about yourselves
   lines[0]: Mikoto says “me too” before they can stop themself.
-  lines[1]: “That’ll do,” Kaname says. “Tomorrow, we start.”
+  lines[1]: “That’ll do for today,” Kaname says. “Tomorrow we start properly.”
   lines[2]: “Now. Do you want me to show you how things work here, or do you know?”
   choices[0]:
     label: Show me everything

@@ -29,7 +29,7 @@ export const CURRICULUM: readonly CurriculumBeat[] = [
     before: '{sensei} catches you before you start and walks you along the drills.',
     says: {
       blunt:
-        '“A drill builds what it works, and the better you get the less each one gives you. Pick one for what you need and do it till you can’t. Then eat, sleep and do it again.”',
+        '“A drill builds what it works, and the better you get the less each one gives you. Pick one for what you need and do it till you can’t. Then eat and sleep, and do it again.”',
       warm: '“Each of these builds a different part of you, a little at a time. It gets slower as you improve, and that’s nothing to be discouraged by. Choose what you need most, and rest when you’re spent.”',
       socratic:
         '“Look at what each one works before you choose. What do you need most right now? And why do you think the first weeks feel quicker than the later ones?”',
@@ -46,12 +46,12 @@ export const CURRICULUM: readonly CurriculumBeat[] = [
     before: '{sensei} stops you before you square up.',
     says: {
       blunt:
-        '“Decide what you’ll do before it starts, close in and far off, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”',
+        '“Decide what you’ll do up close and far off before it starts, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”',
       warm: '“Go in with a plan for near and far, and always keep a way of stopping a blow ready. Then let it happen and watch what comes of it. Nobody minds losing here, I promise.”',
       socratic:
         '“What will you do if they rush you? And if they hang back? Decide both before you start, then watch which of your guesses was wrong.”',
       competitive:
-        '“Have a plan for every distance and a guard you trust, then go and test it. I lost my first forty spars. See if you can do better than that.”',
+        '“Have a plan for every distance and a guard you trust before you go and test it. I lost my first forty spars. See if you can do better than that.”',
       cryptic:
         '“The fight is won before it begins, and then it is watched,” {sensei.they} say{sensei.s}. “Know your near and your far, and keep a shield by the door.”',
     },
@@ -130,7 +130,7 @@ export const CURRICULUM: readonly CurriculumBeat[] = [
     before: '{sensei} watches you look over the pans.',
     says: {
       blunt:
-        '“Learn to cook. A good dish carries you through the whole day, sharper and harder to kill. Grocers sell books of recipes, and friends teach theirs.”',
+        '“Learn to cook. A good dish keeps you sharper and harder to kill all day long. Grocers sell books of recipes, and friends teach theirs.”',
       warm: '“I love that you’re trying this. A good meal looks after you all day long. The grocer has recipe books, and people will share theirs once they know you.”',
       socratic:
         '“Why would a shinobi bother to cook well? Try a good dish before a hard day and you’ll have your answer. The grocer sells recipe books, and your friends know dishes you don’t.”',

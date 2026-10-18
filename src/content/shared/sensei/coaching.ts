@@ -112,7 +112,7 @@ export const SENSEI_COACHING: SenseiCoachingSpeech = {
       ],
       warm: [
         '“I’m so proud of you. Come and find me, often, or I’ll come and find you.”',
-        '“Look at you. I knew it in the first week, you know, and I was right.”',
+        '“Look at you. I knew it in the first week and I was right.”',
       ],
       socratic: [
         '“So. What will you teach, now that people will be following you?”',

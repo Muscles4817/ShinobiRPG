@@ -13,7 +13,7 @@ export const GORAN_WAYS: SenseiWays = {
   rituals: [
     {
       kind: 'challenge',
-      line: 'Gōran bets the team none of you can beat him up the shrine stairs. Nobody does.',
+      line: 'Gōran bets the team that none of you can beat him up the shrine stairs, and wins the bet three times over.',
     },
     { kind: 'meal', line: 'Gōran buys grilled fish for the whole team and eats twice as much.' },
   ],
@@ -41,7 +41,7 @@ export const AKARI_WAYS: SenseiWays = {
   rituals: [
     {
       kind: 'challenge',
-      line: 'Akari lines the team up under the gate lantern: whoever holds a flame longest eats free.',
+      line: 'Akari lines the team up under the gate lantern, and whoever holds a flame in their palm longest eats free.',
     },
   ],
   rewards: ['signature', 'praise'],
