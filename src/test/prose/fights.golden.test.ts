@@ -1,14 +1,13 @@
 import { createRng } from '@/core';
 import { combatLog } from '@/game';
-import { createPlanEngine, type CombatSetup } from '@/systems/combat';
+import { createPlanEngine, type CombatSetup, type CombatState } from '@/systems/combat';
 import { against, classmate, foe, freshCharacter } from '@/test/bench/content';
-import { ctx, newGame } from '@/test/gameFixtures';
+import { act, ctx, newGame } from '@/test/gameFixtures';
 
-import { fightThrough } from './playing';
 import { recorder, type Recorder } from './recorder';
 
 /**
- * Fights as they read in their places: a spar with a teammate played through the game, then
+ * Fights as they read in their places: a spar with a teammate as the game sets it up, then
  * fights put straight to the engine on the grounds and occasions a job or a rivalry brings
  * (a rival's spar, beasts in a forest, a swarm, a fight on the water and in the streets), each
  * with the summary its result card shows.
@@ -17,11 +16,12 @@ import { recorder, type Recorder } from './recorder';
 /** Exchanges after which a golden fight is cut off: enough to read, never a hang. */
 const MAX_EXCHANGES = 40;
 
-function engineFight(r: Recorder, title: string, setup: CombatSetup, seed: number): void {
+/** A fight from where it starts, watched round by round to its end, then its summary. */
+function watched(r: Recorder, title: string, start: CombatState, seed: number): void {
   r.say(`\n########## ${title} ##########`);
   const engine = createPlanEngine();
   const rng = createRng(seed);
-  let state = engine.start(setup, rng);
+  let state = start;
   let told = 0;
   const tell = () => {
     const view = engine.view(state);
@@ -44,13 +44,16 @@ function engineFight(r: Recorder, title: string, setup: CombatSetup, seed: numbe
   r.say(`  summary: ${engine.outcome(state)?.summary ?? '(unfinished)'}`);
 }
 
+function engineFight(r: Recorder, title: string, setup: CombatSetup, seed: number): void {
+  watched(r, title, createPlanEngine().start(setup, createRng(seed)), seed);
+}
+
 it('reads fights in their places', async () => {
   const r = recorder(ctx);
   const game = newGame();
   const teammateId = game.people.team?.teammateIds[0] ?? '';
-  r.say('########## a spar with a teammate ##########');
-  const sparred = r.play(game, { type: 'spar', personId: teammateId });
-  fightThrough(r, ctx, sparred);
+  const sparred = act(game, { type: 'spar', personId: teammateId });
+  if (sparred.combat) watched(r, 'a spar with a teammate', sparred.combat, 2);
 
   const genin = freshCharacter('taijutsu');
   const rivalId = genin.rival?.personId ?? teammateId;

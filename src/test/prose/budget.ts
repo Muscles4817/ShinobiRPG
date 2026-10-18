@@ -19,15 +19,14 @@ export const PROSE_BUDGET: {
   readonly slips: Readonly<Record<Slip, number>>;
   readonly style: Readonly<Record<'original' | 'naruto', StyleBudget>>;
 } = {
-  // The first-hours goldens run eight days (two weekly lessons), so their counts cover more. The
-  // fights golden brings four, three of them the transcript's own scene headers.
+  // The first-hours goldens run eight days (two weekly lessons), so their counts cover more.
   slips: {
     unfilledSlot: 0,
     oneAsPlural: 0,
     zeroChip: 0,
     fractionChip: 0,
     straightQuote: 0,
-    repeatedLine: 62,
+    repeatedLine: 58,
   },
   style: {
     original: {
