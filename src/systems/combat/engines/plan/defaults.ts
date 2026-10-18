@@ -1,6 +1,6 @@
 import { canClimb, LADDER_TOP, type Verb } from '@/systems/techniques';
 
-import type { CombatTechnique, RangeBand } from '../../contract';
+import type { CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
 import { hasPerk } from '../../rules/body';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
@@ -117,8 +117,15 @@ function holdSlot(pool: readonly Card[], facing: Facing): Hold {
  * to hide, a Search (a plan with neither can't touch an illusionist at all).
  */
 function finding(senses: readonly Card[], search: readonly Card[], facing: Facing): Slot[] {
-  const by = senses.length > 0 ? senses : facing.foeHides ? search.slice(0, 1) : [];
+  const by = senses.length > 0 ? senses : facing.foeHides ? search : [];
   return by.map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' }));
+}
+
+/** A carried tool with this effect, while any are left. */
+function tools(pool: readonly Card[], effect: CombatItemEffect): Card[] {
+  return pool
+    .filter((c) => c.kind === 'item' && c.item.effect === effect && c.item.count > 0)
+    .slice(0, 1);
 }
 
 /** The strongest trump that does something to a foe: kept for the last ditch, unless outmatched. */
@@ -143,10 +150,12 @@ function fitted(ordered: readonly Slot[], attack: Slot | undefined, limit: numbe
 
 /**
  * A sensible starting plan, in priority order: a heal for when you're badly hurt, a trump for
- * the last ditch (or first, against a far stronger foe), a sense or Search for when a foe hides,
+ * the last ditch (or first, against a far stronger foe), tools that restore or clear the head
+ * (they wait until needed), a sense, flash or Search for when a foe hides,
  * a summon to call, a field to set the ground (it plays only while none of yours is up), an empower or clones and
- * a trap where you can attack (the plan passes over them while they hold), your best attack, a
- * hold (see `holdSlot`), then more attacks and a conceal, as many as your slots hold, always
+ * a trap where you can attack (the plan passes over them while they hold), your best attack, an
+ * explosive tag, a hold (see `holdSlot`), then more attacks, a conceal and smoke, as many as
+ * your slots hold, always
  * keeping the best attack (see `fitted`). Defences and footwork aren't slotted
  * (`readiness.ts`, `stepping.ts`). Attacks your kit can't make from a distance (an archer up
  * close) are left out.
@@ -167,9 +176,13 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
   const ready = chain.length > 0 ? chain : strongest(pool, readies).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const hold = holdSlot(pool, facing);
-  const search = pool.filter((c) => c.kind === 'search');
+  // A flash tag finds a hidden foe surely, so it comes before a Search that may miss.
+  const search = [...tools(pool, 'flash'), ...pool.filter((c) => c.kind === 'search')].slice(0, 1);
   const ordered: Slot[] = [
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
+    // Tools play only when they help (`pouch.ts`): a salve or pill when running low, a charm
+    // when confused, so slotting them costs nothing while they wait.
+    ...plain([...tools(pool, 'heal'), ...tools(pool, 'clarity'), ...tools(pool, 'chakra')]),
     ...(reaches ? trumpSlot(trumps, facing) : []),
     ...finding(best('sense'), search, facing),
     // A summon is called first: it fights beside you from the next exchange (`summons.ts`).
@@ -179,8 +192,10 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     // Readying (an empower, clones) is worth it anywhere: before a charge most of all.
     ...plain([...ready, ...(reaches ? best('trap') : [])]),
     ...plain(damage.slice(0, 1)),
+    // An explosive tag is a fixed blast: a strong attack beside a genin's jutsu, spent once.
+    ...plain(reaches ? tools(pool, 'blast') : []),
     ...hold.late,
-    ...plain([...damage.slice(1), ...best('conceal')]),
+    ...plain([...damage.slice(1), ...best('conceal'), ...tools(pool, 'smoke')]),
   ];
   const unlocked = damage.find((c) => c.kind === 'jutsu' && !c.technique.needsOpen);
   return fitted(ordered, plain(unlocked ? [unlocked] : damage.slice(0, 1))[0], slotLimit(fighter));
