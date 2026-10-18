@@ -223,7 +223,7 @@ export function dazeLine(moment: Moment, target: Told): string {
 }
 
 const REELING = bank('reeling', [
-  '{a} {a.is} dazed and lose{a.s} the exchange.',
+  '{a} stand{a.s} blinking while the exchange goes by without {a.them}.',
   '{a} shake{a.s} {a.their} head, still reeling.',
   '{a} can’t find {a.their} feet yet.',
 ]);
