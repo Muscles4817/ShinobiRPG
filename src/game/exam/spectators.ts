@@ -94,7 +94,7 @@ export function examWord(state: GameState, ctx: GameContext): ExamWord | null {
   const line = friend ? coming.exam.spectators.hearsay : coming.exam.spectators.invitation;
   return {
     speaker: speaker.name,
-    text: fillNames(line, { you: state.character.name, them: speaker.name }),
+    text: fillNames(line, { you: state.character.name, them: speaker }),
   };
 }
 

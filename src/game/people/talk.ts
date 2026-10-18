@@ -1,10 +1,11 @@
-import type { Rng } from '@/core';
+import { fillSlots, type Rng } from '@/core';
 import type { ConversationDef, ConversationTopic, PersonDef, TopicKind } from '@/content';
 import { stageOf } from '@/systems/bonds';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import { bondOf } from './cast';
+import { personSlots } from './pronouns';
 
 /**
  * Choosing what someone says. Their own lines come first, then small talk they haven't
@@ -64,16 +65,17 @@ export function topicFor(
   return null;
 }
 
-const SLOT = /\{([a-zA-Z0-9-]+)\}/g;
-
-/** Replaces `{you}`, `{them}` and any topic slot in an authored line. */
+/**
+ * Replaces `{you}`, `{them}` (and its pronoun forms) and any topic slot in an authored line.
+ * Twice, because a topic's words may themselves speak of the person (`{them.their}`).
+ */
 export function fillLine(text: string, values: Readonly<Record<string, string>>): string {
-  return text.replace(SLOT, (whole, name: string) => values[name] ?? whole);
+  return fillSlots(fillSlots(text, values), values);
 }
 
-/** Replaces `{you}` and `{them}` in authored lines. */
-export function fillNames(text: string, names: { you: string; them: string }): string {
-  return fillLine(text, names);
+/** Replaces `{you}`, and `{them}` with its pronoun forms, in authored lines. */
+export function fillNames(text: string, names: { you: string; them: PersonDef }): string {
+  return fillSlots(text, { you: names.you, ...personSlots('them', names.them) });
 }
 
 /** Everything a conversation's lines may name, for this person. */
@@ -84,5 +86,5 @@ export function conversationValues(
   def: ConversationDef,
 ): Readonly<Record<string, string>> {
   const topic = def.about ? topicFor(ctx, person, def.about) : null;
-  return { ...topic?.values, you: state.character.name, them: person.name };
+  return { ...topic?.values, you: state.character.name, ...personSlots('them', person) };
 }

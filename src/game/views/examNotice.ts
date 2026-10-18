@@ -90,8 +90,7 @@ function senseiWords(state: GameState, ctx: GameContext, announcement: string) {
   const sensei = senseiOf(state, ctx);
   if (!sensei) return null;
   const blocker = nominationBlocker(state, ctx);
-  const words =
-    blocker ?? fillNames(announcement, { you: state.character.name, them: sensei.name });
+  const words = blocker ?? fillNames(announcement, { you: state.character.name, them: sensei });
   return { name: sensei.name, words, nominated: blocker === null };
 }
 

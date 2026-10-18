@@ -8,6 +8,7 @@ export const SHUKUBA_PEOPLE: readonly PersonDef[] = [
     id: 'sota',
     name: 'Sōta',
     familyName: 'Hikyaku',
+    pronouns: 'he',
     homeLocationId: 'shukuba-town',
     role: 'villager',
     title: 'Highway courier',

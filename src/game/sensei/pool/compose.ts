@@ -13,6 +13,7 @@ import { createRng, hashString } from '@/core';
 import { STAT_INFO } from '@/systems/stats';
 import type { ArcDef, MissionDef } from '@/systems/missions';
 
+import { personSlots, pronounsOf } from '../../people/pronouns';
 import { waysFor } from '../generate';
 import { frameFor, freshName, type Frame } from './frame';
 import { arcFor, beatsFor, fill, foeFor, foeName, type Slots, type StoryIds } from './story';
@@ -38,14 +39,23 @@ export function poolId(past: SenseiPast, temperament: SenseiTemperament): string
   return `pool-${past.id}-${temperament.id}`;
 }
 
+/**
+ * A past's slots: the sensei (`{name}`), the one they lost (`{lost}`) and their foe (`{foe}`)
+ * with every pronoun form (`personSlots`), their art, keepsake and place.
+ */
 function slotsFor(
-  frame: Frame,
+  frame: Frame & { readonly id: string },
   extra: { lost: string; foe: string; keepsake: string; place: string },
 ): Slots {
+  const person = (key: string, name: string) =>
+    personSlots(key, { id: `${frame.id}-${key}`, name });
   return {
-    name: frame.name,
+    ...personSlots('name', { id: frame.id, name: frame.name }),
+    ...person('lost', extra.lost),
+    ...person('foe', extra.foe),
     art: STAT_INFO[frame.specialty].label.toLowerCase(),
-    ...extra,
+    keepsake: extra.keepsake,
+    place: extra.place,
   };
 }
 
@@ -90,12 +100,15 @@ export function composeSensei(pack: ContentPack, parts: Parts): Composed | null 
   const lost = freshName(pack, rng, [frame.name]);
   const given = past.foe.isLost ? lost : freshName(pack, rng, [frame.name, lost]);
   const enemyName = foeName(past.foe, given);
-  const slots = slotsFor(frame, {
-    lost,
-    foe: past.foe.nameless ? past.foe.epithet : given,
-    keepsake: fill(rng.pick(past.keepsakes), { lost }),
-    place: ground.place,
-  });
+  const slots = slotsFor(
+    { ...frame, id },
+    {
+      lost,
+      foe: past.foe.nameless ? past.foe.epithet : given,
+      keepsake: fill(rng.pick(past.keepsakes), { lost }),
+      place: ground.place,
+    },
+  );
   const ids: StoryIds = {
     personId: id,
     opens: `${id}-opens`,
@@ -144,6 +157,7 @@ function personFor(input: { id: string; frame: Frame; parts: Parts; slots: Slots
     id,
     name: frame.name,
     familyName: frame.familyName,
+    pronouns: pronounsOf({ id }),
     role: 'sensei',
     rank: 'jonin',
     stats: frame.stats,

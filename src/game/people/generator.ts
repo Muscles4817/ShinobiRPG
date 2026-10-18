@@ -6,6 +6,7 @@ import { TIME_SLOTS, type TimeSlot } from '@/systems/time';
 import type { GameContext } from '../context';
 import { graduate } from './graduates';
 import { randomAppearance } from './looks';
+import { rolledPronouns } from './pronouns';
 
 /**
  * The genin generator: classmates built from the pack's name pools, its traits and the
@@ -85,6 +86,7 @@ function generateOne(ctx: GameContext, rng: Rng, who: Identity): PersonDef {
     id: who.id,
     name: who.name,
     familyName: clan?.name ?? who.familyName,
+    pronouns: rolledPronouns(`${who.seed}|${who.id}`),
     ...(clan ? { clanId: clan.id } : {}),
     role: 'genin',
     title: 'Genin',

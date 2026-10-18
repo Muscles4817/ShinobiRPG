@@ -1,5 +1,5 @@
 import type { ContentPack, ConversationDef, EnemyDef, SenseiPast, SenseiPastFoe } from '@/content';
-import type { Rng } from '@/core';
+import { fillSlots, type Rng } from '@/core';
 import type { ArcDef, MissionDef, MissionStage } from '@/systems/missions';
 import type { Discipline } from '@/systems/techniques';
 
@@ -33,11 +33,9 @@ const FOE_RANKS = ['D', 'C'];
 /** What a sensei's lines are filled with. */
 export type Slots = Readonly<Record<string, string>>;
 
-const SLOT = /\{([a-zA-Z0-9-]+)\}/g;
-
 /** Fills a part's slots; `{you}` and `{them}` stay for conversations to fill. */
 export function fill(text: string, slots: Slots): string {
-  return text.replace(SLOT, (whole, name: string) => slots[name] ?? whole);
+  return fillSlots(text, slots);
 }
 
 export interface StoryIds {

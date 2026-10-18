@@ -8,6 +8,7 @@ export const KIRI_FORD_PEOPLE: readonly PersonDef[] = [
     id: 'tobei',
     name: 'Tobei',
     familyName: 'Sawa',
+    pronouns: 'he',
     homeLocationId: 'kiri-ford',
     role: 'villager',
     title: 'Ferry pilot',
