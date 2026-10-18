@@ -1,3 +1,4 @@
+import { listed, capitalise } from '@/core';
 import type { GameContext } from '../context';
 import type { CreationDraft } from '../creation';
 
@@ -19,9 +20,7 @@ export interface QuirkCard {
 export function traitNames(ids: readonly string[], ctx: GameContext): string | null {
   const names = ids.flatMap((id) => ctx.content.traits.get(id)?.name.toLowerCase() ?? []);
   if (names.length === 0) return null;
-  const last = names.at(-1) ?? '';
-  const joined = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${last}` : last;
-  return joined.charAt(0).toUpperCase() + joined.slice(1);
+  return capitalise(listed(names));
 }
 
 export function quirkCards(draft: CreationDraft, ctx: GameContext): QuirkCard[] {

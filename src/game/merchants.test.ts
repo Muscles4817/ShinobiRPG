@@ -27,7 +27,7 @@ describe('travelling merchants', () => {
     const names = (day: number) => marketView(onDay(day), ctx)?.stalls.map((s) => s.name) ?? [];
     expect(names(3)).toContain('The Shiomachi Fish Cart');
     expect(names(4)).not.toContain('The Shiomachi Fish Cart');
-    expect(marketView(onDay(1), ctx)?.coming[0]).toBe('The Shiomachi Fish Cart comes in 2 days.');
+    expect(marketView(onDay(1), ctx)?.coming[0]).toBe('The Shiomachi Fish Cart comes in two days.');
     const cart = marketView(onDay(3), ctx)?.stalls.find(
       (s) => s.name === 'The Shiomachi Fish Cart',
     );

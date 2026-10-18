@@ -1,4 +1,5 @@
 import type { PersonDef, RitualKind } from '@/content';
+import { pronounForms } from '@/core';
 import { addPoints } from '@/systems/bonds';
 import type { JournalChip } from '@/systems/journal';
 import type { StatDelta } from '@/systems/stats';
@@ -8,6 +9,7 @@ import { growCharacter } from '../growth';
 import { adjust, chip } from '../ops';
 import { bondOf, findPerson } from '../people/cast';
 import { personStats } from '../people/progress';
+import { pronounsOf } from '../people/pronouns';
 import { sessionGains } from '../people/regimen';
 import { teachingFactor } from '../people/teachingFactor';
 import { warmed } from '../people/warmth';
@@ -65,7 +67,7 @@ function kindEffect(
     case 'meal':
       return {
         state: adjust(state, { satiety: SENSEI_MEAL_SATIETY }),
-        chips: [chip('Fed, on them', 'gain')],
+        chips: [chip(`Fed, on ${pronounForms(pronounsOf(sensei)).them}`, 'gain')],
       };
     case 'challenge':
       return grown(state, ctx, sensei, sessionGains(sensei.sensei?.specialty ?? 'taijutsu'));

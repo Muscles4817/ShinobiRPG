@@ -52,7 +52,8 @@ export const CLAN_TALK: readonly ConversationDef[] = [
     id: 'talk-clan-3-burden',
     minStage: 3,
     about: 'clan',
-    opener: 'Someone mentions {clan}, and {them} goes quiet. Later, they tell you why. {burden}',
+    opener:
+      'Someone mentions {clan}, and {them} goes quiet. Later, {them.they} tell{them.s} you why. {burden}',
     choices: [
       {
         label: '“You’re more than your name.”',
@@ -65,7 +66,7 @@ export const CLAN_TALK: readonly ConversationDef[] = [
         reply: '{them} hesitates a long time. “I don’t know. Nobody ever asked.”',
       },
       {
-        label: 'Walk beside them in silence.',
+        label: 'Walk beside {them.them} in silence.',
         tone: 'quiet',
         reply: 'By the end of the street, {them} is breathing easier.',
       },
@@ -81,7 +82,8 @@ export const CLAN_TALK: readonly ConversationDef[] = [
       {
         label: '“Then don’t do it.”',
         tone: 'challenge',
-        reply: '“It’s not that easy.” But {them} sounds like they’re thinking about it.',
+        reply:
+          "“It’s not that easy.” But {them} sounds like {them.they}{them.'s} thinking about it.",
       },
       {
         label: '“What would happen if you refused?”',

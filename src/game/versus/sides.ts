@@ -1,4 +1,4 @@
-import { err, ok, type Result } from '@/core';
+import { err, listed, ok, type Result } from '@/core';
 import type { CombatantSetup } from '@/systems/combat';
 
 import { enemyCombatant, enemyParty, PLAYER_COMBATANT_ID } from '../combatants';
@@ -29,9 +29,7 @@ export function nameOf(contender: Contender): string {
 
 /** "A", "A and B", "A, B and C". */
 export function namesOf(contenders: readonly Contender[]): string {
-  const names = contenders.map(nameOf);
-  const last = names.pop() ?? '';
-  return names.length === 0 ? last : `${names.join(', ')} and ${last}`;
+  return listed(contenders.map(nameOf));
 }
 
 /** A fighter as written: people with their arsenal (a sensei with their signatures too). */

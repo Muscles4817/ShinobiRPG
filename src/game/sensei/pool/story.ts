@@ -136,7 +136,7 @@ function findStages(past: SenseiPast, input: ArcInput): MissionStage[] {
           onSuccess: { ...found, ledger: s(t.found) },
         },
         {
-          label: 'Think where they would be',
+          label: s('Think where {foe.they} would be'),
           stat: 'intellect',
           difficulty: FIND_DIFFICULTY,
           onSuccess: { ...found, ledger: s(t.found) },

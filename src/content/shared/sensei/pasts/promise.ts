@@ -72,7 +72,7 @@ export const BROKEN_PROMISE: SenseiPast = {
         '“{lost} died in my arms,” {them} says. “The last thing {lost} asked was that I look after Hana. I said yes. A year later, men from the river took her from the village orchard. I was on a mission. I am always on a mission.”',
       choices: [
         {
-          label: 'Tell {them} it wasn’t their fault',
+          label: 'Tell {them} it wasn’t {them.their} fault',
           tone: 'kind',
           reply: '“It was my promise,” {them} says. “Promises don’t care whose fault it is.”',
         },
@@ -140,7 +140,7 @@ export const BROKEN_PROMISE: SenseiPast = {
       question:
         '“When this is done,” {name} says outside the boathouse, “{foe} will be on the ground in front of me. Tell me what to do, because I don’t trust myself.”',
       mercy: {
-        label: '“Bring {foe} home in chains. Let them answer for every child.”',
+        label: '“Bring {foe} home in chains. Let {foe.them} answer for every child.”',
         reply: '“Every child,” {name} says. “Yes.”',
       },
       leave: {

@@ -1,4 +1,5 @@
 import type { GearDef, PersonDef, SenseiFeedback, SenseiReward } from '@/content';
+import { pronounForms } from '@/core';
 import { addPoints } from '@/systems/bonds';
 import { learnRecipes, knowsRecipe } from '@/systems/cooking';
 import { addGear, owns } from '@/systems/inventory';
@@ -7,6 +8,7 @@ import type { JournalChip } from '@/systems/journal';
 import type { GameContext } from '../context';
 import { adjust } from '../ops';
 import { bondOf } from '../people/cast';
+import { pronounsOf } from '../people/pronouns';
 import { teachSignature } from '../people/signatures';
 import { teachingOf } from '../people/teachers';
 import { warmed } from '../people/warmth';
@@ -95,9 +97,10 @@ function recipe(state: GameState, ctx: GameContext, sensei: PersonDef): Given | 
   const id = sensei.favouriteRecipeId;
   const dish = id ? ctx.content.recipes.get(id) : undefined;
   if (!dish || knowsRecipe(state.cooking, dish.id)) return null;
+  const forms = pronounForms(pronounsOf(sensei));
   return {
     state: { ...state, cooking: learnRecipes(state.cooking, [dish.id]) },
-    line: `${sensei.name} teaches you how they make ${dish.name}. It is a kind of trust.`,
+    line: `${sensei.name} teaches you how ${forms.they} make${forms.s} ${dish.name}. It is a kind of trust.`,
     chip: { label: `Recipe: ${dish.name}`, tone: 'gain' },
   };
 }
@@ -106,7 +109,7 @@ function meal(state: GameState, _ctx: GameContext, sensei: PersonDef): Given {
   return {
     state: adjust(state, { satiety: SENSEI_MEAL_SATIETY }),
     line: `${sensei.name} takes you out to eat, and won’t hear of you paying.`,
-    chip: { label: 'A meal on them', tone: 'gain' },
+    chip: { label: `A meal on ${pronounForms(pronounsOf(sensei)).them}`, tone: 'gain' },
   };
 }
 

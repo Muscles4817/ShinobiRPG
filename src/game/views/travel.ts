@@ -1,3 +1,4 @@
+import { counted, listed, numberWord } from '@/core';
 import type { BackdropId, LocationDef } from '@/content';
 import type { Danger } from '@/systems/missions';
 import type { Journey } from '@/systems/travel';
@@ -62,7 +63,7 @@ function warningsFor(
       ? [
           food === 0
             ? 'Nothing in your pack that keeps on the road. The grocer sells rations.'
-            : `Your pack holds food for ${food} of the ${journey.days} days.`,
+            : `Your pack holds food for ${numberWord(food)} of the ${counted(journey.days, 'day')}.`,
         ]
       : []),
     ...(destination.places.some(
@@ -76,7 +77,7 @@ function warningsFor(
 }
 
 function daysWord(days: number): string {
-  return days === 1 ? 'a day' : `${days} days`;
+  return counted(days, 'day');
 }
 
 /**
@@ -162,7 +163,7 @@ function destinationsFrom(
       days: journey?.days ?? 0,
       cost: journey?.cost ?? 0,
       danger: DANGER_WORDS[journey?.danger ?? 'petty'],
-      via: via.length > 0 ? `By way of ${via.join(' and ')}` : null,
+      via: via.length > 0 ? `By way of ${listed(via)}` : null,
       lockedReason: l.lockedReason ?? null,
       quick: choice(state, ctx, { type: 'travel', locationId: l.id, quick: true, ...asking }),
       warnings: open && !here ? warningsFor(state, ctx, l, open) : [],

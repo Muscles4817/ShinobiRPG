@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import type { CompanionKindDef, KindTechnique } from '@/content';
 import { stageForPair, stageOf } from '@/systems/bonds';
 import type { Companion } from '@/systems/companions';
@@ -66,7 +67,7 @@ export function companionArts(
 export function roleLine(companion: Companion, kind: CompanionKindDef): string | null {
   const roles = (kind.roles ?? []).map((r) => ROLE_WORDS[r] ?? r);
   if (roles.length === 0) return null;
-  const what = roles.join(' and ');
+  const what = listed(roles);
   return stageOf(companion.bond) >= ROLE_STAGE
     ? `On a job with a crew it takes ${what} for you when its nose is the best.`
     : `Once you are ${stageForPair(ROLE_STAGE)}, it will take ${what} for you on a job.`;

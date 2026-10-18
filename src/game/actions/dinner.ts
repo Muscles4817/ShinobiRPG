@@ -1,3 +1,4 @@
+import { fillSlots } from '@/core';
 import { recordMeeting, stageName, stageOf, talkedToday } from '@/systems/bonds';
 import { TIME_SLOTS } from '@/systems/time';
 
@@ -9,6 +10,7 @@ import { bondOf, findPerson, whereNow } from '../people/cast';
 import type { GameState } from '../state';
 import { cookedAsUsual } from '../stove';
 import { festivalBondBonus } from '../village';
+import { personSlots } from '../people/pronouns';
 import { warmed } from '../people/warmth';
 import { homeBlocker } from './daily';
 import { cookMeal, missingFor, recipeBlocker } from './kitchen';
@@ -84,7 +86,10 @@ export const hostDinner: ActionHandler<ActionOf<'hostDinner'>> = {
     return log(hosted, {
       heading: `Dinner with ${guest.name}`,
       text: favourite
-        ? `${guest.name} lights up at the first smell of ${recipe.name}. It’s their favourite. You talk until the lanterns burn low.`
+        ? fillSlots(
+            '{guest} lights up at the first smell of {dish}. It’s {guest.their} favourite. You talk until the lanterns burn low.',
+            { ...personSlots('guest', guest), dish: recipe.name },
+          )
         : `${guest.name} comes round for ${recipe.name}. You talk until the lanterns burn low.`,
       tone: 'success',
       chips: [

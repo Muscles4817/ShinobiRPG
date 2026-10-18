@@ -1,9 +1,11 @@
 import type { PersonDef, SenseiGrip } from '@/content';
+import { fillSlots } from '@/core';
 import { write, type NewEntry } from '@/systems/journal';
 import { slotName, TIME_SLOTS, weekOf } from '@/systems/time';
 
 import type { GameContext } from '../context';
 import { laidUp } from '../injuries';
+import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
 import { meetingOn, mentorOf, teamDayOf, teamKey, type Meeting } from './plan';
 import { withAttendance, withRegard, type MeetingOutcome, type Mentor } from './state';
@@ -77,7 +79,7 @@ function settleDay(state: GameState, ctx: GameContext, sensei: PersonDef, day: n
   const settled = { ...state, mentor };
   if (outcome !== 'missed') return settled;
   return logLine(settled, {
-    text: MISSED_LINES[grip].replace('{name}', sensei.name),
+    text: fillSlots(MISSED_LINES[grip], personSlots('name', sensei)),
     tone: 'warning',
     chips: [{ label: `${sensei.name}’s regard falls`, tone: 'cost' }],
   });
@@ -101,7 +103,7 @@ function settleTeamDay(state: GameState, ctx: GameContext, sensei: PersonDef, da
   return logLine(
     { ...state, mentor },
     {
-      text: TEAM_MISSED.replace('{name}', sensei.name),
+      text: fillSlots(TEAM_MISSED, personSlots('name', sensei)),
       tone: 'warning',
       chips: [{ label: `${sensei.name}’s regard falls`, tone: 'cost' }],
     },

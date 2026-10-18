@@ -51,7 +51,7 @@ describe('opening hours', () => {
 describe('festivals', () => {
   it('are announced a week ahead', () => {
     const banner = villageView(at(newGame(), 1), ctx).festival;
-    expect(banner).toMatchObject({ name: 'Kite Day', when: 'In 6 days', today: false });
+    expect(banner).toMatchObject({ name: 'Kite Day', when: 'In six days', today: false });
     expect(villageView(at(newGame(), 20), ctx).festival).toBeNull();
   });
 

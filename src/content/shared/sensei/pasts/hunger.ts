@@ -62,7 +62,7 @@ export const HUNGRY_YEAR: SenseiPast = {
         {
           label: 'Ask if {them} was caught',
           tone: 'earnest',
-          reply: '{them} shakes their head slowly. “Not me,” {them} says.',
+          reply: '{them} shakes {them.their} head slowly. “Not me,” {them} says.',
         },
       ],
     },
@@ -146,7 +146,7 @@ export const HUNGRY_YEAR: SenseiPast = {
       },
       finish: {
         label: '“For {lost}.”',
-        reply: '{name} closes their eyes. “For {lost},” {name} says, very quietly.',
+        reply: '{name} closes {name.their} eyes. “For {lost},” {name} says, very quietly.',
       },
       appears:
         '{foe} is at the storehouse door, older, bigger, as quiet as ever. {foe} looks at {name} and something moves behind the eyes. “The other one,” {foe} says. “I remember.”',

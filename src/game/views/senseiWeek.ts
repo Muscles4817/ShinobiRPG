@@ -1,8 +1,10 @@
 import type { PersonDef, RitualKind } from '@/content';
+import { fillSlots } from '@/core';
 import { STAT_INFO } from '@/systems/stats';
 import { calendarDay, DAYS_PER_WEEK, TIME_SLOTS, weekOf } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { personSlots } from '../people/pronouns';
 import { beatDue } from '../sensei/curriculum';
 import {
   meetingsPerWeek,
@@ -107,12 +109,16 @@ function todayLine(state: GameState, sensei: PersonDef, meeting: Meeting | undef
     : `${what} now, at the training ground.`;
 }
 
-function lessonToday(state: GameState, ctx: GameContext, name: string): SenseiWeekView['lesson'] {
+function lessonToday(
+  state: GameState,
+  ctx: GameContext,
+  sensei: PersonDef,
+): SenseiWeekView['lesson'] {
   const beat = beatDue(state, ctx);
   if (!beat) return null;
   return {
     title: beat.title,
-    text: beat.text.replaceAll('{sensei}', name),
+    text: fillSlots(beat.text, personSlots('sensei', sensei)),
     heed: choice(state, ctx, { type: 'heedSensei' }),
   };
 }
@@ -150,7 +156,7 @@ export function senseiWeekView(state: GameState, ctx: GameContext): SenseiWeekVi
     todayLine: todayLine(state, sensei, today),
     session: today?.kind === 'session' ? choice(state, ctx, { type: 'senseiSession' }) : null,
     assignment: assignmentLine(state),
-    lesson: lessonToday(state, ctx, sensei.name),
+    lesson: lessonToday(state, ctx, sensei),
     teamDay:
       team?.day === state.time.day && state.mentor.outcomes[teamKey(team.day)] !== 'kept'
         ? {

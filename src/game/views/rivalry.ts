@@ -1,4 +1,5 @@
 import type { PersonDef } from '@/content';
+import { fillSlots } from '@/core';
 import {
   fightingPower,
   STAT_GRADES,
@@ -13,9 +14,10 @@ import { DISCIPLINES } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import { personStats } from '../people/progress';
+import { personSlots } from '../people/pronouns';
 import { PURSE } from '../rival/contest';
 import { trailsYou } from '../rival/drive';
-import { SHAPE_NAME, WHO_THEY_ARE } from '../rival/lines';
+import { rivalLine, SHAPE_NAME, WHO_THEY_ARE } from '../rival/lines';
 import { courseEdge } from '../rival/race';
 import {
   firstsScore,
@@ -85,10 +87,16 @@ function sideStats(yours: Stats, theirs: Stats): StatId[] {
 
 function edgeWord(lead: number, even: number): string {
   if (lead > even) return 'Your ground';
-  return lead < -even ? 'Their ground' : 'Even ground';
+  return lead < -even ? '{name.their} ground' : 'Even ground';
 }
 
-function offers(state: GameState, ctx: GameContext, theirs: Stats): ContestOffer[] {
+function offers(
+  state: GameState,
+  ctx: GameContext,
+  person: PersonDef,
+  theirs: Stats,
+): ContestOffer[] {
+  const fill = (text: string) => rivalLine(text, person);
   const yours = state.character.stats;
   const power = fightingPower(yours) / Math.max(1, fightingPower(theirs)) - 1;
   const offer = (contest: Contest, edge: string, note: string): ContestOffer => ({
@@ -100,11 +108,15 @@ function offers(state: GameState, ctx: GameContext, theirs: Stats): ContestOffer
     purse: choice(state, ctx, { type: 'challengeRival', contest, stakes: 'purse' }),
   });
   return [
-    offer('spar', edgeWord(power, EVEN_POWER), 'A real fight, stopped before anyone is hurt.'),
+    offer(
+      'spar',
+      fill(edgeWord(power, EVEN_POWER)),
+      'A real fight, stopped before anyone is hurt.',
+    ),
     offer(
       'race',
-      edgeWord(courseEdge(yours, theirs), EVEN_COURSE),
-      'Gate to the bell tower in three legs: read them as you run.',
+      fill(edgeWord(courseEdge(yours, theirs), EVEN_COURSE)),
+      fill('Gate to the bell tower in three legs: read {name.them} as you run.'),
     ),
   ];
 }
@@ -113,21 +125,28 @@ const gradeOf = (value: number) => STAT_GRADES.indexOf(statTier(value).grade);
 
 function ways(rival: Rival, person: PersonDef, yours: Stats, theirs: Stats): string[] {
   const name = person.name;
+  const slots = personSlots('rival', person);
   const ahead = STAT_IDS.filter((id) => gradeOf(theirs[id]) > gradeOf(yours[id])).sort(
     (a, b) => theirs[b] - yours[b] - (theirs[a] - yours[a]),
   )[0];
   return [
     ...(ahead
       ? [
-          `Swallow your pride: ask ${name} to teach you ${STAT_INFO[ahead].label.toLowerCase()}. Anyone ahead of you can, at a training ground where they are.`,
+          fillSlots(
+            'Swallow your pride: ask {rival} to teach you {stat}. Anyone ahead of you can, at a training ground where {rival.they} {rival.is}.',
+            { ...slots, stat: STAT_INFO[ahead].label.toLowerCase() },
+          ),
         ]
       : []),
     ...(gradeOf(yours.perception) < gradeOf(theirs.perception)
       ? [`Sharpen your eyes: with perception the equal of ${name}’s, you read every leg of a race.`]
       : []),
-    rival.rattled
-      ? `${name} is rattled: they’ll run worse in your next race.`
-      : 'Get under their skin: a barbed word after a contest, or when they needle you, leaves them rattled for the next race.',
+    rivalLine(
+      rival.rattled
+        ? '{name} is rattled: {name.they}’ll run worse in your next race.'
+        : 'Get under {name.their} skin: a barbed word after a contest, or when {name.they} needle{name.s} you, leaves {name.them} rattled for the next race.',
+      person,
+    ),
   ];
 }
 
@@ -170,9 +189,12 @@ export function rivalryView(
     heat: { stages: HEAT_STAGES, at: heatStage(rival.heat) },
     rattled: rival.rattled,
     driven: trailsYou(state, person.id, theirs)
-      ? `${person.name} has been at the grounds before dawn all week. Behind you, they train harder.`
+      ? rivalLine(
+          '{name} has been at the grounds before dawn all week. Behind you, {name.they} train{name.s} harder.',
+          person,
+        )
       : null,
-    offers: offers(state, ctx, theirs),
+    offers: offers(state, ctx, person, theirs),
     purse: PURSE,
     ways: ways(rival, person, yours, theirs),
     next: nextBeat(state, ctx, rival, person.name),

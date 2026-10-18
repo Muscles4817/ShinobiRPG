@@ -24,6 +24,7 @@ export interface SenseiArchetype {
   readonly onMissions: MissionPosture;
   readonly test: OpeningTest;
   readonly rituals: readonly RitualKind[];
+  /** What weighs on them; `{name}` and its pronoun forms are the sensei. */
   readonly wound: string;
 }
 
@@ -38,7 +39,7 @@ export const SENSEI_ARCHETYPES: readonly SenseiArchetype[] = [
     onMissions: 'shield',
     test: 'spar',
     rituals: ['challenge'],
-    wound: 'Someone they trained too gently didn’t come back.',
+    wound: 'Someone {name.they} trained too gently didn’t come back.',
   },
   {
     id: 'strategist',
@@ -50,7 +51,7 @@ export const SENSEI_ARCHETYPES: readonly SenseiArchetype[] = [
     onMissions: 'watchful',
     test: 'bells',
     rituals: ['debrief', 'tea'],
-    wound: 'A plan of theirs once cost a teammate.',
+    wound: 'A plan of {name.theirs} once cost a teammate.',
   },
   {
     id: 'guardian',
@@ -62,7 +63,7 @@ export const SENSEI_ARCHETYPES: readonly SenseiArchetype[] = [
     onMissions: 'shield',
     test: 'interview',
     rituals: ['tea'],
-    wound: 'They were the only one of their team to come home.',
+    wound: '{name.they} {name.was} the only one of {name.their} team to come home.',
   },
   {
     id: 'gourmand',
@@ -74,7 +75,7 @@ export const SENSEI_ARCHETYPES: readonly SenseiArchetype[] = [
     onMissions: 'watchful',
     test: 'survival',
     rituals: ['meal'],
-    wound: 'They grew up hungry, and never will be again.',
+    wound: '{name.they} grew up hungry, and never will be again.',
   },
   {
     id: 'prodigy',
@@ -86,7 +87,7 @@ export const SENSEI_ARCHETYPES: readonly SenseiArchetype[] = [
     onMissions: 'lets-fail',
     test: 'spar',
     rituals: ['challenge'],
-    wound: 'They were a genius at twelve, and lonely for it.',
+    wound: '{name.they} {name.was} a genius at twelve, and lonely for it.',
   },
   {
     id: 'old-hand',
@@ -98,7 +99,7 @@ export const SENSEI_ARCHETYPES: readonly SenseiArchetype[] = [
     onMissions: 'lets-fail',
     test: 'survival',
     rituals: ['camp', 'meal'],
-    wound: 'They have buried more friends than they talk about.',
+    wound: '{name.they} {name.has} buried more friends than {name.they} talk{name.s} about.',
   },
   {
     id: 'eccentric',
@@ -110,7 +111,7 @@ export const SENSEI_ARCHETYPES: readonly SenseiArchetype[] = [
     onMissions: 'watchful',
     test: 'none',
     rituals: ['tea'],
-    wound: 'Nobody has ever quite known what they lost.',
+    wound: 'Nobody has ever quite known what {name.they} lost.',
   },
 ];
 

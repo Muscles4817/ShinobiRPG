@@ -11,7 +11,7 @@ export const SPECIALTY_DEEP_TALK: readonly ConversationDef[] = [
       {
         label: '“You don’t have to get everything right.”',
         tone: 'kind',
-        reply: '“In {art}, you sort of do.” But their shoulders ease a little.',
+        reply: '“In {art}, you sort of do.” But {them.their} shoulders ease a little.',
       },
       {
         label: '“Then we’ll work on it together.”',
@@ -19,7 +19,7 @@ export const SPECIALTY_DEEP_TALK: readonly ConversationDef[] = [
         reply: '{them} looks at you for a long moment. “You mean that.” It isn’t a question.',
       },
       {
-        label: 'Sit down beside them.',
+        label: 'Sit down beside {them.them}.',
         tone: 'quiet',
         reply: 'Neither of you says anything. After a while, {them} lets out a long breath.',
       },
@@ -30,7 +30,7 @@ export const SPECIALTY_DEEP_TALK: readonly ConversationDef[] = [
     minStage: 3,
     about: 'specialty',
     opener:
-      '{them} flexes their hands and winces. “Nobody tells you what {art} costs. The body keeps count.”',
+      '{them} flexes {them.their} hands and winces. “Nobody tells you what {art} costs. The body keeps count.”',
     choices: [
       {
         label: '“Does it hurt all the time?”',
@@ -43,7 +43,7 @@ export const SPECIALTY_DEEP_TALK: readonly ConversationDef[] = [
         reply: '{them} bristles, then sighs. “You’re right. I hate that you’re right.”',
       },
       {
-        label: 'Fetch them something warm to drink.',
+        label: 'Fetch {them.them} something warm to drink.',
         tone: 'kind',
         reply: '{them} holds the cup long after it has gone cold.',
       },

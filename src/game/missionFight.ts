@@ -1,3 +1,4 @@
+import { listed } from '@/core';
 import type { Rng } from '@/core';
 import type { CombatOpening, CombatOutcome } from '@/systems/combat';
 import {
@@ -138,7 +139,7 @@ export function resolveCombat(
   );
   const enemies =
     foes.length > 0
-      ? foes.map((id) => ctx.content.enemies.require(id).name).join(' and ')
+      ? listed(foes.map((id) => ctx.content.enemies.require(id).name))
       : 'your opponent';
 
   switch (outcome.result) {

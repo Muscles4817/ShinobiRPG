@@ -1,8 +1,10 @@
+import { capitalise, fillSlots } from '@/core';
 import { describeSpec } from '@/systems/modifiers';
 
 import { NATURE_LINES } from '../nature';
 import { chip, log } from '../ops';
 import { requirePerson } from '../people/cast';
+import { personSlots } from '../people/pronouns';
 import { natureModifiers } from '../profile';
 import { addReport } from '../reports';
 import type { ActionHandler, ActionOf } from './types';
@@ -12,10 +14,6 @@ import type { ActionHandler, ActionOf } from './types';
  * nature shows itself. From then on it is yours to train: the study bonus applies, techniques
  * that need it open, and people can see it.
  */
-
-function capitalised(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1);
-}
 
 export const testChakraPaper: ActionHandler<ActionOf<'testChakraPaper'>> = {
   check(state) {
@@ -27,11 +25,11 @@ export const testChakraPaper: ActionHandler<ActionOf<'testChakraPaper'>> = {
     const text = ctx.content.text.chakraPaper;
     const sensei = requirePerson(state, ctx, state.people.team?.senseiId ?? '');
     const clan = ctx.content.clans.get(character.clanId);
-    const name = `${capitalised(character.nature)} nature`;
+    const name = `${capitalise(character.nature)} nature`;
     const effects = describeSpec(natureModifiers(character.nature, clan?.nature))
       .filter((e) => e.tone === 'gain')
       .map((e) => e.label);
-    const verdict = text.verdict.replaceAll('{sensei}', sensei.name);
+    const verdict = fillSlots(text.verdict, personSlots('sensei', sensei));
     const result = `${text.results[character.nature]} ${verdict}`;
     const revealed = { ...state, character: { ...character, natureKnown: true } };
     const logged = log(revealed, {

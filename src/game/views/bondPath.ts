@@ -1,10 +1,12 @@
 import type { PersonDef } from '@/content';
+import { fillSlots } from '@/core';
 import { BOND_STAGES, stageName, stageOf, stageProgress } from '@/systems/bonds';
 
 import { PASS_BOND_STAGE } from '../leave';
 import { PERMIT_BOND_STAGE } from '../permits';
 import { bondOf } from '../people/cast';
 import { priceParts } from '../people/price';
+import { personSlots } from '../people/pronouns';
 import { TEACHES_AT_STAGE } from '../people/signatures';
 import { teachingOf } from '../people/teachers';
 import { waysOf } from '../sensei/generate';
@@ -49,12 +51,22 @@ function teacherUnlocks(state: GameState, person: PersonDef): Unlock[] {
     ? priceParts(teaching.price).flatMap((p) => (p.kind === 'bond' ? [p.minStage] : []))
     : [];
   return [
-    ...bondPrice.map((stage) => ({ stage, line: 'They’ll train you.' })),
+    ...bondPrice.map((stage) => ({ stage, line: '{p.they}’ll train you.' })),
     ...(teaching.steers
-      ? [{ stage: teaching.steers.freeAtStage, line: 'They let you choose what to train.' }]
+      ? [
+          {
+            stage: teaching.steers.freeAtStage,
+            line: '{p.they} let{p.s} you choose what to train.',
+          },
+        ]
       : []),
     ...(teaching.teaches.length > 0
-      ? [{ stage: TEACHES_AT_STAGE, line: 'They start teaching you their own techniques.' }]
+      ? [
+          {
+            stage: TEACHES_AT_STAGE,
+            line: '{p.they} start{p.s} teaching you {p.their} own techniques.',
+          },
+        ]
       : []),
   ];
 }
@@ -64,24 +76,33 @@ function senseiUnlocks(state: GameState, person: PersonDef): Unlock[] {
   const ways = waysOf(person);
   const beats = ways?.story.beats ?? [];
   return [
-    { stage: ways?.gatekeeping.passStage ?? PASS_BOND_STAGE, line: 'They sign your travel pass.' },
+    {
+      stage: ways?.gatekeeping.passStage ?? PASS_BOND_STAGE,
+      line: '{p.they} sign{p.s} your travel pass.',
+    },
     {
       stage: ways?.gatekeeping.permitStage ?? PERMIT_BOND_STAGE,
-      line: 'They sign your library permit.',
+      line: '{p.they} sign{p.s} your library permit.',
     },
-    ...(ways ? [{ stage: ways.loosensAtStage, line: 'They ease off your week a little.' }] : []),
-    ...beats.map((_, i) => ({ stage: i + 1, line: 'They tell you more of their story.' })),
+    ...(ways
+      ? [{ stage: ways.loosensAtStage, line: '{p.they} ease{p.s} off your week a little.' }]
+      : []),
+    ...beats.map((_, i) => ({
+      stage: i + 1,
+      line: '{p.they} tell{p.s} you more of {p.their} story.',
+    })),
   ];
 }
 
-/** Everything getting closer to this person opens, by stage. */
+/** Everything getting closer to this person opens, by stage, in words that agree with them. */
 function unlocks(state: GameState, person: PersonDef): Unlock[] {
+  const slots = personSlots('p', person);
   return [
-    { stage: TRAITS_REVEALED_AT, line: 'You learn what they’re like.' },
-    { stage: TASTES_REVEALED_AT, line: 'You learn what they like to hear.' },
+    { stage: TRAITS_REVEALED_AT, line: "You learn what {p.they}{p.'s} like." },
+    { stage: TASTES_REVEALED_AT, line: 'You learn what {p.they} like{p.s} to hear.' },
     ...teacherUnlocks(state, person),
     ...senseiUnlocks(state, person),
-  ];
+  ].map((u) => ({ ...u, line: fillSlots(u.line, slots) }));
 }
 
 export function bondPath(state: GameState, person: PersonDef): BondPath {

@@ -1,4 +1,4 @@
-import { createRng, hashString, type Rng } from '@/core';
+import { createRng, fillSlots, hashString, type Rng } from '@/core';
 import type { PersonDef } from '@/content';
 import type { CombatOutcome } from '@/systems/combat';
 import {
@@ -17,6 +17,7 @@ import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 import { PLAYER_COMBATANT_ID, playerCombatant } from '../combatants';
 import type { GameContext } from '../context';
+import { personSlots } from '../people/pronouns';
 import { startFight } from '../fightStyle';
 import { adjust, spendTime } from '../ops';
 import { everyone } from '../people/cast';
@@ -91,7 +92,7 @@ export function startBout(state: GameState, ctx: GameContext, rng: Rng): GameSta
   const here = tournamentHere(examHere(state, ctx));
   const rival = rivalNow(state, ctx);
   if (!here || !rival || here.progress.fighting) return state;
-  const intro = here.stage.bout.replaceAll('{them}', rival.name);
+  const intro = fillSlots(here.stage.bout, personSlots('them', rival));
   const ready = patchedUp(spendTime(state, BOUT_SLOTS, ctx));
   const run = withNotes(here.run, { kind: 'story', text: intro });
   const combat = startFight(

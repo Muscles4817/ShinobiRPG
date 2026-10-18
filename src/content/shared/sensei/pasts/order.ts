@@ -47,7 +47,7 @@ export const WRONG_ORDER: SenseiPast = {
     },
     {
       opener:
-        '{them} sits with {keepsake} in their lap and doesn’t open it, the way some people sit with a letter from the dead.',
+        '{them} sits with {keepsake} in {them.their} lap and doesn’t open it, the way some people sit with a letter from the dead.',
       choices: [
         {
           label: 'Ask what it is',
@@ -123,7 +123,7 @@ export const WRONG_ORDER: SenseiPast = {
         'At {place}, men with too much money and too little reason ask the way to a house in the hills.',
       found: 'A walled house with a seal-press in the cellar and guards who were soldiers once.',
       lost: 'You follow the wrong man. {name} follows the ink: a merchant sells far too much sealing wax to one address.',
-      camp: 'You camp out of sight. {name} sits with the old order in their lap all night.',
+      camp: 'You camp out of sight. {name} sits with the old order in {name.their} lap all night.',
       ending:
         '“I want to be sure,” {name} says. “I was sure once without looking. I won’t be again. We come back.”',
       home: 'Back to the village.',

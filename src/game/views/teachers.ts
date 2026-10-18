@@ -1,4 +1,5 @@
 import type { PersonDef, TeachingQuirk } from '@/content';
+import { fillSlots } from '@/core';
 import { stageForPair, stageOf } from '@/systems/bonds';
 import { STAT_INFO, statTier, type StatGrade, type StatId } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
@@ -9,6 +10,7 @@ import { placeHere } from '../ops';
 import { bondOf, everyone, fullName } from '../people/cast';
 import { readPrice, type PricePart } from '../people/price';
 import { personStats } from '../people/progress';
+import { personSlots } from '../people/pronouns';
 import { learnBlockerFor, learnBlockerText } from '../learning';
 import { nextSignature, teachesNow, TEACHES_AT_STAGE } from '../people/signatures';
 import {
@@ -74,6 +76,9 @@ const QUIRK_MANNER: Readonly<Record<TeachingQuirk, string>> = {
   natural: 'A natural teacher: makes hard things look simple.',
   distracted: 'A distracted teacher: brilliant in patches.',
 };
+
+/** A teacher with no quirk to speak of. */
+const HAPPY_TO_SHOW = 'Happy to show you what {teacher.they} know{teacher.s}.';
 
 const PER_WEEK: Readonly<Record<number, string>> = {
   1: 'Once a week',
@@ -152,7 +157,7 @@ function offerOf(state: GameState, ctx: GameContext, teaching: Teaching): Teache
     isPeer: person.rank === 'genin',
     manner: teaching.isSensei
       ? (person.sensei?.style ?? '')
-      : `${person.bio} ${quirk ? QUIRK_MANNER[quirk] : 'Happy to show you what they know.'}`,
+      : `${person.bio} ${quirk ? QUIRK_MANNER[quirk] : fillSlots(HAPPY_TO_SHOW, personSlots('teacher', person))}`,
     price: teaching.price ? readPrice(state, ctx, person, teaching.price) : [],
     sessions: sessionsText(state, teaching),
     steering: steered ? steeringNote(teaching) : null,

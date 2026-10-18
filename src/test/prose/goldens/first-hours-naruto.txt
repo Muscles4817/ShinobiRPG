@@ -195,7 +195,7 @@ view:
   choices[1]:
     label: Nothing
   choices[2]:
-    label: Ask what they are afraid of
+    label: Ask what he is afraid of
 
 >>> senseiTest
 
@@ -234,7 +234,7 @@ view:
       blocker: Your rival is waiting for an answer.
   kicker: Word gets round which team you landed on
   title: Sasuke finds you
-  lines[0]: Sasuke has been watching you since the academy. Today they want you to know it.
+  lines[0]: Sasuke has been watching you since the academy. Today he wants you to know it.
   lines[1]: “Congratulations on your team. Truly. Do try to keep up; it would be dull otherwise.”
   choices[0]:
     label: “Enjoy it while it lasts.”
@@ -243,7 +243,7 @@ view:
   choices[2]:
     label: “I’ll beat you, and you’ll know you were beaten.”
   choices[3]:
-    label: Hold their look, and walk past.
+    label: Hold his look, and walk past.
 
 >>> answerRival
   journal «Sasuke»: Sasuke looks at you a moment longer than usual. “Hm. Maybe you’re worth the trouble.”
@@ -387,18 +387,18 @@ view:
   people[1]:
     stage: Acquaintance
     stamp: Now acquaintances
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what she likes to hear.
   people[2]:
     stage: Acquaintance
     stamp: Now acquaintances
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what he likes to hear.
   purse:
     lines[0]:
       label: Miso Chashu Ramen
   aheadLabel: Tomorrow
   ahead[0]:
     text: The Chūnin Exams
-    stamp: In 5 days
+    stamp: In five days
   ahead[1]:
     text: Kaname sets meditation
     stamp: Morning
@@ -485,7 +485,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. They notice you noticing.
+  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
   choices[0]:
     label: “You always do that.”
   choices[1]:
@@ -513,7 +513,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. They notice you noticing.
+  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
   choices[0]:
     label: “You always do that.”
   choices[1]:
@@ -565,20 +565,20 @@ view:
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what he likes to hear.
   people[1]:
     stage: Acquaintance
-    next: At friend: you learn what they like to hear.
+    next: At friend: you learn what she likes to hear.
   purse:
     lines[0]:
       label: Miso Chashu Ramen
   aheadLabel: Tomorrow
   ahead[0]:
     text: The Chūnin Exams
-    stamp: In 4 days
+    stamp: In four days
   ahead[1]:
     text: Cherry Blossom Viewing
-    stamp: In 7 days
+    stamp: In seven days
   ahead[2]:
     text: New work at the hall
     stamp: New
@@ -631,7 +631,7 @@ view:
   festival:
     name: Cherry Blossom Viewing
     description: The whole village picnics under the blossoms. The stalls cut their prices.
-    when: In 7 days
+    when: In seven days
     perks[0]: Market −30%
     perks[1]: Bonds +3 per talk
   rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
@@ -747,7 +747,7 @@ view:
     stamp: Rival
   ahead[1]:
     text: The Chūnin Exams
-    stamp: In 3 days
+    stamp: In three days
   ahead[2]:
     text: Kaname sets drills
     stamp: Morning

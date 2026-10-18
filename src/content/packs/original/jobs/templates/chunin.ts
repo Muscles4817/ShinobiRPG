@@ -138,7 +138,7 @@ export const B_RANK_JOBS: readonly MissionTemplate[] = [
     },
     title: '{title}',
     client: '{client}',
-    summary: 'Hunt down {quarry}. Bring them back, or bring back proof.',
+    summary: 'Hunt down {quarry}. Bring the rogue back, or bring back proof.',
     stages: [
       { kind: 'narrative', text: '{dossier}' },
       {

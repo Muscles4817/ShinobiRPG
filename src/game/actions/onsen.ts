@@ -10,6 +10,7 @@ import { outingWarmth, timeTogether, type Outing } from '../people/together';
 import type { GameState } from '../state';
 import { closedReason } from '../village';
 import type { ActionHandler, ActionOf } from './types';
+import { placeInText } from '../placeName';
 
 /**
  * A soak at the hot spring or bathhouse: alone, or beside whoever is in the water, which
@@ -67,7 +68,7 @@ export const soak: ActionHandler<ActionOf<'soak'>> = {
     });
     const soaked = { ...warm, character: { ...warm.character, soaked: true as const } };
     return log(soaked, {
-      heading: companion ? `A soak with ${companion.name}` : `A soak at ${onsen.name}`,
+      heading: companion ? `A soak with ${companion.name}` : `A soak at ${placeInText(onsen.name)}`,
       text: companion
         ? `You sink into the water beside ${companion.name}. Steam, the drip from the eaves, and the odd word between you.`
         : 'You sink into the water up to your chin and let the day go out of your shoulders.',

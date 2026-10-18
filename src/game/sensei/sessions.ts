@@ -1,6 +1,8 @@
 import type { PersonDef, SenseiFeedback, SessionFormat } from '@/content';
+import { fillSlots } from '@/core';
 import type { StatId } from '@/systems/stats';
 
+import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
 import type { Meeting } from './plan';
 import { waysOf } from './generate';
@@ -79,7 +81,7 @@ export function sessionText(sensei: PersonDef, format: SessionFormat): string {
   const ways = waysOf(sensei);
   const late = ways?.cadence.punctuality === 'late' ? `${sensei.name} turns up late. ` : '';
   const said = ways ? ` ${FEEDBACK_LINES[ways.feedback]}` : '';
-  return `${late}${FORMAT_LINES[format].replace('{name}', sensei.name)}${said}`;
+  return `${late}${fillSlots(FORMAT_LINES[format], personSlots('name', sensei))}${said}`;
 }
 
 /** Whether you already came to this short session. */

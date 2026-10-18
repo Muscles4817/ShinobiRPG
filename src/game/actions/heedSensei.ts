@@ -1,4 +1,7 @@
+import { fillSlots } from '@/core';
+
 import { log } from '../ops';
+import { personSlots } from '../people/pronouns';
 import { beatDue, HEEDED_REGARD } from '../sensei/curriculum';
 import { mentorOf } from '../sensei/plan';
 import { withAttendance } from '../sensei/state';
@@ -19,7 +22,11 @@ export const heedSensei: ActionHandler<ActionOf<'heedSensei'>> = {
     );
     return log(
       { ...state, mentor },
-      { heading: beat.title, text: beat.text.replaceAll('{sensei}', sensei.name), tone: 'info' },
+      {
+        heading: beat.title,
+        text: fillSlots(beat.text, personSlots('sensei', sensei)),
+        tone: 'info',
+      },
     );
   },
 };

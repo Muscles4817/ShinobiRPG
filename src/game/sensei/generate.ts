@@ -10,8 +10,10 @@ import {
   type SenseiReward,
   type SenseiWays,
 } from '@/content';
-import { hashUnit } from '@/core';
+import { fillSlots, hashUnit } from '@/core';
 import { TIME_SLOTS } from '@/systems/time';
+
+import { personSlots } from '../people/pronouns';
 
 /**
  * How a sensei runs a team: their authored ways, or, for a sensei the pack wrote none for,
@@ -63,7 +65,7 @@ export function generatedWays(person: PersonDef): SenseiWays {
 
 /** Ways of a given kind for this person: the kind fixed, the rest rolled from their id. */
 export function waysFor(person: PersonDef, kind: SenseiArchetype): SenseiWays {
-  const name = person.name;
+  const slots = personSlots('name', person);
   return {
     philosophy: kind.philosophy,
     lens: kind.lens,
@@ -78,7 +80,7 @@ export function waysFor(person: PersonDef, kind: SenseiArchetype): SenseiWays {
     feedback: kind.feedback,
     rituals: kind.rituals.map((ritual) => ({
       kind: ritual,
-      line: RITUAL_LINES[ritual].replace('{name}', name),
+      line: fillSlots(RITUAL_LINES[ritual], slots),
     })),
     rewards: rewards(person),
     onMissions: kind.onMissions,
@@ -89,7 +91,7 @@ export function waysFor(person: PersonDef, kind: SenseiArchetype): SenseiWays {
       nominates: pick(person, 'nominates', NOMINATION_HABITS),
     },
     classRegard: pick(person, 'class', CLASS_REGARDS),
-    story: { wound: kind.wound, beats: [] },
+    story: { wound: fillSlots(kind.wound, slots), beats: [] },
   };
 }
 

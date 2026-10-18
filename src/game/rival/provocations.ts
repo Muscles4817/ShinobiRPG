@@ -35,7 +35,7 @@ export const PROVOCATIONS: readonly Provocation[] = [
   {
     id: 'told-sensei',
     temperament: 'kind',
-    line: '{name} told your sensei they were worried you were overdoing it. Your sensei asked you about it, in front of everyone.',
+    line: '{name} told your sensei {name.they} {name.was} worried you were overdoing it. Your sensei asked you about it, in front of everyone.',
   },
   {
     id: 'corrected-stance',

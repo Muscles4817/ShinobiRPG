@@ -13,6 +13,7 @@ import { adjust, busyReason, chip, firstBlocker, log, spendTime } from '../ops';
 import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
+import { placeInText } from '../placeName';
 
 /**
  * Gathering: forage a wild place for what's in season, or cast a line at one of its spots for
@@ -91,7 +92,7 @@ export const forage: ActionHandler<ActionOf<'forage'>> = {
     const ids = draws(findsHereNow(state, place.finds), sharp ? 2 : 1, rng);
     const energy = hardWorkEnergy(state.character, ctx, FORAGE_ENERGY);
     return log(bring(noteFinds(state, ids), ctx, { key: place.id, ids, energy }), {
-      heading: `Foraging in ${place.name}`,
+      heading: `Foraging in ${placeInText(place.name)}`,
       text: sharp
         ? 'You go slowly and look closely, and the ground gives up more than most would see.'
         : 'You search until your knees are muddy and come back with a handful.',

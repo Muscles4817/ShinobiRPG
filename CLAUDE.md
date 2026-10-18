@@ -724,7 +724,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   voice kit) or a `SenseiPast` in `content/shared/sensei/pasts/` (the temperaments that can carry
   it, at least three; regions some ground of every pack has; a foe and its encounter; four beats;
   the arc's text), using only the slots `{name}`, `{art}`, `{lost}`, `{foe}`, `{keepsake}`,
-  `{place}`, `{you}` and `{them}` (validated). Write it gender-neutral: names are drawn. The pool
+  `{place}`, `{you}` and `{them}`, and the pronoun forms of the people among them (validated): names
+  and pronouns are drawn, so never write he, she or they for one person; write `{name.they}`,
+  `{lost.their}`, `{foe.them}` (or `{them.their}` in a beat) and agree verbs with `{name.s}`,
+  `{name.es}`, `{name.is}`, `{name.was}`, `{name.has}`, `{name.does}`, `{name.'s}`. The pool
   grows by itself; `senseiPool.test.ts` checks every new sensei is valid content.
 - **Add a bestiary foe:** a foe of a trade or country (bandits, samurai, pirates, beasts by
   biome) rather than of one job goes in the shared bestiary (`content/shared/bestiary/`), which

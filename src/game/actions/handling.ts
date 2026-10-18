@@ -1,4 +1,5 @@
 import type { PlaceDef, VetFields } from '@/content';
+import { fillSlots } from '@/core';
 import { stageForPair, stageOf } from '@/systems/bonds';
 import { hungerOf, laidUp } from '@/systems/companions';
 import { diffStats, STAT_INFO } from '@/systems/stats';
@@ -6,6 +7,7 @@ import { deduct } from '@/systems/wallet';
 
 import { yourCompanion, withCompanion } from '../companions/care';
 import { drilledStats } from '../companions/drill';
+import { keeperSlots } from '../companions/keeper';
 import type { GameContext } from '../context';
 import {
   busyReason,
@@ -17,7 +19,7 @@ import {
   spendTime,
   statChips,
 } from '../ops';
-import { bondOf, findPerson } from '../people/cast';
+import { bondOf } from '../people/cast';
 import type { GameState } from '../state';
 import { trainableStats } from './companionTraining';
 import type { ActionHandler, ActionOf } from './types';
@@ -54,12 +56,14 @@ function handlerBlocker(state: GameState, ctx: GameContext, fee: number): string
   if (!clinic) return 'Find a clinic with a handler.';
   const yours = yourCompanion(state, ctx);
   if (!yours) return 'You have no companion.';
-  const keeper = findPerson(state, ctx, clinic.keeperId);
   const hunger = hungerOf(yours.companion, state.time.day);
   return firstBlocker(
     busyReason(state),
     stageOf(bondOf(state, clinic.keeperId).points) < clinic.handling.minStage &&
-      `${keeper?.name ?? 'The vet'} works only with the companions of those ${stageForPair(clinic.handling.minStage)} with them.`,
+      fillSlots('{vet} works only with the companions of those {pair} with {vet.them}.', {
+        ...keeperSlots(state, ctx, clinic.keeperId),
+        pair: stageForPair(clinic.handling.minStage),
+      }),
     laidUp(yours.companion, state.time.day) && `${yours.companion.name} is laid up.`,
     (hunger === 'hungry' || hunger === 'starving') &&
       `${yours.companion.name} is too hungry. Feed it first.`,
@@ -89,10 +93,17 @@ export const handlerSession: ActionHandler<ActionOf<'handlerSession'>> = {
       { ...state, wallet: deduct(state.wallet, fee) },
       { ...yours.companion, stats },
     );
-    const keeper = findPerson(state, ctx, clinic.keeperId)?.name ?? 'The vet';
+    const slots = {
+      ...keeperSlots(state, ctx, clinic.keeperId),
+      pet: yours.companion.name,
+      skill: STAT_INFO[stat].label.toLowerCase(),
+    };
     return log(spendTime(worked, SESSION_SLOTS, ctx), {
-      heading: `${keeper} works with ${yours.companion.name}`,
-      text: `${keeper} drills ${yours.companion.name} in ${STAT_INFO[stat].label.toLowerCase()}, sharper than you could, and shows you what they’re doing as they go.`,
+      heading: fillSlots('{vet} works with {pet}', slots),
+      text: fillSlots(
+        "{vet} drills {pet} in {skill}, sharper than you could, and shows you what {vet.they}{vet.'s} doing as {vet.they} go{vet.es}.",
+        slots,
+      ),
       tone: 'success',
       chips: [
         ...statChips(diffStats(yours.companion.stats, stats)),

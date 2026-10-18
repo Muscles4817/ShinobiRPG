@@ -1,3 +1,4 @@
+import { fillSlots } from '@/core';
 import type { CompanionTemperament } from '@/systems/companions';
 import { PLAYER_OWNER } from '@/systems/companions';
 
@@ -68,7 +69,7 @@ export const rehomeCompanion: ActionHandler<ActionOf<'rehomeCompanion'>> = {
       { ...state, companions },
       {
         heading: `${companion.name} is rehomed`,
-        text: REHOMED[temperament].replace('{name}', companion.name),
+        text: fillSlots(REHOMED[temperament], { name: companion.name }),
         tone: 'info',
       },
     );

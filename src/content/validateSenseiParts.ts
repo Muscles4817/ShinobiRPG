@@ -1,3 +1,5 @@
+import { PRONOUN_FORMS } from '@/core';
+
 import { SENSEI_ARCHETYPES } from './senseiArchetypes';
 import type { SenseiPast, SenseiTemperament } from './senseiParts';
 import type { ContentPack } from './types';
@@ -9,11 +11,18 @@ import type { ContentPack } from './types';
  */
 
 /** The slots a part may name: who the sensei is, and who and where their past is. */
-const SLOTS = ['name', 'art', 'lost', 'foe', 'keepsake', 'place', 'you', 'them'];
+const PLAIN_SLOTS = ['art', 'keepsake', 'place', 'you'];
+/** The people a part may name: each with every pronoun form (`{name.their}`, `{foe.s}`). */
+const PERSON_SLOTS = ['name', 'lost', 'foe', 'them'];
+const SLOTS = [
+  ...PLAIN_SLOTS,
+  ...PERSON_SLOTS,
+  ...PERSON_SLOTS.flatMap((person) => PRONOUN_FORMS.map((form) => `${person}.${form}`)),
+];
 /** Fewer than this and a past would repeat the same few senseis. */
 const MIN_TEMPERAMENTS = 3;
 const MIN_FIRESIDE = 2;
-const SLOT = /\{([a-zA-Z0-9-]+)\}/g;
+const SLOT = /\{([a-zA-Z0-9-]+(?:\.[a-zA-Z']+)?)\}/g;
 
 function texts(value: unknown): string[] {
   if (typeof value === 'string') return [value];

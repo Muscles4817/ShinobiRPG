@@ -32,8 +32,9 @@ export function companionBlocker(
   personId: string,
 ): string | null {
   const person = findPerson(state, ctx, personId);
-  if (!person || !isVillager(state, person, ctx) || !COMPANION_ROLES.includes(person.role))
-    return 'They can’t come with you.';
+  if (!person) return 'They can’t come with you.';
+  if (!isVillager(state, person, ctx) || !COMPANION_ROLES.includes(person.role))
+    return `${person.name} can’t come with you.`;
   if (!atHomeVillage(state, ctx)) return 'Friends come along from home.';
   if (state.people.companionId !== null) return 'Someone is already coming with you.';
   if (stageOf(bondOf(state, person.id).points) < COMPANION_STAGE)

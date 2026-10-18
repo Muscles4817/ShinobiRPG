@@ -6,7 +6,8 @@ export const SPECIALTY_TALK: readonly ConversationDef[] = [
     id: 'talk-specialty-0-watch',
     minStage: 0,
     about: 'specialty',
-    opener: 'You find {them} hard at work: {practice}. They don’t stop when you walk up.',
+    opener:
+      'You find {them} hard at work: {practice}. {them.they} keep{them.s} going when you walk up.',
     choices: [
       {
         label: '“That’s good form.”',
@@ -34,12 +35,12 @@ export const SPECIALTY_TALK: readonly ConversationDef[] = [
       {
         label: '“Please. I want to get better.”',
         tone: 'earnest',
-        reply: '“{advice}” They say it like something handed down.',
+        reply: '“{advice}” {them.they} say{them.s} it like something handed down.',
       },
       {
         label: '“Is this going to take long?”',
         tone: 'tease',
-        reply: '“Not if you listen.” They tell you anyway. “{advice}”',
+        reply: '“Not if you listen.” {them.they} tell{them.s} you anyway. “{advice}”',
       },
       {
         label: 'Nod and wait.',
@@ -68,7 +69,8 @@ export const SPECIALTY_TALK: readonly ConversationDef[] = [
       {
         label: '“Talent helps, though.”',
         tone: 'challenge',
-        reply: '“Then talent can do the drills too.” They don’t smile, but their eyes do.',
+        reply:
+          '“Then talent can do the drills too.” {them.their} face doesn’t smile, but {them.their} eyes do.',
       },
     ],
   },
@@ -106,17 +108,19 @@ export const SPECIALTY_TALK: readonly ConversationDef[] = [
       {
         label: '“No. Tell me.”',
         tone: 'curious',
-        reply: '{pride} {them} looks at their hands as if they still can’t quite believe it.',
+        reply:
+          '{pride} {them} looks at {them.their} hands as if {them.they} still can’t quite believe it.',
       },
       {
         label: '“I bet you were brilliant.”',
         tone: 'praise',
-        reply: '“I was lucky.” But they tell you anyway. {pride}',
+        reply: '“I was lucky.” But {them.they} tell{them.s} you anyway. {pride}',
       },
       {
         label: '“Only the once?”',
         tone: 'tease',
-        reply: '{them} flicks your forehead. Then, more softly, they tell you. {pride}',
+        reply:
+          '{them} flicks your forehead. Then, more softly, {them.they} tell{them.s} you. {pride}',
       },
     ],
   },
@@ -125,7 +129,7 @@ export const SPECIALTY_TALK: readonly ConversationDef[] = [
     minStage: 2,
     about: 'specialty',
     opener:
-      '{them} turns a pebble over in their fingers. “I was hopeless at {art} when I started. Everyone said to pick something else.”',
+      '{them} turns a pebble over in {them.their} fingers. “I was hopeless at {art} when I started. Everyone said to pick something else.”',
     choices: [
       {
         label: '“What made you keep going?”',
@@ -154,7 +158,7 @@ export const SPECIALTY_TALK: readonly ConversationDef[] = [
       {
         label: '“You’ll get there.”',
         tone: 'earnest',
-        reply: '“You sound very sure.” {them} sounds like they want to be.',
+        reply: '“You sound very sure.” {them} sounds like {them.they} want{them.s} to be.',
       },
       {
         label: '“What was it like, seeing it?”',

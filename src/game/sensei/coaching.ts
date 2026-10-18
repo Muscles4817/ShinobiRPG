@@ -1,4 +1,5 @@
 import type { PersonDef } from '@/content';
+import { fillSlots } from '@/core';
 import { stageOf } from '@/systems/bonds';
 import type { JournalChip } from '@/systems/journal';
 import { STAT_IDS, STAT_INFO, statTier, type StatGrade, type StatId } from '@/systems/stats';
@@ -8,6 +9,7 @@ import { logDiscoveries } from '../growth';
 import { chip, log } from '../ops';
 import { underSensei } from '../mentorship';
 import { bondOf } from '../people/cast';
+import { personSlots } from '../people/pronouns';
 import type { Character, GameState } from '../state';
 import { lensStat, senseiRead } from './read';
 import { rewardFor } from './rewards';
@@ -23,6 +25,8 @@ import { waysOf } from './generate';
 
 export const ASSIGNMENT_DONE_REGARD = 5;
 export const ASSIGNMENT_MISSED_REGARD = 2;
+/** What a sensei with no voice of their own says of work not done. */
+const NOT_ENOUGH = 'Not enough. {name.they} {name.does}n’t hide it.';
 /** A sensei who doesn't look for hidden talent sees it anyway once you are this close. */
 export const REVEAL_STAGE = 3;
 
@@ -55,7 +59,7 @@ function judge(state: GameState, ctx: GameContext, sensei: PersonDef): Coached {
       state: { ...cleared, mentor: withRegard(cleared.mentor, -ASSIGNMENT_MISSED_REGARD) },
       lines: [
         `${sensei.name} checks your ${label(work.stat)}.`,
-        sensei.sensei?.voice?.scold ?? 'Not enough. They don’t hide it.',
+        fillSlots(sensei.sensei?.voice?.scold ?? NOT_ENOUGH, personSlots('name', sensei)),
       ],
       chips: [chip(`${sensei.name}’s regard falls`, 'cost')],
     };

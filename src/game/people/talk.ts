@@ -65,12 +65,18 @@ export function topicFor(
   return null;
 }
 
+/** A slot naming the player or the person (`{you}`, `{them}`, `{them.their}`), not a topic's. */
+const isNameSlot = (slot: string): boolean =>
+  slot === 'you' || slot === 'them' || slot.startsWith('them.');
+
 /**
  * Replaces `{you}`, `{them}` (and its pronoun forms) and any topic slot in an authored line.
- * Twice, because a topic's words may themselves speak of the person (`{them.their}`).
+ * The topic's words go in first, since they may themselves speak of the person
+ * (`{them.their}`); the names follow, once each can see whether it opens a sentence.
  */
 export function fillLine(text: string, values: Readonly<Record<string, string>>): string {
-  return fillSlots(fillSlots(text, values), values);
+  const topic = Object.fromEntries(Object.entries(values).filter(([slot]) => !isNameSlot(slot)));
+  return fillSlots(fillSlots(text, topic), values);
 }
 
 /** Replaces `{you}`, and `{them}` with its pronoun forms, in authored lines. */
