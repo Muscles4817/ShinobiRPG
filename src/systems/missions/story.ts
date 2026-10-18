@@ -19,6 +19,11 @@ export interface ThreadDef {
   readonly levels: readonly string[];
   /** The level it starts at (an index into `levels`). */
   readonly start: number;
+  /**
+   * What the debrief adds to a ledger line when that line's outcome really moved the thread
+   * ("It cost the light."), so a line never claims a change that didn't happen.
+   */
+  readonly ledger?: { readonly fell?: string; readonly rose?: string };
 }
 
 /** Who must be along (or not) for a condition to hold. */

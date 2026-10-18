@@ -176,7 +176,7 @@ view:
   unlocked[122]: Enough
   ending: Something cold brushes past you in the dark. You finish the round shaken.
   road[0]:
-    text: Something cold brushes past you in the dark. You finish the round shaken.
+    text: Tried to relight them one by one, eyes open, and fell short.
     pay: −25% pay
   grade: rough
 
@@ -1099,7 +1099,7 @@ view:
   road[0]:
     text: Pulled a carter out of the ditch. It cost the light.
   road[1]:
-    text: The trouble on the road cost the light.
+    text: Ran out of patience with Old Saburō. It cost the light.
   road[2]:
     text: Pushed on through the dark instead of making camp.
   road[3]:

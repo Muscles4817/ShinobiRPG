@@ -67,6 +67,17 @@ describe('missions', () => {
     expect(reward(mission, r.run)).toEqual({ ryo: 75, reputation: 3 });
   });
 
+  it('notes a docked check as what was tried, never the story’s failure again', () => {
+    const r = resolveCheck(
+      startRun(mission, SOLO),
+      { stage: check, approach, story: mission },
+      createStats(-100),
+      createRng(1),
+    );
+    expect(r.run.ledger.map((l) => l.text)).toEqual(['Tried to chase, and fell short.']);
+    expect(r.run.notes.some((n) => n.kind === 'story' && n.text === check.failure)).toBe(true);
+  });
+
   it('a teammate who takes the check rolls with their own value and is named', () => {
     const r = resolveCheck(
       startRun(mission, SOLO),

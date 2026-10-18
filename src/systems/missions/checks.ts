@@ -18,6 +18,15 @@ import type { Effect } from './story';
 
 export const CHECK_FAILURE_PENALTY = 0.25;
 
+/**
+ * The ledger's line for a docked check when its approach gives none: what was tried, short and
+ * plain. The story already told how it went wrong; the ledger never says it again.
+ */
+function fellShort(approach: Pick<CheckApproach, 'label'>): string {
+  const tried = approach.label.charAt(0).toLowerCase() + approach.label.slice(1);
+  return `Tried to ${tried}, and fell short.`;
+}
+
 export type CheckStage = Extract<MissionStage, { kind: 'check' }>;
 
 /** The check being attempted and the approach the player picked for it. */
@@ -73,7 +82,7 @@ export function resolveCheck(
       rewardMultiplier: Math.max(0, lost.run.rewardMultiplier - CHECK_FAILURE_PENALTY),
     },
     {
-      text: approach.onFailure?.ledger ?? stage.failure,
+      text: approach.onFailure?.ledger ?? fellShort(approach),
       tone: 'cost',
       pay: -CHECK_FAILURE_PENALTY,
     },

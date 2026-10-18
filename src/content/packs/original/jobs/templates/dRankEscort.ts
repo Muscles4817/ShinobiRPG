@@ -69,6 +69,7 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
         label: 'Daylight',
         levels: ['Dark', 'Dusk', 'Afternoon', 'Morning'],
         start: 3,
+        ledger: { fell: 'It cost the light.', rose: 'It saved some light.' },
       },
     ],
     charge: {
@@ -106,7 +107,7 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
             },
             onFailure: {
               effects: [{ kind: 'thread', thread: 'daylight', by: -2 }],
-              ledger: 'The trouble on the road cost the light.',
+              ledger: 'Ran out of patience with {chargeName}.',
             },
           },
           {
@@ -115,7 +116,7 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
             difficulty: 8,
             onFailure: {
               effects: [{ kind: 'thread', thread: 'daylight', by: -2 }],
-              ledger: 'The trouble on the road cost the light.',
+              ledger: 'Found no clever way round the trouble.',
             },
           },
           {
@@ -124,7 +125,7 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
             difficulty: 9,
             onFailure: {
               effects: [{ kind: 'thread', thread: 'daylight', by: -2 }],
-              ledger: 'The trouble on the road cost the light.',
+              ledger: 'Carried the load the slow way.',
             },
           },
         ],

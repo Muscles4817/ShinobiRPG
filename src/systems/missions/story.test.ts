@@ -124,6 +124,30 @@ describe('outcomes', () => {
     expect(addLedger(run, { text: 'Fought them.', tone: 'plain' }).ledger).toHaveLength(1);
   });
 
+  it('says what a thread did only when it really moved', () => {
+    const light: ThreadDef = {
+      id: 'daylight',
+      label: 'Daylight',
+      levels: ['Dark', 'Morning'],
+      start: 1,
+      ledger: { fell: 'It cost the light.', rose: 'It saved some light.' },
+    };
+    const lit = { ...job, threads: [light] };
+    const lostHour = {
+      effects: [{ kind: 'thread', thread: 'daylight', by: -1 }] as const,
+      ledger: 'Pulled a cart out.',
+    };
+    const first = applyOutcome(startRun(lit, SOLO), lit, lostHour);
+    expect(first.run.ledger.at(-1)?.text).toBe('Pulled a cart out. It cost the light.');
+    // Already dark: nothing more to lose, so nothing is claimed.
+    const again = applyOutcome(first.run, lit, lostHour);
+    expect(again.run.ledger.at(-1)?.text).toBe('Pulled a cart out.');
+    // A job that keeps no light is never told it lost any.
+    expect(applyOutcome(startRun(job, SOLO), job, lostHour).run.ledger.at(-1)?.text).toBe(
+      'Pulled a cart out.',
+    );
+  });
+
   it('leaves the finished stage’s camp and road event behind on moving on', () => {
     const run = { ...startRun(job, SOLO), camp: { done: ['0'] }, roadEvent: 'x', marks: ['m'] };
     const next = advance(run);
