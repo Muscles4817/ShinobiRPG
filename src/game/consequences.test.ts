@@ -106,6 +106,9 @@ describe('what a job leaves behind', () => {
     ) {
       s = step(s, KIND.slice(0, 2));
     }
+    // A choice today that sat badly would come up first; this evening nothing did.
+    const run = s.mission!;
+    s = { ...s, mission: { ...run, marks: run.marks.filter((m) => !m.startsWith('stung:')) } };
     s = step(s, ['Sit with your crew']);
     expect(s.mission?.notes.at(-1)).toMatchObject({
       kind: 'voice',

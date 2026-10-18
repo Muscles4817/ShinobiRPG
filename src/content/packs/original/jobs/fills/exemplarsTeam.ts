@@ -117,7 +117,7 @@ export const EXEMPLARS_TEAM: readonly MissionFill[] = [
       client: 'The Border Watch',
       border: 'the cinder ridge on the northern line',
       orders:
-        '“Walk the ridge, count the cairns, come home,” your sensei reads aloud. She folds the orders away. “They never send genin to count cairns.”',
+        '“Walk the ridge, count the cairns, come home,” your sensei reads aloud. {leader.they} fold{leader.s} the orders away. “They never send genin to count cairns.”',
       march:
         'The ridge path is loose cinder, steep on both sides, and the wind off the heights cuts like a blade.',
       trace:

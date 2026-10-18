@@ -19,7 +19,8 @@ import { cookForCamp, forageCamp } from './campKitchen';
 import { SENSEI_FIRESIDE, senseiAlong, sitWithSensei } from './fireside';
 import { bondWithOne, crewPeople, feel } from './personal';
 import { storyOf } from './state';
-import { voiceOf } from './voices';
+import { campLine } from './campLines';
+import { stungBy, voiceOf } from './voices';
 
 /**
  * A night around the fire: a few things to do before it burns down. Sit with the charge (they
@@ -88,9 +89,14 @@ function sitWithCrew(state: GameState, ctx: GameContext): GameState {
   );
   if (!person) return told(state, { kind: 'story', text: 'You sit alone with the fire.' });
   const memory = state.village.memories.findLast((m) => m.personId === person.id);
-  const voice: MissionNote | null = memory
-    ? { kind: 'voice', speaker: person.name, text: `Remember ${memory.text}?` }
-    : voiceOf(state, ctx, { person, moment: 'camp' });
+  // A choice that sat badly with them today comes up before old times do.
+  const stung = state.mission?.marks.includes(stungBy(person.id)) === true;
+  const grudge = stung ? voiceOf(state, ctx, { person, moment: 'grudge' }) : null;
+  const voice: MissionNote | null =
+    grudge ??
+    (memory
+      ? { kind: 'voice', speaker: person.name, text: `Remember ${memory.text}?` }
+      : voiceOf(state, ctx, { person, moment: 'camp' }));
   const closer = bondWithOne(state, person.id, CAMP_TALK_BOND);
   const line: MissionNote = { kind: 'story', text: `You sit with ${person.name} by the fire.` };
   const logged = log(closer, {
@@ -130,7 +136,8 @@ function drill(state: GameState, ctx: GameContext): GameState {
   const art = bestArt(state);
   const grown = growCharacter(state.character, { [art]: CAMP_DRILL_GAIN }, ctx);
   const drilled = adjust({ ...state, character: grown.character }, { energy: -CAMP_DRILL_ENERGY });
-  const text = 'You drill by the firelight until your arms ache.';
+  const said = campLine(drilled, ctx, 'drill');
+  const text = said.text;
   const logged = log(drilled, {
     text,
     tone: 'success',
@@ -139,12 +146,16 @@ function drill(state: GameState, ctx: GameContext): GameState {
       chip(`−${CAMP_DRILL_ENERGY} energy`, 'cost'),
     ],
   });
-  return told(logDiscoveries(logged, grown.discovered, ctx), { kind: 'story', text });
+  return told(logDiscoveries({ ...logged, told: said.told }, grown.discovered, ctx), {
+    kind: 'story',
+    text,
+  });
 }
 
-function rest(state: GameState): GameState {
-  const text = 'You turn in early and sleep like the dead.';
-  const rested = log(adjust(state, { energy: CAMP_REST_ENERGY }), {
+function rest(state: GameState, ctx: GameContext): GameState {
+  const said = campLine(state, ctx, 'rest');
+  const text = said.text;
+  const rested = log(adjust({ ...state, told: said.told }, { energy: CAMP_REST_ENERGY }), {
     text,
     tone: 'success',
     chips: [chip(`+${CAMP_REST_ENERGY} energy`, 'gain')],
@@ -190,7 +201,7 @@ export function campActivity(
       case 'drill':
         return drill(choice, ctx);
       case 'rest':
-        return rest(choice);
+        return rest(choice, ctx);
       case 'forage': {
         const foraged = forageCamp(choice, ctx, rng);
         return told(foraged.state, ...foraged.notes);

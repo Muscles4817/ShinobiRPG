@@ -1,7 +1,8 @@
 import type { VoiceDef } from '../../voices';
+import { AFTER_VOICES } from './voicesAfter';
 
 /** The crew's lines on a job, for every trait and moment. Shared by every pack. */
-export const VOICES: readonly VoiceDef[] = [
+const CREW_VOICES: readonly VoiceDef[] = [
   // Brash
   { moment: 'check-passed', trait: 'brash', lines: ['Told you. Easy.', 'That all it’s got?'] },
   { moment: 'check-failed', trait: 'brash', lines: ['Should’ve let me do it.', 'Tch. Again.'] },
@@ -220,3 +221,6 @@ export const VOICES: readonly VoiceDef[] = [
     lines: ['Two hundred push-ups before bed. Join me?', 'I’m not tired. You’re tired.'],
   },
 ];
+
+/** Every crew line: at each moment of a job, and after what happened on it. */
+export const VOICES: readonly VoiceDef[] = [...CREW_VOICES, ...AFTER_VOICES];

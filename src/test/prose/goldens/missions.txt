@@ -1443,6 +1443,9 @@ view:
     text: Go in head-on
   lines[8]:
     text: You defeated two bandit thugs.
+  lines[9]:
+    speaker: Asuka
+    text: I didn’t need the help, for the record, but it was well timed.
   route[0]:
     label: Story
     state: done
@@ -1492,6 +1495,9 @@ view:
   lines[8]:
     text: You defeated two bandit thugs.
   lines[9]:
+    speaker: Asuka
+    text: I didn’t need the help, for the record, but it was well timed.
+  lines[10]:
     text: Up on the bluff a man stands with a long blade wrapped in cloth, a thin youth beside him. “Tell the ferrymen the chain stays,” he calls down, quite calm. Then they are gone into the reeds.
   route[0]:
     label: Story
@@ -1546,10 +1552,13 @@ view:
   lines[8]:
     text: You defeated two bandit thugs.
   lines[9]:
-    text: Up on the bluff a man stands with a long blade wrapped in cloth, a thin youth beside him. “Tell the ferrymen the chain stays,” he calls down, quite calm. Then they are gone into the reeds.
+    speaker: Asuka
+    text: I didn’t need the help, for the record, but it was well timed.
   lines[10]:
-    text: Then we see it through, at the price you could pay
+    text: Up on the bluff a man stands with a long blade wrapped in cloth, a thin youth beside him. “Tell the ferrymen the chain stays,” he calls down, quite calm. Then they are gone into the reeds.
   lines[11]:
+    text: Then we see it through, at the price you could pay
+  lines[12]:
     text: Tobei just nods, several times, and can’t say anything at all.
   route[0]:
     label: Story
@@ -1599,6 +1608,7 @@ view:
     text: Kept faith with the ferrymen, though they lied on the notice.
   crew[0]:
     name: Asuka
+    quote: I didn’t need the help, for the record, but it was well timed.
   crew[1]:
     name: Goro
   grade: clean
