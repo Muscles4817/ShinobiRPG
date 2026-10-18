@@ -306,7 +306,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Kicking Posts»: Hammer the old wrapped posts until your shins stop complaining. [Strength, a little] [Taijutsu, a little] [−20 energy]
+  journal «Kicking Posts»: You copy what you remember from the academy, get half of it wrong, and fix the worst of it before you stop. [Strength, a little] [Taijutsu, a little] [−20 energy]
 
 >>> talk
 
@@ -370,13 +370,13 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Ember Noodles»: A fiery broth the whole village swears by. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Ember Noodles»: It’s your first time trying it. You mean to take it slowly and finish it far too fast. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Gōran waited at the training ground until dark. You will hear about it. [Gōran’s regard falls]
   journal: Gōran and the team went ahead without you. [Gōran’s regard falls]
   journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored]
+  journal «Sleep till dawn»: The river is loud tonight, high with rain from the hills, and you fall asleep listening to it. [Energy & chakra restored]
 
 === day end ===
 view:
@@ -489,7 +489,7 @@ view:
   journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaints allowed. “Again. Tomorrow, better.” [Stamina, a touch] [Chakra Reserves, a touch] [Gōran’s regard rises] [−10 energy]
 
 >>> train
-  journal «Rooftop Sprints»: Race the lamplighters across the tiles. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
+  journal «Rooftop Sprints»: The first go is mostly finding out where it hurts. Everywhere, it turns out, so you slow down and learn the shape of it before you push. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
 
 >>> talk
 
@@ -553,7 +553,7 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Ember Noodles»: A fiery broth the whole village swears by. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Ember Noodles»: You take your time over it for once and watch the street go by. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Gōran expects you at Training Grounds for a session, this morning.
@@ -669,7 +669,7 @@ view:
   journal «Drills with Gōran»: Gōran drills you on the basics until they stop being basics. “Again. Tomorrow, better.” [Strength, a touch] [Taijutsu, a touch] [Gōran’s regard rises] [−10 energy]
 
 >>> train
-  journal «Lake Laps»: Swim until your arms burn, then swim back. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
+  journal «Lake Laps»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
   journal «Stamina: a first read»: It fights you every step. Others seem to pick this up in half the time.
 
 >>> talk
@@ -734,11 +734,11 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Ember Noodles»: A fiery broth the whole village swears by. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Ember Noodles»: It’s as good as last time, and you don’t leave a scrap. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored]
+  journal «Sleep till dawn»: Out in the street the lantern-lighters call to each other on their last round, and then it’s quiet. [Energy & chakra restored]
 
 === day end ===
 view:

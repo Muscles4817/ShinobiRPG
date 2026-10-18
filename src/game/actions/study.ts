@@ -8,16 +8,16 @@ import { shelfBlocker, shelfHolding, sourceOf } from '../shelves';
 import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
+import { STUDY_LINES } from '../everyday/deskLines';
+import { tellDaily } from '../everyday/tell';
 
 /** Studying a scroll on the shelves here: the academy's rack or the library's stacks. */
 
 export const STUDY_ENERGY_COST = 15;
 export const STUDY_SLOTS = 1;
 
+/** The line for a session that mastered the technique; one that didn't is told from a bank. */
 function masteryLine(name: string, result: Studied): string {
-  if (!result.mastered) {
-    return 'You unroll the scroll a little further and practise until your hands ache.';
-  }
   return result.unstable
     ? `${name} is yours, just. It is beyond your grade and fights your chakra; it will steady as you grow.`
     : `It finally clicks. ${name} is yours.`;
@@ -44,11 +44,19 @@ export function studyFrom(
   const result = studySession(state, def, ctx, source);
   const energy = hardWorkEnergy(state.character, ctx, STUDY_ENERGY_COST);
   const practised = discover(state.character, { [def.discipline]: 1 });
-  const studied = { ...state, techniques: result.book, character: practised.character };
+  const said = result.mastered
+    ? null
+    : tellDaily(state, ctx, STUDY_LINES, { key: def.id, firstOf: `study:${def.id}` });
+  const studied = {
+    ...state,
+    techniques: result.book,
+    character: practised.character,
+    told: said?.told ?? state.told,
+  };
   const next = adjust(spendTime(studied, STUDY_SLOTS, ctx), { energy: -energy });
   const logged = log(next, {
     heading: `Study ${def.name}`,
-    text: masteryLine(def.name, result),
+    text: said?.text ?? masteryLine(def.name, result),
     tone: result.mastered ? 'success' : 'info',
     chips: [
       chip(result.mastered ? 'Mastered' : `${result.percent}% learned`, 'gain'),

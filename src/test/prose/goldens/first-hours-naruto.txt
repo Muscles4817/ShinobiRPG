@@ -293,7 +293,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Kicking the Posts»: You hammer the three old posts until your shins stop complaining. [Strength, a little] [Taijutsu, a little] [−20 energy]
+  journal «Kicking the Posts»: The first go is mostly finding out where it hurts. Everywhere, it turns out, so you slow down and learn the shape of it before you push. [Strength, a little] [Taijutsu, a little] [−20 energy]
 
 >>> talk
 
@@ -357,12 +357,12 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Miso Chashu Ramen»: It’s your first time trying it. You mean to take it slowly and finish it far too fast. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Kaname waited at the training ground. You didn’t come. [Kaname’s regard falls]
   journal: Kaname expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored]
+  journal «Sleep till dawn»: Across the village a dog barks at nothing for a while, then gives up, and so do you. [Energy & chakra restored]
 
 === day end ===
 view:
@@ -464,7 +464,7 @@ view:
   journal «Meditation with Kaname»: Kaname has you sit still until your chakra settles like a pond. “Why did that work? Think about it tonight.” [Chakra Control, a touch] [Kaname’s regard rises] [−10 energy]
 
 >>> train
-  journal «Rooftop Runs»: You race across the rooftops, leaping the gaps between houses. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
+  journal «Rooftop Runs»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
 
 >>> talk
 
@@ -528,7 +528,7 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Miso Chashu Ramen»: The cook knows your face by now and gives you a little extra without saying anything. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored]
@@ -642,7 +642,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Laps of the Village Walls»: One lap, then another, the gate guards cheering you on with less enthusiasm each time. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
+  journal «Laps of the Village Walls»: You copy what you remember from the academy, get half of it wrong, and fix the worst of it before you stop. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
 
 >>> talk
 
@@ -706,11 +706,11 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Miso Chashu Ramen»: It’s as good as last time, and you don’t leave a scrap. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Kaname expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored]
+  journal «Sleep till dawn»: A patrol crosses the rooftops some time after midnight, light-footed, and you’re asleep again before they’ve gone. [Energy & chakra restored]
 
 === day end ===
 view:
