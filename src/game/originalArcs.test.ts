@@ -23,6 +23,21 @@ describe('the chain at Kiri Ford', () => {
     return play(s, 'arc-ford-barons-bill', ['Fight beside him']);
   }
 
+  it('accounts for Ushio on every road: sent clear, or taken by the Watch', () => {
+    const home = play(ready(), 'arc-ford-pilot-home');
+    const spared = play(home, 'arc-ford-reed-blade', [
+      'Let them go, and tell them never to come back',
+    ]);
+    const clear = play(spared, 'arc-ford-barons-bill', [
+      'Tell him to get Ren clear and stay out of it',
+    ]);
+    expect(clear.village.marks).toContain('ford-ushio-gone');
+    const bound = play(home, 'arc-ford-reed-blade', ['Bind them both for the Watch']);
+    const taken = play(bound, 'arc-ford-barons-bill');
+    expect(taken.village.marks).toContain('ford-ushio-taken');
+    expect(taken.village.marks).not.toContain('ford-ushio-fell');
+  });
+
   it('counts the mercy you show, across jobs', () => {
     const s = atTheHearing();
     expect(s.village.tallies.mercy).toBe(1);

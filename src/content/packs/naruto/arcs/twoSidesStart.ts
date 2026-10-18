@@ -31,7 +31,7 @@ export const TOWN_APART: MissionDef = {
     },
     {
       kind: 'decision',
-      text: 'On Tazuna’s step Inari is sitting with his arms round his knees. “The fishermen threw stones at Grandpa today,” he says. “They used to be his friends.”',
+      text: 'On Tazuna’s step Inari is sitting with his arms round his knees. “The fishermen threw stones at Grandpa today,” he says. “They used to fish with my dad.”',
       options: [
         {
           label: 'Ask what started it',
@@ -78,7 +78,7 @@ export const CUT_NETS: MissionDef = {
       text: 'You sit up in the dark with the drying nets. Past midnight, a shape slips along the jetty with a knife.',
       approaches: [
         {
-          label: 'Get close enough to see his face',
+          label: 'Get close enough to see who he is',
           stat: 'perception',
           difficulty: 8,
           onSuccess: {

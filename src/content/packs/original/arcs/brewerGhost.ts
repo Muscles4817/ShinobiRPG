@@ -43,7 +43,7 @@ export const BREWER_GHOST: ArcDef = {
     {
       beats: ['find', 'take', 'return', 'change'],
       title: 'The night of the ghost',
-      text: 'Gensai wants it over by the month’s end. Whatever you know by then is what you’ll have.',
+      text: 'Gensai wants it over soon. Whatever you know by then is what you’ll have.',
       jobs: [GHOST_NIGHT.id],
     },
   ],

@@ -73,8 +73,7 @@ export const THIRD_HAND: MissionDef = {
   title: 'The Third Hand',
   rank: 'C',
   client: 'Tsunami',
-  summary:
-    'The ropes and the nets were cut by the same hand, paid from the tycoon’s warehouse on the point. End it, and go home.',
+  summary: 'Somebody is behind the cutting on both sides of the water. End it, and go home.',
   slots: 1,
   energyCost: 30,
   reward: { ryo: 520, reputation: 7 },
@@ -90,7 +89,7 @@ export const THIRD_HAND: MissionDef = {
           label: 'Gather the builders and the fishermen at the market, and show them both',
           tone: 'earnest',
           reply:
-            'The sandals, the new blade, the same nights. The market goes quiet. Then Tazuna and the eldest fisherman pick up the same boathook and walk out behind you.',
+            'The tycoon’s sandals on the jetty, the new blade on the scaffold. The market goes quiet. Then Tazuna and the eldest fisherman pick up the same boathook and walk out behind you.',
           effects: [
             { kind: 'mark', mark: 'united' },
             { kind: 'world', mark: 'waves-united' },

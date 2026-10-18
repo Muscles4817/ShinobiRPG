@@ -70,7 +70,7 @@ export const SOUR_VATS: MissionDef = {
     },
     {
       kind: 'decision',
-      text: 'Gensai counts out your fee, then keeps counting. “Double,” he says, “if it’s gone for good by the end of the month. Quickly, and no fuss in the village.”',
+      text: 'Gensai counts out your fee, then keeps counting. “Double,” he says, “if it’s gone for good, and soon. Quickly, and no fuss in the village.”',
       options: [
         {
           label: 'Agree, and take the money',
@@ -96,7 +96,7 @@ export const SOUR_VATS: MissionDef = {
       endings: [
         {
           when: { has: 'saw-well' },
-          text: 'The Watch captain frowns at the boarded well in your report. “Mori’s first wife drowned in the river ten years back,” he says. “Never found. People talk. Find out what they say.”',
+          text: 'The Watch captain frowns at the boarded well in your report. “Mori’s first wife drowned in the river ten years back, they said,” he says. “Closed coffin, quick funeral. People talk. Find out what they say.”',
         },
         {
           text: 'The Watch captain frowns at your report. “Ghosts don’t come from nowhere,” he says. “Find out who she was.”',
@@ -148,7 +148,7 @@ export const OLD_WELL: MissionDef = {
       ],
       success:
         'On a ledge just above the water lies a lacquered hairpin, the kind a bride is given, green with ten years of damp.',
-      failure: 'The rope slips and you come up soaked, with nothing but a mouthful of well water.',
+      failure: 'The water gives back nothing but your own lamp.',
       onFailure: 'forward',
     },
     {

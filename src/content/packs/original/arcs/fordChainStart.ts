@@ -151,7 +151,7 @@ export const REED_BLADE: MissionDef = {
     },
     {
       kind: 'narrative',
-      text: 'Ushio camps on the bluff above the chain, a cold fire and a view of the whole landing. Smoke from it says he isn’t hiding.',
+      text: 'Ushio camps on the bluff above the chain, a banked fire and a view of the whole landing. Its smoke says he isn’t hiding.',
       variants: [
         {
           when: { remembers: 'ford-asked-ren' },

@@ -34,9 +34,10 @@ export const STRONGROOM_SWORD: MissionDef = {
       text: 'The moneylender Hayase keeps a strongroom on the water, guarded day and night. You will need someone who knows the ford.',
       options: [
         {
-          label: 'Brother Ino at the Low Water, who knows Hayase’s locks',
+          label: 'Brother Ino at the Low Water, who drinks with Hayase’s lockmaker',
           tone: 'curious',
-          reply: '“I made half of them,” Ino says. “He never paid for the other half.”',
+          reply:
+            '“His lockmaker owes me a boat,” Ino says. “He’ll draw you every lock in the place.”',
           effects: [{ kind: 'mark', mark: 'crewed' }],
           ledger: 'Brought in Brother Ino, who knows the locks.',
         },
@@ -48,10 +49,10 @@ export const STRONGROOM_SWORD: MissionDef = {
           ledger: 'Brought in Tobei, to row you under the water-gate.',
         },
         {
-          label: 'Go in alone',
+          label: 'Go in without outside help',
           tone: 'quiet',
           reply: 'Fewer people, fewer mouths.',
-          ledger: 'Went in alone.',
+          ledger: 'Went in without outside help.',
         },
       ],
     },
@@ -124,6 +125,7 @@ export const STRONGROOM_SWORD: MissionDef = {
         },
       ],
     },
+    { kind: 'leg', text: 'Back up the river road, the sword wrapped in your bedroll.', days: 1 },
     {
       kind: 'ending',
       endings: [
@@ -133,6 +135,5 @@ export const STRONGROOM_SWORD: MissionDef = {
         },
       ],
     },
-    { kind: 'leg', text: 'Back up the river road, the sword wrapped in your bedroll.', days: 1 },
   ],
 };

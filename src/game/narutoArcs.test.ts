@@ -94,6 +94,14 @@ describe('the unwritten rule', () => {
     expect(kept.village.marks).not.toContain('ibiki-passed');
   });
 
+  it('fails whoever buys the boy back with the message, and takes no message on', () => {
+    const gave = carried('Hold up the message and offer it');
+    expect(gave.village.marks).toContain('ibiki-gave-message');
+    expect(gave.village.marks).not.toContain('ibiki-opened');
+    const verdict = play(gave, 'arc-ibiki-verdict');
+    expect(verdict.village.marks).toContain('ibiki-failed');
+  });
+
   it('offers the three orders as one choice on the road', () => {
     let s = upTo(
       play(ready(), 'arc-ibiki-interview'),

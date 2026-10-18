@@ -31,6 +31,12 @@ export const BRING_HER_HOME: MissionDef = {
     {
       kind: 'leg',
       text: 'Down the pilgrim road, Ochō silent beside you.',
+      variants: [
+        {
+          when: { remembers: 'ocho-trusts' },
+          text: 'Down the pilgrim road, Ochō silent beside you. She comes because you asked her to, and that is worse.',
+        },
+      ],
       days: 2,
       region: 'mountain-pass',
     },
@@ -60,7 +66,7 @@ export const BRING_HER_HOME: MissionDef = {
       endings: [
         {
           when: { has: 'witnessed' },
-          text: 'Word goes round Shukuba by evening. The creditor withdraws his suit, and the maid with the bruised wrist leaves Danjūrō’s house with Ochō a week later.',
+          text: 'Word goes round Shukuba by evening. The creditor withdraws his suit, and within the month Ochō walks out of her father’s house on her own terms.',
           effects: [{ kind: 'world', mark: 'silk-daughter-done' }],
           ledger: 'Ochō went home, but the whole town knows why she left.',
         },
@@ -90,7 +96,7 @@ export const WORD_OF_HER_DEATH: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'Down the pilgrim road alone, with her comb wrapped in a cloth.',
+      text: 'Down the pilgrim road without her, her comb wrapped in a cloth.',
       days: 2,
       region: 'mountain-pass',
     },
@@ -101,8 +107,7 @@ export const WORD_OF_HER_DEATH: MissionDef = {
         {
           label: 'Say nothing more',
           tone: 'quiet',
-          reply: 'He pays you for the news, not the job, and sends you out.',
-          effects: [{ kind: 'pay', share: -0.25 }],
+          reply: 'He pays you for the news, not a coin more, and sends you out.',
           ledger: 'Told Danjūrō his daughter drowned. He paid for the news.',
         },
       ],
@@ -111,7 +116,7 @@ export const WORD_OF_HER_DEATH: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: 'At the Fire Temple a novice sweeps the courtyard every morning, and nobody on the post road ever asks her name.',
+          text: 'At the Fire Temple a young woman in a pilgrim’s robe sweeps the courtyard every morning, and nobody on the post road ever asks her name.',
           effects: [{ kind: 'world', mark: 'silk-daughter-done' }],
           ledger: 'Ochō stays at the temple, dead to her father.',
         },
@@ -157,7 +162,7 @@ export const BEFORE_THE_MAGISTRATE: MissionDef = {
           difficulty: 6,
           onSuccess: {
             effects: [{ kind: 'mark', mark: 'case-made' }],
-            ledger: 'Laid the case out: the bruise, the room, her story.',
+            ledger: 'Laid the case out, piece by piece.',
           },
         },
         {
@@ -190,10 +195,7 @@ export const BEFORE_THE_MAGISTRATE: MissionDef = {
         },
         {
           text: 'The case is dismissed. Ochō goes back up to the temple, and Chiriku closes the gate behind her.',
-          effects: [
-            { kind: 'world', mark: 'silk-daughter-done' },
-            { kind: 'pay', share: -0.25 },
-          ],
+          effects: [{ kind: 'world', mark: 'silk-daughter-done' }],
           ledger: 'The magistrate dismissed the case. Ochō went back to the temple.',
         },
       ],

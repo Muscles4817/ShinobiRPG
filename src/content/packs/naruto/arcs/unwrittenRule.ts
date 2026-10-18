@@ -47,6 +47,7 @@ export const INTERVIEW: MissionDef = {
           label: 'Walk out',
           tone: 'quiet',
           reply: 'At the door he says, without turning round, “Come back tomorrow anyway.”',
+          effects: [{ kind: 'world', mark: 'ibiki-walked' }],
           ledger: 'Walked out of Ibiki’s interview.',
         },
       ],
@@ -82,12 +83,6 @@ export const SEALED_MESSAGE: MissionDef = {
     {
       kind: 'decision',
       text: 'On the forest road masked men burst out of the trees, seize a pilgrim boy walking ahead of you, and drag him off the road into the forest. “The message,” one calls back, “or the boy.”',
-      variants: [
-        {
-          when: { crew: 'team' },
-          text: 'On the forest road masked men burst out of the trees, knock one of your team flat, and drag them off the road into the forest. “The message,” one calls back, “or your friend.”',
-        },
-      ],
       options: [
         {
           label: 'Leave the road and go after them',
@@ -104,7 +99,10 @@ export const SEALED_MESSAGE: MissionDef = {
           tone: 'earnest',
           reply:
             'One of them takes it from your hand and throws their hostage back to you, laughing.',
-          effects: [{ kind: 'world', mark: 'ibiki-gave-message' }],
+          effects: [
+            { kind: 'mark', mark: 'gave-message' },
+            { kind: 'world', mark: 'ibiki-gave-message' },
+          ],
           ledger: 'Let the message out of your hands to buy them back.',
         },
         {
@@ -130,8 +128,9 @@ export const SEALED_MESSAGE: MissionDef = {
       },
     },
     {
+      when: { lacks: 'gave-message' },
       kind: 'decision',
-      text: 'Alone on the pilgrim road that night, the message sits in your lap. Its seal is a plain one, easy to lift and press back.',
+      text: 'By the fire that night, the message sits in your lap. Its seal is a plain one, easy to lift and press back.',
       options: [
         {
           label: 'Open it',
@@ -155,6 +154,10 @@ export const SEALED_MESSAGE: MissionDef = {
         {
           when: { has: 'left-road' },
           text: 'Chiriku breaks the seal, reads, and laughs out loud. Behind you, two familiar chūnin limp up the road with bruises and no masks: Izumo and Kotetsu, who have clearly had a long day.',
+        },
+        {
+          when: { has: 'gave-message' },
+          text: 'You reach the temple with nothing to hand over. Chiriku hears you out, says nothing at all, and writes a short letter of his own to Ibiki.',
         },
         {
           text: 'Chiriku breaks the seal, reads, and says nothing. He gives you tea and a bed for the night and a long look in the morning.',
@@ -181,6 +184,10 @@ export const VERDICT: MissionDef = {
       text: 'Ibiki has a sheet of paper in front of him with very little on it.',
       variants: [
         {
+          when: { remembers: 'ibiki-walked' },
+          text: 'Ibiki has a sheet of paper in front of him. On it, in his square hand, one line: walked out.',
+        },
+        {
           when: { remembers: 'ibiki-opened' },
           text: 'Ibiki has a sheet of paper in front of him, and the message you opened, its seal pressed back a little crooked.',
         },
@@ -190,19 +197,25 @@ export const VERDICT: MissionDef = {
       kind: 'ending',
       endings: [
         {
+          when: { all: [{ remembers: 'ibiki-left-road' }, { remembers: 'ibiki-opened' }] },
+          text: '“You left the road for the boy, with the message still on you,” Ibiki says. “You passed on the forest road.” He taps the crooked seal. “And you opened my message. Curious is good. Caught is not.”',
+          effects: [{ kind: 'world', mark: 'ibiki-passed' }],
+          ledger: 'Ibiki passed you, and noticed the seal.',
+        },
+        {
           when: { remembers: 'ibiki-left-road' },
-          text: '“Three orders,” Ibiki says, “and you broke one the moment someone needed you to. Good. A shinobi who keeps every order and loses a comrade isn’t one I want. You passed. You passed yesterday.”',
+          text: '“Three orders,” Ibiki says, “and you broke the one that could be broken, the moment someone needed you to, and kept the message on you while you did it. A shinobi who keeps every order and loses a comrade isn’t one I want. You passed on the forest road.”',
           effects: [{ kind: 'world', mark: 'ibiki-passed' }],
           ledger: 'Ibiki passed you: you broke an order for someone who needed you.',
         },
         {
           when: { remembers: 'ibiki-gave-message' },
-          text: '“You gave up the message,” Ibiki says. “And got them back. Not the way I’d have done it. But you didn’t walk on.” He writes, and it looks like a pass.',
-          effects: [{ kind: 'world', mark: 'ibiki-passed' }],
-          ledger: 'Ibiki passed you, just: you gave up the message rather than walk on.',
+          text: '“You didn’t walk on,” Ibiki says. “Good. And you bought the boy back with something that wasn’t yours to spend.” He folds the paper once. “Next time it’s a real enemy, and the message is a village’s worth of lives. Come back when you know the difference.”',
+          effects: [{ kind: 'world', mark: 'ibiki-failed' }],
+          ledger: 'Ibiki failed you: you gave up the message to buy the boy back.',
         },
         {
-          text: '“You kept every order,” Ibiki says. “Perfectly. And left someone in the forest.” He folds the paper once. “The test was never the message. Come back in a year.”',
+          text: '“You kept every order,” Ibiki says. “Perfectly. And left a boy in the forest.” He doesn’t fold the paper. He tears it once, cleanly. “The test was never the message. Come back in a year.”',
           effects: [{ kind: 'world', mark: 'ibiki-failed' }],
           ledger: 'Ibiki failed you for keeping the rules and leaving someone behind.',
         },

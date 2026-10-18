@@ -1,4 +1,4 @@
-import type { MissionDef } from '@/systems/missions';
+import type { Condition, MissionDef } from '@/systems/missions';
 
 import { FERRY_OFFICE, MERCY } from './fordChainStart';
 
@@ -7,6 +7,9 @@ import { FERRY_OFFICE, MERCY } from './fordChainStart';
  * village does with the youth who fought for him. The hearing reads the village's count of
  * mercy you have shown, on this job and others, as your argument.
  */
+
+/** Ushio fought beside you and the fight was real: he takes the hook meant for Ren. */
+const DYING: Condition = { all: [{ has: 'ushio-along' }, { has: 'fought-past' }] };
 
 export const BARONS_BILL: MissionDef = {
   id: 'arc-ford-barons-bill',
@@ -50,6 +53,7 @@ export const BARONS_BILL: MissionDef = {
           label: 'Tell him to get Ren clear and stay out of it',
           tone: 'kind',
           reply: 'For the first time, Ushio looks unsure. Ren takes his arm, and they go.',
+          effects: [{ kind: 'mark', mark: 'sent-clear' }],
           ledger: 'Sent Ushio and Ren clear of the fight.',
         },
       ],
@@ -66,6 +70,11 @@ export const BARONS_BILL: MissionDef = {
       },
     },
     {
+      when: DYING,
+      kind: 'narrative',
+      text: 'Ushio held the landing steps alone while the boats came in, as if he had always meant to. He took the hook meant for Ren, and he is still on his feet.',
+    },
+    {
       kind: 'decision',
       text: 'When it is over Oki himself is found hiding in his own toll box, clutching the chain’s key.',
       options: [
@@ -77,6 +86,7 @@ export const BARONS_BILL: MissionDef = {
           ledger: 'Handed the baron to the magistrate.',
         },
         {
+          when: { any: [{ lacks: 'ushio-along' }, { lacks: 'fought-past' }] },
           label: 'Let the ferrymen give him a dunking under his chain first',
           tone: 'joke',
           reply: 'He comes up spluttering three times. The whole landing cheers each one.',
@@ -86,20 +96,47 @@ export const BARONS_BILL: MissionDef = {
           ],
           ledger: 'Let the ferrymen dunk the baron before the magistrate had him.',
         },
+        {
+          when: DYING,
+          label: 'Let Ushio have a word with him',
+          tone: 'quiet',
+          reply:
+            'Ushio walks to the toll box on Ren’s arm and says something to Oki, too low for anyone else to hear. Oki hands the ferrymen the chain’s key and the deeds to the landing, and never charges anyone a toll again.',
+          effects: [{ kind: 'world', mark: 'ford-oki-broken' }],
+          ledger: 'Let the dying blade settle his bill with the baron.',
+        },
       ],
     },
     {
       kind: 'ending',
       endings: [
         {
-          when: { has: 'ushio-along' },
-          text: 'Ushio held the landing steps alone while the boats came in, as if he had always meant to. He took the hook meant for Ren. He is buried on the bluff, the chain cut and coiled over him.',
+          when: DYING,
+          text: 'Ushio dies at the foot of the chain post a little after noon, Ren holding his hand. “He said I was his,” Ren says, to nobody. “I was.” They bury Ushio on the bluff, the chain cut and coiled over him.',
           effects: [
             { kind: 'world', mark: 'ford-chain-cut' },
             { kind: 'world', mark: 'ford-ushio-fell' },
             { kind: 'memory', text: 'Ushio holding the landing steps' },
           ],
           ledger: 'Cut the chain. Ushio fell holding the steps.',
+        },
+        {
+          when: { any: [{ has: 'sent-clear' }, { has: 'ushio-along' }] },
+          text: 'The ferrymen cut the chain and throw it in the river. At dusk Ushio walks out along the river alone. Ren is asleep in the ferry office. “He’s better off with your lot,” Ushio told Tobei, and didn’t look back.',
+          effects: [
+            { kind: 'world', mark: 'ford-chain-cut' },
+            { kind: 'world', mark: 'ford-ushio-gone' },
+          ],
+          ledger: 'The chain is cut. Ushio left Ren with you and went downriver alone.',
+        },
+        {
+          when: { remembers: 'ford-rogue-bound' },
+          text: 'The ferrymen cut the chain and throw it in the river. The Watch’s boat takes Ushio north in irons that afternoon. Ren they leave with you to decide.',
+          effects: [
+            { kind: 'world', mark: 'ford-chain-cut' },
+            { kind: 'world', mark: 'ford-ushio-taken' },
+          ],
+          ledger: 'The chain is cut, and the Watch took Ushio north.',
         },
         {
           text: 'The ferrymen cut the chain themselves, all of them on the rope at once, and throw it in the river.',
@@ -135,6 +172,10 @@ export const REN_HEARING: MissionDef = {
           when: { remembers: 'ford-ushio-fell' },
           text: 'Up the river road to the village, Ren carrying Ushio’s blade in its cloth and not letting anyone else touch it.',
         },
+        {
+          when: { remembers: 'ford-rogue-bound' },
+          text: 'Up the river road to the village, Ren walking ahead of you in the Watch’s rope.',
+        },
       ],
       days: 1,
       region: 'river-road',
@@ -142,10 +183,16 @@ export const REN_HEARING: MissionDef = {
     {
       kind: 'decision',
       text: 'In the Watch house Suzu of the Night Watch reads the ferry office’s letter twice. “He threw needles at the village’s shinobi for a missing-nin,” she says. “Tell me why he isn’t going to the border forts.”',
+      variants: [
+        {
+          when: { any: [{ remembers: 'ford-ushio-gone' }, { remembers: 'ford-ushio-taken' }] },
+          text: 'In the Watch house Suzu of the Night Watch reads the ferry office’s letter twice. “He threw needles at the village’s shinobi for a missing-nin who is still alive,” she says. “Tell me why he isn’t going to the border forts, before he goes looking for him.”',
+        },
+      ],
       options: [
         {
           when: { tally: MERCY, atLeast: 2 },
-          label: 'Remind her of the others you have spared, and how they turned out',
+          label: 'Remind her of the others you’ve given a second chance, and how they turned out',
           tone: 'earnest',
           reply:
             'Suzu hears you out, and then, surprisingly, smiles. “You do keep doing this,” she says. “And it keeps working. He trains with the Watch. On your word.”',
@@ -159,8 +206,11 @@ export const REN_HEARING: MissionDef = {
           label: 'Tell her he had nobody else, and chose the one who saved him',
           tone: 'kind',
           reply:
-            '“So do half the people I hang,” Suzu says, not unkindly. “The forts, then. Their kitchens, not their cells. That much I’ll give you.”',
-          effects: [{ kind: 'world', mark: 'ren-to-the-forts' }],
+            '“So did half the people I’ve hanged,” Suzu says, not unkindly. “The forts, then. Their kitchens, not their cells. That much I’ll give you.”',
+          effects: [
+            { kind: 'world', mark: 'ren-to-the-forts' },
+            { kind: 'mark', mark: 'kitchens' },
+          ],
           ledger: 'Spoke for Ren, and got him the forts’ kitchens, not their cells.',
         },
         {
@@ -188,9 +238,15 @@ export const REN_HEARING: MissionDef = {
           ledger: 'Ren stays in the village, under the Watch.',
         },
         {
-          text: 'They take Ren north with the next supply cart. He sits at the back, looking south, towards the river.',
+          when: { has: 'kitchens' },
+          text: 'They take Ren north with the next supply cart, to the forts’ kitchens. He sits at the back, looking south, towards the river.',
           effects: [{ kind: 'world', mark: 'ford-arc-done' }],
-          ledger: 'Ren went to the border forts.',
+          ledger: 'Ren went to work in the border forts’ kitchens.',
+        },
+        {
+          text: 'They take Ren north in the Watch’s rope, to the forts’ cells. He doesn’t look back at you once.',
+          effects: [{ kind: 'world', mark: 'ford-arc-done' }],
+          ledger: 'Ren went to the border forts’ cells.',
         },
       ],
     },

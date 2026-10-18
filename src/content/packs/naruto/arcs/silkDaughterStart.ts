@@ -104,7 +104,8 @@ export const HER_ROOM: MissionDef = {
       ],
       success:
         'Nobody took Ochō. She packed for winter, paid a rider to carry a letter to the Fire Temple, and walked out before dawn.',
-      failure: 'A made bed and a cold room. Whatever happened, it didn’t happen here.',
+      failure:
+        'A made bed and a cold room. On your way out the innkeeper mentions she asked the way to the temple road.',
       onFailure: 'forward',
     },
     {
@@ -138,8 +139,9 @@ export const BANDITS_BLAMED: MissionDef = {
       canFlee: true,
     },
     {
+      when: { lacks: 'slipped-past' },
       kind: 'narrative',
-      text: 'Their chief, tied to a tree, swears he never took any merchant’s daughter. “A girl walked past us alone, before dawn, a month back,” he says. “Towards the temple road. We let her be. She looked like she had nothing worth taking.”',
+      text: 'Their chief swears he never took any merchant’s daughter. “A girl walked past us alone, before dawn, a month back,” he says. “Towards the temple road. We let her be. She looked like she had nothing worth taking.”',
     },
     {
       kind: 'ending',
@@ -176,7 +178,7 @@ export const PILGRIM_ROAD: MissionDef = {
     },
     {
       kind: 'narrative',
-      text: 'Chiriku meets you at the gate and doesn’t let you through it. Behind him, sweeping the courtyard in a novice’s robe, is a young woman who stops when she sees your headband.',
+      text: 'Chiriku meets you at the gate and doesn’t let you through it. “She asked for sanctuary,” he says mildly. “The temple gave it.” Behind him, sweeping the courtyard in a borrowed pilgrim’s robe, is a young woman who stops when she sees your headband.',
     },
     {
       kind: 'decision',

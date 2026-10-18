@@ -53,7 +53,7 @@ export const ASH_LANTERNS_BARGAIN: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: 'The first: dance at a wedding he promised fifty years ago to dance at. The second: bring home a sword he lost. “Either order,” he says, and goes back to his sweeping.',
+          text: 'The first: dance at a wedding he promised fifty years ago to dance at. The second: bring home the sword the village sold in a lean year. “Either order,” he says, and goes back to his sweeping.',
         },
       ],
     },

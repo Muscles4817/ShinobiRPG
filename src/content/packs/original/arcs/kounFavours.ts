@@ -45,7 +45,7 @@ export const EAST_BRIDGE: MissionDef = {
           label: 'Read her the letter she folded into his sword',
           tone: 'kind',
           reply:
-            'You read it aloud: hold your end, whatever happens, and don’t you dare come back for me. She listens to her own words, and laughs. “He never could follow an order he agreed with,” she says.',
+            'You read it aloud: hold your end, whatever happens, and don’t you dare come back for me. She listens to her own words, and laughs. “The one order of mine he ever kept,” she says. “Of course it was that one.”',
           effects: [
             { kind: 'mark', mark: 'at-peace' },
             { kind: 'mark', mark: 'letter-read' },
@@ -97,12 +97,12 @@ export const EAST_BRIDGE: MissionDef = {
         },
         {
           when: { has: 'at-peace' },
-          text: 'Her lantern goes out gently. When you tell Kōun what she said, he puts down the broom and doesn’t pick it up again that morning.',
+          text: 'Her lantern goes out gently, and the bridge is only a bridge. You carry her words down the pass for Kōun like something that might spill: he can stop.',
           effects: [{ kind: 'world', mark: 'koun-favours-done' }],
           ledger: 'Tsugumi forgave Kōun, and rests.',
         },
         {
-          text: 'She breaks apart in the cold, unanswered. When you tell Kōun she is at rest, he thanks you, and knows you are being kind.',
+          text: 'She breaks apart in the cold, unanswered. All the way down the pass you decide what to tell Kōun, and you know he’ll know you’re being kind.',
           effects: [{ kind: 'world', mark: 'koun-favours-done' }],
           ledger: 'Laid Tsugumi to rest without an answer for Kōun.',
         },
