@@ -87,6 +87,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         id: 'training-grounds',
         kind: 'training',
         name: 'Training Grounds',
+        inText: 'the training ground',
         icon: 'post',
         blurb: 'Posts, trees and the falls',
         trainingIds: [

@@ -107,7 +107,9 @@ describe('chakra exhaustion', () => {
     const first = act(drained, { type: 'sleep' });
     expect(first.character.vitals.chakra).toBe(Math.round(max * 0.5));
     expect(first.character.exhaustion).toBeNull();
-    expect(lastEntry(first)?.chips?.map((c) => c.label)).toContain('Chakra only partly back');
+    // The sleep's own entry: what the sensei made of the night is told after it.
+    const slept = first.journal.entries.findLast((e) => e.heading !== undefined);
+    expect(slept?.chips?.map((c) => c.label)).toContain('Chakra only partly back');
     expect(act(first, { type: 'sleep' }).character.vitals.chakra).toBe(max);
   });
 

@@ -5,7 +5,7 @@ import { blockerFor } from './dispatch';
 import { requirePerson } from './people/cast';
 import { pickDone, PICK_REGARD, senseiPick } from './sensei/pick';
 import { mentorOf, teamDayOf, teamKey, type TeamDay } from './sensei/plan';
-import { settleMentor, MISSED_REGARD } from './sensei/settle';
+import { flushMentorNotices, settleMentor, MISSED_REGARD } from './sensei/settle';
 import { TEAM_DAY_REGARD, TEAMMATE_DAY_BOND } from './sensei/teamDays';
 import type { GameState } from './state';
 import { missionBoardView } from './views/boards';
@@ -54,10 +54,12 @@ describe('team days', () => {
 
   it('missed, cost regard by the sensei’s grip', () => {
     const { state, day } = onTeamDay('goran');
-    const next = settleMentor({ ...state, time: { day: day.day + 1, slot: 0 } }, ctx);
+    const next = flushMentorNotices(
+      settleMentor({ ...state, time: { day: day.day + 1, slot: 0 } }, ctx),
+    );
     expect(next.mentor.outcomes[teamKey(day.day)]).toBe('missed');
-    expect(next.journal.entries.map((e) => e.text)).toContain(
-      'Gōran and the team went ahead without you.',
+    expect(next.journal.entries.map((e) => e.text)).toContainEqual(
+      expect.stringMatching(/the contest|the team meal/),
     );
     expect(next.mentor.regard).toBeLessThanOrEqual(state.mentor.regard - MISSED_REGARD.tight);
   });

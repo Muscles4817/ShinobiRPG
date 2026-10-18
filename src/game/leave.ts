@@ -122,7 +122,7 @@ export function passAfterLesson(state: GameState, sensei: PersonDef): GameState 
   if (renewed) return signed;
   return log(signed, {
     heading: 'A travel pass',
-    text: `${sensei.name} signs a pass. "Safe roads, back by the next lesson. Don’t make me come and find you."`,
+    text: `${sensei.name} signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.”`,
     tone: 'success',
     chips: [{ label: `Pass for ${PASS_DAYS} days`, tone: 'gain' }],
   });

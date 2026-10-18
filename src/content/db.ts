@@ -11,6 +11,7 @@ import type { FieldBookRewards } from './fieldBook';
 import type { FurnishingDef, GardenCrop, HomeDef } from './homes';
 import type { QuirkDef } from './quirks';
 import type { CurriculumBeat } from './curriculum';
+import type { SenseiSpeech } from './senseiSpeech';
 import type { CompanionKindDef, CompanionLoreDef } from './companions';
 import type { SenseiTestDef } from './senseiTests';
 import type { InjuryDef } from './injuries';
@@ -59,6 +60,7 @@ export interface ContentDb {
   readonly exercises: Catalog<ExerciseDef>;
   readonly senseiTests: Catalog<SenseiTestDef>;
   readonly curriculum: Catalog<CurriculumBeat>;
+  readonly senseiSpeech: SenseiSpeech;
   readonly techniques: Catalog<TechniqueDef>;
   readonly missions: Catalog<MissionDef>;
   readonly exams: Catalog<ExamDef>;
@@ -113,6 +115,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     exercises: createCatalog('exercise', pack.exercises),
     senseiTests: createCatalog('sensei test', pack.senseiTests),
     curriculum: createCatalog('curriculum beat', pack.curriculum),
+    senseiSpeech: pack.senseiSpeech,
     techniques: createCatalog('technique', pack.techniques),
     missions: createCatalog('mission', pack.missions),
     exams: createCatalog('exam', pack.exams),

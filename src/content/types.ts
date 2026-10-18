@@ -29,6 +29,7 @@ import type { FieldBookRewards } from './fieldBook';
 import type { FurnishingDef, GardenCrop, HomeDef, LettingsFields } from './homes';
 import type { ExerciseDef } from './exercises';
 import type { CurriculumBeat } from './curriculum';
+import type { SenseiSpeech } from './senseiSpeech';
 import type { SenseiParts } from './senseiParts';
 import type { SenseiTestDef } from './senseiTests';
 import type { CookbookDef, GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
@@ -246,6 +247,11 @@ interface PlaceBase {
   readonly icon: IconId;
   /** One line under the name on the village screen when nothing more specific applies. */
   readonly blurb: string;
+  /**
+   * The name as it reads mid-sentence, when the title doesn't ("the training ground" for
+   * "Training Grounds"); starts lower case (validated). Read through `placeInSentence`.
+   */
+  readonly inText?: string;
   /** Shops and schools close; homes, grounds, the hall and the hospital never do. */
   readonly hours?: OpeningHours;
 }
@@ -329,6 +335,8 @@ export interface ContentPack {
   readonly senseiTests: readonly SenseiTestDef[];
   /** What a sensei shows a new genin, one thing at a time (the tutorial). */
   readonly curriculum: readonly CurriculumBeat[];
+  /** How a sensei's week sounds: sessions, sign-offs, the morning's notes. */
+  readonly senseiSpeech: SenseiSpeech;
   /** What generated senseis are made from (`senseiParts.ts`). */
   readonly senseiParts: SenseiParts;
   readonly techniques: readonly TechniqueDef[];

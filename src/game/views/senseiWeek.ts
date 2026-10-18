@@ -16,7 +16,7 @@ import {
   type Meeting,
 } from '../sensei/plan';
 import { FORMAT_LABELS } from '../sensei/sessions';
-import { meetingKept } from '../sensei/settle';
+import { meetingKept, meetingPlace } from '../sensei/settle';
 import { regardWord, type MeetingOutcome } from '../sensei/state';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
@@ -99,14 +99,15 @@ function meetingName(meeting: Meeting): string {
   return meeting.kind === 'lesson' ? 'Lesson' : FORMAT_LABELS[meeting.format];
 }
 
-function todayLine(state: GameState, sensei: PersonDef, meeting: Meeting | undefined) {
+function todayLine(state: GameState, ctx: GameContext, sensei: PersonDef, meeting?: Meeting) {
   if (!meeting) return null;
   if (meetingKept(state, sensei, meeting)) return 'Done for today.';
   const slot = TIME_SLOTS.indexOf(meeting.from);
   const what = meeting.kind === 'lesson' ? 'Your lesson' : meetingName(meeting);
+  const place = meetingPlace(ctx);
   return state.time.slot < slot
-    ? `${what} today, from ${meeting.from}, at the training ground.`
-    : `${what} now, at the training ground.`;
+    ? `${what} today, from ${meeting.from}, at ${place}.`
+    : `${what} now, at ${place}.`;
 }
 
 function lessonToday(
@@ -153,7 +154,7 @@ export function senseiWeekView(state: GameState, ctx: GameContext): SenseiWeekVi
     regard: regardWord(state.mentor.regard),
     days,
     eased: meetingsPerWeek(state, sensei) < ways.cadence.sessions,
-    todayLine: todayLine(state, sensei, today),
+    todayLine: todayLine(state, ctx, sensei, today),
     session: today?.kind === 'session' ? choice(state, ctx, { type: 'senseiSession' }) : null,
     assignment: assignmentLine(state),
     lesson: lessonToday(state, ctx, sensei),
