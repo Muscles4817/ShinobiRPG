@@ -1,18 +1,19 @@
+import { listed } from '@/core';
 import { formatDate } from '@/systems/time';
 
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import type { DayEnd, DayEndMode, PurseLine } from '../daybook/state';
 import type { GameState } from '../state';
+import { diaryLine } from './dayDiary';
+import { growthRows, type DayGrowth } from './dayEndGrowth';
 import { dayHooks, type DayHook } from './dayHooks';
 import {
   findRows,
-  growthRows,
   hurtRows,
   momentRows,
   peopleRows,
   type DayFind,
-  type DayGrowth,
   type DayHurt,
   type DayMoment,
   type DayPerson,
@@ -29,6 +30,7 @@ export interface DayEndView {
   readonly slept: boolean;
   /** "Spring 9 draws to a close". */
   readonly when: string;
+  /** One sentence about the day, as in a diary. */
   readonly title: string;
   readonly moments: readonly DayMoment[];
   readonly hurts: readonly DayHurt[];
@@ -65,30 +67,28 @@ interface Sections {
   readonly people: readonly DayPerson[];
 }
 
-/** The day's name: the biggest thing that happened in it. */
-function titleOf(ended: DayEnd, s: Sections): string {
-  if (!ended.slept) return 'Dawn, and no sleep';
-  if (ended.days > 1) return 'The days in bed';
-  if (ended.rank) return 'A new rank';
-  if (ended.learned.length > 0) return 'A day to remember';
-  if (ended.jobs.length > 0) return 'Back from the job';
-  if (ended.injuries.length > 0) return 'Home, bruised';
-  if (s.growth.some((g) => g.up)) return 'A step up';
-  if (s.people.some((p) => p.stamp?.startsWith('Now'))) return 'Closer to someone';
-  return s.growth.length > 0 ? 'Hard work' : 'A quiet day';
-}
-
-/** A phrase carried on after a colon: its first letter lowered, names left as they are. */
-function after(phrase: string): string {
-  return `${phrase.charAt(0).toLowerCase()}${phrase.slice(1)}`;
+/**
+ * The people rows' stamps as lines: everyone who reached a stage together ("Now friends with
+ * Goro and Asuka"), then a sensei's change of mind ("Gōran thinks better of you").
+ */
+function peopleLines(people: readonly DayPerson[]): string[] {
+  const closer = new Map<string, string[]>();
+  const others: string[] = [];
+  for (const p of people) {
+    if (p.stamp?.startsWith('Now '))
+      closer.set(p.stamp, [...(closer.get(p.stamp) ?? []), p.face.name]);
+    else if (p.stamp)
+      others.push(`${p.face.name} ${p.stamp.charAt(0).toLowerCase()}${p.stamp.slice(1)}`);
+  }
+  return [...[...closer].map(([stamp, names]) => `${stamp} with ${listed(names)}`), ...others];
 }
 
 function summaryOf(s: Sections): string[] {
   return [
     ...s.moments.map((m) => m.title),
     ...s.hurts.map((h) => h.title),
-    ...s.people.flatMap((p) => (p.stamp ? [`${p.face.name}: ${after(p.stamp)}`] : [])),
-    ...s.growth.map((g) => `${g.name}: ${after(g.words)}`),
+    ...peopleLines(s.people),
+    ...s.growth.map((g) => `${g.name}, ${g.words.charAt(0).toLowerCase()}${g.words.slice(1)}`),
   ].slice(0, SUMMARY_LINES);
 }
 
@@ -107,7 +107,7 @@ export function dayEndView(state: GameState, ctx: GameContext): DayEndView | nul
     mode,
     slept: ended.slept,
     when: whenLine(ended),
-    title: titleOf(ended, sections),
+    title: diaryLine(ended, sections, ctx),
     ...sections,
     finds: findRows(ended, ctx),
     purse: ended.purse,

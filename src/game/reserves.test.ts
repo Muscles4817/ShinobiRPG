@@ -61,7 +61,7 @@ describe('chakra reserves', () => {
     const swum = act(before, { type: 'train', trainingId: 'lake-laps' });
     expect(swum.character.stats.reserves).toBeGreaterThan(before.character.stats.reserves);
     expect(lastEntry(swum)?.chips?.map((c) => c.label)).toContainEqual(
-      expect.stringMatching(/^Chakra Reserves \+/),
+      expect.stringMatching(/^Chakra Reserves( \+|, )/),
     );
     const kicked = act(before, { type: 'train', trainingId: 'post-kicks' });
     expect(kicked.character.stats.reserves).toBe(before.character.stats.reserves);
@@ -75,7 +75,7 @@ describe('chakra reserves', () => {
     const entry = lastEntry(after)!;
     expect(entry.heading).toBe('What the fight taught you');
     expect(entry.text).not.toMatch(/\d/);
-    expect(entry.chips?.[0]?.label).toMatch(/^Chakra Reserves \+/);
+    expect(entry.chips?.[0]?.label).toMatch(/^Chakra Reserves( \+|, )/);
     const spentNothing = { ...lessons, outcome: { ...fought, chakraSpent: 0 } };
     expect(growFromFight(before, spentNothing, ctx)).toBe(before);
   });

@@ -4,7 +4,7 @@ import { spend } from '@/systems/wallet';
 
 import { DRINK_BONUS, drinkStory, drinkWay, roundStory } from '../bar';
 import type { GameContext } from '../context';
-import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
+import { amountChip, busyReason, chip, firstBlocker, log, placeHere } from '../ops';
 import { bondOf, findPerson, peopleAt, requirePerson } from '../people/cast';
 import { outingWarmth, timeTogether, toneReaction } from '../people/together';
 import { warmed } from '../people/warmth';
@@ -62,7 +62,7 @@ export const buyRound: ActionHandler<ActionOf<'buyRound'>> = {
       tone: 'success',
       chips: [
         chip(`−${tavern.roundCost} ryo`, 'cost'),
-        ...names.map((name) => chip(`${name} +${warmth}`, 'gain')),
+        ...names.flatMap((name) => amountChip(name, warmth, 'gain')),
       ],
     });
   },

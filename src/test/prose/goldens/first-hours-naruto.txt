@@ -10,16 +10,16 @@ view:
     steps[3]: Smooth
     steps[4]: Easy going
   verdict: Steady. Middle of the class. You start about where most of your year does.
-  note: Your talent is still mostly hidden. Training will show you what it is.
-  easy[0]: Taijutsu, fast and far
-  easy[1]: Every stat grows quickly
-  easy[2]: Taijutsu, faster still
-  hard[0]: Genjutsu techniques, slower than the rest
-  hard[1]: Staying fed: you get hungry often
-  people[0]: Nothing stands out yet: people will take you as they find you.
-  limits[0]: Everything else is still hidden: training will tell you where it runs out.
+  note: Your talent is still mostly hidden, and only training will show you what it is.
+  easy[0]: Every stat grows quickly
+  easy[1]: Taijutsu comes very fast
+  hard[0]: Genjutsu techniques come slowly
+  hard[1]: You get hungry often
+  people[0]: Nothing stands out yet, so people will take you as they find you.
+  limits[0]: Taijutsu can go further than most.
+  limits[1]: Everything else is still hidden. Training will tell you where it runs out.
 instructor: Iruka-sensei
-caught: A lamp flares in the doorway. "Reading your own file the night before graduation?" Iruka-sensei sighs, and almost smiles. "Go home. Be on time tomorrow. And put the drawer back."
+caught: A lamp flares in the doorway. “Reading your own file the night before graduation?” Iruka-sensei sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”
 
 === class honours ===
 
@@ -293,7 +293,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Kicking the Posts»: You hammer the three old posts until your shins stop complaining. [Strength +0.13] [Taijutsu +0.07] [−20 energy]
+  journal «Kicking the Posts»: The first go is mostly finding out where it hurts. Everywhere, it turns out, so you slow down and learn the shape of it before you push. [Strength, a little] [Taijutsu, a little] [−20 energy]
 
 >>> talk
 
@@ -357,30 +357,30 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Miso Chashu Ramen»: It’s your first time trying it. You mean to take it slowly and finish it far too fast. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Kaname waited at the training ground. You didn’t come. [Kaname’s regard falls]
   journal: Kaname expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: Across the village a dog barks at nothing for a while, then gives up, and so do you. [Energy & chakra restored]
 
 === day end ===
 view:
   mode: full
   when: Spring 1 draws to a close
-  title: Closer to someone
+  title: You worked on your strength and taijutsu, and Mai, Kaname and you are acquaintances now.
   growth[0]:
     stat: strength
     name: Strength
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[1]:
     stat: taijutsu
     name: Taijutsu
     grade: D
     tier: Genin D
-    words: Past halfway to Chūnin C
+    words: Over halfway to a C
   people[0]:
     stage: Stranger
     next: At acquaintance: you learn what they’re like.
@@ -400,14 +400,14 @@ view:
     text: The Chūnin Exams
     stamp: In five days
   ahead[1]:
-    text: Kaname sets meditation
+    text: Meditation with Kaname
     stamp: Morning
   ahead[2]:
     text: Catch Tora the Cat
     stamp: Soon
-  summary[0]: Mai: now acquaintances
-  summary[1]: Kaname: now acquaintances
-  summary[2]: Strength: past halfway to Genin D
+  summary[0]: Now acquaintances with Mai and Kaname
+  summary[1]: Strength, over halfway to a D
+  summary[2]: Taijutsu, over halfway to a C
   button: Sleep
   dismiss:
 
@@ -461,10 +461,10 @@ view:
     befriend:
 
 >>> senseiSession
-  journal «Meditation with Kaname»: Kaname has you sit still until your chakra settles like a pond. “Why did that work? Think about it tonight.” [Chakra Control +0.04] [Kaname’s regard rises] [−10 energy]
+  journal «Meditation with Kaname»: Kaname has you sit still until your chakra settles like a pond. “Why did that work? Think about it tonight.” [Chakra Control, a touch] [Kaname’s regard rises] [−10 energy]
 
 >>> train
-  journal «Rooftop Runs»: You race across the rooftops, leaping the gaps between houses. [Speed +0.01] [Stamina +0.01] [Chakra Reserves +0.02] [−20 energy]
+  journal «Rooftop Runs»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
 
 >>> talk
 
@@ -528,40 +528,40 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Miso Chashu Ramen»: The cook knows your face by now and gives you a little extra without saying anything. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored]
 
 === day end ===
 view:
   mode: full
   when: Spring 2 draws to a close
-  title: Hard work
+  title: You worked on your chakra control and chakra reserves, among other things, and Kaname thinks better of you.
   growth[0]:
     stat: chakraControl
     name: Chakra Control
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[1]:
     stat: reserves
     name: Chakra Reserves
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[2]:
     stat: stamina
     name: Stamina
     grade: D
     tier: Genin D
-    words: Early in the grade
+    words: Only just a D
   growth[3]:
     stat: speed
     name: Speed
     grade: D
     tier: Genin D
-    words: Past halfway to Chūnin C
+    words: Over halfway to a C
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -582,9 +582,9 @@ view:
   ahead[2]:
     text: New work at the hall
     stamp: New
-  summary[0]: Kaname: thinks better of you
-  summary[1]: Chakra Control: past halfway to Genin D
-  summary[2]: Chakra Reserves: past halfway to Genin D
+  summary[0]: Kaname thinks better of you
+  summary[1]: Chakra Control, over halfway to a D
+  summary[2]: Chakra Reserves, over halfway to a D
   button: Sleep
   dismiss:
 
@@ -642,7 +642,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Laps of the Village Walls»: One lap, then another, the gate guards cheering you on with less enthusiasm each time. [Stamina +0.02] [Chakra Reserves +0.06] [Willpower +0.05] [−25 energy]
+  journal «Laps of the Village Walls»: You copy what you remember from the academy, get half of it wrong, and fix the worst of it before you stop. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
 
 >>> talk
 
@@ -706,35 +706,35 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Miso Chashu Ramen»: Teuchi’s broth has been simmering since dawn. Naruto swears by it. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Miso Chashu Ramen»: It’s as good as last time, and you don’t leave a scrap. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Kaname expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a cicada keeps time. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: A patrol crosses the rooftops some time after midnight, light-footed, and you’re asleep again before they’ve gone. [Energy & chakra restored]
 
 === day end ===
 view:
   mode: full
   when: Spring 3 draws to a close
-  title: Hard work
+  title: You worked on your chakra reserves and willpower, among other things.
   growth[0]:
     stat: reserves
     name: Chakra Reserves
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[1]:
     stat: willpower
     name: Willpower
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[2]:
     stat: stamina
     name: Stamina
     grade: D
     tier: Genin D
-    words: Early in the grade
+    words: Only just a D
   people[0]:
     stage: Stranger
     next: At acquaintance: you learn what they’re like.
@@ -749,11 +749,11 @@ view:
     text: The Chūnin Exams
     stamp: In three days
   ahead[2]:
-    text: Kaname sets drills
+    text: Drills with Kaname
     stamp: Morning
-  summary[0]: Chakra Reserves: past halfway to Genin D
-  summary[1]: Willpower: past halfway to Genin D
-  summary[2]: Stamina: early in the grade
+  summary[0]: Chakra Reserves, over halfway to a D
+  summary[1]: Willpower, over halfway to a D
+  summary[2]: Stamina, only just a D
   button: Sleep
   dismiss:
 

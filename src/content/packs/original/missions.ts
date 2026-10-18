@@ -47,7 +47,7 @@ export const MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Hisae presses a fish-shaped treat into your hand. "She likes high places. And biting."',
+        text: 'Hisae presses a fish-shaped treat into your hand. “She likes high places. And biting.”',
       },
       {
         kind: 'check',
@@ -228,7 +228,7 @@ export const MISSIONS: readonly MissionDef[] = [
         ground: 'room',
         template: 'spirit',
         job: 'eliminate',
-        text: 'A grey figure hunches over the rice sacks at the back, muttering. "Mine. All of it. Mine."',
+        text: 'A grey figure hunches over the rice sacks at the back, muttering. “Mine. All of it. Mine.”',
         enemyIds: ['storehouse-wraith'],
         canFlee: false,
       },

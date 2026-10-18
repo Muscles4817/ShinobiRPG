@@ -11,6 +11,8 @@ import {
 } from '../dice';
 import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
 import { closedReason } from '../village';
+import { tellDaily } from '../everyday/tell';
+import { DICE_LOST, DICE_WON } from '../everyday/tableLines';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
@@ -41,8 +43,12 @@ export const playDice: ActionHandler<ActionOf<'playDice'>> = {
     const paid = spend(state.wallet, action.stake);
     if (!paid.ok) return state;
     const wallet = won > 0 ? earn(paid.value, action.stake + won) : paid.value;
+    const said = tellDaily(state, ctx, won > 0 ? DICE_WON : DICE_LOST, {
+      key: `${action.pastimeId}|${roundsTonight(state)}`,
+    });
     const next = {
       ...state,
+      told: said.told,
       wallet,
       village: {
         ...state.village,
@@ -53,11 +59,11 @@ export const playDice: ActionHandler<ActionOf<'playDice'>> = {
         },
       },
     };
-    const lifted = `The cup lifts: ${CALL_NAMES[came].toLowerCase()}.`;
+    const lifted = `The cup lifts on ${CALL_NAMES[came].toLowerCase()}.`;
     return log(next, {
       heading: here.pastime.name,
       tone: won > 0 ? 'success' : 'warning',
-      text: won > 0 ? `${lifted} You called it.` : `${lifted} The dealer rakes in your stake.`,
+      text: `${lifted} ${said.text}`,
       chips: [won > 0 ? chip(`+${won} ryo`, 'gain') : chip(`−${action.stake} ryo`, 'cost')],
     });
   },

@@ -12,6 +12,11 @@ export const NOTHING_TOLD: Told = {};
 /** How many recent picks a bank remembers: enough to rotate a small bank, never the whole of it. */
 export const TOLD_MEMORY = 3;
 
+/** Whether a bank has ever been drawn from: how a "first time" line knows it is the first. */
+export function toldBefore(told: Told, bank: string): boolean {
+  return told[bank] !== undefined;
+}
+
 export function recentlyTold(told: Told, bank: string): readonly number[] {
   return told[bank] ?? [];
 }

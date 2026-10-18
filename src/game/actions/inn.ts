@@ -1,7 +1,10 @@
 import { isHungry } from '@/systems/vitals';
 import { spend } from '@/systems/wallet';
 
-import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
+import { busyReason, chip, firstBlocker, placeHere } from '../ops';
+import { INN_NIGHTS } from '../everyday/awayLines';
+import { tellDaily } from '../everyday/tell';
+import { placeInText } from '../placeName';
 import { sleepTillDawn } from './daily';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -12,8 +15,6 @@ import type { ActionHandler, ActionOf } from './types';
 
 /** A night at an inn heals this share of what a night in your own bed would. */
 export const INN_HEALTH_SHARE = 0.9;
-const INN_SLEEP = 'You sleep in a rented room, to the creaks and voices of a strange house.';
-const INN_SLEEP_HUNGRY = 'You lie awake a while in a rented room, your stomach complaining.';
 
 export const takeRoom: ActionHandler<ActionOf<'takeRoom'>> = {
   check(state, _action, ctx) {
@@ -28,19 +29,15 @@ export const takeRoom: ActionHandler<ActionOf<'takeRoom'>> = {
     const inn = placeHere(state, ctx, 'inn');
     const paid = inn ? spend(state.wallet, inn.roomCost) : null;
     if (!inn || !paid?.ok) return state;
-    const booked = log(
-      { ...state, wallet: paid.value },
-      {
-        text: `${inn.keeper} hands you a key.`,
-        tone: 'info',
-        chips: [chip(`−${inn.roomCost} ryo`, 'cost')],
-      },
-    );
+    const said = tellDaily(state, ctx, INN_NIGHTS, { key: inn.id });
     const hungry = isHungry(state.character.vitals);
-    return sleepTillDawn(booked, ctx, {
+    // One entry for the night: the key at the desk, the night, and what the room cost.
+    return sleepTillDawn({ ...state, wallet: paid.value, told: said.told }, ctx, {
       healthShare: INN_HEALTH_SHARE,
-      text: hungry ? INN_SLEEP_HUNGRY : INN_SLEEP,
+      text: `${inn.keeper} hands you a key. ${said.text}`,
       uneasy: hungry,
+      heading: `A room at ${placeInText(inn.name)}`,
+      chips: [chip(`−${inn.roomCost} ryo`, 'cost')],
     });
   },
 };

@@ -57,7 +57,7 @@ export const GENIN: readonly PersonDef[] = [
       outfit: '#3a3a5e',
     }),
     specialty: 'genjutsu',
-    bio: 'Waves at empty corners. Leaves rice out for someone called "Grandfather".',
+    bio: 'Waves at empty corners. Leaves rice out for someone called “Grandfather”.',
     schedule: {
       morning: 'tokaku-compound',
       afternoon: 'training-grounds',

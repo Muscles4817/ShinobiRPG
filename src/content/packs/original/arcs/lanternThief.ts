@@ -52,6 +52,6 @@ export const LANTERN_THIEF: ArcDef = {
   recommends: {
     personId: 'suzu',
     words:
-      'Suzu of the Night Watch stands at the {leader}’s shoulder, the Watch’s report on the old wall in her hand. "{you} followed the glass upriver, walked into the kiln, and brought the light home. The Watch asks for this one." The {leader} nods. "Kneel, and stand up a chūnin."',
+      'Suzu of the Night Watch stands at the {leader}’s shoulder, the Watch’s report on the old wall in her hand. “{you} followed the glass upriver, walked into the kiln, and brought the light home. The Watch asks for this one.” The {leader} nods. “Kneel, and stand up a chūnin.”',
   },
 };

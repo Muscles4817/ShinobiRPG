@@ -24,6 +24,8 @@ import { cookedAsUsual, cookedByHand, type StoveResult } from '../stove';
 import { dishName, shortFor, slotName, takeFor } from '../pantry';
 import { homeBlocker } from './daily';
 import type { ActionHandler, ActionOf } from './types';
+import { COOKED_LINES } from '../everyday/deskLines';
+import { tellDaily } from '../everyday/tell';
 
 /**
  * Cooking at home: cheaper than eating out, and a good meal sets you up for the day. You cook
@@ -128,11 +130,10 @@ function stepsBlocker(steps: CookingSteps | undefined): string | null {
   return valid ? null : 'That isn’t a way to cook.';
 }
 
-/** The story line for a dish: its description, then what went wrong at the stove. */
-function cookLine(recipe: RecipeDef, result: StoveResult): string {
-  if (result.quality === 'burnt') return `${result.misses.join(' ')} It is edible. Just.`;
-  if (result.misses.length === 0) return recipe.description;
-  return `${recipe.description} ${result.misses.join(' ')}`;
+/** The story line for a dish: how the cooking went, then what went wrong at the stove. */
+function cookLine(told: string, result: StoveResult): string {
+  if (result.quality === 'burnt') return `${result.misses.join(' ')} It’s edible, just about.`;
+  return [told, ...result.misses].join(' ');
 }
 
 export const cook: ActionHandler<ActionOf<'cook'>> = {
@@ -153,12 +154,19 @@ export const cook: ActionHandler<ActionOf<'cook'>> = {
     const result = action.steps
       ? cookedByHand(state, recipe, action.steps)
       : cookedAsUsual(state, recipe);
-    const meal = cookMeal(state, ctx, recipe, { servings: 1, quality: result.quality });
-    return log(meal.state, {
-      heading: `Cooked ${meal.name}`,
-      text: cookLine(recipe, result),
-      tone: result.quality === 'burnt' ? 'warning' : 'success',
-      chips: meal.chips,
+    const said = tellDaily(state, ctx, COOKED_LINES, {
+      key: recipe.id,
+      firstOf: `cooked:${recipe.id}`,
     });
+    const meal = cookMeal(state, ctx, recipe, { servings: 1, quality: result.quality });
+    return log(
+      { ...meal.state, told: said.told },
+      {
+        heading: `Cooked ${meal.name}`,
+        text: cookLine(said.text, result),
+        tone: result.quality === 'burnt' ? 'warning' : 'success',
+        chips: meal.chips,
+      },
+    );
   },
 };

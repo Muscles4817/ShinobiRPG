@@ -10,16 +10,16 @@ view:
     steps[3]: Smooth
     steps[4]: Easy going
   verdict: Steady. Middle of the class. You start about where most of your year does.
-  note: Your talent is still mostly hidden. Training will show you what it is.
-  easy[0]: Taijutsu, fast and far
-  easy[1]: Every stat grows quickly
-  easy[2]: Taijutsu, faster still
-  hard[0]: Genjutsu techniques, slower than the rest
-  hard[1]: Staying fed: you get hungry often
-  people[0]: Nothing stands out yet: people will take you as they find you.
-  limits[0]: Everything else is still hidden: training will tell you where it runs out.
+  note: Your talent is still mostly hidden, and only training will show you what it is.
+  easy[0]: Every stat grows quickly
+  easy[1]: Taijutsu comes very fast
+  hard[0]: Genjutsu techniques come slowly
+  hard[1]: You get hungry often
+  people[0]: Nothing stands out yet, so people will take you as they find you.
+  limits[0]: Taijutsu can go further than most.
+  limits[1]: Everything else is still hidden. Training will tell you where it runs out.
 instructor: Instructor Rin
-caught: A lantern flares in the doorway. "Reading your own file the night before graduation?" Instructor Rin sighs, and almost smiles. "Go home. Be on time tomorrow. And put the drawer back."
+caught: A lantern flares in the doorway. “Reading your own file the night before graduation?” Instructor Rin sighs, and almost smiles. “Go home. Be on time tomorrow. And put the drawer back.”
 
 === class honours ===
 
@@ -306,7 +306,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Kicking Posts»: Hammer the old wrapped posts until your shins stop complaining. [Strength +0.13] [Taijutsu +0.07] [−20 energy]
+  journal «Kicking Posts»: You copy what you remember from the academy, get half of it wrong, and fix the worst of it before you stop. [Strength, a little] [Taijutsu, a little] [−20 energy]
 
 >>> talk
 
@@ -370,31 +370,31 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Ember Noodles»: A fiery broth the whole village swears by. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Ember Noodles»: It’s your first time trying it. You mean to take it slowly and finish it far too fast. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Gōran waited at the training ground until dark. You will hear about it. [Gōran’s regard falls]
   journal: Gōran and the team went ahead without you. [Gōran’s regard falls]
   journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: The river is loud tonight, high with rain from the hills, and you fall asleep listening to it. [Energy & chakra restored]
 
 === day end ===
 view:
   mode: full
   when: Spring 1 draws to a close
-  title: Closer to someone
+  title: You worked on your strength and taijutsu, and Goro, Gōran and you are acquaintances now.
   growth[0]:
     stat: strength
     name: Strength
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[1]:
     stat: taijutsu
     name: Taijutsu
     grade: D
     tier: Genin D
-    words: Past halfway to Chūnin C
+    words: Over halfway to a C
   people[0]:
     stage: Stranger
     next: At acquaintance: you learn what they’re like.
@@ -414,14 +414,14 @@ view:
     text: The Lantern Trials
     stamp: In five days
   ahead[1]:
-    text: Gōran sets march
+    text: March with Gōran
     stamp: Morning
   ahead[2]:
     text: Kite Day
     stamp: In five days
-  summary[0]: Goro: now acquaintances
-  summary[1]: Gōran: now acquaintances
-  summary[2]: Strength: past halfway to Genin D
+  summary[0]: Now acquaintances with Goro and Gōran
+  summary[1]: Strength, over halfway to a D
+  summary[2]: Taijutsu, over halfway to a C
   button: Sleep
   dismiss:
 
@@ -486,10 +486,10 @@ view:
     befriend:
 
 >>> senseiSession
-  journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaints allowed. “Again. Tomorrow, better.” [Stamina +0.01] [Chakra Reserves +0.02] [Gōran’s regard rises] [−10 energy]
+  journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaints allowed. “Again. Tomorrow, better.” [Stamina, a touch] [Chakra Reserves, a touch] [Gōran’s regard rises] [−10 energy]
 
 >>> train
-  journal «Rooftop Sprints»: Race the lamplighters across the tiles. [Speed +0.01] [Stamina +0.01] [Chakra Reserves +0.02] [−20 energy]
+  journal «Rooftop Sprints»: The first go is mostly finding out where it hurts. Everywhere, it turns out, so you slow down and learn the shape of it before you push. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
 
 >>> talk
 
@@ -553,35 +553,35 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Ember Noodles»: A fiery broth the whole village swears by. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Ember Noodles»: You take your time over it for once and watch the street go by. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored]
 
 === day end ===
 view:
   mode: full
   when: Spring 2 draws to a close
-  title: Hard work
+  title: You worked on your chakra reserves and stamina, among other things, and Gōran thinks better of you.
   growth[0]:
     stat: reserves
     name: Chakra Reserves
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[1]:
     stat: stamina
     name: Stamina
     grade: D
     tier: Genin D
-    words: Early in the grade
+    words: Only just a D
   growth[2]:
     stat: speed
     name: Speed
     grade: D
     tier: Genin D
-    words: Past halfway to Chūnin C
+    words: Over halfway to a C
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -597,14 +597,14 @@ view:
     text: The Lantern Trials
     stamp: In four days
   ahead[1]:
-    text: Gōran sets drills
+    text: Drills with Gōran
     stamp: Morning
   ahead[2]:
     text: Kite Day
     stamp: In four days
-  summary[0]: Gōran: thinks better of you
-  summary[1]: Chakra Reserves: past halfway to Genin D
-  summary[2]: Stamina: early in the grade
+  summary[0]: Gōran thinks better of you
+  summary[1]: Chakra Reserves, over halfway to a D
+  summary[2]: Stamina, only just a D
   button: Sleep
   dismiss:
 
@@ -666,11 +666,11 @@ view:
   rumours[2]: The Riverside Grill won’t say where its eels come from. Nobody has seen them caught.
 
 >>> senseiSession
-  journal «Drills with Gōran»: Gōran drills you on the basics until they stop being basics. “Again. Tomorrow, better.” [Strength +0.04] [Taijutsu +0.04] [Gōran’s regard rises] [−10 energy]
+  journal «Drills with Gōran»: Gōran drills you on the basics until they stop being basics. “Again. Tomorrow, better.” [Strength, a touch] [Taijutsu, a touch] [Gōran’s regard rises] [−10 energy]
 
 >>> train
-  journal «Lake Laps»: Swim until your arms burn, then swim back. [Stamina +0.02] [Chakra Reserves +0.06] [Willpower +0.05] [−25 energy]
-  journal «Stamina: a first read»: It fights you every step. Others seem to pick this up in half the time.
+  journal «Lake Laps»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
+  journal «A feel for your stamina»: It fights you every step. Others seem to pick this up in half the time.
 
 >>> talk
 
@@ -734,47 +734,47 @@ view:
 >>> endConversation
 
 >>> eat
-  journal «Ember Noodles»: A fiery broth the whole village swears by. [Hunger −50] [Energy +5] [−45 ryo]
+  journal «Ember Noodles»: It’s as good as last time, and you don’t leave a scrap. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
   journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored] [Health +0]
+  journal «Sleep till dawn»: Out in the street the lantern-lighters call to each other on their last round, and then it’s quiet. [Energy & chakra restored]
 
 === day end ===
 view:
   mode: full
   when: Spring 3 draws to a close
-  title: Hard work
+  title: You worked on your chakra reserves and willpower, among other things, and Gōran thinks better of you.
   growth[0]:
     stat: reserves
     name: Chakra Reserves
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[1]:
     stat: willpower
     name: Willpower
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[2]:
     stat: strength
     name: Strength
     grade: E
     tier: Genin E
-    words: Past halfway to Genin D
+    words: Over halfway to a D
   growth[3]:
     stat: taijutsu
     name: Taijutsu
     grade: D
     tier: Genin D
-    words: Past halfway to Chūnin C
+    words: Over halfway to a C
   growth[4]:
     stat: stamina
     name: Stamina
     grade: D
     tier: Genin D
-    words: Early in the grade
+    words: Only just a D
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -790,14 +790,14 @@ view:
     text: The Lantern Trials
     stamp: In three days
   ahead[1]:
-    text: Gōran sets sparring
+    text: Sparring with Gōran
     stamp: Morning
   ahead[2]:
     text: Kite Day
     stamp: In three days
-  summary[0]: Gōran: thinks better of you
-  summary[1]: Chakra Reserves: past halfway to Genin D
-  summary[2]: Willpower: past halfway to Genin D
+  summary[0]: Gōran thinks better of you
+  summary[1]: Chakra Reserves, over halfway to a D
+  summary[2]: Willpower, over halfway to a D
   button: Sleep
   dismiss:
 

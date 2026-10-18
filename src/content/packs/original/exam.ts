@@ -24,7 +24,7 @@ export const EXAMS: readonly ExamDef[] = [
     rumour:
       'Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.',
     announcement:
-      '{them} leaves three forms on the training-ground post, one weighted with a stone for each of you. "The Trials are coming. Think hard before you sign."',
+      '{them} leaves three forms on the training-ground post, one weighted with a stone for each of you. “The Trials are coming. Think hard before you sign.”',
     intro:
       'The Archive’s great hall is full of strangers in other villages’ headbands. Nobody speaks. A proctor with ink-black sleeves walks the rows, counting.',
     stages: [
@@ -32,7 +32,7 @@ export const EXAMS: readonly ExamDef[] = [
         kind: 'mind',
         name: 'The written paper',
         intro:
-          'Four questions, one hour, and a proctor at every window. "Five eyes on each of you," the head proctor says. "Be caught twice and your whole team goes home."',
+          'Four questions, one hour, and a proctor at every window. “Five eyes on each of you,” the head proctor says. “Be caught twice and your whole team goes home.”',
         questions: [
           {
             text: 'A spirit lantern burns blue in a dry wind. Which way did it come?',
@@ -44,16 +44,16 @@ export const EXAMS: readonly ExamDef[] = [
         ],
         passMark: 2,
         vigilance: 10,
-        caught: 'A brush taps your desk. "That is one." The proctor writes something down.',
+        caught: 'A brush taps your desk. “That is one.” The proctor writes something down.',
         passed: 'Pens down. The proctor gathers the papers without a word, then nods at your row.',
         failed: 'Pens down. Your paper is thinner than it should be. Your name is not read out.',
-        disqualified: '"Two." The proctor points at the door. Your team stands up with you.',
+        disqualified: '“Two.” The proctor points at the door. Your team stands up with you.',
         final: {
-          text: 'The head proctor lifts a sealed envelope. "The last question is inside. Take it and fail, and you stay genin for life. Leave now, and you may try again next season."',
+          text: 'The head proctor lifts a sealed envelope. “The last question is inside. Take it and fail, and you stay genin for life. Leave now, and you may try again next season.”',
           stay: 'Stay in your seat',
           leave: 'Walk out',
           stayed:
-            'Nobody else moves. The head proctor tears the envelope in half. "That was the question. You pass."',
+            'Nobody else moves. The head proctor tears the envelope in half. “That was the question. You pass.”',
           left: 'You stand. Your team follows you out without a word.',
         },
       },
@@ -61,7 +61,7 @@ export const EXAMS: readonly ExamDef[] = [
         kind: 'survival',
         name: 'The Ash Wood',
         intro:
-          'At dawn every team is given one lacquered token and shown the gate to the Ash Wood. "Bring a second token to the shrine at its heart. How you come by it is your affair."',
+          'At dawn every team is given one lacquered token and shown the gate to the Ash Wood. “Bring a second token to the shrine at its heart. How you come by it is your affair.”',
         missionId: ASH_WOOD,
         passed: 'You lay two tokens on the shrine steps. A proctor ticks your team off a list.',
         failed: 'The bell rings over the wood. Your team walks out with one token, or none.',
@@ -92,7 +92,7 @@ export const EXAMS: readonly ExamDef[] = [
     verdict: {
       promoted: 'Your name is read out with the few who will be chūnin. The Tōrokage is smiling.',
       passedOver:
-        'The names are read out. Yours is not one of them. Your sensei says only, "Next season."',
+        'The names are read out. Yours is not one of them. Your sensei says only, “Next season.”',
     },
   },
 ];
@@ -212,13 +212,13 @@ export const PROMOTIONS: Readonly<Record<PromotedRank, PromotionText>> = {
   chunin: {
     title: 'Before the {leader}',
     speech:
-      'The {leader} comes down from the balcony to you. "{you}. You kept your head, and your team. Tōrōgakure needs shinobi who can be trusted with other people’s lives. Kneel, and stand up a chūnin."',
+      'The {leader} comes down from the balcony to you. “{you}. You kept your head, and your team. Tōrōgakure needs shinobi who can be trusted with other people’s lives. Kneel, and stand up a chūnin.”',
     gift: 'An attendant hands you a folded flak vest, still smelling of lamp oil and new canvas.',
   },
   jonin: {
     title: 'In the {leader}’s study',
     speech:
-      'Late, by one lantern, the {leader} pushes a single sheet across the desk. "Your record speaks for you, {you}. From tomorrow you are a jōnin of this village. Sign it."',
+      'Late, by one lantern, the {leader} pushes a single sheet across the desk. “Your record speaks for you, {you}. From tomorrow you are a jōnin of this village. Sign it.”',
     gift: 'Under the sheet lies a lacquered tag with your name in the village’s hand.',
   },
 };
@@ -226,7 +226,7 @@ export const PROMOTIONS: Readonly<Record<PromotedRank, PromotionText>> = {
 /** What the {leader} says to a genin raised without the exam. */
 export const PROMOTION_ROUTES: PromotionRouteText = {
   field:
-    'The {leader} has the report from {job} open on the desk. "No exam asks more than that job did, {you}, and you came back with all of it done. Kneel, and stand up a chūnin."',
+    'The {leader} has the report from {job} open on the desk. “No exam asks more than that job did, {you}, and you came back with all of it done. Kneel, and stand up a chūnin.”',
   sensei:
-    'The {leader} turns a page of {sensei}’s close hand over and over. "Your sensei has never asked me for anything, {you}. A year of your work, on one page. Kneel, and stand up a chūnin."',
+    'The {leader} turns a page of {sensei}’s close hand over and over. “Your sensei has never asked me for anything, {you}. A year of your work, on one page. Kneel, and stand up a chūnin.”',
 };

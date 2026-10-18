@@ -233,7 +233,7 @@ view:
   route[2]:
     label: Story
     state: ahead
-  prompt: A grey figure hunches over the rice sacks at the back, muttering. "Mine. All of it. Mine."
+  prompt: A grey figure hunches over the rice sacks at the back, muttering. “Mine. All of it. Mine.”
   choices[0]:
     label: Size them up
     detail: Spirit
@@ -248,7 +248,7 @@ view:
   rank: D
   client: Rice Broker Hanada
   lines[0]:
-    text: A grey figure hunches over the rice sacks at the back, muttering. "Mine. All of it. Mine."
+    text: A grey figure hunches over the rice sacks at the back, muttering. “Mine. All of it. Mine.”
   lines[1]:
     text: Perception
   facts[0]:
@@ -314,7 +314,7 @@ view:
   rank: D
   client: Rice Broker Hanada
   lines[0]:
-    text: A grey figure hunches over the rice sacks at the back, muttering. "Mine. All of it. Mine."
+    text: A grey figure hunches over the rice sacks at the back, muttering. “Mine. All of it. Mine.”
   lines[1]:
     text: Perception
   lines[2]:
@@ -426,7 +426,7 @@ view:
   journal: Gōran expects you at Training Grounds for a session, this morning.
   journal: You wake in the village hospital, under lantern light and clean sheets. [−40 ryo]
   journal «Torn shoulder»: The medics patched you up, but this one will take time to mend. [6 days to heal]
-  journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves +0.02]
+  journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves, a touch]
 
 === report card ===
 view:
@@ -435,7 +435,7 @@ view:
   helped: Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals.
   summary: You lasted two rounds before going down. The storehouse wraith was still standing.
   injury: Torn shoulder
-  taught[0]: Chakra Reserves +0.02
+  taught[0]: Chakra Reserves, a touch
 
 --- combat (day 3, slot 0) ---
   —— First exchange ——
@@ -569,8 +569,8 @@ view:
 
 >>> missionContinue (Travel on)
   journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength +0.09] [Taijutsu +0.16] [+3 bond]
-  journal «A travel pass»: Gōran signs a pass. "Safe roads, back by the next lesson. Don’t make me come and find you." [Pass for 7 days]
+  journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength, a little] [Taijutsu, a little] [+3 bond]
+  journal «A travel pass»: Gōran signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
   journal «Gōran’s word»: You went down on that job. Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Assignment: Taijutsu]
   journal «On the road»: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb. [A day on the road]
 
@@ -578,8 +578,8 @@ view:
 view:
   sensei: Gōran
   text: Gōran has you hit the striking post until it splinters, then hands you a new one.
-  gains[0]: Strength +0.09
-  gains[1]: Taijutsu +0.16
+  gains[0]: Strength, a little
+  gains[1]: Taijutsu, a little
 
 --- mission (day 4, slot 0) ---
 
@@ -1072,8 +1072,8 @@ view:
 view:
   sensei: Gōran
   text: Gōran has you hit the striking post until it splinters, then hands you a new one.
-  gains[0]: Strength +0.09
-  gains[1]: Taijutsu +0.16
+  gains[0]: Strength, a little
+  gains[1]: Taijutsu, a little
 
 >>> dismissReport
 

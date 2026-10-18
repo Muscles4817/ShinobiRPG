@@ -21,7 +21,7 @@ describe('the end of the day (smoke test)', () => {
     const user = userEvent.setup();
     const done: GameAction[] = [];
     render(<DaySheet view={dayEndView(pushedThrough(), ctx)!} perform={(a) => done.push(a)} />);
-    const sheet = screen.getByRole('dialog', { name: 'Dawn, and no sleep' });
+    const sheet = screen.getByRole('dialog', { name: /^You never made it to bed/ });
     expect(within(sheet).getByRole('region', { name: 'Today' })).toBeInTheDocument();
     expect(within(sheet).getByRole('region', { name: 'What grew' })).toBeInTheDocument();
     expect(within(sheet).getByText('No sleep')).toBeInTheDocument();

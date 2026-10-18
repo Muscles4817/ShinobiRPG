@@ -44,7 +44,7 @@ export const MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Madam Shijimi dabs at her eyes. "My poor Tora. She has a ribbon on her left ear."',
+        text: 'Madam Shijimi dabs at her eyes. “My poor Tora. She has a ribbon on her left ear.”',
       },
       {
         kind: 'check',
@@ -253,7 +253,7 @@ export const MISSIONS: readonly MissionDef[] = [
         ground: 'room',
         template: 'spirit',
         job: 'eliminate',
-        text: 'A grey figure hunches over the grain sacks at the back, muttering. "Mine. All of it. Mine."',
+        text: 'A grey figure hunches over the grain sacks at the back, muttering. “Mine. All of it. Mine.”',
         enemyIds: ['restless-spirit'],
         canFlee: false,
       },

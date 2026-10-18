@@ -24,7 +24,7 @@ export const EXAMS: readonly ExamDef[] = [
     rumour:
       'Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.',
     announcement:
-      '{them} hands you an application form. "I’ve recommended you for the Chūnin Exams. Whether you sit them is up to the three of you."',
+      '{them} hands you an application form. “I’ve recommended you for the Chūnin Exams. Whether you sit them is up to the three of you.”',
     intro:
       'Room 301 of the academy is packed with genin from five villages, and every one of them is staring at your team.',
     stages: [
@@ -32,7 +32,7 @@ export const EXAMS: readonly ExamDef[] = [
         kind: 'mind',
         name: 'The written test',
         intro:
-          'Ibiki Morino stands at the front with his scars and his clipboard. "Ten points each. Every time a proctor catches you cheating, you lose two. Twice, and your team is out."',
+          'Ibiki Morino stands at the front with his scars and his clipboard. “Ten points each. Every time a proctor catches you cheating, you lose two. Twice, and your team is out.”',
         questions: [
           { text: 'Plot the arc of a shuriken thrown from a moving branch.', difficulty: 5 },
           {
@@ -44,16 +44,16 @@ export const EXAMS: readonly ExamDef[] = [
         ],
         passMark: 2,
         vigilance: 10,
-        caught: 'A pencil thuds into your desk. "That’s one." Somebody in the back row laughs.',
-        passed: '"Pencils down." Ibiki collects the papers himself and lingers at your desk.',
-        failed: '"Pencils down." Your paper is too thin. Your team’s number is not called.',
-        disqualified: '"That’s two. Out." Your teammates stand up with you.',
+        caught: 'A pencil thuds into your desk. “That’s one.” Somebody in the back row laughs.',
+        passed: '“Pencils down.” Ibiki collects the papers himself and lingers at your desk.',
+        failed: '“Pencils down.” Your paper is too thin. Your team’s number is not called.',
+        disqualified: '“That’s two. Out.” Your teammates stand up with you.',
         final: {
-          text: '"The tenth question," Ibiki says. "If you take it and get it wrong, you will never sit this exam again. If you don’t want to take it, leave now with your team."',
+          text: '“The tenth question,” Ibiki says. “If you take it and get it wrong, you will never sit this exam again. If you don’t want to take it, leave now with your team.”',
           stay: 'Stay in your seat',
           leave: 'Raise your hand and leave',
           stayed:
-            '"Then... you all pass." Ibiki takes off his headband. The scars beneath are worse.',
+            '“Then... you all pass.” Ibiki takes off his headband. The scars beneath are worse.',
           left: 'Your hand goes up. Your team follows you out of the room.',
         },
       },
@@ -61,7 +61,7 @@ export const EXAMS: readonly ExamDef[] = [
         kind: 'survival',
         name: 'The Forest of Death',
         intro:
-          'Anko Mitarashi hands your team a Heaven scroll at the gate of Training Ground 44. "Bring me an Earth scroll and this one to the tower. Try not to die."',
+          'Anko Mitarashi hands your team a Heaven scroll at the gate of Training Ground 44. “Bring me an Earth scroll and this one to the tower. Try not to die.”',
         missionId: FOREST,
         passed:
           'You hand both scrolls in at the tower. Iruka’s face appears in the smoke, grinning.',
@@ -75,7 +75,7 @@ export const EXAMS: readonly ExamDef[] = [
         rivals: [11, 12.5, 14],
         rivalBase: 8,
         bout: '{them} walks into the arena and doesn’t bother to bow.',
-        won: 'Genma steps between you, senbon in his teeth. "Winner."',
+        won: 'Genma steps between you, senbon in his teeth. “Winner.”',
         lost: 'The world tilts. Genma calls it before you hit the ground.',
         yielded: 'You raise your hand. Genma nods and steps in.',
         champion: 'The stands are on their feet. You won the finals.',
@@ -92,7 +92,7 @@ export const EXAMS: readonly ExamDef[] = [
     },
     verdict: {
       promoted: 'Your name is read out with the few who made chūnin. The Hokage puffs his pipe.',
-      passedOver: 'The names are read out. Yours isn’t one. Your sensei says only, "Next time."',
+      passedOver: 'The names are read out. Yours isn’t one. Your sensei says only, “Next time.”',
     },
   },
 ];
@@ -211,13 +211,13 @@ export const PROMOTIONS: Readonly<Record<PromotedRank, PromotionText>> = {
   chunin: {
     title: 'Before the {leader}',
     speech:
-      'The {leader} sets down his pipe. "{you}. A chūnin is a captain: someone others can follow. You showed me that in the exams. Congratulations."',
-    gift: 'Shikaku tosses you a green flak vest. "Troublesome to keep clean. Wear it anyway."',
+      'The {leader} sets down his pipe. “{you}. A chūnin is a captain: someone others can follow. You showed me that in the exams. Congratulations.”',
+    gift: 'Shikaku tosses you a green flak vest. “Troublesome to keep clean. Wear it anyway.”',
   },
   jonin: {
     title: 'In the {leader}’s office',
     speech:
-      'The {leader} looks up from a pile of reports, most of them yours. "Your record speaks for itself, {you}. From today you are a jōnin of the Leaf."',
+      'The {leader} looks up from a pile of reports, most of them yours. “Your record speaks for itself, {you}. From today you are a jōnin of the Leaf.”',
     gift: 'He slides a jōnin’s papers across the desk, already stamped.',
   },
 };
@@ -225,7 +225,7 @@ export const PROMOTIONS: Readonly<Record<PromotedRank, PromotionText>> = {
 /** What the {leader} says to a genin raised without the exam. */
 export const PROMOTION_ROUTES: PromotionRouteText = {
   field:
-    'The {leader} taps the mission report from {job}. "That was no genin’s job, {you}, and you saw it through. The exams test for exactly that. I don’t see the need to wait for them."',
+    'The {leader} taps the mission report from {job}. “That was no genin’s job, {you}, and you saw it through. The exams test for exactly that. I don’t see the need to wait for them.”',
   sensei:
-    'The {leader} sets down a letter in {sensei}’s hand. "It isn’t often a sensei skips the exams for a student. A year of your work says {sensei.they}{sensei.\'s} right, {you}. Congratulations."',
+    "The {leader} sets down a letter in {sensei}’s hand. “It isn’t often a sensei skips the exams for a student. A year of your work says {sensei.they}{sensei.'s} right, {you}. Congratulations.”",
 };

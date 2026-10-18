@@ -36,7 +36,8 @@ export interface SettingText {
   readonly intro: string;
   /** Button on the new-game screen. */
   readonly graduate: string;
-  readonly sleepWell: string;
+  /** The setting's night sounds, one of which may close a good night's sleep. */
+  readonly sleepWell: readonly string[];
   readonly sleepHungry: string;
   readonly sleepLockedOut: string;
   readonly hospitalWake: string;
