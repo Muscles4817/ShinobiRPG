@@ -6,6 +6,7 @@ import { newGame } from '@/test/gameFixtures';
 
 import { createGameContext } from './context';
 import { findPerson } from './people/cast';
+import { phrasingsOf } from './people/register';
 import { conversationValues, fillLine, pickConversation } from './people/talk';
 import type { GameState } from './state';
 
@@ -69,7 +70,7 @@ describe('templated conversations', () => {
   it('are filled from the person’s own specialty', () => {
     const values = conversationValues(state, ctx, classmate, { def: ART_TALK, topicKey: null });
     const art = classmate.specialty!;
-    expect(fillLine(ART_TALK.opener, values)).toBe(
+    expect(fillLine(phrasingsOf(ART_TALK.opener).join(''), values)).toBe(
       `${classmate.name} shows you ${art} drills. “I want to master the great ${art}.”`,
     );
   });

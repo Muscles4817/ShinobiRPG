@@ -3,6 +3,7 @@ import type { PersonDef } from '@/content';
 import type { GameState } from '@/game';
 import { DRINK_WAYS, drinkStory } from '@/game/bar';
 import { findPerson } from '@/game/people/cast';
+import { registerOf } from '@/game/people/register';
 import { pickConversation, topicFor } from '@/game/people/talk';
 import { toneReaction } from '@/game/people/together';
 import { coachAfterLesson } from '@/game/sensei/coaching';
@@ -23,7 +24,8 @@ import { recorder, type Recorder } from './recorder';
 function talkThrough(r: Recorder, state: GameState, person: PersonDef, convId: string) {
   const def = ctx.content.conversations.require(convId);
   const facets = [person.role, person.specialty ?? 'no art', ...person.traitIds].join(', ');
-  r.say(`\n=== ${convId} with ${person.name} (${facets}) ===`);
+  const register = registerOf(ctx, person);
+  r.say(`\n=== ${convId} with ${person.name} (${facets}; ${register}) ===`);
   def.choices.forEach((_, choiceIndex) => {
     const conversation = {
       personId: person.id,

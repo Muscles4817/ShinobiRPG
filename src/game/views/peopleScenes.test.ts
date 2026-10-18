@@ -3,6 +3,7 @@ import { COOL_LANDING_TO, WARM_LANDING_FROM } from '@/systems/bonds';
 import { act, ctx, newGame } from '@/test/gameFixtures';
 
 import { findPerson, tastesOf } from '../people/cast';
+import { phrasingFor, registerOf } from '../people/register';
 import { conversationValues, fillLine } from '../people/talk';
 import type { GameState } from '../state';
 import { answerAsItLanded, conversationScene } from './peopleScenes';
@@ -51,7 +52,10 @@ describe('answers by how a reply landed', () => {
     const cool = def.choices[index]?.cool ?? '';
     expect(answer?.delta).toBeLessThanOrEqual(COOL_LANDING_TO);
     expect(answer?.reply).toBe(
-      fillLine(cool, conversationValues(state, ctx, person, { def, topicKey: null })),
+      fillLine(
+        phrasingFor(cool, registerOf(ctx, person), `${person.id}|${def.id}`),
+        conversationValues(state, ctx, person, { def, topicKey: null }),
+      ),
     );
   });
 });

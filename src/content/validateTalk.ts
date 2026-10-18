@@ -1,7 +1,13 @@
 import { PRONOUN_FORMS } from '@/core';
 
 import { NAME_SLOTS, TOPIC_SLOTS } from './conversationTopics';
-import { PERSON_ROLES, type ConversationDef, type TopicKind } from './people';
+import {
+  PERSON_ROLES,
+  REGISTERS,
+  type ConversationDef,
+  type Register,
+  type TopicKind,
+} from './people';
 import type { ContentPack } from './types';
 
 /**
@@ -25,6 +31,35 @@ export function validateTalk(pack: ContentPack): string[] {
     ...topicProblems(pack),
     ...pack.conversations.flatMap(slotProblems),
     ...pack.conversations.flatMap(landingProblems),
+    ...pack.conversations.flatMap(phrasingProblems),
+  ];
+}
+
+/** The two pairs of registers; a phrased line must read in one of each, so it fits everyone. */
+const REGISTER_PAIRS: readonly (readonly Register[])[] = [
+  ['blunt', 'wry'],
+  ['warm', 'formal'],
+];
+
+/**
+ * A phrased line gives a phrasing in each pair of registers, so it reads right whoever says
+ * it, and a template's opener gives one for every register: the first words two people say
+ * are never the same.
+ */
+function phrasingProblems(c: ConversationDef): string[] {
+  const lines = [c.opener, ...c.choices.flatMap((x) => [x.reply, x.warm, x.cool])];
+  const halfPhrased = lines.some(
+    (line) =>
+      typeof line === 'object' && REGISTER_PAIRS.some((pair) => pair.every((r) => !line[r])),
+  );
+  const opener = c.opener;
+  const openerShort =
+    c.about !== undefined && (typeof opener === 'string' || REGISTERS.some((r) => !opener[r]));
+  return [
+    ...(halfPhrased
+      ? [`conversation "${c.id}" has a line phrased for only one pair of registers`]
+      : []),
+    ...(openerShort ? [`conversation "${c.id}" needs its opener phrased for every register`] : []),
   ];
 }
 

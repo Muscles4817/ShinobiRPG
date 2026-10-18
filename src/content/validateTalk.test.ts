@@ -44,13 +44,39 @@ describe('templated talk validation', () => {
           id: 'chat',
           minStage: 1,
           about: 'role',
-          opener: 'Hi.',
+          opener: { blunt: 'Hi.', warm: 'Hi.', wry: 'Hi.', formal: 'Hi.' },
           choices: [{ ...plain, warm: 'Ha.' }],
         },
         { id: 'own', minStage: 1, opener: 'Hi.', choices: [plain] },
       ],
     });
     expect(problems).toEqual(['conversation "chat" choice 1 has no cool answer']);
+  });
+
+  it('asks a template’s opener for every register, and any phrased line for both pairs', () => {
+    const choice = { label: 'Hm.', tone: 'quiet' as const, reply: 'Hm.', warm: 'Ha.', cool: 'Oh.' };
+    const problems = validateTalk({
+      ...ORIGINAL_PACK,
+      conversations: [
+        {
+          id: 'chat',
+          minStage: 1,
+          about: 'role',
+          opener: { blunt: 'Hi.', warm: 'Hi.' },
+          choices: [],
+        },
+        {
+          id: 'own',
+          minStage: 1,
+          opener: 'Hi.',
+          choices: [{ ...choice, reply: { blunt: 'Hm.', wry: 'Hm?' } }],
+        },
+      ],
+    });
+    expect(problems).toEqual([
+      'conversation "chat" needs its opener phrased for every register',
+      'conversation "own" has a line phrased for only one pair of registers',
+    ]);
   });
 
   it('lets talk and topics speak of the person by pronoun, and no other way', () => {
@@ -68,7 +94,12 @@ describe('templated talk validation', () => {
           id: 'chat',
           minStage: 1,
           about: 'role',
-          opener: '{them.they} say{them.s} {them.their} {work} is {them.bogus}.',
+          opener: {
+            blunt: '{them.they} say{them.s} {them.their} {work} is {them.bogus}.',
+            warm: 'Hi.',
+            wry: 'Hi.',
+            formal: 'Hi.',
+          },
           choices: [],
         },
       ],

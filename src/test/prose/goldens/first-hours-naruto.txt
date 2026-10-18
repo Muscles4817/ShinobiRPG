@@ -314,7 +314,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mikoto squints at you. “You’ve been watching how I do things. Go on, you can say it.”
+  opener: Mikoto turns to you. “I have the impression you’ve been observing how I do things. Please, say whatever it is.”
   choices[0]:
     label: “You’re a creature of habit.”
   choices[1]:
@@ -342,7 +342,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mikoto squints at you. “You’ve been watching how I do things. Go on, you can say it.”
+  opener: Mikoto turns to you. “I have the impression you’ve been observing how I do things. Please, say whatever it is.”
   choices[0]:
     label: “You’re a creature of habit.”
   choices[1]:
@@ -485,7 +485,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mai at it again: taking apart anything with a hinge, a latch or a seal to see how it works. She notices you noticing.
+  opener: You catch Mai taking apart anything with a hinge, a latch or a seal to see how it works, again. She sees you looking and stares straight back.
   choices[0]:
     label: “You always do that.”
   choices[1]:
@@ -513,7 +513,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mai at it again: taking apart anything with a hinge, a latch or a seal to see how it works. She notices you noticing.
+  opener: You catch Mai taking apart anything with a hinge, a latch or a seal to see how it works, again. She sees you looking and stares straight back.
   choices[0]:
     label: “You always do that.”
   choices[1]:
@@ -663,7 +663,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mikoto barely looks up. “Sorry, I’m busy. It’s always lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+  opener: Mikoto looks up briefly. “Forgive me, I can’t stop for long. It is always lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
   choices[0]:
     label: “I’ll leave you to it.”
   choices[1]:
@@ -691,7 +691,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mikoto barely looks up. “Sorry, I’m busy. It’s always lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+  opener: Mikoto looks up briefly. “Forgive me, I can’t stop for long. It is always lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
   choices[0]:
     label: “I’ll leave you to it.”
   choices[1]:
@@ -700,7 +700,7 @@ view:
     label: “You could stand to slow down.”
   answer:
     said: “I’ll leave you to it.”
-    reply: “Thank you,” Mikoto says, and sounds as if they mean it.
+    reply: “Thank you, that’s kind,” Mikoto says, and sounds as if they mean it.
   leave:
 
 >>> endConversation
