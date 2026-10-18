@@ -322,7 +322,7 @@ view:
   lines[3]:
     text: Perception
   lines[4]:
-    text: From cover you take in the ground, and how they hold themselves.
+    text: You find a place to watch from and stay there until you could draw the ground from memory.
   facts[0]:
     fact: count
     label: How many
@@ -344,7 +344,7 @@ view:
   facts[4]:
     fact: terrain
     label: The ground
-    value: Cold drafts, dark corners, and one place where the frost never lifts.
+    value: Frost on the inside of the shutters, a tatami worn through in one place, and a corner the lamplight will not reach.
     hint: Not yet known. Watch where the cold gathers to find out.
   recon[0]:
     label: Watch where the cold gathers

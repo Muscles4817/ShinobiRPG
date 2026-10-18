@@ -1,5 +1,7 @@
 import type { EncounterTemplate } from '@/systems/missions';
 
+import { BANDIT_CAMP, BEAST, GUARDED_BUILDING, LONE_ROGUE, SPIRIT } from './encounterFlavours';
+
 /**
  * Kinds of encounter every setting shares: which approaches make sense against them, how they
  * can be scouted and how alert they start. Missions pick one per encounter stage and may swap
@@ -8,6 +10,7 @@ import type { EncounterTemplate } from '@/systems/missions';
 export const ENCOUNTERS: readonly EncounterTemplate[] = [
   {
     id: 'bandit-camp',
+    variants: BANDIT_CAMP,
     name: 'Bandit camp',
     approaches: [
       'head-on',
@@ -32,7 +35,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
       terrain: 'A cookfire in a hollow, packs piled by the path, one way in and two ways out.',
       noticed: 'A dog barks. Voices drop, and someone kicks dirt over the fire.',
       slipped: 'You pass close enough to smell their supper. Nobody looks up.',
-      caught: '"Oi! Who’s that?" A torch swings your way.',
+      caught: '“Oi! Who’s that?” A torch swings your way.',
       parley: 'They grumble and spit, but they let you by and melt back into the brush.',
       ambush: 'You drop on them before anyone reaches for a weapon.',
       spotted: 'A lookout you never saw whistles. They come at you from the brush.',
@@ -40,6 +43,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
   },
   {
     id: 'beast',
+    variants: BEAST,
     name: 'Beast',
     approaches: ['head-on', 'ambush', 'sneak', 'set-ground', 'withdraw'],
     recon: [
@@ -63,6 +67,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
   },
   {
     id: 'lone-rogue',
+    variants: LONE_ROGUE,
     name: 'Lone rogue',
     approaches: ['head-on', 'ambush', 'sneak', 'talk', 'intimidate', 'set-ground', 'withdraw'],
     recon: [
@@ -78,7 +83,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
       terrain: 'Close walls, a single lane out, and good cover for whoever moves first.',
       noticed: 'They glance over their shoulder, straight at where you were a moment ago.',
       slipped: 'You let them pass beneath you and go on your way.',
-      caught: '"I see you. Come out, then."',
+      caught: '“I see you. Come out, then.”',
       parley: 'Their shoulders drop. They hold out their wrists.',
       ambush: 'You strike before they know you are there.',
       spotted: 'They were watching you all along. They strike first.',
@@ -86,6 +91,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
   },
   {
     id: 'guarded-building',
+    variants: GUARDED_BUILDING,
     name: 'Guarded building',
     approaches: ['head-on', 'ambush', 'sneak', 'talk', 'bribe', 'set-ground', 'withdraw'],
     recon: [
@@ -108,6 +114,7 @@ export const ENCOUNTERS: readonly EncounterTemplate[] = [
   },
   {
     id: 'spirit',
+    variants: SPIRIT,
     name: 'Spirit',
     approaches: ['head-on', 'ambush', 'set-ground', 'withdraw'],
     recon: [
