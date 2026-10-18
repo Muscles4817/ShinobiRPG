@@ -224,5 +224,5 @@ export const PROMOTION_ROUTES: PromotionRouteText = {
   field:
     'The {leader} taps the mission report from {job}. "That was no genin’s job, {you}, and you saw it through. The exams test for exactly that. I don’t see the need to wait for them."',
   sensei:
-    'The {leader} sets down a letter in {sensei}’s hand. "It isn’t often a sensei skips the exams for a student. A year of your work says they’re right, {you}. Congratulations."',
+    'The {leader} sets down a letter in {sensei}’s hand. "It isn’t often a sensei skips the exams for a student. A year of your work says {sensei.they}{sensei.\'s} right, {you}. Congratulations."',
 };

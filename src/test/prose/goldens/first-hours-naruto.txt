@@ -195,7 +195,7 @@ view:
   choices[1]:
     label: Nothing
   choices[2]:
-    label: Ask what they are afraid of
+    label: Ask what he is afraid of
 
 >>> senseiTest
 

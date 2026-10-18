@@ -4,7 +4,8 @@ import type { OpeningTest } from './senseis';
  * Content schema for the test a sensei sets a new team (`docs/design/sensei-plan.md`). It
  * never fails you: each round's options are ways of going at it, and how the way you chose
  * sits with the sensei's philosophy moves their first view of you. `{sensei}`, `{mate}` and
- * `{mate2}` are filled with names.
+ * `{mate2}` are filled with names, and their pronoun forms (`{sensei.their}`, `{mate.s}`) agree
+ * with them.
  */
 
 /** Ways of going at a test: with the team, on your own, by a trick, or by waiting it out. */

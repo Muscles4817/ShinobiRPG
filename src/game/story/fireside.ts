@@ -1,9 +1,10 @@
 import type { PersonDef, SenseiPhilosophy } from '@/content';
-import { hashUnit } from '@/core';
+import { fillSlots, hashUnit } from '@/core';
 import type { MissionNote } from '@/systems/missions';
 
 import type { GameContext } from '../context';
 import { chip, log } from '../ops';
+import { personSlots } from '../people/pronouns';
 import { waysOf } from '../sensei/generate';
 import { mentorOf } from '../sensei/plan';
 import { senseiRead } from '../sensei/read';
@@ -67,7 +68,8 @@ function talkOf(state: GameState, sensei: PersonDef): string | null {
   // Their own fireside talk, when they have a voice; else what their philosophy talks about.
   const lines = sensei.sensei?.voice?.fireside ?? FIRESIDE_TALK[philosophy];
   const pick = Math.floor(hashUnit(state.board.seed, state.time.day, sensei.id) * lines.length);
-  return lines[pick]?.replaceAll('{sensei}', sensei.name) ?? null;
+  const line = lines[pick];
+  return line === undefined ? null : fillSlots(line, personSlots('sensei', sensei));
 }
 
 /** An evening with your sensei: bond, a little of who they are, and what they saw of you. */
