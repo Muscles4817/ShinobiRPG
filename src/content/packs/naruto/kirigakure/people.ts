@@ -1,0 +1,137 @@
+import { allDay, look } from '../../../look';
+import { statLine } from '../../../statLine';
+import type { PersonDef } from '../../../types';
+
+/**
+ * The harbour ward's people: they live in Kirigakure and are met only there. A hunter-nin who
+ * watches every foreigner, a rebel who hides in plain sight, and the townsfolk keeping their
+ * heads down under the Bloody Mist.
+ */
+export const KIRI_PEOPLE: readonly PersonDef[] = [
+  {
+    id: 'ao',
+    name: 'Ao',
+    familyName: '',
+    pronouns: 'he',
+    homeLocationId: 'kirigakure',
+    role: 'shinobi',
+    title: 'Hunter-nin captain',
+    rank: 'jonin',
+    stats: statLine('C', {
+      perception: 'A',
+      ninjutsu: 'B',
+      chakraControl: 'B',
+      intellect: 'B',
+      willpower: 'B',
+    }),
+    traitIds: ['proud', 'focused'],
+    appearance: look(
+      'ponytail',
+      { hair: '#3d5fa8', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#2f4f7a' },
+      'forehead',
+      { shape: 'long', expression: 'stern', age: 'grown' },
+    ),
+    specialty: 'ninjutsu',
+    bio: 'A sensor who can feel a foreign chakra from the far end of the quay. He checks your pass himself every time and never says why.',
+    schedule: {
+      morning: 'kiri-fish-auction',
+      afternoon: 'kiri-sea-cliffs',
+      evening: null,
+      night: 'drowned-man',
+    },
+  },
+  {
+    id: 'mirei',
+    name: 'Mirei',
+    familyName: '',
+    pronouns: 'she',
+    homeLocationId: 'kirigakure',
+    role: 'shinobi',
+    title: 'Chūnin of the harbour watch',
+    rank: 'chunin',
+    stats: statLine('D', {
+      ninjutsu: 'B',
+      speed: 'C',
+      perception: 'C',
+      chakraControl: 'C',
+      intellect: 'C',
+    }),
+    traitIds: ['cunning', 'kind'],
+    appearance: look(
+      'bob',
+      { hair: '#b8322c', eyes: '#4f8a3a', skin: '#f3d2b3', outfit: '#3e6b3a' },
+      'neck',
+    ),
+    specialty: 'ninjutsu',
+    bio: 'Walks the harbour watch in a village uniform and carries letters for the rebels in its lining. Her brother had a bloodline.',
+    schedule: {
+      morning: null,
+      afternoon: 'harbour-broker',
+      evening: 'kiri-bathhouse',
+      night: 'drowned-man',
+    },
+  },
+  {
+    id: 'granny-shio',
+    name: 'Shio',
+    familyName: '',
+    pronouns: 'she',
+    homeLocationId: 'kirigakure',
+    role: 'villager',
+    title: 'Keeper of the Fog Lantern',
+    rank: 'civilian',
+    stats: statLine(3, {
+      perception: 9,
+      willpower: 10,
+      taijutsu: 0,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 0,
+      fuuinjutsu: 0,
+    }),
+    traitIds: ['kind', 'calm'],
+    favouriteRecipeId: 'grilled-fish-set',
+    appearance: look(
+      'topknot',
+      { hair: '#e8e0d0', eyes: '#2a1d14', skin: '#c68e63', outfit: '#5a3a6e' },
+      'arm',
+      { age: 'old', expression: 'smile' },
+    ),
+    bio: 'Has buried a husband and two sons, all shinobi. She feeds every guest as if they might be next.',
+    schedule: allDay('fog-lantern-lodging'),
+  },
+  {
+    id: 'ryugo',
+    name: 'Ryūgo',
+    familyName: '',
+    pronouns: 'he',
+    homeLocationId: 'kirigakure',
+    role: 'villager',
+    title: 'Auctioneer at the dawn market',
+    rank: 'civilian',
+    stats: statLine(4, {
+      strength: 9,
+      perception: 8,
+      intellect: 8,
+      taijutsu: 1,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 0,
+      fuuinjutsu: 0,
+    }),
+    traitIds: ['brash', 'diligent'],
+    appearance: look(
+      'shaved',
+      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#9a6440', outfit: '#2a2a32' },
+      'arm',
+      { figure: 'broad' },
+    ),
+    bio: 'Sells a boat’s whole catch with his fingers in the fog. His son sits the academy’s last exam this year, and Ryūgo has stopped sleeping.',
+    schedule: {
+      morning: 'kiri-fish-auction',
+      afternoon: 'kiri-shingle',
+      evening: 'drowned-man',
+      night: null,
+    },
+  },
+];

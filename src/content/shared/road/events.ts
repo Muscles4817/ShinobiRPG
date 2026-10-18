@@ -227,4 +227,47 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
       },
     ],
   },
+  {
+    id: 'patrol-boat-in-the-fog',
+    regions: ['mist-sea'],
+    text: 'Oars creak somewhere in the fog, closer with every stroke. The boatman puts his hand over the lantern.',
+    options: [
+      {
+        label: 'Ship the oars and drift until they pass',
+        tone: 'quiet',
+        reply:
+          'You sit without breathing while a long boat full of masks slides past an arm’s length away, and then the fog closes behind it.',
+        effects: [LOST_HOUR],
+        ledger: 'Drifted past a patrol boat in the fog.',
+      },
+      {
+        label: 'Row hard for open water',
+        tone: 'challenge',
+        reply:
+          'Someone shouts behind you and a kunai thunks into the stern, but the fog takes you before a second one comes.',
+        effects: [{ kind: 'harm', health: 5 }, COOLS_CHARGE],
+        ledger: 'Outran a patrol boat in the fog.',
+      },
+    ],
+  },
+  {
+    id: 'empty-boat-drifting',
+    regions: ['mist-sea'],
+    text: 'A small boat drifts out of the mist with nobody in it, only a cloak, a child’s sandal and a forehead protector scratched through.',
+    options: [
+      {
+        label: 'Tow it in and look for whoever it carried',
+        tone: 'kind',
+        reply:
+          'You search the water until the light goes, and find nobody. The boatman says a word for them over the side.',
+        effects: [LOST_HOUR, WARMS_CHARGE],
+        ledger: 'Searched the water around an empty boat.',
+      },
+      {
+        label: 'Let it drift by',
+        tone: 'quiet',
+        reply: 'The empty boat turns slowly in the swell and is gone into the white.',
+      },
+    ],
+  },
 ];

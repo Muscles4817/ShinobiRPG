@@ -24,18 +24,30 @@ describeFan('the fan pack’s towns', () => {
     const open = travelView(newGame({}, ctx), ctx).destinations.filter(
       (d) => d.lockedReason === null,
     );
-    expect(open.map((d) => d.id)).toEqual(expect.arrayContaining([...TOWNS, 'land-of-waves']));
+    expect(open.map((d) => d.id)).toEqual(
+      expect.arrayContaining([...TOWNS, 'land-of-waves', 'kirigakure']),
+    );
   });
 
-  it('lets a genin on a pass reach the towns on safe roads, but not the Land of Waves', () => {
+  it('lets a genin on a pass reach the towns on safe roads, but not the Waves or the Mist', () => {
     const passed = withPass(newGame({}, ctx));
     for (const town of TOWNS) {
       expect(dispatch(passed, { type: 'travel', locationId: town }, ctx).ok).toBe(true);
     }
-    expect(dispatch(passed, { type: 'travel', locationId: 'land-of-waves' }, ctx)).toEqual({
-      ok: false,
-      error: SAFE_ROADS_ONLY,
-    });
+    for (const far of ['land-of-waves', 'kirigakure']) {
+      expect(dispatch(passed, { type: 'travel', locationId: far }, ctx)).toEqual({
+        ok: false,
+        error: SAFE_ROADS_ONLY,
+      });
+    }
+  });
+
+  it('meets the harbour ward’s people at home in Kirigakure, with its own work to do', () => {
+    const residents = naruto!.people.filter((p) => p.homeLocationId === 'kirigakure');
+    expect(residents.map((p) => p.id)).toEqual(['ao', 'mirei', 'granny-shio', 'ryugo']);
+    const kiri = naruto!.locations.find((l) => l.id === 'kirigakure');
+    const desk = kiri?.places.find((p) => p.kind === 'missions');
+    expect(desk?.kind === 'missions' && desk.missionIds.length).toBeGreaterThan(0);
   });
 
   it('meets the bridge builder’s family at home in the Land of Waves', () => {

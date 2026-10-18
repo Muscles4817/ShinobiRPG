@@ -38,7 +38,7 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     to: 'kirigakure',
     legs: [
       {
-        region: 'coast-road',
+        region: 'mist-sea',
         days: 2,
         text: 'A boatman takes you over the misty water, saying as little as he can.',
       },
