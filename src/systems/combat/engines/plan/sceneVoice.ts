@@ -1,6 +1,7 @@
 import type { Told } from '../../rules/telling';
 import type { HoldOffReason } from '../../rules/zoning';
 import { told, within, type Bank, type Moment } from './fresh';
+import { RUNNING_IN, THROWN_BACK, VANISHING } from './voiceScenes';
 
 /**
  * The fight's voice for the field rather than the blows (`voice.ts` has those): someone thrown
@@ -24,6 +25,7 @@ const THROWN: Bank = {
     '{t} {t.is} sent skidding back to {where} range.',
     '{t} tumble{t.s} away to {where} range.',
   ],
+  scene: THROWN_BACK,
 };
 
 /** Someone thrown back to a distance, or dragged in close. */
@@ -66,6 +68,7 @@ const REHIDE: Bank = {
     '{a} fade{a.s} out of sight again.',
     '{a} {a.is} gone again, and the air where {a.they} stood is empty.',
   ],
+  scene: VANISHING,
 };
 
 /** An illusionist slips back out of sight. */
@@ -118,6 +121,7 @@ const THROUGH: Bank = {
     '{c} weave{c.s} in under {h.poss} fire.',
     '{c} run{c.s} the gauntlet of {h.poss} fire and come{c.s} out the other side.',
   ],
+  scene: RUNNING_IN,
 };
 
 /** Someone stepping in gets through a hold-off. */

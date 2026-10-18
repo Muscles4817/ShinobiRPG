@@ -104,6 +104,7 @@ export function startBout(state: GameState, ctx: GameContext, rng: Rng): GameSta
       enemies: [companionCombatant(rival, ready, ctx, RIVAL_TAG)],
       canFlee: true,
       intro,
+      occasion: 'bout',
     },
     rng,
   );

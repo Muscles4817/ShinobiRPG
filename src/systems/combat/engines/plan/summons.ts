@@ -60,7 +60,7 @@ export function callSummon(round: Round, actor: PlanFighter, callId: string): Ro
   );
   const answered = say(
     { ...round, fighters: [...fighters, body] },
-    tell('{a} slam{a.s} a palm down. Smoke bursts, and {b} answers the call.', {
+    tell('{a} slam{a.s} a palm down, and {b} answers the call in a burst of smoke.', {
       a: actor,
       b: body,
     }),
@@ -80,7 +80,7 @@ function goingHome(round: Round, summon: Fighter): SummonFate | null {
 }
 
 const HOME_LINES: Readonly<Record<SummonFate, string>> = {
-  stayed: '{s} stay{s.s}.',
+  stayed: '{s} stay{s.s} to the end.',
   fell: '{s} {s.is} beaten and vanish{s.es} in a puff of smoke.',
   'sent-home': '{s} vanish{s.es} in a puff of smoke, back where {s.they} came from.',
 };

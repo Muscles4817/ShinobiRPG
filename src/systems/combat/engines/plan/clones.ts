@@ -27,7 +27,7 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /** How each kind of clone comes into the fight. */
 const ENTRANCES: Readonly<Record<CloneKind, string>> = {
-  illusion: 'Copies of {a} shimmer into being beside {a.them}.',
+  illusion: 'Copies of {a} step out of the air beside {a.them}.',
   water: 'Clones of {a} rise out of running water.',
   wind: 'Clones of {a} spin up out of the wind.',
   earth: 'Clones of {a} heave up out of the ground.',

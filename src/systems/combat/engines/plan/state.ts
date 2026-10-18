@@ -1,5 +1,6 @@
 import type {
   CombatGround,
+  CombatOccasion,
   CombatResult,
   CombatRow,
   CombatSetup,
@@ -146,6 +147,15 @@ export interface PlanFighter
   readonly copied?: readonly string[];
   /** The exchange they went down in, for the fight's summary (`falls.ts`). */
   readonly fellAt?: number;
+  /** Their last daze and their guard last smashed, and by whom, for the summary's turning point. */
+  readonly dazedBy?: Swing;
+  readonly guardBrokenBy?: Swing;
+}
+
+/** A moment that may have swung a fight: the exchange it came in, and who did it (by id). */
+export interface Swing {
+  readonly at: number;
+  readonly by: string;
 }
 
 /** The change to a fighter who pays chakra: less left, more spent (never below empty). */
@@ -183,6 +193,8 @@ export interface PlanState {
   readonly field?: ActiveField;
   /** Where the fight happens (`rules/ground.ts`); an open arena when absent. */
   readonly ground?: CombatGround;
+  /** What kind of fight it is, for the story only (`scene.ts`); a fight for real when absent. */
+  readonly occasion?: CombatOccasion;
   /** The team mark: the foe (by id) the player's side goes for. */
   readonly mark?: string;
   /** The foes' mark, when they fight as a team (`foeTeam.ts`): whom on your side they go for. */
@@ -213,6 +225,7 @@ export interface Round {
   readonly intents: PlanState['intents'];
   readonly field?: ActiveField;
   readonly ground?: CombatGround;
+  readonly occasion?: CombatOccasion;
   readonly mark?: string;
   readonly foeMark?: string;
   readonly reads?: Reads;
@@ -315,6 +328,8 @@ export function patch(
       | 'footwork'
       | 'secondWindSpent'
       | 'fellAt'
+      | 'dazedBy'
+      | 'guardBrokenBy'
     >
   >,
 ): PlanFighter[] {

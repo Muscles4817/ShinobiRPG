@@ -29,6 +29,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     drops: ['wild-game'],
     danger: 'armed',
     name: 'Ash Fell Bear',
+    blow: 'claw',
     noun: 'Ash Fell bear',
     description: 'A black bear grown huge on charcoal-burners’ scraps, grey with ash to the eyes.',
     baseStat: 6,

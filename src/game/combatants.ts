@@ -199,6 +199,8 @@ function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSet
     called: foeCalled(def),
     grammar: foeGrammar(def, id),
     tag: def.kind,
+    ...(def.form ? { form: def.form } : {}),
+    ...(def.blow ? { blow: def.blow } : {}),
     attributes: attributesOf(enemyStatLine(def)),
     health: enemyMaxHealth(def),
     maxHealth: enemyMaxHealth(def),

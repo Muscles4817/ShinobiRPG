@@ -285,6 +285,7 @@ export function createPlanEngine(): CombatEngine {
         intents: rollIntents(table, rng),
         log: [intro, ...lines, ...(watching ? [FIGHT_BEGINS] : [])],
         ...(setup.ground ? { ground: setup.ground } : {}),
+        ...(setup.occasion ? { occasion: setup.occasion } : {}),
         result: null,
         canFlee: setup.canFlee && !watching,
         ...(watching ? { watching: true as const } : {}),

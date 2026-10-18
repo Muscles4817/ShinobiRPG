@@ -395,20 +395,20 @@ view:
 
 --- combat (day 2, slot 1) ---
   —— First exchange ——
-  You search the field and find no one.
+  You search the corners of the room and find them empty.
   The storehouse wraith catches the eye and lets Whispering Dread unfold.
   You were waiting for exactly that.
   —— Second exchange ——
   You look again, with no more luck.
   The storehouse wraith uses Whispering Dread once more.
-  The storehouse wraith’s Whispering Dread sinks deep into you, and it hurts. [Guarded] [−21]
+  The storehouse wraith’s Whispering Dread sinks deep into you, and it leaves you shaken. [Guarded] [−21]
   You blink, and the field is no longer where it was.
   —— Third exchange ——
   You search again, and still find no one.
   The storehouse wraith reaches for Whispering Dread again.
   The storehouse wraith’s Whispering Dread floods you, and you feel it. [Guarded] [−22]
   —— Last exchange ——
-  You pick out the storehouse wraith.
+  You find the storehouse wraith in a corner of the room.
   The storehouse wraith goes back to Whispering Dread.
   The storehouse wraith lands its Whispering Dread on you. [Guarded] [−14]
   Your senses swim in the storehouse wraith’s illusion.
@@ -440,26 +440,26 @@ view:
 
 --- combat (day 3, slot 0) ---
   —— First exchange ——
-  You dart in close.
-  The storehouse wraith’s strike catches you cleanly. [−9]
+  You cross the floor in two strides.
+  The storehouse wraith’s touch grips you cleanly. [−9]
   —— Second exchange ——
   You send Gale Heel howling out.
   The storehouse wraith sees it coming.
   The storehouse wraith is gone again, and the air where it stood is empty.
-  The air around the storehouse wraith wavers as Whispering Dread takes hold.
-  The storehouse wraith’s Whispering Dread floods you, and it hurts. [Guarded] [−21]
+  The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
+  The storehouse wraith’s Whispering Dread floods you, and it leaves you shaken. [Guarded] [−21]
   You catch the thread of the illusion and find the storehouse wraith.
   —— Third exchange ——
   You explode forward with Gale Heel.
   Your Gale Heel cuts into the storehouse wraith cleanly. [Guarded] [−7]
   Much of it glances off the storehouse wraith.
-  The storehouse wraith’s strike clips you. [Guarded] [−4]
+  The storehouse wraith’s touch brushes you. [Guarded] [−4]
   —— Last exchange ——
   You go back to Gale Heel.
-  You land your Gale Heel on the storehouse wraith. [Guarded] [−6]
+  You find the strength from somewhere, and your Gale Heel slices across the storehouse wraith. [Guarded] [−6]
   Little of it bites on the storehouse wraith.
-  You are a shade too slow, and the storehouse wraith’s strike glances off you. [Guarded] [−4]
-  You go down and stay down.
+  You are a shade too slow, and the storehouse wraith’s touch chills you. [Guarded] [−4]
+  You slide down the wall and stay there.
   Everything goes dark.
 
 >>> leaveFight
@@ -1395,12 +1395,12 @@ view:
 
 --- combat (day 2, slot 0) ---
   —— First exchange ——
-  You close in.
+  You close in at once.
   Gōran explodes forward with Iron Gate Palm.
   Gōran’s Iron Gate Palm drives through the first bandit thug, and he’s nearly knocked off his feet. [Guarded] [−50]
-  Goro goes in with Palm Strike.
+  Goro starts with Palm Strike before anyone has settled.
   There is nothing the first bandit thug can do as Goro’s Palm Strike smashes into him. [Guarded] [−40]
-  Asuka’s blade flows into Lantern Cut.
+  Asuka opens with Lantern Cut.
   Asuka’s Lantern Cut tears through the first bandit thug with everything behind it. [Guarded] [−48]
   The first bandit thug goes down and stays down.
   You are already elsewhere when the second bandit thug’s strike arrives.

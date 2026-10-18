@@ -109,10 +109,10 @@ function selfEffect<B extends Body>(user: B, effect: CombatItemEffect): B {
 
 const USE_LINE: Readonly<Record<Exclude<CombatItemEffect, 'blast'>, string>> = {
   smoke: '{a} vanish{a.es} in a burst of smoke.',
-  flash: '{a} set{a.s} off a flash. Every shadow is lit.',
-  chakra: '{a} swallow{a.s} a pill. Chakra floods back.',
+  flash: '{a} set{a.s} off a flash that lights every corner of the field.',
+  chakra: '{a} swallow{a.s} a pill, and {a.their} chakra comes flooding back.',
   heal: '{a} press{a.es} salve into {a.their} wounds.',
-  clarity: '{a} grip{a.s} a charm. The fog lifts.',
+  clarity: '{a} grip{a.s} a charm until the fog in {a.their} head lifts.',
 };
 
 /** Uses one of the tool: spends it and applies its effect. Check `itemBlocker` first. */

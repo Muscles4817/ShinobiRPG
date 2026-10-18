@@ -257,6 +257,12 @@ function throughSwap(round: Round, ready: readonly Card[], hit: Hit) {
   return substituted(round, ready, swapOf(hit)) ?? { round, escaped: false };
 }
 
+/** A guard smashed, and by whom, kept for the fight's summary only. */
+function brokeGuard(round: Round, targetId: string, by: string): Round {
+  const guardBrokenBy = { at: round.number, by };
+  return { ...round, fighters: patch(round.fighters, targetId, { guardBrokenBy }) };
+}
+
 /** Lands a blow on the target, letting their clones, ready defence and kit react. */
 export function react(start: Round, struck: Hit): Round {
   const answered = riposteFirst(start, struck);
@@ -316,6 +322,7 @@ export function react(start: Round, struck: Hit): Round {
     ),
     ...kitNote(momentOf(shielded, attacker.id), target, blow.kind),
   );
-  const landed = confuse(wound(told, target.id, damage), hit);
+  const marked = smashed ? brokeGuard(told, target.id, attacker.id) : told;
+  const landed = confuse(wound(marked, target.id, damage), hit);
   return canCounterBack(shielded, hit, has) ? counter(landed, hit) : landed;
 }
