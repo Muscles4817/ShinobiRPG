@@ -82,6 +82,22 @@ export const COMBAT_GROUNDS = ['arena', 'forest', 'town', 'room', 'lake'] as con
 export type CombatGround = (typeof COMBAT_GROUNDS)[number];
 
 /**
+ * What a fight is, for its story only (`engines/plan/scene.ts`): a friendly spar, a spar with a
+ * teammate, one with your rival, or a bout before a proctor. Absent: a fight for real. Rules
+ * never read it; it decides how a fall or the end is told, never whether they happen.
+ */
+export const COMBAT_OCCASIONS = ['spar', 'teammate', 'rival', 'bout'] as const;
+export type CombatOccasion = (typeof COMBAT_OCCASIONS)[number];
+
+/**
+ * What a fighter is, for the story's words only: a person, a beast that bites and claws, a
+ * swarm that stings, a spirit that touches rather than strikes. Absent: a spirit if it has the
+ * `spirit` trait, a beast if the story calls it "it", otherwise a person.
+ */
+export const COMBAT_FORMS = ['person', 'beast', 'swarm', 'spirit'] as const;
+export type CombatForm = (typeof COMBAT_FORMS)[number];
+
+/**
  * What a good meal brings into a fight (`rules/provisions.ts`): chakra topped up, a steady
  * opening, harms that wear off sooner, a second wind. Never a stat.
  */
@@ -122,6 +138,10 @@ export interface CombatantSetup {
   readonly grammar?: CombatGrammar;
   /** Short descriptor such as "Spirit" or "Bandit", shown on the combatant's banner. */
   readonly tag?: string;
+  /** What they are, for the story's words (`CombatForm`); absent: read from traits and grammar. */
+  readonly form?: CombatForm;
+  /** What the story calls their plain strike ("tusk", "claw"); absent: their form's word. */
+  readonly blow?: string;
   readonly attributes: CombatAttributes;
   readonly health: number;
   readonly maxHealth: number;
@@ -205,6 +225,8 @@ export interface CombatSetup {
   readonly opening?: CombatOpening;
   /** Where it happens; an open arena when absent. */
   readonly ground?: CombatGround;
+  /** What kind of fight it is, for its telling only; a fight for real when absent. */
+  readonly occasion?: CombatOccasion;
   /**
    * The player only watches: their side fights on its own, as the foes do, and the fight plays
    * on round after round with no planning between. Engines that can't stage a fight ignore it.

@@ -6,6 +6,7 @@ import { strikeWith, throwWith, type Attack } from '../../rules/weapons';
 import { react, type Blow } from './react';
 import type { Turn } from './senses';
 import { canDaze, dazeIn } from './daze';
+import { blowWord } from './scene';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -15,10 +16,11 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
  * drinks the target's chakra.
  */
 
-function blowOf(attack: Attack, thrown: boolean): Blow {
+/** A plain strike goes by the striker's own word for it: a wolf's bite, a spirit's touch. */
+function blowOf(attack: Attack, thrown: boolean, striker: PlanFighter): Blow {
   return {
     raw: attack.raw,
-    what: attack.what,
+    what: attack.what === 'strike' ? blowWord(striker) : attack.what,
     dodgeable: true,
     physical: !thrown,
     kind: attack.kind,
@@ -61,7 +63,7 @@ export function strike(round: Round, turn: Turn, thrown: boolean): Round {
   const { actor, target, rng } = turn;
   if (!target) return round;
   const attack = (thrown ? throwWith : strikeWith)(actor, target, rng.next());
-  const after = react(round, { attacker: actor, target, blow: blowOf(attack, thrown), rng });
+  const after = react(round, { attacker: actor, target, blow: blowOf(attack, thrown, actor), rng });
   const damage = landed(target, after);
   if (damage <= 0) return after;
   const dazed = dazeOnHit(after, target, attack.daze, rng);

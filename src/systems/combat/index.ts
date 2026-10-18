@@ -29,6 +29,8 @@ export type {
   RangeBand,
   CombatRow,
   CombatGround,
+  CombatForm,
+  CombatOccasion,
 } from './contract';
 export {
   COMBAT_TRAITS,

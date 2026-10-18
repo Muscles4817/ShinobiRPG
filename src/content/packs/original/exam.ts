@@ -144,6 +144,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
     drops: ['wild-game'],
     danger: 'armed',
     name: 'Ash Wood Boar',
+    blow: 'tusk',
     noun: 'Ash Wood boar',
     description: 'Old, scarred and bigger than a cart. It has eaten exam tokens before.',
     baseStat: 6,

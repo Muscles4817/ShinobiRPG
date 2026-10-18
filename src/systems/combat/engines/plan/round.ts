@@ -12,7 +12,7 @@ import { charge, step, type Charged } from './steps';
 import { keepHolding } from './holding';
 import { lostTurn } from './lostTurn';
 import { inCover, lostToGround } from './groundPlay';
-import { momentOf, RECENT_LINES } from './fresh';
+import { momentOf, SCENE_MEMORY } from './fresh';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
@@ -244,6 +244,19 @@ function stagedTurn(round: Round, id: string, rng: Rng): Round {
   return staged(round, turn(round, id, rng), id);
 }
 
+/** What an exchange carries in from the fight as it stands: reads, the field, the ground, marks. */
+function carriedIn(state: PlanState): Partial<Round> {
+  return {
+    ...(state.reads ? { reads: state.reads } : {}),
+    ...(state.field ? { field: state.field } : {}),
+    ...(state.ground ? { ground: state.ground } : {}),
+    ...(state.occasion ? { occasion: state.occasion } : {}),
+    ...(state.mark ? { mark: state.mark } : {}),
+    ...(state.foeMark ? { foeMark: state.foeMark } : {}),
+    ...(state.watching ? { watching: true as const } : {}),
+  };
+}
+
 /** Resolves one exchange. */
 export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   // Whoever moved first (the fight's opening) acts first in the first exchange.
@@ -266,15 +279,10 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     fighters: [...state.fighters],
     range: state.range,
     lines: [`— ${EXCHANGE_NAMES[state.exchange] ?? 'Another'} exchange —`],
-    recent: state.log.slice(-RECENT_LINES),
+    recent: state.log.slice(-SCENE_MEMORY),
     seen: state.seen,
     intents: state.intents,
-    ...(state.reads ? { reads: state.reads } : {}),
-    ...(state.field ? { field: state.field } : {}),
-    ...(state.ground ? { ground: state.ground } : {}),
-    ...(state.mark ? { mark: state.mark } : {}),
-    ...(state.foeMark ? { foeMark: state.foeMark } : {}),
-    ...(state.watching ? { watching: true as const } : {}),
+    ...carriedIn(state),
   };
   const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), start);
   const kept = plannedSummons(summonsAfter(clonesAfter(afterEmpowers(played, state.round))));

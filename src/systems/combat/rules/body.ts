@@ -3,6 +3,7 @@ import { clamp } from '@/core';
 import type {
   CombatantSetup,
   CombatantView,
+  CombatForm,
   CombatGrammar,
   CombatItem,
   CombatPerk,
@@ -31,6 +32,9 @@ export interface Body {
   readonly called?: string;
   readonly grammar?: CombatGrammar;
   readonly tag?: string;
+  /** What they are and what their plain strike is called, for the story only. */
+  readonly form?: CombatForm;
+  readonly blow?: string;
   readonly side: CombatSide;
   readonly isPlayer: boolean;
   readonly attributes: CombatantSetup['attributes'];

@@ -144,6 +144,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
     drops: ['wild-game'],
     danger: 'armed',
     name: 'Forest Tiger',
+    blow: 'claw',
     description: 'Training Ground 44 grows its animals big. This one has eaten genin before.',
     baseStat: 6,
     statBonuses: { strength: 4, stamina: 3 },

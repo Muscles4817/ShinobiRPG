@@ -1,5 +1,6 @@
 import type {
   CombatGround,
+  CombatOccasion,
   CombatResult,
   CombatRow,
   CombatSetup,
@@ -181,6 +182,8 @@ export interface PlanState {
   readonly field?: ActiveField;
   /** Where the fight happens (`rules/ground.ts`); an open arena when absent. */
   readonly ground?: CombatGround;
+  /** What kind of fight it is, for the story only (`scene.ts`); a fight for real when absent. */
+  readonly occasion?: CombatOccasion;
   /** The team mark: the foe (by id) the player's side goes for. */
   readonly mark?: string;
   /** The foes' mark, when they fight as a team (`foeTeam.ts`): whom on your side they go for. */
@@ -211,6 +214,7 @@ export interface Round {
   readonly intents: PlanState['intents'];
   readonly field?: ActiveField;
   readonly ground?: CombatGround;
+  readonly occasion?: CombatOccasion;
   readonly mark?: string;
   readonly foeMark?: string;
   readonly reads?: Reads;

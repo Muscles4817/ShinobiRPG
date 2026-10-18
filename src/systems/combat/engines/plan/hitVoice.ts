@@ -3,13 +3,17 @@ import type { Discipline, Element } from '@/systems/techniques';
 import type { AttackKind } from '../../rules/kit';
 import { reactionLine, voiceLine, type NarrationReaction } from '../../rules/narration';
 import { tell, type Told } from '../../rules/telling';
-import { freshPick, freshWord, pick, within, type Bank, type Moment } from './fresh';
+import { choose, freshWord, pick, within, type Bank, type Moment } from './fresh';
+import { FORM_VERBS, hitScenes } from './hitScenes';
+import type { SceneTag } from './scene';
 
 /**
  * Telling a hit by how hard it landed. The share of the target's health it took sets its
  * weight (a graze, solid, heavy, crushing), and the weight, the art and the element choose the
  * verb ("−7" catches, "−30" slams) and the sentence around it. Verbs and sentences are picked
- * fresh (`fresh.ts`), so two hits in a row don't land the same way.
+ * fresh (`fresh.ts`), so two hits in a row don't land the same way; a beast's bite, a swarm's
+ * sting and a spirit's touch have verbs of their own, and the scene may choose the sentence
+ * (`hitScenes.ts`: a wall in a room, a spar, the last of someone's strength).
  */
 
 /** Below these shares of the target's health a hit reads as a graze, solid, or heavy. */
@@ -112,8 +116,19 @@ export interface Landing {
   readonly followUp?: true;
 }
 
+const FORM_TAGS = ['beast', 'swarm', 'spirit'] as const;
+type FormTag = (typeof FORM_TAGS)[number];
+const isForm = (tag: SceneTag): tag is FormTag => (FORM_TAGS as readonly SceneTag[]).includes(tag);
+
 /** The verbs for a hit, and a name for them (so a used one rests a while). */
-function verbsFor(landing: Landing): { readonly id: string; readonly verbs: Verbs } {
+function verbsFor(
+  landing: Landing,
+  moment: Moment,
+): { readonly id: string; readonly verbs: Verbs } {
+  const form = moment.tags?.find(isForm);
+  if (form && landing.kind === 'blow' && !landing.discipline) {
+    return { id: form, verbs: FORM_VERBS[form] };
+  }
   if (landing.discipline === 'genjutsu') return { id: 'illusion', verbs: ILLUSION };
   if (landing.element) return { id: landing.element, verbs: BY_ELEMENT[landing.element] };
   switch (landing.kind) {
@@ -184,16 +199,19 @@ function reactionsTo({ dodgeTried, guarded, smashed }: HitTold): NarrationReacti
  */
 export function hitLine(moment: Moment, hit: HitTold): string {
   const weight = weightOf(hit.damage, hit.maxHealth);
-  const { id, verbs } = verbsFor(hit.blow);
+  const { id, verbs } = verbsFor(hit.blow, moment);
   const verbBank: Bank = { id: `verb-${id}-${weight}`, lines: verbs[weight] };
   const verb = freshWord(within(moment, 'verb'), verbBank);
-  const sentenceId = `hit-${weight}`;
-  const sentences = SENTENCES[weight];
-  const index = freshPick(moment, sentenceId, sentences.length);
+  const sentences = {
+    id: `hit-${weight}`,
+    lines: SENTENCES[weight],
+    scene: hitScenes(weight, hit.blow.discipline === 'genjutsu'),
+  };
+  const sentence = choose(moment, sentences);
   const again = hit.blow.followUp ? pick(within(moment, 'again'), AGAIN) : '';
   const guard = hit.smashed ? pick(within(moment, 'guard'), SMASHED) : '';
   const words = { what: hit.blow.what, verb: verb.word, again, guard };
-  const text = tell(sentences[index] ?? '', { a: hit.attacker, t: hit.target, ...words });
-  const line = voiceLine(text, `${sentenceId}.${index}`, verb.mark);
+  const text = tell(sentence.template, { a: hit.attacker, t: hit.target, ...words });
+  const line = voiceLine(text, `${sentence.id}.${sentence.index}`, verb.mark);
   return reactionLine(line, ...reactionsTo(hit));
 }
