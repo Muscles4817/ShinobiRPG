@@ -16,7 +16,8 @@ import { beats, seenDefence, walksInto } from './adapt';
 import { cardId, isOffence, playable, slotted, type Card } from './cards';
 import { partnered } from './combo';
 import { spendsReserve } from './pacing';
-import { beatsWeight, readsInTheMoment } from './judgement';
+import { beatsWeight, readsInTheMoment, worthSharpness } from './judgement';
+import { cardWorth } from './worth';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
@@ -29,7 +30,8 @@ import type { DefenceKind, PlanFighter, Reads } from './state';
  * Which slotted card a fighter plays this exchange. Fighters follow a few instincts (heal when
  * hurt, daze a fresh foe, punish a dazed one, keep a trump for the last ditch or a far stronger
  * foe, seal only a foe who fights with jutsu); otherwise they pick among the cards slotted for
- * this distance, stronger ones more often. One fighting at a set distance makes for it first
+ * this distance, stronger ones more often, and, as sharply as their judgement allows, those
+ * worth more against this foe (`worth.ts`). One fighting at a set distance makes for it first
  * (`stepping.ts`). With nothing playable they improvise a basic blow,
  * or, when their kit can't attack from here, a step towards where it can. A fighter with Search
  * or Dispel slotted uses it first when a foe is hidden (Dispel also when confused); then a
@@ -39,8 +41,12 @@ import type { DefenceKind, PlanFighter, Reads } from './state';
 
 const LOW_HEALTH = 0.35;
 const DAZE_FIRST_CHANCE = 0.6;
+/** A mind that reckons reaches for a hold first only if it is worth this share of its best attack. */
+const DAZE_WORTH_SHARE = 0.5;
 const BASIC_WEIGHT = 5;
 const STEP_WEIGHT = 5;
+/** An attack worth nothing against this foe still keeps this share of the average's pull. */
+const WORTH_FLOOR = 0.1;
 /** How much likelier an attack that walks into the foe's seen defence is (`judgement.ts` sets the lean towards one that beats it). */
 const WALKS_INTO_WEIGHT = 0.5;
 
@@ -62,27 +68,46 @@ function baseWeight(card: Card): number {
 }
 
 /** Stronger cards more often; for a foe, ones that get past the defence it has seen more still. */
-function weight(card: Card, lean: Lean | undefined, self: PlanFighter): number {
+function weight(card: Card, lean: Lean | undefined, self: PlanFighter, worth = 1): number {
   // A mind that reads the fight reaches less for a technique played turns running.
   const streak = self.streak;
   const leaning = card.kind === 'jutsu' && streak?.card === cardId(card) && readsInTheMoment(self);
   const running = leaning ? streak.turns : 0;
-  const base = baseWeight(card) * repeatWeight(running);
+  const base = baseWeight(card) * repeatWeight(running) * worth;
   if (!lean) return base;
   if (beats(card, lean.defence)) return base * lean.beatsBy;
   return walksInto(card, lean.defence) ? base * WALKS_INTO_WEIGHT : base;
+}
+
+/**
+ * Each attack's lean from what it is worth against the foe (`worth.ts`), against the average
+ * attack on offer, as sharply as the fighter's judgement weighs it; 1 for anything else.
+ */
+function worthLeans(self: PlanFighter, cards: readonly Card[], moment: Moment): number[] {
+  const { foe } = moment;
+  if (!foe) return cards.map(() => 1);
+  const where = { band: moment.band, fighters: moment.fighters ?? [] };
+  const worths = cards.map((c) => (isOffence(c) ? cardWorth(self, foe, c, where) : null));
+  const counted = worths.filter((w): w is number => w !== null);
+  const mean = counted.reduce((sum, w) => sum + w, 0) / Math.max(1, counted.length);
+  if (mean <= 0) return cards.map(() => 1);
+  const sharp = worthSharpness(self);
+  return worths.map((w) => (w === null ? 1 : ((w + WORTH_FLOOR * mean) / mean) ** sharp));
 }
 
 function weighted(
   self: PlanFighter,
   cards: readonly Card[],
   rng: Rng,
-  lean?: Lean,
+  moment: Moment,
 ): Card | undefined {
-  const total = cards.reduce((sum, c) => sum + weight(c, lean, self), 0);
+  const lean = leanOf(self, moment);
+  const leans = worthLeans(self, cards, moment);
+  const weights = cards.map((c, i) => weight(c, lean, self, leans[i]));
+  const total = weights.reduce((sum, w) => sum + w, 0);
   let roll = rng.next() * total;
-  for (const card of cards) {
-    roll -= weight(card, lean, self);
+  for (const [i, card] of cards.entries()) {
+    roll -= weights[i] ?? 0;
     if (roll < 0) return card;
   }
   return cards[cards.length - 1];
@@ -178,11 +203,36 @@ function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, 
     canDaze(foe, moment.exchange ?? 0) &&
     foe.sealed === 0 &&
     foe.confused === 0;
-  if (daze && fresh && rng.chance(DAZE_FIRST_CHANCE)) return daze;
+  if (
+    daze &&
+    fresh &&
+    worthDazing(self, daze, { harmful, moment }) &&
+    rng.chance(DAZE_FIRST_CHANCE)
+  ) {
+    return daze;
+  }
   const finisher = jutsu(harmful, isWounding);
   if (finisher && foe && isDazed(foe)) return finisher;
   const usual = harmful.filter((c) => c !== daze || fresh);
-  return weighted(self, usual, rng, leanOf(self, moment)) ?? fallback(self, moment);
+  return weighted(self, usual, rng, moment) ?? fallback(self, moment);
+}
+
+/**
+ * Whether a hold on a fresh foe is worth reaching for first: always, for a mind that doesn't
+ * reckon (a dull one keeps the reflex), else only when it is worth a fair share of the best
+ * wounding attack on offer (`worth.ts`): an off-art feint a hardy foe shrugs off isn't.
+ */
+function worthDazing(
+  self: PlanFighter,
+  daze: Card,
+  { harmful, moment }: { harmful: readonly Card[]; moment: Moment },
+): boolean {
+  const { foe } = moment;
+  if (!foe || !readsInTheMoment(self)) return true;
+  const where = { band: moment.band, fighters: moment.fighters ?? [] };
+  const worthOf = (c: Card) => cardWorth(self, foe, c, where) ?? 0;
+  const best = Math.max(0, ...harmful.filter((c) => c !== daze).map(worthOf));
+  return worthOf(daze) >= best * DAZE_WORTH_SHARE;
 }
 
 /** A foe's lean towards what beats the defence it has seen this one keep here. */

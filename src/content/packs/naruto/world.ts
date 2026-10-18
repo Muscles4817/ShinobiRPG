@@ -9,6 +9,7 @@ import { KONOHA_WILDS } from './wilds';
 import { KONOHA_COMPOUNDS } from './compounds';
 import { LAND_OF_WAVES } from './landOfWaves';
 import { TANZAKU_TOWN } from './tanzaku';
+import { KIRIGAKURE } from './kirigakure';
 import { SHUKUBA_TOWN } from './shukuba';
 import { OTAFUKU_TOWN } from './otafuku';
 import { FIRE_TEMPLE } from './fireTemple';
@@ -239,15 +240,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
     places: [],
     lockedReason: 'Coming soon',
   },
-  {
-    id: 'kirigakure',
-    name: 'Kirigakure',
-    epithet: 'Village Hidden in the Mist',
-    map: { x: 92, y: 36, label: 'left' },
-    backdrop: 'mist',
-    places: [],
-    lockedReason: 'Coming soon',
-  },
+  KIRIGAKURE,
   LAND_OF_WAVES,
   TANZAKU_TOWN,
   SHUKUBA_TOWN,
