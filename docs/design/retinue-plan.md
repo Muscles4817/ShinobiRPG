@@ -306,6 +306,153 @@ when something first reads it (a combination between you, the outcome's `units`)
   kennels, job rewards.
 - **2d, what the bond opens:** kind techniques, traits (a check role), combinations.
 
+### Companion moves: the brainstorm
+
+Slice 2d gave each kind three or four moves and the player one (Pincer Strike). That is too
+few. This brainstorm is kept so none of it gets lost; every idea is written against verbs the
+engine already has.
+
+**Where moves come from** (more sources, more reasons to play):
+
+- **The bond's stages:** instinct moves.
+- **Its kind's handler:** working moves from a kennel master; a clan handler's signature arts.
+- **Handler scrolls** sold in other towns: each region's style teaches a different family of moves.
+- **Temperament and genes:**
+  - a wild one knows a hunting move from the start;
+  - one big for its kind gets a power move;
+  - one quick for its kind gets a speed move.
+- **Learning by doing:**
+  - enough fights won together;
+  - a job in the matching role (tracking jobs teach Cold Trail).
+- **Quests and rewards:** a rescued animal that knows a trick; an old hunter's manual from a job.
+
+**Companion moves by family:**
+
+- **Hounds:**
+
+  | Move                     | What it does                             | Verb                                      |
+  | ------------------------ | ---------------------------------------- | ----------------------------------------- |
+  | Fang Rush (built)        | closes and bites                         | damage                                    |
+  | Snapping Feint           | a fake lunge that pulls a guard off you  | confuse, brief                            |
+  | Bark Alarm               | reveals a hidden foe                     | sense or search                           |
+  | Scent Mark               | the foe can't hide and takes harder hits | afflict, or a new marked condition        |
+  | Ankle Lock               | holds a leg; strength breaks it          | pin                                       |
+  | Pack Circle              | boxes a foe in (needs a second animal)   | field                                     |
+  | Guard Dog                | stands over you and takes the next blow  | counter or substitute, aimed at the owner |
+  | Dynamic Marking (ninken) | fouls a foe's footing                    | field                                     |
+
+- **Wolves:**
+
+  | Move              | What it does                                             | Verb                        |
+  | ----------------- | -------------------------------------------------------- | --------------------------- |
+  | Hamstring (built) | bleed                                                    | afflict                     |
+  | Throat Lunge      | slow; hits hard on a dazed or pinned foe                 | finisher damage             |
+  | Stalk             | hides before the fight properly starts                   | conceal                     |
+  | Howl to the Pack  | calls a stray wolf for a few exchanges (rare, wild only) | clone, a wolf kind          |
+  | Run Down          | outpaces a foe fleeing or stepping away                  | move                        |
+  | Alpha's Stare     | makes a weaker foe hesitate                              | daze, only on a lower grade |
+
+- **Big cats** (a mountain cat or snow leopard, for the original pack):
+
+  | Move              | What it does                          | Verb               |
+  | ----------------- | ------------------------------------- | ------------------ |
+  | Pounce            | an entry from far                     | damage, entry      |
+  | Raking Claws      | a flurry of cuts that bleed           | damage and afflict |
+  | Vanish into Cover | hides; strong in forests              | conceal            |
+  | Coiled Spring     | dodges, then strikes back at once     | counter            |
+  | Silent Approach   | strikes first at the start of a fight | first strike       |
+
+- **Bears and boars:**
+
+  | Move                   | What it does                            | Verb                  |
+  | ---------------------- | --------------------------------------- | --------------------- |
+  | Maul                   | a slow, brutal blow                     | damage, wild accuracy |
+  | Bowl Over              | throws the foe to mid and staggers them | knock                 |
+  | Bear Hug               | a crushing hold only strength breaks    | pin and damage        |
+  | Hide Like Iron         | a guard stance against blows            | empower, defence      |
+  | Rampage                | hits everyone close, friend and foe     | small area            |
+  | Tusker's Charge (boar) | charges in and knocks back              | entry and knock       |
+
+- **Birds of prey** (hawk, owl; scouts as well):
+
+  | Move          | What it does                                      | Verb                          |
+  | ------------- | ------------------------------------------------- | ----------------------------- |
+  | Stoop         | dives from far onto the back row                  | damage, far reach             |
+  | Eye Rake      | strikes the eyes                                  | daze, or a blinding condition |
+  | Sky Watch     | sees everything hidden, and a foe's plan          | sense                         |
+  | Wing Buffet   | spoils aim, scatters smoke and poison             | confuse, or breaks a field    |
+  | Carry Message | out of a fight: calls help on a job, scouts ahead | a scout role                  |
+
+- **Serpents** (for shamans later):
+
+  | Move          | What it does                        | Verb            |
+  | ------------- | ----------------------------------- | --------------- |
+  | Venom Bite    | saps strength and speed             | afflict, poison |
+  | Constrict     | a hold kept up while it squeezes    | pin, channelled |
+  | Hypnotic Sway | a hold against poise                | daze            |
+  | Shed Skin     | slips a hold or a seal once a fight | substitute      |
+
+- **Monkeys and clever kinds:**
+
+  | Move          | What it does                            | Verb                           |
+  | ------------- | --------------------------------------- | ------------------------------ |
+  | Pickpocket    | steals a foe's tool, or uses your pouch | items                          |
+  | Thrown Stones | a ranged nuisance                       | damage, far                    |
+  | Distraction   | a foe's next move goes wide             | confuse                        |
+  | Untie         | frees you from a hold                   | struggle help, as a teammate's |
+
+**Moves the player learns as a handler** (the bigger gap):
+
+- **Commands**, a new technique family taught at clinics and by handler scrolls. Cheap in
+  chakra, acting through the animal:
+
+  | Command | What it does                                      |
+  | ------- | ------------------------------------------------- |
+  | Heel    | it pulls back to guard you                        |
+  | Sic 'Em | it gets an extra attack this exchange             |
+  | Fetch   | it brings back a dropped weapon or a thrown kunai |
+  | Hold    | it pins whoever you name                          |
+  | Speak   | its bark breaks an illusion on you                |
+
+- **Combinations**, a pair per family, taught by handlers:
+
+  | Pair                          | Notes                                              |
+  | ----------------------------- | -------------------------------------------------- |
+  | Pincer Strike / Flanking Bite | built                                              |
+  | Fang Over Fang                | the Inuzuka clan art, made a true combination      |
+  | Rider's Charge                | you ride a big companion in: an entry with a knock |
+  | Feint and Fang                | your feint opens them to its bite                  |
+  | Hunting Call                  | your sound illusion and its howl: a wide daze      |
+  | Skyfall                       | your throw and a hawk's stoop, both from far       |
+
+- **Support arts:**
+  - Beast Medicine: heals your companion mid-fight; a medic art the vet teaches.
+  - Shared Senses: borrow its perception for scouting and checks; a high-bond sensing art.
+  - Beast Mimicry: Four Legs in the fan pack, a plain version in the original.
+- **Clan arts that need a companion beside you.** The original pack has no animal clan, so a
+  beast-handling school taught outside the village fills that place.
+
+**Rough balance rules:**
+
+- Each kind has five to seven moves:
+  - instinct moves at bond stages 1–2;
+  - handler-taught working moves;
+  - a signature move;
+  - a combination half.
+- A companion takes only a few moves into a fight (two or three for a dog, by its intellect,
+  as a plan's slots), so choosing them is a decision.
+- Roles that work outside a fight (tracker, scout, guard, thief) make it worth having on jobs too.
+
+**Open questions:**
+
+1. Which families come next after hounds and wolves? A hawk is the strongest pick: it fights
+   differently and scouts.
+2. Should commands be a technique family of the player's own, or should there be combinations only?
+3. Should a companion get its own plan (two or three moves chosen), or always bring everything it
+   knows?
+4. Should moves be learned by doing (fights and jobs), or only through bond, handlers, scrolls
+   and quests?
+
 ### Shamans: spirits seen, bound and sealed
 
 A shaman sees spirits, deals with them, and seals them into items and people to empower them.
