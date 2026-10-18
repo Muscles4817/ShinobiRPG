@@ -97,6 +97,8 @@ export interface ContentDb {
   readonly cookbooks: Catalog<CookbookDef>;
   readonly campFinds: readonly Find[];
   readonly people: Catalog<PersonDef>;
+  /** Versus-only fighters (`ContentPack.duelists`), kept apart from the world's cast. */
+  readonly duelists: Catalog<PersonDef>;
   readonly conversations: Catalog<ConversationDef>;
   readonly conversationTopics: readonly ConversationTopic[];
   readonly names: NamePools;
@@ -157,6 +159,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     cookbooks: createCatalog('cookbook', pack.cookbooks),
     campFinds: pack.campFinds,
     people: createCatalog('person', pack.people),
+    duelists: createCatalog('duelist', pack.duelists ?? []),
     conversations: createCatalog('conversation', pack.conversations),
     conversationTopics: pack.conversationTopics,
     names: pack.names,

@@ -3,6 +3,7 @@ import { canGoWithCrew, daysAway, MIN_RYO_PER_DAY_AWAY } from '@/systems/mission
 
 import { duplicateIds } from './catalog';
 import { validateArsenals } from './validateArsenals';
+import { validateDuelists } from './validateDuelists';
 import { validateLadders } from './validateLadders';
 import { validateGear } from './validateGear';
 import { validateEncounters } from './validateEncounters';
@@ -71,6 +72,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateRecipes(pack),
     ...validatePeople(pack),
     ...validateArsenals(pack),
+    ...validateDuelists(pack),
     ...validateLadders(pack),
     ...validateRanks(pack),
     ...validateTeachers(pack),
@@ -183,7 +185,7 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['ingredient', pack.ingredients],
     ['recipe', pack.recipes],
     ['cookbook', pack.cookbooks],
-    ['person', pack.people],
+    ['person', [...pack.people, ...(pack.duelists ?? [])]],
     ['conversation', pack.conversations],
   ];
   return collections.flatMap(([kind, items]) =>

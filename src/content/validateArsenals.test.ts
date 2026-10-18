@@ -36,4 +36,17 @@ describe('arsenals', () => {
       'person "kakashi" fights with "great-fireball" of clan "uchiha"',
     );
   });
+
+  it('wears real gear, a piece per slot, and carries real tools by the piece', () => {
+    const kunai = { techniqueIds: ['lightning-blade'] };
+    expect(withKakashi({ ...kunai, gearIds: ['lost-blade'] })).toContain(
+      'person "kakashi" wears unknown gear "lost-blade"',
+    );
+    expect(withKakashi({ ...kunai, gearIds: ['tanto', 'katana'] })).toContain(
+      'person "kakashi" wears two pieces in the weapon slot',
+    );
+    const problems = withKakashi({ ...kunai, tools: { 'lost-tag': 1, 'smoke-bomb': 0 } });
+    expect(problems).toContain('person "kakashi" carries unknown tool "lost-tag"');
+    expect(problems).toContain('person "kakashi" carries 0 of "smoke-bomb"');
+  });
 });
