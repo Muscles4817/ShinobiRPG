@@ -85,6 +85,8 @@ export interface GameState {
   readonly companions: Companions;
   /** The summoning contract you hold, and your standing with its clan; null before you sign one. */
   readonly contract: Contract | null;
+  /** Contracts you have torn up; their clans won't take your name again. */
+  readonly brokenContracts: readonly string[];
   /**
    * Set only on a versus sandbox (`game/versus/`): who is fighting whom. A sandbox is never
    * saved, so a real playthrough never carries it.

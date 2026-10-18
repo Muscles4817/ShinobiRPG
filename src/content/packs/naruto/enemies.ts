@@ -76,6 +76,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     techniqueIds: ['water-bullet', 'water-gun', 'shuriken-jutsu'],
     traits: ['swift'],
     nature: 'water',
+    summons: [{ summonId: 'great-snake', tell: 'hidden' }],
   },
   {
     id: 'bandit-archer',

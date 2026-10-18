@@ -114,6 +114,8 @@ export type GameAction =
   | { readonly type: 'handlerTeach'; readonly techniqueId: string }
   | { readonly type: 'buyLore'; readonly loreId: string }
   | { readonly type: 'signContract'; readonly personId: string }
+  | { readonly type: 'makeOffering'; readonly ingredientId: string }
+  | { readonly type: 'breakContract' }
   | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
   | { readonly type: 'playWithCompanion'; readonly play: PlayKind }
   | { readonly type: 'doseCompanion'; readonly hidden: boolean }

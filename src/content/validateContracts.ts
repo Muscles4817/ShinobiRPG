@@ -4,8 +4,10 @@ import type { ContentPack } from './types';
 /**
  * Summoning contracts: each summon is called by a real technique whose `summon` effect names it,
  * fights with real techniques, answers at a real standing and asks a sane price (a real
- * offering, some blood); every contract can be signed (a job or a teacher offers it), and every
- * contract a job or teacher names is real. A summoning technique belongs to some contract.
+ * offering, some blood); every contract can be signed (a job or a teacher offers it) or is a
+ * foe's own, and every contract a job, teacher or foe names is real. One you can sign has
+ * tastes (real ingredients) for offerings and parting words for when it is broken. A summoning
+ * technique belongs to some contract.
  */
 
 /** The deepest bond stage. */
@@ -42,17 +44,51 @@ function offeredIds(pack: ContentPack): string[] {
   ];
 }
 
+/** Contracts some foe calls from. */
+function foeHeld(pack: ContentPack): Set<string> {
+  const called = new Set(pack.enemies.flatMap((e) => (e.summons ?? []).map((s) => s.summonId)));
+  return new Set(
+    pack.contracts.filter((c) => c.summons.some((s) => called.has(s.id))).map((c) => c.id),
+  );
+}
+
+/** What a contract you can sign needs besides its summons. */
+function signableProblems(pack: ContentPack, contract: ContractDef): string[] {
+  const at = `contract "${contract.id}"`;
+  const known = new Set(pack.ingredients.map((i) => i.id));
+  const tastes = contract.tastes ?? [];
+  return [
+    ...(tastes.length > 0 ? [] : [`${at} has no tastes for offerings`]),
+    ...tastes.filter((id) => !known.has(id)).map((id) => `${at} likes unknown "${id}"`),
+    ...(contract.parting ? [] : [`${at} has no parting words`]),
+  ];
+}
+
 function signingProblems(pack: ContentPack): string[] {
   const offered = offeredIds(pack);
+  const foes = foeHeld(pack);
   const known = new Set(pack.contracts.map((c) => c.id));
   return [
     ...offered
       .filter((id) => !known.has(id))
       .map((id) => `a job or teacher offers unknown contract "${id}"`),
     ...pack.contracts
-      .filter((c) => !offered.includes(c.id))
+      .filter((c) => !offered.includes(c.id) && !foes.has(c.id))
       .map((c) => `contract "${c.id}" can't be signed anywhere`),
+    ...pack.contracts
+      .filter((c) => offered.includes(c.id))
+      .flatMap((c) => signableProblems(pack, c)),
   ];
+}
+
+/** Every summon a foe calls is one some contract holds. */
+function foeCalls(pack: ContentPack): string[] {
+  const held = new Set(pack.contracts.flatMap((c) => c.summons.map((s) => s.id)));
+  return pack.enemies.flatMap((e) =>
+    (e.summons ?? [])
+      .filter((s) => !held.has(s.summonId))
+      .map((s) => `enemy "${e.id}" calls "${s.summonId}", which no contract holds`),
+  );
 }
 
 /** Every summoning technique calls a summon some contract holds. */
@@ -72,5 +108,6 @@ export function validateContracts(pack: ContentPack): string[] {
     ...pack.contracts.flatMap((c) => c.summons.map((s) => summonProblems(pack, c, s)).flat()),
     ...signingProblems(pack),
     ...strayCalls(pack),
+    ...foeCalls(pack),
   ];
 }

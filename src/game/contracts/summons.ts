@@ -1,10 +1,9 @@
 import type { ContractDef, SummonDef } from '@/content';
-import type { CombatantSetup, CombatCall, CombatOutcome } from '@/systems/combat';
+import type { CombatantSetup, CombatOutcome } from '@/systems/combat';
 import { answers, signed, standingAfter, standingStage, type Contract } from '@/systems/contracts';
 import { pantryCount, useUp } from '@/systems/inventory';
-import { MAX_HEALTH } from '@/systems/vitals';
 
-import { attributesOf } from '../combatants';
+import { withCalls } from '../combatants';
 import type { GameContext } from '../context';
 import { chip, log } from '../ops';
 import type { GameState } from '../state';
@@ -43,32 +42,6 @@ export function summonBlocker(
   return null;
 }
 
-/** A summon's body as it answers. */
-function summonBody(summon: SummonDef, ctx: GameContext): CombatantSetup {
-  const health = Math.max(1, Math.round(MAX_HEALTH * summon.healthScale));
-  return {
-    id: summon.id,
-    name: summon.name,
-    tag: 'Summon',
-    attributes: attributesOf(summon.stats),
-    health,
-    maxHealth: health,
-    chakra: summon.maxChakra,
-    maxChakra: summon.maxChakra,
-    techniques: summon.techniqueIds.map((id) => ctx.content.techniques.require(id)),
-    ...(summon.traits ? { traits: summon.traits } : {}),
-  };
-}
-
-function callOf(summon: SummonDef, ctx: GameContext): CombatCall {
-  return {
-    id: summon.id,
-    body: summonBody(summon, ctx),
-    upkeep: summon.upkeep,
-    ...(summon.price?.blood ? { bloodPrice: summon.price.blood } : {}),
-  };
-}
-
 /** The summons that answer you now. */
 export function answering(state: GameState, ctx: GameContext): SummonDef[] {
   const held = heldContract(state, ctx);
@@ -81,14 +54,7 @@ export function withSummons(
   state: GameState,
   ctx: GameContext,
 ): CombatantSetup {
-  const summons = answering(state, ctx);
-  if (summons.length === 0) return player;
-  const techniques = summons.map((s) => ctx.content.techniques.require(s.techniqueId));
-  return {
-    ...player,
-    techniques: [...player.techniques, ...techniques],
-    calls: summons.map((s) => callOf(s, ctx)),
-  };
+  return withCalls(player, answering(state, ctx), ctx);
 }
 
 /** Offerings given up for the summons called this fight. */
@@ -122,9 +88,12 @@ export function afterSummons(
   });
 }
 
-/** Why you can't sign a contract now, or null when you can. */
-export function signBlocker(state: GameState): string | null {
-  return state.contract ? 'You already hold a contract; one at a time.' : null;
+/** Why you can't sign this contract now, or null when you can. */
+export function signBlocker(state: GameState, contractId: string): string | null {
+  if (state.contract) return 'You already hold a contract; one at a time.';
+  return state.brokenContracts.includes(contractId)
+    ? 'You broke this contract once; the clan won’t take your name again.'
+    : null;
 }
 
 /** You sign a contract today: its smallest summons answer you from now. */

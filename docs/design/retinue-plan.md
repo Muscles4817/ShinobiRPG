@@ -835,7 +835,7 @@ and its genes, its skills with training**, and every kind has its own ceiling.
     playable while its summon is out.
   - **Reporting.** `CombatOutcome.summons` reports each call's fate: stayed, fell or sent home.
   - **Default plans** call a summon early, right after a sense or Search for a hidden foe.
-- **Contracts** (`systems/contracts`, `GameState.contract`, save v56):
+- **Contracts** (`systems/contracts`, `GameState.contract`, save v55, renumbered v56 in #164):
   - **One at a time.**
   - **Standing.** Standing with the whole clan is kept in bond points:
     - a summon kept to the end +3;
@@ -867,8 +867,26 @@ and its genes, its skills with training**, and every kind has its own ceiling.
 
   Summons show in fights as ordinary fighters tagged "Summon".
 
-- **Later:**
-  - offerings that raise standing outside fights;
-  - foes who summon (`EnemyDef` calls, hidden from scouting);
-  - breaking a contract as a story beat;
-  - the toads' mountain, reached by story.
+- **Later:** the toads' mountain, reached by story.
+
+### Step 3e: keeping, breaking, and foes who summon
+
+- **Offerings.** A contract you can sign names its `tastes`. Once a day, at home, you may leave
+  one of them out on the scroll (`makeOffering`): it is used up and your standing rises by
+  `OFFERING_STANDING` (2), a little less than a summon kept to the end of a fight.
+- **Breaking.** `breakContract` tears up your name. The contract is gone, you may sign another,
+  and the clan's `parting` words are logged. The clan never takes you back: its id goes into
+  `GameState.brokenContracts` (save v57), and neither its job nor its teacher offers it again.
+  The card asks twice.
+- **Foes who summon.** `EnemyDef.summons` lists summons from any contract of the pack, each with
+  a `tell`. The foe goes into the fight with the call and its technique, the same way you do.
+  Before the fight, `summonsSeen` reads the contract by its tell, as a retinue is read. Scouting
+  counts a summon you can tell they hold in the threat, with its own counter ("goes home when
+  they fall or run dry"). A client's report names it on the notice.
+- **Content:**
+  - the original pack's bandit chief keeps a cellar contract, the Rats of the Undercroft
+    (`kept`);
+  - the Naruto pack's missing-nin carries the rogue Sannin's snakes (`hidden`), so a Great
+    Snake may come up out of nowhere.
+
+  Contracts held only by foes need no tastes or parting words, and no one offers them.

@@ -12,7 +12,7 @@ import type { FurnishingDef, GardenCrop, HomeDef } from './homes';
 import type { QuirkDef } from './quirks';
 import type { CurriculumBeat } from './curriculum';
 import type { CompanionKindDef, CompanionLoreDef } from './companions';
-import type { ContractDef } from './contracts';
+import type { ContractDef, SummonDef } from './contracts';
 import type { SenseiTestDef } from './senseiTests';
 import type { InjuryDef } from './injuries';
 import type { BuildDef, UpbringingDef } from './upbringing';
@@ -71,6 +71,8 @@ export interface ContentDb {
   readonly companionKinds: Catalog<CompanionKindDef>;
   readonly companionLore: Catalog<CompanionLoreDef>;
   readonly contracts: Catalog<ContractDef>;
+  /** Every contract's summons, by call id. */
+  readonly summons: Catalog<SummonDef>;
   readonly training: Catalog<TrainingDef>;
   readonly foods: Catalog<FoodDef>;
   readonly clans: Catalog<ClanDef>;
@@ -126,6 +128,10 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     companionKinds: createCatalog('companion kind', pack.companionKinds),
     companionLore: createCatalog('companion lore', pack.companionLore),
     contracts: createCatalog('contract', pack.contracts),
+    summons: createCatalog(
+      'summon',
+      pack.contracts.flatMap((c) => c.summons),
+    ),
     training: createCatalog('training', pack.training),
     foods: createCatalog('food', pack.foods),
     clans: createCatalog('clan', pack.clans),

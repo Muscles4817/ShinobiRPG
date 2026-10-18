@@ -17,15 +17,32 @@ describe('summoning contracts (smoke test)', () => {
       ...newGame(),
       contract: { contractId: 'kiln-salamanders', standing: 0, signedDay: 1 },
     };
-    render(<ContractCard ctx={ctx} state={state} />);
+    render(<ContractCard ctx={ctx} state={state} perform={() => undefined} />);
     expect(screen.getByRole('heading', { name: 'The Salamanders of the Old Kilns' })).toBeTruthy();
     expect(screen.getByText('Kiln Newt')).toBeTruthy();
     expect(screen.getAllByText(/Answers once the clan counts you/).length).toBeGreaterThan(0);
   });
 
   it('shows nothing before you sign one', () => {
-    const { container } = render(<ContractCard ctx={ctx} state={newGame()} />);
+    const { container } = render(
+      <ContractCard ctx={ctx} state={newGame()} perform={() => undefined} />,
+    );
     expect(container.textContent).toBe('');
+  });
+
+  it('breaks the contract only on a second tap', async () => {
+    const user = userEvent.setup();
+    const done: GameAction[] = [];
+    const state = {
+      ...newGame(),
+      contract: { contractId: 'kiln-salamanders', standing: 0, signedDay: 1 },
+    };
+    render(<ContractCard ctx={ctx} state={state} perform={(a) => done.push(a)} />);
+    expect(screen.getByRole('button', { name: 'Chestnuts' })).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: 'Break the contract' }));
+    expect(done).toEqual([]);
+    await user.click(screen.getByRole('button', { name: 'Tear it up' }));
+    expect(done).toEqual([{ type: 'breakContract' }]);
   });
 
   it('offers a teacher’s contract on their sheet, once you are close', async () => {
