@@ -952,6 +952,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - A bug fix comes with a test that would have caught it.
 - The UI has smoke tests (`ui/App.test.tsx`) for the core loop; keep them passing and add one
   for each new screen.
+- **Golden transcripts** (`src/test/prose/goldens/`) are the game's text as the player reads it
+  for fixed seeds (the first hours in each pack, a run of jobs, talk). A change to any player-facing
+  text changes them: run `npx vitest run src/test/prose -u` and read the diff before committing.
+  The **prose lint** (`src/test/prose/lint.test.ts`) holds the style measures and slips of
+  `docs/design/prose-plan.md` to `budget.ts`: they may only get better, and a pass that improves
+  them lowers the budget.
 
 ### UI design rules (the "Village Hub" design)
 
