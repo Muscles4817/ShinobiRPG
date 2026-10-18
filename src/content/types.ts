@@ -18,6 +18,7 @@ import type { RouteDef } from '@/systems/travel';
 
 import type { BackdropId, IconId } from './art';
 import type { QuirkDef } from './quirks';
+import type { FieldBookRewards } from './fieldBook';
 import type { FurnishingDef, GardenCrop, HomeDef, LettingsFields } from './homes';
 import type { ExerciseDef } from './exercises';
 import type { CurriculumBeat } from './curriculum';
@@ -370,6 +371,7 @@ export interface ContentPack {
   readonly homes: readonly HomeDef[];
   readonly furnishings: readonly FurnishingDef[];
   readonly gardenCrops: readonly GardenCrop[];
+  readonly fieldBook: FieldBookRewards;
   readonly quirks: readonly QuirkDef[];
   readonly traits: readonly TraitDef[];
   readonly nindos: readonly NindoDef[];

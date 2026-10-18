@@ -8,6 +8,12 @@ export { GEAR_SLOTS, gearSlot } from './items';
 export { MAP_SIZE } from './art';
 export type { QuirkDef } from './quirks';
 export {
+  FIELD_BOOK_PAGES,
+  type FieldBookPage,
+  type FieldBookRewards,
+  type PageReward,
+} from './fieldBook';
+export {
   FIRST_HOME_SPOTS,
   HOME_ROOMS,
   SPOTS,

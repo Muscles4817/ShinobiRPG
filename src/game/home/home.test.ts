@@ -1,4 +1,5 @@
 import { bondWith } from '@/systems/bonds';
+import { EMPTY_FIELD_BOOK } from '@/systems/collections';
 import { pantryCount } from '@/systems/inventory';
 import { act, ctx, newGame } from '@/test/gameFixtures';
 
@@ -154,6 +155,7 @@ describe('gifts and keepsakes', () => {
     const id = game.people.team!.teammateIds[0]!;
     const remembered = {
       ...game,
+      fieldBook: EMPTY_FIELD_BOOK,
       standing: { ...game.standing, rank: 'chunin' as const },
       village: { ...game.village, memories: [{ personId: id, text: 'the bells', day: 2 }] },
       rival: { ...game.rival!, races: { you: 1, them: 0 } },

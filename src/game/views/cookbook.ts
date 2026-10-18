@@ -70,7 +70,7 @@ function bookSellers(ctx: GameContext, cookbookId: string): string[] {
 }
 
 /** Where a recipe can be learned: books on sale, people who teach it, jobs that reward it. */
-function hintsFor(ctx: GameContext, recipeId: string): string[] {
+export function recipeHints(ctx: GameContext, recipeId: string): string[] {
   const { content } = ctx;
   const books = content.cookbooks.all
     .filter((b) => b.recipeIds.includes(recipeId))
@@ -112,7 +112,7 @@ export function cookbookView(state: GameState, ctx: GameContext): CookbookView {
     }),
     sealed: all
       .filter((r) => !isKnown(r))
-      .map((r) => ({ id: r.id, name: r.name, rank: r.rank, hints: hintsFor(ctx, r.id) })),
+      .map((r) => ({ id: r.id, name: r.name, rank: r.rank, hints: recipeHints(ctx, r.id) })),
     total: all.length,
   };
 }

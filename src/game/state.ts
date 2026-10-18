@@ -1,5 +1,6 @@
 import type { CombatState } from '@/systems/combat';
 import type { MapStyle } from './mapStyle';
+import type { FieldBook } from '@/systems/collections';
 import type { Cooking, MealQuality } from '@/systems/cooking';
 import type { Housing } from '@/systems/housing';
 import type { Exhaustion, Injury } from '@/systems/injuries';
@@ -67,6 +68,8 @@ export interface GameState {
   readonly leave: Leave;
   /** The recipes you know, how often you've cooked each, and your cooking grade. */
   readonly cooking: Cooking;
+  /** What you have caught, gathered, followed and fought (`fieldBook/`). */
+  readonly fieldBook: FieldBook;
   /** How your sensei rates you and how this week's meetings went (`game/sensei/`). */
   readonly mentor: Mentor;
   /** The day's record: where you stood at dawn, and the last day that ended (`daybook/`). */

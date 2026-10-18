@@ -4,6 +4,7 @@ import { HANDLERS } from './actions/registry';
 import type { ActionHandler, GameAction } from './actions/types';
 import type { GameContext } from './context';
 import { noteDayEnd } from './daybook/record';
+import { noteFieldBook } from './fieldBook/rewards';
 import { noteHomeGifts } from './home/gifts';
 import { noteRival } from './rival/record';
 import { notePromotions } from './exam/promotion';
@@ -26,7 +27,8 @@ export function blockerFor(state: GameState, action: GameAction, ctx: GameContex
  * Whatever grew a stat into a new grade, the moment is noted here, once (`noteGradeUps`), and
  * unstable techniques the new grades have caught up with steady (see `gradeUps.ts`), and a
  * jōnin's nomination arrives once it is earned (`exam/promotion.ts`), and a day that ended is
- * closed into the day's record (`daybook/record.ts`).
+ * closed into the day's record (`daybook/record.ts`), and a full page of the field book leaves
+ * its reward (`fieldBook/rewards.ts`).
  */
 export function dispatch(
   state: GameState,
@@ -41,6 +43,6 @@ export function dispatch(
   const performed = handler.perform(state, action, ctx, rng);
   const graded = notePromotions(noteGradeUps(state, performed, ctx), ctx);
   const gifted = noteHomeGifts(state, noteRival(state, graded, ctx), ctx);
-  const next = noteDayEnd(state, gifted, action);
+  const next = noteDayEnd(state, noteFieldBook(state, gifted, ctx), action);
   return ok({ ...next, rngState: rng.state() });
 }

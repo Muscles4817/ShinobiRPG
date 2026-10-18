@@ -1,3 +1,4 @@
+import { FIELD_BOOK_PAGES } from '@/content';
 import { stageOf } from '@/systems/bonds';
 import { addFurniture, ownsFurniture } from '@/systems/housing';
 
@@ -24,11 +25,19 @@ function closer(before: GameState, after: GameState): string[] {
     .map(([id]) => id);
 }
 
+/** Pieces only a full page of the field book earns, never a friend's to give. */
+function earned(ctx: GameContext): Set<string> {
+  return new Set(
+    FIELD_BOOK_PAGES.flatMap((page) => ctx.content.fieldBook[page].furnishingId ?? []),
+  );
+}
+
 export function noteHomeGifts(before: GameState, after: GameState, ctx: GameContext): GameState {
+  const notGiven = earned(ctx);
   return closer(before, after).reduce((state, id) => {
     const person = findPerson(state, ctx, id);
     const gift = ctx.content.furnishings.all.find(
-      (f) => f.cost === undefined && !ownsFurniture(state.housing, f.id),
+      (f) => f.cost === undefined && !notGiven.has(f.id) && !ownsFurniture(state.housing, f.id),
     );
     if (!person || !gift) return state;
     return log(

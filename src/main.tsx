@@ -36,6 +36,7 @@ import '@/ui/styles/honours.css';
 import './ui/styles/rival.css';
 import '@/ui/styles/notes.css';
 import '@/ui/styles/home.css';
+import '@/ui/styles/fieldbook.css';
 
 // Composition root for the app: choose the platform adapters here.
 const root = document.getElementById('root');

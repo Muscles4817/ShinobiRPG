@@ -493,6 +493,19 @@ describe('persistence', () => {
     });
   });
 
+  it('gives a save from before the field book an empty one', () => {
+    const { fieldBook: _book, ...state } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 49, state }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.fieldBook).toEqual({
+      catches: {},
+      finds: {},
+      sights: [],
+      foes: {},
+      rewarded: [],
+    });
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

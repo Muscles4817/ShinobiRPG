@@ -140,6 +140,8 @@ export { lettingsView, type FurnishingCard, type HomeCard } from './views/lettin
 export { furnishView, type SpotView } from './views/homeFurnish';
 export { homeRoomsView, type HomeRoomsView } from './views/homeRooms';
 export { keepsakeShelf } from './views/keepsakes';
+export { fieldBookView, type FieldBookView, type FieldPage } from './views/fieldBook';
+export type { FieldEntry } from './views/fieldBookEntries';
 export {
   classHonoursView,
   type ClassHonoursView,

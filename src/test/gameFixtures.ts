@@ -12,6 +12,7 @@ import {
   type GameState,
 } from '@/game';
 import { createDuelEngine } from '@/systems/combat';
+import { markRewarded } from '@/systems/collections';
 import { GRADE_XP } from '@/systems/cooking';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
@@ -64,10 +65,14 @@ export function postEverything(state: GameState, context: GameContext = ctx): Ga
   return { ...state, board: { ...state.board, refreshedDay: state.time.day, postings } };
 }
 
-/** Knows every recipe in the pack, never cooked, as a grade D cook: any rank C dish is in reach. */
+/**
+ * Knows every recipe in the pack, never cooked, as a grade D cook: any rank C dish is in reach.
+ * The field book's recipe page counts as handed over, so a test's first entry doesn't fill it.
+ */
 export function knowEveryRecipe(state: GameState, context: GameContext = ctx): GameState {
   const known = Object.fromEntries(context.content.recipes.all.map((r) => [r.id, 0]));
-  return { ...state, cooking: { ...state.cooking, xp: GRADE_XP.D, known } };
+  const fieldBook = markRewarded(state.fieldBook, 'recipes');
+  return { ...state, cooking: { ...state.cooking, xp: GRADE_XP.D, known }, fieldBook };
 }
 
 /**
