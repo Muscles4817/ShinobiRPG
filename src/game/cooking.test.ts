@@ -47,6 +47,8 @@ describe('learning recipes', () => {
       'food-for-the-road',
       'foragers-notes',
       'river-cook',
+      'fishmongers-knife',
+      'marsh-and-falls',
       'lantern-village-kitchen',
     ]);
     const bought = act(state, { type: 'buyCookbook', cookbookId: 'everyday-kitchen' });

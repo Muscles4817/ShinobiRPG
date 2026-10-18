@@ -77,6 +77,8 @@ export const SHOPPING_DISTRICT: PlaceDef = {
         'food-for-the-road',
         'foragers-notes',
         'river-cook',
+        'fishmongers-knife',
+        'marsh-and-falls',
       ],
     },
   ],

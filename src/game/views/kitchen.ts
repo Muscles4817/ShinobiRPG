@@ -15,6 +15,7 @@ import { knownSteps } from '../stove';
 import { mealProvisions } from '../combatants';
 import { choice, type Choice } from './common';
 import { provisionLine } from './provisions';
+import { slotHave, slotName } from '../pantry';
 import { METHOD_WORDS, stepsHint } from './stove';
 
 /** The kitchen at home: what's in the pantry, what you can cook, and who could come to dinner. */
@@ -144,8 +145,8 @@ export function kitchenView(state: GameState, ctx: GameContext): KitchenView {
         chakra: r.chakra ?? 0,
         effects: [...describeSpec(r.buff), ...provisionLine(r.provision)],
         needs: r.ingredients.map((i) => ({
-          name: content.ingredients.get(i.id)?.name ?? i.id,
-          have: pantryCount(state.inventory, i.id),
+          name: slotName(ctx, i),
+          have: slotHave(ctx, state.inventory.pantry, i),
           need: i.count,
         })),
         inviteBlocker,

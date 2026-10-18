@@ -65,6 +65,15 @@ cookbooks (a fisher's at Shiomachi, a marsh cook's at home), a fisher who teache
 two's reward. Shiomachi's market fish stay sold; the shore's catches are what you bring in
 yourself.
 
+**As built.** Twenty-nine fish on thirteen spots; mountain water sits above each home village
+(Cedar Falls, the falls under the cliff), since Mount Reikon has no places yet. The stove gained
+a `raw` method. Twenty-five recipes: eight by family (`shared/fishRecipes.ts`), eleven for one
+catch (`catchRecipes.ts`), six for the new forage. Older fish dishes now take any freshwater
+fish. Three new cookbooks (The Fishmonger's Knife and Marsh and Falls at home, Tide and Shell on
+the coast); the urchin, the puffer and the turtle are taught by a fisher who trusts you (Umi,
+Tsunami). Held back: freshness (sashimi from today's catch), dishes that make road food, and a
+puffer that poisons a poor cook's guest; each needs a rule of its own.
+
 ## Step 2: the bestiary, authored
 
 About forty foes in `packs/<id>/bestiary/`, one file per faction, each faction a ladder from

@@ -1,6 +1,7 @@
 import type { Find } from '@/systems/cooking';
 
 import type { FishingSpot, IngredientDef } from '../types';
+import { FISH } from './fish';
 
 /**
  * What grows and swims outside every village: wild ingredients (never sold, only gathered), and
@@ -12,15 +13,17 @@ export const WILD_INGREDIENTS: readonly IngredientDef[] = [
   { id: 'wild-mushrooms', name: 'Wild Mushrooms', cost: 14, icon: 'leaf' },
   { id: 'mountain-greens', name: 'Mountain Greens', cost: 8, icon: 'leaf' },
   { id: 'wild-ginger', name: 'Wild Ginger', cost: 20, icon: 'leaf' },
-  { id: 'sweetfish', name: 'Sweetfish', cost: 18, icon: 'fish', length: [14, 28] },
-  { id: 'river-eel', name: 'River Eel', cost: 30, icon: 'fish', length: [40, 95] },
-  { id: 'crayfish', name: 'Crayfish', cost: 12, icon: 'fish', length: [7, 15] },
-  // Rare: the field book's fish page is not full without them.
-  { id: 'mountain-trout', name: 'Mountain Trout', cost: 26, icon: 'fish', length: [24, 48] },
-  { id: 'old-catfish', name: 'Old Whiskers Catfish', cost: 45, icon: 'fish', length: [60, 140] },
   { id: 'watercress', name: 'Watercress', cost: 8, icon: 'leaf' },
   // Only from a beast you've beaten (`EnemyDef.drops`).
   { id: 'wild-game', name: 'Wild Game', cost: 25, icon: 'pot' },
+  // The shore, the marsh and mountain water (`waters.ts`).
+  { id: 'rock-laver', name: 'Rock Laver', cost: 12, icon: 'leaf' },
+  { id: 'sea-lettuce', name: 'Sea Lettuce', cost: 8, icon: 'leaf' },
+  { id: 'water-dropwort', name: 'Water Dropwort', cost: 10, icon: 'leaf' },
+  { id: 'water-chestnuts', name: 'Water Chestnuts', cost: 14, icon: 'veg' },
+  { id: 'butterbur', name: 'Butterbur Shoots', cost: 12, icon: 'leaf' },
+  { id: 'mountain-yam', name: 'Mountain Yam', cost: 18, icon: 'veg' },
+  ...FISH,
 ];
 
 /** The woods: greens in the warm months, mushrooms and chestnuts in autumn, ginger if you know it. */
@@ -40,7 +43,7 @@ export const RIVER_FINDS: readonly Find[] = [
   { ingredientId: 'mountain-greens', weight: 1, seasons: ['Spring', 'Summer'] },
 ];
 
-/** Three places to cast on any river: the shallows, the reeds and the deep pool. */
+/** Four places to cast on any river: the shallows, the reeds, the deep pool and the weir. */
 export const RIVER_SPOTS: readonly FishingSpot[] = [
   {
     id: 'shallows',
@@ -55,6 +58,12 @@ export const RIVER_SPOTS: readonly FishingSpot[] = [
         slots: ['morning', 'afternoon'],
       },
       { ingredientId: 'mountain-trout', weight: 1, seasons: ['Spring'], slots: ['morning'] },
+      {
+        ingredientId: 'dace',
+        weight: 2,
+        seasons: ['Spring', 'Autumn', 'Winter'],
+        slots: ['morning', 'afternoon'],
+      },
     ],
   },
   {
@@ -64,6 +73,12 @@ export const RIVER_SPOTS: readonly FishingSpot[] = [
     catches: [
       { ingredientId: 'crayfish', weight: 3, seasons: ['Spring', 'Summer', 'Autumn'] },
       { ingredientId: 'river-fish', weight: 2 },
+      {
+        ingredientId: 'river-crab',
+        weight: 2,
+        seasons: ['Summer', 'Autumn'],
+        slots: ['evening', 'night'],
+      },
     ],
   },
   {
@@ -78,6 +93,22 @@ export const RIVER_SPOTS: readonly FishingSpot[] = [
         weight: 1,
         seasons: ['Autumn', 'Winter'],
         slots: ['night'],
+        minGrade: 'C',
+      },
+    ],
+  },
+  {
+    id: 'weir',
+    name: 'The weir',
+    description: 'Where an old fish weir breaks the current. Big fish wait in the eddy below it.',
+    catches: [
+      { ingredientId: 'carp', weight: 3 },
+      { ingredientId: 'river-fish', weight: 2 },
+      {
+        ingredientId: 'golden-carp',
+        weight: 1,
+        seasons: ['Summer'],
+        slots: ['evening'],
         minGrade: 'C',
       },
     ],

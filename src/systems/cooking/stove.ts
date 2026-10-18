@@ -6,7 +6,7 @@ import type { ModifierSpec } from '@/systems/modifiers';
  * the quality, and the quality scales everything the dish does. Pure rules; no chance in it.
  */
 
-export const COOKING_METHODS = ['grill', 'simmer', 'steam', 'fry', 'boil'] as const;
+export const COOKING_METHODS = ['grill', 'simmer', 'steam', 'fry', 'boil', 'raw'] as const;
 export type CookingMethod = (typeof COOKING_METHODS)[number];
 
 export const CUTS = ['fine', 'chunky', 'whole'] as const;
@@ -33,6 +33,8 @@ export const METHOD_STEPS: Readonly<Record<CookingMethod, CookingSteps>> = {
   steam: { cut: 'whole', heat: 'steady', finish: 'on-time' },
   fry: { cut: 'fine', heat: 'fierce', finish: 'early' },
   boil: { cut: 'fine', heat: 'steady', finish: 'on-time' },
+  // Sliced and served cold: the knife is all of it, and the fire is barely lit (for the rice).
+  raw: { cut: 'fine', heat: 'gentle', finish: 'early' },
 };
 
 export const MEAL_QUALITIES = ['burnt', 'plain', 'good', 'fine'] as const;

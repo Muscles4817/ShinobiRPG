@@ -21,10 +21,16 @@ export function validateRecipes(pack: ContentPack): string[] {
 
 function recipeLines(pack: ContentPack): string[] {
   const known = new Set(pack.ingredients.map((i) => i.id));
+  const families = new Set(pack.ingredients.map((i) => i.family));
   return pack.recipes.flatMap((r) => [
-    ...r.ingredients
-      .filter((i) => !known.has(i.id))
-      .map((i) => `recipe "${r.id}" needs unknown ingredient "${i.id}"`),
+    ...r.ingredients.flatMap((i) => {
+      if ('family' in i) {
+        return families.has(i.family)
+          ? []
+          : [`recipe "${r.id}" takes ${i.family} fish, and none is`];
+      }
+      return known.has(i.id) ? [] : [`recipe "${r.id}" needs unknown ingredient "${i.id}"`];
+    }),
     ...(r.ingredients.length === 0 || r.satiety <= 0
       ? [`recipe "${r.id}" needs ingredients and must feed you`]
       : []),

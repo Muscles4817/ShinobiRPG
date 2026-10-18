@@ -537,7 +537,7 @@ describe('App (smoke test)', () => {
     expect(screen.getByText(/already searched Lantern Woods today/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Here/ }));
     await user.click(place(/River Below the Canal/));
-    expect(screen.getAllByRole('button', { name: 'Cast a line' })).toHaveLength(3);
+    expect(screen.getAllByRole('button', { name: 'Cast a line' })).toHaveLength(4);
   });
 
   it('resumes a saved game', async () => {

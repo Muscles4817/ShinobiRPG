@@ -8,6 +8,7 @@ import { STAT_GRADES } from '@/systems/stats';
 import type { GameContext } from '../context';
 import { noteFinds } from '../fieldBook/record';
 import { gatherMoment } from '../gathering';
+import { dishName, takeFor } from '../pantry';
 import { adjust, chip, log } from '../ops';
 import type { GameState } from '../state';
 import { bondWithOne, crewPeople } from './personal';
@@ -61,7 +62,7 @@ function campDish(state: GameState, ctx: GameContext, servings: number): RecipeD
   const pantry = state.inventory.pantry;
   return ctx.content.recipes.all
     .filter((r) => r.kind !== 'snack' && state.cooking.known[r.id] !== undefined)
-    .filter((r) => r.ingredients.every((i) => (pantry[i.id] ?? 0) >= i.count * servings))
+    .filter((r) => takeFor(ctx, pantry, r, { servings }) !== null)
     .sort((a, b) => STAT_GRADES.indexOf(b.rank) - STAT_GRADES.indexOf(a.rank))[0];
 }
 
@@ -74,11 +75,9 @@ export function cookForCamp(state: GameState, ctx: GameContext): CampNotes {
     const text = 'There’s nothing in your pack to make a meal of for everyone.';
     return { state, notes: [{ kind: 'story', text }] };
   }
-  const used = useUp(
-    state.inventory,
-    dish.ingredients.map((i) => ({ id: i.id, count: i.count * servings })),
-  );
-  if (!used.ok) return { state, notes: [] };
+  const take = takeFor(ctx, state.inventory.pantry, dish, { servings });
+  const used = take ? useUp(state.inventory, take.taken) : null;
+  if (!take || !used?.ok) return { state, notes: [] };
   const fed = adjust(
     {
       ...state,
@@ -88,7 +87,7 @@ export function cookForCamp(state: GameState, ctx: GameContext): CampNotes {
     { satiety: CAMP_MEAL_SATIETY },
   );
   const closer = crew.reduce((s, p) => bondWithOne(s, p.id, CAMP_MEAL_BOND), fed);
-  const text = `You cook ${dish.name} over the fire, and everyone eats it out of the pot.`;
+  const text = `You cook ${dishName(dish, take.fish)} over the fire, and everyone eats it out of the pot.`;
   const logged = log(closer, {
     text,
     tone: 'success',

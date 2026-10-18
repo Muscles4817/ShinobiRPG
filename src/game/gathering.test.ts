@@ -63,6 +63,7 @@ describe('fishing', () => {
       ['shallows', []],
       ['reeds', ['Crayfish', 'River Fish']],
       ['deep-pool', ['River Eel', 'River Fish']],
+      ['weir', ['Carp', 'River Fish']],
     ]);
     expect(
       blockerFor(evening, { type: 'fish', placeId: 'canal-river', spotId: 'shallows' }, ctx),

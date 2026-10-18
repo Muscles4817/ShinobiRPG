@@ -11,11 +11,13 @@ import { fieldBookView } from '../views/fieldBook';
 import { keepsakeShelf } from '../views/keepsakes';
 import { FOES_PAGE_FULL, pageCount } from './pages';
 import { noteFieldBook } from './rewards';
+import { fishWhere } from './wild';
 
 /** The field book: written in as you fish, forage and fight; each full page leaves something. */
 
 const SPRING = 1;
-const FISH = ['river-fish', 'sweetfish', 'crayfish', 'river-eel', 'mountain-trout', 'old-catfish'];
+/** Every fish on a spot in the pack, from the same reading the page makes. */
+const FISH = [...fishWhere(ctx).keys()];
 
 function morning(state: GameState, slot = 0): GameState {
   return { ...state, time: { day: SPRING, slot }, board: { ...state.board, refreshedDay: SPRING } };

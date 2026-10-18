@@ -104,3 +104,34 @@ describe('experimenting', () => {
     );
   });
 });
+
+describe('a dish that takes any fish of a kind', () => {
+  const sashimiCook = (pantry: Record<string, number>) => {
+    const state = withPantry(newGame(), pantry);
+    return { ...state, cooking: { ...state.cooking, known: { 'sashimi-plate': 3 } } };
+  };
+
+  it('is cooked with the cheapest fish of the kind you have, and named for it', () => {
+    const state = sashimiCook({ rice: 1, 'sea-bream': 1, rockfish: 1 });
+    const after = act(state, { type: 'cook', recipeId: 'sashimi-plate' });
+    expect(after.inventory.pantry).toEqual({ 'sea-bream': 1 });
+    expect(lastEntry(after)?.heading).toBe('Cooked Sashimi Plate with Rockfish');
+  });
+
+  it('says what kind of fish it wants when there is none', () => {
+    const state = sashimiCook({ rice: 1, 'river-fish': 1 });
+    expect(blockerFor(state, { type: 'cook', recipeId: 'sashimi-plate' }, ctx)).toBe(
+      'Needs Any white fish. The grocer sells them.',
+    );
+    const card = kitchenView(state, ctx).recipes.find((r) => r.id === 'sashimi-plate');
+    expect(card?.needs).toContainEqual({ name: 'Any white fish', have: 0, need: 1 });
+  });
+
+  it('is worked out with whichever fish of the kind went into the pot, and eats that one', () => {
+    const state = withPantry(formTeam(freshGame()), { rice: 1, flounder: 1, rockfish: 1 });
+    const known = { ...state, cooking: { ...state.cooking, xp: 400 } };
+    const after = act(known, { type: 'experiment', ingredientIds: ['flounder', 'rice'] });
+    expect(after.cooking.known['sashimi-plate']).toBe(1);
+    expect(after.inventory.pantry).toEqual({ rockfish: 1 });
+  });
+});
