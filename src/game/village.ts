@@ -13,6 +13,7 @@ import { visitingOn } from './merchants';
 import { newPostingsTomorrow } from './board';
 import type { GameContext } from './context';
 import { examRumours } from './exam/calendar';
+import { ringOrder, stillOpen, stretchOf } from './gossip';
 import { placeHere, placesHere } from './ops';
 import { atHomeVillage } from './homeVillage';
 import type { GameState } from './state';
@@ -186,23 +187,28 @@ interface Earful {
 
 function gossip(state: GameState, ctx: GameContext, { maxJobs, total }: Earful): RumourDef[] {
   const { rumours } = ctx.content.village;
-  // A coming exam is what everyone talks about.
-  const exam = examRumours(state, ctx);
+  const { day } = state.time;
+  // A coming exam is what everyone talks about, every other day.
+  const exam = stretchOf(examRumours(state, ctx), day, 1);
   const tomorrow = new Set(newPostingsTomorrow(state, ctx));
   const jobs = rumours
     .filter((r) => r.missionId !== undefined && tomorrow.has(r.missionId))
+    .filter((r) => stillOpen(r, state, ctx))
     .sort(byHash(state, 'rumour'))
     .slice(0, maxJobs);
-  // Talk about what you did is fresher than anything else, once the village remembers it.
-  const known = (r: RumourDef) =>
-    r.worldMark === undefined || state.village.marks.includes(r.worldMark);
-  const talk = rumours
-    .filter((r) => r.missionId === undefined && known(r))
-    .sort(byHash(state, 'rumour'))
-    .sort((a, b) => Number(b.worldMark !== undefined) - Number(a.worldMark !== undefined))
-    .slice(0, Math.max(0, total - jobs.length - exam.length));
-  return [...exam, ...jobs, ...talk];
+  const room = Math.max(0, total - jobs.length - exam.length);
+  // Talk about what you did is fresher than anything else, once the village remembers it; it
+  // takes up to half the day's talk, turn about with the rest.
+  const talk = rumours.filter((r) => r.missionId === undefined);
+  const told = talk.filter((r) => r.worldMark !== undefined && marked(state, r.worldMark));
+  const plain = talk.filter((r) => r.worldMark === undefined);
+  const fresh = stretchOf(ringOrder(told, state.board.seed), day, Math.ceil(total / 2));
+  const rest = stretchOf(ringOrder(plain, state.board.seed), day, total);
+  const said = fresh.slice(0, room);
+  return [...exam, ...jobs, ...said, ...rest.slice(0, room - said.length)];
 }
+
+const marked = (state: GameState, mark: string) => state.village.marks.includes(mark);
 
 /** Today's gossip: a coming exam, hints at tomorrow's new jobs, then talk about people and the village. */
 export function rumoursToday(state: GameState, ctx: GameContext): RumourDef[] {
