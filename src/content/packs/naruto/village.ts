@@ -119,6 +119,26 @@ export const VILLAGE: VillageLife = {
   ],
   festivals: [
     {
+      id: 'drowned-lanterns',
+      name: 'Night of Drowned Lanterns',
+      description:
+        'The harbour ward floats paper lanterns out into the fog for everyone the sea and the Mist have taken. Nobody says whose.',
+      season: 1,
+      day: 14,
+      marketPrices: 0.8,
+      bondBonus: 3,
+      locationId: 'kirigakure',
+      stalls: [
+        {
+          name: 'Lantern-Night Hot Pots',
+          blurb: 'Only on the Night of Drowned Lanterns',
+          icon: 'lantern',
+          foodIds: ['mist-hot-pot', 'kelp-tea'],
+          hours: ['afternoon', 'evening', 'night'],
+        },
+      ],
+    },
+    {
       id: 'hanami',
       name: 'Cherry Blossom Viewing',
       description: 'The whole village picnics under the blossoms. The stalls cut their prices.',
