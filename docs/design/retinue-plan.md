@@ -586,19 +586,71 @@ nothing. This step gives those techniques a pool to come from.
   suggests **lantern moths**: drawn to light, dusting a foe so they glow (sensing, no hiding),
   and blinding with their scales (a daze) rather than draining.
 
-**Questions for you:**
+**Decided** (with the designer):
 
-1. **Persistent or fresh?** Does a hive killed off by fire stay thin for days and breed back
-   at home (more life-sim, a real cost to losing it), or refill fully before every fight
-   (simpler, fights stand alone)?
-2. **Who can have one?** Only the born path (the clan), or can a clanless player get one too:
-   taught by a hermit far from home, or a jar of beetles from a job?
-3. **The original pack:** a swarm of its own now (the lantern moths, or something else), or
-   foes only until the original-pack step (7)?
-4. **Which pools now?** Insects only, or sand as well (a pool that guards its host on its own,
-   the fan pack's sand gourd) in the same step?
-5. **What feeds it?** Should draining a foe's chakra regrow the hive mid-fight (the insect
-   clan's whole point in canon), or should regrowth be flat so a hive can't snowball?
+1. **The hive is in the body, and it costs chakra for life.** Embedding the insects in the
+   flesh is a clan secret, done at birth. It gives the hive a **share** of the host's chakra
+   for good: a little, half, or most, chosen at creation by a child of the clan. The share is
+   taken off the host's own chakra, and it sets how many insects the body can keep (its
+   **cap**). Later in life the same operation can be learned from:
+   - an S-rank scroll in the clan's own library;
+   - another scroll somewhere out in the world;
+   - a rogue of the clan who can be talked into teaching it.
+2. **Insects are lost and bred back.** The hive is persistent. Damage kills insects in a
+   fight, and some kinds of damage are worse for some **strains** (fire for most). An
+   installed host's insects breed back quickly at home, and the host keeps a lot of them.
+3. **Strains, and crossbreeding.** The clan's own strain is famous for draining chakra fast,
+   and the install makes it hardier and lets the body hold more. Away from home you find other
+   insects (wild places of other biomes and other countries), study what they do, and
+   crossbreed them into your hive over time to mix their strengths.
+4. **Draining a foe's chakra restores your own** (the `drain` verb's `absorb`, which the clan's
+   techniques already use).
+5. **The original pack starts from moths.** A clan of its own keeps lantern moths: glowing dust
+   that keeps a foe found, and scales that blind. They drain less and sense more.
+6. **Sand is a different thing, built later.** It is a pool made and remade by jutsu, so it
+   can recover mid-fight, and it guards its host on its own. Its user learns sand techniques.
+   It comes as its own slice, after the hive.
+
+**The design that follows from these:**
+
+- **In the fight** (`engines/plan/swarm.ts`, `rules/swarms.ts`):
+  - `CombatantSetup.swarm` is `{ strain, count, cap }`, where a strain is the rules as data: how
+    fast it drains, how hardy it is, what kills it most (by element or area), whether it senses
+    or blinds.
+  - Swarm techniques spend insects (`swarmCost` on the technique) beside a little chakra.
+  - Insects don't breed mid-fight. They are lost to:
+    - areas that catch their host's side (more for a wider area);
+    - hits on their host by a damage kind the strain fears;
+    - the ones spent on a wall or clone that takes a blow.
+  - What they do: settle on a hit foe as a lingering drain that feeds the host's chakra (scraped
+    off by struggling, burnt off by fire), keep a foe they sit on from hiding, give the host a
+    passive Search, and screen (the wall and the clone).
+  - `CombatOutcome.swarm` reports how many came home.
+- **Outside the fight** (`systems/hives`, `GameState.hive`, a pack's `StrainDef`s):
+  - the hive slice holds the strain, share, cap and count, and what strains you have studied;
+  - each day at home the count breeds back towards the cap (faster for an installed host);
+  - the share comes off max chakra wherever chakra is worked out;
+  - foes carry hives too (`EnemyDef.swarm`, read before the fight as a `hidden` tell).
+
+**Build order** (each its own PR):
+
+- **4a, the hive in a fight:** the engine pool, strains as rules, losses, settling, sensing,
+  the outcome. The fan pack's insect techniques gain `swarmCost`.
+- **4b, the hive at home:** the slice, the install chosen at creation (a little, half or most),
+  chakra given up, breeding back, fights writing back losses, the hive on the Shinobi tab, the
+  moth clan in the original pack.
+- **4c, other strains:** wild insects found away from home, studied, and crossbred.
+- **4d, the install later in life:** the S-rank scroll, the scroll in the world, the rogue who
+  teaches.
+- **4e, sand:** a jutsu-made pool that recovers mid-fight and guards on its own.
+
+**Still open** (answered with sensible defaults unless you say otherwise):
+
+- The original pack's moth clan is new: the **Tōga** ("lamp moth"), who tend the moths that
+  gather at the village's great lanterns. A child of the Tōga starts with the install, like a
+  child of the insect clan.
+- An adult taking the install later gets the same three shares, but at a price: days laid up
+  while the body takes the hive.
 
 ### Shamans: spirits seen, bound and sealed
 
