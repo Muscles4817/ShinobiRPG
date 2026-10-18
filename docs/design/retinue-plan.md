@@ -1034,3 +1034,35 @@ and its genes, its skills with training**, and every kind has its own ceiling.
   chakra alone.
 - **Not yet:** foes and teammates don't yet aim areas or fire at a hive on purpose. That
   comes with the hive at home (4b), when hives first appear in fights.
+
+### Step 4b: the hive at home
+
+- **The system** (`systems/hives`):
+  - a hive is a strain, a share and a count;
+  - the share (a quarter, half or most) is chakra given for good, and sets the cap, at
+    `INSECTS_PER_CHAKRA` insects per point of chakra given;
+  - each day the hive breeds back a share of the cap: `BREED_AT_HOME` in the home village,
+    `BREED_AWAY` elsewhere, halved when the host is hungry.
+- **Chakra given.** `maxChakra` reads a `chakraGiven` share (`ChakraBody`). The game reckons
+  your chakra through `chakraBody(state)` everywhere: the meters, sleep, camp, exams, fights,
+  exhaustion and time passing. The share comes off wherever chakra is worked out.
+- **The game:**
+  - `GameState.hive` (save v59) is null for most;
+  - a child of a hive clan is born with it full, at the share chosen on the family history page;
+  - an old save of a hive clan gets its hive the first time a day passes;
+  - your hive rides into every fight, spars included, and what came home is kept;
+  - people of a hive clan fight with a full hive at half, their chakra taken as yours is.
+- **Content:**
+  - the fan pack's kikaichū (strong drain, hardy, fear fire) for the Aburame;
+  - the original pack's new clan, the **Tōga**: moth-keepers with a compound, a head (Mayu,
+    who teaches their four techniques), clan talk and four moth techniques (dust that settles,
+    scales that blind, a veil, a draining swarm). Their lantern moths drain little, sense
+    keenly and fear fire and wind.
+- **Screens:**
+  - the share as three cards on the family history page;
+  - a hive card on the Shinobi tab: the strain, what it took, how full it is in a word and a
+    bar, and how soon it fills again.
+- **Later:**
+  - foes who carry hives (`EnemyDef.swarm`);
+  - foes and teammates aiming areas and fire at a hive on purpose;
+  - strains and crossbreeding (4c), the install later in life (4d), sand (4e).

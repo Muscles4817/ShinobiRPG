@@ -13,6 +13,8 @@ import { settleMentor } from './sensei/settle';
 import { characterModifiers } from './profile';
 import { snackAt } from './snacks';
 import type { GameState } from './state';
+import { chakraBody } from './hives/hive';
+import { hiveDayPassed } from './hives/keeping';
 
 /**
  * Small state-transition helpers shared by action handlers. Each returns a new state;
@@ -32,7 +34,7 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
     time,
     character: {
       ...rest,
-      vitals: passTime(character.vitals, slots, character.stats, hungerRate),
+      vitals: passTime(character.vitals, slots, chakraBody(state), hungerRate),
       // A home-cooked meal's buff lasts until the day ends; a snack's only a little while.
       meal: time.day === state.time.day ? character.meal : null,
       ...(snack ? { snack } : {}),
@@ -46,7 +48,8 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
     newDay ? { ...healed, people: peopleGrown(healed, ctx) } : healed,
     ctx,
   );
-  const mentored = newDay ? settleMentor(grown, ctx) : grown;
+  const bred = newDay ? hiveDayPassed(grown, ctx) : grown;
+  const mentored = newDay ? settleMentor(bred, ctx) : bred;
   return { ...mentored, board: boardFor(mentored, ctx) };
 }
 
@@ -54,7 +57,7 @@ export function adjust(state: GameState, delta: VitalsDelta): GameState {
   const { character } = state;
   return {
     ...state,
-    character: { ...character, vitals: adjustVitals(character.vitals, delta, character.stats) },
+    character: { ...character, vitals: adjustVitals(character.vitals, delta, chakraBody(state)) },
   };
 }
 

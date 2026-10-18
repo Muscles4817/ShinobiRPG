@@ -16,6 +16,7 @@ import { currentLocation } from '../ops';
 import { hungerEffect, hungerLines } from '../hunger';
 import { atHomeVillage } from '../homeVillage';
 import type { GameState } from '../state';
+import { chakraBody } from '../hives/hive';
 
 export interface Meter {
   readonly label: string;
@@ -51,7 +52,7 @@ export interface HeaderView {
 }
 
 export function headerView(state: GameState, ctx: GameContext): HeaderView {
-  const { stats, vitals } = state.character;
+  const { vitals } = state.character;
   const location = currentLocation(state, ctx);
   const warnings: string[] = [];
   if (vitals.health < MAX_HEALTH * 0.3) warnings.push('Badly hurt');
@@ -70,7 +71,7 @@ export function headerView(state: GameState, ctx: GameContext): HeaderView {
     visiting: !atHomeVillage(state, ctx),
     meters: [
       { label: 'Health', value: Math.round(vitals.health), max: MAX_HEALTH },
-      { label: 'Chakra', value: Math.round(vitals.chakra), max: maxChakra(stats) },
+      { label: 'Chakra', value: Math.round(vitals.chakra), max: maxChakra(chakraBody(state)) },
       { label: 'Energy', value: Math.round(vitals.energy), max: METER_MAX },
       { label: 'Hunger', value: Math.round(hungerOf(vitals)), max: METER_MAX, level },
     ],

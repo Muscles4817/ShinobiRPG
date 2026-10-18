@@ -8,6 +8,7 @@ import { applyFightCosts } from './fightCosts';
 import type { Report } from './reports';
 import type { GameState } from './state';
 import { exhaust, inflict, rollInjury } from './wounds';
+import { chakraBody } from './hives/hive';
 
 /**
  * What a finished fight leaves on your body, once its result has been applied: a real defeat
@@ -52,7 +53,7 @@ function defeatInjury(state: GameState, end: FightEnd, ctx: GameContext, rng: Rn
 }
 
 function drainedExhaustion(state: GameState, outcome: CombatOutcome): GameState {
-  const max = maxChakra(state.character.stats);
+  const max = maxChakra(chakraBody(state));
   if (!isDrained(outcome.player.chakra, max)) return state;
   const spell = { nights: DRAINED_NIGHTS, refill: EXHAUSTED_REFILL };
   return exhaust(state, spell, { text: DRAINED_STORY });

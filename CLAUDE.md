@@ -352,7 +352,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     hive pays chakra alone), a swarm technique that reaches a foe leaves insects settled on them
     that draw their chakra into the host and keep them from hiding until they drop off or a
     feared element burns them off, areas and feared elements kill insects in the host's hive,
-    a hive helps its host find the hidden, and `CombatOutcome.swarm` reports how many came home. It is cared for
+    a hive helps its host find the hidden, and `CombatOutcome.swarm` reports how many came home. Your
+    hive is kept between fights (`systems/hives`, `GameState.hive`, `game/hives/`): a child of a
+    clan with a `hive` (`ClanDef.hive`, a pack's `StrainDef`s) is born with one, giving it a
+    quarter, half or most of their chakra for good (`hiveShare` on the creation draft); the
+    share comes off max chakra wherever chakra is reckoned (`chakraBody`, `ChakraBody.chakraGiven`
+    in `systems/vitals`) and sets how many insects the body keeps; what came home from a fight
+    is what the hive holds, and each day it breeds back (fast at home, slow away, slower hungry).
+    People of a hive clan fight with a full one. It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -814,6 +821,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   teacher's `contract`, with the `tastes` it likes as offerings and its `parting` words. A
   contract only foes hold needs neither: list its summons on an `EnemyDef.summons` with a
   `tell`. Validated in `validateContracts.ts`.
+- **Add a hive strain or hive clan:** a `StrainDef` in the pack's `strains.ts` (drain, hardiness,
+  the elements it fears, how keenly it senses), a `hive` on the `ClanDef` naming it, and clan
+  techniques with a `swarmCost`. Validated in `validateStrains.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

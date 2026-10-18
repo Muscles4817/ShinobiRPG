@@ -1,7 +1,7 @@
 import type { PersonDef } from '@/content';
 import type { CombatantSetup, CombatTrait } from '@/systems/combat';
 import type { Discipline } from '@/systems/techniques';
-import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
+import { MAX_HEALTH } from '@/systems/vitals';
 
 import { attributesOf, pouchFrom } from '../combatants';
 import { walkingByRank } from '../footing';
@@ -11,6 +11,7 @@ import type { GameState } from '../state';
 import { doableNow } from './capable';
 import { personStats } from './progress';
 import { pronounsOf } from './pronouns';
+import { personHive } from '../hives/hive';
 
 /**
  * Genin who fight beside you (teammates) or against you (sparring partners), from their real
@@ -74,6 +75,8 @@ export function companionCombatant(
   tag: string,
 ): CombatantSetup {
   const stats = personStats(person, state);
+  const clan = person.clanId ? ctx.content.clans.get(person.clanId) : undefined;
+  const hive = personHive(stats, clan, ctx);
   return {
     id: `${PERSON_PREFIX}${person.id}`,
     name: person.name,
@@ -82,8 +85,9 @@ export function companionCombatant(
     attributes: attributesOf(stats),
     health: MAX_HEALTH,
     maxHealth: MAX_HEALTH,
-    chakra: maxChakra(stats),
-    maxChakra: maxChakra(stats),
+    chakra: hive.chakra,
+    maxChakra: hive.chakra,
+    ...(hive.swarm ? { swarm: hive.swarm } : {}),
     techniques: companionTechniques(person, state, ctx).map((id) =>
       ctx.content.techniques.require(id),
     ),

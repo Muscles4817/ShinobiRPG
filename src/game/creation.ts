@@ -30,6 +30,7 @@ import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
 import { NOTHING_TOLD } from '@/systems/telling';
 import { NO_LEAVE } from '@/systems/travel';
+import type { HiveShare } from '@/systems/hives';
 import { fullVitals } from '@/systems/vitals';
 
 import { rollCharacterAptitude } from './aptitude';
@@ -44,6 +45,7 @@ import { NO_MENTOR } from './sensei/state';
 import { openDay } from './daybook/open';
 import { NO_DAYBOOK } from './daybook/state';
 import { bornCompanions, kindOf, playerCompanion } from './companions/make';
+import { bornHive, chakraBody, DEFAULT_SHARE } from './hives/hive';
 import type { GameState } from './state';
 import { bornNature } from './nature';
 import { notesAptitude, notesProblems } from './notes';
@@ -80,6 +82,8 @@ export interface CreationDraft {
   readonly quirkIds: readonly string[];
   readonly nindoId: string;
   readonly breakInApproachId: string;
+  /** How much of their chakra a child of a hive clan gave the hive at birth. */
+  readonly hiveShare?: HiveShare;
 }
 
 export interface NewGameOptions {
@@ -184,6 +188,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
   // What a special note fixes (an art that never takes) stands over any gift.
   const aptitude = { ...withGifts(rolled, draft.file.gifts), ...notesAptitude(notes) };
   const known = startingTechniques(draft, grades, ctx);
+  const hive = bornHive(clan, draft.hiveShare ?? DEFAULT_SHARE, stats);
 
   const state: GameState = {
     packId: content.packId,
@@ -213,7 +218,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       aptitude,
       aptitudeKnown: giftsKnown(nothingKnown(), draft.file.gifts),
       aptitudeSessions: {},
-      vitals: fullVitals(stats),
+      vitals: fullVitals(chakraBody({ character: { stats }, hive })),
       meal: null,
       assignment: null,
       injuries: [],
@@ -255,6 +260,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     companions: bornCompanions(clan, seed, ctx),
     contract: null,
     brokenContracts: [],
+    hive,
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),

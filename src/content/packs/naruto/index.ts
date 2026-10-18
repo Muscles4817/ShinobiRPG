@@ -1,6 +1,7 @@
 import { bestiary } from '../../shared/bestiary';
 import { NARUTO_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
+import { STRAINS } from './strains';
 import { CONTRACT_TECHNIQUES, CONTRACTS, TOAD_MISSION } from './contracts';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
@@ -166,6 +167,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   companionKinds: COMPANION_KINDS,
   companionLore: COMPANION_LORE,
   contracts: CONTRACTS,
+  strains: STRAINS,
   enemies: [
     ...ENEMIES,
     ...bestiary(NARUTO_FOE_KIT),

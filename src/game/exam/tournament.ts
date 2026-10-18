@@ -25,6 +25,7 @@ import { companionCombatant } from '../people/companions';
 import { generateGenin } from '../people/generator';
 import type { GameState } from '../state';
 import { examHere, withRun, type ExamHere } from './current';
+import { chakraBody } from '../hives/hive';
 
 /**
  * The tournament: one-against-one bouts against rivals from other villages, a round at a time.
@@ -81,9 +82,12 @@ export function rivalNow(state: GameState, ctx: GameContext): PersonDef | null {
 
 /** The medics bring you up to fighting shape for the bout. */
 function patchedUp(state: GameState): GameState {
-  const { vitals, stats } = state.character;
+  const { vitals } = state.character;
   const health = Math.max(0, Math.round(MAX_HEALTH * BOUT_READY_SHARE) - vitals.health);
-  const chakra = Math.max(0, Math.round(maxChakra(stats) * BOUT_READY_SHARE) - vitals.chakra);
+  const chakra = Math.max(
+    0,
+    Math.round(maxChakra(chakraBody(state)) * BOUT_READY_SHARE) - vitals.chakra,
+  );
   return adjust(state, { health, chakra });
 }
 
