@@ -405,7 +405,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 23. **Missions remember.** A run keeps **marks** (flags), **threads** (counters shown as a word
     and dots, `ThreadDef`) and a **ledger** (what changed the outcome, and why, for the debrief)
     (`systems/missions/story.ts`, `outcomes.ts`). Any stage can carry a `when` `Condition`
-    (marks, threads, who is along); one that doesn't hold is passed over (`game/story/state.ts`
+    (marks, threads, who is along, world marks and village **tallies**: counts kept across jobs
+    such as `mercy`, moved by a `tally` effect and read as they stood when the job began); one that doesn't hold is passed over (`game/story/state.ts`
     `settle`), so a story branches by stages appearing, not by a graph. Results carry
     `Outcome`s (effects plus a ledger line): failing forward (`onFailure: 'forward'`) sets marks
     rather than docking pay. Story stages are `decision` (options with a `Tone`: the crew's bond
@@ -426,8 +427,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     pays `CLIENT_RETURN_SHARE` more (not on standing jobs). `validateStory` checks every world
     mark waited for is one some job leaves behind.
 25. **Long stories are arcs of jobs.** An `ArcDef` (`content.arcs`, `systems/missions/arcs.ts`)
-    is acts of jobs following Harmon's circle; an act's jobs are open together once every job
-    of the act before is done, never posted at random (`Availability` kind `arc`). Jobs read
+    is acts of jobs following Harmon's circle; an act's jobs are open together once the act
+    before is passed, never posted at random (`Availability` kind `arc`). An act's `pass` says
+    how: every job (`all`, the default), `any` one (leads: the rest stay open until a later
+    act's job is done) or `one` (a fork: taking one closes the others). Jobs read
     earlier acts through world marks (`remembers`, a snapshot taken when a job starts). The
     board pins each arc under way (`views/arcs.ts`). An act may be based in another town
     (`ArcAct.baseLocationId`): its jobs are posted at the office there, and while it is open,
@@ -552,6 +555,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   leak into a release build; add a marker for each new fan pack to `scripts/check-release.mjs`.
   Build a fan pack's object inside a `/*#__PURE__*/` IIFE and mark content helpers called at
   module level `/*#__NO_SIDE_EFFECTS__*/`; otherwise array spreads and calls keep its data alive.
+  Name a fan pack's jobs in its arcs by literal id, not `JOB.id`: a property read survives
+  tree-shaking and keeps the job's text in the release build.
 - Content is typed TypeScript for now (type-checked, validated, zero runtime cost). If packs
   ever need to be authored outside the codebase or loaded at runtime (mods, downloads), move
   them to JSON with a runtime schema at the same `ContentPack` boundary — nothing else changes.
