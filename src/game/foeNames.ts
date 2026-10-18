@@ -40,3 +40,15 @@ export function foeList(defs: readonly EnemyDef[]): string {
     }),
   );
 }
+
+/**
+ * The debrief's fact for a won fight, written without a subject so the debrief can run it on
+ * ("You beat two bandit thugs and found…"). A mixed party is a list with an "and" of its own,
+ * so it stands as its own sentence, after a comma.
+ */
+export function beatenLine(defs: readonly EnemyDef[]): string {
+  if (defs.length === 0) return 'Won the fight.';
+  const kinds = new Set(defs.map((d) => d.id)).size;
+  const foes = foeList(defs);
+  return kinds === 1 ? `Beat ${foes}.` : `Fought ${foes}, and won.`;
+}

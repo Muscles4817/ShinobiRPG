@@ -117,6 +117,14 @@ export const LOST_STUDENT: SenseiPast = {
     title: 'Again',
     summary:
       '{lost}, the student {name} broke, is teaching children at {place} the way {name} once taught.',
+    ledger: {
+      found: 'Found {lost}’s fighting pit.',
+      mercy: 'Told {name} to bring {lost} home and say sorry.',
+      leave: 'Told {name} to tell {lost} it was enough.',
+      finish: 'Told {name} to stop the pit for good.',
+      spared: 'Brought {lost} home from the pit.',
+      ended: '{lost} died in the pit, and {name} sent its children home.',
+    },
     find: {
       title: 'The Pit at {place}',
       summary: 'Find {lost}’s fighting pit near {place}.',

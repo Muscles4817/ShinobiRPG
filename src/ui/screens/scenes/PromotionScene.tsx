@@ -41,16 +41,9 @@ export function PromotionScene({ ctx, state, perform }: ScreenProps) {
         {scene.farewell && <p className="story">{scene.farewell}</p>}
         {scene.unlocks.length > 0 && (
           <section className="promotion-opens" aria-label="What this opens">
-            <h2>What this opens</h2>
+            <h2>{scene.means}</h2>
             {scene.unlocks.map((u) => (
-              <div key={u.heading}>
-                <h3>{u.heading}</h3>
-                <ul>
-                  {u.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <p key={u.kind}>{u.text}</p>
             ))}
           </section>
         )}

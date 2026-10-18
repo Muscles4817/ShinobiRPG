@@ -9,7 +9,8 @@ import type { GameState } from '../state';
 /**
  * The keepsake shelf: things you didn't buy, read from what already happened. A memory shared
  * with someone (`village.memories`), a race won against your rival, the vest of each rank you
- * have reached, each full page of the field book; and an empty space for what comes next. Nothing here does anything in a fight.
+ * have reached, each full page of the field book; and an empty space for what comes next.
+ * Nothing here does anything in a fight.
  */
 
 export interface Keepsake {
@@ -26,9 +27,12 @@ export interface KeepsakeShelf {
 const VEST: Readonly<Partial<Record<(typeof RANKS)[number], Keepsake>>> = {
   chunin: {
     name: 'A chūnin vest, folded',
-    line: 'The first one. You keep it for the day it fitted.',
+    line: 'Handed to you at the ceremony, with the creases it came in still in it.',
   },
-  jonin: { name: 'A jōnin’s flak jacket', line: 'Heavier than it looks. So is everything now.' },
+  jonin: {
+    name: 'A jōnin’s flak jacket',
+    line: 'Given with your papers, your name inked inside the collar.',
+  },
 };
 
 function memories(state: GameState, ctx: GameContext): Keepsake[] {
@@ -47,7 +51,7 @@ function rivalry(state: GameState, ctx: GameContext): Keepsake[] {
   return [
     {
       name: 'A frayed bell rope',
-      line: `From the bell tower. You touched it before ${person.name} did.`,
+      line: `From the bell tower, where your hand reached it ahead of ${person.name}’s.`,
     },
   ];
 }
@@ -72,6 +76,6 @@ export function keepsakeShelf(state: GameState, ctx: GameContext): KeepsakeShelf
   const next = VEST[RANKS[RANKS.indexOf(state.standing.rank) + 1] ?? 'kage'];
   return {
     keepsakes,
-    next: next ? 'Your next promotion will leave something here.' : null,
+    next: next ? 'There is room on the shelf for whatever your next rank brings.' : null,
   };
 }

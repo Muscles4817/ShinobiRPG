@@ -1,8 +1,39 @@
-import { CONTENT_PACKS, validateContent } from '@/content';
+import { CONTENT_PACKS, LEDGER_MAX_WORDS, validateContent } from '@/content';
+import type { MissionStage } from '@/systems/missions';
 
 import { composePool, withSenseiPool } from './sensei/pool/pool';
 
 /** Generated senseis: every one is whole, valid content, and they differ from each other. */
+
+/** What a scene shows the player: its text, its choices and their replies, its endings. */
+function sceneLines(stage: MissionStage): string[] {
+  switch (stage.kind) {
+    case 'ending':
+      return stage.endings.map((e) => e.text);
+    case 'decision':
+      return [stage.text, ...stage.options.flatMap((o) => [o.label, o.reply])];
+    case 'check':
+      return [stage.text, stage.success, stage.failure];
+    case 'camp':
+    case 'combat':
+    case 'encounter':
+    case 'leg':
+    case 'narrative':
+      return [stage.text];
+  }
+}
+
+function ledgerLines(stage: MissionStage): string[] {
+  const outcomes =
+    stage.kind === 'decision'
+      ? stage.options
+      : stage.kind === 'ending'
+        ? stage.endings
+        : stage.kind === 'check'
+          ? stage.approaches.map((a) => a.onSuccess ?? {})
+          : [];
+  return outcomes.flatMap((o) => ('ledger' in o && o.ledger ? [o.ledger] : []));
+}
 
 describe.each(CONTENT_PACKS.map((p) => [p.id, p] as const))('the %s sensei pool', (_id, pack) => {
   const pool = composePool(pack);
@@ -29,6 +60,20 @@ describe.each(CONTENT_PACKS.map((p) => [p.id, p] as const))('the %s sensei pool'
       // Every slot is filled.
       const lines = [...conversations.flatMap((c) => [c.opener, ...c.choices.map((x) => x.reply)])];
       for (const line of lines) expect(line).not.toMatch(/\{(name|art|lost|foe|keepsake|place)\}/);
+    }
+  });
+
+  it('keeps its jobs’ ledgers short, and apart from the scenes they note', () => {
+    for (const { missions } of pool) {
+      const stages = missions.flatMap((m) => m.stages);
+      const told = new Set(stages.flatMap(sceneLines));
+      const ledgers = stages.flatMap(ledgerLines);
+      expect(ledgers.length).toBeGreaterThan(0);
+      for (const line of ledgers) {
+        expect(told.has(line)).toBe(false);
+        expect(line.split(/\s+/).length).toBeLessThanOrEqual(LEDGER_MAX_WORDS);
+        expect(line).not.toMatch(/[{}“]/);
+      }
     }
   });
 

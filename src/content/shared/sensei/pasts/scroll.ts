@@ -118,6 +118,14 @@ export const STOLEN_SCROLL: SenseiPast = {
     title: 'The Missing Pages',
     summary:
       'Pages of a scroll stolen on {name}’s watch are being sold at {place}, and {foe} is selling them.',
+    ledger: {
+      found: 'Found the sealed warehouse where {foe} keeps the scroll.',
+      mercy: 'Told {name} to take {foe} home to be sealed.',
+      leave: 'Told {name} to take the scroll back first.',
+      finish: 'Told {name} the secrets should die with {foe}.',
+      spared: 'Took the scroll back, and brought {foe} home in seals.',
+      ended: 'Took the scroll back, and {foe} died with its secrets.',
+    },
     find: {
       title: 'Pages for Sale',
       summary: 'Find where {foe} keeps the stolen scroll near {place}.',

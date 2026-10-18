@@ -118,6 +118,14 @@ export const BROKEN_PROMISE: SenseiPast = {
     title: 'Hana',
     summary:
       'A girl like the one {name} swore to protect has been seen at {place}, with {foe}’s people.',
+    ledger: {
+      found: 'Found the boathouse where {foe} keeps the children.',
+      mercy: 'Told {name} to bring {foe} home in chains.',
+      leave: 'Told {name} to see to the children first.',
+      finish: 'Told {name} to make sure {foe} took no more children.',
+      spared: 'Brought the children home, and {foe} in chains.',
+      ended: 'Brought the children home, and left {foe} dead at the boathouse.',
+    },
     find: {
       title: 'The River Children',
       summary: 'Find where {foe} keeps the children near {place}.',
