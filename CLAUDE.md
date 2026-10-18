@@ -454,12 +454,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `settle`), so a story branches by stages appearing, not by a graph. Results carry
     `Outcome`s (effects plus a ledger line): failing forward (`onFailure: 'forward'`) sets marks
     rather than docking pay. Story stages are `decision` (options with a `Tone`: the crew's bond
-    and the charge's trust move by their tastes, and whoever felt it most says so), `camp`
+    and the charge's trust move by their tastes, and whoever felt it most says so; an option
+    whose `when` fails may still show, closed, with its `unseen` reason), `camp`
     (pick a few activities before the fire burns down) and `ending` (the first that fits). A
     `leg` with a `region` may bring a road event (`content.roadEvents`, drawn by hash). A job
     may have a `charge` (whose trust is a thread) and `twists` (a hidden mark rolled at the
     start). What the crew say comes from `content.voices` by moment and trait. The **debrief**
-    (`game/debrief.ts`) reads it all back: the ledger line by line with the pay each moved,
+    (`game/debrief.ts`) reads it all back: the ledger line by line with the pay each moved (a
+    `noted` outcome, a clue found, gets a stamp),
     each crew member's bond since the start and last word, a grade (clean, rough, botched), and
     on a failure what would have helped (the best approach to the check, or the foe's trick).
 24. **Jobs leave something behind.** Outcomes can make the village remember (`world` effect →
@@ -480,7 +482,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     how: every job (`all`, the default), `any` one (leads: the rest stay open until a later
     act's job is done) or `one` (a fork: taking one closes the others). Jobs read
     earlier acts through world marks (`remembers`, a snapshot taken when a job starts). The
-    board pins each arc under way (`views/arcs.ts`). An act may be based in another town
+    board pins each arc under way (`views/arcs.ts`: its rule as a stamp, the act's jobs, which
+    open their notices, and leads still open), and a job's notice says what finishing it will
+    close (`arcNote`: a fork's other roads, leads not followed). An act may be based in another town
     (`ArcAct.baseLocationId`): its jobs are posted at the office there, and while it is open,
     going there is orders, not leave. A job may leave you somewhere else (`MissionDef.endsAt`,
     walked there by its legs): the "go" act's job takes you to the base, the last brings you home.
