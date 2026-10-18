@@ -12,6 +12,9 @@ import { examToday } from '../exam/calendar';
 import { tavernCrowd } from '../actions/tavern';
 import { wildsLine } from './wilds';
 import { choice } from './common';
+import { aroundYou, compoundLine, quarterLine, quartered } from './compounds';
+import { companionStrip, type CompanionStrip } from './companionCare';
+import { vetLine } from './vet';
 import { teacherOffers } from './teachers';
 import { facesByPlace, type PersonFace } from './people';
 
@@ -26,6 +29,8 @@ export interface PlaceCard {
   readonly suggested: boolean;
   /** Who is there right now. */
   readonly people: readonly PersonFace[];
+  /** The quarter a compound is reached through, so its page goes back there. */
+  readonly parentId: string | null;
   /** Something new worth a visit today, e.g. "2 new" or "Lesson ready". */
   readonly badge: string | null;
   /** "Closed. Opens in the morning." when shut right now, or null when open. */
@@ -33,7 +38,14 @@ export interface PlaceCard {
 }
 
 export interface HubView {
+  /** The places on the village screen (compounds stand behind their quarter's card). */
   readonly places: readonly PlaceCard[];
+  /** Places reached from another's page: the compounds of a quarter. */
+  readonly inner: readonly PlaceCard[];
+  /** People you know who are out and about. */
+  readonly around: readonly PersonFace[];
+  /** Your companion at your side, when you have one. */
+  readonly companion: CompanionStrip | null;
   /** The latest record entry, for the ticker above the dock. */
   readonly latest: {
     readonly heading: string;
@@ -41,12 +53,43 @@ export interface HubView {
   } | null;
 }
 
+/** Places to rest, eat and sleep: grouped so each switch over place kinds stays small. */
+export const REST_KINDS = ['home', 'hospital', 'inn', 'house', 'onsen', 'tavern'] as const;
+export type RestKind = (typeof REST_KINDS)[number];
+type RestPlace = Extract<PlaceDef, { readonly kind: RestKind }>;
+
+export function isRestKind(kind: PlaceKind): kind is RestKind {
+  return (REST_KINDS as readonly string[]).includes(kind);
+}
+
+function isRestPlace(place: PlaceDef): place is RestPlace {
+  return isRestKind(place.kind);
+}
+
+function restLine(place: RestPlace, state: GameState, ctx: GameContext): string {
+  switch (place.kind) {
+    case 'home':
+      return homeLine(state, place.blurb);
+    case 'tavern':
+      return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
+    case 'onsen':
+      return onsenLine(state, place.soakCost);
+    case 'inn':
+      return `A room for ${place.roomCost} ryo`;
+    case 'house':
+      return houseLine(state, place.id, place.price);
+    case 'hospital':
+      return hospitalLine(state, place.treatmentCost);
+  }
+}
+
 function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
+  if (isRestPlace(place)) return restLine(place, state, ctx);
   return place.kind === 'lettings' ? place.blurb : workLine(place, state, ctx);
 }
 
 function workLine(
-  place: Exclude<PlaceDef, { kind: 'lettings' }>,
+  place: Exclude<PlaceDef, { kind: 'lettings' | RestKind }>,
   state: GameState,
   ctx: GameContext,
 ): string {
@@ -61,22 +104,16 @@ function workLine(
       return academyLine(place.techniqueIds, state, ctx);
     case 'library':
       return libraryLine(place.techniqueIds, state, ctx);
-    case 'home':
-      return homeLine(state, place.blurb);
     case 'gear':
       return place.blurb;
-    case 'tavern':
-      return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
-    case 'onsen':
-      return onsenLine(state, place.soakCost);
-    case 'inn':
-      return `A room for ${place.roomCost} ryo`;
-    case 'house':
-      return houseLine(state, place.id, place.price);
     case 'wilds':
       return wildsLine(state, ctx, place.id);
-    case 'hospital':
-      return hospitalLine(state, place.treatmentCost);
+    case 'compound':
+      return compoundLine(state, ctx, place);
+    case 'quarter':
+      return quarterLine(place);
+    case 'vet':
+      return vetLine(state, ctx, place);
   }
 }
 
@@ -175,18 +212,24 @@ export function hubView(state: GameState, ctx: GameContext): HubView {
   const suggested = suggestion(state, places);
   const faces = facesByPlace(state, ctx);
   const last = state.journal.entries.at(-1);
+  const behind = quartered(state, ctx);
+  const cards = places.map((p): PlaceCard => ({
+    id: p.id,
+    kind: p.kind,
+    name: p.kind === 'home' && isRentFree(state.housing) ? 'Home' : p.name,
+    icon: p.icon,
+    line: liveLine(p, state, ctx),
+    suggested: p.kind === suggested,
+    people: faces.get(p.id) ?? [],
+    parentId: behind.get(p.id) ?? null,
+    badge: badgeFor(p, state, ctx),
+    closed: closedSign(p.hours, state),
+  }));
   return {
-    places: places.map((p) => ({
-      id: p.id,
-      kind: p.kind,
-      name: p.kind === 'home' && isRentFree(state.housing) ? 'Home' : p.name,
-      icon: p.icon,
-      line: liveLine(p, state, ctx),
-      suggested: p.kind === suggested,
-      people: faces.get(p.id) ?? [],
-      badge: badgeFor(p, state, ctx),
-      closed: closedSign(p.hours, state),
-    })),
+    places: cards.filter((c) => c.parentId === null),
+    inner: cards.filter((c) => c.parentId !== null),
+    around: aroundYou(state, ctx),
+    companion: companionStrip(state, ctx),
     latest: last ? { heading: last.heading ?? last.text, chips: last.chips ?? [] } : null,
   };
 }

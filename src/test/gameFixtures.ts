@@ -12,6 +12,8 @@ import {
   type GameState,
 } from '@/game';
 import { createDuelEngine } from '@/systems/combat';
+import type { Companion } from '@/systems/companions';
+import { createStats } from '@/systems/stats';
 import { GRADE_XP } from '@/systems/cooking';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
@@ -148,4 +150,30 @@ export function fightOut(start: GameState, context: GameContext = ctx): GameStat
     state = act(state, { type: 'combatAct', optionId: pick.id }, context);
   }
   return state;
+}
+
+/** A stray hound at your side, fed today, a little bonded: overrides change any of it. */
+export function withHound(state: GameState, overrides: Partial<Companion> = {}): GameState {
+  const hound: Companion = {
+    id: 'stray-hound-1',
+    kindId: 'stray-hound',
+    name: 'Ash',
+    stats: createStats(5, { speed: 3, perception: 4 }),
+    // A hound's talent: nothing at all for the arts it never learns.
+    aptitude: createStats(1, { ninjutsu: -1, genjutsu: -1, kenjutsu: -1, fuuinjutsu: -1 }),
+    bond: 12,
+    lastGrownDay: state.time.day - 1,
+    health: 60,
+    lastFedDay: state.time.day,
+    lastPlayDay: null,
+    injury: null,
+    favouriteKnown: false,
+    // Grown: well past the days any hound takes to grow up.
+    grownDays: 200,
+    lastTrainedDay: null,
+    lastCaredDay: state.time.day,
+    learned: [],
+    ...overrides,
+  };
+  return { ...state, companions: { ...state.companions, owned: { player: hound } } };
 }

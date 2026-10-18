@@ -1,6 +1,7 @@
 import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
 import { CHAKRA_PAPER_TEXT } from '../../shared/chakraPaper';
+import { PINCER_STRIKE } from '../../shared/beastTechniques';
 import { TOOL_IDS } from '../../shared/tools';
 import { CHUNIN_MISSIONS } from './chuninMissions';
 import { LANTERN_THIEF_JOBS } from './arcs/lanternThief';
@@ -18,6 +19,7 @@ import { KIRI_FORD } from './kiriFord';
 import { PORT_SHIOMACHI } from './shiomachi';
 import { TOROGAKURE_LEISURE } from './leisure';
 import { TOROGAKURE_WILDS } from './wilds';
+import { TOROGAKURE_COMPOUNDS } from './compounds';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -55,6 +57,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         missionIds: [
           'lantern-patrol',
           'lantern-keepers-cat',
+          'pup-in-the-culvert',
           'shrine-weeding',
           'kuroda-medicine',
           'tea-merchant-escort',
@@ -146,6 +149,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         blurb: 'The library of techniques',
         hours: ['morning', 'afternoon', 'evening'],
         techniqueIds: [
+          PINCER_STRIKE,
           'gale-heel',
           'pebble-volley',
           'lantern-mirage',
@@ -258,6 +262,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         blurb: 'Healers on call',
         treatmentCost: 60,
       },
+      ...TOROGAKURE_COMPOUNDS,
       ...TOROGAKURE_WILDS,
     ],
   },

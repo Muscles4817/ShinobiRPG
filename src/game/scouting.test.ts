@@ -9,7 +9,7 @@ import { shinobiView } from './views/shinobi';
 describe('sizing up an opponent', () => {
   it('says who usually acts first, from speed, calling a near tie even', () => {
     const yours = createStats(10);
-    const pace = (speed: number) => scout({ ...yours, speed }, yours, false).pace;
+    const pace = (speed: number) => scout({ stats: { ...yours, speed } }, yours, false).pace;
     expect(pace(13)).toBe('faster');
     expect(pace(11)).toBe('even');
     expect(pace(9)).toBe('even');
@@ -29,28 +29,28 @@ describe('sizing up an opponent', () => {
 
   it('says how they compare with you', () => {
     const you = createStats(6);
-    expect(scout(createStats(3), you, false).threat).toBe('much-weaker');
-    expect(scout(createStats(6), you, false).threatLabel).toBe('Evenly matched');
-    expect(scout(createStats(10), you, false).threatLabel).toBe('Far stronger than you');
+    expect(scout({ stats: createStats(3) }, you, false).threat).toBe('much-weaker');
+    expect(scout({ stats: createStats(6) }, you, false).threatLabel).toBe('Evenly matched');
+    expect(scout({ stats: createStats(10) }, you, false).threatLabel).toBe('Far stronger than you');
   });
 
   it('reads how they fight from their stats', () => {
     const you = createStats(6);
-    expect(scout(createStats(6, { taijutsu: 4 }), you, false).style).toBe(
+    expect(scout({ stats: createStats(6, { taijutsu: 4 }) }, you, false).style).toBe(
       'Brawler, wants you close',
     );
-    expect(scout(createStats(6, { ninjutsu: 4 }), you, false).style).toBe(
+    expect(scout({ stats: createStats(6, { ninjutsu: 4 }) }, you, false).style).toBe(
       'Jutsu user, keeps their distance',
     );
-    expect(scout(createStats(3, { speed: 3, strength: 1 }), you, false).style).toBe(
+    expect(scout({ stats: createStats(3, { speed: 3, strength: 1 }) }, you, false).style).toBe(
       'Quick and slippery, wants you close',
     );
   });
 
   it('sharp eyes see exactly where they outclass you', () => {
-    const read = scout(createStats(6, { strength: 4 }), createStats(6), true);
+    const read = scout({ stats: createStats(6, { strength: 4 }) }, createStats(6), true);
     expect(read.details[0]).toEqual({ label: 'Strength', theirs: 10, yours: 6 });
-    expect(scout(createStats(6), createStats(6), false).details).toEqual([]);
+    expect(scout({ stats: createStats(6) }, createStats(6), false).details).toEqual([]);
   });
 });
 

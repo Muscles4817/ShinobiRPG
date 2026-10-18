@@ -85,6 +85,37 @@ export const MISSIONS: readonly MissionDef[] = [
     ],
   },
   {
+    id: 'pup-in-the-well',
+    title: 'The Pup in the Old Well',
+    rank: 'D',
+    client: 'Farmer Hachirō',
+    summary: 'A stray pup has fallen into the dry well behind the outer farms.',
+    slots: 2,
+    energyCost: 15,
+    reward: { ryo: 80, reputation: 3, companionKindId: 'stray-hound' },
+    minMissionsCompleted: 1,
+    stages: [
+      {
+        kind: 'narrative',
+        text: 'Hachirō scratches his head. “Can’t leave it, can I. But I’m too old for ropes.”',
+      },
+      {
+        kind: 'check',
+        text: 'At the bottom of the well, a pup yelps and scrabbles at the stones as your shadow falls over it.',
+        approaches: [
+          { label: 'Climb down after it', stat: 'stamina', difficulty: 7 },
+          { label: 'Coax it out', stat: 'willpower', difficulty: 8 },
+        ],
+        success:
+          'You come up the rope with the pup in the crook of your arm. It licks the grit off your chin.',
+        failure:
+          'The rope burns and the pup panics twice, but in the end it is up and you are both filthy.',
+        onFailure: 'penalty',
+        failureDamage: 3,
+      },
+    ],
+  },
+  {
     id: 'farm-medicine',
     title: 'Medicine for the Outer Farms',
     rank: 'D',

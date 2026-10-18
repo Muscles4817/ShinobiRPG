@@ -3,6 +3,7 @@ import type { MapStyle } from '../mapStyle';
 import type { DayEndMode } from '../daybook/state';
 import type { Contest, RaceMove, Stakes } from '../rival/state';
 import type { RangeBand } from '@/systems/combat';
+import type { PlayKind } from '@/systems/companions';
 import type { CookingSteps } from '@/systems/cooking';
 import type { ApproachId, ReconId } from '@/systems/missions';
 import type { DrinkWayId } from '../bar';
@@ -104,6 +105,20 @@ export type GameAction =
   | { readonly type: 'buyCookbook'; readonly cookbookId: string }
   | { readonly type: 'learnRecipe'; readonly personId: string }
   | { readonly type: 'followSight' }
+  | { readonly type: 'befriendStray' }
+  | { readonly type: 'trackWild'; readonly placeId: string }
+  | { readonly type: 'takePup' }
+  | { readonly type: 'takeRescued' }
+  | { readonly type: 'rehomeCompanion' }
+  | { readonly type: 'handlerSession'; readonly stat: StatId }
+  | { readonly type: 'handlerTeach'; readonly techniqueId: string }
+  | { readonly type: 'buyLore'; readonly loreId: string }
+  | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
+  | { readonly type: 'playWithCompanion'; readonly play: PlayKind }
+  | { readonly type: 'doseCompanion'; readonly hidden: boolean }
+  | { readonly type: 'trainCompanion'; readonly stat: StatId }
+  | { readonly type: 'treatCompanion' }
+  | { readonly type: 'buyMedicine' }
   | { readonly type: 'hostDinner'; readonly recipeId: string; readonly guestId: string }
   | { readonly type: 'buyRound' }
   | {

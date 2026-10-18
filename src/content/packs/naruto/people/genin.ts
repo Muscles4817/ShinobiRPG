@@ -11,6 +11,7 @@ import {
   SASUKE_ARSENAL,
   SHINO_ARSENAL,
 } from './arsenals';
+import { TEAM_TEN_GENIN } from './geninTeamTen';
 
 /** The genin of your graduating year. Friends, rivals, nuisances. */
 export const CANON_GENIN: readonly PersonDef[] = [
@@ -98,7 +99,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',
-      evening: null,
+      evening: 'uchiha-compound',
       night: null,
     },
     arsenal: SASUKE_ARSENAL,
@@ -160,7 +161,12 @@ export const CANON_GENIN: readonly PersonDef[] = [
     ),
     specialty: 'taijutsu',
     bio: 'Quiet, gentle, and much stronger than her clan gives her credit for.',
-    schedule: { morning: 'training-grounds', afternoon: 'academy', evening: null, night: null },
+    schedule: {
+      morning: 'training-grounds',
+      afternoon: 'academy',
+      evening: 'hyuga-compound',
+      night: null,
+    },
     arsenal: HINATA_ARSENAL,
   },
   {
@@ -188,7 +194,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
     bio: 'Never seen without Akamaru on his head. Picks fights he’s sure he can win.',
     schedule: {
       morning: 'training-grounds',
-      afternoon: 'shopping-district',
+      afternoon: 'inuzuka-compound',
       evening: 'training-grounds',
       night: 'izakaya',
     },
@@ -212,86 +218,13 @@ export const CANON_GENIN: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Speaks in complete, logical sentences. Remembers every slight. Carries a colony.',
-    schedule: { morning: 'academy', afternoon: 'training-grounds', evening: null, night: null },
+    schedule: {
+      morning: 'academy',
+      afternoon: 'training-grounds',
+      evening: 'aburame-compound',
+      night: null,
+    },
     arsenal: SHINO_ARSENAL,
   },
-  {
-    id: 'shikamaru',
-    name: 'Shikamaru',
-    familyName: 'Nara',
-    role: 'genin',
-    title: 'Genin',
-    rank: 'genin',
-    stats: statLine(5, { ninjutsu: 9, intellect: 12, perception: 9, willpower: 4, stamina: 4 }),
-    clanId: 'nara',
-    traitIds: ['lazy', 'cunning'],
-    appearance: look(
-      'ponytail',
-      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3e6b3a' },
-      'arm',
-      { eyes: 'hooded', expression: 'calm' },
-    ),
-    specialty: 'ninjutsu',
-    bio: 'Genius, if he could be bothered. Would rather watch clouds than do almost anything.',
-    schedule: {
-      morning: null,
-      afternoon: 'training-grounds',
-      evening: 'shopping-district',
-      night: null,
-    },
-  },
-  {
-    id: 'choji',
-    name: 'Chōji',
-    familyName: 'Akimichi',
-    role: 'genin',
-    title: 'Genin',
-    rank: 'genin',
-    stats: statLine(5, { taijutsu: 9, strength: 11, stamina: 10, reserves: 9, speed: 4 }),
-    clanId: 'akimichi',
-    traitIds: ['kind', 'humble'],
-    appearance: look(
-      'spiky',
-      {
-        hair: '#8a5a2b',
-        eyes: '#2a1d14',
-        skin: '#f3d2b3',
-        outfit: '#3e6b3a',
-      },
-      'forehead',
-      { shape: 'round', figure: 'broad', expression: 'smile' },
-    ),
-    specialty: 'taijutsu',
-    bio: 'Big-hearted, loyal, and always holding a bag of chips. Do not call him fat.',
-    schedule: {
-      morning: 'shopping-district',
-      afternoon: 'training-grounds',
-      evening: 'shopping-district',
-      night: null,
-    },
-  },
-  {
-    id: 'ino',
-    name: 'Ino',
-    familyName: 'Yamanaka',
-    role: 'genin',
-    title: 'Genin',
-    rank: 'genin',
-    stats: statLine(5, { genjutsu: 10, perception: 8, intellect: 8 }),
-    clanId: 'yamanaka',
-    traitIds: ['proud', 'curious'],
-    appearance: look(
-      'ponytail',
-      { hair: '#e0b64a', eyes: '#3b6fb6', skin: '#f3d2b3', outfit: '#5a3a6e' },
-      'belt',
-    ),
-    specialty: 'genjutsu',
-    bio: 'Knows everyone’s business by lunchtime. Works the family flower shop when she has to.',
-    schedule: {
-      morning: 'shopping-district',
-      afternoon: 'mission-desk',
-      evening: 'shopping-district',
-      night: null,
-    },
-  },
+  ...TEAM_TEN_GENIN,
 ];

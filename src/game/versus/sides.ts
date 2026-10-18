@@ -1,7 +1,7 @@
 import { err, ok, type Result } from '@/core';
 import type { CombatantSetup } from '@/systems/combat';
 
-import { enemyCombatant, PLAYER_COMBATANT_ID } from '../combatants';
+import { enemyCombatant, enemyParty, PLAYER_COMBATANT_ID } from '../combatants';
 import type { GameContext } from '../context';
 import { companionCombatant, senseiCombatant } from '../people/companions';
 import { defaultStance } from '../people/teamOrders';
@@ -105,9 +105,9 @@ export function foeSetups(
   state: GameState,
   ctx: GameContext,
 ): CombatantSetup[] {
-  return foes.map((c, i) => {
-    if (c.kind === 'person') return setupOf(c, state, ctx, FOE_TAG);
+  return foes.flatMap((c, i) => {
+    if (c.kind === 'person') return [setupOf(c, state, ctx, FOE_TAG)];
     const before = foes.slice(0, i).filter((o) => o.kind === 'enemy' && o.def.id === c.def.id);
-    return { ...enemyCombatant(c.def, before.length, ctx), tag: FOE_TAG };
+    return enemyParty(c.def, before.length, ctx).map((s) => ({ ...s, tag: FOE_TAG }));
   });
 }

@@ -307,6 +307,8 @@ export interface CombatOutcome {
   readonly chakraSpent?: number;
   /** What each fighter used, by combatant id; absent from engines that don't track it. */
   readonly used?: Readonly<Record<string, CombatUsage>>;
+  /** Each fighter on the player's side but the player, as they end it (by combatant id). */
+  readonly allies?: Readonly<Record<string, { readonly health: number }>>;
 }
 
 export interface CombatEngine {

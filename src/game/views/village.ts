@@ -2,6 +2,7 @@ import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import { festivalNotice, hasSight, rumoursToday, sightTonight } from '../village';
 import { choice, type Choice } from './common';
+import { strayNotice, type StrayNotice } from './companion';
 
 /** The village's mood today: a festival, the gossip, and what walks the streets at night. */
 
@@ -28,6 +29,8 @@ export interface VillageView {
   readonly festival: FestivalBanner | null;
   readonly rumours: readonly string[];
   readonly night: NightSight | null;
+  /** A stray about in the village today, for anyone without a companion. */
+  readonly stray: StrayNotice | null;
 }
 
 function whenLabel(daysAway: number): string {
@@ -69,5 +72,6 @@ export function villageView(state: GameState, ctx: GameContext): VillageView {
     festival: banner(state, ctx),
     rumours: rumoursToday(state, ctx).map((r) => r.text),
     night: night(state, ctx),
+    stray: strayNotice(state, ctx),
   };
 }

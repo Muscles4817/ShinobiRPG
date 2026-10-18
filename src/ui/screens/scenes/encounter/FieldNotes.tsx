@@ -27,6 +27,7 @@ export function FieldNotes({ scene }: { readonly scene: EncounterScene }) {
                 {foe.count > 1 && <span className="num"> ×{foe.count}</span>}
               </b>
               <ThreatChip threat={foe.threat} label={foe.threatLabel} />
+              {foe.beside && <small>Fights beside the {foe.beside.toLowerCase()}.</small>}
               {foe.traits?.map((t) => (
                 <small key={t.trait}>
                   <b>{t.label}.</b> {t.counter}

@@ -53,6 +53,9 @@
   --paper-ink: #2a2118;
   --paper-muted: #6f6149;
   --seal: #c0392b;
+  /* Costs and gains stamped on paper: amber and green inks dark enough for the page. */
+  --paper-cost: #9a5c12;
+  --paper-gain: #2f7d4f;
   /* The map's sea, a shade under the paper, and the home country's ember wash. */
   --paper-sea: #e4d6b6;
   --map-home: rgb(229 100 63 / 0.16);

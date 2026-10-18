@@ -38,6 +38,13 @@ import { testChakraPaper } from './chakraPaper';
 import { assignTeam, chooseSensei } from './team';
 import { dismissReport, leaveFight, travel } from './travel';
 import { followSight } from './village';
+import { befriendStray } from './companions';
+import { takePup, trackWild } from './finding';
+import { buyLore, handlerSession, handlerTeach } from './handling';
+import { rehomeCompanion, takeRescued } from './rehoming';
+import { doseCompanion, feedCompanion, playWithCompanion } from './companionCare';
+import { trainCompanion } from './companionTraining';
+import { buyMedicine, treatCompanion } from './vet';
 import type { ActionHandler, ActionOf, GameActionType } from './types';
 
 type Registry = { readonly [T in GameActionType]: ActionHandler<ActionOf<T>> };
@@ -109,6 +116,20 @@ export const HANDLERS: Registry = {
   buyCookbook,
   learnRecipe,
   followSight,
+  befriendStray,
+  trackWild,
+  takePup,
+  takeRescued,
+  rehomeCompanion,
+  handlerSession,
+  handlerTeach,
+  buyLore,
+  feedCompanion,
+  playWithCompanion,
+  doseCompanion,
+  trainCompanion,
+  treatCompanion,
+  buyMedicine,
   hostDinner,
   buyRound,
   playDice,

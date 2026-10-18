@@ -148,3 +148,20 @@ export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): 
     ...(walking.length > 0 ? { perks: walking } : {}),
   };
 }
+
+/** The combatant id of the `k`th body in the retinue of the `index`th enemy of a fight. */
+export function retinueCombatantId(unitId: string, index: number, k: number): string {
+  return `${unitId}#${index}.${k}`;
+}
+
+/**
+ * The `index`th enemy of a fight and the bodies fighting beside them (`EnemyDef.retinue`):
+ * by default a companion is simply one more fighter on their side.
+ */
+export function enemyParty(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup[] {
+  const units = (def.retinue ?? []).map((entry, k) => ({
+    ...enemyCombatant(ctx.content.enemies.require(entry.enemyId), index, ctx),
+    id: retinueCombatantId(entry.enemyId, index, k),
+  }));
+  return [enemyCombatant(def, index, ctx), ...units];
+}

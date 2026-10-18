@@ -117,6 +117,37 @@ export function GearShopPage({
             </div>
           </section>
         ))}
+        {view.lore.length > 0 && (
+          <section className="rack" aria-label="For handlers">
+            <h2 className="label">For handlers</h2>
+            <p className="muted small">
+              Read once and kept: your own sessions with a companion count for more.
+            </p>
+            <div className="rack-items">
+              {view.lore.map((lore) => (
+                <article key={lore.name} className={lore.owned ? 'rack-item worn' : 'rack-item'}>
+                  {!lore.owned && <span className="tag num">{lore.cost}</span>}
+                  <span className="rack-pic">
+                    <Icon id="scroll" size={30} />
+                  </span>
+                  <b>{lore.name}</b>
+                  <small className="rack-desc muted">{lore.description}</small>
+                  {lore.blocker && !lore.owned && <small className="blocker">{lore.blocker}</small>}
+                  <button
+                    type="button"
+                    className={lore.owned ? 'btn ghost small' : 'btn small'}
+                    disabled={lore.blocker !== null}
+                    onClick={() => {
+                      perform(lore.action);
+                    }}
+                  >
+                    {lore.owned ? 'Read' : 'Buy'}
+                  </button>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
         {view.tools.length > 0 && (
           <section className="rack" aria-label="Fight tools">
             <h2 className="label">Fight tools</h2>
