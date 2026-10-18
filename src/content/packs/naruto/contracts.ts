@@ -105,6 +105,40 @@ export const CONTRACT_TECHNIQUES: readonly TechniqueDef[] = [
     rank: 'D',
     difficulty: 45,
   },
+  {
+    id: 'summoning-great-snake',
+    name: 'Summoning: Great Snake',
+    description: 'Blood on the tattoo and a palm to the ground: a snake as thick as a tree.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'summon', power: 1, call: 'great-snake' }],
+    chakraCost: 18,
+    rank: 'C',
+    difficulty: 70,
+  },
+  {
+    id: 'snake-strike',
+    name: 'Snake Strike',
+    description: 'A blur of scales and fangs from further off than it looks.',
+    discipline: 'taijutsu',
+    reach: ['close', 'mid'],
+    effects: [{ verb: 'damage', power: 14 }],
+    chakraCost: 3,
+    rank: 'D',
+    difficulty: 40,
+  },
+  {
+    id: 'snake-coil',
+    name: 'Coil',
+    description: 'It wraps round you and squeezes.',
+    discipline: 'taijutsu',
+    effects: [
+      { verb: 'damage', power: 6 },
+      { verb: 'pin', power: 10 },
+    ],
+    chakraCost: 4,
+    rank: 'D',
+    difficulty: 45,
+  },
 ];
 
 const TOADS: ContractDef = {
@@ -156,6 +190,9 @@ const TOADS: ContractDef = {
       price: { offeringId: 'wild-game' },
     },
   ],
+  tastes: ['wild-game', 'river-fish'],
+  parting:
+    'A last puff of smoke and a toad’s voice from it: the mountain has crossed your name off. Don’t call again.',
 };
 
 const NINKEN: ContractDef = {
@@ -191,9 +228,34 @@ const NINKEN: ContractDef = {
       upkeep: 6,
     },
   ],
+  tastes: ['wild-game', 'eggs'],
+  parting:
+    'Pakkun sniffs the torn scroll, sighs, and goes. The dogs won’t come to your call again.',
 };
 
-export const CONTRACTS: readonly ContractDef[] = [TOADS, NINKEN];
+/** Snakes lent out by the Sannin who left, to the missing-nin who still serve him. */
+const SNAKES: ContractDef = {
+  id: 'rogue-snakes',
+  name: 'The Snakes of the Rogue Sannin',
+  description: 'A snake contract inked for the rogues who still do his errands.',
+  summons: [
+    {
+      id: 'great-snake',
+      name: 'Great Snake',
+      description: 'As thick as a tree, quick to strike and quicker to coil.',
+      techniqueId: 'summoning-great-snake',
+      standing: 0,
+      stats: statLine('D', { strength: 'C', speed: 'C', taijutsu: 'C' }),
+      healthScale: 2.5,
+      maxChakra: 20,
+      techniqueIds: ['snake-coil', 'snake-strike'],
+      upkeep: 8,
+      price: { blood: 6 },
+    },
+  ],
+};
+
+export const CONTRACTS: readonly ContractDef[] = [TOADS, NINKEN, SNAKES];
 
 /** A lost toad messenger: see it home safe, and the toads offer you their scroll. */
 export const TOAD_MISSION: MissionDef = {

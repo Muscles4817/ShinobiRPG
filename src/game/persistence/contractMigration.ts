@@ -9,3 +9,8 @@ type RawState = Record<string, unknown>;
 export function v55ToV56(state: RawState): RawState {
   return { told: {}, ...state, contract: state.contract ?? null };
 }
+
+/** v56 → v57: a broken contract is remembered, and its clan won't take you back. None yet. */
+export function v56ToV57(state: RawState): RawState {
+  return { ...state, brokenContracts: [] };
+}

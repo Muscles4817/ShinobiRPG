@@ -1,5 +1,5 @@
 import { hashUnit } from '@/core';
-import type { EnemyDef, RetinueEntry, RetinueTell } from '@/content';
+import type { EnemyDef, FoeSummon, RetinueEntry, RetinueTell } from '@/content';
 
 import type { GameState } from './state';
 
@@ -10,7 +10,8 @@ import type { GameState } from './state';
  * raises the odds and never makes the kept or the hidden certain. Whether you catch it is
  * read from the seed and the foe, never the Rng, so the same notice reads the same way each
  * time, and only grows clearer as your eyes do. A client's report, a recon of their kit or
- * the fight itself shows the whole retinue (`full`).
+ * the fight itself shows the whole retinue (`full`). A foe's summoning contract
+ * (`EnemyDef.summons`) is read the same way, by its own tell.
  */
 
 /** How much you know of a foe: a glance (a notice, a first look) or everything. */
@@ -48,5 +49,20 @@ export function retinueSeen(
   return retinue.filter(
     (entry, k) =>
       hashUnit(state.board.seed, 'retinue', def.id, k) < glanceOdds(entry.tell, perception),
+  );
+}
+
+/** The summons a foe can call that you can tell they hold. */
+export function summonsSeen(
+  state: GameState,
+  def: EnemyDef,
+  knowledge: RetinueKnowledge,
+): FoeSummon[] {
+  const summons = def.summons ?? [];
+  if (knowledge === 'full') return [...summons];
+  const perception = state.character.stats.perception;
+  return summons.filter(
+    (entry, k) =>
+      hashUnit(state.board.seed, 'summon', def.id, k) < glanceOdds(entry.tell, perception),
   );
 }

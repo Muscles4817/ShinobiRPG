@@ -6,10 +6,12 @@ import { fightingPower, statTier } from '@/systems/stats';
 import { heldContract, summonBlocker } from '../contracts/summons';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { choice, type Choice } from './common';
 
 /**
- * Your summoning contract on the Shinobi tab: the clan, your standing with it, and each summon,
- * whether it answers you now, and what it asks, in words (the price stays out of the story).
+ * Your summoning contract on the Shinobi tab: the clan, your standing with it, each summon,
+ * whether it answers you now, and what it asks, in words (the price stays out of the story);
+ * the offerings it likes, and a way to break it.
  */
 
 /** Upkeep this many chakra an exchange or more is heavy to keep. */
@@ -31,6 +33,10 @@ export interface ContractCard {
   readonly standing: string;
   readonly progress: number;
   readonly summons: readonly SummonCard[];
+  /** What the clan likes left out at home, one a day. */
+  readonly offerings: readonly (Choice & { readonly name: string })[];
+  /** Tearing up your name on the scroll; the clan won't take it again. */
+  readonly breakIt: Choice;
 }
 
 function priceWords(summon: SummonDef, ctx: GameContext): string {
@@ -67,5 +73,10 @@ export function contractCard(state: GameState, ctx: GameContext): ContractCard |
           : `Answers once the clan counts you ${stageForPair(s.standing)}.`,
       };
     }),
+    offerings: (held.def.tastes ?? []).map((id) => ({
+      name: ctx.content.ingredients.require(id).name,
+      ...choice(state, ctx, { type: 'makeOffering', ingredientId: id }),
+    })),
+    breakIt: choice(state, ctx, { type: 'breakContract' }),
   };
 }

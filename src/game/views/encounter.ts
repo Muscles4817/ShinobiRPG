@@ -17,7 +17,7 @@ import type { GameContext } from '../context';
 import { approachPlans, type ApproachPlan } from '../encounter/approaches';
 import { encounterHere, type EncounterHere } from '../encounter/current';
 import { reconPlans, type ReconCost, type ReconPlan } from '../encounter/recon';
-import { retinueSeen } from '../retinueSight';
+import { retinueSeen, summonsSeen } from '../retinueSight';
 import { handicapOf, scoutOpponents, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
 import { noteLine, type SceneLine } from './missionScene';
@@ -176,8 +176,13 @@ function foesOf(state: GameState, ctx: GameContext, here: EncounterHere): Encoun
       const traits = kit ? traitNotes(unit.traits ?? []) : null;
       return { name: unit.name, count, threat, threatLabel, traits, beside: def.name };
     });
+    const called = summonsSeen(state, def, knowledge).map(({ summonId }) => {
+      const summon = ctx.content.summons.require(summonId);
+      const traits = kit ? traitNotes(summon.traits ?? []) : null;
+      return { name: summon.name, count, threat, threatLabel, traits, beside: def.name };
+    });
     const foe = { name: def.name, count, threat, threatLabel, traits: kit ? read.traits : null };
-    return [foe, ...companions];
+    return [foe, ...companions, ...called];
   });
 }
 

@@ -1,6 +1,6 @@
 import type { CombatGrammar, CombatPerk, CombatTrait } from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
-import type { ContractDef } from './contracts';
+import type { ContractDef, FoeSummon } from './contracts';
 import type { AtlasDef, MapLabelSide } from './atlas';
 import type {
   ClanCompanion,
@@ -161,6 +161,8 @@ export interface EnemyDef {
   readonly drops?: readonly string[];
   /** Bodies that fight beside them (`docs/design/retinue-plan.md`): a hound at heel. */
   readonly retinue?: readonly RetinueEntry[];
+  /** Summons they can call into the fight, from a contract of the pack. */
+  readonly summons?: readonly FoeSummon[];
 }
 
 /** A family the character can be born into. Clans shape growth and give techniques. */

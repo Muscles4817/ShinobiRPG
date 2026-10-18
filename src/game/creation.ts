@@ -254,6 +254,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     fieldBook: EMPTY_FIELD_BOOK,
     companions: bornCompanions(clan, seed, ctx),
     contract: null,
+    brokenContracts: [],
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),

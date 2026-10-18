@@ -21,4 +21,27 @@ describe('contract validation', () => {
     );
     expect(problems).toContain('contract "kiln-salamanders" can\'t be signed anywhere');
   });
+
+  it('reports a foe calling a summon no contract holds', () => {
+    const enemies = ORIGINAL_PACK.enemies.map((e) =>
+      e.id === 'bandit-chief'
+        ? { ...e, summons: [{ summonId: 'ghost-rat', tell: 'kept' as const }] }
+        : e,
+    );
+    expect(validateContracts({ ...ORIGINAL_PACK, enemies })).toContain(
+      'enemy "bandit-chief" calls "ghost-rat", which no contract holds',
+    );
+  });
+
+  it('asks a contract you can sign for tastes and parting words; a foe’s own needs neither', () => {
+    const contracts = ORIGINAL_PACK.contracts.map((c) => {
+      const { tastes: _t, parting: _p, ...bare } = c;
+      return bare;
+    });
+    const problems = validateContracts({ ...ORIGINAL_PACK, contracts });
+    expect(problems).toEqual([
+      'contract "kiln-salamanders" has no tastes for offerings',
+      'contract "kiln-salamanders" has no parting words',
+    ]);
+  });
 });

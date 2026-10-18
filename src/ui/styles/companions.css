@@ -144,3 +144,27 @@
 .contract-card .summon p {
   margin: 2px 0;
 }
+.contract-card .offerings {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--paper-muted);
+}
+.contract-card h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-story);
+  font-size: 1rem;
+}
+.contract-card > .btn,
+.contract-card .break-ask {
+  margin-top: 12px;
+}
+/* On paper the ghost button takes the paper's ink, and a closed one fades into it. */
+.contract-card .btn.ghost {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+.contract-card .btn:disabled {
+  background: transparent;
+  color: var(--paper-muted);
+  border: 1px dashed var(--paper-muted);
+}
