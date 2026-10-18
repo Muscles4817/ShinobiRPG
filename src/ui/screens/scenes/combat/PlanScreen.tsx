@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { combatLog, type CombatOption, type CombatView, type ScoutingRead } from '@/game';
 
@@ -30,6 +30,17 @@ function Reserves({ view }: { readonly view: CombatView }) {
       <span className="num">
         {you.chakra}/{you.maxChakra}
       </span>
+      {(view.meters ?? []).map((m) => (
+        <Fragment key={m.id}>
+          <span>{m.label}</span>
+          <span className="hp meter">
+            <i style={{ width: `${m.max > 0 ? (m.value / m.max) * 100 : 0}%` }} />
+          </span>
+          <span className="num">
+            {m.value}/{m.max}
+          </span>
+        </Fragment>
+      ))}
     </div>
   );
 }

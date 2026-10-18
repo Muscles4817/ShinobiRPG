@@ -9,6 +9,7 @@ import {
   searchChance,
   shakeOffChance,
 } from '../../rules/conditions';
+import { swarmSearch } from '../../rules/swarms';
 import { tell } from '../../rules/telling';
 import { dulled } from '../../rules/verbs';
 import { patch, paying, say, type PlanFighter, type Round } from './state';
@@ -79,7 +80,7 @@ export function search(round: Round, { actor, rng }: Turn): Round {
   // A field that blinds the seeker dulls their eyes.
   const seeker = dulled(round.field, actor);
   const found = hidden.filter((foe) =>
-    rng.chance(searchChance(seeker, inCover(round.ground, foe))),
+    rng.chance(searchChance(seeker, inCover(round.ground, foe)) + swarmSearch(actor.swarm)),
   );
   const moment = momentOf(round, actor.id);
   if (found.length === 0) return say(round, emptySearchLine(moment, actor));
