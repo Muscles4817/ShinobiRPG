@@ -234,7 +234,7 @@ view:
       blocker: Your rival is waiting for an answer.
   kicker: Word gets round which team you landed on
   title: Sasuke finds you
-  lines[0]: Sasuke has been watching you since the academy. Today they want you to know it.
+  lines[0]: Sasuke has been watching you since the academy. Today he wants you to know it.
   lines[1]: “Congratulations on your team. Truly. Do try to keep up; it would be dull otherwise.”
   choices[0]:
     label: “Enjoy it while it lasts.”
@@ -243,7 +243,7 @@ view:
   choices[2]:
     label: “I’ll beat you, and you’ll know you were beaten.”
   choices[3]:
-    label: Hold their look, and walk past.
+    label: Hold his look, and walk past.
 
 >>> answerRival
   journal «Sasuke»: Sasuke looks at you a moment longer than usual. “Hm. Maybe you’re worth the trouble.”
@@ -485,7 +485,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. They notice you noticing.
+  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
   choices[0]:
     label: “You always do that.”
   choices[1]:
@@ -513,7 +513,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. They notice you noticing.
+  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
   choices[0]:
     label: “You always do that.”
   choices[1]:

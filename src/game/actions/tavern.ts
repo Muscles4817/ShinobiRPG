@@ -2,7 +2,7 @@ import type { PersonDef } from '@/content';
 import { addPoints, talkedToday } from '@/systems/bonds';
 import { spend } from '@/systems/wallet';
 
-import { DRINK_BONUS, drinkStory, drinkWay } from '../bar';
+import { DRINK_BONUS, drinkStory, drinkWay, roundStory } from '../bar';
 import type { GameContext } from '../context';
 import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
 import { bondOf, findPerson, peopleAt, requirePerson } from '../people/cast';
@@ -57,7 +57,7 @@ export const buyRound: ActionHandler<ActionOf<'buyRound'>> = {
     const names = crowd.map((p) => p.name);
     return log(next, {
       heading: `A round at ${tavern.name}`,
-      text: `You stand everyone a round. ${names.join(', ')} raise their cups to you.`,
+      text: roundStory(crowd),
       tone: 'success',
       chips: [
         chip(`−${tavern.roundCost} ryo`, 'cost'),

@@ -510,7 +510,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Goro at it again: vaulting the fence instead of walking the extra few steps to the gate. They notice you noticing.
+  opener: You catch Goro at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
   choices[0]:
     label: “You always do that.”
   choices[1]:
@@ -538,7 +538,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Goro at it again: vaulting the fence instead of walking the extra few steps to the gate. They notice you noticing.
+  opener: You catch Goro at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
   choices[0]:
     label: “You always do that.”
   choices[1]:

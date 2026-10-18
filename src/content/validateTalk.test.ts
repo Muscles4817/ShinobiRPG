@@ -34,4 +34,30 @@ describe('templated talk validation', () => {
     );
     expect(problems).not.toContain('conversation "chat" uses slot "{work}" it has no words for');
   });
+
+  it('lets talk and topics speak of the person by pronoun, and no other way', () => {
+    const problems = validateTalk({
+      ...ORIGINAL_PACK,
+      conversationTopics: [
+        {
+          kind: 'role',
+          key: 'villager',
+          values: { work: '{them.their} rounds', weight: '{wish}', memory: 'm', hope: 'h' },
+        },
+      ],
+      conversations: [
+        {
+          id: 'chat',
+          minStage: 1,
+          about: 'role',
+          opener: '{them.they} say{them.s} {them.their} {work} is {them.bogus}.',
+          choices: [],
+        },
+      ],
+    });
+    expect(problems).toEqual([
+      'role topic "villager" uses slot "{wish}" it has no words for',
+      'conversation "chat" uses slot "{them.bogus}" it has no words for',
+    ]);
+  });
 });

@@ -4,11 +4,12 @@ import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { PURSE } from '../rival/contest';
 import { RACE_LEGS } from '../rival/race';
+import { rivalLine } from '../rival/lines';
 import { MOVE_LABEL, NO_READ, STRAINED, TELL } from '../rival/raceLines';
 import { RACE_MOVES } from '../rival/state';
 import type { GameState } from '../state';
 import { personCard, type PersonCard } from './people';
-import { fill, rivalOf } from './rival';
+import { rivalOf } from './rival';
 
 /**
  * A race with your rival, as it is run: the leg ahead and what it asks, how the legs so far
@@ -38,10 +39,10 @@ export function raceView(state: GameState, ctx: GameContext): RaceView | null {
   const race = found?.rival.race;
   const leg = race && RACE_LEGS[race.leg];
   if (!found || !race || !leg) return null;
-  const name = found.person.name;
+  const fill = (text: string) => rivalLine(text, found.person);
   const read = [
-    fill(race.read ? TELL[race.theirMove] : NO_READ, name),
-    ...(race.theirStrain > 0 ? [fill(STRAINED, name)] : []),
+    fill(race.read ? TELL[race.theirMove] : NO_READ),
+    ...(race.theirStrain > 0 ? [fill(STRAINED)] : []),
   ];
   return {
     person: personCard(state, ctx, found.person),
@@ -49,7 +50,7 @@ export function raceView(state: GameState, ctx: GameContext): RaceView | null {
     name: leg.name,
     course: leg.course,
     asks: `This leg asks for ${leg.stats.map((id) => STAT_INFO[id].label.toLowerCase()).join(' and ')}.`,
-    told: race.told.map((line) => fill(line, name)),
+    told: race.told.map(fill),
     read,
     purse: race.stakes === 'purse' ? `${PURSE} ryo on it` : null,
     moves: RACE_MOVES.map((move) => ({

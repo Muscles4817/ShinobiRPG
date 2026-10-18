@@ -1,12 +1,25 @@
+import { PRONOUN_FORMS } from '@/core';
+
 import { NAME_SLOTS, TOPIC_SLOTS } from './conversationTopics';
-import { placeholdersIn } from './missionTemplates';
 import { PERSON_ROLES, type ConversationDef, type TopicKind } from './people';
 import type { ContentPack } from './types';
 
 /**
  * Checks templated talk: each topic names a real specialty, trait, clan or role and gives
- * exactly the words its kind promises, and each conversation uses only the slots it may.
+ * exactly the words its kind promises, and each conversation uses only the slots it may. A
+ * topic's words may speak of the person (`{them.their}`), but name no other slot.
  */
+
+/** `{slot}` or `{slot.form}`, as `fillSlots` reads them. */
+const SLOT = /\{([a-zA-Z0-9-]+(?:\.[a-zA-Z']+)?)\}/g;
+
+const slotsIn = (text: string): string[] => [...text.matchAll(SLOT)].map((m) => m[1] ?? '');
+
+/** The person's name and every pronoun form of it: `{them}`, `{them.their}`, `{them.s}`… */
+const PERSON_SLOTS: readonly string[] = ['them', ...PRONOUN_FORMS.map((form) => `them.${form}`)];
+
+/** Slots any conversation may use: the names and the person's pronoun forms. */
+const SPEAKING_SLOTS: ReadonlySet<string> = new Set([...NAME_SLOTS, ...PERSON_SLOTS]);
 export function validateTalk(pack: ContentPack): string[] {
   return [...topicProblems(pack), ...pack.conversations.flatMap(slotProblems)];
 }
@@ -37,14 +50,17 @@ function topicProblems(pack: ContentPack): string[] {
     problems.push(
       ...wanted.filter((s) => !given.includes(s)).map((s) => `${name} is missing "${s}"`),
       ...given.filter((s) => !wanted.includes(s)).map((s) => `${name} has unknown slot "${s}"`),
+      ...slotsIn(Object.values(t.values).join(' '))
+        .filter((s) => !PERSON_SLOTS.includes(s))
+        .map((s) => `${name} uses slot "{${s}}" it has no words for`),
     );
     return problems;
   });
 }
 
 function slotProblems(c: ConversationDef): string[] {
-  const allowed = new Set([...NAME_SLOTS, ...Object.keys(c.about ? TOPIC_SLOTS[c.about] : {})]);
-  const used = new Set(placeholdersIn(JSON.stringify(c)));
+  const allowed = new Set([...SPEAKING_SLOTS, ...Object.keys(c.about ? TOPIC_SLOTS[c.about] : {})]);
+  const used = new Set(slotsIn(JSON.stringify(c)));
   return [...used]
     .filter((s) => !allowed.has(s))
     .map((s) => `conversation "${c.id}" uses slot "{${s}}" it has no words for`);

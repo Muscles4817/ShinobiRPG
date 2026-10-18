@@ -11,7 +11,7 @@ export const ROLE_TALK: readonly ConversationDef[] = [
       {
         label: '“I’ll leave you to it.”',
         tone: 'kind',
-        reply: '“Thanks.” {them} sounds like they mean it.',
+        reply: '“Thanks.” {them} sounds like {them.they} mean{them.s} it.',
       },
       {
         label: '“Need a hand?”',
@@ -44,7 +44,7 @@ export const ROLE_TALK: readonly ConversationDef[] = [
       {
         label: '“Someone has to, and you do it well.”',
         tone: 'praise',
-        reply: '{them} looks pleased despite themselves.',
+        reply: '{them} looks pleased despite {them.themself}.',
       },
     ],
   },
@@ -92,7 +92,7 @@ export const ROLE_TALK: readonly ConversationDef[] = [
       {
         label: '“Everyone starts somewhere.”',
         tone: 'kind',
-        reply: '{them} nods, and tells you where they started. {memory}',
+        reply: '{them} nods, and tells you where {them.they} started. {memory}',
       },
     ],
   },
@@ -101,7 +101,7 @@ export const ROLE_TALK: readonly ConversationDef[] = [
     minStage: 2,
     about: 'role',
     opener:
-      '{them} watches someone younger fumble at the very thing they do every day. “That was me, once.”',
+      '{them} watches someone younger fumble at the very thing {them.they} do{them.es} every day. “That was me, once.”',
     choices: [
       {
         label: '“Who helped you?”',
@@ -116,7 +116,8 @@ export const ROLE_TALK: readonly ConversationDef[] = [
       {
         label: '“Tell them it gets easier.”',
         tone: 'earnest',
-        reply: '“It doesn’t,” {them} says. “You just get better.” Then they go over to help.',
+        reply:
+          '“It doesn’t,” {them} says. “You just get better.” Then {them.they} go{them.es} over to help.',
       },
     ],
   },
@@ -125,7 +126,7 @@ export const ROLE_TALK: readonly ConversationDef[] = [
     minStage: 3,
     about: 'role',
     opener:
-      '{them} looks tired in a way sleep won’t fix. You ask, and for once they answer. {weight}',
+      '{them} looks tired in a way sleep won’t fix. You ask, and for once {them.they} answer{them.s}. {weight}',
     choices: [
       {
         label: '“You carry a lot. Let me help.”',
@@ -138,9 +139,9 @@ export const ROLE_TALK: readonly ConversationDef[] = [
         reply: '“No. And I’d like to keep it that way.”',
       },
       {
-        label: 'Sit with them a while.',
+        label: 'Sit with {them.them} a while.',
         tone: 'quiet',
-        reply: 'The quiet does them good. You can see it.',
+        reply: 'The quiet does {them.them} good. You can see it.',
       },
     ],
   },
@@ -176,7 +177,7 @@ export const ROLE_TALK: readonly ConversationDef[] = [
       {
         label: '“Please.”',
         tone: 'earnest',
-        reply: '“{hope}” They say it like a promise.',
+        reply: '“{hope}” {them.they} say{them.s} it like a promise.',
       },
       {
         label: '“That I stop eating your food?”',

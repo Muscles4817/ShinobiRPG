@@ -6,7 +6,7 @@ export const TRAIT_TALK: readonly ConversationDef[] = [
     id: 'talk-trait-1-habit',
     minStage: 1,
     about: 'trait',
-    opener: 'You catch {them} at it again: {habit}. They notice you noticing.',
+    opener: 'You catch {them} at it again: {habit}. {them.they} notice{them.s} you noticing.',
     choices: [
       {
         label: '“You always do that.”',
@@ -34,7 +34,7 @@ export const TRAIT_TALK: readonly ConversationDef[] = [
       {
         label: '“You’re a creature of habit.”',
         tone: 'tease',
-        reply: '“Guilty.” They show you: {habit}. “See? Can’t help it.”',
+        reply: '“Guilty.” {them.they} show{them.s} you: {habit}. “See? Can’t help it.”',
       },
       {
         label: '“You’re very much yourself. I like it.”',
@@ -58,7 +58,7 @@ export const TRAIT_TALK: readonly ConversationDef[] = [
       {
         label: '“I like you as you are.”',
         tone: 'earnest',
-        reply: '{them} snorts, but they don’t argue.',
+        reply: '{them} snorts, but doesn’t argue.',
       },
       {
         label: '“Some days I’d like to be a cat.”',
@@ -92,7 +92,7 @@ export const TRAIT_TALK: readonly ConversationDef[] = [
       {
         label: '“You don’t have to.”',
         tone: 'kind',
-        reply: '“I want to.” {story} They smile at the memory.',
+        reply: '“I want to.” {story} {them.they} smile{them.s} at the memory.',
       },
     ],
   },

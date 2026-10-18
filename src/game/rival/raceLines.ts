@@ -3,7 +3,7 @@ import type { RaceMove } from './state';
 
 /**
  * The race in words: what each move is, what a sharp eye reads in them before a leg, and how
- * the leg went. Names are filled in as `{name}`; no numbers, ever.
+ * the leg went. The rival is `{name}` (`{name.their}` and the rest for pronouns); no numbers, ever.
  */
 
 export const MOVE_LABEL: Readonly<
@@ -17,7 +17,7 @@ export const MOVE_LABEL: Readonly<
 /** What a sharp eye sees in them before a leg: what they mean to do. */
 export const TELL: Readonly<Record<RaceMove, string>> = {
   steady: '{name} settles into an even pace, watching you rather than the course.',
-  push: '{name} is up on their toes, breathing fast. They mean to go hard.',
+  push: '{name} is up on {name.their} toes, breathing fast. {name.they} mean{name.s} to go hard.',
   gamble: '{name} keeps glancing up at the rooftops.',
 };
 
@@ -40,7 +40,7 @@ function gambleLine(won: boolean | null, yours: boolean): string | null {
 export function legLines(yourMove: RaceMove, theirMove: RaceMove, result: LegResult): string[] {
   const lines = [gambleLine(result.yourGamble, true), gambleLine(result.theirGamble, false)];
   if (yourMove === 'steady' && theirMove === 'push') {
-    lines.push('You sit in {name}’s wake and let them do the work.');
+    lines.push('You sit in {name}’s wake and let {name.them} do the work.');
   } else if (theirMove === 'steady' && yourMove === 'push') {
     lines.push('{name} tucks in behind you and lets you do the work.');
   } else if (yourMove === 'push' && theirMove === 'gamble') {
