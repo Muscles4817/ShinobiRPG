@@ -1597,7 +1597,7 @@ view:
   unlocked[3]: Lost in the Salt Marsh
   unlocked[4]: The Shade on the Pilgrim Path
   ending: The thugs limp off towards Oki’s timber yard. Tobei gets you a room over the ferry office and says the office will want you in the morning.
-  road: You beat two bandit thugs in a fight. Then you kept faith with the ferrymen, though they lied on the notice.
+  road: You beat two bandit thugs. Then you kept faith with the ferrymen, though they lied on the notice.
   crew[0]:
     name: Asuka
     quote: I didn’t need the help, for the record, but it was well timed.

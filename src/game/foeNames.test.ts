@@ -2,7 +2,8 @@ import type { EnemyDef } from '@/content';
 import { ctx, newGame } from '@/test/gameFixtures';
 
 import { enemyParty, playerCombatant } from './combatants';
-import { foeCalled, foeGrammar, foeList } from './foeNames';
+import { debriefStory } from './debriefStory';
+import { beatenLine, foeCalled, foeGrammar, foeList } from './foeNames';
 
 const foe = (id: string): EnemyDef => ctx.content.enemies.require(id);
 
@@ -20,6 +21,27 @@ describe('naming foes for the story', () => {
     expect(foeList([thug, thug, foe('bandit-archer')])).toBe(
       'two bandit thugs and a bandit archer',
     );
+  });
+
+  it('notes a won fight as a short fact that reads in the debrief', () => {
+    const thug = foe('bandit-thug');
+    const tell = (defs: EnemyDef[], next: string) =>
+      debriefStory([
+        { text: beatenLine(defs), tone: 'plain', stageIndex: 0 },
+        { text: next, tone: 'plain', stageIndex: 1 },
+      ])
+        .map((f) => f.text)
+        .join('');
+    expect(tell([thug, thug], 'Found the cart.')).toBe(
+      'You beat two bandit thugs and found the cart.',
+    );
+    expect(tell([foe('storehouse-wraith')], 'Found the cart.')).toBe(
+      'You beat the storehouse wraith and found the cart.',
+    );
+    expect(tell([thug, foe('bandit-archer')], 'Found the cart.')).toBe(
+      'You fought a bandit thug and a bandit archer, and won. Then you found the cart.',
+    );
+    expect(beatenLine([thug])).not.toMatch(/in a fight/);
   });
 
   it('calls creatures and spirits it, and people he or she the same way every time', () => {
