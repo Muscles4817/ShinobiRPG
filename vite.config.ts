@@ -16,8 +16,13 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'apple-touch-icon.png'],
-      // Fonts are precached too, or the game falls back to system fonts offline.
-      workbox: { globPatterns: ['**/*.{js,css,html,woff2}'] },
+      // Fonts are precached too, or the game falls back to system fonts offline. The game is one
+      // bundle of code and content (both packs in a personal build), past workbox's 2 MiB default;
+      // anything not precached is missing offline, so the limit sits well above it.
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,woff2}'],
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+      },
       manifest: {
         name: 'Shinobi RPG — Lantern Village',
         short_name: 'Shinobi RPG',
