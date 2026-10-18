@@ -246,6 +246,7 @@ describe('persistence', () => {
       marks: [],
       memories: [],
       clients: {},
+      tallies: {},
     });
   });
 
@@ -470,6 +471,14 @@ describe('persistence', () => {
     const none = deserialize(JSON.stringify({ version: 47, state: game }));
     if (!none.ok) throw new Error(none.error);
     expect(none.value.exams.ceremony).toBeNull();
+  });
+
+  it('gives a save from before village tallies nothing counted, and keeps what it remembered', () => {
+    const game = newGame();
+    const { tallies: _t, ...village } = { ...game.village, marks: ['tobi-forgiven'] };
+    const loaded = deserialize(JSON.stringify({ version: 48, state: { ...game, village } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.village).toMatchObject({ tallies: {}, marks: ['tobi-forgiven'] });
   });
 
   it('rejects corrupted data', () => {

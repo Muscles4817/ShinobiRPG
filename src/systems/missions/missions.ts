@@ -172,6 +172,8 @@ export interface MissionRun {
   readonly bondsAtStart?: Readonly<Record<string, number>>;
   /** What the village remembered when the job began (world marks), for `remembers`. */
   readonly remembered?: readonly string[];
+  /** The village's tallies when the job began, for `tally` conditions. */
+  readonly tallied?: Readonly<Record<string, number>>;
   /** Set when this is a trip of your own along the roads, not a job (`game/journeys.ts`). */
   readonly journey?: JourneyPlan;
 }

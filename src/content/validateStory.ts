@@ -198,7 +198,24 @@ function worldProblems(pack: ContentPack): string[] {
     ...pack.village.rumours
       .filter((r) => r.worldMark !== undefined && !left.has(r.worldMark))
       .map((r) => `rumour "${r.id}" waits for "${r.worldMark ?? ''}", which no job leaves behind`),
+    ...tallyProblems(pack),
   ];
+}
+
+/** Every village tally a job reads is one some job counts. */
+function tallyProblems(pack: ContentPack): string[] {
+  const counted = new Set(
+    pack.missions
+      .flatMap((m) => m.stages.flatMap(effectsOf))
+      .flatMap((e) => (e.kind === 'tally' ? [e.tally] : [])),
+  );
+  return pack.missions.flatMap((m) =>
+    m.stages
+      .flatMap(conditions)
+      .flatMap((c) => conditionRefs(c).tallies)
+      .filter((tally) => !counted.has(tally))
+      .map((tally) => `mission "${m.id}" reads tally "${tally}", which no job counts`),
+  );
 }
 
 /** Every arc's acts have jobs that exist, and no job belongs to two arcs. */

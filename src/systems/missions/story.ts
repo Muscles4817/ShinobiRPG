@@ -3,7 +3,9 @@ import type { Crew } from './crew';
 /**
  * What a mission remembers as it goes, and the rules for reading and changing it. Marks are
  * named flags ("knows-why", "night-road", a twist); threads are small counters with a word for
- * each level (a charge's trust, the day's light). Conditions read them (and who is along);
+ * each level (a charge's trust, the day's light). Tallies are the village's counters across
+ * jobs (mercy shown, clues found), read as they stood when the job began. Conditions read them
+ * (and who is along);
  * effects change them, or ask the game layer to (harm, energy, time, bond). Everything that
  * changes the outcome writes a ledger line, so the debrief can say what happened and why.
  */
@@ -30,6 +32,9 @@ export type Condition =
   | { readonly crew: CrewCondition }
   /** The village remembers this from an earlier job (a world mark). */
   | { readonly remembers: string }
+  /** A village tally (kept across jobs) stood at least this high when the job began. */
+  | { readonly tally: string; readonly atLeast: number }
+  | { readonly tally: string; readonly below: number }
   | { readonly all: readonly Condition[] }
   | { readonly any: readonly Condition[] };
 
@@ -46,7 +51,9 @@ export type Effect =
   /** Something the village will remember after the job: follow-up jobs and gossip read it. */
   | { readonly kind: 'world'; readonly mark: string }
   /** A moment everyone along will remember, as a phrase ("the night below the pass"). */
-  | { readonly kind: 'memory'; readonly text: string };
+  | { readonly kind: 'memory'; readonly text: string }
+  /** A village tally moved: a count kept across jobs that later jobs read (mercy shown). */
+  | { readonly kind: 'tally'; readonly tally: string; readonly by: number };
 
 /** How a ledger line reads in the debrief: something gained, something lost, or what happened. */
 export type LedgerTone = 'gain' | 'cost' | 'plain';
@@ -67,6 +74,8 @@ export interface StoryState {
   readonly crew: Crew;
   /** What the village remembered when the job began (world marks). */
   readonly remembered: readonly string[];
+  /** The village's tallies when the job began. */
+  readonly tallies: Readonly<Record<string, number>>;
 }
 
 function crewHolds(crew: Crew, want: CrewCondition): boolean {
@@ -89,10 +98,17 @@ export function holds(story: StoryState, condition: Condition | undefined): bool
   if ('lacks' in condition) return !story.marks.includes(condition.lacks);
   if ('crew' in condition) return crewHolds(story.crew, condition.crew);
   if ('remembers' in condition) return story.remembered.includes(condition.remembers);
+  if ('tally' in condition) return counted(story.tallies[condition.tally] ?? 0, condition);
   if ('all' in condition) return condition.all.every((c) => holds(story, c));
   if ('any' in condition) return condition.any.some((c) => holds(story, c));
-  const level = story.threads[condition.thread] ?? 0;
-  return 'atLeast' in condition ? level >= condition.atLeast : level < condition.below;
+  return counted(story.threads[condition.thread] ?? 0, condition);
+}
+
+function counted(
+  level: number,
+  bound: { readonly atLeast: number } | { readonly below: number },
+): boolean {
+  return 'atLeast' in bound ? level >= bound.atLeast : level < bound.below;
 }
 
 /** The first text whose condition holds, or the plain text. */
@@ -125,24 +141,30 @@ export function withMark(marks: readonly string[], mark: string): readonly strin
   return marks.includes(mark) ? marks : [...marks, mark];
 }
 
-/** Every mark and thread a condition reads, for validation. */
-export function conditionRefs(condition: Condition | undefined): {
+/** What a condition reads, for validation. */
+export interface ConditionRefs {
   readonly marks: string[];
   readonly threads: string[];
   readonly world: string[];
-} {
-  const none = { marks: [], threads: [], world: [] };
+  readonly tallies: string[];
+}
+
+/** Every mark, thread, world mark and tally a condition reads, for validation. */
+export function conditionRefs(condition: Condition | undefined): ConditionRefs {
+  const none = { marks: [], threads: [], world: [], tallies: [] };
   if (!condition) return none;
   if ('has' in condition) return { ...none, marks: [condition.has] };
   if ('lacks' in condition) return { ...none, marks: [condition.lacks] };
   if ('crew' in condition) return none;
   if ('remembers' in condition) return { ...none, world: [condition.remembers] };
+  if ('tally' in condition) return { ...none, tallies: [condition.tally] };
   if ('all' in condition || 'any' in condition) {
     const parts = ('all' in condition ? condition.all : condition.any).map(conditionRefs);
     return {
       marks: parts.flatMap((p) => p.marks),
       threads: parts.flatMap((p) => p.threads),
       world: parts.flatMap((p) => p.world),
+      tallies: parts.flatMap((p) => p.tallies),
     };
   }
   return { ...none, threads: [condition.thread] };

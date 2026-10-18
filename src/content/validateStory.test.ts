@@ -14,6 +14,7 @@ describe('story validation', () => {
       ...STORY_JOB,
       stages: [
         { kind: 'narrative', when: { has: 'ghost-mark' }, text: 'Boo.' },
+        { kind: 'narrative', when: { tally: 'kindness', atLeast: 2 }, text: 'They know you.' },
         {
           kind: 'decision',
           text: 'Well?',
@@ -33,6 +34,7 @@ describe('story validation', () => {
     expect(problems).toContain(`mission "${job.id}" reads mark "ghost-mark" that nothing sets`);
     expect(problems).toContain(`mission "${job.id}" names thread "luck" it doesn’t keep`);
     expect(problems).toContain(`mission "${job.id}" uses unknown tone "sulk"`);
+    expect(problems).toContain(`mission "${job.id}" reads tally "kindness", which no job counts`);
   });
 
   it('wants an ending last, with one for every case, and roads where something can happen', () => {

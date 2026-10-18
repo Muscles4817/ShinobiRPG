@@ -12,7 +12,7 @@ import type { GameState } from '../state';
 /**
  * What a story's outcome does to you and the people with you: harm and energy to you, bond
  * with everyone along (not whoever leads), moments they will remember, and what the village
- * will remember of the job. Returned with the chips that show it, since story
+ * will remember (or count) of the job. Returned with the chips that show it, since story
  * text never carries numbers.
  */
 
@@ -63,6 +63,8 @@ function feelOne(felt: Felt, effect: Effect): Felt {
       return { ...felt, state: remember(felt.state, effect.mark) };
     case 'memory':
       return { ...felt, state: shareMemory(felt.state, effect.text) };
+    case 'tally':
+      return { ...felt, state: count(felt.state, effect.tally, effect.by) };
     case 'mark':
     case 'thread':
     case 'pay':
@@ -75,6 +77,13 @@ function remember(state: GameState, mark: string): GameState {
   const { village } = state;
   if (village.marks.includes(mark)) return state;
   return { ...state, village: { ...village, marks: [...village.marks, mark] } };
+}
+
+/** The village counts one more of something across jobs (mercy shown, clues found). */
+function count(state: GameState, tally: string, by: number): GameState {
+  const { village } = state;
+  const tallies = { ...village.tallies, [tally]: (village.tallies[tally] ?? 0) + by };
+  return { ...state, village: { ...village, tallies } };
 }
 
 /** Everyone along will remember this moment with you. */
