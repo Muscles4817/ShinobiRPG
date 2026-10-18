@@ -34,10 +34,16 @@ describe('what a job leaves behind', () => {
 });
 
 describe('a follow-up told once', () => {
+  /** Every job posted over the coming days, the board carried forward a day at a time. */
   function onDays(start: GameState): string[] {
-    return Array.from({ length: 150 }, (_, d) =>
-      boardFor({ ...start, time: { day: d + 1, slot: 0 } }, ctx).postings.map((p) => p.missionId),
-    ).flat();
+    const seen: string[] = [];
+    let state = start;
+    for (let day = 1; day <= 150; day++) {
+      const today = { ...state, time: { day, slot: 0 } };
+      state = { ...today, board: boardFor(today, ctx) };
+      seen.push(...state.board.postings.map((p) => p.missionId));
+    }
+    return seen;
   }
   const hushed = (marks: string[], completed: string[] = []): GameState => {
     const s = veteran(formTeam(freshGame()), 6);
