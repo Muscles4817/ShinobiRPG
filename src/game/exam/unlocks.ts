@@ -1,4 +1,5 @@
 import type { PromotedRank } from '@/content';
+import { listed } from '@/core';
 import { lowestRankFor } from '@/systems/missions';
 
 import type { GameContext } from '../context';
@@ -11,16 +12,38 @@ import { teachingOf } from '../people/teachers';
 import { inSealedArchive, libraryScrollAccess } from '../permits';
 import { libraryAccess } from '../shelves';
 import type { GameState } from '../state';
+import { chuninVest } from './vest';
 
 /**
  * What a promotion opens, worked out from the data by comparing what you may do at your rank
  * now with what you may do at the new one: the library's stacks, jobs on the board, gear the
- * shops will sell you, and the shinobi who will now train you.
+ * shops will sell you, and the shinobi who will now train you. Each is told as a sentence of
+ * what the rank means, naming a couple of examples rather than reading out the list, and
+ * nothing the ceremony already hands you (the vest) is named again.
  */
 
+/** At most this many of a kind are named; the rest are "and more besides". */
+const NAMED = 2;
+
 export interface Unlock {
-  readonly heading: string;
-  readonly items: readonly string[];
+  readonly kind: 'library' | 'jobs' | 'gear' | 'teachers';
+  /** "The mission hall will hand you B-rank work now, such as Smugglers at the Weir." */
+  readonly text: string;
+  /** What the sentence names (places, jobs, gear, people), for checks that none comes twice. */
+  readonly names: readonly string[];
+}
+
+/** "B-rank" or "B- and A-rank", from the ranks of what opens. */
+function ranksOf(ranks: readonly string[]): string {
+  const unique = [...new Set(ranks)];
+  return `${listed(unique.map((r, i) => (i === unique.length - 1 ? r : `${r}-`)))}-rank`;
+}
+
+/** A couple of examples: "X", "X and Y", or "such as X and Y" when there are more. */
+function examples(names: readonly string[]): { readonly told: string; readonly named: string[] } {
+  const named = names.slice(0, NAMED);
+  const told = listed(named);
+  return { told: names.length > NAMED ? `such as ${told}` : told, named };
 }
 
 function atRank(state: GameState, rank: PromotedRank): GameState {
@@ -51,32 +74,46 @@ function libraries(state: GameState, ctx: GameContext, raised: GameState): Unloc
       raised,
       p.techniqueIds.filter((id) => inSealedArchive(ctx.content.techniques.require(id))),
     );
-    return [
-      ...(stacks ? [`${p.name}: the restricted stacks`] : []),
-      ...(sealed ? [`${p.name}: the sealed archive`] : []),
+    const rooms = [
+      ...(stacks ? ['its restricted stacks'] : []),
+      ...(sealed ? ['its sealed archive'] : []),
     ];
+    if (rooms.length === 0) return [];
+    const text = `${p.name} lets you into ${listed(rooms)}.`;
+    return [{ kind: 'library' as const, text, names: [p.name] }];
   });
-  return items.length > 0 ? [{ heading: 'The library', items }] : [];
+  return items;
 }
 
 function jobs(state: GameState, ctx: GameContext, rank: PromotedRank): Unlock[] {
   const offered = new Set(
     currentLocation(state, ctx).places.flatMap((p) => (p.kind === 'missions' ? p.missionIds : [])),
   );
-  const items = ctx.content.missions.all
-    .filter((m) => offered.has(m.id) && !m.examOnly && lowestRankFor(jobOf(ctx, m)) === rank)
-    .map((m) => `${m.rank}-rank: ${m.title}`);
-  return items.length > 0 ? [{ heading: 'Jobs on the board', items }] : [];
+  const opened = ctx.content.missions.all.filter(
+    (m) => offered.has(m.id) && !m.examOnly && lowestRankFor(jobOf(ctx, m)) === rank,
+  );
+  if (opened.length === 0) return [];
+  const { told, named } = examples(opened.map((m) => m.title));
+  const work = ranksOf(opened.map((m) => m.rank));
+  const text = `The mission hall will hand you ${work} work now, ${told}.`;
+  return [{ kind: 'jobs', text, names: named }];
 }
 
 function gear(state: GameState, ctx: GameContext, raised: GameState): Unlock[] {
   const sold = new Set(
     currentLocation(state, ctx).places.flatMap((p) => (p.kind === 'gear' ? p.gearIds : [])),
   );
-  const items = ctx.content.gear.all
-    .filter((g) => sold.has(g.id) && gearRankBlocker(state, g) && !gearRankBlocker(raised, g))
-    .map((g) => `${g.rank}-rank ${g.name}`);
-  return items.length > 0 ? [{ heading: 'Gear the shops will sell you', items }] : [];
+  // The vest is handed over at the ceremony, so it isn't news that the shops sell it.
+  const given = raised.standing.rank === 'chunin' ? chuninVest(ctx)?.id : undefined;
+  const opened = ctx.content.gear.all.filter(
+    (g) =>
+      sold.has(g.id) && g.id !== given && gearRankBlocker(state, g) && !gearRankBlocker(raised, g),
+  );
+  if (opened.length === 0) return [];
+  const { told, named } = examples(opened.map((g) => `the ${g.name}`));
+  const kit = ranksOf(opened.map((g) => g.rank));
+  const text = `The shops will sell you ${kit} gear now, ${told}.`;
+  return [{ kind: 'gear', text, names: named.map((n) => n.replace(/^the /, '')) }];
 }
 
 /** Whether someone would train you, on their terms, as your standing is in `at`. */
@@ -88,13 +125,17 @@ function trainsYou(at: GameState, ctx: GameContext, personId: string): boolean {
 }
 
 function teachers(state: GameState, ctx: GameContext, raised: GameState): Unlock[] {
-  const items = everyone(state, ctx)
+  const willing = everyone(state, ctx)
     .filter((p) => !trainsYou(state, ctx, p.id) && trainsYou(raised, ctx, p.id))
-    .map((p) => `${p.name}, ${p.title.toLowerCase()}`);
-  return items.length > 0 ? [{ heading: 'Who will train you now', items }] : [];
+    .map((p) => p.name);
+  if (willing.length === 0) return [];
+  const named = willing.slice(0, NAMED);
+  const more = willing.length > NAMED ? ', and others besides' : '';
+  const text = `${listed(named)} will train you now${more}.`;
+  return [{ kind: 'teachers', text, names: named }];
 }
 
-/** What being raised to `rank` opens for you, as a list of headings and items. */
+/** What being raised to `rank` opens for you, a sentence for each kind of thing. */
 export function unlocksFor(state: GameState, ctx: GameContext, rank: PromotedRank): Unlock[] {
   const raised = atRank(state, rank);
   return [

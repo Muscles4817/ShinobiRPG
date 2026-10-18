@@ -640,11 +640,11 @@ view:
 
 >>> senseiSession
   journal «Drills with Gōran»: Gōran drills you on the basics until they stop feeling like basics. “You dropped your elbow every time you got tired,” Gōran says. “Fix that before I see you next.” [Strength, a touch] [Taijutsu, a touch] [Gōran’s regard rises] [−10 energy]
-  journal «A feel for your strength»: It comes naturally, as if your body remembered something it was never taught.
+  journal «Building strength»: It comes naturally, as if your body remembered something it was never taught.
 
 >>> train
   journal «Lake Laps»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
-  journal «A feel for your stamina»: It fights you every step. Others seem to pick this up in half the time.
+  journal «Building stamina»: It fights you every step. Others seem to pick this up in half the time.
 
 >>> talk
 
@@ -1595,7 +1595,7 @@ view:
 
 >>> train
   journal «Waterfall Endurance»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a touch] [Willpower, a little] [−25 energy]
-  journal «A feel for your willpower»: It comes as it comes: honest work, honest progress.
+  journal «Hardening your will»: It comes as it comes: honest work, honest progress.
 
 >>> talk
   refused: Goro isn’t around right now.

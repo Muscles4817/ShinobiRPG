@@ -149,41 +149,49 @@ export const VILLAGE: VillageLife = {
     {
       id: 'drowned-child',
       title: 'A small light by the canal',
-      text: 'A child’s spirit sits on the canal steps, looking for a way home.',
-      outcome: 'You walk it to the great lantern gate. It smiles once and is gone.',
-      unseen: 'The canal lanterns flicker, though there is no wind.',
+      text: 'A child’s spirit sits on the canal steps with its feet in the water, looking up and down the bank for the way home.',
+      outcome:
+        'You walk it along the canal to the great lantern gate, and somewhere between one lantern and the next it is no longer beside you.',
+      unseen: 'The lanterns along the canal gutter and dip all at once, though the air is still.',
       reward: { willpower: 1 },
     },
     {
       id: 'chakra-threads',
       title: 'Threads in the dark',
-      text: 'Faint threads of chakra run between the rooftops, like a web someone left behind.',
-      outcome: 'You trace them to a roof where a seal was drawn and broken. You learn its shape.',
-      unseen: 'You feel watched on the way home.',
+      text: 'Threads of chakra, fine as spider silk, run from roof to roof above the lantern streets where nobody has any business stringing them.',
+      outcome:
+        'You trace them to a roof where a seal was drawn and broken, and copy its shape into your memory line by line before the threads fade.',
+      unseen:
+        'All the way home you have the feeling that someone on the roofs is keeping pace with you.',
       reward: { fuuinjutsu: 1 },
     },
     {
       id: 'old-shinobi',
       title: 'An old shinobi on the wall',
-      text: 'A shinobi in an old uniform keeps watch on the wall, flickering.',
-      outcome: 'You stand watch beside him till he fades. He nods to you, one guard to another.',
-      unseen: 'A cold spot hangs over the east wall tonight.',
+      text: 'A shinobi in a uniform nobody has worn for years keeps watch on the east wall, and the lanterns behind him show through his coat.',
+      outcome:
+        'You stand the watch beside him until the sky pales and he goes with the dark, and on the walk down you find you are checking the shadows the way he did.',
+      unseen:
+        'The east wall is colder than the rest of the village tonight, and the sentries keep to the far end of it.',
       reward: { perception: 1 },
     },
     {
       id: 'fox-procession',
       title: 'A fox procession',
-      text: 'A line of fox-lights winds through the back lanes toward the forest.',
-      outcome: 'You follow at a respectful distance and learn how they move without a sound.',
-      unseen: 'Somewhere a fox barks, and then another, and another.',
+      text: 'A line of pale fox-lights winds through the back lanes and out toward the forest, bobbing at the height of a fox’s head.',
+      outcome:
+        'You follow at a respectful distance to the edge of the trees, and by the end you are setting your feet down the way they do, without a sound.',
+      unseen: 'A fox barks out past the back lanes, and another answers it from nearer the forest.',
       reward: { speed: 1 },
     },
     {
       id: 'weeping-lantern',
       title: 'A lantern that weeps',
-      text: 'One lantern on Market Street glows blue and drips light like tears.',
-      outcome: 'You sit with it and listen. Some grief only needs a witness.',
-      unseen: 'One lantern on Market Street has gone strangely dim.',
+      text: 'One lantern on Market Street burns blue, and drops of light run down its paper and fall without reaching the ground.',
+      outcome:
+        'You sit under it on a shuttered stall-front and listen until the blue goes out of it, and you come away knowing how a sorrow can be made to show.',
+      unseen:
+        'One lantern on Market Street has burned low and blue, and the cats won’t walk under it.',
       reward: { genjutsu: 1 },
     },
   ],

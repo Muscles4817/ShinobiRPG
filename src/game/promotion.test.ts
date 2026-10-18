@@ -46,10 +46,26 @@ describe('the chūnin ceremony', () => {
     expect(scene?.speech).toContain('Kaito');
     expect(scene?.title).toMatch(/^Chūnin Kaito/);
     expect(scene?.gear).toBe('Flak Vest');
-    const opens = Object.fromEntries((scene?.unlocks ?? []).map((u) => [u.heading, u.items]));
-    expect(opens['The library']).toEqual(['The Lantern Archive: the restricted stacks']);
-    expect(opens['Jobs on the board']).toContain('B-rank: Smugglers at the Weir');
-    expect(opens['Gear the shops will sell you']).toContain('B-rank Flak Vest');
+    expect(scene?.means).toBe('What a chūnin may do');
+    const opens = Object.fromEntries((scene?.unlocks ?? []).map((u) => [u.kind, u.text]));
+    expect(opens.library).toBe('The Lantern Archive lets you into its restricted stacks.');
+    expect(opens.jobs).toMatch(/^The mission hall will hand you B- and A-rank work now, /);
+  });
+
+  it('names nothing twice: the vest it hands over is not news from the shops', () => {
+    const scene = promotionScene(promoted(), ctx);
+    if (!scene) throw new Error('no ceremony');
+    const said = [scene.speech, scene.gift, scene.gear ?? '', scene.farewell ?? ''].concat(
+      scene.unlocks.map((u) => u.text),
+    );
+    const names = scene.unlocks.flatMap((u) => u.names).concat(scene.gear ?? []);
+    expect(new Set(names).size).toBe(names.length);
+    for (const name of names) {
+      const times = said.join(' ').split(name).length - 1;
+      expect(times, name).toBe(1);
+    }
+    // Each sentence names a couple of examples at most, never the whole list.
+    for (const u of scene.unlocks) expect(u.names.length).toBeLessThanOrEqual(2);
   });
 
   it('makes you a chūnin, hands over the vest and opens the B-rank board', () => {
@@ -163,10 +179,10 @@ describe('a jōnin’s nomination', () => {
       rank: 'Jōnin',
     });
     const opens = Object.fromEntries(
-      (promotionScene(earned, ctx)?.unlocks ?? []).map((u) => [u.heading, u.items]),
+      (promotionScene(earned, ctx)?.unlocks ?? []).map((u) => [u.kind, u]),
     );
-    expect(opens['The library']).toEqual(['The Lantern Archive: the sealed archive']);
-    expect(opens['Jobs on the board']).toContain('S-rank: The Hollow Lantern');
+    expect(opens.library?.text).toBe('The Lantern Archive lets you into its sealed archive.');
+    expect(opens.jobs?.text).toMatch(/S-rank work now/);
     const jonin = act(earned, { type: 'acceptPromotion' });
     expect(jonin.standing.rank).toBe('jonin');
     expect(act(jonin, { type: 'sleep' }).exams.ceremony).toBeNull();

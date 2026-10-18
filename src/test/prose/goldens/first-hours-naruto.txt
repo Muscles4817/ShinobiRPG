@@ -793,7 +793,7 @@ view:
 
 >>> senseiSession
   journal «Drills with Kaname»: Kaname sets you a drill you learned at the academy and shows you how much of it you had wrong. “Why did the last one work when the first ones didn’t?” Kaname asks. “Don’t tell me now. Tomorrow.” [Strength, a little] [Taijutsu, a little] [Kaname’s regard rises] [−10 energy]
-  journal «A feel for your strength»: It comes naturally, as if your body remembered something it was never taught.
+  journal «Building strength»: It comes naturally, as if your body remembered something it was never taught.
 
 >>> train
   journal «Tree Climbing Practice»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Chakra Control, a little] [Willpower, a touch] [−10 energy]
@@ -986,7 +986,7 @@ view:
 
 >>> train
   journal «Hand-Seal Drills»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Chakra Control, a touch] [Ninjutsu, a little] [−15 energy]
-  journal «A feel for your chakra control»: It fights you every step. Others seem to pick this up in half the time.
+  journal «Controlling your chakra»: It fights you every step. Others seem to pick this up in half the time.
 
 >>> talk
 
