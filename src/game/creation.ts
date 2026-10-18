@@ -28,6 +28,7 @@ import { NEW_GENIN } from '@/systems/standing';
 import { checkChance, nothingKnown, STAT_INFO } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
+import { NOTHING_TOLD } from '@/systems/telling';
 import { NO_LEAVE } from '@/systems/travel';
 import { fullVitals } from '@/systems/vitals';
 
@@ -247,6 +248,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     exams: NO_EXAMS,
     leave: NO_LEAVE,
     mentor: NO_MENTOR,
+    told: NOTHING_TOLD,
     daybook: NO_DAYBOOK,
     rival: null,
     fieldBook: EMPTY_FIELD_BOOK,

@@ -14,6 +14,7 @@ import type { Aptitude, AptitudeKnown, StatDelta, StatId, Stats } from '@/system
 import type { Element, TechniqueBook } from '@/systems/techniques';
 import type { GameTime } from '@/systems/time';
 import type { Leave } from '@/systems/travel';
+import type { Told } from '@/systems/telling';
 import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
 
@@ -73,6 +74,8 @@ export interface GameState {
   readonly fieldBook: FieldBook;
   /** How your sensei rates you and how this week's meetings went (`game/sensei/`). */
   readonly mentor: Mentor;
+  /** The lines said lately, per bank, so a pick passes over them (`game/telling.ts`). */
+  readonly told: Told;
   /** The day's record: where you stood at dawn, and the last day that ended (`daybook/`). */
   readonly daybook: Daybook;
   /** Your rival from the year (`rival/`), once your team is settled; null before. */
