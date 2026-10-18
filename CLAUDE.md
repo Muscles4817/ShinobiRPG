@@ -726,6 +726,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   the arc's text), using only the slots `{name}`, `{art}`, `{lost}`, `{foe}`, `{keepsake}`,
   `{place}`, `{you}` and `{them}` (validated). Write it gender-neutral: names are drawn. The pool
   grows by itself; `senseiPool.test.ts` checks every new sensei is valid content.
+- **Add a bestiary foe:** a foe of a trade or country (bandits, samurai, pirates, beasts by
+  biome) rather than of one job goes in the shared bestiary (`content/shared/bestiary/`), which
+  every pack takes through its `FoeKit` (`packs/<id>/bestiaryKit.ts`: a technique of its own for
+  each `FOE_ROLES` role the foes ask for). Write it for the kind of place it lives, not today's
+  towns. Plain animals have no chakra or techniques. The bestiary bench
+  (`src/test/bench/bestiary.test.ts`) fights each at the scale its danger means.
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,
   optional `nature`, `traits`, and `healthScale` for a creature bigger or smaller than a person) to the
   pack's `enemies` and use it in a mission's combat stage. A new trait goes in

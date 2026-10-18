@@ -1,3 +1,5 @@
+import { bestiary } from '../../shared/bestiary';
+import { NARUTO_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
@@ -158,6 +160,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   companionLore: COMPANION_LORE,
   enemies: [
     ...ENEMIES,
+    ...bestiary(NARUTO_FOE_KIT),
     ...CHUNIN_ENEMIES,
     ...EXAM_ENEMIES,
     TEMPLE_BELL_FOE,

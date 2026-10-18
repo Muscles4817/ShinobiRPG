@@ -1,4 +1,5 @@
 import type { MissionFill } from '../../../../missionTemplates';
+import { BESTIARY_FILLS } from './bestiary';
 import { C_TEAM_FIELD_FILLS } from './cTeamField';
 import { C_TEAM_ROAD_FILLS } from './cTeamRoad';
 import { CHUNIN_A_FILLS } from './chuninA';
@@ -26,4 +27,5 @@ export const MISSION_FILLS: readonly MissionFill[] = [
   ...CHUNIN_B_FILLS,
   ...CHUNIN_A_FILLS,
   ...JONIN_S_FILLS,
+  ...BESTIARY_FILLS,
 ];

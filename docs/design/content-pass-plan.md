@@ -98,6 +98,17 @@ About forty foes in `packs/<id>/bestiary/`, one file per faction, each faction a
 A bestiary bench (`src/test/bench/bestiary.test.ts`) fights each against the grade its danger
 expects. Then some go into the job templates' fills so the board actually sends you after them.
 
+**As built.** Forty-four foes, written once in `content/shared/bestiary/` for every pack: each
+foe asks for techniques by role (`FOE_ROLES`: a plain cut, an earth shot, a smoke tag) and each
+pack's `FoeKit` names its own technique for the role, so the fan pack has them too. Foes belong
+to a trade or a kind of country, not to today's towns, so a job written or generated in any
+civilian village, salt pan or mountain hamlet that fits can use them. The bench fights each one
+against the bench archetypes at its danger's scale (beaten at least as often as the old foes of
+that danger) and, for deadly and elite, a scale below (too much for them). The first samurai
+was the outlier and came down two steps. Eight new template jobs (`jobs/fills/bestiary.ts`) put
+wolves, marsh and shore beasts, the bandit middle, smugglers, pirates, a shrine spirit and a
+rōnin on the board; the fan pack's board has no templates yet, so its bestiary waits for jobs.
+
 ## Step 3: the bestiary, templated
 
 Foreign shinobi as templates expanded when the context is built, like the sensei pool
