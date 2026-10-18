@@ -453,6 +453,83 @@ engine already has.
 4. Should moves be learned by doing (fights and jobs), or only through bond, handlers, scrolls
    and quests?
 
+### Summons and contracts (step 3): the proposal
+
+For discussion before building. Summons are **called** full bodies with **their own minds**,
+paid for in **chakra every exchange**, and they **go home** rather than die. The game keeps the
+lasting side: a contract with a clan of summons.
+
+**In the fight** (engine work, `engines/plan/units.ts`). Clones are counts on their maker, not
+fighters, so this is new: a full fighter joining the field mid-fight.
+
+- **The call.** A `summon` verb on a technique names what it calls (`CombatantSetup.calls`, by
+  id): one huge body (`healthScale` well over 1) or a few small ones (`pack`). Calling costs the
+  technique's chakra and the turn.
+- **Where it enters.** In the front row, before its summoner. A big summon screens its summoner
+  as a front-row fighter does now.
+- **Upkeep.** Chakra each exchange, more for a bigger summon (as clones pay,
+  `cloneUpkeep.ts`). When its summoner can't pay, it goes home. It goes home too when it falls
+  or its summoner does, and the fight ends with it gone.
+- **Its mind.** Its own, with orders by your standing with the clan (as a companion's bond
+  opens them). An elder summon may refuse an order it doesn't like, and may leave early if
+  insulted (a weak summoner, or no offering).
+- **Foes.** Foes can summon too (`EnemyDef.calls`). Scouting sees a summoner's contract only
+  with sharp eyes, or not at all (a `hidden` tell).
+- **The outcome.** `CombatOutcome.units` reports how each summon left (fell, sent home, stayed
+  to the end), so the game can count it.
+
+**Outside the fight** (`systems/contracts`, `ContractDef` in each pack):
+
+- **A contract is a clan of summons:**
+  - a name and an elder;
+  - its members by tier: small ones first, a war-summon at the top;
+  - the art it is called through;
+  - its tastes (offerings it likes);
+  - its temper.
+- **What you can call** is set by your rank, your reserves and your **standing** with the clan.
+  Standing is a bond with the clan as a whole, raised by summoning well, offerings and the
+  clan's own jobs, and lowered by wasting them or letting them fall for nothing.
+- **Signing** (the signed path):
+  - a scroll from a rare job;
+  - a sensei or teacher's own contract, offered at a high bond;
+  - a shrine on Mount Reikon (the original pack's spirit realm, which this opens);
+  - a reverse summoning, by accident or by story.
+
+  One contract at a time, as in canon; breaking one is a story beat.
+
+- **Each summon is a character:**
+  - small ones are cheerful;
+  - the elder is proud and demands offerings (sake, a meal cooked well, the cooking system);
+  - the war-summon answers only at the highest standing.
+
+  What they say comes from content (their voice lines).
+
+- **Summons and the spirit art.** Milestone 3 places the spirit art and Mount Reikon here. The
+  Naruto pack's summons are space-time ninjutsu. In the original pack summoning could be the
+  **spirit** art: Mount Reikon's spirits answer contracts. That would open the spirit discipline
+  (teal), which shamans build on later.
+
+**Content to start with:**
+
+- **The Naruto pack:**
+  - the toads (Mount Myōboku, signed through a sensei of that lineage, or by a job);
+  - the slugs or snakes as rarer second contracts;
+  - Ibiki's summoned instruments (existing techniques) come to read the same rules.
+- **The original pack:** one Mount Reikon contract, the **lantern foxes**: spirit foxes in a
+  ladder from kit to nine-tailed elder, with a shrine on Reikon to sign at.
+
+**Open questions:**
+
+1. Should summoning in the original pack be the **spirit art**, opening the spirit discipline
+   now, or ninjutsu as in the fan pack (the spirit art left for shamans)?
+2. Should **Mount Reikon open** with this step (a place with a shrine, chūnin only), or should
+   signing come only through jobs and teachers for now?
+3. **Standing:** one bond with the whole clan, or a bond with each summon (the elder and the
+   small ones apart)?
+4. **One contract at a time**, or several with growing costs?
+5. Should **genin** be able to sign at all (a small summon only), or should contracts start at
+   chūnin like the mountain road?
+
 ### Shamans: spirits seen, bound and sealed
 
 A shaman sees spirits, deals with them, and seals them into items and people to empower them.
