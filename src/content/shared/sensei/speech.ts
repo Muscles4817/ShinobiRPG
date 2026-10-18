@@ -1,4 +1,5 @@
 import type { SenseiSpeech } from '../../senseiSpeech';
+import { SENSEI_COACHING } from './coaching';
 
 /**
  * How every sensei's week sounds (`senseiSpeech.ts`): sessions by format, sign-offs by how they
@@ -149,4 +150,5 @@ export const SENSEI_SPEECH: SenseiSpeech = {
     debrief: 'the debrief',
     camp: 'the night’s camp',
   },
+  coaching: SENSEI_COACHING,
 };

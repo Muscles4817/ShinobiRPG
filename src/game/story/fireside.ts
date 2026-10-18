@@ -73,8 +73,8 @@ function talkOf(state: GameState, sensei: PersonDef): string | null {
 }
 
 /** An evening with your sensei: bond, a little of who they are, and what they saw of you. */
-export function sitWithSensei(state: GameState, sensei: PersonDef): GameState {
-  const read = senseiRead(state, sensei);
+export function sitWithSensei(state: GameState, ctx: GameContext, sensei: PersonDef): GameState {
+  const read = senseiRead(state, ctx);
   const talk = talkOf(state, sensei);
   const notes: MissionNote[] = [
     { kind: 'story', text: `You sit with ${sensei.name} by the fire.` },

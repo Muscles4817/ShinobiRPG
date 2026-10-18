@@ -308,7 +308,7 @@ view:
 >>> trainWith
   journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength +0.19] [Taijutsu +0.2] [+3 bond] [−30 energy]
   journal «A travel pass»: Gōran signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
-  journal «Gōran’s word»: Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Assignment: Taijutsu]
+  journal «Gōran’s word»: Gōran sits down on a stump at the edge of the training ground and waves you over. “Your taijutsu is the best thing you have, but anyone with an illusion walks straight through you,” he says. “I want more of it by the next lesson.” [Assignment: Taijutsu]
 
 === report card ===
 view:
@@ -1593,7 +1593,7 @@ view:
 >>> trainWith
   journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength +0.19] [Taijutsu +0.16] [+3 bond] [−30 energy]
   journal «A travel pass»: Gōran signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
-  journal «Gōran’s word»: Gōran checks your taijutsu. Not enough. He doesn’t hide it. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Gōran’s regard falls] [Assignment: Taijutsu]
+  journal «Gōran’s word»: Gōran looks over your taijutsu and finds it short of the mark. “That’s short. I don’t want to see short again,” he says. “It’s still the best thing you have, but anyone with an illusion walks straight through you. Keep at it. More by next time.” [Gōran’s regard falls] [Assignment: Taijutsu]
 
 === report card ===
 view:

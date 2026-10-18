@@ -163,7 +163,7 @@ export function campWithSensei(state: GameState, ctx: GameContext): GameState {
   const sensei = senseiAlong(state, ctx);
   if (!sensei) return state;
   const choice = told(state, { kind: 'choice', text: `Sit with ${sensei.name}` });
-  const after = sitWithSensei(choice, sensei);
+  const after = sitWithSensei(choice, ctx, sensei);
   const run = after.mission;
   if (!run) return after;
   const done = [...(run.camp?.done ?? []), String(SENSEI_FIRESIDE)];

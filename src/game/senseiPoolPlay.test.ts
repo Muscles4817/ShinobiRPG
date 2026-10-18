@@ -112,7 +112,8 @@ describe('a generated sensei’s voice', () => {
       ...theirs,
       exams: { ...theirs.exams, ceremony: { rank: 'chunin' as const, route: 'exam' as const } },
     };
-    expect(farewellDue(ceremony, ctx)?.words).toContain(voice.catchphrase);
+    // Said as a quote with its attribution after, so its full stop becomes a comma.
+    expect(farewellDue(ceremony, ctx)?.words).toContain(voice.catchphrase.replace(/\.$/, ''));
   });
 });
 

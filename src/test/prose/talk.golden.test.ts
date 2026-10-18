@@ -5,6 +5,7 @@ import { findPerson } from '@/game/people/cast';
 import { topicFor } from '@/game/people/talk';
 import { toneReaction } from '@/game/people/together';
 import { coachAfterLesson } from '@/game/sensei/coaching';
+import { farewellDue } from '@/game/sensei/farewell';
 import { mentorOf } from '@/game/sensei/plan';
 import { voiceOf } from '@/game/story/voices';
 import { conversationScene } from '@/game/views/peopleScenes';
@@ -15,7 +16,8 @@ import { recorder, type Recorder } from './recorder';
 
 /**
  * What people say, side by side: the same templates in different mouths, each reply to each
- * tone, a sensei's coaching (met and missed), crew voices for every moment, and a drink.
+ * tone, a sensei's coaching (met and missed) and farewell, crew voices for every moment, and a
+ * drink.
  */
 
 function talkThrough(r: Recorder, state: GameState, person: PersonDef, convId: string) {
@@ -53,6 +55,20 @@ function coaching(r: Recorder, state: GameState, sensei: PersonDef) {
   }
 }
 
+/** The farewell at the chūnin ceremony: an authored sensei, and a composed one with a voice. */
+function farewells(r: Recorder, state: GameState, senseis: readonly PersonDef[]) {
+  const ceremony = { rank: 'chunin' as const, route: 'exam' as const };
+  for (const sensei of senseis) {
+    const team = { ...state.people.team!, senseiId: sensei.id };
+    const s: GameState = {
+      ...state,
+      people: { ...state.people, team },
+      exams: { ...state.exams, ceremony },
+    };
+    r.say(`\nfarewell of ${sensei.name}: ${farewellDue(s, ctx)?.words ?? ''}`);
+  }
+}
+
 function voices(r: Recorder, state: GameState, people: readonly PersonDef[]) {
   r.say('\n=== crew voices ===');
   for (const person of people) {
@@ -86,6 +102,8 @@ it('reads what people say', async () => {
   const people = [...mates, ...(sensei ? [sensei] : []), ...villagers];
   templates(r, state, people);
   if (sensei) coaching(r, state, sensei);
+  const pooled = ctx.content.people.all.find((p) => p.sensei?.pooled && p.sensei.voice);
+  farewells(r, state, [...(sensei ? [sensei] : []), ...(pooled ? [pooled] : [])]);
   voices(r, state, mates);
   drinks(r, people.slice(0, 3));
   await expect(r.text()).toMatchFileSnapshot('./goldens/talk.txt');

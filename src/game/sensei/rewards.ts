@@ -1,4 +1,4 @@
-import type { GearDef, PersonDef, SenseiFeedback, SenseiReward } from '@/content';
+import type { GearDef, PersonDef, SenseiReward } from '@/content';
 import { pronounForms } from '@/core';
 import { addPoints } from '@/systems/bonds';
 import { learnRecipes, knowsRecipe } from '@/systems/cooking';
@@ -17,7 +17,7 @@ import { waysOf } from './generate';
 
 /**
  * What your sensei gives for an assignment done, in the order they like to give it: praise
- * (bond), a step on their next signature, a piece of gear for their art, their favourite
+ * (bond; their verdict says it, `coaching.ts`), a step on their next signature, a piece of gear for their art, their favourite
  * recipe, or a meal on them. A reward they can't give (nothing left to teach, you own the
  * gear, you know the dish) falls to the next.
  */
@@ -26,17 +26,13 @@ export const PRAISE_BOND = 6;
 /** Hunger a meal on your sensei takes away. */
 export const SENSEI_MEAL_SATIETY = 50;
 
-const PRAISE: Readonly<Record<SenseiFeedback, string>> = {
-  blunt: '“Good. That’s what I asked for.”',
-  warm: '“I’m proud of you. Really.”',
-  socratic: '“You did it. Now tell me how.”',
-  competitive: '“Ha! Nearly as fast as I was. Nearly.”',
-  cryptic: '“The stone remembers the river.”',
-};
-
 export interface Given {
+  readonly kind: SenseiReward;
   readonly state: GameState;
-  readonly line: string;
+  /** What they do, as narration; none for praise, which is the verdict itself. */
+  readonly line: string | null;
+  /** What was given, by name, for the farewell's words. */
+  readonly gift: string;
   readonly chip: JournalChip;
 }
 
@@ -63,10 +59,11 @@ function giftGear(state: GameState, ctx: GameContext, sensei: PersonDef): GearDe
 function praise(state: GameState, ctx: GameContext, sensei: PersonDef): Given {
   const bond = warmed(state, ctx, PRAISE_BOND, sensei);
   const bonds = { ...state.people.bonds, [sensei.id]: addPoints(bondOf(state, sensei.id), bond) };
-  const said = PRAISE[waysOf(sensei)?.feedback ?? 'warm'];
   return {
+    kind: 'praise',
     state: { ...state, people: { ...state.people, bonds } },
-    line: `${sensei.name} looks at you a moment. ${said}`,
+    line: null,
+    gift: 'their word',
     chip: { label: `+${bond} bond`, tone: 'gain' },
   };
 }
@@ -77,8 +74,10 @@ function signature(state: GameState, ctx: GameContext, sensei: PersonDef): Given
   if (!taught) return null;
   const label = taught.mastered ? `${taught.name} mastered` : `${taught.name} ${taught.percent}%`;
   return {
+    kind: 'signature',
     state: { ...state, techniques: taught.book },
-    line: `${sensei.name} shows you a little more of ${taught.name}, as a reward.`,
+    line: `Afterwards ${sensei.name} shows you a little more of ${taught.name}.`,
+    gift: taught.name,
     chip: { label, tone: 'gain' },
   };
 }
@@ -87,8 +86,10 @@ function gear(state: GameState, ctx: GameContext, sensei: PersonDef): Given | nu
   const piece = giftGear(state, ctx, sensei);
   if (!piece) return null;
   return {
+    kind: 'gear',
     state: { ...state, inventory: addGear(state.inventory, piece.id) },
-    line: `${sensei.name} hands you ${piece.name} without a word. It is better than anything you own.`,
+    line: `${sensei.name} hands you ${piece.name}, better than anything you own, and won’t be thanked for it.`,
+    gift: piece.name,
     chip: { label: piece.name, tone: 'gain' },
   };
 }
@@ -99,16 +100,20 @@ function recipe(state: GameState, ctx: GameContext, sensei: PersonDef): Given | 
   if (!dish || knowsRecipe(state.cooking, dish.id)) return null;
   const forms = pronounForms(pronounsOf(sensei));
   return {
+    kind: 'recipe',
     state: { ...state, cooking: learnRecipes(state.cooking, [dish.id]) },
-    line: `${sensei.name} teaches you how ${forms.they} make${forms.s} ${dish.name}. It is a kind of trust.`,
+    line: `${sensei.name} writes out how ${forms.they} make${forms.s} ${dish.name} and gives it to you to keep.`,
+    gift: dish.name,
     chip: { label: `Recipe: ${dish.name}`, tone: 'gain' },
   };
 }
 
 function meal(state: GameState, _ctx: GameContext, sensei: PersonDef): Given {
   return {
+    kind: 'meal',
     state: adjust(state, { satiety: SENSEI_MEAL_SATIETY }),
-    line: `${sensei.name} takes you out to eat, and won’t hear of you paying.`,
+    line: `Afterwards ${sensei.name} takes you out to eat, and won’t hear of you paying.`,
+    gift: 'a meal',
     chip: { label: `A meal on ${pronounForms(pronounsOf(sensei)).them}`, tone: 'gain' },
   };
 }

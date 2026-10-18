@@ -295,7 +295,7 @@ view:
 >>> trainWith
   journal «Lesson with Kaname»: Kaname has you hold a stance until your legs shake, then shows you how to stop them shaking. [Strength +0.43] [+6 bond] [−30 energy]
   journal «A travel pass»: Kaname signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
-  journal «Kaname’s word»: Anyone with an illusion walks straight through you. “By the next lesson, I want to see your strength come on.” [Assignment: Strength]
+  journal «Kaname’s word»: Kaname sits down on a stump at the edge of the training ground and waves you over. “Anyone with an illusion walks straight through you,” he says. “Your strength is where I’d look next. Why, do you think?” [Assignment: Strength]
 
 === report card ===
 view:

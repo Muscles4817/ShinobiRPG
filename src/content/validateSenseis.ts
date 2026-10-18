@@ -3,6 +3,7 @@ import type { PersonDef } from './people';
 import { TEST_APPROACHES } from './senseiTests';
 import type { SenseiWays } from './senseis';
 import type { ContentPack } from './types';
+import { validateSenseiSpeech } from './validateSenseiSpeech';
 
 /**
  * Checks how each sensei runs a team: numbers in range, lists that aren't empty, and the ways
@@ -32,6 +33,7 @@ export function validateSenseis(pack: ContentPack): string[] {
     }),
     ...testProblems(pack),
     ...curriculumProblems(pack),
+    ...validateSenseiSpeech(pack),
   ];
 }
 

@@ -569,7 +569,7 @@ view:
 >>> missionContinue (Travel on)
   journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength +0.09] [Taijutsu +0.16] [+3 bond]
   journal «A travel pass»: Gōran signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
-  journal «Gōran’s word»: You went down on that job. Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Assignment: Taijutsu]
+  journal «Gōran’s word»: Gōran sits down on a stump at the edge of the training ground and waves you over. He brings up the job you went down on. Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals. “Nothing you do is as good as your taijutsu, but anyone with an illusion walks straight through you,” he says. “Keep at it. More by next time.” [Assignment: Taijutsu]
   journal «On the road»: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb. [A day on the road]
   journal: Gōran wants you at the training ground this morning, to spar.
 
