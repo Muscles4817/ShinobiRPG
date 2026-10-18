@@ -19,6 +19,8 @@ export interface SceneChoice {
   readonly detail: string;
   readonly primary: boolean;
   readonly action: GameAction;
+  /** Why it can't be taken, in the story's words; the choice shows closed. */
+  readonly closed?: string;
 }
 
 export interface StagePrompt {
@@ -46,22 +48,28 @@ function roadDetail(days: number, rations: number): string {
   return `${road}, food for ${rations} in your pack`;
 }
 
-/** The options of a decision (or a road event), those open to you, by their real index. */
+/**
+ * The options of a decision (or a road event), those open to you, by their real index; then
+ * the first closed one that says why, so you know more was possible.
+ */
 function decisionChoices(state: GameState, ctx: GameContext): SceneChoice[] {
   const run = state.mission;
   if (!run) return [];
-  return openOptions(state, ctx).flatMap((o, optionIndex) =>
-    holds(storyOf(run), o.when)
-      ? [
-          {
-            label: o.label,
-            detail: '',
-            primary: false,
-            action: { type: 'missionDecide', optionIndex },
-          },
-        ]
-      : [],
-  );
+  const options = openOptions(state, ctx).map((o, optionIndex) => ({
+    o,
+    open: holds(storyOf(run), o.when),
+    action: { type: 'missionDecide', optionIndex } as const,
+  }));
+  const open = options
+    .filter((x) => x.open)
+    .map(({ o, action }) => ({ label: o.label, detail: '', primary: false, action }));
+  const missed = options.find((x) => !x.open && x.o.unseen !== undefined);
+  const why = missed?.o.unseen;
+  if (!missed || why === undefined) return open;
+  return [
+    ...open,
+    { label: missed.o.label, detail: '', primary: false, action: missed.action, closed: why },
+  ];
 }
 
 function campPrompt(

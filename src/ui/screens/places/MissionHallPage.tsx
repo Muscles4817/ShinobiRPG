@@ -32,7 +32,12 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
       <main className="board">
         <ExamNotice ctx={ctx} state={state} perform={perform} />
         {view.arcs.map((arc) => (
-          <ArcCard key={arc.id} arc={arc} />
+          <ArcCard
+            key={arc.id}
+            arc={arc}
+            onOpen={setOpenId}
+            postedHere={view.notices.map((n) => n.id)}
+          />
         ))}
         {view.notices.length === 0 && (
           <p className="board-empty">Nothing posted today. Check back tomorrow.</p>

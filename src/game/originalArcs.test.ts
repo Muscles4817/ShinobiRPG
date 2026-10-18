@@ -65,12 +65,12 @@ describe('the brewer’s ghost', () => {
     const vats = play(ready(), 'arc-brewer-sour-vats');
     for (const id of LEADS) expect(availability(vats, ctx, job(id)).kind).toBe('arc');
     const card = arcsView(vats, ctx).find((a) => a.id === 'the-brewers-ghost');
-    expect(card?.pass).toMatch(/Any one/);
+    expect(card?.rule?.label).toBe('Any lead will do');
 
     const oneLead = play(vats, 'arc-brewer-old-hands', ['Ask what the first wife was like']);
     expect(availability(oneLead, ctx, job('arc-brewer-ghost-night')).kind).toBe('arc');
     expect(availability(oneLead, ctx, job('arc-brewer-gravedigger')).kind).toBe('arc');
-    expect(arcsView(oneLead, ctx).find((a) => a.id === 'the-brewers-ghost')?.jobs).toHaveLength(3);
+    expect(arcsView(oneLead, ctx).find((a) => a.id === 'the-brewers-ghost')?.leads).toHaveLength(3);
 
     const faced = play(oneLead, 'arc-brewer-ghost-night');
     expect(availability(faced, ctx, job('arc-brewer-gravedigger')).kind).toBe('absent');

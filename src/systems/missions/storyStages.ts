@@ -13,6 +13,8 @@ export interface Outcome {
   readonly effects?: readonly Effect[];
   /** The debrief's line for it ("Lost the light at the spring"). No numbers. */
   readonly ledger?: string;
+  /** Something found worth remembering (a clue): the debrief stamps its line. */
+  readonly noted?: true;
 }
 
 /** A text that reads differently once something has happened. */
@@ -31,6 +33,11 @@ export interface DecisionOption extends Outcome {
   readonly tone?: string;
   /** Only offered when this holds. */
   readonly when?: Condition;
+  /**
+   * When it doesn't hold, the option still shows, closed, with this in-world reason ("You never
+   * learned who she was"), so a choice never shrinks to one button without saying why.
+   */
+  readonly unseen?: string;
   /** What happens, in the story. */
   readonly reply: string;
 }

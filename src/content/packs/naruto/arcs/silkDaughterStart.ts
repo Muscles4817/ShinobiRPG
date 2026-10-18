@@ -43,6 +43,7 @@ export const DAUGHTER_TAKEN: MissionDef = {
               { kind: 'tally', tally: OCHO_CLUES, by: 1 },
             ],
             ledger: 'Saw the bruise under the maid’s sleeve, the shape of a hand.',
+            noted: true,
           },
         },
       ],
@@ -86,6 +87,7 @@ export const HER_ROOM: MissionDef = {
               { kind: 'tally', tally: OCHO_CLUES, by: 1 },
             ],
             ledger: 'Her winter clothes were gone, and her mother’s comb. Nobody takes those.',
+            noted: true,
           },
         },
         {
@@ -99,6 +101,7 @@ export const HER_ROOM: MissionDef = {
             ],
             ledger:
               'The innkeeper says she paid a post rider to carry a letter to the Fire Temple.',
+            noted: true,
           },
         },
       ],
@@ -144,9 +147,36 @@ export const BANDITS_BLAMED: MissionDef = {
       text: 'Their chief swears he never took any merchant’s daughter. “A girl walked past us alone, before dawn, a month back,” he says. “Towards the temple road. We let her be. She looked like she had nothing worth taking.”',
     },
     {
+      when: { lacks: 'slipped-past' },
+      kind: 'decision',
+      text: 'Danjūrō has sent word ahead: bring the bandits to him, and there will be a bonus. He means to hang them for his daughter, whatever they did.',
+      options: [
+        {
+          label: 'Hand them to Danjūrō',
+          tone: 'cruel',
+          reply: 'They go to Shukuba in a cart. You don’t ask what happens to them there.',
+          effects: [
+            { kind: 'pay', share: 0.5 },
+            { kind: 'world', mark: 'ocho-bandits-hanged' },
+          ],
+          ledger: 'Handed the bandits to Danjūrō, for a bonus, for something they didn’t do.',
+        },
+        {
+          label: 'Take their word, and send them off the post road',
+          tone: 'curious',
+          reply: 'The chief looks at you as if you’ve grown another head, then goes, fast.',
+          effects: [{ kind: 'tally', tally: OCHO_CLUES, by: 1 }],
+          ledger: 'Believed the bandits: a girl walked past them alone, towards the temple.',
+          noted: true,
+        },
+      ],
+    },
+    {
       kind: 'ending',
       endings: [
-        { text: 'Danjūrō is delighted the bandits are caught, and doesn’t ask what they said.' },
+        {
+          text: 'Danjūrō is delighted the bandits are dealt with, and doesn’t ask what they said.',
+        },
       ],
     },
   ],
@@ -207,6 +237,7 @@ export const PILGRIM_ROAD: MissionDef = {
             { kind: 'tally', tally: OCHO_CLUES, by: 1 },
           ],
           ledger: 'Heard Ochō’s whole story.',
+          noted: true,
         },
       ],
     },

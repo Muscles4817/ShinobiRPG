@@ -37,6 +37,7 @@ export const GHOST_NIGHT: MissionDef = {
         {
           when: { tally: BREWER_CLUES, atLeast: 2 },
           label: 'Call her Oharu, and tell her what is known now',
+          unseen: 'You never learned enough about who she was.',
           tone: 'kind',
           reply:
             'She stops at her name. You tell her everything you’ve pieced together, and what it means. She turns to Gensai, and he falls to his knees and says it all, to her and to the whole yard.',
@@ -49,16 +50,39 @@ export const GHOST_NIGHT: MissionDef = {
         {
           when: { tally: BREWER_CLUES, atLeast: 1 },
           label: 'Tell Gensai to confess, here, in front of her',
+          unseen: 'You have nothing to make him.',
           tone: 'challenge',
           reply:
             '“Confess what?” he says, and backs away. She follows him. You have to stand in her way.',
-          ledger: 'Told the brewer to confess. He wouldn’t.',
+          effects: [{ kind: 'mark', mark: 'pressed' }],
+          ledger: 'Told the brewer to confess. He wouldn’t, yet.',
         },
         {
           label: 'Lay her by force, as you were paid to',
           tone: 'quiet',
           reply: 'You step between them and make the seal.',
           ledger: 'Set out to lay the ghost by force.',
+        },
+      ],
+    },
+    {
+      when: { all: [{ has: 'named-her' }, { remembers: 'brewer-took-bonus' }] },
+      kind: 'decision',
+      text: 'When the yard is quiet again, Gensai finds his voice. “I paid you for quiet,” he says through his teeth. “Double.”',
+      options: [
+        {
+          label: 'Give him his money back',
+          tone: 'earnest',
+          reply: 'You count it out onto the well’s edge, coin by coin, in front of the Watch.',
+          effects: [{ kind: 'pay', share: -0.5 }],
+          ledger: 'Gave the brewer back the money he paid for quiet.',
+        },
+        {
+          label: 'Keep it. He can take it up with the Watch',
+          tone: 'challenge',
+          reply: 'Gensai opens his mouth, looks at the Watch, and shuts it again.',
+          effects: [{ kind: 'world', mark: 'brewer-kept-bribe' }],
+          ledger: 'Kept the brewer’s money, and told him to take it up with the Watch.',
         },
       ],
     },
@@ -98,6 +122,15 @@ export const GHOST_NIGHT: MissionDef = {
             { kind: 'memory', text: 'the night Oharu went home' },
           ],
           ledger: 'Oharu rests, and her husband is in the Watch’s cells. Only the Watch paid.',
+        },
+        {
+          when: { has: 'pressed' },
+          text: 'When it is over, Gensai is white to the lips and can’t stop looking at the well. At dawn he walks to the Watch house on his own and asks to see the captain.',
+          effects: [
+            { kind: 'world', mark: 'brewer-exposed' },
+            { kind: 'pay', share: -0.25 },
+          ],
+          ledger: 'Laid the ghost by force, and the brewer confessed in the morning.',
         },
         {
           text: 'She breaks apart like mist in the cold. Gensai nails the boards back himself, pays every coin, and never once looks at the well.',
@@ -191,6 +224,13 @@ export const OHARUS_CASK: MissionDef = {
           reply: '“She’d have hated the fuss,” Oyuki says, and pours the first cup on the stones.',
           effects: [{ kind: 'memory', text: 'carrying Oharu’s first cask up the shrine steps' }],
           ledger: 'Carried Oharu’s first cask to the shrine.',
+        },
+        {
+          label: 'Let Oyuki carry it the last steps herself',
+          tone: 'quiet',
+          reply: 'She takes it from you at the top step without a word, and her arms don’t shake.',
+          effects: [{ kind: 'memory', text: 'Oyuki carrying Oharu’s cask the last steps' }],
+          ledger: 'Let Oyuki carry Oharu’s first cask the last steps.',
         },
       ],
     },

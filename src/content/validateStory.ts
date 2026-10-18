@@ -62,8 +62,13 @@ function storyProblems(m: MissionDef, roadMarks: ReadonlySet<string>): string[] 
   ];
   const charge =
     m.charge && !threads.has(m.charge.thread) ? ['has a charge with no trust thread'] : [];
+  const unseen = m.stages
+    .flatMap((st) => (st.kind === 'decision' ? st.options : []))
+    .filter((o) => o.unseen !== undefined && o.when === undefined)
+    .map((o) => `says why "${o.label}" is closed, but it is never closed`);
   return [
     ...charge,
+    ...unseen,
     ...shapeProblems(m),
     ...refs
       .flatMap((r) => r.marks)

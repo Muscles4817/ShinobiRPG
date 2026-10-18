@@ -65,6 +65,8 @@ export interface LedgerLine {
   readonly tone: LedgerTone;
   /** The share of the pay it moved, if it moved any. */
   readonly pay?: number;
+  /** Something found worth remembering (a clue). */
+  readonly noted?: true;
 }
 
 /** What the story so far is: the run's marks and threads, and who went. */

@@ -1,8 +1,10 @@
 import type { VillageLife } from '../../types';
+import { ARC_RUMOURS } from './arcs/rumours';
 
 /** Gossip, night sights and festivals of the Hidden Leaf. */
 export const VILLAGE: VillageLife = {
   rumours: [
+    ...ARC_RUMOURS,
     {
       id: 'tora-again',
       missionId: 'catch-tora',

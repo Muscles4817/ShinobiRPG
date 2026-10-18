@@ -8,6 +8,8 @@ export interface DebriefLine {
   readonly tone: 'gain' | 'cost' | 'plain';
   /** The pay it moved, as a chip ("−25% pay"), or null. */
   readonly pay: string | null;
+  /** Something found worth remembering (a clue); absent on older reports. */
+  readonly noted?: true;
 }
 
 /** Someone who went with you: how much closer you came, and the last thing they said. */
