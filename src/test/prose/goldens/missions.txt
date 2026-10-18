@@ -401,7 +401,7 @@ view:
   —— Second exchange ——
   You look again, with no more luck.
   The storehouse wraith uses Whispering Dread once more.
-  The storehouse wraith’s Whispering Dread sinks deep into you, and it hurts. [Guarded] [−21]
+  The storehouse wraith’s Whispering Dread sinks deep into you, and it leaves you shaken. [Guarded] [−21]
   You blink, and the field is no longer where it was.
   —— Third exchange ——
   You search again, and still find no one.
@@ -447,7 +447,7 @@ view:
   The storehouse wraith sees it coming.
   The storehouse wraith is gone again, and the air where it stood is empty.
   The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
-  The storehouse wraith’s Whispering Dread floods you, and it hurts. [Guarded] [−21]
+  The storehouse wraith’s Whispering Dread floods you, and it leaves you shaken. [Guarded] [−21]
   You catch the thread of the illusion and find the storehouse wraith.
   —— Third exchange ——
   You explode forward with Gale Heel.

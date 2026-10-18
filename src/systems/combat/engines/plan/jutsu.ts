@@ -97,7 +97,13 @@ function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
   const healed = { ...round, fighters: patch(round.fighters, actor.id, { health }) };
   // Nothing to mend (a gate that also heals, opened unhurt): nothing to tell.
   if (health === actor.health) return healed;
-  return say(healed, healLine(tell('{a} recover{a.s}.', { a: actor }), health - actor.health));
+  return say(
+    healed,
+    healLine(
+      tell('{a} catch{a.es} {a.their} breath and recover{a.s}.', { a: actor }),
+      health - actor.health,
+    ),
+  );
 }
 
 /** The verbs that land on a foe; every other verb happens to the user. */
@@ -305,7 +311,7 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const { actor } = turn;
   const paid = withChakraSpent(round, actor, t);
   if (misfired(turn, t)) {
-    const line = '{what} comes apart in {a.poss} hands. It isn’t steady yet.';
+    const line = '{what} comes apart in {a.poss} hands before it is steady.';
     return say(paid, tell(line, { a: actor, what: t.name }));
   }
   const targets = targetsOf(paid, turn, t);

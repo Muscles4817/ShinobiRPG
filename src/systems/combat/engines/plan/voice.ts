@@ -47,7 +47,7 @@ const CAST_BY_ART: Readonly<Record<Discipline, readonly string[]>> = {
     '{a} mould{a.s} chakra into {what}.',
   ],
   genjutsu: [
-    '{a} cast{a.s} {what}.',
+    '{a} fix{a.es} {a.their} eyes on the field and cast{a.s} {what}.',
     '{a} catch{a.es} the eye and let{a.s} {what} unfold.',
     'The air around {a} wavers as {what} takes hold.',
   ],
@@ -148,7 +148,11 @@ export function seenLine(moment: Moment, foe: Told): string {
 const STEPS: Readonly<Record<RangeBand, Bank>> = {
   close: bank(
     'step-in',
-    ['{a} close{a.s} in.', '{a} dart{a.s} in close.', '{a} get{a.s} inside {f.poss} reach.'],
+    [
+      '{a} close{a.s} in.',
+      '{a} dart{a.s} in close.',
+      '{a} keep{a.s} low and come{a.s} in under {f.poss} guard, inside {f.poss} reach.',
+    ],
     ['{a} close{a.s} in again.'],
     CLOSING_IN,
   ),
@@ -204,7 +208,11 @@ export function blockedStepLine(moment: Moment, actor: Told, to: RangeBand, foe:
 
 const DAZED = bank(
   'dazed',
-  ['{t} {t.is} dazed.', '{t} reel{t.s}, the world spinning.', '{t} stagger{t.s}, dazed.'],
+  [
+    '{t} {t.is} dazed, and the ground tilts under {t.them}.',
+    '{t} reel{t.s}, the world spinning.',
+    '{t} stagger{t.s}, dazed.',
+  ],
   undefined,
   DAZING,
 );
@@ -230,7 +238,7 @@ const EMPTY_SEARCH = bank(
   [
     '{a} search{a.es} the field and find{a.s} no one.',
     '{a} scan{a.s} the field and see{a.s} nothing.',
-    '{a} look{a.s} hard and find{a.s} only shadows.',
+    '{a} look{a.s} hard at every place a body could hide, and find{a.s} none.',
   ],
   [
     '{a} search{a.es} again, and still find{a.s} no one.',
@@ -257,7 +265,7 @@ export function foundLine(moment: Moment, actor: Told, found: readonly Told[]): 
 }
 
 const COUNTER = bank('counter', [
-  '{t} counter{t.s}.',
+  '{t} counter{t.s} before the blow is finished.',
   '{t} answer{t.s} the blow with one of {t.their} own.',
   '{t} turn{t.s} the attack back on its owner.',
 ]);

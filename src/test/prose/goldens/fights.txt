@@ -29,7 +29,7 @@
   Asuka sees it coming.
   —— Second exchange ——
   The air around Asuka wavers as Shadow Feint takes hold.
-  You are dazed.
+  You are dazed, and the ground tilts under you.
   You are dazed and lose the exchange.
   —— Third exchange ——
   Steel flashes as Asuka looses Lantern Cut.
@@ -51,7 +51,7 @@
   You can’t find your feet yet.
   —— Third exchange ——
   Daisuke uses Forge Cut once more.
-  Daisuke’s Forge Cut slashes deep into you, and it hurts. [Guarded] [−20]
+  Daisuke’s Forge Cut slashes deep into you, and it leaves you shaken. [Guarded] [−20]
   You have been keeping Gale Heel for this, and use it now.
   Your Gale Heel rips into Daisuke, and you let them know it. [Guarded] [−9]
   —— Last exchange ——
@@ -147,7 +147,7 @@
   You break free of the illusion.
   You search again, and still find no one.
   The storehouse wraith goes back to Whispering Dread.
-  The storehouse wraith’s Whispering Dread floods you, and it hurts. [Guarded] [−23]
+  The storehouse wraith’s Whispering Dread floods you, and it leaves you shaken. [Guarded] [−23]
   —— Last exchange ——
   You find the storehouse wraith in a corner of the room.
   The storehouse wraith reaches for Whispering Dread again.
@@ -192,7 +192,7 @@
   —— The next round begins ——
   —— First exchange ——
   You reach for Gale Heel again.
-  Your Gale Heel tears into the first bandit thug, and it hurts. [Guarded] [−28]
+  Your Gale Heel tears into the first bandit thug, and it leaves him shaken. [Guarded] [−28]
   The first bandit thug hits the ground and doesn’t get up.
   The second bandit thug’s strike only just glances off you. [Guarded] [−5]
   —— Second exchange ——

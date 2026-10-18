@@ -158,7 +158,7 @@ const SENTENCES: Readonly<Record<HitWeight, readonly string[]>> = {
   heavy: [
     '{a.poss} {what} {verb} {t}{again}{guard}.',
     '{a.poss} {what} {verb} {t}{again}{guard}, and {t.they} feel{t.ps} it.',
-    '{a.poss} {what} {verb} {t}{again}{guard}, and it hurts.',
+    '{a.poss} {what} {verb} {t}{again}{guard}, and it leaves {t.them} shaken.',
   ],
   crushing: [
     '{a.poss} {what} {verb} {t}{again} with everything behind it{guard}.',
