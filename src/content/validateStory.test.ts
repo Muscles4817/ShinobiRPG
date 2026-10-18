@@ -37,6 +37,39 @@ describe('story validation', () => {
     expect(problems).toContain(`mission "${job.id}" reads tally "kindness", which no job counts`);
   });
 
+  it('refuses a tally counted by a job that can be done again, and a close nothing causes', () => {
+    const job: MissionDef = {
+      ...STORY_JOB,
+      closedBy: 'never-happens',
+      stages: [
+        {
+          kind: 'decision',
+          text: 'Spare them?',
+          options: [
+            {
+              label: 'Yes',
+              tone: 'kind',
+              reply: 'You do.',
+              effects: [{ kind: 'tally', tally: 'mercy', by: 1 }],
+            },
+          ],
+        },
+        ...STORY_JOB.stages.slice(-1),
+      ],
+    };
+    const problems = validateContent(withJob(job));
+    expect(problems).toContain(
+      `mission "${job.id}" counts a tally but can be done again and again`,
+    );
+    expect(problems).toContain(
+      `mission "${job.id}" is closed by "never-happens", which no job leaves behind`,
+    );
+    const { closedBy: _closed, ...onceOnly } = job;
+    expect(validateContent(withJob({ ...onceOnly, once: true }))).not.toContain(
+      `mission "${job.id}" counts a tally but can be done again and again`,
+    );
+  });
+
   it('wants an ending last, with one for every case, and roads where something can happen', () => {
     const job: MissionDef = {
       ...STORY_JOB,

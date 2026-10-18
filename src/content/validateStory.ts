@@ -2,16 +2,14 @@ import {
   conditionRefs,
   RULE_MARKS,
   type ArcAct,
-  type CampActivity,
-  type Condition,
   type DecisionOption,
-  type Effect,
   type MissionDef,
   type MissionStage,
-  type Outcome,
 } from '@/systems/missions';
 
 import { TONES } from './people';
+import { conditions, effectsOf } from './storyParts';
+import { tallyProblems } from './validateTallies';
 import type { ContentPack } from './types';
 import { VOICE_MOMENTS } from './voices';
 
@@ -24,58 +22,6 @@ import { VOICE_MOMENTS } from './voices';
 
 /** Threads a road event may name though a job doesn't keep them (they then do nothing). */
 const GENERIC_THREADS = new Set(['daylight', 'charge']);
-
-function outcomes(stage: MissionStage): (Outcome | undefined)[] {
-  switch (stage.kind) {
-    case 'check':
-      return stage.approaches.flatMap((a) => [a.onSuccess, a.onFailure]);
-    case 'decision':
-      return [...stage.options];
-    case 'camp':
-      return stage.activities.map(campOutcome);
-    case 'ending':
-      return [...stage.endings];
-    case 'narrative':
-    case 'leg':
-    case 'combat':
-    case 'encounter':
-      return [];
-  }
-}
-
-function campOutcome(activity: CampActivity): Outcome | undefined {
-  if (activity.kind === 'charge') return activity.outcome;
-  return activity.kind === 'watch' ? activity.onSuccess : undefined;
-}
-
-function conditions(stage: MissionStage): (Condition | undefined)[] {
-  const own = [
-    stage.when,
-    ...('variants' in stage ? (stage.variants ?? []).map((v) => v.when) : []),
-  ];
-  switch (stage.kind) {
-    case 'check':
-      return [...own, ...stage.approaches.map((a) => a.when)];
-    case 'decision':
-      return [...own, ...stage.options.map((o) => o.when)];
-    case 'camp':
-      return [
-        ...own,
-        ...stage.activities.flatMap((a) => [a.when, a.kind === 'charge' ? a.opensWhen : undefined]),
-      ];
-    case 'ending':
-      return [...own, ...stage.endings.map((e) => e.when)];
-    case 'narrative':
-    case 'leg':
-    case 'combat':
-    case 'encounter':
-      return own;
-  }
-}
-
-function effectsOf(stage: MissionStage): Effect[] {
-  return outcomes(stage).flatMap((o) => o?.effects ?? []);
-}
 
 function tonesOf(stage: MissionStage): (string | undefined)[] {
   return stage.kind === 'decision' ? stage.options.map((o) => o.tone) : [];
@@ -195,27 +141,15 @@ function worldProblems(pack: ContentPack): string[] {
         (m) =>
           `mission "${m.id}" waits for "${m.needsWorldMark ?? ''}", which no job leaves behind`,
       ),
+    ...pack.missions
+      .filter((m) => m.closedBy !== undefined && !left.has(m.closedBy))
+      .map(
+        (m) => `mission "${m.id}" is closed by "${m.closedBy ?? ''}", which no job leaves behind`,
+      ),
     ...pack.village.rumours
       .filter((r) => r.worldMark !== undefined && !left.has(r.worldMark))
       .map((r) => `rumour "${r.id}" waits for "${r.worldMark ?? ''}", which no job leaves behind`),
-    ...tallyProblems(pack),
   ];
-}
-
-/** Every village tally a job reads is one some job counts. */
-function tallyProblems(pack: ContentPack): string[] {
-  const counted = new Set(
-    pack.missions
-      .flatMap((m) => m.stages.flatMap(effectsOf))
-      .flatMap((e) => (e.kind === 'tally' ? [e.tally] : [])),
-  );
-  return pack.missions.flatMap((m) =>
-    m.stages
-      .flatMap(conditions)
-      .flatMap((c) => conditionRefs(c).tallies)
-      .filter((tally) => !counted.has(tally))
-      .map((tally) => `mission "${m.id}" reads tally "${tally}", which no job counts`),
-  );
 }
 
 /** Every arc's acts have jobs that exist, and no job belongs to two arcs. */
@@ -275,6 +209,7 @@ export function validateStory(pack: ContentPack): string[] {
     ...eventProblems(pack),
     ...voiceProblems(pack),
     ...worldProblems(pack),
+    ...tallyProblems(pack),
     ...arcProblems(pack),
   ];
 }

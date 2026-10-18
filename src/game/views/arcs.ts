@@ -49,8 +49,8 @@ function viewOf(state: GameState, ctx: GameContext, arc: ArcDef): ArcView | null
 
 const PASS_LINES: Readonly<Record<ActPass, string | null>> = {
   all: null,
-  any: 'Any one of these moves the story on; the rest stay open until you do.',
-  one: 'Choose one: taking it closes the others.',
+  any: 'Any one of these moves the story on. The rest stay open until you take the next step.',
+  one: 'Choose one road. Finishing one closes the others.',
 };
 
 /** Leads of earlier acts you may still follow before the story moves on. */

@@ -1,6 +1,6 @@
 import type { PersonDef } from '@/content';
 import { addPoints } from '@/systems/bonds';
-import type { Effect } from '@/systems/missions';
+import type { Effect, MissionRun } from '@/systems/missions';
 import type { JournalChip } from '@/systems/journal';
 
 import type { GameContext } from '../context';
@@ -11,8 +11,8 @@ import type { GameState } from '../state';
 
 /**
  * What a story's outcome does to you and the people with you: harm and energy to you, bond
- * with everyone along (not whoever leads), moments they will remember, and what the village
- * will remember (or count) of the job. Returned with the chips that show it, since story
+ * with everyone along (not whoever leads), and, once the job is done, moments they will
+ * remember and what the village will remember (or count) of it. Returned with the chips that show it, since story
  * text never carries numbers.
  */
 
@@ -60,16 +60,52 @@ function feelOne(felt: Felt, effect: Effect): Felt {
             ],
           };
     case 'world':
-      return { ...felt, state: remember(felt.state, effect.mark) };
     case 'memory':
-      return { ...felt, state: shareMemory(felt.state, effect.text) };
     case 'tally':
-      return { ...felt, state: count(felt.state, effect.tally, effect.by) };
+      return { ...felt, state: holdOrKeep(felt.state, effect) };
     case 'mark':
     case 'thread':
     case 'pay':
       return felt;
   }
+}
+
+/** What lasts beyond a job: what the village remembers or counts, and memories shared. */
+type Lasting = Extract<Effect, { readonly kind: 'world' | 'memory' | 'tally' }>;
+
+/**
+ * On a job, what lasts is held until the job is done, so a job failed and taken again leaves
+ * nothing of the first try behind (a mark it set, a mercy it counted twice).
+ */
+function holdOrKeep(state: GameState, effect: Lasting): GameState {
+  const run = state.mission;
+  if (!run) return keep(state, effect);
+  return { ...state, mission: { ...run, held: [...(run.held ?? []), effect] } };
+}
+
+function keep(state: GameState, effect: Lasting): GameState {
+  switch (effect.kind) {
+    case 'world':
+      return remember(state, effect.mark);
+    case 'memory':
+      return shareMemory(state, effect.text);
+    case 'tally':
+      return count(state, effect.tally, effect.by);
+  }
+}
+
+/** A job done: what it held for the village and the crew now lasts. */
+export function releaseHeld(
+  state: GameState,
+  run: MissionRun,
+): GameState & { readonly mission: MissionRun } {
+  const { held = [], ...rest } = run;
+  const onJob = { ...state, mission: rest };
+  return { ...held.filter(isLasting).reduce<GameState>(keep, onJob), mission: rest };
+}
+
+function isLasting(effect: Effect): effect is Lasting {
+  return effect.kind === 'world' || effect.kind === 'memory' || effect.kind === 'tally';
 }
 
 /** The village remembers something you did (once). */

@@ -14,7 +14,7 @@ export const GHOST_NIGHT: MissionDef = {
   title: 'The Night of the Ghost',
   rank: 'D',
   client: BREWER,
-  summary: 'The end of the month. Gensai wants his brewery quiet, tonight, for good.',
+  summary: 'Gensai has had enough of waiting. He wants his brewery quiet, tonight, for good.',
   slots: 2,
   energyCost: 25,
   reward: { ryo: 160, reputation: 5 },
@@ -22,11 +22,11 @@ export const GHOST_NIGHT: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'At midnight the yard goes cold. The boards on the well lift by themselves, and she climbs out: a woman in a drowned wedding robe, looking only at Gensai.',
+      text: 'At midnight the yard goes cold. The boards on the well lift by themselves, and she climbs out: a woman in a brewer’s apron dark with well water, looking only at Gensai.',
       variants: [
         {
           when: { remembers: 'brewer-wrong-man' },
-          text: 'At midnight the boards on the well burst apart. She comes out of the water screaming, a woman in a drowned wedding robe, and the vats crack one by one.',
+          text: 'At midnight the boards on the well burst apart. She comes out of the water screaming, a woman in a brewer’s apron dark with well water, and the vats crack one by one.',
         },
       ],
     },
@@ -39,7 +39,7 @@ export const GHOST_NIGHT: MissionDef = {
           label: 'Call her Oharu, and tell her what is known now',
           tone: 'kind',
           reply:
-            'She stops at her name. You tell her about the sandals by the well, the empty coffin, the hairpin on the ledge. She turns to Gensai, and he falls to his knees and says it all, to her and to the whole yard.',
+            'She stops at her name. You tell her everything you’ve pieced together, and what it means. She turns to Gensai, and he falls to his knees and says it all, to her and to the whole yard.',
           effects: [
             { kind: 'mark', mark: 'named-her' },
             { kind: 'tally', tally: MERCY, by: 1 },
@@ -91,7 +91,7 @@ export const GHOST_NIGHT: MissionDef = {
       endings: [
         {
           when: { has: 'named-her' },
-          text: 'Oharu goes back into the well like someone going home. At dawn the Watch lifts her bones and takes Gensai away. Nobody pays you, and the village talks of nothing else for a week.',
+          text: 'Oharu goes back into the well like someone going home. At dawn the Watch lifts her bones and takes Gensai away. Gensai pays nothing; the Watch pays what it can, and the village talks of nothing else for a week.',
           effects: [
             { kind: 'world', mark: 'brewer-exposed' },
             { kind: 'pay', share: -0.5 },
@@ -121,6 +121,8 @@ export const SECOND_WELL: MissionDef = {
   reward: { ryo: 120, reputation: 4 },
   minMissionsCompleted: 3,
   needsWorldMark: 'brewer-hushed',
+  closedBy: 'brewer-exposed',
+  once: true,
   stages: [
     {
       kind: 'narrative',
@@ -137,6 +139,7 @@ export const SECOND_WELL: MissionDef = {
             'She listens to all of it without a sound, then goes inside and comes back with her travelling bag already packed. She takes it to the Watch herself.',
           effects: [
             { kind: 'world', mark: 'brewer-exposed' },
+            { kind: 'mark', mark: 'told-sachi' },
             { kind: 'tally', tally: MERCY, by: 1 },
           ],
           ledger: 'Told Sachi what is in the well. She went to the Watch.',
@@ -153,7 +156,11 @@ export const SECOND_WELL: MissionDef = {
       kind: 'ending',
       endings: [
         {
+          when: { has: 'told-sachi' },
           text: 'That night, for the first time in a month, the well is quiet.',
+        },
+        {
+          text: 'You hear later that Sachi left Gensai’s house before the month was out, without a word to anyone. The well still weeps.',
         },
       ],
     },
@@ -172,6 +179,7 @@ export const OHARUS_CASK: MissionDef = {
   reward: { ryo: 80, reputation: 4 },
   minMissionsCompleted: 3,
   needsWorldMark: 'brewer-exposed',
+  once: true,
   stages: [
     {
       kind: 'decision',
