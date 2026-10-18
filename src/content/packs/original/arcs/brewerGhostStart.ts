@@ -131,6 +131,7 @@ export const OLD_WELL: MissionDef = {
               { kind: 'tally', tally: BREWER_CLUES, by: 1 },
             ],
             ledger: 'Found a woman’s hairpin on a ledge down the well.',
+            noted: true,
           },
         },
         {
@@ -143,6 +144,7 @@ export const OLD_WELL: MissionDef = {
               { kind: 'tally', tally: BREWER_CLUES, by: 1 },
             ],
             ledger: 'Saw a woman’s hairpin on a ledge down the well.',
+            noted: true,
           },
         },
       ],

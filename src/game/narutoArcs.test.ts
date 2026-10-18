@@ -60,7 +60,7 @@ describe('the silk merchant’s daughter', () => {
     const temple = atTheTemple();
     expect(temple.locationId).toBe('fire-temple');
     const card = arcsView(temple, ctx).find((a) => a.id === 'the-silk-merchants-daughter');
-    expect(card?.pass).toMatch(/Choose one/);
+    expect(card?.rule?.label).toBe('One road only');
     const lied = play(temple, 'arc-silk-word-of-death');
     expect(lied.village.marks).toContain('silk-daughter-done');
     expect(availability(lied, ctx, job('arc-silk-magistrate')).kind).toBe('absent');

@@ -49,6 +49,7 @@ export function NoticeSheet({ notice: n, perform, onClose }: NoticeSheetProps) {
         {n.opposition?.handicap && <p className="handicap">{n.opposition.handicap}</p>}
         {n.opposition && <Opposition opposition={n.opposition} perform={perform} />}
         {n.examClash && !n.blocker && <p className="handicap">{n.examClash}</p>}
+        {n.arcNote && <p className="handicap">{n.arcNote}</p>}
         {n.blocker && <p className="blocker">{n.blocker}</p>}
         <button
           type="button"

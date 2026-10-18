@@ -1,8 +1,10 @@
 import type { VillageLife } from '../../types';
+import { ARC_RUMOURS } from './arcRumours';
 
 /** Gossip, night sights and festivals of Tōrōgakure. */
 export const VILLAGE: VillageLife = {
   rumours: [
+    ...ARC_RUMOURS,
     // Talk about what you did: it goes round once the village remembers it.
     {
       id: 'tobi-forgiven',

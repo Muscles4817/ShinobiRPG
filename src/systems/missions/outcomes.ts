@@ -75,6 +75,7 @@ export function applyOutcome(
     text: outcome.ledger,
     tone: toneOf(effects, fallback),
     ...(pay !== 0 ? { pay } : {}),
+    ...(outcome.noted ? { noted: true as const } : {}),
   };
   return { run: { ...changed, ledger: [...changed.ledger, line] }, personal };
 }

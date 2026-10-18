@@ -11,7 +11,7 @@ import { missionThreat, traitNotes, type Threat, type TraitNote } from '../scout
 import { senseiPick } from '../sensei/pick';
 import { mentorOf } from '../sensei/plan';
 import type { GameState } from '../state';
-import { arcsView, type ArcView } from './arcs';
+import { arcNote, arcsView, type ArcView } from './arcs';
 import { choice, type Choice } from './common';
 import { crewWords, type CrewWords } from './crewWords';
 
@@ -57,6 +57,8 @@ export interface Notice extends Choice {
   /** "Standing job" or how long the posting stays up, e.g. "Gone after tomorrow". */
   readonly posted: string;
   readonly standing: boolean;
+  /** What taking it closes in its long story (a fork's other roads, leads not followed). */
+  readonly arcNote: string | null;
 }
 
 export interface MissionBoardView {
@@ -169,6 +171,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         examClash: examClash(state, ctx, m)?.text ?? null,
         standing: on.kind === 'standing',
         posted: postedLine(on),
+        arcNote: arcNote(state, ctx, id),
       };
     }),
   };

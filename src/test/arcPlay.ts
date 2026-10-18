@@ -30,7 +30,8 @@ export function arcPlayer(context: GameContext): ArcPlayer {
     character: { ...s.character, vitals: ready().character.vitals },
     exams: { ...s.exams, ceremony: null },
   });
-  const labels = (s: GameState) => (missionScene(s, context)?.choices ?? []).map((c) => c.label);
+  const open = (s: GameState) => (missionScene(s, context)?.choices ?? []).filter((c) => !c.closed);
+  const labels = (s: GameState) => open(s).map((c) => c.label);
   const play = (start: GameState, id: string, prefer: readonly string[] = []): GameState => {
     let s = act(rested(start), { type: 'startMission', missionId: id }, context);
     for (let i = 0; i < 60 && s.mission; i++) {
@@ -38,7 +39,7 @@ export function arcPlayer(context: GameContext): ArcPlayer {
       else if (s.mission.encounter) {
         s = act(s, { type: 'encounterApproach', approach: 'head-on' }, context);
       } else {
-        const choices = missionScene(s, context)?.choices ?? [];
+        const choices = open(s);
         const pick =
           prefer.map((p) => choices.find((c) => c.label === p)).find(Boolean) ?? choices[0];
         s = act(s, pick!.action, context);
@@ -49,7 +50,7 @@ export function arcPlayer(context: GameContext): ArcPlayer {
   const upTo = (start: GameState, id: string, at: string): GameState => {
     let s = act(rested(start), { type: 'startMission', missionId: id }, context);
     for (let i = 0; i < 30 && s.mission && !labels(s).some((l) => l.startsWith(at)); i++) {
-      s = act(s, missionScene(s, context)!.choices[0]!.action, context);
+      s = act(s, open(s)[0]!.action, context);
     }
     return s;
   };

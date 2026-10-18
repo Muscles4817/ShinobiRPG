@@ -88,6 +88,7 @@ export const CUT_NETS: MissionDef = {
               { kind: 'tally', tally: TWO_SIDES_CLUES, by: 1 },
             ],
             ledger: 'The net-cutter wore the tycoon’s company sandals, not a builder’s boots.',
+            noted: true,
           },
         },
         {
@@ -101,6 +102,7 @@ export const CUT_NETS: MissionDef = {
               { kind: 'tally', tally: TWO_SIDES_CLUES, by: 1 },
             ],
             ledger: 'Followed the net-cutter to the tycoon’s warehouse on the point.',
+            noted: true,
           },
         },
       ],

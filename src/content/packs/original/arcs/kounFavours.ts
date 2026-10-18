@@ -43,6 +43,7 @@ export const EAST_BRIDGE: MissionDef = {
         {
           when: { remembers: KOUN_LETTER },
           label: 'Read her the letter she folded into his sword',
+          unseen: 'You have nothing of hers to give her.',
           tone: 'kind',
           reply:
             'You read it aloud: hold your end, whatever happens, and don’t you dare come back for me. She listens to her own words, and laughs. “The one order of mine he ever kept,” she says. “Of course it was that one.”',
@@ -55,6 +56,7 @@ export const EAST_BRIDGE: MissionDef = {
         {
           when: { tally: KOUN_GRACE, atLeast: 2 },
           label: 'Tell her what kind of man he has been since',
+          unseen: 'You don’t know him well enough yet to say.',
           tone: 'earnest',
           reply:
             'You tell her about the sweeping at dawn, the wedding he couldn’t bear to be seen at, the sword he held like a weight. She listens, and nods. “Then he’s still holding the bridge,” she says. “Tell him he can stop.”',

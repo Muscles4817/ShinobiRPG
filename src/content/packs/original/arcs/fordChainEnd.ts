@@ -59,6 +59,27 @@ export const BARONS_BILL: MissionDef = {
       ],
     },
     {
+      when: { remembers: 'ford-faith-kept' },
+      kind: 'encounter',
+      template: 'bandit-camp',
+      job: 'eliminate',
+      text: 'Three boats nose into the landing, and find half the ferrymen of Kiri Ford waiting on it with poles and boathooks. One boat turns back.',
+      enemyIds: ['bandit-chief', 'river-pirate'],
+      canFlee: false,
+      flavour: {
+        terrain: 'The landing, the chain overhead, and the ferrymen at your back.',
+      },
+    },
+    {
+      // Unless the ferrymen already stood with you above.
+      when: {
+        all: [
+          { lacks: 'fought-past' },
+          { lacks: 'slipped-past' },
+          { lacks: 'talked-down' },
+          { lacks: 'paid-off' },
+        ],
+      },
       kind: 'encounter',
       template: 'bandit-camp',
       job: 'eliminate',
@@ -192,6 +213,7 @@ export const REN_HEARING: MissionDef = {
       options: [
         {
           when: { tally: MERCY, atLeast: 2 },
+          unseen: 'You haven’t given enough people a second chance for her to believe it.',
           label: 'Remind her of the others you’ve given a second chance, and how they turned out',
           tone: 'earnest',
           reply:

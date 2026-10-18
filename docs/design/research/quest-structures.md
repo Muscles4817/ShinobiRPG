@@ -86,8 +86,23 @@ three more rule changes:
 - **A fork closes when one road is finished.** A fork job that is failed leaves all the roads
   open, so the card says so.
 
-The fork warning on a job's notice, leads kept on the card, and options that show why they're
-closed are the next pass, along with giving forks and red herrings real costs.
+A second pass, after that, carried the rules to where the player decides, and gave the
+choices costs:
+
+- **The board says it.** The arc card shows the act's rule as an ink stamp (岐 one road only,
+  手 any lead will do), its jobs open their notices, and leads of the act before stay listed
+  ("Still to look into", done ones struck through) with what closes them. A job's notice says
+  what finishing it closes: a fork's other roads, or the leads not followed.
+- **Closed choices say why.** A decision option gated by a tally or a mark may carry an
+  `unseen` reason; it shows closed with that reason instead of vanishing, so a choice never
+  shrinks to one button without a word. The first such option shows.
+- **Clues are stamped.** An outcome marked `noted` (a clue found) gets a 記 stamp in the
+  debrief, so you can judge whether to follow another lead. Mercy stays unannounced.
+- **Choices cost.** Keeping faith with the ferrymen is paid at their price and repaid on the
+  landing; sparing Ushio costs pay; the brewer's bribe is called in if you name her; hauling
+  in the wrong man takes a clue away; the silk fork pays most for taking her home and least
+  for the truth; uniting the Waves costs the tycoon's ledger. Arc endings now go round as
+  rumours.
 
 ## Devices from Naruto
 

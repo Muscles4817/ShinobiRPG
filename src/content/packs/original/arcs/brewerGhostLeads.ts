@@ -33,6 +33,7 @@ export const OLD_HANDS: MissionDef = {
             { kind: 'tally', tally: BREWER_CLUES, by: 1 },
           ],
           ledger: 'Oyuki told you Oharu’s sandals were by the well, not the river.',
+          noted: true,
         },
         {
           label: 'Tell her the Watch needs her to talk',
@@ -45,6 +46,7 @@ export const OLD_HANDS: MissionDef = {
             { kind: 'tally', tally: BREWER_CLUES, by: 1 },
           ],
           ledger: 'Oyuki told you Oharu’s sandals were by the well, not the river.',
+          noted: true,
         },
         {
           label: 'Ask if she has a grudge against Gensai',
@@ -95,6 +97,7 @@ export const GRAVEDIGGER: MissionDef = {
           effects: [
             { kind: 'world', mark: 'brewer-wrong-man' },
             { kind: 'mark', mark: 'accused' },
+            { kind: 'tally', tally: BREWER_CLUES, by: -1 },
             { kind: 'pay', share: 0.5 },
           ],
           ledger: 'Hauled the gravedigger to the Watch for the brewer.',
@@ -109,6 +112,7 @@ export const GRAVEDIGGER: MissionDef = {
             { kind: 'tally', tally: BREWER_CLUES, by: 1 },
           ],
           ledger: 'Jūbei told you Oharu’s coffin was buried empty.',
+          noted: true,
         },
         {
           label: 'Share his jug, and let him talk',
@@ -121,6 +125,7 @@ export const GRAVEDIGGER: MissionDef = {
             { kind: 'energy', by: -5 },
           ],
           ledger: 'Over a jug, Jūbei told you Oharu’s coffin was buried empty.',
+          noted: true,
         },
       ],
     },
