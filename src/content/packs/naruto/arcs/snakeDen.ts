@@ -18,7 +18,8 @@ export const SNAKE_DEN_FOE: EnemyDef = {
   name: 'The Den-Keeper',
   proper: true,
   pronouns: 'it',
-  description: 'Something Orochimaru left behind to guard his work, and forgot to come back for.',
+  description:
+    'A failed experiment Orochimaru left behind to guard his work, and never came back for.',
   baseStat: 11,
   statBonuses: { ninjutsu: 3, stamina: 3, speed: 1 },
   maxChakra: 80,
@@ -41,17 +42,17 @@ export const SNAKE_DEN_ACT_ONE: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'Anko eats a whole stick of dango in one bite at the gate, and doesn’t joke once after.',
+      text: 'Anko eats a whole stick of dango in one bite at the gate, and doesn’t make a single joke after that.',
     },
     {
       kind: 'leg',
-      text: 'Two days on the forest track past Otafuku. Anko’s hand keeps going to the mark on her neck.',
+      text: 'Two days on the forest track past Otafuku, with Anko’s hand going again and again to the mark on her neck.',
       days: 2,
       region: 'forest-track',
     },
     {
       kind: 'check',
-      text: 'In a ravine thick with ferns, the air smells of something old and chemical.',
+      text: 'In a ravine thick with ferns, the air smells of old preserving spirit and snakeskin.',
       approaches: [
         {
           label: 'Feel for the hidden door',
@@ -92,7 +93,7 @@ export const SNAKE_DEN_ACT_ONE: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: '“That’s his,” Anko says. “Something’s still alive in there.” She spits. “Next time I bring fire.”',
+          text: '“That’s his,” Anko says. “And there’s still a thing alive in there, I can feel it.” She spits. “Next time I bring fire.”',
         },
       ],
     },
@@ -114,32 +115,33 @@ export const SNAKE_DEN_ACT_TWO: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'The forest track again. Anko doesn’t eat. That is how you know.',
+      text: 'On the forest track again Anko doesn’t eat a thing, and that is how you know how bad it is.',
       days: 2,
       region: 'forest-track',
     },
     {
       kind: 'decision',
-      text: 'Deep in the den, among the jars, something that used to be a person wakes. Anko asks you, “What do we do with it?”',
+      text: 'Deep in the den, among the jars, a creature that used to be a person wakes up. Anko asks you, “What do we do with it?”',
       options: [
         {
           label: '“It didn’t choose this. Free it.”',
           tone: 'kind',
-          reply: 'Anko stares at you, then at it. “Yeah,” she says. “Neither did I.”',
+          reply: 'Anko stares at you, and then at it. “Yeah. Neither did I, come to that.”',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Chose to free what was left in the den.',
         },
         {
           label: '“Burn the notes first. Then see.”',
           tone: 'earnest',
-          reply: 'Anko sets the scrolls alight. The thing watches, almost grateful.',
+          reply:
+            'Anko sets the scrolls alight, and the creature watches them burn, almost grateful.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Burned Orochimaru’s notes first.',
         },
         {
           label: '“Burn all of it.”',
           tone: 'challenge',
-          reply: 'Anko nods. “All of it.”',
+          reply: '“All of it,” Anko agrees, already making the seals.',
           ledger: 'Told Anko to burn everything.',
         },
       ],
@@ -167,7 +169,7 @@ export const SNAKE_DEN_ACT_TWO: MissionDef = {
           ledger: 'Burned the den, and freed what it held.',
         },
         {
-          text: 'Fire goes through the den from end to end. Anko watches it burn and doesn’t touch her neck once. “Done,” she says.',
+          text: 'Fire goes through the den from end to end. Anko watches it burn without touching her neck once, and says it’s done.',
           effects: [
             { kind: 'world', mark: SNAKE_DEN_SETTLED },
             { kind: 'memory', text: 'the fire in the ravine' },
@@ -178,7 +180,7 @@ export const SNAKE_DEN_ACT_TWO: MissionDef = {
     },
     {
       kind: 'leg',
-      text: 'Back along the forest track. Anko buys dango in Otafuku, two sticks, and gives you one.',
+      text: 'Back along the forest track, where Anko buys two sticks of dango in Otafuku and gives you one.',
       days: 2,
     },
   ],

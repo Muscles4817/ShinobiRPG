@@ -36,7 +36,7 @@ export const REN: EnemyDef = {
   name: 'Ren',
   proper: true,
   pronouns: 'he',
-  description: 'Ushio’s ward. Throws needles from the reeds and never leaves his side.',
+  description: 'Ushio’s ward, who throws needles from the reeds and never leaves his side.',
   baseStat: 6,
   statBonuses: { speed: 3, perception: 2, strength: -1 },
   maxChakra: 20,
@@ -85,7 +85,7 @@ export const PILOT_HOME: MissionDef = {
         {
           label: 'Then we see it through, at the price you could pay',
           tone: 'kind',
-          reply: 'Tobei just nods, several times, and can’t say anything at all.',
+          reply: 'Tobei can’t say anything at all, and just keeps bobbing his head.',
           effects: [{ kind: 'world', mark: 'ford-kept-faith' }],
           ledger: 'Kept faith with the ferrymen, though they lied on the notice.',
         },
@@ -101,7 +101,7 @@ export const PILOT_HOME: MissionDef = {
           label: 'Who was the youth beside him?',
           tone: 'curious',
           reply:
-            '“Ren. Ushio pulled him half-drowned out of the rapids, years back. Nobody’s seen one without the other since.”',
+            '“That’s Ren. Ushio pulled him half-drowned out of the rapids years back, and nobody’s seen one without the other since.”',
           effects: [{ kind: 'world', mark: 'ford-asked-ren' }],
           ledger: 'Heard how Ushio pulled Ren out of the rapids.',
         },
@@ -141,7 +141,7 @@ export const REED_BLADE: MissionDef = {
         {
           label: 'Take it',
           tone: 'quiet',
-          reply: 'You take it. The ferrymen at the door look at the floor.',
+          reply: 'You take it, and the ferrymen at the door look at the floor.',
           effects: [{ kind: 'pay', share: 0.5 }],
           ledger: 'The ferry office paid the job its true rank.',
         },
@@ -157,7 +157,7 @@ export const REED_BLADE: MissionDef = {
     {
       when: { remembers: 'ford-kept-faith' },
       kind: 'decision',
-      text: 'The office clerk counts out what the ferrymen promised at the hall: the D-rank price, part of it in coin and part in dried eel. Tobei can’t look at you.',
+      text: 'The office clerk counts out what the ferrymen promised at the hall, the D-rank price, part of it in coin and part in dried eel. Tobei can’t look at you.',
       options: [
         {
           label: 'Take what they promised',
@@ -212,7 +212,7 @@ export const REED_BLADE: MissionDef = {
           label: 'Let them go, and tell them never to come back',
           tone: 'kind',
           reply:
-            'Ushio looks at you a long time. Then he lets Ren help him up, and they go down into the reeds without a word.',
+            'Ushio looks at you for a while. Then he lets Ren help him up, and they go down into the reeds without a word.',
           effects: [
             { kind: 'world', mark: 'ford-rogue-spared' },
             { kind: 'tally', tally: MERCY, by: 1 },
@@ -223,7 +223,7 @@ export const REED_BLADE: MissionDef = {
         {
           label: 'Bind them both for the Watch',
           tone: 'earnest',
-          reply: 'Ren fights the rope. Ushio tells him to stop, and he does.',
+          reply: 'Ren fights the rope until Ushio tells him to stop, and then he does.',
           effects: [{ kind: 'world', mark: 'ford-rogue-bound' }],
           ledger: 'Bound Ushio and Ren for the Watch.',
         },

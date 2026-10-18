@@ -1554,7 +1554,7 @@ view:
   lines[11]:
     text: Then we see it through, at the price you could pay
   lines[12]:
-    text: Tobei just nods, several times, and can’t say anything at all.
+    text: Tobei can’t say anything at all, and just keeps bobbing his head.
   route[0]:
     label: Story
     state: done

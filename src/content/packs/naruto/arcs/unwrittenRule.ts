@@ -22,7 +22,7 @@ export const INTERVIEW: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'The room has one chair, one lamp and Ibiki. He asks questions for an hour. Some have no answers. Some you are sure he already knows.',
+      text: 'The room holds one chair and one lamp, and Ibiki. He asks questions for an hour, some with no answers and some you are sure he already knows.',
     },
     {
       kind: 'decision',
@@ -31,7 +31,7 @@ export const INTERVIEW: MissionDef = {
         {
           label: 'Take the question',
           tone: 'earnest',
-          reply: 'Ibiki looks at you for a long moment. “That was the question,” he says.',
+          reply: 'Ibiki studies you before he speaks. “That was the question,” he says.',
           effects: [{ kind: 'world', mark: 'ibiki-took-it' }],
           ledger: 'Took Ibiki’s last question without knowing it.',
         },
@@ -39,7 +39,7 @@ export const INTERVIEW: MissionDef = {
           label: 'Ask what kind of question',
           tone: 'curious',
           reply:
-            '“The kind you take or you don’t,” he says. You take it. He writes something down.',
+            '“The kind you take or you don’t,” he says. You take it, and he writes a line in his book.',
           effects: [{ kind: 'world', mark: 'ibiki-took-it' }],
           ledger: 'Asked, then took Ibiki’s last question.',
         },
@@ -108,9 +108,9 @@ export const SEALED_MESSAGE: MissionDef = {
         {
           label: 'Keep to the road, as ordered',
           tone: 'quiet',
-          reply: 'You walk on. Behind you the shouting stops, which is worse.',
+          reply: 'You walk on, and behind you the shouting stops, which is worse.',
           effects: [{ kind: 'world', mark: 'ibiki-kept-road' }],
-          ledger: 'Kept to the road, as ordered, and left them.',
+          ledger: 'Kept to the road as ordered, and left them behind.',
         },
       ],
     },
@@ -137,7 +137,7 @@ export const SEALED_MESSAGE: MissionDef = {
           tone: 'curious',
           reply: 'Inside, in Ibiki’s square hand: “Close it.”',
           effects: [{ kind: 'world', mark: 'ibiki-opened' }],
-          ledger: 'Opened the message. It said to close it.',
+          ledger: 'Opened the message, which said to close it.',
         },
         {
           label: 'Leave it sealed',
@@ -153,14 +153,14 @@ export const SEALED_MESSAGE: MissionDef = {
       endings: [
         {
           when: { has: 'left-road' },
-          text: 'Chiriku breaks the seal, reads, and laughs out loud. Behind you, two familiar chūnin limp up the road with bruises and no masks: Izumo and Kotetsu, who have clearly had a long day.',
+          text: 'Chiriku breaks the seal and reads it, and laughs out loud. Behind you two familiar chūnin limp up the road, bruised and with no masks, and you recognise Izumo and Kotetsu, who have clearly had a long day.',
         },
         {
           when: { has: 'gave-message' },
-          text: 'You reach the temple with nothing to hand over. Chiriku hears you out, says nothing at all, and writes a short letter of his own to Ibiki.',
+          text: 'You reach the temple with nothing to hand over. Chiriku hears you out without a word and writes a short letter of his own to Ibiki.',
         },
         {
-          text: 'Chiriku breaks the seal, reads, and says nothing. He gives you tea and a bed for the night and a long look in the morning.',
+          text: 'Chiriku breaks the seal and reads it without comment. He gives you tea and a bed for the night, and in the morning a look you can’t read.',
         },
       ],
     },
@@ -185,7 +185,7 @@ export const VERDICT: MissionDef = {
       variants: [
         {
           when: { remembers: 'ibiki-walked' },
-          text: 'Ibiki has a sheet of paper in front of him. On it, in his square hand, one line: walked out.',
+          text: 'Ibiki has a sheet of paper in front of him. On it, in his square hand, there are two words. Walked out.',
         },
         {
           when: { remembers: 'ibiki-opened' },
@@ -206,13 +206,13 @@ export const VERDICT: MissionDef = {
           when: { remembers: 'ibiki-left-road' },
           text: '“Three orders,” Ibiki says, “and you broke the one that could be broken, the moment someone needed you to, and kept the message on you while you did it. A shinobi who keeps every order and loses a comrade isn’t one I want. You passed on the forest road.”',
           effects: [{ kind: 'world', mark: 'ibiki-passed' }],
-          ledger: 'Ibiki passed you: you broke an order for someone who needed you.',
+          ledger: 'Ibiki passed you, because you broke an order for someone who needed you.',
         },
         {
           when: { remembers: 'ibiki-gave-message' },
-          text: '“You didn’t walk on,” Ibiki says. “Good. And you bought the boy back with something that wasn’t yours to spend.” He folds the paper once. “Next time it’s a real enemy, and the message is a village’s worth of lives. Come back when you know the difference.”',
+          text: '“You didn’t walk on,” Ibiki says. “Good. And you bought the boy back with a message that wasn’t yours to spend.” He folds the paper once. “Next time it’s a real enemy, and the message is a village’s worth of lives. Come back when you know the difference.”',
           effects: [{ kind: 'world', mark: 'ibiki-failed' }],
-          ledger: 'Ibiki failed you: you gave up the message to buy the boy back.',
+          ledger: 'Ibiki failed you, because you gave up the message to buy the boy back.',
         },
         {
           text: '“You kept every order,” Ibiki says. “Perfectly. And left a boy in the forest.” He doesn’t fold the paper. He tears it once, cleanly. “The test was never the message. Come back in a year.”',

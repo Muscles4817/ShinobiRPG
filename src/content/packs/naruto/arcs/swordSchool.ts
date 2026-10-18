@@ -44,13 +44,13 @@ export const SWORD_SCHOOL_ACT_ONE: MissionDef = {
     },
     {
       kind: 'leg',
-      text: 'Two days on the post road to Shukuba. Masaru tells you every rule of the school, then which ones he broke.',
+      text: 'Two days on the post road to Shukuba, while Masaru tells you every rule of the school and then which ones he broke.',
       days: 2,
       region: 'hill-road',
     },
     {
       kind: 'check',
-      text: 'At the school, the students’ practice swords hang broken on the wall, one by one.',
+      text: 'At the school the students’ practice swords hang broken on the wall in a row.',
       approaches: [
         {
           label: 'Read the breaks in the swords',
@@ -72,14 +72,14 @@ export const SWORD_SCHOOL_ACT_ONE: MissionDef = {
         },
       ],
       success:
-        'Every sword broken the same way, at the same point. A rōnin called Kiyomasa, who wins by one cut.',
+        'Every sword is broken the same way at the same point, by a rōnin called Kiyomasa who wins with a single cut.',
       failure:
-        'The students say nothing in front of their master, but Masaru knows the breaks. He has seen that cut before.',
+        'The students won’t talk in front of their master, but Masaru knows the breaks, because he has seen that cut before.',
       onFailure: 'forward',
     },
     {
       kind: 'camp',
-      text: 'You sleep in the school’s hall. Masaru and his father sit at opposite ends of it, and neither speaks.',
+      text: 'You sleep in the school’s hall, where Masaru and his father sit at opposite ends and neither of them speaks.',
       picks: 2,
       activities: [
         { kind: 'crew', label: 'Sit with Masaru', when: { crew: 'team' } },
@@ -91,7 +91,7 @@ export const SWORD_SCHOOL_ACT_ONE: MissionDef = {
       kind: 'ending',
       endings: [
         {
-          text: 'His father doesn’t thank him. He hands Masaru the school’s old practice sword instead. “Come back,” he says. It is enough.',
+          text: 'His father doesn’t thank him. He hands Masaru the school’s old practice sword instead, and says, “Come back,” and Masaru takes it.',
         },
       ],
     },
@@ -113,13 +113,13 @@ export const SWORD_SCHOOL_ACT_TWO: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'The post road again. Masaru practises the school’s old forms, the ones he swore he’d never use.',
+      text: 'On the post road again Masaru practises the school’s old forms, the ones he swore he’d never use.',
       days: 2,
       region: 'hill-road',
     },
     {
       kind: 'decision',
-      text: 'The rōnin waits in the school yard. Masaru’s father stands in the doorway. Masaru asks you, quietly, “How do I fight him?”',
+      text: 'The rōnin is waiting in the school yard, and Masaru’s father stands in the doorway. Masaru asks you, quietly, “How do I fight him?”',
       options: [
         {
           label: '“With your father’s style.”',
@@ -131,14 +131,14 @@ export const SWORD_SCHOOL_ACT_TWO: MissionDef = {
         {
           label: '“With yours. And ours.”',
           tone: 'kind',
-          reply: 'Masaru grins. “Together, then.”',
+          reply: '“Together, then,” Masaru says, looking happier than he has all week.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Masaru fought as a shinobi, with the team.',
         },
         {
           label: '“Just win.”',
           tone: 'challenge',
-          reply: 'Masaru nods. His father says nothing.',
+          reply: 'Masaru draws, and in the doorway his father stays silent.',
           ledger: 'Told Masaru to just win.',
         },
       ],
@@ -147,7 +147,7 @@ export const SWORD_SCHOOL_ACT_TWO: MissionDef = {
       kind: 'encounter',
       template: 'lone-rogue',
       job: 'eliminate',
-      text: 'Kiyomasa draws. One cut, the way he always wins. This time it meets steel.',
+      text: 'Kiyomasa draws and makes his one cut, the way he always wins, and this time it meets steel.',
       enemyIds: ['ronin-kiyomasa'],
       canFlee: false,
       bypassable: false,
@@ -157,7 +157,7 @@ export const SWORD_SCHOOL_ACT_TWO: MissionDef = {
       endings: [
         {
           when: { has: 'mercy' },
-          text: 'The rōnin bows and leaves the school yard. Masaru’s father bows to his son, and then, for a long moment, holds him.',
+          text: 'The rōnin bows and leaves the school yard. Masaru’s father bows to his son, and then he holds him.',
           effects: [
             { kind: 'world', mark: SWORD_SCHOOL_SETTLED },
             { kind: 'memory', text: 'the day at the sword school' },
@@ -176,7 +176,7 @@ export const SWORD_SCHOOL_ACT_TWO: MissionDef = {
     },
     {
       kind: 'leg',
-      text: 'Back along the post road. Masaru carries the old practice sword the whole way.',
+      text: 'Back along the post road, with Masaru carrying the old practice sword the whole way.',
       days: 2,
     },
   ],

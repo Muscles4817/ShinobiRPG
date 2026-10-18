@@ -22,7 +22,7 @@ export const DARK_WALL: MissionDef = {
     },
     {
       kind: 'check',
-      text: 'Below the empty hooks, glass dust glitters between the stones, as if something was broken here, carefully, and carried away.',
+      text: 'Below the empty hooks, glass dust glitters between the stones, as if the lanterns were broken here with care and the pieces carried away.',
       approaches: [
         {
           label: 'Follow the glitter of glass',
@@ -63,7 +63,7 @@ export const DARK_WALL: MissionDef = {
           text: 'The captain marks the canal on his map and taps the river beyond it. “Somebody upriver is buying our light,” he says. “Find them.”',
         },
         {
-          text: 'The captain sighs at the river on his map. “Upriver, then. Somebody up there is buying our light.”',
+          text: 'The captain frowns at the river on his map. “Upriver, then. Somebody up there is buying our light.”',
         },
       ],
     },
@@ -84,13 +84,13 @@ export const RIVER_VILLAGES: MissionDef = {
   stages: [
     {
       kind: 'leg',
-      text: 'A day of reed beds, ferries and villages that all smell of fish.',
+      text: 'A day of reed beds and ferries, and villages that all smell of fish.',
       days: 1,
       region: 'river-road',
     },
     {
       kind: 'decision',
-      text: 'In the third village the headman’s wife is mending nets on her step. She has clearly seen something, and clearly doesn’t want to say.',
+      text: 'In the third village the headman’s wife is mending nets on her step. She has clearly seen the smugglers, and just as clearly doesn’t want to say so.',
       options: [
         {
           label: 'Ask about her nets, and wait',
@@ -114,7 +114,7 @@ export const RIVER_VILLAGES: MissionDef = {
           reply:
             'She goes in and shuts the door. A child runs off into the reeds, fast, to warn somebody.',
           effects: [{ kind: 'world', mark: 'lantern-smugglers-warned' }],
-          ledger: 'Leaned on a headman’s wife. Someone ran to warn the smugglers.',
+          ledger: 'Leaned on a headman’s wife, and someone ran to warn the smugglers.',
         },
       ],
     },
@@ -131,7 +131,7 @@ export const RIVER_VILLAGES: MissionDef = {
           difficulty: 8,
           role: 'sensor',
           success:
-            'Past midnight a flat boat slides downstream with no lantern, low in the water, heavy with something that clinks.',
+            'Past midnight a flat boat slides downstream with no lantern, low in the water, heavy with sacks that clink.',
           failure: 'The river runs on in the dark, keeping its secrets.',
           onSuccess: {
             effects: [{ kind: 'world', mark: 'lantern-boat-seen' }],
@@ -160,7 +160,7 @@ export const NIGHT_MARKET: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'Among the skewer stalls a woman with a tray of glass beads is doing good business. Every bead glows faintly in the dark.',
+      text: 'Among the skewer stalls a woman with a tray of glass beads is doing good business. Every bead gives off a faint light of its own in the dark.',
     },
     {
       kind: 'decision',

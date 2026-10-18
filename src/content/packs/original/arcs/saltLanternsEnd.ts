@@ -17,7 +17,7 @@ export const WRECK_LANTERN: MissionDef = {
   stages: [
     {
       kind: 'narrative',
-      text: 'The wreck lies in green water off the point. Its mast still points at the sky, and its hold is full of something that glows.',
+      text: 'The wreck lies in green water off the point. Its mast still points at the sky, and its hold is full of a pale green light.',
       variants: [
         {
           when: { remembers: 'salt-saw-the-light' },
@@ -84,12 +84,12 @@ export const WHAT_UMI_SAW: MissionDef = {
           label: 'Listen, and take it seriously',
           tone: 'earnest',
           reply:
-            'She tells it all: sailors, dripping, filling the lanterns with seawater, as if to put out a fire they can’t reach.',
+            'She tells you all of it. Sailors come up dripping and fill the lanterns with seawater, as if to put out a fire they can’t reach.',
           effects: [
             { kind: 'world', mark: 'salt-umi-told' },
             { kind: 'memory', text: 'the night on the breakwater' },
           ],
-          ledger: 'Umi told you what she saw: drowned sailors at the shrine.',
+          ledger: 'Umi told you she had seen drowned sailors at the shrine.',
         },
         {
           label: 'Tell her ghosts are a shinobi’s job',
@@ -140,7 +140,7 @@ export const LIGHT_GIVEN_BACK: MissionDef = {
           label: 'Row it out and give it back to the sea',
           tone: 'quiet',
           reply:
-            'You set it on the water over the wreck. It sinks slowly, still lit, and the lights under the sea go out one by one, as if a door had closed.',
+            'You set it on the water over the wreck. It sinks slowly with its light still burning, and one by one the lights under the sea go out, as if a door had closed.',
           effects: [{ kind: 'world', mark: 'salt-light-returned' }],
           ledger: 'Gave the light back to the sea, over the wreck.',
         },
