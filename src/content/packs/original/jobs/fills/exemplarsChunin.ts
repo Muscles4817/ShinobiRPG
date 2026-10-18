@@ -37,7 +37,7 @@ export const EXEMPLARS_CHUNIN: readonly MissionFill[] = [
       preparation:
         'The binding rope must be laid across the ford from bank to bank, every knot sealed, before the ferryman rises at midnight.',
       readied:
-        'The rope lies across the black water, glowing faintly at every knot. It feels like a held breath.',
+        'The rope lies across the black water with a faint light at every knot, and the whole pool feels like a held breath.',
       rushed:
         'The last knots are rushed and the seals smudged. The rope sags in the current, and you know it will not hold for long.',
       manifest:
@@ -59,12 +59,12 @@ export const EXEMPLARS_CHUNIN: readonly MissionFill[] = [
       dossier:
         'The file lists his techniques, his teachers and his debts. It does not say that the scroll he took was his own grandmother’s, sealed away by the clan after her death.',
       trail: 'He left a season ago, by the river gate, at night, and nobody has seen him since.',
-      trap: 'In the doorway of an empty farmhouse on his trail, a single sheet of paper is pinned to the lintel, and the air around it shimmers.',
+      trap: 'In the doorway of an empty farmhouse on his trail, a single sheet of paper is pinned to the lintel, and the air around it wavers.',
       cornered:
         'Masaru waits in a burnt-out shrine, his grandmother’s scroll open in his lap. “They’ll burn it,” he says. “You know they will.”',
       foe: 'ember-missing-nin',
       parley:
-        'He looks at the scroll for a long time. Then he rolls it up and holds it out to you. “Make them read it first.”',
+        'He reads the scroll through twice. Then he rolls it up and holds it out to you. “Make them read it first.”',
       ending:
         'You hand the scroll and the report to the Office. The Hibana head reads the report twice and asks to keep the scroll, unburnt.',
     },
@@ -115,7 +115,7 @@ export const EXEMPLARS_CHUNIN: readonly MissionFill[] = [
       slipped:
         'You cut Kiyo’s ropes under cover of the smoke and lead her out past a sleeping guard, a hand over her mouth.',
       pursuit:
-        'Halfway home a figure drops onto the path ahead of you: the cell’s leader, with ash on his hands and fire in his eyes. Kiyo hides behind a rock.',
+        'Halfway home the cell’s leader drops onto the path ahead of you, with ash on his hands and fire in his eyes, and Kiyo dives behind a rock.',
       pursuer: 'ember-missing-nin',
       relent:
         'He looks at Kiyo, then at you, and laughs without any joy in it. “Keep her, then. The hills will still be here.” He is gone into the smoke.',

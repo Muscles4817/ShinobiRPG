@@ -19,7 +19,7 @@ export const CHUNIN_B_FILLS: readonly MissionFill[] = [
         'The tallies are a mess of blots and crossings-out. When you leave the weir-house, the weir-keeper is already sending a boy off at a run.',
       cover:
         'The barge crews are a family of cousins and in-laws, and they trust nobody who has not been born on a barge.',
-      den: 'In the tannery cellar, lanterns stand in rows, each one flickering with a trapped and frightened light. A rogue in a burnt headband guards them, and a hired chief minds the steps.',
+      den: 'In the tannery cellar, lanterns stand in rows, each one guttering with a trapped and frightened light. A rogue in a burnt headband guards them, and a hired chief minds the steps.',
       foe: 'ember-missing-nin',
       second: 'bandit-chief',
       ending:
@@ -89,7 +89,7 @@ export const CHUNIN_B_FILLS: readonly MissionFill[] = [
       preparation:
         'The binding must be laid in a ring round the place she died, and sealed with her own lantern, which the temple has kept for forty years.',
       readied:
-        'The ring of sealed rope glows softly in the dark, and her old lantern sits at its heart, ready to be lit.',
+        'The ring of sealed rope gives off a soft light in the dark, and her old lantern sits at its heart, ready to be lit.',
       rushed:
         'The ring is uneven and the seals are smudged. You go up the path knowing the binding will not hold for long.',
       manifest:
@@ -140,7 +140,7 @@ export const CHUNIN_B_FILLS: readonly MissionFill[] = [
       preparation:
         'The binding must be painted round the lighthouse’s lamp-room in salt-water ink, with seals that will hold against the sea wind.',
       readied:
-        'The seals glow round the lamp-room like a second light, steady even in the wind off the sea.',
+        'The seals shine round the lamp-room like a second light, steady even in the wind off the sea.',
       rushed:
         'The salt-water ink runs in the wind, and some of the seals are smudged. You climb the stair knowing the binding will not hold.',
       manifest:
@@ -164,12 +164,12 @@ export const CHUNIN_B_FILLS: readonly MissionFill[] = [
         'The file lists his training, his duels and the night he left. It does not say that his father, the clan’s greatest smith, died a week before, and named a cousin his heir.',
       trail:
         'He left by the river gate a month ago, and he was seen heading for the mountain passes with a long bundle on his back.',
-      trap: 'Across the mountain path a fine wire is strung between two pines, glinting in the morning sun, and the snow beneath it is too smooth.',
+      trap: 'Across the mountain path a fine wire is strung between two pines, catching the morning sun, and the snow beneath it is too smooth.',
       cornered:
         'Jin waits on a mountain ledge, his father’s blade drawn. “He made it for me,” he says. “Not for my cousin. For me.”',
       foe: 'kurogane-renegade',
       parley:
-        'Jin looks at the blade for a long time, then sheathes it and holds it out to you. “Tell them I want to forge my own,” he says.',
+        'Jin turns the blade over in his hands before he sheathes it and holds it out to you. “Tell them I want to forge my own,” he says.',
       ending:
         'You bring the blade home. The clan elders read your report, and the cousin, quietly, gives Jin back his place at the forge.',
     },
@@ -209,14 +209,14 @@ export const CHUNIN_B_FILLS: readonly MissionFill[] = [
         'The file lists the villages that have bought her techniques and the dead they have left. It does not say that she was once the clan’s finest teacher.',
       trail:
         'She was last seen in the dunes border, teaching a raider band to breathe fire, and has not stayed in one place since.',
-      trap: 'In the doorway of a ruined caravanserai a single paper fan lies open, and the air above it shimmers with heat.',
+      trap: 'In the doorway of a ruined caravanserai a single paper fan lies open, and the air above it wavers with heat.',
       cornered:
         'Rin sits on the caravanserai’s roof, her fan in her hand. “I taught them all for free, once,” she says. “Nobody listened then.”',
       foe: 'ember-missing-nin',
       parley:
         'Rin closes her fan and drops it at your feet. “Take it, then. You’ll find the clan won’t want it back.”',
       ending:
-        'The Hibana elders take the fan and lock it away. They are quiet for a long time when they read your report, and then they ask whether Rin will teach again.',
+        'The Hibana elders take the fan and lock it away. They read your report in silence, and then they ask whether Rin will teach again.',
     },
   },
 ];

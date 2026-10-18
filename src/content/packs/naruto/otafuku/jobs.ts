@@ -8,7 +8,7 @@ export const OTAFUKU_JOBS: readonly MissionDef[] = [
     rank: 'D',
     client: 'The bathhouse on Lantern Row',
     summary:
-      'Someone has been watching the women’s bath from the fence, giggling and taking notes. Catch him.',
+      'Someone has been watching the women’s bath from the fence, giggling to himself and taking notes, and the bathhouse wants him caught.',
     slots: 2,
     energyCost: 20,
     reward: { ryo: 80, reputation: 2 },

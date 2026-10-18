@@ -58,11 +58,11 @@ export const D_ERRANDS: readonly MissionFill[] = [
       routeWon:
         'You wrap it in a mat, sling it like a fishing rod, and walk through the crowds without a single person looking twice.',
       routeLost:
-        'A pair of off-duty guards stop you to admire it, then to argue about it, and the captain has been waiting a long time when you get there.',
+        'A pair of off-duty guards stop you to admire it, then to argue about it, and the captain has been kept waiting by the time you get there.',
       doorstep:
         'The captain draws the blade, sights down it, flexes it, and announces that it is too short, too long and too plain, all at once.',
       ending:
-        'The captain swings it once in the gate yard and goes silent. He sends a sealed note back to Hagane, and Hagane grins at it for the rest of the day.',
+        'The captain swings it once in the gate yard and goes silent. He sends a sealed note back to Hagane, and Hagane is pleased with himself for the rest of the day.',
     },
   },
   {
@@ -84,7 +84,7 @@ export const D_ERRANDS: readonly MissionFill[] = [
       doorstep:
         'The groom’s mother insists the lanterns be counted, and counts them wrong, and accuses you of eating one.',
       ending:
-        'The sugar lanterns are lit with tiny candles at the feast and glow like the real thing. Kōbai saves you the cracked one, which tastes better than it looks.',
+        'The sugar lanterns are lit with tiny candles at the feast and look just like the real thing. Kōbai saves you the cracked one, which tastes better than it looks.',
     },
   },
   {
@@ -151,7 +151,7 @@ export const D_ERRANDS: readonly MissionFill[] = [
       deadEnd:
         'The apprentices close ranks and lie badly until evening, when one of them finally admits Ren went to the sword shrine on Mount Reikon.',
       search:
-        'The sword shrine is up a goat track in the mist, and the mountain’s spirits are thick there, whispering just past the edge of hearing.',
+        'The sword shrine is up a goat track in the mist, and the mountain’s spirits are thick there, murmuring just past the edge of hearing.',
       found:
         'Ren kneels in the shrine before a rack of ancient rusted swords, his own sad blade laid among them. “I wanted them to tell me if I should give up,” he says.',
       ending:
@@ -169,7 +169,7 @@ export const D_ERRANDS: readonly MissionFill[] = [
       worry:
         '“The whole canal district is invited,” Fusa says, her hands shaking round a cup. “She was laughing at supper. She seemed so happy. Then her room was empty.”',
       rumour:
-        'The maids swear they saw nothing, and the bridegroom’s family is already whispering. Only the old bell-ringer will not meet your eye.',
+        'The maids swear they saw nothing, and the bridegroom’s family has already started talking. Only the old bell-ringer will not meet your eye.',
       lead: 'The bell-ringer finally says he lent Mitsu the key to the shrine bell tower, because she asked so nicely and he is a soft old fool.',
       deadEnd:
         'The evening goes on angry relatives and wild theories, until the old bell-ringer confesses that he lent Mitsu the bell tower key.',

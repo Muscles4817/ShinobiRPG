@@ -136,7 +136,7 @@ export const D_ESCORT: readonly MissionFill[] = [
         '“Mind the cart,” Potter Yasuke says, before he says anything else. “There are three years of my life in it.”',
       warmReply:
         'You ask to see the best piece. He unwraps a bowl the colour of deep water and does not breathe until it is wrapped again.',
-      businessReply: 'He nods, and checks the lashings on the cart for the fourth time.',
+      businessReply: 'He agrees, and checks the lashings on the cart for the fourth time.',
       jokeReply: 'He does not laugh, and he moves the cart a little further from you.',
       camp: 'You make camp in the lee of an old kiln, its bricks still faintly warm from someone else’s fire.',
       confidence:
@@ -194,14 +194,14 @@ export const D_ESCORT: readonly MissionFill[] = [
       greeting:
         '“You’re late,” Doctor Akebono says, though you are early. “People are dying while you stand there.”',
       warmReply: '“Sentiment,” she says, but she lets you carry the chest.',
-      businessReply: 'She looks at you properly for the first time, and nods once.',
+      businessReply: 'She looks at you properly for the first time, and seems to approve.',
       jokeReply: 'She stares at you until the joke dies on its own, and then she starts walking.',
-      camp: 'You make camp on a dry bank above the river, and the doctor sorts her powders by firelight.',
+      camp: 'You make camp on a dry bank above the river, and the doctor sorts her powders by the light of the fire.',
       confidence:
         'She tells you the fever took her own village when she was your age, and that she has been walking towards it ever since.',
       guarded: 'She tells you how to dress a wound properly, at length, and nothing else.',
       lastDay:
-        'The last morning you smell the hamlets before you see them: woodsmoke, and the sharper smell of sickness.',
+        'On the last morning you smell the hamlets before you see them, cooking smoke and under it the sharper smell of sickness.',
       desperate:
         'The pirates waiting in the reeds are fishermen from the hamlets, too sick to fish and too poor to pay a doctor.',
       spared:
@@ -254,7 +254,7 @@ export const D_ESCORT: readonly MissionFill[] = [
         '“A guard!” Master Tsuru cries, sweeping a bow so low his hat touches the road. “At last, a part for someone who can’t act.”',
       warmReply:
         'He claps you on the back and gives you a puppet to carry, a little monk with a cracked face. “He likes you,” he says.',
-      businessReply: '“So serious,” he sighs, and puts on a show for the cart horse instead.',
+      businessReply: '“So serious,” he complains, and puts on a show for the cart horse instead.',
       jokeReply:
         'He laughs so hard he has to sit down on the cart, and the whole troupe wants to know what you said.',
       camp: 'You make camp in a meadow by the river, and the troupe puts on a show for nobody but you.',

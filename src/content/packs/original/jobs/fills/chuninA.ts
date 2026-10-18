@@ -73,7 +73,7 @@ export const CHUNIN_A_FILLS: readonly MissionFill[] = [
       insideLine:
         'You are inside the foundry unseen. Before you, a furnace roars, and racks of raw blades stand waiting for an edge.',
       seenLine:
-        'You get in, but a rogue at the furnace has felt a flicker of chakra that is not his own and is looking round.',
+        'You get in, but a rogue at the furnace has felt a brush of chakra that is not his own and is looking round.',
       work: 'The furnace is built into the old kiln, and its flue is cracked. A seal in the right place will choke the fire and bring the roof down slowly.',
       sprung:
         'The furnace chokes and the roof begins to crack. Between you and the door stand two of the foundry’s rogues, both chūnin, both very angry.',
@@ -106,7 +106,7 @@ export const CHUNIN_A_FILLS: readonly MissionFill[] = [
       slipped:
         'You cut Ayaori’s bonds while the guards argue, and lead her out through the temple’s back gate in silence.',
       pursuit:
-        'Halfway down the mountain a figure in black drops onto the path: the cell’s swordsman, his blade already drawn, and the mist closing round you.',
+        'Halfway down the mountain a figure in black drops onto the path. It is the cell’s swordsman, with his blade already drawn, and the mist is closing round you.',
       pursuer: 'kurogane-renegade',
       relent:
         'He lowers his blade and looks at Ayaori. “She bound my mother’s ghost, once,” he says. “Go.” He steps back into the mist.',
@@ -136,7 +136,7 @@ export const CHUNIN_A_FILLS: readonly MissionFill[] = [
       slipped:
         'You slice open the back of the tent and lead Hayate out into the dunes while the guards play dice by the door.',
       pursuit:
-        'In the dunes a figure rises from the sand ahead: the raiders’ leader, a fire-breathing rogue, his hands already glowing.',
+        'In the dunes a figure rises from the sand ahead, the raiders’ leader, a fire-breathing rogue whose hands are already red-hot.',
       pursuer: 'ember-missing-nin',
       relent:
         'He looks at Hayate, then at you, and spits in the sand. “War will come anyway,” he says, and walks off into the heat haze.',
@@ -154,22 +154,22 @@ export const CHUNIN_A_FILLS: readonly MissionFill[] = [
       client: 'The Hibana Clan',
       captive: 'a Hibana child prodigy named Akane',
       captors: 'a rogue cell planning to light a forbidden fire on the ash fells',
-      plea: '“She can light a lantern from across the street,” the Hibana head says, “and they want her to light something much bigger. If the fells burn, the whole valley burns.”',
+      plea: '“She can light a lantern from across the street,” the Hibana head says, “and they want her to light the whole fells. If the fells burn, the whole valley burns.”',
       search:
         'The cell left no trace, but the fells are full of charcoal camps, and every one of them could be hiding a child.',
       found:
         'The smoke from one camp burns a strange colour, and there you find Akane, ringed by seals and guarded closely.',
-      late: 'You find the camp, but the cell has already started the ritual, and the seals round Akane are glowing.',
+      late: 'You find the camp, but the cell has already started the ritual, and the seals round Akane have started to burn.',
       camp: 'Akane sits in a ring of seals, small and furious. A rogue in a burnt headband stands at the ring’s edge, and a bowman watches from a charcoal heap.',
       foe: 'ember-missing-nin',
       second: 'bandit-archer',
       slipped:
         'You break the seal ring with a single stroke and carry Akane out through the smoke before the guards look round.',
       pursuit:
-        'On the slopes below the fells a figure drops from the trees: the cell’s swordsman, cutting off the only path home.',
+        'On the slopes below the fells the cell’s swordsman drops from the trees, cutting off the only path home.',
       pursuer: 'kurogane-renegade',
       relent:
-        'He looks at Akane, small and furious in your arms, and laughs. “Let her burn something else, then,” he says, and sheathes his blade.',
+        'He looks at Akane, small and furious in your arms, and laughs. “Let her burn candles, then,” he says, and sheathes his blade.',
       ending:
         'Akane runs into the Hibana compound and lights every lantern in it at once, just to show that she can. The Hibana head tells you she is going to be a handful.',
     },

@@ -21,7 +21,7 @@ export const KIRI_FORD_JOBS: readonly MissionDef[] = [
           { label: 'Wade out and haul it in by the rope', stat: 'strength', difficulty: 8 },
         ],
         success: 'You bring it in to the jetty, and the ferrymen cheer like you won a race.',
-        failure: 'You catch it at the very lip of the rapids, soaked and bruised.',
+        failure: 'You catch it at the very lip of the rapids, soaked to the skin and bruised.',
         onFailure: 'penalty',
         failureDamage: 4,
       },
@@ -40,7 +40,7 @@ export const KIRI_FORD_JOBS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'check',
-        text: 'At midnight a small boat pushes off from the reeds, no lantern, and two shapes in it.',
+        text: 'At midnight a small boat pushes off from the reeds without a lantern, with two shapes in it.',
         approaches: [
           { label: 'Follow it along the bank', stat: 'perception', difficulty: 9 },
           { label: 'Wait where it must land', stat: 'intellect', difficulty: 9 },

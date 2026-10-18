@@ -42,8 +42,7 @@ export const CUT_ROPES: MissionDef = {
               { kind: 'world', mark: 'waves-planted-blade' },
               { kind: 'tally', tally: TWO_SIDES_CLUES, by: 1 },
             ],
-            ledger:
-              'The fisherman’s blade had never been used, and was left there to be found.',
+            ledger: 'The fisherman’s blade had never been used, and was left there to be found.',
             noted: true,
           },
         },

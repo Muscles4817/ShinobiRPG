@@ -17,7 +17,7 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
       signs:
         'At the third switchback there is fresh straw on the road, of the kind the potters pack with, and none of their carts has passed this way yet.',
       ambush:
-        'Robbers wearing the potters’ own straw cloaks rise from the ditch: a chief with a stolen guild token, a big man with a club, and a bowman on the bank.',
+        'Robbers wearing the potters’ own straw cloaks rise from the ditch, led by a chief with a stolen guild token, with a big man with a club beside him and a bowman on the bank.',
       foe: 'bandit-chief',
       second: 'bandit-thug',
       third: 'bandit-archer',
@@ -41,7 +41,7 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
       signs:
         'At noon a line of tracks crosses the caravan’s path, deep and fresh, and loops round behind the next dune instead of going on.',
       ambush:
-        'Raiders burst over the dune crest: a leader in a rich trader’s veil, and two bowmen sliding down the sand behind him with arrows on the string.',
+        'Raiders burst over the dune crest, a leader in a rich trader’s veil with two bowmen sliding down the sand behind him, arrows on the string.',
       foe: 'bandit-chief',
       second: 'bandit-archer',
       third: 'bandit-archer',
@@ -65,7 +65,7 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
       signs:
         'Where the coast road turns inland, the river ferry is moored on the wrong bank, and its ferryman is nowhere to be seen.',
       ambush:
-        'Raiders rise from the reeds by the ferry: a chief with a torch held high, a pirate with a boat-hook, and a bowman with fire-arrows.',
+        'Raiders rise from the reeds by the ferry, their chief holding a torch high, with a pirate swinging a boat-hook and a bowman with fire-arrows behind.',
       foe: 'bandit-chief',
       second: 'river-pirate',
       third: 'bandit-archer',
@@ -89,7 +89,7 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
       signs:
         'On the ridge the trees have been cut back to give a clear view of the road, and the stumps are fresh and smell of sap.',
       ambush:
-        'Robbers drop out of the cedars: a chief who knows exactly what a chest of first-picking tea is worth, and two thugs with sacks to carry it off.',
+        'Robbers drop out of the cedars, led by a chief who knows exactly what a chest of first-picking tea is worth, with two thugs carrying sacks to take it off in.',
       foe: 'bandit-chief',
       second: 'bandit-thug',
       third: 'bandit-thug',
@@ -109,7 +109,7 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
       briefing:
         'The pilgrims went up to light lanterns at the summit shrine, and the mist came down behind them. That was four days ago. “The mountain is thick with the dead,” the abbot says. “They do not always mean harm.”',
       trail:
-        'Mist hangs on the path, the spirits whisper from every rock, and the pilgrims’ footprints come and go as if someone keeps rubbing them out.',
+        'Mist hangs on the path, the spirits murmur from every rock, and the pilgrims’ footprints come and go as if someone keeps rubbing them out.',
       threat:
         'The pilgrims are huddled in a cave, and a great grey bear stands at its mouth while a red-faced macaque taunts them from the rocks above.',
       foe: 'ash-fell-bear',
@@ -214,7 +214,7 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
       place: 'the abandoned potters’ village below Kiln Pass',
       dread:
         'A plague emptied the village a lifetime ago, and nobody has lived there since. Now its kilns are burning again, and the guild’s apprentices hear their names called from the smoke.',
-      pull: 'The smell of wet clay and woodsmoke wraps round the team, and somewhere a potter’s wheel is turning, and it is so very peaceful.',
+      pull: 'The smell of wet clay and kiln smoke wraps round the team, and somewhere a potter’s wheel is turning, and it is so very peaceful.',
       ghosts:
         'In the old storehouse a hungry potter crouches over a pile of cracked bowls, and a cold merchant counts the guild’s debts on his fingers.',
       foe: 'hungry-ghost',

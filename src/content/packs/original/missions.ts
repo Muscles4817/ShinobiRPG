@@ -23,7 +23,7 @@ export const MISSIONS: readonly MissionDef[] = [
       },
       {
         kind: 'check',
-        text: 'Halfway round, a stretch of wall has gone dark, and something is moving in it.',
+        text: 'Halfway round, a stretch of wall has gone dark, and a shape is moving along it.',
         approaches: [
           {
             label: 'Relight them one by one, eyes open',
@@ -32,7 +32,7 @@ export const MISSIONS: readonly MissionDef[] = [
             success:
               'You take the stretch lamp by lamp, watching the dark between them, and catch a shape slipping off the wall before the last wick takes.',
             failure:
-              'You are bent over the fourth lantern when something cold brushes the back of your neck. The taper gutters, and you finish the round shaken.',
+              'You are bent over the fourth lantern when a cold touch brushes the back of your neck. The taper gutters, and you finish the round shaken.',
           },
           {
             label: 'Run the whole stretch before it notices',
@@ -41,11 +41,12 @@ export const MISSIONS: readonly MissionDef[] = [
             success:
               'You sprint the dark stretch with the taper cupped in your hand, lighting as you pass, and are out the far end before anything stirs.',
             failure:
-              'You run, and something keeps pace with you on the far side of the parapet the whole way. You finish the round shaken and out of breath.',
+              'You run, and a shape keeps pace with you on the far side of the parapet the whole way. You finish the round shaken and out of breath.',
           },
         ],
-        success: 'The last lantern catches. Whatever it was slips back into the night.',
-        failure: 'Something cold brushes past you in the dark. You finish the round shaken.',
+        success: 'The last lantern catches, and whatever it was slips back into the night.',
+        failure:
+          'A cold draught brushes past you in the dark, though the night is still, and you finish the round shaken.',
         onFailure: 'penalty',
         failureDamage: 2,
       },
@@ -64,7 +65,7 @@ export const MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'narrative',
-        text: 'Hisae presses a fish-shaped treat into your hand. "She likes high places. And biting."',
+        text: 'Hisae presses a fish-shaped treat into your hand. “She likes high places. And biting, I’m afraid.”',
       },
       {
         kind: 'check',
@@ -93,12 +94,13 @@ export const MISSIONS: readonly MissionDef[] = [
     stages: [
       {
         kind: 'check',
-        text: 'The weeds are waist-high, and something in the stones keeps whispering your name.',
+        text: 'The weeds are waist-high, and a thin voice in the stones keeps saying your name.',
         approaches: [
           { label: 'Work through the backache', stat: 'stamina', difficulty: 7 },
-          { label: 'Ignore the whispers', stat: 'willpower', difficulty: 8 },
+          { label: 'Ignore the voice', stat: 'willpower', difficulty: 8 },
         ],
-        success: 'By dusk the garden is immaculate. The whispering stops, as if satisfied.',
+        success:
+          'By dusk the garden is immaculate, and the voice in the stones goes quiet, as if satisfied.',
         failure: 'You finish, but the priest has to redo a corner you abandoned in a cold sweat.',
         onFailure: 'penalty',
       },
@@ -123,7 +125,7 @@ export const MISSIONS: readonly MissionDef[] = [
           { label: 'Take the rooftop-and-treetop route', stat: 'speed', difficulty: 9 },
         ],
         success: 'You make excellent time.',
-        failure: 'You arrive late and mud-soaked. The farmer is not impressed.',
+        failure: 'You arrive late and soaked in mud, to a farmer who is not impressed.',
         onFailure: 'penalty',
       },
       {
@@ -154,7 +156,7 @@ export const MISSIONS: readonly MissionDef[] = [
       { kind: 'narrative', text: 'Ōkubo talks about tea prices for the entire first hour.' },
       {
         kind: 'check',
-        text: 'The road narrows between two rocky banks. Something feels wrong.',
+        text: 'The road narrows between two rocky banks, and the birds in the trees have gone quiet.',
         approaches: [
           { label: 'Scan the ridgeline', stat: 'perception', difficulty: 9 },
           { label: 'Recall where ambushes happen', stat: 'intellect', difficulty: 10 },
@@ -186,7 +188,8 @@ export const MISSIONS: readonly MissionDef[] = [
     title: 'The Academy Dropout',
     rank: 'D',
     client: 'Academy Instructor Rin',
-    summary: 'A washed-out student has been stealing practice scrolls. Bring him in.',
+    summary:
+      'A washed-out student has been stealing practice scrolls, and somebody has to bring him in.',
     slots: 3,
     energyCost: 25,
     reward: { ryo: 200, reputation: 5, scrollId: 'great-seal-of-ash' },

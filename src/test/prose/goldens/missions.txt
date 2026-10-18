@@ -37,7 +37,7 @@ view:
   route[1]:
     label: A trial
     state: now
-  prompt: Halfway round, a stretch of wall has gone dark, and something is moving in it.
+  prompt: Halfway round, a stretch of wall has gone dark, and a shape is moving along it.
   choices[0]:
     label: Relight them one by one, eyes open
     detail: Perception 56%
@@ -46,7 +46,7 @@ view:
     detail: Speed 73%
 
 >>> missionChoose (Relight them one by one, eyes open)
-  journal «Lantern Patrol complete»: You are bent over the fourth lantern when something cold brushes the back of your neck. The taper gutters, and you finish the round shaken. [+41 ryo] [+1 reputation]
+  journal «Lantern Patrol complete»: You are bent over the fourth lantern when a cold touch brushes the back of your neck. The taper gutters, and you finish the round shaken. [+41 ryo] [+1 reputation]
 
 === report card ===
 view:
@@ -175,7 +175,7 @@ view:
   unlocked[120]: Enough
   unlocked[121]: The Pit at the burned terraces above Kayano
   unlocked[122]: Enough
-  ending: You are bent over the fourth lantern when something cold brushes the back of your neck. The taper gutters, and you finish the round shaken.
+  ending: You are bent over the fourth lantern when a cold touch brushes the back of your neck. The taper gutters, and you finish the round shaken.
   road: You tried to relight them one by one, eyes open, and fell short. [−25% pay]
   grade: rough
 
@@ -185,7 +185,7 @@ view:
 
 >>> startMission
   journal «Before a job»: Gōran checks your pouch before you set out. “You went out with empty pockets last time. Buy kunai, smoke, salve, whatever the job wants, before you go. What you don’t use comes home with you.”
-  journal «The Storehouse Ghost»: Something is spoiling the rice in Hanada’s storehouse, and the workers refuse to go in.
+  journal «The Storehouse Ghost»: A cold presence is spoiling the rice in Hanada’s storehouse, and the workers refuse to go in.
 
 --- mission (day 2, slot 1) ---
 
@@ -202,7 +202,7 @@ view:
   route[2]:
     label: Story
     state: ahead
-  prompt: The storehouse is freezing. Ledgers flip their own pages. The lamp keeps going out.
+  prompt: The storehouse is freezing. The ledgers turn their own pages while you watch, and the lamp keeps going out.
   choices[0]:
     label: Steel your nerves and go in
     detail: Willpower 22%

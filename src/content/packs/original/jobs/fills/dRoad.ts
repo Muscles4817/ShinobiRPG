@@ -41,7 +41,7 @@ export const D_ROAD: readonly MissionFill[] = [
       parley:
         'The man in the jacket takes the chain down himself and coils it neatly. “It was a good gate,” he says. “Somebody should guard it properly.”',
       ending:
-        'The first cart through is piled high with raw clay, and the carter throws you a lump of it, telling you to make yourself something useful.',
+        'The first cart through is piled high with raw clay, and the carter throws you a lump of it, telling you to make yourself a cup.',
     },
   },
   {
@@ -82,7 +82,7 @@ export const D_ROAD: readonly MissionFill[] = [
       terrain:
         'A stone well in a hollow of the dunes, a windbreak of palm fronds, and soft sand that slides underfoot on every slope.',
       parley:
-        'The man on the well hands you the ladle, handle first. “Too hot out here for fighting anyway,” he says, and the two of them walk off into the shimmer.',
+        'The man on the well hands you the ladle, handle first. “Too hot out here for fighting anyway,” he says, and the two of them walk off into the heat haze.',
       ending:
         'The traders water their camels and give you a little glass lantern from the dunes, as clear as the well water.',
     },
@@ -161,7 +161,7 @@ export const D_ROAD: readonly MissionFill[] = [
       setup:
         'Everyone in the village has heard about Hagane’s secret blade, and somebody has already tried the forge door. Hagane leaves you by the banked furnace.',
       vigil:
-        'The furnace glows low and warm, the only sound is the tick of cooling iron, and your head starts to nod.',
+        'The furnace burns low and warm, and with no sound but the tick of cooling iron, your head starts to drop.',
       intruder:
         'A slim figure slips in through the smoke hole and creeps towards the wrapped blade on the anvil.',
       foe: 'academy-dropout',
