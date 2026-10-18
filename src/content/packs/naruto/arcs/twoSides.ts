@@ -42,6 +42,7 @@ export const CUT_ROPES: MissionDef = {
               { kind: 'tally', tally: TWO_SIDES_CLUES, by: 1 },
             ],
             ledger: 'The fisherman’s blade was new, never used, and left to be found.',
+            noted: true,
           },
         },
         {
@@ -54,6 +55,7 @@ export const CUT_ROPES: MissionDef = {
               { kind: 'tally', tally: TWO_SIDES_CLUES, by: 1 },
             ],
             ledger: 'No fisherman owns the blade. It was bought at the tycoon’s store.',
+            noted: true,
           },
         },
       ],
@@ -87,20 +89,24 @@ export const THIRD_HAND: MissionDef = {
         {
           when: { tally: TWO_SIDES_CLUES, atLeast: 2 },
           label: 'Gather the builders and the fishermen at the market, and show them both',
+          unseen: 'You haven’t seen enough of both sides to prove it to them.',
           tone: 'earnest',
           reply:
             'The tycoon’s sandals on the jetty, the new blade on the scaffold. The market goes quiet. Then Tazuna and the eldest fisherman pick up the same boathook and walk out behind you.',
           effects: [
             { kind: 'mark', mark: 'united' },
             { kind: 'world', mark: 'waves-united' },
+            { kind: 'pay', share: -0.25 },
           ],
-          ledger: 'Showed the builders and the fishermen what was done to them both.',
+          ledger:
+            'Showed both sides what was done to them. The noise warned him, and he burned his ledger.',
         },
         {
           label: 'Go to the warehouse alone, before he hears you’re coming',
           tone: 'challenge',
           reply: 'Tsunami nods, and closes the shutters behind you.',
-          ledger: 'Went for the warehouse before the town knew.',
+          effects: [{ kind: 'pay', share: 0.25 }],
+          ledger: 'Went for the warehouse before the town knew, and caught him with his ledger.',
         },
       ],
     },

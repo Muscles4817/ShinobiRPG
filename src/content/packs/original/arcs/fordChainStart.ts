@@ -150,6 +150,29 @@ export const REED_BLADE: MissionDef = {
       ],
     },
     {
+      when: { remembers: 'ford-kept-faith' },
+      kind: 'decision',
+      text: 'The office clerk counts out what the ferrymen promised at the hall: the D-rank price, part of it in coin and part in dried eel. Tobei can’t look at you.',
+      options: [
+        {
+          label: 'Take what they promised',
+          tone: 'kind',
+          reply: 'Tobei grips your hand hard enough to hurt. “The ford won’t forget,” he says.',
+          effects: [
+            { kind: 'pay', share: -0.5 },
+            { kind: 'world', mark: 'ford-faith-kept' },
+          ],
+          ledger: 'Took the ferrymen’s D-rank price, as you promised.',
+        },
+        {
+          label: 'Tell them it’s a C-rank job now, and ask for the rest',
+          tone: 'challenge',
+          reply: 'They find it, somehow. Nobody at the office says much to you after that.',
+          ledger: 'Asked the ferrymen for the true price after all.',
+        },
+      ],
+    },
+    {
       kind: 'narrative',
       text: 'Ushio camps on the bluff above the chain, a banked fire and a view of the whole landing. Its smoke says he isn’t hiding.',
       variants: [
@@ -188,8 +211,9 @@ export const REED_BLADE: MissionDef = {
           effects: [
             { kind: 'world', mark: 'ford-rogue-spared' },
             { kind: 'tally', tally: MERCY, by: 1 },
+            { kind: 'pay', share: -0.25 },
           ],
-          ledger: 'Let Ushio and Ren go.',
+          ledger: 'Let Ushio and Ren go. The ferrymen wanted him gone, and paid less for it.',
         },
         {
           label: 'Bind them both for the Watch',
