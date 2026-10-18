@@ -130,6 +130,9 @@ export { VOICE_MOMENTS, type VoiceDef, type VoiceMoment } from './voices';
 export type {
   ClanCompanion,
   CompanionKindDef,
+  CompanionLoreDef,
+  HandlerFields,
+  KindTechnique,
   RetinueEntry,
   RetinueTell,
   KennelPups,

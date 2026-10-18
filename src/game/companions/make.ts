@@ -76,6 +76,7 @@ export function newCompanion(kind: CompanionKindDef, start: CompanionStart): Com
     grownDays,
     lastTrainedDay: null,
     lastCaredDay: start.day,
+    learned: [],
   };
 }
 

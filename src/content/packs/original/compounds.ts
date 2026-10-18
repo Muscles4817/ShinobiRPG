@@ -61,5 +61,6 @@ export const TOROGAKURE_COMPOUNDS: readonly PlaceDef[] = [
       giftStage: 3,
       line: 'A litter of the clinic’s working pups tumbles about a pen by the counter.',
     },
+    handling: { quality: 1.6, price: 30, minStage: 0, teaches: ['baying-howl'] },
   },
 ];

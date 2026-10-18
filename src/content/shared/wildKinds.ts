@@ -1,4 +1,5 @@
 import type { CompanionKindDef } from '../companions';
+import { WOLF_TECHNIQUES } from './beastTechniques';
 
 /**
  * Wild companion kinds the countries share: found only by tracking them on purpose in a wild
@@ -46,6 +47,8 @@ export const FOREST_WOLF: CompanionKindDef = {
     fuuinjutsu: 0,
   },
   diet: ['wild-game', 'river-fish', 'sweetfish', 'river-eel', 'eggs'],
+  techniques: WOLF_TECHNIQUES,
+  roles: ['tracker'],
   plays: { likes: ['scent', 'walk'], dislikes: ['fetch'] },
   names: ['Fubuki', 'Arashi', 'Shigure', 'Kogarashi', 'Mizore', 'Oboro', 'Kasumi'],
   wild: {

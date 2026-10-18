@@ -90,3 +90,21 @@
   color: var(--paper-ink);
   border-color: var(--paper-muted);
 }
+.companion-arts .arts {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.companion-sheet .badge {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+.handler-teach {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--paper-muted);
+}

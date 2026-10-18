@@ -19,6 +19,7 @@ import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { companionGrowing, type CompanionGrowing } from './companionGrowing';
+import { companionArts, roleLine, type CompanionArt } from './handling';
 
 /**
  * Your companion's care, wherever it is with you: a strip on the village screen (health,
@@ -62,6 +63,10 @@ export interface CompanionSheet extends CompanionStrip {
   readonly kind: string;
   /** Its body and skills, and how it is growing (`companionGrowing.ts`). */
   readonly growing: CompanionGrowing;
+  /** Its kind's arts, known and still to open (`handling.ts`). */
+  readonly arts: readonly CompanionArt[];
+  /** The job checks it takes for you, or will once you are close; null if none. */
+  readonly role: string | null;
   readonly stageName: string;
   readonly progress: number;
   /** Why it is laid up and until when, in words, or null. */
@@ -150,6 +155,8 @@ export function companionSheet(state: GameState, ctx: GameContext): CompanionShe
     ...strip,
     kind: kind.name,
     growing: companionGrowing(companion, kind, state.board.seed),
+    arts: companionArts(companion, kind, ctx),
+    role: roleLine(companion, kind),
     stageName: stageName(stageOf(companion.bond)),
     progress: stageProgress(companion.bond),
     laidUp: injury ? laidUpLine(injury, state.time.day) : null,

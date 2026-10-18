@@ -1,4 +1,5 @@
 import type { CombatTrait } from '@/systems/combat';
+import type { MissionRole } from '@/systems/missions';
 import type { BodyStat, CompanionTemperament, PlayKind } from '@/systems/companions';
 import type { StatDelta, StatId } from '@/systems/stats';
 
@@ -84,6 +85,42 @@ export interface CompanionKindDef {
   readonly stray?: StrayHaunt;
   /** Where a wild one lives, for kinds tracked in the wilds. */
   readonly wild?: WildHaunt;
+  /** What it can learn to do in a fight, as the bond opens it (and a handler, for some). */
+  readonly techniques?: readonly KindTechnique[];
+  /** The checks it can take on a job for you once close enough (a tracker follows the trail). */
+  readonly roles?: readonly MissionRole[];
+}
+
+/**
+ * A technique a kind can come to use: open at a bond stage, or, with `handler`, taught by a
+ * handler once the bond is there (a clan's deeper arts). A technique held only by kinds is
+ * never learned by people.
+ */
+export interface KindTechnique {
+  readonly techniqueId: string;
+  readonly stage: number;
+  readonly handler?: true;
+}
+
+/** A clinic's handling: sessions with a kennel master or clan handler, better than your own. */
+export interface HandlerFields {
+  /** How much better a session is than your own handling (×1.6 a kennel master, ×2 a clan's). */
+  readonly quality: number;
+  readonly price: number;
+  /** The bond stage with the vet before they'll work with your companion. */
+  readonly minStage: number;
+  /** Kind techniques they teach (each `handler` technique needs someone to teach it). */
+  readonly teaches?: readonly string[];
+}
+
+/** Written handling lore (a kennel master's notes): makes your own sessions count for more. */
+export interface CompanionLoreDef {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly cost: number;
+  /** How much better your own sessions are with it read (×1.25). */
+  readonly handling: number;
 }
 
 /** A kind's grown body: the adult value of each body stat, and days of growing to reach it. */
@@ -109,6 +146,8 @@ export interface VetFields {
   readonly freeForClanId?: string;
   /** Pups bred here, for someone without a companion. */
   readonly pups?: KennelPups;
+  /** The vet works with companions too: handling sessions, and a clan's arts. */
+  readonly handling?: HandlerFields;
 }
 
 /** A kennel's pups: given to a friend of the vet, or sold to anyone else. */

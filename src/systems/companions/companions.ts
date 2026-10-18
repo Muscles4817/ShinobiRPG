@@ -44,6 +44,8 @@ export interface Companion {
   readonly lastTrainedDay: number | null;
   /** The last day it was shown real care (a game, a proper meal, training); neglect drifts. */
   readonly lastCaredDay: number;
+  /** Kind techniques a handler has taught it (those the bond alone opens aren't kept here). */
+  readonly learned: readonly string[];
 }
 
 /** A companion laid up after a fight. */
@@ -75,6 +77,8 @@ export interface Companions {
   readonly strayed: Companion | null;
   /** Doses of medicine you carry for it. */
   readonly medicine: number;
+  /** Handling lore you have read (`CompanionLoreDef`): your own sessions count for more. */
+  readonly lore: readonly string[];
 }
 
 export const NO_COMPANIONS: Companions = {
@@ -84,6 +88,7 @@ export const NO_COMPANIONS: Companions = {
   waiting: null,
   strayed: null,
   medicine: 0,
+  lore: [],
 };
 
 interface TemperamentRules {

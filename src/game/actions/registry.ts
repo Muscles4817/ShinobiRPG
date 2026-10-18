@@ -38,6 +38,7 @@ import { dismissReport, leaveFight, travel } from './travel';
 import { followSight } from './village';
 import { befriendStray } from './companions';
 import { takePup, trackWild } from './finding';
+import { buyLore, handlerSession, handlerTeach } from './handling';
 import { rehomeCompanion, takeRescued } from './rehoming';
 import { doseCompanion, feedCompanion, playWithCompanion } from './companionCare';
 import { trainCompanion } from './companionTraining';
@@ -111,6 +112,9 @@ export const HANDLERS: Registry = {
   takePup,
   takeRescued,
   rehomeCompanion,
+  handlerSession,
+  handlerTeach,
+  buyLore,
   feedCompanion,
   playWithCompanion,
   doseCompanion,

@@ -96,5 +96,6 @@ export const KONOHA_COMPOUNDS: readonly PlaceDef[] = [
       giftStage: 3,
       line: 'Ninken pups wrestle in the straw of the kennel run, watched by a mother twice their size.',
     },
+    handling: { quality: 2, price: 40, minStage: 1, teaches: ['baying-howl'] },
   },
 ];

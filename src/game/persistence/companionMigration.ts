@@ -41,3 +41,28 @@ export function v47ToV48(state: RawState): RawState {
     },
   };
 }
+
+function withLearned(companion: unknown): unknown {
+  if (typeof companion !== 'object' || companion === null) return companion;
+  return { ...companion, learned: [] };
+}
+
+/**
+ * v48 → v49: what the bond opens. No companion has been taught anything by a handler yet, and
+ * nobody has read any handling lore.
+ */
+export function v48ToV49(state: RawState): RawState {
+  // The companions slice of the previous shape (a trust boundary: the save is untyped).
+  const companions = (state.companions ?? {}) as Record<string, unknown>;
+  const owned = (companions.owned ?? {}) as Record<string, unknown>;
+  return {
+    ...state,
+    companions: {
+      ...companions,
+      owned: Object.fromEntries(Object.entries(owned).map(([id, c]) => [id, withLearned(c)])),
+      strayed: withLearned(companions.strayed ?? null),
+      waiting: withLearned(companions.waiting ?? null),
+      lore: [],
+    },
+  };
+}

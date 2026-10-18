@@ -172,6 +172,7 @@ export function withHound(state: GameState, overrides: Partial<Companion> = {}):
     grownDays: 200,
     lastTrainedDay: null,
     lastCaredDay: state.time.day,
+    learned: [],
     ...overrides,
   };
   return { ...state, companions: { ...state.companions, owned: { player: hound } } };

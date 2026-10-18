@@ -25,6 +25,7 @@ import { validateAtlas } from './validateAtlas';
 import { validateExercises } from './validateExercises';
 import { validateCrews } from './validateCrews';
 import { validateRetinues } from './validateRetinues';
+import { validateCompanionArts } from './validateCompanionArts';
 import { validateCompanions } from './validateCompanions';
 import { validateCompounds } from './validateCompounds';
 import { validateStory } from './validateStory';
@@ -46,6 +47,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateCrews(pack),
     ...validateRetinues(pack),
     ...validateCompanions(pack),
+    ...validateCompanionArts(pack),
     ...validateCompounds(pack),
     ...validateSenseis(pack),
     ...validateSenseiParts(pack),

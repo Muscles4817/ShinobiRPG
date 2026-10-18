@@ -320,7 +320,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     pup is too young to fight and stays home. Its light routine is caught up each morning like
     peers', it fights beside you in every mission fight (never a spar: those are one against
     one), and takes stance and then card orders only as the bond opens them (`ordersOpen`); the
-    bond grows from a game, a proper meal and the day's first training, and drifts on scraps alone. It is cared for
+    bond grows from a game, a proper meal and the day's first training, and drifts on scraps alone.
+    **The bond opens its arts** (`game/companions/arts.ts`): a kind's `techniques` open at bond
+    stages (`shared/beastTechniques.ts`: kinds' own, never learned by people), the deeper ones
+    (`handler`) only once a clinic's handler teaches them (`VetFields.handling`, `handlerTeach`);
+    one is half of a combination with the academy's Pincer Strike; and at close friends it takes
+    a crew job's checks in its kind's `roles` when its nose is best (`checkHand`). Handlers drill
+    it better than you (`handlerSession`, their `quality` over yours), and handling lore bought
+    far from home (`companionLore`, a gear place's `loreIds`) makes your own sessions count more. It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -694,9 +701,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   best, `healthScale`, traits, a talent shape with
   0 for arts it never learns, names, and a `stray` haunt for kinds found on the streets, at
   places of the start village, or a `wild` haunt by biome for wild kinds; shared wild kinds live
-  in `shared/wildKinds.ts`); give a clan one with `ClanDef.companion`, breed a bred kind at a
-  vet (`pups`) or hand one over from a job (`reward.companionKindId`). Validated in
-  `validateCompanions.ts`.
+  in `shared/wildKinds.ts`; `techniques` it opens by bond stage, `handler` ones taught at a
+  clinic whose `handling.teaches` lists them, and the job `roles` it takes); give a clan one with
+  `ClanDef.companion`, breed a bred kind at a vet (`pups`) or hand one over from a job
+  (`reward.companionKindId`). Validated in `validateCompanions.ts`; a clinic's `handling`
+  (quality, price, the bond stage with the vet) and handling lore (`companionLore`, sold through
+  a gear place's `loreIds`) in `validateCompanionArts.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

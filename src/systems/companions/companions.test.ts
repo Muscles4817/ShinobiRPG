@@ -28,6 +28,7 @@ const pup: Companion = {
   grownDays: 0,
   lastTrainedDay: null,
   lastCaredDay: 0,
+  learned: [],
 };
 
 describe('companions', () => {

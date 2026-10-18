@@ -71,6 +71,35 @@ function Growing({ growing }: { readonly growing: CompanionGrowingView }) {
   );
 }
 
+/** What the bond opens: its arts, known and still to come, and the job checks it takes. */
+function Arts({
+  arts,
+  role,
+}: {
+  readonly arts: CompanionSheetView['arts'];
+  readonly role: string | null;
+}) {
+  if (arts.length === 0 && !role) return null;
+  return (
+    <section className="companion-arts" aria-label="What the bond opens">
+      <h3>What the bond opens</h3>
+      <ul className="arts">
+        {arts.map((a) => (
+          <li key={a.name}>
+            <b>{a.name}</b>{' '}
+            {a.known ? (
+              <span className="badge">Knows it</span>
+            ) : (
+              <small className="muted">{a.note}</small>
+            )}
+          </li>
+        ))}
+      </ul>
+      {role && <p className="muted small">{role}</p>}
+    </section>
+  );
+}
+
 /** Your companion's sheet: how it is, and feeding, play and medicine, wherever it is with you. */
 export function CompanionSheet({ ctx, state, perform, onClose }: CompanionSheetProps) {
   const c = companionSheet(state, ctx);
@@ -102,6 +131,7 @@ export function CompanionSheet({ ctx, state, perform, onClose }: CompanionSheetP
         <BondMeter stageName={c.stageName} progress={c.progress} />
         {c.laidUp && <p className="story">{c.laidUp}</p>}
         <Growing growing={c.growing} />
+        <Arts arts={c.arts} role={c.role} />
         <h3>Feed</h3>
         <div className="care-row">
           {c.foods.map((f) => (

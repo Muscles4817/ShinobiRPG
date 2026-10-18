@@ -1,4 +1,5 @@
 import type { CompanionKindDef } from '../../companions';
+import { HOUND_TECHNIQUES } from '../../shared/beastTechniques';
 import { FOREST_WOLF, HOUND_DIET } from '../../shared/wildKinds';
 
 /** Creatures that may become a companion in Tōrōgakure. */
@@ -29,6 +30,8 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       fuuinjutsu: 0,
     },
     diet: HOUND_DIET,
+    techniques: HOUND_TECHNIQUES,
+    roles: ['tracker'],
     plays: { likes: ['fetch', 'scent'], dislikes: ['walk'] },
     names: ['Ash', 'Soot', 'Ember', 'Wick', 'Tallow', 'Cinder', 'Moth', 'Dusk'],
     stray: {
@@ -68,6 +71,8 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       fuuinjutsu: 0,
     },
     diet: HOUND_DIET,
+    techniques: HOUND_TECHNIQUES,
+    roles: ['tracker'],
     plays: { likes: ['fetch', 'walk'], dislikes: [] },
     names: ['Lantern', 'Tsuki', 'Hoshi', 'Kibi', 'Mame', 'Kuri'],
   },

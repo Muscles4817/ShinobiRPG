@@ -13,14 +13,15 @@ import { attributesOf } from '../combatants';
 import type { GameContext } from '../context';
 import { log } from '../ops';
 import type { GameState } from '../state';
+import { knownTechniques } from './arts';
 import { stageOfLife } from './body';
 import { withCompanion, yourCompanion } from './care';
 import { maxHealthOf } from './make';
 
 /**
  * Your companion in a fight: one more fighter on your side (it hits no harder for being
- * yours), at the health it has now and weaker when hungry, taking only the orders your bond has
- * earned (`ordersOpen`). A companion laid up stays home, and so does a pup too young to fight.
+ * yours), at the health it has now and weaker when hungry, with the techniques its bond has
+ * opened (`arts.ts`), taking only the orders your bond has earned (`ordersOpen`). A companion laid up stays home, and so does a pup too young to fight.
  * Knocked down, it is injured.
  */
 
@@ -61,7 +62,7 @@ export function companionAllies(state: GameState, ctx: GameContext): CombatantSe
       maxHealth: maxHealthOf(kind),
       chakra: kind.maxChakra,
       maxChakra: kind.maxChakra,
-      techniques: [],
+      techniques: knownTechniques(companion, kind).map((id) => ctx.content.techniques.require(id)),
       ...(kind.traits ? { traits: kind.traits } : {}),
       orders: {
         ...(open.stance ? {} : { stanceLocked: notYet }),

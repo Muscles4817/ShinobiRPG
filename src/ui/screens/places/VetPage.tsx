@@ -4,6 +4,7 @@ import { headerView, vetView, type Choice, type GameAction } from '@/game';
 
 import { Banner } from '../../components/Banner';
 import type { PlaceProps } from '../types';
+import { HandlerSlip } from './HandlerSlip';
 
 /** One action on a clinic slip, with its reason when shut. */
 function SlipAction({
@@ -108,6 +109,7 @@ export function VetPage({ ctx, state, perform, onBack }: PlaceProps) {
           </p>
           <SlipAction label="Have the vet treat it" choice={view.treat} perform={perform} wide />
         </section>
+        <HandlerSlip handler={view.handler} companion={view.rehome?.name ?? ''} perform={perform} />
         {view.pups && (
           <section className="room-slip">
             <h2>The litter</h2>

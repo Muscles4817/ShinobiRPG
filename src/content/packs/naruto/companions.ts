@@ -1,4 +1,5 @@
 import type { CompanionKindDef } from '../../companions';
+import { HOUND_TECHNIQUES } from '../../shared/beastTechniques';
 import { FOREST_WOLF, HOUND_DIET } from '../../shared/wildKinds';
 
 /** Creatures that may become a companion in the Hidden Leaf. */
@@ -29,6 +30,8 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       fuuinjutsu: 0,
     },
     diet: HOUND_DIET,
+    techniques: HOUND_TECHNIQUES,
+    roles: ['tracker'],
     plays: { likes: ['rough', 'scent'], dislikes: [] },
     names: ['Akamaru', 'Kuromaru', 'Haimaru', 'Shiromaru', 'Kogemaru', 'Tsumemaru'],
   },
@@ -58,6 +61,8 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       fuuinjutsu: 0,
     },
     diet: HOUND_DIET,
+    techniques: HOUND_TECHNIQUES,
+    roles: ['tracker'],
     plays: { likes: ['fetch', 'scent'], dislikes: ['walk'] },
     names: ['Pochi', 'Kuro', 'Shiro', 'Hachi', 'Goro', 'Taro'],
     stray: {

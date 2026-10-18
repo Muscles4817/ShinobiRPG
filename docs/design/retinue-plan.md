@@ -551,3 +551,47 @@ and its genes, its skills with training**, and every kind has its own ceiling.
   - Combination moves last.
   - Ageing past its prime, portraits per stage, and a "stay home" toggle with light injuries
     come later.
+
+### Step 2d: what the bond opens
+
+- **Kind techniques** (`CompanionKindDef.techniques`, `game/companions/arts.ts`). Each opens at a
+  bond stage. The deeper ones (`handler`) open only once a clinic's handler has taught them,
+  kept in `companion.learned`. They live in `shared/beastTechniques.ts`: kinds' own, never
+  learned by people, counted as sourced by validation through the kinds that hold them.
+
+  | Kind   | Stage 1   | Stage 2             | Stage 3       | Stage 4                             |
+  | ------ | --------- | ------------------- | ------------- | ----------------------------------- |
+  | Hounds | Fang Rush | —                   | Flanking Bite | Baying Howl (a daze, taught)        |
+  | Wolf   | Fang Rush | Hamstring (a bleed) | —             | Flanking Bite; Baying Howl (taught) |
+
+  A companion fights with the techniques it knows.
+
+- **A combination:** Flanking Bite is half of a combination with Pincer Strike, a D-rank
+  taijutsu on each academy's rack. Each half plays only beside someone on your side who knows
+  the other, so Pincer Strike needs a companion that knows Flanking Bite.
+- **Job roles** (`CompanionKindDef.roles`; hounds and the wolf are trackers). From close friends
+  (`ROLE_STAGE`), a crew job's check in that role falls to the companion when its stat is the
+  best of you, your crew and it (`checkHand`), so the nose does the tracking.
+- **Handlers** (`VetFields.handling`: quality, price, the bond stage with the vet, and what they
+  teach):
+
+  | Clinic                               | Quality | Price  | Bond needed   | Free to  |
+  | ------------------------------------ | ------- | ------ | ------------- | -------- |
+  | Kaori's clinic (kennel master)       | ×1.6    | 30 ryo | none          | —        |
+  | Hana's Inuzuka clinic (clan handler) | ×2      | 40 ryo | acquaintances | the clan |
+  - `handlerSession` drills a skill at the handler's quality. Every session, yours included,
+    goes through one rule (`companions/drill.ts`): the work is multiplied by the handler's
+    quality, and the pace never falls below a D-grade floor through B.
+  - `handlerTeach` teaches a `handler` art once the bond is there, for four sessions' fees.
+
+- **Handling lore** (`companionLore`, sold through a gear place's `loreIds`): A Kennel Master's
+  Notes (300 ryo), in Port Shiomachi and in Shukuba, makes your own sessions ×1.25. Each piece
+  is read once and kept in `companions.lore`.
+- **Save v49:** no companion has been taught anything, and no lore has been read.
+- **Screens:**
+  - The sheet's "What the bond opens": each art, known or what opens it, and the role line.
+  - The clinic's handler slip: sessions as skill tiles, the fee, and the arts they teach with
+    why not yet.
+  - A "For handlers" shelf at shops that sell lore.
+- **Later:** ageing, a "stay home" toggle and light injuries, portraits by stage, more kinds and
+  their arts (summons, swarms, puppets come as their own steps).

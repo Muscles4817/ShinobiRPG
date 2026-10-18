@@ -65,6 +65,8 @@ function sourcedIds(pack: ContentPack): Set<string> {
     ...pack.academyTechniques,
     ...Object.values(pack.disciplineStarters),
     ...pack.clans.flatMap((c) => c.startingTechniqueIds),
+    // A companion kind's techniques are its own (`validateCompanions.ts` checks them).
+    ...pack.companionKinds.flatMap((k) => (k.techniques ?? []).map((t) => t.techniqueId)),
   ]);
 }
 

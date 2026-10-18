@@ -1,3 +1,4 @@
+import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
@@ -95,6 +96,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...SENSEI_TECHNIQUES,
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
+    ...BEAST_TECHNIQUES,
     ...TIDEWIRE_TECHNIQUES,
   ],
   missions: [
@@ -127,6 +129,7 @@ export const ORIGINAL_PACK: ContentPack = {
   ],
   voices: VOICES,
   companionKinds: COMPANION_KINDS,
+  companionLore: COMPANION_LORE,
   enemies: [
     ...ENEMIES,
     ...CHUNIN_ENEMIES,

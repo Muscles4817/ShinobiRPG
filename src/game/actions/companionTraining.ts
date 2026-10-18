@@ -1,8 +1,8 @@
 import { GROWN_ONLY, hungerOf, laidUp, type Companion } from '@/systems/companions';
-import { applyTraining, diffStats, STAT_INFO, type StatId } from '@/systems/stats';
+import { diffStats, STAT_INFO, type StatId } from '@/systems/stats';
 
 import { warmed, withCompanion, yourCompanion } from '../companions/care';
-import { companionGrowth } from '../companions/routine';
+import { drilledStats, ownerHandling } from '../companions/drill';
 import type { GameContext } from '../context';
 import {
   adjust,
@@ -20,23 +20,14 @@ import type { ActionHandler, ActionOf } from './types';
 
 /**
  * Training together, at a training place: you drill your companion in one of its skills as its
- * handler. A handler's rule is its own, not the teacher rule between people: how well you
- * handle it, not how good you are at the skill yourself, so a fresh genin's hound still learns,
- * and keeps learning past the point solo practice would stall (`OWNER_HANDLING`). Its body
+ * handler (`companions/drill.ts`): how well you handle it, not how good you are at the skill
+ * yourself, so a fresh genin's hound still learns, and handling lore makes it count more. Its body
  * (strength, speed, stamina) comes with time, never drills. It costs you the slot and the
  * energy; the bond grows from the first session of a day only.
  */
 
 export const TRAIN_ENERGY = 20;
 const TRAIN_SLOTS = 1;
-/** A session's work in the chosen stat, before talent, handling and limits. */
-const SESSION_GAIN = 1.5;
-/**
- * How well an owner handles it: the least a session is worth, whatever grade the skill has
- * reached (a D-grade pace kept through B). Kennel masters and clan handlers will do better.
- */
-const OWNER_HANDLING = 0.4;
-const HANDLED_THROUGH = 'B';
 /** Bond the day's first session together is worth. */
 const SESSION_BOND = 2;
 
@@ -74,12 +65,8 @@ export const trainCompanion: ActionHandler<ActionOf<'trainCompanion'>> = {
     const yours = yourCompanion(state, ctx);
     if (!yours) return state;
     const { companion, kind } = yours;
-    const handled = [{ throughGrade: HANDLED_THROUGH, floor: OWNER_HANDLING }] as const;
-    const growth = {
-      ...companionGrowth(companion, kind, state.board.seed),
-      floors: { [stat]: handled },
-    };
-    const stats = applyTraining(companion.stats, { [stat]: SESSION_GAIN }, growth);
+    const quality = ownerHandling(state, ctx);
+    const stats = drilledStats(companion, kind, state.board.seed, { stat, quality });
     const firstToday = companion.lastTrainedDay !== state.time.day;
     const warm = firstToday ? warmed(companion, kind, SESSION_BOND) : companion;
     const trained = {

@@ -450,7 +450,19 @@ describe('persistence', () => {
       waiting: null,
       strayed: null,
       medicine: 0,
+      lore: [],
     });
+  });
+
+  it('gives a companion from before handlers nothing learned, and you no lore', () => {
+    const game = withHound(newGame());
+    const { learned: _l, ...old } = game.companions.owned.player!;
+    const { lore: _r, ...slice } = game.companions;
+    const saved = { ...game, companions: { ...slice, owned: { player: old } } };
+    const loaded = deserialize(JSON.stringify({ version: 48, state: saved }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.companions.owned.player!.learned).toEqual([]);
+    expect(loaded.value.companions.lore).toEqual([]);
   });
 
   it('grows up a companion from before growing up, losing nothing it has', () => {

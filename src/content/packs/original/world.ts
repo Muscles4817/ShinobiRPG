@@ -1,6 +1,7 @@
 import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
 import { CHAKRA_PAPER_TEXT } from '../../shared/chakraPaper';
+import { PINCER_STRIKE } from '../../shared/beastTechniques';
 import { TOOL_IDS } from '../../shared/tools';
 import { CHUNIN_MISSIONS } from './chuninMissions';
 import { LANTERN_THIEF_JOBS } from './arcs/lanternThief';
@@ -146,6 +147,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         blurb: 'The library of techniques',
         hours: ['morning', 'afternoon', 'evening'],
         techniqueIds: [
+          PINCER_STRIKE,
           'gale-heel',
           'pebble-volley',
           'lantern-mirage',

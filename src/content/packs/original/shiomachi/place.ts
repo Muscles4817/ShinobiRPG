@@ -75,6 +75,7 @@ export const PORT_SHIOMACHI: LocationDef = {
       keeper: 'Grandfather Oki, net-mender',
       gearIds: ['fishhook-darts', 'gutting-needles', 'oilskin-coat', 'cork-float-charm'],
       toolIds: TOOL_IDS,
+      loreIds: ['kennel-masters-notes'],
     },
     {
       id: 'breakwater',

@@ -11,6 +11,7 @@ import { placeHere } from '../ops';
 import { findPerson, fullName } from '../people/cast';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
+import { handlerView, type HandlerView } from './handling';
 
 /** The animal clinic's counter: the vet, a treatment for an injured companion, and medicine. */
 
@@ -31,6 +32,8 @@ export interface VetView {
   readonly pups: PupsView | null;
   /** An animal a job rescued, waiting here for you. */
   readonly rescued: RescuedView | null;
+  /** The vet as a handler for your companion: sessions and the arts they teach. */
+  readonly handler: HandlerView | null;
   /** Rehoming the companion you have, here. */
   readonly rehome: (Choice & { readonly name: string; readonly line: string }) | null;
 }
@@ -121,6 +124,7 @@ export function vetView(state: GameState, ctx: GameContext): VetView | null {
     pups: pupsView(state, ctx, vet),
     rescued: rescuedView(state, ctx),
     rehome: rehomeView(state, ctx),
+    handler: handlerView(state, ctx),
   };
 }
 

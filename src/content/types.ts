@@ -1,6 +1,12 @@
 import type { CombatPerk, CombatTrait } from '@/systems/combat';
 import type { AtlasDef, MapLabelSide } from './atlas';
-import type { ClanCompanion, CompanionKindDef, RetinueEntry, VetFields } from './companions';
+import type {
+  ClanCompanion,
+  CompanionKindDef,
+  CompanionLoreDef,
+  RetinueEntry,
+  VetFields,
+} from './companions';
 import type { Find } from '@/systems/cooking';
 import type {
   ArcDef,
@@ -57,7 +63,7 @@ import type { OnsenFields, TavernFields } from './leisure';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
 import type { VoiceDef } from './voices';
-import type { Biome } from './biomes';
+import type { Biome, FishingSpot, WildsFields } from './biomes';
 
 export type { BackdropId, IconId } from './art';
 export type {
@@ -246,17 +252,7 @@ export interface BreakInScene {
   readonly caught: string;
 }
 
-/** The kind of country a wild place is: what grows and swims there. */
-export type { Biome };
-
-/** Somewhere to cast a line: what bites there, and when. */
-export interface FishingSpot {
-  readonly id: string;
-  readonly name: string;
-  /** What it looks like, for the choice. No numbers. */
-  readonly description: string;
-  readonly catches: readonly Find[];
-}
+export type { Biome, FishingSpot, WildsFields };
 
 interface PlaceBase {
   readonly id: string;
@@ -291,13 +287,7 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'inn'; readonly keeper: string; readonly roomCost: number })
   /** A house for sale in a town: bought once, then yours to sleep in, with no rent. */
   | (PlaceBase & { readonly kind: 'house'; readonly seller: string; readonly price: number })
-  /** Woods, a river bank, a shore: forage what's in season, and fish its spots. */
-  | (PlaceBase & {
-      readonly kind: 'wilds';
-      readonly biome: Biome;
-      readonly finds: readonly Find[];
-      readonly spots?: readonly FishingSpot[];
-    })
+  | (PlaceBase & WildsFields)
   | (PlaceBase & TavernFields)
   | (PlaceBase & CompoundFields)
   | (PlaceBase & QuarterFields)
@@ -310,6 +300,8 @@ export type PlaceDef =
       readonly gearIds: readonly string[];
       /** Fight tools sold by the piece. */
       readonly toolIds?: readonly string[];
+      /** Handling lore for companions (`CompanionLoreDef`). */
+      readonly loreIds?: readonly string[];
     });
 
 export type PlaceKind = PlaceDef['kind'];
@@ -367,6 +359,7 @@ export interface ContentPack {
   readonly enemies: readonly EnemyDef[];
   /** Kinds of creature that may become someone's companion. */
   readonly companionKinds: readonly CompanionKindDef[];
+  readonly companionLore: readonly CompanionLoreDef[];
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];
   readonly clans: readonly ClanDef[];

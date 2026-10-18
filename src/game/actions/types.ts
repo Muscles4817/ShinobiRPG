@@ -102,6 +102,9 @@ export type GameAction =
   | { readonly type: 'takePup' }
   | { readonly type: 'takeRescued' }
   | { readonly type: 'rehomeCompanion' }
+  | { readonly type: 'handlerSession'; readonly stat: StatId }
+  | { readonly type: 'handlerTeach'; readonly techniqueId: string }
+  | { readonly type: 'buyLore'; readonly loreId: string }
   | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
   | { readonly type: 'playWithCompanion'; readonly play: PlayKind }
   | { readonly type: 'doseCompanion'; readonly hidden: boolean }

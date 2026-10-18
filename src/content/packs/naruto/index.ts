@@ -1,3 +1,4 @@
+import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
@@ -108,6 +109,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...SENSEI_TECHNIQUES,
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
+    ...BEAST_TECHNIQUES,
     ...CANON_TECHNIQUES,
   ],
   missions: [
@@ -133,6 +135,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   arcs: [TEMPLE_BELL_ARC, DROWNED_SHORE_ARC, LOADED_DICE_ARC, SWORD_SCHOOL_ARC, SNAKE_DEN_ARC],
   voices: VOICES,
   companionKinds: COMPANION_KINDS,
+  companionLore: COMPANION_LORE,
   enemies: [
     ...ENEMIES,
     ...CHUNIN_ENEMIES,

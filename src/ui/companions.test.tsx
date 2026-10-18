@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { villageView, wildsView, type GameAction, type GameState } from '@/game';
@@ -10,6 +10,7 @@ import { VillageLife } from './screens/VillageLife';
 import { CompanionSheet } from './components/CompanionSheet';
 import { VetPage } from './screens/places/VetPage';
 import { WildsPage } from './screens/places/WildsPage';
+import { GearShopPage } from './screens/places/GearShopPage';
 
 /** A game whose seed meets a stray on its first day. */
 function withStray(): GameState {
@@ -144,5 +145,57 @@ describe('companions (smoke test)', () => {
     expect(screen.getByText(/built for the nose/)).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Body' })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Learned' })).toBeTruthy();
+  });
+
+  it('has the vet work with your companion, and teach what the bond has opened', async () => {
+    const user = userEvent.setup();
+    const done: GameAction[] = [];
+    const state = withHound(newGame({ wallet: { ryo: 500 } }), { bond: 90 });
+    render(
+      <VetPage ctx={ctx} state={state} perform={(a) => done.push(a)} onBack={() => undefined} />,
+    );
+    await user.click(screen.getByRole('button', { name: 'Have Kaori drill Ash in Taijutsu' }));
+    await user.click(screen.getByRole('button', { name: 'Teach Ash Baying Howl' }));
+    expect(done).toEqual([
+      { type: 'handlerSession', stat: 'taijutsu' },
+      { type: 'handlerTeach', techniqueId: 'baying-howl' },
+    ]);
+  });
+
+  it('shows what the bond opens on the sheet', () => {
+    render(
+      <CompanionSheet
+        ctx={ctx}
+        state={withHound(newGame(), { bond: 12 })}
+        perform={() => undefined}
+        onClose={() => undefined}
+      />,
+    );
+    expect(screen.getByRole('heading', { name: 'What the bond opens' })).toBeTruthy();
+    expect(screen.getByText('Knows it')).toBeTruthy();
+    expect(
+      screen.getByText(/Once you are close friends, it will take a job’s tracking/),
+    ).toBeTruthy();
+  });
+
+  it('sells handling lore at a shop far from home', async () => {
+    const user = userEvent.setup();
+    const done: GameAction[] = [];
+    const state = { ...newGame({ wallet: { ryo: 500 } }), locationId: 'port-shiomachi' };
+    const shop = ctx.content.locations
+      .require('port-shiomachi')
+      .places.find((p) => p.kind === 'gear')!;
+    render(
+      <GearShopPage
+        ctx={ctx}
+        state={state}
+        perform={(a) => done.push(a)}
+        onBack={() => undefined}
+        placeId={shop.id}
+      />,
+    );
+    const shelf = screen.getByRole('region', { name: 'For handlers' });
+    await user.click(within(shelf).getByRole('button', { name: 'Buy' }));
+    expect(done).toEqual([{ type: 'buyLore', loreId: 'kennel-masters-notes' }]);
   });
 });
