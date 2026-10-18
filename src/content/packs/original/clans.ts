@@ -13,6 +13,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'hibana',
     name: 'Hibana',
+    outsiders: 'welcoming',
     description: 'Fire-breathers who light the village’s great lanterns each dusk. Hot-tempered.',
     statBonuses: { ninjutsu: 2, stamina: 1, willpower: -2 },
     modifiers: { studyElement: { fire: 1.3 } },
@@ -24,6 +25,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'tokaku',
     name: 'Tōkaku',
+    outsiders: 'guarded',
     description: 'Lantern-keepers who guide the dead home. They see what others can’t.',
     statBonuses: { perception: 2, willpower: 1, genjutsu: 1, strength: -2 },
     modifiers: { studyDiscipline: { genjutsu: 1.2 } },
@@ -40,6 +42,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'kurogane',
     name: 'Kurogane',
+    outsiders: 'reserved',
     description: 'Smiths and swordsmen. Every child forges their first blade at twelve.',
     statBonuses: { kenjutsu: 2, strength: 1, genjutsu: -1, intellect: -1 },
     modifiers: { studyDiscipline: { kenjutsu: 1.25, genjutsu: 0.8 } },
@@ -50,6 +53,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'shimenawa',
     name: 'Shimenawa',
+    outsiders: 'reserved',
     description: 'Weavers of the sacred ropes that bind the restless dead. Patient, and frail.',
     statBonuses: { fuuinjutsu: 2, chakraControl: 1, stamina: -2 },
     modifiers: { studyDiscipline: { fuuinjutsu: 1.3 } },

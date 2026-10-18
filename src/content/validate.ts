@@ -26,6 +26,10 @@ import { validateRoutes } from './validateRoutes';
 import { validateAtlas } from './validateAtlas';
 import { validateExercises } from './validateExercises';
 import { validateCrews } from './validateCrews';
+import { validateRetinues } from './validateRetinues';
+import { validateCompanionArts } from './validateCompanionArts';
+import { validateCompanions } from './validateCompanions';
+import { validateCompounds } from './validateCompounds';
 import { validateStory } from './validateStory';
 import { jobProfile, postedAway } from './jobProfile';
 import { placeholdersIn } from './missionTemplates';
@@ -43,6 +47,10 @@ export function validateContent(pack: ContentPack): string[] {
     ...techniqueReferenceProblems(pack),
     ...missionProblems(pack),
     ...validateCrews(pack),
+    ...validateRetinues(pack),
+    ...validateCompanions(pack),
+    ...validateCompanionArts(pack),
+    ...validateCompounds(pack),
     ...validateSenseis(pack),
     ...validateSenseiParts(pack),
     ...validateStory(pack),

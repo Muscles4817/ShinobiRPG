@@ -146,3 +146,22 @@ export {
   type SessionFormat,
 } from './senseis';
 export { VOICE_MOMENTS, type VoiceDef, type VoiceMoment } from './voices';
+export type {
+  ClanCompanion,
+  CompanionKindDef,
+  CompanionLoreDef,
+  HandlerFields,
+  KindTechnique,
+  RetinueEntry,
+  RetinueTell,
+  KennelPups,
+  StrayHaunt,
+  VetFields,
+  WildHaunt,
+} from './companions';
+export {
+  OUTSIDER_STANCES,
+  type CompoundFields,
+  type OutsiderStance,
+  type QuarterFields,
+} from './compounds';

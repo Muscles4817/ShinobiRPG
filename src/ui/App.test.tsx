@@ -276,11 +276,13 @@ describe('App (smoke test)', () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);
     await startGame(user);
+    // Who's here shows the people you know out and about: your team, not every stranger.
+    const around = screen.getByRole('region', { name: 'Who’s here' });
+    expect(within(around).queryByRole('button', { name: /Kaen/ })).toBeNull();
     await user.click(screen.getByRole('button', { name: /Bonds/ }));
     expect(screen.getByRole('heading', { name: 'Your team' })).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: /Here/ }));
-    const around = screen.getByRole('region', { name: 'Who’s here' });
-    await user.click(within(around).getByRole('button', { name: /Kaen/ }));
+    await user.click(screen.getByText(/more to meet around the village/));
+    await user.click(screen.getByRole('button', { name: /Kaen/ }));
     // A stranger's profile is short: who they are, what knowing them opens, a read of them.
     expect(screen.getByRole('region', { name: 'Between you' })).toBeInTheDocument();
     expect(screen.queryByRole('region', { name: 'Where to find them' })).not.toBeInTheDocument();
@@ -288,7 +290,19 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /Bet I can beat you anyway/ }));
     expect(screen.getByText(/^\+\d+ bond$/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Say goodbye' }));
-    expect(screen.getByRole('heading', { name: 'Tōrōgakure' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'The people in your life' })).toBeInTheDocument();
+  });
+
+  it('walks through the clans’ quarter to a compound’s gate, and back', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Clan Quarter/));
+    await user.click(screen.getByRole('button', { name: /Tōkaku Compound/ }));
+    // The Tōkaku keep strangers out; the gate says why.
+    expect(screen.getByText(/let in only those who are close friends/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /The quarter/ }));
+    expect(screen.getByRole('button', { name: /Hibana Compound/ })).toBeInTheDocument();
   });
 
   it('trains with your sensei among the people at the training grounds', async () => {

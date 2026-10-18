@@ -42,6 +42,7 @@ import { NO_PEOPLE } from './people/state';
 import { NO_MENTOR } from './sensei/state';
 import { openDay } from './daybook/open';
 import { NO_DAYBOOK } from './daybook/state';
+import { bornCompanions, kindOf, playerCompanion } from './companions/make';
 import type { GameState } from './state';
 import { bornNature } from './nature';
 import { notesAptitude, notesProblems } from './notes';
@@ -242,6 +243,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     daybook: NO_DAYBOOK,
     rival: null,
     fieldBook: EMPTY_FIELD_BOOK,
+    companions: bornCompanions(clan, seed, ctx),
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),
@@ -273,5 +275,12 @@ function logOpening(state: GameState, ctx: GameContext, roll: BreakInRoll): Game
     ],
   });
   next = log(next, { text: breakIn.caught, tone: 'info' });
-  return log(next, { heading: 'Graduation', text: text.intro, tone: 'success' });
+  next = log(next, { heading: 'Graduation', text: text.intro, tone: 'success' });
+  const companion = playerCompanion(next);
+  if (!companion) return next;
+  const kind = kindOf(companion, ctx).name.toLowerCase();
+  return log(next, {
+    text: `${companion.name}, your ${kind}, has been at your side since you were small. They come too.`,
+    tone: 'info',
+  });
 }

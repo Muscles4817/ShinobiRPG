@@ -14,6 +14,7 @@ import type { GameContext } from '../context';
 import { combatStats, equippedIn } from '../gear';
 import { currentLocation } from '../ops';
 import type { GameState } from '../state';
+import { loreOnShelf, type LoreOnShelf } from './handling';
 import { choice, type Choice } from './common';
 import { gearChips, gearKindLabel } from './gearWords';
 
@@ -91,6 +92,8 @@ export interface GearShopView {
   }[];
   /** Fight tools sold by the piece; empty if the shop sells none. */
   readonly tools: readonly ToolItem[];
+  /** Handling lore for companions; empty if the shop sells none. */
+  readonly lore: readonly LoreOnShelf[];
 }
 
 function gearItem(state: GameState, ctx: GameContext, def: GearDef): GearItem {
@@ -131,6 +134,7 @@ export function gearShopView(
       items: items.filter((g) => gearSlot(g) === slot).map((g) => gearItem(state, ctx, g)),
     })).filter((r) => r.items.length > 0),
     tools: (place.toolIds ?? []).map((id) => toolItem(state, ctx, ctx.content.tools.require(id))),
+    lore: loreOnShelf(state, ctx, place.loreIds ?? []),
   };
 }
 

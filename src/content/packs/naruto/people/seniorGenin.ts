@@ -70,7 +70,7 @@ export const SENIOR_GENIN: readonly PersonDef[] = [
     schedule: {
       morning: 'training-grounds',
       afternoon: 'training-grounds',
-      evening: null,
+      evening: 'hyuga-compound',
       night: null,
     },
     arsenal: NEJI_ARSENAL,

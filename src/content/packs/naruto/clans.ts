@@ -13,6 +13,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'uchiha',
     name: 'Uchiha',
+    outsiders: 'guarded',
     description: 'Fire, pride and a bloodline that wakes in moments of great emotion.',
     statBonuses: { ninjutsu: 2, perception: 1, willpower: -2 },
     modifiers: { studyElement: { fire: 1.3 } },
@@ -30,6 +31,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'hyuga',
     name: 'Hyūga',
+    outsiders: 'guarded',
     description: 'The Byakugan sees chakra itself. The clan’s rules are as strict as its stance.',
     statBonuses: { perception: 3, taijutsu: 1 },
     modifiers: { studyDiscipline: { ninjutsu: 0.7 } },
@@ -45,6 +47,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'nara',
     name: 'Nara',
+    outsiders: 'reserved',
     description: 'Shadow techniques and a mind for strategy. Not fond of effort.',
     statBonuses: { intellect: 3, stamina: -1, strength: -1 },
     modifiers: { growth: { intellect: 1.1 } },
@@ -55,6 +58,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'akimichi',
     name: 'Akimichi',
+    outsiders: 'welcoming',
     description: 'Big bodies, bigger hearts, and an appetite to match the clan’s techniques.',
     statBonuses: { strength: 2, stamina: 2, speed: -1 },
     modifiers: { hungerRate: 1.6 },
@@ -65,6 +69,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'yamanaka',
     name: 'Yamanaka',
+    outsiders: 'reserved',
     description: 'Mind techniques, and a flower shop that hears every rumour in the village.',
     statBonuses: { genjutsu: 2, perception: 1, strength: -1 },
     modifiers: { studyDiscipline: { genjutsu: 1.2 } },
@@ -75,6 +80,7 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'aburame',
     name: 'Aburame',
+    outsiders: 'reserved',
     description: 'Your body is a hive. The insects eat chakra, yours and the enemy’s.',
     statBonuses: { chakraControl: 2, willpower: 1, speed: -1 },
     modifiers: { growth: { chakraControl: 1.1 } },
@@ -85,12 +91,14 @@ export const CLANS: readonly ClanDef[] = [
   {
     id: 'inuzuka',
     name: 'Inuzuka',
+    outsiders: 'reserved',
     description: 'Wild, loud and fast, with a nose to match your ninken.',
     statBonuses: { speed: 2, taijutsu: 1, perception: 1, intellect: -2 },
     modifiers: { growth: { speed: 1.1 } },
     arts: ['speed', 'taijutsu'],
     startingTechniqueIds: ['fang-over-fang'],
     lodging: 'Your room in the Inuzuka kennels',
+    companion: { kindId: 'ninken', bond: 30 },
   },
   {
     id: 'uzumaki',

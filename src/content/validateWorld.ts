@@ -128,6 +128,23 @@ function wildsRefs(wilds: {
   return [...wilds.finds, ...caught].map((f) => ['ingredient', f.ingredientId]);
 }
 
+/** Places that refer to nothing in the pack's lists (a compound's links are `validateCompounds`'s). */
+const BARE_KINDS = [
+  'home',
+  'hospital',
+  'inn',
+  'house',
+  'onsen',
+  'compound',
+  'quarter',
+  'vet',
+] as const;
+type BarePlace = Extract<PlaceDef, { readonly kind: (typeof BARE_KINDS)[number] }>;
+
+function isBare(place: PlaceDef): place is BarePlace {
+  return (BARE_KINDS as readonly string[]).includes(place.kind);
+}
+
 function placeRefs(place: PlaceDef): [RefKind, string][] {
   if (place.kind !== 'lettings') return stockRefs(place);
   return [
@@ -138,6 +155,7 @@ function placeRefs(place: PlaceDef): [RefKind, string][] {
 
 /** What a place other than the lettings office offers. */
 function stockRefs(place: Exclude<PlaceDef, { kind: 'lettings' }>): [RefKind, string][] {
+  if (isBare(place)) return [];
   switch (place.kind) {
     case 'training':
       return place.trainingIds.map((id) => ['training', id]);
@@ -157,11 +175,5 @@ function stockRefs(place: Exclude<PlaceDef, { kind: 'lettings' }>): [RefKind, st
       return place.techniqueIds.map((id) => ['technique', id]);
     case 'wilds':
       return wildsRefs(place);
-    case 'home':
-    case 'hospital':
-    case 'inn':
-    case 'house':
-    case 'onsen':
-      return [];
   }
 }

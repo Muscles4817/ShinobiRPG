@@ -61,6 +61,8 @@ export type Report =
       readonly gear?: string;
       /** The recipe the client taught you, by name. */
       readonly recipe?: string;
+      /** The animal you rescued, waiting at the animal clinic, by the name you gave it. */
+      readonly companion?: string;
       /** How the job went, line by line (absent on reports from before the ledger). */
       readonly road?: readonly DebriefLine[];
       readonly crew?: readonly DebriefCrew[];

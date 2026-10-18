@@ -1,4 +1,5 @@
 import type { CombatState } from '@/systems/combat';
+import type { Companions } from '@/systems/companions';
 import type { MapStyle } from './mapStyle';
 import type { FieldBook } from '@/systems/collections';
 import type { Cooking, MealQuality } from '@/systems/cooking';
@@ -76,6 +77,8 @@ export interface GameState {
   readonly daybook: Daybook;
   /** Your rival from the year (`rival/`), once your team is settled; null before. */
   readonly rival: Rival | null;
+  /** Bonded creatures by owner (yours under `PLAYER_OWNER`), and a stray being won over. */
+  readonly companions: Companions;
   /**
    * Set only on a versus sandbox (`game/versus/`): who is fighting whom. A sandbox is never
    * saved, so a real playthrough never carries it.

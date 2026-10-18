@@ -1,0 +1,86 @@
+import { look } from '../../../look';
+import { statLine } from '../../../statLine';
+import type { PersonDef } from '../../../types';
+
+/** Team Ten of your year: the Ino–Shika–Chō trio. */
+export const TEAM_TEN_GENIN: readonly PersonDef[] = [
+  {
+    id: 'shikamaru',
+    name: 'Shikamaru',
+    familyName: 'Nara',
+    role: 'genin',
+    title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { ninjutsu: 9, intellect: 12, perception: 9, willpower: 4, stamina: 4 }),
+    clanId: 'nara',
+    traitIds: ['lazy', 'cunning'],
+    appearance: look(
+      'ponytail',
+      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3e6b3a' },
+      'arm',
+      { eyes: 'hooded', expression: 'calm' },
+    ),
+    specialty: 'ninjutsu',
+    bio: 'Genius, if he could be bothered. Would rather watch clouds than do almost anything.',
+    schedule: {
+      morning: 'nara-compound',
+      afternoon: 'training-grounds',
+      evening: 'shopping-district',
+      night: null,
+    },
+  },
+  {
+    id: 'choji',
+    name: 'Chōji',
+    familyName: 'Akimichi',
+    role: 'genin',
+    title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { taijutsu: 9, strength: 11, stamina: 10, reserves: 9, speed: 4 }),
+    clanId: 'akimichi',
+    traitIds: ['kind', 'humble'],
+    appearance: look(
+      'spiky',
+      {
+        hair: '#8a5a2b',
+        eyes: '#2a1d14',
+        skin: '#f3d2b3',
+        outfit: '#3e6b3a',
+      },
+      'forehead',
+      { shape: 'round', figure: 'broad', expression: 'smile' },
+    ),
+    specialty: 'taijutsu',
+    bio: 'Big-hearted, loyal, and always holding a bag of chips. Do not call him fat.',
+    schedule: {
+      morning: 'shopping-district',
+      afternoon: 'training-grounds',
+      evening: 'akimichi-compound',
+      night: null,
+    },
+  },
+  {
+    id: 'ino',
+    name: 'Ino',
+    familyName: 'Yamanaka',
+    role: 'genin',
+    title: 'Genin',
+    rank: 'genin',
+    stats: statLine(5, { genjutsu: 10, perception: 8, intellect: 8 }),
+    clanId: 'yamanaka',
+    traitIds: ['proud', 'curious'],
+    appearance: look(
+      'ponytail',
+      { hair: '#e0b64a', eyes: '#3b6fb6', skin: '#f3d2b3', outfit: '#5a3a6e' },
+      'belt',
+    ),
+    specialty: 'genjutsu',
+    bio: 'Knows everyone’s business by lunchtime. Works the family flower shop when she has to.',
+    schedule: {
+      morning: 'shopping-district',
+      afternoon: 'mission-desk',
+      evening: 'yamanaka-compound',
+      night: null,
+    },
+  },
+];

@@ -54,6 +54,7 @@ export const SHUKUBA_TOWN: LocationDef = {
       hours: ['morning', 'afternoon'],
       keeper: 'A retired courier with one good knee',
       gearIds: ['tanto', 'weighted-kunai', 'mesh-shirt', 'shadow-cloak'],
+      loreIds: ['kennel-masters-notes'],
     },
     {
       id: 'waystation',

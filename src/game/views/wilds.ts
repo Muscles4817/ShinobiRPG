@@ -1,8 +1,13 @@
 import type { Biome } from '@/content';
 import { gatheredToday, inSeason, recognised, type Find } from '@/systems/cooking';
 
+import { daysToWin } from '@/systems/companions';
+
+import { TRACK_ENERGY } from '../actions/finding';
+import { trackingChance, wildHere } from '../companions/wild';
 import type { GameContext } from '../context';
 import { gatherMoment, wildsHere } from '../gathering';
+import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 
@@ -25,12 +30,52 @@ export interface FishingSpotView extends Choice {
   readonly bites: WhatsAbout;
 }
 
+/** Signs of a wild one living here, for someone without a companion, and tracking it. */
+export interface WildSign {
+  readonly kind: string;
+  readonly sign: string;
+  /** Good days of tracking so far, and how many it takes. */
+  readonly days: number;
+  readonly needed: number;
+  /** How a day's tracking is likely to go, by your eyes, in words. */
+  readonly odds: string;
+  /** What a day's tracking costs you in energy. */
+  readonly energy: number;
+  readonly track: Choice;
+}
+
 export interface WildsView {
   readonly name: string;
   readonly blurb: string;
   readonly biome: Biome;
   readonly forage: Choice & { readonly about: WhatsAbout };
   readonly spots: readonly FishingSpotView[];
+  readonly wild: WildSign | null;
+}
+
+/** Below this a day's tracking more often goes cold than not; above the next, it mostly gets closer. */
+const ODDS_POOR = 0.4;
+const ODDS_GOOD = 0.65;
+
+function oddsLine(chance: number): string {
+  if (chance < ODDS_POOR) return 'Your eyes lose the trail more often than not.';
+  if (chance < ODDS_GOOD) return 'Some days you’ll keep the trail, some days not.';
+  return 'Your eyes keep the trail more often than not.';
+}
+
+function wildSign(state: GameState, ctx: GameContext, placeId: string): WildSign | null {
+  const kind = wildHere(state, ctx, placeId);
+  if (!kind) return null;
+  const tracking = state.companions.tracking;
+  return {
+    kind: kind.name,
+    sign: kind.wild.sign,
+    days: tracking?.kindId === kind.id ? tracking.visits : 0,
+    needed: daysToWin(kind.temperament),
+    odds: oddsLine(trackingChance(state)),
+    energy: hardWorkEnergy(state.character, ctx, TRACK_ENERGY),
+    track: choice(state, ctx, { type: 'trackWild', placeId }),
+  };
 }
 
 function whatsAbout(state: GameState, ctx: GameContext, finds: readonly Find[]): WhatsAbout {
@@ -63,6 +108,7 @@ export function wildsView(state: GameState, ctx: GameContext, placeId: string): 
       description: spot.description,
       bites: whatsAbout(state, ctx, spot.catches),
     })),
+    wild: wildSign(state, ctx, placeId),
   };
 }
 
@@ -70,6 +116,8 @@ export function wildsView(state: GameState, ctx: GameContext, placeId: string): 
 export function wildsLine(state: GameState, ctx: GameContext, placeId: string): string {
   const place = wildsHere(state, ctx, placeId);
   if (!place) return '';
+  const wild = wildHere(state, ctx, placeId);
+  if (wild) return `Signs of a ${wild.name.toLowerCase()}`;
   if (gatheredToday(state.cooking.gathered, place.id, state.time.day)) return 'Searched today';
   const { known } = whatsAbout(state, ctx, place.finds);
   return known.length > 0 ? `${known.slice(0, 2).join(' and ')} about` : place.blurb;

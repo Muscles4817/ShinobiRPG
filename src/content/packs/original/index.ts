@@ -1,3 +1,4 @@
+import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
@@ -15,6 +16,7 @@ import { UPBRINGINGS } from '../../shared/upbringings';
 import { CLAN_TECHNIQUES } from './clanTechniques';
 import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
+import { COMPANION_KINDS } from './companions';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { SEASONAL_FOODS } from './seasonalFood';
@@ -99,6 +101,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...SENSEI_TECHNIQUES,
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
+    ...BEAST_TECHNIQUES,
     ...TIDEWIRE_TECHNIQUES,
   ],
   missions: [
@@ -130,6 +133,8 @@ export const ORIGINAL_PACK: ContentPack = {
     PATIENT_THING_ARC,
   ],
   voices: VOICES,
+  companionKinds: COMPANION_KINDS,
+  companionLore: COMPANION_LORE,
   enemies: [
     ...ENEMIES,
     ...CHUNIN_ENEMIES,

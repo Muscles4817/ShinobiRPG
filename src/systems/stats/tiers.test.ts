@@ -1,5 +1,5 @@
 import { createStats } from './stats';
-import { fightingPower, statTier } from './tiers';
+import { fightingPower, partyPower, statTier } from './tiers';
 
 describe('stat tiers', () => {
   it('grades a value E–S with its shinobi rank, and names the next step', () => {
@@ -22,5 +22,18 @@ describe('stat tiers', () => {
     const specialist = createStats(6, { taijutsu: 6 });
     expect(fightingPower(allRound)).toBe(6);
     expect(fightingPower(specialist)).toBe(9);
+  });
+});
+
+describe('partyPower', () => {
+  it('is a lone fighter’s own rating', () => {
+    expect(partyPower([10])).toBeCloseTo(10);
+  });
+
+  it('grows with every body beside them, but two are less than twice one', () => {
+    const pair = partyPower([10, 10]);
+    expect(partyPower([10, 5])).toBeGreaterThan(10);
+    expect(pair).toBeGreaterThan(partyPower([10, 5]));
+    expect(pair).toBeLessThan(20);
   });
 });

@@ -2,7 +2,7 @@ import type { EnemyDef } from '@/content';
 import { knownWell, type FoeRecord } from '@/systems/collections';
 
 import type { GameContext } from '../context';
-import { enemyStats, scout, traitNotes } from '../scouting';
+import { scoutOpponents, traitNotes } from '../scouting';
 import type { GameState } from '../state';
 import type { FieldEntry } from './fieldBookEntries';
 
@@ -14,8 +14,7 @@ import type { FieldEntry } from './fieldBookEntries';
 
 function foeLines(state: GameState, ctx: GameContext, foe: EnemyDef): string[] {
   const record = state.fieldBook.foes[foe.id];
-  const stats = enemyStats(ctx, foe.id);
-  const read = stats ? scout(stats, state.character.stats, false) : null;
+  const read = scoutOpponents(state, ctx, [foe.id])[foe.id];
   const tricks = (record?.beaten ?? 0) > 0 ? traitNotes(foe.traits ?? []) : [];
   const leansOn = knownWell(record)
     ? foe.techniqueIds.flatMap((id) => ctx.content.techniques.get(id)?.name ?? [])

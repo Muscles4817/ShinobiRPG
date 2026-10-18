@@ -2,8 +2,8 @@
 
 type RawState = Record<string, unknown>;
 
-/** v49 → v50: a field book. An older save starts it empty: nothing was written down before. */
-export function v49ToV50(state: RawState): RawState {
+/** v52 → v53: a field book. An older save starts it empty: nothing was written down before. */
+export function v52ToV53(state: RawState): RawState {
   return {
     ...state,
     fieldBook: state.fieldBook ?? { catches: {}, finds: {}, sights: [], foes: {}, rewarded: [] },

@@ -4,7 +4,7 @@ import { statLine } from '../../statLine';
 
 /**
  * The people who feed Tōrōgakure and teach its dishes: Granny Tsune at her noodle stall, Kasumi at
- * the canal teahouse and Mama Sayo at the izakaya.
+ * the canal teahouse and Mama Sayo at the izakaya; and Kaori, who mends its animals.
  */
 export const VILLAGE_COOKS: readonly PersonDef[] = [
   {
@@ -108,5 +108,36 @@ export const VILLAGE_COOKS: readonly PersonDef[] = [
     ),
     bio: 'Runs the Paper Lantern and hears everything said over its counter. Forgets nothing.',
     schedule: { morning: null, afternoon: null, evening: 'izakaya', night: 'izakaya' },
+  },
+  {
+    id: 'kaori',
+    name: 'Kaori',
+    familyName: 'Kiyose',
+    role: 'villager',
+    title: 'Animal doctor',
+    rank: 'civilian',
+    stats: statLine(4, {
+      intellect: 9,
+      perception: 9,
+      willpower: 8,
+      taijutsu: 1,
+      ninjutsu: 0,
+      genjutsu: 0,
+      kenjutsu: 0,
+      fuuinjutsu: 0,
+    }),
+    traitIds: ['kind', 'diligent'],
+    appearance: look(
+      'short',
+      { hair: '#3a2a1e', eyes: '#2a1d14', skin: '#d9a070', outfit: '#5a7a8a' },
+      'arm',
+    ),
+    bio: 'Mends the village’s dogs, cats, carp and carrier birds. Talks to the patients, never the owners.',
+    schedule: {
+      morning: 'animal-clinic',
+      afternoon: 'animal-clinic',
+      evening: 'market-street',
+      night: null,
+    },
   },
 ];
