@@ -80,12 +80,16 @@ describe('the chūnin ceremony', () => {
     };
     const senseiId = set.people.team!.senseiId!;
     const sensei = ctx.content.people.require(senseiId);
-    expect(promotionScene(set, ctx)?.farewell).toMatch(
-      new RegExp(`^${sensei.name} finds you after the ceremony`),
-    );
+    const farewell = promotionScene(set, ctx)?.farewell ?? '';
+    expect(farewell).toContain(sensei.name);
+    expect(farewell).not.toMatch(/\d|\n/);
     const after = act(set, { type: 'acceptPromotion' });
     const word = after.journal.entries.find((e) => e.heading === `${sensei.name}’s farewell`);
+    // One speech, the same as the ceremony showed, the gift said in it once.
+    expect(word?.text).toBe(farewell);
     expect(word?.chips?.length).toBe(2);
+    const gift = word?.chips?.[0]?.label ?? '';
+    if (!/bond|meal/i.test(gift)) expect(farewell.split(gift)).toHaveLength(2);
     expect(after.character.assignment).toBeNull();
     expect(after.village.memories).toContainEqual(
       expect.objectContaining({ personId: senseiId, text: 'the day you made chūnin' }),

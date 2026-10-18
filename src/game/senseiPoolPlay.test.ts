@@ -22,7 +22,7 @@ function under(senseiId: string, state: GameState): GameState {
 }
 
 function hearing(state: GameState, personId: string, conversationId: string): GameState {
-  const conversation = { personId, conversationId, answer: null };
+  const conversation = { personId, conversationId, topicKey: null, answer: null };
   return { ...state, people: { ...state.people, conversation } };
 }
 
@@ -112,7 +112,8 @@ describe('a generated sensei’s voice', () => {
       ...theirs,
       exams: { ...theirs.exams, ceremony: { rank: 'chunin' as const, route: 'exam' as const } },
     };
-    expect(farewellDue(ceremony, ctx)?.words).toContain(voice.catchphrase);
+    // Said as a quote with its attribution after, so its full stop becomes a comma.
+    expect(farewellDue(ceremony, ctx)?.words).toContain(voice.catchphrase.replace(/\.$/, ''));
   });
 });
 

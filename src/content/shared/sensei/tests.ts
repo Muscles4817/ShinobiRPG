@@ -7,7 +7,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
     title: 'The bells',
     memory: 'the bells',
     intro:
-      '{sensei} ties two bells to {sensei.their} belt. “Take one by sundown, or go back to the academy. There are three of you. Think about that.”',
+      '{sensei} ties two bells to {sensei.their} belt. “Take one by sundown, or go back to the academy. There are three of you and two bells, so think about that before you start.”',
     rounds: [
       {
         prompt: '{sensei} stands in the clearing, reading, as if you weren’t there.',
@@ -16,12 +16,13 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
             label: 'Charge in alone',
             approach: 'alone',
             result:
-              'You are on your back before you see {sensei.them} move. The bells don’t even ring.',
+              'You are on your back before you see {sensei.them} move, and the bells haven’t so much as rung.',
           },
           {
             label: 'Find {mate} and {mate2}',
             approach: 'together',
-            result: '{mate} wants to go alone. {mate2} listens. Between you, a plan takes shape.',
+            result:
+              '{mate} wants to go alone, but {mate2} listens, and between the three of you a plan starts to take shape.',
           },
           {
             label: 'Watch from the trees',
@@ -32,29 +33,30 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
         ],
       },
       {
-        prompt: 'The sun is going down. One chance left.',
+        prompt: 'The sun is going down, and you have one more chance before it sets.',
         options: [
           {
             label: 'Draw {sensei.them} off so the others can reach the bells',
             approach: 'together',
-            result: 'You take the beating. {mate}’s hand closes on a bell.',
+            result: 'You take the beating so that {mate}’s hand can close on a bell.',
           },
           {
             label: 'Set a snare by the post',
             approach: 'cunning',
             result:
-              'The snare catches nothing, but it makes {sensei.them} step right. That was the point.',
+              'The snare catches nothing, but it makes {sensei.them} step to the right, which was the whole idea.',
           },
           {
             label: 'Go for the bells yourself',
             approach: 'alone',
-            result: 'Your fingers brush a bell. It is not enough, but it is close.',
+            result:
+              'Your fingers brush a bell, close enough to hear it ring and not close enough to take it.',
           },
         ],
       },
     ],
     close:
-      '“Nobody took a bell,” {sensei} says. “But I learned what I needed to. You pass. Barely.”',
+      '“Nobody took a bell,” {sensei} says, “but I learned what I needed to about the three of you. You pass, if only just.”',
   },
   {
     id: 'survival',
@@ -64,7 +66,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
       '{sensei} walks the team out past the last lantern. “You’re here till morning. No fire unless you make it. I’ll be watching.”',
     rounds: [
       {
-        prompt: 'Dark comes quickly under the trees.',
+        prompt: 'Dark comes quickly under the trees, and the cold comes with it.',
         options: [
           {
             label: 'Split the work: water, wood, a shelter',
@@ -74,10 +76,11 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
           {
             label: 'Climb a tree and wait for morning',
             approach: 'patient',
-            result: 'Cold and stiff, but you see everything that moves below.',
+            result:
+              'You spend the night cold and stiff in the branches, but you see everything that moves below.',
           },
           {
-            label: 'Go and find something to eat',
+            label: 'Go and find food',
             approach: 'alone',
             result:
               'You come back with a hare and scratches. {mate} looks impressed despite {mate.themself}.',
@@ -85,7 +88,7 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
         ],
       },
       {
-        prompt: 'Something is circling the camp. {sensei}, probably. Probably.',
+        prompt: 'A shape is circling the camp, and you are almost sure it is {sensei}.',
         options: [
           {
             label: 'Lay false tracks away from the camp',
@@ -95,18 +98,19 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
           {
             label: 'Keep watch in turns',
             approach: 'together',
-            result: 'Nobody sleeps much, but nobody is caught asleep either.',
+            result: 'Nobody sleeps much, but then nobody is caught asleep either.',
           },
           {
             label: 'Go out and face it',
             approach: 'alone',
             result:
-              'It is {sensei}. {sensei.they} seem{sensei.s} pleased you came. {sensei.they} seem{sensei.s} pleased you lost.',
+              'It is {sensei}, who seems pleased that you came out to face {sensei.them} and just as pleased to put you on the ground.',
           },
         ],
       },
     ],
-    close: '“Morning,” {sensei} says, from right behind you. “You’re all alive. That’s a pass.”',
+    close:
+      '“Morning,” {sensei} says, from right behind you. “You’re all still alive, and that counts as a pass.”',
   },
   {
     id: 'spar',
@@ -121,7 +125,8 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
           {
             label: 'Go straight at {sensei.them}',
             approach: 'alone',
-            result: 'You hit air, then the ground. You get up. You go again.',
+            result:
+              'You hit air and then the ground, and you get up and go at {sensei.them} again.',
           },
           {
             label: 'Come at {sensei.them} from three sides with the others',
@@ -138,27 +143,27 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
         ],
       },
       {
-        prompt: 'You are all on the ground. {sensei} waits.',
+        prompt: 'You are all on the ground, and {sensei} waits to see who gets up first.',
         options: [
           {
             label: 'Get up first',
             approach: 'alone',
-            result: 'You are up before the others. It hurts. You don’t show it.',
+            result: 'You are up before the others. It hurts, and you don’t let it show.',
           },
           {
             label: 'Help {mate} up',
             approach: 'together',
-            result: '{mate} takes your hand. {sensei} notices.',
+            result: '{mate} takes your hand, and you see {sensei} notice.',
           },
           {
             label: 'Stay down and catch your breath',
             approach: 'patient',
-            result: 'When you rise, you are steadier than the others.',
+            result: 'When you do get up, you are steadier on your feet than the others.',
           },
         ],
       },
     ],
-    close: '“Again tomorrow,” {sensei} says. “And every day after. You’ll do.”',
+    close: '“Again tomorrow,” {sensei} says, “and every day after that. You’ll do.”',
   },
   {
     id: 'interview',
@@ -173,17 +178,18 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
           {
             label: 'The strongest in the village',
             approach: 'alone',
-            result: '{sensei} nods slowly. “Strong for what?” You don’t have an answer yet.',
+            result: '“Strong for what?” {sensei} asks, and you find you don’t have an answer yet.',
           },
           {
             label: 'Someone the others can count on',
             approach: 'together',
-            result: '{mate2} glances at you. Something in {mate2.their} face eases.',
+            result: '{mate2} glances at you. The worry goes out of {mate2.their} face.',
           },
           {
             label: 'I want to understand things first',
             approach: 'patient',
-            result: '“Good,” {sensei} says. “Most don’t.”',
+            result:
+              '“Good,” {sensei} says. “Most people your age want to be something long before they understand anything.”',
           },
         ],
       },
@@ -208,6 +214,6 @@ export const SENSEI_TESTS: readonly SenseiTestDef[] = [
         ],
       },
     ],
-    close: '“That’ll do,” {sensei} says. “Tomorrow, we start.”',
+    close: '“That’ll do for today,” {sensei} says. “Tomorrow we start properly.”',
   },
 ];

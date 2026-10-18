@@ -3,6 +3,7 @@ import { ctx, newGame } from '@/test/gameFixtures';
 
 import { requirePerson } from './people/cast';
 import { personSlots } from './people/pronouns';
+import { phrasingsOf } from './people/register';
 import { fillLine } from './people/talk';
 import { coachAfterLesson } from './sensei/coaching';
 import { waysOf } from './sensei/generate';
@@ -25,7 +26,9 @@ function beats(sensei: PersonDef): string[] {
   const values = { you: 'Aya', ...personSlots('them', sensei) };
   return ctx.content.conversations.all
     .filter((c) => c.personId === sensei.id)
-    .flatMap((c) => [c.opener, ...c.choices.flatMap((x) => [x.label, x.reply])])
+    .flatMap((c) =>
+      [c.opener, ...c.choices.flatMap((x) => [x.label, x.reply])].flatMap(phrasingsOf),
+    )
     .map((line) => fillLine(line, values));
 }
 

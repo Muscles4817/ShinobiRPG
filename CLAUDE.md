@@ -545,9 +545,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     you, your edge). The **first meeting** (`opening.ts`, a scene after the chakra paper) is
     their test from the pack's `senseiTests` (never failed: your approaches against their
     philosophy set regard) and one question: shown everything, or not. The **curriculum** (the
-    pack's `curriculum`, ordered by philosophy in `curriculum.ts`) is the tutorial: one beat a
-    day on the sensei's slip, each once it makes sense (the slip itself always first, food
-    first once you go hungry); nothing is locked behind it. Turning up raises regard only to
+    pack's `curriculum`, ordered by philosophy in `curriculum.ts`) is the tutorial: each beat is
+    told once, just before the thing it explains (the first drill, spar, job, meal, journey…;
+    `curriculumBefore`/`curriculumAfter` in `dispatch`), in the sensei's own words for their
+    feedback manner; what is left is offered on their slip, one a day; nothing is locked behind
+    it. What a sensei says at sessions, sign-offs and morning notes is the pack's
+    `senseiSpeech`, picked with `tellFresh` so it doesn't repeat. Turning up raises regard only to
     `ATTENDANCE_CEILING`; past it, only what you do counts. On a job they lead, an evening
     with them is a camp choice of its own (`story/fireside.ts`): a little of who they are, and
     what they saw of you. Once a

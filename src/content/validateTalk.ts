@@ -1,7 +1,13 @@
 import { PRONOUN_FORMS } from '@/core';
 
 import { NAME_SLOTS, TOPIC_SLOTS } from './conversationTopics';
-import { PERSON_ROLES, type ConversationDef, type TopicKind } from './people';
+import {
+  PERSON_ROLES,
+  REGISTERS,
+  type ConversationDef,
+  type Register,
+  type TopicKind,
+} from './people';
 import type { ContentPack } from './types';
 
 /**
@@ -21,7 +27,53 @@ const PERSON_SLOTS: readonly string[] = ['them', ...PRONOUN_FORMS.map((form) => 
 /** Slots any conversation may use: the names and the person's pronoun forms. */
 const SPEAKING_SLOTS: ReadonlySet<string> = new Set([...NAME_SLOTS, ...PERSON_SLOTS]);
 export function validateTalk(pack: ContentPack): string[] {
-  return [...topicProblems(pack), ...pack.conversations.flatMap(slotProblems)];
+  return [
+    ...topicProblems(pack),
+    ...pack.conversations.flatMap(slotProblems),
+    ...pack.conversations.flatMap(landingProblems),
+    ...pack.conversations.flatMap(phrasingProblems),
+  ];
+}
+
+/** The two pairs of registers; a phrased line must read in one of each, so it fits everyone. */
+const REGISTER_PAIRS: readonly (readonly Register[])[] = [
+  ['blunt', 'wry'],
+  ['warm', 'formal'],
+];
+
+/**
+ * A phrased line gives a phrasing in each pair of registers, so it reads right whoever says
+ * it, and a template's opener gives one for every register: the first words two people say
+ * are never the same.
+ */
+function phrasingProblems(c: ConversationDef): string[] {
+  const lines = [c.opener, ...c.choices.flatMap((x) => [x.reply, x.warm, x.cool])];
+  const halfPhrased = lines.some(
+    (line) =>
+      typeof line === 'object' && REGISTER_PAIRS.some((pair) => pair.every((r) => !line[r])),
+  );
+  const opener = c.opener;
+  const openerShort =
+    c.about !== undefined && (typeof opener === 'string' || REGISTERS.some((r) => !opener[r]));
+  return [
+    ...(halfPhrased
+      ? [`conversation "${c.id}" has a line phrased for only one pair of registers`]
+      : []),
+    ...(openerShort ? [`conversation "${c.id}" needs its opener phrased for every register`] : []),
+  ];
+}
+
+/**
+ * A template answers by how your reply landed, so each of its choices has a warm and a cool
+ * answer besides the plain one. Authored talk may leave them out: it answers plainly.
+ */
+function landingProblems(c: ConversationDef): string[] {
+  if (!c.about) return [];
+  return c.choices.flatMap((choice, i) =>
+    (['warm', 'cool'] as const)
+      .filter((landing) => !choice[landing])
+      .map((landing) => `conversation "${c.id}" choice ${i + 1} has no ${landing} answer`),
+  );
 }
 
 function keysOf(pack: ContentPack, kind: TopicKind): ReadonlySet<string> {

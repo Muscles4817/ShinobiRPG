@@ -1,630 +1,652 @@
 
-=== talk-specialty-0-watch with Asuka (genin, kenjutsu, calm, proud) ===
-opener: You find Asuka hard at work: the same three cuts through falling leaves, morning after morning. They keep going when you walk up.
+=== talk-specialty-0-watch with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: You find Asuka hard at work, the same three cuts through falling leaves, morning after morning. They finish the set before acknowledging you, and only then lower their hands.
   you: “That’s good form.”
-    Asuka almost smiles. “It’s kenjutsu. Form is the whole thing.”
+    (warm) Asuka finishes the set before they answer, and you can tell they’re pleased. “You noticed? Most people only watch my feet.”
   you: “Looks easy enough.”
-    “Then try it.” Asuka steps aside and waits.
+    (warm) “Then you try it,” Asuka says, already stepping aside, and looks delighted when you take the bait.
   you: “How long do you keep that up?”
-    “Until it’s right,” Asuka says, and carries on.
+    (flat) “Until it feels right, and some days that’s a long while,” Asuka says, and carries on.
 
-=== talk-specialty-0-watch with Goro (genin, ninjutsu, brash, curious) ===
-opener: You find Goro hard at work: hand signs under the table at every meal, faster each day, until the cups rattle. She keeps going when you walk up.
+=== talk-specialty-0-watch with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: You find Goro at the training ground, hand signs under the table at every meal, faster each day, until the cups rattle, and she doesn’t stop for you or for anyone.
   you: “That’s good form.”
-    Goro almost smiles. “It’s ninjutsu. Form is the whole thing.”
+    (flat) “It’s ninjutsu, so form is most of it,” Goro says without stopping.
   you: “Looks easy enough.”
-    “Then try it.” Goro steps aside and waits.
+    (warm) “Then you try it,” Goro says, already stepping aside, and looks delighted when you take the bait.
   you: “How long do you keep that up?”
-    “Until it’s right,” Goro says, and carries on.
+    (warm) “Until it’s right, and then a while longer, in case it was luck.” Goro counts the next one out loud so you can hear how far there is to go.
 
-=== talk-specialty-1-advice with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka watches you train, then can’t help it. “Can I tell you something about kenjutsu?”
+=== talk-specialty-1-advice with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka waits until you have finished the drill. “If you’ll allow me, I have a piece of advice about kenjutsu.”
   you: “Please. I want to get better.”
-    “Look after the edge and the edge looks after you. Oil it every night, even when you are tired.” They say it like something handed down.
+    (warm) Asuka sits on the fence rail, as if this might take a while and they’re glad of it. “Look after the edge and the edge looks after you. Oil it every night, even when you are tired.”
   you: “Is this going to take long?”
-    “Not if you listen.” They tell you anyway. “Look after the edge and the edge looks after you. Oil it every night, even when you are tired.”
-  you: Nod and wait.
-    Asuka seems to like that. “Look after the edge and the edge looks after you. Oil it every night, even when you are tired.”
+    (cool) “Forget I offered, then.” Asuka turns away, and only when you call after them do they give it to you, flatly. “Look after the edge and the edge looks after you. Oil it every night, even when you are tired.”
+  you: Wait for it.
+    (warm) Asuka seems to like that you didn’t fill the gap. They lower their voice. “Look after the edge and the edge looks after you. Oil it every night, even when you are tired.”
 
-=== talk-specialty-1-advice with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro watches you train, then can’t help it. “Can I tell you something about ninjutsu?”
+=== talk-specialty-1-advice with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro watches you train for as long as she can stand it. “You’re doing that wrong. Want me to tell you about ninjutsu, or not?”
   you: “Please. I want to get better.”
-    “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.” She says it like something handed down.
+    (flat) “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.” She says it the way it was said to her, word for word.
   you: “Is this going to take long?”
-    “Not if you listen.” She tells you anyway. “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.”
-  you: Nod and wait.
-    Goro seems to like that. “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.”
+    (flat) “Not if you listen.” She tells you anyway. “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.”
+  you: Wait for it.
+    (cool) “Well? Do you want to hear it or not?” Goro gives up on the pause. “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.”
 
-=== talk-specialty-1-daily with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “People think kenjutsu is about talent,” Asuka says. “It isn’t. It’s the same three cuts through falling leaves, morning after morning, every day.”
+=== talk-specialty-1-daily with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “It is often said that kenjutsu is a matter of talent,” Asuka says. “In my experience it is the same three cuts through falling leaves, morning after morning, kept up until it becomes second nature.”
   you: “That explains why you’re so good.”
-    Asuka shrugs, but stands a little straighter.
+    (warm) Asuka tries to wave it off and fails, and stands a little straighter for the rest of the set.
   you: “Every day? Even festival days?”
-    “Especially festival days. Nobody else is training.”
+    (flat) “Especially festival days. I have the whole ground to myself, and the stalls are still open after.”
   you: “Talent helps, though.”
-    “Then talent can do the drills too.” Their face doesn’t smile, but their eyes do.
+    (warm) “Then talent can do the drills too,” Asuka says, and their eyes light up at the argument. “Go on, tell me who you’re thinking of.”
 
-=== talk-specialty-1-daily with Goro (genin, ninjutsu, brash, curious) ===
-opener: “People think ninjutsu is about talent,” Goro says. “It isn’t. It’s hand signs under the table at every meal, faster each day, until the cups rattle, every day.”
+=== talk-specialty-1-daily with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “People think ninjutsu is talent,” Goro says. “It’s hand signs under the table at every meal, faster each day, until the cups rattle. Do that long enough and you stop noticing you’re doing it.”
   you: “That explains why you’re so good.”
-    Goro shrugs, but stands a little straighter.
+    (flat) “It explains why I’m not worse.” Goro goes back to the drill.
   you: “Every day? Even festival days?”
-    “Especially festival days. Nobody else is training.”
+    (warm) “Especially festival days,” Goro says, laughing. “The ground’s empty and the food stalls are open after.”
   you: “Talent helps, though.”
-    “Then talent can do the drills too.” Her face doesn’t smile, but her eyes do.
+    (warm) “Then talent can do the drills too,” Goro says, and her eyes light up at the argument. “Go on, tell me who you’re thinking of.”
 
-=== talk-specialty-1-opinion with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka frowns at two genin sparring nearby. “Most people who try kenjutsu want the flashy part and skip the rest.”
+=== talk-specialty-1-opinion with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka observes two genin sparring nearby. “Most who take up kenjutsu want only the impressive part. They neglect the rest, and it shows.”
   you: “What’s the rest?”
-    “The dull part. Which is the part that keeps you alive.”
+    (flat) “The dull part. I’m afraid it’s also the part that keeps you alive.”
   you: “Says the one who loves showing off.”
-    “I’ve earned my showing off,” Asuka says, unbothered.
+    (cool) Asuka’s face closes. “I don’t show off,” they say, and watch the spar instead of you.
   you: “I don’t want to skip anything.”
-    Asuka studies you. “Good. Then you might actually get somewhere.”
+    (warm) Asuka looks at you properly for the first time. “Then come by in the morning and I’ll show you the dull part.”
 
-=== talk-specialty-1-opinion with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro frowns at two genin sparring nearby. “Most people who try ninjutsu want the flashy part and skip the rest.”
+=== talk-specialty-1-opinion with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro scowls at two genin sparring nearby. “Look at them. Everyone who tries ninjutsu wants the flashy part and skips the rest.”
   you: “What’s the rest?”
-    “The dull part. Which is the part that keeps you alive.”
+    (warm) “You really want to know?” Goro talks for a good while about patience and repetition and the hundred small habits that keep a person alive, as if nobody has asked her in years.
   you: “Says the one who loves showing off.”
-    “I’ve earned my showing off,” Goro says, unbothered.
+    (flat) “I’ve earned my showing off,” Goro says, unbothered.
   you: “I don’t want to skip anything.”
-    Goro studies you. “Good. Then you might actually get somewhere.”
+    (flat) “Good, then you might actually get somewhere.”
 
-=== talk-specialty-2-pride with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “Did I ever tell you about the time kenjutsu really worked for me?” Asuka asks, already smiling.
-  you: “No. Tell me.”
-    They split a thrown apple in mid-air at their first lesson, and the teacher made them do it again to be sure. Asuka looks at their hands as if they still can’t quite believe it.
+=== talk-specialty-2-pride with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “I don’t believe I have told you about my proudest moment in kenjutsu,” Asuka says, and waits to see if you would like to hear it.
+  you: “No, you didn’t. Tell me.”
+    (flat) They split a thrown apple in mid-air at their first lesson, and the teacher made them do it again to be sure. Asuka shakes their head at it, as if it happened to somebody else.
   you: “I bet you were brilliant.”
-    “I was lucky.” But they tell you anyway. They split a thrown apple in mid-air at their first lesson, and the teacher made them do it again to be sure.
+    (warm) “I was, actually.” Asuka doesn’t even pretend to be modest about it. They split a thrown apple in mid-air at their first lesson, and the teacher made them do it again to be sure.
   you: “Only the once?”
-    Asuka flicks your forehead. Then, more softly, they tell you. They split a thrown apple in mid-air at their first lesson, and the teacher made them do it again to be sure.
+    (cool) “Never mind, then, if you’re going to laugh.” It takes some coaxing before Asuka will tell it at all. They split a thrown apple in mid-air at their first lesson, and the teacher made them do it again to be sure.
 
-=== talk-specialty-2-pride with Goro (genin, ninjutsu, brash, curious) ===
-opener: “Did I ever tell you about the time ninjutsu really worked for me?” Goro asks, already smiling.
-  you: “No. Tell me.”
-    She made a clone so steady that her own teacher handed it a scroll and walked away. Goro looks at her hands as if she still can’t quite believe it.
+=== talk-specialty-2-pride with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “I ever tell you about the best thing I’ve done with ninjutsu?” Goro asks.
+  you: “No, you didn’t. Tell me.”
+    (warm) Goro pulls you down to sit before she starts, and tells it slowly, the way you tell a story you’ve wanted to tell. She made a clone so steady that her own teacher handed it a scroll and walked away.
   you: “I bet you were brilliant.”
-    “I was lucky.” But she tells you anyway. She made a clone so steady that her own teacher handed it a scroll and walked away.
+    (flat) “I was lucky.” But she tells you anyway. She made a clone so steady that her own teacher handed it a scroll and walked away.
   you: “Only the once?”
-    Goro flicks your forehead. Then, more softly, she tells you. She made a clone so steady that her own teacher handed it a scroll and walked away.
+    (flat) Goro flicks your forehead. Then she tells you. She made a clone so steady that her own teacher handed it a scroll and walked away.
 
-=== talk-specialty-2-first with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka turns a pebble over in their fingers. “I was hopeless at kenjutsu when I started. Everyone said to pick something else.”
+=== talk-specialty-2-first with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka turns a pebble over in their fingers. “When I began kenjutsu, I showed no aptitude at all. I was advised, more than once, to choose another art.”
   you: “What made you keep going?”
-    “Spite, at first. Then I started to love it.”
+    (flat) “I think it was stubbornness at first, and then somewhere along the way I fell in love with it.”
   you: “I’m glad you didn’t listen to them.”
-    Asuka looks away, pleased. “So am I.”
-  you: “So everyone was wrong.”
-    “Everyone usually is,” Asuka says, grinning.
+    (flat) “So am I, most days. Thank you for saying it.”
+  you: “So everyone was wrong about you.”
+    (flat) “Everyone was wrong, and I’ve been unbearable about it ever since,” Asuka says.
 
-=== talk-specialty-2-first with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro turns a pebble over in her fingers. “I was hopeless at ninjutsu when I started. Everyone said to pick something else.”
+=== talk-specialty-2-first with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro kicks a pebble along the path. “I was hopeless at ninjutsu when I started. Everyone told me to quit.”
   you: “What made you keep going?”
-    “Spite, at first. Then I started to love it.”
+    (warm) “I kept going out of spite.” Goro laughs. “Then one morning it went right, just once, and I’ve been chasing that morning ever since.”
   you: “I’m glad you didn’t listen to them.”
-    Goro looks away, pleased. “So am I.”
-  you: “So everyone was wrong.”
-    “Everyone usually is,” Goro says, grinning.
+    (flat) “So am I, most days.”
+  you: “So everyone was wrong about you.”
+    (warm) “Everyone usually is.” Goro throws the pebble at a fence post and hits it, which pleases her more than it should.
 
-=== talk-specialty-2-dream with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “A shinobi came to the academy once,” Asuka says. “They showed us a draw so quick the sword is back in the sheath before anyone hears it leave. I’ve wanted it ever since.”
+=== talk-specialty-2-dream with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “When I was at the academy, a visiting shinobi demonstrated a draw so quick the sword is back in the sheath before anyone hears it leave,” Asuka says. “I have been working towards it since that afternoon.”
   you: “You’ll get there.”
-    “You sound very sure.” Asuka sounds like they want to be.
+    (warm) “You sound very sure.” For a moment, listening to you, Asuka sounds sure too.
   you: “What was it like, seeing it?”
-    Asuka is quiet a moment. “Like seeing the edge of the world.”
+    (flat) Asuka thinks about it for a while. “Like being shown the edge of the world and told you could walk there.”
   you: “Then why aren’t you working on it now?”
-    “Who says I’m not?” Asuka grins. “Every night.”
+    (warm) “Who says I’m not?” Asuka is grinning now. “I’m at it every night after the ground empties. Come and see, if you can stay awake.”
 
-=== talk-specialty-2-dream with Goro (genin, ninjutsu, brash, curious) ===
-opener: “A shinobi came to the academy once,” Goro says. “They showed us a technique made from nothing, with a name nobody has written down before. I’ve wanted it ever since.”
+=== talk-specialty-2-dream with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “A shinobi came to the academy once and showed us a technique made from nothing, with a name nobody has written down before,” Goro says. “I’m going to do that. I’ve known it since that day.”
   you: “You’ll get there.”
-    “You sound very sure.” Goro sounds like she wants to be.
+    (flat) “You sound very sure.” Goro sounds as if she wants to be.
   you: “What was it like, seeing it?”
-    Goro is quiet a moment. “Like seeing the edge of the world.”
+    (warm) Goro tries three times to describe it and gives up laughing each time, and in the end just shows you with her hands how fast it was.
   you: “Then why aren’t you working on it now?”
-    “Who says I’m not?” Goro grins. “Every night.”
+    (warm) “Who says I’m not?” Goro is grinning now. “I’m at it every night after the ground empties. Come and see, if you can stay awake.”
 
-=== talk-specialty-3-doubt with Asuka (genin, kenjutsu, calm, proud) ===
-opener: You find Asuka sitting by the training post, not training. They are afraid that one day the blade will be faster than their judgement of where to stop it.
+=== talk-specialty-3-doubt with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: You find Asuka sitting by the training post, very still, not training. They answer your question carefully, as if testing each word. They are afraid that one day the blade will be faster than their judgement of where to stop it.
   you: “You don’t have to get everything right.”
-    “In kenjutsu, you sort of do.” But their shoulders ease a little.
+    (flat) “In kenjutsu, I think you do.” But Asuka lets the breath go, and their shoulders come down a little.
   you: “Then we’ll work on it together.”
-    Asuka looks at you for a long moment. “You mean that.” It isn’t a question.
+    (warm) Asuka looks at you for a while before answering. “You mean that.” It isn’t a question, and they get up off the ground.
   you: Sit down beside them.
-    Neither of you says anything. After a while, Asuka lets out a long breath.
+    (warm) You sit until the shadow of the post has moved a hand’s width, and when Asuka finally gets up they offer you a hand too.
 
-=== talk-specialty-3-doubt with Goro (genin, ninjutsu, brash, curious) ===
-opener: You find Goro sitting by the training post, not training. It worries her that her reserves will run dry in the one fight where she cannot afford it.
+=== talk-specialty-3-doubt with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro is sitting by the training post with her arms on her knees, not training. When you ask, she tells you straight. It worries her that her reserves will run dry in the one fight where she cannot afford it.
   you: “You don’t have to get everything right.”
-    “In ninjutsu, you sort of do.” But her shoulders ease a little.
+    (flat) “In ninjutsu, you sort of do.” But her shoulders come down a little.
   you: “Then we’ll work on it together.”
-    Goro looks at you for a long moment. “You mean that.” It isn’t a question.
+    (flat) “You mean that,” Goro says, as if checking.
   you: Sit down beside her.
-    Neither of you says anything. After a while, Goro lets out a long breath.
+    (cool) Goro puts up with it for a minute, then asks whether you came here to stare at the grass.
 
-=== talk-specialty-3-cost with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka flexes their hands and winces. “Nobody tells you what kenjutsu costs. The body keeps count.”
+=== talk-specialty-3-cost with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka flexes their hands with some care. “There is a price to kenjutsu that no one mentions at the academy. The body keeps an exact account.”
   you: “Does it hurt all the time?”
-    “Not all the time.” Which, you notice, is not the same as no.
-  you: “Then rest, before you break something.”
-    Asuka bristles, then sighs. “You’re right. I hate that you’re right.”
-  you: Fetch them something warm to drink.
-    Asuka holds the cup long after it has gone cold.
+    (flat) “Not all the time, and not so you’d notice.” Which, you notice, is not the same as no.
+  you: “Then rest, before you break your hands.”
+    (warm) “You’re right.” Asuka laughs at themself. “I hate that you’re right. One day off, and you can tell me I listened.”
+  you: Fetch them a cup of tea.
+    (flat) Asuka thanks you and holds the cup in both hands, long after it has gone cold.
 
-=== talk-specialty-3-cost with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro flexes her hands and winces. “Nobody tells you what ninjutsu costs. The body keeps count.”
+=== talk-specialty-3-cost with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro flexes her hands and winces. “Nobody tells you what ninjutsu costs. Your body keeps count.”
   you: “Does it hurt all the time?”
-    “Not all the time.” Which, you notice, is not the same as no.
-  you: “Then rest, before you break something.”
-    Goro bristles, then sighs. “You’re right. I hate that you’re right.”
-  you: Fetch her something warm to drink.
-    Goro holds the cup long after it has gone cold.
+    (warm) “Not all the time.” Then, because you asked properly, she tells you where. Two knuckles, a wrist that clicks in the cold, a knee she favours on stairs.
+  you: “Then rest, before you break your hands.”
+    (warm) “You’re right.” Goro laughs at herself. “I hate that you’re right. One day off, and you can tell me I listened.”
+  you: Fetch her a cup of tea.
+    (flat) Goro holds the cup long after it has gone cold.
 
-=== talk-specialty-3-dream with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “Sometimes I think I chase a draw so quick the sword is back in the sheath before anyone hears it leave because I’m scared of who I’d be without it,” Asuka says.
-  you: “You’d still be you. That’s enough.”
-    Asuka laughs, a little unsteady. “That’s an unfair thing to say. Thank you.”
+=== talk-specialty-3-dream with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “I have begun to suspect,” Asuka says, “that I pursue a draw so quick the sword is back in the sheath before anyone hears it leave partly out of fear of who I would be without it.”
+  you: “You’d still be you, and that’s enough.”
+    (warm) Asuka laughs, a little unsteady. “That’s an unfair thing to say to me, and thank you.”
   you: Let the words sit.
-    The wind moves the grass. Asuka seems glad you didn’t rush to fix it.
+    (warm) The wind moves the grass. Asuka seems glad you didn’t rush to fix it, and after a while goes on, more easily, about what they’re afraid of.
   you: “Scared? You?”
-    “Don’t.” But Asuka is almost smiling, and the moment passes.
+    (cool) “I knew I shouldn’t have said anything.” Asuka doesn’t say any more.
 
-=== talk-specialty-3-dream with Goro (genin, ninjutsu, brash, curious) ===
-opener: “Sometimes I think I chase a technique made from nothing, with a name nobody has written down before because I’m scared of who I’d be without it,” Goro says.
-  you: “You’d still be you. That’s enough.”
-    Goro laughs, a little unsteady. “That’s an unfair thing to say. Thank you.”
+=== talk-specialty-3-dream with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “I think I chase a technique made from nothing, with a name nobody has written down before because I’m scared of who I’d be without it,” Goro says, out of nowhere.
+  you: “You’d still be you, and that’s enough.”
+    (flat) “That’s an unfair thing to say to me, and thank you.”
   you: Let the words sit.
-    The wind moves the grass. Goro seems glad you didn’t rush to fix it.
+    (cool) “Say something, then,” Goro says. “Say anything you like.”
   you: “Scared? You?”
-    “Don’t.” But Goro is almost smiling, and the moment passes.
+    (flat) “Don’t you start.” But the moment passes, which may have been the point.
 
-=== talk-specialty-4-keepsake with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka presses something into your hand: a worn whetstone, dipped in the middle from years of patient strokes. “It’s been with me since my first day of kenjutsu. I want you to have it.”
+=== talk-specialty-4-keepsake with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka offers it in both hands, a worn whetstone, dipped in the middle from years of patient strokes. “This has been with me since my first day of kenjutsu. I would like you to keep it.”
   you: “I’ll look after it.”
-    “I know you will. That’s why it’s yours.”
+    (flat) “I know you will. That’s why I wanted it to be you.”
   you: “I can’t take this.”
-    “You can, and you will.” Asuka closes your fingers over it.
-  you: Hold it a while, then nod.
-    Asuka nods back. Some things don’t need saying.
+    (warm) “You can, and you will.” Asuka closes your fingers over it and holds them shut until you stop arguing.
+  you: Hold it a while, then thank them.
+    (warm) Asuka watches you turn it over in your hands, and is happier with that than with any thanks you could have made up.
 
-=== talk-specialty-4-keepsake with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro presses something into your hand: a scorched practice tag from the first time a jutsu actually worked. “It’s been with me since my first day of ninjutsu. I want you to have it.”
+=== talk-specialty-4-keepsake with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro pushes it into your hand without ceremony, a scorched practice tag from the first time a jutsu actually worked. “Had it since my first day of ninjutsu. It’s yours now.”
   you: “I’ll look after it.”
-    “I know you will. That’s why it’s yours.”
+    (flat) “I know you will. That’s why I’m giving it to you.”
   you: “I can’t take this.”
-    “You can, and you will.” Goro closes your fingers over it.
-  you: Hold it a while, then nod.
-    Goro nods back. Some things don’t need saying.
+    (flat) “You can, and you will.” Goro closes your fingers over it.
+  you: Hold it a while, then thank her.
+    (cool) “You could say whether you like it,” Goro says.
 
-=== talk-specialty-4-promise with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “When I finally master a draw so quick the sword is back in the sheath before anyone hears it leave,” Asuka says, “you’ll be the first to see it. Promise you’ll be there.”
+=== talk-specialty-4-promise with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “When I have mastered a draw so quick the sword is back in the sheath before anyone hears it leave,” Asuka says, “I would like you to be the first to see it. Will you give me your word?”
   you: “I promise.”
-    Asuka holds out a hand, and you shake on it like academy students.
-  you: “Front row. I’ll bring snacks.”
-    Asuka laughs. “Bring enough for two.”
+    (warm) Asuka holds out a hand, and you shake on it like academy students, solemn as anything, and then both of you laugh.
+  you: “I’ll be in the front row with snacks.”
+    (flat) “Bring enough for me too, I’ll have earned it.”
   you: “Only if you watch me do the same.”
-    “Deal. And whoever gets there last buys dinner.”
+    (warm) “You’re on.” Asuka spits in their palm before you can stop them. “Whoever gets there last buys dinner for a month.”
 
-=== talk-specialty-4-promise with Goro (genin, ninjutsu, brash, curious) ===
-opener: “When I finally master a technique made from nothing, with a name nobody has written down before,” Goro says, “you’ll be the first to see it. Promise you’ll be there.”
+=== talk-specialty-4-promise with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “When I master a technique made from nothing, with a name nobody has written down before,” Goro says, “you’re going to be there. First to see it. Promise.”
   you: “I promise.”
-    Goro holds out a hand, and you shake on it like academy students.
-  you: “Front row. I’ll bring snacks.”
-    Goro laughs. “Bring enough for two.”
+    (flat) Goro holds out a hand, and you shake on it like academy students.
+  you: “I’ll be in the front row with snacks.”
+    (warm) Goro laughs. “Bring enough for me too. I’ll be starving after.”
   you: “Only if you watch me do the same.”
-    “Deal. And whoever gets there last buys dinner.”
+    (warm) “You’re on.” Goro spits in her palm before you can stop her. “Whoever gets there last buys dinner for a month.”
 
-=== talk-specialty-4-lesson with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka stops you at the gate. “If I ever don’t come back, I want someone to carry my kenjutsu on. I want it to be you.”
-  you: “Then teach me. All of it.”
-    “It all starts here.” Asuka says it slowly, so you’ll keep it. “Look after the edge and the edge looks after you. Oil it every night, even when you are tired.”
-  you: “You’re coming back. Every time.”
-    Asuka squeezes your arm. “Then we’ll have more time for lessons.”
+=== talk-specialty-4-lesson with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka stops you at the gate. “Should I ever fail to come back, I would want my kenjutsu carried on. I am asking you to be the one.”
+  you: “Then teach me all of it.”
+    (warm) “All of it? Then we’d better start.” Asuka takes you straight back through the gate to the ground, as if there’s no time to lose. “Look after the edge and the edge looks after you. Oil it every night, even when you are tired.”
+  you: “You’re coming back, every time.”
+    (flat) Asuka squeezes your arm. “Then I suppose we’ll have more time for lessons.”
   you: “Fine, but I’m doing it my way.”
-    “Of course you are.” Asuka looks oddly proud.
+    (cool) “Then it won’t be mine, will it?” Asuka lets the gate swing shut between you.
 
-=== talk-specialty-4-lesson with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro stops you at the gate. “If I ever don’t come back, I want someone to carry my ninjutsu on. I want it to be you.”
-  you: “Then teach me. All of it.”
-    “It all starts here.” Goro says it slowly, so you’ll keep it. “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.”
-  you: “You’re coming back. Every time.”
-    Goro squeezes your arm. “Then we’ll have more time for lessons.”
+=== talk-specialty-4-lesson with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro stops you at the gate. “If I don’t come back one day, somebody carries my ninjutsu on. That’s you.”
+  you: “Then teach me all of it.”
+    (flat) Goro says it slowly, so you’ll keep it. “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.”
+  you: “You’re coming back, every time.”
+    (flat) Goro squeezes your arm. “Then we’ll have more time for lessons.”
   you: “Fine, but I’m doing it my way.”
-    “Of course you are.” Goro looks oddly proud.
+    (flat) “Of course you are.” Goro looks oddly proud.
 
-=== talk-trait-1-habit with Asuka (genin, kenjutsu, calm, proud) ===
-opener: You catch Asuka at it again: folding their hands and counting to five before answering anything that matters. They notice you noticing.
+=== talk-trait-1-habit with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: You come across Asuka folding their hands and counting to five before answering anything that matters, as usual. They notice your attention and pause, politely, to let you speak.
   you: “You always do that.”
-    “And you always point it out,” Asuka says. “We all have our habits.”
+    (cool) “So?” Asuka stops doing it, and you get the feeling you’ve spoiled it.
   you: “Why do you do that?”
-    Asuka thinks about it. “I don’t know. It feels wrong not to.”
+    (flat) Asuka thinks about it. “I’m not sure. I think it makes me feel like myself.”
   you: “It suits you.”
-    Asuka looks surprised, then pleased. “Most people find it odd.”
+    (flat) “Does it? Most people tell me it’s odd,” Asuka says, pleased in spite of themself.
 
-=== talk-trait-1-habit with Goro (genin, ninjutsu, brash, curious) ===
-opener: You catch Goro at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
+=== talk-trait-1-habit with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: You catch Goro vaulting the fence instead of walking the extra few steps to the gate, again. She sees you looking and stares straight back.
   you: “You always do that.”
-    “And you always point it out,” Goro says. “We all have our habits.”
+    (flat) “And you always point it out,” Goro says. “We all have our habits.”
   you: “Why do you do that?”
-    Goro thinks about it. “I don’t know. It feels wrong not to.”
+    (warm) Goro actually stops to think, which nobody has asked her to do before. “I don’t know. It started when I was small, I think. Now the day feels wrong without it.”
   you: “It suits you.”
-    Goro looks surprised, then pleased. “Most people find it odd.”
+    (flat) “Most people tell me it’s odd,” Goro says.
 
-=== talk-trait-1-noticed with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka squints at you. “You’ve been watching how I do things. Go on, say it.”
+=== talk-trait-1-noticed with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka turns to you. “I have the impression you’ve been observing how I do things. Please, say whatever it is.”
   you: “You’re a creature of habit.”
-    “Guilty.” They show you: folding their hands and counting to five before answering anything that matters. “See? Can’t help it.”
+    (cool) “And you’re nosy.” Asuka keeps it up anyway, a little pointedly.
   you: “You’re very much yourself. I like it.”
-    Asuka goes a little pink. “That’s not what I expected you to say.”
+    (warm) Asuka goes a little pink. “That’s not what I expected you to say. Say it again, so I can remember it.”
   you: Shake your head and smile.
-    “Coward,” Asuka says fondly.
+    (warm) “You coward.” Asuka says it fondly, and smiles back.
 
-=== talk-trait-1-noticed with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro squints at you. “You’ve been watching how I do things. Go on, say it.”
+=== talk-trait-1-noticed with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro squints at you. “You’ve been watching how I do things. Say it.”
   you: “You’re a creature of habit.”
-    “Guilty.” She shows you: vaulting the fence instead of walking the extra few steps to the gate. “See? Can’t help it.”
+    (flat) “I know.” She shows you, vaulting the fence instead of walking the extra few steps to the gate. “See? I can’t help it.”
   you: “You’re very much yourself. I like it.”
-    Goro goes a little pink. “That’s not what I expected you to say.”
+    (flat) “That’s not what I expected you to say.”
   you: Shake your head and smile.
-    “Coward,” Goro says fondly.
+    (cool) “Go on, I can take it.” When you still won’t, Goro looks a little put out.
 
-=== talk-trait-1-wish with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “Do you ever wish you were someone else?” Asuka asks. “Some days I’d like to be more like the people who laugh out loud without first checking who is watching.”
+=== talk-trait-1-wish with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “Do you ever wish you were otherwise?” Asuka asks. “There are days I would like to be more like the people who laugh out loud without first checking who is watching.”
   you: “I like you as you are.”
-    Asuka snorts, but doesn’t argue.
+    (warm) Asuka snorts, but doesn’t argue, and is still smiling about it a while later.
   you: “Some days I’d like to be a cat.”
-    Asuka laughs. “Fair. Naps and no missions.”
+    (flat) “That doesn’t sound so bad. I’d settle for a cat’s naps and no missions.”
   you: “What would change?”
-    Asuka starts to answer, then shrugs. “Everything. Nothing. I don’t know.”
+    (flat) Asuka starts to answer, then stops. “I don’t know, really. Maybe I’d just worry less.”
 
-=== talk-trait-1-wish with Goro (genin, ninjutsu, brash, curious) ===
-opener: “Do you ever wish you were someone else?” Goro asks. “Some days I’d like to be more like someone who can wait for the right moment and still look like they meant it.”
+=== talk-trait-1-wish with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “You ever wish you were someone else?” Goro asks. “Some days I want to be more like someone who can wait for the right moment and still look like they meant it.”
   you: “I like you as you are.”
-    Goro snorts, but doesn’t argue.
+    (flat) Goro snorts, but doesn’t argue.
   you: “Some days I’d like to be a cat.”
-    Goro laughs. “Fair. Naps and no missions.”
+    (warm) Goro laughs. “I’d be a cat with you. Naps and no missions, and everyone feeds us.”
   you: “What would change?”
-    Goro starts to answer, then shrugs. “Everything. Nothing. I don’t know.”
+    (warm) Goro needs two or three goes at an answer, and in the end talks it through with you for longer than either of you meant to.
 
-=== talk-trait-2-story with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “I was just the same at the academy,” Asuka says. “Want to hear something embarrassing?”
+=== talk-trait-2-story with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “I was much the same at the academy,” Asuka says. “There is one episode in particular I still find embarrassing, if you would like to hear it.”
   you: “Always.”
-    When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket. Asuka groans. “I still think about it.”
-  you: “Only if it’s very embarrassing.”
-    “Oh, it is.” When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket.
+    (flat) When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket. Asuka hides their face for a moment. “I still think about it, you know.”
+  you: “Only if it’s very embarrassing for you.”
+    (cool) “Maybe I won’t, then.” It takes a while to talk them back round. When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket.
   you: “You don’t have to.”
-    “I want to.” When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket. They smile at the memory.
+    (flat) “I know, but I’d like to.” When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket.
 
-=== talk-trait-2-story with Goro (genin, ninjutsu, brash, curious) ===
-opener: “I was just the same at the academy,” Goro says. “Want to hear something embarrassing?”
+=== talk-trait-2-story with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “I was the same at the academy,” Goro says. “Worse, probably. Want to hear something embarrassing?”
   you: “Always.”
-    At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch. Goro groans. “I still think about it.”
-  you: “Only if it’s very embarrassing.”
-    “Oh, it is.” At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch.
+    (warm) Goro leans in to tell it properly, with the voices. At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch. “I still think about it at night,” she adds, laughing.
+  you: “Only if it’s very embarrassing for you.”
+    (flat) “Oh, I promise you it is.” At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch.
   you: “You don’t have to.”
-    “I want to.” At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch. She smiles at the memory.
+    (flat) “I want to.” At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch.
 
-=== talk-trait-2-instructors with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka watches a few academy students run past. “The instructors never knew what to do with me.”
+=== talk-trait-2-instructors with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka watches a few academy students run past. “I was not an easy student. I don’t think the instructors ever quite knew how to manage me.”
   you: “I can’t imagine why.”
-    Asuka shoves you, laughing. “I was a lot. I’m told I still am.”
+    (flat) “I was a lot, I think. People are kind enough to tell me I still am.”
   you: “What did you do?”
-    When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket. “It went in my report,” Asuka adds.
-  you: “They should have tried harder.”
-    Asuka looks at you, surprised. “Maybe. I didn’t make it easy for them.”
+    (flat) When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket. “It went in my report, and my family heard all about it,” Asuka adds.
+  you: “They should have tried harder with you.”
+    (warm) Asuka looks at you, surprised. “Maybe they should have. You’re the first to say so. I didn’t make it easy for them, mind.”
 
-=== talk-trait-2-instructors with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro watches a few academy students run past. “The instructors never knew what to do with me.”
+=== talk-trait-2-instructors with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro watches a few academy students run past. “The instructors never knew what to do with me. Still don’t, I bet.”
   you: “I can’t imagine why.”
-    Goro shoves you, laughing. “I was a lot. I’m told I still am.”
+    (warm) Goro shoves you, laughing. “I was a lot. I’m told I still am.”
   you: “What did you do?”
-    At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch. “It went in my report,” Goro adds.
-  you: “They should have tried harder.”
-    Goro looks at you, surprised. “Maybe. I didn’t make it easy for them.”
+    (warm) “Where do I start?” Goro picks one and tells it with relish. At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch. “It went in my report twice.”
+  you: “They should have tried harder with you.”
+    (flat) “Maybe, but I didn’t make it easy for them.”
 
-=== talk-trait-2-since with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “See this?” Asuka says, and it’s the usual: folding their hands and counting to five before answering anything that matters. “I’ve done it since I was small.”
+=== talk-trait-2-since with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “You have seen this before,” Asuka says, folding their hands and counting to five before answering anything that matters, as usual. “I have done it since I was very young.”
   you: “Someone must have taught you.”
-    “Nobody teaches this. It just grows, like moss.”
+    (cool) “Nobody taught me anything,” Asuka says, and the fun goes out of it.
   you: “Did it ever get you in trouble?”
-    “Constantly.” Asuka grins at some old memory and doesn’t explain.
+    (flat) “More often than I’d like to admit,” Asuka says, and laughs instead of explaining.
   you: “I’d miss it if it went.”
-    Asuka looks touched, and a little embarrassed.
+    (flat) Asuka looks touched, and a little embarrassed, and says they’re glad.
 
-=== talk-trait-2-since with Goro (genin, ninjutsu, brash, curious) ===
-opener: “See this?” Goro says, and it’s the usual: vaulting the fence instead of walking the extra few steps to the gate. “I’ve done it since I was small.”
+=== talk-trait-2-since with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “See this?” Goro says, vaulting the fence instead of walking the extra few steps to the gate. “Been doing it since I was small.”
   you: “Someone must have taught you.”
-    “Nobody teaches this. It just grows, like moss.”
+    (flat) “Nobody taught me this. It just grows on you, like moss.”
   you: “Did it ever get you in trouble?”
-    “Constantly.” Goro grins at some old memory and doesn’t explain.
+    (warm) “Do you have all day?” Goro counts the times off on her fingers and runs out of fingers.
   you: “I’d miss it if it went.”
-    Goro looks touched, and a little embarrassed.
+    (flat) Goro looks touched, and a little embarrassed.
 
-=== talk-trait-3-cost with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka is quieter than usual today. When you ask, they tell you. A friend once mistook their quiet for not caring, and stopped talking to them for a season.
+=== talk-trait-3-cost with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka has been quiet all day. When you ask, they answer after some thought, and choose their words with care. A friend once mistook their quiet for not caring, and stopped talking to them for a season.
   you: “That wasn’t your fault.”
-    “Some of it was.” But Asuka looks grateful you said it.
+    (flat) “Some of it was my fault. But thank you for saying it.”
   you: “Would you change, if you could?”
-    Asuka considers it seriously. “Sometimes. Not today.”
+    (warm) Asuka considers it seriously, which you like them for. “Sometimes I would, but not today. Ask me again in a year.”
   you: Stay beside them.
-    Asuka lets out a slow breath. It seems to help that you stayed.
+    (warm) Asuka lets out a slow breath, and after a while leans on your shoulder without saying why.
 
-=== talk-trait-3-cost with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro is quieter than usual today. When you ask, she tells you. She charged a wasp nest on a mission to look brave. The swelling lasted a week, and so did the jokes.
+=== talk-trait-3-cost with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro is quieter than usual. When you ask, she tells you flat out, no softening. She charged a wasp nest on a mission to look brave. The swelling lasted a week, and so did the jokes.
   you: “That wasn’t your fault.”
-    “Some of it was.” But Goro looks grateful you said it.
+    (flat) “Some of it was my fault.”
   you: “Would you change, if you could?”
-    Goro considers it seriously. “Sometimes. Not today.”
+    (flat) Goro considers it seriously. “Sometimes I would, but not today.”
   you: Stay beside her.
-    Goro lets out a slow breath. It seems to help that you stayed.
+    (cool) “You can go, you know. I’m all right.” Goro isn’t, quite, but wants you to think so.
 
-=== talk-trait-3-admission with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka keeps their eyes on the ground. “Can I tell you something I don’t tell people?”
-  you: “Anything.”
-    “I’m not calm inside. I just learned early that nobody listens to the one who shouts.” They glance up to see if you think less of them.
+=== talk-trait-3-admission with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka looks at the ground for some time. “There is something I don’t tell people. I would like to tell you, if I may.”
+  you: “You can tell me anything.”
+    (warm) “I’m not calm inside, not really. I learned early that nobody listens to whoever shouts, so I stopped shouting, and the rest of it stayed.” They glance up, and whatever they see in your face lets them breathe out.
   you: “Only if you want to.”
-    “I do.” A pause. “I’m not calm inside. I just learned early that nobody listens to the one who shouts.”
+    (flat) “I do want to.” There’s a long pause before the rest comes out. “I’m not calm inside, not really. I learned early that nobody listens to whoever shouts, so I stopped shouting, and the rest of it stayed.”
   you: “Is it that you ate my dumplings?”
-    Asuka laughs despite themself, then sobers. “I’m not calm inside. I just learned early that nobody listens to the one who shouts.”
+    (flat) Asuka laughs despite themself, and it helps. “I’m not calm inside, not really. I learned early that nobody listens to whoever shouts, so I stopped shouting, and the rest of it stayed.”
 
-=== talk-trait-3-admission with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro keeps her eyes on the ground. “Can I tell you something I don’t tell people?”
-  you: “Anything.”
-    “Half the time I jump in because if I stop to think, I’ll see how scared I am.” She glances up to see if you think less of her.
+=== talk-trait-3-admission with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro keeps her eyes on the ground. “I’m going to tell you something I don’t tell people. Don’t make it a thing.”
+  you: “You can tell me anything.”
+    (flat) “Half the time I jump in because if I stop to think, I’ll see how scared I am.” She glances up to see if you think less of her.
   you: “Only if you want to.”
-    “I do.” A pause. “Half the time I jump in because if I stop to think, I’ll see how scared I am.”
+    (flat) “I do.” There’s a pause before the rest comes out. “Half the time I jump in because if I stop to think, I’ll see how scared I am.”
   you: “Is it that you ate my dumplings?”
-    Goro laughs despite herself, then sobers. “Half the time I jump in because if I stop to think, I’ll see how scared I am.”
+    (warm) Goro laughs despite herself, and it makes the rest easier to say. “Half the time I jump in because if I stop to think, I’ll see how scared I am.”
 
-=== talk-trait-3-tired with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “Do you ever get tired of being yourself?” Asuka asks, only half joking.
+=== talk-trait-3-tired with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “Do you ever grow tired of being yourself?” Asuka asks, and it is clear they mean the question.
   you: “Do you?”
-    “Sometimes.” Asuka tells you about the last time. A friend once mistook their quiet for not caring, and stopped talking to them for a season.
+    (flat) “Sometimes I do, yes.” Asuka tells you about the last time, quietly. A friend once mistook their quiet for not caring, and stopped talking to them for a season.
   you: “Every morning.”
-    Asuka laughs, and it seems to loosen something.
+    (flat) Asuka laughs, and looks a little less tired.
   you: “Not when I’m with friends.”
-    Asuka looks at you a long while. “Yes. That helps.”
+    (warm) Asuka looks at you a while. “You help. You know that?”
 
-=== talk-trait-3-tired with Goro (genin, ninjutsu, brash, curious) ===
-opener: “Do you ever get tired of being yourself?” Goro asks, only half joking.
+=== talk-trait-3-tired with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “You ever get tired of being yourself?” Goro asks. She’s not joking.
   you: “Do you?”
-    “Sometimes.” Goro tells you about the last time. She charged a wasp nest on a mission to look brave. The swelling lasted a week, and so did the jokes.
+    (warm) “Sometimes I do.” Goro seems relieved to be asked back, and tells you about the last time. She charged a wasp nest on a mission to look brave. The swelling lasted a week, and so did the jokes.
   you: “Every morning.”
-    Goro laughs, and it seems to loosen something.
+    (warm) Goro laughs properly, and the question doesn’t seem so heavy after that.
   you: “Not when I’m with friends.”
-    Goro looks at you a long while. “Yes. That helps.”
+    (flat) “You know, that helps.”
 
-=== talk-trait-4-worst with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “You’ve seen me at my worst,” Asuka says. “And you’re still here.”
+=== talk-trait-4-worst with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “You have seen me at my worst,” Asuka says, “and you have stayed. I haven’t forgotten it.”
   you: “I’m not going anywhere.”
-    Asuka nods slowly. “Then you should know the rest.” A breath. “I’m not calm inside. I just learned early that nobody listens to the one who shouts.”
+    (warm) “Then you should know the rest.” Asuka takes a breath that goes on too long. “I’m not calm inside, not really. I learned early that nobody listens to whoever shouts, so I stopped shouting, and the rest of it stayed.”
   you: “Your worst isn’t that bad.”
-    Asuka laughs, a little thickly. “Liar. Thank you.”
+    (flat) “That’s a lie, and a kind one, so thank you.”
   you: “Someone has to keep you honest.”
-    “Someone does,” Asuka agrees. “I’m glad it’s you.”
+    (cool) “Is that what you’re doing?” Asuka doesn’t sound sure they want it.
 
-=== talk-trait-4-worst with Goro (genin, ninjutsu, brash, curious) ===
-opener: “You’ve seen me at my worst,” Goro says. “And you’re still here.”
+=== talk-trait-4-worst with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “You’ve seen me at my worst,” Goro says. “You stuck around anyway. Why?”
   you: “I’m not going anywhere.”
-    Goro nods slowly. “Then you should know the rest.” A breath. “Half the time I jump in because if I stop to think, I’ll see how scared I am.”
+    (flat) “Then you should know the rest.” Goro takes a breath before going on. “Half the time I jump in because if I stop to think, I’ll see how scared I am.”
   you: “Your worst isn’t that bad.”
-    Goro laughs, a little thickly. “Liar. Thank you.”
+    (flat) “You liar, and thank you.”
   you: “Someone has to keep you honest.”
-    “Someone does,” Goro agrees. “I’m glad it’s you.”
+    (flat) “Someone has to, I suppose. I’m glad it’s you.”
 
-=== talk-trait-4-promise with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka stops you before you leave. “If this side of me ever gets one of us hurt, tell me straight. Promise?”
+=== talk-trait-4-promise with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka stops you before you leave. “If this side of me should ever cause one of us harm, I would want you to tell me plainly. Will you promise?”
   you: “I promise.”
-    “Good.” Asuka looks relieved. “I’d do the same for you.”
+    (warm) Asuka looks relieved, as if they have been carrying it a while. “I’d do the same for you.”
   you: “You never needed to be more like the people who laugh out loud without first checking who is watching.”
-    Asuka blinks hard. “You remembered that.”
+    (flat) “You remembered that, after all this time.”
   you: “Only if you promise to listen.”
-    Asuka winces, then laughs. “Fine. I’ll listen. Mostly.”
+    (warm) Asuka winces, then laughs. “I suppose that’s fair. I’ll listen, mostly.”
 
-=== talk-trait-4-promise with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro stops you before you leave. “If this side of me ever gets one of us hurt, tell me straight. Promise?”
+=== talk-trait-4-promise with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro stops you before you leave. “If this side of me ever gets one of us hurt, you tell me straight. Promise.”
   you: “I promise.”
-    “Good.” Goro looks relieved. “I’d do the same for you.”
+    (flat) “Good, and I’d do the same for you.”
   you: “You never needed to be more like someone who can wait for the right moment and still look like they meant it.”
-    Goro blinks hard. “You remembered that.”
+    (flat) “You remembered that.”
   you: “Only if you promise to listen.”
-    Goro winces, then laughs. “Fine. I’ll listen. Mostly.”
+    (warm) Goro winces, then laughs. “I suppose that’s fair. I’ll listen, mostly.”
 
-=== talk-trait-4-yours with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “I’ve told you all my stories,” Asuka says. “Tell me one of yours. Then we’re even.”
-  you: Tell them something you’ve never told anyone.
-    Asuka listens to every word. “Thank you for trusting me with that.”
+=== talk-trait-4-yours with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “I have told you all my stories,” Asuka says. “It seems only fair that you tell me one of yours.”
+  you: Tell them the thing you’ve never told anyone.
+    (warm) Asuka listens to every word and doesn’t interrupt once. “Thank you for trusting me with that. I’ll keep it.”
   you: “Only if you tell the academy one again.”
-    Asuka groans, but tells it. When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket. You both laugh until it hurts.
+    (warm) Asuka groans, but tells it, and does all the voices. When the academy kitchen caught fire, they finished their sentence, then fetched the right bucket. You both laugh until it hurts.
   you: “Mine are all about you by now.”
-    “Then tell me the ones where I look good,” Asuka says, grinning.
+    (flat) “Then tell me one where I come out of it well,” Asuka says.
 
-=== talk-trait-4-yours with Goro (genin, ninjutsu, brash, curious) ===
-opener: “I’ve told you all my stories,” Goro says. “Tell me one of yours. Then we’re even.”
-  you: Tell her something you’ve never told anyone.
-    Goro listens to every word. “Thank you for trusting me with that.”
+=== talk-trait-4-yours with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “I’ve told you all my stories,” Goro says. “Your turn. Tell me one of yours.”
+  you: Tell her the thing you’ve never told anyone.
+    (flat) Goro listens to every word. “Thank you for trusting me with that.”
   you: “Only if you tell the academy one again.”
-    Goro groans, but tells it. At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch. You both laugh until it hurts.
+    (warm) Goro groans, but tells it, and does all the voices. At the academy she challenged the top of the class to a duel on the first morning, and lost before lunch. You both laugh until it hurts.
   you: “Mine are all about you by now.”
-    “Then tell me the ones where I look good,” Goro says, grinning.
+    (warm) “Then tell me the ones where I look good,” Goro says, and settles in to listen.
 
-=== talk-role-0-busy with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka barely looks up. “Sorry. Busy. It’s always the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+=== talk-role-0-busy with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka looks up briefly. “Forgive me, I can’t stop for long. It is always lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
   you: “I’ll leave you to it.”
-    “Thanks.” Asuka sounds like they mean it.
+    (flat) “Thank you, that’s kind,” Asuka says, and sounds as if they mean it.
   you: “Need a hand?”
-    Asuka looks up properly this time. “Maybe another day. But thank you.”
+    (warm) Asuka looks up properly. “Do you mean it? Then you hold this end.” For a few minutes you’re part of the work.
   you: “You could stand to slow down.”
-    “Could I?” Asuka doesn’t slow down.
+    (cool) “And you could stand to be somewhere else.”
 
-=== talk-role-0-busy with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro barely looks up. “Sorry. Busy. It’s always the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+=== talk-role-0-busy with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro doesn’t look up. “Busy. It’s always lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
   you: “I’ll leave you to it.”
-    “Thanks.” Goro sounds like she means it.
+    (flat) “Thank you,” Goro says, and sounds as if she means it.
   you: “Need a hand?”
-    Goro looks up properly this time. “Maybe another day. But thank you.”
+    (flat) “Maybe another day, but thank you.”
   you: “You could stand to slow down.”
-    “Could I?” Goro doesn’t slow down.
+    (flat) “Could I?” Goro doesn’t slow down.
 
-=== talk-role-1-days with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka stretches until something clicks. “Most days are the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+=== talk-role-1-days with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka stretches, carefully. “Most of my days are spent on lost cats, leaky roofs, long drills and the odd job that turns out to be a real one. One learns to find a rhythm in it.”
   you: “Do you like it?”
-    “Most of it. Ask me again at the end of the week.”
+    (flat) “Most of it, I think. Ask me again at the end of the week and I might give you a different answer.”
   you: “Sounds thrilling.”
-    “You have no idea,” Asuka says, perfectly straight-faced.
+    (flat) “You have no idea,” Asuka says, and can’t quite keep a straight face.
   you: “Someone has to, and you do it well.”
-    Asuka looks pleased despite themself.
+    (warm) Asuka looks pleased despite themself, and tells you about the one day it went perfectly.
 
-=== talk-role-1-days with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro stretches until something clicks. “Most days are the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+=== talk-role-1-days with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro stretches until her back cracks. “Most of my days are lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
   you: “Do you like it?”
-    “Most of it. Ask me again at the end of the week.”
+    (warm) Goro thinks about it more than you expected. “I like the mornings best. Ask me again at the end of the week.”
   you: “Sounds thrilling.”
-    “You have no idea,” Goro says, perfectly straight-faced.
+    (warm) “You have no idea.” Goro keeps a straight face for nearly a breath before it breaks.
   you: “Someone has to, and you do it well.”
-    Goro looks pleased despite herself.
+    (flat) Goro looks pleased despite herself.
 
-=== talk-role-1-turning-up with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “You know what nobody understands about what I do?” Asuka says. “How much of it is just turning up.”
+=== talk-role-1-turning-up with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “What few people understand about my work,” Asuka says, “is how much of it is simply being there, every day.”
   you: “Turning up is half of everything.”
-    “Exactly. You get it.”
+    (warm) Asuka points at you as if you’ve passed a test. “You get it. Most people your age don’t.”
   you: “So you’re saying it’s easy.”
-    “I’m saying it’s every day.” Asuka gives you a look. “Try it.”
+    (cool) “That isn’t what I said.” Asuka doesn’t bother saying it again.
   you: “And the other half?”
-    “The other half? It’s lost cats, leaky roofs, long drills and the odd job that turns out to be a real one, mostly.”
+    (flat) “For me, the other half is lost cats, leaky roofs, long drills and the odd job that turns out to be a real one, and caring how it’s done.”
 
-=== talk-role-1-turning-up with Goro (genin, ninjutsu, brash, curious) ===
-opener: “You know what nobody understands about what I do?” Goro says. “How much of it is just turning up.”
+=== talk-role-1-turning-up with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “Know what nobody gets about what I do?” Goro says. “It’s mostly turning up. Every day.”
   you: “Turning up is half of everything.”
-    “Exactly. You get it.”
+    (flat) “Exactly, you get it.”
   you: “So you’re saying it’s easy.”
-    “I’m saying it’s every day.” Goro gives you a look. “Try it.”
+    (flat) “I’m saying it’s every day. You try it.”
   you: “And the other half?”
-    “The other half? It’s lost cats, leaky roofs, long drills and the odd job that turns out to be a real one, mostly.”
+    (warm) Goro likes being asked. “The other half? It’s lost cats, leaky roofs, long drills and the odd job that turns out to be a real one, mostly, and knowing which part of it can wait.”
 
-=== talk-role-2-first-day with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “I remember when I started,” Asuka says, smiling at nothing. “I was so sure I knew everything.”
+=== talk-role-2-first-day with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “When I began,” Asuka says, “I was quite certain I understood everything. I was mistaken.”
   you: “What happened?”
-    On their first job they spent a whole day weeding a garden, and the old owner paid them in plums. “I learned fast,” Asuka adds.
+    (flat) On their first job they spent a whole day weeding a garden, and the old owner paid them in plums. “I learned fast after that, and I was grateful for it,” Asuka adds.
   you: “And now you really do?”
-    “Now I know how little I know.” Then Asuka tells you anyway. On their first job they spent a whole day weeding a garden, and the old owner paid them in plums.
-  you: “Everyone starts somewhere.”
-    Asuka nods, and tells you where they started. On their first job they spent a whole day weeding a garden, and the old owner paid them in plums.
+    (cool) “Very clever of you.” Asuka tells it anyway, without the smile. On their first job they spent a whole day weeding a garden, and the old owner paid them in plums.
+  you: “We all start somewhere.”
+    (flat) Asuka tells you where they started, and doesn’t leave out the hard parts. On their first job they spent a whole day weeding a garden, and the old owner paid them in plums.
 
-=== talk-role-2-first-day with Goro (genin, ninjutsu, brash, curious) ===
-opener: “I remember when I started,” Goro says, smiling at nothing. “I was so sure I knew everything.”
+=== talk-role-2-first-day with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “When I started,” Goro says, “I thought I knew everything. I knew nothing.”
   you: “What happened?”
-    On her first job she spent a whole day weeding a garden, and the old owner paid her in plums. “I learned fast,” Goro adds.
+    (warm) Goro tells it as if she has been waiting for someone to ask. On her first job she spent a whole day weeding a garden, and the old owner paid her in plums. “I learned fast after that.”
   you: “And now you really do?”
-    “Now I know how little I know.” Then Goro tells you anyway. On her first job she spent a whole day weeding a garden, and the old owner paid her in plums.
-  you: “Everyone starts somewhere.”
-    Goro nods, and tells you where she started. On her first job she spent a whole day weeding a garden, and the old owner paid her in plums.
+    (flat) “Now I know how little I know.” On her first job she spent a whole day weeding a garden, and the old owner paid her in plums.
+  you: “We all start somewhere.”
+    (flat) Goro tells you where she started. On her first job she spent a whole day weeding a garden, and the old owner paid her in plums.
 
-=== talk-role-2-once with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka watches someone younger fumble at the very thing they do every day. “That was me, once.”
+=== talk-role-2-once with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka watches someone younger struggle at the very thing they do every day. “I was exactly like that, once.”
   you: “Who helped you?”
-    “Someone patient. More patient than I deserved.”
+    (flat) “Someone very patient, much more patient than I deserved.”
   you: “Was it as bad as that?”
-    “Worse.” Asuka laughs, and tells you. On their first job they spent a whole day weeding a garden, and the old owner paid them in plums.
-  you: “Tell them it gets easier.”
-    “It doesn’t,” Asuka says. “You just get better.” Then they go over to help.
+    (flat) “Worse, I’m afraid, much worse.” On their first job they spent a whole day weeding a garden, and the old owner paid them in plums.
+  you: “You should tell them it gets easier.”
+    (warm) “It never got easier for me,” Asuka says. “You just get better.” Then they go over to help, and you watch them be patient.
 
-=== talk-role-2-once with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro watches someone younger fumble at the very thing she does every day. “That was me, once.”
+=== talk-role-2-once with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro watches someone younger fumble at the very thing she does every day. “That was me.”
   you: “Who helped you?”
-    “Someone patient. More patient than I deserved.”
+    (warm) “Someone patient, more patient than I deserved.” Goro tells you their name, and you can hear that she still misses them.
   you: “Was it as bad as that?”
-    “Worse.” Goro laughs, and tells you. On her first job she spent a whole day weeding a garden, and the old owner paid her in plums.
-  you: “Tell them it gets easier.”
-    “It doesn’t,” Goro says. “You just get better.” Then she goes over to help.
+    (warm) “Worse than that, if you can believe it.” Goro laughs, and tells you. On her first job she spent a whole day weeding a garden, and the old owner paid her in plums.
+  you: “You should tell them it gets easier.”
+    (flat) “It never got easier for me,” Goro says. “You just get better.”
 
-=== talk-role-3-weight with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka looks tired in a way sleep won’t fix. You ask, and for once they answer. Everyone calls them a child with a headband. Nobody sees how often they come home bruised from jobs that were meant to be easy.
+=== talk-role-3-weight with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka looks tired in a way rest will not mend. When you ask, they answer, for once, without deflecting. Everyone calls them a child with a headband. Nobody sees how often they come home bruised from jobs that were meant to be easy.
   you: “You carry a lot. Let me help.”
-    “You already do,” Asuka says, and means it.
+    (flat) “You already do, more than you know,” Asuka says.
   you: “Does anyone else know?”
-    “No. And I’d like to keep it that way.”
+    (warm) “Nobody but you.” Asuka seems lighter for having said so.
   you: Sit with them a while.
-    The quiet does them good. You can see it.
+    (warm) The quiet does them good. By the time you both stand up, they’re talking about tomorrow.
 
-=== talk-role-3-weight with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro looks tired in a way sleep won’t fix. You ask, and for once she answers. Everyone calls her a child with a headband. Nobody sees how often she comes home bruised from jobs that were meant to be easy.
+=== talk-role-3-weight with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro looks worn through. You ask, and for once she answers without dodging. Everyone calls her a child with a headband. Nobody sees how often she comes home bruised from jobs that were meant to be easy.
   you: “You carry a lot. Let me help.”
-    “You already do,” Goro says, and means it.
+    (flat) “You already do,” Goro says.
   you: “Does anyone else know?”
-    “No. And I’d like to keep it that way.”
+    (flat) “No, and I’d like to keep it that way.”
   you: Sit with her a while.
-    The quiet does her good. You can see it.
+    (cool) After a while Goro says she should get back, and goes.
 
-=== talk-role-3-why with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “Some days I wonder why I keep doing this,” Asuka admits.
+=== talk-role-3-why with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “There are days,” Asuka says, “when I am not certain why I continue.”
   you: “Why do you?”
-    Asuka thinks. “Because if I stopped, someone worse might do it.”
-  you: “Then stop for a day. See how it feels.”
-    “I tried once. I lasted a morning.” Asuka smiles ruefully.
+    (flat) Asuka thinks about it. “Because if I stopped, someone who cared less might do it.”
+  you: “Then stop for a day and see how it feels.”
+    (warm) “I tried once. I lasted a morning.” Asuka laughs at themself. “Maybe I’ll try for a whole day, if you check on me.”
   you: “Because you’re good at it, and people need you.”
-    Asuka lets that land. “Thank you. I needed to hear that today.”
+    (flat) “Thank you. I think I needed someone to say that today.”
 
-=== talk-role-3-why with Goro (genin, ninjutsu, brash, curious) ===
-opener: “Some days I wonder why I keep doing this,” Goro admits.
+=== talk-role-3-why with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “Some days I don’t know why I keep doing this,” Goro says.
   you: “Why do you?”
-    Goro thinks. “Because if I stopped, someone worse might do it.”
-  you: “Then stop for a day. See how it feels.”
-    “I tried once. I lasted a morning.” Goro smiles ruefully.
+    (warm) Goro thinks, really thinks. “Because if I stopped, someone worse might do it. And because I’d miss it. Don’t you tell anyone that part.”
+  you: “Then stop for a day and see how it feels.”
+    (warm) “I tried once. I lasted a morning.” Goro laughs at herself. “Maybe I’ll try for a whole day, if you check on me.”
   you: “Because you’re good at it, and people need you.”
-    Goro lets that land. “Thank you. I needed to hear that today.”
+    (flat) “Thank you. I needed to hear that today.”
 
-=== talk-role-4-hope with Asuka (genin, kenjutsu, calm, proud) ===
-opener: Asuka looks at you for a long moment. “Can I tell you what I hope for you?”
+=== talk-role-4-hope with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: Asuka regards you for a while. “May I tell you what I hope for you?”
   you: “Please.”
-    “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” They say it like a promise.
+    (warm) “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” They say it like a promise, and you can tell they have thought about it for a long while.
   you: “That I stop eating your food?”
-    “That too.” Then, seriously: “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.”
-  you: Nod.
-    “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” Asuka squeezes your shoulder.
+    (cool) “Will you let me say it?” There’s a pause before they go on. “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.”
+  you: Wait for them to say it.
+    (warm) “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” Asuka squeezes your shoulder and keeps their hand there a moment.
 
-=== talk-role-4-hope with Goro (genin, ninjutsu, brash, curious) ===
-opener: Goro looks at you for a long moment. “Can I tell you what I hope for you?”
+=== talk-role-4-hope with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: Goro looks at you for a while. “I’m going to tell you what I hope for you.”
   you: “Please.”
-    “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” She says it like a promise.
+    (flat) “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” She says it like a promise.
   you: “That I stop eating your food?”
-    “That too.” Then, seriously: “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.”
-  you: Nod.
-    “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” Goro squeezes your shoulder.
+    (flat) “That too, if you can manage it.” Then, seriously, “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.”
+  you: Wait for her to say it.
+    (cool) “You could say yes.” Then, anyway, “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.”
 
-=== talk-role-4-remember with Asuka (genin, kenjutsu, calm, proud) ===
-opener: “Whatever happens to me,” Asuka says, “I want you to remember something.”
+=== talk-role-4-remember with Asuka (genin, kenjutsu, calm, proud; formal) ===
+opener: “Whatever becomes of me,” Asuka says, “I would ask you to remember one thing.”
   you: “I’ll remember.”
-    “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” You fold the words away somewhere safe.
+    (warm) “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” Asuka watches you take it in, and seems satisfied that you will.
   you: “Nothing’s going to happen to you.”
-    Asuka smiles. “Maybe not. Then promise me you’ll look after yourself.” You promise.
+    (flat) “I hope you’re right. Then promise me you’ll look after yourself too.” You promise.
   you: “Only if you promise me the same.”
-    “Deal,” Asuka says, and you both pretend it was a small thing.
+    (warm) “Deal,” Asuka says, and you both pretend it was a small thing. “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.”
 
-=== talk-role-4-remember with Goro (genin, ninjutsu, brash, curious) ===
-opener: “Whatever happens to me,” Goro says, “I want you to remember something.”
+=== talk-role-4-remember with Goro (genin, ninjutsu, brash, curious; blunt) ===
+opener: “Whatever happens to me,” Goro says, “remember one thing.”
   you: “I’ll remember.”
-    “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” You fold the words away somewhere safe.
+    (flat) “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.” You fold the words away somewhere safe.
   you: “Nothing’s going to happen to you.”
-    Goro smiles. “Maybe not. Then promise me you’ll look after yourself.” You promise.
+    (flat) “Maybe you’re right. Then promise me you’ll look after yourself.” You promise.
   you: “Only if you promise me the same.”
-    “Deal,” Goro says, and you both pretend it was a small thing.
+    (warm) “Deal,” Goro says, and you both pretend it was a small thing. “That we both make it to the next rank. Together, I mean. I don’t want to go up alone.”
 
-coaching by Gōran, met: You did the work on your speed. Gōran takes you out to eat, and won’t hear of you paying. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Assignment done] [A meal on him] [Assignment: Taijutsu]
+=== a week of talk with Asuka ===
+day 1, talk-trait-1-noticed (proud): Asuka turns to you. “I have the impression you’ve been observing how I do things. Please, say whatever it is.”
+day 2, talk-specialty-0-watch (kenjutsu): You find Asuka hard at work, the same three cuts through falling leaves, morning after morning. They finish the set before acknowledging you, and only then lower their hands.
+day 3, talk-role-1-days (genin): Asuka stretches, carefully. “Most of my days are spent on lost cats, leaky roofs, long drills and the odd job that turns out to be a real one. One learns to find a rhythm in it.”
+day 4, talk-trait-1-wish (proud): “Do you ever wish you were otherwise?” Asuka asks. “There are days I would like to be more like the people who can say ‘I don’t know’ out loud and not flinch.”
+day 5, talk-trait-1-habit (calm): You come across Asuka folding their hands and counting to five before answering anything that matters, as usual. They notice your attention and pause, politely, to let you speak.
+day 6, talk-specialty-1-daily (kenjutsu): “It is often said that kenjutsu is a matter of talent,” Asuka says. “In my experience it is the same three cuts through falling leaves, morning after morning, kept up until it becomes second nature.”
+day 7, generic-mission (own): “Heard you took a job from the mission desk,” Asuka says. “How did it go?”
 
-coaching by Gōran, missed: Gōran checks your speed. Not enough. He doesn’t hide it. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Gōran’s regard falls] [Assignment: Taijutsu]
+=== a week of talk with Goro ===
+day 1, talk-trait-1-noticed (curious): Goro squints at you. “You’ve been watching how I do things. Say it.”
+day 2, talk-trait-1-wish (brash): “You ever wish you were someone else?” Goro asks. “Some days I want to be more like someone who can wait for the right moment and still look like they meant it.”
+day 3, talk-role-1-days (genin): Goro stretches until her back cracks. “Most of my days are lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+day 4, talk-trait-1-wish (curious): “You ever wish you were someone else?” Goro asks. “Some days I want to be more like the people who know exactly what they want and never wonder about the other road.”
+day 5, talk-specialty-1-opinion (ninjutsu): Goro scowls at two genin sparring nearby. “Look at them. Everyone who tries ninjutsu wants the flashy part and skips the rest.”
+day 6, talk-trait-2-instructors (brash): Goro watches a few academy students run past. “The instructors never knew what to do with me. Still don’t, I bet.”
+day 7, generic-dream (own): “Can I tell you something?” Goro says. “I want to be more than a genin who catches cats.”
+
+coaching by Gōran, met: The first thing Gōran checks is your speed. “That’ll do. That’s the work I wanted,” he says. “Your taijutsu is the best thing you have, but anyone with an illusion walks straight through you. I want more of it by the next lesson.” Afterwards Gōran takes you out to eat, and won’t hear of you paying. [Assignment done] [A meal on him] [Assignment: Taijutsu]
+
+coaching by Gōran, missed: Gōran checks your speed, and it isn’t where he wanted it. “Not enough, and you know it isn’t,” he says. “Your taijutsu is the best thing you have, but anyone with an illusion walks straight through you. I want more of it by the next lesson.” [Gōran’s regard falls] [Assignment: Taijutsu]
+
+farewell of Gōran: Gōran finds you after the ceremony, when the crowd has thinned, and stands beside you for a while without saying much. “I don’t say this often, so listen. You earned every bit of it.” Then he takes you out to eat one more time, and won’t hear of you paying. At last he leaves you to the people waiting to congratulate you.
+
+farewell of Fusako: Fusako finds you after the ceremony, when the crowd has thinned, and stands beside you for a while without saying much. “I don’t say this often, so listen. You earned every bit of it.” For once she doesn’t hurry off. “Again, from one,” she says one last time, and then she is gone into the crowd.
 
 === crew voices ===
-Asuka, check-passed: Naturally.
-Asuka, check-failed: An off day. Nothing more.
-Asuka, approve: Good. Do it boldly.
+Asuka, check-passed: Naturally. Did anyone doubt it?
+Asuka, check-failed: An off day for me, nothing more.
+Asuka, approve: Good. Now do it boldly.
 Asuka, disapprove: Is that really the best we can do?
 Asuka, camp: I’ll take the hard watch. Obviously.
-Goro, check-passed: Huh! It worked!
-Goro, check-failed: Interesting. Wrong, but interesting.
-Goro, approve: Ooh. Good.
-Goro, disapprove: Aw. I wanted to see.
+Goro, check-passed: Huh! It actually worked!
+Goro, check-failed: Interesting. Wrong, but I’d like to know why.
+Goro, approve: Ooh, yes, let’s do that.
+Goro, disapprove: Aw. I wanted to see what was in there.
 Goro, camp: What’s the strangest job you’ve ever heard of?
 
 === drinks ===

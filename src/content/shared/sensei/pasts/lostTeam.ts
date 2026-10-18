@@ -66,7 +66,7 @@ export const LOST_TEAM: SenseiPast = {
     },
     {
       opener:
-        '{them} tells it plainly, as if it happened to someone else: the job at {place}, the ambush in the rain, {lost} shouting for the others to run. “I ran,” {them} says. “I was the one who was meant to lead.”',
+        '{them} tells it plainly, as if it happened to someone else, the job at {place} and the ambush in the rain and {lost} shouting for the others to run. “I ran,” {them} says. “I was the one who was meant to lead.”',
       choices: [
         {
           label: 'Tell {them} running was what {lost} wanted',
@@ -118,7 +118,7 @@ export const LOST_TEAM: SenseiPast = {
       gate: '{name} says nothing at the gate. {keepsake} hangs from {name}’s belt.',
       road: 'The road to {place}. {name} sets a hard pace and doesn’t talk.',
       check:
-        'Near {place} the signs are old and new at once: a cold camp, a fresh one, a path someone wanted hidden.',
+        'Near {place} the signs are old and new at once, a cold camp beside a fresh one and a path someone wanted hidden.',
       found: 'A hollow under a rock face, a blade-rack, a fire banked for someone coming back.',
       lost: 'The trail runs out on wet stone. {name} finds the hollow anyway, as if {name} always knew.',
       camp: 'You camp out of sight of it. {name} sits up all night, facing the dark.',

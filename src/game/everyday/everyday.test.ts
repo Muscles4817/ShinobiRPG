@@ -44,10 +44,12 @@ describe('everyday lines', () => {
   it('writes one journal entry for a meal, and not the stall card’s words', () => {
     const before = newGame();
     const after = act(before, { type: 'eat', foodId: 'ember-noodles' });
-    expect(after.journal.nextId - before.journal.nextId).toBe(1);
+    // The sensei may also have a word about food the first time; that is theirs, not the meal's.
+    const meal = MEAL_LINES.lines.map((l) => l.text);
+    const added = after.journal.entries.filter((e) => e.id >= before.journal.nextId);
+    expect(added.filter((e) => meal.includes(e.text))).toHaveLength(1);
     const food = ctx.content.foods.require('ember-noodles');
-    expect(lastEntry(after)?.text).not.toBe(food.description);
-    expect(MEAL_LINES.lines.map((l) => l.text)).toContain(lastEntry(after)?.text);
+    expect(added.map((e) => e.text)).not.toContain(food.description);
   });
 
   it('keeps a hungry drill’s line about hunger', () => {
@@ -61,7 +63,10 @@ describe('everyday lines', () => {
       },
     };
     const again = act(hungry, { type: 'train', trainingId: 'lake-laps' });
-    expect(linesOf(DRILL_LINES, 'hungry')).toContain(lastEntry(again)?.text);
+    // Going hungry for the first time also brings the sensei over with a bowl, after the drill.
+    const added = again.journal.entries.filter((e) => e.id >= hungry.journal.nextId);
+    const hungryLines = linesOf(DRILL_LINES, 'hungry');
+    expect(added.some((e) => hungryLines.includes(e.text))).toBe(true);
   });
 
   it('keeps every bank big enough to rotate', () => {

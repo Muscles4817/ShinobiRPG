@@ -26,7 +26,7 @@ export const SPIRIT_BARGAIN: SenseiPast = {
   beats: [
     {
       opener:
-        '{them} won’t walk past still water without dropping something into it: a coin, a grain of rice, a thread. “Manners,” {them} says, when you ask. “It never hurts to have manners.”',
+        '{them} won’t walk past still water without dropping a coin or a grain of rice into it. “Manners,” {them} says, when you ask. “It never hurts to have manners.”',
       choices: [
         {
           label: 'Drop something in too',

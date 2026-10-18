@@ -87,7 +87,15 @@ export function validateWorld(pack: ContentPack): string[] {
       if (!reached[kind].has(id)) problems.push(`${kind} "${id}" is not offered at any place`);
     });
   }
-  return [...problems, ...visitProblems(pack)];
+  return [...problems, ...visitProblems(pack), ...inTextProblems(pack)];
+}
+
+/** A place's mid-sentence name starts lower case, or it would read as a title. */
+function inTextProblems(pack: ContentPack): string[] {
+  return pack.locations
+    .flatMap((l) => l.places)
+    .filter((p) => p.inText !== undefined && !/^[a-z]/.test(p.inText))
+    .map((p) => `place "${p.id}" has a mid-sentence name that doesn’t start lower case`);
 }
 
 /** A travelling stall's visits must come round: every day or more, on a day of the cycle. */

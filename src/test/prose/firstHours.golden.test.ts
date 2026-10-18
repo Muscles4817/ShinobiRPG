@@ -19,12 +19,14 @@ import { recorder, type Recorder } from './recorder';
 
 /**
  * The first hours of a new game as the player reads them: the academy file read back, the
- * break-in, graduation, the team, the chakra paper, the sensei's first meeting and three days
- * of training, talk, food and sleep, each ending on its sheet.
+ * break-in, graduation, the team, the chakra paper, the sensei's first meeting and the first
+ * week and a day: what the sensei shows you, their lessons and sessions, training, talk, food
+ * and sleep, each day ending on its sheet.
  */
 
 const SEED = 1234;
-const DAYS = 3;
+/** Long enough for two weekly lessons, so the second can judge the first's assignment. */
+const DAYS = 8;
 
 function creation(r: Recorder, ctx: GameContext) {
   const view = creationView(ctx);
@@ -60,11 +62,22 @@ function talkToTeammate(r: Recorder, start: GameState, day: number): GameState {
   return r.play(s, { type: 'endConversation' });
 }
 
+/** What the sensei has for you today: what they want to show you, and the weekly lesson. */
+function withSensei(r: Recorder, ctx: GameContext, start: GameState): GameState {
+  let s = start;
+  if (senseiWeekView(s, ctx)?.lesson?.heed.blocker === null) s = r.play(s, { type: 'heedSensei' });
+  const sensei = trainingView(s, ctx)?.teachers.find((t) => t.isSensei);
+  const stat = sensei?.open.find((o) => o.blocker === null);
+  if (sensei && stat) s = r.play(s, stat.action);
+  return s;
+}
+
 function oneDay(r: Recorder, ctx: GameContext, start: GameState, day: number): GameState {
   r.say(`\n########## day ${day + 1} ##########`);
   r.dump('sensei’s slip', senseiWeekView(start, ctx));
   r.dump('village', villageView(start, ctx));
-  let s = r.play(start, { type: 'senseiSession' });
+  let s = withSensei(r, ctx, start);
+  s = r.play(s, { type: 'senseiSession' });
   const drill = trainingView(s, ctx)?.drills[day];
   if (drill) s = r.play(s, { type: 'train', trainingId: drill.id });
   s = talkToTeammate(r, s, day);

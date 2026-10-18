@@ -1,7 +1,7 @@
 import { act, ctx, freshGame } from '@/test/gameFixtures';
 
 import { blockerFor } from './dispatch';
-import { CURRICULUM_ORDER, HEEDED_REGARD, beatDue } from './sensei/curriculum';
+import { CURRICULUM_ORDER, HEEDED_REGARD, beatDue, beatText } from './sensei/curriculum';
 import { approachRegard, PREFERRED_REGARD, TOGETHER_REGARD } from './sensei/opening';
 import type { GameState } from './state';
 import { activeScene } from './views/peopleScenes';
@@ -68,6 +68,36 @@ describe('the first meeting', () => {
 });
 
 describe('the curriculum', () => {
+  it('comes just before the first of a thing, in the sensei’s manner, and only once', () => {
+    const state = shown('goran');
+    const drill = ctx.content.training.all[0]!.id;
+    const drilled = act(state, { type: 'train', trainingId: drill });
+    const said = drilled.journal.entries.slice(state.journal.entries.length);
+    expect(said[0]?.heading).toBe('Drills');
+    expect(said[1]?.heading).not.toBe('Drills');
+    expect(drilled.mentor.beats).toContain('drills');
+    expect(drilled.mentor.regard).toBe(state.mentor.regard);
+    const again = act(
+      { ...drilled, character: state.character },
+      { type: 'train', trainingId: drill },
+    );
+    expect(again.journal.entries.filter((e) => e.heading === 'Drills')).toHaveLength(1);
+  });
+
+  it('speaks as the sensei does, not as a manual', () => {
+    for (const beat of ctx.content.curriculum.all) {
+      for (const line of Object.values(beat.says)) {
+        expect(line).not.toMatch(/\d|cards|tap|button|slot|screen/i);
+      }
+    }
+    const spar = ctx.content.curriculum.require('spar');
+    const senseis = ctx.content.people.all.filter((p) => p.sensei?.ways && !p.sensei.pooled);
+    const told = new Set(
+      senseis.map((sensei) => beatText(spar, sensei, ctx).replace(sensei.name, '')),
+    );
+    expect(told.size).toBeGreaterThan(1);
+  });
+
   function shown(senseiId: string): GameState {
     let state = metBy(senseiId);
     while (state.mentor.opening) state = act(state, PICK(0));
@@ -98,9 +128,14 @@ describe('the curriculum', () => {
 
   it('waits until a thing makes sense: job preparation after the first job', () => {
     let state = shown('goran');
-    for (const _ of ['week', 'spar', 'drills', 'eat', 'board']) {
-      state = act(act(state, { type: 'heedSensei' }), { type: 'sleep' });
+    // Going hungry in the night shows you food on its own, so count days, not beats.
+    for (let day = 0; day < 8 && beatDue(state, ctx)?.id !== 'cooking'; day++) {
+      if (beatDue(state, ctx)) state = act(state, { type: 'heedSensei' });
+      state = act(state, { type: 'sleep' });
     }
+    expect(state.mentor.beats).toEqual(
+      expect.arrayContaining(['week', 'spar', 'drills', 'eat', 'board']),
+    );
     expect(beatDue(state, ctx)?.id).toBe('cooking');
     const worked = { ...state, standing: { ...state.standing, missionsCompleted: 1 } };
     expect(beatDue(worked, ctx)?.id).toBe('prep');

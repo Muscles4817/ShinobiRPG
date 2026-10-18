@@ -2,6 +2,7 @@
 ########## lantern-patrol ##########
 
 >>> startMission
+  journal «The jobs board»: Gōran stops you in front of the notices. “Chores inside the walls you do on your own. Anything past the gate, I’m coming with you. New work goes up every few days. Take what pays and what you can live through.”
   journal «Lantern Patrol»: Walk the wall at dusk and make sure every lantern is lit. The village never stops needing this.
 
 --- mission (day 1, slot 2) ---
@@ -185,6 +186,7 @@ view:
 ########## storehouse-ghost ##########
 
 >>> startMission
+  journal «Before a job»: Gōran checks your pouch before you set out. “You went out with empty pockets last time. Buy kunai, smoke, salve, whatever the job wants, before you go. What you don’t use comes home with you.”
   journal «The Storehouse Ghost»: Something is spoiling the rice in Hanada’s storehouse, and the workers refuse to go in.
 
 --- mission (day 2, slot 1) ---
@@ -422,11 +424,12 @@ view:
 
 >>> combatAct (Watch the round)
   journal «The Storehouse Ghost failed»: You were beaten unconscious. [−2 reputation]
-  journal: Gōran waited at the training ground until dark. You will hear about it. [Gōran’s regard falls]
-  journal: Gōran expects you at Training Grounds for a session, this morning.
   journal: You wake in the village hospital, under lantern light and clean sheets. [−40 ryo]
   journal «Torn shoulder»: The medics patched you up, but this one will take time to mend. [6 days to heal]
   journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves, a touch]
+  journal: You missed the march yesterday. Gōran stood at the training ground for hours, and has already told two people about it. [Gōran’s regard falls]
+  journal: Gōran has asked for you at the training ground this morning, for drills.
+  journal «Eat»: Gōran pushes a bowl in front of you. “Hungry shinobi train slowly and fight worse. Eat before you work. A meal you cook yourself does more for you than a snack off a stall.”
 
 === report card ===
 view:
@@ -468,6 +471,7 @@ view:
 ########## brides-chest ##########
 
 >>> startMission
+  journal «Know what you face»: Gōran taps the clerk’s counter before you take the job. “The client knows more than the notice says. Pay the clerk for the report and you’ll know every one of them and their tricks before you meet them. It costs less than the hospital.”
   journal «The Bride’s Chest»: See a bride’s dowry chest and its porter, Old Saburō safely to the hill village of Kayano. The road has a bad name lately.
 
 --- mission (day 3, slot 1) ---
@@ -568,11 +572,11 @@ view:
     detail: A day on the road, and nothing in your pack
 
 >>> missionContinue (Travel on)
-  journal: Gōran expects you at Training Grounds for a session, this morning.
   journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength, a little] [Taijutsu, a little] [+3 bond]
   journal «A travel pass»: Gōran signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
-  journal «Gōran’s word»: You went down on that job. Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Assignment: Taijutsu]
+  journal «Gōran’s word»: Gōran sits down on a stump at the edge of the training ground and waves you over. He brings up the job you went down on. Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals. “Nothing you do is as good as your taijutsu, but anyone with an illusion walks straight through you,” he says. “Keep at it. More by next time.” [Assignment: Taijutsu]
   journal «On the road»: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb. [A day on the road]
+  journal: Gōran wants you at the training ground this morning, to spar.
 
 === report card ===
 view:
@@ -721,7 +725,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   threads[0]:
     label: Old Saburō’s trust
     word: Trusts you
@@ -790,7 +794,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   lines[9]:
     text: Push on in the dark
   lines[10]:
@@ -837,8 +841,8 @@ view:
     detail: A day on the road, and nothing in your pack
 
 >>> missionContinue (Travel on)
-  journal: Gōran expects you at Training Grounds for a session, this morning.
   journal «On the road»: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again. [A day on the road]
+  journal: Gōran will be at the training ground this morning, expecting you for a march.
 
 --- mission (day 5, slot 0) ---
 
@@ -864,7 +868,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   lines[9]:
     text: Push on in the dark
   lines[10]:
@@ -939,7 +943,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   lines[9]:
     text: Push on in the dark
   lines[10]:
@@ -1012,7 +1016,7 @@ view:
     text: You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.
   lines[8]:
     speaker: Goro
-    text: Tch. Again.
+    text: Tch. Give it here, I’ll have another go.
   lines[9]:
     text: Push on in the dark
   lines[10]:
@@ -1064,9 +1068,9 @@ view:
     detail: A day on the road, and nothing in your pack
 
 >>> missionContinue (Travel on)
-  journal: Gōran expects you at Training Grounds for a session, this morning.
   journal «On the road»: The road home is quiet, and shorter than the road out. [A day on the road] [A hungry night]
   journal «The Bride’s Chest complete»: In Kayano the bride’s family open the chest to check it. Saburō is already asleep against the shrine wall, snoring a wedding song. [+420 ryo] [+6 reputation] [+6 team bond]
+  journal: Gōran has asked for you at the training ground this morning, for drills.
 
 === report card ===
 view:
@@ -1108,7 +1112,7 @@ view:
     name: Asuka
   crew[1]:
     name: Goro
-    quote: Tch. Again.
+    quote: Tch. Give it here, I’ll have another go.
   grade: rough
 
 >>> dismissReport
@@ -1179,8 +1183,8 @@ view:
     detail: A day on the road, food for 12 in your pack
 
 >>> missionContinue (Travel on)
-  journal: Gōran expects you at Training Grounds for a session, this morning.
   journal «On the road»: A day down the river road, Tobei talking the whole way. [A day on the road] [1 from your pack]
+  journal: Gōran will be at the training ground this morning, expecting you for a march.
 
 --- mission (day 2, slot 0) ---
 

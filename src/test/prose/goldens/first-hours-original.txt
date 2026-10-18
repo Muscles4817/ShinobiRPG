@@ -186,8 +186,8 @@ view:
 === sensei test ===
 view:
   heading: Show me
-  lines[0]: You hit air, then the ground. You get up. You go again.
-  lines[1]: You are all on the ground. Gōran waits.
+  lines[0]: You hit air and then the ground, and you get up and go at him again.
+  lines[1]: You are all on the ground, and Gōran waits to see who gets up first.
   choices[0]:
     label: Get up first
   choices[1]:
@@ -202,8 +202,8 @@ view:
 === sensei test ===
 view:
   heading: Show me
-  lines[0]: You are up before the others. It hurts. You don’t show it.
-  lines[1]: “Again tomorrow,” Gōran says. “And every day after. You’ll do.”
+  lines[0]: You are up before the others. It hurts, and you don’t let it show.
+  lines[1]: “Again tomorrow,” Gōran says, “and every day after that. You’ll do.”
   lines[2]: “Now. Do you want me to show you how things work here, or do you know?”
   choices[0]:
     label: Show me everything
@@ -282,7 +282,7 @@ view:
   todayLine: Your lesson now, at the training ground.
   lesson:
     title: Your week
-    text: Gōran hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+    text: Gōran hands you a slip with the days of the week marked on it. “Those are the days I want you at the training ground. One full lesson, the rest short. Come when I say and I’ll think better of you, and if you leave me standing there I’ll remember it. A job or a sickbed excuses you. Nothing else does.”
     heed:
   teamDay:
     what: A challenge
@@ -302,87 +302,47 @@ view:
   rumours[1]: The lantern-lighters swear there are more lanterns every year than they remember hanging.
   rumours[2]: The Riverside Grill won’t say where its eels come from. Nobody has seen them caught.
 
+>>> heedSensei
+  journal «Your week»: Gōran hands you a slip with the days of the week marked on it. “Those are the days I want you at the training ground. One full lesson, the rest short. Come when I say and I’ll think better of you, and if you leave me standing there I’ll remember it. A job or a sickbed excuses you. Nothing else does.”
+
+>>> trainWith
+  journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength, a little] [Taijutsu, a little] [+3 bond] [−30 energy]
+  journal «A travel pass»: Gōran signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
+  journal «Gōran’s word»: Gōran sits down on a stump at the edge of the training ground and waves you over. “Your taijutsu is the best thing you have, but anyone with an illusion walks straight through you,” he says. “I want more of it by the next lesson.” [Assignment: Taijutsu]
+
+=== report card ===
+view:
+  sensei: Gōran
+  text: Gōran has you hit the striking post until it splinters, then hands you a new one.
+  gains[0]: Strength, a little
+  gains[1]: Taijutsu, a little
+
 >>> senseiSession
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
+  journal «Drills»: Gōran catches you before you start and walks you along the drills. “A drill builds what it works, and the better you get the less each one gives you. Pick one for what you need and do it till you can’t. Then eat and sleep, and do it again.”
   journal «Kicking Posts»: You copy what you remember from the academy, get half of it wrong, and fix the worst of it before you stop. [Strength, a little] [Taijutsu, a little] [−20 energy]
 
 >>> talk
-
---- conversation (day 1, slot 1) ---
-
-=== conversation ===
-view:
-  person:
-    name: Asuka
-    relation: teammate
-    fullName: Asuka Kanō
-    title: Genin
-    specialty:
-      label: Kenjutsu
-    stageName: Acquaintance
-    where: At the Mission Hall
-    talk:
-      blocker: You are in the middle of a conversation.
-    spar:
-      blocker: You are in the middle of a conversation.
-  opener: Asuka squints at you. “You’ve been watching how I do things. Go on, say it.”
-  choices[0]:
-    label: “You’re a creature of habit.”
-  choices[1]:
-    label: “You’re very much yourself. I like it.”
-  choices[2]:
-    label: Shake your head and smile.
-  leave:
-
->>> reply
-
---- conversation (day 1, slot 1) ---
-
-=== conversation ===
-view:
-  person:
-    name: Asuka
-    relation: teammate
-    fullName: Asuka Kanō
-    title: Genin
-    specialty:
-      label: Kenjutsu
-    stageName: Stranger
-    where: At the Mission Hall
-    talk:
-      blocker: You are in the middle of a conversation.
-    spar:
-      blocker: You are in the middle of a conversation.
-  opener: Asuka squints at you. “You’ve been watching how I do things. Go on, say it.”
-  choices[0]:
-    label: “You’re a creature of habit.”
-  choices[1]:
-    label: “You’re very much yourself. I like it.”
-  choices[2]:
-    label: Shake your head and smile.
-  answer:
-    said: “You’re a creature of habit.”
-    reply: “Guilty.” They show you: folding their hands and counting to five before answering anything that matters. “See? Can’t help it.”
-  leave:
-
->>> endConversation
+  refused: Asuka isn’t around right now.
 
 >>> eat
+  journal «Eat»: Gōran pushes a bowl in front of you. “Hungry shinobi train slowly and fight worse. Eat before you work. A meal you cook yourself does more for you than a snack off a stall.”
   journal «Ember Noodles»: It’s your first time trying it. You mean to take it slowly and finish it far too fast. [Hunger −50] [Energy +5] [−45 ryo]
 
+>>> dismissReport
+
 >>> sleep
-  journal: Gōran waited at the training ground until dark. You will hear about it. [Gōran’s regard falls]
-  journal: Gōran and the team went ahead without you. [Gōran’s regard falls]
-  journal: Gōran expects you at Training Grounds for a session, this morning.
-  journal «Sleep till dawn»: The river is loud tonight, high with rain from the hills, and you fall asleep listening to it. [Energy & chakra restored]
+  journal «Sleep till dawn»: Rain on the roof half the night, and you sleep the better for it. [Energy & chakra restored]
+  journal: Gōran and the team went on to the contest without you yesterday. [Gōran’s regard falls]
+  journal: Gōran will be at the training ground this morning, expecting you for a march.
 
 === day end ===
 view:
   mode: full
   when: Spring 1 draws to a close
-  title: You worked on your strength and taijutsu, and Goro, Gōran and you are acquaintances now.
+  title: You worked on your strength and taijutsu, and Asuka, Goro, Gōran and you are acquaintances now.
   growth[0]:
     stat: strength
     name: Strength
@@ -396,8 +356,9 @@ view:
     tier: Genin D
     words: Over halfway to a C
   people[0]:
-    stage: Stranger
-    next: At acquaintance: you learn what they’re like.
+    stage: Acquaintance
+    stamp: Now acquaintances
+    next: At friend: you learn what they like to hear.
   people[1]:
     stage: Acquaintance
     stamp: Now acquaintances
@@ -419,7 +380,7 @@ view:
   ahead[2]:
     text: Kite Day
     stamp: In five days
-  summary[0]: Now acquaintances with Goro and Gōran
+  summary[0]: Now acquaintances with Asuka, Goro and Gōran
   summary[1]: Strength, over halfway to a D
   summary[2]: Taijutsu, over halfway to a C
   button: Sleep
@@ -432,12 +393,12 @@ view:
 === sensei’s slip ===
 view:
   sensei: Gōran
-  regard: Watching you
+  regard: Rates you
   days[0]:
     label: 1
     meeting: Lesson
     from: morning
-    outcome: missed
+    outcome: kept
     team: Contest
     teamOutcome: missed
   days[1]:
@@ -464,9 +425,12 @@ view:
     label: 7
   todayLine: March now, at the training ground.
   session:
+  assignment:
+    stat: Taijutsu
+    progress: barely started
   lesson:
-    title: Your week
-    text: Gōran hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+    title: Sparring
+    text: Gōran stops you on your way out to talk about sparring. “Decide what you’ll do up close and far off before it starts, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”
     heed:
 
 === village ===
@@ -485,8 +449,11 @@ view:
     where: Near the Training Grounds
     befriend:
 
+>>> heedSensei
+  journal «Sparring»: Gōran stops you on your way out to talk about sparring. “Decide what you’ll do up close and far off before it starts, and keep one way of not getting hit ready. Then you find out if you were right. Losing to a teammate costs you nothing but pride, so lose a lot.”
+
 >>> senseiSession
-  journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaints allowed. “Again. Tomorrow, better.” [Stamina, a touch] [Chakra Reserves, a touch] [Gōran’s regard rises] [−10 energy]
+  journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaining allowed. “That’ll do for today. Go and eat before you fall over.” [Stamina, a touch] [Chakra Reserves, a touch] [Gōran’s regard rises] [−10 energy]
 
 >>> train
   journal «Rooftop Sprints»: The first go is mostly finding out where it hurts. Everywhere, it turns out, so you slow down and learn the shape of it before you push. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
@@ -510,13 +477,13 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Goro at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
+  opener: Goro squints at you. “You’ve been watching how I do things. Say it.”
   choices[0]:
-    label: “You always do that.”
+    label: “You’re a creature of habit.”
   choices[1]:
-    label: “Why do you do that?”
+    label: “You’re very much yourself. I like it.”
   choices[2]:
-    label: “It suits you.”
+    label: Shake your head and smile.
   leave:
 
 >>> reply
@@ -538,16 +505,16 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Goro at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
+  opener: Goro squints at you. “You’ve been watching how I do things. Say it.”
   choices[0]:
-    label: “You always do that.”
+    label: “You’re a creature of habit.”
   choices[1]:
-    label: “Why do you do that?”
+    label: “You’re very much yourself. I like it.”
   choices[2]:
-    label: “It suits you.”
+    label: Shake your head and smile.
   answer:
-    said: “Why do you do that?”
-    reply: Goro thinks about it. “I don’t know. It feels wrong not to.”
+    said: “You’re very much yourself. I like it.”
+    reply: “That’s not what I expected you to say.”
   leave:
 
 >>> endConversation
@@ -556,8 +523,8 @@ view:
   journal «Ember Noodles»: You take your time over it for once and watch the street go by. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
-  journal: Gōran expects you at Training Grounds for a session, this morning.
   journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored]
+  journal: Gōran has asked for you at the training ground this morning, for drills.
 
 === day end ===
 view:
@@ -615,12 +582,12 @@ view:
 === sensei’s slip ===
 view:
   sensei: Gōran
-  regard: Watching you
+  regard: Rates you
   days[0]:
     label: 1
     meeting: Lesson
     from: morning
-    outcome: missed
+    outcome: kept
     team: Contest
     teamOutcome: missed
   days[1]:
@@ -648,9 +615,12 @@ view:
     label: 7
   todayLine: Drills now, at the training ground.
   session:
+  assignment:
+    stat: Taijutsu
+    progress: barely started
   lesson:
-    title: Your week
-    text: Gōran hands you a slip with the week marked on it. “The days I want you at the training ground. Once a week the full lesson, the other days something short. Come when I say and I’ll think better of you. Leave me waiting and I won’t forget it. A job or a sickbed excuses you. Nothing else does.”
+    title: The jobs board
+    text: Gōran keeps you a moment to talk about the jobs board at the mission hall. “Chores inside the walls you do on your own. Anything past the gate, I’m coming with you. New work goes up every few days. Take what pays and what you can live through.”
     heed:
 
 === village ===
@@ -665,8 +635,12 @@ view:
   rumours[1]: The old lantern-keeper is calling for his cat again. Third time this month.
   rumours[2]: The Riverside Grill won’t say where its eels come from. Nobody has seen them caught.
 
+>>> heedSensei
+  journal «The jobs board»: Gōran keeps you a moment to talk about the jobs board at the mission hall. “Chores inside the walls you do on your own. Anything past the gate, I’m coming with you. New work goes up every few days. Take what pays and what you can live through.”
+
 >>> senseiSession
-  journal «Drills with Gōran»: Gōran drills you on the basics until they stop being basics. “Again. Tomorrow, better.” [Strength, a touch] [Taijutsu, a touch] [Gōran’s regard rises] [−10 energy]
+  journal «Drills with Gōran»: Gōran drills you on the basics until they stop feeling like basics. “You dropped your elbow every time you got tired,” Gōran says. “Fix that before I see you next.” [Strength, a touch] [Taijutsu, a touch] [Gōran’s regard rises] [−10 energy]
+  journal «A feel for your strength»: It comes naturally, as if your body remembered something it was never taught.
 
 >>> train
   journal «Lake Laps»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
@@ -685,19 +659,19 @@ view:
     title: Genin
     specialty:
       label: Kenjutsu
-    stageName: Stranger
+    stageName: Acquaintance
     where: At the Mission Hall
     talk:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Asuka barely looks up. “Sorry. Busy. It’s always the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+  opener: You come across Asuka mending their own clothes badly rather than asking anyone to show them how, as usual. They notice your attention and pause, politely, to let you speak.
   choices[0]:
-    label: “I’ll leave you to it.”
+    label: “You always do that.”
   choices[1]:
-    label: “Need a hand?”
+    label: “Why do you do that?”
   choices[2]:
-    label: “You could stand to slow down.”
+    label: “It suits you.”
   leave:
 
 >>> reply
@@ -719,16 +693,16 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Asuka barely looks up. “Sorry. Busy. It’s always the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+  opener: You come across Asuka mending their own clothes badly rather than asking anyone to show them how, as usual. They notice your attention and pause, politely, to let you speak.
   choices[0]:
-    label: “I’ll leave you to it.”
+    label: “You always do that.”
   choices[1]:
-    label: “Need a hand?”
+    label: “Why do you do that?”
   choices[2]:
-    label: “You could stand to slow down.”
+    label: “It suits you.”
   answer:
-    said: “I’ll leave you to it.”
-    reply: “Thanks.” Asuka sounds like they mean it.
+    said: “You always do that.”
+    reply: “So?” Asuka stops doing it, and you get the feeling you’ve spoiled it.
   leave:
 
 >>> endConversation
@@ -737,8 +711,8 @@ view:
   journal «Ember Noodles»: It’s as good as last time, and you don’t leave a scrap. [Hunger −50] [Energy +5] [−45 ryo]
 
 >>> sleep
-  journal: Gōran expects you at Training Grounds for a session, this morning.
   journal «Sleep till dawn»: Out in the street the lantern-lighters call to each other on their last round, and then it’s quiet. [Energy & chakra restored]
+  journal: Gōran wants you at the training ground this morning, to spar.
 
 === day end ===
 view:
@@ -802,3 +776,952 @@ view:
   dismiss:
 
 >>> dismissDay
+
+########## day 4 ##########
+
+=== sensei’s slip ===
+view:
+  sensei: Gōran
+  regard: Rates you
+  days[0]:
+    label: 1
+    meeting: Lesson
+    from: morning
+    outcome: kept
+    team: Contest
+    teamOutcome: missed
+  days[1]:
+    label: 2
+    meeting: March
+    from: morning
+    outcome: kept
+  days[2]:
+    label: 3
+    meeting: Drills
+    from: morning
+    outcome: kept
+  days[3]:
+    label: 4
+    meeting: Sparring
+    from: morning
+  days[4]:
+    label: 5
+    meeting: March
+    from: morning
+  days[5]:
+    label: 6
+    meeting: Drills
+    from: morning
+  days[6]:
+    label: 7
+  todayLine: Sparring now, at the training ground.
+  session:
+  assignment:
+    stat: Taijutsu
+    progress: barely started
+  lesson:
+    title: Cooking
+    text: Gōran asks whether you can cook, and doesn’t seem surprised by the answer. “Learn to cook. A good dish keeps you sharper and harder to kill all day long. Grocers sell books of recipes, and friends teach theirs.”
+    heed:
+
+=== village ===
+view:
+  festival:
+    name: Kite Day
+    description: Children fly paper kites over the lake and the stalls sell cheap sweets.
+    when: In three days
+    perks[0]: Market −30%
+    perks[1]: Bonds +2 per talk
+  rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
+  rumours[1]: The priests say the spirit shrine is choking on weeds, and nobody wants to touch them.
+  rumours[2]: Yomi-sensei talks to the lanterns. Some say the lanterns answer.
+
+>>> heedSensei
+  journal «Cooking»: Gōran asks whether you can cook, and doesn’t seem surprised by the answer. “Learn to cook. A good dish keeps you sharper and harder to kill all day long. Grocers sell books of recipes, and friends teach theirs.”
+
+>>> senseiSession
+  journal «Sparring with Gōran»: Gōran gives you a bout at half speed and then another at full, and your ribs notice the difference. “Same again tomorrow, and I want it cleaner,” Gōran says, already walking off. [Strength, a touch] [Taijutsu, a touch] [Gōran’s regard rises] [−10 energy]
+
+>>> train
+  journal «Leaf Meditation»: You copy what you remember from the academy, get half of it wrong, and fix the worst of it before you stop. [Chakra Control, a little] [Willpower, a touch] [−10 energy]
+
+>>> talk
+
+--- conversation (day 4, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Goro
+    relation: teammate
+    fullName: Goro Tachibana
+    title: Genin
+    specialty:
+      label: Ninjutsu
+    stageName: Acquaintance
+    where: At the Mission Hall
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: “Know what nobody gets about what I do?” Goro says. “It’s mostly turning up. Every day.”
+  choices[0]:
+    label: “Turning up is half of everything.”
+  choices[1]:
+    label: “So you’re saying it’s easy.”
+  choices[2]:
+    label: “And the other half?”
+  leave:
+
+>>> reply
+
+--- conversation (day 4, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Goro
+    relation: teammate
+    fullName: Goro Tachibana
+    title: Genin
+    specialty:
+      label: Ninjutsu
+    stageName: Acquaintance
+    where: At the Mission Hall
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: “Know what nobody gets about what I do?” Goro says. “It’s mostly turning up. Every day.”
+  choices[0]:
+    label: “Turning up is half of everything.”
+  choices[1]:
+    label: “So you’re saying it’s easy.”
+  choices[2]:
+    label: “And the other half?”
+  answer:
+    said: “So you’re saying it’s easy.”
+    reply: “I’m saying it’s every day. You try it.”
+  leave:
+
+>>> endConversation
+
+>>> eat
+  journal «Ember Noodles»: The cook knows your face by now and gives you a little extra without saying anything. [Hunger −50] [Energy +5] [−45 ryo]
+
+>>> sleep
+  journal «Sleep till dawn»: You wake once in the night, listen to the house settle, and drift off again. [Energy & chakra restored]
+  journal: Gōran will be at the training ground this morning, expecting you for a march.
+
+=== day end ===
+view:
+  mode: full
+  when: Spring 4 draws to a close
+  title: You worked on your chakra control and strength, among other things, and Gōran thinks better of you.
+  growth[0]:
+    stat: chakraControl
+    name: Chakra Control
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[1]:
+    stat: strength
+    name: Strength
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[2]:
+    stat: taijutsu
+    name: Taijutsu
+    grade: D
+    tier: Genin D
+    words: Over halfway to a C
+  growth[3]:
+    stat: willpower
+    name: Willpower
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  people[0]:
+    stage: Acquaintance
+    stamp: Thinks better of you
+    next: At friend: you learn what he likes to hear.
+  people[1]:
+    stage: Acquaintance
+    next: At friend: you learn what she likes to hear.
+  purse:
+    lines[0]:
+      label: Ember Noodles
+  aheadLabel: Tomorrow
+  ahead[0]:
+    text: The Lantern Trials
+    stamp: In two days
+  ahead[1]:
+    text: March with Gōran
+    stamp: Morning
+  ahead[2]:
+    text: Kite Day
+    stamp: In two days
+  summary[0]: Gōran thinks better of you
+  summary[1]: Chakra Control, over halfway to a D
+  summary[2]: Strength, over halfway to a D
+  button: Sleep
+  dismiss:
+
+>>> dismissDay
+
+########## day 5 ##########
+
+=== sensei’s slip ===
+view:
+  sensei: Gōran
+  regard: Rates you
+  days[0]:
+    label: 1
+    meeting: Lesson
+    from: morning
+    outcome: kept
+    team: Contest
+    teamOutcome: missed
+  days[1]:
+    label: 2
+    meeting: March
+    from: morning
+    outcome: kept
+  days[2]:
+    label: 3
+    meeting: Drills
+    from: morning
+    outcome: kept
+  days[3]:
+    label: 4
+    meeting: Sparring
+    from: morning
+    outcome: kept
+  days[4]:
+    label: 5
+    meeting: March
+    from: morning
+  days[5]:
+    label: 6
+    meeting: Drills
+    from: morning
+  days[6]:
+    label: 7
+  todayLine: March now, at the training ground.
+  session:
+  assignment:
+    stat: Taijutsu
+    progress: under way
+  lesson:
+    title: Leaving the village
+    text: Gōran taps the pass he signed for you. “Genin go out the gate on a job or with my pass. It lasts a week and covers the safe roads. Get yourself in trouble out there and I’ll hear about it.”
+    heed:
+
+=== village ===
+view:
+  festival:
+    name: Kite Day
+    description: Children fly paper kites over the lake and the stalls sell cheap sweets.
+    when: In two days
+    perks[0]: Market −30%
+    perks[1]: Bonds +2 per talk
+  rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
+  rumours[1]: Gōran-sensei was seen running the lake before dawn. With a boulder.
+  rumours[2]: Akari-sensei gets a letter every week from the capital and burns each one unread.
+  stray:
+    text: A thin grey hound noses through the scraps under the lanterns, ribs showing.
+    where: Near the Training Grounds
+    befriend:
+
+>>> heedSensei
+  journal «Leaving the village»: Gōran taps the pass he signed for you. “Genin go out the gate on a job or with my pass. It lasts a week and covers the safe roads. Get yourself in trouble out there and I’ll hear about it.”
+
+>>> senseiSession
+  journal «March with Gōran»: Gōran sets a pace up the hill road that you can just about keep, and lifts it as soon as you can. “Better than yesterday,” Gōran says, as if that were the least anyone could ask of you. [Stamina, a touch] [Chakra Reserves, a touch] [Gōran’s regard rises] [−10 energy]
+
+>>> train
+  journal «Hand-Seal Drills»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Chakra Control, a touch] [Ninjutsu, a little] [−15 energy]
+
+>>> talk
+
+--- conversation (day 5, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Asuka
+    relation: teammate
+    fullName: Asuka Kanō
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Stranger
+    where: At the Mission Hall
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: “I could eat a whole pot of rice right now,” Asuka says.
+  choices[0]:
+    label: “Only one pot?”
+  choices[1]:
+    label: “I know a good stall. My treat sometime.”
+  choices[2]:
+    label: Nod and say nothing.
+  leave:
+
+>>> reply
+
+--- conversation (day 5, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Asuka
+    relation: teammate
+    fullName: Asuka Kanō
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Stranger
+    where: At the Mission Hall
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: “I could eat a whole pot of rice right now,” Asuka says.
+  choices[0]:
+    label: “Only one pot?”
+  choices[1]:
+    label: “I know a good stall. My treat sometime.”
+  choices[2]:
+    label: Nod and say nothing.
+  answer:
+    said: “Only one pot?”
+    reply: Asuka laughs harder than the joke deserves.
+  leave:
+
+>>> endConversation
+
+>>> eat
+  journal «Ember Noodles»: You eat quickly, without really tasting it, and feel better at once. [Hunger −50] [Energy +5] [−45 ryo]
+
+>>> sleep
+  journal «Sleep till dawn»: You dream about the day’s work and wake stiff in the legs but clear in the head. [Energy & chakra restored]
+  journal: Gōran has asked for you at the training ground this morning, for drills.
+
+=== day end ===
+view:
+  mode: full
+  when: Spring 5 draws to a close
+  title: You worked on your ninjutsu and chakra control, among other things, and Gōran thinks better of you.
+  growth[0]:
+    stat: ninjutsu
+    name: Ninjutsu
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[1]:
+    stat: chakraControl
+    name: Chakra Control
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[2]:
+    stat: reserves
+    name: Chakra Reserves
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[3]:
+    stat: stamina
+    name: Stamina
+    grade: D
+    tier: Genin D
+    words: Only just a D
+  people[0]:
+    stage: Acquaintance
+    stamp: Thinks better of you
+    next: At friend: you learn what he likes to hear.
+  people[1]:
+    stage: Stranger
+    next: At acquaintance: you learn what they’re like.
+  purse:
+    lines[0]:
+      label: Ember Noodles
+  aheadLabel: Tomorrow
+  ahead[0]:
+    text: The Lantern Trials
+    stamp: Tomorrow
+  ahead[1]:
+    text: Drills with Gōran
+    stamp: Morning
+  ahead[2]:
+    text: Kite Day
+    stamp: Tomorrow
+  summary[0]: Gōran thinks better of you
+  summary[1]: Ninjutsu, over halfway to a D
+  summary[2]: Chakra Control, over halfway to a D
+  button: Sleep
+  dismiss:
+
+>>> dismissDay
+
+########## day 6 ##########
+
+=== sensei’s slip ===
+view:
+  sensei: Gōran
+  regard: Rates you
+  days[0]:
+    label: 1
+    meeting: Lesson
+    from: morning
+    outcome: kept
+    team: Contest
+    teamOutcome: missed
+  days[1]:
+    label: 2
+    meeting: March
+    from: morning
+    outcome: kept
+  days[2]:
+    label: 3
+    meeting: Drills
+    from: morning
+    outcome: kept
+  days[3]:
+    label: 4
+    meeting: Sparring
+    from: morning
+    outcome: kept
+  days[4]:
+    label: 5
+    meeting: March
+    from: morning
+    outcome: kept
+  days[5]:
+    label: 6
+    meeting: Drills
+    from: morning
+  days[6]:
+    label: 7
+  todayLine: Drills now, at the training ground.
+  session:
+  assignment:
+    stat: Taijutsu
+    progress: under way
+
+=== village ===
+view:
+  festival:
+    name: Kite Day
+    description: Children fly paper kites over the lake and the stalls sell cheap sweets.
+    when: Tomorrow
+    perks[0]: Market −30%
+    perks[1]: Bonds +2 per talk
+  rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
+  rumours[1]: The cook on the Four Seasons Cart changes his menu by the weather, not the calendar.
+  rumours[2]: Shiori has read every scroll in the academy library. Twice.
+  stray:
+    text: A thin grey hound noses through the scraps under the lanterns, ribs showing.
+    where: Near the Training Grounds
+    befriend:
+
+>>> senseiSession
+  journal «Drills with Gōran»: Gōran takes you through the same three forms over and over, fixing a wrist here and a heel there. Gōran tells you that you were slow on the last few, which you were, and lets you go. [Strength, a touch] [Taijutsu, a touch] [Gōran’s regard rises] [−10 energy]
+
+>>> train
+  journal «Scroll Study»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Intellect, a little] [Genjutsu, a little] [−8 energy]
+
+>>> talk
+
+--- conversation (day 6, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Goro
+    relation: teammate
+    fullName: Goro Tachibana
+    title: Genin
+    specialty:
+      label: Ninjutsu
+    stageName: Acquaintance
+    where: At the Mission Hall
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: Goro watches you train for as long as she can stand it. “You’re doing that wrong. Want me to tell you about ninjutsu, or not?”
+  choices[0]:
+    label: “Please. I want to get better.”
+  choices[1]:
+    label: “Is this going to take long?”
+  choices[2]:
+    label: Wait for it.
+  leave:
+
+>>> reply
+
+--- conversation (day 6, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Goro
+    relation: teammate
+    fullName: Goro Tachibana
+    title: Genin
+    specialty:
+      label: Ninjutsu
+    stageName: Acquaintance
+    where: At the Mission Hall
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: Goro watches you train for as long as she can stand it. “You’re doing that wrong. Want me to tell you about ninjutsu, or not?”
+  choices[0]:
+    label: “Please. I want to get better.”
+  choices[1]:
+    label: “Is this going to take long?”
+  choices[2]:
+    label: Wait for it.
+  answer:
+    said: “Is this going to take long?”
+    reply: “Not if you listen.” She tells you anyway. “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.”
+  leave:
+
+>>> endConversation
+
+>>> eat
+  journal «Ember Noodles»: You take your time over it for once and watch the street go by. [Hunger −50] [Energy +5] [−45 ryo]
+
+>>> sleep
+  journal «Sleep till dawn»: You’re asleep almost before you’ve lain down, and you don’t stir until morning. [Energy & chakra restored]
+
+=== day end ===
+view:
+  mode: full
+  when: Spring 6 draws to a close
+  title: You worked on your intellect and genjutsu, among other things.
+  growth[0]:
+    stat: intellect
+    name: Intellect
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[1]:
+    stat: genjutsu
+    name: Genjutsu
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[2]:
+    stat: strength
+    name: Strength
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[3]:
+    stat: taijutsu
+    name: Taijutsu
+    grade: D
+    tier: Genin D
+    words: Over halfway to a C
+  people[0]:
+    stage: Acquaintance
+    next: At friend: you learn what she likes to hear.
+  purse:
+    lines[0]:
+      label: Ember Noodles
+  aheadLabel: Tomorrow
+  ahead[0]:
+    text: The Lantern Trials
+    stamp: Today
+  ahead[1]:
+    text: Kite Day
+    stamp: Today
+  ahead[2]:
+    text: New work at the hall
+    stamp: New
+  summary[0]: Intellect, over halfway to a D
+  summary[1]: Genjutsu, over halfway to a D
+  summary[2]: Strength, over halfway to a D
+  button: Sleep
+  dismiss:
+
+>>> dismissDay
+
+########## day 7 ##########
+
+=== sensei’s slip ===
+view:
+  sensei: Gōran
+  regard: Rates you
+  days[0]:
+    label: 1
+    meeting: Lesson
+    from: morning
+    outcome: kept
+    team: Contest
+    teamOutcome: missed
+  days[1]:
+    label: 2
+    meeting: March
+    from: morning
+    outcome: kept
+  days[2]:
+    label: 3
+    meeting: Drills
+    from: morning
+    outcome: kept
+  days[3]:
+    label: 4
+    meeting: Sparring
+    from: morning
+    outcome: kept
+  days[4]:
+    label: 5
+    meeting: March
+    from: morning
+    outcome: kept
+  days[5]:
+    label: 6
+    meeting: Drills
+    from: morning
+    outcome: kept
+  days[6]:
+    label: 7
+  assignment:
+    stat: Taijutsu
+    progress: under way
+
+=== village ===
+view:
+  festival:
+    name: Kite Day
+    description: Children fly paper kites over the lake and the stalls sell cheap sweets.
+    when: Today
+    perks[0]: Market −30%
+    perks[1]: Bonds +2 per talk
+  rumours[0]: Old Tsune hears every whisper in the village. Be careful what you say near her.
+  rumours[1]: Gōran-sensei was seen running the lake before dawn. With a boulder.
+  rumours[2]: Old Hagane at the forge is working on a blade he won’t talk about.
+
+>>> senseiSession
+  refused: Your sensei hasn’t set a session for today.
+
+>>> train
+  journal «Lantern Watching»: You copy what you remember from the academy, get half of it wrong, and fix the worst of it before you stop. [Perception, a little] [Genjutsu, a little] [−10 energy]
+
+>>> talk
+
+--- conversation (day 7, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Asuka
+    relation: teammate
+    fullName: Asuka Kanō
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Stranger
+    where: At the Mission Hall
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: You find Asuka hard at work, the same three cuts through falling leaves, morning after morning. They finish the set before acknowledging you, and only then lower their hands.
+  choices[0]:
+    label: “That’s good form.”
+  choices[1]:
+    label: “Looks easy enough.”
+  choices[2]:
+    label: “How long do you keep that up?”
+  leave:
+
+>>> reply
+  journal «Asuka»: You and Asuka have grown closer. [Acquaintance]
+
+--- conversation (day 7, slot 1) ---
+
+=== conversation ===
+view:
+  person:
+    name: Asuka
+    relation: teammate
+    fullName: Asuka Kanō
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Acquaintance
+    where: At the Mission Hall
+    talk:
+      blocker: You are in the middle of a conversation.
+    spar:
+      blocker: You are in the middle of a conversation.
+  opener: You find Asuka hard at work, the same three cuts through falling leaves, morning after morning. They finish the set before acknowledging you, and only then lower their hands.
+  choices[0]:
+    label: “That’s good form.”
+  choices[1]:
+    label: “Looks easy enough.”
+  choices[2]:
+    label: “How long do you keep that up?”
+  answer:
+    said: “That’s good form.”
+    reply: Asuka finishes the set before they answer, and you can tell they’re pleased. “You noticed? Most people only watch my feet.”
+    newStage: Acquaintance
+  leave:
+
+>>> endConversation
+
+>>> eat
+  journal «Kite Candy»: You order it to see what the fuss is about, and by the last mouthful you understand. [Hunger −10] [Energy +15] [−6 ryo]
+
+>>> sleep
+  journal «Sleep till dawn»: You sleep soundly. Somewhere a temple bell counts the hours. [Energy & chakra restored]
+  journal: A note pinned to your door says the rent is due. [30 ryo / week]
+  journal: Gōran wants you at the training ground this morning, for your lesson.
+
+=== day end ===
+view:
+  mode: full
+  when: Spring 7 draws to a close
+  title: You worked on your genjutsu and perception, and you and Asuka are acquaintances now.
+  growth[0]:
+    stat: genjutsu
+    name: Genjutsu
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[1]:
+    stat: perception
+    name: Perception
+    grade: D
+    tier: Genin D
+    words: Only just a D
+  people[0]:
+    stage: Acquaintance
+    stamp: Now acquaintances
+    next: At friend: you learn what they like to hear.
+  purse:
+    lines[0]:
+      label: Kite Candy
+  aheadLabel: Tomorrow
+  ahead[0]:
+    text: Lesson with Gōran
+    stamp: Morning
+  ahead[1]:
+    text: Team meal
+  ahead[2]:
+    text: New work at the hall
+    stamp: New
+  summary[0]: Now acquaintances with Asuka
+  summary[1]: Genjutsu, over halfway to a D
+  summary[2]: Perception, only just a D
+  button: Sleep
+  dismiss:
+
+>>> dismissDay
+
+########## day 8 ##########
+
+=== sensei’s slip ===
+view:
+  sensei: Gōran
+  regard: Rates you
+  days[0]:
+    label: 8
+    meeting: Lesson
+    from: morning
+    team: Meal
+  days[1]:
+    label: 9
+    meeting: March
+    from: morning
+  days[2]:
+    label: 10
+    meeting: Drills
+    from: morning
+  days[3]:
+    label: 11
+    meeting: Sparring
+    from: morning
+  days[4]:
+    label: 12
+    meeting: March
+    from: morning
+  days[5]:
+    label: 13
+    meeting: Drills
+    from: morning
+  days[6]:
+    label: 14
+  todayLine: Your lesson now, at the training ground.
+  assignment:
+    stat: Taijutsu
+    progress: under way
+  teamDay:
+    what: Team meal
+    from: evening
+    join:
+      blocker: The team meets from evening.
+
+=== village ===
+view:
+  rumours[0]: The borders have been quiet lately. The old-timers say that’s never good.
+  rumours[1]: Shiori has read every scroll in the academy library. Twice.
+  rumours[2]: Akari-sensei gets a letter every week from the capital and burns each one unread.
+
+>>> trainWith
+  journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength, a little] [Taijutsu, a little] [+3 bond] [−30 energy]
+  journal «A travel pass»: Gōran signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
+  journal «Gōran’s word»: Gōran looks over your taijutsu and finds it short of the mark. “That’s short. I don’t want to see short again,” he says. “It’s still the best thing you have, but anyone with an illusion walks straight through you. Keep at it. More by next time.” [Gōran’s regard falls] [Assignment: Taijutsu]
+
+=== report card ===
+view:
+  sensei: Gōran
+  text: Gōran has you hit the striking post until it splinters, then hands you a new one.
+  gains[0]: Strength, a little
+  gains[1]: Taijutsu, a little
+
+>>> senseiSession
+  refused: Your sensei hasn’t set a session for today.
+
+>>> train
+  journal «Waterfall Endurance»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a touch] [Willpower, a little] [−25 energy]
+  journal «A feel for your willpower»: It comes as it comes: honest work, honest progress.
+
+>>> talk
+  refused: Goro isn’t around right now.
+
+>>> eat
+  refused: You can’t afford it (45 ryo).
+
+>>> dismissReport
+
+>>> sleep
+  journal «Sleep till dawn»: The landlord has locked your door over unpaid rent. You sleep in the stairwell. [Energy & chakra restored]
+  journal: Your teammates had the team meal with Gōran yesterday, and they will tell you all about it whether you ask or not. [Gōran’s regard falls]
+  journal: Gōran will be at the training ground this morning, expecting you for a march.
+
+--- rival (day 9, slot 0) ---
+
+=== rival ===
+view:
+  person:
+    name: Daisuke
+    relation: rival
+    fullName: Daisuke Kurogane
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Stranger
+    where: At the Academy
+    talk:
+      blocker: Your rival is waiting for an answer.
+    spar:
+      blocker: Your rival is waiting for an answer.
+  kicker: Word reaches you
+  title: Daisuke again
+  lines[0]: Daisuke offered, in front of your team, to carry your pack, “since it looks heavy for you.”
+  choices[0]:
+    label: Let it go.
+    heard: Asuka would like it; Goro and Gōran wouldn’t.
+  choices[1]:
+    label: A dig back, where people can hear.
+    heard: Asuka wouldn’t.
+  choices[2]:
+    label: “Settle it, then. Pick the day.”
+    heard: Asuka, Goro and Gōran would like it.
+
+=== day end ===
+view:
+  mode: full
+  when: Spring 8 draws to a close
+  title: You worked on your strength and taijutsu, among other things, and Gōran thinks less of you.
+  growth[0]:
+    stat: strength
+    name: Strength
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[1]:
+    stat: taijutsu
+    name: Taijutsu
+    grade: D
+    tier: Genin D
+    words: Over halfway to a C
+  growth[2]:
+    stat: willpower
+    name: Willpower
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[3]:
+    stat: reserves
+    name: Chakra Reserves
+    grade: E
+    tier: Genin E
+    words: Over halfway to a D
+  growth[4]:
+    stat: stamina
+    name: Stamina
+    grade: D
+    tier: Genin D
+    words: Only just a D
+  people[0]:
+    stage: Acquaintance
+    stamp: Thinks less of you
+    next: At friend: you learn what he likes to hear.
+  aheadLabel: Tomorrow
+  ahead[0]:
+    text: March with Gōran
+    stamp: Morning
+  ahead[1]:
+    text: New work at the hall
+    stamp: New
+  ahead[2]:
+    text: Your rent is overdue
+  summary[0]: Gōran thinks less of you
+  summary[1]: Strength, over halfway to a D
+  summary[2]: Taijutsu, over halfway to a C
+  button: Sleep
+  dismiss:
+
+>>> dismissDay
+
+--- rival (day 9, slot 0) ---
+
+=== rival ===
+view:
+  person:
+    name: Daisuke
+    relation: rival
+    fullName: Daisuke Kurogane
+    title: Genin
+    specialty:
+      label: Kenjutsu
+    stageName: Stranger
+    where: At the Academy
+    talk:
+      blocker: Your rival is waiting for an answer.
+    spar:
+      blocker: Your rival is waiting for an answer.
+  kicker: Word reaches you
+  title: Daisuke again
+  lines[0]: Daisuke offered, in front of your team, to carry your pack, “since it looks heavy for you.”
+  choices[0]:
+    label: Let it go.
+    heard: Asuka would like it; Goro and Gōran wouldn’t.
+  choices[1]:
+    label: A dig back, where people can hear.
+    heard: Asuka wouldn’t.
+  choices[2]:
+    label: “Settle it, then. Pick the day.”
+    heard: Asuka, Goro and Gōran would like it.

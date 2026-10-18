@@ -21,9 +21,16 @@ export function recentlyTold(told: Told, bank: string): readonly number[] {
   return told[bank] ?? [];
 }
 
-/** Notes a pick, keeping at most `memory` of the newest (and never all of a bank of `size`). */
-export function noteTold(told: Told, bank: string, pick: { index: number; size: number }): Told {
-  const keep = Math.min(TOLD_MEMORY, pick.size - 1);
+/**
+ * Notes a pick, keeping at most `memory` of the newest (`TOLD_MEMORY` unless the bank asks for
+ * more, and never all of a bank of `size`).
+ */
+export function noteTold(
+  told: Told,
+  bank: string,
+  pick: { index: number; size: number; memory?: number },
+): Told {
+  const keep = Math.min(pick.memory ?? TOLD_MEMORY, pick.size - 1);
   const recent = [...recentlyTold(told, bank).filter((i) => i !== pick.index), pick.index];
   return { ...told, [bank]: keep > 0 ? recent.slice(-keep) : [] };
 }

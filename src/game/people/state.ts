@@ -52,6 +52,8 @@ export interface Team {
 export interface Conversation {
   readonly personId: string;
   readonly conversationId: string;
+  /** The facet a templated conversation is filled from (a trait id, their art…), else null. */
+  readonly topicKey: string | null;
   /** Set once you have replied. */
   readonly answer: Answer | null;
 }

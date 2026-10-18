@@ -20,4 +20,12 @@ describe('telling', () => {
     for (const index of [0, 1, 0]) told = noteTold(told, 'b', { index, size: 5 });
     expect(recentlyTold(told, 'b')).toEqual([1, 0]);
   });
+
+  it('keeps a longer memory for a bank that asks for one', () => {
+    let told = NOTHING_TOLD;
+    for (const index of [0, 1, 2, 3, 4]) {
+      told = noteTold(told, 'sign-offs', { index, size: 6, memory: 4 });
+    }
+    expect(recentlyTold(told, 'sign-offs')).toEqual([1, 2, 3, 4]);
+  });
 });
