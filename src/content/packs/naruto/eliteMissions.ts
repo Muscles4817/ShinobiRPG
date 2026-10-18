@@ -11,7 +11,8 @@ export const ELITE_MISSIONS: readonly MissionDef[] = [
     title: 'A Puddle on a Dry Road',
     rank: 'C',
     client: 'Tazuna, bridge builder',
-    summary: 'Escort an old bridge builder home to the Land of Waves. He is hiding something.',
+    summary:
+      'Escort an old bridge builder home to the Land of Waves. He won’t say why he needs one.',
     slots: 4,
     energyCost: 30,
     reward: { ryo: 380, reputation: 9, scrollId: 'multiple-shadow-clone' },

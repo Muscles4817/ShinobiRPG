@@ -117,6 +117,14 @@ export const SPIRIT_BARGAIN: SenseiPast = {
     title: 'The Bargain',
     summary:
       'The spirit {name} bargained with as a child has moved to {place}, where it is weaker.',
+    ledger: {
+      found: 'Found the spirit’s pool under the willows.',
+      mercy: 'Told {name} to let the spirit go home.',
+      leave: 'Left the bargain to {name}.',
+      finish: 'Told {name} to unmake the spirit.',
+      spared: 'Broke the bargain, and let the spirit sink home.',
+      ended: 'Saw the spirit unmade in the reeds.',
+    },
     find: {
       title: 'Still Water at {place}',
       summary: 'Find where the spirit has made its new home near {place}.',

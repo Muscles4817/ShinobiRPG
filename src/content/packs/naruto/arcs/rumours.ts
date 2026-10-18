@@ -15,6 +15,6 @@ export const ARC_RUMOURS: readonly RumourDef[] = [
   {
     id: 'ibiki-passed',
     worldMark: 'ibiki-passed',
-    text: 'Ibiki Morino was heard to say something almost kind about a genin. Nobody believes it.',
+    text: 'Ibiki Morino was heard to call a genin promising. Nobody believes it.',
   },
 ];

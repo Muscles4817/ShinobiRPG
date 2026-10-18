@@ -113,6 +113,14 @@ export const WRONG_ORDER: SenseiPast = {
   arc: {
     title: 'The False Order',
     summary: '{foe}, who once gave {name} a false order, is selling them again at {place}.',
+    ledger: {
+      found: 'Found {foe}’s house and the seal-press in its cellar.',
+      mercy: 'Told {name} to take {foe} home to answer.',
+      leave: 'Told {name} {name.they} already knew the answer.',
+      finish: 'Told {name} to end it.',
+      spared: 'Brought {foe} home to trial, and cleared {lost}’s name.',
+      ended: '{foe} died, and {name} burned the old order at last.',
+    },
     find: {
       title: 'Papers at {place}',
       summary: 'Find where {foe} is working from near {place}.',

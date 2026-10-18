@@ -114,6 +114,14 @@ export const HUNGRY_YEAR: SenseiPast = {
   arc: {
     title: 'The Hungry Year',
     summary: 'The family that hoarded rice in {name}’s hungry year is doing it again at {place}.',
+    ledger: {
+      found: 'Found the hoarded rice behind a storehouse wall.',
+      mercy: 'Told {name} to let {foe} watch the rice given away.',
+      leave: 'Told {name} the door was what mattered.',
+      finish: 'Told {name} to break {foe} for {lost}.',
+      spared: 'Opened the storehouses, and left {foe} alive to watch.',
+      ended: 'Opened the storehouses over {foe}’s body.',
+    },
     find: {
       title: 'Rice at {place}',
       summary: 'Find the storehouses where the rice is being held near {place}.',

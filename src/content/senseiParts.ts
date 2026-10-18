@@ -85,6 +85,11 @@ export interface SenseiPastFoe {
 export interface SenseiPastArc {
   readonly title: string;
   readonly summary: string;
+  /**
+   * The debrief's facts, apart from the scenes (`validateLedger.ts`): short, written without a
+   * subject where they are yours ("Found the camp near {place}."), and never a scene's own line.
+   */
+  readonly ledger: SenseiPastLedger;
   readonly find: {
     readonly title: string;
     readonly summary: string;
@@ -112,6 +117,16 @@ export interface SenseiPastArc {
     readonly ended: string;
     readonly home: string;
   };
+}
+
+/** What each of the arc's ledger lines notes: the find, the counsel given, and the end. */
+export interface SenseiPastLedger {
+  readonly found: string;
+  readonly mercy: string;
+  readonly leave: string;
+  readonly finish: string;
+  readonly spared: string;
+  readonly ended: string;
 }
 
 export interface SenseiPast {
