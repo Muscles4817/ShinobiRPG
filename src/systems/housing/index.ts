@@ -8,6 +8,18 @@ export {
   payWeek,
   ownsHouse,
   buyHouse,
+  UNFURNISHED,
   type HomeRef,
   type Housing,
+  type Planting,
 } from './housing';
+export {
+  addFurniture,
+  isRipe,
+  moveHome,
+  ownsFurniture,
+  placeFurniture,
+  plant,
+  setGuest,
+  type Move,
+} from './home';

@@ -19,6 +19,7 @@ import { validateSources } from './validateSources';
 import { validateTeachers } from './validateTeachers';
 import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
+import { validateHomes } from './validateHomes';
 import { validateLeisure } from './validateLeisure';
 import { validateRoutes } from './validateRoutes';
 import { validateAtlas } from './validateAtlas';
@@ -48,6 +49,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...numberProblems(pack),
     ...validateWorld(pack),
     ...validateLeisure(pack),
+    ...validateHomes(pack),
     ...validateRoutes(pack),
     ...validateAtlas(pack),
     ...validateExercises(pack),
@@ -159,6 +161,8 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['upbringing', pack.upbringings],
     ['talent', pack.talents],
     ['quirk', pack.quirks],
+    ['home', pack.homes],
+    ['furnishing', pack.furnishings],
     ['trait', pack.traits],
     ['nindo', pack.nindos],
     ['gear', pack.gear],

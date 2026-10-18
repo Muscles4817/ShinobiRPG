@@ -13,6 +13,7 @@ import { warmed } from '../people/warmth';
 import { homeBlocker } from './daily';
 import { cookMeal, missingFor, recipeBlocker } from './kitchen';
 import type { ActionHandler, ActionOf } from './types';
+import { homeWelcome } from '../home/home';
 
 /**
  * Dinner invites: cook for two in the evening and have someone over. It counts as your time
@@ -64,7 +65,11 @@ export const hostDinner: ActionHandler<ActionOf<'hostDinner'>> = {
     // The dish is on the table before the talk starts: a convivial one warms this very evening.
     const { quality } = cookedAsUsual(state, recipe);
     const meal = cookMeal(state, ctx, recipe, { servings: SERVINGS, quality });
-    const base = DINNER_BOND + (favourite ? FAVOURITE_BONUS : 0) + festivalBondBonus(state, ctx);
+    const base =
+      DINNER_BOND +
+      (favourite ? FAVOURITE_BONUS : 0) +
+      festivalBondBonus(state, ctx) +
+      homeWelcome(state, ctx);
     const delta = warmed(meal.state, ctx, base, guest);
     const before = bondOf(state, guest.id);
     const after = recordMeeting(before, { day: state.time.day, delta });

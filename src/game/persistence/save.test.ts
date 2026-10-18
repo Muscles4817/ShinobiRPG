@@ -473,10 +473,31 @@ describe('persistence', () => {
     expect(none.value.exams.ceremony).toBeNull();
   });
 
+  it('gives a save from before the home ladder an unfurnished home where it started', () => {
+    const game = newGame();
+    const {
+      homeId: _h,
+      furniture: _f,
+      placed: _p,
+      beds: _b,
+      guestId: _g,
+      ...housing
+    } = game.housing;
+    const loaded = deserialize(JSON.stringify({ version: 48, state: { ...game, housing } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.housing).toMatchObject({
+      homeId: null,
+      furniture: [],
+      placed: {},
+      beds: [],
+      guestId: null,
+    });
+  });
+
   it('gives a save from before village tallies nothing counted, and keeps what it remembered', () => {
     const game = newGame();
     const { tallies: _t, ...village } = { ...game.village, marks: ['tobi-forgiven'] };
-    const loaded = deserialize(JSON.stringify({ version: 48, state: { ...game, village } }));
+    const loaded = deserialize(JSON.stringify({ version: 49, state: { ...game, village } }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.village).toMatchObject({ tallies: {}, marks: ['tobi-forgiven'] });
   });

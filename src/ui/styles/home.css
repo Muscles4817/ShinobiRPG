@@ -1,0 +1,245 @@
+/*
+ * Making a home: the lettings office's ladder (each home a floor plan in ink), the joiner's
+ * pieces, and the home page's furnishing, garden, yard, guest room and keepsake shelf, all on
+ * paper.
+ */
+.room-slip.lettings,
+.room-slip.home-make {
+  margin-top: 12px;
+}
+.home-ladder,
+.joiner,
+.spots,
+.keepsakes,
+.beds,
+.seeds {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.home-rung {
+  position: relative;
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgb(42 33 24 / 0.3);
+  border-radius: var(--radius-sm);
+}
+.home-rung.current {
+  border: 2px solid var(--paper-ink);
+}
+.home-rung.sealed {
+  color: var(--paper-muted);
+  background: rgb(42 33 24 / 0.05);
+}
+.home-rung h3 {
+  margin: 0;
+  padding-right: 52px;
+  font-family: var(--font-story);
+  font-size: 1.02rem;
+  font-weight: normal;
+}
+.home-rung p {
+  margin: 2px 0 4px;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+.home-plan {
+  width: 96px;
+  height: 72px;
+}
+.home-stamp {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 0 6px;
+  border: 1.5px solid var(--seal);
+  border-radius: var(--radius-sm);
+  color: var(--seal);
+  font-family: var(--font-story);
+  font-size: 0.78rem;
+  transform: rotate(-4deg);
+}
+.home-sealed {
+  font-weight: 700;
+}
+.home-offers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.home-offers .btn,
+.joiner-piece .btn {
+  min-height: 40px;
+  font-size: 0.86rem;
+}
+.home-why {
+  display: block;
+  margin-top: 4px;
+  color: var(--paper-muted);
+  font-size: 0.8rem;
+}
+.joiner-piece {
+  display: grid;
+  gap: 4px;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgb(42 33 24 / 0.25);
+}
+.joiner-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--font-story);
+}
+.joiner-head b {
+  font-weight: normal;
+}
+.joiner-price {
+  padding: 0 6px;
+  border: 1.5px solid var(--paper-ink);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+}
+.joiner-piece small {
+  color: var(--paper-muted);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+/* Furnishing the home. */
+.spot-row {
+  display: grid;
+  gap: 4px;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgb(42 33 24 / 0.25);
+}
+.spot-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.spot-head b {
+  font-family: var(--font-story);
+  font-weight: normal;
+}
+.spot-head span {
+  color: var(--paper-muted);
+  font-size: 0.86rem;
+}
+.spot-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.86rem;
+}
+.spot-option small {
+  display: block;
+  color: var(--ink-gain);
+  font-size: 0.78rem;
+}
+.home-make h3 {
+  margin: 8px 0 2px;
+  font-family: var(--font-story);
+  font-size: 1rem;
+  font-weight: normal;
+}
+.home-make .btn.ghost {
+  min-height: 40px;
+  border-color: var(--paper-ink);
+  color: var(--paper-ink);
+}
+.comfort-steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  margin: 4px 0;
+  padding: 0;
+  list-style: none;
+}
+.comfort-steps li {
+  height: 8px;
+  border-radius: 2px;
+  background: rgb(42 33 24 / 0.15);
+}
+.comfort-steps li.on {
+  background: var(--paper-ink);
+}
+
+/* Keepsakes: tags on a shelf. */
+.keepsakes li {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px dashed rgb(42 33 24 / 0.35);
+  border-radius: var(--radius-sm);
+}
+.keepsakes li b {
+  font-family: var(--font-story);
+  font-weight: normal;
+}
+.keepsakes li span,
+.keepsakes li.empty {
+  color: var(--paper-muted);
+  font-size: 0.84rem;
+}
+.keepsakes li.empty {
+  border-style: dotted;
+}
+
+/* The garden's beds, and seed in season. */
+.beds {
+  grid-template-columns: repeat(3, 1fr);
+}
+.beds li {
+  display: grid;
+  gap: 2px;
+  min-height: 64px;
+  padding: 8px;
+  border: 1px solid rgb(42 33 24 / 0.3);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+}
+.beds li b {
+  font-family: var(--font-story);
+  font-size: 0.92rem;
+  font-weight: normal;
+}
+.beds li.ripe {
+  border: 2px solid var(--ink-gain);
+}
+.beds li.empty {
+  border-style: dashed;
+  color: var(--paper-muted);
+}
+.seeds li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.seeds li span:first-child {
+  flex: 1;
+}
+.yard-drills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Chips on these paper slips take the paper's inks. */
+.room-slip .chip {
+  background: #e8dcc2;
+  color: var(--paper-ink);
+}
+.room-slip .chip.gain {
+  background: #dcefe2;
+  color: var(--ink-gain);
+}
+.room-slip .chip.cost {
+  background: #f5ddd6;
+  color: var(--ink-cost);
+}

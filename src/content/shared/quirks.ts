@@ -1,4 +1,4 @@
-import type { QuirkDef } from '../types';
+import type { QuirkDef } from '../quirks';
 
 /**
  * Small habits people notice. Free to take, as many as fit: they change nothing in a fight, only

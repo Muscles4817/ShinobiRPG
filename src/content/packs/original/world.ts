@@ -15,6 +15,7 @@ import { BREWER_AFTER_JOBS, BREWER_GHOST_JOBS } from './arcs/brewerGhost';
 import { KOUN_FAVOURS_JOBS } from './arcs/kounFavours';
 import { TEMPLATE_MISSIONS } from './jobs';
 import { PROMOTION_ROUTES, PROMOTIONS } from './exam';
+import { ORIGINAL_LETTINGS } from './homes';
 import { MARKET_STREET } from './market';
 import { KIRI_FORD } from './kiriFord';
 import { PORT_SHIOMACHI } from './shiomachi';
@@ -246,6 +247,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         ],
       },
       ...TOROGAKURE_LEISURE,
+      ORIGINAL_LETTINGS,
       {
         id: 'home',
         kind: 'home',

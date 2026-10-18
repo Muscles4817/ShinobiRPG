@@ -6,7 +6,7 @@ function asRecord(value: unknown): RawState {
   return typeof value === 'object' && value !== null ? (value as RawState) : {};
 }
 
-/** v48 → v49: the village keeps tallies across jobs. Nothing was counted before. */
-export function v48ToV49(state: RawState): RawState {
+/** v49 → v50: the village keeps tallies across jobs. Nothing was counted before. */
+export function v49ToV50(state: RawState): RawState {
   return { ...state, village: { tallies: {}, ...asRecord(state.village) } };
 }

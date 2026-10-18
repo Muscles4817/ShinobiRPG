@@ -4,7 +4,10 @@ import { EXERCISES } from '../../shared/exercises';
 import { CURRICULUM } from '../../shared/sensei/curriculum';
 import { senseiParts } from '../../shared/sensei/parts';
 import { SENSEI_TESTS } from '../../shared/sensei/tests';
+import { FURNISHINGS } from '../../shared/furnishings';
+import { GARDEN_CROPS } from '../../shared/garden';
 import { QUIRKS } from '../../shared/quirks';
+import { NARUTO_HOMES } from './homes';
 import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
 import { UPBRINGINGS } from '../../shared/upbringings';
@@ -172,6 +175,9 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   upbringings: UPBRINGINGS,
   talents: TALENTS,
   quirks: QUIRKS,
+  homes: NARUTO_HOMES,
+  furnishings: FURNISHINGS,
+  gardenCrops: GARDEN_CROPS,
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,
