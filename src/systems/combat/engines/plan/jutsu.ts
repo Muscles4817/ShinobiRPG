@@ -32,6 +32,7 @@ import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
 import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
+import { callSummon } from './summons';
 import { setTrap } from './traps';
 import { castLine, dazeLine, foresightSlipLine, momentOf, seenLine, slipLine } from './voice';
 
@@ -200,6 +201,8 @@ function onSelf(round: Round, turn: Turn, { technique, effect }: EffectUse): Rou
       return move(round, actor, technique);
     case 'counter':
       return readyRiposte(round, actor, { technique, effect });
+    case 'summon':
+      return callSummon(round, actor, effect.call);
     // A substitution reacts when hit (`footwork.ts`); it is never played on a turn.
     case 'substitute':
       return round;

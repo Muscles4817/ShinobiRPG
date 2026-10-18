@@ -332,7 +332,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     one is half of a combination with the academy's Pincer Strike; and at close friends it takes
     a crew job's checks in its kind's `roles` when its nose is best (`checkHand`). Handlers drill
     it better than you (`handlerSession`, their `quality` over yours), and handling lore bought
-    far from home (`companionLore`, a gear place's `loreIds`) makes your own sessions count more. It is cared for
+    far from home (`companionLore`, a gear place's `loreIds`) makes your own sessions count more.
+    **Summons** are called bodies (`CombatantSetup.calls`, the `summon` verb naming a call;
+    `engines/plan/summons.ts`): they join their caller's front row mid-fight with a plan of their
+    own (`summonPlans.ts`), the caller pays any blood price and chakra upkeep every exchange, and
+    they go home unpaid, beaten or when the caller falls (`CombatOutcome.summons`). The player
+    holds one **contract** at a time (`systems/contracts`, `GameState.contract`, a pack's
+    `ContractDef`s), signed through a job (`reward.contractId`) or a teacher
+    (`TeacherProfile.contract`, `signContract`); summons answer from the standing stage they ask,
+    if you carry their offering, and ride into mission fights (`game/contracts/summons.ts`);
+    how they fare moves your standing with the clan. Nothing is locked by rank: the price is the
+    lock. It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -766,6 +776,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (`reward.companionKindId`). Validated in `validateCompanions.ts`; a clinic's `handling`
   (quality, price, the bond stage with the vet) and handling lore (`companionLore`, sold through
   a gear place's `loreIds`) in `validateCompanionArts.ts`.
+- **Add a summoning contract:** a `ContractDef` in the pack's `contracts.ts` (its summons:
+  body stats, `healthScale`, the techniques they fight with, the standing stage they answer
+  from, `upkeep`, an optional `price` of blood or an offering) with a summoning technique per
+  summon (a `summon` effect naming its id), offered by a job's `reward.contractId` or a
+  teacher's `contract`. Validated in `validateContracts.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

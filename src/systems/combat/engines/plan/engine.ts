@@ -37,6 +37,7 @@ import {
   type PlanState,
 } from './state';
 import { editTeam, teamOptions } from './orders';
+import { summonFatesOf } from './summons';
 import { editPlan, tableOptions } from './table';
 import { stanceStatus } from './team';
 import { foeMarkFor } from './foeTeam';
@@ -332,6 +333,7 @@ export function createPlanEngine(): CombatEngine {
         chakraSpent: player.chakraSpent ?? 0,
         used: usage(plan.fighters),
         allies: alliesAfter(plan.fighters),
+        summons: summonFatesOf(player),
       };
     },
   };

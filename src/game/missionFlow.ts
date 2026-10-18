@@ -91,6 +91,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
     inventory: gifts.inventory,
     cooking: gifts.cooking,
     companions: gifts.companions,
+    contract: gifts.contract,
   };
   const logged = log(afterFieldWork(pickDone(next, ctx, def), ctx, def, state.mission), {
     heading: jobDoneHeading(def.title),
