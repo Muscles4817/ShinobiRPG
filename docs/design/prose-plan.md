@@ -7,9 +7,74 @@ missions and village/systems, reading real transcripts generated from seeds, not
 
 ## The diagnosis
 
-Almost every individual line is fine. What reads as "templated" is how lines meet: each is
-chosen alone, by a hash, knowing nothing about the line before it, who is speaking, or what
-just happened. Six causes account for nearly every complaint.
+Two problems, one on top of the other. The lines themselves are written in a recognisably
+machine voice (next section), and then they are put together without knowing each other. Fixing
+only the assembly would leave a well-joined machine voice; fixing only the lines would leave
+good sentences that still don't follow on. The plan does both.
+
+## The machine voice: AI prose tells, measured
+
+Sources: Wikipedia's field guide [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
+(WikiProject AI Cleanup), EQ-Bench's [slop-score](https://github.com/sam-paech/slop-score)
+(word, bigram and trigram lists measured as over-used by language models against a human
+baseline, a "not X, but Y" detector, and per-model numbers including a human baseline), and the
+UMD/DeepMind StoryScope finding that AI fiction gives itself away by structure more than words
+(tidy single-track plots, over-explained themes, moralising). We extracted every prose string in
+`src/` (about 9,500 strings, 100,000 words, tests and validation messages left out) and ran the
+same measures over it, plus counters for the fiction tells those sources describe.
+
+**The vocabulary is not the problem.** The game uses EQ-Bench's list of over-used words at about
+1.5 per thousand words; their human baseline is 6.9 and the cleanest model 5.6. "Not X, but Y"
+is rarer than in human writing (seven in the whole game). The usual word lists ("delve",
+"tapestry", "testament") would pass this text. What remains of the word-level tells is a small
+stock of atmosphere: whispers, flicker, glow, glint, firelight, lamplight, woodsmoke, shadows.
+
+**The rhythm and the shape are the problem.** These are the tells the text does carry:
+
+| Tell                                        | In the game                                                              | For scale                                                            |
+| ------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| Clipped, even sentences                     | mean 8.7 words, a quarter of all sentences four words or fewer           | EQ-Bench: human fiction 14.6, Claude 11.4                            |
+| Everyone talks in one-liners                | 29% of spoken sentences are short impersonal declaratives                | "Twelve of us." "Every dusk, for years." "Which is worse."           |
+| The button: a short last line on every beat | 550 strings end on a sentence of five words or fewer                     | "You lose. Slowly." "It is not uncomfortable." "Lee swears by them." |
+| Epigram and reversal                        | wisdom in the shape of a saying, and the twist on its second half        | "It doesn't mind laughter. It minds forgetting." "My arm won."       |
+| Gesture beats as punctuation                | 195 nods, grins, shrugs, smiles; 67 "says nothing", "a long time"        | a beat between every two lines of speech                             |
+| Groups of three                             | 213 "A, B and C" lists                                                   | the field guide's "rule of three"                                    |
+| Colons as the house connective              | 176 in story text                                                        | "One of the Demon Brothers: a clawed gauntlet, a shared chain…"      |
+| One sentence skeleton                       | "Name does a thing. “Line,” Name says." 41 times; 95% of tags are "says" | the beat-quote-says rhythm the reviews kept hearing                  |
+| The vague noun                              | "something" 126 times                                                    | "something in there whispers"                                        |
+| Neat endings with a moral                   | the closing line tells you what it meant                                 | "They'll sleep better for that."                                     |
+
+None of these is wrong once. Together they make every person sound like the same wry, laconic
+narrator, every beat end on a punchline, and every paragraph the same length and pace, which is
+exactly the "evenness of tone and sentence length" the field guide and the fiction editors name.
+It also explains why the templating shows: a template is easiest to write as a self-contained
+quip, so the quips multiplied.
+
+**What we do about it** (a style guide, a lint and a rewrite pass, in the plan below):
+
+- **Vary the length.** Let narration run: a sentence that carries two or three actions with
+  "and", "while", "until", next to a short one. Target a mean nearer 13 and fewer than one in
+  eight sentences of four words or fewer outside fights.
+- **People talk like people.** Speech gets hesitation, half-sentences, questions back, small
+  talk, wrong guesses and their own idiom; most lines are not quotable. A person's aphorism is
+  rationed (a sensei may have one a scene; a genin rarely).
+- **Drop the button.** End a beat on the action or the reply, not on a summing-up line. No
+  closing moral.
+- **Beats only where they mean something.** No gesture between every pair of lines; a nod is
+  information, not punctuation. Budget "nods", "grins", "says nothing" across the game.
+- **Colons belong to the UI.** In story text use a sentence or a comma.
+- **Threes only when there are three things.**
+- **Name the thing.** Replace "something" where the writer knows what it is.
+- **Fresh atmosphere.** Retire the stock words (whispers, flicker, glint, firelight) to a
+  budget and describe what this place has that others don't.
+
+The prose lint (F3) measures all of these over the goldens and over content, with budgets, so a
+rewrite can be seen to move them and a new line can't quietly bring them back.
+
+## How lines are put together
+
+Each line is chosen alone, by a hash, knowing nothing about the line before it, who is speaking,
+or what just happened. Six causes account for nearly every complaint about assembly.
 
 1. **Nobody has pronouns.** Generated people and template lines say "they"; authored lines say
    "he". In one scene Gōran "rolls their shoulders" and then "rolls up his sleeve". It is the
@@ -92,6 +157,11 @@ still hashing the seed so the game stays deterministic. Banks gain optional `whe
   slot, no line repeated within N lines of itself, banned stock phrases over a budget ("says
   nothing", "nods once", "almost smiles"), no "!" outside shouted speech, chips never `+0`
   or with decimals.
+- **Style measures** (reported, with budgets that tighten as the rewrite passes land): mean
+  sentence length and the share of four-word sentences, the share of speech that is short
+  impersonal one-liners, beats ending on a button, gesture beats, "A, B and C" lists, colons in
+  story text, "something", and the stock atmosphere words, by area. The extractor and the
+  EQ-Bench word lists live in `scripts/prose/` so the numbers in this plan can be rerun.
 
 These are the measure for every phase below: a phase is done when its goldens read well and
 its lint rules pass.
@@ -218,6 +288,10 @@ file read-back contradicting itself (`fileReadBack.ts`); the ceremony's unlock t
 3. Missions 2–4 and Village 1–4.
 4. Talk 2–4, Missions 5–6, Village 5–7.
 5. Combat 4–5 (the event layer), Talk 5–6, Missions 7–8, the connecting rules.
+6. **Style passes**, one area per PR, alongside the steps above rather than after them: rewrite
+   the content against the style guide (the machine voice section), most-read first: the
+   sensei's lines and curriculum, conversation templates and topics, encounter flavour and
+   voices, mission text, then descriptions. Each pass shows its style measures before and after.
 
 Each step is its own PR with its goldens in the diff. No save-shape change until F2's `said`
 slice (a migration) and pronouns on generated people (a migration rolling them from the seed).
@@ -226,4 +300,6 @@ slice (a migration) and pronouns on generated people (a migration rolling them f
 
 A reviewer can read a golden first-hours transcript end to end without spotting a seam:
 everyone has the right pronoun, no line repeats within a scene, nothing is said twice, story
-text has no numbers or rules, and two different people never say the same sentence.
+text has no numbers or rules, and two different people never say the same sentence; and the
+style measures sit near human fiction: sentences that vary, speech that isn't a string of
+quips, and beats that end on what happened rather than on a punchline.
