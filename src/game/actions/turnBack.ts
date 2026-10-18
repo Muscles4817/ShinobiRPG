@@ -1,7 +1,7 @@
 import { startRun } from '@/systems/missions';
 
 import { activeStage } from '../missionFlow';
-import { journeyMission } from '../journeys';
+import { journeyMission, legsBack } from '../journeys';
 import { log } from '../ops';
 import { settle } from '../story/state';
 import type { ActionHandler, ActionOf } from './types';
@@ -21,12 +21,9 @@ export const turnBack: ActionHandler<ActionOf<'turnBack'>> = {
     if (!run || !plan) return state;
     const stages = journeyMission(plan, ctx).stages;
     const walked = stages.slice(0, run.stageIndex).filter((s) => s.kind === 'leg').length;
-    const back = {
-      from: plan.to,
-      to: plan.from,
-      legs: plan.legs.slice(0, walked).reverse(),
-      quick: plan.quick,
-    };
+    const legs = legsBack(plan, walked);
+    // You turn back on the road you were walking: it starts from the last place you passed.
+    const back = { from: legs[0]?.toward ?? plan.to, to: plan.from, legs, quick: plan.quick };
     const def = journeyMission(back, ctx);
     const returning = settle(def, { ...startRun(def, run.crew), journey: back });
     const home = ctx.content.locations.require(back.to).name;

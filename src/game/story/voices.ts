@@ -1,6 +1,6 @@
 import type { PersonDef, VoiceMoment } from '@/content';
 import { hashUnit } from '@/core';
-import type { MissionNote } from '@/systems/missions';
+import { END_MARKS, withMark, type MissionNote, type MissionRun } from '@/systems/missions';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
@@ -58,4 +58,23 @@ export function crewVoice(
   const people = crewPeople(state, ctx).filter((p) => linesFor(ctx, p, moment).length > 0);
   const speaker = people[Math.floor(roll(state, moment) * people.length)];
   return speaker ? voiceOf(state, ctx, { person: speaker, moment }) : null;
+}
+
+/** Marked once the crew has said its piece after a fight, so it is said once a job. */
+const SPOKE_AFTER_FIGHT = 'spoke-after-fight';
+
+/**
+ * The first quiet moment after a won fight: someone along says something about it (once a
+ * job). The run with their line, or as it was.
+ */
+export function afterTheFight(state: GameState, ctx: GameContext, run: MissionRun): MissionRun {
+  if (!run.marks.includes(END_MARKS.fought) || run.marks.includes(SPOKE_AFTER_FIGHT)) return run;
+  const voice = crewVoice({ ...state, mission: run }, ctx, 'after-fight');
+  const marks = withMark(run.marks, SPOKE_AFTER_FIGHT);
+  return { ...run, marks, notes: voice ? [...run.notes, voice] : run.notes };
+}
+
+/** The mark a crew member carries for the rest of a job after a choice sat badly with them. */
+export function stungBy(personId: string): string {
+  return `stung:${personId}`;
 }

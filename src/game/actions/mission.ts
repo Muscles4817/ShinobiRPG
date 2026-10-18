@@ -1,8 +1,10 @@
 import {
   advance,
   holds,
+  onTheClock,
   pickTwist,
   resolveCheck,
+  resultLine,
   SOLO,
   startRun,
   variantText,
@@ -34,6 +36,7 @@ import { bondsNow } from '../debrief';
 import { travel } from '../road';
 import { playEnding } from '../story/ending';
 import { feel } from '../story/personal';
+import { arrivalLine } from '../story/arrivals';
 import { roadEventOn } from '../story/roadEvents';
 import { settle, storyOf } from '../story/state';
 import { crewVoice } from '../story/voices';
@@ -81,9 +84,10 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
       tallied: state.village.tallies,
     });
     const taken = { ...pickTaken(state, ctx, def), board: takeJob(state, ctx, def), mission: run };
-    const started = adjust(spendTime(taken, def.slots, ctx), {
-      energy: -def.energyCost,
-    });
+    const started = lightOfDay(
+      adjust(spendTime(taken, def.slots, ctx), { energy: -def.energyCost }),
+      def,
+    );
     return log(started, { heading: def.title, text: def.summary, tone: 'info' });
   },
 };
@@ -113,7 +117,7 @@ export const missionChoose: ActionHandler<ActionOf<'missionChoose'>> = {
     const voiced = voice ? { ...result.run, notes: [...result.run.notes, voice] } : result.run;
     const felt = feel({ ...state, mission: voiced }, result.personal).state;
     const hurt = adjust(felt, { health: -result.damage });
-    if (result.aborted) return failMission(hurt, ctx, stage.failure);
+    if (result.aborted) return failMission(hurt, ctx, resultLine(stage, approach, false));
     return afterStage(hurt, ctx);
   },
 };
@@ -136,6 +140,14 @@ function continueBlocker(state: GameState, stage: MissionStage): string | null {
   }
 }
 
+/** The story's light set to the hour, for a job that keeps it. */
+function lightOfDay(state: GameState, def: MissionDef): GameState {
+  const run = state.mission;
+  if (!run || !def.threads?.some((t) => t.clock)) return state;
+  const threads = onTheClock(run.threads, def.threads, state.time.slot);
+  return { ...state, mission: { ...run, threads } };
+}
+
 /** Days on the road, and what comes up on them (a road event waits for your choice). */
 function onTheRoad(
   state: GameState,
@@ -143,16 +155,32 @@ function onTheRoad(
   stage: Extract<MissionStage, { kind: 'leg' }>,
 ): GameState {
   if (!state.mission) return state;
-  const line = variantText(storyOf(state.mission), stage.text, stage.variants);
-  const travelled = travel(state, ctx, stage.days, line);
+  const def = activeMission(state, ctx);
+  const told = variantText(storyOf(state.mission), stage.text, stage.variants);
+  // The last road of all ends somewhere by name, and nothing more comes up on it.
+  const end = def ? roadsEnd(state, def) : null;
+  const arrived = end ? arrivalLine(state, ctx, end) : null;
+  const line = arrived ? `${told} ${arrived.text}` : told;
+  const walked = travel(arrived?.state ?? state, ctx, stage.days, line);
+  // A new morning on the road: the light is back.
+  const travelled = def ? lightOfDay(walked, def) : walked;
   if (!travelled.mission) return travelled;
   const run = travelled.mission;
   const noted = { ...run, notes: [...run.notes, { kind: 'story' as const, text: line }] };
-  const event = stage.region
-    ? roadEventOn({ ...travelled, mission: noted }, ctx, stage.region)
-    : null;
+  const event =
+    stage.region && !end ? roadEventOn({ ...travelled, mission: noted }, ctx, stage.region) : null;
   if (event) return { ...travelled, mission: { ...noted, roadEvent: event.id } };
   return afterStage({ ...travelled, mission: advance(noted) }, ctx);
+}
+
+/**
+ * Where the road ends when this leg is the job's last stage: a trip's destination, or where
+ * the job leaves you (somewhere else, or back where it was taken). Null mid-way.
+ */
+function roadsEnd(state: GameState, def: MissionDef): string | null {
+  const run = state.mission;
+  if (run?.stageIndex !== def.stages.length - 1) return null;
+  return run.journey?.to ?? def.endsAt ?? state.locationId;
 }
 
 export const missionContinue: ActionHandler<ActionOf<'missionContinue'>> = {

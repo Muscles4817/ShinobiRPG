@@ -48,10 +48,18 @@ describe('being ambushed', () => {
     expect(activeScene(s)).toBe('combat');
     expect(spy.setups[0]?.opening).toEqual(SPOTTED_OPENING);
     expect(spy.setups[0]?.intro).toMatch(/They saw you first\.$/);
-    expect(s.mission?.notes.slice(-2)).toEqual([
-      expect.objectContaining({ kind: 'roll', stat: 'perception', success: false }),
-      { kind: 'story', text: hardCtx.content.encounters.require('lone-rogue').flavour.spotted },
-    ]);
+    const rogue = hardCtx.content.encounters.require('lone-rogue');
+    const spottedLines = [rogue.flavour, ...(rogue.variants ?? []).map((v) => v.flavour)].map(
+      (f) => f.spotted,
+    );
+    expect(s.mission?.notes.at(-2)).toMatchObject({
+      kind: 'roll',
+      stat: 'perception',
+      success: false,
+    });
+    const told = s.mission?.notes.at(-1);
+    expect(told?.kind).toBe('story');
+    expect(spottedLines).toContain(told?.kind === 'story' ? told.text : '');
   });
 
   it('a sharp lookout sees them first: the encounter goes on, with the roll in its story', () => {

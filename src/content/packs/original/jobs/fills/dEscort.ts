@@ -42,6 +42,14 @@ export const D_ESCORT: readonly MissionFill[] = [
       fuss: 'At the halfway shrine Saburō sits down and declares that his knees have retired, and the chest is too heavy to carry another step.',
       fussSettled:
         'You rig a sling from your spare rope and take half the weight. Saburō walks on, singing again.',
+      fussWaited:
+        'You sit down beside him and let him complain about his knees, his son-in-law and the price of lacquer until he gets up of his own accord.',
+      fussCarried:
+        'You shoulder the chest as far as the next milestone, and Saburō, shamed, takes it back from you there.',
+      fussSnapped:
+        'You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.',
+      fussStumped:
+        'You offer a pole, a sledge and a bargain, and Saburō turns down all three. By the time he moves, the sun is low.',
       fussCostly:
         'You carry the chest yourself, with Saburō limping behind and telling you that you are doing it wrong. You lose an hour.',
       ambush:
@@ -93,8 +101,16 @@ export const D_ESCORT: readonly MissionFill[] = [
       fuss: 'At a roadside spring Kohaku stops to bless every pilgrim who passes, and there is a long line of them, and the light is going.',
       fussSettled:
         'You take over pouring the water for her, and she blesses twice as fast, and you are back on the road before dusk.',
-      fussCostly:
+      fussWaited:
+        'You stand at her elbow while she blesses the whole line, pilgrim by pilgrim, and the last of them presses a rice cake on you for your patience.',
+      fussCarried:
+        'You carry the oldest pilgrims to the front two at a time, and the line melts away faster than anyone thought it could.',
+      fussSnapped:
         'You try to hurry her, and she blesses you too, at great length, while the queue grows and the sun sets.',
+      fussStumped:
+        'You try to sort the pilgrims into a sensible order. They ignore it entirely, and Kohaku blesses them in the order they arrived.',
+      fussCostly:
+        'You try to carry the queue’s old and lame to the front, and every one you carry brings two more.',
       ambush:
         'The road narrows between two boulders where the pilgrims’ path begins, and someone has been watching it from the rocks above.',
       foe: 'bandit-thug',
@@ -144,6 +160,14 @@ export const D_ESCORT: readonly MissionFill[] = [
       fuss: 'The cart’s wheel cracks on a stone halfway up the pass, and the whole load of pots tilts towards the ditch.',
       fussSettled:
         'You wedge the axle with a branch and lash the wheel with cord, and the cart rolls on, creaking but whole.',
+      fussWaited:
+        'You hold the cart steady and talk Yasuke out of unloading every pot, and between you the wheel is eased back onto the road.',
+      fussCarried:
+        'You take the axle on your back while Yasuke swaps the wheel, and not a single pot so much as rattles.',
+      fussSnapped:
+        'Yasuke panics and you shout at him, and he unloads every pot onto the verge out of spite. Loading them again takes until dusk.',
+      fussStumped:
+        'You try three ways of splinting the wheel and every one of them cracks, so in the end you walk the cart up a yard at a time.',
       fussCostly:
         'You end up carrying half the pots up the pass in your arms, two at a time, while Yasuke steers the limping cart.',
       ambush:
@@ -193,9 +217,17 @@ export const D_ESCORT: readonly MissionFill[] = [
         'The doctor reads a medical scroll as she walks, only looking up to tell you that you are holding your shoulders wrong.',
       fuss: 'At the ford the doctor refuses to wade. Her chest must not get wet, nor must she, and the ferry is on the far bank.',
       fussSettled:
+        'You light a smoky fire of wet reeds on the bank, and the ferryman, seeing it, poles over to find out who is burning what.',
+      fussWaited:
+        'You let the doctor lecture you on river fever until the ferryman, across the water, hears the noise and poles over to see what it is.',
+      fussCarried:
         'You carry the chest across on your head, and then the doctor, who complains about your technique the whole way.',
-      fussCostly:
+      fussSnapped:
         'You spend an hour shouting for the ferry, and the doctor spends it explaining exactly how many patients are dying in the meantime.',
+      fussStumped:
+        'Your driftwood raft floats, just, but not with a doctor on it, and the afternoon is gone before she believes it never will.',
+      fussCostly:
+        'You try to carry the doctor across and she will not be carried. By the time she agrees, the light is going.',
       ambush:
         'On the far bank the road runs through tall reeds, and a skiff has been dragged up into them where no fisherman would leave it.',
       foe: 'river-pirate',
@@ -247,6 +279,14 @@ export const D_ESCORT: readonly MissionFill[] = [
       fuss: 'The troupe’s best puppet, a fox princess, falls off the cart into a stream, and her master refuses to go on without her.',
       fussSettled:
         'You fish the princess out downstream, dry her by your own fire and restring her, and her master weeps on your shoulder.',
+      fussWaited:
+        'You sit with the old master on the bank until he has mourned her properly. Then he lets you look, and she is in the reeds round the next bend.',
+      fussCarried:
+        'You wade in up to your chest and walk the stream bed until your foot finds her.',
+      fussSnapped:
+        'You tell the master she is only a puppet. He does not speak to you for an hour, and does not move for longer.',
+      fussStumped:
+        'You dam the stream with stones to slow it, and the water simply goes round. The princess turns up at dusk, wedged in a weir.',
       fussCostly:
         'It takes the whole afternoon to find the princess wedged in a weir, and the troupe arrives in Kawabe after dark.',
       ambush:

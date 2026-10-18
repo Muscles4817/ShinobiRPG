@@ -22,7 +22,7 @@ export const C_TEAM_ROAD_FILLS: readonly MissionFill[] = [
       second: 'bandit-thug',
       third: 'bandit-archer',
       ending:
-        'The carts reach the village without a single cracked bowl. The guild master gives each of you a cup from the best kiln, and your sensei drinks tea from hers for a month.',
+        'The carts reach the village without a single cracked bowl. The guild master gives each of you a cup from the best kiln, and your sensei drinks tea from {leader.theirs} for a month.',
     },
   },
   {

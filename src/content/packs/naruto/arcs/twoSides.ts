@@ -99,7 +99,7 @@ export const THIRD_HAND: MissionDef = {
             { kind: 'pay', share: -0.25 },
           ],
           ledger:
-            'Showed both sides what was done to them. The noise warned him, and he burned his ledger.',
+            'Showed both sides what was done to them, and warned him into burning his ledger.',
         },
         {
           label: 'Go to the warehouse alone, before he hears you’re coming',

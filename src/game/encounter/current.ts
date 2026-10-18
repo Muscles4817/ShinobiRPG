@@ -16,6 +16,7 @@ import {
 import type { GameContext } from '../context';
 import { activeMission, activeStage } from '../missionFlow';
 import type { GameState } from '../state';
+import { drawFlavour } from './flavour';
 
 /**
  * The encounter the player is sizing up, gathered in one place for the recon and approach
@@ -53,7 +54,7 @@ export function encounterHere(state: GameState, ctx: GameContext): EncounterHere
   return {
     def,
     ...at,
-    flavour: encounterFlavour(at.stage, at.template),
+    flavour: encounterFlavour(at.stage, at.template, run.encounter.flavourSet),
     foes: at.stage.enemyIds.map((id) => ctx.content.enemies.require(id)),
     run,
     encounter: run.encounter,
@@ -70,12 +71,15 @@ export function beginEncounter(state: GameState, ctx: GameContext): GameState {
   const scouted: EncounterFact[] = state.mission.marks.includes(SAW_SCOUTS)
     ? ['count', 'terrain']
     : [];
-  const known = [...new Set([...reported, ...scouted])];
+  const known = [...new Set([...reported, ...scouted, ...(at.stage.shows ?? [])])];
   const notesFrom = state.mission.notes.length;
-  const encounter = startEncounter(at.template, known, notesFrom);
+  const key = `${state.board.seed}|${state.time.day}|${def.id}|${state.mission.stageIndex}`;
+  const drawn = drawFlavour(state.told, at, key);
+  const encounter = startEncounter(at.template, known, notesFrom, drawn.set);
   const opening: MissionNote = { kind: 'story', text: at.stage.text };
   return {
     ...state,
+    told: drawn.told,
     mission: { ...state.mission, notes: [...state.mission.notes, opening], encounter },
   };
 }
