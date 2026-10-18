@@ -15,7 +15,9 @@ import type { TeachingQuirk } from './teachers';
  * Slots, filled when a sensei is made: `{name}` their given name; `{art}` their specialty in
  * lower case; `{lost}` someone from their past; `{foe}` the one their story ends against;
  * `{keepsake}` something they carry; `{place}` where the story is settled. In conversations,
- * `{you}` and `{them}` are filled as anywhere else.
+ * `{you}` and `{them}` are filled as anywhere else. Every person slot (`name`, `lost`, `foe`,
+ * `them`) has its pronoun forms, since names and pronouns are drawn: `{name.their}`,
+ * `{foe.them}`, and verbs that agree, "keep{name.s}".
  */
 
 /** Where they go when they aren't teaching. */

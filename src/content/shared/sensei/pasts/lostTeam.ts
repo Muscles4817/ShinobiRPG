@@ -4,7 +4,7 @@ import type { SenseiPast } from '../../../senseiParts';
 export const LOST_TEAM: SenseiPast = {
   id: 'lost-team',
   wound:
-    '{name} came home from {place} the only one of their old team. {lost} was the last to fall.',
+    '{name} came home from {place} the only one of {name.their} old team. {lost} was the last to fall.',
   temperaments: ['iron-bell', 'big-sibling', 'old-soldier', 'quiet-blade', 'scholar'],
   regions: ['mountain-pass', 'forest-track', 'hill-road'],
   nudge: { grip: 'tight', onMissions: 'shield' },
@@ -24,7 +24,7 @@ export const LOST_TEAM: SenseiPast = {
   beats: [
     {
       opener:
-        '{them} is turning {keepsake} over in their hands when you come by. It isn’t theirs. “Old habit,” {them} says. “Never mind it.”',
+        '{them} is turning {keepsake} over in {them.their} hands when you come by. It isn’t {them.theirs}. “Old habit,” {them} says. “Never mind it.”',
       choices: [
         {
           label: 'Ask whose it was',
@@ -32,7 +32,7 @@ export const LOST_TEAM: SenseiPast = {
           reply: '“A friend’s,” {them} says, and puts it away. “Another time.”',
         },
         {
-          label: 'Sit with them a while and say nothing',
+          label: 'Sit with {them.them} a while and say nothing',
           tone: 'quiet',
           reply: '{them} seems glad you didn’t ask.',
         },
@@ -58,7 +58,7 @@ export const LOST_TEAM: SenseiPast = {
           reply: '{them} looks at you oddly. “Luck,” {them} says. “Yes.”',
         },
         {
-          label: 'Ask if your team is as good as theirs',
+          label: 'Ask if your team is as good as {them.theirs}',
           tone: 'challenge',
           reply: '“Better,” {them} says. “You have a worse sensei to make up for.”',
         },
@@ -134,7 +134,7 @@ export const LOST_TEAM: SenseiPast = {
       question:
         'At the edge of {place}, {name} stops. “I could end {foe} here,” {name} says. “Or bring {foe} home to answer for it. What would you do?”',
       mercy: {
-        label: '“Bring them home. Let the village judge.”',
+        label: '“Bring {foe.them} home. Let the village judge.”',
         reply: '{name} breathes out, long. “That is what {lost} would have said.”',
       },
       leave: {

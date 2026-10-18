@@ -85,7 +85,7 @@ export const DESERTER: SenseiPast = {
           label: 'Ask what became of {lost}',
           tone: 'earnest',
           reply:
-            '“Captain of the Free Blades now,” {them} says. “Good at it. I taught {lost} half of what made them good.”',
+            '“Captain of the Free Blades now,” {them} says. “Good at it. I taught {lost} half of what made {lost.them} good.”',
         },
       ],
     },
@@ -99,7 +99,7 @@ export const DESERTER: SenseiPast = {
           reply: '“I hoped,” {them} says. “I didn’t think I had the right to ask.”',
         },
         {
-          label: '“Do you want to bring {lost} back, or stop them?”',
+          label: '“Do you want to bring {lost} back, or stop {lost.them}?”',
           tone: 'challenge',
           reply: '“Yes,” {them} says. And then: “I don’t know which.”',
         },
@@ -140,20 +140,20 @@ export const DESERTER: SenseiPast = {
       mercy: {
         label: '“Ask for {lost}’s second chance.”',
         reply:
-          '{name} closes their eyes. “Thank you,” {name} says. “I needed someone else to say it.”',
+          '{name} closes {name.their} eyes. “Thank you,” {name} says. “I needed someone else to say it.”',
       },
       leave: {
         label: '“You came back. Let {lost} choose.”',
         reply: '“Let {lost} choose,” {name} says. “That’s fair. That’s all anyone gave me.”',
       },
       finish: {
-        label: '“{lost} made their choice long ago.”',
+        label: '“{lost} made {lost.their} choice long ago.”',
         reply: '“Yes,” {name} says heavily. “So did I. I chose differently.”',
       },
       appears:
         '{lost} walks out of the camp alone, sword on the shoulder, grinning. “Took you long enough,” {lost} says. “Let’s see what the village taught you.”',
       spared:
-        '{lost} kneels in the dust, laughing and bleeding. “Fine,” {lost} says. “Take me home. Someone has to show you how to cook properly.” {name} walks the whole way home beside them.',
+        '{lost} kneels in the dust, laughing and bleeding. “Fine,” {lost} says. “Take me home. Someone has to show you how to cook properly.” {name} walks the whole way home beside {lost.them}.',
       ended:
         '{lost} doesn’t get up. {name} takes the brass token off the body and leaves the loaded die in its place, and walks away without looking back.',
       home: 'The road home, with the Free Blades scattered behind you.',

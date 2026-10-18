@@ -47,7 +47,7 @@ export const STOLEN_SCROLL: SenseiPast = {
     },
     {
       opener:
-        '{them} turns {keepsake} over in their fingers. “I kept the most important thing in the village safe once,” {them} says. “For one night. Then I didn’t.”',
+        '{them} turns {keepsake} over in {them.their} fingers. “I kept the most important thing in the village safe once,” {them} says. “For one night. Then I didn’t.”',
       choices: [
         {
           label: 'Ask what happened that night',
@@ -69,7 +69,7 @@ export const STOLEN_SCROLL: SenseiPast = {
     },
     {
       opener:
-        '“The night the scroll was taken I was on the vault door,” {them} says. “A thief called {foe} walked past me in a borrowed face. {lost} kept the vault. The council needed someone to blame, and {lost} said it was their fault, to spare me. {lost} was sent to the border. I let it happen.”',
+        '“The night the scroll was taken I was on the vault door,” {them} says. “A thief called {foe} walked past me in a borrowed face. {lost} kept the vault. The council needed someone to blame, and {lost} said it was {lost.their} fault, to spare me. {lost} was sent to the border. I let it happen.”',
       choices: [
         {
           label: 'Ask why {them} didn’t speak up',
@@ -84,7 +84,7 @@ export const STOLEN_SCROLL: SenseiPast = {
             '“Still at the border,” {them} says. “Writes every winter. Never mentions it. That’s the worst part.”',
         },
         {
-          label: 'Tell {them} {lost} chose to protect them',
+          label: 'Tell {them} {lost} chose to protect {them.them}',
           tone: 'kind',
           reply: '“Then I owe it to {lost} to be worth it,” {them} says.',
         },
@@ -141,7 +141,7 @@ export const STOLEN_SCROLL: SenseiPast = {
       question:
         '“{foe} has read that scroll,” {name} says at the warehouse door. “Everything in it is in {foe}’s head now. We can take {foe} home for the village to deal with, or make sure the secrets go no further. Which?”',
       mercy: {
-        label: '“Take {foe} home. The village can seal what they know.”',
+        label: '“Take {foe} home. The village can seal what {foe.they} know{foe.s}.”',
         reply:
           '“There are seals for that,” {name} says. “Cruel ones. But better than the other way.”',
       },

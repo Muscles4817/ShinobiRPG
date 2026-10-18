@@ -41,20 +41,22 @@ export function poolId(past: SenseiPast, temperament: SenseiTemperament): string
 
 /**
  * A past's slots: the sensei (`{name}`), the one they lost (`{lost}`) and their foe (`{foe}`)
- * with every pronoun form (`personSlots`), their art, keepsake and place.
+ * with every pronoun form (`personSlots`), their art, keepsake and place. A foe who is the one
+ * they lost is the same person, so speaks of them the same way.
  */
 function slotsFor(
   frame: Frame & { readonly id: string },
-  extra: { lost: string; foe: string; keepsake: string; place: string },
+  extra: { lost: string; foe: string; foeIsLost: boolean; keepsake: string; place: string },
 ): Slots {
-  const person = (key: string, name: string) =>
-    personSlots(key, { id: `${frame.id}-${key}`, name });
+  const person = (key: string, name: string, as = key) =>
+    personSlots(key, { id: `${frame.id}-${as}`, name });
+  const lost = person('lost', extra.lost);
   return {
     ...personSlots('name', { id: frame.id, name: frame.name }),
-    ...person('lost', extra.lost),
-    ...person('foe', extra.foe),
+    ...lost,
+    ...person('foe', extra.foe, extra.foeIsLost ? 'lost' : 'foe'),
     art: STAT_INFO[frame.specialty].label.toLowerCase(),
-    keepsake: extra.keepsake,
+    keepsake: fill(extra.keepsake, lost),
     place: extra.place,
   };
 }
@@ -105,7 +107,8 @@ export function composeSensei(pack: ContentPack, parts: Parts): Composed | null 
     {
       lost,
       foe: past.foe.nameless ? past.foe.epithet : given,
-      keepsake: fill(rng.pick(past.keepsakes), { lost }),
+      foeIsLost: past.foe.isLost === true,
+      keepsake: rng.pick(past.keepsakes),
       place: ground.place,
     },
   );

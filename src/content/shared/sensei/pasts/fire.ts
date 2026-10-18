@@ -4,7 +4,7 @@ import type { SenseiPast } from '../../../senseiParts';
 export const THE_FIRE: SenseiPast = {
   id: 'the-fire',
   wound:
-    'As a genin, {name} lost hold of their fire and burned a farm to the ground. {lost}’s family lived there.',
+    'As a genin, {name} lost hold of {name.their} fire and burned a farm to the ground. {lost}’s family lived there.',
   temperaments: ['scholar', 'mystic', 'quiet-blade', 'big-sibling', 'chess-player'],
   arts: ['ninjutsu'],
   nature: 'fire',
@@ -90,12 +90,12 @@ export const THE_FIRE: SenseiPast = {
     },
     {
       opener:
-        '“There’s an arsonist burning farms near {place},” {them} says. “They call them {foe}. Someone who does on purpose what I did by accident. I want to stop them. And I want you to see what fire looks like when it’s used without care.”',
+        '“There’s an arsonist burning farms near {place},” {them} says. “They call {foe.them} {foe}. Someone who does on purpose what I did by accident. I want to stop {foe.them}. And I want you to see what fire looks like when it’s used without care.”',
       choices: [
         {
-          label: '“We’ll stop them.”',
+          label: '“We’ll stop {foe.them}.”',
           tone: 'earnest',
-          reply: '“Carefully,” {them} says. “We stop them carefully.”',
+          reply: '“Carefully,” {them} says. “We stop {foe.them} carefully.”',
         },
         {
           label: '“Are you sure you want to face that?”',
@@ -116,7 +116,7 @@ export const THE_FIRE: SenseiPast = {
       'An arsonist called {foe} is burning farms near {place}, the way {name} once burned one by accident.',
     find: {
       title: 'Smoke at {place}',
-      summary: 'Follow {foe}’s trail of burned farms near {place} to where they hide.',
+      summary: 'Follow {foe}’s trail of burned farms near {place} to where {foe.they} hide{foe.s}.',
       act: 'Find where {foe} hides near {place}.',
       gate: '{name} checks every water flask in the team before you leave, twice.',
       road: 'The road to {place}. You smell the burning long before you see it.',
@@ -133,11 +133,11 @@ export const THE_FIRE: SenseiPast = {
       title: 'When It Rains',
       summary: 'Back to {place} in the rain, to stop {foe}.',
       act: 'Go back with {name} in the rain and stop {foe}.',
-      road: 'The rain comes as {name} said it would. {name} walks in it with their face turned up.',
+      road: 'The rain comes as {name} said it would. {name} walks in it with {name.their} face turned up.',
       question:
         '“When it’s over,” {name} says, “I could take {foe} home for the village to judge. Or I could make sure no fire ever comes out of {foe} again. Tell me which.”',
       mercy: {
-        label: '“Take them home. Fire isn’t the answer to fire.”',
+        label: '“Take {foe.them} home. Fire isn’t the answer to fire.”',
         reply:
           '{name} lets out a breath that steams in the cold. “No,” {name} says. “It never is.”',
       },
@@ -146,13 +146,13 @@ export const THE_FIRE: SenseiPast = {
         reply: '“I know what it costs,” {name} says. “That’s not the same as knowing what to do.”',
       },
       finish: {
-        label: '“Make sure they never burn anything again.”',
+        label: '“Make sure {foe.they} never burn{foe.s} anything again.”',
         reply: '{name} looks at the bandaged hand for a long moment, and says nothing.',
       },
       appears:
-        '{foe} steps out into the rain, laughing, and the rain steams off their hands. “A fire user,” {foe} says to {name}. “I can smell it on you. Let’s see whose burns hotter.”',
+        '{foe} steps out into the rain, laughing, and the rain steams off {foe.their} hands. “A fire user,” {foe} says to {name}. “I can smell it on you. Let’s see whose burns hotter.”',
       spared:
-        '{foe} goes home bound, hands wrapped in wet cloth. {name} walks beside them all the way, and at the gate {name} unwraps the old bandage for the first time in years.',
+        '{foe} goes home bound, hands wrapped in wet cloth. {name} walks beside {foe.them} all the way, and at the gate {name} unwraps the old bandage for the first time in years.',
       ended:
         '{foe} doesn’t get up. The rain puts out the last of the fires. {name} stands in it until it stops.',
       home: 'Home in the clean rain.',

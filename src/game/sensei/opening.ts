@@ -5,9 +5,11 @@ import type {
   SenseiTestOption,
   TestApproach,
 } from '@/content';
+import { fillSlots } from '@/core';
 
 import type { GameContext } from '../context';
 import { findPerson } from '../people/cast';
+import { personSlots } from '../people/pronouns';
 import type { GameState, SharedMemory } from '../state';
 import { mentorOf } from './plan';
 import { withRegard, type Mentor } from './state';
@@ -48,7 +50,10 @@ export function testOf(ctx: GameContext, sensei: PersonDef): SenseiTestDef | nul
   return test && test !== 'none' ? (ctx.content.senseiTests.get(test) ?? null) : null;
 }
 
-/** Fills `{sensei}`, `{mate}` and `{mate2}`. */
+/** Who a teammate is in a line when the team has nobody there. */
+const NO_MATE = { id: 'no-mate', name: 'your teammate', pronouns: 'they' } as const;
+
+/** Fills `{sensei}`, `{mate}` and `{mate2}`, and their pronoun forms. */
 export function fillTest(
   state: GameState,
   ctx: GameContext,
@@ -56,12 +61,14 @@ export function fillTest(
   text: string,
 ): string {
   const mates = (state.people.team?.teammateIds ?? []).map(
-    (id) => findPerson(state, ctx, id)?.name ?? 'your teammate',
+    (id) => findPerson(state, ctx, id) ?? NO_MATE,
   );
-  return text
-    .replaceAll('{sensei}', sensei.name)
-    .replaceAll('{mate}', mates[0] ?? 'your teammate')
-    .replaceAll('{mate2}', mates[1] ?? mates[0] ?? 'your teammate');
+  const mate = mates[0] ?? NO_MATE;
+  return fillSlots(text, {
+    ...personSlots('sensei', sensei),
+    ...personSlots('mate', mate),
+    ...personSlots('mate2', mates[1] ?? mate),
+  });
 }
 
 export function approachRegard(philosophy: SenseiPhilosophy, approach: TestApproach): number {

@@ -4,7 +4,8 @@ import type { SenseiTemperament } from '../../senseiParts';
  * How generated senseis talk and teach (`senseiParts.ts`). Each is one kind of person, written
  * so that every line could only be theirs: the style on the team card, the weekly lesson, who
  * they are before you know their past, and what they say when the work is done, or isn't, or
- * when there is only a fire to talk to. `{name}` is their given name, `{art}` their specialty.
+ * when there is only a fire to talk to. `{name}` is their given name (with every pronoun form: `{name.their}`,
+ * `{name.s}`), `{art}` their specialty.
  */
 export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
   {
@@ -25,7 +26,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
         '“You stopped short,” {name} says. “Everyone stops short. That is why everyone is ordinary.”',
       catchphrase: 'Again, from one.',
       fireside: [
-        '{name} counts the stars over the fire under their breath, loses count, and starts again, and does not seem to mind.',
+        '{name} counts the stars over the fire under {name.their} breath, loses count, and starts again, and does not seem to mind.',
         '“I rang the bell for my own sensei every morning for a year,” {name} says. “He never once said thank you. I think that was the lesson.”',
       ],
     },
@@ -47,7 +48,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
       scold: '{name} says nothing at all, which is worse than anything {name} could have said.',
       catchphrase: 'Show me.',
       fireside: [
-        '{name} sharpens a kunai by the fire until it sings, and then, without looking up, tells you the name of the smith who made it, and that they are dead.',
+        '{name} sharpens a kunai by the fire until it sings, and then, without looking up, tells you the name of the smith who made it, and that the smith is dead.',
         'For a long time {name} only watches the fire. Then: “Talking is how people hide what they think.” Then nothing else all night.',
       ],
     },
@@ -136,7 +137,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
         '“Boring,” {name} says. “If you’re going to fail, at least fail at something worth watching.”',
       catchphrase: 'Watch closely. I won’t do it twice. I might do it three times.',
       fireside: [
-        '{name} tells the crew about the time they beat three chūnin at once, blindfolded. The story is better every time. Nobody minds.',
+        '{name} tells the crew about the time {name.they} beat three chūnin at once, blindfolded. The story is better every time. Nobody minds.',
         '“Everyone thinks I like being looked at,” {name} says, quieter than usual. “I just never learned what to do when nobody is.”',
       ],
     },
@@ -216,7 +217,7 @@ export const SENSEI_TEMPERAMENTS: readonly SenseiTemperament[] = [
       'A former academy instructor who still teaches like one: patiently, thoroughly, from the very beginning.',
     lesson:
       '{name} takes the {art} technique apart into its smallest pieces and has you build it again, piece by piece, until you understand it.',
-    bio: 'A jōnin who taught at the academy for years and still corrects the grammar on mission reports. Has a notebook on every genin they ever taught.',
+    bio: 'A jōnin who taught at the academy for years and still corrects the grammar on mission reports. Has a notebook on every genin {name.they} ever taught.',
     favouredTraits: ['diligent', 'focused'],
     traits: ['humble', 'focused'],
     quirk: 'patient',

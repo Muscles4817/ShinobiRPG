@@ -130,14 +130,14 @@ view:
 === sensei test ===
 view:
   heading: Show me
-  lines[0]: Gōran rolls their shoulders. “Hit me. All three of you. Don’t hold back, you can’t hurt me.”
-  lines[1]: Gōran doesn’t even raise their hands.
+  lines[0]: Gōran rolls his shoulders. “Hit me. All three of you. Don’t hold back, you can’t hurt me.”
+  lines[1]: Gōran doesn’t even raise his hands.
   choices[0]:
-    label: Go straight at them
+    label: Go straight at him
   choices[1]:
-    label: Come at them from three sides with the others
+    label: Come at him from three sides with the others
   choices[2]:
-    label: Feint, and see what they do
+    label: Feint, and see what he does
 
 >>> dismissReport
 
@@ -154,14 +154,14 @@ view:
 === sensei test ===
 view:
   heading: Show me
-  lines[0]: Gōran rolls their shoulders. “Hit me. All three of you. Don’t hold back, you can’t hurt me.”
-  lines[1]: Gōran doesn’t even raise their hands.
+  lines[0]: Gōran rolls his shoulders. “Hit me. All three of you. Don’t hold back, you can’t hurt me.”
+  lines[1]: Gōran doesn’t even raise his hands.
   choices[0]:
-    label: Go straight at them
+    label: Go straight at him
   choices[1]:
-    label: Come at them from three sides with the others
+    label: Come at him from three sides with the others
   choices[2]:
-    label: Feint, and see what they do
+    label: Feint, and see what he does
 
 >>> dismissReport
 
@@ -170,14 +170,14 @@ view:
 === sensei test ===
 view:
   heading: Show me
-  lines[0]: Gōran rolls their shoulders. “Hit me. All three of you. Don’t hold back, you can’t hurt me.”
-  lines[1]: Gōran doesn’t even raise their hands.
+  lines[0]: Gōran rolls his shoulders. “Hit me. All three of you. Don’t hold back, you can’t hurt me.”
+  lines[1]: Gōran doesn’t even raise his hands.
   choices[0]:
-    label: Go straight at them
+    label: Go straight at him
   choices[1]:
-    label: Come at them from three sides with the others
+    label: Come at him from three sides with the others
   choices[2]:
-    label: Feint, and see what they do
+    label: Feint, and see what he does
 
 >>> senseiTest
 

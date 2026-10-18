@@ -17,7 +17,7 @@ export const LOST_STUDENT: SenseiPast = {
     epithet: 'the Unbroken',
     kind: 'Missing-nin',
     description:
-      'Once {name}’s student. Pushed until they broke, then rebuilt themself into something {name} never meant to make.',
+      'Once {name}’s student. Pushed until {foe.they} broke, then rebuilt {foe.themself} into something {name} never meant to make.',
     art: 'theirs',
     encounter: 'lone-rogue',
     isLost: true,
@@ -47,12 +47,12 @@ export const LOST_STUDENT: SenseiPast = {
     },
     {
       opener:
-        '{them} is reading {keepsake} when you arrive, and doesn’t hide it. “My first student,” {them} says. “Gifted. The best I ever had. Look how hard they worked.”',
+        '{them} is reading {keepsake} when you arrive, and doesn’t hide it. “My first student,” {them} says. “Gifted. The best I ever had. Look how hard {lost.they} worked.”',
       choices: [
         {
-          label: 'Ask what became of them',
+          label: 'Ask what became of {lost.them}',
           tone: 'curious',
-          reply: '“I made them very strong,” {them} says. “That was the trouble.”',
+          reply: '“I made {lost.them} very strong,” {them} says. “That was the trouble.”',
         },
         {
           label: 'Say you work hard too',
@@ -122,7 +122,7 @@ export const LOST_STUDENT: SenseiPast = {
       summary: 'Find {lost}’s fighting pit near {place}.',
       act: 'Find the fighting pit near {place}.',
       gate: '{name} checks each of you for injuries before you leave, and makes you rest first if there are any.',
-      road: 'The road to {place}. {name} tells you every mistake they ever made as a teacher, in order.',
+      road: 'The road to {place}. {name} tells you every mistake {name.they} ever made as a teacher, in order.',
       check:
         'At {place} there are children with taped hands and old eyes, all heading the same way at dusk.',
       found:
@@ -137,7 +137,7 @@ export const LOST_STUDENT: SenseiPast = {
       title: 'Enough',
       summary: 'Back to {place} for {name} to face {lost}.',
       act: 'Go back with {name} to face {lost}.',
-      road: 'The road again. {name} practises an apology under their breath, over and over, and can’t get it right.',
+      road: 'The road again. {name} practises an apology under {name.their} breath, over and over, and can’t get it right.',
       question:
         '“If it comes to a fight and I win,” {name} says, “I could bring {lost} home. Or I could finish what I started, and stop the pit for good. Tell me.”',
       mercy: {
@@ -155,7 +155,7 @@ export const LOST_STUDENT: SenseiPast = {
       appears:
         '{lost} is waiting in the empty pit, bare hands taped, scarred, strong. “Sensei,” {lost} says, and smiles a terrible smile. “Again?”',
       spared:
-        '{lost} sits in the dirt of the pit. {name} kneels down beside them and says, “It was enough. It was always enough.” {lost} cries like a child, and {name} holds on.',
+        '{lost} sits in the dirt of the pit. {name} kneels down beside {lost.them} and says, “It was enough. It was always enough.” {lost} cries like a child, and {name} holds on.',
       ended:
         '{lost} doesn’t get up. {name} unwraps the tape from {lost}’s hands, one finger at a time, and sends the pit’s children home.',
       home: 'Home, with the children of the pit walking behind you.',
