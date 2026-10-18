@@ -116,7 +116,7 @@ const TOADS: ContractDef = {
     {
       id: 'gamakichi',
       name: 'Gamakichi',
-      description: 'Small, cheeky and quick, with an oil bullet and opinions about snacks.',
+      description: 'A small, cheeky toad with an oil bullet and opinions about snacks.',
       techniqueId: 'summoning-gamakichi',
       standing: 0,
       stats: statLine('E', { speed: 'D', ninjutsu: 'D', perception: 'D' }),
@@ -180,7 +180,7 @@ const NINKEN: ContractDef = {
     {
       id: 'bull',
       name: 'Bull',
-      description: 'The biggest of the pack; he bites, and holds, and waits.',
+      description: 'The biggest of the pack; once he bites, he holds on and waits.',
       techniqueId: 'summoning-bull',
       standing: 2,
       stats: statLine('D', { strength: 'C', stamina: 'C', taijutsu: 'C' }),
