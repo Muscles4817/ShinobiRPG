@@ -29,6 +29,9 @@ export interface CheckApproach {
   readonly role?: MissionRole;
   /** Only offered when this holds. */
   readonly when?: Condition;
+  /** How it went, when this way goes differently from the stage's own lines (sneaking, talking). */
+  readonly success?: string;
+  readonly failure?: string;
   /** What succeeding this way does besides moving on (raising trust, say). */
   readonly onSuccess?: Outcome;
   /** What failing this way does (a mark the story picks up later). */
@@ -202,6 +205,8 @@ export interface JourneyPlan {
     readonly region: string;
     readonly days: number;
     readonly text: string;
+    /** The location the leg heads for (absent on trips saved before roads had a heading). */
+    readonly toward?: string;
   }[];
   /** Walk on without stopping to camp; only a road event halts you. */
   readonly quick: boolean;

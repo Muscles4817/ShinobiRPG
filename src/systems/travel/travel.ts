@@ -52,13 +52,18 @@ export interface RouteDef {
   readonly trail?: readonly { readonly x: number; readonly y: number }[];
 }
 
+/** A leg as walked on a journey: which location it heads for. */
+export interface JourneyLeg extends RouteLeg {
+  readonly toward: string;
+}
+
 export interface Journey {
   /** Locations passed through on the way, not counting either end. */
   readonly via: readonly string[];
   /** The routes walked, in order. */
   readonly routeIds: readonly string[];
-  /** Every leg in the order walked. */
-  readonly legs: readonly RouteLeg[];
+  /** Every leg in the order walked, with where it heads. */
+  readonly legs: readonly JourneyLeg[];
   readonly days: number;
   readonly cost: number;
   readonly danger: Danger;
@@ -98,7 +103,8 @@ function cheaper(a: Journey, b: Journey): boolean {
 }
 
 function extend(journey: Journey, step: Step, from: string): Journey {
-  const legs = step.route.from === from ? step.route.legs : [...step.route.legs].reverse();
+  const ahead = step.route.from === from ? step.route.legs : [...step.route.legs].reverse();
+  const legs = ahead.map((leg) => ({ ...leg, toward: step.toward }));
   return {
     via: journey.days === 0 ? [] : [...journey.via, from],
     routeIds: [...journey.routeIds, step.route.id],

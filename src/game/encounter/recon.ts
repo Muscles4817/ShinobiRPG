@@ -7,6 +7,7 @@ import type { GameContext } from '../context';
 import { bestHandFor, type Hand } from '../missionRoles';
 import { adjust, firstBlocker } from '../ops';
 import type { GameState } from '../state';
+import { tellFresh } from '../telling';
 import { encounterHere, withEncounter, type EncounterHere } from './current';
 import { senseMeans } from './means';
 import { watchedFor } from './spotted';
@@ -37,11 +38,28 @@ const COSTS: Readonly<Record<ReconId, ReconCost>> = {
   ask: { ryo: ASK_AROUND_FEE },
 };
 
-const SUCCESS: Readonly<Record<ReconId, string>> = {
-  observe: 'From cover you take in the ground, and how they hold themselves.',
-  track: 'The trail tells you who passed this way, and how many.',
-  sense: 'Their chakra burns in your mind’s eye: how many, how they fight, and whether they know.',
-  ask: 'A few words and a few coins, and you know who they are and how they fight.',
+/** What a recon that worked looks like, a few ways each, drawn without repeating the last. */
+const SUCCESS: Readonly<Record<ReconId, readonly string[]>> = {
+  observe: [
+    'From cover you take in the ground, and how they hold themselves.',
+    'You lie still long enough to learn the lie of the land, and which of them never quite relaxes.',
+    'You find a place to watch from and stay there until you could draw the ground from memory.',
+  ],
+  track: [
+    'The trail tells you who passed this way, and how many.',
+    'Prints in the soft ground, the same few sets coming and going, and you can count them.',
+    'You read the ground where they have walked it bare, and it gives up who they are and how many.',
+  ],
+  sense: [
+    'Their chakra burns in your mind’s eye, enough to count them, to know how they fight and whether they know you are there.',
+    'You let your senses out like a net, and it comes back with every one of them caught in it.',
+    'You close your eyes, and their chakra is there in the dark, each of them a different weight.',
+  ],
+  ask: [
+    'A few words and a few coins, and you know who they are and how they fight.',
+    'The first two people you ask know nothing. The third has a cousin who does, and talks for the price of a cup of tea.',
+    'Someone at the roadside stall has seen them, and is glad of the coin to say so.',
+  ],
 };
 
 /** A recon as it stands now: who would do it, the odds and what it costs, or why not. */
@@ -140,6 +158,8 @@ export function performRecon(state: GameState, ctx: GameContext, id: ReconId, rn
   const success = plan.chance >= 1 || rng.chance(plan.chance);
   const who = plan.hand.personId ? ` (${plan.hand.name})` : '';
   const encounter = afterRecon(here.encounter, id, success);
+  const key = `${state.board.seed}|${state.time.day}|${here.def.id}|${here.encounter.recons}`;
+  const found = tellFresh(state.told, { name: `recon-${id}`, lines: SUCCESS[id] }, key);
   const mission = withEncounter(
     here,
     encounter,
@@ -147,8 +167,8 @@ export function performRecon(state: GameState, ctx: GameContext, id: ReconId, rn
     ...(plan.stat && plan.chance < 1
       ? [{ kind: 'roll' as const, stat: plan.stat, chance: plan.chance, success }]
       : []),
-    { kind: 'story', text: success ? SUCCESS[id] : here.flavour.noticed },
+    { kind: 'story', text: success ? found.line : here.flavour.noticed },
   );
-  const paid = payFor({ ...state, mission }, plan.cost);
+  const paid = payFor({ ...state, mission, told: success ? found.told : state.told }, plan.cost);
   return success ? paid : watchedFor(paid, ctx, rng, false);
 }

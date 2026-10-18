@@ -1,3 +1,4 @@
+import { capitalise, numberWord } from '@/core';
 import { RANGE_BANDS, RANGE_LABEL, type RangeBand } from '@/systems/combat';
 import {
   MAX_RECON,
@@ -120,7 +121,9 @@ const FIXED_DETAIL: Readonly<Record<ApproachId, string>> = {
 function factValue(here: EncounterHere, fact: EncounterFact): string {
   switch (fact) {
     case 'count':
-      return here.foes.length === 1 ? 'One, alone' : `${here.foes.length} of them`;
+      return here.foes.length === 1
+        ? 'One, alone'
+        : capitalise(`${numberWord(here.foes.length)} of them`);
     case 'identity':
       return [...new Set(here.foes.map((f) => f.name))].join(', ');
     case 'kit': {
@@ -138,11 +141,19 @@ function lowerFirst(text: string): string {
   return text.charAt(0).toLowerCase() + text.slice(1);
 }
 
+/** "A, B or C". */
+function eitherOf(words: readonly string[]): string {
+  return words.length <= 1
+    ? (words[0] ?? '')
+    : `${words.slice(0, -1).join(', ')} or ${words.at(-1) ?? ''}`;
+}
+
+/** How to find out what isn't known yet: the ways that would tell you, as one sentence. */
 function factHint(here: EncounterHere, fact: EncounterFact): string {
   const ways = here.template.recon.filter((r) => RECON_REVEALS[r.id].includes(fact));
   return ways.length > 0
-    ? `Unknown. ${ways.map((r, i) => (i === 0 ? r.label : lowerFirst(r.label))).join(' or ')}.`
-    : 'Unknown. You’ll find out when it starts.';
+    ? `Not yet known. ${eitherOf(ways.map((r, i) => (i === 0 ? r.label : lowerFirst(r.label))))} to find out.`
+    : 'Not yet known. You’ll find out when it starts.';
 }
 
 function factLines(here: EncounterHere): FactLine[] {

@@ -68,6 +68,7 @@ export const PILOT_HOME: MissionDef = {
       job: 'escort',
       text: 'An iron chain hangs across the landing road, and two men with clubs sit on the toll box beneath it.',
       enemyIds: ['bandit-thug', 'bandit-thug'],
+      shows: ['count'],
       canFlee: true,
       flavour: {
         terrain: 'The chain, a toll box, the river on one side and a steep bluff on the other.',

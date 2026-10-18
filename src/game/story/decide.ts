@@ -6,6 +6,7 @@ import {
   type MissionDef,
   type MissionNote,
   type MissionRun,
+  withMark,
 } from '@/systems/missions';
 
 import type { GameContext } from '../context';
@@ -13,7 +14,7 @@ import { log } from '../ops';
 import { tastesOf } from '../people/cast';
 import type { GameState } from '../state';
 import { bondWithOne, crewPeople, feel } from './personal';
-import { voiceOf } from './voices';
+import { stungBy, voiceOf } from './voices';
 
 /**
  * Making a decision on a job: what you chose and what came of it go in the story, the people
@@ -27,6 +28,8 @@ export const DECISION_BOND_SHARE = 0.5;
 interface Reaction {
   readonly state: GameState;
   readonly voice: MissionNote | null;
+  /** Marks for those it sat badly with. */
+  readonly stung: readonly string[];
 }
 
 /** The crew's bonds moved by the tone, and a word from whoever felt it most. */
@@ -49,7 +52,9 @@ function crewTakesIt(state: GameState, ctx: GameContext, tone: string): Reaction
         tone,
       })
     : null;
-  return { state: moved, voice };
+  // Whoever it sat badly with remembers it for the rest of the job (and may say so by the fire).
+  const stung = felt.filter((f) => f.delta < 0).map((f) => stungBy(f.person.id));
+  return { state: moved, voice, stung };
 }
 
 /** The charge warms to a tone they like and cools at one they don't. */
@@ -69,7 +74,9 @@ export function decide(
 ): GameState {
   const run = state.mission;
   if (!run) return state;
-  const reacted = option.tone ? crewTakesIt(state, ctx, option.tone) : { state, voice: null };
+  const reacted = option.tone
+    ? crewTakesIt(state, ctx, option.tone)
+    : { state, voice: null, stung: [] };
   const effects = [...(option.effects ?? []), ...chargeEffects(def, option.tone)];
   const applied = applyOutcome(run, def, { ...option, effects });
   const notes: MissionNote[] = [
@@ -77,7 +84,11 @@ export function decide(
     { kind: 'story', text: option.reply },
     ...(reacted.voice ? [reacted.voice] : []),
   ];
-  const told: MissionRun = { ...applied.run, notes: [...applied.run.notes, ...notes] };
+  const told: MissionRun = {
+    ...applied.run,
+    marks: reacted.stung.reduce(withMark, applied.run.marks),
+    notes: [...applied.run.notes, ...notes],
+  };
   const felt = feel({ ...reacted.state, mission: told }, applied.personal);
   return felt.chips.length > 0
     ? log(felt.state, { text: option.reply, tone: 'info', chips: felt.chips })

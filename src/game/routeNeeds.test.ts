@@ -61,7 +61,9 @@ describe('roads with needs', () => {
       'forest-track',
     ]);
     const across = act(atPort(BOTH), { type: 'travel', locationId: 'kiri-ford' });
-    expect(across.mission?.journey?.legs).toEqual(bay.legs);
+    expect(across.mission?.journey?.legs).toEqual(
+      bay.legs.map((leg) => ({ ...leg, toward: 'kiri-ford' })),
+    );
   });
 
   it('reads rank and world-mark needs from the save', () => {

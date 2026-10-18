@@ -58,6 +58,33 @@ function payOf(effects: readonly Effect[]): number {
   return effects.reduce((sum, e) => sum + (e.kind === 'pay' ? e.share : 0), 0);
 }
 
+/**
+ * What the ledger says a thread did, for each thread the outcome really moved: a line never
+ * claims a change that didn't happen (a road event's lost hour, on a job that keeps no light).
+ */
+function threadClauses(
+  before: MissionRun,
+  after: MissionRun,
+  def: StoryDef,
+  effects: readonly Effect[],
+): string[] {
+  return effects.flatMap((e) => {
+    if (e.kind !== 'thread') return [];
+    const thread = threadOf(def, e.thread);
+    if (!thread?.ledger) return [];
+    const moved = (after.threads[thread.id] ?? 0) - (before.threads[thread.id] ?? 0);
+    const said = moved < 0 ? thread.ledger.fell : moved > 0 ? thread.ledger.rose : undefined;
+    return said ? [nextTelling(before, said)] : [];
+  });
+}
+
+/** The first of a thread's ways of saying it, then the next each time the ledger says it again. */
+function nextTelling(run: MissionRun, said: string | readonly string[]): string {
+  const ways = typeof said === 'string' ? [said] : said;
+  const before = run.ledger.filter((l) => ways.some((w) => l.text.endsWith(w))).length;
+  return ways[Math.min(before, ways.length - 1)] ?? '';
+}
+
 /** An outcome applied at the run's current stage. */
 export function applyOutcome(
   run: MissionRun,
@@ -72,7 +99,7 @@ export function applyOutcome(
   const pay = payOf(effects);
   const line = {
     stageIndex: run.stageIndex,
-    text: outcome.ledger,
+    text: [outcome.ledger, ...new Set(threadClauses(run, changed, def, effects))].join(' '),
     tone: toneOf(effects, fallback),
     ...(pay !== 0 ? { pay } : {}),
     ...(outcome.noted ? { noted: true as const } : {}),

@@ -9,6 +9,7 @@ import {
 
 import { TONES } from './people';
 import { conditions, effectsOf } from './storyParts';
+import { ledgerProblems } from './validateLedger';
 import { tallyProblems } from './validateTallies';
 import type { ContentPack } from './types';
 import { VOICE_MOMENTS } from './voices';
@@ -215,6 +216,7 @@ export function validateStory(pack: ContentPack): string[] {
     ...voiceProblems(pack),
     ...worldProblems(pack),
     ...tallyProblems(pack),
+    ...ledgerProblems(pack),
     ...arcProblems(pack),
   ];
 }

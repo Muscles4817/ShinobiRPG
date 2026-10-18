@@ -9,6 +9,8 @@ import { keepsToSafeRoads } from './leave';
 import { arriving, leaving, tripCrew } from './trips';
 import type { GameState } from './state';
 import { placeInText } from './placeName';
+import { bearing } from './compass';
+import { homeVillageId } from './homeVillage';
 
 /**
  * Trips of your own along the roads. The way is the quickest open journey over the pack's
@@ -62,11 +64,45 @@ const CAMP: MissionStage = {
   ],
 };
 
-function stagesOf(plan: JourneyPlan): MissionStage[] {
+type PlanLeg = JourneyPlan['legs'][number];
+
+/** Where each leg sets out from: the start, then wherever the leg before was heading. */
+function startsOf(plan: JourneyPlan): string[] {
+  return plan.legs.map((_, i) => (i === 0 ? plan.from : (plan.legs[i - 1]?.toward ?? plan.from)));
+}
+
+/**
+ * A leg's line, with the way it heads when it sets off for somewhere new: "You set off north
+ * for Kiri Ford." on the first stretch, "From Shiomachi the road turns east, for…" after.
+ */
+function headed(ctx: GameContext, leg: PlanLeg, from: string): string {
+  if (!leg.toward || leg.toward === from) return leg.text;
+  const start = ctx.content.locations.require(from);
+  const end = ctx.content.locations.require(leg.toward);
+  const way = bearing(start.map, end.map);
+  const toward = placeInText(end.name);
+  return `${leg.text} The road runs ${way} from ${placeInText(start.name)}, towards ${toward}.`;
+}
+
+function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
+  const starts = startsOf(plan);
   return plan.legs.flatMap((leg, i): MissionStage[] => {
-    const walk: MissionStage = { kind: 'leg', text: leg.text, days: leg.days, region: leg.region };
+    const from = starts[i] ?? plan.from;
+    // Only the first day of a stretch says where it heads; the rest are the same road.
+    const fresh = i === 0 || plan.legs[i - 1]?.toward !== leg.toward;
+    const text = fresh ? headed(ctx, leg, from) : leg.text;
+    const walk: MissionStage = { kind: 'leg', text, days: leg.days, region: leg.region };
     return plan.quick || i === plan.legs.length - 1 ? [walk] : [walk, CAMP];
   });
+}
+
+/** The legs walked so far, walked back the other way: each heads where the one before began. */
+export function legsBack(plan: JourneyPlan, walked: number): JourneyPlan['legs'] {
+  const starts = startsOf(plan);
+  return plan.legs
+    .slice(0, walked)
+    .map((leg, i) => ({ ...leg, toward: starts[i] ?? plan.from }))
+    .reverse();
 }
 
 /** The trip as a mission the run can play: no client, no pay, only the road. */
@@ -82,7 +118,7 @@ export function journeyMission(plan: JourneyPlan, ctx: GameContext): MissionDef 
     energyCost: 0,
     reward: { ryo: 0, reputation: 0 },
     minMissionsCompleted: 0,
-    stages: stagesOf(plan),
+    stages: stagesOf(plan, ctx),
   };
 }
 
@@ -115,9 +151,13 @@ export function setOut(state: GameState, ctx: GameContext, trip: Departure): Gam
 export function arrive(state: GameState, ctx: GameContext, plan: JourneyPlan): GameState {
   const destination = ctx.content.locations.require(plan.to);
   const days = plan.legs.reduce((sum, leg) => sum + leg.days, 0);
+  const home = destination.id === homeVillageId(state, ctx);
+  const place = placeInText(destination.name);
   return log(arriving({ ...state, mission: null, locationId: destination.id }, ctx, plan), {
-    heading: `Arrived in ${placeInText(destination.name)}`,
-    text: `You walk into ${placeInText(destination.name)}, road-dusty and glad of it.`,
+    heading: home ? `Home in ${place}` : `Arrived in ${place}`,
+    text: home
+      ? `You are back in ${place}, with the road still in your legs.`
+      : `You walk into ${place}, road-dusty and glad of it.`,
     tone: 'success',
     chips: [chip(days === 1 ? 'A day on the road' : `${days} days on the road`, 'info')],
   });
