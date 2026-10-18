@@ -1,6 +1,7 @@
 import { shouldFlee } from '../../rules/kit';
 import { breakHold } from './holding';
 import { fighterIn, patch, say, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Taking damage off a fighter in a planned fight, whatever dealt it (a blow, a riposte, a
@@ -15,5 +16,6 @@ export function wound(round: Round, id: string, damage: number): Round {
   const held = damage > 0 && struck.holding ? breakHold(round, id) : round;
   const fighters = patch(held.fighters, id, { health: hurt.health });
   if (!shouldFlee(hurt)) return { ...held, fighters };
-  return say({ ...held, fighters: patch(fighters, id, { health: 0 }) }, `${struck.name} flees!`);
+  const fled = tell('{t} flee{t.s}!', { t: struck });
+  return say({ ...held, fighters: patch(fighters, id, { health: 0 }) }, fled);
 }

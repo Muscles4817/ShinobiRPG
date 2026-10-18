@@ -38,6 +38,9 @@ import {
   type Landing,
 } from './voice';
 
+const RYO = { id: 'ryo', name: 'Ryo' };
+const KAI = { id: 'kai', name: 'Kai' };
+
 /** Enough moments to see every line of every bank. */
 const MOMENTS = Array.from({ length: 120 }, (_, i) => `${i}:${i * 3}:x`);
 
@@ -66,22 +69,22 @@ function variety(lines: readonly string[]): number {
 
 describe('the fight’s voice', () => {
   it('tells the same beat in several ways, the same way each time for a moment', () => {
-    const casts = MOMENTS.map((m) => castLine(m, 'Ryo', fire));
+    const casts = MOMENTS.map((m) => castLine(m, RYO, fire));
     expect(variety(casts)).toBeGreaterThan(2);
-    expect(castLine('1:2:x', 'Ryo', fire)).toBe(castLine('1:2:x', 'Ryo', fire));
+    expect(castLine('1:2:x', RYO, fire)).toBe(castLine('1:2:x', RYO, fire));
   });
 
   it('names the caster before the technique, so every cast is recognised', () => {
     for (const m of MOMENTS)
-      expect(castsLine(castLine(m, 'Ryo', fire), 'Ryo', 'Fire Blast')).toBe(true);
+      expect(castsLine(castLine(m, RYO, fire), 'Ryo', 'Fire Blast')).toBe(true);
   });
 
   it('tells every hit with the attacker first and the one it lands on, by the attack’s kind', () => {
     for (const blow of LANDINGS) {
       const lines = MOMENTS.map((m) =>
         hitLine(m, {
-          attacker: 'Ryo',
-          target: 'Kai',
+          attacker: RYO,
+          target: KAI,
           blow,
           guarded: false,
           smashed: false,
@@ -96,7 +99,7 @@ describe('the fight’s voice', () => {
   it('says how a guard fared, in words the tests know', () => {
     const blow = LANDINGS[0]!;
     for (const m of MOMENTS) {
-      const base = { attacker: 'Ryo', target: 'Kai', blow, dodgeTried: false };
+      const base = { attacker: RYO, target: KAI, blow, dodgeTried: false };
       expect(hitLine(m, { ...base, guarded: true, smashed: false })).toMatch(GUARDED);
       expect(hitLine(m, { ...base, guarded: false, smashed: true })).toMatch(SMASHED);
     }
@@ -104,34 +107,34 @@ describe('the fight’s voice', () => {
 
   it('keeps every other bank recognisable', () => {
     for (const m of MOMENTS) {
-      expect(slipLine(m, 'Kai', 'Ryo', 'strike')).toMatch(SLIPS);
-      expect(seenLine(m, 'Kai')).toMatch(SEES_IT_COMING);
-      expect(dazeLine(m, 'Kai')).toMatch(dazes('Kai'));
-      expect(emptySearchLine(m, 'Ryo')).toMatch(searchesInVain('Ryo'));
-      expect(foundLine(m, 'Ryo', 'Kai')).toMatch(spots('Ryo', 'Kai'));
-      expect(counterLine(m, 'Kai')).toMatch(/Kai/);
-      expect(stepLine(m, 'Ryo', 'mid', true)).toMatch(/Ryo .*mid range\./);
-      expect(
-        swapLine(m, { target: 'Kai', attacker: 'Ryo', what: 'strike', jutsu: 'Swap' }),
-      ).toMatch(SWAPS);
-      expect(heldOffLine(m, 'Kai', 'Ryo')).toMatch(holdsOff('Kai', 'Ryo'));
-      expect(throughLine(m, 'Ryo', 'Kai')).toMatch(GETS_THROUGH);
-      expect(knockLine(m, 'Kai', 'far', false)).toMatch(/Kai .*far range!/);
-      expect(blockedStepLine(m, 'Ryo', 'mid', 'Kai')).toMatch(/Ryo.*mid range|Kai cuts off Ryo/);
+      expect(slipLine(m, { target: KAI, attacker: RYO, what: 'strike' })).toMatch(SLIPS);
+      expect(seenLine(m, KAI)).toMatch(SEES_IT_COMING);
+      expect(dazeLine(m, KAI)).toMatch(dazes('Kai'));
+      expect(emptySearchLine(m, RYO)).toMatch(searchesInVain('Ryo'));
+      expect(foundLine(m, RYO, [KAI])).toMatch(spots('Ryo', 'Kai'));
+      expect(counterLine(m, KAI)).toMatch(/Kai/);
+      expect(stepLine(m, RYO, 'mid', true)).toMatch(/Ryo .*mid range\./);
+      expect(swapLine(m, { target: KAI, attacker: RYO, what: 'strike', jutsu: 'Swap' })).toMatch(
+        SWAPS,
+      );
+      expect(heldOffLine(m, KAI, RYO)).toMatch(holdsOff('Kai', 'Ryo'));
+      expect(throughLine(m, RYO, KAI)).toMatch(GETS_THROUGH);
+      expect(knockLine(m, KAI, 'far', false)).toMatch(/Kai .*far range!/);
+      expect(blockedStepLine(m, RYO, 'mid', KAI)).toMatch(/Ryo.*mid range|Kai cuts off Ryo/);
     }
   });
 
   it('never puts a number in the story', () => {
     const lines = MOMENTS.flatMap((m) => [
-      castLine(m, 'Ryo', fire),
-      slipLine(m, 'Kai', 'Ryo', 'strike'),
-      dazeLine(m, 'Kai'),
-      counterLine(m, 'Kai'),
-      knockLine(m, 'Kai', 'far', false),
-      confusedLine(m, 'Kai', 'Ryo'),
-      clearHeadLine(m, 'Kai'),
-      rehideLine(m, 'Ryo'),
-      tracedLine(m, 'Kai', 'Ryo'),
+      castLine(m, RYO, fire),
+      slipLine(m, { target: KAI, attacker: RYO, what: 'strike' }),
+      dazeLine(m, KAI),
+      counterLine(m, KAI),
+      knockLine(m, KAI, 'far', false),
+      confusedLine(m, KAI, RYO),
+      clearHeadLine(m, KAI),
+      rehideLine(m, RYO),
+      tracedLine(m, KAI, RYO),
     ]);
     for (const line of lines) expect(line).not.toMatch(/\d/);
   });

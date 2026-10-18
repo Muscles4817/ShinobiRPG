@@ -12,6 +12,7 @@ import { movedTo } from './groundPlay';
 import { swapLine } from './sceneVoice';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
+import { tell } from '../../rules/telling';
 
 /**
  * Move and substitute in a planned fight. A move is footwork no one contests: its user is
@@ -37,13 +38,13 @@ export function moveDestination(fighter: PlanFighter, t: CombatTechnique): Range
 }
 
 export function move(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
-  if (isPinned(actor)) return say(round, `${actor.name} strains against the hold.`);
+  if (isPinned(actor)) return say(round, tell('{a} strain{a.s} against the hold.', { a: actor }));
   const to = moveDestination(actor, t) ?? round.range;
   const where = RANGE_LABEL[to].toLowerCase();
   // An entry carries its user in to strike; a body flicker simply puts them there.
   const told = isHarmful(t)
-    ? `${actor.name} crosses the distance in a blink.`
-    : `${actor.name} flickers to ${where} range.`;
+    ? tell('{a} cross{a.es} the distance in a blink.', { a: actor })
+    : tell('{a} flicker{a.s} to {where} range.', { a: actor, where });
   return movedTo(round, to, told);
 }
 
@@ -94,20 +95,16 @@ export function substituted(round: Round, ready: readonly Card[], swap: Swap): S
   });
   const paid = { ...round, fighters };
   const name = card.technique.name;
+  const swapped = { a: attacker, what: swap.what };
   if (wall === 'weak') {
     return {
-      round: say(paid, `${attacker.name}'s ${swap.what} smashes through ${name}.`),
+      round: say(paid, tell('{a.poss} {what} smashes through {wall}.', { ...swapped, wall: name })),
       escaped: false,
     };
   }
   const line =
     wall === 'strong'
-      ? `${name} swallows ${attacker.name}'s ${swap.what} and still stands.`
-      : swapLine(momentOf(paid, target.id), {
-          target: target.name,
-          attacker: attacker.name,
-          what: swap.what,
-          jutsu: name,
-        });
+      ? tell('{wall} swallows {a.poss} {what} and still stands.', { ...swapped, wall: name })
+      : swapLine(momentOf(paid, target.id), { target, attacker, what: swap.what, jutsu: name });
   return { round: say(paid, reactionLine(line, 'swapped')), escaped: true };
 }

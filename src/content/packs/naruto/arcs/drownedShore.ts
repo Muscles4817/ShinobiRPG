@@ -16,6 +16,8 @@ export const DROWNED_SHORE_FOE: EnemyDef = {
   kind: 'Smuggler',
   danger: 'deadly',
   name: 'Nagi',
+  proper: true,
+  pronouns: 'he',
   description:
     'Hotaru’s brother, grown up working the smugglers’ boats, with the same water in his hands.',
   baseStat: 10,

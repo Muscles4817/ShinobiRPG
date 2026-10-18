@@ -37,6 +37,7 @@ export type {
   ConversationDef,
   ConversationTopic,
   EnemyDef,
+  FoePronouns,
   FestivalDef,
   FoodDef,
   GearDef,

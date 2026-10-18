@@ -1,5 +1,6 @@
 import { alive } from '../../rules/body';
 import { CLONE_RULES, cloneUpkeep, kindOf, type Clones } from '../../rules/verbs';
+import { tell } from '../../rules/telling';
 import { patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -33,10 +34,11 @@ function keptUp(round: Round, maker: PlanFighter): Round {
   const chakra = Math.max(0, maker.chakra - cloneUpkeep(kept));
   const fighters = patch(round.fighters, maker.id, { clones: kept, chakra });
   const next = { ...round, fighters };
-  if (kept.count < grown.count)
-    return say(next, `${maker.name}'s clones fade as their chakra thins.`);
+  if (kept.count < grown.count) {
+    return say(next, tell('{a.poss} clones fade as {a.their} chakra thins.', { a: maker }));
+  }
   return grown.count > standing.count
-    ? say(next, `A clone of ${maker.name} heaves back up.`)
+    ? say(next, tell('A clone of {a} heaves back up.', { a: maker }))
     : next;
 }
 

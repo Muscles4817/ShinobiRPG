@@ -6,6 +6,7 @@ import { healAmount } from '../../rules/damage';
 import { groundRule } from '../../rules/ground';
 import { conditionResist } from '../../rules/avoidance';
 import { healLine, reactionLine } from '../../rules/narration';
+import { tell } from '../../rules/telling';
 import { misfireChance } from '../../rules/unstable';
 import { breakRating } from '../../rules/conditions';
 import {
@@ -56,15 +57,17 @@ function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): 
   };
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, change) },
-    castLine(momentOf(round, actor.id), actor.name, t),
+    castLine(momentOf(round, actor.id), actor, t),
   );
 }
 
 function daze(round: Round, target: PlanFighter): Round {
-  if (!canDaze(target, round.number)) return say(round, `${target.name} shakes it off.`);
+  if (!canDaze(target, round.number)) {
+    return say(round, tell('{t} shake{t.s} it off.', { t: target }));
+  }
   return say(
     { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number)) },
-    dazeLine(momentOf(round, target.id), target.name),
+    dazeLine(momentOf(round, target.id), target),
   );
 }
 
@@ -72,7 +75,7 @@ function seal(round: Round, target: PlanFighter, use: EffectUse<'seal'>): Round 
   const sealed = target.sealed + holdTurns(use.effect) + 1;
   return say(
     { ...round, fighters: patch(round.fighters, target.id, { sealed }) },
-    `Seals lock ${target.name}'s chakra!`,
+    tell('Seals lock {t.poss} chakra!', { t: target }),
   );
 }
 
@@ -82,7 +85,7 @@ function confuse(round: Round, { actor, target }: Aimed, use: EffectUse<'confuse
   const confused = Math.max(target.confused, turns + 1);
   return say(
     { ...round, fighters: patch(round.fighters, target.id, { confused }) },
-    `${target.name}'s senses twist in the illusion.`,
+    tell('{t.poss} senses twist in the illusion.', { t: target }),
   );
 }
 
@@ -91,7 +94,7 @@ function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
   const healed = { ...round, fighters: patch(round.fighters, actor.id, { health }) };
   // Nothing to mend (a gate that also heals, opened unhurt): nothing to tell.
   if (health === actor.health) return healed;
-  return say(healed, healLine(`${actor.name} recovers.`, health - actor.health));
+  return say(healed, healLine(tell('{a} recover{a.s}.', { a: actor }), health - actor.health));
 }
 
 /** The verbs that land on a foe; every other verb happens to the user. */
@@ -118,13 +121,13 @@ function landsOnFoe(effect: TechniqueEffect): effect is EffectOf<FoeVerb> {
 type ConditionVerb = Exclude<FoeVerb, 'damage' | 'area' | 'break'>;
 
 const SHAKEN_OFF: Readonly<Record<ConditionVerb, string>> = {
-  daze: 'shakes it off',
-  seal: 'pushes the seals back before they close',
-  confuse: 'sees through the illusion',
-  knock: 'stands firm',
-  pin: 'tears free before it can hold',
-  drain: 'keeps a grip on their chakra',
-  afflict: 'shrugs it off',
+  daze: '{t} shake{t.s} it off.',
+  seal: '{t} push{t.es} the seals back before they close.',
+  confuse: '{t} see{t.s} through the illusion.',
+  knock: '{t} stand{t.s} firm.',
+  pin: '{t} tear{t.s} free before it can hold.',
+  drain: '{t} keep{t.s} a grip on {t.their} chakra.',
+  afflict: '{t} shrug{t.s} it off.',
 };
 
 /** The condition an effect brings, if it lands on a foe without wounding them. */
@@ -139,7 +142,7 @@ function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse):
   const verb = conditionOf(use.effect);
   if (!verb) return null;
   if (!rng.chance(conditionResist(actor, target, use))) return null;
-  return say(round, `${target.name} ${SHAKEN_OFF[verb]}.`);
+  return say(round, tell(SHAKEN_OFF[verb], { t: target }));
 }
 
 /** One effect landing on a foe who is standing. Effects aimed at the user happen in `onSelf`. */
@@ -280,10 +283,11 @@ function slips(round: Round, turn: Turn, foe: PlanFighter, t: CombatTechnique): 
 /** Tells a foe slipping a technique: read and ready for it, or (a ready Dodge) clear of it. */
 function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
   const moment = momentOf(round, foe.id);
-  if (!dodgesHere(round, foe)) return say(round, seenLine(moment, foe.name));
+  if (!dodgesHere(round, foe)) return say(round, seenLine(moment, foe));
   const slip = hasPerk(foe, 'foresight') ? foresightSlipLine : slipLine;
   const noted = noteDefence(round, foe.id, round.range, 'dodge');
-  return say(noted, reactionLine(slip(moment, foe.name, actor.name, t.name), 'dodged'));
+  const told = slip(moment, { target: foe, attacker: actor, what: t.name });
+  return say(noted, reactionLine(told, 'dodged'));
 }
 
 interface Slipped {
@@ -296,7 +300,8 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const { actor } = turn;
   const paid = withChakraSpent(round, actor, t);
   if (misfired(turn, t)) {
-    return say(paid, `${t.name} comes apart in ${actor.name}'s hands. It isn't steady yet.`);
+    const line = '{what} comes apart in {a.poss} hands. It isn’t steady yet.';
+    return say(paid, tell(line, { a: actor, what: t.name }));
   }
   const targets = targetsOf(paid, turn, t);
   if (isHarmful(t) && targets.length === 0) return paid;

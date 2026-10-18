@@ -103,7 +103,7 @@ describe('plan & watch verbs: area', () => {
     const round = roundOf({ foes });
     expect(fighterIn(round, 'foe3')?.hidden).toBe(true);
     const after = useUntil(round, sweep, hitsOn('foe3', 'sweep'));
-    const hitLines = after.lines.filter((l) => l.startsWith("hero's sweep ") && A_HIT.test(l));
+    const hitLines = after.lines.filter((l) => l.startsWith('Hero’s sweep ') && A_HIT.test(l));
     expect(hitLines.length + after.lines.filter((l) => SEES_IT_COMING.test(l)).length).toBe(3);
     expect(health(after, 'foe3')).toBeLessThan(80);
   });
@@ -163,7 +163,7 @@ describe('plan & watch verbs: conceal', () => {
 describe('plan & watch verbs: sense', () => {
   it('pulls hidden foes into the open and reads foes for the rest of the fight', () => {
     const round = roundOf({ foes: [{ traits: ['illusionist'] }, { traits: ['illusionist'] }] });
-    const after = useUntil(round, reach, /can't hide/, 'none');
+    const after = useUntil(round, reach, /can’t hide/, 'none');
     expect(fighterIn(after, 'foe1')?.hidden).toBe(false);
     expect(fighterIn(after, 'foe2')?.hidden).toBe(false);
     expect(fighterIn(after, 'hero')?.perks).toContain('insight');

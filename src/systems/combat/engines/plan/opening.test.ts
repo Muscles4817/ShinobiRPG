@@ -91,13 +91,13 @@ describe('plan & watch openings', () => {
     expect(view.range).toBe('close');
     expect(view.combatants.find((c) => c.id === 'hero')?.statuses).toContain('Hidden');
     expect(bandit(engine, state)?.statuses).toContain('Dazed');
-    expect(view.log).toContain('bandit is caught off balance!');
+    expect(said(view.log)).toContain('Bandit is caught off balance!');
   });
 
   it('a foe dazed by the opening loses the first exchange, then recovers', () => {
     const state = engine.start(setup({ opening: { dazed: ['bandit'] } }), createRng(1));
     const first = act(engine, act(engine, state, 'begin'), 'next');
-    expect(said(engine.view(first).log)).toContain('bandit is dazed and loses the exchange.');
+    expect(said(engine.view(first).log)).toContain('Bandit is dazed and loses the exchange.');
     expect(bandit(engine, first)?.statuses).not.toContain('Dazed');
   });
 
@@ -113,7 +113,7 @@ describe('plan & watch openings', () => {
       const state = engine.start(fight, createRng(seed));
       const log = engine.view(act(engine, act(engine, state, 'begin'), 'next', seed)).log;
       const exchange = log.slice(log.indexOf('— First exchange —') + 1);
-      expect(exchange[0]).toMatch(/^bandit/);
+      expect(exchange[0]).toMatch(/^bandit/i);
     }
   });
 });

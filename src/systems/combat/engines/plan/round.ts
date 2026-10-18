@@ -46,6 +46,7 @@ import {
   type Round,
 } from './state';
 import { tracedLine } from './sceneVoice';
+import { tell } from '../../rules/telling';
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
@@ -138,7 +139,8 @@ function remember(seen: Round['seen'], fighterId: string, id: string): Round['se
 /** Nobody in sight to attack: rather than stand idle, look for whoever is hiding. */
 function unseen(round: Round, turn: Turn): Round {
   const hiding = opponentsOf(round.fighters, turn.actor).some((f) => f.hidden);
-  return hiding ? search(round, turn) : say(round, `${turn.actor.name} can't find a target.`);
+  if (hiding) return search(round, turn);
+  return say(round, tell('{a} can’t find a target.', { a: turn.actor }));
 }
 
 /**
@@ -156,7 +158,7 @@ function revealed(round: Round, { actor: before, target, rng }: Turn): Round {
   if (!victim || !alive(victim) || !rng.chance(searchChance(victim, hiding))) return round;
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) },
-    tracedLine(momentOf(round, victim.id), victim.name, actor.name),
+    tracedLine(momentOf(round, victim.id), victim, actor),
   );
 }
 
@@ -170,8 +172,8 @@ function attempt(round: Round, turn: Turn, card: Card): Round {
   if (needsAim(card) && !target) return unseen(round, turn);
   if (card.kind === 'item' || !isOffence(card)) return play(round, turn, card);
   if (misfires(actor, rng)) {
-    const whose = actor.isPlayer ? 'Your senses lie to you.' : `${actor.name}'s senses lie.`;
-    return revealed(say(round, `${whose} The attack goes wide.`), turn);
+    const line = tell('{a.poss} senses lie to {a.them}, and the attack goes wide.', { a: actor });
+    return revealed(say(round, line), turn);
   }
   const lost = lostInField(round, actor, rng) ?? lostToGround(round, actor, rng);
   if (lost) return revealed(say(round, lost), turn);

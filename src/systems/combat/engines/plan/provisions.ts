@@ -1,6 +1,7 @@
 import { healLine } from '../../rules/narration';
 import { SECOND_WIND_HEAL, secondWindDue } from '../../rules/provisions';
 import { patch, say, type Round } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Provisions in Plan & Watch (the rules are in `rules/provisions.ts`; fortified and steady are
@@ -15,6 +16,7 @@ export function secondWinds(round: Round): Round {
       health: f.health + healed,
       secondWindSpent: true,
     });
-    return say({ ...now, fighters }, healLine(`${f.name} finds a second wind.`, healed));
+    const line = healLine(tell('{a} find{a.s} a second wind.', { a: f }), healed);
+    return say({ ...now, fighters }, line);
   }, round);
 }

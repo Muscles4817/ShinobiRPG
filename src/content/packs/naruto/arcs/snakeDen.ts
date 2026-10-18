@@ -16,6 +16,8 @@ export const SNAKE_DEN_FOE: EnemyDef = {
   kind: 'Experiment',
   danger: 'deadly',
   name: 'The Den-Keeper',
+  proper: true,
+  pronouns: 'it',
   description: 'Something Orochimaru left behind to guard his work, and forgot to come back for.',
   baseStat: 11,
   statBonuses: { ninjutsu: 3, stamina: 3, speed: 1 },

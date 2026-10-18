@@ -3,6 +3,7 @@ import { clamp } from '@/core';
 import type { CombatTechnique } from '../../contract';
 import { alive, chakraCost } from '../../rules/body';
 import { elementMultiplier, matchup } from '../../rules/elements';
+import { tell } from '../../rules/telling';
 import { driveOf, effectsOf, isWounding, primaryEffect, techniquePower } from '../../rules/verbs';
 import { playable, type Card } from './cards';
 import { intendedCard } from './intent';
@@ -79,7 +80,8 @@ function thrown(round: Round, answerer: PlanFighter, answer: CombatTechnique): R
     used: used.includes(answer.id) ? used : [...used, answer.id],
   });
   const acted = [...(round.acted ?? []), answerer.id];
-  return say({ ...round, fighters, acted }, `${answerer.name} meets it with ${answer.name}!`);
+  const line = tell('{a} meet{a.s} it with {what}!', { a: answerer, what: answer.name });
+  return say({ ...round, fighters, acted }, line);
 }
 
 /** The winning answer carries on into the attacker, weakened. */

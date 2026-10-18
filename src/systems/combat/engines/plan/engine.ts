@@ -252,7 +252,6 @@ export function createPlanEngine(): CombatEngine {
       'Slot cards for each distance, then watch each round play out. Re-plan between rounds.',
 
     start(setup, rng) {
-      const names = setup.enemies.map((e) => e.name);
       const opened = openFight(initialFighters(setup), setup.opening);
       const { fighters, lines, field } = opened;
       const range = withinGround(setup.ground, opened.range);
@@ -268,7 +267,7 @@ export function createPlanEngine(): CombatEngine {
       const firstMover = setup.opening?.firstMover;
       const watching = setup.watch ?? false;
       const intro =
-        setup.intro ?? `${squareUpLine(names)}${watching ? '' : ' How will you fight?'}`;
+        setup.intro ?? `${squareUpLine(setup.enemies)}${watching ? '' : ' How will you fight?'}`;
       const state: PlanState = {
         phase: watching ? 'fight' : 'loadout',
         round: 1,

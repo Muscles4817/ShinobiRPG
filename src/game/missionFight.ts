@@ -16,6 +16,7 @@ import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct } from '@/systems/wallet';
 
 import { enemyParty, playerCombatant } from './combatants';
+import { foeList } from './foeNames';
 import type { GameContext } from './context';
 import { noteFight } from './fieldBook/record';
 import { startFight } from './fightStyle';
@@ -137,9 +138,7 @@ export function resolveCombat(
     },
   );
   const enemies =
-    foes.length > 0
-      ? foes.map((id) => ctx.content.enemies.require(id).name).join(' and ')
-      : 'your opponent';
+    foes.length > 0 ? foeList(foes.map((id) => ctx.content.enemies.require(id))) : 'your opponent';
 
   switch (outcome.result) {
     case 'victory': {

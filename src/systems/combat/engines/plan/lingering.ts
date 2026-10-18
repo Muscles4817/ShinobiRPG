@@ -30,6 +30,7 @@ import { startHolding } from './holding';
 import { wound } from './wound';
 import { knockLine } from './sceneVoice';
 import { momentOf } from './voice';
+import { tell } from '../../rules/telling';
 
 /**
  * The verbs that leave something behind in a planned fight (`rules/verbs/lingering.ts`): a
@@ -47,7 +48,7 @@ export function knock(round: Round, target: PlanFighter, use: EffectUse<'knock'>
   const { to } = use.effect;
   if (round.range === to) return round;
   const where = RANGE_LABEL[to].toLowerCase();
-  const line = knockLine(momentOf(round, target.id), target.name, where, to === 'close');
+  const line = knockLine(momentOf(round, target.id), target, where, to === 'close');
   return movedTo(round, to, line);
 }
 
@@ -62,7 +63,7 @@ export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>)
   };
   const caught = say(
     relinger(round, target.id, { pinned, grip }),
-    `${target.name} is pinned where they stand!`,
+    tell('{t} {t.is} pinned to the spot!', { t: target }),
   );
   // A channelled pin keeps its caster's hands on it (`holding.ts`).
   return use.effect.channelled ? startHolding(caught, actor.id, target.id) : caught;
@@ -70,29 +71,32 @@ export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>)
 
 export function drain(round: Round, { actor, target }: Aim, use: EffectUse<'drain'>): Round {
   const taken = Math.min(target.chakra, drainAmount(actor, target, use));
-  if (taken <= 0) return say(round, `${target.name} has no chakra left to draw.`);
+  if (taken <= 0) return say(round, tell('{t} {t.has} no chakra left to draw.', { t: target }));
   const drained = patch(round.fighters, target.id, { chakra: target.chakra - taken });
   if (!use.effect.absorb) {
-    return say({ ...round, fighters: drained }, `${target.name}'s chakra drains away.`);
+    return say(
+      { ...round, fighters: drained },
+      tell('{t.poss} chakra drains away.', { t: target }),
+    );
   }
   const user = fighterIn({ ...round, fighters: drained }, actor.id) ?? actor;
   const chakra = Math.min(user.maxChakra, user.chakra + Math.round(taken * ABSORB_SHARE));
   return say(
     { ...round, fighters: patch(drained, actor.id, { chakra }) },
-    `${target.name}'s chakra flows into ${actor.name}.`,
+    tell('{t.poss} chakra flows into {a}.', { t: target, a: actor }),
   );
 }
 
-const STRUCK: Readonly<Record<AfflictionKind, (name: string) => string>> = {
-  burn: (name) => `${name} is set alight!`,
-  bleed: (name) => `${name} is bleeding!`,
-  poison: (name) => `Poison seeps into ${name}.`,
+const STRUCK: Readonly<Record<AfflictionKind, string>> = {
+  burn: '{t} {t.is} set alight!',
+  bleed: '{t} {t.is} bleeding!',
+  poison: 'Poison seeps into {t}.',
 };
 
-const LINGERS: Readonly<Record<AfflictionKind, (name: string) => string>> = {
-  burn: (name) => `${name}'s burns sear.`,
-  bleed: (name) => `${name} bleeds.`,
-  poison: (name) => `The poison gnaws at ${name}.`,
+const LINGERS: Readonly<Record<AfflictionKind, string>> = {
+  burn: '{t.poss} burns sear.',
+  bleed: '{t} bleed{t.s}.',
+  poison: 'The poison gnaws at {t}.',
 };
 
 /** The harm just landed (always last) wears off sooner on a fighter with an antidote in them. */
@@ -109,13 +113,13 @@ export function afflict(round: Round, { actor, target }: Aim, use: EffectUse<'af
   const change = sapped
     ? { afflictions, sapped, attributes: withSap(target.attributes, sapped, -1) }
     : { afflictions };
-  return say(relinger(round, target.id, change), STRUCK[fresh.harm](target.name));
+  return say(relinger(round, target.id, change), tell(STRUCK[fresh.harm], { t: target }));
 }
 
 export function readyRiposte(round: Round, actor: PlanFighter, use: EffectUse<'counter'>): Round {
   return say(
     relinger(round, actor.id, { riposte: riposteFrom(use, round.number) }),
-    `${actor.name} settles into a stance, ready to answer.`,
+    tell('{a} settle{a.s} into a stance, ready to answer.', { a: actor }),
   );
 }
 
@@ -180,7 +184,10 @@ export function riposteFirst(round: Round, hit: Incoming): { round: Round; stopp
   const raw = techniqueDamage(target, attacker, use, rng.next());
   const damage = cappedHit(Math.max(1, raw), attacker.maxHealth);
   const line = harmLine(
-    reactionLine(`${target.name} answers with ${ready.name}!`, 'countered'),
+    reactionLine(
+      tell('{t} answer{t.s} with {what}!', { t: target, what: ready.name }),
+      'countered',
+    ),
     damage,
   );
   const spent = relinger(round, target.id, { riposte: null });
@@ -209,7 +216,8 @@ function lingerOn(round: Round, f: PlanFighter, exchange: number): Round {
   });
   const [worst] = f.afflictions ?? [];
   if (harm <= 0 || !worst || !alive(f)) return kept;
-  return wound(say(kept, harmLine(LINGERS[worst.harm](f.name), harm)), f.id, harm);
+  const line = harmLine(tell(LINGERS[worst.harm], { t: f }), harm);
+  return wound(say(kept, line), f.id, harm);
 }
 
 /** At the end of an exchange: harms linger and wear down, pins loosen, ripostes lapse. */

@@ -9,6 +9,7 @@ import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/condit
 import { FORESIGHT_COUNTER, foreseen } from '../../rules/eyes';
 import { canAttackFrom, kitDamageScale, packScale, type AttackKind } from '../../rules/kit';
 import { harmLine, reactionLine } from '../../rules/narration';
+import { tell } from '../../rules/telling';
 import type { RangeBand } from '../../contract';
 import { AREA_RULES, brokenScale, covered, substitutable } from '../../rules/verbs';
 import { avoidOdds, blowSkill, type Incoming } from './avoid';
@@ -101,8 +102,8 @@ function kitted(round: Round, attacker: PlanFighter, defender: PlanFighter, blow
 
 function kitNote(defender: PlanFighter, kind: AttackKind): string[] {
   const scale = kitDamageScale(defender, kind);
-  if (scale < 1) return [`Much of it glances off ${defender.name}.`];
-  return scale > 1 ? [`The seal bites deep into ${defender.name}.`] : [];
+  if (scale < 1) return [tell('Much of it glances off {t}.', { t: defender })];
+  return scale > 1 ? [tell('The seal bites deep into {t}.', { t: defender })] : [];
 }
 
 function confuse(round: Round, { attacker, target, rng }: Hit): Round {
@@ -114,7 +115,7 @@ function confuse(round: Round, { attacker, target, rng }: Hit): Round {
       ...round,
       fighters: patch(round.fighters, target.id, { confused: confusionTurns(attacker, target) }),
     },
-    confusedLine(momentOf(round, target.id), target.name, attacker.name),
+    confusedLine(momentOf(round, target.id), target, attacker),
   );
 }
 
@@ -143,10 +144,7 @@ function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round
   return wound(
     say(
       round,
-      harmLine(
-        reactionLine(counterLine(momentOf(round, target.id), target.name), 'countered'),
-        damage,
-      ),
+      harmLine(reactionLine(counterLine(momentOf(round, target.id), target), 'countered'), damage),
     ),
     attacker.id,
     damage,
@@ -190,9 +188,10 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const avoid = able && !blow.reached ? avoidOdds(round, blowIncoming(hit)) : 0;
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
   const moment = momentOf(round, target.id);
+  const slip = { target, attacker, what: blow.what };
   const line = hasPerk(target, 'foresight')
-    ? foresightSlipLine(moment, target.name, attacker.name, blow.what)
-    : slipLine(moment, target.name, attacker.name, blow.what);
+    ? foresightSlipLine(moment, slip)
+    : slipLine(moment, slip);
   // Anyone slips some blows; only a ready Dodge is shown reacting.
   return { slipped: say(round, tried ? reactionLine(line, 'dodged') : line), tried };
 }
@@ -289,8 +288,8 @@ export function react(start: Round, struck: Hit): Round {
     shielded,
     harmLine(
       hitLine(momentOf(shielded, attacker.id), {
-        attacker: attacker.name,
-        target: target.name,
+        attacker,
+        target,
         blow,
         guarded,
         smashed,

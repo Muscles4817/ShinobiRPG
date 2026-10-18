@@ -1,6 +1,7 @@
 import type { Rng } from '@/core';
 
 import { alive } from '../../rules/body';
+import { tell } from '../../rules/telling';
 import { strikeWith, throwWith, type Attack } from '../../rules/weapons';
 import { react, type Blow } from './react';
 import type { Turn } from './senses';
@@ -37,7 +38,7 @@ function dazeOnHit(round: Round, target: PlanFighter, chance: number, rng: Rng):
   if (!rng.chance(chance)) return round;
   return say(
     { ...round, fighters: patch(round.fighters, target.id, dazeIn(round.number)) },
-    `${target.name} reels from the blow.`,
+    tell('{t} reel{t.s} from the blow.', { t: target }),
   );
 }
 
@@ -51,7 +52,8 @@ function drainOnHit(round: Round, turn: Turn, drained: number): Round {
     self.id,
     { chakra: Math.min(self.maxChakra, self.chakra + taken) },
   );
-  return say({ ...round, fighters }, `${self.name}'s weapon drinks ${struck.name}'s chakra.`);
+  const line = tell('{a.poss} weapon drinks {t.poss} chakra.', { a: self, t: struck });
+  return say({ ...round, fighters }, line);
 }
 
 /** Plays the strike or kunai card at the turn's target. */

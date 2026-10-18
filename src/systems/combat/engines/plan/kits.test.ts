@@ -163,7 +163,7 @@ describe('plan & watch kits: hits', () => {
     const [, coward] = pair(['coward']);
     const after = hitOn({ ...coward!, health: 18 }, STRIKE);
     expect(after.fighters[1]?.health).toBe(0);
-    expect(after.lines.at(-1)).toBe('foe flees!');
+    expect(splitNarration(after.lines.at(-1) ?? '').text).toBe('Foe flees!');
     expect(decide(after.fighters)).toBe('victory');
   });
 
@@ -210,7 +210,7 @@ describe('plan & watch kits: illusions', () => {
     const dazedGhost = { ...ghost!, stunned: 1 };
     const after = resolveExchange(stateOf([caster, dazedGhost]), createRng(3));
     const player = after.fighters[0]!;
-    expect(said(after.log)).toContain('hero forms the seal to break illusions.');
+    expect(said(after.log)).toContain('Hero forms the seal to break illusions.');
     expect(player.chakra).toBe(30 - DISPEL_CHAKRA + 2);
     expect(player.confused).toBe(0);
   });
@@ -221,7 +221,7 @@ describe('plan & watch kits: illusions', () => {
     const logs = Array.from({ length: 20 }, (_, seed) =>
       resolveExchange(stateOf([dazed, foe!]), createRng(seed)).log.join('\n'),
     );
-    const wide = 'Your senses lie to you. The attack goes wide.';
+    const wide = 'Hero’s senses lie to them, and the attack goes wide.';
     expect(logs.some((l) => l.includes(wide))).toBe(true);
   });
 

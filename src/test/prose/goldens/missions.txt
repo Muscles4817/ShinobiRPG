@@ -382,7 +382,7 @@ view:
 >>> encounterApproach
 
 --- combat (day 2, slot 1) ---
-  Storehouse Wraith squares up. How will you fight?
+  The storehouse wraith squares up. How will you fight?
   Four walls: no room to back away, and a wide technique hits everyone.
   prompt: Round 1: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them.
 
@@ -396,23 +396,23 @@ view:
 
 --- combat (day 2, slot 1) ---
   —— First exchange ——
-  Kaito searches, but finds no one.
-  Storehouse Wraith catches the eye and lets Whispering Dread unfold.
-  Kaito was waiting for exactly that.
+  You search, but find no one.
+  The storehouse wraith catches the eye and lets Whispering Dread unfold.
+  You were waiting for exactly that.
   —— Second exchange ——
-  Kaito scans the field: nothing.
-  The air around Storehouse Wraith wavers: Whispering Dread.
-  Storehouse Wraith's Whispering Dread sinks into Kaito, though a raised guard takes the worst of it. [Guarded] [−21]
-  Kaito blinks, and the field is no longer where it was.
+  You scan the field: nothing.
+  The air around the storehouse wraith wavers: Whispering Dread.
+  The storehouse wraith’s Whispering Dread sinks into you, though a raised guard takes the worst of it. [Guarded] [−21]
+  You blink, and the field is no longer where it was.
   —— Third exchange ——
-  Kaito looks hard and finds only shadows.
-  Storehouse Wraith catches the eye and lets Whispering Dread unfold.
-  Storehouse Wraith's Whispering Dread grips Kaito through a guard. [Guarded] [−22]
+  You look hard and find only shadows.
+  The storehouse wraith catches the eye and lets Whispering Dread unfold.
+  The storehouse wraith’s Whispering Dread grips you through a guard. [Guarded] [−22]
   —— Last exchange ——
-  Kaito picks out Storehouse Wraith!
-  Storehouse Wraith casts Whispering Dread.
-  Storehouse Wraith's Whispering Dread sinks into Kaito, though a raised guard takes the worst of it. [Guarded] [−14]
-  Kaito's senses swim in Storehouse Wraith's illusion.
+  You pick out the storehouse wraith!
+  The storehouse wraith casts Whispering Dread.
+  The storehouse wraith’s Whispering Dread sinks into you, though a raised guard takes the worst of it. [Guarded] [−14]
+  Your senses swim in the storehouse wraith’s illusion.
   —— The round is over. Change your cards if you like. ——
   prompt: Round 2: pick up to 2 actions for each distance, higher first, and the defence you keep ready there.
 
@@ -440,25 +440,25 @@ view:
 
 --- combat (day 3, slot 0) ---
   —— First exchange ——
-  Kaito closes to close range.
-  Storehouse Wraith's strike hits Kaito. [−9]
+  You move to close range.
+  The storehouse wraith’s strike hits you. [−9]
   —— Second exchange ——
-  Kaito sends Gale Heel howling out!
-  Storehouse Wraith sees it coming.
-  Storehouse Wraith is gone again, a shimmer where they stood.
-  The air around Storehouse Wraith wavers: Whispering Dread.
-  Storehouse Wraith's Whispering Dread sinks into Kaito, though a raised guard takes the worst of it. [Guarded] [−21]
-  Kaito catches the thread of the illusion and finds Storehouse Wraith.
+  You send Gale Heel howling out!
+  The storehouse wraith sees it coming.
+  The storehouse wraith is gone again, a shimmer where it stood.
+  The air around the storehouse wraith wavers: Whispering Dread.
+  The storehouse wraith’s Whispering Dread sinks into you, though a raised guard takes the worst of it. [Guarded] [−21]
+  You catch the thread of the illusion and find the storehouse wraith.
   —— Third exchange ——
-  Kaito explodes forward with Gale Heel!
-  Kaito's Gale Heel slices across Storehouse Wraith through a guard. [Guarded] [−7]
-  Much of it glances off Storehouse Wraith.
-  Storehouse Wraith's strike hits Kaito, though a raised guard takes the worst of it. [Guarded] [−4]
+  You explode forward with Gale Heel!
+  Your Gale Heel slices across the storehouse wraith through a guard. [Guarded] [−7]
+  Much of it glances off the storehouse wraith.
+  The storehouse wraith’s strike hits you, though a raised guard takes the worst of it. [Guarded] [−4]
   —— Last exchange ——
-  Kaito launches into Gale Heel!
-  Kaito's Gale Heel slices across Storehouse Wraith, though a raised guard takes the worst of it. [Guarded] [−6]
-  Much of it glances off Storehouse Wraith.
-  Storehouse Wraith's strike slams into Kaito through a guard. [Guarded] [−4]
+  You launch into Gale Heel!
+  Your Gale Heel slices across the storehouse wraith, though a raised guard takes the worst of it. [Guarded] [−6]
+  Much of it glances off the storehouse wraith.
+  The storehouse wraith’s strike slams into you through a guard. [Guarded] [−4]
 
 >>> leaveFight
 
@@ -1388,7 +1388,7 @@ view:
 >>> encounterApproach
 
 --- combat (day 2, slot 0) ---
-  Bandit Thug, Bandit Thug square up. How will you fight?
+  Two bandit thugs square up. How will you fight?
   prompt: Round 1: pick up to 5 actions for each distance, higher first, and the defence you keep ready there.
 
 >>> combatAct (Begin the fight)
@@ -1402,23 +1402,23 @@ view:
 === report card ===
 view:
   result: victory
-  enemies: Bandit Thug and Bandit Thug
+  enemies: two bandit thugs
 
 --- combat (day 2, slot 0) ---
   —— First exchange ——
-  Kaito moves to close range.
+  You move to close range.
   Gōran explodes forward with Iron Gate Palm!
-  Gōran's Iron Gate Palm crashes into Bandit Thug 1 through a guard. [Guarded] [−50]
+  Gōran’s Iron Gate Palm crashes into the first bandit thug through a guard. [Guarded] [−50]
   Goro explodes forward with Palm Strike!
-  Goro's Palm Strike hits Bandit Thug 1, though a raised guard takes the worst of it. [Guarded] [−40]
-  Asuka's blade flows into Lantern Cut!
-  Asuka's Lantern Cut slashes Bandit Thug 1 through a guard. [Guarded] [−48]
-  Kaito twists clear of Bandit Thug 2's strike.
+  Goro’s Palm Strike hits the first bandit thug, though a raised guard takes the worst of it. [Guarded] [−40]
+  Asuka’s blade flows into Lantern Cut!
+  Asuka’s Lantern Cut slashes the first bandit thug through a guard. [Guarded] [−48]
+  You twist clear of the second bandit thug’s strike.
   —— Second exchange ——
-  Kaito sends Gale Heel howling out!
-  Kaito's Gale Heel slices across Bandit Thug 2, though a raised guard takes the worst of it. [Guarded] [−50]
+  You send Gale Heel howling out!
+  Your Gale Heel slices across the second bandit thug, though a raised guard takes the worst of it. [Guarded] [−50]
   Gōran launches into Iron Gate Palm!
-  Gōran's Iron Gate Palm crashes into Bandit Thug 2 through a guard. [Guarded] [−50]
+  Gōran’s Iron Gate Palm crashes into the second bandit thug through a guard. [Guarded] [−50]
 
 >>> leaveFight
 
@@ -1445,7 +1445,7 @@ view:
   lines[7]:
     text: Go in head-on
   lines[8]:
-    text: You defeated Bandit Thug and Bandit Thug.
+    text: You defeated two bandit thugs.
   route[0]:
     label: Story
     state: done
@@ -1493,7 +1493,7 @@ view:
   lines[7]:
     text: Go in head-on
   lines[8]:
-    text: You defeated Bandit Thug and Bandit Thug.
+    text: You defeated two bandit thugs.
   lines[9]:
     text: Up on the bluff a man stands with a long blade wrapped in cloth, a thin youth beside him. “Tell the ferrymen the chain stays,” he calls down, quite calm. Then they are gone into the reeds.
   route[0]:
@@ -1547,7 +1547,7 @@ view:
   lines[7]:
     text: Go in head-on
   lines[8]:
-    text: You defeated Bandit Thug and Bandit Thug.
+    text: You defeated two bandit thugs.
   lines[9]:
     text: Up on the bluff a man stands with a long blade wrapped in cloth, a thin youth beside him. “Tell the ferrymen the chain stays,” he calls down, quite calm. Then they are gone into the reeds.
   lines[10]:
@@ -1581,7 +1581,7 @@ view:
 === report card ===
 view:
   result: victory
-  enemies: Bandit Thug and Bandit Thug
+  enemies: two bandit thugs
 
 >>> dismissReport
 
@@ -1596,7 +1596,7 @@ view:
   unlocked[4]: The Shade on the Pilgrim Path
   ending: The thugs limp off towards Oki’s timber yard. Tobei gets you a room over the ferry office and says the office will want you in the morning.
   road[0]:
-    text: Beat Bandit Thug and Bandit Thug in a fight.
+    text: Beat two bandit thugs in a fight.
   road[1]:
     text: Kept faith with the ferrymen, though they lied on the notice.
   crew[0]:

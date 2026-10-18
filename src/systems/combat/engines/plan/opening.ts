@@ -2,6 +2,7 @@ import type { CombatOpening, RangeBand } from '../../contract';
 import { RANGE_LABEL } from '../../rules/range';
 import { FIELD_RULES, raiseField, type ActiveField } from '../../rules/verbs';
 import type { PlanFighter } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * How a planned fight begins when what came before shaped it (`CombatSetup.opening`): the
@@ -38,12 +39,8 @@ function linesFor(fighters: readonly PlanFighter[], opening: CombatOpening): str
   if (opening.range) lines.push(`It starts at ${RANGE_LABEL[opening.range].toLowerCase()} range.`);
   if (opening.firstMover === 'player') lines.push('Your side moves first.');
   if (opening.firstMover === 'enemy') lines.push('They move first!');
-  lines.push(...named(opening.dazed).map((f) => `${f.name} is caught off balance!`));
-  lines.push(
-    ...named(opening.hidden).map((f) =>
-      f.isPlayer ? 'You start out of sight.' : `${f.name} is out of sight.`,
-    ),
-  );
+  lines.push(...named(opening.dazed).map((f) => tell('{a} {a.is} caught off balance!', { a: f })));
+  lines.push(...named(opening.hidden).map((f) => tell('{a} start{a.s} out of sight.', { a: f })));
   if (opening.field) lines.push(FIELD_RULES[opening.field.id].rises);
   return lines;
 }

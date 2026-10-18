@@ -9,6 +9,7 @@ import {
   searchChance,
   shakeOffChance,
 } from '../../rules/conditions';
+import { tell } from '../../rules/telling';
 import { dulled } from '../../rules/verbs';
 import { patch, paying, say, type PlanFighter, type Round } from './state';
 import { inCover } from './groundPlay';
@@ -43,7 +44,7 @@ function rehide(round: Round, actor: PlanFighter): Round {
   if (actor.hidden || !rehidesNow(actor, round.number)) return round;
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, { hidden: true }) },
-    rehideLine(momentOf(round, actor.id), actor.name),
+    rehideLine(momentOf(round, actor.id), actor),
   );
 }
 
@@ -52,7 +53,7 @@ function clearHead(round: Round, actor: PlanFighter, rng: Rng): Round {
   if (rng.chance(shakeOffChance(actor))) {
     return say(
       { ...round, fighters: patch(round.fighters, actor.id, { confused: 0 }) },
-      clearHeadLine(momentOf(round, actor.id), actor.name),
+      clearHeadLine(momentOf(round, actor.id), actor),
     );
   }
   return { ...round, fighters: patch(round.fighters, actor.id, { confused: actor.confused - 1 }) };
@@ -81,16 +82,15 @@ export function search(round: Round, { actor, rng }: Turn): Round {
     rng.chance(searchChance(seeker, inCover(round.ground, foe))),
   );
   const moment = momentOf(round, actor.id);
-  if (found.length === 0) return say(round, emptySearchLine(moment, actor.name));
-  const names = found.map((f) => f.name).join(' and ');
-  return say(reveal(round, found), foundLine(moment, actor.name, names));
+  if (found.length === 0) return say(round, emptySearchLine(moment, actor));
+  return say(reveal(round, found), foundLine(moment, actor, found));
 }
 
 export function dispel(round: Round, { actor, rng }: Turn): Round {
   const change = { ...paying(actor, DISPEL_CHAKRA), confused: 0 };
   const paid = say(
     { ...round, fighters: patch(round.fighters, actor.id, change) },
-    `${actor.name} forms the seal to break illusions.`,
+    tell('{a} form{a.s} the seal to break illusions.', { a: actor }),
   );
   const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden);
   const strongest = [...hidden].sort((a, b) => b.attributes.genjutsu - a.attributes.genjutsu)[0];

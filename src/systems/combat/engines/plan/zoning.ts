@@ -153,7 +153,7 @@ export function holdOff(round: Round, turn: Turn): HeldOff {
     return {
       round: say(
         spent(marked, holder, card),
-        throughLine(momentOf(marked, closer.id), closer.name, holder.name),
+        throughLine(momentOf(marked, closer.id), closer, holder),
       ),
       outcome: 'through',
     };
@@ -161,8 +161,8 @@ export function holdOff(round: Round, turn: Turn): HeldOff {
   const moment = momentOf(marked, holder.id);
   const why = holdOffReason(aim, closer.attributes.speed, areaOf(card));
   const told = say(
-    say(marked, heldOffLine(moment, holder.name, closer.name)),
-    heldOffWhy(moment, { holder: holder.name, closer: closer.name, what: nameOf(card), why }),
+    say(marked, heldOffLine(moment, holder, closer)),
+    heldOffWhy(moment, { holder, closer, what: nameOf(card), why }),
   );
   const fired = fire(told, { holder: fighterIn(told, holder.id) ?? holder, closer, card }, turn);
   return { round: holdersLines(fired, round.lines.length, holder.id), outcome: 'stopped' };

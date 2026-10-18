@@ -16,6 +16,8 @@ export const TEMPLE_BELL_FOE: EnemyDef = {
   kind: 'Monk',
   danger: 'deadly',
   name: 'Jōen',
+  proper: true,
+  pronouns: 'he',
   description: 'Kaname’s temple brother, who learned the same soft style and turned it hard.',
   baseStat: 11,
   statBonuses: { taijutsu: 4, stamina: 2, willpower: 1 },

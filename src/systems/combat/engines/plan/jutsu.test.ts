@@ -109,7 +109,7 @@ describe('plan & watch techniques', () => {
   });
 
   it('a daze leaves the target open until the dazer has had another turn', () => {
-    const after = crushUntil(roundWith(), /bandit is dazed/);
+    const after = crushUntil(roundWith(), /bandit is dazed/i);
     const bandit = fighterIn(after, 'bandit')!;
     expect(bandit.openUntil).toBe(after.number + 1);
     // The lost turn spends the daze, but the target is still reeling…
@@ -132,7 +132,7 @@ describe('plan & watch techniques', () => {
   });
 
   it('a daze can’t be chained: the target is steady for an exchange after it wears off', () => {
-    const after = crushUntil(roundWith(), /bandit is dazed/);
+    const after = crushUntil(roundWith(), /bandit is dazed/i);
     const bandit = fighterIn(after, 'bandit')!;
     expect(canDaze(bandit, after.number + 1)).toBe(false);
     const recovered = wearOffDaze({ ...bandit, stunned: 0 }, after.number + 1);

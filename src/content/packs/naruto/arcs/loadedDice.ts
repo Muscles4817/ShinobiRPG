@@ -16,6 +16,8 @@ export const LOADED_DICE_FOE: EnemyDef = {
   kind: 'Gambler',
   danger: 'deadly',
   name: 'Gonzō the House',
+  proper: true,
+  pronouns: 'he',
   description: 'Runs Tanzaku’s back tables, and the illusions that keep them winning.',
   baseStat: 11,
   statBonuses: { genjutsu: 4, intellect: 2, perception: 1 },

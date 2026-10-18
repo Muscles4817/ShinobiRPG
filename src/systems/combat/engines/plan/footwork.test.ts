@@ -164,9 +164,9 @@ describe('plan & watch verbs: field', () => {
     });
     const lines = fought.flatMap((s) => s.log);
     expect(
-      lines.filter((l) => l.startsWith('foe strikes at a shape in the mist')).length,
+      lines.filter((l) => l.startsWith('Foe strikes at a shape in the mist')).length,
     ).toBeGreaterThan(0);
-    expect(lines.some((l) => l.startsWith('hero strikes at a shape'))).toBe(false);
+    expect(lines.some((l) => l.startsWith('Hero strikes at a shape'))).toBe(false);
     for (const state of fought) {
       expect(state.log).toContain('The mist thins and lifts.');
       expect(state.field).toBeUndefined();

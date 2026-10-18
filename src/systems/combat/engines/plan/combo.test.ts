@@ -140,7 +140,7 @@ describe('plan & watch combos: combination techniques', () => {
   it('both halves go off together, harder, and the partner pays and gives their turn', () => {
     const start = roundWith({ techniques: [snare] }, { techniques: [fall] });
     const both = cast(start, 'hero', snare);
-    expect(both.lines).toContain('hero and kiba combine Snare and Fall!');
+    expect(both.lines.join(' ')).toContain('Hero and kiba combine Snare and Fall!');
     expect(both.lines.some((l) => castsLine(l, 'kiba', 'Fall'))).toBe(true);
     expect(who(both, 'kiba').joined).toBe(true);
     expect(who(both, 'kiba').chakra).toBeLessThan(30);
@@ -167,7 +167,7 @@ describe('plan & watch combos: combination techniques', () => {
       fighters: state.fighters.map((f) => (f.id === 'kiba' ? { ...f, joined: true } : f)),
     };
     const after = resolveExchange(joined, createRng(3));
-    expect(said(after.log)).toContain('kiba gathers themself after the combination.');
+    expect(said(after.log)).toContain('Kiba gathers themself after the combination.');
     expect(after.fighters.find((f) => f.id === 'kiba')?.joined).toBe(false);
   });
 });

@@ -648,6 +648,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   other code changes. Shelving an engine moves it to `shelvedEngines()` (if saves may be
   mid-fight in it) and migrates saves that chose it. Narrate damage and healing
   with `harmLine`/`healLine` (`rules/narration.ts`) so the amount shows as a chip, never in the story.
+  Name fighters only through `tell` (`rules/telling.ts`): a template's slots (`{a}`, `{a.poss}`,
+  `{a.s}`, `{t.their}`…) are filled from each fighter's `called` and `grammar`
+  (`CombatantSetup`), so the player is "you", a spirit "it" and everyone's verbs agree, and the
+  line carries whom it named for the watch screen.
   A staged engine (one that offers plans, not a hand) tags each turn's lines with `turnLine` (whose
   turn, and where the fight stands) and defences with `reactionLine`; the watch screen stages the
   log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. A fight that ends
@@ -734,7 +738,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (`src/test/bench/bestiary.test.ts`) fights each at the scale its danger means.
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,
   optional `nature`, `traits`, and `healthScale` for a creature bigger or smaller than a person) to the
-  pack's `enemies` and use it in a mission's combat stage. A new trait goes in
+  pack's `enemies` (a foe with a name of their own is `proper`, with `pronouns`; a common one is
+  "the bandit thug" in the story, from its `noun` when lower case won't do: `game/foeNames.ts`) and use it in a mission's combat stage. A new trait goes in
   `COMBAT_TRAITS`, its rule in `rules/kit.ts` or `rules/conditions.ts`, its counter text in
   `game/scouting.ts`, and every engine must honour it.
 - **Add a technique verb:** a technique's `effects` is a list of verbs applied in order
