@@ -719,6 +719,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   team of their own sets `offered: false`: never offered, kept by a save that chose them.
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).
+- **Add a versus-only fighter (a duelist):** a `PersonDef` in the pack's `duelists`
+  (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi rank, no
+  schedule, no teaching, and an `arsenal` (which may name `gearIds` and `tools`, carried into
+  every fight). They show in versus by rank and nowhere else; their arsenal sources their
+  techniques (validated in `validateDuelists.ts`). Plumbing one in moves them to `people`, where
+  their techniques then need a real source.
 - **Add a sensei temperament or past:** a `SenseiTemperament` in
   `content/shared/sensei/temperaments.ts` (an existing archetype, traits, a haunt, a full
   voice kit) or a `SenseiPast` in `content/shared/sensei/pasts/` (the temperaments that can carry

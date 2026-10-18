@@ -30,12 +30,12 @@ function weaponOf(def: GearDef | null): CombatWeapon | undefined {
   return { name, shape, rank, ...(effects ? { effects } : {}) };
 }
 
-/** Your equipped gear as the fight sees it. */
-export function combatGear(state: GameState, ctx: GameContext): CombatGear {
-  const held = weaponOf(equippedIn(state, ctx, 'weapon'));
-  const thrown = weaponOf(equippedIn(state, ctx, 'thrown'));
-  const body = equippedIn(state, ctx, 'body');
-  const charm = equippedIn(state, ctx, 'charm');
+/** Gear as the fight sees it, from what is worn in each slot. */
+function gearFrom(worn: (slot: GearSlot) => GearDef | null): CombatGear {
+  const held = weaponOf(worn('weapon'));
+  const thrown = weaponOf(worn('thrown'));
+  const body = worn('body');
+  const charm = worn('charm');
   return {
     ...(held ? { held } : {}),
     ...(thrown ? { thrown } : {}),
@@ -46,6 +46,17 @@ export function combatGear(state: GameState, ctx: GameContext): CombatGear {
       ? { focus: { name: charm.name, rank: charm.rank, boosts: charm.boosts } }
       : {}),
   };
+}
+
+/** Your equipped gear as the fight sees it. */
+export function combatGear(state: GameState, ctx: GameContext): CombatGear {
+  return gearFrom((slot) => equippedIn(state, ctx, slot));
+}
+
+/** Gear a person's arsenal names (`PersonArsenal.gearIds`, a piece per slot) as the fight sees it. */
+export function arsenalGear(gearIds: readonly string[], ctx: GameContext): CombatGear {
+  const worn = gearIds.map((id) => ctx.content.gear.require(id));
+  return gearFrom((slot) => worn.find((def) => gearSlot(def) === slot) ?? null);
 }
 
 /** Why a shop won't sell you this piece yet; null when it will. */

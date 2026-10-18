@@ -18,6 +18,8 @@ const FAN_MARKERS = [
   'Tanzaku',
   'Chiriku',
   'Otafuku',
+  'Tengen',
+  'Sound Breathing',
 ];
 
 function files(dir) {

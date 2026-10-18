@@ -7,7 +7,7 @@ import type { ContentPack, PlaceDef } from './types';
  * keeps A for jōnin), and neither holds a
  * clan's techniques (clan members teach those, through `teacher.teaches`; `validateTeachers`
  * keeps them in the clan). Every technique must be reachable from at least one source: a shelf,
- * a teacher, a mission's scroll, or a starting kit.
+ * a teacher, a mission's scroll, or a starting kit (or a versus-only duelist's own arsenal).
  */
 export function validateSources(pack: ContentPack): string[] {
   return [...shelfProblems(pack), ...scrollRewardProblems(pack), ...unsourcedProblems(pack)];
@@ -64,6 +64,8 @@ function sourcedIds(pack: ContentPack): Set<string> {
   return new Set([
     ...shelves(pack).flatMap((p) => p.techniqueIds),
     ...pack.people.flatMap((p) => p.teacher?.teaches ?? []),
+    // A duelist isn't in the world yet, so their own arts are theirs alone until plumbed in.
+    ...(pack.duelists ?? []).flatMap((p) => p.arsenal?.techniqueIds ?? []),
     ...pack.missions.flatMap((m) => (m.reward.scrollId ? [m.reward.scrollId] : [])),
     ...pack.academyTechniques,
     ...Object.values(pack.disciplineStarters),

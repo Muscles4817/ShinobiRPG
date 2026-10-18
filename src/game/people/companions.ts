@@ -3,9 +3,10 @@ import type { CombatantSetup, CombatTrait } from '@/systems/combat';
 import type { Discipline } from '@/systems/techniques';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
-import { attributesOf } from '../combatants';
+import { attributesOf, pouchFrom } from '../combatants';
 import { walkingByRank } from '../footing';
 import type { GameContext } from '../context';
+import { arsenalGear } from '../gear';
 import type { GameState } from '../state';
 import { doableNow } from './capable';
 import { personStats } from './progress';
@@ -86,6 +87,19 @@ export function companionCombatant(
     ),
     traits: companionTraits(person),
     ...perksOf(person),
+    ...kitOf(person, ctx),
+  };
+}
+
+/**
+ * The gear and tools a person's arsenal names, for someone known by their kit; a full pouch
+ * every fight. Without them, they are armed as their techniques suggest.
+ */
+function kitOf(person: PersonDef, ctx: GameContext): Pick<CombatantSetup, 'gear' | 'items'> {
+  const { gearIds, tools } = person.arsenal ?? {};
+  return {
+    ...(gearIds ? { gear: arsenalGear(gearIds, ctx) } : {}),
+    ...(tools ? { items: pouchFrom(tools, ctx) } : {}),
   };
 }
 

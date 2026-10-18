@@ -28,6 +28,7 @@ import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
 import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
+import { DUELIST_GEAR, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
@@ -119,6 +120,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...COMBO_TECHNIQUES,
     ...BEAST_TECHNIQUES,
     ...CANON_TECHNIQUES,
+    ...DUELIST_TECHNIQUES,
   ],
   missions: [
     ...MISSIONS,
@@ -188,7 +190,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,
-  gear: GEAR,
+  gear: [...GEAR, ...DUELIST_GEAR],
   tools: TOOLS,
   injuries: INJURIES,
   ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS],
@@ -211,6 +213,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...SHUKUBA_PEOPLE,
     ...FIRE_TEMPLE_PEOPLE,
   ],
+  duelists: DUELISTS,
   conversations: [
     ...GENERIC_CONVERSATIONS,
     ...TEMPLATE_CONVERSATIONS,
