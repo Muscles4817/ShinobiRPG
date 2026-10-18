@@ -155,6 +155,11 @@ ui ──► game ──► content ──► systems ──► core
     or a town they live in (`homeLocationId`, only `shinobi` and `villager` roles; `villagers`
     keeps them off your village's crews, teams and dinner table). Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
+    Clans live in **compounds** (`docs/design/compounds-plan.md`): a `compound` place per clan
+    behind one `quarter` card, entered by an outsider only as the clan's `outsiders` stance
+    allows (welcoming, reserved, guarded: the bond needed with anyone of the clan by day; bonded
+    at night; `game/compounds.ts`), and someone home behind a shut gate can't be talked to. The
+    village screen's Who's here shows only people you know out and about.
     A person's **profile** (`views/personSheet.ts`) is one paper sheet that grows with the bond:
     a stranger's shows who they are, a read of them and what the next stage opens
     (`views/bondPath.ts`, read from the rules that open it); an acquaintance's (or a teammate's)
@@ -294,6 +299,45 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and `rules/conditions.ts` (Hidden and Confused, Search and Dispel chances); every engine
     applies them, so an archer is an archer in every fight style. Scouting names each trait
     with its counter. Genin get traits from their specialty (`companionTraits`).
+    Some fighters bring more than one body (**retinues**, `docs/design/retinue-plan.md`). By
+    default a companion is just one more fighter on their side, by its own judgement, fighting
+    on if they fall; it hits no harder for being theirs (combination techniques and what a bond
+    unlocks are earned). A retinue is a real advantage, never balanced away. A foe's
+    `EnemyDef.retinue` is expanded by `enemyParty`; each body has
+    a `tell` (open, kept, hidden) that sets how likely a glance is to see it before the fight
+    (`game/retinueSight.ts`: perception, by hash, never certain short of open), and scouting
+    rates a foe with what it sees (`opponentPower`, `partyPower`). The player may have a
+    **companion** (`systems/companions`, `game/companions/`): a bonded creature of a
+    `CompanionKindDef` (temperament bred, stray or wild: how fast it bonds and how late it takes
+    orders), born to a clan (`ClanDef.companion`), a stray won over in the village
+    (`befriendStray`, drawn from the seed and day), a wild one tracked over days in a wild place of
+    its biome (`trackWild`, `game/companions/wild.ts`; perception raises the odds), a kennel's pup
+    (`VetFields.pups`, `takePup`: a gift to a close friend of the vet) or an animal a job rescues
+    (`reward.companionKindId`: it waits at the vet until you take it; one companion at a time, so
+    a vet also rehomes yours, `rehomeCompanion`). **Its body grows with time, its skills with
+    training** (`systems/companions/growth.ts`, `game/companions/body.ts`): a kind's `body` is an
+    adult strength, speed, stamina and perception and the days a pup takes to grow into them; each
+    animal's genes roll that body (a kennel line never below its kind, a stray rougher), each day
+    grows it (half when hungry, not at all starving), and nothing passes its ceiling (a dog is
+    never as strong as a bear). Strength, speed and stamina are never drilled; skills are, by the
+    handler rule (`trainCompanion`: how you handle it, not your own grades). It arrives as old as
+    its way of coming (`ARRIVES_AT`: a kennel or rescued pup small, a stray or wild one grown); a
+    pup is too young to fight and stays home. Its light routine is caught up each morning like
+    peers', it fights beside you in every mission fight (never a spar: those are one against
+    one), and takes stance and then card orders only as the bond opens them (`ordersOpen`); the
+    bond grows from a game, a proper meal and the day's first training, and drifts on scraps alone.
+    **The bond opens its arts** (`game/companions/arts.ts`): a kind's `techniques` open at bond
+    stages (`shared/beastTechniques.ts`: kinds' own, never learned by people), the deeper ones
+    (`handler`) only once a clinic's handler teaches them (`VetFields.handling`, `handlerTeach`);
+    one is half of a combination with the academy's Pincer Strike; and at close friends it takes
+    a crew job's checks in its kind's `roles` when its nose is best (`checkHand`). Handlers drill
+    it better than you (`handlerSession`, their `quality` over yours), and handling lore bought
+    far from home (`companionLore`, a gear place's `loreIds`) makes your own sessions count more. It is cared for
+    (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
+    a favourite found by feeding), a game by its tastes, training together as its teacher at a
+    training ground; hunger weakens it and a starved stray leaves; its health carries between
+    fights (`CombatOutcome.allies`), and knocked down it is laid up until mended, sooner at a
+    `vet` place or with medicine.
     **Preparation** happens before the fight: fight tools (`ToolDef`, sold by the piece at
     `gear` places' `toolIds`, kept in `inventory.tools`) ride in as `CombatantSetup.items`;
     what they do lives once in `rules/items.ts`, every engine offers them, and
@@ -677,6 +721,26 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   burn, bleed, poison; counter, a readied riposte) keep their rules in
   `rules/verbs/lingering.ts` and their play in `engines/plan/lingering.ts`, which wears them
   down at the end of each exchange.
+- **Add a clan compound:** a `compound` place (`clanId`, optional `headId`) in the clan's
+  village, listed in that village's `quarter`, an `outsiders` stance on the `ClanDef`, and
+  schedules that bring its people home for a slot or two (and out for others, so they can be
+  met). Validated in `validateCompounds.ts`.
+- **Add a companion kind:** a `CompanionKindDef` in the pack's `companions.ts` (temperament, a
+  grown `body` (adult strength, speed, stamina and perception, and `maturesInDays`; the body
+  decides those stats, never `statBonuses`), skills that start no better than a fresh genin's
+  best, `healthScale`, traits, a talent shape with
+  0 for arts it never learns, names, and a `stray` haunt for kinds found on the streets, at
+  places of the start village, or a `wild` haunt by biome for wild kinds; shared wild kinds live
+  in `shared/wildKinds.ts`; `techniques` it opens by bond stage, `handler` ones taught at a
+  clinic whose `handling.teaches` lists them, and the job `roles` it takes); give a clan one with
+  `ClanDef.companion`, breed a bred kind at a vet (`pups`) or hand one over from a job
+  (`reward.companionKindId`). Validated in `validateCompanions.ts`; a clinic's `handling`
+  (quality, price, the bond stage with the vet) and handling lore (`companionLore`, sold through
+  a gear place's `loreIds`) in `validateCompanionArts.ts`.
+- **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
+  worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
+  with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation
+  checks the link; the fight, scouting and the notice pick it up.
 - **Add a fight tool:** add a `ToolDef` to `shared/tools.ts` (or a pack's own list) with an
   existing `effect` and list it in a gear place's `toolIds`. A new effect goes in
   `COMBAT_ITEM_EFFECTS` with its rule in `rules/items.ts`; every engine must offer it.

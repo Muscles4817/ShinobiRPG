@@ -61,6 +61,7 @@ export {
   STAT_TIERS,
   statTier,
   fightingPower,
+  partyPower,
   type FightingStats,
   type StatGrade,
   type StatTier,

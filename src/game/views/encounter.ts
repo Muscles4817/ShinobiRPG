@@ -17,6 +17,7 @@ import type { GameContext } from '../context';
 import { approachPlans, type ApproachPlan } from '../encounter/approaches';
 import { encounterHere, type EncounterHere } from '../encounter/current';
 import { reconPlans, type ReconCost, type ReconPlan } from '../encounter/recon';
+import { retinueSeen } from '../retinueSight';
 import { handicapOf, scoutOpponents, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
 import { noteLine, type SceneLine } from './missionScene';
@@ -42,6 +43,8 @@ export interface EncounterFoe {
   readonly threatLabel: string;
   /** Their tricks and counters, once you know their kit. */
   readonly traits: readonly TraitNote[] | null;
+  /** For a companion, whom it fights beside (their threat is the pair's). */
+  readonly beside?: string;
 }
 
 export interface ReconCard {
@@ -156,9 +159,11 @@ function factLines(here: EncounterHere): FactLine[] {
 
 function foesOf(state: GameState, ctx: GameContext, here: EncounterHere): EncounterFoe[] | null {
   if (!here.encounter.known.includes('identity')) return null;
-  const ids = here.foes.map((f, i) => enemyCombatantId(f.id, i));
-  const reads = scoutOpponents(state, ctx, ids);
   const kit = here.encounter.known.includes('kit');
+  // Knowing their kit shows everything that fights beside them; until then, only what you see.
+  const knowledge = kit ? 'full' : 'glance';
+  const ids = here.foes.map((f, i) => enemyCombatantId(f.id, i));
+  const reads = scoutOpponents(state, ctx, ids, knowledge);
   return [...new Set(here.foes.map((f) => f.id))].flatMap((id) => {
     const index = here.foes.findIndex((f) => f.id === id);
     const def = here.foes[index];
@@ -166,7 +171,13 @@ function foesOf(state: GameState, ctx: GameContext, here: EncounterHere): Encoun
     if (!def || !read) return [];
     const count = here.foes.filter((f) => f.id === id).length;
     const { threat, threatLabel } = read;
-    return [{ name: def.name, count, threat, threatLabel, traits: kit ? read.traits : null }];
+    const companions = retinueSeen(state, def, knowledge).map(({ enemyId }) => {
+      const unit = ctx.content.enemies.require(enemyId);
+      const traits = kit ? traitNotes(unit.traits ?? []) : null;
+      return { name: unit.name, count, threat, threatLabel, traits, beside: def.name };
+    });
+    const foe = { name: def.name, count, threat, threatLabel, traits: kit ? read.traits : null };
+    return [foe, ...companions];
   });
 }
 

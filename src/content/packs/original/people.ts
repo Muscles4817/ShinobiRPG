@@ -119,7 +119,12 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     }),
     specialty: 'genjutsu',
     bio: 'Talks to people nobody else can see. Usually they answer.',
-    schedule: { morning: null, afternoon: 'academy', evening: 'mission-hall', night: null },
+    schedule: {
+      morning: 'tokaku-compound',
+      afternoon: 'academy',
+      evening: 'mission-hall',
+      night: null,
+    },
     sensei: {
       specialty: 'genjutsu',
       favouredTraits: ['calm', 'curious', 'humble'],
@@ -161,7 +166,7 @@ export const SENSEIS_AND_ELDERS: readonly PersonDef[] = [
     schedule: {
       morning: 'training-grounds',
       afternoon: 'market-street',
-      evening: null,
+      evening: 'kurogane-compound',
       night: 'izakaya',
     },
     sensei: {

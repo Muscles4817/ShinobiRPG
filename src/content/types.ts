@@ -1,5 +1,13 @@
 import type { CombatPerk, CombatTrait } from '@/systems/combat';
+import type { FoodDef, TrainingDef } from './drills';
 import type { AtlasDef, MapLabelSide } from './atlas';
+import type {
+  ClanCompanion,
+  CompanionKindDef,
+  CompanionLoreDef,
+  RetinueEntry,
+  VetFields,
+} from './companions';
 import type { Find } from '@/systems/cooking';
 import type {
   ArcDef,
@@ -13,7 +21,6 @@ import type { StatDelta, StatId } from '@/systems/stats';
 import type { NoteWeight } from '@/systems/profile';
 import type { ExamDef } from '@/systems/exams';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
-import type { Season } from '@/systems/time';
 import type { RouteDef } from '@/systems/travel';
 
 import type { BackdropId, IconId } from './art';
@@ -54,10 +61,12 @@ export type {
   SessionFormat,
 } from './senseis';
 import type { SettingText } from './settingText';
+import type { CompoundFields, OutsiderStance, QuarterFields } from './compounds';
 import type { OnsenFields, TavernFields } from './leisure';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
 import type { VoiceDef } from './voices';
+import type { Biome, FishingSpot, WildsFields } from './biomes';
 
 export type { BackdropId, IconId } from './art';
 export type {
@@ -104,35 +113,10 @@ export type { FestivalDef, RumourDef, SightDef, VillageLife } from './village';
  * that system; the rest are defined here.
  */
 
+export type { FoodDef, TrainingDef } from './drills';
+
 export interface Identified {
   readonly id: string;
-}
-
-export interface TrainingDef {
-  readonly id: string;
-  readonly name: string;
-  /** Spot within the training place, e.g. "Training Ground 3". */
-  readonly spot: string;
-  /** One line of flavour shown in the record. No numbers. */
-  readonly description: string;
-  readonly icon: IconId;
-  readonly slots: number;
-  readonly energyCost: number;
-  /** Base stat gains per session, before diminishing returns. */
-  readonly gains: StatDelta;
-}
-
-export interface FoodDef {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly icon: IconId;
-  readonly cost: number;
-  readonly satiety: number;
-  readonly energy: number;
-  readonly slots: number;
-  /** Only on the menu in these seasons; absent means all year. */
-  readonly seasons?: readonly Season[];
 }
 
 export interface EnemyDef {
@@ -158,6 +142,8 @@ export interface EnemyDef {
   readonly traits?: readonly CombatTrait[];
   /** Ingredients a beaten foe leaves (a beast's meat), one of each, into your pack. */
   readonly drops?: readonly string[];
+  /** Bodies that fight beside them (`docs/design/retinue-plan.md`): a hound at heel. */
+  readonly retinue?: readonly RetinueEntry[];
 }
 
 /** A family the character can be born into. Clans shape growth and give techniques. */
@@ -177,6 +163,10 @@ export interface ClanDef {
   readonly startingTechniqueIds: readonly string[];
   /** Clan members live rent-free here instead of renting. */
   readonly lodging?: string;
+  /** The companion a child of the clan grows up with (`companions.ts`). */
+  readonly companion?: ClanCompanion;
+  /** How the clan treats outsiders at its compound's gate (`compounds.ts`). */
+  readonly outsiders?: OutsiderStance;
   readonly kekkeiGenkai?: {
     readonly name: string;
     readonly description: string;
@@ -244,17 +234,7 @@ export interface BreakInScene {
   readonly caught: string;
 }
 
-/** The kind of country a wild place is: what grows and swims there. */
-export type Biome = 'woods' | 'river' | 'shore' | 'mountain' | 'marsh';
-
-/** Somewhere to cast a line: what bites there, and when. */
-export interface FishingSpot {
-  readonly id: string;
-  readonly name: string;
-  /** What it looks like, for the choice. No numbers. */
-  readonly description: string;
-  readonly catches: readonly Find[];
-}
+export type { Biome, FishingSpot, WildsFields };
 
 interface PlaceBase {
   readonly id: string;
@@ -290,14 +270,11 @@ export type PlaceDef =
   | (PlaceBase & LettingsFields)
   /** A house for sale in a town: bought once, then yours to sleep in, with no rent. */
   | (PlaceBase & { readonly kind: 'house'; readonly seller: string; readonly price: number })
-  /** Woods, a river bank, a shore: forage what's in season, and fish its spots. */
-  | (PlaceBase & {
-      readonly kind: 'wilds';
-      readonly biome: Biome;
-      readonly finds: readonly Find[];
-      readonly spots?: readonly FishingSpot[];
-    })
+  | (PlaceBase & WildsFields)
   | (PlaceBase & TavernFields)
+  | (PlaceBase & CompoundFields)
+  | (PlaceBase & QuarterFields)
+  | (PlaceBase & VetFields)
   | (PlaceBase & OnsenFields)
   | (PlaceBase & {
       readonly kind: 'gear';
@@ -306,6 +283,8 @@ export type PlaceDef =
       readonly gearIds: readonly string[];
       /** Fight tools sold by the piece. */
       readonly toolIds?: readonly string[];
+      /** Handling lore for companions (`CompanionLoreDef`). */
+      readonly loreIds?: readonly string[];
     });
 
 export type PlaceKind = PlaceDef['kind'];
@@ -361,6 +340,9 @@ export interface ContentPack {
   /** What crew say on a job, by moment and trait. */
   readonly voices: readonly VoiceDef[];
   readonly enemies: readonly EnemyDef[];
+  /** Kinds of creature that may become someone's companion. */
+  readonly companionKinds: readonly CompanionKindDef[];
+  readonly companionLore: readonly CompanionLoreDef[];
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];
   readonly clans: readonly ClanDef[];

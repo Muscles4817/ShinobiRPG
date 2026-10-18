@@ -60,7 +60,7 @@ export { chakraPaperScene, type ChakraPaperScene } from './views/chakraPaper';
 export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';
 export type { Choice, Discipline } from './views/common';
 export { headerView, type HeaderView, type HungerNote, type Meter } from './views/header';
-export { hubView, type HubView, type PlaceCard } from './views/hub';
+export { hubView, isRestKind, type HubView, type PlaceCard, type RestKind } from './views/hub';
 export { senseiWeekView, type SenseiWeekDay, type SenseiWeekView } from './views/senseiWeek';
 export { examFinalsView, type ExamFinalsView } from './views/examFinals';
 export { senseiTestScene, type SenseiTestScene } from './views/senseiTest';
@@ -202,7 +202,7 @@ export {
   type StatLine,
   type TierRead,
 } from './views/shinobi';
-export type { Pace, ScoutingRead, StatCompare, Threat, TraitNote } from './scouting';
+export type { CompanionNote, Pace, ScoutingRead, StatCompare, Threat, TraitNote } from './scouting';
 export { combatScene, finishedFightScene, combatScouting } from './views/scene';
 export {
   missionScene,
@@ -255,34 +255,36 @@ export type {
 } from '@/systems/combat';
 export type { BackdropId, IconId, PlaceKind } from '@/content';
 export type { TimeSlot } from '@/systems/time';
-export type {
-  Age,
-  Appearance,
-  BrowShape,
-  EarShape,
-  Expression,
-  EyeShape,
-  FaceParts,
-  FaceShape,
-  FacialHair,
-  Figure,
-  Grade,
-  Grades,
-  Look,
-  Mark,
-  NoseShape,
-  Pronouns,
-  HairStyle,
-  HeadbandPlace,
-} from '@/systems/profile';
 export {
   fateStanding,
+  type Age,
+  type Appearance,
   type ArchetypeId,
   type Bloom,
+  type BrowShape,
   type ClassStanding,
+  type EarShape,
+  type Expression,
+  type EyeShape,
+  type FaceParts,
+  type FaceShape,
+  type FacialHair,
+  type Figure,
   type Gift,
+  type Grade,
+  type Grades,
+  type HairStyle,
+  type HeadbandPlace,
+  type Look,
+  type Mark,
+  type NoseShape,
+  type Pronouns,
   type QuickPick,
 } from '@/systems/profile';
 export type { StatGroup, StatId, StatKind } from '@/systems/stats';
 export type { Element } from '@/systems/techniques';
 export type { EffectLine } from '@/systems/modifiers';
+export type { CompanionCard, StrayNotice } from './views/companion';
+export { compoundView, quarterView, type CompoundView, type QuarterView } from './views/compounds';
+export { companionSheet, type CompanionSheet, type CompanionStrip } from './views/companionCare';
+export { vetView, type VetView } from './views/vet';

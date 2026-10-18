@@ -142,7 +142,7 @@ function verdictOf(here: ExamHere): ExamVerdict | null {
 function rivalOf(state: GameState, ctx: GameContext): ExamScene['rival'] {
   const rival = rivalNow(state, ctx);
   if (!rival) return null;
-  const read = scout(rival.stats, combatStats(state, ctx), false);
+  const read = scout({ stats: rival.stats }, combatStats(state, ctx), false);
   return {
     name: `${rival.name} ${rival.familyName}`,
     threat: read.threat,

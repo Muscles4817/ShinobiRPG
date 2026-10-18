@@ -15,7 +15,7 @@ import { slotsUntilNextMorning } from '@/systems/time';
 import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct } from '@/systems/wallet';
 
-import { enemyCombatant, playerCombatant } from './combatants';
+import { enemyParty, playerCombatant } from './combatants';
 import type { GameContext } from './context';
 import { startFight } from './fightStyle';
 import { helpedOf } from './debrief';
@@ -29,6 +29,7 @@ import {
   FAILURE_REPUTATION_LOSS,
 } from './missionFlow';
 import { teamAllies } from './missionTeam';
+import { companionAllies } from './companions/combatant';
 import { adjust, chip, log, spendTime } from './ops';
 import { addReport } from './reports';
 import { takeSpoils } from './spoils';
@@ -56,15 +57,15 @@ export function beginCombat(
 ): GameState {
   const stage = activeStage(state, ctx);
   if (stage?.kind !== 'combat' && stage?.kind !== 'encounter') return state;
-  const enemies = stage.enemyIds.map((id, i) =>
-    enemyCombatant(ctx.content.enemies.require(id), i, ctx),
+  const enemies = stage.enemyIds.flatMap((id, i) =>
+    enemyParty(ctx.content.enemies.require(id), i, ctx),
   );
   const combat = startFight(
     state,
     ctx,
     {
       player: playerCombatant(state, ctx),
-      allies: teamAllies(state, ctx),
+      allies: [...teamAllies(state, ctx), ...companionAllies(state, ctx)],
       enemies,
       canFlee: stage.canFlee,
       ...(stage.ground ? { ground: stage.ground } : {}),

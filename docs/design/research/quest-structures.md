@@ -36,7 +36,7 @@ change to the save.
 
 1. **Village tallies** (`{ kind: 'tally', tally, by }` effect; `{ tally, atLeast }` and
    `{ tally, below }` conditions). These are counters the village keeps across jobs
-   (`GameState.village.tallies`, save v50). Like `remembers`, a condition reads them as they
+   (`GameState.village.tallies`, save v53). Like `remembers`, a condition reads them as they
    stood when the job began (`MissionRun.tallied`). Validation checks that every tally a job
    reads is one some job counts. They cover three devices:
    - a record of mercy used later as an argument (Skellige's Most Wanted);

@@ -1,6 +1,9 @@
 import type { CheckApproach } from '@/systems/missions';
 import type { StatId } from '@/systems/stats';
 
+import { takesRole } from './companions/arts';
+import { yourCompanion } from './companions/care';
+import { fitToFight } from './companions/combatant';
 import type { GameContext } from './context';
 import { crewOf } from './crew';
 import { requirePerson } from './people/cast';
@@ -11,7 +14,8 @@ import type { GameState } from './state';
 
 /**
  * Mission roles: with a crew, a check falls to whoever in it is best at it (the tracker
- * follows the trail, the sensor feels for chakra). Alone, it is always you. Sneaking,
+ * follows the trail, the sensor feels for chakra), your companion among them once the bond
+ * opens its role. Alone, it is always you. Sneaking,
  * the team moves only as quietly as its slowest member who won't hang back when you ask.
  */
 
@@ -42,10 +46,31 @@ export function bestHandFor(state: GameState, ctx: GameContext, stat: StatId): H
   }, you);
 }
 
-/** Who takes a mission check: a role's best teammate, or you when the check names no role. */
+/**
+ * Your companion as a hand for a role its kind takes, once you are close enough (a tracker's
+ * nose on the trail), if it is fit to come along.
+ */
+function companionHand(state: GameState, ctx: GameContext, approach: CheckApproach): Hand | null {
+  const yours = yourCompanion(state, ctx);
+  if (!yours || !approach.role || !fitToFight(state, ctx)) return null;
+  if (!takesRole(yours.companion, yours.kind, approach.role)) return null;
+  const { companion } = yours;
+  return {
+    personId: `companion:${companion.id}`,
+    name: companion.name,
+    value: companion.stats[approach.stat],
+  };
+}
+
+/**
+ * Who takes a mission check: a role's best hand among the crew and your companion, or you when
+ * the check names no role.
+ */
 export function checkHand(state: GameState, ctx: GameContext, approach: CheckApproach): Hand {
-  if (approach.role) return bestHandFor(state, ctx, approach.stat);
-  return yourHand(state, ctx, approach.stat);
+  if (!approach.role) return yourHand(state, ctx, approach.stat);
+  const crew = bestHandFor(state, ctx, approach.stat);
+  const companion = companionHand(state, ctx, approach);
+  return companion && companion.value > crew.value ? companion : crew;
 }
 
 /**

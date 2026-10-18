@@ -1,0 +1,110 @@
+/* Your companion: a strip on the village screen and its care sheet. */
+.companion-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin: 8px var(--gutter) 0;
+  padding: 8px 12px;
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  text-align: left;
+}
+.companion-strip small {
+  color: var(--muted);
+}
+.companion-vitals {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 8px;
+}
+.companion-strip .health-bar,
+.companion-vitals .health-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--raise);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.companion-strip .health-bar i,
+.companion-vitals .health-bar i {
+  display: block;
+  height: 100%;
+  background: var(--health);
+}
+.companion-sheet h3 {
+  margin: 12px 0 4px;
+  font-family: var(--font-story);
+  font-size: 1rem;
+}
+.care-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.care-option {
+  display: grid;
+  gap: 2px;
+  min-height: 44px;
+  padding: 8px 10px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+}
+.care-option small {
+  opacity: 0.75;
+}
+.care-option:disabled {
+  opacity: 0.5;
+}
+.progress-dots {
+  letter-spacing: 3px;
+  color: var(--good);
+}
+.companion-growing h3 {
+  margin-top: 8px;
+}
+/* Muted lines, chips and quiet buttons on paper (the sheet, the clinic's slips). */
+.companion-sheet .muted,
+.companion-sheet .companion-vitals small {
+  color: var(--paper-muted);
+}
+.companion-sheet .chip,
+.room-slip .chip {
+  background: rgb(0 0 0 / 0.08);
+  color: var(--paper-ink);
+}
+.room-slip .chip.cost {
+  color: var(--paper-cost);
+}
+.room-slip .btn.ghost {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+.room-slip .badge {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+.companion-arts .arts {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.companion-sheet .badge {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+.handler-teach {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--paper-muted);
+}

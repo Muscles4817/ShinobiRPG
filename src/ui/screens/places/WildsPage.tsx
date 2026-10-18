@@ -1,6 +1,7 @@
-import { headerView, wildsView, type WhatsAbout } from '@/game';
+import { headerView, wildsView, type GameAction, type WhatsAbout, type WildsView } from '@/game';
 
 import { Banner } from '../../components/Banner';
+import { ProgressDots } from '../../components/ProgressDots';
 import type { PlaceProps } from '../types';
 
 /** "Wild Mushrooms and Chestnuts, and something you don't know." */
@@ -31,9 +32,45 @@ function GatherCard(props: {
   );
 }
 
+/** Signs of a wild one living here, and days spent tracking it. */
+function TrackCard({
+  wild,
+  perform,
+}: {
+  readonly wild: NonNullable<WildsView['wild']>;
+  readonly perform: (action: GameAction) => void;
+}) {
+  return (
+    <article className="gather-card">
+      <h3>Signs of a {wild.kind.toLowerCase()}</h3>
+      <p className="story">{wild.sign}</p>
+      <p className="muted small">
+        {wild.odds} <span className="chip cost num">−{wild.energy} energy</span>
+      </p>
+      {wild.days > 0 && (
+        <p className="small">
+          It knows your scent now <ProgressDots done={wild.days} of={wild.needed} />
+        </p>
+      )}
+      {wild.track.blocker && <p className="blocker">{wild.track.blocker}</p>}
+      <button
+        type="button"
+        className="btn"
+        disabled={wild.track.blocker !== null}
+        onClick={() => {
+          perform(wild.track.action);
+        }}
+      >
+        {wild.days === 0 ? 'Follow the trail' : 'Track it again'}
+      </button>
+    </article>
+  );
+}
+
 /**
  * A wild place outside the village: forage the ground for what's in season, or pick a spot on
- * the water and cast a line. Each gives once a day.
+ * the water and cast a line. Each gives once a day. Some wild places have a wild one living
+ * in them, to be tracked over days.
  */
 export function WildsPage({
   ctx,
@@ -74,6 +111,7 @@ export function WildsPage({
             }}
           />
         ))}
+        {view.wild && <TrackCard wild={view.wild} perform={perform} />}
       </main>
     </>
   );

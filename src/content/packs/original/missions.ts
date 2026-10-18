@@ -1,5 +1,7 @@
 import type { MissionDef } from '@/systems/missions';
 
+import { RESCUE_MISSIONS } from './rescueMissions';
+
 export const MISSIONS: readonly MissionDef[] = [
   {
     id: 'lantern-patrol',
@@ -278,4 +280,5 @@ export const MISSIONS: readonly MissionDef[] = [
       },
     ],
   },
+  ...RESCUE_MISSIONS,
 ];

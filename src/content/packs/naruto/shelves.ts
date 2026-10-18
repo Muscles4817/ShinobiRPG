@@ -1,3 +1,5 @@
+import { PINCER_STRIKE } from '../../shared/beastTechniques';
+
 /**
  * What the village's shelves hold: the academy's rack of standard E–D techniques and the
  * Archives' C–B stacks (C on the open shelves, B restricted to chūnin). Clan techniques are
@@ -6,6 +8,7 @@
 
 /** The Ninja Academy’s scroll rack. */
 export const ACADEMY_SHELF: readonly string[] = [
+  PINCER_STRIKE,
   'basic-strike-combination',
   'leg-sweep',
   'shoulder-throw',

@@ -265,7 +265,8 @@
   margin-top: 10px;
 }
 .festival,
-.night-sight {
+.night-sight,
+.stray {
   display: grid;
   gap: 4px;
   padding: 10px 12px;
@@ -274,7 +275,8 @@
   background: var(--grain), var(--surface);
 }
 .festival p,
-.night-sight p {
+.night-sight p,
+.stray p {
   margin: 0;
   font-family: var(--font-story);
   color: var(--story);
@@ -297,7 +299,8 @@
 .night-sight b {
   color: var(--spirit);
 }
-.night-sight .btn {
+.night-sight .btn,
+.stray .btn {
   justify-self: start;
   min-height: 40px;
 }

@@ -1,6 +1,14 @@
 import type { CombatTrait } from '@/systems/combat';
+import type { EnemyDef } from '@/content';
 import { stageFoes, type MissionDef } from '@/systems/missions';
-import { fightingPower, STAT_IDS, STAT_INFO, type StatId, type Stats } from '@/systems/stats';
+import {
+  fightingPower,
+  partyPower,
+  STAT_IDS,
+  STAT_INFO,
+  type StatId,
+  type Stats,
+} from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
 import { enemyStatLine } from './combatants';
@@ -11,6 +19,7 @@ import { injuryFightEffect } from './injuries';
 import { companionTraits, PERSON_PREFIX } from './people/companions';
 import { personStats } from './people/progress';
 import { findPerson } from './people/cast';
+import { retinueSeen, type RetinueKnowledge } from './retinueSight';
 import type { GameState } from './state';
 
 /**
@@ -64,11 +73,23 @@ export function traitNotes(traits: readonly CombatTrait[]): TraitNote[] {
   return traits.map((trait) => ({ trait, ...TRAIT_NOTES[trait] }));
 }
 
+/** A body you can tell fights beside them (`EnemyDef.retinue`), and how to deal with the pair. */
+export interface CompanionNote {
+  readonly name: string;
+  readonly counter: string;
+}
+
+const COMPANION_COUNTER =
+  'Fights beside them: two bodies to beat, not one. Bring the weaker down first, or outlast both.';
+
 export interface ScoutingRead {
+  /** How they compare with you, counting every body you can tell fights beside them. */
   readonly threat: Threat;
   readonly threatLabel: string;
   /** How they fight beyond numbers, and how to beat it. */
   readonly traits: readonly TraitNote[];
+  /** What you can tell fights beside them. */
+  readonly companions: readonly CompanionNote[];
   /** "Brawler, wants you close". */
   readonly style: string;
   /** Their standout stats beside yours; empty unless your eyes are sharp enough. */
@@ -145,17 +166,36 @@ function standouts(theirs: Stats, yours: Stats): StatCompare[] {
     }));
 }
 
-export function scout(
-  theirs: Stats,
-  yours: Stats,
-  sharp: boolean,
-  traits: readonly CombatTrait[] = [],
-): ScoutingRead {
-  const threat = threatOf(fightingPower(theirs) / Math.max(1, fightingPower(yours)));
+/** A body fighting beside an opponent, as far as a read goes: its stats and how hard it is to fell. */
+export interface Companion {
+  readonly name: string;
+  readonly stats: Stats;
+  /** Its health as a multiple of a human's (`EnemyDef.healthScale`). */
+  readonly healthScale: number;
+}
+
+/** Someone to size up: their stats, and what you can tell of their kit and companions. */
+export interface Opponent {
+  readonly stats: Stats;
+  readonly traits?: readonly CombatTrait[];
+  readonly companions?: readonly Companion[];
+}
+
+/** One rating for an opponent and the companions you can tell are with them. */
+export function opponentPower({ stats, companions = [] }: Opponent): number {
+  // A body half as hard to fell counts for half as much.
+  const beside = companions.map((c) => fightingPower(c.stats) * c.healthScale);
+  return partyPower([fightingPower(stats), ...beside]);
+}
+
+export function scout(them: Opponent, yours: Stats, sharp: boolean): ScoutingRead {
+  const theirs = them.stats;
+  const threat = threatOf(opponentPower(them) / Math.max(1, fightingPower(yours)));
   return {
     threat,
     threatLabel: THREAT_LABEL[threat],
-    traits: traitNotes(traits),
+    traits: traitNotes(them.traits ?? []),
+    companions: (them.companions ?? []).map((c) => ({ name: c.name, counter: COMPANION_COUNTER })),
     style: styleOf(theirs),
     details: sharp ? standouts(theirs, yours) : [],
     handicap: null,
@@ -184,44 +224,56 @@ export function hasSharpEyes(state: GameState, ctx: GameContext): boolean {
   return state.character.stats.perception >= SHARP_EYES || (!!bloodline && !bloodline.dormant);
 }
 
-/** Stats of an enemy from the pack, by id. */
-export function enemyStats(ctx: GameContext, enemyId: string): Stats | null {
-  const def = ctx.content.enemies.get(enemyId);
-  return def ? enemyStatLine(def) : null;
-}
-
-interface Opponent {
-  readonly stats: Stats;
-  readonly traits: readonly CombatTrait[];
-}
-
 /**
  * Whoever stands behind a combatant id: a pack enemy ("bandit-thug#1") or a person you spar
  * with ("person:kaen").
  */
-function opponentOf(state: GameState, ctx: GameContext, combatantId: string): Opponent | null {
+function opponentOf(
+  state: GameState,
+  ctx: GameContext,
+  combatantId: string,
+  knowledge: RetinueKnowledge,
+): Opponent | null {
   if (combatantId.startsWith(PERSON_PREFIX)) {
     const person = findPerson(state, ctx, combatantId.slice(PERSON_PREFIX.length));
     return person ? { stats: personStats(person, state), traits: companionTraits(person) } : null;
   }
   const [base = combatantId] = combatantId.split('#');
-  const stats = enemyStats(ctx, base);
-  return stats ? { stats, traits: ctx.content.enemies.get(base)?.traits ?? [] } : null;
+  const def = ctx.content.enemies.get(base);
+  return def ? enemyOpponent(state, ctx, def, knowledge) : null;
 }
 
-/** A read on each opponent in the fight, keyed by combatant id. */
+/** A pack enemy as a read sees them, with the companions you can tell are beside them. */
+function enemyOpponent(
+  state: GameState,
+  ctx: GameContext,
+  def: EnemyDef,
+  knowledge: RetinueKnowledge,
+): Opponent {
+  const companions = retinueSeen(state, def, knowledge).map(({ enemyId }) => {
+    const unit = ctx.content.enemies.require(enemyId);
+    return { name: unit.name, stats: enemyStatLine(unit), healthScale: unit.healthScale ?? 1 };
+  });
+  return { stats: enemyStatLine(def), traits: def.traits ?? [], companions };
+}
+
+/**
+ * A read on each opponent, keyed by combatant id. In a fight everything on the field is seen
+ * (`full`); before one, a glance may miss what fights beside them (`retinueSight.ts`).
+ */
 export function scoutOpponents(
   state: GameState,
   ctx: GameContext,
   ids: readonly string[],
+  knowledge: RetinueKnowledge = 'full',
 ): Readonly<Record<string, ScoutingRead>> {
   const yours = combatStats(state, ctx);
   const sharp = hasSharpEyes(state, ctx);
   const handicap = handicapOf(state, ctx);
   return Object.fromEntries(
     ids.flatMap((id) => {
-      const them = opponentOf(state, ctx, id);
-      const read = them ? { ...scout(them.stats, yours, sharp, them.traits), handicap } : null;
+      const them = opponentOf(state, ctx, id, knowledge);
+      const read = them ? { ...scout(them, yours, sharp), handicap } : null;
       return read ? [[id, read]] : [];
     }),
   );
@@ -237,14 +289,21 @@ export function scoutPerson(
   return scoutOpponents(state, ctx, [id])[id] ?? null;
 }
 
-/** The toughest foe a job can throw at you, read against you (no sharp eyes: a notice's read). */
+/**
+ * The toughest foe a job can throw at you, with what you can tell fights beside them, read
+ * against you (no sharp eyes: a notice's read). The client's report shows every companion.
+ */
 export function missionThreat(
   state: GameState,
   ctx: GameContext,
   mission: MissionDef,
 ): ScoutingRead | null {
-  const stats = mission.stages.flatMap(stageFoes).flatMap((id) => enemyStats(ctx, id) ?? []);
-  const toughest = stats.sort((a, b) => fightingPower(b) - fightingPower(a))[0];
+  const knowledge = state.board.intel.includes(mission.id) ? 'full' : 'glance';
+  const foes = mission.stages
+    .flatMap(stageFoes)
+    .flatMap((id) => ctx.content.enemies.get(id) ?? [])
+    .map((def) => enemyOpponent(state, ctx, def, knowledge));
+  const toughest = foes.sort((a, b) => opponentPower(b) - opponentPower(a))[0];
   if (!toughest) return null;
   return { ...scout(toughest, combatStats(state, ctx), false), handicap: handicapOf(state, ctx) };
 }

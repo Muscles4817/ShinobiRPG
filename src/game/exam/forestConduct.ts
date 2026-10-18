@@ -26,7 +26,7 @@ function outmatched(state: GameState, ctx: GameContext): boolean {
     .map(enemyStatLine)
     .sort((a, b) => fightingPower(b) - fightingPower(a))[0];
   if (!toughest) return false;
-  const { threat } = scout(toughest, combatStats(state, ctx), false);
+  const { threat } = scout({ stats: toughest }, combatStats(state, ctx), false);
   return threat === 'stronger' || threat === 'much-stronger';
 }
 

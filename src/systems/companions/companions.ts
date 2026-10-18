@@ -1,0 +1,176 @@
+import { addPoints, bondWith, stageOf } from '@/systems/bonds';
+import type { Aptitude, Stats } from '@/systems/stats';
+
+/**
+ * Companions: bonded creatures that fight beside someone (`docs/design/retinue-plan.md`). A
+ * companion's record is its own (stats, talent, the bond), kept by owner so anyone may have
+ * one; the player's is under `PLAYER_OWNER`. How a kind takes to people is its temperament,
+ * read from one table: how fast the bond grows, how many stages later it takes orders and how
+ * many days it takes to win over. Its body grows with time (`growth.ts`), its skills by training.
+ * Befriending a stray is a few days' visits; once it trusts you, it comes home.
+ */
+
+export const COMPANION_TEMPERAMENTS = ['bred', 'stray', 'wild'] as const;
+export type CompanionTemperament = (typeof COMPANION_TEMPERAMENTS)[number];
+
+/** The owner id the player's companion is kept under. */
+export const PLAYER_OWNER = 'player';
+
+export interface Companion {
+  /** Stable for its life, so its combatant id and growth hash never change. */
+  readonly id: string;
+  readonly kindId: string;
+  readonly name: string;
+  readonly stats: Stats;
+  /** Its hidden talent, rolled when it joined you. */
+  readonly aptitude: Aptitude;
+  /** Bond points with its owner (`systems/bonds` stages). */
+  readonly bond: number;
+  /** The last day its routine has been caught up through. */
+  readonly lastGrownDay: number;
+  /** Its health now, out of its kind's maximum; it carries between fights and mends overnight. */
+  readonly health: number;
+  /** The last day it was given a meal (`care.ts`). */
+  readonly lastFedDay: number;
+  /** The last day you played with it. */
+  readonly lastPlayDay: number | null;
+  /** Knocked down in a fight: home until this day dawns, and not treated by a vet yet. */
+  readonly injury: CompanionInjury | null;
+  /** Whether you have found out its favourite food. */
+  readonly favouriteKnown: boolean;
+  /** Days of growing it has had (`growth.ts`): fed days count whole, hungry ones half. */
+  readonly grownDays: number;
+  /** The last day training together counted towards the bond (once a day). */
+  readonly lastTrainedDay: number | null;
+  /** The last day it was shown real care (a game, a proper meal, training); neglect drifts. */
+  readonly lastCaredDay: number;
+  /** Kind techniques a handler has taught it (those the bond alone opens aren't kept here). */
+  readonly learned: readonly string[];
+}
+
+/** A companion laid up after a fight. */
+export interface CompanionInjury {
+  readonly until: number;
+  /** A vet has seen to it (once per injury). */
+  readonly treated: boolean;
+  /** The last day it was given medicine (once a day). */
+  readonly dosedDay: number | null;
+}
+
+/** A stray you are winning over, or a wild one you are tracking: the good days so far, and the last tried. */
+export interface StrayFriendship {
+  readonly kindId: string;
+  readonly visits: number;
+  readonly lastVisitDay: number;
+}
+
+export interface Companions {
+  /** Each owner's companion (one each, for now), by owner id. */
+  readonly owned: Readonly<Record<string, Companion>>;
+  /** A stray you are winning over in the village. */
+  readonly befriending: StrayFriendship | null;
+  /** A wild one you are tracking in the wilds (kept apart, so neither undoes the other). */
+  readonly tracking: StrayFriendship | null;
+  /** An animal a job rescued, waiting at the animal clinic for you to take it home. */
+  readonly waiting: Companion | null;
+  /** A stray of yours that went back to the streets, kept to come home again if won back. */
+  readonly strayed: Companion | null;
+  /** Doses of medicine you carry for it. */
+  readonly medicine: number;
+  /** Handling lore you have read (`CompanionLoreDef`): your own sessions count for more. */
+  readonly lore: readonly string[];
+}
+
+export const NO_COMPANIONS: Companions = {
+  owned: {},
+  befriending: null,
+  tracking: null,
+  waiting: null,
+  strayed: null,
+  medicine: 0,
+  lore: [],
+};
+
+interface TemperamentRules {
+  /** Bond gained, as a multiple of what a person would give. */
+  readonly bondRate: number;
+  /** How many bond stages later than a bred animal it takes orders. */
+  readonly ordersLater: number;
+  /** Days spent winning it over before it is yours (strays befriended, wild ones tracked). */
+  readonly daysToWin: number;
+}
+
+const TEMPERAMENT_RULES: Readonly<Record<CompanionTemperament, TemperamentRules>> = {
+  bred: { bondRate: 1.2, ordersLater: 0, daysToWin: 0 },
+  stray: { bondRate: 1, ordersLater: 0, daysToWin: 3 },
+  wild: { bondRate: 0.6, ordersLater: 1, daysToWin: 5 },
+};
+
+/** The bond stage a bred companion takes stance orders at, and card orders. */
+const STANCE_ORDERS_STAGE = 1;
+const CARD_ORDERS_STAGE = 2;
+
+/** The bond each starts with: a stray that follows you home, a wild one, a pup or a rescue. */
+export const STRAY_START_BOND = 5;
+export const WILD_START_BOND = 0;
+export const PUP_START_BOND = 10;
+export const RESCUED_START_BOND = 10;
+
+/** Days of winning over a stray or tracking a wild one before it is yours. */
+export function daysToWin(temperament: CompanionTemperament): number {
+  return TEMPERAMENT_RULES[temperament].daysToWin;
+}
+
+/** Bond points for some time together, by temperament. */
+export function bondGain(base: number, temperament: CompanionTemperament): number {
+  return base * TEMPERAMENT_RULES[temperament].bondRate;
+}
+
+/** A companion with more bond (never past the top or below none). */
+export function withBond(companion: Companion, delta: number): Companion {
+  return { ...companion, bond: addPoints(bondWith(companion.bond), delta).points };
+}
+
+/** The bond stages at which a companion of this temperament takes stance and card orders. */
+export function ordersStages(temperament: CompanionTemperament): {
+  readonly stance: number;
+  readonly cards: number;
+} {
+  const later = TEMPERAMENT_RULES[temperament].ordersLater;
+  return { stance: STANCE_ORDERS_STAGE + later, cards: CARD_ORDERS_STAGE + later };
+}
+
+/** Which orders a companion takes from its owner at this bond. */
+export function ordersOpen(
+  bond: number,
+  temperament: CompanionTemperament,
+): { readonly stance: boolean; readonly cards: boolean } {
+  const stage = stageOf(bond);
+  const at = ordersStages(temperament);
+  return { stance: stage >= at.stance, cards: stage >= at.cards };
+}
+
+/** The befriending after one more day with a stray. */
+export function visitStray(
+  befriending: StrayFriendship | null,
+  kindId: string,
+  day: number,
+): StrayFriendship {
+  const visits = befriending?.kindId === kindId ? befriending.visits + 1 : 1;
+  return { kindId, visits, lastVisitDay: day };
+}
+
+/** A day spent tracking a wild one that slipped you: the day counts as tried, not as won. */
+export function lostTrail(
+  befriending: StrayFriendship | null,
+  kindId: string,
+  day: number,
+): StrayFriendship {
+  const visits = befriending?.kindId === kindId ? befriending.visits : 0;
+  return { kindId, visits, lastVisitDay: day };
+}
+
+/** Whether it now trusts you enough to come home. */
+export function wonOver(befriending: StrayFriendship, temperament: CompanionTemperament): boolean {
+  return befriending.visits >= daysToWin(temperament);
+}

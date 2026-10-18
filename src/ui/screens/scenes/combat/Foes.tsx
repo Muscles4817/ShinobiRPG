@@ -28,6 +28,11 @@ export function Read({ read }: { readonly read: ScoutingRead }) {
           <b>{t.label}</b> {t.counter}
         </span>
       ))}
+      {read.companions.map((c) => (
+        <span key={c.name} className="trait-note">
+          <b>With {c.name.toLowerCase()}.</b> {c.counter}
+        </span>
+      ))}
       {read.details.length > 0 && (
         <small className="num">
           {read.details.map((d) => `${d.label} ${d.theirs} (you ${d.yours})`).join(', ')}

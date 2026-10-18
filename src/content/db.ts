@@ -10,6 +10,7 @@ import type { ExerciseDef } from './exercises';
 import type { FurnishingDef, GardenCrop, HomeDef } from './homes';
 import type { QuirkDef } from './quirks';
 import type { CurriculumBeat } from './curriculum';
+import type { CompanionKindDef, CompanionLoreDef } from './companions';
 import type { SenseiTestDef } from './senseiTests';
 import type { InjuryDef } from './injuries';
 import type { BuildDef, UpbringingDef } from './upbringing';
@@ -65,6 +66,8 @@ export interface ContentDb {
   readonly arcs: Catalog<ArcDef>;
   readonly voices: readonly VoiceDef[];
   readonly enemies: Catalog<EnemyDef>;
+  readonly companionKinds: Catalog<CompanionKindDef>;
+  readonly companionLore: Catalog<CompanionLoreDef>;
   readonly training: Catalog<TrainingDef>;
   readonly foods: Catalog<FoodDef>;
   readonly clans: Catalog<ClanDef>;
@@ -116,6 +119,8 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     arcs: createCatalog('arc', pack.arcs),
     voices: pack.voices,
     enemies: createCatalog('enemy', pack.enemies),
+    companionKinds: createCatalog('companion kind', pack.companionKinds),
+    companionLore: createCatalog('companion lore', pack.companionLore),
     training: createCatalog('training', pack.training),
     foods: createCatalog('food', pack.foods),
     clans: createCatalog('clan', pack.clans),
