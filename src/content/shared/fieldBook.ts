@@ -6,26 +6,26 @@ export const FIELD_BOOK_REWARDS: FieldBookRewards = {
     furnishingId: 'gyotaku-print',
     keepsake: {
       name: 'A cork float, bitten',
-      line: 'Every fish the rivers keep, caught at least once.',
+      line: 'Off the line that has brought up every fish the rivers keep.',
     },
   },
   finds: {
     furnishingId: 'drying-rack',
     keepsake: {
       name: 'A forager’s knife',
-      line: 'Every wild thing the woods and banks give, gathered by your own hand.',
+      line: 'Worn smooth at the grip from gathering everything the woods and banks give.',
     },
   },
   recipes: {
     keepsake: {
       name: 'A cook’s knife, honed thin',
-      line: 'Every dish there is to learn, learned.',
+      line: 'Kept sharp through every dish there was to learn.',
     },
   },
   sights: {
     keepsake: {
       name: 'A paper lantern that never quite goes out',
-      line: 'Every sight that walks the village at night, followed to its end.',
+      line: 'It has burned since the night you followed the last of the village’s sights to its end.',
     },
   },
   foes: {

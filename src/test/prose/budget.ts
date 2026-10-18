@@ -30,9 +30,9 @@ export const PROSE_BUDGET: {
   },
   style: {
     original: {
-      meanSentence: 9.5,
-      shortShare: 0.25,
-      quipShare: 0.22,
+      meanSentence: 9.4,
+      shortShare: 0.24,
+      quipShare: 0.19,
       per1k: {
         gesture: 0.1,
         triple: 1.6,
@@ -45,11 +45,11 @@ export const PROSE_BUDGET: {
     },
     naruto: {
       meanSentence: 9,
-      shortShare: 0.27,
-      quipShare: 0.21,
+      shortShare: 0.25,
+      quipShare: 0.19,
       per1k: {
         gesture: 0.2,
-        triple: 1.1,
+        triple: 1.2,
         colon: 0.2,
         vagueSomething: 0.2,
         stockAtmosphere: 0.1,

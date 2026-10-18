@@ -1,3 +1,4 @@
+import type { EnemyDef } from '@/content';
 import type { Rng } from '@/core';
 import type { CombatOpening, CombatOutcome } from '@/systems/combat';
 import {
@@ -16,7 +17,7 @@ import { MAX_HEALTH } from '@/systems/vitals';
 import { deduct } from '@/systems/wallet';
 
 import { enemyParty, playerCombatant } from './combatants';
-import { foeList } from './foeNames';
+import { beatenLine, foeList } from './foeNames';
 import type { GameContext } from './context';
 import { noteFight } from './fieldBook/record';
 import { startFight } from './fightStyle';
@@ -80,10 +81,17 @@ export function beginCombat(
   return { ...state, combat };
 }
 
+interface Foes {
+  readonly defs: readonly EnemyDef[];
+  /** What the story calls them: "two bandit thugs and an archer". */
+  readonly enemies: string;
+}
+
 /** A won fight moves the mission on; an encounter's fight pays as its job says. */
-function afterVictory(run: MissionRun, stage: MissionStage | null, enemies: string): MissionRun {
+function afterVictory(run: MissionRun, stage: MissionStage | null, foes: Foes): MissionRun {
+  const { defs, enemies } = foes;
   const fought = { ...run, marks: withMark(run.marks, END_MARKS.fought) };
-  const won = addLedger(fought, { text: `Beat ${enemies} in a fight.`, tone: 'plain' });
+  const won = addLedger(fought, { text: beatenLine(defs), tone: 'plain' });
   const next = advance(won, { kind: 'outcome', text: `You defeated ${enemies}.` });
   return stage?.kind === 'encounter' ? withStagePay(next, stagePay(stage.job, 'fought')) : next;
 }
@@ -140,8 +148,8 @@ export function resolveCombat(
       chakra: outcome.player.chakra - vitals.chakra,
     },
   );
-  const enemies =
-    foes.length > 0 ? foeList(foes.map((id) => ctx.content.enemies.require(id))) : 'your opponent';
+  const defs = foes.map((id) => ctx.content.enemies.require(id));
+  const enemies = defs.length > 0 ? foeList(defs) : 'your opponent';
 
   switch (outcome.result) {
     case 'victory': {
@@ -157,7 +165,7 @@ export function resolveCombat(
         ...(outcome.summary ? { summary: outcome.summary } : {}),
       });
       if (!reported.mission) return reported;
-      const mission = afterVictory(reported.mission, stage, enemies);
+      const mission = afterVictory(reported.mission, stage, { defs, enemies });
       return afterStage({ ...reported, mission }, ctx);
     }
     case 'escaped':

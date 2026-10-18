@@ -76,7 +76,7 @@ export const VILLAGE: VillageLife = {
     },
     {
       id: 'chunin-exams',
-      text: 'The jōnin are talking in low voices about the next Chūnin Exams.',
+      text: 'The jōnin are whispering about the next Chūnin Exams.',
     },
     {
       id: 'ichiraku-new',
@@ -87,33 +87,39 @@ export const VILLAGE: VillageLife = {
     {
       id: 'chakra-trail',
       title: 'A chakra trail',
-      text: 'A thread of foreign chakra runs along the wall and over it.',
-      outcome: 'You follow it to the gate and report it. The night guard looks impressed.',
-      unseen: 'The gate guards seem restless tonight.',
+      text: 'A thread of chakra that isn’t the Leaf’s runs along the outer wall, then up and over it near the east gate.',
+      outcome:
+        'You follow it to the east gate and report it, and the night guard sends a runner before you have finished describing it.',
+      unseen: 'The gate guards are doubled tonight, and nobody will say why.',
       reward: { perception: 1 },
     },
     {
       id: 'monument-figure',
       title: 'Someone on the monument',
       text: 'A figure sits on the Hokage Monument, chakra dimmed almost to nothing.',
-      outcome: 'You climb up. It’s a jōnin on watch, who teaches you how she hides her chakra.',
-      unseen: 'You think you see a figure move on the monument, though it’s probably nothing.',
+      outcome:
+        'You climb up and find a jōnin on watch, amused enough at being found to show you how she keeps her chakra so low.',
+      unseen:
+        'For a moment a shadow on the monument seems to move, but when you look again it is only stone.',
       reward: { chakraControl: 1 },
     },
     {
       id: 'training-ground-ghost',
       title: 'Echoes on the training ground',
       text: 'Chakra still hangs over Training Ground Three, where someone fought hard tonight.',
-      outcome: 'You read the traces like footprints and learn a little of how they moved.',
-      unseen: 'Training Ground Three is scarred with fresh craters.',
+      outcome:
+        'You walk the ground reading the traces like footprints, and by the time they fade you have a fair idea how the fighter moved.',
+      unseen: 'Training Ground Three has fresh craters in it that weren’t there this morning.',
       reward: { taijutsu: 1 },
     },
     {
       id: 'genjutsu-veil',
       title: 'A veil over an alley',
       text: 'One alley is wrapped in a thin genjutsu that turns passers-by away.',
-      outcome: 'You see through it and work out how it was woven before it fades.',
-      unseen: 'You take a shortcut home and somehow end up back where you started.',
+      outcome:
+        'You see through it and stand at the mouth of the alley working out how it was woven, thread by thread, until it fades.',
+      unseen:
+        'You take the alley as a shortcut home and come out, without knowing how, where you went in.',
       reward: { genjutsu: 1 },
     },
   ],

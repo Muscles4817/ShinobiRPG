@@ -24,3 +24,24 @@ describe('the slots of a sensei past', () => {
     ]);
   });
 });
+
+describe('the ledger of a sensei past', () => {
+  it('refuses speech, a long line, the place or a line without a full stop', () => {
+    const [first, ...rest] = ORIGINAL_PACK.senseiParts.pasts;
+    const ledger = {
+      ...first!.arc.ledger,
+      mercy: '“Bring them home,” you said.',
+      spared:
+        'Brought {lost} home after a long road with many turns and many stops along the way there.',
+      ended: 'Ended it at {place}',
+    };
+    const pasts = [{ ...first!, arc: { ...first!.arc, ledger } }, ...rest];
+    const pack = { ...ORIGINAL_PACK, senseiParts: { ...ORIGINAL_PACK.senseiParts, pasts } };
+    expect(validateSenseiParts(pack)).toEqual([
+      expect.stringContaining('quotes speech in its ledger: mercy'),
+      expect.stringContaining('ledger line too long: spared'),
+      expect.stringContaining('names the place in its ledger: ended'),
+      expect.stringContaining('without a full stop: ended'),
+    ]);
+  });
+});

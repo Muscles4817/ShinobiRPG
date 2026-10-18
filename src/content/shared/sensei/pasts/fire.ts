@@ -119,6 +119,14 @@ export const THE_FIRE: SenseiPast = {
     title: 'Ash and Embers',
     summary:
       'An arsonist called {foe} is burning farms near {place}, the way {name} once burned one by accident.',
+    ledger: {
+      found: 'Found {foe}’s hut and oil jars far from any farm.',
+      mercy: 'Told {name} to take {foe} home to be judged.',
+      leave: 'Left the choice to {name}.',
+      finish: 'Told {name} to make sure {foe} never burned anything again.',
+      spared: 'Brought {foe} home bound, for the village to judge.',
+      ended: '{foe} died in the rain, and the fires went out.',
+    },
     find: {
       title: 'Smoke at {place}',
       summary: 'Follow {foe}’s trail of burned farms near {place} to where {foe.they} hide{foe.s}.',

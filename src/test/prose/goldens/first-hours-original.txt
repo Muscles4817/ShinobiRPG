@@ -298,9 +298,9 @@ view:
     when: In six days
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
-  rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
-  rumours[1]: The lantern-lighters swear there are more lanterns every year than they remember hanging.
-  rumours[2]: The Riverside Grill won’t say where its eels come from. Nobody has seen them caught.
+  rumours[0]: The cook on the Four Seasons Cart changes his menu by the weather, not the calendar.
+  rumours[1]: Shiori has read every scroll in the academy library. Twice.
+  rumours[2]: Kaen ate eight bowls at Kenji’s last night and still asked for a ninth.
 
 >>> heedSensei
   journal «Your week»: Gōran hands you a slip with the days of the week marked on it. “Those are the days I want you at the training ground. One full lesson, the rest short. Come when I say and I’ll think better of you, and if you leave me standing there I’ll remember it. A job or a sickbed excuses you. Nothing else does.”
@@ -442,8 +442,8 @@ view:
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
   rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
-  rumours[1]: Yomi-sensei talks to the lanterns. Some say the lanterns answer.
-  rumours[2]: Shiori has read every scroll in the academy library. Twice.
+  rumours[1]: Old Tsune hears every whisper in the village. Be careful what you say near her.
+  rumours[2]: Old Hagane at the forge is working on a blade he won’t talk about.
   stray:
     text: A thin grey hound noses through the scraps under the lanterns, ribs showing.
     where: Near the Training Grounds
@@ -631,20 +631,20 @@ view:
     when: In four days
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
-  rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
-  rumours[1]: The old lantern-keeper is calling for his cat again. Third time this month.
-  rumours[2]: The Riverside Grill won’t say where its eels come from. Nobody has seen them caught.
+  rumours[0]: The old lantern-keeper is calling for his cat again. Third time this month.
+  rumours[1]: Kasumi wraps her buns in old mission notices. Someone found a sealed one inside.
+  rumours[2]: Akari-sensei gets a letter every week from the capital and burns each one unread.
 
 >>> heedSensei
   journal «The jobs board»: Gōran keeps you a moment to talk about the jobs board at the mission hall. “Chores inside the walls you do on your own. Anything past the gate, I’m coming with you. New work goes up every few days. Take what pays and what you can live through.”
 
 >>> senseiSession
   journal «Drills with Gōran»: Gōran drills you on the basics until they stop feeling like basics. “You dropped your elbow every time you got tired,” Gōran says. “Fix that before I see you next.” [Strength, a touch] [Taijutsu, a touch] [Gōran’s regard rises] [−10 energy]
-  journal «A feel for your strength»: It comes naturally, as if your body remembered something it was never taught.
+  journal «Building strength»: It comes naturally, as if your body remembered something it was never taught.
 
 >>> train
   journal «Lake Laps»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
-  journal «A feel for your stamina»: It fights you every step. Others seem to pick this up in half the time.
+  journal «Building stamina»: It fights you every step. Others seem to pick this up in half the time.
 
 >>> talk
 
@@ -834,7 +834,7 @@ view:
     perks[1]: Bonds +2 per talk
   rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
   rumours[1]: The priests say the spirit shrine is choking on weeds, and nobody wants to touch them.
-  rumours[2]: Yomi-sensei talks to the lanterns. Some say the lanterns answer.
+  rumours[2]: An envoy from the desert village came and went without a word to anyone.
 
 >>> heedSensei
   journal «Cooking»: Gōran asks whether you can cook, and doesn’t seem surprised by the answer. “Learn to cook. A good dish keeps you sharper and harder to kill all day long. Grocers sell books of recipes, and friends teach theirs.”
@@ -1026,9 +1026,9 @@ view:
     when: In two days
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
-  rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
-  rumours[1]: Gōran-sensei was seen running the lake before dawn. With a boulder.
-  rumours[2]: Akari-sensei gets a letter every week from the capital and burns each one unread.
+  rumours[0]: The lantern-lighters swear there are more lanterns every year than they remember hanging.
+  rumours[1]: The cook on the Four Seasons Cart changes his menu by the weather, not the calendar.
+  rumours[2]: Shiori has read every scroll in the academy library. Twice.
   stray:
     text: A thin grey hound noses through the scraps under the lanterns, ribs showing.
     where: Near the Training Grounds
@@ -1222,8 +1222,8 @@ view:
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
   rumours[0]: Genin from every village in the Land of Embers are taking rooms by the river. The Lantern Trials are close.
-  rumours[1]: The cook on the Four Seasons Cart changes his menu by the weather, not the calendar.
-  rumours[2]: Shiori has read every scroll in the academy library. Twice.
+  rumours[1]: Kaen ate eight bowls at Kenji’s last night and still asked for a ninth.
+  rumours[2]: Old Tsune hears every whisper in the village. Be careful what you say near her.
   stray:
     text: A thin grey hound noses through the scraps under the lanterns, ribs showing.
     where: Near the Training Grounds
@@ -1407,9 +1407,9 @@ view:
     when: Today
     perks[0]: Market −30%
     perks[1]: Bonds +2 per talk
-  rumours[0]: Old Tsune hears every word said in the village. Be careful what you say near her.
-  rumours[1]: Gōran-sensei was seen running the lake before dawn. With a boulder.
-  rumours[2]: Old Hagane at the forge is working on a blade he won’t talk about.
+  rumours[0]: Gōran-sensei was seen running the lake before dawn. With a boulder.
+  rumours[1]: Kasumi wraps her buns in old mission notices. Someone found a sealed one inside.
+  rumours[2]: Akari-sensei gets a letter every week from the capital and burns each one unread.
 
 >>> senseiSession
   refused: Your sensei hasn’t set a session for today.
@@ -1574,9 +1574,9 @@ view:
 
 === village ===
 view:
-  rumours[0]: The borders have been quiet lately. The old-timers say that’s never good.
-  rumours[1]: Shiori has read every scroll in the academy library. Twice.
-  rumours[2]: Akari-sensei gets a letter every week from the capital and burns each one unread.
+  rumours[0]: Yomi-sensei talks to the lanterns. Some say the lanterns answer.
+  rumours[1]: An envoy from the desert village came and went without a word to anyone.
+  rumours[2]: The borders have been quiet lately. The old-timers say that’s never good.
 
 >>> trainWith
   journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength, a little] [Taijutsu, a little] [+3 bond] [−30 energy]
@@ -1595,7 +1595,7 @@ view:
 
 >>> train
   journal «Waterfall Endurance»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a touch] [Willpower, a little] [−25 energy]
-  journal «A feel for your willpower»: It comes as it comes: honest work, honest progress.
+  journal «Hardening your will»: It comes as it comes: honest work, honest progress.
 
 >>> talk
   refused: Goro isn’t around right now.

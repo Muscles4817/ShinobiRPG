@@ -116,6 +116,14 @@ export const RIVAL: SenseiPast = {
   arc: {
     title: 'One More Bout',
     summary: '{lost}, {name}’s old rival, has sent a challenge to {place}.',
+    ledger: {
+      found: 'Found {lost}’s practice clearing.',
+      mercy: 'Told {name} to ask {lost} to come home.',
+      leave: 'Told {name} to win first and decide after.',
+      finish: 'Told {name} to finish it.',
+      spared: 'Brought {lost} home after the last bout.',
+      ended: '{lost} died in the last bout, and {name} left the score uncounted.',
+    },
     find: {
       title: 'The Challenge at {place}',
       summary: '{name} wants to find where {lost} is waiting before the bout is fought.',

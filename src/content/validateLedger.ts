@@ -10,7 +10,6 @@ import type { ContentPack } from './types';
 
 /** Longer than this, a ledger line is telling the story again rather than noting a fact. */
 export const LEDGER_MAX_WORDS = 16;
-const POOLED_PREFIX = 'pool-';
 
 function storyLines(stage: MissionStage): string[] {
   switch (stage.kind) {
@@ -83,8 +82,5 @@ export function ledgerProblems(pack: ContentPack): string[] {
       .filter((o) => o.ledger !== undefined && o.ledger === o.reply)
       .map((o) => `road event "${e.id}" writes its reply to "${o.label}" into the ledger`),
   );
-  // The sensei pool's arc jobs (`pool-…`) are composed by `game/sensei/pool/`, whose ledger
-  // still reuses its story lines; they join this rule once that composer writes its own.
-  const written = pack.missions.filter((m) => !m.id.startsWith(POOLED_PREFIX));
-  return [...written.flatMap(missionLedgerProblems), ...roadEvents];
+  return [...pack.missions.flatMap(missionLedgerProblems), ...roadEvents];
 }

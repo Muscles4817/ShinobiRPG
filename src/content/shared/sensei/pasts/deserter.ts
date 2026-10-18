@@ -122,6 +122,14 @@ export const DESERTER: SenseiPast = {
   arc: {
     title: 'The Free Blades',
     summary: '{lost}, who ran away with {name} long ago, has brought a sell-sword band to {place}.',
+    ledger: {
+      found: 'Found the Free Blades’ camp.',
+      mercy: 'Told {name} to ask the village for {lost}’s second chance.',
+      leave: 'Told {name} to let {lost} choose.',
+      finish: 'Told {name} that {lost} had chosen long ago.',
+      spared: 'Brought {lost} home to the village.',
+      ended: '{lost} died, and the Free Blades scattered.',
+    },
     find: {
       title: 'Old Friends at {place}',
       summary: '{name} wants to find the Free Blades’ camp near {place} before they move.',

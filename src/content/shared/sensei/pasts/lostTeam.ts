@@ -118,6 +118,14 @@ export const LOST_TEAM: SenseiPast = {
   arc: {
     title: 'The Rain at {place}',
     summary: '{name}’s old team fell at {place}, and {foe} is back there.',
+    ledger: {
+      found: 'Found {foe}’s hollow under a rock face.',
+      mercy: 'Told {name} to bring {foe} home for the village to judge.',
+      leave: 'Left the choice to {name}.',
+      finish: 'Told {name} to end it.',
+      spared: 'Brought {foe} home bound and alive.',
+      ended: '{foe} died where {name}’s team fell.',
+    },
     find: {
       title: 'Back to {place}',
       summary: '{name} wants to see the place again, and find where {foe} is hiding.',
