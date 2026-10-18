@@ -1,4 +1,5 @@
 import { isRentOverdue, ownsHouse } from '@/systems/housing';
+import type { JournalChip } from '@/systems/journal';
 import { diffStats, type StatDelta, type StatId } from '@/systems/stats';
 import { slotsUntilNextMorning } from '@/systems/time';
 import { isHungry, maxChakra, METER_MAX, sleepRecovery, type VitalsDelta } from '@/systems/vitals';
@@ -208,6 +209,10 @@ export interface Night {
   readonly text: string;
   /** A rough night (hungry, locked out): the log says so. */
   readonly uneasy: boolean;
+  /** Where the night was spent, when not in your own bed. */
+  readonly heading?: string;
+  /** What the bed cost, on the same entry as the night. */
+  readonly chips?: readonly JournalChip[];
 }
 
 /** To the next morning in a bed: energy and chakra back, and some health. */
@@ -219,10 +224,11 @@ export function sleepTillDawn(state: GameState, ctx: GameContext, night: Night):
   const mended = mendedOvernight(state, characterModifiers(state.character, ctx).injuryNights);
   const rested = adjust(spendTime(mended, slotsUntilNextMorning(state.time), ctx), recovery);
   return log(rested, {
-    heading: 'Sleep till dawn',
+    heading: night.heading ?? 'Sleep till dawn',
     text: night.text,
     tone: night.uneasy ? 'warning' : 'info',
     chips: [
+      ...(night.chips ?? []),
       chip(chakra.partial ? 'Energy restored' : 'Energy & chakra restored', 'gain'),
       ...(chakra.partial ? [chip('Chakra only partly back', 'cost')] : []),
       ...amountChip('Health', Math.max(0, rested.character.vitals.health - before), 'gain'),
