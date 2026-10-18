@@ -36,6 +36,7 @@ import { bondsNow } from '../debrief';
 import { travel } from '../road';
 import { playEnding } from '../story/ending';
 import { feel } from '../story/personal';
+import { arrivalLine } from '../story/arrivals';
 import { roadEventOn } from '../story/roadEvents';
 import { settle, storyOf } from '../story/state';
 import { crewVoice } from '../story/voices';
@@ -154,19 +155,32 @@ function onTheRoad(
   stage: Extract<MissionStage, { kind: 'leg' }>,
 ): GameState {
   if (!state.mission) return state;
-  const line = variantText(storyOf(state.mission), stage.text, stage.variants);
   const def = activeMission(state, ctx);
-  const walked = travel(state, ctx, stage.days, line);
+  const told = variantText(storyOf(state.mission), stage.text, stage.variants);
+  // The last road of all ends somewhere by name, and nothing more comes up on it.
+  const end = def ? roadsEnd(state, def) : null;
+  const arrived = end ? arrivalLine(state, ctx, end) : null;
+  const line = arrived ? `${told} ${arrived.text}` : told;
+  const walked = travel(arrived?.state ?? state, ctx, stage.days, line);
   // A new morning on the road: the light is back.
   const travelled = def ? lightOfDay(walked, def) : walked;
   if (!travelled.mission) return travelled;
   const run = travelled.mission;
   const noted = { ...run, notes: [...run.notes, { kind: 'story' as const, text: line }] };
-  const event = stage.region
-    ? roadEventOn({ ...travelled, mission: noted }, ctx, stage.region)
-    : null;
+  const event =
+    stage.region && !end ? roadEventOn({ ...travelled, mission: noted }, ctx, stage.region) : null;
   if (event) return { ...travelled, mission: { ...noted, roadEvent: event.id } };
   return afterStage({ ...travelled, mission: advance(noted) }, ctx);
+}
+
+/**
+ * Where the road ends when this leg is the job's last stage: a trip's destination, or where
+ * the job leaves you (somewhere else, or back where it was taken). Null mid-way.
+ */
+function roadsEnd(state: GameState, def: MissionDef): string | null {
+  const run = state.mission;
+  if (run?.stageIndex !== def.stages.length - 1) return null;
+  return run.journey?.to ?? def.endsAt ?? state.locationId;
 }
 
 export const missionContinue: ActionHandler<ActionOf<'missionContinue'>> = {

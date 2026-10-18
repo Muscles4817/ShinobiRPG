@@ -203,6 +203,8 @@ export interface JourneyPlan {
     readonly region: string;
     readonly days: number;
     readonly text: string;
+    /** The location the leg heads for (absent on trips saved before roads had a heading). */
+    readonly toward?: string;
   }[];
   /** Walk on without stopping to camp; only a road event halts you. */
   readonly quick: boolean;
