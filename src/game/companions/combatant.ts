@@ -56,6 +56,7 @@ export function companionAllies(state: GameState, ctx: GameContext): CombatantSe
     {
       id: `${PREFIX}${companion.id}`,
       name: companion.name,
+      grammar: 'it',
       tag: kind.name,
       attributes: attributesOf(scaled(companion.stats, hunger)),
       health: Math.max(1, Math.round(companion.health)),

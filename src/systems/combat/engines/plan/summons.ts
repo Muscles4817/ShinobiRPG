@@ -1,5 +1,6 @@
 import { alive } from '../../rules/body';
 import { harmLine } from '../../rules/narration';
+import { tell } from '../../rules/telling';
 import type { CombatCall, SummonFate } from '../../contract';
 import {
   calledFighter,
@@ -49,7 +50,7 @@ export function callSummon(round: Round, actor: PlanFighter, callId: string): Ro
   const caller: Fighter = actor;
   const call = caller.calls?.find((c) => c.id === callId);
   if (!call || (caller.summonsOut ?? []).includes(callId)) {
-    return say(round, `${actor.name}'s summoning finds nothing to answer it.`);
+    return say(round, tell('{a.their} summoning finds nothing to answer it.', { a: actor }));
   }
   const body = summoned(round, caller, call);
   const blood = Math.min(call.bloodPrice ?? 0, Math.max(0, caller.health - BLOOD_FLOOR));
@@ -59,9 +60,13 @@ export function callSummon(round: Round, actor: PlanFighter, callId: string): Ro
   );
   const answered = say(
     { ...round, fighters: [...fighters, body] },
-    `${actor.name} slams a palm down. Smoke bursts, and ${body.name} answers the call.`,
+    tell('{a} slam{a.s} a palm down. Smoke bursts, and {b} answers the call.', {
+      a: actor,
+      b: body,
+    }),
   );
-  return blood > 0 ? say(answered, harmLine(`${actor.name} pays in blood.`, blood)) : answered;
+  const paid = harmLine(tell('{a} pay{a.s} in blood.', { a: actor }), blood);
+  return blood > 0 ? say(answered, paid) : answered;
 }
 
 /** Why a summon goes home now, or null while it stays. */
@@ -74,10 +79,10 @@ function goingHome(round: Round, summon: Fighter): SummonFate | null {
   return caller.chakra < (summon.upkeep ?? 0) ? 'sent-home' : null;
 }
 
-const HOME_LINES: Readonly<Record<SummonFate, (name: string) => string>> = {
-  stayed: (name) => `${name} stays.`,
-  fell: (name) => `${name} is beaten and vanishes in a puff of smoke.`,
-  'sent-home': (name) => `${name} vanishes in a puff of smoke, back where it came from.`,
+const HOME_LINES: Readonly<Record<SummonFate, string>> = {
+  stayed: '{s} stay{s.s}.',
+  fell: '{s} {s.is} beaten and vanish{s.es} in a puff of smoke.',
+  'sent-home': '{s} vanish{s.es} in a puff of smoke, back where {s.they} came from.',
 };
 
 function leaves(round: Round, summon: Fighter, fate: SummonFate): Round {
@@ -94,7 +99,7 @@ function leaves(round: Round, summon: Fighter, fate: SummonFate): Round {
         summonFates: { ...caller.summonFates, [callId]: fate },
       };
     });
-  return say({ ...round, fighters }, HOME_LINES[fate](summon.name));
+  return say({ ...round, fighters }, tell(HOME_LINES[fate], { s: summon }));
 }
 
 function upkeepPaid(round: Round, summon: Fighter): Round {

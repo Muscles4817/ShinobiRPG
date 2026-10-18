@@ -133,7 +133,7 @@ describe('CombatScene (smoke test)', () => {
     const state = atEncounter('academy-dropout', blind, hardCtx);
     render(<CombatScene ctx={hardCtx} state={state} perform={() => undefined} />);
     expect(screen.getByText(/They saw you first\./)).toBeInTheDocument();
-    expect(screen.getByText('They move first!')).toBeInTheDocument();
+    expect(screen.getByText('They move first.')).toBeInTheDocument();
   });
 
   it('says once why the cards you could add are blocked, and the round once', () => {

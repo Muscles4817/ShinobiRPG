@@ -13,6 +13,7 @@ import { canHit } from './rows';
 import type { Turn } from './senses';
 import { isDazed } from './daze';
 import { say, type Loadout, type PlanFighter, type Round, type Slot } from './state';
+import { tell } from '../../rules/telling';
 
 /**
  * Teammates in a planned fight. Each fights by a stance: their own cards (the default plan for
@@ -194,6 +195,6 @@ export function intercept(round: Round, turn: Turn, card: Card): Aim {
   if (!target || !isOffence(card) || !needsAim(card)) return { round, target };
   const cover = coverFor(round, target, card);
   if (!cover || !rng.chance(coverChance(cover, actor))) return { round, target };
-  const ward = target.isPlayer ? 'you' : target.name;
-  return { round: say(round, `${cover.name} steps in front of ${ward}.`), target: cover };
+  const line = tell('{a} step{a.s} in front of {t}.', { a: cover, t: target });
+  return { round: say(round, line), target: cover };
 }

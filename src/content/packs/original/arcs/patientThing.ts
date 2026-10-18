@@ -16,6 +16,8 @@ export const PATIENT_THING_FOE: EnemyDef = {
   kind: 'Spirit',
   danger: 'deadly',
   name: 'The Patient Thing',
+  proper: true,
+  pronouns: 'it',
   description: 'It waited years for a seal to weaken. It is very good at waiting.',
   baseStat: 11,
   statBonuses: { genjutsu: 4, willpower: 4, stamina: -2 },

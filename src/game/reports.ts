@@ -41,6 +41,8 @@ export type Report =
       readonly taught?: readonly string[];
       /** A bout only watched (versus): who won, as the card's title ("Haku wins"). */
       readonly verdict?: string;
+      /** The fight in a sentence or two, from the engine (`CombatOutcome.summary`). */
+      readonly summary?: string;
     }
   | {
       readonly kind: 'mission-complete';
@@ -94,6 +96,8 @@ export type Report =
       readonly helped?: string;
       /** What the fight taught you, even in defeat, as display labels. */
       readonly taught?: readonly string[];
+      /** The fight in a sentence or two, from the engine (`CombatOutcome.summary`). */
+      readonly summary?: string;
     }
   | {
       readonly kind: 'lesson';

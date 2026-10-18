@@ -3,6 +3,8 @@ import { fillSlots, type Rng } from '@/core';
 import type { ArcDef, MissionDef, MissionStage } from '@/systems/missions';
 import type { Discipline } from '@/systems/techniques';
 
+import { rolledPronouns } from '../../people/pronouns';
+
 /**
  * A generated sensei's story, made from their past (`compose.ts`): the four conversations at
  * bond stages one to four, the last opening their arc; the foe it ends against; and the two
@@ -99,6 +101,9 @@ export function foeFor(
     kind: past.foe.kind,
     danger: 'deadly',
     name: input.name,
+    // A past's foe has a name (or an epithet) of their own; a spirit is "it".
+    proper: true,
+    pronouns: past.foe.kind === 'Spirit' ? 'it' : rolledPronouns(input.id),
     description: fill(past.foe.description, input.slots),
     baseStat: FOE_BASE,
     statBonuses: { [input.art]: FOE_ART, speed: FOE_SPEED, perception: FOE_PERCEPTION },

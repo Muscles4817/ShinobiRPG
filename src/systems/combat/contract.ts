@@ -1,4 +1,4 @@
-import type { Result, Rng } from '@/core';
+import type { Grammar, Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
 import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
 
@@ -104,9 +104,22 @@ export const COMBAT_TRAITS = [
 ] as const;
 export type CombatTrait = (typeof COMBAT_TRAITS)[number];
 
+/**
+ * How the fight's story speaks of a fighter: the player as "you", people by their pronouns,
+ * creatures and spirits as "it". Absent: "they".
+ */
+export type CombatGrammar = Grammar;
+
 export interface CombatantSetup {
   readonly id: string;
   readonly name: string;
+  /**
+   * What the story calls them mid-sentence: "you", "Gōran", "the storehouse wraith". Absent:
+   * their name. Banners always show `name`.
+   */
+  readonly called?: string;
+  /** How the story's pronouns and verbs agree with them; absent: "they". */
+  readonly grammar?: CombatGrammar;
   /** Short descriptor such as "Spirit" or "Bandit", shown on the combatant's banner. */
   readonly tag?: string;
   readonly attributes: CombatAttributes;
@@ -328,6 +341,11 @@ export interface CombatOutcome {
   readonly used?: Readonly<Record<string, CombatUsage>>;
   /** Each fighter on the player's side but the player, as they end it (by combatant id). */
   readonly allies?: Readonly<Record<string, { readonly health: number }>>;
+  /**
+   * The fight in a sentence or two, for its result card (how long, who fell, who stood), in
+   * words with no numbers; absent from engines that don't tell one.
+   */
+  readonly summary?: string;
   /** How each summon the player called ended its part, by call id (the last call of each). */
   readonly summons?: Readonly<Record<string, SummonFate>>;
 }

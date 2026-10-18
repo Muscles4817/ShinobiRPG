@@ -4,6 +4,7 @@ import type { CombatItem, CombatItemEffect } from '../contract';
 import type { Body } from './body';
 import { variance } from './damage';
 import { kitDamageScale } from './kit';
+import { tell } from './telling';
 
 /**
  * Fight tools, the same in every engine. A smoke bomb hides you until you next attack (that
@@ -86,7 +87,8 @@ function blast<B extends Body>(use: Use<B>, rng: Rng): ItemUse<B> {
   const foes = use.foes.map((f) =>
     f.id === target.id ? { ...f, health: Math.max(0, f.health - damage) } : f,
   );
-  return { user: use.user, foes, log: [`The ${use.item.name} bursts on ${target.name}.`] };
+  const line = tell('The {what} bursts on {t}.', { what: use.item.name, t: target });
+  return { user: use.user, foes, log: [line] };
 }
 
 function selfEffect<B extends Body>(user: B, effect: CombatItemEffect): B {
@@ -106,11 +108,11 @@ function selfEffect<B extends Body>(user: B, effect: CombatItemEffect): B {
 }
 
 const USE_LINE: Readonly<Record<Exclude<CombatItemEffect, 'blast'>, string>> = {
-  smoke: 'vanishes in a burst of smoke.',
-  flash: 'sets off a flash. Every shadow is lit.',
-  chakra: 'swallows a pill. Chakra floods back.',
-  heal: 'presses salve into their wounds.',
-  clarity: 'grips a charm. The fog lifts.',
+  smoke: '{a} vanish{a.es} in a burst of smoke.',
+  flash: '{a} set{a.s} off a flash. Every shadow is lit.',
+  chakra: '{a} swallow{a.s} a pill. Chakra floods back.',
+  heal: '{a} press{a.es} salve into {a.their} wounds.',
+  clarity: '{a} grip{a.s} a charm. The fog lifts.',
 };
 
 /** Uses one of the tool: spends it and applies its effect. Check `itemBlocker` first. */
@@ -119,7 +121,7 @@ export function useItem<B extends Body>(use: Use<B>, rng: Rng): ItemUse<B> {
   const { effect } = use.item;
   if (effect === 'blast') return blast({ ...use, user }, rng);
   const foes = effect === 'flash' ? use.foes.map((f) => ({ ...f, hidden: false })) : use.foes;
-  return { user: selfEffect(user, effect), foes, log: [`${user.name} ${USE_LINE[effect]}`] };
+  return { user: selfEffect(user, effect), foes, log: [tell(USE_LINE[effect], { a: user })] };
 }
 
 /**

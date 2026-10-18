@@ -262,7 +262,7 @@ describe('plan & watch verbs: trap', () => {
   it('sharp eyes may spot it and step around', () => {
     const set = { ...cast(roundOf({}, { attributes: { ...attributes, perception: 40 } }), snare) };
     const next = { ...set, number: 2 };
-    const spotted = until(/spots hero's trap/, (seed) =>
+    const spotted = until(/spots hero['’]s trap/, (seed) =>
       springTraps(next, 'foe', createRng(seed), false),
     );
     expect(foe(spotted).health).toBe(80);
@@ -275,11 +275,11 @@ describe('plan & watch verbs: trap', () => {
     });
     const rng = createRng(4);
     const first = resolveExchange(stateOf(round), rng);
-    expect(said(first.log)).toContain('hero sets a trap at close range.');
+    expect(said(first.log)).toContain('Hero sets a trap at close range.');
     const second = resolveExchange(first, rng);
     const fresh = second.log.slice(first.log.length);
     expect(
-      fresh.some((l) => hitsOn('foe', "hero's trap").test(l) || l.includes("spots hero's trap")),
+      fresh.some((l) => hitsOn('foe', "hero's trap").test(l) || l.includes('spots hero’s trap')),
     ).toBe(true);
   });
 });

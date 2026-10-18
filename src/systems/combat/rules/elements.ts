@@ -42,9 +42,9 @@ export function elementMultiplier(
  * that feed each other. The second hit lands harder, whichever came first.
  */
 const COMBOS: readonly { readonly pair: readonly [Element, Element]; readonly line: string }[] = [
-  { pair: ['wind', 'fire'], line: 'The wind feeds the flames!' },
-  { pair: ['water', 'lightning'], line: 'The water carries the lightning!' },
-  { pair: ['earth', 'water'], line: 'Earth and water churn into a sucking mire!' },
+  { pair: ['wind', 'fire'], line: 'The wind feeds the flames.' },
+  { pair: ['water', 'lightning'], line: 'The water carries the lightning.' },
+  { pair: ['earth', 'water'], line: 'Earth and water churn into a sucking mire.' },
 ];
 
 export const ELEMENT_COMBO_BONUS = 1.35;

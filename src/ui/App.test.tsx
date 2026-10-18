@@ -430,9 +430,11 @@ describe('App (smoke test)', () => {
     // The game's seed is random, so the spar may end in this round: then the result card comes
     // up once the last exchange has played, a moment later.
     await waitFor(() => {
-      expect(
-        screen.queryByText(/The round is over/) ?? screen.queryByRole('dialog'),
-      ).not.toBeNull();
+      const between =
+        screen.queryByRole('button', { name: 'Plan the next round' }) ??
+        screen.queryByText(/The round is over/) ??
+        screen.queryByRole('dialog');
+      expect(between).not.toBeNull();
     });
   });
 

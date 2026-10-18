@@ -16,6 +16,8 @@ export const UNFINISHED_FOE: EnemyDef = {
   kind: 'Spirit',
   danger: 'deadly',
   name: 'Sōma’s Ghost',
+  proper: true,
+  pronouns: 'he',
   description: 'Yomi’s teammate, still holding the line he died on.',
   baseStat: 11,
   statBonuses: { genjutsu: 4, willpower: 4, stamina: -2 },

@@ -172,7 +172,7 @@ describe('verbs that leave something behind, in plan & watch', () => {
       blow,
       rng: createRng(2),
     });
-    expect(struck.lines.join(' ')).toMatch(/hero answers with Move/);
+    expect(struck.lines.join(' ')).toMatch(/hero answers with Move/i);
     expect(bandit(struck).health).toBeLessThan(100);
     expect(fighterIn(struck, hero!.id)!.riposte).toBeUndefined();
   });
