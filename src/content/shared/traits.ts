@@ -9,6 +9,7 @@ const TIRELESS_FLOOR: SoloFloor = { floor: 0.4, throughGrade: 'B' };
 export const TRAITS: readonly TraitDef[] = [
   {
     id: 'brash',
+    register: 'blunt',
     likes: ['challenge', 'joke', 'cruel'],
     dislikes: ['quiet'],
     name: 'Brash',
@@ -18,6 +19,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'calm',
+    register: 'formal',
     likes: ['quiet', 'earnest'],
     dislikes: ['tease', 'cruel'],
     name: 'Calm',
@@ -27,6 +29,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'diligent',
+    register: 'blunt',
     likes: ['earnest', 'challenge'],
     dislikes: ['joke', 'cruel'],
     name: 'Diligent',
@@ -36,6 +39,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'lazy',
+    register: 'wry',
     likes: ['joke', 'quiet'],
     dislikes: ['challenge'],
     name: 'Lazy',
@@ -45,6 +49,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'kind',
+    register: 'warm',
     likes: ['kind', 'earnest'],
     dislikes: ['tease', 'cruel'],
     name: 'Kind',
@@ -54,6 +59,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'cunning',
+    register: 'wry',
     likes: ['tease', 'curious', 'cruel'],
     dislikes: ['earnest'],
     name: 'Cunning',
@@ -63,6 +69,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'proud',
+    register: 'formal',
     likes: ['praise', 'challenge'],
     dislikes: ['tease'],
     name: 'Proud',
@@ -72,6 +79,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'humble',
+    register: 'warm',
     likes: ['kind', 'curious'],
     dislikes: ['praise'],
     name: 'Humble',
@@ -89,6 +97,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'curious',
+    register: 'wry',
     likes: ['curious', 'joke'],
     dislikes: ['quiet'],
     name: 'Curious',
@@ -98,6 +107,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'focused',
+    register: 'blunt',
     likes: ['earnest', 'quiet'],
     dislikes: ['joke'],
     name: 'Focused',
@@ -107,6 +117,7 @@ export const TRAITS: readonly TraitDef[] = [
   },
   {
     id: 'tireless',
+    register: 'blunt',
     likes: ['challenge', 'earnest'],
     dislikes: ['tease'],
     name: 'Tireless',

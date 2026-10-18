@@ -2,7 +2,7 @@ export { CONTENT_PACKS } from './packs';
 export { buildContentDb, type ContentDb } from './db';
 export { validateContent } from './validate';
 export type { Catalog } from './catalog';
-export { TONES, TOPIC_KINDS } from './people';
+export { REGISTERS, TONES, TOPIC_KINDS } from './people';
 export { TEACHING_QUIRKS } from './teachers';
 export { FISH_FAMILIES, GEAR_SLOTS, gearSlot } from './items';
 export { MAP_SIZE } from './art';
@@ -67,6 +67,9 @@ export type {
   PersonDef,
   PersonRank,
   PersonRole,
+  Phrased,
+  Phrasings,
+  Register,
   PlaceDef,
   PlaceKind,
   PriceTemplate,

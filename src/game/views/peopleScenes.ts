@@ -1,10 +1,13 @@
-import { stageName } from '@/systems/bonds';
+import type { ConversationChoice, Phrased } from '@/content';
+import { landingOf, stageName } from '@/systems/bonds';
 
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { findPerson, requirePerson } from '../people/cast';
 import { fitReasons } from '../people/senseis';
 import { conversationValues, fillLine } from '../people/talk';
+import { phrasingFor, registerOf } from '../people/register';
+import { talkPick } from '../people/topics';
 import type { GameState } from '../state';
 import { capitalise } from './common';
 import { personCard, toneLabel, type PersonCard } from './people';
@@ -66,17 +69,26 @@ export interface ConversationScene {
   readonly leave: GameAction;
 }
 
+/** Their answer, by how your reply landed: warm, flat or cool, else the plain one. */
+export function answerAsItLanded(choice: ConversationChoice, delta: number): Phrased {
+  const landing = landingOf(delta);
+  return (landing === 'flat' ? undefined : choice[landing]) ?? choice.reply;
+}
+
 export function conversationScene(state: GameState, ctx: GameContext): ConversationScene | null {
   const talking = state.people.conversation;
   const person = talking && findPerson(state, ctx, talking.personId);
   if (!talking || !person) return null;
-  const def = ctx.content.conversations.require(talking.conversationId);
-  const values = conversationValues(state, ctx, person, def);
+  const pick = talkPick(ctx, person, talking);
+  const { def } = pick;
+  const values = conversationValues(state, ctx, person, pick);
   const fill = (text: string) => fillLine(text, values);
+  const register = registerOf(ctx, person);
+  const say = (line: Phrased) => fill(phrasingFor(line, register, `${person.id}|${def.id}`));
   const picked = talking.answer && def.choices[talking.answer.choiceIndex];
   return {
     person: personCard(state, ctx, person),
-    opener: fill(def.opener),
+    opener: say(def.opener),
     choices: def.choices.map((c, choiceIndex) => ({
       label: fill(c.label),
       tone: toneLabel(c.tone),
@@ -86,7 +98,7 @@ export function conversationScene(state: GameState, ctx: GameContext): Conversat
       talking.answer && picked
         ? {
             said: fill(picked.label),
-            reply: fill(picked.reply),
+            reply: say(answerAsItLanded(picked, talking.answer.delta)),
             delta: talking.answer.delta,
             newStage: talking.answer.newStage === null ? null : stageName(talking.answer.newStage),
           }

@@ -42,6 +42,7 @@ import type {
   NamePools,
   PersonDef,
   TeamText,
+  Register,
   Tone,
 } from './people';
 export type {
@@ -95,6 +96,9 @@ export type {
   PersonDef,
   PersonRank,
   PersonRole,
+  Phrased,
+  Phrasings,
+  Register,
   SenseiProfile,
   TeamText,
   Tone,
@@ -224,6 +228,8 @@ export interface TraitDef {
   /** How people with this trait react to the tone of what you say. */
   readonly likes: readonly Tone[];
   readonly dislikes: readonly Tone[];
+  /** How people with this as their first trait talk: the phrasing of templated lines. */
+  readonly register: Register;
 }
 
 /** Your dream: the goal you wrote in your academy application. */

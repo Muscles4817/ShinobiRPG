@@ -22,7 +22,7 @@ function under(senseiId: string, state: GameState): GameState {
 }
 
 function hearing(state: GameState, personId: string, conversationId: string): GameState {
-  const conversation = { personId, conversationId, answer: null };
+  const conversation = { personId, conversationId, topicKey: null, answer: null };
   return { ...state, people: { ...state.people, conversation } };
 }
 

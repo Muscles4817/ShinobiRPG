@@ -451,7 +451,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mai squints at you. “You’ve been watching how I do things. Go on, say it.”
+  opener: Mai squints at you. “You’ve been watching how I do things. Say it.”
   choices[0]:
     label: “You’re a creature of habit.”
   choices[1]:
@@ -479,7 +479,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mai squints at you. “You’ve been watching how I do things. Go on, say it.”
+  opener: Mai squints at you. “You’ve been watching how I do things. Say it.”
   choices[0]:
     label: “You’re a creature of habit.”
   choices[1]:
@@ -488,7 +488,7 @@ view:
     label: Shake your head and smile.
   answer:
     said: “You’re very much yourself. I like it.”
-    reply: Mai goes a little pink. “That’s not what I expected you to say.”
+    reply: “That’s not what I expected you to say.”
   leave:
 
 >>> endConversation
@@ -635,7 +635,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mikoto at it again: folding their hands and counting to five before answering anything that matters. They notice you noticing.
+  opener: You come across Mikoto mending their own clothes badly rather than asking anyone to show them how, as usual. They notice your attention and pause, politely, to let you speak.
   choices[0]:
     label: “You always do that.”
   choices[1]:
@@ -663,7 +663,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mikoto at it again: folding their hands and counting to five before answering anything that matters. They notice you noticing.
+  opener: You come across Mikoto mending their own clothes badly rather than asking anyone to show them how, as usual. They notice your attention and pause, politely, to let you speak.
   choices[0]:
     label: “You always do that.”
   choices[1]:
@@ -672,7 +672,7 @@ view:
     label: “It suits you.”
   answer:
     said: “You always do that.”
-    reply: “And you always point it out,” Mikoto says. “We all have our habits.”
+    reply: “So?” Mikoto stops doing it, and you get the feeling you’ve spoiled it.
   leave:
 
 >>> endConversation
@@ -817,7 +817,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: “You know what nobody understands about what I do?” Mai says. “How much of it is just turning up.”
+  opener: “Know what nobody gets about what I do?” Mai says. “It’s mostly turning up. Every day.”
   choices[0]:
     label: “Turning up is half of everything.”
   choices[1]:
@@ -845,7 +845,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: “You know what nobody understands about what I do?” Mai says. “How much of it is just turning up.”
+  opener: “Know what nobody gets about what I do?” Mai says. “It’s mostly turning up. Every day.”
   choices[0]:
     label: “Turning up is half of everything.”
   choices[1]:
@@ -854,7 +854,7 @@ view:
     label: “And the other half?”
   answer:
     said: “So you’re saying it’s easy.”
-    reply: “I’m saying it’s every day.” Mai gives you a look. “Try it.”
+    reply: “I’m saying it’s every day. You try it.”
   leave:
 
 >>> endConversation
@@ -1184,13 +1184,13 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mai watches you train, then can’t help it. “Can I tell you something about ninjutsu?”
+  opener: Mai watches you train for as long as she can stand it. “You’re doing that wrong. Want me to tell you about ninjutsu, or not?”
   choices[0]:
     label: “Please. I want to get better.”
   choices[1]:
     label: “Is this going to take long?”
   choices[2]:
-    label: Nod and wait.
+    label: Wait for it.
   leave:
 
 >>> reply
@@ -1212,13 +1212,13 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: Mai watches you train, then can’t help it. “Can I tell you something about ninjutsu?”
+  opener: Mai watches you train for as long as she can stand it. “You’re doing that wrong. Want me to tell you about ninjutsu, or not?”
   choices[0]:
     label: “Please. I want to get better.”
   choices[1]:
     label: “Is this going to take long?”
   choices[2]:
-    label: Nod and wait.
+    label: Wait for it.
   answer:
     said: “Is this going to take long?”
     reply: “Not if you listen.” She tells you anyway. “Learn the signs with your eyes shut. In a real fight you will be looking at the enemy, not your hands.”

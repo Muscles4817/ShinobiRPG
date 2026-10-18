@@ -6,6 +6,7 @@ import { newGame } from '@/test/gameFixtures';
 
 import { createGameContext } from './context';
 import { findPerson } from './people/cast';
+import { phrasingsOf } from './people/register';
 import { conversationValues, fillLine, pickConversation } from './people/talk';
 import type { GameState } from './state';
 
@@ -61,15 +62,15 @@ describe('templated conversations', () => {
 
   it('wait for their bond stage, then come before old small talk', () => {
     const acquainted = withBond(state, classmate.id, 10);
-    expect(pickConversation(acquainted, ctx, classmate, createRng(1)).id).toBe('small-talk');
+    expect(pickConversation(acquainted, ctx, classmate, createRng(1)).def.id).toBe('small-talk');
     const friends = withBond(state, classmate.id, 30);
-    expect(pickConversation(friends, ctx, classmate, createRng(1)).id).toBe('art-talk');
+    expect(pickConversation(friends, ctx, classmate, createRng(1)).def.id).toBe('art-talk');
   });
 
   it('are filled from the person’s own specialty', () => {
-    const values = conversationValues(state, ctx, classmate, ART_TALK);
+    const values = conversationValues(state, ctx, classmate, { def: ART_TALK, topicKey: null });
     const art = classmate.specialty!;
-    expect(fillLine(ART_TALK.opener, values)).toBe(
+    expect(fillLine(phrasingsOf(ART_TALK.opener).join(''), values)).toBe(
       `${classmate.name} shows you ${art} drills. “I want to master the great ${art}.”`,
     );
   });
@@ -78,7 +79,9 @@ describe('templated conversations', () => {
     const { specialty: _, ...noSpecialty } = classmate;
     const friends = withBond(state, classmate.id, 30);
     for (let seed = 1; seed < 20; seed++) {
-      expect(pickConversation(friends, ctx, noSpecialty, createRng(seed)).id).toBe('small-talk');
+      expect(pickConversation(friends, ctx, noSpecialty, createRng(seed)).def.id).toBe(
+        'small-talk',
+      );
     }
   });
 });
