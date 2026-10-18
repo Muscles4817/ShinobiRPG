@@ -1,68 +1,43 @@
 import { fillSlots, type Rng } from '@/core';
-import type { ConversationDef, ConversationTopic, PersonDef, TopicKind } from '@/content';
+import type { PersonDef } from '@/content';
 import { stageOf } from '@/systems/bonds';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import { bondOf } from './cast';
 import { personSlots } from './pronouns';
+import { freshPicks, hasHeard, picksOf, topicFor, type TalkPick } from './topics';
+
+export { topicFor, type TalkPick } from './topics';
 
 /**
  * Choosing what someone says. Their own lines come first, then small talk they haven't
  * used on you yet; once everything has been said, anything fitting your stage may repeat.
- * Templated talk (`about`) is said only by people it has a topic for: their specialty, one of
- * their traits, their clan or their role.
+ * Templated talk (`about`) is said only by people it has a topic for, and once for each facet
+ * it fits (their specialty, each of their traits, their clan, their role), turning to facets
+ * not talked about lately (`topics.ts`).
  */
 export function pickConversation(
   state: GameState,
   ctx: GameContext,
   person: PersonDef,
   rng: Rng,
-): ConversationDef {
+): TalkPick {
   const bond = bondOf(state, person.id);
   const stage = stageOf(bond.points);
-  const eligible = ctx.content.conversations.all.filter(
-    (c) =>
-      (c.personId === undefined || c.personId === person.id) &&
-      c.minStage <= stage &&
-      (c.about === undefined || topicFor(ctx, person, c.about) !== null),
-  );
-  const unheard = eligible.filter((c) => !bond.heard.includes(c.id));
-  const own = unheard.filter((c) => c.personId === person.id);
+  const picks = ctx.content.conversations.all
+    .filter((c) => (c.personId === undefined || c.personId === person.id) && c.minStage <= stage)
+    .flatMap((c) => picksOf(ctx, person, c));
+  const firstKey = (p: TalkPick) => (p.def.about ? topicFor(ctx, person, p.def.about)?.key : null);
+  const unheard = picks.filter((p) => !hasHeard(bond.heard, p, firstKey(p) ?? null));
+  const own = unheard.filter((p) => p.def.personId === person.id);
   if (own.length > 0) return rng.pick(own);
+  const fresh = (from: readonly TalkPick[]) => rng.pick(freshPicks(ctx, bond.heard, from));
   // Closer friends talk about deeper things: the newest stage's talk comes before old small talk.
-  const deepest = Math.max(...unheard.map((c) => c.minStage));
-  const deep = unheard.filter((c) => c.minStage === deepest && deepest > 0);
-  if (deep.length > 0) return rng.pick(deep);
-  return rng.pick(unheard.length > 0 ? unheard : eligible);
-}
-
-/** The person's own facet of a topic kind: their art, clan or role, or traits in order. */
-function keysFor(person: PersonDef, kind: TopicKind): readonly string[] {
-  switch (kind) {
-    case 'specialty':
-      return person.specialty ? [person.specialty] : [];
-    case 'trait':
-      return person.traitIds;
-    case 'clan':
-      return person.clanId ? [person.clanId] : [];
-    case 'role':
-      return [person.role];
-  }
-}
-
-/** The topic a templated conversation is filled from for this person, or null if none fits. */
-export function topicFor(
-  ctx: GameContext,
-  person: PersonDef,
-  kind: TopicKind,
-): ConversationTopic | null {
-  const topics = ctx.content.conversationTopics.filter((t) => t.kind === kind);
-  for (const key of keysFor(person, kind)) {
-    const topic = topics.find((t) => t.key === key);
-    if (topic) return topic;
-  }
-  return null;
+  const deepest = Math.max(...unheard.map((p) => p.def.minStage));
+  const deep = unheard.filter((p) => p.def.minStage === deepest && deepest > 0);
+  if (deep.length > 0) return fresh(deep);
+  return fresh(unheard.length > 0 ? unheard : picks);
 }
 
 /** A slot naming the player or the person (`{you}`, `{them}`, `{them.their}`), not a topic's. */
@@ -84,13 +59,14 @@ export function fillNames(text: string, names: { you: string; them: PersonDef })
   return fillSlots(text, { you: names.you, ...personSlots('them', names.them) });
 }
 
-/** Everything a conversation's lines may name, for this person. */
+/** Everything a conversation's lines may name, for this person and the facet it is about. */
 export function conversationValues(
   state: GameState,
   ctx: GameContext,
   person: PersonDef,
-  def: ConversationDef,
+  talk: TalkPick,
 ): Readonly<Record<string, string>> {
-  const topic = def.about ? topicFor(ctx, person, def.about) : null;
+  const { def, topicKey } = talk;
+  const topic = def.about ? topicFor(ctx, person, def.about, topicKey) : null;
   return { ...topic?.values, you: state.character.name, ...personSlots('them', person) };
 }

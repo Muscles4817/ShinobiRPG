@@ -8,7 +8,10 @@ describe('templated talk and pronouns', () => {
   const state = newGame();
   const weight = ctx.content.conversations.require('talk-role-3-weight');
   const said = (person: PersonDef) =>
-    fillLine(weight.opener, conversationValues(state, ctx, person, weight));
+    fillLine(
+      weight.opener,
+      conversationValues(state, ctx, person, { def: weight, topicKey: null }),
+    );
   const kaen = ctx.content.people.require('kaen');
   const shiori = ctx.content.people.require('shiori');
   const sora: PersonDef = { ...kaen, id: 'sora', name: 'Sora', pronouns: 'they' };
@@ -34,7 +37,7 @@ describe('templated talk and pronouns', () => {
     const templated = ctx.content.conversations.all.filter((c) => c.about !== undefined);
     for (const person of [kaen, shiori, sora]) {
       for (const def of templated) {
-        const values = conversationValues(state, ctx, person, def);
+        const values = conversationValues(state, ctx, person, { def, topicKey: null });
         const lines = [def.opener, ...def.choices.flatMap((c) => [c.label, c.reply])];
         for (const line of lines) expect(fillLine(line, values)).not.toMatch(/\{them/);
       }

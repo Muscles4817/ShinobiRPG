@@ -611,6 +611,24 @@ opener: “Whatever happens to me,” Goro says, “I want you to remember somet
   you: “Only if you promise me the same.”
     “Deal,” Goro says, and you both pretend it was a small thing.
 
+=== a week of talk with Asuka ===
+day 1, talk-trait-1-noticed (proud): Asuka squints at you. “You’ve been watching how I do things. Go on, say it.”
+day 2, talk-specialty-0-watch (kenjutsu): You find Asuka hard at work: the same three cuts through falling leaves, morning after morning. They keep going when you walk up.
+day 3, talk-role-1-days (genin): Asuka stretches until something clicks. “Most days are the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+day 4, talk-trait-1-wish (proud): “Do you ever wish you were someone else?” Asuka asks. “Some days I’d like to be more like the people who can say ‘I don’t know’ out loud and not flinch.”
+day 5, talk-trait-1-habit (calm): You catch Asuka at it again: folding their hands and counting to five before answering anything that matters. They notice you noticing.
+day 6, talk-specialty-1-daily (kenjutsu): “People think kenjutsu is about talent,” Asuka says. “It isn’t. It’s the same three cuts through falling leaves, morning after morning, every day.”
+day 7, generic-mission (own): “Heard you took a job from the mission desk,” Asuka says. “How did it go?”
+
+=== a week of talk with Goro ===
+day 1, talk-trait-1-noticed (curious): Goro squints at you. “You’ve been watching how I do things. Go on, say it.”
+day 2, talk-trait-1-wish (brash): “Do you ever wish you were someone else?” Goro asks. “Some days I’d like to be more like someone who can wait for the right moment and still look like they meant it.”
+day 3, talk-role-1-days (genin): Goro stretches until something clicks. “Most days are the same: lost cats, leaky roofs, long drills and the odd job that turns out to be a real one.”
+day 4, talk-trait-1-wish (curious): “Do you ever wish you were someone else?” Goro asks. “Some days I’d like to be more like the people who know exactly what they want and never wonder about the other road.”
+day 5, talk-specialty-1-opinion (ninjutsu): Goro frowns at two genin sparring nearby. “Most people who try ninjutsu want the flashy part and skip the rest.”
+day 6, talk-trait-2-instructors (brash): Goro watches a few academy students run past. “The instructors never knew what to do with me.”
+day 7, generic-dream (own): “Can I tell you something?” Goro says. “I want to be more than a genin who catches cats.”
+
 coaching by Gōran, met: You did the work on your speed. Gōran takes you out to eat, and won’t hear of you paying. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Assignment done] [A meal on him] [Assignment: Taijutsu]
 
 coaching by Gōran, missed: Gōran checks your speed. Not enough. He doesn’t hide it. Taijutsu is your edge: grade D, and Gōran wants more of it. Anyone with an illusion walks straight through you. “By the next lesson, I want to see your taijutsu come on.” [Gōran’s regard falls] [Assignment: Taijutsu]

@@ -351,7 +351,7 @@ view:
     label: Shake your head and smile.
   answer:
     said: “You’re a creature of habit.”
-    reply: “Guilty.” They show you: folding their hands and counting to five before answering anything that matters. “See? Can’t help it.”
+    reply: “Guilty.” They show you: mending their own clothes badly rather than asking anyone to show them how. “See? Can’t help it.”
   leave:
 
 >>> endConversation
@@ -485,7 +485,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
+  opener: You catch Mai at it again: taking apart anything with a hinge, a latch or a seal to see how it works. She notices you noticing.
   choices[0]:
     label: “You always do that.”
   choices[1]:
@@ -513,7 +513,7 @@ view:
       blocker: You are in the middle of a conversation.
     spar:
       blocker: You are in the middle of a conversation.
-  opener: You catch Mai at it again: vaulting the fence instead of walking the extra few steps to the gate. She notices you noticing.
+  opener: You catch Mai at it again: taking apart anything with a hinge, a latch or a seal to see how it works. She notices you noticing.
   choices[0]:
     label: “You always do that.”
   choices[1]:

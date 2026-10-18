@@ -51,4 +51,13 @@ describe('bonds', () => {
     expect(talkedToday(after, 4)).toBe(false);
     expect(recordTalk(after, { day: 4, delta: 1, heard: 'hello' }).heard).toEqual(['hello']);
   });
+
+  it('keeps what was said newest last, so a repeat moves to the end', () => {
+    const twice = recordTalk(recordTalk(NEW_BOND, { day: 1, delta: 3, heard: 'a' }), {
+      day: 2,
+      delta: 3,
+      heard: 'b',
+    });
+    expect(recordTalk(twice, { day: 3, delta: 3, heard: 'a' }).heard).toEqual(['b', 'a']);
+  });
 });
