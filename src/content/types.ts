@@ -75,9 +75,12 @@ export type {
   GearDef,
   GearKind,
   GearSlot,
+  FamilyCount,
+  FishFamily,
   IngredientCount,
   IngredientDef,
   RecipeDef,
+  RecipeIngredient,
   RecipeLesson,
   ToolDef,
 } from './items';

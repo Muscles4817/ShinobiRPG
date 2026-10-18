@@ -4,7 +4,7 @@ export { validateContent } from './validate';
 export type { Catalog } from './catalog';
 export { TONES, TOPIC_KINDS } from './people';
 export { TEACHING_QUIRKS } from './teachers';
-export { GEAR_SLOTS, gearSlot } from './items';
+export { FISH_FAMILIES, GEAR_SLOTS, gearSlot } from './items';
 export { MAP_SIZE } from './art';
 export type { QuirkDef } from './quirks';
 export {
@@ -46,6 +46,9 @@ export type {
   TopicKind,
   IngredientDef,
   RecipeDef,
+  RecipeIngredient,
+  IngredientCount,
+  FishFamily,
   CookbookDef,
   Biome,
   FishingSpot,

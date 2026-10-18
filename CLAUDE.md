@@ -369,8 +369,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     Dishes are cooked by hand at the stove (`game/stove.ts`: three beats against the recipe's
     `method`, giving a `mealQuality` that scales the dish through `buffAt`/`amountAt`) or as
     usual; `experiment` puts pantry ingredients together to discover recipes. Ingredients
-    are bought or gathered: `wilds` places (woods, river) are foraged (`forage`) and fished
-    (`fish`, by spot) once a day each, drawing from `finds` by season, hour and cooking grade.
+    are bought or gathered: `wilds` places (woods, river, shore, marsh, mountain water) are
+    foraged (`forage`) and fished (`fish`, by spot) once a day each, drawing from `finds` by
+    season, hour and cooking grade (`shared/wilds.ts`, `shared/waters.ts`, fish in `shared/fish.ts`).
+    A fish has a **family** (white, oily, freshwater, shellfish), and a recipe slot may take any
+    fish of one (`FamilyCount`): the cook's chosen fish first, then the cheapest, and the dish is
+    named for it (`game/pantry.ts`; read a recipe's ingredients only through it).
     A dish cooked well brings its `provision` into the day's fights (`CombatantSetup.provisions`,
     rules in `rules/provisions.ts`: fortified, steady, antidote, second wind); never a stat.
     A `snack` (tea, sweets) sits beside the meal for the next stretch of the day (`snacks.ts`).
@@ -806,8 +810,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `rank`, cost) to the pack's `gear` and list it at a `gear` place (a smith, an outfitter);
   `unique` pieces are never listed. **Add an ingredient or recipe:** ingredients go in
   `shared/kitchen.ts` (sold at a market stall's `ingredientIds`) or `shared/wilds.ts` (found
-  in a `wilds` place's `finds` or a fishing spot's `catches`), and must be one or the other
-  (validated); recipes go in
+  in a `wilds` place's `finds` or a fishing spot's `catches`; a fish needs a `length` and, unless
+  only its own dishes take it, a `family`); recipes go in
   `shared/recipes.ts` (or a pack's own list) with a `rank`, one role (don't make a bigger copy
   of another dish's buff) and a way to learn it: a cookbook (`CookbookDef`, sold at a stall's
   `cookbookIds`), a person's `recipes`, or a job's `reward.recipeId` (validated). **Add a meal

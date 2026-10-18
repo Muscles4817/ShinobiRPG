@@ -37,9 +37,16 @@ describe('companion validation', () => {
 
   it('reports a wild one living nowhere, or a tame one living wild', () => {
     const wolf = kind('forest-wolf');
-    expect(
-      validateCompanions(withKind({ ...wolf, wild: { ...wolf.wild!, biome: 'marsh' } })),
-    ).toEqual(['companion kind "forest-wolf" lives in marsh, and no place is']);
+    const noMarsh = {
+      ...withKind({ ...wolf, wild: { ...wolf.wild!, biome: 'marsh' } }),
+      locations: ORIGINAL_PACK.locations.map((l) => ({
+        ...l,
+        places: l.places.filter((p) => p.kind !== 'wilds' || p.biome !== 'marsh'),
+      })),
+    };
+    expect(validateCompanions(noMarsh)).toEqual([
+      'companion kind "forest-wolf" lives in marsh, and no place is',
+    ]);
     expect(validateCompanions(withKind({ ...wolf, temperament: 'bred' }))).toEqual([
       'companion kind "forest-wolf" lives wild but is not wild-tempered',
     ]);

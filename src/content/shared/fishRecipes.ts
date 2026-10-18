@@ -1,0 +1,145 @@
+import type { RecipeDef } from '../types';
+
+/**
+ * Ways to prepare a fish, any fish of a kind (`FamilyCount`): the same dish whether it was
+ * cooked with char or trout, named for the fish on the day. Each still has one job of its own.
+ * Taught by The Fishmonger's Knife and Tide and Shell (`kitchen.ts`).
+ */
+export const FISH_RECIPES: readonly RecipeDef[] = [
+  {
+    id: 'stone-grilled-fish',
+    name: 'Fish Grilled on River Stones',
+    description: 'A whole fish laid on hot flat stones by the water, eaten off the stone itself.',
+    icon: 'fish',
+    rank: 'D',
+    method: 'grill',
+    steps: { cut: 'whole' },
+    ingredients: [
+      { family: 'freshwater', count: 1 },
+      { id: 'spices', count: 1 },
+    ],
+    satiety: 40,
+    energy: 15,
+    buff: { growth: { perception: 1.15 } },
+  },
+  {
+    id: 'fish-rice',
+    name: 'Fish Rice',
+    description: 'Rice steamed with a fish laid on top, then the flesh flaked through it.',
+    icon: 'rice',
+    rank: 'D',
+    method: 'steam',
+    ingredients: [
+      { family: 'freshwater', count: 1 },
+      { id: 'rice', count: 1 },
+      { id: 'vegetables', count: 1 },
+    ],
+    satiety: 60,
+    energy: 10,
+    buff: { hungerRate: 0.85 },
+  },
+  {
+    id: 'miso-simmered-fish',
+    name: 'Miso-Simmered Fish',
+    description: 'Oily fish simmered low in miso until the sauce is thick and the bones are soft.',
+    icon: 'pot',
+    rank: 'D',
+    method: 'simmer',
+    ingredients: [
+      { family: 'oily', count: 1 },
+      { id: 'miso', count: 1 },
+    ],
+    satiety: 55,
+    energy: 10,
+    buff: { growth: { willpower: 1.2 } },
+    provision: 'steady',
+  },
+  {
+    id: 'fish-ball-soup',
+    name: 'Fish-Ball Soup',
+    description: 'Oily fish pounded with miso, rolled into balls and dropped into a clear broth.',
+    icon: 'bowl',
+    rank: 'D',
+    method: 'boil',
+    ingredients: [
+      { family: 'oily', count: 1 },
+      { id: 'miso', count: 1 },
+      { id: 'vegetables', count: 1 },
+    ],
+    satiety: 45,
+    energy: 10,
+    health: 10,
+    buff: { growth: { stamina: 1.15 }, hungerRate: 0.9 },
+  },
+  {
+    id: 'sashimi-plate',
+    name: 'Sashimi Plate',
+    description:
+      'White fish sliced thin enough to read through. A cook’s knife and a sword are one lesson.',
+    icon: 'fish',
+    rank: 'C',
+    method: 'raw',
+    ingredients: [
+      { family: 'white', count: 1 },
+      { id: 'rice', count: 1 },
+    ],
+    satiety: 35,
+    energy: 20,
+    buff: { studyDiscipline: { kenjutsu: 1.25 } },
+  },
+  {
+    id: 'fish-tempura',
+    name: 'Fish Tempura',
+    description: 'White fish and vegetables in a batter so light it shatters. Eat it standing up.',
+    icon: 'fish',
+    rank: 'C',
+    method: 'fry',
+    steps: { cut: 'chunky' },
+    ingredients: [
+      { family: 'white', count: 1 },
+      { id: 'eggs', count: 1 },
+      { id: 'vegetables', count: 1 },
+    ],
+    satiety: 50,
+    energy: 20,
+    buff: { growth: { speed: 1.15, taijutsu: 1.1 } },
+  },
+  {
+    id: 'steamed-shellfish',
+    name: 'Steamed Shellfish',
+    description:
+      'Shells steamed open over greens. The broth in the bottom of the bowl is the point.',
+    icon: 'bowl',
+    rank: 'D',
+    method: 'steam',
+    ingredients: [
+      { family: 'shellfish', count: 1 },
+      { id: 'vegetables', count: 1 },
+    ],
+    satiety: 30,
+    energy: 10,
+    health: 15,
+    chakra: 10,
+    buff: { studyElement: { water: 1.25 } },
+  },
+  {
+    id: 'shore-hot-pot',
+    name: 'Shore Hot Pot',
+    description:
+      'White fish and shellfish in one pot in the middle of the table. Nobody leaves early.',
+    icon: 'pot',
+    rank: 'C',
+    method: 'boil',
+    steps: { cut: 'chunky' },
+    ingredients: [
+      { family: 'white', count: 1 },
+      { family: 'shellfish', count: 1 },
+      { id: 'vegetables', count: 1 },
+      { id: 'miso', count: 1 },
+    ],
+    satiety: 80,
+    energy: 20,
+    buff: { bondGain: 1.2, sleepHealing: 1.1 },
+    provision: 'fortified',
+  },
+];

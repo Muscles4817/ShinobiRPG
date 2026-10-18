@@ -21,6 +21,7 @@ import { adjust, busyReason, chip, firstBlocker, log, spendTime } from '../ops';
 import type { GameState } from '../state';
 import { snackFrom } from '../snacks';
 import { cookedAsUsual, cookedByHand, type StoveResult } from '../stove';
+import { dishName, shortFor, slotName, takeFor } from '../pantry';
 import { homeBlocker } from './daily';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -39,10 +40,10 @@ export function missingFor(
   recipe: RecipeDef,
   servings: number,
 ): string | null {
-  const missing = recipe.ingredients
-    .filter((i) => (state.inventory.pantry[i.id] ?? 0) < i.count * servings)
-    .map((i) => ctx.content.ingredients.get(i.id)?.name ?? i.id);
-  return missing.length > 0 ? `Needs ${missing.join(', ')}.` : null;
+  const pantry = state.inventory.pantry;
+  if (takeFor(ctx, pantry, recipe, { servings })) return null;
+  const short = shortFor(ctx, pantry, recipe, servings);
+  return `Needs ${(short.length > 0 ? short : recipe.ingredients.map((i) => slotName(ctx, i))).join(', ')}.`;
 }
 
 /** Why you can't cook this recipe at all yet (unknown, or beyond your grade), or null. */
@@ -78,6 +79,8 @@ const QUALITY_WORDS: Readonly<Record<MealQuality, string>> = {
 export interface Serving {
   readonly servings: number;
   readonly quality: MealQuality;
+  /** Fish the cook put in the pot, taken first for a recipe that takes any of a kind. */
+  readonly prefer?: readonly string[];
 }
 
 /** Cooks servings of a recipe and eats one: the pantry empties, the meal's buff starts. */
@@ -86,13 +89,14 @@ export function cookMeal(
   ctx: GameContext,
   recipe: RecipeDef,
   serving: Serving,
-): { readonly state: GameState; readonly chips: JournalChip[] } {
+): { readonly state: GameState; readonly chips: JournalChip[]; readonly name: string } {
   const { servings, quality } = serving;
-  const used = useUp(
-    state.inventory,
-    recipe.ingredients.map((i) => ({ id: i.id, count: i.count * servings })),
-  );
-  if (!used.ok) return { state, chips: [] };
+  const take = takeFor(ctx, state.inventory.pantry, recipe, {
+    servings,
+    ...(serving.prefer ? { prefer: serving.prefer } : {}),
+  });
+  const used = take ? useUp(state.inventory, take.taken) : null;
+  if (!take || !used?.ok) return { state, chips: [], name: recipe.name };
   const cooking = cookedOnce(state.cooking, recipe.id, recipe.rank);
   const character =
     recipe.kind === 'snack'
@@ -113,7 +117,7 @@ export function cookMeal(
     ...describeSpec(buffAt(recipe.buff, quality)).map((e) => chip(e.label, e.tone)),
     ...(after !== before ? [chip(`Cooking grade ${after}`, 'gain')] : []),
   ];
-  return { state: fed, chips };
+  return { state: fed, chips, name: dishName(recipe, take.fish) };
 }
 
 /** Why these steps can't be cooked (not one of the stove's choices), or null. */
@@ -151,7 +155,7 @@ export const cook: ActionHandler<ActionOf<'cook'>> = {
       : cookedAsUsual(state, recipe);
     const meal = cookMeal(state, ctx, recipe, { servings: 1, quality: result.quality });
     return log(meal.state, {
-      heading: `Cooked ${recipe.name}`,
+      heading: `Cooked ${meal.name}`,
       text: cookLine(recipe, result),
       tone: result.quality === 'burnt' ? 'warning' : 'success',
       chips: meal.chips,

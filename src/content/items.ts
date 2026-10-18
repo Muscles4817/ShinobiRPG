@@ -75,6 +75,13 @@ export interface ToolDef {
   readonly effect: CombatItemEffect;
 }
 
+/**
+ * Kinds of fish a recipe may take any one of (`FamilyCount`), so a dish cooked with char or
+ * trout is the same dish and only one recipe.
+ */
+export const FISH_FAMILIES = ['white', 'oily', 'freshwater', 'shellfish'] as const;
+export type FishFamily = (typeof FISH_FAMILIES)[number];
+
 export interface IngredientDef {
   readonly id: string;
   readonly name: string;
@@ -86,12 +93,22 @@ export interface IngredientDef {
   readonly road?: number;
   /** A fish's length in centimetres, shortest to longest: what the field book measures. */
   readonly length?: readonly [number, number];
+  /** The kind of fish it is, for recipes that take any of a kind. */
+  readonly family?: FishFamily;
 }
 
 export interface IngredientCount {
   readonly id: string;
   readonly count: number;
 }
+
+/** Any fish of a family will do: the cook takes the cheapest they have, unless they choose. */
+export interface FamilyCount {
+  readonly family: FishFamily;
+  readonly count: number;
+}
+
+export type RecipeIngredient = IngredientCount | FamilyCount;
 
 export interface RecipeDef {
   readonly id: string;
@@ -111,7 +128,7 @@ export interface RecipeDef {
   readonly method: CookingMethod;
   /** Where this dish goes against its method (a gentle fry for a rolled omelette). */
   readonly steps?: Partial<CookingSteps>;
-  readonly ingredients: readonly IngredientCount[];
+  readonly ingredients: readonly RecipeIngredient[];
   readonly satiety: number;
   readonly energy: number;
   /** Health it gives back as you eat it (a broth, not a hospital). */

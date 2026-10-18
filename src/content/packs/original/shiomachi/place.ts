@@ -1,5 +1,6 @@
 import type { LocationDef } from '../../../types';
 import { TOOL_IDS } from '../../../shared/tools';
+import { SHORE_FINDS, SHORE_SPOTS } from '../../../shared/waters';
 import { SALT_LANTERNS_PORT_JOBS } from '../arcs/saltLanterns';
 import { SHIOMACHI_JOB_IDS } from './jobs';
 
@@ -7,7 +8,7 @@ import { SHIOMACHI_JOB_IDS } from './jobs';
  * Port Shiomachi, a fishing town a day down the coast road. Where a genin goes first: an inn to
  * sleep in, the fish market, the net-mender's (wire, hooks and oilskin), the breakwater to
  * drill on, the Salt Lantern, where sailors bring talk from other harbours, and the harbour
- * office's civilian work.
+ * office's civilian work, and the rocks and sand past the breakwater to fish and forage.
  */
 export const PORT_SHIOMACHI: LocationDef = {
   id: 'port-shiomachi',
@@ -61,7 +62,7 @@ export const PORT_SHIOMACHI: LocationDef = {
             'travel-rations',
             'rice',
           ],
-          cookbookIds: ['recipes-from-the-port'],
+          cookbookIds: ['recipes-from-the-port', 'tide-and-shell'],
         },
       ],
     },
@@ -85,6 +86,16 @@ export const PORT_SHIOMACHI: LocationDef = {
       blurb: 'Stone, spray and the tide',
       trainingIds: ['tide-runs', 'net-hauling', 'spray-stance'],
       exerciseIds: ['water-walking'],
+    },
+    {
+      id: 'shiomachi-shore',
+      kind: 'wilds',
+      name: 'The Rocks Past the Breakwater',
+      icon: 'wave',
+      blurb: 'Rock pools, sand flats and the deep water off the last stones',
+      biome: 'shore',
+      finds: SHORE_FINDS,
+      spots: SHORE_SPOTS,
     },
     {
       id: 'salt-lantern',

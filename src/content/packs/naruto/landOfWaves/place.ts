@@ -1,10 +1,11 @@
 import type { LocationDef } from '../../../types';
+import { SHORE_FINDS, SHORE_SPOTS } from '../../../shared/waters';
 
 /**
  * The Land of Waves: fishing islands under a shipping tycoon's thumb, joined to the mainland
  * only by a bridge nobody has been allowed to finish. A room at the bridge builder's house,
  * a market with more empty stalls than full, work at the bridge site, and the forest and the
- * sea for chakra control.
+ * sea for chakra control, and the tide flats to fish when the boats can't go out.
  */
 export const LAND_OF_WAVES: LocationDef = {
   id: 'land-of-waves',
@@ -43,6 +44,7 @@ export const LAND_OF_WAVES: LocationDef = {
           icon: 'rice',
           foodIds: ['waves-rice-porridge'],
           ingredientIds: ['rice', 'river-fish', 'travel-rations'],
+          cookbookIds: ['tide-and-shell'],
         },
       ],
     },
@@ -53,6 +55,16 @@ export const LAND_OF_WAVES: LocationDef = {
       icon: 'board',
       blurb: 'Tazuna takes any help he can get',
       missionIds: ['waves-bridge-night-watch', 'waves-market-shakedown', 'waves-inari-ran-off'],
+    },
+    {
+      id: 'waves-shore',
+      kind: 'wilds',
+      name: 'The Tide Flats',
+      icon: 'wave',
+      blurb: 'Rocks, sand and the end of a broken jetty',
+      biome: 'shore',
+      finds: SHORE_FINDS,
+      spots: SHORE_SPOTS,
     },
     {
       id: 'great-bridge',

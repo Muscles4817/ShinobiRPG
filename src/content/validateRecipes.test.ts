@@ -35,4 +35,14 @@ describe('recipe validation', () => {
       'cookbook "everyday-kitchen" teaches unknown recipe "phoenix-egg"',
     );
   });
+
+  it('rejects a recipe taking any fish of a kind the pack has none of', () => {
+    const pack = {
+      ...ORIGINAL_PACK,
+      ingredients: ORIGINAL_PACK.ingredients.map((i) =>
+        i.family === 'white' ? { ...i, family: 'oily' as const } : i,
+      ),
+    };
+    expect(validateRecipes(pack)).toContain('recipe "sashimi-plate" takes white fish, and none is');
+  });
 });

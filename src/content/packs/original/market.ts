@@ -86,6 +86,8 @@ export const MARKET_STREET: PlaceDef = {
         'food-for-the-road',
         'foragers-notes',
         'river-cook',
+        'fishmongers-knife',
+        'marsh-and-falls',
         'lantern-village-kitchen',
       ],
     },

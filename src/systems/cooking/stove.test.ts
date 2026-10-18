@@ -40,8 +40,9 @@ describe('the stove', () => {
 
 describe('experimenting', () => {
   const dishes = [
-    { id: 'congee', ingredientIds: ['rice', 'tofu'] },
-    { id: 'stew', ingredientIds: ['radish', 'miso', 'tofu'] },
+    { id: 'congee', slots: [['rice'], ['tofu']] },
+    { id: 'stew', slots: [['radish'], ['miso'], ['tofu']] },
+    { id: 'grilled', slots: [['char', 'trout'], ['salt']] },
   ];
 
   it('the same set as an unknown dish finds it, whatever the order', () => {
@@ -52,5 +53,19 @@ describe('experimenting', () => {
     expect(tryCombination(['miso', 'tofu'], dishes)).toEqual({ kind: 'close' });
     expect(tryCombination(['miso', 'tofu', 'eggs'], dishes)).toEqual({ kind: 'warm' });
     expect(tryCombination(['eggs', 'fish'], dishes)).toEqual({ kind: 'nothing' });
+  });
+
+  it('a slot that takes any fish of a kind is filled by any one of them, but only once', () => {
+    expect(tryCombination(['salt', 'trout'], dishes)).toEqual({
+      kind: 'found',
+      recipeId: 'grilled',
+    });
+    expect(tryCombination(['char', 'salt'], dishes)).toEqual({
+      kind: 'found',
+      recipeId: 'grilled',
+    });
+    expect(tryCombination(['char', 'trout'], dishes)).not.toEqual(
+      expect.objectContaining({ kind: 'found' }),
+    );
   });
 });

@@ -91,6 +91,11 @@ export const SHIOMACHI_PEOPLE: readonly PersonDef[] = [
     }),
     traitIds: ['brash', 'curious'],
     favouriteRecipeId: 'kelp-fish-broth',
+    recipes: [
+      { recipeId: 'urchin-rice', minStage: 2 },
+      { recipeId: 'puffer-hot-pot', minStage: 3 },
+      { recipeId: 'turtle-soup', minStage: 4 },
+    ],
     appearance: look(
       'ponytail',
       { hair: '#2a1d14', eyes: '#3a5a7a', skin: '#d9a070', outfit: '#b8322c' },

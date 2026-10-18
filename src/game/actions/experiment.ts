@@ -12,6 +12,7 @@ import type { JournalChip } from '@/systems/journal';
 
 import type { GameContext } from '../context';
 import { adjust, busyReason, chip, firstBlocker, log, spendTime } from '../ops';
+import { slotIds } from '../pantry';
 import type { GameState } from '../state';
 import { homeBlocker } from './daily';
 import { cookMeal } from './kitchen';
@@ -38,7 +39,7 @@ function discoverable(state: GameState, ctx: GameContext) {
   const grade = cookingGrade(state.cooking.xp);
   return ctx.content.recipes.all
     .filter((r) => state.cooking.known[r.id] === undefined && withinReach(grade, r.rank))
-    .map((r) => ({ id: r.id, ingredientIds: r.ingredients.map((i) => i.id) }));
+    .map((r) => ({ id: r.id, slots: r.ingredients.map((i) => slotIds(ctx, i)) }));
 }
 
 function experimentBlocker(state: GameState, ids: readonly string[]): string | null {
@@ -65,7 +66,11 @@ export const experiment: ActionHandler<ActionOf<'experiment'>> = {
       const recipe = ctx.content.recipes.require(result.recipeId);
       const learned = { ...state, cooking: learnRecipes(state.cooking, [recipe.id]) };
       // The pot needs the dish's full measure; with less, you learn it but eat what you made.
-      const meal = cookMeal(learned, ctx, recipe, { servings: 1, quality: 'plain' });
+      const meal = cookMeal(learned, ctx, recipe, {
+        servings: 1,
+        quality: 'plain',
+        prefer: action.ingredientIds,
+      });
       if (meal.state !== learned) {
         return log(meal.state, {
           heading: `You worked out ${recipe.name}`,

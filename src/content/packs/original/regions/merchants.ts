@@ -4,12 +4,10 @@ import type { CookbookDef, IngredientDef, Stall } from '../../../types';
  * Travelling merchants from the places around the village: the Shiomachi fish cart (the port
  * sells the same at its own market), the dune caravan and a pilgrim herbalist down from Mount
  * Reikon. Each sets up on Market Street every few days with its home's larder and a cookbook
- * of its dishes (`recipes.ts`).
+ * of its dishes (`recipes.ts`). The cart's bream and clams are the shore's own (`shared/fish.ts`).
  */
 
 export const REGIONAL_INGREDIENTS: readonly IngredientDef[] = [
-  { id: 'sea-bream', name: 'Sea Bream', cost: 24, icon: 'fish' },
-  { id: 'clams', name: 'Clams', cost: 16, icon: 'fish' },
   { id: 'kelp', name: 'Dried Kelp', cost: 10, icon: 'leaf', road: 10 },
   { id: 'dates', name: 'Dates', cost: 14, icon: 'tree', road: 20 },
   { id: 'dune-spices', name: 'Dune Spices', cost: 18, icon: 'leaf' },

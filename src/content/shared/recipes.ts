@@ -1,4 +1,6 @@
 import type { RecipeDef } from '../types';
+import { CATCH_RECIPES } from './catchRecipes';
+import { FISH_RECIPES } from './fishRecipes';
 import { WILD_RECIPES } from './wildRecipes';
 
 /**
@@ -75,7 +77,7 @@ const EVERYDAY: readonly RecipeDef[] = [
     rank: 'D',
     method: 'grill',
     ingredients: [
-      { id: 'river-fish', count: 1 },
+      { family: 'freshwater', count: 1 },
       { id: 'rice', count: 1 },
       { id: 'vegetables', count: 1 },
     ],
@@ -110,7 +112,7 @@ const EVERYDAY: readonly RecipeDef[] = [
     method: 'simmer',
     steps: { cut: 'whole' },
     ingredients: [
-      { id: 'river-fish', count: 1 },
+      { family: 'freshwater', count: 1 },
       { id: 'vegetables', count: 1 },
     ],
     satiety: 30,
@@ -199,7 +201,7 @@ const ROAD: readonly RecipeDef[] = [
     rank: 'C',
     method: 'grill',
     ingredients: [
-      { id: 'river-fish', count: 1 },
+      { family: 'freshwater', count: 1 },
       { id: 'spices', count: 1 },
     ],
     satiety: 35,
@@ -253,7 +255,7 @@ const TAUGHT: readonly RecipeDef[] = [
     method: 'boil',
     steps: { cut: 'chunky' },
     ingredients: [
-      { id: 'river-fish', count: 1 },
+      { family: 'freshwater', count: 1 },
       { id: 'vegetables', count: 1 },
       { id: 'miso', count: 1 },
       { id: 'spices', count: 1 },
@@ -288,4 +290,6 @@ export const RECIPES: readonly RecipeDef[] = [
   ...ROAD,
   ...TAUGHT,
   ...WILD_RECIPES,
+  ...FISH_RECIPES,
+  ...CATCH_RECIPES,
 ];

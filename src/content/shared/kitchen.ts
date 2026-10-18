@@ -6,7 +6,14 @@ import type { CookbookDef, IngredientDef } from '../types';
  */
 export const INGREDIENTS: readonly IngredientDef[] = [
   { id: 'rice', name: 'Rice', cost: 8, icon: 'rice' },
-  { id: 'river-fish', name: 'River Fish', cost: 14, icon: 'fish', length: [18, 36] },
+  {
+    id: 'river-fish',
+    name: 'River Fish',
+    cost: 14,
+    icon: 'fish',
+    length: [18, 36],
+    family: 'freshwater',
+  },
   { id: 'vegetables', name: 'Vegetables', cost: 10, icon: 'veg' },
   { id: 'miso', name: 'Miso', cost: 9, icon: 'bowl' },
   { id: 'spices', name: 'Spices', cost: 12, icon: 'leaf' },
@@ -62,5 +69,56 @@ export const COOKBOOKS: readonly CookbookDef[] = [
     cost: 100,
     icon: 'scroll',
     recipeIds: ['salt-grilled-sweetfish', 'grilled-eel', 'crayfish-boil', 'watercress-soup'],
+  },
+  {
+    id: 'fishmongers-knife',
+    name: 'The Fishmonger’s Knife',
+    description:
+      'How to cut, salt, simmer and fry any fish worth the name. Half of it is about knives.',
+    cost: 110,
+    icon: 'scroll',
+    recipeIds: [
+      'stone-grilled-fish',
+      'fish-rice',
+      'miso-simmered-fish',
+      'fish-ball-soup',
+      'sashimi-plate',
+      'fish-tempura',
+    ],
+  },
+  {
+    id: 'tide-and-shell',
+    name: 'Tide and Shell',
+    description:
+      'A shore cook’s book, sand still in the spine. It tells you which tide to go out on.',
+    cost: 130,
+    icon: 'scroll',
+    recipeIds: [
+      'steamed-shellfish',
+      'shore-hot-pot',
+      'lamplit-squid',
+      'grilled-turban-shell',
+      'octopus-dumplings',
+      'yellowtail-glaze',
+      'laver-rice-rolls',
+      'sea-lettuce-soup',
+    ],
+  },
+  {
+    id: 'marsh-and-falls',
+    name: 'Marsh and Falls',
+    description: 'Farm cooking from the paddies and the hills above them. Muddy fingerprints.',
+    cost: 100,
+    icon: 'scroll',
+    recipeIds: [
+      'carp-miso-stew',
+      'loach-stew',
+      'smelt-fry',
+      'salmon-rice',
+      'dropwort-congee',
+      'water-chestnut-fritters',
+      'butterbur-miso',
+      'grated-yam-rice',
+    ],
   },
 ];

@@ -55,6 +55,11 @@ export const WAVES_PEOPLE: readonly PersonDef[] = [
     }),
     traitIds: ['kind', 'diligent'],
     favouriteRecipeId: 'grilled-fish-set',
+    recipes: [
+      { recipeId: 'urchin-rice', minStage: 2 },
+      { recipeId: 'puffer-hot-pot', minStage: 3 },
+      { recipeId: 'turtle-soup', minStage: 4 },
+    ],
     appearance: look(
       'long',
       { hair: '#1a1a2a', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#d8c8a8' },

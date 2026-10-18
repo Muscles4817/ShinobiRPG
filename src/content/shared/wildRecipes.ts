@@ -1,8 +1,9 @@
 import type { RecipeDef } from '../types';
 
 /**
- * Dishes made from what you gather in the woods and on the river (`wilds.ts`). Taught by two
- * cookbooks (`kitchen.ts`), and like every dish they can be worked out at the stove.
+ * Dishes made from what you gather in the woods and on the river (`wilds.ts`), and on the
+ * shore, the marsh and mountain water (`waters.ts`). Taught by cookbooks (`kitchen.ts`), and
+ * like every dish they can be worked out at the stove.
  */
 export const WILD_RECIPES: readonly RecipeDef[] = [
   {
@@ -63,7 +64,7 @@ export const WILD_RECIPES: readonly RecipeDef[] = [
     steps: { cut: 'fine' },
     ingredients: [
       { id: 'wild-ginger', count: 1 },
-      { id: 'river-fish', count: 1 },
+      { family: 'freshwater', count: 1 },
     ],
     satiety: 30,
     energy: 10,
@@ -140,5 +141,106 @@ export const WILD_RECIPES: readonly RecipeDef[] = [
     chakra: 15,
     buff: { checks: { chakraControl: 1.15, intellect: 1.1 } },
     provision: 'fortified',
+  },
+  {
+    id: 'laver-rice-rolls',
+    name: 'Laver Rice Rolls',
+    description:
+      'Rice rolled in laver you dried yourself on a rock in the sun. Clean, salty, clear.',
+    icon: 'rice',
+    rank: 'D',
+    method: 'steam',
+    ingredients: [
+      { id: 'rock-laver', count: 1 },
+      { id: 'rice', count: 1 },
+    ],
+    satiety: 45,
+    energy: 10,
+    buff: { checks: { perception: 1.1, intellect: 1.1 } },
+  },
+  {
+    id: 'sea-lettuce-soup',
+    name: 'Sea Lettuce Soup',
+    description:
+      'Green weed and tofu in a thin broth. Tastes like standing in the wind off the sea.',
+    icon: 'bowl',
+    rank: 'D',
+    method: 'boil',
+    steps: { finish: 'early' },
+    ingredients: [
+      { id: 'sea-lettuce', count: 1 },
+      { id: 'tofu', count: 1 },
+    ],
+    satiety: 25,
+    energy: 10,
+    health: 10,
+    buff: { checks: { willpower: 1.15 } },
+  },
+  {
+    id: 'dropwort-congee',
+    name: 'Dropwort Congee',
+    description: 'Rice cooked to porridge with the sharp green shoots of the marsh. Sickroom food.',
+    icon: 'bowl',
+    rank: 'D',
+    method: 'simmer',
+    steps: { cut: 'fine' },
+    ingredients: [
+      { id: 'water-dropwort', count: 1 },
+      { id: 'rice', count: 1 },
+    ],
+    satiety: 40,
+    energy: 5,
+    chakra: 10,
+    buff: { sleepHealing: 1.15, hungerRate: 0.9 },
+  },
+  {
+    id: 'water-chestnut-fritters',
+    name: 'Water Chestnut Fritters',
+    description:
+      'Crunchy little fritters fried for a crowd. Everyone takes one more than they should.',
+    icon: 'bowl',
+    rank: 'D',
+    kind: 'snack',
+    method: 'fry',
+    ingredients: [
+      { id: 'water-chestnuts', count: 1 },
+      { id: 'eggs', count: 1 },
+    ],
+    satiety: 15,
+    energy: 10,
+    buff: { bondGain: 1.1 },
+  },
+  {
+    id: 'butterbur-miso',
+    name: 'Butterbur Miso',
+    description: 'Bitter spring shoots chopped into miso. A spoon of it wakes your hands up.',
+    icon: 'bowl',
+    rank: 'D',
+    method: 'boil',
+    ingredients: [
+      { id: 'butterbur', count: 1 },
+      { id: 'miso', count: 1 },
+    ],
+    satiety: 25,
+    energy: 15,
+    buff: { studyDiscipline: { taijutsu: 1.2, kenjutsu: 1.1 } },
+  },
+  {
+    id: 'grated-yam-rice',
+    name: 'Grated Yam over Rice',
+    description:
+      'Mountain yam grated to a white slick over hot rice with an egg. Deep, slow strength.',
+    icon: 'rice',
+    rank: 'C',
+    method: 'steam',
+    steps: { cut: 'fine' },
+    ingredients: [
+      { id: 'mountain-yam', count: 1 },
+      { id: 'rice', count: 1 },
+      { id: 'eggs', count: 1 },
+    ],
+    satiety: 55,
+    energy: 25,
+    buff: { growth: { reserves: 1.2 } },
   },
 ];

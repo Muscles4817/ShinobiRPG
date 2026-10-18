@@ -52,6 +52,7 @@ export const METHOD_WORDS: Readonly<Record<CookingMethod, string>> = {
   steam: 'Steamed',
   fry: 'Fried',
   boil: 'Boiled',
+  raw: 'Raw',
 };
 
 /** "You know: steady fire." from what mastery has shown you, or null when nothing yet. */

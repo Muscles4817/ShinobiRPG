@@ -4,10 +4,13 @@
  * as one of them teaches it, and otherwise the pot tells you how close you came.
  */
 
-/** A recipe as the pot sees it: the set of what goes in. */
+/**
+ * A recipe as the pot sees it: what goes in, slot by slot. Each slot is the ingredients that
+ * will do for it, one for most, every fish of a kind for a slot that takes any.
+ */
 export interface Dish {
   readonly id: string;
-  readonly ingredientIds: readonly string[];
+  readonly slots: readonly (readonly string[])[];
 }
 
 export const MAX_EXPERIMENT_INGREDIENTS = 4;
@@ -21,20 +24,35 @@ export type ExperimentResult =
   | { readonly kind: 'warm' }
   | { readonly kind: 'nothing' };
 
-function sameSet(a: readonly string[], b: ReadonlySet<string>): boolean {
-  return a.length === b.size && a.every((id) => b.has(id));
+/** Whether each chosen ingredient fills a slot of its own, every slot filled once. */
+function fillsEvery(chosen: readonly string[], slots: Dish['slots']): boolean {
+  if (chosen.length !== slots.length) return false;
+  const [first, ...rest] = chosen;
+  if (first === undefined) return true;
+  return slots.some(
+    (slot, k) =>
+      slot.includes(first) &&
+      fillsEvery(
+        rest,
+        slots.filter((_, j) => j !== k),
+      ),
+  );
+}
+
+/** How many of the chosen ingredients belong somewhere in the dish. */
+function overlap(chosen: readonly string[], dish: Dish): number {
+  return chosen.filter((id) => dish.slots.some((slot) => slot.includes(id))).length;
 }
 
 export function tryCombination(
   chosen: readonly string[],
   unknown: readonly Dish[],
 ): ExperimentResult {
-  const picked = new Set(chosen);
-  const found = unknown.find((d) => sameSet([...new Set(d.ingredientIds)], picked));
+  const picked = [...new Set(chosen)];
+  const found = unknown.find((d) => fillsEvery(picked, d.slots));
   if (found) return { kind: 'found', recipeId: found.id };
-  const overlap = (d: Dish) => [...picked].filter((id) => d.ingredientIds.includes(id)).length;
-  if (unknown.some((d) => overlap(d) === picked.size)) return { kind: 'close' };
-  return unknown.some((d) => overlap(d) >= MIN_EXPERIMENT_INGREDIENTS)
+  if (unknown.some((d) => overlap(picked, d) === picked.length)) return { kind: 'close' };
+  return unknown.some((d) => overlap(picked, d) >= MIN_EXPERIMENT_INGREDIENTS)
     ? { kind: 'warm' }
     : { kind: 'nothing' };
 }
