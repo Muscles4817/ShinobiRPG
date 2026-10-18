@@ -19,6 +19,7 @@ import { validateSources } from './validateSources';
 import { validateTeachers } from './validateTeachers';
 import { validateVillage } from './validateVillage';
 import { validateWorld } from './validateWorld';
+import { validateHomes } from './validateHomes';
 import { validateLeisure } from './validateLeisure';
 import { validateRoutes } from './validateRoutes';
 import { validateAtlas } from './validateAtlas';
@@ -56,6 +57,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...numberProblems(pack),
     ...validateWorld(pack),
     ...validateLeisure(pack),
+    ...validateHomes(pack),
     ...validateRoutes(pack),
     ...validateAtlas(pack),
     ...validateExercises(pack),
@@ -104,6 +106,31 @@ function upbringingProblems(pack: ContentPack): string[] {
   ].filter((p): p is string => typeof p === 'string');
 }
 
+/** Notes that contradict each other say so of each other. */
+function noteProblems(pack: ContentPack): string[] {
+  return pack.talents.flatMap((t) => {
+    if (t.opposite === undefined) return [];
+    const opposite = pack.talents.find((o) => o.id === t.opposite);
+    if (!opposite) return [`talent "${t.id}" has unknown opposite "${t.opposite}"`];
+    return opposite.opposite === t.id
+      ? []
+      : [`talents "${t.id}" and "${opposite.id}" are not mutual opposites`];
+  });
+}
+
+/** A quirk names real traits, and never one on both sides. */
+function quirkProblems(pack: ContentPack): string[] {
+  const traits = new Set(pack.traits.map((t) => t.id));
+  return pack.quirks.flatMap((q) => [
+    ...[...q.warms, ...q.cools]
+      .filter((id) => !traits.has(id))
+      .map((id) => `quirk "${q.id}" names unknown trait "${id}"`),
+    ...q.warms
+      .filter((id) => q.cools.includes(id))
+      .map((id) => `quirk "${q.id}" both warms and cools "${id}"`),
+  ]);
+}
+
 /** Clans, traits and clan techniques must fit together. */
 function profileProblems(pack: ContentPack): string[] {
   const clanIds = new Set(pack.clans.map((c) => c.id));
@@ -117,6 +144,7 @@ function profileProblems(pack: ContentPack): string[] {
       problems.push(`technique "${t.id}" belongs to unknown clan "${t.clan}"`);
     }
   }
+  problems.push(...noteProblems(pack), ...quirkProblems(pack));
   for (const t of pack.traits) {
     if (t.opposite === undefined) continue;
     const opposite = pack.traits.find((o) => o.id === t.opposite);
@@ -140,6 +168,9 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['build', pack.builds],
     ['upbringing', pack.upbringings],
     ['talent', pack.talents],
+    ['quirk', pack.quirks],
+    ['home', pack.homes],
+    ['furnishing', pack.furnishings],
     ['trait', pack.traits],
     ['nindo', pack.nindos],
     ['gear', pack.gear],

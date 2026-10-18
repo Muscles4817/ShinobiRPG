@@ -7,6 +7,7 @@ import { VetPage } from './VetPage';
 import { GearShopPage } from './GearShopPage';
 import { HomePage, HospitalPage } from './HomePages';
 import { HousePage } from './HousePage';
+import { LettingsPage } from './LettingsPage';
 import { InnPage } from './InnPage';
 import { LibraryPage } from './LibraryPage';
 import { MarketPage } from './MarketPage';
@@ -65,5 +66,7 @@ export function PlacePage({ kind, placeId, onOpenPlace, ...props }: PlacePagePro
       return <CompoundPage {...props} placeId={placeId} />;
     case 'vet':
       return <VetPage {...props} />;
+    case 'lettings':
+      return <LettingsPage {...props} />;
   }
 }

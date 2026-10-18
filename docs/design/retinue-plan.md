@@ -540,7 +540,7 @@ Each step proves one property and is its own PR.
 - **The system** (`systems/companions`): the `Companion` record (id, kind, name, stats, a
   rolled aptitude, bond points, `lastGrownDay`), the slice `GameState.companions` (`owned` by
   owner, yours under `PLAYER_OWNER`, and a stray being won over), and the temperament table
-  (bred bonds ×1.2, stray ×1, wild ×0.6 and takes orders a stage later). Save v44 gives older
+  (bred bonds ×1.2, stray ×1, wild ×0.6 and takes orders a stage later). A save step gives older
   saves none (a clan child of an older save meets no pup).
 - **Content** (`content/companions.ts`, validated in `validateCompanions.ts`): `CompanionKindDef`
   (temperament, a starting body no better than a fresh genin's best, `healthScale`, traits,
@@ -568,8 +568,8 @@ Each step proves one property and is its own PR.
 - **The record** gains `health` (carried between fights, mended half its maximum each night),
   `lastFedDay`, `lastPlayDay`, an `injury` (home until a day, treated once, dosed once a day) and
   whether you've found its favourite; the slice gains a `strayed` companion and the doses of
-  `medicine` you carry. Rules in `systems/companions/care.ts`. The companions save step (v45 →
-  v46, after main's daybook and rival) gives all of it.
+  `medicine` you carry. Rules in `systems/companions/care.ts`. The companions save step
+  gives all of it.
 - **Feeding** (`feedCompanion`): one meal a day: scraps (free: fed, no bond), plain food from its
   kind's `diet` in your pantry (a little bond), or its favourite (drawn from the seed, found out
   by feeding it: more bond). Hunger counts days without a meal (fed, peckish, hungry, starving):
@@ -675,7 +675,7 @@ and its genes, its skills with training**, and every kind has its own ceiling.
 - **Training: the handler rule.** Strength, speed and stamina are never drilled. Skills (and
   perception) are drilled under the handler rule: a fixed D-grade pace held through B,
   whatever your own grades. This replaces the human teacher rule and the 2c limit shifts.
-- **Save v48:** every kept companion is grown (its body catches up as soon as time passes, and it
+- **Save v51 (v48 before main took it):** every kept companion is grown (its body catches up as soon as time passes, and it
   loses nothing). Wild tracking starts fresh, and nothing is waiting at the vet.
 - **Screens:**
   - **The strip:** health is labelled, there is one hunger word or a stamp (never both), and a
@@ -734,7 +734,7 @@ and its genes, its skills with training**, and every kind has its own ceiling.
 - **Handling lore** (`companionLore`, sold through a gear place's `loreIds`): A Kennel Master's
   Notes (300 ryo), in Port Shiomachi and in Shukuba, makes your own sessions ×1.25. Each piece
   is read once and kept in `companions.lore`.
-- **Save v49:** no companion has been taught anything, and no lore has been read.
+- **Save v52 (v49 before main took it):** no companion has been taught anything, and no lore has been read.
 - **Screens:**
   - The sheet's "What the bond opens": each art, known or what opens it, and the role line.
   - The clinic's handler slip: sessions as skill tiles, the fee, and the arts they teach with

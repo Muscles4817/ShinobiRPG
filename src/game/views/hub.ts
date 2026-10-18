@@ -85,6 +85,14 @@ function restLine(place: RestPlace, state: GameState, ctx: GameContext): string 
 
 function liveLine(place: PlaceDef, state: GameState, ctx: GameContext): string {
   if (isRestPlace(place)) return restLine(place, state, ctx);
+  return place.kind === 'lettings' ? place.blurb : workLine(place, state, ctx);
+}
+
+function workLine(
+  place: Exclude<PlaceDef, { kind: 'lettings' | RestKind }>,
+  state: GameState,
+  ctx: GameContext,
+): string {
   switch (place.kind) {
     case 'missions':
       return hallLine(place.missionIds, state, ctx);
@@ -164,7 +172,7 @@ function homeLine(state: GameState, blurb: string): string {
   if (isRentOverdue(state.housing, state.time.day)) return 'Rent overdue';
   const left = daysOfRentLeft(state.housing, state.time.day);
   if (left === 0) return 'Rent due tomorrow';
-  return blurb;
+  return state.housing.homeId ? (state.housing.lodging ?? blurb) : blurb;
 }
 
 /** Today's news for a place: fresh postings, or a lesson your sensei is ready to give. */

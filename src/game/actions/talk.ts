@@ -65,6 +65,7 @@ export const reply: ActionHandler<ActionOf<'reply'>> = {
       state,
       ctx,
       reactionTo(tastesOf(person, ctx), choice.tone) + festivalBondBonus(state, ctx),
+      person,
     );
     const after = recordTalk(before, { day: state.time.day, delta, heard: talking.conversationId });
     const stage = stageOf(after.points);

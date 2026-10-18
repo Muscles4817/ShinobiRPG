@@ -5,6 +5,7 @@ import { Banner } from '../../components/Banner';
 import { InjuryList } from '../Condition';
 import { GearLocker } from './GearLocker';
 import { HomeKitchen } from './HomeKitchen';
+import { HomeMaking } from './HomeMaking';
 import { ScrollDesk } from './ScrollDesk';
 import type { PlaceProps } from '../types';
 
@@ -78,7 +79,7 @@ export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
         {desk.scrolls.length > 0 && (
           <Jump className="hs-desk" label="Read scrolls" target="scroll-desk" />
         )}
-        <Hotspot className="hs-shrine" label="Pray (soon)" perform={perform} />
+        <Jump className="hs-shrine" label="Furnish" target="furnish" />
       </div>
       <main className="page">
         <section className="deed">
@@ -125,6 +126,7 @@ export function HomePage({ ctx, state, perform, onBack }: PlaceProps) {
           )}
           {view.nap.blocker && <p className="muted small">Nap: {view.nap.blocker}</p>}
         </section>
+        <HomeMaking ctx={ctx} state={state} perform={perform} onBack={onBack} />
         <ScrollDesk desk={desk} perform={perform} />
         <HomeKitchen ctx={ctx} state={state} perform={perform} />
         <GearLocker ctx={ctx} state={state} perform={perform} />

@@ -224,7 +224,16 @@ function arcProblems(pack: ContentPack): string[] {
       .filter(([, n]) => n > 1)
       .map(([id]) => `mission "${id}" belongs to more than one arc`),
     ...pack.arcs.flatMap((a) => a.acts.flatMap((act) => baseProblems(pack, a.id, act))),
+    ...recommendationProblems(pack),
   ];
+}
+
+/** Whoever puts a genin forward at an arc's end is someone the pack has. */
+function recommendationProblems(pack: ContentPack): string[] {
+  const people = new Set(pack.people.map((p) => p.id));
+  return pack.arcs
+    .filter((a) => a.recommends !== undefined && !people.has(a.recommends.personId))
+    .map((a) => `arc "${a.id}" is recommended by unknown person "${a.recommends?.personId}"`);
 }
 
 /** An act based in a town has its jobs posted at an office there. */

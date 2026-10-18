@@ -109,9 +109,9 @@ describe('character creation', () => {
     // The same dice go on to roll aptitude, and the game carries on from there.
     const dice = createRng(roll.rngState);
     const clan = ctx.content.clans.require(state.character.clanId);
-    const talent = ctx.content.talents.require(state.character.talentId ?? '');
+    const notes = state.character.talentIds.map((id) => ctx.content.talents.require(id));
     const shape = { band: STANDING_INFO.middle.talent, specialties: ['taijutsu' as const] };
-    const rolled = rollCharacterAptitude(dice, clan, talent, shape);
+    const rolled = rollCharacterAptitude(dice, clan, notes, shape);
     expect(state.character.aptitude).toEqual(withGifts(rolled, { taijutsu: 'gifted' }));
     expect(state.rngState).toBe(dice.state());
   });

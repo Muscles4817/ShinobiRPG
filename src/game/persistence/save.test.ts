@@ -82,7 +82,8 @@ describe('persistence', () => {
       grades: _g,
       nature: _n,
       traitIds: _t,
-      talentId: _ta,
+      talentIds: _ta,
+      quirkIds: _q,
       nindoId: _ni,
       breakIn: _b,
       ...oldCharacter
@@ -106,7 +107,8 @@ describe('persistence', () => {
       clanId: 'none',
       grades: { ninjutsu: 'A', taijutsu: 'C' },
       traitIds: [],
-      talentId: null,
+      talentIds: [],
+      quirkIds: [],
       stats: { kenjutsu: 5, fuuinjutsu: 5 },
     });
     expect('aptitudeId' in loaded.value.character).toBe(false);
@@ -439,9 +441,61 @@ describe('persistence', () => {
     });
   });
 
+  it('gives a save from before notes stacked its one note as a list, and no habits', () => {
+    const game = newGame();
+    const { talentIds: _t, quirkIds: _q, ...character } = game.character;
+    const old = (talentId: string | null) => ({ ...game, character: { ...character, talentId } });
+    const load = (talentId: string | null) => {
+      const loaded = deserialize(JSON.stringify({ version: 46, state: old(talentId) }));
+      if (!loaded.ok) throw new Error(loaded.error);
+      return loaded.value.character;
+    };
+    expect(load('sensor')).toMatchObject({ talentIds: ['sensor'], quirkIds: [] });
+    expect(load('unremarkable').talentIds).toEqual([]);
+    expect(load(null).talentIds).toEqual([]);
+  });
+
+  it('gives a ceremony waiting in a save from before promotion routes the route it was earned by', () => {
+    const game = newGame();
+    const waiting = (rank: 'chunin' | 'jonin') =>
+      JSON.stringify({
+        version: 47,
+        state: { ...game, exams: { ...game.exams, ceremony: { rank } } },
+      });
+    const chunin = deserialize(waiting('chunin'));
+    const jonin = deserialize(waiting('jonin'));
+    if (!chunin.ok || !jonin.ok) throw new Error('Did not load.');
+    expect(chunin.value.exams.ceremony).toEqual({ rank: 'chunin', route: 'exam' });
+    expect(jonin.value.exams.ceremony).toEqual({ rank: 'jonin', route: 'nomination' });
+    const none = deserialize(JSON.stringify({ version: 47, state: game }));
+    if (!none.ok) throw new Error(none.error);
+    expect(none.value.exams.ceremony).toBeNull();
+  });
+
+  it('gives a save from before the home ladder an unfurnished home where it started', () => {
+    const game = newGame();
+    const {
+      homeId: _h,
+      furniture: _f,
+      placed: _p,
+      beds: _b,
+      guestId: _g,
+      ...housing
+    } = game.housing;
+    const loaded = deserialize(JSON.stringify({ version: 48, state: { ...game, housing } }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.housing).toMatchObject({
+      homeId: null,
+      furniture: [],
+      placed: {},
+      beds: [],
+      guestId: null,
+    });
+  });
+
   it('gives a save from before companions none, and no stray being won over', () => {
     const { companions: _c, ...game } = newGame();
-    const loaded = deserialize(JSON.stringify({ version: 46, state: game }));
+    const loaded = deserialize(JSON.stringify({ version: 49, state: game }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.companions).toEqual({
       owned: {},
@@ -459,7 +513,7 @@ describe('persistence', () => {
     const { learned: _l, ...old } = game.companions.owned.player!;
     const { lore: _r, ...slice } = game.companions;
     const saved = { ...game, companions: { ...slice, owned: { player: old } } };
-    const loaded = deserialize(JSON.stringify({ version: 48, state: saved }));
+    const loaded = deserialize(JSON.stringify({ version: 51, state: saved }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.companions.owned.player!.learned).toEqual([]);
     expect(loaded.value.companions.lore).toEqual([]);
@@ -475,7 +529,7 @@ describe('persistence', () => {
     } = game.companions.owned.player!;
     const { tracking: _k, waiting: _w, ...slice } = game.companions;
     const saved = { ...game, companions: { ...slice, owned: { player: old } } };
-    const loaded = deserialize(JSON.stringify({ version: 47, state: saved }));
+    const loaded = deserialize(JSON.stringify({ version: 50, state: saved }));
     if (!loaded.ok) throw new Error(loaded.error);
     const hound = loaded.value.companions.owned.player!;
     expect(hound.grownDays).toBeGreaterThan(100);

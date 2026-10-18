@@ -139,8 +139,13 @@ ui ──► game ──► content ──► systems ──► core
     **nature is found, not picked** (`game/nature.ts`): read from the seed at creation (a clan's
     nature most of the time) and hidden (`natureKnown`) until the chakra paper scene that follows
     team assignment (`testChakraPaper`). Until then it counts in fights only: no study bonus, no
-    nature techniques, no sensei can see it. Talents
-    may be one-sided (`TalentDef.aptitude` fixes a stat, 0 = never) or blank. The pacing bench
+    nature techniques, no sensei can see it. **Special notes** (`TalentDef`) stack: each is
+    weighed major, minor or a flaw, the standing sets the room (`STANDING_INFO.notes`; a flaw
+    makes room for a minor note, `systems/profile/notes.ts`), and there is no other cap: a full
+    file is an easier game. Notes may be one-sided (`TalentDef.aptitude` fixes a stat, 0 =
+    never). **Habits** (`QuirkDef`) are free and tilt how fast people of the traits they name
+    warm to you (`warmed`). The file is **read back** in words before the essay
+    (`views/fileReadBack.ts`: how hard the road looks, what comes easy and hard). The pacing bench
     (`src/test/pacing/standing.test.ts`) checks the spread and that the dead last can climb.
 13. **People are data, wherever they come from.** Authored people (`PersonDef`) live in the
     pack; generated genin are built from the pack's name pools by `game/people/generator.ts`
@@ -407,7 +412,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     bouts against rivals generated from the seed. Every stage records conduct marks
     (`conduct.ts`), and the verdict weighs conduct with results. A promotion is its own scene
     (`exams.ceremony`): the rank, the vest, and unlocks derived from data (`exam/unlocks.ts`).
-    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it. Those not
+    The exam is the main road to chūnin, not the only one (`exam/routes.ts`; each ceremony keeps
+    its `route`, which picks what is said): a genin who is ready (`readinessGap`) is raised in the
+    field for a clean B-rank or deadly job, at the end of an arc with `recommends` (its patron's
+    words), or on their sensei's word at a lesson after a year (high regard, no exam days away,
+    never a sensei who holds students back).
+    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it, in a ceremony
+    that reads the record back; S-rank hunts for jōnin-grade rogues are theirs. Those not
     sitting it are **spectators** (`exam/spectators.ts`, the exam's `spectators` lines): in the
     week before, your sensei invites you to watch when they won't put you forward (a teammate
     tells you instead when your sensei's grip is loose), and on the day anyone at home may spend
@@ -576,6 +587,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     the next race. A rival behind you trains harder (`drive.ts`), the one open exception to
     peers growing by the same rules. Their ink is `--rival`, never a gain or cost colour.
 
+32. **Homes are a ladder you furnish** (`docs/design/home-plan.md`, `game/home/`). A pack's
+    `homes` (`HomeDef`: rent and/or price, `needs`, spots, rooms) are let at a `lettings` place;
+    you start in your rented room (or your clan's) with `FIRST_HOME_SPOTS`. The housing slice
+    keeps `homeId`, owned `furniture`, what is `placed` in each spot, the garden's `beds` and a
+    `guestId`; moving (`moveHome`) keeps your furniture. A piece (`FurnishingDef`) does one thing,
+    read at one hook while you are at home (`comforts`: sleep, nap, study, guests; decor is
+    comfort only), and comfort warms dinners at home. The finest pieces are gifts from new close
+    friends (`noteHomeGifts` in `dispatch`). Rooms: a garden (`GardenCrop` from seed), a yard
+    (cheaper drills) and a guest room (the guest is home every evening). The keepsake shelf is
+    read from memories, rival wins and ranks, never stored.
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -646,7 +668,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   throws it to far and leaves dust that blinds both sides (`plan/blast.ts`). Keep vast rare. The academy's technique sheet
   (`views/techniqueSheet.ts`) reads all of it, so what the player is told is what the fight does.
 - **Add a clan, talent or trait:** add it to the pack's `clans` (or the shared `talents`/
-  `traits`) with stat bonuses and a `ModifierSpec`. Clan-only techniques set `clan` on the
+  `traits`) with stat bonuses and a `ModifierSpec`. A talent (special note) has a `weight`
+  (major, minor or flaw) and, if it contradicts another, a mutual `opposite`. **Add a habit:** a
+  `QuirkDef` in `shared/quirks.ts` with the traits it `warms` and `cools` (validated real, never
+  both). Clan-only techniques set `clan` on the
   `TechniqueDef` and are listed at the academy; only members see and learn them. Every pack
   needs a `none` clan (validated).
 - **Add a person:** add a `PersonDef` to the pack's `people` (appearance via `look()`, whose
@@ -733,7 +758,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   reports any slot left unfilled, and tests check each fill gives exactly what its template asks.
 - **Add a technique:** give it a source (validated): the academy (rank E–D), a library (its open
   shelves keep standard techniques to C, for genin once their sensei signs the permit at a
-  lesson, `game/permits.ts`; the rest is the restricted stacks, chūnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
+  lesson, `game/permits.ts`; B is the restricted stacks, chūnin only; A is the sealed archive,
+  jōnin only), a teacher's `teaches` (clan techniques only from clan members), or a mission's
   scroll reward. A person's `arsenal` is not a source.
 - **Decide who goes on a mission:** nothing to set. A job's rank and its foes' danger decide
   the crews it may get (decision 21); a crew joins every fight as allies and each member gains
@@ -761,7 +787,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a school technique:** a fighting style (Lantern Wind, River Draw…) is techniques with
   the same `school`, taught by that school's teachers (`teaches`), never shelved. Standard
   techniques (no `school`, no `clan`) go on the academy rack (E–D) and the library (C open
-  shelves, B restricted), so every art has plain moves at every grade before any style.
+  shelves, B restricted, A sealed), so every art has plain moves at every grade before any style.
 - **Add a combination technique:** two `TechniqueDef`s whose `combo.partnerTechniqueId` name
   each other (validated); offer them at the academy. A teammate knows the half in their
   specialty, and a half plays only beside someone on your side who knows the other.
@@ -776,6 +802,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `cookbookIds`), a person's `recipes`, or a job's `reward.recipeId` (validated). **Add a meal
   effect:** a field on `ModifierSpec` combined in `combine`, worded in `describeSpec`, read at
   one hook in `game/`.
+- **Add a home or a piece of furniture:** a `HomeDef` in the pack's `homes.ts` (rent and/or
+  price, `needs`, spots, rooms; a yard needs `yardTrainingIds`, a garden `beds`; `lockedReason`
+  until it is playable) listed at a `lettings` place's `homeIds`; a `FurnishingDef` in
+  `shared/furnishings.ts` with one `effect` (a new kind is a case in `comforts`), listed at a
+  lettings place's `furnishingIds` unless it has no `cost` (a gift). Validated in
+  `validateHomes.ts`.
 - **Add a bar or hot water:** a `tavern` place (`keeper`, `foodIds`, `roundCost`, `cupCost`,
   evening/night `hours`, optional `pastimes` with unique ids) or an `onsen` place (`keeper`,
   `waters` spring or bathhouse, `soakCost`, `hours` without night), validated in

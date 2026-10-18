@@ -6,6 +6,18 @@ export { TONES, TOPIC_KINDS } from './people';
 export { TEACHING_QUIRKS } from './teachers';
 export { GEAR_SLOTS, gearSlot } from './items';
 export { MAP_SIZE } from './art';
+export type { QuirkDef } from './quirks';
+export {
+  FIRST_HOME_SPOTS,
+  HOME_ROOMS,
+  SPOTS,
+  type FurnishingDef,
+  type FurnishingEffect,
+  type GardenCrop,
+  type HomeDef,
+  type HomeRoom,
+  type Spot,
+} from './homes';
 export type { AtlasDef, AtlasLabel, MapLabelSide, MapPoint } from './atlas';
 export type { ExerciseDef } from './exercises';
 export { INJURY_SITE_LABELS, type InjuryCause, type InjuryDef, type InjurySite } from './injuries';
@@ -66,6 +78,7 @@ export type {
   VillageLife,
   Waters,
 } from './types';
+export type { PromotionRouteText } from './settingText';
 export {
   DEFAULT_BUILD_ID,
   DEFAULT_UPBRINGING,

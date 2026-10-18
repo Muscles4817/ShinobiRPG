@@ -16,6 +16,11 @@ describe('new game', () => {
       villageId: 'torogakure',
       rentPerWeek: 30,
       paidThroughDay: 7,
+      homeId: null,
+      furniture: ['straw-futon'],
+      placed: { bed: 'straw-futon' },
+      beds: [],
+      guestId: null,
     });
   });
 

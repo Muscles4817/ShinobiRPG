@@ -4,6 +4,7 @@ import { HANDLERS } from './actions/registry';
 import type { ActionHandler, GameAction } from './actions/types';
 import type { GameContext } from './context';
 import { noteDayEnd } from './daybook/record';
+import { noteHomeGifts } from './home/gifts';
 import { noteRival } from './rival/record';
 import { notePromotions } from './exam/promotion';
 import { noteGradeUps } from './gradeUps';
@@ -38,7 +39,8 @@ export function dispatch(
 
   const rng = createRng(state.rngState);
   const performed = handler.perform(state, action, ctx, rng);
-  const graded = notePromotions(noteGradeUps(state, performed, ctx));
-  const next = noteDayEnd(state, noteRival(state, graded, ctx), action);
+  const graded = notePromotions(noteGradeUps(state, performed, ctx), ctx);
+  const gifted = noteHomeGifts(state, noteRival(state, graded, ctx), ctx);
+  const next = noteDayEnd(state, gifted, action);
   return ok({ ...next, rngState: rng.state() });
 }

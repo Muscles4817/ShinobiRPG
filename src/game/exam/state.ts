@@ -15,10 +15,17 @@ export interface Exams {
   readonly spectating: boolean;
 }
 
-/** A promotion waiting for its scene: the rank you are being raised to. */
-export interface Ceremony {
-  readonly rank: PromotedRank;
-}
+/**
+ * A promotion waiting for its scene: the rank you are being raised to and the route that earned
+ * it (`exam/routes.ts`): the exam, a jōnin's nomination, a field promotion for a job, an arc's
+ * recommendation, or your sensei's.
+ */
+export type Ceremony =
+  | { readonly rank: PromotedRank; readonly route: 'exam' | 'nomination' | 'sensei' }
+  | { readonly rank: 'chunin'; readonly route: 'field'; readonly missionId: string }
+  | { readonly rank: 'chunin'; readonly route: 'arc'; readonly arcId: string };
+
+export type PromotionRoute = Ceremony['route'];
 
 export const NO_EXAMS: Exams = {
   run: null,

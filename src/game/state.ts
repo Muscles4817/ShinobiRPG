@@ -195,8 +195,10 @@ export interface Character {
   /** …and whether the chakra paper has told them yet. */
   readonly natureKnown: boolean;
   readonly traitIds: readonly string[];
-  /** Null for characters from saves made before talents existed. */
-  readonly talentId: string | null;
+  /** The special notes on their file (`TalentDef`), as many as their standing carried. */
+  readonly talentIds: readonly string[];
+  /** Habits people notice (`QuirkDef`). */
+  readonly quirkIds: readonly string[];
   readonly nindoId: string | null;
   /** How the academy break-in went; later scenes remember it. */
   readonly breakIn: { readonly approachId: string; readonly succeeded: boolean };

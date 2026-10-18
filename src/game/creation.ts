@@ -1,6 +1,12 @@
 import { createRng } from '@/core';
 import { learnRecipes, NO_COOKING } from '@/systems/cooking';
-import { freeLodging, newTenancy, type HomeRef } from '@/systems/housing';
+import {
+  addFurniture,
+  freeLodging,
+  newTenancy,
+  placeFurniture,
+  type HomeRef,
+} from '@/systems/housing';
 import { EMPTY_INVENTORY } from '@/systems/inventory';
 import { EMPTY_JOURNAL } from '@/systems/journal';
 import {
@@ -38,6 +44,7 @@ import { NO_DAYBOOK } from './daybook/state';
 import { bornCompanions, kindOf, playerCompanion } from './companions/make';
 import type { GameState } from './state';
 import { bornNature } from './nature';
+import { notesAptitude, notesProblems } from './notes';
 import { BASE_STAT, graduationStats, studentProblems, type StudentProfile } from './student';
 
 /**
@@ -67,7 +74,8 @@ export interface CreationDraft {
   /** The kind of student the file was filled for, or null when it was written by hand. */
   readonly quickPick: QuickPick | null;
   readonly traitIds: readonly string[];
-  readonly talentId: string;
+  readonly talentIds: readonly string[];
+  readonly quirkIds: readonly string[];
   readonly nindoId: string;
   readonly breakInApproachId: string;
 }
@@ -108,7 +116,8 @@ export function draftProblems(draft: CreationDraft, ctx: GameContext): string[] 
   const problems = [
     !draft.name.trim() && 'Write your name.',
     !content.clans.get(draft.clanId) && 'Choose your family.',
-    !content.talents.get(draft.talentId) && 'Choose a special note.',
+    ...notesProblems(draft, ctx),
+    draft.quirkIds.some((id) => !content.quirks.get(id)) && 'That habit isn’t on the list.',
     !content.nindos.get(draft.nindoId) && 'Write your essay.',
     (traits.length !== TRAIT_COUNT || traits.some((t) => !t)) && 'Choose two traits.',
     first?.opposite === second?.id &&
@@ -123,7 +132,7 @@ export function draftProblems(draft: CreationDraft, ctx: GameContext): string[] 
 export function profileOf(draft: CreationDraft): StudentProfile {
   return {
     clanId: draft.clanId,
-    talentId: draft.talentId,
+    talentIds: draft.talentIds,
     buildId: draft.buildId,
     upbringingId: draft.upbringingId,
     standing: draft.standing,
@@ -146,9 +155,13 @@ function bestArts(grades: Grades): Discipline[] {
 
 function housingFor(draft: CreationDraft, ctx: GameContext, home: HomeRef, rent: number) {
   const lodging = ctx.content.clans.require(draft.clanId).lodging;
-  return lodging
+  const housing = lodging
     ? freeLodging(home, lodging, START_TIME.day)
     : newTenancy(home, rent, START_TIME.day);
+  // Every new home has the starter furniture laid out (a futon, at least).
+  return ctx.content.furnishings.all
+    .filter((f) => f.starter)
+    .reduce((h, f) => placeFurniture(addFurniture(h, f.id), f.spot, f.id), housing);
 }
 
 export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext): GameState {
@@ -156,7 +169,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
   if (problems.length > 0) throw new Error(`Invalid character: ${problems.join(' ')}`);
   const { content } = ctx;
   const clan = content.clans.require(draft.clanId);
-  const talent = content.talents.require(draft.talentId);
+  const notes = draft.talentIds.map((id) => content.talents.require(id));
   const stats = graduationStats(profileOf(draft), ctx);
   const grades = gradesFor(stats);
   const location = { locationId: content.startLocationId };
@@ -165,9 +178,9 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
   const roll = rollBreakIn(ctx, draft.breakInApproachId, seed);
   const dice = createRng(roll.rngState);
   const shape = { band: STANDING_INFO[draft.standing].talent, specialties: bestArts(grades) };
-  const rolled = rollCharacterAptitude(dice, clan, talent, shape);
-  // What the special note fixes (an art that never takes) stands over any gift.
-  const aptitude = { ...withGifts(rolled, draft.file.gifts), ...talent.aptitude };
+  const rolled = rollCharacterAptitude(dice, clan, notes, shape);
+  // What a special note fixes (an art that never takes) stands over any gift.
+  const aptitude = { ...withGifts(rolled, draft.file.gifts), ...notesAptitude(notes) };
   const known = startingTechniques(draft, grades, ctx);
 
   const state: GameState = {
@@ -189,7 +202,8 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       nature: bornNature(seed, clan),
       natureKnown: false,
       traitIds: draft.traitIds,
-      talentId: talent.id,
+      talentIds: notes.map((n) => n.id),
+      quirkIds: draft.quirkIds,
       nindoId: draft.nindoId,
       breakIn: { approachId: draft.breakInApproachId, succeeded: roll.succeeded },
       stats,

@@ -2,7 +2,7 @@ import type { LocationDef, SettingText } from '../../types';
 import { APTITUDE_TEXT } from '../../shared/aptitude';
 import { CHAKRA_PAPER_TEXT } from '../../shared/chakraPaper';
 import { TOOL_IDS } from '../../shared/tools';
-import { PROMOTIONS } from './exam';
+import { PROMOTION_ROUTES, PROMOTIONS } from './exam';
 import { SHOPPING_DISTRICT } from './market';
 import { ACADEMY_SHELF, ARCHIVE_SHELF } from './shelves';
 import { KONOHA_WILDS } from './wilds';
@@ -12,6 +12,7 @@ import { TANZAKU_TOWN } from './tanzaku';
 import { SHUKUBA_TOWN } from './shukuba';
 import { OTAFUKU_TOWN } from './otafuku';
 import { FIRE_TEMPLE } from './fireTemple';
+import { NARUTO_LETTINGS } from './homes';
 
 export const NARUTO_TEXT: SettingText = {
   nation: 'the Land of Fire',
@@ -29,6 +30,7 @@ export const NARUTO_TEXT: SettingText = {
   aptitude: APTITUDE_TEXT,
   chakraPaper: CHAKRA_PAPER_TEXT,
   promotions: PROMOTIONS,
+  promotionRoutes: PROMOTION_ROUTES,
 };
 
 export const NARUTO_LOCATIONS: readonly LocationDef[] = [
@@ -195,6 +197,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         waters: 'bathhouse',
         soakCost: 10,
       },
+      NARUTO_LETTINGS,
       {
         id: 'apartment',
         kind: 'home',

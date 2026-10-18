@@ -11,6 +11,7 @@ import {
   type StatId,
 } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
+import { notesAptitude } from './notes';
 
 /**
  * Where a character's talent comes from. Clan shinobi have a high floor and a narrow spread in
@@ -76,15 +77,20 @@ function shifted(odds: AptitudeOdds, band: TalentBand): AptitudeOdds {
   };
 }
 
+/** Whether any note on the file raises this stat. */
+function raises(notes: readonly TalentDef[], stat: StatId): boolean {
+  return notes.some((n) => (n.statBonuses[stat] ?? 0) > 0);
+}
+
 function oddsFor(
   clan: ClanDef,
-  talent: TalentDef | undefined,
+  notes: readonly TalentDef[],
   shape: TalentShape,
 ): (stat: StatId) => AptitudeOdds {
-  const tilt = identityTilt([clan.modifiers, talent?.modifiers ?? {}]);
+  const tilt = identityTilt([clan.modifiers, ...notes.map((n) => n.modifiers)]);
   const specialty = (stat: StatId) => shape.specialties.some((d) => d === stat);
   return (stat) => {
-    const raised = (talent?.statBonuses[stat] ?? 0) > 0;
+    const raised = raises(notes, stat);
     const best = BEST_ART_FLOOR * shape.band.scale;
     const floors = [raised ? TALENT_FLOOR : 0, specialty(stat) ? best : 0];
     const atLeast = Math.max(...floors);
@@ -104,15 +110,15 @@ function oddsFor(
 export function rollCharacterAptitude(
   rng: Rng,
   clan: ClanDef,
-  talent?: TalentDef,
+  notes: readonly TalentDef[] = [],
   shape: TalentShape = MIDDLE,
 ): Aptitude {
-  const rolled: Record<StatId, number> = { ...rollAptitude(rng, oddsFor(clan, talent, shape)) };
+  const rolled: Record<StatId, number> = { ...rollAptitude(rng, oddsFor(clan, notes, shape)) };
   const luck = rng.next();
   const art = rng.pick(DISCIPLINES);
-  const kept = (talent?.statBonuses[art] ?? 0) > 0 || shape.specialties.includes(art);
+  const kept = raises(notes, art) || shape.specialties.includes(art);
   if (clan.arts.length === 0 && luck < VOID_ART_CHANCE && !kept) rolled[art] = 0;
-  return { ...rolled, ...talent?.aptitude };
+  return { ...rolled, ...notesAptitude(notes) };
 }
 
 /**

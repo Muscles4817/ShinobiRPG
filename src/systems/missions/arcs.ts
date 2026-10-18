@@ -40,11 +40,21 @@ export function arcBases(arcs: readonly ArcDef[], completed: readonly string[]):
   });
 }
 
+/**
+ * Someone who puts a genin forward for chūnin once the arc is done (`game/exam/routes.ts`):
+ * who, and what is said at the ceremony. No numbers.
+ */
+export interface ArcRecommendation {
+  readonly personId: string;
+  readonly words: string;
+}
+
 export interface ArcDef {
   readonly id: string;
   readonly title: string;
   readonly summary: string;
   readonly acts: readonly ArcAct[];
+  readonly recommends?: ArcRecommendation;
 }
 
 /** The act an arc stands at: the first with a job not yet done (`acts.length` when finished). */

@@ -21,7 +21,8 @@ import type { GameState } from '../state';
  * (the compiler will insist).
  */
 export type GameAction =
-  | { readonly type: 'train'; readonly trainingId: string }
+  /** `yard`: in your own yard at home, not the training ground. */
+  | { readonly type: 'train'; readonly trainingId: string; readonly yard?: boolean }
   | { readonly type: 'eat'; readonly foodId: string }
   | { readonly type: 'rest' }
   | { readonly type: 'sleep' }
@@ -83,6 +84,13 @@ export type GameAction =
   | { readonly type: 'declineChallenge' }
   | { readonly type: 'challengeRival'; readonly contest: Contest; readonly stakes: Stakes }
   | { readonly type: 'runRaceLeg'; readonly move: RaceMove }
+  | { readonly type: 'moveHome'; readonly homeId: string; readonly buy: boolean }
+  | { readonly type: 'buyFurnishing'; readonly furnishingId: string }
+  | { readonly type: 'placeFurnishing'; readonly furnishingId: string }
+  | { readonly type: 'plantBed'; readonly bed: number; readonly ingredientId: string }
+  | { readonly type: 'pickBed'; readonly bed: number }
+  | { readonly type: 'inviteGuest'; readonly personId: string }
+  | { readonly type: 'sendGuestHome' }
   | { readonly type: 'buyGear'; readonly gearId: string }
   | { readonly type: 'buyTool'; readonly toolId: string }
   | { readonly type: 'buyIntel'; readonly missionId: string }

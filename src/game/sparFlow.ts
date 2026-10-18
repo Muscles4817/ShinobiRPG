@@ -63,7 +63,7 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
   const health = Math.max(outcome.player.health, Math.min(floor, vitals.health));
   // The same bout is practice in their own specialty, and footwork, for them.
   const people = trainPerson(state, ctx, partner, partnerPractice(result, partner.specialty));
-  const bond = warmed(state, ctx, BOND_FOR[result]);
+  const bond = warmed(state, ctx, BOND_FOR[result], partner);
   const after = adjust(
     {
       ...state,

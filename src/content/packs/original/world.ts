@@ -12,7 +12,8 @@ import { FORGED_BLADE_JOBS } from './arcs/forgedBlade';
 import { PATIENT_THING_JOBS } from './arcs/patientThing';
 import { SALT_LANTERNS_VILLAGE_JOBS } from './arcs/saltLanterns';
 import { TEMPLATE_MISSIONS } from './jobs';
-import { PROMOTIONS } from './exam';
+import { PROMOTION_ROUTES, PROMOTIONS } from './exam';
+import { ORIGINAL_LETTINGS } from './homes';
 import { MARKET_STREET } from './market';
 import { KIRI_FORD } from './kiriFord';
 import { PORT_SHIOMACHI } from './shiomachi';
@@ -36,6 +37,7 @@ export const ORIGINAL_TEXT: SettingText = {
   aptitude: APTITUDE_TEXT,
   chakraPaper: CHAKRA_PAPER_TEXT,
   promotions: PROMOTIONS,
+  promotionRoutes: PROMOTION_ROUTES,
 };
 
 export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
@@ -234,9 +236,15 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'thunder-lantern',
           'false-lantern',
           'blast-ring',
+          'falling-lintel',
+          'lamp-black-hammer',
+          'street-of-shut-doors',
+          'tile-splitting-cut',
+          'seven-knot-seal',
         ],
       },
       ...TOROGAKURE_LEISURE,
+      ORIGINAL_LETTINGS,
       {
         id: 'home',
         kind: 'home',

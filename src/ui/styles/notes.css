@@ -1,0 +1,147 @@
+/*
+ * The academy file's special notes, habits and read-back. Weights are ink stamps: a major note
+ * double-ruled, a minor one single, a flaw in the cost ink. Room on the file is a row of slots
+ * that fill as you pick; open ones are dashed.
+ */
+.note-room {
+  display: grid;
+  gap: 6px;
+  margin: 4px 0 14px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--paper-ink);
+  border-radius: var(--radius-sm);
+}
+.note-room p {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+.note-room small {
+  color: var(--paper-muted);
+  font-size: 0.8rem;
+}
+.note-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.note-slot {
+  display: inline-grid;
+  place-items: center;
+  min-height: 30px;
+  padding: 0 8px;
+  border: 1.5px solid var(--paper-ink);
+  border-radius: var(--radius-sm);
+  color: var(--paper-ink);
+  font-size: 0.76rem;
+}
+.note-slot.major {
+  border: 3px double var(--paper-ink);
+}
+.note-slot.flaw {
+  border-color: var(--ink-cost);
+  color: var(--ink-cost);
+}
+.note-slot.open-major,
+.note-slot.open-minor {
+  border-style: dashed;
+  border-color: var(--paper-muted);
+  color: var(--paper-muted);
+}
+.note-group {
+  margin: 14px 0 2px;
+  font-family: var(--font-story);
+  font-size: 1.05rem;
+  font-weight: normal;
+}
+.note-card {
+  position: relative;
+}
+.note-card b {
+  padding-right: 92px;
+}
+.note-weight {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-story);
+  font-size: 0.72rem;
+  transform: rotate(-3deg);
+}
+.note-weight.major {
+  border: 3px double var(--paper-ink);
+  color: var(--paper-ink);
+}
+.note-weight.minor {
+  border: 1.5px solid var(--paper-ink);
+  color: var(--paper-ink);
+}
+.note-weight.flaw {
+  border: 1.5px solid var(--ink-cost);
+  color: var(--ink-cost);
+}
+.note-why {
+  color: var(--paper-muted);
+  font-size: 0.8rem;
+}
+
+/* Whose traits warm to a habit, and whose don't. */
+.quirk-who {
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+.quirk-who .warms {
+  color: var(--ink-gain);
+}
+.quirk-who .cools {
+  color: var(--ink-cost);
+}
+
+/* The file, read back. */
+.read-back h3 {
+  margin: 16px 0 4px;
+  font-family: var(--font-story);
+  font-size: 1.1rem;
+  font-weight: normal;
+}
+.read-back ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.read-back ul li {
+  margin: 4px 0;
+  padding-left: 16px;
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  text-indent: -16px;
+}
+.read-back ul li::before {
+  content: '— ';
+  color: var(--paper-muted);
+}
+.road-scale {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  margin: 8px 0 4px;
+  padding: 0;
+  list-style: none;
+}
+.road-scale li {
+  padding: 6px 0;
+  border: 1px solid rgb(42 33 24 / 0.25);
+  border-radius: var(--radius-sm);
+  color: var(--paper-muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
+.road-scale li.on {
+  border: 2px solid var(--paper-ink);
+  color: var(--paper-ink);
+  font-weight: 700;
+}

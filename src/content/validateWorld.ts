@@ -22,6 +22,8 @@ export function validateWorld(pack: ContentPack): string[] {
     tool: new Set(pack.tools.map((t) => t.id)),
     ingredient: new Set(pack.ingredients.map((i) => i.id)),
     cookbook: new Set(pack.cookbooks.map((c) => c.id)),
+    home: new Set(pack.homes.map((h) => h.id)),
+    furnishing: new Set(pack.furnishings.map((f) => f.id)),
   };
   const reached = {
     training: new Set<string>(),
@@ -31,6 +33,8 @@ export function validateWorld(pack: ContentPack): string[] {
     tool: new Set<string>(),
     ingredient: new Set<string>(),
     cookbook: new Set<string>(),
+    home: new Set<string>(),
+    furnishing: new Set<string>(),
   };
 
   for (const location of pack.locations) {
@@ -62,6 +66,8 @@ export function validateWorld(pack: ContentPack): string[] {
   const unique = new Set(pack.gear.filter((g) => g.unique === true).map((g) => g.id));
   // Exam-only missions are run by an exam's stage, never offered (`validateExams.ts`).
   const examOnly = new Set(pack.missions.filter((m) => m.examOnly === true).map((m) => m.id));
+  // Furniture with no price is given, never sold (`validateHomes.ts`).
+  const gifts = new Set(pack.furnishings.filter((f) => f.cost === undefined).map((f) => f.id));
   const offered = [
     'training',
     'food',
@@ -70,11 +76,14 @@ export function validateWorld(pack: ContentPack): string[] {
     'tool',
     'ingredient',
     'cookbook',
+    'home',
+    'furnishing',
   ] as const;
   for (const kind of offered) {
     refs[kind].forEach((id) => {
       if (kind === 'gear' && unique.has(id)) return;
       if (kind === 'mission' && examOnly.has(id)) return;
+      if (kind === 'furnishing' && gifts.has(id)) return;
       if (!reached[kind].has(id)) problems.push(`${kind} "${id}" is not offered at any place`);
     });
   }
@@ -91,7 +100,16 @@ function visitProblems(pack: ContentPack): string[] {
 }
 
 type RefKind =
-  'training' | 'food' | 'mission' | 'technique' | 'gear' | 'tool' | 'ingredient' | 'cookbook';
+  | 'training'
+  | 'food'
+  | 'mission'
+  | 'technique'
+  | 'gear'
+  | 'tool'
+  | 'ingredient'
+  | 'cookbook'
+  | 'home'
+  | 'furnishing';
 
 function stallRefs(stall: Stall): [RefKind, string][] {
   return [
@@ -128,6 +146,15 @@ function isBare(place: PlaceDef): place is BarePlace {
 }
 
 function placeRefs(place: PlaceDef): [RefKind, string][] {
+  if (place.kind !== 'lettings') return stockRefs(place);
+  return [
+    ...place.homeIds.map((id): [RefKind, string] => ['home', id]),
+    ...place.furnishingIds.map((id): [RefKind, string] => ['furnishing', id]),
+  ];
+}
+
+/** What a place other than the lettings office offers. */
+function stockRefs(place: Exclude<PlaceDef, { kind: 'lettings' }>): [RefKind, string][] {
   if (isBare(place)) return [];
   switch (place.kind) {
     case 'training':

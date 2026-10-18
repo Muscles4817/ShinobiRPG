@@ -5,6 +5,10 @@ import { EXERCISES } from '../../shared/exercises';
 import { CURRICULUM } from '../../shared/sensei/curriculum';
 import { senseiParts } from '../../shared/sensei/parts';
 import { SENSEI_TESTS } from '../../shared/sensei/tests';
+import { FURNISHINGS } from '../../shared/furnishings';
+import { GARDEN_CROPS } from '../../shared/garden';
+import { QUIRKS } from '../../shared/quirks';
+import { ORIGINAL_HOMES } from './homes';
 import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
 import { UPBRINGINGS } from '../../shared/upbringings';
@@ -15,7 +19,7 @@ import { COMPANION_KINDS } from './companions';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { SEASONAL_FOODS } from './seasonalFood';
-import { JOB_ENEMIES, TEMPLATE_MISSIONS } from './jobs';
+import { ELITE_ENEMIES, JOB_ENEMIES, TEMPLATE_MISSIONS } from './jobs';
 import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
@@ -134,6 +138,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...ENEMIES,
     ...CHUNIN_ENEMIES,
     ...JOB_ENEMIES,
+    ...ELITE_ENEMIES,
     ...EXAM_ENEMIES,
     KUROBANE,
     LANTERN_KEEPER_FOE,
@@ -147,6 +152,10 @@ export const ORIGINAL_PACK: ContentPack = {
   builds: BUILDS,
   upbringings: UPBRINGINGS,
   talents: TALENTS,
+  quirks: QUIRKS,
+  homes: ORIGINAL_HOMES,
+  furnishings: FURNISHINGS,
+  gardenCrops: GARDEN_CROPS,
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,

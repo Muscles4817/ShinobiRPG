@@ -14,12 +14,18 @@ function shelve(kind: 'academy' | 'library', id: string): (place: PlaceDef) => P
 }
 
 describe('technique sources', () => {
-  it('keeps the academy to rank E–D and the library to C–B', () => {
+  it('keeps the academy to rank E–D and the library to C–A', () => {
     const academy = validateContent(withPlaces(ORIGINAL_PACK, shelve('academy', 'tide-lash')));
     expect(academy).toContain('academy "academy" holds "tide-lash" of rank C (E–D only)');
     const library = validateContent(withPlaces(ORIGINAL_PACK, shelve('library', 'ember-breath')));
     expect(library).toContain(
-      'library "lantern-archive" holds "ember-breath" of rank D (C–B only)',
+      'library "lantern-archive" holds "ember-breath" of rank D (C–A only)',
+    );
+    const forbidden = validateContent(
+      withPlaces(ORIGINAL_PACK, shelve('library', 'old-lamp-dawn')),
+    );
+    expect(forbidden).toContain(
+      'library "lantern-archive" holds "old-lamp-dawn" of rank S (C–A only)',
     );
   });
 

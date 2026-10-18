@@ -1,4 +1,5 @@
 import type { CombatPerk, CombatTrait } from '@/systems/combat';
+import type { FoodDef, TrainingDef } from './drills';
 import type { AtlasDef, MapLabelSide } from './atlas';
 import type {
   ClanCompanion,
@@ -17,12 +18,14 @@ import type {
 } from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta, StatId } from '@/systems/stats';
+import type { NoteWeight } from '@/systems/profile';
 import type { ExamDef } from '@/systems/exams';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
-import type { Season } from '@/systems/time';
 import type { RouteDef } from '@/systems/travel';
 
 import type { BackdropId, IconId } from './art';
+import type { QuirkDef } from './quirks';
+import type { FurnishingDef, GardenCrop, HomeDef, LettingsFields } from './homes';
 import type { ExerciseDef } from './exercises';
 import type { CurriculumBeat } from './curriculum';
 import type { SenseiParts } from './senseiParts';
@@ -110,35 +113,10 @@ export type { FestivalDef, RumourDef, SightDef, VillageLife } from './village';
  * that system; the rest are defined here.
  */
 
+export type { FoodDef, TrainingDef } from './drills';
+
 export interface Identified {
   readonly id: string;
-}
-
-export interface TrainingDef {
-  readonly id: string;
-  readonly name: string;
-  /** Spot within the training place, e.g. "Training Ground 3". */
-  readonly spot: string;
-  /** One line of flavour shown in the record. No numbers. */
-  readonly description: string;
-  readonly icon: IconId;
-  readonly slots: number;
-  readonly energyCost: number;
-  /** Base stat gains per session, before diminishing returns. */
-  readonly gains: StatDelta;
-}
-
-export interface FoodDef {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly icon: IconId;
-  readonly cost: number;
-  readonly satiety: number;
-  readonly energy: number;
-  readonly slots: number;
-  /** Only on the menu in these seasons; absent means all year. */
-  readonly seasons?: readonly Season[];
 }
 
 export interface EnemyDef {
@@ -206,11 +184,15 @@ export interface ClanDef {
 export interface TalentDef {
   readonly id: string;
   readonly name: string;
+  /** How much of the file's room it takes (`STANDING_INFO.notes`); a flaw makes room. */
+  readonly weight: NoteWeight;
   readonly description: string;
   readonly statBonuses: StatDelta;
   readonly modifiers: ModifierSpec;
   /** Fixes the hidden talent in these stats, whatever the roll; 0 means it will never take. */
   readonly aptitude?: Readonly<Partial<Record<StatId, number>>>;
+  /** A note that contradicts this one: never on the same file. */
+  readonly opposite?: string;
 }
 
 /** A personality trait. Opposites can't be taken together. */
@@ -285,6 +267,7 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
   /** Somewhere to sleep away from home: a room by the night. */
   | (PlaceBase & { readonly kind: 'inn'; readonly keeper: string; readonly roomCost: number })
+  | (PlaceBase & LettingsFields)
   /** A house for sale in a town: bought once, then yours to sleep in, with no rent. */
   | (PlaceBase & { readonly kind: 'house'; readonly seller: string; readonly price: number })
   | (PlaceBase & WildsFields)
@@ -366,6 +349,10 @@ export interface ContentPack {
   readonly builds: readonly BuildDef[];
   readonly upbringings: readonly UpbringingDef[];
   readonly talents: readonly TalentDef[];
+  readonly homes: readonly HomeDef[];
+  readonly furnishings: readonly FurnishingDef[];
+  readonly gardenCrops: readonly GardenCrop[];
+  readonly quirks: readonly QuirkDef[];
   readonly traits: readonly TraitDef[];
   readonly nindos: readonly NindoDef[];
   readonly breakIn: BreakInScene;

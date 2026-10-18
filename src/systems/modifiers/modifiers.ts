@@ -31,6 +31,8 @@ export interface ModifierSpec {
   readonly bondGain?: number;
   /** Your stat when you take a check on a job, per stat. */
   readonly checks?: Readonly<Partial<Record<StatId, number>>>;
+  /** Drills in the evening and at night grow this much faster, and morning ones as much slower. */
+  readonly afterDark?: number;
 }
 
 export interface Modifiers {
@@ -47,6 +49,7 @@ export interface Modifiers {
   readonly injuryNights: number;
   readonly bondGain: number;
   readonly checks: Readonly<Record<StatId, number>>;
+  readonly afterDark: number;
 }
 
 function filled<K extends string>(keys: readonly K[]): Record<K, number> {
@@ -65,6 +68,7 @@ export const NEUTRAL: Modifiers = {
   injuryNights: 0,
   bondGain: 1,
   checks: filled(STAT_IDS),
+  afterDark: 1,
 };
 
 function scaleAll<K extends string>(
@@ -108,6 +112,7 @@ export function combine(specs: readonly ModifierSpec[]): Modifiers {
       injuryNights: acc.injuryNights + (spec.injuryNights ?? 0),
       bondGain: acc.bondGain * (spec.bondGain ?? 1),
       checks: scaleAll(acc.checks, spec.checks),
+      afterDark: acc.afterDark * (spec.afterDark ?? 1),
     }),
     NEUTRAL,
   );
@@ -199,6 +204,10 @@ function dayLines(spec: ModifierSpec): EffectLine[] {
   }
   for (const [stat, m] of Object.entries(spec.checks ?? {}) as [StatId, number][]) {
     lines.push(line(`${STAT_INFO[stat].label} in job checks`, m, 'sharper', 'duller'));
+  }
+  if (spec.afterDark !== undefined) {
+    lines.push(line('Training after dark', spec.afterDark, 'faster', 'slower'));
+    lines.push(line('Morning training', 2 - spec.afterDark, 'faster', 'slower'));
   }
   return lines;
 }

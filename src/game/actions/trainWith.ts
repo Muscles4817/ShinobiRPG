@@ -4,6 +4,7 @@ import { diffStats, STAT_INFO, type StatId } from '@/systems/stats';
 import { DAYS_PER_WEEK } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { afterLessonRecommendation } from '../exam/routes';
 import { dueAtLesson, startedAtLesson } from '../exercises';
 import { passAfterLesson } from '../leave';
 import { permitAfterLesson } from '../permits';
@@ -202,7 +203,8 @@ function teachSession(
   });
   const quirk = person.teacher?.quirk;
   const base = teaching.isSensei ? SENSEI_BOND : TRAIN_WITH_BOND;
-  const bond = warmed(state, ctx, Math.max(1, Math.round(base * (quirk ? QUIRK_BOND[quirk] : 1))));
+  const lesson = Math.max(1, Math.round(base * (quirk ? QUIRK_BOND[quirk] : 1)));
+  const bond = warmed(state, ctx, lesson, person);
   // A genin practises alongside you: the session is theirs too.
   const people = person.rank === 'genin' ? trainPerson(state, ctx, person, gains) : state.people;
   const trained: GameState = {
@@ -241,11 +243,13 @@ export function lessonAway(
 /**
  * What comes after a lesson with your sensei: the library permit and the week's travel pass
  * they sign, an exercise they start with you once you're ready (tree-walking), and in your
- * genin years their word on last week's work and this week's.
+ * genin years their word on last week's work and this week's; and, a year on, perhaps their
+ * recommendation for chūnin without the exam (`exam/routes.ts`).
  */
 function slipsAfterLesson(state: GameState, ctx: GameContext, sensei: PersonDef): GameState {
   const signed = passAfterLesson(permitAfterLesson(state, ctx, sensei), sensei);
-  return coachAfterLesson(exerciseAfterLesson(signed, ctx), ctx, sensei);
+  const coached = coachAfterLesson(exerciseAfterLesson(signed, ctx), ctx, sensei);
+  return afterLessonRecommendation(coached, ctx, sensei);
 }
 
 function exerciseAfterLesson(state: GameState, ctx: GameContext): GameState {
