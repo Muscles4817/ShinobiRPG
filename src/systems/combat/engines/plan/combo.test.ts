@@ -92,14 +92,14 @@ describe('plan & watch combos: elements', () => {
     const alone = cast(start, 'kiba', flame);
     const fanned = cast(start, 'hero', gust);
     const combo = cast(fanned, 'kiba', flame);
-    expect(combo.lines).toContain('The wind feeds the flames!');
+    expect(combo.lines).toContain('The wind feeds the flames.');
     expect(lost(fanned, combo)).toBeGreaterThan(lost(start, alone));
   });
 
   it('elements that don’t feed each other, or the same fighter twice, make no combo', () => {
     const start = roundWith({ techniques: [gust, flame] }, { techniques: [stone] });
     const twice = cast(cast(start, 'hero', gust), 'hero', flame);
-    expect(twice.lines).not.toContain('The wind feeds the flames!');
+    expect(twice.lines).not.toContain('The wind feeds the flames.');
     const apart = cast(cast(start, 'hero', gust), 'kiba', stone);
     expect(apart.lines.some((l) => l.includes('!') && l.includes('feeds'))).toBe(false);
   });
@@ -140,7 +140,7 @@ describe('plan & watch combos: combination techniques', () => {
   it('both halves go off together, harder, and the partner pays and gives their turn', () => {
     const start = roundWith({ techniques: [snare] }, { techniques: [fall] });
     const both = cast(start, 'hero', snare);
-    expect(both.lines.join(' ')).toContain('Hero and kiba combine Snare and Fall!');
+    expect(both.lines.join(' ')).toContain('Hero and kiba combine Snare and Fall.');
     expect(both.lines.some((l) => castsLine(l, 'kiba', 'Fall'))).toBe(true);
     expect(who(both, 'kiba').joined).toBe(true);
     expect(who(both, 'kiba').chakra).toBeLessThan(30);

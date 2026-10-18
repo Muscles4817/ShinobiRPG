@@ -16,6 +16,6 @@ export function wound(round: Round, id: string, damage: number): Round {
   const held = damage > 0 && struck.holding ? breakHold(round, id) : round;
   const fighters = patch(held.fighters, id, { health: hurt.health });
   if (!shouldFlee(hurt)) return { ...held, fighters };
-  const fled = tell('{t} flee{t.s}!', { t: struck });
+  const fled = tell('{t} turn{t.s} and run{t.s}.', { t: struck });
   return say({ ...held, fighters: patch(fighters, id, { health: 0 }) }, fled);
 }

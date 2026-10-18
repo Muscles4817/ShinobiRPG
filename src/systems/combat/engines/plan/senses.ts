@@ -96,5 +96,5 @@ export function dispel(round: Round, { actor, rng }: Turn): Round {
   const strongest = [...hidden].sort((a, b) => b.attributes.genjutsu - a.attributes.genjutsu)[0];
   if (!strongest) return paid;
   if (!rng.chance(dispelChance(actor, strongest))) return say(paid, 'The illusion holds.');
-  return say(reveal(paid, hidden), 'The illusion shatters!');
+  return say(reveal(paid, hidden), 'The illusion shatters.');
 }

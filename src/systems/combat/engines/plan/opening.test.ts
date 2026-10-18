@@ -91,7 +91,7 @@ describe('plan & watch openings', () => {
     expect(view.range).toBe('close');
     expect(view.combatants.find((c) => c.id === 'hero')?.statuses).toContain('Hidden');
     expect(bandit(engine, state)?.statuses).toContain('Dazed');
-    expect(said(view.log)).toContain('Bandit is caught off balance!');
+    expect(said(view.log)).toContain('Bandit is caught off balance.');
   });
 
   it('a foe dazed by the opening loses the first exchange, then recovers', () => {

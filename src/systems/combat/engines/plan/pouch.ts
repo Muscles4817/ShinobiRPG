@@ -59,7 +59,7 @@ function fleeIfBroken(round: Round, id: string): Round {
   if (!struck || struck.health <= 0 || !shouldFlee(struck)) return round;
   return say(
     { ...round, fighters: patch(round.fighters, struck.id, { health: 0 }) },
-    tell('{t} flee{t.s}!', { t: struck }),
+    tell('{t} turn{t.s} and run{t.s}.', { t: struck }),
   );
 }
 

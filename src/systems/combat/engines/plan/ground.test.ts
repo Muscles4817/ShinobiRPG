@@ -134,23 +134,24 @@ describe('the ground in a fight', () => {
     expect(found('forest')).toBeLessThan(found('arena'));
   });
 
-  it('a fight in a room never starts at far range, and its opening names the ground', () => {
+  it('a fight in a room never starts at far range, and its plan screen names the ground', () => {
     const engine = createPlanEngine();
-    const state = decode(
-      engine.start(
-        {
-          player: setup('hero'),
-          allies: [],
-          enemies: [setup('bandit')],
-          canFlee: true,
-          ground: 'room',
-          opening: { range: 'far' },
-        },
-        createRng(1),
-      ),
+    const started = engine.start(
+      {
+        player: setup('hero'),
+        allies: [],
+        enemies: [setup('bandit')],
+        canFlee: true,
+        ground: 'room',
+        opening: { range: 'far' },
+      },
+      createRng(1),
     );
+    const state = decode(started);
     expect(state.range).toBe('mid');
     expect(state.ground).toBe('room');
-    expect(state.log.join(' ')).toMatch(/Four walls/);
+    // Rules are for planning: the prompt says them, the story doesn't.
+    expect(engine.view(started).prompt).toMatch(/Four walls/);
+    expect(state.log.join(' ')).not.toMatch(/Four walls/);
   });
 });

@@ -113,14 +113,14 @@ describe('the fight’s voice', () => {
       expect(emptySearchLine(m, RYO)).toMatch(searchesInVain('Ryo'));
       expect(foundLine(m, RYO, [KAI])).toMatch(spots('Ryo', 'Kai'));
       expect(counterLine(m, KAI)).toMatch(/Kai/);
-      expect(stepLine(m, RYO, 'mid', true)).toMatch(/Ryo .*mid range\./);
+      expect(stepLine(m, { actor: RYO, to: 'mid', closing: true })).toMatch(/Ryo .*mid range\./);
       expect(swapLine(m, { target: KAI, attacker: RYO, what: 'strike', jutsu: 'Swap' })).toMatch(
         SWAPS,
       );
       expect(heldOffLine(m, KAI, RYO)).toMatch(holdsOff('Kai', 'Ryo'));
       expect(throughLine(m, RYO, KAI)).toMatch(GETS_THROUGH);
-      expect(knockLine(m, KAI, 'far', false)).toMatch(/Kai .*far range!/);
-      expect(blockedStepLine(m, RYO, 'mid', KAI)).toMatch(/Ryo.*mid range|Kai cuts off Ryo/);
+      expect(knockLine(m, KAI, 'far', false)).toMatch(/Kai .*far range\./);
+      expect(blockedStepLine(m, RYO, 'mid', KAI)).toMatch(/Ryo .*mid range|Kai cuts Ryo off/);
     }
   });
 

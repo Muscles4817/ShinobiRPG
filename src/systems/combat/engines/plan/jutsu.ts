@@ -75,7 +75,7 @@ function seal(round: Round, target: PlanFighter, use: EffectUse<'seal'>): Round 
   const sealed = target.sealed + holdTurns(use.effect) + 1;
   return say(
     { ...round, fighters: patch(round.fighters, target.id, { sealed }) },
-    tell('Seals lock {t.poss} chakra!', { t: target }),
+    tell('Seals lock {t.poss} chakra.', { t: target }),
   );
 }
 

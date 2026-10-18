@@ -63,7 +63,7 @@ export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>)
   };
   const caught = say(
     relinger(round, target.id, { pinned, grip }),
-    tell('{t} {t.is} pinned to the spot!', { t: target }),
+    tell('{t} {t.is} pinned to the spot.', { t: target }),
   );
   // A channelled pin keeps its caster's hands on it (`holding.ts`).
   return use.effect.channelled ? startHolding(caught, actor.id, target.id) : caught;
@@ -88,8 +88,8 @@ export function drain(round: Round, { actor, target }: Aim, use: EffectUse<'drai
 }
 
 const STRUCK: Readonly<Record<AfflictionKind, string>> = {
-  burn: '{t} {t.is} set alight!',
-  bleed: '{t} {t.is} bleeding!',
+  burn: '{t} {t.is} set alight.',
+  bleed: '{t} {t.is} bleeding.',
   poison: 'Poison seeps into {t}.',
 };
 
@@ -185,7 +185,7 @@ export function riposteFirst(round: Round, hit: Incoming): { round: Round; stopp
   const damage = cappedHit(Math.max(1, raw), attacker.maxHealth);
   const line = harmLine(
     reactionLine(
-      tell('{t} answer{t.s} with {what}!', { t: target, what: ready.name }),
+      tell('{t} answer{t.s} with {what}.', { t: target, what: ready.name }),
       'countered',
     ),
     damage,

@@ -382,9 +382,8 @@ view:
 >>> encounterApproach
 
 --- combat (day 2, slot 1) ---
-  The storehouse wraith squares up. How will you fight?
-  Four walls: no room to back away, and a wide technique hits everyone.
-  prompt: Round 1: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them.
+  The storehouse wraith squares up.
+  prompt: Round 1: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin the fight)
 
@@ -400,21 +399,20 @@ view:
   The storehouse wraith catches the eye and lets Whispering Dread unfold.
   You were waiting for exactly that.
   —— Second exchange ——
-  You scan the field: nothing.
-  The air around the storehouse wraith wavers: Whispering Dread.
-  The storehouse wraith’s Whispering Dread sinks into you, though a raised guard takes the worst of it. [Guarded] [−21]
+  You scan the field and see nothing.
+  The air around the storehouse wraith wavers as Whispering Dread takes hold.
+  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−21]
   You blink, and the field is no longer where it was.
   —— Third exchange ——
   You look hard and find only shadows.
   The storehouse wraith catches the eye and lets Whispering Dread unfold.
-  The storehouse wraith’s Whispering Dread grips you through a guard. [Guarded] [−22]
+  The storehouse wraith’s Whispering Dread grips you. [Guarded] [−22]
   —— Last exchange ——
-  You pick out the storehouse wraith!
+  You pick out the storehouse wraith.
   The storehouse wraith casts Whispering Dread.
-  The storehouse wraith’s Whispering Dread sinks into you, though a raised guard takes the worst of it. [Guarded] [−14]
+  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−14]
   Your senses swim in the storehouse wraith’s illusion.
-  —— The round is over. Change your cards if you like. ——
-  prompt: Round 2: pick up to 2 actions for each distance, higher first, and the defence you keep ready there.
+  prompt: The round is over. Round 2: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin round 2)
 
@@ -440,25 +438,25 @@ view:
 
 --- combat (day 3, slot 0) ---
   —— First exchange ——
-  You move to close range.
+  You dart in close.
   The storehouse wraith’s strike hits you. [−9]
   —— Second exchange ——
-  You send Gale Heel howling out!
+  You send Gale Heel howling out.
   The storehouse wraith sees it coming.
-  The storehouse wraith is gone again, a shimmer where it stood.
-  The air around the storehouse wraith wavers: Whispering Dread.
-  The storehouse wraith’s Whispering Dread sinks into you, though a raised guard takes the worst of it. [Guarded] [−21]
+  The storehouse wraith is gone again, and the air where it stood is empty.
+  The air around the storehouse wraith wavers as Whispering Dread takes hold.
+  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−21]
   You catch the thread of the illusion and find the storehouse wraith.
   —— Third exchange ——
-  You explode forward with Gale Heel!
-  Your Gale Heel slices across the storehouse wraith through a guard. [Guarded] [−7]
-  Much of it glances off the storehouse wraith.
-  The storehouse wraith’s strike hits you, though a raised guard takes the worst of it. [Guarded] [−4]
+  You explode forward with Gale Heel.
+  Your Gale Heel slices across the storehouse wraith. [Guarded] [−7]
+  Little of it bites on the storehouse wraith.
+  The storehouse wraith’s strike hits you. [Guarded] [−4]
   —— Last exchange ——
-  You launch into Gale Heel!
-  Your Gale Heel slices across the storehouse wraith, though a raised guard takes the worst of it. [Guarded] [−6]
-  Much of it glances off the storehouse wraith.
-  The storehouse wraith’s strike slams into you through a guard. [Guarded] [−4]
+  You launch into Gale Heel.
+  Your Gale Heel slices across the storehouse wraith. [Guarded] [−6]
+  The storehouse wraith barely seems to feel it.
+  The storehouse wraith’s strike slams into you. [Guarded] [−4]
 
 >>> leaveFight
 
@@ -1388,7 +1386,7 @@ view:
 >>> encounterApproach
 
 --- combat (day 2, slot 0) ---
-  Two bandit thugs square up. How will you fight?
+  Two bandit thugs square up.
   prompt: Round 1: pick up to 5 actions for each distance, higher first, and the defence you keep ready there.
 
 >>> combatAct (Begin the fight)
@@ -1406,19 +1404,19 @@ view:
 
 --- combat (day 2, slot 0) ---
   —— First exchange ——
-  You move to close range.
-  Gōran explodes forward with Iron Gate Palm!
-  Gōran’s Iron Gate Palm crashes into the first bandit thug through a guard. [Guarded] [−50]
-  Goro explodes forward with Palm Strike!
-  Goro’s Palm Strike hits the first bandit thug, though a raised guard takes the worst of it. [Guarded] [−40]
-  Asuka’s blade flows into Lantern Cut!
-  Asuka’s Lantern Cut slashes the first bandit thug through a guard. [Guarded] [−48]
+  You close in.
+  Gōran explodes forward with Iron Gate Palm.
+  Gōran’s Iron Gate Palm crashes into the first bandit thug. [Guarded] [−50]
+  Goro explodes forward with Palm Strike.
+  Goro’s Palm Strike hits the first bandit thug. [Guarded] [−40]
+  Asuka’s blade flows into Lantern Cut.
+  Asuka’s Lantern Cut slashes the first bandit thug. [Guarded] [−48]
   You twist clear of the second bandit thug’s strike.
   —— Second exchange ——
-  You send Gale Heel howling out!
-  Your Gale Heel slices across the second bandit thug, though a raised guard takes the worst of it. [Guarded] [−50]
-  Gōran launches into Iron Gate Palm!
-  Gōran’s Iron Gate Palm crashes into the second bandit thug through a guard. [Guarded] [−50]
+  You send Gale Heel howling out.
+  Your Gale Heel slices across the second bandit thug. [Guarded] [−50]
+  Gōran launches into Iron Gate Palm.
+  Gōran’s Iron Gate Palm crashes into the second bandit thug. [Guarded] [−50]
 
 >>> leaveFight
 

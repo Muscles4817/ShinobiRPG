@@ -1,7 +1,7 @@
 import { clamp } from '@/core';
 
 import type { RangeBand } from '../../contract';
-import { RANGE_BANDS, RANGE_LABEL, stepBack, stepIn } from '../../rules/range';
+import { RANGE_BANDS, stepBack, stepIn } from '../../rules/range';
 import { footingOf, withinGround } from '../../rules/ground';
 import { cloneStepBonus, isPinned } from '../../rules/verbs';
 import type { Card } from './cards';
@@ -24,13 +24,10 @@ const STEP_PER_SPEED = 0.04;
 const STEP_MIN = 0.25;
 const STEP_MAX = 0.85;
 
-function arrive(round: Round, { actor }: Turn, to: RangeBand): Round {
+function arrive(round: Round, { actor, target }: Turn, to: RangeBand): Round {
   const closing = RANGE_BANDS.indexOf(to) < RANGE_BANDS.indexOf(round.range);
-  const where = RANGE_LABEL[to].toLowerCase();
-  return {
-    ...say(round, stepLine(momentOf(round, actor.id), actor, where, closing)),
-    range: to,
-  };
+  const told = { actor, to, closing, ...(target ? { foe: target } : {}) };
+  return { ...say(round, stepLine(momentOf(round, actor.id), told)), range: to };
 }
 
 /** The step's own contest, when nobody holds the fighter off. */
@@ -46,11 +43,10 @@ function stride(round: Round, { actor, target: foe, rng }: Turn, direction: 'in'
     clamp(STEP_BASE + speedGap * STEP_PER_SPEED, STEP_MIN, STEP_MAX) + cloneStepBonus(actor);
   // Off their footing (on water they can't stand on), every step is harder.
   const chance = foe ? contest * footingOf(round.ground, actor) : 1;
-  const where = RANGE_LABEL[to].toLowerCase();
   // The roll is made even with no foe to stop them (a sure step), as it always was.
   const made = rng.chance(chance);
   if (made || !foe) return arrive(round, { actor, target: foe, rng }, to);
-  return say(round, blockedStepLine(momentOf(round, actor.id), actor, where, foe));
+  return say(round, blockedStepLine(momentOf(round, actor.id), actor, to, foe));
 }
 
 export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round {

@@ -26,15 +26,18 @@ export function lostToGround(round: Round, actor: PlanFighter, rng: Rng): string
   return tell('{a.poss} attack is lost among the cover.', { a: actor });
 }
 
-/** What the opening says of the ground: nothing for an open arena. */
-export function groundLines(ground: CombatGround | undefined): string[] {
-  return ground === undefined || ground === 'arena' ? [] : [groundRule(ground).line];
+/**
+ * What the plan screen says of the ground, beside the prompt: its rules are for planning,
+ * not the story. Nothing for an open arena.
+ */
+export function groundNote(ground: CombatGround | undefined): string | null {
+  return ground === undefined || ground === 'arena' ? null : groundRule(ground).line;
 }
 
 /** The fight moved to `to`, as far as the ground lets it. */
 export function movedTo(round: Round, to: RangeBand, line: string): Round {
   const at = withinGround(round.ground, to);
   if (at === to) return { ...say(round, line), range: to };
-  const walls = `There's no room for ${RANGE_LABEL[to].toLowerCase()} range here: the walls stop it.`;
+  const walls = `The walls stop it short of ${RANGE_LABEL[to].toLowerCase()} range.`;
   return at === round.range ? say(round, walls) : { ...say(round, walls), range: at };
 }

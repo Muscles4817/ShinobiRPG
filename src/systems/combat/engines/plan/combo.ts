@@ -114,7 +114,7 @@ export function combination(round: Round, turn: Turn, joint: Joint, single: Sing
   const { fighter, technique } = partner;
   const told = say(
     { ...round, fighters: patch(round.fighters, fighter.id, { joined: true }) },
-    tell('{a} and {b} combine {what} and {with}!', {
+    tell('{a} and {b} combine {what} and {with}.', {
       a: turn.actor,
       b: fighter,
       what: t.name,

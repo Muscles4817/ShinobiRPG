@@ -47,7 +47,7 @@ export function struggleFree(round: Round, rng: Rng): Round {
     if (!held?.grip || !caught(held) || held.stunned > 0) return now;
     const channelled = holderOf(now, held.id) !== undefined;
     if (!rng.chance(escapeChance(held, held.grip, channelled))) return now;
-    return loosed(now, held, tell('{a} struggle{a.s} free of the hold!', { a: held }));
+    return loosed(now, held, tell('{a} struggle{a.s} free of the hold.', { a: held }));
   }, round);
 }
 
@@ -84,6 +84,6 @@ export function aid(
     const line = tell('{a} pull{a.s} at {t}, but the hold stands.', { a: actor, t: held });
     return { kind: 'spent', round: say(round, line) };
   }
-  const freed = tell('{a} pull{a.s} {t} free!', { a: actor, t: held });
+  const freed = tell('{a} pull{a.s} {t} free.', { a: actor, t: held });
   return { kind: 'spent', round: loosed(round, held, freed) };
 }

@@ -1,7 +1,7 @@
 import { hashString } from '@/core';
 import type { Discipline, Element } from '@/systems/techniques';
 
-import type { CombatTechnique } from '../../contract';
+import type { CombatTechnique, RangeBand } from '../../contract';
 import type { AttackKind } from '../../rules/kit';
 import { reactionLine, type NarrationReaction } from '../../rules/narration';
 import { tell, type Told } from '../../rules/telling';
@@ -30,38 +30,38 @@ export function pick<T>(moment: string, bank: readonly T[]): T {
 
 const CAST_BY_ART: Readonly<Record<Discipline, readonly string[]>> = {
   ninjutsu: [
-    '{a} use{a.s} {what}!',
-    '{a.poss} hands blur through the seals: {what}!',
-    '{a} mould{a.s} chakra into {what}!',
+    '{a} run{a.s} through the seals for {what}.',
+    '{a.poss} hands blur through the seals, and {what} comes.',
+    '{a} mould{a.s} chakra into {what}.',
   ],
   genjutsu: [
     '{a} cast{a.s} {what}.',
     '{a} catch{a.es} the eye and let{a.s} {what} unfold.',
-    'The air around {a} wavers: {what}.',
+    'The air around {a} wavers as {what} takes hold.',
   ],
   taijutsu: [
-    '{a} use{a.s} {what}!',
-    '{a} launch{a.es} into {what}!',
-    '{a} explode{a.s} forward with {what}!',
+    '{a} go{a.es} in with {what}.',
+    '{a} launch{a.es} into {what}.',
+    '{a} explode{a.s} forward with {what}.',
   ],
   kenjutsu: [
-    '{a} use{a.s} {what}!',
-    '{a.poss} blade flows into {what}!',
-    'Steel flashes as {a} loose{a.s} {what}!',
+    '{a} draw{a.s} into {what}.',
+    '{a.poss} blade flows into {what}.',
+    'Steel flashes as {a} loose{a.s} {what}.',
   ],
   fuuinjutsu: [
-    '{a} use{a.s} {what}!',
-    '{a} slap{a.s} down a seal: {what}!',
-    'Ink and chakra spill from {a.poss} hands: {what}!',
+    '{a} write{a.s} {what} into the air.',
+    '{a} slap{a.s} down a seal for {what}.',
+    'Ink and chakra spill from {a.poss} hands into {what}.',
   ],
 };
 
 const CAST_BY_ELEMENT: Readonly<Record<Element, string>> = {
-  fire: '{a} draw{a.s} a deep breath and unleash{a.es} {what}!',
-  water: 'Water gathers around {a}: {what}!',
-  lightning: 'Lightning crackles in {a.poss} hand: {what}!',
-  wind: '{a} send{a.s} {what} howling out!',
-  earth: 'The ground answers {a}: {what}!',
+  fire: '{a} draw{a.s} a deep breath and let{a.s} {what} go.',
+  water: '{a} pull{a.s} the water up into {what}.',
+  lightning: 'Lightning crackles in {a.poss} hand as {what} gathers.',
+  wind: '{a} send{a.s} {what} howling out.',
+  earth: '{a} drive{a.s} {a.their} chakra into the ground, and {what} answers.',
 };
 
 /** Someone uses a technique: in the words of its art, or its element. */
@@ -107,8 +107,16 @@ function verbsFor(landing: Landing): readonly string[] {
 }
 
 const AGAIN = [' again', ' once more', ' a second time'];
-const GUARDED = [' through a guard', ', though a raised guard takes the worst of it'];
+/** A guard that held is the Guarded stamp's to say; one smashed is news, so the line says it. */
 const SMASHED = [', smashing through the guard', ', battering the guard aside'];
+
+/** A step that came off: who moved, where to, which way, and the foe they moved on. */
+export interface StepTold {
+  readonly actor: Told;
+  readonly to: RangeBand;
+  readonly closing: boolean;
+  readonly foe?: Told;
+}
 
 export interface HitTold {
   readonly attacker: Told;
@@ -136,11 +144,7 @@ function reactionsTo({ dodgeTried, guarded, smashed }: HitTold): NarrationReacti
 export function hitLine(moment: string, hit: HitTold): string {
   const verb = pick(moment, verbsFor(hit.blow));
   const again = hit.blow.followUp ? pick(`${moment}:again`, AGAIN) : '';
-  const guard = hit.smashed
-    ? pick(`${moment}:guard`, SMASHED)
-    : hit.guarded
-      ? pick(`${moment}:guard`, GUARDED)
-      : '';
+  const guard = hit.smashed ? pick(`${moment}:guard`, SMASHED) : '';
   const line = tell(`{a.poss} {what} ${verb} {t}${again}${guard}.`, {
     a: hit.attacker,
     t: hit.target,
@@ -193,23 +197,36 @@ export function seenLine(moment: string, foe: Told): string {
   );
 }
 
-/** A step that lands where it meant to. */
-export function stepLine(moment: string, actor: Told, where: string, closing: boolean): string {
-  const bank = closing
-    ? ['{a} move{a.s} to {where} range.', '{a} close{a.s} to {where} range.']
-    : ['{a} move{a.s} to {where} range.', '{a} fall{a.s} back to {where} range.'];
-  return tell(pick(moment, bank), { a: actor, where });
+const STEPS: Readonly<Record<RangeBand, readonly string[]>> = {
+  close: ['{a} close{a.s} in.', '{a} dart{a.s} in close.', '{a} get{a.s} inside {f.poss} reach.'],
+  mid: ['{a} close{a.s} the gap to mid range.', '{a} come{a.s} in to mid range.'],
+  far: ['{a} fall{a.s} back out of reach.', '{a} spring{a.s} back to far range.'],
+};
+
+const BACK_TO_MID = ['{a} fall{a.s} back to mid range.', '{a} give{a.s} ground to mid range.'];
+
+/** A step that lands where it meant to: in close, the gap closed, or ground given. */
+export function stepLine(moment: string, step: StepTold): string {
+  const bank = step.to === 'mid' && !step.closing ? BACK_TO_MID : STEPS[step.to];
+  return tell(pick(moment, bank), { a: step.actor, f: step.foe ?? step.actor });
 }
 
+/** What a step was for, in words: "close in", "get back out of reach". */
+const GOALS: Readonly<Record<RangeBand, string>> = {
+  close: 'close in',
+  mid: 'reach mid range',
+  far: 'get back out of reach',
+};
+
 /** A step the foe won't allow. */
-export function blockedStepLine(moment: string, actor: Told, where: string, foe: Told): string {
+export function blockedStepLine(moment: string, actor: Told, to: RangeBand, foe: Told): string {
   return tell(
     pick(moment, [
-      '{a} make{a.s} for {where} range, but {f} won’t allow it.',
-      '{f} cut{f.s} off {a.poss} move to {where} range.',
-      '{a} feint{a.s} towards {where} range, and {f} {f.does}n’t bite.',
+      '{a} make{a.s} to {goal}, but {f} won’t allow it.',
+      '{f} cut{f.s} {a} off before {a.they} can {goal}.',
+      '{a} feint{a.s}, looking to {goal}, and {f} {f.does}n’t bite.',
     ]),
-    { a: actor, f: foe, where },
+    { a: actor, f: foe, goal: GOALS[to] },
   );
 }
 
@@ -217,7 +234,7 @@ export function blockedStepLine(moment: string, actor: Told, where: string, foe:
 export function dazeLine(moment: string, target: Told): string {
   return tell(
     pick(moment, [
-      '{t} {t.is} dazed!',
+      '{t} {t.is} dazed.',
       '{t} reel{t.s}, the world spinning.',
       '{t} stagger{t.s}, dazed.',
     ]),
@@ -242,7 +259,7 @@ export function emptySearchLine(moment: string, actor: Told): string {
   return tell(
     pick(moment, [
       '{a} search{a.es}, but find{a.s} no one.',
-      '{a} scan{a.s} the field: nothing.',
+      '{a} scan{a.s} the field and see{a.s} nothing.',
       '{a} look{a.s} hard and find{a.s} only shadows.',
     ]),
     { a: actor },
@@ -253,9 +270,9 @@ export function emptySearchLine(moment: string, actor: Told): string {
 export function foundLine(moment: string, actor: Told, found: readonly Told[]): string {
   return tell(
     pick(moment, [
-      '{a} spot{a.s} {found}!',
-      '{a.poss} eyes snap to {found}!',
-      '{a} pick{a.s} out {found}!',
+      '{a} spot{a.s} {found}.',
+      '{a.poss} eyes snap to {found}.',
+      '{a} pick{a.s} out {found}.',
     ]),
     { a: actor, found },
   );
@@ -265,9 +282,9 @@ export function foundLine(moment: string, actor: Told, found: readonly Told[]): 
 export function counterLine(moment: string, target: Told): string {
   return tell(
     pick(moment, [
-      '{t} counter{t.s}!',
-      '{t} answer{t.s} the blow with one of {t.their} own!',
-      '{t} turn{t.s} the attack back on its owner!',
+      '{t} counter{t.s}.',
+      '{t} answer{t.s} the blow with one of {t.their} own.',
+      '{t} turn{t.s} the attack back on its owner.',
     ]),
     { t: target },
   );
@@ -277,9 +294,9 @@ export function counterLine(moment: string, target: Told): string {
 export function chargeLine(moment: string, actor: Told, technique: string): string {
   return tell(
     pick(moment, [
-      '{a} charge{a.s} in with {what}!',
-      '{a} launch{a.es} into {what}!',
-      '{a} hurl{a.s} {a.themself} forward: {what}!',
+      '{a} charge{a.s} in with {what}.',
+      '{a} launch{a.es} into {what}.',
+      '{a} hurl{a.s} {a.themself} forward into {what}.',
     ]),
     { a: actor, what: technique },
   );

@@ -22,7 +22,7 @@ import { riposteFirst } from './lingering';
 import { wound } from './wound';
 import { canHit } from './rows';
 import { isDazed } from './daze';
-import { counterLine, foresightSlipLine, hitLine, momentOf, slipLine } from './voice';
+import { counterLine, foresightSlipLine, hitLine, momentOf, pick, slipLine } from './voice';
 import { fighterIn, patch, say, type DefenceKind, type PlanFighter, type Round } from './state';
 import { confusedLine } from './sceneVoice';
 
@@ -100,9 +100,16 @@ function kitted(round: Round, attacker: PlanFighter, defender: PlanFighter, blow
   return blow.raw * (blow.breaks ? brokenScale(kit) : kit) * pack * hidden;
 }
 
-function kitNote(defender: PlanFighter, kind: AttackKind): string[] {
+/** A hit their kit shrugs off, or a seal that bites deeper. */
+const GLANCES = [
+  'Much of it glances off {t}.',
+  'Little of it bites on {t}.',
+  '{t} barely seem{t.s} to feel it.',
+];
+
+function kitNote(moment: string, defender: PlanFighter, kind: AttackKind): string[] {
   const scale = kitDamageScale(defender, kind);
-  if (scale < 1) return [tell('Much of it glances off {t}.', { t: defender })];
+  if (scale < 1) return [tell(pick(`${moment}:${defender.health}`, GLANCES), { t: defender })];
   return scale > 1 ? [tell('The seal bites deep into {t}.', { t: defender })] : [];
 }
 
@@ -297,7 +304,7 @@ export function react(start: Round, struck: Hit): Round {
       }),
       damage,
     ),
-    ...kitNote(target, blow.kind),
+    ...kitNote(momentOf(shielded, attacker.id), target, blow.kind),
   );
   const landed = confuse(wound(told, target.id, damage), hit);
   return canCounterBack(shielded, hit, has) ? counter(landed, hit) : landed;

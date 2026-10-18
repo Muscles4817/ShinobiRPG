@@ -163,7 +163,7 @@ describe('plan & watch kits: hits', () => {
     const [, coward] = pair(['coward']);
     const after = hitOn({ ...coward!, health: 18 }, STRIKE);
     expect(after.fighters[1]?.health).toBe(0);
-    expect(splitNarration(after.lines.at(-1) ?? '').text).toBe('Foe flees!');
+    expect(splitNarration(after.lines.at(-1) ?? '').text).toBe('Foe turns and runs.');
     expect(decide(after.fighters)).toBe('victory');
   });
 

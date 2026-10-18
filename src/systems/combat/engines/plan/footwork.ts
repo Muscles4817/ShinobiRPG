@@ -37,6 +37,9 @@ export function moveDestination(fighter: PlanFighter, t: CombatTechnique): Range
   return moveGoal(t, homeBand(fighter));
 }
 
+const FLICKER_IN = '{a} {a.is} suddenly right in close.';
+const FLICKER = '{a} blink{a.s} out and reappear{a.s} at {where} range.';
+
 export function move(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
   if (isPinned(actor)) return say(round, tell('{a} strain{a.s} against the hold.', { a: actor }));
   const to = moveDestination(actor, t) ?? round.range;
@@ -44,7 +47,7 @@ export function move(round: Round, actor: PlanFighter, t: CombatTechnique): Roun
   // An entry carries its user in to strike; a body flicker simply puts them there.
   const told = isHarmful(t)
     ? tell('{a} cross{a.es} the distance in a blink.', { a: actor })
-    : tell('{a} flicker{a.s} to {where} range.', { a: actor, where });
+    : tell(to === 'close' ? FLICKER_IN : FLICKER, { a: actor, where });
   return movedTo(round, to, told);
 }
 

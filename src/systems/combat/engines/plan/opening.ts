@@ -1,5 +1,4 @@
 import type { CombatOpening, RangeBand } from '../../contract';
-import { RANGE_LABEL } from '../../rules/range';
 import { FIELD_RULES, raiseField, type ActiveField } from '../../rules/verbs';
 import type { PlanFighter } from './state';
 import { tell } from '../../rules/telling';
@@ -33,13 +32,19 @@ function opened(f: PlanFighter, opening: CombatOpening): PlanFighter {
   };
 }
 
+const STARTS_AT: Readonly<Record<RangeBand, string>> = {
+  close: 'It starts up close.',
+  mid: 'It starts at mid range.',
+  far: 'It starts at a distance.',
+};
+
 function linesFor(fighters: readonly PlanFighter[], opening: CombatOpening): string[] {
   const named = (ids: readonly string[] | undefined) => fighters.filter((f) => ids?.includes(f.id));
   const lines: string[] = [];
-  if (opening.range) lines.push(`It starts at ${RANGE_LABEL[opening.range].toLowerCase()} range.`);
+  if (opening.range) lines.push(STARTS_AT[opening.range]);
   if (opening.firstMover === 'player') lines.push('Your side moves first.');
-  if (opening.firstMover === 'enemy') lines.push('They move first!');
-  lines.push(...named(opening.dazed).map((f) => tell('{a} {a.is} caught off balance!', { a: f })));
+  if (opening.firstMover === 'enemy') lines.push('They move first.');
+  lines.push(...named(opening.dazed).map((f) => tell('{a} {a.is} caught off balance.', { a: f })));
   lines.push(...named(opening.hidden).map((f) => tell('{a} start{a.s} out of sight.', { a: f })));
   if (opening.field) lines.push(FIELD_RULES[opening.field.id].rises);
   return lines;

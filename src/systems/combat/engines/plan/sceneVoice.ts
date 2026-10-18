@@ -12,14 +12,14 @@ import { pick } from './voice';
 export function knockLine(moment: string, target: Told, where: string, closer: boolean): string {
   const bank = closer
     ? [
-        '{t} {t.is} dragged in close!',
-        '{t} {t.is} hauled in, face to face!',
-        '{t} {t.is} yanked off {t.their} feet and into reach!',
+        '{t} {t.is} dragged in close.',
+        '{t} {t.is} hauled in, face to face.',
+        '{t} {t.is} yanked off {t.their} feet and into reach.',
       ]
     : [
-        '{t} {t.is} thrown back to {where} range!',
-        '{t} {t.is} sent skidding back to {where} range!',
-        '{t} tumble{t.s} away to {where} range!',
+        '{t} {t.is} thrown back to {where} range.',
+        '{t} {t.is} sent skidding back to {where} range.',
+        '{t} tumble{t.s} away to {where} range.',
       ];
   return tell(pick(moment, bank), { t: target, where });
 }
@@ -54,7 +54,7 @@ export function rehideLine(moment: string, actor: Told): string {
     pick(moment, [
       '{a} melt{a.s} back into the illusion.',
       '{a} fade{a.s} out of sight again.',
-      '{a} {a.is} gone again, a shimmer where {a.they} stood.',
+      '{a} {a.is} gone again, and the air where {a.they} stood is empty.',
     ]),
     { a: actor },
   );
@@ -65,7 +65,7 @@ export function tracedLine(moment: string, victim: Told, actor: Told): string {
   return tell(
     pick(moment, [
       '{v} trace{v.s} the illusion back to {a}.',
-      '{v} follow{v.s} the blow back to its source: {a}.',
+      '{v} follow{v.s} the blow back to {a}.',
       '{v} catch{v.es} the thread of the illusion and find{v.s} {a}.',
     ]),
     { v: victim, a: actor },
@@ -87,8 +87,8 @@ export function swapLine(moment: string, { target, attacker, what, jutsu }: Swap
   return tell(
     pick(moment, [
       '{t} swap{t.s} out of {a.poss} {what} with {jutsu}.',
-      '{a.poss} {what} splinters a log where {t} stood: {jutsu}.',
-      '{t} {t.is} somewhere else when {a.poss} {what} lands: {jutsu}.',
+      '{a.poss} {what} splinters the log {t} left behind with {jutsu}.',
+      '{t} {t.is} somewhere else by the time {a.poss} {what} lands.',
     ]),
     { t: target, a: attacker, what, jutsu },
   );

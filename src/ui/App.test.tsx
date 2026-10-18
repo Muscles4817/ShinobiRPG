@@ -427,7 +427,11 @@ describe('App (smoke test)', () => {
     await skipWatching(user);
     await user.click(screen.getByRole('button', { name: /^Watch the round/ }));
     await skipWatching(user);
-    expect(screen.queryByText(/The round is over/) ?? screen.queryByRole('dialog')).not.toBeNull();
+    const between =
+      screen.queryByRole('button', { name: 'Plan the next round' }) ??
+      screen.queryByText(/The round is over/) ??
+      screen.queryByRole('dialog');
+    expect(between).not.toBeNull();
   });
 
   it('orders the plan and sets when and at whom each card plays', async () => {
