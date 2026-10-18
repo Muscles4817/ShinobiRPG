@@ -31,20 +31,14 @@ import type { FurnishingDef, GardenCrop, HomeDef, LettingsFields } from './homes
 import type { ExerciseDef } from './exercises';
 import type { CurriculumBeat } from './curriculum';
 import type { SenseiSpeech } from './senseiSpeech';
+import type { TraitDef } from './traits';
+export type { TraitDef } from './traits';
 import type { SenseiParts } from './senseiParts';
 import type { SenseiTestDef } from './senseiTests';
 import type { CookbookDef, GearDef, IngredientDef, RecipeDef, ToolDef } from './items';
 import type { InjuryDef } from './injuries';
 import type { BuildDef, UpbringingDef } from './upbringing';
-import type {
-  ConversationDef,
-  ConversationTopic,
-  NamePools,
-  PersonDef,
-  TeamText,
-  Register,
-  Tone,
-} from './people';
+import type { ConversationDef, ConversationTopic, NamePools, PersonDef, TeamText } from './people';
 export type {
   ClassRegard,
   MissionPosture,
@@ -215,21 +209,6 @@ export interface TalentDef {
   readonly aptitude?: Readonly<Partial<Record<StatId, number>>>;
   /** A note that contradicts this one: never on the same file. */
   readonly opposite?: string;
-}
-
-/** A personality trait. Opposites can't be taken together. */
-export interface TraitDef {
-  readonly id: string;
-  readonly name: string;
-  /** How an instructor would write it in your file. */
-  readonly note: string;
-  readonly opposite?: string;
-  readonly modifiers: ModifierSpec;
-  /** How people with this trait react to the tone of what you say. */
-  readonly likes: readonly Tone[];
-  readonly dislikes: readonly Tone[];
-  /** How people with this as their first trait talk: the phrasing of templated lines. */
-  readonly register: Register;
 }
 
 /** Your dream: the goal you wrote in your academy application. */
