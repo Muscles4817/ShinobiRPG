@@ -533,6 +533,73 @@ fighters, so this is new: a full fighter joining the field mid-fight.
 
    A genin may sign; few can pay for more than the smallest.
 
+### Swarms (step 4): the proposal
+
+For discussion before building. A swarm is a **pool**, not a body: a quantity its host spends
+and regrows, which the other side can't target but can thin. The style poses one problem: a
+pool that drains and senses. Areas and fire thin it, and you shouldn't let it settle on you.
+
+**What exists today.** The fan pack's insect clan already has eight techniques, each a plain
+verb paid in chakra: a swarm that bites (damage), the jar (seal), the rope (pin), the wall and
+the clone (substitutions), the sphere and the tornado (drain, the tornado over an area) and the
+jamming (conceal). Nothing is spent from a hive, nothing thins it, and the insects sense
+nothing. This step gives those techniques a pool to come from.
+
+**In the fight** (`engines/plan/swarm.ts`, kinds as a table like `CLONE_RULES`):
+
+- **The pool.** `CombatantSetup.swarm` is `{ kind, size, cap, regrowth }`. A meter on the host,
+  beside chakra ("Hive: thick", "thin", "spent"), shown in words and a bar, never as a number
+  in the story.
+- **Spending.** A technique may cost swarm (`swarmCost`) besides or instead of chakra. A host
+  with an empty hive can't use it, as with chakra. The chakra cost stays small, because the
+  insects do the work.
+- **Regrowth.** Each exchange the pool regrows by its kind's rule. Insects breed slowly on
+  their own, and faster on what they drain: chakra drained from a foe feeds the hive.
+- **What the kind does** (insects to start; sand, paper and ink later fill the same table):
+  - **Settling.** A hit with a swarm technique may leave insects on the target: a lingering
+    drain, worn down each exchange like a burn. The target can scrape them off by struggling,
+    as against a pin. Fire burns them off at once.
+  - **Sensing.** Insects on a foe keep them found: they can't hide, and their conceal fails.
+    A host also gets a passive Search against hidden foes, stronger as the hive is thicker.
+  - **Screening.** The insect wall and clone spend swarm to take the hit.
+- **Counters:**
+  - An area technique that catches the host's side kills part of the pool: wide more, vast
+    most.
+  - A fire technique kills more of it, and burns off insects settled on anyone.
+  - Foes and teammates know this: a default plan brings an area or fire against a swarm
+    (as the plan's counters table already says), and scouting names "Swarm" with that counter.
+- **Foes.** `EnemyDef.swarm`. A hive is carried inside the body, so before the fight it reads
+  as a `hidden` tell, like a retinue.
+- **The outcome.** `CombatOutcome.swarm` reports what the pool ended at, for the game to keep
+  (if the hive is persistent, question 1).
+
+**Outside the fight** (`systems/swarms`, a `SwarmKindDef` per pack):
+
+- **The born path.** The insect clan's rite gives a child their hive. Its cap grows with the
+  host's chakra reserves and with clan training (the clan's swarm techniques taught at the
+  compound, as today).
+- **Keeping it** (if persistent):
+  - insects lost in a fight breed back over days;
+  - a hungry host breeds them slower;
+  - a quiet day at home with the hive (an action, like playing with a companion) speeds it.
+- **The original pack** needs a swarm of its own, or none yet (question 3). The lantern village
+  suggests **lantern moths**: drawn to light, dusting a foe so they glow (sensing, no hiding),
+  and blinding with their scales (a daze) rather than draining.
+
+**Questions for you:**
+
+1. **Persistent or fresh?** Does a hive killed off by fire stay thin for days and breed back
+   at home (more life-sim, a real cost to losing it), or refill fully before every fight
+   (simpler, fights stand alone)?
+2. **Who can have one?** Only the born path (the clan), or can a clanless player get one too:
+   taught by a hermit far from home, or a jar of beetles from a job?
+3. **The original pack:** a swarm of its own now (the lantern moths, or something else), or
+   foes only until the original-pack step (7)?
+4. **Which pools now?** Insects only, or sand as well (a pool that guards its host on its own,
+   the fan pack's sand gourd) in the same step?
+5. **What feeds it?** Should draining a foe's chakra regrow the hive mid-fight (the insect
+   clan's whole point in canon), or should regrowth be flat so a hive can't snowball?
+
 ### Shamans: spirits seen, bound and sealed
 
 A shaman sees spirits, deals with them, and seals them into items and people to empower them.
