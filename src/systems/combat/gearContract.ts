@@ -13,15 +13,63 @@ export const GEAR_RANKS = ['D', 'C', 'B', 'A'] as const;
 export type GearRank = (typeof GEAR_RANKS)[number];
 
 /**
- * What a weapon is: a blade (a strike becomes a cut; kenjutsu techniques need one), knuckles
- * (heavier blows that bite through a guard), throwing steel (better kunai) or senbon (light
- * needles that may daze). Blades and knuckles are held; throwing steel and senbon are thrown.
+ * The kind of weapon, which sets how it handles (`rules/weapons.ts`: its speed, its weight and
+ * the guard it gives) and which mastery it is fought with (`WeaponMastery`): a light blade
+ * (a tantō), a sword, a greatsword, a polearm, a war fan, a chain or cable
+ * weapon, a staff, a blunt weapon, knuckles, throwing steel or senbon.
  */
-export const WEAPON_SHAPES = ['blade', 'knuckles', 'throwing', 'senbon'] as const;
+export const WEAPON_CLASSES = [
+  'light-blade',
+  'sword',
+  'greatsword',
+  'polearm',
+  'fan',
+  'chain',
+  'staff',
+  'blunt',
+  'knuckles',
+  'throwing',
+  'senbon',
+] as const;
+export type WeaponClass = (typeof WEAPON_CLASSES)[number];
+
+/**
+ * What a class is to the rules: a blade (an edged held weapon: a strike becomes a cut, and
+ * kenjutsu techniques need one), a blunt held weapon (blows of the weapon art), knuckles
+ * (heavier blows that bite through a guard), throwing steel (better kunai) or senbon (light
+ * needles that may daze). Blades, blunt weapons and knuckles are held; the rest are thrown.
+ */
+export const WEAPON_SHAPES = ['blade', 'blunt', 'knuckles', 'throwing', 'senbon'] as const;
 export type WeaponShape = (typeof WEAPON_SHAPES)[number];
 
+export const SHAPE_OF_CLASS: Readonly<Record<WeaponClass, WeaponShape>> = {
+  'light-blade': 'blade',
+  sword: 'blade',
+  greatsword: 'blade',
+  polearm: 'blade',
+  fan: 'blade',
+  chain: 'blade',
+  staff: 'blunt',
+  blunt: 'blunt',
+  knuckles: 'knuckles',
+  throwing: 'throwing',
+  senbon: 'senbon',
+};
+
 /** Shapes held in the hand (the strike), as opposed to thrown (the kunai card). */
-export const HELD_SHAPES: readonly WeaponShape[] = ['blade', 'knuckles'];
+export const HELD_SHAPES: readonly WeaponShape[] = ['blade', 'blunt', 'knuckles'];
+
+/** What a weapon of this class counts as. */
+export function shapeOf(weapon: { readonly weaponClass: WeaponClass }): WeaponShape {
+  return SHAPE_OF_CLASS[weapon.weaponClass];
+}
+
+/**
+ * How well someone knows each class, 0 (never held one) to 1 (their signature weapon). The
+ * weapon art (kenjutsu) is what any weapon fighter has; mastery is how much of it a given
+ * weapon lets through (`rules/mastery.ts`).
+ */
+export type WeaponMastery = Readonly<Partial<Record<WeaponClass, number>>>;
 
 /**
  * What a unique weapon adds to every strike it lands: drain (it drinks the target's chakra),
@@ -36,10 +84,12 @@ export type ArmourLevel = (typeof ARMOUR_LEVELS)[number];
 
 export interface CombatWeapon {
   readonly name: string;
-  readonly shape: WeaponShape;
+  readonly weaponClass: WeaponClass;
   readonly rank: GearRank;
   /** A unique weapon's own verbs. */
   readonly effects?: readonly WeaponEffect[];
+  /** A weapon that is also a focus (a war fan for wind, a blade that carries lightning). */
+  readonly boosts?: FocusTarget;
 }
 
 export interface CombatArmour {
@@ -69,6 +119,11 @@ export interface CombatGear {
   readonly thrown?: CombatWeapon;
   readonly armour?: CombatArmour;
   readonly focus?: CombatFocus;
+  /**
+   * How well the wearer knows each class of weapon. Known with their gear; absent, they are at
+   * home with whatever they carry (foes and teammates are armed as their techniques suggest).
+   */
+  readonly mastery?: WeaponMastery;
 }
 
 /**

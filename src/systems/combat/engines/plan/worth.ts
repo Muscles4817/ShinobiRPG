@@ -75,7 +75,7 @@ function blowWorth(self: PlanFighter, foe: PlanFighter, thrown: boolean, round: 
     form: 'blow' as const,
     attacker: self,
     target: foe,
-    skill: blowSkill(self, kind),
+    skill: blowSkill(self, kind, thrown),
   };
   return (1 - avoidOdds(round, incoming)) * cappedHit(attack.raw, foe.maxHealth);
 }

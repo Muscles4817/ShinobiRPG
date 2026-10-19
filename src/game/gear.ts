@@ -1,6 +1,6 @@
 import { round1 } from '@/core';
 import { gearSlot, type ContentDb, type GearDef, type GearSlot } from '@/content';
-import type { CombatGear, CombatWeapon } from '@/systems/combat';
+import { shapeOf, type CombatGear, type CombatWeapon } from '@/systems/combat';
 import { addGear, equip, type Inventory } from '@/systems/inventory';
 import { RANKS, type Rank } from '@/systems/standing';
 import { STAT_IDS, type StatId, type Stats } from '@/systems/stats';
@@ -26,8 +26,14 @@ export function equippedIn(state: GameState, ctx: GameContext, slot: GearSlot): 
 
 function weaponOf(def: GearDef | null): CombatWeapon | undefined {
   if (def?.kind !== 'weapon') return undefined;
-  const { name, shape, rank, effects } = def;
-  return { name, shape, rank, ...(effects ? { effects } : {}) };
+  const { name, weaponClass, rank, effects, boosts } = def;
+  return {
+    name,
+    weaponClass,
+    rank,
+    ...(effects ? { effects } : {}),
+    ...(boosts ? { boosts } : {}),
+  };
 }
 
 /** Gear as the fight sees it, from what is worn in each slot. */
@@ -74,12 +80,12 @@ function issuedBlade(content: ContentDb): GearDef | null {
   const sold = (start?.places ?? []).flatMap((p) => (p.kind === 'gear' ? p.gearIds : []));
   const blades = sold
     .map((id) => content.gear.require(id))
-    .filter((g) => g.kind === 'weapon' && g.shape === 'blade' && g.rank === 'D');
+    .filter((g) => g.kind === 'weapon' && shapeOf(g) === 'blade' && g.rank === 'D');
   return [...blades].sort((a, b) => a.cost - b.cost)[0] ?? null;
 }
 
 function isBlade(def: GearDef | undefined): boolean {
-  return def?.kind === 'weapon' && def.shape === 'blade';
+  return def?.kind === 'weapon' && shapeOf(def) === 'blade';
 }
 
 /**

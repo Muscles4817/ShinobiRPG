@@ -71,7 +71,7 @@ describe('a blade is worth carrying (step 4.3)', () => {
       stats: statLine('chunin', { kenjutsu: 'peak', taijutsu: 'weak' }),
       techniques: [],
     };
-    const blade: CombatGear = { held: { name: 'Blade', shape: 'blade', rank: 'D' } };
+    const blade: CombatGear = { held: { name: 'Blade', weaponClass: 'sword', rank: 'D' } };
     const equal = plainAtScale('chunin');
     const bare = run({ ...swordsman, gear: {} }, equal);
     const armed = run({ ...swordsman, name: 'Swordsman with a blade', gear: blade }, equal);

@@ -6,6 +6,10 @@ import {
   weaponNumbers,
   type ArmourLevel,
   type FocusTarget,
+  shapeOf,
+  speedOf,
+  weaponGuard,
+  type WeaponClass,
   type WeaponShape,
 } from '@/systems/combat';
 import type { JournalChip } from '@/systems/journal';
@@ -17,8 +21,15 @@ import type { Verb } from '@/systems/techniques';
  * come from the same combat rules the fight applies, so what a shop says is what a fight does.
  */
 
-const SHAPE_LABEL: Readonly<Record<WeaponShape, string>> = {
-  blade: 'Blade',
+const CLASS_LABEL: Readonly<Record<WeaponClass, string>> = {
+  'light-blade': 'Light blade',
+  sword: 'Sword',
+  greatsword: 'Greatsword',
+  polearm: 'Polearm',
+  fan: 'War fan',
+  chain: 'Chain weapon',
+  staff: 'Staff',
+  blunt: 'Blunt weapon',
   knuckles: 'Knuckles',
   throwing: 'Throwing steel',
   senbon: 'Senbon',
@@ -60,7 +71,7 @@ const VERB_FOCUS: Readonly<Record<Verb, string>> = {
 export function gearKindLabel(def: GearDef): string {
   switch (def.kind) {
     case 'weapon':
-      return SHAPE_LABEL[def.shape];
+      return CLASS_LABEL[def.weaponClass];
     case 'armour':
       return ARMOUR_LABEL[def.level];
     case 'focus':
@@ -82,20 +93,58 @@ function change(scale: number): string {
   return delta >= 0 ? `+${delta}%` : `−${-delta}%`;
 }
 
-function weaponChips(def: Extract<GearDef, { kind: 'weapon' }>): JournalChip[] {
-  const n = weaponNumbers(def);
-  const effects = def.effects ?? [];
-  const what = def.shape === 'blade' ? 'Cuts' : def.shape === 'knuckles' ? 'Blows' : 'Kunai';
+const SPEED_WORDS: Readonly<Record<number, string>> = {
+  [-1]: 'Slow in the hand',
+  1: 'Quick in the hand',
+  2: 'Very quick in the hand',
+};
+
+/** What the piece is to the cards: a cut, a weapon's blows, senbon for kunai. */
+const SHAPE_CHIPS: Readonly<Record<WeaponShape, readonly string[]>> = {
+  blade: ['Strike becomes a cut', 'Strikes first up close', 'Needed for kenjutsu'],
+  blunt: ['Blows of the weapon art'],
+  knuckles: [],
+  throwing: [],
+  senbon: ['Kunai become senbon'],
+};
+
+const HIT_WORD: Readonly<Record<WeaponShape, string>> = {
+  blade: 'Cuts',
+  blunt: 'Blows',
+  knuckles: 'Blows',
+  throwing: 'Kunai',
+  senbon: 'Kunai',
+};
+
+/** How it handles: quick or slow in the hand, the guard it gives. */
+function handlingChips(def: Extract<GearDef, { kind: 'weapon' }>): JournalChip[] {
+  const speed = speedOf(def);
+  const guard = weaponGuard(def);
   return [
-    ...(def.shape === 'blade'
-      ? [info('Strike becomes a cut'), info('Strikes first up close'), info('Needed for kenjutsu')]
-      : []),
-    ...(def.shape === 'senbon' ? [info('Kunai become senbon')] : []),
+    ...(speed > 0 ? [gain(SPEED_WORDS[speed] ?? 'Quick in the hand')] : []),
+    ...(speed < 0 ? [cost(SPEED_WORDS[speed] ?? 'Slow in the hand')] : []),
+    ...(guard > 0 ? [gain(`Guards ${change(1 + guard)}`)] : []),
+  ];
+}
+
+function hitChips(def: Extract<GearDef, { kind: 'weapon' }>): JournalChip[] {
+  const n = weaponNumbers(def);
+  const what = HIT_WORD[shapeOf(def)];
+  return [
     ...(n.scale === 1 ? [] : [(n.scale > 1 ? gain : cost)(`${what} ${change(n.scale)}`)]),
     ...(n.pierce >= 1 ? [gain('Through any guard')] : []),
     ...(n.pierce > 0 && n.pierce < 1 ? [gain(`${percent(n.pierce)}% through a guard`)] : []),
     ...(n.daze > 0 ? [gain(`May daze ${percent(n.daze)}%`)] : []),
-    ...(effects.includes('drain') ? [gain('Drinks chakra')] : []),
+  ];
+}
+
+function weaponChips(def: Extract<GearDef, { kind: 'weapon' }>): JournalChip[] {
+  return [
+    ...SHAPE_CHIPS[shapeOf(def)].map(info),
+    ...hitChips(def),
+    ...handlingChips(def),
+    ...(def.boosts ? [gain(`${focusLabel(def.boosts)} ${change(focusScale(def))}`)] : []),
+    ...((def.effects ?? []).includes('drain') ? [gain('Drinks chakra')] : []),
   ];
 }
 

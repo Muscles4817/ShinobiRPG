@@ -50,22 +50,28 @@ export type {
   CombatWeapon,
   FocusTarget,
   GearRank,
+  WeaponClass,
   WeaponEffect,
+  WeaponMastery,
   WeaponShape,
 } from './gearContract';
 export {
   ARMOUR_LEVELS,
   GEAR_RANKS,
   HELD_SHAPES,
+  SHAPE_OF_CLASS,
+  shapeOf,
+  WEAPON_CLASSES,
   WEAPON_EFFECTS,
   WEAPON_SHAPES,
 } from './gearContract';
+export { masteryShare, MASTERY_FLOOR } from './rules/mastery';
 // Gear's numbers, for describing a piece the same way the fight applies it.
 export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
 export { chakraCost, holdTurns } from './rules/body';
 export { equalHitShare } from './rules/damage';
 export { focusScale } from './rules/focus';
-export { weaponNumbers, type WeaponNumbers } from './rules/weapons';
+export { speedOf, weaponGuard, weaponNumbers, type WeaponNumbers } from './rules/weapons';
 export { splitNarration } from './rules/narration';
 export { RANGE_BANDS, RANGE_LABEL, reachOf } from './rules/range';
 export { GROUND_RULES, type GroundRule } from './rules/ground';

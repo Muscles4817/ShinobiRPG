@@ -31,8 +31,8 @@ describe('gear', () => {
       charm: 'ash-ink-brush',
     });
     expect(combatGear(state, ctx)).toEqual({
-      held: { name: 'Forge Wakizashi', shape: 'blade', rank: 'C' },
-      thrown: { name: 'Needle Case', shape: 'senbon', rank: 'D' },
+      held: { name: 'Forge Wakizashi', weaponClass: 'sword', rank: 'C' },
+      thrown: { name: 'Needle Case', weaponClass: 'senbon', rank: 'D' },
       armour: { name: 'Lacquered Cuirass', level: 'heavy', rank: 'C' },
       focus: { name: 'Ash-Ink Sealing Brush', rank: 'C', boosts: { verb: 'seal' } },
     });
@@ -68,17 +68,18 @@ describe('gear', () => {
   it('the shop shows each piece’s kind, rank and what it does', () => {
     const items = at('kurogane-forge')(rich()).racks.flatMap((r) => r.items);
     const tanto = items.find((i) => i.id === 'lantern-steel-tanto')!;
-    expect(tanto).toMatchObject({ kind: 'Blade', rank: 'D', unique: false });
+    expect(tanto).toMatchObject({ kind: 'Light blade', rank: 'D', unique: false });
     expect(tanto.effects.map((c) => c.label)).toEqual([
       'Strike becomes a cut',
       'Strikes first up close',
       'Needed for kenjutsu',
-      'Cuts +25%',
+      'Cuts +15%',
+      'Very quick in the hand',
     ]);
     const wakizashi = items.find((i) => i.id === 'forge-wakizashi')!;
     expect(wakizashi.effects).toContainEqual({ label: 'Cuts +35%', tone: 'gain' });
     const needles = items.find((i) => i.id === 'needle-case')!;
-    expect(needles.effects.map((c) => c.tone)).toEqual(['info', 'cost', 'gain']);
+    expect(needles.effects.map((c) => c.tone)).toEqual(['info', 'cost', 'gain', 'gain']);
     const racks = at('kurogane-forge')(rich()).racks.map((r) => r.label);
     expect(racks).toEqual(['Blades and fists', 'Thrown', 'Focus charms']);
   });

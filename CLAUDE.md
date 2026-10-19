@@ -379,7 +379,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     strike up close unless a foe's hands are well clear of it, open to counters in an unskilled
     hand, and in the way of hand signs short of far: `rules/blades.ts`; knuckles; thrown steel and senbon;
     armour levels that trade protection for speed, eased by strength; a focus that sharpens a
-    verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. Gear has
+    verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. A weapon
+    has a **class** (`WEAPON_CLASSES`: light blade, sword, greatsword, polearm, fan, chain, staff,
+    blunt, knuckles, throwing, senbon; its shape for the rules is `shapeOf`), and each class
+    handles its own way (`CLASS_RULES`: weight, speed in the hand, the guard it gives); a weapon
+    may be a focus too (`boosts`). The weapon art is kenjutsu at the weapon's **mastery**
+    (`rules/mastery.ts`, `CombatGear.mastery`: a weapon never held lets half the art through), so a
+    master of shuriken can be ordinary with a sword; throws are the weapon art aimed by
+    perception. Gear has
     ranks D–A: shops sell D and C, B to chūnin; A and `unique` named weapons are never sold. A home-cooked recipe sets
     `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
     `spendTime` clears it when the day ends. **Cooking is a skill** (`systems/cooking`,

@@ -14,6 +14,7 @@ import { FORESIGHT_SEES, FORESIGHT_SLIP, foreseen } from '../../rules/eyes';
 import { familiarScale } from '../../rules/familiarity';
 import { handsFull, HANDS_FULL_ARRIVAL, HANDS_FULL_READ } from '../../rules/blades';
 import { footingOf } from '../../rules/ground';
+import { weaponSkill } from '../../rules/weapons';
 import { hasTrait, SWIFT_DODGE, type AttackKind } from '../../rules/kit';
 import {
   areaSize,
@@ -107,7 +108,10 @@ export function techniqueIncoming(
   };
 }
 
-/** The art behind a plain blow: a blade's kenjutsu, else taijutsu. */
-export function blowSkill(attacker: PlanFighter, kind: AttackKind): number {
-  return kind === 'weapon' ? attacker.attributes.kenjutsu : attacker.attributes.taijutsu;
+/**
+ * The art behind a plain blow: a weapon's (its mastery, its speed, a throw's aim:
+ * `weaponSkill`), else taijutsu.
+ */
+export function blowSkill(attacker: PlanFighter, kind: AttackKind, thrown: boolean): number {
+  return kind === 'weapon' ? weaponSkill(attacker, thrown) : attacker.attributes.taijutsu;
 }

@@ -4,7 +4,7 @@ import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniqu
 import { alive, hasPerk } from '../../rules/body';
 import { cappedHit, strikeDamage } from '../../rules/damage';
 import { counterChance, guardScale } from '../../rules/defence';
-import { counterSkill, cutSkill } from '../../rules/blades';
+import { counterSkill, cutSkill, heldGuard } from '../../rules/blades';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import { FORESIGHT_COUNTER, foreseen } from '../../rules/eyes';
 import { canAttackFrom, kitDamageScale, packScale, type AttackKind } from '../../rules/kit';
@@ -142,7 +142,8 @@ function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round
   const chance = foreseen(counterChance(skills), target, FORESEES_OPENING);
   if (!struck || !alive(struck) || !rng.chance(chance)) return round;
   const blow: Blow = {
-    raw: strikeDamage(target, attacker, rng.next()) * COUNTER_SCALE,
+    // A broad blade in the countered hand turns some of the answer aside.
+    raw: strikeDamage(target, attacker, rng.next()) * COUNTER_SCALE * (1 - heldGuard(attacker)),
     what: 'counter',
     dodgeable: false,
     physical: true,
@@ -162,9 +163,12 @@ function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round
   );
 }
 
-/** What a Guard lets through of this blow: a piercing weapon goes partly through it. */
+/**
+ * What a Guard lets through of this blow: a guarding weapon in hand (a greatsword, a staff)
+ * catches more, and a piercing weapon goes partly through it.
+ */
 function guardLets(attacker: PlanFighter, target: PlanFighter, blow: Blow): number {
-  const kept = guardScale(attacker, target);
+  const kept = guardScale(attacker, target) * (1 - heldGuard(target));
   return kept + (1 - kept) * (blow.pierce ?? 0);
 }
 
@@ -183,7 +187,7 @@ function blowIncoming({ attacker, target, blow }: Hit): Incoming {
     form: 'blow',
     attacker,
     target,
-    skill: blowSkill(attacker, blow.kind),
+    skill: blowSkill(attacker, blow.kind, !blow.physical),
     ...(blow.discipline ? { discipline: blow.discipline } : {}),
     ...(blow.accuracy ? { accuracy: blow.accuracy } : {}),
     ...(blow.areaSize ? { areaSize: blow.areaSize } : {}),

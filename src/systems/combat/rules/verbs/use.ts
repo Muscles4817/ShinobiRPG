@@ -9,6 +9,7 @@ import type {
 import type { CombatAttributes, CombatTechnique } from '../../contract';
 import type { CombatGear } from '../../gearContract';
 import { focusDrive } from '../focus';
+import { weaponArt } from '../mastery';
 import { profileOf } from './profiles';
 
 /**
@@ -41,9 +42,17 @@ function bindBreaker(attributes: CombatAttributes, discipline: Discipline): numb
   }
 }
 
+/** The art behind a technique: a blade art is fought at the mastery of the weapon in hand. */
+function artOf(fighter: Fighter, discipline: Discipline): number {
+  const held = fighter.gear?.held;
+  return discipline === 'kenjutsu' && held
+    ? weaponArt(fighter, held.weaponClass)
+    : fighter.attributes[discipline];
+}
+
 function statValue(fighter: Fighter, stat: ScalingStat, technique: CombatTechnique): number {
   const { attributes } = fighter;
-  if (stat === 'art') return attributes[technique.discipline];
+  if (stat === 'art') return artOf(fighter, technique.discipline);
   if (stat === 'guard') {
     return technique.discipline === 'genjutsu' ? attributes.willpower : attributes.perception;
   }

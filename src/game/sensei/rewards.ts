@@ -1,3 +1,4 @@
+import { shapeOf } from '@/systems/combat';
 import type { GearDef, PersonDef, SenseiReward } from '@/content';
 import { pronounForms } from '@/core';
 import { addPoints } from '@/systems/bonds';
@@ -42,8 +43,8 @@ function giftGear(state: GameState, ctx: GameContext, sensei: PersonDef): GearDe
   const fits = (g: GearDef): boolean => {
     if (g.kind === 'weapon') {
       return (
-        (art === 'kenjutsu' && g.shape === 'blade') ||
-        (art === 'taijutsu' && g.shape === 'knuckles')
+        (art === 'kenjutsu' && shapeOf(g) === 'blade') ||
+        (art === 'taijutsu' && shapeOf(g) === 'knuckles')
       );
     }
     return g.kind === 'focus' && 'discipline' in g.boosts && g.boosts.discipline === art;

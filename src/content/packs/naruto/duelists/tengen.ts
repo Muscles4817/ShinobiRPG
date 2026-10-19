@@ -74,7 +74,7 @@ export const TENGEN_GEAR: readonly GearDef[] = [
     description:
       'Two great cleavers joined by a chain, their spines packed with powder. They go through a guard.',
     kind: 'weapon',
-    shape: 'blade',
+    weaponClass: 'greatsword',
     rank: 'A',
     unique: true,
     effects: ['sunder'],

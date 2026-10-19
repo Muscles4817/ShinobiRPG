@@ -36,9 +36,12 @@ function line(value: number, overrides: Partial<CombatAttributes> = {}): CombatA
 
 const plain = { attributes: line(10) };
 const armed = (gear: CombatGear, attributes = line(10)) => ({ attributes, gear });
-const weapon = (shape: CombatWeapon['shape'], rank: CombatWeapon['rank'] = 'D'): CombatWeapon => ({
-  name: shape,
-  shape,
+const weapon = (
+  weaponClass: CombatWeapon['weaponClass'],
+  rank: CombatWeapon['rank'] = 'D',
+): CombatWeapon => ({
+  name: weaponClass,
+  weaponClass,
   rank,
 });
 
@@ -72,16 +75,16 @@ describe('weapons', () => {
   });
 
   it('a blade turns the strike into a cut driven by kenjutsu', () => {
-    const swordsman = armed({ held: weapon('blade') }, line(10, { kenjutsu: 20, taijutsu: 2 }));
+    const swordsman = armed({ held: weapon('sword') }, line(10, { kenjutsu: 20, taijutsu: 2 }));
     const cut = strikeWith(swordsman, plain, 0.5);
     expect(cut).toMatchObject({ what: 'cut', kind: 'weapon' });
-    expect(cutPower(swordsman)).toBeGreaterThan(blowPower(swordsman));
+    expect(cutPower(swordsman, weapon('sword'))).toBeGreaterThan(blowPower(swordsman));
     expect(cut.raw).toBeGreaterThan(strikeDamage(swordsman, plain, 0.5));
   });
 
   it('a better blade cuts deeper', () => {
-    const d = strikeWith(armed({ held: weapon('blade', 'D') }), plain, 0.5).raw;
-    const b = strikeWith(armed({ held: weapon('blade', 'B') }), plain, 0.5).raw;
+    const d = strikeWith(armed({ held: weapon('sword', 'D') }), plain, 0.5).raw;
+    const b = strikeWith(armed({ held: weapon('sword', 'B') }), plain, 0.5).raw;
     expect(b).toBeCloseTo(d * (1.45 / 1.25));
   });
 
@@ -109,12 +112,12 @@ describe('weapons', () => {
   });
 
   it('a unique weapon carries its own verbs', () => {
-    const named: CombatWeapon = { ...weapon('blade', 'A'), effects: ['drain', 'daze', 'sunder'] };
+    const named: CombatWeapon = { ...weapon('sword', 'A'), effects: ['drain', 'daze', 'sunder'] };
     const n = weaponNumbers(named);
     expect(n.drain).toBeGreaterThan(0);
     expect(n.daze).toBeGreaterThan(0);
     expect(n.pierce).toBe(1);
-    expect(weaponNumbers(weapon('blade', 'A'))).toMatchObject({ drain: 0, daze: 0, pierce: 0 });
+    expect(weaponNumbers(weapon('sword', 'A'))).toMatchObject({ drain: 0, daze: 0, pierce: 0 });
   });
 
   it('a technique that needs a blade needs one in hand, for fighters whose gear is known', () => {
@@ -122,7 +125,7 @@ describe('weapons', () => {
     expect(weaponMissing({ gear: { held: weapon('knuckles') } }, kenjutsuCut)).toBe(
       NEEDS_WEAPON.blade,
     );
-    expect(weaponMissing({ gear: { held: weapon('blade') } }, kenjutsuCut)).toBeNull();
+    expect(weaponMissing({ gear: { held: weapon('sword') } }, kenjutsuCut)).toBeNull();
     expect(weaponMissing({ gear: {} }, sealing)).toBeNull();
     // Foes and teammates are armed as their techniques suggest.
     expect(weaponMissing({}, kenjutsuCut)).toBeNull();
@@ -184,5 +187,25 @@ describe('focus', () => {
   it('sharpens every technique of the art it covers, more at a better rank', () => {
     expect(focusDrive(armed(beads), 'damage', 'kenjutsu')).toBe(focusScale({ rank: 'C' }));
     expect(focusScale({ rank: 'C' })).toBeGreaterThan(focusScale({ rank: 'D' }));
+  });
+
+  it('a weapon that is also a focus sharpens its art while in hand, beside a charm', () => {
+    const fan: CombatWeapon = {
+      name: 'War fan',
+      weaponClass: 'fan',
+      rank: 'D',
+      boosts: { discipline: 'ninjutsu' },
+    };
+    const charm: CombatGear['focus'] = {
+      name: 'Bead',
+      rank: 'D',
+      boosts: { discipline: 'ninjutsu' },
+    };
+    const scale = focusScale({ rank: 'D' });
+    expect(focusDrive(armed({ held: fan }), 'damage', 'ninjutsu')).toBeCloseTo(scale);
+    expect(focusDrive(armed({ held: fan, focus: charm }), 'damage', 'ninjutsu')).toBeCloseTo(
+      scale * scale,
+    );
+    expect(focusDrive(armed({ held: fan }), 'damage', 'genjutsu')).toBe(1);
   });
 });
