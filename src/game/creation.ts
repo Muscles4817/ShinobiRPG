@@ -188,7 +188,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
   // What a special note fixes (an art that never takes) stands over any gift.
   const aptitude = { ...withGifts(rolled, draft.file.gifts), ...notesAptitude(notes) };
   const known = startingTechniques(draft, grades, ctx);
-  const hive = bornHive(clan, draft.hiveShare ?? DEFAULT_SHARE, stats);
+  const hive = bornHive(clan, draft.hiveShare ?? DEFAULT_SHARE, stats, ctx);
 
   const state: GameState = {
     packId: content.packId,

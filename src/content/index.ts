@@ -162,7 +162,14 @@ export {
 } from './senseis';
 export { VOICE_MOMENTS, type VoiceDef, type VoiceMoment } from './voices';
 export type { ContractDef, ContractOffer, FoeSummon, SummonDef, SummonPrice } from './contracts';
-export type { ClanHive, StrainDef } from './strains';
+export {
+  INSECT_FAMILIES,
+  QUALITY_GRADES,
+  type ClanHive,
+  type InsectFamily,
+  type QualityGrade,
+  type StrainDef,
+} from './strains';
 export type {
   ClanCompanion,
   CompanionKindDef,

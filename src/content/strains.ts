@@ -1,23 +1,32 @@
+import type { SwarmGift, SwarmQuality } from '@/systems/combat';
 import type { Element } from '@/systems/techniques';
 
 /**
  * Hives (`docs/design/retinue-plan.md`, step 4): the strains of insect a host can keep in their
- * body, and the clans that install a hive in their children. A strain's numbers are its rules in
- * a fight (`SwarmStrain` in the combat contract): how hard it drains, how hardy it is, what kills
- * it fastest and how keenly it senses.
+ * body, and the clans that install a hive in their children. A strain has the qualities every
+ * insect has, graded E to A (speed, bite, toughness, brood, size, senses), the gifts only its
+ * species carries, weak to great (1 to 3: chakra drain, camouflage, glow, blinding, venom), and
+ * the elements it can't stand. The fight reads them as a `SwarmStrain`.
  */
+
+export const QUALITY_GRADES = ['E', 'D', 'C', 'B', 'A'] as const;
+export type QualityGrade = (typeof QUALITY_GRADES)[number];
+
+/** Insect families: how near two strains are when crossed. */
+export const INSECT_FAMILIES = ['beetle', 'moth', 'wasp', 'spider', 'fly', 'locust'] as const;
+export type InsectFamily = (typeof INSECT_FAMILIES)[number];
+
 export interface StrainDef {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  /** How hard settled insects draw a foe's chakra: 1 is a strong draining strain. */
-  readonly drain: number;
-  /** Share of losses it shrugs off. */
-  readonly hardiness: number;
+  /** The species, as a breeder says it ("kikaichū beetle"). */
+  readonly species: string;
+  readonly family: InsectFamily;
+  readonly qualities: Readonly<Record<SwarmQuality, QualityGrade>>;
+  readonly gifts: Readonly<Partial<Record<SwarmGift, 1 | 2 | 3>>>;
   /** Elements that kill it far faster. */
   readonly fears: readonly Element[];
-  /** How keenly it finds the hidden at a full hive, 0 to 1. */
-  readonly senses: number;
 }
 
 /** A clan whose children are born with a hive. */

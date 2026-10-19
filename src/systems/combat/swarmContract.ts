@@ -8,17 +8,29 @@ import type { Element } from '@/systems/techniques';
  * and reads back how many came home (`CombatOutcome.swarm`).
  */
 
+/**
+ * What every insect has, as a matter of degree (graded 1 to 5, E to A): speed (attacks land),
+ * bite (attacks hit hard), toughness (fewer lost), brood (breeds back faster, read outside the
+ * fight), size (smaller insects: more of them, each lighter) and senses (finds the hidden).
+ */
+export const SWARM_QUALITIES = ['speed', 'bite', 'toughness', 'brood', 'size', 'senses'] as const;
+export type SwarmQuality = (typeof SWARM_QUALITIES)[number];
+
+/**
+ * What only some species carry, weak to great (1 to 3): chakra drain (settled insects draw a
+ * foe's chakra into the host), camouflage (attacks hard to see coming), glow (a settled foe is
+ * easier to hit), blinding (a settled foe aims worse) and venom (settled insects poison).
+ */
+export const SWARM_GIFTS = ['drain', 'camouflage', 'glow', 'blinding', 'venom'] as const;
+export type SwarmGift = (typeof SWARM_GIFTS)[number];
+
 /** A strain's rules, as data: what its insects are good at and what kills them. */
 export interface SwarmStrain {
   readonly name: string;
-  /** How hard settled insects draw a foe's chakra: 1 is a strong draining strain. */
-  readonly drain: number;
-  /** Share of losses it shrugs off: 0 none, 0.5 half. */
-  readonly hardiness: number;
+  readonly qualities: Readonly<Record<SwarmQuality, number>>;
+  readonly gifts: Readonly<Partial<Record<SwarmGift, number>>>;
   /** Elements that kill its insects far faster (fire, for most). */
   readonly fears: readonly Element[];
-  /** How well its insects find hidden foes at a full hive: 0 not at all, 1 keenly. */
-  readonly senses: number;
 }
 
 /** A host's hive as it goes into a fight. */

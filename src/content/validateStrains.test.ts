@@ -6,14 +6,18 @@ describe('strain validation', () => {
     expect(validateStrains(ORIGINAL_PACK)).toEqual([]);
   });
 
-  it('reports a clan hive of an unknown strain, and strains with numbers out of range', () => {
+  it('reports a clan hive of an unknown strain, and a strain with no gift', () => {
     const clans = ORIGINAL_PACK.clans.map((c) =>
       c.id === 'toga' ? { ...c, hive: { strainId: 'ghost-moth' } } : c,
     );
-    const strains = ORIGINAL_PACK.strains.map((s) => ({ ...s, drain: 0, senses: 2 }));
+    const strains = ORIGINAL_PACK.strains.map((s) => ({
+      ...s,
+      gifts: {},
+      fears: ['fire' as const, 'fire' as const],
+    }));
     expect(validateStrains({ ...ORIGINAL_PACK, clans, strains })).toEqual([
-      'strain "lantern-moth" has no sane drain',
-      'strain "lantern-moth" senses beyond 0–1',
+      'strain "lantern-moth" has no gift',
+      'strain "lantern-moth" fears something twice',
       'clan "toga" hive has unknown strain',
     ]);
   });

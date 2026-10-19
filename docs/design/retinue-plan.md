@@ -1150,3 +1150,30 @@ and its genes, its skills with training**, and every kind has its own ceiling.
   - foes who carry hives (`EnemyDef.swarm`);
   - foes and teammates aiming areas and fire at a hive on purpose;
   - strains and crossbreeding (4c), the install later in life (4d), sand (4e).
+
+### Step 4c-i: what insects are
+
+- **The strain model** (`swarmContract.ts`, `content/strains.ts`):
+  - every strain has six qualities graded E to A: speed, bite, toughness, brood, size, senses;
+  - only some species carry gifts, weak to great: chakra drain, camouflage, glow, blinding,
+    venom;
+  - each strain has a species and a family (for crossing), and the elements it fears.
+- **The fight** reads each one once (`rules/swarms.ts`):
+  - speed and camouflage make swarm attacks harder to slip;
+  - bite hits harder, and small insects hit lighter;
+  - toughness sheds losses;
+  - senses finds the hidden;
+  - drain draws chakra (a strain without the gift settles without draining);
+  - venom poisons each exchange;
+  - glow makes a marked foe easier to hit, and blinding makes them aim worse.
+- **The body:**
+  - size sets how many insects the body keeps, and brood how fast they breed back
+    (`systems/hives`);
+  - the clan's install adds a grade of toughness and size to whatever strain the body holds
+    (`qualitiesInBody`).
+- **Content:**
+  - kikaichū: drain great; size B, the rest C or D (toughness B in the body);
+  - lantern moths: glow and blinding strong, senses B; they no longer drain.
+- **The hive card** lists the gifts in words, the qualities as grades, and what the strain
+  can't stand.
+- **Not built yet:** silk and shell (swarm holds and walls), wild strains, and crossing (4c-ii).

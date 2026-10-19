@@ -176,3 +176,13 @@
   gap: 8px;
   margin: 8px 0;
 }
+
+.hive-card .hive-qualities {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 8px;
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}

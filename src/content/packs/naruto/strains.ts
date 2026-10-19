@@ -6,10 +6,11 @@ export const STRAINS: readonly StrainDef[] = [
     id: 'kikaichu',
     name: 'Kikaichū',
     description:
-      'The Aburame’s destruction bugs, tiny black things always hungry for chakra. Bred in the body for generations, they are hardier than any wild kind.',
-    drain: 1,
-    hardiness: 0.3,
+      'The Aburame’s destruction bugs, tiny black things always hungry for chakra. Bred in the body for generations, they drain like nothing else alive.',
+    species: 'kikaichū beetle',
+    family: 'beetle',
+    qualities: { speed: 'C', bite: 'D', toughness: 'C', brood: 'C', size: 'B', senses: 'C' },
+    gifts: { drain: 3 },
     fears: ['fire'],
-    senses: 0.6,
   },
 ];
