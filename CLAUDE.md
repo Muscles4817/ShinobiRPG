@@ -1017,7 +1017,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
   desktop shows beside a scene is a view model too (`missionSoFar`). Every other scene is a story
   scene: one wider reading column, its `.choices` bar numbered by CSS and pressed by
-  `ChoiceBarKeys`, so a new scene with a choice bar gets both without code.
+  `ChoiceBarKeys`, so a new scene with a choice bar gets both without code, and beside it the
+  panel of what the scene is about (`sceneBeside`, a view model: the job, the person you face,
+  or you; drawn by `SceneSide`). A new scene kind takes a case in `sceneBeside`.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own

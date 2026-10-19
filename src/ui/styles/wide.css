@@ -259,12 +259,14 @@
   font-weight: 700;
   color: var(--gold);
 }
-.you-panel .vitals {
+.you-panel .vitals,
+.app.wide .scene-side .vitals {
   grid-template-columns: 1fr;
   gap: 10px;
   font-size: 0.85rem;
 }
-.you-panel .vitals .vm {
+.you-panel .vitals .vm,
+.app.wide .scene-side .vitals .vm {
   height: 7px;
   background: var(--raise);
 }

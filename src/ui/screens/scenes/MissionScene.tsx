@@ -1,35 +1,16 @@
 import { useEffect, useRef } from 'react';
 
-import { headerView, missionScene, missionSoFar, type RouteMark, type SceneLine } from '@/game';
+import { headerView, missionScene, type SceneLine } from '@/game';
 
 import { Backdrop } from '../../art/Backdrop';
-import { DebriefCrewList, DebriefRoad } from '../../components/Debrief';
 import { Vitals } from '../../components/Vitals';
 import { Pane } from '../../layout/Pane';
 import { KeyHint } from '../../layout/KeyHint';
 import { useChoiceKeys } from '../../layout/useChoiceKeys';
 import { useWideScreen } from '../../layout/useWideScreen';
 import type { ScreenProps } from '../types';
+import { JobSoFar, RouteStrip } from './JobSoFar';
 import { StoryLines, Threads } from './StoryLines';
-
-/** The job's route as a row of stamps: behind you, where you are, and ahead. */
-function RouteStrip({ route }: { readonly route: readonly RouteMark[] }) {
-  return (
-    <ol className="route" aria-label="The job so far">
-      {route.map((m, i) => (
-        <li
-          key={i}
-          className={`route-${m.state}`}
-          title={m.label}
-          aria-label={`${m.label}, ${m.state}`}
-        >
-          {m.glyph}
-          <span className="route-label">{m.label}</span>
-        </li>
-      ))}
-    </ol>
-  );
-}
 
 /** The story split at the last thing you chose: what came before folds away. */
 function beats(lines: readonly SceneLine[]): { earlier: SceneLine[]; now: SceneLine[] } {
@@ -37,21 +18,6 @@ function beats(lines: readonly SceneLine[]): { earlier: SceneLine[]; now: SceneL
   return last <= 0
     ? { earlier: [], now: [...lines] }
     : { earlier: lines.slice(0, last), now: lines.slice(last) };
-}
-
-/**
- * On the desktop layout, the job as it stands beside the story: who is along and what the
- * ledger holds so far, as the debrief will read them.
- */
-function SoFar({ ctx, state }: Pick<ScreenProps, 'ctx' | 'state'>) {
-  const soFar = missionSoFar(state, ctx);
-  if (!soFar) return null;
-  return (
-    <>
-      <DebriefCrewList crew={soFar.crew} title="Who’s with you" />
-      <DebriefRoad lines={soFar.road} title="The road so far" />
-    </>
-  );
 }
 
 /**
@@ -98,7 +64,7 @@ export function MissionScene({ ctx, state, perform }: ScreenProps) {
       </Pane>
       <Pane name="job">
         <Threads threads={scene.threads} />
-        {wide && <SoFar ctx={ctx} state={state} />}
+        {wide && <JobSoFar ctx={ctx} state={state} />}
       </Pane>
       <Pane name="story">
         <main className="page feed scene-feed">

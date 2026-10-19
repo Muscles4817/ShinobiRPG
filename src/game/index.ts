@@ -221,6 +221,7 @@ export {
   type RouteMark,
 } from './views/missionScene';
 export { missionSoFar, type MissionSoFar } from './views/missionSoFar';
+export { sceneBeside, type SceneBeside } from './views/sceneBeside';
 export { combatLog, type CombatLogLine } from './views/combatLog';
 export { fightReplay, storyEnd, type FightBeat } from './views/fightReplay';
 export {

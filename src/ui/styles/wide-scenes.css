@@ -203,9 +203,79 @@
   box-sizing: border-box;
 }
 
-/* Story scenes (an encounter, a talk, an exam, team assignment, a ceremony…). */
+/* Story scenes (an encounter, a talk, an exam, team assignment, a ceremony…): the scene in a
+   reading column, and beside it the panel of what it is about (SceneSide). */
 .app.wide.scene-story {
-  max-width: 760px;
+  max-width: 1140px;
+}
+.app.wide.scene-story .wide-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 760px) minmax(300px, 360px);
+  justify-content: center;
+  align-items: start;
+  min-height: 100vh;
+}
+.app.wide.scene-story .story-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+}
+.app.wide.scene-story .scene-side {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px 18px;
+  box-sizing: border-box;
+  background: var(--grain), var(--surface);
+  border-left: 1px solid var(--line);
+}
+.app.wide.scene-story .scene-side.paper-sheet {
+  max-height: none;
+  border-top: 0;
+  background: var(--grain-ink), var(--paper);
+}
+.app.wide .scene-side-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.app.wide .scene-side-head b {
+  font-family: var(--font-story);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+.app.wide.scene-story .scene-side .route {
+  flex-direction: column;
+  gap: 6px;
+}
+.app.wide.scene-story .scene-side .route li {
+  width: auto;
+  height: auto;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+}
+.app.wide.scene-story .scene-side .route-label {
+  display: inline;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+.app.wide.scene-story .scene-side .threads {
+  flex-direction: column;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.app.wide.scene-story .scene-side .report-list-title {
+  margin: 0 0 8px;
+  color: var(--gold);
 }
 .app.wide.scene-story .page {
   padding-left: 28px;
@@ -242,4 +312,7 @@
 }
 .app.wide.scene-story nav.choices .choice:not(.primary) > small {
   margin-left: auto;
+}
+.app.wide .person-side .scene-side-head .label {
+  color: var(--paper-muted);
 }
