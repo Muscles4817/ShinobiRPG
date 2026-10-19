@@ -92,6 +92,19 @@ describe('the desktop layout (smoke test)', () => {
     expect(document.querySelector('.person-sheet')).toBeNull();
   });
 
+  it('previews a technique in the detail panel while it is pointed at', async () => {
+    windowWide(true);
+    const user = await openGame();
+    await user.keyboard('3');
+    const detail = () => document.querySelector('.detail-card b')?.textContent ?? '';
+    const second = screen.getAllByRole('button', { name: /chakra/ })[1]!;
+    const picked = detail();
+    await user.hover(second);
+    expect(detail()).not.toBe(picked);
+    await user.unhover(second);
+    expect(detail()).toBe(picked);
+  });
+
   it('keeps the phone layout as it was on a narrow screen', async () => {
     windowWide(false);
     const user = await openGame();
@@ -158,6 +171,18 @@ describe('the desktop layout (smoke test)', () => {
       const user = await openGame(inFight());
       await user.keyboard('{Enter}');
       expect(await screen.findByRole('region', { name: 'So far' })).toBeInTheDocument();
+    });
+
+    it('shows the read of a fighter while it is pointed at', async () => {
+      windowWide(true);
+      const user = await openGame(inFight());
+      const read = () => screen.getByRole('region', { name: /^About / }).getAttribute('aria-label');
+      const picked = read();
+      const archer = screen.getByRole('button', { name: /^Bandit Archer/ });
+      await user.hover(archer);
+      expect(read()).toMatch(/Archer/);
+      await user.unhover(archer);
+      expect(read()).toBe(picked);
     });
 
     it('leaves the stage as it was on a phone', async () => {

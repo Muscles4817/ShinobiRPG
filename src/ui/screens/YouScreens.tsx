@@ -5,6 +5,7 @@ import { jutsuDeck, type Discipline, type JutsuCard, type JutsuEffect } from '@/
 import { TechniqueCard } from '../components/TechniqueCard';
 import { TechniqueSheet } from '../components/TechniqueSheet';
 import { Pane } from '../layout/Pane';
+import { useHoverPreview } from '../layout/useHoverPreview';
 import type { ScreenProps } from './types';
 
 const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => string>> = {
@@ -59,13 +60,14 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
   const deck = jutsuDeck(state, ctx);
   const [filter, setFilter] = useState<Discipline | 'all'>('all');
   const [selectedId, setSelectedId] = useState(deck[0]?.id);
+  const hover = useHoverPreview();
   const inFilter = deck.filter((c) => filter === 'all' || c.discipline === filter);
   const shown = inFilter.filter((c) => c.status !== 'unknown');
   const undiscovered = DISCIPLINE_ORDER.map((d) => ({
     discipline: d,
     count: inFilter.filter((c) => c.status === 'unknown' && c.discipline === d).length,
   })).filter((g) => g.count > 0);
-  const selected = deck.find((c) => c.id === selectedId);
+  const selected = deck.find((c) => c.id === (hover.previewId ?? selectedId));
   const known = deck.filter((c) => c.status === 'known').length;
   return (
     <>
@@ -99,6 +101,7 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
                 key={c.id}
                 type="button"
                 className={c.id === selectedId ? 'deck-slot on' : 'deck-slot'}
+                {...hover.handlersFor(c.id)}
                 onClick={() => {
                   setSelectedId(c.id);
                 }}

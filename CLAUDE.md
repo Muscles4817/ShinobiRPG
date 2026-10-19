@@ -1010,8 +1010,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   drawer from the right, and Esc closes them (`useCloseOnEscape`). Keys on desktop go through
   `useKeys` (`ui/layout/`, which leaves fields, modifiers and a focused control alone): number
   keys take a scene's choices (`useChoiceKeys`, with a `KeyHint`) and Enter the primary one, and
-  a fight's watch screen plays on Space, steps on the arrows and skips on S. Scenes still take the whole
-  screen; the ones in `WIDE_SCENES` (`GameScreen.tsx`: the mission and the fight's plan and
+  a fight's watch screen plays on Space, steps on the arrows and skips on S. Pointing at
+  something on desktop previews it in the panel beside it (`useHoverPreview`: a Jutsu card in the
+  detail panel, a fighter's read on the plan screen); a click still picks. Scenes still take the
+  whole screen; the ones in `WIDE_SCENES` (`GameScreen.tsx`: the mission and the fight's plan and
   watch screens) set their panes side by side (`wide-scenes.css`), and what only the desktop
   shows beside a scene is a view model too (`missionSoFar`).
 - **Each page is designed for its job**, not built from one generic list: training is a drill
