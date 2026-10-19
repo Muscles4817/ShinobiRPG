@@ -1,14 +1,6 @@
 import type { NominationHabit, PersonDef } from '@/content';
 import { fillSlots } from '@/core';
 import { stageForPair, stageOf } from '@/systems/bonds';
-import {
-  STAT_GRADES,
-  STAT_IDS,
-  STAT_READING,
-  statTier,
-  type StatGrade,
-  type Stats,
-} from '@/systems/stats';
 
 import type { GameContext } from '../context';
 import { bondOf, findPerson, requirePerson, villagers } from '../people/cast';
@@ -16,6 +8,7 @@ import { personStats } from '../people/progress';
 import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
 import { waysOf } from '../sensei/generate';
+import { readinessGap, readinessStandard } from './readiness';
 
 /**
  * Who may sit an exam. Your sensei nominates you: they must trust you (a bond stage) and judge
@@ -40,12 +33,6 @@ export function nominationMissions(sensei: PersonDef): number {
 }
 /** Your sensei must rate you at least this (`game/sensei/state.ts`): kept sessions earn it. */
 export const NOMINATION_REGARD = 40;
-/**
- * Readiness reads skills only (the arts and chakra control): a sharp mind or a fast body is not
- * chūnin work. A sensei calls a genin ready once one of their skills reaches C, the ordinary
- * chūnin's grade in their art; a specialist is as ready as an all-rounder.
- */
-export const READY_GRADE: StatGrade = 'C';
 /** A teammate sits with you once they count you at least this. */
 export const TEAMMATE_WILLING_STAGE = 1;
 /** A replacement must be a friend, to go into an exam with you. */
@@ -57,18 +44,6 @@ export const REPLACEMENT_BOND_HIT = 25;
 export interface Replacement {
   readonly leaving: string;
   readonly joining: string;
-}
-
-const SKILLS = STAT_IDS.filter((id) => STAT_READING[id] === 'skill');
-
-function hasSkillAt(stats: Stats, grade: StatGrade): boolean {
-  const floor = STAT_GRADES.indexOf(grade);
-  return SKILLS.some((id) => STAT_GRADES.indexOf(statTier(stats[id]).grade) >= floor);
-}
-
-/** What a sensei would say is missing before they call someone ready, or null when ready. */
-export function readinessGap(stats: Stats): string | null {
-  return hasSkillAt(stats, READY_GRADE) ? null : 'a skill at chūnin level (C)';
 }
 
 export function senseiOf(state: GameState, ctx: GameContext): PersonDef | null {
@@ -90,7 +65,7 @@ export function nominationBlocker(state: GameState, ctx: GameContext): string | 
       personSlots('sensei', sensei),
     );
   }
-  const gap = readinessGap(state.character.stats);
+  const gap = readinessGap(state.character.stats, readinessStandard(state, ctx));
   if (gap) return `${name} doesn’t think you’re ready. You need ${gap}.`;
   const done = state.standing.missionsCompleted;
   const wanted = nominationMissions(sensei);
@@ -100,9 +75,16 @@ export function nominationBlocker(state: GameState, ctx: GameContext): string | 
   return null;
 }
 
-/** A teammate's standing for the exam: why they can't or won't sit it, or null when they will. */
-export function teammateBlocker(state: GameState, person: PersonDef): string | null {
-  const gap = readinessGap(personStats(person, state));
+/**
+ * A teammate's standing for the exam: why they can't or won't sit it, or null when they will.
+ * Your sensei judges them by the same standard as you.
+ */
+export function teammateBlocker(
+  state: GameState,
+  ctx: GameContext,
+  person: PersonDef,
+): string | null {
+  const gap = readinessGap(personStats(person, state), readinessStandard(state, ctx));
   const slots = { ...personSlots('mate', person), gap: gap ?? '' };
   if (gap) return fillSlots('{mate} isn’t ready: {mate.they} need{mate.s} {gap}.', slots);
   if (stageOf(bondOf(state, person.id).points) < TEAMMATE_WILLING_STAGE) {
@@ -124,7 +106,7 @@ export function replacementCandidates(state: GameState, ctx: GameContext): Perso
       p.role === 'genin' &&
       !team.has(p.id) &&
       stageOf(bondOf(state, p.id).points) >= REPLACEMENT_STAGE &&
-      readinessGap(personStats(p, state)) === null,
+      readinessGap(personStats(p, state), readinessStandard(state, ctx)) === null,
   );
 }
 
@@ -137,7 +119,7 @@ export function sittingTeam(state: GameState, replacements: readonly Replacement
 
 function replacementBlocker(state: GameState, ctx: GameContext, r: Replacement): string | null {
   const leaving = requirePerson(state, ctx, r.leaving);
-  if (!teammateBlocker(state, leaving)) return `${leaving.name} is ready to sit it with you.`;
+  if (!teammateBlocker(state, ctx, leaving)) return `${leaving.name} is ready to sit it with you.`;
   if (!replacementCandidates(state, ctx).some((p) => p.id === r.joining)) {
     const joining = findPerson(state, ctx, r.joining);
     return `${joining?.name ?? 'They'} can’t sit in for a teammate.`;
@@ -164,7 +146,7 @@ export function teamBlocker(
     if (blocker) return blocker;
   }
   for (const id of sittingTeam(state, replacements)) {
-    const blocker = teammateBlocker(state, requirePerson(state, ctx, id));
+    const blocker = teammateBlocker(state, ctx, requirePerson(state, ctx, id));
     if (blocker) return blocker;
   }
   return null;

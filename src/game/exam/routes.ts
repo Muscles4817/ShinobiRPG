@@ -13,7 +13,8 @@ import { gradeOf } from '../debrief';
 import { waysOf } from '../sensei/generate';
 import type { GameState } from '../state';
 import { examAnnounced } from './calendar';
-import { nominationBlocker, readinessGap } from './entry';
+import { nominationBlocker } from './entry';
+import { readinessGap, readinessStandard } from './readiness';
 import type { Ceremony } from './state';
 
 /**
@@ -30,12 +31,12 @@ export const SENSEI_RECOMMENDATION_DAYS = 112;
 export const SENSEI_RECOMMENDATION_REGARD = 80;
 
 /** Whether a genin is free to be raised: no ceremony waiting and no exam under way. */
-function raisable(state: GameState): boolean {
+function raisable(state: GameState, ctx: GameContext): boolean {
   return (
     state.standing.rank === 'genin' &&
     state.exams.ceremony === null &&
     state.exams.run === null &&
-    readinessGap(state.character.stats) === null
+    readinessGap(state.character.stats, readinessStandard(state, ctx)) === null
   );
 }
 
@@ -56,13 +57,13 @@ export function afterFieldWork(
   def: MissionDef,
   run: MissionRun,
 ): GameState {
-  if (!raisable(state) || gradeOf(run) !== 'clean' || !outstandingJob(ctx, def)) return state;
+  if (!raisable(state, ctx) || gradeOf(run) !== 'clean' || !outstandingJob(ctx, def)) return state;
   return withCeremony(state, { rank: 'chunin', route: 'field', missionId: def.id });
 }
 
 /** The first finished arc whose patron puts a ready genin forward, if any. */
 export function arcRecommendation(state: GameState, ctx: GameContext): Ceremony | null {
-  if (!raisable(state)) return null;
+  if (!raisable(state, ctx)) return null;
   const done = state.board.completed;
   const arc = ctx.content.arcs.all.find(
     (a) => a.recommends !== undefined && actReached(a, done) === a.acts.length,
@@ -89,6 +90,6 @@ export function afterLessonRecommendation(
   ctx: GameContext,
   sensei: PersonDef,
 ): GameState {
-  if (!raisable(state) || !senseiWouldRecommend(state, ctx, sensei)) return state;
+  if (!raisable(state, ctx) || !senseiWouldRecommend(state, ctx, sensei)) return state;
   return withCeremony(state, { rank: 'chunin', route: 'sensei' });
 }

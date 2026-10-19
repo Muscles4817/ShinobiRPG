@@ -293,7 +293,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (the arts and chakra control) against the ordinary shinobi of each rank (E genin, D good
     genin, C chūnin, B jōnin, A good jōnin, S elite: an average, never a cap), the body against
     real athletes (world class at A; beyond human, S, comes from techniques that boost it), the
-    mind as individual. `readinessGap` reads skills only. And
+    mind as individual. And
     `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you
     (threat, fighting style, and with sharp eyes their standout stats) for fights, sparring
     partners and mission notices, from the same stats the fight uses.
@@ -546,8 +546,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     over the week). Your sensei's **regard** (`GameState.mentor`, `game/sensei/state.ts`) is
     their judgement of you, apart from the bond: kept meetings raise it, missed ones lower it by
     their grip as each day is settled (`settleMentor` in `spendTime`; excused on a job, away or
-    laid up), and the nomination reads it. Their gatekeeping sets the pass and permit bond stages
-    and how many jobs a nomination wants; their mission posture sets their stance in a job's
+    laid up), and the nomination reads it. Their gatekeeping sets the pass and permit bond stages,
+    how many jobs a nomination wants and their **readiness** standard (`game/exam/readiness.ts`,
+    read for every road to chūnin): `rounded` (a skill at C and breadth across the rest) or
+    `specialist` (every need of the kind of fighter you fit best at C: `exam/fighterTypes.ts`,
+    a close fighter, a swordsman, a ninjutsu fighter, an illusionist, a sealer, a medic, a sensor
+    and hybrids, each need met any of several ways, getting in close by speed and eyes or by
+    ninjutsu); readiness reads skills and those needs, never a sharp mind or a fast body alone,
+    and a specialist steers the assignment to what your kind lacks once your art is at C. Their
+    mission posture sets their stance in a job's
     fights. After each lesson they coach you (`game/sensei/coaching.ts`): judge last week's
     **assignment** (a stat to raise a step, set by their lens; open, it is a `ModifierSpec` on
     the character, off your best art) with a reward of their kind or lost regard, may name a

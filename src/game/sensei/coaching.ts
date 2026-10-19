@@ -11,6 +11,7 @@ import { underSensei } from '../mentorship';
 import { bondOf } from '../people/cast';
 import { pronounsOf } from '../people/pronouns';
 import type { Character, GameState } from '../state';
+import { readinessFocus } from '../exam/readiness';
 import { lensStat, senseiRead } from './read';
 import { rewardFor, type Given } from './rewards';
 import { meetingPlace } from './settle';
@@ -106,9 +107,19 @@ function reveal(state: GameState, ctx: GameContext, sensei: PersonDef) {
   };
 }
 
+/**
+ * The stat to set: their lens decides, except that a specialist steers a genin whose art is at
+ * chūnin level towards what their kind of fighter still lacks (`exam/readiness.ts`).
+ */
+function assignedStat(state: GameState, ctx: GameContext, sensei: PersonDef): StatId {
+  const ways = waysOf(sensei);
+  const steer =
+    ways?.gatekeeping.readiness === 'specialist' ? readinessFocus(state.character.stats) : null;
+  return steer ?? lensStat(state, ctx, ways?.lens ?? 'weakest-stat');
+}
+
 function assign(state: GameState, ctx: GameContext, sensei: PersonDef) {
-  const lens = waysOf(sensei)?.lens ?? 'weakest-stat';
-  const stat = lensStat(state, ctx, lens);
+  const stat = assignedStat(state, ctx, sensei);
   const from = state.character.stats[stat];
   const assignment: Assignment = {
     stat,

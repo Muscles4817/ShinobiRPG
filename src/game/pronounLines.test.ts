@@ -30,7 +30,7 @@ function withLeader(leaderId: string): GameState {
 describe('lines about a person', () => {
   it('a teammate who isn’t ready is “she” when she is a she', () => {
     const state = newGame();
-    expect(teammateBlocker(state, person(state, 'shiori'))).toMatch(
+    expect(teammateBlocker(state, ctx, person(state, 'shiori'))).toMatch(
       /^Shiori isn’t ready: she needs /,
     );
   });

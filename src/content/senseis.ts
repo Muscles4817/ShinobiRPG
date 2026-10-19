@@ -79,6 +79,25 @@ export type OpeningTest = (typeof OPENING_TESTS)[number];
 export const NOMINATION_HABITS = ['early', 'usual', 'late'] as const;
 export type NominationHabit = (typeof NOMINATION_HABITS)[number];
 
+/**
+ * What they call ready for chūnin: well rounded (a skill at chūnin level and breadth across the
+ * rest), or a specialist (every need of the kind of fighter you fit, at chūnin level; they steer
+ * you towards what it lacks).
+ */
+export const READINESS_STANDARDS = ['rounded', 'specialist'] as const;
+export type ReadinessStandard = (typeof READINESS_STANDARDS)[number];
+
+/** The standard a philosophy holds, for senseis whose ways are generated. */
+export const READINESS_BY_PHILOSOPHY: Readonly<Record<SenseiPhilosophy, ReadinessStandard>> = {
+  body: 'specialist',
+  teamwork: 'rounded',
+  fundamentals: 'rounded',
+  edge: 'specialist',
+  survival: 'rounded',
+  control: 'specialist',
+  shadow: 'specialist',
+};
+
 /** How your place in the class colours their first view of you. */
 export const CLASS_REGARDS = ['champions-last', 'pushes-best', 'even'] as const;
 export type ClassRegard = (typeof CLASS_REGARDS)[number];
@@ -103,6 +122,7 @@ export interface SenseiGatekeeping {
   /** Bond stage before they sign the library permit. */
   readonly permitStage: number;
   readonly nominates: NominationHabit;
+  readonly readiness: ReadinessStandard;
 }
 
 /**

@@ -7,7 +7,6 @@ import { blockerFor } from './dispatch';
 import { examAnnounced, examRumours, examToday, nextSitting } from './exam/calendar';
 import {
   nominationMissions,
-  readinessGap,
   senseiOf,
   REPLACEMENT_BOND_HIT,
   REPLACEMENT_STAGE,
@@ -97,7 +96,7 @@ describe('nomination', () => {
     expect(blockerFor(strangers, ENTER, ctx)).toMatch(/doesn’t know you well enough/);
     const green = { ...ready, character: { ...ready.character, stats: createStats(9) } };
     expect(blockerFor(green, ENTER, ctx)).toMatch(
-      /doesn’t think you’re ready. You need a skill at chūnin level/,
+      /doesn’t think you’re ready. You need .* at chūnin level \(C\)/,
     );
     const fresh = { ...ready, standing: { ...ready.standing, missionsCompleted: 3 } };
     const wanted = nominationMissions(senseiOf(fresh, ctx)!);
@@ -108,17 +107,6 @@ describe('nomination', () => {
     const sensei = (id: string) => ctx.content.people.require(id);
     expect(nominationMissions(sensei('goran'))).toBeLessThan(nominationMissions(sensei('tetsu')));
     expect(nominationMissions(sensei('tetsu'))).toBeLessThan(nominationMissions(sensei('yomi')));
-  });
-
-  it('judges readiness on skills: one at chūnin level, a specialist as much as anyone', () => {
-    // A D in everything is not enough: someone has to be good at something.
-    expect(readinessGap(createStats(12))).toMatch(/chūnin level/);
-    expect(readinessGap(createStats(5, { taijutsu: 9 }))).toBeNull();
-  });
-
-  it('never counts a sharp mind or a fast body as readiness', () => {
-    const gifted = createStats(5, { intellect: 30, speed: 25, strength: 20 });
-    expect(readinessGap(gifted)).toMatch(/chūnin level/);
   });
 
   it('is entered at the mission hall, on the day, once', () => {

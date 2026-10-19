@@ -32,7 +32,16 @@ export function examDay(context: GameContext = ctx, base: GameState = newGame({}
     time: { day: EXAM_DAY, slot: 0 },
     character: {
       ...state.character,
-      stats: { ...state.character.stats, taijutsu: READY, chakraControl: D_GRADE },
+      // Ready by either standard: a close fighter with the body to get in, and breadth.
+      stats: {
+        ...state.character.stats,
+        taijutsu: READY,
+        speed: READY,
+        perception: READY,
+        chakraControl: D_GRADE,
+        ninjutsu: D_GRADE,
+        kenjutsu: D_GRADE,
+      },
     },
     people: {
       ...state.people,

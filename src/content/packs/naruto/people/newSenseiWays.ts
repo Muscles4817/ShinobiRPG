@@ -19,7 +19,7 @@ export const KANAME_WAYS: SenseiWays = {
   rewards: ['praise', 'signature', 'recipe'],
   onMissions: 'shield',
   test: 'interview',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual', readiness: 'specialist' },
   classRegard: 'champions-last',
   story: {
     wound: 'The war took his family; the temple gave him another, and he has not been back to it.',
@@ -49,7 +49,7 @@ export const HOTARU_WAYS: SenseiWays = {
   rewards: ['recipe', 'praise', 'signature'],
   onMissions: 'watchful',
   test: 'bells',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual', readiness: 'rounded' },
   classRegard: 'even',
   story: {
     wound:
@@ -76,7 +76,7 @@ export const SHION_WAYS: SenseiWays = {
   rewards: ['signature', 'praise'],
   onMissions: 'lets-fail',
   test: 'none',
-  gatekeeping: { passStage: 2, permitStage: 2, nominates: 'late' },
+  gatekeeping: { passStage: 2, permitStage: 2, nominates: 'late', readiness: 'specialist' },
   classRegard: 'pushes-best',
   story: {
     wound:
@@ -107,7 +107,7 @@ export const MASARU_WAYS: SenseiWays = {
   rewards: ['gear', 'signature', 'praise'],
   onMissions: 'shield',
   test: 'spar',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early', readiness: 'specialist' },
   classRegard: 'pushes-best',
   story: {
     wound: 'He walked out of his father’s sword school the day he was meant to inherit it.',

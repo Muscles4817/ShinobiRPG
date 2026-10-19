@@ -20,7 +20,7 @@ export const GORAN_WAYS: SenseiWays = {
   rewards: ['signature', 'meal'],
   onMissions: 'shield',
   test: 'spar',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early', readiness: 'specialist' },
   classRegard: 'champions-last',
   story: {
     wound:
@@ -47,7 +47,7 @@ export const AKARI_WAYS: SenseiWays = {
   rewards: ['signature', 'praise'],
   onMissions: 'watchful',
   test: 'survival',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early', readiness: 'specialist' },
   classRegard: 'pushes-best',
   story: {
     wound: 'She pushed a student too hard once, and the student quit.',
@@ -73,7 +73,7 @@ export const YOMI_WAYS: SenseiWays = {
   rewards: ['praise', 'recipe', 'signature'],
   onMissions: 'lets-fail',
   test: 'interview',
-  gatekeeping: { passStage: 2, permitStage: 2, nominates: 'late' },
+  gatekeeping: { passStage: 2, permitStage: 2, nominates: 'late', readiness: 'specialist' },
   classRegard: 'even',
   story: {
     wound: 'Her teammate’s ghost has never come to his grave, and she keeps looking for him.',
@@ -100,7 +100,7 @@ export const TETSU_WAYS: SenseiWays = {
   rewards: ['gear', 'signature'],
   onMissions: 'shield',
   test: 'none',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual', readiness: 'rounded' },
   classRegard: 'even',
   story: {
     wound: 'A blade he forged and sold went on to kill a friend of his.',
@@ -126,7 +126,7 @@ export const ITO_WAYS: SenseiWays = {
   rewards: ['signature', 'recipe'],
   onMissions: 'watchful',
   test: 'bells',
-  gatekeeping: { passStage: 1, permitStage: 3, nominates: 'usual' },
+  gatekeeping: { passStage: 1, permitStage: 3, nominates: 'usual', readiness: 'specialist' },
   classRegard: 'even',
   story: {
     wound: 'A seal she wrote once failed, and what got out is still waiting.',
