@@ -2,6 +2,8 @@ import { useLayoutEffect, useRef, useState } from 'react';
 
 import type { CombatantView, RangeBand, ScoutingRead } from '@/game';
 
+import type { HoverHandlers } from '../../../layout/useHoverPreview';
+
 import { HealthBar } from './HealthBar';
 import type { HealthPulse } from './useHealthPulses';
 
@@ -41,6 +43,8 @@ interface FormationProps {
   readonly pulses: Readonly<Record<string, HealthPulse>>;
   readonly selected: string | null;
   readonly onSelect: (id: string) => void;
+  /** On the desktop layout, the handlers that preview a fighter while it is pointed at. */
+  readonly previewFor?: (id: string) => HoverHandlers;
   /** On the stage: who is acting and on whom, for the beat being shown. */
   readonly stage?: StageMarks;
 }
@@ -57,7 +61,7 @@ function stageRole(id: string, stage: StageMarks | undefined): string | false {
   return stage?.targetId === id && 'struck';
 }
 
-function Token({ fighter: f, reads, pulses, selected, onSelect, stage }: TokenProps) {
+function Token({ fighter: f, reads, pulses, selected, onSelect, previewFor, stage }: TokenProps) {
   const pace = PACE_TAG[reads[f.id]?.pace ?? 'even'];
   const short = shortName(f.name);
   const state = [
@@ -77,6 +81,7 @@ function Token({ fighter: f, reads, pulses, selected, onSelect, stage }: TokenPr
       onClick={() => {
         onSelect(f.id);
       }}
+      {...previewFor?.(f.id)}
     >
       <span className="token-seal" aria-hidden="true">
         {short.mark}

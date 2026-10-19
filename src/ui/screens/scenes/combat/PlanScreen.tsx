@@ -4,6 +4,7 @@ import { combatLog, type CombatOption, type CombatView, type ScoutingRead } from
 
 import { Chips } from '../../../components/Chips';
 import { Pane } from '../../../layout/Pane';
+import { useHoverPreview } from '../../../layout/useHoverPreview';
 import { useKeys } from '../../../layout/useKeys';
 import { useWideScreen } from '../../../layout/useWideScreen';
 
@@ -143,8 +144,11 @@ export function PlanScreen({ view, reads, onPick }: PlanScreenProps) {
     },
     wide,
   );
-  const shown =
+  const hover = useHoverPreview();
+  const picked =
     view.combatants.find((c) => c.id === selected) ?? foes.find((f) => f.health > 0) ?? foes[0];
+  // The read follows the pointer on a wide screen, and comes back to the one picked.
+  const shown = view.combatants.find((c) => c.id === hover.previewId) ?? picked;
   const names = Object.fromEntries(view.combatants.map((c) => [c.id, c.name]));
   const plans = view.options.filter((o) => o.kind === 'plan');
   const formation = (
@@ -153,8 +157,9 @@ export function PlanScreen({ view, reads, onPick }: PlanScreenProps) {
       range={view.range}
       reads={reads}
       pulses={pulses}
-      selected={shown?.id ?? null}
+      selected={picked?.id ?? null}
       onSelect={setSelected}
+      previewFor={hover.handlersFor}
     />
   );
   const fighterRead = <FighterRead fighter={shown} read={shown ? reads[shown.id] : undefined} />;
