@@ -21,6 +21,22 @@ describe('kinds of fighter', () => {
     );
     expect(fighterTypeOf(genin({ taijutsu: 9, ninjutsu: 9, speed: 9 })).id).toBe('close-caster');
   });
+
+  it('reads all-rounders, tacticians, Gentle Fist strikers, binders and swarmers', () => {
+    // Two arts and control, with the legs to choose the distance.
+    const rounded = genin({ ninjutsu: 9, genjutsu: 9, chakraControl: 9, perception: 9 });
+    expect(fighterTypeOf(rounded).id).toBe('all-rounder');
+    // The same two arts with the wits instead of the legs.
+    const thinker = genin({ ninjutsu: 9, genjutsu: 9, chakraControl: 9, intellect: 12 });
+    expect(fighterTypeOf(thinker).id).toBe('tactician');
+    expect(fighterTypeOf(genin({ taijutsu: 9, chakraControl: 9, perception: 9 })).id).toBe(
+      'precision-striker',
+    );
+    expect(fighterTypeOf(genin({ ninjutsu: 9, intellect: 12, chakraControl: 9 })).id).toBe(
+      'binder',
+    );
+    expect(fighterTypeOf(genin({ ninjutsu: 9, reserves: 12, stamina: 12 })).id).toBe('swarmer');
+  });
 });
 
 describe('a specialist sensei', () => {

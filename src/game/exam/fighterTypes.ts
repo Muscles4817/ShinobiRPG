@@ -8,8 +8,15 @@ import { STAT_TIERS, type StatId, type Stats } from '@/systems/stats';
  * still lacks.
  */
 
-/** Hybrids come first: on a tie, the more particular reading of a fighter wins. */
+/**
+ * Hybrids and all-rounders come first: on a tie, the more particular reading of a fighter wins.
+ */
 export const FIGHTER_TYPES = [
+  'tactician',
+  'all-rounder',
+  'precision-striker',
+  'binder',
+  'swarmer',
   'close-caster',
   'illusion-striker',
   'battle-medic',
@@ -53,8 +60,55 @@ const KEEP_DISTANCE: FighterNeed = {
   what: 'the speed or the eyes to keep a fight at arm’s length',
 };
 const CONTROL: FighterNeed = { ways: [['chakraControl']], what: 'chakra control' };
+const ARTS: readonly StatId[] = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'];
+/** Two arts of any kind, both at the grade asked: what an all-rounder is. */
+const TWO_ARTS: FighterNeed = {
+  ways: ARTS.flatMap((a, i) => ARTS.slice(i + 1).map((b) => [a, b])),
+  what: 'two arts',
+};
 
 export const FIGHTER_TYPE_DEFS: Readonly<Record<FighterType, FighterTypeDef>> = {
+  tactician: {
+    id: 'tactician',
+    name: 'a tactician',
+    needs: [TWO_ARTS, { ways: [['intellect']], what: 'the wits to read a fight' }, CONTROL],
+  },
+  'all-rounder': {
+    id: 'all-rounder',
+    name: 'an all-rounder',
+    needs: [
+      TWO_ARTS,
+      CONTROL,
+      { ways: [['speed'], ['perception']], what: 'the speed or eyes to choose the distance' },
+    ],
+  },
+  'precision-striker': {
+    id: 'precision-striker',
+    name: 'a fighter who strikes the chakra itself',
+    needs: [
+      { ways: [['taijutsu']], what: 'taijutsu' },
+      { ways: [['chakraControl']], what: 'the chakra control to strike the network' },
+      { ways: [['perception']], what: 'the eyes to find the points' },
+    ],
+  },
+  binder: {
+    id: 'binder',
+    name: 'a fighter who binds and outthinks',
+    needs: [
+      { ways: [['ninjutsu']], what: 'the ninjutsu to hold a foe' },
+      { ways: [['intellect']], what: 'the wits to set the trap' },
+      CONTROL,
+    ],
+  },
+  swarmer: {
+    id: 'swarmer',
+    name: 'a fighter who wins by numbers',
+    needs: [
+      { ways: [['ninjutsu']], what: 'ninjutsu' },
+      { ways: [['reserves']], what: 'the reserves to keep the numbers up' },
+      { ways: [['stamina']], what: 'the stamina to outlast' },
+    ],
+  },
   brawler: {
     id: 'brawler',
     name: 'a close fighter',
