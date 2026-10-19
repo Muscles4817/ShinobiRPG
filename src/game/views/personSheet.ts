@@ -3,6 +3,7 @@ import { RANK_LABELS } from '@/systems/standing';
 
 import { nextLesson } from '../actions/recipes';
 import type { GameContext } from '../context';
+import { knowsRite, riteOf } from '../hives/rite';
 import { findPerson } from '../people/cast';
 import { scoutPerson, type Threat } from '../scouting';
 import { waysOf } from '../sensei/generate';
@@ -56,6 +57,8 @@ export interface PersonSheet extends PersonCard {
   readonly recipe: (Choice & { readonly name: string }) | null;
   /** The summoning contract they would let you sign, for teachers who hold one; null otherwise. */
   readonly contract: (Choice & { readonly name: string }) | null;
+  /** Their clan's hive rite, for someone who would teach it and you have no hive; null otherwise. */
+  readonly rite: (Choice & { readonly name: string }) | null;
 }
 
 /** A sensei's wound, once you have heard the beat of their story that tells it. */
@@ -76,6 +79,16 @@ function contractOffer(
   return {
     ...choice(state, ctx, { type: 'signContract', personId: person.id }),
     name: ctx.content.contracts.require(offer.contractId).name,
+  };
+}
+
+function riteOffer(state: GameState, ctx: GameContext, person: PersonDef): PersonSheet['rite'] {
+  const offer = person.hiveRite;
+  const found = offer ? riteOf(ctx, offer.clanId) : null;
+  if (!offer || !found || state.hive || knowsRite(state, offer.clanId)) return null;
+  return {
+    ...choice(state, ctx, { type: 'learnRite', personId: person.id }),
+    name: found.rite.name,
   };
 }
 
@@ -150,6 +163,7 @@ export function personSheet(
       .reverse(),
     recipe: recipeOffer(state, ctx, person),
     contract: contractOffer(state, ctx, person),
+    rite: riteOffer(state, ctx, person),
     carries: carriedWound(state, person),
   };
 }

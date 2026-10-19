@@ -262,6 +262,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     contract: null,
     brokenContracts: [],
     hive,
+    rites: [],
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),

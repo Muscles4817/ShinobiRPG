@@ -97,6 +97,43 @@ export const SHIOMACHI_JOBS: readonly MissionDef[] = [
       },
     ],
   },
+  {
+    id: 'harbour-lamp-wreck',
+    title: 'The Lamp Wreck',
+    rank: 'C',
+    client: 'Tomoshi Tōga',
+    summary:
+      'A lamp-ship went down off the breakwater with a Tōga vigil case aboard. Someone has been diving for it at night.',
+    slots: 3,
+    energyCost: 30,
+    reward: { ryo: 420, reputation: 10, hiveRite: 'toga' },
+    minMissionsCompleted: 10,
+    once: true,
+    stages: [
+      {
+        kind: 'check',
+        text: 'The wreck lies in cold green water. The case should be in the stern, if nobody has it yet.',
+        approaches: [
+          { label: 'Dive with your breath held long', stat: 'stamina', difficulty: 12 },
+          { label: 'Feel for the moths sleeping in it', stat: 'perception', difficulty: 12 },
+        ],
+        success:
+          'The case is wedged under a beam, its seal unbroken. Something inside flutters against the lid.',
+        failure:
+          'You come up empty twice before you find it, and the divers on the shore have seen you.',
+        onFailure: 'forward',
+      },
+      {
+        kind: 'encounter',
+        ground: 'town',
+        template: 'bandit-camp',
+        job: 'escort',
+        text: 'Two salvagers are waiting on the breakwater. They dived for the case all week and want it.',
+        enemyIds: ['bandit-thug', 'bandit-archer'],
+        canFlee: false,
+      },
+    ],
+  },
 ];
 
 export const SHIOMACHI_JOB_IDS = SHIOMACHI_JOBS.map((j) => j.id);

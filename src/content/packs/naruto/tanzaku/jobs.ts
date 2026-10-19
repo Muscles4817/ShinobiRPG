@@ -88,4 +88,41 @@ export const TANZAKU_JOBS: readonly MissionDef[] = [
       },
     ],
   },
+  {
+    id: 'tanzaku-humming-case',
+    title: 'The Humming Scroll Case',
+    rank: 'C',
+    client: 'A Tanzaku pawnbroker',
+    summary:
+      'A dead traveller pawned a sealed scroll case that hums at night. The pawnbroker wants it gone, and so do the men watching his shop.',
+    slots: 3,
+    energyCost: 30,
+    reward: { ryo: 420, reputation: 10, hiveRite: 'aburame' },
+    minMissionsCompleted: 10,
+    once: true,
+    stages: [
+      {
+        kind: 'check',
+        text: 'The case is lacquered black and sealed with a clan’s knot. Something inside answers your chakra.',
+        approaches: [
+          { label: 'Read the seal before you touch it', stat: 'fuuinjutsu', difficulty: 12 },
+          { label: 'Steady your chakra and open it slowly', stat: 'chakraControl', difficulty: 12 },
+        ],
+        success:
+          'The seal gives. Inside, a scroll in an old hand and a jar of sleeping beetles, still alive.',
+        failure:
+          'The seal bites as it opens, and the beetles wake angry. You get the lid back on in time.',
+        onFailure: 'forward',
+      },
+      {
+        kind: 'encounter',
+        ground: 'town',
+        template: 'bandit-camp',
+        job: 'escort',
+        text: 'Two men have followed you from the shop. They want the case, and they don’t care what is in it.',
+        enemyIds: ['bandit-thug', 'bandit-archer'],
+        canFlee: false,
+      },
+    ],
+  },
 ];

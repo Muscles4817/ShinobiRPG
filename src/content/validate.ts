@@ -30,6 +30,7 @@ import { validateCrews } from './validateCrews';
 import { validateRetinues } from './validateRetinues';
 import { validateCompanionArts } from './validateCompanionArts';
 import { validateContracts } from './validateContracts';
+import { validateRites } from './validateRites';
 import { validateStrains } from './validateStrains';
 import { validateCompanions } from './validateCompanions';
 import { validateCompounds } from './validateCompounds';
@@ -55,6 +56,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateCompanionArts(pack),
     ...validateContracts(pack),
     ...validateStrains(pack),
+    ...validateRites(pack),
     ...validateCompounds(pack),
     ...validateSenseis(pack),
     ...validateSenseiParts(pack),

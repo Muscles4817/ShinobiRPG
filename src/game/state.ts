@@ -93,6 +93,8 @@ export interface GameState {
   readonly brokenContracts: readonly string[];
   /** The hive in your body (`systems/hives`); null for most. */
   readonly hive: Hive | null;
+  /** Hive clans whose rite you have learned (`hives/rite.ts`), by clan id. */
+  readonly rites: readonly string[];
   /**
    * Set only on a versus sandbox (`game/versus/`): who is fighting whom. A sandbox is never
    * saved, so a real playthrough never carries it.

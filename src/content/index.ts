@@ -166,9 +166,11 @@ export {
   INSECT_FAMILIES,
   QUALITY_GRADES,
   type ClanHive,
+  type HiveRite,
   type InsectFamily,
   type QualityGrade,
   type InsectHaunt,
+  type RiteOffer,
   type StrainDef,
 } from './strains';
 export type {

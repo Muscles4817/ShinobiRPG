@@ -87,7 +87,14 @@ export const CLANS: readonly ClanDef[] = [
     arts: ['chakraControl', 'ninjutsu'],
     startingTechniqueIds: ['insect-swarm'],
     lodging: 'Your room in the Aburame clan house',
-    hive: { strainId: 'kikaichu' },
+    hive: {
+      strainId: 'kikaichu',
+      rite: {
+        name: 'The Hive Embedding',
+        description:
+          'The clan seals a brood of kikaichū into a newborn’s flesh, and the insects take a share of the child’s chakra for life. Done to a grown body, it is slow, and it hurts.',
+      },
+    },
   },
   {
     id: 'inuzuka',

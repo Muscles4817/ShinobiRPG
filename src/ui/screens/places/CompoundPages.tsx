@@ -95,6 +95,23 @@ export function CompoundPage({
         {view.home.map((card) => (
           <Resident key={card.id} card={card} perform={perform} />
         ))}
+        {view.archive && (
+          <section className="contract-card paper-sheet compound-archive">
+            <h3>{view.archive.name}</h3>
+            <p className="muted small">{view.archive.description}</p>
+            <button
+              type="button"
+              className="btn"
+              disabled={view.archive.blocker !== null}
+              onClick={() => {
+                if (view.archive) perform(view.archive.action);
+              }}
+            >
+              Ask to read the rite
+            </button>
+            {view.archive.blocker && <p className="blocker">{view.archive.blocker}</p>}
+          </section>
+        )}
       </main>
     </>
   );

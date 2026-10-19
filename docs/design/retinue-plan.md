@@ -652,6 +652,28 @@ nothing. This step gives those techniques a pool to come from.
 - An adult taking the install later gets the same three shares, but at a price: days laid up
   while the body takes the hive.
 
+### The install later in life (step 4d)
+
+A clan's secret is a **rite** on its hive (`ClanHive.rite`: a name and what it is). Knowing it
+is kept in `GameState.rites` (clan ids); taking it is a second step, at home.
+
+- **Learning it**, three ways (each validated to name a clan with a rite, and every rite has
+  one):
+  - **the clan's archive**: a compound with `keepsRite` lends it (`readRite`, an afternoon) to
+    a jōnin who is friends with the clan's head. The S-rank secret is the late road;
+  - **a scroll in the world**: a job's `reward.hiveRite` hands it over (once, C-rank, ten
+    jobs in: the Aburame's humming case pawned in Tanzaku, the Tōga's vigil case on a wreck
+    off Shiomachi);
+  - **a rogue of the clan**: a person with `hiveRite` teaches it once you are close
+    (`learnRite`): Sōsuke Aburame at Tanzaku's dice tables, Tomoshi Tōga on Shiomachi's
+    breakwater. Only someone of the clan teaches its rite.
+- **Taking it** (`takeHive`, at home, no hive yet): the same three shares a clan child picks.
+  The clan's strain goes in with the clan's install (toughness and size a grade up), as a first
+  brood of a fifth of the cap that breeds up at home. The chakra it takes is gone from today,
+  and a bedridden `rite` injury (the hive taking hold) keeps you abed for days by share
+  (`DAYS_ABED`: three, five or eight, shortened by stamina).
+- Someone with a hive is never offered a rite; a job that finds one hands nothing over to them.
+
 ### Strains and crossbreeding (step 4c)
 
 To crossbreed, a strain has to be made of parts that can be mixed. The designer's model has two

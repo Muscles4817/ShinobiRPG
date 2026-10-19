@@ -368,7 +368,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     hatches days later by luck drawn from the seed and day: its stability (kinship of the parents
     and how many crosses deep they are) decides how far qualities stray, whether gifts pass, and
     whether it fails or throws back. Bred strains are kept on the hive (`Hive.bred`) as
-    `StrainSheet`s beside the pack's, and the host names them (`nameStrain`). It is cared for
+    `StrainSheet`s beside the pack's, and the host names them (`nameStrain`). A body born
+    outside a hive clan can take one later through the clan's **rite** (`ClanHive.rite`,
+    `game/hives/rite.ts`, known rites in `GameState.rites`): lent by the clan's archive
+    (`CompoundFields.keepsRite`) to a jōnin its head trusts, found on a job (`reward.hiveRite`)
+    or taught by someone of the clan (`PersonDef.hiveRite`); taken at home (`takeHive`) at the
+    same three shares, with a first brood that breeds up and days abed (a `rite` injury). It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -853,7 +858,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   on the `ClanDef` naming it, and clan techniques with a `swarmCost`. A body's install adds a
   grade of toughness and size (`qualitiesInBody`). A wild strain has a `wild` haunt (biomes,
   night-only) and is found by searching a wild place of its biome (shared ones in
-  `shared/wildStrains.ts`). Validated in `validateStrains.ts`.
+  `shared/wildStrains.ts`). Validated in `validateStrains.ts`. A clan's `hive.rite` lets an
+  outsider take the hive later: give it a source (a compound with `keepsRite` and a head, a
+  job's `reward.hiveRite`, or a person of the clan with `hiveRite`; `validateRites.ts`).
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

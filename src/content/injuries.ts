@@ -35,10 +35,10 @@ export const INJURY_SITE_LABELS: Readonly<Record<InjurySite, string>> = {
 
 /**
  * Where an injury can come from: losing a fight (`defeat`), straining one stat with a trump
- * card (`strain`, matched by its fight effect), or a trump that puts you in a hospital bed
- * (`collapse`).
+ * card (`strain`, matched by its fight effect), a trump that puts you in a hospital bed
+ * (`collapse`), or a body taking a hive (`rite`, `game/hives/rite.ts`).
  */
-export const INJURY_CAUSES = ['defeat', 'strain', 'collapse'] as const;
+export const INJURY_CAUSES = ['defeat', 'strain', 'collapse', 'rite'] as const;
 export type InjuryCause = (typeof INJURY_CAUSES)[number];
 
 export interface InjuryDef {

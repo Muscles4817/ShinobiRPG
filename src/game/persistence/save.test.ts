@@ -592,6 +592,13 @@ describe('persistence', () => {
     expect(loaded.value.hive).toBeNull();
   });
 
+  it('gives a save from before hive rites none known', () => {
+    const { rites: _r, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 60, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.rites).toEqual([]);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);
