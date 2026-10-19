@@ -282,7 +282,7 @@
   font-family: var(--font-story);
 }
 
-/* On a desk: the bout, the roster and the profile side by side. */
+/* On a desk (`useWideScreen` sets `.wide` on the page): the bout, the roster and the profile. */
 .versus-setup.wide {
   max-width: 1360px;
 }

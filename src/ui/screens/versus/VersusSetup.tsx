@@ -1,4 +1,4 @@
-import { useWide } from '../../components/useWide';
+import { useWideScreen } from '../../layout/useWideScreen';
 import { PickSheet } from './PickSheet';
 import { BothSides, GroundPicker, StartBout, WorldPicker } from './SetupParts';
 import { useVersusSetup, type VersusChoice } from './useVersusSetup';
@@ -19,7 +19,7 @@ interface VersusSetupProps {
  */
 export function VersusSetup({ initial, onFight, onBack }: VersusSetupProps) {
   const setup = useVersusSetup(initial);
-  const wide = useWide();
+  const wide = useWideScreen();
   return (
     <main className={wide ? 'versus-setup wide' : 'versus-setup'}>
       <header>
