@@ -4,6 +4,7 @@ import { jutsuDeck, type Discipline, type JutsuCard, type JutsuEffect } from '@/
 
 import { TechniqueCard } from '../components/TechniqueCard';
 import { TechniqueSheet } from '../components/TechniqueSheet';
+import { Pane } from '../layout/Pane';
 import type { ScreenProps } from './types';
 
 const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => string>> = {
@@ -75,80 +76,84 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
         </p>
       </header>
       <main className="page">
-        <div className="filters" role="group" aria-label="Filter techniques">
-          {(['all', 'taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const).map(
-            (f) => (
+        <Pane name="deck">
+          <div className="filters" role="group" aria-label="Filter techniques">
+            {(['all', 'taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const).map(
+              (f) => (
+                <button
+                  key={f}
+                  type="button"
+                  className={`filter d-${f}${f === filter ? ' on' : ''}`}
+                  onClick={() => {
+                    setFilter(f);
+                  }}
+                >
+                  {FILTER_LABELS[f]}
+                </button>
+              ),
+            )}
+          </div>
+          <div className="deck">
+            {shown.map((c) => (
               <button
-                key={f}
+                key={c.id}
                 type="button"
-                className={`filter d-${f}${f === filter ? ' on' : ''}`}
+                className={c.id === selectedId ? 'deck-slot on' : 'deck-slot'}
                 onClick={() => {
-                  setFilter(f);
+                  setSelectedId(c.id);
                 }}
               >
-                {FILTER_LABELS[f]}
+                <TechniqueCard
+                  name={c.status === 'unknown' ? '?' : c.name}
+                  detail={cardDetail(c)}
+                  discipline={c.discipline}
+                  ghost={c.status !== 'known'}
+                  rank={c.rank}
+                  unstable={c.unstable}
+                />
               </button>
-            ),
-          )}
-        </div>
-        <div className="deck">
-          {shown.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              className={c.id === selectedId ? 'deck-slot on' : 'deck-slot'}
-              onClick={() => {
-                setSelectedId(c.id);
-              }}
-            >
-              <TechniqueCard
-                name={c.status === 'unknown' ? '?' : c.name}
-                detail={cardDetail(c)}
-                discipline={c.discipline}
-                ghost={c.status !== 'known'}
-                rank={c.rank}
-                unstable={c.unstable}
-              />
-            </button>
-          ))}
-        </div>
-        {undiscovered.length > 0 && (
-          <section className="undiscovered" aria-label="To discover">
-            <h2 className="label">Still to discover</h2>
-            <div className="undiscovered-row">
-              {undiscovered.map((g) => (
-                <span key={g.discipline} className={`badge d-${g.discipline}`}>
-                  {FILTER_LABELS[g.discipline]} {g.count}
-                </span>
-              ))}
-            </div>
-            <p className="muted small">
-              Scrolls at the Academy, your clan and your sensei teach the rest.
-            </p>
-          </section>
-        )}
-        {selected && (
-          <section className="detail-card">
-            <b>
-              {selected.status === 'unknown' ? 'Undiscovered technique' : selected.name}{' '}
-              <span className={`badge d-${selected.discipline}`}>{selected.discipline}</span>
-              <span className="badge" data-grade={selected.rank}>
-                Rank {selected.rank}
-              </span>
-              {selected.unstable && <span className="badge unstable">Unstable</span>}
-              {selected.element && <span className="chip"> {selected.element}</span>}
-            </b>
-            {selected.status !== 'unknown' && <p className="story">{selected.description}</p>}
-            <p className="muted small">{cardDetail(selected)}</p>
-            {selected.status !== 'unknown' && <TechniqueSheet sheet={selected.sheet} />}
-            {selected.unstable && (
+            ))}
+          </div>
+          {undiscovered.length > 0 && (
+            <section className="undiscovered" aria-label="To discover">
+              <h2 className="label">Still to discover</h2>
+              <div className="undiscovered-row">
+                {undiscovered.map((g) => (
+                  <span key={g.discipline} className={`badge d-${g.discipline}`}>
+                    {FILTER_LABELS[g.discipline]} {g.count}
+                  </span>
+                ))}
+              </div>
               <p className="muted small">
-                Beyond your grade: it costs more chakra and can misfire. It steadies once your{' '}
-                {FILTER_LABELS[selected.discipline].toLowerCase()} reaches grade {selected.rank}.
+                Scrolls at the Academy, your clan and your sensei teach the rest.
               </p>
-            )}
-          </section>
-        )}
+            </section>
+          )}
+        </Pane>
+        <Pane name="detail">
+          {selected && (
+            <section className="detail-card">
+              <b>
+                {selected.status === 'unknown' ? 'Undiscovered technique' : selected.name}{' '}
+                <span className={`badge d-${selected.discipline}`}>{selected.discipline}</span>
+                <span className="badge" data-grade={selected.rank}>
+                  Rank {selected.rank}
+                </span>
+                {selected.unstable && <span className="badge unstable">Unstable</span>}
+                {selected.element && <span className="chip"> {selected.element}</span>}
+              </b>
+              {selected.status !== 'unknown' && <p className="story">{selected.description}</p>}
+              <p className="muted small">{cardDetail(selected)}</p>
+              {selected.status !== 'unknown' && <TechniqueSheet sheet={selected.sheet} />}
+              {selected.unstable && (
+                <p className="muted small">
+                  Beyond your grade: it costs more chakra and can misfire. It steadies once your{' '}
+                  {FILTER_LABELS[selected.discipline].toLowerCase()} reaches grade {selected.rank}.
+                </p>
+              )}
+            </section>
+          )}
+        </Pane>
       </main>
     </>
   );

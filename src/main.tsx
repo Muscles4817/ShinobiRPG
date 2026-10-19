@@ -42,6 +42,7 @@ import '@/ui/styles/home.css';
 import '@/ui/styles/fieldbook.css';
 import '@/ui/styles/wide.css';
 import '@/ui/styles/wide-places.css';
+import '@/ui/styles/wide-tabs.css';
 
 // Composition root for the app: choose the platform adapters here.
 const root = document.getElementById('root');

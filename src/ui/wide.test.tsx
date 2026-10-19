@@ -68,6 +68,20 @@ describe('the desktop layout (smoke test)', () => {
     expect(screen.getByRole('button', { name: 'Here' })).toHaveAttribute('aria-current', 'page');
   });
 
+  it('keeps the you panel beside every tab', async () => {
+    windowWide(true);
+    const user = await openGame();
+    const dock = screen.getByRole('navigation', { name: 'Main' });
+    for (const tab of ['Travel', 'Jutsu', 'Bonds', 'Shinobi', 'Record']) {
+      await user.click(within(dock).getByRole('button', { name: tab }));
+      expect(within(dock).getByRole('button', { name: tab })).toHaveAttribute(
+        'aria-current',
+        'page',
+      );
+      expect(screen.getByRole('complementary', { name: 'You' })).toBeInTheDocument();
+    }
+  });
+
   it('keeps the phone layout as it was on a narrow screen', async () => {
     windowWide(false);
     const user = await openGame();

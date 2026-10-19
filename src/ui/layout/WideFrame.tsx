@@ -34,7 +34,8 @@ export function WideFrame({
 }: WideFrameProps) {
   useDockKeys(true, onTab);
   const header = headerView(props.state, props.ctx);
-  const here = tab === 'here' ? (placeId === null ? 'village' : 'place') : null;
+  // The main column says what it holds, so each kind of page can be laid out for the width.
+  const holds = tab === 'here' ? (placeId === null ? 'village' : 'place') : `tab-${tab}`;
   return (
     <div className="wide-frame">
       <div className="wide-rail">
@@ -49,7 +50,7 @@ export function WideFrame({
           onOpenPlace={onOpenPlace}
         />
       </div>
-      <div className={here ? `wide-main ${here}` : 'wide-main'}>{children}</div>
+      <div className={`wide-main ${holds}`}>{children}</div>
       <YouPanel {...props} onOpenCompanion={onOpenCompanion} />
     </div>
   );
