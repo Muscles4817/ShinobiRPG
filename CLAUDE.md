@@ -1012,7 +1012,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   keys take a scene's choices (`useChoiceKeys`, with a `KeyHint`) and Enter the primary one, and
   a fight's watch screen plays on Space, steps on the arrows and skips on S. Pointing at
   something on desktop previews it in the panel beside it (`useHoverPreview`: a Jutsu card in the
-  detail panel, a fighter's read on the plan screen); a click still picks. Scenes still take the
+  detail panel, a fighter's read on the plan screen, and in its place a card's technique as the Jutsu tab
+  reads it: `fightTechnique` through `CombatOption.techniqueId`, shown by `JutsuDetail`); a click still picks. Scenes still take the
   whole screen; the ones in `WIDE_SCENES` (`layout/sceneLayout.ts`: the mission and the fight's
   plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
   desktop shows beside a scene is a view model too (`missionSoFar`). Every other scene is a story

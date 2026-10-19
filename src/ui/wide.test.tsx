@@ -185,6 +185,31 @@ describe('the desktop layout (smoke test)', () => {
       expect(read()).toBe(picked);
     });
 
+    const techniqueCard = () =>
+      [...document.querySelectorAll<HTMLElement>('.plan-card')].find(
+        (card) => card.dataset.discipline !== 'basic',
+      )!;
+    const techniqueRead = () => screen.queryByRole('region', { name: /^Technique: / });
+
+    it('reads a technique card in full while it is pointed at', async () => {
+      windowWide(true);
+      const user = await openGame(inFight());
+      const card = techniqueCard();
+      await user.hover(card);
+      expect(techniqueRead()).toHaveTextContent('Reach');
+      expect(screen.queryByRole('region', { name: /^About / })).toBeNull();
+      await user.unhover(card);
+      expect(techniqueRead()).toBeNull();
+      expect(screen.getByRole('region', { name: /^About / })).toBeInTheDocument();
+    });
+
+    it('reads no technique card on a phone', async () => {
+      windowWide(false);
+      const user = await openGame(inFight());
+      await user.hover(techniqueCard());
+      expect(techniqueRead()).toBeNull();
+    });
+
     it('leaves the stage as it was on a phone', async () => {
       windowWide(false);
       const user = await openGame(inFight());

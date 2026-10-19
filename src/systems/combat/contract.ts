@@ -290,6 +290,8 @@ export interface CombatOption {
   readonly kind:
     'basic' | 'technique' | 'move' | 'item' | 'plan' | 'order' | 'continue' | 'end' | 'escape';
   readonly discipline?: TechniqueDef['discipline'];
+  /** The technique this option plays, so a view can show its sheet. */
+  readonly techniqueId?: string;
   /** Points spent from a per-turn budget, for engines that have one. */
   readonly cost?: number;
   /** Aimed at one enemy: the UI sends the chosen target with it. */

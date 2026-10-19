@@ -176,6 +176,12 @@ describe('plan & watch engine', () => {
     expect([...groups]).toEqual(['Close', 'Mid', 'Far']);
   });
 
+  it('names the technique a card plays, and nothing for a plain card', () => {
+    const plans = engine.view(start()).options.filter((o) => o.kind === 'plan');
+    expect(plans.find((o) => o.id === 'slot:mid:jutsu:daze')?.techniqueId).toBe('daze');
+    expect(plans.filter((o) => o.discipline === undefined).every((o) => !o.techniqueId)).toBe(true);
+  });
+
   it('cards toggle in and out, and full slots say so', () => {
     // Against a bandit with no jutsu, the plan holds no daze: slotting it fills both slots.
     const state = act(engine, start(), 'slot:mid:jutsu:daze');

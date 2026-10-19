@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { CombatOption, Discipline } from '@/game';
 
 import { TechniqueCard } from '../../../components/TechniqueCard';
+import { usePlanPreview } from './planPreview';
 import { PlanSlots } from './PlanSlots';
 
 type Pick = (option: CombatOption) => void;
@@ -70,8 +71,10 @@ function PlanChoice({
   readonly reasonShown: boolean;
 }) {
   const toggle = o.selected !== undefined;
+  const preview = usePlanPreview(o);
   return (
     <button
+      {...preview}
       type="button"
       className={toggle ? `plan-card${o.selected ? ' on' : ''}` : 'choice'}
       data-discipline={o.discipline ?? 'basic'}
