@@ -192,4 +192,29 @@ describe('the desktop layout (smoke test)', () => {
       expect(screen.queryByRole('region', { name: 'So far' })).not.toBeInTheDocument();
     });
   });
+
+  describe('in a talk', () => {
+    async function startTalking(user: Awaited<ReturnType<typeof openGame>>) {
+      const around = screen.getByRole('region', { name: 'Who’s here' });
+      await user.click(within(around).getAllByRole('button')[0]!);
+      await user.click(screen.getByRole('button', { name: /^Talk to/ }));
+      return within(screen.getByRole('navigation', { name: 'Replies' })).getAllByRole('button')[0]!;
+    }
+
+    it('takes a reply with its number key', async () => {
+      windowWide(true);
+      const user = await openGame();
+      const first = await startTalking(user);
+      await user.keyboard('1');
+      expect(first).not.toBeInTheDocument();
+    });
+
+    it('leaves the number keys alone on a phone', async () => {
+      windowWide(false);
+      const user = await openGame();
+      const first = await startTalking(user);
+      await user.keyboard('1');
+      expect(first).toBeInTheDocument();
+    });
+  });
 });
