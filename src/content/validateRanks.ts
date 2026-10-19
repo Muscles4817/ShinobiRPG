@@ -9,12 +9,12 @@ import type { ContentPack } from './types';
  * chūnin C–B, jōnin B–A, kage A–S; civilians no better than D). A sensei is B or A in what they teach.
  */
 
-interface GradeBand {
+export interface GradeBand {
   readonly lowest: StatGrade;
   readonly highest: StatGrade;
 }
 
-const BEST_STAT_BAND: Readonly<Record<PersonRank, GradeBand>> = {
+export const BEST_STAT_BAND: Readonly<Record<PersonRank, GradeBand>> = {
   civilian: { lowest: 'E', highest: 'D' },
   genin: { lowest: 'E', highest: 'C' },
   chunin: { lowest: 'C', highest: 'B' },

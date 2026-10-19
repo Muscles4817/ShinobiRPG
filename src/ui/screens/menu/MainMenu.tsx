@@ -14,6 +14,7 @@ export interface MainMenuProps {
   readonly onContinue: () => void;
   readonly onNewGame: () => void;
   readonly onVersus: () => void;
+  readonly onEditor: () => void;
   readonly onSettings: () => void;
 }
 
@@ -62,8 +63,8 @@ function NewGame({ save, onNewGame }: Pick<MainMenuProps, 'save' | 'onNewGame'>)
 }
 
 /**
- * The title screen: carry on, begin again, set up a versus bout, change the settings, or share
- * the game.
+ * The title screen: carry on, begin again, set up a versus bout, edit the world, change the
+ * settings, or share the game.
  */
 export function MainMenu(props: MainMenuProps) {
   const { save, notice } = props;
@@ -105,6 +106,15 @@ export function MainMenu(props: MainMenuProps) {
           <span className="menu-words">
             <b>Versus</b>
             <small>Any two fighters, head to head. Nothing is saved.</small>
+          </span>
+        </button>
+        <button type="button" className="menu-option" onClick={props.onEditor}>
+          <span className="menu-glyph" aria-hidden="true">
+            編
+          </span>
+          <span className="menu-words">
+            <b>Editor</b>
+            <small>Change how fighters are written, for versus and new games.</small>
           </span>
         </button>
         <button type="button" className="menu-option" onClick={props.onSettings}>

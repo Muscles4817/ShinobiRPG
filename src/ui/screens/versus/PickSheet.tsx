@@ -92,7 +92,7 @@ export function PickSheet({
           filter={setup.filter}
           onFilter={setup.setFilter}
           focusedId={setup.idAt(slot)}
-          standingOf={setup.standingOf}
+          stampOf={setup.stampOf}
           onFocus={setup.setFocusId}
         />
       )}

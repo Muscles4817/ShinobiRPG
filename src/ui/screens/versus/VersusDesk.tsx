@@ -57,7 +57,7 @@ export function VersusDesk({
         filter={setup.filter}
         onFilter={setup.setFilter}
         focusedId={setup.focusId ?? setup.idAt(slot)}
-        standingOf={setup.standingOf}
+        stampOf={setup.stampOf}
         onFocus={setup.setFocusId}
       />
       <div className="versus-pane">

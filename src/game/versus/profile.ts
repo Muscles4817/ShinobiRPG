@@ -80,7 +80,7 @@ const PERK_WORDS: Readonly<Record<CombatPerk, string>> = {
 const sandboxes = new WeakMap<GameContext, GameState>();
 
 /** A fresh game of the pack, to read setups and sheets against; one per world. */
-function sandboxOf(ctx: GameContext): GameState {
+export function sandboxOf(ctx: GameContext): GameState {
   const known = sandboxes.get(ctx);
   if (known) return known;
   const draft = reviseDraft(defaultDraft(ctx), { name: SANDBOX_NAME }, ctx);
