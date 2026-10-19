@@ -1,8 +1,15 @@
 import { Fragment, useState } from 'react';
 
-import { combatLog, type CombatOption, type CombatView, type ScoutingRead } from '@/game';
+import {
+  combatLog,
+  type CombatOption,
+  type CombatView,
+  type JutsuCard,
+  type ScoutingRead,
+} from '@/game';
 
 import { Chips } from '../../../components/Chips';
+import { JutsuDetail } from '../../../components/JutsuDetail';
 import { Pane } from '../../../layout/Pane';
 import { useHoverPreview } from '../../../layout/useHoverPreview';
 import { useKeys } from '../../../layout/useKeys';
@@ -10,6 +17,7 @@ import { useWideScreen } from '../../../layout/useWideScreen';
 
 import { FighterRead, FoeMoves } from './FighterRead';
 import { Formation } from './Formation';
+import { PlanPreviewContext, type PreviewFor } from './planPreview';
 import { PlansByOwner, TeamOrders } from './TeamOrders';
 import { useHealthPulses } from './useHealthPulses';
 
@@ -19,6 +27,8 @@ interface PlanScreenProps {
   readonly view: CombatView;
   readonly reads: Readonly<Record<string, ScoutingRead>>;
   readonly onPick: Pick;
+  /** A technique a card plays, read in full for the preview beside the table. */
+  readonly techniqueOf: (techniqueId: string) => JutsuCard | null;
 }
 
 /** Your chakra and any meters the engine keeps, beside the formation (cards spend chakra). */
@@ -128,7 +138,7 @@ function BeginBar({ view, onPick }: { readonly view: CombatView; readonly onPick
  * until you begin. On a wide screen your cards, the field and the read of a fighter sit side by
  * side, so the table is in view while you set it.
  */
-export function PlanScreen({ view, reads, onPick }: PlanScreenProps) {
+export function PlanScreen({ view, reads, onPick, techniqueOf }: PlanScreenProps) {
   const foes = view.combatants.filter((c) => c.side === 'enemy');
   const [selected, setSelected] = useState<string | null>(null);
   const pulses = useHealthPulses(view.combatants);
@@ -145,6 +155,16 @@ export function PlanScreen({ view, reads, onPick }: PlanScreenProps) {
     wide,
   );
   const hover = useHoverPreview();
+  // One of your cards pointed at is read in full where the fighter's read goes. A teammate's
+  // card isn't: the sheet reads a technique in your hands.
+  const cardHover = useHoverPreview();
+  const previewFor: PreviewFor = (o) =>
+    o.techniqueId && o.owner === undefined ? cardHover.handlersFor(o.techniqueId) : {};
+  const technique = cardHover.previewId ? techniqueOf(cardHover.previewId) : null;
+  const pickCard: Pick = (o) => {
+    cardHover.clear();
+    onPick(o);
+  };
   const picked =
     view.combatants.find((c) => c.id === selected) ?? foes.find((f) => f.health > 0) ?? foes[0];
   // The read follows the pointer on a wide screen, and comes back to the one picked.
@@ -166,7 +186,7 @@ export function PlanScreen({ view, reads, onPick }: PlanScreenProps) {
   const cards = (
     <section className="your-cards" aria-label="Your cards">
       <h3 className="plan-heading">Your cards</h3>
-      <PlansByOwner options={plans} names={names} here={view.range} onPick={onPick} />
+      <PlansByOwner options={plans} names={names} here={view.range} onPick={pickCard} />
     </section>
   );
   const head = (
@@ -181,8 +201,10 @@ export function PlanScreen({ view, reads, onPick }: PlanScreenProps) {
         {head}
         <main className="page plan-screen">
           <Pane name="cards">
-            {cards}
-            <TeamPanel view={view} onPick={onPick} />
+            <PlanPreviewContext.Provider value={previewFor}>
+              {cards}
+              <TeamPanel view={view} onPick={pickCard} />
+            </PlanPreviewContext.Provider>
           </Pane>
           <Pane name="field">
             {formation}
@@ -192,8 +214,14 @@ export function PlanScreen({ view, reads, onPick }: PlanScreenProps) {
             <p className="key-note">Enter begins.</p>
           </Pane>
           <Pane name="read">
-            {fighterRead}
-            <FoeMoves foes={foes} />
+            {technique ? (
+              <JutsuDetail card={technique} />
+            ) : (
+              <>
+                {fighterRead}
+                <FoeMoves foes={foes} />
+              </>
+            )}
           </Pane>
         </main>
       </>

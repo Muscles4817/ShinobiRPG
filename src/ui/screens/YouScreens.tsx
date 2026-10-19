@@ -1,59 +1,19 @@
 import { useState } from 'react';
 
-import { jutsuDeck, type Discipline, type JutsuCard, type JutsuEffect } from '@/game';
+import { jutsuDeck, type Discipline } from '@/game';
 
 import { TechniqueCard } from '../components/TechniqueCard';
-import { TechniqueSheet } from '../components/TechniqueSheet';
+import { cardDetail, DISCIPLINE_LABELS, JutsuDetail } from '../components/JutsuDetail';
 import { Pane } from '../layout/Pane';
 import { useHoverPreview } from '../layout/useHoverPreview';
 import type { ScreenProps } from './types';
-
-const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => string>> = {
-  damage: (power) => `Power ${power}`,
-  daze: () => 'Dazes',
-  heal: () => 'Heals',
-  seal: () => 'Seals',
-  area: (power) => `Power ${power} on every foe`,
-  confuse: () => 'Confuses',
-  conceal: () => 'Hides you',
-  sense: () => 'Finds the hidden',
-  break: (power) => `Power ${power} through guard`,
-  field: () => 'Blinds foes for a while',
-  move: () => 'Moves you in a flash',
-  substitute: () => 'Swaps you out of a hit',
-  empower: () => 'Pushes past your limits, at a price',
-  clone: () => 'Makes clones that take hits',
-  trap: (power) => `Sets a trap of power ${power}`,
-  knock: () => 'Throws them to another distance',
-  pin: () => 'Pins them',
-  drain: () => 'Drains chakra',
-  afflict: () => 'Leaves a lingering wound',
-  counter: () => 'Readies a riposte',
-  summon: () => 'Calls a summon',
-};
-
-/** Each effect in order: "Power 12, then dazes". */
-function effectText(effects: readonly JutsuEffect[]): string {
-  const [first, ...rest] = effects.map((e) => EFFECT_TEXT[e.verb](e.power));
-  return [first, ...rest.map((t) => t.toLowerCase())].join(', then ');
-}
 
 const DISCIPLINE_ORDER = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
 
 const FILTER_LABELS: Readonly<Record<Discipline | 'all', string>> = {
   all: 'All',
-  taijutsu: 'Taijutsu',
-  ninjutsu: 'Ninjutsu',
-  genjutsu: 'Genjutsu',
-  kenjutsu: 'Kenjutsu',
-  fuuinjutsu: 'Fūinjutsu',
+  ...DISCIPLINE_LABELS,
 };
-
-function cardDetail(card: JutsuCard): string {
-  if (card.status === 'studying') return `Studying, ${card.progressPct}% learned`;
-  if (card.status === 'unknown') return 'Not learned';
-  return `${effectText(card.effects)} for ${card.chakraCost} chakra`;
-}
 
 /** Your techniques as a deck of the same cards you play in fights. */
 export function JutsuScreen({ ctx, state }: ScreenProps) {
@@ -133,30 +93,7 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
             </section>
           )}
         </Pane>
-        <Pane name="detail">
-          {selected && (
-            <section className="detail-card">
-              <b>
-                {selected.status === 'unknown' ? 'Undiscovered technique' : selected.name}{' '}
-                <span className={`badge d-${selected.discipline}`}>{selected.discipline}</span>
-                <span className="badge" data-grade={selected.rank}>
-                  Rank {selected.rank}
-                </span>
-                {selected.unstable && <span className="badge unstable">Unstable</span>}
-                {selected.element && <span className="chip"> {selected.element}</span>}
-              </b>
-              {selected.status !== 'unknown' && <p className="story">{selected.description}</p>}
-              <p className="muted small">{cardDetail(selected)}</p>
-              {selected.status !== 'unknown' && <TechniqueSheet sheet={selected.sheet} />}
-              {selected.unstable && (
-                <p className="muted small">
-                  Beyond your grade: it costs more chakra and can misfire. It steadies once your{' '}
-                  {FILTER_LABELS[selected.discipline].toLowerCase()} reaches grade {selected.rank}.
-                </p>
-              )}
-            </section>
-          )}
-        </Pane>
+        <Pane name="detail">{selected && <JutsuDetail card={selected} />}</Pane>
       </main>
     </>
   );

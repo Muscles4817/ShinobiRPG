@@ -20,6 +20,8 @@ export interface HoverPreview {
   readonly previewId: string | null;
   /** The handlers to spread on the item with this id. */
   readonly handlersFor: (id: string) => HoverHandlers;
+  /** Back to what was picked: for an item that moves away when clicked, and so never left. */
+  readonly clear: () => void;
 }
 
 const NONE: HoverHandlers = {};
@@ -37,5 +39,5 @@ export function useHoverPreview(): HoverPreview {
     };
     return { onMouseEnter: enter, onMouseLeave: leave, onFocus: enter, onBlur: leave };
   };
-  return { previewId: wide ? previewId : null, handlersFor };
+  return { previewId: wide ? previewId : null, handlersFor, clear: leave };
 }

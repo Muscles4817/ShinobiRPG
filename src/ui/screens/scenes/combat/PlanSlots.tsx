@@ -1,5 +1,7 @@
 import type { CombatOption } from '@/game';
 
+import { usePlanPreview } from './planPreview';
+
 type Pick = (option: CombatOption) => void;
 
 /**
@@ -89,12 +91,14 @@ function SlotRow({
   const settings = settingsOf(adjustments);
   const buttons = settings.filter(([, choices]) => choices.length === 1);
   const pickers = settings.filter(([, choices]) => choices.length > 1);
+  const preview = usePlanPreview(entry);
   return (
     <li className="plan-slot">
       <span className="plan-rank num" aria-hidden="true">
         {(entry.rank ?? 0) + 1}
       </span>
       <button
+        {...preview}
         type="button"
         className="plan-card on"
         data-discipline={entry.discipline ?? 'basic'}
