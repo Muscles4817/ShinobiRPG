@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { serialize, type SaveStore } from '@/game';
-import { act, newGame, pressOn, veteran } from '@/test/gameFixtures';
+import { act, freshGame, newGame, pressOn, veteran } from '@/test/gameFixtures';
 
 import { App } from './App';
 
@@ -215,6 +215,40 @@ describe('the desktop layout (smoke test)', () => {
       const first = await startTalking(user);
       await user.keyboard('1');
       expect(first).toBeInTheDocument();
+    });
+  });
+
+  describe('beside a story scene', () => {
+    it('keeps the person you are talking to in view', async () => {
+      windowWide(true);
+      const user = await openGame();
+      const around = screen.getByRole('region', { name: 'Who’s here' });
+      await user.click(within(around).getAllByRole('button')[0]!);
+      await user.click(screen.getByRole('button', { name: /^Talk to/ }));
+      expect(screen.getByRole('complementary', { name: /^About / })).toBeInTheDocument();
+    });
+
+    it('keeps the job in view when foes are met on it', async () => {
+      windowWide(true);
+      let s = act(veteran(newGame(), 5), {
+        type: 'startMission',
+        missionId: 'tea-merchant-escort',
+      });
+      for (let i = 0; i < 20 && !s.mission?.encounter; i++) s = pressOn(s);
+      await openGame(s);
+      expect(screen.getByRole('complementary', { name: 'The job' })).toBeInTheDocument();
+    });
+
+    it('keeps you in view in the scenes about you', async () => {
+      windowWide(true);
+      await openGame(freshGame());
+      expect(screen.getByRole('complementary', { name: 'You' })).toBeInTheDocument();
+    });
+
+    it('has no panel on a phone', async () => {
+      windowWide(false);
+      await openGame(freshGame());
+      expect(screen.queryByRole('complementary', { name: 'You' })).not.toBeInTheDocument();
     });
   });
 });

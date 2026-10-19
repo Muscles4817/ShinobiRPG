@@ -19,7 +19,6 @@ import { Notice } from '../components/Notice';
 import { PersonSheet } from '../components/PersonSheet';
 import { CompanionSheet } from '../components/CompanionSheet';
 import { ReportCard } from '../components/ReportCard';
-import { ChoiceBarKeys } from '../layout/ChoiceBarKeys';
 import { appClass, isStoryScene } from '../layout/sceneLayout';
 import { WideFrame } from '../layout/WideFrame';
 import { useWideScreen } from '../layout/useWideScreen';
@@ -36,6 +35,7 @@ import { MissionScene } from './scenes/MissionScene';
 import { PromotionScene } from './scenes/PromotionScene';
 import { RaceScene } from './scenes/RaceScene';
 import { RivalScene } from './scenes/RivalScene';
+import { StorySceneFrame } from './scenes/StorySceneFrame';
 import { SettingsScreen } from './settings/SettingsScreen';
 import { ChakraPaperScene } from './scenes/ChakraPaperScene';
 import { SenseiTestScene } from './scenes/SenseiTestScene';
@@ -232,8 +232,13 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
       {session.notice && <Notice text={session.notice} onDismiss={session.dismissNotice} />}
       {scene ? (
         <div className="wide-scene">
-          <Scene {...props} kind={scene} />
-          {wide && isStoryScene(scene) && <ChoiceBarKeys />}
+          {wide && isStoryScene(scene) ? (
+            <StorySceneFrame ctx={ctx} state={state}>
+              <Scene {...props} kind={scene} />
+            </StorySceneFrame>
+          ) : (
+            <Scene {...props} kind={scene} />
+          )}
         </div>
       ) : wide ? (
         <WideFrame
