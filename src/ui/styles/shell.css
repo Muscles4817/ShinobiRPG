@@ -9,8 +9,10 @@
   position: relative;
 }
 
-/* A pane (ui/layout/Pane.tsx) only groups for the desktop layout; on a phone it isn't there. */
-.pane {
+/* A pane (ui/layout/Pane.tsx), and the box a scene sits in, only group for the desktop layout;
+   on a phone they aren't there. */
+.pane,
+.wide-scene {
   display: contents;
 }
 

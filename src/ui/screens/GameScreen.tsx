@@ -173,6 +173,16 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
   }
 }
 
+/** Scenes with a desktop arrangement of their own; the rest keep the phone's column. */
+const WIDE_SCENES: readonly SceneKind[] = ['mission'];
+
+/** The app's classes: the desktop layout outside scenes, and inside the scenes that have one. */
+function appClass(wide: boolean, scene: SceneKind | null): string {
+  if (!wide) return 'app';
+  if (!scene) return 'app wide';
+  return WIDE_SCENES.includes(scene) ? `app wide scene-${scene}` : 'app';
+}
+
 /**
  * The cards over play: a report waits for a fight's last exchange; the end-of-day sheet waits
  * for scenes and reports (and shows only in the full setting).
@@ -226,13 +236,12 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   );
 
   return (
-    <div
-      className={wide && !scene ? 'app wide' : 'app'}
-      data-motion={state.settings.animations ? 'on' : 'off'}
-    >
+    <div className={appClass(wide, scene)} data-motion={state.settings.animations ? 'on' : 'off'}>
       {session.notice && <Notice text={session.notice} onDismiss={session.dismissNotice} />}
       {scene ? (
-        <Scene {...props} kind={scene} />
+        <div className="wide-scene">
+          <Scene {...props} kind={scene} />
+        </div>
       ) : wide ? (
         <WideFrame
           {...props}

@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { serialize, type SaveStore } from '@/game';
-import { newGame } from '@/test/gameFixtures';
+import { act, newGame, veteran } from '@/test/gameFixtures';
 
 import { App } from './App';
 
@@ -28,9 +28,9 @@ function windowWide(wide: boolean) {
     }) as MediaQueryList; // a stand-in: jsdom has no matchMedia of its own
 }
 
-async function openGame() {
+async function openGame(game = newGame()) {
   const user = userEvent.setup();
-  render(<App store={storeWith(serialize(newGame()))} />);
+  render(<App store={storeWith(serialize(game))} />);
   await user.click(screen.getByRole('button', { name: /Continue/ }));
   return user;
 }
@@ -90,5 +90,24 @@ describe('the desktop layout (smoke test)', () => {
     expect(screen.getByText('Health')).toBeInTheDocument();
     await user.keyboard('3');
     expect(screen.getByRole('button', { name: 'Here' })).toHaveAttribute('aria-current', 'page');
+  });
+
+  describe('on a job', () => {
+    const onJob = () =>
+      act(veteran(newGame(), 5), { type: 'startMission', missionId: 'tea-merchant-escort' });
+
+    it('keeps who is along and the road so far beside the story', async () => {
+      windowWide(true);
+      await openGame(onJob());
+      expect(screen.getByRole('region', { name: 'Who’s with you' })).toBeInTheDocument();
+      expect(screen.getByRole('navigation', { name: 'Choices' })).toBeInTheDocument();
+    });
+
+    it('leaves them to the debrief on a phone', async () => {
+      windowWide(false);
+      await openGame(onJob());
+      expect(screen.queryByRole('region', { name: 'Who’s with you' })).not.toBeInTheDocument();
+      expect(screen.getByRole('navigation', { name: 'Choices' })).toBeInTheDocument();
+    });
   });
 });

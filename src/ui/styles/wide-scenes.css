@@ -1,0 +1,122 @@
+/*
+ * Scenes on the desktop layout (`.app.wide.scene-*`, for the scenes GameScreen lists): the
+ * scene's panes side by side instead of one column. A mission sets the road on the left, the
+ * story at a reading width in the middle, and the job as it stands on the right.
+ */
+.app.wide[class*='scene-'] .wide-scene {
+  display: grid;
+  min-height: 100vh;
+  align-items: start;
+}
+
+.app.wide.scene-mission .wide-scene {
+  grid-template-columns: 280px minmax(0, 1fr) 340px;
+}
+.app.wide.scene-mission .pane {
+  min-width: 0;
+}
+
+/* The road: the place and the stops of the job, on lacquered wood like the village rail. */
+.app.wide.scene-mission .pane-road {
+  grid-column: 1;
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px;
+  box-sizing: border-box;
+  background: var(--grain), var(--wood);
+  border-right: 2px solid color-mix(in srgb, var(--wood) 60%, #000);
+}
+.app.wide.scene-mission .pane-road .scene-head {
+  border: 1px solid color-mix(in srgb, var(--wood) 60%, #000);
+  border-radius: var(--radius);
+}
+.app.wide.scene-mission .route {
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+.app.wide.scene-mission .route li {
+  width: auto;
+  height: auto;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+}
+.app.wide.scene-mission .route-label {
+  display: inline;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+/* The story: a reading column, with the choices kept under it. */
+.app.wide.scene-mission .pane-story {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 720px;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+.app.wide.scene-mission .scene-feed {
+  padding: 28px 24px 16px;
+}
+.app.wide.scene-mission .scene-feed .story {
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+.app.wide.scene-mission .choices {
+  padding: 12px 24px 20px;
+}
+
+/* The job: its threads, who is along and the ledger so far, kept in view. */
+.app.wide.scene-mission .pane-job {
+  grid-column: 3;
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 18px;
+  box-sizing: border-box;
+  background: var(--grain), var(--surface);
+  border-left: 1px solid var(--line);
+}
+.app.wide.scene-mission .threads {
+  flex-direction: column;
+  padding: 0;
+  background: none;
+  border: 0;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+.app.wide.scene-mission .pane-road .vitals {
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--paper);
+}
+.app.wide.scene-mission .pane-road .vitals .vm {
+  height: 6px;
+}
+.app.wide.scene-mission .pane-job .report-list-title {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  color: var(--gold);
+}
+.app.wide.scene-mission .pane-job .debrief-crew ul {
+  gap: 12px;
+}

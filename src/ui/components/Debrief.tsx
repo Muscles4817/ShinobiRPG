@@ -13,11 +13,18 @@ function spaced(text: string, index: number): string {
   return index === 0 || /^[\s,]/.test(text) ? text : ` ${text}`;
 }
 
-function Road({ lines }: { readonly lines: readonly DebriefLine[] }) {
+/** The road a job took, as a short paragraph with the pay each moment moved. */
+export function DebriefRoad({
+  lines,
+  title = 'The road',
+}: {
+  readonly lines: readonly DebriefLine[];
+  readonly title?: string;
+}) {
   if (lines.length === 0) return null;
   return (
-    <section className="debrief-road" aria-label="The road">
-      <h3 className="report-list-title">The road</h3>
+    <section className="debrief-road" aria-label={title}>
+      <h3 className="report-list-title">{title}</h3>
       <p>
         {lines.map((l, i) => (
           <span key={i} className={`road-${l.tone}`}>
@@ -37,11 +44,18 @@ function Road({ lines }: { readonly lines: readonly DebriefLine[] }) {
   );
 }
 
-function Crew({ crew }: { readonly crew: readonly DebriefCrew[] }) {
+/** The people who went: how much closer you came, and the last thing they said. */
+export function DebriefCrewList({
+  crew,
+  title = 'Who went with you',
+}: {
+  readonly crew: readonly DebriefCrew[];
+  readonly title?: string;
+}) {
   if (crew.length === 0) return null;
   return (
-    <section className="debrief-crew" aria-label="Who went with you">
-      <h3 className="report-list-title">Who went with you</h3>
+    <section className="debrief-crew" aria-label={title}>
+      <h3 className="report-list-title">{title}</h3>
       <ul>
         {crew.map((c) => (
           <li key={c.name}>
@@ -66,8 +80,8 @@ export function DebriefSections({ report }: { readonly report: JobReport }) {
   const helped = report.kind === 'mission-complete' ? undefined : report.helped;
   return (
     <>
-      <Road lines={road} />
-      <Crew crew={crew} />
+      <DebriefRoad lines={road} />
+      <DebriefCrewList crew={crew} />
       {helped && (
         <section className="debrief-helped" aria-label="What would have helped">
           <h3 className="report-list-title">What would have helped</h3>
