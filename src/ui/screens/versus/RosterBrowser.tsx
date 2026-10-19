@@ -11,9 +11,6 @@ import {
 import { Portrait } from '../../art/Portrait';
 import { GradeBadge } from '../../components/Grade';
 
-/** Where a fighter already stands, for the stamp on their row. */
-export type Standing = 'side' | 'foes' | null;
-
 interface FacetSelectProps {
   readonly id: string;
   readonly label: string;
@@ -162,26 +159,22 @@ function rowLine(f: VersusFighter): string {
   return `${f.title} of ${f.village}${clan}`;
 }
 
-const STANDING_STAMP: Readonly<Record<Exclude<Standing, null>, string>> = {
-  side: 'Your side',
-  foes: 'Facing',
-};
-
 interface RowProps {
   readonly fighter: VersusFighter;
   readonly focused: boolean;
-  readonly standing: Standing;
+  /** A stamp on their row (where they stand, whether they're edited), or null. */
+  readonly stamp: string | null;
   readonly onFocus: (id: string) => void;
 }
 
-function FighterRow({ fighter, focused, standing, onFocus }: RowProps) {
+function FighterRow({ fighter, focused, stamp, onFocus }: RowProps) {
   return (
     <li>
       <button
         type="button"
         className={focused ? 'versus-row on' : 'versus-row'}
         aria-current={focused ? 'true' : undefined}
-        aria-label={`${fighter.name}, ${rowLine(fighter)}, fighting power ${fighter.grade}${standing ? `, ${STANDING_STAMP[standing].toLowerCase()}` : ''}`}
+        aria-label={`${fighter.name}, ${rowLine(fighter)}, fighting power ${fighter.grade}${stamp ? `, ${stamp.toLowerCase()}` : ''}`}
         onClick={() => {
           onFocus(fighter.id);
         }}
@@ -197,7 +190,7 @@ function FighterRow({ fighter, focused, standing, onFocus }: RowProps) {
           <b>{fighter.name}</b>
           <small>{rowLine(fighter)}</small>
         </span>
-        {standing && <span className="badge">{STANDING_STAMP[standing]}</span>}
+        {stamp && <span className="badge">{stamp}</span>}
         <GradeBadge grade={fighter.grade} />
       </button>
     </li>
@@ -209,13 +202,13 @@ interface RosterBrowserProps {
   readonly filter: VersusFilter;
   readonly onFilter: (filter: VersusFilter) => void;
   readonly focusedId: string | null;
-  readonly standingOf: (id: string) => Standing;
+  readonly stampOf: (id: string) => string | null;
   readonly onFocus: (id: string) => void;
 }
 
 /** The roster, filtered: tap a fighter to read their profile. */
 export function RosterBrowser(props: RosterBrowserProps) {
-  const { roster, filter, onFilter, focusedId, standingOf, onFocus } = props;
+  const { roster, filter, onFilter, focusedId, stampOf, onFocus } = props;
   const browse = browseRoster(roster, filter);
   const { found } = browse;
   return (
@@ -241,7 +234,7 @@ export function RosterBrowser(props: RosterBrowserProps) {
             key={f.id}
             fighter={f}
             focused={f.id === focusedId}
-            standing={standingOf(f.id)}
+            stamp={stampOf(f.id)}
             onFocus={onFocus}
           />
         ))}

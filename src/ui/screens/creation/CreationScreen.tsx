@@ -18,6 +18,7 @@ import {
 
 import { Backdrop } from '../../art/Backdrop';
 import { Notice } from '../../components/Notice';
+import { useEdits } from '../../edits/EditsProvider';
 import { randomSeed } from '../../randomSeed';
 import { BreakInStep } from './BreakInStep';
 import { CaughtStep } from './CaughtStep';
@@ -179,7 +180,9 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
   ];
   if (packs.length > 1) steps.unshift('world');
   const [packId, setPackId] = useState(packs[0]?.id ?? '');
-  const ctx = useMemo(() => contextForPack(packId), [packId]);
+  // The editor's changes, as the game this creates will have them.
+  const { editsFor } = useEdits();
+  const ctx = useMemo(() => contextForPack(packId, editsFor(packId)), [packId, editsFor]);
   const [draft, setDraft] = useState<CreationDraft | null>(() => (ctx ? defaultDraft(ctx) : null));
   const [seed] = useState(randomSeed);
   const [roll, setRoll] = useState<BreakInRoll | null>(null);
@@ -192,7 +195,7 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
     setDraft(reviseDraft(draft, patch, ctx));
   };
   const choosePack = (id: string) => {
-    const next = contextForPack(id);
+    const next = contextForPack(id, editsFor(id));
     setPackId(id);
     if (next) setDraft(defaultDraft(next));
     setRoll(null);

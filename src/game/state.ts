@@ -20,6 +20,7 @@ import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
 
 import type { Board } from './boardState';
+import type { ContentEdits } from './edits/state';
 import type { Daybook, DayEndMode } from './daybook/state';
 import type { Rival } from './rival/state';
 import type { CombatFinale } from './combatFinale';
@@ -37,6 +38,8 @@ import type { Report } from './reports';
 export interface GameState {
   /** The content pack this playthrough uses. Fixed for the life of the save. */
   readonly packId: string;
+  /** The editor's changes to the pack as they stood when the game began; fixed like the pack. */
+  readonly edits: ContentEdits;
   readonly rngState: number;
   readonly time: GameTime;
   /** The location the character is in; its places are what the village screen shows. */
