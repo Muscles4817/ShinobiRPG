@@ -9,6 +9,13 @@
   position: relative;
 }
 
+/* A pane (ui/layout/Pane.tsx), and the box a scene sits in, only group for the desktop layout;
+   on a phone they aren't there. */
+.pane,
+.wide-scene {
+  display: contents;
+}
+
 .page {
   flex: 1;
   padding: 12px var(--gutter) 16px;

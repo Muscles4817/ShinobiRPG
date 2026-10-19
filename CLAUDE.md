@@ -998,6 +998,18 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   is always present except in scenes. _Here_ is the current location's village screen, whose
   place cards open place pages. Scenes (missions, fights) take over the whole screen and
   return to where you were.
+- **Desktop is a second arrangement, not a second game.** On a wide window (`useWideScreen`,
+  `ui/layout/`, the one place the breakpoint lives) `.app.wide` lays out a side rail (the dock
+  and the village's places, number keys for tabs), the main column and the you panel (vitals,
+  the time, what waits on you, on every tab). It arranges the same screens and offers the
+  same actions as the phone; its styles live in `styles/wide.css` (place pages, whose lists
+  spread into grids, in `wide-places.css`; the other tabs in `wide-tabs.css`), every rule under
+  `.app.wide` or `.wide-main`, so the phone layout never changes with it. To set parts of a
+  screen side by side, wrap them in a `Pane` (`ui/layout/Pane.tsx`): `display: contents` on a
+  phone, a column on desktop. Scenes still take the whole screen; the ones in `WIDE_SCENES`
+  (`GameScreen.tsx`: the mission and the fight's plan and watch screens) set their panes side
+  by side (`wide-scenes.css`), and what only the desktop shows beside a scene is a view model
+  too (`missionSoFar`).
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own

@@ -220,6 +220,7 @@ export {
   type ThreadView,
   type RouteMark,
 } from './views/missionScene';
+export { missionSoFar, type MissionSoFar } from './views/missionSoFar';
 export { combatLog, type CombatLogLine } from './views/combatLog';
 export { fightReplay, storyEnd, type FightBeat } from './views/fightReplay';
 export {

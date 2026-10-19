@@ -109,6 +109,10 @@
   color: var(--ink);
   border-color: var(--muted);
 }
+/* The stop's name, read out beside its stamp only where there is room (the desktop road). */
+.route-label {
+  display: none;
+}
 .route li.route-now {
   color: var(--bg);
   background: var(--lantern);

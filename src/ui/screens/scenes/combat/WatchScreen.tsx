@@ -1,6 +1,8 @@
 import type { CombatantView, CombatOption, CombatView, FightBeat, ScoutingRead } from '@/game';
 
 import { Chips } from '../../../components/Chips';
+import { Pane } from '../../../layout/Pane';
+import { useWideScreen } from '../../../layout/useWideScreen';
 import { Formation, shortName } from './Formation';
 import { useBeatSounds } from './useBeatSounds';
 import { usePlayback } from './usePlayback';
@@ -184,11 +186,36 @@ function BeatText({ beats, at }: { readonly beats: readonly FightBeat[]; readonl
   );
 }
 
+/** Beside the stage on a wide screen: every line told so far, newest last. */
+function ToldSoFar({ beats, at }: { readonly beats: readonly FightBeat[]; readonly at: number }) {
+  const wide = useWideScreen();
+  const told = beats.slice(0, at + 1);
+  if (!wide || told.length === 0) return null;
+  return (
+    <Pane name="told">
+      <section className="told-so-far" aria-label="So far">
+        <h3 className="plan-heading">So far</h3>
+        {told.map((b, i) =>
+          b.kind === 'divider' ? (
+            <p key={i} className="divider">
+              {b.text}
+            </p>
+          ) : (
+            <p key={i} className="story log-line">
+              {b.text} <Chips chips={b.chips} />
+            </p>
+          ),
+        )}
+      </section>
+    </Pane>
+  );
+}
+
 /**
  * The fight as it plays: both sides on the stage, one beat at a time. Whoever acts is lit,
  * whoever they act on is marked, health moves as it happens, and the line is told below. It
  * plays on its own (faster if you like), stops when something comes at you, and once it has
- * played offers what comes next.
+ * played offers what comes next. On a wide screen what has been told so far stays beside it.
  */
 export function WatchScreen(props: WatchScreenProps) {
   const { view, beats, fresh, reads, onWatched } = props;
@@ -208,21 +235,24 @@ export function WatchScreen(props: WatchScreenProps) {
         <h1>{heading ?? 'The fight'}</h1>
       </header>
       <main className="page watch-screen">
-        <ActingOrder beats={beats} at={play.at} fighters={view.combatants} />
-        <Formation
-          fighters={fighters}
-          range={beat?.range ?? view.range}
-          reads={reads}
-          pulses={pulses}
-          selected={null}
-          onSelect={NO_SELECTION}
-          stage={{ actorId: beat?.actorId ?? null, targetId: beat?.targetId ?? null }}
-        />
-        <BeatText beats={beats} at={play.at} />
-        {play.stoppedForYou && (
-          <p className="stopped-for-you">That one was aimed at you. Press play to carry on.</p>
-        )}
-        <PlaybackBar play={play} watched={view.watched ?? false} />
+        <Pane name="stage">
+          <ActingOrder beats={beats} at={play.at} fighters={view.combatants} />
+          <Formation
+            fighters={fighters}
+            range={beat?.range ?? view.range}
+            reads={reads}
+            pulses={pulses}
+            selected={null}
+            onSelect={NO_SELECTION}
+            stage={{ actorId: beat?.actorId ?? null, targetId: beat?.targetId ?? null }}
+          />
+          <BeatText beats={beats} at={play.at} />
+          {play.stoppedForYou && (
+            <p className="stopped-for-you">That one was aimed at you. Press play to carry on.</p>
+          )}
+          <PlaybackBar play={play} watched={view.watched ?? false} />
+        </Pane>
+        <ToldSoFar beats={beats} at={play.at} />
       </main>
       {play.done && (
         <NextSteps
