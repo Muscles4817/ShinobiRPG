@@ -1,5 +1,12 @@
 import { contextForPack } from '../context';
-import { filterRoster, OPEN_FILTER, versusFacets, withGroup } from './filter';
+import {
+  browseRoster,
+  filterRoster,
+  OPEN_FILTER,
+  versusFacets,
+  withGroup,
+  type VersusFilter,
+} from './filter';
 import { versusProfile } from './profile';
 import { versusRoster } from './roster';
 
@@ -60,5 +67,29 @@ describe('versus profiles', () => {
 
   it('knows nobody the world doesn’t have', () => {
     expect(versusProfile(naruto, 'person:nobody')).toBeNull();
+  });
+});
+
+describe('versus sorting', () => {
+  const powers = (sort: VersusFilter['sort']) =>
+    browseRoster(roster, { ...OPEN_FILTER, sort }).found.map((f) => f.power);
+
+  it('lists by rank by default, as the roster is built', () => {
+    expect(browseRoster(roster, OPEN_FILTER).found).toEqual(roster);
+  });
+
+  it('orders everyone by fighting power either way', () => {
+    expect(powers('strongest')).toEqual([...powers('strongest')].sort((a, b) => b - a));
+    expect(powers('weakest')).toEqual([...powers('weakest')].sort((a, b) => a - b));
+  });
+
+  it('orders by name, and keeps the order through a filter', () => {
+    const names = browseRoster(roster, { ...OPEN_FILTER, group: 'Genin', sort: 'name' }).found;
+    const sorted = [...names].sort((a, b) => a.name.localeCompare(b.name));
+    expect(names.map((f) => f.id)).toEqual(sorted.map((f) => f.id));
+  });
+
+  it('is not a filter: it never makes the list clearable', () => {
+    expect(browseRoster(roster, { ...OPEN_FILTER, sort: 'name' }).filtered).toBe(false);
   });
 });
