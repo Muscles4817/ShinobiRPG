@@ -130,6 +130,23 @@ function Filters({ facets, filter, onFilter }: FiltersProps) {
             onFilter({ ...filter, grade: picked?.value ?? null });
           }}
         />
+        <span className="versus-facet">
+          <label htmlFor="versus-sort">Sort</label>
+          <select
+            id="versus-sort"
+            value={filter.sort}
+            onChange={(e) => {
+              const picked = facets.sorts.find((o) => o.value === e.target.value);
+              if (picked) onFilter({ ...filter, sort: picked.value });
+            }}
+          >
+            {facets.sorts.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </span>
       </div>
     </div>
   );
@@ -204,7 +221,7 @@ export function RosterBrowser(props: RosterBrowserProps) {
             type="button"
             className="btn ghost small"
             onClick={() => {
-              onFilter(OPEN_FILTER);
+              onFilter({ ...OPEN_FILTER, sort: filter.sort });
             }}
           >
             Clear filters

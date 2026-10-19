@@ -51,4 +51,19 @@ describe('versus setup on a desk', () => {
     await user.click(screen.getByRole('button', { name: 'Add an opponent' }));
     expect(screen.getByRole('dialog', { name: 'Opponent 2' })).toBeInTheDocument();
   });
+
+  it('sorts the roster, and keeps the order when filters are cleared', async () => {
+    asDesk(true);
+    const user = userEvent.setup();
+    render(<VersusSetup initial={null} onFight={() => undefined} onBack={() => undefined} />);
+    const roster = screen.getByRole('region', { name: 'Fighters' });
+    const firstRow = () => within(within(roster).getByRole('list')).getAllByRole('button')[0]!;
+    await user.click(within(roster).getByRole('button', { name: /^Genin/ }));
+    await user.selectOptions(within(roster).getByLabelText('Sort'), 'Weakest first');
+    const weakest = firstRow().getAttribute('aria-label');
+    await user.click(within(roster).getByRole('button', { name: 'Clear filters' }));
+    expect(within(roster).getByLabelText('Sort')).toHaveValue('weakest');
+    expect(firstRow().getAttribute('aria-label')).not.toBe(weakest);
+    expect(firstRow()).toHaveAccessibleName(/fighting power E/);
+  });
 });

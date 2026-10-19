@@ -1,6 +1,7 @@
 import { STAT_GRADES, type StatGrade } from '@/systems/stats';
 
 import { VERSUS_GROUPS, type VersusFighter, type VersusGroup } from './roster';
+import { SORT_OPTIONS, sortRoster, type SortOption, type VersusSort } from './sort';
 
 /**
  * Narrowing the versus roster so a pick is never a list of a hundred and sixty names: by rank,
@@ -19,6 +20,8 @@ export interface VersusFilter {
   readonly grade: StatGrade | null;
   /** Typed text, matched against name, title, village, clan and kind, accents ignored. */
   readonly query: string;
+  /** The order the list is shown in; it narrows nothing, so clearing filters keeps it. */
+  readonly sort: VersusSort;
 }
 
 export const OPEN_FILTER: VersusFilter = {
@@ -28,6 +31,7 @@ export const OPEN_FILTER: VersusFilter = {
   kind: null,
   grade: null,
   query: '',
+  sort: 'rank',
 };
 
 export interface FacetOption<T extends string = string> {
@@ -158,12 +162,15 @@ export interface RosterBrowse extends VersusFacets {
   readonly found: readonly VersusFighter[];
   /** Whether anything narrows the list (so it can be cleared). */
   readonly filtered: boolean;
+  /** The orders the list may be shown in. */
+  readonly sorts: readonly SortOption[];
 }
 
 export function browseRoster(roster: readonly VersusFighter[], filter: VersusFilter): RosterBrowse {
   return {
     ...versusFacets(roster, filter),
-    found: filterRoster(roster, filter),
+    found: sortRoster(filterRoster(roster, filter), filter.sort),
     filtered: isFiltered(filter),
+    sorts: SORT_OPTIONS,
   };
 }
