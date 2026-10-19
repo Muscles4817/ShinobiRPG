@@ -13,7 +13,7 @@ import {
   type VersusGround,
 } from '@/game';
 
-import type { Standing } from './RosterBrowser';
+import { useEdits } from '../../edits/EditsProvider';
 import type { Slot } from './SideSlots';
 
 /** The fan pack is the one built for versus play; any pack works. */
@@ -54,7 +54,8 @@ function placed(ids: readonly string[], index: number, id: string): string[] {
 export function useVersusSetup(initial: VersusChoice | null) {
   const packs = useMemo(() => packChoices(), []);
   const [packId, setPackId] = useState(() => initial?.ctx.content.packId ?? defaultPack());
-  const ctx = useMemo(() => contextForPack(packId), [packId]);
+  const edits = useEdits().editsFor(packId);
+  const ctx = useMemo(() => contextForPack(packId, edits), [packId, edits]);
   const roster = useMemo(() => (ctx ? versusRoster(ctx) : []), [ctx]);
   const [sideIds, setSideIds] = useState<readonly string[]>(initial?.side ?? []);
   const [foeIds, setFoeIds] = useState<readonly string[]>(initial?.foes ?? []);
@@ -110,9 +111,10 @@ export function useVersusSetup(initial: VersusChoice | null) {
     setFoeIds(side);
   };
 
-  const standingOf = (id: string): Standing => {
-    if (side.includes(id)) return 'side';
-    return foes.includes(id) ? 'foes' : null;
+  /** Where a fighter already stands, for the stamp on their row. */
+  const stampOf = (id: string): string | null => {
+    if (side.includes(id)) return 'Your side';
+    return foes.includes(id) ? 'Facing' : null;
   };
 
   return {
@@ -137,7 +139,7 @@ export function useVersusSetup(initial: VersusChoice | null) {
     placeProblem,
     remove,
     swap,
-    standingOf,
+    stampOf,
     problem,
   };
 }

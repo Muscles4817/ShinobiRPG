@@ -17,11 +17,12 @@ export interface MainMenuProps {
   readonly onContinue: () => void;
   readonly onNewGame: () => void;
   readonly onVersus: () => void;
+  readonly onEditor: () => void;
   readonly onSettings: () => void;
 }
 
 interface MenuOption {
-  readonly id: 'continue' | 'new-game' | 'versus' | 'settings';
+  readonly id: 'continue' | 'new-game' | 'versus' | 'editor' | 'settings';
   readonly glyph: string;
   readonly title: string;
   readonly line: ReactNode;
@@ -82,7 +83,10 @@ function ConfirmNewGame({
   );
 }
 
-/** The menu's choices in order: carry on (when there is a save), begin again, versus, settings. */
+/**
+ * The menu's choices in order: carry on (when there is a save), begin again, versus, the editor,
+ * settings.
+ */
 function menuOptions(props: MainMenuProps, askToStartOver: () => void): MenuOption[] {
   const { save } = props;
   const resume: MenuOption[] = save
@@ -116,6 +120,14 @@ function menuOptions(props: MainMenuProps, askToStartOver: () => void): MenuOpti
       pick: props.onVersus,
     },
     {
+      id: 'editor',
+      glyph: '編',
+      title: 'Editor',
+      line: 'Change how fighters are written, for versus and new games.',
+      primary: false,
+      pick: props.onEditor,
+    },
+    {
       id: 'settings',
       glyph: '設',
       title: 'Settings',
@@ -127,8 +139,8 @@ function menuOptions(props: MainMenuProps, askToStartOver: () => void): MenuOpti
 }
 
 /**
- * The title screen: carry on, begin again, set up a versus bout, change the settings, or share
- * the game. On a wide screen the picture fills one side and the menu stands beside it, its
+ * The title screen: carry on, begin again, set up a versus bout, edit the world, change the
+ * settings, or share the game. On a wide screen the picture fills one side and the menu stands beside it, its
  * choices on the number keys and Continue (or a new game) on Enter.
  */
 export function MainMenu(props: MainMenuProps) {

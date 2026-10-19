@@ -1,6 +1,8 @@
 import { buildContentDb, CONTENT_PACKS, type ContentDb, type ContentPack } from '@/content';
 import { createDuelEngine, createPlanEngine, type CombatEngine } from '@/systems/combat';
 
+import { withEdits } from './edits/apply';
+import { NO_EDITS, type ContentEdits } from './edits/state';
 import { withSenseiPool } from './sensei/pool/pool';
 
 /**
@@ -17,6 +19,8 @@ export interface GameContext {
    * save made before it was shelved) still plays out in it.
    */
   readonly shelvedEngines: readonly CombatEngine[];
+  /** The player's edits laid over the pack (`edits/`); a new game keeps a copy in its save. */
+  readonly edits: ContentEdits;
 }
 
 /**
@@ -39,12 +43,14 @@ export function shelvedEngines(): readonly CombatEngine[] {
 export function createGameContext(
   pack: ContentPack,
   engines: readonly CombatEngine[] = defaultEngines(),
+  edits: ContentEdits = NO_EDITS,
 ): GameContext {
   // Generated senseis join the pack's own people as ordinary content (`sensei/pool/`).
   return {
-    content: buildContentDb(withSenseiPool(pack)),
+    content: buildContentDb(withSenseiPool(withEdits(pack, edits))),
     engines,
     shelvedEngines: shelvedEngines(),
+    edits,
   };
 }
 
@@ -59,8 +65,11 @@ export function packChoices(): readonly PackChoice[] {
   return CONTENT_PACKS.map(({ id, name, description }) => ({ id, name, description }));
 }
 
-/** Context for a pack id, or null if this build doesn't include that pack. */
-export function contextForPack(packId: string): GameContext | null {
+/**
+ * Context for a pack id with the player's edits over it (a save's own copy, or the device's
+ * for versus and a new game), or null if this build doesn't include that pack.
+ */
+export function contextForPack(packId: string, edits: ContentEdits = NO_EDITS): GameContext | null {
   const pack = CONTENT_PACKS.find((p) => p.id === packId);
-  return pack ? createGameContext(pack) : null;
+  return pack ? createGameContext(pack, defaultEngines(), edits) : null;
 }

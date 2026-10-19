@@ -1,6 +1,7 @@
 export { CONTENT_PACKS } from './packs';
 export { buildContentDb, type ContentDb } from './db';
 export { validateContent } from './validate';
+export { BEST_STAT_BAND, type GradeBand } from './validateRanks';
 export type { Catalog } from './catalog';
 export { REGISTERS, TONES, TOPIC_KINDS } from './people';
 export { TEACHING_QUIRKS } from './teachers';

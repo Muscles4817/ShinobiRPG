@@ -25,6 +25,7 @@ import { v52ToV53 } from './fieldBookMigration';
 import { v53ToV54 } from './tallyMigration';
 import { v54ToV55 } from './tellingMigration';
 import { v57ToV58 } from './talkMigration';
+import { v58ToV59 } from './editsMigration';
 import { v46ToV47 } from './notesMigration';
 import { v44ToV45, v45ToV46 } from './rivalMigration';
 import { v49ToV50, v50ToV51, v51ToV52 } from './companionMigration';
@@ -353,4 +354,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   55: v55ToV56,
   56: v56ToV57,
   57: v57ToV58,
+  58: v58ToV59,
 };

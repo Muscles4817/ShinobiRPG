@@ -39,7 +39,7 @@ src/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
-  platform/   Browser adapters (localStorage save and device-settings stores).
+  platform/   Browser adapters (localStorage save, device-settings and editor stores).
   ui/         React. theme/ (tokens), art/ (SVG icons & backdrops), audio/ (synth & music), components/, screens/.
   main.tsx    App composition root: picks platform adapters and the game context.
 ```
@@ -647,6 +647,19 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `dispatch`): a furnishing only it gives, and a keepsake on the shelf. New entries make one
     line on the day's sheet.
 
+34. **The editor lays changes over a pack** (`docs/design/editor-plan.md`, `game/edits/`). An
+    edit is a sparse override (`ContentEdits`: fighters by roster id, only the stats and the
+    technique list that differ), never a copy, so what is left alone follows the pack. Edits
+    are kept on the device (a third `SaveStore`, read defensively by `readEditBook`) and laid
+    over the pack by `withEdits` when a context is built (`contextForPack(packId, edits)`).
+    Versus uses them at once; a new game copies its pack's edits into `GameState.edits` and is
+    rebuilt from that copy on load, so a game keeps the world it began with. Each change is
+    kept only while it differs from the pack (`editStat`, `editTechniques`), and a fighter or
+    the whole pack goes back as written by dropping its entry (`resetFighter`, `NO_EDITS`). The
+    editor reads the pack's rules as notes (a best stat outside the rank's band) and never
+    refuses a change for them; it only keeps out what would break a fight (it refuses an empty
+    technique list and doesn't offer another clan's techniques or a summons without a contract).
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -756,6 +769,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   every fight). They show in versus by rank and nowhere else; their arsenal sources their
   techniques (validated in `validateDuelists.ts`). Plumbing one in moves them to `people`, where
   their techniques then need a real source.
+- **Make something editable:** add its override to `ContentEdits` (`game/edits/state.ts`), read
+  it back defensively in `editsFrom` (`book.ts`), lay it over the pack in `withEdits`
+  (`apply.ts`), keep it only while it differs from the pack (`edit.ts`), give it a view in
+  `view.ts` and a page in `ui/screens/editor/`. A shape a save can't read needs a migration,
+  since saves keep their copy.
 - **Add a sensei temperament or past:** a `SenseiTemperament` in
   `content/shared/sensei/temperaments.ts` (an existing archetype, traits, a haunt, a full
   voice kit) or a `SenseiPast` in `content/shared/sensei/pasts/` (the temperaments that can carry
