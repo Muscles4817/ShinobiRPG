@@ -1,6 +1,6 @@
 import { hashUnit } from '@/core';
 import type { ModifierSpec } from '@/systems/modifiers';
-import { STAT_IDS, type SoloFloor, type StatId } from '@/systems/stats';
+import { STAT_IDS, type SoloFloor, type StatDelta, type StatId } from '@/systems/stats';
 
 import type { DevelopmentAllowance } from './development';
 import type { GiftAllowance } from './gifts';
@@ -37,6 +37,12 @@ export interface StandingInfo {
   /** The special notes the file carries. */
   readonly notes: NoteAllowance;
   readonly talent: TalentBand;
+  /**
+   * Standing is mostly the arts (the development budget), wits and chakra control: this shifts
+   * the last two at graduation, over whatever the student was born with. The body is the
+   * body, whatever the file says.
+   */
+  readonly schooling: StatDelta;
   readonly modifiers: ModifierSpec;
   /** How often fate deals this standing. */
   readonly fateWeight: number;
@@ -58,6 +64,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     gifts: { gifts: 0, prodigy: false, flaws: 1 },
     notes: { major: 0, minor: 1 },
     talent: { scale: 0.75, prodigy: -1, hole: 0.1 },
+    schooling: { intellect: -3, chakraControl: -3 },
     modifiers: { soloEfficiencyFloor: everyStat(DEAD_LAST_FLOOR) },
     fateWeight: 0.1,
   },
@@ -68,6 +75,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     gifts: { gifts: 1, prodigy: false, flaws: 1 },
     notes: { major: 0, minor: 2 },
     talent: { scale: 0.88, prodigy: 0, hole: 0.05 },
+    schooling: { intellect: -1, chakraControl: -1 },
     modifiers: { soloEfficiencyFloor: everyStat(BELOW_AVERAGE_FLOOR) },
     fateWeight: 0.2,
   },
@@ -78,6 +86,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     gifts: { gifts: 1, prodigy: false, flaws: 1 },
     notes: { major: 1, minor: 1 },
     talent: { scale: 1, prodigy: 0, hole: 0 },
+    schooling: {},
     modifiers: {},
     fateWeight: 0.4,
   },
@@ -88,6 +97,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     gifts: { gifts: 2, prodigy: false, flaws: 1 },
     notes: { major: 1, minor: 2 },
     talent: { scale: 1.12, prodigy: 0.05, hole: 0 },
+    schooling: { intellect: 2, chakraControl: 2 },
     modifiers: {},
     fateWeight: 0.2,
   },
@@ -98,6 +108,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     gifts: { gifts: 2, prodigy: true, flaws: 2 },
     notes: { major: 2, minor: 2 },
     talent: { scale: 1.25, prodigy: 0.1, hole: 0 },
+    schooling: { intellect: 4, chakraControl: 4 },
     modifiers: {},
     fateWeight: 0.1,
   },

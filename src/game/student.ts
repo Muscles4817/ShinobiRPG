@@ -2,6 +2,7 @@ import type { BuildDef, ClanDef, UpbringingDef } from '@/content';
 import {
   fileProblems,
   fileStartBonuses,
+  STANDING_INFO,
   type AcademyFile,
   type ClassStanding,
   type EarlyTraining,
@@ -92,6 +93,7 @@ export function graduationStats(profile: StudentProfile, ctx: GameContext): Stat
     ACADEMY_LINE,
     sumDeltas(
       bornOver(profile.born),
+      STANDING_INFO[profile.standing].schooling,
       parts?.clan.statBonuses ?? {},
       ...notes.map((n) => n.statBonuses),
       parts?.build.statBonuses ?? {},
