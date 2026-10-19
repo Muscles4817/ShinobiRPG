@@ -12,6 +12,17 @@ export function HiveCard({ ctx, state }: { readonly ctx: GameContext; readonly s
       <h2>{card.strain}</h2>
       <p className="muted small">{card.description}</p>
       <p className="small">{card.share}</p>
+      {card.gifts.length > 0 && <p className="small">{card.gifts.join('. ')}.</p>}
+      <ul className="hive-qualities">
+        {card.qualities.map((q) => (
+          <li key={q.name}>
+            {q.name} <span className="badge">{q.grade}</span>
+          </li>
+        ))}
+      </ul>
+      {card.fears.length > 0 && (
+        <p className="muted small">Can’t stand {card.fears.join(' or ').toLowerCase()}.</p>
+      )}
       <div className="hive-fill">
         <span className="badge">{card.state}</span>
         <span className="hp meter">

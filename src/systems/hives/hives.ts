@@ -21,6 +21,12 @@ export const BREED_AT_HOME = 0.35;
 export const BREED_AWAY = 0.1;
 /** A hungry host breeds this much as fast. */
 export const HUNGRY_BREEDING = 0.5;
+/** The middle grade (C) of an insect quality: size and brood at it change nothing. */
+const MIDDLE_GRADE = 3;
+/** Each grade of size above C keeps this many more insects to the chakra (smaller insects). */
+const SIZE_PER_GRADE = 0.2;
+/** Each grade of brood above C breeds this much faster. */
+const BROOD_PER_GRADE = 0.2;
 
 export interface Hive {
   /** The strain the hive holds (`StrainDef`). */
@@ -35,20 +41,28 @@ export function chakraKept(fullChakra: number, share: HiveShare): number {
   return Math.round(fullChakra * (1 - SHARE_OF_CHAKRA[share]));
 }
 
-/** As many insects as the body can keep, from the chakra the host would hold without a hive. */
-export function hiveCap(fullChakra: number, share: HiveShare): number {
-  return Math.round(fullChakra * SHARE_OF_CHAKRA[share] * INSECTS_PER_CHAKRA);
+/**
+ * As many insects as the body can keep, from the chakra the host would hold without a hive and
+ * the strain's size (graded 1 to 5; smaller insects, more of them).
+ */
+export function hiveCap(fullChakra: number, share: HiveShare, size = MIDDLE_GRADE): number {
+  const perChakra = INSECTS_PER_CHAKRA * (1 + (size - MIDDLE_GRADE) * SIZE_PER_GRADE);
+  return Math.round(fullChakra * SHARE_OF_CHAKRA[share] * perChakra);
 }
 
 /** What a day does to a hive. */
 export interface BreedingDay {
   readonly atHome: boolean;
   readonly hungry: boolean;
+  /** The strain's brood, graded 1 to 5; C when left out. */
+  readonly brood?: number;
 }
 
 /** The hive after a day of breeding, never past its cap. */
 export function bredFor(hive: Hive, cap: number, day: BreedingDay): Hive {
-  const rate = (day.atHome ? BREED_AT_HOME : BREED_AWAY) * (day.hungry ? HUNGRY_BREEDING : 1);
+  const brood = 1 + ((day.brood ?? MIDDLE_GRADE) - MIDDLE_GRADE) * BROOD_PER_GRADE;
+  const rate =
+    (day.atHome ? BREED_AT_HOME : BREED_AWAY) * (day.hungry ? HUNGRY_BREEDING : 1) * brood;
   const count = Math.min(cap, hive.count + Math.max(1, Math.round(cap * rate)));
   return count === hive.count ? hive : { ...hive, count };
 }

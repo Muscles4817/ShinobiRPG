@@ -5,7 +5,7 @@ import type { CombatantSetup } from '../../contract';
 import { SETTLE_EXCHANGES } from '../../rules/swarms';
 import type { CombatSwarm } from '../../swarmContract';
 import { playable } from './cards';
-import { settleOn, swarmSpent, swarmStruck, swarmsAfter } from './swarm';
+import { settledSlips, settleOn, swarmSpent, swarmStruck, swarmsAfter } from './swarm';
 import { hiveMeter } from './swarmView';
 import { fighterIn, initialFighters, type Round } from './state';
 
@@ -51,7 +51,12 @@ const FIRESTORM: TechniqueDef = {
 };
 
 const HIVE: CombatSwarm = {
-  strain: { name: 'drainers', drain: 1, hardiness: 0, fears: ['fire'], senses: 1 },
+  strain: {
+    name: 'drainers',
+    qualities: { speed: 3, bite: 3, toughness: 1, brood: 3, size: 3, senses: 5 },
+    gifts: { drain: 3 },
+    fears: ['fire'],
+  },
   count: 100,
   cap: 100,
 };
@@ -124,5 +129,18 @@ describe('a hive in a planned fight', () => {
   it('shows the player’s hive as a meter', () => {
     expect(hiveMeter(host(round()))).toEqual({ id: 'hive', label: 'Hive', value: 100, max: 100 });
     expect(hiveMeter(foe(round()))).toBeNull();
+  });
+
+  it('glowing insects make their carrier easier to hit; blinding ones make them aim worse', () => {
+    const moths = { ...HIVE, strain: { ...HIVE.strain, gifts: { glow: 2, blinding: 2 } } };
+    const r = settleOn(round(moths), 'host', [foe(round(moths))], SWARM);
+    expect(settledSlips(r, host(r), foe(r))).toBeLessThan(1);
+    expect(settledSlips(r, foe(r), host(r))).toBeGreaterThan(1);
+  });
+
+  it('venomous insects poison whoever they sit on', () => {
+    const wasps = { ...HIVE, strain: { ...HIVE.strain, gifts: { venom: 2 } } };
+    const r = settleOn(round(wasps), 'host', [foe(round(wasps))], SWARM);
+    expect(foe(swarmsAfter(r, createRng(1))).health).toBeLessThan(100);
   });
 });

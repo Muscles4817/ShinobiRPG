@@ -6,10 +6,11 @@ export const STRAINS: readonly StrainDef[] = [
     id: 'lantern-moth',
     name: 'Lantern Moths',
     description:
-      'Pale moths that gather at the great lanterns. Their dust glows on whatever it touches, and their scales blind. They sip chakra rather than gorge on it.',
-    drain: 0.4,
-    hardiness: 0.15,
+      'Pale moths that gather at the great lanterns. Their dust glows on whatever it touches, and their scales blind.',
+    species: 'lantern moth',
+    family: 'moth',
+    qualities: { speed: 'C', bite: 'E', toughness: 'D', brood: 'D', size: 'D', senses: 'B' },
+    gifts: { glow: 2, blinding: 2 },
     fears: ['fire', 'wind'],
-    senses: 1,
   },
 ];

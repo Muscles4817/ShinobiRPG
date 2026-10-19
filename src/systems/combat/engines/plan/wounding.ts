@@ -11,7 +11,7 @@ import { elementBoost, recordHit } from './combo';
 import { react, type Blow } from './react';
 import type { Turn } from './senses';
 import { isDazed } from './daze';
-import { swarmStruck } from './swarm';
+import { swarmPower, swarmStruck } from './swarm';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -79,7 +79,8 @@ export function damage(round: Round, aimed: Aimed, use: Wounding): Round {
   const open = isDazed(target) || target.sealed > 0;
   const combo = elementBoost(round, actor, target.id, t);
   const ground = groundElementScale(round.ground, t.element);
-  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1) * ground;
+  const insects = swarmPower(actor, t);
+  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1) * ground * insects;
   const hit = strike(round, aimed, blowsFor(aimed, use, scale));
   const after = fighterIn(hit, target.id)?.health ?? target.health;
   const landed = after !== target.health;

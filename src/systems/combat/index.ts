@@ -41,7 +41,14 @@ export {
 } from './contract';
 export type { CombatOrders, CombatStance, CombatUsage, StanceKind } from './teamContract';
 export { STANCE_KINDS } from './teamContract';
-export type { CombatSwarm, SwarmStrain } from './swarmContract';
+export {
+  SWARM_GIFTS,
+  SWARM_QUALITIES,
+  type CombatSwarm,
+  type SwarmGift,
+  type SwarmQuality,
+  type SwarmStrain,
+} from './swarmContract';
 export type {
   ArmourLevel,
   CombatArmour,

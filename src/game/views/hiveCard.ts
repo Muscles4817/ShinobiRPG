@@ -1,7 +1,9 @@
+import { QUALITY_GRADES } from '@/content';
+import { SWARM_GIFTS, SWARM_QUALITIES, type SwarmGift, type SwarmQuality } from '@/systems/combat';
 import { BREED_AT_HOME } from '@/systems/hives';
 
 import type { GameContext } from '../context';
-import { yourHive } from '../hives/hive';
+import { qualitiesInBody, yourHive } from '../hives/hive';
 import type { GameState } from '../state';
 
 /**
@@ -17,7 +19,30 @@ export interface HiveCard {
   readonly fill: number;
   readonly state: string;
   readonly breeding: string;
+  /** What its species can do, in words ("Drains chakra, greatly"). */
+  readonly gifts: readonly string[];
+  /** Its qualities in your body, graded E to A. */
+  readonly qualities: readonly { readonly name: string; readonly grade: string }[];
+  /** What it can't stand ("Fire"). */
+  readonly fears: readonly string[];
 }
+
+const GIFT_WORDS: Readonly<Record<SwarmGift, string>> = {
+  drain: 'Drains chakra',
+  camouflage: 'Hard to see coming',
+  glow: 'Marks a foe with glowing dust',
+  blinding: 'Blinds with its scales',
+  venom: 'Venomous',
+};
+const STRENGTH = ['', 'a little', 'strongly', 'greatly'] as const;
+const QUALITY_NAMES: Readonly<Record<SwarmQuality, string>> = {
+  speed: 'Speed',
+  bite: 'Bite',
+  toughness: 'Toughness',
+  brood: 'Brood',
+  size: 'Smallness',
+  senses: 'Senses',
+};
 
 const SHARE_LINE = {
   little: 'It took a quarter of your chakra.',
@@ -42,6 +67,7 @@ function breedingLine(fill: number): string {
 export function hiveCard(state: GameState, ctx: GameContext): HiveCard | null {
   const yours = yourHive(state, ctx);
   if (!yours) return null;
+  const inBody = qualitiesInBody(yours.strain);
   const fill = yours.cap > 0 ? Math.min(1, yours.hive.count / yours.cap) : 0;
   return {
     strain: yours.strain.name,
@@ -50,5 +76,14 @@ export function hiveCard(state: GameState, ctx: GameContext): HiveCard | null {
     fill,
     state: stateWord(fill),
     breeding: breedingLine(fill),
+    gifts: SWARM_GIFTS.flatMap((gift) => {
+      const strength = yours.strain.gifts[gift];
+      return strength ? [`${GIFT_WORDS[gift]}, ${STRENGTH[strength]}`] : [];
+    }),
+    qualities: SWARM_QUALITIES.map((q) => ({
+      name: QUALITY_NAMES[q],
+      grade: QUALITY_GRADES[inBody[q] - 1] ?? 'A',
+    })),
+    fears: yours.strain.fears.map((e) => e.charAt(0).toUpperCase() + e.slice(1)),
   };
 }

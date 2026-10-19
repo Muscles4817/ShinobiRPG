@@ -347,7 +347,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`GameState.brokenContracts`). Foes summon too (`EnemyDef.summons`, from a contract of the
     pack, with a `tell` read like a retinue's: `summonsSeen`). Nothing is locked by rank: the
     price is the lock. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
-    `swarmContract.ts`: a strain's rules as data, a count and a cap; `rules/swarms.ts`,
+    `swarmContract.ts`: a strain's qualities graded 1 to 5 (speed, bite, toughness, brood, size,
+    senses), its species' gifts 1 to 3 (chakra drain, camouflage, glow, blinding, venom) and
+    what it fears, a count and a cap; each read once in `rules/swarms.ts`,
     `engines/plan/swarm.ts`): techniques with a `swarmCost` spend insects (a fighter without a
     hive pays chakra alone), a swarm technique that reaches a foe leaves insects settled on them
     that draw their chakra into the host and keep them from hiding until they drop off or a
@@ -839,9 +841,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   teacher's `contract`, with the `tastes` it likes as offerings and its `parting` words. A
   contract only foes hold needs neither: list its summons on an `EnemyDef.summons` with a
   `tell`. Validated in `validateContracts.ts`.
-- **Add a hive strain or hive clan:** a `StrainDef` in the pack's `strains.ts` (drain, hardiness,
-  the elements it fears, how keenly it senses), a `hive` on the `ClanDef` naming it, and clan
-  techniques with a `swarmCost`. Validated in `validateStrains.ts`.
+- **Add a hive strain or hive clan:** a `StrainDef` in the pack's `strains.ts` (a species and
+  family, the six qualities graded E to A, at least one gift, the elements it fears), a `hive`
+  on the `ClanDef` naming it, and clan techniques with a `swarmCost`. A body's install adds a
+  grade of toughness and size (`qualitiesInBody`). Validated in `validateStrains.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

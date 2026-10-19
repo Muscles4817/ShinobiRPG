@@ -4,7 +4,7 @@ import { isHungry } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
-import { bornHive, DEFAULT_SHARE, yourHive } from './hive';
+import { bornHive, DEFAULT_SHARE, qualitiesInBody, yourHive } from './hive';
 
 /**
  * Keeping the hive between fights: what came home from a fight is what the hive holds, and
@@ -27,7 +27,7 @@ export function afterHiveFight(
 function givenOldSave(state: GameState, ctx: GameContext): GameState {
   if (state.hive) return state;
   const clan = ctx.content.clans.get(state.character.clanId);
-  const hive = bornHive(clan, DEFAULT_SHARE, state.character.stats);
+  const hive = bornHive(clan, DEFAULT_SHARE, state.character.stats, ctx);
   return hive ? { ...state, hive } : state;
 }
 
@@ -40,6 +40,7 @@ export function hiveDayPassed(state: GameState, ctx: GameContext): GameState {
   const hive = bredFor(yours.hive, yours.cap, {
     atHome,
     hungry: isHungry(given.character.vitals),
+    brood: qualitiesInBody(yours.strain).brood,
   });
   return hive === yours.hive ? given : { ...given, hive };
 }

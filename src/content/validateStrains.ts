@@ -1,21 +1,15 @@
 import type { ContentPack } from './types';
 
 /**
- * Hive strains: each has sane numbers (a drain and senses between nothing and strong, hardiness
- * short of shrugging off every loss), and every clan that installs a hive names a real strain
- * and teaches techniques that spend from it.
+ * Hive strains: each carries at least one gift (what makes a species) and fears nothing twice
+ * (grades and gift strengths are held to their range by type), and every clan that installs a
+ * hive names a real strain and teaches techniques that spend from it.
  */
-
-const MOST_DRAIN = 2;
-const MOST_HARDINESS = 0.8;
 
 function strainProblems(pack: ContentPack): string[] {
   return pack.strains.flatMap((s) => [
-    ...(s.drain > 0 && s.drain <= MOST_DRAIN ? [] : [`strain "${s.id}" has no sane drain`]),
-    ...(s.hardiness >= 0 && s.hardiness <= MOST_HARDINESS
-      ? []
-      : [`strain "${s.id}" has no sane hardiness`]),
-    ...(s.senses >= 0 && s.senses <= 1 ? [] : [`strain "${s.id}" senses beyond 0–1`]),
+    ...(Object.values(s.gifts).length > 0 ? [] : [`strain "${s.id}" has no gift`]),
+    ...(new Set(s.fears).size === s.fears.length ? [] : [`strain "${s.id}" fears something twice`]),
   ]);
 }
 
