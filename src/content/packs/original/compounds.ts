@@ -1,14 +1,20 @@
 import type { PlaceDef } from '../../types';
 
-/** Tōrōgakure’s clan quarter and the compounds of the four lantern clans. */
+/** Tōrōgakure’s clan quarter and the compounds of the lantern clans. */
 export const TOROGAKURE_COMPOUNDS: readonly PlaceDef[] = [
   {
     id: 'clan-quarter',
     kind: 'quarter',
     name: 'Clan Quarter',
     icon: 'torii',
-    blurb: 'Where the four lantern clans live',
-    compoundIds: ['hibana-compound', 'tokaku-compound', 'kurogane-compound', 'shimenawa-compound'],
+    blurb: 'Where the lantern clans live',
+    compoundIds: [
+      'hibana-compound',
+      'tokaku-compound',
+      'kurogane-compound',
+      'shimenawa-compound',
+      'toga-compound',
+    ],
   },
   {
     id: 'hibana-compound',
@@ -45,6 +51,15 @@ export const TOROGAKURE_COMPOUNDS: readonly PlaceDef[] = [
     blurb: 'Rope-hung gates and a hush inside',
     clanId: 'shimenawa',
     headId: 'kazane',
+  },
+  {
+    id: 'toga-compound',
+    kind: 'compound',
+    name: 'Tōga Moth House',
+    icon: 'house',
+    blurb: 'Paper screens with wings settled on them',
+    clanId: 'toga',
+    headId: 'mayu',
   },
   {
     id: 'animal-clinic',

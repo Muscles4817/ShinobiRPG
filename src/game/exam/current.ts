@@ -12,6 +12,7 @@ import type { GameContext } from '../context';
 import { sleepChakra } from '../injuries';
 import { adjust, spendTime } from '../ops';
 import type { GameState } from '../state';
+import { chakraBody } from '../hives/hive';
 
 /** The exam you are sitting, gathered in one place: its definition, run and current stage. */
 export interface ExamHere {
@@ -42,11 +43,11 @@ export function noted(state: GameState, run: ExamRun, ...lines: readonly string[
  * fed for the next one (your wounds mend only as much as a night's sleep mends them).
  */
 export function examNight(state: GameState, ctx: GameContext): GameState {
-  const { vitals, stats } = state.character;
+  const { vitals } = state.character;
   const night = sleepChakra(state);
   const rested = spendTime(state, slotsUntilNextMorning(state.time), ctx);
   return adjust(rested, {
-    ...sleepRecovery(vitals, stats),
+    ...sleepRecovery(vitals, chakraBody(state)),
     chakra: night.chakra,
     satiety: METER_MAX - rested.character.vitals.satiety,
   });

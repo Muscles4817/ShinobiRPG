@@ -168,3 +168,11 @@
   color: var(--paper-muted);
   border: 1px dashed var(--paper-muted);
 }
+
+.hive-card .hive-fill {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}

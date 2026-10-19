@@ -1,6 +1,7 @@
 import type { CombatForm, CombatGrammar, CombatPerk, CombatTrait } from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
 import type { ContractDef, FoeSummon } from './contracts';
+import type { ClanHive, StrainDef } from './strains';
 import type { AtlasDef, MapLabelSide } from './atlas';
 import type {
   ClanCompanion,
@@ -190,6 +191,8 @@ export interface ClanDef {
   readonly lodging?: string;
   /** The companion a child of the clan grows up with (`companions.ts`). */
   readonly companion?: ClanCompanion;
+  /** The hive a child of the clan is born with (`strains.ts`). */
+  readonly hive?: ClanHive;
   /** How the clan treats outsiders at its compound's gate (`compounds.ts`). */
   readonly outsiders?: OutsiderStance;
   readonly kekkeiGenkai?: {
@@ -363,6 +366,7 @@ export interface ContentPack {
   readonly companionKinds: readonly CompanionKindDef[];
   readonly companionLore: readonly CompanionLoreDef[];
   readonly contracts: readonly ContractDef[];
+  readonly strains: readonly StrainDef[];
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];
   readonly clans: readonly ClanDef[];

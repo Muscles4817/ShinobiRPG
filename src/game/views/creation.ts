@@ -26,6 +26,7 @@ import type { CreationDraft } from '../creation';
 import { filledFile } from '../creationDraft';
 import { BASE_STAT } from '../student';
 import { FACE_PALETTES, type FacePalettes } from './facePalettes';
+import { hiveChoice, type HiveChoice } from './hiveChoice';
 
 /** Everything the academy break-in scene offers, with effects spelled out as chips. */
 
@@ -45,6 +46,8 @@ export interface ClanOption extends ProfileOption {
   } | null;
   readonly techniques: readonly string[];
   readonly lodging: string | null;
+  /** The hive a child of the clan is born with, and the shares on offer. */
+  readonly hive: HiveChoice | null;
 }
 
 export interface TraitOption extends ProfileOption {
@@ -183,6 +186,7 @@ export function creationView(ctx: GameContext): CreationView {
       kekkeiGenkai: c.kekkeiGenkai ?? null,
       techniques: c.startingTechniqueIds.map((id) => content.techniques.require(id).name),
       lodging: c.lodging ?? null,
+      hive: hiveChoice(c, ctx),
     })),
     standings: CLASS_STANDINGS.map(standingOption),
     upbringings: content.upbringings.all.map((u) => ({

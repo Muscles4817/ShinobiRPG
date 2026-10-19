@@ -13,6 +13,7 @@ import { resolveCombat } from '../missionFight';
 import { resolveSpar } from '../sparFlow';
 import { afterCompanionFight, isCompanionCombatant } from '../companions/combatant';
 import { afterSummons } from '../contracts/summons';
+import { afterHiveFight } from '../hives/keeping';
 import type { GameState } from '../state';
 import { resolveVersus } from '../versus/resolve';
 import type { ActionHandler, ActionOf } from './types';
@@ -74,9 +75,11 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const view = engine.view(combat);
     // Spars and exam bouts stop before anyone is really hurt.
     const sparring = state.people.sparringWith !== null || inBout(state);
+    // Insects lost in a spar are lost all the same.
+    const hived = afterHiveFight(ended, outcome, ctx);
     const tended = sparring
-      ? ended
-      : afterSummons(afterCompanionFight(ended, outcome, ctx), outcome, ctx);
+      ? hived
+      : afterSummons(afterCompanionFight(hived, outcome, ctx), outcome, ctx);
     const resolved = resolveFight(tended, outcome, view, ctx);
     const end = { outcome, view, sparring };
     const settled = growFromFight(applyFightToll(resolved, end, ctx, rng), lessons, ctx);

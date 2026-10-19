@@ -87,6 +87,7 @@ export const CLANS: readonly ClanDef[] = [
     arts: ['chakraControl', 'ninjutsu'],
     startingTechniqueIds: ['insect-swarm'],
     lodging: 'Your room in the Aburame clan house',
+    hive: { strainId: 'kikaichu' },
   },
   {
     id: 'inuzuka',

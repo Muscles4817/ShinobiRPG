@@ -7,6 +7,7 @@ import { maxChakra } from '@/systems/vitals';
 
 import type { GameContext } from './context';
 import type { Character, GameState } from './state';
+import { chakraBody } from './hives/hive';
 
 /**
  * What the injuries you carry do to you, built like hunger: each one's ModifierSpec slows
@@ -84,9 +85,9 @@ export function sleepChakra(state: GameState): {
   readonly chakra: number;
   readonly partial: boolean;
 } {
-  const { vitals, stats, exhaustion } = state.character;
+  const { vitals, exhaustion } = state.character;
   const partial = isExhausted(exhaustion, state.time.day);
-  const target = chakraAfterSleep(vitals, maxChakra(stats), {
+  const target = chakraAfterSleep(vitals, maxChakra(chakraBody(state)), {
     state: exhaustion,
     day: state.time.day,
   });

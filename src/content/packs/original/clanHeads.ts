@@ -3,7 +3,7 @@ import { statLine } from '../../statLine';
 import type { PersonDef } from '../../types';
 
 /**
- * The heads of Tōrōgakure's four clans, all jōnin. Each keeps the clan's own techniques and
+ * The heads of Tōrōgakure's clans, all jōnin. Each keeps the clan's own techniques and
  * teaches them only to their own; anyone may still train with them.
  */
 export const CLAN_HEADS: readonly PersonDef[] = [
@@ -156,6 +156,37 @@ export const CLAN_HEADS: readonly PersonDef[] = [
           },
         ],
       },
+    },
+  },
+  {
+    id: 'mayu',
+    name: 'Mayu',
+    familyName: 'Tōga',
+    pronouns: 'she',
+    role: 'leader',
+    title: 'Head of the Tōga',
+    rank: 'jonin',
+    stats: statLine('C', { perception: 'A', genjutsu: 'B', ninjutsu: 'B', chakraControl: 'B' }),
+    clanId: 'toga',
+    traitIds: ['calm', 'curious'],
+    appearance: look('long', {
+      hair: '#d8d0b8',
+      eyes: '#8a7a52',
+      skin: '#ead2b2',
+      outfit: '#5b5a44',
+    }),
+    specialty: 'genjutsu',
+    bio: 'Speaks softly, and never quite alone: there is always a moth on her collar, listening.',
+    schedule: {
+      morning: 'toga-compound',
+      afternoon: 'training-grounds',
+      evening: 'toga-compound',
+      night: null,
+    },
+    teacher: {
+      quirk: 'patient',
+      teaches: ['toga-moth-dust', 'toga-scale-blind', 'toga-moth-veil', 'toga-lantern-swarm'],
+      price: { kind: 'bond', minStage: 1 },
     },
   },
 ];

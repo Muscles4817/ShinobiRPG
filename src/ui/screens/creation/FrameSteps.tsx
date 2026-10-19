@@ -1,3 +1,5 @@
+import type { ClanOption } from '@/game';
+
 import { OptionCard } from './OptionCard';
 import type { StepProps } from './types';
 
@@ -5,8 +7,10 @@ import type { StepProps } from './types';
 export function UpbringingStep({ view, draft, update }: StepProps) {
   const family = draft.clanId === 'none' ? 'clanless' : 'clan';
   const offered = view.upbringings.filter((u) => u.family === family);
+  const hive = view.clans.find((c) => c.id === draft.clanId)?.hive ?? null;
   return (
     <div className="step opt-list">
+      {hive && <HiveShareChoice hive={hive} draft={draft} update={update} />}
       {offered.map((u) => (
         <OptionCard
           key={u.id}
@@ -47,5 +51,36 @@ export function BuildStep({ view, draft, update }: StepProps) {
         was built for and you will slow down.
       </p>
     </div>
+  );
+}
+
+/** A child of a hive clan gives the hive part of their chakra at birth: how much. */
+function HiveShareChoice({
+  hive,
+  draft,
+  update,
+}: {
+  readonly hive: NonNullable<ClanOption['hive']>;
+} & Omit<StepProps, 'view'>) {
+  const chosen = draft.hiveShare ?? 'half';
+  return (
+    <section className="hive-choice">
+      <h3>The hive</h3>
+      <p className="muted small">
+        You were born with {hive.strain.toLowerCase()} in you. What they took of your chakra, they
+        keep for good.
+      </p>
+      {hive.shares.map((s) => (
+        <OptionCard
+          key={s.id}
+          name={s.name}
+          description={s.description}
+          selected={chosen === s.id}
+          onSelect={() => {
+            update({ hiveShare: s.id });
+          }}
+        />
+      ))}
+    </section>
   );
 }
