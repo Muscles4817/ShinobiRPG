@@ -47,6 +47,8 @@ export type GearDef =
       readonly weaponClass: WeaponClass;
       /** A weapon that is also a focus: a war fan for wind, a blade that carries lightning. */
       readonly boosts?: FocusTarget;
+      /** Several blades in hand: the strike is a flurry (validated 2 to `MAX_BLADES`, blades only). */
+      readonly blades?: number;
       /** A unique weapon's own verbs, added to every strike it lands. */
       readonly effects?: readonly WeaponEffect[];
     })

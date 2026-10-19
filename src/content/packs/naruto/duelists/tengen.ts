@@ -77,6 +77,7 @@ export const TENGEN_GEAR: readonly GearDef[] = [
     weaponClass: 'greatsword',
     rank: 'A',
     unique: true,
+    blades: 2,
     effects: ['sunder'],
     cost: 0,
     icon: 'sword',

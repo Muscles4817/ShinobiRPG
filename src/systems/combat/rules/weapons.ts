@@ -73,6 +73,8 @@ export interface Attack {
   readonly daze: number;
   /** Chakra drained per point of damage, if it lands. */
   readonly drain: number;
+  /** How many blows it lands as: several blades in hand strike as a flurry. */
+  readonly blows: number;
 }
 
 /** A weapon's numbers at its rank, with a unique weapon's verbs on top (for rules and shops). */
@@ -131,6 +133,7 @@ function attackWith(
 ): Omit<Attack, 'what' | 'kind'> {
   const n = weaponNumbers(weapon);
   return {
+    blows: bladesOf(weapon),
     raw: BLOW_DAMAGE * gapScale(power, physicalDefence(defender)) * n.scale * variance(roll),
     pierce: n.pierce,
     daze: dazeAgainst(n.daze, attacker, defender),
@@ -138,7 +141,15 @@ function attackWith(
   };
 }
 
-const PLAIN = { pierce: 0, daze: 0, drain: 0 } as const;
+const PLAIN = { pierce: 0, daze: 0, drain: 0, blows: 1 } as const;
+
+/** No one fights with more blades in hand than this (validated). */
+export const MAX_BLADES = 7;
+
+/** How many blows a weapon's strike lands as: one per blade in hand. */
+export function bladesOf(weapon: Pick<CombatWeapon, 'blades'>): number {
+  return clamp(Math.round(weapon.blades ?? 1), 1, MAX_BLADES);
+}
 
 /** A blow arrives this much faster for each step of its weapon's speed (`avoid.ts`). */
 export const ARRIVAL_PER_SPEED = 0.04;

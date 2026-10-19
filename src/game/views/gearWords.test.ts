@@ -34,4 +34,9 @@ describe('gear in words', () => {
     const fan = piece({ weaponClass: 'fan', boosts: { discipline: 'ninjutsu' } });
     expect(labels(fan).some((l) => l.startsWith('Ninjutsu'))).toBe(true);
   });
+
+  it('several blades say they strike as a flurry', () => {
+    expect(labels(piece({ blades: 2 })).some((l) => l.includes('flurry'))).toBe(true);
+    expect(labels(piece({})).some((l) => l.includes('flurry'))).toBe(false);
+  });
 });

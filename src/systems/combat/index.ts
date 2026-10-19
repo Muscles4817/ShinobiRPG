@@ -71,7 +71,7 @@ export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
 export { chakraCost, holdTurns } from './rules/body';
 export { equalHitShare } from './rules/damage';
 export { focusScale } from './rules/focus';
-export { weaponNumbers, type WeaponNumbers } from './rules/weapons';
+export { MAX_BLADES, weaponNumbers, type WeaponNumbers } from './rules/weapons';
 export { speedOf, strikeReach, weaponGuard } from './rules/weaponClasses';
 export { splitNarration } from './rules/narration';
 export { RANGE_BANDS, RANGE_LABEL, reachOf } from './rules/range';

@@ -26,13 +26,14 @@ export function equippedIn(state: GameState, ctx: GameContext, slot: GearSlot): 
 
 function weaponOf(def: GearDef | null): CombatWeapon | undefined {
   if (def?.kind !== 'weapon') return undefined;
-  const { name, weaponClass, rank, effects, boosts } = def;
+  const { name, weaponClass, rank, effects, boosts, blades } = def;
   return {
     name,
     weaponClass,
     rank,
     ...(effects ? { effects } : {}),
     ...(boosts ? { boosts } : {}),
+    ...(blades ? { blades } : {}),
   };
 }
 

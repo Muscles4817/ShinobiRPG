@@ -383,7 +383,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     has a **class** (`WEAPON_CLASSES`: light blade, sword, greatsword, polearm, fan, chain, staff,
     blunt, knuckles, throwing, senbon; its shape for the rules is `shapeOf`), and each class
     handles its own way (`rules/weaponClasses.ts`: weight, speed in the hand, the guard it gives,
-    and reach: a polearm or chain strikes at mid as well, `strikeReach`); a weapon
+    and reach: a polearm or chain strikes at mid as well, `strikeReach`); several `blades` in hand
+    strike as a flurry a Guard or Counter meets once (`bladesOf`); a weapon
     may be a focus too (`boosts`). The weapon art is kenjutsu at the weapon's **mastery**
     (`rules/mastery.ts`, `CombatGear.mastery`: a weapon never held lets half the art through), so a
     master of shuriken can be ordinary with a sword; throws are the weapon art aimed by

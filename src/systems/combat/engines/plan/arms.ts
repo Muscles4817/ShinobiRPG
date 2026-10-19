@@ -14,16 +14,23 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
  * drinks the target's chakra.
  */
 
-/** A plain strike goes by the striker's own word for it: a wolf's bite, a spirit's touch. */
-function blowOf(attack: Attack, thrown: boolean, striker: PlanFighter): Blow {
-  return {
-    raw: attack.raw,
+/**
+ * The blows a strike lands as: a plain strike goes by the striker's own word for it (a wolf's
+ * bite, a spirit's touch), and several blades split it into a flurry whose later blows only a
+ * Dodge stands in the way of.
+ */
+function blowsOf(attack: Attack, thrown: boolean, striker: PlanFighter): Blow[] {
+  const first: Blow = {
+    raw: attack.raw / attack.blows,
     what: attack.what === 'strike' ? blowWord(striker) : attack.what,
     dodgeable: true,
     physical: !thrown,
     kind: attack.kind,
     ...(attack.pierce > 0 ? { pierce: attack.pierce } : {}),
   };
+  return Array.from({ length: attack.blows }, (_, i) =>
+    i === 0 ? first : { ...first, followUp: true as const },
+  );
 }
 
 /** A hit that landed: the target lost health to it. */
@@ -61,7 +68,11 @@ export function strike(round: Round, turn: Turn, thrown: boolean): Round {
   const { actor, target, rng } = turn;
   if (!target) return round;
   const attack = (thrown ? throwWith : strikeWith)(actor, target, rng.next());
-  const after = react(round, { attacker: actor, target, blow: blowOf(attack, thrown, actor), rng });
+  const after = blowsOf(attack, thrown, actor).reduce((now, blow) => {
+    const struck = fighterIn(now, target.id);
+    if (!struck || !alive(struck)) return now;
+    return react(now, { attacker: actor, target: struck, blow, rng });
+  }, round);
   const damage = landed(target, after);
   if (damage <= 0) return after;
   const dazed = dazeOnHit(after, turn, attack.daze);

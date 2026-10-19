@@ -201,4 +201,22 @@ describe('plan & watch weapons', () => {
     expect(attackOf(strikeCard(spear)).reach).toContain('mid');
     expect(attackOf(strikeCard(sword)).reach).toEqual(['close']);
   });
+
+  it('twin blades strike as a flurry that a Guard meets only once', () => {
+    const [, foe] = duel({});
+    const guarded = { ...foe, loadout: { ...foe.loadout, close: plainSlots(['guard']) } };
+    const cut = (held: CombatWeapon, seed: number) => {
+      const [hero] = duel({ held });
+      const after = strike(
+        roundOf([hero, guarded]),
+        { actor: hero, target: guarded, rng: createRng(seed) },
+        false,
+      );
+      return 100 - foeAfter(after).health;
+    };
+    const seeds = Array.from({ length: 200 }, (_, i) => i + 1);
+    const average = (held: CombatWeapon) =>
+      seeds.reduce((sum, seed) => sum + cut(held, seed), 0) / seeds.length;
+    expect(average(weapon('sword', { blades: 2 }))).toBeGreaterThan(average(weapon('sword')));
+  });
 });

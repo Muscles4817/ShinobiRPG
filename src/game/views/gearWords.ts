@@ -143,6 +143,7 @@ function hitChips(def: Extract<GearDef, { kind: 'weapon' }>): JournalChip[] {
 function weaponChips(def: Extract<GearDef, { kind: 'weapon' }>): JournalChip[] {
   return [
     ...SHAPE_CHIPS[shapeOf(def)].map(info),
+    ...(def.blades ? [gain(`${def.blades} blades: a flurry a guard meets once`)] : []),
     ...hitChips(def),
     ...handlingChips(def),
     ...(def.boosts ? [gain(`${focusLabel(def.boosts)} ${change(focusScale(def))}`)] : []),

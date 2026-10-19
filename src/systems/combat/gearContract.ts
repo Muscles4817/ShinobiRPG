@@ -90,6 +90,11 @@ export interface CombatWeapon {
   readonly effects?: readonly WeaponEffect[];
   /** A weapon that is also a focus (a war fan for wind, a blade that carries lightning). */
   readonly boosts?: FocusTarget;
+  /**
+   * Several blades in hand (twin swords, seven at once): the strike lands as a flurry, each
+   * blade dodged on its own and a Guard or Counter meeting only the first (`MAX_BLADES`).
+   */
+  readonly blades?: number;
 }
 
 export interface CombatArmour {

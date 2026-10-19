@@ -205,6 +205,7 @@ export const GEAR: readonly GearDef[] = [
     weaponClass: 'sword',
     rank: 'A',
     unique: true,
+    blades: 2,
     effects: ['daze', 'sunder'],
     cost: 0,
     icon: 'sword',
