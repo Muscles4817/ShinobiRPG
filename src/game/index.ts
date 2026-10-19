@@ -45,16 +45,21 @@ export type { GameAction, GameActionType } from './actions/types';
 export { dispatch, blockerFor } from './dispatch';
 export { saveSummary, type SaveSummary } from './views/menu';
 export {
+  browseRoster,
   createVersus,
+  OPEN_FILTER,
   VERSUS_GROUNDS,
-  VERSUS_GROUPS,
   VERSUS_SIDE_MAX,
   versusProblem,
+  versusProfile,
   versusRoster,
+  withGroup,
+  type FacetOption,
+  type RosterBrowse,
   type VersusFighter,
+  type VersusFilter,
   type VersusGround,
-  type VersusGroup,
-  type VersusPick,
+  type VersusProfile,
 } from './versus';
 export { chakraPaperScene, type ChakraPaperScene } from './views/chakraPaper';
 export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';

@@ -1,8 +1,10 @@
 import type { EnemyDef, PersonDef } from '@/content';
+import type { Look } from '@/systems/profile';
 import { fightingPower, statTier, type StatGrade, type Stats } from '@/systems/stats';
 
 import { enemyStatLine } from '../combatants';
 import type { GameContext } from '../context';
+import { personLook } from '../people/looks';
 
 /**
  * Who can fight in versus mode: the pack's shinobi as written (genin to kage, with their
@@ -16,6 +18,8 @@ export type VersusGroup = (typeof VERSUS_GROUPS)[number];
 
 const PERSON_KEY = 'person:';
 const ENEMY_KEY = 'enemy:';
+/** The clan id every pack keeps for the clanless (validated). */
+const NO_CLAN = 'none';
 
 const GROUP_OF_RANK: Readonly<Record<Exclude<PersonDef['rank'], 'civilian'>, VersusGroup>> = {
   kage: 'Kage',
@@ -34,6 +38,14 @@ export interface VersusFighter {
   /** Their fighting power as a grade, E–S. */
   readonly grade: StatGrade;
   readonly power: number;
+  /** A shinobi's village (where they live); null for a foe. */
+  readonly village: string | null;
+  /** A shinobi's clan; null for the clanless and for foes. */
+  readonly clan: string | null;
+  /** A foe's kind ("Bandit", "Beast"); null for a shinobi. */
+  readonly kind: string | null;
+  /** A shinobi's face, for the picker; null for a foe. */
+  readonly look: Look | null;
 }
 
 /** Someone who can fight in versus, by roster id. */
@@ -46,11 +58,30 @@ function entry(base: Omit<VersusFighter, 'grade' | 'power'>, stats: Stats): Vers
   return { ...base, power, grade: statTier(power).grade };
 }
 
-function personEntry(person: PersonDef): VersusFighter | null {
+/** Where someone lives: their home town, else the pack's start village. */
+function villageOf(person: PersonDef, ctx: GameContext): string {
+  const where = person.homeLocationId ?? ctx.content.startLocationId;
+  return ctx.content.locations.get(where)?.name ?? where;
+}
+
+function clanOf(person: PersonDef, ctx: GameContext): string | null {
+  const clan = person.clanId ? ctx.content.clans.get(person.clanId) : undefined;
+  return clan && clan.id !== NO_CLAN ? clan.name : null;
+}
+
+function personEntry(person: PersonDef, ctx: GameContext): VersusFighter | null {
   if (person.rank === 'civilian') return null;
-  const name = [person.name, person.familyName].filter(Boolean).join(' ');
-  const base = { id: `${PERSON_KEY}${person.id}`, name, title: person.title };
-  return entry({ ...base, group: GROUP_OF_RANK[person.rank] }, person.stats);
+  const base = {
+    id: `${PERSON_KEY}${person.id}`,
+    name: fullName(person),
+    title: person.title,
+    group: GROUP_OF_RANK[person.rank],
+    village: villageOf(person, ctx),
+    clan: clanOf(person, ctx),
+    kind: null,
+    look: personLook(person),
+  };
+  return entry(base, person.stats);
 }
 
 function enemyEntry(def: EnemyDef): VersusFighter {
@@ -59,8 +90,22 @@ function enemyEntry(def: EnemyDef): VersusFighter {
     name: def.name,
     title: def.kind,
     group: 'Foes' as const,
+    village: null,
+    clan: null,
+    kind: def.kind,
+    look: null,
   };
   return entry(base, enemyStatLine(def));
+}
+
+/** A contender's stat line as written. */
+export function statsOf(contender: Contender): Stats {
+  return contender.kind === 'person' ? contender.def.stats : enemyStatLine(contender.def);
+}
+
+/** "Kakashi Hatake"; a person without a family name goes by their own. */
+export function fullName(person: PersonDef): string {
+  return [person.name, person.familyName].filter(Boolean).join(' ');
 }
 
 /** Everyone who can fight, by group, strongest first within each. */
@@ -70,7 +115,7 @@ export function versusRoster(ctx: GameContext): VersusFighter[] {
     ...ctx.content.people.all.filter((p) => !p.sensei?.pooled),
     ...ctx.content.duelists.all,
   ];
-  const people = cast.flatMap((p) => personEntry(p) ?? []);
+  const people = cast.flatMap((p) => personEntry(p, ctx) ?? []);
   const foes = ctx.content.enemies.all.map(enemyEntry);
   return [...people, ...foes].sort(
     (a, b) => VERSUS_GROUPS.indexOf(a.group) - VERSUS_GROUPS.indexOf(b.group) || b.power - a.power,

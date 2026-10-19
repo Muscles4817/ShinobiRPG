@@ -33,6 +33,7 @@ import '@/ui/styles/cues.css';
 import '@/ui/styles/cues-village.css';
 import '@/ui/styles/motion.css';
 import '@/ui/styles/menu.css';
+import '@/ui/styles/versus.css';
 import '@/ui/styles/settings.css';
 import '@/ui/styles/dayend.css';
 import '@/ui/styles/honours.css';
