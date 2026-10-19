@@ -1043,6 +1043,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `wide-menu.css` under `.main-menu.wide`): a game's title screen, a list of choices (arrows move
   the mark, Enter or a number takes it) beside a panel telling the one marked, with your save
   card (`saveSummary`: your portrait, rank, place and day) under Continue.
+  Versus setup on a desk (`VersusDesk`) fills the window: the bout, the roster and a profile,
+  each scrolling on its own; the profile follows the pointer through the roster and is never
+  empty, and Enter fights.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own
