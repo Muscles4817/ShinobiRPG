@@ -58,12 +58,18 @@ export {
 export { checkChance, rollCheck, type CheckResult } from './checks';
 export {
   STAT_GRADES,
+  STAT_MAX,
+  STAT_READING,
+  STAT_READINGS,
   STAT_TIERS,
   statTier,
+  statTierOf,
+  withinScale,
   fightingPower,
   partyPower,
   type FightingStats,
   type StatGrade,
+  type StatReading,
   type StatTier,
   type TierRead,
 } from './tiers';

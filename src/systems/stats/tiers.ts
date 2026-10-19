@@ -1,36 +1,88 @@
-import type { Stats } from './stats';
+import type { StatId, Stats } from './stats';
 
 /**
- * A frame of reference for stat numbers: a letter grade with the shinobi rank it belongs to
- * (E–D genin, C chūnin, B–A jōnin, S kage), and one overall fighting rating built from them,
- * so you (and your opponents) can be compared at a glance.
+ * A frame of reference for stat numbers: a letter grade, and words for what the grade means for
+ * that kind of stat. Skills read against the ordinary shinobi of each rank (an average, never a
+ * cap: anyone may hold any grade); the body reads against real athletes; the mind is individual.
+ * One overall fighting rating is built from them, so you (and your opponents) can be compared at
+ * a glance. See `docs/design/stat-model-plan.md`.
  */
 
 export const STAT_GRADES = ['E', 'D', 'C', 'B', 'A', 'S'] as const;
 export type StatGrade = (typeof STAT_GRADES)[number];
 
+/** No stat goes past this: the top of S, the gods among men. */
+export const STAT_MAX = 60;
+
 export interface StatTier {
   readonly min: number;
   readonly grade: StatGrade;
-  /** The shinobi rank this grade belongs to. */
-  readonly rank: string;
 }
 
-/** Ascending. A fresh graduate sits around 5 (E); academy-level enemies 3–10. */
+/** Ascending. A fresh graduate's skills sit around 5 (E); S runs from 40 to `STAT_MAX`. */
 export const STAT_TIERS: readonly StatTier[] = [
-  { min: 0, grade: 'E', rank: 'Genin' },
-  { min: 8, grade: 'D', rank: 'Genin' },
-  { min: 13, grade: 'C', rank: 'Chūnin' },
-  { min: 20, grade: 'B', rank: 'Jōnin' },
-  { min: 28, grade: 'A', rank: 'Jōnin' },
-  { min: 40, grade: 'S', rank: 'Kage' },
+  { min: 0, grade: 'E' },
+  { min: 8, grade: 'D' },
+  { min: 13, grade: 'C' },
+  { min: 20, grade: 'B' },
+  { min: 28, grade: 'A' },
+  { min: 40, grade: 'S' },
 ];
+
+/** How a stat's grade is read: a skill by rank, the body by athletes, the mind by people. */
+export const STAT_READINGS = ['skill', 'body', 'mind'] as const;
+export type StatReading = (typeof STAT_READINGS)[number];
+
+/** Chakra control has a talent in it, but it is trained like an art, so it reads as a skill. */
+export const STAT_READING: Readonly<Record<StatId, StatReading>> = {
+  strength: 'body',
+  speed: 'body',
+  stamina: 'body',
+  reserves: 'body',
+  chakraControl: 'skill',
+  intellect: 'mind',
+  perception: 'mind',
+  willpower: 'mind',
+  taijutsu: 'skill',
+  ninjutsu: 'skill',
+  genjutsu: 'skill',
+  kenjutsu: 'skill',
+  fuuinjutsu: 'skill',
+};
+
+/** What each grade means, by reading. A skill's words are the rank whose average it is. */
+const GRADE_WORDS: Readonly<Record<StatReading, Readonly<Record<StatGrade, string>>>> = {
+  skill: {
+    E: 'Genin',
+    D: 'Good genin',
+    C: 'Chūnin',
+    B: 'Jōnin',
+    A: 'Good jōnin',
+    S: 'Elite',
+  },
+  body: {
+    E: 'Ordinary',
+    D: 'Athletic',
+    C: 'Fine athlete',
+    B: 'National class',
+    A: 'World class',
+    S: 'Beyond human',
+  },
+  mind: {
+    E: 'Ordinary',
+    D: 'Good',
+    C: 'Strong',
+    B: 'Exceptional',
+    A: 'Rare',
+    S: 'Peerless',
+  },
+};
 
 export interface TierRead {
   readonly grade: StatGrade;
-  /** The shinobi rank the grade belongs to, e.g. "Genin". */
-  readonly rank: string;
-  /** "Genin D". */
+  /** What the grade means for this kind of stat, e.g. "Chūnin" or "World class". */
+  readonly words: string;
+  /** "Chūnin C". */
   readonly label: string;
   /** The value this grade begins at. */
   readonly min: number;
@@ -40,23 +92,35 @@ export interface TierRead {
   readonly next: { readonly label: string; readonly at: number } | null;
 }
 
-function labelOf(tier: StatTier): string {
-  return `${tier.rank} ${tier.grade}`;
+function labelOf(grade: StatGrade, reading: StatReading): string {
+  return `${GRADE_WORDS[reading][grade]} ${grade}`;
 }
 
-export function statTier(value: number): TierRead {
+/** A value's grade, read as a skill unless said otherwise. */
+export function statTier(value: number, reading: StatReading = 'skill'): TierRead {
   const index = STAT_TIERS.reduce((found, tier, i) => (value >= tier.min ? i : found), 0);
-  const tier = STAT_TIERS[index] ?? { min: 0, grade: 'E', rank: 'Genin' };
+  const tier = STAT_TIERS[index] ?? { min: 0, grade: 'E' };
   const next = STAT_TIERS[index + 1];
-  const progress = next ? Math.min(1, (value - tier.min) / (next.min - tier.min)) : 1;
+  const top = next?.min ?? STAT_MAX;
+  const progress = Math.min(1, (value - tier.min) / (top - tier.min));
   return {
     grade: tier.grade,
-    rank: tier.rank,
-    label: labelOf(tier),
+    words: GRADE_WORDS[reading][tier.grade],
+    label: labelOf(tier.grade, reading),
     min: tier.min,
     progress: Math.max(0, progress),
-    next: next ? { label: labelOf(next), at: next.min } : null,
+    next: next ? { label: labelOf(next.grade, reading), at: next.min } : null,
   };
+}
+
+/** A stat's grade, read the way that stat is read. */
+export function statTierOf(id: StatId, value: number): TierRead {
+  return statTier(value, STAT_READING[id]);
+}
+
+/** A value kept within the scale. */
+export function withinScale(value: number): number {
+  return Math.min(STAT_MAX, Math.max(0, value));
 }
 
 /**

@@ -51,7 +51,7 @@ describe('the day’s record', () => {
   it('reads growth as a grade and a bar, never a number', () => {
     const view = dayEndView(act(trainedAndFed(), { type: 'sleep' }), ctx)!;
     const row = view.growth[0]!;
-    expect(row.tier).toMatch(/^Genin [ED]$/);
+    expect(row.tier).toMatch(/^(Ordinary|Athletic|Genin|Good genin) [ED]$/);
     expect(row.to).toBeGreaterThan(row.from);
     expect(row.words).not.toMatch(/\d/);
   });

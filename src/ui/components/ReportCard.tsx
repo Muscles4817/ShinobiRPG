@@ -14,7 +14,7 @@ function taughtList(taught: readonly string[] | undefined): { list?: CardList } 
 function gradeCard(report: Extract<Report, { kind: 'grade' }>): CardContent {
   return {
     title: `${report.stat}: grade ${report.grade}`,
-    subtitle: `${report.rank}-grade work`,
+    subtitle: report.rank,
     seal: null,
     grade: report.grade,
     tone: 'good',

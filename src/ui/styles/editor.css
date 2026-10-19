@@ -46,10 +46,6 @@
   overflow-y: auto;
 }
 
-.editor-sheet .versus-problem {
-  color: var(--paper-cost);
-}
-
 .editor-sheet .versus-power small {
   margin-left: 6px;
 }

@@ -17,7 +17,7 @@ import { promotionScene } from './views/promotion';
 
 /** Stats a sensei calls ready: one at chūnin grade (C), two more at D. */
 function ready(state: GameState): GameState {
-  const stats = { ...state.character.stats, taijutsu: 14, strength: 9, speed: 9 };
+  const stats = { ...state.character.stats, taijutsu: 14, chakraControl: 9 };
   return { ...state, character: { ...state.character, stats } };
 }
 

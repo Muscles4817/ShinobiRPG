@@ -30,7 +30,9 @@ Each kind comes from somewhere different, grows differently and is read in diffe
 
 Trained. These follow the rank chart above. Graduates start low (mostly E, the best of the
 year a D or a C in their art); years of work and teaching move them. Talent (aptitude) sets
-how fast and how far. Only skills are read against rank ("chūnin-level ninjutsu").
+how fast and how far. Only skills are read against rank ("chūnin-level ninjutsu"). Chakra
+control has a large talent component (some are born with fine control, some never get it), but
+it is trained like an art, so it reads as one.
 
 ### Body: strength, speed, stamina and chakra reserves
 
@@ -68,7 +70,21 @@ more than any other body stat.
 - **Reserves** grow slowly with use (as now), much faster for clans built on them.
 - A **late bloomer** (late puberty) gets one more lift to body limits early in their genin
   years, rolled at creation, like a breakthrough.
-- Beyond human (S) comes only through breakthroughs: the Gates, a clan's arts, a bloodline.
+- **Beyond human (S) comes from techniques**, not from the body itself: a whole class of jutsu
+  boosts the body in a fight (`empower`: the Gates, Chakra Enhanced Strength, Lightning Armour,
+  the Akimichi's expansion). Tsunade's strength is a technique she learnt, not her frame. So
+  base bodies stay human-scale (world class at most, about 30), and what a fighter does past it
+  is in their arsenal. Breakthroughs (the Gates opened for good, an awakening) may still raise
+  a limit.
+
+### Sex
+
+Bodies differ by sex as in real people, so the body curves are rolled per sex: on average men
+about 10% faster over a sprint, markedly stronger (roughly 3–4 stat points at the fit-to-athlete
+range) and a little higher in aerobic capacity (about 2 points); women's curves overlap men's
+widely, so plenty of women outrun and outlift plenty of men. The mind and skills don't differ.
+A character's sex is its own field, set at creation and authored on each person; it is never
+read from pronouns.
 
 ### Mind: intellect, perception and willpower
 

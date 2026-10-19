@@ -171,7 +171,7 @@ ui ──► game ──► content ──► systems ──► core
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
     derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`
-    (authored with `statLine`; validated against rank and role) and may have an `aptitude`;
+    (authored with `statLine`; on the scale, any grade at any rank) and may have an `aptitude`;
     generated genin get theirs at generation from the save's seed. Genin train every day
     (`game/people/regimen.ts`) through the same growth formula as you, caught up lazily per day
     like the board (`peopleGrown` in `game/people/progress.ts`, hashing the seed, never the
@@ -288,8 +288,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     lethality targets (equals fight two to three rounds and win about half) and the content bench
     (`contentBench.test.ts`) a fresh character's real fights: against an AI copy, the genin of
     their year and D-rank foes; retune the named constants there, not by eye.
-    Every number has a frame of reference: `statTier` grades a stat value E–S (E–D genin, C chūnin,
-    B–A jōnin, S kage) and
+    Every number has a frame of reference (`docs/design/stat-model-plan.md`): values run 0–60, and
+    `statTier` grades one E–S (S from 40), read by kind (`STAT_READING`, `statTierOf`): a skill
+    (the arts and chakra control) against the ordinary shinobi of each rank (E genin, D good
+    genin, C chūnin, B jōnin, A good jōnin, S elite: an average, never a cap), the body against
+    real athletes (world class at A; beyond human, S, comes from techniques that boost it), the
+    mind as individual. `readinessGap` reads skills only. And
     `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you
     (threat, fighting style, and with sharp eyes their standout stats) for fights, sparring
     partners and mission notices, from the same stats the fight uses.
@@ -656,9 +660,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     rebuilt from that copy on load, so a game keeps the world it began with. Each change is
     kept only while it differs from the pack (`editStat`, `editTechniques`), and a fighter or
     the whole pack goes back as written by dropping its entry (`resetFighter`, `NO_EDITS`). The
-    editor reads the pack's rules as notes (a best stat outside the rank's band) and never
-    refuses a change for them; it only keeps out what would break a fight (it refuses an empty
-    technique list and doesn't offer another clan's techniques or a summons without a contract).
+    editor only keeps out what would break a fight: it refuses an empty technique list and
+    doesn't offer another clan's techniques or a summons without a contract.
 
 ### Content packs
 
@@ -753,8 +756,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   optionally an `aptitude` via `talent()`, and an `arsenal`: the techniques and perks they fight
   with in place of the academy kit, each a pack technique with its own source; validated). List
   their whole canon kit: they fight with, and teach, a technique only once their current
-  grades carry it (`canPerform`, `game/people/capable.ts`), so a genin grows into theirs. Their best stat must fit their rank (genin E–C,
-  chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
+  grades carry it (`canPerform`, `game/people/capable.ts`), so a genin grows into theirs. Any stat may be any grade at any rank: write
+  skills from the rank chart as an average, the body from real athletes and the mind as the person
+  (`docs/design/stat-model-plan.md`). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
   technique ids, price) with its `ways` (how they run a team, `content/senseis.ts`, and their
   story: four personal conversations at stages one to four, validated, the last leaving the

@@ -27,7 +27,7 @@ describe('grade-ups', () => {
     const after = withStats(before, { kenjutsu: 8.02 });
     const noted = noteGradeUps(before, after, ctx);
     const [card] = gradeCards(noted);
-    expect(card).toMatchObject({ stat: 'Kenjutsu', grade: 'D', rank: 'Genin' });
+    expect(card).toMatchObject({ stat: 'Kenjutsu', grade: 'D', rank: 'Good genin' });
     // Moonfall Slash is rank C: two above grade E, one above grade D (learnable, unstable).
     // It is kept in the library's stacks, which a chūnin may use.
     expect(card?.opens.map((o) => o.name)).toContain('Moonfall Slash');

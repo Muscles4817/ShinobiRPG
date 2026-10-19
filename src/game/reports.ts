@@ -125,7 +125,10 @@ export type Report =
       readonly kind: 'grade';
       readonly stat: string;
       readonly grade: StatGrade;
-      /** The shinobi rank the grade belongs to, e.g. "Chūnin". */
+      /**
+       * What the grade means for this stat: the rank whose average a skill now is ("Chūnin"),
+       * or words for the body and mind ("World class").
+       */
       readonly rank: string;
       /** What the new grade opens: techniques now within reach, and where they are taught. */
       readonly opens: readonly { readonly name: string; readonly where: string }[];

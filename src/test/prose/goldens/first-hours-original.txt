@@ -347,13 +347,13 @@ view:
     stat: strength
     name: Strength
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[1]:
     stat: taijutsu
     name: Taijutsu
     grade: D
-    tier: Genin D
+    tier: Good genin D
     words: Over halfway to a C
   people[0]:
     stage: Acquaintance
@@ -535,19 +535,19 @@ view:
     stat: reserves
     name: Chakra Reserves
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[1]:
     stat: stamina
     name: Stamina
     grade: D
-    tier: Genin D
+    tier: Athletic D
     words: Only just a D
   growth[2]:
     stat: speed
     name: Speed
     grade: D
-    tier: Genin D
+    tier: Athletic D
     words: Over halfway to a C
   people[0]:
     stage: Acquaintance
@@ -723,31 +723,31 @@ view:
     stat: reserves
     name: Chakra Reserves
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[1]:
     stat: willpower
     name: Willpower
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[2]:
     stat: strength
     name: Strength
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[3]:
     stat: taijutsu
     name: Taijutsu
     grade: D
-    tier: Genin D
+    tier: Good genin D
     words: Over halfway to a C
   growth[4]:
     stat: stamina
     name: Stamina
     grade: D
-    tier: Genin D
+    tier: Athletic D
     words: Only just a D
   people[0]:
     stage: Acquaintance
@@ -928,19 +928,19 @@ view:
     stat: strength
     name: Strength
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[2]:
     stat: taijutsu
     name: Taijutsu
     grade: D
-    tier: Genin D
+    tier: Good genin D
     words: Over halfway to a C
   growth[3]:
     stat: willpower
     name: Willpower
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   people[0]:
     stage: Acquaintance
@@ -1132,13 +1132,13 @@ view:
     stat: reserves
     name: Chakra Reserves
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[3]:
     stat: stamina
     name: Stamina
     grade: D
-    tier: Genin D
+    tier: Athletic D
     words: Only just a D
   people[0]:
     stage: Acquaintance
@@ -1311,7 +1311,7 @@ view:
     stat: intellect
     name: Intellect
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[1]:
     stat: genjutsu
@@ -1323,13 +1323,13 @@ view:
     stat: strength
     name: Strength
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[3]:
     stat: taijutsu
     name: Taijutsu
     grade: D
-    tier: Genin D
+    tier: Good genin D
     words: Over halfway to a C
   people[0]:
     stage: Acquaintance
@@ -1503,7 +1503,7 @@ view:
     stat: perception
     name: Perception
     grade: D
-    tier: Genin D
+    tier: Good D
     words: Only just a D
   people[0]:
     stage: Acquaintance
@@ -1649,31 +1649,31 @@ view:
     stat: strength
     name: Strength
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[1]:
     stat: taijutsu
     name: Taijutsu
     grade: D
-    tier: Genin D
+    tier: Good genin D
     words: Over halfway to a C
   growth[2]:
     stat: willpower
     name: Willpower
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[3]:
     stat: reserves
     name: Chakra Reserves
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[4]:
     stat: stamina
     name: Stamina
     grade: D
-    tier: Genin D
+    tier: Athletic D
     words: Only just a D
   people[0]:
     stage: Acquaintance

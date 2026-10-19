@@ -88,11 +88,6 @@ export function FighterEditorSheet(props: FighterEditorSheetProps) {
         )}
         <ResetFighter editor={editor} onReset={props.onReset} />
       </div>
-      {editor.notes.map((note) => (
-        <p key={note} className="versus-problem">
-          {note}
-        </p>
-      ))}
       <StatEditor stats={editor.stats} onChange={props.onStat} />
       <TechniqueEditor
         techniques={editor.techniques}

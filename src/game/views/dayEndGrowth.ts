@@ -1,4 +1,11 @@
-import { STAT_GRADES, STAT_INFO, statTier, type StatGrade, type StatId } from '@/systems/stats';
+import {
+  STAT_GRADES,
+  STAT_INFO,
+  statTier,
+  statTierOf,
+  type StatGrade,
+  type StatId,
+} from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 
 import type { DayEnd } from '../daybook/state';
@@ -56,7 +63,7 @@ export function growthRows(ended: DayEnd): DayGrowth[] {
     .filter(([, [before, after]]) => after > before)
     .sort(([, a], [, b]) => b[1] - b[0] - (a[1] - a[0]));
   return rows.slice(0, MAX_GROWTH_ROWS).map(([stat, [before, after]]) => {
-    const now = statTier(after);
+    const now = statTierOf(stat, after);
     const up = statTier(before).grade !== now.grade;
     return {
       stat,

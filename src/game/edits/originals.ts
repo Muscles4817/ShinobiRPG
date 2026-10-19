@@ -1,4 +1,4 @@
-import { CONTENT_PACKS, type PersonDef, type PersonRank } from '@/content';
+import { CONTENT_PACKS, type PersonDef } from '@/content';
 import type { Stats } from '@/systems/stats';
 import type { Element } from '@/systems/techniques';
 
@@ -19,8 +19,6 @@ export interface FighterOriginal {
   readonly techniqueIds: readonly string[];
   /** A person's clan, for the clan techniques they may take; null for a foe. */
   readonly clanId: string | null;
-  /** A person's rank; null for a foe. */
-  readonly rank: PersonRank | null;
   readonly nature?: Element;
 }
 
@@ -37,7 +35,6 @@ function originalPerson(person: PersonDef, ctx: GameContext, ref: FighterRef): F
     stats: person.stats,
     techniqueIds: person.arsenal?.techniqueIds ?? kitOf(person, ctx),
     clanId: person.clanId ?? null,
-    rank: person.rank,
     ...(nature ? { nature } : {}),
   };
 }
@@ -56,7 +53,6 @@ export function originalFighter(ctx: GameContext, key: string): FighterOriginal 
       stats: enemyStatLine(def),
       techniqueIds: def.techniqueIds,
       clanId: null,
-      rank: null,
       ...(nature ? { nature } : {}),
     };
   }

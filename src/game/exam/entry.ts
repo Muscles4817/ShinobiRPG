@@ -1,7 +1,14 @@
 import type { NominationHabit, PersonDef } from '@/content';
 import { fillSlots } from '@/core';
 import { stageForPair, stageOf } from '@/systems/bonds';
-import { STAT_GRADES, STAT_IDS, statTier, type StatGrade, type Stats } from '@/systems/stats';
+import {
+  STAT_GRADES,
+  STAT_IDS,
+  STAT_READING,
+  statTier,
+  type StatGrade,
+  type Stats,
+} from '@/systems/stats';
 
 import type { GameContext } from '../context';
 import { bondOf, findPerson, requirePerson, villagers } from '../people/cast';
@@ -33,10 +40,12 @@ export function nominationMissions(sensei: PersonDef): number {
 }
 /** Your sensei must rate you at least this (`game/sensei/state.ts`): kept sessions earn it. */
 export const NOMINATION_REGARD = 40;
-/** Readiness: at least this many stats at C (chūnin grade)… */
-export const READY_AT_C = 1;
-/** …and at least this many at D or better. */
-export const READY_AT_D = 3;
+/**
+ * Readiness reads skills only (the arts and chakra control): a sharp mind or a fast body is not
+ * chūnin work. A sensei calls a genin ready once one of their skills reaches C, the ordinary
+ * chūnin's grade in their art; a specialist is as ready as an all-rounder.
+ */
+export const READY_GRADE: StatGrade = 'C';
 /** A teammate sits with you once they count you at least this. */
 export const TEAMMATE_WILLING_STAGE = 1;
 /** A replacement must be a friend, to go into an exam with you. */
@@ -50,16 +59,16 @@ export interface Replacement {
   readonly joining: string;
 }
 
-function atLeast(stats: Stats, grade: StatGrade): number {
+const SKILLS = STAT_IDS.filter((id) => STAT_READING[id] === 'skill');
+
+function hasSkillAt(stats: Stats, grade: StatGrade): boolean {
   const floor = STAT_GRADES.indexOf(grade);
-  return STAT_IDS.filter((id) => STAT_GRADES.indexOf(statTier(stats[id]).grade) >= floor).length;
+  return SKILLS.some((id) => STAT_GRADES.indexOf(statTier(stats[id]).grade) >= floor);
 }
 
 /** What a sensei would say is missing before they call someone ready, or null when ready. */
 export function readinessGap(stats: Stats): string | null {
-  if (atLeast(stats, 'C') < READY_AT_C) return 'a stat at chūnin grade (C)';
-  if (atLeast(stats, 'D') < READY_AT_D) return `${READY_AT_D} stats at D or better`;
-  return null;
+  return hasSkillAt(stats, READY_GRADE) ? null : 'a skill at chūnin level (C)';
 }
 
 export function senseiOf(state: GameState, ctx: GameContext): PersonDef | null {
