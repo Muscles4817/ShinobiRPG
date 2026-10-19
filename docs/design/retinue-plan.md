@@ -652,74 +652,89 @@ nothing. This step gives those techniques a pool to come from.
 - An adult taking the install later gets the same three shares, but at a price: days laid up
   while the body takes the hive.
 
-### Strains and crossbreeding (step 4c): the proposal
+### Strains and crossbreeding (step 4c)
 
-For discussion before building. To crossbreed, a strain has to be made of parts that can be
-mixed. Today a strain is four numbers (drain, hardiness, fears, senses), which is too thin to
-inherit from. So a strain becomes a set of **traits**: each one a thing the insects can do (or
-can't stand), with a strength of one to three, that the fight reads. Crossbreeding mixes
-traits.
+To crossbreed, a strain has to be made of parts that can be mixed. The designer's model has two
+layers: **qualities** every insect has, as a matter of degree, and **gifts** only some species
+carry, which can be strong or weak.
 
-**What insects can do** (each read by one rule in `rules/swarms.ts`):
+**Qualities: what every insect has** (graded E to A, like stats; each read by one rule in
+`rules/swarms.ts`):
 
-| Trait    | What it does in a fight                                                         |
-| -------- | ------------------------------------------------------------------------------- |
-| Draining | Settled insects draw a foe's chakra (into the host, by `absorb`).               |
-| Hardy    | A share of losses shrugged off.                                                 |
-| Keen     | Finds the hidden; settled insects keep a foe found.                             |
-| Prolific | Breeds back faster at home.                                                     |
-| Tiny     | More insects to the chakra given (a bigger cap), but each sting is lighter.     |
-| Venomous | Settled insects poison as well (the `afflict` poison: saps strength and speed). |
-| Glowing  | Dust that marks: a settled foe can't conceal, and is easier to hit.             |
-| Blinding | Scales in the eyes: swarm techniques may daze, and settled foes aim worse.      |
-| Silk     | Swarm holds (the rope, the sphere) grip harder and are harder to break.         |
-| Shelled  | The wall and the clone stand more hits before they come apart.                  |
+| Quality   | What a better grade does in a fight or at home                                  |
+| --------- | ------------------------------------------------------------------------------- |
+| Speed     | Swarm attacks are harder to slip: fast insects land.                            |
+| Bite      | Swarm attacks hit harder.                                                       |
+| Toughness | Fewer insects lost to areas and feared elements.                                |
+| Brood     | Breeds back faster at home.                                                     |
+| Size      | Smaller insects: more of them to the chakra given (a bigger cap), each lighter. |
+| Senses    | Finds the hidden; settled insects keep a foe found.                             |
 
-**What insects can't stand** (weaknesses, also traits): fears fire, fears wind, fears water,
-fears cold, short-lived (breeds back slower away from home).
+**Gifts: what makes a species** (each one weak, strong or great, or absent):
+
+| Gift         | What it does                                                                                                            |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Chakra drain | Settled insects draw a foe's chakra into the host. The Aburame's kikaichū have it great; a few wild kinds have a trace. |
+| Camouflage   | Swarm attacks are hard to see coming, so even harder to slip.                                                           |
+| Glow         | Dust that marks: a settled foe can't conceal and is easier to hit.                                                      |
+| Blinding     | Scales in the eyes: swarm techniques may daze, and settled foes aim worse.                                              |
+| Venom        | Settled insects poison as well (saps strength and speed).                                                               |
+| Silk         | Swarm holds grip harder and are harder to break.                                                                        |
+| Shell        | The wall and the clone stand more hits before they come apart.                                                          |
+
+**Weaknesses** are what a species can't stand: fire, wind, water or cold, each doubling the
+losses to that element.
+
+**Species and family.** Every strain has a species (kikaichū, lantern moth, paper wasp…) and
+belongs to a family (beetles, moths, wasps, spiders, flies). How far apart two strains are is
+how far apart their species are: the same species, the same family, or strangers.
 
 **The strains to start with:**
 
-- **Kikaichū:** draining 3, hardy 2, keen 1, fears fire.
-- **Lantern moths:** glowing 2, blinding 2, keen 2, draining 1, fears fire, fears wind.
-- **Wild strains** found away from home, by biome, each strong in one or two things:
-  - woods: a stinging wasp (venomous), a weaving spider (silk);
-  - marsh: a midge cloud (tiny, prolific);
-  - river: a water beetle (shelled, doesn't fear water);
-  - mountain: a cold-hardy locust (hardy, fears fire less);
-  - foreign markets: rarer strains for a price.
+- **Kikaichū** (beetles): chakra drain great; speed C, bite D, toughness B, brood C, size B,
+  senses C; fears fire.
+- **Lantern moths** (moths): glow strong, blinding strong; senses B, speed C, the rest D;
+  fears fire and wind.
+- **Wild strains away from home**, by biome, each with a quality or a gift worth having:
+  - woods: a paper wasp (fast, a weak venom) and a weaving spider (silk);
+  - marsh: a midge cloud (tiny, a fast brood);
+  - river: a water beetle (shell, no fear of water);
+  - mountain: a rock locust (tough);
+  - grassland or anywhere at night: a bark moth (camouflage);
+  - a few with a trace of chakra drain, found far from home;
+  - foreign markets sell rarer strains for a price.
 
-**Crossbreeding:**
+**Crossbreeding is luck, forgiving when simple and wild when complex:**
 
-1. **Find.** In a wild place, search for insects (an action like foraging, once a day). What
-   turns up hangs on the biome, the season and your perception. A find goes into a jar at home.
-2. **Study.** Each day at home with a jar, studying it shows one more of its traits (intellect
-   speeds it). You can't cross what you don't understand.
-3. **Cross.** Choose a studied jar to cross into your hive. Over a few days at home the hive
-   breeds a new strain of your own, which you name. For each trait the parents have, the child
-   takes it at the stronger parent's strength, the weaker, or loses it, by a draw from the seed.
-   Weaknesses come through more easily than strengths. Part of the hive goes into the
-   breeding, so it is thin for those days.
-4. **Keep.** Your hive is one strain at a time, but the strains you have bred are kept in a
-   ledger. Going back to one takes a crossing too.
+- **Stability.** Every cross has a stability, set by how far apart the parents are (same species,
+  same family, strangers) and how many crosses deep the lineage already is. A first cross
+  within a species is near certain; strangers several crosses deep are a gamble.
+  Stability shows in words (true-breeding, settled, wavering, wild), never as a number.
+- **What the brood inherits** is drawn from the seed and the day (never the Rng):
+  - each quality lands between the parents' grades, and a less stable cross strays further
+    either way;
+  - each gift passes at its strength, a step weaker, or not at all, more often lost the less
+    stable the cross; a stable cross keeps what both parents share;
+  - weaknesses pass more easily than gifts;
+  - a wild cross may throw back to one parent, fail outright (the brood dies and the
+    insects spent on it are lost), or, rarely, come out with a gift stronger than either
+    parent's.
+- **Doing it.**
+  1. Find insects in a wild place (an action like foraging, once a day): what turns up hangs on
+     the biome, the season and your perception. A find goes into a jar at home.
+  2. Study a jar each day at home to learn what it is; a cross needs it understood first.
+  3. Cross it into your hive: over a few days at home the hive breeds the new strain, thinned
+     while it does. You name what comes out. If you don't like it, the only way back is
+     another cross.
+- **The install** a child of the clan is born with adds a grade of toughness and size to
+  whatever strain the body holds.
 
-**The balance rule:** a strain has a **trait budget** (strengths added up, less something for
-each weakness), so a hybrid trades things off and can't be best at everything. A body
-installed by the clan rite (as a child of the clan) gives the hive one more point of hardiness
-whatever its strain.
+**Still open:**
 
-**Questions for you:**
-
-1. **The traits:** is the list right? Anything to add (a strain that eats poison, one that
-   carries messages), or cut?
-2. **Strength one to three, or on and off?** Levels make crossing richer and the card busier.
-3. **The budget:** should a hybrid be capped so you always trade off, or can a patient breeder
-   stack everything given enough crossings?
-4. **Luck or choice:** when crossing, is what the child inherits partly luck (redo it to try
-   again, at the cost of days and a thin hive), or do you choose which traits to keep, once
-   you've studied both parents?
-5. **The original pack's moths:** should a moth host find and cross wild moths, or any insect,
-   moths and beetles alike?
+- whether a hybrid is capped (a budget across qualities and gifts) or a patient breeder can
+  stack everything given enough luck. The default is no cap: instability is the brake;
+- whether a moth host may cross beetles and wasps, or only moths. The default is any insect,
+  with strangers being the least stable cross.
 
 ### Shamans: spirits seen, bound and sealed
 
