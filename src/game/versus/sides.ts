@@ -6,7 +6,7 @@ import type { GameContext } from '../context';
 import { companionCombatant, senseiCombatant } from '../people/companions';
 import { defaultStance } from '../people/teamOrders';
 import type { GameState } from '../state';
-import { contenderOf, type Contender } from './roster';
+import { contenderOf, fullName, type Contender } from './roster';
 
 /**
  * The two sides of a versus bout, one to four fighters each, as the fight sees them: you first
@@ -23,8 +23,7 @@ const FOE_TAG = 'Opponent';
 const ALLY_PREFIX = 'ally:';
 
 export function nameOf(contender: Contender): string {
-  if (contender.kind === 'enemy') return contender.def.name;
-  return [contender.def.name, contender.def.familyName].filter(Boolean).join(' ');
+  return contender.kind === 'enemy' ? contender.def.name : fullName(contender.def);
 }
 
 /** "A", "A and B", "A, B and C". */
@@ -33,7 +32,12 @@ export function namesOf(contenders: readonly Contender[]): string {
 }
 
 /** A fighter as written: people with their arsenal (a sensei with their signatures too). */
-function setupOf(c: Contender, state: GameState, ctx: GameContext, tag: string): CombatantSetup {
+export function setupOf(
+  c: Contender,
+  state: GameState,
+  ctx: GameContext,
+  tag: string,
+): CombatantSetup {
   if (c.kind === 'enemy') return { ...enemyCombatant(c.def, 0, ctx), tag };
   return c.def.sensei
     ? senseiCombatant(c.def, state, ctx, tag)

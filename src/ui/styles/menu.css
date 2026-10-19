@@ -241,7 +241,7 @@ a.menu-option {
   margin: 0;
 }
 
-.versus-setup header {
+.versus-setup > header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -279,10 +279,6 @@ a.menu-option {
   gap: 8px;
 }
 
-.versus-remove {
-  align-self: flex-end;
-}
-
 .versus-problem {
   margin: 0;
   color: var(--cost);
@@ -293,7 +289,9 @@ a.menu-option {
   font-size: 1.1rem;
 }
 
-.versus-slot select {
+.versus-slot select,
+.versus-facet select,
+.versus-search {
   min-height: 44px;
   padding: 0 10px;
   font: inherit;
@@ -301,33 +299,6 @@ a.menu-option {
   background: var(--raise);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-}
-
-.versus-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  background: var(--paper) var(--grain-ink);
-  color: var(--paper-ink);
-  border-radius: var(--radius);
-}
-
-.versus-card div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.versus-card b {
-  font-family: var(--font-story);
-  font-size: 1.2rem;
-}
-
-.versus-card small {
-  color: var(--paper-muted);
 }
 
 .versus-power {
