@@ -95,12 +95,7 @@ export {
   type ExerciseCard,
   type StatPreview,
 } from './views/training';
-export {
-  marketView,
-  type MarketItem,
-  type IngredientItem,
-  type CookbookItem,
-} from './views/market';
+export { marketView, type MarketItem, type CookbookItem } from './views/market';
 export { homeView, hospitalView, type HomeView, type HospitalView } from './views/home';
 export { innView, type InnView } from './views/inn';
 export { houseView, type HouseView } from './views/house';

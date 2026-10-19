@@ -115,6 +115,31 @@ describe('the desktop layout (smoke test)', () => {
     expect(screen.getByRole('button', { name: 'Here' })).toHaveAttribute('aria-current', 'page');
   });
 
+  describe('on the title menu', () => {
+    function openMenu() {
+      const user = userEvent.setup();
+      render(<App store={storeWith(serialize(newGame()))} />);
+      return user;
+    }
+
+    it('continues with Enter and takes a choice by its number', async () => {
+      windowWide(true);
+      const user = openMenu();
+      await user.keyboard('2');
+      expect(screen.getByRole('group', { name: 'Start over?' })).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: /^Keep/ }));
+      await user.keyboard('{Enter}');
+      expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument();
+    });
+
+    it('leaves the keys alone on a phone', async () => {
+      windowWide(false);
+      const user = openMenu();
+      await user.keyboard('1');
+      expect(screen.getByRole('navigation', { name: 'Main menu' })).toBeInTheDocument();
+    });
+  });
+
   describe('on a job', () => {
     const onJob = () =>
       act(veteran(newGame(), 5), { type: 'startMission', missionId: 'tea-merchant-escort' });

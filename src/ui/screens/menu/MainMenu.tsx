@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import type { SaveSummary } from '@/game';
 
 import { InkSeal, TitleScene } from '../../art/TitleScene';
 import { Notice } from '../../components/Notice';
+import { KeyHint } from '../../layout/KeyHint';
+import { useKeys } from '../../layout/useKeys';
+import { useWideScreen } from '../../layout/useWideScreen';
 import { ShareLink } from './ShareLink';
 
 export interface MainMenuProps {
@@ -18,29 +21,53 @@ export interface MainMenuProps {
   readonly onSettings: () => void;
 }
 
+interface MenuOption {
+  readonly id: 'continue' | 'new-game' | 'versus' | 'editor' | 'settings';
+  readonly glyph: string;
+  readonly title: string;
+  readonly line: ReactNode;
+  readonly primary: boolean;
+  readonly pick: () => void;
+}
+
+/** One choice on the menu, stamped with its character (and its number key on desktop). */
+function OptionButton({
+  option,
+  index,
+  wide,
+}: {
+  readonly option: MenuOption;
+  readonly index: number;
+  readonly wide: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      className={option.primary ? 'menu-option primary' : 'menu-option'}
+      onClick={option.pick}
+    >
+      <span className="menu-glyph" aria-hidden="true">
+        {option.glyph}
+      </span>
+      <span className="menu-words">
+        <b>{option.title}</b>
+        <small>{option.line}</small>
+      </span>
+      {wide && <KeyHint index={index} />}
+    </button>
+  );
+}
+
 /** Starting over replaces the save, so it asks first when there is one. */
-function NewGame({ save, onNewGame }: Pick<MainMenuProps, 'save' | 'onNewGame'>) {
-  const [asking, setAsking] = useState(false);
-  if (!asking || !save) {
-    return (
-      <button
-        type="button"
-        className={save ? 'menu-option' : 'menu-option primary'}
-        onClick={() => {
-          if (save) setAsking(true);
-          else onNewGame();
-        }}
-      >
-        <span className="menu-glyph" aria-hidden="true">
-          新
-        </span>
-        <span className="menu-words">
-          <b>New game</b>
-          <small>Break into the academy and graduate as a new genin.</small>
-        </span>
-      </button>
-    );
-  }
+function ConfirmNewGame({
+  save,
+  onNewGame,
+  onKeep,
+}: {
+  readonly save: SaveSummary;
+  readonly onNewGame: () => void;
+  readonly onKeep: () => void;
+}) {
   return (
     <div className="menu-confirm" role="group" aria-label="Start over?">
       <p>A new game replaces {save.name}’s save.</p>
@@ -48,13 +75,7 @@ function NewGame({ save, onNewGame }: Pick<MainMenuProps, 'save' | 'onNewGame'>)
         <button type="button" className="btn danger" onClick={onNewGame}>
           Start over
         </button>
-        <button
-          type="button"
-          className="btn ghost"
-          onClick={() => {
-            setAsking(false);
-          }}
-        >
+        <button type="button" className="btn ghost" onClick={onKeep}>
           Keep {save.name}
         </button>
       </div>
@@ -63,13 +84,82 @@ function NewGame({ save, onNewGame }: Pick<MainMenuProps, 'save' | 'onNewGame'>)
 }
 
 /**
+ * The menu's choices in order: carry on (when there is a save), begin again, versus, the editor,
+ * settings.
+ */
+function menuOptions(props: MainMenuProps, askToStartOver: () => void): MenuOption[] {
+  const { save } = props;
+  const resume: MenuOption[] = save
+    ? [
+        {
+          id: 'continue',
+          glyph: '続',
+          title: 'Continue',
+          line: `${save.name}, ${save.line}`,
+          primary: true,
+          pick: props.onContinue,
+        },
+      ]
+    : [];
+  return [
+    ...resume,
+    {
+      id: 'new-game',
+      glyph: '新',
+      title: 'New game',
+      line: 'Break into the academy and graduate as a new genin.',
+      primary: !save,
+      pick: save ? askToStartOver : props.onNewGame,
+    },
+    {
+      id: 'versus',
+      glyph: '対',
+      title: 'Versus',
+      line: 'Any two fighters, head to head. Nothing is saved.',
+      primary: false,
+      pick: props.onVersus,
+    },
+    {
+      id: 'editor',
+      glyph: '編',
+      title: 'Editor',
+      line: 'Change how fighters are written, for versus and new games.',
+      primary: false,
+      pick: props.onEditor,
+    },
+    {
+      id: 'settings',
+      glyph: '設',
+      title: 'Settings',
+      line: 'Sound and music.',
+      primary: false,
+      pick: props.onSettings,
+    },
+  ];
+}
+
+/**
  * The title screen: carry on, begin again, set up a versus bout, edit the world, change the
- * settings, or share the game.
+ * settings, or share the game. On a wide screen the picture fills one side and the menu stands beside it, its
+ * choices on the number keys and Continue (or a new game) on Enter.
  */
 export function MainMenu(props: MainMenuProps) {
   const { save, notice } = props;
+  const wide = useWideScreen();
+  const [asking, setAsking] = useState(false);
+  const options = menuOptions(props, () => {
+    setAsking(true);
+  });
+  const primary = options.find((o) => o.primary);
+  useKeys(
+    {
+      ...Object.fromEntries(options.map((o, i) => [String(i + 1), o.pick])),
+      Enter: primary?.pick,
+    },
+    wide && !asking,
+  );
   return (
-    <main className="main-menu">
+    <main className={wide ? 'main-menu wide' : 'main-menu'}>
       {notice && <Notice text={notice} onDismiss={props.onDismissNotice} />}
       <header className="menu-hero">
         <TitleScene />
@@ -85,49 +175,23 @@ export function MainMenu(props: MainMenuProps) {
         <p className="menu-tagline">A shinobi’s life, one day at a time.</p>
       </header>
       <nav className="menu-options" aria-label="Main menu">
-        {save && (
-          <button type="button" className="menu-option primary" onClick={props.onContinue}>
-            <span className="menu-glyph" aria-hidden="true">
-              続
-            </span>
-            <span className="menu-words">
-              <b>Continue</b>
-              <small>
-                {save.name}, {save.line}
-              </small>
-            </span>
-          </button>
+        {options.map((o, i) =>
+          asking && save && o.id === 'new-game' ? (
+            <ConfirmNewGame
+              key={o.id}
+              save={save}
+              onNewGame={props.onNewGame}
+              onKeep={() => {
+                setAsking(false);
+              }}
+            />
+          ) : (
+            <OptionButton key={o.id} option={o} index={i} wide={wide} />
+          ),
         )}
-        <NewGame save={save} onNewGame={props.onNewGame} />
-        <button type="button" className="menu-option" onClick={props.onVersus}>
-          <span className="menu-glyph" aria-hidden="true">
-            対
-          </span>
-          <span className="menu-words">
-            <b>Versus</b>
-            <small>Any two fighters, head to head. Nothing is saved.</small>
-          </span>
-        </button>
-        <button type="button" className="menu-option" onClick={props.onEditor}>
-          <span className="menu-glyph" aria-hidden="true">
-            編
-          </span>
-          <span className="menu-words">
-            <b>Editor</b>
-            <small>Change how fighters are written, for versus and new games.</small>
-          </span>
-        </button>
-        <button type="button" className="menu-option" onClick={props.onSettings}>
-          <span className="menu-glyph" aria-hidden="true">
-            設
-          </span>
-          <span className="menu-words">
-            <b>Settings</b>
-            <small>Sound and music.</small>
-          </span>
-        </button>
         <ShareLink />
       </nav>
+      {wide && <p className="key-note">Number keys choose. Enter takes the first.</p>}
     </main>
   );
 }
