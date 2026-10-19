@@ -82,6 +82,16 @@ describe('the desktop layout (smoke test)', () => {
     }
   });
 
+  it('opens a person’s sheet beside the page, and closes it with Esc', async () => {
+    windowWide(true);
+    const user = await openGame();
+    const around = screen.getByRole('region', { name: 'Who’s here' });
+    await user.click(within(around).getAllByRole('button')[0]!);
+    expect(document.querySelector('.person-sheet')).not.toBeNull();
+    await user.keyboard('{Escape}');
+    expect(document.querySelector('.person-sheet')).toBeNull();
+  });
+
   it('keeps the phone layout as it was on a narrow screen', async () => {
     windowWide(false);
     const user = await openGame();

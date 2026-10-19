@@ -19,6 +19,7 @@ import {
   TheyTeach,
   WhatTheyreLike,
 } from './PersonSections';
+import { useCloseOnEscape } from './useCloseOnEscape';
 
 interface PersonSheetProps {
   readonly ctx: GameContext;
@@ -148,6 +149,7 @@ function PersonHead({ p }: { readonly p: Sheet }) {
  * with what you can do together kept at the bottom.
  */
 export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSheetProps) {
+  useCloseOnEscape(onClose);
   const p = personSheet(state, ctx, personId);
   const rivalry = rivalryView(state, ctx, personId);
   if (!p) return null;

@@ -9,6 +9,7 @@ import {
 } from '@/game';
 
 import { BondMeter } from './BondMeter';
+import { useCloseOnEscape } from './useCloseOnEscape';
 
 type CompanionGrowingView = CompanionSheetView['growing'];
 
@@ -102,6 +103,7 @@ function Arts({
 
 /** Your companion's sheet: how it is, and feeding, play and medicine, wherever it is with you. */
 export function CompanionSheet({ ctx, state, perform, onClose }: CompanionSheetProps) {
+  useCloseOnEscape(onClose);
   const c = companionSheet(state, ctx);
   if (!c) return null;
   return (
