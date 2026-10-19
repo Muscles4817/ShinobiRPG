@@ -1007,8 +1007,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `.app.wide` or `.wide-main`, so the phone layout never changes with it. To set parts of a
   screen side by side, wrap them in a `Pane` (`ui/layout/Pane.tsx`): `display: contents` on a
   phone, a column on desktop. Scenes still take the whole screen; the ones in `WIDE_SCENES`
-  (`GameScreen.tsx`, today the mission) set their panes side by side (`wide-scenes.css`), and
-  what only the desktop shows beside a scene is a view model too (`missionSoFar`).
+  (`GameScreen.tsx`: the mission and the fight's plan and watch screens) set their panes side
+  by side (`wide-scenes.css`), and what only the desktop shows beside a scene is a view model
+  too (`missionSoFar`).
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own

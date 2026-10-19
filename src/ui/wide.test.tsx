@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { serialize, type SaveStore } from '@/game';
-import { act, newGame, veteran } from '@/test/gameFixtures';
+import { act, newGame, pressOn, veteran } from '@/test/gameFixtures';
 
 import { App } from './App';
 
@@ -108,6 +108,32 @@ describe('the desktop layout (smoke test)', () => {
       await openGame(onJob());
       expect(screen.queryByRole('region', { name: 'Who’s with you' })).not.toBeInTheDocument();
       expect(screen.getByRole('navigation', { name: 'Choices' })).toBeInTheDocument();
+    });
+  });
+
+  describe('in a fight', () => {
+    const inFight = () => {
+      let s = act(veteran(newGame(), 5), {
+        type: 'startMission',
+        missionId: 'tea-merchant-escort',
+      });
+      for (let i = 0; i < 20 && !s.combat; i++) s = pressOn(s);
+      return s;
+    };
+
+    it('sets your cards beside the field, and keeps what was told beside the stage', async () => {
+      windowWide(true);
+      const user = await openGame(inFight());
+      expect(screen.getByRole('region', { name: 'Your cards' })).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: 'Begin the fight' }));
+      expect(await screen.findByRole('region', { name: 'So far' })).toBeInTheDocument();
+    });
+
+    it('leaves the stage as it was on a phone', async () => {
+      windowWide(false);
+      const user = await openGame(inFight());
+      await user.click(screen.getByRole('button', { name: 'Begin the fight' }));
+      expect(screen.queryByRole('region', { name: 'So far' })).not.toBeInTheDocument();
     });
   });
 });

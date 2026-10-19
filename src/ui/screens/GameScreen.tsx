@@ -174,7 +174,7 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
 }
 
 /** Scenes with a desktop arrangement of their own; the rest keep the phone's column. */
-const WIDE_SCENES: readonly SceneKind[] = ['mission'];
+const WIDE_SCENES: readonly SceneKind[] = ['mission', 'combat'];
 
 /** The app's classes: the desktop layout outside scenes, and inside the scenes that have one. */
 function appClass(wide: boolean, scene: SceneKind | null): string {
