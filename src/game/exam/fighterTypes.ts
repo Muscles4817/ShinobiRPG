@@ -21,7 +21,8 @@ export const FIGHTER_TYPES = [
   'illusion-striker',
   'battle-medic',
   'brawler',
-  'swordsman',
+  'weapons-fighter',
+  'marksman',
   'ninjutsu-caster',
   'illusionist',
   'sealer',
@@ -114,10 +115,19 @@ export const FIGHTER_TYPE_DEFS: Readonly<Record<FighterType, FighterTypeDef>> = 
     name: 'a close fighter',
     needs: [{ ways: [['taijutsu']], what: 'taijutsu' }, GET_IN_CLOSE],
   },
-  swordsman: {
-    id: 'swordsman',
-    name: 'a swordsman',
-    needs: [{ ways: [['kenjutsu']], what: 'kenjutsu' }, GET_IN_CLOSE],
+  'weapons-fighter': {
+    id: 'weapons-fighter',
+    name: 'a weapons fighter',
+    needs: [{ ways: [['kenjutsu']], what: 'the weapon art' }, GET_IN_CLOSE],
+  },
+  marksman: {
+    id: 'marksman',
+    name: 'a marksman',
+    needs: [
+      { ways: [['kenjutsu']], what: 'the weapon art' },
+      { ways: [['perception']], what: 'the eyes to aim' },
+      { ways: [['speed']], what: 'the speed to keep a fight at range' },
+    ],
   },
   'ninjutsu-caster': {
     id: 'ninjutsu-caster',

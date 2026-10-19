@@ -9,7 +9,11 @@ const genin = (marks: Parameters<typeof createStats>[1]) => createStats(5, marks
 describe('kinds of fighter', () => {
   it('reads the kind a stat line fits best', () => {
     expect(fighterTypeOf(genin({ taijutsu: 10, speed: 9, perception: 8 })).id).toBe('brawler');
-    expect(fighterTypeOf(genin({ kenjutsu: 10, speed: 9, perception: 8 })).id).toBe('swordsman');
+    expect(fighterTypeOf(genin({ kenjutsu: 10, speed: 9, perception: 8 })).id).toBe(
+      'weapons-fighter',
+    );
+    // The weapon art with sharp eyes: a thrower who keeps the fight at range.
+    expect(fighterTypeOf(genin({ kenjutsu: 10, speed: 10, perception: 12 })).id).toBe('marksman');
     expect(fighterTypeOf(genin({ genjutsu: 10, chakraControl: 8, intellect: 8 })).id).toBe(
       'illusionist',
     );

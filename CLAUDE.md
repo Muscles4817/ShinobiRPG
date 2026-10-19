@@ -562,7 +562,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     how many jobs a nomination wants and their **readiness** standard (`game/exam/readiness.ts`,
     read for every road to chūnin): `rounded` (a skill at C and breadth across the rest) or
     `specialist` (every need of the kind of fighter you fit best at C: `exam/fighterTypes.ts`,
-    a close fighter, a swordsman, a ninjutsu fighter, an illusionist, a sealer, a medic, a sensor,
+    a close fighter, a weapons fighter, a marksman, a ninjutsu fighter, an illusionist, a sealer, a medic, a sensor,
     hybrids, all-rounders and tacticians (two arts), a Gentle Fist striker, a binder and a swarmer,
     each need met any of several ways, getting in close by speed and eyes or by ninjutsu; the
     canon cast against them, and what they miss, is in `docs/design/research/fighter-types-cast.md`); readiness reads skills and those needs, never a sharp mind or a fast body alone,

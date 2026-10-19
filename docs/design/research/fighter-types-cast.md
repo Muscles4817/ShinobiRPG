@@ -13,8 +13,10 @@ squeezed into a type that doesn't describe them.
 | Hinata, Neji, Hiashi                 | strikes the chakra itself (new)      | Gentle Fist: taijutsu, control and the Byakugan               |
 | Sasuke                               | closes with jutsu                    | fire ninjutsu, taijutsu, speed and the Sharingan              |
 | Asuma, Raiga                         | closes with jutsu                    | chakra blades or lightning swords, and ninjutsu               |
-| Hayate, Yūgao, Raidō, Masaru, Tengen | swordsman                            | kenjutsu, closing with speed (Hayate with clones too)         |
-| Zabuza                               | swordsman                            | kenjutsu, closing in the Hidden Mist (ninjutsu as the way in) |
+| Hayate, Yūgao, Raidō, Masaru, Tengen | weapons fighter                      | kenjutsu, closing with speed (Hayate with clones too)         |
+| Zabuza                               | weapons fighter                      | kenjutsu, closing in the Hidden Mist (ninjutsu as the way in) |
+| Tenten, Genma, Haku, Kin             | marksman (new)                       | the weapon art at throwing steel or senbon, aimed by the eyes |
+| Kotetsu                              | weapons fighter                      | a giant club: a blunt weapon of the weapon art                |
 | Kurenai, Shion, early Sakura         | illusionist                          | genjutsu, control, wits                                       |
 | Ino, Inoichi, Aoba                   | illusionist, or sensor               | the mind arts read as genjutsu; sensing                       |
 | Shikamaru, Shikaku                   | binds and outthinks (new)            | shadow holds, intellect, control                              |
@@ -37,14 +39,13 @@ These need a type the stats alone can't express, a change to the engine, or both
 | Shino, Shibi                           | fight through the hive                           | **Hive user.** The hive is a pool in the engine, not a stat, and readiness can't see it.                                                                                                      |
 | Anko (later Jiraiya, Kakashi's ninken) | fight through summons                            | **Summoner.** The contract and summons are in the engine; readiness can't see them.                                                                                                           |
 | Chōji, Chōza                           | Expansion: a heavy body that walks through blows | **Heavy.** In the engine, getting in close is a speed contest (plus clones and entry techniques). Toughness, size and armour never help a slow fighter close, so a juggernaut can't be built. |
-| Tenten, Genma, Haku, Kin               | thrown weapons and senbon from range             | **Marksman.** Thrown weapons hit with strength and taijutsu; no aim or weapons skill drives them.                                                                                             |
-| Kotetsu                                | a giant club                                     | **Blunt weapons.** Weapon shapes are blades, knuckles and throws; a heavy blunt weapon isn't one.                                                                                             |
 | Ibiki                                  | interrogation and torture                        | Not a fighter's type: his work is off the battlefield.                                                                                                                                        |
 | Hana                                   | animal medic                                     | Medic and beast partner at once (both above).                                                                                                                                                 |
 
 ## Next
 
-- The engine holes come first: a way for weight and toughness to close distance, and a skill
-  for thrown weapons.
+- Weapons are filled (decision 18 in CLAUDE.md): weapon classes with their own
+  handling and reach, mastery per class, throws on the weapon art, so the marksman and blunt
+  weapons have a home. Still open: a way for weight and toughness to close distance.
 - Then readiness has to read more than stats, so companions, hives and summons count towards
   their types.
