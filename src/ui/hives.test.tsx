@@ -16,7 +16,7 @@ describe('the hive card (smoke test)', () => {
       { draft: draft({ clanId: 'toga', hiveShare: 'most' }), seed: 1 },
       ctx,
     );
-    render(<HiveCard ctx={ctx} state={state} />);
+    render(<HiveCard ctx={ctx} state={state} perform={() => undefined} />);
     expect(screen.getByRole('heading', { name: 'Lantern Moths' })).toBeTruthy();
     expect(screen.getByText('It took most of your chakra.')).toBeTruthy();
     expect(screen.getByText('Full')).toBeTruthy();
@@ -24,7 +24,7 @@ describe('the hive card (smoke test)', () => {
 
   it('shows nothing without a hive', () => {
     const state = createNewGame({ draft: draft(), seed: 1 }, ctx);
-    const { container } = render(<HiveCard ctx={ctx} state={state} />);
+    const { container } = render(<HiveCard ctx={ctx} state={state} perform={() => undefined} />);
     expect(container.textContent).toBe('');
   });
 });

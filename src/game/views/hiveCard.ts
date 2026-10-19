@@ -1,9 +1,10 @@
 import { QUALITY_GRADES } from '@/content';
 import { SWARM_GIFTS, SWARM_QUALITIES, type SwarmGift, type SwarmQuality } from '@/systems/combat';
-import { BREED_AT_HOME } from '@/systems/hives';
+import { BREED_AT_HOME, stabilityOf, understood, type StrainSheet } from '@/systems/hives';
 
 import type { GameContext } from '../context';
-import { qualitiesInBody, yourHive } from '../hives/hive';
+import { qualitiesInBody, strainSheet, yourHive } from '../hives/hive';
+import { choice, type Choice } from './common';
 import type { GameState } from '../state';
 
 /**
@@ -25,6 +26,33 @@ export interface HiveCard {
   readonly qualities: readonly { readonly name: string; readonly grade: string }[];
   /** What it can't stand ("Fire"). */
   readonly fears: readonly string[];
+  /** Wild insects in jars at home: studied or not, how a cross would go, and what you can do. */
+  readonly jars: readonly JarRow[];
+  /** A cross breeding, in words, or null. */
+  readonly brood: string | null;
+  /** The strain is one you bred, so you may name it. */
+  readonly nameable: boolean;
+}
+
+export interface JarRow {
+  readonly strainId: string;
+  readonly name: string;
+  readonly known: boolean;
+  /** How a cross with your hive would go, in a word, once you know them. */
+  readonly stability: string | null;
+  readonly study: Choice;
+  readonly cross: Choice;
+}
+
+const STABILITY_WORDS = [
+  [0.85, 'True-breeding: a cross would take'],
+  [0.6, 'Settled: a cross should mostly take'],
+  [0.35, 'Wavering: a cross could go either way'],
+  [0, 'Wild: a cross is a gamble'],
+] as const;
+
+function stabilityWord(stability: number): string {
+  return STABILITY_WORDS.find(([at]) => stability >= at)?.[1] ?? 'Wild: a cross is a gamble';
 }
 
 const GIFT_WORDS: Readonly<Record<SwarmGift, string>> = {
@@ -71,7 +99,9 @@ export function hiveCard(state: GameState, ctx: GameContext): HiveCard | null {
   const fill = yours.cap > 0 ? Math.min(1, yours.hive.count / yours.cap) : 0;
   return {
     strain: yours.strain.name,
-    description: yours.strain.description,
+    description:
+      ctx.content.strains.get(yours.strain.id)?.description ??
+      `A ${yours.strain.species} you bred yourself.`,
     share: SHARE_LINE[yours.hive.share],
     fill,
     state: stateWord(fill),
@@ -85,5 +115,34 @@ export function hiveCard(state: GameState, ctx: GameContext): HiveCard | null {
       grade: QUALITY_GRADES[inBody[q] - 1] ?? 'A',
     })),
     fears: yours.strain.fears.map((e) => e.charAt(0).toUpperCase() + e.slice(1)),
+    jars: jarRows(state, ctx, yours.strain),
+    brood: broodLine(state),
+    nameable: (yours.hive.bred ?? []).some((s) => s.id === yours.hive.strainId),
   };
+}
+
+function jarRows(state: GameState, ctx: GameContext, strain: StrainSheet): JarRow[] {
+  return (state.hive?.jars ?? []).flatMap((jar) => {
+    const sheet = strainSheet(state.hive, jar.strainId, ctx);
+    if (!sheet) return [];
+    const known = understood(jar);
+    return [
+      {
+        strainId: jar.strainId,
+        name: sheet.name,
+        known,
+        stability: known ? stabilityWord(stabilityOf(strain, sheet)) : null,
+        study: choice(state, ctx, { type: 'studyJar', strainId: jar.strainId }),
+        cross: choice(state, ctx, { type: 'crossJar', strainId: jar.strainId }),
+      },
+    ];
+  });
+}
+
+function broodLine(state: GameState): string | null {
+  const brood = state.hive?.breeding;
+  if (!brood) return null;
+  return brood.readyDay - state.time.day <= 1
+    ? 'A brood is breeding in the hive. It hatches tomorrow.'
+    : 'A brood is breeding in the hive. It hatches in a few days.';
 }

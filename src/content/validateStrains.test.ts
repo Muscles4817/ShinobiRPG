@@ -10,11 +10,9 @@ describe('strain validation', () => {
     const clans = ORIGINAL_PACK.clans.map((c) =>
       c.id === 'toga' ? { ...c, hive: { strainId: 'ghost-moth' } } : c,
     );
-    const strains = ORIGINAL_PACK.strains.map((s) => ({
-      ...s,
-      gifts: {},
-      fears: ['fire' as const, 'fire' as const],
-    }));
+    const strains = ORIGINAL_PACK.strains.map((s) =>
+      s.id === 'lantern-moth' ? { ...s, gifts: {}, fears: ['fire' as const, 'fire' as const] } : s,
+    );
     expect(validateStrains({ ...ORIGINAL_PACK, clans, strains })).toEqual([
       'strain "lantern-moth" has no gift',
       'strain "lantern-moth" fears something twice',

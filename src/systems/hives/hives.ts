@@ -1,3 +1,5 @@
+import type { StrainSheet } from './crossing';
+
 /**
  * A hive kept in the body (`docs/design/retinue-plan.md`, step 4): installed at birth, or later,
  * it takes a share of its host's chakra for good (a little, half, most), and that share sets how
@@ -34,6 +36,27 @@ export interface Hive {
   readonly share: HiveShare;
   /** Insects in it now. */
   readonly count: number;
+  /** Wild insects kept in jars at home, to study and cross in. */
+  readonly jars?: readonly Jar[];
+  /** The strains you have bred yourself, in the order you bred them. */
+  readonly bred?: readonly StrainSheet[];
+  /** A cross under way. */
+  readonly breeding?: Brood;
+  /** The last day you searched the wild for insects, and studied a jar: once a day each. */
+  readonly searchedDay?: number;
+  readonly studiedDay?: number;
+}
+
+/** Wild insects in a jar, and how many days you have studied them. */
+export interface Jar {
+  readonly strainId: string;
+  readonly studied: number;
+}
+
+/** A cross under way: the jar's strain going into the hive, and the day the brood is ready. */
+export interface Brood {
+  readonly jarStrainId: string;
+  readonly readyDay: number;
 }
 
 /** The chakra a host keeps for themselves, out of what their body would hold without a hive. */

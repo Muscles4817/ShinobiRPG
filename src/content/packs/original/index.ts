@@ -2,6 +2,7 @@ import { bestiary } from '../../shared/bestiary';
 import { ORIGINAL_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import { STRAINS } from './strains';
+import { WILD_STRAINS } from '../../shared/wildStrains';
 import { CONTRACT_TECHNIQUES, CONTRACTS } from './contracts';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
@@ -156,7 +157,7 @@ export const ORIGINAL_PACK: ContentPack = {
   companionKinds: COMPANION_KINDS,
   companionLore: COMPANION_LORE,
   contracts: CONTRACTS,
-  strains: STRAINS,
+  strains: [...STRAINS, ...WILD_STRAINS],
   enemies: [
     ...ENEMIES,
     ...bestiary(ORIGINAL_FOE_KIT),
