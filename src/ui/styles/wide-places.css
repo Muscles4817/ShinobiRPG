@@ -1,0 +1,73 @@
+/*
+ * Place pages on the desktop layout (`.app.wide`): the page takes the whole main column, and
+ * the lists each page is built around (drills, notices, scrolls, stalls, gear, teachers, wild
+ * spots, gates) spread into grids instead of one long column. Every rule is scoped under
+ * `.wide-main.place`, so the phone pages never see one of them.
+ */
+.wide-main.place {
+  max-width: none;
+  padding: 20px 24px 24px;
+  box-sizing: border-box;
+}
+.wide-main.place > .banner,
+.wide-main.place > .room {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.wide-main.place .page {
+  padding-left: 0;
+  padding-right: 0;
+}
+.wide-main.place .board {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Lists that become grids: as many columns as fit, each wide enough for its card. */
+.wide-main.place .drills,
+.wide-main.place .recipes,
+.wide-main.place .board {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+.wide-main.place .board > .exam-notice {
+  grid-column: 1 / -1;
+}
+.wide-main.place .rack:has(> .scroll),
+.wide-main.place .teachers,
+.wide-main.place .sparring,
+.wide-main.place .rack-items,
+.wide-main.place .page.quarter {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  align-items: start;
+  align-content: start;
+}
+.wide-main.place .rack:has(> .scroll) > :not(.scroll),
+.wide-main.place .teachers > :not(.teacher-card),
+.wide-main.place .sparring > :not(.spar-row),
+.wide-main.place .page.quarter > :not(.gate) {
+  grid-column: 1 / -1;
+}
+.wide-main.place .page.wilds {
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  align-items: start;
+  align-content: start;
+}
+.wide-main.place .page.wilds > :not(.gather-card) {
+  grid-column: 1 / -1;
+}
+
+/* Market shelves hang in rows that wrap, rather than a strip that scrolls sideways. */
+.wide-main.place .stall-items {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  overflow-x: visible;
+}
+
+/* Your room keeps the phone's proportions: its hotspots sit on the furniture by percentage. */
+.wide-main.place > .room {
+  align-self: center;
+  width: min(100%, 640px);
+  height: auto;
+  aspect-ratio: 390 / 270;
+}

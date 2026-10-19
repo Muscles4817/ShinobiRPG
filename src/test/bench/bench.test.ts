@@ -63,6 +63,11 @@ const SENSE_CHAKRA_ALLOWANCE = 0.02;
 
 /** The archetype-by-foe matrix is wide, so each pairing gets fewer seeds. */
 const MATRIX_SEEDS = 10;
+/**
+ * The whole matrix takes a few seconds alone and more on a busy CI runner, so it gets its own
+ * room, like the other benches.
+ */
+const MATRIX_TIMEOUT_MS = 30_000;
 
 const REPORT = import.meta.env.VITE_BENCH_REPORT === 'true';
 
@@ -97,17 +102,21 @@ describe('bench fighters', () => {
     expect(fightOnce(rusher, brute, 7)).toEqual(fightOnce(rusher, brute, 7));
   });
 
-  it('every archetype meets every foe at every scale and the fight ends or stalls cleanly', () => {
-    for (const scale of SCALES) {
-      for (const id of ARCHETYPE_IDS) {
-        for (const opponent of FOE_IDS) {
-          const [player, other] = [archetype(id, scale), foe(opponent, scale)];
-          const report = logged(player, other, bench(player, other, MATRIX_SEEDS));
-          expect(report.records).toHaveLength(MATRIX_SEEDS);
+  it(
+    'every archetype meets every foe at every scale and the fight ends or stalls cleanly',
+    () => {
+      for (const scale of SCALES) {
+        for (const id of ARCHETYPE_IDS) {
+          for (const opponent of FOE_IDS) {
+            const [player, other] = [archetype(id, scale), foe(opponent, scale)];
+            const report = logged(player, other, bench(player, other, MATRIX_SEEDS));
+            expect(report.records).toHaveLength(MATRIX_SEEDS);
+          }
         }
       }
-    }
-  });
+    },
+    MATRIX_TIMEOUT_MS,
+  );
 });
 
 describe('power is real: more resources beat fewer, head-on', () => {

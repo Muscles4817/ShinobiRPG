@@ -1,0 +1,106 @@
+/*
+ * The dock's other tabs on the desktop layout (`.app.wide`): each spreads across the main column
+ * in its own way, setting its panes (ui/layout/Pane.tsx) side by side. The Record keeps a reading
+ * width. Every rule is scoped under `.wide-main.tab-*`; on a phone a pane isn't there at all.
+ */
+.wide-main.tab-travel,
+.wide-main.tab-jutsu,
+.wide-main.tab-bonds,
+.wide-main.tab-shinobi {
+  max-width: none;
+  padding: 20px 24px 24px;
+  box-sizing: border-box;
+}
+.wide-main.tab-travel > .banner,
+.wide-main.tab-jutsu > .plain-head,
+.wide-main.tab-bonds .plain-head {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.wide-main[class*='tab-'] .page {
+  padding-left: 0;
+  padding-right: 0;
+}
+.app.wide .pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Two panes side by side; whatever isn't in a pane runs across both. */
+.wide-main.tab-travel .page,
+.wide-main.tab-jutsu .page,
+.wide-main.tab-shinobi .page {
+  display: grid;
+  gap: 12px 24px;
+  align-items: start;
+  align-content: start;
+}
+.wide-main.tab-travel .page > :not(.pane),
+.wide-main.tab-jutsu .page > :not(.pane),
+.wide-main.tab-shinobi .page > :not(.pane) {
+  grid-column: 1 / -1;
+}
+
+/* Travel: the map stays in view beside the places it shows. */
+.wide-main.tab-travel .page {
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 1fr);
+}
+.wide-main.tab-travel .pane-map {
+  position: sticky;
+  top: 20px;
+}
+
+/* Jutsu: the deck beside the card you picked. */
+.wide-main.tab-jutsu .page {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+}
+.wide-main.tab-jutsu .deck {
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+}
+.wide-main.tab-jutsu .pane-detail {
+  position: sticky;
+  top: 20px;
+}
+
+/* Shinobi: who you are beside what you can do; the cookbook runs across below. */
+.wide-main.tab-shinobi .page {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.wide-main.tab-shinobi .cook-pages {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+/* Bonds: the people in each group two or more across. */
+.wide-main.tab-bonds .bond-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 8px 12px;
+  align-items: start;
+}
+.wide-main.tab-bonds .bond-group > :not(.bond-card) {
+  grid-column: 1 / -1;
+}
+.wide-main.tab-shinobi .page > .btn,
+.wide-main.tab-shinobi .page > .menu-option {
+  justify-self: start;
+  width: min(100%, 480px);
+}
+
+/* Settings open inside the Shinobi tab: a form, kept at a reading width. */
+.wide-main.tab-shinobi .page.settings-page {
+  display: flex;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* The Record is for reading: it keeps the narrower column, with room above its header. */
+.wide-main.tab-record {
+  padding-top: 20px;
+}
+.wide-main.tab-record > .plain-head {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}

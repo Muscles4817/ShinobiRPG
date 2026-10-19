@@ -6,6 +6,7 @@ import {
   hubView,
   senseiWeekView,
   villageView,
+  type HeaderView,
 } from '@/game';
 
 import { Backdrop } from '../art/Backdrop';
@@ -26,6 +27,8 @@ interface HubScreenProps extends ScreenProps {
   readonly onOpenPerson: (personId: string) => void;
   readonly onOpenCompanion: () => void;
   readonly onOpenRecord: () => void;
+  /** The desktop layout, where you, your vitals and what waits on you sit in the you panel. */
+  readonly wide?: boolean;
 }
 
 /** "Here": the village you're in, its sky and backdrop, and the places you can go. */
@@ -37,6 +40,7 @@ export function HubScreen({
   onOpenPerson,
   onOpenCompanion,
   onOpenRecord,
+  wide = false,
 }: HubScreenProps) {
   const header = headerView(state, ctx);
   const hub = hubView(state, ctx);
@@ -51,34 +55,20 @@ export function HubScreen({
       <header className="hub-hero sky" data-slot={header.slot} data-land={header.backdrop}>
         <Backdrop id={header.backdrop} />
         <div className="hub-top">
-          <div className="hub-row">
-            <b>{header.name}</b>
-            <span>
-              {header.rank}
-              {header.visiting ? ' (visiting)' : ''}
-            </span>
-            <span className="ryo num">{header.ryo} ryo</span>
-          </div>
-          <div className="hub-row">
-            <span className="when">
-              {header.slot}, {header.date}
-            </span>
-            <DayStrip slotIndex={header.slotIndex} />
-            {header.warnings.map((w) => (
-              <span key={w} className="warn-chip">
-                {w}
-              </span>
-            ))}
-          </div>
+          {!wide && <HubRows header={header} />}
           <h1 className="hub-place">{header.location}</h1>
           <p className="hub-epithet">{header.epithet}</p>
         </div>
-        <Vitals meters={header.meters} />
+        {!wide && <Vitals meters={header.meters} />}
       </header>
-      <HungerNote note={header.hunger} />
-      {hub.companion && <CompanionStrip strip={hub.companion} onOpen={onOpenCompanion} />}
+      {!wide && (
+        <>
+          <HungerNote note={header.hunger} />
+          {hub.companion && <CompanionStrip strip={hub.companion} onOpen={onOpenCompanion} />}
+        </>
+      )}
       {day?.mode === 'brief' && <MorningSlip view={day} perform={perform} />}
-      {challenge && <RivalSlip view={challenge} perform={perform} />}
+      {!wide && challenge && <RivalSlip view={challenge} perform={perform} />}
       {around.length > 0 && (
         <section className="around" aria-label="Who’s here">
           <span className="label">Who’s here</span>
@@ -99,7 +89,7 @@ export function HubScreen({
           </div>
         </section>
       )}
-      {week && <SenseiSlip view={week} perform={perform} />}
+      {!wide && week && <SenseiSlip view={week} perform={perform} />}
       {finals && <ExamFinals view={finals} perform={perform} />}
       <VillageLife view={village} perform={perform} />
       <main className="street" aria-label="Places">
@@ -134,6 +124,33 @@ export function HubScreen({
           <span className="more">Record ›</span>
         </button>
       )}
+    </>
+  );
+}
+
+/** Who you are, the time and your purse, over the backdrop on a phone. */
+function HubRows({ header }: { readonly header: HeaderView }) {
+  return (
+    <>
+      <div className="hub-row">
+        <b>{header.name}</b>
+        <span>
+          {header.rank}
+          {header.visiting ? ' (visiting)' : ''}
+        </span>
+        <span className="ryo num">{header.ryo} ryo</span>
+      </div>
+      <div className="hub-row">
+        <span className="when">
+          {header.slot}, {header.date}
+        </span>
+        <DayStrip slotIndex={header.slotIndex} />
+        {header.warnings.map((w) => (
+          <span key={w} className="warn-chip">
+            {w}
+          </span>
+        ))}
+      </div>
     </>
   );
 }
