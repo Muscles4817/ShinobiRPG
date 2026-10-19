@@ -8,6 +8,7 @@ import {
   type FocusTarget,
   shapeOf,
   speedOf,
+  strikeReach,
   weaponGuard,
   type WeaponClass,
   type WeaponShape,
@@ -124,6 +125,7 @@ function handlingChips(def: Extract<GearDef, { kind: 'weapon' }>): JournalChip[]
     ...(speed > 0 ? [gain(SPEED_WORDS[speed] ?? 'Quick in the hand')] : []),
     ...(speed < 0 ? [cost(SPEED_WORDS[speed] ?? 'Slow in the hand')] : []),
     ...(guard > 0 ? [gain(`Guards ${change(1 + guard)}`)] : []),
+    ...(strikeReach({ gear: { held: def } }).includes('mid') ? [gain('Strikes at mid range')] : []),
   ];
 }
 

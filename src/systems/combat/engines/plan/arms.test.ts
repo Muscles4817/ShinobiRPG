@@ -6,8 +6,11 @@ import type { CombatantSetup, CombatTechnique } from '../../contract';
 import type { CombatGear, CombatWeapon } from '../../gearContract';
 import { NEEDS_WEAPON } from '../../rules/weapons';
 import { strike } from './arms';
+import { fitsBand, strikeCard } from './cards';
 import { defaultLoadout } from './defaults';
 import { createPlanEngine } from './engine';
+import { attackOf } from './rows';
+import { improvise } from './stepping';
 import { initialFighters, plainSlots, type PlanFighter, type Round } from './state';
 import { cardLabel } from './wording';
 
@@ -181,5 +184,21 @@ describe('plan & watch weapons', () => {
     const bare = 100 - foeAfter(hit({ held: weapon('sword') })).health;
     const armoured = 100 - foeAfter(hit({ held: weapon('sword') }, false, plated)).health;
     expect(armoured).toBeLessThan(bare);
+  });
+
+  it('a polearm or chain strikes at mid, where a swordsman steps in', () => {
+    const [spear] = duel({ held: weapon('polearm') });
+    const [sword] = duel({ held: weapon('sword') });
+    expect(improvise(spear, 'mid')).toMatchObject({ kind: 'strike' });
+    expect(improvise(sword, 'mid')).toEqual({ kind: 'step', direction: 'in' });
+    expect(fitsBand(strikeCard(duel({ held: weapon('chain') })[0]), 'mid')).toBe(true);
+    expect(fitsBand(strikeCard(spear), 'far')).toBe(false);
+  });
+
+  it('a spear reaches past the front row, as a kunai does', () => {
+    const [spear] = duel({ held: weapon('polearm') });
+    const [sword] = duel({ held: weapon('sword') });
+    expect(attackOf(strikeCard(spear)).reach).toContain('mid');
+    expect(attackOf(strikeCard(sword)).reach).toEqual(['close']);
   });
 });

@@ -22,6 +22,7 @@ import {
 import { rankStep } from './gearRank';
 import type { AttackKind } from './kit';
 import { weaponArt } from './mastery';
+import { classRule, speedOf } from './weaponClasses';
 
 /**
  * What weapons do, in every fight style. Gear never adds to stats: a weapon changes a card.
@@ -34,84 +35,9 @@ import { weaponArt } from './mastery';
  *  - Throwing steel makes the kunai card hit harder; senbon hit softer but may daze, more so
  *    for sharp eyes against dull ones. A throw is the weapon art at its mastery, aimed by
  *    perception.
- * Each class handles its own way: its speed (initiative, and how fast a blow arrives), its
- * weight (damage, going through a guard) and the guard it gives its wielder. A better rank
- * makes each of these better. A unique weapon adds its own verbs to its strikes.
+ * Each class handles its own way (`weaponClasses.ts`). A better rank makes its numbers better.
+ * A unique weapon adds its own verbs to its strikes.
  */
-
-interface ClassRule {
-  /** Damage against a plain strike (held) or a plain kunai's (thrown). */
-  readonly scale: number;
-  readonly scalePerRank: number;
-  /** Share of a guard the hit goes through. */
-  readonly pierce: number;
-  readonly piercePerRank: number;
-  /** Chance a landed hit dazes, between equals. */
-  readonly daze: number;
-  readonly dazePerRank: number;
-  /** How quick it is in the hand: −1 slow, 0 even, up to 2 very fast (`speedOf`). */
-  readonly speed: number;
-  /** Share more of a blow its wielder's Guard catches, and of a counter at them it turns. */
-  readonly guard: number;
-}
-
-const NO_EXTRAS = { pierce: 0, piercePerRank: 0, daze: 0, dazePerRank: 0 } as const;
-
-const CLASS_RULES: Readonly<Record<WeaponClass, ClassRule>> = {
-  'light-blade': { ...NO_EXTRAS, scale: 1.15, scalePerRank: 0.1, speed: 2, guard: 0 },
-  sword: { ...NO_EXTRAS, scale: 1.25, scalePerRank: 0.1, speed: 1, guard: 0.05 },
-  greatsword: {
-    ...NO_EXTRAS,
-    scale: 1.45,
-    scalePerRank: 0.1,
-    pierce: 0.2,
-    speed: -1,
-    guard: 0.3,
-  },
-  polearm: { ...NO_EXTRAS, scale: 1.2, scalePerRank: 0.1, speed: 0, guard: 0.15 },
-  fan: { ...NO_EXTRAS, scale: 1.1, scalePerRank: 0.08, speed: 1, guard: 0.05 },
-  chain: { ...NO_EXTRAS, scale: 1.15, scalePerRank: 0.1, speed: 0, guard: 0 },
-  staff: { ...NO_EXTRAS, scale: 1.1, scalePerRank: 0.06, daze: 0.1, speed: 0, guard: 0.25 },
-  blunt: {
-    scale: 1.35,
-    scalePerRank: 0.08,
-    pierce: 0.2,
-    piercePerRank: 0.03,
-    daze: 0.15,
-    dazePerRank: 0.03,
-    speed: -1,
-    guard: 0.1,
-  },
-  knuckles: {
-    ...NO_EXTRAS,
-    scale: 1.1,
-    scalePerRank: 0.06,
-    pierce: 0.25,
-    piercePerRank: 0.05,
-    speed: 0,
-    guard: 0,
-  },
-  throwing: { ...NO_EXTRAS, scale: 1.2, scalePerRank: 0.1, speed: 0, guard: 0 },
-  senbon: {
-    scale: 0.75,
-    scalePerRank: 0.07,
-    ...NO_EXTRAS,
-    daze: 0.15,
-    dazePerRank: 0.05,
-    speed: 2,
-    guard: 0,
-  },
-};
-
-/** How quick a weapon is: −1 slow, 0 even, up to 2 very fast. */
-export function speedOf(weapon: Pick<CombatWeapon, 'weaponClass'>): number {
-  return CLASS_RULES[weapon.weaponClass].speed;
-}
-
-/** The share more of a blow (and of a counter) a weapon's wielder turns aside. */
-export function weaponGuard(weapon: Pick<CombatWeapon, 'weaponClass'>): number {
-  return CLASS_RULES[weapon.weaponClass].guard;
-}
 
 /** A thrown kunai, unimproved, lands this share of a plain strike. */
 export const PLAIN_THROW_SCALE = 0.6;
@@ -158,7 +84,7 @@ export interface WeaponNumbers {
 }
 
 export function weaponNumbers(weapon: Omit<CombatWeapon, 'name'>): WeaponNumbers {
-  const rule = CLASS_RULES[weapon.weaponClass];
+  const rule = classRule(weapon.weaponClass);
   const step = rankStep(weapon.rank);
   const effects = weapon.effects ?? [];
   return {

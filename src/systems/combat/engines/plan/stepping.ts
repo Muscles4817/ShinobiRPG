@@ -1,8 +1,9 @@
 import type { RangeBand } from '../../contract';
 import { canAttackFrom, homeBand } from '../../rules/kit';
-import { inReach, RANGE_BANDS, STRIKE_REACH } from '../../rules/range';
+import { inReach, RANGE_BANDS } from '../../rules/range';
+import { strikeReach } from '../../rules/weaponClasses';
 import { hasVerb, isHarmful, isWounding, techniquePower } from '../../rules/verbs';
-import { cardsFor, isFootwork, playable, type Card } from './cards';
+import { cardsFor, fitsBand, isFootwork, playable, strikeCard, type Card } from './cards';
 import { moveDestination } from './footwork';
 import type { PlanFighter } from './state';
 
@@ -24,7 +25,7 @@ export function bestAttack(fighter: PlanFighter, band: RangeBand): number {
   const powers = cardsFor(fighter, band).flatMap((c) =>
     c.kind === 'jutsu' && isWounding(c.technique) ? [techniquePower(c.technique)] : [],
   );
-  return Math.max(0, ...powers, inReach(STRIKE_REACH, band) ? STRIKE_POWER : 0);
+  return Math.max(0, ...powers, inReach(strikeReach(fighter), band) ? STRIKE_POWER : 0);
 }
 
 function stepTowards(band: RangeBand, goal: RangeBand): Card {
@@ -86,7 +87,9 @@ export function improvise(self: PlanFighter, band: RangeBand): Card {
   const reaches = canAttackFrom(self, band);
   const better = bestAttack(self, home) > bestAttack(self, band) * STEP_WORTH;
   if (band !== home && (!reaches || better)) return footworkTowards(self, band, home);
-  return band === 'close' ? { kind: 'strike' } : { kind: 'throw' };
+  const strike = strikeCard(self);
+  // A long weapon in hand is the fighter's own; at mid it beats a kunai.
+  return fitsBand(strike, band) ? strike : { kind: 'throw' };
 }
 
 /**

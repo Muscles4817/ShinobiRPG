@@ -3,7 +3,7 @@ import type { Discipline } from '@/systems/techniques';
 import type { CombatAttributes, CombatTechnique, RangeBand } from '../contract';
 import { shapeOf, type CombatGear, type CombatWeapon, type WeaponShape } from '../gearContract';
 import { weaponArt } from './mastery';
-import { speedOf, weaponGuard } from './weapons';
+import { speedOf, weaponGuard } from './weaponClasses';
 
 /**
  * Kenjutsu (`docs/design/hittability-plan.md`, Part 3). A blade in skilled hands is a big
