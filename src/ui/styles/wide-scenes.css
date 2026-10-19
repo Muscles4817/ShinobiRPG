@@ -1,0 +1,318 @@
+/*
+ * Scenes on the desktop layout (`.app.wide.scene-*`, for the scenes GameScreen lists): the
+ * scene's panes side by side instead of one column. A mission sets the road on the left, the
+ * story at a reading width in the middle, and the job as it stands on the right. A fight's plan
+ * screen sets your cards, the field and a fighter's read side by side; its watch screen keeps
+ * what has been told beside the stage. Every other scene is a story scene: one reading column,
+ * wider than a phone's, with its choices numbered for the keys (`ChoiceBarKeys`).
+ */
+.app.wide.scene-mission .wide-scene {
+  display: grid;
+  min-height: 100vh;
+  align-items: start;
+  grid-template-columns: 280px minmax(0, 1fr) 340px;
+}
+.app.wide.scene-mission .pane {
+  min-width: 0;
+}
+
+/* The road: the place and the stops of the job, on lacquered wood like the village rail. */
+.app.wide.scene-mission .pane-road {
+  grid-column: 1;
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px;
+  box-sizing: border-box;
+  background: var(--grain), var(--wood);
+  border-right: 2px solid color-mix(in srgb, var(--wood) 60%, #000);
+}
+.app.wide.scene-mission .pane-road .scene-head {
+  border: 1px solid color-mix(in srgb, var(--wood) 60%, #000);
+  border-radius: var(--radius);
+}
+.app.wide.scene-mission .route {
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+.app.wide.scene-mission .route li {
+  width: auto;
+  height: auto;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+}
+.app.wide.scene-mission .route-label {
+  display: inline;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+/* The story: a reading column, with the choices kept under it. */
+.app.wide.scene-mission .pane-story {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 720px;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+.app.wide.scene-mission .scene-feed {
+  padding: 28px 24px 16px;
+}
+.app.wide.scene-mission .scene-feed .story {
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+.app.wide.scene-mission .choices {
+  padding: 12px 24px 20px;
+}
+
+/* The job: its threads, who is along and the ledger so far, kept in view. */
+.app.wide.scene-mission .pane-job {
+  grid-column: 3;
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 18px;
+  box-sizing: border-box;
+  background: var(--grain), var(--surface);
+  border-left: 1px solid var(--line);
+}
+.app.wide.scene-mission .threads {
+  flex-direction: column;
+  padding: 0;
+  background: none;
+  border: 0;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+.app.wide.scene-mission .pane-road .vitals {
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--paper);
+}
+.app.wide.scene-mission .pane-road .vitals .vm {
+  height: 6px;
+}
+.app.wide.scene-mission .pane-job .report-list-title {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  color: var(--gold);
+}
+.app.wide.scene-mission .pane-job .debrief-crew ul {
+  gap: 12px;
+}
+
+/* A fight. A turn-by-turn style (shelved) keeps the phone's column, centred. */
+.app.wide.scene-combat .wide-scene {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.app.wide.scene-combat .wide-scene:has(> .plan-screen, > .watch-screen) {
+  max-width: none;
+  margin: 0;
+}
+.app.wide.scene-combat .plan-head,
+.app.wide.scene-combat .watch-head {
+  padding: 16px 24px 12px;
+}
+
+/* The plan: your cards on the left, the field in the middle, the read of a fighter on the right. */
+.app.wide.scene-combat .plan-screen {
+  display: grid;
+  grid-template-columns: minmax(360px, 420px) minmax(0, 1fr) minmax(280px, 340px);
+  gap: 20px;
+  align-items: start;
+  padding: 20px 24px 28px;
+}
+.app.wide.scene-combat .plan-screen .pane {
+  gap: 14px;
+}
+.app.wide.scene-combat .pane-field,
+.app.wide.scene-combat .pane-read {
+  position: sticky;
+  top: 20px;
+}
+.app.wide.scene-combat .pane-field .plan-go {
+  position: static;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+/* The watch: the stage in the middle, what has been told beside it. */
+.app.wide.scene-combat .watch-screen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px 28px;
+  box-sizing: border-box;
+}
+.app.wide.scene-combat .pane-stage {
+  gap: 12px;
+}
+.app.wide.scene-combat .pane-stage .beat-text .story {
+  font-size: 1.1rem;
+}
+.app.wide.scene-combat .pane-told {
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 14px 16px;
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.app.wide.scene-combat .told-so-far {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.app.wide.scene-combat .watch-next {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  box-sizing: border-box;
+}
+
+/* Story scenes (an encounter, a talk, an exam, team assignment, a ceremony…): the scene in a
+   reading column, and beside it the panel of what it is about (SceneSide). */
+.app.wide.scene-story {
+  max-width: 1140px;
+}
+.app.wide.scene-story .wide-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 760px) minmax(300px, 360px);
+  justify-content: center;
+  align-items: start;
+  min-height: 100vh;
+}
+.app.wide.scene-story .story-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+}
+.app.wide.scene-story .scene-side {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px 18px;
+  box-sizing: border-box;
+  background: var(--grain), var(--surface);
+  border-left: 1px solid var(--line);
+}
+.app.wide.scene-story .scene-side.paper-sheet {
+  max-height: none;
+  border-top: 0;
+  background: var(--grain-ink), var(--paper);
+}
+.app.wide .scene-side-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.app.wide .scene-side-head b {
+  font-family: var(--font-story);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+.app.wide.scene-story .scene-side .route {
+  flex-direction: column;
+  gap: 6px;
+}
+.app.wide.scene-story .scene-side .route li {
+  width: auto;
+  height: auto;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+}
+.app.wide.scene-story .scene-side .route-label {
+  display: inline;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+.app.wide.scene-story .scene-side .threads {
+  flex-direction: column;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.app.wide.scene-story .scene-side .report-list-title {
+  margin: 0 0 8px;
+  color: var(--gold);
+}
+.app.wide.scene-story .page {
+  padding-left: 28px;
+  padding-right: 28px;
+}
+.app.wide.scene-story .page .story {
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+.app.wide.scene-story nav.choices {
+  counter-reset: choice;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+/* The number key beside each choice, counted in the order ChoiceBarKeys presses them. */
+.app.wide.scene-story nav.choices button {
+  counter-increment: choice;
+}
+.app.wide.scene-story nav.choices button::before {
+  content: counter(choice);
+  flex: none;
+  min-width: 22px;
+  padding: 0 5px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-align: center;
+  opacity: 0.7;
+}
+.app.wide.scene-story nav.choices .choice:not(.primary) {
+  justify-content: flex-start;
+}
+.app.wide.scene-story nav.choices .choice:not(.primary) > small {
+  margin-left: auto;
+}
+.app.wide .person-side .scene-side-head .label {
+  color: var(--paper-muted);
+}

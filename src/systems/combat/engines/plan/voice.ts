@@ -2,7 +2,16 @@ import type { Discipline, Element } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
 import type { Told } from '../../rules/telling';
-import { told, type Bank, type Moment } from './fresh';
+import { told, type Bank, type Moment, type SceneLines } from './fresh';
+import {
+  castScenes,
+  CLOSING_IN,
+  DAZING,
+  FALLING_BACK,
+  FINDING,
+  MISSING,
+  SEARCHING,
+} from './voiceScenes';
 
 /**
  * How a planned fight tells itself: the same beat in different words, so a long fight doesn't
@@ -17,8 +26,12 @@ import { told, type Bank, type Moment } from './fresh';
 export { momentOf, pick, type Moment } from './fresh';
 export { hitLine, type HitTold, type Landing } from './hitVoice';
 
-const bank = (id: string, lines: readonly string[], again?: readonly string[]): Bank =>
-  again ? { id, lines, again } : { id, lines };
+const bank = (
+  id: string,
+  lines: readonly string[],
+  again?: readonly string[],
+  scene?: SceneLines,
+): Bank => ({ id, lines, ...(again ? { again } : {}), ...(scene ? { scene } : {}) });
 
 /** Using a technique the fighter used just now: told as going back to it. */
 const CAST_AGAIN = [
@@ -34,7 +47,7 @@ const CAST_BY_ART: Readonly<Record<Discipline, readonly string[]>> = {
     '{a} mould{a.s} chakra into {what}.',
   ],
   genjutsu: [
-    '{a} cast{a.s} {what}.',
+    '{a} fix{a.es} {a.their} eyes on the field and cast{a.s} {what}.',
     '{a} catch{a.es} the eye and let{a.s} {what} unfold.',
     'The air around {a} wavers as {what} takes hold.',
   ],
@@ -67,7 +80,8 @@ const CAST_BY_ELEMENT: Readonly<Record<Element, string>> = {
 export function castLine(moment: Moment, actor: Told, t: CombatTechnique): string {
   const byElement = t.element ? [CAST_BY_ELEMENT[t.element]] : [];
   const lines = [...CAST_BY_ART[t.discipline], ...byElement];
-  return told(moment, bank(`cast-${t.element ?? t.discipline}`, lines, CAST_AGAIN), {
+  const id = `cast-${t.element ?? t.discipline}`;
+  return told(moment, bank(id, lines, CAST_AGAIN, castScenes(t.element)), {
     a: actor,
     what: t.name,
   });
@@ -84,11 +98,16 @@ export interface SlipTold {
 export type MissWhy = 'dodged' | 'wide' | 'foreseen' | 'slipped';
 
 const MISSES: Readonly<Record<MissWhy, Bank>> = {
-  dodged: bank('dodge', [
-    '{t} twist{t.s} clear of {a.poss} {what}.',
-    '{a.poss} {what} cuts only air as {t} sway{t.s} aside.',
-    '{t} duck{t.s} under {a.poss} {what}.',
-  ]),
+  dodged: bank(
+    'dodge',
+    [
+      '{t} twist{t.s} clear of {a.poss} {what}.',
+      '{a.poss} {what} cuts only air as {t} sway{t.s} aside.',
+      '{t} duck{t.s} under {a.poss} {what}.',
+    ],
+    undefined,
+    MISSING,
+  ),
   wide: bank('wide', [
     '{a.poss} {what} goes wide of {t}.',
     '{a} overreach{a.es}, and the {what} sails past {t}.',
@@ -98,11 +117,16 @@ const MISSES: Readonly<Record<MissWhy, Bank>> = {
     "{t.poss} eyes see the {what} coming, and {t.they}{t.'s} already elsewhere.",
     '{t} move{t.s} before {a} {a.does}, and the {what} slips past.',
   ]),
-  slipped: bank('slip', [
-    '{t} slip{t.s} past {a.poss} {what}.',
-    '{t} {t.is} already elsewhere when {a.poss} {what} arrives.',
-    '{a.poss} {what} finds only the space where {t} stood.',
-  ]),
+  slipped: bank(
+    'slip',
+    [
+      '{t} slip{t.s} past {a.poss} {what}.',
+      '{t} {t.is} already elsewhere when {a.poss} {what} arrives.',
+      '{a.poss} {what} finds only the space where {t} stood.',
+    ],
+    undefined,
+    MISSING,
+  ),
 };
 
 /** An attack that missed, told by why. */
@@ -124,11 +148,21 @@ export function seenLine(moment: Moment, foe: Told): string {
 const STEPS: Readonly<Record<RangeBand, Bank>> = {
   close: bank(
     'step-in',
-    ['{a} close{a.s} in.', '{a} dart{a.s} in close.', '{a} get{a.s} inside {f.poss} reach.'],
+    [
+      '{a} close{a.s} in.',
+      '{a} dart{a.s} in close.',
+      '{a} keep{a.s} low and come{a.s} in under {f.poss} guard, inside {f.poss} reach.',
+    ],
     ['{a} close{a.s} in again.'],
+    CLOSING_IN,
   ),
   mid: bank('step-mid', ['{a} close{a.s} the gap to mid range.', '{a} come{a.s} in to mid range.']),
-  far: bank('step-far', ['{a} fall{a.s} back out of reach.', '{a} spring{a.s} back to far range.']),
+  far: bank(
+    'step-far',
+    ['{a} fall{a.s} back out of reach.', '{a} spring{a.s} back to far range.'],
+    undefined,
+    FALLING_BACK,
+  ),
 };
 
 const BACK_TO_MID = bank('step-back', [
@@ -172,11 +206,16 @@ export function blockedStepLine(moment: Moment, actor: Told, to: RangeBand, foe:
   return told(moment, BLOCKED, { a: actor, f: foe, goal: GOALS[to] });
 }
 
-const DAZED = bank('dazed', [
-  '{t} {t.is} dazed.',
-  '{t} reel{t.s}, the world spinning.',
-  '{t} stagger{t.s}, dazed.',
-]);
+const DAZED = bank(
+  'dazed',
+  [
+    '{t} {t.is} dazed, and the ground tilts under {t.them}.',
+    '{t} reel{t.s}, the world spinning.',
+    '{t} stagger{t.s}, dazed.',
+  ],
+  undefined,
+  DAZING,
+);
 
 /** A daze takes hold. */
 export function dazeLine(moment: Moment, target: Told): string {
@@ -184,7 +223,7 @@ export function dazeLine(moment: Moment, target: Told): string {
 }
 
 const REELING = bank('reeling', [
-  '{a} {a.is} dazed and lose{a.s} the exchange.',
+  '{a} stand{a.s} blinking while the exchange goes by without {a.them}.',
   '{a} shake{a.s} {a.their} head, still reeling.',
   '{a} can’t find {a.their} feet yet.',
 ]);
@@ -199,12 +238,13 @@ const EMPTY_SEARCH = bank(
   [
     '{a} search{a.es} the field and find{a.s} no one.',
     '{a} scan{a.s} the field and see{a.s} nothing.',
-    '{a} look{a.s} hard and find{a.s} only shadows.',
+    '{a} look{a.s} hard at every place a body could hide, and find{a.s} none.',
   ],
   [
     '{a} search{a.es} again, and still find{a.s} no one.',
     '{a} look{a.s} again, with no more luck.',
   ],
+  SEARCHING,
 );
 
 /** A search that finds no one. */
@@ -212,11 +252,12 @@ export function emptySearchLine(moment: Moment, actor: Told): string {
   return told(moment, EMPTY_SEARCH, { a: actor });
 }
 
-const FOUND = bank('found', [
-  '{a} spot{a.s} {found}.',
-  '{a.poss} eyes snap to {found}.',
-  '{a} pick{a.s} out {found}.',
-]);
+const FOUND = bank(
+  'found',
+  ['{a} spot{a.s} {found}.', '{a.poss} eyes snap to {found}.', '{a} pick{a.s} out {found}.'],
+  undefined,
+  FINDING,
+);
 
 /** A search that finds someone. */
 export function foundLine(moment: Moment, actor: Told, found: readonly Told[]): string {
@@ -224,7 +265,7 @@ export function foundLine(moment: Moment, actor: Told, found: readonly Told[]): 
 }
 
 const COUNTER = bank('counter', [
-  '{t} counter{t.s}.',
+  '{t} counter{t.s} before the blow is finished.',
   '{t} answer{t.s} the blow with one of {t.their} own.',
   '{t} turn{t.s} the attack back on its owner.',
 ]);

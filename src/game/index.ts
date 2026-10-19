@@ -43,18 +43,25 @@ export {
 } from './creationDraft';
 export type { GameAction, GameActionType } from './actions/types';
 export { dispatch, blockerFor } from './dispatch';
+// The content editor's whole public API (`edits/index.ts`).
+export * from './edits';
 export { saveSummary, type SaveSummary } from './views/menu';
 export {
+  browseRoster,
   createVersus,
+  OPEN_FILTER,
   VERSUS_GROUNDS,
-  VERSUS_GROUPS,
   VERSUS_SIDE_MAX,
   versusProblem,
+  versusProfile,
   versusRoster,
+  withGroup,
+  type FacetOption,
+  type RosterBrowse,
   type VersusFighter,
+  type VersusFilter,
   type VersusGround,
-  type VersusGroup,
-  type VersusPick,
+  type VersusProfile,
 } from './versus';
 export { chakraPaperScene, type ChakraPaperScene } from './views/chakraPaper';
 export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';
@@ -88,12 +95,7 @@ export {
   type ExerciseCard,
   type StatPreview,
 } from './views/training';
-export {
-  marketView,
-  type MarketItem,
-  type IngredientItem,
-  type CookbookItem,
-} from './views/market';
+export { marketView, type MarketItem, type CookbookItem } from './views/market';
 export { homeView, hospitalView, type HomeView, type HospitalView } from './views/home';
 export { innView, type InnView } from './views/inn';
 export { houseView, type HouseView } from './views/house';
@@ -206,7 +208,7 @@ export {
   type TierRead,
 } from './views/shinobi';
 export type { CompanionNote, Pace, ScoutingRead, StatCompare, Threat, TraitNote } from './scouting';
-export { combatScene, finishedFightScene, combatScouting } from './views/scene';
+export { combatScene, finishedFightScene, combatScouting, fightTechnique } from './views/scene';
 export {
   missionScene,
   type MissionScene,
@@ -215,6 +217,8 @@ export {
   type ThreadView,
   type RouteMark,
 } from './views/missionScene';
+export { missionSoFar, type MissionSoFar } from './views/missionSoFar';
+export { sceneBeside, type SceneBeside } from './views/sceneBeside';
 export { combatLog, type CombatLogLine } from './views/combatLog';
 export { fightReplay, storyEnd, type FightBeat } from './views/fightReplay';
 export {

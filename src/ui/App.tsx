@@ -3,36 +3,46 @@ import { useState } from 'react';
 import { musicMood, saveSummary, type MusicMood, type SaveStore } from '@/game';
 
 import { SoundProvider, useMusic } from './audio/SoundProvider';
+import { EditsProvider } from './edits/EditsProvider';
 import { GameScreen } from './screens/GameScreen';
 import { CreationScreen } from './screens/creation/CreationScreen';
+import { EditorScreen } from './screens/editor/EditorScreen';
 import { MainMenu } from './screens/menu/MainMenu';
 import { SettingsScreen } from './screens/settings/SettingsScreen';
 import { VersusBout } from './screens/versus/VersusBout';
 import { VersusSetup, type VersusChoice } from './screens/versus/VersusSetup';
 import { useGameSession, type GameSession } from './useGameSession';
 
-/** Where the app is: the title menu, your game, a new game's creation, versus mode or settings. */
+/**
+ * Where the app is: the title menu, your game, a new game's creation, versus mode, the editor
+ * or settings.
+ */
 type Mode =
   | { readonly kind: 'menu' }
   | { readonly kind: 'settings' }
+  | { readonly kind: 'editor' }
   | { readonly kind: 'game' }
   | { readonly kind: 'creation' }
   | { readonly kind: 'versus-setup' }
   | { readonly kind: 'versus'; readonly choice: VersusChoice; readonly bout: number };
 
-/** Device settings kept nowhere, for an app given no store for them (tests, previews). */
-const NO_PREFS: SaveStore = { load: () => null, save: () => undefined, clear: () => undefined };
+/** Device data kept nowhere, for an app given no store for it (tests, previews). */
+const NOWHERE: SaveStore = { load: () => null, save: () => undefined, clear: () => undefined };
 
 interface AppProps {
   readonly store: SaveStore;
   /** Where the device's settings (sound) are kept, apart from the save. */
   readonly prefs?: SaveStore;
+  /** Where the editor's changes are kept, apart from the save. */
+  readonly edits?: SaveStore;
 }
 
-export function App({ store, prefs = NO_PREFS }: AppProps) {
+export function App({ store, prefs = NOWHERE, edits = NOWHERE }: AppProps) {
   return (
     <SoundProvider prefs={prefs}>
-      <Screens store={store} />
+      <EditsProvider store={edits}>
+        <Screens store={store} />
+      </EditsProvider>
     </SoundProvider>
   );
 }
@@ -102,6 +112,8 @@ function Screens({ store }: { readonly store: SaveStore }) {
       );
     case 'settings':
       return <SettingsScreen game={null} onBack={toMenu} />;
+    case 'editor':
+      return <EditorScreen onBack={toMenu} />;
     case 'menu':
       break;
   }
@@ -119,6 +131,9 @@ function Screens({ store }: { readonly store: SaveStore }) {
       }}
       onVersus={() => {
         setMode({ kind: 'versus-setup' });
+      }}
+      onEditor={() => {
+        setMode({ kind: 'editor' });
       }}
       onSettings={() => {
         setMode({ kind: 'settings' });

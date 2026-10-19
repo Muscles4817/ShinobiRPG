@@ -96,17 +96,27 @@ const foeOf = (s: Pick<PlanState, 'fighters'>) => s.fighters.find((f) => f.id ==
 /** The log as the player reads it: the sentences, without the screen's markers. */
 
 describe('plan & watch tools: cards', () => {
-  it('offers each carried tool as a card at every distance, never in a default plan', () => {
+  it('offers each carried tool as a card at every distance', () => {
     const [hero] = pair([tool('heal'), tool('blast', 0)], []);
     for (const band of ['close', 'mid', 'far'] as const) {
       expect(cardsFor(hero!, band).filter((c) => c.kind === 'item')).toHaveLength(2);
     }
-    const defaults = defaultLoadout(hero!);
-    expect(
-      Object.values(defaults)
-        .flat()
-        .filter((s) => s.card.startsWith('item:')),
-    ).toEqual([]);
+  });
+
+  it('slots the tools carried in a default plan, never one that is spent', () => {
+    const [hero] = pair([tool('heal'), tool('blast'), tool('chakra', 0)], []);
+    const slotted = defaultLoadout({ ...hero!, attributes: { ...attributes, intellect: 40 } });
+    expect(slotted.mid.map((s) => s.card)).toEqual(
+      expect.arrayContaining(['item:heal', 'item:blast']),
+    );
+    expect(slotted.mid.map((s) => s.card)).not.toContain('item:chakra');
+  });
+
+  it('brings a flash tag before a Search against a foe who hides', () => {
+    const fighters = pair([tool('flash')], [], { foeTraits: ['illusionist'] });
+    const plan = defaultLoadout(fighters[0]!, fighters);
+    expect(plan.mid.map((s) => s.card)).toContain('item:flash');
+    expect(plan.mid.map((s) => s.card)).not.toContain('search');
   });
 
   it('shows tools at the card table with how many are left', () => {

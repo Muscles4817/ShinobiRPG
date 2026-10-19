@@ -652,6 +652,75 @@ nothing. This step gives those techniques a pool to come from.
 - An adult taking the install later gets the same three shares, but at a price: days laid up
   while the body takes the hive.
 
+### Strains and crossbreeding (step 4c): the proposal
+
+For discussion before building. To crossbreed, a strain has to be made of parts that can be
+mixed. Today a strain is four numbers (drain, hardiness, fears, senses), which is too thin to
+inherit from. So a strain becomes a set of **traits**: each one a thing the insects can do (or
+can't stand), with a strength of one to three, that the fight reads. Crossbreeding mixes
+traits.
+
+**What insects can do** (each read by one rule in `rules/swarms.ts`):
+
+| Trait    | What it does in a fight                                                         |
+| -------- | ------------------------------------------------------------------------------- |
+| Draining | Settled insects draw a foe's chakra (into the host, by `absorb`).               |
+| Hardy    | A share of losses shrugged off.                                                 |
+| Keen     | Finds the hidden; settled insects keep a foe found.                             |
+| Prolific | Breeds back faster at home.                                                     |
+| Tiny     | More insects to the chakra given (a bigger cap), but each sting is lighter.     |
+| Venomous | Settled insects poison as well (the `afflict` poison: saps strength and speed). |
+| Glowing  | Dust that marks: a settled foe can't conceal, and is easier to hit.             |
+| Blinding | Scales in the eyes: swarm techniques may daze, and settled foes aim worse.      |
+| Silk     | Swarm holds (the rope, the sphere) grip harder and are harder to break.         |
+| Shelled  | The wall and the clone stand more hits before they come apart.                  |
+
+**What insects can't stand** (weaknesses, also traits): fears fire, fears wind, fears water,
+fears cold, short-lived (breeds back slower away from home).
+
+**The strains to start with:**
+
+- **Kikaichū:** draining 3, hardy 2, keen 1, fears fire.
+- **Lantern moths:** glowing 2, blinding 2, keen 2, draining 1, fears fire, fears wind.
+- **Wild strains** found away from home, by biome, each strong in one or two things:
+  - woods: a stinging wasp (venomous), a weaving spider (silk);
+  - marsh: a midge cloud (tiny, prolific);
+  - river: a water beetle (shelled, doesn't fear water);
+  - mountain: a cold-hardy locust (hardy, fears fire less);
+  - foreign markets: rarer strains for a price.
+
+**Crossbreeding:**
+
+1. **Find.** In a wild place, search for insects (an action like foraging, once a day). What
+   turns up hangs on the biome, the season and your perception. A find goes into a jar at home.
+2. **Study.** Each day at home with a jar, studying it shows one more of its traits (intellect
+   speeds it). You can't cross what you don't understand.
+3. **Cross.** Choose a studied jar to cross into your hive. Over a few days at home the hive
+   breeds a new strain of your own, which you name. For each trait the parents have, the child
+   takes it at the stronger parent's strength, the weaker, or loses it, by a draw from the seed.
+   Weaknesses come through more easily than strengths. Part of the hive goes into the
+   breeding, so it is thin for those days.
+4. **Keep.** Your hive is one strain at a time, but the strains you have bred are kept in a
+   ledger. Going back to one takes a crossing too.
+
+**The balance rule:** a strain has a **trait budget** (strengths added up, less something for
+each weakness), so a hybrid trades things off and can't be best at everything. A body
+installed by the clan rite (as a child of the clan) gives the hive one more point of hardiness
+whatever its strain.
+
+**Questions for you:**
+
+1. **The traits:** is the list right? Anything to add (a strain that eats poison, one that
+   carries messages), or cut?
+2. **Strength one to three, or on and off?** Levels make crossing richer and the card busier.
+3. **The budget:** should a hybrid be capped so you always trade off, or can a patient breeder
+   stack everything given enough crossings?
+4. **Luck or choice:** when crossing, is what the child inherits partly luck (redo it to try
+   again, at the cost of days and a thin hive), or do you choose which traits to keep, once
+   you've studied both parents?
+5. **The original pack's moths:** should a moth host find and cross wild moths, or any insect,
+   moths and beetles alike?
+
 ### Shamans: spirits seen, bound and sealed
 
 A shaman sees spirits, deals with them, and seals them into items and people to empower them.
@@ -1047,7 +1116,7 @@ and its genes, its skills with training**, and every kind has its own ceiling.
   your chakra through `chakraBody(state)` everywhere: the meters, sleep, camp, exams, fights,
   exhaustion and time passing. The share comes off wherever chakra is worked out.
 - **The game:**
-  - `GameState.hive` (save v59) is null for most;
+  - `GameState.hive` (save v60) is null for most;
   - a child of a hive clan is born with it full, at the share chosen on the family history page;
   - an old save of a hive clan gets its hive the first time a day passes;
   - your hive rides into every fight, spars included, and what came home is kept;

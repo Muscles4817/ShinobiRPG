@@ -192,6 +192,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
 
   const state: GameState = {
     packId: content.packId,
+    edits: ctx.edits,
     rngState: dice.state(),
     time: START_TIME,
     ...location,

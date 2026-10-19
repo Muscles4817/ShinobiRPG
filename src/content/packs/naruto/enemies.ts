@@ -4,6 +4,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'wild-boar',
     name: 'Wild Boar',
+    blow: 'tusk',
     kind: 'Beast',
     drops: ['wild-game'],
     danger: 'petty',

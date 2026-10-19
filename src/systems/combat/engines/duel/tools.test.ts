@@ -155,7 +155,7 @@ describe('duel engine: fight tools', () => {
     for (let seed = 1; seed <= 10; seed++) {
       const next = act(dazed, { optionId: 'item:clarity' }, seed);
       const told = engine.view(next).log.map((l) => splitNarration(l).text);
-      expect(told).toContain('Hero grips a charm. The fog lifts.');
+      expect(told).toContain('Hero grips a charm until the fog in their head lifts.');
       expect(combatant(next, 'hero').statuses).not.toContain('Confused');
     }
   });

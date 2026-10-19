@@ -9,6 +9,7 @@ import {
   type GameState,
   type RecipeCard,
 } from '@/game';
+import { useCloseOnEscape } from '../../components/useCloseOnEscape';
 
 interface StoveProps {
   readonly ctx: GameContext;
@@ -29,6 +30,7 @@ function complete(steps: Partial<CookingSteps>): CookingSteps | null {
  * learned of the dish is set for you; the rest is your call, and the result tells you how it went.
  */
 export function Stove({ ctx, state, recipe, perform, onClose }: StoveProps) {
+  useCloseOnEscape(onClose);
   const [steps, setSteps] = useState<Partial<CookingSteps>>(recipe.knownSteps);
   const ready = complete(steps);
   const action: GameAction | null = ready

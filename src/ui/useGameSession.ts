@@ -17,6 +17,7 @@ import {
 } from '@/game';
 
 import { useSound } from './audio/SoundProvider';
+import { useEdits } from './edits/EditsProvider';
 
 interface Loaded {
   readonly game: GameState;
@@ -47,7 +48,7 @@ function loadInitial(store: SaveStore): { game: Loaded | null; notice: string | 
   if (!raw) return { game: null, notice: null };
   const loaded = deserialize(raw);
   if (!loaded.ok) return { game: null, notice: `Your save could not be loaded: ${loaded.error}` };
-  const ctx = contextForPack(loaded.value.packId);
+  const ctx = contextForPack(loaded.value.packId, loaded.value.edits);
   if (!ctx) {
     return {
       game: null,
@@ -64,6 +65,7 @@ export function useGameSession(store: SaveStore): GameSession {
   const [notice, setNotice] = useState<string | null>(initial.notice);
   const [cue, setCue] = useState<ShownCue | null>(null);
   const { play } = useSound();
+  const { editsFor } = useEdits();
 
   useEffect(() => {
     if (game) store.save(serialize(game.game));
@@ -88,12 +90,16 @@ export function useGameSession(store: SaveStore): GameSession {
     [game, play],
   );
 
-  const start = useCallback((packId: string, draft: CreationDraft, seed: number) => {
-    const ctx = contextForPack(packId);
-    if (!ctx) return;
-    setGame({ game: createNewGame({ draft, seed }, ctx), ctx });
-    setNotice(null);
-  }, []);
+  // A new game takes the editor's changes as they stand, and keeps them in its save.
+  const start = useCallback(
+    (packId: string, draft: CreationDraft, seed: number) => {
+      const ctx = contextForPack(packId, editsFor(packId));
+      if (!ctx) return;
+      setGame({ game: createNewGame({ draft, seed }, ctx), ctx });
+      setNotice(null);
+    },
+    [editsFor],
+  );
 
   const abandon = useCallback(() => {
     store.clear();

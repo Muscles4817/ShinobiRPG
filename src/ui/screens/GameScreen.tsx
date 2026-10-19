@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   activeScene,
@@ -19,6 +19,9 @@ import { Notice } from '../components/Notice';
 import { PersonSheet } from '../components/PersonSheet';
 import { CompanionSheet } from '../components/CompanionSheet';
 import { ReportCard } from '../components/ReportCard';
+import { appClass, isStoryScene } from '../layout/sceneLayout';
+import { WideFrame } from '../layout/WideFrame';
+import { useWideScreen } from '../layout/useWideScreen';
 import type { GameSession } from '../useGameSession';
 import { BondsScreen } from './BondsScreen';
 import { HubScreen } from './HubScreen';
@@ -32,6 +35,7 @@ import { MissionScene } from './scenes/MissionScene';
 import { PromotionScene } from './scenes/PromotionScene';
 import { RaceScene } from './scenes/RaceScene';
 import { RivalScene } from './scenes/RivalScene';
+import { StorySceneFrame } from './scenes/StorySceneFrame';
 import { SettingsScreen } from './settings/SettingsScreen';
 import { ChakraPaperScene } from './scenes/ChakraPaperScene';
 import { SenseiTestScene } from './scenes/SenseiTestScene';
@@ -58,6 +62,8 @@ interface Nav {
 
 interface TabContentProps extends ScreenProps {
   readonly nav: Nav;
+  /** The desktop layout, which shows you in its own panel rather than on the village screen. */
+  readonly wide: boolean;
   readonly setNav: (n: Nav) => void;
   readonly onAbandon: () => void;
   readonly onMenu: () => void;
@@ -67,6 +73,7 @@ interface TabContentProps extends ScreenProps {
 
 function TabContent({
   nav,
+  wide,
   setNav,
   onAbandon,
   onMenu,
@@ -106,6 +113,7 @@ function TabContent({
       ) : (
         <HubScreen
           {...props}
+          wide={wide}
           onOpenPlace={openPlace}
           onOpenPerson={onOpenPerson}
           onOpenCompanion={onOpenCompanion}
@@ -195,32 +203,59 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   useEffect(() => {
     if (showReport) play(reportSound(showReport));
   }, [showReport, play]);
+  const wide = useWideScreen();
+  const selectTab = useCallback((tab: DockTab) => {
+    setNav({ tab, placeId: null });
+  }, []);
+  const openPlace = (placeId: string) => {
+    play('page');
+    setNav({ tab: 'here', placeId });
+  };
+  const openCompanion = () => {
+    setCompanionOpen(true);
+  };
+  const tabContent = (
+    <TabContent
+      {...props}
+      nav={nav}
+      wide={wide}
+      setNav={setNav}
+      onAbandon={session.abandon}
+      onMenu={onMenu}
+      onOpenPerson={setPersonId}
+      onOpenCompanion={openCompanion}
+    />
+  );
 
   return (
-    <div className="app" data-motion={state.settings.animations ? 'on' : 'off'}>
+    <div className={appClass(wide, scene)} data-motion={state.settings.animations ? 'on' : 'off'}>
       {session.notice && <Notice text={session.notice} onDismiss={session.dismissNotice} />}
       {scene ? (
-        <Scene {...props} kind={scene} />
-      ) : (
-        <TabContent
+        <div className="wide-scene">
+          {wide && isStoryScene(scene) ? (
+            <StorySceneFrame ctx={ctx} state={state}>
+              <Scene {...props} kind={scene} />
+            </StorySceneFrame>
+          ) : (
+            <Scene {...props} kind={scene} />
+          )}
+        </div>
+      ) : wide ? (
+        <WideFrame
           {...props}
-          nav={nav}
-          setNav={setNav}
-          onAbandon={session.abandon}
-          onMenu={onMenu}
-          onOpenPerson={setPersonId}
-          onOpenCompanion={() => {
-            setCompanionOpen(true);
-          }}
-        />
-      )}
-      {!scene && (
-        <Dock
-          active={nav.tab}
-          onSelect={(tab) => {
-            setNav({ tab, placeId: null });
-          }}
-        />
+          tab={nav.tab}
+          placeId={nav.placeId}
+          onTab={selectTab}
+          onOpenPlace={openPlace}
+          onOpenCompanion={openCompanion}
+        >
+          {tabContent}
+        </WideFrame>
+      ) : (
+        <>
+          {tabContent}
+          <Dock active={nav.tab} onSelect={selectTab} />
+        </>
       )}
       {personId && !scene && (
         <PersonSheet

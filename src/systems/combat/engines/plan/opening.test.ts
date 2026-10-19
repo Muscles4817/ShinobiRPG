@@ -97,7 +97,8 @@ describe('plan & watch openings', () => {
   it('a foe dazed by the opening loses the first exchange, then recovers', () => {
     const state = engine.start(setup({ opening: { dazed: ['bandit'] } }), createRng(1));
     const first = act(engine, act(engine, state, 'begin'), 'next');
-    expect(said(engine.view(first).log)).toContain('Bandit is dazed and loses the exchange.');
+    // The dazed fighter's lost turn, by its bank's marker, so the words may change.
+    expect(engine.view(first).log.some((l) => l.includes('⟦v:reeling.'))).toBe(true);
     expect(bandit(engine, first)?.statuses).not.toContain('Dazed');
   });
 

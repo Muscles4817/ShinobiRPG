@@ -39,7 +39,7 @@ src/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
-  platform/   Browser adapters (localStorage save and device-settings stores).
+  platform/   Browser adapters (localStorage save, device-settings and editor stores).
   ui/         React. theme/ (tokens), art/ (SVG icons & backdrops), audio/ (synth & music), components/, screens/.
   main.tsx    App composition root: picks platform adapters and the game context.
 ```
@@ -654,6 +654,19 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `dispatch`): a furnishing only it gives, and a keepsake on the shelf. New entries make one
     line on the day's sheet.
 
+34. **The editor lays changes over a pack** (`docs/design/editor-plan.md`, `game/edits/`). An
+    edit is a sparse override (`ContentEdits`: fighters by roster id, only the stats and the
+    technique list that differ), never a copy, so what is left alone follows the pack. Edits
+    are kept on the device (a third `SaveStore`, read defensively by `readEditBook`) and laid
+    over the pack by `withEdits` when a context is built (`contextForPack(packId, edits)`).
+    Versus uses them at once; a new game copies its pack's edits into `GameState.edits` and is
+    rebuilt from that copy on load, so a game keeps the world it began with. Each change is
+    kept only while it differs from the pack (`editStat`, `editTechniques`), and a fighter or
+    the whole pack goes back as written by dropping its entry (`resetFighter`, `NO_EDITS`). The
+    editor reads the pack's rules as notes (a best stat outside the rank's band) and never
+    refuses a change for them; it only keeps out what would break a fight (it refuses an empty
+    technique list and doesn't offer another clan's techniques or a summons without a contract).
+
 ### Content packs
 
 - A pack is `src/content/packs/<id>/index.ts` exporting a `ContentPack`; register it in
@@ -763,6 +776,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   every fight). They show in versus by rank and nowhere else; their arsenal sources their
   techniques (validated in `validateDuelists.ts`). Plumbing one in moves them to `people`, where
   their techniques then need a real source.
+- **Make something editable:** add its override to `ContentEdits` (`game/edits/state.ts`), read
+  it back defensively in `editsFrom` (`book.ts`), lay it over the pack in `withEdits`
+  (`apply.ts`), keep it only while it differs from the pack (`edit.ts`), give it a view in
+  `view.ts` and a page in `ui/screens/editor/`. A shape a save can't read needs a migration,
+  since saves keep their copy.
 - **Add a sensei temperament or past:** a `SenseiTemperament` in
   `content/shared/sensei/temperaments.ts` (an existing archetype, traits, a haunt, a full
   voice kit) or a `SenseiPast` in `content/shared/sensei/pasts/` (the temperaments that can carry
@@ -1008,6 +1026,36 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   is always present except in scenes. _Here_ is the current location's village screen, whose
   place cards open place pages. Scenes (missions, fights) take over the whole screen and
   return to where you were.
+- **Desktop is a second arrangement, not a second game.** On a wide window (`useWideScreen`,
+  `ui/layout/`, the one place the breakpoint lives) `.app.wide` lays out a side rail (the dock
+  and the village's places, number keys for tabs), the main column and the you panel (vitals,
+  the time, what waits on you, on every tab). It arranges the same screens and offers the
+  same actions as the phone; its styles live in `styles/wide.css` (place pages, whose lists
+  spread into grids, in `wide-places.css`; the other tabs in `wide-tabs.css`), every rule under
+  `.app.wide` or `.wide-main`, so the phone layout never changes with it. To set parts of a
+  screen side by side, wrap them in a `Pane` (`ui/layout/Pane.tsx`): `display: contents` on a
+  phone, a column on desktop. Sheets (a person, your companion, a notice, the stove) open as a
+  drawer from the right, and Esc closes them (`useCloseOnEscape`). Keys on desktop go through
+  `useKeys` (`ui/layout/`, which leaves fields, modifiers and a focused control alone): number
+  keys take a scene's choices (`useChoiceKeys`, with a `KeyHint`) and Enter the primary one, and
+  a fight's watch screen plays on Space, steps on the arrows and skips on S. Pointing at
+  something on desktop previews it in the panel beside it (`useHoverPreview`: a Jutsu card in the
+  detail panel, a fighter's read on the plan screen, and in its place a card's technique as the Jutsu tab
+  reads it: `fightTechnique` through `CombatOption.techniqueId`, shown by `JutsuDetail`); a click still picks. Scenes still take the
+  whole screen; the ones in `WIDE_SCENES` (`layout/sceneLayout.ts`: the mission and the fight's
+  plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
+  desktop shows beside a scene is a view model too (`missionSoFar`). Every other scene is a story
+  scene: one wider reading column, its `.choices` bar numbered by CSS and pressed by
+  `ChoiceBarKeys`, so a new scene with a choice bar gets both without code, and beside it the
+  panel of what the scene is about (`sceneBeside`, a view model: the job, the person you face,
+  or you; drawn by `SceneSide`). A new scene kind takes a case in `sceneBeside`.
+  The title menu sits outside the app frame and has its own arrangement (`WideMenu`, styled in
+  `wide-menu.css` under `.main-menu.wide`): a game's title screen, a list of choices (arrows move
+  the mark, Enter or a number takes it) beside a panel telling the one marked, with your save
+  card (`saveSummary`: your portrait, rank, place and day) under Continue.
+  Versus setup on a desk (`VersusDesk`) fills the window: the bout, the roster and a profile,
+  each scrolling on its own; the profile follows the pointer through the roster and is never
+  empty, and Enter fights.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own

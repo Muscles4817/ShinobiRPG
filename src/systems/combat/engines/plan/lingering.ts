@@ -89,13 +89,13 @@ export function drain(round: Round, { actor, target }: Aim, use: EffectUse<'drai
 
 const STRUCK: Readonly<Record<AfflictionKind, string>> = {
   burn: '{t} {t.is} set alight.',
-  bleed: '{t} {t.is} bleeding.',
+  bleed: '{t} {t.is} cut and bleeding.',
   poison: 'Poison seeps into {t}.',
 };
 
 const LINGERS: Readonly<Record<AfflictionKind, string>> = {
-  burn: '{t.poss} burns sear.',
-  bleed: '{t} bleed{t.s}.',
+  burn: 'The burns on {t} keep searing.',
+  bleed: '{t.poss} wounds keep bleeding.',
   poison: 'The poison gnaws at {t}.',
 };
 

@@ -6,6 +6,12 @@ import type { SaveStore } from '@/game';
 
 import { App } from './App';
 
+/**
+ * The longest flows (a journey with a night at the inn, a four-fighter versus setup) take a few
+ * seconds alone and more on a busy CI runner, so they get their own room.
+ */
+const LONG_FLOW_TIMEOUT_MS = 20_000;
+
 function memoryStore(initial: string | null = null): SaveStore & { data: string | null } {
   const store = {
     data: initial,
@@ -52,6 +58,24 @@ async function formTeam(user: User) {
   // Then your rival comes to find you: answer, and the day begins.
   const replies = screen.queryByRole('navigation', { name: 'Replies' });
   if (replies) await user.click(within(replies).getAllByRole('button')[1]!);
+}
+
+/**
+ * Opens a versus slot (or an "Add" button), finds the fighter by name and chooses them. The
+ * slot's own button reads "<slot>: <fighter>".
+ */
+async function pickFighter(user: User, slot: string, name: string) {
+  const opener = slot.startsWith('Add ') ? slot : new RegExp(`^${slot}:`);
+  await user.click(screen.getByRole('button', { name: opener }));
+  const sheet = screen.getByRole('dialog');
+  const kept = within(sheet).queryByRole('button', { name: `Keep ${name}` });
+  if (kept) return user.click(kept);
+  const other = within(sheet).queryByRole('button', { name: 'Choose someone else' });
+  if (other) await user.click(other);
+  await user.click(within(sheet).getByLabelText('Search by name'));
+  await user.paste(name);
+  await user.click(within(sheet).getByRole('button', { name: new RegExp(`^${name},`) }));
+  await user.click(within(sheet).getByRole('button', { name: `Choose ${name}` }));
 }
 
 function place(name: RegExp) {
@@ -196,47 +220,61 @@ describe('App (smoke test)', () => {
     expect(screen.getByRole('heading', { name: 'Mount Reikon' })).toBeInTheDocument();
   });
 
-  it('walks the road to the coast and takes a room at the inn', async () => {
-    const user = userEvent.setup();
-    render(<App store={memoryStore()} />);
-    await startGame(user);
-    const toPort = async () => {
-      await user.click(screen.getByRole('button', { name: /Travel/ }));
-      const port = screen.getByRole('heading', { name: 'Port Shiomachi' }).closest('article')!;
-      return within(port).getByRole('button', { name: 'Set out' });
-    };
-    // A genin goes on their sensei's pass, signed at the weekly lesson.
-    expect(await toPort()).toBeDisabled();
-    await user.click(screen.getByRole('button', { name: /Here/ }));
-    await user.click(place(/Training Grounds/));
-    const sensei = within(screen.getByRole('region', { name: 'People here' })).getAllByRole(
-      'article',
-    )[0]!;
-    const lesson = within(sensei)
-      .getAllByRole('button', { name: /^Train / })
-      .find((b) => !(b as HTMLButtonElement).disabled)!;
-    await user.click(lesson);
-    await user.click(within(screen.getByRole('dialog')).getAllByRole('button')[0]!);
-    await user.click(await toPort());
-    // On the road: take the first way on until you arrive.
-    for (let step = 0; step < 6 && screen.queryByRole('navigation', { name: 'Choices' }); step++) {
-      const choices = screen.getByRole('navigation', { name: 'Choices' });
-      await user.click(within(choices).getAllByRole('button')[0]!);
-    }
-    await user.click(screen.getByRole('button', { name: /Here/ }));
-    await user.click(place(/Gull/));
-    expect(screen.getByRole('button', { name: 'Take a room and sleep till dawn' })).toBeEnabled();
+  it(
+    'walks the road to the coast and takes a room at the inn',
+    async () => {
+      const user = userEvent.setup();
+      render(<App store={memoryStore()} />);
+      await startGame(user);
+      const toPort = async () => {
+        await user.click(screen.getByRole('button', { name: /Travel/ }));
+        const port = screen.getByRole('heading', { name: 'Port Shiomachi' }).closest('article')!;
+        return within(port).getByRole('button', { name: 'Set out' });
+      };
+      // A genin goes on their sensei's pass, signed at the weekly lesson.
+      expect(await toPort()).toBeDisabled();
+      await user.click(screen.getByRole('button', { name: /Here/ }));
+      await user.click(place(/Training Grounds/));
+      const sensei = within(screen.getByRole('region', { name: 'People here' })).getAllByRole(
+        'article',
+      )[0]!;
+      const lesson = within(sensei)
+        .getAllByRole('button', { name: /^Train / })
+        .find((b) => !(b as HTMLButtonElement).disabled)!;
+      await user.click(lesson);
+      await user.click(within(screen.getByRole('dialog')).getAllByRole('button')[0]!);
+      await user.click(await toPort());
+      // On the road: take the first way on until you arrive.
+      for (
+        let step = 0;
+        step < 6 && screen.queryByRole('navigation', { name: 'Choices' });
+        step++
+      ) {
+        const choices = screen.getByRole('navigation', { name: 'Choices' });
+        await user.click(within(choices).getAllByRole('button')[0]!);
+      }
+      await user.click(screen.getByRole('button', { name: /Here/ }));
+      await user.click(place(/Gull/));
+      expect(screen.getByRole('button', { name: 'Take a room and sleep till dawn' })).toBeEnabled();
 
-    // Home again: the village says what it did without you.
-    await user.click(screen.getByRole('button', { name: /Travel/ }));
-    const home = screen.getByRole('heading', { name: 'Tōrōgakure' }).closest('article')!;
-    await user.click(within(home).getByRole('button', { name: 'Set out' }));
-    for (let step = 0; step < 6 && screen.queryByRole('navigation', { name: 'Choices' }); step++) {
-      const choices = screen.getByRole('navigation', { name: 'Choices' });
-      await user.click(within(choices).getAllByRole('button')[0]!);
-    }
-    expect(within(screen.getByRole('dialog')).getByText('Home to Tōrōgakure')).toBeInTheDocument();
-  });
+      // Home again: the village says what it did without you.
+      await user.click(screen.getByRole('button', { name: /Travel/ }));
+      const home = screen.getByRole('heading', { name: 'Tōrōgakure' }).closest('article')!;
+      await user.click(within(home).getByRole('button', { name: 'Set out' }));
+      for (
+        let step = 0;
+        step < 6 && screen.queryByRole('navigation', { name: 'Choices' });
+        step++
+      ) {
+        const choices = screen.getByRole('navigation', { name: 'Choices' });
+        await user.click(within(choices).getAllByRole('button')[0]!);
+      }
+      expect(
+        within(screen.getByRole('dialog')).getByText('Home to Tōrōgakure'),
+      ).toBeInTheDocument();
+    },
+    LONG_FLOW_TIMEOUT_MS,
+  );
 
   it(
     'opens every dock tab and place without crashing',
@@ -427,12 +465,14 @@ describe('App (smoke test)', () => {
     await skipWatching(user);
     await user.click(screen.getByRole('button', { name: /^Watch the round/ }));
     await skipWatching(user);
-    // The game's seed is random, so the spar may end in this round: then the result card comes
-    // up once the last exchange has played, a moment later.
+    // The game's seed is random, so the spar may end in this round: then its last exchange
+    // stays on the stage with a Continue on to the result card.
     await waitFor(() => {
+      const next = screen.queryByRole('navigation', { name: 'What next' });
       const between =
         screen.queryByRole('button', { name: 'Plan the next round' }) ??
         screen.queryByText(/The round is over/) ??
+        (next && within(next).queryByRole('button', { name: 'Continue' })) ??
         screen.queryByRole('dialog');
       expect(between).not.toBeNull();
     });
@@ -578,8 +618,8 @@ describe('App (smoke test)', () => {
     const store = memoryStore();
     render(<App store={store} />);
     await user.click(screen.getByRole('button', { name: /^Versus/ }));
-    await user.selectOptions(screen.getByLabelText('You fight as'), 'person:kakashi');
-    await user.selectOptions(screen.getByLabelText('Opponent 1'), 'person:guy');
+    await pickFighter(user, 'You fight as', 'Kakashi Hatake');
+    await pickFighter(user, 'Opponent 1', 'Might Guy');
     await user.click(screen.getByRole('button', { name: 'Fight' }));
     expect(screen.getAllByText(/Might Guy/).length).toBeGreaterThan(0);
     expect(store.data).toBeNull();
@@ -589,29 +629,56 @@ describe('App (smoke test)', () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);
     await user.click(screen.getByRole('button', { name: /^Versus/ }));
-    await user.selectOptions(screen.getByLabelText('You fight as'), 'person:kakashi');
-    await user.selectOptions(screen.getByLabelText('Opponent 1'), 'person:guy');
+    await pickFighter(user, 'You fight as', 'Kakashi Hatake');
+    await pickFighter(user, 'Opponent 1', 'Might Guy');
     await user.click(screen.getByRole('button', { name: 'Watch them fight' }));
     expect(screen.getByRole('button', { name: 'Watch to the end' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Begin the fight/ })).toBeNull();
   });
 
-  it('sets up a team versus bout, and says why a side won’t do', async () => {
+  it('finds versus fighters by filter and reads their profile before choosing', async () => {
     const user = userEvent.setup();
     render(<App store={memoryStore()} />);
     await user.click(screen.getByRole('button', { name: /^Versus/ }));
-    await user.selectOptions(screen.getByLabelText('You fight as'), 'person:kakashi');
-    await user.click(screen.getByRole('button', { name: 'Add an ally' }));
-    expect(screen.getByText('Kakashi Hatake can’t stand twice on one side.')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Fight' })).toBeDisabled();
-    await user.selectOptions(screen.getByLabelText('Ally 2'), 'person:naruto');
-    await user.selectOptions(screen.getByLabelText('Opponent 1'), 'enemy:zabuza');
-    await user.click(screen.getByRole('button', { name: 'Add an opponent' }));
-    await user.selectOptions(screen.getByLabelText('Opponent 2'), 'enemy:haku');
-    await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(screen.getAllByText(/Zabuza Momochi/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Haku/).length).toBeGreaterThan(0);
+    await user.click(screen.getByRole('button', { name: /^Opponent 1:/ }));
+    const sheet = screen.getByRole('dialog', { name: 'Opponent 1' });
+    await user.click(within(sheet).getByRole('button', { name: 'Choose someone else' }));
+    await user.click(within(sheet).getByRole('button', { name: /^Foes/ }));
+    expect(within(sheet).queryByLabelText('Clan')).toBeNull();
+    await user.selectOptions(within(sheet).getByLabelText('Kind'), 'Missing-nin');
+    await user.click(within(sheet).getByRole('button', { name: /^Zabuza Momochi,/ }));
+    expect(within(sheet).getByRole('heading', { name: 'Techniques' })).toBeInTheDocument();
+    await user.click(within(sheet).getByRole('button', { name: 'Choose Zabuza Momochi' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Opponent 1: Zabuza Momochi' })).toBeInTheDocument();
   });
+
+  it(
+    'sets up a team versus bout, and says why a fighter can’t stand twice',
+    async () => {
+      const user = userEvent.setup();
+      render(<App store={memoryStore()} />);
+      await user.click(screen.getByRole('button', { name: /^Versus/ }));
+      await pickFighter(user, 'You fight as', 'Kakashi Hatake');
+      await user.click(screen.getByRole('button', { name: 'Add an ally' }));
+      const sheet = screen.getByRole('dialog', { name: 'Ally 2' });
+      await user.click(within(sheet).getByLabelText('Search by name'));
+      await user.paste('Kakashi Hatake');
+      await user.click(within(sheet).getByRole('button', { name: /^Kakashi Hatake,/ }));
+      expect(
+        within(sheet).getByText('Kakashi Hatake can’t stand twice on one side.'),
+      ).toBeInTheDocument();
+      expect(within(sheet).getByRole('button', { name: 'Choose Kakashi Hatake' })).toBeDisabled();
+      await user.click(within(sheet).getByRole('button', { name: 'Close' }));
+      await pickFighter(user, 'Add an ally', 'Naruto Uzumaki');
+      await pickFighter(user, 'Opponent 1', 'Zabuza Momochi');
+      await pickFighter(user, 'Add an opponent', 'Haku');
+      await user.click(screen.getByRole('button', { name: 'Fight' }));
+      expect(screen.getAllByText(/Zabuza Momochi/).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/Haku/).length).toBeGreaterThan(0);
+    },
+    LONG_FLOW_TIMEOUT_MS,
+  );
 
   it('lets you start dead last, and your file and sheet say so', async () => {
     const user = userEvent.setup();

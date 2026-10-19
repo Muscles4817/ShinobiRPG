@@ -587,7 +587,7 @@ describe('persistence', () => {
 
   it('gives a save from before hives none', () => {
     const { hive: _h, ...game } = newGame();
-    const loaded = deserialize(JSON.stringify({ version: 58, state: game }));
+    const loaded = deserialize(JSON.stringify({ version: 59, state: game }));
     if (!loaded.ok) throw new Error(loaded.error);
     expect(loaded.value.hive).toBeNull();
   });

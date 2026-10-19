@@ -1,4 +1,4 @@
-import type { CombatGrammar, CombatPerk, CombatTrait } from '@/systems/combat';
+import type { CombatForm, CombatGrammar, CombatPerk, CombatTrait } from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
 import type { ContractDef, FoeSummon } from './contracts';
 import type { ClanHive, StrainDef } from './strains';
@@ -142,6 +142,13 @@ export interface EnemyDef {
   readonly description: string;
   /** Short tag shown on the enemy's banner in a fight, e.g. "Spirit", "Beast". */
   readonly kind: string;
+  /**
+   * What the fight's story makes of them when "it" and the spirit trait don't say: a `swarm`
+   * stings. Words only, like `blow`: what their plain strike is called when their form's word
+   * (a beast's bite) is wrong, such as a boar's "tusk".
+   */
+  readonly form?: CombatForm;
+  readonly blow?: string;
   /** Who may be sent against them (`Danger`); validated against their strength. */
   readonly danger: Danger;
   readonly baseStat: number;

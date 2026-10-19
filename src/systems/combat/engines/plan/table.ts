@@ -145,7 +145,9 @@ function slotOptions(player: PlanFighter, band: RangeBand, team: boolean): Comba
       group: RANGE_LABEL[band],
       selected: rank >= 0,
       ...(rank >= 0 ? { rank } : {}),
-      ...(card.kind === 'jutsu' ? { discipline: card.technique.discipline } : {}),
+      ...(card.kind === 'jutsu'
+        ? { discipline: card.technique.discipline, techniqueId: card.technique.id }
+        : {}),
       ...(blocker ? { disabledReason: blocker } : {}),
     };
   });

@@ -9,6 +9,7 @@ import { ConditionPanel } from './Condition';
 import { Cookbook } from './Cookbook';
 import { FightStylePicker } from './FightStylePicker';
 import { StatSheet } from './StatSheet';
+import { Pane } from '../layout/Pane';
 import type { ScreenProps } from './types';
 
 /** Asks twice before throwing a life away. */
@@ -59,80 +60,84 @@ export function ShinobiScreen({
   const header = headerView(state, ctx);
   return (
     <main className="page">
-      <section className="idcard">
-        <span className="stamp" aria-hidden="true">
-          忍
-        </span>
-        <span className="photo">
-          <Portrait appearance={view.appearance} size={70} />
-        </span>
-        <h1 className="id-name">{[view.name, view.familyName].filter(Boolean).join(' ')}</h1>
-        <dl className="id-kv">
-          <dt>Rank</dt>
-          <dd>{view.rank}</dd>
-          <dt>Village</dt>
-          <dd>{view.village}</dd>
-          <dt>Clan</dt>
-          <dd>{view.clan}</dd>
-          <dt>Nature</dt>
-          <dd>{view.nature}</dd>
-          <dt>Missions</dt>
-          <dd>
-            {view.missionsCompleted} done, {view.missionsFailed} failed
-          </dd>
-        </dl>
-        <p className="id-no">
-          Registry no. {view.registryNo}, issued {view.issued}. Pronouns: {view.pronouns}.
-        </p>
-      </section>
-      <HiveCard ctx={ctx} state={state} />
-      <ContractCard ctx={ctx} state={state} perform={perform} />
-      <section className="identity">
-        {view.kekkeiGenkai && (
-          <p>
-            <span className="label">Bloodline</span> {view.kekkeiGenkai.name}
-            {view.kekkeiGenkai.dormant ? ' (dormant)' : ' (active)'}
+      <Pane name="who">
+        <section className="idcard">
+          <span className="stamp" aria-hidden="true">
+            忍
+          </span>
+          <span className="photo">
+            <Portrait appearance={view.appearance} size={70} />
+          </span>
+          <h1 className="id-name">{[view.name, view.familyName].filter(Boolean).join(' ')}</h1>
+          <dl className="id-kv">
+            <dt>Rank</dt>
+            <dd>{view.rank}</dd>
+            <dt>Village</dt>
+            <dd>{view.village}</dd>
+            <dt>Clan</dt>
+            <dd>{view.clan}</dd>
+            <dt>Nature</dt>
+            <dd>{view.nature}</dd>
+            <dt>Missions</dt>
+            <dd>
+              {view.missionsCompleted} done, {view.missionsFailed} failed
+            </dd>
+          </dl>
+          <p className="id-no">
+            Registry no. {view.registryNo}, issued {view.issued}. Pronouns: {view.pronouns}.
           </p>
-        )}
-        {view.traits.length > 0 && (
+        </section>
+        <HiveCard ctx={ctx} state={state} />
+        <ContractCard ctx={ctx} state={state} perform={perform} />
+        <section className="identity">
+          {view.kekkeiGenkai && (
+            <p>
+              <span className="label">Bloodline</span> {view.kekkeiGenkai.name}
+              {view.kekkeiGenkai.dormant ? ' (dormant)' : ' (active)'}
+            </p>
+          )}
+          {view.traits.length > 0 && (
+            <p>
+              <span className="label">Traits</span> {view.traits.join(', ')}
+            </p>
+          )}
           <p>
-            <span className="label">Traits</span> {view.traits.join(', ')}
+            <span className="label">Class standing</span> {view.standing}
           </p>
-        )}
-        <p>
-          <span className="label">Class standing</span> {view.standing}
-        </p>
-        {view.upbringing && (
-          <p>
-            <span className="label">Raised</span> {view.upbringing}
+          {view.upbringing && (
+            <p>
+              <span className="label">Raised</span> {view.upbringing}
+            </p>
+          )}
+          {view.build && (
+            <p>
+              <span className="label">Build</span> {view.build}
+            </p>
+          )}
+          {view.notes && (
+            <p>
+              <span className="label">Notes</span> {view.notes}
+            </p>
+          )}
+          {view.nindo && (
+            <p>
+              <span className="label">Dream</span> {view.nindo}
+            </p>
+          )}
+          <p className="grades-line">
+            <span className="label">Academy report</span>{' '}
+            {view.grades.map((g) => (
+              <span key={g.discipline} className={`grade-chip d-${g.discipline}`}>
+                <b>{g.label.slice(0, 3)}</b> {g.mark}
+              </span>
+            ))}
           </p>
-        )}
-        {view.build && (
-          <p>
-            <span className="label">Build</span> {view.build}
-          </p>
-        )}
-        {view.notes && (
-          <p>
-            <span className="label">Notes</span> {view.notes}
-          </p>
-        )}
-        {view.nindo && (
-          <p>
-            <span className="label">Dream</span> {view.nindo}
-          </p>
-        )}
-        <p className="grades-line">
-          <span className="label">Academy report</span>{' '}
-          {view.grades.map((g) => (
-            <span key={g.discipline} className={`grade-chip d-${g.discipline}`}>
-              <b>{g.label.slice(0, 3)}</b> {g.mark}
-            </span>
-          ))}
-        </p>
-      </section>
-      <ConditionPanel condition={view.condition} />
-      <StatSheet view={view} />
+        </section>
+        <ConditionPanel condition={view.condition} />
+      </Pane>
+      <Pane name="arts">
+        <StatSheet view={view} />
+      </Pane>
       <Cookbook ctx={ctx} state={state} />
       <FightStylePicker ctx={ctx} state={state} perform={perform} />
       <button type="button" className="menu-option" onClick={onSettings}>

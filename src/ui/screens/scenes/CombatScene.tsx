@@ -10,6 +10,7 @@ import {
   type CombatantView,
   type CombatOption,
   type CombatView,
+  fightTechnique,
 } from '@/game';
 
 import { Chips } from '../../components/Chips';
@@ -200,7 +201,16 @@ export function CombatScene(props: ScreenProps) {
   };
   const reads = combatScouting(props.state, props.ctx);
   const planning = view.options.some((o) => o.kind === 'plan');
-  if (planning && !watch.holding) return <PlanScreen view={view} reads={reads} onPick={act} />;
+  if (planning && !watch.holding) {
+    return (
+      <PlanScreen
+        view={view}
+        reads={reads}
+        onPick={act}
+        techniqueOf={(id) => fightTechnique(props.state, props.ctx, id)}
+      />
+    );
+  }
   return (
     <WatchScreen
       // New lines restage it, even when it was already up (a watched fight opens on it).

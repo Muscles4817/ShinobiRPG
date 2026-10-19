@@ -2,7 +2,11 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
 
-import { createLocalPrefsStore, createLocalSaveStore } from '@/platform/localSaveStore';
+import {
+  createLocalEditsStore,
+  createLocalPrefsStore,
+  createLocalSaveStore,
+} from '@/platform/localSaveStore';
 import { App } from '@/ui/App';
 import '@/ui/theme/fonts.css';
 import '@/ui/theme/tokens.css';
@@ -33,6 +37,8 @@ import '@/ui/styles/cues.css';
 import '@/ui/styles/cues-village.css';
 import '@/ui/styles/motion.css';
 import '@/ui/styles/menu.css';
+import '@/ui/styles/versus.css';
+import '@/ui/styles/editor.css';
 import '@/ui/styles/settings.css';
 import '@/ui/styles/dayend.css';
 import '@/ui/styles/honours.css';
@@ -40,6 +46,11 @@ import './ui/styles/rival.css';
 import '@/ui/styles/notes.css';
 import '@/ui/styles/home.css';
 import '@/ui/styles/fieldbook.css';
+import '@/ui/styles/wide.css';
+import '@/ui/styles/wide-places.css';
+import '@/ui/styles/wide-tabs.css';
+import '@/ui/styles/wide-scenes.css';
+import '@/ui/styles/wide-menu.css';
 
 // Composition root for the app: choose the platform adapters here.
 const root = document.getElementById('root');
@@ -47,7 +58,11 @@ if (!root) throw new Error('Missing #root element');
 
 createRoot(root).render(
   <StrictMode>
-    <App store={createLocalSaveStore()} prefs={createLocalPrefsStore()} />
+    <App
+      store={createLocalSaveStore()}
+      prefs={createLocalPrefsStore()}
+      edits={createLocalEditsStore()}
+    />
   </StrictMode>,
 );
 

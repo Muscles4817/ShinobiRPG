@@ -5,7 +5,14 @@ import type { TechniqueSheet as Sheet } from '@/game';
  * chip), what it does in order, what it costs and needs, its school, and what it does in your
  * hands against an equal. The same sheet at the academy, the library and on the deck.
  */
-export function TechniqueSheet({ sheet }: { readonly sheet: Sheet }) {
+export function TechniqueSheet({
+  sheet,
+  hands = 'In your hands',
+}: {
+  readonly sheet: Sheet;
+  /** Whose hands the last line reads it in: yours, or a fighter's in versus. */
+  readonly hands?: string;
+}) {
   return (
     <dl className="tsheet">
       <div>
@@ -77,7 +84,7 @@ export function TechniqueSheet({ sheet }: { readonly sheet: Sheet }) {
       </div>
       {sheet.inYourHands && (
         <div>
-          <dt>In your hands</dt>
+          <dt>{hands}</dt>
           <dd>{sheet.inYourHands}</dd>
         </div>
       )}

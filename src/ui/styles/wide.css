@@ -1,0 +1,330 @@
+/*
+ * The desktop layout (`.app.wide`, set by useWideScreen): a wooden side rail with the dock and
+ * the village's places, the tab's content in the middle, and the you panel on the right. Every
+ * rule here is scoped under `.app.wide`, so the phone layout never sees one of them.
+ */
+.app.wide {
+  max-width: 1440px;
+  padding-bottom: 0;
+}
+
+.wide-frame {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr) 340px;
+  align-items: start;
+  min-height: 100vh;
+}
+
+/* The rail: lacquered wood, kept in view while the main column scrolls. */
+.wide-rail {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 12px;
+  box-sizing: border-box;
+  background: var(--grain), var(--wood);
+  border-right: 2px solid color-mix(in srgb, var(--wood) 60%, #000);
+}
+.rail-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 12px;
+}
+.rail-title b {
+  font-family: var(--font-story);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--paper);
+}
+.rail-title span {
+  font-family: var(--font-story);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ema);
+}
+
+.app.wide .dock {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.app.wide .dk {
+  flex-direction: row;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+}
+.app.wide .dk i {
+  width: 24px;
+  text-align: center;
+}
+.app.wide .dk:hover {
+  background: rgb(0 0 0 / 0.16);
+}
+.app.wide .dk.on {
+  background: rgb(0 0 0 / 0.28);
+}
+.dk kbd {
+  margin-left: auto;
+  padding: 0 6px;
+  border: 1px solid color-mix(in srgb, var(--ema) 40%, var(--wood));
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--ema);
+}
+
+.rail-places {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--ema) 25%, var(--wood));
+}
+.rail-places h2 {
+  padding: 0 12px;
+  font-family: var(--font-story);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.rail-places ul {
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--grain), var(--surface);
+  border-radius: var(--radius);
+}
+.rail-place {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+.rail-place:hover:not(:disabled),
+.rail-place.on {
+  background: var(--raise);
+}
+.rail-place.on {
+  color: var(--lantern);
+}
+.rail-place small {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: right;
+}
+.rail-place .place-badge {
+  flex: none;
+  white-space: nowrap;
+  color: var(--seal);
+}
+
+/* The main column: the village spreads out; other tabs keep a readable width for now. */
+.wide-main {
+  min-width: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.wide-main.village {
+  max-width: none;
+  padding: 20px 24px 24px;
+  box-sizing: border-box;
+  gap: 4px;
+}
+.wide-main.village .hub-hero {
+  height: 300px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.wide-main.village .hub-top {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 18px;
+  padding: 0;
+}
+.wide-main.village .hub-place {
+  font-size: 2.4rem;
+}
+.wide-main.village .street {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  padding: 14px 0 18px;
+}
+.wide-main.village .street::before {
+  display: none;
+}
+.wide-main.village .stop {
+  min-height: 84px;
+  padding: 10px 12px;
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  text-align: left;
+}
+.wide-main.village .stop:hover:not(:disabled) {
+  border-color: var(--lantern);
+}
+.wide-main.village .stop.suggested {
+  border-color: color-mix(in srgb, var(--gold) 55%, var(--line));
+}
+.wide-main.village .around,
+.wide-main.village .village-life {
+  padding-left: 0;
+  padding-right: 0;
+}
+.wide-main.village .morning-slip {
+  margin-left: 0;
+  margin-right: 0;
+}
+.app.wide .ticker {
+  bottom: 12px;
+  margin: 0 0 12px;
+}
+
+/* The you panel: who you are and what waits on you, kept in view like the rail. */
+.you-panel {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px 18px;
+  box-sizing: border-box;
+  background: var(--grain), var(--surface);
+  border-left: 1px solid var(--line);
+}
+.you-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.you-head b {
+  font-family: var(--font-story);
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+.you-head span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.you-when {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--raise);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+}
+.you-when .when {
+  text-transform: capitalize;
+}
+.you-when .ryo {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--gold);
+}
+.you-panel .vitals,
+.app.wide .scene-side .vitals {
+  grid-template-columns: 1fr;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+.you-panel .vitals .vm,
+.app.wide .scene-side .vitals .vm {
+  height: 7px;
+  background: var(--raise);
+}
+.you-panel .hunger-note,
+.you-panel .companion-strip,
+.you-panel .sensei-slip,
+.you-panel .rival-slip {
+  margin: 0;
+}
+.you-panel .slip-days {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Sheets (a person, your companion, a notice, the stove) open as a drawer from the right, so
+   the page they were opened from stays in view beside them. */
+.app.wide .sheet-backdrop {
+  justify-content: flex-end;
+  align-items: stretch;
+}
+.app.wide .sheet {
+  width: min(480px, 100%);
+  max-width: none;
+  height: 100vh;
+  max-height: none;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 24px var(--gutter) 0;
+  border-radius: 0;
+  border-top: 0;
+  border-left: 1px solid var(--line);
+  box-shadow: -18px 0 40px rgb(0 0 0 / 0.45);
+  animation: drawer-in 0.18s ease-out;
+}
+@keyframes drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app.wide .sheet {
+    animation: none;
+  }
+}
+
+/* The number key that takes a choice in a scene. */
+.app.wide .key-hint {
+  flex: none;
+  min-width: 22px;
+  padding: 0 5px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0.7;
+}
+.app.wide .key-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+}

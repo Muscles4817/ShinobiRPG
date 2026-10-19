@@ -3,9 +3,9 @@
 type RawState = Record<string, unknown>;
 
 /**
- * v58 → v59: hives arrive. Nobody holds one in the save yet; a child of a hive clan is given
+ * v59 → v60: hives arrive. Nobody holds one in the save yet; a child of a hive clan is given
  * theirs, full, the first time a day passes (`hives/keeping.ts`).
  */
-export function v58ToV59(state: RawState): RawState {
+export function v59ToV60(state: RawState): RawState {
   return { ...state, hive: null };
 }

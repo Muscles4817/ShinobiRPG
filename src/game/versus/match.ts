@@ -1,15 +1,13 @@
 import { createRng, err, ok, type Result } from '@/core';
 import type { CombatGround } from '@/systems/combat';
-import type { Stats } from '@/systems/stats';
 
-import { enemyStatLine } from '../combatants';
 import type { GameContext } from '../context';
 import { createNewGame } from '../creation';
 import { reviseDraft } from '../creationDraft';
 import { startFight } from '../fightStyle';
 import type { GameState } from '../state';
 import { defaultDraft } from '../views/creation';
-import type { Contender } from './roster';
+import { statsOf, type Contender } from './roster';
 import { allySetups, foeSetups, nameOf, namesOf, playerSetup, sideOf } from './sides';
 
 /**
@@ -29,10 +27,6 @@ export interface VersusPick {
   readonly ground?: CombatGround;
   /** Only watch: both sides fight on their own, round after round. */
   readonly watch?: boolean;
-}
-
-function statsOf(contender: Contender): Stats {
-  return contender.kind === 'person' ? contender.def.stats : enemyStatLine(contender.def);
 }
 
 /** A sandbox whose character is your fighter, so every read of "you" reads them. */

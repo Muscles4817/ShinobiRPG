@@ -11,10 +11,11 @@ import type {
 } from '@/systems/combat';
 import type { MealQuality } from '@/systems/cooking';
 import { restockPouch } from '@/systems/inventory';
-import { createStats, type Stats } from '@/systems/stats';
-import { maxChakra, MAX_HEALTH, reservesFor } from '@/systems/vitals';
+import type { Stats } from '@/systems/stats';
+import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 import type { GameContext } from './context';
+import { enemyStatLine } from './enemyStats';
 import { foeCalled, foeGrammar } from './foeNames';
 import { enemyWalking, playerWalking } from './footing';
 import { combatGear, combatStats } from './gear';
@@ -22,6 +23,8 @@ import type { GameState } from './state';
 import { chakraBody, hiveSwarm } from './hives/hive';
 
 /** Translates game entities into the combat contract's vocabulary. */
+
+export { enemyStatLine } from './enemyStats';
 
 export function attributesOf(stats: Stats): CombatAttributes {
   const { strength, speed, stamina, chakraControl, intellect, perception, willpower } = stats;
@@ -129,15 +132,6 @@ function enemyMaxHealth(def: Pick<EnemyDef, 'healthScale'>): number {
   return Math.max(1, Math.round(MAX_HEALTH * (def.healthScale ?? 1)));
 }
 
-/**
- * An enemy's stat line. Their chakra is authored (`EnemyDef.maxChakra`), so their reserves are
- * whatever gives that chakra at their control: a beast with none has none to speak of.
- */
-export function enemyStatLine(def: EnemyDef): Stats {
-  const stats = createStats(def.baseStat, def.statBonuses);
-  return { ...stats, reserves: reservesFor(def.maxChakra, stats.chakraControl) };
-}
-
 /** The combatant id of the `index`th enemy of a fight. */
 export function enemyCombatantId(enemyId: string, index: number): string {
   return `${enemyId}#${index}`;
@@ -201,6 +195,8 @@ function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSet
     called: foeCalled(def),
     grammar: foeGrammar(def, id),
     tag: def.kind,
+    ...(def.form ? { form: def.form } : {}),
+    ...(def.blow ? { blow: def.blow } : {}),
     attributes: attributesOf(enemyStatLine(def)),
     health: enemyMaxHealth(def),
     maxHealth: enemyMaxHealth(def),
