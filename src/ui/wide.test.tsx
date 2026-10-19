@@ -122,14 +122,33 @@ describe('the desktop layout (smoke test)', () => {
       return user;
     }
 
-    it('continues with Enter and takes a choice by its number', async () => {
+    it('continues with Enter, and shows your save beside the list', async () => {
       windowWide(true);
       const user = openMenu();
-      await user.keyboard('2');
-      expect(screen.getByRole('group', { name: 'Start over?' })).toBeInTheDocument();
-      await user.click(screen.getByRole('button', { name: /^Keep/ }));
+      const continuing = screen.getByRole('region', { name: 'Continue' });
+      expect(within(continuing).getByText(/^Day 1/)).toBeInTheDocument();
       await user.keyboard('{Enter}');
       expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument();
+    });
+
+    it('moves the mark with the arrows and asks before starting over', async () => {
+      windowWide(true);
+      const user = openMenu();
+      await user.keyboard('{ArrowDown}');
+      expect(screen.getByRole('region', { name: 'New game' })).toBeInTheDocument();
+      await user.keyboard('{Enter}');
+      expect(screen.getByRole('group', { name: 'Start over?' })).toBeInTheDocument();
+      await user.keyboard('{Escape}');
+      expect(screen.queryByRole('group', { name: 'Start over?' })).toBeNull();
+    });
+
+    it('tells the choice pointed at', async () => {
+      windowWide(true);
+      const user = openMenu();
+      await user.hover(screen.getByRole('button', { name: /Versus/ }));
+      expect(screen.getByRole('region', { name: 'Versus' })).toBeInTheDocument();
+      await user.keyboard('5');
+      expect(screen.queryByRole('navigation', { name: 'Main menu' })).toBeNull();
     });
 
     it('leaves the keys alone on a phone', async () => {

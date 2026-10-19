@@ -1039,8 +1039,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `ChoiceBarKeys`, so a new scene with a choice bar gets both without code, and beside it the
   panel of what the scene is about (`sceneBeside`, a view model: the job, the person you face,
   or you; drawn by `SceneSide`). A new scene kind takes a case in `sceneBeside`.
-  The title menu sits outside the app frame and has its own arrangement (`wide-menu.css`, every
-  rule under `.main-menu.wide`): the picture beside the title and choices, which take number keys.
+  The title menu sits outside the app frame and has its own arrangement (`WideMenu`, styled in
+  `wide-menu.css` under `.main-menu.wide`): a game's title screen, a list of choices (arrows move
+  the mark, Enter or a number takes it) beside a panel telling the one marked, with your save
+  card (`saveSummary`: your portrait, rank, place and day) under Continue.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own
