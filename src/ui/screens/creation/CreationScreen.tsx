@@ -183,8 +183,11 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
   // The editor's changes, as the game this creates will have them.
   const { editsFor } = useEdits();
   const ctx = useMemo(() => contextForPack(packId, editsFor(packId)), [packId, editsFor]);
-  const [draft, setDraft] = useState<CreationDraft | null>(() => (ctx ? defaultDraft(ctx) : null));
   const [seed] = useState(randomSeed);
+  // The body and mind are drawn from the same seed as the break-in, so the file shows them.
+  const [draft, setDraft] = useState<CreationDraft | null>(() =>
+    ctx ? { ...defaultDraft(ctx), bornSeed: seed } : null,
+  );
   const [roll, setRoll] = useState<BreakInRoll | null>(null);
   const [index, setIndex] = useState(0);
   if (!ctx || !draft) return null;
@@ -197,7 +200,7 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
   const choosePack = (id: string) => {
     const next = contextForPack(id, editsFor(id));
     setPackId(id);
-    if (next) setDraft(defaultDraft(next));
+    if (next) setDraft({ ...defaultDraft(next), bornSeed: seed });
     setRoll(null);
   };
   const problems = draftProblems(draft, ctx);

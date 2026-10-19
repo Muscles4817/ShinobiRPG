@@ -6,10 +6,11 @@ import {
   withGifts,
   type ArchetypeId,
 } from '@/systems/profile';
-import { STAT_IDS, type Aptitude, type StatId, type Stats } from '@/systems/stats';
+import { STAT_IDS, type Aptitude, type Sex, type StatId, type Stats } from '@/systems/stats';
 import type { Discipline } from '@/systems/techniques';
 
 import { rollCharacterAptitude } from '../aptitude';
+import { bornFor } from '../born';
 import type { GameContext } from '../context';
 import { graduationStats, studentOf } from '../student';
 
@@ -40,6 +41,15 @@ export interface Graduate {
   readonly aptitude: Aptitude;
 }
 
+/** Who a classmate is before the file: their clan, specialty and body. */
+export interface ClassmateBirth {
+  readonly specialty: Discipline;
+  readonly clanId?: string;
+  readonly sex: Sex;
+  /** Draws their body and mind (`game/born.ts`). */
+  readonly bornSeed: number;
+}
+
 function varied(stats: Stats, rng: Rng): Stats {
   const entries = STAT_IDS.map(
     (id) => [id, round1(Math.max(1, stats[id] + (rng.next() * 2 - 1) * STAT_SPREAD))] as const,
@@ -48,12 +58,8 @@ function varied(stats: Stats, rng: Rng): Stats {
 }
 
 /** A classmate specialising in `specialty`, drawn from `rng` (the save's seed and their id). */
-export function graduate(
-  ctx: GameContext,
-  rng: Rng,
-  specialty: Discipline,
-  clanId: string = CLANLESS,
-): Graduate {
+export function graduate(ctx: GameContext, rng: Rng, birth: ClassmateBirth): Graduate {
+  const { specialty, clanId = CLANLESS } = birth;
   const { content } = ctx;
   const family = clanId === CLANLESS ? 'clanless' : 'clan';
   const standing = standingFromRoll(rng.next());
@@ -66,7 +72,8 @@ export function graduate(
   const upbringingId = rng.pick(upbringings).id;
   const who = { clanId, standing, buildId, upbringingId };
   const file = quickFile({ archetype, specialty }, studentOf(who, ctx));
-  const stats = graduationStats({ ...who, talentIds: [], file }, ctx);
+  const born = bornFor(birth.bornSeed, birth.sex);
+  const stats = graduationStats({ ...who, talentIds: [], file, born }, ctx);
   const clan = content.clans.require(clanId);
   const band = STANDING_INFO[standing].talent;
   const rolled = rollCharacterAptitude(rng, clan, [], { band, specialties: [specialty] });

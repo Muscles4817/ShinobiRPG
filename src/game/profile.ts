@@ -92,7 +92,7 @@ export function trainingScale(character: Character, ctx: GameContext, teacher = 
 export function naturalLimits(character: Character, ctx: GameContext): Limits {
   const mods = characterModifiers(character, ctx);
   const build = ctx.content.builds.get(character.buildId);
-  const limits = limitsFor(character.aptitude, mods.limitBonus);
+  const limits = limitsFor(character.aptitude, mods.limitBonus, character.startingStats);
   return effectiveLimits(limits, character.stats, build?.comfortStrength);
 }
 
@@ -103,7 +103,7 @@ export function growthFor(character: Character, ctx: GameContext, teacher = 1): 
   return {
     scale: trainingScale(character, ctx, teacher),
     floors: mods.soloFloors,
-    limits: limitsFor(character.aptitude, mods.limitBonus),
+    limits: limitsFor(character.aptitude, mods.limitBonus, character.startingStats),
     ...(build ? { comfortStrength: build.comfortStrength } : {}),
   };
 }

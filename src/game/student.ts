@@ -7,7 +7,15 @@ import {
   type EarlyTraining,
   type Student,
 } from '@/systems/profile';
-import { createStats, STAT_IDS, sumDeltas, type Stats } from '@/systems/stats';
+import {
+  ACADEMY_LINE,
+  createStats,
+  STAT_IDS,
+  sumDeltas,
+  type BornLine,
+  type StatDelta,
+  type Stats,
+} from '@/systems/stats';
 
 import type { GameContext } from './context';
 import { notesAptitude, notesOf } from './notes';
@@ -19,8 +27,8 @@ import { notesAptitude, notesOf } from './notes';
  * thing wherever it is written.
  */
 
-/** Every stat before anything is added: what any twelve-year-old has. */
-export const BASE_STAT = 5;
+/** What anyone has before training, for a check made before graduation (the break-in). */
+export const BASE_STAT = ACADEMY_LINE;
 /** The clan every pack has for those born outside one (validated). */
 const CLANLESS = 'none';
 
@@ -32,6 +40,8 @@ export interface StudentProfile {
   readonly upbringingId: string;
   readonly standing: ClassStanding;
   readonly file: AcademyFile;
+  /** The body and mind they were born with and grew into (`game/born.ts`). */
+  readonly born: BornLine;
 }
 
 /** The early training an upbringing brings, with the clan's arts filled in. */
@@ -44,7 +54,7 @@ export function earlyTraining(upbringing: UpbringingDef, clan: ClanDef): EarlyTr
 
 /** The student a quick pick fills a file for. */
 export function studentOf(
-  profile: Omit<StudentProfile, 'file' | 'talentIds'>,
+  profile: Omit<StudentProfile, 'file' | 'talentIds' | 'born'>,
   ctx: GameContext,
 ): Student {
   const clan = ctx.content.clans.require(profile.clanId);
@@ -71,13 +81,17 @@ function partsOf(profile: StudentProfile, ctx: GameContext): Parts | null {
   return clan && build && upbringing ? { clan, build, upbringing } : null;
 }
 
-/** Stats on graduation day: the base, then clan, special note, frame and the file. */
+/**
+ * Stats on graduation day: skills at the academy's line and the body and mind as born, then
+ * clan, special note, frame and the file.
+ */
 export function graduationStats(profile: StudentProfile, ctx: GameContext): Stats {
   const parts = partsOf(profile, ctx);
   const notes = notesOf(profile.talentIds, ctx);
   const stats = createStats(
-    BASE_STAT,
+    ACADEMY_LINE,
     sumDeltas(
+      bornOver(profile.born),
       parts?.clan.statBonuses ?? {},
       ...notes.map((n) => n.statBonuses),
       parts?.build.statBonuses ?? {},
@@ -86,6 +100,11 @@ export function graduationStats(profile: StudentProfile, ctx: GameContext): Stat
   );
   // Nobody graduates with less than nothing in a stat.
   return Object.fromEntries(STAT_IDS.map((id) => [id, Math.max(1, stats[id])])) as Stats;
+}
+
+/** The born body and mind as a lift over the academy's line. */
+function bornOver(born: BornLine): StatDelta {
+  return Object.fromEntries(Object.entries(born).map(([id, value]) => [id, value - ACADEMY_LINE]));
 }
 
 /** Everything wrong with how this student was raised and what their file says. */

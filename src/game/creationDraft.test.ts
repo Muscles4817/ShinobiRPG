@@ -111,7 +111,7 @@ describe('the file as it graduates', () => {
     );
     expect(draftProblems(prodigy, naruto)).toEqual([]);
     const view = fileView(prodigy, naruto);
-    expect(view.fighting.grade).toBe('D');
+    expect(view.fighting.grade).toBe('C');
     expect(view.fighting.power).toBeGreaterThanOrEqual(10.5);
     const cs = view.groups.flatMap((g) => g.stats).filter((s) => s.grade === 'C');
     expect(cs.length).toBeGreaterThanOrEqual(3);

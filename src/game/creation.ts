@@ -25,7 +25,7 @@ import {
   type QuickPick,
 } from '@/systems/profile';
 import { NEW_GENIN } from '@/systems/standing';
-import { checkChance, nothingKnown, STAT_INFO } from '@/systems/stats';
+import { checkChance, nothingKnown, STAT_INFO, type Sex } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
 import { NOTHING_TOLD } from '@/systems/telling';
@@ -33,6 +33,7 @@ import { NO_LEAVE } from '@/systems/travel';
 import { fullVitals } from '@/systems/vitals';
 
 import { rollCharacterAptitude } from './aptitude';
+import { bornFor } from './born';
 import type { GameContext } from './context';
 import { chip, log, placeHere } from './ops';
 import { newBoard } from './boardState';
@@ -61,6 +62,13 @@ export interface CreationDraft {
   /** Used only when clanless; clan members take the clan's name. */
   readonly familyName: string;
   readonly pronouns: Pronouns;
+  /** Their body's sex, which shapes how it was drawn; never read from pronouns. */
+  readonly sex: Sex;
+  /**
+   * The seed their body and mind were drawn from (`game/born.ts`), set by the creation scene; null
+   * is the middle of the class.
+   */
+  readonly bornSeed: number | null;
   readonly appearance: Look;
   readonly clanId: string;
   /** Where they stood in their class; with fate, what the file turned out to say. */
@@ -139,6 +147,7 @@ export function profileOf(draft: CreationDraft): StudentProfile {
     upbringingId: draft.upbringingId,
     standing: draft.standing,
     file: draft.file,
+    born: bornFor(draft.bornSeed, draft.sex),
   };
 }
 

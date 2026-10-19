@@ -60,7 +60,8 @@ function growthOf(person: PersonDef, ctx: GameContext, teacher = 1): Growth {
   const scale = Object.fromEntries(
     STAT_IDS.map((id) => [id, aptitude[id] * mods.growth[id] * teacher]),
   );
-  return { scale, floors: mods.soloFloors, limits: limitsFor(aptitude, mods.limitBonus) };
+  const limits = limitsFor(aptitude, mods.limitBonus, person.stats);
+  return { scale, floors: mods.soloFloors, limits };
 }
 
 /** The weekly lesson this person gets from your sensei, if they are your teammate. */

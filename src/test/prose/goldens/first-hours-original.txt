@@ -456,7 +456,7 @@ view:
   journal «March with Gōran»: Gōran marches you over the hills with a full pack and no complaining allowed. “That’ll do for today. Go and eat before you fall over.” [Stamina, a touch] [Chakra Reserves, a touch] [Gōran’s regard rises] [−10 energy]
 
 >>> train
-  journal «Rooftop Sprints»: The first go is mostly finding out where it hurts. Everywhere, it turns out, so you slow down and learn the shape of it before you push. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
+  journal «Rooftop Sprints»: The first go is mostly finding out where it hurts. Everywhere, it turns out, so you slow down and learn the shape of it before you push. [Speed, a touch] [Chakra Reserves, a touch] [−20 energy]
 
 >>> talk
 
@@ -542,13 +542,13 @@ view:
     name: Stamina
     grade: D
     tier: Athletic D
-    words: Only just a D
+    words: Over halfway to a C
   growth[2]:
     stat: speed
     name: Speed
-    grade: D
-    tier: Athletic D
-    words: Over halfway to a C
+    grade: C
+    tier: Fine athlete C
+    words: Only just a C
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -571,7 +571,7 @@ view:
     stamp: In four days
   summary[0]: Gōran thinks better of you
   summary[1]: Chakra Reserves, over halfway to a D
-  summary[2]: Stamina, only just a D
+  summary[2]: Stamina, over halfway to a C
   button: Sleep
   dismiss:
 
@@ -643,7 +643,7 @@ view:
   journal «Building strength»: It comes naturally, as if your body remembered something it was never taught.
 
 >>> train
-  journal «Lake Laps»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
+  journal «Lake Laps»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a touch] [Willpower, a touch] [−25 energy]
   journal «Building stamina»: It fights you every step. Others seem to pick this up in half the time.
 
 >>> talk
@@ -718,7 +718,7 @@ view:
 view:
   mode: full
   when: Spring 3 draws to a close
-  title: You worked on your chakra reserves and willpower, among other things, and Gōran thinks better of you.
+  title: You worked on your chakra reserves and taijutsu, among other things, and Gōran thinks better of you.
   growth[0]:
     stat: reserves
     name: Chakra Reserves
@@ -726,11 +726,11 @@ view:
     tier: Ordinary E
     words: Over halfway to a D
   growth[1]:
-    stat: willpower
-    name: Willpower
-    grade: E
-    tier: Ordinary E
-    words: Over halfway to a D
+    stat: taijutsu
+    name: Taijutsu
+    grade: D
+    tier: Good genin D
+    words: Over halfway to a C
   growth[2]:
     stat: strength
     name: Strength
@@ -738,17 +738,17 @@ view:
     tier: Ordinary E
     words: Over halfway to a D
   growth[3]:
-    stat: taijutsu
-    name: Taijutsu
-    grade: D
-    tier: Good genin D
-    words: Over halfway to a C
+    stat: willpower
+    name: Willpower
+    grade: E
+    tier: Ordinary E
+    words: Nearly a D
   growth[4]:
     stat: stamina
     name: Stamina
     grade: D
     tier: Athletic D
-    words: Only just a D
+    words: Over halfway to a C
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -771,7 +771,7 @@ view:
     stamp: In three days
   summary[0]: Gōran thinks better of you
   summary[1]: Chakra Reserves, over halfway to a D
-  summary[2]: Willpower, over halfway to a D
+  summary[2]: Taijutsu, over halfway to a C
   button: Sleep
   dismiss:
 
@@ -917,7 +917,7 @@ view:
 view:
   mode: full
   when: Spring 4 draws to a close
-  title: You worked on your chakra control and strength, among other things, and Gōran thinks better of you.
+  title: You worked on your chakra control and taijutsu, among other things, and Gōran thinks better of you.
   growth[0]:
     stat: chakraControl
     name: Chakra Control
@@ -925,23 +925,23 @@ view:
     tier: Genin E
     words: Over halfway to a D
   growth[1]:
-    stat: strength
-    name: Strength
-    grade: E
-    tier: Ordinary E
-    words: Over halfway to a D
-  growth[2]:
     stat: taijutsu
     name: Taijutsu
     grade: D
     tier: Good genin D
     words: Over halfway to a C
+  growth[2]:
+    stat: strength
+    name: Strength
+    grade: E
+    tier: Ordinary E
+    words: Over halfway to a D
   growth[3]:
     stat: willpower
     name: Willpower
     grade: E
     tier: Ordinary E
-    words: Over halfway to a D
+    words: Nearly a D
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -964,7 +964,7 @@ view:
     stamp: In two days
   summary[0]: Gōran thinks better of you
   summary[1]: Chakra Control, over halfway to a D
-  summary[2]: Strength, over halfway to a D
+  summary[2]: Taijutsu, over halfway to a C
   button: Sleep
   dismiss:
 
@@ -1139,7 +1139,7 @@ view:
     name: Stamina
     grade: D
     tier: Athletic D
-    words: Only just a D
+    words: Over halfway to a C
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -1312,7 +1312,7 @@ view:
     name: Intellect
     grade: E
     tier: Ordinary E
-    words: Over halfway to a D
+    words: Nearly a D
   growth[1]:
     stat: genjutsu
     name: Genjutsu
@@ -1347,7 +1347,7 @@ view:
   ahead[2]:
     text: New work at the hall
     stamp: New
-  summary[0]: Intellect, over halfway to a D
+  summary[0]: Intellect, nearly a D
   summary[1]: Genjutsu, over halfway to a D
   summary[2]: Strength, over halfway to a D
   button: Sleep
@@ -1504,7 +1504,7 @@ view:
     name: Perception
     grade: D
     tier: Good D
-    words: Only just a D
+    words: On the way to a C
   people[0]:
     stage: Acquaintance
     stamp: Now acquaintances
@@ -1523,7 +1523,7 @@ view:
     stamp: New
   summary[0]: Now acquaintances with Asuka
   summary[1]: Genjutsu, over halfway to a D
-  summary[2]: Perception, only just a D
+  summary[2]: Perception, on the way to a C
   button: Sleep
   dismiss:
 
@@ -1594,7 +1594,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Waterfall Endurance»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Stamina, a touch] [Chakra Reserves, a touch] [Willpower, a little] [−25 energy]
+  journal «Waterfall Endurance»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Chakra Reserves, a touch] [Willpower, a little] [−25 energy]
   journal «Hardening your will»: It comes as it comes: honest work, honest progress.
 
 >>> talk
@@ -1662,19 +1662,13 @@ view:
     name: Willpower
     grade: E
     tier: Ordinary E
-    words: Over halfway to a D
+    words: Nearly a D
   growth[3]:
     stat: reserves
     name: Chakra Reserves
     grade: E
     tier: Ordinary E
     words: Over halfway to a D
-  growth[4]:
-    stat: stamina
-    name: Stamina
-    grade: D
-    tier: Athletic D
-    words: Only just a D
   people[0]:
     stage: Acquaintance
     stamp: Thinks less of you

@@ -10,6 +10,17 @@ export {
   type StatDelta,
   type StatScale,
 } from './stats';
+export {
+  ACADEMY_LINE,
+  BORN_STATS,
+  SEXES,
+  bornLine,
+  bornMedian,
+  normalFrom,
+  type BornLine,
+  type BornStat,
+  type Sex,
+} from './born';
 export { SESSION_PACE, trainingGain, applyTraining, type Growth } from './growth';
 export {
   BULK_SPEED_COST,

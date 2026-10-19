@@ -18,7 +18,14 @@ import {
   type ArchetypeId,
   type ClassStanding,
 } from '@/systems/profile';
-import { checkChance, STAT_INFO, type StatDelta, type StatId } from '@/systems/stats';
+import {
+  checkChance,
+  SEXES,
+  STAT_INFO,
+  type Sex,
+  type StatDelta,
+  type StatId,
+} from '@/systems/stats';
 import { DISCIPLINES, type Discipline, type Element } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
@@ -97,6 +104,8 @@ export interface CreationView {
     readonly outfitColours: readonly string[];
     readonly headbandPlaces: readonly string[];
     readonly pronouns: readonly string[];
+    /** A body is drawn by sex (`systems/stats/born.ts`). */
+    readonly sexes: readonly Sex[];
     readonly face: FacePalettes;
   };
 }
@@ -240,12 +249,15 @@ export function creationView(ctx: GameContext): CreationView {
       outfitColours: OUTFIT_COLOURS,
       headbandPlaces: HEADBAND_PLACES,
       pronouns: PRONOUNS,
+      sexes: SEXES,
       face: FACE_PALETTES,
     },
   };
 }
 
 /** The quick pick a new draft starts from. */
+/** The body a new draft starts with until the player chooses (any default would do). */
+const DEFAULT_SEX: Sex = 'female';
 const FIRST_PICK = { archetype: 'steady', specialty: 'taijutsu' } as const;
 
 /** A sensible starting draft for the creation screens. */
@@ -257,6 +269,8 @@ export function defaultDraft(ctx: GameContext): CreationDraft {
     name: '',
     familyName: '',
     pronouns: 'they',
+    sex: DEFAULT_SEX,
+    bornSeed: null,
     appearance: DEFAULT_APPEARANCE,
     clanId: 'none',
     standing: DEFAULT_STANDING,

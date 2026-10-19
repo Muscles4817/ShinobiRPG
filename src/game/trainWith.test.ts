@@ -206,7 +206,11 @@ describe('training with other teachers', () => {
     expect(offer(as('none'))?.signature).toBeNull();
     expect(act(as('none'), daigoKenjutsu).techniques.progress['forge-cut']).toBeUndefined();
     expect(offer(as('kurogane'))?.signature?.name).toBe('Forge Cut');
-    expect(act(as('kurogane'), daigoKenjutsu).techniques.progress['forge-cut']).toBeGreaterThan(0);
+    // A quick study may take the whole technique in one session.
+    const taught = act(as('kurogane'), daigoKenjutsu).techniques;
+    expect(taught.known.includes('forge-cut') || (taught.progress['forge-cut'] ?? 0) > 0).toBe(
+      true,
+    );
   });
 
   it('a jōnin teaches better than a genin, and civilians don’t teach', () => {

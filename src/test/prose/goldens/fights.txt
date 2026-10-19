@@ -3,39 +3,40 @@
   Asuka squares up. “Don’t hold back.”
   —— The fight begins ——
   —— First exchange ——
-  You close in at once.
-  Asuka opens with Lantern Cut.
-  Asuka’s Lantern Cut hacks into you, harder than a spar calls for. [−30]
+  Asuka starts with Lantern Cut before anyone has settled.
+  Asuka’s Lantern Cut hacks into you, harder than a spar calls for. [Guarded] [−21]
+  You feint, looking to close in, and Asuka doesn’t bite.
   —— Second exchange ——
   Asuka reaches for Lantern Cut again.
-  Asuka’s Lantern Cut slashes you, through an opening they learned on the training ground with you. [Guarded] [−17]
-  You launch into Gale Heel.
-  Your Gale Heel rips into Asuka cleanly. [Guarded] [−11]
+  Asuka’s Lantern Cut slashes you, through an opening they learned on the training ground with you. [Guarded] [−19]
+  You make another try, and Asuka shuts it down again.
   —— Third exchange ——
-  Asuka uses Lantern Cut once more.
-  Asuka lands their Lantern Cut on you. [Guarded] [−17]
-  You use Gale Heel once more.
-  Your Gale Heel cuts into Asuka. [Guarded] [−10]
+  Asuka catches the eye and lets Shadow Feint unfold.
+  You were waiting for exactly that.
+  You make another try, and Asuka shuts it down again.
   —— Last exchange ——
-  Asuka reaches for Lantern Cut again.
-  Asuka’s Lantern Cut bites into you cleanly. [Guarded] [−19]
-  You go back to Gale Heel.
-  You find the strength from somewhere, and your Gale Heel rips into Asuka. [Guarded] [−10]
+  Asuka’s blade flows into Lantern Cut.
+  Asuka’s Lantern Cut carves into you, and it leaves you shaken. [Guarded] [−20]
+  You make another try, and Asuka shuts it down again.
   —— The next round begins ——
   —— First exchange ——
-  Asuka uses Lantern Cut once more.
-  You were waiting for exactly that.
-  You use Gale Heel once more.
-  Asuka sees it coming.
-  —— Second exchange ——
   The air around Asuka wavers as Shadow Feint takes hold.
+  You were waiting for exactly that.
+  You keep low and come in under Asuka’s guard, inside Asuka’s reach.
+  —— Second exchange ——
+  Asuka uses Shadow Feint once more.
   You are dazed, and the ground tilts under you.
   You stand blinking while the exchange goes by without you.
   —— Third exchange ——
   Steel flashes as Asuka looses Lantern Cut.
-  Asuka’s Lantern Cut carves into you, harder than a spar calls for. [Guarded] [−23]
-  You drop to your knees and topple over.
-  Asuka is already talking about the next one before you are back on your feet.
+  Asuka’s Lantern Cut carves into you, harder than a spar calls for. [Guarded] [−25]
+  You go in with Gale Heel.
+  You lash out with the last of your strength, and the Gale Heel only nicks Asuka. [Guarded] [−7]
+  —— Last exchange ——
+  Asuka goes back to Lantern Cut.
+  Asuka’s Lantern Cut hacks into you. [Guarded] [−21]
+  You go down in a heap, laughing at yourself for walking into it.
+  Asuka stands back, breathing hard, and tells you what they saw you do wrong.
   summary: You lasted two rounds before going down. Asuka dazed you in the second round, and you never found your feet again.
 
 ########## a rival’s spar ##########
@@ -47,61 +48,52 @@
   You stagger, dazed.
   —— Second exchange ——
   Daisuke draws into Forge Cut.
-  Daisuke’s Forge Cut hacks into you, harder than a spar calls for. [Guarded] [−22]
+  Daisuke’s Forge Cut hacks into you, harder than a spar calls for. [Guarded] [−29]
   You can’t find your feet yet.
   —— Third exchange ——
   Daisuke uses Forge Cut once more.
-  Daisuke’s Forge Cut slashes deep into you, and it leaves you shaken. [Guarded] [−20]
+  Daisuke’s Forge Cut slashes deep into you, and it leaves you shaken. [Guarded] [−25]
   You have been keeping Gale Heel for this, and use it now.
-  Your Gale Heel rips into Daisuke, and you let them know it. [Guarded] [−9]
+  Your Gale Heel whips across Daisuke, close enough to count. [Guarded] [−7]
   —— Last exchange ——
   Daisuke goes back to Forge Cut.
-  Daisuke’s Forge Cut carves into you. [Guarded] [−20]
+  Daisuke’s Forge Cut carves into you. [Guarded] [−25]
   You use Gale Heel once more.
-  Your Gale Heel cuts into Daisuke. [Guarded] [−8]
+  You lash out with the last of your strength, and the Gale Heel only flicks Daisuke. [Guarded] [−7]
   —— The next round begins ——
   —— First exchange ——
   Daisuke reaches for Forge Cut again.
   You were waiting for exactly that.
   You go back to Gale Heel.
-  Your Gale Heel rips into Daisuke cleanly. [Guarded] [−9]
+  Daisuke is a shade too slow, and your Gale Heel whips across them. [Guarded] [−7]
   —— Second exchange ——
   Daisuke uses Forge Cut once more.
-  Daisuke lands their Forge Cut on you. [Guarded] [−18]
-  You reach for Gale Heel again.
-  You find the strength from somewhere, and your Gale Heel cuts into Daisuke. [Guarded] [−8]
-  —— Third exchange ——
-  Daisuke has been keeping Shadow Feint for this, and uses it now.
-  You reel, the world spinning.
-  You shake your head, still reeling.
-  —— Last exchange ——
-  Daisuke’s blade flows into Forge Cut.
-  Daisuke’s Forge Cut slashes deep into you, harder than a spar calls for. [Guarded] [−25]
-  You go down hard, and it costs you more than the fall.
+  Daisuke’s Forge Cut hacks into you, and it leaves you shaken. [Guarded] [−23]
+  You go down and stay down.
   Daisuke stands over you long enough to be sure you know who won.
-  summary: You lasted two rounds before going down. Daisuke dazed you in the second round, and you never found your feet again.
+  summary: You lasted two rounds before going down. Daisuke was still standing.
 
 ########## wolves in a forest ##########
   Two grey wolves square up.
   —— The fight begins ——
   —— First exchange ——
   You come in through the trees.
-  The first grey wolf’s bite tears at you before you are properly set. [−9]
-  The second grey wolf’s bite sinks into you. [−9]
+  The first grey wolf’s bite tears at you before you are properly set. [−8]
+  The second grey wolf’s bite sinks into you. [−8]
   —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel hurls aside the first grey wolf, and it’s thrown back against a trunk. [Guarded] [−35]
   You put a trunk between yourself and the second grey wolf’s bite.
-  The first grey wolf’s bite only just grazes you. [Guarded] [−4]
+  The first grey wolf’s bite only just grazes you. [Guarded] [−3]
   —— Third exchange ——
   You use Gale Heel once more.
   Your Gale Heel flays the first grey wolf, and it falls back through the undergrowth. [Guarded] [−35]
   The first grey wolf crashes down into the undergrowth and lies still.
-  You are a shade too slow, and the second grey wolf’s bite snaps at you. [Guarded] [−4]
+  You are a shade too slow, and the second grey wolf’s bite snaps at you. [Guarded] [−3]
   —— Last exchange ——
   You go back to Gale Heel.
   Your Gale Heel shreds the second grey wolf with everything behind it. [Guarded] [−35]
-  The second grey wolf’s bite only just nips you. [Guarded] [−4]
+  The second grey wolf’s bite only just nips you. [Guarded] [−3]
   —— The next round begins ——
   —— First exchange ——
   You reach for Gale Heel again.
@@ -136,34 +128,40 @@
   —— First exchange ——
   You search the corners of the room and find them empty.
   Whispering Dread rises off the storehouse wraith like the cold off a well.
-  The storehouse wraith’s Whispering Dread floods you, and you feel it. [Guarded] [−21]
+  The storehouse wraith’s Whispering Dread grips you before you are properly set. [Guarded] [−19]
   Your senses swim in the storehouse wraith’s illusion.
   —— Second exchange ——
   You look again, with no more luck.
   The storehouse wraith reaches for Whispering Dread again.
-  The storehouse wraith’s Whispering Dread sinks deep into you. [Guarded] [−20]
+  The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−18]
   You blink, and the field is no longer where it was.
+  You catch the thread of the illusion and find the storehouse wraith.
   —— Third exchange ——
   You break free of the illusion.
-  You search again, and still find no one.
-  The storehouse wraith goes back to Whispering Dread.
-  The storehouse wraith’s Whispering Dread floods you, and it leaves you shaken. [Guarded] [−23]
+  You cross the floor in two strides.
+  The storehouse wraith melts back into the illusion.
+  The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
+  The storehouse wraith’s Whispering Dread buries you, and you’re nearly knocked off your feet. [−39]
   —— Last exchange ——
   You find the storehouse wraith in a corner of the room.
   The storehouse wraith reaches for Whispering Dread again.
-  The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−15]
+  The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−13]
   Your senses swim in the storehouse wraith’s illusion.
   —— The next round begins ——
   —— First exchange ——
   You bite down and the world snaps back into place.
-  You feint, looking to close in, and the storehouse wraith doesn’t bite.
-  The storehouse wraith’s kunai finds only the space where you stood.
+  You send Gale Heel howling out.
+  You land your Gale Heel on the storehouse wraith. [Guarded] [−8]
+  Much of it glances off the storehouse wraith.
+  You are a shade too slow, and the storehouse wraith’s touch chills you. [Guarded] [−4]
   —— Second exchange ——
-  You throw yourself in close, with nothing left to wait for.
-  The storehouse wraith is gone again, and the air where it stood is empty.
-  The storehouse wraith catches the eye and lets Whispering Dread unfold.
-  The storehouse wraith’s Whispering Dread drowns you, and you’re nearly knocked off your feet. [−42]
-  You drop to your knees and topple over.
+  You use Gale Heel once more.
+  Your Gale Heel slices across the storehouse wraith. [Guarded] [−8]
+  The storehouse wraith barely seems to feel it.
+  The storehouse wraith fades out of sight again.
+  The storehouse wraith fixes its eyes on the field and casts Whispering Dread.
+  The storehouse wraith’s Whispering Dread takes hold of you cleanly. [Guarded] [−17]
+  You slide down the wall and stay there.
   Everything goes dark.
   summary: You lasted two rounds before going down. The storehouse wraith was still standing.
 
@@ -172,45 +170,45 @@
   —— The fight begins ——
   —— First exchange ——
   You cut across the street and into the first bandit thug’s reach.
-  The first bandit thug’s strike catches you before you are properly set. [−9]
-  The second bandit thug lands his strike on you. [−10]
+  The first bandit thug’s strike catches you before you are properly set. [−8]
+  The second bandit thug lands his strike on you. [−9]
   —— Second exchange ——
   You send Gale Heel howling out.
-  Your Gale Heel batters the first bandit thug, and he’s knocked into a shuttered stall. [Guarded] [−26]
-  The second bandit thug’s strike only just glances off you. [Guarded] [−5]
-  The first bandit thug’s strike clips you. [Guarded] [−5]
+  Your Gale Heel batters the first bandit thug, and he’s knocked into a shuttered stall. [Guarded] [−30]
+  The second bandit thug’s strike only just glances off you. [Guarded] [−4]
+  The first bandit thug’s strike clips you. [Guarded] [−4]
   —— Third exchange ——
   You use Gale Heel once more.
-  Your Gale Heel tears into the first bandit thug, and tiles slide off the roof under him. [Guarded] [−30]
+  Your Gale Heel tears into the first bandit thug, and tiles slide off the roof under him. [Guarded] [−34]
   You are a shade too slow, and the second bandit thug’s strike grazes you. [Guarded] [−5]
-  The first bandit thug’s strike only just glances off you. [Guarded] [−5]
+  The first bandit thug’s strike only just glances off you. [Guarded] [−4]
   —— Last exchange ——
   You go back to Gale Heel.
-  Your Gale Heel hammers the first bandit thug. [Guarded] [−27]
+  Your Gale Heel hammers the first bandit thug. [Guarded] [−30]
   The second bandit thug’s strike clips you. [Guarded] [−5]
   The first bandit thug lashes out with the last of his strength, and the strike only grazes you. [Guarded] [−5]
   —— The next round begins ——
   —— First exchange ——
   You reach for Gale Heel again.
-  Your Gale Heel tears into the first bandit thug, and it leaves him shaken. [Guarded] [−28]
+  Your Gale Heel tears into the first bandit thug, and it leaves him shaken. [Guarded] [−31]
   The first bandit thug hits the ground and doesn’t get up.
   The second bandit thug’s strike only just glances off you. [Guarded] [−5]
   —— Second exchange ——
   You use Gale Heel once more.
-  Your Gale Heel batters the second bandit thug. [Guarded] [−30]
-  The second bandit thug’s strike grazes you. [Guarded] [−5]
+  Your Gale Heel batters the second bandit thug. [Guarded] [−34]
+  The second bandit thug’s strike grazes you. [Guarded] [−4]
   —— Third exchange ——
   You go back to Gale Heel.
-  Your Gale Heel hammers the second bandit thug, and he feels it. [Guarded] [−30]
+  Your Gale Heel hammers the second bandit thug, and he feels it. [Guarded] [−33]
   You are a shade too slow, and the second bandit thug’s strike clips you. [Guarded] [−5]
   —— Last exchange ——
   You reach for Gale Heel again.
-  Your Gale Heel batters the second bandit thug, and he’s knocked into a shuttered stall. [Guarded] [−28]
-  The second bandit thug’s strike only just glances off you. [Guarded] [−5]
+  Your Gale Heel batters the second bandit thug, and he’s knocked into a shuttered stall. [Guarded] [−31]
+  The second bandit thug’s strike only just glances off you. [Guarded] [−4]
   —— The next round begins ——
   —— First exchange ——
   You go back to Gale Heel.
-  Your Gale Heel hammers the second bandit thug, and tiles slide off the roof under him. [Guarded] [−30]
+  Your Gale Heel hammers the second bandit thug, and tiles slide off the roof under him. [Guarded] [−34]
   The second bandit thug crumples in the street and doesn’t get up.
   You are still on your feet, and no one is left to face you.
   summary: You won in three rounds. Once the first bandit thug went down in the second round, the second bandit thug didn’t last long.
