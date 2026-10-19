@@ -116,6 +116,10 @@ export type GameAction =
   | { readonly type: 'signContract'; readonly personId: string }
   | { readonly type: 'makeOffering'; readonly ingredientId: string }
   | { readonly type: 'breakContract' }
+  | { readonly type: 'seekInsects'; readonly placeId: string }
+  | { readonly type: 'studyJar'; readonly strainId: string }
+  | { readonly type: 'crossJar'; readonly strainId: string }
+  | { readonly type: 'nameStrain'; readonly name: string }
   | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
   | { readonly type: 'playWithCompanion'; readonly play: PlayKind }
   | { readonly type: 'doseCompanion'; readonly hidden: boolean }

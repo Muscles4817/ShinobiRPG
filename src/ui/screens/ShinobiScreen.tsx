@@ -87,7 +87,7 @@ export function ShinobiScreen({
             Registry no. {view.registryNo}, issued {view.issued}. Pronouns: {view.pronouns}.
           </p>
         </section>
-        <HiveCard ctx={ctx} state={state} />
+        <HiveCard ctx={ctx} state={state} perform={perform} />
         <ContractCard ctx={ctx} state={state} perform={perform} />
         <section className="identity">
           {view.kekkeiGenkai && (

@@ -4,6 +4,7 @@ import { isHungry } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { broodHatched } from './hatching';
 import { bornHive, DEFAULT_SHARE, qualitiesInBody, yourHive } from './hive';
 
 /**
@@ -33,7 +34,7 @@ function givenOldSave(state: GameState, ctx: GameContext): GameState {
 
 /** A day passing for the hive: the insects breed back. */
 export function hiveDayPassed(state: GameState, ctx: GameContext): GameState {
-  const given = givenOldSave(state, ctx);
+  const given = broodHatched(givenOldSave(state, ctx), ctx);
   const yours = yourHive(given, ctx);
   if (!yours) return given;
   const atHome = given.locationId === ctx.content.startLocationId && given.mission === null;

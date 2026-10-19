@@ -1,6 +1,8 @@
 import type { SwarmGift, SwarmQuality } from '@/systems/combat';
 import type { Element } from '@/systems/techniques';
 
+import type { Biome } from './biomes';
+
 /**
  * Hives (`docs/design/retinue-plan.md`, step 4): the strains of insect a host can keep in their
  * body, and the clans that install a hive in their children. A strain has the qualities every
@@ -27,6 +29,14 @@ export interface StrainDef {
   readonly gifts: Readonly<Partial<Record<SwarmGift, 1 | 2 | 3>>>;
   /** Elements that kill it far faster. */
   readonly fears: readonly Element[];
+  /** Where it lives wild, to be found and jarred (`seekInsects`); absent for a clan's own. */
+  readonly wild?: InsectHaunt;
+}
+
+/** The wild country a strain is found in, and whether only by night. */
+export interface InsectHaunt {
+  readonly biomes: readonly Biome[];
+  readonly night?: boolean;
 }
 
 /** A clan whose children are born with a hive. */

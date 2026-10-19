@@ -168,6 +168,7 @@ export {
   type ClanHive,
   type InsectFamily,
   type QualityGrade,
+  type InsectHaunt,
   type StrainDef,
 } from './strains';
 export type {

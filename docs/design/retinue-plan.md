@@ -682,8 +682,8 @@ carry, which can be strong or weak.
 | Silk         | Swarm holds grip harder and are harder to break.                                                                        |
 | Shell        | The wall and the clone stand more hits before they come apart.                                                          |
 
-**Weaknesses** are what a species can't stand: fire, wind, water or cold, each doubling the
-losses to that element.
+**Weaknesses** are what a species can't stand: fire, wind, water, earth or lightning, each
+doubling the losses to that element.
 
 **Species and family.** Every strain has a species (kikaichū, lantern moth, paper wasp…) and
 belongs to a family (beetles, moths, wasps, spiders, flies). How far apart two strains are is
@@ -1177,3 +1177,35 @@ and its genes, its skills with training**, and every kind has its own ceiling.
 - **The hive card** lists the gifts in words, the qualities as grades, and what the strain
   can't stand.
 - **Not built yet:** silk and shell (swarm holds and walls), wild strains, and crossing (4c-ii).
+
+### Step 4c-ii: finding, studying and crossing
+
+- **Wild strains** (`shared/wildStrains.ts`, in every pack), each with a `wild` haunt:
+  - paper wasps (woods: fast, a hard bite, a little venom);
+  - bark moths (woods and mountain, by night: camouflage);
+  - marsh midges (marsh: tiny, a fast brood, a trace of drain);
+  - water beetles (river: very tough, a little camouflage);
+  - rock locusts (mountain: fast and tough, a little blinding);
+  - sand fleas (shore: very fast, a little venom).
+- **Finding.** `seekInsects` at a wild place: once a day, for someone with a hive, an hour and
+  some energy. Perception decides whether you find anything worth a jar. You keep up to three
+  jars, one of each strain.
+- **Studying.** `studyJar` at home, once a day: two days and you understand them, and the card
+  says how a cross with your hive would go (true-breeding, settled, wavering, wild).
+- **Crossing.** `crossJar` at home with one you understand. Half the hive goes into the brood,
+  and it hatches three days later, as each day passes (`broodHatched`). What hatches is drawn by
+  hash from the seed and the day (`systems/hives/crossing.ts`):
+  - stability starts high for a first cross within a species, drops a quarter for each step of
+    kinship apart (family, strangers) and a tenth for each cross deep;
+  - the wilder the cross, the more often it fails (the brood dies) or throws back to a parent;
+  - qualities land between the parents' grades and stray a grade more often;
+  - gifts both parents share are kept by a stable cross, and one parent's comes through less
+    surely, at its strength, a step weaker or not at all;
+  - weaknesses pass more easily than gifts;
+  - now and then a wild cross brings a gift out a step stronger.
+- **Bred strains** are kept on the hive (`Hive.bred`, `StrainSheet`) and read like the pack's
+  (`strainSheet`). The hive takes the new strain, and the card lets you name it.
+- **Screens:** a search card on wild places for hive hosts, and jars (study, cross in), the
+  brood and naming on the hive card.
+- **Saves:** the new fields on the hive are optional, so no migration is needed.
+- **Later:** foreign markets selling rarer strains, and silk and shell.

@@ -361,7 +361,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     share comes off max chakra wherever chakra is reckoned (`chakraBody`, `ChakraBody.chakraGiven`
     in `systems/vitals`) and sets how many insects the body keeps; what came home from a fight
     is what the hive holds, and each day it breeds back (fast at home, slow away, slower hungry).
-    People of a hive clan fight with a full one. It is cared for
+    People of a hive clan fight with a full one. Hives are **crossbred**
+    (`systems/hives/crossing.ts`, `game/hives/breeding.ts`): a host searches a wild place for its
+    biome's insects (`seekInsects`, a pack's wild `StrainDef`s), keeps them in jars at home,
+    studies a jar until it is understood (`studyJar`) and crosses it in (`crossJar`). The brood
+    hatches days later by luck drawn from the seed and day: its stability (kinship of the parents
+    and how many crosses deep they are) decides how far qualities stray, whether gifts pass, and
+    whether it fails or throws back. Bred strains are kept on the hive (`Hive.bred`) as
+    `StrainSheet`s beside the pack's, and the host names them (`nameStrain`). It is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -844,7 +851,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a hive strain or hive clan:** a `StrainDef` in the pack's `strains.ts` (a species and
   family, the six qualities graded E to A, at least one gift, the elements it fears), a `hive`
   on the `ClanDef` naming it, and clan techniques with a `swarmCost`. A body's install adds a
-  grade of toughness and size (`qualitiesInBody`). Validated in `validateStrains.ts`.
+  grade of toughness and size (`qualitiesInBody`). A wild strain has a `wild` haunt (biomes,
+  night-only) and is found by searching a wild place of its biome (shared ones in
+  `shared/wildStrains.ts`). Validated in `validateStrains.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

@@ -1,6 +1,12 @@
 import { QUALITY_GRADES, type ClanDef, type StrainDef } from '@/content';
 import { type CombatantSetup, type CombatSwarm, type SwarmQuality } from '@/systems/combat';
-import { hiveCap, SHARE_OF_CHAKRA, type Hive, type HiveShare } from '@/systems/hives';
+import {
+  hiveCap,
+  SHARE_OF_CHAKRA,
+  type Hive,
+  type HiveShare,
+  type StrainSheet,
+} from '@/systems/hives';
 import type { Stats } from '@/systems/stats';
 import { maxChakra, type ChakraBody } from '@/systems/vitals';
 
@@ -32,10 +38,45 @@ export function chakraBody(state: {
 const INSTALL_BONUS: Partial<Record<SwarmQuality, number>> = { toughness: 1, size: 1 };
 const TOP_GRADE = QUALITY_GRADES.length;
 
+/** A pack's strain as a breeder knows it: grades as 1 (E) to 5 (A), found or born, never bred. */
+export function sheetOf(def: StrainDef): StrainSheet {
+  const graded = (q: SwarmQuality) => QUALITY_GRADES.indexOf(def.qualities[q]) + 1;
+  const { id, name, species, family, gifts, fears } = def;
+  return {
+    id,
+    name,
+    species,
+    family,
+    gifts,
+    fears,
+    depth: 0,
+    qualities: {
+      speed: graded('speed'),
+      bite: graded('bite'),
+      toughness: graded('toughness'),
+      brood: graded('brood'),
+      size: graded('size'),
+      senses: graded('senses'),
+    },
+  };
+}
+
+/** A strain by id: one you bred yourself, or the pack's. */
+export function strainSheet(
+  hive: Pick<Hive, 'bred'> | null,
+  id: string,
+  ctx: GameContext,
+): StrainSheet | null {
+  const bred = hive?.bred?.find((s) => s.id === id);
+  if (bred) return bred;
+  const def = ctx.content.strains.get(id);
+  return def ? sheetOf(def) : null;
+}
+
 /** A strain's qualities as the fight reads them (1 to 5), in a body the install has readied. */
-export function qualitiesInBody(strain: StrainDef): Record<SwarmQuality, number> {
+export function qualitiesInBody(strain: StrainSheet): Record<SwarmQuality, number> {
   const inBody = (q: SwarmQuality) =>
-    Math.min(TOP_GRADE, QUALITY_GRADES.indexOf(strain.qualities[q]) + 1 + (INSTALL_BONUS[q] ?? 0));
+    Math.min(TOP_GRADE, strain.qualities[q] + (INSTALL_BONUS[q] ?? 0));
   return {
     speed: inBody('speed'),
     bite: inBody('bite'),
@@ -47,7 +88,7 @@ export function qualitiesInBody(strain: StrainDef): Record<SwarmQuality, number>
 }
 
 /** As many insects as this body can keep of this strain, for this share. */
-export function capFor(stats: Stats, share: HiveShare, strain: StrainDef): number {
+export function capFor(stats: Stats, share: HiveShare, strain: StrainSheet): number {
   return hiveCap(maxChakra(stats), share, qualitiesInBody(strain).size);
 }
 
@@ -55,15 +96,15 @@ export function capFor(stats: Stats, share: HiveShare, strain: StrainDef): numbe
 export function yourHive(
   state: Pick<GameState, 'character' | 'hive'>,
   ctx: GameContext,
-): { readonly hive: Hive; readonly strain: StrainDef; readonly cap: number } | null {
+): { readonly hive: Hive; readonly strain: StrainSheet; readonly cap: number } | null {
   const hive = state.hive;
-  const strain = hive ? ctx.content.strains.get(hive.strainId) : undefined;
+  const strain = hive ? strainSheet(hive, hive.strainId, ctx) : null;
   if (!hive || !strain) return null;
   return { hive, strain, cap: capFor(state.character.stats, hive.share, strain) };
 }
 
 /** A strain as the fight reads it, in a body the install has readied. */
-export function swarmOf(strain: StrainDef, count: number, cap: number): CombatSwarm {
+export function swarmOf(strain: StrainSheet, count: number, cap: number): CombatSwarm {
   const { name, gifts, fears } = strain;
   return { strain: { name, qualities: qualitiesInBody(strain), gifts, fears }, count, cap };
 }
@@ -75,7 +116,7 @@ export function bornHive(
   stats: Stats,
   ctx: GameContext,
 ): Hive | null {
-  const strain = clan?.hive ? ctx.content.strains.get(clan.hive.strainId) : undefined;
+  const strain = clan?.hive ? strainSheet(null, clan.hive.strainId, ctx) : null;
   if (!strain) return null;
   return { strainId: strain.id, share, count: capFor(stats, share, strain) };
 }
@@ -98,7 +139,7 @@ export function personHive(
   clan: ClanDef | undefined,
   ctx: GameContext,
 ): { readonly swarm?: CombatSwarm; readonly chakra: number } {
-  const strain = clan?.hive ? ctx.content.strains.get(clan.hive.strainId) : undefined;
+  const strain = clan?.hive ? strainSheet(null, clan.hive.strainId, ctx) : null;
   if (!strain) return { chakra: maxChakra(stats) };
   const cap = capFor(stats, DEFAULT_SHARE, strain);
   const chakra = maxChakra({ ...stats, chakraGiven: SHARE_OF_CHAKRA[DEFAULT_SHARE] });
