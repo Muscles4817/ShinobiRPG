@@ -42,7 +42,8 @@ describe('gear', () => {
   });
 
   it('a fighter with nothing equipped still brings known (empty) gear, so blade arts need one', () => {
-    expect(playerCombatant(newGame(), ctx).gear).toEqual({});
+    const state = newGame();
+    expect(playerCombatant(state, ctx).gear).toEqual({ mastery: state.character.weaponMastery });
   });
 
   it('B-rank gear is sold to chūnin, and the shop says why not', () => {
@@ -75,11 +76,12 @@ describe('gear', () => {
       'Needed for kenjutsu',
       'Cuts +15%',
       'Very quick in the hand',
+      'In your hand: practised',
     ]);
     const wakizashi = items.find((i) => i.id === 'forge-wakizashi')!;
     expect(wakizashi.effects).toContainEqual({ label: 'Cuts +35%', tone: 'gain' });
     const needles = items.find((i) => i.id === 'needle-case')!;
-    expect(needles.effects.map((c) => c.tone)).toEqual(['info', 'cost', 'gain', 'gain']);
+    expect(needles.effects.map((c) => c.tone)).toEqual(['info', 'cost', 'gain', 'gain', 'info']);
     const racks = at('kurogane-forge')(rich()).racks.map((r) => r.label);
     expect(racks).toEqual(['Blades and fists', 'Thrown', 'Focus charms']);
   });
@@ -127,7 +129,7 @@ describe('a blade art needs a blade in hand', () => {
     const known = { ...newGame().techniques, known: ['lantern-cut'] };
     const fighter = playerCombatant({ ...newGame(), techniques: known }, ctx);
     expect(fighter.techniques[0]?.needs).toEqual({ weapon: 'blade' });
-    expect(fighter.gear).toEqual({});
+    expect(fighter.gear?.held).toBeUndefined();
   });
 });
 

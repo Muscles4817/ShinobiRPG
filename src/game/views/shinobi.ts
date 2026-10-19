@@ -30,6 +30,7 @@ import { homeVillageId } from '../homeVillage';
 import type { GameState } from '../state';
 import { naturalLimits } from '../profile';
 import { conditionView, type ConditionView } from './condition';
+import { weaponsKnown } from './gearWords';
 
 export type { StatGrade, TierRead } from '@/systems/stats';
 
@@ -82,6 +83,8 @@ export interface ShinobiView {
   readonly overall: TierRead & { readonly power: number };
   /** Injuries and chakra exhaustion you carry. */
   readonly condition: ConditionView;
+  /** The weapons you know and how well, in words; null for a save that keeps none. */
+  readonly weapons: string | null;
 }
 
 /** A stable registry number derived from the name, so it never changes between visits. */
@@ -174,5 +177,6 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
       power: Math.floor(fightingPower(stats) * 10) / 10,
     },
     condition: conditionView(state, ctx),
+    weapons: weaponsKnown(character.weaponMastery),
   };
 }

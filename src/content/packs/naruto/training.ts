@@ -101,6 +101,18 @@ export const TRAINING: readonly TrainingDef[] = [
     slots: 1,
     energyCost: 20,
     gains: { kenjutsu: 1.5, speed: 0.3 },
+    practises: 'held',
+  },
+  {
+    id: 'target-practice',
+    name: 'Target Practice',
+    spot: 'Training Ground 3',
+    icon: 'eye',
+    description: 'Kunai and shuriken at the targets in the trees, until none of them miss.',
+    slots: 1,
+    energyCost: 15,
+    gains: { kenjutsu: 0.8, perception: 0.7 },
+    practises: 'thrown',
   },
   {
     id: 'seal-calligraphy',

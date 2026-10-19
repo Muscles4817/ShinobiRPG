@@ -49,6 +49,7 @@ import type { GameState } from './state';
 import { bornNature } from './nature';
 import { notesAptitude, notesProblems } from './notes';
 import { BASE_STAT, graduationStats, studentProblems, type StudentProfile } from './student';
+import { graduationMastery } from './weaponMastery';
 
 /**
  * Character creation. The UI collects a CreationDraft over the academy break-in scene;
@@ -228,6 +229,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       assignment: null,
       injuries: [],
       exhaustion: null,
+      weaponMastery: graduationMastery(stats),
     },
     wallet: { ryo: content.startingRyo },
     housing: housingFor(

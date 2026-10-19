@@ -107,6 +107,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'waterfall-meditation',
           'youth-sparring',
           'sword-kata',
+          'target-practice',
           'seal-calligraphy',
         ],
         exerciseIds: ['tree-walking', 'water-walking'],

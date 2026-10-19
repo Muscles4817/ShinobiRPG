@@ -8,14 +8,18 @@ import {
   type FocusTarget,
   shapeOf,
   speedOf,
+  WEAPON_CLASSES,
   strikeReach,
   weaponGuard,
   type WeaponClass,
+  type WeaponMastery,
   type WeaponShape,
 } from '@/systems/combat';
 import type { JournalChip } from '@/systems/journal';
 import { STAT_INFO } from '@/systems/stats';
 import type { Verb } from '@/systems/techniques';
+
+import { masteryWord } from '../weaponMastery';
 
 /**
  * Gear in words: what kind of piece it is, and what it does in a fight as chips. The numbers
@@ -67,6 +71,17 @@ const VERB_FOCUS: Readonly<Record<Verb, string>> = {
   counter: 'Ripostes',
   summon: 'Summons',
 };
+
+/** How well you know each class you have practised, strongest first: "Throwing steel seasoned". */
+export function weaponsKnown(mastery: WeaponMastery | undefined): string | null {
+  if (!mastery) return null;
+  const known = WEAPON_CLASSES.flatMap((c) => {
+    const m = mastery[c] ?? 0;
+    return m > 0 ? [{ c, m }] : [];
+  }).sort((a, b) => b.m - a.m);
+  if (known.length === 0) return null;
+  return known.map(({ c, m }) => `${CLASS_LABEL[c]} ${masteryWord(m)}`).join(', ');
+}
 
 /** "Blade", "Flak jacket", "Focus": what kind of piece this is. */
 export function gearKindLabel(def: GearDef): string {
@@ -163,11 +178,23 @@ function focusLabel(boosts: FocusTarget): string {
   return 'verb' in boosts ? VERB_FOCUS[boosts.verb] : STAT_INFO[boosts.discipline].label;
 }
 
-/** What a piece does in a fight, as chips; armour's weight is read against your strength. */
-export function gearChips(def: GearDef, strength: number): JournalChip[] {
+/** How well you know a weapon's class, for a save that keeps mastery. */
+function handChips(
+  def: Extract<GearDef, { kind: 'weapon' }>,
+  mastery?: WeaponMastery,
+): JournalChip[] {
+  if (!mastery) return [];
+  return [info(`In your hand: ${masteryWord(mastery[def.weaponClass] ?? 0)}`)];
+}
+
+/**
+ * What a piece does in a fight, as chips; armour's weight is read against your strength, and a
+ * weapon says how well you know its kind.
+ */
+export function gearChips(def: GearDef, strength: number, mastery?: WeaponMastery): JournalChip[] {
   switch (def.kind) {
     case 'weapon':
-      return weaponChips(def);
+      return [...weaponChips(def), ...handChips(def, mastery)];
     case 'armour':
       return armourChips(def, strength);
     case 'focus':

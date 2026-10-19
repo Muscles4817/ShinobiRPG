@@ -107,6 +107,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'waterfall-endurance',
           'dojo-sparring',
           'blade-forms',
+          'target-practice',
           'ward-writing',
         ],
         exerciseIds: ['tree-walking'],

@@ -388,7 +388,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     may be a focus too (`boosts`). The weapon art is kenjutsu at the weapon's **mastery**
     (`rules/mastery.ts`, `CombatGear.mastery`: a weapon never held lets half the art through), so a
     master of shuriken can be ordinary with a sword; throws are the weapon art aimed by
-    perception. Gear has
+    perception. Yours is `character.weaponMastery` (`game/weaponMastery.ts`: the academy's kunai
+    and tantō at graduation, then each drill that `practises` a hand and each fight carried into
+    closes part of the gap; read in words, never numbers; a save without it is at home with all);
+    an authored fighter's is `PersonArsenal.weaponMastery`. Gear has
     ranks D–A: shops sell D and C, B to chūnin; A and `unique` named weapons are never sold. A home-cooked recipe sets
     `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
     `spendTime` clears it when the day ends. **Cooking is a skill** (`systems/cooking`,

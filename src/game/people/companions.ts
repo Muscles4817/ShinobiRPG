@@ -98,9 +98,10 @@ export function companionCombatant(
  * every fight. Without them, they are armed as their techniques suggest.
  */
 function kitOf(person: PersonDef, ctx: GameContext): Pick<CombatantSetup, 'gear' | 'items'> {
-  const { gearIds, tools } = person.arsenal ?? {};
+  const { gearIds, tools, weaponMastery } = person.arsenal ?? {};
+  const mastery = weaponMastery ? { mastery: weaponMastery } : {};
   return {
-    ...(gearIds ? { gear: arsenalGear(gearIds, ctx) } : {}),
+    ...(gearIds ? { gear: { ...arsenalGear(gearIds, ctx), ...mastery } } : {}),
     ...(tools ? { items: pouchFrom(tools, ctx) } : {}),
   };
 }

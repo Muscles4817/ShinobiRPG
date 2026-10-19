@@ -4,6 +4,7 @@ import type {
   CombatAttributes,
   CombatCall,
   CombatItem,
+  CombatGear,
   CombatOutcome,
   CombatPerk,
   CombatProvision,
@@ -79,6 +80,12 @@ export function afterPouch(state: GameState, outcome: CombatOutcome): GameState 
   return { ...state, inventory: restockPouch(state.inventory, outcome.items) };
 }
 
+/** Your gear as the fight sees it, with how well you know each weapon (a save that keeps none: at home with all). */
+function playerGear(state: GameState, ctx: GameContext): CombatGear {
+  const mastery = state.character.weaponMastery;
+  return { ...combatGear(state, ctx), ...(mastery ? { mastery } : {}) };
+}
+
 /** The player's combatant id in every fight. */
 export const PLAYER_COMBATANT_ID = 'player';
 
@@ -109,7 +116,7 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     nature,
     perks: perksOf(state, ctx),
     items: pouchOf(state, ctx),
-    gear: combatGear(state, ctx),
+    gear: playerGear(state, ctx),
     provisions: mealProvisions(state, ctx),
   };
 }

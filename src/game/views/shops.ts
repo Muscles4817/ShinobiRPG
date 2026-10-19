@@ -108,7 +108,7 @@ function gearItem(state: GameState, ctx: GameContext, def: GearDef): GearItem {
     rank: def.rank,
     kind: gearKindLabel(def),
     unique: def.unique === true,
-    effects: gearChips(def, combatStats(state, ctx).strength),
+    effects: gearChips(def, combatStats(state, ctx).strength, state.character.weaponMastery),
     owned,
     equipped,
     buy: choice(state, ctx, { type: 'buyGear', gearId: def.id }),

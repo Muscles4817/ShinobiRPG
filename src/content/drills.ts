@@ -17,6 +17,11 @@ export interface TrainingDef {
   readonly energyCost: number;
   /** Base stat gains per session, before diminishing returns. */
   readonly gains: StatDelta;
+  /**
+   * The weapon a session works, besides the stats: the one in hand (forms) or the thrown one
+   * (target practice; plain kunai with none), whose mastery grows (`game/weaponMastery.ts`).
+   */
+  readonly practises?: 'held' | 'thrown';
 }
 
 export interface FoodDef {

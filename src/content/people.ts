@@ -1,4 +1,4 @@
-import type { CombatPerk } from '@/systems/combat';
+import type { CombatPerk, WeaponMastery } from '@/systems/combat';
 import type { Appearance, Pronouns } from '@/systems/profile';
 import type { Rank } from '@/systems/standing';
 import type { Aptitude, Stats } from '@/systems/stats';
@@ -133,6 +133,11 @@ export interface PersonArsenal {
   readonly gearIds?: readonly string[];
   /** The pack's fight tools they carry into every fight, by id, and how many. */
   readonly tools?: Readonly<Record<string, number>>;
+  /**
+   * How well they know each class of weapon, 0 to 1 (`rules/mastery.ts`), read with their gear.
+   * Left out, they are at home with whatever they carry.
+   */
+  readonly weaponMastery?: WeaponMastery;
 }
 
 /**
