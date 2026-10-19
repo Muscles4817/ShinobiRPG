@@ -34,7 +34,7 @@ export function WideFrame({
 }: WideFrameProps) {
   useDockKeys(true, onTab);
   const header = headerView(props.state, props.ctx);
-  const onVillage = tab === 'here' && placeId === null;
+  const here = tab === 'here' ? (placeId === null ? 'village' : 'place') : null;
   return (
     <div className="wide-frame">
       <div className="wide-rail">
@@ -49,7 +49,7 @@ export function WideFrame({
           onOpenPlace={onOpenPlace}
         />
       </div>
-      <div className={onVillage ? 'wide-main village' : 'wide-main'}>{children}</div>
+      <div className={here ? `wide-main ${here}` : 'wide-main'}>{children}</div>
       <YouPanel {...props} onOpenCompanion={onOpenCompanion} />
     </div>
   );

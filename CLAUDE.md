@@ -1002,8 +1002,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `ui/layout/`, the one place the breakpoint lives) `.app.wide` lays out a side rail (the dock
   and the village's places, number keys for tabs), the main column and the you panel (vitals,
   the time, what waits on you, on every tab). It arranges the same screens and offers the
-  same actions as the phone; its styles live in `styles/wide.css`, every rule under `.app.wide`,
-  so the phone layout never changes with it. Scenes still take the whole screen.
+  same actions as the phone; its styles live in `styles/wide.css` (place pages, whose lists
+  spread into grids, in `wide-places.css`), every rule under `.app.wide` or `.wide-main`, so the
+  phone layout never changes with it. Scenes still take the whole screen.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own
