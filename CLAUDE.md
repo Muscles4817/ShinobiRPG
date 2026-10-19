@@ -1013,9 +1013,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   a fight's watch screen plays on Space, steps on the arrows and skips on S. Pointing at
   something on desktop previews it in the panel beside it (`useHoverPreview`: a Jutsu card in the
   detail panel, a fighter's read on the plan screen); a click still picks. Scenes still take the
-  whole screen; the ones in `WIDE_SCENES` (`GameScreen.tsx`: the mission and the fight's plan and
-  watch screens) set their panes side by side (`wide-scenes.css`), and what only the desktop
-  shows beside a scene is a view model too (`missionSoFar`).
+  whole screen; the ones in `WIDE_SCENES` (`layout/sceneLayout.ts`: the mission and the fight's
+  plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
+  desktop shows beside a scene is a view model too (`missionSoFar`). Every other scene is a story
+  scene: one wider reading column, its `.choices` bar numbered by CSS and pressed by
+  `ChoiceBarKeys`, so a new scene with a choice bar gets both without code.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own
