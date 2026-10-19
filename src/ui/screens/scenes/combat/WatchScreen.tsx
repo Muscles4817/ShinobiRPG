@@ -6,6 +6,7 @@ import { useWideScreen } from '../../../layout/useWideScreen';
 import { Formation, shortName } from './Formation';
 import { useBeatSounds } from './useBeatSounds';
 import { usePlayback } from './usePlayback';
+import { KeyNote, useWatchKeys } from './watchKeys';
 import { useHealthPulses } from './useHealthPulses';
 
 type OnPick = (option: CombatOption) => void;
@@ -224,6 +225,7 @@ export function WatchScreen(props: WatchScreenProps) {
   const youId = you?.id ?? null;
   const play = usePlayback({ beats, youId, fresh, onDone: onWatched });
   const beat = play.beat;
+  useWatchKeys(play, props);
   useBeatSounds(beat, youId, fresh);
   const fighters = view.combatants.map((c) => ({ ...c, health: beat?.health[c.id] ?? c.health }));
   const pulses = useHealthPulses(fighters);
@@ -251,6 +253,7 @@ export function WatchScreen(props: WatchScreenProps) {
             <p className="stopped-for-you">That one was aimed at you. Press play to carry on.</p>
           )}
           <PlaybackBar play={play} watched={view.watched ?? false} />
+          <KeyNote />
         </Pane>
         <ToldSoFar beats={beats} at={play.at} />
       </main>

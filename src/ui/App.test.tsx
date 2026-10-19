@@ -465,12 +465,14 @@ describe('App (smoke test)', () => {
     await skipWatching(user);
     await user.click(screen.getByRole('button', { name: /^Watch the round/ }));
     await skipWatching(user);
-    // The game's seed is random, so the spar may end in this round: then the result card comes
-    // up once the last exchange has played, a moment later.
+    // The game's seed is random, so the spar may end in this round: then its last exchange
+    // stays on the stage with a Continue on to the result card.
     await waitFor(() => {
+      const next = screen.queryByRole('navigation', { name: 'What next' });
       const between =
         screen.queryByRole('button', { name: 'Plan the next round' }) ??
         screen.queryByText(/The round is over/) ??
+        (next && within(next).queryByRole('button', { name: 'Continue' })) ??
         screen.queryByRole('dialog');
       expect(between).not.toBeNull();
     });

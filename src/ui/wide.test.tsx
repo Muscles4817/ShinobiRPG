@@ -113,6 +113,20 @@ describe('the desktop layout (smoke test)', () => {
       expect(screen.getByRole('navigation', { name: 'Choices' })).toBeInTheDocument();
     });
 
+    it('takes a choice with its number key', async () => {
+      windowWide(true);
+      const user = await openGame(onJob());
+      await user.keyboard('1');
+      expect(await screen.findByRole('button', { name: /^Scan the ridgeline/ })).toBeVisible();
+    });
+
+    it('leaves the number keys alone on a phone', async () => {
+      windowWide(false);
+      const user = await openGame(onJob());
+      await user.keyboard('1');
+      expect(screen.queryByRole('button', { name: /^Scan the ridgeline/ })).toBeNull();
+    });
+
     it('leaves them to the debrief on a phone', async () => {
       windowWide(false);
       await openGame(onJob());
@@ -136,6 +150,13 @@ describe('the desktop layout (smoke test)', () => {
       const user = await openGame(inFight());
       expect(screen.getByRole('region', { name: 'Your cards' })).toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: 'Begin the fight' }));
+      expect(await screen.findByRole('region', { name: 'So far' })).toBeInTheDocument();
+    });
+
+    it('begins the fight with Enter', async () => {
+      windowWide(true);
+      const user = await openGame(inFight());
+      await user.keyboard('{Enter}');
       expect(await screen.findByRole('region', { name: 'So far' })).toBeInTheDocument();
     });
 

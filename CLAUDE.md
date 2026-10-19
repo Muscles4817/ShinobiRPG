@@ -1007,7 +1007,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `.app.wide` or `.wide-main`, so the phone layout never changes with it. To set parts of a
   screen side by side, wrap them in a `Pane` (`ui/layout/Pane.tsx`): `display: contents` on a
   phone, a column on desktop. Sheets (a person, your companion, a notice, the stove) open as a
-  drawer from the right, and Esc closes them (`useCloseOnEscape`). Scenes still take the whole
+  drawer from the right, and Esc closes them (`useCloseOnEscape`). Keys on desktop go through
+  `useKeys` (`ui/layout/`, which leaves fields, modifiers and a focused control alone): number
+  keys take a scene's choices (`useChoiceKeys`, with a `KeyHint`) and Enter the primary one, and
+  a fight's watch screen plays on Space, steps on the arrows and skips on S. Scenes still take the whole
   screen; the ones in `WIDE_SCENES` (`GameScreen.tsx`: the mission and the fight's plan and
   watch screens) set their panes side by side (`wide-scenes.css`), and what only the desktop
   shows beside a scene is a view model too (`missionSoFar`).
