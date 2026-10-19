@@ -4,6 +4,7 @@ import { combatLog, type CombatOption, type CombatView, type ScoutingRead } from
 
 import { Chips } from '../../../components/Chips';
 import { Pane } from '../../../layout/Pane';
+import { useKeys } from '../../../layout/useKeys';
 import { useWideScreen } from '../../../layout/useWideScreen';
 
 import { FighterRead, FoeMoves } from './FighterRead';
@@ -131,6 +132,17 @@ export function PlanScreen({ view, reads, onPick }: PlanScreenProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const pulses = useHealthPulses(view.combatants);
   const wide = useWideScreen();
+  const begin = view.options.find((o) => o.kind === 'continue' && !o.disabledReason);
+  useKeys(
+    {
+      Enter: begin
+        ? () => {
+            onPick(begin);
+          }
+        : undefined,
+    },
+    wide,
+  );
   const shown =
     view.combatants.find((c) => c.id === selected) ?? foes.find((f) => f.health > 0) ?? foes[0];
   const names = Object.fromEntries(view.combatants.map((c) => [c.id, c.name]));
@@ -172,6 +184,7 @@ export function PlanScreen({ view, reads, onPick }: PlanScreenProps) {
             <Reserves view={view} />
             <HowItWent view={view} />
             <BeginBar view={view} onPick={onPick} />
+            <p className="key-note">Enter begins.</p>
           </Pane>
           <Pane name="read">
             {fighterRead}

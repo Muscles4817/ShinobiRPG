@@ -6,6 +6,8 @@ import { Backdrop } from '../../art/Backdrop';
 import { DebriefCrewList, DebriefRoad } from '../../components/Debrief';
 import { Vitals } from '../../components/Vitals';
 import { Pane } from '../../layout/Pane';
+import { KeyHint } from '../../layout/KeyHint';
+import { useChoiceKeys } from '../../layout/useChoiceKeys';
 import { useWideScreen } from '../../layout/useWideScreen';
 import type { ScreenProps } from '../types';
 import { StoryLines, Threads } from './StoryLines';
@@ -61,6 +63,13 @@ export function MissionScene({ ctx, state, perform }: ScreenProps) {
   const scene = missionScene(state, ctx);
   const header = headerView(state, ctx);
   const wide = useWideScreen();
+  useChoiceKeys(
+    scene?.choices ?? [],
+    (c) => {
+      perform(c.action);
+    },
+    wide,
+  );
   const end = useRef<HTMLDivElement>(null);
   const lineCount = scene?.lines.length ?? 0;
   useEffect(() => {
@@ -108,16 +117,18 @@ export function MissionScene({ ctx, state, perform }: ScreenProps) {
           <div ref={end} />
         </main>
         <nav className="choices" aria-label="Choices">
-          {scene.choices.map((c) => (
+          {scene.choices.map((c, i) => (
             <button
               key={c.label}
               type="button"
               className={`choice${c.primary ? ' primary' : ''}${c.closed ? ' closed' : ''}`}
               disabled={c.closed !== undefined}
+              aria-keyshortcuts={wide ? String(i + 1) : undefined}
               onClick={() => {
                 perform(c.action);
               }}
             >
+              {wide && <KeyHint index={i} />}
               <b>{c.label}</b>
               {(c.closed ?? c.detail) && <small>{c.closed ?? c.detail}</small>}
             </button>
