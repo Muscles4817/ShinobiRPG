@@ -1,5 +1,6 @@
 import type { EnemyDef } from '../../types';
 import type { FoeKit } from './kit';
+import { foeStats } from './foeStats';
 
 /**
  * Fighters trained outside the shinobi villages. Samurai have little chakra and less use for
@@ -8,8 +9,8 @@ import type { FoeKit } from './kit';
  * themselves.
  */
 
-/** A samurai's art is the blade alone: ninjutsu and genjutsu are this far below their base. */
-const NO_HAND_SIGNS = -4;
+/** A samurai's art is the blade alone: whatever their rank, they never learn hand signs. */
+const NO_HAND_SIGNS = { ninjutsu: 3, genjutsu: 3 } as const;
 
 /*#__NO_SIDE_EFFECTS__*/
 export function samurai(kit: FoeKit): EnemyDef[] {
@@ -21,8 +22,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       name: 'Spear Footman',
       description:
         'A lord’s foot soldier: a long spear, a lacquered hat and orders to hold the line.',
-      baseStat: 6,
-      statBonuses: { strength: 2, stamina: 2, taijutsu: 1, speed: -1 },
+      ...foeStats(6, [11, 8, 11, 8], { ...NO_HAND_SIGNS, taijutsu: 9, kenjutsu: 8, willpower: 9 }),
       maxChakra: 10,
       techniqueIds: [kit.sweep, kit.palm],
       traits: ['armoured'],
@@ -33,14 +33,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       danger: 'armed',
       name: 'Samurai',
       description: 'Trained to the sword since they could stand. No tricks, and none needed.',
-      baseStat: 7,
-      statBonuses: {
-        kenjutsu: 4,
-        willpower: 3,
-        stamina: 1,
-        ninjutsu: NO_HAND_SIGNS,
-        genjutsu: NO_HAND_SIGNS,
-      },
+      ...foeStats(7, [9, 8, 9, 8], { ...NO_HAND_SIGNS, kenjutsu: 12, willpower: 10 }),
       maxChakra: 25,
       techniqueIds: [kit.cut, kit.heavyCut, kit.drawStrike],
       traits: ['armoured'],
@@ -51,14 +44,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       danger: 'armed',
       name: 'Samurai Archer',
       description: 'Shoots from horseback at a gallop and still picks which eye.',
-      baseStat: 8,
-      statBonuses: {
-        perception: 3,
-        speed: 1,
-        willpower: 2,
-        ninjutsu: NO_HAND_SIGNS,
-        genjutsu: NO_HAND_SIGNS,
-      },
+      ...foeStats(7, [10, 10, 10, 13], { ...NO_HAND_SIGNS, kenjutsu: 12, willpower: 10 }),
       maxChakra: 10,
       techniqueIds: [],
       traits: ['archer'],
@@ -70,14 +56,12 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       name: 'Rōnin',
       description:
         'Their lord is dead and their name is gone. The sword is all that came with them.',
-      baseStat: 10,
-      statBonuses: {
-        kenjutsu: 5,
-        speed: 2,
-        willpower: 2,
-        ninjutsu: NO_HAND_SIGNS - 1,
-        genjutsu: NO_HAND_SIGNS - 1,
-      },
+      ...foeStats(10, [14, 14, 13, 12], {
+        ...NO_HAND_SIGNS,
+        kenjutsu: 19,
+        willpower: 13,
+        taijutsu: 12,
+      }),
       maxChakra: 35,
       techniqueIds: [kit.cut, kit.heavyCut, kit.bleedCut, kit.drawStrike],
       traits: ['swift'],
@@ -88,15 +72,12 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       danger: 'deadly',
       name: 'Retainer Captain',
       description: 'Commands a lord’s guard and has never once been surprised.',
-      baseStat: 12,
-      statBonuses: {
-        kenjutsu: 5,
-        willpower: 4,
-        stamina: 2,
-        intellect: 2,
-        ninjutsu: NO_HAND_SIGNS - 2,
-        genjutsu: NO_HAND_SIGNS - 2,
-      },
+      ...foeStats(12, [15, 13, 15, 13], {
+        ...NO_HAND_SIGNS,
+        kenjutsu: 18,
+        willpower: 15,
+        intellect: 13,
+      }),
       maxChakra: 40,
       techniqueIds: [kit.heavyCut, kit.masterCut, kit.breakCut, kit.drawStrike],
       traits: ['armoured'],
@@ -108,14 +89,12 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       name: 'Wandering Sword Saint',
       description:
         'Walks from dojo to dojo asking for the master. None of them has a sign up any more.',
-      baseStat: 14,
-      statBonuses: {
-        kenjutsu: 7,
-        speed: 3,
-        willpower: 4,
-        ninjutsu: NO_HAND_SIGNS * 2,
-        genjutsu: NO_HAND_SIGNS * 2,
-      },
+      ...foeStats(14, [16, 20, 16, 18], {
+        ...NO_HAND_SIGNS,
+        kenjutsu: 30,
+        willpower: 20,
+        taijutsu: 16,
+      }),
       maxChakra: 60,
       techniqueIds: [kit.masterCut, kit.heavyCut, kit.drawStrike, kit.bleedCut],
       traits: ['swift'],
@@ -132,8 +111,7 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       danger: 'petty',
       name: 'Hunter',
       description: 'Feeds a family with a bow. Would rather not shoot a person, and might anyway.',
-      baseStat: 5,
-      statBonuses: { perception: 3, speed: 1, strength: -1 },
+      ...foeStats(5, [8, 9, 10, 11], { kenjutsu: 6 }),
       maxChakra: 0,
       techniqueIds: [],
       traits: ['archer', 'coward'],
@@ -144,8 +122,7 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       danger: 'armed',
       name: 'Garrison Bowman',
       description: 'Drilled on the walls of a border fort until loosing is as easy as breathing.',
-      baseStat: 7,
-      statBonuses: { perception: 3, stamina: 2 },
+      ...foeStats(6, [11, 9, 12, 12], { kenjutsu: 12, willpower: 9 }),
       maxChakra: 10,
       techniqueIds: [],
       traits: ['archer', 'armoured'],
@@ -157,8 +134,7 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       name: 'Temple Archer',
       description:
         'Shoots as a prayer, eyes half closed. Feels you coming before the bowstring does.',
-      baseStat: 8,
-      statBonuses: { perception: 4, willpower: 3, speed: 1 },
+      ...foeStats(8, [9, 10, 9, 13], { kenjutsu: 12, willpower: 12, chakraControl: 10 }),
       maxChakra: 20,
       techniqueIds: [kit.sense],
       traits: ['archer'],
@@ -169,8 +145,7 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       danger: 'deadly',
       name: 'Border Marksman',
       description: 'A lord pays them by the head. They have never had to take a second shot.',
-      baseStat: 10,
-      statBonuses: { perception: 5, speed: 2, willpower: 2 },
+      ...foeStats(10, [11, 13, 12, 18], { kenjutsu: 17, willpower: 13 }),
       maxChakra: 30,
       techniqueIds: [kit.throw],
       traits: ['archer', 'swift'],
@@ -181,8 +156,7 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       danger: 'armed',
       name: 'Warrior Monk',
       description: 'Shaved head, bare feet and a temple to defend. Hits like a falling bell.',
-      baseStat: 8,
-      statBonuses: { taijutsu: 3, willpower: 4, stamina: 2 },
+      ...foeStats(7, [10, 9, 10, 9], { taijutsu: 11, willpower: 11, chakraControl: 8 }),
       maxChakra: 40,
       techniqueIds: [kit.palm, kit.grapple, kit.heal],
       traits: ['brawler'],
@@ -193,8 +167,12 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       danger: 'deadly',
       name: 'Fighting Abbot',
       description: 'Sixty years of the same prayers and the same drills. Neither has worn thin.',
-      baseStat: 11,
-      statBonuses: { taijutsu: 4, willpower: 5, chakraControl: 2, speed: -1 },
+      ...foeStats(11, [12, 9, 12, 13], {
+        taijutsu: 19,
+        willpower: 18,
+        chakraControl: 14,
+        kenjutsu: 6,
+      }),
       maxChakra: 70,
       techniqueIds: [kit.palm, kit.grapple, kit.lock, kit.heal],
       traits: ['brawler'],

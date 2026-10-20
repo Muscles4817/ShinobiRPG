@@ -10,7 +10,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     description: 'A ninja hound of the Inuzuka kennels, raised beside its partner from a pup.',
     temperament: 'bred',
     body: {
-      adult: { strength: 10, speed: 13, stamina: 11, perception: 15 },
+      adult: { strength: 8, speed: 14, stamina: 13, perception: 18 },
       maturesInDays: 56,
     },
     baseStat: 4,
@@ -41,7 +41,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     description: 'Lean, wary and quick, with a nose for trouble and for anything left unguarded.',
     temperament: 'stray',
     body: {
-      adult: { strength: 9, speed: 12, stamina: 10, perception: 13 },
+      adult: { strength: 7, speed: 13, stamina: 12, perception: 15 },
       maturesInDays: 56,
     },
     baseStat: 4,
