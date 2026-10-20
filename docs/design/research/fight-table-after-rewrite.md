@@ -1,6 +1,6 @@
 # Fight table after the cast rewrite
 
-Every person and foe rewritten to the stat model (`stat-model-plan.md`, authoring guide), before any combat retune. Compare with `fight-table-before.md`.
+Every person and foe rewritten to the stat model (`stat-model-plan.md`, authoring guide), before any combat retune. Compare with `fight-table-before.md`; the table after the retune and the body arts is `fight-table-after-taijutsu.md`.
 
 | Question                         | A                  | B                    | A wins | Avg rounds |
 | -------------------------------- | ------------------ | -------------------- | ------ | ---------- |
