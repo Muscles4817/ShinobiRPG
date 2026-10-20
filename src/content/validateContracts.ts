@@ -91,9 +91,12 @@ function foeCalls(pack: ContentPack): string[] {
   );
 }
 
-/** Every summoning technique calls a summon some contract holds. */
+/** Every summoning technique calls a summon some contract holds, or unseals a puppet. */
 function strayCalls(pack: ContentPack): string[] {
-  const held = new Set(pack.contracts.flatMap((c) => c.summons.map((s) => s.id)));
+  const held = new Set([
+    ...pack.contracts.flatMap((c) => c.summons.map((s) => s.id)),
+    ...(pack.puppets ?? []).map((p) => p.id),
+  ]);
   return pack.techniques.flatMap((t) =>
     t.effects.flatMap((e) =>
       e.verb === 'summon' && !held.has(e.call)

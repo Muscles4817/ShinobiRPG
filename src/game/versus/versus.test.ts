@@ -132,6 +132,41 @@ describe('versus bouts', () => {
     expect(armed?.gear?.held?.name).toMatch(/Nuibari/);
   });
 
+  it('says where each fighter is from: the Mist’s in Kirigakure, the Sand’s in Sunagakure', () => {
+    const roster = versusRoster(naruto);
+    const village = (id: string) => roster.find((f) => f.id === `person:${id}`)?.village;
+    expect(village('kakashi')).toBe('Konohagakure');
+    expect(village('yagura')).toBe('Kirigakure');
+    expect(village('gaara')).toBe('Sunagakure');
+    expect(village('sasori')).toBe('Sunagakure');
+    expect(roster.find((f) => f.id === 'person:temari')?.name).toBe('Temari of the Sands');
+  });
+
+  it('fields a puppeteer with their puppets, which unfold out of a scroll and fight', () => {
+    const kankuro = contenderOf(naruto, 'person:kankuro')!;
+    const state = bout('person:kankuro', 'person:maki');
+    const as = playerSetup(kankuro, state, naruto);
+    expect(as.calls?.map((c) => [c.id, c.puppet])).toEqual([
+      ['karasu', true],
+      ['kuroari', true],
+    ]);
+    expect(as.techniques.map((t) => t.id)).toEqual([
+      'chakra-threads',
+      'unseal-karasu',
+      'unseal-kuroari',
+    ]);
+    const watched = createVersus(naruto, {
+      side: ['person:kankuro'],
+      foes: ['person:maki'],
+      seed: 1,
+      watch: true,
+    });
+    if (!watched.ok) throw new Error(watched.error);
+    const done = fightOut(watched.value, naruto);
+    expect(done.reports[0]?.kind).toBe('fight');
+    expect(done.combatFinale?.log.join(' ')).toMatch(/Crow unfolds out of it/);
+  });
+
   it('refuses a pick the pack doesn’t have', () => {
     const made = createVersus(naruto, { side: ['person:nobody'], foes: ['person:guy'], seed: 1 });
     expect(made.ok).toBe(false);
