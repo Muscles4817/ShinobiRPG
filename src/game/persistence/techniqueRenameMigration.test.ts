@@ -26,6 +26,7 @@ describe('technique merges', () => {
       known: [merged(oldKnown)],
       progress: { [merged(oldStudied)]: 12 },
       unstable: [merged(oldKnown)],
+      repertoire: null,
     });
     expect(loaded.value.inventory.scrolls).toEqual({ [merged(oldStudied)]: true });
     for (const id of [merged(oldKnown), merged(oldStudied)]) {

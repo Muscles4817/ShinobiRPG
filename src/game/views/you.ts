@@ -8,6 +8,8 @@ import { playerCombatant } from '../combatants';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import type { Discipline } from './common';
+import { styleMoveIds } from '../style';
+import { styleSlot, type StyleSlot } from './style';
 import { techniqueSheet, type TechniqueSheet } from './techniqueSheet';
 
 export interface JutsuEffect {
@@ -32,6 +34,8 @@ export interface JutsuCard {
   readonly progressPct: number;
   /** What it does, in full: the back of the card. */
   readonly sheet: TechniqueSheet;
+  /** A known body move's place in your style (the deck's cards only). */
+  readonly style?: StyleSlot | null;
 }
 
 /** One technique as a card of the deck, read for this fighter (you, by default). */
@@ -65,8 +69,9 @@ export function jutsuCard(
 export function jutsuDeck(state: GameState, ctx: GameContext): readonly JutsuCard[] {
   const order = { known: 0, studying: 1, unknown: 2 } as const;
   const fighter = playerCombatant(state, ctx);
+  const style = styleMoveIds(state, ctx);
   return ctx.content.techniques.all
-    .map((t) => jutsuCard(state, ctx, t, fighter))
+    .map((t) => ({ ...jutsuCard(state, ctx, t, fighter), style: styleSlot(state, ctx, t, style) }))
     .sort((a, b) => order[a.status] - order[b.status]);
 }
 

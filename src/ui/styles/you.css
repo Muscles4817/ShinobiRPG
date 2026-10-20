@@ -83,6 +83,12 @@
   color: var(--cost);
   font-size: 0.62rem;
 }
+.tcard .tstyle {
+  align-self: flex-start;
+  position: relative;
+  color: var(--taijutsu);
+  font-size: 0.62rem;
+}
 .tcard.ghost {
   background: transparent;
   border: 1px dashed var(--line);
@@ -437,4 +443,27 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+}
+
+/* Your style: a paper slip above the deck, the moves your strike plays from. */
+.style-panel {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+}
+.style-panel h2 {
+  font-size: 1.1rem;
+  padding-right: 0;
+}
+.style-panel .story {
+  color: var(--paper-ink);
+}
+.style-panel .muted {
+  color: var(--paper-muted);
+}
+.style-choice {
+  margin-top: 10px;
+}
+.style-choice .btn {
+  min-height: 40px;
 }

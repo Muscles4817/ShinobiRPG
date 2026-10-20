@@ -283,7 +283,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`plan/pacing.ts`). A **body move** (plain taijutsu: no element, no Gate, nothing moulded) costs
     **breath**, not chakra (`rules/breath.ts`: a pool set by stamina, a little back each exchange,
     shown as a meter), so it is thrown under a seal and after chakra runs dry; ask `effortOf`
-    (`plan/effort.ts` in the engine) for any cost, never `chakraCost` alone. Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
+    (`plan/effort.ts` in the engine) for any cost, never `chakraCost` alone. A trained fighter's
+    strike is their **style** (`plan/repertoire.ts`): a repertoire of body moves (as many as their
+    taijutsu grade holds; the player's chosen on the Jutsu tab, `techniques.repertoire`, else their
+    best), one slot in a default plan, and when it plays it becomes the move that suits the moment
+    by feel (taijutsu with wits): the hardest for a novice, what beats a seen defence for a better
+    feel, a change-up before a foe who reads the fight has it read; a choice, never a roll.
+    Untrained bodies and a weapon in hand keep the plain blow. Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
     covers (wide ×1.5, vast ×2.2), and each exchange gives back a little, or a share of deep
     reserves. Holds are fought, not waited out (`rules/escape.ts`, `plan/struggle.ts`): a pin
     keeps its `grip` (how strongly it was cast, what breaks it), the held struggle against it at

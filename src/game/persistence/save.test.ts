@@ -613,6 +613,15 @@ describe('persistence', () => {
     expect(loaded.value.dustScrolls).toEqual([]);
   });
 
+  it('gives a save from before repertoires the best moves kept for it', () => {
+    const game = newGame();
+    const { repertoire: _r, ...techniques } = game.techniques;
+    const raw = JSON.stringify({ version: 63, state: { ...game, techniques } });
+    const loaded = deserialize(raw);
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.techniques.repertoire).toBeNull();
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

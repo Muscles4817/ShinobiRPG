@@ -100,7 +100,7 @@ describe('technique ranks', () => {
   });
 
   it('blocks relearning a known technique', () => {
-    const book = { known: ['fireball'], progress: {}, unstable: [] };
+    const book = { known: ['fireball'], progress: {}, unstable: [], repertoire: null };
     expect(learnBlocker(book, fireball, learner(10))).toEqual({ kind: 'already-known' });
   });
 });

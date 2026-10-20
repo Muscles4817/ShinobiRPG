@@ -12,6 +12,7 @@ import { noteGradeUps } from './gradeUps';
 import { curriculumAfter, curriculumBefore } from './sensei/curriculum';
 import { flushMentorNotices } from './sensei/settle';
 import type { GameState } from './state';
+import { noteNewMoves } from './style';
 
 function handlerFor<A extends GameAction>(action: A): ActionHandler<A> {
   // The registry's mapped type guarantees HANDLERS[action.type] handles exactly `A`.
@@ -51,6 +52,7 @@ export function dispatch(
   );
   const graded = notePromotions(noteGradeUps(state, performed, ctx), ctx);
   const gifted = noteHomeGifts(state, noteRival(state, graded, ctx), ctx);
-  const next = noteDayEnd(state, noteFieldBook(state, gifted, ctx), action);
+  const styled = noteNewMoves(state, noteFieldBook(state, gifted, ctx), ctx);
+  const next = noteDayEnd(state, styled, action);
   return ok({ ...next, rngState: rng.state() });
 }

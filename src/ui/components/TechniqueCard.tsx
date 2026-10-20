@@ -19,11 +19,13 @@ interface TechniqueCardProps {
   readonly rank?: StatGrade;
   /** Learned a rank above your grade: stamped until it steadies. */
   readonly unstable?: boolean;
+  /** A body move your strike plays from (your style): stamped. */
+  readonly inStyle?: boolean;
 }
 
 /**
- * The card used for techniques everywhere: the Jutsu deck and the hand in fights. Its rank and
- * an unsteady technique show as ink stamps.
+ * The card used for techniques everywhere: the Jutsu deck and the hand in fights. Its rank, an
+ * unsteady technique and a move of your style show as ink stamps.
  */
 export function TechniqueCard({
   name,
@@ -32,6 +34,7 @@ export function TechniqueCard({
   ghost = false,
   rank,
   unstable = false,
+  inStyle = false,
 }: TechniqueCardProps) {
   return (
     <span className={`tcard t-${discipline}${ghost ? ' ghost' : ''}`}>
@@ -45,6 +48,7 @@ export function TechniqueCard({
         {GLYPH[discipline]}
       </span>
       {unstable && <span className="badge tunstable">Unstable</span>}
+      {inStyle && <span className="badge tstyle">Style</span>}
       <span className="tdetail">{detail}</span>
     </span>
   );

@@ -156,7 +156,7 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       danger: 'armed',
       name: 'Warrior Monk',
       description: 'Shaved head, bare feet and a temple to defend. Hits like a falling bell.',
-      ...foeStats(7, [10, 9, 10, 9], { taijutsu: 11, willpower: 11, chakraControl: 8 }),
+      ...foeStats(7, [10, 9, 10, 9], { taijutsu: 10, willpower: 11, chakraControl: 8 }),
       maxChakra: 40,
       techniqueIds: [kit.palm, kit.grapple, kit.heal],
       traits: ['brawler'],

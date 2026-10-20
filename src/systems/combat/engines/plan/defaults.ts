@@ -13,7 +13,17 @@ import {
   opensOf,
   techniquePower,
 } from '../../rules/verbs';
-import { cardBlocked, cardId, cardsFor, isOffence, slotLimit, type Card } from './cards';
+import {
+  cardBlocked,
+  cardId,
+  cardsFor,
+  fitsBand,
+  isOffence,
+  slotLimit,
+  strikeCard,
+  type Card,
+} from './cards';
+import { styleMoves } from './repertoire';
 import { opponentsOf } from './senses';
 import { defaultHoldOff } from './zoning';
 import { defaultReactions } from './readiness';
@@ -35,6 +45,20 @@ function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean)
 
 function damageJutsu(cards: readonly Card[]): Card[] {
   return strongest(cards, isWounding);
+}
+
+/**
+ * Attacks with the fighter's style folded in: the body moves of their repertoire are one strike
+ * card, ranked where the best of them would be, so they take one slot and the strike picks among
+ * them by the moment (`repertoire.ts`).
+ */
+function withStyle(fighter: PlanFighter, band: RangeBand, attacks: readonly Card[]): Card[] {
+  const style = styleMoves(fighter).map((t) => t.id);
+  const strike = strikeCard(fighter);
+  const inStyle = (c: Card) => c.kind === 'jutsu' && style.includes(c.technique.id);
+  if (style.length === 0 || !fitsBand(strike, band) || !attacks.some(inStyle)) return [...attacks];
+  const first = attacks.findIndex(inStyle);
+  return attacks.flatMap((c, i) => (i === first ? [strike] : inStyle(c) ? [] : [c]));
 }
 
 /** How many of a ladder's openings a default plan slots: enough to climb, not crowd out attacks. */
@@ -170,7 +194,7 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
   const trumps = climbable.filter((c) => c.kind === 'jutsu' && isTrump(c.technique));
   const pool = climbable.filter((c) => !trumps.includes(c) && stepOf(c) === 0);
   const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
-  const damage = damageJutsu(pool);
+  const damage = withStyle(fighter, band, damageJutsu(pool));
   const readies = (t: CombatTechnique) =>
     hasVerb(t, 'empower') || hasVerb(t, 'clone') || hasVerb(t, 'shroud');
   const ready = chain.length > 0 ? chain : strongest(pool, readies).slice(0, 1);
@@ -197,7 +221,8 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     ...hold.late,
     ...plain([...damage.slice(1), ...best('conceal'), ...tools(pool, 'smoke')]),
   ];
-  const unlocked = damage.find((c) => c.kind === 'jutsu' && !c.technique.needsOpen);
+  // The best attack may be the strike that plays your style (`withStyle`).
+  const unlocked = damage.find((c) => c.kind !== 'jutsu' || !c.technique.needsOpen);
   return fitted(ordered, plain(unlocked ? [unlocked] : damage.slice(0, 1))[0], slotLimit(fighter));
 }
 

@@ -88,6 +88,7 @@ export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
 export { HIT_TYPES, hitTypeOf, type HitType } from './rules/hits';
 export { chakraCost, holdTurns } from './rules/body';
 export { effortOf, isBodyMove, type Effort, type EffortPool } from './rules/breath';
+export { defaultRepertoire, fitsRepertoire, repertoireSize } from './engines/plan/repertoire';
 export { equalHitShare } from './rules/damage';
 export { focusScale } from './rules/focus';
 export { MAX_BLADES, weaponNumbers, type WeaponNumbers } from './rules/weapons';

@@ -12,6 +12,7 @@ import {
   techniquePower,
 } from '../../rules/verbs';
 import { repeatWeight } from '../../rules/familiarity';
+import { standIn } from './repertoire';
 import { beats, seenDefence, walksInto } from './adapt';
 import { cardId, isOffence, playable, slotted, type Card } from './cards';
 import { partnered } from './combo';
@@ -102,8 +103,10 @@ function weighted(
   moment: Moment,
 ): Card | undefined {
   const lean = leanOf(self, moment);
-  const leans = worthLeans(self, cards, moment);
-  const weights = cards.map((c, i) => weight(c, lean, self, leans[i]));
+  // A strike that plays a style is weighed as the best of its moves (`repertoire.ts`).
+  const weighed = cards.map((c) => standIn(self, c));
+  const leans = worthLeans(self, weighed, moment);
+  const weights = weighed.map((c, i) => weight(c, lean, self, leans[i]));
   const total = weights.reduce((sum, w) => sum + w, 0);
   let roll = rng.next() * total;
   for (const [i, card] of cards.entries()) {

@@ -80,6 +80,8 @@ export type GameAction =
   | { readonly type: 'setMapStyle'; readonly style: MapStyle }
   | { readonly type: 'setDayEnd'; readonly mode: DayEndMode }
   | { readonly type: 'dismissDay' }
+  | { readonly type: 'setStyleMove'; readonly techniqueId: string; readonly inStyle: boolean }
+  | { readonly type: 'resetStyle' }
   | { readonly type: 'answerRival'; readonly choiceIndex: number }
   | { readonly type: 'acceptChallenge' }
   | { readonly type: 'declineChallenge' }

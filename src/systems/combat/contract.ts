@@ -161,6 +161,11 @@ export interface CombatantSetup {
   readonly traits?: readonly CombatTrait[];
   /** Tools carried into the fight (the player's pouch). */
   readonly items?: readonly CombatItem[];
+  /**
+   * The body moves (technique ids) a plain strike plays from, as the fighter chose them; absent,
+   * the engine keeps their best (`engines/plan/repertoire.ts`).
+   */
+  readonly repertoire?: readonly string[];
   /** Equipped gear (see `gearContract.ts`); absent for fighters armed as their kit suggests. */
   readonly gear?: CombatGear;
   /** What today's meal brings into the fight (the player's). */
