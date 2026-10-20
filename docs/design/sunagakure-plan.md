@@ -1,9 +1,9 @@
 # Sunagakure: the sand that buried a queen
 
-The Village Hidden in the Sand in the fan pack's setting. Nothing of the town exists yet: the
-location is a locked stub. Its families are clans of Sunagakure, and its fighters are in versus
-(`duelists/suna/`, listed at the end). This page records the setting agreed so far, so the town, its
-fighters and the desert are built on it.
+The Village Hidden in the Sand in the fan pack's setting. The town and the desert crossing exist
+(`packs/naruto/sunagakure/`, `packs/naruto/kageroLanding/`), its families are clans of
+Sunagakure, and its fighters are in versus (`duelists/suna/`, listed at the end). This page
+records the setting agreed so far, so later work builds on it.
 
 ## The history
 
@@ -82,6 +82,59 @@ The desert is the Sand's wall. It worsens towards the Deep Desert, where the cor
 **The barges** are how anyone sane crosses: a priest at the helm steers the sand, and a fan
 user fills the sails. Walking is possible and deadly.
 
+## The crossing
+
+The way in starts at **Kagerō Landing**, a frontier town of wells and caravans where the Land of
+Rivers runs out (`kageroLanding/`). It has the Caravanserai, the Water Market, the Barge Office,
+the Barge Yards and the Heat Flats. Sunao of the Dunes pilots the barges, Hamada keeps the
+caravanserai and Rokusuke runs the caravans.
+
+| Road            | From → to              | Days | Danger | Asks                                              |
+| --------------- | ---------------------- | ---- | ------ | ------------------------------------------------- |
+| The Rivers road | the Leaf → the Landing | 2    | Petty  | Nothing: a genin's pass covers it                 |
+| The barge       | the Landing → the Sand | 2    | Armed  | A fare, and the priests' leave to board           |
+| The deep sand   | the Landing → the Sand | 4    | Deadly | Nothing but nerve: the outer sands, then the belt |
+
+The priests' leave (`suna-barge-passage`) comes from one job at the Barge Office: bringing a lost
+apprentice back out of the outer sands (`landing-lost-skiff`). Until then, the only way in is
+the walk. Each road has its own events (`sunagakure/roadEvents.ts`): sandstorms, dry wells and
+mirages in the outer sands; a priest's chant and a barge run aground on the crossing; grey sand
+that cuts and voices of the lost in the belt.
+
+## The town today (Era I)
+
+A foreigner is kept to the **Outer Ring** (`sunagakure/place.ts`, backdrop `sand-village`):
+
+- the Cistern House, where water is billed by the cup
+- the Covered Bazaar
+- the Envoy's Office
+- the Windbreak Workshop, selling war fans, sand veils, iron sand and gold dust
+- the Steam Baths and the Last Well bar
+- the Wind Gallery and the Thread Yard
+- the Poison Ward
+- the Breaking Pens, a vet that breeds sand hounds for the collar
+- a room cut in the cliff, for sale
+
+The great families' compounds stand in the Families' Quarter. The priests' stands outside the
+wall, in the Outer Yards.
+
+**People:** Kiyose the Envoy's clerk, Madam Ruri, Oyone the widow, and Gōzan of the Breaking
+Pens. One member of each family comes home in the evening: Hisui of the Sands, Tsumugi of the
+Red Sand (with a workshop doll), Hayase of the Cutting Wind and Kōro of the Dunes.
+
+**Work** at the Envoy's Office:
+
+| Job                          | What it is about                       |
+| ---------------------------- | -------------------------------------- |
+| The Cistern Watch            | Water is wealth                        |
+| Bitter Spice                 | Spice from the belt in the bazaar      |
+| Chalk on the Wall            | The Hatake widows; a Leaf face answers |
+| The Hound That Waited        | A broken hound that thinks for itself  |
+| Grey Sand at the Outer Wells | The taint, fought beside a priest      |
+
+**Foes** (`sunagakure/foes.ts`) are dune raiders, spice runners, tainted jackals and scorpions,
+sand wraiths and the Sand's own patrols.
+
 **The spice** is sand soaked in bijū chakra. The priests' strongest sand is spice, the Sand's
 economy and the daimyo's interest run on it, smugglers die for it in the tainted belt, and the
 dark rings round a priest's eyes (and Gaara's) are its mark.
@@ -92,8 +145,6 @@ dark rings round a priest's eyes (and Gaara's) are its mark.
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A `desert` biome         | The bestiary, wild places, wild companions and wild strains know woods, river, shore, mountain, marsh                                                                                              |
 | A desert fighting ground | Grounds are arena, forest, town, room, lake. Dunes: open, no cover, room for far, and sand to draw on                                                                                              |
-| The barge crossing       | Routes have `needs`, `cost` and `danger`; a passage by barge is a new kind of need, or a fare beside a deadly road                                                                                 |
-| Desert road regions      | One region (`dune-road`); the three above need their own events                                                                                                                                    |
 | How a town greets you    | Nothing reads where you're from or what you carry. The Sand reacts to the Leaf and to a contract, as the Mist will to a bloodline: one rule for all three                                          |
 | Breaking a beast         | A companion takes orders only as the bond opens them. Breaking opens orders early and keeps the bond thin                                                                                          |
 | Intelligent beasts       | Nothing marks a companion kind as having a mind of its own                                                                                                                                         |

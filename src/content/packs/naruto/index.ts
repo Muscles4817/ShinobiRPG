@@ -86,7 +86,21 @@ import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
 import { NARUTO_ROUTES } from './routes';
-import { SUNA_CLANS } from './sunagakure';
+import {
+  DESERT_FOES,
+  DESERT_ROAD_EVENTS,
+  SAND_HOUND,
+  SUNA_CLANS,
+  SUNA_FOODS,
+  SUNA_GEAR,
+  SUNA_HOUSE_FOLK,
+  SUNA_JOBS,
+  SUNA_PEOPLE,
+  SUNA_TRAINING,
+  WORKSHOP_DOLL,
+  WORKSHOP_DOLL_ARTS,
+} from './sunagakure';
+import { LANDING_FOODS, LANDING_JOBS, LANDING_PEOPLE, LANDING_TRAINING } from './kageroLanding';
 import { NARUTO_ATLAS } from './atlas';
 import { WAVES_FOODS, WAVES_JOBS, WAVES_PEOPLE, WAVES_TRAINING } from './landOfWaves';
 import { TANZAKU_FOODS, TANZAKU_JOBS, TANZAKU_PEOPLE } from './tanzaku';
@@ -143,6 +157,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...CONTRACT_TECHNIQUES,
     ...CANON_TECHNIQUES,
     ...DUELIST_TECHNIQUES,
+    ...WORKSHOP_DOLL_ARTS,
   ],
   missions: [
     ...MISSIONS,
@@ -154,6 +169,8 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...WAVES_JOBS,
     ...TANZAKU_JOBS,
     ...KIRI_JOBS,
+    ...LANDING_JOBS,
+    ...SUNA_JOBS,
     ...SHUKUBA_JOBS,
     ...OTAFUKU_JOBS,
     ...FIRE_TEMPLE_JOBS,
@@ -168,7 +185,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
-  roadEvents: ROAD_EVENTS,
+  roadEvents: [...ROAD_EVENTS, ...DESERT_ROAD_EVENTS],
   arcs: [
     TEMPLE_BELL_ARC,
     DROWNED_SHORE_ARC,
@@ -180,7 +197,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     UNWRITTEN_RULE_ARC,
   ],
   voices: VOICES,
-  companionKinds: COMPANION_KINDS,
+  companionKinds: [...COMPANION_KINDS, SAND_HOUND],
   companionLore: COMPANION_LORE,
   contracts: CONTRACTS,
   strains: [...STRAINS, ...WILD_STRAINS],
@@ -193,17 +210,27 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     TEMPLE_BELL_FOE,
     DROWNED_SHORE_FOE,
     ...KIRI_FOES,
+    ...DESERT_FOES,
     LOADED_DICE_FOE,
     SWORD_SCHOOL_FOE,
     SNAKE_DEN_FOE,
   ],
-  training: [...TRAINING, ...WAVES_TRAINING, ...FIRE_TEMPLE_TRAINING, ...KIRI_TRAINING],
+  training: [
+    ...TRAINING,
+    ...WAVES_TRAINING,
+    ...FIRE_TEMPLE_TRAINING,
+    ...KIRI_TRAINING,
+    ...LANDING_TRAINING,
+    ...SUNA_TRAINING,
+  ],
   foods: [
     ...FOODS,
     ...SEASONAL_FOODS,
     ...WAVES_FOODS,
     ...TANZAKU_FOODS,
     ...KIRI_FOODS,
+    ...LANDING_FOODS,
+    ...SUNA_FOODS,
     ...SHUKUBA_FOODS,
     ...OTAFUKU_FOODS,
     ...FIRE_TEMPLE_FOODS,
@@ -220,7 +247,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   traits: TRAITS,
   nindos: NINDOS,
   breakIn: BREAK_IN,
-  gear: [...GEAR, ...DUELIST_GEAR, ...KIRI_GEAR],
+  gear: [...GEAR, ...DUELIST_GEAR, ...KIRI_GEAR, ...SUNA_GEAR],
   tools: TOOLS,
   injuries: INJURIES,
   ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS],
@@ -241,12 +268,15 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...TANZAKU_PEOPLE,
     ...KIRI_PEOPLE,
     ...KIRI_HOUSE_FOLK,
+    ...LANDING_PEOPLE,
+    ...SUNA_PEOPLE,
+    ...SUNA_HOUSE_FOLK,
     ...OTAFUKU_PEOPLE,
     ...SHUKUBA_PEOPLE,
     ...FIRE_TEMPLE_PEOPLE,
   ],
   duelists: DUELISTS,
-  puppets: DUELIST_PUPPETS,
+  puppets: [...DUELIST_PUPPETS, WORKSHOP_DOLL],
   conversations: [
     ...GENERIC_CONVERSATIONS,
     ...TEMPLATE_CONVERSATIONS,

@@ -1147,7 +1147,7 @@ view:
     perks[1]: Bonds +3 per talk
   rumours[0]: Genin in Sand and Rain headbands have been seen at the gate. The Chūnin Exams must be close.
   rumours[1]: The Yamanaka flower shop is short-handed and the back garden is a jungle.
-  rumours[2]: The Daimyō’s wife was seen at the mission desk in tears. Tora has escaped again.
+  rumours[2]: Might Guy did five hundred laps of the village on his hands this morning.
   stray:
     text: A scruffy brown hound is sniffing round the ramen stand’s back door, ribs showing.
     where: Near the Training Grounds

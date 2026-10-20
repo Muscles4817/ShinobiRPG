@@ -188,11 +188,19 @@
 .sky[data-slot='night'] {
   background: linear-gradient(180deg, #0b0a1e 0%, #1d1840 100%);
 }
-.sky[data-land='dunes'][data-slot='afternoon'] {
+.sky[data-land='dunes'][data-slot='afternoon'],
+.sky[data-land='sand-village'][data-slot='afternoon'],
+.sky[data-land='barge-landing'][data-slot='afternoon'] {
   background: linear-gradient(180deg, #5c9bd0 0%, #e9cf96 100%);
 }
-.sky[data-land='dunes'][data-slot='evening'] {
+.sky[data-land='dunes'][data-slot='evening'],
+.sky[data-land='sand-village'][data-slot='evening'],
+.sky[data-land='barge-landing'][data-slot='evening'] {
   background: linear-gradient(180deg, #3b2a5a 0%, #c86a3a 60%, #f2b765 100%);
+}
+.sky[data-land='sand-village'][data-slot='morning'],
+.sky[data-land='barge-landing'][data-slot='morning'] {
+  background: linear-gradient(180deg, #6a8cc0 0%, #f0b878 100%);
 }
 .sky[data-land='mist'],
 .sky[data-land='mist-village'] {
