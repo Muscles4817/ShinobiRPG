@@ -35,6 +35,7 @@ import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { callSummon } from './summons';
 import { settleOn, swarmSpent } from './swarm';
+import { dustSpent } from './dust';
 import { setTrap } from './traps';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 
@@ -55,6 +56,7 @@ function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): 
   const change = {
     ...paying(actor, chakraCost(actor, t)),
     ...swarmSpent(actor, t),
+    ...dustSpent(actor, t, round.ground),
     used: known.includes(t.id) ? known : [...known, t.id],
     uses: { ...actor.uses, [t.id]: (actor.uses?.[t.id] ?? 0) + 1 },
   };

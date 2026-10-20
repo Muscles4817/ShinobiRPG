@@ -37,6 +37,7 @@ import { clonesAfter } from './cloneUpkeep';
 import { summonsAfter } from './summons';
 import { plannedSummons } from './summonPlans';
 import { swarmsAfter } from './swarm';
+import { dustAfter } from './dust';
 import { wearOffDaze } from './daze';
 import {
   fighterIn,
@@ -287,7 +288,9 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   };
   const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), start);
   const kept = plannedSummons(summonsAfter(clonesAfter(afterEmpowers(played, state.round))));
-  const end = secondWinds(lingerAfter(swarmsAfter(struggleFree(kept, rng), rng), state.round));
+  const end = secondWinds(
+    lingerAfter(dustAfter(swarmsAfter(struggleFree(kept, rng), rng)), state.round),
+  );
   const result = decide(end.fighters);
   const { field, lines: fading } = fieldAfter(end.field, state.round);
   const fighters = end.fighters.map((f) => ({

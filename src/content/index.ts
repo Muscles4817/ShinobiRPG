@@ -162,6 +162,7 @@ export {
 } from './senseis';
 export { VOICE_MOMENTS, type VoiceDef, type VoiceMoment } from './voices';
 export type { ContractDef, ContractOffer, FoeSummon, SummonDef, SummonPrice } from './contracts';
+export type { DustDef } from './dusts';
 export {
   INSECT_FAMILIES,
   QUALITY_GRADES,

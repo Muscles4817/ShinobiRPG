@@ -29,6 +29,7 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { startHolding } from './holding';
 import { wound } from './wound';
 import { knockLine } from './sceneVoice';
+import { dustGrip } from './dust';
 import { momentOf } from './voice';
 import { tell } from '../../rules/telling';
 
@@ -57,7 +58,7 @@ export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>)
   const pinned = Math.max(target.pinned ?? 0, holdTurns(use.effect) + 1);
   // What it takes to break it, struggling or pulled out (`struggle.ts`).
   const grip = {
-    drive: driveOf(actor, use),
+    drive: driveOf(actor, use) * dustGrip(actor, use.technique),
     discipline: use.technique.discipline,
     resist: profileOf(use.effect).resist,
   };

@@ -642,7 +642,8 @@ nothing. This step gives those techniques a pool to come from.
 - **4c, other strains:** wild insects found away from home, studied, and crossbred.
 - **4d, the install later in life:** the S-rank scroll, the scroll in the world, the rogue who
   teaches.
-- **4e, sand:** a jutsu-made pool that recovers mid-fight and guards on its own.
+- **4e, dust:** sand and its kin, a pool its user commands and draws back up by jutsu (see
+  "Commanded dust" below).
 
 **Still open** (answered with sensible defaults unless you say otherwise):
 
@@ -673,6 +674,61 @@ is kept in `GameState.rites` (clan ids); taking it is a second step, at home.
   and a bedridden `rite` injury (the hive taking hold) keeps you abed for days by share
   (`DAYS_ABED`: three, five or eight, shortened by stamina).
 - Someone with a hive is never offered a rite; a job that finds one hands nothing over to them.
+
+### Commanded dust (step 4e)
+
+Sand is one of a family: the second Kazekage fought with iron sand, Gaara's father with gold
+dust. So step 4e builds **dust**, a pool of matter its user commands, and each kind of dust
+is data, as insect strains are.
+
+**What decided it (the designer's calls):**
+
+- **Guard is not a dust quality.** Gaara's sand shields him on its own because it came from a
+  tailed beast. An automatic shield is a perk of where the power came from (a beast, a bound
+  spirit) and lays over any dust; it comes later, with milestone 3's beasts and spirits.
+  Without it a dust user guards with a Guard like anyone, and dust only helps that Guard by its
+  weight.
+- **Bloodline first, a scroll at the edge.** Nearly everyone who commands dust was born to it
+  (a clan with a dust affinity). The only other way is an S-rank scroll found in the world.
+- **Dust kinds are shared.** Every kind is available to both packs: a rogue with ash may turn
+  up in either when the world is populated. The original pack gets a dust clan of its own.
+
+**A kind of dust** (`content/shared/dusts.ts`, a `DustDef`; the fight reads it as a `DustKind`):
+
+| Quality | What a better grade does                                                              |
+| ------- | ------------------------------------------------------------------------------------- |
+| Weight  | Dust attacks hit harder and a Guard keeps more out, but arrive slower (slipped more). |
+| Hold    | Dust pins grip harder (harder to struggle out of).                                    |
+| Draw    | A draw pulls more up from the ground.                                                 |
+
+Gifts only some carry (1 to 3): **cutting** (its hits leave a bleed) and **blinding** (a foe
+it reaches aims worse for a couple of exchanges). **Banes** scatter some of it when its user is
+hit by one: an element (water soaks sand, lightning scatters iron, wind blows ash) or `heavy`
+(a hard physical blow shatters glass). **Drawn on**: the grounds that hold it, where a draw
+pulls it up in full; elsewhere a draw gathers back only what fell near.
+
+| Dust       | Weight | Hold | Draw | Gift       | Bane      | Drawn on            |
+| ---------- | ------ | ---- | ---- | ---------- | --------- | ------------------- |
+| Sand       | D      | B    | A    |            | water     | arena, forest, town |
+| Iron sand  | A      | C    | E    | cutting 2  | lightning | (carried only)      |
+| Gold dust  | A      | A    | E    |            |           | (carried only)      |
+| Ash        | E      | D    | B    | blinding 2 | wind      | town, room          |
+| Glass sand | C      | D    | D    | cutting 3  | heavy     | (carried only)      |
+
+**In the fight** (`dustContract.ts`, `rules/dust.ts`, `engines/plan/dust.ts`):
+`CombatantSetup.dust` is `{ kind, count, cap }`. A technique's `dustCost` spends dust (a
+fighter without dust pays its chakra alone) and its `dustDraw` pulls dust up first, so a
+draw is a jutsu (Sand Armour gathers sand as it coats you). `CombatOutcome.dust` reports
+what is left; the fight screen shows a Dust meter.
+
+**Build order:**
+
+- **4e-i, dust in a fight:** the contract, the rules, the engine, the shared kinds.
+- **4e-ii, dust users:** a carried store between fights (gourd, pouch, scroll), dust
+  bloodlines (the Kazekage and Gaara's lines in the fan pack, a dust clan in the original),
+  their techniques.
+- **4e-iii, the S-rank scrolls** in the world, one per kind.
+- **Later:** the beast or spirit shield perk, with milestone 3.
 
 ### Strains and crossbreeding (step 4c)
 
@@ -1171,7 +1227,7 @@ and its genes, its skills with training**, and every kind has its own ceiling.
 - **Later:**
   - foes who carry hives (`EnemyDef.swarm`);
   - foes and teammates aiming areas and fire at a hive on purpose;
-  - strains and crossbreeding (4c), the install later in life (4d), sand (4e).
+  - strains and crossbreeding (4c), the install later in life (4d), dust (4e).
 
 ### Step 4c-i: what insects are
 

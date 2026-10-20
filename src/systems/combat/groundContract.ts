@@ -1,0 +1,6 @@
+/**
+ * Where a fight happens (`rules/ground.ts`): an open arena, a forest, a town's streets and
+ * roofs, a room with no space to back away, or a lake only water-walkers stand on.
+ */
+export const COMBAT_GROUNDS = ['arena', 'forest', 'town', 'room', 'lake'] as const;
+export type CombatGround = (typeof COMBAT_GROUNDS)[number];
