@@ -1,0 +1,198 @@
+import { look } from '../../../../look';
+import { statLine } from '../../../../statLine';
+import type { PersonDef } from '../../../../types';
+
+import { kiriFighter } from './fighter';
+
+/**
+ * Yagura's Mist: the Fourth Mizukage, who has made the hunting of bloodlines the village's
+ * law, and the champions of the houses that keep his order because none of them has anything
+ * in its blood to fear.
+ */
+export const REGIME_FIGHTERS: readonly PersonDef[] = [
+  kiriFighter({
+    id: 'yagura',
+    name: 'Yagura',
+    familyName: 'Karatachi',
+    pronouns: 'he',
+    title: 'Fourth Mizukage',
+    rank: 'kage',
+    stats: statLine('B', {
+      ninjutsu: 42,
+      reserves: 46,
+      chakraControl: 'A',
+      genjutsu: 'A',
+      willpower: 'A',
+      intellect: 'A',
+    }),
+    traitIds: ['calm', 'focused'],
+    appearance: look(
+      'short',
+      { hair: '#9a9a9a', eyes: '#c9c3d9', skin: '#f3d2b3', outfit: '#3e6b3a' },
+      'forehead',
+      { shape: 'round', figure: 'slight', mark: 'scar', expression: 'calm', age: 'young' },
+    ),
+    specialty: 'ninjutsu',
+    bio: 'The Three-Tails’ host, small as a boy and old in the eyes. He has named the bloodlines the enemy within, and the village has learned to agree out loud.',
+    arsenal: {
+      techniqueIds: [
+        'three-tails-cloak',
+        'three-tails-mirage',
+        'coral-palm',
+        'water-mirror',
+        'water-dragon-bullet',
+        'hooked-staff-sweep',
+        'three-tails-shell',
+        'hidden-mist',
+      ],
+    },
+  }),
+  kiriFighter({
+    id: 'karatachi-sango',
+    name: 'Sango',
+    familyName: 'Karatachi',
+    pronouns: 'she',
+    title: 'Captain of the Tower Guard',
+    rank: 'jonin',
+    stats: statLine('C', { ninjutsu: 'A', willpower: 'B', taijutsu: 'B', stamina: 'B' }),
+    traitIds: ['proud', 'diligent'],
+    appearance: look(
+      'ponytail',
+      { hair: '#9a9a9a', eyes: '#c9c3d9', skin: '#f3d2b3', outfit: '#3e6b3a' },
+      'forehead',
+      { expression: 'stern', age: 'grown' },
+    ),
+    specialty: 'ninjutsu',
+    bio: 'Yagura’s cousin, who guards his door. She has noticed he no longer laughs at the old family jokes, and she tells nobody.',
+    arsenal: {
+      techniqueIds: ['coral-palm', 'water-dragon-bullet', 'hooked-staff-sweep', 'water-wall'],
+    },
+  }),
+  kiriFighter({
+    id: 'kasumi-oboro',
+    name: 'Oboro',
+    familyName: 'Kasumi',
+    pronouns: 'he',
+    title: 'Head of the Mist-keepers',
+    rank: 'jonin',
+    stats: statLine('C', { genjutsu: 'A', chakraControl: 'A', perception: 'B', intellect: 'B' }),
+    traitIds: ['calm', 'cunning'],
+    appearance: look(
+      'long',
+      { hair: '#e8e0d0', eyes: '#c9c3d9', skin: '#f3d2b3', outfit: '#5a3a6e' },
+      'neck',
+      { shape: 'long', expression: 'calm', age: 'old' },
+    ),
+    specialty: 'genjutsu',
+    bio: 'His family has kept the village’s fog for six generations. Under Yagura the fog has learned to watch, and Oboro sees everything it sees.',
+    arsenal: {
+      techniqueIds: [
+        'veil-of-the-keepers',
+        'drowning-fog',
+        'fog-lure',
+        'mist-servant',
+        'hidden-mist',
+      ],
+    },
+  }),
+  kiriFighter({
+    id: 'amibari-tsuzuri',
+    name: 'Tsuzuri',
+    familyName: 'Amibari',
+    pronouns: 'she',
+    title: 'Keeper of the Blood Register',
+    rank: 'jonin',
+    stats: statLine('C', { fuuinjutsu: 'A', intellect: 'A', perception: 'B', chakraControl: 'B' }),
+    traitIds: ['diligent', 'focused'],
+    appearance: look(
+      'buns',
+      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#2a2a32' },
+      'belt',
+      { expression: 'stern', age: 'grown' },
+    ),
+    specialty: 'fuuinjutsu',
+    bio: 'Writes every birth in the Mist into the Register, with what the child’s chakra was read as. She calls it order. Her nets bring in the ones the Register flags.',
+    arsenal: {
+      techniqueIds: ['sealing-net', 'register-brand', 'weighted-net-cast', 'explosive-tag-trap'],
+    },
+  }),
+  kiriFighter({
+    id: 'kurage-shizuku',
+    name: 'Shizuku',
+    familyName: 'Kurage',
+    pronouns: 'they',
+    title: 'First Mask of the hunter-nin',
+    rank: 'jonin',
+    stats: statLine('C', {
+      speed: 'A',
+      perception: 'A',
+      taijutsu: 'A',
+      ninjutsu: 'B',
+      willpower: 'B',
+      stamina: 'B',
+    }),
+    traitIds: ['focused', 'calm'],
+    appearance: look(
+      'bob',
+      { hair: '#3d5fa8', eyes: '#2a1d14', skin: '#f3d2b3', outfit: '#e8e0d0' },
+      'arm',
+      { expression: 'calm', age: 'grown' },
+    ),
+    specialty: 'taijutsu',
+    bio: 'Raised in the Kurage house to wear the mask and dissolve what is left after. Nobody has seen their face since they were twelve.',
+    arsenal: {
+      techniqueIds: [
+        'jellyfish-senbon',
+        'false-death-needle',
+        'senbon-needles',
+        'hidden-mist',
+        'body-flicker',
+      ],
+      gearIds: ['senbon-case'],
+      tools: { 'smoke-bomb': 1 },
+    },
+  }),
+  kiriFighter({
+    id: 'isana-gotetsu',
+    name: 'Gōtetsu',
+    familyName: 'Isana',
+    pronouns: 'he',
+    title: 'Admiral of the whaling fleet',
+    rank: 'jonin',
+    stats: statLine('C', { strength: 'A', taijutsu: 'A', stamina: 'A', willpower: 'B' }),
+    traitIds: ['brash', 'proud'],
+    appearance: look(
+      'shaved',
+      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#9a6440', outfit: '#2f4f7a' },
+      'arm',
+      { figure: 'broad', shape: 'square', expression: 'grin', mark: 'scar', age: 'grown' },
+    ),
+    specialty: 'taijutsu',
+    bio: 'Holds the blockade round the rebel islands with the same boats his family hunts whales from. Buries every rebel he drowns with a whale’s rites, and means it kindly.',
+    arsenal: {
+      techniqueIds: ['harpoon-throw', 'breaker-fist', 'undertow-drag'],
+    },
+  }),
+  kiriFighter({
+    id: 'shiogama-tetsuo',
+    name: 'Tetsuo',
+    familyName: 'Shiogama',
+    pronouns: 'he',
+    title: 'Master of the Seventh Forge',
+    rank: 'jonin',
+    stats: statLine('C', { kenjutsu: 'A', strength: 'B', stamina: 'B', willpower: 'B' }),
+    traitIds: ['diligent', 'humble'],
+    appearance: look(
+      'topknot',
+      { hair: '#4a2f1d', eyes: '#2a1d14', skin: '#c68e63', outfit: '#9a2f2a' },
+      'belt',
+      { figure: 'broad', expression: 'stern', age: 'old' },
+    ),
+    specialty: 'kenjutsu',
+    bio: 'Forged for the Seven and won’t say which of them. Loyal to the tower by day. Some nights his forge is lit for blades that never go up to the tower.',
+    arsenal: {
+      techniqueIds: ['salt-kiln-edge', 'tempered-guard', 'swallow-return', 'silent-killing'],
+      gearIds: ['kiri-broadsword'],
+    },
+  }),
+];
