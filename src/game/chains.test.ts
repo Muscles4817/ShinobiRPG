@@ -23,14 +23,14 @@ describe('your chains', () => {
   it('are built for you from what you know until you build your own', () => {
     const state = trained();
     expect(chainIds(state, ctx).length).toBeGreaterThan(0);
-    expect(chainsView(state, ctx)).toMatchObject({ length: 2, chosen: false });
+    expect(chainsView(state, ctx)).toMatchObject({ locked: false, length: 2, chosen: false });
     expect(playerCombatant(state, ctx).chains).toBeUndefined();
   });
 
   it('come at taijutsu grade C', () => {
-    expect(chainsView(trained(10), ctx)?.length).toBe(0);
+    expect(chainsView(trained(10), ctx)?.locked).toBe(true);
     const keep = { type: 'keepChain', techniqueIds: ['post-sweep', 'crescent-drop'] } as const;
-    expect(blockerFor(trained(10), keep, ctx)).toMatch(/grade C/);
+    expect(blockerFor(trained(10), keep, ctx)).toMatch(/taijutsu come at grade C/);
   });
 
   it('say before you keep one whether each move follows the last', () => {

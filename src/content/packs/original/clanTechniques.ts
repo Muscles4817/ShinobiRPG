@@ -65,6 +65,7 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Tempered Edge',
     description: 'Chakra folded into the blade a hundred times. It cuts through anything.',
     discipline: 'kenjutsu',
+    moulded: true,
     needs: { weapon: 'blade' },
     effects: [{ verb: 'damage', power: 20 }],
     chakraCost: 10,

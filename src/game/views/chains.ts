@@ -1,4 +1,4 @@
-import { chainLength } from '@/systems/combat';
+import { BODY_ARTS, chainLength, isBodyArt } from '@/systems/combat';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
@@ -17,13 +17,15 @@ export interface ChainLine {
 }
 
 export interface ChainsView {
-  /** How many links a chain may have at your taijutsu grade (none below C). */
+  /** No chains yet: neither art is at grade C. */
+  readonly locked: boolean;
+  /** The most links a chain may have, in your best art for chains. */
   readonly length: number;
   readonly chains: readonly ChainLine[];
   /** You built them; otherwise they are built for you from what you know. */
   readonly chosen: boolean;
   readonly reset: Choice;
-  /** The body moves you know that a chain can hold, for the builder. */
+  /** The body moves and weapon forms you know that a chain can hold, for the builder. */
   readonly moves: readonly { readonly id: string; readonly name: string }[];
 }
 
@@ -41,13 +43,19 @@ function chainText(ids: readonly string[], ctx: GameContext): string {
 
 /** Your chains, or null while you know no move a chain could hold. */
 export function chainsView(state: GameState, ctx: GameContext): ChainsView | null {
-  const moves = state.techniques.known.flatMap((id) => {
+  const known = state.techniques.known.flatMap((id) => {
     const def = ctx.content.techniques.get(id);
-    return def && fitsChainLink(def) ? [{ id: def.id, name: def.name }] : [];
+    return def && fitsChainLink(def) ? [def] : [];
   });
-  if (moves.length === 0) return null;
+  if (known.length === 0) return null;
+  const lengthIn = (art: string) => (isBodyArt(art) ? chainLength(state.character.stats[art]) : 0);
+  const moves = known
+    .filter((def) => lengthIn(def.discipline) >= 2)
+    .map((def) => ({ id: def.id, name: def.name }));
+  const length = Math.max(0, ...BODY_ARTS.map(lengthIn));
   return {
-    length: chainLength(state.character.stats.taijutsu),
+    locked: length < 2,
+    length,
     chains: chainIds(state, ctx).map((ids, index) => ({
       text: chainText(ids, ctx),
       drop: choice(state, ctx, { type: 'dropChain', index }),

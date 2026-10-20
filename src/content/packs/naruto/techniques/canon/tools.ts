@@ -21,6 +21,7 @@ export const CANON_TOOL_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Manipulated Tools: Heavenly Chain Disaster',
     description: 'Twin Rising Dragons made greater: chains of blades pour down from the scrolls.',
     discipline: 'kenjutsu',
+    moulded: true,
     needs: { weapon: 'blade' },
     effects: [{ verb: 'damage', power: 22, hits: 4 }],
     chakraCost: 15,

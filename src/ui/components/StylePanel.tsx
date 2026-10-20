@@ -1,8 +1,8 @@
 import type { Choice, GameAction, JutsuCard, StyleView } from '@/game';
 
 /**
- * Your style on the Jutsu tab: the body moves your strike plays from in a fight, and whether
- * you chose them or the fight keeps your best.
+ * Your style on the Jutsu tab: the moves your strike plays from in a fight, with bare hands and
+ * with a weapon in hand, and whether you chose them or the fight keeps your best.
  */
 export function StylePanel({
   style,
@@ -14,13 +14,19 @@ export function StylePanel({
   return (
     <section className="style-panel paper-sheet" aria-label="Your style">
       <h2>Your style</h2>
-      <p className="story">
-        {style.moves.length > 0
-          ? `When you strike, you throw ${style.movesText}, whichever suits the moment.`
-          : 'You strike with a plain blow: put a move in your style to throw it instead.'}
-      </p>
+      {style.groups.map((g) => (
+        <div key={g.art} className="style-group">
+          <p className="story">
+            {g.moves.length > 0
+              ? `${g.lead} you throw ${g.movesText}, whichever suits the moment.`
+              : `${g.lead} you strike plainly: put a move in your style to throw it instead.`}
+          </p>
+          <p className="muted small">
+            {g.moves.length} of {g.room} moves at your {g.art} grade.
+          </p>
+        </div>
+      ))}
       <p className="muted small">
-        {style.moves.length} of {style.room} moves at your taijutsu grade.{' '}
         {style.chosen
           ? 'You chose these.'
           : 'Your best are kept for you. Pick a move to choose your own.'}

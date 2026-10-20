@@ -87,7 +87,15 @@ export { masteryShare, MASTERY_FLOOR } from './rules/mastery';
 export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
 export { HIT_TYPES, hitTypeOf, type HitType } from './rules/hits';
 export { chakraCost, holdTurns } from './rules/body';
-export { effortOf, isBodyMove, type Effort, type EffortPool } from './rules/breath';
+export {
+  BODY_ARTS,
+  effortOf,
+  isBodyArt,
+  isBodyMove,
+  type BodyArt,
+  type Effort,
+  type EffortPool,
+} from './rules/breath';
 export { defaultRepertoire, fitsRepertoire, repertoireSize } from './engines/plan/repertoire';
 export { CHAINS_KEPT, chainLength, chainProblem, defaultChains, fitsChain } from './rules/chains';
 export { equalHitShare } from './rules/damage';

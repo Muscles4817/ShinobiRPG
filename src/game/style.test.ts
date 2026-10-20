@@ -3,7 +3,7 @@ import { act, ctx, newGame } from '@/test/gameFixtures';
 import { blockerFor } from './dispatch';
 import { playerCombatant } from './combatants';
 import type { GameState } from './state';
-import { noteNewMoves, styleMoveIds, styleRoom } from './style';
+import { noteNewMoves, styleMoveIdsIn, styleRoom } from './style';
 import { styleView } from './views/style';
 
 /** Body moves a fresh genin knows (Palm Strike) or has been taught here. */
@@ -17,7 +17,7 @@ function trained(): GameState {
 }
 
 function spareOf(state: GameState): string {
-  const style = styleMoveIds(state, ctx);
+  const style = styleMoveIdsIn(state, ctx, 'taijutsu');
   return MOVES.find((id) => !style.includes(id))!;
 }
 
@@ -25,14 +25,17 @@ describe('your style', () => {
   it('keeps your best moves until you choose', () => {
     const state = trained();
     expect(state.techniques.repertoire).toBeNull();
-    expect(styleMoveIds(state, ctx)).toHaveLength(styleRoom(state));
-    expect(styleView(state, ctx)).toMatchObject({ room: styleRoom(state), chosen: false });
+    expect(styleMoveIdsIn(state, ctx, 'taijutsu')).toHaveLength(styleRoom(state, 'taijutsu'));
+    expect(styleView(state, ctx)).toMatchObject({
+      groups: [{ art: 'taijutsu', room: styleRoom(state, 'taijutsu') }],
+      chosen: false,
+    });
     expect(playerCombatant(state, ctx).repertoire).toBeUndefined();
   });
 
   it('takes a move out and puts another in, and fights carry your choice', () => {
     const state = trained();
-    const [first] = styleMoveIds(state, ctx);
+    const [first] = styleMoveIdsIn(state, ctx, 'taijutsu');
     const out = act(state, { type: 'setStyleMove', techniqueId: first!, inStyle: false });
     expect(out.techniques.repertoire).not.toContain(first);
     const spare = spareOf(out);
@@ -53,7 +56,7 @@ describe('your style', () => {
 
   it('goes back to keeping your best', () => {
     const state = trained();
-    const [first] = styleMoveIds(state, ctx);
+    const [first] = styleMoveIdsIn(state, ctx, 'taijutsu');
     const chosen = act(state, { type: 'setStyleMove', techniqueId: first!, inStyle: false });
     expect(blockerFor(state, { type: 'resetStyle' }, ctx)).not.toBeNull();
     expect(act(chosen, { type: 'resetStyle' }).techniques.repertoire).toBeNull();

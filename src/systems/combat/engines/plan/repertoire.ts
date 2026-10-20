@@ -2,7 +2,7 @@ import { statTier, type StatGrade } from '@/systems/stats';
 
 import type { CombatTechnique } from '../../contract';
 import { shapeOf } from '../../gearContract';
-import { isBodyMove, maxBreath } from '../../rules/breath';
+import { isBodyMove, maxBreath, type BodyArt } from '../../rules/breath';
 import { familiarScale, repeatWeight } from '../../rules/familiarity';
 import { hasVerb, techniquePower } from '../../rules/verbs';
 import { beats, seenDefence, walksInto } from './adapt';
@@ -15,17 +15,17 @@ import type { PlanFighter, Round } from './state';
 
 /**
  * A trained fighter's style: the body moves their plain strike plays from. Nobody past the
- * academy throws the same punch all fight; when the plan reaches for a strike, a fighter with a
- * repertoire throws the move that suits the moment, and how well they pick is their feel for
- * it (taijutsu and wits together): a novice throws what hits hardest, a better feel reads the
+ * academy throws the same punch all fight, or the same cut; when the plan reaches for a strike,
+ * a fighter with a repertoire throws the move that suits the moment: their taijutsu with bare
+ * hands (or knuckles), their kenjutsu forms with a weapon in hand. How well they pick is their
+ * feel for it (that art and wits together): a novice throws what hits hardest, a better feel reads the
  * defence they've seen and picks what gets past it (and holds back a blow that walks into a
  * Counter), and a fine one changes up before a foe who reads the fight has the move read. It is a
  * choice, never a roll: changing up for its own sake would only throw weaker moves. Untrained
- * bodies have no repertoire, and their strike stays a plain blow; so does one with a weapon in
- * hand.
+ * bodies have no repertoire, and their strike stays a plain blow (or a plain cut).
  */
 
-/** How many moves a repertoire holds, by taijutsu grade. */
+/** How many moves a repertoire holds, by grade in its art. */
 export const REPERTOIRE_SIZE: Readonly<Record<StatGrade, number>> = {
   E: 2,
   D: 3,
@@ -35,7 +35,7 @@ export const REPERTOIRE_SIZE: Readonly<Record<StatGrade, number>> = {
   S: 6,
 };
 
-/** The feel (taijutsu with wits) that reads a seen defence into the pick… */
+/** The feel (the art with wits) that reads a seen defence into the pick… */
 const READS_DEFENCES: readonly StatGrade[] = ['D', 'C', 'B', 'A', 'S'];
 /** …and that changes up before a move is read. */
 const CHANGES_UP: readonly StatGrade[] = ['C', 'B', 'A', 'S'];
@@ -53,49 +53,63 @@ export function fitsRepertoire(t: CombatTechnique): boolean {
   return !t.oncePerFight && !t.combo && !t.afterCost && t.swarmCost === undefined;
 }
 
-/** How many moves a repertoire holds at this taijutsu. */
-export function repertoireSize(taijutsu: number): number {
-  return REPERTOIRE_SIZE[statTier(taijutsu).grade];
+/** How many moves a repertoire holds at this grade in its art. */
+export function repertoireSize(skill: number): number {
+  return REPERTOIRE_SIZE[statTier(skill).grade];
 }
 
-function sizeFor(f: Pick<PlanFighter, 'attributes'>): number {
-  return repertoireSize(f.attributes.taijutsu);
+function sizeFor(f: Pick<PlanFighter, 'attributes'>, art: BodyArt): number {
+  return repertoireSize(f.attributes[art]);
 }
 
 /**
  * The best repertoire for a kit: the strongest move of each kind first (a blow, a flurry, a
  * break), so it has answers to different defences, then the strongest of the rest.
  */
-export function defaultRepertoire(f: Pick<PlanFighter, 'attributes' | 'techniques'>): string[] {
+export function defaultRepertoire(
+  f: Pick<PlanFighter, 'attributes' | 'techniques'>,
+  art: BodyArt = 'taijutsu',
+): string[] {
   const moves = f.techniques
-    .filter(fitsRepertoire)
+    .filter((t) => fitsRepertoire(t) && t.discipline === art)
     .sort((a, b) => techniquePower(b) - techniquePower(a));
   const firsts = moves.filter(
     (t, i) => moves.findIndex((m) => styleOf(jutsu(m)) === styleOf(jutsu(t))) === i,
   );
   const ordered = [...firsts, ...moves.filter((t) => !firsts.includes(t))];
-  return ordered.slice(0, sizeFor(f)).map((t) => t.id);
+  return ordered.slice(0, sizeFor(f, art)).map((t) => t.id);
 }
 
-/** The moves a fighter's strike plays from: their own choice of what they know, or the best. */
-export function repertoireOf(f: PlanFighter): CombatTechnique[] {
-  const ids = f.repertoire ?? defaultRepertoire(f);
-  const known = f.techniques.filter((t) => fitsRepertoire(t) && ids.includes(t.id));
-  return known.slice(0, sizeFor(f));
+/**
+ * The moves a fighter's strike plays from in one art: their own choice of what they know, or the
+ * best (also when their choice names no move of this art).
+ */
+export function repertoireOf(f: PlanFighter, art: BodyArt = 'taijutsu'): CombatTechnique[] {
+  const inArt = f.techniques.filter((t) => fitsRepertoire(t) && t.discipline === art);
+  // A chosen style that names no move of this art keeps the best of it.
+  const chosen = inArt.filter((t) => f.repertoire?.includes(t.id));
+  const ids = chosen.length > 0 ? chosen.map((t) => t.id) : defaultRepertoire(f, art);
+  const known = inArt.filter((t) => ids.includes(t.id));
+  return known.slice(0, sizeFor(f, art));
 }
 
 export function jutsu(technique: CombatTechnique): Card {
   return { kind: 'jutsu', technique };
 }
 
-export function armed(f: PlanFighter): boolean {
+function armed(f: PlanFighter): boolean {
   const held = f.gear?.held;
   return held !== undefined && shapeOf(held) !== 'knuckles';
 }
 
-/** The moves a strike plays from as this fighter stands: none with a weapon in hand. */
+/** The art a fighter strikes in as they stand: a weapon's kenjutsu, else their bare hands'. */
+export function styleArt(f: PlanFighter): BodyArt {
+  return armed(f) ? 'kenjutsu' : 'taijutsu';
+}
+
+/** The moves a strike plays from as this fighter stands: their forms with a weapon in hand. */
 export function styleMoves(f: PlanFighter): CombatTechnique[] {
-  return armed(f) ? [] : repertoireOf(f);
+  return repertoireOf(f, styleArt(f));
 }
 
 /** What a card is weighed as on instinct: a strike that plays a style, as the best of its moves. */
@@ -106,7 +120,7 @@ export function standIn(f: PlanFighter, card: Card): Card {
 }
 
 function feelOf(f: PlanFighter): StatGrade {
-  return statTier((f.attributes.taijutsu + f.attributes.intellect) / 2).grade;
+  return statTier((f.attributes[styleArt(f)] + f.attributes.intellect) / 2).grade;
 }
 
 /** A plain blow's weight beside techniques' power, as a plan weighs it (`stepping.ts`). */

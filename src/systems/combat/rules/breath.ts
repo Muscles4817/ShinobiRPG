@@ -7,15 +7,19 @@ import { areaCostScale } from './chakra';
 import { unstableCostScale } from './unstable';
 
 /**
- * Breath: what a body move costs. A kick, a throw or a lock is muscle and timing, not chakra, so
+ * Breath: what a body move costs. A kick, a throw, a lock or a sword's cut is muscle and timing, not chakra, so
  * it draws on the fighter's wind, a pool set by stamina that comes back a little every exchange.
  * A taijutsu fighter keeps fighting with their own moves after their chakra is spent (and while
  * a seal holds it), and tires instead: out of breath, only a plain blow is left. A move that
  * moulds chakra (an element, a Gate, a drain or a seal) still costs chakra.
  */
 
-/** What a body move may do: strike, throw, hold, move and wait for an opening. */
-const BODY_VERBS: ReadonlySet<Verb> = new Set<Verb>([
+/** The arts worked by the body (and the weapon in its hand), not moulded: their moves cost breath. */
+export const BODY_ARTS = ['taijutsu', 'kenjutsu'] as const;
+export type BodyArt = (typeof BODY_ARTS)[number];
+
+/** What a body move may do: strike, throw, hold, move and wait for an opening… */
+const STRIKING_VERBS: readonly Verb[] = [
   'damage',
   'area',
   'break',
@@ -24,7 +28,17 @@ const BODY_VERBS: ReadonlySet<Verb> = new Set<Verb>([
   'daze',
   'move',
   'counter',
-]);
+];
+/** …and a blade's cut may leave a wound that bleeds. */
+const BODY_VERBS: Readonly<Record<BodyArt, ReadonlySet<Verb>>> = {
+  taijutsu: new Set(STRIKING_VERBS),
+  kenjutsu: new Set<Verb>([...STRIKING_VERBS, 'afflict']),
+};
+
+/** Whether an art is one the body works (taijutsu, or kenjutsu's weapon forms). */
+export function isBodyArt(art: string): art is BodyArt {
+  return (BODY_ARTS as readonly string[]).includes(art);
+}
 
 /** Breath everyone has… */
 const BREATH_BASE = 10;
@@ -41,11 +55,15 @@ const SKILL_DISCOUNT_AT = 60;
 type Effortful = Pick<CombatTechnique, 'discipline' | 'chakraCost' | 'effects'> &
   Partial<Pick<CombatTechnique, 'element' | 'needsOpen' | 'moulded' | 'unstable'>>;
 
-/** Whether a technique is a body move: plain taijutsu, paid in breath rather than chakra. */
+/**
+ * Whether a technique is a body move: plain taijutsu or a plain weapon form of kenjutsu, paid in
+ * breath rather than chakra.
+ */
 export function isBodyMove(t: Effortful): boolean {
-  if (t.discipline !== 'taijutsu' || t.moulded || t.element !== undefined) return false;
+  const art = t.discipline;
+  if (!isBodyArt(art) || t.moulded || t.element !== undefined) return false;
   if (t.needsOpen !== undefined) return false;
-  return t.effects.every((e) => BODY_VERBS.has(e.verb));
+  return t.effects.every((e) => BODY_VERBS[art].has(e.verb));
 }
 
 /** A fighter's whole breath, from their stamina. */
@@ -53,12 +71,13 @@ export function maxBreath(attributes: Pick<CombatantSetup['attributes'], 'stamin
   return Math.round(BREATH_BASE + attributes.stamina * BREATH_PER_STAMINA);
 }
 
-/** Breath a body move costs: its authored cost, less for a skilled hand. */
+/** Breath a body move costs: its authored cost, less for a hand skilled in its art. */
 export function breathCost(
-  user: { readonly attributes: Pick<CombatantSetup['attributes'], 'taijutsu'> },
+  user: { readonly attributes: Pick<CombatantSetup['attributes'], BodyArt> },
   t: Effortful,
 ): number {
-  const discount = clamp(user.attributes.taijutsu / SKILL_DISCOUNT_AT, 0, SKILL_DISCOUNT_MAX);
+  const skill = isBodyArt(t.discipline) ? user.attributes[t.discipline] : 0;
+  const discount = clamp(skill / SKILL_DISCOUNT_AT, 0, SKILL_DISCOUNT_MAX);
   const base = t.chakraCost * unstableCostScale(t) * areaCostScale(t);
   return Math.max(1, Math.round(base * (1 - discount)));
 }

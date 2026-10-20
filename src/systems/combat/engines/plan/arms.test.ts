@@ -8,6 +8,7 @@ import { NEEDS_WEAPON } from '../../rules/weapons';
 import { strike } from './arms';
 import { fitsBand, strikeCard } from './cards';
 import { defaultLoadout } from './defaults';
+import { styleMoves } from './repertoire';
 import { createPlanEngine } from './engine';
 import { attackOf } from './rows';
 import { improvise } from './stepping';
@@ -133,7 +134,9 @@ describe('plan & watch weapons', () => {
     });
     const [armed] = duel({ held: weapon('sword') });
     const loadout = defaultLoadout({ ...armed, techniques: [slash] });
-    expect(loadout.close.map((s) => s.card)).toContain('jutsu:slash');
+    // With a blade in hand the slash is a form of the style, played through the strike.
+    expect(loadout.close.map((s) => s.card)).toContain('strike');
+    expect(styleMoves({ ...armed, techniques: [slash] }).map((t) => t.id)).toEqual(['slash']);
   });
 
   it('a held blade makes the plain strike a cut', () => {

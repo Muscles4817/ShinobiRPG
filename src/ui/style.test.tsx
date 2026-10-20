@@ -24,7 +24,7 @@ describe('your style (smoke test)', () => {
       />,
     );
     expect(screen.getByRole('heading', { name: 'Your style' })).toBeTruthy();
-    expect(screen.getByText(/When you strike, you throw/)).toBeTruthy();
+    expect(screen.getByText(/With bare hands you throw/)).toBeTruthy();
     expect(screen.getAllByText('Style').length).toBeGreaterThan(0);
     await user.click(screen.getByRole('button', { name: /Shoulder Throw/ }));
     const toggle = screen.getByRole('button', { name: /your style$/ });

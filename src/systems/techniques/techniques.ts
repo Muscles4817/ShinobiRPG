@@ -64,8 +64,8 @@ export interface TechniqueDef {
   /** A step of a ladder that must be open in the fight to use it (`ladders.ts`): a gate. */
   readonly needsOpen?: LadderStep;
   /**
-   * A taijutsu move that moulds chakra (a Gentle Fist palm, an expansion, a strike charged to a
-   * point): it costs chakra like any jutsu, where a plain body move costs breath.
+   * A taijutsu move or weapon form that moulds chakra (a Gentle Fist palm, an expansion, chakra
+   * run along an edge): it costs chakra like any jutsu, where a plain body move costs breath.
    */
   readonly moulded?: true;
 }

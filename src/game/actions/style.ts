@@ -1,6 +1,13 @@
-import { CHAINS_KEPT } from '@/systems/combat';
+import { BODY_ARTS, CHAINS_KEPT, isBodyArt } from '@/systems/combat';
 
-import { chainBlocker, chainIds, fitsStyle, styleMoveIds, styleRoom } from '../style';
+import {
+  chainBlocker,
+  chainIds,
+  chainRoomFor,
+  styleArtOf,
+  styleMoveIdsIn,
+  styleRoom,
+} from '../style';
 import type { ActionHandler, ActionOf } from './types';
 
 /** Putting a body move you know into your style, or taking it out. Changes nothing in the world. */
@@ -8,21 +15,27 @@ export const setStyleMove: ActionHandler<ActionOf<'setStyleMove'>> = {
   check(state, action, ctx) {
     const def = ctx.content.techniques.get(action.techniqueId);
     if (!def || !state.techniques.known.includes(def.id)) return 'You don’t know that technique.';
-    if (!fitsStyle(def)) return 'Only plain body moves that strike make up a style.';
-    const moves = styleMoveIds(state, ctx);
+    const art = styleArtOf(def);
+    if (!art) return 'Only plain body moves and weapon forms that strike make up a style.';
+    const moves = styleMoveIdsIn(state, ctx, art);
     if (moves.includes(def.id) === action.inStyle) {
       return action.inStyle ? 'It is already part of your style.' : 'It isn’t part of your style.';
     }
-    if (action.inStyle && moves.length >= styleRoom(state)) {
-      return `Your style holds ${styleRoom(state)} moves at your taijutsu grade. Take one out first.`;
+    const room = styleRoom(state, art);
+    if (action.inStyle && moves.length >= room) {
+      return `Your style holds ${room} moves at your ${art} grade. Take one out first.`;
     }
     return null;
   },
   perform(state, action, ctx) {
-    const moves = styleMoveIds(state, ctx);
-    const repertoire = action.inStyle
-      ? [...moves, action.techniqueId]
-      : moves.filter((id) => id !== action.techniqueId);
+    const art = ctx.content.techniques.get(action.techniqueId)?.discipline;
+    // Each art's moves as they stand now (chosen or best), with this one put in or taken out.
+    const others = BODY_ARTS.filter((a) => a !== art).flatMap((a) => styleMoveIdsIn(state, ctx, a));
+    const mine = art && isBodyArt(art) ? styleMoveIdsIn(state, ctx, art) : [];
+    const changed = action.inStyle
+      ? [...mine, action.techniqueId]
+      : mine.filter((id) => id !== action.techniqueId);
+    const repertoire = [...others, ...changed];
     return { ...state, techniques: { ...state.techniques, repertoire } };
   },
 };
@@ -44,12 +57,12 @@ export const keepChain: ActionHandler<ActionOf<'keepChain'>> = {
   check(state, action, ctx) {
     const problem = chainBlocker(state, ctx, action.techniqueIds);
     if (problem) return problem;
-    const chains = chainIds(state, ctx);
     const key = action.techniqueIds.join('>');
-    if (chains.some((c) => c.join('>') === key)) return 'You already keep that chain.';
-    return chains.length >= CHAINS_KEPT
-      ? `You keep ${CHAINS_KEPT} chains at most. Drop one first.`
-      : null;
+    if (chainIds(state, ctx).some((c) => c.join('>') === key))
+      return 'You already keep that chain.';
+    return chainRoomFor(state, ctx, action.techniqueIds)
+      ? null
+      : `You keep ${CHAINS_KEPT} chains in an art at most. Drop one first.`;
   },
   perform(state, action, ctx) {
     const chains = [...chainIds(state, ctx), action.techniqueIds];

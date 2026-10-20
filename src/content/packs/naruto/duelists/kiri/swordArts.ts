@@ -30,6 +30,7 @@ export const SWORD_ARTS: readonly TechniqueDef[] = [
     name: 'Shibuki: Splash',
     description: 'The blade is a roll of explosive tags. Every swing sets one off.',
     discipline: 'kenjutsu',
+    moulded: true,
     needs: { weapon: 'blade' },
     effects: [
       { verb: 'area', power: 20, size: 'wide' },

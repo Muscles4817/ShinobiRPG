@@ -7,7 +7,7 @@ import { techniquePower } from '../../rules/verbs';
 import { fitsBand, playable, type Card } from './cards';
 import { breathOf, effortOf } from './effort';
 import { useJutsu } from './jutsu';
-import { armed, jutsu, strikeScore } from './repertoire';
+import { jutsu, strikeScore, styleArt } from './repertoire';
 import { opponentsOf, type Turn } from './senses';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
 
@@ -33,13 +33,13 @@ export interface Opened {
 
 /** The chains a fighter keeps ready that still hold: built by them, or from their moves. */
 export function chainsOf(f: PlanFighter): CombatTechnique[][] {
-  if (armed(f)) return [];
+  const art = styleArt(f);
   const byId = new Map(f.techniques.map((t) => [t.id, t]));
-  const built = f.chains ?? defaultChains(f.techniques, f.attributes.taijutsu);
+  const built = f.chains ?? defaultChains(f.techniques, f.attributes);
   return built
     .map((ids) => ids.flatMap((id) => byId.get(id) ?? []))
-    .filter((links) => chainProblem(links, f.attributes.taijutsu) === null)
-    .map((links) => links.slice(0, chainLength(f.attributes.taijutsu)));
+    .filter((links) => links[0]?.discipline === art && chainProblem(links, f.attributes) === null)
+    .map((links) => links.slice(0, chainLength(f.attributes[art])));
 }
 
 interface ReadyChain {

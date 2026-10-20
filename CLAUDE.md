@@ -280,17 +280,18 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     running and changes up a slotted attack against such a foe (`rules/familiarity.ts`). Left to their judgement, foes and
     teammates go for whoever is most worth it (`plan/targeting.ts`: the harm they do over the hits
     they'd take to fall), and a mind that reads the fight keeps chakra for its finisher
-    (`plan/pacing.ts`). A **body move** (plain taijutsu: no element, no Gate, nothing moulded) costs
-    **breath**, not chakra (`rules/breath.ts`: a pool set by stamina, a little back each exchange,
+    (`plan/pacing.ts`). A **body move** (plain taijutsu or a plain kenjutsu weapon form: no element,
+    no Gate, nothing `moulded`) costs **breath**, not chakra (`rules/breath.ts`: a pool set by stamina, a little back each exchange,
     shown as a meter), so it is thrown under a seal and after chakra runs dry; ask `effortOf`
     (`plan/effort.ts` in the engine) for any cost, never `chakraCost` alone. A trained fighter's
-    strike is their **style** (`plan/repertoire.ts`): a repertoire of body moves (as many as their
-    taijutsu grade holds; the player's chosen on the Jutsu tab, `techniques.repertoire`, else their
-    best), one slot in a default plan, and when it plays it becomes the move that suits the moment
-    by feel (taijutsu with wits): the hardest for a novice, what beats a seen defence for a better
+    strike is their **style** (`plan/repertoire.ts`): a repertoire of body moves in the art they
+    strike in (taijutsu bare-handed, kenjutsu forms with a weapon in hand; as many as their grade in
+    it holds; the player's chosen on the Jutsu tab, `techniques.repertoire`, else their best), one
+    slot in a default plan, and when it plays it becomes the move that suits the moment by feel
+    (the art with wits): the hardest for a novice, what beats a seen defence for a better
     feel, a change-up before a foe who reads the fight has it read; a choice, never a roll.
-    Untrained bodies and a weapon in hand keep the plain blow. A strike may open a **chain**
-    (`rules/chains.ts`, `plan/chaining.ts`): two body moves from taijutsu C, three from A, thrown
+    Untrained bodies keep the plain blow or cut. A strike may open a **chain**
+    (`rules/chains.ts`, `plan/chaining.ts`): two body moves of one art from grade C in it, three from A, thrown
     in one turn, each only while the last landed (it hurt, dazed or pinned them, and no Counter hurt
     its thrower) and only if it reaches where the last left the fight (a knock to mid needs a move
     that reaches or rushes in); the setups are what the fight already does (a daze leaves them

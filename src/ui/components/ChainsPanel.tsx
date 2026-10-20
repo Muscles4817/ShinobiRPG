@@ -28,10 +28,10 @@ export function ChainsPanel({
   return (
     <section className="style-panel chains-panel paper-sheet" aria-label="Your chains">
       <h2>Your chains</h2>
-      {chains.length === 0 ? (
+      {chains.locked ? (
         <p className="story">
-          Chains come at taijutsu grade C: your moves thrown back to back in one turn, each only if
-          the one before it landed.
+          Chains come at grade C in taijutsu, or in kenjutsu for a weapon’s forms: your moves thrown
+          back to back in one turn, each only if the one before it landed.
         </p>
       ) : (
         <>
