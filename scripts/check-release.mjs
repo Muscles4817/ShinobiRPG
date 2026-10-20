@@ -22,6 +22,8 @@ const FAN_MARKERS = [
   'Sound Breathing',
   'Yagura',
   'Kirigakure',
+  'Kankurō',
+  'Red Sand Puppetry',
 ];
 
 function files(dir) {

@@ -32,4 +32,6 @@ export interface Summoned {
   readonly summoner?: string;
   readonly callId?: string;
   readonly upkeep?: number;
+  /** A puppet on its maker's threads rather than a summon. */
+  readonly puppet?: true;
 }

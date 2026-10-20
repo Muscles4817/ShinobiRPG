@@ -14,6 +14,7 @@ import { pronounsOf } from './pronouns';
 import { clanSize } from '../bodySize';
 import { personHive } from '../hives/hive';
 import { personDust } from '../dust/dust';
+import { withPuppets } from '../puppets';
 
 /**
  * Genin who fight beside you (teammates) or against you (sparring partners), from their real
@@ -80,7 +81,7 @@ export function companionCombatant(
   const clan = person.clanId ? ctx.content.clans.get(person.clanId) : undefined;
   const hive = personHive(stats, clan, ctx);
   const dust = personDust(hive.chakra, { clan, arsenalDust: person.arsenal?.dust }, ctx);
-  return {
+  const fighter: CombatantSetup = {
     id: `${PERSON_PREFIX}${person.id}`,
     name: person.name,
     grammar: pronounsOf(person),
@@ -100,6 +101,7 @@ export function companionCombatant(
     ...kitOf(person, ctx),
     ...clanSize(person.clanId, ctx),
   };
+  return withPuppets(fighter, person.arsenal?.puppets ?? [], ctx);
 }
 
 /**

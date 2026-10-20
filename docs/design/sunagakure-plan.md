@@ -1,8 +1,8 @@
 # Sunagakure: the sand that buried a queen
 
 The Village Hidden in the Sand in the fan pack's setting. Nothing of the town exists yet: the
-location is a locked stub, and Gaara, Rasa and the Third Kazekage fight in versus
-(`duelists/sunaDust.ts`). This page records the setting agreed so far, so the town, its
+location is a locked stub. Its families are clans of Sunagakure, and its fighters are in versus
+(`duelists/suna/`, listed at the end). This page records the setting agreed so far, so the town, its
 fighters and the desert are built on it.
 
 ## The history
@@ -42,15 +42,18 @@ Kazekage's house is part priest by blood. The Kazekage use dust, but refined dus
 Third), gold dust (Rasa). Plain sand is the priests'. That is why Gaara is a horror twice over:
 the Kazekage's son carries the priests' raw sand and their god inside him.
 
-**The clans.** The small clans that followed the First Kazekage, and among them:
+**The clans.** The small clans that followed the First Kazekage, and among them the great
+families (`sunagakure/clans.ts`). The Sand names its people for their family in its own way:
+Gaara of the Sands, Sasori of the Red Sand.
 
-| Clan           | Art                       | Notes                                                                            |
-| -------------- | ------------------------- | -------------------------------------------------------------------------------- |
-| The puppeteers | Puppets on chakra threads | Bodies built, never bound: the Sand's answer to summons. Chiyo and Sasori's line |
-| The fan clan   | Wind through war fans     | Fill the barges' sails while the priests steer the sand                          |
-| Sand priests   | Sand (dust)               | Apart from the rest; the barges and the truce                                    |
+| Clan       | Called              | Art                   | Notes                                                                                                                                                                                                   |
+| ---------- | ------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sabaku     | of the Sands        | Refined dust          | The Kazekage's house, part priest by blood                                                                                                                                                              |
+| Akasuna    | of the Red Sand     | Puppets               | Done for versus: a `PuppetDef` is a call like a summon's, unsealed by its own technique and kept up in chakra, and its maker steps back behind it. Building, repairing and owning one are still to come |
+| Kamaitachi | of the Cutting Wind | Wind through war fans | Fill the barges' sails                                                                                                                                                                                  |
+| Sakyū      | of the Dunes        | Sand (dust)           | The sand priests, apart from the rest under the truce                                                                                                                                                   |
 
-Names are still to be decided.
+The Kazekage comes from the house's line, by lineage as far as anyone has said.
 
 **Beasts are dominated, never befriended.** The Monarch taught the Sand that a beast with a mind
 of its own will turn on you one day. The Sand breeds and breaks its animals for obedience with
@@ -58,7 +61,8 @@ collars, brands and drilling, and it will not tolerate an intelligent beast at a
 dog is an abomination, and a mutated beast that shows cunning is put down. Summoning is the
 Monarch's sin. A human puppet is the same sin in another shape, which is what makes Sasori the
 Sand's worst nightmare. Temari doesn't have Kamatari at the start; she takes him in later, a
-quiet refusal to follow blind tradition and inherited hate.
+quiet refusal to follow blind tradition and inherited hate. Her mother's family, the Cutting
+Wind, is named for the same weasel of the old stories.
 
 **The Sand hates the Leaf.** In the last great war the Leaf fought the Stone in the Rain. The
 Sand saw its chance to weaken the Leaf. Sakumo Hatake was given a small outpost and told to keep
@@ -99,5 +103,16 @@ dark rings round a priest's eyes (and Gaara's) are its mark.
 ## Open questions
 
 - Can the player take the spice, and what does it cost them?
-- The clans' names, and who else stands among the small clans.
-- How the Kazekage is chosen today, if not by birth alone.
+- Who else stands among the small clans.
+
+## Fighters in versus
+
+Every one lives in Sunagakure (`duelists/suna/`):
+
+| Family              | Fighters                                                                    |
+| ------------------- | --------------------------------------------------------------------------- |
+| of the Sands        | Gaara, Rasa, the Third Kazekage, Temari, Kankurō                            |
+| of the Red Sand     | Chiyo with Father and Mother, Sasori with the Third Kazekage and Hiruko     |
+| of the Cutting Wind | Oroshi the sail-master, Yashamaru                                           |
+| of the Dunes        | Isago the high priestess, Nagi the barge pilot, Bunpuku the host of Shukaku |
+| The village's own   | Baki, Pakura of the Scorch, Maki                                            |

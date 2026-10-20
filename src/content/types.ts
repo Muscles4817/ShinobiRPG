@@ -2,6 +2,7 @@ import type { BodySize, CombatPerk } from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
 import type { EnemyDef } from './enemies';
 import type { ContractDef } from './contracts';
+import type { PuppetDef } from './puppets';
 import type { ClanDust, DustDef } from './dusts';
 import type { ClanHive, StrainDef } from './strains';
 import type { AtlasDef, MapLabelSide } from './atlas';
@@ -356,6 +357,8 @@ export interface ContentPack {
    * the cast applies (their techniques then need a real source).
    */
   readonly duelists?: readonly PersonDef[];
+  /** Puppets an arsenal may carry (`PersonArsenal.puppets`), built rather than summoned. */
+  readonly puppets?: readonly PuppetDef[];
   readonly conversations: readonly ConversationDef[];
   /** What templated conversations (`about`) are filled with, per specialty, trait, clan, role. */
   readonly conversationTopics: readonly ConversationTopic[];

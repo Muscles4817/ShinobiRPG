@@ -4,8 +4,8 @@ import type { ContentPack, PersonDef } from './types';
 
 /**
  * Versus-only fighters (`ContentPack.duelists`): held to the cast's rules for rank, stats and
- * arsenal, and kept out of the world until plumbed in: shinobi of a fighting rank, real traits
- * and clan, no schedule, no teaching or sensei profile, and an arsenal of their own (with no
+ * arsenal, and kept out of the world until plumbed in: shinobi of a fighting rank, real traits,
+ * clan and village (`homeLocationId`, shown in versus), no schedule, no teaching or sensei profile, and an arsenal of their own (with no
  * academy behind them, it is all they fight with).
  */
 export function validateDuelists(pack: ContentPack): string[] {
@@ -31,6 +31,9 @@ function duelistProblems(pack: ContentPack, duelist: PersonDef): string[] {
       `${who} teaches, but isn’t in the world yet`,
     !duelist.arsenal && `${who} has no arsenal`,
     clan !== undefined && !pack.clans.some((c) => c.id === clan) && `${who} has unknown clan`,
+    duelist.homeLocationId !== undefined &&
+      !pack.locations.some((l) => l.id === duelist.homeLocationId) &&
+      `${who} lives in unknown location "${duelist.homeLocationId}"`,
     ...duelist.traitIds
       .filter((id) => !traits.has(id))
       .map((id) => `${who} has unknown trait "${id}"`),

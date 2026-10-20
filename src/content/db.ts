@@ -14,6 +14,7 @@ import type { CurriculumBeat } from './curriculum';
 import type { SenseiSpeech } from './senseiSpeech';
 import type { CompanionKindDef, CompanionLoreDef } from './companions';
 import type { ContractDef, SummonDef } from './contracts';
+import type { PuppetDef } from './puppets';
 import type { DustDef } from './dusts';
 import type { StrainDef } from './strains';
 import type { SenseiTestDef } from './senseiTests';
@@ -103,6 +104,8 @@ export interface ContentDb {
   readonly people: Catalog<PersonDef>;
   /** Versus-only fighters (`ContentPack.duelists`), kept apart from the world's cast. */
   readonly duelists: Catalog<PersonDef>;
+  /** Puppets arsenals carry (`ContentPack.puppets`), by call id. */
+  readonly puppets: Catalog<PuppetDef>;
   readonly conversations: Catalog<ConversationDef>;
   readonly conversationTopics: readonly ConversationTopic[];
   readonly names: NamePools;
@@ -166,6 +169,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     campFinds: pack.campFinds,
     people: createCatalog('person', pack.people),
     duelists: createCatalog('duelist', pack.duelists ?? []),
+    puppets: createCatalog('puppet', pack.puppets ?? []),
     conversations: createCatalog('conversation', pack.conversations),
     conversationTopics: pack.conversationTopics,
     names: pack.names,

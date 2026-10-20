@@ -79,6 +79,8 @@ function sourcedIds(pack: ContentPack): Set<string> {
     ...pack.companionKinds.flatMap((k) => (k.techniques ?? []).map((t) => t.techniqueId)),
     // A contract's summoning techniques and what its summons fight with (`validateContracts.ts`).
     ...pack.contracts.flatMap((c) => c.summons.flatMap((s) => [s.techniqueId, ...s.techniqueIds])),
+    // A puppet's unsealing and its mechanisms come with the puppet (`validatePuppets.ts`).
+    ...(pack.puppets ?? []).flatMap((p) => [p.techniqueId, ...p.techniqueIds]),
   ]);
 }
 

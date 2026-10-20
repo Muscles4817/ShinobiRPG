@@ -844,8 +844,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   needs a conversation reply with that `favour` id (validated).
 - **Add a versus-only fighter (a duelist):** a `PersonDef` in the pack's `duelists`
   (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi rank, no
-  schedule, no teaching, and an `arsenal` (which may name `gearIds` and `tools`, carried into
-  every fight). They show in versus by rank and nowhere else; their arsenal sources their
+  schedule, no teaching, a `homeLocationId` for their village if it isn't the start one, and an
+  `arsenal` (which may name `gearIds` and `tools`, carried into every fight, and `puppets`: a
+  pack's `PuppetDef`s, bodies built rather than summoned, each unsealed by its own technique as a
+  call like a summon's, its maker stepping back behind it; `game/puppets.ts`). They show in versus by rank and nowhere else; their arsenal sources their
   techniques (validated in `validateDuelists.ts`). Plumbing one in moves them to `people`, where
   their techniques then need a real source.
 - **Make something editable:** add its override to `ContentEdits` (`game/edits/state.ts`), read
