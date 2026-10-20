@@ -60,4 +60,40 @@ export const OTAFUKU_JOBS: readonly MissionDef[] = [
       },
     ],
   },
+  {
+    id: 'otafuku-gilded-debt',
+    title: 'The Gilded Debt',
+    rank: 'C',
+    client: 'An Otafuku moneylender',
+    summary:
+      'A Sand merchant paid a debt with a scroll instead of gold, and swore it was worth more. The moneylender wants it gone before someone comes for it.',
+    slots: 3,
+    energyCost: 30,
+    reward: { ryo: 380, reputation: 10, dustScroll: 'gold-dust' },
+    minMissionsCompleted: 15,
+    once: true,
+    stages: [
+      {
+        kind: 'check',
+        text: 'The scroll is heavier than paper should be, and something gold shifts inside its case.',
+        approaches: [
+          { label: 'Read the seal before you break it', stat: 'fuuinjutsu', difficulty: 12 },
+          { label: 'Weigh what it really is', stat: 'intellect', difficulty: 12 },
+        ],
+        success:
+          'The case opens on an S-rank scroll on gold dust, a Sand secret if ever there was one.',
+        failure: 'You open it the slow way, and by then word has gone round the pleasure quarter.',
+        onFailure: 'forward',
+      },
+      {
+        kind: 'encounter',
+        ground: 'town',
+        template: 'bandit-camp',
+        job: 'escort',
+        text: 'Two hired blades step out of a side street. Someone told them what the moneylender kept.',
+        enemyIds: ['bandit-thug', 'bandit-archer'],
+        canFlee: false,
+      },
+    ],
+  },
 ];

@@ -94,6 +94,30 @@ export interface GearShopView {
   readonly tools: readonly ToolItem[];
   /** Handling lore for companions; empty if the shop sells none. */
   readonly lore: readonly LoreOnShelf[];
+  /** A batch of the dust you command, if the shop sells it; null otherwise. */
+  readonly dust: DustOnShelf | null;
+}
+
+export interface DustOnShelf extends Choice {
+  readonly name: string;
+  readonly description: string;
+  readonly cost: number;
+}
+
+/** The dust you command, by the batch, where this shop sells it. */
+function dustOnShelf(
+  state: GameState,
+  ctx: GameContext,
+  place: { readonly id: string; readonly dustIds?: readonly string[] },
+): DustOnShelf | null {
+  const def = state.dust ? ctx.content.dusts.get(state.dust.dustId) : undefined;
+  if (def?.price === undefined || !(place.dustIds ?? []).includes(def.id)) return null;
+  return {
+    ...choice(state, ctx, { type: 'buyDust', placeId: place.id }),
+    name: `A batch of ${def.name.toLowerCase()}`,
+    description: def.description,
+    cost: def.price,
+  };
 }
 
 function gearItem(state: GameState, ctx: GameContext, def: GearDef): GearItem {
@@ -135,6 +159,7 @@ export function gearShopView(
     })).filter((r) => r.items.length > 0),
     tools: (place.toolIds ?? []).map((id) => toolItem(state, ctx, ctx.content.tools.require(id))),
     lore: loreOnShelf(state, ctx, place.loreIds ?? []),
+    dust: dustOnShelf(state, ctx, place),
   };
 }
 

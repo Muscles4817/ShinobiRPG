@@ -67,6 +67,11 @@ function sourcedIds(pack: ContentPack): Set<string> {
     // A duelist isn't in the world yet, so their own arts are theirs alone until plumbed in.
     ...(pack.duelists ?? []).flatMap((p) => p.arsenal?.techniqueIds ?? []),
     ...pack.missions.flatMap((m) => (m.reward.scrollId ? [m.reward.scrollId] : [])),
+    // A dust scroll a job hands over teaches its kind's techniques (`DustDef.techniqueIds`).
+    ...pack.missions.flatMap((m) => {
+      const kind = pack.dusts.find((d) => d.id === m.reward.dustScroll);
+      return kind?.techniqueIds ?? [];
+    }),
     ...pack.academyTechniques,
     ...Object.values(pack.disciplineStarters),
     ...pack.clans.flatMap((c) => c.startingTechniqueIds),

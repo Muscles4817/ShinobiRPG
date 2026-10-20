@@ -386,8 +386,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`ClanDef.dust`) is born with a full store, as much as their chakra can hold up; what came
     back from a fight is what the store holds, and each day dust the ground gives (sand, ash)
     gathers back, quickly at home, while dust no ground gives (iron sand, gold, glass) never
-    comes back on its own: it is made or bought. People of a dust clan, and versus fighters
-    whose arsenal names one (`PersonArsenal.dust`), fight with a full store. A companion is cared for
+    comes back on its own: it is made at home for materials and an afternoon (`makeDust`,
+    `DustDef.making`) or bought by the batch where a smith sells it (`buyDust`, a gear place's
+    `dustIds`; `game/dust/supply.ts`). People of a dust clan, and versus fighters whose arsenal
+    names one (`PersonArsenal.dust`), fight with a full store. Outside a dust clan the only way in
+    is an **S-rank scroll** a job hands over (`reward.dustScroll`, `GameState.dustScrolls`,
+    `game/dust/scrolls.ts`): read at home a day at a time with chakra control at B, and mastered
+    it gives a first batch and teaches its kind's techniques (`DustDef.techniqueIds`); a body
+    commands one kind of dust at a time. A companion is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -879,7 +885,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   to A, gifts, banes, the grounds it is drawn on); every pack takes the shared list. A dust
   technique sets `dustCost` (spent) or `dustDraw` (pulled up first). A clan born to it has a
   `dust` on its `ClanDef` and clan techniques that use it; a fighter's arsenal may name one
-  (`dust`). Validated in `validateDusts.ts`.
+  (`dust`). A kind no ground gives back needs `making` (materials and how), may have a `price`
+  where a gear place lists it in `dustIds`, and teaches `techniqueIds` through its S-rank
+  scroll, found on a job (`reward.dustScroll`; shared techniques in `shared/dustTechniques.ts`).
+  Validated in `validateDusts.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

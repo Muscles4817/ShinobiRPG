@@ -148,6 +148,30 @@ export function GearShopPage({
             </div>
           </section>
         )}
+        {view.dust && (
+          <section className="rack" aria-label="Dust">
+            <h2 className="label">Your dust</h2>
+            <p className="muted small">Sold ready-made by the batch, for those who command it.</p>
+            <div className="rack-items">
+              <article className="rack-item">
+                <span className="tag num">{view.dust.cost}</span>
+                <b>{view.dust.name}</b>
+                <small className="rack-desc muted">{view.dust.description}</small>
+                {view.dust.blocker && <small className="blocker">{view.dust.blocker}</small>}
+                <button
+                  type="button"
+                  className="btn small"
+                  disabled={view.dust.blocker !== null}
+                  onClick={() => {
+                    if (view.dust) perform(view.dust.action);
+                  }}
+                >
+                  Buy
+                </button>
+              </article>
+            </div>
+          </section>
+        )}
         {view.tools.length > 0 && (
           <section className="rack" aria-label="Fight tools">
             <h2 className="label">Fight tools</h2>

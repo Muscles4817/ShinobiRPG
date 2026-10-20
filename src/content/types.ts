@@ -308,6 +308,8 @@ export type PlaceDef =
       readonly toolIds?: readonly string[];
       /** Handling lore for companions (`CompanionLoreDef`). */
       readonly loreIds?: readonly string[];
+      /** Dust sold by the batch (`DustDef.price`), for those who command it. */
+      readonly dustIds?: readonly string[];
     });
 
 export type PlaceKind = PlaceDef['kind'];

@@ -127,6 +127,8 @@ export interface MissionDef {
     readonly contractId?: string;
     /** A hive clan's rite, found and handed over on success (a clan id). */
     readonly hiveRite?: string;
+    /** An S-rank scroll that teaches command of a kind of dust (a dust id). */
+    readonly dustScroll?: string;
   };
   readonly minMissionsCompleted: number;
   /** Always on the board (patrols, watches); otherwise jobs are posted for a few days at a time. */

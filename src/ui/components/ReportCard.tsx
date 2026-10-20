@@ -59,6 +59,8 @@ function handOverNote(report: Extract<Report, { kind: 'mission-complete' }>): st
   if (report.recipe) return 'Before you go, the client writes down a family recipe for you.';
   if (report.contract)
     return 'A summoning scroll unrolls at your feet. You sign it in your own blood; the smallest of them will answer you now.';
+  if (report.dustScroll)
+    return 'The client hands over a scroll with an S-rank seal on it. Read it at home, if you can follow it.';
   if (report.rite)
     return 'Inside the case, the rite written out in an old hand, and a jar of insects still alive. You could take the hive at home.';
   if (report.companion)
@@ -109,6 +111,9 @@ function missionCompleteCard(report: Extract<Report, { kind: 'mission-complete' 
         ? [{ label: 'Contract', value: report.contract, tone: 'gain' as const }]
         : []),
       ...(report.rite ? [{ label: 'Rite', value: report.rite, tone: 'gain' as const }] : []),
+      ...(report.dustScroll
+        ? [{ label: 'Scroll', value: report.dustScroll, tone: 'gain' as const }]
+        : []),
     ],
     note: missionNote(report),
   };

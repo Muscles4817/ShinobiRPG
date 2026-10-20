@@ -85,6 +85,7 @@ export const TANZAKU_TOWN: LocationDef = {
         'tanzaku-unpaid-tab',
         'tanzaku-castle-crowds',
         'tanzaku-humming-case',
+        'tanzaku-glass-grinder',
       ],
     },
     {

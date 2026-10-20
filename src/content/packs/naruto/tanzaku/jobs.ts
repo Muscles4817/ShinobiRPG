@@ -125,4 +125,41 @@ export const TANZAKU_JOBS: readonly MissionDef[] = [
       },
     ],
   },
+  {
+    id: 'tanzaku-glass-grinder',
+    title: 'The Glass Grinder’s Scroll',
+    rank: 'C',
+    client: 'A Tanzaku glassblower',
+    summary:
+      'The old glassblower’s master left him a scroll he never dared open. It hums when he grinds glass. He wants someone braver to take it.',
+    slots: 3,
+    energyCost: 30,
+    reward: { ryo: 380, reputation: 10, dustScroll: 'glass-sand' },
+    minMissionsCompleted: 15,
+    once: true,
+    stages: [
+      {
+        kind: 'check',
+        text: 'The scroll is wrapped in cloth full of glittering grit. It cuts your fingers through the wrapping.',
+        approaches: [
+          { label: 'Unwrap it with care', stat: 'perception', difficulty: 12 },
+          { label: 'Hold your chakra still while it hums', stat: 'chakraControl', difficulty: 12 },
+        ],
+        success:
+          'Inside, an S-rank scroll on glass sand, in a hand that grinds its letters as much as writes them.',
+        failure:
+          'You bleed on the wrapping before you have it open, and somebody saw you leave the workshop.',
+        onFailure: 'forward',
+      },
+      {
+        kind: 'encounter',
+        ground: 'town',
+        template: 'bandit-camp',
+        job: 'escort',
+        text: 'Two thieves have been watching the workshop. They want whatever the old man was afraid of.',
+        enemyIds: ['bandit-thug', 'bandit-archer'],
+        canFlee: false,
+      },
+    ],
+  },
 ];

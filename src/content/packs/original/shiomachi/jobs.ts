@@ -134,6 +134,41 @@ export const SHIOMACHI_JOBS: readonly MissionDef[] = [
       },
     ],
   },
+  {
+    id: 'harbour-gold-chest',
+    title: 'The Gold-Dust Chest',
+    rank: 'C',
+    client: 'Harbourmaster Kai',
+    summary:
+      'A merchant ship came in with a lacquered chest no one will sign for. It holds a scroll and enough gold dust to sink a skiff.',
+    slots: 3,
+    energyCost: 30,
+    reward: { ryo: 380, reputation: 10, dustScroll: 'gold-dust' },
+    minMissionsCompleted: 15,
+    once: true,
+    stages: [
+      {
+        kind: 'check',
+        text: 'The chest is locked with a seal, and the gold inside shifts when your chakra comes near.',
+        approaches: [
+          { label: 'Read the seal before you break it', stat: 'fuuinjutsu', difficulty: 12 },
+          { label: 'Weigh what it really is', stat: 'intellect', difficulty: 12 },
+        ],
+        success: 'The seal gives. Under the gold lies an S-rank scroll on gold dust.',
+        failure: 'You break the lock the hard way, and every sailor on the quay hears it give.',
+        onFailure: 'forward',
+      },
+      {
+        kind: 'encounter',
+        ground: 'town',
+        template: 'bandit-camp',
+        job: 'escort',
+        text: 'Two salvagers come up the quay with hooks. They saw the chest come ashore.',
+        enemyIds: ['bandit-thug', 'bandit-archer'],
+        canFlee: false,
+      },
+    ],
+  },
 ];
 
 export const SHIOMACHI_JOB_IDS = SHIOMACHI_JOBS.map((j) => j.id);

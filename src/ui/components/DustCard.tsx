@@ -1,10 +1,18 @@
-import { dustCard, type GameContext, type GameState } from '@/game';
+import { dustCard, type GameAction, type GameContext, type GameState } from '@/game';
 
 /**
  * The dust you command: its kind, what it does, what scatters it, how much you carry and
  * whether it comes back on its own. Nothing shows without any.
  */
-export function DustCard({ ctx, state }: { readonly ctx: GameContext; readonly state: GameState }) {
+export function DustCard({
+  ctx,
+  state,
+  perform,
+}: {
+  readonly ctx: GameContext;
+  readonly state: GameState;
+  readonly perform: (action: GameAction) => void;
+}) {
   const card = dustCard(state, ctx);
   if (!card) return null;
   return (
@@ -29,6 +37,21 @@ export function DustCard({ ctx, state }: { readonly ctx: GameContext; readonly s
         </span>
       </div>
       <p className="muted small">{card.gathering}</p>
+      {card.make && (
+        <>
+          <button
+            type="button"
+            className="btn ghost"
+            disabled={card.make.blocker !== null}
+            onClick={() => {
+              if (card.make) perform(card.make.action);
+            }}
+          >
+            Make a batch ({card.make.cost} ryo)
+          </button>
+          {card.make.blocker && <p className="muted small">{card.make.blocker}</p>}
+        </>
+      )}
     </section>
   );
 }

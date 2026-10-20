@@ -3,6 +3,7 @@ import { DUST_GIFTS, DUST_QUALITIES, type DustGift, type DustQuality } from '@/s
 import { GATHER_AT_HOME } from '@/systems/dusts';
 
 import type { GameContext } from '../context';
+import { choice, type Choice } from './common';
 import { drawable, dustKindOf, yourDust } from '../dust/dust';
 import type { GameState } from '../state';
 
@@ -22,6 +23,8 @@ export interface DustCard {
   readonly qualities: readonly { readonly name: string; readonly grade: string }[];
   /** What scatters it ("Water", "A heavy blow"). */
   readonly banes: readonly string[];
+  /** Making a batch at home, for dust no ground gives back; null for sand and ash. */
+  readonly make: (Choice & { readonly cost: number }) | null;
 }
 
 const GIFT_WORDS: Readonly<Record<DustGift, string>> = {
@@ -68,6 +71,9 @@ export function dustCard(state: GameState, ctx: GameContext): DustCard | null {
       name: QUALITY_NAMES[q],
       grade: QUALITY_GRADES[kind.qualities[q] - 1] ?? 'A',
     })),
+    make: yours.def.making
+      ? { ...choice(state, ctx, { type: 'makeDust' }), cost: yours.def.making.ryo }
+      : null,
     banes: yours.def.banes.map((b) =>
       b === 'heavy' ? 'A heavy blow' : b.charAt(0).toUpperCase() + b.slice(1),
     ),

@@ -21,6 +21,9 @@ export const DUSTS: readonly DustDef[] = [
     gifts: { cutting: 2 },
     banes: ['lightning'],
     drawnOn: [],
+    making: { ryo: 60, how: 'You pan black sand from the river and draw the iron out of it.' },
+    price: 180,
+    techniqueIds: ['dust-iron-needles', 'dust-iron-maul'],
   },
   {
     id: 'gold-dust',
@@ -31,6 +34,9 @@ export const DUSTS: readonly DustDef[] = [
     gifts: {},
     banes: [],
     drawnOn: [],
+    making: { ryo: 320, how: 'You file gold down to dust, grain by grain, until your hands ache.' },
+    price: 900,
+    techniqueIds: ['dust-gold-press', 'dust-gold-tide'],
   },
   {
     id: 'ash',
@@ -51,5 +57,8 @@ export const DUSTS: readonly DustDef[] = [
     gifts: { cutting: 3 },
     banes: ['heavy'],
     drawnOn: [],
+    making: { ryo: 40, how: 'You break old bottles and grind them fine in a mortar.' },
+    price: 120,
+    techniqueIds: ['dust-glass-shards', 'dust-glass-squall'],
   },
 ];
