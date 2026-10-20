@@ -10,7 +10,7 @@ export const DUSTS: readonly DustDef[] = [
     qualities: { weight: 'D', hold: 'B', draw: 'A' },
     gifts: {},
     banes: ['water'],
-    drawnOn: ['arena', 'forest', 'town'],
+    drawnOn: ['arena', 'forest', 'town', 'desert'],
   },
   {
     id: 'iron-sand',

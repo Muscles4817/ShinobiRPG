@@ -30,6 +30,7 @@ const FALLS: Readonly<Record<CombatForm, Bank>> = {
     scene: {
       forest: ['{t} crashes down into the undergrowth and lies still.'],
       lake: ['{t} rolls over in the water and floats there, still.'],
+      desert: ['{t} slumps into the sand, and the wind starts covering it at once.'],
       late: ['{t} has fought as long as it can, and goes down at last.'],
     },
   },
@@ -56,6 +57,7 @@ const FALLS: Readonly<Record<CombatForm, Bank>> = {
       forest: ['{t} fall{t.s} among the roots and {t.does}n’t get up.'],
       town: ['{t} crumple{t.s} in the street and {t.does}n’t get up.'],
       lake: ['{t} lose{t.s} {t.their} footing on the water and go{t.es} down into it.'],
+      desert: ['{t} pitch{t.es} forward into the hot sand and {t.does}n’t get up.'],
       late: ['After all of it, {t} simply fold{t.s} and go{t.es} down.'],
     },
   },

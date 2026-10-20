@@ -132,6 +132,14 @@ Red Sand (with a workshop doll), Hayase of the Cutting Wind and Kōro of the Dun
 | The Hound That Waited        | A broken hound that thinks for itself  |
 | Grey Sand at the Outer Wells | The taint, fought beside a priest      |
 
+**The desert itself** is a biome and a fighting ground. The Outer Dunes by the Landing and the
+Wadi Beyond the Wall outside the Sand are `desert` wild places (`shared/desert.ts`): wild dates,
+prickly pears, sage and, after the spring rain, truffles a good cook knows. A desert fox can be
+tracked there, and dune scarabs found by night for a hive. The bestiary has the desert's plain
+animals (sand vipers, striped hyenas, desert lions). Fights in the sand are on the `desert`
+ground: no cover, a heat haze that throws off every far shot, wind and fire running strong and
+water weak, and sand drawn in full.
+
 **Foes** (`sunagakure/foes.ts`) are dune raiders, spice runners, tainted jackals and scorpions,
 sand wraiths and the Sand's own patrols.
 
@@ -141,15 +149,13 @@ dark rings round a priest's eyes (and Gaara's) are its mark.
 
 ## Engine gaps
 
-| Need                     | Today                                                                                                                                                                                              |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A `desert` biome         | The bestiary, wild places, wild companions and wild strains know woods, river, shore, mountain, marsh                                                                                              |
-| A desert fighting ground | Grounds are arena, forest, town, room, lake. Dunes: open, no cover, room for far, and sand to draw on                                                                                              |
-| How a town greets you    | Nothing reads where you're from or what you carry. The Sand reacts to the Leaf and to a contract, as the Mist will to a bloodline: one rule for all three                                          |
-| Breaking a beast         | A companion takes orders only as the bond opens them. Breaking opens orders early and keeps the bond thin                                                                                          |
-| Intelligent beasts       | Nothing marks a companion kind as having a mind of its own                                                                                                                                         |
-| Puppets                  | A puppet is a summon without a contract: a front-row body on threads, paid in chakra, dropping when its maker falls. The full system (building, repair, hidden weapons) is like companions or dust |
-| Spice                    | A dust kind of its own, a trade good; whether it can be taken (and what it costs) is open                                                                                                          |
+| Need                  | Today                                                                                                                                                                                              |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| How a town greets you | Nothing reads where you're from or what you carry. The Sand reacts to the Leaf and to a contract, as the Mist will to a bloodline: one rule for all three                                          |
+| Breaking a beast      | A companion takes orders only as the bond opens them. Breaking opens orders early and keeps the bond thin                                                                                          |
+| Intelligent beasts    | Nothing marks a companion kind as having a mind of its own                                                                                                                                         |
+| Puppets               | A puppet is a summon without a contract: a front-row body on threads, paid in chakra, dropping when its maker falls. The full system (building, repair, hidden weapons) is like companions or dust |
+| Spice                 | A dust kind of its own, a trade good; whether it can be taken (and what it costs) is open                                                                                                          |
 
 ## Open questions
 

@@ -195,7 +195,7 @@ export const SUNA_HARD_JOBS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
-        ground: 'arena',
+        ground: 'desert',
         template: 'beast',
         job: 'eliminate',
         text: 'A tainted scorpion as big as a barge’s cabin comes up out of the grey sand between the wells, and behind it a shape of blown sand that walks like a person.',

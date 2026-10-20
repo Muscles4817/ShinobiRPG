@@ -27,11 +27,17 @@ const CASTING: SceneLines = {
 /** Techniques of an element meeting ground that feeds them. */
 const FED: Readonly<Partial<Record<Element, SceneLines>>> = {
   water: { lake: ['The lake itself rises at {a.poss} call and becomes {what}.'] },
-  fire: { forest: ['{a} loose{a.s} {what}, and the dry leaves around it catch.'] },
+  fire: {
+    forest: ['{a} loose{a.s} {what}, and the dry leaves around it catch.'],
+    desert: ['{a} loose{a.s} {what}, and the hot air over the sand roars with it.'],
+  },
   earth: {
     forest: ['{a} drive{a.s} chakra down into the roots, and {what} tears up out of them.'],
   },
-  wind: { town: ['{a} send{a.s} {what} down the street, rattling every shutter on it.'] },
+  wind: {
+    town: ['{a} send{a.s} {what} down the street, rattling every shutter on it.'],
+    desert: ['{a} send{a.s} {what} over the dunes, and it comes back full of sand.'],
+  },
 };
 
 const FED_CASTING: Readonly<Partial<Record<Element, SceneLines>>> = Object.fromEntries(
@@ -57,6 +63,7 @@ export const MISSING: SceneLines = {
   town: ['{t} vault{t.s} a handcart, and {a.poss} {what} finds only the cart.'],
   room: ['{t} roll{t.s} under {a.poss} {what}, and it splinters the wall instead.'],
   lake: ['{t} slide{t.s} away across the water, and {a.poss} {what} raises only spray.'],
+  desert: ['{t} drop{t.s} behind the crest of a dune, and {a.poss} {what} only blows up sand.'],
 };
 
 /** Closing in. */
@@ -70,6 +77,7 @@ export const CLOSING_IN: SceneLines = {
   room: ['{a} cross{a.es} the floor in two strides.'],
   town: ['{a} cut{a.s} across the street and into {f.poss} reach.'],
   lake: ['{a} skim{a.s} across the water and in close.'],
+  desert: ['{a} come{a.s} down the face of the dune in a slide of sand.'],
 };
 
 /** Getting back out of reach. */
@@ -79,6 +87,7 @@ export const FALLING_BACK: SceneLines = {
   forest: ['{a} fall{a.s} back among the trees.'],
   town: ['{a} take{a.s} to the rooftops, out of reach.'],
   lake: ['{a} slide{a.s} back across the water, out of reach.'],
+  desert: ['{a} fall{a.s} back over the crest of a dune, out of reach.'],
 };
 
 /** A search that finds no one. */
@@ -87,6 +96,7 @@ export const SEARCHING: SceneLines = {
   town: ['{a} check{a.s} the doorways and find{a.s} no one in them.'],
   room: ['{a} search{a.es} the corners of the room and find{a.s} them empty.'],
   lake: ['{a} scan{a.s} the reeds along the shore and find{a.s} no one.'],
+  desert: ['{a} scan{a.s} the dunes through the haze and find{a.s} no one.'],
 };
 
 /** A search that finds someone. */
@@ -105,6 +115,7 @@ export const DAZING: SceneLines = {
   room: ['{t} reel{t.s} into the wall, dazed.'],
   forest: ['{t} stagger{t.s} against a tree, dazed.'],
   lake: ['{t} stagger{t.s}, and {t.their} footing on the water nearly goes.'],
+  desert: ['{t} stagger{t.s} in the soft sand, dazed.'],
 };
 
 /** Someone thrown back across the ground. */
@@ -112,6 +123,7 @@ export const THROWN_BACK: SceneLines = {
   room: ['{t} {t.is} thrown back across the room.'],
   forest: ['{t} {t.is} thrown back through the brush to {where} range.'],
   lake: ['{t} {t.is} sent skidding across the water to {where} range.'],
+  desert: ['{t} {t.is} sent tumbling down the dune to {where} range.'],
 };
 
 /** Someone getting through a hold-off. */
@@ -119,6 +131,7 @@ export const RUNNING_IN: SceneLines = {
   forest: ['{c} come{c.s} through the trees under {h.poss} fire.'],
   town: ['{c} dart{c.s} from doorway to doorway through {h.poss} fire.'],
   lake: ['{c} race{c.s} across the open water through {h.poss} fire.'],
+  desert: ['{c} run{c.s} the hollows between the dunes through {h.poss} fire.'],
 };
 
 /** An illusionist slipping back out of sight. */

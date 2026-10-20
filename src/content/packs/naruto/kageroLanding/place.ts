@@ -1,3 +1,4 @@
+import { DESERT_FINDS } from '../../../shared/desert';
 import type { LocationDef } from '../../../types';
 
 /**
@@ -68,6 +69,15 @@ export const KAGERO_LANDING: LocationDef = {
       icon: 'eye',
       blurb: 'Hard white ground where the air shimmers from mid-morning',
       trainingIds: ['heat-shimmer-drill', 'sand-running'],
+    },
+    {
+      id: 'outer-dunes',
+      kind: 'wilds',
+      name: 'The Outer Dunes',
+      icon: 'leaf',
+      blurb: 'Wild palms and scrub where the dunes begin, and burrows under every crest',
+      biome: 'desert',
+      finds: DESERT_FINDS,
     },
   ],
 };

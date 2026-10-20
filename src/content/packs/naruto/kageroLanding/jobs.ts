@@ -91,7 +91,7 @@ export const LANDING_JOBS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
-        ground: 'arena',
+        ground: 'desert',
         template: 'beast',
         job: 'retrieve',
         text: 'The boy is on top of a rock with a broken oar, and tainted jackals are circling it. They are too big, and far too quiet.',
@@ -103,7 +103,7 @@ export const LANDING_JOBS: readonly MissionDef[] = [
       {
         kind: 'encounter',
         when: { has: 'belt' },
-        ground: 'arena',
+        ground: 'desert',
         template: 'beast',
         job: 'retrieve',
         text: 'On the way back the sand heaves, and a scorpion the size of a cart comes up out of it between you and the Landing.',
@@ -163,7 +163,7 @@ export const LANDING_JOBS: readonly MissionDef[] = [
       },
       {
         kind: 'encounter',
-        ground: 'arena',
+        ground: 'desert',
         template: 'bandit-camp',
         job: 'eliminate',
         text: 'Three camels, a fire of dung and thorn, and men with rings round their eyes, weighing grey sand into little bags.',
