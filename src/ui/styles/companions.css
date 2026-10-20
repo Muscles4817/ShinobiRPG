@@ -168,3 +168,64 @@
   color: var(--paper-muted);
   border: 1px dashed var(--paper-muted);
 }
+
+.hive-card .hive-fill {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.hive-card .hive-qualities {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 8px;
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}
+
+.hive-card .hive-jars,
+.hive-card .hive-name {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--paper-muted);
+}
+.hive-card .hive-jars ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hive-card .hive-name label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+.hive-card .hive-name input {
+  min-height: 40px;
+  padding: 0 8px;
+  border: 1px solid var(--paper-muted);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--paper-ink);
+  font: inherit;
+}
+.hive-card .hive-name .btn {
+  margin-top: 8px;
+}
+
+/* A learned hive rite: the three shares, each with its way to take the hive. */
+.rite-card .rite-shares {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.rite-card .rite-shares p {
+  margin: 2px 0 6px;
+}

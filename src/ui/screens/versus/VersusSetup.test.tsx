@@ -43,6 +43,31 @@ describe('versus setup on a desk', () => {
     );
   });
 
+  it('opens on the fighter you fight as, and previews whoever is pointed at', async () => {
+    asDesk(true);
+    const user = userEvent.setup();
+    render(<VersusSetup initial={null} onFight={() => undefined} onBack={() => undefined} />);
+    const opening = screen.getByRole('article', { name: /’s profile$/ });
+    const roster = screen.getByRole('region', { name: 'Fighters' });
+    const row = within(roster).getByRole('button', { name: /^Zabuza Momochi,/ });
+    await user.hover(row);
+    expect(screen.getByRole('article', { name: 'Zabuza Momochi’s profile' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Fight as Zabuza/ })).toBeNull();
+    await user.unhover(row);
+    expect(
+      screen.getByRole('article', { name: opening.getAttribute('aria-label')! }),
+    ).toBeVisible();
+  });
+
+  it('fights with Enter', async () => {
+    asDesk(true);
+    const user = userEvent.setup();
+    const onFight = vi.fn();
+    render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
+    await user.keyboard('{Enter}');
+    expect(onFight).toHaveBeenCalledWith(expect.objectContaining({ watch: false }));
+  });
+
   it('opens the roster over the page on a phone instead', async () => {
     asDesk(false);
     const user = userEvent.setup();

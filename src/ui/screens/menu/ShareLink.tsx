@@ -8,7 +8,7 @@ const WHATSAPP_SHARE = 'https://wa.me/';
 const MESSAGE = 'Shinobi RPG: a shinobi’s life, one day at a time. Play it on your phone:';
 
 /** The game's own address: the folder it is served from, without a page, query or hash. */
-function gameAddress(): string {
+export function gameAddress(): string {
   return new URL('./', window.location.href).href;
 }
 

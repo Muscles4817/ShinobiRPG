@@ -3,6 +3,8 @@ import type { Stats } from '@/systems/stats';
 import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
 
 import type { CombatGear, CombatItem } from './gearContract';
+import type { CombatDust } from './dustContract';
+import type { CombatGround } from './groundContract';
 import type { CombatSwarm } from './swarmContract';
 import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
 
@@ -43,6 +45,8 @@ export type CombatTechnique = Pick<
   | 'effects'
   | 'chakraCost'
   | 'swarmCost'
+  | 'dustCost'
+  | 'dustDraw'
   | 'oncePerFight'
   | 'afterCost'
   | 'combo'
@@ -76,12 +80,7 @@ export { COMBAT_ITEM_EFFECTS, type CombatItem, type CombatItemEffect } from './g
  */
 export type CombatPerk = 'insight' | 'foresight' | 'mimicry' | 'water-walking' | 'tree-walking';
 
-/**
- * Where a fight happens (`rules/ground.ts`): an open arena, a forest, a town's streets and
- * roofs, a room with no space to back away, or a lake only water-walkers stand on.
- */
-export const COMBAT_GROUNDS = ['arena', 'forest', 'town', 'room', 'lake'] as const;
-export type CombatGround = (typeof COMBAT_GROUNDS)[number];
+export { COMBAT_GROUNDS, type CombatGround } from './groundContract';
 
 /**
  * What a fight is, for its story only (`engines/plan/scene.ts`): a friendly spar, a spar with a
@@ -178,6 +177,8 @@ export interface CombatantSetup {
   readonly calls?: readonly CombatCall[];
   /** The hive in their body (`swarmContract.ts`). */
   readonly swarm?: CombatSwarm;
+  /** The dust they command and carry (`dustContract.ts`). */
+  readonly dust?: CombatDust;
 }
 
 /**
@@ -386,6 +387,8 @@ export interface CombatOutcome {
   readonly summons?: Readonly<Record<string, SummonFate>>;
   /** Insects in the player's hive as the fight ended; absent without a hive. */
   readonly swarm?: number;
+  /** Dust the player still commands as the fight ended; absent without any. */
+  readonly dust?: number;
 }
 
 export interface CombatEngine {

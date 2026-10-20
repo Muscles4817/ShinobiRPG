@@ -65,4 +65,19 @@ export const CLAN_TOPICS: readonly ConversationTopic[] = [
         'The ropes don’t only hold the dead in. The oldest ones hold something out, and only the head of the clan knows what.',
     },
   },
+  {
+    kind: 'clan',
+    key: 'toga',
+    values: {
+      clan: 'the Tōga',
+      duty: 'a quiet house, an open window at dusk, and never a lamp left burning where the moths can reach it',
+      elder:
+        'my grandmother, who can tell you which lantern on the main street is guttering from three streets away, by the moths',
+      rite: 'the first night a child sleeps with the shutters open, and the hive in them answers the moths outside',
+      burden:
+        '{them.they} gave part of {them.their} chakra to the hive before {them.they} could walk. Some days {them.they} feel{them.s} the lack of it, and the moths feel it too.',
+      secret:
+        'The moths remember where they have been. If you know how to ask, they will tell you who walked under which lantern last night.',
+    },
+  },
 ];

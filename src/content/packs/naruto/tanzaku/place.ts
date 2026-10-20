@@ -80,7 +80,12 @@ export const TANZAKU_TOWN: LocationDef = {
       name: 'The Castle Ward Office',
       icon: 'board',
       blurb: 'The town constables hire out what they can’t handle',
-      missionIds: ['tanzaku-loaded-dice', 'tanzaku-unpaid-tab', 'tanzaku-castle-crowds'],
+      missionIds: [
+        'tanzaku-loaded-dice',
+        'tanzaku-unpaid-tab',
+        'tanzaku-castle-crowds',
+        'tanzaku-humming-case',
+      ],
     },
     {
       id: 'tanzaku-townhouse',

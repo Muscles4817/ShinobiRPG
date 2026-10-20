@@ -7,6 +7,7 @@ import type { TimeSlot } from '@/systems/time';
 
 import type { RecipeLesson } from './items';
 import type { SenseiVoice, SenseiWays } from './senseis';
+import type { RiteOffer } from './strains';
 import type { TeacherProfile } from './teachers';
 
 /** Content schemas for the cast: people, how they talk, and the names generated genin get. */
@@ -115,6 +116,8 @@ export interface PersonDef {
   readonly favouriteRecipeId?: string;
   /** Recipes they teach, in order, once you are close enough. */
   readonly recipes?: readonly RecipeLesson[];
+  /** Their clan's hive rite, which they will teach once you are close enough. */
+  readonly hiveRite?: RiteOffer;
   /** How they fight, when it is their own and not their specialty's generic kit. */
   readonly arsenal?: PersonArsenal;
 }

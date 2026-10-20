@@ -17,6 +17,8 @@ export interface CompoundFields {
   readonly clanId: string;
   /** The clan's head, a person of the clan, when the pack has one. */
   readonly headId?: string;
+  /** The archive keeps the clan's hive rite (`ClanHive.rite`), lent to an outsider it trusts. */
+  readonly keepsRite?: boolean;
 }
 
 /** The clans' quarter: one card on the village screen for the compounds it lists. */

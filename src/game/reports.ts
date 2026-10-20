@@ -69,6 +69,8 @@ export type Report =
       readonly companion?: string;
       /** The summoning contract you signed at the end of it, by name. */
       readonly contract?: string;
+      /** The hive clan's rite the job handed over, by name. */
+      readonly rite?: string;
       /** How the job went, line by line (absent on reports from before the ledger). */
       readonly road?: readonly DebriefLine[];
       readonly crew?: readonly DebriefCrew[];

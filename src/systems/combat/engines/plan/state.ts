@@ -23,6 +23,7 @@ import type {
 import type { CombatOrders, CombatStance } from '../../teamContract';
 import type { Caller, Summoned } from './calls';
 import type { Footing } from './footing';
+import type { Dusty } from './dustBody';
 import type { Hive } from './hive';
 import type { ShroudMemory } from '../../rules/shrouds';
 import { sizedBody } from './sizing';
@@ -98,7 +99,8 @@ export interface PlanFighter
     Caller,
     Summoned,
     Hive,
-    ShroudMemory {
+    ShroudMemory,
+    Dusty {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;

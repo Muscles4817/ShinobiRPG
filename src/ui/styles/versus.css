@@ -282,28 +282,84 @@
   font-family: var(--font-story);
 }
 
-/* On a desk (`useWideScreen` sets `.wide` on the page): the bout, the roster and the profile. */
+/*
+ * On a desk (`useWideScreen` sets `.wide` on the page): the bout, the roster and the profile,
+ * filling the window like an app. The page itself never scrolls; each column does, and the
+ * roster's filters stay put above its list.
+ */
 .versus-setup.wide {
-  max-width: 1360px;
+  max-width: 1480px;
+  height: 100dvh;
+  min-height: 0;
+  padding: 18px 32px 20px;
+}
+
+.versus-setup.wide > header {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 18px;
+}
+
+.versus-setup.wide > header p {
+  margin: 0;
 }
 
 .versus-desk {
+  flex: 1;
+  min-height: 0;
   display: grid;
-  grid-template-columns: minmax(280px, 340px) minmax(320px, 1fr) minmax(340px, 420px);
-  gap: 20px;
-  align-items: start;
+  grid-template-columns: minmax(280px, 340px) minmax(360px, 1fr) minmax(360px, 440px);
+  gap: 24px;
+}
+
+.versus-plan,
+.versus-pane {
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .versus-plan {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-right: 4px;
 }
 
-.versus-desk .versus-browser,
-.versus-pane {
+/* Starting the bout stays in reach at the foot of the column, however long the sides grow. */
+.versus-start {
   position: sticky;
-  top: 16px;
-  max-height: calc(100dvh - 32px);
+  bottom: 0;
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg);
+}
+
+.versus-desk .versus-browser {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The filters stand in one row on a desk, so the list keeps most of the column. */
+.versus-desk .versus-facets {
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+}
+
+.versus-desk .versus-list {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+}
+
+.versus-pane > .muted {
+  margin: 24px 4px;
+}
+
+.versus-setup.wide .key-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
 }

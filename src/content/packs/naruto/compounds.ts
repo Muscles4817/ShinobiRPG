@@ -70,6 +70,7 @@ export const KONOHA_COMPOUNDS: readonly PlaceDef[] = [
     blurb: 'Hives humming under the eaves',
     clanId: 'aburame',
     headId: 'shibi',
+    keepsRite: true,
   },
   {
     id: 'inuzuka-compound',

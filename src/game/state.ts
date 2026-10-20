@@ -1,4 +1,5 @@
 import type { Contract } from '@/systems/contracts';
+import type { Hive } from '@/systems/hives';
 import type { CombatState, WeaponMastery } from '@/systems/combat';
 import type { Companions } from '@/systems/companions';
 import type { MapStyle } from './mapStyle';
@@ -90,6 +91,10 @@ export interface GameState {
   readonly contract: Contract | null;
   /** Contracts you have torn up; their clans won't take your name again. */
   readonly brokenContracts: readonly string[];
+  /** The hive in your body (`systems/hives`); null for most. */
+  readonly hive: Hive | null;
+  /** Hive clans whose rite you have learned (`hives/rite.ts`), by clan id. */
+  readonly rites: readonly string[];
   /**
    * Set only on a versus sandbox (`game/versus/`): who is fighting whom. A sandbox is never
    * saved, so a real playthrough never carries it.

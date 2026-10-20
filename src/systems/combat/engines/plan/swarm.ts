@@ -4,6 +4,11 @@ import type { CombatTechnique } from '../../contract';
 import { alive } from '../../rules/body';
 import {
   areaLoss,
+  blindSlipScale,
+  glowSlipScale,
+  settleVenom,
+  swarmPowerScale,
+  swarmSlipScale,
   burnsOff,
   fearedLoss,
   SETTLE_EXCHANGES,
@@ -12,6 +17,7 @@ import {
   swarmAffords,
   swarmSearch,
 } from '../../rules/swarms';
+import { harmLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
 import { ABSORB_SHARE, areaSize, effectsOf } from '../../rules/verbs';
 import type { Hive } from './hive';
@@ -24,6 +30,31 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
  * and a host loses insects to areas that catch them and to elements their strain fears. A
  * hive also helps its host find the hidden. Insects don't breed mid-fight.
  */
+
+/** The host whose insects sit on a fighter, if any still stands in the fight. */
+function settledHost(round: Round, fighter: Hive): PlanFighter | undefined {
+  return fighter.settled ? fighterIn(round, fighter.settled.hostId) : undefined;
+}
+
+/** A swarm attack's slip scale (speed, camouflage); 1 for anything else. */
+export function swarmSlips(attacker: Hive, t: CombatTechnique): number {
+  return attacker.swarm && t.swarmCost ? swarmSlipScale(attacker.swarm.strain) : 1;
+}
+
+/** A swarm attack's power scale (bite, size); 1 for anything else. */
+export function swarmPower(attacker: Hive, t: CombatTechnique): number {
+  return attacker.swarm && t.swarmCost ? swarmPowerScale(attacker.swarm.strain) : 1;
+}
+
+/**
+ * How settled insects change any attack's slip: a target marked by glowing insects is easier to
+ * hit; an attacker blinded by scales aims worse.
+ */
+export function settledSlips(round: Round, attacker: Hive, target: Hive): number {
+  const glow = settledHost(round, target)?.swarm;
+  const blind = settledHost(round, attacker)?.swarm;
+  return (glow ? glowSlipScale(glow.strain) : 1) * (blind ? blindSlipScale(blind.strain) : 1);
+}
 
 /** Whether a fighter has the insects a technique asks of their hive. */
 export function hasInsectsFor(fighter: Hive, t: CombatTechnique): boolean {
@@ -126,7 +157,20 @@ function drawn(round: Round, carrier: PlanFighter): Round {
         }
       : after;
   const line = left > 0 ? 'The insects on {t} feed.' : 'The insects drop off {t}.';
-  return say(fedHost, tell(line, { t: carrier }));
+  return envenomed(say(fedHost, tell(line, { t: carrier })), carrier, host);
+}
+
+/** Venomous insects poison whoever they sit on. */
+function envenomed(round: Round, carrier: PlanFighter, host: PlanFighter | undefined): Round {
+  const venom = host?.swarm ? settleVenom(host.swarm) : 0;
+  const now = fighterIn(round, carrier.id);
+  if (venom <= 0 || !now) return round;
+  const hurt = Math.min(now.health, venom);
+  const after = {
+    ...round,
+    fighters: patch(round.fighters, now.id, { health: now.health - hurt }),
+  };
+  return say(after, harmLine(tell('The venom works on {t}.', { t: now }), hurt));
 }
 
 /** A host's hive finds hidden foes on its own, the keener the strain and the fuller the hive. */

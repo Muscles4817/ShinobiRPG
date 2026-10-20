@@ -10,6 +10,7 @@ import { sleepChakra } from './injuries';
 import { adjust, chip, log, spendTime } from './ops';
 import type { JournalChip } from '@/systems/journal';
 import type { GameState } from './state';
+import { chakraBody } from './hives/hive';
 
 /**
  * Days on the road. Each passes to the next morning: you eat from your pack in the evening
@@ -48,7 +49,7 @@ function eatFromPack(state: GameState, ctx: GameContext): { state: GameState; at
 /** To the next morning, through a night in camp. */
 function nightInCamp(state: GameState, ctx: GameContext): GameState {
   const night = sleepChakra(state);
-  const rest = sleepRecovery(state.character.vitals, state.character.stats);
+  const rest = sleepRecovery(state.character.vitals, chakraBody(state));
   const slept = spendTime(state, slotsUntilNextMorning(state.time), ctx);
   return adjust(slept, {
     ...rest,

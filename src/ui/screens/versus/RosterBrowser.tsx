@@ -10,6 +10,7 @@ import {
 
 import { Portrait } from '../../art/Portrait';
 import { GradeBadge } from '../../components/Grade';
+import type { HoverHandlers } from '../../layout/useHoverPreview';
 
 interface FacetSelectProps {
   readonly id: string;
@@ -165,12 +166,14 @@ interface RowProps {
   /** A stamp on their row (where they stand, whether they're edited), or null. */
   readonly stamp: string | null;
   readonly onFocus: (id: string) => void;
+  readonly preview: HoverHandlers;
 }
 
-function FighterRow({ fighter, focused, stamp, onFocus }: RowProps) {
+function FighterRow({ fighter, focused, stamp, onFocus, preview }: RowProps) {
   return (
     <li>
       <button
+        {...preview}
         type="button"
         className={focused ? 'versus-row on' : 'versus-row'}
         aria-current={focused ? 'true' : undefined}
@@ -204,11 +207,15 @@ interface RosterBrowserProps {
   readonly focusedId: string | null;
   readonly stampOf: (id: string) => string | null;
   readonly onFocus: (id: string) => void;
+  /** On a desk, pointing at a row previews that fighter's profile beside the list. */
+  readonly previewFor?: (id: string) => HoverHandlers;
 }
+
+const NO_PREVIEW: HoverHandlers = {};
 
 /** The roster, filtered: tap a fighter to read their profile. */
 export function RosterBrowser(props: RosterBrowserProps) {
-  const { roster, filter, onFilter, focusedId, stampOf, onFocus } = props;
+  const { roster, filter, onFilter, focusedId, stampOf, onFocus, previewFor } = props;
   const browse = browseRoster(roster, filter);
   const { found } = browse;
   return (
@@ -236,6 +243,7 @@ export function RosterBrowser(props: RosterBrowserProps) {
             focused={f.id === focusedId}
             stamp={stampOf(f.id)}
             onFocus={onFocus}
+            preview={previewFor ? previewFor(f.id) : NO_PREVIEW}
           />
         ))}
       </ul>

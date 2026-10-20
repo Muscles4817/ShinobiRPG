@@ -1,7 +1,8 @@
 /*
- * The title menu on a wide window: the lantern picture fills the left of the screen and the
- * title and choices stand in a column beside it, all in one view. Every rule is under
- * `.main-menu.wide`, so the phone's menu never changes with it.
+ * The title menu on a wide window (`WideMenu`): the lantern scene fills the right of the
+ * screen and fades into the night, the title stands at the left, and under it a plain list of
+ * choices beside a panel telling the one marked. Every rule is under `.main-menu.wide`, so the
+ * phone's menu never changes with it.
  */
 
 .main-menu.wide {
@@ -10,80 +11,117 @@
   height: 100dvh;
   min-height: 0;
   margin: 0;
-  padding: 0 clamp(32px, 6vw, 96px) 0 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(400px, 480px);
-  grid-template-rows: 1fr auto auto auto 1fr;
-  column-gap: clamp(32px, 4vw, 64px);
-  row-gap: 0;
+  padding: 0 0 0 clamp(48px, 7vw, 112px);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   overflow: hidden;
 }
 
-/* The hero's parts take their own places in the grid: the picture left, the title right. */
-.main-menu.wide .menu-hero {
-  display: contents;
-  text-align: left;
-}
-
+/* The scene: anchored bottom right, fading into the night towards the menu and at its top. */
 .main-menu.wide .title-scene {
-  grid-column: 1;
-  grid-row: 1 / -1;
-  align-self: center;
-  width: 100%;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 54vw;
   height: auto;
-  max-height: 96dvh;
-  /* The picture has no edge: it fades into the night on every side. */
-  mask-image: radial-gradient(ellipse 50% 54% at 50% 46%, #000 72%, transparent 100%);
+  max-height: 100dvh;
+  mask-image:
+    linear-gradient(to right, transparent 0%, #000 38%),
+    linear-gradient(to bottom, transparent 0%, #000 22%);
+  mask-composite: intersect;
+  pointer-events: none;
 }
 
 .main-menu.wide .menu-vertical {
-  top: 28px;
-  right: auto;
-  left: 28px;
+  top: 32px;
+  right: 32px;
   font-size: 1rem;
 }
 
+.wide-menu-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: min(820px, 54vw);
+}
+
 .main-menu.wide .menu-title {
-  grid-column: 2;
-  grid-row: 2;
   justify-content: flex-start;
   margin: 0;
 }
 
 .main-menu.wide .menu-title h1 {
-  font-size: 3.6rem;
+  font-size: 4.4rem;
 }
 
 .main-menu.wide .ink-seal {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
 }
 
 .main-menu.wide .menu-tagline {
-  text-align: left;
-  grid-column: 2;
-  grid-row: 3;
-  margin: 10px 0 28px;
-  font-size: 1.1rem;
+  margin: 12px 0 0;
+  font-size: 1.15rem;
+  color: var(--story);
 }
 
-.main-menu.wide .menu-options {
-  grid-column: 2;
-  grid-row: 4;
+.wide-menu-body {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
 }
 
-.main-menu.wide .key-note {
-  grid-column: 2;
-  grid-row: 5;
-  align-self: start;
-  margin: 14px 0 0;
-  font-size: 0.8rem;
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 54px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
   color: var(--muted);
+  text-align: left;
+  cursor: pointer;
 }
 
-/* The number key sits at the far end of its choice. */
-.main-menu.wide .menu-option .key-hint {
-  margin-left: auto;
+.menu-item.on {
+  background: var(--surface) var(--grain);
+  color: var(--paper);
+}
+
+.menu-item:focus-visible {
+  outline: 2px solid var(--lantern);
+  outline-offset: 2px;
+}
+
+/* The lantern's mark beside the choice you are on. */
+.menu-item-mark {
+  width: 6px;
+  height: 26px;
+  border-radius: 1px;
+}
+
+.menu-item.on .menu-item-mark {
+  background: var(--lantern);
+}
+
+.menu-item-title {
+  flex: 1;
+  font-family: var(--font-story);
+  font-size: 1.55rem;
+}
+
+.main-menu.wide .key-hint {
   flex: none;
   min-width: 22px;
   padding: 0 5px;
@@ -95,9 +133,78 @@
   opacity: 0.7;
 }
 
-.main-menu.wide .notice-bar {
-  grid-column: 2;
-  grid-row: 1;
-  align-self: end;
-  margin-bottom: 24px;
+.menu-detail {
+  min-height: 300px;
+  box-sizing: border-box;
+  padding: 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--surface) var(--grain);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.menu-detail-glyph {
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', var(--font-story);
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--lantern);
+}
+
+.menu-detail h2 {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 1.75rem;
+  color: var(--paper);
+}
+
+.menu-detail p {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--story);
+}
+
+/* Your save, on paper: your face, who you are, and where and when you stopped. */
+.save-card {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  background: var(--paper) var(--grain-ink);
+  color: var(--paper-ink);
+  border-radius: var(--radius);
+}
+
+.save-card .portrait {
+  flex: none;
+  border: 1.5px solid var(--seal);
+  border-radius: var(--radius-sm);
+}
+
+.save-card-words {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.save-card-words b {
+  font-family: var(--font-story);
+  font-size: 1.2rem;
+}
+
+.save-card-words span {
+  color: var(--paper-muted);
+}
+
+.main-menu.wide .menu-confirm {
+  margin-top: 6px;
+}
+
+.main-menu.wide .key-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
 }

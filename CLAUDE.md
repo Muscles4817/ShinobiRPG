@@ -357,12 +357,41 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`GameState.brokenContracts`). Foes summon too (`EnemyDef.summons`, from a contract of the
     pack, with a `tell` read like a retinue's: `summonsSeen`). Nothing is locked by rank: the
     price is the lock. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
-    `swarmContract.ts`: a strain's rules as data, a count and a cap; `rules/swarms.ts`,
+    `swarmContract.ts`: a strain's qualities graded 1 to 5 (speed, bite, toughness, brood, size,
+    senses), its species' gifts 1 to 3 (chakra drain, camouflage, glow, blinding, venom) and
+    what it fears, a count and a cap; each read once in `rules/swarms.ts`,
     `engines/plan/swarm.ts`): techniques with a `swarmCost` spend insects (a fighter without a
     hive pays chakra alone), a swarm technique that reaches a foe leaves insects settled on them
     that draw their chakra into the host and keep them from hiding until they drop off or a
     feared element burns them off, areas and feared elements kill insects in the host's hive,
-    a hive helps its host find the hidden, and `CombatOutcome.swarm` reports how many came home. It is cared for
+    a hive helps its host find the hidden, and `CombatOutcome.swarm` reports how many came home. Your
+    hive is kept between fights (`systems/hives`, `GameState.hive`, `game/hives/`): a child of a
+    clan with a `hive` (`ClanDef.hive`, a pack's `StrainDef`s) is born with one, giving it a
+    quarter, half or most of their chakra for good (`hiveShare` on the creation draft); the
+    share comes off max chakra wherever chakra is reckoned (`chakraBody`, `ChakraBody.chakraGiven`
+    in `systems/vitals`) and sets how many insects the body keeps; what came home from a fight
+    is what the hive holds, and each day it breeds back (fast at home, slow away, slower hungry).
+    People of a hive clan fight with a full one. Hives are **crossbred**
+    (`systems/hives/crossing.ts`, `game/hives/breeding.ts`): a host searches a wild place for its
+    biome's insects (`seekInsects`, a pack's wild `StrainDef`s), keeps them in jars at home,
+    studies a jar until it is understood (`studyJar`) and crosses it in (`crossJar`). The brood
+    hatches days later by luck drawn from the seed and day: its stability (kinship of the parents
+    and how many crosses deep they are) decides how far qualities stray, whether gifts pass, and
+    whether it fails or throws back. Bred strains are kept on the hive (`Hive.bred`) as
+    `StrainSheet`s beside the pack's, and the host names them (`nameStrain`). A body born
+    outside a hive clan can take one later through the clan's **rite** (`ClanHive.rite`,
+    `game/hives/rite.ts`, known rites in `GameState.rites`): lent by the clan's archive
+    (`CompoundFields.keepsRite`) to a jōnin its head trusts, found on a job (`reward.hiveRite`)
+    or taught by someone of the clan (`PersonDef.hiveRite`); taken at home (`takeHive`) at the
+    same three shares, with a first brood that breeds up and days abed (a `rite` injury).
+    **Dust** is a pool its user commands (`CombatantSetup.dust`, `dustContract.ts`: a kind's
+    weight, hold and draw graded 1 to 5, its gifts (cutting, blinding), its banes and the grounds
+    it is drawn on; read once in `rules/dust.ts`, `engines/plan/dust.ts`): a technique's
+    `dustCost` spends it and its `dustDraw` pulls it up first, in full on a ground that holds
+    it; heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
+    harder, a bane scatters it, and `CombatOutcome.dust` reports what is left. Kinds are shared
+    content (`content/shared/dusts.ts`, `DustDef`). An automatic shield is never dust's: it
+    belongs to where the power came from (a beast, a spirit). A companion is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -869,6 +898,18 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   teacher's `contract`, with the `tastes` it likes as offerings and its `parting` words. A
   contract only foes hold needs neither: list its summons on an `EnemyDef.summons` with a
   `tell`. Validated in `validateContracts.ts`.
+- **Add a hive strain or hive clan:** a `StrainDef` in the pack's `strains.ts` (a species and
+  family, the six qualities graded E to A, at least one gift, the elements it fears), a `hive`
+  on the `ClanDef` naming it, and clan techniques with a `swarmCost`. A body's install adds a
+  grade of toughness and size (`qualitiesInBody`). A wild strain has a `wild` haunt (biomes,
+  night-only) and is found by searching a wild place of its biome (shared ones in
+  `shared/wildStrains.ts`). Validated in `validateStrains.ts`. A clan's `hive.rite` lets an
+  outsider take the hive later: give it a source (a compound with `keepsRite` and a head, a
+  job's `reward.hiveRite`, or a person of the clan with `hiveRite`; `validateRites.ts`).
+- **Add a dust kind:** a `DustDef` in `content/shared/dusts.ts` (weight, hold and draw graded E
+  to A, gifts, banes, the grounds it is drawn on); every pack takes the shared list. A dust
+  technique sets `dustCost` (spent) or `dustDraw` (pulled up first). Validated in
+  `validateDusts.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation
@@ -1076,8 +1117,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `ChoiceBarKeys`, so a new scene with a choice bar gets both without code, and beside it the
   panel of what the scene is about (`sceneBeside`, a view model: the job, the person you face,
   or you; drawn by `SceneSide`). A new scene kind takes a case in `sceneBeside`.
-  The title menu sits outside the app frame and has its own arrangement (`wide-menu.css`, every
-  rule under `.main-menu.wide`): the picture beside the title and choices, which take number keys.
+  The title menu sits outside the app frame and has its own arrangement (`WideMenu`, styled in
+  `wide-menu.css` under `.main-menu.wide`): a game's title screen, a list of choices (arrows move
+  the mark, Enter or a number takes it) beside a panel telling the one marked, with your save
+  card (`saveSummary`: your portrait, rank, place and day) under Continue.
+  Versus setup on a desk (`VersusDesk`) fills the window: the bout, the roster and a profile,
+  each scrolling on its own; the profile follows the pointer through the roster and is never
+  empty, and Enter fights.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own

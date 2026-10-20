@@ -125,6 +125,8 @@ export interface MissionDef {
     readonly companionKindId?: string;
     /** A summoning contract offered to you on success (a contract id); one at a time. */
     readonly contractId?: string;
+    /** A hive clan's rite, found and handed over on success (a clan id). */
+    readonly hiveRite?: string;
   };
   readonly minMissionsCompleted: number;
   /** Always on the board (patrols, watches); otherwise jobs are posted for a few days at a time. */

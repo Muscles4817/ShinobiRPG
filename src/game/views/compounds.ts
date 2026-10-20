@@ -5,6 +5,8 @@ import type { GameContext } from '../context';
 import { currentLocation } from '../ops';
 import { findPerson, fullName, peopleHere } from '../people/cast';
 import type { GameState } from '../state';
+import { knowsRite, riteOf } from '../hives/rite';
+import { choice, type Choice } from './common';
 import { personCard, personFace, relationTo, type PersonCard, type PersonFace } from './people';
 
 /**
@@ -43,6 +45,8 @@ export interface CompoundView {
   readonly head: string | null;
   /** Who is home now; empty while the gate is shut to you. */
   readonly home: readonly PersonCard[];
+  /** The clan's hive rite kept in its archive, for an outsider without a hive who doesn't know it. */
+  readonly archive: (Choice & { readonly name: string; readonly description: string }) | null;
 }
 
 function homeAt(state: GameState, ctx: GameContext, placeId: string) {
@@ -97,6 +101,21 @@ export function quarterView(state: GameState, ctx: GameContext): QuarterView | n
   };
 }
 
+function archiveOf(
+  state: GameState,
+  ctx: GameContext,
+  compound: Compound,
+): CompoundView['archive'] {
+  const found = compound.keepsRite ? riteOf(ctx, compound.clanId) : null;
+  const outsider = state.character.clanId !== compound.clanId;
+  if (!found || !outsider || state.hive || knowsRite(state, compound.clanId)) return null;
+  return {
+    ...choice(state, ctx, { type: 'readRite', placeId: compound.id }),
+    name: found.rite.name,
+    description: found.rite.description,
+  };
+}
+
 export function compoundView(
   state: GameState,
   ctx: GameContext,
@@ -117,6 +136,7 @@ export function compoundView(
     home: shut
       ? []
       : homeAt(state, ctx, placeId).map(({ person }) => personCard(state, ctx, person)),
+    archive: shut ? null : archiveOf(state, ctx, compound),
   };
 }
 

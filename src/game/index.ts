@@ -296,3 +296,5 @@ export { compoundView, quarterView, type CompoundView, type QuarterView } from '
 export { companionSheet, type CompanionSheet, type CompanionStrip } from './views/companionCare';
 export { vetView, type VetView } from './views/vet';
 export { contractCard, type ContractCard } from './views/contract';
+export { hiveCard, type HiveCard } from './views/hiveCard';
+export { riteCards, type RiteCard, type RiteShare } from './views/riteCard';

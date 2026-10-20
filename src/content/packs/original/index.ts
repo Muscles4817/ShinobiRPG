@@ -1,6 +1,9 @@
 import { bestiary } from '../../shared/bestiary';
 import { ORIGINAL_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
+import { STRAINS } from './strains';
+import { WILD_STRAINS } from '../../shared/wildStrains';
+import { DUSTS } from '../../shared/dusts';
 import { CONTRACT_TECHNIQUES, CONTRACTS } from './contracts';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
@@ -18,6 +21,7 @@ import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
 import { UPBRINGINGS } from '../../shared/upbringings';
 import { CLAN_TECHNIQUES } from './clanTechniques';
+import { TOGA_TECHNIQUES } from './togaTechniques';
 import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
 import { COMPANION_KINDS } from './companions';
@@ -107,6 +111,7 @@ export const ORIGINAL_PACK: ContentPack = {
   techniques: [
     ...TECHNIQUES,
     ...CLAN_TECHNIQUES,
+    ...TOGA_TECHNIQUES,
     ...SENSEI_TECHNIQUES,
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
@@ -153,6 +158,8 @@ export const ORIGINAL_PACK: ContentPack = {
   companionKinds: COMPANION_KINDS,
   companionLore: COMPANION_LORE,
   contracts: CONTRACTS,
+  strains: [...STRAINS, ...WILD_STRAINS],
+  dusts: DUSTS,
   enemies: [
     ...ENEMIES,
     ...bestiary(ORIGINAL_FOE_KIT),

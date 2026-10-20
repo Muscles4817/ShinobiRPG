@@ -112,6 +112,27 @@ export function WildsPage({
           />
         ))}
         {view.wild && <TrackCard wild={view.wild} perform={perform} />}
+        {view.insects && (
+          <article className="gather-card">
+            <h3>Insects</h3>
+            <p className="story">
+              {view.insects.about.length > 0
+                ? `${view.insects.about.join(' and ')} live here. A few would go in a jar.`
+                : 'Nothing here worth a jar right now.'}
+            </p>
+            {view.insects.blocker && <p className="blocker">{view.insects.blocker}</p>}
+            <button
+              type="button"
+              className="btn"
+              disabled={view.insects.blocker !== null}
+              onClick={() => {
+                if (view.insects) perform(view.insects.action);
+              }}
+            >
+              Search for insects
+            </button>
+          </article>
+        )}
       </main>
     </>
   );

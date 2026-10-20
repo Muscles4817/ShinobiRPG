@@ -130,4 +130,16 @@ export const INJURIES: readonly InjuryDef[] = [
     causes: ['collapse'],
     bedridden: true,
   },
+  {
+    id: 'hive-taking',
+    name: 'The hive taking hold',
+    where: 'chakra',
+    description:
+      'The insects are settling into your flesh and learning your chakra. You burn and shiver, and the medics keep you in bed until the hive is yours.',
+    modifiers: { training: 0.3 },
+    fight: { chakraControl: 0.6, ninjutsu: 0.8, stamina: 0.8 },
+    days: 5,
+    causes: ['rite'],
+    bedridden: true,
+  },
 ];

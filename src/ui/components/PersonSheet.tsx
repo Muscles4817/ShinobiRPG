@@ -76,6 +76,7 @@ function PersonActions({ sheet: p, perform, onClose }: ActionsProps) {
     p.spar?.blocker ? `Spar: ${p.spar.blocker}` : null,
     p.recipe?.blocker ?? null,
     p.contract?.blocker ? `Contract: ${p.contract.blocker}` : null,
+    p.rite?.blocker ? `Rite: ${p.rite.blocker}` : null,
   ];
   const shown = [...new Set(reasons.filter((r): r is string => r !== null))];
   return (
@@ -102,6 +103,9 @@ function PersonActions({ sheet: p, perform, onClose }: ActionsProps) {
           perform={perform}
           onClose={onClose}
         />
+      )}
+      {p.rite && (
+        <Act label={`Learn ${p.rite.name}`} choice={p.rite} perform={perform} onClose={onClose} />
       )}
       {p.recipe && (
         <Act

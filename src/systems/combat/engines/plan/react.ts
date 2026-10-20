@@ -29,6 +29,7 @@ import { counterLine, hitLine, missLine, momentOf, type MissWhy } from './voice'
 import { told, within, type Bank, type Moment } from './fresh';
 import { fighterIn, patch, say, type DefenceKind, type PlanFighter, type Round } from './state';
 import { confusedLine } from './sceneVoice';
+import { dustGuard } from './dust';
 
 /** Foresight finds a Counter's moment more often. */
 const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
@@ -173,7 +174,7 @@ function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round
  * catches more, and a piercing weapon goes partly through it.
  */
 function guardLets(attacker: PlanFighter, target: PlanFighter, blow: Blow): number {
-  const kept = guardScale(attacker, target) * (1 - heldGuard(target));
+  const kept = guardScale(attacker, target) * dustGuard(target) * (1 - heldGuard(target));
   return kept + (1 - kept) * (blow.pierce ?? 0);
 }
 

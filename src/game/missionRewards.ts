@@ -7,6 +7,7 @@ import type { MissionDef } from '@/systems/missions';
 
 import { metToday } from './companions/adopt';
 import { signBlocker } from './contracts/summons';
+import { riteBlocker, riteOf } from './hives/rite';
 import type { GameContext } from './context';
 import { chip } from './ops';
 import type { GameState } from './state';
@@ -14,8 +15,8 @@ import type { GameState } from './state';
 /**
  * What a client hands over besides ryo on success: a technique scroll (studied at home or in a
  * library), a piece of gear such as a named weapon, a family recipe, or an animal you rescued,
- * which waits at the animal clinic until you choose to take it home (one waits at a time).
- * Nothing you already own or know is given twice.
+ * which waits at the animal clinic until you choose to take it home (one waits at a time), a
+ * summoning contract, or a hive clan's rite. Nothing you already own or know is given twice.
  */
 
 export interface HandedOver {
@@ -23,6 +24,8 @@ export interface HandedOver {
   readonly cooking: Cooking;
   readonly companions: Companions;
   readonly contract: Contract | null;
+  /** Hive clans whose rite you know, with any the job handed over. */
+  readonly rites: readonly string[];
   readonly chips: readonly JournalChip[];
   /** For the debrief card, by name. */
   readonly report: {
@@ -31,6 +34,7 @@ export interface HandedOver {
     readonly recipe?: string;
     readonly companion?: string;
     readonly contract?: string;
+    readonly rite?: string;
   };
 }
 
@@ -60,7 +64,7 @@ function giftsOf(state: GameState, ctx: GameContext, def: MissionDef) {
 type Given = HandedOver['report'];
 
 /** The order the debrief and chips name them in. */
-const GIVEN_KINDS = ['scroll', 'gear', 'recipe', 'companion', 'contract'] as const;
+const GIVEN_KINDS = ['scroll', 'gear', 'recipe', 'companion', 'contract', 'rite'] as const;
 
 const GIVEN_CHIPS: Readonly<Record<keyof Given, (name: string) => string>> = {
   scroll: (name) => `${name} scroll`,
@@ -68,6 +72,7 @@ const GIVEN_CHIPS: Readonly<Record<keyof Given, (name: string) => string>> = {
   recipe: (name) => `Learned ${name}`,
   companion: (name) => `${name} is at the animal clinic`,
   contract: (name) => `Signed ${name}`,
+  rite: (name) => `Learned ${name}`,
 };
 
 function namedOnly(names: Record<keyof Given, string | undefined>): Given {
@@ -89,6 +94,13 @@ function contractOffered(state: GameState, ctx: GameContext, def: MissionDef) {
     : null;
 }
 
+/** A hive clan's rite the job hands over, if it is any use to you (no hive, not known yet). */
+function riteFound(state: GameState, ctx: GameContext, def: MissionDef) {
+  const clanId = def.reward.hiveRite;
+  const found = clanId ? riteOf(ctx, clanId) : null;
+  return found && riteBlocker(state, found.clan.id) === null ? found : null;
+}
+
 export function handedOver(state: GameState, ctx: GameContext, def: MissionDef): HandedOver {
   const { scroll, gear, recipe, animal } = giftsOf(state, ctx, def);
   const withScroll = scroll ? addScroll(state.inventory, scroll.id) : state.inventory;
@@ -96,18 +108,21 @@ export function handedOver(state: GameState, ctx: GameContext, def: MissionDef):
     ? metToday(state, animal, { bond: RESCUED_START_BOND, arrival: 'rescue' })
     : null;
   const contractDef = contractOffered(state, ctx, def);
+  const rite = riteFound(state, ctx, def);
   const given = namedOnly({
     scroll: scroll?.name,
     gear: gear?.name,
     recipe: recipe?.name,
     companion: rescued?.name,
     contract: contractDef?.name,
+    rite: rite?.rite.name,
   });
   return {
     inventory: gear ? addGear(withScroll, gear.id) : withScroll,
     cooking: recipe ? learnRecipes(state.cooking, [recipe.id]) : state.cooking,
     companions: rescued ? { ...state.companions, waiting: rescued } : state.companions,
     contract: contractDef ? signed(contractDef.id, state.time.day) : state.contract,
+    rites: rite ? [...state.rites, rite.clan.id] : state.rites,
     chips: chipsFor(given),
     report: given,
   };

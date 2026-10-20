@@ -67,4 +67,24 @@ export const CLANS: readonly ClanDef[] = [
       dormant: true,
     },
   },
+  {
+    id: 'toga',
+    name: 'Tōga',
+    outsiders: 'welcoming',
+    description:
+      'Moth-keepers who tend the great lanterns by night. Their children are born with a hive of lantern moths in them.',
+    statBonuses: { perception: 2, genjutsu: 1, strength: -2 },
+    modifiers: { growth: { perception: 1.1 } },
+    arts: ['perception', 'genjutsu'],
+    startingTechniqueIds: ['toga-moth-dust'],
+    lodging: 'Your room under the eaves of the Tōga moth house',
+    hive: {
+      strainId: 'lantern-moth',
+      rite: {
+        name: 'The Lamp Vigil',
+        description:
+          'A night under the great lantern while the moths find their way in, then days of fever as they settle. The Tōga give their newborns to it; few grown bodies ask.',
+      },
+    },
+  },
 ];

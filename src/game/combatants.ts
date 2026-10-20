@@ -22,6 +22,7 @@ import { enemyWalking, playerWalking } from './footing';
 import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
 import { clanSize } from './bodySize';
+import { chakraBody, hiveSwarm } from './hives/hive';
 
 /** Translates game entities into the combat contract's vocabulary. */
 
@@ -100,7 +101,7 @@ function playerTechniques(state: GameState, ctx: GameContext): CombatTechnique[]
 }
 
 export function playerCombatant(state: GameState, ctx: GameContext): CombatantSetup {
-  const { name, stats, vitals, nature } = state.character;
+  const { name, vitals, nature } = state.character;
   const armed = combatStats(state, ctx);
   return {
     id: PLAYER_COMBATANT_ID,
@@ -112,7 +113,8 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     health: vitals.health,
     maxHealth: MAX_HEALTH,
     chakra: vitals.chakra,
-    maxChakra: maxChakra(stats),
+    maxChakra: maxChakra(chakraBody(state)),
+    ...hiveSwarm(state, ctx),
     techniques: playerTechniques(state, ctx),
     nature,
     perks: perksOf(state, ctx),

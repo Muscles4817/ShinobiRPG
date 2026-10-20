@@ -1095,7 +1095,7 @@ view:
     blocker: You don’t know whether they’ve noticed you. Watch or sense them first.
   approaches[2]:
     label: Sneak past
-    detail: Speed 84%
+    detail: Speed 71%
   approaches[3]:
     label: Talk them down
     detail: Willpower 32%
@@ -1104,7 +1104,7 @@ view:
     detail: 80 ryo
   approaches[5]:
     label: Frighten them off
-    detail: Willpower 68%
+    detail: Willpower 45%
   approaches[6]:
     label: Set the ground
     blocker: Needs a trap or field technique, or a smoke bomb in your pouch.
@@ -1187,7 +1187,7 @@ view:
     detail: They reel, you strike first
   approaches[2]:
     label: Sneak past
-    detail: Speed 84%
+    detail: Speed 71%
   approaches[3]:
     label: Talk them down
     detail: Willpower 32%
@@ -1196,7 +1196,7 @@ view:
     detail: 80 ryo
   approaches[5]:
     label: Frighten them off
-    detail: Willpower 68%
+    detail: Willpower 45%
   approaches[6]:
     label: Set the ground
     blocker: Needs a trap or field technique, or a smoke bomb in your pouch.
@@ -1223,6 +1223,7 @@ view:
   prompt: Mid range, round 1, exchange 1 of 4
 
 >>> combatAct (Watch the round)
+  journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves, a touch] [Taijutsu, a touch]
 
 === report card ===
 view:
@@ -1236,22 +1237,31 @@ view:
   Gōran slips through the bandit archer’s fire.
   Gōran keeps low and comes in under the bandit thug’s guard, inside the bandit thug’s reach.
   Asuka starts with Lantern Cut before anyone has settled.
-  There is nothing the bandit archer can do as Asuka’s Lantern Cut opens up her. [Guarded] [−50]
+  The bandit archer was waiting for exactly that.
   Goro launches into Palm Strike.
-  Goro’s Palm Strike smashes into the bandit thug with everything behind it. [Guarded] [−36]
+  Goro’s Palm Strike slams into the bandit thug, and it leaves him shaken. [Guarded] [−20]
   You open with Gale Heel.
-  The bandit thug sees it coming.
+  Your Gale Heel slices across the bandit thug cleanly. [Guarded] [−11]
   Asuka steps in front of you.
-  Asuka is a shade too slow, and the bandit thug’s strike clips them. [Guarded] [−3]
+  Asuka is a shade too slow, and the bandit thug’s strike clips them. [Guarded] [−7]
   —— Second exchange ——
   Asuka’s blade flows into Lantern Cut.
-  Asuka’s Lantern Cut tears through the bandit thug, and he’s nearly knocked off his feet. [Guarded] [−50]
+  Asuka’s Lantern Cut hacks into the bandit thug, and he feels it. [Guarded] [−34]
   Gōran launches into Iron Gate Palm.
   There is nothing the bandit thug can do as Gōran’s Iron Gate Palm smashes into him. [Guarded] [−50]
   The bandit thug goes down and stays down.
   Goro explodes forward with Palm Strike.
-  Goro’s Palm Strike drives through the bandit archer with everything behind it. [Guarded] [−50]
-  The bandit archer drops to her knees and topples over.
+  Goro’s Palm Strike crashes into the bandit archer, and it leaves her shaken. [Guarded] [−22]
+  You explode forward with Gale Heel.
+  You land your Gale Heel on the bandit archer. [Guarded] [−13]
+  The bandit archer falls back to mid range.
+  —— Third exchange ——
+  The bandit archer meets Gōran’s rush head on.
+  The bandit archer waits for Gōran to commit, then fires.
+  The bandit archer’s kunai nicks Gōran. [−2]
+  Asuka’s blade flows into Lantern Cut.
+  There is nothing the bandit archer can do as Asuka’s Lantern Cut cleaves into her. [Guarded] [−41]
+  The bandit archer turns and runs.
   You are still on your feet, and no one is left to face you.
 
 >>> leaveFight
@@ -1465,6 +1475,8 @@ view:
   result: victory
   enemies: a bandit thug and a bandit archer
   summary: You won in a single round. The bandit archer was the last of them to go down.
+  taught[0]: Chakra Reserves, a touch
+  taught[1]: Taijutsu, a touch
 
 >>> dismissReport
 
@@ -1659,7 +1671,7 @@ view:
     blocker: You don’t know whether they’ve noticed you. Watch or sense them first.
   approaches[2]:
     label: Sneak past
-    detail: Speed 94%, at Goro’s pace
+    detail: Speed 90%, at Goro’s pace
   approaches[3]:
     label: Talk them down
     detail: Willpower 100%
@@ -1749,7 +1761,7 @@ view:
     detail: They reel, you strike first
   approaches[2]:
     label: Sneak past
-    detail: Speed 94%, at Goro’s pace
+    detail: Speed 90%, at Goro’s pace
   approaches[3]:
     label: Talk them down
     detail: Willpower 100%
@@ -1798,17 +1810,19 @@ view:
   Gōran explodes forward with Iron Gate Palm.
   Gōran’s Iron Gate Palm drives through the first bandit thug, and he’s nearly knocked off his feet. [Guarded] [−50]
   Asuka opens with Lantern Cut.
-  There is nothing the first bandit thug can do as Asuka’s Lantern Cut tears through him. [Guarded] [−50]
-  The first bandit thug drops to his knees and topples over.
-  Goro opens with Palm Strike.
-  Goro’s Palm Strike flattens the second bandit thug with everything behind it. [Guarded] [−36]
+  Asuka’s Lantern Cut hacks into the first bandit thug, and he feels it. [Guarded] [−33]
+  Goro starts with Palm Strike before anyone has settled.
+  Goro’s Palm Strike lands on the first bandit thug before the first bandit thug is properly set. [Guarded] [−18]
+  The first bandit thug goes down and stays down.
   Asuka steps in front of you.
   The second bandit thug’s strike finds only the space where Asuka stood.
   —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel hurls aside the second bandit thug, and he’s nearly knocked off his feet. [Guarded] [−50]
   Steel flashes as Asuka looses Lantern Cut.
-  There is nothing the second bandit thug can do as Asuka’s Lantern Cut tears through him. [Guarded] [−50]
+  Asuka’s Lantern Cut hacks into the second bandit thug, and it leaves him shaken. [Guarded] [−30]
+  Gōran goes in with Iron Gate Palm.
+  There is nothing the second bandit thug can do as Gōran’s Iron Gate Palm drives through him. [Guarded] [−50]
   The second bandit thug hits the ground and doesn’t get up.
   The last of them is down, and it is over.
 

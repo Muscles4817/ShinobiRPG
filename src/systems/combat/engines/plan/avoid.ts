@@ -28,6 +28,8 @@ import {
 import { isDazed } from './daze';
 import { readsInTheMoment } from './judgement';
 import { readyDefences } from './readiness';
+import { settledSlips, swarmSlips } from './swarm';
+import { blindedSlips, dustSlips } from './dust';
 import type { PlanFighter, Round } from './state';
 import { sizeSlips } from '../../rules/size';
 
@@ -35,7 +37,8 @@ import { sizeSlips } from '../../rules/size';
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
  * ready Dodge, a daze (no slipping anything), a pin, footing on this ground, a field dulling the
  * defender's eyes, a swift kit, a technique leaned on (read more easily by a mind that reads
- * the fight) and foresight.
+ * the fight), insects (a swarm's speed and camouflage, glowing or blinding insects settled on
+ * someone) and foresight.
  */
 
 /** A swift fighter slips this much more with a Dodge ready, half of it without. */
@@ -53,6 +56,10 @@ export interface Incoming {
   readonly areaSize?: AreaSize;
   /** How much more easily it is read for having been leaned on (`familiarScale`). */
   readonly familiar?: number;
+  /** A swarm attack's slip scale (`swarm.ts`: its insects' speed and camouflage). */
+  readonly swarm?: number;
+  /** A dust attack's slip scale (`dust.ts`: heavy dust is slower to arrive). */
+  readonly dust?: number;
 }
 
 /** A Dodge is the target's ready defence here. */
@@ -78,9 +85,13 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     ...(incoming.accuracy ? { accuracy: incoming.accuracy } : {}),
     ...(incoming.areaSize ? { areaSize: incoming.areaSize } : {}),
   });
+  const insects = (incoming.swarm ?? 1) * settledSlips(round, attacker, target);
+  const dust = (incoming.dust ?? 1) * blindedSlips(attacker);
   // A big body is a big target (`size.ts`).
   const held =
     chance *
+    insects *
+    dust *
     (isPinned(target) ? PIN_SLIP : 1) *
     footingOf(round.ground, target) *
     sizeSlips(target);
@@ -111,6 +122,8 @@ export function techniqueIncoming(
     familiar: familiar * (full ? HANDS_FULL_READ : 1),
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     ...(area ? { areaSize: areaSize(area) } : {}),
+    ...(t.swarmCost ? { swarm: swarmSlips(attacker, t) } : {}),
+    ...(t.dustCost ? { dust: dustSlips(attacker, t) } : {}),
   };
 }
 

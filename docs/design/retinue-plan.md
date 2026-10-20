@@ -642,7 +642,8 @@ nothing. This step gives those techniques a pool to come from.
 - **4c, other strains:** wild insects found away from home, studied, and crossbred.
 - **4d, the install later in life:** the S-rank scroll, the scroll in the world, the rogue who
   teaches.
-- **4e, sand:** a jutsu-made pool that recovers mid-fight and guards on its own.
+- **4e, dust:** sand and its kin, a pool its user commands and draws back up by jutsu (see
+  "Commanded dust" below).
 
 **Still open** (answered with sensible defaults unless you say otherwise):
 
@@ -651,6 +652,167 @@ nothing. This step gives those techniques a pool to come from.
   child of the insect clan.
 - An adult taking the install later gets the same three shares, but at a price: days laid up
   while the body takes the hive.
+
+### The install later in life (step 4d)
+
+A clan's secret is a **rite** on its hive (`ClanHive.rite`: a name and what it is). Knowing it
+is kept in `GameState.rites` (clan ids); taking it is a second step, at home.
+
+- **Learning it**, three ways (each validated to name a clan with a rite, and every rite has
+  one):
+  - **the clan's archive**: a compound with `keepsRite` lends it (`readRite`, an afternoon) to
+    a jōnin who is friends with the clan's head. The S-rank secret is the late road;
+  - **a scroll in the world**: a job's `reward.hiveRite` hands it over (once, C-rank, ten
+    jobs in: the Aburame's humming case pawned in Tanzaku, the Tōga's vigil case on a wreck
+    off Shiomachi);
+  - **a rogue of the clan**: a person with `hiveRite` teaches it once you are close
+    (`learnRite`): Sōsuke Aburame at Tanzaku's dice tables, Tomoshi Tōga on Shiomachi's
+    breakwater. Only someone of the clan teaches its rite.
+- **Taking it** (`takeHive`, at home, no hive yet): the same three shares a clan child picks.
+  The clan's strain goes in with the clan's install (toughness and size a grade up), as a first
+  brood of a fifth of the cap that breeds up at home. The chakra it takes is gone from today,
+  and a bedridden `rite` injury (the hive taking hold) keeps you abed for days by share
+  (`DAYS_ABED`: three, five or eight, shortened by stamina).
+- Someone with a hive is never offered a rite; a job that finds one hands nothing over to them.
+
+### Commanded dust (step 4e)
+
+Sand is one of a family: the second Kazekage fought with iron sand, Gaara's father with gold
+dust. So step 4e builds **dust**, a pool of matter its user commands, and each kind of dust
+is data, as insect strains are.
+
+**What decided it (the designer's calls):**
+
+- **Guard is not a dust quality.** Gaara's sand shields him on its own because it came from a
+  tailed beast. An automatic shield is a perk of where the power came from (a beast, a bound
+  spirit) and lays over any dust; it comes later, with milestone 3's beasts and spirits.
+  Without it a dust user guards with a Guard like anyone, and dust only helps that Guard by its
+  weight.
+- **Bloodline first, a scroll at the edge.** Nearly everyone who commands dust was born to it
+  (a clan with a dust affinity). The only other way is an S-rank scroll found in the world.
+- **Dust kinds are shared.** Every kind is available to both packs: a rogue with ash may turn
+  up in either when the world is populated. The original pack gets a dust clan of its own.
+
+**A kind of dust** (`content/shared/dusts.ts`, a `DustDef`; the fight reads it as a `DustKind`):
+
+| Quality | What a better grade does                                                              |
+| ------- | ------------------------------------------------------------------------------------- |
+| Weight  | Dust attacks hit harder and a Guard keeps more out, but arrive slower (slipped more). |
+| Hold    | Dust pins grip harder (harder to struggle out of).                                    |
+| Draw    | A draw pulls more up from the ground.                                                 |
+
+Gifts only some carry (1 to 3): **cutting** (its hits leave a bleed) and **blinding** (a foe
+it reaches aims worse for a couple of exchanges). **Banes** scatter some of it when its user is
+hit by one: an element (water soaks sand, lightning scatters iron, wind blows ash) or `heavy`
+(a hard physical blow shatters glass). **Drawn on**: the grounds that hold it, where a draw
+pulls it up in full; elsewhere a draw gathers back only what fell near.
+
+| Dust       | Weight | Hold | Draw | Gift       | Bane      | Drawn on            |
+| ---------- | ------ | ---- | ---- | ---------- | --------- | ------------------- |
+| Sand       | D      | B    | A    |            | water     | arena, forest, town |
+| Iron sand  | A      | C    | E    | cutting 2  | lightning | (carried only)      |
+| Gold dust  | A      | A    | E    |            |           | (carried only)      |
+| Ash        | E      | D    | B    | blinding 2 | wind      | town, room          |
+| Glass sand | C      | D    | D    | cutting 3  | heavy     | (carried only)      |
+
+**In the fight** (`dustContract.ts`, `rules/dust.ts`, `engines/plan/dust.ts`):
+`CombatantSetup.dust` is `{ kind, count, cap }`. A technique's `dustCost` spends dust (a
+fighter without dust pays its chakra alone) and its `dustDraw` pulls dust up first, so a
+draw is a jutsu (Sand Armour gathers sand as it coats you). `CombatOutcome.dust` reports
+what is left; the fight screen shows a Dust meter.
+
+**Build order:**
+
+- **4e-i, dust in a fight:** the contract, the rules, the engine, the shared kinds.
+- **4e-ii, dust users:** a carried store between fights (gourd, pouch, scroll), dust
+  bloodlines (the Kazekage and Gaara's lines in the fan pack, a dust clan in the original),
+  their techniques.
+- **4e-iii, the S-rank scrolls** in the world, one per kind.
+- **Later:** the beast or spirit shield perk, with milestone 3.
+
+### Strains and crossbreeding (step 4c)
+
+To crossbreed, a strain has to be made of parts that can be mixed. The designer's model has two
+layers: **qualities** every insect has, as a matter of degree, and **gifts** only some species
+carry, which can be strong or weak.
+
+**Qualities: what every insect has** (graded E to A, like stats; each read by one rule in
+`rules/swarms.ts`):
+
+| Quality   | What a better grade does in a fight or at home                                  |
+| --------- | ------------------------------------------------------------------------------- |
+| Speed     | Swarm attacks are harder to slip: fast insects land.                            |
+| Bite      | Swarm attacks hit harder.                                                       |
+| Toughness | Fewer insects lost to areas and feared elements.                                |
+| Brood     | Breeds back faster at home.                                                     |
+| Size      | Smaller insects: more of them to the chakra given (a bigger cap), each lighter. |
+| Senses    | Finds the hidden; settled insects keep a foe found.                             |
+
+**Gifts: what makes a species** (each one weak, strong or great, or absent):
+
+| Gift         | What it does                                                                                                            |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Chakra drain | Settled insects draw a foe's chakra into the host. The Aburame's kikaichū have it great; a few wild kinds have a trace. |
+| Camouflage   | Swarm attacks are hard to see coming, so even harder to slip.                                                           |
+| Glow         | Dust that marks: a settled foe can't conceal and is easier to hit.                                                      |
+| Blinding     | Scales in the eyes: swarm techniques may daze, and settled foes aim worse.                                              |
+| Venom        | Settled insects poison as well (saps strength and speed).                                                               |
+| Silk         | Swarm holds grip harder and are harder to break.                                                                        |
+| Shell        | The wall and the clone stand more hits before they come apart.                                                          |
+
+**Weaknesses** are what a species can't stand: fire, wind, water, earth or lightning, each
+doubling the losses to that element.
+
+**Species and family.** Every strain has a species (kikaichū, lantern moth, paper wasp…) and
+belongs to a family (beetles, moths, wasps, spiders, flies). How far apart two strains are is
+how far apart their species are: the same species, the same family, or strangers.
+
+**The strains to start with:**
+
+- **Kikaichū** (beetles): chakra drain great; speed C, bite D, toughness B, brood C, size B,
+  senses C; fears fire.
+- **Lantern moths** (moths): glow strong, blinding strong; senses B, speed C, the rest D;
+  fears fire and wind.
+- **Wild strains away from home**, by biome, each with a quality or a gift worth having:
+  - woods: a paper wasp (fast, a weak venom) and a weaving spider (silk);
+  - marsh: a midge cloud (tiny, a fast brood);
+  - river: a water beetle (shell, no fear of water);
+  - mountain: a rock locust (tough);
+  - grassland or anywhere at night: a bark moth (camouflage);
+  - a few with a trace of chakra drain, found far from home;
+  - foreign markets sell rarer strains for a price.
+
+**Crossbreeding is luck, forgiving when simple and wild when complex:**
+
+- **Stability.** Every cross has a stability, set by how far apart the parents are (same species,
+  same family, strangers) and how many crosses deep the lineage already is. A first cross
+  within a species is near certain; strangers several crosses deep are a gamble.
+  Stability shows in words (true-breeding, settled, wavering, wild), never as a number.
+- **What the brood inherits** is drawn from the seed and the day (never the Rng):
+  - each quality lands between the parents' grades, and a less stable cross strays further
+    either way;
+  - each gift passes at its strength, a step weaker, or not at all, more often lost the less
+    stable the cross; a stable cross keeps what both parents share;
+  - weaknesses pass more easily than gifts;
+  - a wild cross may throw back to one parent, fail outright (the brood dies and the
+    insects spent on it are lost), or, rarely, come out with a gift stronger than either
+    parent's.
+- **Doing it.**
+  1. Find insects in a wild place (an action like foraging, once a day): what turns up hangs on
+     the biome, the season and your perception. A find goes into a jar at home.
+  2. Study a jar each day at home to learn what it is; a cross needs it understood first.
+  3. Cross it into your hive: over a few days at home the hive breeds the new strain, thinned
+     while it does. You name what comes out. If you don't like it, the only way back is
+     another cross.
+- **The install** a child of the clan is born with adds a grade of toughness and size to
+  whatever strain the body holds.
+
+**Still open:**
+
+- whether a hybrid is capped (a budget across qualities and gifts) or a patient breeder can
+  stack everything given enough luck. The default is no cap: instability is the brake;
+- whether a moth host may cross beetles and wasps, or only moths. The default is any insect,
+  with strangers being the least stable cross.
 
 ### Shamans: spirits seen, bound and sealed
 
@@ -1034,3 +1196,94 @@ and its genes, its skills with training**, and every kind has its own ceiling.
   chakra alone.
 - **Not yet:** foes and teammates don't yet aim areas or fire at a hive on purpose. That
   comes with the hive at home (4b), when hives first appear in fights.
+
+### Step 4b: the hive at home
+
+- **The system** (`systems/hives`):
+  - a hive is a strain, a share and a count;
+  - the share (a quarter, half or most) is chakra given for good, and sets the cap, at
+    `INSECTS_PER_CHAKRA` insects per point of chakra given;
+  - each day the hive breeds back a share of the cap: `BREED_AT_HOME` in the home village,
+    `BREED_AWAY` elsewhere, halved when the host is hungry.
+- **Chakra given.** `maxChakra` reads a `chakraGiven` share (`ChakraBody`). The game reckons
+  your chakra through `chakraBody(state)` everywhere: the meters, sleep, camp, exams, fights,
+  exhaustion and time passing. The share comes off wherever chakra is worked out.
+- **The game:**
+  - `GameState.hive` (save v60) is null for most;
+  - a child of a hive clan is born with it full, at the share chosen on the family history page;
+  - an old save of a hive clan gets its hive the first time a day passes;
+  - your hive rides into every fight, spars included, and what came home is kept;
+  - people of a hive clan fight with a full hive at half, their chakra taken as yours is.
+- **Content:**
+  - the fan pack's kikaichū (strong drain, hardy, fear fire) for the Aburame;
+  - the original pack's new clan, the **Tōga**: moth-keepers with a compound, a head (Mayu,
+    who teaches their four techniques), clan talk and four moth techniques (dust that settles,
+    scales that blind, a veil, a draining swarm). Their lantern moths drain little, sense
+    keenly and fear fire and wind.
+- **Screens:**
+  - the share as three cards on the family history page;
+  - a hive card on the Shinobi tab: the strain, what it took, how full it is in a word and a
+    bar, and how soon it fills again.
+- **Later:**
+  - foes who carry hives (`EnemyDef.swarm`);
+  - foes and teammates aiming areas and fire at a hive on purpose;
+  - strains and crossbreeding (4c), the install later in life (4d), dust (4e).
+
+### Step 4c-i: what insects are
+
+- **The strain model** (`swarmContract.ts`, `content/strains.ts`):
+  - every strain has six qualities graded E to A: speed, bite, toughness, brood, size, senses;
+  - only some species carry gifts, weak to great: chakra drain, camouflage, glow, blinding,
+    venom;
+  - each strain has a species and a family (for crossing), and the elements it fears.
+- **The fight** reads each one once (`rules/swarms.ts`):
+  - speed and camouflage make swarm attacks harder to slip;
+  - bite hits harder, and small insects hit lighter;
+  - toughness sheds losses;
+  - senses finds the hidden;
+  - drain draws chakra (a strain without the gift settles without draining);
+  - venom poisons each exchange;
+  - glow makes a marked foe easier to hit, and blinding makes them aim worse.
+- **The body:**
+  - size sets how many insects the body keeps, and brood how fast they breed back
+    (`systems/hives`);
+  - the clan's install adds a grade of toughness and size to whatever strain the body holds
+    (`qualitiesInBody`).
+- **Content:**
+  - kikaichū: drain great; size B, the rest C or D (toughness B in the body);
+  - lantern moths: glow and blinding strong, senses B; they no longer drain.
+- **The hive card** lists the gifts in words, the qualities as grades, and what the strain
+  can't stand.
+- **Not built yet:** silk and shell (swarm holds and walls), wild strains, and crossing (4c-ii).
+
+### Step 4c-ii: finding, studying and crossing
+
+- **Wild strains** (`shared/wildStrains.ts`, in every pack), each with a `wild` haunt:
+  - paper wasps (woods: fast, a hard bite, a little venom);
+  - bark moths (woods and mountain, by night: camouflage);
+  - marsh midges (marsh: tiny, a fast brood, a trace of drain);
+  - water beetles (river: very tough, a little camouflage);
+  - rock locusts (mountain: fast and tough, a little blinding);
+  - sand fleas (shore: very fast, a little venom).
+- **Finding.** `seekInsects` at a wild place: once a day, for someone with a hive, an hour and
+  some energy. Perception decides whether you find anything worth a jar. You keep up to three
+  jars, one of each strain.
+- **Studying.** `studyJar` at home, once a day: two days and you understand them, and the card
+  says how a cross with your hive would go (true-breeding, settled, wavering, wild).
+- **Crossing.** `crossJar` at home with one you understand. Half the hive goes into the brood,
+  and it hatches three days later, as each day passes (`broodHatched`). What hatches is drawn by
+  hash from the seed and the day (`systems/hives/crossing.ts`):
+  - stability starts high for a first cross within a species, drops a quarter for each step of
+    kinship apart (family, strangers) and a tenth for each cross deep;
+  - the wilder the cross, the more often it fails (the brood dies) or throws back to a parent;
+  - qualities land between the parents' grades and stray a grade more often;
+  - gifts both parents share are kept by a stable cross, and one parent's comes through less
+    surely, at its strength, a step weaker or not at all;
+  - weaknesses pass more easily than gifts;
+  - now and then a wild cross brings a gift out a step stronger.
+- **Bred strains** are kept on the hive (`Hive.bred`, `StrainSheet`) and read like the pack's
+  (`strainSheet`). The hive takes the new strain, and the card lets you name it.
+- **Screens:** a search card on wild places for hive hosts, and jars (study, cross in), the
+  brood and naming on the hive card.
+- **Saves:** the new fields on the hive are optional, so no migration is needed.
+- **Later:** foreign markets selling rarer strains, and silk and shell.

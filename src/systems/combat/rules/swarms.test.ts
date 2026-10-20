@@ -1,6 +1,11 @@
 import type { CombatSwarm } from '../swarmContract';
 import {
   areaLoss,
+  blindSlipScale,
+  glowSlipScale,
+  settleVenom,
+  swarmPowerScale,
+  swarmSlipScale,
   burnsOff,
   fearedLoss,
   hiveWord,
@@ -11,11 +16,19 @@ import {
 } from './swarms';
 
 const hive: CombatSwarm = {
-  strain: { name: 'drainers', drain: 1, hardiness: 0, fears: ['fire'], senses: 0.5 },
+  strain: {
+    name: 'drainers',
+    qualities: { speed: 3, bite: 3, toughness: 1, brood: 3, size: 3, senses: 3 },
+    gifts: { drain: 3 },
+    fears: ['fire'],
+  },
   count: 100,
   cap: 100,
 };
-const hardy = { ...hive, strain: { ...hive.strain, hardiness: 0.5 } };
+const hardy = {
+  ...hive,
+  strain: { ...hive.strain, qualities: { ...hive.strain.qualities, toughness: 5 } },
+};
 
 describe('swarm rules', () => {
   it('spends insects a fighter has; a fighter without a hive pays chakra alone', () => {
@@ -49,5 +62,27 @@ describe('swarm rules', () => {
     expect(hiveWord(hive)).toBe('thick');
     expect(hiveWord({ ...hive, count: 20 })).toBe('thin');
     expect(hiveWord({ ...hive, count: 0 })).toBe('spent');
+  });
+
+  it('fast and camouflaged insects land more; a hard bite hits harder, small insects lighter', () => {
+    const q = hive.strain.qualities;
+    const fast = { ...hive.strain, qualities: { ...q, speed: 5 } };
+    const hidden = { ...hive.strain, gifts: { camouflage: 2 } };
+    expect(swarmSlipScale(fast)).toBeLessThan(swarmSlipScale(hive.strain));
+    expect(swarmSlipScale(hidden)).toBeLessThan(swarmSlipScale(hive.strain));
+    expect(swarmPowerScale({ ...hive.strain, qualities: { ...q, bite: 5 } })).toBeGreaterThan(1);
+    expect(swarmPowerScale({ ...hive.strain, qualities: { ...q, size: 5 } })).toBeLessThan(1);
+  });
+
+  it('a strain without the drain gift draws nothing; venom, glow and blinding come with their gifts', () => {
+    const plain = { ...hive, strain: { ...hive.strain, gifts: {} } };
+    expect(settleDrain(plain, 20)).toBe(0);
+    expect(settleVenom(plain)).toBe(0);
+    expect(
+      settleVenom({ ...hive, strain: { ...hive.strain, gifts: { venom: 2 } } }),
+    ).toBeGreaterThan(0);
+    expect(glowSlipScale({ ...hive.strain, gifts: { glow: 2 } })).toBeLessThan(1);
+    expect(blindSlipScale({ ...hive.strain, gifts: { blinding: 2 } })).toBeGreaterThan(1);
+    expect(glowSlipScale(hive.strain)).toBe(1);
   });
 });

@@ -32,6 +32,7 @@ import { tellDaily } from '../everyday/tell';
 import type { ActionHandler, ActionOf } from './types';
 import { combatGear } from '../gear';
 import { DRILL_MASTERY, workedWeapon } from '../weaponMastery';
+import { chakraBody } from '../hives/hive';
 
 /** Everyday life in a village: training, eating, napping and sleeping. */
 
@@ -249,13 +250,14 @@ export function sleepTillDawn(state: GameState, ctx: GameContext, night: Night):
  * chakra (only part of it while exhausted, though a restful meal eases that too).
  */
 function nightsRest(state: GameState, ctx: GameContext): VitalsDelta {
-  const { vitals, stats } = state.character;
+  const { vitals } = state.character;
   // A good bed at home heals more on top of whatever else helps (`comforts`).
   const sleepHealing =
     characterModifiers(state.character, ctx).sleepHealing * comforts(state, ctx).sleep;
-  const base = sleepRecovery(vitals, stats);
+  const body = chakraBody(state);
+  const base = sleepRecovery(vitals, body);
   const night = sleepChakra(state);
-  const emptied = maxChakra(stats) - vitals.chakra;
+  const emptied = maxChakra(body) - vitals.chakra;
   return {
     ...base,
     health: Math.round((base.health ?? 0) * sleepHealing),

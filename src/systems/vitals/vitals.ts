@@ -38,11 +38,17 @@ export const CHAKRA_PER_RESERVES = 3.5;
 /** Chakra per point of control: a little more from wasting less. */
 export const CHAKRA_PER_CONTROL = 1;
 
+/** What maximum chakra is reckoned from: the stats, and any share given to a hive for good. */
+export interface ChakraBody extends Pick<Stats, 'reserves' | 'chakraControl'> {
+  /** Share of chakra a hive in the body took (`systems/hives`); absent for most. */
+  readonly chakraGiven?: number;
+}
+
 /** Maximum chakra: mostly reserves, a little control. Stamina feeds it only by growing reserves. */
-export function maxChakra(stats: Pick<Stats, 'reserves' | 'chakraControl'>): number {
-  return Math.round(
-    CHAKRA_BASE + stats.reserves * CHAKRA_PER_RESERVES + stats.chakraControl * CHAKRA_PER_CONTROL,
-  );
+export function maxChakra(stats: ChakraBody): number {
+  const full =
+    CHAKRA_BASE + stats.reserves * CHAKRA_PER_RESERVES + stats.chakraControl * CHAKRA_PER_CONTROL;
+  return Math.round(full * (1 - (stats.chakraGiven ?? 0)));
 }
 
 /** The reserves that give this maximum chakra at this control (never below zero). */
