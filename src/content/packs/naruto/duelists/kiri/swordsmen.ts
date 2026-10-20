@@ -116,6 +116,7 @@ export const SWORDSMEN_FIGHTERS: readonly PersonDef[] = [
     name: 'Kisame',
     familyName: 'Hoshigaki',
     pronouns: 'he',
+    clanId: 'hoshigaki',
     title: 'Rogue Swordsman of the Mist',
     rank: 'kage',
     stats: statLine(26, {

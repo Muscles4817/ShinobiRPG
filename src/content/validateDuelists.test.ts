@@ -39,6 +39,12 @@ describe('duelists', () => {
     expect(withDuelist(unarmed)).toContain('person "tengen" fights with unknown technique "kamui"');
   });
 
+  it('lives in a real village, if not the start one', () => {
+    expect(withDuelist({ ...tengen, homeLocationId: 'atlantis' })).toContain(
+      'duelist "tengen" lives in unknown location "atlantis"',
+    );
+  });
+
   it('never shares an id with someone in the world', () => {
     expect(withDuelist({ ...tengen, id: 'kakashi' })).toContain('duplicate person id "kakashi"');
   });

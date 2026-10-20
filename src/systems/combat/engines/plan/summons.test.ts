@@ -137,6 +137,26 @@ describe('summons', () => {
     expect(toad(summonsAfter(callerDown))).toBeUndefined();
   });
 
+  it('a puppet unfolds in front of its maker, who steps back to work it, and falls apart', () => {
+    const puppet: CombatCall = { ...TOAD, id: 'crow', bloodPrice: 0, puppet: true };
+    const start = round();
+    const withPuppet = {
+      ...start,
+      fighters: start.fighters.map((f): PlanFighter =>
+        f.id === 'caller' ? { ...f, calls: [puppet] } : f,
+      ),
+    };
+    const unsealed = callSummon(withPuppet, caller(withPuppet), 'crow');
+    expect(toad(unsealed)).toMatchObject({ row: 'front', puppet: true });
+    expect(caller(unsealed)).toMatchObject({ row: 'back', health: 100 });
+    expect(unsealed.lines.join(' ')).toMatch(/unfolds out of it/);
+    const broken = {
+      ...unsealed,
+      fighters: unsealed.fighters.map((f): PlanFighter => (f.summoner ? { ...f, health: 0 } : f)),
+    };
+    expect(summonsAfter(broken).lines.join(' ')).toMatch(/clatters apart/);
+  });
+
   it('is called by a default plan, fights, and is reported in the outcome', () => {
     const engine = createPlanEngine();
     let state = engine.start(

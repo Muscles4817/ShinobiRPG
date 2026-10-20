@@ -15,6 +15,7 @@ export const REGIME_FIGHTERS: readonly PersonDef[] = [
     name: 'Yagura',
     familyName: 'Karatachi',
     pronouns: 'he',
+    clanId: 'karatachi',
     title: 'Fourth Mizukage',
     rank: 'kage',
     stats: statLine(18, {
@@ -57,6 +58,7 @@ export const REGIME_FIGHTERS: readonly PersonDef[] = [
     name: 'Sango',
     familyName: 'Karatachi',
     pronouns: 'she',
+    clanId: 'karatachi',
     title: 'Captain of the Tower Guard',
     rank: 'jonin',
     stats: statLine(12, {
@@ -91,6 +93,7 @@ export const REGIME_FIGHTERS: readonly PersonDef[] = [
     name: 'Oboro',
     familyName: 'Kasumi',
     pronouns: 'he',
+    clanId: 'kasumi',
     title: 'Head of the Mist-keepers',
     rank: 'jonin',
     stats: statLine(12, {
@@ -130,6 +133,7 @@ export const REGIME_FIGHTERS: readonly PersonDef[] = [
     name: 'Tsuzuri',
     familyName: 'Amibari',
     pronouns: 'she',
+    clanId: 'amibari',
     title: 'Keeper of the Blood Register',
     rank: 'jonin',
     stats: statLine(12, {
@@ -163,6 +167,7 @@ export const REGIME_FIGHTERS: readonly PersonDef[] = [
     name: 'Shizuku',
     familyName: 'Kurage',
     pronouns: 'they',
+    clanId: 'kurage',
     title: 'First Mask of the hunter-nin',
     rank: 'jonin',
     stats: statLine(14, {
@@ -205,6 +210,7 @@ export const REGIME_FIGHTERS: readonly PersonDef[] = [
     name: 'Gōtetsu',
     familyName: 'Isana',
     pronouns: 'he',
+    clanId: 'isana',
     title: 'Admiral of the whaling fleet',
     rank: 'jonin',
     stats: statLine(14, {
@@ -238,6 +244,7 @@ export const REGIME_FIGHTERS: readonly PersonDef[] = [
     name: 'Tetsuo',
     familyName: 'Shiogama',
     pronouns: 'he',
+    clanId: 'shiogama',
     title: 'Master of the Seventh Forge',
     rank: 'jonin',
     stats: statLine(14, {

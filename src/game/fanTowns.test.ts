@@ -54,8 +54,21 @@ describeFan('the fan pack’s towns', () => {
       'kurage-nami',
       'amibari-shiori',
       'uminari-awa',
+      'shiogama-kanae',
     ]);
     const kiri = naruto!.locations.find((l) => l.id === 'kirigakure');
+    const compounds = kiri?.places.flatMap((p) => (p.kind === 'compound' ? [p] : [])) ?? [];
+    expect(compounds.map((c) => c.clanId)).toEqual([
+      'kasumi',
+      'amibari',
+      'kurage',
+      'isana',
+      'shiogama',
+    ]);
+    for (const c of compounds) {
+      const home = residents.filter((p) => p.clanId === c.clanId);
+      expect(home.some((p) => p.schedule.evening === c.id)).toBe(true);
+    }
     const desk = kiri?.places.find((p) => p.kind === 'missions');
     expect(desk?.kind === 'missions' && desk.missionIds.length).toBeGreaterThan(0);
   });

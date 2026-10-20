@@ -119,7 +119,9 @@ function besideOf(setup: CombatantSetup, def: EnemyDef | null, ctx: GameContext)
     const unit = ctx.content.enemies.get(r.enemyId);
     return unit ? [`${unit.name}, fighting beside them`] : [];
   });
-  const calls = (setup.calls ?? []).map((c) => `${c.body.name}, a summons`);
+  const calls = (setup.calls ?? []).map(
+    (c) => `${c.body.name}, ${c.puppet ? 'a puppet' : 'a summons'}`,
+  );
   return [...retinue, ...calls];
 }
 

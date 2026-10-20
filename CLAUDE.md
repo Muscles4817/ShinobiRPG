@@ -156,7 +156,8 @@ ui ──► game ──► content ──► systems ──► core
     keeps them off your village's crews, teams and dinner table). Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
     Clans live in **compounds** (`docs/design/compounds-plan.md`): a `compound` place per clan
-    behind one `quarter` card, entered by an outsider only as the clan's `outsiders` stance
+    behind one `quarter` card in the clan's village (`ClanDef.village`; the start village's
+    clans alone are born into, `homeClans`), entered by an outsider only as the clan's `outsiders` stance
     allows (welcoming, reserved, guarded: the bond needed with anyone of the clan by day; bonded
     at night; `game/compounds.ts`), and someone home behind a shut gate can't be talked to. The
     village screen's Who's here shows only people you know out and about.
@@ -861,8 +862,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   needs a conversation reply with that `favour` id (validated).
 - **Add a versus-only fighter (a duelist):** a `PersonDef` in the pack's `duelists`
   (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi rank, no
-  schedule, no teaching, and an `arsenal` (which may name `gearIds` and `tools`, carried into
-  every fight). They show in versus by rank and nowhere else; their arsenal sources their
+  schedule, no teaching, a `homeLocationId` for their village if it isn't the start one, and an
+  `arsenal` (which may name `gearIds` and `tools`, carried into every fight, and `puppets`: a
+  pack's `PuppetDef`s, bodies built rather than summoned, each unsealed by its own technique as a
+  call like a summon's, its maker stepping back behind it; `game/puppets.ts`). They show in versus by rank and nowhere else; their arsenal sources their
   techniques (validated in `validateDuelists.ts`). Plumbing one in moves them to `people`, where
   their techniques then need a real source.
 - **Make something editable:** add its override to `ContentEdits` (`game/edits/state.ts`), read
@@ -908,7 +911,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a clan compound:** a `compound` place (`clanId`, optional `headId`) in the clan's
   village, listed in that village's `quarter`, an `outsiders` stance on the `ClanDef`, and
   schedules that bring its people home for a slot or two (and out for others, so they can be
-  met). Validated in `validateCompounds.ts`.
+  met). A clan of another village names it (`ClanDef.village`, a location id): its compound
+  stands there, and it is never offered at creation or drawn into your year (`homeClans`,
+  `game/homeClans.ts`; read the start village's clans only through it). Validated in
+  `validateCompounds.ts`.
 - **Add a companion kind:** a `CompanionKindDef` in the pack's `companions.ts` (temperament, a
   grown `body` (adult strength, speed, stamina and perception, and `maturesInDays`; the body
   decides those stats, never `statBonuses`), skills that start no better than a fresh genin's

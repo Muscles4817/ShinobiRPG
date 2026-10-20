@@ -1,5 +1,6 @@
 import type { LocationDef } from '../../../types';
 import { SHORE_FINDS, SHORE_SPOTS } from '../../../shared/waters';
+import { KIRI_COMPOUNDS } from './compounds';
 
 /**
  * Kirigakure in the years of the Bloody Mist: Yagura's village, where bloodlines are hunted
@@ -183,5 +184,6 @@ export const KIRIGAKURE: LocationDef = {
       finds: SHORE_FINDS,
       spots: SHORE_SPOTS,
     },
+    ...KIRI_COMPOUNDS,
   ],
 };

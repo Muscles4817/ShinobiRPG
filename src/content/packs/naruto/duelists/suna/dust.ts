@@ -1,13 +1,16 @@
 import type { TechniqueDef } from '@/systems/techniques';
 
-import { look } from '../../../look';
-import { statLine } from '../../../statLine';
-import type { PersonDef } from '../../../types';
+import { look } from '../../../../look';
+import { statLine } from '../../../../statLine';
+import type { PersonDef } from '../../../../types';
+
+import { sunaFighter } from './fighter';
 
 /**
- * The Sand's dust users, versus only until the Sand is in the world (`ContentPack.duelists`):
+ * The Kazekage's house, versus only until the Sand is in the world (`ContentPack.duelists`):
  * Gaara with his gourd of sand, the Fourth Kazekage's gold dust and the Third Kazekage's iron
- * sand. Their techniques spend dust from a full store (`PersonArsenal.dust`); Gaara's wall
+ * sand. The house is part priest by blood and keeps to refined dust; Gaara's plain sand is the
+ * priests', and the Sand has never forgiven him for it. Their techniques spend dust from a full store (`PersonArsenal.dust`); Gaara's wall
  * draws more up. None of them is shielded on his own: that comes later, with tailed beasts.
  */
 
@@ -135,12 +138,12 @@ export const SUNA_DUST_TECHNIQUES: readonly TechniqueDef[] = [
   },
 ];
 
-export const GAARA: PersonDef = {
+export const GAARA: PersonDef = sunaFighter({
   id: 'gaara',
   name: 'Gaara',
-  familyName: '',
+  familyName: 'of the Sands',
   pronouns: 'he',
-  role: 'shinobi',
+  clanId: 'sabaku',
   title: 'Fifth Kazekage',
   rank: 'kage',
   stats: statLine(16, {
@@ -165,20 +168,19 @@ export const GAARA: PersonDef = {
     { expression: 'calm' },
   ),
   specialty: 'ninjutsu',
-  bio: 'Carries a gourd of sand on his back and never seems to move. The sand does it for him.',
-  schedule: { morning: null, afternoon: null, evening: null, night: null },
+  bio: 'Carries a gourd of sand on his back and never seems to move. The sand does it for him, and Shukaku sleeps in him, when he sleeps at all.',
   arsenal: {
     techniqueIds: ['sand-shuriken', 'sand-coffin', 'sand-burial', 'sand-wall', 'sand-tsunami'],
     dust: 'sand',
   },
-};
+});
 
-export const RASA: PersonDef = {
+export const RASA: PersonDef = sunaFighter({
   id: 'rasa',
   name: 'Rasa',
-  familyName: '',
+  familyName: 'of the Sands',
   pronouns: 'he',
-  role: 'shinobi',
+  clanId: 'sabaku',
   title: 'Fourth Kazekage',
   rank: 'kage',
   stats: statLine(16, {
@@ -203,19 +205,18 @@ export const RASA: PersonDef = {
   ),
   specialty: 'ninjutsu',
   bio: 'The gold dust he fights with is the same gold the Sand pays its debts in.',
-  schedule: { morning: null, afternoon: null, evening: null, night: null },
   arsenal: {
     techniqueIds: ['gold-dust-wave', 'gold-dust-grip', 'gold-dust-hammer'],
     dust: 'gold-dust',
   },
-};
+});
 
-export const THIRD_KAZEKAGE: PersonDef = {
+export const THIRD_KAZEKAGE: PersonDef = sunaFighter({
   id: 'third-kazekage',
   name: 'Third Kazekage',
   familyName: '',
   pronouns: 'he',
-  role: 'shinobi',
+  clanId: 'sabaku',
   title: 'Third Kazekage',
   rank: 'kage',
   stats: statLine(16, {
@@ -240,9 +241,8 @@ export const THIRD_KAZEKAGE: PersonDef = {
   ),
   specialty: 'ninjutsu',
   bio: 'The strongest Kazekage there ever was, they say, and the iron sand was the reason.',
-  schedule: { morning: null, afternoon: null, evening: null, night: null },
   arsenal: {
     techniqueIds: ['iron-sand-drizzle', 'iron-sand-spikes', 'iron-sand-assault'],
     dust: 'iron-sand',
   },
-};
+});

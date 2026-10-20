@@ -1,0 +1,215 @@
+import type { TechniqueDef } from '@/systems/techniques';
+
+import { statLine } from '../../../../statLine';
+import type { PuppetDef } from '../../../../puppets';
+
+/**
+ * The Red Sand's puppetry: bodies built, never bound, and worked on chakra threads. Each puppet
+ * is unsealed from a scroll by its own technique and fights with what was built into it: hidden
+ * blades, poison, a trap of a body. Sasori's are the worst of them, and one was a man.
+ */
+const SCHOOL = 'Red Sand Puppetry';
+
+/** A puppet's unsealing from its scroll, as a technique (`PuppetDef.techniqueId`). */
+/*#__NO_SIDE_EFFECTS__*/
+function unsealing(puppet: string, name: string, description: string): TechniqueDef {
+  return {
+    id: `unseal-${puppet}`,
+    name: `Unsealing: ${name}`,
+    description,
+    discipline: 'ninjutsu',
+    school: SCHOOL,
+    effects: [{ verb: 'summon', power: 1, call: puppet }],
+    chakraCost: 12,
+    rank: 'B',
+    difficulty: 110,
+  };
+}
+
+export const PUPPET_ARTS: readonly TechniqueDef[] = [
+  unsealing(
+    'karasu',
+    'Crow',
+    'A bundle on the back unwraps itself into a grinning, four-armed puppet.',
+  ),
+  unsealing('kuroari', 'Black Ant', 'A squat puppet with a hollow belly, opened like a cabinet.'),
+  unsealing('father', 'Father', 'A man carved by his son, out of the memory of him.'),
+  unsealing('mother', 'Mother', 'A woman carved by her son, out of the memory of her.'),
+  unsealing('hiruko', 'Hiruko', 'A hunched shell with a scorpion’s tail, which its maker wears.'),
+  unsealing(
+    'third-kazekage-puppet',
+    'Third Kazekage',
+    'The strongest Kazekage there ever was, opened up and fitted with blades. His iron sand came with him.',
+  ),
+  {
+    id: 'chakra-threads',
+    name: 'Chakra Threads',
+    description: 'Threads too fine to see fasten to a foe’s joints and hold them like a puppet.',
+    discipline: 'ninjutsu',
+    school: SCHOOL,
+    reach: ['mid', 'far'],
+    effects: [{ verb: 'pin', power: 14, channelled: true }],
+    chakraCost: 12,
+    rank: 'B',
+    difficulty: 110,
+  },
+  {
+    id: 'hidden-blades',
+    name: 'Hidden Blades',
+    description: 'The arms swing open, and every joint has a blade in it, every blade a poison.',
+    discipline: 'kenjutsu',
+    school: SCHOOL,
+    needs: { weapon: 'blade' },
+    reach: ['close'],
+    effects: [
+      { verb: 'damage', power: 16, hits: 2 },
+      { verb: 'afflict', power: 6, harm: 'poison' },
+    ],
+    chakraCost: 6,
+    rank: 'B',
+    difficulty: 110,
+  },
+  {
+    id: 'poison-needle-volley',
+    name: 'Poison Needle Volley',
+    description: 'A mouth or a chest opens, and needles hiss out of it in a fan.',
+    discipline: 'kenjutsu',
+    school: SCHOOL,
+    needs: { weapon: 'blade' },
+    reach: ['mid', 'far'],
+    effects: [
+      { verb: 'damage', power: 12, hits: 4 },
+      { verb: 'afflict', power: 6, harm: 'poison' },
+    ],
+    chakraCost: 6,
+    rank: 'B',
+    difficulty: 110,
+  },
+  {
+    id: 'black-ant-capture',
+    name: 'Black Ant Capture',
+    description: 'The Black Ant’s belly opens round a foe and shuts on them.',
+    discipline: 'kenjutsu',
+    school: SCHOOL,
+    needs: { weapon: 'blade' },
+    reach: ['close'],
+    effects: [{ verb: 'pin', power: 18 }],
+    chakraCost: 6,
+    rank: 'B',
+    difficulty: 110,
+  },
+  {
+    id: 'father-mother-crush',
+    name: 'Father and Mother',
+    description: 'The two of them close from either side, the way they never could in life.',
+    discipline: 'kenjutsu',
+    school: SCHOOL,
+    needs: { weapon: 'blade' },
+    reach: ['close'],
+    effects: [{ verb: 'damage', power: 20, hits: 2 }],
+    chakraCost: 8,
+    rank: 'A',
+    difficulty: 140,
+  },
+  {
+    id: 'hiruko-tail',
+    name: 'Scorpion Tail',
+    description: 'The scorpion tail lashes out of the shell, and its tip is wet.',
+    discipline: 'kenjutsu',
+    school: SCHOOL,
+    needs: { weapon: 'blade' },
+    reach: ['close', 'mid'],
+    accuracy: 'sure',
+    effects: [
+      { verb: 'damage', power: 20 },
+      { verb: 'afflict', power: 10, harm: 'poison' },
+    ],
+    chakraCost: 8,
+    rank: 'A',
+    difficulty: 140,
+  },
+  {
+    id: 'hiruko-shell',
+    name: 'Shell Guard',
+    description: 'The shell takes the blow, and whatever is inside it doesn’t.',
+    discipline: 'kenjutsu',
+    school: SCHOOL,
+    needs: { weapon: 'blade' },
+    effects: [{ verb: 'substitute', power: 14 }],
+    chakraCost: 6,
+    rank: 'A',
+    difficulty: 140,
+  },
+];
+
+export const SUNA_PUPPETS: readonly PuppetDef[] = [
+  {
+    id: 'karasu',
+    name: 'Crow',
+    description: 'Four arms, three eyes, a grin and a body full of blades.',
+    techniqueId: 'unseal-karasu',
+    stats: statLine('D', { kenjutsu: 'B', speed: 'B', strength: 'C', stamina: 'C' }),
+    healthScale: 1.2,
+    maxChakra: 30,
+    techniqueIds: ['hidden-blades', 'poison-needle-volley'],
+    upkeep: 3,
+  },
+  {
+    id: 'kuroari',
+    name: 'Black Ant',
+    description: 'A trap with legs. What it swallows, the Crow’s blades find.',
+    techniqueId: 'unseal-kuroari',
+    stats: statLine('D', { kenjutsu: 'B', strength: 'B', stamina: 'B' }),
+    healthScale: 1.6,
+    maxChakra: 20,
+    traits: ['armoured'],
+    techniqueIds: ['black-ant-capture'],
+    upkeep: 3,
+  },
+  {
+    id: 'father',
+    name: 'Father',
+    description: 'Sasori’s first puppet, which his grandmother took back and fights with.',
+    techniqueId: 'unseal-father',
+    stats: statLine('C', { kenjutsu: 'A', speed: 'B', strength: 'B' }),
+    healthScale: 1,
+    maxChakra: 30,
+    techniqueIds: ['father-mother-crush', 'hidden-blades'],
+    upkeep: 3,
+  },
+  {
+    id: 'mother',
+    name: 'Mother',
+    description: 'Sasori’s second puppet. He made them to hold him, and they couldn’t.',
+    techniqueId: 'unseal-mother',
+    stats: statLine('C', { kenjutsu: 'A', speed: 'B', perception: 'B' }),
+    healthScale: 1,
+    maxChakra: 30,
+    techniqueIds: ['father-mother-crush', 'poison-needle-volley'],
+    upkeep: 3,
+  },
+  {
+    id: 'hiruko',
+    name: 'Hiruko',
+    description: 'Armour, a disguise and a weapon. Sasori is seldom seen outside it.',
+    techniqueId: 'unseal-hiruko',
+    stats: statLine('C', { kenjutsu: 'A', stamina: 'A', strength: 'B' }),
+    healthScale: 2,
+    maxChakra: 30,
+    traits: ['armoured'],
+    techniqueIds: ['hiruko-tail', 'hiruko-shell', 'poison-needle-volley'],
+    upkeep: 4,
+  },
+  {
+    id: 'third-kazekage-puppet',
+    name: 'Third Kazekage',
+    description: 'A human puppet. The Sand still says he disappeared; Sasori knows where he went.',
+    techniqueId: 'unseal-third-kazekage-puppet',
+    stats: statLine('C', { ninjutsu: 'A', chakraControl: 'A', speed: 'B', perception: 'B' }),
+    healthScale: 1.2,
+    maxChakra: 90,
+    techniqueIds: ['iron-sand-drizzle', 'iron-sand-spikes', 'iron-sand-assault'],
+    upkeep: 6,
+    dust: 'iron-sand',
+  },
+];

@@ -38,7 +38,7 @@ import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
 import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
-import { DUELIST_GEAR, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
+import { DUELIST_GEAR, DUELIST_PUPPETS, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
@@ -88,10 +88,12 @@ import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
 import { NARUTO_ROUTES } from './routes';
+import { SUNA_CLANS } from './sunagakure';
 import { NARUTO_ATLAS } from './atlas';
 import { WAVES_FOODS, WAVES_JOBS, WAVES_PEOPLE, WAVES_TRAINING } from './landOfWaves';
 import { TANZAKU_FOODS, TANZAKU_JOBS, TANZAKU_PEOPLE } from './tanzaku';
 import {
+  KIRI_CLANS,
   KIRI_FOES,
   KIRI_FOODS,
   KIRI_GEAR,
@@ -209,7 +211,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...OTAFUKU_FOODS,
     ...FIRE_TEMPLE_FOODS,
   ],
-  clans: CLANS,
+  clans: [...CLANS, ...KIRI_CLANS, ...SUNA_CLANS],
   builds: BUILDS,
   upbringings: UPBRINGINGS,
   talents: TALENTS,
@@ -247,6 +249,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...FIRE_TEMPLE_PEOPLE,
   ],
   duelists: DUELISTS,
+  puppets: DUELIST_PUPPETS,
   conversations: [
     ...GENERIC_CONVERSATIONS,
     ...TEMPLATE_CONVERSATIONS,

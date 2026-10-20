@@ -30,6 +30,7 @@ import { validateCrews } from './validateCrews';
 import { validateRetinues } from './validateRetinues';
 import { validateCompanionArts } from './validateCompanionArts';
 import { validateContracts } from './validateContracts';
+import { validatePuppets } from './validatePuppets';
 import { validateDusts } from './validateDusts';
 import { validateRites } from './validateRites';
 import { validateStrains } from './validateStrains';
@@ -56,6 +57,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateCompanions(pack),
     ...validateCompanionArts(pack),
     ...validateContracts(pack),
+    ...validatePuppets(pack),
     ...validateStrains(pack),
     ...validateRites(pack),
     ...validateDusts(pack),
@@ -192,6 +194,7 @@ function uniqueIdProblems(pack: ContentPack): string[] {
     ['recipe', pack.recipes],
     ['cookbook', pack.cookbooks],
     ['person', [...pack.people, ...(pack.duelists ?? [])]],
+    ['puppet', pack.puppets ?? []],
     ['conversation', pack.conversations],
   ];
   return collections.flatMap(([kind, items]) =>

@@ -205,6 +205,8 @@ export interface CombatCall {
   readonly body: CombatantSetup;
   readonly upkeep: number;
   readonly bloodPrice?: number;
+  /** A puppet: built and worked on threads, not summoned (it unfolds and falls apart). */
+  readonly puppet?: true;
 }
 
 /** How a summon's part in a fight ended: still there, beaten, or sent home unpaid. */
