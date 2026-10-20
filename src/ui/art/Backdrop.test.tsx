@@ -10,6 +10,8 @@ const IDS: readonly BackdropId[] = [
   'leaf-village',
   'lantern-rooftops',
   'dunes',
+  'sand-village',
+  'barge-landing',
   'coast',
   'mist',
   'mist-village',

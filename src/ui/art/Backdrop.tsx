@@ -3,6 +3,7 @@ import { useId } from 'react';
 
 import type { BackdropId } from '@/game';
 
+import { BargeLanding } from './scenery/bargeLanding';
 import { Coast } from './scenery/coast';
 import { Dunes } from './scenery/dunes';
 import { LeafVillage } from './scenery/leafVillage';
@@ -11,6 +12,7 @@ import { Mist } from './scenery/mist';
 import { MistVillage } from './scenery/mistVillage';
 import { Mountain } from './scenery/mountain';
 import { LanternRooftops } from './scenery/rooftops';
+import { SandVillage } from './scenery/sandVillage';
 
 /**
  * A painted scene for each kind of place, drawn in layers (sky lights, far hills, the town,
@@ -32,6 +34,8 @@ const SCENES: Readonly<Record<BackdropId, ComponentType<SceneProps>>> = {
   mist: Mist,
   'mist-village': MistVillage,
   mountain: Mountain,
+  'sand-village': SandVillage,
+  'barge-landing': BargeLanding,
 };
 
 export function Backdrop({ id }: { readonly id: BackdropId }) {

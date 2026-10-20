@@ -10,6 +10,8 @@ import { KONOHA_COMPOUNDS } from './compounds';
 import { LAND_OF_WAVES } from './landOfWaves';
 import { TANZAKU_TOWN } from './tanzaku';
 import { KIRIGAKURE } from './kirigakure';
+import { KAGERO_LANDING } from './kageroLanding';
+import { SUNAGAKURE } from './sunagakure';
 import { SHUKUBA_TOWN } from './shukuba';
 import { OTAFUKU_TOWN } from './otafuku';
 import { FIRE_TEMPLE } from './fireTemple';
@@ -232,15 +234,8 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
       ...KONOHA_WILDS,
     ],
   },
-  {
-    id: 'sunagakure',
-    name: 'Sunagakure',
-    epithet: 'Village Hidden in the Sand',
-    map: { x: 12, y: 51 },
-    backdrop: 'dunes',
-    places: [],
-    lockedReason: 'Coming soon',
-  },
+  SUNAGAKURE,
+  KAGERO_LANDING,
   KIRIGAKURE,
   LAND_OF_WAVES,
   TANZAKU_TOWN,

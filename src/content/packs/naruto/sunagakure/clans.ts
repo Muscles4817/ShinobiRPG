@@ -15,6 +15,7 @@ export const SUNA_CLANS: readonly ClanDef[] = [
     id: 'sabaku',
     name: 'Sabaku',
     village: SUNA,
+    outsiders: 'guarded',
     description:
       'The Kazekage’s house, “of the Sands”, the First Kazekage’s line and a priestess’s. They command refined dust and leave plain sand to the priests.',
     statBonuses: { ninjutsu: 3, chakraControl: 2 },
@@ -27,6 +28,7 @@ export const SUNA_CLANS: readonly ClanDef[] = [
     id: 'akasuna',
     name: 'Akasuna',
     village: SUNA,
+    outsiders: 'reserved',
     description:
       'The puppeteers, “of the Red Sand”. Their bodies are built of wood and steel and worked on threads, never bound, the Sand’s answer to summons.',
     statBonuses: { chakraControl: 3, intellect: 2 },
@@ -38,6 +40,7 @@ export const SUNA_CLANS: readonly ClanDef[] = [
     id: 'kamaitachi',
     name: 'Kamaitachi',
     village: SUNA,
+    outsiders: 'welcoming',
     description:
       'The fan clan, “of the Cutting Wind”, named for a weasel of the old stories that no one in the Sand would keep. They fill the barges’ sails.',
     statBonuses: { ninjutsu: 3, strength: 2 },
@@ -50,6 +53,7 @@ export const SUNA_CLANS: readonly ClanDef[] = [
     id: 'sakyu',
     name: 'Sakyū',
     village: SUNA,
+    outsiders: 'reserved',
     description:
       'The sand priests, “of the Dunes”, the Monarch’s warriors once and Shukaku’s worshippers still. Despised everywhere and needed, since only they can steer a barge across the desert.',
     statBonuses: { ninjutsu: 2, chakraControl: 2, perception: 1 },

@@ -24,6 +24,7 @@ const FAN_MARKERS = [
   'Kirigakure',
   'Kankurō',
   'Red Sand Puppetry',
+  'Kazekage',
 ];
 
 function files(dir) {
