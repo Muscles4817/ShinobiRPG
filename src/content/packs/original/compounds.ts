@@ -14,6 +14,7 @@ export const TOROGAKURE_COMPOUNDS: readonly PlaceDef[] = [
       'kurogane-compound',
       'shimenawa-compound',
       'toga-compound',
+      'haibara-compound',
     ],
   },
   {
@@ -61,6 +62,15 @@ export const TOROGAKURE_COMPOUNDS: readonly PlaceDef[] = [
     clanId: 'toga',
     headId: 'mayu',
     keepsRite: true,
+  },
+  {
+    id: 'haibara-compound',
+    kind: 'compound',
+    name: 'Haibara Kiln Yard',
+    icon: 'house',
+    blurb: 'Warm walls and grey drifts in the corners',
+    clanId: 'haibara',
+    headId: 'rokuro',
   },
   {
     id: 'animal-clinic',

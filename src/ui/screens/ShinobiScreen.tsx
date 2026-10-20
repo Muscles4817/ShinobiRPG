@@ -1,5 +1,6 @@
 import { ContractCard } from '../components/ContractCard';
 import { HiveCard } from '../components/HiveCard';
+import { DustCard } from '../components/DustCard';
 import { RiteCards } from '../components/RiteCard';
 import { useState } from 'react';
 
@@ -89,6 +90,7 @@ export function ShinobiScreen({
           </p>
         </section>
         <HiveCard ctx={ctx} state={state} perform={perform} />
+        <DustCard ctx={ctx} state={state} />
         <RiteCards ctx={ctx} state={state} perform={perform} />
         <ContractCard ctx={ctx} state={state} perform={perform} />
         <section className="identity">

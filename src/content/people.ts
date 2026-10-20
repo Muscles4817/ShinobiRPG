@@ -136,6 +136,8 @@ export interface PersonArsenal {
   readonly gearIds?: readonly string[];
   /** The pack's fight tools they carry into every fight, by id, and how many. */
   readonly tools?: Readonly<Record<string, number>>;
+  /** The dust they command (a `DustDef` id), a full store of it in every fight. */
+  readonly dust?: string;
 }
 
 /**
