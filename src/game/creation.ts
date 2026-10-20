@@ -49,6 +49,7 @@ import { bornCompanions, kindOf, playerCompanion } from './companions/make';
 import { bornHive, chakraBody, DEFAULT_SHARE } from './hives/hive';
 import { bornDust } from './dust/dust';
 import type { GameState } from './state';
+import { homeClans } from './homeClans';
 import { bornNature } from './nature';
 import { notesAptitude, notesProblems } from './notes';
 import { BASE_STAT, graduationStats, studentProblems, type StudentProfile } from './student';
@@ -131,7 +132,7 @@ export function draftProblems(draft: CreationDraft, ctx: GameContext): string[] 
   const [first, second] = traits;
   const problems = [
     !draft.name.trim() && 'Write your name.',
-    !content.clans.get(draft.clanId) && 'Choose your family.',
+    !homeClans(content).some((c) => c.id === draft.clanId) && 'Choose your family.',
     ...notesProblems(draft, ctx),
     draft.quirkIds.some((id) => !content.quirks.get(id)) && 'That habit isn’t on the list.',
     !content.nindos.get(draft.nindoId) && 'Write your essay.',

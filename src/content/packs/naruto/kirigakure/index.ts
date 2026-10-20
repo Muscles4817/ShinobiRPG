@@ -9,3 +9,4 @@ export { KIRI_PEOPLE } from './people';
 export { KIRI_HOUSE_FOLK } from './houseFolk';
 export { KIRI_JOBS } from './jobs';
 export { KIRI_FOES, KIRI_GEAR } from './foes';
+export { KIRI_CLANS } from './clans';

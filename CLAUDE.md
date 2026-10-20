@@ -156,7 +156,8 @@ ui ──► game ──► content ──► systems ──► core
     keeps them off your village's crews, teams and dinner table). Bonds (points,
     stages, tone reactions) are the `bonds` system; who reacts how comes from trait tastes.
     Clans live in **compounds** (`docs/design/compounds-plan.md`): a `compound` place per clan
-    behind one `quarter` card, entered by an outsider only as the clan's `outsiders` stance
+    behind one `quarter` card in the clan's village (`ClanDef.village`; the start village's
+    clans alone are born into, `homeClans`), entered by an outsider only as the clan's `outsiders` stance
     allows (welcoming, reserved, guarded: the bond needed with anyone of the clan by day; bonded
     at night; `game/compounds.ts`), and someone home behind a shut gate can't be talked to. The
     village screen's Who's here shows only people you know out and about.
@@ -890,7 +891,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a clan compound:** a `compound` place (`clanId`, optional `headId`) in the clan's
   village, listed in that village's `quarter`, an `outsiders` stance on the `ClanDef`, and
   schedules that bring its people home for a slot or two (and out for others, so they can be
-  met). Validated in `validateCompounds.ts`.
+  met). A clan of another village names it (`ClanDef.village`, a location id): its compound
+  stands there, and it is never offered at creation or drawn into your year (`homeClans`,
+  `game/homeClans.ts`; read the start village's clans only through it). Validated in
+  `validateCompounds.ts`.
 - **Add a companion kind:** a `CompanionKindDef` in the pack's `companions.ts` (temperament, a
   grown `body` (adult strength, speed, stamina and perception, and `maturesInDays`; the body
   decides those stats, never `statBonuses`), skills that start no better than a fresh genin's

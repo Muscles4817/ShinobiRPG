@@ -35,4 +35,14 @@ describe('compound validation', () => {
       'clan "hibana" has a compound but no stance on outsiders',
     );
   });
+
+  it('keeps a compound in its clan’s village, and a clan’s village real', () => {
+    const clans = ORIGINAL_PACK.clans.map((c) =>
+      c.id === 'hibana' ? { ...c, village: 'nowhere' } : c,
+    );
+    expect(validateCompounds({ ...ORIGINAL_PACK, clans })).toEqual([
+      'clan "hibana" belongs to unknown village "nowhere"',
+      'compound "hibana-compound" stands outside the hibana clan\'s village',
+    ]);
+  });
 });

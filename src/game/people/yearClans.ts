@@ -1,6 +1,7 @@
 import { hashUnit } from '@/core';
 
 import type { GameContext } from '../context';
+import { homeClans } from '../homeClans';
 
 /**
  * How many of a year's generated classmates are clan children, and of which clans. It varies
@@ -25,7 +26,9 @@ function clanChildren(seed: number, count: number): number {
 
 /** Each classmate's clan by position (null for a clanless child), from the seed alone. */
 export function yearClans(ctx: GameContext, seed: number, count: number): (string | null)[] {
-  const clans = ctx.content.clans.all.filter((c) => c.id !== CLANLESS).map((c) => c.id);
+  const clans = homeClans(ctx.content)
+    .filter((c) => c.id !== CLANLESS)
+    .map((c) => c.id);
   const children = clans.length === 0 ? 0 : clanChildren(seed, count);
   // Which places in the year the clan children take, and which clans, both by hash.
   const places = Array.from({ length: count }, (_, i) => i)

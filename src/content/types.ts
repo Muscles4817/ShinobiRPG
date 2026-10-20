@@ -145,6 +145,12 @@ export interface ClanDef {
   readonly dust?: ClanDust;
   /** How the clan treats outsiders at its compound's gate (`compounds.ts`). */
   readonly outsiders?: OutsiderStance;
+  /**
+   * The village the clan belongs to (a location id), where its compound stands; the start
+   * village when absent. Only the start village's clans are born into its classes and offered
+   * at creation (`game/homeClans.ts`).
+   */
+  readonly village?: string;
   readonly kekkeiGenkai?: {
     readonly name: string;
     readonly description: string;

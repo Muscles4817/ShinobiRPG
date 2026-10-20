@@ -111,8 +111,20 @@ have (`needsWorldMark`, `closedBy`).
 | Compounds            | A clan's outsiders stance is fixed                                              |
 | Festivals            | Have no condition                                                               |
 
-**Clans of another village.** `ClanDef` has no village, so the Kiri clans can't be added as
-clans yet. Character creation (`views/creation.ts`) and the year's generated clan children
-(`people/yearClans.ts`) read every clan in the pack, so a Kiri clan would appear as a Leaf birth
-option and as a Leaf classmate. A `village` (location id) on `ClanDef` would fix both, and then
-the loyal houses and the bloodline clans become compounds with outsiders stances.
+**Clans of another village** (done). A clan names its village (`ClanDef.village`), and only the
+start village's clans are offered at creation or drawn into the academy year (`homeClans`).
+The Mist's families are clans of Kirigakure (`kirigakure/clans.ts`). The loyal houses have
+compounds in the Houses' Quarter, each with a member who comes home in the evening:
+
+| Compound              | House    | Stance    |
+| --------------------- | -------- | --------- |
+| The Kasumi Lamp-House | Kasumi   | Reserved  |
+| The Register House    | Amibari  | Guarded   |
+| The Kurage Hall       | Kurage   | Guarded   |
+| The Isana Boatsheds   | Isana    | Welcoming |
+| The Forge-House       | Shiogama | Reserved  |
+
+The Karatachi hold the tower, which a foreigner never enters. The bloodline clans (Yuki, Hōzuki,
+Hoshigaki, Suikazan, Kaguya) and the Uminari are clans too, and the Kiri fighters belong to
+them, but their compounds stand empty under the purge. They are a job for whichever era brings
+them home.

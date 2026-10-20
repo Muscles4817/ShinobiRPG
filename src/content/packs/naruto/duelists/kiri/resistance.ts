@@ -15,6 +15,7 @@ export const RESISTANCE_FIGHTERS: readonly PersonDef[] = [
     name: 'Mangetsu',
     familyName: 'Hōzuki',
     pronouns: 'he',
+    clanId: 'hozuki',
     title: 'The Second Coming of the Demon',
     rank: 'jonin',
     stats: statLine('C', {
@@ -50,6 +51,7 @@ export const RESISTANCE_FIGHTERS: readonly PersonDef[] = [
     name: 'Kozue',
     familyName: 'Yuki',
     pronouns: 'she',
+    clanId: 'yuki',
     title: 'Last of the Yuki in the snow islands',
     rank: 'jonin',
     stats: statLine('C', {
@@ -83,6 +85,7 @@ export const RESISTANCE_FIGHTERS: readonly PersonDef[] = [
     name: 'Ukibe',
     familyName: 'Hoshigaki',
     pronouns: 'he',
+    clanId: 'hoshigaki',
     title: 'Captain of the rebel boats',
     rank: 'jonin',
     stats: statLine('C', { reserves: 'A', strength: 'A', ninjutsu: 'A', stamina: 'B' }),
@@ -104,6 +107,7 @@ export const RESISTANCE_FIGHTERS: readonly PersonDef[] = [
     name: 'Hari',
     familyName: 'Suikazan',
     pronouns: 'they',
+    clanId: 'suikazan',
     title: 'Resistance spy',
     rank: 'chunin',
     stats: statLine('D', {
@@ -131,6 +135,7 @@ export const RESISTANCE_FIGHTERS: readonly PersonDef[] = [
     name: 'Sekka',
     familyName: 'Kaguya',
     pronouns: 'he',
+    clanId: 'kaguya',
     title: 'Survivor of the Kaguya rising',
     rank: 'jonin',
     stats: statLine('C', {
@@ -158,6 +163,7 @@ export const RESISTANCE_FIGHTERS: readonly PersonDef[] = [
     name: 'Isobe',
     familyName: 'Uminari',
     pronouns: 'she',
+    clanId: 'uminari',
     title: 'Breath-diver and go-between',
     rank: 'chunin',
     stats: statLine('D', {
