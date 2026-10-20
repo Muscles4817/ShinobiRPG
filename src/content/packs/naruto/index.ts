@@ -93,6 +93,7 @@ import {
   KIRI_FOODS,
   KIRI_GEAR,
   KIRI_JOBS,
+  KIRI_HOUSE_FOLK,
   KIRI_PEOPLE,
   KIRI_TRAINING,
 } from './kirigakure';
@@ -235,6 +236,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...WAVES_PEOPLE,
     ...TANZAKU_PEOPLE,
     ...KIRI_PEOPLE,
+    ...KIRI_HOUSE_FOLK,
     ...OTAFUKU_PEOPLE,
     ...SHUKUBA_PEOPLE,
     ...FIRE_TEMPLE_PEOPLE,

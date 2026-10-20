@@ -44,7 +44,17 @@ describeFan('the fan pack’s towns', () => {
 
   it('meets the harbour ward’s people at home in Kirigakure, with its own work to do', () => {
     const residents = naruto!.people.filter((p) => p.homeLocationId === 'kirigakure');
-    expect(residents.map((p) => p.id)).toEqual(['ao', 'mirei', 'granny-shio', 'ryugo']);
+    expect(residents.map((p) => p.id)).toEqual([
+      'ao',
+      'mirei',
+      'granny-shio',
+      'ryugo',
+      'kasumi-yuge',
+      'isana-tora',
+      'kurage-nami',
+      'amibari-shiori',
+      'uminari-awa',
+    ]);
     const kiri = naruto!.locations.find((l) => l.id === 'kirigakure');
     const desk = kiri?.places.find((p) => p.kind === 'missions');
     expect(desk?.kind === 'missions' && desk.missionIds.length).toBeGreaterThan(0);

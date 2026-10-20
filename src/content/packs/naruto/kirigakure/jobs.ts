@@ -1,5 +1,6 @@
 import type { MissionDef } from '@/systems/missions';
 
+import { KIRI_REGIME_JOBS } from './regimeJobs';
 import { KIRI_RESCUE_JOBS } from './rescues';
 
 /**
@@ -164,4 +165,8 @@ const HARBOUR_JOBS: readonly MissionDef[] = [
   },
 ];
 
-export const KIRI_JOBS: readonly MissionDef[] = [...HARBOUR_JOBS, ...KIRI_RESCUE_JOBS];
+export const KIRI_JOBS: readonly MissionDef[] = [
+  ...HARBOUR_JOBS,
+  ...KIRI_RESCUE_JOBS,
+  ...KIRI_REGIME_JOBS,
+];
