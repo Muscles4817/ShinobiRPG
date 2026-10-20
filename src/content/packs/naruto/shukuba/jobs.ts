@@ -64,4 +64,41 @@ export const SHUKUBA_JOBS: readonly MissionDef[] = [
       },
     ],
   },
+  {
+    id: 'shukuba-black-sand',
+    title: 'Black Sand on the Road',
+    rank: 'C',
+    client: 'A Shukuba innkeeper',
+    summary:
+      'A guest died owing a month’s board and left a sealed scroll that pulls iron filings off the floor. Men keep asking for his room.',
+    slots: 3,
+    energyCost: 30,
+    reward: { ryo: 380, reputation: 10, dustScroll: 'iron-sand' },
+    minMissionsCompleted: 15,
+    once: true,
+    stages: [
+      {
+        kind: 'check',
+        text: 'The scroll’s seal is old and strong, and black grit clings to the case as if it wanted in.',
+        approaches: [
+          { label: 'Read the seal before you break it', stat: 'fuuinjutsu', difficulty: 12 },
+          { label: 'Steady your chakra against the pull', stat: 'chakraControl', difficulty: 12 },
+        ],
+        success:
+          'The seal gives without biting. Inside, an S-rank scroll on iron sand, written in a hand from the Sand.',
+        failure:
+          'The case snaps shut on your fingers twice before it opens, and the men downstairs have heard.',
+        onFailure: 'forward',
+      },
+      {
+        kind: 'encounter',
+        ground: 'town',
+        template: 'bandit-camp',
+        job: 'escort',
+        text: 'Two men in travel cloaks are waiting in the yard. They came a long way for that scroll.',
+        enemyIds: ['bandit-thug', 'bandit-archer'],
+        canFlee: false,
+      },
+    ],
+  },
 ];

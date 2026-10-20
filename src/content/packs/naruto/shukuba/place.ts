@@ -88,6 +88,7 @@ export const SHUKUBA_TOWN: LocationDef = {
         'arc-silk-her-room',
         'arc-silk-bandits',
         'arc-silk-pilgrim-road',
+        'shukuba-black-sand',
       ],
     },
   ],

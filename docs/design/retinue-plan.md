@@ -734,7 +734,14 @@ what is left; the fight screen shows a Dust meter.
   techniques, clan talk). In the fan pack the Sand isn't in the world yet, so its dust users
   are versus fighters for now (`PersonArsenal.dust`): Gaara (sand), the Fourth Kazekage (gold
   dust) and the Third Kazekage (iron sand).
-- **4e-iii, the S-rank scrolls** in the world, one per kind.
+- **4e-iii, the S-rank scrolls** in the world, and making and buying carried dust. A job hands
+  over a scroll (`reward.dustScroll`, one C-rank job per carried kind in each pack, fifteen jobs
+  in: iron sand, gold dust, glass sand). It is read at home a day at a time (five days) and only
+  with chakra control at B; mastered, it gives a first batch of the kind and teaches its two
+  shared techniques (`shared/dustTechniques.ts`). A body commands one kind at a time. Carried
+  dust is made at home (`makeDust`: an afternoon, energy and materials: iron cheap, gold dear) or
+  bought by the batch where a smith sells it (`buyDust`: dearer, no time; the original pack's
+  Kurogane Forge sells iron and glass sand).
 - **Later:** the beast or spirit shield perk, with milestone 3.
 
 ### Strains and crossbreeding (step 4c)

@@ -133,6 +133,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'focusing-bell',
         ],
         toolIds: TOOL_IDS,
+        dustIds: ['iron-sand', 'glass-sand'],
       },
       {
         id: 'outfitter',

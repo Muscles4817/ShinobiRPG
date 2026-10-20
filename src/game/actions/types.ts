@@ -124,6 +124,9 @@ export type GameAction =
   | { readonly type: 'readRite'; readonly placeId: string }
   | { readonly type: 'learnRite'; readonly personId: string }
   | { readonly type: 'takeHive'; readonly clanId: string; readonly share: HiveShare }
+  | { readonly type: 'studyDustScroll'; readonly dustId: string }
+  | { readonly type: 'makeDust' }
+  | { readonly type: 'buyDust'; readonly placeId: string }
   | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
   | { readonly type: 'playWithCompanion'; readonly play: PlayKind }
   | { readonly type: 'doseCompanion'; readonly hidden: boolean }

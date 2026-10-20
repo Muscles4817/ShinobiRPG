@@ -28,8 +28,40 @@ function arsenalDustProblems(pack: ContentPack): string[] {
   });
 }
 
+/**
+ * Dust no ground gives back can be made; dust a shop sells has a price; a scroll a job hands
+ * over teaches a real kind.
+ */
+function supplyProblems(pack: ContentPack): string[] {
+  const byId = new Map(pack.dusts.map((d) => [d.id, d]));
+  const unmade = pack.dusts
+    .filter((d) => d.drawnOn.length === 0 && !d.making)
+    .map((d) => `dust "${d.id}" comes back from no ground and can't be made`);
+  const shelved = pack.locations.flatMap((l) =>
+    l.places.flatMap((p) => (p.kind === 'gear' ? (p.dustIds ?? []) : [])),
+  );
+  const unpriced = shelved
+    .filter((id) => byId.get(id)?.price === undefined)
+    .map((id) => `dust "${id}" is sold with no price`);
+  const scrolls = pack.missions
+    .filter((m) => m.reward.dustScroll && !byId.has(m.reward.dustScroll))
+    .map((m) => `job "${m.id}" hands over a scroll of an unknown dust`);
+  const techniques = new Set(pack.techniques.map((t) => t.id));
+  const untaught = pack.dusts.flatMap((d) =>
+    (d.techniqueIds ?? [])
+      .filter((id) => !techniques.has(id))
+      .map((id) => `dust "${d.id}" teaches unknown technique "${id}"`),
+  );
+  return [...unmade, ...unpriced, ...scrolls, ...untaught];
+}
+
 export function validateDusts(pack: ContentPack): string[] {
-  return [...kindProblems(pack), ...clanDustProblems(pack), ...arsenalDustProblems(pack)];
+  return [
+    ...kindProblems(pack),
+    ...clanDustProblems(pack),
+    ...arsenalDustProblems(pack),
+    ...supplyProblems(pack),
+  ];
 }
 
 function kindProblems(pack: ContentPack): string[] {

@@ -1,0 +1,75 @@
+import type { TechniqueDef } from '@/systems/techniques';
+
+/**
+ * What an S-rank dust scroll teaches with the command of its dust (`DustDef.techniqueIds`,
+ * learned the day the scroll is mastered): two techniques for each kind no ground gives back.
+ * Shared by every pack, as the kinds are.
+ */
+export const DUST_TECHNIQUES: readonly TechniqueDef[] = [
+  {
+    id: 'dust-iron-needles',
+    name: 'Iron Sand Needles',
+    description: 'Iron sand drawn out into black needles and flung in a spray.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'damage', power: 14, hits: 3 }],
+    chakraCost: 8,
+    dustCost: 25,
+    rank: 'B',
+    difficulty: 100,
+  },
+  {
+    id: 'dust-iron-maul',
+    name: 'Iron Sand Maul',
+    description: 'Every grain gathered into one black weight and brought down.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'damage', power: 22 }],
+    chakraCost: 12,
+    dustCost: 40,
+    rank: 'A',
+    difficulty: 130,
+  },
+  {
+    id: 'dust-gold-press',
+    name: 'Gold Dust Press',
+    description: 'Gold settles over a foe and gets heavier until they can’t move under it.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'pin', power: 16 }],
+    chakraCost: 12,
+    dustCost: 35,
+    rank: 'B',
+    difficulty: 110,
+  },
+  {
+    id: 'dust-gold-tide',
+    name: 'Gold Dust Tide',
+    description: 'A slow, heavy tide of gold rolling over everyone in front of you.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'area', power: 16, size: 'small' }],
+    chakraCost: 16,
+    dustCost: 55,
+    rank: 'A',
+    difficulty: 130,
+  },
+  {
+    id: 'dust-glass-shards',
+    name: 'Glass Sand Shards',
+    description: 'Ground glass thrown in a glittering fan that cuts whatever it touches.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'damage', power: 12, hits: 2 }],
+    chakraCost: 6,
+    dustCost: 20,
+    rank: 'B',
+    difficulty: 100,
+  },
+  {
+    id: 'dust-glass-squall',
+    name: 'Glass Sand Squall',
+    description: 'A whirl of glass over everyone in front of you, every grain an edge.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'area', power: 14, size: 'small' }],
+    chakraCost: 14,
+    dustCost: 45,
+    rank: 'A',
+    difficulty: 130,
+  },
+];

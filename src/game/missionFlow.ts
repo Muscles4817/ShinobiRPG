@@ -95,6 +95,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
     companions: gifts.companions,
     contract: gifts.contract,
     rites: gifts.rites,
+    dustScrolls: gifts.dustScrolls,
   };
   const logged = log(afterFieldWork(pickDone(next, ctx, def), ctx, def, state.mission), {
     heading: jobDoneHeading(def.title),

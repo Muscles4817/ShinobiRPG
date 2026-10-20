@@ -70,7 +70,7 @@ export const OTAFUKU_TOWN: LocationDef = {
       name: 'The Quarter Office',
       icon: 'board',
       blurb: 'The teahouses’ association takes on help',
-      missionIds: ['otafuku-hermit-research', 'otafuku-silent-shamisen'],
+      missionIds: ['otafuku-hermit-research', 'otafuku-silent-shamisen', 'otafuku-gilded-debt'],
     },
   ],
 };

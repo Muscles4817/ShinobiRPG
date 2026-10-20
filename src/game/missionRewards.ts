@@ -8,6 +8,7 @@ import type { MissionDef } from '@/systems/missions';
 import { metToday } from './companions/adopt';
 import { signBlocker } from './contracts/summons';
 import { riteBlocker, riteOf } from './hives/rite';
+import { scrollKept } from './dust/scrolls';
 import type { GameContext } from './context';
 import { chip } from './ops';
 import type { GameState } from './state';
@@ -26,6 +27,8 @@ export interface HandedOver {
   readonly contract: Contract | null;
   /** Hive clans whose rite you know, with any the job handed over. */
   readonly rites: readonly string[];
+  /** Dust scrolls you hold, with any the job handed over. */
+  readonly dustScrolls: GameState['dustScrolls'];
   readonly chips: readonly JournalChip[];
   /** For the debrief card, by name. */
   readonly report: {
@@ -35,6 +38,7 @@ export interface HandedOver {
     readonly companion?: string;
     readonly contract?: string;
     readonly rite?: string;
+    readonly dustScroll?: string;
   };
 }
 
@@ -64,7 +68,15 @@ function giftsOf(state: GameState, ctx: GameContext, def: MissionDef) {
 type Given = HandedOver['report'];
 
 /** The order the debrief and chips name them in. */
-const GIVEN_KINDS = ['scroll', 'gear', 'recipe', 'companion', 'contract', 'rite'] as const;
+const GIVEN_KINDS = [
+  'scroll',
+  'gear',
+  'recipe',
+  'companion',
+  'contract',
+  'rite',
+  'dustScroll',
+] as const;
 
 const GIVEN_CHIPS: Readonly<Record<keyof Given, (name: string) => string>> = {
   scroll: (name) => `${name} scroll`,
@@ -73,6 +85,7 @@ const GIVEN_CHIPS: Readonly<Record<keyof Given, (name: string) => string>> = {
   companion: (name) => `${name} is at the animal clinic`,
   contract: (name) => `Signed ${name}`,
   rite: (name) => `Learned ${name}`,
+  dustScroll: (name) => `${name} scroll`,
 };
 
 function namedOnly(names: Record<keyof Given, string | undefined>): Given {
@@ -101,6 +114,29 @@ function riteFound(state: GameState, ctx: GameContext, def: MissionDef) {
   return found && riteBlocker(state, found.clan.id) === null ? found : null;
 }
 
+/** A dust scroll the job hands over, if it is any use to you (no dust, not held yet). */
+function dustScrollFound(state: GameState, ctx: GameContext, def: MissionDef) {
+  const dustId = def.reward.dustScroll;
+  const found = dustId ? ctx.content.dusts.get(dustId) : undefined;
+  return found && scrollKept(state, found.id) === null ? found : null;
+}
+
+/** The rites and dust scrolls you hold with what the job handed over, and their names. */
+function secretsFound(state: GameState, ctx: GameContext, def: MissionDef) {
+  const rite = riteFound(state, ctx, def);
+  const dustScroll = dustScrollFound(state, ctx, def);
+  return {
+    kept: {
+      rites: rite ? [...state.rites, rite.clan.id] : state.rites,
+      dustScrolls: dustScroll
+        ? [...state.dustScrolls, { dustId: dustScroll.id, sessions: 0 }]
+        : state.dustScrolls,
+    },
+    rite: rite?.rite.name,
+    dustScroll: dustScroll?.name,
+  };
+}
+
 export function handedOver(state: GameState, ctx: GameContext, def: MissionDef): HandedOver {
   const { scroll, gear, recipe, animal } = giftsOf(state, ctx, def);
   const withScroll = scroll ? addScroll(state.inventory, scroll.id) : state.inventory;
@@ -108,21 +144,22 @@ export function handedOver(state: GameState, ctx: GameContext, def: MissionDef):
     ? metToday(state, animal, { bond: RESCUED_START_BOND, arrival: 'rescue' })
     : null;
   const contractDef = contractOffered(state, ctx, def);
-  const rite = riteFound(state, ctx, def);
+  const secrets = secretsFound(state, ctx, def);
   const given = namedOnly({
     scroll: scroll?.name,
     gear: gear?.name,
     recipe: recipe?.name,
     companion: rescued?.name,
     contract: contractDef?.name,
-    rite: rite?.rite.name,
+    rite: secrets.rite,
+    dustScroll: secrets.dustScroll,
   });
   return {
     inventory: gear ? addGear(withScroll, gear.id) : withScroll,
     cooking: recipe ? learnRecipes(state.cooking, [recipe.id]) : state.cooking,
     companions: rescued ? { ...state.companions, waiting: rescued } : state.companions,
     contract: contractDef ? signed(contractDef.id, state.time.day) : state.contract,
-    rites: rite ? [...state.rites, rite.clan.id] : state.rites,
+    ...secrets.kept,
     chips: chipsFor(given),
     report: given,
   };

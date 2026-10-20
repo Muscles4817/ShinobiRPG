@@ -18,6 +18,15 @@ export interface DustDef {
   readonly gifts: Readonly<Partial<Record<DustGift, 1 | 2 | 3>>>;
   readonly banes: readonly DustBane[];
   readonly drawnOn: readonly CombatGround[];
+  /**
+   * For dust no ground gives back: what a batch made at home costs in materials (ryo), beside
+   * an afternoon's work. Required of every kind with no `drawnOn` (validated).
+   */
+  readonly making?: { readonly ryo: number; readonly how: string };
+  /** What a batch costs bought ready-made, where a shop sells it (`dustIds`). */
+  readonly price?: number;
+  /** Techniques its S-rank scroll teaches with the command of it (`reward.dustScroll`). */
+  readonly techniqueIds?: readonly string[];
 }
 
 /** A clan whose children are born commanding a kind of dust, a store of it to hand. */

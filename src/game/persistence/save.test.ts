@@ -606,6 +606,13 @@ describe('persistence', () => {
     expect(loaded.value.dust).toBeNull();
   });
 
+  it('gives a save from before dust scrolls none held', () => {
+    const { dustScrolls: _s, ...game } = newGame();
+    const loaded = deserialize(JSON.stringify({ version: 62, state: game }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.dustScrolls).toEqual([]);
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

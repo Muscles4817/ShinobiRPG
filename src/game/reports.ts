@@ -71,6 +71,8 @@ export type Report =
       readonly contract?: string;
       /** The hive clan's rite the job handed over, by name. */
       readonly rite?: string;
+      /** The S-rank dust scroll the job handed over, by the dust's name. */
+      readonly dustScroll?: string;
       /** How the job went, line by line (absent on reports from before the ledger). */
       readonly road?: readonly DebriefLine[];
       readonly crew?: readonly DebriefCrew[];

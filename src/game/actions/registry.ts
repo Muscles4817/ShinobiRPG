@@ -44,6 +44,7 @@ import { buyLore, handlerSession, handlerTeach } from './handling';
 import { leaveOffering, signTeacherContract, tearUpContract } from './contracts';
 import { crossAJar, nameYourStrain, searchForInsects, studyAJar } from './hives';
 import { learnRiteFrom, readRite, takeAHive } from './rites';
+import { buyABatch, makeABatch, studyDustScroll } from './dust';
 import { rehomeCompanion, takeRescued } from './rehoming';
 import { doseCompanion, feedCompanion, playWithCompanion } from './companionCare';
 import { trainCompanion } from './companionTraining';
@@ -137,6 +138,9 @@ export const HANDLERS: Registry = {
   readRite,
   learnRite: learnRiteFrom,
   takeHive: takeAHive,
+  studyDustScroll,
+  makeDust: makeABatch,
+  buyDust: buyABatch,
   feedCompanion,
   playWithCompanion,
   doseCompanion,

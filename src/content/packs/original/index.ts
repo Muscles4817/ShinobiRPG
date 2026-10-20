@@ -4,6 +4,7 @@ import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import { STRAINS } from './strains';
 import { WILD_STRAINS } from '../../shared/wildStrains';
 import { DUSTS } from '../../shared/dusts';
+import { DUST_TECHNIQUES } from '../../shared/dustTechniques';
 import { CONTRACT_TECHNIQUES, CONTRACTS } from './contracts';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
@@ -114,6 +115,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...CLAN_TECHNIQUES,
     ...TOGA_TECHNIQUES,
     ...HAIBARA_TECHNIQUES,
+    ...DUST_TECHNIQUES,
     ...SENSEI_TECHNIQUES,
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,

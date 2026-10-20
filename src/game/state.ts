@@ -1,5 +1,5 @@
 import type { Contract } from '@/systems/contracts';
-import type { DustStore } from '@/systems/dusts';
+import type { DustScroll, DustStore } from '@/systems/dusts';
 import type { Hive } from '@/systems/hives';
 import type { CombatState } from '@/systems/combat';
 import type { Companions } from '@/systems/companions';
@@ -96,6 +96,8 @@ export interface GameState {
   readonly hive: Hive | null;
   /** The dust you command and carry (`systems/dusts`); null for most. */
   readonly dust: DustStore | null;
+  /** S-rank scrolls of dust you hold, and how far you have read each (`dust/scrolls.ts`). */
+  readonly dustScrolls: readonly DustScroll[];
   /** Hive clans whose rite you have learned (`hives/rite.ts`), by clan id. */
   readonly rites: readonly string[];
   /**
