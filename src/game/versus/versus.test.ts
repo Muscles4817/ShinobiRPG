@@ -116,6 +116,22 @@ describe('versus bouts', () => {
     expect(fightOut(state, naruto).reports[0]?.kind).toBe('fight');
   });
 
+  it('fields the Water Country’s war: Yagura among the kage, the Mist’s fighters armed as written', () => {
+    const roster = versusRoster(naruto);
+    expect(roster.find((f) => f.id === 'person:yagura')?.group).toBe('Kage');
+    for (const id of ['mei', 'kushimaru', 'mangetsu', 'kasumi-oboro', 'kaguya-sekka']) {
+      const contender = contenderOf(naruto, `person:${id}`);
+      expect(contender?.kind).toBe('person');
+      if (contender?.kind !== 'person') continue;
+      const setup = playerSetup(contender, bout(`person:${id}`, 'person:kakashi'), naruto);
+      expect(setup.techniques.map((t) => t.id)).toEqual(contender.def.arsenal?.techniqueIds);
+    }
+    const kushimaru = contenderOf(naruto, 'person:kushimaru');
+    const armed =
+      kushimaru && playerSetup(kushimaru, bout('person:kushimaru', 'person:jinin'), naruto);
+    expect(armed?.gear?.held?.name).toMatch(/Nuibari/);
+  });
+
   it('refuses a pick the pack doesn’t have', () => {
     const made = createVersus(naruto, { side: ['person:nobody'], foes: ['person:guy'], seed: 1 });
     expect(made.ok).toBe(false);

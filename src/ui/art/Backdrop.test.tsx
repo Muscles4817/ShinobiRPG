@@ -12,6 +12,7 @@ const IDS: readonly BackdropId[] = [
   'dunes',
   'coast',
   'mist',
+  'mist-village',
   'mountain',
 ];
 

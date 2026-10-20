@@ -1,6 +1,7 @@
 import type { TechniqueDef } from '@/systems/techniques';
 
 import type { GearDef, PersonDef } from '../../../types';
+import { KIRI_FIGHTER_ARTS, KIRI_FIGHTER_GEAR, KIRI_FIGHTERS } from './kiri';
 import { GAARA, RASA, SUNA_DUST_TECHNIQUES, THIRD_KAZEKAGE } from './sunaDust';
 import { TENGEN, TENGEN_GEAR, TENGEN_TECHNIQUES } from './tengen';
 
@@ -14,9 +15,14 @@ export const DUELISTS: readonly PersonDef[] = /*#__PURE__*/ (() => [
   GAARA,
   RASA,
   THIRD_KAZEKAGE,
+  ...KIRI_FIGHTERS,
 ])();
 export const DUELIST_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...TENGEN_TECHNIQUES,
   ...SUNA_DUST_TECHNIQUES,
+  ...KIRI_FIGHTER_ARTS,
 ])();
-export const DUELIST_GEAR: readonly GearDef[] = /*#__PURE__*/ (() => [...TENGEN_GEAR])();
+export const DUELIST_GEAR: readonly GearDef[] = /*#__PURE__*/ (() => [
+  ...TENGEN_GEAR,
+  ...KIRI_FIGHTER_GEAR,
+])();

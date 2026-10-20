@@ -2,7 +2,7 @@
 
 /** Drawn scenery the UI knows how to paint. Adding one = add it here and in ui/art. */
 export type BackdropId =
-  'leaf-village' | 'lantern-rooftops' | 'dunes' | 'coast' | 'mist' | 'mountain';
+  'leaf-village' | 'lantern-rooftops' | 'dunes' | 'coast' | 'mist' | 'mist-village' | 'mountain';
 
 /** Small line drawings for places, items and drills. */
 export type IconId =

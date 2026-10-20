@@ -194,12 +194,15 @@
 .sky[data-land='dunes'][data-slot='evening'] {
   background: linear-gradient(180deg, #3b2a5a 0%, #c86a3a 60%, #f2b765 100%);
 }
-.sky[data-land='mist'] {
+.sky[data-land='mist'],
+.sky[data-land='mist-village'] {
   background: linear-gradient(180deg, #5a6878 0%, #a8b6c2 100%);
 }
-.sky[data-land='mist'][data-slot='evening'] {
+.sky[data-land='mist'][data-slot='evening'],
+.sky[data-land='mist-village'][data-slot='evening'] {
   background: linear-gradient(180deg, #2e2c48 0%, #6a6280 60%, #a8949a 100%);
 }
-.sky[data-land='mist'][data-slot='night'] {
+.sky[data-land='mist'][data-slot='night'],
+.sky[data-land='mist-village'][data-slot='night'] {
   background: linear-gradient(180deg, #12142a 0%, #2c3248 100%);
 }
