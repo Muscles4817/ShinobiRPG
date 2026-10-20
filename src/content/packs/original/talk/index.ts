@@ -80,4 +80,19 @@ export const CLAN_TOPICS: readonly ConversationTopic[] = [
         'The moths remember where they have been. If you know how to ask, they will tell you who walked under which lantern last night.',
     },
   },
+  {
+    kind: 'clan',
+    key: 'haibara',
+    values: {
+      clan: 'the Haibara',
+      duty: 'the kilns banked before dawn, the ash swept into the bins, and never a wet floor in the yard',
+      elder:
+        'my grandfather, who can tell you how hot a kiln is by the colour of the ash it leaves',
+      rite: 'the first time a child lifts a handful of ash without touching it, and the whole yard stops to watch',
+      burden:
+        '{them.their} lungs are never quite clear. Everyone in the yard coughs in the mornings, and nobody mentions it.',
+      secret:
+        'The oldest ash in the bins is not from the kilns. Some of it came from the village the first lanterns were lit for.',
+    },
+  },
 ];

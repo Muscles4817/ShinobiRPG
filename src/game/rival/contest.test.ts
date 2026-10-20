@@ -202,7 +202,7 @@ describe('closing the gap', () => {
     const theirs = rivalOf(game).stats;
     const ahead = { ...game, character: { ...game.character, stats: createStats(30, {}) } };
     expect(trailsYou(ahead, game.rival!.personId, theirs)).toBe(true);
-    expect(rivalryView(ahead, ctx, game.rival!.personId)!.driven).toMatch(/train harder/);
+    expect(rivalryView(ahead, ctx, game.rival!.personId)!.driven).toMatch(/trains? harder/);
     const seeded = (s: GameState) => ({ ...s, people: peopleGrown(s, ctx) });
     const later = (s: GameState) => ({ ...s, time: { ...s.time, day: s.time.day + 5 } });
     const grow = (s: GameState) =>
@@ -218,7 +218,7 @@ describe('closing the gap', () => {
     const behind = { ...game, character: { ...game.character, stats: createStats(2, {}) } };
     const view = rivalryView(behind, ctx, game.rival!.personId)!;
     expect(view.offers.map((o) => o.contest)).toEqual(['spar', 'race']);
-    expect(view.offers.every((o) => o.edge === 'Their ground')).toBe(true);
+    expect(view.offers.every((o) => /^(Their|His|Her) ground$/.test(o.edge))).toBe(true);
     expect(view.ways[0]).toMatch(/^Swallow your pride/);
     expect(view.tally.map((t) => t.label)).toContain('Races');
   });

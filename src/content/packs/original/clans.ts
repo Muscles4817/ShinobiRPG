@@ -87,4 +87,17 @@ export const CLANS: readonly ClanDef[] = [
       },
     },
   },
+  {
+    id: 'haibara',
+    name: 'Haibara',
+    outsiders: 'reserved',
+    description:
+      'Ash-workers who tend the great lantern kilns. Their children are born able to lift the ash and throw it.',
+    statBonuses: { chakraControl: 2, ninjutsu: 1, stamina: -2 },
+    modifiers: { growth: { chakraControl: 1.1 } },
+    arts: ['chakraControl', 'ninjutsu'],
+    startingTechniqueIds: ['haibara-ash-puff'],
+    lodging: 'Your room above the Haibara kiln yard',
+    dust: { dustId: 'ash' },
+  },
 ];

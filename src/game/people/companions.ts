@@ -13,6 +13,7 @@ import { personStats } from './progress';
 import { pronounsOf } from './pronouns';
 import { clanSize } from '../bodySize';
 import { personHive } from '../hives/hive';
+import { personDust } from '../dust/dust';
 
 /**
  * Genin who fight beside you (teammates) or against you (sparring partners), from their real
@@ -78,6 +79,7 @@ export function companionCombatant(
   const stats = personStats(person, state);
   const clan = person.clanId ? ctx.content.clans.get(person.clanId) : undefined;
   const hive = personHive(stats, clan, ctx);
+  const dust = personDust(hive.chakra, { clan, arsenalDust: person.arsenal?.dust }, ctx);
   return {
     id: `${PERSON_PREFIX}${person.id}`,
     name: person.name,
@@ -89,6 +91,7 @@ export function companionCombatant(
     chakra: hive.chakra,
     maxChakra: hive.chakra,
     ...(hive.swarm ? { swarm: hive.swarm } : {}),
+    ...(dust ? { dust } : {}),
     techniques: companionTechniques(person, state, ctx).map((id) =>
       ctx.content.techniques.require(id),
     ),

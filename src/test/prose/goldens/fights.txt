@@ -40,38 +40,83 @@
   summary: You lasted two rounds before going down. Asuka dazed you in the second round, and you never found your feet again.
 
 ########## a rival’s spar ##########
-  Daisuke squares up.
+  Hana squares up.
   —— The fight begins ——
   —— First exchange ——
   You close in at once.
-  The air around Daisuke wavers as Shadow Feint takes hold.
+  Hana fixes his eyes on the field and casts Shadow Feint.
   You stagger, dazed.
   —— Second exchange ——
-  Daisuke draws into Forge Cut.
-  Daisuke’s Forge Cut hacks into you, harder than a spar calls for. [Guarded] [−29]
+  Hana has been keeping Lantern Cut for this, and uses it now.
+  Hana’s Lantern Cut slashes you, and he lets you know it. [Guarded] [−14]
   You can’t find your feet yet.
   —— Third exchange ——
-  Daisuke uses Forge Cut once more.
-  Daisuke’s Forge Cut slashes deep into you, and it leaves you shaken. [Guarded] [−25]
   You have been keeping Gale Heel for this, and use it now.
-  Your Gale Heel whips across Daisuke, close enough to count. [Guarded] [−7]
+  Your Gale Heel whips across Hana, close enough to count. [Guarded] [−7]
+  Hana uses Lantern Cut once more.
+  Hana’s Lantern Cut bites into you. [Guarded] [−13]
   —— Last exchange ——
-  Daisuke goes back to Forge Cut.
-  Daisuke’s Forge Cut carves into you. [Guarded] [−25]
-  You use Gale Heel once more.
-  You lash out with the last of your strength, and the Gale Heel only flicks Daisuke. [Guarded] [−7]
+  Hana goes back to Lantern Cut.
+  Hana lands his Lantern Cut on you. [Guarded] [−13]
+  You send Gale Heel howling out.
+  Your Gale Heel rips into Hana cleanly. [Guarded] [−8]
   —— The next round begins ——
   —— First exchange ——
-  Daisuke reaches for Forge Cut again.
+  Hana reaches for Lantern Cut again.
+  You were waiting for exactly that.
+  You use Gale Heel once more.
+  You land your Gale Heel on Hana. [Guarded] [−8]
+  —— Second exchange ——
+  Hana uses Lantern Cut once more.
+  Hana’s Lantern Cut cuts you, and he lets you know it. [Guarded] [−11]
+  You go back to Gale Heel.
+  Hana is a shade too slow, and your Gale Heel whips across him. [Guarded] [−7]
+  —— Third exchange ——
+  Hana has been keeping Shadow Feint for this, and uses it now.
+  You reel, the world spinning.
+  You shake your head, still reeling.
+  —— Last exchange ——
+  Hana has been keeping Lantern Cut for this, and uses it now.
+  Hana’s Lantern Cut bites into you cleanly. [Guarded] [−16]
+  You have been keeping Gale Heel for this, and use it now.
+  You land your Gale Heel on Hana. [Guarded] [−8]
+  —— The next round begins ——
+  —— First exchange ——
+  Hana reaches for Lantern Cut again.
   You were waiting for exactly that.
   You go back to Gale Heel.
-  Daisuke is a shade too slow, and your Gale Heel whips across them. [Guarded] [−7]
+  Your Gale Heel nicks Hana. [Guarded] [−7]
   —— Second exchange ——
-  Daisuke uses Forge Cut once more.
-  Daisuke’s Forge Cut hacks into you, and it leaves you shaken. [Guarded] [−23]
-  You go down and stay down.
-  Daisuke stands over you long enough to be sure you know who won.
-  summary: You lasted two rounds before going down. Daisuke was still standing.
+  Hana uses Lantern Cut once more.
+  Hana’s Lantern Cut bites into you, and he lets you know it. [Guarded] [−12]
+  You reach for Gale Heel again.
+  Your Gale Heel rips into Hana. [Guarded] [−8]
+  —— Third exchange ——
+  You use Gale Heel once more.
+  Your Gale Heel cuts into Hana cleanly. [Guarded] [−8]
+  Hana has been keeping Shadow Feint for this, and uses it now.
+  You reel, the world spinning.
+  —— Last exchange ——
+  Hana has been keeping Lantern Cut for this, and uses it now.
+  Hana lands his Lantern Cut on you. [Guarded] [−16]
+  You shake your head, still reeling.
+  —— The next round begins ——
+  —— First exchange ——
+  Hana reaches for Lantern Cut again.
+  You read the first sign and are ready.
+  You launch into Gale Heel.
+  You lash out with the last of your strength, and the Gale Heel only nicks Hana. [Guarded] [−7]
+  —— Second exchange ——
+  You reach for Gale Heel again.
+  Your Gale Heel whips across Hana, close enough to count. [Guarded] [−7]
+  Tired now, Hana still goes to Shadow Feint.
+  You sway on your feet, close to done.
+  —— Third exchange ——
+  Tired now, Hana still goes to Lantern Cut.
+  Hana’s Lantern Cut bites into you, and he lets you know it. [Guarded] [−16]
+  You go down hard, and it costs you more than the fall.
+  Hana stands over you long enough to be sure you know who won.
+  summary: You lasted four rounds before going down. Hana dazed you in the fourth round, and you never found your feet again.
 
 ########## wolves in a forest ##########
   Two grey wolves square up.

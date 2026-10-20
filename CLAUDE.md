@@ -391,7 +391,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     it; heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
     harder, a bane scatters it, and `CombatOutcome.dust` reports what is left. Kinds are shared
     content (`content/shared/dusts.ts`, `DustDef`). An automatic shield is never dust's: it
-    belongs to where the power came from (a beast, a spirit). A companion is cared for
+    belongs to where the power came from (a beast, a spirit). Your dust is kept between fights
+    (`systems/dusts`, `GameState.dust`, `game/dust/`): a child of a clan with a `dust`
+    (`ClanDef.dust`) is born with a full store, as much as their chakra can hold up; what came
+    back from a fight is what the store holds, and each day dust the ground gives (sand, ash)
+    gathers back, quickly at home, while dust no ground gives (iron sand, gold, glass) never
+    comes back on its own: it is made or bought. People of a dust clan, and versus fighters
+    whose arsenal names one (`PersonArsenal.dust`), fight with a full store. A companion is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -908,8 +914,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   job's `reward.hiveRite`, or a person of the clan with `hiveRite`; `validateRites.ts`).
 - **Add a dust kind:** a `DustDef` in `content/shared/dusts.ts` (weight, hold and draw graded E
   to A, gifts, banes, the grounds it is drawn on); every pack takes the shared list. A dust
-  technique sets `dustCost` (spent) or `dustDraw` (pulled up first). Validated in
-  `validateDusts.ts`.
+  technique sets `dustCost` (spent) or `dustDraw` (pulled up first). A clan born to it has a
+  `dust` on its `ClanDef` and clan techniques that use it; a fighter's arsenal may name one
+  (`dust`). Validated in `validateDusts.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

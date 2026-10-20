@@ -141,6 +141,8 @@ export interface PersonArsenal {
    * Left out, they are at home with whatever they carry.
    */
   readonly weaponMastery?: WeaponMastery;
+  /** The dust they command (a `DustDef` id), a full store of it in every fight. */
+  readonly dust?: string;
 }
 
 /**

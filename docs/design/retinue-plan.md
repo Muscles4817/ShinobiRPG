@@ -724,9 +724,16 @@ what is left; the fight screen shows a Dust meter.
 **Build order:**
 
 - **4e-i, dust in a fight:** the contract, the rules, the engine, the shared kinds.
-- **4e-ii, dust users:** a carried store between fights (gourd, pouch, scroll), dust
-  bloodlines (the Kazekage and Gaara's lines in the fan pack, a dust clan in the original),
-  their techniques.
+- **4e-ii, dust users:** a carried store between fights (`systems/dusts`, `GameState.dust`):
+  as much as the user's chakra holds up, what came back from a fight, and each day dust the
+  ground gives (sand, ash) gathers back, quickly at home. Dust no ground gives (iron sand,
+  gold, glass) never comes back on its own: the designer's call is that it takes the player's
+  active time to make, or a trip to find and buy, so sand and ash keep an edge (making and
+  buying come with 4e-iii, when those kinds can first be had). The original pack's dust clan
+  is the **Haibara**, ash-workers of the great lantern kilns (a compound, a head, four ash
+  techniques, clan talk). In the fan pack the Sand isn't in the world yet, so its dust users
+  are versus fighters for now (`PersonArsenal.dust`): Gaara (sand), the Fourth Kazekage (gold
+  dust) and the Third Kazekage (iron sand).
 - **4e-iii, the S-rank scrolls** in the world, one per kind.
 - **Later:** the beast or spirit shield perk, with milestone 3.
 

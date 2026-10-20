@@ -2,7 +2,7 @@ import type { BodySize, CombatPerk } from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
 import type { EnemyDef } from './enemies';
 import type { ContractDef } from './contracts';
-import type { DustDef } from './dusts';
+import type { ClanDust, DustDef } from './dusts';
 import type { ClanHive, StrainDef } from './strains';
 import type { AtlasDef, MapLabelSide } from './atlas';
 import type { ClanCompanion, CompanionKindDef, CompanionLoreDef, VetFields } from './companions';
@@ -141,6 +141,8 @@ export interface ClanDef {
   readonly companion?: ClanCompanion;
   /** The hive a child of the clan is born with (`strains.ts`). */
   readonly hive?: ClanHive;
+  /** The dust a child of the clan is born commanding (`dusts.ts`). */
+  readonly dust?: ClanDust;
   /** How the clan treats outsiders at its compound's gate (`compounds.ts`). */
   readonly outsiders?: OutsiderStance;
   readonly kekkeiGenkai?: {

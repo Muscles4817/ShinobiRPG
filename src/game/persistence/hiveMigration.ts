@@ -14,3 +14,11 @@ export function v59ToV60(state: RawState): RawState {
 export function v60ToV61(state: RawState): RawState {
   return { ...state, rites: [] };
 }
+
+/**
+ * v61 → v62: commanded dust arrives. Nobody carries a store in the save yet; a child of a dust
+ * clan is given theirs, full, the first time a day passes (`dust/keeping.ts`).
+ */
+export function v61ToV62(state: RawState): RawState {
+  return { ...state, dust: null };
+}

@@ -47,6 +47,7 @@ import { openDay } from './daybook/open';
 import { NO_DAYBOOK } from './daybook/state';
 import { bornCompanions, kindOf, playerCompanion } from './companions/make';
 import { bornHive, chakraBody, DEFAULT_SHARE } from './hives/hive';
+import { bornDust } from './dust/dust';
 import type { GameState } from './state';
 import { bornNature } from './nature';
 import { notesAptitude, notesProblems } from './notes';
@@ -274,6 +275,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     brokenContracts: [],
     hive,
     rites: [],
+    dust: bornDust(clan, stats, ctx),
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),

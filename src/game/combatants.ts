@@ -23,6 +23,7 @@ import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
 import { clanSize } from './bodySize';
 import { chakraBody, hiveSwarm } from './hives/hive';
+import { dustPool } from './dust/dust';
 
 /** Translates game entities into the combat contract's vocabulary. */
 
@@ -115,6 +116,7 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     chakra: vitals.chakra,
     maxChakra: maxChakra(chakraBody(state)),
     ...hiveSwarm(state, ctx),
+    ...dustPool(state, ctx),
     techniques: playerTechniques(state, ctx),
     nature,
     perks: perksOf(state, ctx),

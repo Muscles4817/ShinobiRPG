@@ -64,7 +64,9 @@ describe('sparring', () => {
     const state = newGame();
     const offered = trainingView(state, ctx)!.sparring.map((s) => s.person.id);
     const teammates = state.people.team!.teammateIds;
-    expect(offered.slice(0, 2).sort()).toEqual([...teammates].sort());
+    // Your rival, when they train here, is offered first; your teammates come next.
+    const besidesRival = offered.filter((id) => id !== state.rival?.personId);
+    expect(besidesRival.slice(0, 2).sort()).toEqual([...teammates].sort());
     expect(offered).toContain('kaen');
     expect(offered).not.toContain('kenji');
   });
