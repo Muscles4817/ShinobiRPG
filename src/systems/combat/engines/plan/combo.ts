@@ -1,5 +1,6 @@
 import type { CombatTechnique } from '../../contract';
-import { alive, chakraCost } from '../../rules/body';
+import { affords } from './effort';
+import { alive } from '../../rules/body';
 import { ELEMENT_COMBO_BONUS, elementCombo } from '../../rules/elements';
 import { COMBINATION_BONUS } from '../../rules/team';
 import { trumpSpent } from '../../rules/trumps';
@@ -26,7 +27,7 @@ export interface Partner {
 
 function ready(f: PlanFighter, technique: CombatTechnique): boolean {
   if (!alive(f) || isDazed(f) || f.sealed > 0 || f.joined) return false;
-  return !trumpSpent(f, technique) && chakraCost(f, technique) <= f.chakra;
+  return !trumpSpent(f, technique) && affords(f, technique);
 }
 
 /** Who on this fighter's side could join this combination now, or undefined. */

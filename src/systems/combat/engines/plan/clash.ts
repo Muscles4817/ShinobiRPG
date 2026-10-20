@@ -1,7 +1,8 @@
+import { payFor } from './effort';
 import { clamp } from '@/core';
 
 import type { CombatTechnique } from '../../contract';
-import { alive, chakraCost } from '../../rules/body';
+import { alive } from '../../rules/body';
 import { elementMultiplier, matchup } from '../../rules/elements';
 import { tell } from '../../rules/telling';
 import { driveOf, effectsOf, isWounding, primaryEffect, techniquePower } from '../../rules/verbs';
@@ -10,7 +11,7 @@ import { intendedCard } from './intent';
 import { plannedPlay } from './priority';
 import { canHit } from './rows';
 import { inSight, type Turn } from './senses';
-import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
+import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { damage } from './wounding';
 
 /**
@@ -76,7 +77,7 @@ function answerTo(round: Round, answerer: PlanFighter, turn: Turn): JutsuCard | 
 function thrown(round: Round, answerer: PlanFighter, answer: CombatTechnique): Round {
   const used = answerer.used ?? [];
   const fighters = patch(round.fighters, answerer.id, {
-    ...paying(answerer, chakraCost(answerer, answer)),
+    ...payFor(answerer, answer),
     used: used.includes(answer.id) ? used : [...used, answer.id],
   });
   const acted = [...(round.acted ?? []), answerer.id];

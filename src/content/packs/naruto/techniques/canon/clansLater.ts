@@ -151,6 +151,7 @@ export const CANON_LATER_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Super Open Hand Slap',
     description: 'A giant hand charged with chakra, swung flat.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'akimichi',
     effects: [
       { verb: 'break', power: 22 },

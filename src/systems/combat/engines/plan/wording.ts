@@ -1,8 +1,8 @@
 import type { TechniqueEffect, Verb } from '@/systems/techniques';
 
 import type { CombatItem, CombatItemEffect, CombatTechnique } from '../../contract';
+import { effortOf } from './effort';
 import { shapeOf, type CombatGear } from '../../gearContract';
-import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import type { Card } from './cards';
 import type { PlanFighter } from './state';
@@ -131,8 +131,14 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
     case 'dispel':
       return `Break illusions, ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':
-      return `${techniqueWords(card.technique)}, ${chakraCost(fighter, card.technique)} chakra${card.technique.oncePerFight ? ', once per fight' : ''}${card.technique.unstable ? ', unstable' : ''}`;
+      return `${techniqueWords(card.technique)}, ${effortWords(fighter, card.technique)}${card.technique.oncePerFight ? ', once per fight' : ''}${card.technique.unstable ? ', unstable' : ''}`;
     case 'item':
       return toolDetail(card.item);
   }
+}
+
+/** What a technique costs, in words: so much chakra, or so much breath for a body move. */
+function effortWords(fighter: PlanFighter, technique: CombatTechnique): string {
+  const { pool, amount } = effortOf(fighter, technique);
+  return `${amount} ${pool}`;
 }

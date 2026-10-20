@@ -124,6 +124,7 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Chakra Blade: Straight Line',
     description: 'The knife held level, its edge stretched long with chakra for one wide cut.',
     discipline: 'taijutsu',
+    moulded: true,
     reach: ['close'],
     needs: { weapon: 'knuckles' },
     effects: [{ verb: 'area', power: 16 }],

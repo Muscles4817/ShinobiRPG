@@ -7,6 +7,7 @@ export const CANON_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Palm Bottom',
     description: 'A palm thrust that pushes chakra into the body and shakes what is inside.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'hyuga',
     accuracy: 'sure',
     effects: [
@@ -93,6 +94,7 @@ export const CANON_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Gentle Fist Art One Blow Body',
     description: 'Chakra let out of the whole body in one blast that throws the attacker off.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'hyuga',
     effects: [
       { verb: 'damage', power: 10 },
@@ -108,6 +110,7 @@ export const CANON_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     description:
       'Fine blades of chakra from both palms, woven into a net that cuts down what comes in.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'hyuga',
     effects: [
       { verb: 'counter', power: 14 },
@@ -146,6 +149,7 @@ export const CANON_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Eight Trigrams Vacuum Wall Palm',
     description: 'Both palms at once: a broad wall of compressed chakra that sweeps them away.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'hyuga',
     reach: ['close', 'mid'],
     effects: [

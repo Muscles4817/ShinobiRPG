@@ -1,3 +1,4 @@
+import { breathOf, effortOf } from './effort';
 import { blowsOf, type TechniqueEffect, type Verb } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
@@ -64,7 +65,8 @@ function techniqueWorth(
   if (!incoming) return 0;
   const reaches = 1 - avoidOdds(round, incoming);
   const does = t.effects.reduce((sum, e) => sum + effectWorth(self, foe, t, e), 0);
-  const spent = t.chakraCost / Math.max(1, self.chakra);
+  const { pool, amount } = effortOf(self, t);
+  const spent = amount / Math.max(1, pool === 'breath' ? breathOf(self) : self.chakra);
   return reaches * does * Math.max(0, 1 - COST_WEIGHT * spent);
 }
 

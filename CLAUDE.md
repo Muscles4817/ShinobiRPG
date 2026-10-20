@@ -280,7 +280,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     running and changes up a slotted attack against such a foe (`rules/familiarity.ts`). Left to their judgement, foes and
     teammates go for whoever is most worth it (`plan/targeting.ts`: the harm they do over the hits
     they'd take to fall), and a mind that reads the fight keeps chakra for its finisher
-    (`plan/pacing.ts`). Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
+    (`plan/pacing.ts`). A **body move** (plain taijutsu: no element, no Gate, nothing moulded) costs
+    **breath**, not chakra (`rules/breath.ts`: a pool set by stamina, a little back each exchange,
+    shown as a meter), so it is thrown under a seal and after chakra runs dry; ask `effortOf`
+    (`plan/effort.ts` in the engine) for any cost, never `chakraCost` alone. Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
     covers (wide ×1.5, vast ×2.2), and each exchange gives back a little, or a share of deep
     reserves. Holds are fought, not waited out (`rules/escape.ts`, `plan/struggle.ts`): a pin
     keeps its `grip` (how strongly it was cast, what breaks it), the held struggle against it at

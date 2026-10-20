@@ -1,7 +1,8 @@
 import type { EffectOf, TechniqueEffect, Verb } from '@/systems/techniques';
 
 import type { CombatTechnique } from '../../contract';
-import { alive, chakraCost, hasPerk, holdTurns } from '../../rules/body';
+import { payFor } from './effort';
+import { alive, hasPerk, holdTurns } from '../../rules/body';
 import { healAmount } from '../../rules/damage';
 import { groundRule } from '../../rules/ground';
 import { conditionResist } from '../../rules/avoidance';
@@ -32,7 +33,7 @@ import { damage, type Aimed } from './wounding';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
 import { canDaze, dazeIn } from './daze';
-import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
+import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { callSummon } from './summons';
 import { settleOn, swarmSpent } from './swarm';
 import { dustSpent } from './dust';
@@ -55,7 +56,7 @@ const FRIENDLY_AREA = 0.5;
 function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
   const known = actor.used ?? [];
   const change = {
-    ...paying(actor, chakraCost(actor, t)),
+    ...payFor(actor, t),
     ...swarmSpent(actor, t),
     ...dustSpent(actor, t, round.ground),
     used: known.includes(t.id) ? known : [...known, t.id],

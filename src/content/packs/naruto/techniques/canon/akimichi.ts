@@ -83,6 +83,7 @@ export const CANON_AKIMICHI: readonly TechniqueDef[] = [
     name: 'Butterfly Bullet Bombing',
     description: 'All of Butterfly Mode’s chakra packed into one punch.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'akimichi',
     reach: ['close'],
     effects: [
@@ -100,6 +101,7 @@ export const CANON_AKIMICHI: readonly TechniqueDef[] = [
     name: 'Ballistic Waterwheel',
     description: 'Swell up with swallowed water and roll at them as a heavy, sloshing ball.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'akimichi',
     reach: ['close', 'mid'],
     effects: [

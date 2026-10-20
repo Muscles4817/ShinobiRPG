@@ -64,7 +64,9 @@ export function TechniqueSheet({
       <div>
         <dt>Costs</dt>
         <dd>
-          <span className="chip cost">{sheet.chakra} chakra</span>
+          <span className="chip cost">
+            {sheet.cost.amount} {sheet.cost.pool}
+          </span>
           {sheet.costs.map((c) => (
             <span key={c} className="chip cost">
               {c}

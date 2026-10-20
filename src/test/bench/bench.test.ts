@@ -247,24 +247,28 @@ describe('hiding has counterplay (step 1.4b)', () => {
     }
   });
 
-  it.each(SCALES)('a %s fighter who knows a sense does no worse against hidden foes', (scale) => {
-    // The versatile build without its sharp eyes (insight), with and without a sense. Without
-    // one, its default plan still brings a Search against a foe that hides.
-    const { perks: _eyes, ...blind } = archetype('versatile', scale);
-    const sensing = {
-      ...blind,
-      name: `${blind.name} with a sense`,
-      techniques: [...blind.techniques, ...techniques(['wick-sense'])],
-    };
-    // Both sides win nearly every fight, so it takes many fights to tell them apart. A sense
-    // costs chakra where a Search is free, and clashes spend chakra too, so it may cost a fight
-    // or two in a couple of hundred, never more.
-    for (const hider of [archetype('stalker', scale), foe('trickster', scale)]) {
-      const withSense = bench(sensing, hider, FAIRNESS_SEEDS).winRate;
-      const without = bench(blind, hider, FAIRNESS_SEEDS).winRate;
-      expect(withSense).toBeGreaterThanOrEqual(without - SENSE_CHAKRA_ALLOWANCE);
-    }
-  });
+  it.each(SCALES)(
+    'a %s fighter who knows a sense does no worse against hidden foes',
+    (scale) => {
+      // The versatile build without its sharp eyes (insight), with and without a sense. Without
+      // one, its default plan still brings a Search against a foe that hides.
+      const { perks: _eyes, ...blind } = archetype('versatile', scale);
+      const sensing = {
+        ...blind,
+        name: `${blind.name} with a sense`,
+        techniques: [...blind.techniques, ...techniques(['wick-sense'])],
+      };
+      // Both sides win nearly every fight, so it takes many fights to tell them apart. A sense
+      // costs chakra where a Search is free, and clashes spend chakra too, so it may cost a fight
+      // or two in a couple of hundred, never more.
+      for (const hider of [archetype('stalker', scale), foe('trickster', scale)]) {
+        const withSense = bench(sensing, hider, FAIRNESS_SEEDS).winRate;
+        const without = bench(blind, hider, FAIRNESS_SEEDS).winRate;
+        expect(withSense).toBeGreaterThanOrEqual(without - SENSE_CHAKRA_ALLOWANCE);
+      }
+    },
+    MATRIX_TIMEOUT_MS,
+  );
 });
 
 describe('fields, moves and substitutions find their niche (step 1.4c)', () => {

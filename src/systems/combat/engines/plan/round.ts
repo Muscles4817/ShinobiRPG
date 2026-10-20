@@ -1,6 +1,7 @@
 import type { Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
+import { rested } from './effort';
 import { alive } from '../../rules/body';
 import { reachLead } from '../../rules/blades';
 import { gathered } from '../../rules/chakra';
@@ -300,6 +301,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...wearOffDaze(f, state.round),
     sealed: Math.max(0, f.sealed - 1),
     chakra: alive(f) ? gathered(f) : f.chakra,
+    ...(alive(f) ? rested(f) : {}),
   }));
   const { field: _old, ...rest } = state;
   const closing = result ? [closingLine(end, result)] : fading;

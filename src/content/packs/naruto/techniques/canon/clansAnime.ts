@@ -23,6 +23,7 @@ export const CANON_ANIME_CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Eight Trigrams Mountain Crusher',
     description: 'A stronger Vacuum Palm: a wave of chakra up close that hurls them away.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'hyuga',
     effects: [
       { verb: 'damage', power: 18 },

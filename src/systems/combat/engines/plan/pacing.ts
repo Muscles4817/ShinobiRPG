@@ -1,4 +1,4 @@
-import { chakraCost } from '../../rules/body';
+import { chakraTaken } from './effort';
 import { lastDitch } from '../../rules/trumps';
 import { isWounding, techniquePower } from '../../rules/verbs';
 import type { Card } from './cards';
@@ -25,6 +25,8 @@ export function spendsReserve(self: PlanFighter, card: Card): boolean {
   }
   const finisher = finisherOf(self);
   if (!finisher || finisher.id === card.technique.id) return false;
-  const left = self.chakra - chakraCost(self, card.technique);
-  return left < chakraCost(self, finisher);
+  // Breath and chakra are kept apart: a body move never eats into the finisher's chakra.
+  const spends = chakraTaken(self, card.technique);
+  const keeps = chakraTaken(self, finisher);
+  return spends > 0 && keeps > 0 && self.chakra - spends < keeps;
 }

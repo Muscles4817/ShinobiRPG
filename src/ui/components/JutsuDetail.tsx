@@ -45,7 +45,7 @@ export const DISCIPLINE_LABELS: Readonly<Record<Discipline, string>> = {
 export function cardDetail(card: JutsuCard): string {
   if (card.status === 'studying') return `Studying, ${card.progressPct}% learned`;
   if (card.status === 'unknown') return 'Not learned';
-  return `${effectText(card.effects)} for ${card.chakraCost} chakra`;
+  return `${effectText(card.effects)} for ${card.cost.amount} ${card.cost.pool}`;
 }
 
 /**

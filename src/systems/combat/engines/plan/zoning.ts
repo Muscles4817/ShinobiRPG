@@ -1,5 +1,6 @@
 import type { RangeBand } from '../../contract';
-import { alive, chakraCost } from '../../rules/body';
+import { payFor } from './effort';
+import { alive } from '../../rules/body';
 import { homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
 import {
@@ -20,7 +21,7 @@ import { useJutsu } from './jutsu';
 import { heldOffLine, heldOffWhy, throughLine } from './sceneVoice';
 import { drawnByClones } from './screening';
 import { inSight, opponentsOf, type Turn } from './senses';
-import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
+import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
 
 /**
@@ -122,8 +123,7 @@ function fire(round: Round, { holder, closer, card }: Shot, turn: Turn): Round {
 /** Paying for a shot the closer slipped through: chakra for a technique. */
 function spent(round: Round, holder: PlanFighter, card: Card): Round {
   if (card.kind !== 'jutsu') return round;
-  const cost = chakraCost(holder, card.technique);
-  return { ...round, fighters: patch(round.fighters, holder.id, paying(holder, cost)) };
+  return { ...round, fighters: patch(round.fighters, holder.id, payFor(holder, card.technique)) };
 }
 
 /** What a step in meets: nobody holding them off, held off, or slipped through. */

@@ -1,4 +1,4 @@
-import { chakraCost } from '@/systems/combat';
+import { effortOf, type Effort } from '@/systems/combat';
 import type { JournalChip, JournalTone } from '@/systems/journal';
 import type { StatGrade } from '@/systems/stats';
 import type { TechniqueDef, Verb } from '@/systems/techniques';
@@ -23,7 +23,8 @@ export interface JutsuCard {
   readonly element: string | null;
   /** What it does, in order, with each effect's strength. */
   readonly effects: readonly JutsuEffect[];
-  readonly chakraCost: number;
+  /** What a fight would charge you for it: chakra, or breath for a body move. */
+  readonly cost: Effort;
   readonly rank: StatGrade;
   /** Known, but a rank above your grade: costlier and liable to misfire until it steadies. */
   readonly unstable: boolean;
@@ -51,10 +52,7 @@ export function jutsuCard(
     discipline: t.discipline,
     element: t.element ?? null,
     effects: t.effects.map((e) => ({ verb: e.verb, power: e.power })),
-    chakraCost: chakraCost(
-      { attributes: fighter.attributes },
-      { chakraCost: t.chakraCost, ...(unstable ? { unstable } : {}) },
-    ),
+    cost: effortOf({ attributes: fighter.attributes }, { ...t, ...(unstable ? { unstable } : {}) }),
     rank: t.rank,
     unstable,
     status: known ? 'known' : progress > 0 ? 'studying' : 'unknown',
