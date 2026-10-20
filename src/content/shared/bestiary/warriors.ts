@@ -74,7 +74,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       description: 'Commands a lord’s guard and has never once been surprised.',
       ...foeStats(12, [15, 13, 15, 13], {
         ...NO_HAND_SIGNS,
-        kenjutsu: 18,
+        kenjutsu: 17,
         willpower: 15,
         intellect: 13,
       }),
@@ -167,9 +167,9 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       danger: 'deadly',
       name: 'Fighting Abbot',
       description: 'Sixty years of the same prayers and the same drills. Neither has worn thin.',
-      ...foeStats(11, [12, 9, 12, 13], {
-        taijutsu: 19,
-        willpower: 18,
+      ...foeStats(10, [12, 9, 12, 13], {
+        taijutsu: 17,
+        willpower: 16,
         chakraControl: 14,
         kenjutsu: 6,
       }),

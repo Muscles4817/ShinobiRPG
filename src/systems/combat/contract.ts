@@ -58,6 +58,8 @@ export type CombatTechnique = Pick<
 > & {
   /** Learned a rank above its user's grade: costlier and may misfire (`rules/unstable.ts`). */
   readonly unstable?: true;
+  /** Its rank, which reads its power (`rules/damage.ts`); E when a bare setup leaves it out. */
+  readonly rank?: TechniqueDef['rank'];
 };
 
 /** How far apart the two sides stand. Engines decide what each band allows. */

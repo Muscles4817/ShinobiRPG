@@ -7,7 +7,7 @@ import type {
   CombatTechnique,
   CombatTrait,
 } from '@/systems/combat';
-import { STAT_IDS, type StatId, type Stats } from '@/systems/stats';
+import { STAT_IDS, STAT_READING, type StatId, type Stats } from '@/systems/stats';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 import { ctx } from '@/test/gameFixtures';
 
@@ -71,10 +71,28 @@ export interface FighterSpec {
 
 export type StatProfile = Partial<Readonly<Record<StatId, Emphasis>>>;
 
+/**
+ * The body and the mind per scale, by the stat model (`docs/design/stat-model-plan.md`): a
+ * shinobi's body is an athlete's at any rank, a little more with each, and the mind is the
+ * person, a little sharper with experience. Skills follow `SCALE_VALUES`.
+ */
+export const BODY_SCALE_VALUES: Readonly<Record<Scale, Readonly<Record<Emphasis, number>>>> = {
+  genin: { weak: 5, base: 8, strong: 11, peak: 14 },
+  chunin: { weak: 7, base: 11, strong: 14, peak: 18 },
+  jonin: { weak: 9, base: 13, strong: 17, peak: 22 },
+};
+export const MIND_SCALE_VALUES: Readonly<Record<Scale, Readonly<Record<Emphasis, number>>>> = {
+  genin: { weak: 4, base: 7, strong: 10, peak: 13 },
+  chunin: { weak: 5, base: 8, strong: 12, peak: 16 },
+  jonin: { weak: 6, base: 10, strong: 14, peak: 20 },
+};
+
+const VALUES_BY_READING = { skill: SCALE_VALUES, body: BODY_SCALE_VALUES, mind: MIND_SCALE_VALUES };
+
 /** A stat line at a scale: every stat at `base` unless the profile says otherwise. */
 export function statLine(scale: Scale, profile: StatProfile = {}): Stats {
-  const values = SCALE_VALUES[scale];
-  const entries = STAT_IDS.map((id) => [id, values[profile[id] ?? 'base']] as const);
+  const valueOf = (id: StatId) => VALUES_BY_READING[STAT_READING[id]][scale][profile[id] ?? 'base'];
+  const entries = STAT_IDS.map((id) => [id, valueOf(id)] as const);
   return Object.fromEntries(entries) as Record<StatId, number>;
 }
 
