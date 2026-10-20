@@ -220,12 +220,12 @@ view:
 === rival ===
 view:
   person:
-    name: Sasuke
+    name: Rock
     relation: rival
-    fullName: Sasuke Uchiha
+    fullName: Rock Lee
     title: Genin
     specialty:
-      label: Ninjutsu
+      label: Taijutsu
     stageName: Stranger
     where: At the Training Grounds
     talk:
@@ -233,8 +233,8 @@ view:
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word gets round which team you landed on
-  title: Sasuke finds you
-  lines[0]: Sasuke has been watching you since the academy. Today he wants you to know it.
+  title: Rock finds you
+  lines[0]: Rock has been watching you since the academy. Today he wants you to know it.
   lines[1]: “Congratulations on your team. Truly. Do try to keep up; it would be dull otherwise.”
   choices[0]:
     label: “Enjoy it while it lasts.”
@@ -246,7 +246,7 @@ view:
     label: Hold his look, and walk past.
 
 >>> answerRival
-  journal «Sasuke»: Sasuke looks at you a moment longer than usual. “Hm. Maybe you’re worth the trouble.”
+  journal «Rock»: Rock looks at you a moment longer than usual. “Hm. Maybe you’re worth the trouble.”
 
 ########## day 1 ##########
 
@@ -713,7 +713,7 @@ view:
       label: Miso Chashu Ramen
   aheadLabel: Tomorrow
   ahead[0]:
-    text: Sasuke challenged you to a spar
+    text: Rock challenged you to a spar
     stamp: Rival
   ahead[1]:
     text: The Chūnin Exams
@@ -900,7 +900,7 @@ view:
       label: Miso Chashu Ramen
   aheadLabel: Tomorrow
   ahead[0]:
-    text: Sasuke challenged you to a spar
+    text: Rock challenged you to a spar
     stamp: Rival
   ahead[1]:
     text: The Chūnin Exams
@@ -1232,12 +1232,12 @@ view:
 === rival ===
 view:
   person:
-    name: Sasuke
+    name: Rock
     relation: rival
-    fullName: Sasuke Uchiha
+    fullName: Rock Lee
     title: Genin
     specialty:
-      label: Ninjutsu
+      label: Taijutsu
     stageName: Stranger
     where: At the Training Grounds
     talk:
@@ -1245,8 +1245,8 @@ view:
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word reaches you
-  title: Sasuke again
-  lines[0]: Sasuke took the job off the board you had been eyeing, and told the clerk you weren’t ready for it.
+  title: Rock again
+  lines[0]: Rock took the job off the board you had been eyeing, and told the clerk you weren’t ready for it.
   choices[0]:
     label: Let it go.
     heard: Mikoto and Kaname would like it; Mai wouldn’t.
@@ -1319,12 +1319,12 @@ view:
 === rival ===
 view:
   person:
-    name: Sasuke
+    name: Rock
     relation: rival
-    fullName: Sasuke Uchiha
+    fullName: Rock Lee
     title: Genin
     specialty:
-      label: Ninjutsu
+      label: Taijutsu
     stageName: Stranger
     where: At the Training Grounds
     talk:
@@ -1332,8 +1332,8 @@ view:
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word reaches you
-  title: Sasuke again
-  lines[0]: Sasuke took the job off the board you had been eyeing, and told the clerk you weren’t ready for it.
+  title: Rock again
+  lines[0]: Rock took the job off the board you had been eyeing, and told the clerk you weren’t ready for it.
   choices[0]:
     label: Let it go.
     heard: Mikoto and Kaname would like it; Mai wouldn’t.

@@ -218,21 +218,21 @@ view:
 === rival ===
 view:
   person:
-    name: Hana
+    name: Jin
     relation: rival
-    fullName: Hana Sasaki
+    fullName: Jin Kurogane
     title: Genin
     specialty:
       label: Kenjutsu
     stageName: Stranger
-    where: At the Market Street
+    where: At the Training Grounds
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word gets round which team you landed on
-  title: Hana finds you
-  lines[0]: Hana has been watching you since the academy. Today he wants you to know it.
+  title: Jin finds you
+  lines[0]: Jin has been watching you since the academy. Today he wants you to know it.
   lines[1]: “You’re the one from the back of the hall.” It isn’t a question.
   choices[0]:
     label: “Enjoy it while it lasts.”
@@ -244,7 +244,7 @@ view:
     label: Hold his look, and walk past.
 
 >>> answerRival
-  journal «Hana»: Hana says nothing, but nods once, which is a speech by his standards.
+  journal «Jin»: Jin says nothing, but nods once, which is a speech by his standards.
 
 ########## day 1 ##########
 
@@ -1615,21 +1615,21 @@ view:
 === rival ===
 view:
   person:
-    name: Hana
+    name: Jin
     relation: rival
-    fullName: Hana Sasaki
+    fullName: Jin Kurogane
     title: Genin
     specialty:
       label: Kenjutsu
     stageName: Stranger
-    where: At the Market Street
+    where: At the Training Grounds
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word reaches you
-  title: Hana again
-  lines[0]: Hana stopped at the edge of your drill, corrected your stance in one sentence, and walked on.
+  title: Jin again
+  lines[0]: Jin stopped at the edge of your drill, corrected your stance in one sentence, and walked on.
   choices[0]:
     label: Let it go.
     heard: Asuka would like it; Goro and Gōran wouldn’t.
@@ -1695,21 +1695,21 @@ view:
 === rival ===
 view:
   person:
-    name: Hana
+    name: Jin
     relation: rival
-    fullName: Hana Sasaki
+    fullName: Jin Kurogane
     title: Genin
     specialty:
       label: Kenjutsu
     stageName: Stranger
-    where: At the Market Street
+    where: At the Training Grounds
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word reaches you
-  title: Hana again
-  lines[0]: Hana stopped at the edge of your drill, corrected your stance in one sentence, and walked on.
+  title: Jin again
+  lines[0]: Jin stopped at the edge of your drill, corrected your stance in one sentence, and walked on.
   choices[0]:
     label: Let it go.
     heard: Asuka would like it; Goro and Gōran wouldn’t.
