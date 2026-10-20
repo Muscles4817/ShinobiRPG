@@ -31,8 +31,8 @@ describe('gear', () => {
       charm: 'ash-ink-brush',
     });
     expect(combatGear(state, ctx)).toEqual({
-      held: { name: 'Forge Wakizashi', shape: 'blade', rank: 'C' },
-      thrown: { name: 'Needle Case', shape: 'senbon', rank: 'D' },
+      held: { name: 'Forge Wakizashi', weaponClass: 'sword', rank: 'C' },
+      thrown: { name: 'Needle Case', weaponClass: 'senbon', rank: 'D' },
       armour: { name: 'Lacquered Cuirass', level: 'heavy', rank: 'C' },
       focus: { name: 'Ash-Ink Sealing Brush', rank: 'C', boosts: { verb: 'seal' } },
     });
@@ -42,7 +42,8 @@ describe('gear', () => {
   });
 
   it('a fighter with nothing equipped still brings known (empty) gear, so blade arts need one', () => {
-    expect(playerCombatant(newGame(), ctx).gear).toEqual({});
+    const state = newGame();
+    expect(playerCombatant(state, ctx).gear).toEqual({ mastery: state.character.weaponMastery });
   });
 
   it('B-rank gear is sold to chūnin, and the shop says why not', () => {
@@ -68,17 +69,19 @@ describe('gear', () => {
   it('the shop shows each piece’s kind, rank and what it does', () => {
     const items = at('kurogane-forge')(rich()).racks.flatMap((r) => r.items);
     const tanto = items.find((i) => i.id === 'lantern-steel-tanto')!;
-    expect(tanto).toMatchObject({ kind: 'Blade', rank: 'D', unique: false });
+    expect(tanto).toMatchObject({ kind: 'Light blade', rank: 'D', unique: false });
     expect(tanto.effects.map((c) => c.label)).toEqual([
       'Strike becomes a cut',
       'Strikes first up close',
       'Needed for kenjutsu',
-      'Cuts +25%',
+      'Cuts +15%',
+      'Very quick in the hand',
+      'In your hand: practised',
     ]);
     const wakizashi = items.find((i) => i.id === 'forge-wakizashi')!;
     expect(wakizashi.effects).toContainEqual({ label: 'Cuts +35%', tone: 'gain' });
     const needles = items.find((i) => i.id === 'needle-case')!;
-    expect(needles.effects.map((c) => c.tone)).toEqual(['info', 'cost', 'gain']);
+    expect(needles.effects.map((c) => c.tone)).toEqual(['info', 'cost', 'gain', 'gain', 'info']);
     const racks = at('kurogane-forge')(rich()).racks.map((r) => r.label);
     expect(racks).toEqual(['Blades and fists', 'Thrown', 'Focus charms']);
   });
@@ -95,7 +98,8 @@ describe('gear', () => {
       ...strong,
       character: { ...strong.character, stats: { ...strong.character.stats, strength: 30 } },
     };
-    const speed = (item: typeof weak) => item.effects.find((c) => c.tone === 'cost')!.label;
+    const speed = (item: typeof weak) =>
+      item.effects.find((c) => c.label.startsWith('Speed'))!.label;
     expect(speed(weak)).not.toBe(speed(plate(lifted)));
   });
 
@@ -104,7 +108,9 @@ describe('gear', () => {
     const body = loadoutView(state, ctx).slots.find((s) => s.slot === 'body')!;
     expect(body.label).toBe('Armour');
     expect(body.worn?.effects.map((c) => c.label)).toEqual([
-      'Blows and blades −7%',
+      'Blows −7%',
+      'Blades −5%',
+      'Points and thrown steel −20%',
       'No weight to it',
     ]);
   });
@@ -126,7 +132,7 @@ describe('a blade art needs a blade in hand', () => {
     const known = { ...newGame().techniques, known: ['lantern-cut'] };
     const fighter = playerCombatant({ ...newGame(), techniques: known }, ctx);
     expect(fighter.techniques[0]?.needs).toEqual({ weapon: 'blade' });
-    expect(fighter.gear).toEqual({});
+    expect(fighter.gear?.held).toBeUndefined();
   });
 });
 

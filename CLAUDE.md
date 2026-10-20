@@ -171,7 +171,7 @@ ui ──► game ──► content ──► systems ──► core
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
     derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`
-    (authored with `statLine`; validated against rank and role) and may have an `aptitude`;
+    (authored with `statLine`; on the scale, any grade at any rank) and may have an `aptitude`;
     generated genin get theirs at generation from the save's seed. Genin train every day
     (`game/people/regimen.ts`) through the same growth formula as you, caught up lazily per day
     like the board (`peopleGrown` in `game/people/progress.ts`, hashing the seed, never the
@@ -213,8 +213,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     Each side stands in a front and a back **row** (`rules/rows.ts`, placed by kit or
     `CombatantSetup.row`): a blow up close can't reach the back row while the front stands;
     throws, longer-reach techniques and area effects can. Ask `canReach`, never test rows inline.
-    **Health is 100 for every human** (`MAX_HEALTH`); creatures scale it with
-    `EnemyDef.healthScale`. Damage comes from the **gap** between attacker power and defender
+    **Health is 100 for every human-sized body** (`MAX_HEALTH`); creatures scale it with
+    `EnemyDef.healthScale`. A body may be bred bigger (**size**, `rules/size.ts`:
+    `ClanDef.size`, `EnemyDef.size` → `CombatantSetup.size`; small, human, large, huge): more
+    health (scaled by the engine and reported back on the human scale, `plan/sizing.ts`) and
+    toughness, slipping less, a weight that helps a step in and walks through a hold-off that
+    didn't hurt it much, and the cap on one hit rising for each size step it has on its target
+    (`hitCapShare`). An empower may `grow` its user for as long as it holds (Expansion), and a
+    huge body's fists reach mid. Damage comes from the **gap** between attacker power and defender
     defence (`rules/damage.ts`: a ratio of ratings, narrow variance), so equals trade the same
     blows at every grade and each grade of difference is decisive. **Whether an attack
     reaches** is one avoid roll for every attack, technique or plain blow
@@ -288,8 +294,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     lethality targets (equals fight two to three rounds and win about half) and the content bench
     (`contentBench.test.ts`) a fresh character's real fights: against an AI copy, the genin of
     their year and D-rank foes; retune the named constants there, not by eye.
-    Every number has a frame of reference: `statTier` grades a stat value E–S (E–D genin, C chūnin,
-    B–A jōnin, S kage) and
+    Every number has a frame of reference (`docs/design/stat-model-plan.md`): values run 0–60, and
+    `statTier` grades one E–S (S from 40), read by kind (`STAT_READING`, `statTierOf`): a skill
+    (the arts and chakra control) against the ordinary shinobi of each rank (E genin, D good
+    genin, C chūnin, B jōnin, A good jōnin, S elite: an average, never a cap), the body against
+    real athletes (world class at A; beyond human, S, comes from techniques that boost it), the
+    mind as individual. And
     `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you
     (threat, fighting style, and with sharp eyes their standout stats) for fights, sparring
     partners and mission notices, from the same stats the fight uses.
@@ -416,7 +426,26 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     strike up close unless a foe's hands are well clear of it, open to counters in an unskilled
     hand, and in the way of hand signs short of far: `rules/blades.ts`; knuckles; thrown steel and senbon;
     armour levels that trade protection for speed, eased by strength; a focus that sharpens a
-    verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. Gear has
+    verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. Every hit
+    has a **hit type** (`rules/hits.ts`: blunt, cut, pierce, raw chakra, an element, or mind,
+    which nothing stops; a weapon's from its class, else read from the attack's kind), and armour
+    meets each type its own way (`LEVEL_RULES`: a light vest stops small thrown steel, plate
+    turns blades and conducts lightning); **cast armour** is the `shroud` verb (`rules/shrouds.ts`,
+    `plan/shrouds.ts`: lightning, sand, earth or chakra, laid over anything worn, paid in chakra
+    each exchange; lightning quickens and yields to wind, sand wears away by its integrity, earth
+    splits under lightning). A weapon
+    has a **class** (`WEAPON_CLASSES`: light blade, sword, greatsword, polearm, fan, chain, staff,
+    blunt, knuckles, throwing, senbon; its shape for the rules is `shapeOf`), and each class
+    handles its own way (`rules/weaponClasses.ts`: weight, speed in the hand, the guard it gives,
+    and reach: a polearm or chain strikes at mid as well, `strikeReach`); several `blades` in hand
+    strike as a flurry a Guard or Counter meets once (`bladesOf`); a weapon
+    may be a focus too (`boosts`). The weapon art is kenjutsu at the weapon's **mastery**
+    (`rules/mastery.ts`, `CombatGear.mastery`: a weapon never held lets half the art through), so a
+    master of shuriken can be ordinary with a sword; throws are the weapon art aimed by
+    perception. Yours is `character.weaponMastery` (`game/weaponMastery.ts`: the academy's kunai
+    and tantō at graduation, then each drill that `practises` a hand and each fight carried into
+    closes part of the gap; read in words, never numbers; a save without it is at home with all);
+    an authored fighter's is `PersonArsenal.weaponMastery`. Gear has
     ranks D–A: shops sell D and C, B to chūnin; A and `unique` named weapons are never sold. A home-cooked recipe sets
     `character.meal`; its `buff` is another `ModifierSpec` in `characterModifiers` and
     `spendTime` clears it when the day ends. **Cooking is a skill** (`systems/cooking`,
@@ -583,8 +612,16 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     over the week). Your sensei's **regard** (`GameState.mentor`, `game/sensei/state.ts`) is
     their judgement of you, apart from the bond: kept meetings raise it, missed ones lower it by
     their grip as each day is settled (`settleMentor` in `spendTime`; excused on a job, away or
-    laid up), and the nomination reads it. Their gatekeeping sets the pass and permit bond stages
-    and how many jobs a nomination wants; their mission posture sets their stance in a job's
+    laid up), and the nomination reads it. Their gatekeeping sets the pass and permit bond stages,
+    how many jobs a nomination wants and their **readiness** standard (`game/exam/readiness.ts`,
+    read for every road to chūnin): `rounded` (a skill at C and breadth across the rest) or
+    `specialist` (every need of the kind of fighter you fit best at C: `exam/fighterTypes.ts`,
+    a close fighter, a weapons fighter, a marksman, a ninjutsu fighter, an illusionist, a sealer, a medic, a sensor,
+    hybrids, all-rounders and tacticians (two arts), a Gentle Fist striker, a binder and a swarmer,
+    each need met any of several ways, getting in close by speed and eyes or by ninjutsu; the
+    canon cast against them, and what they miss, is in `docs/design/research/fighter-types-cast.md`); readiness reads skills and those needs, never a sharp mind or a fast body alone,
+    and a specialist steers the assignment to what your kind lacks once your art is at C. Their
+    mission posture sets their stance in a job's
     fights. After each lesson they coach you (`game/sensei/coaching.ts`): judge last week's
     **assignment** (a stat to raise a step, set by their lens; open, it is a `ModifierSpec` on
     the character, off your best art) with a reward of their kind or lost regard, may name a
@@ -697,9 +734,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     rebuilt from that copy on load, so a game keeps the world it began with. Each change is
     kept only while it differs from the pack (`editStat`, `editTechniques`), and a fighter or
     the whole pack goes back as written by dropping its entry (`resetFighter`, `NO_EDITS`). The
-    editor reads the pack's rules as notes (a best stat outside the rank's band) and never
-    refuses a change for them; it only keeps out what would break a fight (it refuses an empty
-    technique list and doesn't offer another clan's techniques or a summons without a contract).
+    editor only keeps out what would break a fight: it refuses an empty technique list and
+    doesn't offer another clan's techniques or a summons without a contract.
 
 ### Content packs
 
@@ -794,8 +830,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   optionally an `aptitude` via `talent()`, and an `arsenal`: the techniques and perks they fight
   with in place of the academy kit, each a pack technique with its own source; validated). List
   their whole canon kit: they fight with, and teach, a technique only once their current
-  grades carry it (`canPerform`, `game/people/capable.ts`), so a genin grows into theirs. Their best stat must fit their rank (genin E–C,
-  chūnin C–B, jōnin B–A, kage A–S, civilians no better than D; validated). Senseis need `role: 'sensei'`, a
+  grades carry it (`canPerform`, `game/people/capable.ts`), so a genin grows into theirs. Any stat may be any grade at any rank: write
+  skills from the rank chart as an average, the body from real athletes and the mind as the person
+  (`docs/design/stat-model-plan.md`). Senseis need `role: 'sensei'`, a
   `sensei` profile (style, lesson text) and a `teacher` profile (quirk, steering, `teaches`
   technique ids, price) with its `ways` (how they run a team, `content/senseis.ts`, and their
   story: four personal conversations at stages one to four, validated, the last leaving the

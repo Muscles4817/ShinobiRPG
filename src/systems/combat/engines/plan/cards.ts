@@ -9,6 +9,7 @@ import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { carried } from '../../rules/items';
 import { inReach, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { trumpSpent } from '../../rules/trumps';
+import { strikeReach } from '../../rules/weaponClasses';
 import { weaponMissing } from '../../rules/weapons';
 import { hasVerb, isHarmful, isOpenFor } from '../../rules/verbs';
 import type { CardId, PlanFighter } from './state';
@@ -34,7 +35,11 @@ const JUTSU_PREFIX = 'jutsu:';
 export const ITEM_PREFIX = 'item:';
 
 export type Card =
-  | { readonly kind: 'strike' }
+  | {
+      readonly kind: 'strike';
+      /** Where it reaches, when a long weapon takes it past close (`strikeReach`). */
+      readonly reach?: readonly RangeBand[];
+    }
   | { readonly kind: 'throw' }
   | { readonly kind: 'step'; readonly direction: 'in' | 'back' }
   | { readonly kind: 'guard' }
@@ -46,7 +51,7 @@ export type Card =
   | { readonly kind: 'item'; readonly item: CombatItem };
 
 /** What a fighter brings: their techniques, and the tools in their pouch. */
-type Kit = Pick<PlanFighter, 'techniques' | 'items'>;
+type Kit = Pick<PlanFighter, 'techniques' | 'items' | 'gear' | 'size' | 'empowered'>;
 
 const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'strike', card: { kind: 'strike' } },
@@ -73,7 +78,7 @@ export function cardId(card: Card): CardId {
 export function fitsBand(card: Card, band: RangeBand): boolean {
   switch (card.kind) {
     case 'strike':
-      return inReach(STRIKE_REACH, band);
+      return inReach(card.reach ?? STRIKE_REACH, band);
     case 'throw':
       return inReach(THROW_REACH, band);
     case 'step':
@@ -91,11 +96,23 @@ export function fitsBand(card: Card, band: RangeBand): boolean {
   }
 }
 
+/** A fighter's strike: further than close with a long weapon in hand. */
+export function strikeCard(fighter: Pick<PlanFighter, 'gear' | 'size' | 'empowered'>): Card {
+  const reach = strikeReach(fighter);
+  return reach === STRIKE_REACH ? { kind: 'strike' } : { kind: 'strike', reach };
+}
+
+/** A basic card as this fighter plays it (their strike reaches as their weapon does). */
+function basicFor(fighter: Kit, card: Card): Card {
+  return card.kind === 'strike' ? strikeCard(fighter) : card;
+}
+
 /** Every card this fighter's kit holds at a distance, of any kind: basics, jutsu, tools. */
 export function kitCards(fighter: Kit, band: RangeBand): Card[] {
+  const basics = BASIC_CARDS.map((b) => basicFor(fighter, b.card));
   const jutsu = fighter.techniques.map((technique): Card => ({ kind: 'jutsu', technique }));
   const tools = fighter.items.map((item): Card => ({ kind: 'item', item }));
-  return [...BASIC_CARDS.map((b) => b.card), ...jutsu, ...tools].filter((c) => fitsBand(c, band));
+  return [...basics, ...jutsu, ...tools].filter((c) => fitsBand(c, band));
 }
 
 /** Footwork: a step, or a technique that does nothing but move its user. */
@@ -126,7 +143,7 @@ export function reactionsFor(fighter: Kit, band: RangeBand): Card[] {
 
 export function findCard(fighter: Kit, id: CardId): Card | null {
   const basic = BASIC_CARDS.find((b) => b.id === id);
-  if (basic) return basic.card;
+  if (basic) return basicFor(fighter, basic.card);
   if (id.startsWith(ITEM_PREFIX)) {
     const item = carried(fighter, id.slice(ITEM_PREFIX.length));
     return item ? { kind: 'item', item } : null;

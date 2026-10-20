@@ -1,7 +1,7 @@
 import type { TechniqueEffect, Verb } from '@/systems/techniques';
 
 import type { CombatItem, CombatItemEffect, CombatTechnique } from '../../contract';
-import type { CombatGear } from '../../gearContract';
+import { shapeOf, type CombatGear } from '../../gearContract';
 import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import type { Card } from './cards';
@@ -45,6 +45,7 @@ const VERB_WORD: Readonly<Record<Verb, string>> = {
   afflict: 'Leave a wound that lingers',
   counter: 'Answer the next blow at once',
   summon: 'Call a summon to fight beside you',
+  shroud: 'Cast armour over yourself; it costs chakra while it holds',
 };
 
 /** One effect in words; a move that names its distance says so. */
@@ -77,15 +78,14 @@ interface Words {
  */
 function armsWords(kind: 'strike' | 'throw', { gear }: Armed): Words {
   if (kind === 'throw') {
-    return gear?.thrown?.shape === 'senbon'
+    return gear?.thrown && shapeOf(gear.thrown) === 'senbon'
       ? { label: 'Senbon', detail: 'Attack, may daze, no chakra' }
       : { label: 'Kunai', detail: 'Attack, no chakra' };
   }
-  if (gear?.held?.shape === 'blade')
-    return { label: 'Cut', detail: 'Cut with your blade, kenjutsu' };
-  if (gear?.held?.shape === 'knuckles') {
-    return { label: 'Strike', detail: 'Heavy blow, partly through a guard' };
-  }
+  const held = gear?.held && shapeOf(gear.held);
+  if (held === 'blade') return { label: 'Cut', detail: 'Cut with your blade, kenjutsu' };
+  if (held === 'blunt') return { label: 'Strike', detail: 'Weapon blow, kenjutsu' };
+  if (held === 'knuckles') return { label: 'Strike', detail: 'Heavy blow, partly through a guard' };
   return { label: 'Strike', detail: 'Attack, no chakra' };
 }
 

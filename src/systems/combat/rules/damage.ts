@@ -1,9 +1,10 @@
 import { clamp } from '@/core';
 import { blowsOf, type EffectOf, type TechniqueEffect } from '@/systems/techniques';
 
-import type { CombatAttributes, CombatantSetup, CombatTechnique } from '../contract';
+import type { BodySize, CombatAttributes, CombatantSetup, CombatTechnique } from '../contract';
 import { elementMultiplier } from './elements';
 import { driveOf, toughnessKept, type EffectUse } from './verbs';
+import { sizeToughness } from './size';
 
 /**
  * How hard hits land and how much heals restore, shared by the engines built on `rules/`.
@@ -47,9 +48,11 @@ const HEAL_PER_SKILL = 1 / 20;
 /** A wild technique, easier to slip (`defence.ts`), hits this much harder when it lands. */
 export const WILD_DAMAGE = 1.2;
 
-/** Anyone with a stat line: the ratings below read nothing else. */
+/** Anyone with a stat line (and, for a big body, its size): the ratings below read nothing else. */
 interface Rated {
   readonly attributes: CombatAttributes;
+  readonly size?: BodySize;
+  readonly empowered?: { readonly grows?: number };
 }
 
 interface Natured extends Rated {
@@ -96,7 +99,8 @@ function withSkill(f: Rated, base: number): number {
  * it well. Armour is kit (`kitDamageScale`); later, toughness is also what resists injury.
  */
 export function toughness(f: Rated): number {
-  return withSkill(f, f.attributes.stamina);
+  // A bigger body takes a blow better (`size.ts`).
+  return withSkill(f, f.attributes.stamina) * sizeToughness(f);
 }
 
 /** Guard: how well blows are caught and rolled with, mostly taijutsu, some strength. */
@@ -113,9 +117,12 @@ export function physicalDefence(f: Rated): number {
   return Math.max(body, body * (1 - BASE_GUARD_SHARE) + guardRating(f) * BASE_GUARD_SHARE);
 }
 
-/** What a hit may take at most from a fighter with this much health. */
-export function cappedHit(damage: number, maxHealth: number): number {
-  return Math.min(damage, Math.max(1, Math.round(maxHealth * MAX_HIT_SHARE)));
+/**
+ * What a hit may take at most from a fighter with this much health: half, or more from a body
+ * bigger than its target (`hitCapShare` in `size.ts`).
+ */
+export function cappedHit(damage: number, maxHealth: number, share = MAX_HIT_SHARE): number {
+  return Math.min(damage, Math.max(1, Math.round(maxHealth * share)));
 }
 
 /**

@@ -56,7 +56,7 @@ function odds(caster: Partial<CombatantSetup>, range: RangeBand): number {
 
 describe('the avoid roll in a planned fight', () => {
   it('signs made around a drawn blade are slipped more often, short of far', () => {
-    const blade = { gear: { held: { name: 'Tanto', shape: 'blade', rank: 'D' } } } as const;
+    const blade = { gear: { held: { name: 'Tanto', weaponClass: 'sword', rank: 'D' } } } as const;
     const bare = { gear: {} };
     expect(odds(blade, 'close')).toBeGreaterThan(odds(bare, 'close'));
     expect(odds(blade, 'mid')).toBeGreaterThan(odds(bare, 'mid'));

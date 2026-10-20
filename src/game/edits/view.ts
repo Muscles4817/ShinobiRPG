@@ -1,4 +1,3 @@
-import { BEST_STAT_BAND } from '@/content';
 import {
   fightingPower,
   STAT_GRADES,
@@ -19,9 +18,8 @@ import { originalFighter, type FighterOriginal } from './originals';
 
 /**
  * The editor's view of a fighter: each stat beside the pack's value, what they fight with
- * (and whether their grades carry it yet), what else they could take, and plain notes on
- * anything the pack's own rules wouldn't allow. Read from the edited world, so what it shows
- * is what versus and a new game will use.
+ * (and whether their grades carry it yet) and what else they could take. Read from the edited
+ * world, so what it shows is what versus and a new game will use.
  */
 
 export interface EditorStat {
@@ -53,30 +51,6 @@ export interface FighterEditor {
   /** Techniques they could be given, by art then rank. */
   readonly choices: readonly EditorTechnique[];
   readonly edited: boolean;
-  /** What the pack's rules would say about them as edited; nothing stops a change. */
-  readonly notes: readonly string[];
-}
-
-const RANK_WORDS: Readonly<Record<string, string>> = {
-  genin: 'a genin',
-  chunin: 'a chūnin',
-  jonin: 'a jōnin',
-  kage: 'a kage',
-};
-
-function bandNote(original: FighterOriginal, stats: Stats): string[] {
-  if (!original.rank) return [];
-  const band = BEST_STAT_BAND[original.rank];
-  const best = statTier(Math.max(...STAT_IDS.map((id) => stats[id]))).grade;
-  const at = STAT_GRADES.indexOf(best);
-  const who = RANK_WORDS[original.rank] ?? original.rank;
-  if (at > STAT_GRADES.indexOf(band.highest)) {
-    return [`Their best stat is ${best}, above the ${band.highest} ${who} reaches in the world.`];
-  }
-  if (at < STAT_GRADES.indexOf(band.lowest)) {
-    return [`Their best stat is ${best}, below the ${band.lowest} ${who} has in the world.`];
-  }
-  return [];
 }
 
 /** Whether a technique may be offered: their clan's or no clan's, and nothing that summons. */
@@ -140,7 +114,6 @@ export function fighterEditor(ctx: GameContext, key: string): FighterEditor | nu
     techniquesEdited: ctx.edits.fighters[key]?.techniqueIds !== undefined,
     choices,
     edited: key in ctx.edits.fighters,
-    notes: bandNote(original, line),
   };
 }
 

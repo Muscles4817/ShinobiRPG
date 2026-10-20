@@ -1,26 +1,13 @@
-import { APTITUDE_MAX, STAT_GRADES, statTier, STAT_IDS, type StatGrade } from '@/systems/stats';
+import { APTITUDE_MAX, STAT_IDS, STAT_MAX } from '@/systems/stats';
 
 import type { PersonDef, PersonRank, PersonRole } from './people';
 import type { ContentPack } from './types';
 
 /**
- * Rank and grade sanity for the cast: each role holds a fitting rank, and a person's best
- * stat sits in the grades their rank belongs to (genin E–C, a prodigy reaching C at graduation;
- * chūnin C–B, jōnin B–A, kage A–S; civilians no better than D). A sensei is B or A in what they teach.
+ * Rank and number sanity for the cast: each role holds a fitting rank, and every stat sits on
+ * the scale. A grade is never held against a rank: the rank chart is an average for an ordinary
+ * shinobi, so anyone may hold any grade in any stat (`docs/design/stat-model-plan.md`).
  */
-
-export interface GradeBand {
-  readonly lowest: StatGrade;
-  readonly highest: StatGrade;
-}
-
-export const BEST_STAT_BAND: Readonly<Record<PersonRank, GradeBand>> = {
-  civilian: { lowest: 'E', highest: 'D' },
-  genin: { lowest: 'E', highest: 'C' },
-  chunin: { lowest: 'C', highest: 'B' },
-  jonin: { lowest: 'B', highest: 'A' },
-  kage: { lowest: 'A', highest: 'S' },
-};
 
 const ROLE_RANKS: Readonly<Record<PersonRole, readonly PersonRank[]>> = {
   genin: ['genin'],
@@ -31,44 +18,22 @@ const ROLE_RANKS: Readonly<Record<PersonRole, readonly PersonRank[]>> = {
   villager: ['civilian'],
 };
 
-const SENSEI_BAND: GradeBand = { lowest: 'B', highest: 'A' };
-
-function within(grade: StatGrade, band: GradeBand): boolean {
-  const at = STAT_GRADES.indexOf(grade);
-  return at >= STAT_GRADES.indexOf(band.lowest) && at <= STAT_GRADES.indexOf(band.highest);
-}
-
-function gradeOf(value: number): StatGrade {
-  return statTier(value).grade;
-}
-
 function rankProblems(person: PersonDef): string[] {
-  const problems: string[] = [];
-  if (!ROLE_RANKS[person.role].includes(person.rank)) {
-    problems.push(`person "${person.id}" is a ${person.role} but ranked ${person.rank}`);
-  }
-  const best = gradeOf(Math.max(...STAT_IDS.map((id) => person.stats[id])));
-  const band = BEST_STAT_BAND[person.rank];
-  if (!within(best, band)) {
-    problems.push(
-      `person "${person.id}" (${person.rank}) has a best stat at ${best}, outside ${band.lowest}–${band.highest}`,
-    );
-  }
-  const taught = person.sensei?.specialty;
-  if (taught && !within(gradeOf(person.stats[taught]), SENSEI_BAND)) {
-    problems.push(`sensei "${person.id}" must be B or A in ${taught}`);
-  }
-  return problems;
+  return ROLE_RANKS[person.role].includes(person.rank)
+    ? []
+    : [`person "${person.id}" is a ${person.role} but ranked ${person.rank}`];
 }
 
 function numberProblems(person: PersonDef): string[] {
-  const stats = STAT_IDS.filter((id) => !(person.stats[id] >= 0));
+  const stats = STAT_IDS.filter((id) => !(person.stats[id] >= 0 && person.stats[id] <= STAT_MAX));
   const talents = STAT_IDS.filter((id) => {
     const value = person.aptitude?.[id] ?? 1;
     return !(value >= 0 && value <= APTITUDE_MAX);
   });
   return [
-    ...stats.map((id) => `person "${person.id}" has a negative or missing ${id}`),
+    ...stats.map(
+      (id) => `person "${person.id}" has ${id} off the scale (0–${STAT_MAX}) or missing`,
+    ),
     ...talents.map(
       (id) => `person "${person.id}" has an aptitude outside 0–${APTITUDE_MAX} in ${id}`,
     ),

@@ -79,7 +79,7 @@ describe('the library', () => {
     expect(act(jonin, sealed).techniques.progress[SEALED_SCROLL]).toBeGreaterThan(0);
     const toChunin = libraryView(chunin(ready()), ctx)!;
     expect(toChunin.restricted).toBe(0);
-    expect(toChunin.sealed).toBe(5);
+    expect(toChunin.sealed).toBe(6);
     expect(libraryView(jonin, ctx)!.sealed).toBe(0);
   });
 

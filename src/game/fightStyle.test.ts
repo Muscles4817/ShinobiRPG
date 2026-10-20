@@ -159,7 +159,10 @@ describe('fight styles', () => {
     const loaded = load(12, { ...sparring, combat: { engineId: style, data: {} } });
     expect(loaded.combat).toBeNull();
     expect(loaded.people.sparringWith).toBeNull();
-    expect(loaded.character.vitals).toEqual(sparring.character.vitals);
+    // Health goes through the old v14 rescale, which reads today's stats; the rest is untouched.
+    const { health: _health, ...vitals } = loaded.character.vitals;
+    const { health: _was, ...before } = sparring.character.vitals;
+    expect(vitals).toEqual(before);
   });
 
   it('Plan & Watch cards carry over to the next fight', () => {

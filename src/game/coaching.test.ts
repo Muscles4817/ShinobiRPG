@@ -48,6 +48,20 @@ describe('the assignment your sensei sets', () => {
     expect(ASSIGNMENT_STEP.E).toBeGreaterThan(ASSIGNMENT_STEP.C);
   });
 
+  it('from a specialist, steers a genin whose art is there to what their kind still lacks', () => {
+    // Chūnin-level taijutsu, but too slow and blind to get in close: Gōran works on a way in
+    // (here the ninjutsu, the nearer of the two).
+    const slow = withStat(
+      withStat(withStat(newGame(), 'taijutsu', 15), 'speed', 3),
+      'perception',
+      3,
+    );
+    expect(coach(under('goran', slow)).character.assignment?.stat).toBe('ninjutsu');
+    // Tetsu holds a rounded standard: their lens decides, as ever.
+    const tetsu = coach(under('tetsu', slow)).character.assignment!;
+    expect(LAYER_STATS[weakestLayer(slow.character.stats)]).toContain(tetsu.stat);
+  });
+
   it('comes with the lesson itself, and says so in their word', () => {
     const state = under('goran');
     const taught = lessonAway(state, ctx, requirePerson(state, ctx, 'goran'))!;

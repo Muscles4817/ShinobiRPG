@@ -63,6 +63,8 @@ export const VERB_PROFILES: Readonly<Record<Verb, VerbProfile>> = {
   counter: { aim: 'self', drive: ['art'], resist: [] },
   // A summon is called, not driven: its body fights for itself (`engines/plan/summons.ts`).
   summon: { aim: 'self', drive: [], resist: [] },
+  // Cast armour: the art decides how solid a shell that wears away is (`rules/shrouds.ts`).
+  shroud: { aim: 'self', drive: ['art'], resist: [] },
 };
 
 /** The profile an effect scales by: its verb's, with the effect's own overrides on top. */

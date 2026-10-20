@@ -60,7 +60,7 @@ export const CANON_LIGHTNING: readonly TechniqueDef[] = [
     element: 'lightning',
     needs: { nature: 'lightning' },
     effects: [
-      { verb: 'empower', power: 10, boosts: ['speed'], healthPerExchange: 1 },
+      { verb: 'shroud', power: 10, kind: 'lightning' },
       { verb: 'counter', power: 10 },
     ],
     chakraCost: 16,

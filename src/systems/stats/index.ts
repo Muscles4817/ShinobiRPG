@@ -10,6 +10,17 @@ export {
   type StatDelta,
   type StatScale,
 } from './stats';
+export {
+  ACADEMY_LINE,
+  BORN_STATS,
+  SEXES,
+  bornLine,
+  bornMedian,
+  normalFrom,
+  type BornLine,
+  type BornStat,
+  type Sex,
+} from './born';
 export { SESSION_PACE, trainingGain, applyTraining, type Growth } from './growth';
 export {
   BULK_SPEED_COST,
@@ -58,12 +69,18 @@ export {
 export { checkChance, rollCheck, type CheckResult } from './checks';
 export {
   STAT_GRADES,
+  STAT_MAX,
+  STAT_READING,
+  STAT_READINGS,
   STAT_TIERS,
   statTier,
+  statTierOf,
+  withinScale,
   fightingPower,
   partyPower,
   type FightingStats,
   type StatGrade,
+  type StatReading,
   type StatTier,
   type TierRead,
 } from './tiers';

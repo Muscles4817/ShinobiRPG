@@ -11,6 +11,7 @@ import type { GameState } from '../state';
 import { doableNow } from './capable';
 import { personStats } from './progress';
 import { pronounsOf } from './pronouns';
+import { clanSize } from '../bodySize';
 import { personHive } from '../hives/hive';
 import { personDust } from '../dust/dust';
 
@@ -97,6 +98,7 @@ export function companionCombatant(
     traits: companionTraits(person),
     ...perksOf(person),
     ...kitOf(person, ctx),
+    ...clanSize(person.clanId, ctx),
   };
 }
 
@@ -105,9 +107,10 @@ export function companionCombatant(
  * every fight. Without them, they are armed as their techniques suggest.
  */
 function kitOf(person: PersonDef, ctx: GameContext): Pick<CombatantSetup, 'gear' | 'items'> {
-  const { gearIds, tools } = person.arsenal ?? {};
+  const { gearIds, tools, weaponMastery } = person.arsenal ?? {};
+  const mastery = weaponMastery ? { mastery: weaponMastery } : {};
   return {
-    ...(gearIds ? { gear: arsenalGear(gearIds, ctx) } : {}),
+    ...(gearIds ? { gear: { ...arsenalGear(gearIds, ctx), ...mastery } } : {}),
     ...(tools ? { items: pouchFrom(tools, ctx) } : {}),
   };
 }

@@ -4,6 +4,7 @@ import type {
   CombatAttributes,
   CombatCall,
   CombatItem,
+  CombatGear,
   CombatOutcome,
   CombatPerk,
   CombatProvision,
@@ -20,6 +21,7 @@ import { foeCalled, foeGrammar } from './foeNames';
 import { enemyWalking, playerWalking } from './footing';
 import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
+import { clanSize } from './bodySize';
 import { chakraBody, hiveSwarm } from './hives/hive';
 import { dustPool } from './dust/dust';
 
@@ -81,6 +83,12 @@ export function afterPouch(state: GameState, outcome: CombatOutcome): GameState 
   return { ...state, inventory: restockPouch(state.inventory, outcome.items) };
 }
 
+/** Your gear as the fight sees it, with how well you know each weapon (a save that keeps none: at home with all). */
+function playerGear(state: GameState, ctx: GameContext): CombatGear {
+  const mastery = state.character.weaponMastery;
+  return { ...combatGear(state, ctx), ...(mastery ? { mastery } : {}) };
+}
+
 /** The player's combatant id in every fight. */
 export const PLAYER_COMBATANT_ID = 'player';
 
@@ -113,8 +121,9 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     nature,
     perks: perksOf(state, ctx),
     items: pouchOf(state, ctx),
-    gear: combatGear(state, ctx),
+    gear: playerGear(state, ctx),
     provisions: mealProvisions(state, ctx),
+    ...clanSize(state.character.clanId, ctx),
   };
 }
 
@@ -208,6 +217,7 @@ function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSet
     ...(def.nature ? { nature: def.nature } : {}),
     ...(def.traits ? { traits: def.traits } : {}),
     ...(walking.length > 0 ? { perks: walking } : {}),
+    ...(def.size ? { size: def.size } : {}),
   };
 }
 

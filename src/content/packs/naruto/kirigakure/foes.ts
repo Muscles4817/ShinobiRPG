@@ -42,7 +42,7 @@ export const KIRI_GEAR: readonly GearDef[] = [
     description:
       'A broad, heavy blade forged in the old Swordsmen’s way. It wants both hands and a strong back.',
     kind: 'weapon',
-    shape: 'blade',
+    weaponClass: 'greatsword',
     rank: 'B',
     cost: 650,
     icon: 'sword',

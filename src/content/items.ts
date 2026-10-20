@@ -1,11 +1,12 @@
+import { HELD_SHAPES, SHAPE_OF_CLASS } from '@/systems/combat';
 import type {
   ArmourLevel,
   CombatProvision,
   CombatItemEffect,
   FocusTarget,
   GearRank,
+  WeaponClass,
   WeaponEffect,
-  WeaponShape,
 } from '@/systems/combat';
 import type { CookingMethod, CookingSteps } from '@/systems/cooking';
 import type { ModifierSpec } from '@/systems/modifiers';
@@ -43,7 +44,11 @@ interface GearBase {
 export type GearDef =
   | (GearBase & {
       readonly kind: 'weapon';
-      readonly shape: WeaponShape;
+      readonly weaponClass: WeaponClass;
+      /** A weapon that is also a focus: a war fan for wind, a blade that carries lightning. */
+      readonly boosts?: FocusTarget;
+      /** Several blades in hand: the strike is a flurry (validated 2 to `MAX_BLADES`, blades only). */
+      readonly blades?: number;
       /** A unique weapon's own verbs, added to every strike it lands. */
       readonly effects?: readonly WeaponEffect[];
     })
@@ -52,11 +57,11 @@ export type GearDef =
 
 export type GearKind = GearDef['kind'];
 
-/** The slot a piece goes in: held or thrown for weapons by their shape. */
+/** The slot a piece goes in: held or thrown for weapons by their class's shape. */
 export function gearSlot(def: GearDef): GearSlot {
   switch (def.kind) {
     case 'weapon':
-      return def.shape === 'blade' || def.shape === 'knuckles' ? 'weapon' : 'thrown';
+      return HELD_SHAPES.includes(SHAPE_OF_CLASS[def.weaponClass]) ? 'weapon' : 'thrown';
     case 'armour':
       return 'body';
     case 'focus':

@@ -1,4 +1,4 @@
-import type { ClanOption, HairStyle, HeadbandPlace, Look, Pronouns } from '@/game';
+import type { ClanOption, HairStyle, HeadbandPlace, Look, Pronouns, Sex } from '@/game';
 
 import { Portrait } from '../../art/Portrait';
 import { FacePicker } from './FacePicker';
@@ -98,6 +98,14 @@ export function RecordStep({ view, draft, update }: StepProps) {
             value={draft.pronouns}
             onPick={(p) => {
               update({ pronouns: p });
+            }}
+          />
+          <Segments<Sex>
+            label="Body"
+            values={palettes.sexes}
+            value={draft.sex}
+            onPick={(sex) => {
+              update({ sex });
             }}
           />
         </div>

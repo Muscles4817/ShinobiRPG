@@ -89,6 +89,20 @@ describe('genin fight to their specialty', () => {
   });
 });
 
+describe('people fight with the weapons they know', () => {
+  it('an arsenal’s mastery rides in with its gear', () => {
+    const state = newGame();
+    const genin = ctx.content.people.all.find((p) => p.role === 'genin')!;
+    const techniqueIds = [ctx.content.techniques.all[0]!.id];
+    const armed = { techniqueIds, gearIds: ['lantern-steel-tanto'] };
+    const known = { ...armed, weaponMastery: { 'light-blade': 0.9 } };
+    const fighterWith = (arsenal: typeof armed) =>
+      companionCombatant({ ...genin, arsenal }, state, ctx, 'Genin');
+    expect(fighterWith(known).gear?.mastery).toEqual({ 'light-blade': 0.9 });
+    expect(fighterWith(armed).gear?.mastery).toBeUndefined();
+  });
+});
+
 describe('saves', () => {
   it('a version 11 save has an empty pouch and no intel', () => {
     const state = newGame();

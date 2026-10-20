@@ -13,7 +13,7 @@ function FightingGrade({ overall }: { readonly overall: ShinobiView['overall'] }
       <div className="overall-body">
         <span className="label">Fighting grade</span>
         <b>
-          {overall.rank} <span className="num muted">{overall.power}</span>
+          {overall.words} <span className="num muted">{overall.power}</span>
         </b>
         <GradeBar tier={overall} />
         <small className="muted">

@@ -171,7 +171,8 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
   const pool = climbable.filter((c) => !trumps.includes(c) && stepOf(c) === 0);
   const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
   const damage = damageJutsu(pool);
-  const readies = (t: CombatTechnique) => hasVerb(t, 'empower') || hasVerb(t, 'clone');
+  const readies = (t: CombatTechnique) =>
+    hasVerb(t, 'empower') || hasVerb(t, 'clone') || hasVerb(t, 'shroud');
   const ready = chain.length > 0 ? chain : strongest(pool, readies).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const hold = holdSlot(pool, facing);

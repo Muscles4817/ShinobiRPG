@@ -31,13 +31,16 @@ const DEAD_LAST_CHUNIN_DAYS = 150;
 const GENIUS_JONIN_FLOOR_DAYS = 120;
 /**
  * The climb: four months of hard work, and the dead last win this often against their year…
- * (Measured over 100 fights a classmate: 0.39 before the avoid roll, 0.375 after; the old 0.4
- * floor passed only on a 20-fight sample.)
+ * (Measured over 100 fights a classmate: 0.375 when the avoid roll landed; 0.44 once bodies were
+ * drawn apart from standing; 0.39 once specialist senseis steered work beyond the art.)
  */
 const CLIMB_DAYS = 120;
-const CLIMB_WIN_RATE = 0.35;
-/** …from a start where most of their year beats them. */
-const DEAD_LAST_START_WIN_RATE = 0.3;
+const CLIMB_WIN_RATE = 0.37;
+/**
+ * …from a start where most of their year beats them. (0.3 when everyone's body was the same
+ * line; 0.32 once bodies were drawn, the dead last on a median body.)
+ */
+const DEAD_LAST_START_WIN_RATE = 0.35;
 
 function start(standing: ClassStanding, seed: number): GameState {
   const quickPick = { archetype: 'steady', specialty: 'taijutsu' } as const;

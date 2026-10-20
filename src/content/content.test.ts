@@ -82,19 +82,26 @@ describe('content validation', () => {
     expect(problems).toContain('clan "hibana" declares no arts');
   });
 
-  it('detects people whose rank does not fit their role or their stats', () => {
+  it('detects people whose rank does not fit their role, or whose numbers are off the scale', () => {
     const people = ORIGINAL_PACK.people.map((p) => {
-      if (p.id === 'kaen') return { ...p, stats: { ...p.stats, ninjutsu: 20 } };
+      if (p.id === 'kaen') return { ...p, stats: { ...p.stats, ninjutsu: 61 } };
       if (p.id === 'goran') return { ...p, rank: 'chunin' as const };
-      if (p.id === 'akari') return { ...p, stats: { ...p.stats, ninjutsu: 14 } };
       if (p.id === 'tsune') return { ...p, aptitude: talent(1, { intellect: 3 }) };
       return p;
     });
     const problems = validateContent({ ...ORIGINAL_PACK, people });
-    expect(problems).toContain('person "kaen" (genin) has a best stat at B, outside E–C');
+    expect(problems).toContain('person "kaen" has ninjutsu off the scale (0–60) or missing');
     expect(problems).toContain('person "goran" is a sensei but ranked chunin');
-    expect(problems).toContain('sensei "akari" must be B or A in ninjutsu');
     expect(problems).toContain('person "tsune" has an aptitude outside 0–1.8 in intellect');
+  });
+
+  it('holds no grade against a rank: a genin may be brilliant, a jōnin elite', () => {
+    const people = ORIGINAL_PACK.people.map((p) =>
+      p.id === 'kaen' ? { ...p, stats: { ...p.stats, intellect: 30, ninjutsu: 20 } } : p,
+    );
+    expect(validateContent({ ...ORIGINAL_PACK, people }).filter((m) => m.includes('kaen'))).toEqual(
+      [],
+    );
   });
 
   it('detects teachers with broken signatures, prices and favours', () => {

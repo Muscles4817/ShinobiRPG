@@ -30,8 +30,13 @@ const CHUNIN_READY_DAYS = 30;
 const CHUNIN_READY_WINDOW = 10;
 /** What "ready" means for now: the focused stat at the chūnin grade. */
 const CHUNIN_GRADE = 'C';
-/** The sensei puts the focused player forward for the chūnin exam about this many days in… */
-const NOMINATION_DAYS = 45;
+/**
+ * The sensei puts the focused player forward for the chūnin exam about this many days in…
+ * (Gōran is a specialist: the art at chūnin level is not enough until the player can also get
+ * in close, which the player works on as Gōran steers them. Measured: day 79; it was 45 when one
+ * stat at C was readiness.)
+ */
+const NOMINATION_DAYS = 80;
 /** …give or take this many. */
 const NOMINATION_WINDOW = 15;
 /** Training with the sensei every week gets the focus to C at least this many days sooner. */
@@ -52,6 +57,7 @@ const TAIJUTSU_FOCUS: FocusPlan = {
   drillId: 'post-kicks',
   missionEveryDays: 2,
   withTeachers: true,
+  followsAssignment: true,
 };
 
 /** The same player, drilling alone: no sensei, no better genin. */

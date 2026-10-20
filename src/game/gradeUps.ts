@@ -3,6 +3,7 @@ import {
   STAT_IDS,
   STAT_INFO,
   statTier,
+  statTierOf,
   type StatId,
   type Stats,
 } from '@/systems/stats';
@@ -82,8 +83,8 @@ function opened(state: GameState, before: Stats, ctx: GameContext): GradeReport[
 }
 
 function gradeReport(state: GameState, id: StatId, opens: GradeReport['opens']): GradeReport {
-  const tier = statTier(state.character.stats[id]);
-  return { kind: 'grade', stat: STAT_INFO[id].label, grade: tier.grade, rank: tier.rank, opens };
+  const tier = statTierOf(id, state.character.stats[id]);
+  return { kind: 'grade', stat: STAT_INFO[id].label, grade: tier.grade, rank: tier.words, opens };
 }
 
 /**

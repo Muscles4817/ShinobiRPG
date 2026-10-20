@@ -120,6 +120,11 @@ export function ShinobiScreen({
               <span className="label">Build</span> {view.build}
             </p>
           )}
+          {view.weapons && (
+            <p>
+              <span className="label">Weapons</span> {view.weapons}
+            </p>
+          )}
           {view.notes && (
             <p>
               <span className="label">Notes</span> {view.notes}

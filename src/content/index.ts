@@ -1,7 +1,6 @@
 export { CONTENT_PACKS } from './packs';
 export { buildContentDb, type ContentDb } from './db';
 export { validateContent } from './validate';
-export { BEST_STAT_BAND, type GradeBand } from './validateRanks';
 export type { Catalog } from './catalog';
 export { REGISTERS, TONES, TOPIC_KINDS } from './people';
 export { TEACHING_QUIRKS } from './teachers';
@@ -134,6 +133,8 @@ export {
   NOMINATION_HABITS,
   OPENING_TESTS,
   PUNCTUALITIES,
+  READINESS_BY_PHILOSOPHY,
+  READINESS_STANDARDS,
   RITUAL_KINDS,
   SENSEI_FEEDBACK,
   SENSEI_GRIPS,
@@ -146,6 +147,7 @@ export {
   type NominationHabit,
   type OpeningTest,
   type Punctuality,
+  type ReadinessStandard,
   type RitualKind,
   type SenseiCadence,
   type SenseiFeedback,

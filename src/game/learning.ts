@@ -1,3 +1,4 @@
+import { shapeOf } from '@/systems/combat';
 import { round1 } from '@/core';
 import { studyMultiplier } from '@/systems/modifiers';
 import { STAT_INFO } from '@/systems/stats';
@@ -38,7 +39,7 @@ export function learnerOf(state: GameState, ctx: GameContext): Learner {
     stats: character.stats,
     clanId: character.clanId,
     nature: knownNature(character),
-    held: held?.kind === 'weapon' ? held.shape : null,
+    held: held?.kind === 'weapon' ? shapeOf(held) : null,
   };
 }
 

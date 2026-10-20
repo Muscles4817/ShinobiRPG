@@ -38,6 +38,7 @@ import { settleOn, swarmSpent } from './swarm';
 import { dustSpent } from './dust';
 import { setTrap } from './traps';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
+import { raiseShroud } from './shrouds';
 
 /**
  * Using a technique in a planned fight: pay its chakra, see whether each target slips it (the
@@ -216,6 +217,8 @@ function onSelf(round: Round, turn: Turn, { technique, effect }: EffectUse): Rou
       return readyRiposte(round, actor, { technique, effect });
     case 'summon':
       return callSummon(round, actor, effect.call);
+    case 'shroud':
+      return raiseShroud(round, actor, { technique, effect });
     // A substitution reacts when hit (`footwork.ts`); it is never played on a turn.
     case 'substitute':
       return round;

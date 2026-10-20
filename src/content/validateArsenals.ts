@@ -3,7 +3,8 @@ import type { ContentPack, PersonDef } from './types';
 
 /**
  * People's own arsenals (`PersonDef.arsenal`): every technique is real and clan techniques stay
- * in the clan; gear is real, a piece per slot, and tools are real and carried by the piece. An
+ * in the clan; gear is real, a piece per slot, tools are real and carried by the piece, and
+ * weapon mastery runs 0 to 1. An
  * arsenal may list techniques beyond its owner's grades today: the game lets them use each one
  * only once they've grown into it (`game/people/capable.ts`).
  */
@@ -26,7 +27,7 @@ function arsenalProblems(pack: ContentPack, person: PersonDef): string[] {
   });
 }
 
-/** The gear and tools an arsenal names. */
+/** The gear and tools an arsenal names, and how well its owner knows each weapon. */
 function kitProblems(pack: ContentPack, person: PersonDef): string[] {
   const who = `person "${person.id}"`;
   const gear = (person.arsenal?.gearIds ?? []).map((id) => ({
@@ -44,5 +45,8 @@ function kitProblems(pack: ContentPack, person: PersonDef): string[] {
       ...(pack.tools.some((t) => t.id === id) ? [] : [`${who} carries unknown tool "${id}"`]),
       ...(Number.isInteger(count) && count > 0 ? [] : [`${who} carries ${count} of "${id}"`]),
     ]),
+    ...Object.entries(person.arsenal?.weaponMastery ?? {}).flatMap(([weaponClass, m]) =>
+      m >= 0 && m <= 1 ? [] : [`${who} knows "${weaponClass}" at ${m}, not 0 to 1`],
+    ),
   ];
 }

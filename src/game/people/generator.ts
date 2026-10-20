@@ -1,5 +1,7 @@
-import { createRng, hashString, type Rng } from '@/core';
+import { createRng, hashString, hashUnit, type Rng } from '@/core';
 import type { PersonDef, PlaceKind } from '@/content';
+import type { Pronouns } from '@/systems/profile';
+import type { Sex } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { TIME_SLOTS, type TimeSlot } from '@/systems/time';
 
@@ -80,13 +82,21 @@ function generateOne(ctx: GameContext, rng: Rng, who: Identity): PersonDef {
   const drawn = rng.pick(DISCIPLINES);
   const specialty = clanSpecialty(ctx, who.clanId) ?? drawn;
   const clan = who.clanId ? ctx.content.clans.require(who.clanId) : null;
-  const dice = createRng(hashString(`${who.seed}|${who.id}`));
-  const start = graduate(ctx, dice, specialty, clan?.id);
+  const key = `${who.seed}|${who.id}`;
+  const dice = createRng(hashString(key));
+  const pronouns = rolledPronouns(key);
+  const birth = {
+    specialty,
+    ...(clan ? { clanId: clan.id } : {}),
+    sex: generatedSex(key, pronouns),
+    bornSeed: hashString(`${key}|born`),
+  };
+  const start = graduate(ctx, dice, birth);
   return {
     id: who.id,
     name: who.name,
     familyName: clan?.name ?? who.familyName,
-    pronouns: rolledPronouns(`${who.seed}|${who.id}`),
+    pronouns,
     ...(clan ? { clanId: clan.id } : {}),
     role: 'genin',
     title: 'Genin',
@@ -100,6 +110,16 @@ function generateOne(ctx: GameContext, rng: Rng, who: Identity): PersonDef {
     schedule: randomSchedule(ctx, rng, who.village),
     ...(who.village === ctx.content.startLocationId ? {} : { homeLocationId: who.village }),
   };
+}
+
+/**
+ * A made-up classmate's body, drawn to sit with the pronouns already drawn for them: a he is
+ * drawn a man's body, a she a woman's, and someone who goes by they either, by hash.
+ */
+function generatedSex(key: string, pronouns: Pronouns): Sex {
+  if (pronouns === 'he') return 'male';
+  if (pronouns === 'she') return 'female';
+  return hashUnit(key, 'sex') < 0.5 ? 'male' : 'female';
 }
 
 /** Two traits that don't contradict each other. */

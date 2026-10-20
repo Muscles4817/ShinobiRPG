@@ -60,7 +60,7 @@ function whenText(days: number): string {
 
 function replacementSets(state: GameState, ctx: GameContext): Replacement[][] {
   const blocked = (state.people.team?.teammateIds ?? []).filter(
-    (id) => teammateBlocker(state, requirePerson(state, ctx, id)) !== null,
+    (id) => teammateBlocker(state, ctx, requirePerson(state, ctx, id)) !== null,
   );
   const candidates = replacementCandidates(state, ctx).slice(0, MAX_CANDIDATES);
   const [first, second] = blocked;
@@ -100,7 +100,7 @@ export function examNotice(state: GameState, ctx: GameContext): ExamNotice | nul
   if (!coming) return null;
   const team = (state.people.team?.teammateIds ?? []).map((id) => {
     const person = requirePerson(state, ctx, id);
-    return { name: person.name, blocker: teammateBlocker(state, person) };
+    return { name: person.name, blocker: teammateBlocker(state, ctx, person) };
   });
   const someoneOut = team.some((t) => t.blocker !== null);
   const sensei = senseiOf(state, ctx);

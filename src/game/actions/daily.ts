@@ -30,6 +30,8 @@ import { NAP_LINES, nightLines } from '../everyday/restLines';
 import { MEAL_LINES } from '../everyday/tableLines';
 import { tellDaily } from '../everyday/tell';
 import type { ActionHandler, ActionOf } from './types';
+import { combatGear } from '../gear';
+import { DRILL_MASTERY, workedWeapon } from '../weaponMastery';
 import { chakraBody } from '../hives/hive';
 
 /** Everyday life in a village: training, eating, napping and sleeping. */
@@ -116,8 +118,14 @@ export const train: ActionHandler<ActionOf<'train'>> = {
     const before = state.character.stats;
     const grown = growCharacter(state.character, byTheClock(state, ctx, def.gains), ctx);
     const { stats } = grown.character;
+    const character = def.practises
+      ? workedWeapon(grown.character, combatGear(state, ctx), {
+          hand: def.practises,
+          share: DRILL_MASTERY,
+        })
+      : grown.character;
 
-    let next: GameState = { ...state, character: grown.character, told: said.told };
+    let next: GameState = { ...state, character, told: said.told };
     next = adjust(spendTime(next, def.slots, ctx), { energy: -energy });
     const logged = log(next, {
       heading: def.name,

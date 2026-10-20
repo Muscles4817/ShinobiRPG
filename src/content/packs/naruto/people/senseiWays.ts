@@ -19,7 +19,7 @@ export const KAKASHI_WAYS: SenseiWays = {
   rewards: ['signature', 'praise'],
   onMissions: 'lets-fail',
   test: 'bells',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'late' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'late', readiness: 'rounded' },
   classRegard: 'pushes-best',
   story: {
     wound: 'He lost both his teammates, and carries one of them in his eye.',
@@ -48,7 +48,7 @@ export const GUY_WAYS: SenseiWays = {
   rewards: ['praise', 'signature', 'gear'],
   onMissions: 'shield',
   test: 'spar',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'early', readiness: 'specialist' },
   classRegard: 'champions-last',
   story: {
     wound: 'His father opened the last gate, and he would too.',
@@ -73,7 +73,7 @@ export const KURENAI_WAYS: SenseiWays = {
   rewards: ['praise', 'signature'],
   onMissions: 'shield',
   test: 'interview',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual', readiness: 'rounded' },
   classRegard: 'even',
   story: {
     wound: 'Her father never told her she was good enough.',
@@ -95,7 +95,7 @@ export const ASUMA_WAYS: SenseiWays = {
   rewards: ['meal', 'signature'],
   onMissions: 'watchful',
   test: 'survival',
-  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual' },
+  gatekeeping: { passStage: 1, permitStage: 2, nominates: 'usual', readiness: 'specialist' },
   classRegard: 'even',
   story: {
     wound: 'He left to be more than his father’s son, and came back fighting him still.',
@@ -115,7 +115,7 @@ export const ANKO_WAYS: SenseiWays = {
   rewards: ['meal', 'signature'],
   onMissions: 'lets-fail',
   test: 'survival',
-  gatekeeping: { passStage: 2, permitStage: 2, nominates: 'early' },
+  gatekeeping: { passStage: 2, permitStage: 2, nominates: 'early', readiness: 'rounded' },
   classRegard: 'pushes-best',
   story: {
     wound: 'Her teacher used her and threw her away, and left his mark on her neck.',

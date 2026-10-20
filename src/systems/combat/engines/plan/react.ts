@@ -2,11 +2,14 @@ import type { Rng } from '@/core';
 import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniques';
 
 import { alive, hasPerk } from '../../rules/body';
-import { cappedHit, strikeDamage } from '../../rules/damage';
+import { cappedHit, MAX_HIT_SHARE, strikeDamage } from '../../rules/damage';
+import { hitCapShare } from '../../rules/size';
 import { counterChance, guardScale } from '../../rules/defence';
-import { counterSkill, cutSkill } from '../../rules/blades';
+import { counterSkill, cutSkill, heldGuard } from '../../rules/blades';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import { FORESIGHT_COUNTER, foreseen } from '../../rules/eyes';
+import { hitTypeOf, type HitType } from '../../rules/hits';
+import { wearShroud } from './shrouds';
 import { canAttackFrom, kitDamageScale, packScale, type AttackKind } from '../../rules/kit';
 import { harmLine, reactionLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
@@ -66,6 +69,8 @@ export interface Blow {
   readonly areaSize?: AreaSize;
   /** Share of a guard it goes through (knuckles, a sundering weapon: `rules/weapons.ts`). */
   readonly pierce?: number;
+  /** The hurt it does, when its weapon says (`rules/hits.ts`); else read from its kind. */
+  readonly hit?: HitType;
   /** How hard it is to slip (a technique's accuracy; steady when unset). */
   readonly accuracy?: Accuracy;
   /**
@@ -98,7 +103,7 @@ function kitted(round: Round, attacker: PlanFighter, defender: PlanFighter, blow
   const unseen = attacker.hidden || covered(round.field, attacker, defender);
   const hidden = unseen ? HIDDEN_DAMAGE : 1;
   const pack = packScale(attacker, round.fighters);
-  const kit = kitDamageScale(defender, blow.kind);
+  const kit = kitDamageScale(defender, blow.kind, hitTypeOf(blow));
   return blow.raw * (blow.breaks ? brokenScale(kit) : kit) * pack * hidden;
 }
 
@@ -112,8 +117,8 @@ const GLANCES: Bank = {
   ],
 };
 
-function kitNote(moment: Moment, defender: PlanFighter, kind: AttackKind): string[] {
-  const scale = kitDamageScale(defender, kind);
+function kitNote(moment: Moment, defender: PlanFighter, blow: Blow): string[] {
+  const scale = kitDamageScale(defender, blow.kind, hitTypeOf(blow));
   if (scale < 1) return [told(within(moment, 'kit'), GLANCES, { t: defender })];
   return scale > 1 ? [tell('The seal bites deep into {t}.', { t: defender })] : [];
 }
@@ -143,7 +148,8 @@ function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round
   const chance = foreseen(counterChance(skills), target, FORESEES_OPENING);
   if (!struck || !alive(struck) || !rng.chance(chance)) return round;
   const blow: Blow = {
-    raw: strikeDamage(target, attacker, rng.next()) * COUNTER_SCALE,
+    // A broad blade in the countered hand turns some of the answer aside.
+    raw: strikeDamage(target, attacker, rng.next()) * COUNTER_SCALE * (1 - heldGuard(attacker)),
     what: 'counter',
     dodgeable: false,
     physical: true,
@@ -163,9 +169,12 @@ function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round
   );
 }
 
-/** What a Guard lets through of this blow: a piercing weapon goes partly through it. */
+/**
+ * What a Guard lets through of this blow: a guarding weapon in hand (a greatsword, a staff)
+ * catches more, and a piercing weapon goes partly through it.
+ */
 function guardLets(attacker: PlanFighter, target: PlanFighter, blow: Blow): number {
-  const kept = guardScale(attacker, target) * dustGuard(target);
+  const kept = guardScale(attacker, target) * dustGuard(target) * (1 - heldGuard(target));
   return kept + (1 - kept) * (blow.pierce ?? 0);
 }
 
@@ -184,7 +193,7 @@ function blowIncoming({ attacker, target, blow }: Hit): Incoming {
     form: 'blow',
     attacker,
     target,
-    skill: blowSkill(attacker, blow.kind),
+    skill: blowSkill(attacker, blow.kind, !blow.physical),
     ...(blow.discipline ? { discipline: blow.discipline } : {}),
     ...(blow.accuracy ? { accuracy: blow.accuracy } : {}),
     ...(blow.areaSize ? { areaSize: blow.areaSize } : {}),
@@ -305,6 +314,7 @@ export function react(start: Round, struck: Hit): Round {
       ),
     ),
     target.maxHealth,
+    hitCapShare(MAX_HIT_SHARE, attacker, target),
   );
   const told = say(
     shielded,
@@ -321,9 +331,10 @@ export function react(start: Round, struck: Hit): Round {
       }),
       damage,
     ),
-    ...kitNote(momentOf(shielded, attacker.id), target, blow.kind),
+    ...kitNote(momentOf(shielded, attacker.id), target, blow),
   );
   const marked = smashed ? brokeGuard(told, target.id, attacker.id) : told;
-  const landed = confuse(wound(marked, target.id, damage), hit);
+  const worn = wearShroud(wound(marked, target.id, damage), target.id, hitTypeOf(blow), damage);
+  const landed = confuse(worn, hit);
   return canCounterBack(shielded, hit, has) ? counter(landed, hit) : landed;
 }

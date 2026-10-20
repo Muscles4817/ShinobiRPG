@@ -1,4 +1,4 @@
-import { clamp } from '@/core';
+import { clamp, round1 } from '@/core';
 
 import type { Aptitude } from './aptitude';
 import { STAT_IDS, type StatDelta, type StatId, type Stats } from './stats';
@@ -9,6 +9,11 @@ import { STAT_IDS, type StatDelta, type StatId, type Stats } from './stats';
  * trained. A stat's talent sets how far it can go as well as how fast: growth runs as usual up
  * to the limit, eases over its last stretch, and past it only trickles. Teachers get you to
  * your limit sooner; only a breakthrough (a `limitBonus`) moves it.
+ *
+ * The body and mind grow from where someone started (`docs/design/stat-model-plan.md`): a
+ * graduate is grown, so speed has a step left in it, strength and stamina a couple of grades,
+ * reserves more with use, and the mind a little with experience. Skills go as far as talent
+ * takes them, wherever they began.
  */
 
 export const STAT_KINDS = ['born', 'frame', 'trained'] as const;
@@ -71,17 +76,48 @@ function onCurve(curve: Curve, aptitude: number): number {
   return last[1];
 }
 
-/** How far a stat of this kind can go on this talent. */
+/** How far a stat of this kind can go on this talent, from nothing (creatures, skills). */
 export function limitOf(kind: StatKind, aptitude: number): number {
   const curve = kind === 'trained' ? WIDE_CURVE : NARROW_CURVE;
   return Math.round(onCurve(curve, Math.max(0, aptitude)));
 }
 
-/** Every stat's limit from a talent, plus any breakthroughs and frame shifts. */
-export function limitsFor(aptitude: Aptitude, bonus: StatDelta = {}): Limits {
+/**
+ * Room above a starting value per unit of talent: a share of the start (a stronger frame has
+ * more to build on) and a fixed step. Ordinary talent (1) takes speed about one grade, strength
+ * and stamina about two.
+ */
+interface Headroom {
+  readonly share: number;
+  readonly step: number;
+}
+
+const HEADROOM: Readonly<Partial<Record<StatId, Headroom>>> = {
+  speed: { share: 0, step: 5 },
+  strength: { share: 1.1, step: 0 },
+  stamina: { share: 1, step: 0 },
+  reserves: { share: 0, step: 14 },
+  intellect: { share: 0, step: 4 },
+  perception: { share: 0, step: 10 },
+  willpower: { share: 0, step: 10 },
+};
+
+function limitFrom(id: StatId, aptitude: number, start: number | undefined): number {
+  const room = HEADROOM[id];
+  if (!room || start === undefined) return limitOf(STAT_KIND[id], aptitude);
+  const talent = Math.max(0, aptitude);
+  return round1(start + talent * (start * room.share + room.step));
+}
+
+/**
+ * Every stat's limit from a talent, plus any breakthroughs and frame shifts. With `start` (the
+ * stats someone began with) the body and mind grow from there; without it (a creature), every
+ * stat is read from talent alone.
+ */
+export function limitsFor(aptitude: Aptitude, bonus: StatDelta = {}, start?: Stats): Limits {
   const entries = STAT_IDS.map((id) => {
-    const born = limitOf(STAT_KIND[id], aptitude[id]);
-    return [id, born > 0 ? Math.max(0, born + (bonus[id] ?? 0)) : 0] as const;
+    const natural = limitFrom(id, aptitude[id], start?.[id]);
+    return [id, natural > 0 ? Math.max(0, natural + (bonus[id] ?? 0)) : 0] as const;
   });
   return Object.fromEntries(entries) as Record<StatId, number>;
 }

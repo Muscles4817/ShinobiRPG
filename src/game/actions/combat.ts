@@ -18,6 +18,8 @@ import { afterDustFight } from '../dust/keeping';
 import type { GameState } from '../state';
 import { resolveVersus } from '../versus/resolve';
 import type { ActionHandler, ActionOf } from './types';
+import { combatGear } from '../gear';
+import { foughtWith } from '../weaponMastery';
 
 /**
  * Where a finished fight's result goes: a spar, an exam bout, or a mission (an exam's forest is
@@ -84,7 +86,9 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const resolved = resolveFight(tended, outcome, view, ctx);
     const end = { outcome, view, sparring };
     const settled = growFromFight(applyFightToll(resolved, end, ctx, rng), lessons, ctx);
+    // Every fight teaches a little of the weapons carried into it.
+    const character = foughtWith(settled.character, combatGear(state, ctx));
     // The watch screen stages the last exchange before the result card.
-    return { ...settled, combatFinale: finaleOf(view) };
+    return { ...settled, character, combatFinale: finaleOf(view) };
   },
 };

@@ -7,6 +7,7 @@ import { splitNarration } from '../../rules/narration';
 import { UNSTABLE_MISFIRE } from '../../rules/unstable';
 import { chooseCard } from './choose';
 import { useJutsu } from './jutsu';
+import { shroudsAfter } from './shrouds';
 import { canDaze, isDazed, wearOffDaze } from './daze';
 import { fighterIn, initialFighters, plainSlots, type PlanFighter, type Round } from './state';
 
@@ -245,5 +246,63 @@ describe('plan & watch techniques', () => {
       const after = useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed) }, crush);
       expect(after.lines.join(' ')).not.toMatch(/comes apart/);
     }
+  });
+});
+
+describe('cast armour in a planned fight', () => {
+  const sandShell: CombatTechnique = {
+    id: 'sand-shell',
+    name: 'Sand Shell',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'shroud', power: 10, kind: 'sand' }],
+    chakraCost: 6,
+  };
+
+  function shrouded(): Round {
+    const round = roundWith();
+    const hero = fighterIn(round, 'hero')!;
+    return useJutsu(round, { actor: hero, target: undefined, rng: createRng(1) }, sandShell);
+  }
+
+  it('raises the armour on its caster, once', () => {
+    const raised = shrouded();
+    expect(fighterIn(raised, 'hero')?.shroud?.kind).toBe('sand');
+    const hero = fighterIn(raised, 'hero')!;
+    const again = useJutsu(
+      raised,
+      { actor: hero, target: undefined, rng: createRng(2) },
+      sandShell,
+    );
+    expect(again.lines.join(' ')).toContain('already armoured');
+  });
+
+  it('turns a blow that would have hurt more', () => {
+    const bare = roundWith({ techniques: [jab] });
+    const covered = shrouded();
+    const hit = (round: Round) => {
+      const bandit = fighterIn(round, 'bandit')!;
+      const target = fighterIn(round, 'hero')!;
+      const after = useJutsu(
+        round,
+        { actor: { ...bandit, techniques: [jab] }, target, rng: createRng(3) },
+        jab,
+      );
+      return target.health - (fighterIn(after, 'hero')?.health ?? 0);
+    };
+    expect(hit(covered)).toBeLessThan(hit(bare));
+  });
+
+  it('is paid for as each exchange ends, and falls when the chakra runs out', () => {
+    const raised = shrouded();
+    const chakra = fighterIn(raised, 'hero')!.chakra;
+    const paid = shroudsAfter(raised);
+    expect(fighterIn(paid, 'hero')!.chakra).toBeLessThan(chakra);
+    const dry = {
+      ...raised,
+      fighters: raised.fighters.map((f) => (f.id === 'hero' ? { ...f, chakra: 0 } : f)),
+    };
+    const fallen = shroudsAfter(dry);
+    expect(fighterIn(fallen, 'hero')?.shroud).toBeUndefined();
+    expect(fallen.lines.join(' ')).toContain('sand armour runs off');
   });
 });

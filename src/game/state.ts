@@ -1,7 +1,7 @@
 import type { Contract } from '@/systems/contracts';
 import type { DustScroll, DustStore } from '@/systems/dusts';
 import type { Hive } from '@/systems/hives';
-import type { CombatState } from '@/systems/combat';
+import type { CombatState, WeaponMastery } from '@/systems/combat';
 import type { Companions } from '@/systems/companions';
 import type { MapStyle } from './mapStyle';
 import type { FieldBook } from '@/systems/collections';
@@ -257,4 +257,9 @@ export interface Character {
   readonly exercises?: Readonly<Record<string, number>>;
   /** Chakra exhaustion: nights' sleep refill only part of your chakra until it passes. */
   readonly exhaustion: Exhaustion | null;
+  /**
+   * How well they know each class of weapon (`weaponMastery.ts`). Absent: a save from before
+   * mastery, whose owner is at home with every weapon.
+   */
+  readonly weaponMastery?: WeaponMastery;
 }

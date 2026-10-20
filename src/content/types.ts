@@ -1,24 +1,13 @@
-import type { CombatForm, CombatGrammar, CombatPerk, CombatTrait } from '@/systems/combat';
+import type { BodySize, CombatPerk } from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
-import type { ContractDef, FoeSummon } from './contracts';
+import type { EnemyDef } from './enemies';
+import type { ContractDef } from './contracts';
 import type { ClanDust, DustDef } from './dusts';
 import type { ClanHive, StrainDef } from './strains';
 import type { AtlasDef, MapLabelSide } from './atlas';
-import type {
-  ClanCompanion,
-  CompanionKindDef,
-  CompanionLoreDef,
-  RetinueEntry,
-  VetFields,
-} from './companions';
+import type { ClanCompanion, CompanionKindDef, CompanionLoreDef, VetFields } from './companions';
 import type { Find } from '@/systems/cooking';
-import type {
-  ArcDef,
-  Danger,
-  EncounterTemplate,
-  MissionDef,
-  RoadEventDef,
-} from '@/systems/missions';
+import type { ArcDef, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta, StatId } from '@/systems/stats';
 import type { NoteWeight } from '@/systems/profile';
@@ -120,57 +109,10 @@ export type { FestivalDef, RumourDef, SightDef, VillageLife } from './village';
  */
 
 export type { FoodDef, TrainingDef } from './drills';
+export type { EnemyDef, FoePronouns } from './enemies';
 
 export interface Identified {
   readonly id: string;
-}
-
-/** How a fight's story speaks of a foe: a person's pronouns, or "it" for a creature. */
-export type FoePronouns = Exclude<CombatGrammar, 'you'>;
-
-export interface EnemyDef {
-  readonly id: string;
-  readonly name: string;
-  /**
-   * A foe with a name of their own (a rogue called Ren) is told by it; any other is "the
-   * bandit thug" in a fight's story, from `noun` or the name in lower case.
-   */
-  readonly proper?: boolean;
-  /** The common noun when the name in lower case won't do: "Reikon macaque". */
-  readonly noun?: string;
-  /** How the story speaks of them; creatures are "it", people he or she by their id. */
-  readonly pronouns?: FoePronouns;
-  readonly description: string;
-  /** Short tag shown on the enemy's banner in a fight, e.g. "Spirit", "Beast". */
-  readonly kind: string;
-  /**
-   * What the fight's story makes of them when "it" and the spirit trait don't say: a `swarm`
-   * stings. Words only, like `blow`: what their plain strike is called when their form's word
-   * (a beast's bite) is wrong, such as a boar's "tusk".
-   */
-  readonly form?: CombatForm;
-  readonly blow?: string;
-  /** Who may be sent against them (`Danger`); validated against their strength. */
-  readonly danger: Danger;
-  readonly baseStat: number;
-  readonly statBonuses: StatDelta;
-  /**
-   * Health as a multiple of a human's 100: a giant beast more, a small creature less.
-   * Humans leave it out (1).
-   */
-  readonly healthScale?: number;
-  readonly maxChakra: number;
-  readonly techniqueIds: readonly string[];
-  /** Elemental nature, for matchups; most enemies have none. */
-  readonly nature?: Element;
-  /** How they fight: archer, brawler, illusionist… Every fight style honours these. */
-  readonly traits?: readonly CombatTrait[];
-  /** Ingredients a beaten foe leaves (a beast's meat), one of each, into your pack. */
-  readonly drops?: readonly string[];
-  /** Bodies that fight beside them (`docs/design/retinue-plan.md`): a hound at heel. */
-  readonly retinue?: readonly RetinueEntry[];
-  /** Summons they can call into the fight, from a contract of the pack. */
-  readonly summons?: readonly FoeSummon[];
 }
 
 /** A family the character can be born into. Clans shape growth and give techniques. */
@@ -188,6 +130,11 @@ export interface ClanDef {
   /** The clan's chakra nature; choosing the same nature earns a bonus. */
   readonly nature?: Element;
   readonly startingTechniqueIds: readonly string[];
+  /**
+   * A body bred bigger than a human's (`rules/size.ts`): more health and toughness, a bigger
+   * target, a step that walks through blows. Human when absent.
+   */
+  readonly size?: BodySize;
   /** Clan members live rent-free here instead of renting. */
   readonly lodging?: string;
   /** The companion a child of the clan grows up with (`companions.ts`). */

@@ -14,6 +14,7 @@ import { FORESIGHT_SEES, FORESIGHT_SLIP, foreseen } from '../../rules/eyes';
 import { familiarScale } from '../../rules/familiarity';
 import { handsFull, HANDS_FULL_ARRIVAL, HANDS_FULL_READ } from '../../rules/blades';
 import { footingOf } from '../../rules/ground';
+import { weaponSkill } from '../../rules/weapons';
 import { hasTrait, SWIFT_DODGE, type AttackKind } from '../../rules/kit';
 import {
   areaSize,
@@ -30,6 +31,7 @@ import { readyDefences } from './readiness';
 import { settledSlips, swarmSlips } from './swarm';
 import { blindedSlips, dustSlips } from './dust';
 import type { PlanFighter, Round } from './state';
+import { sizeSlips } from '../../rules/size';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -85,8 +87,14 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
   });
   const insects = (incoming.swarm ?? 1) * settledSlips(round, attacker, target);
   const dust = (incoming.dust ?? 1) * blindedSlips(attacker);
+  // A big body is a big target (`size.ts`).
   const held =
-    chance * insects * dust * (isPinned(target) ? PIN_SLIP : 1) * footingOf(round.ground, target);
+    chance *
+    insects *
+    dust *
+    (isPinned(target) ? PIN_SLIP : 1) *
+    footingOf(round.ground, target) *
+    sizeSlips(target);
   const scale = form === 'technique' ? FORESIGHT_SEES : FORESIGHT_SLIP;
   return foreseen(held, target, { scale, ceiling: AVOID_MAX });
 }
@@ -119,7 +127,10 @@ export function techniqueIncoming(
   };
 }
 
-/** The art behind a plain blow: a blade's kenjutsu, else taijutsu. */
-export function blowSkill(attacker: PlanFighter, kind: AttackKind): number {
-  return kind === 'weapon' ? attacker.attributes.kenjutsu : attacker.attributes.taijutsu;
+/**
+ * The art behind a plain blow: a weapon's (its mastery, its speed, a throw's aim:
+ * `weaponSkill`), else taijutsu.
+ */
+export function blowSkill(attacker: PlanFighter, kind: AttackKind, thrown: boolean): number {
+  return kind === 'weapon' ? weaponSkill(attacker, thrown) : attacker.attributes.taijutsu;
 }

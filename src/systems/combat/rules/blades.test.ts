@@ -1,7 +1,19 @@
 import type { CombatAttributes, CombatTechnique } from '../contract';
-import type { CombatGear } from '../gearContract';
-import { bladeInHand, counterSkill, handsFull, reachLead, REACH_LEAD } from './blades';
+import type { CombatGear, CombatWeapon, WeaponClass } from '../gearContract';
+import {
+  bladeInHand,
+  counterSkill,
+  handsFull,
+  LEAD_PER_SPEED,
+  reachLead,
+  REACH_LEAD,
+} from './blades';
+
 import { counterChance } from './defence';
+import { MASTERY_FLOOR } from './mastery';
+
+/** A sword is a little quicker in the hand than even. */
+const SWORD_LEAD = REACH_LEAD + LEAD_PER_SPEED;
 
 const BASE: CombatAttributes = {
   strength: 10,
@@ -27,7 +39,8 @@ const slash: CombatTechnique = {
   effects: [{ verb: 'damage', power: 10 }],
 };
 
-const blade: CombatGear = { held: { name: 'Tanto', shape: 'blade', rank: 'D' } };
+const sword: CombatWeapon = { name: 'Sword', weaponClass: 'sword', rank: 'D' };
+const blade: CombatGear = { held: sword };
 
 interface Fighter {
   readonly attributes: CombatAttributes;
@@ -52,17 +65,45 @@ describe('a blade in hand', () => {
 
 describe('reach', () => {
   it('a drawn blade acts first up close, and only up close', () => {
-    expect(reachLead(swordsman, [fighter()], 'close')).toBe(REACH_LEAD);
+    expect(reachLead(swordsman, [fighter()], 'close')).toBe(SWORD_LEAD);
     expect(reachLead(swordsman, [fighter()], 'mid')).toBe(0);
     expect(reachLead(fighter(), [swordsman], 'close')).toBe(0);
   });
 
   it('is taken away by hands well clear of the blade, or by a better blade', () => {
     expect(reachLead(swordsman, [fighter({ taijutsu: 20 })], 'close')).toBe(0);
-    expect(reachLead(swordsman, [fighter({ taijutsu: 16 })], 'close')).toBe(REACH_LEAD);
+    expect(reachLead(swordsman, [fighter({ taijutsu: 16 })], 'close')).toBe(SWORD_LEAD);
     const master = fighter({ kenjutsu: 20 }, { gear: blade });
     expect(reachLead(swordsman, [master], 'close')).toBe(0);
-    expect(reachLead(master, [swordsman], 'close')).toBe(REACH_LEAD);
+    expect(reachLead(master, [swordsman], 'close')).toBe(SWORD_LEAD);
+  });
+});
+
+describe('how a weapon handles', () => {
+  const holding = (weaponClass: WeaponClass, attributes: Partial<CombatAttributes> = {}) =>
+    fighter(attributes, { gear: { held: { name: weaponClass, weaponClass, rank: 'D' } } });
+
+  it('a quick weapon buys more of a lead up close, a slow one less', () => {
+    const tanto = reachLead(holding('light-blade'), [fighter()], 'close');
+    const sword = reachLead(holding('sword'), [fighter()], 'close');
+    const greatsword = reachLead(holding('greatsword'), [fighter()], 'close');
+    expect(tanto).toBeGreaterThan(sword);
+    expect(sword).toBeGreaterThan(greatsword);
+    expect(greatsword).toBeGreaterThan(0);
+  });
+
+  it('a staff is fought with the weapon art, though it is no blade', () => {
+    const staff = holding('staff', { kenjutsu: 15 });
+    expect(bladeInHand(staff)).toBe(false);
+    expect(reachLead(staff, [fighter()], 'close')).toBe(REACH_LEAD);
+    expect(counterSkill(staff)).toBe(15);
+  });
+
+  it('the weapon art comes through only as far as the weapon is known', () => {
+    const master = fighter({ kenjutsu: 20 }, { gear: { held: sword, mastery: { sword: 1 } } });
+    const stranger = fighter({ kenjutsu: 20 }, { gear: { held: sword, mastery: { throwing: 1 } } });
+    expect(counterSkill(master)).toBe(20);
+    expect(counterSkill(stranger)).toBe(20 * MASTERY_FLOOR);
   });
 });
 

@@ -45,6 +45,33 @@ export interface FocusPlan {
   readonly withTeachers: boolean;
   /** Whether they skip the short sessions their sensei plans (the lesson they still take). */
   readonly skipsSessions?: boolean;
+  /**
+   * Whether they turn to their sensei's assignment once their focus is at chūnin level, as a
+   * player whose specialist sensei steers them would (`exam/readiness.ts`).
+   */
+  readonly followsAssignment?: boolean;
+}
+
+/** A focus at this grade or better is where it needs to be; the rest is the assignment's. */
+const FOCUS_DONE = 'C';
+
+/** What they work on today: the focus, or once it is done, the work their sensei set. */
+function workingOn(state: GameState, plan: FocusPlan): StatId {
+  const set = state.character.assignment?.stat;
+  const done =
+    gradeIndex(statTier(state.character.stats[plan.focus]).grade) >= gradeIndex(FOCUS_DONE);
+  return plan.followsAssignment && done && set ? set : plan.focus;
+}
+
+/** The drill that grows a stat most, or the plan's own when it is the focus. */
+function drillFor(stat: StatId, plan: FocusPlan, context: GameContext): string {
+  if (stat === plan.focus) return plan.drillId;
+  const drills = context.content.training.all.filter((t) => (t.gains[stat] ?? 0) > 0);
+  const best = drills.reduce<(typeof drills)[number] | null>(
+    (top, t) => (top && (top.gains[stat] ?? 0) >= (t.gains[stat] ?? 0) ? top : t),
+    null,
+  );
+  return best?.id ?? plan.drillId;
 }
 
 export interface DayRecord {
@@ -143,7 +170,7 @@ function upkeep(state: GameState, today: Today): GameAction | null {
 function teacherSessions(state: GameState, today: Today): GameAction[] {
   if (!today.plan.withTeachers) return [];
   const offers = trainingView(state, today.context)?.teachers ?? [];
-  const { focus } = today.plan;
+  const focus = workingOn(state, today.plan);
   return offers.flatMap((offer) => {
     const open = offer.open.filter((s) => s.blocker === null);
     const pick = open.find((s) => s.id === focus) ?? (offer.isSensei ? open[0] : undefined);
@@ -162,7 +189,7 @@ function nextAction(state: GameState, today: Today): GameAction {
     ...(plan.withTeachers && !plan.skipsSessions ? [{ type: 'teamDay' } as const] : []),
     ...teacherSessions(state, today),
     ...(jobDay ? [{ type: 'startMission', missionId: today.jobId } as const] : []),
-    { type: 'train', trainingId: plan.drillId },
+    { type: 'train', trainingId: drillFor(workingOn(state, plan), plan, context) },
     { type: 'rest' },
   ];
   const chosen = upkeep(state, today) ??

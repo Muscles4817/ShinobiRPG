@@ -295,7 +295,7 @@ view:
 >>> trainWith
   journal «Lesson with Kaname»: Kaname has you hold a stance until your legs shake, then shows you how to stop them shaking. [Strength, a little] [+6 bond] [−30 energy]
   journal «A travel pass»: Kaname signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
-  journal «Kaname’s word»: Kaname sits down on a stump at the edge of the training ground and waves you over. “Anyone with an illusion walks straight through you,” he says. “Your strength is where I’d look next. Why, do you think?” [Assignment: Strength]
+  journal «Kaname’s word»: Kaname sits down on a stump at the edge of the training ground and waves you over. “Anyone with an illusion walks straight through you,” he says. “Your chakra control is where I’d look next. Why, do you think?” [Assignment: Chakra Control]
 
 === report card ===
 view:
@@ -332,13 +332,13 @@ view:
     stat: strength
     name: Strength
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[1]:
     stat: taijutsu
     name: Taijutsu
     grade: D
-    tier: Genin D
+    tier: Good genin D
     words: Over halfway to a C
   people[0]:
     stage: Acquaintance
@@ -406,7 +406,7 @@ view:
   todayLine: Meditation now, at the training ground.
   session:
   assignment:
-    stat: Strength
+    stat: Chakra Control
     progress: barely started
   lesson:
     title: Sparring
@@ -427,10 +427,10 @@ view:
   journal «Sparring»: Kaname stops you on your way out to talk about sparring. “What will you do if they rush you? And if they hang back? Decide both before you start, then watch which of your guesses was wrong.”
 
 >>> senseiSession
-  journal «Meditation with Kaname»: Kaname has you sit still until your chakra settles like a pond after rain. “Halfway through it got easier, and you felt it,” Kaname says. “What changed?” [Chakra Control, a touch] [Kaname’s regard rises] [−10 energy]
+  journal «Meditation with Kaname»: Kaname has you sit still until your chakra settles like a pond after rain. “Halfway through it got easier, and you felt it,” Kaname says. “What changed?” [Chakra Control, a little] [Kaname’s regard rises] [−10 energy]
 
 >>> train
-  journal «Rooftop Runs»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Speed, a touch] [Stamina, a touch] [Chakra Reserves, a touch] [−20 energy]
+  journal «Rooftop Runs»: You’ve watched others do this often enough to think it looked easy. By the end you know which parts you were getting wrong, and that’s a start. [Speed, a touch] [Chakra Reserves, a touch] [−20 energy]
 
 >>> talk
 
@@ -514,20 +514,14 @@ view:
     stat: reserves
     name: Chakra Reserves
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[2]:
-    stat: stamina
-    name: Stamina
-    grade: D
-    tier: Genin D
-    words: Only just a D
-  growth[3]:
     stat: speed
     name: Speed
-    grade: D
-    tier: Genin D
-    words: Over halfway to a C
+    grade: C
+    tier: Fine athlete C
+    words: Only just a C
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -588,7 +582,7 @@ view:
   days[6]:
     label: 7
   assignment:
-    stat: Strength
+    stat: Chakra Control
     progress: barely started
   lesson:
     title: The jobs board
@@ -614,7 +608,7 @@ view:
   refused: Your sensei hasn’t set a session for today.
 
 >>> train
-  journal «Laps of the Village Walls»: You copy what you remember from the academy, get half of it wrong, and fix the worst of it before you stop. [Stamina, a touch] [Chakra Reserves, a little] [Willpower, a little] [−25 energy]
+  journal «Laps of the Village Walls»: You copy what you remember from the academy, get half of it wrong, and fix the worst of it before you stop. [Stamina, a touch] [Chakra Reserves, a touch] [Willpower, a touch] [−25 energy]
 
 >>> talk
 
@@ -693,20 +687,20 @@ view:
     stat: reserves
     name: Chakra Reserves
     grade: E
-    tier: Genin E
+    tier: Ordinary E
     words: Over halfway to a D
   growth[1]:
     stat: willpower
     name: Willpower
     grade: E
-    tier: Genin E
-    words: Over halfway to a D
+    tier: Ordinary E
+    words: Nearly a D
   growth[2]:
     stat: stamina
     name: Stamina
     grade: D
-    tier: Genin D
-    words: Only just a D
+    tier: Athletic D
+    words: Over halfway to a C
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -729,7 +723,7 @@ view:
     stamp: Morning
   summary[0]: Kaname thinks better of you
   summary[1]: Chakra Reserves, over halfway to a D
-  summary[2]: Willpower, over halfway to a D
+  summary[2]: Willpower, nearly a D
   button: Sleep
   dismiss:
 
@@ -769,7 +763,7 @@ view:
   todayLine: Drills now, at the training ground.
   session:
   assignment:
-    stat: Strength
+    stat: Chakra Control
     progress: barely started
   lesson:
     title: Cooking
@@ -869,31 +863,31 @@ view:
 view:
   mode: full
   when: Spring 4 draws to a close
-  title: You worked on your strength and chakra control, among other things, and Kaname thinks better of you.
+  title: You worked on your chakra control and taijutsu, among other things, and Kaname thinks better of you.
   growth[0]:
-    stat: strength
-    name: Strength
-    grade: E
-    tier: Genin E
-    words: Over halfway to a D
-  growth[1]:
     stat: chakraControl
     name: Chakra Control
     grade: E
     tier: Genin E
     words: Over halfway to a D
-  growth[2]:
+  growth[1]:
     stat: taijutsu
     name: Taijutsu
     grade: D
-    tier: Genin D
+    tier: Good genin D
     words: Over halfway to a C
+  growth[2]:
+    stat: strength
+    name: Strength
+    grade: E
+    tier: Ordinary E
+    words: Over halfway to a D
   growth[3]:
     stat: willpower
     name: Willpower
     grade: E
-    tier: Genin E
-    words: Over halfway to a D
+    tier: Ordinary E
+    words: Nearly a D
   people[0]:
     stage: Acquaintance
     stamp: Thinks better of you
@@ -915,8 +909,8 @@ view:
     text: Cherry Blossom Viewing
     stamp: In five days
   summary[0]: Kaname thinks better of you
-  summary[1]: Strength, over halfway to a D
-  summary[2]: Chakra Control, over halfway to a D
+  summary[1]: Chakra Control, over halfway to a D
+  summary[2]: Taijutsu, over halfway to a C
   button: Sleep
   dismiss:
 
@@ -955,8 +949,8 @@ view:
   days[6]:
     label: 7
   assignment:
-    stat: Strength
-    progress: under way
+    stat: Chakra Control
+    progress: barely started
   lesson:
     title: Leaving the village
     text: Kaname taps the pass he signed for you. “A pass for a week on the safe roads. Where will you go first, and what do you think you’ll find that you can’t find here?”
@@ -1135,8 +1129,8 @@ view:
   todayLine: Sparring now, at the training ground.
   session:
   assignment:
-    stat: Strength
-    progress: under way
+    stat: Chakra Control
+    progress: barely started
   teamDay:
     what: Tea
     from: evening
@@ -1267,30 +1261,30 @@ view:
 view:
   mode: full
   when: Spring 6 draws to a close
-  title: You worked on your intellect and strength, among other things, and Kaname thinks less of you.
+  title: You worked on your intellect and taijutsu, among other things, and Kaname thinks less of you.
   growth[0]:
     stat: intellect
     name: Intellect
     grade: E
-    tier: Genin E
-    words: Over halfway to a D
+    tier: Ordinary E
+    words: Nearly a D
   growth[1]:
-    stat: strength
-    name: Strength
-    grade: E
-    tier: Genin E
-    words: Over halfway to a D
-  growth[2]:
     stat: taijutsu
     name: Taijutsu
     grade: D
-    tier: Genin D
+    tier: Good genin D
     words: Over halfway to a C
-  growth[3]:
+  growth[2]:
     stat: genjutsu
     name: Genjutsu
     grade: E
     tier: Genin E
+    words: Over halfway to a D
+  growth[3]:
+    stat: strength
+    name: Strength
+    grade: E
+    tier: Ordinary E
     words: Over halfway to a D
   people[0]:
     stage: Acquaintance
@@ -1313,8 +1307,8 @@ view:
     text: New work at the hall
     stamp: New
   summary[0]: Kaname thinks less of you
-  summary[1]: Intellect, over halfway to a D
-  summary[2]: Strength, over halfway to a D
+  summary[1]: Intellect, nearly a D
+  summary[2]: Taijutsu, over halfway to a C
   button: Sleep
   dismiss:
 
@@ -1385,8 +1379,8 @@ view:
   days[6]:
     label: 7
   assignment:
-    stat: Strength
-    progress: under way
+    stat: Chakra Control
+    progress: barely started
 
 === village ===
 view:
@@ -1452,8 +1446,8 @@ view:
   days[6]:
     label: 7
   assignment:
-    stat: Strength
-    progress: under way
+    stat: Chakra Control
+    progress: barely started
 
 === village ===
 view:

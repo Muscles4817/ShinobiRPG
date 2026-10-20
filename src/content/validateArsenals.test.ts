@@ -49,4 +49,12 @@ describe('arsenals', () => {
     expect(problems).toContain('person "kakashi" carries unknown tool "lost-tag"');
     expect(problems).toContain('person "kakashi" carries 0 of "smoke-bomb"');
   });
+
+  it('knows each weapon between never held and mastered', () => {
+    const arsenal = { techniqueIds: ['lightning-blade'] };
+    expect(withKakashi({ ...arsenal, weaponMastery: { sword: 0.6 } })).toEqual([]);
+    expect(withKakashi({ ...arsenal, weaponMastery: { sword: 1.5 } })).toContain(
+      'person "kakashi" knows "sword" at 1.5, not 0 to 1',
+    );
+  });
 });

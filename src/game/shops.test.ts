@@ -40,7 +40,11 @@ describe('gear', () => {
     const state = act(rich(), { type: 'buyGear', gearId: 'forge-wakizashi' });
     const fighter = playerCombatant(state, ctx);
     expect(fighter.attributes.kenjutsu).toBe(state.character.stats.kenjutsu);
-    expect(fighter.gear?.held).toEqual({ name: 'Forge Wakizashi', shape: 'blade', rank: 'C' });
+    expect(fighter.gear?.held).toEqual({
+      name: 'Forge Wakizashi',
+      weaponClass: 'sword',
+      rank: 'C',
+    });
   });
 
   it('refuses what you cannot afford', () => {

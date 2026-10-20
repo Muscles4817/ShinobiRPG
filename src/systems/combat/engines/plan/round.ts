@@ -34,6 +34,7 @@ import { intercept } from './team';
 import { springTraps } from './traps';
 import { aid, struggleFree } from './struggle';
 import { clonesAfter } from './cloneUpkeep';
+import { shroudsAfter } from './shrouds';
 import { summonsAfter } from './summons';
 import { plannedSummons } from './summonPlans';
 import { swarmsAfter } from './swarm';
@@ -287,7 +288,9 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...carriedIn(state),
   };
   const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), start);
-  const kept = plannedSummons(summonsAfter(clonesAfter(afterEmpowers(played, state.round))));
+  const kept = plannedSummons(
+    summonsAfter(clonesAfter(shroudsAfter(afterEmpowers(played, state.round)))),
+  );
   const end = secondWinds(
     lingerAfter(dustAfter(swarmsAfter(struggleFree(kept, rng), rng)), state.round),
   );

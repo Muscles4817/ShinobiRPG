@@ -24,6 +24,7 @@ const EFFECT_TEXT: Readonly<Record<JutsuEffect['verb'], (power: number) => strin
   afflict: () => 'Leaves a lingering wound',
   counter: () => 'Readies a riposte',
   summon: () => 'Calls a summon',
+  shroud: () => 'Cast armour',
 };
 
 /** Each effect in order: "Power 12, then dazes". */

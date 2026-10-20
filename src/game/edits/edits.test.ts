@@ -88,14 +88,13 @@ describe('fighter edits', () => {
 });
 
 describe('the fighter editor', () => {
-  it('reads each stat beside the pack’s, and notes a line beyond the rank', () => {
+  it('reads each stat beside the pack’s, at any grade for any rank', () => {
     const ctx = edited(editStat(naruto, KAKASHI, 'genjutsu', 50));
     const editor = fighterEditor(ctx, KAKASHI)!;
     const genjutsu = editor.stats.find((s) => s.id === 'genjutsu')!;
     expect(genjutsu).toMatchObject({ value: 50, grade: 'S', edited: true });
     expect(genjutsu.original).toBe(naruto.content.people.require('kakashi').stats.genjutsu);
     expect(editor.edited).toBe(true);
-    expect(editor.notes.join(' ')).toMatch(/above the A a jōnin reaches/);
   });
 
   it('offers no other clan’s techniques and nothing that summons', () => {

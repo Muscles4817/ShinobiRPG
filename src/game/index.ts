@@ -288,7 +288,7 @@ export {
   type Pronouns,
   type QuickPick,
 } from '@/systems/profile';
-export type { StatGroup, StatId, StatKind } from '@/systems/stats';
+export type { Sex, StatGroup, StatId, StatKind } from '@/systems/stats';
 export type { Element } from '@/systems/techniques';
 export type { EffectLine } from '@/systems/modifiers';
 export type { CompanionCard, StrayNotice } from './views/companion';

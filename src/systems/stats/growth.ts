@@ -5,6 +5,7 @@ import { withReserves } from './reserves';
 import { soloEfficiency, type SoloFloor, type SoloFloors } from './solo';
 import { STAT_IDS, type StatDelta, type StatId, type Stats, type StatScale } from './stats';
 import { teacherEfficiency } from './teaching';
+import { withinScale } from './tiers';
 
 /**
  * How a session of practice turns into stat growth. A session's base gain (content weights)
@@ -81,7 +82,7 @@ export function applyTraining(stats: Stats, gains: StatDelta, growth: Growth = {
         ? trainingGain(stats[id], base, scale, floors)
         : taughtGain(stats[id], base, scale, { value: teacher, floors });
     const held = limits ? limitFactor(stats[id], limits[id]) : 1;
-    next[id] = round3(stats[id] + gain * held);
+    next[id] = round3(withinScale(stats[id] + gain * held));
   }
   return next;
 }

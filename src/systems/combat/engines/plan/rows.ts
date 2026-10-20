@@ -14,6 +14,7 @@ import type { PlanFighter } from './state';
 export function attackOf(card: Card): RowAttack {
   switch (card.kind) {
     case 'strike':
+      return { reach: card.reach ?? STRIKE_REACH };
     case 'counter':
       return { reach: STRIKE_REACH };
     case 'throw':

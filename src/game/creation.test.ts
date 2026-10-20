@@ -67,11 +67,27 @@ describe('character creation', () => {
 
   it('the file, the frame and the special note shape starting stats', () => {
     // A steady taijutsu student: three steps in taijutsu and speed, two in stamina; a sensor.
+    // Skills start at the academy's line, the body and mind at the middle of the class.
     const s = newGame().character.stats;
-    expect([s.taijutsu, s.speed, s.stamina, s.perception, s.strength]).toEqual([11, 11, 9, 8, 4]);
+    expect([s.taijutsu, s.speed, s.stamina, s.perception, s.strength]).toEqual([
+      11, 13.5, 11.5, 10, 5,
+    ]);
     expect(newGame().character.grades.taijutsu).toBe('B');
     const heavy = createNewGame({ draft: draft({ buildId: 'heavy' }), seed: 1 }, ctx);
-    expect(heavy.character.stats.strength).toBe(6);
+    expect(heavy.character.stats.strength).toBe(7);
+  });
+
+  it('draws the body and mind from the creation seed, by sex', () => {
+    const drawn = (bornSeed: number | null, sex: 'male' | 'female') =>
+      createNewGame({ draft: draft({ bornSeed, sex }), seed: 1 }, ctx).character.stats;
+    // The same seed draws the same person; another seed someone else.
+    expect(drawn(7, 'male')).toEqual(drawn(7, 'male'));
+    expect(drawn(7, 'male')).not.toEqual(drawn(8, 'male'));
+    // The same draws on a man's curve and a woman's: the man stronger, the mind the same.
+    expect(drawn(7, 'male').strength).toBeGreaterThan(drawn(7, 'female').strength);
+    expect(drawn(7, 'male').intellect).toBe(drawn(7, 'female').intellect);
+    // Skills are never born: they start at the academy's line, whatever the seed.
+    expect(drawn(7, 'male').ninjutsu).toBe(drawn(8, 'female').ninjutsu);
   });
 
   it('a gift on the file is known from the first day', () => {
@@ -89,7 +105,7 @@ describe('character creation', () => {
       rentPerWeek: 0,
       lodging: 'Your room in the Uchiha compound',
     });
-    expect(state.character.stats.willpower).toBe(3);
+    expect(state.character.stats.willpower).toBe(6);
   });
 
   it('family homes show as rent-free and refuse rent', () => {

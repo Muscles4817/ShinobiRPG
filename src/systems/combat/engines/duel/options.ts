@@ -40,6 +40,7 @@ const EFFECT_DETAIL: Readonly<Record<Verb, (power: number) => string>> = {
   afflict: () => 'leaves lingering harm',
   counter: () => 'readies a riposte',
   summon: () => 'calls a summon',
+  shroud: () => 'raises cast armour',
 };
 
 /**

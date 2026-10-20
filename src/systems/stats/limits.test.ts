@@ -21,6 +21,20 @@ describe('natural limits', () => {
     expect(limitOf('born', 0.75)).toBeGreaterThan(limitOf('born', 0.5));
   });
 
+  it('grow the body and mind from where someone started', () => {
+    const start = createStats(5, { speed: 5, strength: 5, intellect: 7 });
+    const limits = limitsFor(evenAptitude(1), {}, start);
+    // Speed has about a grade left in a grown body; strength and stamina about two.
+    expect(limits.speed).toBe(15);
+    expect(limits.strength).toBe(21);
+    expect(limits.stamina).toBe(10);
+    expect(limits.intellect).toBe(16);
+    // Skills go as far as talent takes them, wherever they began.
+    expect(limits.taijutsu).toBe(limitOf('trained', 1));
+    // No talent at all: the body stays as it is.
+    expect(limitsFor(evenAptitude(0), {}, start).speed).toBe(10);
+  });
+
   it('let growth run, ease near the limit, and trickle past it', () => {
     expect(limitFactor(10, 17)).toBe(1);
     expect(limitFactor(15.5, 17)).toBeLessThan(1);

@@ -80,6 +80,7 @@ describe('verbs', () => {
       ['afflict', 'foe'],
       ['counter', 'self'],
       ['summon', 'self'],
+      ['shroud', 'self'],
     ]);
   });
 
