@@ -36,6 +36,8 @@ import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
 import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
+import { DESERT_INGREDIENTS } from '../../shared/desert';
+import { DESERT_FOX } from '../../shared/wildKinds';
 import { DUELIST_GEAR, DUELIST_PUPPETS, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
@@ -197,7 +199,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     UNWRITTEN_RULE_ARC,
   ],
   voices: VOICES,
-  companionKinds: [...COMPANION_KINDS, SAND_HOUND],
+  companionKinds: [...COMPANION_KINDS, SAND_HOUND, DESERT_FOX],
   companionLore: COMPANION_LORE,
   contracts: CONTRACTS,
   strains: [...STRAINS, ...WILD_STRAINS],
@@ -250,7 +252,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   gear: [...GEAR, ...DUELIST_GEAR, ...KIRI_GEAR, ...SUNA_GEAR],
   tools: TOOLS,
   injuries: INJURIES,
-  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS],
+  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS, ...DESERT_INGREDIENTS],
   recipes: RECIPES,
   cookbooks: COOKBOOKS,
   campFinds: CAMP_FINDS,

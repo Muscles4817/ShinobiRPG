@@ -125,6 +125,25 @@ describeFan('the fan pack’s towns', () => {
     expect(desk?.kind === 'missions' && desk.missionIds.length).toBe(5);
   });
 
+  it('forages the desert by the Landing and the Sand, where a fox and scarabs live', () => {
+    const deserts = naruto!.locations.flatMap((l) =>
+      l.places.flatMap((p) => (p.kind === 'wilds' && p.biome === 'desert' ? [p.id] : [])),
+    );
+    expect(deserts).toEqual(['wadi-beyond-the-wall', 'outer-dunes']);
+    expect(naruto!.companionKinds.find((k) => k.wild?.biome === 'desert')?.id).toBe('desert-fox');
+    expect(naruto!.strains.find((s) => s.wild?.biomes.includes('desert'))?.id).toBe('dune-scarab');
+  });
+
+  it('fights the sand’s jobs on desert ground, where sand is drawn in full', () => {
+    const onSand = naruto!.missions.flatMap((m) =>
+      m.stages.some((st) => 'ground' in st && st.ground === 'desert') ? [m.id] : [],
+    );
+    expect(onSand).toEqual(
+      expect.arrayContaining(['landing-lost-skiff', 'landing-spice-runners', 'suna-outer-wells']),
+    );
+    expect(naruto!.dusts.find((d) => d.id === 'sand')?.drawnOn).toContain('desert');
+  });
+
   it('meets the bridge builder’s family at home in the Land of Waves', () => {
     const residents = naruto!.people.filter((p) => p.homeLocationId === 'land-of-waves');
     expect(residents.map((p) => p.id)).toEqual(['tazuna', 'tsunami', 'inari']);

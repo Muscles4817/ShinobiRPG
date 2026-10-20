@@ -1,3 +1,4 @@
+import { DESERT_FINDS } from '../../../shared/desert';
 import type { LocationDef } from '../../../types';
 import { SUNA_COMPOUNDS } from './compounds';
 
@@ -160,6 +161,16 @@ export const SUNAGAKURE: LocationDef = {
         'Two rooms carved into the ring’s inner wall, with a shutter that opens on the whole village. Cool all day.',
       seller: 'A clerk of the Envoy’s Office, who sells to foreigners only at a foreigner’s price',
       price: 2600,
+    },
+    {
+      id: 'wadi-beyond-the-wall',
+      kind: 'wilds',
+      name: 'The Wadi Beyond the Wall',
+      icon: 'leaf',
+      blurb:
+        'A dry riverbed outside the cliffs, where sage and pears grow and the rain runs once a year',
+      biome: 'desert',
+      finds: DESERT_FINDS,
     },
     ...SUNA_COMPOUNDS,
   ],
