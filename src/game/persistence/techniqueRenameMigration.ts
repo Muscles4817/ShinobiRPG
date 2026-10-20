@@ -28,6 +28,7 @@ function bookOf(value: unknown): TechniqueBook {
     progress: asNumbers(raw.progress),
     unstable: asStrings(raw.unstable),
     repertoire: Array.isArray(raw.repertoire) ? asStrings(raw.repertoire) : null,
+    chains: Array.isArray(raw.chains) ? raw.chains.map(asStrings) : null,
   };
 }
 

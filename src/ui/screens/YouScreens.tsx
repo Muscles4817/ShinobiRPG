@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
-import { jutsuDeck, styleView, type Discipline } from '@/game';
+import { chainsView, jutsuDeck, styleView, type Discipline } from '@/game';
 
 import { TechniqueCard } from '../components/TechniqueCard';
 import { cardDetail, DISCIPLINE_LABELS, JutsuDetail } from '../components/JutsuDetail';
+import { ChainsPanel } from '../components/ChainsPanel';
 import { StylePanel, StyleToggle } from '../components/StylePanel';
 import { Pane } from '../layout/Pane';
 import { useHoverPreview } from '../layout/useHoverPreview';
@@ -20,6 +21,7 @@ const FILTER_LABELS: Readonly<Record<Discipline | 'all', string>> = {
 export function JutsuScreen({ ctx, state, perform }: ScreenProps) {
   const deck = jutsuDeck(state, ctx);
   const style = styleView(state, ctx);
+  const chains = chainsView(state, ctx);
   const [filter, setFilter] = useState<Discipline | 'all'>('all');
   const [selectedId, setSelectedId] = useState(deck[0]?.id);
   const hover = useHoverPreview();
@@ -58,6 +60,7 @@ export function JutsuScreen({ ctx, state, perform }: ScreenProps) {
             )}
           </div>
           {style && <StylePanel style={style} perform={perform} />}
+          {chains && <ChainsPanel chains={chains} ctx={ctx} state={state} perform={perform} />}
           <div className="deck">
             {shown.map((c) => (
               <button

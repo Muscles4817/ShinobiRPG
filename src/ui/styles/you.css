@@ -467,3 +467,49 @@
 .style-choice .btn {
   min-height: 40px;
 }
+
+/* Your chains: the list kept, and the builder below it. */
+.chain-list {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+}
+.chain-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--paper-muted);
+}
+.chain-list .style-choice {
+  margin-top: 0;
+}
+.chain-builder h3 {
+  font-family: var(--font-story);
+  font-size: 1rem;
+  margin: 12px 0 6px;
+}
+.chain-moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chain-moves .btn,
+.chain-builder .row-buttons .btn {
+  min-height: 40px;
+}
+/* On paper a ghost button takes the paper's ink, and a closed one fades into it (as on a contract). */
+.style-panel .btn.ghost {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+  background: transparent;
+}
+.style-panel .btn:disabled {
+  background: transparent;
+  color: var(--paper-muted);
+  border: 1px dashed var(--paper-muted);
+}
+.chain-builder .row-buttons {
+  align-items: flex-start;
+}

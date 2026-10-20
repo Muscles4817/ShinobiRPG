@@ -166,6 +166,11 @@ export interface CombatantSetup {
    * the engine keeps their best (`engines/plan/repertoire.ts`).
    */
   readonly repertoire?: readonly string[];
+  /**
+   * The chains (technique ids, opener first) the fighter keeps ready, as they built them; absent,
+   * the engine builds them from their moves (`rules/chains.ts`).
+   */
+  readonly chains?: readonly (readonly string[])[];
   /** Equipped gear (see `gearContract.ts`); absent for fighters armed as their kit suggests. */
   readonly gear?: CombatGear;
   /** What today's meal brings into the fight (the player's). */

@@ -82,6 +82,9 @@ export type GameAction =
   | { readonly type: 'dismissDay' }
   | { readonly type: 'setStyleMove'; readonly techniqueId: string; readonly inStyle: boolean }
   | { readonly type: 'resetStyle' }
+  | { readonly type: 'keepChain'; readonly techniqueIds: readonly string[] }
+  | { readonly type: 'dropChain'; readonly index: number }
+  | { readonly type: 'resetChains' }
   | { readonly type: 'answerRival'; readonly choiceIndex: number }
   | { readonly type: 'acceptChallenge' }
   | { readonly type: 'declineChallenge' }

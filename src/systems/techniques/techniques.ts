@@ -107,6 +107,11 @@ export interface TechniqueBook {
    * `CombatantSetup.repertoire`); null: the fight keeps their best.
    */
   readonly repertoire: readonly string[] | null;
+  /**
+   * The chains of body moves (opener first) the player built (a fight's
+   * `CombatantSetup.chains`); null: the fight builds them from what they know.
+   */
+  readonly chains: readonly (readonly string[])[] | null;
 }
 
 export const EMPTY_BOOK: TechniqueBook = {
@@ -114,6 +119,7 @@ export const EMPTY_BOOK: TechniqueBook = {
   progress: {},
   unstable: [],
   repertoire: null,
+  chains: null,
 };
 
 /** Who is learning: what their grades, clan, nature and the weapon in their hand allow. */

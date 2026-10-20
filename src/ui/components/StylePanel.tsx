@@ -43,7 +43,7 @@ export function StyleToggle({
   return <ChoiceButton label={label} choice={card.style.choice} perform={perform} />;
 }
 
-function ChoiceButton({
+export function ChoiceButton({
   label,
   choice,
   perform,

@@ -3,6 +3,7 @@ import type { Rng } from '@/core';
 import type { CombatResult } from '../../contract';
 import { rested } from './effort';
 import { styled } from './repertoire';
+import { followThrough, opened } from './chaining';
 import { alive } from '../../rules/body';
 import { reachLead } from '../../rules/blades';
 import { gathered } from '../../rules/chakra';
@@ -233,10 +234,12 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const chosen = choosePlay(round, actor, rng);
   if ('spent' in chosen) return chosen.spent;
   const { target } = chosen;
-  // A trained fighter's strike is one of their moves (`repertoire.ts`).
-  const card = styled(round, { actor, target, rng }, chosen.card);
-  const aim = intercept(round, { actor, target, rng }, card);
-  const tried = attempt(aim.round, { actor, target: aim.target, rng }, card);
+  // A trained fighter's strike is one of their moves, or a chain of them (`repertoire.ts`).
+  const planned = { actor, target, rng };
+  const { card, follow } = opened(round, planned, chosen.card, styled(round, planned, chosen.card));
+  const aim = intercept(round, planned, card);
+  const aimed = { actor, target: aim.target, rng };
+  const tried = followThrough(aim.round, attempt(aim.round, aimed, card), aimed, follow);
   const played = afterStep(aim.round, tried, actor.id, rng);
   const noted = noteAttack(played, actor.id, card);
   const acted = [...(noted.acted ?? []), actor.id];

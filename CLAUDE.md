@@ -289,7 +289,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     best), one slot in a default plan, and when it plays it becomes the move that suits the moment
     by feel (taijutsu with wits): the hardest for a novice, what beats a seen defence for a better
     feel, a change-up before a foe who reads the fight has it read; a choice, never a roll.
-    Untrained bodies and a weapon in hand keep the plain blow. Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
+    Untrained bodies and a weapon in hand keep the plain blow. A strike may open a **chain**
+    (`rules/chains.ts`, `plan/chaining.ts`): two body moves from taijutsu C, three from A, thrown
+    in one turn, each only while the last landed (it hurt, dazed or pinned them, and no Counter hurt
+    its thrower) and only if it reaches where the last left the fight (a knock to mid needs a move
+    that reaches or rushes in); the setups are what the fight already does (a daze leaves them
+    open, a pin hard to slip). The player builds theirs on the Jutsu tab (`techniques.chains`,
+    checked by `chainProblem` before they are kept); otherwise they are built from the moves known. Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
     covers (wide ×1.5, vast ×2.2), and each exchange gives back a little, or a share of deep
     reserves. Holds are fought, not waited out (`rules/escape.ts`, `plan/struggle.ts`): a pin
     keeps its `grip` (how strongly it was cast, what breaks it), the held struggle against it at

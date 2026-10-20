@@ -622,6 +622,15 @@ describe('persistence', () => {
     expect(loaded.value.techniques.repertoire).toBeNull();
   });
 
+  it('gives a save from before chains none built', () => {
+    const game = newGame();
+    const { chains: _c, ...techniques } = game.techniques;
+    const raw = JSON.stringify({ version: 64, state: { ...game, techniques } });
+    const loaded = deserialize(raw);
+    if (!loaded.ok) throw new Error(loaded.error);
+    expect(loaded.value.techniques.chains).toBeNull();
+  });
+
   it('rejects corrupted data', () => {
     expect(deserialize('{not json').ok).toBe(false);
     expect(deserialize(JSON.stringify({ version: 1, state: {} })).ok).toBe(false);

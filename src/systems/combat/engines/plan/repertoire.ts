@@ -84,11 +84,11 @@ export function repertoireOf(f: PlanFighter): CombatTechnique[] {
   return known.slice(0, sizeFor(f));
 }
 
-function jutsu(technique: CombatTechnique): Card {
+export function jutsu(technique: CombatTechnique): Card {
   return { kind: 'jutsu', technique };
 }
 
-function armed(f: PlanFighter): boolean {
+export function armed(f: PlanFighter): boolean {
   const held = f.gear?.held;
   return held !== undefined && shapeOf(held) !== 'knuckles';
 }
@@ -144,6 +144,11 @@ function freshness(self: PlanFighter, foe: PlanFighter, card: Card): number {
   return repeatWeight(running) / leaned;
 }
 
+/** How well a card would serve a strike now: its fitness, and how fresh it is against this foe. */
+export function strikeScore(round: Round, self: PlanFighter, foe: PlanFighter, card: Card): number {
+  return fitness(round, self, foe, card) * freshness(self, foe, card);
+}
+
 /**
  * What a planned strike becomes: the move that suits the moment best, or the plain strike when
  * they have none to hand. Winded, they save their breath for a cheap move or a plain blow.
@@ -158,7 +163,7 @@ export function styled(round: Round, turn: Turn, card: Card): Card {
     .map(jutsu)
     .filter((c) => fitsBand(c, round.range) && playable(actor, c));
   if (!foe || moves.length === 0) return card;
-  const score = (c: Card) => fitness(round, actor, foe, c) * freshness(actor, foe, c);
+  const score = (c: Card) => strikeScore(round, actor, foe, c);
   const best = moves.reduce((a, b) => (score(b) > score(a) ? b : a));
   return score(best) >= score(card) ? best : card;
 }
