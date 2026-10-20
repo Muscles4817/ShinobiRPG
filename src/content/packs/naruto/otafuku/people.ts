@@ -13,10 +13,13 @@ export const OTAFUKU_PEOPLE: readonly PersonDef[] = [
     role: 'villager',
     title: 'Shamisen player at the Willow',
     rank: 'civilian',
-    stats: statLine(4, {
+    stats: statLine(5, {
+      strength: 3,
+      reserves: 4,
+      chakraControl: 2,
+      intellect: 8,
       perception: 9,
       willpower: 8,
-      intellect: 8,
       taijutsu: 0,
       ninjutsu: 0,
       genjutsu: 1,

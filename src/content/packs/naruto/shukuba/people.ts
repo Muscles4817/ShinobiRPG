@@ -13,10 +13,13 @@ export const SHUKUBA_PEOPLE: readonly PersonDef[] = [
     role: 'villager',
     title: 'Highway courier',
     rank: 'civilian',
-    stats: statLine(4, {
-      speed: 10,
-      stamina: 10,
+    stats: statLine(6, {
+      speed: 9,
+      stamina: 9,
+      reserves: 4,
+      chakraControl: 2,
       intellect: 8,
+      perception: 7,
       taijutsu: 1,
       ninjutsu: 0,
       genjutsu: 0,
