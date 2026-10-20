@@ -4,11 +4,11 @@ import { stageForPair, stageOf } from '@/systems/bonds';
 
 import type { GameContext } from '../context';
 import { bondOf, findPerson, requirePerson, villagers } from '../people/cast';
-import { personStats } from '../people/progress';
 import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
 import { waysOf } from '../sensei/generate';
 import { readinessGap, readinessStandard } from './readiness';
+import { personReadinessLine, readinessLine } from './kitReadiness';
 
 /**
  * Who may sit an exam. Your sensei nominates you: they must trust you (a bond stage) and judge
@@ -65,7 +65,7 @@ export function nominationBlocker(state: GameState, ctx: GameContext): string | 
       personSlots('sensei', sensei),
     );
   }
-  const gap = readinessGap(state.character.stats, readinessStandard(state, ctx));
+  const gap = readinessGap(readinessLine(state, ctx), readinessStandard(state, ctx));
   if (gap) return `${name} doesn’t think you’re ready. You need ${gap}.`;
   const done = state.standing.missionsCompleted;
   const wanted = nominationMissions(sensei);
@@ -84,7 +84,7 @@ export function teammateBlocker(
   ctx: GameContext,
   person: PersonDef,
 ): string | null {
-  const gap = readinessGap(personStats(person, state), readinessStandard(state, ctx));
+  const gap = readinessGap(personReadinessLine(person, state, ctx), readinessStandard(state, ctx));
   const slots = { ...personSlots('mate', person), gap: gap ?? '' };
   if (gap) return fillSlots('{mate} isn’t ready: {mate.they} need{mate.s} {gap}.', slots);
   if (stageOf(bondOf(state, person.id).points) < TEAMMATE_WILLING_STAGE) {
@@ -106,7 +106,7 @@ export function replacementCandidates(state: GameState, ctx: GameContext): Perso
       p.role === 'genin' &&
       !team.has(p.id) &&
       stageOf(bondOf(state, p.id).points) >= REPLACEMENT_STAGE &&
-      readinessGap(personStats(p, state), readinessStandard(state, ctx)) === null,
+      readinessGap(personReadinessLine(p, state, ctx), readinessStandard(state, ctx)) === null,
   );
 }
 

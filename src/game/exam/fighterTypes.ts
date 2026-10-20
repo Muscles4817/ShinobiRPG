@@ -1,17 +1,31 @@
 import { STAT_TIERS, type StatId, type Stats } from '@/systems/stats';
 
 /**
- * Kinds of fighter, read from a stat line: what each needs to hold its own at chūnin level.
- * A need can be met more than one way (getting in close takes the speed and eyes for it, or the
- * ninjutsu), and a way is met when every stat in it is at the grade asked. A specialist sensei
- * judges a genin against the kind they fit best (`readiness.ts`) and steers them towards what it
- * still lacks.
+ * Kinds of fighter, read from a stat line and what the fighter brings besides (a companion, a
+ * hive, summons: `kitReadiness.ts`, on the same scale): what each needs to hold its own at
+ * chūnin level. A need can be met more than one way (getting in close takes the speed and eyes
+ * for it, or the ninjutsu), and a way is met when every part of it is at the grade asked. A
+ * specialist sensei judges a genin against the kind they fit best (`readiness.ts`) and steers
+ * them towards what it still lacks, where training can reach it.
  */
+
+/** What a fighter brings besides their stats, read for readiness. */
+export const KIT_PARTS = ['companion', 'hive', 'summons'] as const;
+export type KitPart = (typeof KIT_PARTS)[number];
+
+/** A stat line with what the fighter brings: a part they don't have reads as nothing. */
+export type ReadinessLine = Stats & Readonly<Partial<Record<KitPart, number>>>;
+
+/** Part of a way to meet a need: a stat, or something the fighter brings. */
+export type NeedPart = StatId | KitPart;
 
 /**
  * Hybrids and all-rounders come first: on a tie, the more particular reading of a fighter wins.
  */
 export const FIGHTER_TYPES = [
+  'beast-partner',
+  'hive-user',
+  'summoner',
   'tactician',
   'all-rounder',
   'precision-striker',
@@ -32,8 +46,8 @@ export const FIGHTER_TYPES = [
 export type FighterType = (typeof FIGHTER_TYPES)[number];
 
 export interface FighterNeed {
-  /** Ways to meet it: any one whose stats all reach the grade asked. */
-  readonly ways: readonly (readonly StatId[])[];
+  /** Ways to meet it: any one whose parts all reach the grade asked. */
+  readonly ways: readonly (readonly NeedPart[])[];
   /** What it is, as a sensei says what's missing: "the speed and eyes to get in close". */
   readonly what: string;
 }
@@ -68,7 +82,36 @@ const TWO_ARTS: FighterNeed = {
   what: 'two arts',
 };
 
+const RESERVES: FighterNeed = { ways: [['reserves']], what: 'the reserves to keep it fed' };
+
 export const FIGHTER_TYPE_DEFS: Readonly<Record<FighterType, FighterTypeDef>> = {
+  'beast-partner': {
+    id: 'beast-partner',
+    name: 'a fighter beside a beast partner',
+    needs: [
+      { ways: [['companion']], what: 'a partner who can fight' },
+      { ways: [['taijutsu'], ['kenjutsu']], what: 'a close art' },
+      { ways: [['speed']], what: 'the speed to fight alongside it' },
+    ],
+  },
+  'hive-user': {
+    id: 'hive-user',
+    name: 'a fighter through the hive',
+    needs: [
+      { ways: [['hive']], what: 'a hive that can fight' },
+      { ways: [['chakraControl']], what: 'the chakra control to direct it' },
+      RESERVES,
+    ],
+  },
+  summoner: {
+    id: 'summoner',
+    name: 'a summoner',
+    needs: [
+      { ways: [['summons']], what: 'a summons that answers and can fight' },
+      { ways: [['ninjutsu']], what: 'ninjutsu' },
+      { ways: [['reserves']], what: 'the reserves to keep a summons in the fight' },
+    ],
+  },
   tactician: {
     id: 'tactician',
     name: 'a tactician',
@@ -199,25 +242,29 @@ export const FIGHTER_TYPE_DEFS: Readonly<Record<FighterType, FighterTypeDef>> = 
   },
 };
 
-/** The value a way reaches: its weakest stat. */
-function wayValue(stats: Stats, way: readonly StatId[]): number {
-  return Math.min(...way.map((id) => stats[id]));
+function partValue(line: ReadinessLine, part: NeedPart): number {
+  return line[part] ?? 0;
+}
+
+/** The value a way reaches: its weakest part. */
+function wayValue(line: ReadinessLine, way: readonly NeedPart[]): number {
+  return Math.min(...way.map((part) => partValue(line, part)));
 }
 
 /** How far a need is met: its best way. */
-export function needValue(stats: Stats, need: FighterNeed): number {
+export function needValue(stats: ReadinessLine, need: FighterNeed): number {
   return Math.max(...need.ways.map((way) => wayValue(stats, way)));
 }
 
 /** How well a stat line fits a kind: the average of its needs, held back by the weakest. */
-function fit(stats: Stats, def: FighterTypeDef): number {
+function fit(stats: ReadinessLine, def: FighterTypeDef): number {
   const values = def.needs.map((need) => needValue(stats, need));
   const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
   return (mean + Math.min(...values)) / 2;
 }
 
 /** The kind of fighter a stat line fits best (the first listed on a tie: a hybrid). */
-export function fighterTypeOf(stats: Stats): FighterTypeDef {
+export function fighterTypeOf(stats: ReadinessLine): FighterTypeDef {
   return FIGHTER_TYPES.map((id) => FIGHTER_TYPE_DEFS[id]).reduce((best, def) =>
     fit(stats, def) > fit(stats, best) ? def : best,
   );
@@ -229,15 +276,29 @@ export function gradeFloor(grade: (typeof STAT_TIERS)[number]['grade']): number 
 }
 
 /** The needs of a kind not yet at `floor`, weakest first. */
-export function unmetNeeds(stats: Stats, def: FighterTypeDef, floor: number): FighterNeed[] {
+export function unmetNeeds(
+  stats: ReadinessLine,
+  def: FighterTypeDef,
+  floor: number,
+): FighterNeed[] {
   return def.needs
     .filter((need) => needValue(stats, need) < floor)
     .sort((a, b) => needValue(stats, a) - needValue(stats, b));
 }
 
-/** The stat that would do most for a need: the weakest stat of its nearest way. */
-export function statForNeed(stats: Stats, need: FighterNeed): StatId {
-  const nearest = need.ways.reduce((best, way) =>
+function isStat(part: NeedPart): part is StatId {
+  return !(KIT_PARTS as readonly string[]).includes(part);
+}
+
+/**
+ * The stat that would do most for a need: the weakest stat of its nearest way that training
+ * can reach. Null when every way rests on what the fighter brings (a partner, a hive, a summons):
+ * that grows by its own care, not by work set for the fighter.
+ */
+export function statForNeed(stats: ReadinessLine, need: FighterNeed): StatId | null {
+  const trainable = need.ways.flatMap((way) => (way.every(isStat) ? [way.filter(isStat)] : []));
+  if (trainable.length === 0) return null;
+  const nearest = trainable.reduce((best, way) =>
     wayValue(stats, way) > wayValue(stats, best) ? way : best,
   );
   return nearest.reduce((low, id) => (stats[id] < stats[low] ? id : low));

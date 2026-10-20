@@ -18,6 +18,7 @@ import { meetingPlace } from './settle';
 import { withRegard, type Assignment } from './state';
 import { waysOf } from './generate';
 import { said, speakerFor, spoken, type Speaker } from './voice';
+import { readinessLine } from '../exam/kitReadiness';
 
 /**
  * What your sensei does at the end of each weekly lesson: judges last week's assignment
@@ -114,7 +115,7 @@ function reveal(state: GameState, ctx: GameContext, sensei: PersonDef) {
 function assignedStat(state: GameState, ctx: GameContext, sensei: PersonDef): StatId {
   const ways = waysOf(sensei);
   const steer =
-    ways?.gatekeeping.readiness === 'specialist' ? readinessFocus(state.character.stats) : null;
+    ways?.gatekeeping.readiness === 'specialist' ? readinessFocus(readinessLine(state, ctx)) : null;
   return steer ?? lensStat(state, ctx, ways?.lens ?? 'weakest-stat');
 }
 

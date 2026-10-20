@@ -1,19 +1,27 @@
 import type { ReadinessStandard } from '@/content';
-import { STAT_IDS, STAT_READING, type StatId, type Stats } from '@/systems/stats';
+import { STAT_IDS, STAT_READING, type StatId } from '@/systems/stats';
 
 import type { GameContext } from '../context';
 import { findPerson } from '../people/cast';
 import { waysOf } from '../sensei/generate';
 import type { GameState } from '../state';
-import { fighterTypeOf, gradeFloor, needValue, statForNeed, unmetNeeds } from './fighterTypes';
+import {
+  fighterTypeOf,
+  gradeFloor,
+  needValue,
+  statForNeed,
+  unmetNeeds,
+  type ReadinessLine,
+} from './fighterTypes';
 
 /**
  * When a sensei calls a genin ready for chūnin, by their standard. Readiness reads skills and
  * what a fighter needs, never a sharp mind or a fast body for its own sake. A rounded sensei
  * wants one skill at chūnin level and breadth across the rest; a specialist wants every need of
  * the kind of fighter the genin fits best (`fighterTypes.ts`) at chūnin level, judging them by
- * the kind their stats suit rather than one they picked, and steers their training towards what
- * it lacks once their art is there (`readinessFocus`).
+ * the kind their stats (and the partner, hive or summons they bring: `kitReadiness.ts`) suit
+ * rather than one they picked, and steers their training towards what it lacks once their art
+ * is there (`readinessFocus`).
  */
 
 /** Chūnin level: the ordinary chūnin's grade in their art. */
@@ -26,13 +34,13 @@ const DEFAULT_STANDARD: ReadinessStandard = 'specialist';
 
 const SKILLS: readonly StatId[] = STAT_IDS.filter((id) => STAT_READING[id] === 'skill');
 
-function roundedGap(stats: Stats): string | null {
+function roundedGap(stats: ReadinessLine): string | null {
   if (!SKILLS.some((id) => stats[id] >= CHUNIN_FLOOR)) return 'a skill at chūnin level (C)';
   const broad = SKILLS.filter((id) => stats[id] >= BREADTH_FLOOR).length;
   return broad >= ROUNDED_BREADTH ? null : `${ROUNDED_BREADTH} skills at D or better`;
 }
 
-function specialistGap(stats: Stats): string | null {
+function specialistGap(stats: ReadinessLine): string | null {
   const type = fighterTypeOf(stats);
   const [need] = unmetNeeds(stats, type, CHUNIN_FLOOR);
   return need ? `${need.what} at chūnin level (C), as ${type.name}` : null;
@@ -40,7 +48,7 @@ function specialistGap(stats: Stats): string | null {
 
 /** What a sensei of this standard would say is missing, or null when they'd call them ready. */
 export function readinessGap(
-  stats: Stats,
+  stats: ReadinessLine,
   standard: ReadinessStandard = DEFAULT_STANDARD,
 ): string | null {
   return standard === 'rounded' ? roundedGap(stats) : specialistGap(stats);
@@ -59,10 +67,11 @@ export function readinessStandard(state: GameState, ctx: GameContext): Readiness
  * that would do most for the need they are furthest from. Null while the art itself is short
  * (the sensei works it their own way) and once they are ready.
  */
-export function readinessFocus(stats: Stats): StatId | null {
+export function readinessFocus(stats: ReadinessLine): StatId | null {
   const type = fighterTypeOf(stats);
   const [art] = type.needs;
   if (!art || needValue(stats, art) < CHUNIN_FLOOR) return null;
-  const [need] = unmetNeeds(stats, type, CHUNIN_FLOOR);
-  return need ? statForNeed(stats, need) : null;
+  // A need resting on a partner, a hive or a summons is passed over: it grows by its own care.
+  const steers = unmetNeeds(stats, type, CHUNIN_FLOOR).map((need) => statForNeed(stats, need));
+  return steers.find((id) => id !== null) ?? null;
 }

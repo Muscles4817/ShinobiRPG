@@ -79,3 +79,26 @@ describe('a rounded sensei', () => {
     expect(readinessGap(broad, 'rounded')).toBeNull();
   });
 });
+
+describe('what a fighter brings', () => {
+  it('reads a beast partner, a hive user and a summoner by what they bring', () => {
+    const partnered = { ...genin({ taijutsu: 10, speed: 9 }), companion: 16 };
+    expect(fighterTypeOf(partnered).id).toBe('beast-partner');
+    const hived = { ...genin({ chakraControl: 9, reserves: 9 }), hive: 16 };
+    expect(fighterTypeOf(hived).id).toBe('hive-user');
+    const summoner = { ...genin({ ninjutsu: 9, reserves: 9 }), summons: 18 };
+    expect(fighterTypeOf(summoner).id).toBe('summoner');
+    // Without them, the same stats read as something else.
+    expect(fighterTypeOf(genin({ taijutsu: 10, speed: 9 })).id).not.toBe('beast-partner');
+  });
+
+  it('says what is missing of what they bring, but never sets work for it', () => {
+    const pup = { ...genin({ taijutsu: 10, speed: 9 }), companion: 9 };
+    expect(fighterTypeOf(pup).id).toBe('beast-partner');
+    expect(readinessGap(pup, 'specialist')).toMatch(/partner who can fight.*beast partner/);
+    // The partner grows by its own care: the sensei steers to what training reaches.
+    expect(readinessFocus(pup)).toBeNull();
+    const slow = { ...genin({ taijutsu: 10, speed: 4 }), companion: 16 };
+    expect(readinessFocus(slow)).toBe('speed');
+  });
+});
