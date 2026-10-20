@@ -98,7 +98,8 @@ describe('gear', () => {
       ...strong,
       character: { ...strong.character, stats: { ...strong.character.stats, strength: 30 } },
     };
-    const speed = (item: typeof weak) => item.effects.find((c) => c.tone === 'cost')!.label;
+    const speed = (item: typeof weak) =>
+      item.effects.find((c) => c.label.startsWith('Speed'))!.label;
     expect(speed(weak)).not.toBe(speed(plate(lifted)));
   });
 
@@ -107,7 +108,9 @@ describe('gear', () => {
     const body = loadoutView(state, ctx).slots.find((s) => s.slot === 'body')!;
     expect(body.label).toBe('Armour');
     expect(body.worn?.effects.map((c) => c.label)).toEqual([
-      'Blows and blades −7%',
+      'Blows −7%',
+      'Blades −5%',
+      'Points and thrown steel −20%',
       'No weight to it',
     ]);
   });

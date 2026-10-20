@@ -6,6 +6,7 @@ import {
   weaponNumbers,
   type ArmourLevel,
   type FocusTarget,
+  type HitType,
   shapeOf,
   speedOf,
   WEAPON_CLASSES,
@@ -166,10 +167,30 @@ function weaponChips(def: Extract<GearDef, { kind: 'weapon' }>): JournalChip[] {
   ];
 }
 
+/** The kinds of hurt a shop names for armour, in words; the elements are read as one. */
+const ARMOUR_AGAINST: readonly { readonly hit: HitType; readonly label: string }[] = [
+  { hit: 'blunt', label: 'Blows' },
+  { hit: 'cut', label: 'Blades' },
+  { hit: 'pierce', label: 'Points and thrown steel' },
+  { hit: 'fire', label: 'Elements' },
+  { hit: 'lightning', label: 'Lightning' },
+];
+
+/** What armour does to each kind of hurt: less of it (gain) or, for a conductor, more (cost). */
+function protectionChips(def: Extract<GearDef, { kind: 'armour' }>): JournalChip[] {
+  const elements = armourKept(def, 'fire');
+  return ARMOUR_AGAINST.flatMap(({ hit, label }) => {
+    const kept = armourKept(def, hit);
+    // Lightning is named only where it differs from the other elements.
+    if (kept === 1 || (hit === 'lightning' && kept === elements)) return [];
+    return [(kept < 1 ? gain : cost)(`${label} ${change(kept)}`)];
+  });
+}
+
 function armourChips(def: Extract<GearDef, { kind: 'armour' }>, strength: number): JournalChip[] {
   const slows = armourSlows(def, strength);
   return [
-    gain(`Blows and blades ${change(armourKept(def))}`),
+    ...protectionChips(def),
     slows > 0 ? cost(`Speed −${Math.max(1, percent(slows))}% for you`) : info('No weight to it'),
   ];
 }

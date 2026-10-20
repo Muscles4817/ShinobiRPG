@@ -27,6 +27,7 @@ function blowsOf(attack: Attack, thrown: boolean, striker: PlanFighter): Blow[] 
     physical: !thrown,
     kind: attack.kind,
     ...(attack.pierce > 0 ? { pierce: attack.pierce } : {}),
+    ...(attack.hit ? { hit: attack.hit } : {}),
   };
   return Array.from({ length: attack.blows }, (_, i) =>
     i === 0 ? first : { ...first, followUp: true as const },

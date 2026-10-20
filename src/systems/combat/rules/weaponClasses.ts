@@ -6,6 +6,7 @@ import {
   type CombatWeapon,
   type WeaponClass,
 } from '../gearContract';
+import type { HitType } from './hits';
 import { STRIKE_REACH } from './range';
 
 /**
@@ -33,13 +34,15 @@ export interface ClassRule {
   readonly guard: number;
   /** Where its strike reaches, when further than close: a spear or a chain at mid. */
   readonly reach?: readonly RangeBand[];
+  /** The hurt it does, which armour meets (`hits.ts`): an edge, a point or a weight. */
+  readonly hit: HitType;
 }
 
 const NO_EXTRAS = { pierce: 0, piercePerRank: 0, daze: 0, dazePerRank: 0 } as const;
 
 const CLASS_RULES: Readonly<Record<WeaponClass, ClassRule>> = {
-  'light-blade': { ...NO_EXTRAS, scale: 1.15, scalePerRank: 0.1, speed: 2, guard: 0 },
-  sword: { ...NO_EXTRAS, scale: 1.25, scalePerRank: 0.1, speed: 1, guard: 0.05 },
+  'light-blade': { ...NO_EXTRAS, scale: 1.15, scalePerRank: 0.1, speed: 2, guard: 0, hit: 'cut' },
+  sword: { ...NO_EXTRAS, scale: 1.25, scalePerRank: 0.1, speed: 1, guard: 0.05, hit: 'cut' },
   greatsword: {
     ...NO_EXTRAS,
     scale: 1.45,
@@ -47,11 +50,36 @@ const CLASS_RULES: Readonly<Record<WeaponClass, ClassRule>> = {
     pierce: 0.2,
     speed: -1,
     guard: 0.3,
+    hit: 'cut',
   },
-  polearm: { ...NO_EXTRAS, scale: 1.2, scalePerRank: 0.1, speed: 0, guard: 0.15, reach: LONG },
-  fan: { ...NO_EXTRAS, scale: 1.1, scalePerRank: 0.08, speed: 1, guard: 0.05 },
-  chain: { ...NO_EXTRAS, scale: 1.15, scalePerRank: 0.1, speed: 0, guard: 0, reach: LONG },
-  staff: { ...NO_EXTRAS, scale: 1.1, scalePerRank: 0.06, daze: 0.1, speed: 0, guard: 0.25 },
+  polearm: {
+    ...NO_EXTRAS,
+    scale: 1.2,
+    scalePerRank: 0.1,
+    speed: 0,
+    guard: 0.15,
+    reach: LONG,
+    hit: 'pierce',
+  },
+  fan: { ...NO_EXTRAS, scale: 1.1, scalePerRank: 0.08, speed: 1, guard: 0.05, hit: 'cut' },
+  chain: {
+    ...NO_EXTRAS,
+    scale: 1.15,
+    scalePerRank: 0.1,
+    speed: 0,
+    guard: 0,
+    reach: LONG,
+    hit: 'cut',
+  },
+  staff: {
+    ...NO_EXTRAS,
+    scale: 1.1,
+    scalePerRank: 0.06,
+    daze: 0.1,
+    speed: 0,
+    guard: 0.25,
+    hit: 'blunt',
+  },
   blunt: {
     scale: 1.35,
     scalePerRank: 0.08,
@@ -61,6 +89,7 @@ const CLASS_RULES: Readonly<Record<WeaponClass, ClassRule>> = {
     dazePerRank: 0.03,
     speed: -1,
     guard: 0.1,
+    hit: 'blunt',
   },
   knuckles: {
     ...NO_EXTRAS,
@@ -70,8 +99,9 @@ const CLASS_RULES: Readonly<Record<WeaponClass, ClassRule>> = {
     piercePerRank: 0.05,
     speed: 0,
     guard: 0,
+    hit: 'blunt',
   },
-  throwing: { ...NO_EXTRAS, scale: 1.2, scalePerRank: 0.1, speed: 0, guard: 0 },
+  throwing: { ...NO_EXTRAS, scale: 1.2, scalePerRank: 0.1, speed: 0, guard: 0, hit: 'pierce' },
   senbon: {
     scale: 0.75,
     scalePerRank: 0.07,
@@ -80,6 +110,7 @@ const CLASS_RULES: Readonly<Record<WeaponClass, ClassRule>> = {
     dazePerRank: 0.05,
     speed: 2,
     guard: 0,
+    hit: 'pierce',
   },
 };
 
@@ -89,6 +120,11 @@ export function speedOf(weapon: Pick<CombatWeapon, 'weaponClass'>): number {
 }
 
 /** The share more of a blow (and of a counter) a weapon's wielder turns aside. */
+/** The hurt a weapon does: an edge, a point or a weight. */
+export function hitOf(weapon: Pick<CombatWeapon, 'weaponClass'>): HitType {
+  return CLASS_RULES[weapon.weaponClass].hit;
+}
+
 export function weaponGuard(weapon: Pick<CombatWeapon, 'weaponClass'>): number {
   return CLASS_RULES[weapon.weaponClass].guard;
 }

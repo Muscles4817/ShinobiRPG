@@ -7,6 +7,7 @@ import { counterChance, guardScale } from '../../rules/defence';
 import { counterSkill, cutSkill, heldGuard } from '../../rules/blades';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import { FORESIGHT_COUNTER, foreseen } from '../../rules/eyes';
+import { hitTypeOf, type HitType } from '../../rules/hits';
 import { canAttackFrom, kitDamageScale, packScale, type AttackKind } from '../../rules/kit';
 import { harmLine, reactionLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
@@ -65,6 +66,8 @@ export interface Blow {
   readonly areaSize?: AreaSize;
   /** Share of a guard it goes through (knuckles, a sundering weapon: `rules/weapons.ts`). */
   readonly pierce?: number;
+  /** The hurt it does, when its weapon says (`rules/hits.ts`); else read from its kind. */
+  readonly hit?: HitType;
   /** How hard it is to slip (a technique's accuracy; steady when unset). */
   readonly accuracy?: Accuracy;
   /**
@@ -97,7 +100,7 @@ function kitted(round: Round, attacker: PlanFighter, defender: PlanFighter, blow
   const unseen = attacker.hidden || covered(round.field, attacker, defender);
   const hidden = unseen ? HIDDEN_DAMAGE : 1;
   const pack = packScale(attacker, round.fighters);
-  const kit = kitDamageScale(defender, blow.kind);
+  const kit = kitDamageScale(defender, blow.kind, hitTypeOf(blow));
   return blow.raw * (blow.breaks ? brokenScale(kit) : kit) * pack * hidden;
 }
 
@@ -111,8 +114,8 @@ const GLANCES: Bank = {
   ],
 };
 
-function kitNote(moment: Moment, defender: PlanFighter, kind: AttackKind): string[] {
-  const scale = kitDamageScale(defender, kind);
+function kitNote(moment: Moment, defender: PlanFighter, blow: Blow): string[] {
+  const scale = kitDamageScale(defender, blow.kind, hitTypeOf(blow));
   if (scale < 1) return [told(within(moment, 'kit'), GLANCES, { t: defender })];
   return scale > 1 ? [tell('The seal bites deep into {t}.', { t: defender })] : [];
 }
@@ -324,7 +327,7 @@ export function react(start: Round, struck: Hit): Round {
       }),
       damage,
     ),
-    ...kitNote(momentOf(shielded, attacker.id), target, blow.kind),
+    ...kitNote(momentOf(shielded, attacker.id), target, blow),
   );
   const marked = smashed ? brokeGuard(told, target.id, attacker.id) : told;
   const landed = confuse(wound(marked, target.id, damage), hit);

@@ -3,37 +3,47 @@ import { clamp } from '@/core';
 import type { CombatAttributes } from '../contract';
 import type { ArmourLevel, CombatArmour, CombatGear } from '../gearContract';
 import { rankStep } from './gearRank';
+import type { HitType } from './hits';
 
 /**
- * What armour does, in every fight style: the `armoured` kit rule (`kit.ts`), scaled by level.
- * Each level trades protection against blows and blades for speed, which is also footwork and
- * the dodge: light armour costs nothing, a flak jacket a little, heavier shinobi armour more,
- * full samurai plate a lot. Strength carries the weight: the stronger the wearer, the less it
- * slows them. A better rank protects a little more for the same weight.
+ * What armour does, in every fight style: it meets each kind of hurt its own way (`hits.ts`)
+ * and trades that for speed, which is also footwork and the dodge. A light flak vest takes the
+ * sting out of small thrown steel and a little off blows; a reinforced jacket stops most thrown
+ * weapons and dulls blows and cuts; heavier shinobi armour more; full samurai plate turns blades
+ * almost entirely, points well and blows less, and carries a lightning strike in. Illusions go
+ * through all of it, and the elements nearly so. Strength carries the weight: the stronger the
+ * wearer, the less it slows them. A better rank protects a little more for the same weight.
  */
 
 interface LevelRule {
-  /** Share of a blow or blade that still gets through. */
-  readonly kept: number;
+  /** Share of each kind of hurt that still gets through; a kind not named gets through whole. */
+  readonly kept: Readonly<Partial<Record<HitType, number>>>;
   /** Share of speed it costs a wearer with no strength to carry it. */
   readonly slows: number;
 }
 
+/** What a shinobi jacket does against the elements: a little, and nothing against lightning. */
+const JACKET_ELEMENTS = { chakra: 0.97, fire: 0.95, wind: 0.95, earth: 0.95, water: 0.97 };
+
 const LEVEL_RULES: Readonly<Record<ArmourLevel, LevelRule>> = {
-  light: { kept: 0.93, slows: 0 },
-  flak: { kept: 0.86, slows: 0.1 },
-  heavy: { kept: 0.77, slows: 0.25 },
-  plate: { kept: 0.66, slows: 0.4 },
+  light: { kept: { blunt: 0.93, cut: 0.95, pierce: 0.8 }, slows: 0 },
+  flak: { kept: { blunt: 0.85, cut: 0.82, pierce: 0.72, ...JACKET_ELEMENTS }, slows: 0.1 },
+  heavy: { kept: { blunt: 0.78, cut: 0.66, pierce: 0.66, ...JACKET_ELEMENTS }, slows: 0.25 },
+  plate: {
+    kept: { blunt: 0.78, cut: 0.42, pierce: 0.55, ...JACKET_ELEMENTS, lightning: 1.1 },
+    slows: 0.4,
+  },
 };
 
-/** Each rank above D lets this much less through. */
+/** Each rank above D lets this much less through of what the armour protects against. */
 const KEPT_PER_RANK = 0.03;
 /** Strength at which a wearer carries any armour as if it weighed nothing (grade S). */
 export const STRENGTH_CARRIES = 40;
 
-/** Share of a physical hit that gets through this armour. */
-export function armourKept(armour: Pick<CombatArmour, 'level' | 'rank'>): number {
-  return LEVEL_RULES[armour.level].kept - KEPT_PER_RANK * rankStep(armour.rank);
+/** Share of a hit of this kind that gets through this armour. */
+export function armourKept(armour: Pick<CombatArmour, 'level' | 'rank'>, hit: HitType): number {
+  const kept = LEVEL_RULES[armour.level].kept[hit] ?? 1;
+  return kept < 1 ? kept - KEPT_PER_RANK * rankStep(armour.rank) : kept;
 }
 
 /** Share of speed the armour costs this wearer, after their strength carries some of it. */
@@ -42,10 +52,10 @@ export function armourSlows(armour: Pick<CombatArmour, 'level'>, strength: numbe
   return LEVEL_RULES[armour.level].slows * (1 - carried);
 }
 
-/** The share of a blow or blade the fighter's armour lets through: 1 without any. */
-export function wornArmourKept(f: { readonly gear?: CombatGear }): number {
+/** The share of a hit of this kind the fighter's armour lets through: 1 without any. */
+export function wornArmourKept(f: { readonly gear?: CombatGear }, hit: HitType): number {
   const armour = f.gear?.armour;
-  return armour ? armourKept(armour) : 1;
+  return armour ? armourKept(armour, hit) : 1;
 }
 
 /** A fighter's stats as they move in their armour: slower, the heavier it is. */

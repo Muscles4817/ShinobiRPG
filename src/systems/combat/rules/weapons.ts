@@ -22,7 +22,8 @@ import {
 import { rankStep } from './gearRank';
 import type { AttackKind } from './kit';
 import { weaponArt } from './mastery';
-import { classRule, speedOf } from './weaponClasses';
+import type { HitType } from './hits';
+import { classRule, hitOf, speedOf } from './weaponClasses';
 
 /**
  * What weapons do, in every fight style. Gear never adds to stats: a weapon changes a card.
@@ -75,6 +76,8 @@ export interface Attack {
   readonly drain: number;
   /** How many blows it lands as: several blades in hand strike as a flurry. */
   readonly blows: number;
+  /** The hurt its weapon does, which armour meets; a plain blow or kunai says by its kind. */
+  readonly hit?: HitType;
 }
 
 /** A weapon's numbers at its rank, with a unique weapon's verbs on top (for rules and shops). */
@@ -134,6 +137,7 @@ function attackWith(
   const n = weaponNumbers(weapon);
   return {
     blows: bladesOf(weapon),
+    hit: hitOf(weapon),
     raw: BLOW_DAMAGE * gapScale(power, physicalDefence(defender)) * n.scale * variance(roll),
     pierce: n.pierce,
     daze: dazeAgainst(n.daze, attacker, defender),

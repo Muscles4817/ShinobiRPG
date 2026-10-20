@@ -1,6 +1,7 @@
 import type { CombatTechnique, CombatTrait, RangeBand } from '../contract';
 import type { CombatGear } from '../gearContract';
 import { wornArmourKept } from './armour';
+import { hitTypeOf, isPhysicalHit, type AttackKind, type HitType } from './hits';
 import { preferredRange, RANGE_BANDS } from './range';
 
 /**
@@ -9,8 +10,7 @@ import { preferredRange, RANGE_BANDS } from './range';
  * reading traits themselves, so an archer is an archer everywhere.
  */
 
-/** What kind of attack lands, which decides what armour and spirits shrug off. */
-export type AttackKind = 'blow' | 'weapon' | 'jutsu' | 'seal';
+export type { AttackKind } from './hits';
 
 const ARMOUR_SCALE = 0.6;
 const SPIRIT_PHYSICAL_SCALE = 0.35;
@@ -52,18 +52,25 @@ export function isPhysical(kind: AttackKind): boolean {
 }
 
 /**
- * Share of a blow or blade that gets through the defender's armour: an armoured kit's, or the
- * armour they wear (`armour.ts`), whichever protects more.
+ * Share of a hit that gets through the defender's armour: an armoured kit's against blows,
+ * blades and points, or the armour they wear against its type (`armour.ts`), whichever
+ * protects more.
  */
-function physicalKept(defender: Kitted): number {
-  const kit = hasTrait(defender, 'armoured') ? ARMOUR_SCALE : 1;
-  return Math.min(kit, wornArmourKept(defender));
+function armourLets(defender: Kitted, hit: HitType): number {
+  const kit = hasTrait(defender, 'armoured') && isPhysicalHit(hit) ? ARMOUR_SCALE : 1;
+  return Math.min(kit, wornArmourKept(defender, hit));
 }
 
-/** How much of an attack of this kind actually hurts the defender. */
-export function kitDamageScale(defender: Kitted, kind: AttackKind): number {
-  let scale = 1;
-  if (isPhysical(kind)) scale *= physicalKept(defender);
+/**
+ * How much of an attack of this kind actually hurts the defender. Its type, when not given, is
+ * read from the kind (a blow blunt, a blade a cut, a technique raw chakra).
+ */
+export function kitDamageScale(
+  defender: Kitted,
+  kind: AttackKind,
+  hit: HitType = hitTypeOf({ kind, physical: isPhysical(kind) }),
+): number {
+  let scale = armourLets(defender, hit);
   if (hasTrait(defender, 'spirit')) {
     if (isPhysical(kind)) scale *= SPIRIT_PHYSICAL_SCALE;
     if (kind === 'seal') scale *= SPIRIT_SEAL_SCALE;

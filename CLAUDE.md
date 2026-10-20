@@ -379,7 +379,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     strike up close unless a foe's hands are well clear of it, open to counters in an unskilled
     hand, and in the way of hand signs short of far: `rules/blades.ts`; knuckles; thrown steel and senbon;
     armour levels that trade protection for speed, eased by strength; a focus that sharpens a
-    verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. A weapon
+    verb or art), with the rules once in `rules/weapons.ts`, `armour.ts`, `focus.ts`. Every hit
+    has a **hit type** (`rules/hits.ts`: blunt, cut, pierce, raw chakra, an element, or mind,
+    which nothing stops; a weapon's from its class, else read from the attack's kind), and armour
+    meets each type its own way (`LEVEL_RULES`: a light vest stops small thrown steel, plate
+    turns blades and conducts lightning). A weapon
     has a **class** (`WEAPON_CLASSES`: light blade, sword, greatsword, polearm, fan, chain, staff,
     blunt, knuckles, throwing, senbon; its shape for the rules is `shapeOf`), and each class
     handles its own way (`rules/weaponClasses.ts`: weight, speed in the hand, the guard it gives,

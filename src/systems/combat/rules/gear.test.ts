@@ -1,5 +1,6 @@
 import type { CombatAttributes, CombatTechnique } from '../contract';
 import type { ArmourLevel, CombatGear, CombatWeapon } from '../gearContract';
+import type { HitType } from './hits';
 import { armourKept, armourSlows, armouredAttributes, STRENGTH_CARRIES } from './armour';
 import { blowPower, strikeDamage } from './damage';
 import { dodgeChance } from './defence';
@@ -133,20 +134,40 @@ describe('weapons', () => {
 });
 
 describe('armour', () => {
-  it('heavier armour lets less of a blow or blade through, but not a jutsu', () => {
+  it('heavier armour lets less of a blade or a point through, and barely touches a jutsu', () => {
     const levels = (['light', 'flak', 'heavy', 'plate'] as const).map((level) =>
-      armourKept({ level, rank: 'D' }),
+      armourKept({ level, rank: 'D' }, 'cut'),
     );
     expect([...levels].sort((a, b) => b - a)).toEqual(levels);
     const plated = { traits: [], gear: wearing('plate') };
-    expect(kitDamageScale(plated, 'blow')).toBe(levels[3]);
-    expect(kitDamageScale(plated, 'weapon')).toBe(levels[3]);
-    expect(kitDamageScale(plated, 'jutsu')).toBe(1);
+    expect(kitDamageScale(plated, 'weapon', 'cut')).toBe(levels[3]);
+    expect(kitDamageScale(plated, 'jutsu', 'fire')).toBeGreaterThan(0.9);
+    expect(kitDamageScale(plated, 'jutsu', 'mind')).toBe(1);
+  });
+
+  it('each armour meets each kind of hurt its own way', () => {
+    const vest = (hit: HitType) => armourKept({ level: 'light', rank: 'D' }, hit);
+    const plate = (hit: HitType) => armourKept({ level: 'plate', rank: 'D' }, hit);
+    // A light vest is for small thrown steel more than anything.
+    expect(vest('pierce')).toBeLessThan(vest('blunt'));
+    expect(vest('fire')).toBe(1);
+    // Plate turns blades best of all, blows less, and carries lightning in.
+    expect(plate('cut')).toBeLessThan(plate('pierce'));
+    expect(plate('pierce')).toBeLessThan(plate('blunt'));
+    expect(plate('lightning')).toBeGreaterThan(1);
+  });
+
+  it('a weapon’s hurt is its class’s: a spear pierces, a staff bruises, a sword cuts', () => {
+    const plated = { attributes: line(10), gear: wearing('plate'), traits: [] };
+    const at = (held: CombatWeapon) => strikeWith(armed({ held }), plated, 0.5).hit;
+    expect(at(weapon('polearm'))).toBe('pierce');
+    expect(at(weapon('staff'))).toBe('blunt');
+    expect(at(weapon('sword'))).toBe('cut');
   });
 
   it('a better rank protects a little more', () => {
-    expect(armourKept({ level: 'heavy', rank: 'B' })).toBeLessThan(
-      armourKept({ level: 'heavy', rank: 'D' }),
+    expect(armourKept({ level: 'heavy', rank: 'B' }, 'cut')).toBeLessThan(
+      armourKept({ level: 'heavy', rank: 'D' }, 'cut'),
     );
   });
 

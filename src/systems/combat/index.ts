@@ -68,6 +68,7 @@ export {
 export { masteryShare, MASTERY_FLOOR } from './rules/mastery';
 // Gear's numbers, for describing a piece the same way the fight applies it.
 export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
+export { HIT_TYPES, hitTypeOf, type HitType } from './rules/hits';
 export { chakraCost, holdTurns } from './rules/body';
 export { equalHitShare } from './rules/damage';
 export { focusScale } from './rules/focus';
