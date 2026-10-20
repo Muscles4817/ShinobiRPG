@@ -31,6 +31,7 @@ import { DISCIPLINES, type Discipline, type Element } from '@/systems/techniques
 import type { GameContext } from '../context';
 import type { CreationDraft } from '../creation';
 import { filledFile } from '../creationDraft';
+import { homeClans } from '../homeClans';
 import { BASE_STAT } from '../student';
 import { FACE_PALETTES, type FacePalettes } from './facePalettes';
 import { hiveChoice, type HiveChoice } from './hiveChoice';
@@ -186,7 +187,7 @@ export function creationView(ctx: GameContext): CreationView {
       stat: STAT_INFO[a.stat].label,
       chance: Math.round(checkChance(BASE_STAT, a.difficulty) * 100),
     })),
-    clans: content.clans.all.map((c) => ({
+    clans: homeClans(content).map((c) => ({
       id: c.id,
       name: c.name,
       description: c.description,

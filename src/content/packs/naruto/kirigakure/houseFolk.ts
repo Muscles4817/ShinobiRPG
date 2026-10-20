@@ -3,9 +3,10 @@ import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
 
 /**
- * Members of the loyal houses who live in the harbour ward: a Kasumi fog-keeper, an Isana
- * harpooner, a Kurage medic, an Amibari clerk of the Register, and an Uminari diver who
- * belongs to no side. None of them has a bloodline, which is why they are still here.
+ * Members of the loyal houses who live in the harbour ward and go home to their compounds in
+ * the evening: a Kasumi fog-keeper, an Isana harpooner, a Kurage medic, an Amibari clerk of
+ * the Register and a Shiogama journeyman smith, and an Uminari diver who belongs to no side.
+ * None of them has a bloodline, which is why they are still here.
  */
 export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
   {
@@ -14,6 +15,7 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
     familyName: 'Kasumi',
     pronouns: 'she',
     homeLocationId: 'kirigakure',
+    clanId: 'kasumi',
     role: 'shinobi',
     title: 'Fog-keeper of the shrine',
     rank: 'chunin',
@@ -30,7 +32,7 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
     schedule: {
       morning: 'kasumi-fog-shrine',
       afternoon: 'kasumi-fog-shrine',
-      evening: 'kiri-bathhouse',
+      evening: 'kasumi-compound',
       night: 'kasumi-fog-shrine',
     },
     arsenal: { techniqueIds: ['fog-lure', 'veil-of-the-keepers', 'hidden-mist'] },
@@ -41,6 +43,7 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
     familyName: 'Isana',
     pronouns: 'he',
     homeLocationId: 'kirigakure',
+    clanId: 'isana',
     role: 'shinobi',
     title: 'Harpooner of the blockade fleet',
     rank: 'chunin',
@@ -57,8 +60,8 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
     schedule: {
       morning: 'isana-quay',
       afternoon: 'kiri-sea-cliffs',
-      evening: 'drowned-man',
-      night: null,
+      evening: 'isana-compound',
+      night: 'drowned-man',
     },
     arsenal: { techniqueIds: ['harpoon-throw', 'breaker-fist', 'undertow-drag'] },
   },
@@ -68,6 +71,7 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
     familyName: 'Kurage',
     pronouns: 'they',
     homeLocationId: 'kirigakure',
+    clanId: 'kurage',
     role: 'shinobi',
     title: 'Medic of the Kurage Infirmary',
     rank: 'chunin',
@@ -84,7 +88,7 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
     schedule: {
       morning: 'kurage-infirmary',
       afternoon: 'kurage-infirmary',
-      evening: 'kiri-fish-auction',
+      evening: 'kurage-compound',
       night: null,
     },
     arsenal: { techniqueIds: ['false-death-needle', 'senbon-needles', 'mystical-palm'] },
@@ -95,6 +99,7 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
     familyName: 'Amibari',
     pronouns: 'he',
     homeLocationId: 'kirigakure',
+    clanId: 'amibari',
     role: 'shinobi',
     title: 'Clerk of the Blood Register',
     rank: 'chunin',
@@ -111,8 +116,8 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
     schedule: {
       morning: 'kiri-fish-auction',
       afternoon: 'harbour-broker',
-      evening: 'drowned-man',
-      night: null,
+      evening: 'amibari-compound',
+      night: 'drowned-man',
     },
     arsenal: { techniqueIds: ['weighted-net-cast', 'register-brand', 'sealing-net'] },
   },
@@ -122,6 +127,7 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
     familyName: 'Uminari',
     pronouns: 'she',
     homeLocationId: 'kirigakure',
+    clanId: 'uminari',
     role: 'villager',
     title: 'Breath-diver',
     rank: 'civilian',
@@ -149,5 +155,33 @@ export const KIRI_HOUSE_FOLK: readonly PersonDef[] = [
       evening: 'kiri-bathhouse',
       night: 'drowned-man',
     },
+  },
+  {
+    id: 'shiogama-kanae',
+    name: 'Kanae',
+    familyName: 'Shiogama',
+    pronouns: 'she',
+    clanId: 'shiogama',
+    homeLocationId: 'kirigakure',
+    role: 'shinobi',
+    title: 'Journeyman of the Seventh Forge',
+    rank: 'chunin',
+    stats: statLine('D', { kenjutsu: 'B', strength: 'C', stamina: 'C', willpower: 'C' }),
+    traitIds: ['diligent', 'kind'],
+    appearance: look(
+      'ponytail',
+      { hair: '#4a2f1d', eyes: '#2a1d14', skin: '#c68e63', outfit: '#9a2f2a' },
+      'belt',
+      { figure: 'broad', expression: 'smile' },
+    ),
+    specialty: 'kenjutsu',
+    bio: 'Tetsuo’s niece, who works the bellows by day and doesn’t ask who the night blades are for. She has started to guess.',
+    schedule: {
+      morning: 'seventh-forge',
+      afternoon: 'seventh-forge',
+      evening: 'shiogama-compound',
+      night: null,
+    },
+    arsenal: { techniqueIds: ['salt-kiln-edge', 'tempered-guard'], gearIds: ['ninjato'] },
   },
 ];

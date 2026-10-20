@@ -90,6 +90,7 @@ import { NARUTO_ATLAS } from './atlas';
 import { WAVES_FOODS, WAVES_JOBS, WAVES_PEOPLE, WAVES_TRAINING } from './landOfWaves';
 import { TANZAKU_FOODS, TANZAKU_JOBS, TANZAKU_PEOPLE } from './tanzaku';
 import {
+  KIRI_CLANS,
   KIRI_FOES,
   KIRI_FOODS,
   KIRI_GEAR,
@@ -206,7 +207,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...OTAFUKU_FOODS,
     ...FIRE_TEMPLE_FOODS,
   ],
-  clans: CLANS,
+  clans: [...CLANS, ...KIRI_CLANS],
   builds: BUILDS,
   upbringings: UPBRINGINGS,
   talents: TALENTS,
