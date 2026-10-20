@@ -14,6 +14,7 @@ import type { CurriculumBeat } from './curriculum';
 import type { SenseiSpeech } from './senseiSpeech';
 import type { CompanionKindDef, CompanionLoreDef } from './companions';
 import type { ContractDef, SummonDef } from './contracts';
+import type { DustDef } from './dusts';
 import type { StrainDef } from './strains';
 import type { SenseiTestDef } from './senseiTests';
 import type { InjuryDef } from './injuries';
@@ -77,6 +78,7 @@ export interface ContentDb {
   /** Every contract's summons, by call id. */
   readonly summons: Catalog<SummonDef>;
   readonly strains: Catalog<StrainDef>;
+  readonly dusts: Catalog<DustDef>;
   readonly training: Catalog<TrainingDef>;
   readonly foods: Catalog<FoodDef>;
   readonly clans: Catalog<ClanDef>;
@@ -136,6 +138,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     companionLore: createCatalog('companion lore', pack.companionLore),
     contracts: createCatalog('contract', pack.contracts),
     strains: createCatalog('strain', pack.strains),
+    dusts: createCatalog('dust', pack.dusts),
     summons: createCatalog(
       'summon',
       pack.contracts.flatMap((c) => c.summons),

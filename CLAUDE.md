@@ -373,7 +373,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `game/hives/rite.ts`, known rites in `GameState.rites`): lent by the clan's archive
     (`CompoundFields.keepsRite`) to a jōnin its head trusts, found on a job (`reward.hiveRite`)
     or taught by someone of the clan (`PersonDef.hiveRite`); taken at home (`takeHive`) at the
-    same three shares, with a first brood that breeds up and days abed (a `rite` injury). It is cared for
+    same three shares, with a first brood that breeds up and days abed (a `rite` injury).
+    **Dust** is a pool its user commands (`CombatantSetup.dust`, `dustContract.ts`: a kind's
+    weight, hold and draw graded 1 to 5, its gifts (cutting, blinding), its banes and the grounds
+    it is drawn on; read once in `rules/dust.ts`, `engines/plan/dust.ts`): a technique's
+    `dustCost` spends it and its `dustDraw` pulls it up first, in full on a ground that holds
+    it; heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
+    harder, a bane scatters it, and `CombatOutcome.dust` reports what is left. Kinds are shared
+    content (`content/shared/dusts.ts`, `DustDef`). An automatic shield is never dust's: it
+    belongs to where the power came from (a beast, a spirit). A companion is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -861,6 +869,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `shared/wildStrains.ts`). Validated in `validateStrains.ts`. A clan's `hive.rite` lets an
   outsider take the hive later: give it a source (a compound with `keepsRite` and a head, a
   job's `reward.hiveRite`, or a person of the clan with `hiveRite`; `validateRites.ts`).
+- **Add a dust kind:** a `DustDef` in `content/shared/dusts.ts` (weight, hold and draw graded E
+  to A, gifts, banes, the grounds it is drawn on); every pack takes the shared list. A dust
+  technique sets `dustCost` (spent) or `dustDraw` (pulled up first). Validated in
+  `validateDusts.ts`.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

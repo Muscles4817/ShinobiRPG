@@ -12,6 +12,7 @@ import { react, type Blow } from './react';
 import type { Turn } from './senses';
 import { isDazed } from './daze';
 import { swarmPower, swarmStruck } from './swarm';
+import { dustLanded, dustPower, dustStruck } from './dust';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -79,13 +80,19 @@ export function damage(round: Round, aimed: Aimed, use: Wounding): Round {
   const open = isDazed(target) || target.sealed > 0;
   const combo = elementBoost(round, actor, target.id, t);
   const ground = groundElementScale(round.ground, t.element);
-  const insects = swarmPower(actor, t);
-  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1) * ground * insects;
+  const pool = swarmPower(actor, t) * dustPower(actor, t);
+  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1) * ground * pool;
   const hit = strike(round, aimed, blowsFor(aimed, use, scale));
   const after = fighterIn(hit, target.id)?.health ?? target.health;
   const landed = after !== target.health;
   const told = landed && combo ? say(hit, combo.line) : hit;
-  return landed
-    ? swarmStruck(recordHit(told, actor, target.id, t), target.id, t, target.health - after)
-    : told;
+  if (!landed) return told;
+  const dealt = target.health - after;
+  const stung = swarmStruck(recordHit(told, actor, target.id, t), target.id, t, dealt);
+  const felt = {
+    damage: dealt,
+    physical: physical(t),
+    ...(t.element ? { element: t.element } : {}),
+  };
+  return dustLanded(dustStruck(stung, target.id, felt), actor, target.id, t);
 }

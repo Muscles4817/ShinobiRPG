@@ -23,6 +23,7 @@ import type {
 import type { CombatOrders, CombatStance } from '../../teamContract';
 import type { Caller, Summoned } from './calls';
 import type { Footing } from './footing';
+import type { Dusty } from './dustBody';
 import type { Hive } from './hive';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -95,7 +96,8 @@ export interface PlanFighter
     Footing,
     Caller,
     Summoned,
-    Hive {
+    Hive,
+    Dusty {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;

@@ -1,5 +1,6 @@
 import { canCall } from './calls';
 import { hasInsectsFor } from './swarm';
+import { hasDustFor } from './dust';
 import { statTier, type StatGrade } from '@/systems/stats';
 
 import type { CombatItem, CombatTechnique, RangeBand } from '../../contract';
@@ -188,5 +189,6 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (trumpSpent(fighter, card.technique) || !isOpenFor(fighter, card.technique)) return false;
   if (!canCall(fighter, card.technique)) return false;
   if (!hasInsectsFor(fighter, card.technique)) return false;
+  if (!hasDustFor(fighter, card.technique)) return false;
   return fighter.sealed === 0 && chakraCost(fighter, card.technique) <= fighter.chakra;
 }

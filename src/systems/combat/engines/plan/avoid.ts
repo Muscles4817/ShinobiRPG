@@ -28,6 +28,7 @@ import { isDazed } from './daze';
 import { readsInTheMoment } from './judgement';
 import { readyDefences } from './readiness';
 import { settledSlips, swarmSlips } from './swarm';
+import { blindedSlips, dustSlips } from './dust';
 import type { PlanFighter, Round } from './state';
 
 /**
@@ -55,6 +56,8 @@ export interface Incoming {
   readonly familiar?: number;
   /** A swarm attack's slip scale (`swarm.ts`: its insects' speed and camouflage). */
   readonly swarm?: number;
+  /** A dust attack's slip scale (`dust.ts`: heavy dust is slower to arrive). */
+  readonly dust?: number;
 }
 
 /** A Dodge is the target's ready defence here. */
@@ -81,8 +84,9 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     ...(incoming.areaSize ? { areaSize: incoming.areaSize } : {}),
   });
   const insects = (incoming.swarm ?? 1) * settledSlips(round, attacker, target);
+  const dust = (incoming.dust ?? 1) * blindedSlips(attacker);
   const held =
-    chance * insects * (isPinned(target) ? PIN_SLIP : 1) * footingOf(round.ground, target);
+    chance * insects * dust * (isPinned(target) ? PIN_SLIP : 1) * footingOf(round.ground, target);
   const scale = form === 'technique' ? FORESIGHT_SEES : FORESIGHT_SLIP;
   return foreseen(held, target, { scale, ceiling: AVOID_MAX });
 }
@@ -111,6 +115,7 @@ export function techniqueIncoming(
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     ...(area ? { areaSize: areaSize(area) } : {}),
     ...(t.swarmCost ? { swarm: swarmSlips(attacker, t) } : {}),
+    ...(t.dustCost ? { dust: dustSlips(attacker, t) } : {}),
   };
 }
 

@@ -42,6 +42,15 @@ export {
 export type { CombatOrders, CombatStance, CombatUsage, StanceKind } from './teamContract';
 export { STANCE_KINDS } from './teamContract';
 export {
+  DUST_GIFTS,
+  DUST_QUALITIES,
+  type CombatDust,
+  type DustBane,
+  type DustGift,
+  type DustKind,
+  type DustQuality,
+} from './dustContract';
+export {
   SWARM_GIFTS,
   SWARM_QUALITIES,
   type CombatSwarm,

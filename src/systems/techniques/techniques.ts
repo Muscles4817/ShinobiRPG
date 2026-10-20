@@ -31,6 +31,10 @@ export interface TechniqueDef {
   readonly chakraCost: number;
   /** Insects it spends from its user's hive (`CombatSwarm`), beside its chakra. */
   readonly swarmCost?: number;
+  /** Dust it spends from what its user commands (`CombatDust`), beside its chakra. */
+  readonly dustCost?: number;
+  /** Dust it pulls up from the ground into its user's command (a draw), before anything else. */
+  readonly dustDraw?: number;
   /** How advanced it is, in the letters of ability grades (see `learning.ts`). */
   readonly rank: StatGrade;
   /** What the body must have to use it at all, whatever the learner's grade. */
