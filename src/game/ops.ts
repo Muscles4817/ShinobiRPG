@@ -15,6 +15,7 @@ import { snackAt } from './snacks';
 import type { GameState } from './state';
 import { chakraBody } from './hives/hive';
 import { hiveDayPassed } from './hives/keeping';
+import { dustDayPassed } from './dust/keeping';
 
 /**
  * Small state-transition helpers shared by action handlers. Each returns a new state;
@@ -48,7 +49,7 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
     newDay ? { ...healed, people: peopleGrown(healed, ctx) } : healed,
     ctx,
   );
-  const bred = newDay ? hiveDayPassed(grown, ctx) : grown;
+  const bred = newDay ? dustDayPassed(hiveDayPassed(grown, ctx), ctx) : grown;
   const mentored = newDay ? settleMentor(bred, ctx) : bred;
   return { ...mentored, board: boardFor(mentored, ctx) };
 }

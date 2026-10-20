@@ -1,0 +1,217 @@
+import type { TechniqueDef } from '@/systems/techniques';
+
+import { look } from '../../../look';
+import { statLine } from '../../../statLine';
+import type { PersonDef } from '../../../types';
+
+/**
+ * The Sand's dust users, versus only until the Sand is in the world (`ContentPack.duelists`):
+ * Gaara with his gourd of sand, the Fourth Kazekage's gold dust and the Third Kazekage's iron
+ * sand. Their techniques spend dust from a full store (`PersonArsenal.dust`); Gaara's wall
+ * draws more up. None of them is shielded on his own: that comes later, with tailed beasts.
+ */
+
+export const SUNA_DUST_TECHNIQUES: readonly TechniqueDef[] = [
+  {
+    id: 'sand-shuriken',
+    name: 'Sand Shuriken',
+    description: 'Sand packed hard into stars and thrown in a spread.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'damage', power: 16, hits: 3 }],
+    chakraCost: 8,
+    dustCost: 25,
+    rank: 'B',
+    difficulty: 100,
+  },
+  {
+    id: 'sand-coffin',
+    name: 'Sand Coffin',
+    description: 'Sand pours over a foe and closes on them, held shut by his hand.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'pin', power: 18, channelled: true }],
+    chakraCost: 14,
+    dustCost: 40,
+    rank: 'A',
+    difficulty: 140,
+  },
+  {
+    id: 'sand-burial',
+    name: 'Sand Burial',
+    description: 'He closes his fist, and the sand closes with it.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'damage', power: 30 }],
+    chakraCost: 16,
+    dustCost: 40,
+    rank: 'A',
+    difficulty: 140,
+  },
+  {
+    id: 'sand-wall',
+    name: 'Sand Wall',
+    description: 'Sand surges up out of the ground into a wall between him and the blow.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'substitute', power: 14 }],
+    chakraCost: 10,
+    dustDraw: 60,
+    rank: 'B',
+    difficulty: 110,
+  },
+  {
+    id: 'sand-tsunami',
+    name: 'Quicksand Waterfall Flow',
+    description: 'All the sand there is, rising in a wave over the field.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'area', power: 26, size: 'wide' }],
+    chakraCost: 30,
+    dustCost: 90,
+    rank: 'S',
+    difficulty: 180,
+  },
+  {
+    id: 'gold-dust-wave',
+    name: 'Gold Dust Wave',
+    description: 'A heavy wall of gold rolls over everything in front of him.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'area', power: 20, size: 'small' }],
+    chakraCost: 18,
+    dustCost: 60,
+    rank: 'A',
+    difficulty: 140,
+  },
+  {
+    id: 'gold-dust-grip',
+    name: 'Gold Dust Grip',
+    description: 'Gold settles over a foe and sets, too heavy to move under.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'pin', power: 20 }],
+    chakraCost: 14,
+    dustCost: 40,
+    rank: 'A',
+    difficulty: 140,
+  },
+  {
+    id: 'gold-dust-hammer',
+    name: 'Gold Dust Hammer',
+    description: 'Gold pressed into a fist the size of a man and swung.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'damage', power: 22 }],
+    chakraCost: 10,
+    dustCost: 30,
+    rank: 'B',
+    difficulty: 110,
+  },
+  {
+    id: 'iron-sand-drizzle',
+    name: 'Iron Sand Drizzle',
+    description: 'Black needles of iron sand rain over the whole field.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'area', power: 24, size: 'wide' }],
+    chakraCost: 26,
+    dustCost: 80,
+    rank: 'S',
+    difficulty: 180,
+  },
+  {
+    id: 'iron-sand-spikes',
+    name: 'Iron Sand Spikes',
+    description: 'Iron sand thrown out in a spray of spikes.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'damage', power: 20, hits: 3 }],
+    chakraCost: 12,
+    dustCost: 35,
+    rank: 'A',
+    difficulty: 130,
+  },
+  {
+    id: 'iron-sand-assault',
+    name: 'Iron Sand Gathering Assault',
+    description: 'All of the iron sand, gathered into one weight and driven at a foe.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'damage', power: 28 }],
+    chakraCost: 16,
+    dustCost: 50,
+    rank: 'A',
+    difficulty: 140,
+  },
+];
+
+export const GAARA: PersonDef = {
+  id: 'gaara',
+  name: 'Gaara',
+  familyName: '',
+  pronouns: 'he',
+  role: 'shinobi',
+  title: 'Fifth Kazekage',
+  rank: 'kage',
+  stats: statLine('B', {
+    ninjutsu: 'S',
+    chakraControl: 'A',
+    willpower: 'A',
+    speed: 'C',
+    taijutsu: 'D',
+    strength: 'D',
+  }),
+  traitIds: ['calm', 'focused'],
+  appearance: look(
+    'short',
+    { hair: '#b8322c', eyes: '#5f9b8a', skin: '#f3d2b3', outfit: '#8a5a3a' },
+    'belt',
+    { expression: 'calm' },
+  ),
+  specialty: 'ninjutsu',
+  bio: 'Carries a gourd of sand on his back and never seems to move. The sand does it for him.',
+  schedule: { morning: null, afternoon: null, evening: null, night: null },
+  arsenal: {
+    techniqueIds: ['sand-shuriken', 'sand-coffin', 'sand-burial', 'sand-wall', 'sand-tsunami'],
+    dust: 'sand',
+  },
+};
+
+export const RASA: PersonDef = {
+  id: 'rasa',
+  name: 'Rasa',
+  familyName: '',
+  pronouns: 'he',
+  role: 'shinobi',
+  title: 'Fourth Kazekage',
+  rank: 'kage',
+  stats: statLine('B', { ninjutsu: 'S', chakraControl: 'A', intellect: 'A', strength: 'C' }),
+  traitIds: ['proud', 'cunning'],
+  appearance: look(
+    'short',
+    { hair: '#7a4a2a', eyes: '#3a3632', skin: '#e2b48c', outfit: '#e8e0d0' },
+    'forehead',
+    { expression: 'stern' },
+  ),
+  specialty: 'ninjutsu',
+  bio: 'The gold dust he fights with is the same gold the Sand pays its debts in.',
+  schedule: { morning: null, afternoon: null, evening: null, night: null },
+  arsenal: {
+    techniqueIds: ['gold-dust-wave', 'gold-dust-grip', 'gold-dust-hammer'],
+    dust: 'gold-dust',
+  },
+};
+
+export const THIRD_KAZEKAGE: PersonDef = {
+  id: 'third-kazekage',
+  name: 'Third Kazekage',
+  familyName: '',
+  pronouns: 'he',
+  role: 'shinobi',
+  title: 'Third Kazekage',
+  rank: 'kage',
+  stats: statLine('B', { ninjutsu: 'S', chakraControl: 'S', perception: 'A', speed: 'C' }),
+  traitIds: ['calm', 'proud'],
+  appearance: look(
+    'long',
+    { hair: '#2a1d14', eyes: '#2a1d14', skin: '#e2b48c', outfit: '#3a3632' },
+    'forehead',
+  ),
+  specialty: 'ninjutsu',
+  bio: 'The strongest Kazekage there ever was, they say, and the iron sand was the reason.',
+  schedule: { morning: null, afternoon: null, evening: null, night: null },
+  arsenal: {
+    techniqueIds: ['iron-sand-drizzle', 'iron-sand-spikes', 'iron-sand-assault'],
+    dust: 'iron-sand',
+  },
+};

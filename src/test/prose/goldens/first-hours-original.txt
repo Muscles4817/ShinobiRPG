@@ -218,22 +218,22 @@ view:
 === rival ===
 view:
   person:
-    name: Daisuke
+    name: Jin
     relation: rival
-    fullName: Daisuke Kurogane
+    fullName: Jin Kurogane
     title: Genin
     specialty:
       label: Kenjutsu
     stageName: Stranger
-    where: At the Academy
+    where: At the Training Grounds
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word gets round which team you landed on
-  title: Daisuke finds you
-  lines[0]: Daisuke has been watching you since the academy. Today they want you to know it.
-  lines[1]: “I hope your sensei is patient. I mean that kindly. I’ll help, if you ever ask.”
+  title: Jin finds you
+  lines[0]: Jin has been watching you since the academy. Today he wants you to know it.
+  lines[1]: “You’re the one from the back of the hall.” It isn’t a question.
   choices[0]:
     label: “Enjoy it while it lasts.”
   choices[1]:
@@ -241,10 +241,10 @@ view:
   choices[2]:
     label: “I’ll beat you, and you’ll know you were beaten.”
   choices[3]:
-    label: Hold their look, and walk past.
+    label: Hold his look, and walk past.
 
 >>> answerRival
-  journal «Daisuke»: Daisuke laughs, properly. “That’s the spirit.” [Rivalry: respect]
+  journal «Jin»: Jin says nothing, but nods once, which is a speech by his standards.
 
 ########## day 1 ##########
 
@@ -1615,21 +1615,21 @@ view:
 === rival ===
 view:
   person:
-    name: Daisuke
+    name: Jin
     relation: rival
-    fullName: Daisuke Kurogane
+    fullName: Jin Kurogane
     title: Genin
     specialty:
       label: Kenjutsu
     stageName: Stranger
-    where: At the Academy
+    where: At the Training Grounds
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word reaches you
-  title: Daisuke again
-  lines[0]: Daisuke offered, in front of your team, to carry your pack, “since it looks heavy for you.”
+  title: Jin again
+  lines[0]: Jin stopped at the edge of your drill, corrected your stance in one sentence, and walked on.
   choices[0]:
     label: Let it go.
     heard: Asuka would like it; Goro and Gōran wouldn’t.
@@ -1701,21 +1701,21 @@ view:
 === rival ===
 view:
   person:
-    name: Daisuke
+    name: Jin
     relation: rival
-    fullName: Daisuke Kurogane
+    fullName: Jin Kurogane
     title: Genin
     specialty:
       label: Kenjutsu
     stageName: Stranger
-    where: At the Academy
+    where: At the Training Grounds
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word reaches you
-  title: Daisuke again
-  lines[0]: Daisuke offered, in front of your team, to carry your pack, “since it looks heavy for you.”
+  title: Jin again
+  lines[0]: Jin stopped at the edge of your drill, corrected your stance in one sentence, and walked on.
   choices[0]:
     label: Let it go.
     heard: Asuka would like it; Goro and Gōran wouldn’t.

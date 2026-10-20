@@ -39,47 +39,47 @@
   summary: You lasted two rounds before going down. Asuka dazed you in the second round, and you never found your feet again.
 
 ########## a rival’s spar ##########
-  Daisuke squares up.
+  Jin squares up.
   —— The fight begins ——
   —— First exchange ——
   You close in at once.
-  The air around Daisuke wavers as Shadow Feint takes hold.
+  Jin has been keeping Shadow Feint for this, and uses it now.
   You stagger, dazed.
   —— Second exchange ——
-  Daisuke draws into Forge Cut.
-  Daisuke’s Forge Cut hacks into you, harder than a spar calls for. [Guarded] [−22]
+  Jin has been keeping Forge Cut for this, and uses it now.
+  Jin’s Forge Cut carves into you, harder than a spar calls for. [Guarded] [−21]
   You can’t find your feet yet.
   —— Third exchange ——
-  Daisuke uses Forge Cut once more.
-  Daisuke’s Forge Cut slashes deep into you, and it leaves you shaken. [Guarded] [−20]
   You have been keeping Gale Heel for this, and use it now.
-  Your Gale Heel rips into Daisuke, and you let them know it. [Guarded] [−9]
+  Your Gale Heel rips into Jin, and you let him know it. [Guarded] [−9]
+  Jin reaches for Forge Cut again.
+  Jin’s Forge Cut slashes you. [Guarded] [−19]
   —— Last exchange ——
-  Daisuke goes back to Forge Cut.
-  Daisuke’s Forge Cut carves into you. [Guarded] [−20]
-  You use Gale Heel once more.
-  Your Gale Heel cuts into Daisuke. [Guarded] [−8]
+  Jin uses Forge Cut once more.
+  Jin lands his Forge Cut on you. [Guarded] [−19]
+  You send Gale Heel howling out.
+  Your Gale Heel rips into Jin cleanly. [Guarded] [−10]
   —— The next round begins ——
   —— First exchange ——
-  Daisuke reaches for Forge Cut again.
+  Jin goes back to Forge Cut.
   You were waiting for exactly that.
-  You go back to Gale Heel.
-  Your Gale Heel rips into Daisuke cleanly. [Guarded] [−9]
+  You use Gale Heel once more.
+  You land your Gale Heel on Jin. [Guarded] [−10]
   —— Second exchange ——
-  Daisuke uses Forge Cut once more.
-  Daisuke lands their Forge Cut on you. [Guarded] [−18]
-  You reach for Gale Heel again.
-  You find the strength from somewhere, and your Gale Heel cuts into Daisuke. [Guarded] [−8]
+  Jin reaches for Forge Cut again.
+  Jin’s Forge Cut cuts you cleanly. [Guarded] [−17]
+  You go back to Gale Heel.
+  You find the strength from somewhere, and your Gale Heel rips into Jin. [Guarded] [−9]
   —— Third exchange ——
-  Daisuke has been keeping Shadow Feint for this, and uses it now.
+  Jin has been keeping Shadow Feint for this, and uses it now.
   You reel, the world spinning.
   You shake your head, still reeling.
   —— Last exchange ——
-  Daisuke’s blade flows into Forge Cut.
-  Daisuke’s Forge Cut slashes deep into you, harder than a spar calls for. [Guarded] [−25]
+  Jin has been keeping Forge Cut for this, and uses it now.
+  Jin’s Forge Cut hacks into you, and you feel it. [Guarded] [−24]
   You go down hard, and it costs you more than the fall.
-  Daisuke stands over you long enough to be sure you know who won.
-  summary: You lasted two rounds before going down. Daisuke dazed you in the second round, and you never found your feet again.
+  Jin stands over you long enough to be sure you know who won.
+  summary: You lasted two rounds before going down. Jin dazed you in the second round, and you never found your feet again.
 
 ########## wolves in a forest ##########
   Two grey wolves square up.

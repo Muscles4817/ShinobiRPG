@@ -19,3 +19,8 @@ export interface DustDef {
   readonly banes: readonly DustBane[];
   readonly drawnOn: readonly CombatGround[];
 }
+
+/** A clan whose children are born commanding a kind of dust, a store of it to hand. */
+export interface ClanDust {
+  readonly dustId: string;
+}
