@@ -21,6 +21,7 @@ import { TALENTS } from '../../shared/talents';
 import { TRAITS } from '../../shared/traits';
 import { UPBRINGINGS } from '../../shared/upbringings';
 import { CLAN_TECHNIQUES } from './clanTechniques';
+import { HAIBARA_TECHNIQUES } from './haibaraTechniques';
 import { TOGA_TECHNIQUES } from './togaTechniques';
 import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
@@ -112,6 +113,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...TECHNIQUES,
     ...CLAN_TECHNIQUES,
     ...TOGA_TECHNIQUES,
+    ...HAIBARA_TECHNIQUES,
     ...SENSEI_TECHNIQUES,
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,

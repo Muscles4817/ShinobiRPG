@@ -1,4 +1,5 @@
 import type { Contract } from '@/systems/contracts';
+import type { DustStore } from '@/systems/dusts';
 import type { Hive } from '@/systems/hives';
 import type { CombatState } from '@/systems/combat';
 import type { Companions } from '@/systems/companions';
@@ -93,6 +94,8 @@ export interface GameState {
   readonly brokenContracts: readonly string[];
   /** The hive in your body (`systems/hives`); null for most. */
   readonly hive: Hive | null;
+  /** The dust you command and carry (`systems/dusts`); null for most. */
+  readonly dust: DustStore | null;
   /** Hive clans whose rite you have learned (`hives/rite.ts`), by clan id. */
   readonly rites: readonly string[];
   /**
