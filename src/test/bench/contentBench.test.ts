@@ -1,4 +1,5 @@
 import { DISCIPLINES } from '@/systems/techniques';
+import { ctx } from '@/test/gameFixtures';
 
 import {
   against,
@@ -40,13 +41,19 @@ const CLASSMATES_FLOOR = 0.1;
 const CLASSMATE_EXCHANGES = 8;
 /** At most this share of fights sees a single hit take half the health. */
 const HEAVY_HITS = 0.05;
+/** Against D-rank foes, each specialty wins at least this share on average. */
+const D_FOES_FLOOR = 0.35;
 /**
- * Against D-rank foes, each specialty wins this share on average. (A graduate has real early
- * training now, so petty foes are beaten more often than not, but never as a formality: most
- * are won every time, and the ceiling is held up by the few that are a real fight. Measured
- * over 200 fights a foe, the best specialty won 0.78 before the avoid roll and 0.81 after.)
+ * Someone who doesn't use chakra (no more reserves than this) is an easy win one on one for any
+ * graduate: a thug, a poacher, an archer. Their danger is numbers…
  */
-const D_FOES = { min: 0.35, max: 0.85 } as const;
+const ORDINARY_CHAKRA = 10;
+const ORDINARY_FLOOR = 0.9;
+/** …so a gang of them is more than a graduate alone can take. */
+const GANG = ['bandit-thug', 'bandit-thug', 'bandit-thug'] as const;
+const GANG_CEILING = 0.3;
+/** And the hardest D-rank foe is still a real fight for every specialty. */
+const HARDEST_CEILING = 0.75;
 
 const SEEDS = 100;
 
@@ -62,7 +69,14 @@ const builds = DISCIPLINES.map((specialty) => {
     classmates: classmateIds(state).map((id) =>
       contentBench(against(state, classmate(state, id)), SEEDS),
     ),
-    foes: dRankFoeIds().map((id) => contentBench(against(state, foe(id)), SEEDS)),
+    foes: dRankFoeIds().map((id) => ({ id, ...contentBench(against(state, foe(id)), SEEDS) })),
+    gang: contentBench(
+      {
+        ...against(state, foe(GANG[0])),
+        enemies: GANG.map((id, i) => ({ ...foe(id), id: `${id}#${i}` })),
+      },
+      SEEDS,
+    ),
   };
 });
 
@@ -96,8 +110,17 @@ describe('a fresh character in the fights the game gives them', () => {
 
   it.each(DISCIPLINES)('a %s specialist can take on D-rank work', (specialty) => {
     const build = builds.find((b) => b.specialty === specialty)!;
-    const rate = average(build.foes, (r) => r.winRate);
-    expect(rate).toBeGreaterThanOrEqual(D_FOES.min);
-    expect(rate).toBeLessThanOrEqual(D_FOES.max);
+    expect(average(build.foes, (r) => r.winRate)).toBeGreaterThanOrEqual(D_FOES_FLOOR);
+    expect(Math.min(...build.foes.map((r) => r.winRate))).toBeLessThanOrEqual(HARDEST_CEILING);
+  });
+
+  it.each(DISCIPLINES)('a %s specialist beats an ordinary person but not a gang', (specialty) => {
+    const build = builds.find((b) => b.specialty === specialty)!;
+    const ordinary = build.foes.filter(
+      (r) => ctx.content.enemies.require(r.id).maxChakra <= ORDINARY_CHAKRA,
+    );
+    expect(ordinary.length).toBeGreaterThan(0);
+    for (const r of ordinary) expect(r.winRate, r.id).toBeGreaterThanOrEqual(ORDINARY_FLOOR);
+    expect(build.gang.winRate).toBeLessThanOrEqual(GANG_CEILING);
   });
 });

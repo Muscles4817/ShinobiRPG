@@ -23,7 +23,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     description: 'A road-bandit with a club and no patience.',
     baseStat: 6,
     // A grown ruffian: a labourer's body, brawling learned in the street (`stat-model-plan.md`).
-    statBonuses: { strength: 4, stamina: 3, speed: 2, taijutsu: 2, perception: 1, willpower: 1 },
+    statBonuses: { strength: 4, stamina: 3, speed: 2, taijutsu: 1, perception: 1, willpower: 1 },
     maxChakra: 10,
     techniqueIds: [],
     traits: ['brawler'],
@@ -112,7 +112,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     description: 'Shoots from the treeline and runs the moment anyone gets close.',
     baseStat: 6,
     // Throws on the weapon art, aimed by the eyes (`rules/weapons.ts`).
-    statBonuses: { speed: 2, perception: 4, kenjutsu: 3, stamina: 1 },
+    statBonuses: { speed: 2, perception: 4, kenjutsu: 1, stamina: 1 },
     maxChakra: 10,
     techniqueIds: [],
     traits: ['archer', 'coward'],
@@ -124,7 +124,7 @@ export const ENEMIES: readonly EnemyDef[] = [
     name: 'Poacher',
     description: 'Hunts where hunting is forbidden, and never without the dog.',
     baseStat: 6,
-    statBonuses: { perception: 4, speed: 2, stamina: 3, strength: 2, kenjutsu: 3 },
+    statBonuses: { perception: 4, speed: 2, stamina: 3, strength: 2, kenjutsu: 1 },
     maxChakra: 10,
     techniqueIds: [],
     retinue: [{ enemyId: 'poachers-hound', tell: 'open' }],

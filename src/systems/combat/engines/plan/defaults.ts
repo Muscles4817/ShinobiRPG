@@ -17,7 +17,7 @@ import { cardBlocked, cardId, cardsFor, isOffence, slotLimit, type Card } from '
 import { opponentsOf } from './senses';
 import { defaultHoldOff } from './zoning';
 import { defaultReactions } from './readiness';
-import { fightsFromHome, isEntry } from './stepping';
+import { fightsFromHome, isEntry, strongestBand } from './stepping';
 import { plainSlots, type Loadout, type PlanFighter, type Slot } from './state';
 
 /**
@@ -242,7 +242,7 @@ export function defaultReadiness(
   fighter: PlanFighter,
   shape: PlanShape = {},
 ): Pick<PlanFighter, 'reactions' | 'keepAt' | 'holdOff'> {
-  const home = shape.home ?? homeBand(fighter);
+  const home = shape.home ?? strongestBand(fighter);
   const makesFor = home !== homeBand(fighter) || fightsFromHome(fighter, home);
   return {
     reactions: defaultReactions(fighter),

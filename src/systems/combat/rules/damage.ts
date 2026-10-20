@@ -174,6 +174,16 @@ function effectPower(attacker: Rated, use: EffectUse): number {
 }
 
 /**
+ * How hard a fighter drives a technique, read from its art alone (with the body for the physical
+ * arts): for weighing one attack against another before the verb's own profile is applied.
+ */
+export function artPower(attacker: Rated, technique: CombatTechnique): number {
+  const art = attacker.attributes[technique.discipline];
+  const body = BODY_POWER[technique.discipline];
+  return body ? art * (1 - BODY_SHARE) + body(attacker) * BODY_SHARE : art;
+}
+
+/**
  * What a technique meets: a genjutsu meets the will, a physical art the body and its guard,
  * everything else the body (less of either against a break).
  */

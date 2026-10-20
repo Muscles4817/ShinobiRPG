@@ -47,7 +47,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     name: 'River Pirate',
     description: 'A boat-hook, a stolen skiff and a habit of cutting other people’s nets.',
     baseStat: 6,
-    statBonuses: { strength: 5, stamina: 3, speed: 1, taijutsu: 3, willpower: 1 },
+    statBonuses: { strength: 5, stamina: 3, speed: 1, taijutsu: 1, willpower: 1 },
     maxChakra: 10,
     techniqueIds: ['ferrymans-shove', 'post-sweep'],
     traits: ['brawler'],

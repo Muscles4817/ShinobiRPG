@@ -169,7 +169,10 @@ clan- and talent-driven more than anything: a kage's or an Uzumaki's run 30–50
 10–13, brilliant 14–20, a genius 20–30 (Shikamaru as a genin, Kakashi), legends above. A
 sensor's perception and an illusionist's willpower are part of their trade and run high.
 
-**Foes** use the same anchors. Bandits and thugs are grown labourers (bodies 8–12, skills 3–7);
+**Foes** use the same anchors. Someone who doesn't use chakra is an easy win one on one for any
+graduate; their danger is numbers (the content bench holds both: each specialty beats every
+ordinary D-rank foe nine times in ten, and none takes a gang of three thugs alone). So their
+arts stay at 3–7, never level with a fresh genin's best. Bandits and thugs are grown labourers (bodies 8–12, skills 3–7);
 samurai are trained warriors (kenjutsu like a chūnin's or better, armoured bodies); missing-nin
 are shinobi of the rank they left at; beasts are their animal (a dog faster than a person and
 keen-nosed, a bear stronger than any). `baseStat` stays inside the danger's band

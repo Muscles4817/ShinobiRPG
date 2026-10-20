@@ -1,4 +1,5 @@
 import type { RangeBand } from '../../contract';
+import { artPower, blowPower } from '../../rules/damage';
 import { canAttackFrom, homeBand } from '../../rules/kit';
 import { inReach, RANGE_BANDS } from '../../rules/range';
 import { strikeReach } from '../../rules/weaponClasses';
@@ -19,13 +20,19 @@ const STRIKE_POWER = 8;
 /** A step costs a turn and may fail: it's only worth it for a clearly better attack. */
 export const STEP_WORTH = 1.25;
 
-/** The hardest-hitting attack the kit has at a distance, as technique power. */
+/**
+ * The hardest-hitting attack the kit has at a distance: technique power by how well this fighter
+ * drives its art, so a ninjutsu fighter's palm strike weighs light beside their earth shot.
+ */
 export function bestAttack(fighter: PlanFighter, band: RangeBand): number {
   if (!canAttackFrom(fighter, band)) return 0;
   const powers = cardsFor(fighter, band).flatMap((c) =>
-    c.kind === 'jutsu' && isWounding(c.technique) ? [techniquePower(c.technique)] : [],
+    c.kind === 'jutsu' && isWounding(c.technique)
+      ? [techniquePower(c.technique) * artPower(fighter, c.technique)]
+      : [],
   );
-  return Math.max(0, ...powers, inReach(strikeReach(fighter), band) ? STRIKE_POWER : 0);
+  const strike = inReach(strikeReach(fighter), band) ? STRIKE_POWER * blowPower(fighter) : 0;
+  return Math.max(0, ...powers, strike);
 }
 
 function stepTowards(band: RangeBand, goal: RangeBand): Card {
@@ -79,11 +86,24 @@ export function makingFor(fighter: PlanFighter, band: RangeBand): Card | null {
 }
 
 /**
+ * Where this fighter is strongest: their kit's home (`homeBand`), unless their attack somewhere
+ * else is clearly stronger, read by how well they drive it (a caster whose techniques outnumber
+ * their one strong one still fights where that one reaches).
+ */
+export function strongestBand(fighter: PlanFighter): RangeBand {
+  const home = homeBand(fighter);
+  const best = RANGE_BANDS.reduce((a, b) =>
+    bestAttack(fighter, b) > bestAttack(fighter, a) ? b : a,
+  );
+  return bestAttack(fighter, best) > bestAttack(fighter, home) * STEP_WORTH ? best : home;
+}
+
+/**
  * With nothing slotted to play: home, when the kit can't attack from here or a clearly
  * stronger attack waits there; else a plain blow up close or a kunai from further off.
  */
 export function improvise(self: PlanFighter, band: RangeBand): Card {
-  const home = homeBand(self);
+  const home = strongestBand(self);
   const reaches = canAttackFrom(self, band);
   const better = bestAttack(self, home) > bestAttack(self, band) * STEP_WORTH;
   if (band !== home && (!reaches || better)) return footworkTowards(self, band, home);

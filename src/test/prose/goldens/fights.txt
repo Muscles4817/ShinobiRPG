@@ -286,33 +286,34 @@
   —— The fight begins ——
   —— First exchange ——
   You cut across the street and into the first bandit thug’s reach.
-  The first bandit thug’s strike catches you before you are properly set. [−13]
-  The second bandit thug lands his strike on you. [−15]
+  The first bandit thug’s strike catches you before you are properly set. [−12]
+  The second bandit thug lands his strike on you. [−13]
   —— Second exchange ——
   You send Gale Heel howling out.
-  Your Gale Heel cuts into the first bandit thug cleanly. [Guarded] [−15]
-  The second bandit thug’s strike lands on you. [Guarded] [−9]
-  The first bandit thug lands his strike on you. [Guarded] [−8]
+  Your Gale Heel cuts into the first bandit thug cleanly. [Guarded] [−18]
+  The second bandit thug’s strike lands on you. [Guarded] [−8]
+  The first bandit thug’s strike only just clips you. [Guarded] [−7]
   —— Third exchange ——
   You use Gale Heel once more.
-  Your Gale Heel rips into the first bandit thug cleanly. [Guarded] [−17]
-  The second bandit thug’s strike hits you. [Guarded] [−9]
-  The first bandit thug lands his strike on you. [Guarded] [−9]
+  Your Gale Heel tears into the first bandit thug, and tiles slide off the roof under him. [Guarded] [−20]
+  The second bandit thug lands his strike on you. [Guarded] [−8]
+  The first bandit thug’s strike catches you cleanly. [Guarded] [−8]
   —— Last exchange ——
   You go back to Gale Heel.
   The first bandit thug was waiting for exactly that.
-  The second bandit thug’s strike catches you cleanly. [Guarded] [−9]
-  The first bandit thug’s strike hits you. [Guarded] [−8]
+  The second bandit thug’s strike only just glances off you. [Guarded] [−7]
+  You are a shade too slow, and the first bandit thug’s strike clips you. [Guarded] [−7]
   —— The next round begins ——
   —— First exchange ——
   You reach for Gale Heel again.
-  You land your Gale Heel on the first bandit thug. [Guarded] [−15]
-  The second bandit thug’s strike lands on you cleanly. [Guarded] [−8]
-  The first bandit thug’s strike catches you. [Guarded] [−9]
+  You land your Gale Heel on the first bandit thug. [Guarded] [−18]
+  The second bandit thug’s strike grazes you. [Guarded] [−7]
+  The first bandit thug’s strike only just glances off you. [Guarded] [−7]
   —— Second exchange ——
   You use Gale Heel once more.
-  You land your Gale Heel on the first bandit thug. [Guarded] [−16]
-  The second bandit thug’s strike hits you cleanly. [Guarded] [−9]
-  You crumple in the street and don’t get up.
-  The fight goes on a little longer without you, then ends.
+  Your Gale Heel batters the first bandit thug. [Guarded] [−20]
+  The second bandit thug’s strike catches you. [Guarded] [−8]
+  The first bandit thug finds the strength from somewhere, and the first bandit thug’s strike lands on you. [Guarded] [−8]
+  You drop to your knees and topple over.
+  Everything goes dark.
   summary: You lasted two rounds before going down. The first bandit thug and the second bandit thug were still standing.

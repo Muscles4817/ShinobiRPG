@@ -75,7 +75,7 @@ export function bandits(kit: FoeKit): EnemyDef[] {
       danger: 'armed',
       name: 'Bandit Lieutenant',
       description: 'The chief’s right hand: a stolen sword, a padded coat and a habit of winning.',
-      ...foeStats(7, [12, 10, 11, 8], { kenjutsu: 9, taijutsu: 8 }),
+      ...foeStats(7, [12, 10, 11, 8], { kenjutsu: 7, taijutsu: 7 }),
       maxChakra: 30,
       techniqueIds: [kit.cut, kit.bleedCut, kit.throw],
       traits: ['armoured'],

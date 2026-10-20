@@ -23,7 +23,9 @@ function repeats(lines: readonly string[]): number {
     const text = line.trim();
     if (
       text.split(/\s+/).length < 4 ||
+      // The transcript's own markers: the action taken and the scene's heading, not prose.
       text.startsWith('>>>') ||
+      /^---.*---$/.test(text) ||
       /^[a-z]+(\[\d+\])?:$/.test(text)
     ) {
       return;
