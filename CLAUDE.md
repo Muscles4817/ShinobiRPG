@@ -213,8 +213,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     Each side stands in a front and a back **row** (`rules/rows.ts`, placed by kit or
     `CombatantSetup.row`): a blow up close can't reach the back row while the front stands;
     throws, longer-reach techniques and area effects can. Ask `canReach`, never test rows inline.
-    **Health is 100 for every human** (`MAX_HEALTH`); creatures scale it with
-    `EnemyDef.healthScale`. Damage comes from the **gap** between attacker power and defender
+    **Health is 100 for every human-sized body** (`MAX_HEALTH`); creatures scale it with
+    `EnemyDef.healthScale`. A body may be bred bigger (**size**, `rules/size.ts`:
+    `ClanDef.size`, `EnemyDef.size` → `CombatantSetup.size`; small, human, large, huge): more
+    health (scaled by the engine and reported back on the human scale, `plan/sizing.ts`) and
+    toughness, slipping less, a weight that helps a step in and walks through a hold-off that
+    didn't hurt it much, and the cap on one hit rising for each size step it has on its target
+    (`hitCapShare`). An empower may `grow` its user for as long as it holds (Expansion), and a
+    huge body's fists reach mid. Damage comes from the **gap** between attacker power and defender
     defence (`rules/damage.ts`: a ratio of ratings, narrow variance), so equals trade the same
     blows at every grade and each grade of difference is decisive. **Whether an attack
     reaches** is one avoid roll for every attack, technique or plain blow

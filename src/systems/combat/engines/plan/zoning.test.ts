@@ -6,6 +6,7 @@ import { editReadiness, readinessOptions } from './readinessTable';
 import { readyDefences } from './readiness';
 import { step } from './steps';
 import { initialFighters, type Round } from './state';
+import { humanHealth } from './sizing';
 import { defaultHoldOff } from './zoning';
 
 const attributes = {
@@ -55,10 +56,10 @@ function setup(id: string, overrides: Partial<CombatantSetup> = {}): CombatantSe
 }
 
 /** The hero steps in from mid range on a caster who holds off with Gust. */
-function atMid(acted: readonly string[] = []): Round {
+function atMid(acted: readonly string[] = [], hero: Partial<CombatantSetup> = {}): Round {
   const holdOff = { close: null, mid: 'jutsu:gust', far: 'jutsu:gust' };
   const fighters = initialFighters({
-    player: setup('hero'),
+    player: setup('hero', hero),
     allies: [],
     enemies: [setup('caster', { techniques: [gust] })],
     canFlee: true,
@@ -130,5 +131,31 @@ describe('the hold-off setting', () => {
     expect(held('mid').map((o) => o.label)).toContain('Nothing');
     const edited = editReadiness({ fighters: [hero] }, hero, 'hold:mid:none');
     expect(edited?.fighters[0]?.holdOff?.mid).toBeNull();
+  });
+});
+
+describe('a big body closing in', () => {
+  it('takes the shot and keeps coming, where a human-sized one is held off', () => {
+    const seeds = Array.from({ length: 60 }, (_, i) => i + 1);
+    const closed = (hero: Partial<CombatantSetup>) =>
+      seeds.filter((seed) => stepIn(atMid([], hero), seed).range === 'close').length;
+    expect(closed({ size: 'large' })).toBeGreaterThan(closed({}));
+    const walked = seeds
+      .map((seed) => stepIn(atMid([], { size: 'large' }), seed))
+      .filter((r) => r.lines.some((l) => l.includes('coming')));
+    expect(walked.length).toBeGreaterThan(0);
+    for (const r of walked) expect(r.range).toBe('close');
+  });
+
+  it('fights with more health than it brings, and reports it back on the human scale', () => {
+    const [hero] = initialFighters({
+      player: setup('hero', { size: 'large', health: 80 }),
+      allies: [],
+      enemies: [setup('caster')],
+      canFlee: true,
+    });
+    expect(hero!.maxHealth).toBe(130);
+    expect(hero!.health).toBe(104);
+    expect(humanHealth(hero!)).toBe(80);
   });
 });

@@ -11,6 +11,7 @@ import type { GameState } from '../state';
 import { doableNow } from './capable';
 import { personStats } from './progress';
 import { pronounsOf } from './pronouns';
+import { clanSize } from '../bodySize';
 
 /**
  * Genin who fight beside you (teammates) or against you (sparring partners), from their real
@@ -90,6 +91,7 @@ export function companionCombatant(
     traits: companionTraits(person),
     ...perksOf(person),
     ...kitOf(person, ctx),
+    ...clanSize(person.clanId, ctx),
   };
 }
 

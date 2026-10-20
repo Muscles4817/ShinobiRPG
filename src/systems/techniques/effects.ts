@@ -142,6 +142,8 @@ interface VerbExtras {
      * (`ladders.ts`) and holds until the fight ends or the body gives out.
      */
     readonly opens?: LadderStep;
+    /** Size steps it makes its user bigger while it holds (Expansion: 1 or 2, validated). */
+    readonly grows?: number;
   };
   /**
    * Solid clones that throw a weak blow of their own when their maker attacks, and the kind of
@@ -240,6 +242,9 @@ function cloneProblem(effect: EffectOf<'clone'>): string | null {
 /** An empower must raise something, open a real step if any, and cost something real. */
 function empowerProblem(effect: EffectOf<'empower'>): string | null {
   if (effect.boosts.length === 0) return 'an empower that raises nothing';
+  if (effect.grows !== undefined && ![1, 2].includes(effect.grows)) {
+    return `an empower that grows its user by ${effect.grows} sizes (1 or 2)`;
+  }
   const step = effect.opens ? ladderStepProblem(effect.opens) : null;
   if (step) return `an empower that opens ${step}`;
   if (effect.afterCost && !costIsSane(effect.afterCost)) {

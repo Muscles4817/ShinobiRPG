@@ -8,6 +8,7 @@ import {
 } from '../gearContract';
 import type { HitType } from './hits';
 import { STRIKE_REACH } from './range';
+import { reachesWithFists } from './size';
 
 /**
  * How each class of weapon handles, in every fight style: its weight (damage, going through a
@@ -137,7 +138,11 @@ export function classRule(weaponClass: WeaponClass): ClassRule {
  * Where a fighter's strike reaches: further with a long weapon in hand, else up close. Only a
  * held weapon of known gear lengthens it (foes are armed as their techniques suggest).
  */
-export function strikeReach(f: { readonly gear?: CombatGear }): readonly RangeBand[] {
+export function strikeReach(
+  f: { readonly gear?: CombatGear } & Parameters<typeof reachesWithFists>[0],
+): readonly RangeBand[] {
+  // A body grown huge reaches past arm's length with its fists (`size.ts`).
+  if (reachesWithFists(f)) return LONG;
   const held = f.gear?.held;
   if (!held || !HELD_SHAPES.includes(shapeOf(held))) return STRIKE_REACH;
   return CLASS_RULES[held.weaponClass].reach ?? STRIKE_REACH;

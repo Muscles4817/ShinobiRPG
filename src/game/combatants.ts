@@ -21,6 +21,7 @@ import { foeCalled, foeGrammar } from './foeNames';
 import { enemyWalking, playerWalking } from './footing';
 import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
+import { clanSize } from './bodySize';
 
 /** Translates game entities into the combat contract's vocabulary. */
 
@@ -118,6 +119,7 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     items: pouchOf(state, ctx),
     gear: playerGear(state, ctx),
     provisions: mealProvisions(state, ctx),
+    ...clanSize(state.character.clanId, ctx),
   };
 }
 
@@ -211,6 +213,7 @@ function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSet
     ...(def.nature ? { nature: def.nature } : {}),
     ...(def.traits ? { traits: def.traits } : {}),
     ...(walking.length > 0 ? { perks: walking } : {}),
+    ...(def.size ? { size: def.size } : {}),
   };
 }
 

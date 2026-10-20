@@ -45,6 +45,7 @@ import { foeMarkFor } from './foeTeam';
 import { planOf, plannedFighters } from './planning';
 import { squareUpLine } from '../../rules/narration';
 import { fightSummary } from './summary';
+import { humanHealth } from './sizing';
 
 /**
  * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
@@ -128,7 +129,7 @@ function alliesAfter(fighters: readonly PlanFighter[]): Record<string, { health:
   return Object.fromEntries(
     fighters
       .filter((f) => f.side === 'player' && !f.isPlayer)
-      .map((f) => [f.id, { health: Math.max(0, f.health) }]),
+      .map((f) => [f.id, { health: Math.max(0, humanHealth(f)) }]),
   );
 }
 
@@ -330,7 +331,7 @@ export function createPlanEngine(): CombatEngine {
       return {
         result,
         rounds: plan.bout,
-        player: { health: player.health, chakra: player.chakra },
+        player: { health: humanHealth(player), chakra: player.chakra },
         items: itemsLeft(player),
         plan: planOf(player),
         costs: [...costsOwed(player), ...empowerCostsOwed(player)],

@@ -1,4 +1,10 @@
-import type { CombatForm, CombatGrammar, CombatPerk, CombatTrait } from '@/systems/combat';
+import type {
+  BodySize,
+  CombatForm,
+  CombatGrammar,
+  CombatPerk,
+  CombatTrait,
+} from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
 import type { ContractDef, FoeSummon } from './contracts';
 import type { AtlasDef, MapLabelSide } from './atlas';
@@ -152,6 +158,8 @@ export interface EnemyDef {
   readonly danger: Danger;
   readonly baseStat: number;
   readonly statBonuses: StatDelta;
+  /** A body bigger than a human's (`rules/size.ts`), for a person of a big clan; human when absent. */
+  readonly size?: BodySize;
   /**
    * Health as a multiple of a human's 100: a giant beast more, a small creature less.
    * Humans leave it out (1).
@@ -186,6 +194,11 @@ export interface ClanDef {
   /** The clan's chakra nature; choosing the same nature earns a bonus. */
   readonly nature?: Element;
   readonly startingTechniqueIds: readonly string[];
+  /**
+   * A body bred bigger than a human's (`rules/size.ts`): more health and toughness, a bigger
+   * target, a step that walks through blows. Human when absent.
+   */
+  readonly size?: BodySize;
   /** Clan members live rent-free here instead of renting. */
   readonly lodging?: string;
   /** The companion a child of the clan grows up with (`companions.ts`). */

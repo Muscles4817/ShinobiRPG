@@ -1,6 +1,7 @@
 import { clamp } from '@/core';
 
 import type {
+  BodySize,
   CombatantSetup,
   CombatantView,
   CombatForm,
@@ -54,6 +55,8 @@ export interface Body {
   readonly items: readonly CombatItem[];
   /** Equipped gear; absent for fighters armed as their kit suggests (`gearContract.ts`). */
   readonly gear?: CombatGear;
+  /** A body bigger or smaller than a human's (`size.ts`); absent for human-sized. */
+  readonly size?: BodySize;
   /** What a meal brought into the fight (`provisions.ts`); absent for most. */
   readonly provisions?: readonly CombatProvision[];
 }

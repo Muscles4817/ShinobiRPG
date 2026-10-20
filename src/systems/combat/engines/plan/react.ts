@@ -2,7 +2,8 @@ import type { Rng } from '@/core';
 import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniques';
 
 import { alive, hasPerk } from '../../rules/body';
-import { cappedHit, strikeDamage } from '../../rules/damage';
+import { cappedHit, MAX_HIT_SHARE, strikeDamage } from '../../rules/damage';
+import { hitCapShare } from '../../rules/size';
 import { counterChance, guardScale } from '../../rules/defence';
 import { counterSkill, cutSkill, heldGuard } from '../../rules/blades';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
@@ -312,6 +313,7 @@ export function react(start: Round, struck: Hit): Round {
       ),
     ),
     target.maxHealth,
+    hitCapShare(MAX_HIT_SHARE, attacker, target),
   );
   const told = say(
     shielded,

@@ -28,6 +28,7 @@ export type {
   CombatItemEffect,
   RangeBand,
   CombatRow,
+  BodySize,
   CombatGround,
   CombatForm,
   CombatOccasion,

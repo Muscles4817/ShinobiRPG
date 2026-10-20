@@ -61,7 +61,9 @@ export const CLANS: readonly ClanDef[] = [
     outsiders: 'welcoming',
     description: 'Big bodies, bigger hearts, and an appetite to match the clan’s techniques.',
     statBonuses: { strength: 11, stamina: 5, reserves: 7, speed: -1 },
-    modifiers: { hungerRate: 1.6 },
+    // Bred big: past what any human frame can carry.
+    modifiers: { hungerRate: 1.6, limitBonus: { strength: 10 } },
+    size: 'large',
     arts: ['strength', 'stamina'],
     startingTechniqueIds: ['partial-expansion'],
     lodging: 'Your room in the Akimichi clan house',

@@ -25,6 +25,7 @@ import type { Caller, Summoned } from './calls';
 import type { Footing } from './footing';
 import type { Hive } from './hive';
 import type { ShroudMemory } from '../../rules/shrouds';
+import { sizedBody } from './sizing';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -255,7 +256,7 @@ function fighterFrom(
   side: 'player' | 'enemy',
   isPlayer = false,
 ): PlanFighter {
-  const body = bodyFrom(setup, side, isPlayer);
+  const body = sizedBody(bodyFrom(setup, side, isPlayer));
   const steady = openingSteadiness(body);
   return {
     ...body,

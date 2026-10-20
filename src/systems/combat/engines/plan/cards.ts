@@ -50,7 +50,7 @@ export type Card =
   | { readonly kind: 'item'; readonly item: CombatItem };
 
 /** What a fighter brings: their techniques, and the tools in their pouch. */
-type Kit = Pick<PlanFighter, 'techniques' | 'items' | 'gear'>;
+type Kit = Pick<PlanFighter, 'techniques' | 'items' | 'gear' | 'size' | 'empowered'>;
 
 const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'strike', card: { kind: 'strike' } },
@@ -96,7 +96,7 @@ export function fitsBand(card: Card, band: RangeBand): boolean {
 }
 
 /** A fighter's strike: further than close with a long weapon in hand. */
-export function strikeCard(fighter: Pick<PlanFighter, 'gear'>): Card {
+export function strikeCard(fighter: Pick<PlanFighter, 'gear' | 'size' | 'empowered'>): Card {
   const reach = strikeReach(fighter);
   return reach === STRIKE_REACH ? { kind: 'strike' } : { kind: 'strike', reach };
 }

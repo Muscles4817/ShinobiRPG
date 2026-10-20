@@ -128,6 +128,9 @@ export type CombatTrait = (typeof COMBAT_TRAITS)[number];
  */
 export type CombatGrammar = Grammar;
 
+/** How big a body is: a bred size, or one a technique makes for a while. */
+export type BodySize = 'small' | 'human' | 'large' | 'huge';
+
 export interface CombatantSetup {
   readonly id: string;
   readonly name: string;
@@ -162,6 +165,11 @@ export interface CombatantSetup {
   readonly provisions?: readonly CombatProvision[];
   /** A preferred row; when absent the engine places the fighter by their kit. */
   readonly row?: CombatRow;
+  /**
+   * A body bigger (or smaller) than a human's (`rules/size.ts`); human when absent. Health is
+   * given on the human scale and scaled by the engine, and reported back on it.
+   */
+  readonly size?: BodySize;
   /** An ally's stance; when absent the engine picks one from their kit. */
   readonly stance?: CombatStance;
   /** What the player may change about this ally (see `teamContract.ts`). */

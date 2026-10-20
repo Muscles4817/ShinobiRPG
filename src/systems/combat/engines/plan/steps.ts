@@ -7,11 +7,12 @@ import { cloneStepBonus, isPinned } from '../../rules/verbs';
 import type { Card } from './cards';
 import type { Turn } from './senses';
 import { isEntry } from './stepping';
-import { chakraCost } from '../../rules/body';
+import { alive, chakraCost } from '../../rules/body';
 import { fighterIn, patch, paying, say, type Round } from './state';
 import { holdOff } from './zoning';
 import { blockedStepLine, chargeLine, momentOf, stepLine } from './voice';
 import { tell } from '../../rules/telling';
+import { sizeGap, STEP_PER_SIZE, walksThrough } from '../../rules/size';
 
 /**
  * A step: the fighter tries for the next distance in or out, contested by the foe's speed. A
@@ -38,15 +39,32 @@ function stride(round: Round, { actor, target: foe, rng }: Turn, direction: 'in'
     return say(round, tell(line, { a: actor }));
   }
   const speedGap = actor.attributes.speed - (foe?.attributes.speed ?? 0);
+  // A bigger body leans its weight into a step in (`size.ts`).
+  const weight = direction === 'in' && foe ? Math.max(0, sizeGap(actor, foe)) * STEP_PER_SIZE : 0;
   // Clones crowding round the one stepping make them harder to cut off.
   const contest =
-    clamp(STEP_BASE + speedGap * STEP_PER_SPEED, STEP_MIN, STEP_MAX) + cloneStepBonus(actor);
+    clamp(STEP_BASE + speedGap * STEP_PER_SPEED, STEP_MIN, STEP_MAX) +
+    cloneStepBonus(actor) +
+    weight;
   // Off their footing (on water they can't stand on), every step is harder.
   const chance = foe ? contest * footingOf(round.ground, actor) : 1;
   // The roll is made even with no foe to stop them (a sure step), as it always was.
   const made = rng.chance(chance);
   if (made || !foe) return arrive(round, { actor, target: foe, rng }, to);
   return say(round, blockedStepLine(momentOf(round, actor.id), actor, to, foe));
+}
+
+/**
+ * A big body held off takes the shot and keeps coming, unless it hurt too much (`size.ts`):
+ * the step lands after all. Null when it stops them.
+ */
+function walkedThrough(before: Round, after: Round, turn: Turn): Round | null {
+  const was = fighterIn(before, turn.actor.id);
+  const now = fighterIn(after, turn.actor.id);
+  if (!was || !now || !alive(now)) return null;
+  if (!walksThrough(now, was.health - now.health, now.maxHealth)) return null;
+  const told = say(after, tell('{a} take{a.s} it and keep{a.s} coming.', { a: now }));
+  return arrive(told, { ...turn, actor: now }, stepIn(before.range));
 }
 
 export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
@@ -60,7 +78,7 @@ export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round 
   const met = holdOff(moving, turn);
   switch (met.outcome) {
     case 'stopped':
-      return met.round;
+      return walkedThrough(round, met.round, turn) ?? met.round;
     case 'through':
       return arrive(met.round, turn, stepIn(round.range));
     case 'unopposed':

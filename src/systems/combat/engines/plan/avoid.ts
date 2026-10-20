@@ -29,6 +29,7 @@ import { isDazed } from './daze';
 import { readsInTheMoment } from './judgement';
 import { readyDefences } from './readiness';
 import type { PlanFighter, Round } from './state';
+import { sizeSlips } from '../../rules/size';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -77,7 +78,12 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     ...(incoming.accuracy ? { accuracy: incoming.accuracy } : {}),
     ...(incoming.areaSize ? { areaSize: incoming.areaSize } : {}),
   });
-  const held = chance * (isPinned(target) ? PIN_SLIP : 1) * footingOf(round.ground, target);
+  // A big body is a big target (`size.ts`).
+  const held =
+    chance *
+    (isPinned(target) ? PIN_SLIP : 1) *
+    footingOf(round.ground, target) *
+    sizeSlips(target);
   const scale = form === 'technique' ? FORESIGHT_SEES : FORESIGHT_SLIP;
   return foreseen(held, target, { scale, ceiling: AVOID_MAX });
 }

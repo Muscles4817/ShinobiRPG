@@ -40,6 +40,8 @@ export interface Empowerment {
   readonly opened?: LadderStep;
   /** Health paid at the end of each exchange it holds. */
   readonly healthPerExchange: number;
+  /** Size steps it makes its user bigger while it holds (`rules/size.ts`). */
+  readonly grows?: number;
 }
 
 /** What a fighter carries of empowerment. Absent in fights saved before it existed. */
@@ -107,6 +109,7 @@ export function empower(
     added,
     ...(opens ? { opened: opens } : { until: exchange + empowerExchanges(fighter.maxChakra) }),
     healthPerExchange: empowerPrice(fighter.attributes.willpower, use),
+    ...(use.effect.grows ? { grows: use.effect.grows } : {}),
   };
   const attributes = addTo(base, added, 1);
   if (!use.effect.afterCost) return { attributes, empowered };
