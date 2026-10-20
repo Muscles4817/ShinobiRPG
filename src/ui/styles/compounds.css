@@ -37,3 +37,11 @@
   font-family: var(--font-story);
   color: var(--story);
 }
+
+/* The clan's archive: its rite on a paper slip (the contract card's paper). */
+.compound-archive p {
+  margin: 0;
+}
+.compound-archive .btn {
+  margin-top: 10px;
+}

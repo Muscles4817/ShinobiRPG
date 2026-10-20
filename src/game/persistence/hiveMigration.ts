@@ -9,3 +9,8 @@ type RawState = Record<string, unknown>;
 export function v59ToV60(state: RawState): RawState {
   return { ...state, hive: null };
 }
+
+/** v60 → v61: hive rites arrive (`hives/rite.ts`). Nobody knows one yet. */
+export function v60ToV61(state: RawState): RawState {
+  return { ...state, rites: [] };
+}

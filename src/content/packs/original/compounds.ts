@@ -60,6 +60,7 @@ export const TOROGAKURE_COMPOUNDS: readonly PlaceDef[] = [
     blurb: 'Paper screens with wings settled on them',
     clanId: 'toga',
     headId: 'mayu',
+    keepsRite: true,
   },
   {
     id: 'animal-clinic',

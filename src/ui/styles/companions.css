@@ -217,3 +217,15 @@
 .hive-card .hive-name .btn {
   margin-top: 8px;
 }
+
+/* A learned hive rite: the three shares, each with its way to take the hive. */
+.rite-card .rite-shares {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.rite-card .rite-shares p {
+  margin: 2px 0 6px;
+}

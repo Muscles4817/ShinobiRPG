@@ -42,4 +42,23 @@ export interface InsectHaunt {
 /** A clan whose children are born with a hive. */
 export interface ClanHive {
   readonly strainId: string;
+  /**
+   * The clan's secret of putting a hive into a grown body (`game/hives/rite.ts`), learned from
+   * the clan's archive (`CompoundFields.keepsRite`), a job's find (`reward.hiveRite`) or a
+   * person of the clan (`PersonDef.hiveRite`).
+   */
+  readonly rite?: HiveRite;
+}
+
+/** How a clan's hive is put into someone born outside it. */
+export interface HiveRite {
+  readonly name: string;
+  readonly description: string;
+}
+
+/** Someone of a hive clan who may teach its rite, once you are close enough. */
+export interface RiteOffer {
+  /** The clan whose rite it is. */
+  readonly clanId: string;
+  readonly minStage: number;
 }

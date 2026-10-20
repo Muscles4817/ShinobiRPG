@@ -5,6 +5,7 @@ import type { Contest, RaceMove, Stakes } from '../rival/state';
 import type { RangeBand } from '@/systems/combat';
 import type { PlayKind } from '@/systems/companions';
 import type { CookingSteps } from '@/systems/cooking';
+import type { HiveShare } from '@/systems/hives';
 import type { ApproachId, ReconId } from '@/systems/missions';
 import type { DrinkWayId } from '../bar';
 import type { DiceCall } from '../state';
@@ -120,6 +121,9 @@ export type GameAction =
   | { readonly type: 'studyJar'; readonly strainId: string }
   | { readonly type: 'crossJar'; readonly strainId: string }
   | { readonly type: 'nameStrain'; readonly name: string }
+  | { readonly type: 'readRite'; readonly placeId: string }
+  | { readonly type: 'learnRite'; readonly personId: string }
+  | { readonly type: 'takeHive'; readonly clanId: string; readonly share: HiveShare }
   | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
   | { readonly type: 'playWithCompanion'; readonly play: PlayKind }
   | { readonly type: 'doseCompanion'; readonly hidden: boolean }
