@@ -117,6 +117,7 @@ export const ARCHIVE_SHELF: readonly string[] = [
   'banquet-of-lightning',
   'lightning-dragon-tornado',
   'lightning-strike-armour',
+  'earth-spear',
   'rock-avalanche',
   'afterglow',
   'great-dragon-fire',

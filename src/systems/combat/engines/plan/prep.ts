@@ -5,6 +5,7 @@ import { RANGE_LABEL } from '../../rules/range';
 import { lastDitch, outmatched } from '../../rules/trumps';
 import { canOpen, clonesLeft, hasVerb, opensOf, worthOpening } from '../../rules/verbs';
 import { stepStatus } from './ladderWords';
+import { SHROUD_STATUS } from './shrouds';
 import type { Card } from './cards';
 import type { PlanFighter } from './state';
 
@@ -51,8 +52,9 @@ function empowerNeeded(self: PlanFighter, t: CombatTechnique, foes: readonly Pla
  * empower or clones with no foe in sight to spend them on.
  */
 export function prepNeeded(self: PlanFighter, t: CombatTechnique, facing: Facing): boolean {
-  const boosts = hasVerb(t, 'empower') || hasVerb(t, 'clone');
+  const boosts = hasVerb(t, 'empower') || hasVerb(t, 'clone') || hasVerb(t, 'shroud');
   if (boosts && !facing.foeInSight) return false;
+  if (hasVerb(t, 'shroud') && self.shroud) return false;
   if (hasVerb(t, 'empower') && !empowerNeeded(self, t, facing.foes)) return false;
   if (hasVerb(t, 'clone') && clonesLeft(self) > 0) return false;
   return !(hasVerb(t, 'trap') && self.trap);
@@ -63,6 +65,7 @@ function wants(self: PlanFighter, t: CombatTechnique, moment: Moment): boolean {
   if (!prepNeeded(self, t, { foeInSight: moment.foe !== undefined, foes })) return false;
   // Ready where they can attack, or before a charge to where they can.
   const charging = self.keepAt !== undefined && self.keepAt !== moment.band;
+  if (hasVerb(t, 'shroud')) return true;
   if (hasVerb(t, 'empower') || hasVerb(t, 'clone')) {
     return canAttackFrom(self, moment.band) || charging;
   }
@@ -84,6 +87,7 @@ export function prepStatuses(f: PlanFighter): string[] {
   const clones = clonesLeft(f);
   return [
     ...(f.empowered ? [f.empowered.opened ? stepStatus(f.empowered.opened) : 'Empowered'] : []),
+    ...(f.shroud ? [SHROUD_STATUS[f.shroud.kind]] : []),
     ...(clones > 0 ? [`Clones ×${clones}`] : []),
     ...(f.trap ? [`Trap at ${RANGE_LABEL[f.trap.band].toLowerCase()} range`] : []),
   ];

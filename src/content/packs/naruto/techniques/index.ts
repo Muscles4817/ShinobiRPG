@@ -1,5 +1,6 @@
 import type { TechniqueDef } from '@/systems/techniques';
 
+import { LEAF_CAST_ARMOUR } from './armour';
 import { LEAF_ELEMENTS } from './elements';
 import { FUUINJUTSU } from './fuuinjutsu';
 import { GENJUTSU } from './genjutsu';
@@ -23,4 +24,5 @@ export const TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...LEAF_STANDARD,
   ...LEAF_ELEMENTS,
   ...SCHOOL_TECHNIQUES,
+  ...LEAF_CAST_ARMOUR,
 ])();

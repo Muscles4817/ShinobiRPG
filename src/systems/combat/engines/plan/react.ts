@@ -8,6 +8,7 @@ import { counterSkill, cutSkill, heldGuard } from '../../rules/blades';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
 import { FORESIGHT_COUNTER, foreseen } from '../../rules/eyes';
 import { hitTypeOf, type HitType } from '../../rules/hits';
+import { wearShroud } from './shrouds';
 import { canAttackFrom, kitDamageScale, packScale, type AttackKind } from '../../rules/kit';
 import { harmLine, reactionLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
@@ -330,6 +331,7 @@ export function react(start: Round, struck: Hit): Round {
     ...kitNote(momentOf(shielded, attacker.id), target, blow),
   );
   const marked = smashed ? brokeGuard(told, target.id, attacker.id) : told;
-  const landed = confuse(wound(marked, target.id, damage), hit);
+  const worn = wearShroud(wound(marked, target.id, damage), target.id, hitTypeOf(blow), damage);
+  const landed = confuse(worn, hit);
   return canCounterBack(shielded, hit, has) ? counter(landed, hit) : landed;
 }

@@ -45,6 +45,7 @@ const VERB_WORD: Readonly<Record<Verb, string>> = {
   afflict: 'Leave a wound that lingers',
   counter: 'Answer the next blow at once',
   summon: 'Call a summon to fight beside you',
+  shroud: 'Cast armour over yourself; it costs chakra while it holds',
 };
 
 /** One effect in words; a move that names its distance says so. */

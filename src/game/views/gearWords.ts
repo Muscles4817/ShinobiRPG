@@ -71,6 +71,7 @@ const VERB_FOCUS: Readonly<Record<Verb, string>> = {
   afflict: 'Lingering harm',
   counter: 'Ripostes',
   summon: 'Summons',
+  shroud: 'Cast armour',
 };
 
 /** How well you know each class you have practised, strongest first: "Throwing steel seasoned". */

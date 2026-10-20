@@ -116,6 +116,8 @@ const PLAIN_WORDS: Readonly<Record<PlainSheetVerb, string>> = {
   substitute: 'Swaps you out of the first hit each round',
   counter: 'Readies a riposte: the next blow at you is answered first',
   summon: 'Calls a summon to fight beside you; you pay its upkeep in chakra while it stays',
+  shroud:
+    'Casts armour over you that turns blows and jutsu by its kind; it costs chakra every exchange it holds',
 };
 
 /** How an area reads by the ground it covers (`rules/verbs/area.ts`). */

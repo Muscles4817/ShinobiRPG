@@ -2,6 +2,7 @@ import type { StatId } from '@/systems/stats';
 
 import { costIsSane, type CostTemplate } from './costs';
 import { ladderStepProblem, type LadderStep } from './ladders';
+import { SHROUD_KINDS, type ShroudKind } from './shrouds';
 
 /**
  * What a technique does, as a list of verbs applied in order (damage, then daze). Each verb's
@@ -31,6 +32,7 @@ export const VERBS = [
   'afflict',
   'counter',
   'summon',
+  'shroud',
 ] as const;
 export type Verb = (typeof VERBS)[number];
 
@@ -159,6 +161,8 @@ interface VerbExtras {
   readonly afflict: { readonly harm: AfflictionKind };
   /** Which of its user's summons it calls (`CombatCall.id`). */
   readonly summon: { readonly call: string };
+  /** What the cast armour is made of, which decides what it stops and what it costs. */
+  readonly shroud: { readonly kind: ShroudKind };
 }
 
 type ExtrasOf<V extends Verb> = V extends keyof VerbExtras ? VerbExtras[V] : unknown;
@@ -166,7 +170,10 @@ type ExtrasOf<V extends Verb> = V extends keyof VerbExtras ? VerbExtras[V] : unk
 export type TechniqueEffect = { readonly [V in Verb]: EffectBase<V> & ExtrasOf<V> }[Verb];
 
 /** Verbs whose effects need nothing beyond their power. */
-export type PlainVerb = Exclude<Verb, 'field' | 'empower' | 'knock' | 'afflict' | 'summon'>;
+export type PlainVerb = Exclude<
+  Verb,
+  'field' | 'empower' | 'knock' | 'afflict' | 'summon' | 'shroud'
+>;
 
 /** How many blows a wounding effect lands as: a flurry's count, or one. */
 export function blowsOf(effect: TechniqueEffect): number {
@@ -184,6 +191,7 @@ const DISTANCES: readonly string[] = ['close', 'mid', 'far'];
 const harms: readonly string[] = AFFLICTIONS;
 const cloneKinds: readonly string[] = CLONE_KINDS;
 const sizes: readonly string[] = AREA_SIZES;
+const shroudKinds: readonly string[] = SHROUD_KINDS;
 
 /** Most blows a flurry splits into. */
 export const MAX_HITS = 5;
@@ -213,6 +221,9 @@ export function effectProblem(effect: TechniqueEffect): string | null {
     return `an unknown lingering harm "${effect.harm}"`;
   }
   if (effect.verb === 'clone') return cloneProblem(effect);
+  if (effect.verb === 'shroud' && !shroudKinds.includes(effect.kind)) {
+    return `an unknown kind of cast armour "${effect.kind}"`;
+  }
   return effect.verb === 'empower' ? empowerProblem(effect) : null;
 }
 

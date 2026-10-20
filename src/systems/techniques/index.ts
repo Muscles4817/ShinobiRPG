@@ -77,3 +77,4 @@ export {
   type LadderId,
   type LadderStep,
 } from './ladders';
+export { SHROUD_KINDS, type ShroudKind } from './shrouds';

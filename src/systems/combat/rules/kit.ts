@@ -1,6 +1,7 @@
 import type { CombatTechnique, CombatTrait, RangeBand } from '../contract';
 import type { CombatGear } from '../gearContract';
 import { wornArmourKept } from './armour';
+import { shroudKept, type ShroudMemory } from './shrouds';
 import { hitTypeOf, isPhysicalHit, type AttackKind, type HitType } from './hits';
 import { preferredRange, RANGE_BANDS } from './range';
 
@@ -22,7 +23,7 @@ const COWARD_FLEES_AT = 0.3;
 /** Extra chance a swift fighter slips a blow, in engines that roll to dodge or avoid. */
 export const SWIFT_DODGE = 0.2;
 
-interface Kitted {
+interface Kitted extends ShroudMemory {
   readonly traits: readonly CombatTrait[];
   readonly gear?: CombatGear;
 }
@@ -54,11 +55,11 @@ export function isPhysical(kind: AttackKind): boolean {
 /**
  * Share of a hit that gets through the defender's armour: an armoured kit's against blows,
  * blades and points, or the armour they wear against its type (`armour.ts`), whichever
- * protects more.
+ * protects more; and a cast armour on top (`shrouds.ts`).
  */
 function armourLets(defender: Kitted, hit: HitType): number {
   const kit = hasTrait(defender, 'armoured') && isPhysicalHit(hit) ? ARMOUR_SCALE : 1;
-  return Math.min(kit, wornArmourKept(defender, hit));
+  return Math.min(kit, wornArmourKept(defender, hit)) * shroudKept(defender, hit);
 }
 
 /**

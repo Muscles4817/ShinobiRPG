@@ -383,7 +383,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     has a **hit type** (`rules/hits.ts`: blunt, cut, pierce, raw chakra, an element, or mind,
     which nothing stops; a weapon's from its class, else read from the attack's kind), and armour
     meets each type its own way (`LEVEL_RULES`: a light vest stops small thrown steel, plate
-    turns blades and conducts lightning). A weapon
+    turns blades and conducts lightning); **cast armour** is the `shroud` verb (`rules/shrouds.ts`,
+    `plan/shrouds.ts`: lightning, sand, earth or chakra, laid over anything worn, paid in chakra
+    each exchange; lightning quickens and yields to wind, sand wears away by its integrity, earth
+    splits under lightning). A weapon
     has a **class** (`WEAPON_CLASSES`: light blade, sword, greatsword, polearm, fan, chain, staff,
     blunt, knuckles, throwing, senbon; its shape for the rules is `shapeOf`), and each class
     handles its own way (`rules/weaponClasses.ts`: weight, speed in the hand, the guard it gives,
