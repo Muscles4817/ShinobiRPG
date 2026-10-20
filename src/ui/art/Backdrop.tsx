@@ -8,6 +8,7 @@ import { Dunes } from './scenery/dunes';
 import { LeafVillage } from './scenery/leafVillage';
 import { SharedDefs, paint } from './scenery/lights';
 import { Mist } from './scenery/mist';
+import { MistVillage } from './scenery/mistVillage';
 import { Mountain } from './scenery/mountain';
 import { LanternRooftops } from './scenery/rooftops';
 
@@ -29,6 +30,7 @@ const SCENES: Readonly<Record<BackdropId, ComponentType<SceneProps>>> = {
   dunes: Dunes,
   coast: Coast,
   mist: Mist,
+  'mist-village': MistVillage,
   mountain: Mountain,
 };
 

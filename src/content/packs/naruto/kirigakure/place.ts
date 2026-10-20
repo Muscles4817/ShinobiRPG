@@ -2,18 +2,19 @@ import type { LocationDef } from '../../../types';
 import { SHORE_FINDS, SHORE_SPOTS } from '../../../shared/waters';
 
 /**
- * Kirigakure in the years of the Bloody Mist: the Fourth Mizukage's village, where bloodlines
- * are hunted and the academy's last test is a fight to the death. A foreigner gets no further
- * than the harbour ward, under a pass that is checked at every corner: a lodging house, the
- * dawn fish auction, a bathhouse and a bar for fishermen, a smith who still forges in the old
- * Swordsmen's way, the sea cliffs, and a broker who hands out the work nobody official will.
+ * Kirigakure in the years of the Bloody Mist: Yagura's village, where bloodlines are hunted
+ * and the academy's last test is a fight to the death. A foreigner gets no further than the
+ * harbour ward, under a pass checked at every corner. It is the loyal houses' ward: the
+ * Kasumi's fog shrine, the Isana's whaling quay, the Kurage's infirmary and the Shiogama's
+ * forge stand among the lodging house, the dawn auction, the bathhouse, the fishermen's bar,
+ * the sea cliffs and a broker who hands out the work nobody official will.
  */
 export const KIRIGAKURE: LocationDef = {
   id: 'kirigakure',
   name: 'Kirigakure',
   epithet: 'Village Hidden in the Mist',
   map: { x: 92, y: 36, label: 'left' },
-  backdrop: 'mist',
+  backdrop: 'mist-village',
   places: [
     {
       id: 'fog-lantern-lodging',
@@ -61,6 +62,8 @@ export const KIRIGAKURE: LocationDef = {
         'kiri-graduation',
         'kiri-frost-children',
         'kiri-sealed-letter',
+        'kiri-blockade-lookout',
+        'kiri-drain-hunt',
       ],
     },
     {
@@ -119,6 +122,56 @@ export const KIRIGAKURE: LocationDef = {
       blurb: 'Fog above and below, with the swell between',
       trainingIds: ['blind-mist-drill', 'cliff-surf-run'],
       exerciseIds: ['water-walking'],
+    },
+    {
+      id: 'kasumi-fog-shrine',
+      kind: 'training',
+      name: 'The Fog Shrine',
+      icon: 'torii',
+      blurb: 'Where the Kasumi tend the braziers that feed the village’s mist',
+      trainingIds: ['fog-breath-drill', 'brazier-watch'],
+    },
+    {
+      id: 'isana-quay',
+      kind: 'market',
+      name: 'The Whaling Quay',
+      icon: 'wave',
+      blurb: 'The Isana fleet’s berth, where the blockade boats come in',
+      stalls: [
+        {
+          name: 'The Flensing Shed',
+          blurb: 'Whale meat cut on the quay, the bones carted off to the whale graves',
+          hours: ['morning', 'afternoon'],
+          icon: 'grill',
+          foodIds: ['whale-bacon', 'whale-broth'],
+        },
+        {
+          name: 'The Fleet Chandlery',
+          blurb: 'Rope, rations and lamp oil for the boats, sold to anyone with a pass',
+          hours: ['morning', 'afternoon', 'evening'],
+          icon: 'cart',
+          foodIds: ['kelp-tea'],
+          ingredientIds: ['travel-rations', 'rice'],
+        },
+      ],
+    },
+    {
+      id: 'kurage-infirmary',
+      kind: 'hospital',
+      name: 'The Kurage Infirmary',
+      icon: 'heal',
+      blurb: 'The hunter-nin house mends the living as neatly as it disposes of the dead',
+      treatmentCost: 90,
+    },
+    {
+      id: 'canal-stilt-house',
+      kind: 'house',
+      name: 'A Stilt House on the Back Canal',
+      icon: 'house',
+      blurb:
+        'Two rooms over the water and a ladder down to a boat. The last owners left in the night and nobody asks where.',
+      seller: 'An Amibari clerk, who has the deed and the Register page that went with it',
+      price: 2400,
     },
     {
       id: 'kiri-shingle',

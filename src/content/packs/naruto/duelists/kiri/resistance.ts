@@ -1,0 +1,210 @@
+import { look } from '../../../../look';
+import { statLine } from '../../../../statLine';
+import type { PersonDef } from '../../../../types';
+
+import { kiriFighter } from './fighter';
+
+/**
+ * The resistance: every bloodline clan Yagura hunts, hiding on the outer islands and in the
+ * people's houses, with the breath-divers who carry for whoever pays and the Six-Tails' host
+ * who walked away from all of it.
+ */
+export const RESISTANCE_FIGHTERS: readonly PersonDef[] = [
+  kiriFighter({
+    id: 'mangetsu',
+    name: 'Mangetsu',
+    familyName: 'Hōzuki',
+    pronouns: 'he',
+    title: 'The Second Coming of the Demon',
+    rank: 'jonin',
+    stats: statLine('C', {
+      kenjutsu: 37,
+      ninjutsu: 33,
+      speed: 30,
+      chakraControl: 'B',
+      reserves: 'B',
+      strength: 'B',
+    }),
+    traitIds: ['proud', 'brash'],
+    appearance: look(
+      'short',
+      { hair: '#e8e0d0', eyes: '#7a4a8a', skin: '#f3d2b3', outfit: '#3d5fa8' },
+      'forehead',
+      { shape: 'angular', expression: 'grin', age: 'young' },
+    ),
+    specialty: 'kenjutsu',
+    bio: 'Mastered every one of the Seven’s blades before he was old enough to sit the exam. When the purge came for the Hōzuki, he took Hiramekarei and left the tower with it.',
+    arsenal: {
+      techniqueIds: [
+        'hydrification',
+        'great-water-arm',
+        'water-gun',
+        'swallow-return',
+        'hidden-mist',
+      ],
+      gearIds: ['hiramekarei'],
+    },
+  }),
+  kiriFighter({
+    id: 'yuki-kozue',
+    name: 'Kozue',
+    familyName: 'Yuki',
+    pronouns: 'she',
+    title: 'Last of the Yuki in the snow islands',
+    rank: 'jonin',
+    stats: statLine('C', {
+      ninjutsu: 33,
+      speed: 33,
+      perception: 'B',
+      chakraControl: 'B',
+      willpower: 'B',
+    }),
+    traitIds: ['kind', 'calm'],
+    appearance: look(
+      'long',
+      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#f3d2b3', outfit: '#e8e0d0' },
+      'neck',
+      { expression: 'worried', age: 'grown' },
+    ),
+    specialty: 'ninjutsu',
+    bio: 'Hid her ice for twenty years and married a man who never knew. The Register found her children anyway. She has stopped hiding.',
+    arsenal: {
+      techniqueIds: [
+        'demonic-ice-mirrors',
+        'ice-needles',
+        'frost-shackle',
+        'senbon-needles',
+        'hidden-mist',
+      ],
+    },
+  }),
+  kiriFighter({
+    id: 'hoshigaki-ukibe',
+    name: 'Ukibe',
+    familyName: 'Hoshigaki',
+    pronouns: 'he',
+    title: 'Captain of the rebel boats',
+    rank: 'jonin',
+    stats: statLine('C', { reserves: 'A', strength: 'A', ninjutsu: 'A', stamina: 'B' }),
+    traitIds: ['brash', 'kind'],
+    appearance: look(
+      'spiky',
+      { hair: '#2f4f7a', eyes: '#e8e0d0', skin: '#7a9ab0', outfit: '#2a2a32' },
+      'arm',
+      { figure: 'broad', expression: 'grin', mark: 'scar', age: 'grown' },
+    ),
+    specialty: 'ninjutsu',
+    bio: 'Runs the resistance’s boats through the Isana blockade. Everyone in the Mist expects a Hoshigaki to turn out like Kisame, so Ukibe has made a point of being the opposite, loudly.',
+    arsenal: {
+      techniqueIds: ['five-feeding-sharks', 'water-shark-bullet', 'shark-skin', 'hiding-in-water'],
+    },
+  }),
+  kiriFighter({
+    id: 'suikazan-hari',
+    name: 'Hari',
+    familyName: 'Suikazan',
+    pronouns: 'they',
+    title: 'Resistance spy',
+    rank: 'chunin',
+    stats: statLine('D', {
+      ninjutsu: 'B',
+      speed: 'B',
+      perception: 'B',
+      intellect: 'C',
+      chakraControl: 'C',
+    }),
+    traitIds: ['cunning', 'curious'],
+    appearance: look(
+      'shaggy',
+      { hair: '#4a2f1d', eyes: '#4f8a3a', skin: '#e2b48c', outfit: '#3e6b3a' },
+      'belt',
+      { expression: 'smirk', age: 'young' },
+    ),
+    specialty: 'ninjutsu',
+    bio: 'Keeps their hair tied tight and short, because loose it bristles into needles. Works in the tower kitchens and listens.',
+    arsenal: {
+      techniqueIds: ['needle-hair-barrage', 'needle-hair-guard', 'senbon-needles', 'body-flicker'],
+    },
+  }),
+  kiriFighter({
+    id: 'kaguya-sekka',
+    name: 'Sekka',
+    familyName: 'Kaguya',
+    pronouns: 'he',
+    title: 'Survivor of the Kaguya rising',
+    rank: 'jonin',
+    stats: statLine('C', {
+      taijutsu: 34,
+      stamina: 34,
+      strength: 'B',
+      speed: 'B',
+      willpower: 'B',
+    }),
+    traitIds: ['brash', 'tireless'],
+    appearance: look(
+      'long',
+      { hair: '#e8e0d0', eyes: '#2a1d14', skin: '#f3d2b3', outfit: '#e8e0d0' },
+      'belt',
+      { shape: 'long', expression: 'stern', mark: 'scar', age: 'grown' },
+    ),
+    specialty: 'taijutsu',
+    bio: 'The Kaguya rose against the purge too early and alone, and were wiped out for it. Sekka crawled out of the burning compound. The resistance waited; he has never forgiven them that.',
+    arsenal: {
+      techniqueIds: ['dance-of-the-willow', 'dance-of-the-larch', 'finger-bone-bullets'],
+    },
+  }),
+  kiriFighter({
+    id: 'uminari-isobe',
+    name: 'Isobe',
+    familyName: 'Uminari',
+    pronouns: 'she',
+    title: 'Breath-diver and go-between',
+    rank: 'chunin',
+    stats: statLine('D', {
+      perception: 'B',
+      stamina: 'B',
+      speed: 'C',
+      taijutsu: 'C',
+      ninjutsu: 'C',
+    }),
+    traitIds: ['cunning', 'tireless'],
+    appearance: look(
+      'ponytail',
+      { hair: '#1b1a22', eyes: '#2a1d14', skin: '#9a6440', outfit: '#e8e0d0' },
+      'arm',
+      { expression: 'smirk', age: 'grown' },
+    ),
+    specialty: 'taijutsu',
+    bio: 'The Uminari divers carry messages, people and abalone across the water for whoever pays, and whistle to each other in a language nobody else has cracked.',
+    arsenal: {
+      techniqueIds: ['deep-dive', 'diver-whistle', 'undertow-drag', 'senbon-needles'],
+    },
+  }),
+  kiriFighter({
+    id: 'utakata',
+    name: 'Utakata',
+    familyName: '',
+    pronouns: 'he',
+    title: 'Host of the Six-Tails',
+    rank: 'jonin',
+    stats: statLine('C', {
+      ninjutsu: 'A',
+      chakraControl: 'A',
+      reserves: 'A',
+      speed: 'B',
+      intellect: 'B',
+    }),
+    traitIds: ['lazy', 'calm'],
+    appearance: look(
+      'shaggy',
+      { hair: '#2a1d14', eyes: '#7a4a8a', skin: '#f3d2b3', outfit: '#3d5fa8' },
+      'neck',
+      { shape: 'long', expression: 'calm', age: 'young' },
+    ),
+    specialty: 'ninjutsu',
+    bio: 'Left the Mist after his master tried to tear the Six-Tails out of him. Wanders the islands blowing bubbles from a pipe, and belongs to neither side.',
+    arsenal: {
+      techniqueIds: ['six-tails-acid-bubbles', 'exploding-bubbles', 'bubble-cage', 'body-flicker'],
+    },
+  }),
+];

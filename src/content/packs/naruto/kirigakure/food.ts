@@ -44,4 +44,25 @@ export const KIRI_FOODS: readonly FoodDef[] = [
     energy: 10,
     slots: 0,
   },
+  {
+    id: 'whale-bacon',
+    name: 'Whale Bacon',
+    icon: 'grill',
+    description: 'Striped red and white, sliced thin off the flensing table and eaten standing up.',
+    cost: 40,
+    satiety: 35,
+    energy: 10,
+    slots: 0,
+  },
+  {
+    id: 'whale-broth',
+    name: 'Whale-Bone Broth',
+    icon: 'bowl',
+    description:
+      'Boiled all night from the bones before they go to the graves. The whalers say grace over it.',
+    cost: 25,
+    satiety: 30,
+    energy: 5,
+    slots: 0,
+  },
 ];
