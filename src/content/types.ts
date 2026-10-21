@@ -3,6 +3,7 @@ import type { FoodDef, TrainingDef } from './drills';
 import type { EnemyDef } from './enemies';
 import type { ContractDef } from './contracts';
 import type { PuppetDef } from './puppets';
+import type { TownGreeting } from './greetings';
 import type { ClanDust, DustDef } from './dusts';
 import type { ClanHive, StrainDef } from './strains';
 import type { AtlasDef, MapLabelSide } from './atlas';
@@ -283,6 +284,8 @@ export interface LocationDef {
   readonly places: readonly PlaceDef[];
   /** Why it can't be visited yet; absent when travel is possible. The way there is a route. */
   readonly lockedReason?: string;
+  /** What the town holds against you, if anything: dearer prices and slower friends. */
+  readonly greetings?: readonly TownGreeting[];
 }
 
 export interface ContentPack {

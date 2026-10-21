@@ -12,6 +12,7 @@ import type { GameState } from '../state';
 import { closedReason } from '../village';
 import type { ActionHandler, ActionOf } from './types';
 import { placeInText } from '../placeName';
+import { townPrice } from '../greetings';
 
 /**
  * The bar at night: stand everyone inside a round and they all warm to you a little. That
@@ -36,18 +37,20 @@ export const buyRound: ActionHandler<ActionOf<'buyRound'>> = {
       closedReason(tavern.name, tavern.hours, state),
       state.village.lastRoundDay === state.time.day && 'You’ve already stood a round tonight.',
       tavernCrowd(state, ctx).length === 0 && 'Nobody’s in yet to buy for.',
-      state.wallet.ryo < tavern.roundCost && `You can’t afford a round (${tavern.roundCost} ryo).`,
+      state.wallet.ryo < townPrice(tavern.roundCost, state, ctx) &&
+        `You can’t afford a round (${townPrice(tavern.roundCost, state, ctx)} ryo).`,
     );
   },
   perform(state, _action, ctx) {
     const tavern = placeHere(state, ctx, 'tavern');
     if (!tavern) return state;
-    const paid = spend(state.wallet, tavern.roundCost);
+    const round = townPrice(tavern.roundCost, state, ctx);
+    const paid = spend(state.wallet, round);
     if (!paid.ok) return state;
     const crowd = tavernCrowd(state, ctx);
-    const warmth = warmed(state, ctx, ROUND_BOND);
+    const warmth = new Map(crowd.map((p) => [p.id, warmed(state, ctx, ROUND_BOND, p)]));
     const bonds = Object.fromEntries(
-      crowd.map((p) => [p.id, addPoints(bondOf(state, p.id), warmth)]),
+      crowd.map((p) => [p.id, addPoints(bondOf(state, p.id), warmth.get(p.id) ?? 0)]),
     );
     const next = {
       ...state,
@@ -55,14 +58,13 @@ export const buyRound: ActionHandler<ActionOf<'buyRound'>> = {
       people: { ...state.people, bonds: { ...state.people.bonds, ...bonds } },
       village: { ...state.village, lastRoundDay: state.time.day },
     };
-    const names = crowd.map((p) => p.name);
     return log(next, {
       heading: `A round at ${placeInText(tavern.name)}`,
       text: roundStory(crowd),
       tone: 'success',
       chips: [
-        chip(`−${tavern.roundCost} ryo`, 'cost'),
-        ...names.flatMap((name) => amountChip(name, warmth, 'gain')),
+        chip(`−${round} ryo`, 'cost'),
+        ...crowd.flatMap((p) => amountChip(p.name, warmth.get(p.id) ?? 0, 'gain')),
       ],
     });
   },
@@ -81,12 +83,14 @@ export const drinkWith: ActionHandler<ActionOf<'drinkWith'>> = {
         `${person.name} isn’t in tonight.`,
       talkedToday(bondOf(state, person.id), state.time.day) &&
         `You’ve already spent time with ${person.name} today.`,
-      state.wallet.ryo < tavern.cupCost && `A drink costs ${tavern.cupCost} ryo.`,
+      state.wallet.ryo < townPrice(tavern.cupCost, state, ctx) &&
+        `A drink costs ${townPrice(tavern.cupCost, state, ctx)} ryo.`,
     );
   },
   perform(state, action, ctx) {
     const tavern = placeHere(state, ctx, 'tavern');
-    const paid = tavern ? spend(state.wallet, tavern.cupCost) : null;
+    const cup = tavern ? townPrice(tavern.cupCost, state, ctx) : 0;
+    const paid = tavern ? spend(state.wallet, cup) : null;
     if (!tavern || !paid?.ok) return state;
     const person = requirePerson(state, ctx, action.personId);
     const way = drinkWay(action.way);
@@ -96,7 +100,7 @@ export const drinkWith: ActionHandler<ActionOf<'drinkWith'>> = {
       heading: `A drink with ${person.name}`,
       text: drinkStory(way, person, toneReaction(ctx, person, way.tone)),
       tone: delta > 0 ? 'success' : 'warning',
-      chips: [chip(`−${tavern.cupCost} ryo`, 'cost'), ...together.chips],
+      chips: [chip(`−${cup} ryo`, 'cost'), ...together.chips],
     });
   },
 };

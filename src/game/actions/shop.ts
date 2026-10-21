@@ -17,6 +17,7 @@ import { busyReason, chip, firstBlocker, log, placesHere } from '../ops';
 import type { GameState } from '../state';
 import { closedReason, isOpen, marketPrice, stallsHere } from '../village';
 import type { ActionHandler, ActionOf } from './types';
+import { townPrice } from '../greetings';
 
 /** Buying and wearing gear, filling the tool pouch, and stocking the pantry. */
 
@@ -46,12 +47,13 @@ export const buyGear: ActionHandler<ActionOf<'buyGear'>> = {
       closedReason(shop.name, shop.hours, state),
       owns(state.inventory, def.id) && 'You already own this.',
       gearRankBlocker(state, def),
-      state.wallet.ryo < def.cost && `You can’t afford it (${def.cost} ryo).`,
+      state.wallet.ryo < townPrice(def.cost, state, ctx) &&
+        `You can’t afford it (${townPrice(def.cost, state, ctx)} ryo).`,
     );
   },
   perform(state, action, ctx) {
     const def = ctx.content.gear.require(action.gearId);
-    const paid = spend(state.wallet, def.cost);
+    const paid = spend(state.wallet, townPrice(def.cost, state, ctx));
     if (!paid.ok) return state;
     const bought = addGear(state.inventory, def.id);
     // A new piece goes straight on if the slot is empty.
@@ -63,7 +65,7 @@ export const buyGear: ActionHandler<ActionOf<'buyGear'>> = {
         heading: `Bought ${def.name}`,
         text: def.description,
         tone: 'success',
-        chips: [chip(`−${def.cost} ryo`, 'cost')],
+        chips: [chip(`−${townPrice(def.cost, state, ctx)} ryo`, 'cost')],
       },
     );
   },
@@ -79,12 +81,13 @@ export const buyTool: ActionHandler<ActionOf<'buyTool'>> = {
       closedReason(shop.name, shop.hours, state),
       toolCount(state.inventory, def.id) >= POUCH_LIMIT &&
         `Your pouch holds ${POUCH_LIMIT} of those.`,
-      state.wallet.ryo < def.cost && `You can’t afford it (${def.cost} ryo).`,
+      state.wallet.ryo < townPrice(def.cost, state, ctx) &&
+        `You can’t afford it (${townPrice(def.cost, state, ctx)} ryo).`,
     );
   },
   perform(state, action, ctx) {
     const def = ctx.content.tools.require(action.toolId);
-    const paid = spend(state.wallet, def.cost);
+    const paid = spend(state.wallet, townPrice(def.cost, state, ctx));
     if (!paid.ok) return state;
     return { ...state, wallet: paid.value, inventory: addTool(state.inventory, def.id) };
   },

@@ -3,12 +3,14 @@ import type { PersonDef } from '@/content';
 import type { GameContext } from '../context';
 import { characterModifiers } from '../profile';
 import type { GameState } from '../state';
+import { townWarmth } from '../greetings';
 
 /**
  * How much a moment with someone counts today. A shared, convivial meal (`bondGain`) makes
  * good time count for more, and so do your habits with someone whose traits take to them
- * (`QuirkDef`: each one they warm to counts for more, each they don't for less). Neither ever
- * softens a falling-out.
+ * (`QuirkDef`: each one they warm to counts for more, each they don't for less), and less with
+ * someone whose home town holds something against you (`greetings.ts`). None of it ever softens
+ * a falling-out.
  */
 
 /** What each habit someone warms to (or doesn't) adds to (or takes from) good time with them. */
@@ -36,6 +38,6 @@ export function warmed(
   person?: PersonDef,
 ): number {
   if (delta <= 0) return delta;
-  const habits = person ? quirkTilt(state, ctx, person) : 1;
+  const habits = person ? quirkTilt(state, ctx, person) * townWarmth(state, ctx, person) : 1;
   return Math.round(delta * characterModifiers(state.character, ctx).bondGain * habits);
 }

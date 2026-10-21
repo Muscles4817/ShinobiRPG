@@ -29,12 +29,12 @@ describeFan('the fan pack’s towns', () => {
     );
   });
 
-  it('lets a genin on a pass reach the towns on safe roads, but not the Waves, the Mist or the Sand', () => {
+  it('lets a genin on a pass reach the towns on safe roads, but not the Waves or the Mist', () => {
     const passed = withPass(newGame({}, ctx));
     for (const town of TOWNS) {
       expect(dispatch(passed, { type: 'travel', locationId: town }, ctx).ok).toBe(true);
     }
-    for (const far of ['land-of-waves', 'kirigakure', 'sunagakure']) {
+    for (const far of ['land-of-waves', 'kirigakure']) {
       expect(dispatch(passed, { type: 'travel', locationId: far }, ctx)).toEqual({
         ok: false,
         error: SAFE_ROADS_ONLY,

@@ -1,11 +1,15 @@
 import { counted } from '@/core';
 import type { GameContext } from '../context';
+import { greetingNotes, type GreetingNote } from '../greetings';
 import type { GameState } from '../state';
 import { festivalNotice, hasSight, rumoursToday, sightTonight } from '../village';
 import { choice, type Choice } from './common';
 import { strayNotice, type StrayNotice } from './companion';
 
-/** The village's mood today: a festival, the gossip, and what walks the streets at night. */
+/**
+ * The village's mood today: what it holds against you, a festival, the gossip, and what walks
+ * the streets at night.
+ */
 
 export interface FestivalBanner {
   readonly name: string;
@@ -27,6 +31,8 @@ export type NightSight =
   | { readonly kind: 'unseen'; readonly text: string };
 
 export interface VillageView {
+  /** What this town holds against you, and what it costs you. */
+  readonly greetings: readonly GreetingNote[];
   readonly festival: FestivalBanner | null;
   readonly rumours: readonly string[];
   readonly night: NightSight | null;
@@ -70,6 +76,7 @@ function night(state: GameState, ctx: GameContext): NightSight | null {
 
 export function villageView(state: GameState, ctx: GameContext): VillageView {
   return {
+    greetings: greetingNotes(state, ctx),
     festival: banner(state, ctx),
     rumours: rumoursToday(state, ctx).map((r) => r.text),
     night: night(state, ctx),

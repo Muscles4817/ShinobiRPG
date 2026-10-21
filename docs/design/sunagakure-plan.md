@@ -101,6 +101,14 @@ the walk. Each road has its own events (`sunagakure/roadEvents.ts`): sandstorms,
 mirages in the outer sands; a priest's chant and a barge run aground on the crossing; grey sand
 that cuts and voices of the lost in the belt.
 
+**The gates are shut to the Leaf.** The Sand turns a Leaf shinobi back at the gorge until the
+Kazekage gives leave (`suna-gates-open`). That leave comes from one job at the Barge Office,
+open once the priests will carry you: _The Envoy Who Missed the Barge_
+(`kageroLanding/envoy.ts`). Sayo, the Sand's envoy, is stranded at the Landing with the
+daimyo's answer, and a Leaf shinobi walks her home across the sand. The job ends inside the
+Sand, and its ending leaves the Kazekage's leave to come and go. Even then the Sand charges
+the Leaf more and warms to it slowly.
+
 ## The town today (Era I)
 
 A foreigner is kept to the **Outer Ring** (`sunagakure/place.ts`, backdrop `sand-village`):
@@ -149,13 +157,13 @@ dark rings round a priest's eyes (and Gaara's) are its mark.
 
 ## Engine gaps
 
-| Need                  | Today                                                                                                                                                                                              |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| How a town greets you | Nothing reads where you're from or what you carry. The Sand reacts to the Leaf and to a contract, as the Mist will to a bloodline: one rule for all three                                          |
-| Breaking a beast      | A companion takes orders only as the bond opens them. Breaking opens orders early and keeps the bond thin                                                                                          |
-| Intelligent beasts    | Nothing marks a companion kind as having a mind of its own                                                                                                                                         |
-| Puppets               | A puppet is a summon without a contract: a front-row body on threads, paid in chakra, dropping when its maker falls. The full system (building, repair, hidden weapons) is like companions or dust |
-| Spice                 | A dust kind of its own, a trade good; whether it can be taken (and what it costs) is open                                                                                                          |
+| Need                  | Today                                                                                                                                                                                                                                                                                                                  |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| How a town greets you | Done: a town’s `greetings` hold where you come from or a contract against you, wary or cold (`game/greetings.ts`), for dearer prices there and slower friends from there. The Sand is cold to the Leaf and to contracts, the Landing wary of contracts. The Mist’s grudge against a bloodline is the next cause to add |
+| Breaking a beast      | A companion takes orders only as the bond opens them. Breaking opens orders early and keeps the bond thin                                                                                                                                                                                                              |
+| Intelligent beasts    | Nothing marks a companion kind as having a mind of its own                                                                                                                                                                                                                                                             |
+| Puppets               | A puppet is a summon without a contract: a front-row body on threads, paid in chakra, dropping when its maker falls. The full system (building, repair, hidden weapons) is like companions or dust                                                                                                                     |
+| Spice                 | A dust kind of its own, a trade good; whether it can be taken (and what it costs) is open                                                                                                                                                                                                                              |
 
 ## Open questions
 
