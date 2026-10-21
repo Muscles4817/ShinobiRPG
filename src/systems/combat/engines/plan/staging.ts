@@ -1,9 +1,16 @@
 import { STAT_GRADES, statTier } from '@/systems/stats';
 
 import type { CombatTechnique } from '../../contract';
-import { chakraLine, forceLine, turnLine, type NarrationForce } from '../../rules/narration';
+import {
+  forceLine,
+  poolsLine,
+  turnLine,
+  type NarrationForce,
+  type NarrationPools,
+} from '../../rules/narration';
 import { findCard, type Card } from './cards';
 import type { CardId, PlanFighter, Round } from './state';
+import { poolAmounts } from './swarmView';
 
 /**
  * Staging a turn for the screen. How big a turn was, for its sound (`forceLine`): the grade of its maker in the art
@@ -42,29 +49,32 @@ export function turnForce(fighter: PlanFighter, id: CardId | undefined): Narrati
   };
 }
 
-/** Everyone's chakra, by id, for a line that says where it stands (`chakraLine`). */
-function chakraOf(fighters: readonly PlanFighter[]): Record<string, number> {
-  return Object.fromEntries(fighters.map((f) => [f.id, f.chakra]));
+/** Everyone's pools, by id, for a line that says where they stand (`poolsLine`). */
+function poolsOf(fighters: readonly PlanFighter[]): Record<string, Record<string, number>> {
+  return Object.fromEntries(fighters.map((f) => [f.id, poolAmounts(f)]));
 }
 
-/** "— Second exchange —", saying where everyone's chakra starts it. */
+/** "— Second exchange —", saying where everyone's pools start it. */
 export function exchangeDivider(name: string, fighters: readonly PlanFighter[]): string {
-  return chakraLine(`— ${name} exchange —`, chakraOf(fighters));
+  return poolsLine(`— ${name} exchange —`, poolsOf(fighters));
 }
 
-/** The chakra of those whose chakra the turn moved. */
-function chakraMoved(before: Round, after: Round): Record<string, number> {
-  const was = chakraOf(before.fighters);
+/** The pools the turn moved, for each fighter it moved any of. */
+function poolsMoved(before: Round, after: Round): NarrationPools {
+  const was = poolsOf(before.fighters);
   return Object.fromEntries(
-    after.fighters.filter((f) => was[f.id] !== f.chakra).map((f) => [f.id, f.chakra]),
+    Object.entries(poolsOf(after.fighters)).flatMap(([id, now]) => {
+      const moved = Object.entries(now).filter(([pool, n]) => was[id]?.[pool] !== n);
+      return moved.length > 0 ? [[id, Object.fromEntries(moved)]] : [];
+    }),
   );
 }
 
 /**
  * A turn as the screen stages it: every line it wrote tagged as its maker's, the first with
  * the distance the turn began at and the last with the new one if the turn moved the fight,
- * each with how big the turn was, and the last with the chakra of anyone the turn moved it
- * for. The tags are narration only: the turn plays exactly as untagged.
+ * each with how big the turn was, and the last with the pools of anyone the turn moved
+ * them for. The tags are narration only: the turn plays exactly as untagged.
  */
 export function staged(before: Round, after: Round, id: string): Round {
   const { played, ...turn } = after;
@@ -76,11 +86,11 @@ export function staged(before: Round, after: Round, id: string): Round {
     if (i === last && turn.range !== before.range) return turn.range;
     return i === 0 ? before.range : undefined;
   };
-  const moved = chakraMoved(before, turn);
+  const moved = poolsMoved(before, turn);
   const tagged = added.map((line, i) => {
     const theirs = turnLine(line, id, rangeAt(i));
     const sized = force ? forceLine(theirs, force) : theirs;
-    return i === last ? chakraLine(sized, moved) : sized;
+    return i === last ? poolsLine(sized, moved) : sized;
   });
   return { ...turn, lines: [...before.lines, ...tagged] };
 }

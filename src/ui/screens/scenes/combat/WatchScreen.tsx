@@ -218,9 +218,19 @@ function ToldSoFar({ beats, at }: { readonly beats: readonly FightBeat[]; readon
   );
 }
 
+/** A fighter's pools as a beat says they stand, over what they were before it. */
+function poolsAt(fighter: CombatantView, said: Readonly<Record<string, number>>): CombatantView {
+  const meters = fighter.meters?.map((m) => ({ ...m, value: said[m.id] ?? m.value }));
+  return {
+    ...fighter,
+    chakra: said.chakra ?? fighter.chakra,
+    ...(meters ? { meters } : {}),
+  };
+}
+
 /**
- * Fighters as the beat being shown leaves them: health and chakra from the beat, the other pools
- * from `before` until the beats have played (then everyone as they are now).
+ * Fighters as the beat being shown leaves them: health and pools from the beat, over how they
+ * stood before these beats (`before`) where the beats haven't said yet.
  */
 function fightersAt(
   view: CombatView,
@@ -229,14 +239,11 @@ function fightersAt(
 ): CombatantView[] {
   return view.combatants.map((c) => {
     const was = before?.find((b) => b.id === c.id);
-    const pools = was ? { chakra: was.chakra, ...(was.meters ? { meters: was.meters } : {}) } : {};
-    const chakra = beat?.chakra[c.id];
-    return {
-      ...c,
-      ...pools,
-      ...(chakra === undefined ? {} : { chakra }),
-      health: beat?.health[c.id] ?? c.health,
-    };
+    const start = was
+      ? { ...c, chakra: was.chakra, ...(was.meters ? { meters: was.meters } : {}) }
+      : c;
+    const health = beat?.health[c.id] ?? c.health;
+    return { ...poolsAt(start, beat?.pools[c.id] ?? {}), health };
   });
 }
 
@@ -282,7 +289,7 @@ export function WatchScreen(props: WatchScreenProps) {
   const beat = play.beat;
   useWatchKeys(play, props);
   useBeatSounds(beat, youId, fresh);
-  // Once played, everyone stands as they are now (chakra gathered back at the exchange's end).
+  // Once played, everyone stands as they are now (chakra and breath gathered back at the end).
   const fighters = play.done
     ? [...view.combatants]
     : fightersAt(view, beat, props.gauges?.before ?? null);

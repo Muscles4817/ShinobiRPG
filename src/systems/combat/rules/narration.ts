@@ -7,8 +7,8 @@
  * turn says whose turn it was (and, if the turn moved the fight, the new distance) via
  * `turnLine`, so the screen can stage it, and how big the turn was (`forceLine`: its maker's
  * grade in the art, the ground an area covered, its element), so the screen can make a jōnin's
- * fire sound like one. A line may also say where everyone's chakra stands once it has played
- * (`chakraLine`), so the watch screen can move chakra beat by beat. `splitNarration` reads all of it back out of the sentence. Lines without a marker (older saves) pass through unchanged.
+ * fire sound like one. A line may also say where fighters' pools (chakra, breath, a hive, dust)
+ * stand once it has played (`poolsLine`), so the watch screen can move them beat by beat. `splitNarration` reads all of it back out of the sentence. Lines without a marker (older saves) pass through unchanged.
  */
 
 import { capitalise, listed, numberWord, ordinalWord, plural } from '@/core';
@@ -48,9 +48,12 @@ export interface Narration {
   readonly named?: readonly string[];
   /** Which bank and template the words came from (`voiceLine`), when the engine says. */
   readonly voices?: readonly string[];
-  /** Fighters' chakra once the line has played, by id (`chakraLine`), when the engine says. */
-  readonly chakra?: Readonly<Record<string, number>>;
+  /** Fighters' pools once the line has played, by id (`poolsLine`), when the engine says. */
+  readonly pools?: NarrationPools;
 }
+
+/** Where fighters' pools stand, by fighter id and then by pool ("chakra", "breath"…). */
+export type NarrationPools = Readonly<Record<string, Readonly<Record<string, number>>>>;
 
 /** How big a turn was: its maker's grade in the art (0 for E up to 5 for S), area, element. */
 export interface NarrationForce {
@@ -68,6 +71,8 @@ const ACTOR_MARKER = /\s*⟦by:([^⟧]+)⟧/;
 const RANGE_MARKER = /\s*⟦at:(close|mid|far)⟧/;
 const NAMED_MARKER = /\s*⟦n:([^⟧]+)⟧/g;
 const VOICE_MARKER = /\s*⟦v:([^⟧]+)⟧/g;
+const POOLS_MARKER = /\s*⟦pl:([^⟧]+)⟧/;
+/** The chakra-only form an earlier version wrote, read so a fight saved mid-way still plays. */
 const CHAKRA_MARKER = /\s*⟦ck:([^⟧]+)⟧/;
 
 function isReaction(word: string | undefined): word is NarrationReaction {
@@ -121,20 +126,39 @@ export function voiceLine(text: string, ...voices: readonly string[]): string {
   return [text, ...voices.map((v) => `⟦v:${v}⟧`)].join(' ');
 }
 
-/** A line after which these fighters' chakra stands at these amounts (by id). */
-export function chakraLine(text: string, chakra: Readonly<Record<string, number>>): string {
-  const said = Object.entries(chakra).map(([id, amount]) => `${id}=${Math.round(amount)}`);
-  return said.length === 0 ? text : `${text} ⟦ck:${said.join('|')}⟧`;
+/** A line after which these fighters' pools stand at these amounts (by id, then by pool). */
+export function poolsLine(text: string, pools: NarrationPools): string {
+  const said = Object.entries(pools).flatMap(([id, theirs]) => {
+    const amounts = Object.entries(theirs).map(([pool, n]) => `${pool}:${Math.round(n)}`);
+    return amounts.length > 0 ? [`${id}=${amounts.join(',')}`] : [];
+  });
+  return said.length === 0 ? text : `${text} ⟦pl:${said.join('|')}⟧`;
 }
 
-function chakraIn(line: string): Record<string, number> | null {
-  const found = CHAKRA_MARKER.exec(line)?.[1];
-  if (!found) return null;
-  const pairs = found.split('|').map((pair) => {
+/** "id=…" pairs, split at the last "=" (ids may hold a colon, never an equals sign). */
+function byFighter(found: string): [string, string][] {
+  return found.split('|').map((pair) => {
     const at = pair.lastIndexOf('=');
-    return [pair.slice(0, at), Number(pair.slice(at + 1))] as const;
+    return [pair.slice(0, at), pair.slice(at + 1)];
   });
-  return Object.fromEntries(pairs);
+}
+
+/** "chakra:40,breath:12" as { chakra: 40, breath: 12 }. */
+function amountsIn(said: string): Record<string, number> {
+  return Object.fromEntries(
+    said.split(',').map((pool) => {
+      const [name = '', amount] = pool.split(':');
+      return [name, Number(amount)];
+    }),
+  );
+}
+
+function poolsIn(line: string): Record<string, Record<string, number>> | null {
+  const found = POOLS_MARKER.exec(line)?.[1];
+  if (found) return Object.fromEntries(byFighter(found).map(([id, said]) => [id, amountsIn(said)]));
+  const chakra = CHAKRA_MARKER.exec(line)?.[1];
+  if (!chakra) return null;
+  return Object.fromEntries(byFighter(chakra).map(([id, n]) => [id, { chakra: Number(n) }]));
 }
 
 /** The templates a line's words came from ("search.2"), without reading the rest of it. */
@@ -182,13 +206,14 @@ export function splitNarration(line: string): Narration {
   const force = forceOf(line);
   const named = namedIn(line);
   const voices = voicesIn(line);
-  const chakra = chakraIn(line);
+  const pools = poolsIn(line);
   const markers = [
     MARKER,
     REACTION_MARKER,
     ACTOR_MARKER,
     RANGE_MARKER,
     FORCE_MARKER,
+    POOLS_MARKER,
     CHAKRA_MARKER,
   ];
   const text = [...markers, NAMED_MARKER, VOICE_MARKER].reduce(
@@ -204,7 +229,7 @@ export function splitNarration(line: string): Narration {
     ...(force ? { force } : {}),
     ...(named ? { named } : {}),
     ...(voices ? { voices } : {}),
-    ...(chakra ? { chakra } : {}),
+    ...(pools ? { pools } : {}),
   };
 }
 
