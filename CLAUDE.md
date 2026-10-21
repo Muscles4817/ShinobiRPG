@@ -1191,6 +1191,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   empty, and Enter fights.
   The editor on a desk fills the window too: the roster, then the fighter's stats and their
   techniques side by side (stacked below 1300px), the cards short as on a profile.
+  The Record on a desk keeps its header in view, lists the journal's days beside the feed (the
+  day being read marked, a click going to it; below 1300px the feed has the column) and sets the
+  field book's entries two across.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own
