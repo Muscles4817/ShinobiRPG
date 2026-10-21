@@ -75,6 +75,7 @@ const PERK_WORDS: Readonly<Record<CombatPerk, string>> = {
   mimicry: 'Mimicry: copies a technique it has watched',
   'water-walking': 'Walks on water',
   'tree-walking': 'Walks up trees',
+  shield: 'Shield: dust that rises on its own against a hit',
 };
 
 const sandboxes = new WeakMap<GameContext, GameState>();

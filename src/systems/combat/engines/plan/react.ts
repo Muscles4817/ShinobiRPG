@@ -31,6 +31,7 @@ import { told, within, type Bank, type Moment } from './fresh';
 import { fighterIn, patch, say, type DefenceKind, type PlanFighter, type Round } from './state';
 import { confusedLine } from './sceneVoice';
 import { dustGuard } from './dust';
+import { shieldUp } from './shield';
 
 /** Foresight finds a Counter's moment more often. */
 const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
@@ -321,9 +322,13 @@ export function react(start: Round, struck: Hit): Round {
   if (evasion.slipped) return evasion.slipped;
   const swap = throughSwap(round, ready, hit);
   if (swap.escaped) return swap.round;
-  const shielded = swap.round;
   const { guarded, smashed, lets } = guardOn(hit, has('guard'));
-  const force = Math.max(1, Math.round(kitted(shielded, attacker, target, blow) * lets));
+  const met = Math.max(1, Math.round(kitted(swap.round, attacker, target, blow) * lets));
+  // An automatic shield rises last, over whatever the ready defence did (`shield.ts`).
+  const breaking = { what, hit: hitTypeOf(blow), breaks: blow.breaks === true };
+  const shield = shieldUp(swap.round, { attacker, target, rng: hit.rng, ...breaking }, met);
+  if (shield.force <= 0) return shield.round;
+  const { round: shielded, force } = shield;
   const damage = taken(target, force);
   const told = say(
     shielded,

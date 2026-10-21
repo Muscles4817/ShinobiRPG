@@ -424,7 +424,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     it; heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
     harder, a bane scatters it, and `CombatOutcome.dust` reports what is left. Kinds are shared
     content (`content/shared/dusts.ts`, `DustDef`). An automatic shield is never dust's: it
-    belongs to where the power came from (a beast, a spirit). Your dust is kept between fights
+    belongs to where the power came from (a beast, a spirit), and reaches a fight as the
+    `shield` perk (`rules/shield.ts`, `plan/shield.ts`; an arsenal's `perks`, a foe's
+    `dust.shield`): dust rises on its own against a hit that would land, after the ready
+    defence, at a pace heavy dust slows, so a fast enough attacker outruns it; it keeps out what
+    it holds (a break half), paid in dust, and never meets an illusion. Your dust is kept between fights
     (`systems/dusts`, `GameState.dust`, `game/dust/`): a child of a clan with a `dust`
     (`ClanDef.dust`) is born with a full store, as much as their chakra can hold up; what came
     back from a fight is what the store holds, and each day dust the ground gives (sand, ash)

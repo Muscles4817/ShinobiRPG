@@ -172,6 +172,8 @@ export const GAARA: PersonDef = sunaFighter({
   arsenal: {
     techniqueIds: ['sand-shuriken', 'sand-coffin', 'sand-burial', 'sand-wall', 'sand-tsunami'],
     dust: 'sand',
+    // Shukaku's sand rises to shield him without his asking.
+    perks: ['shield'],
   },
 });
 

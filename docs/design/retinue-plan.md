@@ -742,7 +742,32 @@ what is left; the fight screen shows a Dust meter.
   dust is made at home (`makeDust`: an afternoon, energy and materials: iron cheap, gold dear) or
   bought by the batch where a smith sells it (`buyDust`: dearer, no time; the original pack's
   Kurogane Forge sells iron and glass sand).
-- **Later:** the beast or spirit shield perk, with milestone 3.
+- **The shield** (built, below): the beast or spirit shield perk, for NPCs for now.
+
+### The automatic shield
+
+Gaara's sand rises without his asking because it came from Shukaku. The shield is a **perk**
+(`shield`), a gift of where the power came from, laid over whatever dust its holder commands;
+until tailed beasts and bound spirits exist as content, it is given straight to NPCs: an
+arsenal's `perks` (Gaara) or a foe's `dust.shield` (the original pack's ash-bound Haibara, who
+sealed a kiln spirit into his ash, hunted in the B-rank job "The Ash That Answers").
+Validation refuses a shield with no dust to raise.
+
+**In the fight** (`rules/shield.ts`, `engines/plan/shield.ts`), after the ready defence has done
+what it does, against any hit that would land:
+
+- **It is quick, not instant.** It rises at its own pace (a good chūnin's speed, slower for heavy
+  dust: sand is quicker than gold). Against anyone slower it rises nine times in ten; an
+  attacker from about a tenth faster starts to outrun it, and one nearly twice as fast always
+  does. That is how Lee gets through.
+- **It holds so much.** It keeps out about a quarter of a body's health from one hit (heavier
+  dust more, a break half), and a bigger hit comes through with what is left over.
+- **Dust pays.** Every block spends dust for what it kept out; below a small reserve it can't
+  rise, so a long fight wears it down.
+- **Illusions go past it.** It stands in the way of bodies and chakra, never the mind.
+
+A read names it with its counter (speed, illusions, and the dust's banes), and the log stamps
+the block "Shielded".
 
 ### Foes with hives and dust
 

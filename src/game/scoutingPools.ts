@@ -31,17 +31,27 @@ function hiveNote(strainId: string, ctx: GameContext): PoolNote | null {
   };
 }
 
-function dustNote(dustId: string, ctx: GameContext): PoolNote | null {
-  const dust = ctx.content.dusts.get(dustId);
+/** What scatters a kind of dust, as a counter. */
+function scatteredBy(banes: readonly string[]): string {
+  if (banes.length === 0) return 'Nothing scatters it: outlast what they carry.';
+  const verb = banes.length === 1 && banes[0] !== 'heavy blows' ? 'scatters' : 'scatter';
+  return `${capitalised(listed(banes))} ${verb} it.`;
+}
+
+/** A shield is outrun by speed and never meets an illusion. */
+const SHIELD_COUNTER = 'Only real speed gets in before the shield rises, and illusions go past it.';
+
+function dustNote(carried: NonNullable<EnemyDef['dust']>, ctx: GameContext): PoolNote | null {
+  const dust = ctx.content.dusts.get(carried.dustId);
   if (!dust) return null;
-  const banes = dust.banes.map((b) => (b === 'heavy' ? 'heavy blows' : b));
-  return {
-    label: `Commands ${dust.name.toLowerCase()}.`,
-    counter:
-      banes.length > 0
-        ? `${capitalised(listed(banes))} ${banes.length === 1 && banes[0] !== 'heavy blows' ? 'scatters' : 'scatter'} it.`
-        : 'Nothing scatters it: outlast what they carry.',
-  };
+  const kind = dust.name.toLowerCase();
+  const banes = scatteredBy(dust.banes.map((b) => (b === 'heavy' ? 'heavy blows' : b)));
+  return carried.shield
+    ? {
+        label: `Commands ${kind} that rises to shield them on its own.`,
+        counter: `${SHIELD_COUNTER} ${banes}`,
+      }
+    : { label: `Commands ${kind}.`, counter: banes };
 }
 
 /** Notes on what you can tell a foe carries. */
@@ -51,6 +61,6 @@ export function poolNotes(
   ctx: GameContext,
 ): PoolNote[] {
   const hive = seen.hive && def.hive ? hiveNote(def.hive.strainId, ctx) : null;
-  const dust = seen.dust && def.dust ? dustNote(def.dust.dustId, ctx) : null;
+  const dust = seen.dust && def.dust ? dustNote(def.dust, ctx) : null;
   return [hive, dust].flatMap((n) => (n ? [n] : []));
 }
