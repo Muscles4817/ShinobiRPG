@@ -12,21 +12,18 @@ import type { CombatUsage } from '../../teamContract';
 import { alive, hasPerk, viewOf } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
-import { screened } from '../../rules/rows';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed, isPinned } from '../../rules/verbs';
 import { slotLimit } from './cards';
-import { fieldMeter, fieldStatuses } from './field';
+import { fieldMeter } from './field';
+import { statuses } from './statusView';
 import { betweenRounds } from './adapt';
 import { intentLine, rollIntents } from './intent';
-import { lingeringStatuses } from './lingering';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
-import { prepStatuses } from './prep';
 import { openFight } from './opening';
 import { groundNote } from './groundPlay';
 import { withinGround } from '../../rules/ground';
 import { decide, resolveExchange } from './round';
-import { isDazed } from './daze';
 import {
   decode,
   encode,
@@ -40,7 +37,6 @@ import { editTeam, teamOptions } from './orders';
 import { summonFatesOf } from './summons';
 import { metersOf, onStage, poolsLeft } from './swarmView';
 import { editPlan, tableOptions } from './table';
-import { stanceStatus } from './team';
 import { foeMarkFor } from './foeTeam';
 import { planOf, plannedFighters } from './planning';
 import { squareUpLine } from '../../rules/narration';
@@ -72,24 +68,6 @@ const FIGHT_BEGINS = '— The fight begins —';
 
 function read(state: CombatState): PlanState {
   return withRows(withIntents(withSlots(upgradeLegacy(withKits(decode(state))))));
-}
-
-/**
- * Conditions, whether a back-row fighter is still out of reach behind their front row, and
- * whether a field blinds them, and what they have ready (empowered, clones, a trap).
- */
-function statuses(state: PlanState, f: PlanFighter): string[] {
-  return [
-    ...(isDazed(f) ? ['Dazed'] : []),
-    ...(f.sealed > 0 ? ['Sealed'] : []),
-    ...lingeringStatuses(f),
-    ...(alive(f) && screened(f, state.fighters) ? ['Screened'] : []),
-    ...fieldStatuses(state, f),
-    ...prepStatuses(f),
-    ...stanceStatus(f, state.fighters),
-    ...(alive(f) && f.id === state.mark ? ['Marked'] : []),
-    ...(alive(f) && f.id === state.foeMark ? ['Targeted'] : []),
-  ];
 }
 
 function fleeBlocker(state: PlanState): { disabledReason?: string } {

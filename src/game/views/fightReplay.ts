@@ -4,6 +4,8 @@ import {
   type CombatView,
   type Narration,
   type NarrationForce,
+  type NarrationPools,
+  type NarrationStatuses,
   type RangeBand,
 } from '@/systems/combat';
 import type { JournalChip } from '@/systems/journal';
@@ -16,8 +18,9 @@ import { combatLog, type CombatLogLine } from './combatLog';
  * whose turn a line was written in (`turnLine`); who it was aimed at is the other fighter the
  * line names. Health is rebuilt backwards from the fight as it stands now, so the last beat
  * always matches the screen; in between, an amount goes to the fighter the line is about.
- * Chakra is read forwards from the lines that say where it stands (each exchange's divider,
- * and a turn that moved it), so it is only known from the first such line on.
+ * Pools (chakra, breath, a hive, dust) and statuses are read forwards from the lines that say where they
+ * stand (each exchange's divider, and a turn that moved them), so they are only known from the
+ * first such line on.
  */
 
 /** "— Second exchange —": dividers between exchanges and rounds. */
@@ -35,8 +38,10 @@ export interface FightBeat {
   readonly force: NarrationForce | null;
   /** Every fighter's health once this beat has played, by combatant id. */
   readonly health: Readonly<Record<string, number>>;
-  /** Fighters' chakra once this beat has played, by id, as far as the lines have said it. */
-  readonly chakra: Readonly<Record<string, number>>;
+  /** Fighters' pools once this beat has played, by id, as far as the lines have said them. */
+  readonly pools: NarrationPools;
+  /** Fighters' statuses once this beat has played, by id, as far as the lines have said them. */
+  readonly statuses: NarrationStatuses;
 }
 
 interface Named {
@@ -100,6 +105,12 @@ function healthAfterEach(parsed: readonly Parsed[], fighters: readonly Combatant
   return after;
 }
 
+/** Pools as they stood, with what a line says laid over them (a turn says only what it moved). */
+function withPools(was: NarrationPools, said: NarrationPools): NarrationPools {
+  const ids = Object.keys(said);
+  return { ...was, ...Object.fromEntries(ids.map((id) => [id, { ...was[id], ...said[id] }])) };
+}
+
 /** Where the story has reached: its place after the last line, counting lines let go. */
 export function storyEnd(view: CombatView): number {
   return (view.logOffset ?? 0) + view.log.length;
@@ -118,12 +129,14 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
     return combatLog([line]).map((shown) => ({ said, shown, targetId }));
   });
   const health = healthAfterEach(parsed, view.combatants);
-  let chakra: Readonly<Record<string, number>> = {};
+  let pools: NarrationPools = {};
+  let statuses: NarrationStatuses = {};
   // Until a line says where the fight stands, it stands where the first such line says.
   let range = parsed.find((p) => p.said.range)?.said.range ?? view.range ?? null;
   return parsed.map(({ said, shown, targetId }, i): FightBeat => {
     range = said.range ?? range;
-    chakra = said.chakra ? { ...chakra, ...said.chakra } : chakra;
+    pools = said.pools ? withPools(pools, said.pools) : pools;
+    statuses = said.statuses ? { ...statuses, ...said.statuses } : statuses;
     const divider = shown.kind === 'round' || said.text.startsWith(DIVIDER);
     return {
       kind: divider ? 'divider' : 'line',
@@ -134,7 +147,8 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
       range,
       force: said.force ?? null,
       health: health[i] ?? {},
-      chakra,
+      pools,
+      statuses,
     };
   });
 }

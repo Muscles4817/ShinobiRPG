@@ -69,6 +69,6 @@ export function fieldMeter(state: PlanState): CombatMeter | null {
 }
 
 /** A status for fighters the field blinds. */
-export function fieldStatuses(state: PlanState, f: PlanFighter): string[] {
+export function fieldStatuses(state: Pick<PlanState, 'field'>, f: PlanFighter): string[] {
   return blinds(state.field, f) ? ['Blinded'] : [];
 }
