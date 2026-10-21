@@ -98,6 +98,11 @@ The war has more than one ending, and the player may shape it or stay out of it:
 
 Each ending is a world mark that later content reads. Era II is whichever ending happened.
 
+**A bloodline costs you in the Mist.** Kirigakure holds an awakened bloodline against you
+(`LocationDef.greetings`, `game/greetings.ts`): while you are there its shops, inn, bar, baths
+and hospital charge more, its people warm to you slowly, and the village screen says the Blood
+Register has your chakra on a page. A dormant bloodline shows nothing yet.
+
 ## Engine gaps for eras and clans
 
 These are things that are fixed per town today and would need to change by world mark. One small

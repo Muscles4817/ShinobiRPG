@@ -631,7 +631,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     you were away; people who live in a town (`homeLocationId`) are met there, its festivals
     (`FestivalDef.locationId`) are held there, and the village's street talk stays at home. A
     town may hold something against you (`LocationDef.greetings`, `game/greetings.ts`): the
-    village you come from or a summoning contract you hold, wary or cold. While it holds, the
+    village you come from, a summoning contract you hold or an awakened bloodline (a dormant one
+    shows nothing), wary or cold. While it holds, the
     town's market, shops, inn, bar, baths and hospital charge you more (`townPrice`), its people
     warm to you more slowly wherever you meet them (`townWarmth`, read in `warmed`), and the
     village screen says so; two grudges stack. A grudge may also `shut` the gates until the
@@ -842,7 +843,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`,
   and for a road not everyone may walk, `needs` and a `name` to say it by;
   `systems/travel` finds the quickest open way, validated so every location has a road). Give
-  it `greetings` if it holds where you come from or a contract against you, and `shut` gates
+  it `greetings` if it holds where you come from, a contract or a bloodline against you, and `shut` gates
   that open on a world mark a job leaves (validated in `validateGreetings.ts`). Leave `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road
   passes through it.
   A road may `trail` through bends so it follows the land. The country itself is the pack's

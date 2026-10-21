@@ -4,7 +4,8 @@ import { KIRI_COMPOUNDS } from './compounds';
 
 /**
  * Kirigakure in the years of the Bloody Mist: Yagura's village, where bloodlines are hunted
- * and the academy's last test is a fight to the death. A foreigner gets no further than the
+ * (a visitor whose bloodline has woken pays for it, `greetings`) and the academy's last test is
+ * a fight to the death. A foreigner gets no further than the
  * harbour ward, under a pass checked at every corner. It is the loyal houses' ward: the
  * Kasumi's fog shrine, the Isana's whaling quay, the Kurage's infirmary and the Shiogama's
  * forge stand among the lodging house, the dawn auction, the bathhouse, the fishermen's bar,
@@ -16,6 +17,13 @@ export const KIRIGAKURE: LocationDef = {
   epithet: 'Village Hidden in the Mist',
   map: { x: 92, y: 36, label: 'left' },
   backdrop: 'mist-village',
+  greetings: [
+    {
+      cause: { kind: 'bloodline' },
+      temper: 'cold',
+      line: 'The Blood Register has your chakra on a page by now. Shopkeepers serve you quickly and watch the door, and the masks watch you.',
+    },
+  ],
   places: [
     {
       id: 'fog-lantern-lodging',

@@ -1,6 +1,7 @@
 /**
  * How a town greets you for what you are (`docs/design/sunagakure-plan.md`): a town may hold
- * something against where you come from or against what you carry (a summoning contract). Each
+ * something against where you come from, against what you carry (a summoning contract) or
+ * against what is in your blood (an awakened bloodline). Each
  * greeting names its cause and its temper, and the game reads the temper in two places only:
  * what the town charges you, and how slowly its people warm to you (`game/greetings.ts`). Its
  * line is what the village screen says of it. A greeting may also shut the town's gates to you
@@ -12,9 +13,14 @@
 export const GREETING_TEMPERS = ['wary', 'cold'] as const;
 export type GreetingTemper = (typeof GREETING_TEMPERS)[number];
 
-/** What a town holds against you: the village you come from, or a summoning contract held. */
+/**
+ * What a town holds against you: the village you come from, a summoning contract held, or a
+ * bloodline that has awakened in you (a dormant one shows nothing yet).
+ */
 export type GreetingCause =
-  { readonly kind: 'from'; readonly locationId: string } | { readonly kind: 'contract' };
+  | { readonly kind: 'from'; readonly locationId: string }
+  | { readonly kind: 'contract' }
+  | { readonly kind: 'bloodline' };
 
 /** The town turns you away at the gate until the village remembers `until`. */
 export interface ShutGates {

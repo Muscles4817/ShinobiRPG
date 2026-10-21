@@ -57,6 +57,18 @@ describeFan('town greetings', () => {
     expect(warmed(home, ctx, -5, sandFolk)).toBe(-5);
   });
 
+  it('makes the Mist cold to an awakened bloodline, and blind to a dormant one or none', () => {
+    const inMist = (clanId: string) =>
+      newGame({ locationId: 'kirigakure', character: { ...home.character, clanId } }, ctx);
+    expect(townMarkup(inMist('hyuga'), ctx)).toBe(1.5);
+    expect(greetingNotes(inMist('hyuga'), ctx)[0]?.line).toMatch(/Blood Register/);
+    expect(townMarkup(inMist('uchiha'), ctx)).toBe(1);
+    expect(townMarkup(inMist('none'), ctx)).toBe(1);
+    const mistFolk = ctx.content.people.require('ao');
+    expect(townWarmth(inMist('hyuga'), ctx, mistFolk)).toBe(0.5);
+    expect(townWarmth(inMist('none'), ctx, mistFolk)).toBe(1);
+  });
+
   it('shuts the Sand’s gates to the Leaf until the Kazekage gives leave', () => {
     const refusal = gateRefusal(home, ctx, 'sunagakure');
     expect(refusal).toMatch(/turns Leaf shinobi back/);
