@@ -32,6 +32,16 @@ describe('grounds', () => {
     expect(groundElementScale('forest', 'fire')).toBeGreaterThan(1);
   });
 
+  it('in the desert the haze throws off every far shot, and wind and fire run strong', () => {
+    expect(groundMiss('desert', walker, 'far')).toBeGreaterThan(0);
+    expect(groundMiss('desert', nobody, 'far')).toBe(groundMiss('desert', walker, 'far'));
+    expect(groundMiss('desert', nobody, 'mid')).toBe(0);
+    expect(footingOf('desert', nobody)).toBe(1);
+    expect(groundElementScale('desert', 'wind')).toBeGreaterThan(1);
+    expect(groundElementScale('desert', 'fire')).toBeGreaterThan(1);
+    expect(groundElementScale('desert', 'water')).toBeLessThan(1);
+  });
+
   it('a room has no far range', () => {
     expect(withinGround('room', 'far')).toBe('mid');
     expect(withinGround('room', 'close')).toBe('close');

@@ -7,8 +7,9 @@ import type { CombatGround, CombatPerk, RangeBand } from '../contract';
  * cover it gives someone hiding, how often an attack from far off goes wide among trees or
  * walls, which elements it feeds, and what footing it gives: on a lake, only someone who walks
  * on water keeps theirs; among trees or roofs, someone who walks up them fights from range
- * unhindered. In a room an area technique catches its user's own side too. An arena is open
- * ground, as every fight was before grounds.
+ * unhindered. In a room an area technique catches its user's own side too. In the desert the
+ * heat haze throws off long shots, and the dry air feeds wind and fire and starves water. An
+ * arena is open ground, as every fight was before grounds.
  */
 
 export interface GroundRule {
@@ -21,6 +22,8 @@ export interface GroundRule {
   readonly cover: number;
   /** Chance an attack from far range goes wide, for anyone without the walker's perk. */
   readonly farMiss: number;
+  /** Chance an attack from far range goes wide whoever makes it: a heat haze. */
+  readonly haze?: number;
   /** The perk that keeps its footing here and lifts its penalties. */
   readonly walker?: CombatPerk;
   /** Share of their step and dodge chances kept by anyone without the walker's perk. */
@@ -83,6 +86,16 @@ export const GROUND_RULES: Readonly<Record<CombatGround, GroundRule>> = {
     footing: 0.5,
     elements: { water: 1.25, lightning: 1.15 },
   },
+  desert: {
+    name: 'Desert',
+    line: 'Open sand under the sun. Nowhere to hide, a heat haze over anything far off, and air so dry that wind and fire run strong while water has nothing to draw on.',
+    bands: ALL_BANDS,
+    cover: 0,
+    farMiss: 0,
+    haze: 0.12,
+    footing: 1,
+    elements: { wind: 1.15, fire: 1.1, water: 0.85 },
+  },
 };
 
 interface Footed {
@@ -106,7 +119,9 @@ export function footingOf(ground: CombatGround | undefined, f: Footed): number {
 
 /** Chance a fighter's attack from this distance goes wide on this ground. */
 export function groundMiss(ground: CombatGround | undefined, f: Footed, band: RangeBand): number {
-  return band === 'far' && !sureFooted(ground, f) ? groundRule(ground).farMiss : 0;
+  if (band !== 'far') return 0;
+  const rule = groundRule(ground);
+  return (sureFooted(ground, f) ? 0 : rule.farMiss) + (rule.haze ?? 0);
 }
 
 /** How much stronger a technique of this element is here. */

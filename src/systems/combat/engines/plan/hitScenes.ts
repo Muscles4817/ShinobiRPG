@@ -52,6 +52,10 @@ const HEAVY_GROUND: SceneLines = {
     '{a.poss} {what} {verb} {t}{again}{guard}, and {t.they} skid{t.ps} back across the water.',
     '{a.poss} {what} {verb} {t}{again}{guard}, and spray goes up behind {t.them}.',
   ],
+  desert: [
+    '{a.poss} {what} {verb} {t}{again}{guard}, and {t.they} slide{t.ps} back down the face of a dune.',
+    '{a.poss} {what} {verb} {t}{again}{guard}, and sand sprays up where {t.they} land{t.ps}.',
+  ],
 };
 
 /** Sentences around the verb, by weight, for moments that change how any hit reads. */

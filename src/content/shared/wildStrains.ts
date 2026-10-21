@@ -75,4 +75,16 @@ export const WILD_STRAINS: readonly StrainDef[] = [
     fears: ['water'],
     wild: { biomes: ['shore'] },
   },
+  {
+    id: 'dune-scarab',
+    name: 'Dune Scarabs',
+    description:
+      'Sand-coloured beetles that come up out of the dunes after dark and vanish into them at a footstep.',
+    species: 'dune scarab',
+    family: 'beetle',
+    qualities: { speed: 'D', bite: 'C', toughness: 'A', brood: 'D', size: 'C', senses: 'C' },
+    gifts: { camouflage: 2 },
+    fears: ['water'],
+    wild: { biomes: ['desert'], night: true },
+  },
 ];

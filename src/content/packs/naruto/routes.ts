@@ -1,9 +1,12 @@
 import type { RouteDef } from '@/systems/travel';
 
+import { SUNA_BARGE_PASSAGE } from './kageroLanding';
+
 /**
  * The roads out of the Leaf: south-east to the Land of Waves and across the water to the Mist,
- * west through the hills to the desert, down the highway to Shukuba and Tanzaku, east to the
- * pleasure quarter, up to the Fire Temple, and the long way to the toads.
+ * west through the Land of Rivers to Kagerō Landing and over the sand to the Sand (by a
+ * priests' barge, or on foot through the tainted belt), down the highway to Shukuba and
+ * Tanzaku, east to the pleasure quarter, up to the Fire Temple, and the long way to the toads.
  */
 export const NARUTO_ROUTES: readonly RouteDef[] = [
   {
@@ -117,28 +120,67 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     danger: 'petty',
   },
   {
-    id: 'desert-road',
+    id: 'rivers-road',
     from: 'konohagakure',
-    to: 'sunagakure',
+    to: 'kagero-landing',
     legs: [
       {
         region: 'hill-road',
         days: 1,
-        text: 'The road crosses dry hills between the forest and the desert.',
+        text: 'The road crosses dry hills between the forest and the Land of Rivers.',
       },
       {
-        region: 'dune-road',
-        days: 2,
-        text: 'Sand, and more sand. You walk at dawn and dusk, and shelter from the noon sun.',
+        region: 'river-road',
+        days: 1,
+        text: 'Through the Land of Rivers, where the rivers thin to stony beds and the sky gets bigger.',
       },
     ],
     trail: [
       { x: 36, y: 30 },
-      { x: 26, y: 38 },
-      { x: 18, y: 46 },
+      { x: 28, y: 36 },
     ],
+    danger: 'petty',
+  },
+  {
+    id: 'barge-crossing',
+    from: 'kagero-landing',
+    to: 'sunagakure',
+    name: 'The barge crossing',
+    needs: [
+      { kind: 'worldMark', mark: SUNA_BARGE_PASSAGE, text: 'a sand priest’s leave to board' },
+    ],
+    legs: [
+      {
+        region: 'sand-barge',
+        days: 2,
+        text: 'A priests’ barge carries you over the dunes, a priest at the helm and the fan clan filling the sail.',
+      },
+    ],
+    trail: [{ x: 17, y: 45 }],
     danger: 'armed',
-    cost: 120,
+    cost: 160,
+  },
+  {
+    id: 'deep-sand-walk',
+    from: 'kagero-landing',
+    to: 'sunagakure',
+    legs: [
+      {
+        region: 'dune-road',
+        days: 2,
+        text: 'The outer sands. You walk at dawn and dusk, and shelter from the noon sun.',
+      },
+      {
+        region: 'tainted-belt',
+        days: 2,
+        text: 'The tainted belt, where the sand goes grey and glitters, and nothing lives that should.',
+      },
+    ],
+    trail: [
+      { x: 22, y: 47 },
+      { x: 17, y: 52 },
+    ],
+    danger: 'deadly',
   },
   {
     id: 'toad-path',

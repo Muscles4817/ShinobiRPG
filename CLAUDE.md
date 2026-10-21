@@ -201,9 +201,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
     styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan: `rules/eyes.ts`, `plan/mimicry.ts`). A fight has a **ground**
-    (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake; arena when unset):
-    the distances it has room for (a room has no far), cover for hiding, far attacks lost among
-    trees or walls, elements it feeds, and footing (on a lake only water-walkers keep theirs). In
+    (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake, desert; arena when
+    unset): the distances it has room for (a room has no far), cover for hiding, far attacks lost
+    among trees or walls (or, in the desert's heat haze, by everyone), elements it feeds or
+    starves, and footing (on a lake only water-walkers keep theirs). In
     a room an area catches its user's own side. Walking on water or trees reaches a fight as a
     perk (`game/footing.ts`: what you've mastered, chūnin and up, deadly foes). A **nature** is an affinity, never a shield: it strengthens
     techniques of its own element, and elements meet only where techniques meet (`rules/elements.ts`):
@@ -476,9 +477,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     Dishes are cooked by hand at the stove (`game/stove.ts`: three beats against the recipe's
     `method`, giving a `mealQuality` that scales the dish through `buffAt`/`amountAt`) or as
     usual; `experiment` puts pantry ingredients together to discover recipes. Ingredients
-    are bought or gathered: `wilds` places (woods, river, shore, marsh, mountain water) are
+    are bought or gathered: `wilds` places (woods, river, shore, marsh, mountain water, desert) are
     foraged (`forage`) and fished (`fish`, by spot) once a day each, drawing from `finds` by
-    season, hour and cooking grade (`shared/wilds.ts`, `shared/waters.ts`, fish in `shared/fish.ts`).
+    season, hour and cooking grade (`shared/wilds.ts`, `shared/waters.ts`, `shared/desert.ts`,
+    fish in `shared/fish.ts`).
     A fish has a **family** (white, oily, freshwater, shellfish), and a recipe slot may take any
     fish of one (`FamilyCount`): the cook's chosen fish first, then the cheapest, and the dish is
     named for it (`game/pantry.ts`; read a recipe's ingredients only through it).
