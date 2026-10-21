@@ -742,7 +742,67 @@ what is left; the fight screen shows a Dust meter.
   dust is made at home (`makeDust`: an afternoon, energy and materials: iron cheap, gold dear) or
   bought by the batch where a smith sells it (`buyDust`: dearer, no time; the original pack's
   Kurogane Forge sells iron and glass sand).
-- **Later:** the beast or spirit shield perk, with milestone 3.
+- **The shield** (built, below): the beast or spirit shield perk, for NPCs for now.
+
+### The automatic shield
+
+Gaara's sand rises without his asking because it came from Shukaku. The shield is a **perk**
+(`shield`), a gift of where the power came from, laid over whatever dust its holder commands;
+until tailed beasts and bound spirits exist as content, it is given straight to NPCs: an
+arsenal's `perks` (Gaara) or a foe's `dust.shield` (the original pack's ash-bound Haibara, who
+sealed a kiln spirit into his ash, hunted in the B-rank job "The Ash That Answers").
+Validation refuses a shield with no dust to raise.
+
+**In the fight** (`rules/shield.ts`, `engines/plan/shield.ts`), after the ready defence has done
+what it does, against any hit that would land:
+
+- **It is quick, not instant.** It rises at its own pace (a good chūnin's speed, slower for heavy
+  dust: sand is quicker than gold). Against anyone slower it rises nine times in ten; an
+  attacker from about a tenth faster starts to outrun it, and one nearly twice as fast always
+  does. That is how Lee gets through.
+- **It holds so much.** It keeps out about a quarter of a body's health from one hit (heavier
+  dust more, a break half), and a bigger hit comes through with what is left over.
+- **Dust pays.** Every block spends dust for what it kept out; below a small reserve it can't
+  rise, so a long fight wears it down.
+- **Illusions go past it.** It stands in the way of bodies and chakra, never the mind.
+
+A read names it with its counter (speed, illusions, and the dust's banes), and the log stamps
+the block "Shielded".
+
+**What the Part 1 cast taught it** (the designer's calls after the first bench, with #222's
+chakra curve in): the fan pack's cast stands as at canon's start (Gaara a genin at the Chūnin
+Exams; Temari and Kankurō genin, Karasu his only puppet).
+
+- **A store is a vessel, never chakra.** Gaara's sand is his gourd's, not his chakra's: each
+  kind has an ordinary `carried` amount, and a clan or fighter may carry more (`vessel`,
+  `dustVessel`: the great gourd holds 300). Making more mid-fight is a draw's work. Hives stay
+  with chakra: insects live on it.
+- **Dust arrives at its own pace**, the shield's (`dustPace`: a good chūnin's speed, slower for
+  heavy dust), not its master's ninjutsu. Speed answers sand on both sides: Kakashi slips it and
+  outthinks it, Lee sometimes gets past the shield, Guy overwhelms it.
+- **The shield meets conditions too.** A Gentle Fist touch (a seal and a drain, which armour
+  never meets) must get past the shield first, then ignores armour.
+- **A bloodline's perks reach everyone born to it**, not only the player: Neji sees with the
+  Byakugan (`insight`, and `all-seeing`: total sight, not prediction, so no illusion takes hold).
+- **Palm Rotation is a spin** (`substitute` with `spins`): kept ready, it turns aside every hit
+  and hold it meets (a coffin of sand too), paid in chakra each time, never spent while the
+  chakra lasts. Illusions and an empty tank get past it.
+- **Sand comes back in the fight**: a dust user gathers a little each exchange where the ground
+  holds their dust (1.5% of the vessel at C draw), and dust moves at a good genin's pace (14),
+  so a fast taijutsu fighter can outrun it.
+
+- **A spin costs less the finer its user's control** (`spinCost`: its technique's cost, halved
+  at C control and less above).
+- **The Byakugan, further** (`all-seeing`): it sees which body holds the chakra, so no clone
+  draws or takes its attacks; its seals and drains close the chakra points more surely (shaken
+  off half as often); and it has one blind spot, found from the third round by a foe with a
+  B-grade mind, through which a quarter of their attacks come and meet no ready defence,
+  Rotation included.
+
+The bench after these (60 fights each, Part 1 Gaara): Lee wins 25% (by outrunning the sand),
+Kakashi and Guy always. Neji turns Gaara's sand aside and the shield takes his palms: the fight
+runs about 77 exchanges, Gaara wins 85% and 15% end in stalemate. Neji beats Lee two in three
+and genin Sasuke always, and loses to Kakashi, who finds the blind spot.
 
 ### Foes with hives and dust
 
@@ -1251,7 +1311,10 @@ and its genes, its skills with training**, and every kind has its own ceiling.
     bar, and how soon it fills again.
 - **Later:**
   - foes who carry hives (`EnemyDef.swarm`);
-  - foes and teammates aiming areas and fire at a hive on purpose;
+  - foes and teammates aiming areas and fire at a hive on purpose (built: an attack's worth
+    counts the insects it would kill, a share of a whole hive being worth a share of
+    `WHOLE_HIVE_WORTH` health, and a host is worth more as a target to someone carrying such an
+    attack, `HIVE_TARGET_WEIGHT`; both only weigh with the judgement to reckon worth);
   - strains and crossbreeding (4c), the install later in life (4d), dust (4e).
 
 ### Step 4c-i: what insects are

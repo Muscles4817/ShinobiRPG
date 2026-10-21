@@ -1,13 +1,12 @@
 import { STAT_GRADES, statTier } from '@/systems/stats';
-import { batchAdded, FIRST_BATCH, scrollMastered, storeCap, studiedScroll } from '@/systems/dusts';
-import { maxChakra } from '@/systems/vitals';
+import { batchAdded, FIRST_BATCH, scrollMastered, studiedScroll } from '@/systems/dusts';
 
 import type { GameContext } from '../context';
 import { atHome } from '../home/home';
 import { laidUp } from '../injuries';
 import { chip, log } from '../ops';
+import { vesselOf } from './dust';
 import type { GameState } from '../state';
-import { chakraBody } from '../hives/hive';
 
 /**
  * S-rank dust scrolls (`docs/design/retinue-plan.md`, step 4e): the one way to command a kind
@@ -61,7 +60,7 @@ export function studyScroll(state: GameState, ctx: GameContext, dustId: string):
       { text: `You work through more of the ${def.name.toLowerCase()} scroll.`, tone: 'info' },
     );
   }
-  const cap = storeCap(maxChakra(chakraBody(state)));
+  const cap = vesselOf(def);
   const dust = { dustId, count: batchAdded(0, cap, FIRST_BATCH) };
   const known = state.techniques.known;
   const taught = (def.techniqueIds ?? []).filter((id) => !known.includes(id));

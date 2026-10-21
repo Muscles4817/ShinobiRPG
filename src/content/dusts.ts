@@ -19,6 +19,12 @@ export interface DustDef {
   readonly banes: readonly DustBane[];
   readonly drawnOn: readonly CombatGround[];
   /**
+   * How much a user carries in an ordinary vessel (a gourd, a pouch): the store's size, whatever
+   * their chakra. A clan or a fighter may carry more or less (`ClanDust.vessel`, an arsenal's
+   * `dustVessel`, a foe's `dust.vessel`).
+   */
+  readonly carried: number;
+  /**
    * For dust no ground gives back: what a batch made at home costs in materials (ryo), beside
    * an afternoon's work. Required of every kind with no `drawnOn` (validated).
    */
@@ -32,4 +38,6 @@ export interface DustDef {
 /** A clan whose children are born commanding a kind of dust, a store of it to hand. */
 export interface ClanDust {
   readonly dustId: string;
+  /** What the clan's vessel holds, when not the kind's ordinary `carried`. */
+  readonly vessel?: number;
 }

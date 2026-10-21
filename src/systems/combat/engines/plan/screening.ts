@@ -7,6 +7,7 @@ import type { Card } from './cards';
 import { eyes } from './decoys';
 import { patch, type PlanFighter, type Round } from './state';
 import { tell } from '../../rules/telling';
+import { seesTheRealBody } from '../../rules/eyes';
 
 /**
  * Clones screening a charge in a planned fight (`rules/verbs/clones.ts`): when someone closes on
@@ -43,7 +44,9 @@ export function drawnByClones(round: Round, { holder, closer, card, rng }: Shot)
   const maker = screenFor(round, closer);
   const clones = maker?.clones;
   if (!maker || !clones) return null;
-  const chance = drawFireChance(clones, eyes(holder, maker), hasPerk(holder, 'insight'));
+  const chance = seesTheRealBody(holder)
+    ? 0
+    : drawFireChance(clones, eyes(holder, maker), hasPerk(holder, 'insight'));
   if (!rng.chance(chance)) return null;
   const left = isArea(card) ? 0 : clones.count - 1;
   const fighters = patch(round.fighters, maker.id, { clones: { ...clones, count: left } });

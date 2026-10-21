@@ -32,10 +32,11 @@ import { isDazed } from './daze';
 import { readsInTheMoment } from './judgement';
 import { readyDefences } from './readiness';
 import { settledSlips, swarmSlips } from './swarm';
-import { blindedSlips, dustSlips } from './dust';
+import { blindedSlips, dustArrival } from './dust';
 import type { PlanFighter, Round } from './state';
 import { sizeSlips } from '../../rules/size';
 import { techniqueDamage } from '../../rules/damage';
+import { seesThroughIllusions } from '../../rules/eyes';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -62,8 +63,6 @@ export interface Incoming {
   readonly familiar?: number;
   /** A swarm attack's slip scale (`swarm.ts`: its insects' speed and camouflage). */
   readonly swarm?: number;
-  /** A dust attack's slip scale (`dust.ts`: heavy dust is slower to arrive). */
-  readonly dust?: number;
   /** Share of the target's health it would take, which a good read saves Evade for. */
   readonly threat?: number;
   /** The attacker's speed behind a body's attack, which may outpace the target (`pace.ts`). */
@@ -77,6 +76,12 @@ export function dodgesHere(round: Round, target: PlanFighter): boolean {
 
 /** The chance this attack doesn't reach its target. */
 export function avoidOdds(round: Round, incoming: Incoming): number {
+  // Eyes that see everything see an illusion for what it is (`rules/eyes.ts`).
+  const illusion = incoming.discipline === 'genjutsu';
+  return illusion && seesThroughIllusions(incoming.target) ? 1 : avoidRoll(round, incoming);
+}
+
+function avoidRoll(round: Round, incoming: Incoming): number {
   const { attacker, form } = incoming;
   const target = dulled(round.field, incoming.target);
   if (isDazed(target)) return 0;
@@ -101,7 +106,7 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     (incoming.swarm ?? 1) *
     settledSlips(round, attacker, target) *
     (isGathering(target) ? GATHER_OPEN : 1);
-  const dust = (incoming.dust ?? 1) * blindedSlips(attacker);
+  const dust = blindedSlips(attacker);
   // A big body is a big target (`size.ts`).
   const held =
     chance *
@@ -145,13 +150,13 @@ export function techniqueIncoming(
     form: 'technique',
     attacker,
     target,
-    skill: driveOf(attacker, use) * (full ? HANDS_FULL_ARRIVAL : 1),
+    // Dust arrives at its own pace, however strong its master (`dust.ts`).
+    skill: dustArrival(attacker, t) ?? driveOf(attacker, use) * (full ? HANDS_FULL_ARRIVAL : 1),
     discipline: t.discipline,
     familiar: familiar * (full ? HANDS_FULL_READ : 1),
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     ...(area ? { areaSize: areaSize(area) } : {}),
     ...(t.swarmCost ? { swarm: swarmSlips(attacker, t) } : {}),
-    ...(t.dustCost ? { dust: dustSlips(attacker, t) } : {}),
     threat: threatOf(attacker, target, t),
     ...(body ? { paceSpeed: attacker.attributes.speed } : {}),
   };

@@ -10,6 +10,7 @@ import { healLine, reactionLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
 import { misfireChance } from '../../rules/unstable';
 import { breakRating } from '../../rules/conditions';
+import { pointsSeenScale } from '../../rules/eyes';
 import {
   confuseTurns,
   driveOf,
@@ -19,6 +20,8 @@ import {
   type EffectUse,
 } from '../../rules/verbs';
 import { aftermath } from './blast';
+import { shieldStops } from './shield';
+import { throughBlindSpot } from './blindSpot';
 import { avoidOdds, dodgesHere, techniqueIncoming } from './avoid';
 import { noteDefence } from './reads';
 import { clash } from './clash';
@@ -27,7 +30,7 @@ import { watchedBy } from './mimicry';
 import { combination, comboPartner } from './combo';
 import { empowerSelf } from './empower';
 import { castField } from './field';
-import { move } from './footwork';
+import { move, spunAway } from './footwork';
 import { afflict, drain, knock, pin, readyRiposte } from './lingering';
 import { damage, type Aimed } from './wounding';
 import { opponentsOf, type Turn } from './senses';
@@ -160,16 +163,34 @@ function conditionOf(effect: TechniqueEffect): ConditionVerb | null {
 function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse): Round | null {
   const verb = conditionOf(use.effect);
   if (!verb) return null;
-  const resist = conditionResist(actor, target, use);
+  // Eyes that see the chakra points close them more surely (`rules/eyes.ts`).
+  const resist = conditionResist(actor, target, use) * pointsSeenScale(actor, verb);
   // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
   const braced = committedTo(target, 'brace') && isBracedAgainst(verb);
   if (!rng.chance(braced ? bracedResist(resist) : resist)) return null;
   return say(round, tell(SHAKEN_OFF[verb], { t: target }));
 }
 
+/**
+ * A hold, a seal or a drain meets a ready spin (Palm Rotation) and then an automatic shield
+ * before it can take hold; a hit meets them as it lands (`react.ts`). The round it was turned
+ * aside in, or null.
+ */
+function turnedAway(round: Round, aimed: Aimed, t: CombatTechnique): Round | null {
+  const { actor: attacker, target, rng } = aimed;
+  const swap = { attacker, target, what: t.name, discipline: t.discipline };
+  const illusion = t.discipline === 'genjutsu';
+  const shielded = { attacker, target, what: t.name, illusion, rng };
+  // A hold through the blind spot meets no spin (`blindSpot.ts`), but still the shield.
+  const blind = throughBlindSpot(round, { attacker, target, rng });
+  return (blind ? null : spunAway(round, swap)) ?? shieldStops(round, shielded);
+}
+
 /** One effect landing on a foe who is standing. Effects aimed at the user happen in `onSelf`. */
 function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): Round {
   if (!landsOnFoe(effect)) return round;
+  const stopped = conditionOf(effect) ? turnedAway(round, aimed, technique) : null;
+  if (stopped) return stopped;
   const resisted = shakenOff(round, aimed, { technique, effect });
   if (resisted) return resisted;
   switch (effect.verb) {

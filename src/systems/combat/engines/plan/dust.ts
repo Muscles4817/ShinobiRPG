@@ -10,7 +10,8 @@ import {
   dustGripScale,
   dustGuardScale,
   dustPowerScale,
-  dustSlipScale,
+  dustPace,
+  regathered,
   dustUsed,
   scattered,
   type DustHit,
@@ -22,7 +23,8 @@ import { fighterIn, say, type PlanFighter, type Round } from './state';
 
 /**
  * Commanded dust in a planned fight (`rules/dust.ts`): dust techniques draw it up (first) and
- * spend it, heavy dust lands harder but slower and grips its pins harder, a Guard with dust to
+ * spend it, dust arrives at its own pace (`dustPace`) whoever commands it, heavy dust lands
+ * harder but slower and grips its pins harder, a Guard with dust to
  * raise keeps more out, cutting dust leaves a bleed and blinding dust gets in a foe's eyes, and
  * a bane (an element it can't bear, a heavy blow on brittle dust) scatters some of it.
  */
@@ -52,9 +54,9 @@ export function dustSpent(
   };
 }
 
-/** A dust attack's slip scale (its weight); 1 for anything else. */
-export function dustSlips(attacker: Dusty, t: CombatTechnique): number {
-  return attacker.dust && t.dustCost ? dustSlipScale(attacker.dust.kind) : 1;
+/** How fast a dust attack arrives (its dust's pace, not its user's skill); none for anything else. */
+export function dustArrival(attacker: Dusty, t: CombatTechnique): number | undefined {
+  return attacker.dust && t.dustCost ? dustPace(attacker.dust.kind) : undefined;
 }
 
 /** A dust attack's power scale (its weight); 1 for anything else. */
@@ -129,7 +131,19 @@ function clearedEyes(f: PlanFighter): PlanFighter {
   return rest;
 }
 
-/** At the end of an exchange, blinding dust works its way out of everyone's eyes. */
+/** At the end of an exchange, dust users gather back what the ground gives (`regathered`). */
+function gathering(round: Round): Round {
+  const ground = round.ground ?? 'arena';
+  const fighters = round.fighters.map((f) =>
+    f.dust && alive(f) ? { ...f, dust: regathered(f.dust, ground) } : f,
+  );
+  return { ...round, fighters };
+}
+
+/**
+ * At the end of an exchange, blinding dust works its way out of everyone's eyes, and dust users
+ * gather back what the ground gives.
+ */
 export function dustAfter(round: Round): Round {
   return round.fighters.reduce((now, f) => {
     const blinded = f.blinded;
@@ -144,7 +158,7 @@ export function dustAfter(round: Round): Round {
     );
     const cleared = left > 0 ? now : say(now, tell('{t} blink{t.s} the dust away.', { t: f }));
     return { ...cleared, fighters };
-  }, round);
+  }, gathering(round));
 }
 
 /** The player's dust on the fight screen, beside their chakra. */

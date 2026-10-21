@@ -16,7 +16,7 @@ const PUPPET_TAG = 'Puppet';
 
 function puppetBody(puppet: PuppetDef, ctx: GameContext): CombatantSetup {
   const health = Math.max(1, Math.round(MAX_HEALTH * puppet.healthScale));
-  const dust = personDust(puppet.maxChakra, { clan: undefined, arsenalDust: puppet.dust }, ctx);
+  const dust = personDust({ clan: undefined, dustId: puppet.dust }, ctx);
   return {
     id: puppet.id,
     name: puppet.name,

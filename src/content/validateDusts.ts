@@ -19,12 +19,18 @@ function clanDustProblems(pack: ContentPack): string[] {
   });
 }
 
-/** Every arsenal and foe that commands dust names a real kind. */
+/** Every arsenal and foe that commands dust names a real kind; a shield needs dust to rise from. */
 function arsenalDustProblems(pack: ContentPack): string[] {
   const kinds = new Set(pack.dusts.map((d) => d.id));
+  const dustClans = new Set(pack.clans.filter((c) => c.dust).map((c) => c.id));
   const people = [...pack.people, ...(pack.duelists ?? [])].flatMap((p) => {
     const dustId = p.arsenal?.dust;
-    return dustId && !kinds.has(dustId) ? [`person "${p.id}" commands an unknown dust`] : [];
+    const shielded = p.arsenal?.perks?.includes('shield') === true;
+    const dusty = dustId !== undefined || (p.clanId !== undefined && dustClans.has(p.clanId));
+    return [
+      ...(dustId && !kinds.has(dustId) ? [`person "${p.id}" commands an unknown dust`] : []),
+      ...(shielded && !dusty ? [`person "${p.id}" has a shield but no dust to raise it`] : []),
+    ];
   });
   const foes = pack.enemies.flatMap((e) =>
     e.dust && !kinds.has(e.dust.dustId) ? [`enemy "${e.id}" commands an unknown dust`] : [],

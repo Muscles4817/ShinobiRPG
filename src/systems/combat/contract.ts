@@ -78,10 +78,14 @@ export { COMBAT_ITEM_EFFECTS, type CombatItem, type CombatItemEffect } from './g
 /**
  * Special abilities a combatant brings: an awakened bloodline's eyes (`insight` reads every foe
  * and card, `foresight` reads movement before it happens, `mimicry` copies techniques watched;
- * `rules/eyes.ts`), or walking on water or up trees with chakra (which keep their footing on a lake, or the trees in a forest; see
- * `rules/ground.ts`). Engines ignore what they don't use.
+ * `rules/eyes.ts`), walking on water or up trees with chakra (which keep their footing on a lake, or the trees in a forest; see
+ * `rules/ground.ts`), or a `shield`: dust that rises on its own against a hit, a gift of
+ * where the power came from (a tailed beast, a bound spirit; `rules/shield.ts`), or `all-seeing`:
+ * eyes that see everything at once (the Byakugan), not ahead like `foresight`, so no illusion
+ * takes hold of them (`rules/eyes.ts`). Engines ignore what they don't use.
  */
-export type CombatPerk = 'insight' | 'foresight' | 'mimicry' | 'water-walking' | 'tree-walking';
+export type CombatPerk =
+  'insight' | 'foresight' | 'mimicry' | 'water-walking' | 'tree-walking' | 'shield' | 'all-seeing';
 
 export { COMBAT_GROUNDS, type CombatGround } from './groundContract';
 

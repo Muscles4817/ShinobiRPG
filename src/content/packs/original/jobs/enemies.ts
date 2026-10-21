@@ -125,4 +125,33 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     techniqueIds: ['whispering-dread', 'moth-dance', 'shadow-feint'],
     traits: ['spirit', 'illusionist'],
   },
+  {
+    id: 'haibara-ash-bound',
+    kind: 'Rogue',
+    danger: 'deadly',
+    name: 'Ash-Bound Haibara',
+    noun: 'ash-bound Haibara',
+    description:
+      'A Haibara who sealed a kiln spirit into the ash he carries. It rises round him when anything comes at him, whether he asks it to or not.',
+    baseStat: 10,
+    statBonuses: {
+      ninjutsu: 7,
+      chakraControl: 5,
+      reserves: 5,
+      willpower: 3,
+      perception: 2,
+      speed: -2,
+      taijutsu: -3,
+      kenjutsu: -3,
+    },
+    maxChakra: 112,
+    techniqueIds: [
+      'haibara-ash-puff',
+      'haibara-cinder-bind',
+      'haibara-kiln-storm',
+      'haibara-ash-pall',
+    ],
+    nature: 'fire',
+    dust: { dustId: 'ash', shield: true },
+  },
 ];

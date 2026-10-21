@@ -26,7 +26,7 @@ export function afterDustFight(
 function givenOldSave(state: GameState, ctx: GameContext): GameState {
   if (state.dust) return state;
   const clan = ctx.content.clans.get(state.character.clanId);
-  const dust = bornDust(clan, state.character.stats, ctx);
+  const dust = bornDust(clan, ctx);
   return dust ? { ...state, dust } : state;
 }
 

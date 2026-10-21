@@ -32,6 +32,7 @@ export const NARRATION_REACTIONS = [
   'guard-broken',
   'countered',
   'swapped',
+  'shielded',
 ] as const;
 export type NarrationReaction = (typeof NARRATION_REACTIONS)[number];
 

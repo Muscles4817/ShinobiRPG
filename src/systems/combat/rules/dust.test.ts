@@ -3,7 +3,8 @@ import {
   dustAffords,
   dustGuardScale,
   dustPowerScale,
-  dustSlipScale,
+  dustPace,
+  regathered,
   dustUsed,
   dustWord,
   HEAVY_HIT,
@@ -41,7 +42,7 @@ describe('dust rules', () => {
   it('heavy dust hits harder and arrives slower, and helps a Guard more', () => {
     const iron = { ...SAND, qualities: { ...SAND.qualities, weight: 5 } };
     expect(dustPowerScale(iron)).toBeGreaterThan(dustPowerScale(SAND));
-    expect(dustSlipScale(iron)).toBeGreaterThan(dustSlipScale(SAND));
+    expect(dustPace(iron)).toBeLessThan(dustPace(SAND));
     expect(dustGuardScale(pool(iron))).toBeLessThan(dustGuardScale(pool(SAND)));
     expect(dustGuardScale(pool(SAND, 5))).toBe(1);
     expect(dustGuardScale(undefined)).toBe(1);
@@ -58,5 +59,12 @@ describe('dust rules', () => {
     expect(dustWord(pool())).toBe('thick');
     expect(dustWord(pool(SAND, 10))).toBe('thin');
     expect(dustWord(pool(SAND, 0))).toBe('spent');
+  });
+
+  it('gathers a little back each exchange where the ground holds it, never carried dust', () => {
+    const thin = pool(SAND, 10);
+    expect(regathered(thin, 'arena').count).toBeGreaterThan(10);
+    expect(regathered(thin, 'lake').count).toBe(10);
+    expect(regathered(pool(SAND), 'arena').count).toBe(pool(SAND).count);
   });
 });

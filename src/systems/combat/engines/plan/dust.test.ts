@@ -6,9 +6,11 @@ import type { CombatDust } from '../../dustContract';
 import { BLIND_EXCHANGES } from '../../rules/dust';
 import { playable } from './cards';
 import { createPlanEngine } from './engine';
+import { techniqueIncoming } from './avoid';
 import {
   blindedSlips,
   dustAfter,
+  dustArrival,
   dustGrip,
   dustLanded,
   dustMeter,
@@ -148,5 +150,16 @@ describe('dust in a planned fight', () => {
     const left = engine.outcome(done.value)?.dust;
     expect(left).toBeDefined();
     expect(left).toBeLessThanOrEqual(SAND.cap);
+  });
+
+  it('arrives at the dust’s own pace, however strong its master', () => {
+    const r = round();
+    const master = { ...user(r), attributes: { ...user(r).attributes, ninjutsu: 50 } };
+    const novice = { ...user(r), attributes: { ...user(r).attributes, ninjutsu: 5 } };
+    const pace = dustArrival(master, BURIAL);
+    expect(pace).toBeDefined();
+    expect(techniqueIncoming(master, foe(r), BURIAL, 'mid')?.skill).toBe(pace);
+    expect(techniqueIncoming(novice, foe(r), BURIAL, 'mid')?.skill).toBe(pace);
+    expect(dustArrival(foe(r), BURIAL)).toBeUndefined();
   });
 });
