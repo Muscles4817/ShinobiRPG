@@ -5,6 +5,7 @@ import {
   type GameContext,
   type GameState,
   type PersonSheet as Sheet,
+  type RivalryView,
 } from '@/game';
 
 import { Portrait } from '../art/Portrait';
@@ -148,10 +149,46 @@ function PersonHead({ p }: { readonly p: Sheet }) {
   );
 }
 
+interface PersonPageProps {
+  readonly p: Sheet;
+  readonly rivalry: RivalryView | null;
+  readonly perform: (action: GameAction) => void;
+  /** After an action: the drawer closes; a page set beside a list stays. */
+  readonly onClose: () => void;
+  readonly className: string;
+}
+
 /**
  * Someone's page, on paper: it starts short for a stranger and grows as you get to know them,
- * with what you can do together kept at the bottom.
+ * with what you can do together kept at the bottom. Shown in a drawer, or on a roomy desk's
+ * Bonds tab beside the list.
  */
+export function PersonPage({ p, rivalry, perform, onClose, className }: PersonPageProps) {
+  return (
+    <section
+      className={className}
+      aria-label={p.fullName}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
+      <PersonHead p={p} />
+      <p className="story">{p.bio}</p>
+      {rivalry && <RivalrySection view={rivalry} perform={perform} onClose={onClose} />}
+      <BetweenYou p={p} />
+      <WhatTheyreLike p={p} />
+      {p.day && <TheirDay day={p.day} />}
+      {p.arts && <TheirArts arts={p.arts} />}
+      {p.teaches && <TheyTeach teaches={p.teaches} />}
+      {p.growth && <SinceTheAcademy growth={p.growth} />}
+      {p.sizing && <SizingUp sizing={p.sizing} />}
+      <Remembered p={p} />
+      <PersonActions sheet={p} perform={perform} onClose={onClose} />
+    </section>
+  );
+}
+
+/** Someone's page in a drawer over whatever tab you are on. */
 export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSheetProps) {
   useCloseOnEscape(onClose);
   const p = personSheet(state, ctx, personId);
@@ -159,26 +196,13 @@ export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSh
   if (!p) return null;
   return (
     <div className="sheet-backdrop" onClick={onClose}>
-      <section
+      <PersonPage
+        p={p}
+        rivalry={rivalry}
+        perform={perform}
+        onClose={onClose}
         className="sheet person-sheet paper-sheet enter"
-        aria-label={p.fullName}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <PersonHead p={p} />
-        <p className="story">{p.bio}</p>
-        {rivalry && <RivalrySection view={rivalry} perform={perform} onClose={onClose} />}
-        <BetweenYou p={p} />
-        <WhatTheyreLike p={p} />
-        {p.day && <TheirDay day={p.day} />}
-        {p.arts && <TheirArts arts={p.arts} />}
-        {p.teaches && <TheyTeach teaches={p.teaches} />}
-        {p.growth && <SinceTheAcademy growth={p.growth} />}
-        {p.sizing && <SizingUp sizing={p.sizing} />}
-        <Remembered p={p} />
-        <PersonActions sheet={p} perform={perform} onClose={onClose} />
-      </section>
+      />
     </div>
   );
 }
