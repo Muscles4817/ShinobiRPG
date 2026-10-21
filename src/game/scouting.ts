@@ -20,7 +20,8 @@ import { injuryFightEffect } from './injuries';
 import { companionTraits, PERSON_PREFIX } from './people/companions';
 import { personStats } from './people/progress';
 import { findPerson } from './people/cast';
-import { retinueSeen, summonsSeen, type RetinueKnowledge } from './retinueSight';
+import { poolsSeen, retinueSeen, summonsSeen, type RetinueKnowledge } from './retinueSight';
+import { poolNotes, type PoolNote } from './scoutingPools';
 import type { GameState } from './state';
 
 /**
@@ -93,6 +94,8 @@ export interface ScoutingRead {
   readonly traits: readonly TraitNote[];
   /** What you can tell fights beside them. */
   readonly companions: readonly CompanionNote[];
+  /** A hive or dust you can tell they carry, and what undoes it. */
+  readonly pools: readonly PoolNote[];
   /** "Brawler, wants you close". */
   readonly style: string;
   /** Their standout stats beside yours; empty unless your eyes are sharp enough. */
@@ -184,6 +187,7 @@ export interface Opponent {
   readonly stats: Stats;
   readonly traits?: readonly CombatTrait[];
   readonly companions?: readonly Companion[];
+  readonly pools?: readonly PoolNote[];
 }
 
 /** One rating for an opponent and the companions you can tell are with them. */
@@ -204,6 +208,7 @@ export function scout(them: Opponent, yours: Stats, sharp: boolean): ScoutingRea
       name: c.name,
       counter: c.called ? SUMMON_COUNTER : COMPANION_COUNTER,
     })),
+    pools: them.pools ?? [],
     style: styleOf(theirs),
     details: sharp ? standouts(theirs, yours) : [],
     handicap: null,
@@ -271,6 +276,7 @@ function enemyOpponent(
     stats: enemyStatLine(def),
     traits: def.traits ?? [],
     companions: [...companions, ...summons],
+    pools: poolNotes(def, poolsSeen(state, def, knowledge), ctx),
   };
 }
 

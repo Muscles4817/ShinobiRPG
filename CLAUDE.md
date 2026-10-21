@@ -442,7 +442,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     is an **S-rank scroll** a job hands over (`reward.dustScroll`, `GameState.dustScrolls`,
     `game/dust/scrolls.ts`): read at home a day at a time with chakra control at B, and mastered
     it gives a first batch and teaches its kind's techniques (`DustDef.techniqueIds`); a body
-    commands one kind of dust at a time. A companion is cared for
+    commands one kind of dust at a time. Foes carry them too (`EnemyDef.hive`, `dust`: full,
+    with a `tell` read like a retinue's, `poolsSeen`: a hive in the body `hidden`, a gourd
+    `open`); a read and the client's report name what they carry and what undoes it
+    (`game/scoutingPools.ts`). A companion is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between
@@ -1203,6 +1206,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   empty, and Enter fights.
   The editor on a desk fills the window too: the roster, then the fighter's stats and their
   techniques side by side (stacked below 1300px), the cards short as on a profile.
+  The Record on a desk keeps its header in view, lists the journal's days beside the feed (the
+  day being read marked, a click going to it; below 1300px the feed has the column) and sets the
+  field book's entries two across.
+  Bonds on a roomy desk (`useRoomyDesk`, 1300px and up, beside `useWideScreen`) sets everyone in
+  a list you can search by name beside the page of whoever is picked (`PersonPage`, the drawer's
+  page), which follows the pointer; narrower desks keep the cards and the drawer.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own

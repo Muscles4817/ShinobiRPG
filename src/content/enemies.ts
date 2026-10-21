@@ -3,7 +3,7 @@ import type { Danger } from '@/systems/missions';
 import type { StatDelta } from '@/systems/stats';
 import type { Element } from '@/systems/techniques';
 
-import type { RetinueEntry } from './companions';
+import type { RetinueEntry, RetinueTell } from './companions';
 import type { FoeSummon } from './contracts';
 
 /**
@@ -59,4 +59,8 @@ export interface EnemyDef {
   readonly retinue?: readonly RetinueEntry[];
   /** Summons they can call into the fight, from a contract of the pack. */
   readonly summons?: readonly FoeSummon[];
+  /** A full hive of a pack strain in their body; `hidden` from a glance unless told otherwise. */
+  readonly hive?: { readonly strainId: string; readonly tell?: RetinueTell };
+  /** A full store of a kind of dust; `open` (a gourd on the back) unless told otherwise. */
+  readonly dust?: { readonly dustId: string; readonly tell?: RetinueTell };
 }

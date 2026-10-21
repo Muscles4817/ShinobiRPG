@@ -25,6 +25,14 @@ function clanHiveProblems(pack: ContentPack): string[] {
   });
 }
 
+/** A foe's hive names a real strain. */
+function foeHiveProblems(pack: ContentPack): string[] {
+  const strains = new Set(pack.strains.map((s) => s.id));
+  return pack.enemies.flatMap((e) =>
+    e.hive && !strains.has(e.hive.strainId) ? [`enemy "${e.id}" carries an unknown strain`] : [],
+  );
+}
+
 export function validateStrains(pack: ContentPack): string[] {
-  return [...strainProblems(pack), ...clanHiveProblems(pack)];
+  return [...strainProblems(pack), ...clanHiveProblems(pack), ...foeHiveProblems(pack)];
 }

@@ -11,3 +11,9 @@ export interface ScreenProps {
 export interface PlaceProps extends ScreenProps {
   readonly onBack: () => void;
 }
+
+/** Props for the Bonds tab, which opens people and your companion. */
+export interface BondsProps extends ScreenProps {
+  readonly onOpenPerson: (personId: string) => void;
+  readonly onOpenCompanion: () => void;
+}

@@ -1,61 +1,20 @@
-import { bondsView, type CompanionCard, type PersonCard } from '@/game';
+import { bondsView, type PersonCard } from '@/game';
 
-import { Avatar } from '../components/Faces';
-import { BondMeter } from '../components/BondMeter';
-import type { ScreenProps } from './types';
+import { useRoomyDesk } from '../layout/useWideScreen';
+import { BondCard, CompanionSlip } from './bonds/BondCards';
+import { BondsDesk } from './bonds/BondsDesk';
+import type { BondsProps } from './types';
 
-interface BondsScreenProps extends ScreenProps {
-  readonly onOpenPerson: (personId: string) => void;
-  readonly onOpenCompanion: () => void;
+/**
+ * 縁 Bonds: your companion and your team first, then everyone you know, closest first; strangers
+ * fold away. A roomy desk sets the list beside the page of whoever you pick.
+ */
+export function BondsScreen(props: BondsProps) {
+  const roomy = useRoomyDesk();
+  return roomy ? <BondsDesk {...props} /> : <BondsList {...props} />;
 }
 
-/** "At the Forge" reads "Jōnin, at the Forge" after their rank. */
-function midSentence(text: string): string {
-  return text.charAt(0).toLowerCase() + text.slice(1);
-}
-
-function BondCard({ card, onOpen }: { readonly card: PersonCard; readonly onOpen: () => void }) {
-  return (
-    <button type="button" className="bond-card" onClick={onOpen}>
-      <Avatar face={card} size={44} />
-      <span className="bond-main">
-        <b>{card.fullName}</b>
-        <small>
-          {card.title}, {midSentence(card.where)}
-        </small>
-        <BondMeter stageName={card.stageName} progress={card.progress} />
-      </span>
-      {card.specialty && (
-        <span className={`badge d-${card.specialty.id}`}>{card.specialty.label}</span>
-      )}
-    </button>
-  );
-}
-
-/** Your companion: what it is, how close you are, what it takes from you in a fight. */
-function CompanionSlip({
-  card,
-  onOpen,
-}: {
-  readonly card: CompanionCard;
-  readonly onOpen: () => void;
-}) {
-  return (
-    <button type="button" className="bond-card companion-card" onClick={onOpen}>
-      <span className="bond-main">
-        <b>{card.name}</b>
-        <small>{card.description}</small>
-        <BondMeter stageName={card.stageName} progress={card.progress} />
-        <small>{card.orders}</small>
-        <small>Best at {card.standouts.join(', ')}.</small>
-      </span>
-      <span className="badge">{card.kind}</span>
-    </button>
-  );
-}
-
-/** 縁 Bonds: your companion and your team first, then everyone you know, closest first; strangers fold away. */
-export function BondsScreen({ ctx, state, onOpenPerson, onOpenCompanion }: BondsScreenProps) {
+function BondsList({ ctx, state, onOpenPerson, onOpenCompanion }: BondsProps) {
   const view = bondsView(state, ctx);
   const card = (c: PersonCard) => (
     <BondCard
