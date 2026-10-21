@@ -45,7 +45,7 @@ const BREAKS: Readonly<Record<ChainBreak, readonly string[]>> = {
     '{t} {t.is} knocked out of reach, and {a.poss} chain ends there.',
   ],
   winded: [
-    '{a} {a.has} no breath left for the next move, and {a.poss} chain breaks off there.',
+    '{a} {a.has} no breath left for the next move, and {a.their} chain breaks off there.',
     'Out of breath, {a} let{a.s} the chain go.',
   ],
 };
