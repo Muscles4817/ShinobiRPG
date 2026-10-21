@@ -22,6 +22,7 @@ import { cardWorth } from './worth';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
+import { shelterInstinct } from './shelter';
 import { sightInstinct } from './sight';
 import { improvise, isEntry, makingFor, readiesTheCharge } from './stepping';
 import { canDaze, isDazed } from './daze';
@@ -272,6 +273,9 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   if (instinct) return instinct;
   const heal = jutsu(ready, (t) => hasVerb(t, 'heal'));
   if (heal && self.health < self.maxHealth * LOW_HEALTH) return heal;
+  // Far outclassed, a mind that reads the fight takes cover some turns (`shelter.ts`).
+  const shelter = shelterInstinct(self, moment.foe, rng);
+  if (shelter) return shelter;
   // Someone fighting at a set distance makes for it before anything but an emergency, going in
   // with an entry when they have one.
   const footwork = isPinned(self) ? null : makingFor(self, moment.band);

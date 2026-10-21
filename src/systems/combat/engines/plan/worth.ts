@@ -100,6 +100,8 @@ export function cardWorth(
     case 'guard':
     case 'dodge':
     case 'counter':
+    case 'evade':
+    case 'brace':
     case 'search':
     case 'dispel':
     case 'item':

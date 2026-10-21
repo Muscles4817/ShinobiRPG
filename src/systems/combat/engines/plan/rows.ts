@@ -25,6 +25,8 @@ export function attackOf(card: Card): RowAttack {
     case 'step':
     case 'guard':
     case 'dodge':
+    case 'evade':
+    case 'brace':
     case 'search':
     case 'dispel':
       return { reach: RANGE_BANDS };

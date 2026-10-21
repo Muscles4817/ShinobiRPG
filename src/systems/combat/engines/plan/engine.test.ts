@@ -75,8 +75,15 @@ describe('plan & watch cards', () => {
     const [hero] = bodies();
     const ids = (cards: readonly Card[]) =>
       cards.map((c) => (c.kind === 'jutsu' ? c.technique.id : c.kind));
-    expect(ids(cardsFor(hero!, 'close'))).toEqual(['search', 'dispel', 'daze']);
-    expect(ids(cardsFor(hero!, 'far'))).toEqual(['search', 'dispel', 'daze', 'blast']);
+    expect(ids(cardsFor(hero!, 'close'))).toEqual(['evade', 'brace', 'search', 'dispel', 'daze']);
+    expect(ids(cardsFor(hero!, 'far'))).toEqual([
+      'evade',
+      'brace',
+      'search',
+      'dispel',
+      'daze',
+      'blast',
+    ]);
     expect(ids(reactionsFor(hero!, 'close'))).toEqual(['guard', 'dodge', 'counter']);
     expect(ids(reactionsFor(hero!, 'far'))).toEqual(['guard', 'dodge']);
   });

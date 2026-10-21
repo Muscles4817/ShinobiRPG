@@ -22,6 +22,8 @@ import { throughClones } from './decoys';
 import { substituted, type Swap } from './footwork';
 import { riposteFirst } from './lingering';
 import { taken, wound } from './wound';
+import { committedTo } from './commitment';
+import { BRACE_LETS } from '../../rules/commitment';
 import { canHit } from './rows';
 import { isDazed } from './daze';
 import { counterLine, hitLine, missLine, momentOf, type MissWhy } from './voice';
@@ -174,6 +176,25 @@ function guardLets(attacker: PlanFighter, target: PlanFighter, blow: Blow): numb
   return kept + (1 - kept) * (blow.pierce ?? 0);
 }
 
+/** How a hit meets a guard: a ready Guard, a Brace, both, or neither. */
+interface Guarding {
+  readonly guarded: boolean;
+  /** A break went through a ready Guard. */
+  readonly smashed: boolean;
+  /** Share of the hit that gets through. */
+  readonly lets: number;
+}
+
+function guardOn({ attacker, target, blow }: Hit, guardReady: boolean): Guarding {
+  const guarding = guardReady && guardMeets(blow);
+  // A Brace stands firm against every physical blow, a flurry's later ones too; a break goes
+  // through it as through a Guard.
+  const braced = committedTo(target, 'brace') && blow.physical && !blow.breaks;
+  const guarded = (guarding && !blow.breaks) || braced;
+  const lets = guarded ? guardLets(attacker, target, blow) * (braced ? BRACE_LETS : 1) : 1;
+  return { guarded, smashed: guarding && blow.breaks === true, lets };
+}
+
 type Ready = (kind: 'guard' | 'dodge' | 'counter') => boolean;
 
 interface Evasion {
@@ -207,8 +228,9 @@ function missWhy({ target, blow }: Hit, tried: boolean): MissWhy {
 function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const { attacker, target, blow, rng } = hit;
   const able = blow.dodgeable && !isDazed(target);
-  // A Dodge that tried for the technique this blow comes with is told trying for the blow.
-  const tried = able && has('dodge');
+  // A Dodge (or an Evade) that tried for the technique this blow comes with is told trying for
+  // the blow.
+  const tried = able && (has('dodge') || committedTo(target, 'evade'));
   const avoid = able && !blow.reached ? avoidOdds(round, blowIncoming(hit)) : 0;
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
   const slip = { target, attacker, what: blow.what };
@@ -298,10 +320,7 @@ export function react(start: Round, struck: Hit): Round {
   const swap = throughSwap(round, ready, hit);
   if (swap.escaped) return swap.round;
   const shielded = swap.round;
-  const guarding = has('guard') && guardMeets(blow);
-  const guarded = guarding && !blow.breaks;
-  const smashed = guarding && blow.breaks === true;
-  const lets = guarded ? guardLets(attacker, target, blow) : 1;
+  const { guarded, smashed, lets } = guardOn(hit, has('guard'));
   const force = Math.max(1, Math.round(kitted(shielded, attacker, target, blow) * lets));
   const damage = taken(target, force);
   const told = say(
