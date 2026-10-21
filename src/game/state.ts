@@ -92,6 +92,8 @@ export interface GameState {
   readonly contract: Contract | null;
   /** Contracts you have torn up; their clans won't take your name again. */
   readonly brokenContracts: readonly string[];
+  /** How close a town's hunters are to finding you (`hunt.ts`); never shown, 0 when nobody is. */
+  readonly hunt: { readonly heat: number };
   /** The hive in your body (`systems/hives`); null for most. */
   readonly hive: Hive | null;
   /** The dust you command and carry (`systems/dusts`); null for most. */

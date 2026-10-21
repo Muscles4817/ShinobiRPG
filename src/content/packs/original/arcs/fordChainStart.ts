@@ -34,7 +34,7 @@ export const USHIO: EnemyDef = {
     genjutsu: -2,
     fuuinjutsu: -2,
   },
-  maxChakra: 70,
+  maxChakra: 80,
   techniqueIds: ['tide-lash', 'moonfall-slash', 'bleeding-cut'],
   traits: ['swift'],
   nature: 'water',
@@ -51,7 +51,7 @@ export const REN: EnemyDef = {
   description: 'Ushio’s ward, who throws needles from the reeds and never leaves his side.',
   baseStat: 6,
   statBonuses: { speed: 3, perception: 4, kenjutsu: 3, stamina: 1 },
-  maxChakra: 20,
+  maxChakra: 26,
   techniqueIds: [],
   traits: ['archer', 'swift'],
 };

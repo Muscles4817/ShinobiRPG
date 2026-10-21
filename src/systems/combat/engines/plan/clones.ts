@@ -14,6 +14,7 @@ import {
 import { isOffence, type Card } from './cards';
 import { react, type Blow } from './react';
 import { canHit } from './rows';
+import { makeShadows, makesShadows } from './shadows';
 import type { Turn } from './senses';
 import { tell } from '../../rules/telling';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
@@ -37,6 +38,8 @@ const ENTRANCES: Readonly<Record<CloneKind, string>> = {
 };
 
 export function makeClones(round: Round, actor: PlanFighter, use: EffectUse<'clone'>): Round {
+  // Shadow clones are fighters of their own (`shadows.ts`).
+  if (makesShadows(use.technique)) return makeShadows(round, actor, use);
   const clones = clonesFrom(driveOf(actor, use), actor.maxChakra, use);
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, { clones }) },

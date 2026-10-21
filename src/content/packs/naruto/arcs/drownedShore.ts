@@ -34,7 +34,7 @@ export const DROWNED_SHORE_FOE: EnemyDef = {
     genjutsu: -3,
     fuuinjutsu: -3,
   },
-  maxChakra: 70,
+  maxChakra: 80,
   techniqueIds: ['water-gun', 'water-bullet', 'hiding-in-water', 'water-needle'],
   traits: ['swift'],
   nature: 'water',

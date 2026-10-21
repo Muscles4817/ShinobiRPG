@@ -106,7 +106,7 @@ function options(state: PlanState): readonly CombatOption[] {
 function alliesAfter(fighters: readonly PlanFighter[]): Record<string, { health: number }> {
   return Object.fromEntries(
     fighters
-      .filter((f) => f.side === 'player' && !f.isPlayer)
+      .filter((f) => f.side === 'player' && !f.isPlayer && f.shadowOf === undefined)
       .map((f) => [f.id, { health: Math.max(0, humanHealth(f)) }]),
   );
 }

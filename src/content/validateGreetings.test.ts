@@ -50,4 +50,34 @@ describe('town greetings', () => {
       ]),
     );
   });
+
+  it('hunts on real roads with real foes, and asks questions a careful traveller can answer', () => {
+    const at = ORIGINAL_PACK.locations[0]!.id;
+    const careless = { label: 'Openly', tone: 'earnest' as const, reply: 'Seen.', heat: 3 };
+    const problems = withGreetings([
+      {
+        cause: { kind: 'contract' },
+        temper: 'cold',
+        line: 'Begone.',
+        hunt: {
+          regions: ['the-moon'],
+          hunterIds: ['nobody-at-all'],
+          travel: { text: 'How?', answers: [careless] },
+          sleep: { text: ' ', answers: [careless, { ...careless, heat: 1 }] },
+          found: ' ',
+        },
+      },
+    ]);
+    expect(problems).toEqual(
+      expect.arrayContaining([
+        `location "${at}" hunts on region "the-moon", which has no road events`,
+        `location "${at}" hunts with unknown foe "nobody-at-all"`,
+        `location "${at}" offers one answer or none at its travel stop`,
+        `location "${at}" has an answer at its travel stop that isn't 0 to 2 closer`,
+        `location "${at}" has no careful answer at its sleep stop`,
+        `location "${at}" asks nothing at its sleep stop`,
+        `location "${at}" finds you with no words`,
+      ]),
+    );
+  });
 });

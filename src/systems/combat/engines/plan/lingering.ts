@@ -166,12 +166,15 @@ function answers(round: Round, { attacker, target, blow }: Incoming): boolean {
     target.riposte !== undefined &&
     blow.physical &&
     !blow.followUp &&
+    // Only a blow thrown up close can be answered: a throw from across the field is out of reach.
+    round.range === 'close' &&
     canHit({ kind: 'counter' }, attacker, round.fighters)
   );
 }
 
 /**
- * A readied riposte answers the first blow of a hand-to-hand or blade attack before it lands.
+ * A readied riposte answers the first blow of a hand-to-hand or blade attack up close before it
+ * lands.
  * If it fells the attacker, their blow never comes.
  */
 export function riposteFirst(round: Round, hit: Incoming): { round: Round; stopped: boolean } {

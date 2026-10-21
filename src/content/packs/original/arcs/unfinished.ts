@@ -30,7 +30,7 @@ export const UNFINISHED_FOE: EnemyDef = {
     stamina: -3,
     taijutsu: -3,
   },
-  maxChakra: 80,
+  maxChakra: 95,
   techniqueIds: ['whispering-dread', 'moth-dance', 'shadow-feint', 'sap-the-will'],
   traits: ['spirit', 'illusionist'],
 };

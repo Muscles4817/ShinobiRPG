@@ -31,7 +31,7 @@ export const PATIENT_THING_FOE: EnemyDef = {
     stamina: -3,
     taijutsu: -3,
   },
-  maxChakra: 90,
+  maxChakra: 115,
   techniqueIds: ['whispering-dread', 'sap-the-will', 'moth-dance', 'shadow-feint'],
   traits: ['spirit', 'illusionist'],
   healthScale: 1.2,

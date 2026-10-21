@@ -11,6 +11,8 @@ import {
   type CombatOption,
   type CombatView,
   fightTechnique,
+  fighterSight,
+  SEEN_IN_FULL,
 } from '@/game';
 
 import { Chips } from '../../components/Chips';
@@ -21,6 +23,7 @@ import { Pouch } from './combat/Pouch';
 import { HealthBar } from './combat/HealthBar';
 import { PlanScreen } from './combat/PlanScreen';
 import { WatchScreen } from './combat/WatchScreen';
+import type { SightOf } from './combat/Gauges';
 import { RangeStrip } from './combat/RangeStrip';
 import { PlansByOwner, TeamOrders } from './combat/TeamOrders';
 import { useHealthPulses, type HealthPulse } from './combat/useHealthPulses';
@@ -178,16 +181,18 @@ function isStaged(view: CombatView): boolean {
 }
 
 type CombatSceneProps = ScreenProps & {
-  /** Show every fighter's bars, not just yours (versus, where you set up or watch both sides). */
-  readonly gauges?: boolean;
+  /** See every fighter's bars in full (versus, where you set up both sides), not by your eyes. */
+  readonly seeAll?: boolean;
 };
+
+const SEE_ALL: SightOf = () => SEEN_IN_FULL;
 
 /**
  * One scene for every fight style. A staged fight is two screens: the card table between
  * rounds (the plan screen) and the stage that plays out what you chose (the watch screen),
  * which holds after a round until you go back to plan. Turn-by-turn styles keep one screen.
  */
-export function CombatScene({ gauges = false, ...props }: CombatSceneProps) {
+export function CombatScene({ seeAll = false, ...props }: CombatSceneProps) {
   const live = combatScene(props.state, props.ctx);
   const view = live ?? finishedFightScene(props.state);
   const length = view ? storyEnd(view) : 0;
@@ -213,6 +218,7 @@ export function CombatScene({ gauges = false, ...props }: CombatSceneProps) {
     props.perform({ type: 'combatAct', optionId: o.id });
   };
   const reads = combatScouting(props.state, props.ctx);
+  const sightOf = seeAll ? SEE_ALL : fighterSight(props.state, props.ctx);
   const planning = view.options.some((o) => o.kind === 'plan');
   if (planning && !watch.holding) {
     return (
@@ -221,7 +227,7 @@ export function CombatScene({ gauges = false, ...props }: CombatSceneProps) {
         reads={reads}
         onPick={act}
         techniqueOf={(id) => fightTechnique(props.state, props.ctx, id)}
-        gauges={gauges}
+        sightOf={sightOf}
       />
     );
   }
@@ -234,7 +240,8 @@ export function CombatScene({ gauges = false, ...props }: CombatSceneProps) {
       fresh={length > watch.seen}
       reads={reads}
       onPick={act}
-      {...(gauges ? { gauges: { before: watch.before } } : {})}
+      before={watch.before}
+      sightOf={sightOf}
       onWatched={() => {
         setWatch((w) => (w.seen === length ? w : { ...w, seen: length }));
       }}

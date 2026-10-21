@@ -54,11 +54,14 @@ function withClones(clones: Clones, chakra = 60): Round {
 const maker = (r: Round) => r.fighters.find((f) => f.id === 'maker')!;
 
 describe('keeping clones up', () => {
-  it('the maker pays each clone’s upkeep, shadow clones most', () => {
-    const shadow = maker(clonesAfter(withClones(solid({ kind: 'shadow' }))));
+  it('the maker pays each clone’s upkeep, earth more than water; a shadow crowd nothing', () => {
+    const earth = maker(clonesAfter(withClones(solid({ kind: 'earth' }))));
     const water = maker(clonesAfter(withClones(solid({ kind: 'water' }))));
-    expect(shadow.chakra).toBeLessThan(water.chakra);
+    const shadow = maker(clonesAfter(withClones(solid({ kind: 'shadow' }))));
+    expect(earth.chakra).toBeLessThan(water.chakra);
     expect(water.chakra).toBeLessThan(60);
+    // Shadow clones are paid for by the split on casting (`rules/shadowClones.ts`).
+    expect(shadow.chakra).toBe(60);
   });
 
   it('fire clones feed themselves and illusions cost nothing', () => {
@@ -68,8 +71,8 @@ describe('keeping clones up', () => {
   });
 
   it('clones the maker can no longer pay for fade', () => {
-    const after = clonesAfter(withClones(solid({ kind: 'shadow' }), 3));
-    expect(maker(after).clones?.count).toBe(2);
+    const after = clonesAfter(withClones(solid({ kind: 'lightning' }), 3));
+    expect(maker(after).clones?.count).toBe(3);
     expect(after.lines.at(-1)).toMatch(/clones fade/);
   });
 

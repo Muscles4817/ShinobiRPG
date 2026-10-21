@@ -54,11 +54,12 @@ const surge: CombatTechnique = {
   ],
   chakraCost: 8,
 };
+/** Solid decoys (shadow clones are fighters of their own: `shadows.test.ts`). */
 const shades: CombatTechnique = {
   id: 'shades',
   name: 'Shades',
   discipline: 'ninjutsu',
-  effects: [{ verb: 'clone', power: 10, strikes: true }],
+  effects: [{ verb: 'clone', power: 10, strikes: true, kind: 'water' }],
   chakraCost: 12,
 };
 const snare: CombatTechnique = {

@@ -116,6 +116,7 @@ export function cardWorth(
     case 'counter':
     case 'evade':
     case 'brace':
+    case 'gather':
     case 'search':
     case 'dispel':
     case 'item':

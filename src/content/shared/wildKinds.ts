@@ -31,7 +31,7 @@ export const FOREST_WOLF: CompanionKindDef = {
   baseStat: 5,
   statBonuses: { taijutsu: 1, intellect: -2 },
   healthScale: 0.8,
-  maxChakra: 10,
+  maxChakra: 13,
   traits: ['brawler', 'swift'],
   aptitude: {
     speed: 1.3,
@@ -76,7 +76,7 @@ export const DESERT_FOX: CompanionKindDef = {
   baseStat: 4,
   statBonuses: { taijutsu: 1, intellect: -1 },
   healthScale: 0.4,
-  maxChakra: 10,
+  maxChakra: 13,
   traits: ['swift'],
   aptitude: {
     speed: 1.4,

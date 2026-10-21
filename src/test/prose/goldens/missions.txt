@@ -425,23 +425,24 @@ view:
 --- combat (day 2, slot 1) ---
   —— First exchange ——
   You cross the floor in two strides.
-  You are a shade too slow, and the storehouse wraith’s touch grazes you. [−2]
+  The storehouse wraith reaches for Whispering Dread again.
+  The storehouse wraith’s Whispering Dread closes around you, and you feel it. [−25]
   —— Second exchange ——
   You break free of the illusion.
   You go in with Gale Heel.
   Your Gale Heel cuts into the storehouse wraith cleanly. [Guarded] [−7]
   Little of it bites on the storehouse wraith.
   The storehouse wraith is gone again, and the air where it stood is empty.
-  The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
-  The storehouse wraith lands its Whispering Dread on you. [Guarded] [−13]
+  The storehouse wraith’s touch only just brushes you. [Guarded] [−1]
   The storehouse wraith’s illusion folds the world around you.
   —— Third exchange ——
   You search the field and find no one.
-  The storehouse wraith’s touch only just grazes you. [Guarded] [−1]
+  Whispering Dread rises off the storehouse wraith like the cold off a well.
+  The storehouse wraith’s Whispering Dread takes hold of you cleanly. [Guarded] [−11]
   —— Last exchange ——
   You shake off the illusion.
   You look again, with no more luck.
-  You are a shade too slow, and the storehouse wraith’s touch chills you. [Guarded] [−1]
+  You are a shade too slow, and the storehouse wraith’s touch grazes you. [Guarded] [−1]
   You blink, and the field is no longer where it was.
   prompt: The round is over. Round 3: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them. Four walls: no room to back away, and a wide technique hits everyone.
 
@@ -462,12 +463,12 @@ view:
   The storehouse wraith’s touch comes slower than it did at the start and only grazes you. [Guarded] [−1]
   —— Third exchange ——
   You sweep the field once more and turn up nothing.
-  The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
-  The storehouse wraith’s Whispering Dread grips you. [Guarded] [−12]
+  You are a shade too slow, and the storehouse wraith’s touch chills you. [Guarded] [−1]
   You blink, and the field is no longer where it was.
   —— Last exchange ——
   You search again, and still find no one.
-  The storehouse wraith’s touch only just brushes you. [Guarded] [−1]
+  The air around the storehouse wraith wavers as Whispering Dread takes hold.
+  You read the first sign and are ready.
   prompt: The round is over. Round 4: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin round 4)
@@ -479,9 +480,8 @@ view:
 >>> combatAct (Watch the round)
 
 --- combat (day 2, slot 1) ---
-  Little of it bites on the storehouse wraith.
-  The storehouse wraith’s touch brushes you. [Guarded] [−1]
-  prompt: The round is over. Round 5: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
+  You blink, and the field is no longer where it was.
+  prompt: The round is over. Round 5: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin round 5)
 
@@ -490,113 +490,26 @@ view:
   prompt: Close range, round 5, exchange 1 of 4
 
 >>> combatAct (Watch the round)
-
---- combat (day 2, slot 1) ---
-  prompt: The round is over. Round 6: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
-
->>> combatAct (Begin round 6)
-
---- combat (day 2, slot 1) ---
-  —— The next round begins ——
-  prompt: Close range, round 6, exchange 1 of 4
-
->>> combatAct (Watch the round)
-
---- combat (day 2, slot 1) ---
-  prompt: The round is over. Round 7: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them. Four walls: no room to back away, and a wide technique hits everyone.
-
->>> combatAct (Begin round 7)
-
---- combat (day 2, slot 1) ---
-  —— The next round begins ——
-  prompt: Close range, round 7, exchange 1 of 4
-
->>> combatAct (Watch the round)
-  journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves, a little]
+  journal «The Storehouse Ghost failed»: You were beaten unconscious. [−2 reputation]
+  journal: You wake in the village hospital, under lantern light and clean sheets. [−40 ryo]
+  journal «Broken fingers»: The medics patched you up, but this one will take time to mend. [5 days to heal]
+  journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves, a touch]
+  journal: You missed the march yesterday. Gōran stood at the training ground for hours, and has already told two people about it. [Gōran’s regard falls]
+  journal: Gōran has asked for you at the training ground this morning, for drills.
+  journal «Eat»: Gōran pushes a bowl in front of you. “Hungry shinobi train slowly and fight worse. Eat before you work. A meal you cook yourself does more for you than a snack off a stall.”
 
 === report card ===
 view:
-  result: victory
-  enemies: the storehouse wraith
-  summary: You won in seven rounds. The storehouse wraith went down in the seventh round.
-  taught[0]: Chakra Reserves, a little
+  title: The Storehouse Ghost
+  text: You wake in the village hospital, under lantern light and clean sheets.
+  helped: Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals.
+  summary: You lasted five rounds before going down. The storehouse wraith was still standing.
+  injury: Broken fingers
+  taught[0]: Chakra Reserves, a touch
 
---- combat (day 2, slot 1) ---
+--- combat (day 3, slot 0) ---
 
 >>> leaveFight
-
---- mission (day 2, slot 1) ---
-
-=== mission ===
-view:
-  title: The Storehouse Ghost
-  kicker: D-rank mission for Rice Broker Hanada
-  lines[0]:
-    text: Steel your nerves and go in
-  lines[1]:
-    text: Willpower
-  lines[2]:
-    text: You get three steps past the door before your legs carry you back out into the street. It takes a while, standing in the sun, before you can go in again.
-  lines[3]:
-    text: A grey figure hunches over the rice sacks at the back, muttering into its sleeve. “Mine. All of it, mine.”
-  lines[4]:
-    text: Perception
-  lines[5]:
-    text: Watch where the cold gathers
-  lines[6]:
-    text: Perception
-  lines[7]:
-    text: You find a place to watch from and stay there until you could draw the ground from memory.
-  lines[8]:
-    text: Go in head-on
-  lines[9]:
-    text: You defeated the storehouse wraith.
-  route[0]:
-    label: A trial
-    state: done
-  route[1]:
-    label: Foes
-    state: done
-  route[2]:
-    label: Story
-    state: now
-  prompt: You light a lantern at the door. The cold drains away, and the rice smells sweet again.
-  choices[0]:
-    label: Continue
-
->>> missionContinue (Continue)
-  journal «The Storehouse Ghost complete»: Rice Broker Hanada thanks you. [+195 ryo] [+6 reputation] [Whispering Dread scroll]
-
-=== report card ===
-view:
-  result: victory
-  enemies: the storehouse wraith
-  summary: You won in seven rounds. The storehouse wraith went down in the seventh round.
-  taught[0]: Chakra Reserves, a little
-
->>> dismissReport
-
-=== report card ===
-view:
-  title: The Storehouse Ghost
-  client: Rice Broker Hanada
-  unlocked[0]: The Ash Lantern’s Bargain
-  unlocked[1]: A Dance Owed
-  unlocked[2]: The Sword in the Strongroom
-  unlocked[3]: The East Bridge
-  unlocked[4]: The Paper Mill Hoard
-  unlocked[5]: Walls for the Tea Terraces
-  unlocked[6]: Order at the Harvest Wrestling
-  unlocked[7]: Monkeys in the Temple Kitchen
-  unlocked[8]: The Kiln Pass Gate
-  unlocked[9]: The Travelling Physician
-  unlocked[10]: The Bear of the Ash Fells
-  unlocked[11]: The Pirates’ Boathouse
-  unlocked[12]: The Toll on the Pass Road
-  unlocked[13]: The Crossroads Shrine
-  scroll: Whispering Dread
-  road: You tried to steel your nerves and go in, and fell short. [−25% pay] Then you beat the storehouse wraith.
-  grade: rough
 
 >>> dismissReport
 
@@ -606,7 +519,7 @@ view:
   journal «Know what you face»: Gōran taps the clerk’s counter before you take the job. “The client knows more than the notice says. Pay the clerk for the report and you’ll know every one of them and their tricks before you meet them. It costs less than the hospital.”
   journal «The Bride’s Chest»: See a bride’s dowry chest and its porter, Old Saburō safely to the hill village of Kayano. The road has a bad name lately.
 
---- mission (day 2, slot 2) ---
+--- mission (day 3, slot 1) ---
 
 === mission ===
 view:
@@ -617,7 +530,7 @@ view:
     word: Polite
   threads[1]:
     label: Daylight
-    word: Dusk
+    word: Afternoon
   route[0]:
     label: A choice
     state: now
@@ -628,21 +541,18 @@ view:
     label: A trial
     state: ahead
   route[3]:
-    label: A choice
-    state: ahead
-  route[4]:
     label: Camp
     state: ahead
-  route[5]:
+  route[4]:
     label: The road
     state: ahead
-  route[6]:
+  route[5]:
     label: Foes
     state: ahead
-  route[7]:
+  route[6]:
     label: The end
     state: ahead
-  route[8]:
+  route[7]:
     label: The road
     state: ahead
   prompt: “They sent children,” Old Saburō says, peering at you over the chest on his back. “Well. Children can carry things.”
@@ -655,7 +565,7 @@ view:
 
 >>> missionDecide (Answer warmly)
 
---- mission (day 2, slot 2) ---
+--- mission (day 3, slot 1) ---
 
 === mission ===
 view:
@@ -670,7 +580,7 @@ view:
     word: At ease
   threads[1]:
     label: Daylight
-    word: Dusk
+    word: Afternoon
   route[0]:
     label: A choice
     state: done
@@ -681,21 +591,18 @@ view:
     label: A trial
     state: ahead
   route[3]:
-    label: A choice
-    state: ahead
-  route[4]:
     label: Camp
     state: ahead
-  route[5]:
+  route[4]:
     label: The road
     state: ahead
-  route[6]:
+  route[5]:
     label: Foes
     state: ahead
-  route[7]:
+  route[6]:
     label: The end
     state: ahead
-  route[8]:
+  route[7]:
     label: The road
     state: ahead
   prompt: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
@@ -706,9 +613,9 @@ view:
 >>> missionContinue (Travel on)
   journal «Lesson with Gōran»: Gōran has you hit the striking post until it splinters, then hands you a new one. [Strength, a little] [Taijutsu, a little] [+3 bond]
   journal «A travel pass»: Gōran signs a pass. “Safe roads, back by the next lesson. Don’t make me come and find you.” [Pass for 7 days]
-  journal «Gōran’s word»: When the lesson is done, Gōran walks a little way with you. “Your taijutsu is the best thing you have, but anyone with an illusion walks straight through you,” he says. “I want more of it by the next lesson.” [Assignment: Taijutsu]
+  journal «Gōran’s word»: Gōran sits down on a stump at the edge of the training ground and waves you over. He brings up the job you went down on. Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals. “Nothing you do is as good as your taijutsu, but anyone with an illusion walks straight through you,” he says. “Keep at it. More by next time.” [Assignment: Taijutsu]
   journal «On the road»: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb. [A day on the road]
-  journal: Gōran has asked for you at the training ground this morning, for drills.
+  journal: Gōran wants you at the training ground this morning, to spar.
 
 === report card ===
 view:
@@ -717,7 +624,7 @@ view:
   gains[0]: Strength, a little
   gains[1]: Taijutsu, a little
 
---- mission (day 3, slot 0) ---
+--- mission (day 4, slot 0) ---
 
 === mission ===
 view:
@@ -759,15 +666,16 @@ view:
   route[7]:
     label: The road
     state: ahead
-  prompt: A peddler with a pack taller than he is falls into step with you, eager for company and full of gossip.
+  prompt: An ox-cart has slid into the ditch. Its owner is trying to lift it alone, red in the face.
   choices[0]:
-    label: Ask what he’s seen on the road ahead
+    label: Put your shoulder to it
   choices[1]:
-    label: Make a joke of his enormous pack
+    label: Walk on. The job comes first
 
->>> missionDecide (Ask what he’s seen on the road ahead)
+>>> missionDecide (Put your shoulder to it)
+  journal: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone. [−10 energy]
 
---- mission (day 3, slot 0) ---
+--- mission (day 4, slot 0) ---
 
 === mission ===
 view:
@@ -780,18 +688,15 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Ask what he’s seen on the road ahead
+    text: Put your shoulder to it
   lines[4]:
-    text: He talks for a mile about tolls and prices and a stretch of road ahead where nobody likes to camp, and leaves you at a fork with half his gossip still untold.
-  lines[5]:
-    speaker: Goro
-    text: I was hoping you’d pick that one.
+    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
   threads[0]:
     label: Old Saburō’s trust
     word: Trusts you
   threads[1]:
     label: Daylight
-    word: Morning
+    word: Afternoon
   route[0]:
     label: A choice
     state: done
@@ -829,7 +734,7 @@ view:
 
 >>> missionChoose (Keep your patience)
 
---- mission (day 3, slot 0) ---
+--- mission (day 4, slot 0) ---
 
 === mission ===
 view:
@@ -842,27 +747,24 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Ask what he’s seen on the road ahead
+    text: Put your shoulder to it
   lines[4]:
-    text: He talks for a mile about tolls and prices and a stretch of road ahead where nobody likes to camp, and leaves you at a fork with half his gossip still untold.
+    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
   lines[5]:
-    speaker: Goro
-    text: I was hoping you’d pick that one.
-  lines[6]:
     text: Keep your patience
-  lines[7]:
+  lines[6]:
     text: Willpower
+  lines[7]:
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
-    text: You sit down beside him and let him complain about his knees, his son-in-law and the price of lacquer until he gets up of his own accord.
-  lines[9]:
-    speaker: Gōran
-    text: Done properly, and on time. I’ll put that in the report.
+    speaker: Goro
+    text: Again? Next time stand back and let me at it.
   threads[0]:
     label: Old Saburō’s trust
-    word: Trusts you
+    word: At ease
   threads[1]:
     label: Daylight
-    word: Morning
+    word: Dark
   route[0]:
     label: A choice
     state: done
@@ -873,47 +775,32 @@ view:
     label: A trial
     state: done
   route[3]:
-    label: Camp
+    label: A choice
     state: now
   route[4]:
-    label: The road
+    label: Camp
     state: ahead
   route[5]:
-    label: Foes
-    state: ahead
-  route[6]:
-    label: The end
-    state: ahead
-  route[7]:
     label: The road
     state: ahead
-  prompt: You make camp in a cedar hollow below the ridge, and Saburō sets the chest where he can touch it in his sleep.
+  route[6]:
+    label: Foes
+    state: ahead
+  route[7]:
+    label: The end
+    state: ahead
+  route[8]:
+    label: The road
+    state: ahead
+  prompt: The light is going. Old Saburō walks ahead without a word to you, and the road narrows into country none of you know.
   choices[0]:
-    label: Sit with Gōran
-    detail: He might tell you something
+    label: Push on in the dark
   choices[1]:
-    label: Sit with Old Saburō
-  choices[2]:
-    label: Sit with your crew
-  choices[3]:
-    label: Take first watch
-    detail: Perception 62%
-  choices[4]:
-    label: Cook for everyone
-  choices[5]:
-    label: Forage near the camp
-  choices[6]:
-    label: Drill by the fire
-  choices[7]:
-    label: Sleep properly
-  choices[8]:
-    label: Turn in
-    detail: Time for 2 more things
+    label: Make camp where you are
 
->>> missionCamp (Sit with Gōran)
-  journal: You sit with Gōran by the fire. [+6 bond with Gōran]
+>>> missionDecide (Push on in the dark)
 
---- mission (day 3, slot 0) ---
+--- mission (day 4, slot 0) ---
 
 === mission ===
 view:
@@ -926,36 +813,31 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Ask what he’s seen on the road ahead
+    text: Put your shoulder to it
   lines[4]:
-    text: He talks for a mile about tolls and prices and a stretch of road ahead where nobody likes to camp, and leaves you at a fork with half his gossip still untold.
+    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
   lines[5]:
-    speaker: Goro
-    text: I was hoping you’d pick that one.
-  lines[6]:
     text: Keep your patience
-  lines[7]:
+  lines[6]:
     text: Willpower
+  lines[7]:
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
-    text: You sit down beside him and let him complain about his knees, his son-in-law and the price of lacquer until he gets up of his own accord.
+    speaker: Goro
+    text: Again? Next time stand back and let me at it.
   lines[9]:
-    speaker: Gōran
-    text: Done properly, and on time. I’ll put that in the report.
+    text: Push on in the dark
   lines[10]:
-    text: Sit with Gōran
+    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
   lines[11]:
-    text: You sit with Gōran by the fire.
-  lines[12]:
-    text: “I broke this on a door I was sure would give,” Gōran says, rubbing an old scar across one knuckle. “It didn’t, and I ate with my other hand for a month.”
-  lines[13]:
     speaker: Gōran
-    text: Anyone with an illusion walks straight through you.
+    text: That’s the job done right, by the book.
   threads[0]:
     label: Old Saburō’s trust
-    word: Trusts you
+    word: Polite
   threads[1]:
     label: Daylight
-    word: Morning
+    word: Dark
   route[0]:
     label: A choice
     state: done
@@ -966,102 +848,7 @@ view:
     label: A trial
     state: done
   route[3]:
-    label: Camp
-    state: now
-  route[4]:
-    label: The road
-    state: ahead
-  route[5]:
-    label: Foes
-    state: ahead
-  route[6]:
-    label: The end
-    state: ahead
-  route[7]:
-    label: The road
-    state: ahead
-  prompt: You make camp in a cedar hollow below the ridge, and Saburō sets the chest where he can touch it in his sleep.
-  choices[0]:
-    label: Sit with Old Saburō
-  choices[1]:
-    label: Sit with your crew
-  choices[2]:
-    label: Take first watch
-    detail: Perception 62%
-  choices[3]:
-    label: Cook for everyone
-  choices[4]:
-    label: Forage near the camp
-  choices[5]:
-    label: Drill by the fire
-  choices[6]:
-    label: Sleep properly
-  choices[7]:
-    label: Turn in
-    detail: Time for one more thing
-
->>> missionCamp (Sit with Old Saburō)
-
---- mission (day 3, slot 0) ---
-
-=== mission ===
-view:
-  title: The Bride’s Chest
-  kicker: D-rank mission for The Matsuda household
-  lines[0]:
-    text: Answer warmly
-  lines[1]:
-    text: He laughs until he wheezes, and tells you that you remind him of his grandson, who is a fool.
-  lines[2]:
-    text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
-  lines[3]:
-    text: Ask what he’s seen on the road ahead
-  lines[4]:
-    text: He talks for a mile about tolls and prices and a stretch of road ahead where nobody likes to camp, and leaves you at a fork with half his gossip still untold.
-  lines[5]:
-    speaker: Goro
-    text: I was hoping you’d pick that one.
-  lines[6]:
-    text: Keep your patience
-  lines[7]:
-    text: Willpower
-  lines[8]:
-    text: You sit down beside him and let him complain about his knees, his son-in-law and the price of lacquer until he gets up of his own accord.
-  lines[9]:
-    speaker: Gōran
-    text: Done properly, and on time. I’ll put that in the report.
-  lines[10]:
-    text: Sit with Gōran
-  lines[11]:
-    text: You sit with Gōran by the fire.
-  lines[12]:
-    text: “I broke this on a door I was sure would give,” Gōran says, rubbing an old scar across one knuckle. “It didn’t, and I ate with my other hand for a month.”
-  lines[13]:
-    speaker: Gōran
-    text: Anyone with an illusion walks straight through you.
-  lines[14]:
-    text: Sit with Old Saburō
-  lines[15]:
-    text: He tells you he carried the bride’s mother’s chest up this same hill, thirty springs ago, and he will not die before he has carried the daughter’s.
-  lines[16]:
-    text: The fire burns down to embers, and Asuka banks it for the morning.
-  threads[0]:
-    label: Old Saburō’s trust
-    word: Trusts you
-  threads[1]:
-    label: Daylight
-    word: Morning
-  route[0]:
     label: A choice
-    state: done
-  route[1]:
-    label: The road
-    state: done
-  route[2]:
-    label: A trial
-    state: done
-  route[3]:
-    label: Camp
     state: done
   route[4]:
     label: The road
@@ -1082,9 +869,9 @@ view:
 
 >>> missionContinue (Travel on)
   journal «On the road»: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again. [A day on the road]
-  journal: Gōran wants you at the training ground this morning, to spar.
+  journal: Gōran will be at the training ground this morning, expecting you for a march.
 
---- mission (day 4, slot 0) ---
+--- mission (day 5, slot 0) ---
 
 === mission ===
 view:
@@ -1097,41 +884,30 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Ask what he’s seen on the road ahead
+    text: Put your shoulder to it
   lines[4]:
-    text: He talks for a mile about tolls and prices and a stretch of road ahead where nobody likes to camp, and leaves you at a fork with half his gossip still untold.
+    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
   lines[5]:
-    speaker: Goro
-    text: I was hoping you’d pick that one.
-  lines[6]:
     text: Keep your patience
-  lines[7]:
+  lines[6]:
     text: Willpower
+  lines[7]:
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
-    text: You sit down beside him and let him complain about his knees, his son-in-law and the price of lacquer until he gets up of his own accord.
+    speaker: Goro
+    text: Again? Next time stand back and let me at it.
   lines[9]:
-    speaker: Gōran
-    text: Done properly, and on time. I’ll put that in the report.
+    text: Push on in the dark
   lines[10]:
-    text: Sit with Gōran
+    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
   lines[11]:
-    text: You sit with Gōran by the fire.
-  lines[12]:
-    text: “I broke this on a door I was sure would give,” Gōran says, rubbing an old scar across one knuckle. “It didn’t, and I ate with my other hand for a month.”
-  lines[13]:
     speaker: Gōran
-    text: Anyone with an illusion walks straight through you.
-  lines[14]:
-    text: Sit with Old Saburō
-  lines[15]:
-    text: He tells you he carried the bride’s mother’s chest up this same hill, thirty springs ago, and he will not die before he has carried the daughter’s.
-  lines[16]:
-    text: The fire burns down to embers, and Asuka banks it for the morning.
-  lines[17]:
+    text: That’s the job done right, by the book.
+  lines[12]:
     text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
   threads[0]:
     label: Old Saburō’s trust
-    word: Trusts you
+    word: Polite
   threads[1]:
     label: Daylight
     word: Morning
@@ -1145,18 +921,15 @@ view:
     label: A trial
     state: done
   route[3]:
-    label: Camp
-    state: done
-  route[4]:
     label: The road
     state: done
-  route[5]:
+  route[4]:
     label: Foes
     state: now
-  route[6]:
+  route[5]:
     label: The end
     state: ahead
-  route[7]:
+  route[6]:
     label: The road
     state: ahead
   prompt: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
@@ -1166,15 +939,188 @@ view:
 
 >>> missionContinue (Size them up)
 
---- combat (day 4, slot 0) ---
-  A lookout you never saw whistles from the trees, and they come at you out of the brush. They saw you first.
-  They move first.
-  You are caught off balance.
+--- encounter (day 5, slot 0) ---
+
+=== encounter ===
+view:
+  title: The Bride’s Chest
+  rank: D
+  client: The Matsuda household
+  lines[0]:
+    text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
+  lines[1]:
+    text: Perception
+  facts[0]:
+    fact: count
+    label: How many
+    hint: Not yet known. Watch them from cover, read their tracks or feel for chakra to find out.
+  facts[1]:
+    fact: identity
+    label: Who
+    hint: Not yet known. Read their tracks or ask travellers on the road to find out.
+  facts[2]:
+    fact: kit
+    label: How they fight
+    hint: Not yet known. Feel for chakra or ask travellers on the road to find out.
+  facts[3]:
+    fact: awareness
+    label: Are they watching
+    hint: Not yet known. Watch them from cover or feel for chakra to find out.
+  facts[4]:
+    fact: terrain
+    label: The ground
+    hint: Not yet known. Watch them from cover to find out.
+  handicap: Read against you as you are now: injured.
+  recon[0]:
+    label: Watch them from cover
+    odds: Perception 62%
+    cost: 5 energy
+  recon[1]:
+    label: Read their tracks
+    odds: Perception 68%
+    cost: 8 energy
+  recon[2]:
+    label: Feel for chakra
+    odds: Perception 56%
+    cost: 10 chakra
+    blocker: You can’t feel chakra yet. Learn a sensing technique, or raise ninjutsu to D.
+  recon[3]:
+    label: Ask travellers on the road
+    odds: Certain
+    cost: 15 ryo
+  approaches[0]:
+    label: Go in head-on
+    detail: A straight fight
+  approaches[1]:
+    label: Ambush them
+    detail: They reel, you strike first
+    blocker: You don’t know whether they’ve noticed you. Watch or sense them first.
+  approaches[2]:
+    label: Sneak past
+    detail: Speed 71%
+  approaches[3]:
+    label: Talk them down
+    detail: Willpower 32%
+  approaches[4]:
+    label: Pay them off
+    detail: 80 ryo
+  approaches[5]:
+    label: Frighten them off
+    detail: Willpower 49%
+  approaches[6]:
+    label: Set the ground
+    blocker: Needs a trap or field technique, or a smoke bomb in your pouch.
+  approaches[7]:
+    label: Withdraw
+    detail: The job fails, but you’re unhurt
+  ranges[0]:
+    label: Close
+  ranges[1]:
+    label: Mid
+  ranges[2]:
+    label: Far
+
+>>> encounterRecon (Watch them from cover)
+
+--- encounter (day 5, slot 0) ---
+
+=== encounter ===
+view:
+  title: The Bride’s Chest
+  rank: D
+  client: The Matsuda household
+  lines[0]:
+    text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
+  lines[1]:
+    text: Perception
+  lines[2]:
+    text: Watch them from cover
+  lines[3]:
+    text: Perception
+  lines[4]:
+    text: From cover you take in the ground, and how they hold themselves.
+  facts[0]:
+    fact: count
+    label: How many
+    value: Two of them
+    hint: Not yet known. Watch them from cover, read their tracks or feel for chakra to find out.
+  facts[1]:
+    fact: identity
+    label: Who
+    hint: Not yet known. Read their tracks or ask travellers on the road to find out.
+  facts[2]:
+    fact: kit
+    label: How they fight
+    hint: Not yet known. Feel for chakra or ask travellers on the road to find out.
+  facts[3]:
+    fact: awareness
+    label: Are they watching
+    value: They don’t know you’re here.
+    hint: Not yet known. Watch them from cover or feel for chakra to find out.
+  facts[4]:
+    fact: terrain
+    label: The ground
+    value: A felled tree across the road where it dips between two banks, and room behind it for more men than you can see.
+    hint: Not yet known. Watch them from cover to find out.
+  handicap: Read against you as you are now: injured.
+  recon[0]:
+    label: Watch them from cover
+    odds: Perception 62%
+    cost: 5 energy
+    blocker: Nothing more to learn that way.
+  recon[1]:
+    label: Read their tracks
+    odds: Perception 68%
+    cost: 8 energy
+  recon[2]:
+    label: Feel for chakra
+    odds: Perception 56%
+    cost: 10 chakra
+    blocker: You can’t feel chakra yet. Learn a sensing technique, or raise ninjutsu to D.
+  recon[3]:
+    label: Ask travellers on the road
+    odds: Certain
+    cost: 15 ryo
+  approaches[0]:
+    label: Go in head-on
+    detail: A straight fight
+  approaches[1]:
+    label: Ambush them
+    detail: They reel, you strike first
+  approaches[2]:
+    label: Sneak past
+    detail: Speed 71%
+  approaches[3]:
+    label: Talk them down
+    detail: Willpower 32%
+  approaches[4]:
+    label: Pay them off
+    detail: 80 ryo
+  approaches[5]:
+    label: Frighten them off
+    detail: Willpower 49%
+  approaches[6]:
+    label: Set the ground
+    blocker: Needs a trap or field technique, or a smoke bomb in your pouch.
+  approaches[7]:
+    label: Withdraw
+    detail: The job fails, but you’re unhurt
+  ranges[0]:
+    label: Close
+  ranges[1]:
+    label: Mid
+  ranges[2]:
+    label: Far
+
+>>> encounterApproach
+
+--- combat (day 5, slot 0) ---
+  The bandit thug and the bandit archer square up.
   prompt: Round 1: pick up to 2 actions for each distance, higher first, and the defence you keep ready there.
 
 >>> combatAct (Begin the fight)
 
---- combat (day 4, slot 0) ---
+--- combat (day 5, slot 0) ---
   —— The fight begins ——
   prompt: Mid range, round 1, exchange 1 of 4
 
@@ -1187,28 +1133,32 @@ view:
   gains[0]: Strength, a little
   gains[1]: Taijutsu, a little
 
---- combat (day 4, slot 0) ---
+--- combat (day 5, slot 0) ---
   —— First exchange ——
-  The bandit archer’s kunai grazes you. [Guarded] [−4]
-  The bandit thug feints, looking to close in, and Gōran doesn’t bite.
   Asuka starts with Lantern Cut before anyone has settled.
-  There is nothing the bandit archer can do as Asuka’s Lantern Cut opens up her. [Guarded] [−54]
-  Goro darts in close.
-  Gōran opens with Lantern Wind Flurry.
-  Gōran’s Lantern Wind Flurry smashes into the bandit thug, and he’s nearly knocked off his feet. [−44]
-  Gōran’s Lantern Wind Flurry flattens the bandit thug once more with everything behind it. [−44]
-  There is nothing the bandit thug can do as Gōran’s Lantern Wind Flurry drives through him again. [−12]
-  The bandit thug drops to his knees and topples over.
-  You stand blinking while the exchange goes by without you.
+  Asuka’s Lantern Cut tears through the bandit archer with everything behind it. [Guarded] [−56]
+  The bandit archer keeps Gōran off.
+  The bandit archer waits for Gōran to commit, then fires.
+  The bandit archer’s kunai only just skims Gōran. [−1]
+  Goro closes in at once.
+  You open with Gale Heel.
+  Your Gale Heel slices across the bandit thug cleanly. [Guarded] [−13]
+  Asuka is a shade too slow, and the bandit thug’s strike glances off them. [Guarded] [−6]
   —— Second exchange ——
   Asuka’s blade flows into Lantern Cut.
-  Asuka’s Lantern Cut tears through the bandit archer, and she’s nearly knocked off her feet. [Guarded] [−46]
-  The bandit archer goes down and stays down.
+  Asuka’s Lantern Cut tears through the bandit thug, and he’s nearly knocked off his feet. [Guarded] [−42]
+  Gōran launches into Lantern Wind Flurry.
+  There is nothing the bandit thug can do as Gōran’s Lantern Wind Flurry smashes into him. [Guarded] [−35]
+  Gōran’s Lantern Wind Flurry drives through the bandit thug again with everything behind it. [−10]
+  The bandit thug drops to his knees and topples over.
+  Goro explodes forward with Palm Strike.
+  Goro’s Palm Strike slams into the bandit archer, and she feels it. [Guarded] [−32]
+  The bandit archer turns and runs.
   You are still on your feet, and no one is left to face you.
 
 >>> leaveFight
 
---- mission (day 4, slot 0) ---
+--- mission (day 5, slot 0) ---
 
 === mission ===
 view:
@@ -1221,52 +1171,47 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Ask what he’s seen on the road ahead
+    text: Put your shoulder to it
   lines[4]:
-    text: He talks for a mile about tolls and prices and a stretch of road ahead where nobody likes to camp, and leaves you at a fork with half his gossip still untold.
+    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
   lines[5]:
-    speaker: Goro
-    text: I was hoping you’d pick that one.
-  lines[6]:
     text: Keep your patience
-  lines[7]:
+  lines[6]:
     text: Willpower
+  lines[7]:
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
-    text: You sit down beside him and let him complain about his knees, his son-in-law and the price of lacquer until he gets up of his own accord.
+    speaker: Goro
+    text: Again? Next time stand back and let me at it.
   lines[9]:
-    speaker: Gōran
-    text: Done properly, and on time. I’ll put that in the report.
+    text: Push on in the dark
   lines[10]:
-    text: Sit with Gōran
+    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
   lines[11]:
-    text: You sit with Gōran by the fire.
-  lines[12]:
-    text: “I broke this on a door I was sure would give,” Gōran says, rubbing an old scar across one knuckle. “It didn’t, and I ate with my other hand for a month.”
-  lines[13]:
     speaker: Gōran
-    text: Anyone with an illusion walks straight through you.
-  lines[14]:
-    text: Sit with Old Saburō
-  lines[15]:
-    text: He tells you he carried the bride’s mother’s chest up this same hill, thirty springs ago, and he will not die before he has carried the daughter’s.
-  lines[16]:
-    text: The fire burns down to embers, and Asuka banks it for the morning.
-  lines[17]:
+    text: That’s the job done right, by the book.
+  lines[12]:
     text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
-  lines[18]:
+  lines[13]:
     text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
-  lines[19]:
+  lines[14]:
     text: Perception
-  lines[20]:
-    text: A lookout you never saw whistles from the trees, and they come at you out of the brush.
-  lines[21]:
+  lines[15]:
+    text: Watch them from cover
+  lines[16]:
+    text: Perception
+  lines[17]:
+    text: From cover you take in the ground, and how they hold themselves.
+  lines[18]:
+    text: Go in head-on
+  lines[19]:
     text: You defeated a bandit thug and a bandit archer.
-  lines[22]:
-    speaker: Asuka
-    text: They’ll think twice before they try that on anyone from our village.
+  lines[20]:
+    speaker: Gōran
+    text: That was a warm-up, wasn’t it? Tell me there are more of them further on.
   threads[0]:
     label: Old Saburō’s trust
-    word: Trusts you
+    word: Polite
   threads[1]:
     label: Daylight
     word: Morning
@@ -1280,18 +1225,15 @@ view:
     label: A trial
     state: done
   route[3]:
-    label: Camp
-    state: done
-  route[4]:
     label: The road
     state: done
-  route[5]:
+  route[4]:
     label: Foes
     state: done
-  route[6]:
+  route[5]:
     label: The end
     state: now
-  route[7]:
+  route[6]:
     label: The road
     state: ahead
   choices[0]:
@@ -1299,7 +1241,7 @@ view:
 
 >>> missionContinue (See it through)
 
---- mission (day 4, slot 0) ---
+--- mission (day 5, slot 0) ---
 
 === mission ===
 view:
@@ -1312,54 +1254,49 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Ask what he’s seen on the road ahead
+    text: Put your shoulder to it
   lines[4]:
-    text: He talks for a mile about tolls and prices and a stretch of road ahead where nobody likes to camp, and leaves you at a fork with half his gossip still untold.
+    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
   lines[5]:
-    speaker: Goro
-    text: I was hoping you’d pick that one.
-  lines[6]:
     text: Keep your patience
-  lines[7]:
+  lines[6]:
     text: Willpower
+  lines[7]:
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[8]:
-    text: You sit down beside him and let him complain about his knees, his son-in-law and the price of lacquer until he gets up of his own accord.
+    speaker: Goro
+    text: Again? Next time stand back and let me at it.
   lines[9]:
-    speaker: Gōran
-    text: Done properly, and on time. I’ll put that in the report.
+    text: Push on in the dark
   lines[10]:
-    text: Sit with Gōran
+    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
   lines[11]:
-    text: You sit with Gōran by the fire.
-  lines[12]:
-    text: “I broke this on a door I was sure would give,” Gōran says, rubbing an old scar across one knuckle. “It didn’t, and I ate with my other hand for a month.”
-  lines[13]:
     speaker: Gōran
-    text: Anyone with an illusion walks straight through you.
-  lines[14]:
-    text: Sit with Old Saburō
-  lines[15]:
-    text: He tells you he carried the bride’s mother’s chest up this same hill, thirty springs ago, and he will not die before he has carried the daughter’s.
-  lines[16]:
-    text: The fire burns down to embers, and Asuka banks it for the morning.
-  lines[17]:
+    text: That’s the job done right, by the book.
+  lines[12]:
     text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
-  lines[18]:
+  lines[13]:
     text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
-  lines[19]:
+  lines[14]:
     text: Perception
-  lines[20]:
-    text: A lookout you never saw whistles from the trees, and they come at you out of the brush.
-  lines[21]:
+  lines[15]:
+    text: Watch them from cover
+  lines[16]:
+    text: Perception
+  lines[17]:
+    text: From cover you take in the ground, and how they hold themselves.
+  lines[18]:
+    text: Go in head-on
+  lines[19]:
     text: You defeated a bandit thug and a bandit archer.
-  lines[22]:
-    speaker: Asuka
-    text: They’ll think twice before they try that on anyone from our village.
-  lines[23]:
-    text: At the gate of Kayano, Saburō sets the chest down and makes you carry it the last steps. “So you can say you did,” he says.
+  lines[20]:
+    speaker: Gōran
+    text: That was a warm-up, wasn’t it? Tell me there are more of them further on.
+  lines[21]:
+    text: Saburō ran when the fighting started and fell on the slope. He reaches Kayano on your back, the chest on his, swearing at you both.
   threads[0]:
     label: Old Saburō’s trust
-    word: Trusts you
+    word: Polite
   threads[1]:
     label: Daylight
     word: Morning
@@ -1373,18 +1310,15 @@ view:
     label: A trial
     state: done
   route[3]:
-    label: Camp
-    state: done
-  route[4]:
     label: The road
     state: done
-  route[5]:
+  route[4]:
     label: Foes
     state: done
-  route[6]:
+  route[5]:
     label: The end
     state: done
-  route[7]:
+  route[6]:
     label: The road
     state: now
   prompt: The road home is quiet, and shorter than the road out.
@@ -1393,10 +1327,9 @@ view:
     detail: A day on the road, and nothing in your pack
 
 >>> missionContinue (Travel on)
-  journal «On the road»: The road home is quiet, and shorter than the road out. The gate of Tōrōgakure stands open when you reach it near dusk, and the guard waves you through without looking up from his tea. [A day on the road] [A hungry night]
-  journal «The Bride’s Chest complete»: At the gate of Kayano, Saburō sets the chest down and makes you carry it the last steps. “So you can say you did,” he says. [+504 ryo] [+7 reputation] [+6 team bond]
-  journal: Gōran will be at the training ground this morning, expecting you for a march.
-  journal «Eat»: Gōran pushes a bowl in front of you. “Hungry shinobi train slowly and fight worse. Eat before you work. A meal you cook yourself does more for you than a snack off a stall.”
+  journal «On the road»: The road home is quiet, and shorter than the road out. By evening the lanterns are lit along the wall of Tōrōgakure, and you walk in under them, home. [A day on the road] [A hungry night]
+  journal «The Bride’s Chest complete»: Saburō ran when the fighting started and fell on the slope. He reaches Kayano on your back, the chest on his, swearing at you both. [+252 ryo] [+4 reputation] [+6 team bond]
+  journal: Gōran has asked for you at the training ground this morning, for drills.
 
 === report card ===
 view:
@@ -1419,26 +1352,28 @@ view:
 view:
   title: The Bride’s Chest
   client: The Matsuda household
-  unlocked[0]: The Cold Kilns
-  unlocked[1]: Smugglers at the Weir
-  unlocked[2]: The Wraith of Kiln Pass
-  unlocked[3]: False Seals at Shiomachi
-  unlocked[4]: The Rope at Hollow Ford
-  unlocked[5]: The Runaway Apprentice
-  unlocked[6]: Lanterns on the Grave Hill
-  unlocked[7]: The Weaver’s Missing Silk
-  unlocked[8]: Night at the Forge
-  unlocked[9]: Glass from the Dunes
-  unlocked[10]: The Smugglers’ Cove
-  ending: At the gate of Kayano, Saburō sets the chest down and makes you carry it the last steps. “So you can say you did,” he says.
-  road: You heard about the road ahead from a peddler. Then you kept your patience with Old Saburō, who noticed. After that you heard why Old Saburō makes this journey. Later you fought a bandit thug and a bandit archer, and won. Old Saburō pressed a gift on you at the end of the road. [+20% pay]
+  unlocked[0]: The Ash Lantern’s Bargain
+  unlocked[1]: A Dance Owed
+  unlocked[2]: The Sword in the Strongroom
+  unlocked[3]: The East Bridge
+  unlocked[4]: The Paper Mill Hoard
+  unlocked[5]: Walls for the Tea Terraces
+  unlocked[6]: Order at the Harvest Wrestling
+  unlocked[7]: Monkeys in the Temple Kitchen
+  unlocked[8]: The Kiln Pass Gate
+  unlocked[9]: The Travelling Physician
+  unlocked[10]: The Bear of the Ash Fells
+  unlocked[11]: The Pirates’ Boathouse
+  unlocked[12]: The Toll on the Pass Road
+  unlocked[13]: The Crossroads Shrine
+  ending: Saburō ran when the fighting started and fell on the slope. He reaches Kayano on your back, the chest on his, swearing at you both.
+  road: You pulled a carter out of the ditch. It cost the light. Then you ran out of patience with Old Saburō. That cost more of it. After that you pushed on through the dark instead of making camp. Later you fought a bandit thug and a bandit archer, and won. Old Saburō bolted when the fighting started, and was hurt. [−40% pay]
   crew[0]:
     name: Asuka
-    quote: They’ll think twice before they try that on anyone from our village.
   crew[1]:
     name: Goro
-    quote: I was hoping you’d pick that one.
-  grade: clean
+    quote: Again? Next time stand back and let me at it.
+  grade: botched
 
 >>> dismissReport
 

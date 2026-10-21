@@ -5,7 +5,8 @@ import type { GameState } from './state';
 
 /**
  * How a town greets you (`LocationDef.greetings`): what it holds against you that is true of
- * you now (the village you come from, a summoning contract you hold), and what that costs you.
+ * you now (the village you come from, a summoning contract you hold, an awakened bloodline), and
+ * what that costs you.
  * Its shops, inn, bar, baths and hospital charge you more while you are there (`townPrice`), and
  * its people warm to you more slowly wherever you meet them (`townWarmth`). Two grudges stack.
  * A grudge may shut the gates until the village remembers something (`gateRefusal`): you can't
@@ -24,6 +25,11 @@ function holds(cause: GreetingCause, state: GameState, ctx: GameContext): boolea
       return cause.locationId === ctx.content.startLocationId;
     case 'contract':
       return state.contract !== null;
+    // A dormant bloodline shows nothing yet; an awakened one can't be hidden for long.
+    case 'bloodline': {
+      const bloodline = ctx.content.clans.get(state.character.clanId)?.kekkeiGenkai;
+      return bloodline !== undefined && !bloodline.dormant;
+    }
   }
 }
 

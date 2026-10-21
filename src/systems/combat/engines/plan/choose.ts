@@ -23,6 +23,7 @@ import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
 import { shelterInstinct } from './shelter';
+import { gatherInstinct } from './resting';
 import { sightInstinct } from './sight';
 import { improvise, isEntry, makingFor, readiesTheCharge } from './stepping';
 import { canDaze, isDazed } from './daze';
@@ -276,6 +277,9 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   // Far outclassed, a mind that reads the fight takes cover some turns (`shelter.ts`).
   const shelter = shelterInstinct(self, moment.foe, rng);
   if (shelter) return shelter;
+  // Run dry of chakra, a fighter whose attacks need it may gather it back (`gather.ts`).
+  const rest = gatherInstinct(self, moment, rng);
+  if (rest) return rest;
   // Someone fighting at a set distance makes for it before anything but an emergency, going in
   // with an entry when they have one.
   const footwork = isPinned(self) ? null : makingFor(self, moment.band);

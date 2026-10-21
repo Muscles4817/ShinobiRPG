@@ -31,10 +31,17 @@ export type HungerLevel = (typeof HUNGER_LEVELS)[number];
  */
 export const MAX_HEALTH = 100;
 
-/** Chakra everyone has before reserves and control add to it. */
-export const CHAKRA_BASE = 30;
-/** Chakra per point of reserves: the depth of the well. */
-export const CHAKRA_PER_RESERVES = 3.5;
+/**
+ * The chakra a body of no reserves to speak of has, before control adds to it: the floor of the
+ * well everyone shares.
+ */
+export const CHAKRA_BASE = 40;
+/**
+ * Reserves that double the well (`docs/design/defence-plan.md`). Chakra grows by multiplying, not
+ * adding, so a deep well dwarfs an ordinary one: a fresh genin has about 70, a jōnin over 100, a
+ * monster of stamina several times that, and the beasts at the top of the scale thousands.
+ */
+export const RESERVES_PER_DOUBLING = 10;
 /** Chakra per point of control: a little more from wasting less. */
 export const CHAKRA_PER_CONTROL = 1;
 
@@ -46,16 +53,16 @@ export interface ChakraBody extends Pick<Stats, 'reserves' | 'chakraControl'> {
 
 /** Maximum chakra: mostly reserves, a little control. Stamina feeds it only by growing reserves. */
 export function maxChakra(stats: ChakraBody): number {
-  const full =
-    CHAKRA_BASE + stats.reserves * CHAKRA_PER_RESERVES + stats.chakraControl * CHAKRA_PER_CONTROL;
+  const well = CHAKRA_BASE * 2 ** (Math.max(0, stats.reserves) / RESERVES_PER_DOUBLING);
+  const full = well + stats.chakraControl * CHAKRA_PER_CONTROL;
   return Math.round(full * (1 - (stats.chakraGiven ?? 0)));
 }
 
 /** The reserves that give this maximum chakra at this control (never below zero). */
 export function reservesFor(chakra: number, chakraControl: number): number {
-  const reserves =
-    (chakra - CHAKRA_BASE - chakraControl * CHAKRA_PER_CONTROL) / CHAKRA_PER_RESERVES;
-  return Math.max(0, round1(reserves));
+  const well = chakra - chakraControl * CHAKRA_PER_CONTROL;
+  if (well <= CHAKRA_BASE) return 0;
+  return round1(RESERVES_PER_DOUBLING * Math.log2(well / CHAKRA_BASE));
 }
 
 export function fullVitals(stats: Stats): Vitals {

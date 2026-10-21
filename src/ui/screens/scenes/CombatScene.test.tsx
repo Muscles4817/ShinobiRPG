@@ -89,6 +89,19 @@ describe('CombatScene (smoke test)', () => {
     expect(screen.getByRole('group', { name: 'Their front row' })).toBeInTheDocument();
   });
 
+  it('shows your bars exactly and a foe’s as your eyes read them', () => {
+    const dull = act(withAllStats(newGame(), 3), { type: 'spar', personId: 'kaen' });
+    render(<CombatScene ctx={ctx} state={dull} perform={() => undefined} />);
+    const [mine, theirs] = within(
+      screen.getByRole('region', { name: 'Every fighter’s bars' }),
+    ).getAllByRole('article');
+    expect(within(mine!).getByText('Chakra')).toBeInTheDocument();
+    expect(within(mine!).getAllByText(/^\d+\/\d+$/).length).toBeGreaterThan(1);
+    expect(within(theirs!).queryByText('Chakra')).toBeNull();
+    expect(within(theirs!).queryAllByText(/^\d+\/\d+$/)).toHaveLength(0);
+    expect(within(theirs!).getByText('Fresh')).toBeInTheDocument();
+  });
+
   it('shows both sides in their rows, with the distance between them', () => {
     const state = riverFight();
     render(<CombatScene ctx={ctx} state={state} perform={() => undefined} />);

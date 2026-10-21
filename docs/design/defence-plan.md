@@ -140,7 +140,9 @@ Fighters change what they do when they face a killer (`plan/judgement.ts`, `plan
 - The player's teammates switch when ordered or by stance; the player chooses, and the plan
   screen says why ("Guy has the seventh gate open: one blow from him could end you").
 
-## Part 4: The Eight Gates
+## Part 4: The Eight Gates, the Sharingan and set-ups
+
+### 4.1 The Eight Gates
 
 The Gates are the test of all of it: the biggest attack in the game, available only after a
 turn every foe can see.
@@ -149,14 +151,35 @@ turn every foe can see.
   gets their next turn to flee, Evade or Brace. That setup turn is the balance, not a cap.
 - **The lift is real.** The deep gates put Guy beyond any body (`LADDER_SHARE`: the seventh and
   eighth at least double), fast enough to outpace almost anyone (3.4).
-- **The burn clock.** Each open gate drains health every exchange as a share of his maximum:
-  about a tenth at the fifth, a sixth to a fifth at the seventh, a quarter at the eighth. When
-  the gates shut (or the price takes him to `GIVE_OUT_SHARE`) he collapses: out of the fight.
-  The hospital days after stay.
+- **Guy fights with taijutsu first.** The Gates are not a readying move: they leave his default
+  plan, which opens with his style and chains (the body arts were built so a taijutsu fighter
+  closes the gap and wins with taijutsu). He opens a gate only for a reason the fight gives him
+  (`worthOpening`, rewritten), and climbs only as far as the reason needs, a gate or two at a
+  time, never straight to the sixth or seventh for one move:
+  - **His taijutsu isn't enough.** A perceptive fighter can judge it from sizing the foe up; a
+    duller one has to try first, a few exchanges of real blows, and see them miss or do little
+    (a read of the damage he has dealt against the damage he needs).
+  - **He is badly hurt**, and has to end it before it ends him.
+  - **A teammate is about to die**: the only reason for the eighth gate.
+- **The price escalates, while open and after.** Each band of gates costs more than the last,
+  and costs he carries for the rest of the fight once it shuts:
+
+  | Gates                   | While open                                        | Once they shut                                     |
+  | ----------------------- | ------------------------------------------------- | -------------------------------------------------- |
+  | First to third          | Breath drains faster                              | His most breath is lower for the rest of the fight |
+  | Fourth and fifth        | As above, and a little health each exchange       | Speed and strength fall a little                   |
+  | Sixth (Morning Peacock) | Breath drains hard, and real health each exchange | Clearly slower and weaker for the fight            |
+  | Seventh                 | A health drain that leaves about a round to win   | He collapses: out of the fight, or barely standing |
+  | Eighth                  | Night Guy, and the burn kills him                 |                                                    |
+
+  By the seventh gate he is fighting to win within a round; if he hasn't, he is cooked. Opening
+  the deep gates to throw one finisher costs the fight unless it wins it, so it is a last resort
+  or a judgement that the foe can't be hurt any other way.
+
 - **His finishers**, each a kind of attack of its own:
   - **Morning Peacock** (sixth gate): close range, and only against a target who is held or
-    dazed (a new `needsTarget` on the technique: open or held). A storm of blows. Guy is still
-    serviceable afterwards (a light toll).
+    dazed (a new `needsTarget` on the technique: open or held). A storm of blows. Guy can still
+    fight afterwards, but the sixth gate's toll (above) stays with him: winded, slower, weaker.
   - **Afternoon Tiger** (seventh gate; today's Daytime Tiger): ranged, a wide area, crushing,
     hard to evade (area against evasion). It leaves him **drained**: winded and dazed for some
     exchanges, a heavy health and breath toll.
@@ -168,6 +191,41 @@ turn every foe can see.
     him whatever happens, and he opens it only in the last ditch (to save a teammate about to
     die, `worthOpening`).
 - **Rock Lee** opens the Gates the same way, a few steps shallower, with the same price.
+
+### 4.2 The Sharingan, revealed
+
+Kakashi keeps his Sharingan covered, and in canon he has good reason: it drains him. Today it is a
+passive perk (`foresight`: slips, counters and sees techniques more often, always on). It becomes a
+choice:
+
+- **Revealing it is a turn** (a technique, like opening a gate), and it costs chakra every
+  exchange it stays uncovered.
+- **While revealed**, the fighter reads everything: Evade's read is perfect (3.3, all of it on the
+  attack that matters), their slip's ceiling rises well above an ordinary evader's, counters and
+  copying come easier, and a genjutsu cast at them is seen through far more often.
+- **Pace still holds** (3.4): against Guy deep in the Gates his eyes see it coming, but his body
+  can't keep up past a point. That is the canon matchup: Kakashi has to make sure Guy never gets
+  the chance.
+- Covering it again (to save chakra) is also a choice; a sharp mind reveals it when the fight
+  turns dangerous, not before.
+
+### 4.3 Stealth and set-ups
+
+Hiding exists (smoke, mist, concealment, Search to find someone), but nobody fights with it as a
+plan. A fighter like Kakashi against someone like Guy would use his range of genjutsu and ninjutsu
+to manipulate the field: stop Guy tracking him at all, pin him with an illusion, and put him down in
+one blow with a Chidori or a Rasengan. The engine learns three things:
+
+- **Controlling the field.** Mist, a cloaking genjutsu or a substitution drops a foe's tracking;
+  finding them again is perception (and sensing) against the hider's concealment, so a fighter
+  with poor eyes, like Guy, may not find them at all.
+- **Pinning from hiding.** A genjutsu or a binding cast from concealment is far harder to notice
+  and to break (the caster isn't where the target is looking).
+- **The one-hit finisher.** A killing technique (Chidori, Rasengan) on a target who is held or
+  can't see the attacker can't be evaded and hits to kill (`lethal` on the finisher, 3.1): the
+  pay-off the set-up was for.
+- **Planning it.** A mind that reads the fight sequences it (hide, pin, finish) instead of trading
+  blows, and a foe who knows it is outclassed in taijutsu reaches for it first.
 
 ## Part 5: What the benches will hold
 
@@ -203,9 +261,20 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
 5. **Gather and chakra.** The Gather action; a review of the top techniques' costs; shadow
    clones as their canon price and power (a share of chakra for whole fighters who fall to one
    hit).
-6. **The Gates.** The burn clock, the collapse, the lift; `needsTarget`, `lethal`,
-   `sRankDefence`; Guy's four finishers rewritten; survival judgement for foes.
-7. **The fight table and the docs** (`CLAUDE.md` decision 16, `hittability-plan.md`).
+6. **The Gates.** Guy's judgement (taijutsu first; a gate only for a reason the fight gives,
+   and only as deep as it needs); the escalating price, while open and after (4.1); the lift; the
+   collapse; `needsTarget`, `lethal`, `sRankDefence`; Guy's four finishers rewritten; survival
+   judgement for foes.
+7. **The Sharingan revealed** (4.2): a turn to reveal, chakra upkeep, a perfect read and a raised
+   slip ceiling while it is uncovered.
+8. **Stealth and set-ups** (4.3): field control that stops tracking, pins from hiding, one-hit
+   finishers on the held or the blind, and the AI that sequences them.
+9. **Shadow clones** (slice 5's second half): their canon price and power.
+10. **Durability by build**: `SKILL_DEFENCE_SHARE` lowered so stamina tells a glass cannon from a
+    tank, retuned against the benches now that Evade, Brace and reading are in.
+11. **The fight table and the docs** (`CLAUDE.md` decision 16, `hittability-plan.md`): Guy
+    against Kakashi should be a rivalry again, decided by the Sharingan, set-ups and the Gates'
+    price, not by who runs dry first.
 
 ## Progress
 
@@ -251,11 +320,55 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   exchanges where it lasted 15. The fight table moves a little where one side is much quicker:
   Guy beats Hiruzen 90% of the time (83% before) in shorter bouts, his speed now partly
   outpacing an old body's slip.
-- **Shadow clones are part of slice 5.** Today a shadow clone costs a flat 14 chakra and is a
-  decoy that strikes at a third of its maker. In canon it splits its maker's chakra (half of what
-  is left) and makes a whole fighter as able as its maker who falls to one hit: a huge
-  multiplier at a huge price. Slice 5 makes it so: its cost a share of chakra, and each clone a
-  fighter with its maker's stats, kit and turn, one hit from gone.
+- **Slice 5, part one: Gather and chakra costs (done).** A technique costs at least its rank's
+  floor before its user's control (`RANK_COST_FLOOR` in `rules/chakra.ts`: C 10, B 18, A 30,
+  S 45; E and D keep their written costs). Surveyed against the cast before the floor, the best
+  techniques took far too little: Kisame's 7% of his tank, Zabuza's 8%, Kurenai's 12%, Gaara's
+  S-rank 13%. After it, Asuma's best takes 26%, Guy's finishers 28%, Kakashi's Great Waterfall
+  40% of his small tank; Kisame's deep reserves still make his cheap (8%). Gather
+  (`rules/gather.ts`, `plan/gather.ts`) is an action that draws back a fifth of the fighter's
+  chakra (at least 10) and 30% of their breath and leaves them open until their next turn: their
+  slip times 0.4, and only a Guard of the ready defences. A foe with attacks paid in chakra and
+  none it can still pay for (a body move paid in breath counts) gathers half the time, never up
+  close if it reads the fight (`plan/resting.ts`). The fight table: fights at the top run longer
+  (Kakashi against Asuma 2.0 → 2.3 rounds, against Zabuza 1.6 → 1.9), and Guy now beats Kakashi
+  93% of the time (67% before): Kakashi's costly ninjutsu drains his small tank while Guy fights
+  on breath. That is too lopsided for rivals and a target for the durability retune (or for
+  Kakashi's reserves).
+- **Slice 5, part two: shadow clones (done).** A technique that only makes solid clones of no
+  element (Shadow Clone, Multiple Shadow Clone, an earth or lightning shadow clone keeps its
+  element and stays a decoy) now splits its maker's chakra evenly with the clones it makes, and
+  each clone is a fighter (`rules/shadowClones.ts`, `plan/shadows.ts`): the maker's body and kit
+  (all but the technique that made it), its own turn, a plan made as the exchange ends, popping
+  at the first hit that lands, gone with its maker. One fighting clone for every five power, at
+  most four standing; any more the technique makes are a crowd of decoys beside the maker, with
+  no upkeep (the split is the price). An attack aimed at the maker may go into a clone instead:
+  more clones make it likelier, the attacker's perception against the maker's ninjutsu shifts
+  it, and insight sees through most of it. Its leftover chakra is lost when a clone pops. A
+  technique that wounds as it makes clones (Clone Body Blow, Shadow Clone Sword Dance) keeps
+  them as decoys. The fight table: Hiruzen, a kage with deep reserves, now fields his clones
+  (canon has four of him against Orochimaru), and Guy beats him 40% of the time (90% before),
+  Kakashi lasting a round where he lasted two; Naruto lasts longer against Sasuke (3.3 → 3.8
+  rounds) and Izumo (2.7 → 3.1), though the split leaves him short of chakra, which the
+  chakra-totals review may answer.
+- **Chakra totals (done).** A full tank grew by adding (30, plus 3.5 a point of reserves, plus
+  control), so the deepest well in the cast held twice a jōnin's and a cost or a clone split
+  swung everyone alike. It now doubles every 10 points of reserves (`maxChakra` in
+  `systems/vitals`: 40 × 2^(reserves ÷ 10), plus control), so genin barely move (Sakura 66,
+  Sasuke 97) and the deep wells pull away: Kakashi 141, Guy 176, Naruto 246 (raised to 35 reserves below), Hiruzen 779,
+  Gaara 1,004, Kisame 1,496, and a tailed beast at reserves 60 about 2,600. Foes', companions'
+  and puppets' authored chakra moved onto the same curve from the reserves it stood for;
+  summons were set by hand as the chakra beasts they are (Gamabunta 650, a great snake 230,
+  the Kiln Mother 370). Regen, Gather and the clone split already scale with the tank, and the
+  rank floors stay, so a deep well pays for big techniques many times over. Saves keep their
+  stats, so a save's chakra follows the curve. The fight table: Guy beats Kakashi 63% of the
+  time (93% before), and Guy beats Hiruzen 30% (40%).
+  Naruto's reserves went from 26 to 35 (about 470 chakra, over three times Kakashi's). It
+  changes none of his bouts: his kit (shadow clones, shuriken, an illusion) is cheap, so chakra
+  is never what he runs out of, and Kakashi beats him every time on the grade gap (shuriken he
+  copies land for most of Naruto's health). Watching those bouts found a readied riposte (a
+  lightning clone's shock) answering shuriken thrown from mid; it now answers only up close, as
+  a ready Counter does, and Kakashi beats Asuma 87% of the time (100% with the bug).
 - **Guy never opens a deep gate** in the table's bouts (only the first, the Gate of Life), so
   his finishers never come into it; that is slice 6.
 

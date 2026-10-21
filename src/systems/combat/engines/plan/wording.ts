@@ -111,6 +111,8 @@ export function cardLabel(card: Card, fighter: Armed): string {
       return 'Brace';
     case 'search':
       return 'Search';
+    case 'gather':
+      return 'Gather';
     case 'dispel':
       return 'Dispel';
     case 'jutsu':
@@ -140,6 +142,8 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
       return card.direction === 'in' ? 'Try to get closer' : 'Try to open distance';
     case 'search':
       return 'Find hidden foes, perception';
+    case 'gather':
+      return 'Spend the turn drawing chakra and breath back, open until your next turn';
     case 'dispel':
       return `Break illusions, ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':

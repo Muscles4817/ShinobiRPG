@@ -11,6 +11,7 @@ import type { GameState } from './state';
 import { placeInText } from './placeName';
 import { bearing } from './compass';
 import { homeVillageId } from './homeVillage';
+import { heatAfterTrip, huntedLeg, huntThread } from './hunt';
 
 /**
  * Trips of your own along the roads. The way is the quickest open journey over the pack's
@@ -91,8 +92,9 @@ function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
     // Only the first day of a stretch says where it heads; the rest are the same road.
     const fresh = i === 0 || plan.legs[i - 1]?.toward !== leg.toward;
     const text = fresh ? headed(ctx, leg, from) : leg.text;
-    const walk: MissionStage = { kind: 'leg', text, days: leg.days, region: leg.region };
-    return plan.quick || i === plan.legs.length - 1 ? [walk] : [walk, CAMP];
+    const walk = { kind: 'leg' as const, text, days: leg.days, region: leg.region };
+    const road = plan.hunt ? huntedLeg(plan.hunt, ctx, walk) : [walk];
+    return plan.quick || i === plan.legs.length - 1 ? road : [...road, CAMP];
   });
 }
 
@@ -119,6 +121,7 @@ export function journeyMission(plan: JourneyPlan, ctx: GameContext): MissionDef 
     reward: { ryo: 0, reputation: 0 },
     minMissionsCompleted: 0,
     stages: stagesOf(plan, ctx),
+    ...(plan.hunt ? { threads: [huntThread(plan.hunt)] } : {}),
   };
 }
 
@@ -153,7 +156,8 @@ export function arrive(state: GameState, ctx: GameContext, plan: JourneyPlan): G
   const days = plan.legs.reduce((sum, leg) => sum + leg.days, 0);
   const home = destination.id === homeVillageId(state, ctx);
   const place = placeInText(destination.name);
-  return log(arriving({ ...state, mission: null, locationId: destination.id }, ctx, plan), {
+  const trailed = heatAfterTrip(state);
+  return log(arriving({ ...trailed, mission: null, locationId: destination.id }, ctx, plan), {
     heading: home ? `Home in ${place}` : `Arrived in ${place}`,
     text: home
       ? `You are back in ${place}, with the road still in your legs.`

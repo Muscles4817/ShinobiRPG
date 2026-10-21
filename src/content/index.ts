@@ -170,6 +170,9 @@ export {
   type GreetingCause,
   type GreetingTemper,
   type ShutGates,
+  type HuntAnswer,
+  type HuntDef,
+  type HuntStop,
   type TownGreeting,
 } from './greetings';
 export type { ClanDust, DustDef } from './dusts';

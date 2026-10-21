@@ -19,6 +19,7 @@ import { momentOf, SCENE_MEMORY } from './fresh';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { commit, released } from './commitment';
+import { gather } from './gather';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
@@ -40,6 +41,7 @@ import { aid, struggleFree } from './struggle';
 import { clonesAfter } from './cloneUpkeep';
 import { shroudsAfter } from './shrouds';
 import { summonsAfter } from './summons';
+import { misled, shadowsAfter } from './shadows';
 import { plannedSummons } from './summonPlans';
 import { swarmsAfter } from './swarm';
 import { dustAfter } from './dust';
@@ -137,6 +139,8 @@ function play(round: Round, turn: Turn, card: Card): Round {
     case 'evade':
     case 'brace':
       return commit(round, turn, card.kind);
+    case 'gather':
+      return gather(round, turn);
     case 'guard':
     case 'dodge':
     case 'counter':
@@ -248,7 +252,8 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const planned = { actor, target, rng };
   const { card, follow } = opened(round, planned, chosen.card, styled(round, planned, chosen.card));
   const aim = intercept(round, planned, card);
-  const aimed = { actor, target: aim.target, rng };
+  // A maker's shadow clones look like them (`shadows.ts`).
+  const aimed = { actor, target: misled(aim.round, { actor, target: aim.target, rng }, card), rng };
   const tried = followThrough(aim.round, attempt(aim.round, aimed, card), aimed, follow);
   const played = afterStep(aim.round, tried, actor.id, rng);
   const noted = noteAttack(played, actor.id, card);
@@ -308,7 +313,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const opened: Round = { ...start, lines: [exchangeDivider(name, start)] };
   const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), opened);
   const kept = plannedSummons(
-    summonsAfter(clonesAfter(shroudsAfter(afterEmpowers(played, state.round)))),
+    shadowsAfter(summonsAfter(clonesAfter(shroudsAfter(afterEmpowers(played, state.round))))),
   );
   const end = secondWinds(
     lingerAfter(dustAfter(swarmsAfter(struggleFree(kept, rng), rng)), state.round),

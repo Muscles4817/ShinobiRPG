@@ -26,7 +26,7 @@ export const WORKSHOP_DOLL: PuppetDef = {
   techniqueId: 'unseal-workshop-doll',
   stats: statLine('D', { kenjutsu: 'C', speed: 'C' }),
   healthScale: 1,
-  maxChakra: 20,
+  maxChakra: 25,
   techniqueIds: ['hidden-blades'],
   upkeep: 2,
 };

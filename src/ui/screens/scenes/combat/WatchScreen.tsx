@@ -4,7 +4,7 @@ import { Chips } from '../../../components/Chips';
 import { Pane } from '../../../layout/Pane';
 import { useWideScreen } from '../../../layout/useWideScreen';
 import { Formation, shortName } from './Formation';
-import { fightMeters, Gauges } from './Gauges';
+import { fightMeters, Gauges, type SightOf } from './Gauges';
 import { useBeatSounds } from './useBeatSounds';
 import { usePlayback } from './usePlayback';
 import { KeyNote, useWatchKeys } from './watchKeys';
@@ -25,11 +25,10 @@ interface WatchScreenProps {
   readonly onPlan: (() => void) | null;
   /** The fight is over: leave the scene (to its result) once you have watched it end. */
   readonly onLeave: (() => void) | null;
-  /**
-   * Show every fighter's bars (versus). Health moves beat by beat; the rest stand as they were
-   * before these beats (`before`) until they have played, then as they are now.
-   */
-  readonly gauges?: { readonly before: readonly CombatantView[] | null };
+  /** Everyone as they stood before these beats, where the beats haven't yet said. */
+  readonly before: readonly CombatantView[] | null;
+  /** How much of each fighter's bars you can see. */
+  readonly sightOf: SightOf;
 }
 
 const EARLIER_SHOWN = 2;
@@ -258,11 +257,11 @@ interface StageProps {
   readonly beat: FightBeat | undefined;
   readonly fighters: readonly CombatantView[];
   readonly reads: Readonly<Record<string, ScoutingRead>>;
-  readonly gauges: boolean;
+  readonly sightOf: SightOf;
 }
 
 /** Both sides as the beat leaves them, and every fighter's bars when they are shown. */
-function Stage({ view, beat, fighters, reads, gauges }: StageProps) {
+function Stage({ view, beat, fighters, reads, sightOf }: StageProps) {
   const pulses = useHealthPulses(fighters);
   return (
     <>
@@ -275,7 +274,7 @@ function Stage({ view, beat, fighters, reads, gauges }: StageProps) {
         onSelect={NO_SELECTION}
         stage={{ actorId: beat?.actorId ?? null, targetId: beat?.targetId ?? null }}
       />
-      {gauges && <Gauges fighters={fighters} pulses={pulses} shared={fightMeters(view)} />}
+      <Gauges fighters={fighters} pulses={pulses} shared={fightMeters(view)} sightOf={sightOf} />
     </>
   );
 }
@@ -296,9 +295,7 @@ export function WatchScreen(props: WatchScreenProps) {
   useWatchKeys(play, props);
   useBeatSounds(beat, youId, fresh);
   // Once played, everyone stands as they are now (pools gathered back, dazes worn off at the end).
-  const fighters = play.done
-    ? [...view.combatants]
-    : fightersAt(view, beat, props.gauges?.before ?? null);
+  const fighters = play.done ? [...view.combatants] : fightersAt(view, beat, props.before);
   // The heading names the stretch you are in; a divider being told now is the beat itself.
   const heading = beats.slice(0, play.at).findLast((b) => b.kind === 'divider')?.text;
   return (
@@ -314,7 +311,7 @@ export function WatchScreen(props: WatchScreenProps) {
             beat={beat}
             fighters={fighters}
             reads={reads}
-            gauges={props.gauges !== undefined}
+            sightOf={props.sightOf}
           />
           <BeatText beats={beats} at={play.at} />
           {play.stoppedForYou && (

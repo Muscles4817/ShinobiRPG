@@ -14,6 +14,7 @@ export {
   type TwistDef,
   type MissionDef,
   type MissionRun,
+  type JourneyHunt,
   type JourneyPlan,
   type MissionNote,
 } from './missions';
