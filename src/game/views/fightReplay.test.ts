@@ -53,6 +53,35 @@ describe('the watch screen’s beats', () => {
     expect(beats[2]!.health).toMatchObject({ 'person:kaen': kaen!.health });
   });
 
+  it('moves chakra beat by beat from the lines that say where it stands', () => {
+    const base = combatScene(begun(), ctx)!;
+    const view = {
+      ...base,
+      log: [
+        '— First exchange — ⟦ck:player=50|person:kaen=40⟧',
+        "Kaen's Pebble Volley flies. ⟦by:person:kaen⟧ ⟦ck:person:kaen=32⟧",
+        'Kaito weaves the seals. ⟦by:player⟧ ⟦ck:player=41⟧',
+      ],
+    };
+    const chakra = fightReplay(view, 0).map((b) => b.chakra);
+    expect(chakra).toEqual([
+      { player: 50, 'person:kaen': 40 },
+      { player: 50, 'person:kaen': 32 },
+      { player: 41, 'person:kaen': 32 },
+    ]);
+  });
+
+  it('says everyone’s chakra at each exchange, and follows a real one as it is spent', () => {
+    const before = begun();
+    const seen = combatScene(before, ctx)!.log.length;
+    const after = act(before, { type: 'combatAct', optionId: 'next' });
+    const view = combatScene(after, ctx)!;
+    const beats = fightReplay(view, seen);
+    const ids = view.combatants.map((c) => c.id).sort();
+    expect(Object.keys(beats[0]!.chakra).sort()).toEqual(ids);
+    for (const b of beats) expect(Object.keys(b.chakra).sort()).toEqual(ids);
+  });
+
   it('keeps its place in a long fight, after the engine lets its oldest lines go', () => {
     let state = begun();
     let end = storyEnd(combatScene(state, ctx)!);

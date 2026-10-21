@@ -1,4 +1,5 @@
 import {
+  chakraLine,
   forceLine,
   harmLine,
   healLine,
@@ -91,6 +92,19 @@ describe('fight narration', () => {
       text: 'You hit the thug.',
       named: ['player', 'thug#0'],
     });
+  });
+
+  it('carries where fighters’ chakra stands out of the sentence', () => {
+    const line = chakraLine(turnLine('You weave the seals.', 'player'), {
+      player: 41.6,
+      'enemy:zabuza': 120,
+    });
+    expect(splitNarration(line)).toMatchObject({
+      text: 'You weave the seals.',
+      actorId: 'player',
+      chakra: { player: 42, 'enemy:zabuza': 120 },
+    });
+    expect(chakraLine('Nothing moved.', {})).toBe('Nothing moved.');
   });
 });
 

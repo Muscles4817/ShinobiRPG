@@ -25,6 +25,7 @@ function beat(overrides: Partial<FightBeat>): FightBeat {
     range: null,
     force: null,
     health: {},
+    chakra: {},
     ...overrides,
   };
 }

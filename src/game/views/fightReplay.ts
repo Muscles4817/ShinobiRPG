@@ -16,6 +16,8 @@ import { combatLog, type CombatLogLine } from './combatLog';
  * whose turn a line was written in (`turnLine`); who it was aimed at is the other fighter the
  * line names. Health is rebuilt backwards from the fight as it stands now, so the last beat
  * always matches the screen; in between, an amount goes to the fighter the line is about.
+ * Chakra is read forwards from the lines that say where it stands (each exchange's divider,
+ * and a turn that moved it), so it is only known from the first such line on.
  */
 
 /** "— Second exchange —": dividers between exchanges and rounds. */
@@ -33,6 +35,8 @@ export interface FightBeat {
   readonly force: NarrationForce | null;
   /** Every fighter's health once this beat has played, by combatant id. */
   readonly health: Readonly<Record<string, number>>;
+  /** Fighters' chakra once this beat has played, by id, as far as the lines have said it. */
+  readonly chakra: Readonly<Record<string, number>>;
 }
 
 interface Named {
@@ -114,10 +118,12 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
     return combatLog([line]).map((shown) => ({ said, shown, targetId }));
   });
   const health = healthAfterEach(parsed, view.combatants);
+  let chakra: Readonly<Record<string, number>> = {};
   // Until a line says where the fight stands, it stands where the first such line says.
   let range = parsed.find((p) => p.said.range)?.said.range ?? view.range ?? null;
   return parsed.map(({ said, shown, targetId }, i): FightBeat => {
     range = said.range ?? range;
+    chakra = said.chakra ? { ...chakra, ...said.chakra } : chakra;
     const divider = shown.kind === 'round' || said.text.startsWith(DIVIDER);
     return {
       kind: divider ? 'divider' : 'line',
@@ -128,6 +134,7 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
       range,
       force: said.force ?? null,
       health: health[i] ?? {},
+      chakra,
     };
   });
 }
