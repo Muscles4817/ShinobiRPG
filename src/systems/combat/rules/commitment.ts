@@ -29,6 +29,37 @@ export const EVADE_STANCE = { technique: 1, blow: 1.2 } as const;
 /** A committed evader may slip up to this share of what comes at them. */
 export const EVADE_MAX = 0.9;
 
+/**
+ * Reading what is coming (plan 3.3): an evader who reads the attacker well saves the evasion for
+ * the attack that matters (one that would take `DANGER_SHARE` of their health or more) and lets
+ * ordinary blows meet their ready defence; one who reads poorly spreads it over everything. A
+ * blind evader puts `EVADE_SPREAD` of the lift into every attack; a perfect read puts all of it
+ * into the dangerous ones and none into the rest.
+ */
+export const DANGER_SHARE = 0.25;
+export const EVADE_SPREAD = 0.6;
+/** The read's multiplier (`readScale`) at which an evader reads nothing, and reads it all. */
+const READS_NOTHING = 0.75;
+const READS_ALL = 1.25;
+
+/** How well an evader reads what is coming, from the avoid roll's read: 0 blind, 1 clear. */
+export function readClarity(read: number): number {
+  return Math.min(1, Math.max(0, (read - READS_NOTHING) / (READS_ALL - READS_NOTHING)));
+}
+
+/**
+ * How much of Evade's lift meets this attack: by how clearly it is read and whether it is the
+ * dangerous one (`threat`, the share of the evader's health it would take; unknown counts as
+ * spread).
+ */
+export function evadeFocus(read: number, threat: number | undefined): number {
+  if (threat === undefined) return EVADE_SPREAD;
+  const clarity = readClarity(read);
+  return threat >= DANGER_SHARE
+    ? EVADE_SPREAD + (1 - EVADE_SPREAD) * clarity
+    : EVADE_SPREAD * (1 - clarity);
+}
+
 /** Share of a physical hit's damage that gets through a Brace (multiplying any guard). */
 export const BRACE_LETS = 0.5;
 

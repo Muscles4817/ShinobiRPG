@@ -33,6 +33,7 @@ import { settledSlips, swarmSlips } from './swarm';
 import { blindedSlips, dustSlips } from './dust';
 import type { PlanFighter, Round } from './state';
 import { sizeSlips } from '../../rules/size';
+import { techniqueDamage } from '../../rules/damage';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -61,6 +62,10 @@ export interface Incoming {
   readonly swarm?: number;
   /** A dust attack's slip scale (`dust.ts`: heavy dust is slower to arrive). */
   readonly dust?: number;
+  /** Share of the target's health it would take, which a good read saves Evade for. */
+  readonly threat?: number;
+  /** The attacker's speed behind a body's attack, which may outpace the target (`pace.ts`). */
+  readonly paceSpeed?: number;
 }
 
 /** A Dodge is the target's ready defence here. */
@@ -84,6 +89,8 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     read: read * (incoming.familiar ?? 1),
     dodging,
     evading,
+    ...(incoming.threat === undefined ? {} : { threat: incoming.threat }),
+    ...(incoming.paceSpeed === undefined ? {} : { paceSpeed: incoming.paceSpeed }),
     bonus: swift,
     ...(incoming.accuracy ? { accuracy: incoming.accuracy } : {}),
     ...(incoming.areaSize ? { areaSize: incoming.areaSize } : {}),
@@ -102,6 +109,18 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
   return foreseen(held, target, { scale, ceiling: avoidCeiling(evading) });
 }
 
+/** Share of the target's health a technique's wounding effects would take, mid-roll. */
+function threatOf(attacker: PlanFighter, target: PlanFighter, t: CombatTechnique): number {
+  const wounding = t.effects.filter(
+    (e) => e.verb === 'damage' || e.verb === 'area' || e.verb === 'break',
+  );
+  const total = wounding.reduce(
+    (sum, effect) => sum + techniqueDamage(attacker, target, { technique: t, effect }, 0.5),
+    0,
+  );
+  return total / Math.max(1, target.maxHealth);
+}
+
 /** A technique on its way to one foe; null when nothing in it is aimed at a foe. */
 export function techniqueIncoming(
   attacker: PlanFighter,
@@ -112,6 +131,7 @@ export function techniqueIncoming(
   const use = landingUse(t);
   if (!use) return null;
   const [area] = effectsOf(t, 'area');
+  const body = t.discipline === 'taijutsu' || t.discipline === 'kenjutsu';
   // Only a mind that reads the fight picks up on a technique leaned on.
   const familiar = readsInTheMoment(target) ? familiarScale(attacker.uses?.[t.id] ?? 0) : 1;
   // Signs made around a drawn blade come slower and give more away (`blades.ts`).
@@ -127,6 +147,8 @@ export function techniqueIncoming(
     ...(area ? { areaSize: areaSize(area) } : {}),
     ...(t.swarmCost ? { swarm: swarmSlips(attacker, t) } : {}),
     ...(t.dustCost ? { dust: dustSlips(attacker, t) } : {}),
+    threat: threatOf(attacker, target, t),
+    ...(body ? { paceSpeed: attacker.attributes.speed } : {}),
   };
 }
 

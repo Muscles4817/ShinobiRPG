@@ -77,6 +77,8 @@ function blowWorth(self: PlanFighter, foe: PlanFighter, thrown: boolean, round: 
     attacker: self,
     target: foe,
     skill: blowSkill(self, kind, thrown),
+    threat: attack.raw / Math.max(1, foe.maxHealth),
+    ...(thrown ? {} : { paceSpeed: self.attributes.speed }),
   };
   return (1 - avoidOdds(round, incoming)) * Math.min(attack.raw, foe.maxHealth);
 }

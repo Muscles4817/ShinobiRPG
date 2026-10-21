@@ -236,7 +236,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     roll and lifts its ceiling (`EVADE_MAX`), Brace guards every physical blow far harder
     (`BRACE_LETS`, a flurry's later blows too; a break goes through it) and makes a pin, daze
     or knock take hold less often. They stack on the ready defence; breath is the clock, so a
-    turtle loses to an equal, slowly (`src/test/bench/defenceBench.test.ts`). A foe who reads the
+    turtle loses to an equal, slowly (`src/test/bench/defenceBench.test.ts`). An evader's **read**
+    decides where Evade goes (`evadeFocus`): a clear read saves it for the attack that would take
+    `DANGER_SHARE` of their health and lets ordinary blows meet the ready defence, a blind one
+    spreads it thin over everything. **Pace** (`rules/pace.ts`): a body's attack (a blow, a
+    taijutsu or kenjutsu technique) from someone far faster than the defender's avoid rating
+    outpaces them, from `OUTPACE_FROM` times it, and past `OUTPACE_FULL` nothing slips it; only a
+    swap escapes. A foe who reads the
     fight and is far outclassed takes cover some turns on instinct (`plan/shelter.ts`). A hit
     that lands is not yet a hold: each condition rolls against its verb's resist (a pin against
     what breaks a hold of its art: strength, chakra control or willpower; a daze against poise;

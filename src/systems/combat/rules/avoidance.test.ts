@@ -121,3 +121,28 @@ describe('a condition taking hold', () => {
     expect(strong).toBeLessThan(0.5);
   });
 });
+
+describe('reading and pace against committed evasion', () => {
+  const evading = { ...even, form: 'blow' as const, evading: true };
+
+  it('a clear read saves Evade for the dangerous attack; a blind one spreads it', () => {
+    const clear = { ...evading, read: 1.4 };
+    const blind = { ...evading, read: 0.75 };
+    const big = avoidChance({ ...clear, threat: 0.5 });
+    const small = avoidChance({ ...clear, threat: 0.1 });
+    expect(big).toBeGreaterThan(small * 1.5);
+    // Blind, the big one and the small one meet the same evasion.
+    expect(avoidChance({ ...blind, threat: 0.5 })).toBeCloseTo(
+      avoidChance({ ...blind, threat: 0.1 }),
+    );
+    expect(big).toBeGreaterThan(avoidChance({ ...blind, threat: 0.5 }));
+  });
+
+  it('an attacker about twice as fast as the defender’s rating can’t be slipped, Evade or not', () => {
+    expect(avoidChance({ ...evading, threat: 0.5, paceSpeed: 22 })).toBe(0);
+    expect(avoidChance({ ...evading, threat: 0.5, paceSpeed: 15 })).toBeGreaterThan(0);
+    expect(avoidChance({ ...evading, threat: 0.5, paceSpeed: 10 })).toBeCloseTo(
+      avoidChance({ ...evading, threat: 0.5 }),
+    );
+  });
+});

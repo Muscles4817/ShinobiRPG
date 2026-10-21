@@ -2,7 +2,8 @@ import { clamp, logistic } from '@/core';
 import type { Accuracy, AreaSize, Discipline } from '@/systems/techniques';
 
 import type { CombatAttributes } from '../contract';
-import { EVADE_MAX, EVADE_STANCE } from './commitment';
+import { evadeFocus, EVADE_MAX, EVADE_STANCE } from './commitment';
+import { paceLeft } from './pace';
 import { gapRatio } from './damage';
 import { slipChance } from './defence';
 import { AREA_RULES, driveOf, resistOf, type EffectUse } from './verbs';
@@ -18,7 +19,9 @@ import { AREA_RULES, driveOf, resistOf, type EffectUse } from './verbs';
  *    most things; a genjutsu is avoided by noticing it (willpower, with perception), never by
  *    stepping aside.
  *  - Stance: everyone slips some; a ready Dodge slips much more (`STANCE`), and a committed
- *    Evade far more again, up to more than anyone else can (`commitment.ts`).
+ *    Evade far more again, up to more than anyone else can (`commitment.ts`), as much on the
+ *    dangerous attack as the defender's read lets them save it for.
+ *  - Pace: an attacker far faster than the defender's rating outpaces them (`pace.ts`).
  *  - Shape: accuracy (`slipChance`) and an area's size (wide is hard to get clear of, vast
  *    impossible).
  * A hit that lands is not yet a hold: each condition it brings (a pin, a daze, a seal…) rolls
@@ -88,6 +91,10 @@ export interface AvoidRoll {
   readonly dodging: boolean;
   /** The defender committed to Evade this turn (`commitment.ts`). */
   readonly evading?: boolean;
+  /** Share of the defender's health it would take: an evader who reads it saves Evade for it. */
+  readonly threat?: number;
+  /** The attacker's speed behind a body's attack, which may outpace the defender (`pace.ts`). */
+  readonly paceSpeed?: number;
   /** Flat chance on top (a swift kit). */
   readonly bonus?: number;
   readonly accuracy?: Accuracy;
@@ -99,11 +106,12 @@ export function avoidChance(roll: AvoidRoll): number {
   const gap = Math.log(gapRatio(roll.rating, roll.arrival));
   const base = AVOID_TOP * logistic(gap * AVOID_STEEPNESS);
   const evading = roll.evading === true;
-  const stance =
-    STANCE[roll.form][roll.dodging ? 'dodging' : 'open'] + (evading ? EVADE_STANCE[roll.form] : 0);
+  const lift = evading ? EVADE_STANCE[roll.form] * evadeFocus(roll.read, roll.threat) : 0;
+  const stance = STANCE[roll.form][roll.dodging ? 'dodging' : 'open'] + lift;
   const area = roll.areaSize ? AREA_RULES[roll.areaSize].dodge : 1;
   const chance = base * stance * roll.read + (roll.bonus ?? 0);
-  return Math.min(avoidCeiling(evading), slipChance(chance, roll.accuracy)) * area;
+  const pace = roll.paceSpeed === undefined ? 1 : paceLeft(roll.paceSpeed, roll.rating);
+  return Math.min(avoidCeiling(evading), slipChance(chance, roll.accuracy)) * area * pace;
 }
 
 /** The most of what comes at them a defender can slip: more for one committed to it. */
