@@ -18,6 +18,7 @@ function beat(over: Partial<FightBeat>): FightBeat {
     force: null,
     health: {},
     pools: {},
+    statuses: {},
     ...over,
   };
 }

@@ -8,7 +8,8 @@
  * `turnLine`, so the screen can stage it, and how big the turn was (`forceLine`: its maker's
  * grade in the art, the ground an area covered, its element), so the screen can make a jōnin's
  * fire sound like one. A line may also say where fighters' pools (chakra, breath, a hive, dust)
- * stand once it has played (`poolsLine`), so the watch screen can move them beat by beat. `splitNarration` reads all of it back out of the sentence. Lines without a marker (older saves) pass through unchanged.
+ * stand once it has played (`poolsLine`), and what the screen says of them (`statusLine`), so the
+ * watch screen can move both beat by beat. `splitNarration` reads all of it back out of the sentence. Lines without a marker (older saves) pass through unchanged.
  */
 
 import { capitalise, listed, numberWord, ordinalWord, plural } from '@/core';
@@ -50,7 +51,12 @@ export interface Narration {
   readonly voices?: readonly string[];
   /** Fighters' pools once the line has played, by id (`poolsLine`), when the engine says. */
   readonly pools?: NarrationPools;
+  /** Fighters' statuses once the line has played, by id (`statusLine`), when the engine says. */
+  readonly statuses?: NarrationStatuses;
 }
+
+/** What the screen says of fighters, by fighter id ("Dazed", "Clones ×2"…; none is an empty list). */
+export type NarrationStatuses = Readonly<Record<string, readonly string[]>>;
 
 /** Where fighters' pools stand, by fighter id and then by pool ("chakra", "breath"…). */
 export type NarrationPools = Readonly<Record<string, Readonly<Record<string, number>>>>;
@@ -72,6 +78,7 @@ const RANGE_MARKER = /\s*⟦at:(close|mid|far)⟧/;
 const NAMED_MARKER = /\s*⟦n:([^⟧]+)⟧/g;
 const VOICE_MARKER = /\s*⟦v:([^⟧]+)⟧/g;
 const POOLS_MARKER = /\s*⟦pl:([^⟧]+)⟧/;
+const STATUS_MARKER = /\s*⟦st:([^⟧]+)⟧/;
 /** The chakra-only form an earlier version wrote, read so a fight saved mid-way still plays. */
 const CHAKRA_MARKER = /\s*⟦ck:([^⟧]+)⟧/;
 
@@ -161,6 +168,20 @@ function poolsIn(line: string): Record<string, Record<string, number>> | null {
   return Object.fromEntries(byFighter(chakra).map(([id, n]) => [id, { chakra: Number(n) }]));
 }
 
+/** A line after which these fighters' statuses are these (by id; an empty list for none). */
+export function statusLine(text: string, statuses: NarrationStatuses): string {
+  const said = Object.entries(statuses).map(([id, theirs]) => `${id}=${theirs.join(';')}`);
+  return said.length === 0 ? text : `${text} ⟦st:${said.join('|')}⟧`;
+}
+
+function statusesIn(line: string): Record<string, string[]> | null {
+  const found = STATUS_MARKER.exec(line)?.[1];
+  if (!found) return null;
+  return Object.fromEntries(
+    byFighter(found).map(([id, said]) => [id, said === '' ? [] : said.split(';')]),
+  );
+}
+
 /** The templates a line's words came from ("search.2"), without reading the rest of it. */
 export function voicesOf(line: string): readonly string[] {
   if (!line.includes('⟦v:')) return [];
@@ -207,6 +228,7 @@ export function splitNarration(line: string): Narration {
   const named = namedIn(line);
   const voices = voicesIn(line);
   const pools = poolsIn(line);
+  const statuses = statusesIn(line);
   const markers = [
     MARKER,
     REACTION_MARKER,
@@ -214,6 +236,7 @@ export function splitNarration(line: string): Narration {
     RANGE_MARKER,
     FORCE_MARKER,
     POOLS_MARKER,
+    STATUS_MARKER,
     CHAKRA_MARKER,
   ];
   const text = [...markers, NAMED_MARKER, VOICE_MARKER].reduce(
@@ -230,6 +253,7 @@ export function splitNarration(line: string): Narration {
     ...(named ? { named } : {}),
     ...(voices ? { voices } : {}),
     ...(pools ? { pools } : {}),
+    ...(statuses ? { statuses } : {}),
   };
 }
 

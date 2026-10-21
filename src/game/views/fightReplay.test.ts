@@ -80,6 +80,23 @@ describe('the watch screen’s beats', () => {
     });
   });
 
+  it('changes statuses beat by beat, keeping each fighter’s until a line says otherwise', () => {
+    const base = combatScene(begun(), ctx)!;
+    const view = {
+      ...base,
+      log: [
+        '— First exchange — ⟦st:player=Clones ×2|person:kaen=⟧',
+        "Kaen's blow dazes Kaito. ⟦by:person:kaen⟧ ⟦st:player=Dazed;Clones ×1⟧",
+        'Kaen readies a trap. ⟦by:person:kaen⟧ ⟦st:person:kaen=Trap set⟧',
+      ],
+    };
+    expect(fightReplay(view, 0).map((b) => b.statuses)).toEqual([
+      { player: ['Clones ×2'], 'person:kaen': [] },
+      { player: ['Dazed', 'Clones ×1'], 'person:kaen': [] },
+      { player: ['Dazed', 'Clones ×1'], 'person:kaen': ['Trap set'] },
+    ]);
+  });
+
   it('says everyone’s chakra and breath at each exchange of a real fight', () => {
     const before = begun();
     const seen = combatScene(before, ctx)!.log.length;
@@ -90,6 +107,7 @@ describe('the watch screen’s beats', () => {
     for (const b of beats) {
       expect(Object.keys(b.pools).sort()).toEqual(ids);
       for (const id of ids) expect(Object.keys(b.pools[id]!)).toEqual(['chakra', 'breath']);
+      expect(Object.keys(b.statuses).sort()).toEqual(ids);
     }
   });
 

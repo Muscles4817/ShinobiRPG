@@ -288,13 +288,15 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     opening: state.exchange === 0,
     fighters: [...state.fighters],
     range: state.range,
-    lines: [exchangeDivider(EXCHANGE_NAMES[state.exchange] ?? 'Another', state.fighters)],
+    lines: [],
     recent: state.log.slice(-SCENE_MEMORY),
     seen: state.seen,
     intents: state.intents,
     ...carriedIn(state),
   };
-  const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), start);
+  const name = EXCHANGE_NAMES[state.exchange] ?? 'Another';
+  const opened: Round = { ...start, lines: [exchangeDivider(name, start)] };
+  const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), opened);
   const kept = plannedSummons(
     summonsAfter(clonesAfter(shroudsAfter(afterEmpowers(played, state.round)))),
   );

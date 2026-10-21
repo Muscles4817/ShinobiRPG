@@ -229,7 +229,7 @@ function poolsAt(fighter: CombatantView, said: Readonly<Record<string, number>>)
 }
 
 /**
- * Fighters as the beat being shown leaves them: health and pools from the beat, over how they
+ * Fighters as the beat being shown leaves them: health, pools and statuses from the beat, over how they
  * stood before these beats (`before`) where the beats haven't said yet.
  */
 function fightersAt(
@@ -240,10 +240,16 @@ function fightersAt(
   return view.combatants.map((c) => {
     const was = before?.find((b) => b.id === c.id);
     const start = was
-      ? { ...c, chakra: was.chakra, ...(was.meters ? { meters: was.meters } : {}) }
+      ? {
+          ...c,
+          chakra: was.chakra,
+          statuses: was.statuses,
+          ...(was.meters ? { meters: was.meters } : {}),
+        }
       : c;
     const health = beat?.health[c.id] ?? c.health;
-    return { ...poolsAt(start, beat?.pools[c.id] ?? {}), health };
+    const statuses = beat?.statuses[c.id] ?? start.statuses;
+    return { ...poolsAt(start, beat?.pools[c.id] ?? {}), health, statuses };
   });
 }
 
@@ -289,7 +295,7 @@ export function WatchScreen(props: WatchScreenProps) {
   const beat = play.beat;
   useWatchKeys(play, props);
   useBeatSounds(beat, youId, fresh);
-  // Once played, everyone stands as they are now (chakra and breath gathered back at the end).
+  // Once played, everyone stands as they are now (pools gathered back, dazes worn off at the end).
   const fighters = play.done
     ? [...view.combatants]
     : fightersAt(view, beat, props.gauges?.before ?? null);

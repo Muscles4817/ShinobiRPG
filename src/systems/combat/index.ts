@@ -114,6 +114,7 @@ export type {
   NarrationForce,
   NarrationPools,
   NarrationReaction,
+  NarrationStatuses,
 } from './rules/narration';
 export { createDuelEngine } from './engines/duel/engine';
 /** Shelved: kept compiling and tested, but not offered as a fight style (see `game/context.ts`). */

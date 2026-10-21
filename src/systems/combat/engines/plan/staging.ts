@@ -4,12 +4,15 @@ import type { CombatTechnique } from '../../contract';
 import {
   forceLine,
   poolsLine,
+  statusLine,
   turnLine,
   type NarrationForce,
   type NarrationPools,
+  type NarrationStatuses,
 } from '../../rules/narration';
 import { findCard, type Card } from './cards';
 import type { CardId, PlanFighter, Round } from './state';
+import { statusesShown } from './statusView';
 import { poolAmounts } from './swarmView';
 
 /**
@@ -54,9 +57,24 @@ function poolsOf(fighters: readonly PlanFighter[]): Record<string, Record<string
   return Object.fromEntries(fighters.map((f) => [f.id, poolAmounts(f)]));
 }
 
-/** "— Second exchange —", saying where everyone's pools start it. */
-export function exchangeDivider(name: string, fighters: readonly PlanFighter[]): string {
-  return poolsLine(`— ${name} exchange —`, poolsOf(fighters));
+/** Everyone's statuses, by id, as the screen shows them (`statusLine`). */
+function statusesOf(round: Round): Record<string, string[]> {
+  return Object.fromEntries(round.fighters.map((f) => [f.id, statusesShown(round, f)]));
+}
+
+/** "— Second exchange —", saying where everyone's pools and statuses start it. */
+export function exchangeDivider(name: string, round: Round): string {
+  return statusLine(poolsLine(`— ${name} exchange —`, poolsOf(round.fighters)), statusesOf(round));
+}
+
+/** The statuses of those whose statuses the turn changed (an empty list where all ended). */
+function statusesMoved(before: Round, after: Round): NarrationStatuses {
+  const was = statusesOf(before);
+  return Object.fromEntries(
+    Object.entries(statusesOf(after)).filter(
+      ([id, now]) => now.join(';') !== (was[id] ?? []).join(';'),
+    ),
+  );
 }
 
 /** The pools the turn moved, for each fighter it moved any of. */
@@ -73,8 +91,8 @@ function poolsMoved(before: Round, after: Round): NarrationPools {
 /**
  * A turn as the screen stages it: every line it wrote tagged as its maker's, the first with
  * the distance the turn began at and the last with the new one if the turn moved the fight,
- * each with how big the turn was, and the last with the pools of anyone the turn moved
- * them for. The tags are narration only: the turn plays exactly as untagged.
+ * each with how big the turn was, and the last with the pools and statuses of anyone the
+ * turn changed them for. The tags are narration only: the turn plays exactly as untagged.
  */
 export function staged(before: Round, after: Round, id: string): Round {
   const { played, ...turn } = after;
@@ -87,10 +105,11 @@ export function staged(before: Round, after: Round, id: string): Round {
     return i === 0 ? before.range : undefined;
   };
   const moved = poolsMoved(before, turn);
+  const changed = statusesMoved(before, turn);
   const tagged = added.map((line, i) => {
     const theirs = turnLine(line, id, rangeAt(i));
     const sized = force ? forceLine(theirs, force) : theirs;
-    return i === last ? poolsLine(sized, moved) : sized;
+    return i === last ? statusLine(poolsLine(sized, moved), changed) : sized;
   });
   return { ...turn, lines: [...before.lines, ...tagged] };
 }

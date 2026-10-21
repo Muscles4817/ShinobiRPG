@@ -8,6 +8,7 @@ import {
   reactionLine,
   splitNarration,
   squareUpLine,
+  statusLine,
   turnLine,
 } from './narration';
 
@@ -106,6 +107,18 @@ describe('fight narration', () => {
     });
     expect(poolsLine('Nothing moved.', {})).toBe('Nothing moved.');
     expect(poolsLine('Nothing moved.', { player: {} })).toBe('Nothing moved.');
+  });
+
+  it('carries fighters’ statuses out of the sentence, an empty list where all ended', () => {
+    const line = statusLine('Asuka reels. ⟦by:person:asuka⟧', {
+      player: ['Clones ×2', 'Marked'],
+      'person:asuka': [],
+    });
+    expect(splitNarration(line)).toMatchObject({
+      text: 'Asuka reels.',
+      statuses: { player: ['Clones ×2', 'Marked'], 'person:asuka': [] },
+    });
+    expect(statusLine('Nothing changed.', {})).toBe('Nothing changed.');
   });
 });
 
