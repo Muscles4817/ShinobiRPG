@@ -7,7 +7,6 @@ import { styleMoves } from './repertoire';
 import { shapeOf, type CombatGear } from '../../gearContract';
 import { COMMIT_BREATH } from '../../rules/commitment';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
-import { EYE_UPKEEP } from '../../rules/veil';
 import { isDefenceCard, type Card, type DefenceCard } from './cards';
 import type { PlanFighter } from './state';
 
@@ -103,7 +102,6 @@ const PLAIN_LABELS: Readonly<Record<Plainly, string>> = {
   brace: 'Brace',
   search: 'Search',
   gather: 'Gather',
-  reveal: 'Uncover the eye',
   dispel: 'Dispel',
 };
 
@@ -148,8 +146,6 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
       return 'Find hidden foes, perception';
     case 'gather':
       return 'Spend the turn drawing chakra and breath back, open until your next turn';
-    case 'reveal':
-      return `Spend the turn uncovering your hidden eye: it sees everything coming, for ${EYE_UPKEEP} chakra an exchange`;
     case 'dispel':
       return `Break illusions, ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':

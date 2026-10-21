@@ -18,7 +18,7 @@ import { spendsReserve } from './pacing';
 import { bestTarget } from './targeting';
 import { finisherTargets, needsOpenTarget } from './finishers';
 import { nextOpening } from './climbing';
-import { revealWorth } from './veil';
+import { setupPlay } from './setups';
 import { readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
 import { ownField } from './field';
@@ -204,12 +204,6 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
     case 'step':
     case 'gather':
       return true;
-    case 'reveal':
-      return revealWorth(self, {
-        foes: opponentsOf(round.fighters, self),
-        exchange: round.number,
-        ...(round.reads ? { reads: round.reads } : {}),
-      });
   }
 }
 
@@ -336,15 +330,11 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   const slots = self.loadout[round.range];
   const emergency = firstPlay(self, round, slots.filter(urgent));
   if (emergency) return emergency;
-  const fight = {
-    foes: opponentsOf(round.fighters, self),
-    exchange: round.number,
-    ...(round.reads ? { reads: round.reads } : {}),
-  };
-  // A covered eye and a ladder's next step take no slot (`veil.ts`, `climbing.ts`).
-  if (revealWorth(self, fight)) return { card: { kind: 'reveal' }, target: undefined };
   const climb = climbing(self, round);
   if (climb) return climb;
+  // A set-up from the kit, against a match (`setups.ts`): hide, hold, finish.
+  const setup = setupPlay(self, { band: round.range, foes: opponentsOf(round.fighters, self) });
+  if (setup) return setup;
   const footwork = isPinned(self) ? null : makingFor(self, round.range);
   if (footwork) {
     // Ready the charge first: power up or make clones, or go in with an entry.

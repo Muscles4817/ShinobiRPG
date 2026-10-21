@@ -39,7 +39,7 @@ import { clonesAfter } from './cloneUpkeep';
 import { shroudsAfter } from './shrouds';
 import { summonsAfter } from './summons';
 import { misled, shadowsAfter } from './shadows';
-import { veilsAfter } from './veil';
+import { uncoverWhenWorth, veilsAfter } from './veil';
 import { plannedSummons } from './summonPlans';
 import { swarmsAfter } from './swarm';
 import { dustAfter } from './dust';
@@ -200,7 +200,8 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   // A channelled hold takes the turn while it holds (`holding.ts`).
   const held = keepHolding(sprung, sprung.fighters.find((f) => f.id === actorId) ?? before);
   if (held.spent) return held.round;
-  const round = held.round;
+  // A covered eye is uncovered as the turn begins, when the fight calls for it (`veil.ts`).
+  const round = uncoverWhenWorth(held.round, actorId);
   const actor = round.fighters.find((f) => f.id === actorId) ?? before;
   if (!alive(actor)) return round;
   const lost = lostTurn(round, actor);

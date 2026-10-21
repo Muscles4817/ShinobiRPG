@@ -22,7 +22,7 @@ import { cardWorth } from './worth';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
-import { revealWorth } from './veil';
+import { setupPlay } from './setups';
 import { opponentsOf } from './senses';
 import { needsOpenTarget, openFoes } from './finishers';
 import { shelterInstinct } from './shelter';
@@ -135,16 +135,6 @@ function senses(self: PlanFighter, ready: readonly Card[], hiddenFoe: boolean): 
   return dispel && (hiddenFoe || self.confused > 0) ? dispel : undefined;
 }
 
-/** A covered eye uncovered when the fight calls for it (`veil.ts`); it takes no slot. */
-function eyeInstinct(self: PlanFighter, moment: Moment): Card | undefined {
-  const fight = {
-    foes: opponentsOf(moment.fighters ?? [], self),
-    ...(moment.reads ? { reads: moment.reads } : {}),
-    ...(moment.exchange !== undefined ? { exchange: moment.exchange } : {}),
-  };
-  return revealWorth(self, fight) ? { kind: 'reveal' } : undefined;
-}
-
 /** The situation a fighter acts in. */
 export interface Moment {
   readonly band: RangeBand;
@@ -175,7 +165,7 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
   return (
     sightInstinct(self, ready, { ...now, fieldUp: moment.fieldUp ?? false }) ??
     senses(self, ready, hiddenFoe) ??
-    eyeInstinct(self, moment) ??
+    setupPlay(self, { band: moment.band, foes: opponentsOf(moment.fighters ?? [], self) })?.card ??
     prepInstinct(self, ready, moment) ??
     toolInstinct(self, ready, now)
   );

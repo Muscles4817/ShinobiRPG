@@ -24,6 +24,8 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'lightning',
     reach: ['close'],
+    // Made to kill in one thrust: on a foe who can't see it or can't move, nothing slips it.
+    lethal: true,
     effects: [{ verb: 'damage', power: 26 }],
     chakraCost: 18,
     rank: 'A',

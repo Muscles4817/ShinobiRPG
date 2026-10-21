@@ -8,15 +8,15 @@ import { canReveal, covered, EYE_UPKEEP, isRevealed, uncovered } from '../../rul
 import { climbReasons, type FightSoFar } from './climbing';
 import { told, type Bank } from './fresh';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
-import type { Turn } from './senses';
+import { opponentsOf } from './senses';
 import { momentOf } from './voice';
 
 /**
- * A veiled eye in a planned fight (`rules/veil.ts`): uncovering it is a turn, and it costs chakra
- * as each exchange ends until its owner can't pay, when it closes again. A fighter keeps it
- * covered against a foe they outclass and uncovers it when the fight turns: a foe who is a match
- * for them, one who fights with illusions, or a fight going against them (`climbing.ts`). It takes no slot; a player may slot it
- * to uncover it by hand.
+ * A veiled eye in a planned fight (`rules/veil.ts`): uncovering it is a moment's work as a turn
+ * begins, no turn spent, and it costs chakra as each exchange ends until its owner can't pay,
+ * when it closes again. A fighter keeps it covered against a foe they outclass and uncovers it
+ * when the fight turns: a foe who is a match for them, one who fights with illusions, or a fight
+ * going against them (`climbing.ts`).
  */
 
 /** A foe this close to the fighter's own fighting power is worth the eye from the start. */
@@ -30,8 +30,8 @@ const UNCOVERING: Bank = {
   ],
 };
 
-/** The turn spent uncovering the eye. */
-export function reveal(round: Round, { actor }: Turn): Round {
+/** The eye uncovered: a moment's work, no turn spent. */
+export function reveal(round: Round, actor: PlanFighter): Round {
   const line = told(momentOf(round, actor.id), UNCOVERING, { a: actor });
   return say({ ...round, fighters: patch(round.fighters, actor.id, uncovered(actor)) }, line);
 }
@@ -52,6 +52,18 @@ export function revealWorth(self: PlanFighter, fight: FightSoFar): boolean {
   const match = standing.some((f) => fightingPower(f.attributes) / own >= MATCH_RATIO);
   const why = climbReasons(self, fight);
   return match || standing.some(illusionist) || why.losing || why.hurt;
+}
+
+/** As a fighter's turn begins: their eye uncovered if the fight calls for it, and they act on. */
+export function uncoverWhenWorth(round: Round, id: string): Round {
+  const f = fighterIn(round, id);
+  if (!f || !alive(f)) return round;
+  const fight = {
+    foes: opponentsOf(round.fighters, f),
+    exchange: round.number,
+    ...(round.reads ? { reads: round.reads } : {}),
+  };
+  return revealWorth(f, fight) ? reveal(round, f) : round;
 }
 
 /** One fighter's eye as the exchange ends: paid for, or closed when they can't pay. */

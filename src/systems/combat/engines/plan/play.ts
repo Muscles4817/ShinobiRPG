@@ -8,7 +8,6 @@ import { useTool } from './pouch';
 import { dispel, opponentsOf, search, type Turn } from './senses';
 import { fighterIn, patch, type PlanFighter, type Round } from './state';
 import { step } from './steps';
-import { reveal } from './veil';
 
 /**
  * A card played on a fighter's turn (`round.ts` decides which): a step, a search or dispel, a
@@ -58,7 +57,5 @@ function spent(round: Round, turn: Turn, card: SelfCard): Round {
       return commit(round, turn, card.kind);
     case 'gather':
       return gather(round, turn);
-    case 'reveal':
-      return reveal(round, turn);
   }
 }

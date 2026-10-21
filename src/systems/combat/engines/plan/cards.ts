@@ -2,7 +2,6 @@ import { affords } from './effort';
 import { canCall } from './calls';
 import { canCommit } from './commitment';
 import { canGather } from './gather';
-import { canReveal } from '../../rules/veil';
 import { hasInsectsFor } from './swarm';
 import { hasDustFor } from './dust';
 import { statTier, type StatGrade } from '@/systems/stats';
@@ -54,15 +53,13 @@ export type Card =
   | { readonly kind: 'brace' }
   /** Drawing chakra and breath back, open until the next turn (`gather.ts`). */
   | { readonly kind: 'gather' }
-  /** Uncovering a veiled eye (`veil.ts`), offered only to a fighter with one covered. */
-  | { readonly kind: 'reveal' }
   | { readonly kind: 'search' }
   | { readonly kind: 'dispel' }
   | { readonly kind: 'jutsu'; readonly technique: CombatTechnique }
   | { readonly kind: 'item'; readonly item: CombatItem };
 
 /** What a fighter brings: their techniques, and the tools in their pouch. */
-type Kit = Pick<PlanFighter, 'techniques' | 'items' | 'gear' | 'size' | 'empowered' | 'veiled'>;
+type Kit = Pick<PlanFighter, 'techniques' | 'items' | 'gear' | 'size' | 'empowered'>;
 
 const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'strike', card: { kind: 'strike' } },
@@ -93,8 +90,7 @@ export function cardId(card: Card): CardId {
 type Anywhere = Extract<
   Card,
   {
-    kind:
-      'guard' | 'dodge' | 'evade' | 'brace' | 'gather' | 'reveal' | 'search' | 'dispel' | 'item';
+    kind: 'guard' | 'dodge' | 'evade' | 'brace' | 'gather' | 'search' | 'dispel' | 'item';
   }
 >;
 const ANYWHERE_KINDS: readonly Card['kind'][] = [
@@ -103,15 +99,14 @@ const ANYWHERE_KINDS: readonly Card['kind'][] = [
   'evade',
   'brace',
   'gather',
-  'reveal',
   'search',
   'dispel',
   'item',
 ];
 
-/** Cards that spend the turn on the fighter themself: committing, gathering, an eye uncovered. */
-export type SelfCard = Extract<Card, { kind: 'evade' | 'brace' | 'gather' | 'reveal' }>;
-const SELF_KINDS: readonly Card['kind'][] = ['evade', 'brace', 'gather', 'reveal'];
+/** Cards that spend the turn on the fighter themself: committing to a defence, gathering. */
+export type SelfCard = Extract<Card, { kind: 'evade' | 'brace' | 'gather' }>;
+const SELF_KINDS: readonly Card['kind'][] = ['evade', 'brace', 'gather'];
 
 /** Whether a card spends the turn on the fighter themself. */
 export function spendsOnSelf(card: Card): card is SelfCard {
@@ -164,8 +159,7 @@ export function kitCards(fighter: Kit, band: RangeBand): Card[] {
   const basics = BASIC_CARDS.map((b) => basicFor(fighter, b.card));
   const jutsu = fighter.techniques.map((technique): Card => ({ kind: 'jutsu', technique }));
   const tools = fighter.items.map((item): Card => ({ kind: 'item', item }));
-  const eye: Card[] = (fighter.veiled ?? []).length > 0 ? [{ kind: 'reveal' }] : [];
-  return [...basics, ...eye, ...jutsu, ...tools].filter((c) => fitsBand(c, band));
+  return [...basics, ...jutsu, ...tools].filter((c) => fitsBand(c, band));
 }
 
 /** Footwork: a step, or a technique that does nothing but move its user. */
@@ -269,7 +263,6 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind === 'evade' || card.kind === 'brace') return canCommit(fighter, card.kind);
   if (card.kind === 'gather') return canGather(fighter);
-  if (card.kind === 'reveal') return canReveal(fighter);
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
   if (trumpSpent(fighter, card.technique) || !isOpenFor(fighter, card.technique)) return false;

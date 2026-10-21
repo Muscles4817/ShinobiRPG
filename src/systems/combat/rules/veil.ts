@@ -3,8 +3,8 @@ import type { CombatPerk } from '../contract';
 /**
  * A veiled eye (`docs/design/defence-plan.md` 4.2): perks a fighter keeps covered
  * (`CombatantSetup.veiled`, a transplanted eye under a headband) are no use until uncovered, and
- * an uncovered eye drains its owner every exchange it stays open. Uncovering it is a turn; when
- * its owner can no longer pay, it closes again. What foresight does once it sees is the avoid
+ * an uncovered eye drains its owner every exchange it stays open. Uncovering it takes no turn;
+ * when its owner can no longer pay, it closes again. What foresight does once it sees is the avoid
  * roll's (`avoidance.ts`: a higher ceiling and a perfect read for Evade) and `eyes.ts`'s.
  */
 

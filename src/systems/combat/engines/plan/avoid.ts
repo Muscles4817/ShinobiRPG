@@ -37,6 +37,8 @@ import type { PlanFighter, Round } from './state';
 import { sizeSlips } from '../../rules/size';
 import { hasPerk } from '../../rules/body';
 import { techniqueDamage } from '../../rules/damage';
+import { strikesToKill, type KillingMoment } from '../../rules/lethal';
+import { isOpen } from './finishers';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -69,6 +71,8 @@ export interface Incoming {
   readonly threat?: number;
   /** The attacker's speed behind a body's attack, which may outpace the target (`pace.ts`). */
   readonly paceSpeed?: number;
+  /** A killing blow on a target who can't meet it (`rules/lethal.ts`): nothing slips it. */
+  readonly sure?: boolean;
 }
 
 /** A Dodge is the target's ready defence here. */
@@ -86,7 +90,7 @@ function foresightScale({ form, discipline }: Incoming): number {
 export function avoidOdds(round: Round, incoming: Incoming): number {
   const { attacker, form } = incoming;
   const target = dulled(round.field, incoming.target);
-  if (isDazed(target)) return 0;
+  if (isDazed(target) || incoming.sure === true) return 0;
   const dodging = dodgesHere(round, target);
   const evading = committedTo(target, 'evade');
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE * (dodging ? 1 : SWIFT_INSTINCT) : 0;
@@ -163,7 +167,13 @@ export function techniqueIncoming(
     ...(t.dustCost ? { dust: dustSlips(attacker, t) } : {}),
     threat: threatOf(attacker, target, t),
     ...(body ? { paceSpeed: attacker.attributes.speed } : {}),
+    ...(strikesToKill(t, killingMoment(attacker, target)) ? { sure: true } : {}),
   };
+}
+
+/** Whether a target can meet a killing blow: they see its user, and can move. */
+export function killingMoment(attacker: PlanFighter, target: PlanFighter): KillingMoment {
+  return { unseen: attacker.hidden, open: isOpen(target) };
 }
 
 /**

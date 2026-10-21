@@ -1,13 +1,8 @@
-import { createRng } from '@/core';
-
 import type { CombatantSetup } from '../../contract';
 import { avoidCeiling, SEEING_AVOID_MAX } from '../../rules/avoidance';
 import { EYE_UPKEEP } from '../../rules/veil';
-import { chooseCard } from './choose';
-import { kitCards } from './cards';
-import { plannedPlay } from './priority';
 import { initialFighters, type PlanFighter, type Round } from './state';
-import { reveal, revealWorth, veilsAfter } from './veil';
+import { reveal, revealWorth, uncoverWhenWorth, veilsAfter } from './veil';
 
 /** An eye kept covered: no use until uncovered, a drain while open, and worth it against a match. */
 
@@ -66,15 +61,13 @@ describe('a veiled eye', () => {
   it('is no use until uncovered: then its perks are in play', () => {
     const r = round();
     expect(eyed(r).perks).not.toContain('foresight');
-    expect(kitCards(eyed(r), 'close').some((c) => c.kind === 'reveal')).toBe(true);
-    const open = reveal(r, { actor: eyed(r), target: undefined, rng: createRng(1) });
+    const open = reveal(r, eyed(r));
     expect(eyed(open).perks).toEqual(expect.arrayContaining(['insight', 'foresight', 'mimicry']));
-    expect(kitCards(eyed(open), 'close').some((c) => c.kind === 'reveal')).toBe(false);
   });
 
   it('drains chakra each exchange it is open, and closes when its owner can’t pay', () => {
     const r = round();
-    const open = reveal(r, { actor: eyed(r), target: undefined, rng: createRng(1) });
+    const open = reveal(r, eyed(r));
     const paid = veilsAfter(open);
     expect(eyed(paid).chakra).toBe(100 - EYE_UPKEEP);
     const dry = {
@@ -90,13 +83,19 @@ describe('a veiled eye', () => {
   it('is uncovered against a match or an illusionist, kept covered against a foe it outclasses', () => {
     const even = round();
     expect(revealWorth(eyed(even), { foes: [foeOf(even)] })).toBe(true);
-    expect(plannedPlay(eyed(even), even).card.kind).toBe('reveal');
-    const moment = { band: 'close' as const, foe: foeOf(even), fighters: even.fighters };
-    expect(chooseCard(eyed(even), moment, createRng(1)).kind).toBe('reveal');
     const easy = round({ attributes: weak });
     expect(revealWorth(eyed(easy), { foes: [foeOf(easy)] })).toBe(false);
     const caster = round({ attributes: { ...weak, genjutsu: 12 } });
     expect(revealWorth(eyed(caster), { foes: [foeOf(caster)] })).toBe(true);
+  });
+
+  it('is uncovered as a turn begins, no turn spent, when the fight calls for it', () => {
+    const even = round();
+    const begun = uncoverWhenWorth(even, 'kakashi');
+    expect(eyed(begun).perks).toContain('foresight');
+    expect(begun.lines.join(' ')).toMatch(/eye/);
+    const easy = round({ attributes: weak });
+    expect(uncoverWhenWorth(easy, 'kakashi')).toBe(easy);
   });
 
   it('sees well enough to slip more than anyone else can', () => {

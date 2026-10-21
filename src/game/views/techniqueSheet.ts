@@ -274,7 +274,12 @@ export function techniqueSheet(
     lands:
       wounding.length > 0 && def.discipline !== 'genjutsu' ? LANDS[def.accuracy ?? 'steady'] : null,
     strikes: strikesOf(def),
-    effects: def.effects.map(effectLine),
+    effects: [
+      ...def.effects.map(effectLine),
+      ...(def.lethal
+        ? [{ text: 'Kills in one strike a foe who can’t see it coming or can’t move', chip: null }]
+        : []),
+    ],
     cost: effortOf(you, { ...def, ...(unstable ? { unstable } : {}) }),
     costs: [
       ...(def.oncePerFight ? ['Once a fight'] : []),

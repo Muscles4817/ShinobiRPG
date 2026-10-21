@@ -6,6 +6,7 @@ import { alive, hasPerk, holdTurns } from '../../rules/body';
 import { healAmount } from '../../rules/damage';
 import { groundRule } from '../../rules/ground';
 import { conditionResist } from '../../rules/avoidance';
+import { HIDDEN_HOLD_RESIST } from '../../rules/lethal';
 import { healLine, reactionLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
 import { misfireChance } from '../../rules/unstable';
@@ -160,7 +161,8 @@ function conditionOf(effect: TechniqueEffect): ConditionVerb | null {
 function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse): Round | null {
   const verb = conditionOf(use.effect);
   if (!verb) return null;
-  const resist = conditionResist(actor, target, use);
+  // A hold cast from hiding comes from where its target isn't looking (`rules/lethal.ts`).
+  const resist = conditionResist(actor, target, use) * (actor.hidden ? HIDDEN_HOLD_RESIST : 1);
   // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
   const braced = committedTo(target, 'brace') && isBracedAgainst(verb);
   if (!rng.chance(braced ? bracedResist(resist) : resist)) return null;

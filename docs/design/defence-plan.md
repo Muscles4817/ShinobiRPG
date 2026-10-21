@@ -401,17 +401,27 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   (a Little Toe Attack's daze) and finishes with Morning Peacock. The fight table: Guy beats
   Kakashi 53% (70% before), Hiruzen 20%.
 - **Slice 7: the Sharingan, revealed (done).** Kakashi's arsenal keeps foresight and mimicry
-  covered (`PersonArsenal.veiled`, `CombatantSetup.veiled`): no use until uncovered, which is a turn
-  (a `reveal` card, taking no slot like the gates; a plan may slot it to play by hand), taken
-  against a foe who is a match (fighting power at least `MATCH_RATIO` of his own), one who fights
-  with illusions, or a fight turning against him, and paid in chakra every exchange (`EYE_UPKEEP`, 3) until he can't, when it closes again (`rules/veil.ts`, `plan/veil.ts`). Foresight itself
-  grew: eyes that see it coming slip up to `SEEING_AVOID_MAX` (0.85, 0.95 committed to Evade), read
-  every attack clearly for Evade, meet a body up to `SEEING_PACE` faster before it outpaces them
-  (past that, still nothing slips it) and see through illusions most of all
-  (`FORESIGHT_SEES_THROUGH`). The fight table: the turn spent uncovering it and its drain cost him
-  where foresight used to be free; Guy beats Kakashi 63% (53% before), Kurenai 30% (0%), and
-  Kakashi beats Asuma 77% (87%) and Zabuza every time. Guy's chains and pace still find him: the
-  stealth slice (4.3) is the answer, so Guy never gets the chance.
+  covered (`PersonArsenal.veiled`, `CombatantSetup.veiled`): no use until uncovered, a moment's
+  work as his turn begins (no turn spent, no slot: `uncoverWhenWorth`), against a foe who is a
+  match (fighting power at least `MATCH_RATIO` of his own), one who fights with illusions, or a
+  fight turning against him, and paid in chakra every exchange (`EYE_UPKEEP`, 3) until he can't,
+  when it closes again (`rules/veil.ts`, `plan/veil.ts`). Foresight itself grew: eyes that see it
+  coming slip up to `SEEING_AVOID_MAX` (0.85, 0.95 committed to Evade), read every attack clearly
+  for Evade, meet a body up to `SEEING_PACE` faster before it outpaces them (past that, still
+  nothing slips it) and see through illusions most of all (`FORESIGHT_SEES_THROUGH`). Uncovering
+  first cost a turn, which cost him more than the eye gave (Guy won 63%); it no longer does.
+- **Slice 8: stealth and set-ups (done).** A `lethal` technique (`TechniqueDef.lethal`: the
+  Lightning Blade, the Rasengan) on a target who can't see its user (hidden) or can't move (dazed,
+  reeling or held) can't be slipped, goes through a guard as a break does and lands `LETHAL_SCALE`
+  (2) times as hard; against a foe standing ready it is an ordinary attack (`rules/lethal.ts`). A
+  hold cast from hiding is shaken off half as often (`HIDDEN_HOLD_RESIST`). A mind that reads the
+  fight, with a conceal, a hold (a daze or a pin) and a killing blow in its kit, fights a match
+  (`SETUP_MATCH_RATIO`) by hide, hold, finish, from the kit like the gates (`plan/setups.ts`):
+  Kakashi goes under with Hiding Like a Mole, dazes Guy with the Lightning Beast Fang from below
+  and puts the Lightning Blade through him. Finding him again is a Search, perception against his
+  concealment. The killing blow's scale was tuned on the matchup: 1.8 left Guy winning 73%, 2.5
+  Kakashi 80%. The fight table: Guy beats Kakashi 50% (53% before the eye), Kurenai beats him 7%,
+  and Kakashi beats Asuma every time (87%) and Zabuza every time, now in about a round.
 
 ## Open questions
 
