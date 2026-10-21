@@ -70,5 +70,7 @@ export interface EnemyDef {
     readonly dustId: string;
     readonly tell?: RetinueTell;
     readonly shield?: true;
+    /** What their vessel holds, when not the kind's ordinary `carried`. */
+    readonly vessel?: number;
   };
 }

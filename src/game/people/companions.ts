@@ -1,5 +1,5 @@
-import type { PersonDef } from '@/content';
-import type { CombatantSetup, CombatTrait } from '@/systems/combat';
+import type { ClanDef, PersonDef } from '@/content';
+import type { CombatantSetup, CombatPerk, CombatTrait } from '@/systems/combat';
 import type { Discipline } from '@/systems/techniques';
 import { MAX_HEALTH } from '@/systems/vitals';
 
@@ -80,7 +80,10 @@ export function companionCombatant(
   const stats = personStats(person, state);
   const clan = person.clanId ? ctx.content.clans.get(person.clanId) : undefined;
   const hive = personHive(stats, clan, ctx);
-  const dust = personDust(hive.chakra, { clan, arsenalDust: person.arsenal?.dust }, ctx);
+  const dust = personDust(
+    { clan, dustId: person.arsenal?.dust, vessel: person.arsenal?.dustVessel },
+    ctx,
+  );
   const fighter: CombatantSetup = {
     id: `${PERSON_PREFIX}${person.id}`,
     name: person.name,
@@ -97,7 +100,7 @@ export function companionCombatant(
       ctx.content.techniques.require(id),
     ),
     traits: companionTraits(person),
-    ...perksOf(person),
+    ...perksOf(person, clan),
     ...kitOf(person, ctx),
     ...clanSize(person.clanId, ctx),
   };
@@ -117,9 +120,19 @@ function kitOf(person: PersonDef, ctx: GameContext): Pick<CombatantSetup, 'gear'
   };
 }
 
-/** A person's perks in a fight: their arsenal's, and walking on water and trees by rank. */
-function perksOf(person: PersonDef): Pick<CombatantSetup, 'perks'> {
-  const perks = [...new Set([...(person.arsenal?.perks ?? []), ...walkingByRank(person.rank)])];
+/** What an awakened bloodline gives anyone born to it, as it does you (`combatants.ts`). */
+function bloodlinePerks(clan: ClanDef | undefined): CombatPerk[] {
+  const bloodline = clan?.kekkeiGenkai;
+  return bloodline && !bloodline.dormant ? ['insight', ...(bloodline.perks ?? [])] : [];
+}
+
+/**
+ * A person's perks in a fight: their arsenal's, their clan's awakened bloodline (a Byakugan
+ * sees), and walking on water and trees by rank.
+ */
+function perksOf(person: PersonDef, clan: ClanDef | undefined): Pick<CombatantSetup, 'perks'> {
+  const owned = [...(person.arsenal?.perks ?? []), ...bloodlinePerks(clan)];
+  const perks = [...new Set([...owned, ...walkingByRank(person.rank)])];
   return perks.length > 0 ? { perks } : {};
 }
 

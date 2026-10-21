@@ -200,7 +200,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan: `rules/eyes.ts`, `plan/mimicry.ts`). A fight has a **ground**
+    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan: `rules/eyes.ts`, `plan/mimicry.ts`). A fight has a **ground**
     (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake, desert; arena when
     unset): the distances it has room for (a room has no far), cover for hiding, far attacks lost
     among trees or walls (or, in the desert's heat haze, by everyone), elements it feeds or
@@ -435,16 +435,20 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     weight, hold and draw graded 1 to 5, its gifts (cutting, blinding), its banes and the grounds
     it is drawn on; read once in `rules/dust.ts`, `engines/plan/dust.ts`): a technique's
     `dustCost` spends it and its `dustDraw` pulls it up first, in full on a ground that holds
-    it; heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
+    it; a dust attack arrives at the dust's own pace (`dustPace`), never its master's skill, so a
+    quick fighter slips it however strong its master; heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
     harder, a bane scatters it, and `CombatOutcome.dust` reports what is left. Kinds are shared
     content (`content/shared/dusts.ts`, `DustDef`). An automatic shield is never dust's: it
     belongs to where the power came from (a beast, a spirit), and reaches a fight as the
     `shield` perk (`rules/shield.ts`, `plan/shield.ts`; an arsenal's `perks`, a foe's
     `dust.shield`): dust rises on its own against a hit that would land, after the ready
     defence, at a pace heavy dust slows, so a fast enough attacker outruns it; it keeps out what
-    it holds (a break half), paid in dust, and never meets an illusion. Your dust is kept between fights
+    it holds (a break half), paid in dust, stops a hold, seal or drain whole when it rises, and
+    never meets an illusion. Your dust is kept between fights
     (`systems/dusts`, `GameState.dust`, `game/dust/`): a child of a clan with a `dust`
-    (`ClanDef.dust`) is born with a full store, as much as their chakra can hold up; what came
+    (`ClanDef.dust`) is born with a full store, as much as their vessel holds (`DustDef.carried`,
+    or the clan's `vessel`; a fighter's `dustVessel`, a foe's `dust.vessel`), never their
+    chakra; what came
     back from a fight is what the store holds, and each day dust the ground gives (sand, ash)
     gathers back, quickly at home, while dust no ground gives (iron sand, gold, glass) never
     comes back on its own: it is made at home for materials and an afternoon (`makeDust`,
@@ -920,7 +924,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).
 - **Add a versus-only fighter (a duelist):** a `PersonDef` in the pack's `duelists`
-  (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi rank, no
+  (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi or genin
+  (as they stand at canon's start, unless deliberately changed), no
   schedule, no teaching, a `homeLocationId` for their village if it isn't the start one, and an
   `arsenal` (which may name `gearIds` and `tools`, carried into every fight, and `puppets`: a
   pack's `PuppetDef`s, bodies built rather than summoned, each unsealed by its own technique as a

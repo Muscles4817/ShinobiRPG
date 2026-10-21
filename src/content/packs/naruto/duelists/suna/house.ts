@@ -16,12 +16,14 @@ export const HOUSE_FIGHTERS: readonly PersonDef[] = [
     familyName: 'of the Sands',
     pronouns: 'she',
     clanId: 'sabaku',
-    title: 'The Kazekage’s Daughter',
-    rank: 'jonin',
-    stats: statLine('C', {
-      ninjutsu: 'A',
+    role: 'genin',
+    title: 'Genin',
+    rank: 'genin',
+    // As at the Chūnin Exams.
+    stats: statLine('D', {
+      ninjutsu: 'B',
       intellect: 'B',
-      chakraControl: 'B',
+      chakraControl: 'C',
     }),
     traitIds: ['proud', 'cunning'],
     appearance: look(
@@ -44,15 +46,18 @@ export const HOUSE_FIGHTERS: readonly PersonDef[] = [
     familyName: 'of the Sands',
     pronouns: 'he',
     clanId: 'sabaku',
-    title: 'Puppet Master of the Sand',
-    rank: 'jonin',
-    stats: statLine('C', {
-      chakraControl: 'A',
-      intellect: 'A',
+    role: 'genin',
+    title: 'Genin',
+    rank: 'genin',
+    // As at the Chūnin Exams: Karasu is his only puppet yet.
+    stats: statLine('D', {
+      chakraControl: 'B',
+      intellect: 'B',
+      // Enough for the threads, a B-rank art, and little else.
       ninjutsu: 'B',
-      perception: 'B',
-      stamina: 'B',
-      taijutsu: 'D',
+      perception: 'C',
+      stamina: 'C',
+      taijutsu: 'E',
     }),
     traitIds: ['brash', 'cunning'],
     appearance: look(
@@ -65,7 +70,7 @@ export const HOUSE_FIGHTERS: readonly PersonDef[] = [
     bio: 'Wears the puppeteer’s paint and a hood with ears on it. Begged the Red Sand to teach him until the old woman gave in, and never says thank you.',
     arsenal: {
       techniqueIds: ['chakra-threads'],
-      puppets: ['karasu', 'kuroari'],
+      puppets: ['karasu'],
     },
   }),
 ];

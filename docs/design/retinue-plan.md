@@ -769,6 +769,26 @@ what it does, against any hit that would land:
 A read names it with its counter (speed, illusions, and the dust's banes), and the log stamps
 the block "Shielded".
 
+**What the Part 1 cast taught it** (the designer's calls after the first bench, with #222's
+chakra curve in): the fan pack's cast stands as at canon's start (Gaara a genin at the Chūnin
+Exams; Temari and Kankurō genin, Karasu his only puppet).
+
+- **A store is a vessel, never chakra.** Gaara's sand is his gourd's, not his chakra's: each
+  kind has an ordinary `carried` amount, and a clan or fighter may carry more (`vessel`,
+  `dustVessel`: the great gourd holds 300). Making more mid-fight is a draw's work. Hives stay
+  with chakra: insects live on it.
+- **Dust arrives at its own pace**, the shield's (`dustPace`: a good chūnin's speed, slower for
+  heavy dust), not its master's ninjutsu. Speed answers sand on both sides: Kakashi slips it and
+  outthinks it, Lee sometimes gets past the shield, Guy overwhelms it.
+- **The shield meets conditions too.** A Gentle Fist touch (a seal and a drain, which armour
+  never meets) must get past the shield first, then ignores armour.
+- **A bloodline's perks reach everyone born to it**, not only the player: Neji sees with the
+  Byakugan (`insight`).
+
+The bench after these (60 fights each, Part 1 Gaara): Lee wins 20%, Kakashi and Guy always.
+Neji still loses nearly every time with no stalemates: Rotation is a close-range riposte here,
+not the all-round defence it is in canon. That is a framework question left open.
+
 ### Foes with hives and dust
 
 A foe may carry a hive (`EnemyDef.hive`, a pack strain) or dust (`EnemyDef.dust`), full, into

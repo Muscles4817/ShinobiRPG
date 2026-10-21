@@ -3,7 +3,7 @@ import {
   dustAffords,
   dustGuardScale,
   dustPowerScale,
-  dustSlipScale,
+  dustPace,
   dustUsed,
   dustWord,
   HEAVY_HIT,
@@ -41,7 +41,7 @@ describe('dust rules', () => {
   it('heavy dust hits harder and arrives slower, and helps a Guard more', () => {
     const iron = { ...SAND, qualities: { ...SAND.qualities, weight: 5 } };
     expect(dustPowerScale(iron)).toBeGreaterThan(dustPowerScale(SAND));
-    expect(dustSlipScale(iron)).toBeGreaterThan(dustSlipScale(SAND));
+    expect(dustPace(iron)).toBeLessThan(dustPace(SAND));
     expect(dustGuardScale(pool(iron))).toBeLessThan(dustGuardScale(pool(SAND)));
     expect(dustGuardScale(pool(SAND, 5))).toBe(1);
     expect(dustGuardScale(undefined)).toBe(1);

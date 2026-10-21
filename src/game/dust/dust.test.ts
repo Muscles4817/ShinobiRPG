@@ -73,4 +73,21 @@ describe('commanded dust', () => {
     expect(gaara.dust?.kind.name).toBe('Sand');
     expect(gaara.dust?.count).toBe(gaara.dust?.cap);
   });
+
+  it('a store is a vessel, whatever the chakra: the great gourd holds more than most', () => {
+    const naruto = contextForPack('naruto')!;
+    const game = createNewGame({ draft: draft(), seed: 1234 }, naruto);
+    const gaara = companionCombatant(naruto.content.duelists.require('gaara'), game, naruto, '');
+    const sand = naruto.content.dusts.require('sand');
+    expect(gaara.dust?.cap).toBe(300);
+    expect(gaara.dust?.cap).toBeGreaterThan(sand.carried);
+    expect(gaara.dust?.cap).toBeLessThan(gaara.maxChakra);
+    expect(yourDust(ashChild(), ctx)?.cap).toBe(ctx.content.dusts.require('ash').carried);
+  });
+
+  it('a store kept from when stores grew with chakra is read as a full vessel', () => {
+    const state = { ...ashChild(), dust: { dustId: 'ash', count: 5000 } };
+    const yours = yourDust(state, ctx);
+    expect(yours?.store.count).toBe(yours?.cap);
+  });
 });

@@ -1,12 +1,5 @@
 import type { CombatDust, DustKind } from '../dustContract';
-import {
-  shieldBlock,
-  shieldHolds,
-  shieldMeets,
-  shieldPace,
-  shieldRises,
-  SHIELD_MIN_DUST,
-} from './shield';
+import { shieldBlock, shieldHolds, shieldMeets, shieldRises, SHIELD_MIN_DUST } from './shield';
 
 const SAND: DustKind = {
   name: 'Sand',
@@ -23,7 +16,7 @@ function store(kind: DustKind, count = 200): CombatDust {
 
 describe('the automatic shield', () => {
   it('rises slower the heavier its dust', () => {
-    expect(shieldPace(SAND)).toBeGreaterThan(shieldPace(GOLD));
+    expect(shieldRises(store(GOLD), 18)).toBeLessThan(shieldRises(store(SAND), 18));
   });
 
   it('rises against the slow almost always, and is outrun by real speed', () => {

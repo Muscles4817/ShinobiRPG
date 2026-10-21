@@ -19,6 +19,7 @@ import {
   type EffectUse,
 } from '../../rules/verbs';
 import { aftermath } from './blast';
+import { shieldStops } from './shield';
 import { avoidOdds, dodgesHere, techniqueIncoming } from './avoid';
 import { noteDefence } from './reads';
 import { clash } from './clash';
@@ -170,6 +171,17 @@ function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse):
 /** One effect landing on a foe who is standing. Effects aimed at the user happen in `onSelf`. */
 function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): Round {
   if (!landsOnFoe(effect)) return round;
+  // A condition meets an automatic shield first; a hit meets it as it lands (`react.ts`).
+  const touch = {
+    attacker: aimed.actor,
+    target: aimed.target,
+    what: technique.name,
+    rng: aimed.rng,
+  };
+  const stopped = conditionOf(effect)
+    ? shieldStops(round, { ...touch, illusion: technique.discipline === 'genjutsu' })
+    : null;
+  if (stopped) return stopped;
   const resisted = shakenOff(round, aimed, { technique, effect });
   if (resisted) return resisted;
   switch (effect.verb) {

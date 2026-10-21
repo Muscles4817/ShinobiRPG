@@ -3,7 +3,7 @@ import { createRng, type Rng } from '@/core';
 import type { CombatantSetup } from '../../contract';
 import type { CombatDust } from '../../dustContract';
 import { react, type Blow } from './react';
-import { shieldUp } from './shield';
+import { shieldStops, shieldUp } from './shield';
 import { fighterIn, initialFighters, type Round } from './state';
 
 /** The automatic shield in a planned fight: it rises on its own, pays in dust, and is outrun. */
@@ -113,5 +113,17 @@ describe('the shield in a planned fight', () => {
     const bare = round({});
     const hurt = react(bare, { attacker: foe(bare), target: host(bare), blow, rng: RISES });
     expect(host(hurt).health).toBeLessThan(100);
+  });
+
+  it('stops a hold, a seal or a drain whole when it rises, but never an illusion', () => {
+    const r = round(SHIELDED);
+    const touch = { attacker: foe(r), target: host(r), what: 'Gentle Fist', rng: RISES };
+    const stopped = shieldStops(r, { ...touch, illusion: false });
+    expect(stopped).not.toBeNull();
+    expect(host(stopped!).dust!.count).toBeLessThan(SAND.count);
+    expect(shieldStops(r, { ...touch, illusion: true })).toBeNull();
+    const plain = round({ dust: SAND });
+    const bare = { ...touch, target: host(plain), illusion: false };
+    expect(shieldStops(plain, bare)).toBeNull();
   });
 });

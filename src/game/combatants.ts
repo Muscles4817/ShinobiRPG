@@ -204,7 +204,7 @@ export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): 
 function enemyPools(def: EnemyDef, ctx: GameContext): Pick<CombatantSetup, 'swarm' | 'dust'> {
   const swarm = def.hive ? foeHive(def.hive.strainId, enemyStatLine(def), ctx) : undefined;
   const dust = def.dust
-    ? personDust(def.maxChakra, { clan: undefined, arsenalDust: def.dust.dustId }, ctx)
+    ? personDust({ clan: undefined, dustId: def.dust.dustId, vessel: def.dust.vessel }, ctx)
     : undefined;
   return { ...(swarm ? { swarm } : {}), ...(dust ? { dust } : {}) };
 }
