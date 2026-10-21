@@ -17,7 +17,8 @@ function beat(over: Partial<FightBeat>): FightBeat {
     range: 'mid',
     force: null,
     health: {},
-    chakra: {},
+    pools: {},
+    statuses: {},
     ...over,
   };
 }

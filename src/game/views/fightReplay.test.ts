@@ -53,33 +53,62 @@ describe('the watch screen’s beats', () => {
     expect(beats[2]!.health).toMatchObject({ 'person:kaen': kaen!.health });
   });
 
-  it('moves chakra beat by beat from the lines that say where it stands', () => {
+  it('moves pools beat by beat from the lines that say where they stand', () => {
     const base = combatScene(begun(), ctx)!;
     const view = {
       ...base,
       log: [
-        '— First exchange — ⟦ck:player=50|person:kaen=40⟧',
-        "Kaen's Pebble Volley flies. ⟦by:person:kaen⟧ ⟦ck:person:kaen=32⟧",
-        'Kaito weaves the seals. ⟦by:player⟧ ⟦ck:player=41⟧',
+        '— First exchange — ⟦pl:player=chakra:50,breath:30|person:kaen=chakra:40,breath:20⟧',
+        "Kaen's Pebble Volley flies. ⟦by:person:kaen⟧ ⟦pl:person:kaen=chakra:32⟧",
+        'Kaito drives in a kick. ⟦by:player⟧ ⟦pl:player=breath:24⟧',
       ],
     };
-    const chakra = fightReplay(view, 0).map((b) => b.chakra);
-    expect(chakra).toEqual([
-      { player: 50, 'person:kaen': 40 },
-      { player: 50, 'person:kaen': 32 },
-      { player: 41, 'person:kaen': 32 },
+    const pools = fightReplay(view, 0).map((b) => b.pools);
+    expect(pools).toEqual([
+      { player: { chakra: 50, breath: 30 }, 'person:kaen': { chakra: 40, breath: 20 } },
+      { player: { chakra: 50, breath: 30 }, 'person:kaen': { chakra: 32, breath: 20 } },
+      { player: { chakra: 50, breath: 24 }, 'person:kaen': { chakra: 32, breath: 20 } },
     ]);
   });
 
-  it('says everyone’s chakra at each exchange, and follows a real one as it is spent', () => {
+  it('reads the chakra-only marker a fight saved mid-way may still carry', () => {
+    const base = combatScene(begun(), ctx)!;
+    const view = { ...base, log: ['— First exchange — ⟦ck:player=50|person:kaen=40⟧'] };
+    expect(fightReplay(view, 0)[0]).toMatchObject({
+      text: 'First exchange',
+      pools: { player: { chakra: 50 }, 'person:kaen': { chakra: 40 } },
+    });
+  });
+
+  it('changes statuses beat by beat, keeping each fighter’s until a line says otherwise', () => {
+    const base = combatScene(begun(), ctx)!;
+    const view = {
+      ...base,
+      log: [
+        '— First exchange — ⟦st:player=Clones ×2|person:kaen=⟧',
+        "Kaen's blow dazes Kaito. ⟦by:person:kaen⟧ ⟦st:player=Dazed;Clones ×1⟧",
+        'Kaen readies a trap. ⟦by:person:kaen⟧ ⟦st:person:kaen=Trap set⟧',
+      ],
+    };
+    expect(fightReplay(view, 0).map((b) => b.statuses)).toEqual([
+      { player: ['Clones ×2'], 'person:kaen': [] },
+      { player: ['Dazed', 'Clones ×1'], 'person:kaen': [] },
+      { player: ['Dazed', 'Clones ×1'], 'person:kaen': ['Trap set'] },
+    ]);
+  });
+
+  it('says everyone’s chakra and breath at each exchange of a real fight', () => {
     const before = begun();
     const seen = combatScene(before, ctx)!.log.length;
     const after = act(before, { type: 'combatAct', optionId: 'next' });
     const view = combatScene(after, ctx)!;
     const beats = fightReplay(view, seen);
     const ids = view.combatants.map((c) => c.id).sort();
-    expect(Object.keys(beats[0]!.chakra).sort()).toEqual(ids);
-    for (const b of beats) expect(Object.keys(b.chakra).sort()).toEqual(ids);
+    for (const b of beats) {
+      expect(Object.keys(b.pools).sort()).toEqual(ids);
+      for (const id of ids) expect(Object.keys(b.pools[id]!)).toEqual(['chakra', 'breath']);
+      expect(Object.keys(b.statuses).sort()).toEqual(ids);
+    }
   });
 
   it('keeps its place in a long fight, after the engine lets its oldest lines go', () => {

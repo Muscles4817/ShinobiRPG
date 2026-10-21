@@ -31,6 +31,16 @@ export function breathMeter(player: Breathing): CombatMeter | null {
 
 type Breathing = Pick<PlanFighter, 'techniques' | 'attributes' | 'breath'>;
 
+/** A fighter's pools as amounts by id (chakra, breath, and a hive or dust if they carry one). */
+export function poolAmounts(
+  fighter: Hive & Dusty & Breathing & Pick<PlanFighter, 'chakra'>,
+): Record<string, number> {
+  const pools: Record<string, number> = { chakra: fighter.chakra, breath: breathOf(fighter) };
+  if (fighter.swarm) pools.hive = fighter.swarm.count;
+  if (fighter.dust) pools.dust = fighter.dust.count;
+  return pools;
+}
+
 /** Where a fighter stands and the pools they carry, for their view. */
 export function onStage(
   fighter: Hive & Dusty & Breathing & Pick<PlanFighter, 'row'>,

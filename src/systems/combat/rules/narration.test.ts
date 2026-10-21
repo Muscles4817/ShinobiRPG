@@ -1,13 +1,14 @@
 import {
-  chakraLine,
   forceLine,
   harmLine,
   healLine,
   namedLine,
   numberedNames,
+  poolsLine,
   reactionLine,
   splitNarration,
   squareUpLine,
+  statusLine,
   turnLine,
 } from './narration';
 
@@ -94,17 +95,30 @@ describe('fight narration', () => {
     });
   });
 
-  it('carries where fighters’ chakra stands out of the sentence', () => {
-    const line = chakraLine(turnLine('You weave the seals.', 'player'), {
-      player: 41.6,
-      'enemy:zabuza': 120,
+  it('carries where fighters’ pools stand out of the sentence', () => {
+    const line = poolsLine(turnLine('You weave the seals.', 'player'), {
+      player: { chakra: 41.6, breath: 12 },
+      'enemy:zabuza': { chakra: 120 },
     });
     expect(splitNarration(line)).toMatchObject({
       text: 'You weave the seals.',
       actorId: 'player',
-      chakra: { player: 42, 'enemy:zabuza': 120 },
+      pools: { player: { chakra: 42, breath: 12 }, 'enemy:zabuza': { chakra: 120 } },
     });
-    expect(chakraLine('Nothing moved.', {})).toBe('Nothing moved.');
+    expect(poolsLine('Nothing moved.', {})).toBe('Nothing moved.');
+    expect(poolsLine('Nothing moved.', { player: {} })).toBe('Nothing moved.');
+  });
+
+  it('carries fighters’ statuses out of the sentence, an empty list where all ended', () => {
+    const line = statusLine('Asuka reels. ⟦by:person:asuka⟧', {
+      player: ['Clones ×2', 'Marked'],
+      'person:asuka': [],
+    });
+    expect(splitNarration(line)).toMatchObject({
+      text: 'Asuka reels.',
+      statuses: { player: ['Clones ×2', 'Marked'], 'person:asuka': [] },
+    });
+    expect(statusLine('Nothing changed.', {})).toBe('Nothing changed.');
   });
 });
 
