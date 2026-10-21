@@ -139,7 +139,7 @@ describe('the fight’s voice', () => {
   it('says it again when the same fighter repeats themself', () => {
     const said = emptySearchLine(MOMENTS[0]!, YOU);
     const again = text(emptySearchLine({ key: 'later', recent: [said] }, YOU));
-    expect(again).toMatch(/^You (search|look) again/);
+    expect(again).toMatch(/again|once more/);
     const cast = castLine(MOMENTS[0]!, YOU, fire);
     expect(text(castLine({ key: 'later', recent: [cast] }, YOU, fire))).toMatch(
       /back to|again|once more/,

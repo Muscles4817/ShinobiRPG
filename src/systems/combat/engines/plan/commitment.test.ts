@@ -24,12 +24,13 @@ const attributes = {
   fuuinjutsu: 10,
 };
 
+/** Heavy enough to be the attack worth evading (`DANGER_SHARE`). */
 const bolt: CombatTechnique = {
   id: 'bolt',
   name: 'Bolt',
   discipline: 'ninjutsu',
   chakraCost: 4,
-  effects: [{ verb: 'damage', power: 10 }],
+  effects: [{ verb: 'damage', power: 30 }],
 };
 
 function setup(id: string): CombatantSetup {
@@ -75,10 +76,10 @@ function blowTaken(round: Round): number {
 }
 
 describe('committed defence', () => {
-  it('Evade makes everything far harder to land, up to more than anyone else may slip', () => {
+  it('Evade makes a dangerous attack far harder to land, up to more than anyone else may slip', () => {
     const open = slipOdds(roundOf());
     const evading = slipOdds(committed(roundOf(), 'evade'));
-    expect(evading).toBeGreaterThan(open * 1.8);
+    expect(evading).toBeGreaterThan(open * 1.7);
     expect(evading).toBeLessThanOrEqual(EVADE_MAX);
   });
 

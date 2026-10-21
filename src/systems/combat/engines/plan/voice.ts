@@ -243,6 +243,7 @@ const EMPTY_SEARCH = bank(
   [
     '{a} search{a.es} again, and still find{a.s} no one.',
     '{a} look{a.s} again, with no more luck.',
+    '{a} sweep{a.s} the field once more and turn{a.s} up nothing.',
   ],
   SEARCHING,
 );

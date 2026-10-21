@@ -218,11 +218,12 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   kick on a bandit thug now ends him) and small bodies (a hornet swarm). `MAX_RATIO` stays at
   four: it is what keeps a blow between grades from running away, and nothing in the table
   leans on it.
-- **Durability by build is waiting on slice 3.** Toughness is still mostly skill
+- **Durability by build is still open.** Toughness is still mostly skill
   (`SKILL_DEFENCE_SHARE` 0.8), so a genjutsu master is as hard to hurt as a wall of a clan
   fighter of the same grade. Lowering the share is what lets stamina tell a glass cannon from a
   tank, but without Evade a glass cannon would have no way to survive, and equals would end each
-  other in a hit. It moves with Evade and Brace, against the same bench targets.
+  other in a hit. With Evade, Brace and reading in, it is the next retune, against the same bench
+  targets.
 - **Slice 3, Evade and Brace (done).** Two actions (`rules/commitment.ts`, `plan/commitment.ts`),
   slotted like any other and paid in breath (Evade 8, Brace 5), held until the fighter's next
   turn. Evade adds to the avoid roll's stance (a technique +1, a blow +1.2, on top of an open
@@ -237,6 +238,19 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   takes cover against Guy some turns (Guy 77% → 67%, 2.0 → 2.2 rounds), and the lopsided
   cross-rank bouts last a little longer. Between equals nothing changes until slice 4 teaches
   fighters when a blow is worth evading.
+- **Slice 4, reading and pace (done).** Every attack now carries its threat (the share of the
+  target's health it would take, mid-roll) and, for a body's attack, its speed. Evade's lift
+  meets an attack by the evader's read (`evadeFocus` in `rules/commitment.ts`). Blind, 0.6 of it
+  meets everything. A clear read (the read's multiplier at 1.25 or more) puts all of it on an
+  attack worth a quarter of their health or more, and none on the rest. Between equals, with a
+  read of one, a dangerous attack meets 0.8 of it and an ordinary one 0.3. Familiarity sharpens
+  the read, as it already did. Pace (`rules/pace.ts`): a body's attack from someone 1.5 times
+  the defender's avoid rating starts to outpace them, and from twice it nothing slips it, Evade
+  or a ready Dodge alike; a swap still works. Against an equal's plain blows (a fifth of their
+  health each) a reader lets them meet the ready defence, so an evade-only turtle lasts 12
+  exchanges where it lasted 15. The fight table moves a little where one side is much quicker:
+  Guy beats Hiruzen 90% of the time (83% before) in shorter bouts, his speed now partly
+  outpacing an old body's slip.
 - **Shadow clones are part of slice 5.** Today a shadow clone costs a flat 14 chakra and is a
   decoy that strikes at a third of its maker. In canon it splits its maker's chakra (half of what
   is left) and makes a whole fighter as able as its maker who falls to one hit: a huge

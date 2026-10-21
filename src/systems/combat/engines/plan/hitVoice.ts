@@ -154,6 +154,7 @@ const SENTENCES: Readonly<Record<HitWeight, readonly string[]>> = {
     '{a.poss} {what} {verb} {t}{again}{guard}.',
     '{a.poss} {what} {verb} {t} cleanly{again}{guard}.',
     '{a} land{a.s} {a.their} {what} on {t}{again}{guard}.',
+    '{a} catch{a.es} {t} with {a.their} {what}{again}{guard}.',
   ],
   heavy: [
     '{a.poss} {what} {verb} {t}{again}{guard}.',

@@ -210,6 +210,8 @@ function blowIncoming({ attacker, target, blow }: Hit): Incoming {
     form: 'blow',
     attacker,
     target,
+    threat: blow.raw / Math.max(1, target.maxHealth),
+    ...(blow.physical ? { paceSpeed: attacker.attributes.speed } : {}),
     skill: blowSkill(attacker, blow.kind, !blow.physical),
     ...(blow.discipline ? { discipline: blow.discipline } : {}),
     ...(blow.accuracy ? { accuracy: blow.accuracy } : {}),
