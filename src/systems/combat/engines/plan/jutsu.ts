@@ -38,6 +38,7 @@ import { callSummon } from './summons';
 import { settleOn, swarmSpent } from './swarm';
 import { dustSpent } from './dust';
 import { setTrap } from './traps';
+import { linkLine } from './chainVoice';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 import { raiseShroud } from './shrouds';
 
@@ -53,7 +54,8 @@ import { raiseShroud } from './shrouds';
 const FRIENDLY_AREA = 0.5;
 
 /** Pays the chakra, and notes the technique and the chakra for the outcome's usage report. */
-function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
+function withChakraSpent(round: Round, turn: Turn, t: CombatTechnique): Round {
+  const { actor, target } = turn;
   const known = actor.used ?? [];
   const change = {
     ...payFor(actor, t),
@@ -64,7 +66,9 @@ function withChakraSpent(round: Round, actor: PlanFighter, t: CombatTechnique): 
   };
   return say(
     { ...round, fighters: patch(round.fighters, actor.id, change) },
-    castLine(momentOf(round, actor.id), actor, t),
+    turn.linked && target
+      ? linkLine(momentOf(round, actor.id), { actor, target }, t)
+      : castLine(momentOf(round, actor.id), actor, t),
   );
 }
 
@@ -315,7 +319,7 @@ interface Slipped {
 
 function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const { actor } = turn;
-  const paid = withChakraSpent(round, actor, t);
+  const paid = withChakraSpent(round, turn, t);
   if (misfired(turn, t)) {
     const line = '{what} comes apart in {a.poss} hands before it is steady.';
     return say(paid, tell(line, { a: actor, what: t.name }));

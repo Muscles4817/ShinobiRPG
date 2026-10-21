@@ -30,6 +30,8 @@ export interface Turn {
   readonly rng: Rng;
   /** How much harder their damage lands: set while a combination technique resolves. */
   readonly boost?: number;
+  /** Thrown as a chain's next link, carried on from the last (`chaining.ts`). */
+  readonly linked?: boolean;
 }
 
 /** Hidden foes can't be aimed at, unless you read foes (insight, or a sense this fight). */

@@ -63,6 +63,16 @@ export function spots(actor: string, names: string): RegExp {
   return line(['found'], actor, names);
 }
 
+/** A chain's next link thrown on from the last: the line names its thrower and the move. */
+export function linksLine(said: string, actor: string, technique: string): boolean {
+  return line(['link-[a-z]+'], actor, technique).test(said);
+}
+
+/** A chain breaking off, for one reason (`missed`, `countered`, `out-of-reach`, `winded`) or any. */
+export function chainBreaks(why = '[a-z-]+'): RegExp {
+  return new RegExp(from(`chain-break-${why}`));
+}
+
 /** Someone using a technique: the line names them and it, and hurts no one. */
 export function castsLine(said: string, actor: string, technique: string): boolean {
   return line(['cast-[a-z]+'], actor, technique).test(said) && !A_HIT.test(said);

@@ -2,14 +2,15 @@ import type { CombatTechnique } from '../../contract';
 import { alive } from '../../rules/body';
 import { maxBreath } from '../../rules/breath';
 import { chainLength, chainProblem, defaultChains, reachesAfter } from '../../rules/chains';
-import { tell } from '../../rules/telling';
 import { techniquePower } from '../../rules/verbs';
 import { fitsBand, playable, type Card } from './cards';
+import { breakLine, type ChainBreak } from './chainVoice';
 import { breathOf, effortOf } from './effort';
 import { useJutsu } from './jutsu';
 import { jutsu, strikeScore, styleArt } from './repertoire';
 import { opponentsOf, type Turn } from './senses';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
+import { momentOf } from './voice';
 
 /**
  * Chains in a fight (`rules/chains.ts`): when a strike plays, a chain whose opener suits the
@@ -74,16 +75,30 @@ export function opened(round: Round, turn: Turn, planned: Card, single: Card): O
   return { card: jutsu(best.opener), follow: best.rest };
 }
 
-/** Whether a link landed: it hurt, dazed or pinned its target, and nothing hurt its thrower. */
-function landed(before: Round, after: Round, actorId: string, targetId: string): boolean {
+/** Whether a link landed: it hurt, dazed or pinned its target. */
+function landed(before: Round, after: Round, targetId: string): boolean {
   const [was, is] = [fighterIn(before, targetId), fighterIn(after, targetId)];
-  const [self, now] = [fighterIn(before, actorId), fighterIn(after, actorId)];
-  if (!was || !is || !self || !now || now.health < self.health) return false;
+  if (!was || !is) return false;
   const pinned = (is.pinned ?? 0) > (was.pinned ?? 0);
   return is.health < was.health || is.stunned > was.stunned || pinned;
 }
 
-const BREAKS = '{a.poss} chain breaks off there.';
+/** The fight around one link: as the last met it, and as it stands now. */
+interface Link {
+  readonly prev: Round;
+  readonly now: Round;
+  readonly actor: PlanFighter;
+  readonly target: PlanFighter;
+}
+
+/** Why the next link can't follow, or null when it can. */
+function breakOf({ prev, now, actor, target }: Link, link: CombatTechnique): ChainBreak | null {
+  const self = fighterIn(prev, actor.id);
+  if (self && actor.health < self.health) return 'countered';
+  if (!landed(prev, now, target.id)) return 'missed';
+  if (!reachesAfter(link, now.range)) return 'out-of-reach';
+  return playable(actor, jutsu(link)) ? null : 'winded';
+}
 
 /**
  * The rest of a chain, after its opener was thrown (`before` is the fight as the opener met it):
@@ -101,12 +116,9 @@ export function followThrough(
     const actor = fighterIn(now, turn.actor.id);
     const target = targetId === undefined ? undefined : fighterIn(now, targetId);
     if (!actor || !target || !alive(actor) || !alive(target)) return now;
-    const card = jutsu(link);
-    const goes = landed(prev, now, actor.id, target.id);
-    if (!goes || !reachesAfter(link, now.range) || !playable(actor, card)) {
-      return say(now, tell(BREAKS, { a: actor }));
-    }
-    [prev, now] = [now, useJutsu(now, { actor, target, rng: turn.rng }, link)];
+    const why = breakOf({ prev, now, actor, target }, link);
+    if (why) return say(now, breakLine(momentOf(now, actor.id), { actor, target }, why));
+    [prev, now] = [now, useJutsu(now, { actor, target, rng: turn.rng, linked: true }, link)];
   }
   return now;
 }

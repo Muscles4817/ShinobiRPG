@@ -1,4 +1,5 @@
 import { createRng } from '@/core';
+import { castsLine, chainBreaks, linksLine } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { chainsOf, followThrough, opened } from './chaining';
@@ -86,16 +87,35 @@ describe('chains in a fight', () => {
     expect(after.fighters[0]!.uses?.heel).toBe(1);
   });
 
+  it('tell a link as carried on from the last, not as a fresh start', () => {
+    const before = roundOf();
+    const hurt = { ...before, fighters: patch(before.fighters, 'foe', { health: 90 }) };
+    const lines = followThrough(before, hurt, turnIn(before), [heel]).lines;
+    expect(lines.some((l) => linksLine(l, 'hero', 'Heel'))).toBe(true);
+    expect(lines.some((l) => castsLine(l, 'hero', 'Heel'))).toBe(false);
+  });
+
   it('break off when the last link missed, or its thrower was hurt in answer', () => {
     const before = roundOf();
     const missed = followThrough(before, before, turnIn(before), [heel]);
-    expect(missed.lines.at(-1)).toMatch(/chain breaks off/);
+    expect(missed.lines.at(-1)).toMatch(chainBreaks('missed'));
     const countered = {
       ...before,
       fighters: patch(patch(before.fighters, 'foe', { health: 90 }), 'hero', { health: 80 }),
     };
     expect(followThrough(before, countered, turnIn(before), [heel]).lines.at(-1)).toMatch(
-      /chain breaks off/,
+      chainBreaks('countered'),
     );
+  });
+
+  it('break off out of reach once a knock leaves the next move nothing to hit', () => {
+    const before = roundOf();
+    const knocked = {
+      ...before,
+      range: 'far' as const,
+      fighters: patch(before.fighters, 'foe', { health: 90 }),
+    };
+    const after = followThrough(before, knocked, turnIn(before), [heel]);
+    expect(after.lines.at(-1)).toMatch(chainBreaks('out-of-reach'));
   });
 });
