@@ -15,6 +15,18 @@ export const SUNAGAKURE: LocationDef = {
   epithet: 'Village Hidden in the Sand',
   map: { x: 12, y: 51 },
   backdrop: 'sand-village',
+  greetings: [
+    {
+      cause: { kind: 'from', locationId: 'konohagakure' },
+      temper: 'cold',
+      line: 'The Sand remembers Sakumo Hatake. A Leaf forehead protector buys you the foreigner’s price, and long looks from everyone who lost someone in the war.',
+    },
+    {
+      cause: { kind: 'contract' },
+      temper: 'cold',
+      line: 'Word has gone round that you hold a summoning contract. In the Sand, binding a beast is the Monarch’s sin, and nobody lets you forget it.',
+    },
+  ],
   places: [
     {
       id: 'cistern-house',

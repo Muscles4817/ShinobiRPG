@@ -17,6 +17,7 @@ import { companionStrip, type CompanionStrip } from './companionCare';
 import { vetLine } from './vet';
 import { teacherOffers } from './teachers';
 import { facesByPlace, type PersonFace } from './people';
+import { townPrice } from '../greetings';
 
 /** A place on the village screen, with one live line about it. */
 export interface PlaceCard {
@@ -73,13 +74,13 @@ function restLine(place: RestPlace, state: GameState, ctx: GameContext): string 
     case 'tavern':
       return tavernLine(tavernCrowd(state, ctx).length, place.blurb);
     case 'onsen':
-      return onsenLine(state, place.soakCost);
+      return onsenLine(state, townPrice(place.soakCost, state, ctx));
     case 'inn':
-      return `A room for ${place.roomCost} ryo`;
+      return `A room for ${townPrice(place.roomCost, state, ctx)} ryo`;
     case 'house':
       return houseLine(state, place.id, place.price);
     case 'hospital':
-      return hospitalLine(state, place.treatmentCost);
+      return hospitalLine(state, townPrice(place.treatmentCost, state, ctx));
   }
 }
 

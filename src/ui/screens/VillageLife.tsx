@@ -67,12 +67,39 @@ function StrayCard({
   );
 }
 
-/** The village's mood on the hub: a festival banner, tonight's sight, and today's gossip. */
+/** What the town holds against you, and what it costs you. */
+function GreetingCard({ greeting }: { readonly greeting: VillageView['greetings'][number] }) {
+  return (
+    <div className="town-greeting">
+      <p>{greeting.line}</p>
+      <span className="chips">
+        {greeting.chips.map((c) => (
+          <span key={c} className="chip cost">
+            {c}
+          </span>
+        ))}
+      </span>
+    </div>
+  );
+}
+
+/** Whether there is nothing of the village's mood to show today. */
+function quiet({ greetings, festival, night, rumours, stray }: VillageView): boolean {
+  return greetings.length === 0 && !festival && !night && !stray && rumours.length === 0;
+}
+
+/**
+ * The village's mood on the hub: what it holds against you, a festival banner, tonight's sight,
+ * and today's gossip.
+ */
 export function VillageLife({ view, perform }: VillageLifeProps) {
-  const { festival, night, rumours, stray } = view;
-  if (!festival && !night && !stray && rumours.length === 0) return null;
+  const { greetings, festival, night, rumours, stray } = view;
+  if (quiet(view)) return null;
   return (
     <section className="village-life" aria-label="Village life">
+      {greetings.map((g) => (
+        <GreetingCard key={g.line} greeting={g} />
+      ))}
       {festival && !festival.today && (
         <p className="festival-soon">
           <span className="festival-when">{festival.when}</span> {festival.name}

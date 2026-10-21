@@ -17,6 +17,7 @@ import { ringOrder, stillOpen, stretchOf } from './gossip';
 import { placeHere, placesHere } from './ops';
 import { atHomeVillage } from './homeVillage';
 import type { GameState } from './state';
+import { townMarkup } from './greetings';
 
 /**
  * Village life, derived from the calendar and the save's seed: what is open at this hour,
@@ -94,9 +95,9 @@ export function festivalNotice(state: GameState, ctx: GameContext): FestivalNoti
   return next && next.daysAway <= FESTIVAL_NOTICE_DAYS ? next : null;
 }
 
-/** What something on the market costs today: festivals bring prices down. */
+/** What something on the market costs today: festivals bring prices down, grudges up. */
 export function marketPrice(cost: number, state: GameState, ctx: GameContext): number {
-  const factor = festivalToday(state, ctx)?.marketPrices ?? 1;
+  const factor = (festivalToday(state, ctx)?.marketPrices ?? 1) * townMarkup(state, ctx);
   return Math.max(1, Math.round(cost * factor));
 }
 

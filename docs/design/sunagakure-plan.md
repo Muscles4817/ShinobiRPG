@@ -149,13 +149,13 @@ dark rings round a priest's eyes (and Gaara's) are its mark.
 
 ## Engine gaps
 
-| Need                  | Today                                                                                                                                                                                              |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| How a town greets you | Nothing reads where you're from or what you carry. The Sand reacts to the Leaf and to a contract, as the Mist will to a bloodline: one rule for all three                                          |
-| Breaking a beast      | A companion takes orders only as the bond opens them. Breaking opens orders early and keeps the bond thin                                                                                          |
-| Intelligent beasts    | Nothing marks a companion kind as having a mind of its own                                                                                                                                         |
-| Puppets               | A puppet is a summon without a contract: a front-row body on threads, paid in chakra, dropping when its maker falls. The full system (building, repair, hidden weapons) is like companions or dust |
-| Spice                 | A dust kind of its own, a trade good; whether it can be taken (and what it costs) is open                                                                                                          |
+| Need                  | Today                                                                                                                                                                                                                                                                                                                  |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| How a town greets you | Done: a town’s `greetings` hold where you come from or a contract against you, wary or cold (`game/greetings.ts`), for dearer prices there and slower friends from there. The Sand is cold to the Leaf and to contracts, the Landing wary of contracts. The Mist’s grudge against a bloodline is the next cause to add |
+| Breaking a beast      | A companion takes orders only as the bond opens them. Breaking opens orders early and keeps the bond thin                                                                                                                                                                                                              |
+| Intelligent beasts    | Nothing marks a companion kind as having a mind of its own                                                                                                                                                                                                                                                             |
+| Puppets               | A puppet is a summon without a contract: a front-row body on threads, paid in chakra, dropping when its maker falls. The full system (building, repair, hidden weapons) is like companions or dust                                                                                                                     |
+| Spice                 | A dust kind of its own, a trade good; whether it can be taken (and what it costs) is open                                                                                                                                                                                                                              |
 
 ## Open questions
 

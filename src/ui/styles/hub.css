@@ -256,7 +256,7 @@
   transform: rotate(-3deg);
 }
 
-/* Village life: festival banner, night sights and gossip */
+/* Village life: what the town holds against you, festival banner, night sights and gossip */
 .village-life {
   display: flex;
   flex-direction: column;
@@ -266,7 +266,8 @@
 }
 .festival,
 .night-sight,
-.stray {
+.stray,
+.town-greeting {
   display: grid;
   gap: 4px;
   padding: 10px 12px;
@@ -276,7 +277,8 @@
 }
 .festival p,
 .night-sight p,
-.stray p {
+.stray p,
+.town-greeting p {
   margin: 0;
   font-family: var(--font-story);
   color: var(--story);
@@ -291,6 +293,9 @@
   font-size: 0.8rem;
   font-weight: 800;
   color: var(--gold);
+}
+.town-greeting {
+  border-color: var(--cost);
 }
 .night-sight {
   border-color: var(--spirit);

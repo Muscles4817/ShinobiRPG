@@ -10,6 +10,7 @@ import { choice, type Choice } from './common';
 import { diceTableView, type DiceTableView } from './diceTable';
 import { foodItem, type MarketItem } from './market';
 import { companion, toneRead, type Companion, type ToneRead } from './outings';
+import { townPrice } from '../greetings';
 
 /**
  * The bar: who's in tonight, a seat beside one of them, a round for the house, what is being
@@ -74,10 +75,10 @@ export function tavernView(state: GameState, ctx: GameContext): TavernView | nul
     ryo: state.wallet.ryo,
     closed,
     seats: tavernCrowd(state, ctx).map((p) => seat(state, ctx, p)),
-    cupCost: tavern.cupCost,
+    cupCost: townPrice(tavern.cupCost, state, ctx),
     round: {
       ...choice(state, ctx, { type: 'buyRound' }),
-      cost: tavern.roundCost,
+      cost: townPrice(tavern.roundCost, state, ctx),
       bond: ROUND_BOND,
     },
     pastimes: (tavern.pastimes ?? []).map((p) => ({

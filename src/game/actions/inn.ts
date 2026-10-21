@@ -7,6 +7,7 @@ import { tellDaily } from '../everyday/tell';
 import { placeInText } from '../placeName';
 import { sleepTillDawn } from './daily';
 import type { ActionHandler, ActionOf } from './types';
+import { townPrice } from '../greetings';
 
 /**
  * A room for the night away from home. A strange bed rests you nearly as well as your own,
@@ -20,14 +21,13 @@ export const takeRoom: ActionHandler<ActionOf<'takeRoom'>> = {
   check(state, _action, ctx) {
     const inn = placeHere(state, ctx, 'inn');
     if (!inn) return 'There is no inn here.';
-    return firstBlocker(
-      busyReason(state),
-      state.wallet.ryo < inn.roomCost && `A room costs ${inn.roomCost} ryo.`,
-    );
+    const room = townPrice(inn.roomCost, state, ctx);
+    return firstBlocker(busyReason(state), state.wallet.ryo < room && `A room costs ${room} ryo.`);
   },
   perform(state, _action, ctx) {
     const inn = placeHere(state, ctx, 'inn');
-    const paid = inn ? spend(state.wallet, inn.roomCost) : null;
+    const room = inn ? townPrice(inn.roomCost, state, ctx) : 0;
+    const paid = inn ? spend(state.wallet, room) : null;
     if (!inn || !paid?.ok) return state;
     const said = tellDaily(state, ctx, INN_NIGHTS, { key: inn.id });
     const hungry = isHungry(state.character.vitals);
@@ -37,7 +37,7 @@ export const takeRoom: ActionHandler<ActionOf<'takeRoom'>> = {
       text: `${inn.keeper} hands you a key. ${said.text}`,
       uneasy: hungry,
       heading: `A room at ${placeInText(inn.name)}`,
-      chips: [chip(`−${inn.roomCost} ryo`, 'cost')],
+      chips: [chip(`−${room} ryo`, 'cost')],
     });
   },
 };

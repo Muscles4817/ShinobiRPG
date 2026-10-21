@@ -15,6 +15,7 @@ import { fillSlots } from '@/core';
 import { personSlots } from '../people/pronouns';
 import { SOAK_ALONE, SOAK_WITH } from '../everyday/awayLines';
 import { tellDaily } from '../everyday/tell';
+import { townPrice } from '../greetings';
 
 /**
  * A soak at the hot spring or bathhouse: alone, or beside whoever is in the water, which
@@ -55,13 +56,15 @@ export const soak: ActionHandler<ActionOf<'soak'>> = {
       busyReason(state),
       closedReason(onsen.name, onsen.hours, state),
       state.character.soaked === true && 'You’ve already had your soak today.',
-      state.wallet.ryo < onsen.soakCost && `A soak costs ${onsen.soakCost} ryo.`,
+      state.wallet.ryo < townPrice(onsen.soakCost, state, ctx) &&
+        `A soak costs ${townPrice(onsen.soakCost, state, ctx)} ryo.`,
       action.withId !== null && companionBlocker(state, ctx, action.withId),
     );
   },
   perform(state, action, ctx) {
     const onsen = placeHere(state, ctx, 'onsen');
-    const paid = onsen ? spend(state.wallet, onsen.soakCost) : null;
+    const fee = onsen ? townPrice(onsen.soakCost, state, ctx) : 0;
+    const paid = onsen ? spend(state.wallet, fee) : null;
     if (!onsen || !paid?.ok) return state;
     const companion =
       action.withId === null ? null : (findPerson(state, ctx, action.withId) ?? null);
@@ -79,7 +82,7 @@ export const soak: ActionHandler<ActionOf<'soak'>> = {
       text: companion ? fillSlots(said.text, personSlots('them', companion)) : said.text,
       tone: 'success',
       chips: [
-        chip(`−${onsen.soakCost} ryo`, 'cost'),
+        chip(`−${fee} ryo`, 'cost'),
         chip(`Energy +${SOAK_ENERGY}`, 'gain'),
         chip(`Health +${SOAK_HEALTH}`, 'gain'),
         ...together.chips,

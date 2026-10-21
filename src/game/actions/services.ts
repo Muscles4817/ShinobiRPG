@@ -8,6 +8,7 @@ import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import { atRentedHome } from './daily';
 import type { ActionHandler, ActionOf } from './types';
+import { townPrice } from '../greetings';
 
 /** Paid services: rent for your home, treatment at the hospital. */
 
@@ -57,7 +58,8 @@ export function untreatedInjuries(state: GameState): number {
 export function treatmentBill(state: GameState, ctx: GameContext): number | null {
   const hospital = placeHere(state, ctx, 'hospital');
   if (!hospital) return null;
-  return hospital.treatmentCost + INJURY_TREATMENT_FEE * untreatedInjuries(state);
+  const bill = hospital.treatmentCost + INJURY_TREATMENT_FEE * untreatedInjuries(state);
+  return townPrice(bill, state, ctx);
 }
 
 const SET_STORY = 'A medic’s glowing hands close your wounds and coax the deeper hurts to mend.';
