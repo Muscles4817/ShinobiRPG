@@ -144,7 +144,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
       taijutsu: -3,
       kenjutsu: -3,
     },
-    maxChakra: 90,
+    maxChakra: 112,
     techniqueIds: [
       'haibara-ash-puff',
       'haibara-cinder-bind',
