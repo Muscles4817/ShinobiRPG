@@ -35,11 +35,14 @@ function measured(player: FighterSpec): BenchReport {
 describe('committed defence buys time, never the fight', () => {
   const trading = measured(plainAtGrade('C'));
 
-  it.each(['evade', 'brace'] as const)('a fighter who only %ss loses to an equal, slowly', (kind) => {
-    const report = measured(turtle(kind));
-    expect(report.winRate).toBeLessThanOrEqual(TURTLE_WIN_RATE);
-    expect(report.avgExchanges).toBeGreaterThanOrEqual(trading.avgExchanges * TURTLE_LASTS);
-    expect(report.stalemateRate).toBe(0);
-    expect(report.avgExchanges).toBeLessThan(STALEMATE_EXCHANGES);
-  });
+  it.each(['evade', 'brace'] as const)(
+    'a fighter who only %ss loses to an equal, slowly',
+    (kind) => {
+      const report = measured(turtle(kind));
+      expect(report.winRate).toBeLessThanOrEqual(TURTLE_WIN_RATE);
+      expect(report.avgExchanges).toBeGreaterThanOrEqual(trading.avgExchanges * TURTLE_LASTS);
+      expect(report.stalemateRate).toBe(0);
+      expect(report.avgExchanges).toBeLessThan(STALEMATE_EXCHANGES);
+    },
+  );
 });

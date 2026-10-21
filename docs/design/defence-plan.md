@@ -233,7 +233,10 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   who reads the fight and is outmatched takes cover about a third of its turns, Evade or Brace as
   its body suits (`plan/shelter.ts`). On the defence bench a fighter who only Evades loses every
   bout to an equal in 15 exchanges, one who only Braces in 19, against 9 for a straight trade; no
-  bout stalls.
+  bout stalls. The fight table moves only where someone is outclassed and reads the fight: Kakashi
+  takes cover against Guy some turns (Guy 77% → 67%, 2.0 → 2.2 rounds), and the lopsided
+  cross-rank bouts last a little longer. Between equals nothing changes until slice 4 teaches
+  fighters when a blow is worth evading.
 - **Shadow clones are part of slice 5.** Today a shadow clone costs a flat 14 chakra and is a
   decoy that strikes at a third of its maker. In canon it splits its maker's chakra (half of what
   is left) and makes a whole fighter as able as its maker who falls to one hit: a huge
