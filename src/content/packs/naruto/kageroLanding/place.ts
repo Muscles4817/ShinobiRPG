@@ -13,6 +13,13 @@ export const KAGERO_LANDING: LocationDef = {
   epithet: 'Where the Sand Begins',
   map: { x: 22.5, y: 41, label: 'left' },
   backdrop: 'barge-landing',
+  greetings: [
+    {
+      cause: { kind: 'contract' },
+      temper: 'wary',
+      line: 'The Landing grew up on the Monarch’s stories. People hear you hold a summoning contract and find somewhere else to stand.',
+    },
+  ],
   places: [
     {
       id: 'kagero-caravanserai',
@@ -52,7 +59,12 @@ export const KAGERO_LANDING: LocationDef = {
       name: 'The Barge Office',
       icon: 'board',
       blurb: 'A shed by the yards, where a priest writes down who may board',
-      missionIds: ['landing-ballast', 'landing-lost-skiff', 'landing-spice-runners'],
+      missionIds: [
+        'landing-ballast',
+        'landing-lost-skiff',
+        'landing-spice-runners',
+        'landing-sand-envoy',
+      ],
     },
     {
       id: 'barge-yards',

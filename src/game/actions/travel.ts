@@ -2,6 +2,7 @@ import type { Rng } from '@/core';
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
+import { gateRefusal } from '../greetings';
 import { journeyTo, setOut } from '../journeys';
 import { leaveBlocker, spendLeave } from '../leave';
 import { busyReason, firstBlocker } from '../ops';
@@ -31,6 +32,7 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
       busyReason(state),
       destination.id === state.locationId && 'You are already here.',
       destination.lockedReason ?? null,
+      gateRefusal(state, ctx, destination.id),
       !journey && 'No open road goes there yet.',
       journey && leaveBlocker(state, ctx, destination.id, journey),
       action.companionId !== undefined && companionBlocker(state, ctx, action.companionId),

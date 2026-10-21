@@ -611,7 +611,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     an `inn`; a friend may come along (`game/trips.ts`, a `companion` crew, found at your
     lodging), you may turn back at a camp, and coming home shows what the village did while
     you were away; people who live in a town (`homeLocationId`) are met there, its festivals
-    (`FestivalDef.locationId`) are held there, and the village's street talk stays at home.
+    (`FestivalDef.locationId`) are held there, and the village's street talk stays at home. A
+    town may hold something against you (`LocationDef.greetings`, `game/greetings.ts`): the
+    village you come from or a summoning contract you hold, wary or cold. While it holds, the
+    town's market, shops, inn, bar, baths and hospital charge you more (`townPrice`), its people
+    warm to you more slowly wherever you meet them (`townWarmth`, read in `warmed`), and the
+    village screen says so; two grudges stack. A grudge may also `shut` the gates until the
+    village remembers a world mark (`gateRefusal`, read by `travel`): you can't travel there,
+    but a job may still take you (`endsAt`), and that is how the gates come to open.
     **Leave is strict** (`game/leave.ts`, the `leave` slice): a genin goes only on the pass
     their sensei signs at the weekly lesson, by safe roads (the quickest safe way, where there
     is one); a chūnin spends a season's days of leave; a jōnin comes and goes; going home never
@@ -810,8 +817,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   run into a neighbour's) and places, and a `RouteDef` to it in
   the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`,
   and for a road not everyone may walk, `needs` and a `name` to say it by;
-  `systems/travel` finds the quickest open way, validated so every location has a road). Leave
-  `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road
+  `systems/travel` finds the quickest open way, validated so every location has a road). Give
+  it `greetings` if it holds where you come from or a contract against you, and `shut` gates
+  that open on a world mark a job leaves (validated in `validateGreetings.ts`). Leave `lockedReason` set until it is playable; the Travel tab shows it as coming soon, and no road
   passes through it.
   A road may `trail` through bends so it follows the land. The country itself is the pack's
   `atlas` (`content/atlas.ts`: coastlines, the home country, borders, rivers, names, in map

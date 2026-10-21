@@ -17,6 +17,7 @@ import type { GameState } from '../state';
 import { loreOnShelf, type LoreOnShelf } from './handling';
 import { choice, type Choice } from './common';
 import { gearChips, gearKindLabel } from './gearWords';
+import { townPrice } from '../greetings';
 
 /** Gear shops (racks of gear, a tray of fight tools) and your own gear locker at home. */
 
@@ -74,7 +75,7 @@ function toolItem(state: GameState, ctx: GameContext, def: ToolDef): ToolItem {
     name: def.name,
     description: def.description,
     icon: def.icon,
-    cost: def.cost,
+    cost: townPrice(def.cost, state, ctx),
     count: toolCount(state.inventory, def.id),
     limit: POUCH_LIMIT,
     buy: choice(state, ctx, { type: 'buyTool', toolId: def.id }),
@@ -128,7 +129,7 @@ function gearItem(state: GameState, ctx: GameContext, def: GearDef): GearItem {
     name: def.name,
     description: def.description,
     icon: def.icon,
-    cost: def.cost,
+    cost: townPrice(def.cost, state, ctx),
     rank: def.rank,
     kind: gearKindLabel(def),
     unique: def.unique === true,
