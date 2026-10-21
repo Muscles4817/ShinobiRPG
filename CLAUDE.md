@@ -1203,6 +1203,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   The Record on a desk keeps its header in view, lists the journal's days beside the feed (the
   day being read marked, a click going to it; below 1300px the feed has the column) and sets the
   field book's entries two across.
+  Bonds on a roomy desk (`useRoomyDesk`, 1300px and up, beside `useWideScreen`) sets everyone in
+  a list you can search by name beside the page of whoever is picked (`PersonPage`, the drawer's
+  page), which follows the pointer; narrower desks keep the cards and the drawer.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own

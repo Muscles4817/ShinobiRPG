@@ -83,6 +83,57 @@
 .wide-main.tab-bonds .bond-group > :not(.bond-card) {
   grid-column: 1 / -1;
 }
+/* Bonds on a roomy desk: the list beside the page of whoever is picked, which scrolls on its own. */
+.wide-main.tab-bonds .bonds-desk {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  gap: 14px 24px;
+  align-items: start;
+}
+.bonds-desk > .plain-head {
+  grid-column: 1 / -1;
+}
+.bonds-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.bonds-search {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+.bonds-search:focus-visible {
+  outline: 2px solid var(--lantern);
+  outline-offset: 1px;
+}
+.bonds-desk .bond-card {
+  cursor: pointer;
+}
+.bonds-desk .bond-card:hover,
+.bonds-desk .bond-card.on {
+  border-color: var(--lantern);
+}
+.bonds-desk .bond-card.on {
+  background: var(--grain), var(--raise);
+}
+.bonds-page {
+  position: sticky;
+  top: 20px;
+  display: flex;
+  flex-direction: column;
+  /* Below the header, so its actions stay in sight before the list scrolls. */
+  max-height: calc(100vh - 148px);
+  box-sizing: border-box;
+  padding: 20px var(--gutter) 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
 .wide-main.tab-shinobi .page > .btn,
 .wide-main.tab-shinobi .page > .menu-option {
   justify-self: start;
