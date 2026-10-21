@@ -1,7 +1,7 @@
 import { STAT_GRADES, statTier } from '@/systems/stats';
 
 import type { CombatTechnique } from '../../contract';
-import { forceLine, turnLine, type NarrationForce } from '../../rules/narration';
+import { chakraLine, forceLine, turnLine, type NarrationForce } from '../../rules/narration';
 import { findCard, type Card } from './cards';
 import type { CardId, PlanFighter, Round } from './state';
 
@@ -42,11 +42,29 @@ export function turnForce(fighter: PlanFighter, id: CardId | undefined): Narrati
   };
 }
 
+/** Everyone's chakra, by id, for a line that says where it stands (`chakraLine`). */
+function chakraOf(fighters: readonly PlanFighter[]): Record<string, number> {
+  return Object.fromEntries(fighters.map((f) => [f.id, f.chakra]));
+}
+
+/** "— Second exchange —", saying where everyone's chakra starts it. */
+export function exchangeDivider(name: string, fighters: readonly PlanFighter[]): string {
+  return chakraLine(`— ${name} exchange —`, chakraOf(fighters));
+}
+
+/** The chakra of those whose chakra the turn moved. */
+function chakraMoved(before: Round, after: Round): Record<string, number> {
+  const was = chakraOf(before.fighters);
+  return Object.fromEntries(
+    after.fighters.filter((f) => was[f.id] !== f.chakra).map((f) => [f.id, f.chakra]),
+  );
+}
+
 /**
  * A turn as the screen stages it: every line it wrote tagged as its maker's, the first with
  * the distance the turn began at and the last with the new one if the turn moved the fight,
- * and each with how big the turn was. The tags are narration only: the turn plays exactly as
- * untagged.
+ * each with how big the turn was, and the last with the chakra of anyone the turn moved it
+ * for. The tags are narration only: the turn plays exactly as untagged.
  */
 export function staged(before: Round, after: Round, id: string): Round {
   const { played, ...turn } = after;
@@ -58,9 +76,11 @@ export function staged(before: Round, after: Round, id: string): Round {
     if (i === last && turn.range !== before.range) return turn.range;
     return i === 0 ? before.range : undefined;
   };
+  const moved = chakraMoved(before, turn);
   const tagged = added.map((line, i) => {
     const theirs = turnLine(line, id, rangeAt(i));
-    return force ? forceLine(theirs, force) : theirs;
+    const sized = force ? forceLine(theirs, force) : theirs;
+    return i === last ? chakraLine(sized, moved) : sized;
   });
   return { ...turn, lines: [...before.lines, ...tagged] };
 }

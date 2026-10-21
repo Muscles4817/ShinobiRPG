@@ -218,7 +218,10 @@ function ToldSoFar({ beats, at }: { readonly beats: readonly FightBeat[]; readon
   );
 }
 
-/** Fighters as the beat being shown leaves them: health from the beat, the rest from `before`. */
+/**
+ * Fighters as the beat being shown leaves them: health and chakra from the beat, the other pools
+ * from `before` until the beats have played (then everyone as they are now).
+ */
 function fightersAt(
   view: CombatView,
   beat: FightBeat | undefined,
@@ -227,7 +230,13 @@ function fightersAt(
   return view.combatants.map((c) => {
     const was = before?.find((b) => b.id === c.id);
     const pools = was ? { chakra: was.chakra, ...(was.meters ? { meters: was.meters } : {}) } : {};
-    return { ...c, ...pools, health: beat?.health[c.id] ?? c.health };
+    const chakra = beat?.chakra[c.id];
+    return {
+      ...c,
+      ...pools,
+      ...(chakra === undefined ? {} : { chakra }),
+      health: beat?.health[c.id] ?? c.health,
+    };
   });
 }
 
@@ -273,7 +282,10 @@ export function WatchScreen(props: WatchScreenProps) {
   const beat = play.beat;
   useWatchKeys(play, props);
   useBeatSounds(beat, youId, fresh);
-  const fighters = fightersAt(view, beat, play.done ? null : (props.gauges?.before ?? null));
+  // Once played, everyone stands as they are now (chakra gathered back at the exchange's end).
+  const fighters = play.done
+    ? [...view.combatants]
+    : fightersAt(view, beat, props.gauges?.before ?? null);
   // The heading names the stretch you are in; a divider being told now is the beat itself.
   const heading = beats.slice(0, play.at).findLast((b) => b.kind === 'divider')?.text;
   return (

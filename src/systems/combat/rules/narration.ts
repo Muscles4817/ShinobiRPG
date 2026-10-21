@@ -7,7 +7,8 @@
  * turn says whose turn it was (and, if the turn moved the fight, the new distance) via
  * `turnLine`, so the screen can stage it, and how big the turn was (`forceLine`: its maker's
  * grade in the art, the ground an area covered, its element), so the screen can make a jōnin's
- * fire sound like one. `splitNarration` reads all of it back out of the sentence. Lines without a marker (older saves) pass through unchanged.
+ * fire sound like one. A line may also say where everyone's chakra stands once it has played
+ * (`chakraLine`), so the watch screen can move chakra beat by beat. `splitNarration` reads all of it back out of the sentence. Lines without a marker (older saves) pass through unchanged.
  */
 
 import { capitalise, listed, numberWord, ordinalWord, plural } from '@/core';
@@ -47,6 +48,8 @@ export interface Narration {
   readonly named?: readonly string[];
   /** Which bank and template the words came from (`voiceLine`), when the engine says. */
   readonly voices?: readonly string[];
+  /** Fighters' chakra once the line has played, by id (`chakraLine`), when the engine says. */
+  readonly chakra?: Readonly<Record<string, number>>;
 }
 
 /** How big a turn was: its maker's grade in the art (0 for E up to 5 for S), area, element. */
@@ -65,6 +68,7 @@ const ACTOR_MARKER = /\s*⟦by:([^⟧]+)⟧/;
 const RANGE_MARKER = /\s*⟦at:(close|mid|far)⟧/;
 const NAMED_MARKER = /\s*⟦n:([^⟧]+)⟧/g;
 const VOICE_MARKER = /\s*⟦v:([^⟧]+)⟧/g;
+const CHAKRA_MARKER = /\s*⟦ck:([^⟧]+)⟧/;
 
 function isReaction(word: string | undefined): word is NarrationReaction {
   return NARRATION_REACTIONS.some((r) => r === word);
@@ -117,6 +121,22 @@ export function voiceLine(text: string, ...voices: readonly string[]): string {
   return [text, ...voices.map((v) => `⟦v:${v}⟧`)].join(' ');
 }
 
+/** A line after which these fighters' chakra stands at these amounts (by id). */
+export function chakraLine(text: string, chakra: Readonly<Record<string, number>>): string {
+  const said = Object.entries(chakra).map(([id, amount]) => `${id}=${Math.round(amount)}`);
+  return said.length === 0 ? text : `${text} ⟦ck:${said.join('|')}⟧`;
+}
+
+function chakraIn(line: string): Record<string, number> | null {
+  const found = CHAKRA_MARKER.exec(line)?.[1];
+  if (!found) return null;
+  const pairs = found.split('|').map((pair) => {
+    const at = pair.lastIndexOf('=');
+    return [pair.slice(0, at), Number(pair.slice(at + 1))] as const;
+  });
+  return Object.fromEntries(pairs);
+}
+
 /** The templates a line's words came from ("search.2"), without reading the rest of it. */
 export function voicesOf(line: string): readonly string[] {
   if (!line.includes('⟦v:')) return [];
@@ -162,7 +182,15 @@ export function splitNarration(line: string): Narration {
   const force = forceOf(line);
   const named = namedIn(line);
   const voices = voicesIn(line);
-  const markers = [MARKER, REACTION_MARKER, ACTOR_MARKER, RANGE_MARKER, FORCE_MARKER];
+  const chakra = chakraIn(line);
+  const markers = [
+    MARKER,
+    REACTION_MARKER,
+    ACTOR_MARKER,
+    RANGE_MARKER,
+    FORCE_MARKER,
+    CHAKRA_MARKER,
+  ];
   const text = [...markers, NAMED_MARKER, VOICE_MARKER].reduce(
     (rest, marker) => rest.replace(marker, ''),
     line,
@@ -176,6 +204,7 @@ export function splitNarration(line: string): Narration {
     ...(force ? { force } : {}),
     ...(named ? { named } : {}),
     ...(voices ? { voices } : {}),
+    ...(chakra ? { chakra } : {}),
   };
 }
 

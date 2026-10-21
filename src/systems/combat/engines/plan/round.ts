@@ -22,7 +22,7 @@ import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
 import { intendedCard } from './intent';
-import { staged } from './staging';
+import { exchangeDivider, staged } from './staging';
 import { useJutsu } from './jutsu';
 import { lingerAfter } from './lingering';
 import { useTool } from './pouch';
@@ -288,7 +288,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     opening: state.exchange === 0,
     fighters: [...state.fighters],
     range: state.range,
-    lines: [`— ${EXCHANGE_NAMES[state.exchange] ?? 'Another'} exchange —`],
+    lines: [exchangeDivider(EXCHANGE_NAMES[state.exchange] ?? 'Another', state.fighters)],
     recent: state.log.slice(-SCENE_MEMORY),
     seen: state.seen,
     intents: state.intents,
