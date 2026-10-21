@@ -16,7 +16,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     baseStat: 4,
     statBonuses: { taijutsu: 1, intellect: -1 },
     healthScale: 0.6,
-    maxChakra: 15,
+    maxChakra: 19,
     traits: ['brawler'],
     aptitude: {
       speed: 1.3,
@@ -47,7 +47,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     baseStat: 4,
     statBonuses: { intellect: -2 },
     healthScale: 0.6,
-    maxChakra: 10,
+    maxChakra: 13,
     traits: ['brawler'],
     aptitude: {
       speed: 1.1,

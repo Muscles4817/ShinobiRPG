@@ -335,11 +335,40 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   93% of the time (67% before): Kakashi's costly ninjutsu drains his small tank while Guy fights
   on breath. That is too lopsided for rivals and a target for the durability retune (or for
   Kakashi's reserves).
-- **Shadow clones are part of slice 5.** Today a shadow clone costs a flat 14 chakra and is a
-  decoy that strikes at a third of its maker. In canon it splits its maker's chakra (half of what
-  is left) and makes a whole fighter as able as its maker who falls to one hit: a huge
-  multiplier at a huge price. Slice 5 makes it so: its cost a share of chakra, and each clone a
-  fighter with its maker's stats, kit and turn, one hit from gone.
+- **Slice 5, part two: shadow clones (done).** A technique that only makes solid clones of no
+  element (Shadow Clone, Multiple Shadow Clone, an earth or lightning shadow clone keeps its
+  element and stays a decoy) now splits its maker's chakra evenly with the clones it makes, and
+  each clone is a fighter (`rules/shadowClones.ts`, `plan/shadows.ts`): the maker's body and kit
+  (all but the technique that made it), its own turn, a plan made as the exchange ends, popping
+  at the first hit that lands, gone with its maker. One fighting clone for every five power, at
+  most four standing; any more the technique makes are a crowd of decoys beside the maker, with
+  no upkeep (the split is the price). An attack aimed at the maker may go into a clone instead:
+  more clones make it likelier, the attacker's perception against the maker's ninjutsu shifts
+  it, and insight sees through most of it. Its leftover chakra is lost when a clone pops. A
+  technique that wounds as it makes clones (Clone Body Blow, Shadow Clone Sword Dance) keeps
+  them as decoys. The fight table: Hiruzen, a kage with deep reserves, now fields his clones
+  (canon has four of him against Orochimaru), and Guy beats him 40% of the time (90% before),
+  Kakashi lasting a round where he lasted two; Naruto lasts longer against Sasuke (3.3 → 3.8
+  rounds) and Izumo (2.7 → 3.1), though the split leaves him short of chakra, which the
+  chakra-totals review may answer.
+- **Chakra totals (done).** A full tank grew by adding (30, plus 3.5 a point of reserves, plus
+  control), so the deepest well in the cast held twice a jōnin's and a cost or a clone split
+  swung everyone alike. It now doubles every 10 points of reserves (`maxChakra` in
+  `systems/vitals`: 40 × 2^(reserves ÷ 10), plus control), so genin barely move (Sakura 66,
+  Sasuke 97) and the deep wells pull away: Kakashi 141, Guy 176, Naruto 246 (raised to 35 reserves below), Hiruzen 779,
+  Gaara 1,004, Kisame 1,496, and a tailed beast at reserves 60 about 2,600. Foes', companions'
+  and puppets' authored chakra moved onto the same curve from the reserves it stood for;
+  summons were set by hand as the chakra beasts they are (Gamabunta 650, a great snake 230,
+  the Kiln Mother 370). Regen, Gather and the clone split already scale with the tank, and the
+  rank floors stay, so a deep well pays for big techniques many times over. Saves keep their
+  stats, so a save's chakra follows the curve. The fight table: Guy beats Kakashi 63% of the
+  time (93% before), and Guy beats Hiruzen 30% (40%).
+  Naruto's reserves went from 26 to 35 (about 470 chakra, over three times Kakashi's). It
+  changes none of his bouts: his kit (shadow clones, shuriken, an illusion) is cheap, so chakra
+  is never what he runs out of, and Kakashi beats him every time on the grade gap (shuriken he
+  copies land for most of Naruto's health). Watching those bouts found a readied riposte (a
+  lightning clone's shock) answering shuriken thrown from mid; it now answers only up close, as
+  a ready Counter does, and Kakashi beats Asuma 87% of the time (100% with the bug).
 - **Guy never opens a deep gate** in the table's bouts (only the first, the Gate of Life), so
   his finishers never come into it; that is slice 6.
 

@@ -32,7 +32,7 @@ export const FORGED_BLADE_FOE: EnemyDef = {
     genjutsu: -3,
     fuuinjutsu: -3,
   },
-  maxChakra: 60,
+  maxChakra: 70,
   techniqueIds: ['moonfall-slash', 'bleeding-cut', 'cut-the-wick', 'riverbank-draw'],
   traits: ['swift'],
 };

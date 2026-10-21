@@ -2,13 +2,14 @@ import { defaultLoadout, defaultReadiness } from './defaults';
 import type { PlanFighter, Round } from './state';
 
 /**
- * A summon called this exchange gets its plan as the exchange ends, against the fighters then on
+ * A summon called (or a shadow clone made) this exchange gets its plan as the exchange ends, against the fighters then on
  * the field, before its first turn (it was called with none, `summons.ts`).
  */
 
 function unplanned(f: PlanFighter): boolean {
   const { close, mid, far } = f.loadout;
-  return f.summoner !== undefined && close.length + mid.length + far.length === 0;
+  const called = f.summoner !== undefined || f.shadowOf !== undefined;
+  return called && close.length + mid.length + far.length === 0;
 }
 
 export function plannedSummons(round: Round): Round {

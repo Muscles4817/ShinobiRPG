@@ -27,7 +27,7 @@ const FOE_BASE = 11;
 const FOE_ART = 4;
 const FOE_SPEED = 2;
 const FOE_PERCEPTION = 1;
-const FOE_CHAKRA = 60;
+const FOE_CHAKRA = 70;
 const FOE_TECHNIQUES = 2;
 /** The foe's techniques: what a chūnin-grade rogue of their art would know. */
 const FOE_RANKS = ['D', 'C'];

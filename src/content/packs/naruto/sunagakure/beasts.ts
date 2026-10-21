@@ -20,7 +20,7 @@ export const SAND_HOUND: CompanionKindDef = {
   baseStat: 4,
   statBonuses: { taijutsu: 1, intellect: -2 },
   healthScale: 0.6,
-  maxChakra: 10,
+  maxChakra: 13,
   traits: ['brawler', 'swift'],
   aptitude: {
     speed: 1.4,

@@ -11,7 +11,8 @@ import type { EffectUse } from './use';
  *  - Earth: dear and tough; it may shrug off a hit, and one rebuilds between exchanges.
  *  - Lightning: dear; whoever bursts one with a blow up close takes a shock.
  *  - Fire: it feeds itself, so it costs nothing to keep up.
- *  - Shadow: the dearest, a share of the maker in each; they strike hardest, as one.
+ *  - Shadow: a share of the maker in each, paid for by splitting their chakra on casting; the
+ *    ones that fight are fighters of their own (`rules/shadowClones.ts`), the rest a crowd.
  * A kind is named by the technique, or follows it: illusions unless solid, a solid clone takes
  * its technique's element, and solid clones of no element are shadow clones.
  */
@@ -40,7 +41,8 @@ export const CLONE_RULES: Readonly<Record<CloneKind, CloneRule>> = {
   earth: { ...FRAIL, blow: 0.25, upkeep: 1, sturdy: 0.5, rebuilds: true, screen: 1 },
   lightning: { ...FRAIL, blow: 0.25, upkeep: 1, shock: 0.5, screen: 1 },
   fire: { ...FRAIL, blow: 0.25, upkeep: 0, screen: 1 },
-  shadow: { ...FRAIL, blow: 0.35, upkeep: 1.5, screen: 1 },
+  // The split of chakra on casting is a shadow clone's price (`rules/shadowClones.ts`).
+  shadow: { ...FRAIL, blow: 0.35, upkeep: 0, screen: 1 },
 };
 
 const BY_ELEMENT: Readonly<Record<Element, CloneKind>> = {

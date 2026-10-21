@@ -34,7 +34,7 @@ export const SWORD_SCHOOL_FOE: EnemyDef = {
     genjutsu: -6,
     fuuinjutsu: -6,
   },
-  maxChakra: 50,
+  maxChakra: 60,
   techniqueIds: ['samurai-sabre', 'swallow-return', 'decapitating-sweep', 'iaido-draw'],
   traits: ['armoured'],
 };

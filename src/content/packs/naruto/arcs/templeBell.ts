@@ -33,7 +33,7 @@ export const TEMPLE_BELL_FOE: EnemyDef = {
     kenjutsu: -4,
     fuuinjutsu: -4,
   },
-  maxChakra: 60,
+  maxChakra: 70,
   techniqueIds: ['drunken-fist', 'heel-drop', 'arm-bar', 'shoulder-throw'],
   traits: ['brawler'],
 };

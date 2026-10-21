@@ -175,5 +175,12 @@ describe('verbs that leave something behind, in plan & watch', () => {
     expect(struck.lines.join(' ')).toMatch(/hero answers with Move/i);
     expect(bandit(struck).health).toBeLessThan(100);
     expect(fighterIn(struck, hero!.id)!.riposte).toBeUndefined();
+
+    const thrown = react(
+      { ...ready, range: 'mid' },
+      { attacker: bandit(ready), target: fighterIn(ready, hero!.id)!, blow, rng: createRng(2) },
+    );
+    expect(thrown.lines.join(' ')).not.toMatch(/answers with/i);
+    expect(fighterIn(thrown, hero!.id)!.riposte).toBeDefined();
   });
 });

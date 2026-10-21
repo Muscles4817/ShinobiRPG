@@ -36,10 +36,10 @@ describe('kinds of clone', () => {
     expect(kindOf({ strikes: false })).toBe('illusion');
   });
 
-  it('cost what they are worth: shadows dearest, fire and illusions free to keep up', () => {
+  it('cost what they are worth: earth dearer than water; shadows, fire and illusions free to keep up', () => {
     const upkeep = (kind: keyof typeof CLONE_RULES) =>
       cloneUpkeep({ kind, strikes: true, count: 4 });
-    expect(upkeep('shadow')).toBeGreaterThan(upkeep('earth'));
+    expect(upkeep('shadow')).toBe(0);
     expect(upkeep('earth')).toBeGreaterThan(upkeep('water'));
     expect(upkeep('fire')).toBe(0);
     expect(cloneUpkeep({ kind: 'illusion', strikes: false, count: 4 })).toBe(0);

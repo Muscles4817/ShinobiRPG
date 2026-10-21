@@ -112,7 +112,7 @@ export const CHUNIN_ENEMIES: readonly EnemyDef[] = [
       genjutsu: -2,
       fuuinjutsu: -2,
     },
-    maxChakra: 70,
+    maxChakra: 80,
     techniqueIds: ['phoenix-flower', 'water-bullet', 'crescent-moon-dance'],
     traits: ['swift'],
     nature: 'fire',

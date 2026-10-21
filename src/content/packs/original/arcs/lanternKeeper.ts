@@ -31,7 +31,7 @@ export const LANTERN_KEEPER_FOE: EnemyDef = {
     genjutsu: -2,
     fuuinjutsu: -2,
   },
-  maxChakra: 80,
+  maxChakra: 95,
   techniqueIds: ['ember-breath', 'ember-rain', 'great-lantern-flame', 'ash-screen'],
   traits: ['swift'],
   nature: 'fire',

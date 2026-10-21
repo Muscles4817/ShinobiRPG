@@ -22,6 +22,11 @@ function oldMaxChakra(stats: GameState['character']['stats']): number {
   return Math.round(30 + stats.chakraControl * 3 + stats.stamina * 1.5);
 }
 
+/** Max chakra under the version 16 rule the migration seeds for (it has since grown steeper). */
+function v16MaxChakra(stats: GameState['character']['stats']): number {
+  return Math.round(30 + stats.reserves * 3.5 + stats.chakraControl);
+}
+
 /** A long fight against a wraith, started through the game's own `startFight`. */
 function wraithFight(state: GameState): GameState {
   const wraith = enemyCombatant(ctx.content.enemies.require('storehouse-wraith'), 0, ctx);
@@ -99,7 +104,7 @@ describe('chakra reserves', () => {
     }
   });
 
-  it('are seeded for a version 15 save so max chakra stays about the same', () => {
+  it('are seeded for a version 15 save so max chakra stayed about the same', () => {
     const state = newGame();
     const { reserves: _none, ...old } = { ...state.character.stats, stamina: 12, chakraControl: 8 };
     const v15 = {
@@ -110,7 +115,7 @@ describe('chakra reserves', () => {
     if (!loaded.ok) throw new Error(loaded.error);
     const { stats, startingStats } = loaded.value.character;
     const oldMax = oldMaxChakra({ ...stats, reserves: 0 });
-    expect(Math.abs(maxChakra(stats) - oldMax)).toBeLessThanOrEqual(1);
+    expect(Math.abs(v16MaxChakra(stats) - oldMax)).toBeLessThanOrEqual(1);
     expect(startingStats.reserves).toBe(stats.reserves);
     expect(loaded.value.character.vitals.chakra).toBe(state.character.vitals.chakra);
   });

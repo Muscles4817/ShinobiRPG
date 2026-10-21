@@ -37,7 +37,7 @@ export const KUROBANE: EnemyDef = {
     genjutsu: -3,
     fuuinjutsu: -3,
   },
-  maxChakra: 60,
+  maxChakra: 70,
   techniqueIds: ['moonfall-slash', 'bleeding-cut'],
   traits: ['swift'],
 };
