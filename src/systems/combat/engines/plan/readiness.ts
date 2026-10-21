@@ -75,7 +75,8 @@ export function readyDefences(target: PlanFighter, round: Pick<Round, 'range' | 
   const kept = reactionAt(target, round.range);
   // Hands on a channelled hold leave none for a defence.
   if (!kept || target.holding) return [];
-  if (isDazed(target) && kept.kind !== 'guard') return [];
+  // Reeling, or gathering their strength, only a Guard still comes up (`gather.ts`).
+  if ((isDazed(target) || target.gathering === true) && kept.kind !== 'guard') return [];
   const stance = kept.kind === 'guard' || kept.kind === 'counter';
   return target.movedAt === round.number && stance ? [] : [kept];
 }

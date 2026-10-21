@@ -1,3 +1,4 @@
+import type { StatGrade } from '@/systems/stats';
 import type { AreaSize } from '@/systems/techniques';
 
 import type { CombatTechnique } from '../contract';
@@ -10,6 +11,27 @@ import type { CombatTechnique } from '../contract';
  * an exchange gives back, and a fighter who has spent hard has to lean on cheaper moves for a
  * while before the next one.
  */
+
+/**
+ * The least a technique of each rank costs to mould (before its user's control takes some off),
+ * whatever its authored cost says (`docs/design/defence-plan.md`, slice 5): a jōnin's best
+ * technique takes a real share of a full tank (about a quarter of a jōnin's), so a fighter who
+ * throws their finest twice runs low and has to gather or lean on cheaper moves. E and D
+ * techniques keep the costs they were written with.
+ */
+export const RANK_COST_FLOOR: Readonly<Record<StatGrade, number>> = {
+  E: 0,
+  D: 0,
+  C: 10,
+  B: 18,
+  A: 30,
+  S: 45,
+};
+
+/** A technique's cost before its user's control: what it was written with, or its rank's floor. */
+export function rankedCost(t: { readonly chakraCost: number; readonly rank?: StatGrade }): number {
+  return Math.max(t.chakraCost, RANK_COST_FLOOR[t.rank ?? 'E']);
+}
 
 /** How much more an area technique costs, by the ground it covers. */
 export const AREA_COST: Readonly<Record<AreaSize, number>> = { small: 1, wide: 1.5, vast: 2.2 };

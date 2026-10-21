@@ -53,9 +53,9 @@ export function commit(round: Round, { actor }: Turn, kind: Commitment): Round {
   );
 }
 
-/** A fighter's turn begins: whatever they committed to last turn is over. */
+/** A fighter's turn begins: whatever they committed to last turn (or a gather) is over. */
 export function released(round: Round, id: string): Round {
   const f = fighterIn(round, id);
-  if (!f?.committed) return round;
-  return { ...round, fighters: patch(round.fighters, id, { committed: null }) };
+  if (!f?.committed && !f?.gathering) return round;
+  return { ...round, fighters: patch(round.fighters, id, { committed: null, gathering: false }) };
 }

@@ -1,6 +1,7 @@
 import { affords } from './effort';
 import { canCall } from './calls';
 import { canCommit } from './commitment';
+import { canGather } from './gather';
 import { hasInsectsFor } from './swarm';
 import { hasDustFor } from './dust';
 import { statTier, type StatGrade } from '@/systems/stats';
@@ -50,6 +51,8 @@ export type Card =
   /** Committed defence, played as an action (`commitment.ts`). */
   | { readonly kind: 'evade' }
   | { readonly kind: 'brace' }
+  /** Drawing chakra and breath back, open until the next turn (`gather.ts`). */
+  | { readonly kind: 'gather' }
   | { readonly kind: 'search' }
   | { readonly kind: 'dispel' }
   | { readonly kind: 'jutsu'; readonly technique: CombatTechnique }
@@ -68,6 +71,7 @@ const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'counter', card: { kind: 'counter' } },
   { id: 'evade', card: { kind: 'evade' } },
   { id: 'brace', card: { kind: 'brace' } },
+  { id: 'gather', card: { kind: 'gather' } },
   { id: 'search', card: { kind: 'search' } },
   { id: 'dispel', card: { kind: 'dispel' } },
 ];
@@ -82,7 +86,29 @@ export function cardId(card: Card): CardId {
   return card.kind === 'step' ? `step-${card.direction}` : card.kind;
 }
 
+/** Cards that are no attack and work at any distance: defences, gathering, the senses, tools. */
+type Anywhere = Extract<
+  Card,
+  { kind: 'guard' | 'dodge' | 'evade' | 'brace' | 'gather' | 'search' | 'dispel' | 'item' }
+>;
+const ANYWHERE_KINDS: readonly Card['kind'][] = [
+  'guard',
+  'dodge',
+  'evade',
+  'brace',
+  'gather',
+  'search',
+  'dispel',
+  'item',
+];
+
+/** Whether a card works at any distance. */
+export function playsAnywhere(card: Card): card is Anywhere {
+  return ANYWHERE_KINDS.includes(card.kind);
+}
+
 export function fitsBand(card: Card, band: RangeBand): boolean {
+  if (playsAnywhere(card)) return true;
   switch (card.kind) {
     case 'strike':
       return inReach(card.reach ?? STRIKE_REACH, band);
@@ -92,14 +118,6 @@ export function fitsBand(card: Card, band: RangeBand): boolean {
       return card.direction === 'in' ? band !== 'close' : band !== 'far';
     case 'counter':
       return band === 'close';
-    case 'guard':
-    case 'dodge':
-    case 'evade':
-    case 'brace':
-    case 'search':
-    case 'dispel':
-    case 'item':
-      return true;
     case 'jutsu':
       return inReach(reachOf(card.technique), band);
   }
@@ -224,6 +242,7 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (cardBlocked(fighter, card)) return false;
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind === 'evade' || card.kind === 'brace') return canCommit(fighter, card.kind);
+  if (card.kind === 'gather') return canGather(fighter);
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
   if (trumpSpent(fighter, card.technique) || !isOpenFor(fighter, card.technique)) return false;

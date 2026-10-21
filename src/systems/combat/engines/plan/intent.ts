@@ -123,6 +123,8 @@ function telegraph(card: Card, precise: boolean): string {
       return card.direction === 'in' ? 'Closing in' : 'Backing off';
     case 'search':
       return 'Searching for you';
+    case 'gather':
+      return 'Gathering their strength';
     case 'dispel':
       return 'Gathering chakra to break the illusion';
     case 'jutsu':
