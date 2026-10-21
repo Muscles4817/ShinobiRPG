@@ -33,6 +33,7 @@ import { v55ToV56, v56ToV57 } from './contractMigration';
 import { v59ToV60, v60ToV61, v61ToV62 } from './hiveMigration';
 import { v62ToV63 } from './dustMigration';
 import { v63ToV64, v64ToV65 } from './repertoireMigration';
+import { v65ToV66 } from './huntMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
 import { v19ToV20 as v20ToV21 } from './rankMigration';
 import { v19ToV20 } from './teachingMigration';
@@ -364,4 +365,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   62: v62ToV63,
   63: v63ToV64,
   64: v64ToV65,
+  65: v65ToV66,
 };

@@ -33,6 +33,8 @@ export interface ThreadDef {
    * begins and each morning on the road, so the story's light agrees with the hour.
    */
   readonly clock?: true;
+  /** Kept out of sight: the story reads it, the player never sees it (a hunt closing in). */
+  readonly hidden?: true;
 }
 
 /** Who must be along (or not) for a condition to hold. */

@@ -4,7 +4,8 @@ import { KIRI_COMPOUNDS } from './compounds';
 
 /**
  * Kirigakure in the years of the Bloody Mist: Yagura's village, where bloodlines are hunted
- * and the academy's last test is a fight to the death. A foreigner gets no further than the
+ * (a visitor whose bloodline has woken pays for it, `greetings`) and the academy's last test is
+ * a fight to the death. A foreigner gets no further than the
  * harbour ward, under a pass checked at every corner. It is the loyal houses' ward: the
  * Kasumi's fog shrine, the Isana's whaling quay, the Kurage's infirmary and the Shiogama's
  * forge stand among the lodging house, the dawn auction, the bathhouse, the fishermen's bar,
@@ -16,6 +17,73 @@ export const KIRIGAKURE: LocationDef = {
   epithet: 'Village Hidden in the Mist',
   map: { x: 92, y: 36, label: 'left' },
   backdrop: 'mist-village',
+  greetings: [
+    {
+      cause: { kind: 'bloodline' },
+      temper: 'cold',
+      line: 'The Blood Register has your chakra on a page by now. Shopkeepers serve you quickly and watch the door, and the masks watch you.',
+      // Anywhere on the Mist's water, unless the Leaf has sent you there (`game/hunt.ts`).
+      hunt: {
+        regions: ['mist-sea'],
+        hunterIds: ['mist-hunter-nin', 'mist-patrol'],
+        ground: 'lake',
+        travel: {
+          text: 'Halfway over, the boatman asks how you mean to come in to the harbour.',
+          answers: [
+            {
+              label: 'Openly, on the ferry',
+              tone: 'earnest',
+              reply:
+                'You stand at the rail with the other passengers, where anyone on the quay can see you.',
+              heat: 2,
+            },
+            {
+              label: 'By night, with no lantern',
+              tone: 'challenge',
+              reply:
+                'The boatman shrugs and douses the lamp. Dark water is quiet, and quiet boats are noticed.',
+              heat: 1,
+            },
+            {
+              label: 'Under the nets in the bilge',
+              tone: 'quiet',
+              reply: 'You lie in fish water under the nets for hours and climb out stiff and cold.',
+              heat: 0,
+              energy: 10,
+            },
+          ],
+        },
+        sleep: {
+          text: 'Night comes down on the water. The boatman puts in at a fishing island and asks where you will sleep.',
+          answers: [
+            {
+              label: 'At the island inn',
+              tone: 'kind',
+              reply: 'You sleep in a real bed, and the innkeeper writes a name in her book.',
+              heat: 2,
+            },
+            {
+              label: 'Wrapped in a sail on deck',
+              tone: 'quiet',
+              reply: 'You sleep badly under wet canvas while the mist drips off the mast.',
+              heat: 1,
+              energy: 5,
+            },
+            {
+              label: 'Hardly at all, watching the water',
+              tone: 'challenge',
+              reply:
+                'You sit up all night with your back to the mast. Nothing comes, and you are worn through by dawn.',
+              heat: 0,
+              energy: 15,
+            },
+          ],
+        },
+        found:
+          'A mask rises out of the fog beside the boat, then another. The hunter-nin have been on your trail for days, and now they have you.',
+      },
+    },
+  ],
   places: [
     {
       id: 'fog-lantern-lodging',

@@ -98,6 +98,20 @@ The war has more than one ending, and the player may shape it or stay out of it:
 
 Each ending is a world mark that later content reads. Era II is whichever ending happened.
 
+**A bloodline costs you in the Mist.** Kirigakure holds an awakened bloodline against you
+(`LocationDef.greetings`, `game/greetings.ts`): while you are there its shops, inn, bar, baths
+and hospital charge more, its people warm to you slowly, and the village screen says the Blood
+Register has your chakra on a page. A dormant bloodline shows nothing yet.
+
+**And the Mist hunts it.** Anywhere on the Mist's water, unless the Leaf has sent you there (an
+arc act based in the Mist), hunter-nin are on your trail (`game/hunt.ts`). You can still go and
+wander the harbour ward, but how close they are is a hidden meter. Each night in the Mist brings
+them closer and each day away cools the trail. On the crossing the boatman asks how you mean to
+come in (openly, by night or under the nets) and where you will sleep (an inn, the deck or hardly
+at all); the careful answers cost sleep. Once they are close enough, somewhere past a line drawn
+fresh for each crossing, masks rise out of the fog and you fight on the water. After that the
+trail starts again near cold. The usual way to be found is leaving after a long stay.
+
 ## Engine gaps for eras and clans
 
 These are things that are fixed per town today and would need to change by world mark. One small

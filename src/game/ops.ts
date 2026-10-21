@@ -10,6 +10,7 @@ import { healInjuries } from './injuries';
 import { peopleGrown } from './people/progress';
 import { companionsDayPassed } from './companions/routine';
 import { settleMentor } from './sensei/settle';
+import { settleHunt } from './hunt';
 import { characterModifiers } from './profile';
 import { snackAt } from './snacks';
 import type { GameState } from './state';
@@ -50,7 +51,7 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
     ctx,
   );
   const bred = newDay ? dustDayPassed(hiveDayPassed(grown, ctx), ctx) : grown;
-  const mentored = newDay ? settleMentor(bred, ctx) : bred;
+  const mentored = newDay ? settleHunt(settleMentor(bred, ctx), ctx) : bred;
   return { ...mentored, board: boardFor(mentored, ctx) };
 }
 
