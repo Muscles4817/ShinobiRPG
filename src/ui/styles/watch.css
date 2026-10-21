@@ -187,3 +187,10 @@
 .app.wide .gauge-rows {
   font-size: 0.8rem;
 }
+/* A pool read by eye: a word where the bar and its numbers would be. */
+.gauge-read {
+  grid-column: span 2;
+  font-family: var(--font-story);
+  font-style: italic;
+  color: var(--ink);
+}
