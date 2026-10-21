@@ -2,37 +2,37 @@
 ########## a spar with a teammate ##########
   Asuka squares up. “Don’t hold back.”
   —— The fight begins ——
-  —— First exchange  ⟦ck:player=58|person:genin-1=69⟧ ——
+  —— First exchange ——
   Asuka starts with Lantern Cut before anyone has settled.
   Asuka’s Lantern Cut hacks into you, harder than a spar calls for. [Guarded] [−22]
   You feint, looking to close in, and Asuka doesn’t bite.
-  —— Second exchange  ⟦ck:player=58|person:genin-1=69⟧ ——
+  —— Second exchange ——
   Asuka reaches for Lantern Cut again.
   Asuka’s Lantern Cut slashes you, through an opening they learned on the training ground with you. [Guarded] [−19]
   You make another try, and Asuka shuts it down again.
-  —— Third exchange  ⟦ck:player=58|person:genin-1=69⟧ ——
+  —— Third exchange ——
   Asuka catches the eye and lets Shadow Feint unfold.
   You were waiting for exactly that.
   You make another try, and Asuka shuts it down again.
-  —— Last exchange  ⟦ck:player=58|person:genin-1=66⟧ ——
+  —— Last exchange ——
   Asuka’s blade flows into Lantern Cut.
   Asuka’s Lantern Cut carves into you, and it leaves you shaken. [Guarded] [−20]
   You make another try, and Asuka shuts it down again.
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=58|person:genin-1=68⟧ ——
+  —— First exchange ——
   The air around Asuka wavers as Shadow Feint takes hold.
   You were waiting for exactly that.
   You keep low and come in under Asuka’s guard, inside Asuka’s reach.
-  —— Second exchange  ⟦ck:player=58|person:genin-1=65⟧ ——
+  —— Second exchange ——
   Asuka uses Shadow Feint once more.
   You are dazed, and the ground tilts under you.
   You stand blinking while the exchange goes by without you.
-  —— Third exchange  ⟦ck:player=58|person:genin-1=62⟧ ——
+  —— Third exchange ——
   Steel flashes as Asuka looses Lantern Cut.
   Asuka’s Lantern Cut carves into you, harder than a spar calls for. [Guarded] [−25]
   You go in with Gale Heel.
   You find the strength from somewhere, and your Gale Heel slices across Asuka. [Guarded] [−8]
-  —— Last exchange  ⟦ck:player=55|person:genin-1=64⟧ ——
+  —— Last exchange ——
   Asuka goes back to Lantern Cut.
   Asuka’s Lantern Cut hacks into you. [Guarded] [−22]
   You go down in a heap, laughing at yourself for walking into it.
@@ -42,52 +42,52 @@
 ########## a rival’s spar ##########
   Jin squares up.
   —— The fight begins ——
-  —— First exchange  ⟦ck:player=58|person:jin=56⟧ ——
+  —— First exchange ——
   You close in at once.
   Jin has been keeping Shadow Feint for this, and uses it now.
   You stagger, dazed.
-  —— Second exchange  ⟦ck:player=58|person:jin=52⟧ ——
+  —— Second exchange ——
   You shake your head, still reeling.
   Jin has been keeping Forge Cut for this, and uses it now.
   Jin’s Forge Cut slashes deep into you, and it leaves you shaken. [Guarded] [−22]
-  —— Third exchange  ⟦ck:player=58|person:jin=54⟧ ——
+  —— Third exchange ——
   You have been keeping Gale Heel for this, and use it now.
   Your Gale Heel rips into Jin, and you let him know it. [Guarded] [−8]
   Jin reaches for Forge Cut again.
   Jin’s Forge Cut slashes you. [Guarded] [−19]
-  —— Last exchange  ⟦ck:player=55|person:jin=56⟧ ——
+  —— Last exchange ——
   Jin uses Forge Cut once more.
   Jin lands his Forge Cut on you. [Guarded] [−19]
   You send Gale Heel howling out.
   Your Gale Heel rips into Jin cleanly. [Guarded] [−9]
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=52|person:jin=56⟧ ——
+  —— First exchange ——
   Jin goes back to Forge Cut.
   You were waiting for exactly that.
   You use Gale Heel once more.
   You land your Gale Heel on Jin. [Guarded] [−9]
-  —— Second exchange  ⟦ck:player=49|person:jin=56⟧ ——
+  —— Second exchange ——
   You go back to Gale Heel.
   Your Gale Heel slices across Jin. [Guarded] [−9]
   Jin has been keeping Forge Cut for this, and uses it now.
   Jin’s Forge Cut bites into you cleanly. [Guarded] [−19]
-  —— Third exchange  ⟦ck:player=46|person:jin=56⟧ ——
+  —— Third exchange ——
   You reach for Gale Heel again.
   You land your Gale Heel on Jin. [Guarded] [−9]
   Jin has been keeping Shadow Feint for this, and uses it now.
   You were waiting for exactly that.
-  —— Last exchange  ⟦ck:player=43|person:jin=52⟧ ——
+  —— Last exchange ——
   You go back to Gale Heel.
   You find the strength from somewhere, and your Gale Heel slices across Jin. [Guarded] [−9]
   Jin draws into Forge Cut.
   Jin’s Forge Cut carves into you, harder than a spar calls for. [Guarded] [−20]
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=40|person:jin=54⟧ ——
+  —— First exchange ——
   Tired now, Jin still goes to Shadow Feint.
   You were waiting for exactly that.
   You scrape together what chakra you can for Gale Heel.
   Your Gale Heel slices across Jin. [Guarded] [−8]
-  —— Second exchange  ⟦ck:player=37|person:jin=50⟧ ——
+  —— Second exchange ——
   You reach for Gale Heel again.
   Your Gale Heel rips into Jin, and you let him know it. [Guarded] [−8]
   Jin has been keeping Forge Cut for this, and uses it now.
@@ -99,48 +99,48 @@
 ########## wolves in a forest ##########
   Two grey wolves square up.
   —— The fight begins ——
-  —— First exchange  ⟦ck:player=58|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— First exchange ——
   You come in through the trees.
   The first grey wolf’s bite tears at you before you are properly set. [−8]
   The second grey wolf’s bite sinks into you. [−8]
-  —— Second exchange  ⟦ck:player=58|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel hurls aside the first grey wolf, and it’s thrown back against a trunk. [Guarded] [−34]
   You put a trunk between yourself and the second grey wolf’s bite.
   The first grey wolf’s bite only just grazes you. [Guarded] [−3]
-  —— Third exchange  ⟦ck:player=55|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— Third exchange ——
   You use Gale Heel once more.
   Your Gale Heel flays the first grey wolf, and it falls back through the undergrowth. [Guarded] [−32]
   The first grey wolf lashes out with the last of its strength, and the bite only snaps at you. [Guarded] [−4]
   You are a shade too slow, and the second grey wolf’s bite nips you. [Guarded] [−3]
-  —— Last exchange  ⟦ck:player=52|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— Last exchange ——
   You go back to Gale Heel.
   Your Gale Heel shreds the first grey wolf with everything behind it. [Guarded] [−33]
   The first grey wolf crashes down into the undergrowth and lies still.
   The second grey wolf’s bite only just grazes you. [Guarded] [−3]
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=49|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— First exchange ——
   You reach for Gale Heel again.
   The second grey wolf was waiting for exactly that.
   You are a shade too slow, and the second grey wolf’s bite snaps at you. [Guarded] [−3]
-  —— Second exchange  ⟦ck:player=46|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— Second exchange ——
   You use Gale Heel once more.
   Your Gale Heel hurls aside the second grey wolf with everything behind it. [Guarded] [−34]
   The second grey wolf’s bite only just nips you. [Guarded] [−3]
-  —— Third exchange  ⟦ck:player=43|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— Third exchange ——
   You go back to Gale Heel.
   The second grey wolf was waiting for exactly that.
   The second grey wolf’s bite grazes you. [Guarded] [−3]
-  —— Last exchange  ⟦ck:player=40|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— Last exchange ——
   You reach for Gale Heel again.
   Your Gale Heel hurls aside the second grey wolf, and it’s thrown back against a trunk. [Guarded] [−35]
   You are a shade too slow, and the second grey wolf’s bite nips you. [Guarded] [−3]
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=37|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— First exchange ——
   You go back to Gale Heel.
   The second grey wolf reads the first sign and is ready.
   The second grey wolf’s bite only just grazes you. [Guarded] [−3]
-  —— Second exchange  ⟦ck:player=34|grey-wolf-0=0|grey-wolf-1=0⟧ ——
+  —— Second exchange ——
   You reach for Gale Heel again.
   Your Gale Heel flays the second grey wolf, and it falls back through the undergrowth. [Guarded] [−31]
   The second grey wolf crashes down into the undergrowth and lies still.
@@ -150,11 +150,11 @@
 ########## a hornet swarm ##########
   The hornet swarm squares up.
   —— The fight begins ——
-  —— First exchange  ⟦ck:player=58|hornet-swarm-0=0⟧ ——
+  —— First exchange ——
   The hornet swarm boils in close around you.
   You send Gale Heel howling out.
   Your Gale Heel hurls aside the hornet swarm, and it’s thrown back against a trunk. [−20]
-  —— Second exchange  ⟦ck:player=55|hornet-swarm-0=0⟧ ——
+  —— Second exchange ——
   You are a shade too slow, and the hornet swarm’s sting nips you. [Guarded] [−1]
   You reach for Gale Heel again.
   Your Gale Heel shreds the hornet swarm, and it falls back through the undergrowth. [Guarded] [−20]
@@ -165,52 +165,52 @@
 ########## a wraith in a room ##########
   The storehouse wraith squares up.
   —— The fight begins ——
-  —— First exchange  ⟦ck:player=58|storehouse-wraith-0=40⟧ ——
+  —— First exchange ——
   You search the corners of the room and find them empty.
   Whispering Dread rises off the storehouse wraith like the cold off a well.
   The storehouse wraith’s Whispering Dread grips you before you are properly set. [Guarded] [−12]
   Your senses swim in the storehouse wraith’s illusion.
-  —— Second exchange  ⟦ck:player=58|storehouse-wraith-0=32⟧ ——
+  —— Second exchange ——
   You look again, with no more luck.
   The storehouse wraith reaches for Whispering Dread again.
   The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−11]
   You blink, and the field is no longer where it was.
   You catch the thread of the illusion and find the storehouse wraith.
-  —— Third exchange  ⟦ck:player=58|storehouse-wraith-0=24⟧ ——
+  —— Third exchange ——
   You break free of the illusion.
   You cross the floor in two strides.
   The storehouse wraith melts back into the illusion.
   The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
   The storehouse wraith’s Whispering Dread buries you, and you’re nearly knocked off your feet. [−36]
-  —— Last exchange  ⟦ck:player=58|storehouse-wraith-0=16⟧ ——
+  —— Last exchange ——
   You find the storehouse wraith in a corner of the room.
   The storehouse wraith reaches for Whispering Dread again.
   The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−8]
   Your senses swim in the storehouse wraith’s illusion.
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=58|storehouse-wraith-0=8⟧ ——
+  —— First exchange ——
   You bite down and the world snaps back into place.
   You send Gale Heel howling out.
   You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
   Much of it glances off the storehouse wraith.
   You roll under the storehouse wraith’s touch, and it splinters the wall instead.
-  —— Second exchange  ⟦ck:player=55|storehouse-wraith-0=10⟧ ——
+  —— Second exchange ——
   You use Gale Heel once more.
   Your Gale Heel slices across the storehouse wraith. [Guarded] [−7]
   The storehouse wraith barely seems to feel it.
   The storehouse wraith fades out of sight again.
   The storehouse wraith fixes its eyes on the field and casts Shadow Feint.
   You were waiting for exactly that.
-  —— Third exchange  ⟦ck:player=52|storehouse-wraith-0=7⟧ ——
+  —— Third exchange ——
   You search the field and find no one.
   The storehouse wraith’s touch chills you. [Guarded] [−1]
   You blink, and the field is no longer where it was.
-  —— Last exchange  ⟦ck:player=54|storehouse-wraith-0=9⟧ ——
+  —— Last exchange ——
   You find the storehouse wraith in a corner of the room.
   The storehouse wraith’s touch only just grazes you. [Guarded] [−1]
   Your senses swim in the storehouse wraith’s illusion.
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=56|storehouse-wraith-0=11⟧ ——
+  —— First exchange ——
   You go in with Gale Heel.
   You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
   Much of it glances off the storehouse wraith.
@@ -218,61 +218,61 @@
   The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
   The storehouse wraith’s Whispering Dread grips you. [Guarded] [−11]
   You follow the blow back to the storehouse wraith.
-  —— Second exchange  ⟦ck:player=53|storehouse-wraith-0=3⟧ ——
+  —— Second exchange ——
   You go in with Gale Heel.
   You find the strength from somewhere, and your Gale Heel rips into the storehouse wraith. [Guarded] [−7]
   Little of it bites on the storehouse wraith.
   The storehouse wraith’s touch comes slower than it did at the start and only chills you. [Guarded] [−1]
-  —— Third exchange  ⟦ck:player=50|storehouse-wraith-0=5⟧ ——
+  —— Third exchange ——
   You reach for Gale Heel again.
   Your Gale Heel cuts into the storehouse wraith. [Guarded] [−7]
   The storehouse wraith barely seems to feel it.
   The storehouse wraith fixes its eyes on the field and casts Shadow Feint.
   You reel, the world spinning.
-  —— Last exchange  ⟦ck:player=47|storehouse-wraith-0=2⟧ ——
+  —— Last exchange ——
   You stand blinking while the exchange goes by without you.
   The storehouse wraith melts back into the illusion.
   The storehouse wraith’s touch only just grazes you. [Guarded] [−1]
   You blink, and the field is no longer where it was.
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=49|storehouse-wraith-0=4⟧ ——
+  —— First exchange ——
   You search the field and find no one.
   You are a shade too slow, and the storehouse wraith’s touch brushes you. [Guarded] [−1]
   Your senses swim in the storehouse wraith’s illusion.
   You trace the illusion back to the storehouse wraith.
-  —— Second exchange  ⟦ck:player=51|storehouse-wraith-0=6⟧ ——
+  —— Second exchange ——
   You scrape together what chakra you can for Gale Heel.
   You find the strength from somewhere, and your Gale Heel rips into the storehouse wraith. [Guarded] [−7]
   Much of it glances off the storehouse wraith.
   The storehouse wraith’s touch comes slower than it did at the start and only brushes you. [Guarded] [−1]
-  —— Third exchange  ⟦ck:player=48|storehouse-wraith-0=8⟧ ——
+  —— Third exchange ——
   You go back to Gale Heel.
   You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
   Little of it bites on the storehouse wraith.
   The storehouse wraith fades out of sight again.
   The storehouse wraith’s touch only just chills you. [Guarded] [−1]
-  —— Last exchange  ⟦ck:player=45|storehouse-wraith-0=10⟧ ——
+  —— Last exchange ——
   You search the field and find no one.
   The air around the storehouse wraith wavers as Whispering Dread takes hold.
   The storehouse wraith’s Whispering Dread grips you. [Guarded] [−11]
   You blink, and the field is no longer where it was.
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=47|storehouse-wraith-0=2⟧ ——
+  —— First exchange ——
   You break free of the illusion.
   You search the corners of the room and find them empty.
   You are a shade too slow, and the storehouse wraith’s touch chills you. [Guarded] [−1]
   Your senses swim in the storehouse wraith’s illusion.
-  —— Second exchange  ⟦ck:player=49|storehouse-wraith-0=4⟧ ——
+  —— Second exchange ——
   You search again, and still find no one.
   The storehouse wraith’s touch only just brushes you. [Guarded] [−1]
   You trace the illusion back to the storehouse wraith.
-  —— Third exchange  ⟦ck:player=51|storehouse-wraith-0=6⟧ ——
+  —— Third exchange ——
   Hurt and running short of time, you reach for Gale Heel.
   You find the strength from somewhere, and your Gale Heel rips into the storehouse wraith. [Guarded] [−7]
   Little of it bites on the storehouse wraith.
   The storehouse wraith lashes out with the last of its strength, and the touch only grazes you. [Guarded] [−1]
   You blink, and the field is no longer where it was.
-  —— Last exchange  ⟦ck:player=48|storehouse-wraith-0=8⟧ ——
+  —— Last exchange ——
   You use Gale Heel once more.
   Your Gale Heel cuts into the storehouse wraith. [Guarded] [−7]
   The storehouse wraith barely seems to feel it.
@@ -284,32 +284,32 @@
 ########## bandits in the streets ##########
   Two bandit thugs square up.
   —— The fight begins ——
-  —— First exchange  ⟦ck:player=58|bandit-thug-0=10|bandit-thug-1=10⟧ ——
+  —— First exchange ——
   You cut across the street and into the first bandit thug’s reach.
   The first bandit thug’s strike catches you before you are properly set. [−12]
   The second bandit thug lands his strike on you. [−13]
-  —— Second exchange  ⟦ck:player=58|bandit-thug-0=10|bandit-thug-1=10⟧ ——
+  —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel cuts into the first bandit thug cleanly. [Guarded] [−18]
   The second bandit thug’s strike lands on you. [Guarded] [−8]
   The first bandit thug’s strike only just clips you. [Guarded] [−7]
-  —— Third exchange  ⟦ck:player=55|bandit-thug-0=10|bandit-thug-1=10⟧ ——
+  —— Third exchange ——
   You use Gale Heel once more.
   Your Gale Heel tears into the first bandit thug, and tiles slide off the roof under him. [Guarded] [−20]
   The second bandit thug lands his strike on you. [Guarded] [−8]
   The first bandit thug’s strike catches you cleanly. [Guarded] [−8]
-  —— Last exchange  ⟦ck:player=52|bandit-thug-0=10|bandit-thug-1=10⟧ ——
+  —— Last exchange ——
   You go back to Gale Heel.
   The first bandit thug was waiting for exactly that.
   The second bandit thug’s strike only just glances off you. [Guarded] [−7]
   You are a shade too slow, and the first bandit thug’s strike clips you. [Guarded] [−7]
   —— The next round begins ——
-  —— First exchange  ⟦ck:player=49|bandit-thug-0=10|bandit-thug-1=10⟧ ——
+  —— First exchange ——
   You reach for Gale Heel again.
   You land your Gale Heel on the first bandit thug. [Guarded] [−18]
   The second bandit thug’s strike grazes you. [Guarded] [−7]
   The first bandit thug’s strike only just glances off you. [Guarded] [−7]
-  —— Second exchange  ⟦ck:player=46|bandit-thug-0=10|bandit-thug-1=10⟧ ——
+  —— Second exchange ——
   You use Gale Heel once more.
   Your Gale Heel batters the first bandit thug. [Guarded] [−20]
   The second bandit thug’s strike catches you. [Guarded] [−8]

@@ -35,10 +35,11 @@ function chipFor({ kind, amount }: NarrationAmount): JournalChip {
 
 export function combatLog(log: readonly string[]): CombatLogLine[] {
   return log.map((line): CombatLogLine => {
-    if (line.startsWith(ROUND_MARK)) {
-      return { kind: 'round', text: line.replaceAll(ROUND_MARK, '').trim() };
-    }
     const { text, amounts, reactions } = splitNarration(line);
+    if (line.startsWith(ROUND_MARK)) {
+      // A divider may carry markers too (where everyone's chakra stands), kept out of sight.
+      return { kind: 'round', text: text.replaceAll(ROUND_MARK, '').trim() };
+    }
     return {
       kind: 'story',
       text,
