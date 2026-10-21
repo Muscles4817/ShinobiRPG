@@ -1,7 +1,6 @@
 import type { CombatAttributes } from '../contract';
-import { cappedHit, MAX_HIT_SHARE, toughness } from './damage';
+import { toughness } from './damage';
 import {
-  hitCapShare,
   reachesWithFists,
   sizeGap,
   sizeHealthScale,
@@ -39,15 +38,6 @@ describe('size', () => {
     expect(sizeOf({ size: 'large', empowered: { grows: 2 } })).toBe('huge');
     expect(sizeOf({ empowered: { grows: 1 } })).toBe('large');
     expect(sizeGap({ size: 'huge' }, {})).toBe(2);
-  });
-
-  it('a bigger body may hit a smaller one harder than equals ever can', () => {
-    expect(hitCapShare(MAX_HIT_SHARE, {}, {})).toBe(MAX_HIT_SHARE);
-    // Smaller against bigger never goes under the usual cap.
-    expect(hitCapShare(MAX_HIT_SHARE, {}, { size: 'huge' })).toBe(MAX_HIT_SHARE);
-    const giant = hitCapShare(MAX_HIT_SHARE, { size: 'huge' }, {});
-    expect(giant).toBeGreaterThan(MAX_HIT_SHARE);
-    expect(cappedHit(90, 100, giant)).toBeGreaterThan(cappedHit(90, 100));
   });
 
   it('walks through a shot that would stop a human, unless it hurt too much', () => {

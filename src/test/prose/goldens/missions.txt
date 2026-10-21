@@ -1371,7 +1371,7 @@ view:
   Asuka’s blade flows into Lantern Cut.
   Asuka’s Lantern Cut tears through the bandit thug, and he’s nearly knocked off his feet. [Guarded] [−40]
   Gōran launches into Lantern Wind Flurry.
-  There is nothing the bandit thug can do as Gōran’s Lantern Wind Flurry smashes into him. [Guarded] [−35]
+  There is nothing the bandit thug can do as Gōran’s Lantern Wind Flurry smashes into him. [Guarded] [−18]
   The bandit thug goes down and stays down.
   Goro explodes forward with Palm Strike.
   Goro’s Palm Strike crashes into the bandit archer, and she feels it. [Guarded] [−29]
@@ -1927,18 +1927,16 @@ view:
   Asuka’s Lantern Cut tears through the first bandit thug, and he’s nearly knocked off his feet. [Guarded] [−37]
   Gōran opens with Lantern Wind Flurry.
   There is nothing the first bandit thug can do as Gōran’s Lantern Wind Flurry smashes into him. [Guarded] [−39]
-  Gōran’s Lantern Wind Flurry drives through the first bandit thug again with everything behind it. [−46]
+  Gōran’s Lantern Wind Flurry drives through the first bandit thug again with everything behind it. [−24]
   The first bandit thug hits the ground and doesn’t get up.
   Goro starts with Palm Strike before anyone has settled.
   Goro’s Palm Strike slams into the second bandit thug. [Guarded] [−21]
   The second bandit thug’s strike finds only the space where Asuka stood.
   —— Second exchange ——
   You send Gale Heel howling out.
-  Your Gale Heel hurls aside the second bandit thug, and he’s nearly knocked off his feet. [Guarded] [−50]
-  Steel flashes as Asuka looses Lantern Cut.
-  There is nothing the second bandit thug can do as Asuka’s Lantern Cut tears through him. [Guarded] [−36]
+  Your Gale Heel hurls aside the second bandit thug, and he’s nearly knocked off his feet. [Guarded] [−79]
   The second bandit thug hits the ground and doesn’t get up.
-  The last of them is down, and it is over.
+  You are still on your feet, and no one is left to face you.
 
 >>> leaveFight
 

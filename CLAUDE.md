@@ -219,9 +219,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `EnemyDef.healthScale`. A body may be bred bigger (**size**, `rules/size.ts`:
     `ClanDef.size`, `EnemyDef.size` → `CombatantSetup.size`; small, human, large, huge): more
     health (scaled by the engine and reported back on the human scale, `plan/sizing.ts`) and
-    toughness, slipping less, a weight that helps a step in and walks through a hold-off that
-    didn't hurt it much, and the cap on one hit rising for each size step it has on its target
-    (`hitCapShare`). An empower may `grow` its user for as long as it holds (Expansion), and a
+    toughness, slipping less, and a weight that helps a step in and walks through a hold-off that
+    didn't hurt it much. An empower may `grow` its user for as long as it holds (Expansion), and a
     huge body's fists reach mid. Damage comes from the **gap** between attacker power and defender
     defence (`rules/damage.ts`: a ratio of ratings, narrow variance), so equals trade the same
     blows at every grade and each grade of difference is decisive. **Whether an attack
@@ -238,8 +237,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     toughness or, where it is better, a blend with hand-to-hand guard (`physicalDefence` in
     `rules/damage.ts`), and a ready Guard catches much more; toughness
     is stamina (plus `armoured` kit), and toughness and will both blend in the fighter's best art
-    (`SKILL_DEFENCE_SHARE`: skill defends, so specialists of a grade don't one-shot each other);
-    no hit takes more than half the target's health (`cappedHit`). A daze costs the target their
+    (`SKILL_DEFENCE_SHARE`: skill defends, so specialists of a grade don't one-shot each other).
+    **No hit has a ceiling** (`docs/design/defence-plan.md`): a hit takes what the gap says, and
+    the chip shows what it took (`taken` in `plan/wound.ts`), so a blow far beyond a body ends
+    the fight; what stands between a fighter and that is what they do about it. A daze costs the target their
     next turn and leaves them open (no dodge, a finisher target, though a Guard still works);
     afterwards they are steady for an exchange (`canDaze`), so dazes can't be chained. A plan is
     **actions** per distance, two to five by intellect grade (`slotLimit`: E 2, D 3, C 4, B+ 5):

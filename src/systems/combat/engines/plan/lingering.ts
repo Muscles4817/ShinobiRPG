@@ -2,7 +2,7 @@ import type { Rng } from '@/core';
 import type { AfflictionKind } from '@/systems/techniques';
 
 import { alive, holdTurns } from '../../rules/body';
-import { cappedHit, techniqueDamage } from '../../rules/damage';
+import { techniqueDamage } from '../../rules/damage';
 import { harmLine, reactionLine } from '../../rules/narration';
 import { RANGE_LABEL } from '../../rules/range';
 import {
@@ -27,7 +27,7 @@ import { movedTo } from './groundPlay';
 import { canHit } from './rows';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { startHolding } from './holding';
-import { wound } from './wound';
+import { taken, wound } from './wound';
 import { knockLine } from './sceneVoice';
 import { dustGrip } from './dust';
 import { momentOf } from './voice';
@@ -183,7 +183,7 @@ export function riposteFirst(round: Round, hit: Incoming): { round: Round; stopp
     effect: { verb: 'damage', power: ready.power },
   } as const;
   const raw = techniqueDamage(target, attacker, use, rng.next());
-  const damage = cappedHit(Math.max(1, raw), attacker.maxHealth);
+  const damage = taken(attacker, Math.max(1, raw));
   const line = harmLine(
     reactionLine(
       tell('{t} answer{t.s} with {what}.', { t: target, what: ready.name }),

@@ -1,6 +1,6 @@
 import { clamp } from '@/core';
 import { STAT_GRADES, type StatGrade } from '@/systems/stats';
-import { blowsOf, type EffectOf, type TechniqueEffect } from '@/systems/techniques';
+import { type EffectOf, type TechniqueEffect } from '@/systems/techniques';
 
 import type { BodySize, CombatAttributes, CombatantSetup, CombatTechnique } from '../contract';
 import { elementMultiplier } from './elements';
@@ -33,8 +33,6 @@ export const SKILL_DEFENCE_SHARE = 0.8;
  * boost on top (`defence.ts`).
  */
 export const BASE_GUARD_SHARE = 0.3;
-/** No single hit takes more than this share of the target's health: a fight is never one blow. */
-export const MAX_HIT_SHARE = 0.5;
 /** Ratios are taken on ratings plus this, so tiny stat values don't make wild gaps. */
 const RATING_OFFSET = 1;
 /** The ratio counts this far either way; beyond it, more power changes nothing. */
@@ -146,14 +144,6 @@ export function physicalDefence(f: Rated): number {
 }
 
 /**
- * What a hit may take at most from a fighter with this much health: half, or more from a body
- * bigger than its target (`hitCapShare` in `size.ts`).
- */
-export function cappedHit(damage: number, maxHealth: number, share = MAX_HIT_SHARE): number {
-  return Math.min(damage, Math.max(1, Math.round(maxHealth * share)));
-}
-
-/**
  * Body stats the physical arts add to the stats driving them: fists put strength behind a
  * blow, blades strength and footwork. They make up `BODY_SHARE` of the power.
  */
@@ -232,15 +222,13 @@ function isWoundingEffect(e: TechniqueEffect): e is EffectOf<'damage' | 'area' |
 
 /**
  * The share of an equal's health one use of a technique takes (a copy of the fighter, the
- * middle of the damage roll, every wounding effect summed, each capped as a hit is): what the
+ * middle of the damage roll, every wounding effect summed): what the
  * academy tells you a technique does in your hands. Null for a technique that doesn't wound.
  */
 export function equalHitShare(fighter: Natured, technique: CombatTechnique): number | null {
-  const hits = technique.effects.filter(isWoundingEffect).map((effect) => {
-    const damage = techniqueDamage(fighter, fighter, { technique, effect }, 0.5);
-    const blows = blowsOf(effect);
-    return cappedHit(damage / blows, EQUAL_HEALTH) * blows;
-  });
+  const hits = technique.effects
+    .filter(isWoundingEffect)
+    .map((effect) => techniqueDamage(fighter, fighter, { technique, effect }, 0.5));
   if (hits.length === 0) return null;
   return Math.min(1, hits.reduce((sum, h) => sum + h, 0) / EQUAL_HEALTH);
 }

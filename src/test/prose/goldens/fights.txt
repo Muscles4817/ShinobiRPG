@@ -34,7 +34,7 @@
   You find the strength from somewhere, and your Gale Heel slices across Asuka. [Guarded] [−8]
   —— Last exchange ——
   Asuka goes back to Lantern Cut.
-  Asuka’s Lantern Cut hacks into you. [Guarded] [−22]
+  Asuka’s Lantern Cut hacks into you. [Guarded] [−14]
   You go down in a heap, laughing at yourself for walking into it.
   Asuka stands back, breathing hard, and tells you what they saw you do wrong.
   summary: You lasted two rounds before going down. Asuka dazed you in the second round, and you never found your feet again.
@@ -91,7 +91,7 @@
   You reach for Gale Heel again.
   Your Gale Heel rips into Jin, and you let him know it. [Guarded] [−8]
   Jin has been keeping Forge Cut for this, and uses it now.
-  Jin’s Forge Cut bites into you cleanly. [Guarded] [−19]
+  Jin’s Forge Cut bites into you cleanly. [Guarded] [−1]
   You drop to your knees and topple over.
   Jin walks away before you can get up.
   summary: You lasted three rounds before going down. Jin was still standing.
@@ -115,7 +115,7 @@
   You are a shade too slow, and the second grey wolf’s bite nips you. [Guarded] [−3]
   —— Last exchange ——
   You go back to Gale Heel.
-  Your Gale Heel shreds the first grey wolf with everything behind it. [Guarded] [−33]
+  Your Gale Heel shreds the first grey wolf with everything behind it. [Guarded] [−4]
   The first grey wolf crashes down into the undergrowth and lies still.
   The second grey wolf’s bite only just grazes you. [Guarded] [−3]
   —— The next round begins ——
@@ -133,19 +133,10 @@
   The second grey wolf’s bite grazes you. [Guarded] [−3]
   —— Last exchange ——
   You reach for Gale Heel again.
-  Your Gale Heel hurls aside the second grey wolf, and it’s thrown back against a trunk. [Guarded] [−35]
-  You are a shade too slow, and the second grey wolf’s bite nips you. [Guarded] [−3]
-  —— The next round begins ——
-  —— First exchange ——
-  You go back to Gale Heel.
-  The second grey wolf reads the first sign and is ready.
-  The second grey wolf’s bite only just grazes you. [Guarded] [−3]
-  —— Second exchange ——
-  You reach for Gale Heel again.
-  Your Gale Heel flays the second grey wolf, and it falls back through the undergrowth. [Guarded] [−31]
-  The second grey wolf crashes down into the undergrowth and lies still.
+  Your Gale Heel hurls aside the second grey wolf, and it’s thrown back against a trunk. [Guarded] [−36]
+  The second grey wolf crumples and lies still.
   You are still on your feet, and no one is left to face you.
-  summary: You won in three rounds. Once the first grey wolf went down in the first round, the second grey wolf didn’t last long.
+  summary: You won in two rounds. Once the first grey wolf went down in the first round, the second grey wolf didn’t last long.
 
 ########## a hornet swarm ##########
   The hornet swarm squares up.
@@ -153,13 +144,9 @@
   —— First exchange ——
   The hornet swarm boils in close around you.
   You send Gale Heel howling out.
-  Your Gale Heel hurls aside the hornet swarm, and it’s thrown back against a trunk. [−20]
-  —— Second exchange ——
-  You are a shade too slow, and the hornet swarm’s sting nips you. [Guarded] [−1]
-  You reach for Gale Heel again.
-  Your Gale Heel shreds the hornet swarm, and it falls back through the undergrowth. [Guarded] [−20]
-  The hornet swarm thins out and drifts away in ones and twos.
-  You are still on your feet, and no one is left to face you.
+  Your Gale Heel hurls aside the hornet swarm, and it’s thrown back against a trunk. [−40]
+  The hornet swarm breaks apart, and what is left of it scatters.
+  It goes quiet, and the fight is over.
   summary: You won in a single round. The hornet swarm went down in the first round.
 
 ########## a wraith in a room ##########
