@@ -396,7 +396,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `engines/plan/swarm.ts`): techniques with a `swarmCost` spend insects (a fighter without a
     hive pays chakra alone), a swarm technique that reaches a foe leaves insects settled on them
     that draw their chakra into the host and keep them from hiding until they drop off or a
-    feared element burns them off, areas and feared elements kill insects in the host's hive,
+    feared element burns them off, areas and feared elements kill insects in the host's hive
+    (and foes and teammates reckon that in when they pick an attack and a target, `plan/worth.ts`,
+    `plan/targeting.ts`),
     a hive helps its host find the hidden, and `CombatOutcome.swarm` reports how many came home. Your
     hive is kept between fights (`systems/hives`, `GameState.hive`, `game/hives/`): a child of a
     clan with a `hive` (`ClanDef.hive`, a pack's `StrainDef`s) is born with one, giving it a

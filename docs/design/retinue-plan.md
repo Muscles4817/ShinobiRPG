@@ -1276,7 +1276,10 @@ and its genes, its skills with training**, and every kind has its own ceiling.
     bar, and how soon it fills again.
 - **Later:**
   - foes who carry hives (`EnemyDef.swarm`);
-  - foes and teammates aiming areas and fire at a hive on purpose;
+  - foes and teammates aiming areas and fire at a hive on purpose (built: an attack's worth
+    counts the insects it would kill, a share of a whole hive being worth a share of
+    `WHOLE_HIVE_WORTH` health, and a host is worth more as a target to someone carrying such an
+    attack, `HIVE_TARGET_WEIGHT`; both only weigh with the judgement to reckon worth);
   - strains and crossbreeding (4c), the install later in life (4d), dust (4e).
 
 ### Step 4c-i: what insects are
