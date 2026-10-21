@@ -278,8 +278,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     lightning, fire, shadow; named on the clone effect or following the technique's element),
     each with its blow, its upkeep paid every exchange (`plan/cloneUpkeep.ts`: clones the maker
     can't pay for fade) and its trick: earth may stand a hit and rebuilds, lightning shocks a
-    blow that bursts it up close, wind screens a charge best, fire feeds itself, shadow clones
-    strike hardest and cost most; without one, they step home only when nothing slotted does anything
+    blow that bursts it up close, wind screens a charge best, fire feeds itself. **Shadow clones**
+    are fighters (`rules/shadowClones.ts`, `plan/shadows.ts`): a technique that only makes solid
+    clones of no element splits its maker's chakra evenly with them, and each comes in on the
+    maker's side with the maker's body and kit, its own turn and a plan of its own, popping at the
+    first hit that lands and going with its maker if the maker falls; a few stand at once
+    (`SHADOW_BODIES_MAX`), the rest a crowd of decoys, and an attack aimed at the maker may go into
+    a clone instead (`misleadChance`: more clones, sharper eyes, insight). A technique that wounds
+    as it makes clones (a clone body blow) keeps them as decoys. Without one, they step home only when nothing slotted does anything
     there, else throw a plain blow (never slotted). Foes play
     their default plan by priority, as the player does, as often as their judgement keeps them to
     it, and instinct otherwise (`plan/judgement.ts`: intellect grade sets plan adherence, whether

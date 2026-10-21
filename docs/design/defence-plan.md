@@ -335,11 +335,22 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   93% of the time (67% before): Kakashi's costly ninjutsu drains his small tank while Guy fights
   on breath. That is too lopsided for rivals and a target for the durability retune (or for
   Kakashi's reserves).
-- **Shadow clones are part of slice 5.** Today a shadow clone costs a flat 14 chakra and is a
-  decoy that strikes at a third of its maker. In canon it splits its maker's chakra (half of what
-  is left) and makes a whole fighter as able as its maker who falls to one hit: a huge
-  multiplier at a huge price. Slice 5 makes it so: its cost a share of chakra, and each clone a
-  fighter with its maker's stats, kit and turn, one hit from gone.
+- **Slice 5, part two: shadow clones (done).** A technique that only makes solid clones of no
+  element (Shadow Clone, Multiple Shadow Clone, an earth or lightning shadow clone keeps its
+  element and stays a decoy) now splits its maker's chakra evenly with the clones it makes, and
+  each clone is a fighter (`rules/shadowClones.ts`, `plan/shadows.ts`): the maker's body and kit
+  (all but the technique that made it), its own turn, a plan made as the exchange ends, popping
+  at the first hit that lands, gone with its maker. One fighting clone for every five power, at
+  most four standing; any more the technique makes are a crowd of decoys beside the maker, with
+  no upkeep (the split is the price). An attack aimed at the maker may go into a clone instead:
+  more clones make it likelier, the attacker's perception against the maker's ninjutsu shifts
+  it, and insight sees through most of it. Its leftover chakra is lost when a clone pops. A
+  technique that wounds as it makes clones (Clone Body Blow, Shadow Clone Sword Dance) keeps
+  them as decoys. The fight table: Hiruzen, a kage with deep reserves, now fields his clones
+  (canon has four of him against Orochimaru), and Guy beats him 40% of the time (90% before),
+  Kakashi lasting a round where he lasted two; Naruto lasts longer against Sasuke (3.3 → 3.8
+  rounds) and Izumo (2.7 → 3.1), though the split leaves him short of chakra, which the
+  chakra-totals review may answer.
 - **Guy never opens a deep gate** in the table's bouts (only the first, the Gate of Life), so
   his finishers never come into it; that is slice 6.
 

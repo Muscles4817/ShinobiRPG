@@ -109,6 +109,8 @@ export interface PlanFighter
   readonly breath?: number;
   /** Evade or Brace, held until their next turn (`commitment.ts`); absent or null: neither. */
   readonly committed?: Commitment | null;
+  /** A shadow clone: the id of its maker (`shadows.ts`). */
+  readonly shadowOf?: string;
   /** Gathering chakra and breath this turn, and so open until their next (`gather.ts`). */
   readonly gathering?: boolean;
   readonly loadout: Loadout;
