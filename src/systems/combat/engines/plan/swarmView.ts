@@ -1,4 +1,4 @@
-import type { CombatMeter, CombatOutcome } from '../../contract';
+import type { CombatantView, CombatMeter, CombatOutcome } from '../../contract';
 import { isBodyMove, maxBreath } from '../../rules/breath';
 import { breathOf } from './effort';
 import { dustMeter } from './dust';
@@ -6,7 +6,7 @@ import type { Dusty } from './dustBody';
 import type { Hive } from './hive';
 import type { PlanFighter } from './state';
 
-/** The player's pools on the fight screen and in the outcome: breath, their hive and their dust. */
+/** Fighters' pools on the fight screen and in the outcome: breath, a hive and dust. */
 
 /** The player's hive on the fight screen, beside their chakra: how many insects are left. */
 export function hiveMeter(player: Hive): CombatMeter | null {
@@ -14,14 +14,31 @@ export function hiveMeter(player: Hive): CombatMeter | null {
   return swarm ? { id: 'hive', label: 'Hive', value: swarm.count, max: swarm.cap } : null;
 }
 
+/** A fighter's breath: what their stamina leaves for body moves. */
+function breath(fighter: Breathing): CombatMeter {
+  return {
+    id: 'breath',
+    label: 'Breath',
+    value: breathOf(fighter),
+    max: maxBreath(fighter.attributes),
+  };
+}
+
 /** The player's breath, beside their chakra, when they know a body move to spend it on. */
 export function breathMeter(player: Breathing): CombatMeter | null {
-  if (!player.techniques.some(isBodyMove)) return null;
-  const max = maxBreath(player.attributes);
-  return { id: 'breath', label: 'Breath', value: breathOf(player), max };
+  return player.techniques.some(isBodyMove) ? breath(player) : null;
 }
 
 type Breathing = Pick<PlanFighter, 'techniques' | 'attributes' | 'breath'>;
+
+/** Where a fighter stands and the pools they carry, for their view. */
+export function onStage(
+  fighter: Hive & Dusty & Breathing & Pick<PlanFighter, 'row'>,
+): Pick<CombatantView, 'row' | 'meters'> {
+  // Everyone breathes, so a watcher sees each fighter's stamina whether or not they spend it.
+  const pools = [hiveMeter(fighter), dustMeter(fighter)].flatMap((m) => (m ? [m] : []));
+  return { row: fighter.row, meters: [breath(fighter), ...pools] };
+}
 
 /** The fight screen's meters: the field's, if one is cast, and whatever pools the player carries. */
 export function metersOf(

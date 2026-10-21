@@ -131,3 +131,59 @@
     animation: none;
   }
 }
+
+/* Every fighter's bars (versus): a slip each, two abreast on a phone, more on a desk. */
+.gauges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+.gauge-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.gauge-card.down {
+  opacity: 0.45;
+}
+.gauge-card header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.gauge-card header b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+.gauge-rows {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.gauge-rows .hp {
+  margin-top: 0;
+}
+/* Breath is plain ink, so it never reads as the dust or the hive beside it. */
+.gauge-rows .hp.breath i {
+  background: var(--story);
+}
+.gauge-shared {
+  grid-column: 1 / -1;
+}
+.app.wide .gauges {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+.app.wide .gauge-rows {
+  font-size: 0.8rem;
+}

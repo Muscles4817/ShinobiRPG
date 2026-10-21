@@ -38,7 +38,7 @@ import {
 } from './state';
 import { editTeam, teamOptions } from './orders';
 import { summonFatesOf } from './summons';
-import { metersOf, poolsLeft } from './swarmView';
+import { metersOf, onStage, poolsLeft } from './swarmView';
 import { editPlan, tableOptions } from './table';
 import { stanceStatus } from './team';
 import { foeMarkFor } from './foeTeam';
@@ -311,7 +311,7 @@ export function createPlanEngine(): CombatEngine {
         round: plan.bout,
         combatants: plan.fighters.map((f) => ({
           ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
-          row: f.row,
+          ...onStage(f),
         })),
         log: plan.log,
         ...(plan.logDropped ? { logOffset: plan.logDropped } : {}),

@@ -168,6 +168,8 @@ interface Watching {
   readonly from: number;
   readonly seen: number;
   readonly holding: boolean;
+  /** Everyone as they stood when the beats being watched began, for the gauges. */
+  readonly before: readonly CombatantView[] | null;
 }
 
 /** A style played on a stage (Plan & Watch) offers no hand of cards to play turn by turn. */
@@ -175,27 +177,38 @@ function isStaged(view: CombatView): boolean {
   return !view.options.some((o) => o.kind === 'basic' || o.kind === 'technique');
 }
 
+type CombatSceneProps = ScreenProps & {
+  /** Show every fighter's bars, not just yours (versus, where you set up or watch both sides). */
+  readonly gauges?: boolean;
+};
+
 /**
  * One scene for every fight style. A staged fight is two screens: the card table between
  * rounds (the plan screen) and the stage that plays out what you chose (the watch screen),
  * which holds after a round until you go back to plan. Turn-by-turn styles keep one screen.
  */
-export function CombatScene(props: ScreenProps) {
+export function CombatScene({ gauges = false, ...props }: CombatSceneProps) {
   const live = combatScene(props.state, props.ctx);
   const view = live ?? finishedFightScene(props.state);
   const length = view ? storyEnd(view) : 0;
-  const [watch, setWatch] = useState<Watching>({ from: length, seen: length, holding: false });
+  const [watch, setWatch] = useState<Watching>({
+    from: length,
+    seen: length,
+    holding: false,
+    before: null,
+  });
   if (!view) return null;
   if (!isStaged(view)) {
     // Turn by turn, the log is the screen; keep up so a finished fight stages only its end.
-    if (watch.from !== length) setWatch({ from: length, seen: length, holding: false });
+    if (watch.from !== length)
+      setWatch({ from: length, seen: length, holding: false, before: null });
     return <FightScreen {...props} view={view} />;
   }
   const act = (o: CombatOption) => {
     // Playing on (begin, the next exchange, the round, flight) stages what follows; changing
     // your cards or orders just changes the table.
     if (o.kind === 'continue' || o.kind === 'escape') {
-      setWatch((w) => ({ ...w, from: length, holding: true }));
+      setWatch((w) => ({ ...w, from: length, holding: true, before: view.combatants }));
     }
     props.perform({ type: 'combatAct', optionId: o.id });
   };
@@ -208,6 +221,7 @@ export function CombatScene(props: ScreenProps) {
         reads={reads}
         onPick={act}
         techniqueOf={(id) => fightTechnique(props.state, props.ctx, id)}
+        gauges={gauges}
       />
     );
   }
@@ -220,6 +234,7 @@ export function CombatScene(props: ScreenProps) {
       fresh={length > watch.seen}
       reads={reads}
       onPick={act}
+      {...(gauges ? { gauges: { before: watch.before } } : {})}
       onWatched={() => {
         setWatch((w) => (w.seen === length ? w : { ...w, seen: length }));
       }}
