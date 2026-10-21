@@ -1,6 +1,9 @@
+import { canClimb, LADDER_TOP } from '@/systems/techniques';
+
+import type { CombatTechnique } from '../../contract';
 import { alive } from '../../rules/body';
 import { lastDitch, outmatched } from '../../rules/trumps';
-import { STEP_TRIAL, type ClimbReasons } from '../../rules/verbs';
+import { opensOf, openStep, STEP_TRIAL, stepBand, type ClimbReasons } from '../../rules/verbs';
 import { readOf } from './reads';
 import type { PlanFighter, Reads } from './state';
 
@@ -10,7 +13,8 @@ import type { PlanFighter, Reads } from './state';
  * whose eyes are at least as sharp as every foe's can size the fight up at sight (a far stronger
  * foe is a fight going against them from the start); anyone else has to try first, a few attacks
  * of their own, and see how the trade goes: losing it (the foe has lost less of their health than
- * they have), or barely touching the foe at all.
+ * they have), or barely touching the foe at all. A ladder's openings take no slot in a plan: the
+ * fighter climbs from their kit, a band at a time (`climbOrder`), as the fight calls for it.
  */
 
 /** Attacks a fighter throws before they know how the fight is going. */
@@ -61,4 +65,42 @@ export function climbReasons(
     lastDitch: lastDitch(self),
     settled: settled(self, exchange),
   };
+}
+
+function stepOf(t: CombatTechnique): number {
+  return opensOf(t)?.step ?? 0;
+}
+
+/**
+ * A kit's ladder openings in the order they climb, a band at a time (`stepBand`): the deepest of
+ * the next band within reach of the last (the third gate, then the sixth, then the seventh). The
+ * last step kills its user: never climbed by judgement, only played from a plan by hand.
+ */
+export function climbOrder(techniques: readonly CombatTechnique[]): CombatTechnique[] {
+  const openers = techniques.filter((t) => {
+    const opens = opensOf(t);
+    return opens !== undefined && opens.step < LADDER_TOP[opens.ladder];
+  });
+  const order: CombatTechnique[] = [];
+  for (let at = 0; ;) {
+    const from = at;
+    const reachable = openers.filter(
+      (t) => canClimb(from, stepOf(t)) && stepBand(stepOf(t)) > stepBand(from),
+    );
+    const band = Math.min(...reachable.map((t) => stepBand(stepOf(t))));
+    const next = reachable
+      .filter((t) => stepBand(stepOf(t)) === band)
+      .sort((a, b) => stepOf(b) - stepOf(a))[0];
+    if (!next) return order;
+    order.push(next);
+    at = stepOf(next);
+  }
+}
+
+/** The opening a fighter would climb to next from the step open now, if their kit has one. */
+export function nextOpening(f: PlanFighter): CombatTechnique | undefined {
+  return climbOrder(f.techniques).find((t) => {
+    const opens = opensOf(t);
+    return opens !== undefined && opens.step > openStep(f, opens.ladder);
+  });
 }

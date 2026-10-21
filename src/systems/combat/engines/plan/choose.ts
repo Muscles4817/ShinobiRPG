@@ -22,6 +22,7 @@ import { cardWorth } from './worth';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
+import { needsOpenTarget, openFoes } from './finishers';
 import { shelterInstinct } from './shelter';
 import { gatherInstinct } from './resting';
 import { sightInstinct } from './sight';
@@ -268,6 +269,7 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
       playable(self, c) &&
       !spendsReserve(self, c) &&
       (trumpNow || !trumpCard(c)) &&
+      (!needsOpenTarget(c) || openFoes(self, fighters).length > 0) &&
       (c.kind !== 'jutsu' || partnered(fighters, self, c.technique)),
   );
   const instinct = instinctFor(self, ready, moment);

@@ -61,6 +61,19 @@ export function stepHealthPrice(step: LadderStep, maxHealth: number): number {
   return Math.round(stepToll(step).health * maxHealth);
 }
 
+/**
+ * Exchanges a body could hold a step open before its health price brings it to `giveOutAt`:
+ * no end while it costs no health.
+ */
+export function exchangesOpen(
+  body: { readonly health: number; readonly maxHealth: number },
+  step: LadderStep,
+  giveOutAt: number,
+): number {
+  const price = stepHealthPrice(step, body.maxHealth);
+  return price > 0 ? Math.floor((body.health - giveOutAt) / price) : Infinity;
+}
+
 /** Breath a step costs each exchange, for a body of this much breath. */
 export function stepBreathPrice(step: LadderStep, maxBreath: number): number {
   return Math.round(stepToll(step).breath * maxBreath);

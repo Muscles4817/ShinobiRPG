@@ -4,7 +4,8 @@ import { canOpen, openStep } from '../../rules/verbs';
 import { playable } from './cards';
 import { defaultLoadout } from './defaults';
 import { afterEmpowers, empowerSelf } from './empower';
-import { prepStatuses } from './prep';
+import { climbOrder } from './climbing';
+import { prepInstinct, prepStatuses } from './prep';
 import { initialFighters, type PlanFighter, type Round } from './state';
 
 /** The Eight Gates in a planned fight: climbed, gating their arts, and giving out. */
@@ -137,11 +138,20 @@ describe('the gates', () => {
     expect(after.lines.join(' ')).toMatch(/body gives out under/);
   });
 
-  it('a default plan climbs the gates in two openings and never reaches for the last by itself', () => {
+  it('a plan slots no openings: the kit climbs a band at a time, never to the last by itself', () => {
     const [g] = round().fighters;
     const close = defaultLoadout(g!, round().fighters).close.map((s) => s.card);
-    expect(close).toEqual(expect.arrayContaining(['jutsu:life', 'jutsu:wonder']));
-    expect(close).not.toContain('jutsu:death');
-    expect(close.indexOf('jutsu:life')).toBeLessThan(close.indexOf('jutsu:wonder'));
+    expect(close).toContain('jutsu:tiger');
+    expect(close).not.toEqual(expect.arrayContaining(['jutsu:life']));
+    expect(climbOrder(g!.techniques).map((t) => t.id)).toEqual(['life', 'wonder']);
+  });
+
+  it('climbs the next gate by instinct once the fight calls for it', () => {
+    const r = round();
+    const moment = { band: 'close' as const, foe: r.fighters[1], fighters: r.fighters };
+    expect(prepInstinct(guy(r), [], moment)).toBeUndefined();
+    const hurt = withGuy(r, { health: 40 });
+    const card = prepInstinct(guy(hurt), [], { ...moment, fighters: hurt.fighters });
+    expect(card?.kind === 'jutsu' && card.technique.id).toBe('life');
   });
 });

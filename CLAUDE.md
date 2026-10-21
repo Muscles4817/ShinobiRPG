@@ -882,7 +882,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   source. Physical needs (nature, reserves, control grade) go in `needs`. Starters must be rank E.
   Its shape in a fight: `reach` (bands, when not its art's usual reach; ask `reachOf`),
   `accuracy` (sure, steady, wild: a multiplier on slipping it, and wild hits harder; `slipChance`
-  in `rules/defence.ts`) and a damage effect's `hits` (a flurry: the power split over 2–5 blows,
+  in `rules/defence.ts`), `needsTarget: 'open'` for a finisher that waits for a dazed or held
+  foe (`plan/finishers.ts`) and a damage effect's `hits` (a flurry: the power split over 2–5 blows,
   each dodged alone; a Guard or Counter meets only the first). An `area` effect has a `size` (small,
   wide, vast; `rules/verbs/area.ts`): a wide one is hard to slip, beats a plain Guard (only a
   swap or a wall escapes it) and throws the fight apart to mid; a vast one can't be outrun,
@@ -956,7 +957,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `LADDER_REACH` steps past the one open and holding until the body gives out; a technique may
   need a step open (`needsOpen`). Each step's lift, the chakra surge, its band and when it is
   worth opening live in `rules/verbs/ladders.ts`, judged on what the fight has shown
-  (`plan/climbing.ts`: taijutsu first, a band at a time); its price is its **toll**
+  (`plan/climbing.ts`: taijutsu first, a band at a time, from the kit: openings take no plan
+  slot, and only a step the body could hold a couple of exchanges); its price is its **toll**
   (`rules/verbs/tolls.ts`: breath, then health, each exchange; spent stamina, speed and strength
   once it shuts, and past the seventh a collapse), never the technique's own health price
   (validated); validation checks every needed step can be climbed to

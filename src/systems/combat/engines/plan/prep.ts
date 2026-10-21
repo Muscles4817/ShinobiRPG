@@ -2,11 +2,11 @@ import type { CombatTechnique, RangeBand } from '../../contract';
 import { alive } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
 import { RANGE_LABEL } from '../../rules/range';
-import { canOpen, clonesLeft, hasVerb, opensOf, worthOpening } from '../../rules/verbs';
-import { climbReasons } from './climbing';
+import { canOpen, clonesLeft, hasVerb, lastsOpen, opensOf, worthOpening } from '../../rules/verbs';
+import { climbReasons, nextOpening } from './climbing';
 import { stepStatus } from './ladderWords';
 import { SHROUD_STATUS } from './shrouds';
-import type { Card } from './cards';
+import { playable, type Card } from './cards';
 import type { PlanFighter, Reads } from './state';
 
 /**
@@ -38,13 +38,14 @@ export interface Facing {
 }
 
 /**
- * An empower worth using now: none in force, or a ladder's next step within reach, only when
- * the fight calls for it (`worthOpening`, on what it has shown: `climbing.ts`).
+ * An empower worth using now: none in force, or a ladder's next step within reach that the body
+ * could hold long enough to use (`lastsOpen`), only when the fight calls for it (`worthOpening`,
+ * on what it has shown: `climbing.ts`).
  */
 function empowerNeeded(self: PlanFighter, t: CombatTechnique, facing: Facing) {
   const opens = opensOf(t);
   if (!opens) return !self.empowered;
-  if (!canOpen(self, t)) return false;
+  if (!canOpen(self, t) || !lastsOpen(self, opens)) return false;
   return worthOpening(opens.step, climbReasons(self, facing));
 }
 
@@ -78,13 +79,21 @@ function wants(self: PlanFighter, t: CombatTechnique, moment: Moment): boolean {
   return hasVerb(t, 'trap') && (moment.opening ?? false);
 }
 
-/** A slotted empower, clone or trap the moment calls for. */
+/**
+ * A slotted empower, clone or trap the moment calls for; else the next step of a ladder in the
+ * kit, which takes no slot (`climbing.ts`), when the fight calls for it.
+ */
 export function prepInstinct(
   self: PlanFighter,
   ready: readonly Card[],
   moment: Moment,
 ): Card | undefined {
-  return ready.find((c) => c.kind === 'jutsu' && wants(self, c.technique, moment));
+  const slotted = ready.find((c) => c.kind === 'jutsu' && wants(self, c.technique, moment));
+  if (slotted) return slotted;
+  const opening = nextOpening(self);
+  if (!opening) return undefined;
+  const card: Card = { kind: 'jutsu', technique: opening };
+  return playable(self, card) && wants(self, opening, moment) ? card : undefined;
 }
 
 /** What the fight screen shows of it: empowered, how many clones, where a trap waits. */

@@ -54,6 +54,7 @@ export type CombatTechnique = Pick<
   | 'reach'
   | 'accuracy'
   | 'needsOpen'
+  | 'needsTarget'
   | 'moulded'
   | 'clan'
 > & {

@@ -4,6 +4,7 @@ import {
   canOpen,
   givesOut,
   isOpenFor,
+  lastsOpen,
   openStep,
   stepBand,
   stepShare,
@@ -94,6 +95,13 @@ describe('ladders in a fight', () => {
 
   it('climbs in bands: the first three gates, the fourth to sixth, the seventh, the last', () => {
     expect([1, 3, 4, 6, 7, 8].map(stepBand)).toEqual([1, 1, 2, 2, 3, 4]);
+  });
+
+  it('opens a step only with health enough to hold it a couple of exchanges', () => {
+    const gate7 = { ladder: 'gates' as const, step: 7 };
+    expect(lastsOpen({ health: 80, maxHealth: 100 }, gate7)).toBe(true);
+    expect(lastsOpen({ health: 40, maxHealth: 100 }, gate7)).toBe(false);
+    expect(lastsOpen({ health: 15, maxHealth: 100 }, { ladder: 'gates', step: 3 })).toBe(true);
   });
 
   it('gives out once its price has worn the body down, or the wind is gone', () => {

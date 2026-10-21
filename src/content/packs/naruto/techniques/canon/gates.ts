@@ -113,8 +113,10 @@ export const CANON_GATES: readonly TechniqueDef[] = [
     needsOpen: { ladder: 'gates', step: 7 },
     school: 'Strong Fist',
     reach: ['close', 'mid'],
+    // Five blows faster than almost anyone can slip: a swap is the answer, not a dodge.
+    accuracy: 'sure',
     effects: [
-      { verb: 'area', power: 24, size: 'wide' },
+      { verb: 'damage', power: 30, hits: 5 },
       { verb: 'knock', power: 10, to: 'far' },
     ],
     chakraCost: 24,

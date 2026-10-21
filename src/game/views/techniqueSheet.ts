@@ -231,7 +231,10 @@ function effectLine(effect: TechniqueEffect): SheetLine {
 }
 
 function needLines(def: TechniqueDef): string[] {
-  const open = def.needsOpen ? [`${capital(stepWords(def.needsOpen))} open`] : [];
+  const open = [
+    ...(def.needsOpen ? [`${capital(stepWords(def.needsOpen))} open`] : []),
+    ...(def.needsTarget === 'open' ? ['A foe dazed or held'] : []),
+  ];
   const n = def.needs;
   if (!n) return open;
   return [

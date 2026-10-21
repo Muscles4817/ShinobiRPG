@@ -64,6 +64,11 @@ export interface TechniqueDef {
   /** A step of a ladder that must be open in the fight to use it (`ladders.ts`): a gate. */
   readonly needsOpen?: LadderStep;
   /**
+   * What its target must be to use it on them: `open` (dazed, reeling or held), for a finisher
+   * that is a storm of blows no one standing ready would let land (Morning Peacock).
+   */
+  readonly needsTarget?: 'open';
+  /**
    * A taijutsu move or weapon form that moulds chakra (a Gentle Fist palm, an expansion, chakra
    * run along an edge): it costs chakra like any jutsu, where a plain body move costs breath.
    */

@@ -1,4 +1,4 @@
-import { canClimb, LADDER_TOP, type Verb } from '@/systems/techniques';
+import type { Verb } from '@/systems/techniques';
 
 import type { CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
 import { hasPerk } from '../../rules/body';
@@ -11,7 +11,6 @@ import {
   isHindering,
   isWounding,
   opensOf,
-  stepBand,
   techniquePower,
 } from '../../rules/verbs';
 import {
@@ -24,6 +23,7 @@ import {
   strikeCard,
   type Card,
 } from './cards';
+import { climbOrder } from './climbing';
 import { styleMoves } from './repertoire';
 import { opponentsOf } from './senses';
 import { defaultHoldOff } from './zoning';
@@ -62,42 +62,8 @@ function withStyle(fighter: PlanFighter, band: RangeBand, attacks: readonly Card
   return attacks.flatMap((c, i) => (i === first ? [strike] : inStyle(c) ? [] : [c]));
 }
 
-/** How many of a ladder's openings a default plan slots: a band each, not crowding out attacks. */
-const LADDER_SLOTS = 3;
-
-function lastStep(card: Card): boolean {
-  const opens = card.kind === 'jutsu' ? opensOf(card.technique) : undefined;
-  return opens !== undefined && opens.step >= LADDER_TOP[opens.ladder];
-}
-
 function stepOf(card: Card): number {
   return card.kind === 'jutsu' ? (opensOf(card.technique)?.step ?? 0) : 0;
-}
-
-/**
- * A ladder's openings in the order they climb, a band at a time (`stepBand`): the deepest of the
- * next band within reach of the last (the third gate, then the sixth, then the seventh). The plan
- * opens each only when the fight calls for it (`prep.ts`), so a fighter never jumps to the deep
- * gates for one move.
- */
-function ladderChain(pool: readonly Card[]): Card[] {
-  // The last step kills its user: never a plan's default, only a choice made by hand.
-  const openers = pool.filter((c) => stepOf(c) > 0 && !lastStep(c));
-  const chain: Card[] = [];
-  let at = 0;
-  for (;;) {
-    const from = at;
-    const reachable = openers.filter(
-      (c) => canClimb(from, stepOf(c)) && stepBand(stepOf(c)) > stepBand(from),
-    );
-    const band = Math.min(...reachable.map((c) => stepBand(stepOf(c))));
-    const next = reachable
-      .filter((c) => stepBand(stepOf(c)) === band)
-      .sort((a, b) => stepOf(b) - stepOf(a))[0];
-    if (!next) return chain;
-    chain.push(next);
-    at = stepOf(next);
-  }
 }
 
 /** A technique that needs a step deeper than the plan's openings climb is left out. */
@@ -196,15 +162,19 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     (c) =>
       (reaches || !isOffence(c) || isEntry(fighter, c, band)) && cardBlocked(fighter, c) === null,
   );
-  const chain = ladderChain(usable).slice(0, LADDER_SLOTS);
-  const climbable = usable.filter(withinClimb(Math.max(0, ...chain.map(stepOf))));
+  // A ladder's openings take no slot: the fighter climbs from the kit (`climbing.ts`), so the
+  // plan keeps the arts of the steps they can reach.
+  const climb = climbOrder(fighter.techniques).map((t) => opensOf(t)?.step ?? 0);
+  const climbable = usable.filter(withinClimb(Math.max(0, ...climb)));
   const trumps = climbable.filter((c) => c.kind === 'jutsu' && isTrump(c.technique));
   const pool = climbable.filter((c) => !trumps.includes(c) && stepOf(c) === 0);
   const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
   const damage = withStyle(fighter, band, damageJutsu(pool));
   const readies = (t: CombatTechnique) =>
     hasVerb(t, 'empower') || hasVerb(t, 'clone') || hasVerb(t, 'shroud');
-  const ready = chain.length > 0 ? chain : strongest(pool, readies).slice(0, 1);
+  // A fighter who climbs a ladder readies with it: their slot goes to the best art it opens.
+  const finisher = damage.filter((c) => c.kind === 'jutsu' && c.technique.needsOpen).slice(0, 1);
+  const ready = climb.length > 0 ? finisher : strongest(pool, readies).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const hold = holdSlot(pool, facing);
   // A flash tag finds a hidden foe surely, so it comes before a Search that may miss.

@@ -61,6 +61,7 @@ export {
   canOpen,
   givesOut,
   isOpenFor,
+  lastsOpen,
   openStep,
   opensOf,
   stepBand,

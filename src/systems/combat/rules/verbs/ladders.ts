@@ -1,5 +1,7 @@
 import { canClimb, type LadderId, type LadderStep } from '@/systems/techniques';
 
+import { exchangesOpen } from './tolls';
+
 import type { CombatTechnique } from '../../contract';
 
 /**
@@ -115,6 +117,18 @@ export function worthOpening(step: number, why: ClimbReasons): boolean {
     default:
       return why.lastDitch;
   }
+}
+
+/** Exchanges a step must be able to hold before it is worth opening: time to use what it gives. */
+export const MIN_EXCHANGES_OPEN = 2;
+
+/** Whether a body could hold a step open long enough to use it, before its price fells it. */
+export function lastsOpen(
+  body: { readonly health: number; readonly maxHealth: number },
+  step: LadderStep,
+): boolean {
+  const giveOutAt = Math.round(body.maxHealth * GIVE_OUT_SHARE);
+  return exchangesOpen(body, step, giveOutAt) >= MIN_EXCHANGES_OPEN;
 }
 
 /** Whether an open ladder gives out: health worn down by its price, or no breath left. */

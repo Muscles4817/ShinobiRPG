@@ -34,6 +34,7 @@ import { plannedPlay, type Play } from './priority';
 import { readsInTheMoment } from './judgement';
 import { noteAttack } from './reads';
 import { bestTarget } from './targeting';
+import { finisherTargets, needsOpenTarget } from './finishers';
 import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { intercept } from './team';
 import { springTraps } from './traps';
@@ -98,8 +99,11 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
     ...(round.reads ? { reads: round.reads } : {}),
   };
   const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
-  if (!foe || !isOffence(card) || canHit(card, foe, round.fighters)) return { card, target: foe };
-  return { card, target: targetFor(hittable(card, seen, round.fighters), rng) };
+  // A finisher that needs an opening goes for an open foe (`finishers.ts`).
+  const open = finisherTargets(card, seen);
+  const aim = !needsOpenTarget(card) || (foe && open.includes(foe)) ? foe : open[0];
+  if (!aim || !isOffence(card) || canHit(card, aim, round.fighters)) return { card, target: aim };
+  return { card, target: targetFor(hittable(card, open, round.fighters), rng) };
 }
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {

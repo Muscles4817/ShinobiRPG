@@ -385,8 +385,21 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   last ditch, and past the first band the gate open now must have been fought with for a couple of
   exchanges. The eighth is never a default. The fight table: Guy beats Kakashi 70% (63% before),
   Hiruzen 23% (30%), and Asuma every time; he opens the third gate in most bouts against Kakashi
-  and the sixth in a few, and in watched bouts never jumps to the seventh. His finishers (Morning
-  Peacock on the held or dazed, Daytime Tiger, Evening Elephant) are part two.
+  and the sixth in a few, and in watched bouts never jumps to the seventh.
+- **Slice 6, part two: climbing from the kit, and the finishers (done).** Watching Guy showed his
+  openings filling a small plan (three slots at his intellect): two gates and a trump left no room
+  for what the gates are for. A ladder's openings now take no slot, like defences and footwork:
+  the fighter climbs from their kit (`climbOrder`, `nextOpening` in `plan/climbing.ts`), from the
+  plan's turn and from instinct alike, when the fight calls for it; a player may still slot an
+  opening to play it by hand. A fighter who climbs readies with the ladder, so the plan's readying
+  slot goes to the best art it opens. A step is opened only if the body could hold it a couple of
+  exchanges before its toll fells it (`lastsOpen`): no seventh gate at a third of health to
+  collapse before acting. The finishers: **Morning Peacock** is a storm of five blows up close on
+  a target who is open (`needsTarget: 'open'`, `plan/finishers.ts`: dazed, reeling or held), so a
+  plan's slot and the instinct wait for an opening and go for the open foe; **Daytime Tiger** is a
+  wide area across the field; **Evening Elephant** is five sure blows. Guy now sets Kakashi up
+  (a Little Toe Attack's daze) and finishes with Morning Peacock. The fight table: Guy beats
+  Kakashi 53% (70% before), Hiruzen 20%.
 
 ## Open questions
 

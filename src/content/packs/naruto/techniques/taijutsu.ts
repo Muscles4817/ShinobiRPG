@@ -204,12 +204,11 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
       'Asakujaku. The sixth gate open: punches so fast the air catches fire, fanning out like a peacock’s tail.',
     discipline: 'taijutsu',
     needsOpen: { ladder: 'gates', step: 6 },
+    // A storm of blows no one standing ready would let land: it waits for an opening.
+    needsTarget: 'open',
     school: 'Strong Fist',
-    reach: ['close', 'mid'],
-    effects: [
-      { verb: 'area', power: 22, size: 'wide' },
-      { verb: 'daze', power: 6 },
-    ],
+    reach: ['close'],
+    effects: [{ verb: 'damage', power: 30, hits: 5 }],
     chakraCost: 22,
     rank: 'A',
     needs: { minReserves: 14 },
@@ -225,7 +224,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     school: 'Strong Fist',
     reach: ['close', 'mid', 'far'],
     effects: [
-      { verb: 'break', power: 31 },
+      { verb: 'area', power: 32, size: 'wide' },
       { verb: 'daze', power: 10 },
     ],
     chakraCost: 25,
