@@ -765,6 +765,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     the whole pack goes back as written by dropping its entry (`resetFighter`, `NO_EDITS`). The
     editor only keeps out what would break a fight: it refuses an empty technique list and
     doesn't offer another clan's techniques or a summons without a contract.
+    Its technique finder (`browseTechniques`, `edits/techniqueFilter.ts`) filters by art, rank,
+    element and **kind** (`techniqueKinds`: blade arts, nin-taijutsu, projectiles, power-ups and
+    gates, clones…, read from what a technique does, never tagged, so a new one needs no code),
+    each facet counting what the others leave, a page at a time.
 
 ### Content packs
 
@@ -1175,6 +1179,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Versus setup on a desk (`VersusDesk`) fills the window: the bout, the roster and a profile,
   each scrolling on its own; the profile follows the pointer through the roster and is never
   empty, and Enter fights.
+  The editor on a desk fills the window too: the roster, then the fighter's stats and their
+  techniques side by side (stacked below 1300px), the cards short as on a profile.
 - **Each page is designed for its job**, not built from one generic list: training is a drill
   board, the market is stalls with price tags, home is your room with tappable objects, the
   mission hall is a notice board, the academy is a scroll rack. New place kinds get their own
