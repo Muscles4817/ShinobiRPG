@@ -19,6 +19,7 @@ import { momentOf, SCENE_MEMORY } from './fresh';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
 import { commit, released } from './commitment';
+import { gather } from './gather';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
@@ -137,6 +138,8 @@ function play(round: Round, turn: Turn, card: Card): Round {
     case 'evade':
     case 'brace':
       return commit(round, turn, card.kind);
+    case 'gather':
+      return gather(round, turn);
     case 'guard':
     case 'dodge':
     case 'counter':

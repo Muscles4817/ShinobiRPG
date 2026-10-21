@@ -105,7 +105,7 @@ export function VersusBout(props: VersusBoutProps) {
       )}
       {fighting ? (
         <div className="wide-scene">
-          <CombatScene ctx={ctx} state={state} perform={perform} gauges />
+          <CombatScene ctx={ctx} state={state} perform={perform} seeAll />
         </div>
       ) : (
         !report && <AfterBout {...props} />

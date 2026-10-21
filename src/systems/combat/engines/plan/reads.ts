@@ -1,6 +1,6 @@
 import type { RangeBand } from '../../contract';
 import { effectsOf, hasVerb, isWounding } from '../../rules/verbs';
-import type { Card } from './cards';
+import { isDefenceCard, type Card } from './cards';
 import type { AttackStyle, DefenceKind, Read, Reads, Round } from './state';
 
 /**
@@ -28,6 +28,7 @@ function jutsuStyle(card: Extract<Card, { kind: 'jutsu' }>): AttackStyle {
 
 /** How an attack reads to the one it's aimed at, or null for what isn't an attack. */
 export function styleOf(card: Card): AttackStyle | null {
+  if (isDefenceCard(card)) return null;
   switch (card.kind) {
     case 'strike':
     case 'throw':
@@ -37,11 +38,7 @@ export function styleOf(card: Card): AttackStyle | null {
     case 'item':
       return card.item.effect === 'blast' ? 'jutsu' : null;
     case 'step':
-    case 'guard':
-    case 'dodge':
-    case 'counter':
-    case 'evade':
-    case 'brace':
+    case 'gather':
     case 'search':
     case 'dispel':
       return null;
@@ -63,6 +60,7 @@ export function defenceKind(card: Card): DefenceKind | null {
     case 'step':
     case 'evade':
     case 'brace':
+    case 'gather':
     case 'search':
     case 'dispel':
       return null;

@@ -258,7 +258,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     next turn and leaves them open (no dodge, a finisher target, though a Guard still works);
     afterwards they are steady for an exchange (`canDaze`), so dazes can't be chained. A plan is
     **actions** per distance, two to five by intellect grade (`slotLimit`: E 2, D 3, C 4, B+ 5):
-    techniques, tools, Search and Dispel. Defences and footwork take no slot
+    techniques, tools, Search, Dispel, Evade, Brace and Gather. Defences and footwork take no slot
     (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Counter or a
     substitution; never stacked) that reacts on its own, and a plan may say where to **fight at**:
     the fighter steps towards it first (after an emergency slot), and a step still costs the turn
@@ -313,9 +313,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     its thrower) and only if it reaches where the last left the fight (a knock to mid needs a move
     that reaches or rushes in); the setups are what the fight already does (a daze leaves them
     open, a pin hard to slip). The player builds theirs on the Jutsu tab (`techniques.chains`,
-    checked by `chainProblem` before they are kept); otherwise they are built from the moves known. Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
-    covers (wide ×1.5, vast ×2.2), and each exchange gives back a little, or a share of deep
-    reserves. Holds are fought, not waited out (`rules/escape.ts`, `plan/struggle.ts`): a pin
+    checked by `chainProblem` before they are kept); otherwise they are built from the moves known. Chakra ebbs and flows (`rules/chakra.ts`): a technique costs at least its rank's floor
+    (`RANK_COST_FLOOR`: C 10 up to S 45, before control), so a jōnin's best takes a real share of
+    a full tank; an area costs more for the ground it covers (wide ×1.5, vast ×2.2), and each
+    exchange gives back a little, or a share of deep reserves. **Gather** (`rules/gather.ts`,
+    `plan/gather.ts`) is an action that spends the turn drawing back a fifth of the fighter's
+    chakra and a share of their breath, and leaves them open until their next turn (they slip
+    far less, and only a Guard of the ready defences comes up); a foe whose attacks are out of
+    reach of what it has left gathers on instinct (`plan/resting.ts`), seldom up close when it
+    reads the fight. Holds are fought, not waited out (`rules/escape.ts`, `plan/struggle.ts`): a pin
     keeps its `grip` (how strongly it was cast, what breaks it), the held struggle against it at
     the end of each exchange, and a teammate may spend their turn pulling them free (the player's
     teammates always; otherwise a mind that reads the fight). A `channelled` pin keeps its

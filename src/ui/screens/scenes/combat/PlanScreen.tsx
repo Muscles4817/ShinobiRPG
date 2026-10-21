@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 
 import {
   combatLog,
@@ -17,7 +17,7 @@ import { useWideScreen } from '../../../layout/useWideScreen';
 
 import { FighterRead, FoeMoves } from './FighterRead';
 import { Formation } from './Formation';
-import { fightMeters, Gauges } from './Gauges';
+import { fightMeters, Gauges, type SightOf } from './Gauges';
 import { PlanPreviewContext, type PreviewFor } from './planPreview';
 import { PlansByOwner, TeamOrders } from './TeamOrders';
 import { useHealthPulses } from './useHealthPulses';
@@ -30,36 +30,8 @@ interface PlanScreenProps {
   readonly onPick: Pick;
   /** A technique a card plays, read in full for the preview beside the table. */
   readonly techniqueOf: (techniqueId: string) => JutsuCard | null;
-  /** Show every fighter's bars in place of your reserves alone (versus). */
-  readonly gauges?: boolean;
-}
-
-/** Your chakra and any meters the engine keeps, beside the formation (cards spend chakra). */
-function Reserves({ view }: { readonly view: CombatView }) {
-  const you = view.combatants.find((c) => c.side === 'player');
-  if (!you) return null;
-  return (
-    <div className="plan-reserves">
-      <span>Chakra</span>
-      <span className="hp chakra">
-        <i style={{ width: `${(you.chakra / you.maxChakra) * 100}%` }} />
-      </span>
-      <span className="num">
-        {you.chakra}/{you.maxChakra}
-      </span>
-      {(view.meters ?? []).map((m) => (
-        <Fragment key={m.id}>
-          <span>{m.label}</span>
-          <span className="hp meter">
-            <i style={{ width: `${m.max > 0 ? (m.value / m.max) * 100 : 0}%` }} />
-          </span>
-          <span className="num">
-            {m.value}/{m.max}
-          </span>
-        </Fragment>
-      ))}
-    </div>
-  );
+  /** How much of each fighter's bars you can see. */
+  readonly sightOf: SightOf;
 }
 
 /** How many lines of the story so far the plan screen keeps in view. */
@@ -141,7 +113,7 @@ function BeginBar({ view, onPick }: { readonly view: CombatView; readonly onPick
  * until you begin. On a wide screen your cards, the field and the read of a fighter sit side by
  * side, so the table is in view while you set it.
  */
-export function PlanScreen({ view, reads, onPick, techniqueOf, gauges }: PlanScreenProps) {
+export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanScreenProps) {
   const foes = view.combatants.filter((c) => c.side === 'enemy');
   const [selected, setSelected] = useState<string | null>(null);
   const pulses = useHealthPulses(view.combatants);
@@ -185,10 +157,13 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, gauges }: PlanScr
       previewFor={hover.handlersFor}
     />
   );
-  const reserves = gauges ? (
-    <Gauges fighters={view.combatants} pulses={pulses} shared={fightMeters(view)} />
-  ) : (
-    <Reserves view={view} />
+  const reserves = (
+    <Gauges
+      fighters={view.combatants}
+      pulses={pulses}
+      shared={fightMeters(view)}
+      sightOf={sightOf}
+    />
   );
   const fighterRead = <FighterRead fighter={shown} read={shown ? reads[shown.id] : undefined} />;
   const cards = (

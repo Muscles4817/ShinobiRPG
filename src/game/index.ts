@@ -205,6 +205,7 @@ export {
 } from './views/shinobi';
 export type { CompanionNote, Pace, ScoutingRead, StatCompare, Threat, TraitNote } from './scouting';
 export { combatScene, finishedFightScene, combatScouting, fightTechnique } from './views/scene';
+export { fighterSight, gaugeRead, SEEN_IN_FULL, type FighterSight } from './views/gaugeSight';
 export {
   missionScene,
   type MissionScene,
