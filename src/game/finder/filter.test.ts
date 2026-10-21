@@ -3,8 +3,8 @@ import {
   OPEN_TECHNIQUE_FILTER,
   TECHNIQUE_PAGE_SIZE,
   type TechniqueFilter,
-} from './techniqueFilter';
-import type { EditorTechnique } from './view';
+} from './filter';
+import type { EditorTechnique } from '../edits';
 
 /** Finding a technique: facets, counts that never lead nowhere, and pages. */
 

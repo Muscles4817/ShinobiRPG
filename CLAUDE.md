@@ -773,10 +773,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     the whole pack goes back as written by dropping its entry (`resetFighter`, `NO_EDITS`). The
     editor only keeps out what would break a fight: it refuses an empty technique list and
     doesn't offer another clan's techniques or a summons without a contract.
-    Its technique finder (`browseTechniques`, `edits/techniqueFilter.ts`) filters by art, rank,
-    element and **kind** (`techniqueKinds`: blade arts, nin-taijutsu, projectiles, power-ups and
-    gates, clones…, read from what a technique does, never tagged, so a new one needs no code),
-    each facet counting what the others leave, a page at a time.
+    Its technique finder (`browseTechniques`, `game/finder/`) filters by art, rank, element and
+    **kind** (`techniqueKinds`: blade arts, nin-taijutsu, projectiles, power-ups and gates,
+    clones…, read from what a technique does, never tagged, so a new one needs no code), each
+    facet counting what the others leave, a page at a time. The Jutsu deck uses the same finder
+    (`ui/components/finder/`) once it holds enough cards to need it, its art still the coloured
+    chips.
 
 ### Content packs
 

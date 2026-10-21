@@ -15,7 +15,7 @@ import type { GameContext } from '../context';
 import type { Discipline } from '../views/common';
 import { versusRoster, type VersusFighter } from '../versus/roster';
 import { originalFighter, type FighterOriginal } from './originals';
-import { techniqueKinds, type TechniqueKind } from './techniqueKinds';
+import { techniqueKinds, type TechniqueKind } from '../finder';
 
 /**
  * The editor's view of a fighter: each stat beside the pack's value, what they fight with

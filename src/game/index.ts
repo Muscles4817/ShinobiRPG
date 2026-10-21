@@ -45,6 +45,7 @@ export type { GameAction, GameActionType } from './actions/types';
 export { dispatch, blockerFor } from './dispatch';
 // The content editor's whole public API (`edits/index.ts`).
 export * from './edits';
+export * from './finder';
 export { saveSummary, type SaveSummary } from './views/menu';
 export {
   browseRoster,
