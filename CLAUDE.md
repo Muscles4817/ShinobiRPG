@@ -954,8 +954,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Plan & Watch applies it in `engines/plan/jutsu.ts`. An empower may open a step of a
   **ladder** (`opens`, `systems/techniques/ladders.ts`: the Eight Gates), climbing at most
   `LADDER_REACH` steps past the one open and holding until the body gives out; a technique may
-  need a step open (`needsOpen`). Each step's lift, the chakra surge and when a deep step is worth
-  opening live in `rules/verbs/ladders.ts`; validation checks every needed step can be climbed to
+  need a step open (`needsOpen`). Each step's lift, the chakra surge, its band and when it is
+  worth opening live in `rules/verbs/ladders.ts`, judged on what the fight has shown
+  (`plan/climbing.ts`: taijutsu first, a band at a time); its price is its **toll**
+  (`rules/verbs/tolls.ts`: breath, then health, each exchange; spent stamina, speed and strength
+  once it shuts, and past the seventh a collapse), never the technique's own health price
+  (validated); validation checks every needed step can be climbed to
   by the pack and by each arsenal that holds it. Shelved engines read a technique
   through `primaryEffect`. Verbs that leave something behind (knock, pin, drain, afflict:
   burn, bleed, poison; counter, a readied riposte) keep their rules in

@@ -2,12 +2,12 @@ import type { CombatTechnique, RangeBand } from '../../contract';
 import { alive } from '../../rules/body';
 import { canAttackFrom } from '../../rules/kit';
 import { RANGE_LABEL } from '../../rules/range';
-import { lastDitch, outmatched } from '../../rules/trumps';
 import { canOpen, clonesLeft, hasVerb, opensOf, worthOpening } from '../../rules/verbs';
+import { climbReasons } from './climbing';
 import { stepStatus } from './ladderWords';
 import { SHROUD_STATUS } from './shrouds';
 import type { Card } from './cards';
-import type { PlanFighter } from './state';
+import type { PlanFighter, Reads } from './state';
 
 /**
  * Getting ready: empower, clone and trap, the techniques a fighter uses on themselves before
@@ -23,28 +23,29 @@ interface Moment {
   readonly foe: PlanFighter | undefined;
   readonly opening?: boolean;
   readonly fighters?: readonly PlanFighter[];
+  readonly reads?: Reads;
+  readonly exchange?: number;
 }
 
 /** Who a fighter is getting ready against: whether any is in sight, and all of them. */
 export interface Facing {
   readonly foeInSight: boolean;
   readonly foes: readonly PlanFighter[];
+  /** What has been seen of the fight so far: a ladder is climbed on what it shows. */
+  readonly reads?: Reads;
+  /** The exchange it would be used in. */
+  readonly exchange?: number;
 }
 
 /**
- * An empower worth using now: none in force, or a ladder's next step within reach, and a deep
- * step only when the fight calls for it (`worthOpening`).
+ * An empower worth using now: none in force, or a ladder's next step within reach, only when
+ * the fight calls for it (`worthOpening`, on what it has shown: `climbing.ts`).
  */
-function empowerNeeded(self: PlanFighter, t: CombatTechnique, foes: readonly PlanFighter[]) {
+function empowerNeeded(self: PlanFighter, t: CombatTechnique, facing: Facing) {
   const opens = opensOf(t);
   if (!opens) return !self.empowered;
   if (!canOpen(self, t)) return false;
-  const why = {
-    outmatched: outmatched(self, foes),
-    hurt: self.health < self.maxHealth / 2,
-    lastDitch: lastDitch(self),
-  };
-  return worthOpening(opens.step, why);
+  return worthOpening(opens.step, climbReasons(self, facing));
 }
 
 /**
@@ -55,14 +56,19 @@ export function prepNeeded(self: PlanFighter, t: CombatTechnique, facing: Facing
   const boosts = hasVerb(t, 'empower') || hasVerb(t, 'clone') || hasVerb(t, 'shroud');
   if (boosts && !facing.foeInSight) return false;
   if (hasVerb(t, 'shroud') && self.shroud) return false;
-  if (hasVerb(t, 'empower') && !empowerNeeded(self, t, facing.foes)) return false;
+  if (hasVerb(t, 'empower') && !empowerNeeded(self, t, facing)) return false;
   if (hasVerb(t, 'clone') && clonesLeft(self) > 0) return false;
   return !(hasVerb(t, 'trap') && self.trap);
 }
 
 function wants(self: PlanFighter, t: CombatTechnique, moment: Moment): boolean {
   const foes = (moment.fighters ?? []).filter((f) => f.side !== self.side && alive(f));
-  if (!prepNeeded(self, t, { foeInSight: moment.foe !== undefined, foes })) return false;
+  const facing = {
+    foeInSight: moment.foe !== undefined,
+    foes,
+    ...(moment.reads ? { reads: moment.reads } : {}),
+  };
+  if (!prepNeeded(self, t, facing)) return false;
   // Ready where they can attack, or before a charge to where they can.
   const charging = self.keepAt !== undefined && self.keepAt !== moment.band;
   if (hasVerb(t, 'shroud')) return true;

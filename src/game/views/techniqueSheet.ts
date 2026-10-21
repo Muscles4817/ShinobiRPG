@@ -22,6 +22,7 @@ import {
 } from '@/systems/techniques';
 
 import { playerCombatant } from '../combatants';
+import { gateLine } from './gateToll';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 
@@ -179,13 +180,14 @@ function detailedLine(effect: Extract<TechniqueEffect, { verb: DetailedVerb }>):
           : 'Takes you to where you fight best',
         chip: null,
       };
-    case 'empower':
+    case 'empower': {
+      const raises = listed(effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()));
+      if (effect.opens) return gateLine(effect.opens, raises);
       return {
-        text: effect.opens
-          ? `Opens ${stepWords(effect.opens)}: raises ${listed(effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()))} until the body gives out`
-          : `Raises ${listed(effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()))}, at a price`,
+        text: `Raises ${raises}, at a price`,
         chip: effect.healthPerExchange ? `−${effect.healthPerExchange} health a turn` : null,
       };
+    }
     case 'clone':
       return {
         text: `Makes clones that ${effect.strikes ? 'fight and ' : ''}take hits`,

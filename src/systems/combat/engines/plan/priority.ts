@@ -166,7 +166,14 @@ function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boole
   if (moveDestination(self, t) === round.range) return false;
   if (!partnered(round.fighters, self, t)) return false;
   const foes = opponentsOf(round.fighters, self);
-  if (!prepNeeded(self, t, { foeInSight: foes.some((f) => inSight(self, f)), foes })) return false;
+  const foeInSight = foes.some((f) => inSight(self, f));
+  const facing = {
+    foeInSight,
+    foes,
+    exchange: round.number,
+    ...(round.reads ? { reads: round.reads } : {}),
+  };
+  if (!prepNeeded(self, t, facing)) return false;
   return !(hasVerb(t, 'conceal') && self.hidden);
 }
 

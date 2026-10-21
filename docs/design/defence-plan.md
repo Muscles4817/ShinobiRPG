@@ -369,8 +369,24 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   copies land for most of Naruto's health). Watching those bouts found a readied riposte (a
   lightning clone's shock) answering shuriken thrown from mid; it now answers only up close, as
   a ready Counter does, and Kakashi beats Asuma 87% of the time (100% with the bug).
-- **Guy never opens a deep gate** in the table's bouts (only the first, the Gate of Life), so
-  his finishers never come into it; that is slice 6.
+- **Slice 6, part one: the Gates' price and Guy's judgement (done).** Each gate takes a toll
+  (`rules/verbs/tolls.ts`) in place of the technique's own health price: the first three wind
+  their user (a share of their breath every exchange), the fourth to sixth wear on health too
+  (the sixth 8 a turn), and the seventh drains 20 a turn, about a round. An open ladder gives out
+  when health falls to a tenth or breath runs out, and once it shuts the body is spent for the
+  rest of the fight (less stamina; past the third gate, slower and weaker) and the gates stay
+  shut; when the seventh shuts its user collapses, out of the fight. Guy fights with his style
+  first and climbs a band at a time (the first three gates, the fourth to sixth, the seventh;
+  `stepBand`, a default plan slotting one opener per band), each band for a reason the fight
+  gives (`plan/climbing.ts`): eyes at least as sharp as every foe's size a far stronger one up at
+  sight, anyone else has to throw a few attacks first and see the trade go against them, or their
+  blows barely touch the foe. The first band opens when losing or hurt, the second when losing and
+  hurt or unable to hurt the foe, the seventh only against a foe he can't hurt or losing in the
+  last ditch, and past the first band the gate open now must have been fought with for a couple of
+  exchanges. The eighth is never a default. The fight table: Guy beats Kakashi 70% (63% before),
+  Hiruzen 23% (30%), and Asuma every time; he opens the third gate in most bouts against Kakashi
+  and the sixth in a few, and in watched bouts never jumps to the seventh. His finishers (Morning
+  Peacock on the held or dazed, Daytime Tiger, Evening Elephant) are part two.
 
 ## Open questions
 

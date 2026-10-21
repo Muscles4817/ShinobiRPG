@@ -1,5 +1,6 @@
 import type { CombatantSetup, CombatTechnique } from '../../contract';
-import { openStep } from '../../rules/verbs';
+import { maxBreath } from '../../rules/breath';
+import { canOpen, openStep } from '../../rules/verbs';
 import { playable } from './cards';
 import { defaultLoadout } from './defaults';
 import { afterEmpowers, empowerSelf } from './empower';
@@ -23,7 +24,7 @@ const attributes = {
   fuuinjutsu: 5,
 };
 
-function opener(id: string, step: number, price = 4): CombatTechnique {
+function opener(id: string, step: number): CombatTechnique {
   return {
     id,
     name: id,
@@ -33,7 +34,6 @@ function opener(id: string, step: number, price = 4): CombatTechnique {
         verb: 'empower',
         power: 10,
         boosts: ['strength', 'speed'],
-        healthPerExchange: price,
         opens: { ladder: 'gates', step },
       },
     ],
@@ -41,7 +41,7 @@ function opener(id: string, step: number, price = 4): CombatTechnique {
   };
 }
 const life = opener('life', 3);
-const wonder = opener('wonder', 7, 30);
+const wonder = opener('wonder', 7);
 const death = opener('death', 8);
 const tiger: CombatTechnique = {
   id: 'tiger',
@@ -79,6 +79,10 @@ function round(): Round {
 
 const use = (t: CombatTechnique) => ({ technique: t, effect: t.effects[0] as never });
 const guy = (r: Round): PlanFighter => r.fighters.find((f) => f.id === 'guy')!;
+const withGuy = (r: Round, change: Partial<PlanFighter>): Round => ({
+  ...r,
+  fighters: r.fighters.map((f) => (f.id === 'guy' ? { ...f, ...change } : f)),
+});
 
 describe('the gates', () => {
   it('climbs from the third to the seventh, each opening a surge of chakra', () => {
@@ -100,19 +104,37 @@ describe('the gates', () => {
     expect(playable(guy(seventh), card)).toBe(true);
   });
 
-  it('gives out once the price wears the body down: the gates shut and they reel', () => {
+  it('winds its user each exchange it is open, more for a deeper gate', () => {
+    const third = empowerSelf(round(), guy(round()), use(life));
+    const winded = afterEmpowers(third, 2);
+    const full = maxBreath(guy(third).attributes);
+    expect(guy(winded).breath).toBeLessThan(full);
+    const seventh = empowerSelf(third, guy(third), use(wonder));
+    expect(guy(afterEmpowers(seventh, 2)).breath).toBeLessThan(guy(winded).breath ?? full);
+    expect(guy(afterEmpowers(seventh, 2)).health).toBeLessThan(100);
+  });
+
+  it('gives out once the wind is gone: the gates shut, and the body is spent for the fight', () => {
+    const r = round();
+    const third = empowerSelf(r, guy(r), use(life));
+    const out = withGuy(third, { breath: 1 });
+    const after = afterEmpowers(out, 2);
+    expect(guy(after).empowered).toBeUndefined();
+    expect(guy(after).stunned).toBeGreaterThan(0);
+    expect(guy(after).attributes.stamina).toBeLessThan(attributes.stamina);
+    expect(guy(after).attributes.speed).toBe(attributes.speed);
+    expect(after.lines.join(' ')).toMatch(/gates slam shut/);
+    expect(canOpen(guy(after), life)).toBe(false);
+  });
+
+  it('collapses its user when the seventh gate shuts: out of the fight', () => {
     const r = round();
     const third = empowerSelf(r, guy(r), use(life));
     const seventh = empowerSelf(third, guy(third), use(wonder));
-    const worn = {
-      ...seventh,
-      fighters: seventh.fighters.map((f) => (f.id === 'guy' ? { ...f, health: 30 } : f)),
-    };
-    const after = afterEmpowers(worn, 2);
-    expect(guy(after).empowered).toBeUndefined();
-    expect(guy(after).stunned).toBeGreaterThan(0);
-    expect(guy(after).attributes).toEqual(attributes);
-    expect(after.lines.join(' ')).toMatch(/gates slam shut/);
+    const after = afterEmpowers(withGuy(seventh, { health: 25 }), 2);
+    expect(guy(after).health).toBe(0);
+    expect(guy(after).fellAt).toBe(after.number);
+    expect(after.lines.join(' ')).toMatch(/body gives out under/);
   });
 
   it('a default plan climbs the gates in two openings and never reaches for the last by itself', () => {

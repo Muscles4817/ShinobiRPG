@@ -133,7 +133,10 @@ interface VerbExtras {
   readonly empower: {
     /** The stats it raises while it holds. Never empty (validated). */
     readonly boosts: readonly FightStat[];
-    /** Health the user's body pays at the end of each exchange it holds. */
+    /**
+     * Health the user's body pays at the end of each exchange it holds. Not for a ladder's step,
+     * which pays its step's toll (validated).
+     */
     readonly healthPerExchange?: number;
     /** What it takes out of its user once the fight is over, each time it is used. */
     readonly afterCost?: CostTemplate;
@@ -247,9 +250,16 @@ function empowerProblem(effect: EffectOf<'empower'>): string | null {
   }
   const step = effect.opens ? ladderStepProblem(effect.opens) : null;
   if (step) return `an empower that opens ${step}`;
+  if (effect.opens && effect.healthPerExchange !== undefined) {
+    return 'a ladder step with a health price of its own (its toll is its price)';
+  }
   if (effect.afterCost && !costIsSane(effect.afterCost)) {
     return 'an empower whose after-cost is not positive';
   }
-  const priced = (effect.healthPerExchange ?? 0) > 0 || effect.afterCost !== undefined;
+  // A ladder's step is priced by its toll in a fight (`combat/rules/verbs/tolls.ts`).
+  const priced =
+    (effect.healthPerExchange ?? 0) > 0 ||
+    effect.afterCost !== undefined ||
+    effect.opens !== undefined;
   return priced ? null : 'an empower with no price (it needs a health price or an after-cost)';
 }

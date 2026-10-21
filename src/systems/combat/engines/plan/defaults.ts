@@ -11,6 +11,7 @@ import {
   isHindering,
   isWounding,
   opensOf,
+  stepBand,
   techniquePower,
 } from '../../rules/verbs';
 import {
@@ -61,8 +62,8 @@ function withStyle(fighter: PlanFighter, band: RangeBand, attacks: readonly Card
   return attacks.flatMap((c, i) => (i === first ? [strike] : inStyle(c) ? [] : [c]));
 }
 
-/** How many of a ladder's openings a default plan slots: enough to climb, not crowd out attacks. */
-const LADDER_SLOTS = 2;
+/** How many of a ladder's openings a default plan slots: a band each, not crowding out attacks. */
+const LADDER_SLOTS = 3;
 
 function lastStep(card: Card): boolean {
   const opens = card.kind === 'jutsu' ? opensOf(card.technique) : undefined;
@@ -74,8 +75,10 @@ function stepOf(card: Card): number {
 }
 
 /**
- * A ladder's openings in the order they climb, each the deepest within reach of the last (the
- * third gate, then the sixth): the plan opens them as the fight calls for (`prep.ts`).
+ * A ladder's openings in the order they climb, a band at a time (`stepBand`): the deepest of the
+ * next band within reach of the last (the third gate, then the sixth, then the seventh). The plan
+ * opens each only when the fight calls for it (`prep.ts`), so a fighter never jumps to the deep
+ * gates for one move.
  */
 function ladderChain(pool: readonly Card[]): Card[] {
   // The last step kills its user: never a plan's default, only a choice made by hand.
@@ -84,8 +87,12 @@ function ladderChain(pool: readonly Card[]): Card[] {
   let at = 0;
   for (;;) {
     const from = at;
-    const next = openers
-      .filter((c) => canClimb(from, stepOf(c)))
+    const reachable = openers.filter(
+      (c) => canClimb(from, stepOf(c)) && stepBand(stepOf(c)) > stepBand(from),
+    );
+    const band = Math.min(...reachable.map((c) => stepBand(stepOf(c))));
+    const next = reachable
+      .filter((c) => stepBand(stepOf(c)) === band)
       .sort((a, b) => stepOf(b) - stepOf(a))[0];
     if (!next) return chain;
     chain.push(next);
