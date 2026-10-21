@@ -1,0 +1,54 @@
+/*
+ * A technique finder (`ui/components/finder/`): a name, the facets, the ready-only switch and a
+ * pager, on the night ground by default; a screen on paper recolours the labels.
+ */
+
+.finder {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.finder-search,
+.finder-facet select {
+  min-height: 40px;
+  font: inherit;
+}
+
+.finder-facets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.finder-facet {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.finder-found {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.finder-ready {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+}
+
+.finder-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}

@@ -218,53 +218,8 @@
   gap: 6px;
 }
 
-/* The technique finder: a name, four facets, readiness, and a page of cards. */
-.editor-finder {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.editor-search,
-.editor-facet select {
-  min-height: 40px;
-  font: inherit;
-}
-
-.editor-facets {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 8px;
-}
-
-.editor-facet {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 0.86rem;
-  color: var(--paper-muted);
-}
-
-.editor-found {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.editor-ready {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 40px;
-}
-
-.editor-pager {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 0.9rem;
+/* On the sheet's paper the finder's labels and page count take the paper's muted ink. */
+.editor-sheet .finder-facet,
+.editor-sheet .finder-pager {
   color: var(--paper-muted);
 }

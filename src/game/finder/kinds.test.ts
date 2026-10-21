@@ -1,6 +1,6 @@
 import { contextForPack } from '../context';
-import { techniqueKinds, type TechniqueKind } from './techniqueKinds';
-import { NO_EDITS } from './state';
+import { NO_EDITS } from '../edits';
+import { techniqueKinds, type TechniqueKind } from './kinds';
 
 /** The kinds of techniques read from what they do, in both packs. */
 

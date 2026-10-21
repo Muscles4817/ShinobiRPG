@@ -2,14 +2,25 @@ import { STAT_GRADES, STAT_INFO, type StatGrade } from '@/systems/stats';
 import { DISCIPLINES, ELEMENTS, type Element } from '@/systems/techniques';
 
 import type { Discipline } from '../views/common';
-import { TECHNIQUE_KIND_LABEL, TECHNIQUE_KINDS, type TechniqueKind } from './techniqueKinds';
-import type { EditorTechnique } from './view';
+import { TECHNIQUE_KIND_LABEL, TECHNIQUE_KINDS, type TechniqueKind } from './kinds';
 
 /**
- * Finding a technique to give a fighter among hundreds: by art, rank, element and kind, by
- * name, and only what their grades carry if asked, a page at a time. Each facet counts what
- * the other filters leave, so no choice leads to an empty list.
+ * Finding a technique among many: by art, rank, element and kind, by name, and only the ready
+ * ones if asked, a page at a time. Each facet counts what the other filters leave, so no
+ * choice leads to an empty list. Any list of techniques that says those things can be browsed:
+ * the editor's choices for a fighter, your own Jutsu deck.
  */
+
+/** What a technique must say about itself to be found. */
+export interface FindableTechnique {
+  readonly name: string;
+  readonly discipline: Discipline;
+  readonly rank: StatGrade;
+  readonly element: Element | null;
+  readonly kinds: readonly TechniqueKind[];
+  /** Usable as it stands (their grades carry it; you know it): what "ready only" keeps. */
+  readonly ready: boolean;
+}
 
 /** How many techniques a page shows, unless the screen asks for more. */
 export const TECHNIQUE_PAGE_SIZE = 12;
@@ -21,7 +32,7 @@ export interface TechniqueFilter {
   readonly element: Element | 'none' | 'all';
   readonly kind: TechniqueKind | 'all';
   readonly query: string;
-  /** Only what their grades carry now. */
+  /** Only the ready ones (`FindableTechnique.ready`). */
   readonly readyOnly: boolean;
 }
 
@@ -41,7 +52,7 @@ export interface TechniqueFacetOption<V extends string> {
   readonly count: number;
 }
 
-export interface TechniqueBrowse {
+export interface TechniqueBrowse<T extends FindableTechnique = FindableTechnique> {
   readonly arts: readonly TechniqueFacetOption<Discipline>[];
   readonly ranks: readonly TechniqueFacetOption<StatGrade>[];
   readonly elements: readonly TechniqueFacetOption<Element | 'none'>[];
@@ -53,7 +64,7 @@ export interface TechniqueBrowse {
   /** The page shown (clamped), from 0, and how many there are (at least one). */
   readonly page: number;
   readonly pages: number;
-  readonly shown: readonly EditorTechnique[];
+  readonly shown: readonly T[];
   readonly pageSize: number;
 }
 
@@ -61,7 +72,7 @@ const FACETS = ['art', 'rank', 'element', 'kind'] as const;
 type Facet = (typeof FACETS)[number];
 
 /** Whether a technique fits each facet's choice (`all` fits everything). */
-const FITS: Readonly<Record<Facet, (t: EditorTechnique, f: TechniqueFilter) => boolean>> = {
+const FITS: Readonly<Record<Facet, (t: FindableTechnique, f: TechniqueFilter) => boolean>> = {
   art: (t, f) => f.art === 'all' || t.discipline === f.art,
   rank: (t, f) => f.rank === 'all' || t.rank === f.rank,
   element: (t, f) => f.element === 'all' || (t.element ?? 'none') === f.element,
@@ -69,7 +80,7 @@ const FITS: Readonly<Record<Facet, (t: EditorTechnique, f: TechniqueFilter) => b
 };
 
 /** Whether it passes the filter, leaving one facet out to count that facet's choices. */
-function passes(t: EditorTechnique, f: TechniqueFilter, except: Facet | null): boolean {
+function passes(t: FindableTechnique, f: TechniqueFilter, except: Facet | null): boolean {
   if (f.readyOnly && !t.ready) return false;
   const needle = f.query.trim().toLowerCase();
   if (needle !== '' && !t.name.toLowerCase().includes(needle)) return false;
@@ -78,9 +89,9 @@ function passes(t: EditorTechnique, f: TechniqueFilter, except: Facet | null): b
 
 /** The values of a facet that something left by the other filters has, with their counts. */
 function facet<V extends string>(
-  left: readonly EditorTechnique[],
+  left: readonly FindableTechnique[],
   values: readonly V[],
-  has: (t: EditorTechnique, v: V) => boolean,
+  has: (t: FindableTechnique, v: V) => boolean,
   label: (v: V) => string,
 ): TechniqueFacetOption<V>[] {
   return values
@@ -97,12 +108,12 @@ function elementLabel(e: Element | 'none'): string {
 }
 
 /** The techniques the filter lets through, a page of them, and each facet's choices. */
-export function browseTechniques(
-  list: readonly EditorTechnique[],
+export function browseTechniques<T extends FindableTechnique>(
+  list: readonly T[],
   filter: TechniqueFilter,
   page: number,
   pageSize = TECHNIQUE_PAGE_SIZE,
-): TechniqueBrowse {
+): TechniqueBrowse<T> {
   const left = (except: Facet) => list.filter((t) => passes(t, filter, except));
   const found = list.filter((t) => passes(t, filter, null));
   const pages = Math.max(1, Math.ceil(found.length / pageSize));
