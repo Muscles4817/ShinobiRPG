@@ -21,17 +21,3 @@ export {
   type EditorTechnique,
   type FighterEditor,
 } from './view';
-export {
-  OPEN_TECHNIQUE_FILTER,
-  TECHNIQUE_PAGE_SIZE,
-  browseTechniques,
-  type TechniqueBrowse,
-  type TechniqueFacetOption,
-  type TechniqueFilter,
-} from './techniqueFilter';
-export {
-  TECHNIQUE_KIND_LABEL,
-  TECHNIQUE_KINDS,
-  techniqueKinds,
-  type TechniqueKind,
-} from './techniqueKinds';

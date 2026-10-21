@@ -1,10 +1,11 @@
 import { effortOf, type Effort } from '@/systems/combat';
 import type { JournalChip, JournalTone } from '@/systems/journal';
 import type { StatGrade } from '@/systems/stats';
-import type { TechniqueDef, Verb } from '@/systems/techniques';
+import type { Element, TechniqueDef, Verb } from '@/systems/techniques';
 import { formatDate, slotName } from '@/systems/time';
 
 import { playerCombatant } from '../combatants';
+import { techniqueKinds, type TechniqueKind } from '../finder';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import type { Discipline } from './common';
@@ -22,7 +23,11 @@ export interface JutsuCard {
   readonly name: string;
   readonly description: string;
   readonly discipline: Discipline;
-  readonly element: string | null;
+  readonly element: Element | null;
+  /** What kind of technique it is, read from what it does (`techniqueKinds`). */
+  readonly kinds: readonly TechniqueKind[];
+  /** Known: what the deck's "only those you know" keeps. */
+  readonly ready: boolean;
   /** What it does, in order, with each effect's strength. */
   readonly effects: readonly JutsuEffect[];
   /** What a fight would charge you for it: chakra, or breath for a body move. */
@@ -55,6 +60,8 @@ export function jutsuCard(
     description: t.description,
     discipline: t.discipline,
     element: t.element ?? null,
+    kinds: techniqueKinds(t),
+    ready: known,
     effects: t.effects.map((e) => ({ verb: e.verb, power: e.power })),
     cost: effortOf({ attributes: fighter.attributes }, { ...t, ...(unstable ? { unstable } : {}) }),
     rank: t.rank,
