@@ -28,7 +28,7 @@ import { watchedBy } from './mimicry';
 import { combination, comboPartner } from './combo';
 import { empowerSelf } from './empower';
 import { castField } from './field';
-import { move } from './footwork';
+import { move, spunAway } from './footwork';
 import { afflict, drain, knock, pin, readyRiposte } from './lingering';
 import { damage, type Aimed } from './wounding';
 import { opponentsOf, type Turn } from './senses';
@@ -168,19 +168,23 @@ function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse):
   return say(round, tell(SHAKEN_OFF[verb], { t: target }));
 }
 
+/**
+ * A hold, a seal or a drain meets a ready spin (Palm Rotation) and then an automatic shield
+ * before it can take hold; a hit meets them as it lands (`react.ts`). The round it was turned
+ * aside in, or null.
+ */
+function turnedAway(round: Round, aimed: Aimed, t: CombatTechnique): Round | null {
+  const { actor: attacker, target, rng } = aimed;
+  const swap = { attacker, target, what: t.name, discipline: t.discipline };
+  const illusion = t.discipline === 'genjutsu';
+  const shielded = { attacker, target, what: t.name, illusion, rng };
+  return spunAway(round, swap) ?? shieldStops(round, shielded);
+}
+
 /** One effect landing on a foe who is standing. Effects aimed at the user happen in `onSelf`. */
 function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): Round {
   if (!landsOnFoe(effect)) return round;
-  // A condition meets an automatic shield first; a hit meets it as it lands (`react.ts`).
-  const touch = {
-    attacker: aimed.actor,
-    target: aimed.target,
-    what: technique.name,
-    rng: aimed.rng,
-  };
-  const stopped = conditionOf(effect)
-    ? shieldStops(round, { ...touch, illusion: technique.discipline === 'genjutsu' })
-    : null;
+  const stopped = conditionOf(effect) ? turnedAway(round, aimed, technique) : null;
   if (stopped) return stopped;
   const resisted = shakenOff(round, aimed, { technique, effect });
   if (resisted) return resisted;

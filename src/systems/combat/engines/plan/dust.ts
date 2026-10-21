@@ -11,6 +11,7 @@ import {
   dustGuardScale,
   dustPowerScale,
   dustPace,
+  regathered,
   dustUsed,
   scattered,
   type DustHit,
@@ -130,7 +131,19 @@ function clearedEyes(f: PlanFighter): PlanFighter {
   return rest;
 }
 
-/** At the end of an exchange, blinding dust works its way out of everyone's eyes. */
+/** At the end of an exchange, dust users gather back what the ground gives (`regathered`). */
+function gathering(round: Round): Round {
+  const ground = round.ground ?? 'arena';
+  const fighters = round.fighters.map((f) =>
+    f.dust && alive(f) ? { ...f, dust: regathered(f.dust, ground) } : f,
+  );
+  return { ...round, fighters };
+}
+
+/**
+ * At the end of an exchange, blinding dust works its way out of everyone's eyes, and dust users
+ * gather back what the ground gives.
+ */
 export function dustAfter(round: Round): Round {
   return round.fighters.reduce((now, f) => {
     const blinded = f.blinded;
@@ -145,7 +158,7 @@ export function dustAfter(round: Round): Round {
     );
     const cleared = left > 0 ? now : say(now, tell('{t} blink{t.s} the dust away.', { t: f }));
     return { ...cleared, fighters };
-  }, round);
+  }, gathering(round));
 }
 
 /** The player's dust on the fight screen, beside their chakra. */

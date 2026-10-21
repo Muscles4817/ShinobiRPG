@@ -1,5 +1,6 @@
 import type { RangeBand } from '../../contract';
 import { RANGE_BANDS } from '../../rules/range';
+import { spins } from '../../rules/verbs';
 import { cardId, findCard, fitsBand, isReaction, reactionsFor, type Card } from './cards';
 import { isDazed } from './daze';
 import type { CardId, PlanFighter, Reactions, Round } from './state';
@@ -40,14 +41,18 @@ export function reactionChoices(fighter: Ready, band: RangeBand): Card[] {
 }
 
 /**
- * The defence a plan keeps ready by default: a substitution when the kit has one, then a
+ * The defence a plan keeps ready by default: a substitution when the kit has one (a spin
+ * first), then a
  * Guard, then a Dodge. A plan with a defence beats one without far more often than any extra
  * attack makes up for (the content bench measures it), so every distance keeps one.
  */
 export function defaultReactions(fighter: Ready): Reactions {
   const pick = (band: RangeBand): CardId | null => {
     const choices = reactionChoices(fighter, band);
-    const swap = choices.find((c) => c.kind === 'jutsu');
+    // A spin (Palm Rotation) is never spent, so it beats a plain swap.
+    const swaps = choices.filter((c): c is Extract<Card, { kind: 'jutsu' }> => c.kind === 'jutsu');
+    const spin = swaps.find((c) => spins(c.technique));
+    const swap = spin ?? swaps[0];
     const best = swap ?? choices.find((c) => c.kind === 'guard') ?? choices[0];
     return best ? cardId(best) : null;
   };

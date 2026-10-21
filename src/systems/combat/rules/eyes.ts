@@ -32,6 +32,11 @@ export function foreseen(chance: number, f: Eyed, { scale, ceiling }: Foresight)
   return f.perks.includes('foresight') ? Math.min(ceiling, chance * scale) : chance;
 }
 
+/** Eyes that see everything at once: no illusion takes hold of them (they see the chakra). */
+export function seesThroughIllusions(f: Eyed): boolean {
+  return f.perks.includes('all-seeing');
+}
+
 /** How foresight bends one chance. */
 export interface Foresight {
   readonly scale: number;

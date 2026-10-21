@@ -17,6 +17,14 @@ export function moveGoal(technique: CombatTechnique, home: RangeBand): RangeBand
   return move ? (move.to ?? home) : null;
 }
 
+/**
+ * Whether a substitution is a spin (Palm Rotation): it turns aside every hit it meets instead of
+ * swapping out of the first, so it is never spent while its chakra lasts.
+ */
+export function spins(technique: CombatTechnique): boolean {
+  return effectsOf(technique, 'substitute').some((effect) => effect.spins === true);
+}
+
 /** Whether a substitution can swap out of an attack (a technique's art, or none for a blow). */
 export function substitutable(discipline: Discipline | undefined): boolean {
   return discipline !== 'genjutsu';

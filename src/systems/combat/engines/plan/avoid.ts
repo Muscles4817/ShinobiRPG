@@ -36,6 +36,7 @@ import { blindedSlips, dustArrival } from './dust';
 import type { PlanFighter, Round } from './state';
 import { sizeSlips } from '../../rules/size';
 import { techniqueDamage } from '../../rules/damage';
+import { seesThroughIllusions } from '../../rules/eyes';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -75,6 +76,12 @@ export function dodgesHere(round: Round, target: PlanFighter): boolean {
 
 /** The chance this attack doesn't reach its target. */
 export function avoidOdds(round: Round, incoming: Incoming): number {
+  // Eyes that see everything see an illusion for what it is (`rules/eyes.ts`).
+  const illusion = incoming.discipline === 'genjutsu';
+  return illusion && seesThroughIllusions(incoming.target) ? 1 : avoidRoll(round, incoming);
+}
+
+function avoidRoll(round: Round, incoming: Incoming): number {
   const { attacker, form } = incoming;
   const target = dulled(round.field, incoming.target);
   if (isDazed(target)) return 0;

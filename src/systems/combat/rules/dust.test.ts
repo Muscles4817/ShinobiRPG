@@ -4,6 +4,7 @@ import {
   dustGuardScale,
   dustPowerScale,
   dustPace,
+  regathered,
   dustUsed,
   dustWord,
   HEAVY_HIT,
@@ -58,5 +59,12 @@ describe('dust rules', () => {
     expect(dustWord(pool())).toBe('thick');
     expect(dustWord(pool(SAND, 10))).toBe('thin');
     expect(dustWord(pool(SAND, 0))).toBe('spent');
+  });
+
+  it('gathers a little back each exchange where the ground holds it, never carried dust', () => {
+    const thin = pool(SAND, 10);
+    expect(regathered(thin, 'arena').count).toBeGreaterThan(10);
+    expect(regathered(thin, 'lake').count).toBe(10);
+    expect(regathered(pool(SAND), 'arena').count).toBe(pool(SAND).count);
   });
 });

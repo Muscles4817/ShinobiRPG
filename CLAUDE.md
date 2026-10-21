@@ -200,7 +200,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan: `rules/eyes.ts`, `plan/mimicry.ts`). A fight has a **ground**
+    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead, so no illusion takes hold of them: `rules/eyes.ts`, `plan/mimicry.ts`). A fight has a **ground**
     (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake, desert; arena when
     unset): the distances it has room for (a room has no far), cover for hiding, far attacks lost
     among trees or walls (or, in the desert's heat haze, by everyone), elements it feeds or
@@ -260,7 +260,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     **actions** per distance, two to five by intellect grade (`slotLimit`: E 2, D 3, C 4, B+ 5):
     techniques, tools, Search, Dispel, Evade, Brace and Gather. Defences and footwork take no slot
     (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Counter or a
-    substitution; never stacked) that reacts on its own, and a plan may say where to **fight at**:
+    substitution; never stacked) that reacts on its own (a **spin**, a substitution that `spins`
+    like Palm Rotation, turns aside every hit and hold it meets for chakra each time instead of
+    swapping out of one a round, kept ready ahead of a plain swap; only illusions and an empty
+    tank get past it: `plan/footwork.ts`), and a plan may say where to **fight at**:
     the fighter steps towards it first (after an emergency slot), and a step still costs the turn
     (`plan/stepping.ts`) and leaves them unable to set a Guard or a Counter that exchange
     (`plan/steps.ts`). At mid and far a plan may **hold off** with kunai or a wounding
@@ -436,7 +439,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     it is drawn on; read once in `rules/dust.ts`, `engines/plan/dust.ts`): a technique's
     `dustCost` spends it and its `dustDraw` pulls it up first, in full on a ground that holds
     it; a dust attack arrives at the dust's own pace (`dustPace`), never its master's skill, so a
-    quick fighter slips it however strong its master; heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
+    quick fighter slips it however strong its master; a little gathers back each exchange where the
+    ground holds it (`regathered`); heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
     harder, a bane scatters it, and `CombatOutcome.dust` reports what is left. Kinds are shared
     content (`content/shared/dusts.ts`, `DustDef`). An automatic shield is never dust's: it
     belongs to where the power came from (a beast, a spirit), and reaches a fight as the

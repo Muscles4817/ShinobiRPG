@@ -783,11 +783,19 @@ Exams; Temari and Kankurō genin, Karasu his only puppet).
 - **The shield meets conditions too.** A Gentle Fist touch (a seal and a drain, which armour
   never meets) must get past the shield first, then ignores armour.
 - **A bloodline's perks reach everyone born to it**, not only the player: Neji sees with the
-  Byakugan (`insight`).
+  Byakugan (`insight`, and `all-seeing`: total sight, not prediction, so no illusion takes hold).
+- **Palm Rotation is a spin** (`substitute` with `spins`): kept ready, it turns aside every hit
+  and hold it meets (a coffin of sand too), paid in chakra each time, never spent while the
+  chakra lasts. Illusions and an empty tank get past it.
+- **Sand comes back in the fight**: a dust user gathers a little each exchange where the ground
+  holds their dust (1.5% of the vessel at C draw), and dust moves at a good genin's pace (14),
+  so a fast taijutsu fighter can outrun it.
 
-The bench after these (60 fights each, Part 1 Gaara): Lee wins 20%, Kakashi and Guy always.
-Neji still loses nearly every time with no stalemates: Rotation is a close-range riposte here,
-not the all-round defence it is in canon. That is a framework question left open.
+The bench after these (60 fights each, Part 1 Gaara): Lee wins 25% (by outrunning the sand),
+Kakashi and Guy always. Neji turns Gaara's sand aside and the shield takes his palms, so the
+fight runs long (about 44 exchanges); then his chakra runs dry (a spin costs about 7, an exchange
+gives back about 2) and Gaara wins, with a few stalemates. More stalemates would need a cheaper
+spin or a deeper well for Neji: the designer's call.
 
 ### Foes with hives and dust
 
