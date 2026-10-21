@@ -637,7 +637,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     warm to you more slowly wherever you meet them (`townWarmth`, read in `warmed`), and the
     village screen says so; two grudges stack. A grudge may also `shut` the gates until the
     village remembers a world mark (`gateRefusal`, read by `travel`): you can't travel there,
-    but a job may still take you (`endsAt`), and that is how the gates come to open.
+    but a job may still take you (`endsAt`), and that is how the gates come to open. A grudge
+    may also `hunt` you (`game/hunt.ts`) on its roads' regions, unless you are there on orders
+    (`onOrders`, an arc act based in the town): a hidden meter (`GameState.hunt`) that each night
+    in the town warms and each day out of its reach cools. A hunted trip carries it on its
+    `JourneyPlan.hunt` as a `hidden` thread, asks on each hunted stretch how you travel and how
+    you sleep (answers 0 to 2 closer, one careful, at a cost in energy), and past a line drawn
+    for the trip the hunters find you; after them the trail starts again near cold.
     **Leave is strict** (`game/leave.ts`, the `leave` slice): a genin goes only on the pass
     their sensei signs at the weekly lesson, by safe roads (the quickest safe way, where there
     is one); a chūnin spends a season's days of leave; a jōnin comes and goes; going home never

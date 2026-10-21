@@ -3,6 +3,7 @@ import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
 import { gateRefusal } from '../greetings';
+import { huntForTrip } from '../hunt';
 import { journeyTo, setOut } from '../journeys';
 import { leaveBlocker, spendLeave } from '../leave';
 import { busyReason, firstBlocker } from '../ops';
@@ -46,11 +47,13 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
     if (!journey) return state;
     const paid = spend(state.wallet, journey.cost);
     if (!paid.ok) return state;
+    const hunt = huntForTrip(state, ctx, journey.legs);
     const plan = {
       from: state.locationId,
       to: action.locationId,
       legs: journey.legs,
       quick: action.quick === true,
+      ...(hunt ? { hunt } : {}),
     };
     const onLeave = spendLeave({ ...state, wallet: paid.value }, ctx, action.locationId, journey);
     const trip = { plan, passage: journey.cost, companionId: action.companionId ?? null };

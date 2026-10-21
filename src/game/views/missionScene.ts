@@ -91,9 +91,11 @@ function threadViews(state: GameState, ctx: GameContext): ThreadView[] {
   const def = activeMission(state, ctx);
   const run = state.mission;
   if (!def || !run) return [];
-  return (def.threads ?? []).map((t) => {
+  // A hidden thread (how close hunters are) is felt in the story, never shown.
+  return (def.threads ?? []).flatMap((t) => {
+    if (t.hidden) return [];
     const level = run.threads[t.id] ?? t.start;
-    return { label: t.label, word: t.levels[level] ?? '', level, of: t.levels.length - 1 };
+    return [{ label: t.label, word: t.levels[level] ?? '', level, of: t.levels.length - 1 }];
   });
 }
 

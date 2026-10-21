@@ -202,6 +202,16 @@ export interface MissionRun {
 }
 
 /** A trip along the roads: where from and to, the way as legs, and whether to hurry. */
+/**
+ * A trip made while a town hunts you (`game/hunt.ts`): which town's hunters, how close they were
+ * when you set out, and how close they must come this time to find you.
+ */
+export interface JourneyHunt {
+  readonly townId: string;
+  readonly heat: number;
+  readonly foundAt: number;
+}
+
 export interface JourneyPlan {
   readonly from: string;
   readonly to: string;
@@ -214,6 +224,8 @@ export interface JourneyPlan {
   }[];
   /** Walk on without stopping to camp; only a road event halts you. */
   readonly quick: boolean;
+  /** Set when a town hunts you along the way; absent on every other trip. */
+  readonly hunt?: JourneyHunt;
 }
 
 export function startRun(def: MissionDef, crew: Crew, marks: readonly string[] = []): MissionRun {

@@ -22,6 +22,66 @@ export const KIRIGAKURE: LocationDef = {
       cause: { kind: 'bloodline' },
       temper: 'cold',
       line: 'The Blood Register has your chakra on a page by now. Shopkeepers serve you quickly and watch the door, and the masks watch you.',
+      // Anywhere on the Mist's water, unless the Leaf has sent you there (`game/hunt.ts`).
+      hunt: {
+        regions: ['mist-sea'],
+        hunterIds: ['mist-hunter-nin', 'mist-patrol'],
+        ground: 'lake',
+        travel: {
+          text: 'Halfway over, the boatman asks how you mean to come in to the harbour.',
+          answers: [
+            {
+              label: 'Openly, on the ferry',
+              tone: 'earnest',
+              reply:
+                'You stand at the rail with the other passengers, where anyone on the quay can see you.',
+              heat: 2,
+            },
+            {
+              label: 'By night, with no lantern',
+              tone: 'challenge',
+              reply:
+                'The boatman shrugs and douses the lamp. Dark water is quiet, and quiet boats are noticed.',
+              heat: 1,
+            },
+            {
+              label: 'Under the nets in the bilge',
+              tone: 'quiet',
+              reply: 'You lie in fish water under the nets for hours and climb out stiff and cold.',
+              heat: 0,
+              energy: 10,
+            },
+          ],
+        },
+        sleep: {
+          text: 'Night comes down on the water. The boatman puts in at a fishing island and asks where you will sleep.',
+          answers: [
+            {
+              label: 'At the island inn',
+              tone: 'kind',
+              reply: 'You sleep in a real bed, and the innkeeper writes a name in her book.',
+              heat: 2,
+            },
+            {
+              label: 'Wrapped in a sail on deck',
+              tone: 'quiet',
+              reply: 'You sleep badly under wet canvas while the mist drips off the mast.',
+              heat: 1,
+              energy: 5,
+            },
+            {
+              label: 'Hardly at all, watching the water',
+              tone: 'challenge',
+              reply:
+                'You sit up all night with your back to the mast. Nothing comes, and you are worn through by dawn.',
+              heat: 0,
+              energy: 15,
+            },
+          ],
+        },
+        found:
+          'A mask rises out of the fog beside the boat, then another. The hunter-nin have been on your trail for days, and now they have you.',
+      },
     },
   ],
   places: [

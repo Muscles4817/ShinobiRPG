@@ -273,6 +273,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     fieldBook: EMPTY_FIELD_BOOK,
     companions: bornCompanions(clan, seed, ctx),
     contract: null,
+    hunt: { heat: 0 },
     brokenContracts: [],
     hive,
     rites: [],

@@ -1,5 +1,6 @@
 import { startRun } from '@/systems/missions';
 
+import { HUNT_THREAD } from '../hunt';
 import { activeStage } from '../missionFlow';
 import { journeyMission, legsBack } from '../journeys';
 import { log } from '../ops';
@@ -23,7 +24,14 @@ export const turnBack: ActionHandler<ActionOf<'turnBack'>> = {
     const walked = stages.slice(0, run.stageIndex).filter((s) => s.kind === 'leg').length;
     const legs = legsBack(plan, walked);
     // You turn back on the road you were walking: it starts from the last place you passed.
-    const back = { from: legs[0]?.toward ?? plan.to, to: plan.from, legs, quick: plan.quick };
+    const back = {
+      from: legs[0]?.toward ?? plan.to,
+      to: plan.from,
+      legs,
+      quick: plan.quick,
+      // The hunters are as close on the way back as they had come.
+      ...(plan.hunt ? { hunt: { ...plan.hunt, heat: run.threads[HUNT_THREAD] ?? 0 } } : {}),
+    };
     const def = journeyMission(back, ctx);
     const returning = settle(def, { ...startRun(def, run.crew), journey: back });
     const home = ctx.content.locations.require(back.to).name;

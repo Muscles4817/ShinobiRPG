@@ -1,5 +1,5 @@
 import { stageOf } from '@/systems/bonds';
-import { arcBases, dangerAtLeast } from '@/systems/missions';
+import { dangerAtLeast } from '@/systems/missions';
 import { RANKS, type Rank } from '@/systems/standing';
 import { DAYS_PER_SEASON, formatDate } from '@/systems/time';
 import { leaveLeft, passValid, signPass, takeLeave, type Journey } from '@/systems/travel';
@@ -7,6 +7,7 @@ import { leaveLeft, passValid, signPass, takeLeave, type Journey } from '@/syste
 import type { PersonDef } from '@/content';
 import type { GameContext } from './context';
 import { log } from './ops';
+import { onOrders } from './orders';
 import { bondOf } from './people/cast';
 import { homeVillageId } from './homeVillage';
 import type { GameState } from './state';
@@ -63,11 +64,6 @@ export function leaveBlocker(
   }
   if (!passValid(state.leave, state.time.day)) return PASS_NEEDED;
   return dangerAtLeast(journey.danger, 'armed') ? SAFE_ROADS_ONLY : null;
-}
-
-/** A town where a long story's current act is based: going there is orders, not leave. */
-function onOrders(state: GameState, ctx: GameContext, destinationId: string): boolean {
-  return arcBases(ctx.content.arcs.all, state.board.completed).includes(destinationId);
 }
 
 /** Whether this trip must keep to safe roads: a genin's, on a pass, away from home. */
