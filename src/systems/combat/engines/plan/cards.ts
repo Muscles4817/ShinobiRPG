@@ -1,5 +1,6 @@
 import { affords } from './effort';
 import { canCall } from './calls';
+import { canCommit } from './commitment';
 import { hasInsectsFor } from './swarm';
 import { hasDustFor } from './dust';
 import { statTier, type StatGrade } from '@/systems/stats';
@@ -16,8 +17,9 @@ import type { CardId, PlanFighter } from './state';
 
 /**
  * The cards a fighter can slot for each distance, Punch Club style: a few action slots per
- * range, filled with techniques that reach, tools, and Search or Dispel. Defences aren't slotted
- * (each distance keeps one reaction ready, `readiness.ts`), nor is footwork (a fighter steps
+ * range, filled with techniques that reach, tools, Search or Dispel, and committed defence (Evade
+ * or Brace, which spend the turn on not being hit). A defence that reacts on its own isn't slotted
+ * (each distance keeps one ready, `readiness.ts`), nor is footwork (a fighter steps
  * towards the distance they fight at on their own), nor plain blows (what anyone falls back on).
  * Which actions sit where is the whole plan, and a sharper mind holds more of them.
  */
@@ -45,6 +47,9 @@ export type Card =
   | { readonly kind: 'guard' }
   | { readonly kind: 'dodge' }
   | { readonly kind: 'counter' }
+  /** Committed defence, played as an action (`commitment.ts`). */
+  | { readonly kind: 'evade' }
+  | { readonly kind: 'brace' }
   | { readonly kind: 'search' }
   | { readonly kind: 'dispel' }
   | { readonly kind: 'jutsu'; readonly technique: CombatTechnique }
@@ -61,6 +66,8 @@ const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'guard', card: { kind: 'guard' } },
   { id: 'dodge', card: { kind: 'dodge' } },
   { id: 'counter', card: { kind: 'counter' } },
+  { id: 'evade', card: { kind: 'evade' } },
+  { id: 'brace', card: { kind: 'brace' } },
   { id: 'search', card: { kind: 'search' } },
   { id: 'dispel', card: { kind: 'dispel' } },
 ];
@@ -87,6 +94,8 @@ export function fitsBand(card: Card, band: RangeBand): boolean {
       return band === 'close';
     case 'guard':
     case 'dodge':
+    case 'evade':
+    case 'brace':
     case 'search':
     case 'dispel':
     case 'item':
@@ -131,7 +140,7 @@ export function isAction(card: Card): boolean {
   return !isReaction(card) && !isFootwork(card) && !isPlainBlow(card);
 }
 
-/** The actions this fighter could slot at a distance: jutsu, tools, Search and Dispel. */
+/** The actions this fighter could slot at a distance: jutsu, tools, Evade, Brace, Search and Dispel. */
 export function cardsFor(fighter: Kit, band: RangeBand): Card[] {
   return kitCards(fighter, band).filter(isAction);
 }
@@ -179,6 +188,19 @@ export function isReaction(card: Card): boolean {
   return card.kind === 'guard' || card.kind === 'dodge' || card.kind === 'counter';
 }
 
+/** A defence of any kind: one kept ready (Guard, Dodge, Counter) or committed to (Evade, Brace). */
+export type DefenceCard = Extract<
+  Card,
+  { kind: 'guard' | 'dodge' | 'counter' | 'evade' | 'brace' }
+>;
+
+const DEFENCE_KINDS: readonly Card['kind'][] = ['guard', 'dodge', 'counter', 'evade', 'brace'];
+
+/** Whether a card is a defence of any kind (a substitution aside, which is a technique). */
+export function isDefenceCard(card: Card): card is DefenceCard {
+  return DEFENCE_KINDS.includes(card.kind);
+}
+
 /** Cards that hurt or hinder a foe: what reach and confusion rule out. */
 export function isOffence(card: Card): boolean {
   if (card.kind === 'jutsu') return isHarmful(card.technique);
@@ -201,6 +223,7 @@ export function cardBlocked(fighter: Pick<PlanFighter, 'gear'>, card: Card): str
 export function playable(fighter: PlanFighter, card: Card): boolean {
   if (cardBlocked(fighter, card)) return false;
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
+  if (card.kind === 'evade' || card.kind === 'brace') return canCommit(fighter, card.kind);
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
   if (trumpSpent(fighter, card.technique) || !isOpenFor(fighter, card.technique)) return false;

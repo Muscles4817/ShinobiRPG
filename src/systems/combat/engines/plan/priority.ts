@@ -1,7 +1,16 @@
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { alive, hasPerk } from '../../rules/body';
 import { effectsOf, hasVerb, isHindering, isPinned, isWounding, opensOf } from '../../rules/verbs';
-import { cardId, findCard, fitsBand, isOffence, needsAim, playable, type Card } from './cards';
+import {
+  cardId,
+  findCard,
+  fitsBand,
+  isDefenceCard,
+  isOffence,
+  needsAim,
+  playable,
+  type Card,
+} from './cards';
 import { CHANGE_UP_AFTER } from '../../rules/familiarity';
 import { beats, seenDefence, walksInto } from './adapt';
 import { partnered } from './combo';
@@ -166,6 +175,7 @@ function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boole
  * getting ready twice over or with no foe in sight (`prep.ts`).
  */
 function needed(self: PlanFighter, card: Card, round: Round): boolean {
+  if (isDefenceCard(card)) return true;
   const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
   switch (card.kind) {
     case 'search':
@@ -182,9 +192,6 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
     case 'strike':
     case 'throw':
     case 'step':
-    case 'guard':
-    case 'dodge':
-    case 'counter':
       return true;
   }
 }

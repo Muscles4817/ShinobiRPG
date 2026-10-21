@@ -6,7 +6,16 @@ import { canAttackFrom } from '../../rules/kit';
 import { RANGE_LABEL } from '../../rules/range';
 import { isTrump } from '../../rules/trumps';
 import { hasVerb } from '../../rules/verbs';
-import { cardId, findCard, fitsBand, isOffence, playable, type Card } from './cards';
+import {
+  cardId,
+  findCard,
+  fitsBand,
+  isDefenceCard,
+  isOffence,
+  playable,
+  type Card,
+  type DefenceCard,
+} from './cards';
 import { chooseCard, desperate } from './choose';
 import { ownField } from './field';
 import { planAdherence } from './judgement';
@@ -94,7 +103,17 @@ function readsPrecisely(viewer: PlanFighter, foe: PlanFighter, insight: boolean)
   return insight || viewer.attributes.perception >= foe.attributes.perception;
 }
 
+/** What a defence looks like on its way: a ready one is just a stance, a commitment shows. */
+const DEFENDING: Readonly<Record<DefenceCard['kind'], string>> = {
+  guard: 'Bracing to defend',
+  dodge: 'Bracing to defend',
+  counter: 'Bracing to defend',
+  evade: 'Getting light on their feet',
+  brace: 'Digging in to take it',
+};
+
 function telegraph(card: Card, precise: boolean): string {
+  if (isDefenceCard(card)) return DEFENDING[card.kind];
   switch (card.kind) {
     case 'strike':
       return 'Coming in to strike';
@@ -112,10 +131,6 @@ function telegraph(card: Card, precise: boolean): string {
       return hasVerb(card.technique, 'counter') ? 'Settling into a stance' : 'Readying a technique';
     case 'item':
       return precise ? `Reaching for a ${card.item.name.toLowerCase()}` : 'Reaching into a pouch';
-    case 'guard':
-    case 'dodge':
-    case 'counter':
-      return 'Bracing to defend';
   }
 }
 

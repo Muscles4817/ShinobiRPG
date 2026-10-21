@@ -229,7 +229,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and wits against the attacker's speed and skill; hand signs give a technique away more than
     a fist), the defender's avoid rating against how fast it arrives (speed with perception;
     a genjutsu is noticed, willpower with perception), a stance (anyone slips some, a ready Dodge
-    many more), accuracy and an area's size (wide hard to get clear of, vast impossible). A hit
+    many more), accuracy and an area's size (wide hard to get clear of, vast impossible).
+    **Defence can be committed to** (`rules/commitment.ts`, `plan/commitment.ts`): Evade and
+    Brace are actions, slotted like any other and paid in breath, that spend the turn on not
+    being hit and hold until the fighter's next turn: Evade adds a large stance to every avoid
+    roll and lifts its ceiling (`EVADE_MAX`), Brace guards every physical blow far harder
+    (`BRACE_LETS`, a flurry's later blows too; a break goes through it) and makes a pin, daze
+    or knock take hold less often. They stack on the ready defence; breath is the clock, so a
+    turtle loses to an equal, slowly (`src/test/bench/defenceBench.test.ts`). A foe who reads the
+    fight and is far outclassed takes cover some turns on instinct (`plan/shelter.ts`). A hit
     that lands is not yet a hold: each condition rolls against its verb's resist (a pin against
     what breaks a hold of its art: strength, chakra control or willpower; a daze against poise;
     a seal against chakra control; `conditionResist`). Then guard and counter (taijutsu,

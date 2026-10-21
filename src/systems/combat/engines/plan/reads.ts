@@ -40,6 +40,8 @@ export function styleOf(card: Card): AttackStyle | null {
     case 'guard':
     case 'dodge':
     case 'counter':
+    case 'evade':
+    case 'brace':
     case 'search':
     case 'dispel':
       return null;
@@ -59,6 +61,8 @@ export function defenceKind(card: Card): DefenceKind | null {
     case 'throw':
     case 'item':
     case 'step':
+    case 'evade':
+    case 'brace':
     case 'search':
     case 'dispel':
       return null;

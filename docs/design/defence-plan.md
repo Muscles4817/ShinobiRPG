@@ -200,7 +200,9 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
    roll and the guard; the plan screen's cards and wording; the default plan and judgement
    using them against a stronger foe.
 4. **Reading and pace.** Saving evasion for the dangerous attack by the read; outpacing.
-5. **Gather and chakra.** The Gather action; a review of the top techniques' costs.
+5. **Gather and chakra.** The Gather action; a review of the top techniques' costs; shadow
+   clones as their canon price and power (a share of chakra for whole fighters who fall to one
+   hit).
 6. **The Gates.** The burn clock, the collapse, the lift; `needsTarget`, `lethal`,
    `sRankDefence`; Guy's four finishers rewritten; survival judgement for foes.
 7. **The fight table and the docs** (`CLAUDE.md` decision 16, `hittability-plan.md`).
@@ -221,6 +223,25 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   fighter of the same grade. Lowering the share is what lets stamina tell a glass cannon from a
   tank, but without Evade a glass cannon would have no way to survive, and equals would end each
   other in a hit. It moves with Evade and Brace, against the same bench targets.
+- **Slice 3, Evade and Brace (done).** Two actions (`rules/commitment.ts`, `plan/commitment.ts`),
+  slotted like any other and paid in breath (Evade 8, Brace 5), held until the fighter's next
+  turn. Evade adds to the avoid roll's stance (a technique +1, a blow +1.2, on top of an open
+  fighter's or a ready Dodge's) and lifts its ceiling from 0.75 to 0.9; Brace lets half of a
+  physical hit through any guard, meets a flurry's every blow, and halves how often a pin, daze
+  or knock takes hold (a break goes through it). Against chakra, an element or the mind, Brace
+  does nothing: that is what Evade or a swap is for (the open question settled that way). A foe
+  who reads the fight and is outmatched takes cover about a third of its turns, Evade or Brace as
+  its body suits (`plan/shelter.ts`). On the defence bench a fighter who only Evades loses every
+  bout to an equal in 15 exchanges, one who only Braces in 19, against 9 for a straight trade; no
+  bout stalls. The fight table moves only where someone is outclassed and reads the fight: Kakashi
+  takes cover against Guy some turns (Guy 77% → 67%, 2.0 → 2.2 rounds), and the lopsided
+  cross-rank bouts last a little longer. Between equals nothing changes until slice 4 teaches
+  fighters when a blow is worth evading.
+- **Shadow clones are part of slice 5.** Today a shadow clone costs a flat 14 chakra and is a
+  decoy that strikes at a third of its maker. In canon it splits its maker's chakra (half of what
+  is left) and makes a whole fighter as able as its maker who falls to one hit: a huge
+  multiplier at a huge price. Slice 5 makes it so: its cost a share of chakra, and each clone a
+  fighter with its maker's stats, kit and turn, one hit from gone.
 - **Guy never opens a deep gate** in the table's bouts (only the first, the Gate of Life), so
   his finishers never come into it; that is slice 6.
 

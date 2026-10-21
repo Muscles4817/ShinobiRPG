@@ -13,6 +13,7 @@ import { numberedNames } from '../../rules/narration';
 import { openingChakra, openingSteadiness } from '../../rules/provisions';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
+import type { Commitment } from '../../rules/commitment';
 import type {
   ActiveField,
   CloneBody,
@@ -106,6 +107,8 @@ export interface PlanFighter
   readonly sealed: number;
   /** Breath left for body moves (`rules/breath.ts`); absent: all of it. */
   readonly breath?: number;
+  /** Evade or Brace, held until their next turn (`commitment.ts`); absent or null: neither. */
+  readonly committed?: Commitment | null;
   readonly loadout: Loadout;
   /** The defence ready at each distance (`readiness.ts`); absent in fights saved before. */
   readonly reactions?: Reactions;
@@ -337,6 +340,8 @@ export function patch(
       | 'fellAt'
       | 'dazedBy'
       | 'guardBrokenBy'
+      | 'breath'
+      | 'committed'
     >
   >,
 ): PlanFighter[] {

@@ -18,6 +18,7 @@ import { inCover, lostToGround } from './groundPlay';
 import { momentOf, SCENE_MEMORY } from './fresh';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { chooseCard } from './choose';
+import { commit, released } from './commitment';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
@@ -133,6 +134,9 @@ function play(round: Round, turn: Turn, card: Card): Round {
       return strike(practise(round, turn.actor, 'blows'), turn, false);
     case 'throw':
       return strike(round, turn, true);
+    case 'evade':
+    case 'brace':
+      return commit(round, turn, card.kind);
     case 'guard':
     case 'dodge':
     case 'counter':
@@ -222,7 +226,13 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   if (!before || !alive(before) || decide(start.fighters) || start.acted?.includes(actorId)) {
     return start;
   }
-  const sprung = springTraps(startOfTurn(start, before, rng), actorId, rng, false);
+  // Last turn's Evade or Brace holds until now (`commitment.ts`).
+  const sprung = springTraps(
+    startOfTurn(released(start, actorId), before, rng),
+    actorId,
+    rng,
+    false,
+  );
   // A channelled hold takes the turn while it holds (`holding.ts`).
   const held = keepHolding(sprung, sprung.fighters.find((f) => f.id === actorId) ?? before);
   if (held.spent) return held.round;

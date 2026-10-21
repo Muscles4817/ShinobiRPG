@@ -39,6 +39,8 @@ import { settleOn, swarmSpent } from './swarm';
 import { dustSpent } from './dust';
 import { setTrap } from './traps';
 import { linkLine } from './chainVoice';
+import { committedTo } from './commitment';
+import { bracedResist, isBracedAgainst } from '../../rules/commitment';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 import { raiseShroud } from './shrouds';
 
@@ -158,7 +160,10 @@ function conditionOf(effect: TechniqueEffect): ConditionVerb | null {
 function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse): Round | null {
   const verb = conditionOf(use.effect);
   if (!verb) return null;
-  if (!rng.chance(conditionResist(actor, target, use))) return null;
+  const resist = conditionResist(actor, target, use);
+  // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
+  const braced = committedTo(target, 'brace') && isBracedAgainst(verb);
+  if (!rng.chance(braced ? bracedResist(resist) : resist)) return null;
   return say(round, tell(SHAKEN_OFF[verb], { t: target }));
 }
 

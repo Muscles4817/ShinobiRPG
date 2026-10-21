@@ -2,7 +2,7 @@ import type { Accuracy, AreaSize, Discipline } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
 import {
-  AVOID_MAX,
+  avoidCeiling,
   avoidChance,
   avoidRating,
   readRating,
@@ -25,6 +25,7 @@ import {
   landingUse,
   PIN_SLIP,
 } from '../../rules/verbs';
+import { committedTo } from './commitment';
 import { isDazed } from './daze';
 import { readsInTheMoment } from './judgement';
 import { readyDefences } from './readiness';
@@ -35,7 +36,7 @@ import { sizeSlips } from '../../rules/size';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
- * ready Dodge, a daze (no slipping anything), a pin, footing on this ground, a field dulling the
+ * ready Dodge, a committed Evade, a daze (no slipping anything), a pin, footing on this ground, a field dulling the
  * defender's eyes, a swift kit, a technique leaned on (read more easily by a mind that reads
  * the fight), insects (a swarm's speed and camouflage, glowing or blinding insects settled on
  * someone) and foresight.
@@ -73,6 +74,7 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
   const target = dulled(round.field, incoming.target);
   if (isDazed(target)) return 0;
   const dodging = dodgesHere(round, target);
+  const evading = committedTo(target, 'evade');
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE * (dodging ? 1 : SWIFT_INSTINCT) : 0;
   const read = readScale(readRating(target), tellRating(attacker, incoming.skill), form);
   const chance = avoidChance({
@@ -81,6 +83,7 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     arrival: form === 'technique' ? incoming.skill : attacker.attributes.speed,
     read: read * (incoming.familiar ?? 1),
     dodging,
+    evading,
     bonus: swift,
     ...(incoming.accuracy ? { accuracy: incoming.accuracy } : {}),
     ...(incoming.areaSize ? { areaSize: incoming.areaSize } : {}),
@@ -96,7 +99,7 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     footingOf(round.ground, target) *
     sizeSlips(target);
   const scale = form === 'technique' ? FORESIGHT_SEES : FORESIGHT_SLIP;
-  return foreseen(held, target, { scale, ceiling: AVOID_MAX });
+  return foreseen(held, target, { scale, ceiling: avoidCeiling(evading) });
 }
 
 /** A technique on its way to one foe; null when nothing in it is aimed at a foe. */

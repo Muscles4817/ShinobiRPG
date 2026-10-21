@@ -5,8 +5,9 @@ import type { CombatItem, CombatItemEffect, CombatTechnique } from '../../contra
 import { effortOf } from './effort';
 import { styleMoves } from './repertoire';
 import { shapeOf, type CombatGear } from '../../gearContract';
+import { COMMIT_BREATH } from '../../rules/commitment';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
-import type { Card } from './cards';
+import { isDefenceCard, type Card, type DefenceCard } from './cards';
 import type { PlanFighter } from './state';
 
 /** What the card table and the telegraphs call each card, and what it says it does. */
@@ -104,6 +105,10 @@ export function cardLabel(card: Card, fighter: Armed): string {
       return 'Dodge';
     case 'counter':
       return 'Counter';
+    case 'evade':
+      return 'Evade';
+    case 'brace':
+      return 'Brace';
     case 'search':
       return 'Search';
     case 'dispel':
@@ -115,7 +120,17 @@ export function cardLabel(card: Card, fighter: Armed): string {
   }
 }
 
+/** What each defence does, as its card says. */
+const DEFENCE_DETAIL: Readonly<Record<DefenceCard['kind'], string>> = {
+  guard: 'Always ready, takes the edge off every hit',
+  dodge: 'Always ready, may slip any hit',
+  counter: 'Always ready, hits back up close',
+  evade: `Spend the turn keeping clear of everything, ${COMMIT_BREATH.evade} breath`,
+  brace: `Spend the turn standing firm against blows and holds, ${COMMIT_BREATH.brace} breath`,
+};
+
 export function cardDetail(card: Card, fighter: PlanFighter): string {
+  if (isDefenceCard(card)) return DEFENCE_DETAIL[card.kind];
   switch (card.kind) {
     case 'strike':
       return styleWords(fighter) ?? armsWords(card.kind, fighter).detail;
@@ -123,12 +138,6 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
       return armsWords(card.kind, fighter).detail;
     case 'step':
       return card.direction === 'in' ? 'Try to get closer' : 'Try to open distance';
-    case 'guard':
-      return 'Always ready, takes the edge off every hit';
-    case 'dodge':
-      return 'Always ready, may slip any hit';
-    case 'counter':
-      return 'Always ready, hits back up close';
     case 'search':
       return 'Find hidden foes, perception';
     case 'dispel':

@@ -2,6 +2,7 @@ import { clamp, logistic } from '@/core';
 import type { Accuracy, AreaSize, Discipline } from '@/systems/techniques';
 
 import type { CombatAttributes } from '../contract';
+import { EVADE_MAX, EVADE_STANCE } from './commitment';
 import { gapRatio } from './damage';
 import { slipChance } from './defence';
 import { AREA_RULES, driveOf, resistOf, type EffectUse } from './verbs';
@@ -16,7 +17,8 @@ import { AREA_RULES, driveOf, resistOf, type EffectUse } from './verbs';
  *    speed for a blow, their skill in the art for a technique). Speed (with perception) avoids
  *    most things; a genjutsu is avoided by noticing it (willpower, with perception), never by
  *    stepping aside.
- *  - Stance: everyone slips some; a ready Dodge slips much more (`STANCE`).
+ *  - Stance: everyone slips some; a ready Dodge slips much more (`STANCE`), and a committed
+ *    Evade far more again, up to more than anyone else can (`commitment.ts`).
  *  - Shape: accuracy (`slipChance`) and an area's size (wide is hard to get clear of, vast
  *    impossible).
  * A hit that lands is not yet a hold: each condition it brings (a pin, a daze, a seal…) rolls
@@ -84,6 +86,8 @@ export interface AvoidRoll {
   readonly read: number;
   /** A Dodge is the defender's ready defence. */
   readonly dodging: boolean;
+  /** The defender committed to Evade this turn (`commitment.ts`). */
+  readonly evading?: boolean;
   /** Flat chance on top (a swift kit). */
   readonly bonus?: number;
   readonly accuracy?: Accuracy;
@@ -94,10 +98,17 @@ export interface AvoidRoll {
 export function avoidChance(roll: AvoidRoll): number {
   const gap = Math.log(gapRatio(roll.rating, roll.arrival));
   const base = AVOID_TOP * logistic(gap * AVOID_STEEPNESS);
-  const stance = STANCE[roll.form][roll.dodging ? 'dodging' : 'open'];
+  const evading = roll.evading === true;
+  const stance =
+    STANCE[roll.form][roll.dodging ? 'dodging' : 'open'] + (evading ? EVADE_STANCE[roll.form] : 0);
   const area = roll.areaSize ? AREA_RULES[roll.areaSize].dodge : 1;
   const chance = base * stance * roll.read + (roll.bonus ?? 0);
-  return Math.min(AVOID_MAX, slipChance(chance, roll.accuracy)) * area;
+  return Math.min(avoidCeiling(evading), slipChance(chance, roll.accuracy)) * area;
+}
+
+/** The most of what comes at them a defender can slip: more for one committed to it. */
+export function avoidCeiling(evading: boolean): number {
+  return evading ? EVADE_MAX : AVOID_MAX;
 }
 
 /** The chance a condition that reached its target fails to take hold, by its verb's resist. */
