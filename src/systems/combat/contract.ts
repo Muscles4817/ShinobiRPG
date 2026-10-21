@@ -290,6 +290,8 @@ export interface CombatantView {
   readonly targetable?: boolean;
   /** Their row, for engines with formations. */
   readonly row?: CombatRow;
+  /** Pools of their own besides health and chakra (breath, a hive, dust), when they have any. */
+  readonly meters?: readonly CombatMeter[];
 }
 
 /** A resource the engine wants shown (action points, momentum, block…). */

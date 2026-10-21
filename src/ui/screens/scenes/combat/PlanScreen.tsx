@@ -17,6 +17,7 @@ import { useWideScreen } from '../../../layout/useWideScreen';
 
 import { FighterRead, FoeMoves } from './FighterRead';
 import { Formation } from './Formation';
+import { fightMeters, Gauges } from './Gauges';
 import { PlanPreviewContext, type PreviewFor } from './planPreview';
 import { PlansByOwner, TeamOrders } from './TeamOrders';
 import { useHealthPulses } from './useHealthPulses';
@@ -29,6 +30,8 @@ interface PlanScreenProps {
   readonly onPick: Pick;
   /** A technique a card plays, read in full for the preview beside the table. */
   readonly techniqueOf: (techniqueId: string) => JutsuCard | null;
+  /** Show every fighter's bars in place of your reserves alone (versus). */
+  readonly gauges?: boolean;
 }
 
 /** Your chakra and any meters the engine keeps, beside the formation (cards spend chakra). */
@@ -138,7 +141,7 @@ function BeginBar({ view, onPick }: { readonly view: CombatView; readonly onPick
  * until you begin. On a wide screen your cards, the field and the read of a fighter sit side by
  * side, so the table is in view while you set it.
  */
-export function PlanScreen({ view, reads, onPick, techniqueOf }: PlanScreenProps) {
+export function PlanScreen({ view, reads, onPick, techniqueOf, gauges }: PlanScreenProps) {
   const foes = view.combatants.filter((c) => c.side === 'enemy');
   const [selected, setSelected] = useState<string | null>(null);
   const pulses = useHealthPulses(view.combatants);
@@ -182,6 +185,11 @@ export function PlanScreen({ view, reads, onPick, techniqueOf }: PlanScreenProps
       previewFor={hover.handlersFor}
     />
   );
+  const reserves = gauges ? (
+    <Gauges fighters={view.combatants} pulses={pulses} shared={fightMeters(view)} />
+  ) : (
+    <Reserves view={view} />
+  );
   const fighterRead = <FighterRead fighter={shown} read={shown ? reads[shown.id] : undefined} />;
   const cards = (
     <section className="your-cards" aria-label="Your cards">
@@ -208,7 +216,7 @@ export function PlanScreen({ view, reads, onPick, techniqueOf }: PlanScreenProps
           </Pane>
           <Pane name="field">
             {formation}
-            <Reserves view={view} />
+            {reserves}
             <HowItWent view={view} />
             <BeginBar view={view} onPick={onPick} />
             <p className="key-note">Enter begins.</p>
@@ -232,7 +240,7 @@ export function PlanScreen({ view, reads, onPick, techniqueOf }: PlanScreenProps
       {head}
       <main className="page plan-screen">
         {formation}
-        <Reserves view={view} />
+        {reserves}
         {fighterRead}
         <HowItWent view={view} />
         <FoeMoves foes={foes} />

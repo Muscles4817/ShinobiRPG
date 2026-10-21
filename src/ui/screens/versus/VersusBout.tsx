@@ -3,6 +3,8 @@ import { useCallback, useState } from 'react';
 import { createVersus, dispatch, type GameAction, type GameState } from '@/game';
 
 import { Notice } from '../../components/Notice';
+import { appClass } from '../../layout/sceneLayout';
+import { useWideScreen } from '../../layout/useWideScreen';
 import { ReportCard } from '../../components/ReportCard';
 import { randomSeed } from '../../randomSeed';
 import { CombatScene } from '../scenes/CombatScene';
@@ -57,7 +59,8 @@ function AfterBout({ choice, onRematch, onChangeFighters, onMenu }: VersusBoutPr
 }
 
 /**
- * A versus bout, played on the game's own fight screen in a sandbox that is never saved.
+ * A versus bout, played on the game's own fight screen in a sandbox that is never saved, with
+ * every fighter's bars in view, since both sides are yours to read.
  * Remount it (a new `key`) for a rematch.
  */
 export function VersusBout(props: VersusBoutProps) {
@@ -65,6 +68,7 @@ export function VersusBout(props: VersusBoutProps) {
   const [initial] = useState(() => startBout(props.choice));
   const [state, setState] = useState(initial.state);
   const [notice, setNotice] = useState(initial.notice);
+  const wide = useWideScreen();
 
   const perform = useCallback(
     (action: GameAction) => {
@@ -88,8 +92,9 @@ export function VersusBout(props: VersusBoutProps) {
   }
   const report = state.reports[0];
   const fighting = state.combat !== null || state.combatFinale !== null;
+  // A bout is the game's fight scene, so it takes the fight's desktop arrangement too.
   return (
-    <div className="app" data-motion="on">
+    <div className={appClass(wide, fighting ? 'combat' : null)} data-motion="on">
       {notice && (
         <Notice
           text={notice}
@@ -99,7 +104,9 @@ export function VersusBout(props: VersusBoutProps) {
         />
       )}
       {fighting ? (
-        <CombatScene ctx={ctx} state={state} perform={perform} />
+        <div className="wide-scene">
+          <CombatScene ctx={ctx} state={state} perform={perform} gauges />
+        </div>
       ) : (
         !report && <AfterBout {...props} />
       )}
