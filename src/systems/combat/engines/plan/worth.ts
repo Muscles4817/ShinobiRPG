@@ -1,9 +1,9 @@
 import { breathOf, effortOf } from './effort';
-import { blowsOf, type TechniqueEffect, type Verb } from '@/systems/techniques';
+import { type TechniqueEffect, type Verb } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { conditionResist } from '../../rules/avoidance';
-import { BLOW_DAMAGE, cappedHit, techniqueDamage } from '../../rules/damage';
+import { BLOW_DAMAGE, techniqueDamage } from '../../rules/damage';
 import { attackKindOf } from '../../rules/kit';
 import { strikeWith, throwWith } from '../../rules/weapons';
 import { avoidOdds, blowSkill, techniqueIncoming } from './avoid';
@@ -45,9 +45,8 @@ function effectWorth(
   e: TechniqueEffect,
 ): number {
   if (e.verb === 'damage' || e.verb === 'area' || e.verb === 'break') {
-    const blows = blowsOf(e);
-    const hit = techniqueDamage(self, foe, { technique: t, effect: e }, 0.5) / blows;
-    return cappedHit(hit, foe.maxHealth) * blows;
+    // Nothing is worth more than the whole of them.
+    return Math.min(techniqueDamage(self, foe, { technique: t, effect: e }, 0.5), foe.maxHealth);
   }
   const worth = CONDITION_WORTH[e.verb];
   if (worth === undefined) return 0;
@@ -79,7 +78,7 @@ function blowWorth(self: PlanFighter, foe: PlanFighter, thrown: boolean, round: 
     target: foe,
     skill: blowSkill(self, kind, thrown),
   };
-  return (1 - avoidOdds(round, incoming)) * cappedHit(attack.raw, foe.maxHealth);
+  return (1 - avoidOdds(round, incoming)) * Math.min(attack.raw, foe.maxHealth);
 }
 
 /** What an attack card is worth against this foe; null for anything that isn't an attack. */

@@ -9,6 +9,14 @@ import { tell } from '../../rules/telling';
  * lingering harm): a coward who is now badly hurt runs and counts as beaten, one holding a
  * channelled pin loses their grip, and one it fells goes down in the story.
  */
+/**
+ * What a hit of this much takes from a fighter: never more than they have left. No hit is
+ * capped (`docs/design/defence-plan.md`), so a blow far beyond a body is told as what it took.
+ */
+export function taken(f: { readonly health: number }, damage: number): number {
+  return Math.min(damage, Math.max(1, Math.ceil(f.health)));
+}
+
 export function wound(round: Round, id: string, damage: number): Round {
   const struck = fighterIn(round, id);
   if (!struck) return round;

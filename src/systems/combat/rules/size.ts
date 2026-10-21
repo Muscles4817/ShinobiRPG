@@ -38,8 +38,6 @@ const SIZE_RULES: Readonly<Record<BodySize, SizeRule>> = {
   huge: { health: 1.7, toughness: 1.45, slips: 0.65 },
 };
 
-/** The cap on one hit rises this much (a share of health) for each size step bigger. */
-export const CAP_PER_SIZE_STEP = 0.12;
 /** A body this big or bigger walks through a hold-off… */
 const WALKS_THROUGH_FROM: BodySize = 'large';
 /** …unless the shot took more than this share of its health. */
@@ -79,11 +77,6 @@ export function sizeToughness(f: Sized): number {
 
 export function sizeSlips(f: Sized): number {
   return SIZE_RULES[sizeOf(f)].slips;
-}
-
-/** The most one hit from `attacker` may take of `target`'s health, as a share. */
-export function hitCapShare(base: number, attacker: Sized, target: Sized): number {
-  return base + CAP_PER_SIZE_STEP * Math.max(0, sizeGap(attacker, target));
 }
 
 /** Whether a body this size keeps coming through a shot that took `taken` of `maxHealth`. */

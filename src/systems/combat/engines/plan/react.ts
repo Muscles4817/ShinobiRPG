@@ -2,8 +2,7 @@ import type { Rng } from '@/core';
 import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniques';
 
 import { alive, hasPerk } from '../../rules/body';
-import { cappedHit, MAX_HIT_SHARE, strikeDamage } from '../../rules/damage';
-import { hitCapShare } from '../../rules/size';
+import { strikeDamage } from '../../rules/damage';
 import { counterChance, guardScale } from '../../rules/defence';
 import { counterSkill, cutSkill, heldGuard } from '../../rules/blades';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
@@ -22,7 +21,7 @@ import { defenceKind, noteDefence } from './reads';
 import { throughClones } from './decoys';
 import { substituted, type Swap } from './footwork';
 import { riposteFirst } from './lingering';
-import { wound } from './wound';
+import { taken, wound } from './wound';
 import { canHit } from './rows';
 import { isDazed } from './daze';
 import { counterLine, hitLine, missLine, momentOf, type MissWhy } from './voice';
@@ -155,10 +154,7 @@ function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round
     physical: true,
     kind: 'blow',
   };
-  const damage = cappedHit(
-    Math.max(1, Math.round(kitted(round, struck, attacker, blow))),
-    attacker.maxHealth,
-  );
+  const damage = taken(attacker, Math.max(1, Math.round(kitted(round, struck, attacker, blow))));
   return wound(
     say(
       round,
@@ -305,25 +301,18 @@ export function react(start: Round, struck: Hit): Round {
   const guarding = has('guard') && guardMeets(blow);
   const guarded = guarding && !blow.breaks;
   const smashed = guarding && blow.breaks === true;
-  const damage = cappedHit(
-    Math.max(
-      1,
-      Math.round(
-        kitted(shielded, attacker, target, blow) *
-          (guarded ? guardLets(attacker, target, blow) : 1),
-      ),
-    ),
-    target.maxHealth,
-    hitCapShare(MAX_HIT_SHARE, attacker, target),
-  );
+  const lets = guarded ? guardLets(attacker, target, blow) : 1;
+  const force = Math.max(1, Math.round(kitted(shielded, attacker, target, blow) * lets));
+  const damage = taken(target, force);
   const told = say(
     shielded,
     harmLine(
+      // Told by the blow's force; the chip says what it took.
       hitLine(momentOf(shielded, attacker.id), {
         attacker,
         target,
         blow,
-        damage,
+        damage: force,
         maxHealth: target.maxHealth,
         guarded,
         smashed,

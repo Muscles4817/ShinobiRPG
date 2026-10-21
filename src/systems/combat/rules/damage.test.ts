@@ -2,8 +2,6 @@ import type { CombatAttributes, CombatTechnique } from '../contract';
 import {
   bestArt,
   BLOW_DAMAGE,
-  cappedHit,
-  MAX_HIT_SHARE,
   SKILL_DEFENCE_SHARE,
   physicalDefence,
   toughness,
@@ -124,10 +122,9 @@ describe('skill in defence', () => {
     expect(hit).toBeGreaterThan(15);
   });
 
-  it('no hit takes more than half the target’s health', () => {
-    expect(cappedHit(200, 100)).toBe(100 * MAX_HIT_SHARE);
-    expect(cappedHit(20, 100)).toBe(20);
-    expect(cappedHit(200, 50)).toBe(50 * MAX_HIT_SHARE);
+  it('has no ceiling: a hit takes what the gap says, a whole body from one far above', () => {
+    expect(strikeDamage(even(40), even(5), 0.5)).toBeGreaterThan(100);
+    expect(strikeDamage(even(10), even(10), 0.5)).toBe(BLOW_DAMAGE);
   });
 });
 

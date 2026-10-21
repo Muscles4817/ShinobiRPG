@@ -205,6 +205,25 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
    `sRankDefence`; Guy's four finishers rewritten; survival judgement for foes.
 7. **The fight table and the docs** (`CLAUDE.md` decision 16, `hittability-plan.md`).
 
+## Progress
+
+- **Slice 2, no cap (done).** `MAX_HIT_SHARE`, `cappedHit` and `hitCapShare` are gone; a hit
+  takes what the gap says, and its chip shows what it took (`taken` in `plan/wound.ts`) while
+  its words follow the blow's force. Between the cast the cap rarely bit: the fight table is
+  unchanged to within a few points, and over 15 bouts each about one hit in twenty went past
+  half (Chōza on Shikaku up to 72, Guy on Kakashi up to 70, Kakashi on Asuma up to 55). It bit
+  where the plan says it should stop biting: a far stronger fighter on a weaker one (a jōnin's
+  kick on a bandit thug now ends him) and small bodies (a hornet swarm). `MAX_RATIO` stays at
+  four: it is what keeps a blow between grades from running away, and nothing in the table
+  leans on it.
+- **Durability by build is waiting on slice 3.** Toughness is still mostly skill
+  (`SKILL_DEFENCE_SHARE` 0.8), so a genjutsu master is as hard to hurt as a wall of a clan
+  fighter of the same grade. Lowering the share is what lets stamina tell a glass cannon from a
+  tank, but without Evade a glass cannon would have no way to survive, and equals would end each
+  other in a hit. It moves with Evade and Brace, against the same bench targets.
+- **Guy never opens a deep gate** in the table's bouts (only the first, the Gate of Life), so
+  his finishers never come into it; that is slice 6.
+
 ## Open questions
 
 - How large is a committed Evade against a plain blow, and against a technique? (Set by the

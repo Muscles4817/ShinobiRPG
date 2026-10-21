@@ -1,7 +1,7 @@
 import type { Rng } from '@/core';
 
 import { hasPerk } from '../../rules/body';
-import { cappedHit, strikeDamage } from '../../rules/damage';
+import { strikeDamage } from '../../rules/damage';
 import { harmLine } from '../../rules/narration';
 import {
   carriesThrough,
@@ -14,7 +14,7 @@ import {
   resistOf,
   type Clones,
 } from '../../rules/verbs';
-import { wound } from './wound';
+import { taken, wound } from './wound';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { tell } from '../../rules/telling';
 
@@ -110,7 +110,7 @@ function struckClone(round: Round, { hit, maker, clones }: Struck): Round {
   const close = hit.physical === true && round.range === 'close';
   if (rule.shock <= 0 || !close) return burst;
   const raw = strikeDamage(maker, hit.attacker, hit.rng.next()) * rule.shock;
-  const damage = cappedHit(Math.max(1, Math.round(raw)), hit.attacker.maxHealth);
+  const damage = taken(hit.attacker, Math.max(1, Math.round(raw)));
   const leaps = tell('The clone’s lightning leaps into {t}.', { t: hit.attacker });
   const line = harmLine(leaps, damage);
   return wound(say(burst, line), hit.attacker.id, damage);
