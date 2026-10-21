@@ -251,6 +251,21 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   exchanges where it lasted 15. The fight table moves a little where one side is much quicker:
   Guy beats Hiruzen 90% of the time (83% before) in shorter bouts, his speed now partly
   outpacing an old body's slip.
+- **Slice 5, part one: Gather and chakra costs (done).** A technique costs at least its rank's
+  floor before its user's control (`RANK_COST_FLOOR` in `rules/chakra.ts`: C 10, B 18, A 30,
+  S 45; E and D keep their written costs). Surveyed against the cast before the floor, the best
+  techniques took far too little: Kisame's 7% of his tank, Zabuza's 8%, Kurenai's 12%, Gaara's
+  S-rank 13%. After it, Asuma's best takes 26%, Guy's finishers 28%, Kakashi's Great Waterfall
+  40% of his small tank; Kisame's deep reserves still make his cheap (8%). Gather
+  (`rules/gather.ts`, `plan/gather.ts`) is an action that draws back a fifth of the fighter's
+  chakra (at least 10) and 30% of their breath and leaves them open until their next turn: their
+  slip times 0.4, and only a Guard of the ready defences. A foe with attacks paid in chakra and
+  none it can still pay for (a body move paid in breath counts) gathers half the time, never up
+  close if it reads the fight (`plan/resting.ts`). The fight table: fights at the top run longer
+  (Kakashi against Asuma 2.0 → 2.3 rounds, against Zabuza 1.6 → 1.9), and Guy now beats Kakashi
+  93% of the time (67% before): Kakashi's costly ninjutsu drains his small tank while Guy fights
+  on breath. That is too lopsided for rivals and a target for the durability retune (or for
+  Kakashi's reserves).
 - **Shadow clones are part of slice 5.** Today a shadow clone costs a flat 14 chakra and is a
   decoy that strikes at a third of its maker. In canon it splits its maker's chakra (half of what
   is left) and makes a whole fighter as able as its maker who falls to one hit: a huge

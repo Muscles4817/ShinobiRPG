@@ -109,6 +109,8 @@ export interface PlanFighter
   readonly breath?: number;
   /** Evade or Brace, held until their next turn (`commitment.ts`); absent or null: neither. */
   readonly committed?: Commitment | null;
+  /** Gathering chakra and breath this turn, and so open until their next (`gather.ts`). */
+  readonly gathering?: boolean;
   readonly loadout: Loadout;
   /** The defence ready at each distance (`readiness.ts`); absent in fights saved before. */
   readonly reactions?: Reactions;
@@ -342,6 +344,7 @@ export function patch(
       | 'guardBrokenBy'
       | 'breath'
       | 'committed'
+      | 'gathering'
     >
   >,
 ): PlanFighter[] {

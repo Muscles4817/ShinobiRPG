@@ -26,6 +26,8 @@ import {
   PIN_SLIP,
 } from '../../rules/verbs';
 import { committedTo } from './commitment';
+import { isGathering } from './gather';
+import { GATHER_OPEN } from '../../rules/gather';
 import { isDazed } from './daze';
 import { readsInTheMoment } from './judgement';
 import { readyDefences } from './readiness';
@@ -95,7 +97,10 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     ...(incoming.accuracy ? { accuracy: incoming.accuracy } : {}),
     ...(incoming.areaSize ? { areaSize: incoming.areaSize } : {}),
   });
-  const insects = (incoming.swarm ?? 1) * settledSlips(round, attacker, target);
+  const insects =
+    (incoming.swarm ?? 1) *
+    settledSlips(round, attacker, target) *
+    (isGathering(target) ? GATHER_OPEN : 1);
   const dust = (incoming.dust ?? 1) * blindedSlips(attacker);
   // A big body is a big target (`size.ts`).
   const held =

@@ -192,6 +192,7 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
     case 'strike':
     case 'throw':
     case 'step':
+    case 'gather':
       return true;
   }
 }

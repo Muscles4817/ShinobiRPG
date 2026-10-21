@@ -209,64 +209,40 @@
   You go in with Gale Heel.
   You find the strength from somewhere, and your Gale Heel rips into the storehouse wraith. [Guarded] [−7]
   Little of it bites on the storehouse wraith.
-  The storehouse wraith’s touch comes slower than it did at the start and only chills you. [Guarded] [−1]
+  The storehouse wraith drops into a stance of stillness and gathers itself.
   —— Third exchange ——
   You reach for Gale Heel again.
   You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
   The storehouse wraith barely seems to feel it.
-  The storehouse wraith fixes its eyes on the field and casts Shadow Feint.
-  You reel, the world spinning.
+  The storehouse wraith fixes its eyes on the field and casts Whispering Dread.
+  The storehouse wraith’s Whispering Dread grips you. [Guarded] [−8]
+  The storehouse wraith’s illusion folds the world around you.
   —— Last exchange ——
-  You stand blinking while the exchange goes by without you.
+  Your senses lie to you, and the attack goes wide.
   The storehouse wraith melts back into the illusion.
-  The storehouse wraith’s touch only just grazes you. [Guarded] [−1]
+  The storehouse wraith’s touch comes slower than it did at the start and only grazes you. [Guarded] [−1]
   You blink, and the field is no longer where it was.
   —— The next round begins ——
   —— First exchange ——
-  You search the field and find no one.
-  You are a shade too slow, and the storehouse wraith’s touch brushes you. [Guarded] [−1]
+  You shake off the illusion.
+  You search the corners of the room and find them empty.
+  The storehouse wraith’s touch only just brushes you. [Guarded] [−1]
   Your senses swim in the storehouse wraith’s illusion.
-  You trace the illusion back to the storehouse wraith.
   —— Second exchange ——
-  You scrape together what chakra you can for Gale Heel.
+  You bite down and the world snaps back into place.
+  You find the storehouse wraith in a corner of the room.
+  The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
+  The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−9]
+  The storehouse wraith’s illusion folds the world around you.
+  —— Third exchange ——
+  You launch into Gale Heel.
   You find the strength from somewhere, and your Gale Heel rips into the storehouse wraith. [Guarded] [−7]
   Much of it glances off the storehouse wraith.
-  The storehouse wraith’s touch comes slower than it did at the start and only brushes you. [Guarded] [−1]
-  —— Third exchange ——
-  You go back to Gale Heel.
-  You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
-  Little of it bites on the storehouse wraith.
   The storehouse wraith fades out of sight again.
-  The storehouse wraith’s touch only just chills you. [Guarded] [−1]
-  —— Last exchange ——
-  You search the field and find no one.
-  The air around the storehouse wraith wavers as Whispering Dread takes hold.
-  The storehouse wraith catches you with its Whispering Dread. [Guarded] [−11]
-  You blink, and the field is no longer where it was.
-  —— The next round begins ——
-  —— First exchange ——
-  You break free of the illusion.
-  You search the corners of the room and find them empty.
-  You are a shade too slow, and the storehouse wraith’s touch chills you. [Guarded] [−1]
-  Your senses swim in the storehouse wraith’s illusion.
-  —— Second exchange ——
-  You sweep the field once more and turn up nothing.
-  The storehouse wraith’s touch only just brushes you. [Guarded] [−1]
-  You trace the illusion back to the storehouse wraith.
-  —— Third exchange ——
-  Hurt and running short of time, you reach for Gale Heel.
-  You find the strength from somewhere, and your Gale Heel rips into the storehouse wraith. [Guarded] [−7]
-  Little of it bites on the storehouse wraith.
-  The storehouse wraith lashes out with the last of its strength, and the touch only grazes you. [Guarded] [−1]
-  You blink, and the field is no longer where it was.
-  —— Last exchange ——
-  You use Gale Heel once more.
-  You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
-  The storehouse wraith barely seems to feel it.
-  The storehouse wraith’s touch only just chills you. [Guarded] [−1]
+  The storehouse wraith’s touch comes slower than it did at the start and only chills you. [Guarded] [−1]
   You slide down the wall and stay there.
-  Everything goes dark.
-  summary: You lasted five rounds before going down. The storehouse wraith was still standing.
+  The fight goes on a little longer without you, then ends.
+  summary: You lasted four rounds before going down. The storehouse wraith was still standing.
 
 ########## bandits in the streets ##########
   Two bandit thugs square up.
