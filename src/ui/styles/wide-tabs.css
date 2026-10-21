@@ -1,7 +1,8 @@
 /*
  * The dock's other tabs on the desktop layout (`.app.wide`): each spreads across the main column
- * in its own way, setting its panes (ui/layout/Pane.tsx) side by side. The Record keeps a reading
- * width. Every rule is scoped under `.wide-main.tab-*`; on a phone a pane isn't there at all.
+ * in its own way, setting its panes (ui/layout/Pane.tsx) side by side. Every rule is scoped under
+ * `.wide-main.tab-*` or styles what only a desk draws (the journal's days); on a phone a pane
+ * isn't there at all.
  */
 .wide-main.tab-travel,
 .wide-main.tab-jutsu,
@@ -96,11 +97,95 @@
   margin: 0 auto;
 }
 
-/* The Record is for reading: it keeps the narrower column, with room above its header. */
+/*
+ * The Record: its header stays in view. The journal is read in a column beside its list of
+ * days; the field book's entries are set two across.
+ */
 .wide-main.tab-record {
-  padding-top: 20px;
+  max-width: none;
+  padding: 0 24px 24px;
+  box-sizing: border-box;
 }
 .wide-main.tab-record > .plain-head {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin-top: 20px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  background: var(--surface) var(--grain);
+}
+.record-desk {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 720px);
+  gap: 28px;
+  align-items: start;
+}
+.record-desk .feed-day {
+  scroll-margin-top: 96px;
+}
+.journal-days {
+  position: sticky;
+  top: 92px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100vh - 116px);
+  padding-top: 14px;
+}
+.journal-days h2 {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+.journal-days ol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.journal-day {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.journal-day span {
+  font-family: var(--font-story);
+}
+.journal-day small {
+  font-size: 0.78rem;
+}
+.journal-day:hover {
+  color: var(--ink);
+}
+.journal-day.on {
+  border-color: var(--line);
+  background: var(--surface) var(--grain);
+  color: var(--ink);
+}
+.wide-main.tab-record .field-entries {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+/* A narrow desk gives the journal its whole column. */
+@media (max-width: 1299px) {
+  .record-desk {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .journal-days {
+    display: none;
+  }
 }

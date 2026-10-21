@@ -105,12 +105,32 @@ describe('the desktop layout (smoke test)', () => {
     expect(detail()).toBe(picked);
   });
 
+  it('lists the journal’s days beside it, the latest marked', async () => {
+    windowWide(true);
+    const game = newGame();
+    const nextDay = game.journal.entries.map((e, i) => ({ ...e, id: 1000 + i, day: e.day + 1 }));
+    const user = await openGame({
+      ...game,
+      journal: { entries: [...game.journal.entries, ...nextDay], nextId: 2000 },
+    });
+    await user.keyboard('6');
+    const days = screen.getByRole('navigation', { name: 'Days' });
+    const listed = within(days).getAllByRole('button');
+    expect(listed).toHaveLength(2);
+    expect(listed[1]).toHaveAttribute('aria-current', 'true');
+    await user.click(screen.getByRole('tab', { name: 'Field book' }));
+    expect(screen.queryByRole('navigation', { name: 'Days' })).not.toBeInTheDocument();
+  });
+
   it('keeps the phone layout as it was on a narrow screen', async () => {
     windowWide(false);
     const user = await openGame();
     expect(screen.queryByRole('complementary', { name: 'You' })).not.toBeInTheDocument();
     expect(screen.queryByRole('region', { name: /^Places in/ })).not.toBeInTheDocument();
     expect(screen.getByText('Health')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Record' }));
+    expect(screen.queryByRole('navigation', { name: 'Days' })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Here' }));
     await user.keyboard('3');
     expect(screen.getByRole('button', { name: 'Here' })).toHaveAttribute('aria-current', 'page');
   });
