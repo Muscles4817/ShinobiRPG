@@ -11,7 +11,8 @@ import type { GameState } from './state';
  * read from the seed and the foe, never the Rng, so the same notice reads the same way each
  * time, and only grows clearer as your eyes do. A client's report, a recon of their kit or
  * the fight itself shows the whole retinue (`full`). A foe's summoning contract
- * (`EnemyDef.summons`) is read the same way, by its own tell.
+ * (`EnemyDef.summons`), hive and dust (`EnemyDef.hive`, `dust`) are read the same way, by
+ * their own tells.
  */
 
 /** How much you know of a foe: a glance (a notice, a first look) or everything. */
@@ -50,6 +51,21 @@ export function retinueSeen(
     (entry, k) =>
       hashUnit(state.board.seed, 'retinue', def.id, k) < glanceOdds(entry.tell, perception),
   );
+}
+
+/** What a foe carries of hive and dust that a glance can tell: a hive hides; a gourd shows. */
+export function poolsSeen(
+  state: GameState,
+  def: EnemyDef,
+  knowledge: RetinueKnowledge,
+): { readonly hive: boolean; readonly dust: boolean } {
+  const perception = state.character.stats.perception;
+  const sees = (pool: 'hive' | 'dust', tell: RetinueTell) =>
+    knowledge === 'full' || hashUnit(state.board.seed, pool, def.id) < glanceOdds(tell, perception);
+  return {
+    hive: def.hive !== undefined && sees('hive', def.hive.tell ?? 'hidden'),
+    dust: def.dust !== undefined && sees('dust', def.dust.tell ?? 'open'),
+  };
 }
 
 /** The summons a foe can call that you can tell they hold. */

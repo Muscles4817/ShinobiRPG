@@ -436,7 +436,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     is an **S-rank scroll** a job hands over (`reward.dustScroll`, `GameState.dustScrolls`,
     `game/dust/scrolls.ts`): read at home a day at a time with chakra control at B, and mastered
     it gives a first batch and teaches its kind's techniques (`DustDef.techniqueIds`); a body
-    commands one kind of dust at a time. A companion is cared for
+    commands one kind of dust at a time. Foes carry them too (`EnemyDef.hive`, `dust`: full,
+    with a `tell` read like a retinue's, `poolsSeen`: a hive in the body `hidden`, a gourd
+    `open`); a read and the client's report name what they carry and what undoes it
+    (`game/scoutingPools.ts`). A companion is cared for
     (`systems/companions/care.ts`, `game/companions/`): a meal a day (scraps, its kind's `diet`,
     a favourite found by feeding), a game by its tastes, training together as its teacher at a
     training ground; hunger weakens it and a starved stray leaves; its health carries between

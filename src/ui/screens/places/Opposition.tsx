@@ -22,10 +22,17 @@ export function Opposition({ opposition, perform }: OppositionProps) {
               {f.name}
               {f.count > 1 && <span className="num"> ×{f.count}</span>}
             </b>
-            {f.traits.length === 0 && <small>No tricks. Just a fight.</small>}
+            {f.traits.length === 0 && f.pools.length === 0 && (
+              <small>No tricks. Just a fight.</small>
+            )}
             {f.traits.map((t) => (
               <small key={t.trait}>
                 <b>{t.label}.</b> {t.counter}
+              </small>
+            ))}
+            {f.pools.map((p) => (
+              <small key={p.label}>
+                <b>{p.label}</b> {p.counter}
               </small>
             ))}
           </li>

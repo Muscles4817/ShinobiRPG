@@ -118,4 +118,30 @@ export const ENEMIES: readonly EnemyDef[] = [
     techniqueIds: [],
     traits: ['archer', 'coward'],
   },
+  {
+    id: 'rogue-insect-user',
+    kind: 'Rogue',
+    danger: 'armed',
+    name: 'Rogue Insect User',
+    description:
+      'Left a clan of insect-keepers and took the hive in his body with him. Never seems to move, and never seems to need to.',
+    baseStat: 7,
+    statBonuses: { chakraControl: 4, ninjutsu: 3, perception: 2, willpower: 2 },
+    maxChakra: 40,
+    techniqueIds: ['insect-swarm', 'insect-jar'],
+    hive: { strainId: 'kikaichu' },
+  },
+  {
+    id: 'iron-sand-rogue',
+    kind: 'Rogue',
+    danger: 'armed',
+    name: 'Iron Sand Rogue',
+    description:
+      'Carries a black sack of iron sand on his back and wants the scroll that taught his master to use it.',
+    baseStat: 7,
+    statBonuses: { ninjutsu: 4, chakraControl: 3, perception: 2, speed: 1 },
+    maxChakra: 40,
+    techniqueIds: ['dust-iron-needles', 'dust-iron-maul'],
+    dust: { dustId: 'iron-sand' },
+  },
 ];

@@ -145,3 +145,11 @@ export function personHive(
   const chakra = maxChakra({ ...stats, chakraGiven: SHARE_OF_CHAKRA[DEFAULT_SHARE] });
   return { swarm: swarmOf(strain, cap, cap), chakra };
 }
+
+/** A foe's hive (`EnemyDef.hive`): full, of a pack strain, at the default share. */
+export function foeHive(strainId: string, stats: Stats, ctx: GameContext): CombatSwarm | undefined {
+  const strain = strainSheet(null, strainId, ctx);
+  if (!strain) return undefined;
+  const cap = capFor(stats, DEFAULT_SHARE, strain);
+  return swarmOf(strain, cap, cap);
+}
