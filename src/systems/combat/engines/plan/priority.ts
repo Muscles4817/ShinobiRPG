@@ -18,6 +18,7 @@ import { spendsReserve } from './pacing';
 import { bestTarget } from './targeting';
 import { finisherTargets, needsOpenTarget } from './finishers';
 import { nextOpening } from './climbing';
+import { revealWorth } from './veil';
 import { readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
 import { ownField } from './field';
@@ -203,6 +204,12 @@ function needed(self: PlanFighter, card: Card, round: Round): boolean {
     case 'step':
     case 'gather':
       return true;
+    case 'reveal':
+      return revealWorth(self, {
+        foes: opponentsOf(round.fighters, self),
+        exchange: round.number,
+        ...(round.reads ? { reads: round.reads } : {}),
+      });
   }
 }
 
@@ -329,6 +336,13 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   const slots = self.loadout[round.range];
   const emergency = firstPlay(self, round, slots.filter(urgent));
   if (emergency) return emergency;
+  const fight = {
+    foes: opponentsOf(round.fighters, self),
+    exchange: round.number,
+    ...(round.reads ? { reads: round.reads } : {}),
+  };
+  // A covered eye and a ladder's next step take no slot (`veil.ts`, `climbing.ts`).
+  if (revealWorth(self, fight)) return { card: { kind: 'reveal' }, target: undefined };
   const climb = climbing(self, round);
   if (climb) return climb;
   const footwork = isPinned(self) ? null : makingFor(self, round.range);

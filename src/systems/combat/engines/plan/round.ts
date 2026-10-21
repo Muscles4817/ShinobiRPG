@@ -9,25 +9,21 @@ import { reachLead } from '../../rules/blades';
 import { gathered } from '../../rules/chakra';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
-import { afterUsing } from '../../rules/trumps';
-import { strike } from './arms';
-import { charge, step, type Charged } from './steps';
+import { charge, type Charged } from './steps';
 import { keepHolding } from './holding';
 import { lostTurn } from './lostTurn';
 import { inCover, lostToGround } from './groundPlay';
 import { momentOf, SCENE_MEMORY } from './fresh';
 import { cardId, isOffence, needsAim, type Card } from './cards';
+import { released } from './commitment';
+import { play } from './play';
 import { chooseCard } from './choose';
-import { commit, released } from './commitment';
-import { gather } from './gather';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
 import { intendedCard } from './intent';
 import { exchangeDivider, staged } from './staging';
-import { useJutsu } from './jutsu';
 import { lingerAfter } from './lingering';
-import { useTool } from './pouch';
 import { secondWinds } from './provisions';
 import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
@@ -35,7 +31,7 @@ import { readsInTheMoment } from './judgement';
 import { noteAttack } from './reads';
 import { bestTarget } from './targeting';
 import { finisherTargets, needsOpenTarget } from './finishers';
-import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
+import { inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { intercept } from './team';
 import { springTraps } from './traps';
 import { aid, struggleFree } from './struggle';
@@ -43,6 +39,7 @@ import { clonesAfter } from './cloneUpkeep';
 import { shroudsAfter } from './shrouds';
 import { summonsAfter } from './summons';
 import { misled, shadowsAfter } from './shadows';
+import { veilsAfter } from './veil';
 import { plannedSummons } from './summonPlans';
 import { swarmsAfter } from './swarm';
 import { dustAfter } from './dust';
@@ -109,47 +106,6 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
   if (!alive(playerOf({ fighters }))) return 'defeat';
   return fighters.some((f) => f.side === 'enemy' && alive(f)) ? null : 'victory';
-}
-
-/** Counts a plain strike or a step towards the fighter's usage report. */
-function practise(round: Round, actor: PlanFighter, work: 'blows' | 'footwork'): Round {
-  const done = fighterIn(round, actor.id)?.[work] ?? 0;
-  return { ...round, fighters: patch(round.fighters, actor.id, { [work]: done + 1 }) };
-}
-
-function play(round: Round, turn: Turn, card: Card): Round {
-  switch (card.kind) {
-    case 'step':
-      return step(
-        practise(round, turn.actor, 'footwork'),
-        { ...turn, target: turn.target ?? opponentsOf(round.fighters, turn.actor)[0] },
-        card.direction,
-      );
-    case 'search':
-      return search(round, turn);
-    case 'dispel':
-      return dispel(round, turn);
-    case 'jutsu': {
-      const trumpsUsed = afterUsing(turn.actor, card.technique);
-      const marked = { ...round, fighters: patch(round.fighters, turn.actor.id, { trumpsUsed }) };
-      return useJutsu(marked, turn, card.technique);
-    }
-    case 'item':
-      return useTool(round, turn, card.item);
-    case 'strike':
-      return strike(practise(round, turn.actor, 'blows'), turn, false);
-    case 'throw':
-      return strike(round, turn, true);
-    case 'evade':
-    case 'brace':
-      return commit(round, turn, card.kind);
-    case 'gather':
-      return gather(round, turn);
-    case 'guard':
-    case 'dodge':
-    case 'counter':
-      return round;
-  }
 }
 
 function remember(seen: Round['seen'], fighterId: string, id: string): Round['seen'] {
@@ -317,7 +273,9 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const opened: Round = { ...start, lines: [exchangeDivider(name, start)] };
   const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), opened);
   const kept = plannedSummons(
-    shadowsAfter(summonsAfter(clonesAfter(shroudsAfter(afterEmpowers(played, state.round))))),
+    veilsAfter(
+      shadowsAfter(summonsAfter(clonesAfter(shroudsAfter(afterEmpowers(played, state.round))))),
+    ),
   );
   const end = secondWinds(
     lingerAfter(dustAfter(swarmsAfter(struggleFree(kept, rng), rng)), state.round),

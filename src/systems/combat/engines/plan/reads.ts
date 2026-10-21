@@ -39,6 +39,7 @@ export function styleOf(card: Card): AttackStyle | null {
       return card.item.effect === 'blast' ? 'jutsu' : null;
     case 'step':
     case 'gather':
+    case 'reveal':
     case 'search':
     case 'dispel':
       return null;
@@ -61,6 +62,7 @@ export function defenceKind(card: Card): DefenceKind | null {
     case 'evade':
     case 'brace':
     case 'gather':
+    case 'reveal':
     case 'search':
     case 'dispel':
       return null;

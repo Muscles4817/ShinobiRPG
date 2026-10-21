@@ -2,6 +2,7 @@ import { affords } from './effort';
 import { canCall } from './calls';
 import { canCommit } from './commitment';
 import { canGather } from './gather';
+import { canReveal } from '../../rules/veil';
 import { hasInsectsFor } from './swarm';
 import { hasDustFor } from './dust';
 import { statTier, type StatGrade } from '@/systems/stats';
@@ -53,13 +54,15 @@ export type Card =
   | { readonly kind: 'brace' }
   /** Drawing chakra and breath back, open until the next turn (`gather.ts`). */
   | { readonly kind: 'gather' }
+  /** Uncovering a veiled eye (`veil.ts`), offered only to a fighter with one covered. */
+  | { readonly kind: 'reveal' }
   | { readonly kind: 'search' }
   | { readonly kind: 'dispel' }
   | { readonly kind: 'jutsu'; readonly technique: CombatTechnique }
   | { readonly kind: 'item'; readonly item: CombatItem };
 
 /** What a fighter brings: their techniques, and the tools in their pouch. */
-type Kit = Pick<PlanFighter, 'techniques' | 'items' | 'gear' | 'size' | 'empowered'>;
+type Kit = Pick<PlanFighter, 'techniques' | 'items' | 'gear' | 'size' | 'empowered' | 'veiled'>;
 
 const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'strike', card: { kind: 'strike' } },
@@ -89,7 +92,10 @@ export function cardId(card: Card): CardId {
 /** Cards that are no attack and work at any distance: defences, gathering, the senses, tools. */
 type Anywhere = Extract<
   Card,
-  { kind: 'guard' | 'dodge' | 'evade' | 'brace' | 'gather' | 'search' | 'dispel' | 'item' }
+  {
+    kind:
+      'guard' | 'dodge' | 'evade' | 'brace' | 'gather' | 'reveal' | 'search' | 'dispel' | 'item';
+  }
 >;
 const ANYWHERE_KINDS: readonly Card['kind'][] = [
   'guard',
@@ -97,10 +103,29 @@ const ANYWHERE_KINDS: readonly Card['kind'][] = [
   'evade',
   'brace',
   'gather',
+  'reveal',
   'search',
   'dispel',
   'item',
 ];
+
+/** Cards that spend the turn on the fighter themself: committing, gathering, an eye uncovered. */
+export type SelfCard = Extract<Card, { kind: 'evade' | 'brace' | 'gather' | 'reveal' }>;
+const SELF_KINDS: readonly Card['kind'][] = ['evade', 'brace', 'gather', 'reveal'];
+
+/** Whether a card spends the turn on the fighter themself. */
+export function spendsOnSelf(card: Card): card is SelfCard {
+  return SELF_KINDS.includes(card.kind);
+}
+
+/** Defences kept ready, which react on their own and never take a turn. */
+export type ReadyCard = Extract<Card, { kind: 'guard' | 'dodge' | 'counter' }>;
+const READY_KINDS: readonly Card['kind'][] = ['guard', 'dodge', 'counter'];
+
+/** Whether a card is a defence kept ready. */
+export function isReadyDefence(card: Card): card is ReadyCard {
+  return READY_KINDS.includes(card.kind);
+}
 
 /** Whether a card works at any distance. */
 export function playsAnywhere(card: Card): card is Anywhere {
@@ -139,7 +164,8 @@ export function kitCards(fighter: Kit, band: RangeBand): Card[] {
   const basics = BASIC_CARDS.map((b) => basicFor(fighter, b.card));
   const jutsu = fighter.techniques.map((technique): Card => ({ kind: 'jutsu', technique }));
   const tools = fighter.items.map((item): Card => ({ kind: 'item', item }));
-  return [...basics, ...jutsu, ...tools].filter((c) => fitsBand(c, band));
+  const eye: Card[] = (fighter.veiled ?? []).length > 0 ? [{ kind: 'reveal' }] : [];
+  return [...basics, ...eye, ...jutsu, ...tools].filter((c) => fitsBand(c, band));
 }
 
 /** Footwork: a step, or a technique that does nothing but move its user. */
@@ -243,6 +269,7 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind === 'evade' || card.kind === 'brace') return canCommit(fighter, card.kind);
   if (card.kind === 'gather') return canGather(fighter);
+  if (card.kind === 'reveal') return canReveal(fighter);
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
   if (trumpSpent(fighter, card.technique) || !isOpenFor(fighter, card.technique)) return false;

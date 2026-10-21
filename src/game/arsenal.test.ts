@@ -25,14 +25,10 @@ describe('arsenals', () => {
     );
     expect(ids(fighter.techniques)).toContain('lightning-blade');
     expect(ids(fighter.techniques)).not.toContain('shuriken-jutsu');
-    // His Sharingan's perks, and as a jōnin he walks on water and up trees.
-    expect(fighter.perks).toEqual([
-      'insight',
-      'foresight',
-      'mimicry',
-      'water-walking',
-      'tree-walking',
-    ]);
+    // His eye for a fight, and as a jōnin he walks on water and up trees; his Sharingan's perks
+    // stay under the headband until the fight calls for them.
+    expect(fighter.perks).toEqual(['insight', 'water-walking', 'tree-walking']);
+    expect(fighter.veiled).toEqual(['foresight', 'mimicry']);
   });
 
   it('arms Asuma with his canon trench-knife jutsu and Burning Ash', () => {

@@ -4,7 +4,8 @@ import { isHarmful } from './verbs';
 /**
  * Eyes in a fight: what an awakened bloodline (or a transplanted eye) brings beyond reading foes
  * (`insight`, read in `plan/sight.ts` and `plan/intent.ts`). **Foresight** reads movement before
- * it happens: attacks and techniques are slipped and countered more often, and
+ * it happens: attacks and techniques are slipped and countered more often, illusions seen through
+ * most of all, and
  * between rounds its owner keeps the defence that best meets what they've been thrown, as a foe
  * would. **Mimicry** copies a technique watched being used: one the copier's own art could carry
  * (`COPY_SKILL_SHARE` of the user's), of no clan, needing no nature they lack, never a trump, a
@@ -17,6 +18,8 @@ export const FORESIGHT_SLIP = 1.4;
 export const FORESIGHT_SEES = 1.35;
 /** …and a Counter this much likelier to find its moment. */
 export const FORESIGHT_COUNTER = 1.3;
+/** An illusion cast at eyes that see movement before it comes is seen through this much more. */
+export const FORESIGHT_SEES_THROUGH = 1.8;
 
 /** A copy needs the copier's art at least this share of the user's. */
 export const COPY_SKILL_SHARE = 0.7;

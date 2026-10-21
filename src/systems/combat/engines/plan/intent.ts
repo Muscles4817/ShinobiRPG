@@ -125,6 +125,8 @@ function telegraph(card: Card, precise: boolean): string {
       return 'Searching for you';
     case 'gather':
       return 'Gathering their strength';
+    case 'reveal':
+      return 'Reaching for the cover over one eye';
     case 'dispel':
       return 'Gathering chakra to break the illusion';
     case 'jutsu':

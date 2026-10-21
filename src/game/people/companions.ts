@@ -117,10 +117,17 @@ function kitOf(person: PersonDef, ctx: GameContext): Pick<CombatantSetup, 'gear'
   };
 }
 
-/** A person's perks in a fight: their arsenal's, and walking on water and trees by rank. */
-function perksOf(person: PersonDef): Pick<CombatantSetup, 'perks'> {
+/**
+ * A person's perks in a fight: their arsenal's, and walking on water and trees by rank; and any
+ * they keep covered until the fight calls for them.
+ */
+function perksOf(person: PersonDef): Pick<CombatantSetup, 'perks' | 'veiled'> {
   const perks = [...new Set([...(person.arsenal?.perks ?? []), ...walkingByRank(person.rank)])];
-  return perks.length > 0 ? { perks } : {};
+  const veiled = person.arsenal?.veiled ?? [];
+  return {
+    ...(perks.length > 0 ? { perks } : {}),
+    ...(veiled.length > 0 ? { veiled } : {}),
+  };
 }
 
 /**

@@ -7,7 +7,7 @@ import { BLOW_DAMAGE, techniqueDamage } from '../../rules/damage';
 import { attackKindOf } from '../../rules/kit';
 import { strikeWith, throwWith } from '../../rules/weapons';
 import { avoidOdds, blowSkill, techniqueIncoming } from './avoid';
-import type { Card } from './cards';
+import { playsAnywhere, type Card } from './cards';
 import type { PlanFighter, Round } from './state';
 
 /**
@@ -90,6 +90,7 @@ export function cardWorth(
   card: Card,
   where: { readonly band: RangeBand; readonly fighters: readonly PlanFighter[] },
 ): number | null {
+  if (playsAnywhere(card)) return null;
   const round = sketch(where.fighters.length > 0 ? where.fighters : [self, foe], where.band);
   switch (card.kind) {
     case 'jutsu':
@@ -99,15 +100,7 @@ export function cardWorth(
     case 'throw':
       return blowWorth(self, foe, true, round);
     case 'step':
-    case 'guard':
-    case 'dodge':
     case 'counter':
-    case 'evade':
-    case 'brace':
-    case 'gather':
-    case 'search':
-    case 'dispel':
-    case 'item':
       return null;
   }
 }

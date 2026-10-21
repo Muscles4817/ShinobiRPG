@@ -400,6 +400,18 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   wide area across the field; **Evening Elephant** is five sure blows. Guy now sets Kakashi up
   (a Little Toe Attack's daze) and finishes with Morning Peacock. The fight table: Guy beats
   Kakashi 53% (70% before), Hiruzen 20%.
+- **Slice 7: the Sharingan, revealed (done).** Kakashi's arsenal keeps foresight and mimicry
+  covered (`PersonArsenal.veiled`, `CombatantSetup.veiled`): no use until uncovered, which is a turn
+  (a `reveal` card, taking no slot like the gates; a plan may slot it to play by hand), taken
+  against a foe who is a match (fighting power at least `MATCH_RATIO` of his own), one who fights
+  with illusions, or a fight turning against him, and paid in chakra every exchange (`EYE_UPKEEP`, 3) until he can't, when it closes again (`rules/veil.ts`, `plan/veil.ts`). Foresight itself
+  grew: eyes that see it coming slip up to `SEEING_AVOID_MAX` (0.85, 0.95 committed to Evade), read
+  every attack clearly for Evade, meet a body up to `SEEING_PACE` faster before it outpaces them
+  (past that, still nothing slips it) and see through illusions most of all
+  (`FORESIGHT_SEES_THROUGH`). The fight table: the turn spent uncovering it and its drain cost him
+  where foresight used to be free; Guy beats Kakashi 63% (53% before), Kurenai 30% (0%), and
+  Kakashi beats Asuma 77% (87%) and Zabuza every time. Guy's chains and pace still find him: the
+  stealth slice (4.3) is the answer, so Guy never gets the chance.
 
 ## Open questions
 

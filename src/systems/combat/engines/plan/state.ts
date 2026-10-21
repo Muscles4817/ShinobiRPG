@@ -347,6 +347,8 @@ export function patch(
       | 'breath'
       | 'committed'
       | 'gathering'
+      | 'veiled'
+      | 'revealed'
     >
   >,
 ): PlanFighter[] {
