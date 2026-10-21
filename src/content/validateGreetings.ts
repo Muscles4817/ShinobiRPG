@@ -1,19 +1,38 @@
 import type { GreetingCause } from './greetings';
 import type { ContentPack, LocationDef } from './types';
+import { worldMarksLeft } from './validateStory';
 
 /**
  * Towns' greetings (`LocationDef.greetings`): a village held against is a real one and not the
- * town itself, each cause is held once, and every greeting has words for the village screen.
+ * town itself, each cause is held once, every greeting has words for the village screen, and
+ * gates shut to you open on a world mark some job leaves, with words for the refusal.
  */
 function causeKey(cause: GreetingCause): string {
   return cause.kind === 'from' ? `from:${cause.locationId}` : cause.kind;
 }
 
-function locationProblems(pack: ContentPack, location: LocationDef): string[] {
+function gateProblems(at: string, location: LocationDef, marks: ReadonlySet<string>): string[] {
+  return (location.greetings ?? []).flatMap(({ shut }) => {
+    if (!shut) return [];
+    return [
+      ...(marks.has(shut.until)
+        ? []
+        : [`${at} opens on "${shut.until}", which no job leaves behind`]),
+      ...(shut.refusal.trim() === '' ? [`${at} shuts its gates with no words`] : []),
+    ];
+  });
+}
+
+function locationProblems(
+  pack: ContentPack,
+  location: LocationDef,
+  marks: ReadonlySet<string>,
+): string[] {
   const at = `location "${location.id}"`;
   const greetings = location.greetings ?? [];
   const keys = greetings.map((g) => causeKey(g.cause));
   return [
+    ...gateProblems(at, location, marks),
     ...greetings.flatMap((g) => {
       const { cause } = g;
       const unknown =
@@ -33,5 +52,6 @@ function locationProblems(pack: ContentPack, location: LocationDef): string[] {
 }
 
 export function validateGreetings(pack: ContentPack): string[] {
-  return pack.locations.flatMap((l) => locationProblems(pack, l));
+  const marks = worldMarksLeft(pack);
+  return pack.locations.flatMap((l) => locationProblems(pack, l, marks));
 }

@@ -6,4 +6,6 @@ export { KAGERO_LANDING } from './place';
 export { LANDING_FOODS } from './food';
 export { LANDING_TRAINING } from './training';
 export { LANDING_PEOPLE } from './people';
-export { LANDING_JOBS, SUNA_BARGE_PASSAGE } from './jobs';
+export { LANDING_JOBS } from './jobs';
+export { SUNA_BARGE_PASSAGE } from './passage';
+export { SUNA_GATES_OPEN } from './envoy';

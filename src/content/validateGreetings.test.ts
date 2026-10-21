@@ -32,4 +32,22 @@ describe('town greetings', () => {
       ]),
     );
   });
+
+  it('opens shut gates only on a mark some job leaves, and says why they are shut', () => {
+    const at = ORIGINAL_PACK.locations[0]!.id;
+    const problems = withGreetings([
+      {
+        cause: { kind: 'contract' },
+        temper: 'cold',
+        line: 'Begone.',
+        shut: { until: 'never-happens', refusal: ' ' },
+      },
+    ]);
+    expect(problems).toEqual(
+      expect.arrayContaining([
+        `location "${at}" opens on "never-happens", which no job leaves behind`,
+        `location "${at}" shuts its gates with no words`,
+      ]),
+    );
+  });
 });

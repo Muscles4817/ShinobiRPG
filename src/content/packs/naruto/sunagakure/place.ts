@@ -5,7 +5,8 @@ import { SUNA_COMPOUNDS } from './compounds';
 /**
  * Sunagakure under the Fourth Kazekage, a village cut into the inside of a ring of cliffs in
  * the deep desert. A foreigner is kept to the Outer Ring, and a Leaf one is watched there: the
- * Sand remembers Sakumo Hatake's raids (`docs/design/sunagakure-plan.md`). Water is wealth,
+ * Sand remembers Sakumo Hatake's raids (`docs/design/sunagakure-plan.md`); its gates are shut to
+ * the Leaf until the Kazekage gives leave (`kageroLanding/envoy.ts`). Water is wealth,
  * beasts are broken rather than befriended, and the sand priests live outside the wall, by the
  * barges, because nobody inside it will have them.
  */
@@ -20,6 +21,11 @@ export const SUNAGAKURE: LocationDef = {
       cause: { kind: 'from', locationId: 'konohagakure' },
       temper: 'cold',
       line: 'The Sand remembers Sakumo Hatake. A Leaf forehead protector buys you the foreigner’s price, and long looks from everyone who lost someone in the war.',
+      shut: {
+        until: 'suna-gates-open',
+        refusal:
+          'The Sand turns Leaf shinobi back at the gorge. Only the Kazekage’s leave lets one in, and the Sand’s envoys pass through Kagerō Landing.',
+      },
     },
     {
       cause: { kind: 'contract' },

@@ -1,16 +1,19 @@
 import type { MissionDef } from '@/systems/missions';
 
+import { LANDING_ENVOY_JOB } from './envoy';
+import { SUNA_BARGE_PASSAGE } from './passage';
+
 /**
  * The Barge Office: work for the sand priests, which the Landing won't do and a stranger may.
  * Bringing a lost apprentice back out of the outer sands earns their leave to board a barge
- * (`SUNA_BARGE_PASSAGE`, which the barge crossing needs).
+ * (`SUNA_BARGE_PASSAGE`, which the barge crossing needs); walking the Sand's envoy home earns a
+ * Leaf shinobi the Sand's gates (`envoy.ts`).
  */
-export const SUNA_BARGE_PASSAGE = 'suna-barge-passage';
 
 const TAINTED_TERRAIN =
   'Dunes like frozen waves, and between them hard pans of grey sand that crunch like eggshell. Out here it glitters faintly, and nothing lives that should.';
 
-export const LANDING_JOBS: readonly MissionDef[] = [
+const BARGE_OFFICE_JOBS: readonly MissionDef[] = [
   {
     id: 'landing-ballast',
     title: 'Stones for the Priests',
@@ -184,3 +187,5 @@ export const LANDING_JOBS: readonly MissionDef[] = [
     ],
   },
 ];
+
+export const LANDING_JOBS: readonly MissionDef[] = [...BARGE_OFFICE_JOBS, LANDING_ENVOY_JOB];

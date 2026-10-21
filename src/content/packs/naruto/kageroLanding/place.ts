@@ -59,7 +59,12 @@ export const KAGERO_LANDING: LocationDef = {
       name: 'The Barge Office',
       icon: 'board',
       blurb: 'A shed by the yards, where a priest writes down who may board',
-      missionIds: ['landing-ballast', 'landing-lost-skiff', 'landing-spice-runners'],
+      missionIds: [
+        'landing-ballast',
+        'landing-lost-skiff',
+        'landing-spice-runners',
+        'landing-sand-envoy',
+      ],
     },
     {
       id: 'barge-yards',

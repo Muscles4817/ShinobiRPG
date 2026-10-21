@@ -3,7 +3,7 @@ import { newGame } from '@/test/gameFixtures';
 
 import { createGameContext } from './context';
 import { dispatch } from './dispatch';
-import { greetingNotes, townMarkup, townPrice, townWarmth } from './greetings';
+import { gateRefusal, greetingNotes, townMarkup, townPrice, townWarmth } from './greetings';
 import { warmed } from './people/warmth';
 import type { GameState } from './state';
 import { marketPrice } from './village';
@@ -55,6 +55,31 @@ describeFan('town greetings', () => {
     const plain = warmed(home, ctx, 20);
     expect(warmed(home, ctx, 20, sandFolk)).toBeLessThanOrEqual(Math.ceil(plain / 2));
     expect(warmed(home, ctx, -5, sandFolk)).toBe(-5);
+  });
+
+  it('shuts the Sand’s gates to the Leaf until the Kazekage gives leave', () => {
+    const refusal = gateRefusal(home, ctx, 'sunagakure');
+    expect(refusal).toMatch(/turns Leaf shinobi back/);
+    expect(gateRefusal(home, ctx, 'kagero-landing')).toBeNull();
+    expect(dispatch(home, { type: 'travel', locationId: 'sunagakure' }, ctx)).toEqual({
+      ok: false,
+      error: refusal,
+    });
+    const marks = ['suna-gates-open'];
+    const admitted = { ...home, village: { ...home.village, marks } };
+    expect(gateRefusal(admitted, ctx, 'sunagakure')).toBeNull();
+  });
+
+  it('opens the gates with the job that walks the Sand’s envoy home, which ends inside', () => {
+    const envoy = ctx.content.missions.require('landing-sand-envoy');
+    expect(envoy.endsAt).toBe('sunagakure');
+    const ending = envoy.stages.find((s) => s.kind === 'ending');
+    const opens =
+      ending?.kind === 'ending' &&
+      ending.endings.every((e) =>
+        (e.effects ?? []).some((f) => f.kind === 'world' && f.mark === 'suna-gates-open'),
+      );
+    expect(opens).toBe(true);
   });
 
   it('bills a room at the Sand’s inn at the foreigner’s price', () => {

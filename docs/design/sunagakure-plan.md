@@ -101,6 +101,14 @@ the walk. Each road has its own events (`sunagakure/roadEvents.ts`): sandstorms,
 mirages in the outer sands; a priest's chant and a barge run aground on the crossing; grey sand
 that cuts and voices of the lost in the belt.
 
+**The gates are shut to the Leaf.** The Sand turns a Leaf shinobi back at the gorge until the
+Kazekage gives leave (`suna-gates-open`). That leave comes from one job at the Barge Office,
+open once the priests will carry you: _The Envoy Who Missed the Barge_
+(`kageroLanding/envoy.ts`). Sayo, the Sand's envoy, is stranded at the Landing with the
+daimyo's answer, and a Leaf shinobi walks her home across the sand. The job ends inside the
+Sand, and its ending leaves the Kazekage's leave to come and go. Even then the Sand charges
+the Leaf more and warms to it slowly.
+
 ## The town today (Era I)
 
 A foreigner is kept to the **Outer Ring** (`sunagakure/place.ts`, backdrop `sand-village`):

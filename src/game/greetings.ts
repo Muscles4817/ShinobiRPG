@@ -8,6 +8,8 @@ import type { GameState } from './state';
  * you now (the village you come from, a summoning contract you hold), and what that costs you.
  * Its shops, inn, bar, baths and hospital charge you more while you are there (`townPrice`), and
  * its people warm to you more slowly wherever you meet them (`townWarmth`). Two grudges stack.
+ * A grudge may shut the gates until the village remembers something (`gateRefusal`): you can't
+ * travel there, though a job may still take you, which is how the gates come to open.
  */
 
 /** What a town charges you over its usual prices, by its temper. */
@@ -56,6 +58,14 @@ export function townPrice(cost: number, state: GameState, ctx: GameContext): num
 export function townWarmth(state: GameState, ctx: GameContext, person: PersonDef): number {
   const home = person.homeLocationId ?? ctx.content.startLocationId;
   return product(greetingsOf(state, ctx, home), WARMTH);
+}
+
+/** Why the town turns you away at the gate, or null when it lets you in. */
+export function gateRefusal(state: GameState, ctx: GameContext, locationId: string): string | null {
+  const shut = greetingsOf(state, ctx, locationId).find(
+    (g) => g.shut && !state.village.marks.includes(g.shut.until),
+  );
+  return shut?.shut?.refusal ?? null;
 }
 
 /** What the village screen says of a grudge, with what it costs you as chips. */

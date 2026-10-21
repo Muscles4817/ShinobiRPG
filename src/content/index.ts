@@ -169,6 +169,7 @@ export {
   GREETING_TEMPERS,
   type GreetingCause,
   type GreetingTemper,
+  type ShutGates,
   type TownGreeting,
 } from './greetings';
 export type { ClanDust, DustDef } from './dusts';
