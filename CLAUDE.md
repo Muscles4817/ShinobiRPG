@@ -282,7 +282,23 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     running and changes up a slotted attack against such a foe (`rules/familiarity.ts`). Left to their judgement, foes and
     teammates go for whoever is most worth it (`plan/targeting.ts`: the harm they do over the hits
     they'd take to fall), and a mind that reads the fight keeps chakra for its finisher
-    (`plan/pacing.ts`). Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
+    (`plan/pacing.ts`). A **body move** (plain taijutsu or a plain kenjutsu weapon form: no element,
+    no Gate, nothing `moulded`) costs **breath**, not chakra (`rules/breath.ts`: a pool set by stamina, a little back each exchange,
+    shown as a meter), so it is thrown under a seal and after chakra runs dry; ask `effortOf`
+    (`plan/effort.ts` in the engine) for any cost, never `chakraCost` alone. A trained fighter's
+    strike is their **style** (`plan/repertoire.ts`): a repertoire of body moves in the art they
+    strike in (taijutsu bare-handed, kenjutsu forms with a weapon in hand; as many as their grade in
+    it holds; the player's chosen on the Jutsu tab, `techniques.repertoire`, else their best), one
+    slot in a default plan, and when it plays it becomes the move that suits the moment by feel
+    (the art with wits): the hardest for a novice, what beats a seen defence for a better
+    feel, a change-up before a foe who reads the fight has it read; a choice, never a roll.
+    Untrained bodies keep the plain blow or cut. A strike may open a **chain**
+    (`rules/chains.ts`, `plan/chaining.ts`): two body moves of one art from grade C in it, three from A, thrown
+    in one turn, each only while the last landed (it hurt, dazed or pinned them, and no Counter hurt
+    its thrower) and only if it reaches where the last left the fight (a knock to mid needs a move
+    that reaches or rushes in); the setups are what the fight already does (a daze leaves them
+    open, a pin hard to slip). The player builds theirs on the Jutsu tab (`techniques.chains`,
+    checked by `chainProblem` before they are kept); otherwise they are built from the moves known. Chakra ebbs and flows (`rules/chakra.ts`): an area costs more for the ground it
     covers (wide ×1.5, vast ×2.2), and each exchange gives back a little, or a share of deep
     reserves. Holds are fought, not waited out (`rules/escape.ts`, `plan/struggle.ts`): a pin
     keeps its `grip` (how strongly it was cast, what breaks it), the held struggle against it at
@@ -621,6 +637,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `specialist` (every need of the kind of fighter you fit best at C: `exam/fighterTypes.ts`,
     a close fighter, a weapons fighter, a marksman, a ninjutsu fighter, an illusionist, a sealer, a medic, a sensor,
     hybrids, all-rounders and tacticians (two arts), a Gentle Fist striker, a binder and a swarmer,
+    and those read by what they bring (`exam/kitReadiness.ts`, on the stat scale: a beast partner's
+    companion, a hive user's hive, a summoner's summons; work is never set for those),
     each need met any of several ways, getting in close by speed and eyes or by ninjutsu; the
     canon cast against them, and what they miss, is in `docs/design/research/fighter-types-cast.md`); readiness reads skills and those needs, never a sharp mind or a fast body alone,
     and a specialist steers the assignment to what your kind lacks once your art is at C. Their

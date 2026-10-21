@@ -1,7 +1,7 @@
 import type { ArmourLevel, CombatGear } from '@/systems/combat';
 
-import { foe, plainAtScale } from './archetypes';
-import { statLine, type FighterSpec } from './fighters';
+import { foe, plainAtScale, plainFighter } from './archetypes';
+import { SCALE_VALUES, statLine, type FighterSpec } from './fighters';
 import { bench, summarise, type BenchReport } from './runner';
 
 /**
@@ -72,9 +72,11 @@ describe('a blade is worth carrying (step 4.3)', () => {
       techniques: [],
     };
     const blade: CombatGear = { held: { name: 'Blade', weaponClass: 'sword', rank: 'D' } };
-    const equal = plainAtScale('chunin');
-    const bare = run({ ...swordsman, gear: {} }, equal);
-    const armed = run({ ...swordsman, name: 'Swordsman with a blade', gear: blade }, equal);
+    // Someone the swordsman can't beat bare-handed: their skill defends them either way, so
+    // only a foe a match for them shows what the blade adds.
+    const match = plainFighter(SCALE_VALUES.chunin.strong);
+    const bare = run({ ...swordsman, gear: {} }, match);
+    const armed = run({ ...swordsman, name: 'Swordsman with a blade', gear: blade }, match);
     expect(armed.winRate).toBeGreaterThan(bare.winRate + 0.2);
   });
 });

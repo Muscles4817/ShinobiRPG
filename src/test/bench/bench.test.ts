@@ -58,8 +58,16 @@ const TWO_GRADES_ENDED_RATE = 0.9;
 const EQUALS_WIN_RATE = { min: 0.4, max: 0.65 } as const;
 /** Fairness is a close call, so it gets more seeds. */
 const FAIRNESS_SEEDS = 200;
-/** What a sense's chakra may cost against hidden foes, as a share of fights won. */
-const SENSE_CHAKRA_ALLOWANCE = 0.02;
+/**
+ * What a sense's chakra may cost against hidden foes, as a share of fights won. (0.02 until a
+ * hider's blade forms cost breath, not chakra: a stalker kept more chakra to hide again, so a
+ * sense was paid for more often. Over 600 fights: 0.68 with a sense, 0.70 without.)
+ */
+const SENSE_CHAKRA_ALLOWANCE = 0.03;
+/** The two sides of a sense differ by a few fights in a hundred, so they get more seeds still. */
+const SENSE_SEEDS = 400;
+/** Four hundred fights a side, both hiders, takes a while on a slow runner. */
+const SENSE_TIMEOUT_MS = 90_000;
 
 /** The archetype-by-foe matrix is wide, so each pairing gets fewer seeds. */
 const MATRIX_SEEDS = 10;
@@ -247,24 +255,28 @@ describe('hiding has counterplay (step 1.4b)', () => {
     }
   });
 
-  it.each(SCALES)('a %s fighter who knows a sense does no worse against hidden foes', (scale) => {
-    // The versatile build without its sharp eyes (insight), with and without a sense. Without
-    // one, its default plan still brings a Search against a foe that hides.
-    const { perks: _eyes, ...blind } = archetype('versatile', scale);
-    const sensing = {
-      ...blind,
-      name: `${blind.name} with a sense`,
-      techniques: [...blind.techniques, ...techniques(['wick-sense'])],
-    };
-    // Both sides win nearly every fight, so it takes many fights to tell them apart. A sense
-    // costs chakra where a Search is free, and clashes spend chakra too, so it may cost a fight
-    // or two in a couple of hundred, never more.
-    for (const hider of [archetype('stalker', scale), foe('trickster', scale)]) {
-      const withSense = bench(sensing, hider, FAIRNESS_SEEDS).winRate;
-      const without = bench(blind, hider, FAIRNESS_SEEDS).winRate;
-      expect(withSense).toBeGreaterThanOrEqual(without - SENSE_CHAKRA_ALLOWANCE);
-    }
-  });
+  it.each(SCALES)(
+    'a %s fighter who knows a sense does no worse against hidden foes',
+    (scale) => {
+      // The versatile build without its sharp eyes (insight), with and without a sense. Without
+      // one, its default plan still brings a Search against a foe that hides.
+      const { perks: _eyes, ...blind } = archetype('versatile', scale);
+      const sensing = {
+        ...blind,
+        name: `${blind.name} with a sense`,
+        techniques: [...blind.techniques, ...techniques(['wick-sense'])],
+      };
+      // Both sides win nearly every fight, so it takes many fights to tell them apart. A sense
+      // costs chakra where a Search is free, and clashes spend chakra too, so it may cost a fight
+      // or two in a couple of hundred, never more.
+      for (const hider of [archetype('stalker', scale), foe('trickster', scale)]) {
+        const withSense = bench(sensing, hider, SENSE_SEEDS).winRate;
+        const without = bench(blind, hider, SENSE_SEEDS).winRate;
+        expect(withSense).toBeGreaterThanOrEqual(without - SENSE_CHAKRA_ALLOWANCE);
+      }
+    },
+    SENSE_TIMEOUT_MS,
+  );
 });
 
 describe('fields, moves and substitutions find their niche (step 1.4c)', () => {

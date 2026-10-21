@@ -245,7 +245,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
       { villageId: content.startLocationId, placeId: home.id },
       home.rentPerWeek,
     ),
-    techniques: { known, progress: {}, unstable: [] },
+    techniques: { known, progress: {}, unstable: [], repertoire: null, chains: null },
     standing: NEW_GENIN,
     journal: EMPTY_JOURNAL,
     mission: null,

@@ -104,6 +104,8 @@ export interface PlanFighter
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
   readonly sealed: number;
+  /** Breath left for body moves (`rules/breath.ts`); absent: all of it. */
+  readonly breath?: number;
   readonly loadout: Loadout;
   /** The defence ready at each distance (`readiness.ts`); absent in fights saved before. */
   readonly reactions?: Reactions;

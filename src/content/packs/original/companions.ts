@@ -10,7 +10,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     description: 'Lean, wary and quick, with a nose for trouble and for anything left unguarded.',
     temperament: 'stray',
     body: {
-      adult: { strength: 9, speed: 12, stamina: 10, perception: 13 },
+      adult: { strength: 7, speed: 13, stamina: 12, perception: 15 },
       maturesInDays: 56,
     },
     baseStat: 4,
@@ -51,7 +51,7 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
       'A pup from the clinic’s own line of working dogs, steady and keen-nosed and eager to please.',
     temperament: 'bred',
     body: {
-      adult: { strength: 9, speed: 12, stamina: 11, perception: 14 },
+      adult: { strength: 7, speed: 13, stamina: 13, perception: 16 },
       maturesInDays: 56,
     },
     baseStat: 4,

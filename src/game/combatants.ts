@@ -124,6 +124,9 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     gear: playerGear(state, ctx),
     provisions: mealProvisions(state, ctx),
     ...clanSize(state.character.clanId, ctx),
+    // The moves you chose for your style; left unset, the fight keeps your best.
+    ...(state.techniques.repertoire ? { repertoire: state.techniques.repertoire } : {}),
+    ...(state.techniques.chains ? { chains: state.techniques.chains } : {}),
   };
 }
 

@@ -192,14 +192,9 @@ export { cookbookView, type CookbookEntry, type SealedRecipe } from './views/coo
 export type { SparOption } from './views/team';
 export type { TeacherOffer, TeachStat } from './views/teachers';
 export type { PricePart } from './people/price';
-export {
-  jutsuDeck,
-  recordView,
-  type JutsuCard,
-  type JutsuEffect,
-  type RecordDay,
-  type RecordLine,
-} from './views/you';
+export { recordView, type RecordDay, type RecordLine } from './views/you';
+// The Jutsu tab: your deck and your style (`jutsuTab.ts`).
+export * from './jutsuTab';
 export {
   shinobiView,
   type ShinobiView,

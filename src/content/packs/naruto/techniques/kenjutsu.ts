@@ -44,6 +44,7 @@ export const KENJUTSU: readonly TechniqueDef[] = [
     name: 'Chakra Flow',
     description: 'Run chakra along the edge until the steel cuts through steel.',
     discipline: 'kenjutsu',
+    moulded: true,
     needs: { weapon: 'blade' },
     effects: [{ verb: 'break', power: 12, scaling: { drive: ['kenjutsu', 'chakraControl'] } }],
     chakraCost: 6,
@@ -66,6 +67,7 @@ export const KENJUTSU: readonly TechniqueDef[] = [
     name: 'Crescent Moon Dance',
     description: 'Three of you strike from three directions at once.',
     discipline: 'kenjutsu',
+    moulded: true,
     school: 'Leaf Sword',
     needs: { weapon: 'blade' },
     effects: [{ verb: 'damage', power: 26, hits: 3 }],
@@ -78,6 +80,7 @@ export const KENJUTSU: readonly TechniqueDef[] = [
     name: 'Samurai Sabre Technique',
     description: 'Chakra lengthens the cut past the blade’s tip; you are back out of reach after.',
     discipline: 'kenjutsu',
+    moulded: true,
     needs: { weapon: 'blade' },
     effects: [
       { verb: 'damage', power: 15 },
@@ -194,6 +197,7 @@ export const KENJUTSU: readonly TechniqueDef[] = [
     description:
       'You were at the marker, then at their back with the blade already through. It costs dearly.',
     discipline: 'kenjutsu',
+    moulded: true,
     needs: { weapon: 'blade', control: 'C' },
     effects: [
       { verb: 'move', power: 8, to: 'close' },

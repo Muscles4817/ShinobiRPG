@@ -124,6 +124,60 @@ reserves where an ordinary student is at D), and limits raised to match.
    against them.
 9. **Saves**: existing characters keep their stats; nothing is rescaled.
 
+## Authoring guide
+
+How to write a person's or a foe's stat line under this model. Values are numbers 0–60
+(`statLine` takes a grade for a typical value, E 5, D 10, C 16, B 23, A 32, S 44, or an exact
+number; a foe takes `baseStat` and `statBonuses`). Write each stat for what it is, never the
+whole line at the rank's grade.
+
+**Skills** (the five arts and chakra control), by the rank chart, for the person's main art:
+
+| Who                          | Main art | A second art | Others |
+| ---------------------------- | -------- | ------------ | ------ |
+| Fresh genin                  | 6–9      | 5–7          | 4–6    |
+| Good genin (a year or two)   | 9–13     | 7–10         | 5–8    |
+| Chūnin                       | 14–19    | 10–14        | 6–11   |
+| Jōnin                        | 20–27    | 14–20        | 8–14   |
+| Good jōnin, famed specialist | 28–38    | 18–26        | 10–18  |
+| Elite (kage, legends)        | 40–55    | 28–40        | 14–28  |
+
+A clan child or a prodigy sits above the line in their clan's arts; an all-rounder keeps
+several arts close together a step below a specialist's best.
+
+**Body** (strength, speed, stamina), against real adults. Shinobi train for a living, so even
+an ordinary one is an athlete:
+
+| Who                                 | Typical | Their best body stat        |
+| ----------------------------------- | ------- | --------------------------- |
+| Untrained adult (a farmer, a clerk) | 4–6     | 7–9 (a labourer's strength) |
+| Bandit, sailor, hunter              | 6–9     | 10–12                       |
+| Fresh genin                         | 7–9     | 10–14                       |
+| Chūnin                              | 9–12    | 13–17                       |
+| Jōnin                               | 11–15   | 16–22                       |
+| Famed fighters                      | 13–18   | 20–30 (world class)         |
+
+Women sit about 3 lower in strength, 2 in stamina and 1 in speed than men of the same kind, with
+plenty of overlap. Nobody's body is above 30 unaided: what goes past it (Guy in the Gates,
+Tsunade's strength, the Raikage's speed, Expansion) is a technique in their arsenal. Clans move
+it a long way (an Akimichi's strength, an Inuzuka's speed).
+
+**Reserves** follow the body table for ordinary people (chūnin 10–14, jōnin 13–20), but are
+clan- and talent-driven more than anything: a kage's or an Uzumaki's run 30–50.
+
+**Mind** (intellect, perception, willpower) is the person, not the rank: most people 5–9, sharp
+10–13, brilliant 14–20, a genius 20–30 (Shikamaru as a genin, Kakashi), legends above. A
+sensor's perception and an illusionist's willpower are part of their trade and run high.
+
+**Foes** use the same anchors. Someone who doesn't use chakra is an easy win one on one for any
+graduate; their danger is numbers (the content bench holds both: each specialty beats every
+ordinary D-rank foe nine times in ten, and none takes a gang of three thugs alone). So their
+arts stay at 3–7, never level with a fresh genin's best. Bandits and thugs are grown labourers (bodies 8–12, skills 3–7);
+samurai are trained warriors (kenjutsu like a chūnin's or better, armoured bodies); missing-nin
+are shinobi of the rank they left at; beasts are their animal (a dog faster than a person and
+keen-nosed, a bear stronger than any). `baseStat` stays inside the danger's band
+(`validateCrews.ts`); the signature stats go in `statBonuses`.
+
 ## The baseline
 
 `fight-table-before.md` (in `research/`) is the table on today's numbers: 30 watched bouts a

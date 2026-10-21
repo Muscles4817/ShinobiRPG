@@ -80,7 +80,7 @@ describe('the technique sheet', () => {
     expect([...scrolls.ready, ...scrolls.comingUp].every((s) => s.sheet.reach.length === 3)).toBe(
       true,
     );
-    expect(jutsuDeck(state, ctx).every((c) => c.sheet.chakra > 0)).toBe(true);
+    expect(jutsuDeck(state, ctx).every((c) => c.sheet.cost.amount > 0)).toBe(true);
   });
 });
 

@@ -1,3 +1,4 @@
+import { payFor } from './effort';
 import { clamp } from '@/core';
 
 import type { RangeBand } from '../../contract';
@@ -7,8 +8,8 @@ import { cloneStepBonus, isPinned } from '../../rules/verbs';
 import type { Card } from './cards';
 import type { Turn } from './senses';
 import { isEntry } from './stepping';
-import { alive, chakraCost } from '../../rules/body';
-import { fighterIn, patch, paying, say, type Round } from './state';
+import { alive } from '../../rules/body';
+import { fighterIn, patch, say, type Round } from './state';
 import { holdOff } from './zoning';
 import { blockedStepLine, chargeLine, momentOf, stepLine } from './voice';
 import { tell } from '../../rules/telling';
@@ -111,7 +112,7 @@ export function charge(round: Round, turn: Turn, card: Card): Charged {
   const { actor } = turn;
   const told = chargeLine(momentOf(round, actor.id), actor, card.technique.name);
   const lines = [...round.lines, told, ...met.round.lines.slice(round.lines.length)];
-  const paid = paying(fighterIn(met.round, actor.id) ?? actor, chakraCost(actor, card.technique));
+  const paid = payFor(fighterIn(met.round, actor.id) ?? actor, card.technique);
   const fighters = patch(met.round.fighters, actor.id, paid);
   return { round: { ...met.round, lines, fighters }, stopped: true, after: [] };
 }

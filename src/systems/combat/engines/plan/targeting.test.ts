@@ -97,20 +97,24 @@ describe('targeting', () => {
 
 describe('chakra pacing', () => {
   const card = (technique: CombatTechnique) => ({ kind: 'jutsu' as const, technique });
+  // Moulded with chakra: a body move spends breath and never eats into it (`rules/breath.ts`).
+  const big = { ...finisher, discipline: 'ninjutsu' as const };
+  const small = { ...jab, discipline: 'ninjutsu' as const };
 
   // With this chakra control, the jab costs 5 and the finisher 8.
   it('keeps enough chakra for the finisher', () => {
-    const bandit = find(against([], { techniques: [finisher, jab], chakra: 12 }), 'bandit');
-    expect(spendsReserve(bandit, card(jab))).toBe(true);
-    expect(spendsReserve(bandit, card(finisher))).toBe(false);
-    expect(spendsReserve({ ...bandit, chakra: 13 }, card(jab))).toBe(false);
+    const bandit = find(against([], { techniques: [big, small], chakra: 12 }), 'bandit');
+    expect(spendsReserve(bandit, card(small))).toBe(true);
+    expect(spendsReserve(bandit, card(big))).toBe(false);
+    expect(spendsReserve({ ...bandit, chakra: 13 }, card(small))).toBe(false);
+    expect(spendsReserve(bandit, card(jab))).toBe(false);
   });
 
   it('spends freely in the last ditch, with a dull mind, or as the player', () => {
-    const bandit = find(against([], { techniques: [finisher, jab], chakra: 12 }), 'bandit');
-    expect(spendsReserve({ ...bandit, health: 10 }, card(jab))).toBe(false);
+    const bandit = find(against([], { techniques: [big, small], chakra: 12 }), 'bandit');
+    expect(spendsReserve({ ...bandit, health: 10 }, card(small))).toBe(false);
     const dull = { ...bandit, attributes: { ...attributes, intellect: 4 } };
-    expect(spendsReserve(dull, card(jab))).toBe(false);
-    expect(spendsReserve({ ...bandit, isPlayer: true }, card(jab))).toBe(false);
+    expect(spendsReserve(dull, card(small))).toBe(false);
+    expect(spendsReserve({ ...bandit, isPlayer: true }, card(small))).toBe(false);
   });
 });

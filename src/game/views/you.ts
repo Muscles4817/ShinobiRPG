@@ -1,4 +1,4 @@
-import { chakraCost } from '@/systems/combat';
+import { effortOf, type Effort } from '@/systems/combat';
 import type { JournalChip, JournalTone } from '@/systems/journal';
 import type { StatGrade } from '@/systems/stats';
 import type { TechniqueDef, Verb } from '@/systems/techniques';
@@ -8,6 +8,8 @@ import { playerCombatant } from '../combatants';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import type { Discipline } from './common';
+import { styleMoveIds } from '../style';
+import { styleSlot, type StyleSlot } from './style';
 import { techniqueSheet, type TechniqueSheet } from './techniqueSheet';
 
 export interface JutsuEffect {
@@ -23,7 +25,8 @@ export interface JutsuCard {
   readonly element: string | null;
   /** What it does, in order, with each effect's strength. */
   readonly effects: readonly JutsuEffect[];
-  readonly chakraCost: number;
+  /** What a fight would charge you for it: chakra, or breath for a body move. */
+  readonly cost: Effort;
   readonly rank: StatGrade;
   /** Known, but a rank above your grade: costlier and liable to misfire until it steadies. */
   readonly unstable: boolean;
@@ -31,6 +34,8 @@ export interface JutsuCard {
   readonly progressPct: number;
   /** What it does, in full: the back of the card. */
   readonly sheet: TechniqueSheet;
+  /** A known body move's place in your style (the deck's cards only). */
+  readonly style?: StyleSlot | null;
 }
 
 /** One technique as a card of the deck, read for this fighter (you, by default). */
@@ -51,10 +56,7 @@ export function jutsuCard(
     discipline: t.discipline,
     element: t.element ?? null,
     effects: t.effects.map((e) => ({ verb: e.verb, power: e.power })),
-    chakraCost: chakraCost(
-      { attributes: fighter.attributes },
-      { chakraCost: t.chakraCost, ...(unstable ? { unstable } : {}) },
-    ),
+    cost: effortOf({ attributes: fighter.attributes }, { ...t, ...(unstable ? { unstable } : {}) }),
     rank: t.rank,
     unstable,
     status: known ? 'known' : progress > 0 ? 'studying' : 'unknown',
@@ -67,8 +69,9 @@ export function jutsuCard(
 export function jutsuDeck(state: GameState, ctx: GameContext): readonly JutsuCard[] {
   const order = { known: 0, studying: 1, unknown: 2 } as const;
   const fighter = playerCombatant(state, ctx);
+  const style = styleMoveIds(state, ctx);
   return ctx.content.techniques.all
-    .map((t) => jutsuCard(state, ctx, t, fighter))
+    .map((t) => ({ ...jutsuCard(state, ctx, t, fighter), style: styleSlot(state, ctx, t, style) }))
     .sort((a, b) => order[a.status] - order[b.status]);
 }
 

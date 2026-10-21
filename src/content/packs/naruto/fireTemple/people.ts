@@ -13,11 +13,17 @@ export const FIRE_TEMPLE_PEOPLE: readonly PersonDef[] = [
     role: 'shinobi',
     title: 'Head monk of the Fire Temple',
     rank: 'jonin',
-    stats: statLine('C', {
-      taijutsu: 'B',
-      willpower: 'A',
-      chakraControl: 'B',
-      stamina: 'B',
+    stats: statLine(14, {
+      stamina: 18,
+      reserves: 22,
+      chakraControl: 24,
+      intellect: 15,
+      perception: 18,
+      willpower: 30,
+      taijutsu: 28,
+      ninjutsu: 18,
+      genjutsu: 10,
+      kenjutsu: 8,
     }),
     traitIds: ['calm', 'humble'],
     appearance: look(
@@ -43,9 +49,12 @@ export const FIRE_TEMPLE_PEOPLE: readonly PersonDef[] = [
     role: 'villager',
     title: 'Temple novice',
     rank: 'civilian',
-    stats: statLine(3, {
+    stats: statLine(6, {
+      strength: 5,
       stamina: 7,
-      willpower: 8,
+      reserves: 5,
+      chakraControl: 3,
+      willpower: 9,
       taijutsu: 3,
       ninjutsu: 0,
       genjutsu: 0,

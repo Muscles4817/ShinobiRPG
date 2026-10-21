@@ -123,7 +123,7 @@ describe('plan & watch verbs: field', () => {
     expect(after.field).toMatchObject({ id: 'mist', side: 'player' });
     expect(after.lines).toContain('A thick mist rolls across the field.');
     const view = createPlanEngine().view(encode(stateOf(after)));
-    expect(view.meters).toEqual([{ id: 'field', label: 'Your mist', value: 4, max: 4 }]);
+    expect(view.meters).toContainEqual({ id: 'field', label: 'Your mist', value: 4, max: 4 });
     expect(view.combatants.find((c) => c.id === 'foe')?.statuses).toContain('Blinded');
     expect(view.combatants.find((c) => c.id === 'hero')?.statuses).not.toContain('Blinded');
   });

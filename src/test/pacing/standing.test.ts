@@ -38,9 +38,10 @@ const CLIMB_DAYS = 120;
 const CLIMB_WIN_RATE = 0.37;
 /**
  * …from a start where most of their year beats them. (0.3 when everyone's body was the same
- * line; 0.32 once bodies were drawn, the dead last on a median body.)
+ * line; 0.32 once bodies were drawn, the dead last on a median body; 0.36 once a trained strike
+ * played the fighter's own moves, which a taijutsu student has more of.)
  */
-const DEAD_LAST_START_WIN_RATE = 0.35;
+const DEAD_LAST_START_WIN_RATE = 0.37;
 
 function start(standing: ClassStanding, seed: number): GameState {
   const quickPick = { archetype: 'steady', specialty: 'taijutsu' } as const;

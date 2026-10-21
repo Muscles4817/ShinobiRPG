@@ -54,10 +54,13 @@ export type CombatTechnique = Pick<
   | 'reach'
   | 'accuracy'
   | 'needsOpen'
+  | 'moulded'
   | 'clan'
 > & {
   /** Learned a rank above its user's grade: costlier and may misfire (`rules/unstable.ts`). */
   readonly unstable?: true;
+  /** Its rank, which reads its power (`rules/damage.ts`); E when a bare setup leaves it out. */
+  readonly rank?: TechniqueDef['rank'];
 };
 
 /** How far apart the two sides stand. Engines decide what each band allows. */
@@ -158,6 +161,16 @@ export interface CombatantSetup {
   readonly traits?: readonly CombatTrait[];
   /** Tools carried into the fight (the player's pouch). */
   readonly items?: readonly CombatItem[];
+  /**
+   * The body moves (technique ids) a plain strike plays from, as the fighter chose them; absent,
+   * the engine keeps their best (`engines/plan/repertoire.ts`).
+   */
+  readonly repertoire?: readonly string[];
+  /**
+   * The chains (technique ids, opener first) the fighter keeps ready, as they built them; absent,
+   * the engine builds them from their moves (`rules/chains.ts`).
+   */
+  readonly chains?: readonly (readonly string[])[];
   /** Equipped gear (see `gearContract.ts`); absent for fighters armed as their kit suggests. */
   readonly gear?: CombatGear;
   /** What today's meal brings into the fight (the player's). */

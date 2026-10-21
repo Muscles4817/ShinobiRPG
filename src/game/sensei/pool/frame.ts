@@ -1,6 +1,6 @@
 import type { ContentPack, Haunt, PersonDef, SenseiPast, SenseiTemperament } from '@/content';
 import type { Rng } from '@/core';
-import { createStats, type Stats } from '@/systems/stats';
+import type { Stats } from '@/systems/stats';
 import { DISCIPLINES, ELEMENTS, type Discipline, type Element } from '@/systems/techniques';
 import type { TimeSlot } from '@/systems/time';
 
@@ -13,11 +13,28 @@ import { randomAppearance } from '../../people/looks';
  * and a day spent between the training ground and wherever their temperament takes them.
  */
 
-/** A jōnin's stats: a solid chūnin base, their art at B to A, and what holds a jōnin up. */
-const BASE = 14;
+/**
+ * A jōnin's stats, by the stat model (`docs/design/stat-model-plan.md`, authoring guide): their
+ * art at B to A, chakra control and a second skill below it, the rest of the arts a chūnin's,
+ * an athlete's body with deep enough reserves, and an ordinary sharp mind.
+ */
 const ART_LOW = 24;
 const ART_SPREAD = 6;
-const SUPPORT = { speed: 20, stamina: 18, chakraControl: 18, perception: 17 } as const;
+const JONIN_LINE: Stats = {
+  taijutsu: 10,
+  ninjutsu: 10,
+  genjutsu: 10,
+  kenjutsu: 10,
+  fuuinjutsu: 10,
+  chakraControl: 17,
+  strength: 13,
+  speed: 15,
+  stamina: 15,
+  reserves: 16,
+  intellect: 11,
+  perception: 13,
+  willpower: 12,
+};
 /** How often a sensei has a nature of their own, when their past doesn't say. */
 const NATURE_CHANCE = 0.6;
 /** Signature techniques they teach: the grades a jōnin would, a few of them. */
@@ -61,7 +78,7 @@ function natureFor(past: SenseiPast, rng: Rng): Element | null {
 
 function statsFor(specialty: Discipline, rng: Rng): Stats {
   const art = ART_LOW + Math.floor(rng.next() * ART_SPREAD);
-  return createStats(BASE, { ...SUPPORT, [specialty]: art - BASE });
+  return { ...JONIN_LINE, [specialty]: art };
 }
 
 /** Plain techniques of their art (no clan, no school, no partner) they can teach. */

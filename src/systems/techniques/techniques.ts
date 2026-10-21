@@ -63,6 +63,11 @@ export interface TechniqueDef {
   readonly accuracy?: Accuracy;
   /** A step of a ladder that must be open in the fight to use it (`ladders.ts`): a gate. */
   readonly needsOpen?: LadderStep;
+  /**
+   * A taijutsu move or weapon form that moulds chakra (a Gentle Fist palm, an expansion, chakra
+   * run along an edge): it costs chakra like any jutsu, where a plain body move costs breath.
+   */
+  readonly moulded?: true;
 }
 
 /**
@@ -97,9 +102,25 @@ export interface TechniqueBook {
   readonly known: readonly string[];
   readonly progress: Readonly<Record<string, number>>;
   readonly unstable: readonly string[];
+  /**
+   * The body moves a plain strike plays from, as the player chose them (a fight's
+   * `CombatantSetup.repertoire`); null: the fight keeps their best.
+   */
+  readonly repertoire: readonly string[] | null;
+  /**
+   * The chains of body moves (opener first) the player built (a fight's
+   * `CombatantSetup.chains`); null: the fight builds them from what they know.
+   */
+  readonly chains: readonly (readonly string[])[] | null;
 }
 
-export const EMPTY_BOOK: TechniqueBook = { known: [], progress: {}, unstable: [] };
+export const EMPTY_BOOK: TechniqueBook = {
+  known: [],
+  progress: {},
+  unstable: [],
+  repertoire: null,
+  chains: null,
+};
 
 /** Who is learning: what their grades, clan, nature and the weapon in their hand allow. */
 export interface Learner {
@@ -240,6 +261,7 @@ export function study(
   const { [def.id]: _done, ...remaining } = book.progress;
   return {
     book: {
+      ...book,
       known: [...book.known, def.id],
       progress: remaining,
       unstable: unstable ? [...book.unstable, def.id] : book.unstable,

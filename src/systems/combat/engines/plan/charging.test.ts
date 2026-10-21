@@ -106,7 +106,7 @@ describe('closing in', () => {
     expect(play.card).toMatchObject({ kind: 'jutsu', technique: { id: 'entry' } });
   });
 
-  it('a charge stopped by a hold-off is told first, costs its chakra, and the fire is the holder’s', () => {
+  it('a charge stopped by a hold-off is told first, costs its breath, and the fire is the holder’s', () => {
     const stopped = Array.from({ length: 30 }, (_, i) => {
       const round = atMid(true);
       const [brawler, caster] = round.fighters;
@@ -118,6 +118,7 @@ describe('closing in', () => {
     expect(lines[0]?.text).toMatch(/Flying Kick/);
     expect(lines.slice(1).every((l) => l.actorId === 'caster')).toBe(true);
     expect(lines.some((l) => /too wide to slip|no gap in/.test(l.text))).toBe(true);
-    expect(stopped!.round.fighters[0]!.chakra).toBeLessThan(60);
+    // A flying kick is a body move: it spends breath, not chakra (`rules/breath.ts`).
+    expect(stopped!.round.fighters[0]!.breath).toBeDefined();
   });
 });

@@ -171,6 +171,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     description:
       'Chakra gathered to a point in the fist and released on contact. The ground splits too.',
     discipline: 'taijutsu',
+    moulded: true,
     effects: [
       { verb: 'break', power: 17, scaling: { drive: ['strength', 'chakraControl'] } },
       { verb: 'area', power: 6 },

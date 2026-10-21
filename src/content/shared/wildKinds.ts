@@ -25,7 +25,7 @@ export const FOREST_WOLF: CompanionKindDef = {
     'A grey wolf of the deep woods: bigger than any hound, quick and hard to tire, and nobody’s.',
   temperament: 'wild',
   body: {
-    adult: { strength: 12, speed: 14, stamina: 13, perception: 14 },
+    adult: { strength: 10, speed: 15, stamina: 15, perception: 16 },
     maturesInDays: 70,
   },
   baseStat: 5,

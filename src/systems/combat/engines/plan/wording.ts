@@ -1,8 +1,10 @@
+import { listed } from '@/core';
 import type { TechniqueEffect, Verb } from '@/systems/techniques';
 
 import type { CombatItem, CombatItemEffect, CombatTechnique } from '../../contract';
+import { effortOf } from './effort';
+import { styleMoves } from './repertoire';
 import { shapeOf, type CombatGear } from '../../gearContract';
-import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import type { Card } from './cards';
 import type { PlanFighter } from './state';
@@ -116,6 +118,7 @@ export function cardLabel(card: Card, fighter: Armed): string {
 export function cardDetail(card: Card, fighter: PlanFighter): string {
   switch (card.kind) {
     case 'strike':
+      return styleWords(fighter) ?? armsWords(card.kind, fighter).detail;
     case 'throw':
       return armsWords(card.kind, fighter).detail;
     case 'step':
@@ -131,8 +134,21 @@ export function cardDetail(card: Card, fighter: PlanFighter): string {
     case 'dispel':
       return `Break illusions, ${DISPEL_CHAKRA} chakra`;
     case 'jutsu':
-      return `${techniqueWords(card.technique)}, ${chakraCost(fighter, card.technique)} chakra${card.technique.oncePerFight ? ', once per fight' : ''}${card.technique.unstable ? ', unstable' : ''}`;
+      return `${techniqueWords(card.technique)}, ${effortWords(fighter, card.technique)}${card.technique.oncePerFight ? ', once per fight' : ''}${card.technique.unstable ? ', unstable' : ''}`;
     case 'item':
       return toolDetail(card.item);
   }
+}
+
+/** What a technique costs, in words: so much chakra, or so much breath for a body move. */
+function effortWords(fighter: PlanFighter, technique: CombatTechnique): string {
+  const { pool, amount } = effortOf(fighter, technique);
+  return `${amount} ${pool}`;
+}
+
+/** A strike that plays from your style says which moves: the one that suits the moment. */
+function styleWords(fighter: PlanFighter): string | null {
+  const moves = styleMoves(fighter);
+  if (moves.length === 0) return null;
+  return `One of your moves as the moment suits: ${listed(moves.map((t) => t.name))}`;
 }

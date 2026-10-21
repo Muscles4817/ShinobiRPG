@@ -1,14 +1,14 @@
 import { listed } from '@/core';
 import {
   AFFLICT_EXCHANGES,
-  chakraCost,
+  effortOf,
   equalHitShare,
   holdTurns,
   RANGE_BANDS,
   RANGE_LABEL,
   reachOf,
 } from '@/systems/combat';
-import type { CombatantSetup } from '@/systems/combat';
+import type { CombatantSetup, Effort } from '@/systems/combat';
 import { STAT_INFO } from '@/systems/stats';
 import {
   blowsOf,
@@ -53,7 +53,8 @@ export interface TechniqueSheet {
   readonly strikes: string | null;
   readonly effects: readonly SheetLine[];
   /** Chakra it costs you today (control and steadiness counted). */
-  readonly chakra: number;
+  /** What it costs you: chakra, or breath for a body move (`rules/breath.ts`). */
+  readonly cost: Effort;
   /** Prices beyond chakra: once a fight, a cost after it. */
   readonly costs: readonly string[];
   /** What the body must have: a nature, a control grade, a weapon in hand, deep reserves. */
@@ -269,11 +270,7 @@ export function techniqueSheet(
       wounding.length > 0 && def.discipline !== 'genjutsu' ? LANDS[def.accuracy ?? 'steady'] : null,
     strikes: strikesOf(def),
     effects: def.effects.map(effectLine),
-    chakra: chakraCost(you, {
-      chakraCost: def.chakraCost,
-      effects: def.effects,
-      ...(unstable ? { unstable } : {}),
-    }),
+    cost: effortOf(you, { ...def, ...(unstable ? { unstable } : {}) }),
     costs: [
       ...(def.oncePerFight ? ['Once a fight'] : []),
       ...(def.swarmCost ? ['Spends insects from your hive'] : []),

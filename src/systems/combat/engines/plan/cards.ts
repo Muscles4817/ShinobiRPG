@@ -1,10 +1,10 @@
+import { affords } from './effort';
 import { canCall } from './calls';
 import { hasInsectsFor } from './swarm';
 import { hasDustFor } from './dust';
 import { statTier, type StatGrade } from '@/systems/stats';
 
 import type { CombatItem, CombatTechnique, RangeBand } from '../../contract';
-import { chakraCost } from '../../rules/body';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { carried } from '../../rules/items';
 import { inReach, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
@@ -207,5 +207,5 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (!canCall(fighter, card.technique)) return false;
   if (!hasInsectsFor(fighter, card.technique)) return false;
   if (!hasDustFor(fighter, card.technique)) return false;
-  return fighter.sealed === 0 && chakraCost(fighter, card.technique) <= fighter.chakra;
+  return affords(fighter, card.technique);
 }

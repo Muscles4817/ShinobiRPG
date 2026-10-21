@@ -29,5 +29,7 @@ export function renameInBook(book: TechniqueBook, renames: TechniqueRenames): Te
     const to = renamed(id, renames);
     if (!known.includes(to)) progress[to] = Math.max(progress[to] ?? 0, points);
   }
-  return { known, progress, unstable };
+  const repertoire = book.repertoire && unique(book.repertoire.map((id) => renamed(id, renames)));
+  const chains = book.chains?.map((chain) => chain.map((id) => renamed(id, renames))) ?? null;
+  return { known, progress, unstable, repertoire, chains };
 }

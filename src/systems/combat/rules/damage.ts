@@ -1,4 +1,5 @@
 import { clamp } from '@/core';
+import { STAT_GRADES, type StatGrade } from '@/systems/stats';
 import { blowsOf, type EffectOf, type TechniqueEffect } from '@/systems/techniques';
 
 import type { BodySize, CombatAttributes, CombatantSetup, CombatTechnique } from '../contract';
@@ -24,7 +25,7 @@ export const GAP_EXPONENT = 1.8;
  * their best art protects them alongside the body. Without it, attacks (driven by an art people
  * specialise in) met only stamina (which few train), and equals one-shot each other.
  */
-export const SKILL_DEFENCE_SHARE = 0.7;
+export const SKILL_DEFENCE_SHARE = 0.8;
 /**
  * Share of the defence against a physical attack (a blow, a blade, a taijutsu or kenjutsu
  * technique) that guard can make up: everyone catches and rolls with blows (the skill share of
@@ -40,9 +41,36 @@ const RATING_OFFSET = 1;
 const MAX_RATIO = 4;
 /** Damage rolls land within this fraction either side of the expected hit. */
 export const DAMAGE_VARIANCE = 0.08;
-/** A technique hits as hard as `TECHNIQUE_BASE + power × TECHNIQUE_PER_POWER` plain blows. */
+/**
+ * A technique hits as hard as `TECHNIQUE_BASE + TYPICAL_WEIGHT × power / typical × lift` plain
+ * blows, where typical is the power of the usual technique of its rank (the packs' medians) and
+ * each rank above E lifts it by `RANK_LIFT`. An ordinary E-rank technique lands as it always has
+ * (a little over a plain blow), an ordinary A-rank one about a third harder, and a standout for
+ * its rank harder than that. Raw power climbs much faster than that with rank, and counted in
+ * full it ended fights between equal jōnin inside a round
+ * (`docs/design/research/fight-table-after-rewrite.md`); this way equals trade nearly the same
+ * blows at every grade, as the gap rule means them to, and a bigger technique still pays.
+ */
 const TECHNIQUE_BASE = 0.5;
-const TECHNIQUE_PER_POWER = 1 / 16;
+const TYPICAL_WEIGHT = 0.625;
+const TYPICAL_POWER: Readonly<Record<StatGrade, number>> = {
+  E: 10,
+  D: 12,
+  C: 15,
+  B: 18,
+  A: 22,
+  S: 30,
+};
+const RANK_LIFT = 1.06;
+
+/** How many plain blows a technique's power is worth. */
+function techniqueWeight(use: EffectUse): number {
+  const rank = use.technique.rank ?? 'E';
+  const power = 'power' in use.effect ? use.effect.power : 0;
+  const lift = RANK_LIFT ** STAT_GRADES.indexOf(rank);
+  return TECHNIQUE_BASE + ((TYPICAL_WEIGHT * power) / TYPICAL_POWER[rank]) * lift;
+}
+
 /** A heal restores its power, plus this fraction more per point of healing skill. */
 const HEAL_PER_SKILL = 1 / 20;
 /** A wild technique, easier to slip (`defence.ts`), hits this much harder when it lands. */
@@ -146,6 +174,16 @@ function effectPower(attacker: Rated, use: EffectUse): number {
 }
 
 /**
+ * How hard a fighter drives a technique, read from its art alone (with the body for the physical
+ * arts): for weighing one attack against another before the verb's own profile is applied.
+ */
+export function artPower(attacker: Rated, technique: CombatTechnique): number {
+  const art = attacker.attributes[technique.discipline];
+  const body = BODY_POWER[technique.discipline];
+  return body ? art * (1 - BODY_SHARE) + body(attacker) * BODY_SHARE : art;
+}
+
+/**
  * What a technique meets: a genjutsu meets the will, a physical art the body and its guard,
  * everything else the body (less of either against a break).
  */
@@ -172,9 +210,9 @@ export function techniqueDamage(
   use: EffectUse<'damage' | 'area' | 'break' | 'trap'>,
   roll: number,
 ): number {
-  const { technique, effect } = use;
+  const { technique } = use;
   const scale = gapScale(effectPower(attacker, use), defenceAgainst(defender, use));
-  const weight = TECHNIQUE_BASE + effect.power * TECHNIQUE_PER_POWER;
+  const weight = techniqueWeight(use);
   const elements = elementMultiplier(technique, attacker.nature);
   const wild = technique.accuracy === 'wild' ? WILD_DAMAGE : 1;
   return Math.max(1, Math.round(BLOW_DAMAGE * weight * scale * elements * wild * variance(roll)));

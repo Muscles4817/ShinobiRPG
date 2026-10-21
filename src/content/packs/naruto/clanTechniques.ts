@@ -72,6 +72,7 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Partial Expansion',
     description: 'One fist swells to the size of a cart, and comes down on the enemy.',
     discipline: 'taijutsu',
+    moulded: true,
     effects: [{ verb: 'break', power: 14 }],
     chakraCost: 6,
     rank: 'E',
@@ -83,6 +84,7 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Human Bullet Tank',
     description: 'Expand, tuck, and roll over everything in your path.',
     discipline: 'taijutsu',
+    moulded: true,
     effects: [
       { verb: 'break', power: 18 },
       { verb: 'knock', power: 8, to: 'far' },
@@ -207,6 +209,7 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Air Palm',
     description: 'A Gentle Fist strike that never touches: the chakra crosses the gap and shoves.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'hyuga',
     reach: ['close', 'mid'],
     accuracy: 'sure',
@@ -223,6 +226,7 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Eight Trigrams Palm Rotation',
     description: 'Chakra from every point at once and a spin that turns the blow aside and back.',
     discipline: 'taijutsu',
+    moulded: true,
     clan: 'hyuga',
     effects: [
       { verb: 'counter', power: 14 },

@@ -89,11 +89,14 @@ function readyWith(target: Partial<CombatantSetup>, kept: string): Round {
   };
 }
 
+/** Crush moulded with chakra rather than thrown as a body move (`rules/breath.ts`). */
+const chakraCrush: CombatTechnique = { ...crush, id: 'chakra-crush', discipline: 'ninjutsu' };
+
 /** Uses Crush with each seed in turn until the narration matches. */
-function crushUntil(round: Round, wanted: RegExp): Round {
+function crushUntil(round: Round, wanted: RegExp, technique = crush): Round {
   for (let seed = 1; seed < 200; seed++) {
     const [actor, target] = round.fighters;
-    const after = useJutsu(round, { actor: actor!, target, rng: createRng(seed) }, crush);
+    const after = useJutsu(round, { actor: actor!, target, rng: createRng(seed) }, technique);
     if (after.lines.some((l) => wanted.test(l))) return after;
   }
   throw new Error(`no seed narrates ${wanted.source}`);
@@ -190,10 +193,10 @@ describe('plan & watch techniques', () => {
   });
 
   it('add what they cost to the chakra spent in the fight, hit or miss', () => {
-    const once = crushUntil(roundWith(), hitsOn('bandit'));
+    const once = crushUntil(roundWith(), hitsOn('bandit'), chakraCrush);
     expect(fighterIn(once, 'hero')).toMatchObject({ chakra: 24, chakraSpent: 6 });
     const [hero, bandit] = once.fighters;
-    const twice = useJutsu(once, { actor: hero!, target: bandit, rng: createRng(3) }, crush);
+    const twice = useJutsu(once, { actor: hero!, target: bandit, rng: createRng(3) }, chakraCrush);
     expect(fighterIn(twice, 'hero')).toMatchObject({ chakra: 18, chakraSpent: 12 });
     expect(fighterIn(twice, 'bandit')?.chakraSpent).toBeUndefined();
   });
@@ -227,7 +230,7 @@ describe('plan & watch techniques', () => {
   });
 
   it('an unstable technique costs more and sometimes comes apart, chakra spent', () => {
-    const shaky: CombatTechnique = { ...crush, unstable: true };
+    const shaky: CombatTechnique = { ...chakraCrush, unstable: true };
     const round = roundWith();
     const [hero, bandit] = round.fighters;
     const SEEDS = 400;

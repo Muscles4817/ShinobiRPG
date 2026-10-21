@@ -16,6 +16,7 @@ import { examAnnounced } from './calendar';
 import { nominationBlocker } from './entry';
 import { readinessGap, readinessStandard } from './readiness';
 import type { Ceremony } from './state';
+import { readinessLine } from './kitReadiness';
 
 /**
  * The other roads to chūnin. The exam is the main one; beside it, a genin who is ready (some
@@ -36,7 +37,7 @@ function raisable(state: GameState, ctx: GameContext): boolean {
     state.standing.rank === 'genin' &&
     state.exams.ceremony === null &&
     state.exams.run === null &&
-    readinessGap(state.character.stats, readinessStandard(state, ctx)) === null
+    readinessGap(readinessLine(state, ctx), readinessStandard(state, ctx)) === null
   );
 }
 

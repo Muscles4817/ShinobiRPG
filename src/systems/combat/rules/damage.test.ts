@@ -152,7 +152,7 @@ describe('guard against blows', () => {
       techniqueDamage(
         even(15),
         target,
-        { technique: t, effect: { verb: 'damage', power: 10 } },
+        { technique: t, effect: { verb: 'damage', power: 20 } },
         0.5,
       );
     expect(hit(palm, brawler)).toBeLessThan(hit(palm, scholar));

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 
-import { jutsuDeck, type Discipline } from '@/game';
+import { chainsView, jutsuDeck, styleView, type Discipline } from '@/game';
 
 import { TechniqueCard } from '../components/TechniqueCard';
 import { cardDetail, DISCIPLINE_LABELS, JutsuDetail } from '../components/JutsuDetail';
+import { ChainsPanel } from '../components/ChainsPanel';
+import { StylePanel, StyleToggle } from '../components/StylePanel';
 import { Pane } from '../layout/Pane';
 import { useHoverPreview } from '../layout/useHoverPreview';
 import type { ScreenProps } from './types';
@@ -16,8 +18,10 @@ const FILTER_LABELS: Readonly<Record<Discipline | 'all', string>> = {
 };
 
 /** Your techniques as a deck of the same cards you play in fights. */
-export function JutsuScreen({ ctx, state }: ScreenProps) {
+export function JutsuScreen({ ctx, state, perform }: ScreenProps) {
   const deck = jutsuDeck(state, ctx);
+  const style = styleView(state, ctx);
+  const chains = chainsView(state, ctx);
   const [filter, setFilter] = useState<Discipline | 'all'>('all');
   const [selectedId, setSelectedId] = useState(deck[0]?.id);
   const hover = useHoverPreview();
@@ -55,6 +59,8 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
               ),
             )}
           </div>
+          {style && <StylePanel style={style} perform={perform} />}
+          {chains && <ChainsPanel chains={chains} ctx={ctx} state={state} perform={perform} />}
           <div className="deck">
             {shown.map((c) => (
               <button
@@ -73,6 +79,7 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
                   ghost={c.status !== 'known'}
                   rank={c.rank}
                   unstable={c.unstable}
+                  inStyle={c.style?.inStyle === true}
                 />
               </button>
             ))}
@@ -93,7 +100,10 @@ export function JutsuScreen({ ctx, state }: ScreenProps) {
             </section>
           )}
         </Pane>
-        <Pane name="detail">{selected && <JutsuDetail card={selected} />}</Pane>
+        <Pane name="detail">
+          {selected && <JutsuDetail card={selected} />}
+          {selected && <StyleToggle card={selected} perform={perform} />}
+        </Pane>
       </main>
     </>
   );

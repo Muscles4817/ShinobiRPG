@@ -51,6 +51,10 @@ export interface Body {
   readonly hidden: boolean;
   /** Turns of confusion left: actions may misfire. */
   readonly confused: number;
+  /** The body moves a plain strike plays from, as chosen (`CombatantSetup.repertoire`). */
+  readonly repertoire?: readonly string[];
+  /** The chains a strike may open, as built (`CombatantSetup.chains`). */
+  readonly chains?: readonly (readonly string[])[];
   /** Tools still in the pouch (only the player carries any). */
   readonly items: readonly CombatItem[];
   /** Equipped gear; absent for fighters armed as their kit suggests (`gearContract.ts`). */

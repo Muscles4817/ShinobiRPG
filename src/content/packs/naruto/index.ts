@@ -5,7 +5,8 @@ import { STRAINS } from './strains';
 import { WILD_STRAINS } from '../../shared/wildStrains';
 import { DUSTS } from '../../shared/dusts';
 import { DUST_TECHNIQUES } from '../../shared/dustTechniques';
-import { CONTRACT_TECHNIQUES, CONTRACTS, TOAD_MISSION } from './contracts';
+import { CONTRACTS, TOAD_MISSION } from './contracts';
+import { CONTRACT_TECHNIQUES } from './contractTechniques';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
 import { EXERCISES } from '../../shared/exercises';
@@ -26,6 +27,7 @@ import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
 import { ELITE_MISSIONS } from './eliteMissions';
 import { COMPANION_KINDS } from './companions';
+import { CANON_FOES } from './canonFoes';
 import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { SEASONAL_FOODS } from './seasonalFood';
@@ -206,6 +208,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   dusts: DUSTS,
   enemies: [
     ...ENEMIES,
+    ...CANON_FOES,
     ...bestiary(NARUTO_FOE_KIT),
     ...CHUNIN_ENEMIES,
     ...EXAM_ENEMIES,
