@@ -17,6 +17,7 @@ import {
 import { taken, wound } from './wound';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { tell } from '../../rules/telling';
+import { seesTheRealBody } from '../../rules/eyes';
 
 /**
  * Clones taking hits in a planned fight. A hit only gets here once it has reached its target
@@ -66,7 +67,10 @@ export function throughClones(
       absorbed: false,
     };
   }
-  const chance = decoyChance(clones, eyes(hit.attacker, maker), hasPerk(hit.attacker, 'insight'));
+  // Eyes that see the chakra see the real body (`rules/eyes.ts`): no clone draws the blow.
+  const chance = seesTheRealBody(hit.attacker)
+    ? 0
+    : decoyChance(clones, eyes(hit.attacker, maker), hasPerk(hit.attacker, 'insight'));
   if (!hit.rng.chance(chance)) return { round, absorbed: false };
   if (carriesThrough(hit.raw, maker.maxHealth, hit.breaks)) {
     const fighters = patch(round.fighters, maker.id, { clones: oneBurst(clones) });

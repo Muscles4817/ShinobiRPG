@@ -791,11 +791,18 @@ Exams; Temari and Kankurō genin, Karasu his only puppet).
   holds their dust (1.5% of the vessel at C draw), and dust moves at a good genin's pace (14),
   so a fast taijutsu fighter can outrun it.
 
+- **A spin costs less the finer its user's control** (`spinCost`: its technique's cost, halved
+  at C control and less above).
+- **The Byakugan, further** (`all-seeing`): it sees which body holds the chakra, so no clone
+  draws or takes its attacks; its seals and drains close the chakra points more surely (shaken
+  off half as often); and it has one blind spot, found from the third round by a foe with a
+  B-grade mind, through which a quarter of their attacks come and meet no ready defence,
+  Rotation included.
+
 The bench after these (60 fights each, Part 1 Gaara): Lee wins 25% (by outrunning the sand),
-Kakashi and Guy always. Neji turns Gaara's sand aside and the shield takes his palms, so the
-fight runs long (about 44 exchanges); then his chakra runs dry (a spin costs about 7, an exchange
-gives back about 2) and Gaara wins, with a few stalemates. More stalemates would need a cheaper
-spin or a deeper well for Neji: the designer's call.
+Kakashi and Guy always. Neji turns Gaara's sand aside and the shield takes his palms: the fight
+runs about 77 exchanges, Gaara wins 85% and 15% end in stalemate. Neji beats Lee two in three
+and genin Sasuke always, and loses to Kakashi, who finds the blind spot.
 
 ### Foes with hives and dust
 

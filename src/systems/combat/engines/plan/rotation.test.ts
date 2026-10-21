@@ -77,6 +77,16 @@ describe('a spin', () => {
     expect(neji(twice).chakra).toBeLessThan(neji(once).chakra);
   });
 
+  it('costs less the finer its user’s chakra control', () => {
+    const cost = (chakraControl: number) => {
+      const r = round({ attributes: { ...attributes, chakraControl } });
+      const once = react(r, { attacker: foe(r), target: neji(r), blow, rng: NO_LUCK });
+      return neji(r).chakra - neji(once).chakra;
+    };
+    expect(cost(30)).toBeLessThan(cost(5));
+    expect(cost(30)).toBeGreaterThan(0);
+  });
+
   it('lets the hit through once the chakra is gone', () => {
     const dry = round({ chakra: 0 });
     const hit = react(dry, { attacker: foe(dry), target: neji(dry), blow, rng: NO_LUCK });

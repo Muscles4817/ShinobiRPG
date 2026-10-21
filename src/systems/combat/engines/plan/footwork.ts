@@ -1,7 +1,7 @@
 import type { Discipline, Element } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
-import { chakraCost } from '../../rules/body';
+import { chakraCost, spinCost } from '../../rules/body';
 import { matchup } from '../../rules/elements';
 import { homeBand } from '../../rules/kit';
 import { reactionLine } from '../../rules/narration';
@@ -64,7 +64,7 @@ export function spunAway(round: Round, touch: Swap): Round | null {
   const target = fighterIn(round, touch.target.id) ?? touch.target;
   const card = substitution(readyDefences(target, round));
   if (!card || !spins(card.technique) || !substitutable(touch.discipline)) return null;
-  const cost = chakraCost(target, card.technique);
+  const cost = spinCost(target, card.technique);
   if (target.chakra < cost) return null;
   const turned = { ...round, fighters: patch(round.fighters, target.id, paying(target, cost)) };
   const line = tell(SPUN, { t: target, a: touch.attacker, what: touch.what });
@@ -110,7 +110,8 @@ export function substituted(round: Round, ready: readonly Card[], swap: Swap): S
   if (!card || (target.substituteSpent === true && !spinning) || !substitutable(swap.discipline)) {
     return null;
   }
-  const cost = chakraCost(target, card.technique);
+  // A spin turns aside for less the finer its user's control (`spinCost`).
+  const cost = spinning ? spinCost(target, card.technique) : chakraCost(target, card.technique);
   if (target.chakra < cost) return null;
   if (spinning) {
     const turned = { ...round, fighters: patch(round.fighters, target.id, paying(target, cost)) };

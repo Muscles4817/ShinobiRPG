@@ -32,6 +32,7 @@ import { fighterIn, patch, say, type DefenceKind, type PlanFighter, type Round }
 import { confusedLine } from './sceneVoice';
 import { dustGuard } from './dust';
 import { shieldUp } from './shield';
+import { foundBlindSpot, throughBlindSpot } from './blindSpot';
 
 /** Foresight finds a Counter's moment more often. */
 const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
@@ -313,10 +314,13 @@ export function react(start: Round, struck: Hit): Round {
   const kept = decoyed.carried ?? 1;
   const hit = { ...struck, blow: { ...struck.blow, raw: raw * kept } };
   const { attacker, target, blow } = hit;
-  const ready = readyDefences(target, decoyed.round);
+  // An attack through the blind spot meets no ready defence (`blindSpot.ts`).
+  const blind = throughBlindSpot(decoyed.round, hit);
+  const ready = blind ? [] : readyDefences(target, decoyed.round);
   // A defence that comes into play gives itself away to everyone facing its owner.
   const band = decoyed.round.range;
-  const round = noteDefence(decoyed.round, target.id, band, shown(ready, blow, band));
+  const seen = blind ? foundBlindSpot(decoyed.round, attacker, target) : decoyed.round;
+  const round = noteDefence(seen, target.id, band, shown(ready, blow, band));
   const has: Ready = (kind) => ready.some((c) => c.kind === kind);
   const evasion = evade(round, hit, has);
   if (evasion.slipped) return evasion.slipped;

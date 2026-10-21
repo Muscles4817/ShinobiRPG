@@ -10,6 +10,7 @@ import { healLine, reactionLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
 import { misfireChance } from '../../rules/unstable';
 import { breakRating } from '../../rules/conditions';
+import { pointsSeenScale } from '../../rules/eyes';
 import {
   confuseTurns,
   driveOf,
@@ -20,6 +21,7 @@ import {
 } from '../../rules/verbs';
 import { aftermath } from './blast';
 import { shieldStops } from './shield';
+import { throughBlindSpot } from './blindSpot';
 import { avoidOdds, dodgesHere, techniqueIncoming } from './avoid';
 import { noteDefence } from './reads';
 import { clash } from './clash';
@@ -161,7 +163,8 @@ function conditionOf(effect: TechniqueEffect): ConditionVerb | null {
 function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse): Round | null {
   const verb = conditionOf(use.effect);
   if (!verb) return null;
-  const resist = conditionResist(actor, target, use);
+  // Eyes that see the chakra points close them more surely (`rules/eyes.ts`).
+  const resist = conditionResist(actor, target, use) * pointsSeenScale(actor, verb);
   // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
   const braced = committedTo(target, 'brace') && isBracedAgainst(verb);
   if (!rng.chance(braced ? bracedResist(resist) : resist)) return null;
@@ -178,7 +181,9 @@ function turnedAway(round: Round, aimed: Aimed, t: CombatTechnique): Round | nul
   const swap = { attacker, target, what: t.name, discipline: t.discipline };
   const illusion = t.discipline === 'genjutsu';
   const shielded = { attacker, target, what: t.name, illusion, rng };
-  return spunAway(round, swap) ?? shieldStops(round, shielded);
+  // A hold through the blind spot meets no spin (`blindSpot.ts`), but still the shield.
+  const blind = throughBlindSpot(round, { attacker, target, rng });
+  return (blind ? null : spunAway(round, swap)) ?? shieldStops(round, shielded);
 }
 
 /** One effect landing on a foe who is standing. Effects aimed at the user happen in `onSelf`. */

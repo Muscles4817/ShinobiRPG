@@ -200,7 +200,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead, so no illusion takes hold of them: `rules/eyes.ts`, `plan/mimicry.ts`). A fight has a **ground**
+    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead: no illusion takes hold of them, no clone fools them, their seals and drains close the chakra points more surely, and they have one blind spot a sharp foe finds after a few rounds, where no ready defence rises: `rules/eyes.ts`, `plan/blindSpot.ts`, `plan/mimicry.ts`). A fight has a **ground**
     (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake, desert; arena when
     unset): the distances it has room for (a room has no far), cover for hiding, far attacks lost
     among trees or walls (or, in the desert's heat haze, by everyone), elements it feeds or
@@ -261,7 +261,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     techniques, tools, Search, Dispel, Evade, Brace and Gather. Defences and footwork take no slot
     (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Counter or a
     substitution; never stacked) that reacts on its own (a **spin**, a substitution that `spins`
-    like Palm Rotation, turns aside every hit and hold it meets for chakra each time instead of
+    like Palm Rotation, turns aside every hit and hold it meets for chakra each time (`spinCost`: less the finer
+    its user's control) instead of
     swapping out of one a round, kept ready ahead of a plain swap; only illusions and an empty
     tank get past it: `plan/footwork.ts`), and a plan may say where to **fight at**:
     the fighter steps towards it first (after an emergency slot), and a step still costs the turn
