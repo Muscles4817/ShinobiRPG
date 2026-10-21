@@ -61,34 +61,39 @@ function ResetFighter({ editor, onReset }: Pick<FighterEditorSheetProps, 'editor
   );
 }
 
-/** One fighter on the editor's desk: who they are, their stats and what they fight with. */
+/**
+ * One fighter on the editor's desk: who they are, their stats and what they fight with. On a
+ * desk the two halves stand side by side, each scrolling on its own.
+ */
 export function FighterEditorSheet(props: FighterEditorSheetProps) {
   const { editor, onBack } = props;
   const { fighter } = editor;
   return (
     <article className="versus-profile editor-sheet" aria-label={`Editing ${fighter.name}`}>
-      <header className="versus-profile-head">
-        {fighter.look && <Portrait appearance={fighter.look} size={72} />}
-        <div>
-          <h2>{fighter.name}</h2>
-          <p>{fighter.title}</p>
-          <span className="versus-power">
-            Fighting power <GradeBadge grade={fighter.grade} />
-            {editor.edited && fighter.grade !== editor.originalGrade && (
-              <small>written as {editor.originalGrade}</small>
-            )}
-          </span>
+      <div className="editor-sheet-main">
+        <header className="versus-profile-head">
+          {fighter.look && <Portrait appearance={fighter.look} size={72} />}
+          <div>
+            <h2>{fighter.name}</h2>
+            <p>{fighter.title}</p>
+            <span className="versus-power">
+              Fighting power <GradeBadge grade={fighter.grade} />
+              {editor.edited && fighter.grade !== editor.originalGrade && (
+                <small>written as {editor.originalGrade}</small>
+              )}
+            </span>
+          </div>
+        </header>
+        <div className="versus-profile-actions">
+          {onBack && (
+            <button type="button" className="btn ghost" onClick={onBack}>
+              Back to the list
+            </button>
+          )}
+          <ResetFighter editor={editor} onReset={props.onReset} />
         </div>
-      </header>
-      <div className="versus-profile-actions">
-        {onBack && (
-          <button type="button" className="btn ghost" onClick={onBack}>
-            Back to the list
-          </button>
-        )}
-        <ResetFighter editor={editor} onReset={props.onReset} />
+        <StatEditor stats={editor.stats} onChange={props.onStat} />
       </div>
-      <StatEditor stats={editor.stats} onChange={props.onStat} />
       <TechniqueEditor
         techniques={editor.techniques}
         choices={editor.choices}

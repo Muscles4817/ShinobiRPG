@@ -51,4 +51,56 @@ describe('the editor', () => {
     expect(screen.getByText('As the world writes them.')).toBeInTheDocument();
     expect(edits.data).not.toContain('kakashi');
   });
+
+  async function openKakashi() {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} edits={memoryStore()} />);
+    await user.click(screen.getByRole('button', { name: /^Editor/ }));
+    await user.click(screen.getByLabelText('Search by name'));
+    await user.paste('Kakashi Hatake');
+    await user.click(screen.getByRole('button', { name: /^Kakashi Hatake,/ }));
+    return { user, sheet: screen.getByRole('article', { name: 'Editing Kakashi Hatake' }) };
+  }
+
+  it('finds techniques to add by kind, element and rank, a page at a time', async () => {
+    const { user, sheet } = await openKakashi();
+    const adds = () => within(sheet).getAllByRole('button', { name: /^Add / });
+    const pages = within(sheet).getByRole('navigation', { name: 'Pages' });
+    const firstPage = adds()[0]!.getAttribute('aria-label');
+    await user.click(within(pages).getByRole('button', { name: 'Next' }));
+    expect(adds()[0]!.getAttribute('aria-label')).not.toBe(firstPage);
+
+    await user.selectOptions(within(sheet).getByLabelText('Kind'), 'power-up');
+    expect(
+      within(sheet).getByRole('button', { name: /^Add Eight Gates: Gate of Opening/ }),
+    ).toBeVisible();
+    await user.selectOptions(within(sheet).getByLabelText('Element'), 'none');
+    await user.selectOptions(within(sheet).getByLabelText('Rank'), 'C');
+    expect(adds().map((b) => b.getAttribute('aria-label'))).toContain(
+      'Add Eight Gates: Gate of Opening',
+    );
+    await user.click(within(sheet).getByRole('button', { name: 'Clear filters' }));
+    expect(within(sheet).getByLabelText('Kind')).toHaveValue('all');
+  });
+
+  it('opens on a desk with a fighter on the sheet, beside the list', async () => {
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: (query: string) => ({
+        matches: query.includes('min-width'),
+        media: query,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+      }),
+    });
+    try {
+      const user = userEvent.setup();
+      render(<App store={memoryStore()} edits={memoryStore()} />);
+      await user.click(screen.getByRole('button', { name: /^Editor/ }));
+      expect(screen.getByRole('region', { name: 'Fighters' })).toBeInTheDocument();
+      expect(screen.getByRole('article', { name: /^Editing / })).toBeInTheDocument();
+    } finally {
+      Reflect.deleteProperty(window, 'matchMedia');
+    }
+  });
 });

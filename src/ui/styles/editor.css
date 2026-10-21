@@ -28,22 +28,118 @@
   margin: 0;
 }
 
+/*
+ * On a desk the editor fills the window like an app: the roster, then the fighter's sheet
+ * split into their stats and their techniques, each column scrolling on its own.
+ */
 .editor-screen.wide {
-  max-width: 1120px;
+  max-width: 1600px;
+  height: 100dvh;
+  min-height: 0;
+  padding: 18px 32px 20px;
+}
+
+.editor-screen.wide > header {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+
+.editor-screen.wide > header p {
+  flex: 1 1 320px;
+  margin: 0;
+}
+
+.editor-screen.wide > header .versus-slot {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
 .editor-desk {
+  flex: 1;
+  min-height: 0;
   display: grid;
-  grid-template-columns: minmax(300px, 380px) minmax(380px, 1fr);
-  gap: 20px;
-  align-items: start;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  gap: 24px;
 }
 
 .editor-desk .versus-browser {
-  position: sticky;
-  top: 16px;
-  max-height: calc(100dvh - 32px);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-desk .versus-facets {
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+}
+
+.editor-desk .versus-list {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+}
+
+.editor-desk .versus-pane {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editor-desk .editor-sheet {
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* With room for both, the stats and the techniques stand side by side, each scrolling alone. */
+@media (min-width: 1300px) {
+  .editor-desk .editor-sheet {
+    display: grid;
+    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+    gap: 24px;
+    overflow: hidden;
+  }
+
+  .editor-desk .editor-sheet-main,
+  .editor-desk .editor-techniques {
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+/* On a desk the cards are short, as on a profile: a glance each, so a page fits in view. */
+.editor-desk .editor-techniques ul {
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+
+.editor-desk .editor-techniques .tcard {
+  aspect-ratio: auto;
+  min-height: 72px;
+  gap: 6px;
+}
+
+.editor-desk .editor-techniques .tglyph {
+  font-size: 1.5rem;
+  place-items: end end;
+  padding: 0 6px 2px 0;
+}
+
+.editor-desk .editor-techniques .tcard.ghost .tglyph {
+  display: none;
+}
+
+.editor-sheet-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* On paper a closed button fades into it rather than going dark. */
+.editor-sheet .btn:disabled {
+  background: transparent;
+  color: var(--paper-muted);
+  border: 1px dashed var(--paper-muted);
 }
 
 .editor-sheet .versus-power small {
@@ -122,15 +218,53 @@
   gap: 6px;
 }
 
-.editor-find {
+/* The technique finder: a name, four facets, readiness, and a page of cards. */
+.editor-finder {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.editor-search,
+.editor-facet select {
+  min-height: 40px;
+  font: inherit;
+}
+
+.editor-facets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 8px;
 }
 
-.editor-find select,
-.editor-find input {
-  flex: 1 1 140px;
+.editor-facet {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.86rem;
+  color: var(--paper-muted);
+}
+
+.editor-found {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.editor-ready {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   min-height: 40px;
-  font: inherit;
+}
+
+.editor-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--paper-muted);
 }

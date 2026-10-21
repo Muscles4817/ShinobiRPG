@@ -9,12 +9,13 @@ import {
   type StatId,
   type Stats,
 } from '@/systems/stats';
-import { canPerform, type TechniqueDef } from '@/systems/techniques';
+import { canPerform, type Element, type TechniqueDef } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import type { Discipline } from '../views/common';
 import { versusRoster, type VersusFighter } from '../versus/roster';
 import { originalFighter, type FighterOriginal } from './originals';
+import { techniqueKinds, type TechniqueKind } from './techniqueKinds';
 
 /**
  * The editor's view of a fighter: each stat beside the pack's value, what they fight with
@@ -37,6 +38,9 @@ export interface EditorTechnique {
   readonly name: string;
   readonly discipline: Discipline;
   readonly rank: StatGrade;
+  readonly element: Element | null;
+  /** What kind of technique it is, read from what it does (`techniqueKinds`). */
+  readonly kinds: readonly TechniqueKind[];
   /** False when their grades don't carry it yet: they won't use it until they do. */
   readonly ready: boolean;
 }
@@ -68,7 +72,8 @@ function techniqueOf(def: TechniqueDef, original: FighterOriginal, stats: Stats)
   // A foe fights with what it is written with; only people grow into their techniques.
   const ready = original.ref.kind === 'enemy' || canPerform(def, performer);
   const { id, name, discipline, rank } = def;
-  return { id, name, discipline, rank, ready };
+  const element = def.element ?? null;
+  return { id, name, discipline, rank, element, kinds: techniqueKinds(def), ready };
 }
 
 function byArtAndRank(a: EditorTechnique, b: EditorTechnique): number {

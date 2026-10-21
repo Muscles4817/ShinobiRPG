@@ -71,11 +71,42 @@ function ResetWorld({ name, onReset }: { readonly name: string; readonly onReset
   );
 }
 
+/** The world whose fighters are edited, when there is more than one. */
+function WorldPicker({
+  packs,
+  packId,
+  onPick,
+}: {
+  readonly packs: readonly { readonly id: string; readonly name: string }[];
+  readonly packId: string;
+  readonly onPick: (packId: string) => void;
+}) {
+  if (packs.length < 2) return null;
+  return (
+    <section className="versus-slot">
+      <label htmlFor="editor-world">World</label>
+      <select
+        id="editor-world"
+        value={packId}
+        onChange={(e) => {
+          onPick(e.target.value);
+        }}
+      >
+        {packs.map((p) => (
+          <option key={p.id} value={p.id}>
+            {p.name}
+          </option>
+        ))}
+      </select>
+    </section>
+  );
+}
+
 /**
  * The editor: pick a world and a fighter, then change their stats and what they fight with.
  * Changes are kept on the device and used at once in versus and by every new game; a game
- * already under way keeps the world it began with. On a desk the list and the sheet sit side
- * by side; on a phone the sheet takes the page.
+ * already under way keeps the world it began with. On a desk the list, the fighter's stats and
+ * their techniques fill the window side by side; on a phone the sheet takes the page.
  */
 export function EditorScreen({ onBack }: { readonly onBack: () => void }) {
   const packs = useMemo(() => packChoices(), []);
@@ -87,9 +118,11 @@ export function EditorScreen({ onBack }: { readonly onBack: () => void }) {
   const [focusId, setFocusId] = useState<string | null>(null);
   const wide = useWideScreen();
   const roster = useMemo(() => (ctx ? editorRoster(ctx) : []), [ctx]);
+  // On a desk the sheet is never blank: it opens on the first fighter until another is picked.
+  const shownId = focusId ?? (wide ? (roster[0]?.id ?? null) : null);
   const editor = useMemo(
-    () => (ctx && focusId ? fighterEditor(ctx, focusId) : null),
-    [ctx, focusId],
+    () => (ctx && shownId ? fighterEditor(ctx, shownId) : null),
+    [ctx, shownId],
   );
   if (!ctx) return null;
   const packName = packs.find((p) => p.id === packId)?.name ?? packId;
@@ -100,7 +133,7 @@ export function EditorScreen({ onBack }: { readonly onBack: () => void }) {
       roster={roster}
       filter={filter}
       onFilter={setFilter}
-      focusedId={focusId}
+      focusedId={shownId}
       stampOf={(id) => (edited.has(id) ? 'Edited' : null)}
       onFocus={setFocusId}
     />
@@ -138,25 +171,14 @@ export function EditorScreen({ onBack }: { readonly onBack: () => void }) {
           Changes are used at once in versus and by every new game. A game already under way keeps
           the world it began with.
         </p>
-        {packs.length > 1 && (
-          <section className="versus-slot">
-            <label htmlFor="editor-world">World</label>
-            <select
-              id="editor-world"
-              value={packId}
-              onChange={(e) => {
-                setPackId(e.target.value);
-                setFocusId(null);
-              }}
-            >
-              {packs.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </section>
-        )}
+        <WorldPicker
+          packs={packs}
+          packId={packId}
+          onPick={(id) => {
+            setPackId(id);
+            setFocusId(null);
+          }}
+        />
         {hasEdits(edits) && (
           <ResetWorld
             name={packName}
