@@ -33,7 +33,7 @@ export const CANON_GENIN: readonly PersonDef[] = [
       strength: 8,
       speed: 9,
       stamina: 15,
-      reserves: 26,
+      reserves: 35,
       intellect: 5,
       perception: 6,
       willpower: 15,
