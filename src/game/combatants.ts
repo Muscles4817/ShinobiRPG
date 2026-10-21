@@ -22,8 +22,8 @@ import { enemyWalking, playerWalking } from './footing';
 import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
 import { clanSize } from './bodySize';
-import { chakraBody, hiveSwarm } from './hives/hive';
-import { dustPool } from './dust/dust';
+import { chakraBody, foeHive, hiveSwarm } from './hives/hive';
+import { dustPool, personDust } from './dust/dust';
 
 /** Translates game entities into the combat contract's vocabulary. */
 
@@ -200,6 +200,15 @@ export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): 
   return withCalls(enemyBody(def, index, ctx), summons, ctx);
 }
 
+/** What a foe carries of hive and dust into a fight, full. */
+function enemyPools(def: EnemyDef, ctx: GameContext): Pick<CombatantSetup, 'swarm' | 'dust'> {
+  const swarm = def.hive ? foeHive(def.hive.strainId, enemyStatLine(def), ctx) : undefined;
+  const dust = def.dust
+    ? personDust(def.maxChakra, { clan: undefined, arsenalDust: def.dust.dustId }, ctx)
+    : undefined;
+  return { ...(swarm ? { swarm } : {}), ...(dust ? { dust } : {}) };
+}
+
 function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
   const walking = enemyWalking(def);
   const id = enemyCombatantId(def.id, index);
@@ -221,6 +230,7 @@ function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSet
     ...(def.traits ? { traits: def.traits } : {}),
     ...(walking.length > 0 ? { perks: walking } : {}),
     ...(def.size ? { size: def.size } : {}),
+    ...enemyPools(def, ctx),
   };
 }
 

@@ -9,6 +9,7 @@ import type { GameContext } from '../context';
 import { placeHere } from '../ops';
 import { retinueSeen, summonsSeen } from '../retinueSight';
 import { missionThreat, traitNotes, type Threat, type TraitNote } from '../scouting';
+import { poolNotes, type PoolNote } from '../scoutingPools';
 import { senseiPick } from '../sensei/pick';
 import { mentorOf } from '../sensei/plan';
 import type { GameState } from '../state';
@@ -21,6 +22,8 @@ export interface Foe {
   readonly name: string;
   readonly count: number;
   readonly traits: readonly TraitNote[];
+  /** A hive or dust they carry, by the client's report (`EnemyDef.hive`, `dust`). */
+  readonly pools: readonly PoolNote[];
 }
 
 export interface Notice extends Choice {
@@ -75,7 +78,9 @@ function foesOf(ctx: GameContext, enemyIds: readonly string[]): Foe[] {
   enemyIds.forEach((id) => counts.set(id, (counts.get(id) ?? 0) + 1));
   return [...counts].flatMap(([id, count]) => {
     const def = ctx.content.enemies.get(id);
-    return def ? [{ name: def.name, count, traits: traitNotes(def.traits ?? []) }] : [];
+    if (!def) return [];
+    const pools = poolNotes(def, { hive: true, dust: true }, ctx);
+    return [{ name: def.name, count, traits: traitNotes(def.traits ?? []), pools }];
   });
 }
 
@@ -86,7 +91,7 @@ function calledFoes(state: GameState, ctx: GameContext, enemyIds: readonly strin
     return (def ? summonsSeen(state, def, 'full') : []).map(({ summonId }) => {
       const summon = ctx.content.summons.require(summonId);
       const name = `${summon.name}, summoned by ${def?.name ?? 'them'}`;
-      return { name, count: 1, traits: traitNotes(summon.traits ?? []) };
+      return { name, count: 1, traits: traitNotes(summon.traits ?? []), pools: [] };
     });
   });
 }

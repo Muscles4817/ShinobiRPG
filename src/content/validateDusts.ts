@@ -19,13 +19,17 @@ function clanDustProblems(pack: ContentPack): string[] {
   });
 }
 
-/** Every arsenal that commands dust names a real kind. */
+/** Every arsenal and foe that commands dust names a real kind. */
 function arsenalDustProblems(pack: ContentPack): string[] {
   const kinds = new Set(pack.dusts.map((d) => d.id));
-  return [...pack.people, ...(pack.duelists ?? [])].flatMap((p) => {
+  const people = [...pack.people, ...(pack.duelists ?? [])].flatMap((p) => {
     const dustId = p.arsenal?.dust;
     return dustId && !kinds.has(dustId) ? [`person "${p.id}" commands an unknown dust`] : [];
   });
+  const foes = pack.enemies.flatMap((e) =>
+    e.dust && !kinds.has(e.dust.dustId) ? [`enemy "${e.id}" commands an unknown dust`] : [],
+  );
+  return [...people, ...foes];
 }
 
 /**

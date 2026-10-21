@@ -33,6 +33,11 @@ export function Read({ read }: { readonly read: ScoutingRead }) {
           <b>With {c.name.toLowerCase()}.</b> {c.counter}
         </span>
       ))}
+      {read.pools.map((p) => (
+        <span key={p.label} className="trait-note">
+          <b>{p.label}</b> {p.counter}
+        </span>
+      ))}
       {read.details.length > 0 && (
         <small className="num">
           {read.details.map((d) => `${d.label} ${d.theirs} (you ${d.yours})`).join(', ')}

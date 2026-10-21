@@ -744,6 +744,17 @@ what is left; the fight screen shows a Dust meter.
   Kurogane Forge sells iron and glass sand).
 - **Later:** the beast or spirit shield perk, with milestone 3.
 
+### Foes with hives and dust
+
+A foe may carry a hive (`EnemyDef.hive`, a pack strain) or dust (`EnemyDef.dust`), full, into
+the fight. Each has a `tell` read like a retinue's (`poolsSeen` in `game/retinueSight.ts`): a
+hive in the body is `hidden` unless told otherwise, so a glance rarely catches it; dust in a
+gourd or pouch is `open`. A read in the fight and the client's report on a notice name what
+they carry and what undoes it (a strain's fears, a dust's banes: `game/scoutingPools.ts`).
+The first are rogues in the jobs that already hold their secrets: a rogue insect user after
+the Aburame's humming case, an iron sand rogue after the Shukuba scroll, a rogue moth-keeper
+at the Tōga wreck and a glass sand rogue at the Kiri Ford lamp-glass scroll.
+
 ### Strains and crossbreeding (step 4c)
 
 To crossbreed, a strain has to be made of parts that can be mixed. The designer's model has two
