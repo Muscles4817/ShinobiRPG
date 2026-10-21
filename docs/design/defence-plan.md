@@ -351,6 +351,18 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   Kakashi lasting a round where he lasted two; Naruto lasts longer against Sasuke (3.3 → 3.8
   rounds) and Izumo (2.7 → 3.1), though the split leaves him short of chakra, which the
   chakra-totals review may answer.
+- **Chakra totals (done).** A full tank grew by adding (30, plus 3.5 a point of reserves, plus
+  control), so the deepest well in the cast held twice a jōnin's and a cost or a clone split
+  swung everyone alike. It now doubles every 10 points of reserves (`maxChakra` in
+  `systems/vitals`: 40 × 2^(reserves ÷ 10), plus control), so genin barely move (Sakura 66,
+  Sasuke 97) and the deep wells pull away: Kakashi 141, Guy 176, Naruto 246, Hiruzen 779,
+  Gaara 1,004, Kisame 1,496, and a tailed beast at reserves 60 about 2,600. Foes', companions'
+  and puppets' authored chakra moved onto the same curve from the reserves it stood for;
+  summons were set by hand as the chakra beasts they are (Gamabunta 650, a great snake 230,
+  the Kiln Mother 370). Regen, Gather and the clone split already scale with the tank, and the
+  rank floors stay, so a deep well pays for big techniques many times over. Saves keep their
+  stats, so a save's chakra follows the curve. The fight table: Guy beats Kakashi 63% of the
+  time (93% before), and Guy beats Hiruzen 30% (40%).
 - **Guy never opens a deep gate** in the table's bouts (only the first, the Gate of Life), so
   his finishers never come into it; that is slice 6.
 

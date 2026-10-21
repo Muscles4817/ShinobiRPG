@@ -34,7 +34,7 @@ export const LOADED_DICE_FOE: EnemyDef = {
     taijutsu: -3,
     kenjutsu: -3,
   },
-  maxChakra: 70,
+  maxChakra: 80,
   techniqueIds: ['sapping-illusion', 'sly-mind-affect', 'bell-sound-clone', 'binding-illusion'],
   traits: ['illusionist', 'coward'],
 };

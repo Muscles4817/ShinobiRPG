@@ -34,7 +34,7 @@ export const SNAKE_DEN_FOE: EnemyDef = {
     fuuinjutsu: -3,
     intellect: -4,
   },
-  maxChakra: 80,
+  maxChakra: 100,
   techniqueIds: ['hidden-shadow-snake-hands', 'snake-clone', 'binding-snake-glare'],
   traits: ['swift'],
   healthScale: 1.2,

@@ -319,7 +319,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     its thrower) and only if it reaches where the last left the fight (a knock to mid needs a move
     that reaches or rushes in); the setups are what the fight already does (a daze leaves them
     open, a pin hard to slip). The player builds theirs on the Jutsu tab (`techniques.chains`,
-    checked by `chainProblem` before they are kept); otherwise they are built from the moves known. Chakra ebbs and flows (`rules/chakra.ts`): a technique costs at least its rank's floor
+    checked by `chainProblem` before they are kept); otherwise they are built from the moves known. A full tank doubles every 10 points of reserves (`maxChakra`, `systems/vitals`), so deep wells dwarf ordinary ones. Chakra ebbs and flows (`rules/chakra.ts`): a technique costs at least its rank's floor
     (`RANK_COST_FLOOR`: C 10 up to S 45, before control), so a jōnin's best takes a real share of
     a full tank; an area costs more for the ground it covers (wide ×1.5, vast ×2.2), and each
     exchange gives back a little, or a share of deep reserves. **Gather** (`rules/gather.ts`,
