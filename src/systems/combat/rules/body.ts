@@ -144,6 +144,22 @@ export function holdTurns(effect: Pick<EffectUse['effect'], 'power'>): number {
  * unstable one, and more for one that covers more ground (`chakra.ts`); never less than its
  * rank's floor (`RANK_COST_FLOOR`).
  */
+/**
+ * Chakra control at which a spin (Palm Rotation) costs half its technique each time it turns
+ * something aside: finer control, a lighter flick of chakra from every point at once.
+ */
+const SPIN_CONTROL_PIVOT = 20;
+
+/** What one turn of a spin costs: its technique's cost, eased by its user's chakra control. */
+export function spinCost(
+  user: Pick<Body, 'attributes'>,
+  technique: Pick<CombatTechnique, 'chakraCost' | 'unstable' | 'rank'>,
+): number {
+  const control = Math.max(0, user.attributes.chakraControl);
+  const share = SPIN_CONTROL_PIVOT / (SPIN_CONTROL_PIVOT + control);
+  return Math.max(1, Math.round(chakraCost(user, technique) * share));
+}
+
 export function chakraCost(
   user: Pick<Body, 'attributes'>,
   technique: Pick<CombatTechnique, 'chakraCost' | 'unstable' | 'rank'> & {

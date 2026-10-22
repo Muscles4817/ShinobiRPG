@@ -3,7 +3,8 @@ import { clamp } from '@/core';
 /**
  * Commanded dust between fights (`docs/design/retinue-plan.md`, step 4e): the store a user
  * carries (a gourd, a pouch, a sealed scroll) and how much of it there is. How much a user can
- * hold up grows with their chakra. What came back from a fight is what the store holds. Dust
+ * carry is their vessel's, never their chakra's (the game reads it from the kind, or from a
+ * clan's or fighter's own vessel). What came back from a fight is what the store holds. Dust
  * the ground gives (sand, ash) gathers itself again day by day, quickly at home; dust no
  * ground gives (iron sand, gold, glass) never comes back on its own: it is made or bought.
  */
@@ -15,21 +16,14 @@ export interface DustStore {
   readonly count: number;
 }
 
-/** Dust held up per point of full chakra. */
-export const DUST_PER_CHAKRA = 2;
 /** Share of the store a drawable dust gathers back in a day at home. */
 export const GATHER_AT_HOME = 0.5;
 /** Share it gathers back in a day away (a strange ground, a road). */
 export const GATHER_AWAY = 0.15;
 
-/** As much dust as a body of this full chakra can hold up at once. */
-export function storeCap(fullChakra: number): number {
-  return Math.round(fullChakra * DUST_PER_CHAKRA);
-}
-
-/** A full store of a kind, for a body of this chakra. */
-export function fullStore(dustId: string, fullChakra: number): DustStore {
-  return { dustId, count: storeCap(fullChakra) };
+/** A full store of a kind, in a vessel that holds this much. */
+export function fullStore(dustId: string, vessel: number): DustStore {
+  return { dustId, count: vessel };
 }
 
 /** The store after a fight: what came back, never past the cap. */

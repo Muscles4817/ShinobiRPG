@@ -1,5 +1,15 @@
 import type { CombatAttributes, CombatTechnique } from '../contract';
-import { canCopy, foreseen, MAX_COPIES } from './eyes';
+import {
+  BLIND_SPOT_CHANCE,
+  BLIND_SPOT_FROM_ROUND,
+  blindSpotChance,
+  canCopy,
+  foreseen,
+  MAX_COPIES,
+  POINTS_SEEN_RESIST,
+  pointsSeenScale,
+  seesTheRealBody,
+} from './eyes';
 
 const attributes = (ninjutsu: number): CombatAttributes => ({
   strength: 10,
@@ -55,5 +65,31 @@ describe('eyes', () => {
     expect(canCopy({ ...copier, techniques: [bullet] }, user, bullet)).toBe(false);
     const full = { ...copier, copied: Array.from({ length: MAX_COPIES }, (_, i) => `t${i}`) };
     expect(canCopy(full, user, bullet)).toBe(false);
+  });
+});
+
+/** The Byakugan (`all-seeing`): the real body, the chakra points, and the one blind spot. */
+describe('all-seeing eyes', () => {
+  const seer = { perks: ['all-seeing' as const] };
+  const plain = { perks: [] };
+  const mind = (intellect: number) => ({ attributes: { ...attributes(10), intellect } });
+
+  it('see the real body among clones', () => {
+    expect(seesTheRealBody(seer)).toBe(true);
+    expect(seesTheRealBody(plain)).toBe(false);
+  });
+
+  it('close the chakra points more surely, for seals and drains only', () => {
+    expect(pointsSeenScale(seer, 'seal')).toBe(POINTS_SEEN_RESIST);
+    expect(pointsSeenScale(seer, 'drain')).toBe(POINTS_SEEN_RESIST);
+    expect(pointsSeenScale(seer, 'pin')).toBe(1);
+    expect(pointsSeenScale(plain, 'seal')).toBe(1);
+  });
+
+  it('have one blind spot, found only by a sharp foe once the fight has gone on', () => {
+    expect(blindSpotChance(seer, mind(30), BLIND_SPOT_FROM_ROUND)).toBe(BLIND_SPOT_CHANCE);
+    expect(blindSpotChance(seer, mind(30), 1)).toBe(0);
+    expect(blindSpotChance(seer, mind(10), BLIND_SPOT_FROM_ROUND)).toBe(0);
+    expect(blindSpotChance(plain, mind(30), BLIND_SPOT_FROM_ROUND)).toBe(0);
   });
 });

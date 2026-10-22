@@ -148,6 +148,8 @@ export interface PersonArsenal {
   readonly weaponMastery?: WeaponMastery;
   /** The dust they command (a `DustDef` id), a full store of it in every fight. */
   readonly dust?: string;
+  /** What their vessel holds (a great gourd), when not the kind's ordinary `carried`. */
+  readonly dustVessel?: number;
   /** The puppets they work on threads (`PuppetDef` ids), each unsealed by its own technique. */
   readonly puppets?: readonly string[];
 }

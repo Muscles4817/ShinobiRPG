@@ -21,6 +21,7 @@ const REACTION_LABEL: Readonly<Record<NarrationReaction, string>> = {
   'guard-broken': 'Guard broken',
   countered: 'Countered',
   swapped: 'Swapped out',
+  shielded: 'Shielded',
 };
 
 function reactionChip(reaction: NarrationReaction): JournalChip {

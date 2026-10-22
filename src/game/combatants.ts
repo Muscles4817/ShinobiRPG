@@ -204,13 +204,18 @@ export function enemyCombatant(def: EnemyDef, index: number, ctx: GameContext): 
 function enemyPools(def: EnemyDef, ctx: GameContext): Pick<CombatantSetup, 'swarm' | 'dust'> {
   const swarm = def.hive ? foeHive(def.hive.strainId, enemyStatLine(def), ctx) : undefined;
   const dust = def.dust
-    ? personDust(def.maxChakra, { clan: undefined, arsenalDust: def.dust.dustId }, ctx)
+    ? personDust({ clan: undefined, dustId: def.dust.dustId, vessel: def.dust.vessel }, ctx)
     : undefined;
   return { ...(swarm ? { swarm } : {}), ...(dust ? { dust } : {}) };
 }
 
+/** A foe's perks: walking on water and trees, and a shield from their dust. */
+function enemyPerks(def: EnemyDef): CombatPerk[] {
+  return [...enemyWalking(def), ...(def.dust?.shield ? (['shield'] as const) : [])];
+}
+
 function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
-  const walking = enemyWalking(def);
+  const perks = enemyPerks(def);
   const id = enemyCombatantId(def.id, index);
   return {
     id,
@@ -228,7 +233,7 @@ function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSet
     techniques: def.techniqueIds.map((id) => ctx.content.techniques.require(id)),
     ...(def.nature ? { nature: def.nature } : {}),
     ...(def.traits ? { traits: def.traits } : {}),
-    ...(walking.length > 0 ? { perks: walking } : {}),
+    ...(perks.length > 0 ? { perks } : {}),
     ...(def.size ? { size: def.size } : {}),
     ...enemyPools(def, ctx),
   };

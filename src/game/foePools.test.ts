@@ -41,4 +41,13 @@ describe('foes with hives and dust', () => {
       counter: 'Heavy blows scatter it.',
     });
   });
+
+  it('a foe whose dust shields them fights with the perk, and a read says how to beat it', () => {
+    const bound = enemyCombatant(ctx.content.enemies.require('haibara-ash-bound'), 0, ctx);
+    expect(bound.perks).toContain('shield');
+    expect(bound.dust?.kind.name).toBe('Ash');
+    const reads = scoutOpponents(newGame(), ctx, ['haibara-ash-bound#0']);
+    expect(reads['haibara-ash-bound#0']?.pools[0]?.label).toMatch(/shield them on its own/);
+    expect(reads['haibara-ash-bound#0']?.pools[0]?.counter).toMatch(/Only real speed/);
+  });
 });

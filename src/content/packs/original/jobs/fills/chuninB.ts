@@ -197,6 +197,28 @@ export const CHUNIN_B_FILLS: readonly MissionFill[] = [
     },
   },
   {
+    id: 'the-ash-that-answers',
+    templateId: 'b-rogue-hunt',
+    minMissionsCompleted: 12,
+    values: {
+      title: 'The Ash That Answers',
+      client: 'The Haibara Kiln-Masters',
+      quarry: 'Haibara Sōen, who sealed the spirit of the great kiln into his own ash',
+      dossier:
+        'The file lists his firings, his rank and the night the great kiln went cold. It does not say that the kiln-masters passed him over for its keeping three years running.',
+      trail:
+        'He left with every sack of ash from the great kiln, and a grey trail runs from the kiln yard to the hills, as if he wanted it followed.',
+      trap: 'Ash lies in a smooth drift across the hill path, and where your foot would fall it is warm.',
+      cornered:
+        'Sōen stands in a ring of cold kilns with the ash moving round him like water. “It came to me,” he says. “They never once asked it what it wanted.”',
+      foe: 'haibara-ash-bound',
+      parley:
+        'Sōen lets the ash settle and kneels in it. “Tell them it chose,” he says. “And let me keep the kiln, if it will stay.”',
+      ending:
+        'You bring the ash home in sealed jars. The kiln-masters light the great kiln with it, and for the first time in three years it draws.',
+    },
+  },
+  {
     id: 'woman-with-the-ember-fan',
     templateId: 'b-rogue-hunt',
     minMissionsCompleted: 22,

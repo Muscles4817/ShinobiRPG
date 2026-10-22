@@ -146,15 +146,9 @@ describe('versus bouts', () => {
     const kankuro = contenderOf(naruto, 'person:kankuro')!;
     const state = bout('person:kankuro', 'person:maki');
     const as = playerSetup(kankuro, state, naruto);
-    expect(as.calls?.map((c) => [c.id, c.puppet])).toEqual([
-      ['karasu', true],
-      ['kuroari', true],
-    ]);
-    expect(as.techniques.map((t) => t.id)).toEqual([
-      'chakra-threads',
-      'unseal-karasu',
-      'unseal-kuroari',
-    ]);
+    // At the Chūnin Exams, Karasu is his only puppet.
+    expect(as.calls?.map((c) => [c.id, c.puppet])).toEqual([['karasu', true]]);
+    expect(as.techniques.map((t) => t.id)).toEqual(['chakra-threads', 'unseal-karasu']);
     const watched = createVersus(naruto, {
       side: ['person:kankuro'],
       foes: ['person:maki'],

@@ -12,6 +12,7 @@ import {
 import { tell } from '../../rules/telling';
 import { cloneCount, cloneKindFor, isWounding, type EffectUse } from '../../rules/verbs';
 import { EMPTY_LOADOUT, fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { seesTheRealBody } from '../../rules/eyes';
 
 /**
  * Shadow clones in a planned fight (`rules/shadowClones.ts`): the technique splits its maker's
@@ -115,7 +116,8 @@ export function misled(
   { actor, target, rng }: { actor: PlanFighter; target: PlanFighter | undefined; rng: Rng },
   card: Card,
 ): PlanFighter | undefined {
-  if (!target || !needsAim(card)) return target;
+  // Eyes that see the chakra see which body is the maker (`rules/eyes.ts`).
+  if (!target || !needsAim(card) || seesTheRealBody(actor)) return target;
   const clones = shadowsOf(round, target.id);
   const odds = misleadChance(clones.length, {
     eyes: actor.attributes.perception,

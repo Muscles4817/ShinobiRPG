@@ -29,7 +29,7 @@ export {
   type FieldRule,
   type FieldSource,
 } from './field';
-export { moveGoal, substitutable } from './footwork';
+export { moveGoal, spins, substitutable } from './footwork';
 export { AREA_RULES, afterBlast, areaSize, type AreaRule } from './area';
 export {
   BREAK_ARMOUR,

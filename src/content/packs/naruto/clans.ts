@@ -42,6 +42,7 @@ export const CLANS: readonly ClanDef[] = [
       name: 'Byakugan',
       description: 'Near 360° sight that sees chakra pathways. Active from the start.',
       dormant: false,
+      perks: ['all-seeing'],
     },
   },
   {

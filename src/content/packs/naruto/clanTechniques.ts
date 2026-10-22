@@ -224,14 +224,12 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
   {
     id: 'eight-trigrams-rotation',
     name: 'Eight Trigrams Palm Rotation',
-    description: 'Chakra from every point at once and a spin that turns the blow aside and back.',
+    description:
+      'Chakra from every point at once and a spin that turns any blow aside, from any side. It lasts as long as the chakra does.',
     discipline: 'taijutsu',
     moulded: true,
     clan: 'hyuga',
-    effects: [
-      { verb: 'counter', power: 14 },
-      { verb: 'area', power: 8 },
-    ],
+    effects: [{ verb: 'substitute', power: 14, spins: true }],
     chakraCost: 12,
     rank: 'C',
     difficulty: 90,

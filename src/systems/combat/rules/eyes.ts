@@ -35,6 +35,49 @@ export function foreseen(chance: number, f: Eyed, { scale, ceiling }: Foresight)
   return f.perks.includes('foresight') ? Math.min(ceiling, chance * scale) : chance;
 }
 
+/** Eyes that see everything at once: no illusion takes hold of them (they see the chakra). */
+export function seesThroughIllusions(f: Eyed): boolean {
+  return f.perks.includes('all-seeing');
+}
+
+/** The round from which a sharp enough foe may have found the eyes' one blind spot. */
+export const BLIND_SPOT_FROM_ROUND = 3;
+/** The wits it takes to find it: a B-grade mind (an observer, watching where the eyes never turn). */
+export const BLIND_SPOT_WITS = 20;
+/** Once it is found, this share of their attacks come through it. */
+export const BLIND_SPOT_CHANCE = 0.25;
+
+/**
+ * The chance an attack comes through the one blind spot of eyes that see everything else: only
+ * from a foe sharp enough to find it, and only once the fight has gone on long enough.
+ */
+export function blindSpotChance(
+  target: Eyed,
+  attacker: { readonly attributes: CombatAttributes },
+  roundNumber: number,
+): number {
+  const sharp = attacker.attributes.intellect >= BLIND_SPOT_WITS;
+  const found = sharp && roundNumber >= BLIND_SPOT_FROM_ROUND;
+  return found && target.perks.includes('all-seeing') ? BLIND_SPOT_CHANCE : 0;
+}
+
+/** A seal or a drain from eyes that see the chakra points is shaken off this share as often. */
+export const POINTS_SEEN_RESIST = 0.5;
+
+/**
+ * What eyes that see the chakra points do to a foe's chance of shaking off a seal or a drain
+ * (closing the points is the Gentle Fist's whole art): 1 for anyone else, or any other hold.
+ */
+export function pointsSeenScale(f: Eyed, verb: string): number {
+  const atThePoints = verb === 'seal' || verb === 'drain';
+  return atThePoints && f.perks.includes('all-seeing') ? POINTS_SEEN_RESIST : 1;
+}
+
+/** Eyes that see the chakra see which body holds it: a clone never fools them. */
+export function seesTheRealBody(f: Eyed): boolean {
+  return f.perks.includes('all-seeing');
+}
+
 /** How foresight bends one chance. */
 export interface Foresight {
   readonly scale: number;

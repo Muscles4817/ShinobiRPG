@@ -29,5 +29,7 @@ export const NEJI_ARSENAL: PersonArsenal = {
     'substitution-jutsu',
     'one-blow-body',
     'tenketsu-needle',
+    'sixty-four-palms',
+    'eight-trigrams-rotation',
   ],
 };

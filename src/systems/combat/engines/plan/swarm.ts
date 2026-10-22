@@ -109,12 +109,21 @@ function burntOff(round: Round, target: PlanFighter, t: CombatTechnique): Round 
   return say(cleared, tell('The insects on {t} burn away.', { t: target }));
 }
 
-function lostFrom(target: PlanFighter, t: CombatTechnique, dealt: number): number {
+function lostFrom(target: Hive, t: CombatTechnique, dealt: number): number {
   const swarm = target.swarm;
   if (!swarm) return 0;
   const [area] = effectsOf(t, 'area');
   const caught = area ? areaLoss(swarm, areaSize(area), t.element) : 0;
   return Math.min(swarm.count, caught + fearedLoss(swarm, dealt, t.element));
+}
+
+/**
+ * Share of a host's whole hive a technique would kill if it hit them for `dealt` (an area that
+ * catches them, an element their strain fears), for a fighter reckoning what an attack is worth.
+ */
+export function hiveToll(target: Hive, t: CombatTechnique, dealt: number): number {
+  const swarm = target.swarm;
+  return swarm && swarm.cap > 0 ? lostFrom(target, t, dealt) / swarm.cap : 0;
 }
 
 /** A technique hit someone: insects on them may burn off, and their own hive may suffer. */

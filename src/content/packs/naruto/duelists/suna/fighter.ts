@@ -10,7 +10,9 @@ const SUNA = 'sunagakure';
 
 /*#__NO_SIDE_EFFECTS__*/
 export function sunaFighter(
-  fighter: Omit<PersonDef, 'role' | 'schedule' | 'homeLocationId'>,
+  fighter: Omit<PersonDef, 'role' | 'schedule' | 'homeLocationId'> & {
+    readonly role?: 'shinobi' | 'genin';
+  },
 ): PersonDef {
   return { role: 'shinobi', schedule: AWAY, homeLocationId: SUNA, ...fighter };
 }

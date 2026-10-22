@@ -23,7 +23,7 @@ function duelistProblems(pack: ContentPack, duelist: PersonDef): string[] {
   const traits = new Set(pack.traits.map((t) => t.id));
   const clan = duelist.clanId;
   return [
-    duelist.role !== 'shinobi' && `${who} must be a shinobi`,
+    duelist.role !== 'shinobi' && duelist.role !== 'genin' && `${who} must be a shinobi or a genin`,
     duelist.rank === 'civilian' && `${who} has no fighting rank`,
     Object.values(duelist.schedule).some((at) => at !== null) &&
       `${who} has a schedule, but isn’t in the world yet`,

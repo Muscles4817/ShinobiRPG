@@ -3,6 +3,7 @@ import { clamp } from '@/core';
 import type { CombatAttributes, CombatPerk, CombatTrait } from '../contract';
 import { gapRatio } from './damage';
 import { concealmentOf } from './verbs';
+import { seesThroughIllusions } from './eyes';
 
 /**
  * Hidden and Confused, shared by every engine. An illusionist starts hidden: they can't be
@@ -75,7 +76,7 @@ export function confusionTurns(attacker: Illusion, victim: Senses): number {
 
 /** Chance an illusionist's hit leaves the victim confused. */
 export function confuseChance(attacker: Illusion, target: Senses): number {
-  if (!attacker.traits.includes('illusionist')) return 0;
+  if (!attacker.traits.includes('illusionist') || seesThroughIllusions(target)) return 0;
   return clamp(
     0.35 + (attacker.attributes.genjutsu - target.attributes.willpower) * 0.05,
     0.1,

@@ -277,7 +277,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     brokenContracts: [],
     hive,
     rites: [],
-    dust: bornDust(clan, stats, ctx),
+    dust: bornDust(clan, ctx),
     dustScrolls: [],
     cooking: learnRecipes(
       NO_COOKING,

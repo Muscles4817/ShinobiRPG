@@ -164,6 +164,11 @@ interface VerbExtras {
   readonly drain: { readonly absorb?: true };
   /** Which lingering harm it leaves. */
   readonly afflict: { readonly harm: AfflictionKind };
+  /**
+   * A spin (Palm Rotation): not a swap but a turning, that meets every hit it can instead of the
+   * first in a round, paid in chakra each time, and is never spent while the chakra lasts.
+   */
+  readonly substitute: { readonly spins?: true };
   /** Which of its user's summons it calls (`CombatCall.id`). */
   readonly summon: { readonly call: string };
   /** What the cast armour is made of, which decides what it stops and what it costs. */

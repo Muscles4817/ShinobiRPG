@@ -8,13 +8,15 @@ import { attackKindOf } from '../../rules/kit';
 import { strikeWith, throwWith } from '../../rules/weapons';
 import { avoidOdds, blowSkill, techniqueIncoming } from './avoid';
 import { playsAnywhere, type Card } from './cards';
+import { hiveToll } from './swarm';
 import type { PlanFighter, Round } from './state';
 
 /**
  * What an attack is worth against one foe, as a fighter reckons it before choosing
  * (`choose.ts`): the chance it reaches them (the avoid roll they'd make, `avoid.ts`), times what
  * it does when it does (the hit from the gap formula, plus what its conditions are worth if
- * they take hold), a little less for the chakra it costs. It reads the same rules the fight
+ * they take hold, and the insects it would kill in a host's hive: an area, an element the strain
+ * fears), a little less for the chakra it costs. It reads the same rules the fight
  * plays by, so a sharp mind picks what works here, not just what is strongest on paper. A
  * reckoning, not a forecast: it ignores clones, defences that react and what the ground does.
  */
@@ -29,12 +31,19 @@ const CONDITION_WORTH: Readonly<Partial<Record<Verb, number>>> = {
   knock: 0.2,
   afflict: 0.6,
 };
+/** A host's whole hive is worth this much health to them: it is their arsenal. */
+const WHOLE_HIVE_WORTH = 60;
 /** How much of its worth an attack loses for spending all the chakra its user has left. */
 const COST_WEIGHT = 0.5;
 
 /** The fight as a reckoning sees it: who is where, nothing more. */
 function sketch(fighters: readonly PlanFighter[], band: RangeBand): Round {
   return { number: 1, fighters: [...fighters], range: band, lines: [], seen: {}, intents: {} };
+}
+
+/** Whether an effect takes health. */
+function wounds(e: TechniqueEffect): boolean {
+  return e.verb === 'damage' || e.verb === 'area' || e.verb === 'break';
 }
 
 /** What one effect is worth if it reaches its target. */
@@ -63,7 +72,10 @@ function techniqueWorth(
   const incoming = techniqueIncoming(self, foe, t, round.range);
   if (!incoming) return 0;
   const reaches = 1 - avoidOdds(round, incoming);
-  const does = t.effects.reduce((sum, e) => sum + effectWorth(self, foe, t, e), 0);
+  const worths = t.effects.map((e) => ({ e, worth: effectWorth(self, foe, t, e) }));
+  const dealt = worths.filter(({ e }) => wounds(e)).reduce((sum, { worth }) => sum + worth, 0);
+  const hurts = worths.reduce((sum, { worth }) => sum + worth, 0);
+  const does = hurts + hiveToll(foe, t, dealt) * WHOLE_HIVE_WORTH;
   const { pool, amount } = effortOf(self, t);
   const spent = amount / Math.max(1, pool === 'breath' ? breathOf(self) : self.chakra);
   return reaches * does * Math.max(0, 1 - COST_WEIGHT * spent);

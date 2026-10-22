@@ -7,10 +7,11 @@ import type { CombatGround } from '../groundContract';
 /**
  * The rules of commanded dust in a fight (`dustContract.ts`), the same for any engine: what a
  * dust technique spends and a draw pulls up (in full where the ground holds the dust, a little
- * elsewhere), how heavy dust lands (harder, but slower to arrive and easier to slip), how hard
+ * elsewhere), how heavy dust lands (harder, but slower to arrive), how hard
  * it grips a pin, how much it adds to a Guard, what its gifts leave behind (a bleed, blinded
- * eyes) and what scatters it (a bane: an element, or for brittle dust a heavy blow). Each
- * quality and gift is read here and nowhere else. A fighter commanding no dust pays a dust
+ * eyes), what it gathers back each exchange from a ground that holds it, and what scatters it (a bane: an element, or for brittle dust a heavy blow). Each
+ * quality and gift is read here and nowhere else. Dust moves at its own pace (`dustPace`), not
+ * its user's skill: a quick fighter slips it however strong its master. A fighter commanding no dust pays a dust
  * technique's chakra alone.
  */
 
@@ -18,8 +19,13 @@ import type { CombatGround } from '../groundContract';
 const MIDDLE_GRADE = 3;
 /** How much harder dust attacks hit per grade of weight above C. */
 const WEIGHT_POWER_PER_GRADE = 0.1;
-/** How much more often dust attacks are slipped per grade of weight above C (heavy is slow). */
-const WEIGHT_SLIP_PER_GRADE = 0.06;
+/**
+ * The pace dust moves at, on the stat scale: middling (C) dust as fast as a good genin. A
+ * dust attack arrives at it, whoever commands the dust, and a shield rises at it.
+ */
+const DUST_PACE = 14;
+/** Each grade of weight above C slows it by this much (and each below quickens it). */
+const PACE_PER_WEIGHT = 2;
 /** How much harder dust pins grip per grade of hold above C. */
 const HOLD_PER_GRADE = 0.12;
 /** Share of a hit a Guard keeps out per grade of weight, while the user has dust to raise. */
@@ -40,6 +46,11 @@ const BLEED_PER_GIFT = 2;
 export const BLIND_EXCHANGES = 2;
 /** Per strength of blinding: how much more often a blinded fighter's attacks are slipped. */
 const BLIND_SLIP_PER_GIFT = 0.1;
+/**
+ * Share of the cap a user gathers back at the end of each exchange, where the ground holds their
+ * dust, at a middling draw (C): sand on open ground, ash among hearths. Carried dust never does.
+ */
+const GATHER_PER_EXCHANGE = 0.015;
 /** Below this share of its cap dust reads as thin. */
 const THIN_SHARE = 0.4;
 
@@ -79,9 +90,9 @@ export function dustPowerScale(kind: DustKind): number {
   return 1 + (grade(kind, 'weight') - MIDDLE_GRADE) * WEIGHT_POWER_PER_GRADE;
 }
 
-/** How often a dust attack is slipped, against a plain technique: heavy dust arrives slower. */
-export function dustSlipScale(kind: DustKind): number {
-  return Math.max(0, 1 + (grade(kind, 'weight') - MIDDLE_GRADE) * WEIGHT_SLIP_PER_GRADE);
+/** How fast a kind of dust moves: heavy dust slower. */
+export function dustPace(kind: DustKind): number {
+  return DUST_PACE - (grade(kind, 'weight') - MIDDLE_GRADE) * PACE_PER_WEIGHT;
 }
 
 /** How hard a dust pin grips, against a plain one. */
@@ -128,6 +139,13 @@ export function dustBleed(kind: DustKind): number {
 /** How often a fighter with blinding dust in their eyes has their attacks slipped. */
 export function blindedSlipScale(blinding: number): number {
   return 1 + blinding * BLIND_SLIP_PER_GIFT;
+}
+
+/** The dust after an exchange's gathering: back from the ground that holds it, never past the cap. */
+export function regathered(dust: CombatDust, ground: CombatGround): CombatDust {
+  if (!dust.kind.drawnOn.includes(ground) || dust.count >= dust.cap) return dust;
+  const share = GATHER_PER_EXCHANGE * (grade(dust.kind, 'draw') / MIDDLE_GRADE);
+  return { ...dust, count: Math.min(dust.cap, dust.count + Math.round(dust.cap * share)) };
 }
 
 /** Dust in a word: thick, thin or spent. */

@@ -1,12 +1,8 @@
-import type { EffectOf, TechniqueEffect, Verb } from '@/systems/techniques';
-
 import type { CombatTechnique } from '../../contract';
 import { payFor } from './effort';
 import { alive, hasPerk, holdTurns } from '../../rules/body';
 import { healAmount } from '../../rules/damage';
 import { groundRule } from '../../rules/ground';
-import { conditionResist } from '../../rules/avoidance';
-import { HIDDEN_HOLD_RESIST } from '../../rules/lethal';
 import { healLine, reactionLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
 import { misfireChance } from '../../rules/unstable';
@@ -20,6 +16,8 @@ import {
   type EffectUse,
 } from '../../rules/verbs';
 import { aftermath } from './blast';
+import { shieldStops } from './shield';
+import { throughBlindSpot } from './blindSpot';
 import { avoidOdds, dodgesHere, techniqueIncoming } from './avoid';
 import { noteDefence } from './reads';
 import { clash } from './clash';
@@ -28,9 +26,10 @@ import { watchedBy } from './mimicry';
 import { combination, comboPartner } from './combo';
 import { empowerSelf } from './empower';
 import { castField } from './field';
-import { move } from './footwork';
+import { move, spunAway } from './footwork';
 import { afflict, drain, knock, pin, readyRiposte } from './lingering';
 import { damage, type Aimed } from './wounding';
+import { conditionOf, landsOnFoe, shakenOff } from './takingHold';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
 import { canDaze, dazeIn } from './daze';
@@ -40,8 +39,6 @@ import { settleOn, swarmSpent } from './swarm';
 import { dustSpent } from './dust';
 import { setTrap } from './traps';
 import { linkLine } from './chainVoice';
-import { committedTo } from './commitment';
-import { bracedResist, isBracedAgainst } from '../../rules/commitment';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 import { raiseShroud } from './shrouds';
 
@@ -117,61 +114,26 @@ function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
   );
 }
 
-/** The verbs that land on a foe; every other verb happens to the user. */
-const FOE_VERBS = [
-  'damage',
-  'area',
-  'break',
-  'daze',
-  'seal',
-  'confuse',
-  'knock',
-  'pin',
-  'drain',
-  'afflict',
-] as const;
-type FoeVerb = (typeof FOE_VERBS)[number];
-const foeVerbs: readonly Verb[] = FOE_VERBS;
-
-function landsOnFoe(effect: TechniqueEffect): effect is EffectOf<FoeVerb> {
-  return foeVerbs.includes(effect.verb);
-}
-
-/** What it looks like when a condition that reached its target fails to take hold. */
-type ConditionVerb = Exclude<FoeVerb, 'damage' | 'area' | 'break'>;
-
-const SHAKEN_OFF: Readonly<Record<ConditionVerb, string>> = {
-  daze: '{t} shake{t.s} it off.',
-  seal: '{t} push{t.es} the seals back before they close.',
-  confuse: '{t} see{t.s} through the illusion.',
-  knock: '{t} stand{t.s} firm.',
-  pin: '{t} tear{t.s} free before it can hold.',
-  drain: '{t} keep{t.s} a grip on {t.their} chakra.',
-  afflict: '{t} shrug{t.s} it off.',
-};
-
-/** The condition an effect brings, if it lands on a foe without wounding them. */
-function conditionOf(effect: TechniqueEffect): ConditionVerb | null {
-  if (!landsOnFoe(effect)) return null;
-  const { verb } = effect;
-  return verb === 'damage' || verb === 'area' || verb === 'break' ? null : verb;
-}
-
-/** A condition reached its target; whether it takes hold is its verb's resist (`avoidance.ts`). */
-function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse): Round | null {
-  const verb = conditionOf(use.effect);
-  if (!verb) return null;
-  // A hold cast from hiding comes from where its target isn't looking (`rules/lethal.ts`).
-  const resist = conditionResist(actor, target, use) * (actor.hidden ? HIDDEN_HOLD_RESIST : 1);
-  // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
-  const braced = committedTo(target, 'brace') && isBracedAgainst(verb);
-  if (!rng.chance(braced ? bracedResist(resist) : resist)) return null;
-  return say(round, tell(SHAKEN_OFF[verb], { t: target }));
+/**
+ * A hold, a seal or a drain meets a ready spin (Palm Rotation) and then an automatic shield
+ * before it can take hold; a hit meets them as it lands (`react.ts`). The round it was turned
+ * aside in, or null.
+ */
+function turnedAway(round: Round, aimed: Aimed, t: CombatTechnique): Round | null {
+  const { actor: attacker, target, rng } = aimed;
+  const swap = { attacker, target, what: t.name, discipline: t.discipline };
+  const illusion = t.discipline === 'genjutsu';
+  const shielded = { attacker, target, what: t.name, illusion, rng };
+  // A hold through the blind spot meets no spin (`blindSpot.ts`), but still the shield.
+  const blind = throughBlindSpot(round, { attacker, target, rng });
+  return (blind ? null : spunAway(round, swap)) ?? shieldStops(round, shielded);
 }
 
 /** One effect landing on a foe who is standing. Effects aimed at the user happen in `onSelf`. */
 function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): Round {
   if (!landsOnFoe(effect)) return round;
+  const stopped = conditionOf(effect) ? turnedAway(round, aimed, technique) : null;
+  if (stopped) return stopped;
   const resisted = shakenOff(round, aimed, { technique, effect });
   if (resisted) return resisted;
   switch (effect.verb) {

@@ -200,7 +200,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan: `rules/eyes.ts`, `plan/mimicry.ts`). Eyes that see it coming (`foresight`) slip more than anyone else can (`SEEING_AVOID_MAX`), read every attack clearly for Evade, keep up with a faster body a little longer (`SEEING_PACE`) and see through illusions most of all. Perks may be **veiled** (`CombatantSetup.veiled`, `PersonArsenal.veiled`: a transplanted eye under a headband, `rules/veil.ts`, `plan/veil.ts`): no use until uncovered, a moment's work as a turn begins (no turn spent, no slot), against a match, an illusionist or a fight turning, and paid in chakra every exchange (`EYE_UPKEEP`) until it closes again. **Set-ups** (`docs/design/defence-plan.md` 4.3): a `lethal` technique (a lightning blade) on a target who can't see its user (hidden) or can't move (dazed or held) can't be slipped, goes through a guard and hits to kill (`rules/lethal.ts`, `LETHAL_SCALE`); a hold cast from hiding is shaken off less often (`HIDDEN_HOLD_RESIST`); and a mind that reads the fight, with a conceal, a hold and a killing blow in its kit, fights a match by hide, hold, finish from the kit, no slot (`plan/setups.ts`). A fight has a **ground**
+    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead: no illusion takes hold of them, no clone fools them, their seals and drains close the chakra points more surely, and they have one blind spot a sharp foe finds after a few rounds, where no ready defence rises: `rules/eyes.ts`, `plan/blindSpot.ts`, `plan/mimicry.ts`). Eyes that see it coming (`foresight`) slip more than anyone else can (`SEEING_AVOID_MAX`), read every attack clearly for Evade, keep up with a faster body a little longer (`SEEING_PACE`) and see through illusions most of all. Perks may be **veiled** (`CombatantSetup.veiled`, `PersonArsenal.veiled`: a transplanted eye under a headband, `rules/veil.ts`, `plan/veil.ts`): no use until uncovered, a moment's work as a turn begins (no turn spent, no slot), against a match, an illusionist or a fight turning, and paid in chakra every exchange (`EYE_UPKEEP`) until it closes again. **Set-ups** (`docs/design/defence-plan.md` 4.3): a `lethal` technique (a lightning blade) on a target who can't see its user (hidden) or can't move (dazed or held) can't be slipped, goes through a guard and hits to kill (`rules/lethal.ts`, `LETHAL_SCALE`); a hold cast from hiding is shaken off less often (`HIDDEN_HOLD_RESIST`); and a mind that reads the fight, with a conceal, a hold and a killing blow in its kit, fights a match by hide, hold, finish from the kit, no slot (`plan/setups.ts`). A fight has a **ground**
     (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake, desert; arena when
     unset): the distances it has room for (a room has no far), cover for hiding, far attacks lost
     among trees or walls (or, in the desert's heat haze, by everyone), elements it feeds or
@@ -260,7 +260,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     **actions** per distance, two to five by intellect grade (`slotLimit`: E 2, D 3, C 4, B+ 5):
     techniques, tools, Search, Dispel, Evade, Brace and Gather. Defences and footwork take no slot
     (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Counter or a
-    substitution; never stacked) that reacts on its own, and a plan may say where to **fight at**:
+    substitution; never stacked) that reacts on its own (a **spin**, a substitution that `spins`
+    like Palm Rotation, turns aside every hit and hold it meets for chakra each time (`spinCost`: less the finer
+    its user's control) instead of
+    swapping out of one a round, kept ready ahead of a plain swap; only illusions and an empty
+    tank get past it: `plan/footwork.ts`), and a plan may say where to **fight at**:
     the fighter steps towards it first (after an emergency slot), and a step still costs the turn
     (`plan/stepping.ts`) and leaves them unable to set a Guard or a Counter that exchange
     (`plan/steps.ts`). At mid and far a plan may **hold off** with kunai or a wounding
@@ -408,7 +412,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `engines/plan/swarm.ts`): techniques with a `swarmCost` spend insects (a fighter without a
     hive pays chakra alone), a swarm technique that reaches a foe leaves insects settled on them
     that draw their chakra into the host and keep them from hiding until they drop off or a
-    feared element burns them off, areas and feared elements kill insects in the host's hive,
+    feared element burns them off, areas and feared elements kill insects in the host's hive
+    (and foes and teammates reckon that in when they pick an attack and a target, `plan/worth.ts`,
+    `plan/targeting.ts`),
     a hive helps its host find the hidden, and `CombatOutcome.swarm` reports how many came home. Your
     hive is kept between fights (`systems/hives`, `GameState.hive`, `game/hives/`): a child of a
     clan with a `hive` (`ClanDef.hive`, a pack's `StrainDef`s) is born with one, giving it a
@@ -433,12 +439,21 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     weight, hold and draw graded 1 to 5, its gifts (cutting, blinding), its banes and the grounds
     it is drawn on; read once in `rules/dust.ts`, `engines/plan/dust.ts`): a technique's
     `dustCost` spends it and its `dustDraw` pulls it up first, in full on a ground that holds
-    it; heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
+    it; a dust attack arrives at the dust's own pace (`dustPace`), never its master's skill, so a
+    quick fighter slips it however strong its master; a little gathers back each exchange where the
+    ground holds it (`regathered`); heavy dust hits harder but arrives slower and helps a Guard, a firm hold grips pins
     harder, a bane scatters it, and `CombatOutcome.dust` reports what is left. Kinds are shared
     content (`content/shared/dusts.ts`, `DustDef`). An automatic shield is never dust's: it
-    belongs to where the power came from (a beast, a spirit). Your dust is kept between fights
+    belongs to where the power came from (a beast, a spirit), and reaches a fight as the
+    `shield` perk (`rules/shield.ts`, `plan/shield.ts`; an arsenal's `perks`, a foe's
+    `dust.shield`): dust rises on its own against a hit that would land, after the ready
+    defence, at a pace heavy dust slows, so a fast enough attacker outruns it; it keeps out what
+    it holds (a break half), paid in dust, stops a hold, seal or drain whole when it rises, and
+    never meets an illusion. Your dust is kept between fights
     (`systems/dusts`, `GameState.dust`, `game/dust/`): a child of a clan with a `dust`
-    (`ClanDef.dust`) is born with a full store, as much as their chakra can hold up; what came
+    (`ClanDef.dust`) is born with a full store, as much as their vessel holds (`DustDef.carried`,
+    or the clan's `vessel`; a fighter's `dustVessel`, a foe's `dust.vessel`), never their
+    chakra; what came
     back from a fight is what the store holds, and each day dust the ground gives (sand, ash)
     gathers back, quickly at home, while dust no ground gives (iron sand, gold, glass) never
     comes back on its own: it is made at home for materials and an afternoon (`makeDust`,
@@ -915,7 +930,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Anyone else who should teach on their own terms gets a `teacher` profile too. A favour price
   needs a conversation reply with that `favour` id (validated).
 - **Add a versus-only fighter (a duelist):** a `PersonDef` in the pack's `duelists`
-  (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi rank, no
+  (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi or genin
+  (as they stand at canon's start, unless deliberately changed), no
   schedule, no teaching, a `homeLocationId` for their village if it isn't the start one, and an
   `arsenal` (which may name `gearIds` and `tools`, carried into every fight, and `puppets`: a
   pack's `PuppetDef`s, bodies built rather than summoned, each unsealed by its own technique as a

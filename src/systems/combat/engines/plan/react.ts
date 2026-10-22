@@ -31,6 +31,8 @@ import { told, within, type Bank, type Moment } from './fresh';
 import { fighterIn, patch, say, type DefenceKind, type PlanFighter, type Round } from './state';
 import { confusedLine } from './sceneVoice';
 import { dustGuard } from './dust';
+import { shieldUp } from './shield';
+import { foundBlindSpot, throughBlindSpot } from './blindSpot';
 
 /** Foresight finds a Counter's moment more often. */
 const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
@@ -312,18 +314,25 @@ export function react(start: Round, struck: Hit): Round {
   const kept = decoyed.carried ?? 1;
   const hit = { ...struck, blow: { ...struck.blow, raw: raw * kept } };
   const { attacker, target, blow } = hit;
-  const ready = readyDefences(target, decoyed.round);
+  // An attack through the blind spot meets no ready defence (`blindSpot.ts`).
+  const blind = throughBlindSpot(decoyed.round, hit);
+  const ready = blind ? [] : readyDefences(target, decoyed.round);
   // A defence that comes into play gives itself away to everyone facing its owner.
   const band = decoyed.round.range;
-  const round = noteDefence(decoyed.round, target.id, band, shown(ready, blow, band));
+  const seen = blind ? foundBlindSpot(decoyed.round, attacker, target) : decoyed.round;
+  const round = noteDefence(seen, target.id, band, shown(ready, blow, band));
   const has: Ready = (kind) => ready.some((c) => c.kind === kind);
   const evasion = evade(round, hit, has);
   if (evasion.slipped) return evasion.slipped;
   const swap = throughSwap(round, ready, hit);
   if (swap.escaped) return swap.round;
-  const shielded = swap.round;
   const { guarded, smashed, lets } = guardOn(hit, has('guard'));
-  const force = Math.max(1, Math.round(kitted(shielded, attacker, target, blow) * lets));
+  const met = Math.max(1, Math.round(kitted(swap.round, attacker, target, blow) * lets));
+  // An automatic shield rises last, over whatever the ready defence did (`shield.ts`).
+  const breaking = { what, hit: hitTypeOf(blow), breaks: blow.breaks === true };
+  const shield = shieldUp(swap.round, { attacker, target, rng: hit.rng, ...breaking }, met);
+  if (shield.force <= 0) return shield.round;
+  const { round: shielded, force } = shield;
   const damage = taken(target, force);
   const told = say(
     shielded,
