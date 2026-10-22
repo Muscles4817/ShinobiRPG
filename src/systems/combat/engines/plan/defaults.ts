@@ -1,3 +1,5 @@
+import { threadsHeld } from '../../rules/puppets';
+import { unsealsPuppet, unsealsShell } from './puppets';
 import { canClimb, LADDER_TOP, type Verb } from '@/systems/techniques';
 
 import type { CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
@@ -173,6 +175,21 @@ function fitted(ordered: readonly Slot[], attack: Slot | undefined, limit: numbe
 }
 
 /**
+ * The summoning cards worth slotting: every puppet its master can work at once, or the one
+ * summon worth calling.
+ */
+function callsToMake(fighter: PlanFighter, summons: readonly Card[]): Card[] {
+  const of = (c: Card, is: typeof unsealsPuppet) => c.kind === 'jutsu' && is(fighter, c.technique);
+  // A shell they fight from inside comes out first.
+  const puppets = [
+    ...summons.filter((c) => of(c, unsealsShell)),
+    ...summons.filter((c) => of(c, unsealsPuppet) && !of(c, unsealsShell)),
+  ];
+  const worked = puppets.slice(0, threadsHeld(fighter.attributes));
+  return worked.length > 0 ? worked : summons.slice(0, 1);
+}
+
+/**
  * A sensible starting plan, in priority order: a heal for when you're badly hurt, a trump for
  * the last ditch (or first, against a far stronger foe), a sense, flash or Search for when a
  * foe hides, a summon to call, a field to set the ground (it plays only while none of yours is
@@ -206,8 +223,14 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
     ...(reaches ? trumpSlot(trumps, facing) : []),
     ...finding(best('sense'), search, facing),
-    // A summon is called first: it fights beside you from the next exchange (`summons.ts`).
-    ...plain(best('summon')),
+    // A summon is called first: it fights beside you from the next exchange (`summons.ts`), and
+    // a puppeteer unseals as many puppets as their threads can work.
+    ...plain(
+      callsToMake(
+        fighter,
+        strongest(pool, (t) => hasVerb(t, 'summon')),
+      ),
+    ),
     ...plain(best('field')),
     ...hold.early,
     // Readying (an empower, clones) is worth it anywhere: before a charge most of all.

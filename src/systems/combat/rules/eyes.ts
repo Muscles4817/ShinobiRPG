@@ -90,8 +90,14 @@ export interface Copier extends Eyed {
   readonly copied?: readonly string[];
 }
 
+/** A technique worked through something carried (sand, insects): the eyes see it, not the means. */
+function carriedMeans(t: CombatTechnique): boolean {
+  return (t.dustCost ?? 0) > 0 || (t.dustDraw ?? 0) > 0 || (t.swarmCost ?? 0) > 0;
+}
+
 function copyable(t: CombatTechnique, copier: Copier): boolean {
   if (!isHarmful(t) || t.oncePerFight || t.combo || t.needsOpen || t.clan) return false;
+  if (carriedMeans(t)) return false;
   const nature = t.needs?.nature;
   return nature === undefined || nature === copier.nature;
 }

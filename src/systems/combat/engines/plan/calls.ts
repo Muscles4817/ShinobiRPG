@@ -11,6 +11,8 @@ export interface Caller {
   readonly summonsOut?: readonly string[];
   /** How each summon called this fight ended its part, by call id (the last call of each). */
   readonly summonFates?: Readonly<Record<string, SummonFate>>;
+  /** A hard hit made their puppets' threads slip, until their next turn (`puppets.ts`). */
+  readonly threadsSlipped?: boolean;
 }
 
 /** The call a technique's `summon` effect names, if it has one. */
@@ -34,4 +36,6 @@ export interface Summoned {
   readonly upkeep?: number;
   /** A puppet on its maker's threads rather than a summon. */
   readonly puppet?: true;
+  /** A puppet its maker fights from inside, taking the blows aimed at them (`puppets.ts`). */
+  readonly worn?: true;
 }

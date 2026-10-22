@@ -76,9 +76,11 @@ export function dodgesHere(round: Round, target: PlanFighter): boolean {
 
 /** The chance this attack doesn't reach its target. */
 export function avoidOdds(round: Round, incoming: Incoming): number {
-  // Eyes that see everything see an illusion for what it is (`rules/eyes.ts`).
+  // Eyes that see everything see an illusion for what it is (`rules/eyes.ts`), and a puppet
   const illusion = incoming.discipline === 'genjutsu';
-  return illusion && seesThroughIllusions(incoming.target) ? 1 : avoidRoll(round, incoming);
+  // has no mind to fool (`rules/puppets.ts`).
+  const unfooled = seesThroughIllusions(incoming.target) || incoming.target.puppet === true;
+  return illusion && unfooled ? 1 : avoidRoll(round, incoming);
 }
 
 function avoidRoll(round: Round, incoming: Incoming): number {

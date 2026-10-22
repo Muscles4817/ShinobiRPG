@@ -938,7 +938,7 @@ Each step proves one property and is its own PR.
 3. **Summons and contracts:** called bodies, the `summon` verb, chakra upkeep, one huge or
    many small, the signed path.
 4. **Swarms:** pools, kinds, swarm costs, area and fire against them, the born path for hosts.
-5. **Puppetry** (planning discussion first): a discipline or not, driven bodies, strings and
+5. **Puppetry** (5a built, Part 5; 5b the workshop next): a discipline or not, driven bodies, strings and
    attention, design and the workshop, the taught path.
 6. **Shared mind and the taken path:** pooled reads, a hidden controller, revival, the arc.
 7. **The original pack's equivalents** (planning discussion first). Until then each PR ships
@@ -1375,3 +1375,36 @@ and its genes, its skills with training**, and every kind has its own ceiling.
   brood and naming on the hive card.
 - **Saves:** the new fields on the hive are optional, so no migration is needed.
 - **Later:** foreign markets selling rarer strains, and silk and shell.
+
+### Step 5a: driven bodies
+
+Decided in the puppetry discussion: puppetry is not a discipline. It is ninjutsu run on chakra
+threads, and chakra control runs it. A puppet can do more than kenjutsu: what it does depends on
+how it was built.
+
+- **The frame and the hands** (`rules/puppets.ts`). A puppet's stats are its frame: its body,
+  and how far it was built to go in each art. Hidden blades are kenjutsu; seals fitted into it
+  give a little ninjutsu or genjutsu; a human puppet keeps the art it had in life, which is how
+  Sasori reaches S-rank ninjutsu. Its master works each art and its speed only as far as their
+  chakra control allows (`drivenAttributes`), and it sees, judges and stands firm by their mind.
+  It keeps its own turn, so two puppets are three bodies acting.
+- **Attention.** Chakra control sets how many puppets are up at once (`threadsHeld`): one to C,
+  two at B, three at A, four at S. A technique that raises it (Chiyo's ten) is for later. While
+  any are up, the master makes no hand signs but the scrolls and the threads (`handsOnThreads`).
+  A default plan unseals as many as the threads can work, a shell first.
+- **Cutting the strings** (`plan/puppets.ts`). A master dazed, pinned or sealed leaves their
+  puppets hanging slack: no turn and no defence. A hit that takes a quarter of their health makes
+  the threads slip until the master's next turn. Insects that land on a puppet climb its threads
+  to its master and drain the chakra that keeps them up. A puppet has no mind for an illusion
+  to fool. Foes value a master for the harm their puppets do (`plan/targeting.ts`).
+- **The shell.** A `worn` puppet (Hiruko) is fought from inside: blows aimed at its master go
+  into it while it stands. An area or an illusion still reaches the master.
+- **Fixed alongside:** mimicry no longer copies a technique worked through something carried
+  (sand, insects), so a Sharingan can't throw iron sand it doesn't have.
+- **Bench** (40 seeds; probe, not committed). Kankurō wins every fight against the rookies
+  straight out of the academy (Shino, Naruto, Sasuke, Kiba) and against Neji. Gentle Fist only
+  glances off wood, and Neji's close blows can't reach past Crow to the back row. He loses to
+  Lee 85% of the time (speed takes Crow apart) and to Kakashi always. With Hiruko as his shell,
+  Sasori beats Kakashi every time, where he lost 85% of fights in the open, and Guy 42% of the
+  time. Chiyo, with only Father and Mother, still loses to Kakashi (85%) and Guy (100%).
+- **Left for 5b:** learning puppetry, the workshop, building, repair and owning a puppet.

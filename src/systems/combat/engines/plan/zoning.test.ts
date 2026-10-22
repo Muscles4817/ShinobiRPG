@@ -97,7 +97,7 @@ describe('holding a foe off', () => {
   it('on the move, a fighter can’t set a Guard, but a Dodge still works', () => {
     const moved = stepIn(atMid(['caster']), 1);
     const hero = moved.fighters.find((f) => f.id === 'hero')!;
-    const at = { range: moved.range, number: moved.number };
+    const at = { range: moved.range, number: moved.number, fighters: moved.fighters };
     const guarding = { ...hero, reactions: { close: 'guard', mid: 'guard', far: 'guard' } };
     const dodging = { ...hero, reactions: { close: 'dodge', mid: 'dodge', far: 'dodge' } };
     expect(readyDefences(guarding, at)).toEqual([]);

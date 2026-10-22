@@ -405,7 +405,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`breakContract`) frees you to sign another, and its clan never takes you back
     (`GameState.brokenContracts`). Foes summon too (`EnemyDef.summons`, from a contract of the
     pack, with a `tell` read like a retinue's: `summonsSeen`). Nothing is locked by rank: the
-    price is the lock. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
+    price is the lock. **Puppets** are called like summons (`PersonArsenal.puppets`,
+    `game/puppets.ts`) but **driven** (`rules/puppets.ts`, `plan/puppets.ts`): the frame brings
+    its body and how far it was built to go in each art (blades, seals fitted for a little
+    ninjutsu or genjutsu, a human puppet's art kept from life), and its master the rest: each art
+    and its speed only as far as their chakra control works the threads, and their mind. Control
+    sets how many puppets are up at once (`threadsHeld`), and while any are, the master's hands
+    make no hand signs but the scrolls and the threads. A master dazed, pinned, sealed or hit for
+    a quarter of their health leaves their puppets slack (no turn, no defence); insects that
+    land on a puppet climb its threads to its master; a puppet has no mind for an illusion; a
+    `worn` puppet (a shell) takes the blows aimed at its master while it stands, though an area
+    or an illusion still reaches them. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
     `swarmContract.ts`: a strain's qualities graded 1 to 5 (speed, bite, toughness, brood, size,
     senses), its species' gifts 1 to 3 (chakra drain, camouflage, glow, blinding, venom) and
     what it fears, a count and a cap; each read once in `rules/swarms.ts`,

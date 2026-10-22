@@ -1,4 +1,5 @@
 import { alive } from '../../rules/body';
+import { drivenAttributes } from '../../rules/puppets';
 import { harmLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
 import type { CombatCall, SummonFate } from '../../contract';
@@ -40,7 +41,11 @@ function summoned(round: Round, caller: Fighter, call: CombatCall): Fighter {
     summoner: caller.id,
     callId: call.id,
     upkeep: call.upkeep,
-    ...(call.puppet ? { puppet: true as const } : {}),
+    // A puppet moves and strikes with its master's hands and sees by their eyes.
+    ...(call.puppet
+      ? { puppet: true as const, attributes: drivenAttributes(body.attributes, caller.attributes) }
+      : {}),
+    ...(call.worn ? { worn: true as const } : {}),
   };
   // Its plan is made as the exchange ends, before its first turn (`summonPlans.ts`).
   return fighter;
