@@ -3,6 +3,7 @@ import { RANGE_BANDS } from '../../rules/range';
 import { spins } from '../../rules/verbs';
 import { cardId, findCard, fitsBand, isReaction, reactionsFor, type Card } from './cards';
 import { isDazed } from './daze';
+import { hangsSlack } from './puppets';
 import type { CardId, PlanFighter, Reactions, Round } from './state';
 
 export type { Reactions } from './state';
@@ -76,10 +77,13 @@ export function cleanReactions(fighter: Ready, reactions: Reactions): Reactions 
  * dodge, counter or swap out; on the move (they stepped this exchange), a Guard or a Counter
  * can't be set, though a Dodge or a swap still works.
  */
-export function readyDefences(target: PlanFighter, round: Pick<Round, 'range' | 'number'>): Card[] {
+export function readyDefences(
+  target: PlanFighter,
+  round: Pick<Round, 'range' | 'number' | 'fighters'>,
+): Card[] {
   const kept = reactionAt(target, round.range);
-  // Hands on a channelled hold leave none for a defence.
-  if (!kept || target.holding) return [];
+  // Hands on a channelled hold leave none for a defence, and slack threads none for a puppet.
+  if (!kept || target.holding || hangsSlack(round, target)) return [];
   // Reeling, or gathering their strength, only a Guard still comes up (`gather.ts`).
   if ((isDazed(target) || target.gathering === true) && kept.kind !== 'guard') return [];
   const stance = kept.kind === 'guard' || kept.kind === 'counter';

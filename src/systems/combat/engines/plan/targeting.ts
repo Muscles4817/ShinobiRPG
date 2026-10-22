@@ -8,7 +8,8 @@ import { hiveToll } from './swarm';
  * A frail foe who hits hard goes first; a tough one who barely scratches anyone, last. The
  * estimate reads the same gap formula the fight uses (`rules/damage.ts`), from the better of a
  * plain blow and the fighter's best art. A hive host is worth more to someone who carries what
- * kills insects (an area, an element the strain fears): their hive is their arsenal.
+ * kills insects (an area, an element the strain fears): their hive is their arsenal. A
+ * puppeteer does their harm through their puppets, and their fall leaves every one of them slack.
  */
 
 /** How much more a host is worth for each share of their hive the fighter's best technique would kill. */
@@ -27,10 +28,20 @@ function hiveLift(self: PlanFighter, foe: PlanFighter): number {
   return 1 + toll * HIVE_TARGET_WEIGHT;
 }
 
+/** The harm a foe does, with what their puppets among the others do on their threads. */
+function harmOf(self: PlanFighter, foe: PlanFighter, others: readonly PlanFighter[]): number {
+  const puppets = others.filter((p) => p.puppet === true && p.summoner === foe.id);
+  return puppets.reduce((sum, p) => sum + hitOn(p, self), hitOn(foe, self));
+}
+
 /** How much a foe is worth going for: the harm they do, over the hits they'd take to fall. */
-export function targetWorth(self: PlanFighter, foe: PlanFighter): number {
+export function targetWorth(
+  self: PlanFighter,
+  foe: PlanFighter,
+  others: readonly PlanFighter[] = [],
+): number {
   const hitsToFall = Math.max(1, foe.health / hitOn(self, foe));
-  return (hitOn(foe, self) / hitsToFall) * hiveLift(self, foe);
+  return (harmOf(self, foe, others) / hitsToFall) * hiveLift(self, foe);
 }
 
 /** The foe most worth going for, if any. */
@@ -38,5 +49,6 @@ export function bestTarget(
   self: PlanFighter,
   foes: readonly PlanFighter[],
 ): PlanFighter | undefined {
-  return [...foes].sort((a, b) => targetWorth(self, b) - targetWorth(self, a))[0];
+  const worth = (f: PlanFighter): number => targetWorth(self, f, foes);
+  return [...foes].sort((a, b) => worth(b) - worth(a))[0];
 }

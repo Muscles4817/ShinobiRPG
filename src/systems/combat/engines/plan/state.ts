@@ -347,6 +347,7 @@ export function patch(
       | 'breath'
       | 'committed'
       | 'gathering'
+      | 'threadsSlipped'
     >
   >,
 ): PlanFighter[] {

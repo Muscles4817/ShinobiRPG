@@ -34,7 +34,13 @@ function puppetBody(puppet: PuppetDef, ctx: GameContext): CombatantSetup {
 }
 
 function puppetCall(puppet: PuppetDef, ctx: GameContext): CombatCall {
-  return { id: puppet.id, body: puppetBody(puppet, ctx), upkeep: puppet.upkeep, puppet: true };
+  return {
+    id: puppet.id,
+    body: puppetBody(puppet, ctx),
+    upkeep: puppet.upkeep,
+    puppet: true,
+    ...(puppet.worn ? { worn: true as const } : {}),
+  };
 }
 
 /** A fighter with these puppets on their threads: the unsealing techniques and the calls. */

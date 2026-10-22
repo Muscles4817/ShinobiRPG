@@ -30,6 +30,11 @@ const WEAPON_ART_SHAPES: readonly WeaponShape[] = ['blade', 'blunt'];
 const CLEAR_OF_REACH = 1.3;
 /** Arts cast with hand signs, which a drawn blade gets in the way of. */
 const SIGNED_ARTS: readonly Discipline[] = ['ninjutsu', 'genjutsu', 'fuuinjutsu'];
+
+/** Whether an art is cast with hand signs, which need both hands free. */
+export function isSigned(discipline: Discipline): boolean {
+  return SIGNED_ARTS.includes(discipline);
+}
 /** With hands full, a signed technique arrives this much as fast… */
 export const HANDS_FULL_ARRIVAL = 0.85;
 /** …and is read this much more easily. */
@@ -108,5 +113,5 @@ export function counterSkill(defender: Armed): number {
 
 /** A technique cast with hands full: a signed art, a weapon drawn, short of far. */
 export function handsFull(caster: Armed, discipline: Discipline, band: RangeBand): boolean {
-  return band !== 'far' && SIGNED_ARTS.includes(discipline) && weaponInHand(caster);
+  return band !== 'far' && isSigned(discipline) && weaponInHand(caster);
 }

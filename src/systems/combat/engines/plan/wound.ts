@@ -1,6 +1,8 @@
 import { shouldFlee } from '../../rules/kit';
 import { felled } from './falls';
 import { breakHold } from './holding';
+import { puppetsUp } from './puppets';
+import { threadsSlip } from '../../rules/puppets';
 import { popLine, shadowsGone } from './shadows';
 import { fighterIn, patch, say, type Round } from './state';
 import { tell } from '../../rules/telling';
@@ -29,7 +31,12 @@ export function wound(round: Round, id: string, damage: number): Round {
   const hurt = { ...struck, health: Math.max(0, struck.health - damage) };
   // Hurting someone holding a channelled pin breaks it (`holding.ts`).
   const held = damage > 0 && struck.holding ? breakHold(round, id) : round;
-  const fighters = patch(held.fighters, id, { health: hurt.health });
+  // A hard hit makes a puppeteer's threads slip (`puppets.ts`).
+  const slipped = puppetsUp(struck) > 0 && threadsSlip(damage, struck.maxHealth);
+  const fighters = patch(held.fighters, id, {
+    health: hurt.health,
+    ...(slipped ? { threadsSlipped: true } : {}),
+  });
   if (!shouldFlee(hurt)) {
     const after = { ...held, fighters };
     return hurt.health <= 0 && struck.health > 0

@@ -14,6 +14,7 @@ import { strike } from './arms';
 import { charge, step, type Charged } from './steps';
 import { keepHolding } from './holding';
 import { lostTurn } from './lostTurn';
+import { threadsRetaken } from './puppets';
 import { inCover, lostToGround } from './groundPlay';
 import { momentOf, SCENE_MEMORY } from './fresh';
 import { cardId, isOffence, needsAim, type Card } from './cards';
@@ -232,7 +233,7 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   }
   // Last turn's Evade or Brace holds until now (`commitment.ts`).
   const sprung = springTraps(
-    startOfTurn(released(start, actorId), before, rng),
+    startOfTurn(threadsRetaken(released(start, actorId), actorId), before, rng),
     actorId,
     rng,
     false,

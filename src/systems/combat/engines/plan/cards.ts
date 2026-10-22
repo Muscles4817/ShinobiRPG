@@ -4,6 +4,7 @@ import { canCommit } from './commitment';
 import { canGather } from './gather';
 import { hasInsectsFor } from './swarm';
 import { hasDustFor } from './dust';
+import { threadsForbid } from './puppets';
 import { statTier, type StatGrade } from '@/systems/stats';
 
 import type { CombatItem, CombatTechnique, RangeBand } from '../../contract';
@@ -246,7 +247,7 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
   if (trumpSpent(fighter, card.technique) || !isOpenFor(fighter, card.technique)) return false;
-  if (!canCall(fighter, card.technique)) return false;
+  if (!canCall(fighter, card.technique) || threadsForbid(fighter, card.technique)) return false;
   if (!hasInsectsFor(fighter, card.technique)) return false;
   if (!hasDustFor(fighter, card.technique)) return false;
   return affords(fighter, card.technique);
