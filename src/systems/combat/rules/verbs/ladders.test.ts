@@ -1,6 +1,15 @@
 import type { CombatAttributes, CombatTechnique } from '../../contract';
 import { empower, empowerEnds } from './empower';
-import { canOpen, givesOut, isOpenFor, openStep, stepShare, worthOpening } from './ladders';
+import {
+  canOpen,
+  givesOut,
+  isOpenFor,
+  lastsOpen,
+  openStep,
+  stepBand,
+  stepShare,
+  worthOpening,
+} from './ladders';
 import type { EffectUse } from './use';
 
 const attributes: CombatAttributes = {
@@ -23,7 +32,6 @@ function gate(step: number): EffectUse<'empower'> {
     verb: 'empower' as const,
     power: 10,
     boosts: ['speed' as const],
-    healthPerExchange: 4,
     opens: { ladder: 'gates' as const, step },
   };
   const technique: CombatTechnique = {
@@ -36,7 +44,7 @@ function gate(step: number): EffectUse<'empower'> {
   return { technique, effect };
 }
 
-const fighter = { attributes, maxChakra: 100, health: 100 };
+const fighter = { attributes, maxChakra: 100, health: 100, maxHealth: 100 };
 
 describe('ladders in a fight', () => {
   it('lifts the stats more with each step, the deep ones beyond any limit', () => {
@@ -68,17 +76,37 @@ describe('ladders in a fight', () => {
     ).toBe(true);
   });
 
-  it('opens the deep steps only when the fight calls for it, the last only in the last ditch', () => {
-    const calm = { outmatched: false, hurt: false, lastDitch: false };
-    expect(worthOpening(3, calm)).toBe(true);
-    expect(worthOpening(7, calm)).toBe(false);
-    expect(worthOpening(7, { ...calm, outmatched: true })).toBe(true);
-    expect(worthOpening(8, { ...calm, outmatched: true })).toBe(false);
+  it('opens a step only when the fight calls for it, deeper bands for more, the last only in the last ditch', () => {
+    const calm = { losing: false, cantHurt: false, hurt: false, lastDitch: false, settled: true };
+    expect(worthOpening(3, calm)).toBe(false);
+    expect(worthOpening(3, { ...calm, losing: true })).toBe(true);
+    expect(worthOpening(6, { ...calm, losing: true })).toBe(false);
+    expect(worthOpening(6, { ...calm, losing: true, hurt: true })).toBe(true);
+    expect(worthOpening(7, { ...calm, losing: true, hurt: true })).toBe(false);
+    expect(worthOpening(7, { ...calm, cantHurt: true })).toBe(true);
+    expect(worthOpening(7, { ...calm, losing: true, lastDitch: true })).toBe(true);
+    expect(worthOpening(8, { ...calm, cantHurt: true })).toBe(false);
     expect(worthOpening(8, { ...calm, lastDitch: true })).toBe(true);
+    const fresh = { ...calm, cantHurt: true, settled: false };
+    expect(worthOpening(3, fresh)).toBe(true);
+    expect(worthOpening(6, fresh)).toBe(false);
+    expect(worthOpening(6, { ...fresh, lastDitch: true })).toBe(true);
   });
 
-  it('gives out once its price has worn the body down', () => {
-    expect(givesOut(10, 100)).toBe(true);
-    expect(givesOut(40, 100)).toBe(false);
+  it('climbs in bands: the first three gates, the fourth to sixth, the seventh, the last', () => {
+    expect([1, 3, 4, 6, 7, 8].map(stepBand)).toEqual([1, 1, 2, 2, 3, 4]);
+  });
+
+  it('opens a step only with health enough to hold it a couple of exchanges', () => {
+    const gate7 = { ladder: 'gates' as const, step: 7 };
+    expect(lastsOpen({ health: 80, maxHealth: 100 }, gate7)).toBe(true);
+    expect(lastsOpen({ health: 40, maxHealth: 100 }, gate7)).toBe(false);
+    expect(lastsOpen({ health: 15, maxHealth: 100 }, { ladder: 'gates', step: 3 })).toBe(true);
+  });
+
+  it('gives out once its price has worn the body down, or the wind is gone', () => {
+    expect(givesOut({ health: 10, maxHealth: 100, breath: 20 })).toBe(true);
+    expect(givesOut({ health: 40, maxHealth: 100, breath: 0 })).toBe(true);
+    expect(givesOut({ health: 40, maxHealth: 100, breath: 20 })).toBe(false);
   });
 });

@@ -92,29 +92,31 @@ function armsWords(kind: 'strike' | 'throw', { gear }: Armed): Words {
   return { label: 'Strike', detail: 'Attack, no chakra' };
 }
 
+/** Cards named by their kind alone. */
+type Plainly = Exclude<Card['kind'], 'strike' | 'throw' | 'step' | 'jutsu' | 'item'>;
+const PLAIN_LABELS: Readonly<Record<Plainly, string>> = {
+  guard: 'Guard',
+  dodge: 'Dodge',
+  counter: 'Counter',
+  evade: 'Evade',
+  brace: 'Brace',
+  search: 'Search',
+  gather: 'Gather',
+  dispel: 'Dispel',
+};
+
+function namedPlainly(card: Card): card is Extract<Card, { kind: Plainly }> {
+  return card.kind in PLAIN_LABELS;
+}
+
 export function cardLabel(card: Card, fighter: Armed): string {
+  if (namedPlainly(card)) return PLAIN_LABELS[card.kind];
   switch (card.kind) {
     case 'strike':
     case 'throw':
       return armsWords(card.kind, fighter).label;
     case 'step':
       return card.direction === 'in' ? 'Close in' : 'Back off';
-    case 'guard':
-      return 'Guard';
-    case 'dodge':
-      return 'Dodge';
-    case 'counter':
-      return 'Counter';
-    case 'evade':
-      return 'Evade';
-    case 'brace':
-      return 'Brace';
-    case 'search':
-      return 'Search';
-    case 'gather':
-      return 'Gather';
-    case 'dispel':
-      return 'Dispel';
     case 'jutsu':
       return card.technique.name;
     case 'item':

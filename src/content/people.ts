@@ -132,6 +132,11 @@ export interface PersonDef {
 export interface PersonArsenal {
   readonly techniqueIds: readonly string[];
   readonly perks?: readonly CombatPerk[];
+  /**
+   * Perks they keep covered until a fight calls for them (a transplanted eye under a headband):
+   * uncovered as a turn, and a drain on chakra while open (`CombatantSetup.veiled`).
+   */
+  readonly veiled?: readonly CombatPerk[];
   /** The pack's gear they fight in, a piece per slot (validated). Left out, armed as their kit. */
   readonly gearIds?: readonly string[];
   /** The pack's fight tools they carry into every fight, by id, and how many. */

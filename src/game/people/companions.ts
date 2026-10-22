@@ -128,12 +128,20 @@ function bloodlinePerks(clan: ClanDef | undefined): CombatPerk[] {
 
 /**
  * A person's perks in a fight: their arsenal's, their clan's awakened bloodline (a Byakugan
- * sees), and walking on water and trees by rank.
+ * sees), and walking on water and trees by rank; and any they keep covered until the fight calls
+ * for them.
  */
-function perksOf(person: PersonDef, clan: ClanDef | undefined): Pick<CombatantSetup, 'perks'> {
+function perksOf(
+  person: PersonDef,
+  clan: ClanDef | undefined,
+): Pick<CombatantSetup, 'perks' | 'veiled'> {
   const owned = [...(person.arsenal?.perks ?? []), ...bloodlinePerks(clan)];
   const perks = [...new Set([...owned, ...walkingByRank(person.rank)])];
-  return perks.length > 0 ? { perks } : {};
+  const veiled = person.arsenal?.veiled ?? [];
+  return {
+    ...(perks.length > 0 ? { perks } : {}),
+    ...(veiled.length > 0 ? { veiled } : {}),
+  };
 }
 
 /**

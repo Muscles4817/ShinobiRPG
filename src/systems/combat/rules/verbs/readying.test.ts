@@ -63,7 +63,7 @@ const shades: CombatTechnique = {
 const shadeUse = { technique: shades, effect: shadeEffect };
 
 describe('empower', () => {
-  const fighter = { attributes: stats(10), maxChakra: 60, health: 100 };
+  const fighter = { attributes: stats(10), maxChakra: 60, health: 100, maxHealth: 100 };
 
   it('raises only the boosted stats, more in skilled hands', () => {
     const { attributes } = empower(fighter, surgeUse, { drive: 10, exchange: 1 });

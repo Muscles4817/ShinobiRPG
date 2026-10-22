@@ -45,6 +45,17 @@ const READ_MIN = 0.75;
 const READ_MAX = 1.6;
 /** However sharp the defender, some attacks still land. */
 export const AVOID_MAX = 0.75;
+/**
+ * Eyes that see movement before it comes (`foresight`, an eye uncovered) slip up to this much of
+ * what comes at them, and this much committed to Evade: still never all of it.
+ */
+export const SEEING_AVOID_MAX = 0.85;
+export const SEEING_EVADE_MAX = 0.95;
+/**
+ * Such eyes see a blow coming soon enough to meet one this much faster before it outpaces them
+ * (`pace.ts`): past that, the body still can't keep up.
+ */
+export const SEEING_PACE = 1.25;
 /** A condition fails to take hold of an equal half this often, and never more often than this. */
 const CONDITION_TOP = 0.25;
 const CONDITION_FLOOR = 0.1;
@@ -99,6 +110,8 @@ export interface AvoidRoll {
   readonly bonus?: number;
   readonly accuracy?: Accuracy;
   readonly areaSize?: AreaSize;
+  /** The defender's eyes see it coming (`foresight`): a perfect read for Evade, a higher ceiling. */
+  readonly seesAll?: boolean;
 }
 
 /** The chance an attack doesn't reach its target at all. */
@@ -106,16 +119,25 @@ export function avoidChance(roll: AvoidRoll): number {
   const gap = Math.log(gapRatio(roll.rating, roll.arrival));
   const base = AVOID_TOP * logistic(gap * AVOID_STEEPNESS);
   const evading = roll.evading === true;
-  const lift = evading ? EVADE_STANCE[roll.form] * evadeFocus(roll.read, roll.threat) : 0;
+  const seesAll = roll.seesAll === true;
+  // Eyes that see it coming read every attack clearly: Evade goes where it matters.
+  const focusRead = seesAll ? Infinity : roll.read;
+  const lift = evading ? EVADE_STANCE[roll.form] * evadeFocus(focusRead, roll.threat) : 0;
   const stance = STANCE[roll.form][roll.dodging ? 'dodging' : 'open'] + lift;
   const area = roll.areaSize ? AREA_RULES[roll.areaSize].dodge : 1;
   const chance = base * stance * roll.read + (roll.bonus ?? 0);
-  const pace = roll.paceSpeed === undefined ? 1 : paceLeft(roll.paceSpeed, roll.rating);
-  return Math.min(avoidCeiling(evading), slipChance(chance, roll.accuracy)) * area * pace;
+  const keepsUp = roll.rating * (seesAll ? SEEING_PACE : 1);
+  const pace = roll.paceSpeed === undefined ? 1 : paceLeft(roll.paceSpeed, keepsUp);
+  const ceiling = avoidCeiling(evading, seesAll);
+  return Math.min(ceiling, slipChance(chance, roll.accuracy)) * area * pace;
 }
 
-/** The most of what comes at them a defender can slip: more for one committed to it. */
-export function avoidCeiling(evading: boolean): number {
+/**
+ * The most of what comes at them a defender can slip: more for one committed to it, and more
+ * again for eyes that see it coming.
+ */
+export function avoidCeiling(evading: boolean, seesAll = false): number {
+  if (seesAll) return evading ? SEEING_EVADE_MAX : SEEING_AVOID_MAX;
   return evading ? EVADE_MAX : AVOID_MAX;
 }
 

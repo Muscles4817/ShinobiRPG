@@ -10,7 +10,7 @@ import {
   tellRating,
   type AttackForm,
 } from '../../rules/avoidance';
-import { FORESIGHT_SEES, FORESIGHT_SLIP, foreseen } from '../../rules/eyes';
+import { FORESIGHT_SEES, FORESIGHT_SEES_THROUGH, FORESIGHT_SLIP, foreseen } from '../../rules/eyes';
 import { familiarScale } from '../../rules/familiarity';
 import { handsFull, HANDS_FULL_ARRIVAL, HANDS_FULL_READ } from '../../rules/blades';
 import { footingOf } from '../../rules/ground';
@@ -35,7 +35,10 @@ import { settledSlips, swarmSlips } from './swarm';
 import { blindedSlips, dustArrival } from './dust';
 import type { PlanFighter, Round } from './state';
 import { sizeSlips } from '../../rules/size';
+import { hasPerk } from '../../rules/body';
 import { techniqueDamage } from '../../rules/damage';
+import { strikesToKill, type KillingMoment } from '../../rules/lethal';
+import { isOpen } from './finishers';
 import { seesThroughIllusions } from '../../rules/eyes';
 
 /**
@@ -67,11 +70,19 @@ export interface Incoming {
   readonly threat?: number;
   /** The attacker's speed behind a body's attack, which may outpace the target (`pace.ts`). */
   readonly paceSpeed?: number;
+  /** A killing blow on a target who can't meet it (`rules/lethal.ts`): nothing slips it. */
+  readonly sure?: boolean;
 }
 
 /** A Dodge is the target's ready defence here. */
 export function dodgesHere(round: Round, target: PlanFighter): boolean {
   return readyDefences(target, round).some((c) => c.kind === 'dodge');
+}
+
+/** How much foresight lifts the slip: a blow, a technique, an illusion most of all. */
+function foresightScale({ form, discipline }: Incoming): number {
+  if (form !== 'technique') return FORESIGHT_SLIP;
+  return discipline === 'genjutsu' ? FORESIGHT_SEES_THROUGH : FORESIGHT_SEES;
 }
 
 /** The chance this attack doesn't reach its target. */
@@ -84,12 +95,14 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
 function avoidRoll(round: Round, incoming: Incoming): number {
   const { attacker, form } = incoming;
   const target = dulled(round.field, incoming.target);
-  if (isDazed(target)) return 0;
+  if (isDazed(target) || incoming.sure === true) return 0;
   const dodging = dodgesHere(round, target);
   const evading = committedTo(target, 'evade');
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE * (dodging ? 1 : SWIFT_INSTINCT) : 0;
   const read = readScale(readRating(target), tellRating(attacker, incoming.skill), form);
+  const seesAll = hasPerk(target, 'foresight');
   const chance = avoidChance({
+    seesAll,
     form,
     rating: avoidRating(target, incoming.discipline),
     arrival: form === 'technique' ? incoming.skill : attacker.attributes.speed,
@@ -115,8 +128,8 @@ function avoidRoll(round: Round, incoming: Incoming): number {
     (isPinned(target) ? PIN_SLIP : 1) *
     footingOf(round.ground, target) *
     sizeSlips(target);
-  const scale = form === 'technique' ? FORESIGHT_SEES : FORESIGHT_SLIP;
-  return foreseen(held, target, { scale, ceiling: avoidCeiling(evading) });
+  const scale = foresightScale(incoming);
+  return foreseen(held, target, { scale, ceiling: avoidCeiling(evading, seesAll) });
 }
 
 /** Share of the target's health a technique's wounding effects would take, mid-roll. */
@@ -159,7 +172,13 @@ export function techniqueIncoming(
     ...(t.swarmCost ? { swarm: swarmSlips(attacker, t) } : {}),
     threat: threatOf(attacker, target, t),
     ...(body ? { paceSpeed: attacker.attributes.speed } : {}),
+    ...(strikesToKill(t, killingMoment(attacker, target)) ? { sure: true } : {}),
   };
+}
+
+/** Whether a target can meet a killing blow: they see its user, and can move. */
+export function killingMoment(attacker: PlanFighter, target: PlanFighter): KillingMoment {
+  return { unseen: attacker.hidden, open: isOpen(target) };
 }
 
 /**

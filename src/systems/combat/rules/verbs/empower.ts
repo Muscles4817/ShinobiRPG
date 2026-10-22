@@ -1,15 +1,17 @@
 import { clamp, round1 } from '@/core';
-import type { LadderStep } from '@/systems/techniques';
+import type { LadderId, LadderStep } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatCost, CombatTechnique } from '../../contract';
 import { stepShare } from './ladders';
+import { stepHealthPrice } from './tolls';
 import type { EffectUse } from './use';
 
 /**
  * Empower: a self-buff for a few exchanges, with a price (the Gates are the reference). How much
  * it raises the boosted stats comes from its power and the user's art; how long it holds from
  * their reserves (through max chakra, which derives from them); the body pays health
- * each exchange, eased by willpower, and some empowers leave a cost due after the fight. Engines
+ * each exchange, eased by willpower (a ladder's step pays its toll instead, `tolls.ts`), and some
+ * empowers leave a cost due after the fight. Engines
  * raise the stats themselves while it holds, so every rule that reads a stat sees it.
  */
 
@@ -38,6 +40,8 @@ export interface Empowerment {
   readonly until?: number;
   /** The ladder step it opened (a gate), when it is a ladder's. */
   readonly opened?: LadderStep;
+  /** The exchange a ladder's step opened in: a deeper one waits until it has been fought with. */
+  readonly since?: number;
   /** Health paid at the end of each exchange it holds. */
   readonly healthPerExchange: number;
   /** Size steps it makes its user bigger while it holds (`rules/size.ts`). */
@@ -49,12 +53,15 @@ export interface EmpowerMemory {
   readonly empowered?: Empowerment;
   /** Techniques used whose empower leaves a cost after the fight, once per use. */
   readonly empowersUsed?: readonly string[];
+  /** Ladders that gave out this fight: a spent body can't force them open again. */
+  readonly laddersShut?: readonly LadderId[];
 }
 
 interface Empowerable extends EmpowerMemory {
   readonly attributes: CombatAttributes;
   readonly maxChakra: number;
   readonly health: number;
+  readonly maxHealth: number;
 }
 
 /** The share of each boosted stat an empower adds, from its power and the user's drive. */
@@ -107,8 +114,13 @@ export function empower(
   const empowered: Empowerment = {
     techniqueId: use.technique.id,
     added,
-    ...(opens ? { opened: opens } : { until: exchange + empowerExchanges(fighter.maxChakra) }),
-    healthPerExchange: empowerPrice(fighter.attributes.willpower, use),
+    ...(opens
+      ? { opened: opens, since: exchange }
+      : { until: exchange + empowerExchanges(fighter.maxChakra) }),
+    // A ladder's step is priced by its toll (`tolls.ts`), the same for every body that opens it.
+    healthPerExchange: opens
+      ? stepHealthPrice(opens, fighter.maxHealth)
+      : empowerPrice(fighter.attributes.willpower, use),
     ...(use.effect.grows ? { grows: use.effect.grows } : {}),
   };
   const attributes = addTo(base, added, 1);

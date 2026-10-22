@@ -107,6 +107,7 @@ export { RANGE_BANDS, RANGE_LABEL, reachOf } from './rules/range';
 export { GROUND_RULES, type GroundRule } from './rules/ground';
 export { potencyOf as fieldPotencyOf } from './rules/verbs/field';
 export { AFFLICT_EXCHANGES } from './rules/verbs/lingering';
+export { stepToll, type StepToll } from './rules/verbs/tolls';
 export type {
   Narration,
   NarrationAmount,

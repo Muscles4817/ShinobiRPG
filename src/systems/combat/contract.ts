@@ -54,6 +54,8 @@ export type CombatTechnique = Pick<
   | 'reach'
   | 'accuracy'
   | 'needsOpen'
+  | 'needsTarget'
+  | 'lethal'
   | 'moulded'
   | 'clan'
 > & {
@@ -162,6 +164,11 @@ export interface CombatantSetup {
   /** Chakra nature: boosts techniques of the same element and decides elemental matchups. */
   readonly nature?: Element;
   readonly perks?: readonly CombatPerk[];
+  /**
+   * Perks kept covered until revealed in the fight (a transplanted eye under a headband): no use
+   * until uncovered, and a drain on chakra while open (`rules/veil.ts`).
+   */
+  readonly veiled?: readonly CombatPerk[];
   readonly traits?: readonly CombatTrait[];
   /** Tools carried into the fight (the player's pouch). */
   readonly items?: readonly CombatItem[];

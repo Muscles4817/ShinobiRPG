@@ -369,8 +369,59 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   copies land for most of Naruto's health). Watching those bouts found a readied riposte (a
   lightning clone's shock) answering shuriken thrown from mid; it now answers only up close, as
   a ready Counter does, and Kakashi beats Asuma 87% of the time (100% with the bug).
-- **Guy never opens a deep gate** in the table's bouts (only the first, the Gate of Life), so
-  his finishers never come into it; that is slice 6.
+- **Slice 6, part one: the Gates' price and Guy's judgement (done).** Each gate takes a toll
+  (`rules/verbs/tolls.ts`) in place of the technique's own health price: the first three wind
+  their user (a share of their breath every exchange), the fourth to sixth wear on health too
+  (the sixth 8 a turn), and the seventh drains 20 a turn, about a round. An open ladder gives out
+  when health falls to a tenth or breath runs out, and once it shuts the body is spent for the
+  rest of the fight (less stamina; past the third gate, slower and weaker) and the gates stay
+  shut; when the seventh shuts its user collapses, out of the fight. Guy fights with his style
+  first and climbs a band at a time (the first three gates, the fourth to sixth, the seventh;
+  `stepBand`, a default plan slotting one opener per band), each band for a reason the fight
+  gives (`plan/climbing.ts`): eyes at least as sharp as every foe's size a far stronger one up at
+  sight, anyone else has to throw a few attacks first and see the trade go against them, or their
+  blows barely touch the foe. The first band opens when losing or hurt, the second when losing and
+  hurt or unable to hurt the foe, the seventh only against a foe he can't hurt or losing in the
+  last ditch, and past the first band the gate open now must have been fought with for a couple of
+  exchanges. The eighth is never a default. The fight table: Guy beats Kakashi 70% (63% before),
+  Hiruzen 23% (30%), and Asuma every time; he opens the third gate in most bouts against Kakashi
+  and the sixth in a few, and in watched bouts never jumps to the seventh.
+- **Slice 6, part two: climbing from the kit, and the finishers (done).** Watching Guy showed his
+  openings filling a small plan (three slots at his intellect): two gates and a trump left no room
+  for what the gates are for. A ladder's openings now take no slot, like defences and footwork:
+  the fighter climbs from their kit (`climbOrder`, `nextOpening` in `plan/climbing.ts`), from the
+  plan's turn and from instinct alike, when the fight calls for it; a player may still slot an
+  opening to play it by hand. A fighter who climbs readies with the ladder, so the plan's readying
+  slot goes to the best art it opens. A step is opened only if the body could hold it a couple of
+  exchanges before its toll fells it (`lastsOpen`): no seventh gate at a third of health to
+  collapse before acting. The finishers: **Morning Peacock** is a storm of five blows up close on
+  a target who is open (`needsTarget: 'open'`, `plan/finishers.ts`: dazed, reeling or held), so a
+  plan's slot and the instinct wait for an opening and go for the open foe; **Daytime Tiger** is a
+  wide area across the field; **Evening Elephant** is five sure blows. Guy now sets Kakashi up
+  (a Little Toe Attack's daze) and finishes with Morning Peacock. The fight table: Guy beats
+  Kakashi 53% (70% before), Hiruzen 20%.
+- **Slice 7: the Sharingan, revealed (done).** Kakashi's arsenal keeps foresight and mimicry
+  covered (`PersonArsenal.veiled`, `CombatantSetup.veiled`): no use until uncovered, a moment's
+  work as his turn begins (no turn spent, no slot: `uncoverWhenWorth`), against a foe who is a
+  match (fighting power at least `MATCH_RATIO` of his own), one who fights with illusions, or a
+  fight turning against him, and paid in chakra every exchange (`EYE_UPKEEP`, 3) until he can't,
+  when it closes again (`rules/veil.ts`, `plan/veil.ts`). Foresight itself grew: eyes that see it
+  coming slip up to `SEEING_AVOID_MAX` (0.85, 0.95 committed to Evade), read every attack clearly
+  for Evade, meet a body up to `SEEING_PACE` faster before it outpaces them (past that, still
+  nothing slips it) and see through illusions most of all (`FORESIGHT_SEES_THROUGH`). Uncovering
+  first cost a turn, which cost him more than the eye gave (Guy won 63%); it no longer does.
+- **Slice 8: stealth and set-ups (done).** A `lethal` technique (`TechniqueDef.lethal`: the
+  Lightning Blade, the Rasengan) on a target who can't see its user (hidden) or can't move (dazed,
+  reeling or held) can't be slipped, goes through a guard as a break does and lands `LETHAL_SCALE`
+  (2) times as hard; against a foe standing ready it is an ordinary attack (`rules/lethal.ts`). A
+  hold cast from hiding is shaken off half as often (`HIDDEN_HOLD_RESIST`). A mind that reads the
+  fight, with a conceal, a hold (a daze or a pin) and a killing blow in its kit, fights a match
+  (`SETUP_MATCH_RATIO`) by hide, hold, finish, from the kit like the gates (`plan/setups.ts`):
+  Kakashi goes under with Hiding Like a Mole, dazes Guy with the Lightning Beast Fang from below
+  and puts the Lightning Blade through him. Finding him again is a Search, perception against his
+  concealment. The killing blow's scale was tuned on the matchup: 1.8 left Guy winning 73%, 2.5
+  Kakashi 80%. The fight table: Guy beats Kakashi 50% (53% before the eye), Kurenai beats him 7%,
+  and Kakashi beats Asuma every time (87%) and Zabuza every time, now in about a round.
 
 ## Open questions
 

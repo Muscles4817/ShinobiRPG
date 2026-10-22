@@ -6,6 +6,8 @@ import { techniqueDamage } from '../../rules/damage';
 import { groundElementScale } from '../../rules/ground';
 import { attackKindOf } from '../../rules/kit';
 import { finisherScale } from '../../rules/team';
+import { LETHAL_SCALE, strikesToKill } from '../../rules/lethal';
+import { killingMoment } from './avoid';
 import { areaSize, type EffectUse } from '../../rules/verbs';
 import { elementBoost, recordHit } from './combo';
 import { react, type Blow } from './react';
@@ -36,8 +38,14 @@ function physical(t: CombatTechnique): boolean {
   return t.discipline === 'taijutsu' || t.discipline === 'kenjutsu';
 }
 
+/** How hard a wounding effect lands, and whether it strikes to kill (`rules/lethal.ts`). */
+interface Force {
+  readonly scale: number;
+  readonly kills: boolean;
+}
+
 /** The blows a wounding effect lands as: one, or a flurry's share of it each. */
-function blowsFor(aimed: Aimed, use: Wounding, scale: number): Blow[] {
+function blowsFor(aimed: Aimed, use: Wounding, { scale, kills }: Force): Blow[] {
   const { actor, target, rng } = aimed;
   const t = use.technique;
   const count = blowsOf(use.effect);
@@ -51,7 +59,8 @@ function blowsFor(aimed: Aimed, use: Wounding, scale: number): Blow[] {
     discipline: t.discipline,
     ...(t.element ? { element: t.element } : {}),
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
-    ...(use.effect.verb === 'break' ? { breaks: true } : {}),
+    // A killing blow goes through a guard as a break does: only a swap gets out of its way.
+    ...(use.effect.verb === 'break' || kills ? { breaks: true } : {}),
     ...(use.effect.verb === 'area' ? { area: true, areaSize: areaSize(use.effect) } : {}),
   };
   const opening = aimed.reached ? { ...first, reached: true as const } : first;
@@ -81,8 +90,11 @@ export function damage(round: Round, aimed: Aimed, use: Wounding): Round {
   const combo = elementBoost(round, actor, target.id, t);
   const ground = groundElementScale(round.ground, t.element);
   const pool = swarmPower(actor, t) * dustPower(actor, t);
-  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1) * ground * pool;
-  const hit = strike(round, aimed, blowsFor(aimed, use, scale));
+  // A killing blow on a target who can't meet it hits to kill (`rules/lethal.ts`).
+  const kills = strikesToKill(t, killingMoment(actor, target));
+  const kill = kills ? LETHAL_SCALE : 1;
+  const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1) * ground * pool * kill;
+  const hit = strike(round, aimed, blowsFor(aimed, use, { scale, kills }));
   const after = fighterIn(hit, target.id)?.health ?? target.health;
   const landed = after !== target.health;
   const told = landed && combo ? say(hit, combo.line) : hit;

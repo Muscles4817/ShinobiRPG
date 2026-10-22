@@ -89,7 +89,9 @@ export function cardId(card: Card): CardId {
 /** Cards that are no attack and work at any distance: defences, gathering, the senses, tools. */
 type Anywhere = Extract<
   Card,
-  { kind: 'guard' | 'dodge' | 'evade' | 'brace' | 'gather' | 'search' | 'dispel' | 'item' }
+  {
+    kind: 'guard' | 'dodge' | 'evade' | 'brace' | 'gather' | 'search' | 'dispel' | 'item';
+  }
 >;
 const ANYWHERE_KINDS: readonly Card['kind'][] = [
   'guard',
@@ -101,6 +103,24 @@ const ANYWHERE_KINDS: readonly Card['kind'][] = [
   'dispel',
   'item',
 ];
+
+/** Cards that spend the turn on the fighter themself: committing to a defence, gathering. */
+export type SelfCard = Extract<Card, { kind: 'evade' | 'brace' | 'gather' }>;
+const SELF_KINDS: readonly Card['kind'][] = ['evade', 'brace', 'gather'];
+
+/** Whether a card spends the turn on the fighter themself. */
+export function spendsOnSelf(card: Card): card is SelfCard {
+  return SELF_KINDS.includes(card.kind);
+}
+
+/** Defences kept ready, which react on their own and never take a turn. */
+export type ReadyCard = Extract<Card, { kind: 'guard' | 'dodge' | 'counter' }>;
+const READY_KINDS: readonly Card['kind'][] = ['guard', 'dodge', 'counter'];
+
+/** Whether a card is a defence kept ready. */
+export function isReadyDefence(card: Card): card is ReadyCard {
+  return READY_KINDS.includes(card.kind);
+}
 
 /** Whether a card works at any distance. */
 export function playsAnywhere(card: Card): card is Anywhere {

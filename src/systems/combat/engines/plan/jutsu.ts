@@ -1,16 +1,12 @@
-import type { EffectOf, TechniqueEffect, Verb } from '@/systems/techniques';
-
 import type { CombatTechnique } from '../../contract';
 import { payFor } from './effort';
 import { alive, hasPerk, holdTurns } from '../../rules/body';
 import { healAmount } from '../../rules/damage';
 import { groundRule } from '../../rules/ground';
-import { conditionResist } from '../../rules/avoidance';
 import { healLine, reactionLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
 import { misfireChance } from '../../rules/unstable';
 import { breakRating } from '../../rules/conditions';
-import { pointsSeenScale } from '../../rules/eyes';
 import {
   confuseTurns,
   driveOf,
@@ -33,6 +29,7 @@ import { castField } from './field';
 import { move, spunAway } from './footwork';
 import { afflict, drain, knock, pin, readyRiposte } from './lingering';
 import { damage, type Aimed } from './wounding';
+import { conditionOf, landsOnFoe, shakenOff } from './takingHold';
 import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
 import { canDaze, dazeIn } from './daze';
@@ -42,8 +39,6 @@ import { settleOn, swarmSpent } from './swarm';
 import { dustSpent } from './dust';
 import { setTrap } from './traps';
 import { linkLine } from './chainVoice';
-import { committedTo } from './commitment';
-import { bracedResist, isBracedAgainst } from '../../rules/commitment';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 import { raiseShroud } from './shrouds';
 
@@ -117,58 +112,6 @@ function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
       health - actor.health,
     ),
   );
-}
-
-/** The verbs that land on a foe; every other verb happens to the user. */
-const FOE_VERBS = [
-  'damage',
-  'area',
-  'break',
-  'daze',
-  'seal',
-  'confuse',
-  'knock',
-  'pin',
-  'drain',
-  'afflict',
-] as const;
-type FoeVerb = (typeof FOE_VERBS)[number];
-const foeVerbs: readonly Verb[] = FOE_VERBS;
-
-function landsOnFoe(effect: TechniqueEffect): effect is EffectOf<FoeVerb> {
-  return foeVerbs.includes(effect.verb);
-}
-
-/** What it looks like when a condition that reached its target fails to take hold. */
-type ConditionVerb = Exclude<FoeVerb, 'damage' | 'area' | 'break'>;
-
-const SHAKEN_OFF: Readonly<Record<ConditionVerb, string>> = {
-  daze: '{t} shake{t.s} it off.',
-  seal: '{t} push{t.es} the seals back before they close.',
-  confuse: '{t} see{t.s} through the illusion.',
-  knock: '{t} stand{t.s} firm.',
-  pin: '{t} tear{t.s} free before it can hold.',
-  drain: '{t} keep{t.s} a grip on {t.their} chakra.',
-  afflict: '{t} shrug{t.s} it off.',
-};
-
-/** The condition an effect brings, if it lands on a foe without wounding them. */
-function conditionOf(effect: TechniqueEffect): ConditionVerb | null {
-  if (!landsOnFoe(effect)) return null;
-  const { verb } = effect;
-  return verb === 'damage' || verb === 'area' || verb === 'break' ? null : verb;
-}
-
-/** A condition reached its target; whether it takes hold is its verb's resist (`avoidance.ts`). */
-function shakenOff(round: Round, { actor, target, rng }: Aimed, use: EffectUse): Round | null {
-  const verb = conditionOf(use.effect);
-  if (!verb) return null;
-  // Eyes that see the chakra points close them more surely (`rules/eyes.ts`).
-  const resist = conditionResist(actor, target, use) * pointsSeenScale(actor, verb);
-  // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
-  const braced = committedTo(target, 'brace') && isBracedAgainst(verb);
-  if (!rng.chance(braced ? bracedResist(resist) : resist)) return null;
-  return say(round, tell(SHAKEN_OFF[verb], { t: target }));
 }
 
 /**

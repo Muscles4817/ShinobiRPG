@@ -490,9 +490,31 @@ view:
   prompt: Close range, round 5, exchange 1 of 4
 
 >>> combatAct (Watch the round)
+
+--- combat (day 2, slot 1) ---
+  prompt: The round is over. Round 6: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
+
+>>> combatAct (Begin round 6)
+
+--- combat (day 2, slot 1) ---
+  —— The next round begins ——
+  prompt: Close range, round 6, exchange 1 of 4
+
+>>> combatAct (Watch the round)
+
+--- combat (day 2, slot 1) ---
+  prompt: The round is over. Round 7: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them. Four walls: no room to back away, and a wide technique hits everyone.
+
+>>> combatAct (Begin round 7)
+
+--- combat (day 2, slot 1) ---
+  —— The next round begins ——
+  prompt: Close range, round 7, exchange 1 of 4
+
+>>> combatAct (Watch the round)
   journal «The Storehouse Ghost failed»: You were beaten unconscious. [−2 reputation]
   journal: You wake in the village hospital, under lantern light and clean sheets. [−40 ryo]
-  journal «Broken fingers»: The medics patched you up, but this one will take time to mend. [5 days to heal]
+  journal «Torn shoulder»: The medics patched you up, but this one will take time to mend. [6 days to heal]
   journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves, a touch]
   journal: You missed the march yesterday. Gōran stood at the training ground for hours, and has already told two people about it. [Gōran’s regard falls]
   journal: Gōran has asked for you at the training ground this morning, for drills.
@@ -503,8 +525,8 @@ view:
   title: The Storehouse Ghost
   text: You wake in the village hospital, under lantern light and clean sheets.
   helped: Storehouse Wraith: Spirit. Plain blows barely touch it. Use chakra or seals.
-  summary: You lasted five rounds before going down. The storehouse wraith was still standing.
-  injury: Broken fingers
+  summary: You lasted seven rounds before going down. The storehouse wraith was still standing.
+  injury: Torn shoulder
   taught[0]: Chakra Reserves, a touch
 
 --- combat (day 3, slot 0) ---
@@ -730,7 +752,7 @@ view:
     detail: Intellect 44%
   choices[2]:
     label: Do the heavy work yourself
-    detail: Strength 28%
+    detail: Strength 27%
 
 >>> missionChoose (Keep your patience)
 
@@ -1006,7 +1028,7 @@ view:
     detail: 80 ryo
   approaches[5]:
     label: Frighten them off
-    detail: Willpower 49%
+    detail: Willpower 51%
   approaches[6]:
     label: Set the ground
     blocker: Needs a trap or field technique, or a smoke bomb in your pouch.
@@ -1038,11 +1060,10 @@ view:
   lines[3]:
     text: Perception
   lines[4]:
-    text: From cover you take in the ground, and how they hold themselves.
+    text: A pebble you dislodge rattles down the bank. Behind the tree someone hisses for quiet, and the talking stops.
   facts[0]:
     fact: count
     label: How many
-    value: Two of them
     hint: Not yet known. Watch them from cover, read their tracks or feel for chakra to find out.
   facts[1]:
     fact: identity
@@ -1055,19 +1076,16 @@ view:
   facts[3]:
     fact: awareness
     label: Are they watching
-    value: They don’t know you’re here.
     hint: Not yet known. Watch them from cover or feel for chakra to find out.
   facts[4]:
     fact: terrain
     label: The ground
-    value: A felled tree across the road where it dips between two banks, and room behind it for more men than you can see.
     hint: Not yet known. Watch them from cover to find out.
   handicap: Read against you as you are now: injured.
   recon[0]:
     label: Watch them from cover
     odds: Perception 62%
     cost: 5 energy
-    blocker: Nothing more to learn that way.
   recon[1]:
     label: Read their tracks
     odds: Perception 68%
@@ -1087,18 +1105,19 @@ view:
   approaches[1]:
     label: Ambush them
     detail: They reel, you strike first
+    blocker: You don’t know whether they’ve noticed you. Watch or sense them first.
   approaches[2]:
     label: Sneak past
-    detail: Speed 71%
+    detail: Speed 59%
   approaches[3]:
     label: Talk them down
-    detail: Willpower 32%
+    detail: Willpower 22%
   approaches[4]:
     label: Pay them off
     detail: 80 ryo
   approaches[5]:
     label: Frighten them off
-    detail: Willpower 49%
+    detail: Willpower 39%
   approaches[6]:
     label: Set the ground
     blocker: Needs a trap or field technique, or a smoke bomb in your pouch.
@@ -1136,24 +1155,20 @@ view:
 --- combat (day 5, slot 0) ---
   —— First exchange ——
   Asuka starts with Lantern Cut before anyone has settled.
-  Asuka’s Lantern Cut tears through the bandit archer with everything behind it. [Guarded] [−56]
-  The bandit archer keeps Gōran off.
-  The bandit archer waits for Gōran to commit, then fires.
-  The bandit archer’s kunai only just skims Gōran. [−1]
+  Asuka’s Lantern Cut tears through the bandit archer with everything behind it. [Guarded] [−51]
+  Goro slips through the bandit archer’s fire.
   Goro closes in at once.
-  You open with Gale Heel.
-  Your Gale Heel slices across the bandit thug cleanly. [Guarded] [−13]
-  Asuka is a shade too slow, and the bandit thug’s strike glances off them. [Guarded] [−6]
+  Gōran starts with Lantern Wind Flurry before anyone has settled.
+  There is nothing the bandit thug can do as Gōran’s Lantern Wind Flurry smashes into him. [Guarded] [−40]
+  Gōran’s Lantern Wind Flurry drives through the bandit thug once more, and he’s nearly knocked off his feet. [−47]
+  Gōran’s Lantern Wind Flurry flattens the bandit thug once more with everything behind it. [−13]
+  The bandit thug drops to his knees and topples over.
+  You explode forward with Gale Heel.
+  You catch the bandit archer with your Gale Heel. [Guarded] [−19]
   —— Second exchange ——
   Asuka’s blade flows into Lantern Cut.
-  Asuka’s Lantern Cut tears through the bandit thug, and he’s nearly knocked off his feet. [Guarded] [−42]
-  Gōran launches into Lantern Wind Flurry.
-  There is nothing the bandit thug can do as Gōran’s Lantern Wind Flurry smashes into him. [Guarded] [−35]
-  Gōran’s Lantern Wind Flurry drives through the bandit thug again with everything behind it. [−10]
-  The bandit thug drops to his knees and topples over.
-  Goro explodes forward with Palm Strike.
-  Goro’s Palm Strike slams into the bandit archer, and she feels it. [Guarded] [−32]
-  The bandit archer turns and runs.
+  Asuka’s Lantern Cut tears through the bandit archer, and she’s nearly knocked off her feet. [Guarded] [−30]
+  The bandit archer goes down and stays down.
   You are still on your feet, and no one is left to face you.
 
 >>> leaveFight
@@ -1201,7 +1216,7 @@ view:
   lines[16]:
     text: Perception
   lines[17]:
-    text: From cover you take in the ground, and how they hold themselves.
+    text: A pebble you dislodge rattles down the bank. Behind the tree someone hisses for quiet, and the talking stops.
   lines[18]:
     text: Go in head-on
   lines[19]:
@@ -1284,7 +1299,7 @@ view:
   lines[16]:
     text: Perception
   lines[17]:
-    text: From cover you take in the ground, and how they hold themselves.
+    text: A pebble you dislodge rattles down the bank. Behind the tree someone hisses for quiet, and the talking stops.
   lines[18]:
     text: Go in head-on
   lines[19]:

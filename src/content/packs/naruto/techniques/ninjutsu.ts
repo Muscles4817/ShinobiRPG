@@ -196,6 +196,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
       'The Fourth Hokage’s sphere of spinning chakra, held in the palm. No hand signs, all control.',
     discipline: 'ninjutsu',
     reach: ['close'],
+    lethal: true,
     effects: [
       {
         verb: 'break',

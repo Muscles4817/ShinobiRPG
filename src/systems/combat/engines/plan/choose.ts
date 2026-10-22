@@ -22,6 +22,9 @@ import { cardWorth } from './worth';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
+import { setupPlay } from './setups';
+import { opponentsOf } from './senses';
+import { needsOpenTarget, openFoes } from './finishers';
 import { shelterInstinct } from './shelter';
 import { gatherInstinct } from './resting';
 import { sightInstinct } from './sight';
@@ -162,6 +165,7 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
   return (
     sightInstinct(self, ready, { ...now, fieldUp: moment.fieldUp ?? false }) ??
     senses(self, ready, hiddenFoe) ??
+    setupPlay(self, { band: moment.band, foes: opponentsOf(moment.fighters ?? [], self) })?.card ??
     prepInstinct(self, ready, moment) ??
     toolInstinct(self, ready, now)
   );
@@ -268,6 +272,7 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
       playable(self, c) &&
       !spendsReserve(self, c) &&
       (trumpNow || !trumpCard(c)) &&
+      (!needsOpenTarget(c) || openFoes(self, fighters).length > 0) &&
       (c.kind !== 'jutsu' || partnered(fighters, self, c.technique)),
   );
   const instinct = instinctFor(self, ready, moment);

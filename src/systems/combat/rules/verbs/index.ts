@@ -57,15 +57,19 @@ export {
 export {
   CHAKRA_SURGE_PER_STEP,
   GIVE_OUT_SHARE,
+  STEP_TRIAL,
   canOpen,
   givesOut,
   isOpenFor,
+  lastsOpen,
   openStep,
   opensOf,
+  stepBand,
   stepShare,
   worthOpening,
   type ClimbReasons,
 } from './ladders';
+export { spentBody, stepBreathPrice, stepToll, type StepToll } from './tolls';
 export {
   cloneBlowScale,
   drawFireChance,

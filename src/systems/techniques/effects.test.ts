@@ -9,4 +9,13 @@ describe('effect validation', () => {
       /disagree/,
     );
   });
+
+  it('a ladder step is priced by its toll, never by a health price of its own', () => {
+    const opens = { ladder: 'gates' as const, step: 3 };
+    const gate = { verb: 'empower' as const, power: 10, boosts: ['speed' as const], opens };
+    expect(effectProblem(gate)).toBeNull();
+    expect(effectProblem({ ...gate, healthPerExchange: 4 })).toMatch(/toll is its price/);
+    const { opens: _none, ...plain } = gate;
+    expect(effectProblem(plain)).toMatch(/no price/);
+  });
 });

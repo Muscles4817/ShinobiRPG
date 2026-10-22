@@ -200,7 +200,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead: no illusion takes hold of them, no clone fools them, their seals and drains close the chakra points more surely, and they have one blind spot a sharp foe finds after a few rounds, where no ready defence rises: `rules/eyes.ts`, `plan/blindSpot.ts`, `plan/mimicry.ts`). A fight has a **ground**
+    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead: no illusion takes hold of them, no clone fools them, their seals and drains close the chakra points more surely, and they have one blind spot a sharp foe finds after a few rounds, where no ready defence rises: `rules/eyes.ts`, `plan/blindSpot.ts`, `plan/mimicry.ts`). Eyes that see it coming (`foresight`) slip more than anyone else can (`SEEING_AVOID_MAX`), read every attack clearly for Evade, keep up with a faster body a little longer (`SEEING_PACE`) and see through illusions most of all. Perks may be **veiled** (`CombatantSetup.veiled`, `PersonArsenal.veiled`: a transplanted eye under a headband, `rules/veil.ts`, `plan/veil.ts`): no use until uncovered, a moment's work as a turn begins (no turn spent, no slot), against a match, an illusionist or a fight turning, and paid in chakra every exchange (`EYE_UPKEEP`) until it closes again. **Set-ups** (`docs/design/defence-plan.md` 4.3): a `lethal` technique (a lightning blade) on a target who can't see its user (hidden) or can't move (dazed or held) can't be slipped, goes through a guard and hits to kill (`rules/lethal.ts`, `LETHAL_SCALE`); a hold cast from hiding is shaken off less often (`HIDDEN_HOLD_RESIST`); and a mind that reads the fight, with a conceal, a hold and a killing blow in its kit, fights a match by hide, hold, finish from the kit, no slot (`plan/setups.ts`). A fight has a **ground**
     (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake, desert; arena when
     unset): the distances it has room for (a room has no far), cover for hiding, far attacks lost
     among trees or walls (or, in the desert's heat haze, by everyone), elements it feeds or
@@ -897,7 +897,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   source. Physical needs (nature, reserves, control grade) go in `needs`. Starters must be rank E.
   Its shape in a fight: `reach` (bands, when not its art's usual reach; ask `reachOf`),
   `accuracy` (sure, steady, wild: a multiplier on slipping it, and wild hits harder; `slipChance`
-  in `rules/defence.ts`) and a damage effect's `hits` (a flurry: the power split over 2–5 blows,
+  in `rules/defence.ts`), `needsTarget: 'open'` for a finisher that waits for a dazed or held
+  foe (`plan/finishers.ts`) and a damage effect's `hits` (a flurry: the power split over 2–5 blows,
   each dodged alone; a Guard or Counter meets only the first). An `area` effect has a `size` (small,
   wide, vast; `rules/verbs/area.ts`): a wide one is hard to slip, beats a plain Guard (only a
   swap or a wall escapes it) and throws the fight apart to mid; a vast one can't be outrun,
@@ -970,8 +971,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Plan & Watch applies it in `engines/plan/jutsu.ts`. An empower may open a step of a
   **ladder** (`opens`, `systems/techniques/ladders.ts`: the Eight Gates), climbing at most
   `LADDER_REACH` steps past the one open and holding until the body gives out; a technique may
-  need a step open (`needsOpen`). Each step's lift, the chakra surge and when a deep step is worth
-  opening live in `rules/verbs/ladders.ts`; validation checks every needed step can be climbed to
+  need a step open (`needsOpen`). Each step's lift, the chakra surge, its band and when it is
+  worth opening live in `rules/verbs/ladders.ts`, judged on what the fight has shown
+  (`plan/climbing.ts`: taijutsu first, a band at a time, from the kit: openings take no plan
+  slot, and only a step the body could hold a couple of exchanges); its price is its **toll**
+  (`rules/verbs/tolls.ts`: breath, then health, each exchange; spent stamina, speed and strength
+  once it shuts, and past the seventh a collapse), never the technique's own health price
+  (validated); validation checks every needed step can be climbed to
   by the pack and by each arsenal that holds it. Shelved engines read a technique
   through `primaryEffect`. Verbs that leave something behind (knock, pin, drain, afflict:
   burn, bleed, poison; counter, a readied riposte) keep their rules in
