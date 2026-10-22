@@ -243,7 +243,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     taijutsu or kenjutsu technique) from someone far faster than the defender's avoid rating
     outpaces them, from `OUTPACE_FROM` times it, and past `OUTPACE_FULL` nothing slips it; only a
     swap escapes. A foe who reads the
-    fight and is far outclassed takes cover some turns on instinct (`plan/shelter.ts`). A hit
+    fight and is far outclassed takes cover some turns on instinct (`plan/shelter.ts`). Facing a
+    **killer** (a gate open, or a killing blow announced, whose blow could end them), a mind that
+    reads the fight plays for time unless it would fell the killer first (`plan/survival.ts`): a
+    hold on them, Evade or a step back while it keeps their pace, else a Brace that would hold;
+    a set-up comes first, the player's own plan stays theirs (the plan screen names who could end
+    them), and a Brace or an Evade shows as plainly as a defence kept (`seenDefence`). A hit
     that lands is not yet a hold: each condition rolls against its verb's resist (a pin against
     what breaks a hold of its art: strength, chakra control or willpower; a daze against poise;
     a seal against chakra control; `conditionResist`). Then guard and counter (taijutsu,

@@ -423,6 +423,23 @@ Each slice lands green (`npm run check`), with its benches retuned by named cons
   Kakashi 80%. The fight table: Guy beats Kakashi 50% (53% before the eye), Kurenai beats him 7%,
   and Kakashi beats Asuma every time (87%) and Zabuza every time, now in about a round.
 
+- **Survival, as judgement (3.7, done).** A mind that reads the fight sees a killer (a foe with a
+  gate open whose heaviest blow would take most of what health is left, or half a fresh body, or
+  a killing blow announced that would) and plays for time unless it would fell the killer in as
+  few blows (`plan/survival.ts`): a hold on the killer from the kit; Evade, or a step back from one
+  who only kills up close, while it keeps the killer's pace (`EVADE_WORTH_PACE`: a body that
+  outpaces it can't be slipped or outrun); else a Brace, only where what gets through would no
+  longer end it. A set-up is its own answer and comes first (putting survival ahead of it took
+  Guy from 50% to 63% against Kakashi). The player's own plan stays theirs: the plan screen names
+  who could end them ("Might Guy has the seventh gate open: one blow from him could end you").
+  Turtles can be broken now: a Brace or an Evade shows as plainly as a defence kept
+  (`seenDefence`), so a foe who reads it brings a break or an illusion. With the seventh gate
+  opened on him, the pack's Guy is outlasted by Hiruzen 24 times in 30 when Hiruzen reads the
+  fight (17 when he trades), by Kurenai 24 (20) and by Kakashi 3 (0); Asuma falls either way. The
+  engine test (`gateSurvival.test.ts`) holds it: an equal who trades is cut down, one who reads
+  the fight outlasts the gate. The fight table barely moves (Guy 50% on Kakashi, 23% on Hiruzen),
+  since the deep gates seldom open in it.
+
 ## Open questions
 
 - How large is a committed Evade against a plain blow, and against a technique? (Set by the

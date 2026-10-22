@@ -19,6 +19,7 @@ import { bestTarget } from './targeting';
 import { finisherTargets, needsOpenTarget } from './finishers';
 import { nextOpening } from './climbing';
 import { setupPlay } from './setups';
+import { survivalPlay } from './survival';
 import { readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
 import { ownField } from './field';
@@ -322,7 +323,8 @@ function climbing(self: PlanFighter, round: Round): Play | null {
 }
 
 /**
- * An emergency slot that holds; else a ladder's next step when it is time; else, for someone fighting at a set distance and elsewhere, a
+ * An emergency slot that holds; else a ladder's next step when it is time; else a set-up, or
+ * playing for time against a killer; else, for someone fighting at a set distance and elsewhere, a
  * step towards it; else the first slot at this distance that qualifies; else an improvised
  * blow or step (at the mark).
  */
@@ -335,6 +337,9 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   // A set-up from the kit, against a match (`setups.ts`): hide, hold, finish.
   const setup = setupPlay(self, { band: round.range, foes: opponentsOf(round.fighters, self) });
   if (setup) return setup;
+  // A killer coming: play for time until it burns out (`survival.ts`).
+  const survival = survivalPlay(self, round);
+  if (survival) return survival;
   const footwork = isPinned(self) ? null : makingFor(self, round.range);
   if (footwork) {
     // Ready the charge first: power up or make clones, or go in with an entry.

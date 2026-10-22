@@ -1,5 +1,6 @@
 import type { RangeBand } from '../../contract';
 import { alive, hasPerk } from '../../rules/body';
+import type { Commitment } from '../../rules/commitment';
 import { RANGE_BANDS } from '../../rules/range';
 import { cardId, type Card } from './cards';
 import { substitutionsReady } from './footwork';
@@ -58,13 +59,22 @@ export function walksInto(card: Card, defence: DefenceKind): boolean {
   return defence === 'counter' && handToHand(card);
 }
 
-/** The defence a target has been seen to keep at this distance. */
+/**
+ * A commitment shows as plainly as a defence kept (`docs/design/defence-plan.md` 3.4, breaking a
+ * turtle): a Brace is met as a Guard (a break goes through it), an Evade as a Dodge.
+ */
+const COMMITTED_AS: Readonly<Record<Commitment, DefenceKind>> = { brace: 'guard', evade: 'dodge' };
+
+/** The defence a target is committed to now, else the one they have been seen to keep here. */
 export function seenDefence(
   reads: Reads | undefined,
   target: PlanFighter | undefined,
   band: RangeBand,
 ): DefenceKind | undefined {
-  return target ? readOf(reads, target.id).defences[band] : undefined;
+  if (!target) return undefined;
+  return target.committed
+    ? COMMITTED_AS[target.committed]
+    : readOf(reads, target.id).defences[band];
 }
 
 /** Every attack the fighter's opponents have been seen to throw, by style. */
