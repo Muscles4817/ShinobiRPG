@@ -26,6 +26,7 @@ import { setupPlay } from './setups';
 import { opponentsOf } from './senses';
 import { needsOpenTarget, openFoes } from './finishers';
 import { shelterInstinct } from './shelter';
+import { survivalPlay } from './survival';
 import { gatherInstinct } from './resting';
 import { sightInstinct } from './sight';
 import { improvise, isEntry, makingFor, readiesTheCharge } from './stepping';
@@ -155,8 +156,8 @@ export interface Moment {
 }
 
 /**
- * A sense, Search or Dispel for a hidden foe, a conceal to open, an empower, clones or a trap
- * (`prep.ts`); else a tool that's called for.
+ * A sense, Search or Dispel for a hidden foe, a set-up, playing for time against a killer, a
+ * conceal to open, an empower, clones or a trap (`prep.ts`); else a tool that's called for.
  */
 function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment): Card | undefined {
   const hiddenFoe = moment.hiddenFoe ?? false;
@@ -165,10 +166,21 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
   return (
     sightInstinct(self, ready, { ...now, fieldUp: moment.fieldUp ?? false }) ??
     senses(self, ready, hiddenFoe) ??
-    setupPlay(self, { band: moment.band, foes: opponentsOf(moment.fighters ?? [], self) })?.card ??
+    forTime(self, moment) ??
     prepInstinct(self, ready, moment) ??
     toolInstinct(self, ready, now)
   );
+}
+
+/**
+ * A set-up (`setups.ts`), which is its own answer to a killer; else playing for time against one
+ * (`survival.ts`). A foe sees no one's announced card.
+ */
+function forTime(self: PlanFighter, moment: Moment): Card | undefined {
+  const fighters = moment.fighters ?? [];
+  const setup = setupPlay(self, { band: moment.band, foes: opponentsOf(fighters, self) })?.card;
+  const at = { fighters, range: moment.band, intents: {}, number: moment.exchange ?? 0 };
+  return setup ?? survivalPlay(self, at)?.card;
 }
 
 /** A trump card's moment: badly hurt, or facing a far stronger foe. */
