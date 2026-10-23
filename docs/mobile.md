@@ -24,6 +24,9 @@ native plugins (`@capacitor/filesystem`, `@capacitor/app`).
 
 ## Android
 
+To get a build without building it yourself, download one the **App builds** workflow made
+(`docs/app-builds.md`).
+
 Needs Android Studio (with its bundled JDK 21) and the Android SDK, platform 36
 (`android/variables.gradle`: min SDK 24, target 36).
 

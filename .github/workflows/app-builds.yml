@@ -1,0 +1,108 @@
+name: App builds
+
+# Builds the apps from the release game (the `original` pack only) and keeps them as this run's
+# artifacts: the Windows installer and the Android APK. Runs on every push to main, from the
+# Actions tab ("Run workflow"), and on pull requests that change how the apps are built. Nothing
+# is published to a public release page: the repository is public, so a release there would be
+# the paid game for anyone to take.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - .github/workflows/app-builds.yml
+      - electron/**
+      - electron-builder.json
+      - android/**
+      - capacitor.config.ts
+      - scripts/**
+      - package.json
+      - package-lock.json
+  workflow_dispatch:
+
+concurrency:
+  group: app-builds-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows installer
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Package the desktop app
+        run: npm run desktop:dist -- --win
+        env:
+          # Not code-signed yet: don't let electron-builder go looking for a certificate.
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shinobi-rpg-windows
+          path: release/*.exe
+          if-no-files-found: error
+          retention-days: 30
+
+  android:
+    name: Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HAS_KEY: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - run: npm ci
+
+      - name: Copy the checked release game into the Android project
+        run: npm run mobile:sync
+
+      - name: Unpack the signing key
+        if: env.HAS_KEY == 'true'
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > "$RUNNER_TEMP/release.jks"
+
+      # With your key from the repository's secrets: a release APK that installs over the last one
+      # and keeps its saves. Without it: a debug APK, signed by a key that changes from run to run.
+      - name: Build the APK
+        working-directory: android
+        run: |
+          if [ "$HAS_KEY" = "true" ]; then
+            ./gradlew assembleRelease -PversionCode=${{ github.run_number }}
+          else
+            ./gradlew assembleDebug -PversionCode=${{ github.run_number }}
+          fi
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ env.HAS_KEY == 'true' && format('{0}/release.jks', runner.temp) || '' }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shinobi-rpg-android
+          path: android/app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 30

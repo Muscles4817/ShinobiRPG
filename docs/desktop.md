@@ -61,12 +61,15 @@ backup too. To move a game to another computer, copy the `saves` folder.
 
 ## Packaging
 
+To get a build without building it yourself, download one the **App builds** workflow made
+(`docs/app-builds.md`).
+
 `npm run desktop:dist` (`scripts/desktop-dist.mjs`) runs `check:release` (the release build,
 checked free of fan names), compiles the shell, runs electron-builder (`electron-builder.json`)
 for the current OS, then `scripts/check-package.mjs`, which opens every `app.asar` under
 `release/` and fails if it holds anything but `package.json`, `electron/dist/` and
-`dist-release/`, or if any fan name is in it. `check:release` sets its flag the POSIX way, so
-package on Windows from Git Bash or WSL.
+`dist-release/`, or if any fan name is in it. It runs the same from a Windows command prompt,
+PowerShell or any other shell.
 
 | OS      | Target   | Output                                                |
 | ------- | -------- | ----------------------------------------------------- |

@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+// A release is signed with your own key when the build is given one (the app-builds workflow
+// passes it from the repository's secrets), so each new build installs over the last and keeps
+// its saves. Without it, the release build can't be installed; build debug instead.
+def releaseKeystore = System.getenv('ANDROID_KEYSTORE_PATH')
+
 android {
     namespace = "com.shinobirpg.game"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,7 +12,8 @@ android {
         applicationId "com.shinobirpg.game"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        // Rises with every build the workflow makes, so Android accepts it as an update.
+        versionCode((project.findProperty('versionCode') ?: '1').toInteger())
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -16,8 +22,21 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (releaseKeystore) {
+            release {
+                storeFile file(releaseKeystore)
+                storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('ANDROID_KEY_ALIAS')
+                keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+            }
+        }
+    }
     buildTypes {
         release {
+            if (releaseKeystore) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
