@@ -46,7 +46,7 @@ describe('jobs on the map', () => {
     const job: MissionDef = {
       ...ctx.content.missions.require(COAST_JOB),
       stages: [
-        { kind: 'road', to: 'outbound', text: 'Off you go.', when: { marks: ['going'] } },
+        { kind: 'road', to: 'outbound', text: 'Off you go.', when: { has: 'going' } },
         { kind: 'narrative', text: 'You are there.' },
       ],
     };
@@ -54,7 +54,7 @@ describe('jobs on the map', () => {
     expect(walked.stages.map((s) => s.kind)).toEqual(['leg', 'camp', 'leg', 'narrative']);
     expect(walked.stages[0]).toMatchObject({ text: 'Off you go.', region: 'coast-road' });
     expect(walked.stages[2]).toMatchObject({ text: 'The road to b.', region: 'hill-road' });
-    expect(walked.stages.slice(0, 3).every((s) => s.when?.marks?.[0] === 'going')).toBe(true);
+    expect(walked.stages.slice(0, 3).map((s) => s.when)).toEqual(Array(3).fill({ has: 'going' }));
   });
 
   it('finds the way when the job is taken, keeps it, and counts its days on the notice', () => {
