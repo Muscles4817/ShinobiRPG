@@ -1,4 +1,10 @@
-import { MAP_SIZE, type AtlasLabel, type MapLabelSide, type MapPoint } from '@/content';
+import {
+  MAP_SIZE,
+  type AtlasLabel,
+  type LocationKind,
+  type MapLabelSide,
+  type MapPoint,
+} from '@/content';
 import type { Danger } from '@/systems/missions';
 
 import type { GameContext } from '../context';
@@ -13,11 +19,13 @@ import type { GameState } from '../state';
  * where you stand. Positions are in the units of `MAP_SIZE`.
  */
 
-export type { AtlasLabel, MapLabelSide, MapPoint };
+export type { AtlasLabel, LocationKind, MapLabelSide, MapPoint };
 
 export interface MapPlace extends MapPoint {
   readonly id: string;
   readonly name: string;
+  /** Marked on the map by kind: a village's seal, a city's, a town's, wild country, a landmark. */
+  readonly kind: LocationKind;
   readonly here: boolean;
   /** Still coming soon: shown, but with what opens it. */
   readonly locked: boolean;
@@ -60,6 +68,7 @@ export function travelMap(state: GameState, ctx: GameContext): TravelMap {
     places: locations.all.map((l) => ({
       id: l.id,
       name: l.name,
+      kind: l.kind,
       x: l.map.x,
       y: l.map.y,
       label: l.map.label ?? 'below',

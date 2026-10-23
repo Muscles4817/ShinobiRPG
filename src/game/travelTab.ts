@@ -1,4 +1,5 @@
-// The Travel tab's public API: where you can go, the map, and the trip under way.
+// The Travel tab's public API: where you can go, the map, the trip under way, and camp.
+export { campView, type CampView } from './views/camp';
 export {
   travelView,
   type CompanionOption,
@@ -7,6 +8,7 @@ export {
 } from './views/travel';
 export type {
   AtlasLabel,
+  LocationKind,
   MapLabelSide,
   MapPlace,
   MapPoint,

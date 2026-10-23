@@ -13,6 +13,7 @@ import { SUNA_COMPOUNDS } from './compounds';
 export const SUNAGAKURE: LocationDef = {
   id: 'sunagakure',
   name: 'Sunagakure',
+  kind: 'village',
   epithet: 'Village Hidden in the Sand',
   map: { x: 12, y: 51 },
   backdrop: 'sand-village',

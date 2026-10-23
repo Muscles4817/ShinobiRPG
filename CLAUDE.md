@@ -898,7 +898,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   catches broken references and anything no place offers.
 - **Add a content pack:** copy `packs/original/`, change ids/names, register it. Keep every
   pack complete; packs don't inherit from each other.
-- **Add a location:** add a `LocationDef` with a backdrop, a `map` point (and a `label` side if its name would
+- **Add a location:** add a `LocationDef` with a `kind` (village, city, town, wild or landmark:
+  what it must have once open, validated in `validateLocationKinds.ts`, and its mark on the map;
+  wild country and landmarks keep a `camp` place, where `makeCamp` sleeps you under the sky on
+  supper from your pack, and never an inn), a backdrop, a `map` point (and a `label` side if its name would
   run into a neighbour's) and places, and a `RouteDef` to it in
   the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`,
   and for a road not everyone may walk, `needs` and a `name` to say it by;

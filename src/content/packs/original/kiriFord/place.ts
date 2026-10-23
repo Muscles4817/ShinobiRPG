@@ -11,6 +11,7 @@ import { KIRI_FORD_JOB_IDS } from './jobs';
 export const KIRI_FORD: LocationDef = {
   id: 'kiri-ford',
   name: 'Kiri Ford',
+  kind: 'city',
   epithet: 'River city',
   map: { x: 66, y: 38, label: 'right' },
   backdrop: 'mist',

@@ -55,7 +55,7 @@ export interface HubView {
 }
 
 /** Places to rest, eat and sleep: grouped so each switch over place kinds stays small. */
-export const REST_KINDS = ['home', 'hospital', 'inn', 'house', 'onsen', 'tavern'] as const;
+export const REST_KINDS = ['home', 'hospital', 'inn', 'camp', 'house', 'onsen', 'tavern'] as const;
 export type RestKind = (typeof REST_KINDS)[number];
 type RestPlace = Extract<PlaceDef, { readonly kind: RestKind }>;
 
@@ -77,6 +77,8 @@ function restLine(place: RestPlace, state: GameState, ctx: GameContext): string 
       return onsenLine(state, townPrice(place.soakCost, state, ctx));
     case 'inn':
       return `A room for ${townPrice(place.roomCost, state, ctx)} ryo`;
+    case 'camp':
+      return place.blurb;
     case 'house':
       return houseLine(state, place.id, place.price);
     case 'hospital':

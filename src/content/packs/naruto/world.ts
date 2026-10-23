@@ -44,6 +44,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
   {
     id: 'konohagakure',
     name: 'Konohagakure',
+    kind: 'village',
     epithet: 'Village Hidden in the Leaves',
     map: { x: 48, y: 29, label: 'right' },
     backdrop: 'leaf-village',
@@ -245,6 +246,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
   {
     id: 'mount-myoboku',
     name: 'Mount Myōboku',
+    kind: 'landmark',
     epithet: 'Where the toads train sages',
     map: { x: 61, y: 22, label: 'right' },
     backdrop: 'mountain',

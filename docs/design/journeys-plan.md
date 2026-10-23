@@ -335,3 +335,17 @@ migration and a previous-version save test wherever the save shape changes.
    is never empty; the stamp and the stretches struck through keep up with the seal leg by leg
    (`JourneyView.progress` is words for each number of legs walked); and the place's title
    card sits high, clear of any town's skyline.
+
+3. **Kinds of location** (this step). Every location has a `kind` (`content/locationKinds.ts`):
+   village, city, town, wild or landmark. Once open, a city has an inn, a market, a mission office
+   and at least five places; a town an inn; wild country a `wilds` place and a camp; a landmark a
+   camp and no more than three places; neither of those an inn, and only they a camp. The start
+   location is a village (`validateLocationKinds.ts`). The original pack: Tōrōgakure and
+   Sakyūgakure villages, Kiri Ford a city, Port Shiomachi a town, Mount Reikon a landmark; the
+   fan pack's hidden villages, Tanzaku a city, its other towns (the Fire Temple too, being a town
+   of pilgrims) and Mount Myōboku a landmark. The `camp` place kind is a night under the sky
+   (`makeCamp`, `CampPage`): supper from your pack by the fire, then sleep till dawn at the road's
+   camp healing, kept on the day's sheet like any night's sleep. The map marks each kind its own
+   way (`data-kind`): a ringed seal for a village, a square block for a city, the plain seal for
+   a town, an open dashed ring for wild country and a diamond for a landmark, the last two named
+   in italic. No wild country is open yet: step 10 fills the map.

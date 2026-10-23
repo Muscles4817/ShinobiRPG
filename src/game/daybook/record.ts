@@ -11,7 +11,7 @@ import { openDay } from './open';
  */
 
 /** Going to bed: anything else that carries you into the morning was a night without sleep. */
-const SLEEPING: readonly GameActionType[] = ['sleep', 'takeRoom'];
+const SLEEPING: readonly GameActionType[] = ['sleep', 'takeRoom', 'makeCamp'];
 
 function away(state: GameState): boolean {
   return state.mission !== null || state.exams.run !== null;
