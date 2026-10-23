@@ -37,4 +37,18 @@ describe('jobs on the map', () => {
       'mission "arc-salt-coast-road" pays too little for 1 days away from "torogakure"',
     );
   });
+
+  it('places a beat along a road only straight after one, a whole number of stretches in', () => {
+    const [road, ...rest] = COAST_JOB.stages;
+    const beat = { kind: 'narrative' as const, text: 'Halfway.', at: 1 };
+    expect(withJob({ ...COAST_JOB, stages: [road!, beat, { ...beat, at: 2 }, ...rest] })).toEqual(
+      [],
+    );
+    expect(withJob({ ...COAST_JOB, stages: [beat, road!, ...rest] })).toContain(
+      'mission "arc-salt-coast-road" stage 0 is placed along a road but doesn\'t follow one',
+    );
+    expect(withJob({ ...COAST_JOB, stages: [road!, { ...beat, at: 0.5 }, ...rest] })).toContain(
+      'mission "arc-salt-coast-road" stage 1 is placed at 0.5 along its road',
+    );
+  });
 });

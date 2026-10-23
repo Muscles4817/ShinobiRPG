@@ -122,6 +122,16 @@
 }
 
 /* A journey: the map fills the window, the road's story in a column beside it. */
+.app.wide.scene-journey .journey-job {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 24px 24px;
+  border-top: 1px solid var(--line);
+}
+.app.wide.scene-journey .journey-job .debrief-crew ul {
+  gap: 12px;
+}
 .app.wide.scene-journey .wide-scene {
   display: grid;
   height: 100vh;

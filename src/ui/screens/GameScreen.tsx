@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import {
-  activeScene,
+  sceneOnScreen,
   dayEndView,
   hubView,
   reportSound,
@@ -202,7 +202,7 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   const [personId, setPersonId] = useState<string | null>(null);
   const [companionOpen, setCompanionOpen] = useState(false);
   const props: ScreenProps = { ctx, state, perform: session.perform };
-  const scene = activeScene(state);
+  const scene = sceneOnScreen(state, ctx);
   const { showReport, showDay } = cardsOver(state, ctx, scene);
   const { play } = useSound();
   useEffect(() => {

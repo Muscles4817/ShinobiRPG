@@ -96,8 +96,12 @@ type StageBody =
   | RoadStage
   | EndingStage;
 
-/** A stage, played only when its condition holds (and skipped otherwise). */
-export type MissionStage = StageBody & { readonly when?: Condition };
+/**
+ * A stage, played only when its condition holds (and skipped otherwise). Straight after a job's
+ * `road`, `at` places a beat partway along it: after that many of the road's stretches (or at the
+ * end of a shorter road); stages after a road without one happen on arrival.
+ */
+export type MissionStage = StageBody & { readonly when?: Condition; readonly at?: number };
 
 /** Someone you look after on a job: their trust is one of its threads, moved by your tone. */
 export interface ChargeDef {

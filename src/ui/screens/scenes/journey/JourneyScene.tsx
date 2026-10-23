@@ -4,6 +4,7 @@ import { Vitals } from '../../../components/Vitals';
 import { Pane } from '../../../layout/Pane';
 import { useWideScreen } from '../../../layout/useWideScreen';
 import type { ScreenProps } from '../../types';
+import { JobSoFar } from '../JobSoFar';
 import { MissionStory } from '../MissionStory';
 import { OneChoice } from '../OneChoice';
 import { Threads } from '../StoryLines';
@@ -13,8 +14,18 @@ import { useSealTravel } from './useSealTravel';
 
 const SKIP = 'Skip ahead';
 
+/** A job keeps its crew and what has gone on so far in view, as its own scene does. */
+function JobBeside({ ctx, state }: Pick<ScreenProps, 'ctx' | 'state'>) {
+  if (!state.mission || state.mission.journey) return null;
+  return (
+    <div className="journey-job">
+      <JobSoFar ctx={ctx} state={state} />
+    </div>
+  );
+}
+
 /**
- * A trip of your own: the road on the map, and beside it (on a phone, under it) where it goes,
+ * A trip of your own, or a job on its road: the road on the map, and beside it (on a phone, under it) where it goes,
  * its stretches, the story of the road and your choices. The map walks your seal on as each leg
  * is done, so going somewhere plays like the montage in an adventure film; what the road brings
  * waits until the seal gets there, and at the end the place you reach is a title card.
@@ -68,6 +79,7 @@ export function JourneyScene({ ctx, state, perform }: ScreenProps) {
         ) : (
           travel.moving && <OneChoice label={SKIP} onChoose={travel.skip} wide={wide} />
         )}
+        {wide && <JobBeside ctx={ctx} state={state} />}
       </Pane>
     </>
   );

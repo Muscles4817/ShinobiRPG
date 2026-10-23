@@ -22,9 +22,10 @@ export const DAUGHTER_TAKEN: MissionDef = {
   energyCost: 20,
   reward: { ryo: 260, reputation: 4 },
   minMissionsCompleted: 4,
+  goesTo: 'shukuba-town',
   endsAt: 'shukuba-town',
   stages: [
-    { kind: 'leg', text: 'A day up the post road to Shukuba.', days: 1, region: 'forest-track' },
+    { kind: 'road', to: 'outbound', text: 'Up the post road to Shukuba.' },
     {
       kind: 'narrative',
       text: 'Danjūrō receives you in a room full of silk, and shouts at the maid who brings the tea for bringing it slowly. “Bandits,” he says, “on the post road. My only daughter, and I am a man of standing in this town.”',
@@ -192,22 +193,13 @@ export const PILGRIM_ROAD: MissionDef = {
   summary: 'The trail leads up the pilgrim road to the Fire Temple.',
   slots: 1,
   energyCost: 25,
-  reward: { ryo: 300, reputation: 4 },
+  reward: { ryo: 380, reputation: 4 },
   minMissionsCompleted: 4,
+  goesTo: 'fire-temple',
   endsAt: 'fire-temple',
   stages: [
-    {
-      kind: 'leg',
-      text: 'Back through the forest, then up into the hills.',
-      days: 1,
-      region: 'forest-track',
-    },
-    {
-      kind: 'leg',
-      text: 'The pilgrim road climbs to the temple gate.',
-      days: 1,
-      region: 'mountain-pass',
-    },
+    { kind: 'road', to: 'outbound', text: 'Back down the post road, then up into the hills.' },
+    { kind: 'narrative', text: 'The pilgrim road climbs to the temple gate.' },
     {
       kind: 'narrative',
       text: 'Chiriku meets you at the gate and doesn’t let you through it. “She asked for sanctuary,” he says mildly. “The temple gave it.” Behind him, sweeping the courtyard in a borrowed pilgrim’s robe, is a young woman who stops when she sees your headband.',

@@ -20,14 +20,13 @@ export const TOWN_APART: MissionDef = {
   energyCost: 20,
   reward: { ryo: 300, reputation: 4 },
   minMissionsCompleted: 3,
+  goesTo: 'land-of-waves',
   endsAt: 'land-of-waves',
   stages: [
-    { kind: 'leg', text: 'Through the forest to the coast.', days: 1, region: 'forest-track' },
+    { kind: 'road', to: 'outbound', text: 'Through the forest to the coast.' },
     {
-      kind: 'leg',
-      text: 'Down the coast road and across the water in a borrowed boat, the half-built bridge looming out of the fog.',
-      days: 1,
-      region: 'coast-road',
+      kind: 'narrative',
+      text: 'Across the water in a borrowed boat, the half-built bridge looming out of the fog.',
     },
     {
       kind: 'decision',
