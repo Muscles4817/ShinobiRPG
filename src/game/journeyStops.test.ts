@@ -27,7 +27,7 @@ const openRoads = createGameContext({
 function setOut(ctx: GameContext, locationId: string, quick = false): GameState {
   const game = newGame({}, ctx);
   // Every place on the map: these tests are about stopping, not finding the way.
-  const atlas = { known: ctx.content.locations.all.map((l) => l.id), visited: [] };
+  const atlas = { ...game.atlas, known: ctx.content.locations.all.map((l) => l.id) };
   const jonin = { ...game, atlas, standing: { ...game.standing, rank: 'jonin' as const } };
   return act(jonin, { type: 'travel', locationId, quick }, ctx);
 }

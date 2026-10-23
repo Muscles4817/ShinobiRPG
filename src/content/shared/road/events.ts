@@ -1,5 +1,8 @@
 import type { RoadEventDef } from '@/systems/missions';
 
+import { ROUGH_ROAD_EVENTS } from './roughEvents';
+import { SEASON_ROAD_EVENTS } from './seasonEvents';
+
 /**
  * Things that happen on the road, drawn by the region and the day. Written once for every pack
  * and every job: effects name only threads a job may keep (`daylight`, and `charge` for whoever
@@ -11,7 +14,7 @@ const LOST_HOUR = { kind: 'thread', thread: 'daylight', by: -1 } as const;
 const WARMS_CHARGE = { kind: 'thread', thread: 'charge', by: 1 } as const;
 const COOLS_CHARGE = { kind: 'thread', thread: 'charge', by: -1 } as const;
 
-export const ROAD_EVENTS: readonly RoadEventDef[] = [
+const EVERYDAY_ROAD_EVENTS: readonly RoadEventDef[] = [
   {
     id: 'ox-cart-in-the-ditch',
     regions: ['hill-road', 'river-road'],
@@ -270,4 +273,11 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
       },
     ],
   },
+];
+
+/** Every road event every pack takes: everyday ones, the seasons' and the rough roads'. */
+export const ROAD_EVENTS: readonly RoadEventDef[] = [
+  ...EVERYDAY_ROAD_EVENTS,
+  ...SEASON_ROAD_EVENTS,
+  ...ROUGH_ROAD_EVENTS,
 ];

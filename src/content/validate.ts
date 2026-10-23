@@ -1,4 +1,5 @@
 import { costIsSane, effectProblem } from '@/systems/techniques';
+import { validateTravel } from './validateTravel';
 import { canGoWithCrew, daysAway, MIN_RYO_PER_DAY_AWAY } from '@/systems/missions';
 
 import { duplicateIds } from './catalog';
@@ -23,8 +24,6 @@ import { validateWorld } from './validateWorld';
 import { validateFieldBook } from './validateFieldBook';
 import { validateHomes } from './validateHomes';
 import { validateLeisure } from './validateLeisure';
-import { validateRoutes } from './validateRoutes';
-import { validateLocationKinds } from './validateLocationKinds';
 import { validateAtlas } from './validateAtlas';
 import { validateExercises } from './validateExercises';
 import { validateCrews } from './validateCrews';
@@ -74,8 +73,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateLeisure(pack),
     ...validateHomes(pack),
     ...validateFieldBook(pack),
-    ...validateRoutes(pack),
-    ...validateLocationKinds(pack),
+    ...validateTravel(pack),
     ...validateAtlas(pack),
     ...validateExercises(pack),
     ...profileProblems(pack),

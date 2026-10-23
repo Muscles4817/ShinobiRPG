@@ -380,3 +380,19 @@ migration and a previous-version save test wherever the save shape changes.
    halts and, once you've chosen, hurries on. Left for the content that needs them (step 10):
    rumours, maps for sale and road events that reveal a place, and the field book's Places page
    (step 11).
+
+6. **Road events, filtered and remembered** (this step). A road event may ask a least road
+   `danger`, `seasons`, a `rarity` (common, uncommon, rare) or to come `once` in a life
+   (`RoadEventDef`). Each leg carries its road's danger (`JourneyLeg.danger`, from the route; a
+   job's legs read the job's worst foe), and the chance something comes up grows with it
+   (`ROAD_EVENT_CHANCE`: a safe road has more quiet days). The draw (`story/roadEvents.ts`) takes
+   the region's events that the danger and the season allow, less those met for good
+   (`atlas.roadSeen`) and, while others remain, those met lately (`atlas.recentRoad`, the last
+   `RECENT_ROAD`; save v69), weighted by rarity, still by hash. Fourteen new events: blossom
+   pilgrims, noon heat, chestnuts, storm surf, a snowdrift and a frozen river by season
+   (`seasonEvents.ts`); toll-men, a burned waystation, arrows in a tree and a watcher on the
+   ridge on roads with danger, and a crane dance, a caravan, an old swordsman at a ford and a
+   lantern with no keeper as the rare ones, the last two once in a life (`roughEvents.ts`).
+   Every region a road or a job crosses keeps an event for any road and season
+   (`validateRoadEvents.ts`). Not done: `slots` (a leg ends at dawn, so the hour is always the
+   same) and `when` conditions, until an event needs them; the new kinds of event are step 7.

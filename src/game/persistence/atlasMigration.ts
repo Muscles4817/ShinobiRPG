@@ -9,5 +9,5 @@ type RawState = Record<string, unknown>;
 export function v67ToV68(state: RawState): RawState {
   if (typeof state.atlas === 'object' && state.atlas !== null) return state;
   const here = typeof state.locationId === 'string' ? [state.locationId] : [];
-  return { ...state, atlas: { known: [], visited: here } };
+  return { ...state, atlas: { known: [], visited: here, recentRoad: [], roadSeen: [] } };
 }
