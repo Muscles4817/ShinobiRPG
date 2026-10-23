@@ -416,3 +416,23 @@ migration and a previous-version save test wherever the save shape changes.
    checks each kind's parts (`validateRoadEvents.ts`). Not yet: road sights on a field-book
    page (step 11 makes the Places page), and finds drawn from a region's wild places (regions
    don't know their places yet).
+
+8. **Travellers** (this step). People of the road (`TravellerDef`, `systems/missions/travellers.ts`,
+   a pack's `travellers`) each come as a road event of their own (`kind: 'traveller'`, made by
+   `travellerRoadEvents` when the content is built), uncommon unless they say, on the regions
+   they walk. The meeting is the next one with them (`nextMeeting`, `story/travellers.ts`): in
+   order, each once, and one that `needs` what an earlier meeting left them remembering is passed
+   over without it. Once every meeting is behind you they are met no more. The atlas keeps how far
+   you've come with each and what they remember (`atlas.travellers`, save v70). A meeting's
+   options are written like a decision's, with tones, and each may `remember` something and leave
+   a gift: a recipe, an ingredient, or word of the nearest place on the roads you haven't heard of
+   (`nearestUnheardOf`). Its own words are the prompt (`roadEventText`). The first cast, shared by
+   both packs (`shared/road/travellers.ts`): Ozu the peddler, Haru the pilgrim, Kaede the ronin and
+   the Willow Troupe, three meetings each, the last waiting on the first or second. Validated in
+   `validateTravellers.ts`: real regions, a first meeting anyone can reach, needs some earlier
+   meeting leaves, real tones and gifts. Not yet: selling from a traveller's pack, and memories
+   shared with a crew (a trip of your own has none to share them with).
+
+   **The choices' order, changed.** Step 7 put the cautious choice first. Now the choice that
+   meets the road comes first and the way round it second: face the foes or go round, push on
+   through the weather or wait it out, take the find or walk on, stop for the sight or walk on.
