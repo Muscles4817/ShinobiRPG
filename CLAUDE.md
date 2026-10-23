@@ -5,8 +5,9 @@ Rules marked **(enforced)** fail CI if broken; the rest are enforced in review.
 
 ## What this is
 
-**Shinobi RPG** — a text-based shinobi life-sim RPG, built as an offline-first PWA so it can be
-played on a phone while travelling. Original setting: Tōrōgakure, the Village Hidden Among
+**Shinobi RPG** — a text-based shinobi life-sim RPG. It is a **desktop game first**: a deep game
+sold as a paid desktop release (only the `original` pack ships in it), built as an offline-first
+web app that also plays in full on a phone. Original setting: Tōrōgakure, the Village Hidden Among
 Lanterns. Stack: TypeScript (strict), React, Vite, vite-plugin-pwa, Vitest.
 
 Roadmap (milestones): **1. vertical slice** (done) → **2. people & relationships** (done) → 3. progression (ranks, elements, spirits) → 4. world & travel → 5. branching paths (rogue / Kage)
@@ -1209,7 +1210,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   is always present except in scenes. _Here_ is the current location's village screen, whose
   place cards open place pages. Scenes (missions, fights) take over the whole screen and
   return to where you were.
-- **Desktop is a second arrangement, not a second game.** On a wide window (`useWideScreen`,
+- **Desktop leads; the phone is a second arrangement, not a second game.** New screens are
+  designed for a wide window first, then arranged for the phone, and both offer the same
+  actions. On a wide window (`useWideScreen`,
   `ui/layout/`, the one place the breakpoint lives) `.app.wide` lays out a side rail (the dock
   and the village's places, number keys for tabs), the main column and the you panel (vitals,
   the time, what waits on you, on every tab). It arranges the same screens and offers the
@@ -1268,8 +1271,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   a gain, a cost), never decoration: no gradient fills on cards or tiles.
 - **Avoid the generic-template look.** No small uppercase letter-spaced labels (labels are
   sentence case; a section label is a serif heading), no " · "-joined meta lines (write a
-  phrase), no coloured left-edge bars on cards, no emoji. Check new screens by screenshot at
-  390px, not just by tests.
+  phrase), no coloured left-edge bars on cards, no emoji. Check new screens by screenshot on a
+  wide window and at 390px, not just by tests.
 - **Tokens only**: colours, fonts and radii come from `ui/theme/tokens.css`. Icons and scenery
   are inline SVG in `ui/art/` (offline, no image files). Tap targets ≥ 40px. Motion is subtle
   and always disabled under `prefers-reduced-motion`. Night is the default theme.
@@ -1285,4 +1288,4 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 1. `npm run check` (and `npm run check:release`) are green.
 2. New behaviour has tests; boundaries respected without lint/arch exceptions.
 3. Save compatibility preserved (migration + test if the shape changed).
-4. Works at phone width (≈390px) and offline.
+4. Works on a wide window and at phone width (≈390px), and offline.

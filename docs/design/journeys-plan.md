@@ -68,13 +68,11 @@ All proposed until agreed.
 7. **Jobs use the map's roads.** A job that goes somewhere names where. The map supplies its
    road, and the job's own beats are stops on it.
 8. **Designed for the desk first.** The montage is laid out for a wide window first (the map
-   large, the story beside it); on a phone it stacks. See the open question on platform.
+   large, the story beside it); on a phone it stacks. Agreed: the game is desktop-first
+   (CLAUDE.md, "What this is" and the UI rules).
 
 ### Open questions
 
-- **Platform.** CLAUDE.md says the game is an offline-first phone PWA with desktop as a second
-  arrangement. If desktop becomes the lead (a paid desktop release), that is a change to
-  CLAUDE.md and the UI rules, not only to this plan. The design below works either way.
 - **Does hurrying skip passing places?** Proposed: hurry walks past landmarks you've seen
   before and stops at ones you haven't.
 
@@ -290,3 +288,20 @@ migration and a previous-version save test wherever the save shape changes.
 10. **The original pack's map**, as 3.8.
 11. **The Places page** of the field book, and its reward.
 12. **The fan pack's map**, filled to the same density.
+
+---
+
+## Part 5: What was built
+
+1. **The journey view** (this step). `journeyView` (`game/views/journeyView.ts`) reads the trip
+   under way: the road as one line in walking order through each route's bends
+   (`views/journeyPath.ts`), each leg's span along it as a share of the whole (a route's length
+   shared among its legs by their days), the region as a caption, the places passed and the
+   destination as stops, legs and days walked, where the seal stands, the day and hour, what
+   the road waits on (the next leg, a road event, the fire, a fight, the story), whether you
+   are hurrying, and a frame of the map around the road. A road walked back after turning
+   round part-way up a route starts where you stood: the stretch is matched to its route by
+   the regions its legs cross, since the plan doesn't record the spot. Legs walked are counted
+   in one place (`legsWalked` in `game/journeys.ts`), which turning back now uses too. Region
+   captions are read from the region's id for now; a pack may name its regions later. Nothing
+   draws the view yet: step 2 does.

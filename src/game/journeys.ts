@@ -1,4 +1,10 @@
-import { startRun, type JourneyPlan, type MissionDef, type MissionStage } from '@/systems/missions';
+import {
+  startRun,
+  type JourneyPlan,
+  type MissionDef,
+  type MissionRun,
+  type MissionStage,
+} from '@/systems/missions';
 import { findJourney, type Journey, type RouteDef } from '@/systems/travel';
 
 import type { GameContext } from './context';
@@ -96,6 +102,12 @@ function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
     const road = plan.hunt ? huntedLeg(plan.hunt, ctx, walk) : [walk];
     return plan.quick || i === plan.legs.length - 1 ? road : [...road, CAMP];
   });
+}
+
+/** How many legs are behind you: those passed, and one whose road event waits on your choice. */
+export function legsWalked(run: MissionRun, stages: readonly MissionStage[]): number {
+  const passed = stages.slice(0, run.stageIndex).filter((s) => s.kind === 'leg').length;
+  return run.roadEvent && stages[run.stageIndex]?.kind === 'leg' ? passed + 1 : passed;
 }
 
 /** The legs walked so far, walked back the other way: each heads where the one before began. */
