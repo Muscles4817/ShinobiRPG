@@ -4,6 +4,7 @@ import {
   type ArcAct,
   type DecisionOption,
   type MissionDef,
+  writtenOptions,
   type MissionStage,
 } from '@/systems/missions';
 
@@ -86,7 +87,7 @@ function storyProblems(m: MissionDef, roadMarks: ReadonlySet<string>): string[] 
 }
 
 function eventProblems(pack: ContentPack): string[] {
-  const options: DecisionOption[] = pack.roadEvents.flatMap((e) => [...e.options]);
+  const options: DecisionOption[] = pack.roadEvents.flatMap((e) => [...writtenOptions(e)]);
   const regions = new Set(pack.roadEvents.flatMap((e) => e.regions));
   const roads = pack.missions.flatMap((m) =>
     m.stages.flatMap((s) => (s.kind === 'leg' && s.region ? [[m.id, s.region] as const] : [])),
@@ -207,7 +208,7 @@ function baseProblems(pack: ContentPack, arcId: string, act: ArcAct): string[] {
 export function validateStory(pack: ContentPack): string[] {
   const roadMarks = new Set(
     pack.roadEvents
-      .flatMap((e) => e.options.flatMap((o) => o.effects ?? []))
+      .flatMap((e) => writtenOptions(e).flatMap((o) => o.effects ?? []))
       .flatMap((e) => (e.kind === 'mark' ? [e.mark] : [])),
   );
   return [

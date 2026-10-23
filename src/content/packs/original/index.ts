@@ -1,3 +1,4 @@
+import { DESERT_INGREDIENTS } from '../../shared/desert';
 import { bestiary } from '../../shared/bestiary';
 import { ORIGINAL_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
@@ -199,6 +200,7 @@ export const ORIGINAL_PACK: ContentPack = {
   ingredients: [
     ...INGREDIENTS,
     ...WILD_INGREDIENTS,
+    ...DESERT_INGREDIENTS,
     ...TOROGAKURE_INGREDIENTS,
     ...REGIONAL_INGREDIENTS,
     ...SHIOMACHI_INGREDIENTS,

@@ -1,5 +1,5 @@
 import { CONTENT_PACKS } from '@/content';
-import type { Danger, RoadEventDef } from '@/systems/missions';
+import type { Danger, DecisionRoadEvent } from '@/systems/missions';
 import { DAYS_PER_SEASON, seasonOf } from '@/systems/time';
 import { act, newGame } from '@/test/gameFixtures';
 
@@ -10,7 +10,7 @@ import { ROAD_EVENT_CHANCE, roadEventOn } from './roadEvents';
 /** What the road brings: by its danger and the season, by rarity, and not the same again soon. */
 
 const original = CONTENT_PACKS.find((p) => p.id === 'original')!;
-const event = (id: string, more: Partial<RoadEventDef> = {}): RoadEventDef => ({
+const event = (id: string, more: Partial<DecisionRoadEvent> = {}): DecisionRoadEvent => ({
   id,
   regions: ['coast-road'],
   text: 'Something on the road.',

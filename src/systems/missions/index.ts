@@ -83,7 +83,6 @@ export type {
   Ending,
   EndingStage,
   Outcome,
-  RoadEventDef,
   TextVariant,
 } from './storyStages';
 export {
@@ -130,4 +129,17 @@ export {
   type ArcDef,
   type ArcRecommendation,
 } from './arcs';
-export { ROAD_RARITIES, type RoadRarity } from './storyStages';
+export {
+  isDecisionEvent,
+  ROAD_EVENT_KINDS,
+  ROAD_RARITIES,
+  writtenOptions,
+  type DecisionRoadEvent,
+  type EncounterRoadEvent,
+  type FindRoadEvent,
+  type RoadEventDef,
+  type RoadEventKind,
+  type RoadRarity,
+  type SightRoadEvent,
+  type WeatherRoadEvent,
+} from './roadEvents';

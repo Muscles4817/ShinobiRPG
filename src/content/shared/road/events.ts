@@ -2,6 +2,7 @@ import type { RoadEventDef } from '@/systems/missions';
 
 import { ROUGH_ROAD_EVENTS } from './roughEvents';
 import { SEASON_ROAD_EVENTS } from './seasonEvents';
+import { WILD_ROAD_EVENTS } from './wildEvents';
 
 /**
  * Things that happen on the road, drawn by the region and the day. Written once for every pack
@@ -280,4 +281,5 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
   ...EVERYDAY_ROAD_EVENTS,
   ...SEASON_ROAD_EVENTS,
   ...ROUGH_ROAD_EVENTS,
+  ...WILD_ROAD_EVENTS,
 ];

@@ -1,5 +1,11 @@
 import { checkChance, STAT_INFO } from '@/systems/stats';
-import { stageFoes, type LedgerLine, type MissionDef, type MissionRun } from '@/systems/missions';
+import {
+  currentStage,
+  stageFoes,
+  type LedgerLine,
+  type MissionDef,
+  type MissionRun,
+} from '@/systems/missions';
 
 import type { GameContext } from './context';
 import { requirePerson } from './people/cast';
@@ -57,7 +63,7 @@ export function bondsNow(state: GameState, ids: readonly string[]): Record<strin
 
 /** On a failed fight: the trick of theirs that beat you, and its counter. */
 function foeAdvice(ctx: GameContext, def: MissionDef, run: MissionRun): string | null {
-  const stage = def.stages[run.stageIndex];
+  const stage = currentStage(def, run);
   const foes = stage ? stageFoes(stage).map((id) => ctx.content.enemies.require(id)) : [];
   for (const foe of foes) {
     const [note] = traitNotes(foe.traits ?? []);
@@ -70,7 +76,7 @@ function foeAdvice(ctx: GameContext, def: MissionDef, run: MissionRun): string |
 
 /** On a failed check: the approach that was your best chance. */
 function checkAdvice(state: GameState, def: MissionDef, run: MissionRun): string | null {
-  const stage = def.stages[run.stageIndex];
+  const stage = currentStage(def, run);
   if (stage?.kind !== 'check') return null;
   const odds = (a: (typeof stage.approaches)[number]) =>
     checkChance(state.character.stats[a.stat], a.difficulty);

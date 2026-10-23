@@ -7,7 +7,6 @@ import { gateRefusal } from '../greetings';
 import { huntForTrip } from '../hunt';
 import { journeyTo, setOut } from '../journeys';
 import { plannedStops } from '../journeyStops';
-import { activeStage } from '../missionFlow';
 import { leaveBlocker, spendLeave } from '../leave';
 import { busyReason, firstBlocker } from '../ops';
 import type { GameState } from '../state';
@@ -21,13 +20,10 @@ import type { ActionHandler, ActionOf } from './types';
  */
 export function walkOn(state: GameState, ctx: GameContext, rng: Rng): GameState {
   let now = state;
-  // A stop waits on your choice, as a road event does.
-  while (
-    now.mission?.journey?.quick === true &&
-    !now.mission.roadEvent &&
-    activeStage(now, ctx)?.kind !== 'stop'
-  ) {
-    now = missionContinue.perform(now, { type: 'missionContinue' }, ctx, rng);
+  // Whatever waits on your choice (a road event, a stop, foes in the way) halts you.
+  const onward = { type: 'missionContinue' } as const;
+  while (now.mission?.journey?.quick === true && missionContinue.check(now, onward, ctx) === null) {
+    now = missionContinue.perform(now, onward, ctx, rng);
   }
   return now;
 }

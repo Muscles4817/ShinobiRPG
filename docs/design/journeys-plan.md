@@ -396,3 +396,23 @@ migration and a previous-version save test wherever the save shape changes.
    Every region a road or a job crosses keeps an event for any road and season
    (`validateRoadEvents.ts`). Not done: `slots` (a leg ends at dawn, so the hour is always the
    same) and `when` conditions, until an event needs them; the new kinds of event are step 7.
+
+7. **New kinds of road event** (this step). A road event is a `kind` (`RoadEventDef`, a union in
+   `systems/missions/roadEvents.ts`; a written `decision` needs none). The game gives the others
+   their choices (`story/roadChoices.ts`), the cautious one first, each saying what it costs on
+   the choice bar, and does what they leave to do (`story/roadAfter.ts`). An `encounter` brings
+   one of its bands of bestiary foes, none worse than the road (`partiesFor`, drawn by hash), and
+   only on a trip of your own, since a job's fights are its own story's. Go the long way round for
+   energy, or face them: the encounter becomes the run's `detour` (`MissionRun.detour`, read by
+   `currentStage` and cleared by `advance`), played where you stand with its recon and its ways
+   past, and the road goes on after it. Its pay is nobody's (`job: 'deliver'`). A `find` puts one
+   of its ingredients in your pantry and the field book. Road finds count as a way to come by an
+   ingredient, which gives the original pack the shared desert finds. `weather` is waited out for
+   part of the day or pushed through for energy and health. A `sight` teaches a little to those who
+   stop and watch. A hurried trip now halts wherever the road needs you, as Continue would
+   (`walkOn`). Seventeen events (`wildEvents.ts`). Foes: wolves, footpads, a bear in the pass,
+   scavengers on the strand and hunters in the dunes. Finds: one for each shared region. Weather: a
+   downpour, a sandstorm and fog. Sights: a heron, falling stars, a whale and a hawk. Validation
+   checks each kind's parts (`validateRoadEvents.ts`). Not yet: road sights on a field-book
+   page (step 11 makes the Places page), and finds drawn from a region's wild places (regions
+   don't know their places yet).
