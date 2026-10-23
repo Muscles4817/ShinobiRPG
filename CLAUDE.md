@@ -28,6 +28,8 @@ npm run format         # auto-format with Prettier
 npm run desktop:dev    # the desktop app (Electron) on the Vite dev server
 npm run desktop:start  # the desktop app on the release build
 npm run desktop:dist   # package the desktop app from the release build (docs/desktop.md)
+npm run mobile:sync    # phone app: checked release build copied into android/ and ios/
+npm run mobile:android # open the Android project in Android Studio (mobile:ios: Xcode)
 ```
 
 Run `npm run check` before every commit. Nothing merges unless it is green.
@@ -51,6 +53,8 @@ electron/     The desktop app's shell (Electron main process and preload; its ow
               to electron/dist). Serves the release build from app://game, keeps each slot as a
               file in the app's data folder; the page reaches it only through window.shinobiNative
               (platform/electronBackend.ts). Its code never imports src/. See docs/desktop.md.
+android/ ios/ Phone app (Capacitor): generated native projects, committed; they ship only the
+              release build (capacitor.config.ts `webDir: dist-release`). See docs/mobile.md.
 ```
 
 ### Dependency rules (enforced by `npm run arch`)
@@ -1218,7 +1222,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   writes atomic) and add a `NativeBackend` that detects the shell to `NATIVE_BACKENDS` in
   `platform/chooseStores.ts`. `openCachedStores` reads everything at boot and writes behind each
   save, so the game stays synchronous; a failed write is reported by the next save, and the
-  service worker is registered only outside a shell.
+  service worker is registered only outside a shell. The phone app's is
+  `platform/capacitorBackend.ts` (files in the app's data directory) with `phoneShell.ts`
+  (status bar, Android back as Esc); `docs/mobile.md` says how to build it.
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.
 

@@ -1,4 +1,5 @@
 import { openCachedStores, type Stores } from './cachedStores';
+import { capacitorBackend } from './capacitorBackend';
 import { ELECTRON_BACKEND } from './electronBackend';
 import {
   createLocalEditsStore,
@@ -14,7 +15,7 @@ import type { NativeBackend } from './storageBackend';
  */
 
 /** Every shell the game knows how to run in. A shell adds its backend here. */
-const NATIVE_BACKENDS: readonly NativeBackend[] = [ELECTRON_BACKEND];
+const NATIVE_BACKENDS: readonly NativeBackend[] = [ELECTRON_BACKEND, capacitorBackend];
 
 export interface ChosenStores {
   readonly stores: Stores;
