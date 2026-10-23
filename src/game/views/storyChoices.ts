@@ -10,6 +10,7 @@ import { rationDays } from '../road';
 import { campChoices, watchOdds } from '../story/camp';
 import { SENSEI_FIRESIDE, senseiAlong } from '../story/fireside';
 import { endingFor } from '../story/ending';
+import { stopPrompt } from './stopChoices';
 import { storyOf } from '../story/state';
 import type { GameState } from '../state';
 import { personSlots } from '../people/pronouns';
@@ -155,6 +156,15 @@ export function stagePrompt(state: GameState, ctx: GameContext, stage: MissionSt
     const event = ctx.content.roadEvents.get(run.roadEvent);
     return { prompt: event?.text ?? null, choices: decisionChoices(state, ctx) };
   }
+  return stageChoices(state, ctx, stage, story);
+}
+
+function stageChoices(
+  state: GameState,
+  ctx: GameContext,
+  stage: MissionStage,
+  story: ReturnType<typeof storyOf>,
+): StagePrompt {
   switch (stage.kind) {
     case 'narrative':
       return {
@@ -191,6 +201,8 @@ export function stagePrompt(state: GameState, ctx: GameContext, stage: MissionSt
         prompt: variantText(story, stage.text, stage.variants),
         choices: campPrompt(state, ctx, stage),
       };
+    case 'stop':
+      return stopPrompt(state, ctx, stage.locationId);
     case 'ending':
       return {
         prompt: null,

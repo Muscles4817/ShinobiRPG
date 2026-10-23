@@ -12,7 +12,14 @@ import {
   type LedgerLine,
   type ThreadDef,
 } from './story';
-import type { CampStage, DecisionStage, EndingStage, Outcome, TextVariant } from './storyStages';
+import type {
+  CampStage,
+  DecisionStage,
+  EndingStage,
+  Outcome,
+  StopStage,
+  TextVariant,
+} from './storyStages';
 
 /**
  * Missions are a linear sequence of stages. This module tracks progress through them
@@ -82,6 +89,7 @@ type StageBody =
   | EncounterStage
   | DecisionStage
   | CampStage
+  | StopStage
   | EndingStage;
 
 /** A stage, played only when its condition holds (and skipped otherwise). */

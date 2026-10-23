@@ -20,6 +20,8 @@ function sceneLines(stage: MissionStage): string[] {
     case 'leg':
     case 'narrative':
       return [stage.text];
+    case 'stop':
+      return [];
   }
 }
 

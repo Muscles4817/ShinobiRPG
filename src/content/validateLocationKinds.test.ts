@@ -50,6 +50,17 @@ describe('kinds of location', () => {
     );
   });
 
+  it('asks a landmark for a sight to stop for, a camp, and little else', () => {
+    expect(withLocation((l) => ({ ...l, kind: 'landmark' }))).toEqual(
+      expect.arrayContaining([
+        'location "kiri-ford" is a landmark with no sight',
+        'location "kiri-ford" is a landmark with no camp place',
+        'location "kiri-ford" is a landmark with an inn',
+        'location "kiri-ford" is a landmark of more than 3 places',
+      ]),
+    );
+  });
+
   it('starts you in a village', () => {
     expect(withLocation((l) => ({ ...l, kind: 'town' }), ORIGINAL_PACK.startLocationId)).toContain(
       `the start location "${ORIGINAL_PACK.startLocationId}" isn't a village`,

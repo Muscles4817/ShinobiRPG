@@ -77,6 +77,7 @@ export {
 export type {
   CampActivity,
   CampStage,
+  StopStage,
   DecisionOption,
   DecisionStage,
   Ending,

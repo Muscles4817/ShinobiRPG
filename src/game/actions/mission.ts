@@ -131,6 +131,8 @@ function continueBlocker(state: GameState, stage: MissionStage): string | null {
       return 'Decide first.';
     case 'encounter':
       return state.mission?.encounter ? 'Choose how to go in first.' : null;
+    case 'stop':
+      return 'Choose whether to stop first.';
     case 'narrative':
     case 'leg':
     case 'combat':
@@ -216,6 +218,7 @@ export const missionContinue: ActionHandler<ActionOf<'missionContinue'>> = {
         return afterStage(playEnding(state, def, stage), ctx);
       case 'check':
       case 'decision':
+      case 'stop':
         return state;
     }
   },

@@ -93,6 +93,16 @@ export interface CampStage {
   readonly activities: readonly CampActivity[];
 }
 
+/**
+ * A trip's pause at a place on the way (`docs/design/journeys-plan.md` 3.3): the game decides
+ * what the place offers by its kind (a room at a town's inn, a landmark's sight, a day in wild
+ * country), and you take it or walk on.
+ */
+export interface StopStage {
+  readonly kind: 'stop';
+  readonly locationId: string;
+}
+
 export interface Ending extends Outcome {
   readonly when?: Condition;
   readonly text: string;

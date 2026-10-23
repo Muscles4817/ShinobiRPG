@@ -25,7 +25,12 @@ export {
   type Spot,
 } from './homes';
 export type { AtlasDef, AtlasLabel, MapLabelSide, MapPoint } from './atlas';
-export { CAMPING_KINDS, LOCATION_KINDS, type LocationKind } from './locationKinds';
+export {
+  CAMPING_KINDS,
+  LOCATION_KINDS,
+  type LandmarkSight,
+  type LocationKind,
+} from './locationKinds';
 export type { ExerciseDef } from './exercises';
 export { INJURY_SITE_LABELS, type InjuryCause, type InjuryDef, type InjurySite } from './injuries';
 export type {

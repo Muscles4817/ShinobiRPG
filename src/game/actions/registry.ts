@@ -38,6 +38,7 @@ import { endConversation, reply, talk } from './talk';
 import { testChakraPaper } from './chakraPaper';
 import { assignTeam, chooseSensei } from './team';
 import { makeCamp } from './camp';
+import { journeyStop } from './journeyStop';
 import { dismissReport, leaveFight, leaveJourney, travel } from './travel';
 import { followSight } from './village';
 import { befriendStray } from './companions';
@@ -116,6 +117,7 @@ export const HANDLERS: Registry = {
   leaveFight,
   leaveJourney,
   makeCamp,
+  journeyStop,
   buyGear,
   buyTool,
   buyIntel,

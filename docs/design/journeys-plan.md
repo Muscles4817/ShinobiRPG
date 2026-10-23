@@ -349,3 +349,17 @@ migration and a previous-version save test wherever the save shape changes.
    way (`data-kind`): a ringed seal for a village, a square block for a city, the plain seal for
    a town, an open dashed ring for wild country and a diamond for a landmark, the last two named
    in italic. No wild country is open yet: step 10 fills the map.
+
+4. **Stops on the way** (this step). A trip's stages gain a `stop` (`systems/missions`
+   `StopStage`, naming a location) wherever a stretch ends at a place that offers one, read from
+   its kind (`game/journeyStops.ts`, `stopOffer`): a town, city or village with an inn offers a
+   room for the night in place of the camp after it (paid at its own prices, grudges included,
+   `priceAt`; healing what a bed heals over a night in camp), a landmark its `sight`
+   (`LandmarkSight`: what you see and a small stat reward, required of every open landmark), and
+   wild country a day spent in it (a day passes as on the road, and two draws from its finds).
+   Each stop is taken or passed (`journeyStop`; "Camp outside …" or "Walk on"), shown with its
+   own choices (`views/stopChoices.ts`) and a 宿 stamp on the route. Hurrying walks past every
+   stop for now; once the map remembers where you've been (step 5) it will stop at landmarks you
+   haven't seen. Today's stops: the fan pack's highway towns (Shukuba on the way to Tanzaku); the
+   original pack gains its first with the wild country and landmarks of step 10. Not yet: your
+   own bed when a trip passes your home village.

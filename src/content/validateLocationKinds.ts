@@ -39,6 +39,9 @@ function openProblems(at: string, location: LocationDef): string[] {
       .filter((kind) => !has(kind))
       .map((kind) => `${at} is a ${location.kind} with no ${kind} place`),
     ...(camping && has('inn') ? [`${at} is a ${location.kind} with an inn`] : []),
+    ...(location.kind === 'landmark' && !location.sight
+      ? [`${at} is a landmark with no sight`]
+      : []),
     ...sizeProblems(at, location),
   ];
 }

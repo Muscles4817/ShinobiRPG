@@ -69,6 +69,7 @@ const ROUTE_MARKS: Readonly<Record<MissionStage['kind'], { glyph: string; label:
   check: { glyph: '試', label: 'A trial' },
   decision: { glyph: '選', label: 'A choice' },
   camp: { glyph: '火', label: 'Camp' },
+  stop: { glyph: '宿', label: 'A stop' },
   encounter: { glyph: '敵', label: 'Foes' },
   combat: { glyph: '戦', label: 'A fight' },
   ending: { glyph: '終', label: 'The end' },
