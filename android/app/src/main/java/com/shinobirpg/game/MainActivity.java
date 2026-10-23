@@ -1,0 +1,5 @@
+package com.shinobirpg.game;
+
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {}

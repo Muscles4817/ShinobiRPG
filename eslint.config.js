@@ -15,6 +15,9 @@ export default tseslint.config(
       '.claude',
       '.dependency-cruiser.cjs',
       'docs/design/art-mockups',
+      // The native projects Capacitor generates, with the game's build copied inside them.
+      'android',
+      'ios',
     ],
   },
   js.configs.recommended,
@@ -83,7 +86,7 @@ export default tseslint.config(
     languageOptions: { globals: { ...globals.node } },
   },
   {
-    files: ['vite.config.ts', 'eslint.config.js', 'scripts/**'],
+    files: ['vite.config.ts', 'capacitor.config.ts', 'eslint.config.js', 'scripts/**'],
     languageOptions: { globals: { ...globals.node } },
     rules: { 'no-restricted-syntax': 'off' },
   },

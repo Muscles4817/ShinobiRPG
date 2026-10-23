@@ -26,9 +26,17 @@
     "desktop:build": "node -e \"require('node:fs').rmSync('electron/dist',{recursive:true,force:true})\" && tsc -p electron/tsconfig.build.json",
     "desktop:dev": "npm run desktop:build && node scripts/desktop-dev.mjs",
     "desktop:start": "npm run build:release && npm run desktop:build && electron .",
-    "desktop:dist": "node scripts/desktop-dist.mjs"
+    "desktop:dist": "node scripts/desktop-dist.mjs",
+    "mobile:sync": "npm run check:release && cap sync",
+    "mobile:android": "cap open android",
+    "mobile:ios": "cap open ios"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/ios": "^8.5.3",
     "@fontsource/atkinson-hyperlegible": "^5.3.0",
     "@fontsource/shippori-mincho": "^5.3.0",
     "react": "^19.3.0",
@@ -36,6 +44,7 @@
   },
   "devDependencies": {
     "@electron/asar": "^4.3.1",
+    "@capacitor/cli": "^8.5.3",
     "@eslint/js": "^10.0.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

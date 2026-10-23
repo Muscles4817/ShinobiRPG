@@ -7,3 +7,5 @@ dist-release
 docs/design/art-mockups
 electron/dist
 release
+android
+ios
