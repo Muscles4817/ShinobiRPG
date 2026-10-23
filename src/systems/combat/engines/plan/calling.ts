@@ -1,6 +1,6 @@
 import { fightingPower } from '@/systems/stats';
 
-import type { CombatCall, CombatTechnique } from '../../contract';
+import type { CombatCall, CombatTechnique, RangeBand } from '../../contract';
 import { alive } from '../../rules/body';
 import { lastDitch, outmatched } from '../../rules/trumps';
 import { hasVerb, openStep } from '../../rules/verbs';
@@ -8,6 +8,8 @@ import { answers, callsOf, isOut } from './calls';
 import { playable, type Card } from './cards';
 import { climbReasons, isStill } from './climbing';
 import { effortOf } from './effort';
+import { readsInTheMoment } from './judgement';
+import { stillnessHolds } from './stillness';
 import { opponentsOf } from './senses';
 import { upkeepOut, UPKEEP_HORIZON } from './summons';
 import type { PlanFighter, Reads } from './state';
@@ -92,9 +94,10 @@ function mounted(self: PlanFighter, fighters: readonly PlanFighter[]): boolean {
 /**
  * The road into Sage Mode: a mount to cover and carry them, the summons the mode needs (the sage
  * toads, onto their shoulders), then the meditation; with no mount to be had, a conceal to
- * meditate in. Undefined when there is nothing to do towards it now.
+ * meditate in when sitting still in the open wouldn't hold. Undefined when there is nothing to
+ * do towards it now.
  */
-function towardsSage(self: PlanFighter, round: Table): Card | undefined {
+function towardsSage(self: PlanFighter, round: CallingMoment): Card | undefined {
   const sage = sageToOpen(self);
   if (!sage) return undefined;
   const ready = callers(self, round);
@@ -106,14 +109,19 @@ function towardsSage(self: PlanFighter, round: Table): Card | undefined {
     const call = ready.find((t) => callsOf(t).some((id) => missing.includes(id)));
     return call ? jutsu(call) : undefined;
   }
+  // Going still only where the stillness would hold (`stillness.ts`); else hide first, or fight
+  // on and let the plan change the fight (a hold, distance) before sitting down.
+  const safe = !readsInTheMoment(self) || stillnessHolds(self, { ...round, band: round.band });
+  if (safe) return canAfford(self, round, sage) ? jutsu(sage) : undefined;
   const hide = self.techniques.find((t) => hasVerb(t, 'conceal') && canAfford(self, round, t));
-  if (!covered && hide) return jutsu(hide);
-  return canAfford(self, round, sage) ? jutsu(sage) : undefined;
+  return !self.hidden && hide ? jutsu(hide) : undefined;
 }
 
 /** What the fight has shown a summoner so far: whom they face, and what has been seen. */
 export interface CallingMoment {
   readonly fighters: readonly PlanFighter[];
+  /** The distance the fight stands at. */
+  readonly band: RangeBand;
   readonly reads?: Reads;
   readonly exchange?: number;
 }

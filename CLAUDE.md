@@ -406,7 +406,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`UPKEEP_HORIZON`). A kit that calls more than one summon fights **by summoning**
     (`plan/calling.ts`): calls take no plan slot; against anyone strong the whole style at once,
     otherwise only what the fight shows they need (read as a ladder's step is, `climbReasons`):
-    the biggest body when outmatched or hurt, else the cheapest that answers. A `mount` covers its caller
+    the biggest body when outmatched or hurt, else the cheapest that answers; a killer's answer
+    (a set-up, or playing for time) comes before any call, and a mind that reads the fight goes
+    still only where the stillness would hold (`plan/stillness.ts`: each foe's worst attack on a
+    still body), hiding first or fighting on where it wouldn't. A `mount` covers its caller
     and carries a still rider clear (`plan/riding.ts`); `perch` summons (the sage toads) land on
     the caller's shoulders, not the field (`plan/perching.ts`). **Sage Mode** is the `sage`
     ladder: an empower that is `still` is meditated into (a turn open, as if gathering; it opens

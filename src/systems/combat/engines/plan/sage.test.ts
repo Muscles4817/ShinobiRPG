@@ -3,6 +3,7 @@ import type { TechniqueDef } from '@/systems/techniques';
 import type { CombatantSetup, CombatCall } from '../../contract';
 import { avoidOdds, techniqueIncoming } from './avoid';
 import { kitCall } from './calling';
+import { plannedPlay } from './priority';
 import { playable } from './cards';
 import { afterEmpowers } from './empower';
 import { meditationEnds } from './meditation';
@@ -89,6 +90,40 @@ const BOLT: TechniqueDef = {
   discipline: 'ninjutsu',
   effects: [{ verb: 'damage', power: 20 }],
   chakraCost: 5,
+  rank: 'C',
+  difficulty: 60,
+};
+
+const KICK: TechniqueDef = {
+  id: 'kick',
+  name: 'Kick',
+  description: 'A kick.',
+  discipline: 'taijutsu',
+  effects: [{ verb: 'damage', power: 24 }],
+  chakraCost: 0,
+  rank: 'C',
+  difficulty: 60,
+};
+
+const SNARE: TechniqueDef = {
+  id: 'snare',
+  name: 'Snare',
+  description: 'The ground grips their legs.',
+  discipline: 'ninjutsu',
+  reach: ['close', 'mid', 'far'],
+  effects: [{ verb: 'pin', power: 14 }],
+  chakraCost: 8,
+  rank: 'C',
+  difficulty: 60,
+};
+
+const HIDE: TechniqueDef = {
+  id: 'hide',
+  name: 'Hide',
+  description: 'Gone from sight.',
+  discipline: 'ninjutsu',
+  effects: [{ verb: 'conceal', power: 14 }],
+  chakraCost: 8,
   rank: 'C',
   difficulty: 60,
 };
@@ -240,7 +275,7 @@ describe('meditating into Sage Mode', () => {
 
 describe('a summoner calling from the kit', () => {
   const step = (r: Round): Round => {
-    const card = kitCall(sage(r), r);
+    const card = kitCall(sage(r), { ...r, band: r.range });
     return card?.kind === 'jutsu'
       ? useJutsu(r, { actor: sage(r), target: undefined, rng: createRng(1) }, card.technique)
       : r;
@@ -250,9 +285,8 @@ describe('a summoner calling from the kit', () => {
     const weak = Object.fromEntries(
       Object.keys(attributes).map((k) => [k, 1]),
     ) as typeof attributes;
-    expect(
-      kitCall(sage(round({}, { attributes: weak })), round({}, { attributes: weak })),
-    ).toBeUndefined();
+    const facingWeak = round({}, { attributes: weak });
+    expect(kitCall(sage(facingWeak), { ...facingWeak, band: facingWeak.range })).toBeUndefined();
   });
 
   it('against a match: a mount, then the sage toads, then Sage Mode', () => {
@@ -268,9 +302,49 @@ describe('a summoner calling from the kit', () => {
     const third = step(step(step(round())));
     const open = meditationEnds(third, 'sage');
     expect(sage(open).empowered?.opened?.ladder).toBe('sage');
-    expect(kitCall(sage(open), open)).toBeUndefined();
+    expect(kitCall(sage(open), { ...open, band: open.range })).toBeUndefined();
     const struck = hurt(open, (f) => f.id === 'sage', 40);
-    const called = kitCall(sage(struck), struck);
+    const called = kitCall(sage(struck), { ...struck, band: struck.range });
     expect(called?.kind === 'jutsu' && called.technique.id).toBe('call-pup');
+  });
+
+  it('won’t sit still up close beside a foe far too quick to be carried clear of', () => {
+    const quick = { ...attributes, speed: 45, strength: 30, taijutsu: 40 };
+    const ready = (over: Partial<CombatantSetup> = {}): Round => {
+      const start = round(over, { attributes: quick, techniques: [KICK] });
+      return { ...step(step({ ...start, range: 'close' })), range: 'close' };
+    };
+    const beside = ready();
+    expect(sage(beside).perched).toEqual(['elder', 'elder-wife']);
+    const besideCall = kitCall(sage(beside), { ...beside, band: 'close' });
+    expect(besideCall?.kind === 'jutsu' && besideCall.technique.id).not.toBe('sage-mode');
+    const withCover = ready({
+      techniques: [CALL_BOSS, CALL_SAGES, CALL_PUP, SAGE_MODE, BOLT, HIDE],
+    });
+    const hiding = kitCall(sage(withCover), { ...withCover, band: 'close' });
+    expect(hiding?.kind === 'jutsu' && hiding.technique.id).toBe('hide');
+  });
+
+  it('plays for time against a killer before calling anything', () => {
+    const brute = { ...attributes, strength: 45, taijutsu: 45, speed: 20 };
+    const start = round(
+      { techniques: [CALL_BOSS, CALL_SAGES, CALL_PUP, SAGE_MODE, BOLT, SNARE] },
+      { attributes: brute, techniques: [KICK] },
+    );
+    const gateOpen = {
+      techniqueId: 'gate',
+      added: {},
+      opened: { ladder: 'gates', step: 3 },
+      since: 1,
+      healthPerExchange: 0,
+    } as const;
+    const facing: Round = {
+      ...start,
+      range: 'close',
+      watching: true,
+      fighters: start.fighters.map((f) => (f.id === 'foe' ? { ...f, empowered: gateOpen } : f)),
+    };
+    const play = plannedPlay(sage(facing), facing);
+    expect(play.card.kind === 'jutsu' && play.card.technique.id).toBe('snare');
   });
 });

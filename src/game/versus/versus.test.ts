@@ -180,7 +180,7 @@ describe('versus bouts', () => {
       told.push(...combatScene(state, naruto)!.log);
       state = act(state, { type: 'combatAct', optionId: 'round' }, naruto);
     }
-    const story = told.join(' ');
+    const story = [...told, ...(state.combatFinale?.log ?? [])].join(' ');
     expect(story).toMatch(/Gamabunta answers the call/);
     expect(story).toMatch(/Fukasaku perches on Jiraiya’s shoulder/);
     expect(story).toMatch(/Natural energy floods into Jiraiya/);
