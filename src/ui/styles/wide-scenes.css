@@ -153,8 +153,11 @@
 .app.wide.scene-journey .journey-stamp strong {
   font-size: 1rem;
 }
+.app.wide.scene-journey .journey-arrival-title {
+  top: 6%;
+}
 .app.wide.scene-journey .journey-arrival-title h2 {
-  font-size: 5rem;
+  font-size: 4.4rem;
 }
 .app.wide.scene-journey .journey-arrival-title p {
   font-size: 1.2rem;

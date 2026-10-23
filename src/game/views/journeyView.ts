@@ -81,8 +81,11 @@ export interface JourneyView {
   readonly seal: number;
   readonly daysWalked: number;
   readonly daysInAll: number;
-  /** How far you've come, in words: "A day behind you, two ahead". */
-  readonly progress: string;
+  /**
+   * How far you've come, in words, once each number of legs is walked ("A day behind you, two
+   * ahead" at one), so the stamp can keep up with the seal as it walks.
+   */
+  readonly progress: readonly string[];
   readonly day: number;
   readonly slot: TimeSlot;
   readonly waiting: JourneyWaiting;
@@ -206,7 +209,9 @@ export function journeyView(state: GameState, ctx: GameContext): JourneyView | n
     seal: legs[walked - 1]?.end ?? 0,
     daysWalked: days(walked),
     daysInAll: days(legs.length),
-    progress: progressLine(days(walked), days(legs.length)),
+    progress: [0, ...legs.map((_, i) => i + 1)].map((n) =>
+      progressLine(days(n), days(legs.length)),
+    ),
     day: state.time.day,
     slot: TIME_SLOTS[state.time.slot] ?? 'morning',
     waiting,

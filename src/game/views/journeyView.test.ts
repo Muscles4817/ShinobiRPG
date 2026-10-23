@@ -83,8 +83,12 @@ describe('journeyView', () => {
     const camp = journeyView(toCamp(setOut('sakyugakure')), ctx)!;
     expect(camp).toMatchObject({ walked: 1, daysWalked: 1, waiting: 'camp' });
     expect(camp.seal).toBe(camp.legs[0]!.end);
-    expect(camp.progress).toBe('A day behind you, two ahead');
-    expect(journeyView(setOut('sakyugakure'), ctx)!.progress).toBe('Three days on the road ahead');
+    expect(camp.progress[camp.walked]).toBe('A day behind you, two ahead');
+    expect(journeyView(setOut('sakyugakure'), ctx)!.progress).toEqual([
+      'Three days on the road ahead',
+      'A day behind you, two ahead',
+      'The road behind you',
+    ]);
   });
 
   it('counts a leg walked while its road event waits on you', () => {

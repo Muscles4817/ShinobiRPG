@@ -329,3 +329,9 @@ migration and a previous-version save test wherever the save shape changes.
    walk in (`leaveJourney`); cards wait until then. Report cards and the day's sheet hold back
    while a trip or a fight is ending. The story's feed and choices are shared with jobs
    (`MissionStory`).
+
+   **Tuned after a play-through.** While the seal walks, the story column keeps the leg's own
+   line (only the situation and its choices wait, behind one "Skip ahead"), so a desk's column
+   is never empty; the stamp and the stretches struck through keep up with the seal leg by leg
+   (`JourneyView.progress` is words for each number of legs walked); and the place's title
+   card sits high, clear of any town's skyline.

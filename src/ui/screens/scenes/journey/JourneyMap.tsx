@@ -19,6 +19,14 @@ interface JourneyMapProps {
   readonly children?: ReactNode;
 }
 
+/** Shares closer than this count as the same place on the road. */
+const SAME_PLACE = 1e-6;
+
+/** How many legs the seal has passed where it stands now (the walk may be under way). */
+export function legsPassed(view: JourneyView, shown: number): number {
+  return view.legs.filter((l) => l.end <= shown + SAME_PLACE).length;
+}
+
 /** Where a map point sits in the frame, as a share of the pane. */
 function placed(p: MapPoint, frame: MapFrame): CSSProperties {
   return {
@@ -102,7 +110,7 @@ export function JourneyMap({ view, date, slot, travel, children }: JourneyMapPro
         <strong>
           {date}, {slot}
         </strong>
-        <span>{view.progress}</span>
+        <span>{view.progress[legsPassed(view, travel.shown)]}</span>
       </p>
       {children}
     </section>

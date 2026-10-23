@@ -1,43 +1,17 @@
 import { headerView, journeyView, missionScene } from '@/game';
 
 import { Vitals } from '../../../components/Vitals';
-import { KeyHint } from '../../../layout/KeyHint';
 import { Pane } from '../../../layout/Pane';
-import { useChoiceKeys } from '../../../layout/useChoiceKeys';
 import { useWideScreen } from '../../../layout/useWideScreen';
 import type { ScreenProps } from '../../types';
 import { MissionStory } from '../MissionStory';
+import { OneChoice } from '../OneChoice';
 import { Threads } from '../StoryLines';
 import { ArrivalCard } from './ArrivalCard';
-import { JourneyMap } from './JourneyMap';
+import { JourneyMap, legsPassed } from './JourneyMap';
 import { useSealTravel } from './useSealTravel';
 
-/** The only way on is the primary one: 1 or Enter takes it. */
-const ONLY_WAY = [{ primary: true }];
-
-interface OneChoiceProps {
-  readonly label: string;
-  readonly onChoose: () => void;
-  readonly wide: boolean;
-}
-
-/** A single way on, for the bar under the story: skipping the walk, or walking in. */
-function OneChoice({ label, onChoose, wide }: OneChoiceProps) {
-  useChoiceKeys(ONLY_WAY, onChoose, wide);
-  return (
-    <nav className="choices" aria-label="Choices">
-      <button
-        type="button"
-        className="choice primary"
-        aria-keyshortcuts={wide ? '1' : undefined}
-        onClick={onChoose}
-      >
-        {wide && <KeyHint index={0} />}
-        <b>{label}</b>
-      </button>
-    </nav>
-  );
-}
+const SKIP = 'Skip ahead';
 
 /**
  * A trip of your own: the road on the map, and beside it (on a phone, under it) where it goes,
@@ -53,6 +27,7 @@ export function JourneyScene({ ctx, state, perform }: ScreenProps) {
   const travel = useSealTravel(view?.seal ?? 0, state.settings.animations);
   if (!view) return null;
   const arrived = view.arrival !== null && !travel.moving ? view.arrival : null;
+  const passed = legsPassed(view, travel.shown);
   return (
     <>
       <Pane name="map">
@@ -66,10 +41,7 @@ export function JourneyScene({ ctx, state, perform }: ScreenProps) {
           <h1>{view.title}</h1>
           <ol className="journey-legs" aria-label="The road's stretches">
             {view.legs.map((leg, i) => (
-              <li
-                key={i}
-                className={i < view.walked ? 'done' : i === view.walked ? 'now' : undefined}
-              >
+              <li key={i} className={i < passed ? 'done' : i === passed ? 'now' : undefined}>
                 {leg.caption}
               </li>
             ))}
@@ -77,10 +49,7 @@ export function JourneyScene({ ctx, state, perform }: ScreenProps) {
           <Vitals meters={header.meters} />
         </header>
         {scene && <Threads threads={scene.threads} />}
-        {travel.moving ? (
-          // What the road brings waits until the seal gets there.
-          <OneChoice label="Skip ahead" onChoose={travel.skip} wide={wide} />
-        ) : arrived ? (
+        {arrived ? (
           <OneChoice
             label={arrived.enter}
             onChoose={() => {
@@ -88,8 +57,16 @@ export function JourneyScene({ ctx, state, perform }: ScreenProps) {
             }}
             wide={wide}
           />
+        ) : scene ? (
+          // What the road brings waits until the seal gets there.
+          <MissionStory
+            scene={scene}
+            perform={perform}
+            wide={wide}
+            {...(travel.moving ? { held: { label: SKIP, onSkip: travel.skip } } : {})}
+          />
         ) : (
-          scene && <MissionStory scene={scene} perform={perform} wide={wide} />
+          travel.moving && <OneChoice label={SKIP} onChoose={travel.skip} wide={wide} />
         )}
       </Pane>
     </>
