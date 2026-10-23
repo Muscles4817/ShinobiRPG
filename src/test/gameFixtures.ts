@@ -95,6 +95,16 @@ export function act(state: GameState, action: GameAction, context: GameContext =
   return result.value;
 }
 
+/**
+ * The answer to a road event that keeps a walk moving: the way round foes on the road (facing
+ * them is an encounter to play), else the first option.
+ */
+export function keepClear(state: GameState, context: GameContext = ctx): GameAction {
+  const id = state.mission?.roadEvent;
+  const event = id ? context.content.roadEvents.get(id) : undefined;
+  return { type: 'missionDecide', optionIndex: event?.kind === 'encounter' ? 1 : 0 };
+}
+
 /** A character with every stat set to `value`, fully healed for those stats. */
 export function withAllStats(state: GameState, value: number): GameState {
   const stats = Object.fromEntries(Object.keys(state.character.stats).map((k) => [k, value]));

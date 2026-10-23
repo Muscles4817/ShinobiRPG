@@ -455,3 +455,23 @@ migration and a previous-version save test wherever the save shape changes.
    placed by `at` partway along a road (every road a job walks is one stretch so far), the
    montage for a job's road (a job keeps its own scene), stops on a job's road, and moving the
    other jobs with `endsAt` over, as they are touched.
+
+10. **The original pack's map** (this step), as 3.8. Six new places, none famous, so each is heard
+    of on the roads or found by walking them (`packs/original/wildCountry.ts`): the Cedar Deep,
+    wild forest on the track to Kiri Ford (its woods, and a camp at a hermit's empty hut);
+    Hanebashi, a post town below the pass (an inn and an outfitter for the cold); Lanternfall, a
+    landmark on the pass where the old lanterns were washed (a sight that steadies the will); the
+    Drowned Shrine, a landmark in the bay reached by the tide path, for water-walkers only (a
+    sight that trains chakra control); the Salt Flats, wild country at the desert's edge (the
+    desert's finds, and a caravan camp); and the Old Battlefield off the dune road (a sight that
+    teaches how a fight goes wrong). The roads are split where the places stand on them. The forest
+    track is now two days through the Cedar Deep. The hill road to Hanebashi is safe, and above it
+    the path to Lanternfall and on to Mount Reikon is deadly. Kiri Ford reaches the dunes by way of
+    the Salt Flats, with a spur to the battlefield. The bay crossing is two days on the water, so
+    the forest is still the quicker way to the ford for those who don't mind its bandits. A
+    place's name reads "the" mid-sentence on the Travel tab ("By way of the Cedar Deep"). Tests
+    that walk trips now walk past stops and go round foes (`keepClear` in the fixtures), and the
+    test wild country has ids of its own. Not yet: backdrops of their own (forest, shrine and
+    battlefield borrow the mountain, coast and dunes), the hermit, the battlefield's keeper as a
+    teacher, Hanebashi's pilgrims' gossip, and Sakyūgakure and Mount Reikon still waiting on
+    their own steps.

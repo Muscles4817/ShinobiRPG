@@ -1,5 +1,5 @@
 import { CONTENT_PACKS, type LocationDef, type MapPoint } from '@/content';
-import { act, newGame } from '@/test/gameFixtures';
+import { act, keepClear, newGame } from '@/test/gameFixtures';
 
 import { createGameContext, type GameContext } from '../context';
 import { dispatch } from '../dispatch';
@@ -22,26 +22,44 @@ const ctx: GameContext = createGameContext({
   }),
 });
 
+/** The same, with the road to Hanebashi walked in two stretches, a day and then three. */
+const twoStretches: GameContext = createGameContext({
+  ...original,
+  routes: original.routes.map((r) =>
+    r.id === 'hanebashi-road'
+      ? {
+          ...r,
+          legs: [
+            { region: 'hill-road', days: 1, text: 'The hill road climbs.' },
+            { region: 'hill-road', days: 3, text: 'It climbs on, and on.' },
+          ],
+        }
+      : r,
+  ),
+});
+
 const pointOf = (id: string): MapPoint => {
   const { x, y } = ctx.content.locations.require(id).map;
   return { x, y };
 };
 
 /** A jōnin comes and goes: these tests are about the road, not leave. */
-function setOut(locationId: string): GameState {
-  const game = newGame({}, ctx);
+function setOut(locationId: string, context: GameContext = ctx): GameState {
+  const game = newGame({}, context);
   const jonin = { ...game, standing: { ...game.standing, rank: 'jonin' as const } };
-  return act(jonin, { type: 'travel', locationId }, ctx);
+  return act(jonin, { type: 'travel', locationId }, context);
 }
 
-/** On along the road until the fire, answering whatever it brings. */
-function toCamp(start: GameState): GameState {
+/** On along the road until the fire, answering whatever it brings and walking past stops. */
+function toCamp(start: GameState, context: GameContext = ctx): GameState {
   let state = start;
-  for (let step = 0; activeStage(state, ctx)?.kind !== 'camp' && step < 8; step++) {
+  for (let step = 0; activeStage(state, context)?.kind !== 'camp' && step < 8; step++) {
     const answer = state.mission?.roadEvent
-      ? ({ type: 'missionDecide', optionIndex: 0 } as const)
-      : ({ type: 'missionContinue' } as const);
-    state = act(state, answer, ctx);
+      ? keepClear(state, context)
+      : activeStage(state, context)?.kind === 'stop'
+        ? ({ type: 'journeyStop', stay: false } as const)
+        : ({ type: 'missionContinue' } as const);
+    state = act(state, answer, context);
   }
   return state;
 }
@@ -53,20 +71,20 @@ describe('journeyView', () => {
   });
 
   it('lays the road out from home to the destination, through the places it passes', () => {
-    const view = journeyView(setOut('sakyugakure'), ctx)!;
+    const view = journeyView(setOut('kiri-ford'), ctx)!;
     expect(view.path[0]).toEqual(pointOf('torogakure'));
-    expect(view.path.at(-1)).toEqual(pointOf('sakyugakure'));
+    expect(view.path.at(-1)).toEqual(pointOf('kiri-ford'));
     expect(view.legs.map((l) => [l.region, l.toward])).toEqual([
+      ['forest-track', 'cedar-deep'],
       ['forest-track', 'kiri-ford'],
-      ['dune-road', 'sakyugakure'],
     ]);
     expect(view.stops).toEqual([
-      expect.objectContaining({ id: 'kiri-ford', kind: 'through', at: view.legs[0]!.end }),
-      expect.objectContaining({ id: 'sakyugakure', kind: 'destination', at: 1 }),
+      expect.objectContaining({ id: 'cedar-deep', kind: 'through', at: view.legs[0]!.end }),
+      expect.objectContaining({ id: 'kiri-ford', kind: 'destination', at: 1 }),
     ]);
     expect(view.legs[0]!.start).toBe(0);
     expect(view.legs[1]!.start).toBe(view.legs[0]!.end);
-    expect(view).toMatchObject({ walked: 0, seal: 0, waiting: 'road', daysInAll: 3 });
+    expect(view).toMatchObject({ walked: 0, seal: 0, waiting: 'road', daysInAll: 2 });
   });
 
   it('frames the road with room around it, on the map', () => {
@@ -80,13 +98,13 @@ describe('journeyView', () => {
   });
 
   it('moves the seal on as legs are walked, and stops at the fire', () => {
-    const camp = journeyView(toCamp(setOut('sakyugakure')), ctx)!;
+    const camp = journeyView(toCamp(setOut('kiri-ford')), ctx)!;
     expect(camp).toMatchObject({ walked: 1, daysWalked: 1, waiting: 'camp' });
     expect(camp.seal).toBe(camp.legs[0]!.end);
-    expect(camp.progress[camp.walked]).toBe('A day behind you, two ahead');
-    expect(journeyView(setOut('sakyugakure'), ctx)!.progress).toEqual([
-      'Three days on the road ahead',
-      'A day behind you, two ahead',
+    expect(camp.progress[camp.walked]).toBe('A day behind you, one ahead');
+    expect(journeyView(setOut('kiri-ford'), ctx)!.progress).toEqual([
+      'Two days on the road ahead',
+      'A day behind you, one ahead',
       'The road behind you',
     ]);
   });
@@ -98,19 +116,19 @@ describe('journeyView', () => {
   });
 
   it('shares a route among its legs by their days', () => {
-    const [hill, pass] = journeyView(setOut('mount-reikon'), ctx)!.legs;
+    const [first, second] = journeyView(setOut('hanebashi', twoStretches), twoStretches)!.legs;
     const spanOf = (l: { start: number; end: number }) => l.end - l.start;
-    expect(spanOf(pass!)).toBeCloseTo(spanOf(hill!) * 3);
+    expect(spanOf(second!)).toBeCloseTo(spanOf(first!) * 3);
   });
 
   it('turned back part-way up a road, starts where you stood', () => {
-    const camp = toCamp(setOut('mount-reikon'));
-    const up = journeyView(camp, ctx)!;
+    const camp = toCamp(setOut('hanebashi', twoStretches), twoStretches);
+    const up = journeyView(camp, twoStretches)!;
     const sealAt = up.legs[0]!.end;
-    const back = journeyView(act(camp, { type: 'turnBack' }, ctx), ctx)!;
+    const back = journeyView(act(camp, { type: 'turnBack' }, twoStretches), twoStretches)!;
     expect(back.legs.map((l) => l.region)).toEqual(['hill-road']);
     expect(back.path.at(-1)).toEqual(pointOf('torogakure'));
-    expect(back.path[0]).not.toEqual(pointOf('mount-reikon'));
+    expect(back.path[0]).not.toEqual(pointOf('hanebashi'));
     expect(back.path[0]).not.toEqual(pointOf('torogakure'));
     expect(sealAt).toBeGreaterThan(0);
   });
@@ -122,7 +140,7 @@ describe('arriving', () => {
     let state = start;
     for (let step = 0; state.mission && step < 12; step++) {
       const answer = state.mission.roadEvent
-        ? ({ type: 'missionDecide', optionIndex: 0 } as const)
+        ? keepClear(state, ctx)
         : ({ type: 'missionContinue' } as const);
       state = act(state, answer, ctx);
     }

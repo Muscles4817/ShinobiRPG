@@ -12,6 +12,7 @@ import { findPerson } from '../people/cast';
 import { closedBy } from '../routeNeeds';
 import { companionsOnOffer } from '../trips';
 import { rationDays } from '../road';
+import { placeInText } from '../placeName';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { travelMap, type TravelMap } from './travelMap';
@@ -154,7 +155,9 @@ function destinationsFrom(
     .map((l) => {
       const open = journeyTo(state, ctx, l.id);
       const journey = open ?? plannedJourneyTo(state, ctx, l.id);
-      const via = (journey?.via ?? []).map((id) => ctx.content.locations.require(id).name);
+      const via = (journey?.via ?? []).map((id) =>
+        placeInText(ctx.content.locations.require(id).name),
+      );
       const here = l.id === state.locationId;
       return {
         ...choice(state, ctx, { type: 'travel', locationId: l.id, ...asking }),
