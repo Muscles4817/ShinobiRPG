@@ -1,6 +1,12 @@
 import { hashUnit } from '@/core';
 import { jobProfile } from '@/content';
-import { dangerAtLeast, type Danger, type RoadEventDef, type RoadRarity } from '@/systems/missions';
+import {
+  dangerAtLeast,
+  type Danger,
+  type EncounterRoadEvent,
+  type RoadEventDef,
+  type RoadRarity,
+} from '@/systems/missions';
 import { seasonOf } from '@/systems/time';
 import { meetOnRoad } from '@/systems/travel';
 
@@ -29,16 +35,36 @@ export const ROAD_EVENT_CHANCE: Readonly<Record<Danger, number>> = {
 const RARITY_WEIGHT: Readonly<Record<RoadRarity, number>> = { common: 6, uncommon: 3, rare: 1 };
 
 /** A stretch of road: the kind of road it is, and the worst it may hold when it says. */
-interface Stretch {
+export interface Stretch {
   readonly region?: string;
   readonly danger?: Danger;
 }
 
 /** The worst a stretch may bring: its own road's, else the job's worst foe, else nothing much. */
-function dangerOf(state: GameState, ctx: GameContext, stretch: Stretch): Danger {
+export function stretchDanger(state: GameState, ctx: GameContext, stretch: Stretch): Danger {
   if (stretch.danger) return stretch.danger;
   const def = activeMission(state, ctx);
   return (def && jobProfile(def, (id) => ctx.content.enemies.get(id)).danger) ?? 'petty';
+}
+
+/** The bands of foes an encounter may bring on a road this dangerous: none worse than the road. */
+export function partiesFor(
+  event: EncounterRoadEvent,
+  danger: Danger,
+  ctx: GameContext,
+): readonly (readonly string[])[] {
+  return event.parties.filter((party) =>
+    party.every((id) => dangerAtLeast(danger, ctx.content.enemies.require(id).danger)),
+  );
+}
+
+/**
+ * Whether the event can happen here at all: foes come only on a trip of your own (a job's fights
+ * are its own story's), and only when some band of them is no worse than the road.
+ */
+function canHappen(state: GameState, ctx: GameContext, e: RoadEventDef, danger: Danger): boolean {
+  if (e.kind !== 'encounter') return true;
+  return state.mission?.journey !== undefined && partiesFor(e, danger, ctx).length > 0;
 }
 
 /** The region's events this road and season allow, not met for good. */
@@ -49,7 +75,8 @@ function eventsFor(state: GameState, ctx: GameContext, region: string, danger: D
       e.regions.includes(region) &&
       dangerAtLeast(danger, e.danger ?? 'petty') &&
       (e.seasons?.includes(season) ?? true) &&
-      !state.atlas.roadSeen.includes(e.id),
+      !state.atlas.roadSeen.includes(e.id) &&
+      canHappen(state, ctx, e, danger),
   );
 }
 
@@ -72,7 +99,7 @@ export function roadEventOn(
   const run = state.mission;
   if (!run || !stretch.region) return null;
   const key = [state.board.seed, state.time.day, run.missionId, run.stageIndex] as const;
-  const danger = dangerOf(state, ctx, stretch);
+  const danger = stretchDanger(state, ctx, stretch);
   if (hashUnit(...key, 'happens') >= ROAD_EVENT_CHANCE[danger]) return null;
   const fits = eventsFor(state, ctx, stretch.region, danger);
   // Only when every event the road could bring was met lately does one come round again.

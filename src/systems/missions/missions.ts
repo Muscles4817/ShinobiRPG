@@ -199,6 +199,11 @@ export interface MissionRun {
   readonly camp?: { readonly done: readonly string[] };
   /** On a leg: the road event that came up, waiting on your choice. */
   readonly roadEvent?: string;
+  /**
+   * A stage the road put in the way (foes met on it), played where you stand before the run
+   * moves on past the leg it came up on.
+   */
+  readonly detour?: MissionStage;
   /** Bond with each crew member when the job began, so the debrief can say how it grew. */
   readonly bondsAtStart?: Readonly<Record<string, number>>;
   /** What the village remembered when the job began (world marks), for `remembers`. */
@@ -272,13 +277,14 @@ export function pickTwist(def: MissionDef, roll: number): string | null {
 
 /** The stage awaiting the player, or undefined when every stage is done. */
 export function currentStage(def: MissionDef, run: MissionRun): MissionStage | undefined {
-  return def.stages[run.stageIndex];
+  return run.detour ?? def.stages[run.stageIndex];
 }
 
 /** Moves to the next stage, adding any notes describing what just happened. */
 export function advance(run: MissionRun, ...notes: MissionNote[]): MissionRun {
-  // What belonged to the stage just finished (an encounter, a camp, a road event) is left behind.
-  const { encounter: _encounter, camp: _camp, roadEvent: _event, ...kept } = run;
+  // What belonged to the stage just finished (an encounter, a camp, a road event, a detour) is left
+  // behind.
+  const { encounter: _encounter, camp: _camp, roadEvent: _event, detour: _detour, ...kept } = run;
   return { ...kept, stageIndex: run.stageIndex + 1, notes: [...run.notes, ...notes] };
 }
 

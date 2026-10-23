@@ -127,10 +127,14 @@ function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
   });
 }
 
-/** How many legs are behind you: those passed, and one whose road event waits on your choice. */
+/**
+ * How many legs are behind you: those passed, and one whose road event (or the foes it brought)
+ * waits on you.
+ */
 export function legsWalked(run: MissionRun, stages: readonly MissionStage[]): number {
   const passed = stages.slice(0, run.stageIndex).filter((s) => s.kind === 'leg').length;
-  return run.roadEvent && stages[run.stageIndex]?.kind === 'leg' ? passed + 1 : passed;
+  const held = run.roadEvent !== undefined || run.detour !== undefined;
+  return held && stages[run.stageIndex]?.kind === 'leg' ? passed + 1 : passed;
 }
 
 /** The legs walked so far, walked back the other way: each heads where the one before began. */

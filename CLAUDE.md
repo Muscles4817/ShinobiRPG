@@ -640,7 +640,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `leg` with a `region` may bring a road event (`content.roadEvents`, drawn by hash,
     `story/roadEvents.ts`): likelier the more danger its road holds (`ROAD_EVENT_CHANCE`, the leg's
     `danger`, else the job's worst foe), from the events that danger and the season allow, weighted
-    by `rarity`, passing over those met lately (`atlas.recentRoad`) and `once` ones met for good. A job
+    by `rarity`, passing over those met lately (`atlas.recentRoad`) and `once` ones met for good.
+    An event is a `kind` (`systems/missions/roadEvents.ts`): a written `decision`, or one the game
+    gives its choices (`story/roadChoices.ts`, the cautious one first): an `encounter` of bestiary
+    foes no worse than the road (`partiesFor`; trips only, a job's fights being its own), faced as
+    the run's `detour` stage or gone round; a `find` taken into the pantry; `weather` waited out
+    for part of the day or pushed through; a `sight` that teaches a little (`story/roadAfter.ts`). A job
     may have a `charge` (whose trust is a thread) and `twists` (a hidden mark rolled at the
     start). What the crew say comes from `content.voices` by moment and trait. The **debrief**
     (`game/debrief.ts`) reads it all back: the ledger line by line with the pay each moved (a
@@ -1112,8 +1117,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   on an `ending` stage whose last ending has no `when`. `validateStory` checks every mark read
   is set somewhere, every thread named is kept, tones are real and every region has road
   events. **Add a road event or a voice line:** `content/shared/road/` (everyday, season and
-  rough-road files; an event may ask a least road `danger`, `seasons`, a `rarity` or `once`; every
-  region a road crosses keeps one for any road and season, validated; effects may name only
+  rough-road files, and `wildEvents.ts` for foes, finds, weather and sights; an event may ask a
+  least road `danger`, `seasons`, a `rarity` or `once`; every region a road crosses keeps a
+  non-encounter one for any road and season, and a foes event a band its least road may bring,
+  validated; effects may name only
   `daylight` and `charge` threads) or `content/shared/talk/voices.ts` (every trait
   needs a line for every moment).
 - **Add foes to a mission:** use an `encounter` stage (recon, then an approach, then maybe a

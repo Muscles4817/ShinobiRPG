@@ -57,7 +57,18 @@ export function validateWorld(pack: ContentPack): string[] {
       id,
     })),
   );
-  for (const { place, kind, id } of [...placeLinks, ...festivalLinks, ...dropLinks]) {
+  // Something found lying by a road (`validateRoadEvents.ts`) is a way to come by it too.
+  const roadLinks = pack.roadEvents.flatMap((e) =>
+    e.kind === 'find'
+      ? e.ingredientIds.map((id) => ({
+          place: { id: `road event ${e.id}` },
+          kind: 'ingredient' as const,
+          id,
+        }))
+      : [],
+  );
+  const links = [...placeLinks, ...festivalLinks, ...dropLinks, ...roadLinks];
+  for (const { place, kind, id } of links) {
     if (!refs[kind].has(id))
       problems.push(`place "${place.id}" references unknown ${kind} "${id}"`);
     if (kind !== 'technique') reached[kind].add(id);

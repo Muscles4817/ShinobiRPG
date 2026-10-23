@@ -2,7 +2,7 @@ import { capitalise, counted, fillSlots } from '@/core';
 import { holds, variantText, type CheckApproach, type MissionStage } from '@/systems/missions';
 import { checkChance, STAT_INFO } from '@/systems/stats';
 
-import { openOptions } from '../actions/missionStory';
+import { openChoices } from '../actions/missionStory';
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { checkHand } from '../missionRoles';
@@ -58,14 +58,15 @@ function roadDetail(days: number, rations: number): string {
 function decisionChoices(state: GameState, ctx: GameContext): SceneChoice[] {
   const run = state.mission;
   if (!run) return [];
-  const options = openOptions(state, ctx).map((o, optionIndex) => ({
+  const options = openChoices(state, ctx).map(({ option: o, detail }, optionIndex) => ({
     o,
+    detail: detail ?? '',
     open: holds(storyOf(run), o.when),
     action: { type: 'missionDecide', optionIndex } as const,
   }));
   const open = options
     .filter((x) => x.open)
-    .map(({ o, action }) => ({ label: o.label, detail: '', primary: false, action }));
+    .map(({ o, detail, action }) => ({ label: o.label, detail, primary: false, action }));
   const missed = options.find((x) => !x.open && x.o.unseen !== undefined);
   const why = missed?.o.unseen;
   if (!missed || why === undefined) return open;
