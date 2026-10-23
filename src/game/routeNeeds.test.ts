@@ -62,7 +62,7 @@ describe('roads with needs', () => {
     ]);
     const across = act(atPort(BOTH), { type: 'travel', locationId: 'kiri-ford' });
     expect(across.mission?.journey?.legs).toEqual(
-      bay.legs.map((leg) => ({ ...leg, toward: 'kiri-ford' })),
+      bay.legs.map((leg) => ({ ...leg, toward: 'kiri-ford', danger: bay.danger })),
     );
   });
 
