@@ -251,6 +251,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     mission: null,
     combat: null,
     combatFinale: null,
+    journeyEnd: null,
     reports: [],
     people: NO_PEOPLE,
     settings: defaultSettings(ctx),

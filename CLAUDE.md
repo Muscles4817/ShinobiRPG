@@ -168,8 +168,8 @@ ui ──► game ──► content ──► systems ──► core
     adds their day, what they can do and are growing into (`views/personFacts.ts`), what they'll
     teach you and a genin's growth since the academy; tastes come with friendship.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
-    (fight › encounter › mission › conversation › team assignment › chakra paper › the sensei's
-    first meeting). Anything that must happen before
+    (fight › encounter › mission or journey › conversation › team assignment › chakra paper ›
+    the sensei's first meeting). Anything that must happen before
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
     derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`
@@ -653,7 +653,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     locked is closed, as is one whose `needs` you don't meet: a rank, a world mark, or walking
     on water or trees, asked only of `canWalk` in `game/walking.ts`). Setting out (`travel`) starts a mission run carrying a `journey` plan, so
     the road plays as on a job (`game/journeys.ts`: a leg per stretch, a camp between, road
-    events); `quick` hurries on until a road event needs a choice. Away from home you sleep at
+    events); `quick` hurries on until a road event needs a choice. A trip takes the screen as a
+    **journey** (`docs/design/journeys-plan.md`): the road on the map (`views/journeyView.ts`,
+    `ui/screens/scenes/journey/`), your seal walking each leg as it is done, what the road
+    brings held back until the seal gets there, and on arrival the trip kept as `journeyEnd`
+    for the place's title card until you walk in (`leaveJourney`; like a finished fight, it
+    never blocks play). The map is framed on the road; its lines keep their weight at any zoom
+    (`--map-zoom`). Away from home you sleep at
     an `inn`; a friend may come along (`game/trips.ts`, a `companion` crew, found at your
     lodging), you may turn back at a camp, and coming home shows what the village did while
     you were away; people who live in a town (`homeLocationId`) are met there, its festivals
@@ -1228,8 +1234,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   something on desktop previews it in the panel beside it (`useHoverPreview`: a Jutsu card in the
   detail panel, a fighter's read on the plan screen, and in its place a card's technique as the Jutsu tab
   reads it: `fightTechnique` through `CombatOption.techniqueId`, shown by `JutsuDetail`); a click still picks. Scenes still take the
-  whole screen; the ones in `WIDE_SCENES` (`layout/sceneLayout.ts`: the mission and the fight's
-  plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
+  whole screen; the ones in `WIDE_SCENES` (`layout/sceneLayout.ts`: the mission, the journey and the
+  fight's plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
   desktop shows beside a scene is a view model too (`missionSoFar`). Every other scene is a story
   scene: one wider reading column, its `.choices` bar numbered by CSS and pressed by
   `ChoiceBarKeys`, so a new scene with a choice bar gets both without code, and beside it the

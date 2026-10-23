@@ -31,6 +31,7 @@ import { CombatScene } from './scenes/CombatScene';
 import { ConversationScene } from './scenes/ConversationScene';
 import { EncounterScene } from './scenes/EncounterScene';
 import { ExamScene } from './scenes/ExamScene';
+import { JourneyScene } from './scenes/journey/JourneyScene';
 import { MissionScene } from './scenes/MissionScene';
 import { PromotionScene } from './scenes/PromotionScene';
 import { RaceScene } from './scenes/RaceScene';
@@ -156,6 +157,8 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
       return <EncounterScene {...props} />;
     case 'mission':
       return <MissionScene {...props} />;
+    case 'journey':
+      return <JourneyScene {...props} />;
     case 'exam':
       return <ExamScene {...props} />;
     case 'promotion':
@@ -181,9 +184,11 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
  */
 function cardsOver(state: GameState, ctx: GameContext, scene: SceneKind | null) {
   const report = state.reports[0];
-  const showReport = report && !state.combatFinale ? report : null;
+  // A fight's or a trip's last moments play out before any card covers them.
+  const ending = state.combatFinale !== null || state.journeyEnd !== null;
+  const showReport = report && !ending ? report : null;
   const day = dayEndView(state, ctx);
-  const quiet = !scene && !showReport && !state.combatFinale;
+  const quiet = !scene && !showReport && !ending;
   return { showReport, showDay: day?.mode === 'full' && quiet ? day : null };
 }
 

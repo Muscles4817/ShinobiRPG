@@ -312,3 +312,20 @@ migration and a previous-version save test wherever the save shape changes.
    keeps a wide view of the country (`FRAME_MIN_SPAN`), and the map's lines and labels are
    drawn at the Travel tab's weight whatever the zoom, since they are sized in map units. The
    caption names the leg you are on, which during a road event is the one just walked.
+
+2. **The montage** (this step). A trip is its own scene, `journey` (a job stays `mission`):
+   `JourneyScene` sets the map beside the road's story on a desk and above it on a phone. The
+   map (`JourneyMap`) is the atlas framed on the road and widened to the pane's shape
+   (`fitFrame`), its lines kept at the Travel tab's weight by `--map-zoom`; the road ahead is
+   dotted, the road walked inked red up to your seal, both found along the drawn curve
+   (`alongCurve` in `mapCurve.ts`), with the places on the way and the destination marked. When
+   a leg is done the seal walks it (`useSealTravel`: its share of a whole road's time, eased; a
+   tap or "Skip ahead" ends it; still under reduced motion or with animations off), and what
+   the road brings next waits until it gets there. The hour washes over the map (pale morning,
+   amber evening, dark night), the camp fire glows round the seal, the region's name fades in
+   as a caption and the date and "a day behind you, one ahead" sit on a stamp. Arriving keeps
+   the trip as `journeyEnd` (save v67) so the seal walks the last stretch and the place comes
+   up as a title card (its scene, name and epithet, "After two days on the road") until you
+   walk in (`leaveJourney`); cards wait until then. Report cards and the day's sheet hold back
+   while a trip or a fight is ending. The story's feed and choices are shared with jobs
+   (`MissionStory`).

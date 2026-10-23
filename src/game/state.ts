@@ -11,7 +11,7 @@ import type { Exhaustion, Injury } from '@/systems/injuries';
 import type { Inventory } from '@/systems/inventory';
 import type { Journal } from '@/systems/journal';
 import type { Appearance, ClassStanding, Grades, Pronouns } from '@/systems/profile';
-import type { MissionRun } from '@/systems/missions';
+import type { JourneyPlan, MissionRun } from '@/systems/missions';
 import type { Standing } from '@/systems/standing';
 import type { Aptitude, AptitudeKnown, StatDelta, StatId, Stats } from '@/systems/stats';
 import type { Element, TechniqueBook } from '@/systems/techniques';
@@ -58,6 +58,12 @@ export interface GameState {
   readonly combat: CombatState | null;
   /** A fight that just ended, kept for the watch screen until you move on. */
   readonly combatFinale: CombatFinale | null;
+  /**
+   * A trip of your own just walked to its end, kept so the map can walk its last stretch and
+   * say where you are, until you walk in (`leaveJourney`). Like a finished fight, it never
+   * blocks play.
+   */
+  readonly journeyEnd: JourneyPlan | null;
   /** Result cards waiting to be shown, oldest first. */
   readonly reports: readonly Report[];
   /** Classmates, bonds, your team and any conversation in progress. */

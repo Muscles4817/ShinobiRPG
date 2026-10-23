@@ -384,6 +384,12 @@
   --map-deadly: var(--seal);
   --map-here: var(--seal);
   --map-name: var(--paper-ink);
+  /*
+   * Lines and labels are sized in map units. A map showing only part of the country (a
+   * journey's) sets this to the share it shows, so they keep the weight they have on the
+   * whole map.
+   */
+  --map-zoom: 1;
   position: relative;
   width: 100%;
   background: var(--map-sea);
@@ -429,44 +435,44 @@
 }
 .map-hatch {
   stroke: var(--map-hatch);
-  stroke-width: 0.22;
+  stroke-width: calc(0.22 * var(--map-zoom));
 }
 .map-shore {
   fill: none;
-  stroke-width: var(--map-shore-width);
+  stroke-width: calc(var(--map-shore-width) * var(--map-zoom));
 }
 .map-land {
   fill: var(--map-land);
   stroke: var(--map-coast);
-  stroke-width: var(--map-coast-width);
+  stroke-width: calc(var(--map-coast-width) * var(--map-zoom));
 }
 .map-home {
   fill: var(--map-wash);
   stroke: var(--map-faint);
-  stroke-width: 0.35;
-  stroke-dasharray: 1 0.8;
+  stroke-width: calc(0.35 * var(--map-zoom));
+  stroke-dasharray: calc(1 * var(--map-zoom)) calc(0.8 * var(--map-zoom));
 }
 .map-border {
   fill: none;
   stroke: var(--map-faint);
-  stroke-width: 0.3;
-  stroke-dasharray: 1 0.8;
+  stroke-width: calc(0.3 * var(--map-zoom));
+  stroke-dasharray: calc(1 * var(--map-zoom)) calc(0.8 * var(--map-zoom));
 }
 .map-river {
   fill: none;
   stroke: var(--map-faint);
-  stroke-width: 0.4;
+  stroke-width: calc(0.4 * var(--map-zoom));
   stroke-linecap: round;
 }
 .map-label {
   font-family: var(--font-story);
   font-style: italic;
-  font-size: 2.2px;
+  font-size: calc(2.2px * var(--map-zoom));
   text-anchor: middle;
   fill: var(--map-faint);
 }
 .map-label.land.large {
-  font-size: 2.7px;
+  font-size: calc(2.7px * var(--map-zoom));
 }
 .map-label.sea {
   opacity: 0.8;
@@ -474,12 +480,12 @@
 .map-road {
   fill: none;
   stroke: var(--map-road);
-  stroke-width: 0.55;
+  stroke-width: calc(0.55 * var(--map-zoom));
   stroke-linecap: round;
   opacity: 0.85;
 }
 .map-road.closed {
-  stroke-dasharray: 1 1.4;
+  stroke-dasharray: calc(1 * var(--map-zoom)) calc(1.4 * var(--map-zoom));
   opacity: 0.5;
 }
 .map-road.deadly {

@@ -2,9 +2,11 @@ import { CONTENT_PACKS, type LocationDef, type MapPoint } from '@/content';
 import { act, newGame } from '@/test/gameFixtures';
 
 import { createGameContext, type GameContext } from '../context';
+import { dispatch } from '../dispatch';
 import { activeStage } from '../missionFlow';
 import type { GameState } from '../state';
 import { journeyView, regionCaption } from './journeyView';
+import { activeScene } from './peopleScenes';
 
 const original = CONTENT_PACKS.find((p) => p.id === 'original')!;
 const home = original.locations.find((l) => l.id === original.startLocationId)!;
@@ -45,8 +47,9 @@ function toCamp(start: GameState): GameState {
 }
 
 describe('journeyView', () => {
-  it('is only for a trip of your own', () => {
+  it('is only for a trip of your own, which takes the screen as a journey', () => {
     expect(journeyView(newGame({}, ctx), ctx)).toBeNull();
+    expect(activeScene(setOut('port-shiomachi'))).toBe('journey');
   });
 
   it('lays the road out from home to the destination, through the places it passes', () => {
@@ -80,6 +83,8 @@ describe('journeyView', () => {
     const camp = journeyView(toCamp(setOut('sakyugakure')), ctx)!;
     expect(camp).toMatchObject({ walked: 1, daysWalked: 1, waiting: 'camp' });
     expect(camp.seal).toBe(camp.legs[0]!.end);
+    expect(camp.progress).toBe('A day behind you, two ahead');
+    expect(journeyView(setOut('sakyugakure'), ctx)!.progress).toBe('Three days on the road ahead');
   });
 
   it('counts a leg walked while its road event waits on you', () => {
@@ -104,6 +109,45 @@ describe('journeyView', () => {
     expect(back.path[0]).not.toEqual(pointOf('mount-reikon'));
     expect(back.path[0]).not.toEqual(pointOf('torogakure'));
     expect(sealAt).toBeGreaterThan(0);
+  });
+});
+
+describe('arriving', () => {
+  /** On along the road, answering whatever it brings, until there. */
+  function arrive(start: GameState): GameState {
+    let state = start;
+    for (let step = 0; state.mission && step < 12; step++) {
+      const answer = state.mission.roadEvent
+        ? ({ type: 'missionDecide', optionIndex: 0 } as const)
+        : ({ type: 'missionContinue' } as const);
+      state = act(state, answer, ctx);
+    }
+    return state;
+  }
+
+  it('keeps the road on the map, walked, with the place for its title card', () => {
+    const there = arrive(setOut('port-shiomachi'));
+    expect(there.locationId).toBe('port-shiomachi');
+    expect(activeScene(there)).toBe('journey');
+    expect(journeyView(there, ctx)).toMatchObject({
+      waiting: 'arrived',
+      seal: 1,
+      arrival: {
+        name: 'Port Shiomachi',
+        line: 'After a day on the road',
+        enter: 'Walk into Port Shiomachi',
+      },
+    });
+  });
+
+  it('closes when you walk in, or set out again', () => {
+    const there = arrive(setOut('port-shiomachi'));
+    const onward = act(there, { type: 'travel', locationId: 'torogakure' }, ctx);
+    expect(onward.journeyEnd).toBeNull();
+    const inside = act(there, { type: 'leaveJourney' }, ctx);
+    expect(activeScene(inside)).toBeNull();
+    expect(journeyView(inside, ctx)).toBeNull();
+    expect(dispatch(inside, { type: 'leaveJourney' }, ctx).ok).toBe(false);
   });
 });
 

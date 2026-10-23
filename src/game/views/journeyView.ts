@@ -1,13 +1,15 @@
-import { clamp } from '@/core';
-import { MAP_SIZE, type MapPoint } from '@/content';
-import type { MissionStage } from '@/systems/missions';
+import { clamp, counted, numberWord } from '@/core';
+import { MAP_SIZE, type BackdropId, type MapPoint } from '@/content';
+import type { JourneyPlan, MissionStage } from '@/systems/missions';
 import { TIME_SLOTS, type TimeSlot } from '@/systems/time';
 
 import type { GameContext } from '../context';
-import { legsWalked } from '../journeys';
+import { journeyTitle, legsWalked } from '../journeys';
 import { activeMission, activeStage } from '../missionFlow';
+import { placeInText } from '../placeName';
 import type { GameState } from '../state';
 import { journeyPath, type LegSpan } from './journeyPath';
+import { travelMap, type TravelMap } from './travelMap';
 
 /**
  * A trip as the map shows it (`docs/design/journeys-plan.md` 3.1): the road as one line in
@@ -39,8 +41,21 @@ export interface JourneyStop {
   readonly kind: 'through' | 'destination';
 }
 
-/** What the road waits on: walking the next leg, a road event, the fire, a fight or the story. */
-export type JourneyWaiting = 'road' | 'road-event' | 'camp' | 'fight' | 'story';
+/**
+ * What the road waits on: walking the next leg, a road event, the fire, a fight or the story;
+ * or nothing, the road walked and the place reached.
+ */
+export type JourneyWaiting = 'road' | 'road-event' | 'camp' | 'fight' | 'story' | 'arrived';
+
+/** The place reached, for its title card: "After three days on the road". */
+export interface Arrival {
+  readonly name: string;
+  readonly epithet: string;
+  readonly backdrop: BackdropId;
+  readonly line: string;
+  /** The choice that closes the map: "Walk into Port Shiomachi". */
+  readonly enter: string;
+}
 
 /** The part of the map to show, in map units. */
 export interface MapFrame {
@@ -51,6 +66,10 @@ export interface MapFrame {
 }
 
 export interface JourneyView {
+  /** "The road to Kiri Ford". */
+  readonly title: string;
+  /** The country the road crosses, as the Travel tab draws it. */
+  readonly map: TravelMap;
   readonly destination: string;
   readonly destinationName: string;
   readonly path: readonly MapPoint[];
@@ -62,17 +81,29 @@ export interface JourneyView {
   readonly seal: number;
   readonly daysWalked: number;
   readonly daysInAll: number;
+  /** How far you've come, in words: "A day behind you, two ahead". */
+  readonly progress: string;
   readonly day: number;
   readonly slot: TimeSlot;
   readonly waiting: JourneyWaiting;
   readonly hurrying: boolean;
   readonly frame: MapFrame;
+  /** Set once the road is walked. */
+  readonly arrival: Arrival | null;
 }
 
 /** "forest-track" as a caption: "The forest track". */
 export function regionCaption(region: string): string {
   const words = region.replace(/^the-/, '').replaceAll('-', ' ');
   return `The ${words}`;
+}
+
+const upper = (text: string) => `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
+
+function progressLine(walked: number, inAll: number): string {
+  if (walked === 0) return `${upper(counted(inAll, 'day'))} on the road ahead`;
+  if (walked >= inAll) return 'The road behind you';
+  return `${upper(counted(walked, 'day'))} behind you, ${numberWord(inAll - walked)} ahead`;
 }
 
 function waitingOn(stage: MissionStage | null, roadEvent: boolean): JourneyWaiting {
@@ -125,12 +156,33 @@ function frameOf(path: readonly MapPoint[]): MapFrame {
   return { x: x.start, y: y.start, width: x.span, height: y.span };
 }
 
-/** The trip under way as the map shows it, or null when you aren't on a trip of your own. */
-export function journeyView(state: GameState, ctx: GameContext): JourneyView | null {
+/** Where the road has got to: the legs behind you and what it waits on, or its end. */
+function whereNow(
+  state: GameState,
+  ctx: GameContext,
+  legCount: number,
+): { walked: number; waiting: JourneyWaiting } {
   const run = state.mission;
-  const plan = run?.journey;
   const def = activeMission(state, ctx);
-  if (!run || !plan || !def) return null;
+  if (!run || !def) return { walked: legCount, waiting: 'arrived' };
+  const waiting = waitingOn(activeStage(state, ctx), run.roadEvent !== undefined);
+  return { walked: legsWalked(run, def.stages), waiting };
+}
+
+/** The title card for the place you walk into. */
+function arrivalAt(plan: JourneyPlan, days: number, ctx: GameContext): Arrival {
+  const { name, epithet, backdrop } = ctx.content.locations.require(plan.to);
+  const line = `After ${counted(days, 'day')} on the road`;
+  return { name, epithet, backdrop, line, enter: `Walk into ${placeInText(name)}` };
+}
+
+/**
+ * The trip under way as the map shows it, or the trip just ended while you take in where you
+ * are (`journeyEnd`); null when you aren't on a trip of your own.
+ */
+export function journeyView(state: GameState, ctx: GameContext): JourneyView | null {
+  const plan = state.mission ? state.mission.journey : state.journeyEnd;
+  if (!plan) return null;
   const { points, spans } = journeyPath(plan, ctx);
   const legs = plan.legs.map((leg, i) => ({
     start: spans[i]?.start ?? 0,
@@ -140,9 +192,11 @@ export function journeyView(state: GameState, ctx: GameContext): JourneyView | n
     days: leg.days,
     toward: leg.toward ?? plan.to,
   }));
-  const walked = legsWalked(run, def.stages);
+  const { walked, waiting } = whereNow(state, ctx, legs.length);
   const days = (n: number) => legs.slice(0, n).reduce((sum, leg) => sum + leg.days, 0);
   return {
+    title: journeyTitle(plan, ctx),
+    map: travelMap(state, ctx),
     destination: plan.to,
     destinationName: ctx.content.locations.require(plan.to).name,
     path: points,
@@ -152,10 +206,12 @@ export function journeyView(state: GameState, ctx: GameContext): JourneyView | n
     seal: legs[walked - 1]?.end ?? 0,
     daysWalked: days(walked),
     daysInAll: days(legs.length),
+    progress: progressLine(days(walked), days(legs.length)),
     day: state.time.day,
     slot: TIME_SLOTS[state.time.slot] ?? 'morning',
-    waiting: waitingOn(activeStage(state, ctx), run.roadEvent !== undefined),
+    waiting,
     hurrying: plan.quick,
     frame: frameOf(points),
+    arrival: waiting === 'arrived' ? arrivalAt(plan, days(legs.length), ctx) : null,
   };
 }

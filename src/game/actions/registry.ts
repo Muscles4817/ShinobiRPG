@@ -37,7 +37,7 @@ import { soak } from './onsen';
 import { endConversation, reply, talk } from './talk';
 import { testChakraPaper } from './chakraPaper';
 import { assignTeam, chooseSensei } from './team';
-import { dismissReport, leaveFight, travel } from './travel';
+import { dismissReport, leaveFight, leaveJourney, travel } from './travel';
 import { followSight } from './village';
 import { befriendStray } from './companions';
 import { takePup, trackWild } from './finding';
@@ -113,6 +113,7 @@ export const HANDLERS: Registry = {
   inviteGuest,
   sendGuestHome,
   leaveFight,
+  leaveJourney,
   buyGear,
   buyTool,
   buyIntel,

@@ -15,6 +15,7 @@ export type {
 } from './views/travelMap';
 export {
   journeyView,
+  type Arrival,
   type JourneyMapLeg,
   type JourneyStop,
   type JourneyView,

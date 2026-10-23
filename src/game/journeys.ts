@@ -119,12 +119,17 @@ export function legsBack(plan: JourneyPlan, walked: number): JourneyPlan['legs']
     .reverse();
 }
 
+/** "The road to Kiri Ford". */
+export function journeyTitle(plan: JourneyPlan, ctx: GameContext): string {
+  return `The road to ${ctx.content.locations.require(plan.to).name}`;
+}
+
 /** The trip as a mission the run can play: no client, no pay, only the road. */
 export function journeyMission(plan: JourneyPlan, ctx: GameContext): MissionDef {
   const destination = ctx.content.locations.require(plan.to).name;
   return {
     id: `journey:${plan.from}:${plan.to}`,
-    title: `The road to ${destination}`,
+    title: journeyTitle(plan, ctx),
     rank: 'D',
     client: '',
     summary: `You set out for ${destination}.`,
@@ -152,7 +157,7 @@ export function setOut(state: GameState, ctx: GameContext, trip: Departure): Gam
   const crew = tripCrew(going.people.companionId);
   const run = settle(def, { ...startRun(def, crew), journey: plan });
   return log(
-    { ...going, mission: run },
+    { ...going, mission: run, journeyEnd: null },
     {
       heading: def.title,
       text: def.summary,
@@ -169,7 +174,8 @@ export function arrive(state: GameState, ctx: GameContext, plan: JourneyPlan): G
   const home = destination.id === homeVillageId(state, ctx);
   const place = placeInText(destination.name);
   const trailed = heatAfterTrip(state);
-  return log(arriving({ ...trailed, mission: null, locationId: destination.id }, ctx, plan), {
+  const there = { ...trailed, mission: null, journeyEnd: plan, locationId: destination.id };
+  return log(arriving(there, ctx, plan), {
     heading: home ? `Home in ${place}` : `Arrived in ${place}`,
     text: home
       ? `You are back in ${place}, with the road still in your legs.`
