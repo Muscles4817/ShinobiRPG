@@ -175,6 +175,8 @@ export function summonCall(summon: SummonDef, ctx: GameContext): CombatCall {
     body: summonBody(summon, ctx),
     upkeep: summon.upkeep,
     ...(summon.price?.blood ? { bloodPrice: summon.price.blood } : {}),
+    ...(summon.mount ? { mount: true as const } : {}),
+    ...(summon.perch ? { perch: true as const } : {}),
   };
 }
 
@@ -185,13 +187,13 @@ export function withCalls(
   ctx: GameContext,
 ): CombatantSetup {
   if (summons.length === 0) return fighter;
+  // One technique may call a pair (the sage toads): it joins the kit once.
+  const known = new Set(fighter.techniques.map((t) => t.id));
+  const calling = [...new Set(summons.map((s) => s.techniqueId))].filter((id) => !known.has(id));
   return {
     ...fighter,
-    techniques: [
-      ...fighter.techniques,
-      ...summons.map((s) => ctx.content.techniques.require(s.techniqueId)),
-    ],
-    calls: summons.map((s) => summonCall(s, ctx)),
+    techniques: [...fighter.techniques, ...calling.map((id) => ctx.content.techniques.require(id))],
+    calls: [...(fighter.calls ?? []), ...summons.map((s) => summonCall(s, ctx))],
   };
 }
 

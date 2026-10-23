@@ -147,6 +147,12 @@ interface VerbExtras {
     readonly opens?: LadderStep;
     /** Size steps it makes its user bigger while it holds (Expansion: 1 or 2, validated). */
     readonly grows?: number;
+    /**
+     * Drawn in from stillness (Sage Mode): the turn goes into meditating, open to any blow, and
+     * it takes hold as the user's next turn begins if nothing has hurt them since. Only a ladder's
+     * opening is (validated).
+     */
+    readonly still?: true;
   };
   /**
    * Solid clones that throw a weak blow of their own when their maker attacks, and the kind of
@@ -247,17 +253,24 @@ function cloneProblem(effect: EffectOf<'clone'>): string | null {
   return illusion === (effect.strikes === true) ? 'a clone whose kind and strikes disagree' : null;
 }
 
+/** A ladder's opening must open a real step and pay only its toll; only an opening is still. */
+function stepProblem(effect: EffectOf<'empower'>): string | null {
+  if (!effect.opens) return effect.still ? 'a still empower that opens no ladder step' : null;
+  const step = ladderStepProblem(effect.opens);
+  if (step) return `an empower that opens ${step}`;
+  return effect.healthPerExchange === undefined
+    ? null
+    : 'a ladder step with a health price of its own (its toll is its price)';
+}
+
 /** An empower must raise something, open a real step if any, and cost something real. */
 function empowerProblem(effect: EffectOf<'empower'>): string | null {
   if (effect.boosts.length === 0) return 'an empower that raises nothing';
   if (effect.grows !== undefined && ![1, 2].includes(effect.grows)) {
     return `an empower that grows its user by ${effect.grows} sizes (1 or 2)`;
   }
-  const step = effect.opens ? ladderStepProblem(effect.opens) : null;
-  if (step) return `an empower that opens ${step}`;
-  if (effect.opens && effect.healthPerExchange !== undefined) {
-    return 'a ladder step with a health price of its own (its toll is its price)';
-  }
+  const step = stepProblem(effect);
+  if (step) return step;
   if (effect.afterCost && !costIsSane(effect.afterCost)) {
     return 'an empower whose after-cost is not positive';
   }

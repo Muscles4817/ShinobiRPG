@@ -19,6 +19,8 @@ const FAN_MARKERS = [
   'Chiriku',
   'Otafuku',
   'Tengen',
+  'Jiraiya',
+  'Gamarinsh',
   'Sound Breathing',
   'Yagura',
   'Kirigakure',

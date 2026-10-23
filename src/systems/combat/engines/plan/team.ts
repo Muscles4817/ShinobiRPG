@@ -25,6 +25,9 @@ import { tell } from '../../rules/telling';
  *  - hold: keeps to where their kit fights best and spares chakra: emergencies, else blows.
  */
 
+/** How much likelier a mount is to take what is aimed at the one riding it. */
+const MOUNT_COVER = 0.3;
+
 /** A teammate with no stance given: an illusionist supports, anyone else presses. */
 function kitStance(f: PlanFighter): CombatStance {
   return hasTrait(f, 'illusionist') ? { kind: 'support' } : { kind: 'press' };
@@ -194,7 +197,10 @@ export function intercept(round: Round, turn: Turn, card: Card): Aim {
   const { actor, target, rng } = turn;
   if (!target || !isOffence(card) || !needsAim(card)) return { round, target };
   const cover = coverFor(round, target, card);
-  if (!cover || !rng.chance(coverChance(cover, actor))) return { round, target };
+  // A rider stands on their mount: it is in the way of what comes at them far more often.
+  const carries = cover?.mount === true && cover.summoner === target.id;
+  const chance = cover ? coverChance(cover, actor) + (carries ? MOUNT_COVER : 0) : 0;
+  if (!cover || !rng.chance(chance)) return { round, target };
   const line = tell('{a} step{a.s} in front of {t}.', { a: cover, t: target });
   return { round: say(round, line), target: cover };
 }

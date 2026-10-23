@@ -22,6 +22,7 @@ import { cardWorth } from './worth';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
+import { kitCall } from './calling';
 import { setupPlay } from './setups';
 import { opponentsOf } from './senses';
 import { needsOpenTarget, openFoes } from './finishers';
@@ -156,8 +157,8 @@ export interface Moment {
 }
 
 /**
- * A sense, Search or Dispel for a hidden foe, a set-up, playing for time against a killer, a
- * conceal to open, an empower, clones or a trap (`prep.ts`); else a tool that's called for.
+ * A sense, Search or Dispel for a hidden foe, a killer's answer (a set-up, or playing for
+ * time), a summoner's call from the kit (`calling.ts`), a set-up, a conceal to open, an empower, clones or a trap (`prep.ts`); else a tool that's called for.
  */
 function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment): Card | undefined {
   const hiddenFoe = moment.hiddenFoe ?? false;
@@ -166,21 +167,34 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
   return (
     sightInstinct(self, ready, { ...now, fieldUp: moment.fieldUp ?? false }) ??
     senses(self, ready, hiddenFoe) ??
-    forTime(self, moment) ??
+    againstKiller(self, moment) ??
+    kitCall(self, {
+      fighters: moment.fighters ?? [],
+      band: moment.band,
+      ...(moment.reads ? { reads: moment.reads } : {}),
+      ...(moment.exchange === undefined ? {} : { exchange: moment.exchange }),
+    }) ??
+    setupCard(self, moment) ??
     prepInstinct(self, ready, moment) ??
     toolInstinct(self, ready, now)
   );
 }
 
+/** A set-up from the kit (`setups.ts`): hide, hold, finish. */
+function setupCard(self: PlanFighter, moment: Moment): Card | undefined {
+  const foes = opponentsOf(moment.fighters ?? [], self);
+  return setupPlay(self, { band: moment.band, foes })?.card;
+}
+
 /**
- * A set-up (`setups.ts`), which is its own answer to a killer; else playing for time against one
+ * Against a killer: a set-up, which is its own answer to one; else playing for time
  * (`survival.ts`). A foe sees no one's announced card.
  */
-function forTime(self: PlanFighter, moment: Moment): Card | undefined {
+function againstKiller(self: PlanFighter, moment: Moment): Card | undefined {
   const fighters = moment.fighters ?? [];
-  const setup = setupPlay(self, { band: moment.band, foes: opponentsOf(fighters, self) })?.card;
   const at = { fighters, range: moment.band, intents: {}, number: moment.exchange ?? 0 };
-  return setup ?? survivalPlay(self, at)?.card;
+  const survival = survivalPlay(self, at)?.card;
+  return survival ? (setupCard(self, moment) ?? survival) : undefined;
 }
 
 /** A trump card's moment: badly hurt, or facing a far stronger foe. */

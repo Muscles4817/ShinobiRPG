@@ -1,5 +1,5 @@
 import { combatScene, combatScouting } from '@/game';
-import { fightOut } from '@/test/gameFixtures';
+import { act, fightOut } from '@/test/gameFixtures';
 
 import { contextForPack } from '../context';
 import { createVersus } from './match';
@@ -159,6 +159,31 @@ describe('versus bouts', () => {
     const done = fightOut(watched.value, naruto);
     expect(done.reports[0]?.kind).toBe('fight');
     expect(done.combatFinale?.log.join(' ')).toMatch(/Crow unfolds out of it/);
+  });
+
+  it('fields a summoner with the toads, who calls them and meditates into Sage Mode', () => {
+    const jiraiya = contenderOf(naruto, 'person:jiraiya')!;
+    const as = playerSetup(jiraiya, bout('person:jiraiya', 'person:kisame'), naruto);
+    expect(as.calls?.map((c) => c.id)).toEqual(
+      expect.arrayContaining(['gamabunta', 'fukasaku', 'shima']),
+    );
+    const watched = createVersus(naruto, {
+      side: ['person:jiraiya'],
+      foes: ['person:kisame'],
+      seed: 2,
+      watch: true,
+    });
+    if (!watched.ok) throw new Error(watched.error);
+    let state = watched.value;
+    const told: string[] = [];
+    for (let i = 0; i < 40 && state.combat; i++) {
+      told.push(...combatScene(state, naruto)!.log);
+      state = act(state, { type: 'combatAct', optionId: 'round' }, naruto);
+    }
+    const story = [...told, ...(state.combatFinale?.log ?? [])].join(' ');
+    expect(story).toMatch(/Gamabunta answers the call/);
+    expect(story).toMatch(/Fukasaku perches on Jiraiya’s shoulder/);
+    expect(story).toMatch(/Natural energy floods into Jiraiya/);
   });
 
   it('refuses a pick the pack doesn’t have', () => {

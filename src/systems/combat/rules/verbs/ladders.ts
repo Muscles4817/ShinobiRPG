@@ -10,13 +10,32 @@ import type { CombatTechnique } from '../../contract';
  * beyond any limit a body has. Opening releases a surge of chakra. An open ladder holds until
  * the fight ends or the body gives out (its toll, `tolls.ts`, brings health to `GIVE_OUT_SHARE`
  * or breath to nothing), when it slams shut and leaves its user reeling and spent. A step is
- * worth opening only when the fight calls for it (`worthOpening`), a band at a time.
+ * worth opening only when the fight calls for it (`worthOpening`), a band at a time. Sage Mode
+ * is meditated into rather than climbed (`plan/meditation.ts`), lifts more at once, costs the body
+ * nothing and lasts as long as its natural energy (`ladderHolds`).
  */
 
 /** The share each boosted stat rises by with each step open (index 0: nothing open). */
 const LADDER_SHARE: Readonly<Record<LadderId, readonly number[]>> = {
   gates: [0, 0.15, 0.25, 0.4, 0.55, 0.7, 0.9, 1.15, 1.6],
+  sage: [0, 0.3, 0.45],
 };
+
+/**
+ * Exchanges a step of the ladder holds after the one it opened in, when it runs out on its own
+ * (Sage Mode's natural energy, unless sage toads perched on its user keep drawing it in); absent
+ * for a ladder that holds until the body gives out.
+ */
+const LADDER_HOLDS: Readonly<Partial<Record<LadderId, number>>> = { sage: 4 };
+
+export function ladderHolds(ladder: LadderId): number | undefined {
+  return LADDER_HOLDS[ladder];
+}
+
+/** Whether an open step of the ladder wears the body down until it gives out (the Gates). */
+export function wearsBody(ladder: LadderId): boolean {
+  return ladderHolds(ladder) === undefined;
+}
 
 /** Chakra released by each step newly opened. */
 export const CHAKRA_SURGE_PER_STEP = 4;

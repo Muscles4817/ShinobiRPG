@@ -8,7 +8,8 @@ import type { LadderStep } from '@/systems/techniques';
  * body is spent for the rest of the fight: less wind (stamina), and past the third gate slower
  * and weaker. The seventh drains the body so fast it has about a round to win, and when it shuts
  * the body collapses: out of the fight. Opening the deep gates to throw one finisher costs the
- * fight unless it wins it.
+ * fight unless it wins it. Sage Mode takes nothing from the body: its natural energy runs out
+ * instead (`ladderHolds` in `ladders.ts`).
  */
 
 export interface StepToll {
@@ -51,9 +52,14 @@ const GATE_TOLLS: readonly StepToll[] = [
 
 const NO_TOLL = toll(0, 0, 0, 0);
 
-/** What a step costs while open and once it shuts. */
-export function stepToll({ step }: LadderStep): StepToll {
-  return GATE_TOLLS[step] ?? NO_TOLL;
+/** What a step costs while open and once it shuts. Sage Mode costs the body nothing. */
+export function stepToll({ ladder, step }: LadderStep): StepToll {
+  switch (ladder) {
+    case 'gates':
+      return GATE_TOLLS[step] ?? NO_TOLL;
+    case 'sage':
+      return NO_TOLL;
+  }
 }
 
 /** Health a step costs each exchange, for a body of this much health. */

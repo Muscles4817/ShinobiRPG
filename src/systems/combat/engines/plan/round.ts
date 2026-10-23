@@ -16,6 +16,7 @@ import { inCover, lostToGround } from './groundPlay';
 import { momentOf, SCENE_MEMORY } from './fresh';
 import { cardId, isOffence, needsAim, type Card } from './cards';
 import { released } from './commitment';
+import { meditationEnds } from './meditation';
 import { play } from './play';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
@@ -191,8 +192,9 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
     return start;
   }
   // Last turn's Evade or Brace holds until now (`commitment.ts`).
+  // A turn of stillness opens Sage Mode now, unless it was broken (`meditation.ts`).
   const sprung = springTraps(
-    startOfTurn(released(start, actorId), before, rng),
+    startOfTurn(meditationEnds(released(start, actorId), actorId), before, rng),
     actorId,
     rng,
     false,

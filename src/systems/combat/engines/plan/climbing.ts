@@ -67,6 +67,11 @@ export function climbReasons(
   };
 }
 
+/** An opening meditated into rather than forced (Sage Mode, `meditation.ts`). */
+export function isStill(t: Pick<CombatTechnique, 'effects'>): boolean {
+  return t.effects.some((e) => e.verb === 'empower' && e.still === true);
+}
+
 function stepOf(t: CombatTechnique): number {
   return opensOf(t)?.step ?? 0;
 }
@@ -77,9 +82,10 @@ function stepOf(t: CombatTechnique): number {
  * last step kills its user: never climbed by judgement, only played from a plan by hand.
  */
 export function climbOrder(techniques: readonly CombatTechnique[]): CombatTechnique[] {
+  // Sage Mode is meditated into, never climbed by judgement (`calling.ts` sees to it).
   const openers = techniques.filter((t) => {
     const opens = opensOf(t);
-    return opens !== undefined && opens.step < LADDER_TOP[opens.ladder];
+    return opens !== undefined && opens.step < LADDER_TOP[opens.ladder] && !isStill(t);
   });
   const order: CombatTechnique[] = [];
   for (let at = 0; ;) {
