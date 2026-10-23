@@ -2,11 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
 
-import {
-  createLocalEditsStore,
-  createLocalPrefsStore,
-  createLocalSaveStore,
-} from '@/platform/localSaveStore';
+import { chooseStores } from '@/platform/chooseStores';
 import { App } from '@/ui/App';
 import '@/ui/theme/fonts.css';
 import '@/ui/theme/tokens.css';
@@ -58,14 +54,15 @@ import '@/ui/styles/wide-menu.css';
 const root = document.getElementById('root');
 if (!root) throw new Error('Missing #root element');
 
-createRoot(root).render(
-  <StrictMode>
-    <App
-      store={createLocalSaveStore()}
-      prefs={createLocalPrefsStore()}
-      edits={createLocalEditsStore()}
-    />
-  </StrictMode>,
-);
+async function boot(container: HTMLElement): Promise<void> {
+  const { stores, shell } = await chooseStores();
+  createRoot(container).render(
+    <StrictMode>
+      <App store={stores.save} prefs={stores.prefs} edits={stores.edits} />
+    </StrictMode>,
+  );
+  // An app ships its files with it; only the web build caches itself for offline play.
+  if (!shell) registerSW({ immediate: true });
+}
 
-registerSW({ immediate: true });
+void boot(root);
