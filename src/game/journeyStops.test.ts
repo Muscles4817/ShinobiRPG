@@ -1,6 +1,6 @@
 import { CONTENT_PACKS, type LocationDef } from '@/content';
-import { act, newGame } from '@/test/gameFixtures';
-import { STONE_LANTERN, wildCtx } from '@/test/wildCountry';
+import { act, keepClear, newGame } from '@/test/gameFixtures';
+import { STONE_LANTERN, THE_FALLS, wildCtx } from '@/test/wildCountry';
 
 import { createGameContext, type GameContext } from './context';
 import { roomPrice, stopAt } from './journeyStops';
@@ -37,7 +37,7 @@ function toStop(start: GameState, ctx: GameContext): GameState {
   let state = start;
   for (let step = 0; activeStage(state, ctx)?.kind !== 'stop' && step < 12; step++) {
     const answer = state.mission?.roadEvent
-      ? ({ type: 'missionDecide', optionIndex: 0 } as const)
+      ? keepClear(state, ctx)
       : ({ type: 'missionContinue' } as const);
     state = act(state, answer, ctx);
   }
@@ -52,17 +52,21 @@ function kinds(state: GameState, ctx: GameContext) {
 
 describe('stopping on the way', () => {
   it('stops where a stretch ends at a town with an inn, and never when hurrying', () => {
-    expect(kinds(setOut(openRoads, 'sakyugakure'), openRoads)).toEqual([
-      'leg',
-      'stop',
-      'camp',
+    // Out to the salt flats: the Cedar Deep, then Kiri Ford and its inn, on the way.
+    const stretch = ['leg', 'stop', 'camp'];
+    expect(kinds(setOut(openRoads, 'salt-flats'), openRoads)).toEqual([
+      ...stretch,
+      ...stretch,
       'leg',
     ]);
-    expect(kinds(setOut(openRoads, 'sakyugakure', true), openRoads)).not.toContain('stop');
+    expect(kinds(setOut(openRoads, 'salt-flats', true), openRoads)).not.toContain('stop');
   });
 
   it('takes a room at the inn in place of the camp, paid at the desk', () => {
-    const stop = toStop(setOut(openRoads, 'sakyugakure'), openRoads);
+    // Past the Cedar Deep without stopping, on to the stop at Kiri Ford.
+    const atDeep = toStop(setOut(openRoads, 'salt-flats'), openRoads);
+    const pastDeep = act(atDeep, { type: 'journeyStop', stay: false }, openRoads);
+    const stop = toStop(act(pastDeep, { type: 'missionContinue' }, openRoads), openRoads);
     const price = roomPrice(stop, openRoads, stopAt(openRoads, 'kiri-ford')!);
     expect(missionScene(stop, openRoads)?.choices.map((c) => c.label)).toEqual([
       expect.stringMatching(/^Take a room at /),
@@ -77,7 +81,7 @@ describe('stopping on the way', () => {
   });
 
   it('stops at a landmark for its sight, and spends a day in wild country', () => {
-    const trip = setOut(wildCtx, 'the-falls');
+    const trip = setOut(wildCtx, THE_FALLS.id);
     expect(kinds(trip, wildCtx).filter((k) => k === 'stop')).toHaveLength(2);
     const atLantern = toStop(trip, wildCtx);
     const saw = act(atLantern, { type: 'journeyStop', stay: true }, wildCtx);

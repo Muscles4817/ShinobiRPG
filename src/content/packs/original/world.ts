@@ -24,6 +24,7 @@ import { TOROGAKURE_LEISURE } from './leisure';
 import { TOROGAKURE_WILDS } from './wilds';
 import { TOROGAKURE_COMPOUNDS } from './compounds';
 import { ARCHIVE_SHELF } from './shelves';
+import { WILD_COUNTRY } from './wildCountry';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -267,4 +268,5 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
     places: [],
     lockedReason: 'Needs Chūnin rank',
   },
+  ...WILD_COUNTRY,
 ];

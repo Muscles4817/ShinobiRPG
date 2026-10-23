@@ -7,9 +7,15 @@ import { travelMap } from './views/travelMap';
 const original = CONTENT_PACKS.find((p) => p.id === 'original')!;
 const ctx = createGameContext(original);
 
+/** A new game that has heard of everywhere: these tests are about drawing, not finding. */
+function knowingAll() {
+  const game = newGame({}, ctx);
+  return { ...game, atlas: { ...game.atlas, known: original.locations.map((l) => l.id) } };
+}
+
 describe('the travel map', () => {
   it('puts every place on it, marks where you stand and what is still coming', () => {
-    const map = travelMap(newGame({}, ctx), ctx);
+    const map = travelMap(knowingAll(), ctx);
     expect(map).toMatchObject(MAP_SIZE);
     expect(map.places).toHaveLength(original.locations.length);
     expect(map.places.find((p) => p.here)?.id).toBe('torogakure');
@@ -18,7 +24,7 @@ describe('the travel map', () => {
   });
 
   it('draws a road for every route, closed while either end is locked', () => {
-    const roads = travelMap(newGame({}, ctx), ctx).roads;
+    const roads = travelMap(knowingAll(), ctx).roads;
     expect(roads).toHaveLength(original.routes.length);
     expect(roads.find((r) => r.id === 'coast-road')).toMatchObject({ open: true, danger: 'petty' });
     expect(roads.find((r) => r.id === 'dune-crossing')?.open).toBe(false);

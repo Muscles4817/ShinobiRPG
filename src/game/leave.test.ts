@@ -122,6 +122,6 @@ describe('leave from the village', () => {
     expect(dispatch(walker, { type: 'travel', locationId: 'kiri-ford' }, ctx).ok).toBe(true);
     // A chūnin takes the quickest road, bandits or not.
     const chunin = { ...walker, standing: { ...walker.standing, rank: 'chunin' as const } };
-    expect(journeyTo(chunin, ctx, 'kiri-ford')?.routeIds).toEqual(['ford-track']);
+    expect(journeyTo(chunin, ctx, 'kiri-ford')?.routeIds).toEqual(['ford-track', 'cedar-track']);
   });
 });

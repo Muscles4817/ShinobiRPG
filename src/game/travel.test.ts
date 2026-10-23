@@ -1,5 +1,5 @@
 import { CONTENT_PACKS, type LocationDef } from '@/content';
-import { act, newGame } from '@/test/gameFixtures';
+import { act, keepClear, newGame } from '@/test/gameFixtures';
 
 import type { GameContext } from './context';
 import { createGameContext } from './context';
@@ -73,10 +73,13 @@ describe('travel', () => {
       act(start, { type: 'travel', locationId: 'sakyugakure' }, openRoads),
       openRoads,
     );
-    expect(stages).toEqual(['leg', 'camp', 'leg']);
+    // The wild country on the way offers a stop, walked past here; the ford (only a market in
+    // these tests) has no inn to offer one.
+    const wild = ['leg', 'stop', 'camp'];
+    expect(stages).toEqual([...wild, 'leg', 'camp', ...wild, 'leg']);
     expect(state.mission).toBeNull();
     expect(state.locationId).toBe('sakyugakure');
-    expect(state.time.day).toBe(4);
+    expect(state.time.day).toBe(5);
     expect(dispatch(state, { type: 'sleep' }, openRoads)).toEqual({
       ok: false,
       error: 'Your home is not in this village.',
@@ -96,7 +99,7 @@ describe('travel', () => {
     const { state, stages } = walk(hurrying, openRoads);
     expect(stages).not.toContain('camp');
     expect(state.locationId).toBe('sakyugakure');
-    expect(state.time.day).toBe(4);
+    expect(state.time.day).toBe(5);
   });
 
   it('comes home the same way, legs reversed', () => {
@@ -105,14 +108,19 @@ describe('travel', () => {
       openRoads,
     ).state;
     const back = act(there, { type: 'travel', locationId: 'torogakure' }, openRoads);
-    expect(back.mission?.journey?.legs.map((l) => l.region)).toEqual(['dune-road', 'forest-track']);
+    expect(back.mission?.journey?.legs.map((l) => l.region)).toEqual([
+      'dune-road',
+      'dune-road',
+      'forest-track',
+      'forest-track',
+    ]);
     expect(walk(back, openRoads).state.locationId).toBe('torogakure');
   });
 
   it('says which way a road runs, and the last day arrives by name', () => {
     const going = act(jonin(), { type: 'travel', locationId: 'sakyugakure' }, openRoads);
     expect(missionScene(going, openRoads)?.prompt).toMatch(
-      /The road runs [a-z-]+ from Tōrōgakure, towards [A-Z]/,
+      /The road runs [a-z-]+ from Tōrōgakure, towards (the )?[A-Z]/,
     );
     const there = walk(going, openRoads).state;
     const roads = there.journal.entries.filter((e) => e.heading === 'On the road');
@@ -129,10 +137,10 @@ describe('travel', () => {
   it('shows the way, the worst of the road and the places passed', () => {
     const dunes = travelView(jonin(), openRoads).destinations.find((d) => d.id === 'sakyugakure');
     expect(dunes).toMatchObject({
-      days: 3,
+      days: 4,
       cost: 120,
       danger: 'Bandits about',
-      via: 'By way of Kiri Ford',
+      via: 'By way of the Cedar Deep, Kiri Ford and the Salt Flats',
       lockedReason: null,
       blocker: null,
     });
@@ -153,13 +161,16 @@ describe('travel', () => {
 function walk(start: GameState, ctx: GameContext) {
   let state = start;
   const stages: string[] = [];
-  for (let step = 0; state.mission && step < 20; step++) {
+  for (let step = 0; state.mission && step < 40; step++) {
     if (state.mission.roadEvent) {
-      state = act(state, { type: 'missionDecide', optionIndex: 0 }, ctx);
+      state = act(state, keepClear(state, ctx), ctx);
       continue;
     }
-    stages.push(activeStage(state, ctx)?.kind ?? 'none');
-    state = act(state, { type: 'missionContinue' }, ctx);
+    const kind = activeStage(state, ctx)?.kind ?? 'none';
+    stages.push(kind);
+    // A place on the way offers a stop; these tests walk on past it.
+    const onward = kind === 'stop' ? ({ type: 'journeyStop', stay: false } as const) : null;
+    state = act(state, onward ?? { type: 'missionContinue' }, ctx);
   }
   return { state, stages };
 }

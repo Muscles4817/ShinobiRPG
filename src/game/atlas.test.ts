@@ -1,4 +1,4 @@
-import { act, newGame } from '@/test/gameFixtures';
+import { act, keepClear, newGame } from '@/test/gameFixtures';
 import { CEDAR_DEEP, STONE_LANTERN, THE_FALLS, wildCtx as ctx } from '@/test/wildCountry';
 
 import { knowsOf } from './atlas';
@@ -20,7 +20,7 @@ function arrive(start: GameState): GameState {
   for (let step = 0; state.mission && step < 16; step++) {
     const stage = journeyMission(state.mission.journey!, ctx).stages[state.mission.stageIndex];
     const answer = state.mission.roadEvent
-      ? ({ type: 'missionDecide', optionIndex: 0 } as const)
+      ? keepClear(state, ctx)
       : stage?.kind === 'stop'
         ? ({ type: 'journeyStop', stay: true } as const)
         : ({ type: 'missionContinue' } as const);

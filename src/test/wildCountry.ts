@@ -7,10 +7,10 @@ import { stock } from '@/systems/inventory';
 import { newGame } from './gameFixtures';
 
 /**
- * The original pack with a stretch of wild country added (none is open in the pack yet): the
- * Cedar Deep, its woods and a camp, for tests of what wild places offer; and a test road out of
- * the village past a landmark (the Stone Lantern) and through the Deep to the Falls, so a trip
- * passes both kinds of stop.
+ * The original pack with a test stretch of wild country added, laid out so the tests don't move
+ * when the pack's own map does: the Old Wood, its woods and a camp, for tests of what wild places
+ * offer; and a test road out of the village past a landmark (the Stone Lantern) and through the
+ * wood to the Falls, so a trip passes both kinds of stop.
  */
 
 const original = CONTENT_PACKS.find((p) => p.id === 'original')!;
@@ -18,8 +18,8 @@ const home = original.locations.find((l) => l.id === original.startLocationId)!;
 const woods = home.places.find((p) => p.kind === 'wilds')!;
 
 export const CEDAR_DEEP: LocationDef = {
-  id: 'cedar-deep',
-  name: 'The Cedar Deep',
+  id: 'test-old-wood',
+  name: 'The Old Wood',
   kind: 'wild',
   epithet: 'Old forest',
   backdrop: home.backdrop,
@@ -46,8 +46,8 @@ const landmark = (id: string, name: string, x: number): LocationDef => ({
   },
 });
 
-export const STONE_LANTERN = landmark('stone-lantern', 'The Stone Lantern', 48);
-export const THE_FALLS = landmark('the-falls', 'The Falls', 56);
+export const STONE_LANTERN = landmark('test-stone-lantern', 'The Stone Lantern', 48);
+export const THE_FALLS = landmark('test-falls', 'The Falls', 56);
 
 const road = (id: string, from: string, to: string): RouteDef => ({
   id,
