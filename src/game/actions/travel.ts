@@ -1,10 +1,13 @@
 import type { Rng } from '@/core';
 import { spend } from '@/systems/wallet';
 
+import { knowsOf } from '../atlas';
 import type { GameContext } from '../context';
 import { gateRefusal } from '../greetings';
 import { huntForTrip } from '../hunt';
 import { journeyTo, setOut } from '../journeys';
+import { plannedStops } from '../journeyStops';
+import { activeStage } from '../missionFlow';
 import { leaveBlocker, spendLeave } from '../leave';
 import { busyReason, firstBlocker } from '../ops';
 import type { GameState } from '../state';
@@ -18,7 +21,12 @@ import type { ActionHandler, ActionOf } from './types';
  */
 export function walkOn(state: GameState, ctx: GameContext, rng: Rng): GameState {
   let now = state;
-  while (now.mission?.journey?.quick === true && !now.mission.roadEvent) {
+  // A stop waits on your choice, as a road event does.
+  while (
+    now.mission?.journey?.quick === true &&
+    !now.mission.roadEvent &&
+    activeStage(now, ctx)?.kind !== 'stop'
+  ) {
     now = missionContinue.perform(now, { type: 'missionContinue' }, ctx, rng);
   }
   return now;
@@ -28,6 +36,7 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
   check(state, action, ctx) {
     const destination = ctx.content.locations.get(action.locationId);
     if (!destination) return 'Unknown destination.';
+    if (!knowsOf(state, ctx, destination.id)) return 'You don’t know the way there yet.';
     const journey = journeyTo(state, ctx, destination.id);
     return firstBlocker(
       busyReason(state),
@@ -48,11 +57,13 @@ export const travel: ActionHandler<ActionOf<'travel'>> = {
     const paid = spend(state.wallet, journey.cost);
     if (!paid.ok) return state;
     const hunt = huntForTrip(state, ctx, journey.legs);
+    const quick = action.quick === true;
     const plan = {
       from: state.locationId,
       to: action.locationId,
       legs: journey.legs,
-      quick: action.quick === true,
+      quick,
+      stops: plannedStops(state, ctx, journey.legs, quick),
       ...(hunt ? { hunt } : {}),
     };
     const onLeave = spendLeave({ ...state, wallet: paid.value }, ctx, action.locationId, journey);

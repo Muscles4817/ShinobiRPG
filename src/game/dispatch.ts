@@ -3,6 +3,7 @@ import { createRng, err, ok, type Result } from '@/core';
 import { HANDLERS } from './actions/registry';
 import type { ActionHandler, GameAction } from './actions/types';
 import type { GameContext } from './context';
+import { noteArrival } from './atlas';
 import { noteDayEnd } from './daybook/record';
 import { noteFieldBook } from './fieldBook/rewards';
 import { noteHomeGifts } from './home/gifts';
@@ -31,7 +32,7 @@ export function blockerFor(state: GameState, action: GameAction, ctx: GameContex
  * unstable techniques the new grades have caught up with steady (see `gradeUps.ts`), and a
  * jōnin's nomination arrives once it is earned (`exam/promotion.ts`), and a day that ended is
  * closed into the day's record (`daybook/record.ts`), and a full page of the field book leaves
- * its reward (`fieldBook/rewards.ts`). What your sensei made of the days that passed is told
+ * its reward (`fieldBook/rewards.ts`), and somewhere you arrive goes on your map (`atlas.ts`). What your sensei made of the days that passed is told
  * after the action that passed them (`sensei/settle.ts`), and what they want to show you before
  * the first of a thing comes just before it (`sensei/curriculum.ts`).
  */
@@ -53,6 +54,6 @@ export function dispatch(
   const graded = notePromotions(noteGradeUps(state, performed, ctx), ctx);
   const gifted = noteHomeGifts(state, noteRival(state, graded, ctx), ctx);
   const styled = noteNewMoves(state, noteFieldBook(state, gifted, ctx), ctx);
-  const next = noteDayEnd(state, styled, action);
+  const next = noteDayEnd(state, noteArrival(state, styled, ctx), action);
   return ok({ ...next, rngState: rng.state() });
 }

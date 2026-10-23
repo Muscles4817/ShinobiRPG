@@ -277,6 +277,11 @@ export interface LocationDef {
   readonly name: string;
   /** What kind of place it is: what it must have, and how the map marks it. */
   readonly kind: LocationKind;
+  /**
+   * Known to everyone from the start: on the map, and the way there asked of anyone. Every
+   * other place is learned of (heard of, passed near, or a job's) before it is on your map.
+   */
+  readonly famous?: boolean;
   /** A landmark's sight, for a stop on the way (`journeys-plan.md` 3.3); every open one has one. */
   readonly sight?: LandmarkSight;
   /** e.g. "Village Hidden in the Leaves". */

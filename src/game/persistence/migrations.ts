@@ -35,6 +35,7 @@ import { v62ToV63 } from './dustMigration';
 import { v63ToV64, v64ToV65 } from './repertoireMigration';
 import { v65ToV66 } from './huntMigration';
 import { v66ToV67 } from './journeyMigration';
+import { v67ToV68 } from './atlasMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
 import { v19ToV20 as v20ToV21 } from './rankMigration';
 import { v19ToV20 } from './teachingMigration';
@@ -368,4 +369,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   64: v64ToV65,
   65: v65ToV66,
   66: v66ToV67,
+  67: v67ToV68,
 };

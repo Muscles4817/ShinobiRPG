@@ -230,8 +230,13 @@ export interface JourneyPlan {
     /** The location the leg heads for (absent on trips saved before roads had a heading). */
     readonly toward?: string;
   }[];
-  /** Walk on without stopping to camp; only a road event halts you. */
+  /** Walk on without stopping to camp; only a road event or a stop halts you. */
   readonly quick: boolean;
+  /**
+   * The places on the way the trip stops at, chosen when it was planned; absent on trips planned
+   * before (they stop wherever a place offers it, unless hurrying).
+   */
+  readonly stops?: readonly string[];
   /** Set when a town hunts you along the way; absent on every other trip. */
   readonly hunt?: JourneyHunt;
 }

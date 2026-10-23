@@ -11,6 +11,7 @@ export const KAGERO_LANDING: LocationDef = {
   id: 'kagero-landing',
   name: 'Kagerō Landing',
   kind: 'town',
+  famous: true,
   epithet: 'Where the Sand Begins',
   map: { x: 22.5, y: 41, label: 'left' },
   backdrop: 'barge-landing',
