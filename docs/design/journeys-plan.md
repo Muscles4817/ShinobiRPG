@@ -363,3 +363,20 @@ migration and a previous-version save test wherever the save shape changes.
    haven't seen. Today's stops: the fan pack's highway towns (Shukuba on the way to Tanzaku); the
    original pack gains its first with the wild country and landmarks of step 10. Not yet: your
    own bed when a trip passes your home village.
+
+5. **Finding the map** (this step). The `atlas` slice (`systems/travel/atlas.ts`, save v68) keeps
+   the places you've heard of and been to; what everyone knows is content, `LocationDef.famous`,
+   set on every location of both packs so far, so no save loses a place it could reach (the
+   migration gives an atlas of where the save stands). `game/atlas.ts` reads it: a place is known
+   when famous, heard of or been to, and been to when it is where you stand, your home village
+   or in `visited`. You hear of the places one road from home at the start (`homeAtlas`), of
+   the places a road leads to from anywhere you arrive (`noteArrival` in `dispatch`, for trips
+   and jobs alike), of the towns a trip is planned through, and of where a job ends when you take
+   it; a stop you take is a place been to. The Travel tab and its map show only what you know
+   (roads only between known places), a place never been to drawn faint, and `travel` refuses
+   the rest ("You don't know the way there yet."). A trip now chooses its stops when it is planned
+   (`JourneyPlan.stops`, `plannedStops`; trips planned before keep the old rule): every place
+   that offers one, or, when hurrying, only landmarks you've never been to, where a hurried trip
+   halts and, once you've chosen, hurries on. Left for the content that needs them (step 10):
+   rumours, maps for sale and road events that reveal a place, and the field book's Places page
+   (step 11).

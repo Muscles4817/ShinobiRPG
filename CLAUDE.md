@@ -682,7 +682,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`--map-zoom`). Where a stretch ends at a place that offers it, the trip **stops**
     (`game/journeyStops.ts`, a `stop` stage, `journeyStop`): a town's inn for the night in place
     of the camp, a landmark's `sight` (validated on every open one), a day in wild country
-    foraging its finds, or walking on; hurrying walks past them all. Away from home you sleep at
+    foraging its finds, or walking on; a trip chooses its stops when planned (`plannedStops`),
+    and a hurried one stops only at landmarks you've never been to. **The map is found**
+    (`game/atlas.ts`, the `atlas` slice): a place is on it when it is `famous`, heard of (one
+    road from home at the start, a road from anywhere you arrive, the towns a trip is planned
+    through, where a job ends) or been to; the Travel tab, its map and `travel` know only those,
+    and a place heard of but never been to is drawn faint. Away from home you sleep at
     an `inn`; a friend may come along (`game/trips.ts`, a `companion` crew, found at your
     lodging), you may turn back at a camp, and coming home shows what the village did while
     you were away; people who live in a town (`homeLocationId`) are met there, its festivals
@@ -901,7 +906,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   catches broken references and anything no place offers.
 - **Add a content pack:** copy `packs/original/`, change ids/names, register it. Keep every
   pack complete; packs don't inherit from each other.
-- **Add a location:** add a `LocationDef` with a `kind` (village, city, town, wild or landmark:
+- **Add a location:** add a `LocationDef` (`famous` if everyone knows it from the start, else it
+  is found: heard of on the roads, through jobs, or by arriving) with a `kind` (village, city, town, wild or landmark:
   what it must have once open, validated in `validateLocationKinds.ts`, and its mark on the map;
   wild country and landmarks keep a `camp` place, where `makeCamp` sleeps you under the sky on
   supper from your pack, and never an inn), a backdrop, a `map` point (and a `label` side if its name would

@@ -15,6 +15,7 @@ export const KIRIGAKURE: LocationDef = {
   id: 'kirigakure',
   name: 'Kirigakure',
   kind: 'village',
+  famous: true,
   epithet: 'Village Hidden in the Mist',
   map: { x: 92, y: 36, label: 'left' },
   backdrop: 'mist-village',

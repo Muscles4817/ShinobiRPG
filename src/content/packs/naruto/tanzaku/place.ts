@@ -9,6 +9,7 @@ export const TANZAKU_TOWN: LocationDef = {
   id: 'tanzaku-town',
   name: 'Tanzaku Town',
   kind: 'city',
+  famous: true,
   epithet: 'Castle town of gamblers',
   map: { x: 32, y: 37, label: 'left' },
   backdrop: 'lantern-rooftops',

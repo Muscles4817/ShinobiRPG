@@ -1,5 +1,6 @@
 import type { LandmarkSight, LocationDef, PlaceDef } from '@/content';
 
+import { hasBeenTo } from './atlas';
 import type { GameContext } from './context';
 import { priceAt } from './greetings';
 import type { GameState } from './state';
@@ -49,4 +50,27 @@ export function stopAt(ctx: GameContext, locationId: string): StopOffer | null {
 /** What a room costs at a stop's inn, its town's grudges included. */
 export function roomPrice(state: GameState, ctx: GameContext, offer: StopOffer): number {
   return offer.kind === 'inn' ? priceAt(offer.inn.roomCost, state, ctx, offer.location.id) : 0;
+}
+
+/** A trip's legs, as planned: each heads somewhere. */
+type PlannedLegs = readonly { readonly toward?: string }[];
+
+/**
+ * Where a trip will stop: every place it passes between stretches that offers a stop, or, when
+ * hurrying, only the landmarks you have never seen.
+ */
+export function plannedStops(
+  state: GameState,
+  ctx: GameContext,
+  legs: PlannedLegs,
+  quick: boolean,
+): string[] {
+  return legs.flatMap((leg, i) => {
+    const here = leg.toward;
+    if (!here || i === legs.length - 1 || legs[i + 1]?.toward === here) return [];
+    const offer = stopAt(ctx, here);
+    if (!offer) return [];
+    const unseen = offer.kind === 'sight' && !hasBeenTo(state, ctx, here);
+    return !quick || unseen ? [here] : [];
+  });
 }

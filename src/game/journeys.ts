@@ -15,6 +15,7 @@ import { keepsToSafeRoads } from './leave';
 import { arriving, leaving, tripCrew } from './trips';
 import type { GameState } from './state';
 import { placeInText } from './placeName';
+import { hearOf } from './atlas';
 import { bearing } from './compass';
 import { stopAt } from './journeyStops';
 import { homeVillageId } from './homeVillage';
@@ -93,14 +94,16 @@ function headed(ctx: GameContext, leg: PlanLeg, from: string): string {
 }
 
 /**
- * A stop where a stretch ends at a place that offers one (`journeyStops.ts`): a town's inn, a
- * landmark's sight, a day in wild country. Hurrying walks past them all.
+ * A stop where a stretch ends at a place the trip chose to stop at (`plannedStops`): a town's
+ * inn, a landmark's sight, a day in wild country. A trip planned before stops were chosen stops
+ * wherever a place offers it, unless it hurries.
  */
 function stopAfter(plan: JourneyPlan, i: number, ctx: GameContext): MissionStage[] {
   const here = plan.legs[i]?.toward;
   const next = plan.legs[i + 1]?.toward;
   if (!here || here === next || !stopAt(ctx, here)) return [];
-  return [{ kind: 'stop', locationId: here }];
+  const stops = plan.stops ?? (plan.quick ? [] : [here]);
+  return stops.includes(here) ? [{ kind: 'stop', locationId: here }] : [];
 }
 
 function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
@@ -112,8 +115,9 @@ function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
     const text = fresh ? headed(ctx, leg, from) : leg.text;
     const walk = { kind: 'leg' as const, text, days: leg.days, region: leg.region };
     const road = plan.hunt ? huntedLeg(plan.hunt, ctx, walk) : [walk];
-    if (plan.quick || i === plan.legs.length - 1) return road;
-    return [...road, ...stopAfter(plan, i, ctx), CAMP];
+    if (i === plan.legs.length - 1) return road;
+    const stop = stopAfter(plan, i, ctx);
+    return plan.quick ? [...road, ...stop] : [...road, ...stop, CAMP];
   });
 }
 
@@ -166,7 +170,12 @@ export interface Departure {
 export function setOut(state: GameState, ctx: GameContext, trip: Departure): GameState {
   const { plan, passage } = trip;
   const def = journeyMission(plan, ctx);
-  const going = leaving(state, ctx, plan, trip.companionId);
+  // The towns you plan your road through are on your map now: you asked the way.
+  const asked = hearOf(
+    state,
+    plan.legs.flatMap((leg) => (leg.toward ? [leg.toward] : [])),
+  );
+  const going = leaving(asked, ctx, plan, trip.companionId);
   const crew = tripCrew(going.people.companionId);
   const run = settle(def, { ...startRun(def, crew), journey: plan });
   return log(

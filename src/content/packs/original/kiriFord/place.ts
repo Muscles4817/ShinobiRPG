@@ -12,6 +12,7 @@ export const KIRI_FORD: LocationDef = {
   id: 'kiri-ford',
   name: 'Kiri Ford',
   kind: 'city',
+  famous: true,
   epithet: 'River city',
   map: { x: 66, y: 38, label: 'right' },
   backdrop: 'mist',

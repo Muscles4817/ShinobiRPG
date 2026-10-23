@@ -16,7 +16,7 @@ import type { Standing } from '@/systems/standing';
 import type { Aptitude, AptitudeKnown, StatDelta, StatId, Stats } from '@/systems/stats';
 import type { Element, TechniqueBook } from '@/systems/techniques';
 import type { GameTime } from '@/systems/time';
-import type { Leave } from '@/systems/travel';
+import type { Atlas, Leave } from '@/systems/travel';
 import type { Told } from '@/systems/telling';
 import type { Vitals } from '@/systems/vitals';
 import type { Wallet } from '@/systems/wallet';
@@ -80,6 +80,8 @@ export interface GameState {
   readonly exams: Exams;
   /** Leave from the village for trips of your own: a genin's pass, a chūnin's days. */
   readonly leave: Leave;
+  /** The map as you know it: places heard of and been to, beyond the famous and your home. */
+  readonly atlas: Atlas;
   /** The recipes you know, how often you've cooked each, and your cooking grade. */
   readonly cooking: Cooking;
   /** What you have caught, gathered, followed and fought (`fieldBook/`). */

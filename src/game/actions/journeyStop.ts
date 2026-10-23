@@ -6,6 +6,7 @@ import { diffStats } from '@/systems/stats';
 import { sleepRecovery } from '@/systems/vitals';
 import { spend } from '@/systems/wallet';
 
+import { beenTo } from '../atlas';
 import type { GameContext } from '../context';
 import { noteFinds } from '../fieldBook/record';
 import { gatherMoment } from '../gathering';
@@ -18,6 +19,7 @@ import { placeInText } from '../placeName';
 import { CAMP_HEALTH_SHARE, travel } from '../road';
 import type { GameState } from '../state';
 import { INN_HEALTH_SHARE } from './inn';
+import { walkOn } from './travel';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
@@ -143,7 +145,8 @@ export const journeyStop: ActionHandler<ActionOf<'journeyStop'>> = {
     const def = activeMission(state, ctx);
     if (stage?.kind !== 'stop' || !def) return state;
     const offer = stopAt(ctx, stage.locationId);
-    const took = action.stay && offer ? stay(state, ctx, offer, rng) : null;
+    const took =
+      action.stay && offer ? stay(beenTo(state, ctx, offer.location.id), ctx, offer, rng) : null;
     const after = took?.state ?? state;
     if (!after.mission) return after;
     const nextIsCamp = def.stages[after.mission.stageIndex + 1]?.kind === 'camp';
@@ -153,6 +156,7 @@ export const journeyStop: ActionHandler<ActionOf<'journeyStop'>> = {
       took?.skipCamp ?? false,
       nextIsCamp,
     );
-    return afterStage({ ...after, mission: run }, ctx);
+    // A hurried trip hurries on again once you've chosen.
+    return walkOn(afterStage({ ...after, mission: run }, ctx), ctx, rng);
   },
 };

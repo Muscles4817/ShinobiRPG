@@ -578,6 +578,14 @@
   background: var(--map-land);
   box-shadow: 0 0 0 1.5px var(--map-faint);
 }
+/* A place only heard of, never been to: its name in faint ink. */
+.map-place.unvisited .map-name {
+  opacity: 0.7;
+}
+.map-place.unvisited .map-seal {
+  opacity: 0.75;
+}
+
 /* A village keeps its ring where you stand and while it is still to come. */
 .map-place.here[data-kind='village'] .map-seal {
   box-shadow:

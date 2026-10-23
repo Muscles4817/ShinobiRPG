@@ -12,6 +12,7 @@ import {
   type MissionStage,
 } from '@/systems/missions';
 
+import { hearOf } from '../atlas';
 import { examClash } from '../awayNotes';
 import { availability, crewFor, takeJob } from '../board';
 import { pickTaken } from '../sensei/pick';
@@ -83,7 +84,9 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
       remembered: state.village.marks,
       tallied: state.village.tallies,
     });
-    const taken = { ...pickTaken(state, ctx, def), board: takeJob(state, ctx, def), mission: run };
+    // A job that ends somewhere puts it on your map: you are told where you're going.
+    const heard = def.endsAt ? hearOf(state, [def.endsAt]) : state;
+    const taken = { ...pickTaken(heard, ctx, def), board: takeJob(heard, ctx, def), mission: run };
     const started = lightOfDay(
       adjust(spendTime(taken, def.slots, ctx), { energy: -def.energyCost }),
       def,

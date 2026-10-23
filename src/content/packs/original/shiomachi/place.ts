@@ -14,6 +14,7 @@ export const PORT_SHIOMACHI: LocationDef = {
   id: 'port-shiomachi',
   name: 'Port Shiomachi',
   kind: 'town',
+  famous: true,
   epithet: 'Fishing town',
   map: { x: 20, y: 54 },
   backdrop: 'coast',

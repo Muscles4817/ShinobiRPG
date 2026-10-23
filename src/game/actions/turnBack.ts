@@ -3,6 +3,7 @@ import { startRun } from '@/systems/missions';
 import { HUNT_THREAD } from '../hunt';
 import { activeStage } from '../missionFlow';
 import { journeyMission, legsBack, legsWalked } from '../journeys';
+import { plannedStops } from '../journeyStops';
 import { log } from '../ops';
 import { settle } from '../story/state';
 import type { ActionHandler, ActionOf } from './types';
@@ -27,6 +28,7 @@ export const turnBack: ActionHandler<ActionOf<'turnBack'>> = {
       to: plan.from,
       legs,
       quick: plan.quick,
+      stops: plannedStops(state, ctx, legs, plan.quick),
       // The hunters are as close on the way back as they had come.
       ...(plan.hunt ? { hunt: { ...plan.hunt, heat: run.threads[HUNT_THREAD] ?? 0 } } : {}),
     };

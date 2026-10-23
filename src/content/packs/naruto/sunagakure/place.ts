@@ -14,6 +14,7 @@ export const SUNAGAKURE: LocationDef = {
   id: 'sunagakure',
   name: 'Sunagakure',
   kind: 'village',
+  famous: true,
   epithet: 'Village Hidden in the Sand',
   map: { x: 12, y: 51 },
   backdrop: 'sand-village',
