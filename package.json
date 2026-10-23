@@ -1,7 +1,10 @@
 {
   "name": "shinobi-rpg",
+  "productName": "Shinobi RPG",
   "private": true,
   "version": "0.1.0",
+  "description": "A text-based shinobi life-sim RPG.",
+  "main": "electron/dist/main.js",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -19,7 +22,11 @@
     "test:watch": "vitest",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm run arch && npm run test && npm run build",
     "build:release": "VITE_EXCLUDE_FAN_PACKS=true vite build --outDir dist-release",
-    "check:release": "npm run build:release && node scripts/check-release.mjs dist-release"
+    "check:release": "npm run build:release && node scripts/check-release.mjs dist-release",
+    "desktop:build": "node -e \"require('node:fs').rmSync('electron/dist',{recursive:true,force:true})\" && tsc -p electron/tsconfig.build.json",
+    "desktop:dev": "npm run desktop:build && node scripts/desktop-dev.mjs",
+    "desktop:start": "npm run build:release && npm run desktop:build && electron .",
+    "desktop:dist": "node scripts/desktop-dist.mjs"
   },
   "dependencies": {
     "@fontsource/atkinson-hyperlegible": "^5.3.0",
@@ -28,6 +35,7 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@electron/asar": "^4.3.1",
     "@eslint/js": "^10.0.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
@@ -37,6 +45,8 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "dependency-cruiser": "^18.5.0",
+    "electron": "^44.9.3",
+    "electron-builder": "^26.15.3",
     "eslint": "^10.12.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.13.0",

@@ -8,6 +8,8 @@ export default tseslint.config(
     ignores: [
       'dist',
       'dist-release',
+      'electron/dist',
+      'release',
       'dev-dist',
       'coverage',
       '.claude',
@@ -75,6 +77,10 @@ export default tseslint.config(
   {
     files: ['**/*.js', '**/*.mjs'],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    files: ['electron/**'],
+    languageOptions: { globals: { ...globals.node } },
   },
   {
     files: ['vite.config.ts', 'eslint.config.js', 'scripts/**'],
