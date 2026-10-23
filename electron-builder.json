@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/app-builder-lib/scheme.json",
+  "appId": "com.shinobirpg.game",
+  "productName": "Shinobi RPG",
+  "copyright": "Copyright © Shinobi RPG",
+  "directories": { "output": "release", "buildResources": "public" },
+  "files": [
+    "package.json",
+    "electron/dist/**/*",
+    "dist-release/**/*",
+    "!**/node_modules/**",
+    "!**/*.map"
+  ],
+  "asar": true,
+  "publish": null,
+  "artifactName": "Shinobi-RPG-${version}-${os}-${arch}.${ext}",
+  "win": { "target": ["nsis"], "icon": "public/icon-512.png" },
+  "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true },
+  "mac": {
+    "target": ["dmg"],
+    "category": "public.app-category.role-playing-games",
+    "icon": "public/icon-512.png"
+  },
+  "linux": { "target": ["AppImage"], "category": "Game", "icon": "public/icon-512.png" }
+}

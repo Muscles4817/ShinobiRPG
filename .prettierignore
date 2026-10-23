@@ -5,3 +5,5 @@ package-lock.json
 dist-release
 .claude
 docs/design/art-mockups
+electron/dist
+release

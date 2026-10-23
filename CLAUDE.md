@@ -25,6 +25,9 @@ npm test               # unit + integration + UI smoke tests
 npm run arch           # module-boundary check (dependency-cruiser)
 npm run check:release  # release build without fan packs, verified free of fan names
 npm run format         # auto-format with Prettier
+npm run desktop:dev    # the desktop app (Electron) on the Vite dev server
+npm run desktop:start  # the desktop app on the release build
+npm run desktop:dist   # package the desktop app from the release build (docs/desktop.md)
 ```
 
 Run `npm run check` before every commit. Nothing merges unless it is green.
@@ -44,6 +47,10 @@ src/
               or a native shell's files through a StorageBackend; chooseStores picks at boot).
   ui/         React. theme/ (tokens), art/ (SVG icons & backdrops), audio/ (synth & music), components/, screens/.
   main.tsx    App composition root: picks platform adapters and the game context.
+electron/     The desktop app's shell (Electron main process and preload; its own tsconfig, built
+              to electron/dist). Serves the release build from app://game, keeps each slot as a
+              file in the app's data folder; the page reaches it only through window.shinobiNative
+              (platform/electronBackend.ts). Its code never imports src/. See docs/desktop.md.
 ```
 
 ### Dependency rules (enforced by `npm run arch`)
