@@ -62,7 +62,8 @@ export function plannedJourneyTo(
   return findJourney(ctx.content.routes.all, state.locationId, locationId);
 }
 
-const CAMP: MissionStage = {
+/** The fire between stretches of road, a trip's or a job's. */
+export const CAMP: MissionStage = {
   kind: 'camp',
   text: CAMP_TEXT,
   picks: CAMP_PICKS,

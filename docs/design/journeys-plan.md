@@ -436,3 +436,22 @@ migration and a previous-version save test wherever the save shape changes.
    **The choices' order, changed.** Step 7 put the cautious choice first. Now the choice that
    meets the road comes first and the way round it second: face the foes or go round, push on
    through the weather or wait it out, take the find or walk on, stop for the sight or walk on.
+
+9. **Jobs on the map** (this step). A job may walk the map's road instead of legs of its own:
+   `MissionDef.goesTo` names where it goes, and a `road` stage (`RoadStage`, `to: 'outbound'` to
+   there or `'home'` to your village, with an optional `text` for the first stretch in the job's
+   own words) is the quickest open way (`game/jobRoads.ts`). It is worked out when the job is
+   taken (`jobWays`, the routes you can walk today) and kept on the run (`MissionRun.ways`), so a
+   road that opens or shuts while you are out doesn't move you; a run taken before ways were kept
+   works its way out again. `activeMission` walks each road as its legs (`withRoads`), with a camp
+   between stretches, each leg carrying its route's region and danger, so the map's road events
+   come up on it as on a trip; the stages after a road are what happens on arrival. The board
+   reads the same (`jobAsWalked`): its days away and an exam it would make you miss, and a job
+   with no way you can walk can't be taken ("No road you can walk goes there."). Validated in
+   `validateJobRoads.ts`: a road out names a real `goesTo` and only it does, every hall that
+   posts the job has a way, `endsAt` is where the last road leaves you (kept, so everything that
+   reads where a job ends still does), and the job pays for the days. The reference: Salt in the
+   Lanterns' road down to Port Shiomachi and its road home now walk the map. Not yet: beats
+   placed by `at` partway along a road (every road a job walks is one stretch so far), the
+   montage for a job's road (a job keeps its own scene), stops on a job's road, and moving the
+   other jobs with `endsAt` over, as they are touched.

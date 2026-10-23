@@ -66,6 +66,7 @@ export function noteLine(n: MissionNote): SceneLine {
 const ROUTE_MARKS: Readonly<Record<MissionStage['kind'], { glyph: string; label: string }>> = {
   narrative: { glyph: '話', label: 'Story' },
   leg: { glyph: '道', label: 'The road' },
+  road: { glyph: '道', label: 'The road' },
   check: { glyph: '試', label: 'A trial' },
   decision: { glyph: '選', label: 'A choice' },
   camp: { glyph: '火', label: 'Camp' },

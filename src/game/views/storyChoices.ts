@@ -206,6 +206,9 @@ function stageChoices(
       };
     case 'stop':
       return stopPrompt(state, ctx, stage.locationId);
+    // A job's road is walked as its legs (`jobRoads.ts`); one never waits here unexpanded.
+    case 'road':
+      return { prompt: stage.text ?? null, choices: [onward('Travel on')] };
     case 'ending':
       return {
         prompt: null,

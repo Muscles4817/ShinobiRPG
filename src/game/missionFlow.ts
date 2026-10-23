@@ -16,6 +16,7 @@ import { jobDoneHeading } from './daybook/jobs';
 import { crewDebrief, debriefLines, gradeOf, helpedOf } from './debrief';
 import { forestCleared, forestLost } from './exam/forest';
 import { afterFieldWork } from './exam/routes';
+import { jobAsWalked } from './jobRoads';
 import { arrive, journeyMission } from './journeys';
 import { chip, log, placeHere } from './ops';
 import { handedOver } from './missionRewards';
@@ -43,9 +44,9 @@ export const BEATEN = 'You were beaten unconscious.';
 export function activeMission(state: GameState, ctx: GameContext): MissionDef | null {
   const run = state.mission;
   if (!run) return null;
-  return run.journey
-    ? journeyMission(run.journey, ctx)
-    : withCrewWords(ctx.content.missions.require(run.missionId), state, ctx);
+  if (run.journey) return journeyMission(run.journey, ctx);
+  const def = jobAsWalked(state, ctx, ctx.content.missions.require(run.missionId));
+  return withCrewWords(def, state, ctx);
 }
 
 export function activeStage(state: GameState, ctx: GameContext): MissionStage | null {
