@@ -692,6 +692,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`ArcAct.baseLocationId`): its jobs are posted at the office there, and while it is open,
     going there is orders, not leave. A job may leave you somewhere else (`MissionDef.endsAt`,
     walked there by its legs): the "go" act's job takes you to the base, the last brings you home.
+    A job may walk the **map's road** instead of legs of its own (`game/jobRoads.ts`): a `road`
+    stage (`to: 'outbound'` to where it `goesTo`, or `'home'` to your village) is the quickest open
+    way, worked out when the job is taken and kept on the run (`MissionRun.ways`), walked as its
+    legs with a camp between stretches and the routes' regions and danger; read a job's stages
+    through `activeMission` (or `jobAsWalked` on the board), never `def.stages` alone. Validated in
+    `validateJobRoads.ts` (a real `goesTo`, a way from every hall, `endsAt` where the last road
+    leaves you, pay for the days).
 26. **Travel is a journey along routes, on leave** (`docs/design/world-plan.md`). A pack's
     `routes` join its locations (legs of days through road-event regions, a `danger`, a
     passage `cost`); `systems/travel` finds the quickest open way (a road through a place still
@@ -1108,7 +1115,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   like its stages.
 - **Add a long story:** write its jobs (any tier), list them at a mission hall, and add an
   `ArcDef` to the pack's `arcs` with its acts (beats, a line, the jobs, and a `baseLocationId`
-  for an act lived in another town, with `endsAt` on the jobs that take you there and back). Leave world marks in
+  for an act lived in another town, with `endsAt` on the jobs that take you there and back, and
+  a `road` stage with `goesTo` rather than legs of their own). Leave world marks in
   outcomes for later acts to `remember` (validated: every remembered mark is left by some job).
 - **Add many jobs of one shape:** write a `MissionTemplate` (`content/missionTemplates.ts`) with
   `{slot}` placeholders and their meanings in `placeholders`, then add `MissionFill`s giving every

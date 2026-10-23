@@ -14,6 +14,7 @@ export {
   type TwistDef,
   type MissionDef,
   type MissionRun,
+  type WayLeg,
   type JourneyHunt,
   type JourneyPlan,
   type MissionNote,
@@ -74,6 +75,7 @@ export {
   type StoryState,
   type ThreadDef,
 } from './story';
+export { ROAD_WAYS, type RoadStage, type RoadWay } from './storyStages';
 export type {
   CampActivity,
   CampStage,

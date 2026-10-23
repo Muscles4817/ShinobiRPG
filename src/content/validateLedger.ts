@@ -45,6 +45,8 @@ function storyLines(stage: MissionStage): string[] {
     case 'combat':
     case 'encounter':
       return [stage.text];
+    case 'road':
+      return stage.text ? [stage.text] : [];
     case 'stop':
       return [];
   }
@@ -67,6 +69,7 @@ function outcomesOf(stage: MissionStage): (Outcome | undefined)[] {
     case 'combat':
     case 'encounter':
     case 'stop':
+    case 'road':
       return [];
   }
 }

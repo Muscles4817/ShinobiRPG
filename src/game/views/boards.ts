@@ -185,7 +185,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         crew: crewOf(state, ctx, m),
         picked: sensei && pick === id ? `${sensei.name}’s pick for the team` : null,
         returning: asksForYou(state, m),
-        away: awayFor(m),
+        away: awayFor(state, ctx, m),
         examClash: examClash(state, ctx, m)?.text ?? null,
         standing: on.kind === 'standing',
         posted: postedLine(on),

@@ -63,13 +63,13 @@ export const DOWN_TO_THE_COAST: MissionDef = {
   energyCost: 15,
   reward: { ryo: 160, reputation: 3 },
   minMissionsCompleted: 2,
+  goesTo: 'port-shiomachi',
   endsAt: 'port-shiomachi',
   stages: [
     {
-      kind: 'leg',
+      kind: 'road',
+      to: 'outbound',
       text: 'The coast road winds down through the terraces, and the wind starts to taste of salt.',
-      days: 1,
-      region: 'coast-road',
     },
     {
       kind: 'check',

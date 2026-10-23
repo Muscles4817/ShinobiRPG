@@ -103,6 +103,22 @@ export interface StopStage {
   readonly locationId: string;
 }
 
+/** Which way a job's road goes: out to where it `goesTo`, or home to your village. */
+export const ROAD_WAYS = ['outbound', 'home'] as const;
+export type RoadWay = (typeof ROAD_WAYS)[number];
+
+/**
+ * A job's road on the map (`docs/design/journeys-plan.md` 3.7): when the job is taken it becomes
+ * the legs of the quickest open way there or back, with a camp between stretches and the map's
+ * road events on them, as a trip does. The stages after it are what happens on arrival.
+ */
+export interface RoadStage {
+  readonly kind: 'road';
+  readonly to: RoadWay;
+  /** The first stretch's line in the job's own words, in place of the road's. */
+  readonly text?: string;
+}
+
 export interface Ending extends Outcome {
   readonly when?: Condition;
   readonly text: string;

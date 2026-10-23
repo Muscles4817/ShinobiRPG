@@ -17,6 +17,7 @@ import type {
   DecisionStage,
   EndingStage,
   Outcome,
+  RoadStage,
   StopStage,
   TextVariant,
 } from './storyStages';
@@ -92,6 +93,7 @@ type StageBody =
   | DecisionStage
   | CampStage
   | StopStage
+  | RoadStage
   | EndingStage;
 
 /** A stage, played only when its condition holds (and skipped otherwise). */
@@ -153,6 +155,8 @@ export interface MissionDef {
   readonly once?: true;
   /** Where the job leaves you, when it ends somewhere else (a long story's base, or home). */
   readonly endsAt?: string;
+  /** Where its `road` out goes (a location id); a job that walks the map's road names it. */
+  readonly goesTo?: string;
   /** Counters the story keeps (a charge's trust, the day's light). */
   readonly threads?: readonly ThreadDef[];
   /** Who you look after, if anyone. */
@@ -212,8 +216,22 @@ export interface MissionRun {
   readonly tallied?: Readonly<Record<string, number>>;
   /** What lasts beyond the job (world marks, tallies, memories), held until it is done. */
   readonly held?: readonly Effect[];
+  /**
+   * A job's roads on the map, worked out when it was taken: for each of its `road` stages in
+   * order, the legs walked (`game/jobRoads.ts`).
+   */
+  readonly ways?: readonly (readonly WayLeg[])[];
   /** Set when this is a trip of your own along the roads, not a job (`game/journeys.ts`). */
   readonly journey?: JourneyPlan;
+}
+
+/** A stretch of a job's road, as walked: the road's own line, region, days, danger and heading. */
+export interface WayLeg {
+  readonly region: string;
+  readonly days: number;
+  readonly text: string;
+  readonly danger: Danger;
+  readonly toward: string;
 }
 
 /** A trip along the roads: where from and to, the way as legs, and whether to hurry. */

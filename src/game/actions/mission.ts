@@ -33,6 +33,7 @@ import { checkHand } from '../missionRoles';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
 import { welcomeBack } from '../clients';
+import { jobWays, walksTheMap, withRoads } from '../jobRoads';
 import { bondsNow } from '../debrief';
 import { travel } from '../road';
 import { playEnding } from '../story/ending';
@@ -68,6 +69,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
       state.character.vitals.energy < def.energyCost && `Needs ${def.energyCost} energy.`,
       healthFraction(state) < MIN_HEALTH_FOR_MISSION && 'You are too injured to take a mission.',
       senseiForbids(state, ctx, def),
+      walksTheMap(def) && !jobWays(state, ctx, def) && 'No road you can walk goes there.',
     );
   },
   perform(state, action, ctx, rng) {
@@ -76,9 +78,12 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
     const crew = crewFor(state, ctx, def) ?? SOLO;
     // The twist is rolled now and kept hidden: the story finds it out when it gets there.
     const twist = def.twists ? pickTwist(def, rng.next()) : null;
+    // A job on the map's road keeps the way it was given today (`jobRoads.ts`).
+    const ways = walksTheMap(def) ? (jobWays(state, ctx, def) ?? []) : null;
+    const walked = ways ? withRoads(def, ways) : def;
     const begun = startRun(def, crew, twist ? [twist] : []);
-    const known = welcomeBack(state, def, begun);
-    const run = settle(def, {
+    const known = welcomeBack(state, def, ways ? { ...begun, ways } : begun);
+    const run = settle(walked, {
       ...known,
       bondsAtStart: bondsNow(state, crew.memberIds),
       remembered: state.village.marks,
@@ -138,6 +143,7 @@ function continueBlocker(state: GameState, stage: MissionStage): string | null {
       return 'Choose whether to stop first.';
     case 'narrative':
     case 'leg':
+    case 'road':
     case 'combat':
     case 'camp':
     case 'ending':
@@ -215,6 +221,9 @@ export const missionContinue: ActionHandler<ActionOf<'missionContinue'>> = {
       }
       case 'camp':
         // Turning in: the fire is left to burn down.
+        return afterStage({ ...state, mission: advance(state.mission) }, ctx);
+      case 'road':
+        // A job's road is walked as its legs (`jobRoads.ts`); one left unexpanded is passed.
         return afterStage({ ...state, mission: advance(state.mission) }, ctx);
       case 'ending':
         return afterStage(playEnding(state, def, stage), ctx);

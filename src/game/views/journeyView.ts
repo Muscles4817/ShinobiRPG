@@ -114,6 +114,7 @@ function waitingOn(stage: MissionStage | null, roadEvent: boolean): JourneyWaiti
   if (!stage) return 'road';
   switch (stage.kind) {
     case 'leg':
+    case 'road':
       return 'road';
     case 'camp':
       return 'camp';
