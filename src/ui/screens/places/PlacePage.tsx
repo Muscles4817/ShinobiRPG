@@ -2,6 +2,7 @@ import { isRestKind, type PlaceKind, type RestKind } from '@/game';
 
 import type { PlaceProps } from '../types';
 import { AcademyPage } from './AcademyPage';
+import { CampPage } from './CampPage';
 import { CompoundPage, QuarterPage } from './CompoundPages';
 import { VetPage } from './VetPage';
 import { GearShopPage } from './GearShopPage';
@@ -38,6 +39,8 @@ function RestPage({ kind, ...props }: PlaceProps & { readonly kind: RestKind }) 
       return <OnsenPage {...props} />;
     case 'inn':
       return <InnPage {...props} />;
+    case 'camp':
+      return <CampPage {...props} />;
     case 'house':
       return <HousePage {...props} />;
   }

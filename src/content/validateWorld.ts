@@ -141,6 +141,7 @@ const BARE_KINDS = [
   'home',
   'hospital',
   'inn',
+  'camp',
   'house',
   'onsen',
   'compound',

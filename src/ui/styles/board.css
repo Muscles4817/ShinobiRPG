@@ -535,6 +535,38 @@
   border: 2px solid var(--map-land);
   box-shadow: 0 0 0 1.5px var(--map-ink);
 }
+/*
+ * Each kind of place has its own mark: a hidden village a ringed seal, a city a square block, a
+ * town the plain seal, wild country an open dashed ring, a landmark a diamond.
+ */
+.map-place[data-kind='village'] .map-seal {
+  width: 14px;
+  height: 14px;
+  box-shadow:
+    0 0 0 1.5px var(--map-ink),
+    0 0 0 3.5px var(--map-land),
+    0 0 0 4.5px var(--map-ink);
+}
+.map-place[data-kind='city'] .map-seal {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+}
+.map-place[data-kind='wild'] .map-seal {
+  background: transparent;
+  border: 1.5px dashed var(--map-ink);
+  box-shadow: none;
+}
+.map-place[data-kind='landmark'] .map-seal {
+  width: 10px;
+  height: 10px;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+.map-place[data-kind='wild'] .map-name,
+.map-place[data-kind='landmark'] .map-name {
+  font-style: italic;
+}
 .map-place.here .map-seal {
   background: var(--map-here);
   box-shadow: 0 0 0 1.5px var(--map-here);
@@ -545,6 +577,19 @@
 .map-place.locked .map-seal {
   background: var(--map-land);
   box-shadow: 0 0 0 1.5px var(--map-faint);
+}
+/* A village keeps its ring where you stand and while it is still to come. */
+.map-place.here[data-kind='village'] .map-seal {
+  box-shadow:
+    0 0 0 1.5px var(--map-here),
+    0 0 0 3.5px var(--map-land),
+    0 0 0 4.5px var(--map-here);
+}
+.map-place.locked[data-kind='village'] .map-seal {
+  box-shadow:
+    0 0 0 1.5px var(--map-faint),
+    0 0 0 3.5px var(--map-land),
+    0 0 0 4.5px var(--map-faint);
 }
 .map-place.selected .map-name {
   text-decoration: underline;

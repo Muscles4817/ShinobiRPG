@@ -52,6 +52,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
   {
     id: 'torogakure',
     name: 'Tōrōgakure',
+    kind: 'village',
     epithet: 'Village Hidden Among Lanterns',
     map: { x: 46, y: 36 },
     backdrop: 'lantern-rooftops',
@@ -245,6 +246,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
   {
     id: 'sakyugakure',
     name: 'Sakyūgakure',
+    kind: 'village',
     epithet: 'Village Hidden in the Dunes',
     map: { x: 88, y: 28 },
     backdrop: 'dunes',
@@ -255,6 +257,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
   {
     id: 'mount-reikon',
     name: 'Mount Reikon',
+    kind: 'landmark',
     epithet: 'Where spirits gather',
     map: { x: 40, y: 10, label: 'right' },
     backdrop: 'mountain',

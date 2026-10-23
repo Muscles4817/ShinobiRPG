@@ -16,6 +16,7 @@ import type { NoteWeight } from '@/systems/profile';
 import type { ExamDef } from '@/systems/exams';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 import type { RouteDef } from '@/systems/travel';
+import type { LocationKind } from './locationKinds';
 
 import type { BackdropId, IconId } from './art';
 import type { QuirkDef } from './quirks';
@@ -243,6 +244,8 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'library'; readonly techniqueIds: readonly string[] })
   | (PlaceBase & { readonly kind: 'home'; readonly rentPerWeek: number; readonly lodging: string })
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
+  /** Somewhere to sleep under the sky in wild country: a fire and what's in your pack. */
+  | (PlaceBase & { readonly kind: 'camp' })
   /** Somewhere to sleep away from home: a room by the night. */
   | (PlaceBase & { readonly kind: 'inn'; readonly keeper: string; readonly roomCost: number })
   | (PlaceBase & LettingsFields)
@@ -272,6 +275,8 @@ export type PlaceKind = PlaceDef['kind'];
 export interface LocationDef {
   readonly id: string;
   readonly name: string;
+  /** What kind of place it is: what it must have, and how the map marks it. */
+  readonly kind: LocationKind;
   /** e.g. "Village Hidden in the Leaves". */
   readonly epithet: string;
   readonly backdrop: BackdropId;

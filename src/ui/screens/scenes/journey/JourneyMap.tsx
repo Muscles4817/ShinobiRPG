@@ -81,6 +81,7 @@ export function JourneyMap({ view, date, slot, travel, children }: JourneyMapPro
       {view.map.places.map((p) => (
         <div
           key={p.id}
+          data-kind={p.kind}
           className={`map-place label-${p.label}${stops.has(p.id) ? ` journey-${stops.get(p.id) ?? ''}` : ''}`}
           style={placed(p, frame)}
         >
