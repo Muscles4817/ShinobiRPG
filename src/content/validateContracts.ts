@@ -112,5 +112,16 @@ export function validateContracts(pack: ContentPack): string[] {
     ...signingProblems(pack),
     ...strayCalls(pack),
     ...foeCalls(pack),
+    ...neededCalls(pack),
   ];
+}
+
+/** A technique that needs summons out (Sage Mode, the sage toads' duet) names real ones. */
+function neededCalls(pack: ContentPack): string[] {
+  const known = new Set(pack.contracts.flatMap((c) => c.summons.map((s) => s.id)));
+  return pack.techniques.flatMap((t) =>
+    (t.needsCalls ?? [])
+      .filter((id) => !known.has(id))
+      .map((id) => `technique "${t.id}" needs unknown summon "${id}"`),
+  );
 }

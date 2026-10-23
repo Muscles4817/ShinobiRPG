@@ -4,6 +4,7 @@ import type { PuppetDef } from '../../../puppets';
 import type { GearDef, PersonDef } from '../../../types';
 import { KIRI_FIGHTER_ARTS, KIRI_FIGHTER_GEAR, KIRI_FIGHTERS } from './kiri';
 import { SUNA_FIGHTER_ARTS, SUNA_FIGHTER_GEAR, SUNA_FIGHTER_PUPPETS, SUNA_FIGHTERS } from './suna';
+import { JIRAIYA, JIRAIYA_TECHNIQUES } from './jiraiya';
 import { TENGEN, TENGEN_GEAR, TENGEN_TECHNIQUES } from './tengen';
 
 /**
@@ -13,11 +14,13 @@ import { TENGEN, TENGEN_GEAR, TENGEN_TECHNIQUES } from './tengen';
  */
 export const DUELISTS: readonly PersonDef[] = /*#__PURE__*/ (() => [
   TENGEN,
+  JIRAIYA,
   ...SUNA_FIGHTERS,
   ...KIRI_FIGHTERS,
 ])();
 export const DUELIST_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...TENGEN_TECHNIQUES,
+  ...JIRAIYA_TECHNIQUES,
   ...SUNA_FIGHTER_ARTS,
   ...KIRI_FIGHTER_ARTS,
 ])();

@@ -24,7 +24,7 @@ import { clash } from './clash';
 import { makeClones } from './clones';
 import { watchedBy } from './mimicry';
 import { combination, comboPartner } from './combo';
-import { empowerSelf } from './empower';
+import { empowering } from './meditation';
 import { castField } from './field';
 import { move, spunAway } from './footwork';
 import { afflict, drain, knock, pin, readyRiposte } from './lingering';
@@ -178,7 +178,7 @@ function onSelf(round: Round, turn: Turn, { technique, effect }: EffectUse): Rou
     case 'sense':
       return sense(round, { ...turn, actor }, { technique, effect });
     case 'empower':
-      return empowerSelf(round, actor, { technique, effect });
+      return empowering(round, actor, { technique, effect });
     case 'clone':
       return makeClones(round, actor, { technique, effect });
     case 'trap':

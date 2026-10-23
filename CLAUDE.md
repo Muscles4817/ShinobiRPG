@@ -400,7 +400,19 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     **Summons** are called bodies (`CombatantSetup.calls`, the `summon` verb naming a call;
     `engines/plan/summons.ts`): they join their caller's front row mid-fight with a plan of their
     own (`summonPlans.ts`), the caller pays any blood price and chakra upkeep every exchange, and
-    they go home unpaid, beaten or when the caller falls (`CombatOutcome.summons`). The player
+    they go home unpaid, beaten or when the caller falls (`CombatOutcome.summons`); one hurt to
+    `BROKEN_SHARE` goes before it falls and won't answer again that fight, and a caller who reads
+    the fight sends one home hurt first (`SAVED_SHARE`) or lets the smallest go to spare chakra
+    (`UPKEEP_HORIZON`). A kit that calls more than one summon fights **by summoning**
+    (`plan/calling.ts`): calls take no plan slot; against anyone strong the whole style at once,
+    otherwise only what the fight shows they need (read as a ladder's step is, `climbReasons`):
+    the biggest body when outmatched or hurt, else the cheapest that answers. A `mount` covers its caller
+    and carries a still rider clear (`plan/riding.ts`); `perch` summons (the sage toads) land on
+    the caller's shoulders, not the field (`plan/perching.ts`). **Sage Mode** is the `sage`
+    ladder: an empower that is `still` is meditated into (a turn open, as if gathering; it opens
+    as the next turn begins unless a real hurt broke it, `plan/meditation.ts`), costs the body
+    nothing and runs out (`ladderHolds`) unless perched toads renew it; a technique may
+    `needsCalls` (summons out). Authored fighters call summons through `arsenal.summons`. The player
     holds one **contract** at a time (`systems/contracts`, `GameState.contract`, a pack's
     `ContractDef`s), signed through a job (`reward.contractId`) or a teacher
     (`TeacherProfile.contract`, `signContract`); summons answer from the standing stage they ask,
@@ -938,7 +950,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi or genin
   (as they stand at canon's start, unless deliberately changed), no
   schedule, no teaching, a `homeLocationId` for their village if it isn't the start one, and an
-  `arsenal` (which may name `gearIds` and `tools`, carried into every fight, and `puppets`: a
+  `arsenal` (which may name `gearIds` and `tools`, carried into every fight, `summons` from the
+  pack's contracts, called from the kit, and `puppets`: a
   pack's `PuppetDef`s, bodies built rather than summoned, each unsealed by its own technique as a
   call like a summon's, its maker stepping back behind it; `game/puppets.ts`). They show in versus by rank and nowhere else; their arsenal sources their
   techniques (validated in `validateDuelists.ts`). Plumbing one in moves them to `people`, where

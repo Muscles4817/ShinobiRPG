@@ -17,6 +17,7 @@ import { partnered } from './combo';
 import { spendsReserve } from './pacing';
 import { bestTarget } from './targeting';
 import { finisherTargets, needsOpenTarget } from './finishers';
+import { kitCall } from './calling';
 import { nextOpening } from './climbing';
 import { setupPlay } from './setups';
 import { survivalPlay } from './survival';
@@ -323,7 +324,7 @@ function climbing(self: PlanFighter, round: Round): Play | null {
 }
 
 /**
- * An emergency slot that holds; else a ladder's next step when it is time; else a set-up, or
+ * An emergency slot that holds; else a summoner's call from the kit; else a ladder's next step when it is time; else a set-up, or
  * playing for time against a killer; else, for someone fighting at a set distance and elsewhere, a
  * step towards it; else the first slot at this distance that qualifies; else an improvised
  * blow or step (at the mark).
@@ -332,6 +333,13 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   const slots = self.loadout[round.range];
   const emergency = firstPlay(self, round, slots.filter(urgent));
   if (emergency) return emergency;
+  // A summoner calls from the kit, Sage Mode and all (`calling.ts`).
+  const called = kitCall(self, {
+    fighters: round.fighters,
+    ...(round.reads ? { reads: round.reads } : {}),
+    exchange: round.number,
+  });
+  if (called) return { card: called, target: undefined };
   const climb = climbing(self, round);
   if (climb) return climb;
   // A set-up from the kit, against a match (`setups.ts`): hide, hold, finish.

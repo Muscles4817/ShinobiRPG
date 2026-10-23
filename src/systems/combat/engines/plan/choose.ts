@@ -22,6 +22,7 @@ import { cardWorth } from './worth';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
+import { kitCall } from './calling';
 import { setupPlay } from './setups';
 import { opponentsOf } from './senses';
 import { needsOpenTarget, openFoes } from './finishers';
@@ -157,7 +158,7 @@ export interface Moment {
 
 /**
  * A sense, Search or Dispel for a hidden foe, a set-up, playing for time against a killer, a
- * conceal to open, an empower, clones or a trap (`prep.ts`); else a tool that's called for.
+ * summoner's call from the kit (`calling.ts`), a conceal to open, an empower, clones or a trap (`prep.ts`); else a tool that's called for.
  */
 function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment): Card | undefined {
   const hiddenFoe = moment.hiddenFoe ?? false;
@@ -167,6 +168,11 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
     sightInstinct(self, ready, { ...now, fieldUp: moment.fieldUp ?? false }) ??
     senses(self, ready, hiddenFoe) ??
     forTime(self, moment) ??
+    kitCall(self, {
+      fighters: moment.fighters ?? [],
+      ...(moment.reads ? { reads: moment.reads } : {}),
+      ...(moment.exchange === undefined ? {} : { exchange: moment.exchange }),
+    }) ??
     prepInstinct(self, ready, moment) ??
     toolInstinct(self, ready, now)
   );

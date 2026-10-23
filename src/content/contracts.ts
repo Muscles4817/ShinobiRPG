@@ -39,6 +39,10 @@ export interface SummonDef {
   /** Chakra its caller pays every exchange it stays. */
   readonly upkeep: number;
   readonly price?: SummonPrice;
+  /** Big enough to stand on: it carries its caller clear while they meditate or gather. */
+  readonly mount?: true;
+  /** A sage: it answers onto its caller's shoulder and helps them into Sage Mode, never fighting itself. */
+  readonly perch?: true;
 }
 
 export interface ContractDef {

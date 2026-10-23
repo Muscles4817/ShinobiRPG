@@ -64,6 +64,11 @@ export interface TechniqueDef {
   /** A step of a ladder that must be open in the fight to use it (`ladders.ts`): a gate. */
   readonly needsOpen?: LadderStep;
   /**
+   * Summons (call ids) that must be out, on the field or perched on the user, to use it: Sage
+   * Mode needs the two sage toads, their duet both of them (`combat/engines/plan/calls.ts`).
+   */
+  readonly needsCalls?: readonly string[];
+  /**
    * What its target must be to use it on them: `open` (dazed, reeling or held), for a finisher
    * that is a storm of blows no one standing ready would let land (Morning Peacock).
    */

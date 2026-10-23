@@ -11,20 +11,36 @@ export interface Caller {
   readonly summonsOut?: readonly string[];
   /** How each summon called this fight ended its part, by call id (the last call of each). */
   readonly summonFates?: Readonly<Record<string, SummonFate>>;
+  /** Calls that won't answer again this fight: beaten, or sent home hurt to save them. */
+  readonly summonsLost?: readonly string[];
+  /** Call ids of sage toads perched on them (`perching.ts`), off the field but still out. */
+  readonly perched?: readonly string[];
 }
 
-/** The call a technique's `summon` effect names, if it has one. */
-export function callOf(technique: CombatTechnique): string | undefined {
-  const effect = technique.effects.find((e) => e.verb === 'summon');
-  return effect?.verb === 'summon' ? effect.call : undefined;
+/** Every call a technique summons: one, or a pair that answer together (the sage toads). */
+export function callsOf(technique: Pick<CombatTechnique, 'effects'>): string[] {
+  return technique.effects.flatMap((e) => (e.verb === 'summon' ? [e.call] : []));
 }
 
-/** Whether a summoning technique can be played now: it holds the call, and that summon isn't out. */
+/** Whether a call's summon is out: on the field, or perched on its caller. */
+export function isOut(fighter: Caller, callId: string): boolean {
+  return (fighter.summonsOut ?? []).includes(callId);
+}
+
+/**
+ * Whether a summoning technique can be played now: it holds every call, none of them is out, and
+ * none was lost this fight; and the summons the technique needs (`needsCalls`) are out.
+ */
 export function canCall(fighter: Caller, technique: CombatTechnique): boolean {
-  const call = callOf(technique);
-  if (call === undefined) return true;
-  const holds = (fighter.calls ?? []).some((c) => c.id === call);
-  return holds && !(fighter.summonsOut ?? []).includes(call);
+  const ready = (technique.needsCalls ?? []).every((id) => isOut(fighter, id));
+  const calls = callsOf(technique);
+  return ready && calls.every((call) => answers(fighter, call));
+}
+
+/** Whether a call would answer now: held, not out, not lost. */
+export function answers(fighter: Caller, callId: string): boolean {
+  const holds = (fighter.calls ?? []).some((c) => c.id === callId);
+  return holds && !isOut(fighter, callId) && !(fighter.summonsLost ?? []).includes(callId);
 }
 
 /** A fighter who is a summon, while it is out: whose it is, which call, and what it costs. */
@@ -34,4 +50,6 @@ export interface Summoned {
   readonly upkeep?: number;
   /** A puppet on its maker's threads rather than a summon. */
   readonly puppet?: true;
+  /** Big enough to carry its caller (`riding.ts`). */
+  readonly mount?: true;
 }

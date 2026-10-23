@@ -54,6 +54,7 @@ export type CombatTechnique = Pick<
   | 'reach'
   | 'accuracy'
   | 'needsOpen'
+  | 'needsCalls'
   | 'needsTarget'
   | 'lethal'
   | 'moulded'
@@ -218,6 +219,13 @@ export interface CombatCall {
   readonly bloodPrice?: number;
   /** A puppet: built and worked on threads, not summoned (it unfolds and falls apart). */
   readonly puppet?: true;
+  /** Big enough to carry its caller: a meditating rider is carried clear by it (`plan/riding.ts`). */
+  readonly mount?: true;
+  /**
+   * A sage toad: it answers onto its caller's shoulder rather than the field, and draws natural
+   * energy in with them while it perches (`plan/perching.ts`).
+   */
+  readonly perch?: true;
 }
 
 /** How a summon's part in a fight ended: still there, beaten, or sent home unpaid. */

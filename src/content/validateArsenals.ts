@@ -4,7 +4,8 @@ import type { ContentPack, PersonDef } from './types';
 /**
  * People's own arsenals (`PersonDef.arsenal`): every technique is real and clan techniques stay
  * in the clan; gear is real, a piece per slot, tools are real and carried by the piece, and
- * weapon mastery runs 0 to 1. An
+ * weapon mastery runs 0 to 1; summons are real, and a technique that needs summons out (Sage
+ * Mode needs the sage toads) comes with them. An
  * arsenal may list techniques beyond its owner's grades today: the game lets them use each one
  * only once they've grown into it (`game/people/capable.ts`).
  */
@@ -48,5 +49,23 @@ function kitProblems(pack: ContentPack, person: PersonDef): string[] {
     ...Object.entries(person.arsenal?.weaponMastery ?? {}).flatMap(([weaponClass, m]) =>
       m >= 0 && m <= 1 ? [] : [`${who} knows "${weaponClass}" at ${m}, not 0 to 1`],
     ),
+    ...summonProblems(pack, person),
+  ];
+}
+
+/** The summons an arsenal calls are real, and every summon its techniques need is among them. */
+function summonProblems(pack: ContentPack, person: PersonDef): string[] {
+  const who = `person "${person.id}"`;
+  const summons = person.arsenal?.summons ?? [];
+  const known = new Set(pack.contracts.flatMap((c) => c.summons.map((s) => s.id)));
+  const ids = person.arsenal?.techniqueIds ?? [];
+  const needed = pack.techniques
+    .filter((t) => ids.includes(t.id))
+    .flatMap((t) => (t.needsCalls ?? []).map((call) => ({ technique: t.id, call })));
+  return [
+    ...summons.filter((id) => !known.has(id)).map((id) => `${who} calls unknown summon "${id}"`),
+    ...needed
+      .filter(({ call }) => !summons.includes(call))
+      .map(({ technique, call }) => `${who} fights with "${technique}" but can't call "${call}"`),
   ];
 }

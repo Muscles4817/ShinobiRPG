@@ -61,11 +61,13 @@ export {
   canOpen,
   givesOut,
   isOpenFor,
+  ladderHolds,
   lastsOpen,
   openStep,
   opensOf,
   stepBand,
   stepShare,
+  wearsBody,
   worthOpening,
   type ClimbReasons,
 } from './ladders';

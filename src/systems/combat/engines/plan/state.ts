@@ -113,6 +113,11 @@ export interface PlanFighter
   readonly shadowOf?: string;
   /** Gathering chakra and breath this turn, and so open until their next (`gather.ts`). */
   readonly gathering?: boolean;
+  /**
+   * Meditating into a still empower (Sage Mode, `meditation.ts`): which technique, and their
+   * health as they went still. It takes hold as their next turn begins, if nothing hurt them.
+   */
+  readonly meditating?: { readonly techniqueId: string; readonly health: number };
   readonly loadout: Loadout;
   /** The defence ready at each distance (`readiness.ts`); absent in fights saved before. */
   readonly reactions?: Reactions;
@@ -347,6 +352,7 @@ export function patch(
       | 'breath'
       | 'committed'
       | 'gathering'
+      | 'meditating'
       | 'veiled'
       | 'revealed'
     >

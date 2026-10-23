@@ -33,6 +33,31 @@ export const CONTRACT_TECHNIQUES: readonly TechniqueDef[] = [
     difficulty: 130,
   },
   {
+    id: 'summoning-gamahiro',
+    name: 'Summoning: Gamahiro',
+    description:
+      'A smear of blood on the palm, and a toad with two swords stands up out of the smoke.',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'summon', power: 1, call: 'gamahiro' }],
+    chakraCost: 22,
+    rank: 'B',
+    difficulty: 100,
+  },
+  {
+    id: 'summoning-two-great-sage-toads',
+    name: 'Summoning: The Two Great Sage Toads',
+    description:
+      'Fukasaku and Shima of Mount Myōboku, called together, bickering before the smoke has cleared.',
+    discipline: 'ninjutsu',
+    effects: [
+      { verb: 'summon', power: 1, call: 'fukasaku' },
+      { verb: 'summon', power: 1, call: 'shima' },
+    ],
+    chakraCost: 24,
+    rank: 'A',
+    difficulty: 130,
+  },
+  {
     id: 'summoning-pakkun',
     name: 'Summoning: Pakkun',
     description: 'A small pug in a blue vest, with the best nose in the pack and an opinion.',
@@ -84,6 +109,16 @@ export const CONTRACT_TECHNIQUES: readonly TechniqueDef[] = [
     chakraCost: 14,
     rank: 'A',
     difficulty: 120,
+  },
+  {
+    id: 'toad-twin-blades',
+    name: 'Toad Twin Blades',
+    description: 'Two great swords drawn at once and brought down in a cross.',
+    discipline: 'taijutsu',
+    effects: [{ verb: 'damage', power: 20, hits: 2 }],
+    chakraCost: 4,
+    rank: 'B',
+    difficulty: 90,
   },
   {
     id: 'ninken-hold',

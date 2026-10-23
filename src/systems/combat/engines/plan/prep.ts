@@ -101,7 +101,9 @@ export function prepStatuses(f: PlanFighter): string[] {
   if (!alive(f)) return [];
   const clones = clonesLeft(f);
   return [
+    ...(f.meditating ? ['Meditating'] : []),
     ...(f.empowered ? [f.empowered.opened ? stepStatus(f.empowered.opened) : 'Empowered'] : []),
+    ...((f.perched ?? []).length > 0 ? ['Sage toads perched'] : []),
     ...(f.shroud ? [SHROUD_STATUS[f.shroud.kind]] : []),
     ...(clones > 0 ? [`Clones ×${clones}`] : []),
     ...(f.trap ? [`Trap at ${RANGE_LABEL[f.trap.band].toLowerCase()} range`] : []),

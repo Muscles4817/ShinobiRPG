@@ -27,6 +27,7 @@ import {
 } from '../../rules/verbs';
 import { committedTo } from './commitment';
 import { isGathering } from './gather';
+import { carrierOf, leapingClear } from './riding';
 import { GATHER_OPEN } from '../../rules/gather';
 import { isDazed } from './daze';
 import { readsInTheMoment } from './judgement';
@@ -93,6 +94,9 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
 }
 
 function avoidRoll(round: Round, incoming: Incoming): number {
+  // A still rider is carried clear by their mount, or not at all (`riding.ts`).
+  const mount = carrierOf(round, incoming.target);
+  if (mount) return avoidRoll(round, { ...incoming, target: leapingClear(mount) });
   const { attacker, form } = incoming;
   const target = dulled(round.field, incoming.target);
   if (isDazed(target) || incoming.sure === true) return 0;

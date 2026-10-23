@@ -152,6 +152,11 @@ export interface PersonArsenal {
   readonly dustVessel?: number;
   /** The puppets they work on threads (`PuppetDef` ids), each unsealed by its own technique. */
   readonly puppets?: readonly string[];
+  /**
+   * The summons they call (`SummonDef` ids of the pack's contracts), each by its own summoning
+   * technique, which joins their kit with it (validated).
+   */
+  readonly summons?: readonly string[];
 }
 
 /**

@@ -2,7 +2,7 @@ import { clamp, round1 } from '@/core';
 import type { LadderId, LadderStep } from '@/systems/techniques';
 
 import type { CombatAttributes, CombatCost, CombatTechnique } from '../../contract';
-import { stepShare } from './ladders';
+import { ladderHolds, stepShare } from './ladders';
 import { stepHealthPrice } from './tolls';
 import type { EffectUse } from './use';
 
@@ -36,7 +36,7 @@ export interface Empowerment {
   readonly techniqueId: string;
   /** What it added to each boosted stat, taken back when it ends. */
   readonly added: Readonly<Partial<Record<Stat, number>>>;
-  /** The last exchange it holds; absent for a ladder, open until the body gives out. */
+  /** The last exchange it holds; absent for a ladder open until the body gives out (a gate). */
   readonly until?: number;
   /** The ladder step it opened (a gate), when it is a ladder's. */
   readonly opened?: LadderStep;
@@ -99,6 +99,19 @@ export interface Empowered {
   readonly empowersUsed?: readonly string[];
 }
 
+/** A ladder step opened in `exchange`: open from then, and until its natural energy runs out. */
+function stepHolds(
+  opens: LadderStep,
+  exchange: number,
+): Pick<Empowerment, 'opened' | 'since' | 'until'> {
+  const holds = ladderHolds(opens.ladder);
+  return {
+    opened: opens,
+    since: exchange,
+    ...(holds === undefined ? {} : { until: exchange + holds }),
+  };
+}
+
 /** Raises a fighter's stats, starting in exchange `exchange`. */
 export function empower(
   fighter: Empowerable,
@@ -115,7 +128,7 @@ export function empower(
     techniqueId: use.technique.id,
     added,
     ...(opens
-      ? { opened: opens, since: exchange }
+      ? stepHolds(opens, exchange)
       : { until: exchange + empowerExchanges(fighter.maxChakra) }),
     // A ladder's step is priced by its toll (`tolls.ts`), the same for every body that opens it.
     healthPerExchange: opens

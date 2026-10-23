@@ -23,7 +23,9 @@ import {
   strikeCard,
   type Card,
 } from './cards';
-import { climbOrder } from './climbing';
+import { fightsBySummons } from './calling';
+import { callsOf } from './calls';
+import { climbOrder, isStill } from './climbing';
 import { styleMoves } from './repertoire';
 import { opponentsOf } from './senses';
 import { defaultHoldOff } from './zoning';
@@ -60,6 +62,10 @@ function withStyle(fighter: PlanFighter, band: RangeBand, attacks: readonly Card
   if (style.length === 0 || !fitsBand(strike, band) || !attacks.some(inStyle)) return [...attacks];
   const first = attacks.findIndex(inStyle);
   return attacks.flatMap((c, i) => (i === first ? [strike] : inStyle(c) ? [] : [c]));
+}
+
+function isCall(card: Card): boolean {
+  return card.kind === 'jutsu' && callsOf(card.technique).length > 0;
 }
 
 function stepOf(card: Card): number {
@@ -165,9 +171,15 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
   // A ladder's openings take no slot: the fighter climbs from the kit (`climbing.ts`), so the
   // plan keeps the arts of the steps they can reach.
   const climb = climbOrder(fighter.techniques).map((t) => opensOf(t)?.step ?? 0);
-  const climbable = usable.filter(withinClimb(Math.max(0, ...climb)));
+  // Sage Mode is meditated into from the kit too (`calling.ts`): its arts stay in the plan.
+  const meditated = fighter.techniques.filter(isStill).map((t) => opensOf(t)?.step ?? 0);
+  const climbable = usable.filter(withinClimb(Math.max(0, ...climb, ...meditated)));
   const trumps = climbable.filter((c) => c.kind === 'jutsu' && isTrump(c.technique));
-  const pool = climbable.filter((c) => !trumps.includes(c) && stepOf(c) === 0);
+  // A summoner's calls come from the kit as well, so they take no slot either.
+  const bySummons = fightsBySummons(fighter);
+  const pool = climbable.filter(
+    (c) => !trumps.includes(c) && stepOf(c) === 0 && !(bySummons && isCall(c)),
+  );
   const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
   const damage = withStyle(fighter, band, damageJutsu(pool));
   const readies = (t: CombatTechnique) =>
