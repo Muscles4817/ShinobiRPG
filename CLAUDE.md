@@ -1031,6 +1031,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   each `FOE_ROLES` role the foes ask for). Write it for the kind of place it lives, not today's
   towns. Plain animals have no chakra or techniques. The bestiary bench
   (`src/test/bench/bestiary.test.ts`) fights each at the scale its danger means.
+- **Add another village's shinobi:** a `ShinobiVillage` in the pack's `shinobiVillages.ts` (a
+  `short` word for foe names, a `headband` line, its `natures`, twelve `rogueNames`), with the
+  pack's `NatureKit` (a shot, a heavier and a jōnin's technique per element). Every archetype
+  (`shared/foreignShinobi/archetypes.ts`: scout, vanguard, sensor, medic, trapper, captain) at
+  every grade becomes a foe (`foe-<village>-<archetype>-<grade>`), and every chūnin and jōnin
+  archetype a named missing-nin (`rogue-<village>-<archetype>-<grade>`). A village needn't be on
+  the map. Tune the archetypes, never one village's foes; the foreign shinobi bench
+  (`foreignBench*.test.ts`) fights them all.
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,
   optional `nature`, `traits`, and `healthScale` for a creature bigger or smaller than a person) to the
   pack's `enemies` (a foe with a name of their own is `proper`, with `pronouns`; a common one is

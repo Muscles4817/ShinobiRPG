@@ -118,6 +118,22 @@ ordinary `EnemyDef` with a stable id (`foe-<village>-<archetype>-<grade>`). Bord
 rivals and squads of three draw on them. **Named rogues** (missing-nin, the S-rank hunts) are the
 same machinery with a name and a past drawn from the pack, plus a few authored for arcs.
 
+**As built.** A pack lists its other villages as data (`shinobiVillages.ts`: a short name, a
+headband, natures, twelve missing-nin names; a village need not be on the map) and its nature
+techniques (`NatureKit`). `foreignShinobi` composes them when the pack is built, beside the
+bestiary rather than in the context: six archetypes (scout, vanguard, sensor, medic, trapper,
+captain) × three grades per village, each with one of its village's natures, and a named
+missing-nin for every chūnin and jōnin archetype, a step past their village's own in their art
+with a trick of their own. Numbers follow the stat model (skills in the grade's band, bodies
+human). The original pack has Sakyūgakure, the Ashfield villages (whose genin the exam already
+names) and a new sea village across the Southern Sea, the Squalls; the fan pack the Mist, Sand,
+Stone and Cloud. Ninety foes a pack in the original, a hundred and twenty in the fan pack. The
+foreign shinobi bench fights the original pack's, in two halves run side by side; the scouts
+and the missing-nin had to come down to sit in the bands. Six template jobs use them: a Squall
+scout on the coast, an Ashfield genin squad, a Dune trapper minding a smuggling ring, two
+missing-nin hunts and an S-rank hunt for a Squall captain. Sensors and medics are support and
+easy alone; squads of three (border jobs, exam rivals) are the next use.
+
 ## Step 4 (later): foes with gear
 
 `EnemyDef.gear` and `items` riding into `CombatantSetup` as the player's do: a samurai's real
