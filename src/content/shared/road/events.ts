@@ -283,3 +283,4 @@ export const ROAD_EVENTS: readonly RoadEventDef[] = [
   ...ROUGH_ROAD_EVENTS,
   ...WILD_ROAD_EVENTS,
 ];
+export { TRAVELLERS } from './travellers';

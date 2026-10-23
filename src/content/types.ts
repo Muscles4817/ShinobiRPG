@@ -9,7 +9,13 @@ import type { ClanHive, StrainDef } from './strains';
 import type { AtlasDef, MapLabelSide } from './atlas';
 import type { ClanCompanion, CompanionKindDef, CompanionLoreDef, VetFields } from './companions';
 import type { Find } from '@/systems/cooking';
-import type { ArcDef, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
+import type {
+  ArcDef,
+  EncounterTemplate,
+  MissionDef,
+  RoadEventDef,
+  TravellerDef,
+} from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta, StatId } from '@/systems/stats';
 import type { NoteWeight } from '@/systems/profile';
@@ -331,6 +337,8 @@ export interface ContentPack {
   readonly encounters: readonly EncounterTemplate[];
   /** Things that may happen on a stretch of road, by region. */
   readonly roadEvents: readonly RoadEventDef[];
+  /** People of the road, met on it now and then (each also comes as a road event). */
+  readonly travellers: readonly TravellerDef[];
   /** Long stories: chains of jobs in acts. */
   readonly arcs: readonly ArcDef[];
   /** What crew say on a job, by moment and trait. */

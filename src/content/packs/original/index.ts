@@ -48,7 +48,7 @@ import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
-import { ROAD_EVENTS } from '../../shared/road/events';
+import { ROAD_EVENTS, TRAVELLERS } from '../../shared/road/events';
 import { VOICES } from '../../shared/talk/voices';
 import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
@@ -147,6 +147,7 @@ export const ORIGINAL_PACK: ContentPack = {
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
   roadEvents: ROAD_EVENTS,
+  travellers: TRAVELLERS,
   arcs: [
     LANTERN_THIEF,
     SALT_LANTERNS,

@@ -13,6 +13,7 @@ import { meetOnRoad } from '@/systems/travel';
 import type { GameContext } from '../context';
 import { activeMission } from '../missionFlow';
 import type { GameState } from '../state';
+import { nextMeeting } from './travellers';
 
 /**
  * What comes up on a stretch of road with a `region` (`docs/design/journeys-plan.md` 3.5). Some
@@ -60,9 +61,11 @@ export function partiesFor(
 
 /**
  * Whether the event can happen here at all: foes come only on a trip of your own (a job's fights
- * are its own story's), and only when some band of them is no worse than the road.
+ * are its own story's), and only when some band of them is no worse than the road; someone of
+ * the road only while a meeting with them is still ahead.
  */
 function canHappen(state: GameState, ctx: GameContext, e: RoadEventDef, danger: Danger): boolean {
+  if (e.kind === 'traveller') return nextMeeting(state, ctx, e.travellerId) !== null;
   if (e.kind !== 'encounter') return true;
   return state.mission?.journey !== undefined && partiesFor(e, danger, ctx).length > 0;
 }

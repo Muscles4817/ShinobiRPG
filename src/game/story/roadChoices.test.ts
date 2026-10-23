@@ -58,7 +58,7 @@ const choose = (state: GameState, optionIndex: number) =>
 describe('road events of each kind', () => {
   it('puts foes faced in the way, as an encounter played where you stand', () => {
     const met = metOnTheCoastRoad(FOES.id);
-    const faced = choose(met, 1);
+    const faced = choose(met, 0);
     expect(faced.mission?.roadEvent).toBeUndefined();
     const stage = activeStage(faced, ctx);
     expect(stage?.kind).toBe('encounter');
@@ -85,7 +85,7 @@ describe('road events of each kind', () => {
 
   it('lets you go round foes for the day’s strength', () => {
     const met = metOnTheCoastRoad(FOES.id);
-    const round = choose(met, 0);
+    const round = choose(met, 1);
     expect(round.mission?.detour).toBeUndefined();
     expect(round.character.vitals.energy).toBe(met.character.vitals.energy - ROUND_THEM_ENERGY);
   });
@@ -99,9 +99,9 @@ describe('road events of each kind', () => {
 
   it('costs part of the day to wait out the weather, or the body to push through it', () => {
     const met = metOnTheCoastRoad(RAIN.id);
-    const waited = choose(met, 0);
+    const waited = choose(met, 1);
     expect(waited.time.slot).toBe((met.time.slot + 2) % 4);
-    const pushed = choose(met, 1);
+    const pushed = choose(met, 0);
     expect(pushed.time).toEqual(met.time);
     expect(pushed.character.vitals.energy).toBeLessThan(met.character.vitals.energy);
     expect(pushed.character.vitals.health).toBeLessThan(met.character.vitals.health);

@@ -141,5 +141,13 @@ export {
   type RoadEventKind,
   type RoadRarity,
   type SightRoadEvent,
+  type TravellerRoadEvent,
   type WeatherRoadEvent,
 } from './roadEvents';
+export {
+  travellerEventId,
+  type TravellerDef,
+  type TravellerGift,
+  type TravellerMeeting,
+  type TravellerOption,
+} from './travellers';

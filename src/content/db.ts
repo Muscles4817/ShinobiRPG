@@ -1,7 +1,13 @@
 import type { Find } from '@/systems/cooking';
 import type { AtlasDef } from './atlas';
 import type { ExamDef } from '@/systems/exams';
-import type { ArcDef, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
+import type {
+  ArcDef,
+  EncounterTemplate,
+  MissionDef,
+  RoadEventDef,
+  TravellerDef,
+} from '@/systems/missions';
 import type { TechniqueDef } from '@/systems/techniques';
 import type { RouteDef } from '@/systems/travel';
 
@@ -12,6 +18,7 @@ import type { FurnishingDef, GardenCrop, HomeDef } from './homes';
 import type { QuirkDef } from './quirks';
 import type { CurriculumBeat } from './curriculum';
 import type { SenseiSpeech } from './senseiSpeech';
+import { travellerRoadEvents } from './travellerEvents';
 import type { CompanionKindDef, CompanionLoreDef } from './companions';
 import type { ContractDef, SummonDef } from './contracts';
 import type { PuppetDef } from './puppets';
@@ -69,7 +76,9 @@ export interface ContentDb {
   readonly missions: Catalog<MissionDef>;
   readonly exams: Catalog<ExamDef>;
   readonly encounters: Catalog<EncounterTemplate>;
+  /** The pack's road events and a road event for each traveller (`travellerRoadEvents`). */
   readonly roadEvents: Catalog<RoadEventDef>;
+  readonly travellers: Catalog<TravellerDef>;
   readonly arcs: Catalog<ArcDef>;
   readonly voices: readonly VoiceDef[];
   readonly enemies: Catalog<EnemyDef>;
@@ -133,7 +142,11 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     missions: createCatalog('mission', pack.missions),
     exams: createCatalog('exam', pack.exams),
     encounters: createCatalog('encounter', pack.encounters),
-    roadEvents: createCatalog('road event', pack.roadEvents),
+    roadEvents: createCatalog('road event', [
+      ...pack.roadEvents,
+      ...travellerRoadEvents(pack.travellers),
+    ]),
+    travellers: createCatalog('traveller', pack.travellers),
     arcs: createCatalog('arc', pack.arcs),
     voices: pack.voices,
     enemies: createCatalog('enemy', pack.enemies),

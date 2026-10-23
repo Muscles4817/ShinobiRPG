@@ -1,4 +1,4 @@
-/** The road's memory, a step of the save migrations (see `migrations.ts`). */
+/** The road's memory, steps of the save migrations (see `migrations.ts`). */
 
 type RawState = Record<string, unknown>;
 
@@ -17,4 +17,11 @@ export function v68ToV69(state: RawState): RawState {
       roadSeen: Array.isArray(atlas.roadSeen) ? atlas.roadSeen : [],
     },
   };
+}
+
+/** v69 → v70: the road remembers the people met on it. Nobody yet. */
+export function v69ToV70(state: RawState): RawState {
+  const atlas = asRecord(state.atlas);
+  const travellers = asRecord(atlas.travellers);
+  return { ...state, atlas: { ...atlas, travellers } };
 }

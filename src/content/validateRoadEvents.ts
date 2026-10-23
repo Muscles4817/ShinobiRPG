@@ -72,5 +72,8 @@ function kindProblems(pack: ContentPack, event: RoadEventDef): string[] {
         : [`${where} costs nothing to wait out or push through`];
     case 'sight':
       return Object.values(event.reward).some((v) => v > 0) ? [] : [`${where} teaches nothing`];
+    case 'traveller':
+      // Made from the pack's travellers, which are checked in `validateTravellers.ts`.
+      return [];
   }
 }

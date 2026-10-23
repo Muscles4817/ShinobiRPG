@@ -3,6 +3,7 @@ import { holds, variantText, type CheckApproach, type MissionStage } from '@/sys
 import { checkChance, STAT_INFO } from '@/systems/stats';
 
 import { openChoices } from '../actions/missionStory';
+import { roadEventText } from '../story/roadChoices';
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { checkHand } from '../missionRoles';
@@ -155,7 +156,8 @@ export function stagePrompt(state: GameState, ctx: GameContext, stage: MissionSt
   const story = storyOf(run);
   if (run.roadEvent) {
     const event = ctx.content.roadEvents.get(run.roadEvent);
-    return { prompt: event?.text ?? null, choices: decisionChoices(state, ctx) };
+    const prompt = event ? roadEventText(state, ctx, event) : null;
+    return { prompt, choices: decisionChoices(state, ctx) };
   }
   return stageChoices(state, ctx, stage, story);
 }

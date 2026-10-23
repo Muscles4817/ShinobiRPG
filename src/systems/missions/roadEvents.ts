@@ -17,7 +17,14 @@ import type { DecisionOption } from './storyStages';
 export const ROAD_RARITIES = ['common', 'uncommon', 'rare'] as const;
 export type RoadRarity = (typeof ROAD_RARITIES)[number];
 
-export const ROAD_EVENT_KINDS = ['decision', 'encounter', 'find', 'weather', 'sight'] as const;
+export const ROAD_EVENT_KINDS = [
+  'decision',
+  'encounter',
+  'find',
+  'weather',
+  'sight',
+  'traveller',
+] as const;
 export type RoadEventKind = (typeof ROAD_EVENT_KINDS)[number];
 
 interface RoadEventBase {
@@ -81,8 +88,19 @@ export interface SightRoadEvent extends RoadEventBase {
   readonly reward: StatDelta;
 }
 
+/** Someone of the road (`travellers.ts`), at whichever meeting with you comes next. */
+export interface TravellerRoadEvent extends RoadEventBase {
+  readonly kind: 'traveller';
+  readonly travellerId: string;
+}
+
 export type RoadEventDef =
-  DecisionRoadEvent | EncounterRoadEvent | FindRoadEvent | WeatherRoadEvent | SightRoadEvent;
+  | DecisionRoadEvent
+  | EncounterRoadEvent
+  | FindRoadEvent
+  | WeatherRoadEvent
+  | SightRoadEvent
+  | TravellerRoadEvent;
 
 /** A road event written as a scene with options (every event before kinds came was one). */
 export function isDecisionEvent(event: RoadEventDef): event is DecisionRoadEvent {

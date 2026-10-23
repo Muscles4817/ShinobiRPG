@@ -5,6 +5,8 @@ import {
   type EncounterRoadEvent,
   type EncounterStage,
   type RoadEventDef,
+  type TravellerGift,
+  type TravellerRoadEvent,
 } from '@/systems/missions';
 import type { StatDelta } from '@/systems/stats';
 
@@ -12,14 +14,16 @@ import type { GameContext } from '../context';
 import { activeStage } from '../missionFlow';
 import type { GameState } from '../state';
 import { partiesFor, stretchDanger } from './roadEvents';
+import { nextMeeting } from './travellers';
 
 /**
  * The choices a road event offers, by its kind (`docs/design/journeys-plan.md` 3.5). A
  * decision's are its own options. The other kinds get theirs from the game: foes on the road
  * (go the long way round, or face them where they stand), something by the road (take it or walk
  * on), the weather (wait it out or push on), a sight (stop and watch it or walk on). What each
- * leaves for the game to do after the option's own outcome is its `after`. The cautious choice
- * comes first.
+ * leaves for the game to do after the option's own outcome is its `after`. The choice that meets
+ * the road comes first and the one that keeps clear of it second, so the cautious way is always
+ * there but never the one the bar leads with.
  */
 
 /** Going round foes on the road costs this much energy. */
@@ -30,7 +34,15 @@ export type RoadAfter =
   | { readonly kind: 'face'; readonly stage: EncounterStage }
   | { readonly kind: 'take'; readonly ingredientId: string }
   | { readonly kind: 'wait'; readonly slots: number }
-  | { readonly kind: 'watch'; readonly reward: StatDelta };
+  | { readonly kind: 'watch'; readonly reward: StatDelta }
+  /** A meeting with someone of the road behind you, what they keep of it, and their gift. */
+  | {
+      readonly kind: 'meet';
+      readonly travellerId: string;
+      readonly index: number;
+      readonly remember?: string;
+      readonly gift?: TravellerGift;
+    };
 
 export interface RoadChoice {
   readonly option: DecisionOption;
@@ -89,6 +101,11 @@ function encounterChoices(
   };
   return [
     {
+      option: { label: 'Face them', tone: 'challenge', reply: 'You walk on to meet them.' },
+      detail: 'Size them up first',
+      after: { kind: 'face', stage },
+    },
+    {
       option: {
         label: 'Go the long way round',
         tone: 'quiet',
@@ -97,12 +114,33 @@ function encounterChoices(
       },
       detail: 'A long, tiring way',
     },
-    {
-      option: { label: 'Face them', tone: 'challenge', reply: 'You walk on to meet them.' },
-      detail: 'Size them up first',
-      after: { kind: 'face', stage },
-    },
   ];
+}
+
+/** The meeting with them that comes next: its options, each leaving the meeting behind you. */
+function travellerChoices(
+  state: GameState,
+  ctx: GameContext,
+  event: TravellerRoadEvent,
+): RoadChoice[] {
+  const next = nextMeeting(state, ctx, event.travellerId);
+  if (!next) return [];
+  return next.meeting.options.map(({ remember, gift, ...option }) => ({
+    option,
+    after: {
+      kind: 'meet',
+      travellerId: event.travellerId,
+      index: next.index,
+      ...(remember ? { remember } : {}),
+      ...(gift ? { gift } : {}),
+    },
+  }));
+}
+
+/** What the road shows of the event: a traveller's next meeting, else the event's own text. */
+export function roadEventText(state: GameState, ctx: GameContext, event: RoadEventDef): string {
+  if (event.kind !== 'traveller') return event.text;
+  return nextMeeting(state, ctx, event.travellerId)?.meeting.text ?? event.text;
 }
 
 /** The choices the event offers here and now. */
@@ -125,11 +163,6 @@ export function roadChoices(state: GameState, ctx: GameContext, event: RoadEvent
     case 'weather':
       return [
         {
-          option: { label: 'Wait it out', tone: 'quiet', reply: event.wait.reply },
-          detail: 'Loses part of the day',
-          after: { kind: 'wait', slots: event.wait.slots },
-        },
-        {
           option: {
             label: 'Push on through it',
             tone: 'challenge',
@@ -141,6 +174,11 @@ export function roadChoices(state: GameState, ctx: GameContext, event: RoadEvent
           },
           detail: 'Tiring, and it will hurt',
         },
+        {
+          option: { label: 'Wait it out', tone: 'quiet', reply: event.wait.reply },
+          detail: 'Loses part of the day',
+          after: { kind: 'wait', slots: event.wait.slots },
+        },
       ];
     case 'sight':
       return [
@@ -151,5 +189,7 @@ export function roadChoices(state: GameState, ctx: GameContext, event: RoadEvent
         },
         walkOn('You keep your eyes on the road and walk on.'),
       ];
+    case 'traveller':
+      return travellerChoices(state, ctx, event);
   }
 }

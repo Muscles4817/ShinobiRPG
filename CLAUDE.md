@@ -653,10 +653,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `danger`, else the job's worst foe), from the events that danger and the season allow, weighted
     by `rarity`, passing over those met lately (`atlas.recentRoad`) and `once` ones met for good.
     An event is a `kind` (`systems/missions/roadEvents.ts`): a written `decision`, or one the game
-    gives its choices (`story/roadChoices.ts`, the cautious one first): an `encounter` of bestiary
+    gives its choices (`story/roadChoices.ts`, the one that meets the road first, the one that keeps
+    clear of it second): an `encounter` of bestiary
     foes no worse than the road (`partiesFor`; trips only, a job's fights being its own), faced as
     the run's `detour` stage or gone round; a `find` taken into the pantry; `weather` waited out
-    for part of the day or pushed through; a `sight` that teaches a little (`story/roadAfter.ts`). A job
+    for part of the day or pushed through; a `sight` that teaches a little (`story/roadAfter.ts`); or
+    a `traveller`, one of the pack's people of the road (`TravellerDef`, `content.travellers`, each
+    its own road event), met meeting by meeting (`story/travellers.ts`, `atlas.travellers`): a
+    meeting that `needs` what an earlier one left them remembering is passed over without it, and
+    one may end with a gift (a recipe, a find, word of the nearest place you haven't heard of). A job
     may have a `charge` (whose trust is a thread) and `twists` (a hidden mark rolled at the
     start). What the crew say comes from `content.voices` by moment and trait. The **debrief**
     (`game/debrief.ts`) reads it all back: the ledger line by line with the pay each moved (a
@@ -1128,7 +1133,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   on an `ending` stage whose last ending has no `when`. `validateStory` checks every mark read
   is set somewhere, every thread named is kept, tones are real and every region has road
   events. **Add a road event or a voice line:** `content/shared/road/` (everyday, season and
-  rough-road files, and `wildEvents.ts` for foes, finds, weather and sights; an event may ask a
+  rough-road files, `wildEvents.ts` for foes, finds, weather and sights, and `travellers.ts` for
+  people of the road, validated in `validateTravellers.ts`; an event may ask a
   least road `danger`, `seasons`, a `rarity` or `once`; every region a road crosses keeps a
   non-encounter one for any road and season, and a foes event a band its least road may bring,
   validated; effects may name only
