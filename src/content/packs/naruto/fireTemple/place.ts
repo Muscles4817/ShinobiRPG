@@ -12,7 +12,7 @@ export const FIRE_TEMPLE: LocationDef = {
   famous: true,
   epithet: 'Monks of the Land of Fire',
   map: { x: 37, y: 22, label: 'left' },
-  backdrop: 'mountain',
+  backdrop: 'temple-hill',
   places: [
     {
       id: 'pilgrims-hall',

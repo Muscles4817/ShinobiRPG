@@ -17,7 +17,7 @@ export const CEDAR_DEEP: LocationDef = {
   kind: 'wild',
   epithet: 'The old forest on the Kiri track',
   map: { x: 56, y: 33 },
-  backdrop: 'mountain',
+  backdrop: 'cedar-forest',
   places: [
     {
       id: 'cedar-deep-woods',
@@ -44,7 +44,7 @@ export const DROWNED_SHRINE: LocationDef = {
   kind: 'landmark',
   epithet: 'Twice a day the tide covers it',
   map: { x: 24, y: 61, label: 'right' },
-  backdrop: 'coast',
+  backdrop: 'tide-shrine',
   sight: {
     text: 'At low water the shrine stands up out of the bay, weed on its gate and fish in its basin. You stand under the gate as the tide comes back in, and keep your feet on the water as it rises round you.',
     reward: { chakraControl: 1 },
@@ -66,7 +66,7 @@ export const HANEBASHI: LocationDef = {
   kind: 'town',
   epithet: 'The post town below the pass',
   map: { x: 44, y: 24 },
-  backdrop: 'mountain',
+  backdrop: 'post-town',
   places: [
     {
       id: 'hanebashi-inn',
@@ -96,7 +96,7 @@ export const LANTERNFALL: LocationDef = {
   kind: 'landmark',
   epithet: 'Where the old lanterns were washed',
   map: { x: 39, y: 17, label: 'left' },
-  backdrop: 'mountain',
+  backdrop: 'waterfall',
   sight: {
     text: 'The fall comes off the cliff in one white rope. Under it the rocks are worn into bowls, where the village once brought its lanterns to be washed before the spirits’ festival. You sit by the pool until you can hear nothing but the water.',
     reward: { willpower: 1 },
@@ -118,7 +118,7 @@ export const SALT_FLATS: LocationDef = {
   kind: 'wild',
   epithet: 'The desert’s white edge',
   map: { x: 76, y: 36 },
-  backdrop: 'dunes',
+  backdrop: 'salt-flats',
   places: [
     {
       id: 'salt-flats-scrub',
@@ -145,7 +145,7 @@ export const OLD_BATTLEFIELD: LocationDef = {
   kind: 'landmark',
   epithet: 'A grave field off the dune road',
   map: { x: 82, y: 44 },
-  backdrop: 'dunes',
+  backdrop: 'battlefield',
   sight: {
     text: 'Rusted blades stand in the sand in rows, one for each who fell, and the wind has polished the hilts. You walk the rows and read what you can of the names, and come away knowing more of how a fight goes wrong.',
     reward: { intellect: 1 },

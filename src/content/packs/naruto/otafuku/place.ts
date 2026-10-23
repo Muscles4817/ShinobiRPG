@@ -12,7 +12,7 @@ export const OTAFUKU_TOWN: LocationDef = {
   famous: true,
   epithet: 'Pleasure quarter',
   map: { x: 52, y: 36.5 },
-  backdrop: 'lantern-rooftops',
+  backdrop: 'pleasure-quarter',
   places: [
     {
       id: 'smiling-mask-inn',
