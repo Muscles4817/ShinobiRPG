@@ -40,7 +40,8 @@ src/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
-  platform/   Browser adapters (localStorage save, device-settings and editor stores).
+  platform/   Device adapters: where the save, settings and editor stores live (browser storage,
+              or a native shell's files through a StorageBackend; chooseStores picks at boot).
   ui/         React. theme/ (tokens), art/ (SVG icons & backdrops), audio/ (synth & music), components/, screens/.
   main.tsx    App composition root: picks platform adapters and the game context.
 ```
@@ -1193,6 +1194,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   portrait (`ui/art/portrait/`) is put together from an appearance's `FaceParts` (shape, figure,
   eyes, brows, nose, ears, expression, age, facial hair, a mark): a new part is a union member in
   `systems/profile/face.ts` and a drawing in the matching `Record`.
+- **Run in a native shell (the desktop or phone app):** implement a `StorageBackend`
+  (`platform/storageBackend.ts`: read, write and remove the `save`, `prefs` and `edits` slots,
+  writes atomic) and add a `NativeBackend` that detects the shell to `NATIVE_BACKENDS` in
+  `platform/chooseStores.ts`. `openCachedStores` reads everything at boot and writes behind each
+  save, so the game stays synchronous; a failed write is reported by the next save, and the
+  service worker is registered only outside a shell.
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.
 
