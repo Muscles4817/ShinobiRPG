@@ -21,7 +21,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm run arch && npm run test && npm run build",
-    "build:release": "VITE_EXCLUDE_FAN_PACKS=true vite build --outDir dist-release",
+    "build:release": "node scripts/build-release.mjs",
     "check:release": "npm run build:release && node scripts/check-release.mjs dist-release",
     "desktop:build": "node -e \"require('node:fs').rmSync('electron/dist',{recursive:true,force:true})\" && tsc -p electron/tsconfig.build.json",
     "desktop:dev": "npm run desktop:build && node scripts/desktop-dev.mjs",

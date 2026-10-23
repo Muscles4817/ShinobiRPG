@@ -1225,6 +1225,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   service worker is registered only outside a shell. The phone app's is
   `platform/capacitorBackend.ts` (files in the app's data directory) with `phoneShell.ts`
   (status bar, Android back as Esc); `docs/mobile.md` says how to build it.
+  The **App builds** workflow (`.github/workflows/app-builds.yml`) builds the Windows installer
+  and the Android APK on every push to main and keeps them as run artifacts, never a public
+  release (the repository is public); Android is release-signed from the repository's secrets
+  when they are set (`docs/app-builds.md`). `build:release` is a node script
+  (`scripts/build-release.mjs`), so every release command runs from any shell.
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.
 
