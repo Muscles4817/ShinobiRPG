@@ -305,3 +305,10 @@ migration and a previous-version save test wherever the save shape changes.
    in one place (`legsWalked` in `game/journeys.ts`), which turning back now uses too. Region
    captions are read from the region's id for now; a pack may name its regions later. Nothing
    draws the view yet: step 2 does.
+
+   **Mockups** of the montage drawn from this view (the original pack's road to Sakyūgakure,
+   on the real map component) are in `journey-mockups/`: setting out, a road event, camp at
+   night and arriving, on a desk and at 390px. They settled two things for step 2: the frame
+   keeps a wide view of the country (`FRAME_MIN_SPAN`), and the map's lines and labels are
+   drawn at the Travel tab's weight whatever the zoom, since they are sized in map units. The
+   caption names the leg you are on, which during a road event is the one just walked.

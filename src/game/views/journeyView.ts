@@ -18,9 +18,9 @@ import { journeyPath, type LegSpan } from './journeyPath';
  */
 
 /** Map units kept clear around the road when the map is framed on it. */
-const FRAME_MARGIN = 8;
+const FRAME_MARGIN = 10;
 /** The least the frame shows across, so a one-day road isn't drawn at street scale. */
-const FRAME_MIN_SPAN = 30;
+const FRAME_MIN_SPAN = 45;
 
 export interface JourneyMapLeg extends LegSpan {
   readonly region: string;
