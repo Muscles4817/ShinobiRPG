@@ -14,7 +14,7 @@ export const LAND_OF_WAVES: LocationDef = {
   famous: true,
   epithet: 'Fishing islands and a great bridge',
   map: { x: 76.6, y: 46 },
-  backdrop: 'coast',
+  backdrop: 'bridge-coast',
   places: [
     {
       id: 'tazunas-house',

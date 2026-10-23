@@ -12,7 +12,7 @@ export const TANZAKU_TOWN: LocationDef = {
   famous: true,
   epithet: 'Castle town of gamblers',
   map: { x: 32, y: 37, label: 'left' },
-  backdrop: 'lantern-rooftops',
+  backdrop: 'castle-town',
   places: [
     {
       id: 'lucky-cat-inn',

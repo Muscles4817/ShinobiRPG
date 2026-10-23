@@ -12,7 +12,7 @@ export const SHUKUBA_TOWN: LocationDef = {
   famous: true,
   epithet: 'Post town on the highway',
   map: { x: 42, y: 32.5, label: 'right' },
-  backdrop: 'lantern-rooftops',
+  backdrop: 'highway-town',
   places: [
     {
       id: 'shukuba-inn',

@@ -36,6 +36,9 @@
 .backdrop .bd-leaf {
   fill: var(--bd-leaf);
 }
+.backdrop .bd-leaf-stroke {
+  stroke: var(--bd-leaf);
+}
 .backdrop .bd-leaf-lit {
   fill: var(--bd-leaf-lit);
 }

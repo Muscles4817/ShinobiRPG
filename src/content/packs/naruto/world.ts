@@ -251,7 +251,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
     famous: true,
     epithet: 'Where the toads train sages',
     map: { x: 61, y: 22, label: 'right' },
-    backdrop: 'mountain',
+    backdrop: 'toad-mountain',
     places: [],
     lockedReason: 'Needs a summoning contract',
   },
