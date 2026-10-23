@@ -25,6 +25,7 @@ import { validateHomes } from './validateHomes';
 import { validateLeisure } from './validateLeisure';
 import { validateRoutes } from './validateRoutes';
 import { validateLocationKinds } from './validateLocationKinds';
+import { validateRoadEvents } from './validateRoadEvents';
 import { validateAtlas } from './validateAtlas';
 import { validateExercises } from './validateExercises';
 import { validateCrews } from './validateCrews';
@@ -76,6 +77,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateFieldBook(pack),
     ...validateRoutes(pack),
     ...validateLocationKinds(pack),
+    ...validateRoadEvents(pack),
     ...validateAtlas(pack),
     ...validateExercises(pack),
     ...profileProblems(pack),

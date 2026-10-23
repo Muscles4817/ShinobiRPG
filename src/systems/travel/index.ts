@@ -11,5 +11,5 @@ export {
   type RouteNeed,
   type WalkSurface,
 } from './travel';
-export { learnOf, NEW_ATLAS, visit, type Atlas } from './atlas';
+export { learnOf, meetOnRoad, NEW_ATLAS, RECENT_ROAD, visit, type Atlas } from './atlas';
 export { leaveLeft, NO_LEAVE, passValid, signPass, takeLeave, type Leave } from './leave';

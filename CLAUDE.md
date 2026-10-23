@@ -636,7 +636,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and the charge's trust move by their tastes, and whoever felt it most says so; an option
     whose `when` fails may still show, closed, with its `unseen` reason), `camp`
     (pick a few activities before the fire burns down) and `ending` (the first that fits). A
-    `leg` with a `region` may bring a road event (`content.roadEvents`, drawn by hash). A job
+    `leg` with a `region` may bring a road event (`content.roadEvents`, drawn by hash,
+    `story/roadEvents.ts`): likelier the more danger its road holds (`ROAD_EVENT_CHANCE`, the leg's
+    `danger`, else the job's worst foe), from the events that danger and the season allow, weighted
+    by `rarity`, passing over those met lately (`atlas.recentRoad`) and `once` ones met for good. A job
     may have a `charge` (whose trust is a thread) and `twists` (a hidden mark rolled at the
     start). What the crew say comes from `content.voices` by moment and trait. The **debrief**
     (`game/debrief.ts`) reads it all back: the ledger line by line with the pay each moved (a
@@ -1107,8 +1110,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   stages, approaches and options with `when`; give results `Outcome`s with a `ledger` line; end
   on an `ending` stage whose last ending has no `when`. `validateStory` checks every mark read
   is set somewhere, every thread named is kept, tones are real and every region has road
-  events. **Add a road event or a voice line:** `content/shared/road/events.ts` (effects may
-  name only `daylight` and `charge` threads) or `content/shared/talk/voices.ts` (every trait
+  events. **Add a road event or a voice line:** `content/shared/road/` (everyday, season and
+  rough-road files; an event may ask a least road `danger`, `seasons`, a `rarity` or `once`; every
+  region a road crosses keeps one for any road and season, validated; effects may name only
+  `daylight` and `charge` threads) or `content/shared/talk/voices.ts` (every trait
   needs a line for every moment).
 - **Add foes to a mission:** use an `encounter` stage (recon, then an approach, then maybe a
   fight) with a shared template (`content/shared/encounters.ts`: which approaches and recon make

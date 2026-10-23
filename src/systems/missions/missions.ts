@@ -1,7 +1,7 @@
 import type { CombatGround } from '@/systems/combat';
 import type { StatId } from '@/systems/stats';
 
-import type { Crew } from './crew';
+import type { Crew, Danger } from './crew';
 import type { EncounterRun, EncounterStage } from './encounter';
 import type { MissionRank, MissionRole } from './missionRank';
 import type { StagePay } from './encounterPay';
@@ -77,6 +77,8 @@ type StageBody =
       readonly variants?: readonly TextVariant[];
       readonly days: number;
       readonly region?: string;
+      /** The worst a road event on it may bring; absent, the job's own worst foe. */
+      readonly danger?: Danger;
     }
   | {
       readonly kind: 'combat';
@@ -229,6 +231,8 @@ export interface JourneyPlan {
     readonly text: string;
     /** The location the leg heads for (absent on trips saved before roads had a heading). */
     readonly toward?: string;
+    /** The worst its road may bring (absent on trips saved before roads said). */
+    readonly danger?: Danger;
   }[];
   /** Walk on without stopping to camp; only a road event or a stop halts you. */
   readonly quick: boolean;

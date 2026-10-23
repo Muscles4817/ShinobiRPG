@@ -38,7 +38,7 @@ import { travel } from '../road';
 import { playEnding } from '../story/ending';
 import { feel } from '../story/personal';
 import { arrivalLine } from '../story/arrivals';
-import { roadEventOn } from '../story/roadEvents';
+import { metOnRoad, roadEventOn } from '../story/roadEvents';
 import { settle, storyOf } from '../story/state';
 import { crewVoice } from '../story/voices';
 import type { GameContext } from '../context';
@@ -172,9 +172,8 @@ function onTheRoad(
   if (!travelled.mission) return travelled;
   const run = travelled.mission;
   const noted = { ...run, notes: [...run.notes, { kind: 'story' as const, text: line }] };
-  const event =
-    stage.region && !end ? roadEventOn({ ...travelled, mission: noted }, ctx, stage.region) : null;
-  if (event) return { ...travelled, mission: { ...noted, roadEvent: event.id } };
+  const event = end ? null : roadEventOn({ ...travelled, mission: noted }, ctx, stage);
+  if (event) return metOnRoad({ ...travelled, mission: { ...noted, roadEvent: event.id } }, event);
   return afterStage({ ...travelled, mission: advance(noted) }, ctx);
 }
 

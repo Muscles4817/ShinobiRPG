@@ -688,14 +688,13 @@ view:
   route[7]:
     label: The road
     state: ahead
-  prompt: An ox-cart has slid into the ditch. Its owner is trying to lift it alone, red in the face.
+  prompt: A shrine no bigger than a lantern stands by the road, its offering bowl empty and its roof furred with moss.
   choices[0]:
-    label: Put your shoulder to it
+    label: Leave an offering and clean the roof
   choices[1]:
-    label: Walk on. The job comes first
+    label: Bow as you pass
 
->>> missionDecide (Put your shoulder to it)
-  journal: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone. [−10 energy]
+>>> missionDecide (Leave an offering and clean the roof)
 
 --- mission (day 4, slot 0) ---
 
@@ -710,9 +709,12 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Put your shoulder to it
+    text: Leave an offering and clean the roof
   lines[4]:
-    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
+    text: You scrape the moss away and leave a rice cake in the bowl, and somebody says a word for the road ahead.
+  lines[5]:
+    speaker: Asuka
+    text: That was well judged. I’d have done the same.
   threads[0]:
     label: Old Saburō’s trust
     word: Trusts you
@@ -769,18 +771,21 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Put your shoulder to it
+    text: Leave an offering and clean the roof
   lines[4]:
-    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
+    text: You scrape the moss away and leave a rice cake in the bowl, and somebody says a word for the road ahead.
   lines[5]:
-    text: Keep your patience
+    speaker: Asuka
+    text: That was well judged. I’d have done the same.
   lines[6]:
-    text: Willpower
+    text: Keep your patience
   lines[7]:
-    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
+    text: Willpower
   lines[8]:
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
+  lines[9]:
     speaker: Goro
-    text: Again? Next time stand back and let me at it.
+    text: Wrong, but I want to know why it was wrong.
   threads[0]:
     label: Old Saburō’s trust
     word: At ease
@@ -835,23 +840,26 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Put your shoulder to it
+    text: Leave an offering and clean the roof
   lines[4]:
-    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
+    text: You scrape the moss away and leave a rice cake in the bowl, and somebody says a word for the road ahead.
   lines[5]:
-    text: Keep your patience
+    speaker: Asuka
+    text: That was well judged. I’d have done the same.
   lines[6]:
-    text: Willpower
+    text: Keep your patience
   lines[7]:
-    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
+    text: Willpower
   lines[8]:
-    speaker: Goro
-    text: Again? Next time stand back and let me at it.
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[9]:
-    text: Push on in the dark
+    speaker: Goro
+    text: Wrong, but I want to know why it was wrong.
   lines[10]:
-    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
+    text: Push on in the dark
   lines[11]:
+    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
+  lines[12]:
     speaker: Gōran
     text: That’s the job done right, by the book.
   threads[0]:
@@ -906,26 +914,29 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Put your shoulder to it
+    text: Leave an offering and clean the roof
   lines[4]:
-    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
+    text: You scrape the moss away and leave a rice cake in the bowl, and somebody says a word for the road ahead.
   lines[5]:
-    text: Keep your patience
+    speaker: Asuka
+    text: That was well judged. I’d have done the same.
   lines[6]:
-    text: Willpower
+    text: Keep your patience
   lines[7]:
-    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
+    text: Willpower
   lines[8]:
-    speaker: Goro
-    text: Again? Next time stand back and let me at it.
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[9]:
-    text: Push on in the dark
+    speaker: Goro
+    text: Wrong, but I want to know why it was wrong.
   lines[10]:
-    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
+    text: Push on in the dark
   lines[11]:
+    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
+  lines[12]:
     speaker: Gōran
     text: That’s the job done right, by the book.
-  lines[12]:
+  lines[13]:
     text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
   threads[0]:
     label: Old Saburō’s trust
@@ -1186,43 +1197,46 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Put your shoulder to it
+    text: Leave an offering and clean the roof
   lines[4]:
-    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
+    text: You scrape the moss away and leave a rice cake in the bowl, and somebody says a word for the road ahead.
   lines[5]:
-    text: Keep your patience
+    speaker: Asuka
+    text: That was well judged. I’d have done the same.
   lines[6]:
-    text: Willpower
+    text: Keep your patience
   lines[7]:
-    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
+    text: Willpower
   lines[8]:
-    speaker: Goro
-    text: Again? Next time stand back and let me at it.
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[9]:
-    text: Push on in the dark
+    speaker: Goro
+    text: Wrong, but I want to know why it was wrong.
   lines[10]:
-    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
+    text: Push on in the dark
   lines[11]:
+    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
+  lines[12]:
     speaker: Gōran
     text: That’s the job done right, by the book.
-  lines[12]:
-    text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
   lines[13]:
-    text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
+    text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
   lines[14]:
-    text: Perception
+    text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
   lines[15]:
-    text: Watch them from cover
-  lines[16]:
     text: Perception
+  lines[16]:
+    text: Watch them from cover
   lines[17]:
-    text: A pebble you dislodge rattles down the bank. Behind the tree someone hisses for quiet, and the talking stops.
+    text: Perception
   lines[18]:
-    text: Go in head-on
+    text: A pebble you dislodge rattles down the bank. Behind the tree someone hisses for quiet, and the talking stops.
   lines[19]:
-    text: You defeated a bandit thug and a bandit archer.
+    text: Go in head-on
   lines[20]:
-    speaker: Gōran
+    text: You defeated a bandit thug and a bandit archer.
+  lines[21]:
+    speaker: Goro
     text: That was a warm-up, wasn’t it? Tell me there are more of them further on.
   threads[0]:
     label: Old Saburō’s trust
@@ -1269,45 +1283,48 @@ view:
   lines[2]:
     text: Old Saburō carries the chest on his back and sings wedding songs, badly, for the first hour of the climb.
   lines[3]:
-    text: Put your shoulder to it
+    text: Leave an offering and clean the roof
   lines[4]:
-    text: It takes all of you and most of an hour, but the cart rolls free. The carter presses a pear on everyone.
+    text: You scrape the moss away and leave a rice cake in the bowl, and somebody says a word for the road ahead.
   lines[5]:
-    text: Keep your patience
+    speaker: Asuka
+    text: That was well judged. I’d have done the same.
   lines[6]:
-    text: Willpower
+    text: Keep your patience
   lines[7]:
-    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
+    text: Willpower
   lines[8]:
-    speaker: Goro
-    text: Again? Next time stand back and let me at it.
+    text: You tell him the bride will be an old woman before he gets there. He takes offence, then takes his time, and the afternoon goes with it.
   lines[9]:
-    text: Push on in the dark
+    speaker: Goro
+    text: Wrong, but I want to know why it was wrong.
   lines[10]:
-    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
+    text: Push on in the dark
   lines[11]:
+    text: You light a single lantern and go on, Old Saburō stumbling at your heels.
+  lines[12]:
     speaker: Gōran
     text: That’s the job done right, by the book.
-  lines[12]:
-    text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
   lines[13]:
-    text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
+    text: Kayano’s rooftops show over the last ridge by midmorning, and Saburō starts singing again.
   lines[14]:
-    text: Perception
+    text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
   lines[15]:
-    text: Watch them from cover
-  lines[16]:
     text: Perception
+  lines[16]:
+    text: Watch them from cover
   lines[17]:
-    text: A pebble you dislodge rattles down the bank. Behind the tree someone hisses for quiet, and the talking stops.
+    text: Perception
   lines[18]:
-    text: Go in head-on
+    text: A pebble you dislodge rattles down the bank. Behind the tree someone hisses for quiet, and the talking stops.
   lines[19]:
-    text: You defeated a bandit thug and a bandit archer.
+    text: Go in head-on
   lines[20]:
-    speaker: Gōran
-    text: That was a warm-up, wasn’t it? Tell me there are more of them further on.
+    text: You defeated a bandit thug and a bandit archer.
   lines[21]:
+    speaker: Goro
+    text: That was a warm-up, wasn’t it? Tell me there are more of them further on.
+  lines[22]:
     text: Saburō ran when the fighting started and fell on the slope. He reaches Kayano on your back, the chest on his, swearing at you both.
   threads[0]:
     label: Old Saburō’s trust
@@ -1382,12 +1399,13 @@ view:
   unlocked[12]: The Toll on the Pass Road
   unlocked[13]: The Crossroads Shrine
   ending: Saburō ran when the fighting started and fell on the slope. He reaches Kayano on your back, the chest on his, swearing at you both.
-  road: You pulled a carter out of the ditch. It cost the light. Then you ran out of patience with Old Saburō. That cost more of it. After that you pushed on through the dark instead of making camp. Later you fought a bandit thug and a bandit archer, and won. Old Saburō bolted when the fighting started, and was hurt. [−40% pay]
+  road: You tended a wayside shrine. It cost the light. Then you ran out of patience with Old Saburō. That cost more of it. After that you pushed on through the dark instead of making camp. Later you fought a bandit thug and a bandit archer, and won. Old Saburō bolted when the fighting started, and was hurt. [−40% pay]
   crew[0]:
     name: Asuka
+    quote: That was well judged. I’d have done the same.
   crew[1]:
     name: Goro
-    quote: Again? Next time stand back and let me at it.
+    quote: That was a warm-up, wasn’t it? Tell me there are more of them further on.
   grade: botched
 
 >>> dismissReport

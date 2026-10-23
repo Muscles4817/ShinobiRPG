@@ -130,3 +130,4 @@ export {
   type ArcDef,
   type ArcRecommendation,
 } from './arcs';
+export { ROAD_RARITIES, type RoadRarity } from './storyStages';

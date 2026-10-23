@@ -1,3 +1,6 @@
+import type { Season } from '@/systems/time';
+
+import type { Danger } from './crew';
 import type { MissionRole } from './missionRank';
 import type { Condition, Effect } from './story';
 import type { StatId } from '@/systems/stats';
@@ -115,10 +118,22 @@ export interface EndingStage {
 }
 
 /** Something that may happen on a stretch of road, drawn by the region and the day. */
+/** How often a road event comes up among the others it could be: a rare one is a find. */
+export const ROAD_RARITIES = ['common', 'uncommon', 'rare'] as const;
+export type RoadRarity = (typeof ROAD_RARITIES)[number];
+
 export interface RoadEventDef {
   readonly id: string;
   /** The kinds of road it happens on ("hill-road", "coast-road"). */
   readonly regions: readonly string[];
+  /** The least danger a road must hold for it (bandits never come on a safe road); any by default. */
+  readonly danger?: Danger;
+  /** The seasons it happens in; every season when absent. */
+  readonly seasons?: readonly Season[];
+  /** Common when absent. */
+  readonly rarity?: RoadRarity;
+  /** Met once in a life, never again (`atlas.roadSeen`). */
+  readonly once?: true;
   readonly text: string;
   readonly options: readonly DecisionOption[];
 }

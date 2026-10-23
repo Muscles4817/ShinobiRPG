@@ -113,7 +113,13 @@ function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
     // Only the first day of a stretch says where it heads; the rest are the same road.
     const fresh = i === 0 || plan.legs[i - 1]?.toward !== leg.toward;
     const text = fresh ? headed(ctx, leg, from) : leg.text;
-    const walk = { kind: 'leg' as const, text, days: leg.days, region: leg.region };
+    const walk = {
+      kind: 'leg' as const,
+      text,
+      days: leg.days,
+      region: leg.region,
+      ...(leg.danger ? { danger: leg.danger } : {}),
+    };
     const road = plan.hunt ? huntedLeg(plan.hunt, ctx, walk) : [walk];
     if (i === plan.legs.length - 1) return road;
     const stop = stopAfter(plan, i, ctx);
