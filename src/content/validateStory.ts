@@ -34,7 +34,9 @@ function shapeProblems(m: MissionDef): string[] {
   m.stages.forEach((stage, i) => {
     if (stage.kind === 'ending') {
       // Only the road home may follow how a job ends.
-      if (m.stages.slice(i + 1).some((s) => s.kind !== 'leg')) {
+      const homeward = (s: MissionStage) =>
+        s.kind === 'leg' || (s.kind === 'road' && s.to === 'home');
+      if (!m.stages.slice(i + 1).every(homeward)) {
         problems.push('has an ending with more than the road home after it');
       }
       if (stage.endings.at(-1)?.when !== undefined) problems.push('has no ending for every case');

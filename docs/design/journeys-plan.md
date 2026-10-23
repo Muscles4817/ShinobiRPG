@@ -451,10 +451,22 @@ migration and a previous-version save test wherever the save shape changes.
    `validateJobRoads.ts`: a road out names a real `goesTo` and only it does, every hall that
    posts the job has a way, `endsAt` is where the last road leaves you (kept, so everything that
    reads where a job ends still does), and the job pays for the days. The reference: Salt in the
-   Lanterns' road down to Port Shiomachi and its road home now walk the map. Not yet: beats
-   placed by `at` partway along a road (every road a job walks is one stretch so far), the
-   montage for a job's road (a job keeps its own scene), stops on a job's road, and moving the
-   other jobs with `endsAt` over, as they are touched.
+   Lanterns' road down to Port Shiomachi and its road home now walk the map.
+
+   **The rest of step 9.** A job's own beats can sit partway along its road: a stage straight
+   after a `road` with `at: n` plays after the road's nth stretch (or at the end of a shorter
+   road), and the stages after it without one happen on arrival (validated: `at` only after a
+   road, a whole number). A town's inn or a landmark's sight on the way is a stop, as on a trip,
+   but never a day in wild country (a crew won't wait while you forage) and never your own
+   village. While a job is on its road it plays on the journey map (`sceneOnScreen`, read from
+   `jobRoadNow`: the road being walked as a trip's plan), with the crew and the ledger beside
+   the story on a desk; at the job's business it goes back to its own scene. A road may say its
+   first stretch as the story stands (`variants`), and a road home may follow how a job ends.
+   Moved over: the ferry pilot's road to Kiri Ford (with a beat under the cedars) and Ren's road
+   home in the original pack; in the fan pack the roads to and from the Land of Waves, Shukuba
+   and the Fire Temple. Jobs whose roads grew longer pay for the days. The Sand's envoy still
+   walks her own legs: the story is that she missed the barge, and the map's quickest way is the
+   barge.
 
 10. **The original pack's map** (this step), as 3.8. Six new places, none famous, so each is heard
     of on the roads or found by walking them (`packs/original/wildCountry.ts`): the Cedar Deep,

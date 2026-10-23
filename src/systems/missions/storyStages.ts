@@ -117,6 +117,8 @@ export interface RoadStage {
   readonly to: RoadWay;
   /** The first stretch's line in the job's own words, in place of the road's. */
   readonly text?: string;
+  /** The first stretch's line as the story stands (needs `text`). */
+  readonly variants?: readonly TextVariant[];
 }
 
 export interface Ending extends Outcome {

@@ -65,15 +65,21 @@ export const PILOT_HOME: MissionDef = {
     'A ferry pilot from Kiri Ford wants seeing home past some bullies at the river crossing. A simple job, the notice says.',
   slots: 1,
   energyCost: 20,
-  reward: { ryo: 180, reputation: 3 },
+  reward: { ryo: 250, reputation: 3 },
   minMissionsCompleted: 4,
+  goesTo: 'kiri-ford',
   endsAt: 'kiri-ford',
   stages: [
     {
       kind: 'narrative',
       text: 'Tobei pays at the hall in small coins from a dozen purses, and won’t meet the clerk’s eye. “Bullies,” he says. “Just bullies, at the chain.”',
     },
-    { kind: 'leg', text: 'A day down the river road, Tobei talking the whole way.', days: 1 },
+    { kind: 'road', to: 'outbound', text: 'You set off with Tobei, who talks the whole way.' },
+    {
+      kind: 'narrative',
+      at: 1,
+      text: 'Under the cedars Tobei runs out of talk at last. When he starts again it is about the chain: how it went up one spring morning, with the timber baron’s men standing round it, and how nobody on the river has crossed for free since.',
+    },
     {
       kind: 'encounter',
       template: 'bandit-camp',

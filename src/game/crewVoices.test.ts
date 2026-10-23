@@ -2,7 +2,15 @@ import { CONTENT_PACKS, TONES } from '@/content';
 import { reactionTo } from '@/systems/bonds';
 import { PRONOUN_FORMS } from '@/core';
 import { arcPlayer } from '@/test/arcPlay';
-import { act, ctx, fightOut, newGame, postEverything, veteran } from '@/test/gameFixtures';
+import {
+  act,
+  ctx,
+  fightOut,
+  newGame,
+  pastTheRoad,
+  postEverything,
+  veteran,
+} from '@/test/gameFixtures';
 
 import { activeMission } from './missionFlow';
 import { campLine } from './story/campLines';
@@ -18,7 +26,9 @@ import type { GameState } from './state';
  */
 
 function arcJob(): GameState {
-  return act(arcPlayer(ctx).ready(), { type: 'startMission', missionId: 'arc-ford-pilot-home' });
+  return pastTheRoad(
+    act(arcPlayer(ctx).ready(), { type: 'startMission', missionId: 'arc-ford-pilot-home' }),
+  );
 }
 
 /** Plays on until the job's first fight is over. */
