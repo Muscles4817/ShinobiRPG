@@ -3,7 +3,7 @@
 .main-menu,
 .versus-setup,
 .versus-after {
-  min-height: 100dvh;
+  min-height: calc(100dvh - env(safe-area-inset-top));
   box-sizing: border-box;
   padding: 24px var(--gutter) 32px;
   display: flex;

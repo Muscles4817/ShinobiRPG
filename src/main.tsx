@@ -2,7 +2,9 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
 
+import { CAPACITOR_SHELL } from '@/platform/capacitorBackend';
 import { chooseStores } from '@/platform/chooseStores';
+import { startPhoneShell } from '@/platform/phoneShell';
 import { App } from '@/ui/App';
 import '@/ui/theme/fonts.css';
 import '@/ui/theme/tokens.css';
@@ -63,6 +65,7 @@ async function boot(container: HTMLElement): Promise<void> {
   );
   // An app ships its files with it; only the web build caches itself for offline play.
   if (!shell) registerSW({ immediate: true });
+  if (shell === CAPACITOR_SHELL) void startPhoneShell();
 }
 
 void boot(root);

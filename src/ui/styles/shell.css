@@ -297,7 +297,7 @@
 /* Notices and sheets */
 .notice-bar {
   position: sticky;
-  top: 0;
+  top: env(safe-area-inset-top);
   z-index: 30;
   display: flex;
   justify-content: space-between;
@@ -313,6 +313,7 @@
   position: fixed;
   inset: 0;
   z-index: 40;
+  padding-top: env(safe-area-inset-top);
   background: rgb(8 6 12 / 0.6);
   display: flex;
   align-items: flex-end;
