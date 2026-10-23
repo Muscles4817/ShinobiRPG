@@ -11,8 +11,8 @@ import type { PlanFighter } from './state';
  * Taking cover on instinct (`docs/design/defence-plan.md`): a fighter who reads the fight and
  * faces someone far stronger gives some turns to not being hit, Evade or Brace as their body
  * suits (the quick keep clear, the sturdy stand firm), while the breath lasts. A dull fighter
- * keeps trading blows. This is the first of the survival judgement the plan describes; the
- * read of what is coming, and the threat of a killing blow, come later.
+ * keeps trading blows. Facing a killer (a gate open, a killing blow announced) is
+ * `survival.ts`.
  */
 
 /** How often an outmatched mind that reads the fight takes cover rather than attacking. */

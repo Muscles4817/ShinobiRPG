@@ -14,6 +14,7 @@ import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed, isPinned } from '../../rules/verbs';
+import { survivalWarning } from './survival';
 import { slotLimit } from './cards';
 import { fieldMeter } from './field';
 import { statuses } from './statusView';
@@ -219,9 +220,10 @@ function prompt(state: PlanState): string {
     const pick = `${over}Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} actions for each distance, higher first, and the defence you keep ready there.`;
     const hidden = state.fighters.some((f) => f.side === 'enemy' && alive(f) && f.hidden);
     const ground = groundNote(state.ground);
-    return [pick, hidden ? 'Someone is hidden: Search or Dispel finds them.' : null, ground]
-      .filter((part) => part !== null)
-      .join(' ');
+    const hiding = hidden ? 'Someone is hidden: Search or Dispel finds them.' : null;
+    // A killer facing you is said plainly: the choice of how to meet them is yours (`survival.ts`).
+    const killer = survivalWarning(playerOf(state), state);
+    return [pick, killer, hiding, ground].filter((part) => part !== null).join(' ');
   }
   const where = `${RANGE_LABEL[state.range]} range, round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
   // A watched fight has no card table to show the ground on.
