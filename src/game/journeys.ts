@@ -16,6 +16,7 @@ import { arriving, leaving, tripCrew } from './trips';
 import type { GameState } from './state';
 import { placeInText } from './placeName';
 import { bearing } from './compass';
+import { stopAt } from './journeyStops';
 import { homeVillageId } from './homeVillage';
 import { heatAfterTrip, huntedLeg, huntThread } from './hunt';
 
@@ -91,6 +92,17 @@ function headed(ctx: GameContext, leg: PlanLeg, from: string): string {
   return `${leg.text} The road runs ${way} from ${placeInText(start.name)}, towards ${toward}.`;
 }
 
+/**
+ * A stop where a stretch ends at a place that offers one (`journeyStops.ts`): a town's inn, a
+ * landmark's sight, a day in wild country. Hurrying walks past them all.
+ */
+function stopAfter(plan: JourneyPlan, i: number, ctx: GameContext): MissionStage[] {
+  const here = plan.legs[i]?.toward;
+  const next = plan.legs[i + 1]?.toward;
+  if (!here || here === next || !stopAt(ctx, here)) return [];
+  return [{ kind: 'stop', locationId: here }];
+}
+
 function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
   const starts = startsOf(plan);
   return plan.legs.flatMap((leg, i): MissionStage[] => {
@@ -100,7 +112,8 @@ function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
     const text = fresh ? headed(ctx, leg, from) : leg.text;
     const walk = { kind: 'leg' as const, text, days: leg.days, region: leg.region };
     const road = plan.hunt ? huntedLeg(plan.hunt, ctx, walk) : [walk];
-    return plan.quick || i === plan.legs.length - 1 ? road : [...road, CAMP];
+    if (plan.quick || i === plan.legs.length - 1) return road;
+    return [...road, ...stopAfter(plan, i, ctx), CAMP];
   });
 }
 

@@ -1,4 +1,5 @@
 import { CONTENT_PACKS, type LocationDef } from '@/content';
+import type { RouteDef } from '@/systems/travel';
 import { createGameContext } from '@/game/context';
 import type { GameState } from '@/game/state';
 import { stock } from '@/systems/inventory';
@@ -7,7 +8,9 @@ import { newGame } from './gameFixtures';
 
 /**
  * The original pack with a stretch of wild country added (none is open in the pack yet): the
- * Cedar Deep, its woods and a camp, for tests of what wild places offer.
+ * Cedar Deep, its woods and a camp, for tests of what wild places offer; and a test road out of
+ * the village past a landmark (the Stone Lantern) and through the Deep to the Falls, so a trip
+ * passes both kinds of stop.
  */
 
 const original = CONTENT_PACKS.find((p) => p.id === 'original')!;
@@ -27,9 +30,42 @@ export const CEDAR_DEEP: LocationDef = {
   ],
 };
 
+const landmark = (id: string, name: string, x: number): LocationDef => ({
+  id,
+  name,
+  kind: 'landmark',
+  epithet: 'Worth the walk',
+  backdrop: home.backdrop,
+  map: { x, y: 20 },
+  places: [
+    { id: `${id}-camp`, kind: 'camp', name: 'A Ledge', icon: 'tree', blurb: 'Flat ground.' },
+  ],
+  sight: {
+    text: 'The old stone lantern still burns, though no one tends it.',
+    reward: { perception: 1 },
+  },
+});
+
+export const STONE_LANTERN = landmark('stone-lantern', 'The Stone Lantern', 48);
+export const THE_FALLS = landmark('the-falls', 'The Falls', 56);
+
+const road = (id: string, from: string, to: string): RouteDef => ({
+  id,
+  from,
+  to,
+  legs: [{ region: 'forest-track', days: 1, text: 'The track runs on under the trees.' }],
+  danger: 'petty',
+});
+
 export const wildCtx = createGameContext({
   ...original,
-  locations: [...original.locations, CEDAR_DEEP],
+  locations: [...original.locations, CEDAR_DEEP, STONE_LANTERN, THE_FALLS],
+  routes: [
+    ...original.routes,
+    road('to-lantern', original.startLocationId, STONE_LANTERN.id),
+    road('to-deep', STONE_LANTERN.id, CEDAR_DEEP.id),
+    road('to-falls', CEDAR_DEEP.id, THE_FALLS.id),
+  ],
 });
 
 /** Food that keeps on the road, as the grocer sells it. */

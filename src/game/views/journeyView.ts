@@ -124,6 +124,7 @@ function waitingOn(stage: MissionStage | null, roadEvent: boolean): JourneyWaiti
     case 'check':
     case 'decision':
     case 'ending':
+    case 'stop':
       return 'story';
   }
 }

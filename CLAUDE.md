@@ -679,7 +679,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     brings held back until the seal gets there, and on arrival the trip kept as `journeyEnd`
     for the place's title card until you walk in (`leaveJourney`; like a finished fight, it
     never blocks play). The map is framed on the road; its lines keep their weight at any zoom
-    (`--map-zoom`). Away from home you sleep at
+    (`--map-zoom`). Where a stretch ends at a place that offers it, the trip **stops**
+    (`game/journeyStops.ts`, a `stop` stage, `journeyStop`): a town's inn for the night in place
+    of the camp, a landmark's `sight` (validated on every open one), a day in wild country
+    foraging its finds, or walking on; hurrying walks past them all. Away from home you sleep at
     an `inn`; a friend may come along (`game/trips.ts`, a `companion` crew, found at your
     lodging), you may turn back at a camp, and coming home shows what the village did while
     you were away; people who live in a town (`homeLocationId`) are met there, its festivals

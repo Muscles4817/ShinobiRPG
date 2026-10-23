@@ -51,6 +51,7 @@ export type GameAction =
   | { readonly type: 'leaveFight' }
   | { readonly type: 'leaveJourney' }
   | { readonly type: 'makeCamp' }
+  | { readonly type: 'journeyStop'; readonly stay: boolean }
   | { readonly type: 'study'; readonly techniqueId: string }
   | { readonly type: 'studyScroll'; readonly techniqueId: string }
   | { readonly type: 'startMission'; readonly missionId: string }
