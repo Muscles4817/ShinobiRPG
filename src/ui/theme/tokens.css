@@ -71,6 +71,12 @@
   --map-brush-ink: #1d1a17;
   --map-brush-faint: #9a907e;
   --map-brush-home: rgb(192 57 43 / 0.08);
+  /* The light over a journey's map by the hour, laid over it like a wash, and the camp fire. */
+  --journey-morning: rgb(255 226 170 / 0.16);
+  --journey-evening: rgb(214 110 40 / 0.22);
+  --journey-night: rgb(14 18 44 / 0.62);
+  --journey-fire: rgb(255 170 80 / 0.55);
+  --journey-embers: rgb(240 120 40 / 0.22);
   --wood: #4f3420;
   /* Pale cypress for ema, the wooden plaques hung at shrines. */
   --ema: #d9bb8a;

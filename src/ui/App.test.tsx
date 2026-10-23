@@ -244,6 +244,7 @@ describe('App (smoke test)', () => {
       await user.click(lesson);
       await user.click(within(screen.getByRole('dialog')).getAllByRole('button')[0]!);
       await user.click(await toPort());
+      expect(screen.getByRole('region', { name: 'The road' })).toBeInTheDocument();
       // On the road: take the first way on until you arrive.
       for (
         let step = 0;

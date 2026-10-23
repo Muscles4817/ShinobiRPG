@@ -112,20 +112,7 @@ export {
   type ScrollDesk,
   type Stack,
 } from './views/library';
-export {
-  travelView,
-  type CompanionOption,
-  type Destination,
-  type TravelView,
-} from './views/travel';
-export type {
-  AtlasLabel,
-  MapLabelSide,
-  MapPlace,
-  MapPoint,
-  MapRoad,
-  TravelMap,
-} from './views/travelMap';
+export * from './travelTab';
 export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
 export {
   animationSetting,

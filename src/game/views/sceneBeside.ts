@@ -25,6 +25,7 @@ export function sceneBeside(state: GameState): SceneBeside | null {
     case null:
     case 'combat':
     case 'mission':
+    case 'journey':
       return null;
     case 'encounter':
       return { kind: 'job' };

@@ -5,8 +5,9 @@ Rules marked **(enforced)** fail CI if broken; the rest are enforced in review.
 
 ## What this is
 
-**Shinobi RPG** — a text-based shinobi life-sim RPG, built as an offline-first PWA so it can be
-played on a phone while travelling. Original setting: Tōrōgakure, the Village Hidden Among
+**Shinobi RPG** — a text-based shinobi life-sim RPG. It is a **desktop game first**: a deep game
+sold as a paid desktop release (only the `original` pack ships in it), built as an offline-first
+web app that also plays in full on a phone. Original setting: Tōrōgakure, the Village Hidden Among
 Lanterns. Stack: TypeScript (strict), React, Vite, vite-plugin-pwa, Vitest.
 
 Roadmap (milestones): **1. vertical slice** (done) → **2. people & relationships** (done) → 3. progression (ranks, elements, spirits) → 4. world & travel → 5. branching paths (rogue / Kage)
@@ -167,8 +168,8 @@ ui ──► game ──► content ──► systems ──► core
     adds their day, what they can do and are growing into (`views/personFacts.ts`), what they'll
     teach you and a genin's growth since the academy; tastes come with friendship.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
-    (fight › encounter › mission › conversation › team assignment › chakra paper › the sensei's
-    first meeting). Anything that must happen before
+    (fight › encounter › mission or journey › conversation › team assignment › chakra paper ›
+    the sensei's first meeting). Anything that must happen before
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
     derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`
@@ -672,7 +673,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     locked is closed, as is one whose `needs` you don't meet: a rank, a world mark, or walking
     on water or trees, asked only of `canWalk` in `game/walking.ts`). Setting out (`travel`) starts a mission run carrying a `journey` plan, so
     the road plays as on a job (`game/journeys.ts`: a leg per stretch, a camp between, road
-    events); `quick` hurries on until a road event needs a choice. Away from home you sleep at
+    events); `quick` hurries on until a road event needs a choice. A trip takes the screen as a
+    **journey** (`docs/design/journeys-plan.md`): the road on the map (`views/journeyView.ts`,
+    `ui/screens/scenes/journey/`), your seal walking each leg as it is done, what the road
+    brings held back until the seal gets there, and on arrival the trip kept as `journeyEnd`
+    for the place's title card until you walk in (`leaveJourney`; like a finished fight, it
+    never blocks play). The map is framed on the road; its lines keep their weight at any zoom
+    (`--map-zoom`). Away from home you sleep at
     an `inn`; a friend may come along (`game/trips.ts`, a `companion` crew, found at your
     lodging), you may turn back at a camp, and coming home shows what the village did while
     you were away; people who live in a town (`homeLocationId`) are met there, its festivals
@@ -1230,7 +1237,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   is always present except in scenes. _Here_ is the current location's village screen, whose
   place cards open place pages. Scenes (missions, fights) take over the whole screen and
   return to where you were.
-- **Desktop is a second arrangement, not a second game.** On a wide window (`useWideScreen`,
+- **Desktop leads; the phone is a second arrangement, not a second game.** New screens are
+  designed for a wide window first, then arranged for the phone, and both offer the same
+  actions. On a wide window (`useWideScreen`,
   `ui/layout/`, the one place the breakpoint lives) `.app.wide` lays out a side rail (the dock
   and the village's places, number keys for tabs), the main column and the you panel (vitals,
   the time, what waits on you, on every tab). It arranges the same screens and offers the
@@ -1246,8 +1255,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   something on desktop previews it in the panel beside it (`useHoverPreview`: a Jutsu card in the
   detail panel, a fighter's read on the plan screen, and in its place a card's technique as the Jutsu tab
   reads it: `fightTechnique` through `CombatOption.techniqueId`, shown by `JutsuDetail`); a click still picks. Scenes still take the
-  whole screen; the ones in `WIDE_SCENES` (`layout/sceneLayout.ts`: the mission and the fight's
-  plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
+  whole screen; the ones in `WIDE_SCENES` (`layout/sceneLayout.ts`: the mission, the journey and the
+  fight's plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
   desktop shows beside a scene is a view model too (`missionSoFar`). Every other scene is a story
   scene: one wider reading column, its `.choices` bar numbered by CSS and pressed by
   `ChoiceBarKeys`, so a new scene with a choice bar gets both without code, and beside it the
@@ -1289,8 +1298,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   a gain, a cost), never decoration: no gradient fills on cards or tiles.
 - **Avoid the generic-template look.** No small uppercase letter-spaced labels (labels are
   sentence case; a section label is a serif heading), no " · "-joined meta lines (write a
-  phrase), no coloured left-edge bars on cards, no emoji. Check new screens by screenshot at
-  390px, not just by tests.
+  phrase), no coloured left-edge bars on cards, no emoji. Check new screens by screenshot on a
+  wide window and at 390px, not just by tests.
 - **Tokens only**: colours, fonts and radii come from `ui/theme/tokens.css`. Icons and scenery
   are inline SVG in `ui/art/` (offline, no image files). Tap targets ≥ 40px. Motion is subtle
   and always disabled under `prefers-reduced-motion`. Night is the default theme.
@@ -1306,4 +1315,4 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 1. `npm run check` (and `npm run check:release`) are green.
 2. New behaviour has tests; boundaries respected without lint/arch exceptions.
 3. Save compatibility preserved (migration + test if the shape changed).
-4. Works at phone width (≈390px) and offline.
+4. Works on a wide window and at phone width (≈390px), and offline.

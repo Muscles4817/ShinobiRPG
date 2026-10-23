@@ -9,7 +9,7 @@ import type { SceneKind } from '@/game';
  * Scenes with a desktop arrangement of panes of their own; the rest are story scenes, read in
  * one wider column with keys for their choice bar.
  */
-const WIDE_SCENES: readonly SceneKind[] = ['mission', 'combat'];
+const WIDE_SCENES: readonly SceneKind[] = ['mission', 'journey', 'combat'];
 
 export function isStoryScene(scene: SceneKind | null): boolean {
   return scene !== null && !WIDE_SCENES.includes(scene);

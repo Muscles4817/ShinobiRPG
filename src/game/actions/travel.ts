@@ -71,6 +71,16 @@ export const leaveFight: ActionHandler<ActionOf<'leaveFight'>> = {
   },
 };
 
+/** Done watching a trip end: the map closes on the place you walked to. */
+export const leaveJourney: ActionHandler<ActionOf<'leaveJourney'>> = {
+  check(state) {
+    return state.journeyEnd ? null : 'You have not just arrived anywhere.';
+  },
+  perform(state) {
+    return { ...state, journeyEnd: null };
+  },
+};
+
 export const dismissReport: ActionHandler<ActionOf<'dismissReport'>> = {
   check(state) {
     return state.reports.length > 0 ? null : 'Nothing to dismiss.';

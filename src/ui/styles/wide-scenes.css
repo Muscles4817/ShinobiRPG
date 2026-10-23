@@ -121,6 +121,85 @@
   gap: 12px;
 }
 
+/* A journey: the map fills the window, the road's story in a column beside it. */
+.app.wide.scene-journey .wide-scene {
+  display: grid;
+  height: 100vh;
+  grid-template-columns: minmax(0, 1fr) 460px;
+}
+.app.wide.scene-journey .pane {
+  min-width: 0;
+}
+.app.wide.scene-journey .pane-map {
+  grid-column: 1;
+  grid-row: 1;
+}
+.app.wide.scene-journey .journey-map {
+  height: 100vh;
+}
+.app.wide.scene-journey .journey-caption {
+  top: 16%;
+  bottom: auto;
+  font-size: 2.4rem;
+}
+.app.wide.scene-journey .journey-stamp {
+  top: auto;
+  right: auto;
+  left: 20px;
+  bottom: 20px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}
+.app.wide.scene-journey .journey-stamp strong {
+  font-size: 1rem;
+}
+.app.wide.scene-journey .journey-arrival-title {
+  top: 6%;
+}
+.app.wide.scene-journey .journey-arrival-title h2 {
+  font-size: 4.4rem;
+}
+.app.wide.scene-journey .journey-arrival-title p {
+  font-size: 1.2rem;
+}
+.app.wide.scene-journey .journey-seal {
+  width: 34px;
+  height: 34px;
+  font-size: 19px;
+}
+.app.wide.scene-journey .pane-story {
+  grid-column: 2;
+  grid-row: 1;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--grain), var(--surface);
+  border-left: 1px solid var(--line);
+}
+.app.wide.scene-journey .journey-head {
+  padding: 26px 24px 14px;
+  border-bottom: 0;
+  background: none;
+}
+.app.wide.scene-journey .journey-head h1 {
+  font-size: 1.7rem;
+}
+.app.wide.scene-journey .threads {
+  padding: 0 24px;
+}
+.app.wide.scene-journey .scene-feed {
+  flex: 1;
+  padding: 8px 24px 16px;
+}
+.app.wide.scene-journey .scene-feed .story {
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+.app.wide.scene-journey .choices {
+  padding: 12px 24px 20px;
+}
+
 /* A fight. A turn-by-turn style (shelved) keeps the phone's column, centred. */
 .app.wide.scene-combat .wide-scene {
   display: flex;

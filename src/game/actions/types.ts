@@ -49,6 +49,7 @@ export type GameAction =
   | { readonly type: 'turnBack' }
   | { readonly type: 'dismissReport' }
   | { readonly type: 'leaveFight' }
+  | { readonly type: 'leaveJourney' }
   | { readonly type: 'study'; readonly techniqueId: string }
   | { readonly type: 'studyScroll'; readonly techniqueId: string }
   | { readonly type: 'startMission'; readonly missionId: string }
