@@ -34,4 +34,11 @@ export const FIELD_BOOK_REWARDS: FieldBookRewards = {
       line: 'A notch for every kind of foe you have beaten.',
     },
   },
+  places: {
+    furnishingId: 'painted-map',
+    keepsake: {
+      name: 'A pilgrim’s stamp book, every page inked',
+      line: 'A seal from every gate, inn and shrine of the country, and the road between them.',
+    },
+  },
 };

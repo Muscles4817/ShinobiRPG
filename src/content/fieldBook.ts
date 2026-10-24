@@ -4,7 +4,7 @@
  * the pack's wild places, recipes, night sights and foes.
  */
 
-export const FIELD_BOOK_PAGES = ['fish', 'finds', 'recipes', 'sights', 'foes'] as const;
+export const FIELD_BOOK_PAGES = ['fish', 'finds', 'recipes', 'sights', 'foes', 'places'] as const;
 export type FieldBookPage = (typeof FIELD_BOOK_PAGES)[number];
 
 export interface PageReward {
