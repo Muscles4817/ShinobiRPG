@@ -132,7 +132,12 @@ foreign shinobi bench fights the original pack's, in two halves run side by side
 and the missing-nin had to come down to sit in the bands. Six template jobs use them: a Squall
 scout on the coast, an Ashfield genin squad, a Dune trapper minding a smuggling ring, two
 missing-nin hunts and an S-rank hunt for a Squall captain. Sensors and medics are support and
-easy alone; squads of three (border jobs, exam rivals) are the next use.
+easy alone. Squads of three now meet you in the chūnin exam: the Ash Wood's rival team is an
+Ashfield captain, scout and medic, composed like the rest (the old rival genin stay for the field
+books of saves that met them). And two of Sakyūgakure's missing-nin carry an arc of their own,
+**The Glass-Eyed Scout** (`arcs/glassEye.ts`): Isago blinding the dune-line watchtowers at B
+rank, then their teacher Kazemi the Glass-Eyed, who sells every border, at A rank under a jōnin,
+with the maps burned or brought home.
 
 ## Step 4 (later): foes with gear
 

@@ -98,7 +98,11 @@ export const EXAMS: readonly ExamDef[] = [
   },
 ];
 
-/** Genin from the other villages of the Land of Embers, met in the Ash Wood. */
+/**
+ * Genin from the other villages of the Land of Embers. The Ash Wood now sends an Ashfield squad
+ * composed from the pack's villages (`shinobiVillages.ts`); these stay for the field books of
+ * saves that met them there.
+ */
 export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'rival-genin-blade',
@@ -208,8 +212,12 @@ export const EXAM_MISSIONS: readonly MissionDef[] = [
         ground: 'forest',
         template: 'rival-team',
         job: 'retrieve',
-        text: 'Three genin from Ashfield are filling their flasks at a stream. One of them wears a token on a cord.',
-        enemyIds: ['rival-genin-blade', 'rival-genin-thrower', 'rival-genin-weaver'],
+        text: 'An Ashfield squad is filling its flasks at a stream: a captain, a scout up a tree and a medic. The captain wears a token on a cord.',
+        enemyIds: [
+          'foe-ashfield-captain-genin',
+          'foe-ashfield-scout-genin',
+          'foe-ashfield-medic-genin',
+        ],
         canFlee: true,
       },
       {

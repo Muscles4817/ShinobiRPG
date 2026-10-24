@@ -9,6 +9,7 @@ import { BROKEN_BLADE_JOBS } from './arcs/brokenBlade';
 import { LANTERN_KEEPER_JOBS } from './arcs/lanternKeeper';
 import { UNFINISHED_JOBS } from './arcs/unfinished';
 import { FORGED_BLADE_JOBS } from './arcs/forgedBlade';
+import { GLASS_EYE_JOBS } from './arcs/glassEye';
 import { PATIENT_THING_JOBS } from './arcs/patientThing';
 import { SALT_LANTERNS_VILLAGE_JOBS } from './arcs/saltLanterns';
 import { PILOT_HOME } from './arcs/fordChainStart';
@@ -84,6 +85,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           ...UNFINISHED_JOBS.map((m) => m.id),
           ...FORGED_BLADE_JOBS.map((m) => m.id),
           ...PATIENT_THING_JOBS.map((m) => m.id),
+          ...GLASS_EYE_JOBS.map((m) => m.id),
           ...SALT_LANTERNS_VILLAGE_JOBS,
           PILOT_HOME.id,
           ...BREWER_GHOST_JOBS.map((m) => m.id),
