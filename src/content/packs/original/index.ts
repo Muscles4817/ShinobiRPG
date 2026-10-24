@@ -1,3 +1,4 @@
+import { GLASS_EYE_ARC, GLASS_EYE_JOBS } from './arcs/glassEye';
 import { foreignShinobi } from '../../shared/foreignShinobi';
 import { ORIGINAL_NATURE_KIT, ORIGINAL_VILLAGES } from './shinobiVillages';
 import { DESERT_INGREDIENTS } from '../../shared/desert';
@@ -134,6 +135,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...UNFINISHED_JOBS,
     ...FORGED_BLADE_JOBS,
     ...PATIENT_THING_JOBS,
+    ...GLASS_EYE_JOBS,
     ...SALT_LANTERNS_JOBS,
     ...FORD_CHAIN_JOBS,
     ...BREWER_GHOST_JOBS,
@@ -161,6 +163,7 @@ export const ORIGINAL_PACK: ContentPack = {
     UNFINISHED_ARC,
     FORGED_BLADE_ARC,
     PATIENT_THING_ARC,
+    GLASS_EYE_ARC,
   ],
   voices: VOICES,
   companionKinds: COMPANION_KINDS,
