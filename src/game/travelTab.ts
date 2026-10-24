@@ -17,6 +17,7 @@ export type {
 } from './views/travelMap';
 export {
   journeyView,
+  sceneOnScreen,
   type Arrival,
   type JourneyMapLeg,
   type JourneyStop,

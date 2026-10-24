@@ -1,5 +1,13 @@
 import { arcPlayer } from '@/test/arcPlay';
-import { act, ctx, newGame, postEverything, veteran, withAllStats } from '@/test/gameFixtures';
+import {
+  act,
+  ctx,
+  newGame,
+  pastTheRoad,
+  postEverything,
+  veteran,
+  withAllStats,
+} from '@/test/gameFixtures';
 
 import type { GameState } from './state';
 import { encounterScene } from './views/encounter';
@@ -58,7 +66,9 @@ describe('a check told for the way it was tried', () => {
 
 describe('an encounter’s facts', () => {
   it('knows what the scene already said, in words', () => {
-    let s = act(arcPlayer(ctx).ready(), { type: 'startMission', missionId: 'arc-ford-pilot-home' });
+    let s = pastTheRoad(
+      act(arcPlayer(ctx).ready(), { type: 'startMission', missionId: 'arc-ford-pilot-home' }),
+    );
     for (let i = 0; i < 3 && !s.mission?.encounter; i++) s = act(s, { type: 'missionContinue' });
     const count = encounterScene(s, ctx)?.facts.find((f) => f.fact === 'count');
     expect(count?.value).toBe('Two of them');

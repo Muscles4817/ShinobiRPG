@@ -8,10 +8,11 @@ import type { ContentPack } from './types';
  * (`goesTo`, a real place), and only such a job does; from every hall that posts it each of its
  * roads has a way along the pack's routes; it ends where its last road leaves you (`endsAt`, so
  * everything that reads where a job ends still can); and it pays for the days its roads keep you
- * away, as a job walking its own legs must.
+ * away, as a job walking its own legs must. A beat placed along a road (`at`) follows the road
+ * (or another such beat), at a whole number of stretches.
  */
 export function validateJobRoads(pack: ContentPack): string[] {
-  return pack.missions.flatMap((m) => jobRoadProblems(pack, m));
+  return pack.missions.flatMap((m) => [...beatProblems(m), ...jobRoadProblems(pack, m)]);
 }
 
 /** The towns whose halls post the job. */
@@ -47,6 +48,20 @@ function roadDays(pack: ContentPack, m: MissionDef, hall: string): number | null
     from = to;
   }
   return days;
+}
+
+/** Beats placed along a road: each straight after one, or after another such beat. */
+function beatProblems(m: MissionDef): string[] {
+  return m.stages.flatMap((s, i) => {
+    if (s.at === undefined) return [];
+    const where = `mission "${m.id}" stage ${i}`;
+    if (!Number.isInteger(s.at) || s.at < 1)
+      return [`${where} is placed at ${s.at} along its road`];
+    const before = m.stages.slice(0, i).findLast((b) => b.at === undefined);
+    return before?.kind === 'road' && s.kind !== 'road'
+      ? []
+      : [`${where} is placed along a road but doesn't follow one`];
+  });
 }
 
 function jobRoadProblems(pack: ContentPack, m: MissionDef): string[] {

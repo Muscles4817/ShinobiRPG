@@ -696,9 +696,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     stage (`to: 'outbound'` to where it `goesTo`, or `'home'` to your village) is the quickest open
     way, worked out when the job is taken and kept on the run (`MissionRun.ways`), walked as its
     legs with a camp between stretches and the routes' regions and danger; read a job's stages
-    through `activeMission` (or `jobAsWalked` on the board), never `def.stages` alone. Validated in
-    `validateJobRoads.ts` (a real `goesTo`, a way from every hall, `endsAt` where the last road
-    leaves you, pay for the days).
+    through `activeMission` (or `jobAsWalked` on the board), never `def.stages` alone. A stage
+    straight after a road with `at: n` happens after its nth stretch; a town's inn or a landmark
+    on the way is a stop; and while a job is on its road it plays on the journey map
+    (`sceneOnScreen`, `jobRoadNow`). Validated in `validateJobRoads.ts` (a real `goesTo`, a way
+    from every hall, `endsAt` where the last road leaves you, pay for the days, `at` only after
+    a road).
 26. **Travel is a journey along routes, on leave** (`docs/design/world-plan.md`). A pack's
     `routes` join its locations (legs of days through road-event regions, a `danger`, a
     passage `cost`); `systems/travel` finds the quickest open way (a road through a place still

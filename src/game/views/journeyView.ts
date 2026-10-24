@@ -4,11 +4,13 @@ import type { JourneyPlan, MissionStage } from '@/systems/missions';
 import { TIME_SLOTS, type TimeSlot } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { jobRoadNow } from '../jobRoads';
 import { journeyTitle, legsWalked } from '../journeys';
 import { activeMission, activeStage } from '../missionFlow';
 import { placeInText } from '../placeName';
 import type { GameState } from '../state';
 import { journeyPath, type LegSpan } from './journeyPath';
+import { activeScene, type SceneKind } from './peopleScenes';
 import { travelMap, type TravelMap } from './travelMap';
 
 /**
@@ -165,13 +167,13 @@ function frameOf(path: readonly MapPoint[]): MapFrame {
 function whereNow(
   state: GameState,
   ctx: GameContext,
-  legCount: number,
+  road: { readonly legCount: number; readonly legsBefore: number },
 ): { walked: number; waiting: JourneyWaiting } {
   const run = state.mission;
   const def = activeMission(state, ctx);
-  if (!run || !def) return { walked: legCount, waiting: 'arrived' };
+  if (!run || !def) return { walked: road.legCount, waiting: 'arrived' };
   const waiting = waitingOn(activeStage(state, ctx), run.roadEvent !== undefined);
-  return { walked: legsWalked(run, def.stages), waiting };
+  return { walked: legsWalked(run, def.stages) - road.legsBefore, waiting };
 }
 
 /** The title card for the place you walk into. */
@@ -181,13 +183,22 @@ function arrivalAt(plan: JourneyPlan, days: number, ctx: GameContext): Arrival {
   return { name, epithet, backdrop, line, enter: `Walk into ${placeInText(name)}` };
 }
 
+/** The road being walked: a trip of your own, the trip just ended, or a job's road. */
+function roadNow(state: GameState, ctx: GameContext) {
+  const job = jobRoadNow(state, ctx);
+  if (job) return job;
+  const plan = state.mission ? state.mission.journey : state.journeyEnd;
+  return plan ? { plan, legsBefore: 0 } : null;
+}
+
 /**
  * The trip under way as the map shows it, or the trip just ended while you take in where you
- * are (`journeyEnd`); null when you aren't on a trip of your own.
+ * are (`journeyEnd`), or a job on its road; null when you aren't on the road.
  */
 export function journeyView(state: GameState, ctx: GameContext): JourneyView | null {
-  const plan = state.mission ? state.mission.journey : state.journeyEnd;
-  if (!plan) return null;
+  const road = roadNow(state, ctx);
+  if (!road) return null;
+  const { plan, legsBefore } = road;
   const { points, spans } = journeyPath(plan, ctx);
   const legs = plan.legs.map((leg, i) => ({
     start: spans[i]?.start ?? 0,
@@ -197,7 +208,7 @@ export function journeyView(state: GameState, ctx: GameContext): JourneyView | n
     days: leg.days,
     toward: leg.toward ?? plan.to,
   }));
-  const { walked, waiting } = whereNow(state, ctx, legs.length);
+  const { walked, waiting } = whereNow(state, ctx, { legCount: legs.length, legsBefore });
   const days = (n: number) => legs.slice(0, n).reduce((sum, leg) => sum + leg.days, 0);
   return {
     title: journeyTitle(plan, ctx),
@@ -221,4 +232,13 @@ export function journeyView(state: GameState, ctx: GameContext): JourneyView | n
     frame: frameOf(points),
     arrival: waiting === 'arrived' ? arrivalAt(plan, days(legs.length), ctx) : null,
   };
+}
+
+/**
+ * The scene on the screen: as `activeScene`, except that a job walking the map's road is drawn on
+ * the map, as a trip is, until it reaches the business at the end of the road.
+ */
+export function sceneOnScreen(state: GameState, ctx: GameContext): SceneKind | null {
+  const scene = activeScene(state);
+  return scene === 'mission' && jobRoadNow(state, ctx) ? 'journey' : scene;
 }

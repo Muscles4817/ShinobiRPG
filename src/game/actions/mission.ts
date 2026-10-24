@@ -33,6 +33,7 @@ import { checkHand } from '../missionRoles';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
 import { welcomeBack } from '../clients';
+import { homeVillageId } from '../homeVillage';
 import { jobWays, walksTheMap, withRoads } from '../jobRoads';
 import { bondsNow } from '../debrief';
 import { travel } from '../road';
@@ -80,7 +81,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
     const twist = def.twists ? pickTwist(def, rng.next()) : null;
     // A job on the map's road keeps the way it was given today (`jobRoads.ts`).
     const ways = walksTheMap(def) ? (jobWays(state, ctx, def) ?? []) : null;
-    const walked = ways ? withRoads(def, ways) : def;
+    const walked = ways ? withRoads(def, ways, { ctx, home: homeVillageId(state, ctx) }) : def;
     const begun = startRun(def, crew, twist ? [twist] : []);
     const known = welcomeBack(state, def, ways ? { ...begun, ways } : begun);
     const run = settle(walked, {
