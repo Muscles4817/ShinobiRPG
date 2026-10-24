@@ -487,3 +487,15 @@ migration and a previous-version save test wherever the save shape changes.
     battlefield borrow the mountain, coast and dunes), the hermit, the battlefield's keeper as a
     teacher, Hanebashi's pilgrims' gossip, and Sakyūgakure and Mount Reikon still waiting on
     their own steps.
+
+11. **The Places page** (this step). The field book gains a sixth page, `places`
+    (`game/fieldBook/places.ts`): a slot for every place of the pack you can stand in (a place
+    still coming soon is none), filled by having stood there (`hasBeenTo`, read from the `atlas`,
+    so nothing new is recorded and old saves fill it from what they've walked). A place you've
+    been to gives its epithet; one you've heard of is its name, "heard of, never been"; one you've
+    never heard of gives only its kind and the country of the roads that reach it ("A landmark,
+    somewhere along the dune road"), never its name (`views/fieldBookPlaces.ts`). The full page
+    leaves a painted map of the country for the wall at home and a pilgrim's stamp book for the
+    shelf. The book's tabs sit three across on a phone and in one row on a desk. Since step 10
+    every place of both packs also has a backdrop of its own. Not yet: road sights on a page of
+    their own, and the day's sheet naming a place first stood in.

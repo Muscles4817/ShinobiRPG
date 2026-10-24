@@ -18,13 +18,16 @@ export const PAGE_TITLES: Readonly<Record<(typeof FIELD_BOOK_PAGES)[number], str
   recipes: 'Recipes',
   sights: 'Night sights',
   foes: 'Foes',
+  places: 'Places',
 };
 
 export function noteFieldBook(before: GameState, state: GameState, ctx: GameContext): GameState {
-  // Only something written in the book, or a recipe learned, can fill a page.
-  if (before.fieldBook === state.fieldBook && before.cooking.known === state.cooking.known) {
-    return state;
-  }
+  // Only something written in the book, a recipe learned or a place stood in can fill a page.
+  const unchanged =
+    before.fieldBook === state.fieldBook &&
+    before.cooking.known === state.cooking.known &&
+    before.atlas.visited === state.atlas.visited;
+  if (unchanged) return state;
   return FIELD_BOOK_PAGES.filter(
     (page) => !state.fieldBook.rewarded.includes(page) && pageFull(state, ctx, page),
   ).reduce((s, page) => {

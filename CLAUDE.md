@@ -869,9 +869,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     longest, measured from `IngredientDef.length` by hash, never the Rng), finds, sights followed,
     foes fought and beaten, and pages rewarded; it is written at the action that causes it
     (`fieldBook/record.ts`). The pages are read from content (every spot's fish, every wild find,
-    every recipe, every sight; foes you've met or a report named), so a new fish or sight is a
-    new slot with no code. Empty slots give a hint (where and when, the sight as unseen), never
-    the name. A full page leaves its `content.fieldBook` reward once (`noteFieldBook` in
+    every recipe, every sight; foes you've met or a report named; every place you can stand in,
+    filled from the `atlas`), so a new fish, sight or place is a new slot with no code. Empty
+    slots give a hint (where and when, the sight as unseen, a place's kind and the roads that
+    reach it), never the name. A full page leaves its `content.fieldBook` reward once (`noteFieldBook` in
     `dispatch`): a furnishing only it gives, and a keepsake on the shelf. New entries make one
     line on the day's sheet.
 
