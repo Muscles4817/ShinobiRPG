@@ -1,3 +1,5 @@
+import { foreignShinobi } from '../../shared/foreignShinobi';
+import { ORIGINAL_NATURE_KIT, ORIGINAL_VILLAGES } from './shinobiVillages';
 import { DESERT_INGREDIENTS } from '../../shared/desert';
 import { bestiary } from '../../shared/bestiary';
 import { ORIGINAL_FOE_KIT } from './bestiaryKit';
@@ -169,6 +171,7 @@ export const ORIGINAL_PACK: ContentPack = {
   enemies: [
     ...ENEMIES,
     ...bestiary(ORIGINAL_FOE_KIT),
+    ...foreignShinobi(ORIGINAL_VILLAGES, { kit: ORIGINAL_FOE_KIT, natures: ORIGINAL_NATURE_KIT }),
     ...CHUNIN_ENEMIES,
     ...JOB_ENEMIES,
     ...ELITE_ENEMIES,
