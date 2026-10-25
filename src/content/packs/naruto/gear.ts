@@ -16,6 +16,17 @@ export const GEAR: readonly GearDef[] = [
     icon: 'fist',
   },
   {
+    id: 'yari',
+    name: 'Yari',
+    description:
+      'A foot soldier’s straight spear. It reaches where a sword can’t, and turns slowly.',
+    kind: 'weapon',
+    weaponClass: 'polearm',
+    rank: 'D',
+    cost: 200,
+    icon: 'sword',
+  },
+  {
     id: 'tanto',
     name: 'Tantō',
     description: 'A short, straight blade. ANBU favour them for a reason.',

@@ -32,4 +32,16 @@ export const ORIGINAL_FOE_KIT: FoeKit = {
   heavyLimbs: 'heavy-limbs',
   heal: 'mending-glow',
   sense: 'wick-sense',
+  gear: {
+    knife: 'lantern-steel-tanto',
+    sword: 'forge-wakizashi',
+    fineSword: 'kurogane-katana',
+    spear: 'ash-spear',
+    knuckles: 'wrapped-knuckles',
+    kunai: 'weighted-kunai',
+    needles: 'needle-case',
+    lightArmour: 'padded-jacket',
+    heavyArmour: 'lacquered-cuirass',
+    plate: 'river-lord-plate',
+  },
 };

@@ -1,7 +1,7 @@
 import type { StatDelta, StatId } from '@/systems/stats';
 import type { CombatTrait } from '@/systems/combat';
 
-import type { FoeRole } from '../bestiary';
+import type { FoeGearRole, FoeRole } from '../bestiary';
 
 /**
  * The kinds of shinobi a village sends: what their body leans to, the arts they are best in,
@@ -41,6 +41,11 @@ export interface ForeignArchetype {
   readonly deepReserves?: true;
   readonly traits?: readonly CombatTrait[];
   readonly roles: Readonly<Record<ForeignGrade, readonly ShinobiRole[]>>;
+  /** What they carry at every grade: gear by role (the pack's `FoeKit.gear`) and tools by id. */
+  readonly carries?: {
+    readonly gear?: readonly FoeGearRole[];
+    readonly tools?: Readonly<Record<string, number>>;
+  };
 }
 
 export const FOREIGN_ARCHETYPES: Readonly<Record<ForeignArchetypeId, ForeignArchetype>> = {
@@ -51,6 +56,7 @@ export const FOREIGN_ARCHETYPES: Readonly<Record<ForeignArchetypeId, ForeignArch
     main: 'ninjutsu',
     second: 'taijutsu',
     traits: ['swift'],
+    carries: { gear: ['kunai'], tools: { 'smoke-bomb': 1 } },
     roles: {
       genin: ['throw', 'natureShot'],
       chunin: ['throw', 'natureShot', 'move'],
@@ -64,6 +70,7 @@ export const FOREIGN_ARCHETYPES: Readonly<Record<ForeignArchetypeId, ForeignArch
     main: 'taijutsu',
     second: 'ninjutsu',
     traits: ['brawler'],
+    carries: { gear: ['knuckles', 'lightArmour'] },
     roles: {
       genin: ['palm', 'natureShot'],
       chunin: ['grapple', 'natureHeavy', 'substitute'],
@@ -77,6 +84,7 @@ export const FOREIGN_ARCHETYPES: Readonly<Record<ForeignArchetypeId, ForeignArch
     main: 'genjutsu',
     second: 'chakraControl',
     lean: { intellect: 3 },
+    carries: { tools: { 'clarity-charm': 1 } },
     roles: {
       genin: ['sense', 'feint'],
       chunin: ['sense', 'feint', 'natureShot'],
@@ -91,6 +99,7 @@ export const FOREIGN_ARCHETYPES: Readonly<Record<ForeignArchetypeId, ForeignArch
     second: 'ninjutsu',
     lean: { willpower: 2 },
     deepReserves: true,
+    carries: { tools: { 'wound-salve': 1 } },
     roles: {
       genin: ['heal', 'palm'],
       chunin: ['heal', 'natureShot', 'substitute'],
@@ -104,6 +113,7 @@ export const FOREIGN_ARCHETYPES: Readonly<Record<ForeignArchetypeId, ForeignArch
     main: 'fuuinjutsu',
     second: 'ninjutsu',
     lean: { intellect: 2 },
+    carries: { tools: { 'explosive-tag': 2 } },
     roles: {
       genin: ['snare', 'blastTag'],
       chunin: ['snare', 'blastTag', 'smoke'],
@@ -118,6 +128,7 @@ export const FOREIGN_ARCHETYPES: Readonly<Record<ForeignArchetypeId, ForeignArch
     second: 'taijutsu',
     lean: { intellect: 3, willpower: 3 },
     deepReserves: true,
+    carries: { gear: ['lightArmour'], tools: { 'soldier-pill': 1 } },
     roles: {
       genin: ['natureShot', 'palm'],
       chunin: ['natureHeavy', 'natureShot', 'substitute'],

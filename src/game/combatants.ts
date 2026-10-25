@@ -19,6 +19,7 @@ import type { GameContext } from './context';
 import { enemyStatLine } from './enemyStats';
 import { foeCalled, foeGrammar } from './foeNames';
 import { enemyWalking, playerWalking } from './footing';
+import { carriedInto, pouchFrom } from './carried';
 import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
 import { clanSize } from './bodySize';
@@ -67,14 +68,6 @@ function perksOf(state: GameState, ctx: GameContext): CombatPerk[] {
 /** The tools in your pouch, as the fight sees them. */
 function pouchOf(state: GameState, ctx: GameContext): CombatItem[] {
   return pouchFrom(state.inventory.tools, ctx);
-}
-
-/** Tools by id and count as the fight carries them. */
-export function pouchFrom(tools: Readonly<Record<string, number>>, ctx: GameContext): CombatItem[] {
-  return Object.entries(tools).flatMap(([id, count]) => {
-    const def = ctx.content.tools.get(id);
-    return def && count > 0 ? [{ id, name: def.name, effect: def.effect, count }] : [];
-  });
 }
 
 /** Takes the tools a finished fight used up out of the pouch. */
@@ -238,6 +231,7 @@ function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSet
     ...(perks.length > 0 ? { perks } : {}),
     ...(def.size ? { size: def.size } : {}),
     ...enemyPools(def, ctx),
+    ...carriedInto(def.carries, ctx),
   };
 }
 

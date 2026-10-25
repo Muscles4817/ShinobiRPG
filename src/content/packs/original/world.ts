@@ -131,6 +131,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'wrapped-knuckles',
           'lantern-steel-tanto',
           'ember-gauntlets',
+          'ash-spear',
           'forge-wakizashi',
           'kurogane-katana',
           'weighted-kunai',

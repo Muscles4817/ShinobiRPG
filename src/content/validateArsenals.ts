@@ -1,5 +1,5 @@
-import { gearSlot } from './items';
 import type { ContentPack, PersonDef } from './types';
+import { carriedProblems } from './validateCarried';
 
 /**
  * People's own arsenals (`PersonDef.arsenal`): every technique is real and clan techniques stay
@@ -28,27 +28,10 @@ function arsenalProblems(pack: ContentPack, person: PersonDef): string[] {
   });
 }
 
-/** The gear and tools an arsenal names, and how well its owner knows each weapon. */
+/** The gear and tools an arsenal names, how well its owner knows each weapon, and its summons. */
 function kitProblems(pack: ContentPack, person: PersonDef): string[] {
-  const who = `person "${person.id}"`;
-  const gear = (person.arsenal?.gearIds ?? []).map((id) => ({
-    id,
-    def: pack.gear.find((g) => g.id === id),
-  }));
-  const slots = gear.flatMap(({ def }) => (def ? [gearSlot(def)] : []));
-  const tools = Object.entries(person.arsenal?.tools ?? {});
   return [
-    ...gear.flatMap(({ id, def }) => (def ? [] : [`${who} wears unknown gear "${id}"`])),
-    ...slots
-      .filter((slot, i) => slots.indexOf(slot) !== i)
-      .map((slot) => `${who} wears two pieces in the ${slot} slot`),
-    ...tools.flatMap(([id, count]) => [
-      ...(pack.tools.some((t) => t.id === id) ? [] : [`${who} carries unknown tool "${id}"`]),
-      ...(Number.isInteger(count) && count > 0 ? [] : [`${who} carries ${count} of "${id}"`]),
-    ]),
-    ...Object.entries(person.arsenal?.weaponMastery ?? {}).flatMap(([weaponClass, m]) =>
-      m >= 0 && m <= 1 ? [] : [`${who} knows "${weaponClass}" at ${m}, not 0 to 1`],
-    ),
+    ...carriedProblems(pack, `person "${person.id}"`, person.arsenal),
     ...summonProblems(pack, person),
   ];
 }

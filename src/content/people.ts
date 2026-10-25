@@ -1,10 +1,11 @@
-import type { CombatPerk, WeaponMastery } from '@/systems/combat';
+import type { CombatPerk } from '@/systems/combat';
 import type { Appearance, Pronouns } from '@/systems/profile';
 import type { Rank } from '@/systems/standing';
 import type { Aptitude, Stats } from '@/systems/stats';
 import type { Discipline, Element } from '@/systems/techniques';
 import type { TimeSlot } from '@/systems/time';
 
+import type { CarriedKit } from './carried';
 import type { RecipeLesson } from './items';
 import type { SenseiVoice, SenseiWays } from './senseis';
 import type { RiteOffer } from './strains';
@@ -129,7 +130,7 @@ export interface PersonDef {
  * Every technique is one of the pack's, learnable somewhere like any other, and fits its owner's
  * grade in its art (validated).
  */
-export interface PersonArsenal {
+export interface PersonArsenal extends CarriedKit {
   readonly techniqueIds: readonly string[];
   readonly perks?: readonly CombatPerk[];
   /**
@@ -137,15 +138,6 @@ export interface PersonArsenal {
    * uncovered as a turn, and a drain on chakra while open (`CombatantSetup.veiled`).
    */
   readonly veiled?: readonly CombatPerk[];
-  /** The pack's gear they fight in, a piece per slot (validated). Left out, armed as their kit. */
-  readonly gearIds?: readonly string[];
-  /** The pack's fight tools they carry into every fight, by id, and how many. */
-  readonly tools?: Readonly<Record<string, number>>;
-  /**
-   * How well they know each class of weapon, 0 to 1 (`rules/mastery.ts`), read with their gear.
-   * Left out, they are at home with whatever they carry.
-   */
-  readonly weaponMastery?: WeaponMastery;
   /** The dust they command (a `DustDef` id), a full store of it in every fight. */
   readonly dust?: string;
   /** What their vessel holds (a great gourd), when not the kind's ordinary `carried`. */

@@ -36,6 +36,16 @@ export const GEAR: readonly GearDef[] = [
     icon: 'fist',
   },
   {
+    id: 'ash-spear',
+    name: 'Ash-Shaft Spear',
+    description: 'A plain spear of seasoned ash. It keeps a foe a step further off than a sword.',
+    kind: 'weapon',
+    weaponClass: 'polearm',
+    rank: 'D',
+    cost: 200,
+    icon: 'sword',
+  },
+  {
     id: 'forge-wakizashi',
     name: 'Forge Wakizashi',
     description: 'A companion blade, balanced for drawing fast in a narrow street.',

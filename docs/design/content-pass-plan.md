@@ -144,6 +144,16 @@ with the maps burned or brought home.
 `EnemyDef.gear` and `items` riding into `CombatantSetup` as the player's do: a samurai's real
 armour level, a pirate's smoke bombs, a spear's reach. An engine change, kept apart.
 
+**As built.** Foes and people's arsenals share one shape for what they carry (`CarriedKit`:
+gear, tools, weapon mastery; `content/carried.ts`), read into a fight by one helper
+(`game/carried.ts`) and validated once (`validateCarried.ts`). A pack's `FoeKit` gains `gear`, its
+own piece for each gear role (knife, sword, fine sword, spear, knuckles, kunai, needles, three
+weights of armour), and each pack's smith now sells a spear, the first polearm. The bestiary's
+foes carry what fits them (samurai in armour with swords, the footman's spear, the cutpurse's
+smoke bombs, the warlord's soldier pill), and each foreign shinobi archetype carries its kind's
+kit (a scout's kunai and smoke bomb, a trapper's tags). A read names what a foe wears; what is in
+the pouch is kept and a glance may miss it (`game/scoutingCarried.ts`). Both benches still hold.
+
 ## Later still: chakra beasts
 
 Animals changed by chakra over generations: beasts that use techniques, mimic, hide, or carry a

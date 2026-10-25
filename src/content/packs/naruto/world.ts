@@ -128,6 +128,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         gearIds: [
           'fingerless-gloves',
           'tanto',
+          'yari',
           'trench-knives',
           'ninjato',
           'katana',

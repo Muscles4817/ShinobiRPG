@@ -4,6 +4,7 @@ import { canGoWithCrew, daysAway, MIN_RYO_PER_DAY_AWAY } from '@/systems/mission
 
 import { duplicateIds } from './catalog';
 import { validateArsenals } from './validateArsenals';
+import { validateFoesCarried } from './validateCarried';
 import { validateDuelists } from './validateDuelists';
 import { validateLadders } from './validateLadders';
 import { validateGear } from './validateGear';
@@ -55,6 +56,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...missionProblems(pack),
     ...validateCrews(pack),
     ...validateRetinues(pack),
+    ...validateFoesCarried(pack),
     ...validateCompanions(pack),
     ...validateCompanionArts(pack),
     ...validateContracts(pack),

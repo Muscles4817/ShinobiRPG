@@ -9,6 +9,7 @@ import {
   FOREIGN_ARCHETYPE_IDS,
   FOREIGN_GRADES,
   FOREIGN_ARCHETYPES,
+  type ForeignArchetype,
   type ForeignArchetypeId,
   type ForeignGrade,
   type NatureRole,
@@ -166,6 +167,18 @@ function rogueName(shape: Shape): string {
   return shape.village.rogueNames[index % shape.village.rogueNames.length] ?? shape.village.short;
 }
 
+/** What an archetype carries, its gear roles read as the pack's own pieces. */
+function carriesOf(a: ForeignArchetype, kits: ForeignKits): Pick<EnemyDef, 'carries'> {
+  if (!a.carries) return {};
+  const gearIds = (a.carries.gear ?? []).map((role) => kits.kit.gear[role]);
+  return {
+    carries: {
+      ...(gearIds.length > 0 ? { gearIds } : {}),
+      ...(a.carries.tools ? { tools: a.carries.tools } : {}),
+    },
+  };
+}
+
 function foeOf(shape: Shape, kits: ForeignKits): EnemyDef {
   const { village, archetypeId, grade, rogue } = shape;
   const a = FOREIGN_ARCHETYPES[archetypeId];
@@ -193,6 +206,7 @@ function foeOf(shape: Shape, kits: ForeignKits): EnemyDef {
     techniqueIds: techniquesOf(shape, kits),
     nature: natureOf(shape),
     ...(a.traits ? { traits: a.traits } : {}),
+    ...carriesOf(a, kits),
   };
 }
 

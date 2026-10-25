@@ -67,6 +67,7 @@ import type { VoiceDef } from './voices';
 import type { Biome, FishingSpot, WildsFields } from './biomes';
 
 export type { BackdropId, IconId } from './art';
+export type { CarriedKit } from './carried';
 export type {
   CookbookDef,
   GearDef,

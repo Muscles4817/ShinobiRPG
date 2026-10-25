@@ -3,6 +3,7 @@ import type { Danger } from '@/systems/missions';
 import type { StatDelta } from '@/systems/stats';
 import type { Element } from '@/systems/techniques';
 
+import type { CarriedKit } from './carried';
 import type { RetinueEntry, RetinueTell } from './companions';
 import type { FoeSummon } from './contracts';
 
@@ -55,6 +56,11 @@ export interface EnemyDef {
   readonly traits?: readonly CombatTrait[];
   /** Ingredients a beaten foe leaves (a beast's meat), one of each, into your pack. */
   readonly drops?: readonly string[];
+  /**
+   * The gear they fight in and the tools in their pouch (`CarriedKit`, validated like an
+   * arsenal's): a samurai's armour, a cutpurse's smoke bombs. Left out, armed as their kit.
+   */
+  readonly carries?: CarriedKit;
   /** Bodies that fight beside them (`docs/design/retinue-plan.md`): a hound at heel. */
   readonly retinue?: readonly RetinueEntry[];
   /** Summons they can call into the fight, from a contract of the pack. */
