@@ -6,6 +6,18 @@ lines have lived beside chakra for generations and come out of it strange. A boa
 smoke, a fox whose tracks lead you in circles, an old bear with moss on its back that the
 mountain itself seems to answer to.
 
+## Decisions
+
+- **They are animals, never people.** Unlike the summoning clans, a chakra beast is not sentient:
+  it doesn't speak, bargain, sign or remember you as a person would. However old an elder is, it
+  is an animal that has lived a long time beside chakra.
+- **They live in the deep wilds**, not on the roads. On any commonly travelled path they are rare
+  to the point of a story told at an inn. You find them by choosing to go off the road and into
+  wild country, and the further in you go, the likelier they get (see **The deep wilds**).
+- **Tailed beasts**, and anything of that scale, are out of scope.
+- **No settled name yet** (see **Names**). Until one is chosen the code says `chakra beast` and
+  nothing in the game's text depends on a category word.
+
 ## What a chakra beast is
 
 An animal of a kind the bestiary already has (or could), changed by where it lives: a leyline
@@ -61,6 +73,54 @@ techniques are shared, like companions', so no `FoeKit` roles are needed):
 
 Each joins the bestiary bench at its danger, like every other foe.
 
+## The deep wilds
+
+Wild country already exists: wild locations between the towns (the Cedar Deep, the Salt Flats,
+the Old Battlefield: `kind: 'wild'`, a `wilds` place and a `camp`) and the wild places in and
+around every village. What doesn't exist is going _into_ it. This is where chakra beasts live,
+so it comes first.
+
+**Venturing in.** From a wild place's camp, or any `wilds` place outside a village, you may set
+out into the wild instead of foraging at the edge (`venture`, a new action). A venture plays like
+a journey (`game/journeys.ts`: it is a mission run with generated stages): a day at a time, each
+day a leg deeper, a way-finding check (perception, intellect or a tracker's nose: fail and you
+lose a day or a little health, never your way home), and that depth's draw: a find, a sight, a
+camp, or a meeting. Every evening you choose to push on or turn back; turning back walks you out
+the way you came, at the depths you came through. Food is your pack, as on the road.
+
+**Depths.** Each wild country has three:
+
+| Depth     | What lives there                                                                                                                 |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **Edge**  | Plain animals, foragers' finds, the odd poacher or bandit camp.                                                                  |
+| **Deep**  | Where people go to hide: missing-nin (the composed rogues), smugglers' caches, a hermit, deserters. Touched beasts. Rarer finds. |
+| **Heart** | Changed beasts as a matter of course, and somewhere in it an elder. The rarest finds, and sights of the kind only the heart has. |
+
+What each depth holds is data on the wild country (`WildDepths`: by biome, with the shared lists
+per biome written once, as finds and fishing spots are), drawn by hash of the seed and the day
+like the board, never the Rng. Foes at a depth follow the bestiary's danger bands, so the heart
+of a forest is elite country whatever your rank: the venture's notice says how deep you are and
+what that means, and a genin's sensei won't sign leave for the heart (`game/leave.ts`).
+
+**Why go.** The heart's finds and drops (the kitchen, below), field book entries no road gives,
+bounties: a missing-nin hiding in the deep is a job's quarry already, and a hunt posted for one
+can name the wild country it is in. Later, a changed kind to win over (companions, below).
+
+## Names
+
+There is no settled name, and the world may not need one. Three ways to go:
+
+- **No category word at all.** People name what they meet: "the ember-tusk", "the old owl of the
+  pass". The banner says `Beast` like any animal, and a read adds a line ("its chakra runs like a
+  shinobi's") once seen. This is the quietest, and keeps them strange.
+- **A folk word**, said by hunters and innkeepers rather than scholars, set per pack in
+  `SettingText` so the fan pack can use its own. Candidates for the original: _the changed_,
+  _deep-blood_, _old-wild beasts_, _lantern-eyed_ (their eyes take the light like a lantern).
+- **A scholar's word** the Archive uses, with the folk word in the mouths of everyone else.
+
+Recommended: start with no category word (the first option), and add a folk word only if the
+writing keeps reaching for one.
+
 ## What has to be built
 
 1. **Beast techniques for foes.** Add the new techniques to `shared/beastTechniques.ts` (or a
@@ -72,10 +132,11 @@ Each joins the bestiary bench at its danger, like every other foe.
    bear fat, glass scorpion venom sac), each an ingredient only a beaten beast leaves (the existing
    `drops` route), and recipes that use them: chakra back as you eat, a study bonus for the
    beast's element (`studyElement`), a provision. One role each, as always.
-4. **Jobs.** Hunt fills for the changed beasts (`c-team-hunt`, B-rank hunts); a protect job (a
-   white stag poachers want, where the job fails if the beast dies); road-event bands for touched
-   and changed beasts on the roads whose regions fit; and one arc around an elder (the old owl of
-   the pass, say: something is wrong on the mountain, and the owl has been watching it).
+4. **Jobs.** Hunt fills for the changed beasts (`c-team-hunt`, B-rank hunts) that send you into
+   the wild country they live in; a protect job (a white stag poachers want, where the job fails if
+   the beast dies); and one arc around an elder (the old owl of the pass, say: something is wrong
+   on the mountain, and the owl has been watching it). No road-event bands: they stay off the
+   roads.
 5. **Scouting and the field book.** A read says "Changed by chakra" and names the nature and the
    gift once seen. The field book's foes page takes them with no code; a page of its own for chakra
    beasts is a later choice.
@@ -92,18 +153,17 @@ Then, later:
 ## Order
 
 1. Beast techniques, the source exemption and its validation; the roster; the bench.
-2. Drops and the recipes that use them.
-3. Hunt fills, the protect job, road-event bands, then the elder's arc.
-4. Scouting's "changed by chakra" line.
-5. Later: changed companions, and any rule a beast turns out to need.
+2. The deep wilds: `venture`, depths and their shared tables by biome, the edge, deep and heart
+   of the wild countries that exist, with the missing-nin and hideouts of the deep.
+3. Drops and the recipes that use them.
+4. Hunt fills that name a wild country, the protect job, then the elder's arc.
+5. Scouting's line for a changed beast.
+6. Later: changed companions, and any rule a beast turns out to need.
 
 ## Open questions
 
-- **What the world calls them.** "Chakra beasts" is a working name. The original pack may want
-  its own word, and the fan pack has canon ones; the banner text could come from `SettingText`.
-- **Where the line with summons sits.** Summoning clans speak and sign contracts. Are elders what
-  a chakra beast becomes when it lives long enough to talk, or a different thing entirely? This
-  plan keeps them apart: elders never speak.
-- **Tailed beasts** and anything of that scale are out of scope.
-- **How rare.** Touched beasts could be common on the roads near chakra places, or rare
-  everywhere. This plan starts rare: a band on a few regions' roads, and hunts.
+- **The name**, if any (see **Names**).
+- **How deep a genin may go.** This plan lets a genin venture to the deep on leave and keeps the
+  heart for chūnin and up, or for a genin under their sensei on a job.
+- **Whether the deep wilds get places of their own** on the map (a hidden valley found only by
+  venturing), or stay depths of the wild countries that exist. This plan starts with depths.
