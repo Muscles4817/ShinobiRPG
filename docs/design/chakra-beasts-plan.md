@@ -198,17 +198,20 @@ Then, later:
 6. **Companions.** A changed wild kind you can track and win over in a chakra-rich wild place
    (`trackWild`), whose techniques open by bond stage like any kind's (`CompanionKindDef`), slower
    to bond than a plain wolf and worth it.
+
+   **As built.** Two kinds of the beasts' lines (`content/shared/beastKinds.ts`): a mist fox in the
+   woods, which opens the fox's haze and lure by the bond and takes a job's sensing checks, and a
+   thunder kite in the mountains, which opens the kite's dive and tracks. They are tracked like
+   any wild kind, in fewer places than a wolf, and leave signs only for someone who has fought one
+   of their kind (`WildHaunt.after`, read from the field book's foes). Their techniques are the
+   beasts' own: a companion kind may hold a beast art only if the beast it is found after holds
+   it. A companion carries no nature into a fight, so the kite's dive has no lightning affinity.
+
 7. **Rules gaps, only if the first pass shows them.** Candidates: a beast that regenerates (a
    heal over exchanges), venom that stacks, a shell that cracks and stays cracked. Each a verb or a
    lingering effect, added only when a beast can't be written without it.
 
-   **As built.** Two changed kinds (`content/shared/changedKinds.ts`): a mist fox in the woods,
-   which opens the fox's haze and lure by the bond and takes a job's sensing checks, and a
-   thunder kite in the mountains, which opens the kite's dive and tracks. They are tracked like
-   any wild kind, in fewer places than a wolf, and leave signs only for someone who has fought one
-   of their kind (`WildHaunt.after`, read from the field book's foes). Their techniques are the
-   beasts' own, which a companion kind may hold and nobody else may (`kindArtIds`). No new rules:
-   every beast so far was written with the verbs there are.
+   **As built.** No new rules: every beast so far was written with the verbs there are.
 
 ## Order
 

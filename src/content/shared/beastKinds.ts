@@ -1,17 +1,17 @@
 import type { CompanionKindDef } from '../companions';
 
 /**
- * Companion kinds changed by chakra (`docs/design/chakra-beasts-plan.md`): wild ones of the same
- * lines as the chakra beasts, found by tracking like any wild kind, but only by someone who has
- * met one of their kind in the wild (`WildHaunt.after`). Their techniques are the beasts' own,
- * opened by the bond. Rarer than a wolf and slower to settle: fewer places have one.
+ * Companion kinds of the chakra beasts' lines (`docs/design/chakra-beasts-plan.md`): found by
+ * tracking like any wild kind, but only by someone who has fought one of their kind
+ * (`WildHaunt.after`), and in fewer places than a wolf. Their techniques are the beasts' own,
+ * opened by the bond.
  */
 
 export const MIST_FOX: CompanionKindDef = {
   id: 'mist-fox-kit',
   name: 'Mist fox',
   description:
-    'A red fox that is never quite where you are looking. It plays the same tricks on you as on anything else.',
+    'A red fox from the deep woods with a trick of hiding in plain sight. It plays the same tricks on you as on anything else.',
   temperament: 'wild',
   body: {
     adult: { strength: 5, speed: 14, stamina: 10, perception: 15 },
@@ -50,10 +50,10 @@ export const MIST_FOX: CompanionKindDef = {
     after: 'mist-fox',
     sign: 'A fox’s tracks that go round a tree and don’t come out the other side.',
     closer:
-      'A red fox sits in the path, watching you. You blink, and it is sitting a little further off, still watching.',
-    lost: 'The tracks lead you round in a circle back to your own. Somewhere off in the trees, a fox barks.',
+      'A red fox sits in the path, watching you. When you look again it is sitting further off, still watching.',
+    lost: 'The tracks lead you round in a circle back to your own. A fox barks off in the trees.',
     comes:
-      'This morning the fox is curled up on your pack when you wake. When you set off, it comes too, and is never quite where you look for it.',
+      'Today the fox follows you out of the trees. It keeps a little behind, and stops when you stop.',
   },
 };
 
@@ -61,7 +61,7 @@ export const THUNDER_KITE: CompanionKindDef = {
   id: 'thunder-kite-chick',
   name: 'Thunder kite',
   description:
-    'A kite of the high peaks whose feathers crackle in a storm. It hunts from higher than you can see.',
+    'A kite of the high peaks that flies into storms rather than away from them. It hunts from higher than you can see.',
   temperament: 'wild',
   body: {
     adult: { strength: 6, speed: 18, stamina: 9, perception: 18 },
@@ -69,7 +69,7 @@ export const THUNDER_KITE: CompanionKindDef = {
   },
   baseStat: 4,
   statBonuses: { taijutsu: 1, intellect: -1 },
-  healthScale: 0.5,
+  healthScale: 0.6,
   maxChakra: 40,
   traits: ['swift'],
   aptitude: {
@@ -86,7 +86,10 @@ export const THUNDER_KITE: CompanionKindDef = {
     fuuinjutsu: 0,
   },
   diet: ['river-fish', 'wild-game', 'sweetfish', 'mountain-trout'],
-  techniques: [{ techniqueId: 'thunder-dive', stage: 3 }],
+  techniques: [
+    { techniqueId: 'fang-rush', stage: 1 },
+    { techniqueId: 'thunder-dive', stage: 3 },
+  ],
   roles: ['tracker'],
   plays: { likes: ['walk', 'fetch'], dislikes: ['scent'] },
   names: ['Raikō', 'Hayate', 'Inazuma', 'Sora', 'Tobi', 'Kumo'],
@@ -94,13 +97,12 @@ export const THUNDER_KITE: CompanionKindDef = {
     biome: 'mountain',
     chance: 0.35,
     after: 'thunder-kite',
-    sign: 'A scorched feather on a rock above the falls, and a smell like the air after lightning.',
-    closer:
-      'A kite circles over you most of the afternoon, lower each time round, and its shadow crackles as it crosses the rocks.',
+    sign: 'A scorched feather on a rock above the falls, and the rock smells burnt.',
+    closer: 'A kite circles over you most of the afternoon, a little lower each time round.',
     lost: 'Cloud comes down over the peak and the kite goes up into it. You wait till dark, and it doesn’t come down.',
     comes:
       'The kite drops out of the sky onto the rock beside you and stays there, feathers settling, until you go home. Then it follows.',
   },
 };
 
-export const CHANGED_KINDS: readonly CompanionKindDef[] = [MIST_FOX, THUNDER_KITE];
+export const BEAST_KINDS: readonly CompanionKindDef[] = [MIST_FOX, THUNDER_KITE];
