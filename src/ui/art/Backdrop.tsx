@@ -4,6 +4,12 @@ import { useId } from 'react';
 import type { BackdropId } from '@/game';
 
 import { BargeLanding } from './scenery/bargeLanding';
+import { BroadleafForest } from './scenery/broadleafForest';
+import { RiverPlain } from './scenery/riverPlain';
+import { SandArch } from './scenery/sandArch';
+import { MountainStair } from './scenery/mountainStair';
+import { GorgeBridge } from './scenery/gorgeBridge';
+import { TwinStatues } from './scenery/twinStatues';
 import { Battlefield } from './scenery/battlefield';
 import { BridgeCoast } from './scenery/bridgeCoast';
 import { CastleTown } from './scenery/castleTown';
@@ -60,6 +66,12 @@ const SCENES: Readonly<Record<BackdropId, ComponentType<SceneProps>>> = {
   'bridge-coast': BridgeCoast,
   'temple-hill': TempleHill,
   'toad-mountain': ToadMountain,
+  'broadleaf-forest': BroadleafForest,
+  'river-plain': RiverPlain,
+  'sand-arch': SandArch,
+  'mountain-stair': MountainStair,
+  'gorge-bridge': GorgeBridge,
+  'twin-statues': TwinStatues,
 };
 
 export function Backdrop({ id }: { readonly id: BackdropId }) {

@@ -22,7 +22,13 @@ export type BackdropId =
   | 'pleasure-quarter'
   | 'bridge-coast'
   | 'temple-hill'
-  | 'toad-mountain';
+  | 'toad-mountain'
+  | 'broadleaf-forest'
+  | 'river-plain'
+  | 'sand-arch'
+  | 'mountain-stair'
+  | 'gorge-bridge'
+  | 'twin-statues';
 
 /** Small line drawings for places, items and drills. */
 export type IconId =

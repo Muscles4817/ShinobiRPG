@@ -1,5 +1,5 @@
 import { r1, ridge, scatter } from './kit';
-import { SkyLights, paint } from './lights';
+import { Campfire, SkyLights, paint } from './lights';
 import { Boulder, Tufts } from './terrain';
 import { Snag } from './trees';
 
@@ -63,8 +63,7 @@ function Keeper({ uid }: { readonly uid: string }) {
       <path className="bd-front" d="M300 212L326 186L352 212Z" />
       <path className="bd-rim" d="M300 212L326 186L352 212" strokeWidth=".9" fill="none" />
       <path className="bd-dark" d="M318 212L326 200L334 212Z" />
-      <circle className="bd-lit" cx="366" cy="210" r="22" fill={paint(uid, 'glow')} />
-      <path d="M360 214l6 -10l6 10z" fill="#f2a24a" />
+      <Campfire uid={uid} at={[366, 214]} size={1.2} />
       <path className="bd-front-stroke" d="M358 216l16 -4M358 212l16 4" strokeWidth="1.6" />
     </g>
   );

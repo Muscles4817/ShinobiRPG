@@ -499,3 +499,10 @@ migration and a previous-version save test wherever the save shape changes.
     shelf. The book's tabs sit three across on a phone and in one row on a desk. Since step 10
     every place of both packs also has a backdrop of its own. Not yet: road sights on a page of
     their own, and the day's sheet naming a place first stood in.
+
+12. **The fan pack's map** (this step). The fan pack's roads now stop somewhere, as the
+    original's do: three stretches of wild country and three landmarks between its towns
+    (`packs/naruto/wildCountry.ts`), each with a backdrop of its own and none famous. The roads
+    are split where they stand without changing any day count, so jobs and trips take as long as
+    before; the one change in play is that the first two days of the walk to the Sand are armed
+    rather than deadly.
