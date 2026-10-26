@@ -36,6 +36,13 @@ export const NARRATION_REACTIONS = [
 ] as const;
 export type NarrationReaction = (typeof NARRATION_REACTIONS)[number];
 
+/**
+ * Why a player's turn played something they never slotted: nothing slotted would do here, so
+ * they threw a plain blow or stepped (`improvised`), or no one was in sight to hit (`looking`).
+ */
+export const NARRATION_OFF_PLAN = ['improvised', 'looking'] as const;
+export type NarrationOffPlan = (typeof NARRATION_OFF_PLAN)[number];
+
 export interface Narration {
   readonly text: string;
   readonly amounts: readonly NarrationAmount[];
@@ -54,6 +61,8 @@ export interface Narration {
   readonly pools?: NarrationPools;
   /** Fighters' statuses once the line has played, by id (`statusLine`), when the engine says. */
   readonly statuses?: NarrationStatuses;
+  /** The player's turn played off their plan, and why (`offPlanLine`), when the engine says. */
+  readonly offPlan?: NarrationOffPlan;
 }
 
 /** What the screen says of fighters, by fighter id ("Dazed", "Clones ×2"…; none is an empty list). */
@@ -74,6 +83,7 @@ const NONE = '-';
 
 const MARKER = /\s*⟦([+-])(\d+)⟧/g;
 const REACTION_MARKER = /\s*⟦r:([a-z-]+)⟧/g;
+const OFF_PLAN_MARKER = /\s*⟦op:([a-z-]+)⟧/;
 const ACTOR_MARKER = /\s*⟦by:([^⟧]+)⟧/;
 const RANGE_MARKER = /\s*⟦at:(close|mid|far)⟧/;
 const NAMED_MARKER = /\s*⟦n:([^⟧]+)⟧/g;
@@ -100,6 +110,15 @@ export function healLine(text: string, healed: number): string {
 /** "Shun slips past the bandit's strike." when Shun's Dodge did it. */
 export function reactionLine(text: string, ...reactions: readonly NarrationReaction[]): string {
   return [text, ...reactions.map((r) => `⟦r:${r}⟧`)].join(' ');
+}
+
+/** A line from a player's turn that played off their plan, saying why. */
+export function offPlanLine(text: string, why: NarrationOffPlan): string {
+  return `${text} ⟦op:${why}⟧`;
+}
+
+function isOffPlan(word: string | undefined): word is NarrationOffPlan {
+  return NARRATION_OFF_PLAN.some((w) => w === word);
 }
 
 /**
@@ -230,7 +249,9 @@ export function splitNarration(line: string): Narration {
   const voices = voicesIn(line);
   const pools = poolsIn(line);
   const statuses = statusesIn(line);
+  const offPlan = OFF_PLAN_MARKER.exec(line)?.[1];
   const markers = [
+    OFF_PLAN_MARKER,
     MARKER,
     REACTION_MARKER,
     ACTOR_MARKER,
@@ -255,6 +276,7 @@ export function splitNarration(line: string): Narration {
     ...(voices ? { voices } : {}),
     ...(pools ? { pools } : {}),
     ...(statuses ? { statuses } : {}),
+    ...(isOffPlan(offPlan) ? { offPlan } : {}),
   };
 }
 

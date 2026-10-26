@@ -114,6 +114,7 @@ export type {
   NarrationAmount,
   NarrationAmountKind,
   NarrationForce,
+  NarrationOffPlan,
   NarrationPools,
   NarrationReaction,
   NarrationStatuses,

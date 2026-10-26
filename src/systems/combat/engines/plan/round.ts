@@ -191,6 +191,11 @@ function choosePlay(round: Round, actor: PlanFighter, rng: Rng): Play | { spent:
   return helping.kind === 'strike' ? { ...planned, target: helping.at } : planned;
 }
 
+/** The player is told when their turn played something they never slotted (`staging.ts`). */
+function offPlanOf(actor: PlanFighter, play: Play): Pick<Round, 'offPlan'> {
+  return actor.isPlayer && play.offPlan ? { offPlan: play.offPlan } : {};
+}
+
 function turn(start: Round, actorId: string, rng: Rng): Round {
   const before = start.fighters.find((f) => f.id === actorId);
   // A fighter who met an attack in a clash has spent their turn already.
@@ -230,7 +235,8 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const id = cardId(card);
   const turns = actor.streak?.card === id ? actor.streak.turns + 1 : 1;
   const fighters = patch(noted.fighters, actor.id, { streak: { card: id, turns } });
-  return { ...noted, fighters, acted, seen: remember(noted.seen, actor.id, id), played: id };
+  const seen = remember(noted.seen, actor.id, id);
+  return { ...noted, fighters, acted, seen, played: id, ...offPlanOf(actor, chosen) };
 }
 
 /** A fighter's turn, its lines tagged for the screen (`staging.ts`). */
