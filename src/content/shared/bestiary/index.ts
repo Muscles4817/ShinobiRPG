@@ -1,4 +1,5 @@
 import type { EnemyDef } from '../../types';
+import { CHAKRA_BEASTS } from './chakraBeasts';
 import { DESERT_BEASTS } from './desert';
 import type { FoeKit } from './kit';
 import { bandits, smugglersAndSellswords } from './outlaws';
@@ -20,6 +21,7 @@ export {
   type FoeKit,
   type FoeRole,
 } from './kit';
+export { CHAKRA_BEAST_ARTS } from './beastArts';
 
 /*#__NO_SIDE_EFFECTS__*/
 export function bestiary(kit: FoeKit): EnemyDef[] {
@@ -32,5 +34,6 @@ export function bestiary(kit: FoeKit): EnemyDef[] {
     ...restlessDead(kit),
     ...WILD_BEASTS,
     ...DESERT_BEASTS,
+    ...CHAKRA_BEASTS,
   ];
 }

@@ -1,3 +1,4 @@
+import { beastArtIds } from '@/content';
 import type { ContentPack, Haunt, PersonDef, SenseiPast, SenseiTemperament } from '@/content';
 import type { Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
@@ -81,11 +82,13 @@ function statsFor(specialty: Discipline, rng: Rng): Stats {
   return { ...JONIN_LINE, [specialty]: art };
 }
 
-/** Plain techniques of their art (no clan, no school, no partner) they can teach. */
+/** Plain techniques of their art (no clan, no school, no partner, no beast's) they can teach. */
 function signaturesFor(pack: ContentPack, art: Discipline, nature: Element | null, rng: Rng) {
+  const beasts = beastArtIds(pack);
   const fits = pack.techniques.filter(
     (t) =>
       t.discipline === art &&
+      !beasts.has(t.id) &&
       SIGNATURE_RANKS.includes(t.rank) &&
       !t.clan &&
       !t.school &&

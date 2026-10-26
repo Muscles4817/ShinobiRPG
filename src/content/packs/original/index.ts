@@ -1,8 +1,10 @@
 import { GLASS_EYE_ARC, GLASS_EYE_JOBS } from './arcs/glassEye';
+import { OLD_OWL_ARC, OLD_OWL_JOBS } from './arcs/oldOwl';
+import { WHITE_STAG } from './jobs/whiteStag';
 import { foreignShinobi } from '../../shared/foreignShinobi';
 import { ORIGINAL_NATURE_KIT, ORIGINAL_VILLAGES } from './shinobiVillages';
 import { DESERT_INGREDIENTS } from '../../shared/desert';
-import { bestiary } from '../../shared/bestiary';
+import { bestiary, CHAKRA_BEAST_ARTS } from '../../shared/bestiary';
 import { ORIGINAL_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import { STRAINS } from './strains';
@@ -42,6 +44,7 @@ import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
 import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
+import { BEAST_INGREDIENTS } from '../../shared/beastKitchen';
 import { TOROGAKURE_COOKBOOKS, TOROGAKURE_INGREDIENTS } from './kitchen';
 import { TOROGAKURE_RECIPES } from './recipes';
 import { REGIONAL_COOKBOOKS, REGIONAL_INGREDIENTS } from './regions/merchants';
@@ -51,7 +54,9 @@ import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
+import { DEEP_WILDS } from '../../shared/deepWilds';
 import { ROAD_EVENTS, TRAVELLERS } from '../../shared/road/events';
+import { DEEP_WILDS_EVENTS } from './deepWilds';
 import { VOICES } from '../../shared/talk/voices';
 import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
@@ -124,6 +129,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
     ...BEAST_TECHNIQUES,
+    ...CHAKRA_BEAST_ARTS,
     ...CONTRACT_TECHNIQUES,
     ...TIDEWIRE_TECHNIQUES,
   ],
@@ -136,6 +142,8 @@ export const ORIGINAL_PACK: ContentPack = {
     ...FORGED_BLADE_JOBS,
     ...PATIENT_THING_JOBS,
     ...GLASS_EYE_JOBS,
+    ...OLD_OWL_JOBS,
+    WHITE_STAG,
     ...SALT_LANTERNS_JOBS,
     ...FORD_CHAIN_JOBS,
     ...BREWER_GHOST_JOBS,
@@ -150,7 +158,8 @@ export const ORIGINAL_PACK: ContentPack = {
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
-  roadEvents: ROAD_EVENTS,
+  roadEvents: [...ROAD_EVENTS, ...DEEP_WILDS_EVENTS],
+  deepWilds: DEEP_WILDS,
   travellers: TRAVELLERS,
   arcs: [
     LANTERN_THIEF,
@@ -164,6 +173,7 @@ export const ORIGINAL_PACK: ContentPack = {
     FORGED_BLADE_ARC,
     PATIENT_THING_ARC,
     GLASS_EYE_ARC,
+    OLD_OWL_ARC,
   ],
   voices: VOICES,
   companionKinds: COMPANION_KINDS,
@@ -207,6 +217,7 @@ export const ORIGINAL_PACK: ContentPack = {
   ingredients: [
     ...INGREDIENTS,
     ...WILD_INGREDIENTS,
+    ...BEAST_INGREDIENTS,
     ...DESERT_INGREDIENTS,
     ...TOROGAKURE_INGREDIENTS,
     ...REGIONAL_INGREDIENTS,

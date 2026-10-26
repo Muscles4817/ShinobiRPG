@@ -1,4 +1,5 @@
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
+import { CHAKRA_BEAST_ARTS } from '../../shared/bestiary';
 import { STRAINS } from './strains';
 import { WILD_STRAINS } from '../../shared/wildStrains';
 import { DUSTS } from '../../shared/dusts';
@@ -34,6 +35,7 @@ import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
 import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
+import { BEAST_INGREDIENTS } from '../../shared/beastKitchen';
 import { DESERT_INGREDIENTS } from '../../shared/desert';
 import { DESERT_FOX } from '../../shared/wildKinds';
 import { DUELIST_GEAR, DUELIST_PUPPETS, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
@@ -41,7 +43,9 @@ import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
+import { DEEP_WILDS } from '../../shared/deepWilds';
 import { ROAD_EVENTS, TRAVELLERS } from '../../shared/road/events';
+import { DEEP_WILDS_EVENTS } from './deepWilds';
 import { VOICES } from '../../shared/talk/voices';
 import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_MISSIONS } from './chuninMissions';
@@ -153,6 +157,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
     ...BEAST_TECHNIQUES,
+    ...CHAKRA_BEAST_ARTS,
     ...CONTRACT_TECHNIQUES,
     ...CANON_TECHNIQUES,
     ...DUELIST_TECHNIQUES,
@@ -184,7 +189,8 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
-  roadEvents: [...ROAD_EVENTS, ...DESERT_ROAD_EVENTS],
+  roadEvents: [...ROAD_EVENTS, ...DESERT_ROAD_EVENTS, ...DEEP_WILDS_EVENTS],
+  deepWilds: DEEP_WILDS,
   travellers: TRAVELLERS,
   arcs: [
     TEMPLE_BELL_ARC,
@@ -238,7 +244,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   gear: [...GEAR, ...DUELIST_GEAR, ...KIRI_GEAR, ...SUNA_GEAR],
   tools: TOOLS,
   injuries: INJURIES,
-  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS, ...DESERT_INGREDIENTS],
+  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS, ...BEAST_INGREDIENTS, ...DESERT_INGREDIENTS],
   recipes: RECIPES,
   cookbooks: COOKBOOKS,
   campFinds: CAMP_FINDS,

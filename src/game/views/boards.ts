@@ -13,6 +13,7 @@ import { poolNotes, type PoolNote } from '../scoutingPools';
 import { senseiPick } from '../sensei/pick';
 import { mentorOf } from '../sensei/plan';
 import type { GameState } from '../state';
+import { changedNotes } from '../scoutingChanged';
 import { arcNote, arcsView, type ArcView } from './arcs';
 import { choice, type Choice } from './common';
 import { crewWords, type CrewWords } from './crewWords';
@@ -79,7 +80,8 @@ function foesOf(ctx: GameContext, enemyIds: readonly string[]): Foe[] {
   return [...counts].flatMap(([id, count]) => {
     const def = ctx.content.enemies.get(id);
     if (!def) return [];
-    const pools = poolNotes(def, { hive: true, dust: true }, ctx);
+    // The client's report names a changed beast's nature and gifts as well.
+    const pools = [...poolNotes(def, { hive: true, dust: true }, ctx), ...changedNotes(def, true)];
     return [{ name: def.name, count, traits: traitNotes(def.traits ?? []), pools }];
   });
 }

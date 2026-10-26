@@ -75,3 +75,13 @@ describe('plan & watch default plan: finding hidden foes', () => {
     expect(defaultLoadout(eyes[0]!, eyes).mid.map((s) => s.card)).not.toContain('search');
   });
 });
+
+describe('plan & watch default plan: attacks by what they are worth', () => {
+  it('leads with the art the fighter is good at, not the most power on paper', () => {
+    const dread: CombatTechnique = { ...bolt('dread', 14), discipline: 'genjutsu' };
+    const caster = table([bolt('breath', 18), dread], {
+      attributes: { ...attributes, genjutsu: 30, ninjutsu: 3 },
+    })[0]!;
+    expect(cards(caster, 'mid')[0]).toBe('jutsu:dread');
+  });
+});

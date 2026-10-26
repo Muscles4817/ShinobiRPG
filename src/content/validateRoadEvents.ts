@@ -1,10 +1,12 @@
 import {
   dangerAtLeast,
+  WILD_DEPTHS,
   isDecisionEvent,
   type EncounterRoadEvent,
   type RoadEventDef,
 } from '@/systems/missions';
 
+import { deepRegion } from './deepWilds';
 import type { ContentPack } from './types';
 
 /**
@@ -15,17 +17,36 @@ import type { ContentPack } from './types';
  * sights that cost and teach something.
  */
 export function validateRoadEvents(pack: ContentPack): string[] {
-  return [...regionProblems(pack), ...pack.roadEvents.flatMap((e) => kindProblems(pack, e))];
+  return [
+    ...regionProblems(pack),
+    ...depthProblems(pack),
+    ...pack.roadEvents.flatMap((e) => kindProblems(pack, e)),
+  ];
 }
 
-function regionProblems(pack: ContentPack): string[] {
-  const any = new Set(pack.roadEvents.flatMap((e) => e.regions));
-  const always = new Set(
+/** Regions with an event any road brings in any season, on a job or a trip. */
+function alwaysRegions(pack: ContentPack): Set<string> {
+  return new Set(
     pack.roadEvents
       // Foes come only on trips, so they don't keep a job's road from going silent.
       .filter((e) => !e.danger && !e.seasons && !e.once && e.kind !== 'encounter')
       .flatMap((e) => e.regions),
   );
+}
+
+/** Every depth of wild country you can go into has an event for any day of the year. */
+function depthProblems(pack: ContentPack): string[] {
+  const always = alwaysRegions(pack);
+  return pack.deepWilds.flatMap((country) =>
+    WILD_DEPTHS.filter((depth) => !always.has(deepRegion(country.biome, depth))).map(
+      (depth) => `the ${depth} of the ${country.biome} has no road event for every season`,
+    ),
+  );
+}
+
+function regionProblems(pack: ContentPack): string[] {
+  const any = new Set(pack.roadEvents.flatMap((e) => e.regions));
+  const always = alwaysRegions(pack);
   const crossed = new Set([
     ...pack.routes.flatMap((r) => r.legs.map((l) => l.region)),
     ...pack.missions.flatMap((m) =>

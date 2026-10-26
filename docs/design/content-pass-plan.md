@@ -159,4 +159,4 @@ the pouch is kept and a glance may miss it (`game/scoutingCarried.ts`). Both ben
 Animals changed by chakra over generations: beasts that use techniques, mimic, hide, or carry a
 nature. They build on step 2's plain animals (the same kinds, grown strange), and reach into
 companions (`systems/companions`) and summons. Designed when we get there; step 2 keeps plain
-animals plain so the line between them is clear.
+animals plain so the line between them is clear. Now planned in `chakra-beasts-plan.md`.

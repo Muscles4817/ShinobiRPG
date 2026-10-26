@@ -2,8 +2,17 @@ import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { createPlanEngine } from './engine';
-import { intendedCard, intentLine } from './intent';
-import { decode, encode, type PlanState } from './state';
+import { raiseField } from '../../rules/verbs';
+import { intendedCard, intentLine, keepsTo } from './intent';
+import {
+  decode,
+  encode,
+  initialFighters,
+  plainSlots,
+  type PlanFighter,
+  type PlanState,
+  type Round,
+} from './state';
 
 const attributes = {
   strength: 5,
@@ -121,5 +130,61 @@ describe('plan & watch telegraphs', () => {
     const fought = engine.act(next.value, { optionId: 'next' }, createRng(1));
     if (!fought.ok) throw new Error(fought.error);
     expect(decode(fought.value).intents.bandit).toBeDefined();
+  });
+});
+
+describe('keeping to what was announced', () => {
+  const fog: CombatTechnique = {
+    id: 'fog',
+    name: 'Fog',
+    discipline: 'ninjutsu',
+    effects: [{ verb: 'field', field: 'mist', power: 10 }],
+    chakraCost: 6,
+  };
+  const card = (technique: CombatTechnique) => ({ kind: 'jutsu', technique }) as const;
+
+  /** A foe with fog and a blast slotted at mid, and the mist (if any) on `side`. */
+  function moment(intellect: number, side?: 'player' | 'enemy'): [PlanFighter, Round] {
+    const fighters = initialFighters({
+      player: fighter('hero'),
+      allies: [],
+      enemies: [
+        fighter('bandit', { attributes: { ...attributes, intellect }, techniques: [fog, blast] }),
+      ],
+      canFlee: true,
+    }).map((f) =>
+      f.id === 'bandit'
+        ? { ...f, loadout: { close: [], mid: plainSlots(['jutsu:fog', 'jutsu:blast']), far: [] } }
+        : f,
+    );
+    const mist = side ? { field: raiseField({ id: 'mist', side, potency: 10, power: 10 }, 1) } : {};
+    const round: Round = {
+      number: 1,
+      fighters,
+      range: 'mid',
+      lines: [],
+      seen: {},
+      intents: {},
+      ...mist,
+    };
+    return [fighters.find((f) => f.id === 'bandit')!, round];
+  }
+
+  it('plays an attack it announced', () => {
+    const [foe, round] = moment(30);
+    expect(keepsTo(foe, card(blast), round)).toBe(true);
+  });
+
+  it('thinks again when its own mist is already up', () => {
+    const [foe, round] = moment(30, 'enemy');
+    expect(keepsTo(foe, card(fog), round)).toBe(false);
+  });
+
+  it('a mind that reads the fight takes back a field the other side has just taken', () => {
+    const [sharp, taken] = moment(30, 'player');
+    expect(keepsTo(sharp, card(blast), taken)).toBe(false);
+    expect(keepsTo(sharp, card(fog), taken)).toBe(true);
+    const [dull, alsoTaken] = moment(2, 'player');
+    expect(keepsTo(dull, card(blast), alsoTaken)).toBe(true);
   });
 });

@@ -14,6 +14,7 @@ import { endingFor } from '../story/ending';
 import { stopPrompt } from './stopChoices';
 import { storyOf } from '../story/state';
 import type { GameState } from '../state';
+import { ventureAhead } from '../ventures';
 import { personSlots } from '../people/pronouns';
 
 /** What each kind of stage puts in front of you on a job: the situation, and your choices. */
@@ -113,15 +114,17 @@ function campPrompt(
   return [...activities, onward('Turn in', time), ...turnBackChoice(state, ctx)];
 }
 
-/** On a trip of your own, a camp is where you can still change your mind. */
+/** On a trip or a venture of your own, a camp is where you can still change your mind. */
 function turnBackChoice(state: GameState, ctx: GameContext): SceneChoice[] {
   const plan = state.mission?.journey;
-  if (!plan) return [];
-  const home = ctx.content.locations.require(plan.from).name;
+  const venturing = ventureAhead(state, ctx) !== null;
+  if (!plan && !venturing) return [];
   return [
     {
       label: 'Turn back',
-      detail: `The road back to ${home}`,
+      detail: plan
+        ? `The road back to ${ctx.content.locations.require(plan.from).name}`
+        : 'Walk back out the way you came',
       primary: false,
       action: { type: 'turnBack' },
     },

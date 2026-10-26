@@ -1,4 +1,10 @@
-import type { BodySize, CombatForm, CombatGrammar, CombatTrait } from '@/systems/combat';
+import type {
+  BodySize,
+  CombatForm,
+  CombatGrammar,
+  CombatPerk,
+  CombatTrait,
+} from '@/systems/combat';
 import type { Danger } from '@/systems/missions';
 import type { StatDelta } from '@/systems/stats';
 import type { Element } from '@/systems/techniques';
@@ -54,6 +60,13 @@ export interface EnemyDef {
   readonly nature?: Element;
   /** How they fight: archer, brawler, illusionist… Every fight style honours these. */
   readonly traits?: readonly CombatTrait[];
+  /** Perks people earn by blood or training, which a chakra beast is born with (an owl's foresight). */
+  readonly perks?: readonly CombatPerk[];
+  /**
+   * An animal changed by chakra (`docs/design/chakra-beasts-plan.md`): it has chakra and
+   * techniques no person learns, and only it may hold them (`validateChakraBeasts.ts`).
+   */
+  readonly chakraBeast?: true;
   /** Ingredients a beaten foe leaves (a beast's meat), one of each, into your pack. */
   readonly drops?: readonly string[];
   /**

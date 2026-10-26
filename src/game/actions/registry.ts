@@ -43,6 +43,7 @@ import { dismissReport, leaveFight, leaveJourney, travel } from './travel';
 import { followSight } from './village';
 import { befriendStray } from './companions';
 import { takePup, trackWild } from './finding';
+import { venture } from './venture';
 import { buyLore, handlerSession, handlerTeach } from './handling';
 import { leaveOffering, signTeacherContract, tearUpContract } from './contracts';
 import { crossAJar, nameYourStrain, searchForInsects, studyAJar } from './hives';
@@ -133,6 +134,7 @@ export const HANDLERS: Registry = {
   followSight,
   befriendStray,
   trackWild,
+  venture,
   takePup,
   takeRescued,
   rehomeCompanion,

@@ -61,7 +61,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
         'Their lord is dead and their name is gone. The sword is all that came with them.',
       ...foeStats(10, [14, 14, 13, 12], {
         ...NO_HAND_SIGNS,
-        kenjutsu: 19,
+        kenjutsu: 18,
         willpower: 13,
         taijutsu: 12,
       }),

@@ -204,9 +204,13 @@ function enemyPools(def: EnemyDef, ctx: GameContext): Pick<CombatantSetup, 'swar
   return { ...(swarm ? { swarm } : {}), ...(dust ? { dust } : {}) };
 }
 
-/** A foe's perks: walking on water and trees, and a shield from their dust. */
+/** A foe's perks: walking on water and trees, their own gifts, and a shield from their dust. */
 function enemyPerks(def: EnemyDef): CombatPerk[] {
-  return [...enemyWalking(def), ...(def.dust?.shield ? (['shield'] as const) : [])];
+  return [
+    ...enemyWalking(def),
+    ...(def.perks ?? []),
+    ...(def.dust?.shield ? (['shield'] as const) : []),
+  ];
 }
 
 function enemyBody(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup {
