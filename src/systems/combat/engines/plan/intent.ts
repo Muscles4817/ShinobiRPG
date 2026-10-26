@@ -13,13 +13,14 @@ import {
   isDefenceCard,
   isOffence,
   playable,
+  slotted,
   type Card,
   type DefenceCard,
 } from './cards';
 import { chooseCard, desperate } from './choose';
 import { ownField } from './field';
-import { planAdherence } from './judgement';
-import { plannedPlay } from './priority';
+import { planAdherence, readsInTheMoment } from './judgement';
+import { needed, plannedPlay } from './priority';
 import { opponentsOf } from './senses';
 import { cardLabel } from './wording';
 import { playerOf, type CardId, type PlanFighter, type PlanState, type Round } from './state';
@@ -93,6 +94,21 @@ export function intendedCard(
     return undefined;
   }
   return isOffence(card) && !canAttackFrom(actor, band) ? undefined : card;
+}
+
+/**
+ * Whether a foe plays what it announced. Not when the exchange has made it pointless (its field
+ * already up, no one left hidden to find): it thinks again, as a plan passes over a card it
+ * doesn't need. Nor, for a mind that reads the fight, when a foe has just taken the field from
+ * it and it could raise its own: it takes it back rather than strike blind.
+ */
+export function keepsTo(actor: PlanFighter, card: Card, round: Round): boolean {
+  if (!needed(actor, card, round)) return false;
+  if (!round.field || ownField(round.field, actor) || !readsInTheMoment(actor)) return true;
+  const raises = slotted(actor, round.range).some(
+    (c) => c.kind === 'jutsu' && hasVerb(c.technique, 'field') && playable(actor, c),
+  );
+  return !raises || (card.kind === 'jutsu' && hasVerb(card.technique, 'field'));
 }
 
 /**

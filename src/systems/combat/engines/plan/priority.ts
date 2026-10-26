@@ -184,9 +184,10 @@ function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boole
 
 /**
  * Whether a card is needed now: no searching with no one hidden, no healing at full health, no
- * getting ready twice over or with no foe in sight (`prep.ts`).
+ * getting ready twice over or with no foe in sight (`prep.ts`). A foe's announced card is held
+ * to it too, at its turn (`round.ts`).
  */
-function needed(self: PlanFighter, card: Card, round: Round): boolean {
+export function needed(self: PlanFighter, card: Card, round: Round): boolean {
   if (isDefenceCard(card)) return true;
   const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
   switch (card.kind) {

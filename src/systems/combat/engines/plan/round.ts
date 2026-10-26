@@ -22,7 +22,7 @@ import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
-import { intendedCard } from './intent';
+import { intendedCard, keepsTo } from './intent';
 import { exchangeDivider, staged } from './staging';
 import { lingerAfter } from './lingering';
 import { secondWinds } from './provisions';
@@ -96,7 +96,9 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
     exchange: round.number,
     ...(round.reads ? { reads: round.reads } : {}),
   };
-  const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
+  const intended = intendedCard(actor, round.intents, round.range);
+  const card =
+    intended && keepsTo(actor, intended, round) ? intended : chooseCard(actor, moment, rng);
   // A finisher that needs an opening goes for an open foe (`finishers.ts`).
   const open = finisherTargets(card, seen);
   const aim = !needsOpenTarget(card) || (foe && open.includes(foe)) ? foe : open[0];
