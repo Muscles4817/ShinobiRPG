@@ -188,6 +188,11 @@ writing keeps reaching for one.
    gift once seen. The field book's foes page takes them with no code; a page of its own for chakra
    beasts is a later choice.
 
+   **As built.** A read says "Changed by chakra" at a glance (`game/scoutingChanged.ts`); its
+   nature, with the element that overpowers it, and its gifts (mimicry, foresight) only in a
+   fight, in a client's report, or to eyes sharp enough to catch them. The field book's foes page
+   takes them with no code.
+
 Then, later:
 
 6. **Companions.** A changed wild kind you can track and win over in a chakra-rich wild place

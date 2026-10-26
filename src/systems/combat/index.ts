@@ -83,6 +83,7 @@ export {
   WEAPON_SHAPES,
 } from './gearContract';
 export { masteryShare, MASTERY_FLOOR } from './rules/mastery';
+export { overpoweredBy } from './rules/elements';
 // Gear's numbers, for describing a piece the same way the fight applies it.
 export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
 export { HIT_TYPES, hitTypeOf, type HitType } from './rules/hits';

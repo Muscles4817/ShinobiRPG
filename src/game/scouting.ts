@@ -22,6 +22,7 @@ import { personStats } from './people/progress';
 import { findPerson } from './people/cast';
 import { poolsSeen, retinueSeen, summonsSeen, type RetinueKnowledge } from './retinueSight';
 import { carriedNotes } from './scoutingCarried';
+import { changedNotes, changeSeen } from './scoutingChanged';
 import { poolNotes, type PoolNote } from './scoutingPools';
 import type { GameState } from './state';
 
@@ -280,6 +281,7 @@ function enemyOpponent(
     pools: [
       ...poolNotes(def, poolsSeen(state, def, knowledge), ctx),
       ...carriedNotes(state, ctx, def, knowledge),
+      ...changedNotes(def, changeSeen(state, def, knowledge)),
     ],
   };
 }
