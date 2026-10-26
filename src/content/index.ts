@@ -1,6 +1,8 @@
 export { CONTENT_PACKS } from './packs';
 export { buildContentDb, type ContentDb } from './db';
 export { validateContent } from './validate';
+export { shelves, type ShelfPlace } from './shelves';
+export { beastArtIds } from './techniqueSources';
 export type { Catalog } from './catalog';
 export { REGISTERS, TONES, TOPIC_KINDS } from './people';
 export { TEACHING_QUIRKS } from './teachers';

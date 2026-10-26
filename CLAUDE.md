@@ -1113,6 +1113,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   where a gear place lists it in `dustIds`, and teaches `techniqueIds` through its S-rank
   scroll, found on a job (`reward.dustScroll`; shared techniques in `shared/dustTechniques.ts`).
   Validated in `validateDusts.ts`.
+- **Add a chakra beast:** an animal changed by chakra (`docs/design/chakra-beasts-plan.md`)
+  goes in `content/shared/bestiary/chakraBeasts.ts` with `chakraBeast: true`, chakra, techniques
+  of its own (`beastArts.ts`, `beastArtsWater.ts`: no person learns them, so they need no other
+  source and nobody else may hold them; `validateChakraBeasts.ts`) and any gift as `perks`
+  (mimicry, foresight) or a hive or dust shield. The bestiary bench fights it like any foe.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation
