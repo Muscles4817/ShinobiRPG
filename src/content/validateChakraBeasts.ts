@@ -4,8 +4,9 @@ import type { ContentPack } from './types';
 /**
  * Chakra beasts (`docs/design/chakra-beasts-plan.md`) and their arts. A chakra beast has chakra
  * and a technique, or it is a plain animal. Its arts are its own: nobody learns them from a
- * shelf, a teacher or a scroll, no other foe or person fights with them, and each is some
- * chakra beast's.
+ * shelf, a teacher or a scroll, no other foe or person fights with them, a companion kind holds
+ * one only if it is the kind of a beast that does (`WildHaunt.after`), and each is some chakra
+ * beast's.
  */
 export function validateChakraBeasts(pack: ContentPack): string[] {
   return [...beastProblems(pack), ...artProblems(pack)];
@@ -37,5 +38,17 @@ function artProblems(pack: ContentPack): string[] {
     ...others.flatMap(({ who, ids }) =>
       ids.filter((id) => arts.has(id)).map((id) => `${who} fights with beast art "${id}"`),
     ),
+    ...kindProblems(pack, arts),
   ];
+}
+
+/** A companion kind holds a beast art only when the beast its kind is found after holds it. */
+function kindProblems(pack: ContentPack, arts: ReadonlySet<string>): string[] {
+  return pack.companionKinds.flatMap((kind) => {
+    const after = pack.enemies.find((e) => e.id === kind.wild?.after);
+    return (kind.techniques ?? [])
+      .map((t) => t.techniqueId)
+      .filter((id) => arts.has(id) && !(after?.techniqueIds.includes(id) ?? false))
+      .map((id) => `companion kind "${kind.id}" holds beast art "${id}" its beast doesn’t`);
+  });
 }

@@ -18,13 +18,21 @@ export function learnableIds(pack: ContentPack): Set<string> {
     ...pack.academyTechniques,
     ...Object.values(pack.disciplineStarters),
     ...pack.clans.flatMap((c) => c.startingTechniqueIds),
-    // A companion kind's techniques are its own (`validateCompanions.ts` checks them).
-    ...pack.companionKinds.flatMap((k) => (k.techniques ?? []).map((t) => t.techniqueId)),
     // A contract's summoning techniques and what its summons fight with (`validateContracts.ts`).
     ...pack.contracts.flatMap((c) => c.summons.flatMap((s) => [s.techniqueId, ...s.techniqueIds])),
     // A puppet's unsealing and its mechanisms come with the puppet (`validatePuppets.ts`).
     ...(pack.puppets ?? []).flatMap((p) => [p.techniqueId, ...p.techniqueIds]),
   ]);
+}
+
+/**
+ * Techniques companion kinds open by the bond (`validateCompanions.ts` checks them): theirs, and
+ * never a person's, so a changed kind may hold a chakra beast's arts.
+ */
+export function kindArtIds(pack: ContentPack): Set<string> {
+  return new Set(
+    pack.companionKinds.flatMap((k) => (k.techniques ?? []).map((t) => t.techniqueId)),
+  );
 }
 
 /** The pack's chakra beast arts: techniques only chakra beasts fight with. */

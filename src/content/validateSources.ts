@@ -1,7 +1,7 @@
 import { STAT_GRADES, type StatGrade } from '@/systems/stats';
 
 import { shelves, type ShelfPlace } from './shelves';
-import { beastArtIds, learnableIds } from './techniqueSources';
+import { beastArtIds, kindArtIds, learnableIds } from './techniqueSources';
 import type { ContentPack } from './types';
 
 /**
@@ -59,7 +59,7 @@ function scrollRewardProblems(pack: ContentPack): string[] {
 
 function sourcedIds(pack: ContentPack): Set<string> {
   // A chakra beast's arts are its own (`validateChakraBeasts.ts` keeps them its own).
-  return new Set([...learnableIds(pack), ...beastArtIds(pack)]);
+  return new Set([...learnableIds(pack), ...kindArtIds(pack), ...beastArtIds(pack)]);
 }
 
 function unsourcedProblems(pack: ContentPack): string[] {

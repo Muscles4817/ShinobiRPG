@@ -39,4 +39,15 @@ describe('chakra beasts', () => {
       'no chakra beast holds "shrike-cry"',
     ]);
   });
+
+  it('reports a companion kind holding a beast art its beast does not', () => {
+    const companionKinds = ORIGINAL_PACK.companionKinds.map((k) =>
+      k.id === 'mist-fox-kit'
+        ? { ...k, techniques: [...(k.techniques ?? []), { techniqueId: 'moss-mend', stage: 4 }] }
+        : k,
+    );
+    expect(validateChakraBeasts({ ...ORIGINAL_PACK, companionKinds })).toEqual([
+      'companion kind "mist-fox-kit" holds beast art "moss-mend" its beast doesn’t',
+    ]);
+  });
 });
