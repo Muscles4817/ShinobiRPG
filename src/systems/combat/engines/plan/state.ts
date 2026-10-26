@@ -9,7 +9,7 @@ import type {
   RangeBand,
 } from '../../contract';
 import { bodyFrom, type Body } from '../../rules/body';
-import { numberedNames } from '../../rules/narration';
+import { numberedNames, type NarrationOffPlan } from '../../rules/narration';
 import { openingChakra, openingSteadiness } from '../../rules/provisions';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
@@ -258,6 +258,8 @@ export interface Round {
   readonly watching?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */
   readonly played?: CardId;
+  /** The turn just taken was the player's and played off their plan, and why (`staging.ts`). */
+  readonly offPlan?: NarrationOffPlan;
   /** The story's last lines before this exchange, so words aren't picked twice running. */
   readonly recent?: readonly string[];
 }

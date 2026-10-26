@@ -3,6 +3,7 @@ import { STAT_GRADES, statTier } from '@/systems/stats';
 import type { CombatTechnique } from '../../contract';
 import {
   forceLine,
+  offPlanLine,
   poolsLine,
   statusLine,
   turnLine,
@@ -95,7 +96,7 @@ function poolsMoved(before: Round, after: Round): NarrationPools {
  * turn changed them for. The tags are narration only: the turn plays exactly as untagged.
  */
 export function staged(before: Round, after: Round, id: string): Round {
-  const { played, ...turn } = after;
+  const { played, offPlan, ...turn } = after;
   const actor = turn.fighters.find((f) => f.id === id);
   const force = actor ? turnForce(actor, played) : null;
   const added = turn.lines.slice(before.lines.length);
@@ -108,7 +109,8 @@ export function staged(before: Round, after: Round, id: string): Round {
   const changed = statusesMoved(before, turn);
   const tagged = added.map((line, i) => {
     const theirs = turnLine(line, id, rangeAt(i));
-    const sized = force ? forceLine(theirs, force) : theirs;
+    const forced = force ? forceLine(theirs, force) : theirs;
+    const sized = i === 0 && offPlan ? offPlanLine(forced, offPlan) : forced;
     return i === last ? statusLine(poolsLine(sized, moved), changed) : sized;
   });
   return { ...turn, lines: [...before.lines, ...tagged] };

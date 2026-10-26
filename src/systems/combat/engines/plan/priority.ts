@@ -12,6 +12,7 @@ import {
   type Card,
 } from './cards';
 import { CHANGE_UP_AFTER } from '../../rules/familiarity';
+import type { NarrationOffPlan } from '../../rules/narration';
 import { beats, seenDefence, walksInto } from './adapt';
 import { partnered } from './combo';
 import { spendsReserve } from './pacing';
@@ -221,6 +222,8 @@ function useful(self: PlanFighter, card: Card, round: Round): boolean {
 export interface Play {
   readonly card: Card;
   readonly target: PlanFighter | undefined;
+  /** Nothing slotted played: why the turn went off the plan (stamped for the player). */
+  readonly offPlan?: NarrationOffPlan;
 }
 
 /** A technique that only holds a foe back (daze, seal, confuse), without wounding them. */
@@ -382,8 +385,9 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   const seen = foes.filter((f) => inSight(self, f));
   // With no one to hit and someone hidden, looking for them beats walking about.
   if (seen.length === 0 && foes.some((f) => f.hidden)) {
-    return { card: { kind: 'search' }, target: undefined };
+    return { card: { kind: 'search' }, target: undefined, offPlan: 'looking' };
   }
   const card = improvise(self, round.range);
-  return { card, target: aimAt(hittable(card, seen, round.fighters), 'marked', self, round) };
+  const target = aimAt(hittable(card, seen, round.fighters), 'marked', self, round);
+  return { card, target, offPlan: 'improvised' };
 }
