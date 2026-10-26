@@ -138,12 +138,20 @@ describe('the gates', () => {
     expect(after.lines.join(' ')).toMatch(/body gives out under/);
   });
 
-  it('a plan slots no openings: the kit climbs a band at a time, never to the last by itself', () => {
+  it('a fighter the game plays slots no openings: the kit climbs a band at a time', () => {
     const [g] = round().fighters;
-    const close = defaultLoadout(g!, round().fighters).close.map((s) => s.card);
+    const ai = { ...g!, isPlayer: false };
+    const close = defaultLoadout(ai, round().fighters).close.map((s) => s.card);
     expect(close).toContain('jutsu:tiger');
     expect(close).not.toEqual(expect.arrayContaining(['jutsu:life']));
     expect(climbOrder(g!.techniques).map((t) => t.id)).toEqual(['life', 'wonder']);
+  });
+
+  it('the player’s plan slots the openings it would climb, never the last gate', () => {
+    const [g] = round().fighters;
+    const close = defaultLoadout(g!, round().fighters).close.map((s) => s.card);
+    expect(close).toEqual(expect.arrayContaining(['jutsu:life', 'jutsu:wonder']));
+    expect(close).not.toContain('jutsu:death');
   });
 
   it('climbs the next gate by instinct once the fight calls for it', () => {

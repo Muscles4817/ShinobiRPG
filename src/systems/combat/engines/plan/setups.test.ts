@@ -1,7 +1,9 @@
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { strikesToKill } from '../../rules/lethal';
 import { avoidOdds, techniqueIncoming } from './avoid';
-import { initialFighters, type PlanFighter, type Round } from './state';
+import { defaultLoadout } from './defaults';
+import { plannedPlay } from './priority';
+import { initialFighters, plainSlots, type PlanFighter, type Round } from './state';
 import { setupPlay, setsUp } from './setups';
 
 /** Hide, hold, finish: a killing blow on a target who can't meet it, and the mind that sets it up. */
@@ -108,5 +110,35 @@ describe('a set-up', () => {
     expect(play(r)).toBe('mole');
     expect(play(round({ hidden: true }))).toBe('fang');
     expect(play(round({ hidden: true }, { stunned: 1 }))).toBe('blade');
+  });
+});
+
+describe('a set-up and the player’s own plan', () => {
+  const firstCard = (play: ReturnType<typeof plannedPlay>) =>
+    play.card.kind === 'jutsu' ? play.card.technique.id : play.card.kind;
+
+  it('the player plays what they slotted, not the set-up from their kit', () => {
+    const r = round({ loadout: { close: plainSlots(['jutsu:fang']), mid: [], far: [] } });
+    expect(firstCard(plannedPlay(one(r, 'kakashi'), r))).toBe('fang');
+  });
+
+  it('a fighter the game plays sets up from the kit, slot or no slot', () => {
+    const r = round({
+      isPlayer: false,
+      loadout: { close: plainSlots(['jutsu:fang']), mid: [], far: [] },
+    });
+    expect(firstCard(plannedPlay(one(r, 'kakashi'), r))).toBe('mole');
+  });
+
+  it('the player’s default plan slots the set-up where they can see it', () => {
+    const r = round();
+    const close = defaultLoadout(one(r, 'kakashi'), r.fighters).close;
+    expect(close).toEqual(
+      expect.arrayContaining([
+        { card: 'jutsu:blade', when: 'foe-dazed' },
+        { card: 'jutsu:mole' },
+        { card: 'jutsu:fang' },
+      ]),
+    );
   });
 });

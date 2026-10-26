@@ -27,6 +27,7 @@ import {
 import { fightsBySummons } from './calling';
 import { callsOf } from './calls';
 import { climbOrder, isStill } from './climbing';
+import { kitSlots } from './kitSlots';
 import { styleMoves } from './repertoire';
 import { opponentsOf } from './senses';
 import { cardWorth } from './worth';
@@ -235,6 +236,8 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
     ...(reaches ? trumpSlot(trumps, facing) : []),
     ...finding(best('sense'), search, facing),
+    // For the player, what the kit would play by itself (`kitSlots.ts`): their plan is theirs.
+    ...(fighter.isPlayer ? kitSlots(fighter, usable) : []),
     // A summon is called first: it fights beside you from the next exchange (`summons.ts`).
     ...plain(best('summon')),
     ...plain(best('field')),
