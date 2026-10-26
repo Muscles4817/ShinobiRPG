@@ -67,6 +67,40 @@ function TrackCard({
   );
 }
 
+/** Going off the paths into wild country, as deep as you choose. */
+function VentureCard({
+  venture,
+  perform,
+}: {
+  readonly venture: NonNullable<WildsView['venture']>;
+  readonly perform: (action: GameAction) => void;
+}) {
+  return (
+    <article className="gather-card">
+      <h3>Off the paths</h3>
+      <p className="story">
+        Leave the path and go into {venture.country}, a day for each depth and back out the way you
+        came. The deeper you go, the stranger it gets.
+      </p>
+      {venture.depths.map((d) => (
+        <div key={d.depth}>
+          {d.blocker && <p className="blocker">{d.blocker}</p>}
+          <button
+            type="button"
+            className="btn"
+            disabled={d.blocker !== null}
+            onClick={() => {
+              perform(d.action);
+            }}
+          >
+            {d.label}
+          </button>
+        </div>
+      ))}
+    </article>
+  );
+}
+
 /**
  * A wild place outside the village: forage the ground for what's in season, or pick a spot on
  * the water and cast a line. Each gives once a day. Some wild places have a wild one living
@@ -112,6 +146,7 @@ export function WildsPage({
           />
         ))}
         {view.wild && <TrackCard wild={view.wild} perform={perform} />}
+        {view.venture && <VentureCard venture={view.venture} perform={perform} />}
         {view.insects && (
           <article className="gather-card">
             <h3>Insects</h3>

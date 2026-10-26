@@ -1,6 +1,7 @@
 import { listed } from '@/core';
 import type { Biome } from '@/content';
 import { gatheredToday, inSeason, recognised, type Find } from '@/systems/cooking';
+import { WILD_DEPTHS, type WildDepth } from '@/systems/missions';
 
 import { daysToWin } from '@/systems/companions';
 
@@ -12,6 +13,7 @@ import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { insectsHere } from '../hives/breeding';
+import { deepWildsOf } from '../ventures';
 
 /**
  * A wild place: foraging, with what's in season, and each fishing spot with what bites at this
@@ -46,6 +48,20 @@ export interface WildSign {
   readonly track: Choice;
 }
 
+/** Going off the paths from here into wild country, as far as each depth. */
+export interface VentureView {
+  /** "the deep woods". */
+  readonly country: string;
+  readonly depths: readonly (Choice & { readonly depth: WildDepth; readonly label: string })[];
+}
+
+/** What each depth is called on its button. */
+const DEPTH_LABELS: Readonly<Record<WildDepth, string>> = {
+  edge: 'As far as the edge',
+  deep: 'Into the deep',
+  heart: 'To the heart',
+};
+
 export interface WildsView {
   readonly name: string;
   readonly blurb: string;
@@ -55,6 +71,8 @@ export interface WildsView {
   readonly wild: WildSign | null;
   /** For someone with a hive: insects here worth a jar, and the search for them. */
   readonly insects: (Choice & { readonly about: readonly string[] }) | null;
+  /** The way into wild country, where there is one. */
+  readonly venture: VentureView | null;
 }
 
 /** Below this a day's tracking more often goes cold than not; above the next, it mostly gets closer. */
@@ -94,6 +112,24 @@ function whatsAbout(state: GameState, ctx: GameContext, finds: readonly Find[]):
   };
 }
 
+function ventureView(
+  state: GameState,
+  ctx: GameContext,
+  placeId: string,
+  biome: Biome,
+): VentureView | null {
+  const country = deepWildsOf(ctx, biome);
+  if (!country) return null;
+  return {
+    country: country.name,
+    depths: WILD_DEPTHS.map((depth) => ({
+      ...choice(state, ctx, { type: 'venture', placeId, depth }),
+      depth,
+      label: DEPTH_LABELS[depth],
+    })),
+  };
+}
+
 export function wildsView(state: GameState, ctx: GameContext, placeId: string): WildsView | null {
   const place = wildsHere(state, ctx, placeId);
   if (!place) return null;
@@ -119,6 +155,7 @@ export function wildsView(state: GameState, ctx: GameContext, placeId: string): 
           about: insectsHere(state, ctx, placeId).map((s) => s.name),
         }
       : null,
+    venture: ventureView(state, ctx, placeId, place.biome),
   };
 }
 

@@ -6,19 +6,25 @@ import { journeyMission, legsBack, legsWalked } from '../journeys';
 import { plannedStops } from '../journeyStops';
 import { log } from '../ops';
 import { settle } from '../story/state';
+import { ventureAhead, turnOut } from '../ventures';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
  * Turning back on a trip of your own: at a camp, before the next stretch, you walk back the
- * legs you came by. Passage paid and leave spent stay spent.
+ * legs you came by. Passage paid and leave spent stay spent. A venture turns back the same way,
+ * walking out of the wild from the depth it reached (`ventures.ts`).
  */
 export const turnBack: ActionHandler<ActionOf<'turnBack'>> = {
   check(state, _action, ctx) {
-    if (!state.mission?.journey) return 'You are not on a trip of your own.';
+    if (!state.mission?.journey && !ventureAhead(state, ctx)) {
+      return 'You are not on a trip of your own.';
+    }
     return activeStage(state, ctx)?.kind === 'camp' ? null : 'You can turn back only at a camp.';
   },
   perform(state, _action, ctx) {
     const run = state.mission;
+    const reached = ventureAhead(state, ctx);
+    if (reached) return turnOut(state, ctx, reached);
     const plan = run?.journey;
     if (!run || !plan) return state;
     const legs = legsBack(plan, legsWalked(run, journeyMission(plan, ctx).stages));

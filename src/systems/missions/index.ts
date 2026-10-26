@@ -153,3 +153,4 @@ export {
   type TravellerMeeting,
   type TravellerOption,
 } from './travellers';
+export { depthsOut, depthsTo, WILD_DEPTHS, type VenturePlan, type WildDepth } from './ventures';

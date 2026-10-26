@@ -1,0 +1,112 @@
+import type { RoadEventDef } from '@/systems/missions';
+
+/**
+ * The edge of wild country, off the paths but not far (`DEEP_WILDS`): the country's plain
+ * animals, what grows there, and poachers who don't want to be seen.
+ */
+export const EDGE_EVENTS: readonly RoadEventDef[] = [
+  {
+    kind: 'encounter',
+    id: 'poachers-camp',
+    regions: ['woods-edge', 'mountain-edge', 'marsh-edge', 'shore-edge', 'desert-edge'],
+    rarity: 'uncommon',
+    text: 'Snares in a line, a fire kicked out not long ago, and two men watching you from behind it.',
+    parties: [
+      ['village-hunter'],
+      ['village-hunter', 'guard-dog'],
+      ['bandit-knifeman', 'village-hunter'],
+    ],
+    template: 'bandit-camp',
+    flavour: {
+      terrain: 'A hollow out of the wind, with their snares strung along the only way through.',
+    },
+    around: 'You back away and go round the hollow, stepping over their snares.',
+  },
+  {
+    kind: 'encounter',
+    id: 'wolves-off-the-path',
+    regions: ['woods-edge'],
+    text: 'A wolf stands in the bracken ahead and watches you. Then another one, a little way off.',
+    parties: [['grey-wolf', 'grey-wolf'], ['wolf-pack-leader', 'grey-wolf'], ['giant-centipede']],
+    template: 'beast',
+    ground: 'forest',
+    around: 'You climb a ridge and come down the far side of it, and they let you go.',
+  },
+  {
+    kind: 'find',
+    id: 'under-old-trees',
+    regions: ['woods-edge'],
+    text: 'In the leaf litter under the first old trees there is food nobody has picked.',
+    ingredientIds: ['wild-mushrooms', 'butterbur', 'mountain-yam'],
+    taken: 'You fill a cloth and knot it to your pack.',
+  },
+  {
+    kind: 'encounter',
+    id: 'eagles-over-the-scree',
+    regions: ['mountain-edge'],
+    text: 'A shadow goes over the scree, and then it comes round again, lower.',
+    parties: [['mountain-eagle'], ['mountain-eagle', 'mountain-eagle']],
+    template: 'beast',
+    around: 'You get in under an overhang and wait until the shadow goes away.',
+  },
+  {
+    kind: 'find',
+    id: 'by-a-snowmelt-stream',
+    regions: ['mountain-edge'],
+    text: 'A stream comes down off the snow, and the banks are green with herbs.',
+    ingredientIds: ['mountain-greens', 'wild-ginger'],
+    taken: 'You pick what you can carry and wrap it in wet moss.',
+  },
+  {
+    kind: 'encounter',
+    id: 'in-the-reeds',
+    regions: ['marsh-edge'],
+    text: 'The reeds ahead shake, though there is no wind.',
+    parties: [['marsh-viper'], ['giant-salamander']],
+    template: 'beast',
+    around: 'You wade a long way round and keep your feet out of the deep water.',
+  },
+  {
+    kind: 'find',
+    id: 'in-the-shallows',
+    regions: ['marsh-edge'],
+    text: 'The water between the reed beds is shallow and clear, and full of good greens.',
+    ingredientIds: ['watercress', 'water-dropwort', 'water-chestnuts'],
+    taken: 'You wade in up to the knees and come out with your hands full.',
+  },
+  {
+    kind: 'encounter',
+    id: 'on-the-empty-sand',
+    regions: ['shore-edge'],
+    text: 'At the waterline a big shape is dragging itself out of the sea.',
+    parties: [['moray-eel'], ['shore-crab'], ['reef-shark']],
+    template: 'beast',
+    around: 'You go up over the dunes and keep well back from the water.',
+  },
+  {
+    kind: 'find',
+    id: 'below-the-cliffs',
+    regions: ['shore-edge'],
+    text: 'The rocks under the cliff are thick with weed nobody comes this far to pick.',
+    ingredientIds: ['rock-laver', 'sea-lettuce'],
+    taken: 'You pick the best of it before the tide comes back.',
+  },
+  {
+    kind: 'encounter',
+    id: 'tracks-in-the-dunes',
+    regions: ['desert-edge'],
+    text: 'Paw prints cross your path, fresh, and they go round the dune you are about to climb.',
+    parties: [['sand-viper'], ['striped-hyena', 'striped-hyena'], ['desert-lion']],
+    template: 'beast',
+    ground: 'desert',
+    around: 'You walk wide of the dune and lose an hour finding your line again.',
+  },
+  {
+    kind: 'find',
+    id: 'at-a-dry-oasis',
+    regions: ['desert-edge'],
+    text: 'There was an oasis here once. The water has gone, but the plants have not.',
+    ingredientIds: ['wild-dates', 'prickly-pear', 'desert-sage'],
+    taken: 'You pick what you can without the thorns getting you.',
+  },
+];

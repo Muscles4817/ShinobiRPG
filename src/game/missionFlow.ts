@@ -28,6 +28,7 @@ import { withCrewWords } from './story/crewSlots';
 import { releaseHeld } from './story/personal';
 import { settle } from './story/state';
 import { afterTheFight } from './story/voices';
+import { comeOut, ventureMission } from './ventures';
 import type { GameState } from './state';
 
 /**
@@ -45,6 +46,7 @@ export function activeMission(state: GameState, ctx: GameContext): MissionDef | 
   const run = state.mission;
   if (!run) return null;
   if (run.journey) return journeyMission(run.journey, ctx);
+  if (run.venture) return ventureMission(run.venture, ctx);
   const def = jobAsWalked(state, ctx, ctx.content.missions.require(run.missionId));
   return withCrewWords(def, state, ctx);
 }
@@ -75,6 +77,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
   if (currentStage(def, run)) return tendWounds({ ...before, mission: run }, ctx);
   const state = releaseHeld(before, run);
   if (run.journey) return arrive(state, ctx, run.journey);
+  if (run.venture) return comeOut(state, ctx, run.venture);
   if (def.examOnly) return forestCleared(state, ctx);
   const earned = reward(def, state.mission);
   const senior = isSeniorMission(def.rank);

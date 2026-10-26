@@ -962,6 +962,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `start` line if the sensei begins it, an optional `walk` surface, a `limitBonus`, practice and
   fall lines) in `shared/exercises.ts` or a pack's own list, offered at a training place's
   `exerciseIds` (validated).
+- **Add wild country to go into:** a `DeepWildsDef` in `content/shared/deepWilds.ts` (a biome,
+  each depth's day going in and coming back, finding the way on, coming out) opens a `venture`
+  from every `wilds` place of that biome (`game/ventures.ts`: a run of your own, a day a depth,
+  a way-finding check before the deep and the heart, a camp each night to turn back at). What a
+  day holds is its depth region's road events (`deepRegion`: `woods-heart`), in
+  `shared/road/deepWilds*.ts`; every depth keeps one for every season (validated), and each pack
+  names the missing-nin hiding in the deep (`packs/<id>/deepWilds.ts`). A genin goes as far as the
+  deep only on a pass; the heart is for chūnin.
 - **Add a wild place:** a `wilds` `PlaceDef` with a `biome`, `finds` and optional fishing
   `spots` (reuse the shared lists in `shared/wilds.ts` where the country is the same).
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view

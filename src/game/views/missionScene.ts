@@ -101,15 +101,20 @@ function threadViews(state: GameState, ctx: GameContext): ThreadView[] {
   });
 }
 
+/** What kind of trip this is: a journey, a venture or a job. */
+function kickerOf(run: MissionRun, def: MissionDef): string {
+  if (run.journey) return 'A journey of your own';
+  if (run.venture) return 'Off the paths';
+  return `${def.rank}-rank mission for ${def.client}`;
+}
+
 export function missionScene(state: GameState, ctx: GameContext): MissionScene | null {
   const def = activeMission(state, ctx);
   if (!def || !state.mission || state.combat) return null;
   const stage = activeStage(state, ctx);
   const base = {
     title: def.title,
-    kicker: state.mission.journey
-      ? 'A journey of your own'
-      : `${def.rank}-rank mission for ${def.client}`,
+    kicker: kickerOf(state.mission, def),
     lines: state.mission.notes.map(noteLine),
     threads: threadViews(state, ctx),
     route: routeOf(def, state.mission),

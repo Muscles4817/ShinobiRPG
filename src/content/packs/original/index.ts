@@ -51,7 +51,9 @@ import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
+import { DEEP_WILDS } from '../../shared/deepWilds';
 import { ROAD_EVENTS, TRAVELLERS } from '../../shared/road/events';
+import { DEEP_WILDS_EVENTS } from './deepWilds';
 import { VOICES } from '../../shared/talk/voices';
 import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
@@ -151,7 +153,8 @@ export const ORIGINAL_PACK: ContentPack = {
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
-  roadEvents: ROAD_EVENTS,
+  roadEvents: [...ROAD_EVENTS, ...DEEP_WILDS_EVENTS],
+  deepWilds: DEEP_WILDS,
   travellers: TRAVELLERS,
   arcs: [
     LANTERN_THIEF,

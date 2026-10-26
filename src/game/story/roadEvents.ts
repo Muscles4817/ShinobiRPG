@@ -60,14 +60,15 @@ export function partiesFor(
 }
 
 /**
- * Whether the event can happen here at all: foes come only on a trip of your own (a job's fights
- * are its own story's), and only when some band of them is no worse than the road; someone of
- * the road only while a meeting with them is still ahead.
+ * Whether the event can happen here at all: foes come only on a trip or a venture of your own (a
+ * job's fights are its own story's), and only when some band of them is no worse than the road;
+ * someone of the road only while a meeting with them is still ahead.
  */
 function canHappen(state: GameState, ctx: GameContext, e: RoadEventDef, danger: Danger): boolean {
   if (e.kind === 'traveller') return nextMeeting(state, ctx, e.travellerId) !== null;
   if (e.kind !== 'encounter') return true;
-  return state.mission?.journey !== undefined && partiesFor(e, danger, ctx).length > 0;
+  const own = state.mission?.journey !== undefined || state.mission?.venture !== undefined;
+  return own && partiesFor(e, danger, ctx).length > 0;
 }
 
 /** The region's events this road and season allow, not met for good. */
