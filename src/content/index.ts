@@ -70,6 +70,7 @@ export type {
   Pastime,
   PastimeGame,
   PersonArsenal,
+  CarriedKit,
   PersonDef,
   PersonRank,
   PersonRole,

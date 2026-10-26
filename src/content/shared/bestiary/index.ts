@@ -12,7 +12,14 @@ import { restlessDead, seaRaiders, WILD_BEASTS } from './wild';
  * A bench test fights each one at the grade its danger means (`src/test/bench/bestiary.test.ts`).
  */
 
-export { FOE_ROLES, type FoeKit, type FoeRole } from './kit';
+export {
+  FOE_GEAR_ROLES,
+  FOE_ROLES,
+  type FoeGear,
+  type FoeGearRole,
+  type FoeKit,
+  type FoeRole,
+} from './kit';
 
 /*#__NO_SIDE_EFFECTS__*/
 export function bestiary(kit: FoeKit): EnemyDef[] {

@@ -32,4 +32,16 @@ export const NARUTO_FOE_KIT: FoeKit = {
   heavyLimbs: 'binding-illusion',
   heal: 'mystical-palm',
   sense: 'chakra-sensing',
+  gear: {
+    knife: 'tanto',
+    sword: 'ninjato',
+    fineSword: 'katana',
+    spear: 'yari',
+    knuckles: 'fingerless-gloves',
+    kunai: 'weighted-kunai',
+    needles: 'senbon-case',
+    lightArmour: 'mesh-shirt',
+    heavyArmour: 'shinobi-armour',
+    plate: 'samurai-plate',
+  },
 };

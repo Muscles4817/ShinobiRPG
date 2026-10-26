@@ -21,6 +21,7 @@ import { companionTraits, PERSON_PREFIX } from './people/companions';
 import { personStats } from './people/progress';
 import { findPerson } from './people/cast';
 import { poolsSeen, retinueSeen, summonsSeen, type RetinueKnowledge } from './retinueSight';
+import { carriedNotes } from './scoutingCarried';
 import { poolNotes, type PoolNote } from './scoutingPools';
 import type { GameState } from './state';
 
@@ -276,7 +277,10 @@ function enemyOpponent(
     stats: enemyStatLine(def),
     traits: def.traits ?? [],
     companions: [...companions, ...summons],
-    pools: poolNotes(def, poolsSeen(state, def, knowledge), ctx),
+    pools: [
+      ...poolNotes(def, poolsSeen(state, def, knowledge), ctx),
+      ...carriedNotes(state, ctx, def, knowledge),
+    ],
   };
 }
 

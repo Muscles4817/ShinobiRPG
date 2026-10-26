@@ -3,10 +3,10 @@ import type { CombatantSetup, CombatPerk, CombatTrait } from '@/systems/combat';
 import type { Discipline } from '@/systems/techniques';
 import { MAX_HEALTH } from '@/systems/vitals';
 
-import { attributesOf, pouchFrom } from '../combatants';
+import { attributesOf } from '../combatants';
+import { carriedInto } from '../carried';
 import { walkingByRank } from '../footing';
 import type { GameContext } from '../context';
-import { arsenalGear } from '../gear';
 import type { GameState } from '../state';
 import { doableNow } from './capable';
 import { personStats } from './progress';
@@ -102,25 +102,12 @@ export function companionCombatant(
     ),
     traits: companionTraits(person),
     ...perksOf(person, clan),
-    ...kitOf(person, ctx),
+    ...carriedInto(person.arsenal, ctx),
     ...clanSize(person.clanId, ctx),
   };
   // A summoner brings their summons (`arsenal.summons`), called from the kit in the fight.
   const summons = (person.arsenal?.summons ?? []).map((id) => ctx.content.summons.require(id));
   return withPuppets(withCalls(fighter, summons, ctx), person.arsenal?.puppets ?? [], ctx);
-}
-
-/**
- * The gear and tools a person's arsenal names, for someone known by their kit; a full pouch
- * every fight. Without them, they are armed as their techniques suggest.
- */
-function kitOf(person: PersonDef, ctx: GameContext): Pick<CombatantSetup, 'gear' | 'items'> {
-  const { gearIds, tools, weaponMastery } = person.arsenal ?? {};
-  const mastery = weaponMastery ? { mastery: weaponMastery } : {};
-  return {
-    ...(gearIds ? { gear: { ...arsenalGear(gearIds, ctx), ...mastery } } : {}),
-    ...(tools ? { items: pouchFrom(tools, ctx) } : {}),
-  };
 }
 
 /** What an awakened bloodline gives anyone born to it, as it does you (`combatants.ts`). */

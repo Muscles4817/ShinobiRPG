@@ -20,6 +20,7 @@ export function bandits(kit: FoeKit): EnemyDef[] {
       ...foeStats(5, [7, 12, 8, 9]),
       maxChakra: 19,
       techniqueIds: [kit.smoke],
+      carries: { tools: { 'smoke-bomb': 2 } },
       traits: ['swift', 'coward'],
     },
     {
@@ -31,6 +32,7 @@ export function bandits(kit: FoeKit): EnemyDef[] {
       ...foeStats(5, [10, 11, 9, 7], { taijutsu: 7 }),
       maxChakra: 13,
       techniqueIds: [kit.palm, kit.sweep],
+      carries: { gearIds: [kit.gear.knife, kit.gear.lightArmour] },
       traits: ['swift'],
     },
     {
@@ -78,6 +80,7 @@ export function bandits(kit: FoeKit): EnemyDef[] {
       ...foeStats(7, [12, 10, 11, 8], { kenjutsu: 7, taijutsu: 7 }),
       maxChakra: 38,
       techniqueIds: [kit.cut, kit.bleedCut, kit.throw],
+      carries: { gearIds: [kit.gear.sword, kit.gear.lightArmour] },
       traits: ['armoured'],
     },
     {
@@ -90,6 +93,10 @@ export function bandits(kit: FoeKit): EnemyDef[] {
       ...foeStats(10, [14, 11, 13, 10], { kenjutsu: 13, willpower: 13, ninjutsu: 5, genjutsu: 5 }),
       maxChakra: 60,
       techniqueIds: [kit.heavyCut, kit.sweepCut, kit.bleedCut, kit.blastTag],
+      carries: {
+        gearIds: [kit.gear.fineSword, kit.gear.heavyArmour],
+        tools: { 'soldier-pill': 1 },
+      },
       traits: ['armoured'],
     },
   ];
@@ -107,6 +114,7 @@ export function smugglersAndSellswords(kit: FoeKit): EnemyDef[] {
       ...foeStats(5, [8, 10, 8, 8], { intellect: 8 }),
       maxChakra: 19,
       techniqueIds: [kit.smoke, kit.throw],
+      carries: { tools: { 'smoke-bomb': 1 } },
       traits: ['coward'],
     },
     {
@@ -131,6 +139,7 @@ export function smugglersAndSellswords(kit: FoeKit): EnemyDef[] {
       ...foeStats(7, [9, 10, 9, 9], { intellect: 11, taijutsu: 8 }),
       maxChakra: 32,
       techniqueIds: [kit.palm, kit.smoke, kit.snare],
+      carries: { tools: { 'flash-tag': 1 } },
       retinue: [{ enemyId: 'guard-dog', tell: 'open' }],
     },
     {
@@ -142,6 +151,7 @@ export function smugglersAndSellswords(kit: FoeKit): EnemyDef[] {
       ...foeStats(7, [10, 9, 10, 8], { kenjutsu: 11 }),
       maxChakra: 25,
       techniqueIds: [kit.cut, kit.bleedCut],
+      carries: { gearIds: [kit.gear.sword, kit.gear.lightArmour] },
       traits: ['armoured'],
     },
     {
@@ -158,6 +168,7 @@ export function smugglersAndSellswords(kit: FoeKit): EnemyDef[] {
       }),
       maxChakra: 55,
       techniqueIds: [kit.heavyCut, kit.throw, kit.substitute, kit.blastTag],
+      carries: { gearIds: [kit.gear.sword, kit.gear.heavyArmour], tools: { 'wound-salve': 1 } },
       traits: ['armoured'],
     },
     {
@@ -169,6 +180,10 @@ export function smugglersAndSellswords(kit: FoeKit): EnemyDef[] {
       ...foeStats(10, [10, 15, 9, 14], { kenjutsu: 16, taijutsu: 12 }),
       maxChakra: 60,
       techniqueIds: [kit.bleedCut, kit.conceal, kit.throw, kit.move],
+      carries: {
+        gearIds: [kit.gear.knife, kit.gear.needles],
+        tools: { 'smoke-bomb': 1, 'flash-tag': 1 },
+      },
       traits: ['swift'],
     },
   ];

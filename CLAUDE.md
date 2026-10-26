@@ -1032,8 +1032,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a bestiary foe:** a foe of a trade or country (bandits, samurai, pirates, beasts by
   biome) rather than of one job goes in the shared bestiary (`content/shared/bestiary/`), which
   every pack takes through its `FoeKit` (`packs/<id>/bestiaryKit.ts`: a technique of its own for
-  each `FOE_ROLES` role the foes ask for). Write it for the kind of place it lives, not today's
-  towns. Plain animals have no chakra or techniques. The bestiary bench
+  each `FOE_ROLES` role the foes ask for, and in `gear` a piece of its own for each
+  `FOE_GEAR_ROLES` role). Write it for the kind of place it lives, not today's
+  towns. Plain animals have no chakra or techniques. A foe known by its kit `carries` gear and
+  tools (`CarriedKit`, the same shape as an arsenal's, read by `carriedInto` and validated in
+  `validateCarried.ts`); a read names what it wears and, past a glance, its pouch
+  (`game/scoutingCarried.ts`). The bestiary bench
   (`src/test/bench/bestiary.test.ts`) fights each at the scale its danger means.
 - **Add another village's shinobi:** a `ShinobiVillage` in the pack's `shinobiVillages.ts` (a
   `short` word for foe names, a `headband` line, its `natures`, twelve `rogueNames`), with the

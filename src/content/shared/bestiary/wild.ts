@@ -175,6 +175,7 @@ export function seaRaiders(kit: FoeKit): EnemyDef[] {
       ...foeStats(6, [12, 10, 11, 7], { taijutsu: 7, kenjutsu: 7 }),
       maxChakra: 13,
       techniqueIds: [kit.cut, kit.palm],
+      carries: { gearIds: [kit.gear.sword] },
       traits: ['brawler'],
     },
     {
@@ -187,6 +188,7 @@ export function seaRaiders(kit: FoeKit): EnemyDef[] {
       ...foeStats(6, [12, 8, 10, 10], { kenjutsu: 7 }),
       maxChakra: 13,
       techniqueIds: [kit.throw],
+      carries: { gearIds: [kit.gear.kunai] },
       traits: ['archer'],
     },
     {
@@ -211,6 +213,7 @@ export function seaRaiders(kit: FoeKit): EnemyDef[] {
       ...foeStats(10, [14, 11, 13, 10], { kenjutsu: 13, willpower: 13, ninjutsu: 5, genjutsu: 5 }),
       maxChakra: 60,
       techniqueIds: [kit.heavyCut, kit.bleedCut, kit.sweepCut, kit.smoke],
+      carries: { gearIds: [kit.gear.fineSword, kit.gear.lightArmour], tools: { 'smoke-bomb': 1 } },
       traits: ['armoured'],
     },
   ];
