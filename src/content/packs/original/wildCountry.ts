@@ -29,11 +29,19 @@ export const CEDAR_DEEP: LocationDef = {
       finds: WOODS_FINDS,
     },
     {
+      id: 'cedar-deep-paths',
+      kind: 'training',
+      name: 'The Hermit’s Paths',
+      icon: 'tree',
+      blurb: 'Deer trails worn smooth by someone who walks them every morning',
+      trainingIds: ['root-running', 'still-listening'],
+    },
+    {
       id: 'cedar-deep-camp',
       kind: 'camp',
       name: 'The Hermit’s Clearing',
       icon: CAMP_ICON,
-      blurb: 'A ring of stones by an empty hut, where travellers sleep',
+      blurb: 'A ring of stones by the hermit’s hut, where travellers sleep',
     },
   ],
 };
@@ -152,11 +160,19 @@ export const OLD_BATTLEFIELD: LocationDef = {
   },
   places: [
     {
+      id: 'old-battlefield-rows',
+      kind: 'training',
+      name: 'The Rows',
+      icon: 'sword',
+      blurb: 'Room to swing a blade between the markers, if you mind them',
+      trainingIds: ['row-walking', 'clearing-sand'],
+    },
+    {
       id: 'old-battlefield-camp',
       kind: 'camp',
       name: 'The Keeper’s Fire',
       icon: CAMP_ICON,
-      blurb: 'A fire someone keeps lit at the field’s edge',
+      blurb: 'A fire the keeper keeps lit at the field’s edge',
     },
   ],
 };
