@@ -100,13 +100,16 @@ export function statChips(delta: StatDelta, tone: ChipTone = 'gain'): JournalChi
   );
 }
 
+/** What a run in progress keeps you to: a trip, a venture or a job. */
+function awayOn(run: NonNullable<GameState['mission']>): string {
+  if (run.journey) return 'You are on the road.';
+  return run.venture ? 'You are out in the wild.' : 'You are on a mission.';
+}
+
 /** Reason the character can't start a new activity, or null if they're free. */
 export function busyReason(state: GameState): string | null {
   if (state.combat) return 'You are in the middle of a fight.';
-  if (state.mission) {
-    if (state.mission.journey) return 'You are on the road.';
-    return state.mission.venture ? 'You are out in the wild.' : 'You are on a mission.';
-  }
+  if (state.mission) return awayOn(state.mission);
   if (state.exams.run) return 'You are sitting an exam.';
   if (state.exams.ceremony) return 'Your promotion ceremony is waiting.';
   if (state.people.conversation) return 'You are in the middle of a conversation.';

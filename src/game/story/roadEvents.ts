@@ -2,6 +2,7 @@ import { hashUnit } from '@/core';
 import { jobProfile } from '@/content';
 import {
   dangerAtLeast,
+  ownRun,
   type Danger,
   type EncounterRoadEvent,
   type RoadEventDef,
@@ -67,7 +68,7 @@ export function partiesFor(
 function canHappen(state: GameState, ctx: GameContext, e: RoadEventDef, danger: Danger): boolean {
   if (e.kind === 'traveller') return nextMeeting(state, ctx, e.travellerId) !== null;
   if (e.kind !== 'encounter') return true;
-  const own = state.mission?.journey !== undefined || state.mission?.venture !== undefined;
+  const own = state.mission !== null && ownRun(state.mission);
   return own && partiesFor(e, danger, ctx).length > 0;
 }
 

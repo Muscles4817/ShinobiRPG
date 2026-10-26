@@ -19,6 +19,11 @@ export interface VenturePlan {
   readonly out?: WildDepth;
 }
 
+/** A trip or a venture of your own, rather than a job: nobody is let down when it goes wrong. */
+export function ownRun(run: { readonly journey?: unknown; readonly venture?: unknown }): boolean {
+  return run.journey !== undefined || run.venture !== undefined;
+}
+
 /** The depths from the edge in to `depth`, in the order you reach them. */
 export function depthsTo(depth: WildDepth): readonly WildDepth[] {
   return WILD_DEPTHS.slice(0, WILD_DEPTHS.indexOf(depth) + 1);
@@ -27,4 +32,9 @@ export function depthsTo(depth: WildDepth): readonly WildDepth[] {
 /** The depths walked back through on the way out from `depth`, the next one out first. */
 export function depthsOut(depth: WildDepth): readonly WildDepth[] {
   return depthsTo(depth).slice(0, -1).reverse();
+}
+
+/** Days a venture to `depth` takes: a day at each depth going in, and one back through each. */
+export function ventureDays(depth: WildDepth): number {
+  return depthsTo(depth).length + depthsOut(depth).length;
 }

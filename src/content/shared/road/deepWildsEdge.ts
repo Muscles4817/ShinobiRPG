@@ -10,7 +10,7 @@ export const EDGE_EVENTS: readonly RoadEventDef[] = [
     id: 'poachers-camp',
     regions: ['woods-edge', 'mountain-edge', 'marsh-edge', 'shore-edge', 'desert-edge'],
     rarity: 'uncommon',
-    text: 'Snares in a line, a fire kicked out not long ago, and two men watching you from behind it.',
+    text: 'Snares in a line, a fire kicked out not long ago, and someone watching you from behind it.',
     parties: [
       ['village-hunter'],
       ['village-hunter', 'guard-dog'],

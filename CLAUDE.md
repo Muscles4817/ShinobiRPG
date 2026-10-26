@@ -968,8 +968,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   a way-finding check before the deep and the heart, a camp each night to turn back at). What a
   day holds is its depth region's road events (`deepRegion`: `woods-heart`), in
   `shared/road/deepWilds*.ts`; every depth keeps one for every season (validated), and each pack
-  names the missing-nin hiding in the deep (`packs/<id>/deepWilds.ts`). A genin goes as far as the
-  deep only on a pass; the heart is for chūnin.
+  names the missing-nin hiding in the deep (`packs/<id>/deepWilds.ts`). Past the edge, leave is as for a trip
+  (`ventureLeaveBlocker`: a genin's pass, a chūnin's days); the heart is for chūnin, and a
+  venture ending badly costs no standing (`ownRun`).
 - **Add a wild place:** a `wilds` `PlaceDef` with a `biome`, `finds` and optional fishing
   `spots` (reuse the shared lists in `shared/wilds.ts` where the country is the same).
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view

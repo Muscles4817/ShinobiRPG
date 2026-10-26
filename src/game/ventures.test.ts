@@ -1,12 +1,12 @@
 import { signPass } from '@/systems/travel';
 import { act, ctx, keepClear, newGame } from '@/test/gameFixtures';
 
-import { HEART_IS_FOR_CHUNIN, NEEDS_PASS_FOR_DEEP } from './actions/venture';
 import { dispatch } from './dispatch';
-import { PASS_DAYS } from './leave';
-import { activeStage } from './missionFlow';
+import { HEART_IS_FOR_CHUNIN, PASS_DAYS, VENTURE_PASS_NEEDED } from './leave';
+import { activeStage, endMission } from './missionFlow';
 import { roadEventOn } from './story/roadEvents';
 import type { GameState } from './state';
+import { ventureMission } from './ventures';
 import { wildsView } from './views/wilds';
 
 const WOODS = 'lantern-woods';
@@ -45,7 +45,7 @@ describe('going off the paths', () => {
     const game = newGame();
     expect(dispatch(game, { type: 'venture', placeId: WOODS, depth: 'deep' }, ctx)).toEqual({
       ok: false,
-      error: NEEDS_PASS_FOR_DEEP,
+      error: VENTURE_PASS_NEEDED,
     });
     const passed = onPass();
     expect(dispatch(passed, { type: 'venture', placeId: WOODS, depth: 'deep' }, ctx).ok).toBe(true);
@@ -74,7 +74,7 @@ describe('going off the paths', () => {
     expect(turned.mission?.venture).toMatchObject({ depth: 'deep', out: 'edge' });
     const back = walk(turned);
     expect(back.mission).toBeNull();
-    expect(back.journal.entries.at(-1)?.chips.map((c) => c.label)).toEqual(['A day in the wild']);
+    expect(back.journal.entries.at(-1)?.chips?.map((c) => c.label)).toEqual(['A day in the wild']);
   });
 
   it('meets foes in the wild, as on a trip of your own', () => {
@@ -84,5 +84,21 @@ describe('going off the paths', () => {
       return roadEventOn(day, ctx, { region: 'woods-deep', danger: 'deadly' })?.kind;
     });
     expect(kinds).toContain('encounter');
+  });
+
+  it('lets nobody down when it ends badly', () => {
+    const going = act(newGame(), { type: 'venture', placeId: WOODS, depth: 'edge' });
+    const { state } = endMission(going, ctx, 'You were beaten.');
+    expect(state.mission).toBeNull();
+    expect(state.standing).toEqual(going.standing);
+    expect(state.journal.entries.at(-1)?.heading).toBe('Into the deep woods cut short');
+  });
+
+  it('camps between the days back out', () => {
+    const chunin = { ...newGame(), standing: { ...newGame().standing, rank: 'chunin' as const } };
+    const going = act(chunin, { type: 'venture', placeId: WOODS, depth: 'heart' });
+    expect(going.leave).not.toEqual(chunin.leave);
+    const kinds = ventureMission(going.mission!.venture!, ctx).stages.map((s) => s.kind);
+    expect(kinds.slice(-4)).toEqual(['leg', 'camp', 'leg', 'narrative']);
   });
 });

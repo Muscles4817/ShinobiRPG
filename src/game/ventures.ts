@@ -6,12 +6,13 @@ import {
   type Danger,
   type MissionDef,
   type MissionStage,
+  ventureDays,
   type VenturePlan,
   type WildDepth,
 } from '@/systems/missions';
 
 import type { GameContext } from './context';
-import { CAMP, legsWalked } from './journeys';
+import { CAMP, legsWalked, turningBack } from './journeys';
 import { chip, log } from './ops';
 import type { GameState } from './state';
 import { settle } from './story/state';
@@ -82,11 +83,13 @@ function goingIn(country: DeepWildsDef, depth: WildDepth): MissionStage[] {
   ]);
 }
 
+/** The days back out through the depths below `from`, a camp between them. */
 function comingOut(country: DeepWildsDef, from: WildDepth): MissionStage[] {
-  return [
-    ...depthsOut(from).map((d) => day(country, d, 'back')),
-    { kind: 'narrative', text: country.out },
-  ];
+  const back = depthsOut(from).flatMap((d, i) => [
+    ...(i > 0 ? [CAMP] : []),
+    day(country, d, 'back'),
+  ]);
+  return [...back, { kind: 'narrative', text: country.out }];
 }
 
 /** "Into the deep woods". */
@@ -142,20 +145,15 @@ export function turnOut(state: GameState, ctx: GameContext, reached: WildDepth):
   const back = { ...plan, out: reached };
   const def = ventureMission(back, ctx);
   const returning = settle(def, { ...startRun(def, run.crew), venture: back });
-  return log(
+  return turningBack(
     { ...state, mission: returning },
-    {
-      heading: 'Turning back',
-      text: 'You break camp and start back the way you came.',
-      tone: 'warning',
-    },
+    'You break camp and start back the way you came.',
   );
 }
 
 /** Out of the wild, where you went in. */
 export function comeOut(state: GameState, ctx: GameContext, plan: VenturePlan): GameState {
-  const deepest = plan.out ?? plan.depth;
-  const days = depthsTo(deepest).length + depthsOut(deepest).length;
+  const days = ventureDays(plan.out ?? plan.depth);
   const country = countryOf(ctx, plan);
   return log(
     { ...state, mission: null },

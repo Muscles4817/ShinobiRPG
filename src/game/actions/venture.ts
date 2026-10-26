@@ -1,48 +1,50 @@
-import { RANKS } from '@/systems/standing';
-import { passValid } from '@/systems/travel';
+import { ventureDays, type VenturePlan } from '@/systems/missions';
 
+import { examClash } from '../awayNotes';
 import type { GameContext } from '../context';
 import { wildsHere } from '../gathering';
 import { laidUp } from '../injuries';
+import { spendVentureLeave, ventureLeaveBlocker } from '../leave';
 import { busyReason, firstBlocker } from '../ops';
 import type { GameState } from '../state';
-import { deepWildsOf, goInto } from '../ventures';
+import { deepWildsOf, goInto, ventureMission } from '../ventures';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
  * Going off the paths into wild country from a wild place (`game/ventures.ts`). The edge is
- * anyone's. The deep takes days, so a genin goes only on their sensei's pass; the heart is for
- * chūnin and up.
+ * anyone's; past it, leave is as for a trip (`ventureLeaveBlocker`), and your sensei won't sign
+ * you out across an exam they'd put you in.
  */
 
-export const NEEDS_PASS_FOR_DEEP =
-  'A genin goes as far as the deep only on a pass your sensei signs at your weekly lesson.';
-export const HEART_IS_FOR_CHUNIN = 'Only a chūnin or higher goes into the heart of wild country.';
-
-function depthBlocker(state: GameState, depth: ActionOf<'venture'>['depth']): string | null {
-  const rank = RANKS.indexOf(state.standing.rank);
-  if (rank >= RANKS.indexOf('chunin') || depth === 'edge') return null;
-  if (depth === 'heart') return HEART_IS_FOR_CHUNIN;
-  return passValid(state.leave, state.time.day) ? null : NEEDS_PASS_FOR_DEEP;
+/** What keeps you from going in at all, whatever the depth. */
+export function ventureBlocker(state: GameState, ctx: GameContext): string | null {
+  return firstBlocker(busyReason(state), laidUp(state, ctx));
 }
 
-function countryHere(state: GameState, ctx: GameContext, placeId: string) {
+function planHere(
+  state: GameState,
+  ctx: GameContext,
+  { placeId, depth }: ActionOf<'venture'>,
+): VenturePlan | null {
   const place = wildsHere(state, ctx, placeId);
-  return place ? deepWildsOf(ctx, place.biome) : null;
+  const country = place ? deepWildsOf(ctx, place.biome) : null;
+  return country ? { placeId, country: country.biome, depth } : null;
 }
 
 export const venture: ActionHandler<ActionOf<'venture'>> = {
-  check(state, { placeId, depth }, ctx) {
+  check(state, action, ctx) {
+    const plan = planHere(state, ctx, action);
+    if (!plan) return 'There is no way further in from here.';
+    const clash = examClash(state, ctx, ventureMission(plan, ctx));
     return firstBlocker(
-      busyReason(state),
-      countryHere(state, ctx, placeId) === null && 'There is no way further in from here.',
-      laidUp(state, ctx),
-      depthBlocker(state, depth),
+      ventureBlocker(state, ctx),
+      ventureLeaveBlocker(state, ventureDays(action.depth), action.depth === 'heart'),
+      clash?.blocks === true && clash.text,
     );
   },
-  perform(state, { placeId, depth }, ctx) {
-    const country = countryHere(state, ctx, placeId);
-    if (!country) return state;
-    return goInto(state, ctx, { placeId, country: country.biome, depth });
+  perform(state, action, ctx) {
+    const plan = planHere(state, ctx, action);
+    if (!plan) return state;
+    return goInto(spendVentureLeave(state, ventureDays(plan.depth)), ctx, plan);
   },
 };

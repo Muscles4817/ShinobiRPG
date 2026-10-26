@@ -1,6 +1,7 @@
 import {
   currentStage,
   isSeniorMission,
+  ownRun,
   reward,
   type MissionDef,
   type MissionRun,
@@ -168,17 +169,20 @@ export function endMission(
     const exit = reason === BEATEN ? 'beaten' : 'no-token';
     return { state: forestLost(state, ctx, exit), title: null, exam: true };
   }
+  // A trip or a venture of your own lets nobody down: it ends, and that is all.
+  const own = state.mission !== null && ownRun(state.mission);
+  const lost = own ? 0 : reputationLost;
   const next: GameState = {
     ...state,
     mission: null,
     combat: null,
-    standing: recordMissionFailure(state.standing, reputationLost),
+    standing: own ? state.standing : recordMissionFailure(state.standing, lost),
   };
   const logged = log(next, {
-    heading: def ? `${def.title} failed` : 'Mission failed',
+    heading: def ? `${def.title} ${own ? 'cut short' : 'failed'}` : 'Mission failed',
     text: reason,
     tone: 'danger',
-    chips: reputationLost > 0 ? [chip(`−${reputationLost} reputation`, 'harm')] : [],
+    chips: lost > 0 ? [chip(`−${lost} reputation`, 'harm')] : [],
   });
   return { state: logged, title: def?.title ?? null, exam: false };
 }
@@ -193,8 +197,9 @@ export function failMission(
   const def = activeMission(state, ctx);
   const helped = def ? helpedOf(state, ctx, def) : null;
   const road = debriefLines(state.mission?.ledger ?? []);
+  const own = state.mission !== null && ownRun(state.mission);
   const ended = endMission(state, ctx, reason, reputationLost);
-  if (ended.exam) return ended.state;
+  if (ended.exam || own) return ended.state;
   return addReport(ended.state, {
     kind: 'mission-failed',
     title: ended.title ?? 'Mission',

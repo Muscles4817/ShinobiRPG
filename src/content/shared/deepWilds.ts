@@ -20,7 +20,7 @@ export const DEEP_WILDS: readonly DeepWildsDef[] = [
       },
       heart: {
         going:
-          'The trunks are wider than a house and the moss is up to your knees. Nothing sings here, and the quiet has a weight.',
+          'The trunks are wider than a house and the moss is up to your knees. No birds sing this far in.',
         back: 'You leave the heart behind, and somewhere behind you the birds start up again.',
       },
     },
@@ -87,7 +87,7 @@ export const DEEP_WILDS: readonly DeepWildsDef[] = [
       },
       heart: {
         going:
-          'The water here is black and very still, and the mist on it never lifts. Things move under the surface that you never see.',
+          'The water here is black and very still, and the mist on it never lifts. No fish live in it, but now and then the surface stirs.',
         back: 'The black water turns brown again as you wade out of the heart.',
       },
     },
@@ -149,7 +149,7 @@ export const DEEP_WILDS: readonly DeepWildsDef[] = [
       deep: {
         going:
           'The dunes go on to the edge of sight, and the wind moves them while you watch. There are stones out here that were walls once.',
-        back: 'You walk back out by the stars, through the dunes you came in by.',
+        back: 'You walk back out through the dunes, counting them off the way you came.',
       },
       heart: {
         going:
@@ -169,6 +169,6 @@ export const DEEP_WILDS: readonly DeepWildsDef[] = [
         failure: 'The heat gets into your head, and you walk half the day the wrong way.',
       },
     },
-    out: 'You come down off the last dune onto the caravan track, dry to the bone.',
+    out: 'You come down off the last dune onto the caravan track, with your lips cracked.',
   },
 ];

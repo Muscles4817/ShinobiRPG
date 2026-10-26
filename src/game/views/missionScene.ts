@@ -11,6 +11,7 @@ import type { GameContext } from '../context';
 import { activeMission, activeStage } from '../missionFlow';
 import type { GameState } from '../state';
 import { storyOf } from '../story/state';
+import { runKind } from './runKind';
 import { stagePrompt, type SceneChoice } from './storyChoices';
 
 /**
@@ -101,20 +102,13 @@ function threadViews(state: GameState, ctx: GameContext): ThreadView[] {
   });
 }
 
-/** What kind of trip this is: a journey, a venture or a job. */
-function kickerOf(run: MissionRun, def: MissionDef): string {
-  if (run.journey) return 'A journey of your own';
-  if (run.venture) return 'Off the paths';
-  return `${def.rank}-rank mission for ${def.client}`;
-}
-
 export function missionScene(state: GameState, ctx: GameContext): MissionScene | null {
   const def = activeMission(state, ctx);
   if (!def || !state.mission || state.combat) return null;
   const stage = activeStage(state, ctx);
   const base = {
     title: def.title,
-    kicker: kickerOf(state.mission, def),
+    kicker: runKind(state.mission, def).kicker,
     lines: state.mission.notes.map(noteLine),
     threads: threadViews(state, ctx),
     route: routeOf(def, state.mission),

@@ -2,9 +2,8 @@ import { startRun } from '@/systems/missions';
 
 import { HUNT_THREAD } from '../hunt';
 import { activeStage } from '../missionFlow';
-import { journeyMission, legsBack, legsWalked } from '../journeys';
+import { journeyMission, legsBack, legsWalked, turningBack } from '../journeys';
 import { plannedStops } from '../journeyStops';
-import { log } from '../ops';
 import { settle } from '../story/state';
 import { ventureAhead, turnOut } from '../ventures';
 import type { ActionHandler, ActionOf } from './types';
@@ -41,13 +40,9 @@ export const turnBack: ActionHandler<ActionOf<'turnBack'>> = {
     const def = journeyMission(back, ctx);
     const returning = settle(def, { ...startRun(def, run.crew), journey: back });
     const home = ctx.content.locations.require(back.to).name;
-    return log(
+    return turningBack(
       { ...state, mission: returning },
-      {
-        heading: 'Turning back',
-        text: `You break camp and take the road back to ${home}.`,
-        tone: 'warning',
-      },
+      `You break camp and take the road back to ${home}.`,
     );
   },
 };

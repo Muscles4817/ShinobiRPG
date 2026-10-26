@@ -119,9 +119,10 @@ deep and the heart that costs some health when it fails, a camp each night where
 back, and a day back through each depth on the way out. What a day brings is its depth's road
 events, drawn as a road's are, encounters included: plain animals, poachers and finds at the edge;
 the pack's missing-nin, smugglers, deserters, a hermit and the touched beasts in the deep; the
-changed beasts, the three elders (rare) and the heart's sights in the heart. Leave is simpler
-than this plan had it: the edge is anyone's, a genin goes to the deep only on their sensei's pass,
-and the heart is for chūnin and up. The heart's finds wait for the drops and recipes of step 3.
+changed beasts, the three elders (rare) and the heart's sights in the heart. A day at the edge is anyone's; past it, leave works as for a trip: a genin's pass must last until
+they are back, a chūnin spends days of leave, and the heart is for chūnin and up. A sensei won't
+sign you out across an exam they'd put you in, and a day at the edge is no excuse for missing
+them. A venture that ends in a defeat costs no standing, as a trip's doesn't.
 
 **Why go.** The heart's finds and drops (the kitchen, below), field book entries no road gives,
 bounties: a missing-nin hiding in the deep is a job's quarry already, and a hunt posted for one

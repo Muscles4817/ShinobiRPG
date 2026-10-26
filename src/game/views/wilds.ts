@@ -1,7 +1,6 @@
 import { listed } from '@/core';
 import type { Biome } from '@/content';
 import { gatheredToday, inSeason, recognised, type Find } from '@/systems/cooking';
-import { WILD_DEPTHS, type WildDepth } from '@/systems/missions';
 
 import { daysToWin } from '@/systems/companions';
 
@@ -13,7 +12,7 @@ import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { insectsHere } from '../hives/breeding';
-import { deepWildsOf } from '../ventures';
+import { ventureView, type VentureView } from './venture';
 
 /**
  * A wild place: foraging, with what's in season, and each fishing spot with what bites at this
@@ -47,20 +46,6 @@ export interface WildSign {
   readonly energy: number;
   readonly track: Choice;
 }
-
-/** Going off the paths from here into wild country, as far as each depth. */
-export interface VentureView {
-  /** "the deep woods". */
-  readonly country: string;
-  readonly depths: readonly (Choice & { readonly depth: WildDepth; readonly label: string })[];
-}
-
-/** What each depth is called on its button. */
-const DEPTH_LABELS: Readonly<Record<WildDepth, string>> = {
-  edge: 'As far as the edge',
-  deep: 'Into the deep',
-  heart: 'To the heart',
-};
 
 export interface WildsView {
   readonly name: string;
@@ -109,24 +94,6 @@ function whatsAbout(state: GameState, ctx: GameContext, finds: readonly Find[]):
   return {
     known: names(now.filter((f) => recognised(f, moment.grade))),
     strange: now.filter((f) => !recognised(f, moment.grade)).length,
-  };
-}
-
-function ventureView(
-  state: GameState,
-  ctx: GameContext,
-  placeId: string,
-  biome: Biome,
-): VentureView | null {
-  const country = deepWildsOf(ctx, biome);
-  if (!country) return null;
-  return {
-    country: country.name,
-    depths: WILD_DEPTHS.map((depth) => ({
-      ...choice(state, ctx, { type: 'venture', placeId, depth }),
-      depth,
-      label: DEPTH_LABELS[depth],
-    })),
   };
 }
 
