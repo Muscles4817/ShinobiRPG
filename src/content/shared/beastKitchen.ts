@@ -2,8 +2,10 @@ import type { CookbookDef, IngredientDef, RecipeDef } from '../types';
 
 /**
  * What a beaten chakra beast leaves for the pot (`EnemyDef.drops`), and the dishes made from
- * it (`docs/design/chakra-beasts-plan.md`). Nobody sells the meat: you bring it out of the wild
- * yourself. The dishes are in a hunter's book sold at home, and can be worked out at the stove.
+ * it (`docs/design/chakra-beasts-plan.md`). Nobody sells these: you bring them out of the wild
+ * yourself. Each dish does a job another already does and adds a second one, as a dish that
+ * costs a hunt should (`cooking-plan.md`, rule 3). They are in a book sold at home, and can be
+ * worked out at the stove.
  */
 
 export const BEAST_INGREDIENTS: readonly IngredientDef[] = [
@@ -20,19 +22,19 @@ export const BEAST_RECIPES: readonly RecipeDef[] = [
     id: 'ember-boar-skewers',
     name: 'Ember Boar Skewers',
     description:
-      'The meat is warm before it goes near the fire, and you feel it in your chest after.',
+      'The meat is warm before it goes near the fire, and still warm an hour after you eat it.',
     icon: 'pot',
-    rank: 'C',
+    rank: 'B',
     method: 'grill',
     steps: { cut: 'chunky' },
     ingredients: [
       { id: 'ember-boar-flank', count: 1 },
       { id: 'spices', count: 1 },
     ],
-    satiety: 55,
-    energy: 15,
-    chakra: 35,
-    buff: {},
+    satiety: 40,
+    energy: 10,
+    chakra: 30,
+    buff: { hungerRate: 0.9 },
   },
   {
     id: 'thunder-eel-rice',
@@ -54,7 +56,7 @@ export const BEAST_RECIPES: readonly RecipeDef[] = [
     id: 'serow-stew',
     name: 'Serow Haunch Stew',
     description:
-      'Mountain meat stewed all afternoon with roots. Hunters eat it before a long climb.',
+      'Lean, dark meat stewed all afternoon with roots. It tastes of the mountain herbs the serow eats.',
     icon: 'pot',
     rank: 'C',
     method: 'simmer',
@@ -65,13 +67,13 @@ export const BEAST_RECIPES: readonly RecipeDef[] = [
     ],
     satiety: 70,
     energy: 20,
-    buff: { training: 1.1 },
+    buff: { studyElement: { earth: 1.25 }, growth: { stamina: 1.1 } },
   },
   {
     id: 'moss-bear-broth',
     name: 'Moss Bear Broth',
     description:
-      'A little of the fat goes a long way. Old hunters keep it for wounds that won’t close.',
+      'A spoon of the green fat melted into broth. It smells of moss, and cuts close up overnight.',
     icon: 'bowl',
     rank: 'B',
     method: 'simmer',
@@ -81,16 +83,16 @@ export const BEAST_RECIPES: readonly RecipeDef[] = [
     ],
     satiety: 45,
     energy: 10,
-    health: 35,
-    buff: { injuryNights: 1 },
+    health: 15,
+    buff: { injuryNights: 1, sleepHealing: 1.2 },
   },
   {
     id: 'venom-sac-tonic',
     name: 'Venom Sac Tonic',
     description:
-      'A drop of the venom boiled down with ginger. It burns going down, and after a cup a sting hardly troubles you.',
+      'The sac boiled down with ginger. It burns going down. Scorpion hunters drink it before a night out on the sand.',
     icon: 'bowl',
-    rank: 'B',
+    rank: 'C',
     method: 'boil',
     ingredients: [
       { id: 'glass-venom-sac', count: 1 },
@@ -98,7 +100,7 @@ export const BEAST_RECIPES: readonly RecipeDef[] = [
     ],
     satiety: 15,
     energy: 5,
-    buff: {},
+    buff: { afterDark: 1.2 },
     provision: 'antidote',
   },
   {
@@ -112,14 +114,15 @@ export const BEAST_RECIPES: readonly RecipeDef[] = [
     ingredients: [{ id: 'tide-crab-claw', count: 1 }],
     satiety: 50,
     energy: 10,
-    buff: { bondGain: 1.3 },
+    buff: { bondGain: 1.25, hungerRate: 0.9 },
   },
 ];
 
 export const BEAST_COOKBOOK: CookbookDef = {
-  id: 'deep-hunters-pot',
-  name: 'The Deep Hunter’s Pot',
-  description: 'A hunter’s notebook from the deep woods. Some pages are scorched, and one is wet.',
+  id: 'hunters-pot',
+  name: 'The Hunter’s Pot',
+  description:
+    'A notebook kept by someone who went into the deep woods for meat. Some pages are scorched, and one is water-stained.',
   cost: 180,
   icon: 'scroll',
   recipeIds: BEAST_RECIPES.map((r) => r.id),

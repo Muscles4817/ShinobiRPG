@@ -79,7 +79,7 @@ export const SHOPPING_DISTRICT: PlaceDef = {
         'river-cook',
         'fishmongers-knife',
         'marsh-and-falls',
-        'deep-hunters-pot',
+        'hunters-pot',
       ],
     },
   ],

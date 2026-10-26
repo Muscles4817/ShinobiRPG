@@ -1,8 +1,8 @@
 import type { RecipeDef } from '../types';
+import { BEAST_RECIPES } from './beastKitchen';
 import { CATCH_RECIPES } from './catchRecipes';
 import { FISH_RECIPES } from './fishRecipes';
 import { WILD_RECIPES } from './wildRecipes';
-import { BEAST_RECIPES } from './beastKitchen';
 
 /**
  * Home cooking shared by every pack. Each dish has one job (its role) and at most one more:

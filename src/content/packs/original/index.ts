@@ -42,6 +42,7 @@ import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
 import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
+import { BEAST_INGREDIENTS } from '../../shared/beastKitchen';
 import { TOROGAKURE_COOKBOOKS, TOROGAKURE_INGREDIENTS } from './kitchen';
 import { TOROGAKURE_RECIPES } from './recipes';
 import { REGIONAL_COOKBOOKS, REGIONAL_INGREDIENTS } from './regions/merchants';
@@ -211,6 +212,7 @@ export const ORIGINAL_PACK: ContentPack = {
   ingredients: [
     ...INGREDIENTS,
     ...WILD_INGREDIENTS,
+    ...BEAST_INGREDIENTS,
     ...DESERT_INGREDIENTS,
     ...TOROGAKURE_INGREDIENTS,
     ...REGIONAL_INGREDIENTS,

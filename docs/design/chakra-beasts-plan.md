@@ -157,10 +157,11 @@ writing keeps reaching for one.
 
    **As built.** Six drops (`content/shared/beastKitchen.ts`): the ember boar's flank, the
    thunder eel, the serow's haunch, the moss bear's fat, the glass scorpion's venom sac and the
-   tide crab's claw, sold nowhere. Six dishes, one role each: skewers that give chakra back,
-   eel that helps study lightning and water together, a stew that helps every kind of training,
-   a broth that heals and closes wounds sooner, a tonic that is an antidote in a fight, and a
-   crab cracked at the table that makes time with people count for more. They are in The Deep
+   tide crab's claw, sold nowhere. Six dishes; each does a job another dish already does and adds
+   a second, as a dish that costs a hunt should: skewers that give chakra back and keep you full,
+   eel that helps study lightning and water together, a stew for earth and stamina, a broth that
+   closes wounds and deepens sleep, a tonic that is an antidote and helps night drills, and a
+   crab cracked at the table that warms time with people and keeps you full. They are in The
    Hunter's Pot, sold at each home village's market.
 
 4. **Jobs.** Hunt fills for the changed beasts (`c-team-hunt`, B-rank hunts) that send you into

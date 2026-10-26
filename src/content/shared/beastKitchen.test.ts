@@ -1,25 +1,22 @@
 import { CONTENT_PACKS } from '../packs';
 import { BEAST_INGREDIENTS } from './beastKitchen';
 
-/** The meat of a chakra beast only comes out of the wild with you. */
+/** What a chakra beast leaves comes out of the wild only with you: no stall sells it, no road gives it. */
 describe('the beast kitchen', () => {
   it.each(CONTENT_PACKS.map((p) => [p.id, p] as const))(
-    'in %s, every beast ingredient is dropped by a chakra beast and sold nowhere',
+    'in %s, no stall sells a beast ingredient and no road gives one',
     (_, pack) => {
-      const dropped = new Set(
-        pack.enemies.filter((e) => e.chakraBeast).flatMap((e) => e.drops ?? []),
-      );
-      const sold = new Set(
-        pack.locations.flatMap((l) =>
-          l.places.flatMap((p) =>
-            p.kind === 'market' ? p.stalls.flatMap((s) => s.ingredientIds) : [],
-          ),
+      const stalls = [
+        ...pack.locations.flatMap((l) =>
+          l.places.flatMap((p) => (p.kind === 'market' ? p.stalls : [])),
         ),
-      );
-      for (const { id } of BEAST_INGREDIENTS) {
-        expect(dropped.has(id), id).toBe(true);
-        expect(sold.has(id), id).toBe(false);
-      }
+        ...pack.village.festivals.flatMap((f) => f.stalls ?? []),
+      ];
+      const elsewhere = new Set([
+        ...stalls.flatMap((s) => s.ingredientIds),
+        ...pack.roadEvents.flatMap((e) => (e.kind === 'find' ? e.ingredientIds : [])),
+      ]);
+      expect(BEAST_INGREDIENTS.map((i) => i.id).filter((id) => elsewhere.has(id))).toEqual([]);
     },
   );
 });
