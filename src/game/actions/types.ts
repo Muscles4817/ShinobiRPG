@@ -6,7 +6,7 @@ import type { RangeBand } from '@/systems/combat';
 import type { PlayKind } from '@/systems/companions';
 import type { CookingSteps } from '@/systems/cooking';
 import type { HiveShare } from '@/systems/hives';
-import type { ApproachId, ReconId } from '@/systems/missions';
+import type { ApproachId, ReconId, WildDepth } from '@/systems/missions';
 import type { DrinkWayId } from '../bar';
 import type { DiceCall } from '../state';
 import type { MindApproach } from '../exam/mind';
@@ -116,6 +116,7 @@ export type GameAction =
   | { readonly type: 'followSight' }
   | { readonly type: 'befriendStray' }
   | { readonly type: 'trackWild'; readonly placeId: string }
+  | { readonly type: 'venture'; readonly placeId: string; readonly depth: WildDepth }
   | { readonly type: 'takePup' }
   | { readonly type: 'takeRescued' }
   | { readonly type: 'rehomeCompanion' }

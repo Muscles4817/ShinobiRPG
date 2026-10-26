@@ -12,6 +12,7 @@ import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { insectsHere } from '../hives/breeding';
+import { ventureView, type VentureView } from './venture';
 
 /**
  * A wild place: foraging, with what's in season, and each fishing spot with what bites at this
@@ -55,6 +56,8 @@ export interface WildsView {
   readonly wild: WildSign | null;
   /** For someone with a hive: insects here worth a jar, and the search for them. */
   readonly insects: (Choice & { readonly about: readonly string[] }) | null;
+  /** The way into wild country, where there is one. */
+  readonly venture: VentureView | null;
 }
 
 /** Below this a day's tracking more often goes cold than not; above the next, it mostly gets closer. */
@@ -119,6 +122,7 @@ export function wildsView(state: GameState, ctx: GameContext, placeId: string): 
           about: insectsHere(state, ctx, placeId).map((s) => s.name),
         }
       : null,
+    venture: ventureView(state, ctx, placeId, place.biome),
   };
 }
 

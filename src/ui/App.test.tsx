@@ -589,6 +589,16 @@ describe('App (smoke test)', () => {
     expect(screen.getAllByRole('button', { name: 'Cast a line' })).toHaveLength(4);
   });
 
+  it('goes off the paths into the woods and back out', async () => {
+    const user = userEvent.setup();
+    render(<App store={memoryStore()} />);
+    await startGame(user);
+    await user.click(place(/Lantern Woods/));
+    expect(screen.getByRole('button', { name: 'To the heart' })).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: 'As far as the edge' }));
+    expect(screen.getByText('Off the paths')).toBeInTheDocument();
+  });
+
   it('resumes a saved game', async () => {
     const user = userEvent.setup();
     const store = memoryStore();

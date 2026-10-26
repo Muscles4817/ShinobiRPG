@@ -45,9 +45,13 @@ function lessonHad(state: GameState, sensei: PersonDef, day: number): boolean {
   return record?.week === weekOf(day) && record.lastDay <= day;
 }
 
+/**
+ * Away on a job, a trip or a venture past the edge, out of the village or laid up. A day at the
+ * edge of the woods needs no pass, so it is no excuse for missing your sensei.
+ */
 function excused(state: GameState, ctx: GameContext): boolean {
   return (
-    state.mission !== null ||
+    (state.mission !== null && state.mission.venture?.depth !== 'edge') ||
     state.locationId !== ctx.content.startLocationId ||
     laidUp(state, ctx) !== null
   );

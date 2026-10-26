@@ -964,6 +964,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `start` line if the sensei begins it, an optional `walk` surface, a `limitBonus`, practice and
   fall lines) in `shared/exercises.ts` or a pack's own list, offered at a training place's
   `exerciseIds` (validated).
+- **Add wild country to go into:** a `DeepWildsDef` in `content/shared/deepWilds.ts` (a biome,
+  each depth's day going in and coming back, finding the way on, coming out) opens a `venture`
+  from every `wilds` place of that biome (`game/ventures.ts`: a run of your own, a day a depth,
+  a way-finding check before the deep and the heart, a camp each night to turn back at). What a
+  day holds is its depth region's road events (`deepRegion`: `woods-heart`), in
+  `shared/road/deepWilds*.ts`; every depth keeps one for every season (validated), and each pack
+  names the missing-nin hiding in the deep (`packs/<id>/deepWilds.ts`). Past the edge, leave is as for a trip
+  (`ventureLeaveBlocker`: a genin's pass, a chūnin's days); the heart is for chūnin, and a
+  venture ending badly costs no standing (`ownRun`).
 - **Add a wild place:** a `wilds` `PlaceDef` with a `biome`, `finds` and optional fishing
   `spots` (reuse the shared lists in `shared/wilds.ts` where the country is the same).
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
@@ -1115,6 +1124,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   where a gear place lists it in `dustIds`, and teaches `techniqueIds` through its S-rank
   scroll, found on a job (`reward.dustScroll`; shared techniques in `shared/dustTechniques.ts`).
   Validated in `validateDusts.ts`.
+- **Add a chakra beast:** an animal changed by chakra (`docs/design/chakra-beasts-plan.md`)
+  goes in `content/shared/bestiary/chakraBeasts.ts` with `chakraBeast: true`, chakra, techniques
+  of its own (`beastArts.ts`, `beastArtsWater.ts`: no person learns them, so they need no other
+  source and nobody else may hold them; `validateChakraBeasts.ts`) and any gift as `perks`
+  (mimicry, foresight) or a hive or dust shield. The bestiary bench fights it like any foe.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation

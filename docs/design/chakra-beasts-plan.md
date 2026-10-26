@@ -73,6 +73,14 @@ techniques are shared, like companions', so no `FoeKit` roles are needed):
 
 Each joins the bestiary bench at its danger, like every other foe.
 
+**As built.** Eighteen, as listed (the hornets are bell-nest wasps, a hive of the shared paper
+wasps). They keep the `Beast` banner and are marked `chakraBeast` instead, so no category word
+reaches the game's text; a foe's `perks` carry the shrike's mimicry and the owl's foresight.
+Twenty-eight techniques of their own (`beastArts.ts`, `beastArtsWater.ts`), exempt from needing
+a source and validated so no one else holds them. The elders had to come down to sit in the
+elite band, and the moss-backed bear lost its armour: huge is armour enough. Elders are not
+`proper`, so the story says "the old owl of the pass".
+
 ## The deep wilds
 
 Wild country already exists: wild locations between the towns (the Cedar Deep, the Salt Flats,
@@ -101,6 +109,20 @@ per biome written once, as finds and fishing spots are), drawn by hash of the se
 like the board, never the Rng. Foes at a depth follow the bestiary's danger bands, so the heart
 of a forest is elite country whatever your rank: the venture's notice says how deep you are and
 what that means, and a genin's sensei won't sign leave for the heart (`game/leave.ts`).
+
+**As built.** Woods, mountains, marsh, shore and desert each have the three depths
+(`content/shared/deepWilds.ts`); a river runs through other country and has none. A venture is
+set out on from any wild place of those biomes and plays as a mission run of your own
+(`game/ventures.ts`), never on the map: a day at each depth (edge armed, deep deadly, heart elite),
+a way-finding check (perception or intellect, a tracker's nose where you have one) before the
+deep and the heart that costs some health when it fails, a camp each night where you may turn
+back, and a day back through each depth on the way out. What a day brings is its depth's road
+events, drawn as a road's are, encounters included: plain animals, poachers and finds at the edge;
+the pack's missing-nin, smugglers, deserters, a hermit and the touched beasts in the deep; the
+changed beasts, the three elders (rare) and the heart's sights in the heart. A day at the edge is anyone's; past it, leave works as for a trip: a genin's pass must last until
+they are back, a chūnin spends days of leave, and the heart is for chūnin and up. A sensei won't
+sign you out across an exam they'd put you in, and a day at the edge is no excuse for missing
+them. A venture that ends in a defeat costs no standing, as a trip's doesn't.
 
 **Why go.** The heart's finds and drops (the kitchen, below), field book entries no road gives,
 bounties: a missing-nin hiding in the deep is a job's quarry already, and a hunt posted for one
@@ -132,14 +154,44 @@ writing keeps reaching for one.
    bear fat, glass scorpion venom sac), each an ingredient only a beaten beast leaves (the existing
    `drops` route), and recipes that use them: chakra back as you eat, a study bonus for the
    beast's element (`studyElement`), a provision. One role each, as always.
+
+   **As built.** Six drops (`content/shared/beastKitchen.ts`): the ember boar's flank, the
+   thunder eel, the serow's haunch, the moss bear's fat, the glass scorpion's venom sac and the
+   tide crab's claw, sold nowhere. Six dishes; each does a job another dish already does and adds
+   a second, as a dish that costs a hunt should: skewers that give chakra back and keep you full,
+   eel that helps study lightning and water together, a stew for earth and stamina, a broth that
+   closes wounds and deepens sleep, a tonic that is an antidote and helps night drills, and a
+   crab cracked at the table that warms time with people and keeps you full. They are in The
+   Hunter's Pot, sold at each home village's market.
+
 4. **Jobs.** Hunt fills for the changed beasts (`c-team-hunt`, B-rank hunts) that send you into
    the wild country they live in; a protect job (a white stag poachers want, where the job fails if
    the beast dies); and one arc around an elder (the old owl of the pass, say: something is wrong
    on the mountain, and the owl has been watching it). No road-event bands: they stay off the
    roads.
+
+   **As built.** A C-rank template, `c-team-deep-hunt` (`jobs/templates/cTeamWild.ts`): a day at
+   the edge and one in the deep, a way-finding check, a day into the heart and the beast there,
+   two days back, named by one `country` slot. Its days draw the depths' sights and finds; a job's
+   foes are its own, and its fight is on open ground (a stage's `ground` can't be a slot). Five
+   fills (`jobs/fills/wild.ts`): the ember-tusk boar at a charcoal village, the thunder kite over
+   a goat hamlet, the marsh serpent at a reed village, a glass scorpion at an oasis, the tide crab
+   at a fishing cove. **The White Stag** (`jobs/whiteStag.ts`, once only): poachers in the deep
+   woods, and if the last one's arrow lands the job fails; freeing the stag first lets you call it
+   out of the way. **The Old Owl of the Pass** (`arcs/oldOwl.ts`): deserters moving the cairns on
+   the high pass at C rank, then at B rank the owl, which you either fight or follow to a
+   missing-nin digging warm stones out of the peak. Still open: the owl can be met on a venture
+   before or after its arc, since road events don't read world marks. The fan pack's board has no
+   templates yet, so these are the original pack's.
+
 5. **Scouting and the field book.** A read says "Changed by chakra" and names the nature and the
    gift once seen. The field book's foes page takes them with no code; a page of its own for chakra
    beasts is a later choice.
+
+   **As built.** A read says "Changed by chakra" at a glance (`game/scoutingChanged.ts`); its
+   nature, with the element that overpowers it, and its gifts (mimicry, foresight) only in a
+   fight, in a client's report, or to eyes sharp enough to catch them. The field book's foes page
+   takes them with no code.
 
 Then, later:
 

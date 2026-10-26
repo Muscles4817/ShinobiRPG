@@ -89,8 +89,14 @@ function jobs(state: GameState, ctx: GameContext, rank: PromotedRank): Unlock[] 
   const offered = new Set(
     currentLocation(state, ctx).places.flatMap((p) => (p.kind === 'missions' ? p.missionIds : [])),
   );
+  // A long story's jobs are posted only as the story reaches them, so none is named here.
+  const inArcs = new Set(ctx.content.arcs.all.flatMap((a) => a.acts.flatMap((act) => act.jobs)));
   const opened = ctx.content.missions.all.filter(
-    (m) => offered.has(m.id) && !m.examOnly && lowestRankFor(jobOf(ctx, m)) === rank,
+    (m) =>
+      offered.has(m.id) &&
+      !m.examOnly &&
+      !inArcs.has(m.id) &&
+      lowestRankFor(jobOf(ctx, m)) === rank,
   );
   if (opened.length === 0) return [];
   const { told, named } = examples(opened.map((m) => m.title));

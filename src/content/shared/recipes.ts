@@ -1,4 +1,5 @@
 import type { RecipeDef } from '../types';
+import { BEAST_RECIPES } from './beastKitchen';
 import { CATCH_RECIPES } from './catchRecipes';
 import { FISH_RECIPES } from './fishRecipes';
 import { WILD_RECIPES } from './wildRecipes';
@@ -292,4 +293,5 @@ export const RECIPES: readonly RecipeDef[] = [
   ...WILD_RECIPES,
   ...FISH_RECIPES,
   ...CATCH_RECIPES,
+  ...BEAST_RECIPES,
 ];

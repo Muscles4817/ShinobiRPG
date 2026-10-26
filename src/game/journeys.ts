@@ -200,6 +200,11 @@ export function setOut(state: GameState, ctx: GameContext, trip: Departure): Gam
   );
 }
 
+/** Turning back at a camp, for the log. */
+export function turningBack(state: GameState, text: string): GameState {
+  return log(state, { heading: 'Turning back', text, tone: 'warning' });
+}
+
 /** The last leg walked: you are there. */
 export function arrive(state: GameState, ctx: GameContext, plan: JourneyPlan): GameState {
   const destination = ctx.content.locations.require(plan.to);

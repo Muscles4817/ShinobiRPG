@@ -1,4 +1,4 @@
-import type { Element } from '@/systems/techniques';
+import { ELEMENTS, type Element } from '@/systems/techniques';
 
 import type { CombatTechnique } from '../contract';
 
@@ -16,6 +16,13 @@ const BEATS: Readonly<Record<Element, Element>> = {
   earth: 'water',
   water: 'fire',
 };
+
+/** The element that overpowers this one where techniques meet. */
+export function overpoweredBy(element: Element): Element {
+  const over = ELEMENTS.find((e) => BEATS[e] === element);
+  if (!over) throw new Error(`Nothing overpowers ${element}: the cycle is broken`);
+  return over;
+}
 
 export const OWN_NATURE_BONUS = 1.15;
 
