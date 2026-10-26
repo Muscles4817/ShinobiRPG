@@ -60,7 +60,7 @@ export interface EnemyDef {
   readonly nature?: Element;
   /** How they fight: archer, brawler, illusionist… Every fight style honours these. */
   readonly traits?: readonly CombatTrait[];
-  /** Gifts people earn by blood or training, born into a chakra beast: an owl's foresight. */
+  /** Perks people earn by blood or training, which a chakra beast is born with (an owl's foresight). */
   readonly perks?: readonly CombatPerk[];
   /**
    * An animal changed by chakra (`docs/design/chakra-beasts-plan.md`): it has chakra and

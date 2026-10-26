@@ -1,9 +1,8 @@
 import { STAT_GRADES, type StatGrade } from '@/systems/stats';
 
 import { shelves, type ShelfPlace } from './shelves';
-import { learnableIds } from './techniqueSources';
+import { beastArtIds, learnableIds } from './techniqueSources';
 import type { ContentPack } from './types';
-import { validateChakraBeasts } from './validateChakraBeasts';
 
 /**
  * Where techniques come from. The academy holds rank E–D, the library C–A (its sealed archive
@@ -14,12 +13,7 @@ import { validateChakraBeasts } from './validateChakraBeasts';
  * be a chakra beast's own.
  */
 export function validateSources(pack: ContentPack): string[] {
-  return [
-    ...shelfProblems(pack),
-    ...scrollRewardProblems(pack),
-    ...unsourcedProblems(pack),
-    ...validateChakraBeasts(pack),
-  ];
+  return [...shelfProblems(pack), ...scrollRewardProblems(pack), ...unsourcedProblems(pack)];
 }
 
 type ShelfKind = ShelfPlace['kind'];
@@ -31,7 +25,7 @@ const SHELF_RANKS: Readonly<Record<ShelfKind, readonly StatGrade[]>> = {
 
 function shelfProblems(pack: ContentPack): string[] {
   const grades: readonly string[] = STAT_GRADES;
-  return shelves(pack).flatMap((place) =>
+  return shelves(pack.locations).flatMap((place) =>
     place.techniqueIds.flatMap((id) => {
       const t = pack.techniques.find((d) => d.id === id);
       if (!t) return [];
@@ -64,9 +58,8 @@ function scrollRewardProblems(pack: ContentPack): string[] {
 }
 
 function sourcedIds(pack: ContentPack): Set<string> {
-  // A chakra beast's techniques are its own (`validateChakraBeasts.ts` keeps them its own).
-  const beasts = pack.enemies.filter((e) => e.chakraBeast).flatMap((e) => e.techniqueIds);
-  return new Set([...learnableIds(pack), ...beasts]);
+  // A chakra beast's arts are its own (`validateChakraBeasts.ts` keeps them its own).
+  return new Set([...learnableIds(pack), ...beastArtIds(pack)]);
 }
 
 function unsourcedProblems(pack: ContentPack): string[] {

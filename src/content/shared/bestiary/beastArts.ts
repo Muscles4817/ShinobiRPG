@@ -4,15 +4,15 @@ import { WATER_ARTS } from './beastArtsWater';
 
 /**
  * What chakra beasts do in a fight, by the country they live in: techniques no person learns
- * (`validateChakraBeasts.ts`), grown by instinct over generations. A bite or a charge is a body
- * move; one wreathed in an element is moulded and costs chakra. The river, marsh and shore
+ * (`validateChakraBeasts.ts`). A bite or a charge is a body move; one wreathed in an element is
+ * moulded and costs chakra. The river, marsh and shore
  * beasts' are in `beastArtsWater.ts`.
  */
-export const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
+const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
   {
     id: 'fox-haze',
     name: 'Fox Haze',
-    description: 'The fox is a smudge between the trunks, and then not even that.',
+    description: 'The fox fades into the shadow between two trunks.',
     discipline: 'genjutsu',
     effects: [{ verb: 'conceal', power: 10 }],
     chakraCost: 6,
@@ -22,7 +22,7 @@ export const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
   {
     id: 'fox-fire-lure',
     name: 'Fox-Fire Lure',
-    description: 'Pale lights bob off through the trees, and the path you came by has gone.',
+    description: 'Pale lights bob off through the trees. When you look back, the path has gone.',
     discipline: 'genjutsu',
     effects: [{ verb: 'confuse', power: 8 }],
     chakraCost: 7,
@@ -32,8 +32,8 @@ export const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
   {
     id: 'shrike-cry',
     name: 'Shrike Cry',
-    description: 'A shriek pitched to go straight through the skull.',
-    discipline: 'taijutsu',
+    description: 'A shriek pitched to go through your head. For a moment you can’t think.',
+    discipline: 'genjutsu',
     effects: [{ verb: 'daze', power: 8 }],
     chakraCost: 3,
     rank: 'E',
@@ -42,7 +42,8 @@ export const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
   {
     id: 'burning-charge',
     name: 'Burning Charge',
-    description: 'Head down, tusks smoking, and the grass catches where it ran.',
+    description:
+      'It charges with its head down and its tusks smoking. The grass burns where it ran.',
     discipline: 'taijutsu',
     element: 'fire',
     moulded: true,
@@ -57,7 +58,7 @@ export const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
   {
     id: 'mountains-weight',
     name: 'Mountain’s Weight',
-    description: 'It rears and comes down, and the ground comes up to meet whatever is under it.',
+    description: 'It rears up and drops its whole weight on you. The ground cracks under the blow.',
     discipline: 'taijutsu',
     element: 'earth',
     moulded: true,
@@ -73,8 +74,7 @@ export const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
   {
     id: 'root-bind',
     name: 'Root Bind',
-    description:
-      'Roots break the soil round your ankles and pull, as if the forest takes its side.',
+    description: 'Roots break the soil round your ankles and pull you down.',
     discipline: 'ninjutsu',
     element: 'earth',
     effects: [
@@ -126,7 +126,7 @@ export const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
   {
     id: 'owl-stare',
     name: 'Owl’s Stare',
-    description: 'Its eyes take the light and hold it, and for a moment so do yours.',
+    description: 'It stares, and its eyes hold yours. You can’t look away.',
     discipline: 'genjutsu',
     effects: [{ verb: 'daze', power: 14 }],
     chakraCost: 14,
@@ -146,7 +146,7 @@ export const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
   {
     id: 'silent-wing',
     name: 'Silent Wing',
-    description: 'A shadow goes over, and there was no sound of wings.',
+    description: 'A shadow goes over without any sound of wings.',
     discipline: 'genjutsu',
     effects: [{ verb: 'conceal', power: 14 }],
     chakraCost: 12,
@@ -156,11 +156,11 @@ export const WOODS_AND_MOUNTAIN_ARTS: readonly TechniqueDef[] = [
 ];
 
 /** Chakra beasts' techniques of the desert. */
-export const DESERT_ARTS: readonly TechniqueDef[] = [
+const DESERT_ARTS: readonly TechniqueDef[] = [
   {
     id: 'glass-sting',
     name: 'Glass Sting',
-    description: 'A tail like blown glass, and the venom shows through it as it strikes.',
+    description: 'It strikes with a tail like blown glass, the venom showing through it.',
     discipline: 'taijutsu',
     accuracy: 'sure',
     effects: [
@@ -174,7 +174,7 @@ export const DESERT_ARTS: readonly TechniqueDef[] = [
   {
     id: 'sand-dive',
     name: 'Sand Dive',
-    description: 'It goes into the dune head first, and the sand closes over it.',
+    description: 'It dives head first into the dune and the sand closes over it.',
     discipline: 'ninjutsu',
     element: 'earth',
     effects: [{ verb: 'conceal', power: 10 }],
@@ -185,7 +185,7 @@ export const DESERT_ARTS: readonly TechniqueDef[] = [
   {
     id: 'burrow-strike',
     name: 'Burrow Strike',
-    description: 'The sand under your feet opens, and there are teeth in it.',
+    description: 'It comes up through the sand under your feet, jaws first.',
     discipline: 'taijutsu',
     element: 'earth',
     moulded: true,
@@ -220,11 +220,11 @@ export const DESERT_ARTS: readonly TechniqueDef[] = [
 ];
 
 /** Chakra beasts' techniques of anywhere chakra pools: the swarms. */
-export const SWARM_ARTS: readonly TechniqueDef[] = [
+const SWARM_ARTS: readonly TechniqueDef[] = [
   {
     id: 'hornet-cloud',
     name: 'Hornet Cloud',
-    description: 'The nest empties at you, and every sting draws a little of your chakra out.',
+    description: 'The nest empties at you. Each sting draws out a little chakra.',
     discipline: 'ninjutsu',
     effects: [
       { verb: 'damage', power: 7 },
@@ -238,7 +238,7 @@ export const SWARM_ARTS: readonly TechniqueDef[] = [
   {
     id: 'moth-glow',
     name: 'Moth Glow',
-    description: 'A thousand pale wings light up together, and the dark swims.',
+    description: 'The moths light up all together, and the glare makes you giddy.',
     discipline: 'genjutsu',
     effects: [
       { verb: 'confuse', power: 8 },

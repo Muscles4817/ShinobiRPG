@@ -1,10 +1,10 @@
 import { ORIGINAL_PACK } from './packs/original';
-import type { ContentPack } from './types';
+import type { ContentPack, EnemyDef } from './types';
 import { validateChakraBeasts } from './validateChakraBeasts';
 
 /** Chakra beasts keep chakra and a technique, and their arts stay theirs. */
 
-function withEnemy(id: string, change: object): ContentPack {
+function withEnemy(id: string, change: Partial<EnemyDef>): ContentPack {
   const enemies = ORIGINAL_PACK.enemies.map((e) => (e.id === id ? { ...e, ...change } : e));
   return { ...ORIGINAL_PACK, enemies };
 }
@@ -32,5 +32,11 @@ describe('chakra beasts', () => {
       academyTechniques: [...ORIGINAL_PACK.academyTechniques, 'shrike-cry'],
     };
     expect(validateChakraBeasts(pack)).toEqual(['beast art "shrike-cry" can be learned']);
+  });
+
+  it('reports a beast art no chakra beast holds', () => {
+    expect(validateChakraBeasts(withEnemy('echo-shrike', { techniqueIds: ['fox-haze'] }))).toEqual([
+      'no chakra beast holds "shrike-cry"',
+    ]);
   });
 });

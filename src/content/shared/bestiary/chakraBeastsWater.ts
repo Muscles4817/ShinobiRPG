@@ -1,11 +1,11 @@
 import type { EnemyDef } from '../../types';
-import { CHANGED } from './chakraBeastShape';
+import { CHAKRA_BEAST } from './chakraBeastShape';
 import { foeStats, NO_ARTS } from './foeStats';
 
 /** Chakra beasts of the river, the marsh and the shore (see `chakraBeasts.ts`). */
 export const CHAKRA_BEASTS_OF_WATER: readonly EnemyDef[] = [
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'lightning-eel',
     drops: ['river-eel'],
     danger: 'armed',
@@ -19,7 +19,7 @@ export const CHAKRA_BEASTS_OF_WATER: readonly EnemyDef[] = [
     traits: ['coward'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'mist-toad',
     danger: 'petty',
     name: 'Mist Toad',
@@ -31,11 +31,11 @@ export const CHAKRA_BEASTS_OF_WATER: readonly EnemyDef[] = [
     nature: 'water',
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'marsh-serpent',
     danger: 'armed',
     name: 'Marsh Serpent',
-    description: 'Long as a boat and green as the reeds, and the reeds lie flat where it has been.',
+    description: 'Long as a boat and green as the reeds. It leaves a flattened path through them.',
     ...foeStats(7, [14, 10, 13, 10], { ...NO_ARTS, taijutsu: 10, ninjutsu: 8, willpower: 9 }),
     size: 'large',
     maxChakra: 55,
@@ -44,13 +44,12 @@ export const CHAKRA_BEASTS_OF_WATER: readonly EnemyDef[] = [
     traits: ['brawler'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'tide-crab',
     danger: 'armed',
     name: 'Tide Crab',
     blow: 'claw',
-    description:
-      'Its shell is the colour of the sea at dusk, and the waves come up the beach after it.',
+    description: 'Its shell is the colour of the sea at dusk. Waves follow it up the beach.',
     ...foeStats(6, [14, 5, 15, 7], { ...NO_ARTS, taijutsu: 8, ninjutsu: 8, willpower: 8 }),
     healthScale: 0.9,
     maxChakra: 45,
@@ -59,7 +58,7 @@ export const CHAKRA_BEASTS_OF_WATER: readonly EnemyDef[] = [
     traits: ['armoured'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'ink-squid',
     drops: ['spear-squid'],
     danger: 'petty',
@@ -72,13 +71,13 @@ export const CHAKRA_BEASTS_OF_WATER: readonly EnemyDef[] = [
     traits: ['coward'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'storm-gull-flock',
     danger: 'petty',
     name: 'Storm Gulls',
     noun: 'storm gull flock',
     blow: 'beak',
-    description: 'Gulls that fly ahead of every storm, and now and then bring one with them.',
+    description: 'Gulls that fly ahead of the storms. Fishers say they bring them.',
     ...foeStats(4, [3, 16, 6, 13], { ...NO_ARTS, ninjutsu: 7, taijutsu: 5, willpower: 5 }),
     healthScale: 0.5,
     maxChakra: 35,

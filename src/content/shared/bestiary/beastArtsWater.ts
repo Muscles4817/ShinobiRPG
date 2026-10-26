@@ -5,7 +5,7 @@ export const WATER_ARTS: readonly TechniqueDef[] = [
   {
     id: 'eel-shock',
     name: 'Eel Shock',
-    description: 'The water round it goes white, and every muscle you have locks at once.',
+    description: 'The water round it flashes white. Your muscles lock.',
     discipline: 'ninjutsu',
     element: 'lightning',
     reach: ['close'],
@@ -91,7 +91,7 @@ export const WATER_ARTS: readonly TechniqueDef[] = [
   {
     id: 'grasping-arms',
     name: 'Grasping Arms',
-    description: 'Eight arms and a hundred suckers, and every one of them wants your wrists.',
+    description: 'Its arms wrap round your wrists and the suckers hold.',
     discipline: 'taijutsu',
     effects: [{ verb: 'pin', power: 8 }],
     chakraCost: 3,
@@ -101,7 +101,7 @@ export const WATER_ARTS: readonly TechniqueDef[] = [
   {
     id: 'gale-wings',
     name: 'Gale Wings',
-    description: 'The whole flock beats its wings at once, and the wind comes with them.',
+    description: 'The whole flock beats its wings at once and raises a gale.',
     discipline: 'ninjutsu',
     element: 'wind',
     effects: [{ verb: 'area', power: 10 }],

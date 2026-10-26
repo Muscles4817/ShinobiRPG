@@ -1,18 +1,18 @@
 import type { EnemyDef } from '../../types';
 import { CHAKRA_BEASTS_OF_WATER } from './chakraBeastsWater';
-import { CHANGED } from './chakraBeastShape';
+import { CHAKRA_BEAST } from './chakraBeastShape';
 import { foeStats, NO_ARTS } from './foeStats';
 
 /**
- * Animals whose lines have lived beside chakra for generations (`docs/design/chakra-beasts-plan.md`):
- * still animals, never people, but with a pool of chakra, techniques of their own
- * (`beastArts.ts`) and sometimes a nature or a gift. They live off the roads, in the deep wilds.
- * Touched ones have a trick, changed ones an element, and an elder is one of a kind.
+ * Animals whose lines have lived beside chakra for generations (`docs/design/chakra-beasts-plan.md`).
+ * They are still animals, never people, but they have chakra and techniques of their own
+ * (`beastArts.ts`). They live off the roads, in the deep wilds. A touched beast has one trick, a
+ * changed one an element; an elder is the only one of its kind.
  */
 
 const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'mist-fox',
     danger: 'petty',
     name: 'Mist Fox',
@@ -25,13 +25,13 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
     traits: ['illusionist', 'swift'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'echo-shrike',
     danger: 'petty',
     name: 'Echo Shrike',
     blow: 'beak',
     description:
-      'A grey shrike that sings back every sound in the wood, and anything you do in front of it.',
+      'A grey shrike that copies every call in the wood. It copies what you do in front of it too.',
     ...foeStats(4, [3, 18, 6, 16], { ...NO_ARTS, taijutsu: 6, willpower: 6 }),
     healthScale: 0.3,
     maxChakra: 30,
@@ -40,7 +40,7 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
     traits: ['swift', 'coward'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'ember-tusk-boar',
     drops: ['wild-game'],
     danger: 'armed',
@@ -55,14 +55,14 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
     traits: ['brawler'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'moss-backed-bear',
     drops: ['wild-game'],
     danger: 'elite',
     name: 'Moss-Backed Bear',
     blow: 'claw',
     description:
-      'Moss and saplings grow on its back. The foresters say the forest moves when it does, and they are right.',
+      'Moss and saplings grow on its back. Foresters who see it lying down take it for a bank.',
     ...foeStats(12, [26, 10, 20, 15], {
       ...NO_ARTS,
       taijutsu: 18,
@@ -77,12 +77,12 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
     traits: ['brawler'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'thunder-kite',
     danger: 'armed',
     name: 'Thunder Kite',
     blow: 'talon',
-    description: 'Rides the storm in over the peaks, and its feathers crackle when it banks.',
+    description: 'Rides the storm in over the peaks. Its feathers crackle when it banks.',
     ...foeStats(6, [6, 20, 9, 20], { ...NO_ARTS, taijutsu: 9, chakraControl: 7, willpower: 8 }),
     healthScale: 0.6,
     maxChakra: 50,
@@ -91,7 +91,7 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
     traits: ['swift'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'stone-serow',
     drops: ['wild-game'],
     danger: 'armed',
@@ -107,13 +107,13 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
     traits: ['armoured'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'old-owl-of-the-pass',
     danger: 'deadly',
     name: 'Old Owl of the Pass',
     blow: 'talon',
     description:
-      'Has watched shinobi cross the pass for sixty years from the same dead pine. It knows how you will move before you do.',
+      'Has watched shinobi cross the pass for sixty years from the same dead pine. It moves before they do.',
     ...foeStats(10, [6, 16, 10, 22], {
       ...NO_ARTS,
       genjutsu: 17,
@@ -132,11 +132,11 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
 
 const DESERT_AND_SWARMS: readonly EnemyDef[] = [
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'glass-scorpion',
     danger: 'armed',
     name: 'Glass Scorpion',
-    description: 'You can see the sand through its body, and the venom in its tail.',
+    description: 'Clear as a bottle. You can see the venom in its tail.',
     ...foeStats(6, [9, 12, 10, 11], { ...NO_ARTS, taijutsu: 10, willpower: 8 }),
     healthScale: 0.5,
     maxChakra: 35,
@@ -144,11 +144,11 @@ const DESERT_AND_SWARMS: readonly EnemyDef[] = [
     traits: ['armoured'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'dune-serpent',
     danger: 'armed',
     name: 'Dune Serpent',
-    description: 'A ridge in the sand that wasn’t there this morning, and is coming closer.',
+    description: 'A ridge in the sand that wasn’t there this morning. It is moving towards you.',
     ...foeStats(7, [13, 11, 12, 11], { ...NO_ARTS, taijutsu: 10, ninjutsu: 9, willpower: 9 }),
     size: 'large',
     maxChakra: 55,
@@ -156,13 +156,13 @@ const DESERT_AND_SWARMS: readonly EnemyDef[] = [
     nature: 'earth',
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'sand-sea-turtle',
     danger: 'elite',
     name: 'Sand-Sea Turtle',
     blow: 'beak',
     description:
-      'Swims through the dunes as a turtle swims the sea. Caravans have camped on its shell and never known.',
+      'Lies under the dunes for years at a time. Caravans have camped on its shell without knowing.',
     ...foeStats(12, [22, 7, 22, 13], {
       ...NO_ARTS,
       taijutsu: 15,
@@ -178,13 +178,14 @@ const DESERT_AND_SWARMS: readonly EnemyDef[] = [
     traits: ['armoured'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'bell-nest-wasps',
     danger: 'petty',
     name: 'Bell-Nest Wasps',
     noun: 'bell-nest swarm',
     form: 'swarm',
-    description: 'A grey paper nest that hums like a struck bell, and every wasp in it has a glow.',
+    description:
+      'A grey paper nest that hums like a struck bell. The wasps’ bellies glow faintly blue.',
     ...foeStats(4, [1, 18, 4, 12], { ...NO_ARTS, ninjutsu: 7, taijutsu: 5, willpower: 6 }),
     healthScale: 0.4,
     maxChakra: 30,
@@ -193,14 +194,14 @@ const DESERT_AND_SWARMS: readonly EnemyDef[] = [
     traits: ['pack', 'swift'],
   },
   {
-    ...CHANGED,
+    ...CHAKRA_BEAST,
     id: 'lantern-moths',
     danger: 'petty',
     name: 'Lantern Moths',
     noun: 'lantern moth swarm',
     form: 'swarm',
     description:
-      'A cloud of pale moths that glow like paper lanterns. Travellers follow the light and lose the path.',
+      'Pale moths that glow like paper lanterns. Travellers who follow the light lose the path.',
     ...foeStats(3, [1, 12, 4, 10], { ...NO_ARTS, genjutsu: 7, willpower: 6 }),
     healthScale: 0.3,
     maxChakra: 35,

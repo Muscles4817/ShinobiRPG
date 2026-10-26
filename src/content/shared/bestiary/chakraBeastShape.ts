@@ -1,5 +1,2 @@
-/**
- * What marks a chakra beast out from a plain animal: the `Beast` banner like any animal, and the
- * mark validation and scouting read (`EnemyDef.chakraBeast`).
- */
-export const CHANGED = { kind: 'Beast', chakraBeast: true } as const;
+/** A chakra beast keeps the `Beast` banner like any animal, and carries the mark validation reads. */
+export const CHAKRA_BEAST = { kind: 'Beast', chakraBeast: true } as const;

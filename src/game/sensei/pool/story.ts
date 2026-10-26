@@ -1,3 +1,4 @@
+import { beastArtIds } from '@/content';
 import type { ContentPack, ConversationDef, EnemyDef, SenseiPast, SenseiPastFoe } from '@/content';
 import { fillSlots, type Rng } from '@/core';
 import type { ArcDef, MissionDef, MissionStage } from '@/systems/missions';
@@ -73,8 +74,14 @@ export function foeName(foe: SenseiPastFoe, given: string): string {
 }
 
 function foeTechniques(pack: ContentPack, art: Discipline, rng: Rng): string[] {
+  const beasts = beastArtIds(pack);
   const fits = pack.techniques.filter(
-    (t) => t.discipline === art && FOE_RANKS.includes(t.rank) && !t.clan && !t.combo,
+    (t) =>
+      t.discipline === art &&
+      FOE_RANKS.includes(t.rank) &&
+      !t.clan &&
+      !t.combo &&
+      !beasts.has(t.id),
   );
   const left = [...fits];
   const picked: string[] = [];

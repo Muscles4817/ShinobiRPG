@@ -1,10 +1,11 @@
+import { CHAKRA_BEAST_ARTS } from './shared/bestiary';
 import { shelves } from './shelves';
 import type { ContentPack } from './types';
 
-/** Techniques someone may learn or hold besides a chakra beast: every source but the beasts. */
+/** Techniques a person may learn or hold. */
 export function learnableIds(pack: ContentPack): Set<string> {
   return new Set([
-    ...shelves(pack).flatMap((p) => p.techniqueIds),
+    ...shelves(pack.locations).flatMap((p) => p.techniqueIds),
     ...pack.people.flatMap((p) => p.teacher?.teaches ?? []),
     // A duelist isn't in the world yet, so their own arts are theirs alone until plumbed in.
     ...(pack.duelists ?? []).flatMap((p) => p.arsenal?.techniqueIds ?? []),
@@ -24,4 +25,10 @@ export function learnableIds(pack: ContentPack): Set<string> {
     // A puppet's unsealing and its mechanisms come with the puppet (`validatePuppets.ts`).
     ...(pack.puppets ?? []).flatMap((p) => [p.techniqueId, ...p.techniqueIds]),
   ]);
+}
+
+/** The pack's chakra beast arts: techniques only chakra beasts fight with. */
+export function beastArtIds(pack: ContentPack): Set<string> {
+  const arts = new Set(CHAKRA_BEAST_ARTS.map((t) => t.id));
+  return new Set(pack.techniques.filter((t) => arts.has(t.id)).map((t) => t.id));
 }
