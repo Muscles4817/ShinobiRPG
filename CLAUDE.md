@@ -373,7 +373,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     Fighters also have a **kit**: `CombatTrait`s (archer, brawler, illusionist, armoured,
     swift, pack, coward, spirit) on `EnemyDef.traits` → `CombatantSetup.traits`. What they
     mean lives once in `rules/kit.ts` (reach, `kitDamageScale` by `AttackKind`, pack, coward)
-    and `rules/conditions.ts` (Hidden and Confused, Search and Dispel chances); every engine
+    and `rules/conditions.ts` (Hidden and Confused, Search and Dispel chances: every glimpse since a
+    hider last hid, a missed Search or Dispel or an attack made from hiding, brings seekers nearer,
+    `EXPOSURE_STEP`, and a default plan brings the surest finder it has); every engine
     applies them, so an archer is an archer in every fight style. Scouting names each trait
     with its counter. Genin get traits from their specialty (`companionTraits`).
     Some fighters bring more than one body (**retinues**, `docs/design/retinue-plan.md`). By
