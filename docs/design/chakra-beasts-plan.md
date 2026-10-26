@@ -73,6 +73,14 @@ techniques are shared, like companions', so no `FoeKit` roles are needed):
 
 Each joins the bestiary bench at its danger, like every other foe.
 
+**As built.** Eighteen, as listed (the hornets are bell-nest wasps, a hive of the shared paper
+wasps). They keep the `Beast` banner and are marked `chakraBeast` instead, so no category word
+reaches the game's text; a foe's `perks` carry the shrike's mimicry and the owl's foresight.
+Twenty-seven techniques of their own (`beastArts.ts`, `beastArtsWater.ts`), exempt from needing
+a source and validated so no one else holds them. The elders had to come down to sit in the
+elite band, and the moss-backed bear lost its armour: huge is armour enough. Elders are not
+`proper`, so the story says "the old owl of the pass".
+
 ## The deep wilds
 
 Wild country already exists: wild locations between the towns (the Cedar Deep, the Salt Flats,

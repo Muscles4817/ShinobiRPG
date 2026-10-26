@@ -2,7 +2,7 @@ import { GLASS_EYE_ARC, GLASS_EYE_JOBS } from './arcs/glassEye';
 import { foreignShinobi } from '../../shared/foreignShinobi';
 import { ORIGINAL_NATURE_KIT, ORIGINAL_VILLAGES } from './shinobiVillages';
 import { DESERT_INGREDIENTS } from '../../shared/desert';
-import { bestiary } from '../../shared/bestiary';
+import { bestiary, CHAKRA_BEAST_ARTS } from '../../shared/bestiary';
 import { ORIGINAL_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import { STRAINS } from './strains';
@@ -124,6 +124,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
     ...BEAST_TECHNIQUES,
+    ...CHAKRA_BEAST_ARTS,
     ...CONTRACT_TECHNIQUES,
     ...TIDEWIRE_TECHNIQUES,
   ],

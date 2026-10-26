@@ -1,4 +1,5 @@
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
+import { CHAKRA_BEAST_ARTS } from '../../shared/bestiary';
 import { STRAINS } from './strains';
 import { WILD_STRAINS } from '../../shared/wildStrains';
 import { DUSTS } from '../../shared/dusts';
@@ -153,6 +154,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
     ...BEAST_TECHNIQUES,
+    ...CHAKRA_BEAST_ARTS,
     ...CONTRACT_TECHNIQUES,
     ...CANON_TECHNIQUES,
     ...DUELIST_TECHNIQUES,
