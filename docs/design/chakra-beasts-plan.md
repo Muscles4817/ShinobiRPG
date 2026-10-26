@@ -154,6 +154,16 @@ writing keeps reaching for one.
    bear fat, glass scorpion venom sac), each an ingredient only a beaten beast leaves (the existing
    `drops` route), and recipes that use them: chakra back as you eat, a study bonus for the
    beast's element (`studyElement`), a provision. One role each, as always.
+
+   **As built.** Six drops (`content/shared/beastKitchen.ts`): the ember boar's flank, the
+   thunder eel, the serow's haunch, the moss bear's fat, the glass scorpion's venom sac and the
+   tide crab's claw, sold nowhere. Six dishes; each does a job another dish already does and adds
+   a second, as a dish that costs a hunt should: skewers that give chakra back and keep you full,
+   eel that helps study lightning and water together, a stew for earth and stamina, a broth that
+   closes wounds and deepens sleep, a tonic that is an antidote and helps night drills, and a
+   crab cracked at the table that warms time with people and keeps you full. They are in The
+   Hunter's Pot, sold at each home village's market.
+
 4. **Jobs.** Hunt fills for the changed beasts (`c-team-hunt`, B-rank hunts) that send you into
    the wild country they live in; a protect job (a white stag poachers want, where the job fails if
    the beast dies); and one arc around an elder (the old owl of the pass, say: something is wrong

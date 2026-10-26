@@ -7,7 +7,7 @@ export const CHAKRA_BEASTS_OF_WATER: readonly EnemyDef[] = [
   {
     ...CHAKRA_BEAST,
     id: 'lightning-eel',
-    drops: ['river-eel'],
+    drops: ['thunder-eel'],
     danger: 'armed',
     name: 'Lightning Eel',
     description: 'Fishers find the shallows dead for a hundred paces around where it hunts.',
@@ -46,6 +46,7 @@ export const CHAKRA_BEASTS_OF_WATER: readonly EnemyDef[] = [
   {
     ...CHAKRA_BEAST,
     id: 'tide-crab',
+    drops: ['tide-crab-claw'],
     danger: 'armed',
     name: 'Tide Crab',
     blow: 'claw',

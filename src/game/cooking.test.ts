@@ -49,6 +49,7 @@ describe('learning recipes', () => {
       'river-cook',
       'fishmongers-knife',
       'marsh-and-falls',
+      'hunters-pot',
       'lantern-village-kitchen',
     ]);
     const bought = act(state, { type: 'buyCookbook', cookbookId: 'everyday-kitchen' });
