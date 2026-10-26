@@ -155,7 +155,7 @@ function finder(fighter: PlanFighter, pool: readonly Card[], facing: Facing): Ca
   const hiders = facing.foes.filter((f) => f.hidden || hasTrait(f, 'illusionist'));
   const odds = (chance: (foe: PlanFighter) => number) =>
     hiders.length === 0 ? 0 : Math.min(...hiders.map(chance));
-  const ways: { readonly card: Card; readonly odds: number }[] = pool.flatMap((card) => {
+  const ways = pool.flatMap((card): { readonly card: Card; readonly odds: number }[] => {
     if (card.kind === 'search') return [{ card, odds: odds((f) => searchChance(fighter, f)) }];
     if (card.kind === 'dispel') return [{ card, odds: odds((f) => dispelChance(fighter, f)) }];
     return [];

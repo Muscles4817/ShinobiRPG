@@ -61,20 +61,21 @@ function roundOf(all: PlanFighter[], number = 1): Round {
 
 /** Nothing comes up: no search finds, no trace, no dodge. */
 const never: Rng = { ...createRng(1), chance: () => false };
-const who = (r: Pick<Round, 'fighters'>, id: string) => r.fighters.find((f) => f.id === id)!;
+const who = (r: { readonly fighters: readonly PlanFighter[] }, id: string) =>
+  r.fighters.find((f) => f.id === id)!;
 
 describe('closing in on a hider', () => {
   it('a Search that misses narrows them down for the next look', () => {
     const round = roundOf(fighters());
-    const once = search(round, { actor: who(round, 'hero'), rng: never });
-    const twice = search(once, { actor: who(once, 'hero'), rng: never });
+    const once = search(round, { actor: who(round, 'hero'), target: undefined, rng: never });
+    const twice = search(once, { actor: who(once, 'hero'), target: undefined, rng: never });
     expect(who(once, 'foe').exposure).toBe(1);
     expect(who(twice, 'foe').exposure).toBe(2);
   });
 
   it('so does a Dispel that fails', () => {
     const round = roundOf(fighters());
-    const after = dispel(round, { actor: who(round, 'hero'), rng: never });
+    const after = dispel(round, { actor: who(round, 'hero'), target: undefined, rng: never });
     expect(who(after, 'foe').exposure).toBe(1);
   });
 
