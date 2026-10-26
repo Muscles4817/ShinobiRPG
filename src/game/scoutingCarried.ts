@@ -1,9 +1,8 @@
-import { hashUnit } from '@/core';
 import type { EnemyDef } from '@/content';
 import type { CombatItemEffect } from '@/systems/combat';
 
 import type { GameContext } from './context';
-import { glanceOdds, type RetinueKnowledge } from './retinueSight';
+import { glanceCatches, type RetinueKnowledge } from './retinueSight';
 import type { PoolNote } from './scoutingPools';
 import type { GameState } from './state';
 
@@ -39,9 +38,7 @@ function pouchNotes(def: EnemyDef, ctx: GameContext): PoolNote[] {
 
 /** Whether you can tell what is in a foe's pouch. */
 function pouchSeen(state: GameState, def: EnemyDef, knowledge: RetinueKnowledge): boolean {
-  if (knowledge === 'full') return true;
-  const perception = state.character.stats.perception;
-  return hashUnit(state.board.seed, 'pouch', def.id) < glanceOdds('kept', perception);
+  return glanceCatches(state, def, { key: 'pouch', tell: 'kept' }, knowledge);
 }
 
 /** Notes on the gear a foe wears and, when you can tell, the tools they carry. */
