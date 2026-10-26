@@ -72,8 +72,10 @@ export function useTool(round: Round, { actor, target, rng }: Turn, item: Combat
     { user: actor, item, foes, ...(target ? { targetId: target.id } : {}) },
     rng,
   );
+  // Smoke is a fresh hiding place: no one has glimpsed them in it yet.
+  const user = used.user.hidden && !actor.hidden ? { ...used.user, exposure: 0 } : used.user;
   const fighters = round.fighters.map((f) =>
-    f.id === actor.id ? used.user : (used.foes.find((foe) => foe.id === f.id) ?? f),
+    f.id === actor.id ? user : (used.foes.find((foe) => foe.id === f.id) ?? f),
   );
   const told = say({ ...round, fighters }, ...used.log);
   const struck = used.foes.find((f) => f.id === target?.id);

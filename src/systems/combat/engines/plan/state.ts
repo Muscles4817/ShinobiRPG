@@ -127,6 +127,8 @@ export interface PlanFighter
   readonly row: CombatRow;
   /** How hard they are to find while hidden, once a conceal set it (`concealmentOf`). */
   readonly concealment?: number;
+  /** Glimpses since they last hid, bringing seekers nearer (`searchChance`); absent: none. */
+  readonly exposure?: number;
   /**
    * The last exchange a daze leaves this fighter open (no defences, a target for finishers),
    * even after the lost turn: through the exchange after the daze, so whoever dazed them
@@ -333,6 +335,7 @@ export function patch(
       | 'hidden'
       | 'confused'
       | 'concealment'
+      | 'exposure'
       | 'perks'
       | 'openUntil'
       | 'steadyUntil'

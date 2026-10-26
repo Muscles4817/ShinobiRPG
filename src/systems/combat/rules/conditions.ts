@@ -31,6 +31,11 @@ const DISPEL_MIN = 0.25;
 const DISPEL_MAX = 0.95;
 /** An illusionist found and in the open slips back into hiding every this many rounds. */
 export const REHIDE_EVERY = 3;
+/**
+ * How much nearer each glimpse brings the seekers: a Search that misses, or an attack made from
+ * hiding, narrows down where the hider must be. A fresh hiding place starts unknown.
+ */
+export const EXPOSURE_STEP = 0.2;
 
 interface Senses {
   readonly attributes: CombatAttributes;
@@ -41,17 +46,24 @@ interface Illusion {
   readonly attributes: CombatAttributes;
   readonly traits: readonly CombatTrait[];
   readonly concealment?: number;
+  /** Glimpses since they last hid (`EXPOSURE_STEP`): misses searching for them, attacks they made. */
+  readonly exposure?: number;
 }
 
 export function startsHidden(f: { readonly traits: readonly CombatTrait[] }): boolean {
   return f.traits.includes('illusionist');
 }
 
-/** Chance a Search finds a hidden fighter. Insight always does. */
+/**
+ * Chance a Search finds a hidden fighter (or the one struck traces an attack back). Insight
+ * always does; otherwise eyes against concealment, and nearer for every glimpse since they hid,
+ * so hiding holds best at first and a seeker who keeps at it gets there.
+ */
 export function searchChance(seeker: Senses, hider: Illusion): number {
   if (seeker.perks.includes('insight')) return 1;
   const senses = seeker.attributes.perception * 0.6 + seeker.attributes.intellect * 0.4;
-  return clamp(0.35 + (senses - concealmentOf(hider)) * 0.06, 0.15, 0.9);
+  const closing = (hider.exposure ?? 0) * EXPOSURE_STEP;
+  return clamp(0.35 + (senses - concealmentOf(hider)) * 0.06 + closing, 0.15, 0.9);
 }
 
 /**
@@ -62,10 +74,14 @@ export function breakRating(f: Senses): number {
   return f.attributes.chakraControl * BREAK_CONTROL + f.attributes.willpower * (1 - BREAK_CONTROL);
 }
 
-/** Chance a Dispel breaks a hidden fighter's illusion (and your own confusion). */
+/**
+ * Chance a Dispel breaks a hidden fighter's illusion (and your own confusion): control against
+ * their genjutsu, and nearer for every glimpse since they hid, as a Search is.
+ */
 export function dispelChance(caster: Senses, hider: Illusion): number {
   const ratio = gapRatio(breakRating(caster), hider.attributes.genjutsu);
-  return clamp(DISPEL_BASE + (ratio - 1) * DISPEL_PER_GAP, DISPEL_MIN, DISPEL_MAX);
+  const closing = (hider.exposure ?? 0) * EXPOSURE_STEP;
+  return clamp(DISPEL_BASE + (ratio - 1) * DISPEL_PER_GAP + closing, DISPEL_MIN, DISPEL_MAX);
 }
 
 /** Turns a confusion lasts: control that matches the illusionist's genjutsu cuts it short. */

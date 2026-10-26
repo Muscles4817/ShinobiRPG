@@ -17,7 +17,10 @@ import { tell } from '../../rules/telling';
 export function conceal(round: Round, actor: PlanFighter, use: EffectUse<'conceal'>): Round {
   const concealment = concealmentFrom(driveOf(actor, use), use);
   return say(
-    { ...round, fighters: patch(round.fighters, actor.id, { hidden: true, concealment }) },
+    {
+      ...round,
+      fighters: patch(round.fighters, actor.id, { hidden: true, concealment, exposure: 0 }),
+    },
     tell('{a} fade{a.s} from sight.', { a: actor }),
   );
 }

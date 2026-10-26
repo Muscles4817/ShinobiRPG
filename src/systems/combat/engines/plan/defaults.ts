@@ -2,6 +2,7 @@ import type { Verb } from '@/systems/techniques';
 
 import type { CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
 import { hasPerk } from '../../rules/body';
+import { dispelChance, searchChance } from '../../rules/conditions';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
 import { isTrump, outmatched } from '../../rules/trumps';
@@ -143,6 +144,27 @@ function finding(senses: readonly Card[], search: readonly Card[], facing: Facin
   return by.map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' }));
 }
 
+/**
+ * The surest way this fighter has of finding a hidden foe: a flash tag (it never misses), else a
+ * Search or a Dispel, whichever their eyes or their control make likelier against the hiders
+ * they face (a Dispel also clears their own head of an illusion).
+ */
+function finder(fighter: PlanFighter, pool: readonly Card[], facing: Facing): Card[] {
+  const flash = tools(pool, 'flash');
+  if (flash.length > 0) return flash;
+  const hiders = facing.foes.filter((f) => f.hidden || hasTrait(f, 'illusionist'));
+  const odds = (chance: (foe: PlanFighter) => number) =>
+    hiders.length === 0 ? 0 : Math.min(...hiders.map(chance));
+  const ways: { readonly card: Card; readonly odds: number }[] = pool.flatMap((card) => {
+    if (card.kind === 'search') return [{ card, odds: odds((f) => searchChance(fighter, f)) }];
+    if (card.kind === 'dispel') return [{ card, odds: odds((f) => dispelChance(fighter, f)) }];
+    return [];
+  });
+  // A Search first between equals (it comes first in the kit): it costs no chakra.
+  const [best] = [...ways].sort((a, b) => b.odds - a.odds);
+  return best ? [best.card] : [];
+}
+
 /** A carried tool with this effect, while any are left. */
 function tools(pool: readonly Card[], effect: CombatItemEffect): Card[] {
   return pool
@@ -208,8 +230,7 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
   const ready = climb.length > 0 ? finisher : strongest(pool, readies).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const hold = holdSlot(pool, facing);
-  // A flash tag finds a hidden foe surely, so it comes before a Search that may miss.
-  const search = [...tools(pool, 'flash'), ...pool.filter((c) => c.kind === 'search')].slice(0, 1);
+  const search = finder(fighter, pool, facing);
   const ordered: Slot[] = [
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
     ...(reaches ? trumpSlot(trumps, facing) : []),
