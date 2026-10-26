@@ -484,9 +484,13 @@ migration and a previous-version save test wherever the save shape changes.
     place's name reads "the" mid-sentence on the Travel tab ("By way of the Cedar Deep"). Tests
     that walk trips now walk past stops and go round foes (`keepClear` in the fixtures), and the
     test wild country has ids of its own. Not yet: backdrops of their own (forest, shrine and
-    battlefield borrow the mountain, coast and dunes), the hermit, the battlefield's keeper as a
-    teacher, Hanebashi's pilgrims' gossip, and Sakyūgakure and Mount Reikon still waiting on
-    their own steps.
+    battlefield borrow the mountain, coast and dunes; they have their own now), Hanebashi's
+    pilgrims' gossip, and Sakyūgakure and Mount Reikon still waiting on their own steps. The
+    hermit and the keeper came later (`packs/original/wildFolk/`): Oboro Sakane, a tracker who
+    walked into the cedars and stayed, teaches the Moss Step school (hiding and sensing) on her
+    paths once you know her; Gonzō Hidaka, the one of his company who walked off the field and
+    went back, teaches the Gravefield school (a two-cut and a counter stance) among the rows,
+    for the bond and incense money. Each place gains a training ground of two drills for it.
 
 11. **The Places page** (this step). The field book gains a sixth page, `places`
     (`game/fieldBook/places.ts`): a slot for every place of the pack you can stand in (a place

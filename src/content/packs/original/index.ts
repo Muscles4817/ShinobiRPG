@@ -100,6 +100,7 @@ import {
   SHIOMACHI_TRAINING,
   TIDEWIRE_TECHNIQUES,
 } from './shiomachi';
+import { WILD_FOLK, WILD_FOLK_TECHNIQUES, WILD_FOLK_TRAINING } from './wildFolk';
 import { KIRI_FORD_FOODS, KIRI_FORD_JOBS, KIRI_FORD_PEOPLE } from './kiriFord';
 import { SENSEI_GROUNDS, SENSEI_NAMES } from './senseiGrounds';
 
@@ -132,6 +133,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...CHAKRA_BEAST_ARTS,
     ...CONTRACT_TECHNIQUES,
     ...TIDEWIRE_TECHNIQUES,
+    ...WILD_FOLK_TECHNIQUES,
   ],
   missions: [
     ...MISSIONS,
@@ -197,7 +199,7 @@ export const ORIGINAL_PACK: ContentPack = {
     USHIO,
     REN,
   ],
-  training: [...TRAINING, ...SHIOMACHI_TRAINING],
+  training: [...TRAINING, ...SHIOMACHI_TRAINING, ...WILD_FOLK_TRAINING],
   foods: [...FOODS, ...SEASONAL_FOODS, ...SHIOMACHI_FOODS, ...KIRI_FORD_FOODS],
   clans: CLANS,
   builds: BUILDS,
@@ -234,6 +236,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...CLAN_HEADS,
     ...VILLAGE_CHUNIN,
     ...SHIOMACHI_PEOPLE,
+    ...WILD_FOLK,
     ...KIRI_FORD_PEOPLE,
   ],
   conversations: [
