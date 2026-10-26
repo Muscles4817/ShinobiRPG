@@ -1,6 +1,7 @@
 import type { CombatForm, CombatGround, CombatOccasion } from '../../contract';
 import { alive, type Body } from '../../rules/body';
-import type { Round } from './state';
+import { maxBreath } from '../../rules/breath';
+import type { PlanFighter, Round } from './state';
 
 /**
  * Where a line is said, as the story's words see it: the ground underfoot, how far into the
@@ -20,6 +21,11 @@ export type SceneTag = 'desperate' | CombatOccasion | FormTag | GroundTag | 'ope
 const DESPERATE_BELOW = 0.25;
 /** From this exchange on (the third round of four exchanges) the fight reads as a long one. */
 const LATE_FROM = 9;
+/**
+ * Below this share of their health, chakra or breath, a fighter is worn: only then do the long
+ * fight's words ("tired now") say so of them. A fresh fighter late in a fight is still fresh.
+ */
+const WORN_BELOW = 0.4;
 
 /** What a fighter is: as their setup says, else a spirit, a creature ("it") or a person. */
 export function formOf(f: Pick<Body, 'form' | 'traits' | 'grammar'>): CombatForm {
@@ -47,9 +53,18 @@ function occasionTags(occasion: CombatOccasion | undefined): SceneTag[] {
   return occasion === 'teammate' || occasion === 'rival' ? [occasion, 'spar'] : [occasion];
 }
 
-function stageTag(exchange: number): SceneTag[] {
+/** Breath unspent (absent) is all of it. */
+function winded(f: PlanFighter): boolean {
+  return f.breath !== undefined && f.breath < maxBreath(f.attributes) * WORN_BELOW;
+}
+
+function worn(f: PlanFighter): boolean {
+  return f.health < f.maxHealth * WORN_BELOW || f.chakra < f.maxChakra * WORN_BELOW || winded(f);
+}
+
+function stageTag(exchange: number, f: PlanFighter | undefined): SceneTag[] {
   if (exchange === 1) return ['opening'];
-  return exchange >= LATE_FROM ? ['late'] : [];
+  return exchange >= LATE_FROM && f !== undefined && worn(f) ? ['late'] : [];
 }
 
 /** The tags of a moment about `who`, most particular first. */
@@ -63,6 +78,6 @@ export function sceneTags(round: Round, who: string): readonly SceneTag[] {
     ...occasionTags(round.occasion),
     ...(form === 'person' ? [] : [form]),
     ...(ground && ground !== 'arena' ? [ground] : []),
-    ...stageTag(round.number),
+    ...stageTag(round.number, f),
   ];
 }

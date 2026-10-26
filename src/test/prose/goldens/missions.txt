@@ -395,7 +395,7 @@ view:
   You form the seal to break illusions.
   The illusion holds.
   The storehouse wraith fixes its eyes on the field and casts Whispering Dread.
-  You see it coming.
+  You catch the first sign of the storehouse wraith’s Whispering Dread and shake it off before it settles.
   —— Second exchange ——
   You press your palms together and push the illusions back.
   The illusion bends, then settles again.
@@ -1264,7 +1264,7 @@ view:
 --- combat (day 5, slot 0) ---
   —— First exchange ——
   Asuka starts with Lantern Cut before anyone has settled.
-  Asuka’s Lantern Cut tears through the bandit archer with everything behind it. [Guarded] [−56]
+  Asuka’s Lantern Cut tears through the bandit archer with everything behind it, guard or no guard. [Guarded] [−56]
   Gōran weaves in under the bandit archer’s fire.
   Gōran closes in at once.
   Goro launches into Palm Strike.
@@ -1274,9 +1274,9 @@ view:
   Asuka slips past the bandit thug’s strike.
   —— Second exchange ——
   Asuka’s blade flows into Lantern Cut.
-  Asuka’s Lantern Cut tears through the bandit thug, and he’s nearly knocked off his feet. [Guarded] [−43]
+  Asuka’s Lantern Cut tears through the bandit thug, through the guard all the same, and he’s nearly knocked off his feet. [Guarded] [−43]
   Gōran launches into Lantern Wind Flurry.
-  There is nothing the bandit thug can do as Gōran’s Lantern Wind Flurry smashes into him. [Guarded] [−14]
+  The bandit thug can do little as Gōran’s Lantern Wind Flurry smashes into him, through the guard all the same. [Guarded] [−14]
   The bandit thug goes down and stays down.
   Goro explodes forward with Palm Strike.
   Goro’s Palm Strike crashes into the bandit archer, and she feels it. [Guarded] [−27]
@@ -2097,9 +2097,9 @@ view:
   —— First exchange ——
   You close in at once.
   Asuka opens with Lantern Cut.
-  Asuka’s Lantern Cut tears through the first bandit thug, and he’s nearly knocked off his feet. [Guarded] [−38]
+  Asuka’s Lantern Cut tears through the first bandit thug, through the guard all the same, and he’s nearly knocked off his feet. [Guarded] [−38]
   Gōran opens with Lantern Wind Flurry.
-  There is nothing the first bandit thug can do as Gōran’s Lantern Wind Flurry smashes into him. [Guarded] [−39]
+  The first bandit thug can do little as Gōran’s Lantern Wind Flurry smashes into him, through the guard all the same. [Guarded] [−39]
   Gōran’s Lantern Wind Flurry drives through the first bandit thug again with everything behind it. [−23]
   The first bandit thug hits the ground and doesn’t get up.
   Goro starts with Palm Strike before anyone has settled.
@@ -2108,7 +2108,7 @@ view:
   The second bandit thug’s strike finds only the space where Asuka stood.
   —— Second exchange ——
   You send Gale Heel howling out.
-  Your Gale Heel hurls aside the second bandit thug, and he’s nearly knocked off his feet. [Guarded] [−78]
+  Your Gale Heel hurls aside the second bandit thug, guard or no guard, and he’s nearly knocked off his feet. [Guarded] [−78]
   The second bandit thug hits the ground and doesn’t get up.
   You are still on your feet, and no one is left to face you.
 

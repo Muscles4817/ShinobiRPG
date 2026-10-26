@@ -17,7 +17,7 @@ import { empowerCostsOwed, isPinned } from '../../rules/verbs';
 import { survivalWarning } from './survival';
 import { slotLimit } from './cards';
 import { fieldMeter } from './field';
-import { statuses } from './statusView';
+import { seenByPlayer, statuses, statusesShown } from './statusView';
 import { betweenRounds } from './adapt';
 import { intentLine, rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
@@ -218,7 +218,9 @@ function prompt(state: PlanState): string {
   if (state.phase === 'loadout') {
     const over = state.bout > 1 ? 'The round is over. ' : '';
     const pick = `${over}Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} actions for each distance, higher first, and the defence you keep ready there.`;
-    const hidden = state.fighters.some((f) => f.side === 'enemy' && alive(f) && f.hidden);
+    const hidden = state.fighters.some(
+      (f) => f.side === 'enemy' && alive(f) && f.hidden && !seenByPlayer(state, f),
+    );
     const ground = groundNote(state.ground);
     const hiding = hidden ? 'Someone is hidden: Search or Dispel finds them.' : null;
     // A killer facing you is said plainly: the choice of how to meet them is yours (`survival.ts`).
@@ -291,6 +293,8 @@ export function createPlanEngine(): CombatEngine {
         round: plan.bout,
         combatants: plan.fighters.map((f) => ({
           ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
+          // A hidden foe the player sees anyway is shown, and aimed at, as seen.
+          ...(seenByPlayer(plan, f) ? { statuses: statusesShown(plan, f), targetable: true } : {}),
           ...onStage(f),
         })),
         log: plan.log,

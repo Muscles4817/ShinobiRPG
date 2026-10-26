@@ -26,6 +26,13 @@ const STEP_PER_SPEED = 0.04;
 const STEP_MIN = 0.25;
 const STEP_MAX = 0.85;
 
+/** A step that can go no further (in at close, back at far) is told as staying put. */
+const NO_FURTHER: Readonly<Record<RangeBand, string>> = {
+  close: '{a} press{a.es} in, but there is no closer to get.',
+  mid: '{a} hold{a.s} at mid range.',
+  far: '{a} keep{a.s} well back, as far off as the ground allows.',
+};
+
 function arrive(round: Round, { actor, target }: Turn, to: RangeBand): Round {
   const closing = RANGE_BANDS.indexOf(to) < RANGE_BANDS.indexOf(round.range);
   const told = { actor, to, closing, ...(target ? { foe: target } : {}) };
@@ -71,6 +78,8 @@ function walkedThrough(before: Round, after: Round, turn: Turn): Round | null {
 export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
   const { actor } = turn;
   if (isPinned(actor)) return say(round, tell('{a} strain{a.s} against the hold.', { a: actor }));
+  const to = direction === 'in' ? stepIn(round.range) : stepBack(round.range);
+  if (to === round.range) return say(round, tell(NO_FURTHER[to], { a: actor }));
   const moving = {
     ...round,
     fighters: patch(round.fighters, actor.id, { movedAt: round.number }),
