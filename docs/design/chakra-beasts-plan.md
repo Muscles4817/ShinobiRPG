@@ -169,6 +169,21 @@ writing keeps reaching for one.
    the beast dies); and one arc around an elder (the old owl of the pass, say: something is wrong
    on the mountain, and the owl has been watching it). No road-event bands: they stay off the
    roads.
+
+   **As built.** A C-rank template, `c-team-deep-hunt` (`jobs/templates/cTeamWild.ts`): a day at
+   the edge and one in the deep, a way-finding check, a day into the heart and the beast there,
+   two days back, named by one `country` slot. Its days draw the depths' sights and finds; a job's
+   foes are its own, and its fight is on open ground (a stage's `ground` can't be a slot). Five
+   fills (`jobs/fills/wild.ts`): the ember-tusk boar at a charcoal village, the thunder kite over
+   a goat hamlet, the marsh serpent at a reed village, a glass scorpion at an oasis, the tide crab
+   at a fishing cove. **The White Stag** (`jobs/whiteStag.ts`, once only): poachers in the deep
+   woods, and if the last one's arrow lands the job fails; freeing the stag first lets you call it
+   out of the way. **The Old Owl of the Pass** (`arcs/oldOwl.ts`): deserters moving the cairns on
+   the high pass at C rank, then at B rank the owl, which you either fight or follow to a
+   missing-nin digging warm stones out of the peak. Still open: the owl can be met on a venture
+   before or after its arc, since road events don't read world marks. The fan pack's board has no
+   templates yet, so these are the original pack's.
+
 5. **Scouting and the field book.** A read says "Changed by chakra" and names the nature and the
    gift once seen. The field book's foes page takes them with no code; a page of its own for chakra
    beasts is a later choice.
