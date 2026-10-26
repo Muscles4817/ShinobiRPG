@@ -153,71 +153,71 @@
   The storehouse wraith squares up.
   —— The fight begins ——
   —— First exchange ——
-  You search the corners of the room and find them empty.
-  Whispering Dread rises off the storehouse wraith like the cold off a well.
-  The storehouse wraith’s Whispering Dread grips you before you are properly set. [Guarded] [−12]
-  Your senses swim in the storehouse wraith’s illusion.
-  —— Second exchange ——
-  You look again, with no more luck.
-  The storehouse wraith reaches for Whispering Dread again.
-  The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−11]
-  You blink, and the field is no longer where it was.
-  You catch the thread of the illusion and find the storehouse wraith.
-  —— Third exchange ——
-  You break free of the illusion.
-  You cross the floor in two strides.
-  The storehouse wraith melts back into the illusion.
+  You form the seal to break illusions.
+  The illusion holds.
   The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
-  The storehouse wraith’s Whispering Dread buries you, and you’re nearly knocked off your feet. [−36]
-  —— Last exchange ——
-  You find the storehouse wraith in a corner of the room.
-  The storehouse wraith reaches for Whispering Dread again.
-  The storehouse wraith lands its Whispering Dread on you. [Guarded] [−8]
+  The storehouse wraith’s Whispering Dread sinks into you before you are properly set. [Guarded] [−12]
   Your senses swim in the storehouse wraith’s illusion.
+  You follow the blow back to the storehouse wraith.
+  —— Second exchange ——
+  You dart in close.
+  The storehouse wraith reaches for Whispering Dread again.
+  The storehouse wraith’s Whispering Dread sinks deep into you. [−23]
+  You blink, and the field is no longer where it was.
+  —— Third exchange ——
+  Your senses lie to you, and the attack goes wide.
+  The storehouse wraith melts back into the illusion.
+  The storehouse wraith goes back to Whispering Dread.
+  The storehouse wraith lands its Whispering Dread on you. [Guarded] [−12]
+  —— Last exchange ——
+  You snap through the release seal.
+  Nothing gives.
+  The storehouse wraith reaches for Whispering Dread again.
+  You see it coming.
+  You follow the blow back to the storehouse wraith.
   —— The next round begins ——
   —— First exchange ——
-  You bite down and the world snaps back into place.
-  You send Gale Heel howling out.
+  You go in with Gale Heel.
   You catch the storehouse wraith with your Gale Heel. [Guarded] [−7]
-  Much of it glances off the storehouse wraith.
-  The storehouse wraith catches the eye and lets Whispering Dread unfold.
-  You were waiting for exactly that.
-  —— Second exchange ——
-  You use Gale Heel once more.
-  Your Gale Heel slices across the storehouse wraith. [Guarded] [−7]
   The storehouse wraith barely seems to feel it.
-  The storehouse wraith fades out of sight again.
-  The storehouse wraith’s touch brushes you. [Guarded] [−1]
-  You catch the thread of the illusion and find the storehouse wraith.
+  Whispering Dread rises off the storehouse wraith like the cold off a well.
+  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−8]
+  The storehouse wraith’s illusion folds the world around you.
+  —— Second exchange ——
+  Your senses lie to you, and the attack goes wide.
+  The storehouse wraith is gone again, and the air where it stood is empty.
+  You are a shade too slow, and the storehouse wraith’s touch brushes you. [Guarded] [−1]
+  You follow the blow back to the storehouse wraith.
   —— Third exchange ——
-  You explode forward with Gale Heel.
-  Your Gale Heel cuts into the storehouse wraith cleanly. [Guarded] [−7]
-  Much of it glances off the storehouse wraith.
-  The storehouse wraith fixes its eyes on the field and casts Whispering Dread.
-  You were waiting for exactly that.
+  You shake off the illusion.
+  You launch into Gale Heel.
+  Your Gale Heel rips into the storehouse wraith. [Guarded] [−7]
+  The storehouse wraith barely seems to feel it.
+  The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
+  The storehouse wraith’s Whispering Dread sinks into you cleanly. [Guarded] [−8]
   —— Last exchange ——
   You go back to Gale Heel.
   You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
-  Little of it bites on the storehouse wraith.
+  Much of it glances off the storehouse wraith.
   You are a shade too slow, and the storehouse wraith’s touch brushes you. [Guarded] [−1]
   Your senses swim in the storehouse wraith’s illusion.
   —— The next round begins ——
   —— First exchange ——
   You go in with Gale Heel.
   You catch the storehouse wraith with your Gale Heel. [Guarded] [−7]
-  Much of it glances off the storehouse wraith.
+  Little of it bites on the storehouse wraith.
   The storehouse wraith is gone again, and the air where it stood is empty.
   The storehouse wraith’s touch comes slower than it did at the start and only grazes you. [Guarded] [−1]
   You catch the thread of the illusion and find the storehouse wraith.
   —— Second exchange ——
   You go in with Gale Heel.
   You catch the storehouse wraith with your Gale Heel. [Guarded] [−7]
-  Little of it bites on the storehouse wraith.
+  The storehouse wraith barely seems to feel it.
   You are a shade too slow, and the storehouse wraith’s touch chills you. [Guarded] [−1]
   —— Third exchange ——
   You reach for Gale Heel again.
   You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
-  The storehouse wraith barely seems to feel it.
+  Much of it glances off the storehouse wraith.
   The storehouse wraith fixes its eyes on the field and casts Shadow Feint.
   You reel, the world spinning.
   —— Last exchange ——
@@ -227,32 +227,40 @@
   You blink, and the field is no longer where it was.
   —— The next round begins ——
   —— First exchange ——
-  You search the field and find no one.
-  The storehouse wraith’s touch comes slower than it did at the start and only brushes you. [Guarded] [−1]
+  You form the seal to break illusions.
+  The illusion holds.
+  The storehouse wraith’s touch brushes you. [Guarded] [−1]
   Your senses swim in the storehouse wraith’s illusion.
-  You trace the illusion back to the storehouse wraith.
+  You follow the blow back to the storehouse wraith.
   —— Second exchange ——
   Tired now, you still go to Gale Heel.
   You catch the storehouse wraith with your Gale Heel. [Guarded] [−7]
   Much of it glances off the storehouse wraith.
-  The storehouse wraith scrapes together what chakra it can for Whispering Dread.
-  The storehouse wraith finds the strength from somewhere, and the storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−8]
+  Whispering Dread rises off the storehouse wraith like the cold off a well.
+  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−8]
   —— Third exchange ——
   You go back to Gale Heel.
-  You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
+  You find the strength from somewhere, and your Gale Heel cuts into the storehouse wraith. [Guarded] [−7]
   Little of it bites on the storehouse wraith.
   The storehouse wraith fades out of sight again.
   The storehouse wraith lashes out with the last of its strength, and the touch only chills you. [Guarded] [−1]
   —— Last exchange ——
-  You search the field and find no one.
+  You form the seal to break illusions.
+  The illusion shatters.
   You scramble clear of the storehouse wraith’s touch with nothing to spare.
-  You follow the blow back to the storehouse wraith.
   —— The next round begins ——
   —— First exchange ——
   Hurt and running short of time, you reach for Gale Heel.
   Your Gale Heel cuts into the storehouse wraith. [Guarded] [−7]
   The storehouse wraith barely seems to feel it.
-  The storehouse wraith sinks into the floorboards and does not come back up.
+  The storehouse wraith’s touch comes slower than it did at the start and only grazes you. [Guarded] [−1]
+  You blink, and the field is no longer where it was.
+  —— Second exchange ——
+  You break free of the illusion.
+  You scrape together what chakra you can for Gale Heel.
+  You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
+  Much of it glances off the storehouse wraith.
+  The storehouse wraith comes apart like smoke.
   The last of them is down, and it is over.
   summary: You won in five rounds. The storehouse wraith went down in the fifth round.
 

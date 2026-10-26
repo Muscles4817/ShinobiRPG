@@ -10,12 +10,11 @@ import {
   shakeOffChance,
 } from '../../rules/conditions';
 import { swarmSearch } from '../../rules/swarms';
-import { tell } from '../../rules/telling';
 import { dulled } from '../../rules/verbs';
 import { patch, paying, say, type PlanFighter, type Round } from './state';
 import { inCover } from './groundPlay';
 import { emptySearchLine, foundLine, momentOf } from './voice';
-import { clearHeadLine, rehideLine } from './sceneVoice';
+import { clearHeadLine, dispelLine, dispelledLine, rehideLine } from './sceneVoice';
 
 /**
  * Hidden and Confused in a planned fight. Illusionists slip back into hiding every few
@@ -104,15 +103,13 @@ export function search(round: Round, { actor, rng }: Turn): Round {
 
 export function dispel(round: Round, { actor, rng }: Turn): Round {
   const change = { ...paying(actor, DISPEL_CHAKRA), confused: 0 };
-  const paid = say(
-    { ...round, fighters: patch(round.fighters, actor.id, change) },
-    tell('{a} form{a.s} the seal to break illusions.', { a: actor }),
-  );
+  const paid = { ...round, fighters: patch(round.fighters, actor.id, change) };
   const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden);
   const strongest = [...hidden].sort((a, b) => b.attributes.genjutsu - a.attributes.genjutsu)[0];
-  if (!strongest) return paid;
-  if (!rng.chance(dispelChance(actor, strongest))) {
-    return say(narrowed(paid, hidden), 'The illusion holds.');
-  }
-  return say(reveal(paid, hidden), 'The illusion shatters.');
+  const moment = momentOf(round, actor.id);
+  const cast = dispelLine(moment, actor);
+  if (!strongest) return say(paid, cast);
+  const broke = rng.chance(dispelChance(actor, strongest));
+  const after = dispelledLine(moment, broke);
+  return broke ? say(reveal(paid, hidden), cast, after) : say(narrowed(paid, hidden), cast, after);
 }

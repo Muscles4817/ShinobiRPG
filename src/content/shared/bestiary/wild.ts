@@ -97,7 +97,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
     name: 'Old Cave Bear',
     blow: 'claw',
     description: 'Has slept in the same cave for twenty winters and woken up angry for every one.',
-    ...foeStats(8, [30, 11, 17, 13], { ...NO_ARTS, taijutsu: 12, willpower: 13 }),
+    ...foeStats(8, [28, 11, 17, 13], { ...NO_ARTS, taijutsu: 12, willpower: 13 }),
     healthScale: 1.8,
     ...PLAIN,
     traits: ['brawler'],
