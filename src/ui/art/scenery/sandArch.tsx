@@ -1,5 +1,5 @@
 import { r1, scatter } from './kit';
-import { SkyLights, paint } from './lights';
+import { Campfire, SkyLights } from './lights';
 
 /**
  * The outer sands: great dunes one behind another with their crests lit and their lee sides in
@@ -23,36 +23,36 @@ const DUNES = [
 
 const GLITTER = (() => {
   const next = scatter(181);
-  return Array.from({ length: 24 }, () => ({ x: r1(next() * 400), y: r1(152 + next() * 10) }));
+  return Array.from({ length: 24 }, () => ({ x: r1(next() * 400), y: r1(143 + next() * 6) }));
 })();
 
 function Arch() {
   return (
     <g>
       <path
-        d="M260 192V150Q264 128 290 124Q318 122 326 144V192H314V156Q310 140 292 140Q276 142 272 160V192Z"
+        d="M260 190V148Q264 126 290 122Q318 120 326 142V190H314V154Q310 138 292 138Q276 140 272 158V190Z"
         fill="#9a6440"
       />
-      <path d="M290 124Q318 122 326 144V192H316V150Q314 134 296 132Z" fill="#7a4a30" opacity=".6" />
+      <path d="M290 122Q318 120 326 142V190H316V148Q314 132 296 130Z" fill="#7a4a30" opacity=".6" />
     </g>
   );
 }
 
-export function OuterDunes({ uid }: { readonly uid: string }) {
+export function SandArch({ uid }: { readonly uid: string }) {
   return (
     <>
       <SkyLights uid={uid} moon={[110, 50]} sun={[120, 56]} seed={181} starDepth={120} />
-      <path d="M-10 160Q100 150 200 156Q300 150 410 156V240H-10Z" fill="#8f8a84" />
+      <path d="M-10 152Q100 142 200 148Q300 142 410 148V240H-10Z" fill="#8f8a84" />
       <g fill="#e6eef8" opacity=".5">
         {GLITTER.map((g) => (
           <circle key={`${g.x}-${g.y}`} cx={g.x} cy={g.y} r=".7" />
         ))}
       </g>
-      <Arch />
-      {DUNES.map((dune) => (
+      {DUNES.map((dune, i) => (
         <g key={dune.d}>
           <path d={dune.d} fill={dune.fill} />
           <path d={dune.d} fill={dune.shade} opacity=".35" transform="translate(30 6)" />
+          {i === 1 && <Arch />}
         </g>
       ))}
       <path d="M-10 240V200Q60 176 150 196Q200 210 240 240Z" fill="#e8bd84" />
@@ -67,7 +67,7 @@ export function OuterDunes({ uid }: { readonly uid: string }) {
         <path d="M76 224h10M80 220v8M88 225h8" stroke="#efe6d4" strokeWidth="1.4" />
       </g>
       <rect className="bd-dusk" width="400" height="240" />
-      <circle className="bd-lit" cx="300" cy="196" r="14" fill={paint(uid, 'glow')} />
+      <Campfire uid={uid} at={[293, 190]} size={0.8} />
     </>
   );
 }

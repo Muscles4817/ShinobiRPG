@@ -30,7 +30,7 @@ const IDS: readonly BackdropId[] = [
   'toad-mountain',
   'broadleaf-forest',
   'river-plain',
-  'outer-dunes',
+  'sand-arch',
   'mountain-stair',
   'gorge-bridge',
   'twin-statues',

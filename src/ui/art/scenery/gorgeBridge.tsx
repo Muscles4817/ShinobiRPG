@@ -5,7 +5,7 @@ import { PlankBridge } from './waterTown';
 
 /**
  * A rope bridge over a gorge: two cliff walls falling away to a thread of river far below, the
- * bridge slung between them on ropes as thick as an arm, the far hills beyond, a dead pine on the
+ * bridge slung between them on its posts, the far hills beyond, a dead pine on the
  * near lip and the old toll hut at the bridge-head.
  */
 
@@ -15,7 +15,6 @@ function TollHut({ uid }: { readonly uid: string }) {
       <rect className="bd-front" x="18" y="132" width="34" height="22" />
       <path className="bd-roof" d="M12 134L35 118L58 134Z" />
       <rect className="bd-lamp" x="24" y="138" width="8" height="7" fill={paint(uid, 'shoji')} />
-      <path className="bd-front-stroke" d="M64 150V122M100 150V126" strokeWidth="3" />
     </g>
   );
 }

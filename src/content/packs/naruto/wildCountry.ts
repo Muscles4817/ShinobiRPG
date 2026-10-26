@@ -16,16 +16,16 @@ export const GREAT_FOREST: LocationDef = {
   id: 'great-forest',
   name: 'The Great Forest',
   kind: 'wild',
-  epithet: 'The Land of Fire’s endless trees',
+  epithet: 'The forest between the Leaf and the sea',
   map: { x: 63, y: 39.5, label: 'right' },
   backdrop: 'broadleaf-forest',
   places: [
     {
       id: 'great-forest-woods',
       kind: 'wilds',
-      name: 'Under the Canopy',
+      name: 'The Fallen Oak',
       icon: 'tree',
-      blurb: 'Trees as wide as houses, and the road a thread between them',
+      blurb: 'Oaks so wide the road bends round them',
       biome: 'woods',
       finds: WOODS_FINDS,
     },
@@ -44,7 +44,7 @@ export const LAND_OF_RIVERS: LocationDef = {
   name: 'The Land of Rivers',
   kind: 'wild',
   epithet: 'Braided water between the Fire and the Wind',
-  map: { x: 34, y: 30.5 },
+  map: { x: 28, y: 41.5, label: 'right' },
   backdrop: 'river-plain',
   places: [
     {
@@ -52,7 +52,7 @@ export const LAND_OF_RIVERS: LocationDef = {
       kind: 'wilds',
       name: 'The Shingle Banks',
       icon: 'wave',
-      blurb: 'Shallow channels running over stones, and herons in all of them',
+      blurb: 'Ankle-deep channels over grey stones; herons stand in the slow ones',
       biome: 'river',
       finds: RIVER_FINDS,
       spots: RIVER_SPOTS,
@@ -62,7 +62,7 @@ export const LAND_OF_RIVERS: LocationDef = {
       kind: 'camp',
       name: 'The Ferryman’s Island',
       icon: CAMP_ICON,
-      blurb: 'A gravel island with a fire pit and nobody’s name on it',
+      blurb: 'A gravel island where the ferryman’s old fire pit still draws travellers',
     },
   ],
 };
@@ -73,12 +73,12 @@ export const OUTER_SANDS: LocationDef = {
   kind: 'wild',
   epithet: 'The dunes before the tainted belt',
   map: { x: 20, y: 47, label: 'right' },
-  backdrop: 'outer-dunes',
+  backdrop: 'sand-arch',
   places: [
     {
       id: 'outer-sands-hollows',
       kind: 'wilds',
-      name: 'The Wind Hollows',
+      name: 'The Thorn Hollows',
       icon: 'leaf',
       blurb: 'Scrub and thorn in the lee of the big dunes',
       biome: 'desert',
@@ -120,11 +120,11 @@ export const TENCHI_BRIDGE: LocationDef = {
   id: 'tenchi-bridge',
   name: 'The Tenchi Bridge',
   kind: 'landmark',
-  epithet: 'Heaven and earth over the gorge',
+  epithet: 'A rope bridge on the old Grass road',
   map: { x: 27, y: 25 },
   backdrop: 'gorge-bridge',
   sight: {
-    text: 'The bridge hangs across the gorge on ropes as thick as your arm, and the wind sings in them. Halfway over you stop and look down, and pick out every ledge and bird’s nest on the far wall before you go on.',
+    text: 'The bridge hangs across the gorge on ropes as thick as your arm, and the ropes creak at every step. Halfway over you stop and look down, and pick out every ledge and bird’s nest on the far wall before you go on.',
     reward: { perception: 1 },
   },
   places: [
@@ -146,7 +146,7 @@ export const VALLEY_OF_THE_END: LocationDef = {
   map: { x: 46, y: 14, label: 'right' },
   backdrop: 'twin-statues',
   sight: {
-    text: 'Two stone giants stand on either side of the falls, each with a hand raised in the sign of confrontation, the river pouring down between them. You stand in the spray at the foot of the falls and feel how small a fight between two people ought to be.',
+    text: 'Two stone giants stand on either side of the falls, each with a hand raised in the sign of confrontation, the river pouring down between them. One giant’s arm is split along its length where something struck it, and moss has grown into the crack. You stand in the spray until the cold has gone right through you.',
     reward: { willpower: 1 },
   },
   places: [

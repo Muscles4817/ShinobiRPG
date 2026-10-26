@@ -1,4 +1,5 @@
 import { SkyLights, paint } from './lights';
+import { Pine } from './nature';
 import { Boulder, Waterfall } from './terrain';
 
 /**
@@ -9,13 +10,12 @@ import { Boulder, Waterfall } from './terrain';
 
 /** A stone giant from the waist up, facing across the falls; `facing` 1 looks right. */
 function Giant({ x, facing }: { readonly x: number; readonly facing: 1 | -1 }) {
-  const f = facing;
   return (
-    <g transform={`translate(${x} 150) scale(${f * 1.2} 1.2) translate(0 -150)`}>
-      <path className="bd-mid" d="M-26 150V88Q-24 70 0 66Q24 70 26 88V150Z" />
-      <circle className="bd-mid" cx="0" cy="52" r="14" />
-      <path className="bd-mid" d="M-6 40Q0 30 6 40Z" />
-      <path className="bd-mid" d="M14 84L34 70L38 50L30 48L28 64L12 74Z" />
+    <g transform={`translate(${x} 150) scale(${facing * 1.2} 1.2) translate(0 -150)`}>
+      <path className="bd-near" d="M-26 150V88Q-24 70 0 66Q24 70 26 88V150Z" />
+      <circle className="bd-near" cx="0" cy="52" r="14" />
+      <path className="bd-near" d="M-6 40Q0 30 6 40Z" />
+      <path className="bd-near" d="M14 84L34 70L38 50L30 48L28 64L12 74Z" />
       <path
         className="bd-rim"
         d="M-26 88Q-24 70 0 66M-14 52a14 14 0 0 1 14 -14M-20 150V96"
@@ -42,6 +42,8 @@ export function TwinStatues({ uid }: { readonly uid: string }) {
       <g stroke="#f4f8fb" fill="none" strokeOpacity=".35">
         <path d="M168 226q16 -3 32 0M204 234q16 -3 32 0" />
       </g>
+      <Pine at={[30, 152]} scale={0.6} />
+      <Pine at={[372, 152]} scale={0.5} />
       <Boulder at={[40, 240]} size={16} seed={213} />
       <Boulder at={[364, 240]} size={12} seed={214} />
     </>

@@ -18,7 +18,7 @@ function withPass(state: GameState): GameState {
 }
 
 describeFan('the fan pack’s country between its towns', () => {
-  it('has wild country and landmarks to the same measure as the original, each on a road', () => {
+  it('has six unfamous wild places and landmarks, each reachable from the Leaf', () => {
     const open = naruto!.locations.filter((l) => l.lockedReason === undefined);
     const small = open.filter((l) => l.kind === 'wild' || l.kind === 'landmark');
     expect(small.map((l) => l.id)).toEqual([

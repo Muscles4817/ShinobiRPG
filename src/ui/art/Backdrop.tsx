@@ -6,7 +6,7 @@ import type { BackdropId } from '@/game';
 import { BargeLanding } from './scenery/bargeLanding';
 import { BroadleafForest } from './scenery/broadleafForest';
 import { RiverPlain } from './scenery/riverPlain';
-import { OuterDunes } from './scenery/outerDunes';
+import { SandArch } from './scenery/sandArch';
 import { MountainStair } from './scenery/mountainStair';
 import { GorgeBridge } from './scenery/gorgeBridge';
 import { TwinStatues } from './scenery/twinStatues';
@@ -68,7 +68,7 @@ const SCENES: Readonly<Record<BackdropId, ComponentType<SceneProps>>> = {
   'toad-mountain': ToadMountain,
   'broadleaf-forest': BroadleafForest,
   'river-plain': RiverPlain,
-  'outer-dunes': OuterDunes,
+  'sand-arch': SandArch,
   'mountain-stair': MountainStair,
   'gorge-bridge': GorgeBridge,
   'twin-statues': TwinStatues,

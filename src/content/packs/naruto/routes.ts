@@ -3,12 +3,12 @@ import type { RouteDef } from '@/systems/travel';
 import { SUNA_BARGE_PASSAGE } from './kageroLanding';
 
 /**
- * The roads out of the Leaf: south-east through the Great Forest to the Land of Waves and across
- * the water to the Mist, west through the Land of Rivers (with a track up to the Tenchi Bridge) to
- * Kagerō Landing and over the sand to the Sand (by a priests' barge, or on foot over the outer
- * sands and through the tainted belt), down the highway to Shukuba and Tanzaku, east to the
- * pleasure quarter, up the Thousand Steps to the Fire Temple, north to the Valley of the End,
- * and the long way to the toads.
+ * The roads west of the Leaf run through the Land of Rivers, with a track up to the Tenchi Bridge,
+ * to Kagerō Landing, and from there over the sand to the Sand: by a priests' barge, or on foot over
+ * the outer sands and through the tainted belt. The rest run south-east through the Great Forest
+ * to the Land of Waves and over the water to the Mist, down the highway to Shukuba and Tanzaku,
+ * east to the pleasure quarter, up the Thousand Steps to the Fire Temple, north to the Valley of
+ * the End, and the long way to the toads.
  */
 export const NARUTO_ROUTES: readonly RouteDef[] = [
   {
@@ -117,7 +117,7 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
       {
         region: 'forest-track',
         days: 1,
-        text: 'A pilgrims’ road north-west, with a shrine at every crossing and a prayer at most of them.',
+        text: 'A pilgrims’ road north-west, with a shrine at every crossing, and at the last crossing the road turns to steps.',
       },
     ],
     danger: 'petty',
@@ -130,7 +130,7 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
       {
         region: 'mountain-pass',
         days: 1,
-        text: 'The road becomes a stair, and the stair goes on into the clouds. A bell sounds somewhere above.',
+        text: 'Above the shrine the stair goes on into the cloud, and a bell sounds somewhere over it.',
       },
     ],
     danger: 'petty',
@@ -146,7 +146,10 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         text: 'The road crosses dry hills between the forest and the Land of Rivers.',
       },
     ],
-    trail: [{ x: 41, y: 28.5 }],
+    trail: [
+      { x: 41, y: 28.5 },
+      { x: 33, y: 33 },
+    ],
     danger: 'petty',
   },
   {
@@ -160,7 +163,6 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
         text: 'Through the Land of Rivers, where the rivers thin to stony beds and the sky gets bigger.',
       },
     ],
-    trail: [{ x: 28, y: 36 }],
     danger: 'petty',
   },
   {
@@ -171,10 +173,10 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
       {
         region: 'hill-road',
         days: 1,
-        text: 'A track climbs away from the rivers into broken hills, and the ground drops away into a gorge.',
+        text: 'A track climbs from the rivers into broken hills, and then the ground simply stops at the edge of a gorge.',
       },
     ],
-    trail: [{ x: 31, y: 28 }],
+    trail: [{ x: 25, y: 33 }],
     danger: 'armed',
   },
   {
@@ -190,7 +192,7 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
       {
         region: 'river-road',
         days: 1,
-        text: 'Along the river through a deep valley, and the roar of the falls ahead long before you see them.',
+        text: 'The path follows the river down into a deep valley, and you hear the falls for an hour before you see them.',
       },
     ],
     trail: [{ x: 47, y: 21 }],

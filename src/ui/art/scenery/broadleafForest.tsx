@@ -1,11 +1,11 @@
 import { r1, ridge, scatter } from './kit';
-import { Lantern, SkyLights, paint } from './lights';
+import { Campfire, Lantern, SkyLights, paint } from './lights';
 import { Crown } from './nature';
 import { Boulder, Tufts } from './terrain';
 
 /**
  * A broadleaf forest: trunks as wide as houses going up out of the frame, their crowns closing
- * over the road, light coming down in patches, ferns underfoot, and the fallen watch post where
+ * over the road, light coming down in patches, long grass underfoot, and the fallen watch post where
  * patrols sleep, its lantern still hung on the one post left standing.
  */
 
@@ -78,8 +78,7 @@ function WatchPost({ uid }: { readonly uid: string }) {
         fill="none"
       />
       <Lantern uid={uid} at={[262, 192]} size={2.6} />
-      <circle className="bd-lit" cx="280" cy="226" r="16" fill={paint(uid, 'glow')} />
-      <path d="M274 230l6 -9l6 9z" fill="#f2a24a" />
+      <Campfire uid={uid} at={[280, 230]} size={0.9} />
     </g>
   );
 }

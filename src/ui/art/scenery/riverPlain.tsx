@@ -1,10 +1,10 @@
 import { r1, ridge, scatter } from './kit';
-import { SkyLights, paint } from './lights';
+import { Campfire, SkyLights, paint } from './lights';
 import { Boulder, Reeds } from './terrain';
 import { Willow } from './trees';
 
 /**
- * A braided river plain: shallow channels running over grey shingle between gravel islands,
+ * A braided river plain: shallow channels running over a wide bed of grey shingle,
  * low dry hills on either side, herons standing in the water, and a fire on the near island
  * where travellers wait for the river to fall.
  */
@@ -73,8 +73,7 @@ export function RiverPlain({ uid }: { readonly uid: string }) {
       {HERONS.map((h) => (
         <Heron key={h.x} {...h} />
       ))}
-      <circle className="bd-lit" cx="300" cy="234" r="18" fill={paint(uid, 'glow')} />
-      <path d="M294 238l6 -9l6 9z" fill="#f2a24a" />
+      <Campfire uid={uid} at={[300, 238]} />
       <Reeds at={[20, 240]} count={10} seed={175} scale={1.1} />
       <Reeds at={[384, 240]} count={8} seed={176} />
       <Boulder at={[250, 240]} size={10} seed={177} />

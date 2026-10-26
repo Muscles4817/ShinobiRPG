@@ -5,7 +5,7 @@ import { Boulder } from './terrain';
 
 /**
  * A pilgrims' stair up a cliff: stone steps zigzagging up the rock face out of the clouds below,
- * stone lanterns at the turns, pines clinging to the ledges, and halfway up a shrine no bigger
+ * paper lanterns at the turns, pines clinging to the ledges, and halfway up a shrine no bigger
  * than a cupboard with sandals in a row before it.
  */
 
@@ -20,17 +20,26 @@ const FLIGHTS: readonly (readonly [number, number, number, number])[] = [
   [232, 92, 262, 64],
 ];
 
+/** Height of a step, and the width of the stair, in scene units. */
+const TREAD_RISE = 4;
+const STAIR_WIDTH = 14;
+
 function Flight({ flight: [x0, y0, x1, y1] }: { readonly flight: (typeof FLIGHTS)[number] }) {
-  const steps = Math.round(Math.abs(y1 - y0) / 4);
+  const steps = Math.round(Math.abs(y1 - y0) / TREAD_RISE);
   const treads = Array.from({ length: steps }, (_, i) => {
     const t = i / steps;
     const x = x0 + (x1 - x0) * t;
     const y = y0 + (y1 - y0) * t;
-    return `M${r1(x - 7)} ${r1(y)}h14`;
+    return `M${r1(x - STAIR_WIDTH / 2)} ${r1(y)}h${STAIR_WIDTH}`;
   }).join('');
   return (
     <g>
-      <path d={`M${x0} ${y0}L${x1} ${y1}`} stroke="#a8a092" strokeOpacity=".45" strokeWidth="12" />
+      <path
+        d={`M${x0} ${y0}L${x1} ${y1}`}
+        stroke="#a8a092"
+        strokeOpacity=".45"
+        strokeWidth={STAIR_WIDTH - 2}
+      />
       <path d={treads} stroke="#e8e0d0" strokeOpacity=".3" strokeWidth=".8" />
     </g>
   );
@@ -42,7 +51,7 @@ function Shrine({ uid }: { readonly uid: string }) {
       <rect className="bd-front" x="200" y="146" width="14" height="14" />
       <path className="bd-roof" d="M196 148L207 138L218 148Z" />
       <rect className="bd-lamp" x="204" y="150" width="6" height="6" fill={paint(uid, 'shoji')} />
-      <path d="M190 160h6M194 160h6M218 160h6" stroke="#c8a070" strokeWidth="1.6" />
+      <path d="M188 160h5M195 160h5M218 160h6" stroke="#c8a070" strokeWidth="1.6" />
     </g>
   );
 }
