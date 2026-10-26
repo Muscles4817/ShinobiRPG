@@ -28,6 +28,12 @@ const IDS: readonly BackdropId[] = [
   'bridge-coast',
   'temple-hill',
   'toad-mountain',
+  'broadleaf-forest',
+  'river-plain',
+  'outer-dunes',
+  'mountain-stair',
+  'gorge-bridge',
+  'twin-statues',
 ];
 
 /** Every `url(#…)` a drawing points at. */

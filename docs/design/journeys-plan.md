@@ -499,3 +499,15 @@ migration and a previous-version save test wherever the save shape changes.
     shelf. The book's tabs sit three across on a phone and in one row on a desk. Since step 10
     every place of both packs also has a backdrop of its own. Not yet: road sights on a page of
     their own, and the day's sheet naming a place first stood in.
+
+12. **The fan pack's map** (this step), to the original's measure: six new places, none famous,
+    each on the roads (`packs/naruto/wildCountry.ts`). The Great Forest is wild country on the road
+    to the Land of Waves (its woods, and a camp in a fallen outpost); the Land of Rivers, wild
+    country on the road west, has braided shallows to forage and fish; the Outer Sands is the
+    desert before the tainted belt, on the walk to the Sand. The landmarks are the Thousand Steps
+    halfway up the temple stair (a sight that builds stamina), the Tenchi Bridge up a track from the
+    rivers (perception) and the Valley of the End north of the Leaf (willpower). The roads are split
+    where the places stand, and every day count is as it was, so jobs and trips take as long as
+    before; the walk to the Sand is armed to the outer sands and deadly past them. Each place has a
+    backdrop of its own: a broadleaf forest, a river plain, outer dunes with a stone arch, a cliff
+    stair, a rope bridge over a gorge, and two stone giants facing across the falls.

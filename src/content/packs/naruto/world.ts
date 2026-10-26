@@ -15,6 +15,7 @@ import { SUNAGAKURE } from './sunagakure';
 import { SHUKUBA_TOWN } from './shukuba';
 import { OTAFUKU_TOWN } from './otafuku';
 import { FIRE_TEMPLE } from './fireTemple';
+import { NARUTO_WILD_COUNTRY } from './wildCountry';
 import { NARUTO_LETTINGS } from './homes';
 
 export const NARUTO_TEXT: SettingText = {
@@ -245,6 +246,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
   SHUKUBA_TOWN,
   OTAFUKU_TOWN,
   FIRE_TEMPLE,
+  ...NARUTO_WILD_COUNTRY,
   {
     id: 'mount-myoboku',
     name: 'Mount Myōboku',

@@ -17,6 +17,25 @@ function withPass(state: GameState): GameState {
   return { ...state, leave: signPass(state.leave, state.time.day, PASS_DAYS) };
 }
 
+describeFan('the fan pack’s country between its towns', () => {
+  it('has wild country and landmarks to the same measure as the original, each on a road', () => {
+    const open = naruto!.locations.filter((l) => l.lockedReason === undefined);
+    const small = open.filter((l) => l.kind === 'wild' || l.kind === 'landmark');
+    expect(small.map((l) => l.id)).toEqual([
+      'great-forest',
+      'land-of-rivers',
+      'outer-sands',
+      'thousand-steps',
+      'tenchi-bridge',
+      'valley-of-the-end',
+    ]);
+    for (const place of small) {
+      expect(place.famous).toBeUndefined();
+      expect(findJourney(naruto!.routes, naruto!.startLocationId, place.id)).not.toBeNull();
+    }
+  });
+});
+
 describeFan('the fan pack’s towns', () => {
   const ctx = createGameContext(naruto!);
 
@@ -73,10 +92,14 @@ describeFan('the fan pack’s towns', () => {
     expect(desk?.kind === 'missions' && desk.missionIds.length).toBeGreaterThan(0);
   });
 
-  it('crosses the sand by barge only with the priests’ leave, else on foot through the belt', () => {
+  it('crosses the sand by barge only with the priests’ leave, else on foot over the outer sands and through the belt', () => {
     const routes = naruto!.routes;
     const walked = findJourney(routes, 'kagero-landing', 'sunagakure', (r) => !r.needs);
-    expect(walked).toMatchObject({ routeIds: ['deep-sand-walk'], danger: 'deadly', days: 4 });
+    expect(walked).toMatchObject({
+      routeIds: ['outer-sand-walk', 'deep-sand-walk'],
+      danger: 'deadly',
+      days: 4,
+    });
     expect(walked?.legs.map((l) => l.region)).toEqual(['dune-road', 'tainted-belt']);
     const sailed = findJourney(routes, 'kagero-landing', 'sunagakure');
     expect(sailed).toMatchObject({ routeIds: ['barge-crossing'], danger: 'armed', days: 2 });
@@ -129,7 +152,7 @@ describeFan('the fan pack’s towns', () => {
     const deserts = naruto!.locations.flatMap((l) =>
       l.places.flatMap((p) => (p.kind === 'wilds' && p.biome === 'desert' ? [p.id] : [])),
     );
-    expect(deserts).toEqual(['wadi-beyond-the-wall', 'outer-dunes']);
+    expect(deserts).toEqual(['wadi-beyond-the-wall', 'outer-dunes', 'outer-sands-hollows']);
     expect(naruto!.companionKinds.find((k) => k.wild?.biome === 'desert')?.id).toBe('desert-fox');
     expect(naruto!.strains.find((s) => s.wild?.biomes.includes('desert'))?.id).toBe('dune-scarab');
   });
