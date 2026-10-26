@@ -2,6 +2,7 @@ import type { Find } from '@/systems/cooking';
 
 import type { FishingSpot, IngredientDef } from '../types';
 import { FISH } from './fish';
+import { BEAST_INGREDIENTS } from './beastKitchen';
 
 /**
  * What grows and swims outside every village: wild ingredients (never sold, only gathered), and
@@ -10,6 +11,8 @@ import { FISH } from './fish';
  */
 
 export const WILD_INGREDIENTS: readonly IngredientDef[] = [
+  // What beaten chakra beasts leave (`beastKitchen.ts`).
+  ...BEAST_INGREDIENTS,
   { id: 'wild-mushrooms', name: 'Wild Mushrooms', cost: 14, icon: 'leaf' },
   { id: 'mountain-greens', name: 'Mountain Greens', cost: 8, icon: 'leaf' },
   { id: 'wild-ginger', name: 'Wild Ginger', cost: 20, icon: 'leaf' },

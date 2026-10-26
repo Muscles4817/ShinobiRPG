@@ -42,7 +42,7 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
   {
     ...CHAKRA_BEAST,
     id: 'ember-tusk-boar',
-    drops: ['wild-game'],
+    drops: ['ember-boar-flank'],
     danger: 'armed',
     name: 'Ember-Tusk Boar',
     blow: 'tusk',
@@ -57,7 +57,7 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
   {
     ...CHAKRA_BEAST,
     id: 'moss-backed-bear',
-    drops: ['wild-game'],
+    drops: ['moss-bear-fat'],
     danger: 'elite',
     name: 'Moss-Backed Bear',
     blow: 'claw',
@@ -93,7 +93,7 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
   {
     ...CHAKRA_BEAST,
     id: 'stone-serow',
-    drops: ['wild-game'],
+    drops: ['serow-haunch'],
     danger: 'armed',
     name: 'Stone Serow',
     blow: 'horn',
@@ -134,6 +134,7 @@ const DESERT_AND_SWARMS: readonly EnemyDef[] = [
   {
     ...CHAKRA_BEAST,
     id: 'glass-scorpion',
+    drops: ['glass-venom-sac'],
     danger: 'armed',
     name: 'Glass Scorpion',
     description: 'Clear as a bottle. You can see the venom in its tail.',

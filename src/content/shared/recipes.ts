@@ -2,6 +2,7 @@ import type { RecipeDef } from '../types';
 import { CATCH_RECIPES } from './catchRecipes';
 import { FISH_RECIPES } from './fishRecipes';
 import { WILD_RECIPES } from './wildRecipes';
+import { BEAST_RECIPES } from './beastKitchen';
 
 /**
  * Home cooking shared by every pack. Each dish has one job (its role) and at most one more:
@@ -292,4 +293,5 @@ export const RECIPES: readonly RecipeDef[] = [
   ...WILD_RECIPES,
   ...FISH_RECIPES,
   ...CATCH_RECIPES,
+  ...BEAST_RECIPES,
 ];
