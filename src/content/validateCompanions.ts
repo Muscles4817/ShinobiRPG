@@ -35,7 +35,11 @@ function strayProblems(kind: CompanionKindDef, places: ReadonlySet<string>): str
 }
 
 /** A wild one lives in some wild place of the pack, and only a wild kind lives wild. */
-function wildProblems(kind: CompanionKindDef, biomes: ReadonlySet<string>): string[] {
+function wildProblems(
+  kind: CompanionKindDef,
+  biomes: ReadonlySet<string>,
+  changed: ReadonlySet<string>,
+): string[] {
   const wild = kind.wild;
   const at = `companion kind "${kind.id}"`;
   return [
@@ -46,6 +50,9 @@ function wildProblems(kind: CompanionKindDef, biomes: ReadonlySet<string>): stri
     ...(wild && !biomes.has(wild.biome) ? [`${at} lives in ${wild.biome}, and no place is`] : []),
     ...(wild && (wild.chance <= 0 || wild.chance > 1)
       ? [`${at} has a wild chance outside 0–1`]
+      : []),
+    ...(wild?.after !== undefined && !changed.has(wild.after)
+      ? [`${at} is found after "${wild.after}", which is no chakra beast`]
       : []),
   ];
 }
@@ -150,8 +157,9 @@ export function validateCompanions(pack: ContentPack): string[] {
   const biomes = new Set(
     pack.locations.flatMap((l) => l.places).flatMap((p) => (p.kind === 'wilds' ? [p.biome] : [])),
   );
+  const changed = new Set(pack.enemies.filter((e) => e.chakraBeast).map((e) => e.id));
   return [
-    ...pack.companionKinds.flatMap((kind) => wildProblems(kind, biomes)),
+    ...pack.companionKinds.flatMap((kind) => wildProblems(kind, biomes, changed)),
     ...pupProblems(pack),
     ...rewardProblems(pack, kinds),
     ...pack.companionKinds.flatMap((kind) => kindProblems(kind, places)),

@@ -4,8 +4,8 @@ import type { ContentPack } from './types';
 /**
  * Chakra beasts (`docs/design/chakra-beasts-plan.md`) and their arts. A chakra beast has chakra
  * and a technique, or it is a plain animal. Its arts are its own: nobody learns them from a
- * shelf, a teacher or a scroll, no other foe or person fights with them, and each is some
- * chakra beast's.
+ * shelf, a teacher or a scroll, no other foe or person fights with them (a companion of its kind
+ * may: `CHANGED_KINDS`), and each is some chakra beast's.
  */
 export function validateChakraBeasts(pack: ContentPack): string[] {
   return [...beastProblems(pack), ...artProblems(pack)];

@@ -1095,7 +1095,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   best, `healthScale`, traits, a talent shape with
   0 for arts it never learns, names, and a `stray` haunt for kinds found on the streets, at
   places of the start village, or a `wild` haunt by biome for wild kinds; shared wild kinds live
-  in `shared/wildKinds.ts`; `techniques` it opens by bond stage, `handler` ones taught at a
+  in `shared/wildKinds.ts`, and changed ones, found only after fighting one of their kind (`wild.after`),
+  in `shared/changedKinds.ts`; `techniques` it opens by bond stage, `handler` ones taught at a
   clinic whose `handling.teaches` lists them, and the job `roles` it takes); give a clan one with
   `ClanDef.companion`, breed a bred kind at a vet (`pups`) or hand one over from a job
   (`reward.companionKindId`). Validated in `validateCompanions.ts`; a clinic's `handling`

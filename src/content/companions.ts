@@ -54,6 +54,11 @@ export interface WildHaunt {
   readonly lost: string;
   /** The day it comes to you. */
   readonly comes: string;
+  /**
+   * A changed kind's foe (an enemy id): its signs show only to someone who has fought one of its
+   * kind (the field book's foes), as nobody looks for what they have never seen.
+   */
+  readonly after?: string;
 }
 
 /** A kind of creature that may become a companion: a breed of ninken, a stray hound. */

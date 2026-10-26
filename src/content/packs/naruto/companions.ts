@@ -1,5 +1,6 @@
 import type { CompanionKindDef } from '../../companions';
 import { HOUND_TECHNIQUES } from '../../shared/beastTechniques';
+import { CHANGED_KINDS } from '../../shared/changedKinds';
 import { FOREST_WOLF, HOUND_DIET } from '../../shared/wildKinds';
 
 /** Creatures that may become a companion in the Hidden Leaf. */
@@ -76,4 +77,5 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     },
   },
   FOREST_WOLF,
+  ...CHANGED_KINDS,
 ];
