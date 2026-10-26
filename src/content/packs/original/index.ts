@@ -1,4 +1,6 @@
 import { GLASS_EYE_ARC, GLASS_EYE_JOBS } from './arcs/glassEye';
+import { OLD_OWL_ARC, OLD_OWL_JOBS } from './arcs/oldOwl';
+import { WHITE_STAG } from './jobs/whiteStag';
 import { foreignShinobi } from '../../shared/foreignShinobi';
 import { ORIGINAL_NATURE_KIT, ORIGINAL_VILLAGES } from './shinobiVillages';
 import { DESERT_INGREDIENTS } from '../../shared/desert';
@@ -140,6 +142,8 @@ export const ORIGINAL_PACK: ContentPack = {
     ...FORGED_BLADE_JOBS,
     ...PATIENT_THING_JOBS,
     ...GLASS_EYE_JOBS,
+    ...OLD_OWL_JOBS,
+    WHITE_STAG,
     ...SALT_LANTERNS_JOBS,
     ...FORD_CHAIN_JOBS,
     ...BREWER_GHOST_JOBS,
@@ -169,6 +173,7 @@ export const ORIGINAL_PACK: ContentPack = {
     FORGED_BLADE_ARC,
     PATIENT_THING_ARC,
     GLASS_EYE_ARC,
+    OLD_OWL_ARC,
   ],
   voices: VOICES,
   companionKinds: COMPANION_KINDS,
