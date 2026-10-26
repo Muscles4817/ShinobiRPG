@@ -324,32 +324,49 @@ function climbing(self: PlanFighter, round: Round): Play | null {
   return useful(self, card, round) ? { card, target: undefined } : null;
 }
 
-/**
- * An emergency slot that holds; else a ladder's next step when it is time; else a set-up, or
- * playing for time against a killer; else a summoner's call from the kit; else, for someone fighting at a set distance and elsewhere, a
- * step towards it; else the first slot at this distance that qualifies; else an improvised
- * blow or step (at the mark).
- */
-export function plannedPlay(self: PlanFighter, round: Round): Play {
-  const slots = self.loadout[round.range];
-  const emergency = firstPlay(self, round, slots.filter(urgent));
-  if (emergency) return emergency;
-  const climb = climbing(self, round);
-  if (climb) return climb;
-  // A set-up from the kit, against a match (`setups.ts`): hide, hold, finish.
-  const setup = setupPlay(self, { band: round.range, foes: opponentsOf(round.fighters, self) });
-  // A killer coming: the set-up is its own answer, else play for time (`survival.ts`).
-  const survival = survivalPlay(self, round);
-  if (survival) return setup ?? survival;
-  // Otherwise a summoner fights their own way first: from the kit, Sage Mode and all.
-  const called = kitCall(self, {
+/** A summoner's call from the kit, now, if it calls for one (`calling.ts`). */
+function kitFor(self: PlanFighter, round: Round): Card | undefined {
+  return kitCall(self, {
     fighters: round.fighters,
     band: round.range,
     ...(round.reads ? { reads: round.reads } : {}),
     exchange: round.number,
   });
+}
+
+/**
+ * What the kit plays by itself, slot or no slot: a ladder's next step when it is time, a set-up
+ * or playing for time against a killer, a summoner's call. Never for the player's own plan,
+ * which slots those (`kitSlots.ts`): it is theirs, unless they only watch the fight. Playing
+ * for time is never the player's either (`survival.ts`).
+ */
+function kitPlay(self: PlanFighter, round: Round): Play | null {
+  if (self.isPlayer && round.watching !== true) return null;
+  const climb = climbing(self, round);
+  if (climb) return climb;
+  // A set-up from the kit, against a match (`setups.ts`): hide, hold, finish.
+  const foes = opponentsOf(round.fighters, self);
+  const setup = setupPlay(self, { band: round.range, foes });
+  // A killer coming: the set-up is its own answer, else play for time (`survival.ts`).
+  const survival = survivalPlay(self, round);
+  if (survival) return setup ?? survival;
+  // Otherwise a summoner fights their own way first: from the kit, Sage Mode and all.
+  const called = kitFor(self, round);
   if (called) return { card: called, target: undefined };
-  if (setup) return setup;
+  return setup ?? null;
+}
+
+/**
+ * An emergency slot that holds; else what the kit plays by itself (`kitPlay`, never the
+ * player's); else, for someone fighting at a set distance and elsewhere, a step towards it; else the
+ * first slot at this distance that qualifies; else an improvised blow or step (at the mark).
+ */
+export function plannedPlay(self: PlanFighter, round: Round): Play {
+  const slots = self.loadout[round.range];
+  const emergency = firstPlay(self, round, slots.filter(urgent));
+  if (emergency) return emergency;
+  const kit = kitPlay(self, round);
+  if (kit) return kit;
   const footwork = isPinned(self) ? null : makingFor(self, round.range);
   if (footwork) {
     // Ready the charge first: power up or make clones, or go in with an entry.
