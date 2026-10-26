@@ -11,6 +11,7 @@ import type { GameContext } from '../context';
 import { activeMission, activeStage } from '../missionFlow';
 import type { GameState } from '../state';
 import { storyOf } from '../story/state';
+import { runKind } from './runKind';
 import { stagePrompt, type SceneChoice } from './storyChoices';
 
 /**
@@ -107,9 +108,7 @@ export function missionScene(state: GameState, ctx: GameContext): MissionScene |
   const stage = activeStage(state, ctx);
   const base = {
     title: def.title,
-    kicker: state.mission.journey
-      ? 'A journey of your own'
-      : `${def.rank}-rank mission for ${def.client}`,
+    kicker: runKind(state.mission, def).kicker,
     lines: state.mission.notes.map(noteLine),
     threads: threadViews(state, ctx),
     route: routeOf(def, state.mission),

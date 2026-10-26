@@ -64,6 +64,7 @@ import type { OnsenFields, TavernFields } from './leisure';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
 import type { VoiceDef } from './voices';
+import type { DeepWildsDef } from './deepWilds';
 import type { Biome, FishingSpot, WildsFields } from './biomes';
 
 export type { BackdropId, IconId } from './art';
@@ -338,6 +339,8 @@ export interface ContentPack {
   readonly encounters: readonly EncounterTemplate[];
   /** Things that may happen on a stretch of road, by region. */
   readonly roadEvents: readonly RoadEventDef[];
+  /** Wild country you can go into off the paths, by the kind of country (`deepWilds.ts`). */
+  readonly deepWilds: readonly DeepWildsDef[];
   /** People of the road, met on it now and then (each also comes as a road event). */
   readonly travellers: readonly TravellerDef[];
   /** Long stories: chains of jobs in acts. */

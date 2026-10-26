@@ -11,6 +11,13 @@ describe('road events', () => {
     );
   });
 
+  it('keep something for every season at every depth of wild country', () => {
+    const roadEvents = ORIGINAL_PACK.roadEvents.filter((e) => !e.regions.includes('marsh-heart'));
+    expect(validateContent({ ...ORIGINAL_PACK, roadEvents })).toContain(
+      'the heart of the marsh has no road event for every season',
+    );
+  });
+
   it('checks each kind’s own parts', () => {
     const base = { regions: ['coast-road'], text: 'On the road.' };
     const odd: RoadEventDef[] = [

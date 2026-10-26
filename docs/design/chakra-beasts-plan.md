@@ -110,6 +110,20 @@ like the board, never the Rng. Foes at a depth follow the bestiary's danger band
 of a forest is elite country whatever your rank: the venture's notice says how deep you are and
 what that means, and a genin's sensei won't sign leave for the heart (`game/leave.ts`).
 
+**As built.** Woods, mountains, marsh, shore and desert each have the three depths
+(`content/shared/deepWilds.ts`); a river runs through other country and has none. A venture is
+set out on from any wild place of those biomes and plays as a mission run of your own
+(`game/ventures.ts`), never on the map: a day at each depth (edge armed, deep deadly, heart elite),
+a way-finding check (perception or intellect, a tracker's nose where you have one) before the
+deep and the heart that costs some health when it fails, a camp each night where you may turn
+back, and a day back through each depth on the way out. What a day brings is its depth's road
+events, drawn as a road's are, encounters included: plain animals, poachers and finds at the edge;
+the pack's missing-nin, smugglers, deserters, a hermit and the touched beasts in the deep; the
+changed beasts, the three elders (rare) and the heart's sights in the heart. A day at the edge is anyone's; past it, leave works as for a trip: a genin's pass must last until
+they are back, a chūnin spends days of leave, and the heart is for chūnin and up. A sensei won't
+sign you out across an exam they'd put you in, and a day at the edge is no excuse for missing
+them. A venture that ends in a defeat costs no standing, as a trip's doesn't.
+
 **Why go.** The heart's finds and drops (the kitchen, below), field book entries no road gives,
 bounties: a missing-nin hiding in the deep is a job's quarry already, and a hunt posted for one
 can name the wild country it is in. Later, a changed kind to win over (companions, below).

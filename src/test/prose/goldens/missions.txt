@@ -244,8 +244,7 @@ view:
 === encounter ===
 view:
   title: The Storehouse Ghost
-  rank: D
-  client: Rice Broker Hanada
+  kicker: Spirit ahead, on a D-rank mission for Rice Broker Hanada
   lines[0]:
     text: A grey figure hunches over the rice sacks at the back, muttering into its sleeve. “Mine. All of it, mine.”
   lines[1]:
@@ -310,8 +309,7 @@ view:
 === encounter ===
 view:
   title: The Storehouse Ghost
-  rank: D
-  client: Rice Broker Hanada
+  kicker: Spirit ahead, on a D-rank mission for Rice Broker Hanada
   lines[0]:
     text: A grey figure hunches over the rice sacks at the back, muttering into its sleeve. “Mine. All of it, mine.”
   lines[1]:
@@ -977,8 +975,7 @@ view:
 === encounter ===
 view:
   title: The Bride’s Chest
-  rank: D
-  client: The Matsuda household
+  kicker: Bandit camp ahead, on a D-rank mission for The Matsuda household
   lines[0]:
     text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
   lines[1]:
@@ -1060,8 +1057,7 @@ view:
 === encounter ===
 view:
   title: The Bride’s Chest
-  rank: D
-  client: The Matsuda household
+  kicker: Bandit camp ahead, on a D-rank mission for The Matsuda household
   lines[0]:
     text: Where the path crosses the ridge, someone has rolled a log across it, and the bushes either side are too still.
   lines[1]:
@@ -1786,8 +1782,7 @@ view:
 === encounter ===
 view:
   title: A Pilot Going Home
-  rank: D
-  client: Tobei Sawa
+  kicker: Bandit camp ahead, on a D-rank mission for Tobei Sawa
   lines[0]:
     text: An iron chain hangs across the landing road, and two men with clubs sit on the toll box beneath it.
   lines[1]:
@@ -1868,8 +1863,7 @@ view:
 === encounter ===
 view:
   title: A Pilot Going Home
-  rank: D
-  client: Tobei Sawa
+  kicker: Bandit camp ahead, on a D-rank mission for Tobei Sawa
   lines[0]:
     text: An iron chain hangs across the landing road, and two men with clubs sit on the toll box beneath it.
   lines[1]:

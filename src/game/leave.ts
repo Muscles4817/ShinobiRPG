@@ -34,7 +34,7 @@ export const PASS_NEEDED =
   'Genin leave the village only on a job, or with a pass your sensei signs at your weekly lesson.';
 export const SAFE_ROADS_ONLY = 'Your sensei’s pass covers safe roads only.';
 
-function rankAtLeast(state: GameState, rank: Rank): boolean {
+export function rankAtLeast(state: Pick<GameState, 'standing'>, rank: Rank): boolean {
   return RANKS.indexOf(state.standing.rank) >= RANKS.indexOf(rank);
 }
 
@@ -47,6 +47,14 @@ function leaveDaysLeft(state: GameState): number {
   return leaveLeft(state.leave, seasonNumber(state.time.day), CHUNIN_LEAVE_DAYS);
 }
 
+/** A chūnin without the days of leave for this many days away, said; null when they have them. */
+function shortOfLeave(state: GameState, days: number): string | null {
+  const left = leaveDaysLeft(state);
+  return days > left
+    ? `You have ${left === 0 ? 'no' : left} ${left === 1 ? 'day' : 'days'} of leave left this season.`
+    : null;
+}
+
 /** Why you can't set out on this trip, or null. */
 export function leaveBlocker(
   state: GameState,
@@ -56,14 +64,33 @@ export function leaveBlocker(
 ): string | null {
   if (destinationId === homeVillageId(state, ctx) || rankAtLeast(state, FREE_RANK)) return null;
   if (onOrders(state, ctx, destinationId)) return null;
-  if (rankAtLeast(state, 'chunin')) {
-    const left = leaveDaysLeft(state);
-    return journey.days > left
-      ? `You have ${left === 0 ? 'no' : left} ${left === 1 ? 'day' : 'days'} of leave left this season.`
-      : null;
-  }
+  if (rankAtLeast(state, 'chunin')) return shortOfLeave(state, journey.days);
   if (!passValid(state.leave, state.time.day)) return PASS_NEEDED;
   return dangerAtLeast(journey.danger, 'armed') ? SAFE_ROADS_ONLY : null;
+}
+
+export const VENTURE_PASS_NEEDED =
+  'A genin goes past the edge of wild country only on a pass your sensei signs at your weekly lesson.';
+export const HEART_IS_FOR_CHUNIN = 'Only a chūnin or higher goes into the heart of wild country.';
+
+/**
+ * Why you can't go this many days into wild country, or null. A day at the edge needs no leave;
+ * past it, a genin's pass must last until they are back and a chūnin spends days of leave, as on
+ * a trip. The heart is never a genin's.
+ */
+export function ventureLeaveBlocker(state: GameState, days: number, heart: boolean): string | null {
+  if (rankAtLeast(state, FREE_RANK) || days <= 1) return null;
+  if (rankAtLeast(state, 'chunin')) return shortOfLeave(state, days);
+  if (heart) return HEART_IS_FOR_CHUNIN;
+  const until = state.leave.passUntil;
+  return until !== null && until >= state.time.day + days - 1 ? null : VENTURE_PASS_NEEDED;
+}
+
+/** Going into wild country past the edge: a chūnin's leave is spent by the days it takes. */
+export function spendVentureLeave(state: GameState, days: number): GameState {
+  const counted = days > 1 && rankAtLeast(state, 'chunin') && !rankAtLeast(state, FREE_RANK);
+  if (!counted) return state;
+  return { ...state, leave: takeLeave(state.leave, seasonNumber(state.time.day), days) };
 }
 
 /** Whether this trip must keep to safe roads: a genin's, on a pass, away from home. */

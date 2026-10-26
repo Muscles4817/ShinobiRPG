@@ -28,6 +28,7 @@ import type { SenseiTestDef } from './senseiTests';
 import type { InjuryDef } from './injuries';
 import type { BuildDef, UpbringingDef } from './upbringing';
 import type { VoiceDef } from './voices';
+import type { DeepWildsDef } from './deepWilds';
 import type {
   BreakInScene,
   ClanDef,
@@ -81,6 +82,7 @@ export interface ContentDb {
   readonly travellers: Catalog<TravellerDef>;
   readonly arcs: Catalog<ArcDef>;
   readonly voices: readonly VoiceDef[];
+  readonly deepWilds: readonly DeepWildsDef[];
   readonly enemies: Catalog<EnemyDef>;
   readonly companionKinds: Catalog<CompanionKindDef>;
   readonly companionLore: Catalog<CompanionLoreDef>;
@@ -149,6 +151,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     travellers: createCatalog('traveller', pack.travellers),
     arcs: createCatalog('arc', pack.arcs),
     voices: pack.voices,
+    deepWilds: pack.deepWilds,
     enemies: createCatalog('enemy', pack.enemies),
     companionKinds: createCatalog('companion kind', pack.companionKinds),
     companionLore: createCatalog('companion lore', pack.companionLore),

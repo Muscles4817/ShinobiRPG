@@ -1,4 +1,11 @@
-import { headerView, wildsView, type GameAction, type WhatsAbout, type WildsView } from '@/game';
+import {
+  headerView,
+  wildsView,
+  type GameAction,
+  type VentureView,
+  type WhatsAbout,
+  type WildsView,
+} from '@/game';
 
 import { Banner } from '../../components/Banner';
 import { ProgressDots } from '../../components/ProgressDots';
@@ -67,6 +74,40 @@ function TrackCard({
   );
 }
 
+/** Going off the paths into wild country, as deep as you choose. */
+function VentureCard({
+  venture,
+  perform,
+}: {
+  readonly venture: VentureView;
+  readonly perform: (action: GameAction) => void;
+}) {
+  return (
+    <article className="gather-card">
+      <h3>Off the paths</h3>
+      <p className="story">{venture.text}</p>
+      {venture.warning && <p className="muted small">{venture.warning}</p>}
+      {venture.blocker && <p className="blocker">{venture.blocker}</p>}
+      {venture.depths.map((d) => (
+        <div key={d.depth}>
+          <p className="muted small">{d.detail}</p>
+          {d.blocker && <p className="blocker">{d.blocker}</p>}
+          <button
+            type="button"
+            className="btn"
+            disabled={venture.blocker !== null || d.blocker !== null}
+            onClick={() => {
+              perform(d.action);
+            }}
+          >
+            {d.label}
+          </button>
+        </div>
+      ))}
+    </article>
+  );
+}
+
 /**
  * A wild place outside the village: forage the ground for what's in season, or pick a spot on
  * the water and cast a line. Each gives once a day. Some wild places have a wild one living
@@ -112,6 +153,7 @@ export function WildsPage({
           />
         ))}
         {view.wild && <TrackCard wild={view.wild} perform={perform} />}
+        {view.venture && <VentureCard venture={view.venture} perform={perform} />}
         {view.insects && (
           <article className="gather-card">
             <h3>Insects</h3>

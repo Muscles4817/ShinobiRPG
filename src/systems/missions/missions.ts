@@ -5,6 +5,7 @@ import type { Crew, Danger } from './crew';
 import type { EncounterRun, EncounterStage } from './encounter';
 import type { MissionRank, MissionRole } from './missionRank';
 import type { StagePay } from './encounterPay';
+import type { VenturePlan } from './ventures';
 import {
   startThreads,
   type Condition,
@@ -227,6 +228,8 @@ export interface MissionRun {
   readonly ways?: readonly (readonly WayLeg[])[];
   /** Set when this is a trip of your own along the roads, not a job (`game/journeys.ts`). */
   readonly journey?: JourneyPlan;
+  /** Set when this is a venture off the paths into wild country (`game/ventures.ts`). */
+  readonly venture?: VenturePlan;
 }
 
 /** A stretch of a job's road, as walked: the road's own line, region, days, danger and heading. */
