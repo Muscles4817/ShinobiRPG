@@ -48,19 +48,20 @@ export interface SightMoment extends ToolMoment {
 }
 
 /**
- * A slotted sense the moment calls for (a foe is hidden and they don't read foes already), or
- * to open a round, a conceal (as a smoke bomb would) or a field when theirs isn't up.
+ * A slotted sense the moment calls for (a foe is hidden and they don't read foes already), a
+ * field whenever none of their side's is up (as a plan raises one: a field a foe laid over
+ * theirs is taken back at once), or to open a round, a conceal (as a smoke bomb would).
  */
 export function sightInstinct(
   self: PlanFighter,
   ready: readonly Card[],
   moment: SightMoment,
 ): Card | undefined {
-  const opens = (c: CombatTechnique) =>
-    (!self.hidden && hasVerb(c, 'conceal')) || (!moment.fieldUp && hasVerb(c, 'field'));
+  const opens = (c: CombatTechnique) => !self.hidden && hasVerb(c, 'conceal');
   const wants = (c: Card) =>
     c.kind === 'jutsu' &&
     ((moment.hiddenFoe && !hasPerk(self, 'insight') && hasVerb(c.technique, 'sense')) ||
+      (!moment.fieldUp && hasVerb(c.technique, 'field')) ||
       (moment.opening && opens(c.technique)));
   return ready.find(wants);
 }

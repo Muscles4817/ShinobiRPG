@@ -28,6 +28,7 @@ import { callsOf } from './calls';
 import { climbOrder, isStill } from './climbing';
 import { styleMoves } from './repertoire';
 import { opponentsOf } from './senses';
+import { cardWorth } from './worth';
 import { defaultHoldOff } from './zoning';
 import { defaultReactions } from './readiness';
 import { fightsFromHome, isEntry, strongestBand } from './stepping';
@@ -46,8 +47,24 @@ function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean)
     .sort((a, b) => techniquePower(b.technique) - techniquePower(a.technique));
 }
 
-function damageJutsu(cards: readonly Card[]): Card[] {
-  return strongest(cards, isWounding);
+/**
+ * Wounding jutsu, the one worth most first: what each is worth from this fighter's own stats
+ * against the foes they face (`worth.ts`), so a genjutsu master leads with genjutsu even when a
+ * ninjutsu has more power on paper. With no foes known, the fighter themself stands in.
+ */
+function damageJutsu(
+  fighter: PlanFighter,
+  band: RangeBand,
+  facing: Facing,
+  cards: readonly Card[],
+) {
+  const against = facing.foes.length > 0 ? facing.foes : [fighter];
+  const fighters = [fighter, ...facing.foes];
+  const worthOf = (card: Card) =>
+    against.reduce((sum, foe) => sum + (cardWorth(fighter, foe, card, { band, fighters }) ?? 0), 0);
+  const worths = new Map(strongest(cards, isWounding).map((c) => [c, worthOf(c)]));
+  // A stable sort keeps the stronger technique first between equals.
+  return [...worths.keys()].sort((a, b) => (worths.get(b) ?? 0) - (worths.get(a) ?? 0));
 }
 
 /**
@@ -87,6 +104,8 @@ interface Facing {
   readonly support: boolean;
   /** Some foe fights from hiding (an illusionist, or hidden already): bring a Search. */
   readonly foeHides: boolean;
+  /** The foes faced, when known: attacks are ranked by what they are worth against them. */
+  readonly foes: readonly PlanFighter[];
 }
 
 /** A hold slotted ahead of the attacks, or behind the best jutsu. */
@@ -181,7 +200,7 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     (c) => !trumps.includes(c) && stepOf(c) === 0 && !(bySummons && isCall(c)),
   );
   const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
-  const damage = withStyle(fighter, band, damageJutsu(pool));
+  const damage = withStyle(fighter, band, damageJutsu(fighter, band, facing, pool));
   const readies = (t: CombatTechnique) =>
     hasVerb(t, 'empower') || hasVerb(t, 'clone') || hasVerb(t, 'shroud');
   // A fighter who climbs a ladder readies with it: their slot goes to the best art it opens.
@@ -232,6 +251,7 @@ function facingOf(fighter: PlanFighter, among: readonly PlanFighter[], support: 
     // Insight sees through hiding, so it needs no Search.
     foeHides:
       !hasPerk(fighter, 'insight') && foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
+    foes,
   };
 }
 
