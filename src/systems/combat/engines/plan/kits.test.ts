@@ -210,7 +210,8 @@ describe('plan & watch kits: illusions', () => {
     const dazedGhost = { ...ghost!, stunned: 1 };
     const after = resolveExchange(stateOf([caster, dazedGhost]), createRng(3));
     const player = after.fighters[0]!;
-    expect(said(after.log)).toContain('Hero forms the seal to break illusions.');
+    // Any of the Dispel's lines (`sceneVoice.ts`): they're picked fresh.
+    expect(said(after.log).join('\n')).toMatch(/seal|push the illusions back/);
     expect(player.chakra).toBe(30 - DISPEL_CHAKRA + 2);
     expect(player.confused).toBe(0);
   });

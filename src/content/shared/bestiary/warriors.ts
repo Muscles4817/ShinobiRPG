@@ -78,7 +78,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       description: 'Commands a lord’s guard and has never once been surprised.',
       ...foeStats(12, [15, 13, 15, 13], {
         ...NO_HAND_SIGNS,
-        kenjutsu: 17,
+        kenjutsu: 16,
         willpower: 15,
         intellect: 13,
       }),

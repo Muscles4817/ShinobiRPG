@@ -63,7 +63,7 @@ const WOODS_AND_MOUNTAIN: readonly EnemyDef[] = [
     blow: 'claw',
     description:
       'Moss and saplings grow on its back. Foresters who see it lying down take it for a bank.',
-    ...foeStats(12, [26, 10, 20, 15], {
+    ...foeStats(12, [24, 10, 20, 15], {
       ...NO_ARTS,
       taijutsu: 18,
       ninjutsu: 14,
