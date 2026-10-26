@@ -97,6 +97,17 @@ describe('lines that know where they are', () => {
     expect(sceneTags(roundWith(100, 4, { ground: 'arena' }), 'ryo')).toEqual([]);
   });
 
+  it('reads a long fight as tiring only for someone it has worn down', () => {
+    const fresh = roundWith(100, 12);
+    const at = (r: Round, change: Partial<PlanFighter>) => ({
+      ...r,
+      fighters: r.fighters.map((f) => ({ ...f, chakra: 100, maxChakra: 100, ...change })),
+    });
+    expect(sceneTags(at(fresh, {}), 'ryo')).toEqual([]);
+    expect(sceneTags(at(fresh, { chakra: 20 }), 'ryo')).toEqual(['late']);
+    expect(sceneTags(at(roundWith(100, 4), { chakra: 20 }), 'ryo')).toEqual([]);
+  });
+
   it('prefers a fresh line for the scene, and falls back on the general lines', () => {
     const lines = MOMENTS.map((m) => told(m, BANK, { a: RYO }));
     const ofScene = lines.filter((l) => voicesOf(l)[0]?.startsWith('test-forest.'));

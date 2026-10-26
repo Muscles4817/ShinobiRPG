@@ -273,10 +273,13 @@ function slips(round: Round, turn: Turn, foe: PlanFighter, t: CombatTechnique): 
 /** Tells a foe slipping a technique: read and ready for it, or (a ready Dodge) clear of it. */
 function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
   const moment = momentOf(round, foe.id);
-  if (!dodgesHere(round, foe)) return say(round, seenLine(moment, foe));
+  const slip = { target: foe, attacker: actor, what: t.name };
+  if (!dodgesHere(round, foe)) {
+    return say(round, seenLine(moment, slip, t.discipline === 'genjutsu'));
+  }
   const why = hasPerk(foe, 'foresight') ? 'foreseen' : 'dodged';
   const noted = noteDefence(round, foe.id, round.range, 'dodge');
-  const told = missLine(moment, why, { target: foe, attacker: actor, what: t.name });
+  const told = missLine(moment, why, slip);
   return say(noted, reactionLine(told, 'dodged'));
 }
 

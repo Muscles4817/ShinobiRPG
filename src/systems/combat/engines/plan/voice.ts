@@ -134,15 +134,22 @@ export function missLine(moment: Moment, why: MissWhy, slip: SlipTold): string {
   return told(moment, MISSES[why], { t: slip.target, a: slip.attacker, what: slip.what });
 }
 
+/** A slip with no Dodge ready: read in time, and the technique misses (it says so). */
 const SEEN = bank('seen', [
-  '{t} see{t.s} it coming.',
-  '{t} read{t.s} the first sign and {t.is} ready.',
-  '{t} {t.was} waiting for exactly that.',
+  '{t} see{t.s} {a.poss} {what} coming, and it misses.',
+  '{t} read{t.s} the first sign of {a.poss} {what} and {t.is} clear of it.',
+  '{t} {t.was} waiting for exactly that, and {a.poss} {what} finds nothing.',
+]);
+/** The same for an illusion, which isn't dodged but seen through. */
+const SEEN_THROUGH = bank('seen-through', [
+  '{t} see{t.s} through {a.poss} {what}, and it never takes hold.',
+  '{t} catch{t.es} the first sign of {a.poss} {what} and shake{t.s} it off before it settles.',
 ]);
 
-/** Someone reads a technique coming and isn't there for it. */
-export function seenLine(moment: Moment, foe: Told): string {
-  return told(moment, SEEN, { t: foe });
+/** Someone reads a technique coming and isn't there for it (or, an illusion, isn't taken in). */
+export function seenLine(moment: Moment, slip: SlipTold, illusion: boolean): string {
+  const lines = illusion ? SEEN_THROUGH : SEEN;
+  return told(moment, lines, { t: slip.target, a: slip.attacker, what: slip.what });
 }
 
 const STEPS: Readonly<Record<RangeBand, Bank>> = {

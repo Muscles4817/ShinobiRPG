@@ -12,7 +12,7 @@
   You make another try, and Asuka shuts it down again.
   —— Third exchange ——
   Asuka catches the eye and lets Shadow Feint unfold.
-  You were waiting for exactly that.
+  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles.
   You make another try, and Asuka shuts it down again.
   —— Last exchange ——
   Asuka’s blade flows into Lantern Cut.
@@ -21,7 +21,7 @@
   —— The next round begins ——
   —— First exchange ——
   The air around Asuka wavers as Shadow Feint takes hold.
-  You were waiting for exactly that.
+  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles.
   You keep low and come in under Asuka’s guard, inside Asuka’s reach.
   —— Second exchange ——
   Asuka uses Shadow Feint once more.
@@ -63,7 +63,7 @@
   —— The next round begins ——
   —— First exchange ——
   Jin goes back to Forge Cut.
-  You were waiting for exactly that.
+  You were waiting for exactly that, and Jin’s Forge Cut finds nothing.
   You use Gale Heel once more.
   Your Gale Heel cuts into Jin cleanly. [Guarded] [−9]
   —— Second exchange ——
@@ -75,7 +75,7 @@
   You reach for Gale Heel again.
   Your Gale Heel cuts into Jin cleanly. [Guarded] [−9]
   Jin has been keeping Shadow Feint for this, and uses it now.
-  You were waiting for exactly that.
+  You catch the first sign of Jin’s Shadow Feint and shake it off before it settles.
   —— Last exchange ——
   You go back to Gale Heel.
   You find the strength from somewhere, and your Gale Heel slices across Jin. [Guarded] [−9]
@@ -83,8 +83,8 @@
   Jin’s Forge Cut carves into you, harder than a spar calls for. [Guarded] [−20]
   —— The next round begins ——
   —— First exchange ——
-  Tired now, Jin still goes to Shadow Feint.
-  You were waiting for exactly that.
+  Jin fixes his eyes on the field and casts Shadow Feint.
+  You catch the first sign of Jin’s Shadow Feint and shake it off before it settles.
   You scrape together what chakra you can for Gale Heel.
   Your Gale Heel slices across Jin cleanly. [Guarded] [−8]
   —— Second exchange ——
@@ -105,35 +105,35 @@
   The second grey wolf’s bite sinks into you cleanly. [−8]
   —— Second exchange ——
   You send Gale Heel howling out.
-  Your Gale Heel hurls aside the first grey wolf, and it’s thrown back against a trunk. [Guarded] [−34]
+  Your Gale Heel hurls aside the first grey wolf, guard or no guard, and it’s thrown back against a trunk. [Guarded] [−34]
   You put a trunk between yourself and the second grey wolf’s bite.
   The first grey wolf’s bite only just grazes you. [Guarded] [−3]
   —— Third exchange ——
   You use Gale Heel once more.
-  Your Gale Heel flays the first grey wolf, and it falls back through the undergrowth. [Guarded] [−32]
+  Your Gale Heel flays the first grey wolf, through the guard all the same, and it falls back through the undergrowth. [Guarded] [−32]
   The first grey wolf lashes out with the last of its strength, and the bite only snaps at you. [Guarded] [−4]
   You are a shade too slow, and the second grey wolf’s bite nips you. [Guarded] [−3]
   —— Last exchange ——
   You go back to Gale Heel.
-  Your Gale Heel shreds the first grey wolf with everything behind it. [Guarded] [−4]
+  Your Gale Heel shreds the first grey wolf with everything behind it, guard or no guard. [Guarded] [−4]
   The first grey wolf crashes down into the undergrowth and lies still.
   The second grey wolf’s bite only just grazes you. [Guarded] [−3]
   —— The next round begins ——
   —— First exchange ——
   You reach for Gale Heel again.
-  The second grey wolf was waiting for exactly that.
+  The second grey wolf was waiting for exactly that, and your Gale Heel finds nothing.
   You are a shade too slow, and the second grey wolf’s bite snaps at you. [Guarded] [−3]
   —— Second exchange ——
   You use Gale Heel once more.
-  Your Gale Heel hurls aside the second grey wolf with everything behind it. [Guarded] [−34]
+  Your Gale Heel hurls aside the second grey wolf with everything behind it, guard or no guard. [Guarded] [−34]
   The second grey wolf’s bite only just nips you. [Guarded] [−3]
   —— Third exchange ——
   You go back to Gale Heel.
-  The second grey wolf was waiting for exactly that.
+  The second grey wolf was waiting for exactly that, and your Gale Heel finds nothing.
   The second grey wolf’s bite grazes you. [Guarded] [−3]
   —— Last exchange ——
   You reach for Gale Heel again.
-  Your Gale Heel hurls aside the second grey wolf, and it’s thrown back against a trunk. [Guarded] [−36]
+  Your Gale Heel hurls aside the second grey wolf, guard or no guard, and it’s thrown back against a trunk. [Guarded] [−36]
   The second grey wolf crumples and lies still.
   You are still on your feet, and no one is left to face you.
   summary: You won in two rounds. Once the first grey wolf went down in the first round, the second grey wolf didn’t last long.
@@ -173,7 +173,7 @@
   You snap through the release seal.
   Nothing gives.
   The storehouse wraith reaches for Whispering Dread again.
-  You see it coming.
+  You see through the storehouse wraith’s Whispering Dread, and it never takes hold.
   You follow the blow back to the storehouse wraith.
   —— The next round begins ——
   —— First exchange ——
