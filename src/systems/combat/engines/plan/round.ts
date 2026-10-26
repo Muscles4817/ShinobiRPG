@@ -125,20 +125,24 @@ function unseen(round: Round, turn: Turn): Round {
 
 /**
  * Attacking from smoke or a conceal gives you away, hit or miss. An illusionist stays hidden,
- * unless the one they struck at traces the illusion back (as a Search would find them).
+ * unless the one they struck at traces the illusion back (as a Search would find them); every
+ * attack leaves a trail, so each one is easier to trace than the last (`EXPOSURE_STEP`).
  */
 function revealed(round: Round, { actor: before, target, rng }: Turn): Round {
-  const actor = fighterIn(round, before.id);
-  if (!actor?.hidden) return round;
-  if (!revealOnAttack(actor).hidden) {
-    return { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) };
+  const struck = fighterIn(round, before.id);
+  if (!struck?.hidden) return round;
+  if (!revealOnAttack(struck).hidden) {
+    return { ...round, fighters: patch(round.fighters, struck.id, { hidden: false }) };
   }
-  const victim = target && fighterIn(round, target.id);
-  const hiding = inCover(round.ground, actor);
-  if (!victim || !alive(victim) || !rng.chance(searchChance(victim, hiding))) return round;
+  const trail = { exposure: (struck.exposure ?? 0) + 1 };
+  const actor = { ...struck, ...trail };
+  const trailed = { ...round, fighters: patch(round.fighters, actor.id, trail) };
+  const victim = target && fighterIn(trailed, target.id);
+  const hiding = inCover(trailed.ground, actor);
+  if (!victim || !alive(victim) || !rng.chance(searchChance(victim, hiding))) return trailed;
   return say(
-    { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) },
-    tracedLine(momentOf(round, victim.id), victim, actor),
+    { ...trailed, fighters: patch(trailed.fighters, actor.id, { hidden: false }) },
+    tracedLine(momentOf(trailed, victim.id), victim, actor),
   );
 }
 

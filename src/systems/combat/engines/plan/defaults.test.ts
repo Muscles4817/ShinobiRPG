@@ -68,11 +68,23 @@ describe('plan & watch default plan: actions only', () => {
 });
 
 describe('plan & watch default plan: finding hidden foes', () => {
-  it('brings a Search against an illusionist, unless insight already sees them', () => {
-    const plain = table([bolt('bolt', 14)]);
-    expect(defaultLoadout(plain[0]!, plain).mid.map((s) => s.card)).toContain('search');
-    const eyes = table([bolt('bolt', 14)], { perks: ['insight'] });
-    expect(defaultLoadout(eyes[0]!, eyes).mid.map((s) => s.card)).not.toContain('search');
+  const finders = (f: readonly PlanFighter[]) =>
+    defaultLoadout(f[0]!, f)
+      .mid.map((s) => s.card)
+      .filter((c) => c === 'search' || c === 'dispel' || c.startsWith('item:'));
+
+  it('brings a way to find an illusionist, unless insight already sees them', () => {
+    expect(finders(table([bolt('bolt', 14)]))).toHaveLength(1);
+    expect(finders(table([bolt('bolt', 14)], { perks: ['insight'] }))).toEqual([]);
+  });
+
+  it('the surest it has: sharp eyes Search, fine control Dispels, a flash tag beats both', () => {
+    const eyes = { ...attributes, perception: 20, intellect: 20 };
+    const control = { ...attributes, chakraControl: 20, willpower: 20 };
+    expect(finders(table([bolt('bolt', 14)], { attributes: eyes }))).toEqual(['search']);
+    expect(finders(table([bolt('bolt', 14)], { attributes: control }))).toEqual(['dispel']);
+    const flash = { id: 'flash', name: 'Flash tag', effect: 'flash', count: 1 } as const;
+    expect(finders(table([bolt('bolt', 14)], { items: [flash] }))).toEqual(['item:flash']);
   });
 });
 

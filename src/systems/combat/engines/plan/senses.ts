@@ -10,12 +10,11 @@ import {
   shakeOffChance,
 } from '../../rules/conditions';
 import { swarmSearch } from '../../rules/swarms';
-import { tell } from '../../rules/telling';
 import { dulled } from '../../rules/verbs';
 import { patch, paying, say, type PlanFighter, type Round } from './state';
 import { inCover } from './groundPlay';
 import { emptySearchLine, foundLine, momentOf } from './voice';
-import { clearHeadLine, rehideLine } from './sceneVoice';
+import { clearHeadLine, dispelLine, dispelledLine, rehideLine } from './sceneVoice';
 
 /**
  * Hidden and Confused in a planned fight. Illusionists slip back into hiding every few
@@ -46,7 +45,7 @@ export function opponentsOf(fighters: readonly PlanFighter[], self: PlanFighter)
 function rehide(round: Round, actor: PlanFighter): Round {
   if (actor.hidden || !rehidesNow(actor, round.number)) return round;
   return say(
-    { ...round, fighters: patch(round.fighters, actor.id, { hidden: true }) },
+    { ...round, fighters: patch(round.fighters, actor.id, { hidden: true, exposure: 0 }) },
     rehideLine(momentOf(round, actor.id), actor),
   );
 }
@@ -77,6 +76,15 @@ function reveal(round: Round, foes: readonly PlanFighter[]): Round {
   return { ...round, fighters };
 }
 
+/** Hiders a look missed, narrowed down for the next one (`EXPOSURE_STEP`). */
+function narrowed(round: Round, missed: readonly PlanFighter[]): Round {
+  const fighters = missed.reduce(
+    (all, foe) => patch(all, foe.id, { exposure: (foe.exposure ?? 0) + 1 }),
+    round.fighters,
+  );
+  return { ...round, fighters };
+}
+
 export function search(round: Round, { actor, rng }: Turn): Round {
   const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden);
   // A field that blinds the seeker dulls their eyes.
@@ -85,19 +93,23 @@ export function search(round: Round, { actor, rng }: Turn): Round {
     rng.chance(searchChance(seeker, inCover(round.ground, foe)) + swarmSearch(actor.swarm)),
   );
   const moment = momentOf(round, actor.id);
-  if (found.length === 0) return say(round, emptySearchLine(moment, actor));
-  return say(reveal(round, found), foundLine(moment, actor, found));
+  const looked = narrowed(
+    round,
+    hidden.filter((foe) => !found.includes(foe)),
+  );
+  if (found.length === 0) return say(looked, emptySearchLine(moment, actor));
+  return say(reveal(looked, found), foundLine(moment, actor, found));
 }
 
 export function dispel(round: Round, { actor, rng }: Turn): Round {
   const change = { ...paying(actor, DISPEL_CHAKRA), confused: 0 };
-  const paid = say(
-    { ...round, fighters: patch(round.fighters, actor.id, change) },
-    tell('{a} form{a.s} the seal to break illusions.', { a: actor }),
-  );
+  const paid = { ...round, fighters: patch(round.fighters, actor.id, change) };
   const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden);
   const strongest = [...hidden].sort((a, b) => b.attributes.genjutsu - a.attributes.genjutsu)[0];
-  if (!strongest) return paid;
-  if (!rng.chance(dispelChance(actor, strongest))) return say(paid, 'The illusion holds.');
-  return say(reveal(paid, hidden), 'The illusion shatters.');
+  const moment = momentOf(round, actor.id);
+  const cast = dispelLine(moment, actor);
+  if (!strongest) return say(paid, cast);
+  const broke = rng.chance(dispelChance(actor, strongest));
+  const after = dispelledLine(moment, broke);
+  return broke ? say(reveal(paid, hidden), cast, after) : say(narrowed(paid, hidden), cast, after);
 }

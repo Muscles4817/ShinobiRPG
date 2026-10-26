@@ -87,6 +87,13 @@ describe('hidden and confused', () => {
     expect(searchChance({ ...plain, perks: ['insight'] }, illusionist)).toBe(1);
   });
 
+  it('every glimpse since they hid brings seekers nearer, by Search or by Dispel', () => {
+    const plain = { attributes: attributes(), perks: [] };
+    const glimpsed = { ...illusionist, exposure: 2 };
+    expect(searchChance(plain, glimpsed)).toBeGreaterThan(searchChance(plain, illusionist));
+    expect(dispelChance(plain, glimpsed)).toBeGreaterThan(dispelChance(plain, illusionist));
+  });
+
   it('will breaks illusions and confusion', () => {
     const strong = { attributes: attributes({ willpower: 12, chakraControl: 12 }), perks: [] };
     const weak = { attributes: attributes({ willpower: 2, chakraControl: 2 }), perks: [] };
