@@ -1394,6 +1394,7 @@ view:
   unlocked[11]: The Pirates’ Boathouse
   unlocked[12]: The Toll on the Pass Road
   unlocked[13]: The Crossroads Shrine
+  unlocked[14]: The Burning Boar
   ending: Saburō ran when the fighting started and fell on the slope. He reaches Kayano on your back, the chest on his, swearing at you both.
   road: You tended a wayside shrine. It cost the light. Then you ran out of patience with Old Saburō. That cost more of it. After that you pushed on through the dark instead of making camp. Later you fought a bandit thug and a bandit archer, and won. Old Saburō bolted when the fighting started, and was hurt. [−40% pay]
   crew[0]:
@@ -2256,11 +2257,13 @@ view:
 view:
   title: A Pilot Going Home
   client: Tobei Sawa
-  unlocked[0]: The Ash-Hand Deserter
-  unlocked[1]: The Mill That Grinds at Night
-  unlocked[2]: The Puppet Troupe
-  unlocked[3]: Lost in the Salt Marsh
-  unlocked[4]: The Shade on the Pilgrim Path
+  unlocked[0]: The Fallen Cairns
+  unlocked[1]: The Ash-Hand Deserter
+  unlocked[2]: The Mill That Grinds at Night
+  unlocked[3]: The Puppet Troupe
+  unlocked[4]: Lost in the Salt Marsh
+  unlocked[5]: The Shade on the Pilgrim Path
+  unlocked[6]: The Glass at the Well
   ending: The thugs limp off towards Oki’s timber yard. Tobei gets you a room over the ferry office and says the office will want you in the morning.
   road: You sheltered from a cloudburst and beat two bandit thugs. Then you kept faith with the ferrymen, though they lied on the notice.
   crew[0]:
