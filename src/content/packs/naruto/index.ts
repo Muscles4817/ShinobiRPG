@@ -49,6 +49,7 @@ import { DEEP_WILDS_EVENTS } from './deepWilds';
 import { VOICES } from '../../shared/talk/voices';
 import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
 import { CHUNIN_MISSIONS } from './chuninMissions';
+import { SENIOR_MISSIONS } from './seniorJobs';
 import { EXAM_MISSIONS, EXAMS } from './exam';
 import { NARUTO_CONVERSATIONS } from './conversations';
 import { TEMPLE_BELL_ARC, TEMPLE_BELL_JOBS } from './arcs/templeBell';
@@ -169,6 +170,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...TEAM_MISSIONS,
     ...ELITE_MISSIONS,
     ...CHUNIN_MISSIONS,
+    ...SENIOR_MISSIONS,
     ...EXAM_MISSIONS,
     ...WAVES_JOBS,
     ...TANZAKU_JOBS,
