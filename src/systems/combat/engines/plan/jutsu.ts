@@ -275,7 +275,7 @@ function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
   const moment = momentOf(round, foe.id);
   const slip = { target: foe, attacker: actor, what: t.name };
   if (!dodgesHere(round, foe)) {
-    return say(round, seenLine(moment, slip, t.discipline === 'genjutsu'));
+    return say(round, reactionLine(seenLine(moment, slip, t.discipline === 'genjutsu'), 'missed'));
   }
   const why = hasPerk(foe, 'foresight') ? 'foreseen' : 'dodged';
   const noted = noteDefence(round, foe.id, round.range, 'dodge');

@@ -930,7 +930,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (`CombatOutcome.summary`). Rules and instructions go in the view's `prompt`, never the log.
   A staged engine (one that offers plans, not a hand) tags each turn's lines with `turnLine` (whose
   turn, and where the fight stands) and defences with `reactionLine`; the watch screen stages the
-  log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. A fight that ends
+  log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. The first exchange's
+  divider opens a round (`roundStartLine`), and the plan screen says why the last round went as
+  it did from that round's lines (`game/views/roundWhy.ts`: turns off your plan, your attacks, who
+  hurt you, your defences, what it cost); a slip with no Dodge ready is stamped `missed`. A fight that ends
   is kept as `combatFinale` (its last view) so the stage plays the final exchange before the
   result card; like a report, it never blocks play, and `leaveFight` closes it. Removing an engine or
   changing its id needs a migration for saves that are mid-fight in it or have it chosen.

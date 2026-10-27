@@ -24,9 +24,10 @@ export interface NarrationAmount {
   readonly amount: number;
 }
 
-/** What a slotted defence did about a blow. */
+/** What a slotted defence did about a blow, or (`missed`) that it was slipped without one. */
 export const NARRATION_REACTIONS = [
   'dodged',
+  'missed',
   'dodge-missed',
   'guarded',
   'guard-broken',
@@ -63,6 +64,8 @@ export interface Narration {
   readonly statuses?: NarrationStatuses;
   /** The player's turn played off their plan, and why (`offPlanLine`), when the engine says. */
   readonly offPlan?: NarrationOffPlan;
+  /** The line opens a round (`roundStartLine`): what follows is that round's story. */
+  readonly roundStart?: true;
 }
 
 /** What the screen says of fighters, by fighter id ("Dazed", "Clones ×2"…; none is an empty list). */
@@ -84,6 +87,7 @@ const NONE = '-';
 const MARKER = /\s*⟦([+-])(\d+)⟧/g;
 const REACTION_MARKER = /\s*⟦r:([a-z-]+)⟧/g;
 const OFF_PLAN_MARKER = /\s*⟦op:([a-z-]+)⟧/;
+const ROUND_START_MARKER = /\s*⟦rs⟧/;
 const ACTOR_MARKER = /\s*⟦by:([^⟧]+)⟧/;
 const RANGE_MARKER = /\s*⟦at:(close|mid|far)⟧/;
 const NAMED_MARKER = /\s*⟦n:([^⟧]+)⟧/g;
@@ -110,6 +114,11 @@ export function healLine(text: string, healed: number): string {
 /** "Shun slips past the bandit's strike." when Shun's Dodge did it. */
 export function reactionLine(text: string, ...reactions: readonly NarrationReaction[]): string {
   return [text, ...reactions.map((r) => `⟦r:${r}⟧`)].join(' ');
+}
+
+/** The line that opens a round (its first exchange's divider), so a round's lines can be found. */
+export function roundStartLine(text: string): string {
+  return `${text} ⟦rs⟧`;
 }
 
 /** A line from a player's turn that played off their plan, saying why. */
@@ -250,8 +259,10 @@ export function splitNarration(line: string): Narration {
   const pools = poolsIn(line);
   const statuses = statusesIn(line);
   const offPlan = OFF_PLAN_MARKER.exec(line)?.[1];
+  const roundStart = ROUND_START_MARKER.test(line);
   const markers = [
     OFF_PLAN_MARKER,
+    ROUND_START_MARKER,
     MARKER,
     REACTION_MARKER,
     ACTOR_MARKER,
@@ -277,6 +288,7 @@ export function splitNarration(line: string): Narration {
     ...(pools ? { pools } : {}),
     ...(statuses ? { statuses } : {}),
     ...(isOffPlan(offPlan) ? { offPlan } : {}),
+    ...(roundStart ? { roundStart: true as const } : {}),
   };
 }
 

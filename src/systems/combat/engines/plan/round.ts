@@ -285,7 +285,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...carriedIn(state),
   };
   const name = EXCHANGE_NAMES[state.exchange] ?? 'Another';
-  const opened: Round = { ...start, lines: [exchangeDivider(name, start)] };
+  const opened: Round = { ...start, lines: [exchangeDivider(name, start, state.exchange === 0)] };
   const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), opened);
   const kept = plannedSummons(
     veilsAfter(
