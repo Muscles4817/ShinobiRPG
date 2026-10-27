@@ -1115,7 +1115,8 @@ stages, rumour, announcement, intro, verdict }` with `ExamStageDef` a union (`mi
   the body slot is empty) and "What this opens", worked out by comparing access at both ranks
   (`exam/unlocks.ts`): the library's stacks, jobs on the board, B-rank gear, and shinobi whose
   price is now met. Jobs done alone are given by rank (`rankForMission`: B and A to chūnin, S to
-  jōnin); team jobs to any genin team. New B and A solo jobs in both packs (`chuninMissions.ts`).
+  jōnin); team jobs to any genin team. New B and A solo jobs in both packs (`chuninMissions.ts`), and the fan pack's
+  senior work (`packs/naruto/seniorJobs/`): B-, A- and S-rank jobs out along the map's roads.
   `Standing.seniorMissionsCompleted` counts B-and-harder jobs; a chūnin with 5 of them, a best art
   at B and 80 reputation is nominated jōnin (`notePromotions` after every action in `dispatch`),
   a smaller ceremony. Save v24 adds `exams` and the senior record. Pacing: the focused player is
