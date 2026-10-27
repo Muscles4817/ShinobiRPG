@@ -10,6 +10,8 @@ import type { ArcDef, MissionDef } from '@/systems/missions';
 const CLIENT = 'The Pass Wardens';
 export const OWL_NAMED = 'old-owl-named';
 export const OWL_SETTLED = 'old-owl-settled';
+/** You followed the owl rather than fight it: it is still on its pine. */
+export const OWL_SPARED = 'old-owl-spared';
 
 export const FALLEN_CAIRNS: MissionDef = {
   id: 'arc-old-owl-cairns',
@@ -199,6 +201,7 @@ export const OWL_OF_THE_PASS: MissionDef = {
           text: 'The digging stops, and the warm hollow goes cold over the winter. When you come back past the saddle the owl is still on its pine. It looks at you this time.',
           effects: [
             { kind: 'world', mark: OWL_SETTLED },
+            { kind: 'world', mark: OWL_SPARED },
             { kind: 'memory', text: 'the warm hollow under the peak' },
           ],
         },

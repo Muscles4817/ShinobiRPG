@@ -2,7 +2,8 @@ import type { RoadEventDef } from '@/systems/missions';
 
 /**
  * The heart of wild country: changed beasts as a matter of course, an elder where the country
- * has one, and sights only the heart has.
+ * has one, and sights only the heart has. A pack whose story tells of an elder bounds it there
+ * (`DeepWildsCast.gates`).
  */
 export const HEART_EVENTS: readonly RoadEventDef[] = [
   {

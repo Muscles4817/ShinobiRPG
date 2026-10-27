@@ -6,6 +6,7 @@ import {
   type MissionDef,
   writtenOptions,
   type MissionStage,
+  type WorldGate,
 } from '@/systems/missions';
 
 import { TONES } from './people';
@@ -132,6 +133,18 @@ export function worldMarksLeft(pack: ContentPack): Set<string> {
   ]);
 }
 
+/** A gate waits on and closes on only marks some job leaves behind. */
+function gateProblems(who: string, gate: WorldGate, left: ReadonlySet<string>): string[] {
+  return [
+    ...(gate.needsWorldMark !== undefined && !left.has(gate.needsWorldMark)
+      ? [`${who} waits for "${gate.needsWorldMark}", which no job leaves behind`]
+      : []),
+    ...(gate.closedBy !== undefined && !left.has(gate.closedBy)
+      ? [`${who} is closed by "${gate.closedBy}", which no job leaves behind`]
+      : []),
+  ];
+}
+
 function worldProblems(pack: ContentPack): string[] {
   const left = worldMarksLeft(pack);
   const remembered = pack.missions.flatMap((m) =>
@@ -144,17 +157,8 @@ function worldProblems(pack: ContentPack): string[] {
     ...remembered
       .filter(([, mark]) => !left.has(mark))
       .map(([id, mark]) => `mission "${id}" remembers "${mark}", which no job leaves behind`),
-    ...pack.missions
-      .filter((m) => m.needsWorldMark !== undefined && !left.has(m.needsWorldMark))
-      .map(
-        (m) =>
-          `mission "${m.id}" waits for "${m.needsWorldMark ?? ''}", which no job leaves behind`,
-      ),
-    ...pack.missions
-      .filter((m) => m.closedBy !== undefined && !left.has(m.closedBy))
-      .map(
-        (m) => `mission "${m.id}" is closed by "${m.closedBy ?? ''}", which no job leaves behind`,
-      ),
+    ...pack.missions.flatMap((m) => gateProblems(`mission "${m.id}"`, m, left)),
+    ...pack.roadEvents.flatMap((e) => gateProblems(`road event "${e.id}"`, e, left)),
     ...pack.village.rumours
       .filter((r) => r.worldMark !== undefined && !left.has(r.worldMark))
       .map((r) => `rumour "${r.id}" waits for "${r.worldMark ?? ''}", which no job leaves behind`),

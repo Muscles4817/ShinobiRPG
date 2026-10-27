@@ -6,6 +6,7 @@ import type { EncounterRun, EncounterStage } from './encounter';
 import type { MissionRank, MissionRole } from './missionRank';
 import type { StagePay } from './encounterPay';
 import type { VenturePlan } from './ventures';
+import type { WorldGate } from './worldGate';
 import {
   startThreads,
   type Condition,
@@ -120,7 +121,8 @@ export interface TwistDef {
   readonly weight: number;
 }
 
-export interface MissionDef {
+/** A job's `WorldGate`: a follow-up waits on what another job left; a story moved on closes it. */
+export interface MissionDef extends WorldGate {
   readonly id: string;
   readonly title: string;
   readonly rank: MissionRank;
@@ -152,10 +154,6 @@ export interface MissionDef {
   readonly standing?: boolean;
   /** Never posted: an exam stage runs it (the survival forest). */
   readonly examOnly?: boolean;
-  /** Posted only once the village remembers this (a world mark): a follow-up to another job. */
-  readonly needsWorldMark?: string;
-  /** No longer posted once the village remembers this: the story it follows has moved on. */
-  readonly closedBy?: string;
   /** Done once and never posted again (a follow-up that tells one moment). */
   readonly once?: true;
   /** Where the job leaves you, when it ends somewhere else (a long story's base, or home). */

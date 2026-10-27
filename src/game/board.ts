@@ -7,6 +7,7 @@ import {
   type ArcDef,
   type Crew,
   type MissionDef,
+  worldAllows,
 } from '@/systems/missions';
 import type { Standing } from '@/systems/standing';
 
@@ -48,8 +49,7 @@ function trusted(def: MissionDef, who: Reader, ctx: GameContext): boolean {
   return (
     def.examOnly !== true &&
     def.minMissionsCompleted <= standing.missionsCompleted &&
-    (def.needsWorldMark === undefined || who.marks.includes(def.needsWorldMark)) &&
-    (def.closedBy === undefined || !who.marks.includes(def.closedBy)) &&
+    worldAllows(def, who.marks) &&
     crewOptions(jobOf(ctx, def), assigneeOf(standing)).length > 0
   );
 }

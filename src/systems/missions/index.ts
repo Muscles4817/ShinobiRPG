@@ -162,3 +162,4 @@ export {
   type VenturePlan,
   type WildDepth,
 } from './ventures';
+export { worldAllows, type WorldGate } from './worldGate';

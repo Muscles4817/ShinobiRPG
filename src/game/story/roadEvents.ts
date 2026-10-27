@@ -3,6 +3,7 @@ import { jobProfile } from '@/content';
 import {
   dangerAtLeast,
   ownRun,
+  worldAllows,
   type Danger,
   type EncounterRoadEvent,
   type RoadEventDef,
@@ -81,6 +82,7 @@ function eventsFor(state: GameState, ctx: GameContext, region: string, danger: D
       dangerAtLeast(danger, e.danger ?? 'petty') &&
       (e.seasons?.includes(season) ?? true) &&
       !state.atlas.roadSeen.includes(e.id) &&
+      worldAllows(e, state.village.marks) &&
       canHappen(state, ctx, e, danger),
   );
 }

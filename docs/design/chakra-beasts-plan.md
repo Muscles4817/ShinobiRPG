@@ -180,8 +180,9 @@ writing keeps reaching for one.
    woods, and if the last one's arrow lands the job fails; freeing the stag first lets you call it
    out of the way. **The Old Owl of the Pass** (`arcs/oldOwl.ts`): deserters moving the cairns on
    the high pass at C rank, then at B rank the owl, which you either fight or follow to a
-   missing-nin digging warm stones out of the peak. Still open: the owl can be met on a venture
-   before or after its arc, since road events don't read world marks. The fan pack's board has no
+   missing-nin digging warm stones out of the peak. The owl is met on a venture only once you
+   have followed it and let it be, and then once only (a road event's gate). Before the arc,
+   only the arc brings it. The fan pack's board has no
    templates yet, so these are the original pack's.
 
 5. **Scouting and the field book.** A read says "Changed by chakra" and names the nature and the

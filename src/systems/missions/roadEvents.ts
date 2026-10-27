@@ -5,6 +5,7 @@ import type { Season } from '@/systems/time';
 import type { Danger } from './crew';
 import type { EncounterFlavour } from './encounter';
 import type { DecisionOption } from './storyStages';
+import type { WorldGate } from './worldGate';
 
 /**
  * What may happen on a stretch of road (`docs/design/journeys-plan.md` 3.5), drawn by the
@@ -27,7 +28,8 @@ export const ROAD_EVENT_KINDS = [
 ] as const;
 export type RoadEventKind = (typeof ROAD_EVENT_KINDS)[number];
 
-interface RoadEventBase {
+/** A road event's `WorldGate`: what a story has left in the wild, or moved on from. */
+interface RoadEventBase extends WorldGate {
   readonly id: string;
   /** The kinds of road it happens on ("hill-road", "coast-road"). */
   readonly regions: readonly string[];
