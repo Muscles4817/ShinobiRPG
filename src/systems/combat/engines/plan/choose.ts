@@ -1,7 +1,6 @@
 import type { Rng } from '@/core';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
-import { canAttackFrom } from '../../rules/kit';
 import { isTrump, lastDitch, outmatched } from '../../rules/trumps';
 import {
   hasVerb,
@@ -30,7 +29,7 @@ import { shelterInstinct } from './shelter';
 import { survivalPlay } from './survival';
 import { gatherInstinct } from './resting';
 import { sightInstinct } from './sight';
-import { improvise, isEntry, makingFor, readiesTheCharge } from './stepping';
+import { attacksFrom, improvise, isEntry, makingFor, readiesTheCharge } from './stepping';
 import { canDaze, isDazed } from './daze';
 import type { DefenceKind, PlanFighter, Reads } from './state';
 
@@ -215,12 +214,9 @@ function holdsBack(foe: PlanFighter | undefined) {
 
 /** Footwork and attacks that reach from here: what a turn can be spent on. */
 function moves(self: PlanFighter, ready: readonly Card[], band: RangeBand): Card[] {
-  const reaches = canAttackFrom(self, band);
   return ready.filter(
     (c) =>
-      c.kind === 'step' ||
-      flickers(self, c, band) ||
-      (isOffence(c) && (reaches || isEntry(self, c, band))),
+      c.kind === 'step' || flickers(self, c, band) || (isOffence(c) && attacksFrom(self, c, band)),
   );
 }
 

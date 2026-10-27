@@ -45,7 +45,7 @@ function setup(id: string, over: Partial<CombatantSetup> = {}): CombatantSetup {
   };
 }
 
-/** A hero against an illusionist, who starts hidden; the hero may read foes (insight). */
+/** A hero against an illusionist, who starts hidden; the hero's eyes may see the hidden. */
 function viewWith(perks: CombatantSetup['perks']) {
   const engine = createPlanEngine();
   const state = engine.start(
@@ -69,8 +69,14 @@ describe('a hidden foe, as the player sees them', () => {
     expect(view.prompt).toMatch(/Search/);
   });
 
-  it('is seen, and can be aimed at, by eyes that read foes', () => {
-    const view = viewWith(['insight']);
+  it('stays hidden from eyes that only read foes (insight): they must find it', () => {
+    const foe = viewWith(['insight']).combatants.find((c) => c.id === 'foe')!;
+    expect(foe.statuses).toContain('Hidden');
+    expect(foe.targetable).toBe(false);
+  });
+
+  it('is seen, and can be aimed at, by eyes that see everything', () => {
+    const view = viewWith(['all-seeing']);
     const foe = view.combatants.find((c) => c.id === 'foe')!;
     expect(foe.statuses).toContain('Hidden, but you see them');
     expect(foe.statuses).not.toContain('Hidden');

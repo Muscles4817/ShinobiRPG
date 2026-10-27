@@ -11,7 +11,7 @@ import { tell } from '../../rules/telling';
  * Conceal and sense in a planned fight. A conceal hides its user as a smoke bomb would, but
  * how hard they are to find comes from their own art; attacking gives them away as ever. A
  * sense pulls hidden foes into the open, and for the rest of the fight its user reads foes as
- * insight does: every card they hold, and anyone who slips away again is found by a Search.
+ * insight does: every card they hold, and anyone who slips away again is readily found by a Search.
  */
 
 export function conceal(round: Round, actor: PlanFighter, use: EffectUse<'conceal'>): Round {

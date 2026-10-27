@@ -3,17 +3,21 @@ import { clamp } from '@/core';
 import type { CombatAttributes, CombatPerk, CombatTrait } from '../contract';
 import { gapRatio } from './damage';
 import { concealmentOf } from './verbs';
-import { seesThroughIllusions } from './eyes';
+import { seesTheHidden, seesThroughIllusions } from './eyes';
 
 /**
  * Hidden and Confused, shared by every engine. An illusionist starts hidden: they can't be
  * targeted and hit harder, until someone finds them (Search: perception and intellect against
- * their concealment, which is their genjutsu unless a conceal set it; insight always sees
- * them) or breaks the illusion (Dispel: chakra control and willpower, costs chakra). Their hits
+ * their concealment, which is their genjutsu unless a conceal set it; eyes that read foes find
+ * them most of the time, and only eyes that see everything always do) or breaks the illusion (Dispel: chakra control and willpower, costs chakra). Their hits
  * can confuse, making the victim's actions misfire until willpower shakes it off; good chakra
  * control makes the confusion shorter.
  */
 
+/** Eyes that read foes (insight) find a hider this often on a Search, before any glimpses… */
+export const INSIGHT_SEARCH = 0.8;
+/** …and never more often than this: a large edge, not a certainty. */
+export const INSIGHT_SEARCH_MAX = 0.95;
 /** A hidden attacker's hits land this much harder. */
 export const HIDDEN_DAMAGE = 1.4;
 /** Chakra spent on a Dispel. */
@@ -55,14 +59,17 @@ export function startsHidden(f: { readonly traits: readonly CombatTrait[] }): bo
 }
 
 /**
- * Chance a Search finds a hidden fighter (or the one struck traces an attack back). Insight
- * always does; otherwise eyes against concealment, and nearer for every glimpse since they hid,
- * so hiding holds best at first and a seeker who keeps at it gets there.
+ * Chance a Search finds a hidden fighter (or the one struck traces an attack back). Eyes that see
+ * everything always do; eyes that read foes (insight) mostly do (`INSIGHT_SEARCH`); otherwise
+ * eyes against concealment. Every glimpse since they hid brings any seeker nearer, so hiding
+ * holds best at first and a seeker who keeps at it gets there.
  */
 export function searchChance(seeker: Senses, hider: Illusion): number {
-  if (seeker.perks.includes('insight')) return 1;
-  const senses = seeker.attributes.perception * 0.6 + seeker.attributes.intellect * 0.4;
+  if (seesTheHidden(seeker)) return 1;
   const closing = (hider.exposure ?? 0) * EXPOSURE_STEP;
+  if (seeker.perks.includes('insight'))
+    return Math.min(INSIGHT_SEARCH_MAX, INSIGHT_SEARCH + closing);
+  const senses = seeker.attributes.perception * 0.6 + seeker.attributes.intellect * 0.4;
   return clamp(0.35 + (senses - concealmentOf(hider)) * 0.06 + closing, 0.15, 0.9);
 }
 

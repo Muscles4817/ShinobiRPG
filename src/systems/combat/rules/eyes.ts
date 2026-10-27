@@ -40,6 +40,14 @@ export function seesThroughIllusions(f: Eyed): boolean {
   return f.perks.includes('all-seeing');
 }
 
+/**
+ * Eyes that see everything at once see the hidden too: no hiding keeps them off, and they aim at
+ * a hider as at anyone. Reading foes (insight) is an edge in finding them, never a certainty.
+ */
+export function seesTheHidden(f: Eyed): boolean {
+  return f.perks.includes('all-seeing');
+}
+
 /** The round from which a sharp enough foe may have found the eyes' one blind spot. */
 export const BLIND_SPOT_FROM_ROUND = 3;
 /** The wits it takes to find it: a B-grade mind (an observer, watching where the eyes never turn). */

@@ -1,6 +1,6 @@
 import { createRng } from '@/core';
 
-import type { CombatantSetup, CombatTechnique } from '../../contract';
+import type { CombatantSetup, CombatPerk, CombatTechnique } from '../../contract';
 import { createPlanEngine } from './engine';
 import { raiseField } from '../../rules/verbs';
 import { intendedCard, intentLine, keepsTo } from './intent';
@@ -101,15 +101,16 @@ describe('plan & watch telegraphs', () => {
     );
   });
 
-  it('a hidden foe gives nothing away without insight', () => {
+  it('a hidden foe gives nothing away, even to insight, but eyes that see everything see it', () => {
     const base = start();
-    const state = {
+    const hide = (perks: CombatPerk[]) => ({
       ...base,
       intents: { bandit: 'strike' },
-      fighters: base.fighters.map((f) => (f.isPlayer ? f : { ...f, hidden: true })),
-    };
-    expect(intentLine(state, banditOf(state), false)).toBeUndefined();
-    expect(intentLine(state, banditOf(state), true)).toMatch(/^Coming in to strike/);
+      fighters: base.fighters.map((f) => (f.isPlayer ? { ...f, perks } : { ...f, hidden: true })),
+    });
+    expect(intentLine(hide(['insight']), banditOf(hide(['insight'])), true)).toBeUndefined();
+    const seen = hide(['all-seeing']);
+    expect(intentLine(seen, banditOf(seen), true)).toMatch(/^Coming in to strike/);
   });
 
   it('a move the fight has outgrown is dropped for a fresh choice', () => {
