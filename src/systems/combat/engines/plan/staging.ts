@@ -5,6 +5,7 @@ import {
   forceLine,
   offPlanLine,
   poolsLine,
+  roundStartLine,
   statusLine,
   turnLine,
   type NarrationForce,
@@ -63,9 +64,14 @@ function statusesOf(round: Round): Record<string, string[]> {
   return Object.fromEntries(round.fighters.map((f) => [f.id, statusesShown(round, f)]));
 }
 
-/** "— Second exchange —", saying where everyone's pools and statuses start it. */
-export function exchangeDivider(name: string, round: Round): string {
-  return statusLine(poolsLine(`— ${name} exchange —`, poolsOf(round.fighters)), statusesOf(round));
+/**
+ * "— Second exchange —", saying where everyone's pools and statuses start it; the first of a
+ * round says it opens the round.
+ */
+export function exchangeDivider(name: string, round: Round, first: boolean): string {
+  const divider = `— ${name} exchange —`;
+  const opening = first ? roundStartLine(divider) : divider;
+  return statusLine(poolsLine(opening, poolsOf(round.fighters)), statusesOf(round));
 }
 
 /** The statuses of those whose statuses the turn changed (an empty list where all ended). */

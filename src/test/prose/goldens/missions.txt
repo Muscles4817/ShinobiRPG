@@ -395,7 +395,7 @@ view:
   You form the seal to break illusions.
   The illusion holds.
   The storehouse wraith fixes its eyes on the field and casts Whispering Dread.
-  You catch the first sign of the storehouse wraith’s Whispering Dread and shake it off before it settles.
+  You catch the first sign of the storehouse wraith’s Whispering Dread and shake it off before it settles. [Missed]
   —— Second exchange ——
   You press your palms together and push the illusions back.
   The illusion bends, then settles again.
@@ -1271,7 +1271,7 @@ view:
   Goro’s Palm Strike slams into the bandit thug, and it leaves him shaken. [Guarded] [−22]
   You open with Gale Heel.
   Your Gale Heel hammers the bandit thug, and he feels it. [Guarded] [−21]
-  Asuka slips past the bandit thug’s strike.
+  Asuka slips past the bandit thug’s strike. [Missed]
   —— Second exchange ——
   Asuka’s blade flows into Lantern Cut.
   Asuka’s Lantern Cut tears through the bandit thug, through the guard all the same, and he’s nearly knocked off his feet. [Guarded] [−43]
@@ -2105,7 +2105,7 @@ view:
   Goro starts with Palm Strike before anyone has settled.
   Goro’s Palm Strike slams into the second bandit thug. [Guarded] [−22]
   Asuka steps in front of you.
-  The second bandit thug’s strike finds only the space where Asuka stood.
+  The second bandit thug’s strike finds only the space where Asuka stood. [Missed]
   —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel hurls aside the second bandit thug, guard or no guard, and he’s nearly knocked off his feet. [Guarded] [−78]

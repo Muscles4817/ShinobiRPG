@@ -20,8 +20,9 @@ export type CombatLogLine =
   | { readonly kind: 'round'; readonly text: string }
   | { readonly kind: 'story'; readonly text: string; readonly chips: readonly JournalChip[] };
 
-const REACTION_LABEL: Readonly<Record<NarrationReaction, string>> = {
+export const REACTION_LABEL: Readonly<Record<NarrationReaction, string>> = {
   dodged: 'Dodged',
+  missed: 'Missed',
   'dodge-missed': 'Dodge missed',
   guarded: 'Guarded',
   'guard-broken': 'Guard broken',
@@ -30,7 +31,7 @@ const REACTION_LABEL: Readonly<Record<NarrationReaction, string>> = {
   shielded: 'Shielded',
 };
 
-const OFF_PLAN_LABEL: Readonly<Record<NarrationOffPlan, string>> = {
+export const OFF_PLAN_LABEL: Readonly<Record<NarrationOffPlan, string>> = {
   improvised: 'Off plan: nothing slotted fit',
   looking: 'Off plan: no one in sight',
 };

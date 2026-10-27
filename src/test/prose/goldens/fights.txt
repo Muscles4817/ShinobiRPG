@@ -12,7 +12,7 @@
   You make another try, and Asuka shuts it down again.
   —— Third exchange ——
   Asuka catches the eye and lets Shadow Feint unfold.
-  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles.
+  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles. [Missed]
   You make another try, and Asuka shuts it down again.
   —— Last exchange ——
   Asuka’s blade flows into Lantern Cut.
@@ -21,7 +21,7 @@
   —— The next round begins ——
   —— First exchange ——
   The air around Asuka wavers as Shadow Feint takes hold.
-  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles.
+  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles. [Missed]
   You keep low and come in under Asuka’s guard, inside Asuka’s reach.
   —— Second exchange ——
   Asuka uses Shadow Feint once more.
@@ -63,7 +63,7 @@
   —— The next round begins ——
   —— First exchange ——
   Jin goes back to Forge Cut.
-  You were waiting for exactly that, and Jin’s Forge Cut finds nothing.
+  You were waiting for exactly that, and Jin’s Forge Cut finds nothing. [Missed]
   You use Gale Heel once more.
   Your Gale Heel cuts into Jin cleanly. [Guarded] [−9]
   —— Second exchange ——
@@ -75,7 +75,7 @@
   You reach for Gale Heel again.
   Your Gale Heel cuts into Jin cleanly. [Guarded] [−9]
   Jin has been keeping Shadow Feint for this, and uses it now.
-  You catch the first sign of Jin’s Shadow Feint and shake it off before it settles.
+  You catch the first sign of Jin’s Shadow Feint and shake it off before it settles. [Missed]
   —— Last exchange ——
   You go back to Gale Heel.
   You find the strength from somewhere, and your Gale Heel slices across Jin. [Guarded] [−9]
@@ -84,7 +84,7 @@
   —— The next round begins ——
   —— First exchange ——
   Jin fixes his eyes on the field and casts Shadow Feint.
-  You catch the first sign of Jin’s Shadow Feint and shake it off before it settles.
+  You catch the first sign of Jin’s Shadow Feint and shake it off before it settles. [Missed]
   You scrape together what chakra you can for Gale Heel.
   Your Gale Heel slices across Jin cleanly. [Guarded] [−8]
   —— Second exchange ——
@@ -106,7 +106,7 @@
   —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel hurls aside the first grey wolf, guard or no guard, and it’s thrown back against a trunk. [Guarded] [−34]
-  You put a trunk between yourself and the second grey wolf’s bite.
+  You put a trunk between yourself and the second grey wolf’s bite. [Missed]
   The first grey wolf’s bite only just grazes you. [Guarded] [−3]
   —— Third exchange ——
   You use Gale Heel once more.
@@ -121,7 +121,7 @@
   —— The next round begins ——
   —— First exchange ——
   You reach for Gale Heel again.
-  The second grey wolf was waiting for exactly that, and your Gale Heel finds nothing.
+  The second grey wolf was waiting for exactly that, and your Gale Heel finds nothing. [Missed]
   You are a shade too slow, and the second grey wolf’s bite snaps at you. [Guarded] [−3]
   —— Second exchange ——
   You use Gale Heel once more.
@@ -129,7 +129,7 @@
   The second grey wolf’s bite only just nips you. [Guarded] [−3]
   —— Third exchange ——
   You go back to Gale Heel.
-  The second grey wolf was waiting for exactly that, and your Gale Heel finds nothing.
+  The second grey wolf was waiting for exactly that, and your Gale Heel finds nothing. [Missed]
   The second grey wolf’s bite grazes you. [Guarded] [−3]
   —— Last exchange ——
   You reach for Gale Heel again.
@@ -173,7 +173,7 @@
   You snap through the release seal.
   Nothing gives.
   The storehouse wraith reaches for Whispering Dread again.
-  You see through the storehouse wraith’s Whispering Dread, and it never takes hold.
+  You see through the storehouse wraith’s Whispering Dread, and it never takes hold. [Missed]
   You follow the blow back to the storehouse wraith.
   —— The next round begins ——
   —— First exchange ——
@@ -247,7 +247,7 @@
   —— Last exchange ——
   You form the seal to break illusions.
   The illusion shatters.
-  You scramble clear of the storehouse wraith’s touch with nothing to spare.
+  You scramble clear of the storehouse wraith’s touch with nothing to spare. [Missed]
   —— The next round begins ——
   —— First exchange ——
   Hurt and running short of time, you reach for Gale Heel.
