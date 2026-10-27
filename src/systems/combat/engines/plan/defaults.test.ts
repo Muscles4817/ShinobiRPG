@@ -67,15 +67,27 @@ describe('plan & watch default plan: actions only', () => {
   });
 });
 
+describe('plan & watch default plan: an archer up close', () => {
+  const senbon: CombatTechnique = { ...bolt('senbon', 10), reach: ['close', 'mid'] };
+  const archer = (techniques: readonly CombatTechnique[]) =>
+    table(techniques, { traits: ['archer'] })[0]!;
+
+  it('keeps no plain attack up close, but slots a technique whose own reach is close', () => {
+    expect(cards(archer([bolt('bolt', 14)]), 'close')).toEqual([]);
+    expect(cards(archer([bolt('bolt', 14), senbon]), 'close')).toEqual(['jutsu:senbon']);
+  });
+});
+
 describe('plan & watch default plan: finding hidden foes', () => {
   const finders = (f: readonly PlanFighter[]) =>
     defaultLoadout(f[0]!, f)
       .mid.map((s) => s.card)
       .filter((c) => c === 'search' || c === 'dispel' || c.startsWith('item:'));
 
-  it('brings a way to find an illusionist, unless insight already sees them', () => {
+  it('brings a way to find an illusionist, insight too, unless eyes see everything', () => {
     expect(finders(table([bolt('bolt', 14)]))).toHaveLength(1);
-    expect(finders(table([bolt('bolt', 14)], { perks: ['insight'] }))).toEqual([]);
+    expect(finders(table([bolt('bolt', 14)], { perks: ['insight'] }))).toHaveLength(1);
+    expect(finders(table([bolt('bolt', 14)], { perks: ['all-seeing'] }))).toEqual([]);
   });
 
   it('the surest it has: sharp eyes Search, fine control Dispels, a flash tag beats both', () => {

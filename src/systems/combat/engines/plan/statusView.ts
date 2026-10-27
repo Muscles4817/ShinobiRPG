@@ -12,7 +12,7 @@ import { stanceStatus } from './team';
  * What the screen says of a fighter's state: conditions, whether a back-row fighter is still
  * out of reach behind their front row, whether a field blinds them, what they have ready
  * (empowered, clones, a trap), their stance and the marks on them. A hidden foe the player sees
- * anyway (insight) is shown as the player sees them: hidden from others, not from them. Read from the fight as it
+ * anyway (eyes that see everything) is shown as the player sees them: hidden from others, not them. Read from the fight as it
  * stands or from an exchange part-played, so the watch screen can follow them beat by beat.
  */
 

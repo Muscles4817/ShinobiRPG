@@ -1,7 +1,7 @@
 import type { Verb } from '@/systems/techniques';
 
 import type { CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
-import { hasPerk } from '../../rules/body';
+import { seesTheHidden } from '../../rules/eyes';
 import { dispelChance, searchChance } from '../../rules/conditions';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
@@ -33,7 +33,7 @@ import { opponentsOf } from './senses';
 import { cardWorth } from './worth';
 import { defaultHoldOff } from './zoning';
 import { defaultReactions } from './readiness';
-import { fightsFromHome, isEntry, strongestBand } from './stepping';
+import { attacksFrom, fightsFromHome, strongestBand } from './stepping';
 import { plainSlots, type Loadout, type PlanFighter, type Slot } from './state';
 
 /**
@@ -207,8 +207,7 @@ function fitted(ordered: readonly Slot[], attack: Slot | undefined, limit: numbe
 function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot[] {
   const reaches = canAttackFrom(fighter, band);
   const usable = cardsFor(fighter, band).filter(
-    (c) =>
-      (reaches || !isOffence(c) || isEntry(fighter, c, band)) && cardBlocked(fighter, c) === null,
+    (c) => (!isOffence(c) || attacksFrom(fighter, c, band)) && cardBlocked(fighter, c) === null,
   );
   // A ladder's openings take no slot: the fighter climbs from the kit (`climbing.ts`), so the
   // plan keeps the arts of the steps they can reach.
@@ -272,9 +271,8 @@ function facingOf(fighter: PlanFighter, among: readonly PlanFighter[], support: 
     foeJutsu: foes.length === 0 || foes.some((f) => f.techniques.some(isHarmful)),
     outmatched: outmatched(fighter, foes),
     support,
-    // Insight sees through hiding, so it needs no Search.
-    foeHides:
-      !hasPerk(fighter, 'insight') && foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
+    // Eyes that see everything need no Search; any other eyes (insight too) bring a finder.
+    foeHides: !seesTheHidden(fighter) && foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
     foes,
   };
 }

@@ -4,6 +4,8 @@ import {
   CONFUSION_TURNS,
   confusionTurns,
   dispelChance,
+  INSIGHT_SEARCH,
+  INSIGHT_SEARCH_MAX,
   rehidesNow,
   searchChance,
   shakeOffChance,
@@ -14,6 +16,7 @@ import {
   canAttackFrom,
   homeBand,
   kitDamageScale,
+  namesReach,
   packScale,
   shouldFlee,
 } from './kit';
@@ -80,11 +83,22 @@ describe('hidden and confused', () => {
     expect(rehidesNow(illusionist, 2)).toBe(false);
   });
 
-  it('sharp senses find them; insight always does', () => {
+  it('a technique that names its reach strikes from there, whatever the kit', () => {
+    const archer = { traits: ['archer' as const] };
+    expect(canAttackFrom(archer, 'close')).toBe(false);
+    expect(namesReach({ reach: ['close', 'mid'] }, 'close')).toBe(true);
+    expect(namesReach({ reach: ['mid', 'far'] }, 'close')).toBe(false);
+    expect(namesReach({}, 'close')).toBe(false);
+  });
+
+  it('sharp senses find them; insight mostly does; only eyes that see everything always do', () => {
     const plain = { attributes: attributes(), perks: [] };
     const sharp = { attributes: attributes({ perception: 14, intellect: 10 }), perks: [] };
     expect(searchChance(sharp, illusionist)).toBeGreaterThan(searchChance(plain, illusionist));
-    expect(searchChance({ ...plain, perks: ['insight'] }, illusionist)).toBe(1);
+    const insight = { ...plain, perks: ['insight' as const] };
+    expect(searchChance(insight, illusionist)).toBe(INSIGHT_SEARCH);
+    expect(searchChance(insight, { ...illusionist, exposure: 5 })).toBe(INSIGHT_SEARCH_MAX);
+    expect(searchChance({ ...plain, perks: ['all-seeing'] }, illusionist)).toBe(1);
   });
 
   it('every glimpse since they hid brings seekers nearer, by Search or by Dispel', () => {
