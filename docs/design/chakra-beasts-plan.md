@@ -206,7 +206,7 @@ Then, later:
    any wild kind, in fewer places than a wolf, and leave signs only for someone who has fought one
    of their kind (`WildHaunt.after`, read from the field book's foes). Their techniques are the
    beasts' own: a companion kind may hold a beast art only if the beast it is found after holds
-   it. A kind carries its beast's nature into a fight, so the kite's dive is as strong as the kite's
+   it. A kind carries its beast's nature into a fight, so the kite's dive is as strong as the wild kite's
    (validated against the beast).
 
 7. **Rules gaps, only if the first pass shows them.** Candidates: a beast that regenerates (a

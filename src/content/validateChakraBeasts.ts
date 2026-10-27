@@ -1,11 +1,13 @@
 import { beastArtIds, learnableIds } from './techniqueSources';
+import type { CompanionKindDef } from './companions';
+import type { EnemyDef } from './enemies';
 import type { ContentPack } from './types';
 
 /**
  * Chakra beasts (`docs/design/chakra-beasts-plan.md`) and their arts. A chakra beast has chakra
  * and a technique, or it is a plain animal. Its arts are its own: nobody learns them from a
  * shelf, a teacher or a scroll, no other foe or person fights with them, a companion kind holds
- * one only if it is the kind of a beast that does (`WildHaunt.after`) and carries that beast's
+ * one only if it is the kind of a beast that does (`WildHaunt.after`), and has that beast's
  * nature, and each is some chakra beast's.
  */
 export function validateChakraBeasts(pack: ContentPack): string[] {
@@ -43,8 +45,8 @@ function artProblems(pack: ContentPack): string[] {
 }
 
 /**
- * A companion kind holds a beast art only when the beast its kind is found after holds it, and
- * has a nature only as its beast's own.
+ * A companion kind holds a beast art only when the beast it is found after holds it, and a kind
+ * of a beast's line has its beast's nature.
  */
 function kindProblems(pack: ContentPack, arts: ReadonlySet<string>): string[] {
   return pack.companionKinds.flatMap((kind) => {
@@ -55,11 +57,13 @@ function kindProblems(pack: ContentPack, arts: ReadonlySet<string>): string[] {
         .map((t) => t.techniqueId)
         .filter((id) => arts.has(id) && !(after?.techniqueIds.includes(id) ?? false))
         .map((id) => `${at} holds beast art "${id}" its beast doesn’t`),
-      ...(kind.nature === after?.nature
-        ? []
-        : [
-            `${at} has nature ${kind.nature ?? 'none'}, but its beast has ${after?.nature ?? 'none'}`,
-          ]),
+      ...natureProblems(at, kind, after),
     ];
   });
+}
+
+/** A kind found after a beast shares its nature; a kind with no beast may have any or none. */
+function natureProblems(at: string, kind: CompanionKindDef, after: EnemyDef | undefined): string[] {
+  if (!after || kind.nature === after.nature) return [];
+  return [`${at} has nature ${kind.nature ?? 'none'}, but its beast has ${after.nature ?? 'none'}`];
 }

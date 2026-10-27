@@ -59,4 +59,11 @@ describe('chakra beasts', () => {
       'companion kind "thunder-kite-chick" has nature fire, but its beast has lightning',
     ]);
   });
+
+  it('leaves the nature of a kind with no beast to the kind', () => {
+    const companionKinds = ORIGINAL_PACK.companionKinds.map((k) =>
+      k.id === 'stray-hound' ? { ...k, nature: 'fire' as const } : k,
+    );
+    expect(validateChakraBeasts({ ...ORIGINAL_PACK, companionKinds })).toEqual([]);
+  });
 });
