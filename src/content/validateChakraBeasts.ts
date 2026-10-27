@@ -5,8 +5,8 @@ import type { ContentPack } from './types';
  * Chakra beasts (`docs/design/chakra-beasts-plan.md`) and their arts. A chakra beast has chakra
  * and a technique, or it is a plain animal. Its arts are its own: nobody learns them from a
  * shelf, a teacher or a scroll, no other foe or person fights with them, a companion kind holds
- * one only if it is the kind of a beast that does (`WildHaunt.after`), and each is some chakra
- * beast's.
+ * one only if it is the kind of a beast that does (`WildHaunt.after`) and carries that beast's
+ * nature, and each is some chakra beast's.
  */
 export function validateChakraBeasts(pack: ContentPack): string[] {
   return [...beastProblems(pack), ...artProblems(pack)];
@@ -42,13 +42,24 @@ function artProblems(pack: ContentPack): string[] {
   ];
 }
 
-/** A companion kind holds a beast art only when the beast its kind is found after holds it. */
+/**
+ * A companion kind holds a beast art only when the beast its kind is found after holds it, and
+ * has a nature only as its beast's own.
+ */
 function kindProblems(pack: ContentPack, arts: ReadonlySet<string>): string[] {
   return pack.companionKinds.flatMap((kind) => {
+    const at = `companion kind "${kind.id}"`;
     const after = pack.enemies.find((e) => e.id === kind.wild?.after);
-    return (kind.techniques ?? [])
-      .map((t) => t.techniqueId)
-      .filter((id) => arts.has(id) && !(after?.techniqueIds.includes(id) ?? false))
-      .map((id) => `companion kind "${kind.id}" holds beast art "${id}" its beast doesn’t`);
+    return [
+      ...(kind.techniques ?? [])
+        .map((t) => t.techniqueId)
+        .filter((id) => arts.has(id) && !(after?.techniqueIds.includes(id) ?? false))
+        .map((id) => `${at} holds beast art "${id}" its beast doesn’t`),
+      ...(kind.nature === after?.nature
+        ? []
+        : [
+            `${at} has nature ${kind.nature ?? 'none'}, but its beast has ${after?.nature ?? 'none'}`,
+          ]),
+    ];
   });
 }

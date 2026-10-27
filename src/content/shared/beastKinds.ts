@@ -71,6 +71,7 @@ export const THUNDER_KITE: CompanionKindDef = {
   statBonuses: { taijutsu: 1, intellect: -1 },
   healthScale: 0.6,
   maxChakra: 40,
+  nature: 'lightning',
   traits: ['swift'],
   aptitude: {
     speed: 1.4,

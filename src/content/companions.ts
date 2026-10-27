@@ -2,6 +2,7 @@ import type { CombatTrait } from '@/systems/combat';
 import type { MissionRole } from '@/systems/missions';
 import type { BodyStat, CompanionTemperament, PlayKind } from '@/systems/companions';
 import type { StatDelta, StatId } from '@/systems/stats';
+import type { Element } from '@/systems/techniques';
 
 import type { Biome } from './biomes';
 
@@ -77,6 +78,11 @@ export interface CompanionKindDef {
   /** Health as a multiple of a human's 100. */
   readonly healthScale: number;
   readonly maxChakra: number;
+  /**
+   * Its chakra nature, for a kind of a chakra beast's line: the beast's own, so its elemental
+   * techniques come out as strong as the beast's (validated against `wild.after`).
+   */
+  readonly nature?: Element;
   readonly traits?: readonly CombatTrait[];
   /** Its talent per stat, 1 when left out; 0 is an art it can never learn. */
   readonly aptitude: Partial<Readonly<Record<StatId, number>>>;
