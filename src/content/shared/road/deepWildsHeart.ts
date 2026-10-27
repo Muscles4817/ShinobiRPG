@@ -2,7 +2,8 @@ import type { RoadEventDef } from '@/systems/missions';
 
 /**
  * The heart of wild country: changed beasts as a matter of course, an elder where the country
- * has one, and sights only the heart has.
+ * has one, and sights only the heart has. A pack whose story tells of an elder bounds it there
+ * (`DeepWildsCast.gates`).
  */
 export const HEART_EVENTS: readonly RoadEventDef[] = [
   {
@@ -45,6 +46,18 @@ export const HEART_EVENTS: readonly RoadEventDef[] = [
     parties: [['thunder-kite'], ['stone-serow'], ['stone-serow', 'thunder-kite']],
     template: 'beast',
     around: 'You get down off the ridge into a gully and wait for the storm to pass over.',
+  },
+  {
+    kind: 'encounter',
+    danger: 'elite',
+    id: 'the-owl-on-the-pine',
+    regions: ['mountain-heart'],
+    rarity: 'rare',
+    text: 'A dead pine stands alone on the saddle, and an owl as big as a child sits in it. Its eyes have been on you since before you saw it.',
+    parties: [['old-owl-of-the-pass']],
+    template: 'beast',
+    around:
+      'You go down the far side of the saddle with your eyes on your feet, and the owl lets you.',
   },
   {
     kind: 'sight',
@@ -122,20 +135,3 @@ export const HEART_EVENTS: readonly RoadEventDef[] = [
     reward: { intellect: 1 },
   },
 ];
-
-/**
- * The old owl of the pass, where it sits. A pack whose story tells of the owl gates it on what
- * the village remembers (`deepWildsEvents`), so it is met only where that story has left it.
- */
-export const OWL_ON_THE_PINE: RoadEventDef = {
-  kind: 'encounter',
-  danger: 'elite',
-  id: 'the-owl-on-the-pine',
-  regions: ['mountain-heart'],
-  rarity: 'rare',
-  text: 'A dead pine stands alone on the saddle, and an owl as big as a child sits in it. Its eyes have been on you since before you saw it.',
-  parties: [['old-owl-of-the-pass']],
-  template: 'beast',
-  around:
-    'You go down the far side of the saddle with your eyes on your feet, and the owl lets you.',
-};

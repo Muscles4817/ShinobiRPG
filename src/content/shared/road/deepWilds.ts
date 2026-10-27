@@ -1,14 +1,17 @@
-import type { RoadEventDef } from '@/systems/missions';
+import type { RoadEventDef, WorldGate } from '@/systems/missions';
 
 import { deepEvents } from './deepWildsDeep';
 import { EDGE_EVENTS } from './deepWildsEdge';
-import { HEART_EVENTS, OWL_ON_THE_PINE } from './deepWildsHeart';
+import { HEART_EVENTS } from './deepWildsHeart';
 
-/** What a pack puts in its deep wilds: its missing-nin, and when the old owl is about. */
+/** How a pack's own story bounds one of the shared events: what it waits on, and once only. */
+export type RoadEventGate = WorldGate & Pick<RoadEventDef, 'once'>;
+
+/** What a pack puts in its deep wilds: its missing-nin, and gates its stories set on events. */
 export interface DeepWildsCast {
   readonly missingNin: readonly (readonly string[])[];
-  /** The world marks the owl waits on, where the pack's story tells of it. */
-  readonly owl?: Pick<RoadEventDef, 'needsWorldMark' | 'closedBy'>;
+  /** By event id: an elder its story tells of, met only where the story leaves it. */
+  readonly gates?: Readonly<Record<string, RoadEventGate>>;
 }
 
 /**
@@ -16,11 +19,7 @@ export interface DeepWildsCast {
  * met on a venture: the edge, the deep with the pack's missing-nin hiding in it, and the heart.
  */
 /*#__NO_SIDE_EFFECTS__*/
-export function deepWildsEvents({ missingNin, owl = {} }: DeepWildsCast): RoadEventDef[] {
-  return [
-    ...EDGE_EVENTS,
-    ...deepEvents(missingNin),
-    ...HEART_EVENTS,
-    { ...OWL_ON_THE_PINE, ...owl },
-  ];
+export function deepWildsEvents({ missingNin, gates = {} }: DeepWildsCast): RoadEventDef[] {
+  const events = [...EDGE_EVENTS, ...deepEvents(missingNin), ...HEART_EVENTS];
+  return events.map((e) => ({ ...e, ...gates[e.id] }));
 }

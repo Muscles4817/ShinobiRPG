@@ -23,7 +23,7 @@ describe('road events', () => {
       e.id === 'the-owl-on-the-pine' ? { ...e, needsWorldMark: 'owl-never-met' } : e,
     );
     expect(validateContent({ ...ORIGINAL_PACK, roadEvents })).toContain(
-      'road event "the-owl-on-the-pine" waits on "owl-never-met", which no job leaves behind',
+      'road event "the-owl-on-the-pine" waits for "owl-never-met", which no job leaves behind',
     );
   });
 

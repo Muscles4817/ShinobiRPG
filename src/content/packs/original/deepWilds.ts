@@ -9,6 +9,8 @@ export const DEEP_WILDS_EVENTS = deepWildsEvents({
     ['rogue-arashigakure-trapper-chunin'],
     ['rogue-sakyugakure-medic-chunin'],
   ],
-  // The owl is met in the heart only once you followed it and let it be (`arcs/oldOwl.ts`).
-  owl: { needsWorldMark: OWL_SPARED },
+  gates: {
+    // The owl is met in the heart only once you have followed it and let it be, and only once.
+    'the-owl-on-the-pine': { needsWorldMark: OWL_SPARED, once: true },
+  },
 });
