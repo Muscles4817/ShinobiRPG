@@ -155,6 +155,11 @@ function worldProblems(pack: ContentPack): string[] {
       .map(
         (m) => `mission "${m.id}" is closed by "${m.closedBy ?? ''}", which no job leaves behind`,
       ),
+    ...pack.roadEvents.flatMap((e) =>
+      [e.needsWorldMark, e.closedBy]
+        .filter((mark): mark is string => mark !== undefined && !left.has(mark))
+        .map((mark) => `road event "${e.id}" waits on "${mark}", which no job leaves behind`),
+    ),
     ...pack.village.rumours
       .filter((r) => r.worldMark !== undefined && !left.has(r.worldMark))
       .map((r) => `rumour "${r.id}" waits for "${r.worldMark ?? ''}", which no job leaves behind`),

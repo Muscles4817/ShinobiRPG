@@ -72,6 +72,15 @@ function canHappen(state: GameState, ctx: GameContext, e: RoadEventDef, danger: 
   return own && partiesFor(e, danger, ctx).length > 0;
 }
 
+/** Whether what the village remembers lets the event happen (`needsWorldMark`, `closedBy`). */
+function remembered(state: GameState, e: RoadEventDef): boolean {
+  const marks = state.village.marks;
+  return (
+    (e.needsWorldMark === undefined || marks.includes(e.needsWorldMark)) &&
+    (e.closedBy === undefined || !marks.includes(e.closedBy))
+  );
+}
+
 /** The region's events this road and season allow, not met for good. */
 function eventsFor(state: GameState, ctx: GameContext, region: string, danger: Danger) {
   const season = seasonOf(state.time.day);
@@ -81,6 +90,7 @@ function eventsFor(state: GameState, ctx: GameContext, region: string, danger: D
       dangerAtLeast(danger, e.danger ?? 'petty') &&
       (e.seasons?.includes(season) ?? true) &&
       !state.atlas.roadSeen.includes(e.id) &&
+      remembered(state, e) &&
       canHappen(state, ctx, e, danger),
   );
 }

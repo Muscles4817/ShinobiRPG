@@ -18,6 +18,15 @@ describe('road events', () => {
     );
   });
 
+  it('wait only on world marks some job leaves behind', () => {
+    const roadEvents = ORIGINAL_PACK.roadEvents.map((e) =>
+      e.id === 'the-owl-on-the-pine' ? { ...e, needsWorldMark: 'owl-never-met' } : e,
+    );
+    expect(validateContent({ ...ORIGINAL_PACK, roadEvents })).toContain(
+      'road event "the-owl-on-the-pine" waits on "owl-never-met", which no job leaves behind',
+    );
+  });
+
   it('checks each kind’s own parts', () => {
     const base = { regions: ['coast-road'], text: 'On the road.' };
     const odd: RoadEventDef[] = [

@@ -39,6 +39,10 @@ interface RoadEventBase {
   readonly rarity?: RoadRarity;
   /** Met once in a life, never again (`atlas.roadSeen`). */
   readonly once?: true;
+  /** Only once the village remembers this (a world mark): what a story has left in the wild. */
+  readonly needsWorldMark?: string;
+  /** No longer once the village remembers this: a story has moved it on. */
+  readonly closedBy?: string;
   readonly text: string;
 }
 

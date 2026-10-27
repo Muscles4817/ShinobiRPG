@@ -1176,7 +1176,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   events. **Add a road event or a voice line:** `content/shared/road/` (everyday, season and
   rough-road files, `wildEvents.ts` for foes, finds, weather and sights, and `travellers.ts` for
   people of the road, validated in `validateTravellers.ts`; an event may ask a
-  least road `danger`, `seasons`, a `rarity` or `once`; every region a road crosses keeps a
+  least road `danger`, `seasons`, a `rarity`, `once`, or world marks it waits on or is closed by
+  (`needsWorldMark`, `closedBy`, as a job's); every region a road crosses keeps a
   non-encounter one for any road and season, and a foes event a band its least road may bring,
   validated; effects may name only
   `daylight` and `charge` threads) or `content/shared/talk/voices.ts` (every trait
