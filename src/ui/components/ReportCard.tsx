@@ -2,6 +2,7 @@ import type { Report } from '@/game';
 
 import { DebriefRoad, DebriefSections } from './Debrief';
 import { gainRow, peopleCardContent, type CardContent, type CardList } from './peopleReports';
+import { ventureCard } from './ventureCard';
 
 /** What a fight taught, as a list on its card (absent when it taught nothing visible). */
 function taughtList(taught: readonly string[] | undefined): { list?: CardList } {
@@ -48,23 +49,6 @@ function homeAgainCard(report: Extract<Report, { kind: 'home-again' }>): CardCon
         value: n.value,
         ...(n.tone ? { tone: n.tone } : {}),
       })),
-    ],
-    note: report.text,
-  };
-}
-
-/** Out of the wild: how far in, the days it took, and what it gave. */
-function ventureCard(report: Extract<Report, { kind: 'venture-over' }>): CardContent {
-  return {
-    title: `Out of ${report.country}`,
-    subtitle: report.reached,
-    seal: '野',
-    tone: 'good',
-    rows: [
-      { label: 'Days in the wild', value: String(report.days) },
-      { label: 'Fights', value: String(report.fought) },
-      { label: 'Won', value: String(report.beaten) },
-      { label: 'Found', value: String(report.found) },
     ],
     note: report.text,
   };

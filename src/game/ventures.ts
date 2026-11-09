@@ -149,7 +149,7 @@ export function turnOut(state: GameState, ctx: GameContext, reached: WildDepth):
   if (!run || !plan) return state;
   const back = { ...plan, out: reached };
   const def = ventureMission(back, ctx);
-  const returning = settle(def, { ...startRun(def, run.crew), venture: back });
+  const returning = settle(def, { ...startRun(def, run.crew), ledger: run.ledger, venture: back });
   return turningBack(
     { ...state, mission: returning },
     'You break camp and start back the way you came.',
@@ -171,6 +171,9 @@ export function comeOut(state: GameState, ctx: GameContext, run: MissionRun): Ga
       chips: [chip(days === 1 ? 'A day in the wild' : `${days} days in the wild`, 'info')],
     },
   );
-  const report = ventureReport({ country: country.name, run, days, book: state.fieldBook });
-  return report ? addReport(logged, report) : logged;
+  const book = state.fieldBook;
+  return addReport(
+    logged,
+    ventureReport({ country: country.name, plan, ledger: run.ledger, days, book }),
+  );
 }

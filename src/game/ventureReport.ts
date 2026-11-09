@@ -1,15 +1,14 @@
 import type { FieldBook } from '@/systems/collections';
-import { depthsTo, type MissionRun, type VentureTally, type WildDepth } from '@/systems/missions';
+import type { MissionRun, VenturePlan, VentureTally, WildDepth } from '@/systems/missions';
 
 import { debriefLines } from './debrief';
-import type { Report } from './reports';
+import type { DebriefLine, Report } from './reports';
 
 /**
  * What a venture leaves on its card when you come out (`game/ventures.ts`): how far in you got,
  * the days it took, and what the wild gave, read as the field book's counts since you set out.
  */
 
-/** "As far as the deep". */
 const REACHED_WORDS: Readonly<Record<WildDepth, string>> = {
   edge: 'As far as the edge',
   deep: 'As far as the deep',
@@ -29,28 +28,30 @@ export function tallyOf(book: FieldBook): VentureTally {
 export interface VentureEnd {
   /** "the deep woods". */
   readonly country: string;
-  readonly run: MissionRun;
+  readonly plan: VenturePlan;
+  readonly ledger: MissionRun['ledger'];
   readonly days: number;
   readonly book: FieldBook;
 }
 
-/** The card for a venture just over. */
-export function ventureReport({ country, run, days, book }: VentureEnd): Report | null {
-  const plan = run.venture;
-  if (!plan) return null;
+/** The card for a venture just over. A plan with `out` was turned back short of its depth. */
+export function ventureReport({ country, plan, ledger, days, book }: VentureEnd): Report {
   const reached = plan.out ?? plan.depth;
-  const turnedBack = depthsTo(reached).length < depthsTo(plan.depth).length;
-  const now = tallyOf(book);
-  const then = plan.tally ?? now;
-  return {
-    kind: 'venture-over',
+  const road: readonly DebriefLine[] = debriefLines(ledger);
+  const card = {
+    kind: 'venture-over' as const,
     country,
-    reached: turnedBack ? `${REACHED_WORDS[reached]}, then back` : REACHED_WORDS[reached],
+    reached: plan.out ? `${REACHED_WORDS[reached]}, then back` : REACHED_WORDS[reached],
     days,
+    road,
+  };
+  return plan.tally ? { ...card, gave: since(plan.tally, tallyOf(book)) } : card;
+}
+
+function since(then: VentureTally, now: VentureTally): VentureTally {
+  return {
+    found: now.found - then.found,
     fought: now.fought - then.fought,
     beaten: now.beaten - then.beaten,
-    found: now.found - then.found,
-    road: debriefLines(run.ledger),
-    text: 'You are back where you left the path.',
   };
 }

@@ -74,7 +74,13 @@ describe('going off the paths', () => {
     for (let step = 0; activeStage(state, ctx)?.kind !== 'camp' && step < 10; step++) {
       state = act(state, state.mission?.roadEvent ? keepClear(state) : { type: 'missionContinue' });
     }
-    const turned = act(state, { type: 'turnBack' });
+    const run = state.mission;
+    if (!run) throw new Error('expected the venture under way');
+    const met = { stageIndex: 0, text: 'Weeded a hermit’s beans.', tone: 'plain' as const };
+    const turned = act(
+      { ...state, mission: { ...run, ledger: [...run.ledger, met] } },
+      { type: 'turnBack' },
+    );
     expect(turned.mission?.venture).toMatchObject({ depth: 'deep', out: 'edge' });
     const back = walk(turned);
     expect(back.mission).toBeNull();
@@ -83,6 +89,7 @@ describe('going off the paths', () => {
       kind: 'venture-over',
       reached: 'As far as the edge, then back',
       days: 1,
+      road: [expect.objectContaining({ text: 'You weeded a hermit’s beans.' })],
     });
   });
 
@@ -96,9 +103,7 @@ describe('going off the paths', () => {
       country: 'the deep woods',
       reached: 'As far as the edge',
       days: 1,
-      found: 2,
-      fought: 1,
-      beaten: 1,
+      gave: { found: 2, fought: 1, beaten: 1 },
     });
   });
 

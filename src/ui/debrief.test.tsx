@@ -56,15 +56,14 @@ describe('the debrief (smoke test)', () => {
       country: 'the deep woods',
       reached: 'As far as the deep',
       days: 3,
-      fought: 1,
-      beaten: 1,
-      found: 2,
+      gave: { fought: 1, beaten: 1, found: 0 },
       road: [{ text: 'Weeded a hermit’s beans.', tone: 'plain', pay: null }],
-      text: 'You are back where you left the path.',
     };
     render(<ReportCard report={report} onContinue={ignore} />);
     expect(screen.getByText('Out of the deep woods')).toBeInTheDocument();
     expect(screen.getByText('As far as the deep')).toBeInTheDocument();
+    expect(screen.getByText('Foes faced')).toBeInTheDocument();
+    expect(screen.queryByText('Things found')).toBeNull();
     const road = screen.getByRole('region', { name: 'On the way' });
     expect(within(road).getByText('Weeded a hermit’s beans.')).toBeInTheDocument();
   });

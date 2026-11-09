@@ -1,4 +1,5 @@
 import type { CombatResult } from '@/systems/combat';
+import type { VentureTally } from '@/systems/missions';
 import type { StatGrade } from '@/systems/stats';
 import type { Element } from '@/systems/techniques';
 
@@ -157,12 +158,10 @@ export type Report =
       /** "As far as the deep", or "As far as the edge, then back" when you turned back. */
       readonly reached: string;
       readonly days: number;
-      readonly fought: number;
-      readonly beaten: number;
-      readonly found: number;
+      /** Foes faced and beaten and things found while in; absent for a venture begun before it was counted. */
+      readonly gave?: VentureTally;
       /** Moments worth a line on the way, as a job's debrief tells its road. */
       readonly road: readonly DebriefLine[];
-      readonly text: string;
     }
   | {
       /** The chakra paper showed your nature. */
