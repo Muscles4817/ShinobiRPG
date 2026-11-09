@@ -71,6 +71,7 @@ export function reportSound(report: Report): Sound {
     case 'mission-failed':
     case 'lesson':
     case 'home-again':
+    case 'venture-over':
     case 'nature':
       return 'paper';
   }

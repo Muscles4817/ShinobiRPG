@@ -160,6 +160,7 @@ export {
   ventureDays,
   WILD_DEPTHS,
   type VenturePlan,
+  type VentureTally,
   type WildDepth,
 } from './ventures';
 export { worldAllows, type WorldGate } from './worldGate';

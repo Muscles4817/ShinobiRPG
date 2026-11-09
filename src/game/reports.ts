@@ -1,4 +1,5 @@
 import type { CombatResult } from '@/systems/combat';
+import type { VentureTally } from '@/systems/missions';
 import type { StatGrade } from '@/systems/stats';
 import type { Element } from '@/systems/techniques';
 
@@ -148,6 +149,19 @@ export type Report =
         readonly tone?: 'gain' | 'cost' | 'harm';
       }[];
       readonly text: string;
+    }
+  | {
+      /** Out of wild country after a venture (`ventureReport.ts`). */
+      readonly kind: 'venture-over';
+      /** "the deep woods". */
+      readonly country: string;
+      /** "As far as the deep", or "As far as the edge, then back" when you turned back. */
+      readonly reached: string;
+      readonly days: number;
+      /** Foes faced and beaten and things found while in; absent for a venture begun before it was counted. */
+      readonly gave?: VentureTally;
+      /** Moments worth a line on the way, as a job's debrief tells its road. */
+      readonly road: readonly DebriefLine[];
     }
   | {
       /** The chakra paper showed your nature. */

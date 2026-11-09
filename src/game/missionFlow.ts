@@ -78,7 +78,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
   if (currentStage(def, run)) return tendWounds({ ...before, mission: run }, ctx);
   const state = releaseHeld(before, run);
   if (run.journey) return arrive(state, ctx, run.journey);
-  if (run.venture) return comeOut(state, ctx, run.venture);
+  if (run.venture) return comeOut(state, ctx, run);
   if (def.examOnly) return forestCleared(state, ctx);
   const earned = reward(def, state.mission);
   const senior = isSeniorMission(def.rank);

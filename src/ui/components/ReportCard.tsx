@@ -1,7 +1,8 @@
 import type { Report } from '@/game';
 
-import { DebriefSections } from './Debrief';
+import { DebriefRoad, DebriefSections } from './Debrief';
 import { gainRow, peopleCardContent, type CardContent, type CardList } from './peopleReports';
+import { ventureCard } from './ventureCard';
 
 /** What a fight taught, as a list on its card (absent when it taught nothing visible). */
 function taughtList(taught: readonly string[] | undefined): { list?: CardList } {
@@ -198,6 +199,8 @@ function content(report: Report): CardContent {
       return gradeCard(report);
     case 'home-again':
       return homeAgainCard(report);
+    case 'venture-over':
+      return ventureCard(report);
     case 'lesson':
     case 'spar':
     case 'team-formed':
@@ -278,6 +281,7 @@ export function ReportCard({ report, onContinue }: ReportCardProps) {
         </dl>
         {c.list && <ReportList list={c.list} />}
         {job && <DebriefSections report={report} />}
+        {report.kind === 'venture-over' && <DebriefRoad lines={report.road} title="On the way" />}
         {!job && c.note && <p className="story report-note">{c.note}</p>}
         <button type="button" className="btn wide" onClick={onContinue} autoFocus>
           Continue

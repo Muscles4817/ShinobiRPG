@@ -17,6 +17,15 @@ export interface VenturePlan {
   readonly depth: WildDepth;
   /** Set once you turn back: the depth you are walking out from. */
   readonly out?: WildDepth;
+  /** The field book's counts when you set out, so coming out can say what the wild gave. */
+  readonly tally?: VentureTally;
+}
+
+/** Totals from the field book: what you have found and fought, all told. */
+export interface VentureTally {
+  readonly found: number;
+  readonly fought: number;
+  readonly beaten: number;
 }
 
 /** A trip or a venture of your own, rather than a job: nobody is let down when it goes wrong. */
