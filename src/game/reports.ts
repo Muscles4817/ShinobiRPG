@@ -150,6 +150,21 @@ export type Report =
       readonly text: string;
     }
   | {
+      /** Out of wild country after a venture (`ventureReport.ts`). */
+      readonly kind: 'venture-over';
+      /** "the deep woods". */
+      readonly country: string;
+      /** "As far as the deep", or "As far as the edge, then back" when you turned back. */
+      readonly reached: string;
+      readonly days: number;
+      readonly fought: number;
+      readonly beaten: number;
+      readonly found: number;
+      /** Moments worth a line on the way, as a job's debrief tells its road. */
+      readonly road: readonly DebriefLine[];
+      readonly text: string;
+    }
+  | {
       /** The chakra paper showed your nature. */
       readonly kind: 'nature';
       readonly nature: Element;

@@ -5,6 +5,7 @@ import {
   startRun,
   type Danger,
   type MissionDef,
+  type MissionRun,
   type MissionStage,
   ventureDays,
   type VenturePlan,
@@ -14,9 +15,11 @@ import {
 import type { GameContext } from './context';
 import { CAMP, legsWalked, turningBack } from './journeys';
 import { chip, log } from './ops';
+import { addReport } from './reports';
 import type { GameState } from './state';
 import { settle } from './story/state';
 import { tripCrew } from './trips';
+import { tallyOf, ventureReport } from './ventureReport';
 
 /**
  * Going off the paths into wild country (`docs/design/chakra-beasts-plan.md`). A venture is a
@@ -120,7 +123,9 @@ export function ventureMission(plan: VenturePlan, ctx: GameContext): MissionDef 
 /** Setting off the paths: the venture becomes the run in progress. */
 export function goInto(state: GameState, ctx: GameContext, plan: VenturePlan): GameState {
   const def = ventureMission(plan, ctx);
-  const run = settle(def, { ...startRun(def, tripCrew(null)), venture: plan });
+  // What the field book holds now, so coming out can tell what this venture added.
+  const counted = { ...plan, tally: tallyOf(state.fieldBook) };
+  const run = settle(def, { ...startRun(def, tripCrew(null)), venture: counted });
   return log({ ...state, mission: run }, { heading: def.title, text: def.summary, tone: 'info' });
 }
 
@@ -152,10 +157,12 @@ export function turnOut(state: GameState, ctx: GameContext, reached: WildDepth):
 }
 
 /** Out of the wild, where you went in. */
-export function comeOut(state: GameState, ctx: GameContext, plan: VenturePlan): GameState {
+export function comeOut(state: GameState, ctx: GameContext, run: MissionRun): GameState {
+  const plan = run.venture;
+  if (!plan) return state;
   const days = ventureDays(plan.out ?? plan.depth);
   const country = countryOf(ctx, plan);
-  return log(
+  const logged = log(
     { ...state, mission: null },
     {
       heading: `Out of ${country.name}`,
@@ -164,4 +171,6 @@ export function comeOut(state: GameState, ctx: GameContext, plan: VenturePlan): 
       chips: [chip(days === 1 ? 'A day in the wild' : `${days} days in the wild`, 'info')],
     },
   );
+  const report = ventureReport({ country: country.name, run, days, book: state.fieldBook });
+  return report ? addReport(logged, report) : logged;
 }

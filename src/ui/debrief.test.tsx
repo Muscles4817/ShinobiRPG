@@ -49,4 +49,23 @@ describe('the debrief (smoke test)', () => {
     const helped = screen.getByRole('region', { name: 'What would have helped' });
     expect(within(helped).getByText('Academy Dropout: Coward. Corner them.')).toBeInTheDocument();
   });
+
+  it('says how far a venture went and what the wild gave', () => {
+    const report: Report = {
+      kind: 'venture-over',
+      country: 'the deep woods',
+      reached: 'As far as the deep',
+      days: 3,
+      fought: 1,
+      beaten: 1,
+      found: 2,
+      road: [{ text: 'Weeded a hermit’s beans.', tone: 'plain', pay: null }],
+      text: 'You are back where you left the path.',
+    };
+    render(<ReportCard report={report} onContinue={ignore} />);
+    expect(screen.getByText('Out of the deep woods')).toBeInTheDocument();
+    expect(screen.getByText('As far as the deep')).toBeInTheDocument();
+    const road = screen.getByRole('region', { name: 'On the way' });
+    expect(within(road).getByText('Weeded a hermit’s beans.')).toBeInTheDocument();
+  });
 });

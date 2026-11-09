@@ -33,7 +33,11 @@ describe('going off the paths', () => {
   it('goes into the woods and comes back out where it went in', () => {
     const start = newGame();
     const going = act(start, { type: 'venture', placeId: WOODS, depth: 'edge' });
-    expect(going.mission?.venture).toEqual({ placeId: WOODS, country: 'woods', depth: 'edge' });
+    expect(going.mission?.venture).toMatchObject({
+      placeId: WOODS,
+      country: 'woods',
+      depth: 'edge',
+    });
     const back = walk(going);
     expect(back.mission).toBeNull();
     expect(back.locationId).toBe(start.locationId);
@@ -75,6 +79,27 @@ describe('going off the paths', () => {
     const back = walk(turned);
     expect(back.mission).toBeNull();
     expect(back.journal.entries.at(-1)?.chips?.map((c) => c.label)).toEqual(['A day in the wild']);
+    expect(back.reports.at(-1)).toMatchObject({
+      kind: 'venture-over',
+      reached: 'As far as the edge, then back',
+      days: 1,
+    });
+  });
+
+  it('comes out with a card of what the wild gave since you went in', () => {
+    const going = act(newGame(), { type: 'venture', placeId: WOODS, depth: 'edge' });
+    const finds = { ...going.fieldBook.finds, 'wild-mushrooms': 2 };
+    const foes = { ...going.fieldBook.foes, 'grey-wolf': { fought: 1, beaten: 1 } };
+    const out = walk({ ...going, fieldBook: { ...going.fieldBook, finds, foes } });
+    expect(out.reports.at(-1)).toMatchObject({
+      kind: 'venture-over',
+      country: 'the deep woods',
+      reached: 'As far as the edge',
+      days: 1,
+      found: 2,
+      fought: 1,
+      beaten: 1,
+    });
   });
 
   it('meets foes in the wild, as on a trip of your own', () => {
