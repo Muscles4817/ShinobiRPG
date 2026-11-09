@@ -215,7 +215,7 @@ describe('plan & watch rows: view and saves', () => {
     const view = engine.view(engine.start(setup(), createRng(1)));
     const archer = view.combatants.find((c) => c.id === 'archer');
     expect(archer?.row).toBe('back');
-    expect(archer?.statuses).toContain('Screened');
+    expect(archer?.statuses).toContain('Behind the front row');
     expect(view.combatants.find((c) => c.id === 'wall')?.row).toBe('front');
   });
 

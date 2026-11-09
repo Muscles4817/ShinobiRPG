@@ -6,6 +6,7 @@ import type {
   CombatOption,
   CombatOutcome,
   CombatState,
+  CombatantView,
   CombatView,
 } from '../../contract';
 import type { CombatUsage } from '../../teamContract';
@@ -19,7 +20,7 @@ import { slotLimit } from './cards';
 import { fieldMeter } from './field';
 import { seenByPlayer, statuses, statusesShown } from './statusView';
 import { betweenRounds } from './adapt';
-import { intentLine, rollIntents } from './intent';
+import { intentLine, knownLine, rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
 import { groundNote } from './groundPlay';
@@ -233,6 +234,12 @@ function prompt(state: PlanState): string {
   return ground ? `${where}. ${ground}` : where;
 }
 
+/** The cards you know a foe holds, for its view (only when there are any). */
+function knownOf(plan: PlanState, f: PlanFighter, insight: boolean): Pick<CombatantView, 'known'> {
+  const known = knownLine(plan, f, insight);
+  return known ? { known } : {};
+}
+
 export function createPlanEngine(): CombatEngine {
   return {
     id: PLAN_ENGINE_ID,
@@ -293,6 +300,7 @@ export function createPlanEngine(): CombatEngine {
         round: plan.bout,
         combatants: plan.fighters.map((f) => ({
           ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
+          ...knownOf(plan, f, insight),
           // A hidden foe the player sees anyway is shown, and aimed at, as seen.
           ...(seenByPlayer(plan, f) ? { statuses: statusesShown(plan, f), targetable: true } : {}),
           ...onStage(f),

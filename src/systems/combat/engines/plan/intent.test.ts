@@ -73,10 +73,11 @@ function step(state: PlanState, optionId: string, seed: number): PlanState {
 }
 
 const banditOf = (s: PlanState) => s.fighters.find((f) => f.id === 'bandit')!;
-const intentOf = (s: PlanState, hero: Partial<CombatantSetup> = {}) =>
+const banditView = (s: PlanState, hero: Partial<CombatantSetup> = {}) =>
   engine
     .view(encode({ ...s, fighters: s.fighters.map((f) => (f.isPlayer ? { ...f, ...hero } : f)) }))
-    .combatants.find((c) => c.id === 'bandit')?.intent;
+    .combatants.find((c) => c.id === 'bandit');
+const intentOf = (s: PlanState, hero: Partial<CombatantSetup> = {}) => banditView(s, hero)?.intent;
 
 describe('plan & watch telegraphs', () => {
   it('a foe announces its opening move at the card table, then plays it', () => {
@@ -96,9 +97,18 @@ describe('plan & watch telegraphs', () => {
     const dull = { attributes: { ...attributes, perception: 4 } };
     expect(intentOf(state, dull)).toBe('Readying a technique');
     expect(intentOf(state)).toBe('Readying Blast');
-    expect(intentOf(state, { ...dull, perks: ['insight'] })).toMatch(
-      /^Readying Blast\. Mid cards: /,
-    );
+    const seen = banditView(state, { ...dull, perks: ['insight'] });
+    expect(seen?.intent).toBe('Readying Blast');
+    expect(seen?.known).toMatch(/^Mid cards: /);
+  });
+
+  it('a dazed foe is told as losing its next turn, not by what it meant to do', () => {
+    const base = { ...start({}, { techniques: [blast] }), intents: { bandit: 'jutsu:blast' } };
+    const state = {
+      ...base,
+      fighters: base.fighters.map((f) => (f.isPlayer ? f : { ...f, stunned: 1 })),
+    };
+    expect(intentOf(state)).toBe('Dazed: loses the next turn');
   });
 
   it('a hidden foe gives nothing away, even to insight, but eyes that see everything see it', () => {

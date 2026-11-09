@@ -541,6 +541,17 @@ button.foe {
   font-weight: normal;
   color: var(--muted);
 }
+/* The cards a plan could take, folded away when none can be added. */
+.plan-could-add > summary {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.plan-could-add > summary small {
+  color: var(--muted);
+}
 .plan-empty {
   margin: 0;
   font-size: 0.85rem;

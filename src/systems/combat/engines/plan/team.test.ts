@@ -117,7 +117,7 @@ describe('plan & watch team: stances', () => {
 
   it('shows each teammate’s stance on the fight screen', () => {
     const view = engine.view(engine.start(setup(), createRng(1)));
-    expect(view.combatants.find((c) => c.id === 'kiba')?.statuses).toContain('Pressing');
+    expect(view.combatants.find((c) => c.id === 'kiba')?.statuses).toContain('Pressing the attack');
   });
 });
 
@@ -166,7 +166,7 @@ describe('plan & watch team: the mark', () => {
     const marked = choose(started(), 'mark:boss');
     expect(marked.mark).toBe('boss');
     const view = engine.view(encode(marked));
-    expect(view.combatants.find((c) => c.id === 'boss')?.statuses).toContain('Marked');
+    expect(view.combatants.find((c) => c.id === 'boss')?.statuses).toContain("Your side's target");
     const kiba = ally(marked);
     const round: Round = {
       number: 1,

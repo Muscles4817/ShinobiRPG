@@ -5,7 +5,7 @@ import { shortName } from './Formation';
 
 /**
  * What you know of the fighter you tapped in the formation: for a foe, what they are about to
- * do and your read on them; for one of yours, how they stand.
+ * do, the cards you know they hold and your read on them; for one of yours, how they stand.
  */
 export function FighterRead({
   fighter: f,
@@ -25,6 +25,7 @@ export function FighterRead({
         </span>
       </p>
       {f.intent && f.health > 0 && <p className="intent">{f.intent}</p>}
+      {f.known && f.health > 0 && <p className="muted small known-cards">{f.known}</p>}
       {conditions && <p className="muted small">{conditions}</p>}
       {read && f.health > 0 && <Read read={read} />}
     </section>

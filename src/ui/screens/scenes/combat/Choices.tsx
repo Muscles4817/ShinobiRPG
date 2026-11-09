@@ -194,14 +194,43 @@ export function PlanPicker({
           onPick={onPick}
         />
       )}
-      {ranks && visible.length > 0 && <h3 className="plan-heading">Cards you could add</h3>}
-      {blocker && <p className="plan-empty">{blocker}</p>}
-      <div className={groups.length > 0 ? 'plan-cards' : 'plan-list'}>
-        {visible.map((o) => (
-          <PlanChoice key={o.id} option={o} onPick={onPick} reasonShown={blocker !== null} />
-        ))}
-      </div>
+      {ranks && visible.length > 0 && blocker && <p className="plan-empty">{blocker}</p>}
+      {ranks && visible.length > 0 ? (
+        // When none can be added (slots full), the cards fold away; the reason stays in view.
+        <details className="plan-could-add" open={visible.some((o) => !o.disabledReason)}>
+          <summary className="plan-heading">
+            Cards you could add <small className="num">{visible.length}</small>
+          </summary>
+          <CardList visible={visible} grid={groups.length > 0} blocker={blocker} onPick={onPick} />
+        </details>
+      ) : (
+        <>
+          {blocker && <p className="plan-empty">{blocker}</p>}
+          <CardList visible={visible} grid={groups.length > 0} blocker={blocker} onPick={onPick} />
+        </>
+      )}
     </nav>
+  );
+}
+
+/** The cards a plan could take, each a button (greyed with its reason where it can't). */
+function CardList({
+  visible,
+  grid,
+  blocker,
+  onPick,
+}: {
+  readonly visible: readonly CombatOption[];
+  readonly grid: boolean;
+  readonly blocker: string | null;
+  readonly onPick: Pick;
+}) {
+  return (
+    <div className={grid ? 'plan-cards' : 'plan-list'}>
+      {visible.map((o) => (
+        <PlanChoice key={o.id} option={o} onPick={onPick} reasonShown={blocker !== null} />
+      ))}
+    </div>
   );
 }
 

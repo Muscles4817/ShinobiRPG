@@ -74,9 +74,11 @@ describe('team orders in a team fight', () => {
     const fight = toRiverFight(newGame());
     const allyId = `person:${FIRST}`;
     const ally = combatScene(fight, ctx)!.combatants.find((c) => c.id === allyId);
-    expect(ally?.statuses.some((s) => ['Pressing', 'Supporting', 'Covering you'].includes(s))).toBe(
-      true,
-    );
+    expect(
+      ally?.statuses.some((s) =>
+        ['Pressing the attack', 'Supporting from behind', 'Covering you'].includes(s),
+      ),
+    ).toBe(true);
     const locked = stanceOptions(fight, allyId);
     expect(locked.length).toBeGreaterThan(0);
     expect(locked.every((o) => o.disabledReason?.includes("won't take orders"))).toBe(true);
@@ -90,7 +92,7 @@ describe('team orders in a team fight', () => {
     expect(hold?.disabledReason).toBeUndefined();
     const after = act(fight, { type: 'combatAct', optionId: hold!.id });
     const ally = combatScene(after, ctx)!.combatants.find((c) => c.id === allyId);
-    expect(ally?.statuses).toContain('Holding');
+    expect(ally?.statuses).toContain('Holding back');
   });
 
   it('a teammate knows the half of a combination in their specialty', () => {

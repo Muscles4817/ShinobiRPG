@@ -18,18 +18,25 @@ import { stanceStatus } from './team';
 
 type Standing = Pick<PlanState, 'fighters' | 'field' | 'mark' | 'foeMark'>;
 
+/** A back-row fighter out of reach behind their front row. */
+const SCREENED = 'Behind the front row';
+/** The foe your side goes for (the team mark). */
+const MARKED = "Your side's target";
+/** Whom on your side the foes go for (their mark). */
+const TARGETED = "The foes' target";
+
 /** The engine's own statuses (the body's conditions are added by `viewOf`). */
 export function statuses(state: Standing, f: PlanFighter): string[] {
   return [
     ...(isDazed(f) ? ['Dazed'] : []),
     ...(f.sealed > 0 ? ['Sealed'] : []),
     ...lingeringStatuses(f),
-    ...(alive(f) && screened(f, state.fighters) ? ['Screened'] : []),
+    ...(alive(f) && screened(f, state.fighters) ? [SCREENED] : []),
     ...fieldStatuses(state, f),
     ...prepStatuses(f),
     ...stanceStatus(f, state.fighters),
-    ...(alive(f) && f.id === state.mark ? ['Marked'] : []),
-    ...(alive(f) && f.id === state.foeMark ? ['Targeted'] : []),
+    ...(alive(f) && f.id === state.mark ? [MARKED] : []),
+    ...(alive(f) && f.id === state.foeMark ? [TARGETED] : []),
   ];
 }
 

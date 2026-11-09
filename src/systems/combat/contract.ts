@@ -305,6 +305,8 @@ export interface CombatantView {
   readonly statuses: readonly string[];
   /** What they seem about to do (a telegraph or tell), when the engine shows one. */
   readonly intent?: string;
+  /** The cards you know they hold (all of them here, to eyes that read foes; else those seen). */
+  readonly known?: string;
   /** False while they can't be picked as a target (hidden in an illusion). */
   readonly targetable?: boolean;
   /** Their row, for engines with formations. */

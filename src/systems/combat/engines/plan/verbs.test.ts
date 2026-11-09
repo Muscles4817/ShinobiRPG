@@ -169,7 +169,7 @@ describe('plan & watch verbs: sense', () => {
     const foeCards: Loadout = { close: plainSlots(['strike']), mid: [], far: [] };
     const fighters = after.fighters.map((f) => (f.isPlayer ? f : { ...f, loadout: foeCards }));
     const view = engine.view(encode(stateOf({ ...after, fighters })));
-    expect(view.combatants.find((c) => c.id === 'foe1')?.intent).toMatch(/Close cards: Strike/);
+    expect(view.combatants.find((c) => c.id === 'foe1')?.known).toMatch(/Close cards: Strike/);
   });
 });
 
