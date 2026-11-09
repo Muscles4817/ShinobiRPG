@@ -448,7 +448,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     sets how many puppets are up at once (`threadsHeld`), and while any are, the master's hands
     make no hand signs but the scrolls and the threads. A master dazed, pinned, sealed or hit for
     a quarter of their health leaves their puppets slack (no turn, no defence); insects that
-    land on a puppet climb its threads to its master; a puppet has no mind for an illusion; a
+    land on a puppet climb its threads to its master; eyes that see everything see the threads
+    too, and a hit they land on a puppet cuts them (it hangs slack, and its master spends a turn
+    from the next exchange casting fresh ones, moving it again only the exchange after); a slack
+    puppet holds no line, so the back row behind it is open; a puppet has no mind for an illusion; a
     `worn` puppet (a shell) takes the blows aimed at its master while it stands, though an area
     or an illusion still reaches them. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
     `swarmContract.ts`: a strain's qualities graded 1 to 5 (speed, bite, toughness, brood, size,

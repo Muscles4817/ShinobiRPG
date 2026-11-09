@@ -5,7 +5,16 @@ import type { CombatantSetup, CombatCall } from '../../contract';
 import type { CombatSwarm } from '../../swarmContract';
 import { avoidOdds, techniqueIncoming } from './avoid';
 import { playable } from './cards';
-import { hangsSlack, slackTurn, threadsRetaken } from './puppets';
+import { lostTurn } from './lostTurn';
+import {
+  hangsSlack,
+  rethreading,
+  slackTurn,
+  threadsCutBy,
+  threadsRetaken,
+  threadsTaken,
+} from './puppets';
+import { canHit } from './rows';
 import { readyDefences } from './readiness';
 import { callSummon } from './summons';
 import { settleOn } from './swarm';
@@ -166,5 +175,41 @@ describe('a shell its master fights from inside', () => {
     const turn = { actor: foe(r), target: master(r), rng: createRng(1) };
     expect(intercept(r, turn, jutsu(SWARM)).target?.id).toBe('master~crow');
     expect(intercept(r, turn, jutsu(ILLUSION)).target?.id).toBe('master');
+  });
+});
+
+describe('eyes that see the threads', () => {
+  const seer = (r: Round) => ({ ...foe(r), perks: ['all-seeing' as const] });
+
+  it('cut them with a hit that lands on the puppet; plain eyes do not', () => {
+    const up = unsealed();
+    expect(hangsSlack(threadsCutBy(up, foe(up), crow(up)), crow(up))).toBe(false);
+    const cut = threadsCutBy(up, seer(up), crow(up));
+    expect(hangsSlack(cut, crow(cut))).toBe(true);
+    expect(cut.lines.join(' ')).toMatch(/sees the threads/);
+  });
+
+  it('leave a slack puppet no wall: a blow reaches the master behind it', () => {
+    const blow = { kind: 'strike' } as const;
+    const behind = (r: Round): Round => ({
+      ...r,
+      fighters: r.fighters.map((f) => (f.id === 'master' ? { ...f, row: 'back' as const } : f)),
+    });
+    const up = behind(unsealed());
+    expect(canHit(blow, master(up), up.fighters)).toBe(false);
+    const cut = threadsCutBy(up, seer(up), crow(up));
+    expect(canHit(blow, master(cut), cut.fighters)).toBe(true);
+  });
+
+  it('cost the master a turn for fresh threads, from the next exchange, and the next is clear', () => {
+    const up = unsealed();
+    const cut = threadsCutBy(up, seer(up), crow(up));
+    expect(rethreading(cut, master(cut))).toBeNull();
+    const later = { ...cut, number: cut.number + 1 };
+    const retied = lostTurn(later, master(later));
+    expect(retied?.lines.join(' ')).toMatch(/casts fresh threads to crow/i);
+    expect(hangsSlack(retied!, crow(retied!))).toBe(true);
+    const next = threadsTaken(retied!);
+    expect(hangsSlack(next, crow(next))).toBe(false);
   });
 });

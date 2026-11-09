@@ -1,11 +1,12 @@
 import { patch, say, type PlanFighter, type Round } from './state';
 import { momentOf, reelingLine } from './voice';
-import { slackTurn } from './puppets';
+import { rethreading, slackTurn } from './puppets';
 import { tell } from '../../rules/telling';
 
 /**
  * A turn lost before it starts in a planned fight: reeling from a daze, or gathering after a
- * combination, or a puppet hanging slack on its threads (`puppets.ts`). Null when the fighter is
+ * combination, a puppet hanging slack on its threads, or its master casting fresh ones
+ * (`puppets.ts`). Null when the fighter is
  * free to act.
  */
 export function lostTurn(round: Round, actor: PlanFighter): Round | null {
@@ -18,5 +19,5 @@ export function lostTurn(round: Round, actor: PlanFighter): Round | null {
     const line = tell('{a} gather{a.s} {a.themself} after the combination.', { a: actor });
     return say({ ...round, fighters }, line);
   }
-  return slackTurn(round, actor);
+  return slackTurn(round, actor) ?? rethreading(round, actor);
 }

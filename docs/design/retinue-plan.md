@@ -1408,3 +1408,17 @@ how it was built.
   Sasori beats Kakashi every time, where he lost 85% of fights in the open, and Guy 42% of the
   time. Chiyo, with only Father and Mother, still loses to Kakashi (85%) and Guy (100%).
 - **Left for 5b:** learning puppetry, the workshop, building, repair and owning a puppet.
+
+### Step 5a, after: eyes that see the threads
+
+The Byakugan sees chakra threads. A hit an all-seeing fighter lands on a puppet cuts its threads
+(`threadsCutBy`, `plan/puppets.ts`), and it hangs slack. Its master can cast fresh ones from the
+next exchange on, and doing so takes their turn (`rethreading`); the puppet moves again only
+from the exchange after (`threadsTaken`). So every cut buys at least one clear exchange,
+whoever is quicker. A slack puppet, cut or with its master dazed, pinned or sealed, holds no
+line: the back row behind it is open to blows up close (`holdingTheLine`, `plan/rows.ts`).
+
+Bench (40 seeds, Neji on the AI side): Kankurō's wins against Neji fall from 72% to 62%. Neji now
+goes for Kankurō while Crow hangs slack. What still costs him is the blind spot: Crow judges by
+Kankurō's mind, which is sharp enough to find it. Fights with Neji on the player's side aren't
+comparable since the player's plan stopped playing the kit by itself (#257).

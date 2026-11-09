@@ -1,5 +1,6 @@
 import { alive } from '../../rules/body';
 import { drivenAttributes } from '../../rules/puppets';
+import { threadsTaken } from './puppets';
 import { readsInTheMoment } from './judgement';
 import { harmLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
@@ -220,7 +221,8 @@ export function summonsAfter(round: Round): Round {
     return going ? leaves(now, summon, going) : upkeepPaid(now, summon);
   }, round);
   const callers = [...new Set(out.map((s: Fighter) => s.summoner ?? ''))];
-  return perchesKept(callers.reduce(spared, kept));
+  // Puppets given fresh threads this exchange are worked again from the next (`puppets.ts`).
+  return threadsTaken(perchesKept(callers.reduce(spared, kept)));
 }
 
 /** How each summon the fighter called ended its part, including those still out. */

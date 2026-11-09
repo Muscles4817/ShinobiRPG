@@ -54,6 +54,13 @@ export interface Summoned {
   readonly puppet?: true;
   /** A puppet its maker fights from inside, taking the blows aimed at them (`puppets.ts`). */
   readonly worn?: true;
+  /**
+   * The exchange eyes that see them cut this puppet's threads: it hangs slack until its maker
+   * casts fresh ones, which they can do from the next exchange on.
+   */
+  readonly threadsCut?: number;
+  /** Its maker cast fresh threads to it this exchange: it moves again from the next. */
+  readonly rethreading?: boolean;
   /** Big enough to carry its caller (`riding.ts`). */
   readonly mount?: true;
 }
