@@ -11,6 +11,8 @@ export interface Caller {
   readonly summonsOut?: readonly string[];
   /** How each summon called this fight ended its part, by call id (the last call of each). */
   readonly summonFates?: Readonly<Record<string, SummonFate>>;
+  /** A hard hit made their puppets' threads slip, until their next turn (`puppets.ts`). */
+  readonly threadsSlipped?: boolean;
   /** Calls that won't answer again this fight: beaten, or sent home hurt to save them. */
   readonly summonsLost?: readonly string[];
   /** Call ids of sage toads perched on them (`perching.ts`), off the field but still out. */
@@ -50,6 +52,8 @@ export interface Summoned {
   readonly upkeep?: number;
   /** A puppet on its maker's threads rather than a summon. */
   readonly puppet?: true;
+  /** A puppet its maker fights from inside, taking the blows aimed at them (`puppets.ts`). */
+  readonly worn?: true;
   /** Big enough to carry its caller (`riding.ts`). */
   readonly mount?: true;
 }

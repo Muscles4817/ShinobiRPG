@@ -1,3 +1,4 @@
+import { shellOf } from './puppets';
 import type { RangeBand } from '../../contract';
 import { alive } from '../../rules/body';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
@@ -196,6 +197,10 @@ export interface Aim {
 export function intercept(round: Round, turn: Turn, card: Card): Aim {
   const { actor, target, rng } = turn;
   if (!target || !isOffence(card) || !needsAim(card)) return { round, target };
+  // A puppeteer inside a shell is reached only through it, but an illusion goes past the wood.
+  const shell = shellOf(round, target);
+  const illusion = card.kind === 'jutsu' && card.technique.discipline === 'genjutsu';
+  if (shell && !illusion) return { round, target: shell };
   const cover = coverFor(round, target, card);
   // A rider stands on their mount: it is in the way of what comes at them far more often.
   const carries = cover?.mount === true && cover.summoner === target.id;

@@ -66,6 +66,12 @@ describe('eyes', () => {
     const full = { ...copier, copied: Array.from({ length: MAX_COPIES }, (_, i) => `t${i}`) };
     expect(canCopy(full, user, bullet)).toBe(false);
   });
+
+  it('never copies what is worked through something carried: sand or insects', () => {
+    expect(canCopy(copier, user, { ...bullet, dustCost: 20 })).toBe(false);
+    expect(canCopy(copier, user, { ...bullet, dustDraw: 20 })).toBe(false);
+    expect(canCopy(copier, user, { ...bullet, swarmCost: 20 })).toBe(false);
+  });
 });
 
 /** The Byakugan (`all-seeing`): the real body, the chakra points, and the one blind spot. */

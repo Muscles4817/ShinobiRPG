@@ -26,6 +26,8 @@ export interface PuppetDef {
   readonly techniqueIds: readonly string[];
   /** Chakra its maker pays every exchange to keep the threads on it. */
   readonly upkeep: number;
+  /** Its maker fights from inside it (a shell): it takes the blows aimed at them while it stands. */
+  readonly worn?: true;
   /** A dust it carries and commands (a `DustDef` id): a human puppet that kept its art. */
   readonly dust?: string;
 }

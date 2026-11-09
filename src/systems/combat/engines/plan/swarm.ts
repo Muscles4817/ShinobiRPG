@@ -25,7 +25,8 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
  * A hive in a planned fight (`rules/swarms.ts`): swarm techniques spend insects, a swarm
- * technique that reaches a foe leaves insects settled on them, drawing their chakra into the
+ * technique that reaches a foe leaves insects settled on them (on a puppet, they climb its threads
+ * to its master), drawing their chakra into the
  * host each exchange and keeping them from hiding until they drop off or fire burns them off,
  * and a host loses insects to areas that catch them and to elements their strain fears. A
  * hive also helps its host find the hidden. Insects don't breed mid-fight.
@@ -94,11 +95,23 @@ export function settleOn(
     exchanges: SETTLE_EXCHANGES,
   };
   return foes.reduce((now, foe) => {
-    const target = fighterIn(now, foe.id);
-    if (!target || !alive(target)) return now;
-    const covered = withHive(now, foe.id, (f) => ({ ...f, settled, hidden: false }));
-    return say(covered, tell('Insects settle on {t}.', { t: target }));
+    const struck = fighterIn(now, foe.id);
+    if (!struck || !alive(struck)) return now;
+    // On a puppet, they crawl up its threads to whoever works them.
+    const master = threadedTo(now, struck);
+    const target = master ?? struck;
+    const covered = withHive(now, target.id, (f) => ({ ...f, settled, hidden: false }));
+    const line = master ? UP_THE_THREADS : 'Insects settle on {t}.';
+    return say(covered, tell(line, { t: target, p: struck }));
   }, round);
+}
+
+const UP_THE_THREADS = 'Insects swarm up {p.poss} threads and settle on {t}.';
+
+/** The master a puppet hangs from, while they stand. */
+function threadedTo(round: Round, puppet: PlanFighter): PlanFighter | undefined {
+  const master = puppet.puppet && puppet.summoner ? fighterIn(round, puppet.summoner) : undefined;
+  return master && alive(master) ? master : undefined;
 }
 
 /** Fire (or what else the strain fears) burns settled insects off whoever it hits. */

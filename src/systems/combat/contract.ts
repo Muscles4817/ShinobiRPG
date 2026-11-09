@@ -219,6 +219,8 @@ export interface CombatCall {
   readonly bloodPrice?: number;
   /** A puppet: built and worked on threads, not summoned (it unfolds and falls apart). */
   readonly puppet?: true;
+  /** A puppet its master fights from inside (a shell): it takes the blows aimed at them. */
+  readonly worn?: true;
   /** Big enough to carry its caller: a meditating rider is carried clear by it (`plan/riding.ts`). */
   readonly mount?: true;
   /**
