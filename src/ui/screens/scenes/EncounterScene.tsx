@@ -25,9 +25,7 @@ export function EncounterScene({ ctx, state, perform }: ScreenProps) {
       >
         <Backdrop id={header.backdrop} />
         <div className="vignette-text">
-          <p className="label">
-            {scene.kind} ahead, on a {scene.rank}-rank mission for {scene.client}
-          </p>
+          <p className="label">{scene.kicker}</p>
           <h1>{scene.title}</h1>
         </div>
         <Vitals meters={header.meters} />

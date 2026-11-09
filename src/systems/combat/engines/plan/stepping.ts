@@ -1,6 +1,6 @@
 import type { RangeBand } from '../../contract';
 import { artPower, blowPower } from '../../rules/damage';
-import { canAttackFrom, homeBand } from '../../rules/kit';
+import { canAttackFrom, homeBand, namesReach } from '../../rules/kit';
 import { inReach, RANGE_BANDS } from '../../rules/range';
 import { strikeReach } from '../../rules/weaponClasses';
 import { hasVerb, isHarmful, isWounding, techniquePower } from '../../rules/verbs';
@@ -25,13 +25,14 @@ export const STEP_WORTH = 1.25;
  * drives its art, so a ninjutsu fighter's palm strike weighs light beside their earth shot.
  */
 export function bestAttack(fighter: PlanFighter, band: RangeBand): number {
-  if (!canAttackFrom(fighter, band)) return 0;
+  const reaches = canAttackFrom(fighter, band);
   const powers = cardsFor(fighter, band).flatMap((c) =>
-    c.kind === 'jutsu' && isWounding(c.technique)
+    c.kind === 'jutsu' && isWounding(c.technique) && (reaches || namesReach(c.technique, band))
       ? [techniquePower(c.technique) * artPower(fighter, c.technique)]
       : [],
   );
-  const strike = inReach(strikeReach(fighter), band) ? STRIKE_POWER * blowPower(fighter) : 0;
+  const strike =
+    reaches && inReach(strikeReach(fighter), band) ? STRIKE_POWER * blowPower(fighter) : 0;
   return Math.max(0, ...powers, strike);
 }
 
@@ -62,9 +63,13 @@ export function isEntry(fighter: PlanFighter, card: Card, band: RangeBand): bool
   return canAttackFrom(fighter, to);
 }
 
-/** Whether a card attacks from here: the kit reaches from this distance, or it is an entry. */
+/**
+ * Whether a card attacks from here: the kit reaches from this distance, the technique names a
+ * reach that does (whatever the kit), or it is an entry.
+ */
 export function attacksFrom(fighter: PlanFighter, card: Card, band: RangeBand): boolean {
-  return canAttackFrom(fighter, band) || isEntry(fighter, card, band);
+  if (canAttackFrom(fighter, band) || isEntry(fighter, card, band)) return true;
+  return card.kind === 'jutsu' && namesReach(card.technique, band);
 }
 
 /**

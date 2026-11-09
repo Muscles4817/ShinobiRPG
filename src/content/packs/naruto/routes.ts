@@ -3,22 +3,33 @@ import type { RouteDef } from '@/systems/travel';
 import { SUNA_BARGE_PASSAGE } from './kageroLanding';
 
 /**
- * The roads out of the Leaf: south-east to the Land of Waves and across the water to the Mist,
- * west through the Land of Rivers to Kagerō Landing and over the sand to the Sand (by a
- * priests' barge, or on foot through the tainted belt), down the highway to Shukuba and
- * Tanzaku, east to the pleasure quarter, up to the Fire Temple, and the long way to the toads.
+ * The roads west of the Leaf run through the Land of Rivers, with a track up to the Tenchi Bridge,
+ * to Kagerō Landing, and from there over the sand to the Sand: by a priests' barge, or on foot over
+ * the outer sands and through the tainted belt. The rest run south-east through the Great Forest
+ * to the Land of Waves and over the water to the Mist, down the highway to Shukuba and Tanzaku,
+ * east to the pleasure quarter, up the Thousand Steps to the Fire Temple, north to the Valley of
+ * the End, and the long way to the toads.
  */
 export const NARUTO_ROUTES: readonly RouteDef[] = [
   {
     id: 'waves-road',
     from: 'konohagakure',
-    to: 'land-of-waves',
+    to: 'great-forest',
     legs: [
       {
         region: 'forest-track',
         days: 1,
         text: 'The road runs under the forest canopy, past the outposts at the edge of the Leaf’s land.',
       },
+    ],
+    trail: [{ x: 56, y: 34 }],
+    danger: 'armed',
+  },
+  {
+    id: 'waves-coast',
+    from: 'great-forest',
+    to: 'land-of-waves',
+    legs: [
       {
         region: 'coast-road',
         days: 1,
@@ -26,8 +37,6 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
       },
     ],
     trail: [
-      { x: 56, y: 34 },
-      { x: 63, y: 40 },
       { x: 68, y: 43.5 },
       { x: 71, y: 44.6 },
       { x: 74.6, y: 45.8 },
@@ -103,43 +112,91 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
   {
     id: 'temple-stair',
     from: 'konohagakure',
-    to: 'fire-temple',
+    to: 'thousand-steps',
     legs: [
       {
         region: 'forest-track',
         days: 1,
-        text: 'A pilgrims’ road north-west, with a shrine at every crossing and a prayer at most of them.',
+        text: 'A pilgrims’ road north-west, with a shrine at every crossing, and at the last crossing the road turns to steps.',
       },
+    ],
+    danger: 'petty',
+  },
+  {
+    id: 'temple-climb',
+    from: 'thousand-steps',
+    to: 'fire-temple',
+    legs: [
       {
         region: 'mountain-pass',
         days: 1,
-        text: 'The road becomes a stair, and the stair goes on into the clouds. A bell sounds somewhere above.',
+        text: 'Above the shrine the stair goes on into the cloud, and a bell sounds somewhere over it.',
       },
     ],
-    trail: [{ x: 43, y: 25 }],
     danger: 'petty',
   },
   {
     id: 'rivers-road',
     from: 'konohagakure',
-    to: 'kagero-landing',
+    to: 'land-of-rivers',
     legs: [
       {
         region: 'hill-road',
         days: 1,
         text: 'The road crosses dry hills between the forest and the Land of Rivers.',
       },
+    ],
+    trail: [
+      { x: 41, y: 28.5 },
+      { x: 33, y: 33 },
+    ],
+    danger: 'petty',
+  },
+  {
+    id: 'rivers-west',
+    from: 'land-of-rivers',
+    to: 'kagero-landing',
+    legs: [
       {
         region: 'river-road',
         days: 1,
         text: 'Through the Land of Rivers, where the rivers thin to stony beds and the sky gets bigger.',
       },
     ],
-    trail: [
-      { x: 36, y: 30 },
-      { x: 28, y: 36 },
-    ],
     danger: 'petty',
+  },
+  {
+    id: 'gorge-track',
+    from: 'land-of-rivers',
+    to: 'tenchi-bridge',
+    legs: [
+      {
+        region: 'hill-road',
+        days: 1,
+        text: 'A track climbs from the rivers into broken hills, and then the ground simply stops at the edge of a gorge.',
+      },
+    ],
+    trail: [{ x: 25, y: 33 }],
+    danger: 'armed',
+  },
+  {
+    id: 'valley-path',
+    from: 'konohagakure',
+    to: 'valley-of-the-end',
+    legs: [
+      {
+        region: 'forest-track',
+        days: 1,
+        text: 'A path north to the border, where the forest grows thin and the ground turns to rock.',
+      },
+      {
+        region: 'river-road',
+        days: 1,
+        text: 'The path follows the river down into a deep valley, and you hear the falls for an hour before you see them.',
+      },
+    ],
+    trail: [{ x: 47, y: 21 }],
+    danger: 'armed',
   },
   {
     id: 'barge-crossing',
@@ -161,25 +218,30 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     cost: 160,
   },
   {
-    id: 'deep-sand-walk',
+    id: 'outer-sand-walk',
     from: 'kagero-landing',
-    to: 'sunagakure',
+    to: 'outer-sands',
     legs: [
       {
         region: 'dune-road',
         days: 2,
         text: 'The outer sands. You walk at dawn and dusk, and shelter from the noon sun.',
       },
+    ],
+    danger: 'armed',
+  },
+  {
+    id: 'deep-sand-walk',
+    from: 'outer-sands',
+    to: 'sunagakure',
+    legs: [
       {
         region: 'tainted-belt',
         days: 2,
         text: 'The tainted belt, where the sand goes grey and glitters, and nothing lives that should.',
       },
     ],
-    trail: [
-      { x: 22, y: 47 },
-      { x: 17, y: 52 },
-    ],
+    trail: [{ x: 17, y: 52 }],
     danger: 'deadly',
   },
   {

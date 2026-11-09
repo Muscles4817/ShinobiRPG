@@ -1,7 +1,6 @@
 import type { Rng } from '@/core';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
-import { canAttackFrom } from '../../rules/kit';
 import { isTrump, lastDitch, outmatched } from '../../rules/trumps';
 import {
   hasVerb,
@@ -22,10 +21,15 @@ import { cardWorth } from './worth';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
 import { prepInstinct } from './prep';
+import { kitCall } from './calling';
+import { setupPlay } from './setups';
+import { opponentsOf } from './senses';
+import { needsOpenTarget, openFoes } from './finishers';
 import { shelterInstinct } from './shelter';
+import { survivalPlay } from './survival';
 import { gatherInstinct } from './resting';
 import { sightInstinct } from './sight';
-import { improvise, isEntry, makingFor, readiesTheCharge } from './stepping';
+import { attacksFrom, improvise, isEntry, makingFor, readiesTheCharge } from './stepping';
 import { canDaze, isDazed } from './daze';
 import type { DefenceKind, PlanFighter, Reads } from './state';
 
@@ -152,8 +156,8 @@ export interface Moment {
 }
 
 /**
- * A sense, Search or Dispel for a hidden foe, a conceal to open, an empower, clones or a trap
- * (`prep.ts`); else a tool that's called for.
+ * A sense, Search or Dispel for a hidden foe, a killer's answer (a set-up, or playing for
+ * time), a summoner's call from the kit (`calling.ts`), a set-up, a conceal to open, an empower, clones or a trap (`prep.ts`); else a tool that's called for.
  */
 function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment): Card | undefined {
   const hiddenFoe = moment.hiddenFoe ?? false;
@@ -162,9 +166,34 @@ function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment):
   return (
     sightInstinct(self, ready, { ...now, fieldUp: moment.fieldUp ?? false }) ??
     senses(self, ready, hiddenFoe) ??
+    againstKiller(self, moment) ??
+    kitCall(self, {
+      fighters: moment.fighters ?? [],
+      band: moment.band,
+      ...(moment.reads ? { reads: moment.reads } : {}),
+      ...(moment.exchange === undefined ? {} : { exchange: moment.exchange }),
+    }) ??
+    setupCard(self, moment) ??
     prepInstinct(self, ready, moment) ??
     toolInstinct(self, ready, now)
   );
+}
+
+/** A set-up from the kit (`setups.ts`): hide, hold, finish. */
+function setupCard(self: PlanFighter, moment: Moment): Card | undefined {
+  const foes = opponentsOf(moment.fighters ?? [], self);
+  return setupPlay(self, { band: moment.band, foes })?.card;
+}
+
+/**
+ * Against a killer: a set-up, which is its own answer to one; else playing for time
+ * (`survival.ts`). A foe sees no one's announced card.
+ */
+function againstKiller(self: PlanFighter, moment: Moment): Card | undefined {
+  const fighters = moment.fighters ?? [];
+  const at = { fighters, range: moment.band, intents: {}, number: moment.exchange ?? 0 };
+  const survival = survivalPlay(self, at)?.card;
+  return survival ? (setupCard(self, moment) ?? survival) : undefined;
 }
 
 /** A trump card's moment: badly hurt, or facing a far stronger foe. */
@@ -185,12 +214,9 @@ function holdsBack(foe: PlanFighter | undefined) {
 
 /** Footwork and attacks that reach from here: what a turn can be spent on. */
 function moves(self: PlanFighter, ready: readonly Card[], band: RangeBand): Card[] {
-  const reaches = canAttackFrom(self, band);
   return ready.filter(
     (c) =>
-      c.kind === 'step' ||
-      flickers(self, c, band) ||
-      (isOffence(c) && (reaches || isEntry(self, c, band))),
+      c.kind === 'step' || flickers(self, c, band) || (isOffence(c) && attacksFrom(self, c, band)),
   );
 }
 
@@ -268,6 +294,7 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
       playable(self, c) &&
       !spendsReserve(self, c) &&
       (trumpNow || !trumpCard(c)) &&
+      (!needsOpenTarget(c) || openFoes(self, fighters).length > 0) &&
       (c.kind !== 'jutsu' || partnered(fighters, self, c.technique)),
   );
   const instinct = instinctFor(self, ready, moment);

@@ -1,9 +1,10 @@
 import { threadsHeld } from '../../rules/puppets';
 import { unsealsPuppet, unsealsShell } from './puppets';
-import { canClimb, LADDER_TOP, type Verb } from '@/systems/techniques';
+import type { Verb } from '@/systems/techniques';
 
 import type { CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
-import { hasPerk } from '../../rules/body';
+import { seesTheHidden } from '../../rules/eyes';
+import { dispelChance, searchChance } from '../../rules/conditions';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
 import { isTrump, outmatched } from '../../rules/trumps';
@@ -25,11 +26,16 @@ import {
   strikeCard,
   type Card,
 } from './cards';
+import { fightsBySummons } from './calling';
+import { callsOf } from './calls';
+import { climbOrder, isStill } from './climbing';
+import { kitSlots } from './kitSlots';
 import { styleMoves } from './repertoire';
 import { opponentsOf } from './senses';
+import { cardWorth } from './worth';
 import { defaultHoldOff } from './zoning';
 import { defaultReactions } from './readiness';
-import { fightsFromHome, isEntry, strongestBand } from './stepping';
+import { attacksFrom, fightsFromHome, strongestBand } from './stepping';
 import { plainSlots, type Loadout, type PlanFighter, type Slot } from './state';
 
 /**
@@ -45,8 +51,24 @@ function strongest(pool: readonly Card[], test: (t: CombatTechnique) => boolean)
     .sort((a, b) => techniquePower(b.technique) - techniquePower(a.technique));
 }
 
-function damageJutsu(cards: readonly Card[]): Card[] {
-  return strongest(cards, isWounding);
+/**
+ * Wounding jutsu, the one worth most first: what each is worth from this fighter's own stats
+ * against the foes they face (`worth.ts`), so a genjutsu master leads with genjutsu even when a
+ * ninjutsu has more power on paper. With no foes known, the fighter themself stands in.
+ */
+function damageJutsu(
+  fighter: PlanFighter,
+  band: RangeBand,
+  facing: Facing,
+  cards: readonly Card[],
+) {
+  const against = facing.foes.length > 0 ? facing.foes : [fighter];
+  const fighters = [fighter, ...facing.foes];
+  const worthOf = (card: Card) =>
+    against.reduce((sum, foe) => sum + (cardWorth(fighter, foe, card, { band, fighters }) ?? 0), 0);
+  const worths = new Map(strongest(cards, isWounding).map((c) => [c, worthOf(c)]));
+  // A stable sort keeps the stronger technique first between equals.
+  return [...worths.keys()].sort((a, b) => (worths.get(b) ?? 0) - (worths.get(a) ?? 0));
 }
 
 /**
@@ -63,36 +85,12 @@ function withStyle(fighter: PlanFighter, band: RangeBand, attacks: readonly Card
   return attacks.flatMap((c, i) => (i === first ? [strike] : inStyle(c) ? [] : [c]));
 }
 
-/** How many of a ladder's openings a default plan slots: enough to climb, not crowd out attacks. */
-const LADDER_SLOTS = 2;
-
-function lastStep(card: Card): boolean {
-  const opens = card.kind === 'jutsu' ? opensOf(card.technique) : undefined;
-  return opens !== undefined && opens.step >= LADDER_TOP[opens.ladder];
+function isCall(card: Card): boolean {
+  return card.kind === 'jutsu' && callsOf(card.technique).length > 0;
 }
 
 function stepOf(card: Card): number {
   return card.kind === 'jutsu' ? (opensOf(card.technique)?.step ?? 0) : 0;
-}
-
-/**
- * A ladder's openings in the order they climb, each the deepest within reach of the last (the
- * third gate, then the sixth): the plan opens them as the fight calls for (`prep.ts`).
- */
-function ladderChain(pool: readonly Card[]): Card[] {
-  // The last step kills its user: never a plan's default, only a choice made by hand.
-  const openers = pool.filter((c) => stepOf(c) > 0 && !lastStep(c));
-  const chain: Card[] = [];
-  let at = 0;
-  for (;;) {
-    const from = at;
-    const next = openers
-      .filter((c) => canClimb(from, stepOf(c)))
-      .sort((a, b) => stepOf(b) - stepOf(a))[0];
-    if (!next) return chain;
-    chain.push(next);
-    at = stepOf(next);
-  }
 }
 
 /** A technique that needs a step deeper than the plan's openings climb is left out. */
@@ -110,6 +108,8 @@ interface Facing {
   readonly support: boolean;
   /** Some foe fights from hiding (an illusionist, or hidden already): bring a Search. */
   readonly foeHides: boolean;
+  /** The foes faced, when known: attacks are ranked by what they are worth against them. */
+  readonly foes: readonly PlanFighter[];
 }
 
 /** A hold slotted ahead of the attacks, or behind the best jutsu. */
@@ -145,6 +145,27 @@ function holdSlot(pool: readonly Card[], facing: Facing): Hold {
 function finding(senses: readonly Card[], search: readonly Card[], facing: Facing): Slot[] {
   const by = senses.length > 0 ? senses : facing.foeHides ? search : [];
   return by.map((c): Slot => ({ card: cardId(c), when: 'foe-hidden' }));
+}
+
+/**
+ * The surest way this fighter has of finding a hidden foe: a flash tag (it never misses), else a
+ * Search or a Dispel, whichever their eyes or their control make likelier against the hiders
+ * they face (a Dispel also clears their own head of an illusion).
+ */
+function finder(fighter: PlanFighter, pool: readonly Card[], facing: Facing): Card[] {
+  const flash = tools(pool, 'flash');
+  if (flash.length > 0) return flash;
+  const hiders = facing.foes.filter((f) => f.hidden || hasTrait(f, 'illusionist'));
+  const odds = (chance: (foe: PlanFighter) => number) =>
+    hiders.length === 0 ? 0 : Math.min(...hiders.map(chance));
+  const ways = pool.flatMap((card): { readonly card: Card; readonly odds: number }[] => {
+    if (card.kind === 'search') return [{ card, odds: odds((f) => searchChance(fighter, f)) }];
+    if (card.kind === 'dispel') return [{ card, odds: odds((f) => dispelChance(fighter, f)) }];
+    return [];
+  });
+  // A Search first between equals (it comes first in the kit): it costs no chakra.
+  const [best] = [...ways].sort((a, b) => b.odds - a.odds);
+  return best ? [best.card] : [];
 }
 
 /** A carried tool with this effect, while any are left. */
@@ -203,26 +224,36 @@ function callsToMake(fighter: PlanFighter, summons: readonly Card[]): Card[] {
 function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot[] {
   const reaches = canAttackFrom(fighter, band);
   const usable = cardsFor(fighter, band).filter(
-    (c) =>
-      (reaches || !isOffence(c) || isEntry(fighter, c, band)) && cardBlocked(fighter, c) === null,
+    (c) => (!isOffence(c) || attacksFrom(fighter, c, band)) && cardBlocked(fighter, c) === null,
   );
-  const chain = ladderChain(usable).slice(0, LADDER_SLOTS);
-  const climbable = usable.filter(withinClimb(Math.max(0, ...chain.map(stepOf))));
+  // A ladder's openings take no slot: the fighter climbs from the kit (`climbing.ts`), so the
+  // plan keeps the arts of the steps they can reach.
+  const climb = climbOrder(fighter.techniques).map((t) => opensOf(t)?.step ?? 0);
+  // Sage Mode is meditated into from the kit too (`calling.ts`): its arts stay in the plan.
+  const meditated = fighter.techniques.filter(isStill).map((t) => opensOf(t)?.step ?? 0);
+  const climbable = usable.filter(withinClimb(Math.max(0, ...climb, ...meditated)));
   const trumps = climbable.filter((c) => c.kind === 'jutsu' && isTrump(c.technique));
-  const pool = climbable.filter((c) => !trumps.includes(c) && stepOf(c) === 0);
+  // A summoner's calls come from the kit as well, so they take no slot either.
+  const bySummons = fightsBySummons(fighter);
+  const pool = climbable.filter(
+    (c) => !trumps.includes(c) && stepOf(c) === 0 && !(bySummons && isCall(c)),
+  );
   const best = (verb: Verb) => strongest(pool, (t) => hasVerb(t, verb)).slice(0, 1);
-  const damage = withStyle(fighter, band, damageJutsu(pool));
+  const damage = withStyle(fighter, band, damageJutsu(fighter, band, facing, pool));
   const readies = (t: CombatTechnique) =>
     hasVerb(t, 'empower') || hasVerb(t, 'clone') || hasVerb(t, 'shroud');
-  const ready = chain.length > 0 ? chain : strongest(pool, readies).slice(0, 1);
+  // A fighter who climbs a ladder readies with it: their slot goes to the best art it opens.
+  const finisher = damage.filter((c) => c.kind === 'jutsu' && c.technique.needsOpen).slice(0, 1);
+  const ready = climb.length > 0 ? finisher : strongest(pool, readies).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
   const hold = holdSlot(pool, facing);
-  // A flash tag finds a hidden foe surely, so it comes before a Search that may miss.
-  const search = [...tools(pool, 'flash'), ...pool.filter((c) => c.kind === 'search')].slice(0, 1);
+  const search = finder(fighter, pool, facing);
   const ordered: Slot[] = [
     ...best('heal').map((c): Slot => ({ card: cardId(c), when: 'low-health' })),
     ...(reaches ? trumpSlot(trumps, facing) : []),
     ...finding(best('sense'), search, facing),
+    // For the player, what the kit would play by itself (`kitSlots.ts`): their plan is theirs.
+    ...(fighter.isPlayer ? kitSlots(fighter, usable) : []),
     // A summon is called first: it fights beside you from the next exchange (`summons.ts`), and
     // a puppeteer unseals as many puppets as their threads can work.
     ...plain(
@@ -263,9 +294,9 @@ function facingOf(fighter: PlanFighter, among: readonly PlanFighter[], support: 
     foeJutsu: foes.length === 0 || foes.some((f) => f.techniques.some(isHarmful)),
     outmatched: outmatched(fighter, foes),
     support,
-    // Insight sees through hiding, so it needs no Search.
-    foeHides:
-      !hasPerk(fighter, 'insight') && foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
+    // Eyes that see everything need no Search; any other eyes (insight too) bring a finder.
+    foeHides: !seesTheHidden(fighter) && foes.some((f) => f.hidden || hasTrait(f, 'illusionist')),
+    foes,
   };
 }
 

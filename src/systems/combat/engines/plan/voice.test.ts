@@ -129,6 +129,15 @@ describe('the fight’s voice', () => {
     }
   });
 
+  it('says a guard that held was beaten when the hit lands hard anyway', () => {
+    for (const m of MOMENTS) {
+      const beaten = hitLine(m, { ...hit(80), guarded: true });
+      expect(beaten).toMatch(GUARDED);
+      expect(text(beaten)).toMatch(/guard/);
+      expect(text(beaten)).not.toMatch(/nothing .* can do/);
+    }
+  });
+
   it('passes over a template said in the last few lines', () => {
     const [first] = MOMENTS;
     const said = emptySearchLine(first!, RYO);
@@ -160,7 +169,10 @@ describe('the fight’s voice', () => {
 
   it('keeps every other bank recognisable', () => {
     for (const m of MOMENTS) {
-      expect(seenLine(m, KAI)).toMatch(SEES_IT_COMING);
+      const seen = { target: KAI, attacker: RYO, what: 'strike' };
+      expect(seenLine(m, seen, false)).toMatch(SEES_IT_COMING);
+      expect(text(seenLine(m, seen, false))).toMatch(/Ryo’s strike/);
+      expect(seenLine(m, { ...seen, what: 'Mist' }, true)).toMatch(SEES_IT_COMING);
       expect(dazeLine(m, KAI)).toMatch(dazes('Kai'));
       expect(emptySearchLine(m, RYO)).toMatch(searchesInVain('Ryo'));
       expect(foundLine(m, RYO, [KAI])).toMatch(spots('Ryo', 'Kai'));

@@ -37,10 +37,13 @@ import { soak } from './onsen';
 import { endConversation, reply, talk } from './talk';
 import { testChakraPaper } from './chakraPaper';
 import { assignTeam, chooseSensei } from './team';
-import { dismissReport, leaveFight, travel } from './travel';
+import { makeCamp } from './camp';
+import { journeyStop } from './journeyStop';
+import { dismissReport, leaveFight, leaveJourney, travel } from './travel';
 import { followSight } from './village';
 import { befriendStray } from './companions';
 import { takePup, trackWild } from './finding';
+import { venture } from './venture';
 import { buyLore, handlerSession, handlerTeach } from './handling';
 import { leaveOffering, signTeacherContract, tearUpContract } from './contracts';
 import { crossAJar, nameYourStrain, searchForInsects, studyAJar } from './hives';
@@ -113,6 +116,9 @@ export const HANDLERS: Registry = {
   inviteGuest,
   sendGuestHome,
   leaveFight,
+  leaveJourney,
+  makeCamp,
+  journeyStop,
   buyGear,
   buyTool,
   buyIntel,
@@ -128,6 +134,7 @@ export const HANDLERS: Registry = {
   followSight,
   befriendStray,
   trackWild,
+  venture,
   takePup,
   takeRescued,
   rehomeCompanion,

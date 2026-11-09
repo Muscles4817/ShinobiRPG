@@ -9,8 +9,9 @@ import { playerCompanion } from './make';
 /**
  * Wild ones in the wilds (`CompanionKindDef.wild`): a kind lives in some wild places of its
  * biome, read from the seed and the place (not every woods has a wolf), and leaves signs there
- * for anyone without a companion to follow. Tracking it is a day's work with a chance of getting
- * closer that sharp eyes raise; enough good days and it comes to you.
+ * for anyone without a companion to follow (a beast's kind only once you have fought one).
+ * Tracking it is a day's work with a chance of getting closer that sharp eyes raise; enough good
+ * days and it comes to you.
  */
 
 /** A day's tracking gets closer this often, plus a share per point of perception. */
@@ -25,6 +26,15 @@ function wildKinds(ctx: GameContext): WildKind[] {
   return ctx.content.companionKinds.all.flatMap((k) => (k.wild ? [{ ...k, wild: k.wild }] : []));
 }
 
+/**
+ * A beast's kind leaves signs only for someone who has fought one of its kind, anywhere. The
+ * first kind that fits a place lives there, so these come last in a pack's list: met, they
+ * never hide a wolf that was already there.
+ */
+function metItsKind(state: GameState, wild: WildHaunt): boolean {
+  return wild.after === undefined || (state.fieldBook.foes[wild.after]?.fought ?? 0) > 0;
+}
+
 /** The wild one living at this wild place in this save, for someone without a companion. */
 export function wildHere(state: GameState, ctx: GameContext, placeId: string): WildKind | null {
   const place = wildsHere(state, ctx, placeId);
@@ -32,7 +42,10 @@ export function wildHere(state: GameState, ctx: GameContext, placeId: string): W
   const { seed } = state.board;
   return (
     wildKinds(ctx).find(
-      (k) => k.wild.biome === place.biome && hashUnit(seed, 'wild', k.id, place.id) < k.wild.chance,
+      (k) =>
+        k.wild.biome === place.biome &&
+        metItsKind(state, k.wild) &&
+        hashUnit(seed, 'wild', k.id, place.id) < k.wild.chance,
     ) ?? null
   );
 }

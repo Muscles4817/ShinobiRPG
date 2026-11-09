@@ -2,7 +2,8 @@ import { capitalise, counted, fillSlots } from '@/core';
 import { holds, variantText, type CheckApproach, type MissionStage } from '@/systems/missions';
 import { checkChance, STAT_INFO } from '@/systems/stats';
 
-import { openOptions } from '../actions/missionStory';
+import { openChoices } from '../actions/missionStory';
+import { roadEventText } from '../story/roadChoices';
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
 import { checkHand } from '../missionRoles';
@@ -10,8 +11,10 @@ import { rationDays } from '../road';
 import { campChoices, watchOdds } from '../story/camp';
 import { SENSEI_FIRESIDE, senseiAlong } from '../story/fireside';
 import { endingFor } from '../story/ending';
+import { stopPrompt } from './stopChoices';
 import { storyOf } from '../story/state';
 import type { GameState } from '../state';
+import { ventureAhead } from '../ventures';
 import { personSlots } from '../people/pronouns';
 
 /** What each kind of stage puts in front of you on a job: the situation, and your choices. */
@@ -57,14 +60,15 @@ function roadDetail(days: number, rations: number): string {
 function decisionChoices(state: GameState, ctx: GameContext): SceneChoice[] {
   const run = state.mission;
   if (!run) return [];
-  const options = openOptions(state, ctx).map((o, optionIndex) => ({
+  const options = openChoices(state, ctx).map(({ option: o, detail }, optionIndex) => ({
     o,
+    detail: detail ?? '',
     open: holds(storyOf(run), o.when),
     action: { type: 'missionDecide', optionIndex } as const,
   }));
   const open = options
     .filter((x) => x.open)
-    .map(({ o, action }) => ({ label: o.label, detail: '', primary: false, action }));
+    .map(({ o, detail, action }) => ({ label: o.label, detail, primary: false, action }));
   const missed = options.find((x) => !x.open && x.o.unseen !== undefined);
   const why = missed?.o.unseen;
   if (!missed || why === undefined) return open;
@@ -110,15 +114,17 @@ function campPrompt(
   return [...activities, onward('Turn in', time), ...turnBackChoice(state, ctx)];
 }
 
-/** On a trip of your own, a camp is where you can still change your mind. */
+/** On a trip or a venture of your own, a camp is where you can still change your mind. */
 function turnBackChoice(state: GameState, ctx: GameContext): SceneChoice[] {
   const plan = state.mission?.journey;
-  if (!plan) return [];
-  const home = ctx.content.locations.require(plan.from).name;
+  const venturing = ventureAhead(state, ctx) !== null;
+  if (!plan && !venturing) return [];
   return [
     {
       label: 'Turn back',
-      detail: `The road back to ${home}`,
+      detail: plan
+        ? `The road back to ${ctx.content.locations.require(plan.from).name}`
+        : 'Walk back out the way you came',
       primary: false,
       action: { type: 'turnBack' },
     },
@@ -153,8 +159,18 @@ export function stagePrompt(state: GameState, ctx: GameContext, stage: MissionSt
   const story = storyOf(run);
   if (run.roadEvent) {
     const event = ctx.content.roadEvents.get(run.roadEvent);
-    return { prompt: event?.text ?? null, choices: decisionChoices(state, ctx) };
+    const prompt = event ? roadEventText(state, ctx, event) : null;
+    return { prompt, choices: decisionChoices(state, ctx) };
   }
+  return stageChoices(state, ctx, stage, story);
+}
+
+function stageChoices(
+  state: GameState,
+  ctx: GameContext,
+  stage: MissionStage,
+  story: ReturnType<typeof storyOf>,
+): StagePrompt {
   switch (stage.kind) {
     case 'narrative':
       return {
@@ -191,6 +207,11 @@ export function stagePrompt(state: GameState, ctx: GameContext, stage: MissionSt
         prompt: variantText(story, stage.text, stage.variants),
         choices: campPrompt(state, ctx, stage),
       };
+    case 'stop':
+      return stopPrompt(state, ctx, stage.locationId);
+    // A job's road is walked as its legs (`jobRoads.ts`); one never waits here unexpanded.
+    case 'road':
+      return { prompt: stage.text ?? null, choices: [onward('Travel on')] };
     case 'ending':
       return {
         prompt: null,

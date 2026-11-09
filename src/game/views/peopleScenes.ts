@@ -18,6 +18,7 @@ export type SceneKind =
   | 'combat'
   | 'encounter'
   | 'mission'
+  | 'journey'
   | 'exam'
   | 'promotion'
   | 'conversation'
@@ -29,13 +30,14 @@ export type SceneKind =
 
 /**
  * Which scene takes over the screen, if any. Fights win over encounters (sizing foes up on a
- * mission) win over missions (an exam's forest is one) win over the exam, then a promotion
- * ceremony, then talk.
+ * mission) win over jobs and trips of your own (an exam's forest is a job) win over the exam,
+ * then a promotion ceremony, then talk. A trip is a journey: the road on the map.
  */
 export function activeScene(state: GameState): SceneKind | null {
   if (state.combat || state.combatFinale) return 'combat';
   if (state.mission?.encounter) return 'encounter';
-  if (state.mission) return 'mission';
+  if (state.mission) return state.mission.journey ? 'journey' : 'mission';
+  if (state.journeyEnd) return 'journey';
   if (state.exams.run) return 'exam';
   if (state.exams.ceremony) return 'promotion';
   if (state.people.conversation) return 'conversation';

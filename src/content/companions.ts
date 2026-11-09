@@ -2,6 +2,7 @@ import type { CombatTrait } from '@/systems/combat';
 import type { MissionRole } from '@/systems/missions';
 import type { BodyStat, CompanionTemperament, PlayKind } from '@/systems/companions';
 import type { StatDelta, StatId } from '@/systems/stats';
+import type { Element } from '@/systems/techniques';
 
 import type { Biome } from './biomes';
 
@@ -54,6 +55,11 @@ export interface WildHaunt {
   readonly lost: string;
   /** The day it comes to you. */
   readonly comes: string;
+  /**
+   * A changed kind's foe (an enemy id): its signs show only to someone who has fought one of its
+   * kind (the field book's foes), as nobody looks for what they have never seen.
+   */
+  readonly after?: string;
 }
 
 /** A kind of creature that may become a companion: a breed of ninken, a stray hound. */
@@ -72,6 +78,8 @@ export interface CompanionKindDef {
   /** Health as a multiple of a human's 100. */
   readonly healthScale: number;
   readonly maxChakra: number;
+  /** Its chakra nature; a kind of a chakra beast's line has its beast's own (validated). */
+  readonly nature?: Element;
   readonly traits?: readonly CombatTrait[];
   /** Its talent per stat, 1 when left out; 0 is an art it can never learn. */
   readonly aptitude: Partial<Readonly<Record<StatId, number>>>;

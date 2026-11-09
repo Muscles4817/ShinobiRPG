@@ -67,11 +67,45 @@ describe('plan & watch default plan: actions only', () => {
   });
 });
 
+describe('plan & watch default plan: an archer up close', () => {
+  const senbon: CombatTechnique = { ...bolt('senbon', 10), reach: ['close', 'mid'] };
+  const archer = (techniques: readonly CombatTechnique[]) =>
+    table(techniques, { traits: ['archer'] })[0]!;
+
+  it('keeps no plain attack up close, but slots a technique whose own reach is close', () => {
+    expect(cards(archer([bolt('bolt', 14)]), 'close')).toEqual([]);
+    expect(cards(archer([bolt('bolt', 14), senbon]), 'close')).toEqual(['jutsu:senbon']);
+  });
+});
+
 describe('plan & watch default plan: finding hidden foes', () => {
-  it('brings a Search against an illusionist, unless insight already sees them', () => {
-    const plain = table([bolt('bolt', 14)]);
-    expect(defaultLoadout(plain[0]!, plain).mid.map((s) => s.card)).toContain('search');
-    const eyes = table([bolt('bolt', 14)], { perks: ['insight'] });
-    expect(defaultLoadout(eyes[0]!, eyes).mid.map((s) => s.card)).not.toContain('search');
+  const finders = (f: readonly PlanFighter[]) =>
+    defaultLoadout(f[0]!, f)
+      .mid.map((s) => s.card)
+      .filter((c) => c === 'search' || c === 'dispel' || c.startsWith('item:'));
+
+  it('brings a way to find an illusionist, insight too, unless eyes see everything', () => {
+    expect(finders(table([bolt('bolt', 14)]))).toHaveLength(1);
+    expect(finders(table([bolt('bolt', 14)], { perks: ['insight'] }))).toHaveLength(1);
+    expect(finders(table([bolt('bolt', 14)], { perks: ['all-seeing'] }))).toEqual([]);
+  });
+
+  it('the surest it has: sharp eyes Search, fine control Dispels, a flash tag beats both', () => {
+    const eyes = { ...attributes, perception: 20, intellect: 20 };
+    const control = { ...attributes, chakraControl: 20, willpower: 20 };
+    expect(finders(table([bolt('bolt', 14)], { attributes: eyes }))).toEqual(['search']);
+    expect(finders(table([bolt('bolt', 14)], { attributes: control }))).toEqual(['dispel']);
+    const flash = { id: 'flash', name: 'Flash tag', effect: 'flash', count: 1 } as const;
+    expect(finders(table([bolt('bolt', 14)], { items: [flash] }))).toEqual(['item:flash']);
+  });
+});
+
+describe('plan & watch default plan: attacks by what they are worth', () => {
+  it('leads with the art the fighter is good at, not the most power on paper', () => {
+    const dread: CombatTechnique = { ...bolt('dread', 14), discipline: 'genjutsu' };
+    const caster = table([bolt('breath', 18), dread], {
+      attributes: { ...attributes, genjutsu: 30, ninjutsu: 3 },
+    })[0]!;
+    expect(cards(caster, 'mid')[0]).toBe('jutsu:dread');
   });
 });

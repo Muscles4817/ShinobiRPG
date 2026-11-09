@@ -12,6 +12,7 @@ import {
   type MissionStage,
 } from '@/systems/missions';
 
+import { hearOf } from '../atlas';
 import { examClash } from '../awayNotes';
 import { availability, crewFor, takeJob } from '../board';
 import { pickTaken } from '../sensei/pick';
@@ -32,12 +33,14 @@ import { checkHand } from '../missionRoles';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
 import { welcomeBack } from '../clients';
+import { homeVillageId } from '../homeVillage';
+import { jobWays, walksTheMap, withRoads } from '../jobRoads';
 import { bondsNow } from '../debrief';
 import { travel } from '../road';
 import { playEnding } from '../story/ending';
 import { feel } from '../story/personal';
 import { arrivalLine } from '../story/arrivals';
-import { roadEventOn } from '../story/roadEvents';
+import { metOnRoad, roadEventOn } from '../story/roadEvents';
 import { settle, storyOf } from '../story/state';
 import { crewVoice } from '../story/voices';
 import type { GameContext } from '../context';
@@ -67,6 +70,7 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
       state.character.vitals.energy < def.energyCost && `Needs ${def.energyCost} energy.`,
       healthFraction(state) < MIN_HEALTH_FOR_MISSION && 'You are too injured to take a mission.',
       senseiForbids(state, ctx, def),
+      walksTheMap(def) && !jobWays(state, ctx, def) && 'No road you can walk goes there.',
     );
   },
   perform(state, action, ctx, rng) {
@@ -75,15 +79,20 @@ export const startMission: ActionHandler<ActionOf<'startMission'>> = {
     const crew = crewFor(state, ctx, def) ?? SOLO;
     // The twist is rolled now and kept hidden: the story finds it out when it gets there.
     const twist = def.twists ? pickTwist(def, rng.next()) : null;
+    // A job on the map's road keeps the way it was given today (`jobRoads.ts`).
+    const ways = walksTheMap(def) ? (jobWays(state, ctx, def) ?? []) : null;
+    const walked = ways ? withRoads(def, ways, { ctx, home: homeVillageId(state, ctx) }) : def;
     const begun = startRun(def, crew, twist ? [twist] : []);
-    const known = welcomeBack(state, def, begun);
-    const run = settle(def, {
+    const known = welcomeBack(state, def, ways ? { ...begun, ways } : begun);
+    const run = settle(walked, {
       ...known,
       bondsAtStart: bondsNow(state, crew.memberIds),
       remembered: state.village.marks,
       tallied: state.village.tallies,
     });
-    const taken = { ...pickTaken(state, ctx, def), board: takeJob(state, ctx, def), mission: run };
+    // A job that ends somewhere puts it on your map: you are told where you're going.
+    const heard = def.endsAt ? hearOf(state, [def.endsAt]) : state;
+    const taken = { ...pickTaken(heard, ctx, def), board: takeJob(heard, ctx, def), mission: run };
     const started = lightOfDay(
       adjust(spendTime(taken, def.slots, ctx), { energy: -def.energyCost }),
       def,
@@ -131,8 +140,11 @@ function continueBlocker(state: GameState, stage: MissionStage): string | null {
       return 'Decide first.';
     case 'encounter':
       return state.mission?.encounter ? 'Choose how to go in first.' : null;
+    case 'stop':
+      return 'Choose whether to stop first.';
     case 'narrative':
     case 'leg':
+    case 'road':
     case 'combat':
     case 'camp':
     case 'ending':
@@ -167,9 +179,8 @@ function onTheRoad(
   if (!travelled.mission) return travelled;
   const run = travelled.mission;
   const noted = { ...run, notes: [...run.notes, { kind: 'story' as const, text: line }] };
-  const event =
-    stage.region && !end ? roadEventOn({ ...travelled, mission: noted }, ctx, stage.region) : null;
-  if (event) return { ...travelled, mission: { ...noted, roadEvent: event.id } };
+  const event = end ? null : roadEventOn({ ...travelled, mission: noted }, ctx, stage);
+  if (event) return metOnRoad({ ...travelled, mission: { ...noted, roadEvent: event.id } }, event);
   return afterStage({ ...travelled, mission: advance(noted) }, ctx);
 }
 
@@ -212,10 +223,14 @@ export const missionContinue: ActionHandler<ActionOf<'missionContinue'>> = {
       case 'camp':
         // Turning in: the fire is left to burn down.
         return afterStage({ ...state, mission: advance(state.mission) }, ctx);
+      case 'road':
+        // A job's road is walked as its legs (`jobRoads.ts`); one left unexpanded is passed.
+        return afterStage({ ...state, mission: advance(state.mission) }, ctx);
       case 'ending':
         return afterStage(playEnding(state, def, stage), ctx);
       case 'check':
       case 'decision':
+      case 'stop':
         return state;
     }
   },

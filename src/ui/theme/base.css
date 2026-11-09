@@ -8,6 +8,24 @@ body,
   height: 100%;
 }
 
+/* Under a phone's status bar (the phone app, or the web app added to a home screen) the page
+   starts below it, and a strip of night ground covers whatever scrolls up behind it. Zero on a
+   desktop and in a browser tab. */
+#root {
+  padding-top: env(safe-area-inset-top);
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top);
+  z-index: 60;
+  background: var(--bg);
+  pointer-events: none;
+}
+
 body {
   margin: 0;
   background: var(--grain), var(--bg);

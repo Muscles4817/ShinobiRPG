@@ -14,6 +14,7 @@ export {
   type TwistDef,
   type MissionDef,
   type MissionRun,
+  type WayLeg,
   type JourneyHunt,
   type JourneyPlan,
   type MissionNote,
@@ -74,15 +75,16 @@ export {
   type StoryState,
   type ThreadDef,
 } from './story';
+export { ROAD_WAYS, type RoadStage, type RoadWay } from './storyStages';
 export type {
   CampActivity,
   CampStage,
+  StopStage,
   DecisionOption,
   DecisionStage,
   Ending,
   EndingStage,
   Outcome,
-  RoadEventDef,
   TextVariant,
 } from './storyStages';
 export {
@@ -129,3 +131,35 @@ export {
   type ArcDef,
   type ArcRecommendation,
 } from './arcs';
+export {
+  isDecisionEvent,
+  ROAD_EVENT_KINDS,
+  ROAD_RARITIES,
+  writtenOptions,
+  type DecisionRoadEvent,
+  type EncounterRoadEvent,
+  type FindRoadEvent,
+  type RoadEventDef,
+  type RoadEventKind,
+  type RoadRarity,
+  type SightRoadEvent,
+  type TravellerRoadEvent,
+  type WeatherRoadEvent,
+} from './roadEvents';
+export {
+  travellerEventId,
+  type TravellerDef,
+  type TravellerGift,
+  type TravellerMeeting,
+  type TravellerOption,
+} from './travellers';
+export {
+  depthsOut,
+  depthsTo,
+  ownRun,
+  ventureDays,
+  WILD_DEPTHS,
+  type VenturePlan,
+  type WildDepth,
+} from './ventures';
+export { worldAllows, type WorldGate } from './worldGate';

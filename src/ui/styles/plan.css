@@ -241,6 +241,24 @@
   font-size: 0.9rem;
   margin: 2px 0;
 }
+/* Why the round went as it did: a short ruled list, each phrase with its chips. */
+.round-why {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.round-why li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--story);
+}
+.round-lines summary {
+  min-height: 40px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
 
 /* Four or more on one side's row: two tokens abreast, the row's name across the top. */
 .formation-col.paired {

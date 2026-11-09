@@ -11,13 +11,16 @@ import { tell } from '../../rules/telling';
  * Conceal and sense in a planned fight. A conceal hides its user as a smoke bomb would, but
  * how hard they are to find comes from their own art; attacking gives them away as ever. A
  * sense pulls hidden foes into the open, and for the rest of the fight its user reads foes as
- * insight does: every card they hold, and anyone who slips away again is found by a Search.
+ * insight does: every card they hold, and anyone who slips away again is readily found by a Search.
  */
 
 export function conceal(round: Round, actor: PlanFighter, use: EffectUse<'conceal'>): Round {
   const concealment = concealmentFrom(driveOf(actor, use), use);
   return say(
-    { ...round, fighters: patch(round.fighters, actor.id, { hidden: true, concealment }) },
+    {
+      ...round,
+      fighters: patch(round.fighters, actor.id, { hidden: true, concealment, exposure: 0 }),
+    },
     tell('{a} fade{a.s} from sight.', { a: actor }),
   );
 }
@@ -48,19 +51,20 @@ export interface SightMoment extends ToolMoment {
 }
 
 /**
- * A slotted sense the moment calls for (a foe is hidden and they don't read foes already), or
- * to open a round, a conceal (as a smoke bomb would) or a field when theirs isn't up.
+ * A slotted sense the moment calls for (a foe is hidden and they don't read foes already), a
+ * field whenever none of their side's is up (as a plan raises one: a field a foe laid over
+ * theirs is taken back at once), or to open a round, a conceal (as a smoke bomb would).
  */
 export function sightInstinct(
   self: PlanFighter,
   ready: readonly Card[],
   moment: SightMoment,
 ): Card | undefined {
-  const opens = (c: CombatTechnique) =>
-    (!self.hidden && hasVerb(c, 'conceal')) || (!moment.fieldUp && hasVerb(c, 'field'));
+  const opens = (c: CombatTechnique) => !self.hidden && hasVerb(c, 'conceal');
   const wants = (c: Card) =>
     c.kind === 'jutsu' &&
     ((moment.hiddenFoe && !hasPerk(self, 'insight') && hasVerb(c.technique, 'sense')) ||
+      (!moment.fieldUp && hasVerb(c.technique, 'field')) ||
       (moment.opening && opens(c.technique)));
   return ready.find(wants);
 }

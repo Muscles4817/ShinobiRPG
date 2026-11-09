@@ -4,6 +4,7 @@ import {
   healLine,
   namedLine,
   numberedNames,
+  offPlanLine,
   poolsLine,
   reactionLine,
   splitNarration,
@@ -31,6 +32,17 @@ describe('fight narration', () => {
       text: 'Aoi strikes, but Shun slips aside.',
       amounts: [],
       reactions: [],
+    });
+  });
+
+  it('says why a player’s turn went off their plan, out of the sentence', () => {
+    const line = turnLine(offPlanLine('You look around.', 'looking'), 'you');
+    expect(splitNarration(line)).toEqual({
+      text: 'You look around.',
+      amounts: [],
+      reactions: [],
+      actorId: 'you',
+      offPlan: 'looking',
     });
   });
 

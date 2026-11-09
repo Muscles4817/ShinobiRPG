@@ -16,10 +16,14 @@ function sceneLines(stage: MissionStage): string[] {
       return [stage.text, stage.success, stage.failure];
     case 'camp':
     case 'combat':
+    case 'road':
+      return stage.text ? [stage.text] : [];
     case 'encounter':
     case 'leg':
     case 'narrative':
       return [stage.text];
+    case 'stop':
+      return [];
   }
 }
 

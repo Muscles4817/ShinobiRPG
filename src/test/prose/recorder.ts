@@ -7,6 +7,7 @@ import {
   dispatch,
   encounterScene,
   finishedFightScene,
+  journeyView,
   missionScene,
   rivalScene,
   senseiTestScene,
@@ -125,6 +126,11 @@ export function recorder(ctx: GameContext): Recorder {
     if (view.prompt) say(`  prompt: ${view.prompt}`);
   }
 
+  /** A job or trip under way; a trip just ended shows only the place reached. */
+  function roadScene(state: GameState): unknown {
+    return missionScene(state, ctx) ?? journeyView(state, ctx)?.arrival;
+  }
+
   function scene(state: GameState): void {
     const kind = activeScene(state);
     if (kind === null) return;
@@ -134,7 +140,8 @@ export function recorder(ctx: GameContext): Recorder {
         fightLines(state);
         return;
       case 'mission':
-        dump('mission', missionScene(state, ctx));
+      case 'journey':
+        dump(kind, roadScene(state));
         return;
       case 'encounter':
         dump('encounter', encounterScene(state, ctx));

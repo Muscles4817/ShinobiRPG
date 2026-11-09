@@ -164,13 +164,17 @@ const SENTENCES: Readonly<Record<HitWeight, readonly string[]>> = {
   crushing: [
     '{a.poss} {what} {verb} {t}{again} with everything behind it{guard}.',
     "{a.poss} {what} {verb} {t}{again}{guard}, and {t.they}{t.'s} nearly knocked off {t.their} feet.",
-    'There is nothing {t} can do as {a.poss} {what} {verb} {t.them}{again}{guard}.',
+    '{t} can do little as {a.poss} {what} {verb} {t.them}{again}{guard}.',
   ],
 };
 
 const AGAIN = [' again', ' once more', ' a second time'];
 /** A guard that held is the Guarded stamp's to say; one smashed is news, so the line says it. */
 const SMASHED = [', smashing through the guard', ', battering the guard aside'];
+/** A guard that held and still let a hard hit through: the line says so, beside the stamp. */
+const OVERWHELMED = [', through the guard all the same', ', guard or no guard'];
+/** Hits this hard read as having gone through a guard that held. */
+const OVERWHELMING: readonly HitWeight[] = ['crushing'];
 
 export interface HitTold {
   readonly attacker: Told;
@@ -194,6 +198,14 @@ function reactionsTo({ dodgeTried, guarded, smashed }: HitTold): NarrationReacti
   ];
 }
 
+/** What the line says of the guard: smashed, held but beaten, or nothing (the stamp says it). */
+function guardWords(moment: Moment, hit: HitTold, weight: HitWeight): string {
+  if (hit.smashed) return pick(within(moment, 'guard'), SMASHED);
+  if (hit.guarded && OVERWHELMING.includes(weight))
+    return pick(within(moment, 'guard'), OVERWHELMED);
+  return '';
+}
+
 /**
  * A hit landing: the attacker's attack, a verb for what it is and how hard it landed, and a
  * smashed guard if it was, tagged with the defences that reacted.
@@ -210,7 +222,7 @@ export function hitLine(moment: Moment, hit: HitTold): string {
   };
   const sentence = choose(moment, sentences);
   const again = hit.blow.followUp ? pick(within(moment, 'again'), AGAIN) : '';
-  const guard = hit.smashed ? pick(within(moment, 'guard'), SMASHED) : '';
+  const guard = guardWords(moment, hit, weight);
   const words = { what: hit.blow.what, verb: verb.word, again, guard };
   const text = tell(sentence.template, { a: hit.attacker, t: hit.target, ...words });
   const line = voiceLine(text, `${sentence.id}.${sentence.index}`, verb.mark);

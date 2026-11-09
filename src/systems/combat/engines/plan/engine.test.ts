@@ -124,7 +124,7 @@ describe('plan & watch cards', () => {
     });
   });
 
-  it('every distance keeps a defence ready, and brings a Search against a foe that hides', () => {
+  it('every distance keeps a defence ready, and brings a way to find a foe that hides', () => {
     const [hero, shade] = initialFighters({
       player: fighter('hero', { techniques: [daze, blast] }),
       allies: [],
@@ -137,8 +137,9 @@ describe('plan & watch cards', () => {
       far: 'guard',
     });
     const plan = defaultLoadout(hero!, [hero!, shade!]);
+    // Between equals a Dispel is likelier than a Search (`finder` in `defaults.ts`).
     for (const band of ['close', 'mid', 'far'] as const) {
-      expect(plan[band][0]).toEqual({ card: 'search', when: 'foe-hidden' });
+      expect(plan[band][0]).toEqual({ card: 'dispel', when: 'foe-hidden' });
     }
   });
 

@@ -65,8 +65,8 @@ describe('counts, lists and places', () => {
     ({ stages: [{ kind: 'leg', days, text: 'The road.' }] }) as unknown as MissionDef;
 
   it('a one-day job is “a day away”, a longer one in words', () => {
-    expect(awayFor(legs(1))).toBe('A day away');
-    expect(awayFor(legs(3))).toBe('Three days away');
+    expect(awayFor(newGame(), ctx, legs(1))).toBe('A day away');
+    expect(awayFor(newGame(), ctx, legs(3))).toBe('Three days away');
   });
 
   it('a crew of three reads as a list', () => {

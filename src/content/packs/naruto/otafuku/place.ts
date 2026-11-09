@@ -8,9 +8,11 @@ import type { LocationDef } from '../../../types';
 export const OTAFUKU_TOWN: LocationDef = {
   id: 'otafuku-town',
   name: 'Otafuku Town',
+  kind: 'town',
+  famous: true,
   epithet: 'Pleasure quarter',
   map: { x: 52, y: 36.5 },
-  backdrop: 'lantern-rooftops',
+  backdrop: 'pleasure-quarter',
   places: [
     {
       id: 'smiling-mask-inn',

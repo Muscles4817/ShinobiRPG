@@ -55,6 +55,8 @@ export interface RouteDef {
 /** A leg as walked on a journey: which location it heads for. */
 export interface JourneyLeg extends RouteLeg {
   readonly toward: string;
+  /** The worst its road may bring (the route's `danger`), for what comes up on it. */
+  readonly danger: Danger;
 }
 
 export interface Journey {
@@ -104,7 +106,7 @@ function cheaper(a: Journey, b: Journey): boolean {
 
 function extend(journey: Journey, step: Step, from: string): Journey {
   const ahead = step.route.from === from ? step.route.legs : [...step.route.legs].reverse();
-  const legs = ahead.map((leg) => ({ ...leg, toward: step.toward }));
+  const legs = ahead.map((leg) => ({ ...leg, toward: step.toward, danger: step.route.danger }));
   return {
     via: journey.days === 0 ? [] : [...journey.via, from],
     routeIds: [...journey.routeIds, step.route.id],

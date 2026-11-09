@@ -1,4 +1,5 @@
 import { counted, listed, numberWord } from '@/core';
+import { knowsOf } from '../atlas';
 import type { BackdropId, LocationDef } from '@/content';
 import type { Danger } from '@/systems/missions';
 import type { Journey } from '@/systems/travel';
@@ -11,6 +12,7 @@ import { findPerson } from '../people/cast';
 import { closedBy } from '../routeNeeds';
 import { companionsOnOffer } from '../trips';
 import { rationDays } from '../road';
+import { placeInText } from '../placeName';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
 import { travelMap, type TravelMap } from './travelMap';
@@ -148,26 +150,30 @@ function destinationsFrom(
   companionId: string | null,
 ): readonly Destination[] {
   const asking = companionId === null ? {} : { companionId };
-  return ctx.content.locations.all.map((l) => {
-    const open = journeyTo(state, ctx, l.id);
-    const journey = open ?? plannedJourneyTo(state, ctx, l.id);
-    const via = (journey?.via ?? []).map((id) => ctx.content.locations.require(id).name);
-    const here = l.id === state.locationId;
-    return {
-      ...choice(state, ctx, { type: 'travel', locationId: l.id, ...asking }),
-      id: l.id,
-      name: l.name,
-      epithet: l.epithet,
-      backdrop: l.backdrop,
-      here,
-      days: journey?.days ?? 0,
-      cost: journey?.cost ?? 0,
-      danger: DANGER_WORDS[journey?.danger ?? 'petty'],
-      via: via.length > 0 ? `By way of ${listed(via)}` : null,
-      lockedReason: l.lockedReason ?? null,
-      quick: choice(state, ctx, { type: 'travel', locationId: l.id, quick: true, ...asking }),
-      warnings: open && !here ? warningsFor(state, ctx, l, open) : [],
-      closedRoads: closedRoadsTo(state, ctx, l.id, open),
-    };
-  });
+  return ctx.content.locations.all
+    .filter((l) => knowsOf(state, ctx, l.id))
+    .map((l) => {
+      const open = journeyTo(state, ctx, l.id);
+      const journey = open ?? plannedJourneyTo(state, ctx, l.id);
+      const via = (journey?.via ?? []).map((id) =>
+        placeInText(ctx.content.locations.require(id).name),
+      );
+      const here = l.id === state.locationId;
+      return {
+        ...choice(state, ctx, { type: 'travel', locationId: l.id, ...asking }),
+        id: l.id,
+        name: l.name,
+        epithet: l.epithet,
+        backdrop: l.backdrop,
+        here,
+        days: journey?.days ?? 0,
+        cost: journey?.cost ?? 0,
+        danger: DANGER_WORDS[journey?.danger ?? 'petty'],
+        via: via.length > 0 ? `By way of ${listed(via)}` : null,
+        lockedReason: l.lockedReason ?? null,
+        quick: choice(state, ctx, { type: 'travel', locationId: l.id, quick: true, ...asking }),
+        warnings: open && !here ? warningsFor(state, ctx, l, open) : [],
+        closedRoads: closedRoadsTo(state, ctx, l.id, open),
+      };
+    });
 }

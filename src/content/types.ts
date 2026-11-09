@@ -9,13 +9,20 @@ import type { ClanHive, StrainDef } from './strains';
 import type { AtlasDef, MapLabelSide } from './atlas';
 import type { ClanCompanion, CompanionKindDef, CompanionLoreDef, VetFields } from './companions';
 import type { Find } from '@/systems/cooking';
-import type { ArcDef, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
+import type {
+  ArcDef,
+  EncounterTemplate,
+  MissionDef,
+  RoadEventDef,
+  TravellerDef,
+} from '@/systems/missions';
 import type { ModifierSpec } from '@/systems/modifiers';
 import type { StatDelta, StatId } from '@/systems/stats';
 import type { NoteWeight } from '@/systems/profile';
 import type { ExamDef } from '@/systems/exams';
 import type { Discipline, Element, TechniqueDef } from '@/systems/techniques';
 import type { RouteDef } from '@/systems/travel';
+import type { LandmarkSight, LocationKind } from './locationKinds';
 
 import type { BackdropId, IconId } from './art';
 import type { QuirkDef } from './quirks';
@@ -57,9 +64,11 @@ import type { OnsenFields, TavernFields } from './leisure';
 import type { OpeningHours, Stall } from './stall';
 import type { VillageLife } from './village';
 import type { VoiceDef } from './voices';
+import type { DeepWildsDef } from './deepWilds';
 import type { Biome, FishingSpot, WildsFields } from './biomes';
 
 export type { BackdropId, IconId } from './art';
+export type { CarriedKit } from './carried';
 export type {
   CookbookDef,
   GearDef,
@@ -243,6 +252,8 @@ export type PlaceDef =
   | (PlaceBase & { readonly kind: 'library'; readonly techniqueIds: readonly string[] })
   | (PlaceBase & { readonly kind: 'home'; readonly rentPerWeek: number; readonly lodging: string })
   | (PlaceBase & { readonly kind: 'hospital'; readonly treatmentCost: number })
+  /** Somewhere to sleep under the sky in wild country: a fire and what's in your pack. */
+  | (PlaceBase & { readonly kind: 'camp' })
   /** Somewhere to sleep away from home: a room by the night. */
   | (PlaceBase & { readonly kind: 'inn'; readonly keeper: string; readonly roomCost: number })
   | (PlaceBase & LettingsFields)
@@ -272,6 +283,15 @@ export type PlaceKind = PlaceDef['kind'];
 export interface LocationDef {
   readonly id: string;
   readonly name: string;
+  /** What kind of place it is: what it must have, and how the map marks it. */
+  readonly kind: LocationKind;
+  /**
+   * Known to everyone from the start: on the map, and the way there asked of anyone. Every
+   * other place is learned of (heard of, passed near, or a job's) before it is on your map.
+   */
+  readonly famous?: boolean;
+  /** A landmark's sight, for a stop on the way (`journeys-plan.md` 3.3); every open one has one. */
+  readonly sight?: LandmarkSight;
   /** e.g. "Village Hidden in the Leaves". */
   readonly epithet: string;
   readonly backdrop: BackdropId;
@@ -319,6 +339,10 @@ export interface ContentPack {
   readonly encounters: readonly EncounterTemplate[];
   /** Things that may happen on a stretch of road, by region. */
   readonly roadEvents: readonly RoadEventDef[];
+  /** Wild country you can go into off the paths, by the kind of country (`deepWilds.ts`). */
+  readonly deepWilds: readonly DeepWildsDef[];
+  /** People of the road, met on it now and then (each also comes as a road event). */
+  readonly travellers: readonly TravellerDef[];
   /** Long stories: chains of jobs in acts. */
   readonly arcs: readonly ArcDef[];
   /** What crew say on a job, by moment and trait. */

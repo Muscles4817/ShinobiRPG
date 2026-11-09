@@ -50,6 +50,9 @@ function copyOf(maker: PlanFighter, index: number, chakra: number): PlanFighter 
     calls: _calls,
     summonsOut: _out,
     summonFates: _fates,
+    summonsLost: _lost,
+    perched: _perched,
+    meditating: _meditating,
     holding: _holding,
     fellAt: _fell,
     ...body

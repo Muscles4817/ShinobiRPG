@@ -7,6 +7,7 @@ import {
   type StatId,
   type Stats,
 } from '@/systems/stats';
+import { shelves } from '@/content';
 import { scrollIds } from '@/systems/inventory';
 import { learnBlocker } from '@/systems/techniques';
 
@@ -54,10 +55,7 @@ function mayRead(state: GameState, ctx: GameContext, kind: string, id: string): 
  */
 function teachingPlaces(state: GameState, ctx: GameContext): Map<string, string> {
   const where = new Map<string, string>();
-  const shelves = ctx.content.locations.all.flatMap((l) =>
-    l.places.flatMap((p) => (p.kind === 'academy' || p.kind === 'library' ? [p] : [])),
-  );
-  for (const place of shelves) {
+  for (const place of shelves(ctx.content.locations.all)) {
     for (const id of place.techniqueIds) {
       if (!where.has(id) && mayRead(state, ctx, place.kind, id)) where.set(id, place.name);
     }

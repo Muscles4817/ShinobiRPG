@@ -8,11 +8,16 @@ export default tseslint.config(
     ignores: [
       'dist',
       'dist-release',
+      'electron/dist',
+      'release',
       'dev-dist',
       'coverage',
       '.claude',
       '.dependency-cruiser.cjs',
       'docs/design/art-mockups',
+      // The native projects Capacitor generates, with the game's build copied inside them.
+      'android',
+      'ios',
     ],
   },
   js.configs.recommended,
@@ -77,7 +82,11 @@ export default tseslint.config(
     ...tseslint.configs.disableTypeChecked,
   },
   {
-    files: ['vite.config.ts', 'eslint.config.js', 'scripts/**'],
+    files: ['electron/**'],
+    languageOptions: { globals: { ...globals.node } },
+  },
+  {
+    files: ['vite.config.ts', 'capacitor.config.ts', 'eslint.config.js', 'scripts/**'],
     languageOptions: { globals: { ...globals.node } },
     rules: { 'no-restricted-syntax': 'off' },
   },

@@ -8,9 +8,11 @@ import type { LocationDef } from '../../../types';
 export const SHUKUBA_TOWN: LocationDef = {
   id: 'shukuba-town',
   name: 'Shukuba Town',
+  kind: 'town',
+  famous: true,
   epithet: 'Post town on the highway',
   map: { x: 42, y: 32.5, label: 'right' },
-  backdrop: 'lantern-rooftops',
+  backdrop: 'highway-town',
   places: [
     {
       id: 'shukuba-inn',

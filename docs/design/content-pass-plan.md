@@ -118,14 +118,45 @@ ordinary `EnemyDef` with a stable id (`foe-<village>-<archetype>-<grade>`). Bord
 rivals and squads of three draw on them. **Named rogues** (missing-nin, the S-rank hunts) are the
 same machinery with a name and a past drawn from the pack, plus a few authored for arcs.
 
+**As built.** A pack lists its other villages as data (`shinobiVillages.ts`: a short name, a
+headband, natures, twelve missing-nin names; a village need not be on the map) and its nature
+techniques (`NatureKit`). `foreignShinobi` composes them when the pack is built, beside the
+bestiary rather than in the context: six archetypes (scout, vanguard, sensor, medic, trapper,
+captain) × three grades per village, each with one of its village's natures, and a named
+missing-nin for every chūnin and jōnin archetype, a step past their village's own in their art
+with a trick of their own. Numbers follow the stat model (skills in the grade's band, bodies
+human). The original pack has Sakyūgakure, the Ashfield villages (whose genin the exam already
+names) and a new sea village across the Southern Sea, the Squalls; the fan pack the Mist, Sand,
+Stone and Cloud. Ninety foes a pack in the original, a hundred and twenty in the fan pack. The
+foreign shinobi bench fights the original pack's, in two halves run side by side; the scouts
+and the missing-nin had to come down to sit in the bands. Six template jobs use them: a Squall
+scout on the coast, an Ashfield genin squad, a Dune trapper minding a smuggling ring, two
+missing-nin hunts and an S-rank hunt for a Squall captain. Sensors and medics are support and
+easy alone. Squads of three now meet you in the chūnin exam: the Ash Wood's rival team is an
+Ashfield captain, scout and medic, composed like the rest (the old rival genin stay for the field
+books of saves that met them). And two of Sakyūgakure's missing-nin carry an arc of their own,
+**The Glass-Eyed Scout** (`arcs/glassEye.ts`): Isago blinding the dune-line watchtowers at B
+rank, then their teacher Kazemi the Glass-Eyed, who sells every border, at A rank under a jōnin,
+with the maps burned or brought home.
+
 ## Step 4 (later): foes with gear
 
 `EnemyDef.gear` and `items` riding into `CombatantSetup` as the player's do: a samurai's real
 armour level, a pirate's smoke bombs, a spear's reach. An engine change, kept apart.
+
+**As built.** Foes and people's arsenals share one shape for what they carry (`CarriedKit`:
+gear, tools, weapon mastery; `content/carried.ts`), read into a fight by one helper
+(`game/carried.ts`) and validated once (`validateCarried.ts`). A pack's `FoeKit` gains `gear`, its
+own piece for each gear role (knife, sword, fine sword, spear, knuckles, kunai, needles, three
+weights of armour), and each pack's smith now sells a spear, the first polearm. The bestiary's
+foes carry what fits them (samurai in armour with swords, the footman's spear, the cutpurse's
+smoke bombs, the warlord's soldier pill), and each foreign shinobi archetype carries its kind's
+kit (a scout's kunai and smoke bomb, a trapper's tags). A read names what a foe wears; what is in
+the pouch is kept and a glance may miss it (`game/scoutingCarried.ts`). Both benches still hold.
 
 ## Later still: chakra beasts
 
 Animals changed by chakra over generations: beasts that use techniques, mimic, hide, or carry a
 nature. They build on step 2's plain animals (the same kinds, grown strange), and reach into
 companions (`systems/companions`) and summons. Designed when we get there; step 2 keeps plain
-animals plain so the line between them is clear.
+animals plain so the line between them is clear. Now planned in `chakra-beasts-plan.md`.

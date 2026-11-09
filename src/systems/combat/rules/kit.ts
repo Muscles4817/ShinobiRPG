@@ -79,11 +79,20 @@ export function kitDamageScale(
   return scale;
 }
 
-/** Archers can't fight up close; brawlers can only fight up close. Everyone else anywhere. */
+/**
+ * Archers can't fight up close; brawlers can only fight up close. Everyone else anywhere. This is
+ * the kit's own reach (its blows and its usual techniques); a technique that names its own reach
+ * strikes from there whatever the kit (`namesReach`), so an archer's senbon still fly up close.
+ */
 export function canAttackFrom(f: Kitted, band: RangeBand): boolean {
   if (hasTrait(f, 'archer')) return band !== 'close';
   if (hasTrait(f, 'brawler')) return band === 'close';
   return true;
+}
+
+/** A technique that names its reach and reaches from this distance, whatever its user's kit. */
+export function namesReach(t: Pick<CombatTechnique, 'reach'>, band: RangeBand): boolean {
+  return t.reach?.includes(band) ?? false;
 }
 
 /** Where a fighter wants to be: their trait decides, else wherever their offence reaches. */

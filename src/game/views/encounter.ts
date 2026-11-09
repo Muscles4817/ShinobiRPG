@@ -22,6 +22,7 @@ import { retinueSeen, summonsSeen } from '../retinueSight';
 import { handicapOf, scoutOpponents, traitNotes, type Threat, type TraitNote } from '../scouting';
 import type { GameState } from '../state';
 import { noteLine, type SceneLine } from './missionScene';
+import { runKind } from './runKind';
 
 /**
  * The encounter scene: what you know of the foes, the ways to learn more, and the ways in.
@@ -72,9 +73,8 @@ export interface ApproachCard {
 
 export interface EncounterScene {
   readonly title: string;
-  readonly rank: string;
-  readonly client: string;
-  readonly kind: string;
+  /** "Bandit camp ahead, on a D-rank mission for the miller". */
+  readonly kicker: string;
   readonly lines: readonly SceneLine[];
   readonly facts: readonly FactLine[];
   readonly foes: readonly EncounterFoe[] | null;
@@ -259,9 +259,7 @@ export function encounterScene(state: GameState, ctx: GameContext): EncounterSce
   if (!here) return null;
   return {
     title: here.def.title,
-    rank: here.def.rank,
-    client: here.def.client,
-    kind: here.template.name,
+    kicker: `${here.template.name} ahead, ${runKind(here.run, here.def).onIt}`,
     lines: here.run.notes.slice(here.encounter.notesFrom).map(noteLine),
     facts: factLines(here),
     foes: foesOf(state, ctx, here),

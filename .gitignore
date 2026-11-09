@@ -5,3 +5,5 @@ coverage
 *.tsbuildinfo
 .DS_Store
 dist-release
+electron/dist
+release

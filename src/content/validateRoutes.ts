@@ -41,7 +41,7 @@ function endsAtProblems(pack: ContentPack, job: MissionDef): string[] {
     ...(place.lockedReason !== undefined
       ? [`mission "${job.id}" ends somewhere still locked`]
       : []),
-    ...(job.stages.some((s) => s.kind === 'leg')
+    ...(job.stages.some((s) => s.kind === 'leg' || s.kind === 'road')
       ? []
       : [`mission "${job.id}" ends elsewhere without a road`]),
   ];

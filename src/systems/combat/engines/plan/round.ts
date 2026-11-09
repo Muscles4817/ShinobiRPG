@@ -9,33 +9,31 @@ import { reachLead } from '../../rules/blades';
 import { gathered } from '../../rules/chakra';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
-import { afterUsing } from '../../rules/trumps';
-import { strike } from './arms';
-import { charge, step, type Charged } from './steps';
+import { charge, type Charged } from './steps';
 import { keepHolding } from './holding';
 import { lostTurn } from './lostTurn';
 import { threadsRetaken } from './puppets';
 import { inCover, lostToGround } from './groundPlay';
 import { momentOf, SCENE_MEMORY } from './fresh';
 import { cardId, isOffence, needsAim, type Card } from './cards';
+import { released } from './commitment';
+import { meditationEnds } from './meditation';
+import { play } from './play';
 import { chooseCard } from './choose';
-import { commit, released } from './commitment';
-import { gather } from './gather';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField, ownField } from './field';
-import { intendedCard } from './intent';
+import { intendedCard, keepsTo } from './intent';
 import { exchangeDivider, staged } from './staging';
-import { useJutsu } from './jutsu';
 import { lingerAfter } from './lingering';
-import { useTool } from './pouch';
 import { secondWinds } from './provisions';
 import { canHit, hittable } from './rows';
 import { plannedPlay, type Play } from './priority';
 import { readsInTheMoment } from './judgement';
 import { noteAttack } from './reads';
 import { bestTarget } from './targeting';
-import { dispel, inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
+import { finisherTargets, needsOpenTarget } from './finishers';
+import { inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { intercept } from './team';
 import { springTraps } from './traps';
 import { aid, struggleFree } from './struggle';
@@ -43,6 +41,7 @@ import { clonesAfter } from './cloneUpkeep';
 import { shroudsAfter } from './shrouds';
 import { summonsAfter } from './summons';
 import { misled, shadowsAfter } from './shadows';
+import { uncoverWhenWorth, veilsAfter } from './veil';
 import { plannedSummons } from './summonPlans';
 import { swarmsAfter } from './swarm';
 import { dustAfter } from './dust';
@@ -98,55 +97,19 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
     exchange: round.number,
     ...(round.reads ? { reads: round.reads } : {}),
   };
-  const card = intendedCard(actor, round.intents, round.range) ?? chooseCard(actor, moment, rng);
-  if (!foe || !isOffence(card) || canHit(card, foe, round.fighters)) return { card, target: foe };
-  return { card, target: targetFor(hittable(card, seen, round.fighters), rng) };
+  const intended = intendedCard(actor, round.intents, round.range);
+  const card =
+    intended && keepsTo(actor, intended, round) ? intended : chooseCard(actor, moment, rng);
+  // A finisher that needs an opening goes for an open foe (`finishers.ts`).
+  const open = finisherTargets(card, seen);
+  const aim = !needsOpenTarget(card) || (foe && open.includes(foe)) ? foe : open[0];
+  if (!aim || !isOffence(card) || canHit(card, aim, round.fighters)) return { card, target: aim };
+  return { card, target: targetFor(hittable(card, open, round.fighters), rng) };
 }
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
   if (!alive(playerOf({ fighters }))) return 'defeat';
   return fighters.some((f) => f.side === 'enemy' && alive(f)) ? null : 'victory';
-}
-
-/** Counts a plain strike or a step towards the fighter's usage report. */
-function practise(round: Round, actor: PlanFighter, work: 'blows' | 'footwork'): Round {
-  const done = fighterIn(round, actor.id)?.[work] ?? 0;
-  return { ...round, fighters: patch(round.fighters, actor.id, { [work]: done + 1 }) };
-}
-
-function play(round: Round, turn: Turn, card: Card): Round {
-  switch (card.kind) {
-    case 'step':
-      return step(
-        practise(round, turn.actor, 'footwork'),
-        { ...turn, target: turn.target ?? opponentsOf(round.fighters, turn.actor)[0] },
-        card.direction,
-      );
-    case 'search':
-      return search(round, turn);
-    case 'dispel':
-      return dispel(round, turn);
-    case 'jutsu': {
-      const trumpsUsed = afterUsing(turn.actor, card.technique);
-      const marked = { ...round, fighters: patch(round.fighters, turn.actor.id, { trumpsUsed }) };
-      return useJutsu(marked, turn, card.technique);
-    }
-    case 'item':
-      return useTool(round, turn, card.item);
-    case 'strike':
-      return strike(practise(round, turn.actor, 'blows'), turn, false);
-    case 'throw':
-      return strike(round, turn, true);
-    case 'evade':
-    case 'brace':
-      return commit(round, turn, card.kind);
-    case 'gather':
-      return gather(round, turn);
-    case 'guard':
-    case 'dodge':
-    case 'counter':
-      return round;
-  }
 }
 
 function remember(seen: Round['seen'], fighterId: string, id: string): Round['seen'] {
@@ -163,20 +126,24 @@ function unseen(round: Round, turn: Turn): Round {
 
 /**
  * Attacking from smoke or a conceal gives you away, hit or miss. An illusionist stays hidden,
- * unless the one they struck at traces the illusion back (as a Search would find them).
+ * unless the one they struck at traces the illusion back (as a Search would find them); every
+ * attack leaves a trail, so each one is easier to trace than the last (`EXPOSURE_STEP`).
  */
 function revealed(round: Round, { actor: before, target, rng }: Turn): Round {
-  const actor = fighterIn(round, before.id);
-  if (!actor?.hidden) return round;
-  if (!revealOnAttack(actor).hidden) {
-    return { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) };
+  const struck = fighterIn(round, before.id);
+  if (!struck?.hidden) return round;
+  if (!revealOnAttack(struck).hidden) {
+    return { ...round, fighters: patch(round.fighters, struck.id, { hidden: false }) };
   }
-  const victim = target && fighterIn(round, target.id);
-  const hiding = inCover(round.ground, actor);
-  if (!victim || !alive(victim) || !rng.chance(searchChance(victim, hiding))) return round;
+  const trail = { exposure: (struck.exposure ?? 0) + 1 };
+  const actor = { ...struck, ...trail };
+  const trailed = { ...round, fighters: patch(round.fighters, actor.id, trail) };
+  const victim = target && fighterIn(trailed, target.id);
+  const hiding = inCover(trailed.ground, actor);
+  if (!victim || !alive(victim) || !rng.chance(searchChance(victim, hiding))) return trailed;
   return say(
-    { ...round, fighters: patch(round.fighters, actor.id, { hidden: false }) },
-    tracedLine(momentOf(round, victim.id), victim, actor),
+    { ...trailed, fighters: patch(trailed.fighters, actor.id, { hidden: false }) },
+    tracedLine(momentOf(trailed, victim.id), victim, actor),
   );
 }
 
@@ -225,6 +192,11 @@ function choosePlay(round: Round, actor: PlanFighter, rng: Rng): Play | { spent:
   return helping.kind === 'strike' ? { ...planned, target: helping.at } : planned;
 }
 
+/** The player is told when their turn played something they never slotted (`staging.ts`). */
+function offPlanOf(actor: PlanFighter, play: Play): Pick<Round, 'offPlan'> {
+  return actor.isPlayer && play.offPlan ? { offPlan: play.offPlan } : {};
+}
+
 function turn(start: Round, actorId: string, rng: Rng): Round {
   const before = start.fighters.find((f) => f.id === actorId);
   // A fighter who met an attack in a clash has spent their turn already.
@@ -232,8 +204,13 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
     return start;
   }
   // Last turn's Evade or Brace holds until now (`commitment.ts`).
+  // A turn of stillness opens Sage Mode now, unless it was broken (`meditation.ts`).
   const sprung = springTraps(
-    startOfTurn(threadsRetaken(released(start, actorId), actorId), before, rng),
+    startOfTurn(
+      threadsRetaken(meditationEnds(released(start, actorId), actorId), actorId),
+      before,
+      rng,
+    ),
     actorId,
     rng,
     false,
@@ -241,7 +218,8 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   // A channelled hold takes the turn while it holds (`holding.ts`).
   const held = keepHolding(sprung, sprung.fighters.find((f) => f.id === actorId) ?? before);
   if (held.spent) return held.round;
-  const round = held.round;
+  // A covered eye is uncovered as the turn begins, when the fight calls for it (`veil.ts`).
+  const round = uncoverWhenWorth(held.round, actorId);
   const actor = round.fighters.find((f) => f.id === actorId) ?? before;
   if (!alive(actor)) return round;
   const lost = lostTurn(round, actor);
@@ -262,7 +240,8 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const id = cardId(card);
   const turns = actor.streak?.card === id ? actor.streak.turns + 1 : 1;
   const fighters = patch(noted.fighters, actor.id, { streak: { card: id, turns } });
-  return { ...noted, fighters, acted, seen: remember(noted.seen, actor.id, id), played: id };
+  const seen = remember(noted.seen, actor.id, id);
+  return { ...noted, fighters, acted, seen, played: id, ...offPlanOf(actor, chosen) };
 }
 
 /** A fighter's turn, its lines tagged for the screen (`staging.ts`). */
@@ -311,10 +290,12 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...carriedIn(state),
   };
   const name = EXCHANGE_NAMES[state.exchange] ?? 'Another';
-  const opened: Round = { ...start, lines: [exchangeDivider(name, start)] };
+  const opened: Round = { ...start, lines: [exchangeDivider(name, start, state.exchange === 0)] };
   const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), opened);
   const kept = plannedSummons(
-    shadowsAfter(summonsAfter(clonesAfter(shroudsAfter(afterEmpowers(played, state.round))))),
+    veilsAfter(
+      shadowsAfter(summonsAfter(clonesAfter(shroudsAfter(afterEmpowers(played, state.round))))),
+    ),
   );
   const end = secondWinds(
     lingerAfter(dustAfter(swarmsAfter(struggleFree(kept, rng), rng)), state.round),

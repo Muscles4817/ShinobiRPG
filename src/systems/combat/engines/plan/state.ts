@@ -9,7 +9,7 @@ import type {
   RangeBand,
 } from '../../contract';
 import { bodyFrom, type Body } from '../../rules/body';
-import { numberedNames } from '../../rules/narration';
+import { numberedNames, type NarrationOffPlan } from '../../rules/narration';
 import { openingChakra, openingSteadiness } from '../../rules/provisions';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
@@ -113,6 +113,11 @@ export interface PlanFighter
   readonly shadowOf?: string;
   /** Gathering chakra and breath this turn, and so open until their next (`gather.ts`). */
   readonly gathering?: boolean;
+  /**
+   * Meditating into a still empower (Sage Mode, `meditation.ts`): which technique, and their
+   * health as they went still. It takes hold as their next turn begins, if nothing hurt them.
+   */
+  readonly meditating?: { readonly techniqueId: string; readonly health: number };
   readonly loadout: Loadout;
   /** The defence ready at each distance (`readiness.ts`); absent in fights saved before. */
   readonly reactions?: Reactions;
@@ -122,6 +127,8 @@ export interface PlanFighter
   readonly row: CombatRow;
   /** How hard they are to find while hidden, once a conceal set it (`concealmentOf`). */
   readonly concealment?: number;
+  /** Glimpses since they last hid, bringing seekers nearer (`searchChance`); absent: none. */
+  readonly exposure?: number;
   /**
    * The last exchange a daze leaves this fighter open (no defences, a target for finishers),
    * even after the lost turn: through the exchange after the daze, so whoever dazed them
@@ -251,6 +258,8 @@ export interface Round {
   readonly watching?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */
   readonly played?: CardId;
+  /** The turn just taken was the player's and played off their plan, and why (`staging.ts`). */
+  readonly offPlan?: NarrationOffPlan;
   /** The story's last lines before this exchange, so words aren't picked twice running. */
   readonly recent?: readonly string[];
 }
@@ -328,6 +337,7 @@ export function patch(
       | 'hidden'
       | 'confused'
       | 'concealment'
+      | 'exposure'
       | 'perks'
       | 'openUntil'
       | 'steadyUntil'
@@ -348,6 +358,9 @@ export function patch(
       | 'committed'
       | 'gathering'
       | 'threadsSlipped'
+      | 'meditating'
+      | 'veiled'
+      | 'revealed'
     >
   >,
 ): PlanFighter[] {

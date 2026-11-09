@@ -26,7 +26,7 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
   {
     id: 'ford-track',
     from: 'torogakure',
-    to: 'kiri-ford',
+    to: 'cedar-deep',
     legs: [
       {
         region: 'forest-track',
@@ -34,43 +34,98 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
         text: 'The track runs under old cedars, and the lanterns of home are soon out of sight.',
       },
     ],
-    trail: [{ x: 56, y: 35 }],
+    danger: 'armed',
+  },
+  {
+    id: 'cedar-track',
+    from: 'cedar-deep',
+    to: 'kiri-ford',
+    legs: [
+      {
+        region: 'forest-track',
+        days: 1,
+        text: 'The cedars thin out towards the river, and the track drops through bamboo to the ford.',
+      },
+    ],
+    danger: 'armed',
+  },
+  {
+    id: 'flats-road',
+    from: 'kiri-ford',
+    to: 'salt-flats',
+    legs: [
+      {
+        region: 'dune-road',
+        days: 1,
+        text: 'The river country dries out mile by mile until the ground underfoot is white and crunches.',
+      },
+    ],
     danger: 'armed',
   },
   {
     id: 'dune-crossing',
-    from: 'kiri-ford',
+    from: 'salt-flats',
     to: 'sakyugakure',
     legs: [
       {
         region: 'dune-road',
-        days: 2,
+        days: 1,
         text: 'Caravan posts mark the way across the dunes, a day apart if the wind is kind.',
       },
     ],
-    trail: [{ x: 76, y: 34 }],
+    trail: [{ x: 82, y: 32 }],
     danger: 'armed',
     cost: 120,
   },
   {
-    id: 'reikon-pass',
+    id: 'battlefield-track',
+    from: 'salt-flats',
+    to: 'old-battlefield',
+    legs: [
+      {
+        region: 'dune-road',
+        days: 1,
+        text: 'A track nobody keeps leaves the caravan road and runs south over the dunes.',
+      },
+    ],
+    danger: 'armed',
+  },
+  {
+    id: 'hanebashi-road',
     from: 'torogakure',
-    to: 'mount-reikon',
+    to: 'hanebashi',
     legs: [
       {
         region: 'hill-road',
         days: 1,
         text: 'The hill road climbs past shrines whose lanterns nobody tends any more.',
       },
+    ],
+    danger: 'petty',
+  },
+  {
+    id: 'lanternfall-path',
+    from: 'hanebashi',
+    to: 'lanternfall',
+    legs: [
       {
         region: 'mountain-pass',
-        days: 3,
-        text: 'The pass climbs into cloud. Paper charms hang from the rocks, and something rustles behind them.',
+        days: 1,
+        text: 'Above the post town the road becomes a path, and the sound of falling water grows.',
       },
     ],
-    trail: [
-      { x: 45, y: 24 },
-      { x: 41, y: 16 },
+    danger: 'deadly',
+  },
+  {
+    id: 'reikon-pass',
+    from: 'lanternfall',
+    to: 'mount-reikon',
+    legs: [
+      {
+        region: 'mountain-pass',
+        days: 2,
+        text: 'The pass climbs into cloud. Paper charms hang from the rocks, and something rustles behind them.',
+      },
     ],
     danger: 'deadly',
   },
@@ -82,7 +137,7 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
     legs: [
       {
         region: 'coast-road',
-        days: 1,
+        days: 2,
         text: 'You walk out across the bay on the swell, gulls overhead and nothing under your feet but chakra and green water.',
       },
     ],
@@ -90,6 +145,21 @@ export const ORIGINAL_ROUTES: readonly RouteDef[] = [
       { x: 33, y: 55 },
       { x: 48, y: 50 },
       { x: 60, y: 44 },
+    ],
+    danger: 'petty',
+    needs: [{ kind: 'walk', surface: 'water' }],
+  },
+  {
+    id: 'tide-path',
+    name: 'The tide path',
+    from: 'port-shiomachi',
+    to: 'drowned-shrine',
+    legs: [
+      {
+        region: 'coast-road',
+        days: 1,
+        text: 'You walk out from the harbour mouth over open water towards a gate standing in the sea.',
+      },
     ],
     danger: 'petty',
     needs: [{ kind: 'walk', surface: 'water' }],

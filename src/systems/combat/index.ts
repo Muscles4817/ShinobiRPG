@@ -83,6 +83,7 @@ export {
   WEAPON_SHAPES,
 } from './gearContract';
 export { masteryShare, MASTERY_FLOOR } from './rules/mastery';
+export { overpoweredBy } from './rules/elements';
 // Gear's numbers, for describing a piece the same way the fight applies it.
 export { armourKept, armourSlows, STRENGTH_CARRIES } from './rules/armour';
 export { HIT_TYPES, hitTypeOf, type HitType } from './rules/hits';
@@ -107,11 +108,13 @@ export { RANGE_BANDS, RANGE_LABEL, reachOf } from './rules/range';
 export { GROUND_RULES, type GroundRule } from './rules/ground';
 export { potencyOf as fieldPotencyOf } from './rules/verbs/field';
 export { AFFLICT_EXCHANGES } from './rules/verbs/lingering';
+export { stepToll, type StepToll } from './rules/verbs/tolls';
 export type {
   Narration,
   NarrationAmount,
   NarrationAmountKind,
   NarrationForce,
+  NarrationOffPlan,
   NarrationPools,
   NarrationReaction,
   NarrationStatuses,

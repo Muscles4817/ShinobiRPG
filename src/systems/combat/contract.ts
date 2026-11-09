@@ -54,6 +54,9 @@ export type CombatTechnique = Pick<
   | 'reach'
   | 'accuracy'
   | 'needsOpen'
+  | 'needsCalls'
+  | 'needsTarget'
+  | 'lethal'
   | 'moulded'
   | 'clan'
 > & {
@@ -162,6 +165,11 @@ export interface CombatantSetup {
   /** Chakra nature: boosts techniques of the same element and decides elemental matchups. */
   readonly nature?: Element;
   readonly perks?: readonly CombatPerk[];
+  /**
+   * Perks kept covered until revealed in the fight (a transplanted eye under a headband): no use
+   * until uncovered, and a drain on chakra while open (`rules/veil.ts`).
+   */
+  readonly veiled?: readonly CombatPerk[];
   readonly traits?: readonly CombatTrait[];
   /** Tools carried into the fight (the player's pouch). */
   readonly items?: readonly CombatItem[];
@@ -213,6 +221,13 @@ export interface CombatCall {
   readonly puppet?: true;
   /** A puppet its master fights from inside (a shell): it takes the blows aimed at them. */
   readonly worn?: true;
+  /** Big enough to carry its caller: a meditating rider is carried clear by it (`plan/riding.ts`). */
+  readonly mount?: true;
+  /**
+   * A sage toad: it answers onto its caller's shoulder rather than the field, and draws natural
+   * energy in with them while it perches (`plan/perching.ts`).
+   */
+  readonly perch?: true;
 }
 
 /** How a summon's part in a fight ended: still there, beaten, or sent home unpaid. */

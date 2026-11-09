@@ -1,7 +1,13 @@
 import type { Find } from '@/systems/cooking';
 import type { AtlasDef } from './atlas';
 import type { ExamDef } from '@/systems/exams';
-import type { ArcDef, EncounterTemplate, MissionDef, RoadEventDef } from '@/systems/missions';
+import type {
+  ArcDef,
+  EncounterTemplate,
+  MissionDef,
+  RoadEventDef,
+  TravellerDef,
+} from '@/systems/missions';
 import type { TechniqueDef } from '@/systems/techniques';
 import type { RouteDef } from '@/systems/travel';
 
@@ -12,6 +18,7 @@ import type { FurnishingDef, GardenCrop, HomeDef } from './homes';
 import type { QuirkDef } from './quirks';
 import type { CurriculumBeat } from './curriculum';
 import type { SenseiSpeech } from './senseiSpeech';
+import { travellerRoadEvents } from './travellerEvents';
 import type { CompanionKindDef, CompanionLoreDef } from './companions';
 import type { ContractDef, SummonDef } from './contracts';
 import type { PuppetDef } from './puppets';
@@ -21,6 +28,7 @@ import type { SenseiTestDef } from './senseiTests';
 import type { InjuryDef } from './injuries';
 import type { BuildDef, UpbringingDef } from './upbringing';
 import type { VoiceDef } from './voices';
+import type { DeepWildsDef } from './deepWilds';
 import type {
   BreakInScene,
   ClanDef,
@@ -69,9 +77,12 @@ export interface ContentDb {
   readonly missions: Catalog<MissionDef>;
   readonly exams: Catalog<ExamDef>;
   readonly encounters: Catalog<EncounterTemplate>;
+  /** The pack's road events and a road event for each traveller (`travellerRoadEvents`). */
   readonly roadEvents: Catalog<RoadEventDef>;
+  readonly travellers: Catalog<TravellerDef>;
   readonly arcs: Catalog<ArcDef>;
   readonly voices: readonly VoiceDef[];
+  readonly deepWilds: readonly DeepWildsDef[];
   readonly enemies: Catalog<EnemyDef>;
   readonly companionKinds: Catalog<CompanionKindDef>;
   readonly companionLore: Catalog<CompanionLoreDef>;
@@ -133,9 +144,14 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     missions: createCatalog('mission', pack.missions),
     exams: createCatalog('exam', pack.exams),
     encounters: createCatalog('encounter', pack.encounters),
-    roadEvents: createCatalog('road event', pack.roadEvents),
+    roadEvents: createCatalog('road event', [
+      ...pack.roadEvents,
+      ...travellerRoadEvents(pack.travellers),
+    ]),
+    travellers: createCatalog('traveller', pack.travellers),
     arcs: createCatalog('arc', pack.arcs),
     voices: pack.voices,
+    deepWilds: pack.deepWilds,
     enemies: createCatalog('enemy', pack.enemies),
     companionKinds: createCatalog('companion kind', pack.companionKinds),
     companionLore: createCatalog('companion lore', pack.companionLore),

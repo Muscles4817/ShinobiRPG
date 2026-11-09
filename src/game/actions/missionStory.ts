@@ -1,4 +1,4 @@
-import { advance, holds, type DecisionOption } from '@/systems/missions';
+import { advance, holds } from '@/systems/missions';
 
 import type { GameContext } from '../context';
 import { activeMission, activeStage, afterStage } from '../missionFlow';
@@ -6,6 +6,8 @@ import { campActivity, campChoices, campOver, campWithSensei } from '../story/ca
 import { campLine } from '../story/campLines';
 import { SENSEI_FIRESIDE } from '../story/fireside';
 import { decide } from '../story/decide';
+import { afterRoadChoice } from '../story/roadAfter';
+import { roadChoices, type RoadChoice } from '../story/roadChoices';
 import { storyOf } from '../story/state';
 import type { GameState } from '../state';
 import { walkOn } from './travel';
@@ -16,28 +18,31 @@ import type { ActionHandler, ActionOf } from './types';
  * what to do by the fire. Checks, encounters and moving on are `mission.ts`.
  */
 
-/** The options open now: a road event's, or the decision stage's. */
-export function openOptions(state: GameState, ctx: GameContext): readonly DecisionOption[] {
+/** The choices open now: a road event's (with what each leaves to do), or the decision stage's. */
+export function openChoices(state: GameState, ctx: GameContext): readonly RoadChoice[] {
   const run = state.mission;
   if (!run) return [];
-  if (run.roadEvent) return ctx.content.roadEvents.get(run.roadEvent)?.options ?? [];
+  const event = run.roadEvent ? ctx.content.roadEvents.get(run.roadEvent) : undefined;
+  if (event) return roadChoices(state, ctx, event);
   const stage = activeStage(state, ctx);
-  return stage?.kind === 'decision' ? stage.options : [];
+  return stage?.kind === 'decision' ? stage.options.map((option) => ({ option })) : [];
 }
 
 export const missionDecide: ActionHandler<ActionOf<'missionDecide'>> = {
   check(state, action, ctx) {
     if (state.combat) return 'You are in the middle of a fight.';
-    const option = openOptions(state, ctx)[action.optionIndex];
+    const option = openChoices(state, ctx)[action.optionIndex]?.option;
     if (!state.mission || !option) return 'There is no decision to make right now.';
     return holds(storyOf(state.mission), option.when) ? null : 'That isn’t open to you here.';
   },
   perform(state, action, ctx, rng) {
     const def = activeMission(state, ctx);
-    const option = openOptions(state, ctx)[action.optionIndex];
-    if (!def || !option) return state;
-    const decided = decide(state, ctx, def, option);
+    const choice = openChoices(state, ctx)[action.optionIndex];
+    if (!def || !choice) return state;
+    const decided = afterRoadChoice(decide(state, ctx, def, choice.option), ctx, choice);
     if (!decided.mission) return decided;
+    // Foes faced on the road stand in the way: the run waits on them before it moves on.
+    if (decided.mission.detour) return walkOn(decided, ctx, rng);
     // On a quick trip, the road event dealt with, you hurry on.
     return walkOn(afterStage({ ...decided, mission: advance(decided.mission) }, ctx), ctx, rng);
   },

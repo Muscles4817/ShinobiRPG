@@ -52,7 +52,22 @@ function product(
 
 /** How much more than its usual prices the town you are in charges you. */
 export function townMarkup(state: GameState, ctx: GameContext): number {
-  return product(greetingsOf(state, ctx, state.locationId), MARKUP);
+  return markupAt(state, ctx, state.locationId);
+}
+
+/** How much more than its usual prices a town charges you, wherever you are now. */
+export function markupAt(state: GameState, ctx: GameContext, locationId: string): number {
+  return product(greetingsOf(state, ctx, locationId), MARKUP);
+}
+
+/** What a town sells for, its grudges included, from before you're in it (a room on the way). */
+export function priceAt(
+  cost: number,
+  state: GameState,
+  ctx: GameContext,
+  locationId: string,
+): number {
+  return cost <= 0 ? cost : Math.max(1, Math.round(cost * markupAt(state, ctx, locationId)));
 }
 
 /** What something the town sells costs you, its grudges included. A free thing stays free. */

@@ -1,7 +1,7 @@
 import { CONTENT_PACKS, type LocationDef } from '@/content';
 import { addPoints, NEW_BOND } from '@/systems/bonds';
 import { signPass } from '@/systems/travel';
-import { act, newGame } from '@/test/gameFixtures';
+import { act, keepClear, newGame } from '@/test/gameFixtures';
 
 import { createGameContext, type GameContext } from './context';
 import { dispatch } from './dispatch';
@@ -36,7 +36,7 @@ function walk(start: GameState, context: GameContext = ctx): GameState {
   let state = start;
   for (let step = 0; state.mission && step < 20; step++) {
     const action = state.mission.roadEvent
-      ? ({ type: 'missionDecide', optionIndex: 0 } as const)
+      ? keepClear(state, context)
       : ({ type: 'missionContinue' } as const);
     state = act(state, action, context);
   }
@@ -109,8 +109,10 @@ describe('turning back', () => {
       state = act(
         state,
         state.mission?.roadEvent
-          ? { type: 'missionDecide', optionIndex: 0 }
-          : { type: 'missionContinue' },
+          ? keepClear(state, openRoads)
+          : activeStage(state, openRoads)?.kind === 'stop'
+            ? { type: 'journeyStop', stay: false }
+            : { type: 'missionContinue' },
         openRoads,
       );
     }

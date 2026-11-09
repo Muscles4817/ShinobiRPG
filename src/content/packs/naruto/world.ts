@@ -15,6 +15,7 @@ import { SUNAGAKURE } from './sunagakure';
 import { SHUKUBA_TOWN } from './shukuba';
 import { OTAFUKU_TOWN } from './otafuku';
 import { FIRE_TEMPLE } from './fireTemple';
+import { NARUTO_WILD_COUNTRY } from './wildCountry';
 import { NARUTO_LETTINGS } from './homes';
 
 export const NARUTO_TEXT: SettingText = {
@@ -44,6 +45,8 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
   {
     id: 'konohagakure',
     name: 'Konohagakure',
+    kind: 'village',
+    famous: true,
     epithet: 'Village Hidden in the Leaves',
     map: { x: 48, y: 29, label: 'right' },
     backdrop: 'leaf-village',
@@ -74,6 +77,27 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
           'smugglers-of-tanzaku',
           'bridge-builders-debt',
           'border-outpost-orders',
+          'senior-pirates-at-the-bridge',
+          'senior-forest-poachers',
+          'senior-steps-toll',
+          'senior-stone-surveyors',
+          'senior-otafuku-pawn',
+          'senior-refugees-at-the-waves',
+          'senior-tax-silver',
+          'senior-temple-sutra',
+          'senior-bounty-station',
+          'senior-spice-runners',
+          'senior-cloud-delegation',
+          'senior-rivers-orphans',
+          'senior-envoy-night',
+          'senior-hyuga-taken',
+          'senior-otafuku-traitor',
+          'senior-sand-watchers',
+          'senior-stone-cache',
+          'senior-mist-defector',
+          'senior-mist-sword-for-hire',
+          'senior-cloud-pair',
+          'senior-sword-saint',
           'arc-kaname-bell-one',
           'arc-kaname-bell-two',
           'arc-hotaru-shore-one',
@@ -126,6 +150,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
         gearIds: [
           'fingerless-gloves',
           'tanto',
+          'yari',
           'trench-knives',
           'ninjato',
           'katana',
@@ -242,12 +267,15 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
   SHUKUBA_TOWN,
   OTAFUKU_TOWN,
   FIRE_TEMPLE,
+  ...NARUTO_WILD_COUNTRY,
   {
     id: 'mount-myoboku',
     name: 'Mount Myōboku',
+    kind: 'landmark',
+    famous: true,
     epithet: 'Where the toads train sages',
     map: { x: 61, y: 22, label: 'right' },
-    backdrop: 'mountain',
+    backdrop: 'toad-mountain',
     places: [],
     lockedReason: 'Needs a summoning contract',
   },

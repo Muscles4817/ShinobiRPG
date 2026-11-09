@@ -52,6 +52,14 @@ describe('companion validation', () => {
     ]);
   });
 
+  it('reports a changed kind found after a foe that is no chakra beast', () => {
+    const fox = kind('mist-fox-kit');
+    const odd = { ...fox, wild: { ...fox.wild!, after: 'grey-wolf' } };
+    expect(validateCompanions(withKind(odd))).toEqual([
+      'companion kind "mist-fox-kit" is found after "grey-wolf", which is no chakra beast',
+    ]);
+  });
+
   it('reports a kennel breeding a kind that is not bred, and a job giving an unknown kind', () => {
     const pack = withKind({ ...kind('kennel-hound'), temperament: 'stray' });
     const missions = ORIGINAL_PACK.missions.map((m, i) =>

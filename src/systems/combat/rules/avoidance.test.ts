@@ -145,4 +145,16 @@ describe('reading and pace against committed evasion', () => {
       avoidChance({ ...evading, threat: 0.5 }),
     );
   });
+
+  it('eyes that see it coming read every attack clearly and keep up a little longer', () => {
+    const blind = { ...evading, read: 0.75, seesAll: true };
+    expect(avoidChance({ ...blind, threat: 0.5 })).toBeGreaterThan(
+      avoidChance({ ...blind, threat: 0.1 }),
+    );
+    expect(avoidChance({ ...evading, threat: 0.5, paceSpeed: 21 })).toBe(0);
+    expect(avoidChance({ ...evading, seesAll: true, threat: 0.5, paceSpeed: 21 })).toBeGreaterThan(
+      0,
+    );
+    expect(avoidChance({ ...evading, seesAll: true, threat: 0.5, paceSpeed: 30 })).toBe(0);
+  });
 });

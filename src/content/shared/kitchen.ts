@@ -1,4 +1,5 @@
 import type { CookbookDef, IngredientDef } from '../types';
+import { BEAST_COOKBOOK } from './beastKitchen';
 
 /**
  * Everyday ingredients and the cookbooks sold beside them. Shared by every pack: rice is rice
@@ -121,4 +122,5 @@ export const COOKBOOKS: readonly CookbookDef[] = [
       'grated-yam-rice',
     ],
   },
+  BEAST_COOKBOOK,
 ];

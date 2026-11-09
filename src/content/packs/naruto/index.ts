@@ -1,6 +1,5 @@
-import { bestiary } from '../../shared/bestiary';
-import { NARUTO_FOE_KIT } from './bestiaryKit';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
+import { CHAKRA_BEAST_ARTS } from '../../shared/bestiary';
 import { STRAINS } from './strains';
 import { WILD_STRAINS } from '../../shared/wildStrains';
 import { DUSTS } from '../../shared/dusts';
@@ -27,8 +26,6 @@ import { CLANS } from './clans';
 import { COMBO_TECHNIQUES } from './comboTechniques';
 import { ELITE_MISSIONS } from './eliteMissions';
 import { COMPANION_KINDS } from './companions';
-import { CANON_FOES } from './canonFoes';
-import { ENEMIES } from './enemies';
 import { FOODS } from './food';
 import { SEASONAL_FOODS } from './seasonalFood';
 import { MISSIONS } from './missions';
@@ -38,6 +35,7 @@ import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
 import { RECIPES } from '../../shared/recipes';
 import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
+import { BEAST_INGREDIENTS } from '../../shared/beastKitchen';
 import { DESERT_INGREDIENTS } from '../../shared/desert';
 import { DESERT_FOX } from '../../shared/wildKinds';
 import { DUELIST_GEAR, DUELIST_PUPPETS, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
@@ -45,17 +43,20 @@ import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
 import { TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
-import { ROAD_EVENTS } from '../../shared/road/events';
+import { DEEP_WILDS } from '../../shared/deepWilds';
+import { ROAD_EVENTS, TRAVELLERS } from '../../shared/road/events';
+import { DEEP_WILDS_EVENTS } from './deepWilds';
 import { VOICES } from '../../shared/talk/voices';
 import { EXAM_ENCOUNTERS } from '../../shared/examEncounters';
-import { CHUNIN_ENEMIES, CHUNIN_MISSIONS } from './chuninMissions';
-import { EXAM_ENEMIES, EXAM_MISSIONS, EXAMS } from './exam';
+import { CHUNIN_MISSIONS } from './chuninMissions';
+import { SENIOR_MISSIONS } from './seniorJobs';
+import { EXAM_MISSIONS, EXAMS } from './exam';
 import { NARUTO_CONVERSATIONS } from './conversations';
-import { TEMPLE_BELL_ARC, TEMPLE_BELL_FOE, TEMPLE_BELL_JOBS } from './arcs/templeBell';
-import { DROWNED_SHORE_ARC, DROWNED_SHORE_FOE, DROWNED_SHORE_JOBS } from './arcs/drownedShore';
-import { LOADED_DICE_ARC, LOADED_DICE_FOE, LOADED_DICE_JOBS } from './arcs/loadedDice';
-import { SWORD_SCHOOL_ARC, SWORD_SCHOOL_FOE, SWORD_SCHOOL_JOBS } from './arcs/swordSchool';
-import { SNAKE_DEN_ARC, SNAKE_DEN_FOE, SNAKE_DEN_JOBS } from './arcs/snakeDen';
+import { TEMPLE_BELL_ARC, TEMPLE_BELL_JOBS } from './arcs/templeBell';
+import { DROWNED_SHORE_ARC, DROWNED_SHORE_JOBS } from './arcs/drownedShore';
+import { LOADED_DICE_ARC, LOADED_DICE_JOBS } from './arcs/loadedDice';
+import { SWORD_SCHOOL_ARC, SWORD_SCHOOL_JOBS } from './arcs/swordSchool';
+import { SNAKE_DEN_ARC, SNAKE_DEN_JOBS } from './arcs/snakeDen';
 import { TWO_SIDES_ARC, TWO_SIDES_JOBS } from './arcs/twoSides';
 import { SILK_DAUGHTER_ARC, SILK_DAUGHTER_JOBS } from './arcs/silkDaughter';
 import { UNWRITTEN_RULE_ARC, UNWRITTEN_RULE_JOBS } from './arcs/unwrittenRule';
@@ -86,12 +87,12 @@ import { SENSEI_TECHNIQUES } from './senseiTechniques';
 import { RENAMED_TECHNIQUES } from './techniques/renamed';
 import { TECHNIQUES } from './techniques';
 import { CANON_TECHNIQUES } from './techniques/canon';
+import { narutoFoes } from './foes';
 import { TRAINING } from './training';
 import { VILLAGE } from './village';
 import { NARUTO_LOCATIONS, NARUTO_TEXT } from './world';
 import { NARUTO_ROUTES } from './routes';
 import {
-  DESERT_FOES,
   DESERT_ROAD_EVENTS,
   SAND_HOUND,
   SUNA_CLANS,
@@ -110,7 +111,6 @@ import { WAVES_FOODS, WAVES_JOBS, WAVES_PEOPLE, WAVES_TRAINING } from './landOfW
 import { TANZAKU_FOODS, TANZAKU_JOBS, TANZAKU_PEOPLE } from './tanzaku';
 import {
   KIRI_CLANS,
-  KIRI_FOES,
   KIRI_FOODS,
   KIRI_GEAR,
   KIRI_JOBS,
@@ -158,6 +158,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...ROSTER_TECHNIQUES,
     ...COMBO_TECHNIQUES,
     ...BEAST_TECHNIQUES,
+    ...CHAKRA_BEAST_ARTS,
     ...CONTRACT_TECHNIQUES,
     ...CANON_TECHNIQUES,
     ...DUELIST_TECHNIQUES,
@@ -169,6 +170,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...TEAM_MISSIONS,
     ...ELITE_MISSIONS,
     ...CHUNIN_MISSIONS,
+    ...SENIOR_MISSIONS,
     ...EXAM_MISSIONS,
     ...WAVES_JOBS,
     ...TANZAKU_JOBS,
@@ -189,7 +191,9 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   ],
   exams: EXAMS,
   encounters: [...ENCOUNTERS, ...EXAM_ENCOUNTERS],
-  roadEvents: [...ROAD_EVENTS, ...DESERT_ROAD_EVENTS],
+  roadEvents: [...ROAD_EVENTS, ...DESERT_ROAD_EVENTS, ...DEEP_WILDS_EVENTS],
+  deepWilds: DEEP_WILDS,
+  travellers: TRAVELLERS,
   arcs: [
     TEMPLE_BELL_ARC,
     DROWNED_SHORE_ARC,
@@ -206,20 +210,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   contracts: CONTRACTS,
   strains: [...STRAINS, ...WILD_STRAINS],
   dusts: DUSTS,
-  enemies: [
-    ...ENEMIES,
-    ...CANON_FOES,
-    ...bestiary(NARUTO_FOE_KIT),
-    ...CHUNIN_ENEMIES,
-    ...EXAM_ENEMIES,
-    TEMPLE_BELL_FOE,
-    DROWNED_SHORE_FOE,
-    ...KIRI_FOES,
-    ...DESERT_FOES,
-    LOADED_DICE_FOE,
-    SWORD_SCHOOL_FOE,
-    SNAKE_DEN_FOE,
-  ],
+  enemies: narutoFoes(),
   training: [
     ...TRAINING,
     ...WAVES_TRAINING,
@@ -255,7 +246,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   gear: [...GEAR, ...DUELIST_GEAR, ...KIRI_GEAR, ...SUNA_GEAR],
   tools: TOOLS,
   injuries: INJURIES,
-  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS, ...DESERT_INGREDIENTS],
+  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS, ...BEAST_INGREDIENTS, ...DESERT_INGREDIENTS],
   recipes: RECIPES,
   cookbooks: COOKBOOKS,
   campFinds: CAMP_FINDS,

@@ -239,8 +239,8 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
   const slip = { target, attacker, what: blow.what };
   const line = missLine(momentOf(round, target.id), missWhy(hit, tried), slip);
-  // Anyone slips some blows; only a ready Dodge is shown reacting.
-  return { slipped: say(round, tried ? reactionLine(line, 'dodged') : line), tried };
+  // Anyone slips some blows; a ready Dodge is shown reacting, any other slip as a miss.
+  return { slipped: say(round, reactionLine(line, tried ? 'dodged' : 'missed')), tried };
 }
 
 /** A Counter answers a hand-to-hand blow up close, if the attacker is in reach. */

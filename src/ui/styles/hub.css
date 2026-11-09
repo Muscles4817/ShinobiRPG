@@ -54,7 +54,9 @@
 }
 
 .sky[data-land='dunes'] .hub-place,
-.sky[data-land='dunes'] .hub-epithet {
+.sky[data-land='dunes'] .hub-epithet,
+.sky[data-land='salt-flats'] .hub-place,
+.sky[data-land='salt-flats'] .hub-epithet {
   color: #2a1608;
   text-shadow: 0 1px 8px rgb(255 230 180 / 0.6);
 }

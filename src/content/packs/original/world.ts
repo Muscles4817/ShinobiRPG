@@ -9,6 +9,9 @@ import { BROKEN_BLADE_JOBS } from './arcs/brokenBlade';
 import { LANTERN_KEEPER_JOBS } from './arcs/lanternKeeper';
 import { UNFINISHED_JOBS } from './arcs/unfinished';
 import { FORGED_BLADE_JOBS } from './arcs/forgedBlade';
+import { GLASS_EYE_JOBS } from './arcs/glassEye';
+import { OLD_OWL_JOBS } from './arcs/oldOwl';
+import { WHITE_STAG } from './jobs/whiteStag';
 import { PATIENT_THING_JOBS } from './arcs/patientThing';
 import { SALT_LANTERNS_VILLAGE_JOBS } from './arcs/saltLanterns';
 import { PILOT_HOME } from './arcs/fordChainStart';
@@ -24,6 +27,7 @@ import { TOROGAKURE_LEISURE } from './leisure';
 import { TOROGAKURE_WILDS } from './wilds';
 import { TOROGAKURE_COMPOUNDS } from './compounds';
 import { ARCHIVE_SHELF } from './shelves';
+import { WILD_COUNTRY } from './wildCountry';
 
 export const ORIGINAL_TEXT: SettingText = {
   nation: 'the Land of Embers',
@@ -52,6 +56,8 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
   {
     id: 'torogakure',
     name: 'Tōrōgakure',
+    kind: 'village',
+    famous: true,
     epithet: 'Village Hidden Among Lanterns',
     map: { x: 46, y: 36 },
     backdrop: 'lantern-rooftops',
@@ -81,6 +87,9 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           ...UNFINISHED_JOBS.map((m) => m.id),
           ...FORGED_BLADE_JOBS.map((m) => m.id),
           ...PATIENT_THING_JOBS.map((m) => m.id),
+          ...GLASS_EYE_JOBS.map((m) => m.id),
+          ...OLD_OWL_JOBS.map((m) => m.id),
+          WHITE_STAG.id,
           ...SALT_LANTERNS_VILLAGE_JOBS,
           PILOT_HOME.id,
           ...BREWER_GHOST_JOBS.map((m) => m.id),
@@ -126,6 +135,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'wrapped-knuckles',
           'lantern-steel-tanto',
           'ember-gauntlets',
+          'ash-spear',
           'forge-wakizashi',
           'kurogane-katana',
           'weighted-kunai',
@@ -245,6 +255,8 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
   {
     id: 'sakyugakure',
     name: 'Sakyūgakure',
+    kind: 'village',
+    famous: true,
     epithet: 'Village Hidden in the Dunes',
     map: { x: 88, y: 28 },
     backdrop: 'dunes',
@@ -255,10 +267,13 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
   {
     id: 'mount-reikon',
     name: 'Mount Reikon',
+    kind: 'landmark',
+    famous: true,
     epithet: 'Where spirits gather',
     map: { x: 40, y: 10, label: 'right' },
     backdrop: 'mountain',
     places: [],
     lockedReason: 'Needs Chūnin rank',
   },
+  ...WILD_COUNTRY,
 ];

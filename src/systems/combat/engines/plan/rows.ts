@@ -1,7 +1,7 @@
 import { canReach, reachable, type RowAttack } from '../../rules/rows';
 import { RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { hasVerb } from '../../rules/verbs';
-import type { Card } from './cards';
+import { playsAnywhere, type Card } from './cards';
 import type { PlanFighter } from './state';
 
 /**
@@ -12,6 +12,7 @@ import type { PlanFighter } from './state';
 
 /** How a card reaches, as rows see it. Cards that don't attack reach anywhere. */
 export function attackOf(card: Card): RowAttack {
+  if (playsAnywhere(card)) return { reach: RANGE_BANDS };
   switch (card.kind) {
     case 'strike':
       return { reach: card.reach ?? STRIKE_REACH };
@@ -21,15 +22,7 @@ export function attackOf(card: Card): RowAttack {
       return { reach: THROW_REACH };
     case 'jutsu':
       return { reach: reachOf(card.technique), area: hasVerb(card.technique, 'area') };
-    case 'item':
     case 'step':
-    case 'guard':
-    case 'dodge':
-    case 'evade':
-    case 'brace':
-    case 'gather':
-    case 'search':
-    case 'dispel':
       return { reach: RANGE_BANDS };
   }
 }

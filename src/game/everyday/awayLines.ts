@@ -1,7 +1,7 @@
 import type { DailyBank } from './tell';
 
 /**
- * A soak in hot water and a night in a rented room: by the hour and the season, so the baths
+ * A soak in hot water, a night in a rented room and a night in camp: by the hour and the season, so the baths
  * in winter don't read like the baths in summer. `{them}` is whoever soaks beside you.
  */
 
@@ -79,6 +79,32 @@ export const INN_NIGHTS: DailyBank = {
     {
       when: 'hungry',
       text: 'The smell of the kitchen comes up through the floor and keeps you awake, hungry as you are.',
+    },
+  ],
+};
+
+export const CAMP_NIGHTS: DailyBank = {
+  name: 'camp',
+  prefer: ['hungry'],
+  lines: [
+    { text: 'You bank the fire, roll yourself in your blanket and sleep under the sky.' },
+    {
+      text: 'The fire ticks down to embers. Somewhere off in the dark, something calls and is answered.',
+    },
+    {
+      text: 'You sleep with your back to a rock and your kit under your head, and wake stiff but rested.',
+    },
+    {
+      when: 'winter',
+      text: 'The cold gets in at every edge of the blanket. You sleep close to the fire and keep it fed.',
+    },
+    {
+      when: 'summer',
+      text: 'It is warm enough to sleep without the fire, and the stars are thick overhead.',
+    },
+    {
+      when: 'hungry',
+      text: 'There is nothing in your pack worth cooking. You lie by the fire with your stomach complaining.',
     },
   ],
 };

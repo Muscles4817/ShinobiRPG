@@ -148,8 +148,7 @@ export const THIRD_HAND: MissionDef = {
         },
       ],
     },
-    { kind: 'leg', text: 'Back across the water and up the coast.', days: 1, region: 'coast-road' },
-    { kind: 'leg', text: 'Home through the forest.', days: 1 },
+    { kind: 'road', to: 'home', text: 'Back across the water and up the coast.' },
   ],
 };
 

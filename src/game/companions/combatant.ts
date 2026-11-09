@@ -64,6 +64,7 @@ export function companionAllies(state: GameState, ctx: GameContext): CombatantSe
       chakra: kind.maxChakra,
       maxChakra: kind.maxChakra,
       techniques: knownTechniques(companion, kind).map((id) => ctx.content.techniques.require(id)),
+      ...(kind.nature ? { nature: kind.nature } : {}),
       ...(kind.traits ? { traits: kind.traits } : {}),
       orders: {
         ...(open.stance ? {} : { stanceLocked: notYet }),

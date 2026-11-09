@@ -29,14 +29,14 @@ const routes: RouteDef[] = [
 ];
 
 describe('travel', () => {
-  it('walks the quickest open way, adding up days, ryo and the worst danger', () => {
+  it('walks the quickest open way, adding up days, ryo and the worst danger, each leg its road’s', () => {
     expect(findJourney(routes, 'home', 'dunes')).toEqual({
       via: ['ford'],
       routeIds: ['forest', 'sands'],
       legs: [
-        { region: 'forest-track', days: 1, text: 'forest-track', toward: 'ford' },
-        { region: 'river-road', days: 1, text: 'river-road', toward: 'dunes' },
-        { region: 'dune-road', days: 1, text: 'dune-road', toward: 'dunes' },
+        { region: 'forest-track', days: 1, text: 'forest-track', toward: 'ford', danger: 'petty' },
+        { region: 'river-road', days: 1, text: 'river-road', toward: 'dunes', danger: 'armed' },
+        { region: 'dune-road', days: 1, text: 'dune-road', toward: 'dunes', danger: 'armed' },
       ],
       days: 3,
       cost: 120,

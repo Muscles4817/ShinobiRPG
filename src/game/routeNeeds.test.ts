@@ -48,7 +48,7 @@ describe('roads with needs', () => {
 
   it('goes the long way round without water-walking, and across the bay with it', () => {
     const round = journeyTo(atPort(TREES), ctx, 'kiri-ford');
-    expect(round?.routeIds).toEqual(['coast-road', 'ford-track']);
+    expect(round?.routeIds).toEqual(['coast-road', 'ford-track', 'cedar-track']);
     const across = journeyTo(atPort(BOTH), ctx, 'kiri-ford');
     expect(across?.routeIds).toEqual(['bay-crossing']);
     expect(across?.days).toBeLessThan(round?.days ?? 0);
@@ -59,10 +59,11 @@ describe('roads with needs', () => {
     expect(round.mission?.journey?.legs.map((l) => l.region)).toEqual([
       'coast-road',
       'forest-track',
+      'forest-track',
     ]);
     const across = act(atPort(BOTH), { type: 'travel', locationId: 'kiri-ford' });
     expect(across.mission?.journey?.legs).toEqual(
-      bay.legs.map((leg) => ({ ...leg, toward: 'kiri-ford' })),
+      bay.legs.map((leg) => ({ ...leg, toward: 'kiri-ford', danger: bay.danger })),
     );
   });
 
@@ -96,15 +97,18 @@ describe('the Travel tab and map', () => {
     expect(ford(atPort(TREES))?.closedRoads).toEqual([
       'The bay crossing needs water-walking. It would save a day.',
     ]);
-    expect(ford(atPort(TREES))?.days).toBe(2);
+    expect(ford(atPort(TREES))?.days).toBe(3);
     expect(ford(atPort(BOTH))?.closedRoads).toEqual([]);
-    expect(ford(atPort(BOTH))?.days).toBe(1);
+    expect(ford(atPort(BOTH))?.days).toBe(2);
   });
 
   it('names a closed road to a place even when it is no shortcut from here', () => {
     const home = { ...atPort(TREES), locationId: 'torogakure' };
     const port = travelView(home, ctx).destinations.find((d) => d.id === 'port-shiomachi');
-    expect(port?.closedRoads).toEqual(['The bay crossing needs water-walking.']);
+    expect(port?.closedRoads).toEqual([
+      'The bay crossing needs water-walking.',
+      'The tide path needs water-walking.',
+    ]);
   });
 
   it('says nothing of roads to a place that is coming soon', () => {

@@ -2,7 +2,6 @@ import type { Rng } from '@/core';
 
 import type { RangeBand } from '../../contract';
 import { alive, targetable } from '../../rules/body';
-import { canAttackFrom } from '../../rules/kit';
 import { RANGE_LABEL } from '../../rules/range';
 import { isTrump } from '../../rules/trumps';
 import { hasVerb } from '../../rules/verbs';
@@ -13,14 +12,16 @@ import {
   isDefenceCard,
   isOffence,
   playable,
+  slotted,
   type Card,
   type DefenceCard,
 } from './cards';
 import { chooseCard, desperate } from './choose';
 import { ownField } from './field';
-import { planAdherence } from './judgement';
-import { plannedPlay } from './priority';
-import { opponentsOf } from './senses';
+import { planAdherence, readsInTheMoment } from './judgement';
+import { needed, plannedPlay } from './priority';
+import { inSight, opponentsOf } from './senses';
+import { attacksFrom } from './stepping';
 import { cardLabel } from './wording';
 import { playerOf, type CardId, type PlanFighter, type PlanState, type Round } from './state';
 
@@ -92,7 +93,22 @@ export function intendedCard(
   if (desperate(actor, band) && !(card.kind === 'jutsu' && isTrump(card.technique))) {
     return undefined;
   }
-  return isOffence(card) && !canAttackFrom(actor, band) ? undefined : card;
+  return isOffence(card) && !attacksFrom(actor, card, band) ? undefined : card;
+}
+
+/**
+ * Whether a foe plays what it announced. Not when the exchange has made it pointless (its field
+ * already up, no one left hidden to find): it thinks again, as a plan passes over a card it
+ * doesn't need. Nor, for a mind that reads the fight, when a foe has just taken the field from
+ * it and it could raise its own: it takes it back rather than strike blind.
+ */
+export function keepsTo(actor: PlanFighter, card: Card, round: Round): boolean {
+  if (!needed(actor, card, round)) return false;
+  if (!round.field || ownField(round.field, actor) || !readsInTheMoment(actor)) return true;
+  const raises = slotted(actor, round.range).some(
+    (c) => c.kind === 'jutsu' && hasVerb(c.technique, 'field') && playable(actor, c),
+  );
+  return !raises || (card.kind === 'jutsu' && hasVerb(card.technique, 'field'));
 }
 
 /**
@@ -137,7 +153,8 @@ function telegraph(card: Card, precise: boolean): string {
 }
 
 function nextMove(state: PlanState, f: PlanFighter, insight: boolean): string | undefined {
-  if (f.hidden && !insight) return undefined;
+  // A hidden foe gives nothing away to eyes that don't see them.
+  if (!inSight(playerOf(state), f)) return undefined;
   const id = state.intents[f.id];
   const card = id === undefined ? null : findCard(f, id);
   return card ? telegraph(card, readsPrecisely(playerOf(state), f, insight)) : undefined;

@@ -2,7 +2,7 @@ import { isPinned } from '../../rules/verbs';
 import { handsOnThreads, threadsHeld } from '../../rules/puppets';
 import { tell } from '../../rules/telling';
 import type { CombatTechnique } from '../../contract';
-import { callOf } from './calls';
+import { callsOf } from './calls';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -59,8 +59,8 @@ export function threadsRetaken(round: Round, actorId: string): Round {
 }
 
 function puppetCalled(fighter: PlanFighter, technique: CombatTechnique) {
-  const call = callOf(technique);
-  return (fighter.calls ?? []).find((c) => c.id === call && c.puppet);
+  const calls = callsOf(technique);
+  return (fighter.calls ?? []).find((c) => calls.includes(c.id) && c.puppet);
 }
 
 /** Whether a summoning technique unseals one of this fighter's puppets. */

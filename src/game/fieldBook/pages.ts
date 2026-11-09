@@ -2,11 +2,13 @@ import type { FieldBookPage } from '@/content';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { hasBeenTo } from '../atlas';
+import { placesOnTheBook } from './places';
 import { findsWhere, fishWhere } from './wild';
 
 /**
  * How full each page of the field book is: the fish and the finds the pack's wild places hold,
- * every recipe, every night sight, and kinds of foe beaten (the foes page fills at
+ * every recipe, every night sight, every place you can stand in, and kinds of foe beaten (the foes page fills at
  * `FOES_PAGE_FULL`, since nobody meets every foe there is).
  */
 
@@ -43,6 +45,11 @@ export function pageCount(state: GameState, ctx: GameContext, page: FieldBookPag
       const beaten = Object.values(book.foes).filter((f) => f.beaten > 0).length;
       return { filled: Math.min(beaten, FOES_PAGE_FULL), total: FOES_PAGE_FULL };
     }
+    case 'places':
+      return counted(
+        placesOnTheBook(ctx).map((l) => l.id),
+        (id) => hasBeenTo(state, ctx, id),
+      );
   }
 }
 

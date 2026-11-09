@@ -5,8 +5,9 @@ Rules marked **(enforced)** fail CI if broken; the rest are enforced in review.
 
 ## What this is
 
-**Shinobi RPG** — a text-based shinobi life-sim RPG, built as an offline-first PWA so it can be
-played on a phone while travelling. Original setting: Tōrōgakure, the Village Hidden Among
+**Shinobi RPG** — a text-based shinobi life-sim RPG. It is a **desktop game first**: a deep game
+sold as a paid desktop release (only the `original` pack ships in it), built as an offline-first
+web app that also plays in full on a phone. Original setting: Tōrōgakure, the Village Hidden Among
 Lanterns. Stack: TypeScript (strict), React, Vite, vite-plugin-pwa, Vitest.
 
 Roadmap (milestones): **1. vertical slice** (done) → **2. people & relationships** (done) → 3. progression (ranks, elements, spirits) → 4. world & travel → 5. branching paths (rogue / Kage)
@@ -24,6 +25,11 @@ npm test               # unit + integration + UI smoke tests
 npm run arch           # module-boundary check (dependency-cruiser)
 npm run check:release  # release build without fan packs, verified free of fan names
 npm run format         # auto-format with Prettier
+npm run desktop:dev    # the desktop app (Electron) on the Vite dev server
+npm run desktop:start  # the desktop app on the release build
+npm run desktop:dist   # package the desktop app from the release build (docs/desktop.md)
+npm run mobile:sync    # phone app: checked release build copied into android/ and ios/
+npm run mobile:android # open the Android project in Android Studio (mobile:ios: Xcode)
 ```
 
 Run `npm run check` before every commit. Nothing merges unless it is green.
@@ -39,9 +45,16 @@ src/
   content/    Content schema, validation and the pack registry.
     packs/<id>/   One complete setting: locations, places, techniques, missions, text…
   game/       Composition layer: GameState, player actions, mission flow, save/load, view models.
-  platform/   Browser adapters (localStorage save, device-settings and editor stores).
+  platform/   Device adapters: where the save, settings and editor stores live (browser storage,
+              or a native shell's files through a StorageBackend; chooseStores picks at boot).
   ui/         React. theme/ (tokens), art/ (SVG icons & backdrops), audio/ (synth & music), components/, screens/.
   main.tsx    App composition root: picks platform adapters and the game context.
+electron/     The desktop app's shell (Electron main process and preload; its own tsconfig, built
+              to electron/dist). Serves the release build from app://game, keeps each slot as a
+              file in the app's data folder; the page reaches it only through window.shinobiNative
+              (platform/electronBackend.ts). Its code never imports src/. See docs/desktop.md.
+android/ ios/ Phone app (Capacitor): generated native projects, committed; they ship only the
+              release build (capacitor.config.ts `webDir: dist-release`). See docs/mobile.md.
 ```
 
 ### Dependency rules (enforced by `npm run arch`)
@@ -167,8 +180,8 @@ ui ──► game ──► content ──► systems ──► core
     adds their day, what they can do and are growing into (`views/personFacts.ts`), what they'll
     teach you and a genin's growth since the academy; tastes come with friendship.
 14. **Scenes are derived from state.** `activeScene` decides what takes over the screen
-    (fight › encounter › mission › conversation › team assignment › chakra paper › the sensei's
-    first meeting). Anything that must happen before
+    (fight › encounter › mission or journey › conversation › team assignment › chakra paper ›
+    the sensei's first meeting). Anything that must happen before
     normal play (like team assignment) is a scene plus a `busyReason`, not UI-only logic.
 15. **People have real stats and a rank; peers grow on their own.** (The old rule, companions
     derived from your mission record, is retired.) Every `PersonDef` has a `rank` and `stats`
@@ -200,7 +213,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead: no illusion takes hold of them, no clone fools them, their seals and drains close the chakra points more surely, and they have one blind spot a sharp foe finds after a few rounds, where no ready defence rises: `rules/eyes.ts`, `plan/blindSpot.ts`, `plan/mimicry.ts`). A fight has a **ground**
+    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`, which reads foes: every card they hold, and a Search that mostly finds the hidden, `INSIGHT_SEARCH`, never a certainty; only eyes that see everything see the hidden outright, `seesTheHidden`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead: no illusion takes hold of them, no clone fools them, their seals and drains close the chakra points more surely, and they have one blind spot a sharp foe finds after a few rounds, where no ready defence rises: `rules/eyes.ts`, `plan/blindSpot.ts`, `plan/mimicry.ts`). Eyes that see it coming (`foresight`) slip more than anyone else can (`SEEING_AVOID_MAX`), read every attack clearly for Evade, keep up with a faster body a little longer (`SEEING_PACE`) and see through illusions most of all. Perks may be **veiled** (`CombatantSetup.veiled`, `PersonArsenal.veiled`: a transplanted eye under a headband, `rules/veil.ts`, `plan/veil.ts`): no use until uncovered, a moment's work as a turn begins (no turn spent, no slot), against a match, an illusionist or a fight turning, and paid in chakra every exchange (`EYE_UPKEEP`) until it closes again. **Set-ups** (`docs/design/defence-plan.md` 4.3): a `lethal` technique (a lightning blade) on a target who can't see its user (hidden) or can't move (dazed or held) can't be slipped, goes through a guard and hits to kill (`rules/lethal.ts`, `LETHAL_SCALE`); a hold cast from hiding is shaken off less often (`HIDDEN_HOLD_RESIST`); and a mind that reads the fight, with a conceal, a hold and a killing blow in its kit, fights a match by hide, hold, finish from the kit, no slot (`plan/setups.ts`). **The player's plan is theirs**: the kit never plays itself for the player (no set-up, ladder step or summoner's call they didn't slot; `kitPlay` in `plan/priority.ts`) unless they only watch, and their default plan slots those moves where they can see them (`plan/kitSlots.ts`); a turn of theirs that plays something they never slotted (a blow improvised, a look round with no one in sight) is stamped with why (`Play.offPlan`, `offPlanLine`). A fight has a **ground**
     (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake, desert; arena when
     unset): the distances it has room for (a room has no far), cover for hiding, far attacks lost
     among trees or walls (or, in the desert's heat haze, by everyone), elements it feeds or
@@ -243,7 +256,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     taijutsu or kenjutsu technique) from someone far faster than the defender's avoid rating
     outpaces them, from `OUTPACE_FROM` times it, and past `OUTPACE_FULL` nothing slips it; only a
     swap escapes. A foe who reads the
-    fight and is far outclassed takes cover some turns on instinct (`plan/shelter.ts`). A hit
+    fight and is far outclassed takes cover some turns on instinct (`plan/shelter.ts`). Facing a
+    **killer** (a gate open, or a killing blow announced, whose blow could end them), a mind that
+    reads the fight plays for time unless it would fell the killer first (`plan/survival.ts`): a
+    hold on them, Evade or a step back while it keeps their pace, else a Brace that would hold;
+    a set-up comes first, the player's own plan stays theirs (the plan screen names who could end
+    them), and a Brace or an Evade shows as plainly as a defence kept (`seenDefence`). A hit
     that lands is not yet a hold: each condition rolls against its verb's resist (a pin against
     what breaks a hold of its art: strength, chakra control or willpower; a daze against poise;
     a seal against chakra control; `conditionResist`). Then guard and counter (taijutsu,
@@ -354,8 +372,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     partners and mission notices, from the same stats the fight uses.
     Fighters also have a **kit**: `CombatTrait`s (archer, brawler, illusionist, armoured,
     swift, pack, coward, spirit) on `EnemyDef.traits` → `CombatantSetup.traits`. What they
-    mean lives once in `rules/kit.ts` (reach, `kitDamageScale` by `AttackKind`, pack, coward)
-    and `rules/conditions.ts` (Hidden and Confused, Search and Dispel chances); every engine
+    mean lives once in `rules/kit.ts` (reach, which a technique that names its own reach overrides, `namesReach`, so an archer's senbon still fly up close; `kitDamageScale` by `AttackKind`, pack, coward)
+    and `rules/conditions.ts` (Hidden and Confused, Search and Dispel chances: every glimpse since a
+    hider last hid, a missed Search or Dispel or an attack made from hiding, brings seekers nearer,
+    `EXPOSURE_STEP`, and a default plan brings the surest finder it has); every engine
     applies them, so an archer is an archer in every fight style. Scouting names each trait
     with its counter. Genin get traits from their specialty (`companionTraits`).
     Some fighters bring more than one body (**retinues**, `docs/design/retinue-plan.md`). By
@@ -395,7 +415,22 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     **Summons** are called bodies (`CombatantSetup.calls`, the `summon` verb naming a call;
     `engines/plan/summons.ts`): they join their caller's front row mid-fight with a plan of their
     own (`summonPlans.ts`), the caller pays any blood price and chakra upkeep every exchange, and
-    they go home unpaid, beaten or when the caller falls (`CombatOutcome.summons`). The player
+    they go home unpaid, beaten or when the caller falls (`CombatOutcome.summons`); one hurt to
+    `BROKEN_SHARE` goes before it falls and won't answer again that fight, and a caller who reads
+    the fight sends one home hurt first (`SAVED_SHARE`) or lets the smallest go to spare chakra
+    (`UPKEEP_HORIZON`). A kit that calls more than one summon fights **by summoning**
+    (`plan/calling.ts`): calls take no plan slot; against anyone strong the whole style at once,
+    otherwise only what the fight shows they need (read as a ladder's step is, `climbReasons`):
+    the biggest body when outmatched or hurt, else the cheapest that answers; a killer's answer
+    (a set-up, or playing for time) comes before any call, and a mind that reads the fight goes
+    still only where the stillness would hold (`plan/stillness.ts`: each foe's worst attack on a
+    still body), hiding first or fighting on where it wouldn't. A `mount` covers its caller
+    and carries a still rider clear (`plan/riding.ts`); `perch` summons (the sage toads) land on
+    the caller's shoulders, not the field (`plan/perching.ts`). **Sage Mode** is the `sage`
+    ladder: an empower that is `still` is meditated into (a turn open, as if gathering; it opens
+    as the next turn begins unless a real hurt broke it, `plan/meditation.ts`), costs the body
+    nothing and runs out (`ladderHolds`) unless perched toads renew it; a technique may
+    `needsCalls` (summons out). Authored fighters call summons through `arsenal.summons`. The player
     holds one **contract** at a time (`systems/contracts`, `GameState.contract`, a pack's
     `ContractDef`s), signed through a job (`reward.contractId`) or a teacher
     (`TeacherProfile.contract`, `signContract`); summons answer from the standing stage they ask,
@@ -625,7 +660,20 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and the charge's trust move by their tastes, and whoever felt it most says so; an option
     whose `when` fails may still show, closed, with its `unseen` reason), `camp`
     (pick a few activities before the fire burns down) and `ending` (the first that fits). A
-    `leg` with a `region` may bring a road event (`content.roadEvents`, drawn by hash). A job
+    `leg` with a `region` may bring a road event (`content.roadEvents`, drawn by hash,
+    `story/roadEvents.ts`): likelier the more danger its road holds (`ROAD_EVENT_CHANCE`, the leg's
+    `danger`, else the job's worst foe), from the events that danger and the season allow, weighted
+    by `rarity`, passing over those met lately (`atlas.recentRoad`) and `once` ones met for good.
+    An event is a `kind` (`systems/missions/roadEvents.ts`): a written `decision`, or one the game
+    gives its choices (`story/roadChoices.ts`, the one that meets the road first, the one that keeps
+    clear of it second): an `encounter` of bestiary
+    foes no worse than the road (`partiesFor`; trips only, a job's fights being its own), faced as
+    the run's `detour` stage or gone round; a `find` taken into the pantry; `weather` waited out
+    for part of the day or pushed through; a `sight` that teaches a little (`story/roadAfter.ts`); or
+    a `traveller`, one of the pack's people of the road (`TravellerDef`, `content.travellers`, each
+    its own road event), met meeting by meeting (`story/travellers.ts`, `atlas.travellers`): a
+    meeting that `needs` what an earlier one left them remembering is passed over without it, and
+    one may end with a gift (a recipe, a find, word of the nearest place you haven't heard of). A job
     may have a `charge` (whose trust is a thread) and `twists` (a hidden mark rolled at the
     start). What the crew say comes from `content.voices` by moment and trait. The **debrief**
     (`game/debrief.ts`) reads it all back: the ledger line by line with the pay each moved (a
@@ -656,13 +704,37 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`ArcAct.baseLocationId`): its jobs are posted at the office there, and while it is open,
     going there is orders, not leave. A job may leave you somewhere else (`MissionDef.endsAt`,
     walked there by its legs): the "go" act's job takes you to the base, the last brings you home.
+    A job may walk the **map's road** instead of legs of its own (`game/jobRoads.ts`): a `road`
+    stage (`to: 'outbound'` to where it `goesTo`, or `'home'` to your village) is the quickest open
+    way, worked out when the job is taken and kept on the run (`MissionRun.ways`), walked as its
+    legs with a camp between stretches and the routes' regions and danger; read a job's stages
+    through `activeMission` (or `jobAsWalked` on the board), never `def.stages` alone. A stage
+    straight after a road with `at: n` happens after its nth stretch; a town's inn or a landmark
+    on the way is a stop; and while a job is on its road it plays on the journey map
+    (`sceneOnScreen`, `jobRoadNow`). Validated in `validateJobRoads.ts` (a real `goesTo`, a way
+    from every hall, `endsAt` where the last road leaves you, pay for the days, `at` only after
+    a road).
 26. **Travel is a journey along routes, on leave** (`docs/design/world-plan.md`). A pack's
     `routes` join its locations (legs of days through road-event regions, a `danger`, a
     passage `cost`); `systems/travel` finds the quickest open way (a road through a place still
     locked is closed, as is one whose `needs` you don't meet: a rank, a world mark, or walking
     on water or trees, asked only of `canWalk` in `game/walking.ts`). Setting out (`travel`) starts a mission run carrying a `journey` plan, so
     the road plays as on a job (`game/journeys.ts`: a leg per stretch, a camp between, road
-    events); `quick` hurries on until a road event needs a choice. Away from home you sleep at
+    events); `quick` hurries on until a road event needs a choice. A trip takes the screen as a
+    **journey** (`docs/design/journeys-plan.md`): the road on the map (`views/journeyView.ts`,
+    `ui/screens/scenes/journey/`), your seal walking each leg as it is done, what the road
+    brings held back until the seal gets there, and on arrival the trip kept as `journeyEnd`
+    for the place's title card until you walk in (`leaveJourney`; like a finished fight, it
+    never blocks play). The map is framed on the road; its lines keep their weight at any zoom
+    (`--map-zoom`). Where a stretch ends at a place that offers it, the trip **stops**
+    (`game/journeyStops.ts`, a `stop` stage, `journeyStop`): a town's inn for the night in place
+    of the camp, a landmark's `sight` (validated on every open one), a day in wild country
+    foraging its finds, or walking on; a trip chooses its stops when planned (`plannedStops`),
+    and a hurried one stops only at landmarks you've never been to. **The map is found**
+    (`game/atlas.ts`, the `atlas` slice): a place is on it when it is `famous`, heard of (one
+    road from home at the start, a road from anywhere you arrive, the towns a trip is planned
+    through, where a job ends) or been to; the Travel tab, its map and `travel` know only those,
+    and a place heard of but never been to is drawn faint. Away from home you sleep at
     an `inn`; a friend may come along (`game/trips.ts`, a `companion` crew, found at your
     lodging), you may turn back at a camp, and coming home shows what the village did while
     you were away; people who live in a town (`homeLocationId`) are met there, its festivals
@@ -809,9 +881,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     longest, measured from `IngredientDef.length` by hash, never the Rng), finds, sights followed,
     foes fought and beaten, and pages rewarded; it is written at the action that causes it
     (`fieldBook/record.ts`). The pages are read from content (every spot's fish, every wild find,
-    every recipe, every sight; foes you've met or a report named), so a new fish or sight is a
-    new slot with no code. Empty slots give a hint (where and when, the sight as unseen), never
-    the name. A full page leaves its `content.fieldBook` reward once (`noteFieldBook` in
+    every recipe, every sight; foes you've met or a report named; every place you can stand in,
+    filled from the `atlas`), so a new fish, sight or place is a new slot with no code. Empty
+    slots give a hint (where and when, the sight as unseen, a place's kind and the roads that
+    reach it), never the name. A full page leaves its `content.fieldBook` reward once (`noteFieldBook` in
     `dispatch`): a furnishing only it gives, and a keepsake on the shelf. New entries make one
     line on the day's sheet.
 
@@ -867,7 +940,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (`CombatOutcome.summary`). Rules and instructions go in the view's `prompt`, never the log.
   A staged engine (one that offers plans, not a hand) tags each turn's lines with `turnLine` (whose
   turn, and where the fight stands) and defences with `reactionLine`; the watch screen stages the
-  log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. A fight that ends
+  log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. The first exchange's
+  divider opens a round (`roundStartLine`), and the plan screen says why the last round went as
+  it did from that round's lines (`game/views/roundWhy.ts`: turns off your plan, your attacks, who
+  hurt you, your defences, what it cost); a slip with no Dodge ready is stamped `missed`. A fight that ends
   is kept as `combatFinale` (its last view) so the stage plays the final exchange before the
   result card; like a report, it never blocks play, and `leaveFight` closes it. Removing an engine or
   changing its id needs a migration for saves that are mid-fight in it or have it chosen.
@@ -881,7 +957,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   catches broken references and anything no place offers.
 - **Add a content pack:** copy `packs/original/`, change ids/names, register it. Keep every
   pack complete; packs don't inherit from each other.
-- **Add a location:** add a `LocationDef` with a backdrop, a `map` point (and a `label` side if its name would
+- **Add a location:** add a `LocationDef` (`famous` if everyone knows it from the start, else it
+  is found: heard of on the roads, through jobs, or by arriving) with a `kind` (village, city, town, wild or landmark:
+  what it must have once open, validated in `validateLocationKinds.ts`, and its mark on the map;
+  wild country and landmarks keep a `camp` place, where `makeCamp` sleeps you under the sky on
+  supper from your pack, and never an inn), a backdrop, a `map` point (and a `label` side if its name would
   run into a neighbour's) and places, and a `RouteDef` to it in
   the pack's `routes` (legs of days through road-event regions, a `danger`, any passage `cost`,
   and for a road not everyone may walk, `needs` and a `name` to say it by;
@@ -897,6 +977,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `start` line if the sensei begins it, an optional `walk` surface, a `limitBonus`, practice and
   fall lines) in `shared/exercises.ts` or a pack's own list, offered at a training place's
   `exerciseIds` (validated).
+- **Add wild country to go into:** a `DeepWildsDef` in `content/shared/deepWilds.ts` (a biome,
+  each depth's day going in and coming back, finding the way on, coming out) opens a `venture`
+  from every `wilds` place of that biome (`game/ventures.ts`: a run of your own, a day a depth,
+  a way-finding check before the deep and the heart, a camp each night to turn back at). What a
+  day holds is its depth region's road events (`deepRegion`: `woods-heart`), in
+  `shared/road/deepWilds*.ts`; every depth keeps one for every season (validated), and each pack
+  names the missing-nin hiding in the deep (`packs/<id>/deepWilds.ts`). Past the edge, leave is as for a trip
+  (`ventureLeaveBlocker`: a genin's pass, a chūnin's days); the heart is for chūnin, and a
+  venture ending badly costs no standing (`ownRun`).
 - **Add a wild place:** a `wilds` `PlaceDef` with a `biome`, `finds` and optional fishing
   `spots` (reuse the shared lists in `shared/wilds.ts` where the country is the same).
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
@@ -907,7 +996,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   source. Physical needs (nature, reserves, control grade) go in `needs`. Starters must be rank E.
   Its shape in a fight: `reach` (bands, when not its art's usual reach; ask `reachOf`),
   `accuracy` (sure, steady, wild: a multiplier on slipping it, and wild hits harder; `slipChance`
-  in `rules/defence.ts`) and a damage effect's `hits` (a flurry: the power split over 2–5 blows,
+  in `rules/defence.ts`), `needsTarget: 'open'` for a finisher that waits for a dazed or held
+  foe (`plan/finishers.ts`) and a damage effect's `hits` (a flurry: the power split over 2–5 blows,
   each dodged alone; a Guard or Counter meets only the first). An `area` effect has a `size` (small,
   wide, vast; `rules/verbs/area.ts`): a wide one is hard to slip, beats a plain Guard (only a
   swap or a wall escapes it) and throws the fight apart to mid; a vast one can't be outrun,
@@ -942,7 +1032,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   (`packs/naruto/duelists/`, a file each with their own techniques and gear): shinobi or genin
   (as they stand at canon's start, unless deliberately changed), no
   schedule, no teaching, a `homeLocationId` for their village if it isn't the start one, and an
-  `arsenal` (which may name `gearIds` and `tools`, carried into every fight, and `puppets`: a
+  `arsenal` (which may name `gearIds` and `tools`, carried into every fight, `summons` from the
+  pack's contracts, called from the kit, and `puppets`: a
   pack's `PuppetDef`s, bodies built rather than summoned, each unsealed by its own technique as a
   call like a summon's, its maker stepping back behind it; `game/puppets.ts`). They show in versus by rank and nowhere else; their arsenal sources their
   techniques (validated in `validateDuelists.ts`). Plumbing one in moves them to `people`, where
@@ -965,9 +1056,21 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a bestiary foe:** a foe of a trade or country (bandits, samurai, pirates, beasts by
   biome) rather than of one job goes in the shared bestiary (`content/shared/bestiary/`), which
   every pack takes through its `FoeKit` (`packs/<id>/bestiaryKit.ts`: a technique of its own for
-  each `FOE_ROLES` role the foes ask for). Write it for the kind of place it lives, not today's
-  towns. Plain animals have no chakra or techniques. The bestiary bench
+  each `FOE_ROLES` role the foes ask for, and in `gear` a piece of its own for each
+  `FOE_GEAR_ROLES` role). Write it for the kind of place it lives, not today's
+  towns. Plain animals have no chakra or techniques. A foe known by its kit `carries` gear and
+  tools (`CarriedKit`, the same shape as an arsenal's, read by `carriedInto` and validated in
+  `validateCarried.ts`); a read names what it wears and, past a glance, its pouch
+  (`game/scoutingCarried.ts`). The bestiary bench
   (`src/test/bench/bestiary.test.ts`) fights each at the scale its danger means.
+- **Add another village's shinobi:** a `ShinobiVillage` in the pack's `shinobiVillages.ts` (a
+  `short` word for foe names, a `headband` line, its `natures`, twelve `rogueNames`), with the
+  pack's `NatureKit` (a shot, a heavier and a jōnin's technique per element). Every archetype
+  (`shared/foreignShinobi/archetypes.ts`: scout, vanguard, sensor, medic, trapper, captain) at
+  every grade becomes a foe (`foe-<village>-<archetype>-<grade>`), and every chūnin and jōnin
+  archetype a named missing-nin (`rogue-<village>-<archetype>-<grade>`). A village needn't be on
+  the map. Tune the archetypes, never one village's foes; the foreign shinobi bench
+  (`foreignBench*.test.ts`) fights them all.
 - **Add an enemy:** add an `EnemyDef` (stats, techniques, a `danger` that fits its strength,
   optional `nature`, `traits`, and `healthScale` for a creature bigger or smaller than a person) to the
   pack's `enemies` (a foe with a name of their own is `proper`, with `pronouns`; a common one is
@@ -980,8 +1083,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Plan & Watch applies it in `engines/plan/jutsu.ts`. An empower may open a step of a
   **ladder** (`opens`, `systems/techniques/ladders.ts`: the Eight Gates), climbing at most
   `LADDER_REACH` steps past the one open and holding until the body gives out; a technique may
-  need a step open (`needsOpen`). Each step's lift, the chakra surge and when a deep step is worth
-  opening live in `rules/verbs/ladders.ts`; validation checks every needed step can be climbed to
+  need a step open (`needsOpen`). Each step's lift, the chakra surge, its band and when it is
+  worth opening live in `rules/verbs/ladders.ts`, judged on what the fight has shown
+  (`plan/climbing.ts`: taijutsu first, a band at a time, from the kit: openings take no plan
+  slot, and only a step the body could hold a couple of exchanges); its price is its **toll**
+  (`rules/verbs/tolls.ts`: breath, then health, each exchange; spent stamina, speed and strength
+  once it shuts, and past the seventh a collapse), never the technique's own health price
+  (validated); validation checks every needed step can be climbed to
   by the pack and by each arsenal that holds it. Shelved engines read a technique
   through `primaryEffect`. Verbs that leave something behind (knock, pin, drain, afflict:
   burn, bleed, poison; counter, a readied riposte) keep their rules in
@@ -1000,7 +1108,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   best, `healthScale`, traits, a talent shape with
   0 for arts it never learns, names, and a `stray` haunt for kinds found on the streets, at
   places of the start village, or a `wild` haunt by biome for wild kinds; shared wild kinds live
-  in `shared/wildKinds.ts`; `techniques` it opens by bond stage, `handler` ones taught at a
+  in `shared/wildKinds.ts`, and kinds of the chakra beasts' lines, found only after fighting one of
+  their kind (`wild.after`) and with their beast's `nature`, in `shared/beastKinds.ts`; `techniques` it opens by bond stage, `handler` ones taught at a
   clinic whose `handling.teaches` lists them, and the job `roles` it takes); give a clan one with
   `ClanDef.companion`, breed a bred kind at a vet (`pups`) or hand one over from a job
   (`reward.companionKindId`). Validated in `validateCompanions.ts`; a clinic's `handling`
@@ -1029,6 +1138,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   where a gear place lists it in `dustIds`, and teaches `techniqueIds` through its S-rank
   scroll, found on a job (`reward.dustScroll`; shared techniques in `shared/dustTechniques.ts`).
   Validated in `validateDusts.ts`.
+- **Add a chakra beast:** an animal changed by chakra (`docs/design/chakra-beasts-plan.md`)
+  goes in `content/shared/bestiary/chakraBeasts.ts` with `chakraBeast: true`, chakra, techniques
+  of its own (`beastArts.ts`, `beastArtsWater.ts`: no person learns them, so they need no other
+  source and nobody else may hold them; `validateChakraBeasts.ts`) and any gift as `perks`
+  (mimicry, foresight) or a hive or dust shield. The bestiary bench fights it like any foe.
 - **Give a foe a companion:** add the companion as its own `EnemyDef` (stats, a `danger` no
   worse than its master's, its traits and `healthScale`) and list it in the master's `retinue`
   with a `tell` (`open` at heel, `kept` out of sight, `hidden` inside the body). Validation
@@ -1047,7 +1161,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   like its stages.
 - **Add a long story:** write its jobs (any tier), list them at a mission hall, and add an
   `ArcDef` to the pack's `arcs` with its acts (beats, a line, the jobs, and a `baseLocationId`
-  for an act lived in another town, with `endsAt` on the jobs that take you there and back). Leave world marks in
+  for an act lived in another town, with `endsAt` on the jobs that take you there and back, and
+  a `road` stage with `goesTo` rather than legs of their own). Leave world marks in
   outcomes for later acts to `remember` (validated: every remembered mark is left by some job).
 - **Add many jobs of one shape:** write a `MissionTemplate` (`content/missionTemplates.ts`) with
   `{slot}` placeholders and their meanings in `placeholders`, then add `MissionFill`s giving every
@@ -1071,8 +1186,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   stages, approaches and options with `when`; give results `Outcome`s with a `ledger` line; end
   on an `ending` stage whose last ending has no `when`. `validateStory` checks every mark read
   is set somewhere, every thread named is kept, tones are real and every region has road
-  events. **Add a road event or a voice line:** `content/shared/road/events.ts` (effects may
-  name only `daylight` and `charge` threads) or `content/shared/talk/voices.ts` (every trait
+  events. **Add a road event or a voice line:** `content/shared/road/` (everyday, season and
+  rough-road files, `wildEvents.ts` for foes, finds, weather and sights, and `travellers.ts` for
+  people of the road, validated in `validateTravellers.ts`; an event may ask a
+  least road `danger`, `seasons`, a `rarity`, `once`, or world marks it waits on or is closed by
+  (`needsWorldMark`, `closedBy`, as a job's); every region a road crosses keeps a
+  non-encounter one for any road and season, and a foes event a band its least road may bring,
+  validated; effects may name only
+  `daylight` and `charge` threads) or `content/shared/talk/voices.ts` (every trait
   needs a line for every moment).
 - **Add foes to a mission:** use an `encounter` stage (recon, then an approach, then maybe a
   fight) with a shared template (`content/shared/encounters.ts`: which approaches and recon make
@@ -1157,6 +1278,19 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   portrait (`ui/art/portrait/`) is put together from an appearance's `FaceParts` (shape, figure,
   eyes, brows, nose, ears, expression, age, facial hair, a mark): a new part is a union member in
   `systems/profile/face.ts` and a drawing in the matching `Record`.
+- **Run in a native shell (the desktop or phone app):** implement a `StorageBackend`
+  (`platform/storageBackend.ts`: read, write and remove the `save`, `prefs` and `edits` slots,
+  writes atomic) and add a `NativeBackend` that detects the shell to `NATIVE_BACKENDS` in
+  `platform/chooseStores.ts`. `openCachedStores` reads everything at boot and writes behind each
+  save, so the game stays synchronous; a failed write is reported by the next save, and the
+  service worker is registered only outside a shell. The phone app's is
+  `platform/capacitorBackend.ts` (files in the app's data directory) with `phoneShell.ts`
+  (status bar, Android back as Esc); `docs/mobile.md` says how to build it.
+  The **App builds** workflow (`.github/workflows/app-builds.yml`) builds the Windows installer
+  and the Android APK on every push to main and keeps them as run artifacts, never a public
+  release (the repository is public); Android is release-signed from the repository's secrets
+  when they are set (`docs/app-builds.md`). `build:release` is a node script
+  (`scripts/build-release.mjs`), so every release command runs from any shell.
 - **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
   a test that a previous-version save still loads. Never break existing saves.
 
@@ -1213,7 +1347,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   is always present except in scenes. _Here_ is the current location's village screen, whose
   place cards open place pages. Scenes (missions, fights) take over the whole screen and
   return to where you were.
-- **Desktop is a second arrangement, not a second game.** On a wide window (`useWideScreen`,
+- **Desktop leads; the phone is a second arrangement, not a second game.** New screens are
+  designed for a wide window first, then arranged for the phone, and both offer the same
+  actions. On a wide window (`useWideScreen`,
   `ui/layout/`, the one place the breakpoint lives) `.app.wide` lays out a side rail (the dock
   and the village's places, number keys for tabs), the main column and the you panel (vitals,
   the time, what waits on you, on every tab). It arranges the same screens and offers the
@@ -1229,8 +1365,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   something on desktop previews it in the panel beside it (`useHoverPreview`: a Jutsu card in the
   detail panel, a fighter's read on the plan screen, and in its place a card's technique as the Jutsu tab
   reads it: `fightTechnique` through `CombatOption.techniqueId`, shown by `JutsuDetail`); a click still picks. Scenes still take the
-  whole screen; the ones in `WIDE_SCENES` (`layout/sceneLayout.ts`: the mission and the fight's
-  plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
+  whole screen; the ones in `WIDE_SCENES` (`layout/sceneLayout.ts`: the mission, the journey and the
+  fight's plan and watch screens) set their panes side by side (`wide-scenes.css`), and what only the
   desktop shows beside a scene is a view model too (`missionSoFar`). Every other scene is a story
   scene: one wider reading column, its `.choices` bar numbered by CSS and pressed by
   `ChoiceBarKeys`, so a new scene with a choice bar gets both without code, and beside it the
@@ -1272,8 +1408,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   a gain, a cost), never decoration: no gradient fills on cards or tiles.
 - **Avoid the generic-template look.** No small uppercase letter-spaced labels (labels are
   sentence case; a section label is a serif heading), no " · "-joined meta lines (write a
-  phrase), no coloured left-edge bars on cards, no emoji. Check new screens by screenshot at
-  390px, not just by tests.
+  phrase), no coloured left-edge bars on cards, no emoji. Check new screens by screenshot on a
+  wide window and at 390px, not just by tests.
 - **Tokens only**: colours, fonts and radii come from `ui/theme/tokens.css`. Icons and scenery
   are inline SVG in `ui/art/` (offline, no image files). Tap targets ≥ 40px. Motion is subtle
   and always disabled under `prefers-reduced-motion`. Night is the default theme.
@@ -1289,4 +1425,4 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 1. `npm run check` (and `npm run check:release`) are green.
 2. New behaviour has tests; boundaries respected without lint/arch exceptions.
 3. Save compatibility preserved (migration + test if the shape changed).
-4. Works at phone width (≈390px) and offline.
+4. Works on a wide window and at phone width (≈390px), and offline.

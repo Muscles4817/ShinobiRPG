@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import {
   contextForPack,
@@ -18,6 +18,7 @@ import {
 
 import { useSound } from './audio/SoundProvider';
 import { useEdits } from './edits/EditsProvider';
+import { saveSafely, STORAGE_FULL } from './saveSafely';
 
 interface Loaded {
   readonly game: GameState;
@@ -67,17 +68,21 @@ export function useGameSession(store: SaveStore): GameSession {
   const { play } = useSound();
   const { editsFor } = useEdits();
 
-  useEffect(() => {
-    if (game) store.save(serialize(game.game));
-  }, [game, store]);
+  // Every change is saved as it is made; a save that doesn't fit says so rather than stopping play.
+  const keep = useCallback(
+    (next: Loaded) => {
+      setGame(next);
+      setNotice(saveSafely(store, serialize(next.game)) ? null : STORAGE_FULL);
+    },
+    [store],
+  );
 
   const perform = useCallback(
     (action: GameAction) => {
       if (!game) return;
       const result = dispatch(game.game, action, game.ctx);
       if (result.ok) {
-        setGame({ ...game, game: result.value });
-        setNotice(null);
+        keep({ ...game, game: result.value });
         const kind = cueAfter(action, game.game, result.value);
         setCue((shown) => (kind ? { kind, id: (shown?.id ?? 0) + 1 } : shown));
         const sound = soundAfter(action, game.game, result.value);
@@ -87,7 +92,7 @@ export function useGameSession(store: SaveStore): GameSession {
         play('refused');
       }
     },
-    [game, play],
+    [game, keep, play],
   );
 
   // A new game takes the editor's changes as they stand, and keeps them in its save.
@@ -95,10 +100,9 @@ export function useGameSession(store: SaveStore): GameSession {
     (packId: string, draft: CreationDraft, seed: number) => {
       const ctx = contextForPack(packId, editsFor(packId));
       if (!ctx) return;
-      setGame({ game: createNewGame({ draft, seed }, ctx), ctx });
-      setNotice(null);
+      keep({ game: createNewGame({ draft, seed }, ctx), ctx });
     },
-    [editsFor],
+    [editsFor, keep],
   );
 
   const abandon = useCallback(() => {

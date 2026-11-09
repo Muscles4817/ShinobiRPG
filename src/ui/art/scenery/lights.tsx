@@ -214,3 +214,30 @@ export function Clouds({ at: [x, y], scale = 1 }: { readonly at: Point; readonly
     </g>
   );
 }
+
+/** A small fire on the ground at `at` (its base), with the glow it throws once the light goes. */
+export function Campfire({
+  uid,
+  at: [x, base],
+  size: s = 1,
+}: {
+  readonly uid: string;
+  readonly at: Point;
+  readonly size?: number;
+}) {
+  return (
+    <g>
+      <circle
+        className="bd-lit"
+        cx={x}
+        cy={r1(base - 4 * s)}
+        r={r1(18 * s)}
+        fill={paint(uid, 'glow')}
+      />
+      <path
+        d={`M${r1(x - 6 * s)} ${base}l${r1(6 * s)} ${r1(-10 * s)}l${r1(6 * s)} ${r1(10 * s)}z`}
+        fill="#f2a24a"
+      />
+    </g>
+  );
+}

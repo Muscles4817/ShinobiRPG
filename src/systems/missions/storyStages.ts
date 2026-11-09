@@ -93,6 +93,34 @@ export interface CampStage {
   readonly activities: readonly CampActivity[];
 }
 
+/**
+ * A trip's pause at a place on the way (`docs/design/journeys-plan.md` 3.3): the game decides
+ * what the place offers by its kind (a room at a town's inn, a landmark's sight, a day in wild
+ * country), and you take it or walk on.
+ */
+export interface StopStage {
+  readonly kind: 'stop';
+  readonly locationId: string;
+}
+
+/** Which way a job's road goes: out to where it `goesTo`, or home to your village. */
+export const ROAD_WAYS = ['outbound', 'home'] as const;
+export type RoadWay = (typeof ROAD_WAYS)[number];
+
+/**
+ * A job's road on the map (`docs/design/journeys-plan.md` 3.7): when the job is taken it becomes
+ * the legs of the quickest open way there or back, with a camp between stretches and the map's
+ * road events on them, as a trip does. The stages after it are what happens on arrival.
+ */
+export interface RoadStage {
+  readonly kind: 'road';
+  readonly to: RoadWay;
+  /** The first stretch's line in the job's own words, in place of the road's. */
+  readonly text?: string;
+  /** The first stretch's line as the story stands (needs `text`). */
+  readonly variants?: readonly TextVariant[];
+}
+
 export interface Ending extends Outcome {
   readonly when?: Condition;
   readonly text: string;
@@ -102,13 +130,4 @@ export interface Ending extends Outcome {
 export interface EndingStage {
   readonly kind: 'ending';
   readonly endings: readonly Ending[];
-}
-
-/** Something that may happen on a stretch of road, drawn by the region and the day. */
-export interface RoadEventDef {
-  readonly id: string;
-  /** The kinds of road it happens on ("hill-road", "coast-road"). */
-  readonly regions: readonly string[];
-  readonly text: string;
-  readonly options: readonly DecisionOption[];
 }

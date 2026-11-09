@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { reducedMotion } from './reducedMotion';
+
 /**
  * A stat ticking up within its grade: when the sheet shows a value higher than the last time it
  * was shown (this session), the number rolls up from the old value and the bar gets a quick ink
@@ -11,13 +13,6 @@ const ROLL_MS = 700;
 
 /** The value each stat was last shown at, by key, so a later visit can show what grew. */
 const lastShown = new Map<string, number>();
-
-function reducedMotion(): boolean {
-  return (
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-}
 
 export interface Tick {
   /** The number to show now (rolling up while the tick plays). */

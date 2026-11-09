@@ -30,6 +30,7 @@ import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
 import { NOTHING_TOLD } from '@/systems/telling';
 import { NO_LEAVE } from '@/systems/travel';
+import { homeAtlas } from './atlas';
 import type { HiveShare } from '@/systems/hives';
 import { fullVitals } from '@/systems/vitals';
 
@@ -251,6 +252,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     mission: null,
     combat: null,
     combatFinale: null,
+    journeyEnd: null,
     reports: [],
     people: NO_PEOPLE,
     settings: defaultSettings(ctx),
@@ -266,6 +268,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     },
     exams: NO_EXAMS,
     leave: NO_LEAVE,
+    atlas: homeAtlas(ctx),
     mentor: NO_MENTOR,
     told: NOTHING_TOLD,
     daybook: NO_DAYBOOK,

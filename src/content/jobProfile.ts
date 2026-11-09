@@ -13,7 +13,10 @@ export function jobProfile(
   postedAway = false,
 ): JobProfile {
   const danger = worstDanger(def.stages.flatMap(stageFoes), (id) => enemy(id)?.danger ?? 'elite');
-  const away = postedAway || def.endsAt !== undefined || def.stages.some((s) => s.kind === 'leg');
+  const away =
+    postedAway ||
+    def.endsAt !== undefined ||
+    def.stages.some((s) => s.kind === 'leg' || s.kind === 'road');
   return { rank: def.rank, danger, away };
 }
 

@@ -1,6 +1,7 @@
 import { MISSION_ROLES } from '@/systems/missions';
 
 import type { ContentPack } from './types';
+import { kindArtIds } from './techniqueSources';
 
 /**
  * What companions learn and who handles them: a kind's techniques are real, open at a real bond
@@ -44,9 +45,7 @@ function roleProblems(pack: ContentPack): string[] {
 }
 
 function handlingProblems(pack: ContentPack): string[] {
-  const held = new Set(
-    pack.companionKinds.flatMap((k) => (k.techniques ?? []).map((t) => t.techniqueId)),
-  );
+  const held = kindArtIds(pack);
   return clinics(pack).flatMap((vet) => {
     const handling = vet.handling;
     if (!handling) return [];

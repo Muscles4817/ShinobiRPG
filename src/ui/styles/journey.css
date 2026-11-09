@@ -1,0 +1,269 @@
+/*
+ * A journey (`JourneyScene`): the road on the map, framed on it, with the hour washed over it,
+ * the road walked inked in red, your seal, the camp fire, the region's caption and the date on
+ * a stamp; then where it goes, its stretches and the story. On a phone the map sits on top.
+ */
+.journey-map {
+  height: 44vh;
+  min-height: 260px;
+  border-radius: 0;
+  box-shadow: none;
+  flex-shrink: 0;
+}
+.journey-map svg {
+  pointer-events: none;
+}
+.journey-map .map-road {
+  opacity: 0.35;
+}
+.journey-ahead {
+  fill: none;
+  stroke: var(--map-road);
+  stroke-width: calc(0.4 * var(--map-zoom));
+  stroke-dasharray: calc(0.7 * var(--map-zoom)) calc(0.9 * var(--map-zoom));
+  opacity: 0.55;
+}
+.journey-walked {
+  fill: none;
+  stroke: var(--seal);
+  stroke-width: calc(0.9 * var(--map-zoom));
+  stroke-linecap: round;
+}
+.journey-map .map-place {
+  cursor: default;
+}
+.journey-map .map-place.journey-destination .map-seal {
+  background: var(--seal);
+  box-shadow: 0 0 0 1.5px var(--seal);
+}
+
+/* The hour, laid over the map: pale at morning, amber at evening, dark at night. */
+.journey-wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.journey-map[data-slot='morning'] .journey-wash {
+  background: var(--journey-morning);
+}
+.journey-map[data-slot='evening'] .journey-wash {
+  background: var(--journey-evening);
+  mix-blend-mode: multiply;
+}
+.journey-map[data-slot='night'] .journey-wash {
+  background: var(--journey-night);
+  mix-blend-mode: multiply;
+}
+
+/* You: a red seal stood on the road like a pin, and at camp a fire glowing round it. */
+.journey-you {
+  position: absolute;
+  width: 0;
+  height: 0;
+  z-index: 1;
+}
+.journey-seal {
+  position: absolute;
+  transform: translate(-50%, -118%) rotate(-6deg);
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  background: var(--seal);
+  color: var(--paper);
+  border-radius: var(--radius);
+  font-family: var(--font-story);
+  font-weight: 800;
+  font-size: 17px;
+  box-shadow:
+    0 0 0 2px var(--paper),
+    0 3px 8px rgb(0 0 0 / 0.4);
+}
+.journey-seal::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 1px);
+  bottom: -9px;
+  width: 2px;
+  height: 8px;
+  background: var(--seal);
+}
+.journey-fire {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--journey-fire),
+    var(--journey-embers) 35%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  animation: journey-flicker 2.4s ease-in-out infinite alternate;
+}
+@keyframes journey-flicker {
+  from {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The region's name, faded in as you enter it, and the date stamped in a corner. */
+.journey-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-story);
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--paper-ink);
+  text-shadow:
+    0 0 12px var(--paper),
+    0 0 4px var(--paper);
+  pointer-events: none;
+  animation: journey-caption 1.2s ease-out both;
+}
+@keyframes journey-caption {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.journey-map[data-slot='night'] .journey-caption {
+  color: var(--story);
+  text-shadow: 0 0 10px #000;
+}
+.journey-stamp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin: 0;
+  display: grid;
+  gap: 2px;
+  padding: 6px 10px;
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border: 1.5px solid var(--paper-ink);
+  border-radius: var(--radius);
+  font-family: var(--font-story);
+  font-size: 0.75rem;
+}
+.journey-stamp strong {
+  font-size: 0.85rem;
+}
+.journey-stamp span {
+  color: var(--paper-muted);
+}
+.journey-skip {
+  position: absolute;
+  inset: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* Where the road goes and its stretches, walked ones struck through. */
+.journey-head {
+  padding: 14px var(--gutter) 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--grain), var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.journey-head h1 {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--story);
+}
+.journey-legs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.journey-legs li {
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.journey-legs li.done {
+  color: var(--ink);
+  border-color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--seal);
+}
+.journey-legs li.now {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+/* The place you reach, as a title card laid over the map once the seal gets there. */
+.journey-arrival {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  background: var(--bg);
+  animation: journey-arrive 1.4s ease-out both;
+}
+.journey-arrival .backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.journey-arrival-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 4%;
+  padding: 28px var(--gutter);
+  /* A soft dark glow behind the name, so it reads over any town's skyline. */
+  background: radial-gradient(ellipse at center, rgb(8 6 12 / 0.5), transparent 68%);
+  text-align: center;
+  font-family: var(--font-story);
+  color: var(--story);
+  text-shadow: 0 1px 10px rgb(0 0 0 / 0.7);
+}
+.journey-arrival-title p {
+  margin: 0;
+}
+.journey-arrival-title h2 {
+  margin: 4px 0;
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+.journey-arrival-epithet {
+  color: var(--lantern);
+  text-shadow:
+    0 0 6px rgb(0 0 0 / 0.9),
+    0 1px 2px #000;
+  font-size: 1.05rem;
+}
+@keyframes journey-arrive {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-fire,
+  .journey-caption,
+  .journey-arrival {
+    animation: none;
+  }
+}

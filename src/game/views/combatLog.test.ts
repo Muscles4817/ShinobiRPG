@@ -55,6 +55,18 @@ describe('combat log view', () => {
     ]);
   });
 
+  it('stamps a turn of the player’s that played off their plan, with why', () => {
+    const [line] = combatLog(['You throw a plain blow. ⟦op:improvised⟧ ⟦-3⟧']);
+    expect(line).toEqual({
+      kind: 'story',
+      text: 'You throw a plain blow.',
+      chips: [
+        { label: 'Off plan: nothing slotted fit', tone: 'info' },
+        { label: '−3', tone: 'harm' },
+      ],
+    });
+  });
+
   it.each(STYLES)('keeps numbers out of the story and its dividers in %s, as chips', (style, c) => {
     const lines = combatLog(sparLog(style, c));
     const story = lines.flatMap((l) => (l.kind === 'story' ? [l] : []));

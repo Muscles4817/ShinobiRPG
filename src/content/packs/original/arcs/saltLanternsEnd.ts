@@ -147,10 +147,9 @@ export const LIGHT_GIVEN_BACK: MissionDef = {
       ],
     },
     {
-      kind: 'leg',
+      kind: 'road',
+      to: 'home',
       text: 'The coast road home, up through the terraces, with the harbour lights behind you.',
-      days: 1,
-      region: 'coast-road',
     },
     {
       kind: 'ending',

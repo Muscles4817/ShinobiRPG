@@ -11,6 +11,7 @@ import type { GameContext } from '../context';
 import { activeMission, activeStage } from '../missionFlow';
 import type { GameState } from '../state';
 import { storyOf } from '../story/state';
+import { runKind } from './runKind';
 import { stagePrompt, type SceneChoice } from './storyChoices';
 
 /**
@@ -66,9 +67,11 @@ export function noteLine(n: MissionNote): SceneLine {
 const ROUTE_MARKS: Readonly<Record<MissionStage['kind'], { glyph: string; label: string }>> = {
   narrative: { glyph: '話', label: 'Story' },
   leg: { glyph: '道', label: 'The road' },
+  road: { glyph: '道', label: 'The road' },
   check: { glyph: '試', label: 'A trial' },
   decision: { glyph: '選', label: 'A choice' },
   camp: { glyph: '火', label: 'Camp' },
+  stop: { glyph: '宿', label: 'A stop' },
   encounter: { glyph: '敵', label: 'Foes' },
   combat: { glyph: '戦', label: 'A fight' },
   ending: { glyph: '終', label: 'The end' },
@@ -105,9 +108,7 @@ export function missionScene(state: GameState, ctx: GameContext): MissionScene |
   const stage = activeStage(state, ctx);
   const base = {
     title: def.title,
-    kicker: state.mission.journey
-      ? 'A journey of your own'
-      : `${def.rank}-rank mission for ${def.client}`,
+    kicker: runKind(state.mission, def).kicker,
     lines: state.mission.notes.map(noteLine),
     threads: threadViews(state, ctx),
     route: routeOf(def, state.mission),

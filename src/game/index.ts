@@ -112,20 +112,7 @@ export {
   type ScrollDesk,
   type Stack,
 } from './views/library';
-export {
-  travelView,
-  type CompanionOption,
-  type Destination,
-  type TravelView,
-} from './views/travel';
-export type {
-  AtlasLabel,
-  MapLabelSide,
-  MapPlace,
-  MapPoint,
-  MapRoad,
-  TravelMap,
-} from './views/travelMap';
+export * from './travelTab';
 export { fightStyles, type FightStyleMenu, type FightStyleOption } from './views/fightStyle';
 export {
   animationSetting,
@@ -187,7 +174,8 @@ export {
 } from './views/shops';
 export { kitchenView, type DinnerInvite, type KitchenView, type RecipeCard } from './views/kitchen';
 export { STOVE_BEATS, EXPERIMENT_LIMIT, type StoveBeat } from './views/stove';
-export { wildsView, type WildsView, type FishingSpotView, type WhatsAbout } from './views/wilds';
+export { wildsView, type FishingSpotView, type WhatsAbout, type WildsView } from './views/wilds';
+export type { VentureDepthView, VentureView } from './views/venture';
 export type { CookingSteps } from '@/systems/cooking';
 export { cookbookView, type CookbookEntry, type SealedRecipe } from './views/cookbook';
 export type { SparOption } from './views/team';
@@ -218,6 +206,7 @@ export { missionSoFar, type MissionSoFar } from './views/missionSoFar';
 export { sceneBeside, type SceneBeside } from './views/sceneBeside';
 export { combatLog, type CombatLogLine } from './views/combatLog';
 export { fightReplay, storyEnd, type FightBeat } from './views/fightReplay';
+export { roundWhy, type WhyRow } from './views/roundWhy';
 export {
   examScene,
   type ConductLine,

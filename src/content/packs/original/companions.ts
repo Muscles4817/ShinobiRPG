@@ -1,5 +1,6 @@
 import type { CompanionKindDef } from '../../companions';
 import { HOUND_TECHNIQUES } from '../../shared/beastTechniques';
+import { BEAST_KINDS } from '../../shared/beastKinds';
 import { FOREST_WOLF, HOUND_DIET } from '../../shared/wildKinds';
 
 /** Creatures that may become a companion in Tōrōgakure. */
@@ -77,4 +78,5 @@ export const COMPANION_KINDS: readonly CompanionKindDef[] = [
     names: ['Lantern', 'Tsuki', 'Hoshi', 'Kibi', 'Mame', 'Kuri'],
   },
   FOREST_WOLF,
+  ...BEAST_KINDS,
 ];

@@ -36,7 +36,10 @@ export function rationDays(state: GameState, ctx: GameContext): number {
 }
 
 /** The evening meal from your pack, if there's anything in it and you've room for it. */
-function eatFromPack(state: GameState, ctx: GameContext): { state: GameState; ate: boolean } {
+export function eatFromPack(
+  state: GameState,
+  ctx: GameContext,
+): { state: GameState; ate: boolean } {
   const [food] = roadFoods(state, ctx);
   const room = METER_MAX - state.character.vitals.satiety;
   if (!food || room < (food.road ?? 0) / 2) return { state, ate: false };

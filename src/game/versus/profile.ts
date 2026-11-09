@@ -133,7 +133,12 @@ function carriedBy(setup: CombatantSetup): Pick<VersusProfile, 'gear' | 'tools' 
     gear: gearNames(setup.gear),
     tools: (setup.items ?? []).map((i) => (i.count > 1 ? `${i.name} ×${i.count}` : i.name)),
     kit: traitNotes(setup.traits ?? []),
-    perks: (setup.perks ?? []).map((p) => PERK_WORDS[p]),
+    perks: [
+      ...(setup.perks ?? []).map((p) => PERK_WORDS[p]),
+      ...(setup.veiled ?? []).map(
+        (p) => `${PERK_WORDS[p]}, kept covered until the fight calls for it`,
+      ),
+    ],
   };
 }
 

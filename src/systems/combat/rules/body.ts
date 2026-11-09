@@ -46,6 +46,10 @@ export interface Body {
   readonly techniques: readonly CombatTechnique[];
   readonly nature?: CombatantSetup['nature'];
   readonly perks: readonly CombatPerk[];
+  /** Perks kept covered until revealed (`veil.ts`). */
+  readonly veiled?: readonly CombatPerk[];
+  /** Perks uncovered this fight, paid for each exchange (`veil.ts`). */
+  readonly revealed?: readonly CombatPerk[];
   readonly traits: readonly CombatTrait[];
   /** Hidden in an illusion: can't be targeted until found. */
   readonly hidden: boolean;

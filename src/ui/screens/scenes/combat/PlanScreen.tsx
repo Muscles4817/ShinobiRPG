@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import {
   combatLog,
+  roundWhy,
   type CombatOption,
   type CombatView,
   type JutsuCard,
@@ -37,13 +38,11 @@ interface PlanScreenProps {
 /** How many lines of the story so far the plan screen keeps in view. */
 const RECENT_LINES = 5;
 
-/** How the fight has gone so far: the opening, or the round just played. */
-function HowItWent({ view }: { readonly view: CombatView }) {
+/** The story's last lines, as the log tells them. */
+function LastLines({ view }: { readonly view: CombatView }) {
   const lines = combatLog(view.log.slice(-RECENT_LINES));
-  if (lines.length === 0) return null;
   return (
-    <details className="how-it-went" open>
-      <summary>{view.round > 1 ? 'How the last round went' : 'How it starts'}</summary>
+    <>
       {lines.map((line, i) =>
         line.kind === 'round' ? (
           <p key={i} className="divider">
@@ -55,6 +54,39 @@ function HowItWent({ view }: { readonly view: CombatView }) {
           </p>
         ),
       )}
+    </>
+  );
+}
+
+/**
+ * How the fight has gone so far: the opening's last lines, or why the round just played went as
+ * it did (`roundWhy`), with its last lines folded under it.
+ */
+function HowItWent({ view }: { readonly view: CombatView }) {
+  const why = view.round > 1 ? roundWhy(view) : [];
+  if (view.log.length === 0) return null;
+  if (why.length === 0) {
+    return (
+      <details className="how-it-went" open>
+        <summary>{view.round > 1 ? 'How the last round went' : 'How it starts'}</summary>
+        <LastLines view={view} />
+      </details>
+    );
+  }
+  return (
+    <details className="how-it-went" open>
+      <summary>Why the last round went as it did</summary>
+      <ul className="round-why">
+        {why.map((row) => (
+          <li key={row.text}>
+            {row.text} <Chips chips={row.chips} />
+          </li>
+        ))}
+      </ul>
+      <details className="round-lines">
+        <summary>Its last lines</summary>
+        <LastLines view={view} />
+      </details>
     </details>
   );
 }

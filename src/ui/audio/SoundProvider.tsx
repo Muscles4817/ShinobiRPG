@@ -10,6 +10,7 @@ import {
   type SoundForce,
 } from '@/game';
 
+import { saveSafely } from '../saveSafely';
 import { createAudioEngine, type AudioEngine } from './engine';
 
 /**
@@ -77,7 +78,7 @@ export function SoundProvider({
       change: (next) => {
         setSettings(next);
         engine.setLevels(next);
-        prefs.save(writeAudioSettings(next));
+        saveSafely(prefs, writeAudioSettings(next));
       },
       play: engine.play,
       setMood: engine.setMood,

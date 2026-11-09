@@ -3,10 +3,10 @@ import type { CombatantSetup, CombatPerk, CombatTrait } from '@/systems/combat';
 import type { Discipline } from '@/systems/techniques';
 import { MAX_HEALTH } from '@/systems/vitals';
 
-import { attributesOf, pouchFrom } from '../combatants';
+import { attributesOf } from '../combatants';
+import { carriedInto } from '../carried';
 import { walkingByRank } from '../footing';
 import type { GameContext } from '../context';
-import { arsenalGear } from '../gear';
 import type { GameState } from '../state';
 import { doableNow } from './capable';
 import { personStats } from './progress';
@@ -15,6 +15,7 @@ import { clanSize } from '../bodySize';
 import { personHive } from '../hives/hive';
 import { personDust } from '../dust/dust';
 import { withPuppets } from '../puppets';
+import { withCalls } from '../combatants';
 
 /**
  * Genin who fight beside you (teammates) or against you (sparring partners), from their real
@@ -101,23 +102,12 @@ export function companionCombatant(
     ),
     traits: companionTraits(person),
     ...perksOf(person, clan),
-    ...kitOf(person, ctx),
+    ...carriedInto(person.arsenal, ctx),
     ...clanSize(person.clanId, ctx),
   };
-  return withPuppets(fighter, person.arsenal?.puppets ?? [], ctx);
-}
-
-/**
- * The gear and tools a person's arsenal names, for someone known by their kit; a full pouch
- * every fight. Without them, they are armed as their techniques suggest.
- */
-function kitOf(person: PersonDef, ctx: GameContext): Pick<CombatantSetup, 'gear' | 'items'> {
-  const { gearIds, tools, weaponMastery } = person.arsenal ?? {};
-  const mastery = weaponMastery ? { mastery: weaponMastery } : {};
-  return {
-    ...(gearIds ? { gear: { ...arsenalGear(gearIds, ctx), ...mastery } } : {}),
-    ...(tools ? { items: pouchFrom(tools, ctx) } : {}),
-  };
+  // A summoner brings their summons (`arsenal.summons`), called from the kit in the fight.
+  const summons = (person.arsenal?.summons ?? []).map((id) => ctx.content.summons.require(id));
+  return withPuppets(withCalls(fighter, summons, ctx), person.arsenal?.puppets ?? [], ctx);
 }
 
 /** What an awakened bloodline gives anyone born to it, as it does you (`combatants.ts`). */
@@ -128,12 +118,20 @@ function bloodlinePerks(clan: ClanDef | undefined): CombatPerk[] {
 
 /**
  * A person's perks in a fight: their arsenal's, their clan's awakened bloodline (a Byakugan
- * sees), and walking on water and trees by rank.
+ * sees), and walking on water and trees by rank; and any they keep covered until the fight calls
+ * for them.
  */
-function perksOf(person: PersonDef, clan: ClanDef | undefined): Pick<CombatantSetup, 'perks'> {
+function perksOf(
+  person: PersonDef,
+  clan: ClanDef | undefined,
+): Pick<CombatantSetup, 'perks' | 'veiled'> {
   const owned = [...(person.arsenal?.perks ?? []), ...bloodlinePerks(clan)];
   const perks = [...new Set([...owned, ...walkingByRank(person.rank)])];
-  return perks.length > 0 ? { perks } : {};
+  const veiled = person.arsenal?.veiled ?? [];
+  return {
+    ...(perks.length > 0 ? { perks } : {}),
+    ...(veiled.length > 0 ? { veiled } : {}),
+  };
 }
 
 /**

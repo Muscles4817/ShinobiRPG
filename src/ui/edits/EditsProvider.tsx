@@ -11,6 +11,8 @@ import {
   type SaveStore,
 } from '@/game';
 
+import { saveSafely } from '../saveSafely';
+
 /**
  * The content editor's changes for the whole app: read from the device once, written back on
  * every change. Versus and a new game take a pack's edits from here; a game under way keeps
@@ -46,7 +48,8 @@ export function EditsProvider({
       change: (packId, edits) => {
         const next = withPackEdits(book, packId, edits);
         setBook(next);
-        store.save(writeEditBook(next));
+        // Edits are kept for this visit even when the device has no room to keep them longer.
+        saveSafely(store, writeEditBook(next));
       },
     }),
     [book, store],

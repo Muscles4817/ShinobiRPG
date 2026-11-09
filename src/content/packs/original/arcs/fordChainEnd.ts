@@ -182,25 +182,24 @@ export const REN_HEARING: MissionDef = {
     'Ren fought shinobi of the village for a missing-nin. Take him to Tōrōgakure, where the Watch will decide what he is owed.',
   slots: 1,
   energyCost: 15,
-  reward: { ryo: 200, reputation: 5 },
+  reward: { ryo: 250, reputation: 5 },
   minMissionsCompleted: 4,
   endsAt: 'torogakure',
   stages: [
     {
-      kind: 'leg',
-      text: 'Up the river road to the village, Ren walking beside you without a rope.',
+      kind: 'road',
+      to: 'home',
+      text: 'Home to the village, Ren walking beside you without a rope.',
       variants: [
         {
           when: { remembers: 'ford-ushio-fell' },
-          text: 'Up the river road to the village, Ren carrying Ushio’s blade in its cloth and not letting anyone else touch it.',
+          text: 'Home to the village, Ren carrying Ushio’s blade in its cloth and not letting anyone else touch it.',
         },
         {
           when: { remembers: 'ford-rogue-bound' },
-          text: 'Up the river road to the village, Ren walking ahead of you in the Watch’s rope.',
+          text: 'Home to the village, Ren walking ahead of you in the Watch’s rope.',
         },
       ],
-      days: 1,
-      region: 'river-road',
     },
     {
       kind: 'decision',

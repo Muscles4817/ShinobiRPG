@@ -25,6 +25,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       ...foeStats(6, [11, 8, 11, 8], { ...NO_HAND_SIGNS, taijutsu: 9, kenjutsu: 8, willpower: 9 }),
       maxChakra: 13,
       techniqueIds: [kit.sweep, kit.palm],
+      carries: { gearIds: [kit.gear.spear, kit.gear.heavyArmour] },
       traits: ['armoured'],
     },
     {
@@ -36,6 +37,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       ...foeStats(7, [9, 8, 9, 8], { ...NO_HAND_SIGNS, kenjutsu: 12, willpower: 10 }),
       maxChakra: 32,
       techniqueIds: [kit.cut, kit.heavyCut, kit.drawStrike],
+      carries: { gearIds: [kit.gear.sword, kit.gear.heavyArmour] },
       traits: ['armoured'],
     },
     {
@@ -47,6 +49,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       ...foeStats(7, [10, 10, 10, 13], { ...NO_HAND_SIGNS, kenjutsu: 12, willpower: 10 }),
       maxChakra: 13,
       techniqueIds: [],
+      carries: { gearIds: [kit.gear.heavyArmour] },
       traits: ['archer'],
     },
     {
@@ -58,12 +61,13 @@ export function samurai(kit: FoeKit): EnemyDef[] {
         'Their lord is dead and their name is gone. The sword is all that came with them.',
       ...foeStats(10, [14, 14, 13, 12], {
         ...NO_HAND_SIGNS,
-        kenjutsu: 19,
+        kenjutsu: 18,
         willpower: 13,
         taijutsu: 12,
       }),
       maxChakra: 44,
       techniqueIds: [kit.cut, kit.heavyCut, kit.bleedCut, kit.drawStrike],
+      carries: { gearIds: [kit.gear.fineSword, kit.gear.lightArmour] },
       traits: ['swift'],
     },
     {
@@ -74,12 +78,13 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       description: 'Commands a lord’s guard and has never once been surprised.',
       ...foeStats(12, [15, 13, 15, 13], {
         ...NO_HAND_SIGNS,
-        kenjutsu: 17,
+        kenjutsu: 16,
         willpower: 15,
         intellect: 13,
       }),
       maxChakra: 50,
       techniqueIds: [kit.heavyCut, kit.masterCut, kit.breakCut, kit.drawStrike],
+      carries: { gearIds: [kit.gear.fineSword, kit.gear.plate] },
       traits: ['armoured'],
     },
     {
@@ -97,6 +102,7 @@ export function samurai(kit: FoeKit): EnemyDef[] {
       }),
       maxChakra: 70,
       techniqueIds: [kit.masterCut, kit.heavyCut, kit.drawStrike, kit.bleedCut],
+      carries: { gearIds: [kit.gear.fineSword] },
       traits: ['swift'],
     },
   ];
@@ -125,6 +131,7 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       ...foeStats(6, [11, 9, 12, 12], { kenjutsu: 12, willpower: 9 }),
       maxChakra: 13,
       techniqueIds: [],
+      carries: { gearIds: [kit.gear.lightArmour] },
       traits: ['archer', 'armoured'],
     },
     {
@@ -159,6 +166,7 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       ...foeStats(7, [10, 9, 10, 9], { taijutsu: 10, willpower: 11, chakraControl: 8 }),
       maxChakra: 50,
       techniqueIds: [kit.palm, kit.grapple, kit.heal],
+      carries: { gearIds: [kit.gear.knuckles] },
       traits: ['brawler'],
     },
     {
@@ -175,6 +183,7 @@ export function archersAndMonks(kit: FoeKit): EnemyDef[] {
       }),
       maxChakra: 80,
       techniqueIds: [kit.palm, kit.grapple, kit.lock, kit.heal],
+      carries: { gearIds: [kit.gear.knuckles], tools: { 'wound-salve': 1 } },
       traits: ['brawler'],
     },
   ];

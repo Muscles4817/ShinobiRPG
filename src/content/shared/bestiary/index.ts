@@ -1,4 +1,5 @@
 import type { EnemyDef } from '../../types';
+import { CHAKRA_BEASTS } from './chakraBeasts';
 import { DESERT_BEASTS } from './desert';
 import type { FoeKit } from './kit';
 import { bandits, smugglersAndSellswords } from './outlaws';
@@ -12,7 +13,15 @@ import { restlessDead, seaRaiders, WILD_BEASTS } from './wild';
  * A bench test fights each one at the grade its danger means (`src/test/bench/bestiary.test.ts`).
  */
 
-export { FOE_ROLES, type FoeKit, type FoeRole } from './kit';
+export {
+  FOE_GEAR_ROLES,
+  FOE_ROLES,
+  type FoeGear,
+  type FoeGearRole,
+  type FoeKit,
+  type FoeRole,
+} from './kit';
+export { CHAKRA_BEAST_ARTS } from './beastArts';
 
 /*#__NO_SIDE_EFFECTS__*/
 export function bestiary(kit: FoeKit): EnemyDef[] {
@@ -25,5 +34,6 @@ export function bestiary(kit: FoeKit): EnemyDef[] {
     ...restlessDead(kit),
     ...WILD_BEASTS,
     ...DESERT_BEASTS,
+    ...CHAKRA_BEASTS,
   ];
 }

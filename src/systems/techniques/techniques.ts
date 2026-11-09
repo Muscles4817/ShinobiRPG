@@ -64,6 +64,21 @@ export interface TechniqueDef {
   /** A step of a ladder that must be open in the fight to use it (`ladders.ts`): a gate. */
   readonly needsOpen?: LadderStep;
   /**
+   * Summons (call ids) that must be out, on the field or perched on the user, to use it: Sage
+   * Mode needs the two sage toads, their duet both of them (`combat/engines/plan/calls.ts`).
+   */
+  readonly needsCalls?: readonly string[];
+  /**
+   * What its target must be to use it on them: `open` (dazed, reeling or held), for a finisher
+   * that is a storm of blows no one standing ready would let land (Morning Peacock).
+   */
+  readonly needsTarget?: 'open';
+  /**
+   * Made to end a fight in one strike (a lightning blade): on a target who can't see it coming or
+   * can't move, it can't be slipped and hits to kill (`combat/rules/lethal.ts`).
+   */
+  readonly lethal?: true;
+  /**
    * A taijutsu move or weapon form that moulds chakra (a Gentle Fist palm, an expansion, chakra
    * run along an edge): it costs chakra like any jutsu, where a plain body move costs breath.
    */

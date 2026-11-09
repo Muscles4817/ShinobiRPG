@@ -53,15 +53,29 @@ export function retinueSeen(
   );
 }
 
+/**
+ * Whether a glance catches this about a foe, told as plainly as `tell` (in a fight, always): by
+ * perception, hashed on the seed, the foe and what is being looked for.
+ */
+export function glanceCatches(
+  state: GameState,
+  def: EnemyDef,
+  look: { readonly key: string; readonly tell: RetinueTell },
+  knowledge: RetinueKnowledge,
+): boolean {
+  if (knowledge === 'full') return true;
+  const odds = glanceOdds(look.tell, state.character.stats.perception);
+  return hashUnit(state.board.seed, look.key, def.id) < odds;
+}
+
 /** What a foe carries of hive and dust that a glance can tell: a hive hides; a gourd shows. */
 export function poolsSeen(
   state: GameState,
   def: EnemyDef,
   knowledge: RetinueKnowledge,
 ): { readonly hive: boolean; readonly dust: boolean } {
-  const perception = state.character.stats.perception;
   const sees = (pool: 'hive' | 'dust', tell: RetinueTell) =>
-    knowledge === 'full' || hashUnit(state.board.seed, pool, def.id) < glanceOdds(tell, perception);
+    glanceCatches(state, def, { key: pool, tell }, knowledge);
   return {
     hive: def.hive !== undefined && sees('hive', def.hive.tell ?? 'hidden'),
     dust: def.dust !== undefined && sees('dust', def.dust.tell ?? 'open'),

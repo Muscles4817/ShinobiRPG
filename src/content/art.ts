@@ -10,7 +10,25 @@ export type BackdropId =
   | 'mist-village'
   | 'mountain'
   | 'sand-village'
-  | 'barge-landing';
+  | 'barge-landing'
+  | 'cedar-forest'
+  | 'post-town'
+  | 'waterfall'
+  | 'tide-shrine'
+  | 'salt-flats'
+  | 'battlefield'
+  | 'castle-town'
+  | 'highway-town'
+  | 'pleasure-quarter'
+  | 'bridge-coast'
+  | 'temple-hill'
+  | 'toad-mountain'
+  | 'broadleaf-forest'
+  | 'river-plain'
+  | 'sand-arch'
+  | 'mountain-stair'
+  | 'gorge-bridge'
+  | 'twin-statues';
 
 /** Small line drawings for places, items and drills. */
 export type IconId =

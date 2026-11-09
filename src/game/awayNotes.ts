@@ -4,6 +4,7 @@ import { daysAway, type MissionDef } from '@/systems/missions';
 import type { GameContext } from './context';
 import { nextSitting } from './exam/calendar';
 import { nominationBlocker, senseiOf } from './exam/entry';
+import { jobAsWalked } from './jobRoads';
 import type { GameState } from './state';
 
 /**
@@ -26,7 +27,7 @@ function inDays(days: number): string {
 
 /** The exam a job would make you miss, or null when you'd be back in time. */
 export function examClash(state: GameState, ctx: GameContext, def: MissionDef): ExamClash | null {
-  const away = daysAway(def);
+  const away = daysAway(jobAsWalked(state, ctx, def));
   const sitting = nextSitting(state, ctx);
   if (away === 0 || !sitting || sitting.daysAway >= away) return null;
   const when = inDays(sitting.daysAway);
@@ -41,8 +42,8 @@ export function examClash(state: GameState, ctx: GameContext, def: MissionDef): 
 }
 
 /** How long a job keeps you away, in words, or null for one done within a day. */
-export function awayFor(def: MissionDef): string | null {
-  const days = daysAway(def);
+export function awayFor(state: GameState, ctx: GameContext, def: MissionDef): string | null {
+  const days = daysAway(jobAsWalked(state, ctx, def));
   if (days === 0) return null;
   return capitalise(`${counted(days, 'day')} away`);
 }

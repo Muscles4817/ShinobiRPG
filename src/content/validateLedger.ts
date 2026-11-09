@@ -1,4 +1,9 @@
-import type { MissionDef, MissionStage, Outcome } from '@/systems/missions';
+import {
+  writtenOptions,
+  type MissionDef,
+  type MissionStage,
+  type Outcome,
+} from '@/systems/missions';
 
 import type { ContentPack } from './types';
 
@@ -40,6 +45,10 @@ function storyLines(stage: MissionStage): string[] {
     case 'combat':
     case 'encounter':
       return [stage.text];
+    case 'road':
+      return stage.text ? [stage.text] : [];
+    case 'stop':
+      return [];
   }
 }
 
@@ -59,6 +68,8 @@ function outcomesOf(stage: MissionStage): (Outcome | undefined)[] {
     case 'leg':
     case 'combat':
     case 'encounter':
+    case 'stop':
+    case 'road':
       return [];
   }
 }
@@ -78,7 +89,7 @@ function missionLedgerProblems(m: MissionDef): string[] {
 
 export function ledgerProblems(pack: ContentPack): string[] {
   const roadEvents = pack.roadEvents.flatMap((e) =>
-    e.options
+    writtenOptions(e)
       .filter((o) => o.ledger !== undefined && o.ledger === o.reply)
       .map((o) => `road event "${e.id}" writes its reply to "${o.label}" into the ledger`),
   );

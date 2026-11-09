@@ -240,3 +240,8 @@
     display: none;
   }
 }
+
+/* The field book's tabs in one row. */
+.app.wide .field-tabs {
+  grid-template-columns: repeat(6, 1fr);
+}

@@ -8,6 +8,7 @@
   inset: 0;
   z-index: 40;
   overflow-y: auto;
+  padding-top: env(safe-area-inset-top);
   background: var(--bg);
   color: var(--story);
 }

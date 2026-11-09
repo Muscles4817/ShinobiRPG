@@ -1,4 +1,4 @@
-import { listed } from '@/core';
+import { capitalise, listed } from '@/core';
 import type { EnemyDef } from '@/content';
 
 import type { GameContext } from './context';
@@ -14,10 +14,6 @@ export interface PoolNote {
   readonly counter: string;
 }
 
-function capitalised(words: string): string {
-  return words.charAt(0).toUpperCase() + words.slice(1);
-}
-
 function hiveNote(strainId: string, ctx: GameContext): PoolNote | null {
   const strain = ctx.content.strains.get(strainId);
   if (!strain) return null;
@@ -26,7 +22,7 @@ function hiveNote(strainId: string, ctx: GameContext): PoolNote | null {
     label: `Carries a hive of ${strain.name.toLowerCase()}.`,
     counter:
       strain.fears.length > 0
-        ? `${capitalised(listed(strain.fears))} ${kill} the insects, and areas thin the hive.`
+        ? `${capitalise(listed(strain.fears))} ${kill} the insects, and areas thin the hive.`
         : 'Areas thin the hive.',
   };
 }
@@ -35,7 +31,7 @@ function hiveNote(strainId: string, ctx: GameContext): PoolNote | null {
 function scatteredBy(banes: readonly string[]): string {
   if (banes.length === 0) return 'Nothing scatters it: outlast what they carry.';
   const verb = banes.length === 1 && banes[0] !== 'heavy blows' ? 'scatters' : 'scatter';
-  return `${capitalised(listed(banes))} ${verb} it.`;
+  return `${capitalise(listed(banes))} ${verb} it.`;
 }
 
 /** A shield is outrun by speed and never meets an illusion. */

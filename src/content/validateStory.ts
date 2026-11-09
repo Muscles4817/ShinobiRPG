@@ -4,7 +4,9 @@ import {
   type ArcAct,
   type DecisionOption,
   type MissionDef,
+  writtenOptions,
   type MissionStage,
+  type WorldGate,
 } from '@/systems/missions';
 
 import { TONES } from './people';
@@ -33,7 +35,9 @@ function shapeProblems(m: MissionDef): string[] {
   m.stages.forEach((stage, i) => {
     if (stage.kind === 'ending') {
       // Only the road home may follow how a job ends.
-      if (m.stages.slice(i + 1).some((s) => s.kind !== 'leg')) {
+      const homeward = (s: MissionStage) =>
+        s.kind === 'leg' || (s.kind === 'road' && s.to === 'home');
+      if (!m.stages.slice(i + 1).every(homeward)) {
         problems.push('has an ending with more than the road home after it');
       }
       if (stage.endings.at(-1)?.when !== undefined) problems.push('has no ending for every case');
@@ -86,7 +90,7 @@ function storyProblems(m: MissionDef, roadMarks: ReadonlySet<string>): string[] 
 }
 
 function eventProblems(pack: ContentPack): string[] {
-  const options: DecisionOption[] = pack.roadEvents.flatMap((e) => [...e.options]);
+  const options: DecisionOption[] = pack.roadEvents.flatMap((e) => [...writtenOptions(e)]);
   const regions = new Set(pack.roadEvents.flatMap((e) => e.regions));
   const roads = pack.missions.flatMap((m) =>
     m.stages.flatMap((s) => (s.kind === 'leg' && s.region ? [[m.id, s.region] as const] : [])),
@@ -129,6 +133,18 @@ export function worldMarksLeft(pack: ContentPack): Set<string> {
   ]);
 }
 
+/** A gate waits on and closes on only marks some job leaves behind. */
+function gateProblems(who: string, gate: WorldGate, left: ReadonlySet<string>): string[] {
+  return [
+    ...(gate.needsWorldMark !== undefined && !left.has(gate.needsWorldMark)
+      ? [`${who} waits for "${gate.needsWorldMark}", which no job leaves behind`]
+      : []),
+    ...(gate.closedBy !== undefined && !left.has(gate.closedBy)
+      ? [`${who} is closed by "${gate.closedBy}", which no job leaves behind`]
+      : []),
+  ];
+}
+
 function worldProblems(pack: ContentPack): string[] {
   const left = worldMarksLeft(pack);
   const remembered = pack.missions.flatMap((m) =>
@@ -141,17 +157,8 @@ function worldProblems(pack: ContentPack): string[] {
     ...remembered
       .filter(([, mark]) => !left.has(mark))
       .map(([id, mark]) => `mission "${id}" remembers "${mark}", which no job leaves behind`),
-    ...pack.missions
-      .filter((m) => m.needsWorldMark !== undefined && !left.has(m.needsWorldMark))
-      .map(
-        (m) =>
-          `mission "${m.id}" waits for "${m.needsWorldMark ?? ''}", which no job leaves behind`,
-      ),
-    ...pack.missions
-      .filter((m) => m.closedBy !== undefined && !left.has(m.closedBy))
-      .map(
-        (m) => `mission "${m.id}" is closed by "${m.closedBy ?? ''}", which no job leaves behind`,
-      ),
+    ...pack.missions.flatMap((m) => gateProblems(`mission "${m.id}"`, m, left)),
+    ...pack.roadEvents.flatMap((e) => gateProblems(`road event "${e.id}"`, e, left)),
     ...pack.village.rumours
       .filter((r) => r.worldMark !== undefined && !left.has(r.worldMark))
       .map((r) => `rumour "${r.id}" waits for "${r.worldMark ?? ''}", which no job leaves behind`),
@@ -207,7 +214,7 @@ function baseProblems(pack: ContentPack, arcId: string, act: ArcAct): string[] {
 export function validateStory(pack: ContentPack): string[] {
   const roadMarks = new Set(
     pack.roadEvents
-      .flatMap((e) => e.options.flatMap((o) => o.effects ?? []))
+      .flatMap((e) => writtenOptions(e).flatMap((o) => o.effects ?? []))
       .flatMap((e) => (e.kind === 'mark' ? [e.mark] : [])),
   );
   return [

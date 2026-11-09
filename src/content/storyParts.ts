@@ -17,6 +17,8 @@ export function outcomes(stage: MissionStage): (Outcome | undefined)[] {
     case 'leg':
     case 'combat':
     case 'encounter':
+    case 'stop':
+    case 'road':
       return [];
   }
 }
@@ -48,6 +50,8 @@ export function conditions(stage: MissionStage): (Condition | undefined)[] {
     case 'leg':
     case 'combat':
     case 'encounter':
+    case 'stop':
+    case 'road':
       return own;
   }
 }

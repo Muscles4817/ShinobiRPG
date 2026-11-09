@@ -119,4 +119,13 @@ export const FURNISHINGS: readonly FurnishingDef[] = [
     comfort: 2,
     effect: { kind: 'decor' },
   },
+  {
+    id: 'painted-map',
+    name: 'Painted map of the country',
+    description:
+      'Every road you have walked, inked in by your own hand, every place on it one you have stood in. Earned, never sold.',
+    spot: 'wall',
+    comfort: 3,
+    effect: { kind: 'decor' },
+  },
 ];

@@ -6,6 +6,7 @@ import {
   dispatch,
   openDay,
   reviseDraft,
+  sceneOnScreen,
   type CreationDraft,
   type GameAction,
   type GameContext,
@@ -93,6 +94,39 @@ export function act(state: GameState, action: GameAction, context: GameContext =
   const result = dispatch(state, action, context);
   if (!result.ok) throw new Error(`Action ${action.type} refused: ${result.error}`);
   return result.value;
+}
+
+/**
+ * The answer to a road event that keeps a walk moving: the way round foes on the road (facing
+ * them is an encounter to play), else the first option.
+ */
+export function keepClear(state: GameState, context: GameContext = ctx): GameAction {
+  const id = state.mission?.roadEvent;
+  const event = id ? context.content.roadEvents.get(id) : undefined;
+  return { type: 'missionDecide', optionIndex: event?.kind === 'encounter' ? 1 : 0 };
+}
+
+/**
+ * Walks a job's road (or a trip's): on to it past what comes before, through each stretch, past
+ * stops and round whatever the road brings, until the job's business at the end of it.
+ */
+export function pastTheRoad(start: GameState, context: GameContext = ctx): GameState {
+  let s = start;
+  let onRoad = false;
+  for (let i = 0; i < 30 && s.mission && !s.combat && !s.mission.encounter; i++) {
+    const mapped = sceneOnScreen(s, context) === 'journey';
+    if (onRoad && !mapped) return s;
+    onRoad ||= mapped;
+    const goes = dispatch(s, { type: 'missionContinue' }, context).ok;
+    if (!mapped && !goes) return s;
+    const onward: GameAction = s.mission.roadEvent
+      ? keepClear(s, context)
+      : goes
+        ? { type: 'missionContinue' }
+        : { type: 'journeyStop', stay: false };
+    s = act(s, onward, context);
+  }
+  return s;
 }
 
 /** A character with every stat set to `value`, fully healed for those stats. */

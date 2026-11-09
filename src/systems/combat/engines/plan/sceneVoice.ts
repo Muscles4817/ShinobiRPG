@@ -76,6 +76,39 @@ export function rehideLine(moment: Moment, actor: Told): string {
   return told(moment, REHIDE, { a: actor });
 }
 
+const DISPEL: Bank = {
+  id: 'dispel',
+  lines: [
+    '{a} form{a.s} the seal to break illusions.',
+    '{a} press{a.es} {a.their} palms together and push the illusions back.',
+    '{a} snap{a.s} through the release seal.',
+  ],
+};
+
+const DISPEL_HOLDS: Bank = {
+  id: 'dispel-holds',
+  lines: ['The illusion holds.', 'The illusion bends, then settles again.', 'Nothing gives.'],
+};
+
+const DISPEL_BREAKS: Bank = {
+  id: 'dispel-breaks',
+  lines: [
+    'The illusion shatters.',
+    'The illusion tears like wet paper.',
+    'The air clears at once.',
+  ],
+};
+
+/** Someone forms the seal to break illusions. */
+export function dispelLine(moment: Moment, actor: Told): string {
+  return told(moment, DISPEL, { a: actor });
+}
+
+/** Whether a hiding one's illusion broke under it. */
+export function dispelledLine(moment: Moment, broke: boolean): string {
+  return told(moment, broke ? DISPEL_BREAKS : DISPEL_HOLDS, {});
+}
+
 const TRACED: Bank = {
   id: 'traced',
   lines: [

@@ -22,6 +22,7 @@ import {
 } from '@/systems/techniques';
 
 import { playerCombatant } from '../combatants';
+import { gateLine } from './gateToll';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 
@@ -179,13 +180,14 @@ function detailedLine(effect: Extract<TechniqueEffect, { verb: DetailedVerb }>):
           : 'Takes you to where you fight best',
         chip: null,
       };
-    case 'empower':
+    case 'empower': {
+      const raises = listed(effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()));
+      if (effect.opens) return gateLine(effect.opens, raises);
       return {
-        text: effect.opens
-          ? `Opens ${stepWords(effect.opens)}: raises ${listed(effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()))} until the body gives out`
-          : `Raises ${listed(effect.boosts.map((s) => STAT_INFO[s].label.toLowerCase()))}, at a price`,
+        text: `Raises ${raises}, at a price`,
         chip: effect.healthPerExchange ? `−${effect.healthPerExchange} health a turn` : null,
       };
+    }
     case 'clone':
       return {
         text: `Makes clones that ${effect.strikes ? 'fight and ' : ''}take hits`,
@@ -229,7 +231,10 @@ function effectLine(effect: TechniqueEffect): SheetLine {
 }
 
 function needLines(def: TechniqueDef): string[] {
-  const open = def.needsOpen ? [`${capital(stepWords(def.needsOpen))} open`] : [];
+  const open = [
+    ...(def.needsOpen ? [`${capital(stepWords(def.needsOpen))} open`] : []),
+    ...(def.needsTarget === 'open' ? ['A foe dazed or held'] : []),
+  ];
   const n = def.needs;
   if (!n) return open;
   return [
@@ -269,7 +274,12 @@ export function techniqueSheet(
     lands:
       wounding.length > 0 && def.discipline !== 'genjutsu' ? LANDS[def.accuracy ?? 'steady'] : null,
     strikes: strikesOf(def),
-    effects: def.effects.map(effectLine),
+    effects: [
+      ...def.effects.map(effectLine),
+      ...(def.lethal
+        ? [{ text: 'Kills in one strike a foe who can’t see it coming or can’t move', chip: null }]
+        : []),
+    ],
     cost: effortOf(you, { ...def, ...(unstable ? { unstable } : {}) }),
     costs: [
       ...(def.oncePerFight ? ['Once a fight'] : []),

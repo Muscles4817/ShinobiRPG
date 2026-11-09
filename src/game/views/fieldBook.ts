@@ -13,6 +13,7 @@ import {
   type FieldEntry,
 } from './fieldBookEntries';
 import { foeEntries } from './fieldBookFoes';
+import { placeEntries } from './fieldBookPlaces';
 
 /**
  * The field book in the Record tab: a page for each kind of thing out in the world, how full it
@@ -55,6 +56,7 @@ const SEALS: Readonly<Record<FieldBookPage, string>> = {
   recipes: '膳',
   sights: '灯',
   foes: '敵',
+  places: '旅',
 };
 
 const DONE_WORD: Readonly<Record<FieldBookPage, string>> = {
@@ -63,6 +65,7 @@ const DONE_WORD: Readonly<Record<FieldBookPage, string>> = {
   recipes: 'learned',
   sights: 'followed',
   foes: 'kinds beaten',
+  places: 'been to',
 };
 
 function entriesOf(state: GameState, ctx: GameContext, page: FieldBookPage): FieldEntry[] {
@@ -77,6 +80,8 @@ function entriesOf(state: GameState, ctx: GameContext, page: FieldBookPage): Fie
       return sightEntries(state, ctx);
     case 'foes':
       return foeEntries(state, ctx);
+    case 'places':
+      return placeEntries(state, ctx);
   }
 }
 

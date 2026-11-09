@@ -12,10 +12,16 @@ import {
   type Card,
 } from './cards';
 import { CHANGE_UP_AFTER } from '../../rules/familiarity';
+import type { NarrationOffPlan } from '../../rules/narration';
 import { beats, seenDefence, walksInto } from './adapt';
 import { partnered } from './combo';
 import { spendsReserve } from './pacing';
 import { bestTarget } from './targeting';
+import { finisherTargets, needsOpenTarget } from './finishers';
+import { kitCall } from './calling';
+import { nextOpening } from './climbing';
+import { setupPlay } from './setups';
+import { survivalPlay } from './survival';
 import { readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
 import { ownField } from './field';
@@ -166,15 +172,23 @@ function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boole
   if (moveDestination(self, t) === round.range) return false;
   if (!partnered(round.fighters, self, t)) return false;
   const foes = opponentsOf(round.fighters, self);
-  if (!prepNeeded(self, t, { foeInSight: foes.some((f) => inSight(self, f)), foes })) return false;
+  const foeInSight = foes.some((f) => inSight(self, f));
+  const facing = {
+    foeInSight,
+    foes,
+    exchange: round.number,
+    ...(round.reads ? { reads: round.reads } : {}),
+  };
+  if (!prepNeeded(self, t, facing)) return false;
   return !(hasVerb(t, 'conceal') && self.hidden);
 }
 
 /**
  * Whether a card is needed now: no searching with no one hidden, no healing at full health, no
- * getting ready twice over or with no foe in sight (`prep.ts`).
+ * getting ready twice over or with no foe in sight (`prep.ts`). A foe's announced card is held
+ * to it too, at its turn (`round.ts`).
  */
-function needed(self: PlanFighter, card: Card, round: Round): boolean {
+export function needed(self: PlanFighter, card: Card, round: Round): boolean {
   if (isDefenceCard(card)) return true;
   const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
   switch (card.kind) {
@@ -208,6 +222,8 @@ function useful(self: PlanFighter, card: Card, round: Round): boolean {
 export interface Play {
   readonly card: Card;
   readonly target: PlanFighter | undefined;
+  /** Nothing slotted played: why the turn went off the plan (stamped for the player). */
+  readonly offPlan?: NarrationOffPlan;
 }
 
 /** A technique that only holds a foe back (daze, seal, confuse), without wounding them. */
@@ -228,8 +244,10 @@ function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {
   if (!card || !fitsBand(card, round.range) || !useful(self, card, round)) return null;
   const held = whenHolds(self, round, slot.when);
   // Dazing, sealing or confusing a foe already held is wasted: such a card looks for a fresh one.
-  const foes = held && holdsOnly(card) ? held.filter((f) => free(f, card, round.number)) : held;
-  if (!foes) return null;
+  const fresh = held && holdsOnly(card) ? held.filter((f) => free(f, card, round.number)) : held;
+  // A finisher that needs an opening waits for an open foe (`finishers.ts`).
+  const foes = fresh && finisherTargets(card, fresh);
+  if (!foes || (needsOpenTarget(card) && foes.length === 0)) return null;
   const inReach = needsAim(card) ? hittable(card, foes, round.fighters) : foes;
   const target = aimAt(inReach, slot.target, self, round);
   return needsAim(card) && !target ? null : { card, target };
@@ -299,14 +317,59 @@ function changeUp(self: PlanFighter, round: Round, play: Play): Play {
 }
 
 /**
- * An emergency slot that holds; else, for someone fighting at a set distance and elsewhere, a
- * step towards it; else the first slot at this distance that qualifies; else an improvised
- * blow or step (at the mark).
+ * A ladder's next step from the kit, which takes no slot (`climbing.ts`), when the fight calls
+ * for it (`prep.ts` judges it like any readying).
+ */
+function climbing(self: PlanFighter, round: Round): Play | null {
+  const opening = nextOpening(self);
+  if (!opening) return null;
+  const card: Card = { kind: 'jutsu', technique: opening };
+  return useful(self, card, round) ? { card, target: undefined } : null;
+}
+
+/** A summoner's call from the kit, now, if it calls for one (`calling.ts`). */
+function kitFor(self: PlanFighter, round: Round): Card | undefined {
+  return kitCall(self, {
+    fighters: round.fighters,
+    band: round.range,
+    ...(round.reads ? { reads: round.reads } : {}),
+    exchange: round.number,
+  });
+}
+
+/**
+ * What the kit plays by itself, slot or no slot: a ladder's next step when it is time, a set-up
+ * or playing for time against a killer, a summoner's call. Never for the player's own plan,
+ * which slots those (`kitSlots.ts`): it is theirs, unless they only watch the fight. Playing
+ * for time is never the player's either (`survival.ts`).
+ */
+function kitPlay(self: PlanFighter, round: Round): Play | null {
+  if (self.isPlayer && round.watching !== true) return null;
+  const climb = climbing(self, round);
+  if (climb) return climb;
+  // A set-up from the kit, against a match (`setups.ts`): hide, hold, finish.
+  const foes = opponentsOf(round.fighters, self);
+  const setup = setupPlay(self, { band: round.range, foes });
+  // A killer coming: the set-up is its own answer, else play for time (`survival.ts`).
+  const survival = survivalPlay(self, round);
+  if (survival) return setup ?? survival;
+  // Otherwise a summoner fights their own way first: from the kit, Sage Mode and all.
+  const called = kitFor(self, round);
+  if (called) return { card: called, target: undefined };
+  return setup ?? null;
+}
+
+/**
+ * An emergency slot that holds; else what the kit plays by itself (`kitPlay`, never the
+ * player's); else, for someone fighting at a set distance and elsewhere, a step towards it; else the
+ * first slot at this distance that qualifies; else an improvised blow or step (at the mark).
  */
 export function plannedPlay(self: PlanFighter, round: Round): Play {
   const slots = self.loadout[round.range];
   const emergency = firstPlay(self, round, slots.filter(urgent));
   if (emergency) return emergency;
+  const kit = kitPlay(self, round);
+  if (kit) return kit;
   const footwork = isPinned(self) ? null : makingFor(self, round.range);
   if (footwork) {
     // Ready the charge first: power up or make clones, or go in with an entry.
@@ -322,8 +385,9 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   const seen = foes.filter((f) => inSight(self, f));
   // With no one to hit and someone hidden, looking for them beats walking about.
   if (seen.length === 0 && foes.some((f) => f.hidden)) {
-    return { card: { kind: 'search' }, target: undefined };
+    return { card: { kind: 'search' }, target: undefined, offPlan: 'looking' };
   }
   const card = improvise(self, round.range);
-  return { card, target: aimAt(hittable(card, seen, round.fighters), 'marked', self, round) };
+  const target = aimAt(hittable(card, seen, round.fighters), 'marked', self, round);
+  return { card, target, offPlan: 'improvised' };
 }

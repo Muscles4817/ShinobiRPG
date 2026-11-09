@@ -1,8 +1,15 @@
-import type { BodySize, CombatForm, CombatGrammar, CombatTrait } from '@/systems/combat';
+import type {
+  BodySize,
+  CombatForm,
+  CombatGrammar,
+  CombatPerk,
+  CombatTrait,
+} from '@/systems/combat';
 import type { Danger } from '@/systems/missions';
 import type { StatDelta } from '@/systems/stats';
 import type { Element } from '@/systems/techniques';
 
+import type { CarriedKit } from './carried';
 import type { RetinueEntry, RetinueTell } from './companions';
 import type { FoeSummon } from './contracts';
 
@@ -53,8 +60,20 @@ export interface EnemyDef {
   readonly nature?: Element;
   /** How they fight: archer, brawler, illusionist… Every fight style honours these. */
   readonly traits?: readonly CombatTrait[];
+  /** Perks people earn by blood or training, which a chakra beast is born with (an owl's foresight). */
+  readonly perks?: readonly CombatPerk[];
+  /**
+   * An animal changed by chakra (`docs/design/chakra-beasts-plan.md`): it has chakra and
+   * techniques no person learns, and only it may hold them (`validateChakraBeasts.ts`).
+   */
+  readonly chakraBeast?: true;
   /** Ingredients a beaten foe leaves (a beast's meat), one of each, into your pack. */
   readonly drops?: readonly string[];
+  /**
+   * The gear they fight in and the tools in their pouch (`CarriedKit`, validated like an
+   * arsenal's): a samurai's armour, a cutpurse's smoke bombs. Left out, armed as their kit.
+   */
+  readonly carries?: CarriedKit;
   /** Bodies that fight beside them (`docs/design/retinue-plan.md`): a hound at heel. */
   readonly retinue?: readonly RetinueEntry[];
   /** Summons they can call into the fight, from a contract of the pack. */

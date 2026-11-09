@@ -266,7 +266,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px var(--gutter) 32px;
+  padding: calc(16px + env(safe-area-inset-top)) var(--gutter) 32px;
   overflow-y: auto;
   background: var(--bg);
 }

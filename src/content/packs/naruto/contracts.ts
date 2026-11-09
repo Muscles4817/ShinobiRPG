@@ -2,6 +2,7 @@ import type { MissionDef } from '@/systems/missions';
 
 import type { ContractDef } from '../../contracts';
 import { statLine } from '../../statLine';
+import { SAGE_TOADS } from './sageToads';
 
 /**
  * Summoning contracts in the Hidden Leaf: the toads of Mount Myōboku, signed after a job for a
@@ -63,6 +64,34 @@ const TOADS: ContractDef = {
       techniqueIds: ['toad-jitte-strike'],
       upkeep: 10,
       price: { blood: 8 },
+      mount: true,
+    },
+    {
+      id: 'gamahiro',
+      name: 'Gamahiro',
+      description: 'A towering toad with a pair of swords at his hip, quiet and quick to draw.',
+      techniqueId: 'summoning-gamahiro',
+      standing: 3,
+      stats: statLine(10, {
+        strength: 44,
+        speed: 12,
+        stamina: 38,
+        reserves: 26,
+        intellect: 12,
+        willpower: 18,
+        taijutsu: 16,
+        ninjutsu: 4,
+        genjutsu: 0,
+        kenjutsu: 30,
+        fuuinjutsu: 0,
+      }),
+      healthScale: 3.5,
+      maxChakra: 220,
+      traits: ['armoured'],
+      techniqueIds: ['toad-twin-blades'],
+      upkeep: 12,
+      price: { blood: 10 },
+      mount: true,
     },
     {
       id: 'gamabunta',
@@ -90,7 +119,9 @@ const TOADS: ContractDef = {
       techniqueIds: ['toad-water-gun', 'toad-jitte-strike'],
       upkeep: 18,
       price: { offeringId: 'wild-game' },
+      mount: true,
     },
+    ...SAGE_TOADS,
   ],
   tastes: ['wild-game', 'river-fish'],
   parting:

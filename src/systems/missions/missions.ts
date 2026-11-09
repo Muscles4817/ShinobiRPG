@@ -1,10 +1,12 @@
 import type { CombatGround } from '@/systems/combat';
 import type { StatId } from '@/systems/stats';
 
-import type { Crew } from './crew';
+import type { Crew, Danger } from './crew';
 import type { EncounterRun, EncounterStage } from './encounter';
 import type { MissionRank, MissionRole } from './missionRank';
 import type { StagePay } from './encounterPay';
+import type { VenturePlan } from './ventures';
+import type { WorldGate } from './worldGate';
 import {
   startThreads,
   type Condition,
@@ -12,7 +14,15 @@ import {
   type LedgerLine,
   type ThreadDef,
 } from './story';
-import type { CampStage, DecisionStage, EndingStage, Outcome, TextVariant } from './storyStages';
+import type {
+  CampStage,
+  DecisionStage,
+  EndingStage,
+  Outcome,
+  RoadStage,
+  StopStage,
+  TextVariant,
+} from './storyStages';
 
 /**
  * Missions are a linear sequence of stages. This module tracks progress through them
@@ -70,6 +80,8 @@ type StageBody =
       readonly variants?: readonly TextVariant[];
       readonly days: number;
       readonly region?: string;
+      /** The worst a road event on it may bring; absent, the job's own worst foe. */
+      readonly danger?: Danger;
     }
   | {
       readonly kind: 'combat';
@@ -82,10 +94,16 @@ type StageBody =
   | EncounterStage
   | DecisionStage
   | CampStage
+  | StopStage
+  | RoadStage
   | EndingStage;
 
-/** A stage, played only when its condition holds (and skipped otherwise). */
-export type MissionStage = StageBody & { readonly when?: Condition };
+/**
+ * A stage, played only when its condition holds (and skipped otherwise). Straight after a job's
+ * `road`, `at` places a beat partway along it: after that many of the road's stretches (or at the
+ * end of a shorter road); stages after a road without one happen on arrival.
+ */
+export type MissionStage = StageBody & { readonly when?: Condition; readonly at?: number };
 
 /** Someone you look after on a job: their trust is one of its threads, moved by your tone. */
 export interface ChargeDef {
@@ -103,7 +121,8 @@ export interface TwistDef {
   readonly weight: number;
 }
 
-export interface MissionDef {
+/** A job's `WorldGate`: a follow-up waits on what another job left; a story moved on closes it. */
+export interface MissionDef extends WorldGate {
   readonly id: string;
   readonly title: string;
   readonly rank: MissionRank;
@@ -135,14 +154,12 @@ export interface MissionDef {
   readonly standing?: boolean;
   /** Never posted: an exam stage runs it (the survival forest). */
   readonly examOnly?: boolean;
-  /** Posted only once the village remembers this (a world mark): a follow-up to another job. */
-  readonly needsWorldMark?: string;
-  /** No longer posted once the village remembers this: the story it follows has moved on. */
-  readonly closedBy?: string;
   /** Done once and never posted again (a follow-up that tells one moment). */
   readonly once?: true;
   /** Where the job leaves you, when it ends somewhere else (a long story's base, or home). */
   readonly endsAt?: string;
+  /** Where its `road` out goes (a location id); a job that walks the map's road names it. */
+  readonly goesTo?: string;
   /** Counters the story keeps (a charge's trust, the day's light). */
   readonly threads?: readonly ThreadDef[];
   /** Who you look after, if anyone. */
@@ -189,6 +206,11 @@ export interface MissionRun {
   readonly camp?: { readonly done: readonly string[] };
   /** On a leg: the road event that came up, waiting on your choice. */
   readonly roadEvent?: string;
+  /**
+   * A stage the road put in the way (foes met on it), played where you stand before the run
+   * moves on past the leg it came up on.
+   */
+  readonly detour?: MissionStage;
   /** Bond with each crew member when the job began, so the debrief can say how it grew. */
   readonly bondsAtStart?: Readonly<Record<string, number>>;
   /** What the village remembered when the job began (world marks), for `remembers`. */
@@ -197,8 +219,24 @@ export interface MissionRun {
   readonly tallied?: Readonly<Record<string, number>>;
   /** What lasts beyond the job (world marks, tallies, memories), held until it is done. */
   readonly held?: readonly Effect[];
+  /**
+   * A job's roads on the map, worked out when it was taken: for each of its `road` stages in
+   * order, the legs walked (`game/jobRoads.ts`).
+   */
+  readonly ways?: readonly (readonly WayLeg[])[];
   /** Set when this is a trip of your own along the roads, not a job (`game/journeys.ts`). */
   readonly journey?: JourneyPlan;
+  /** Set when this is a venture off the paths into wild country (`game/ventures.ts`). */
+  readonly venture?: VenturePlan;
+}
+
+/** A stretch of a job's road, as walked: the road's own line, region, days, danger and heading. */
+export interface WayLeg {
+  readonly region: string;
+  readonly days: number;
+  readonly text: string;
+  readonly danger: Danger;
+  readonly toward: string;
 }
 
 /** A trip along the roads: where from and to, the way as legs, and whether to hurry. */
@@ -221,9 +259,16 @@ export interface JourneyPlan {
     readonly text: string;
     /** The location the leg heads for (absent on trips saved before roads had a heading). */
     readonly toward?: string;
+    /** The worst its road may bring (absent on trips saved before roads said). */
+    readonly danger?: Danger;
   }[];
-  /** Walk on without stopping to camp; only a road event halts you. */
+  /** Walk on without stopping to camp; only a road event or a stop halts you. */
   readonly quick: boolean;
+  /**
+   * The places on the way the trip stops at, chosen when it was planned; absent on trips planned
+   * before (they stop wherever a place offers it, unless hurrying).
+   */
+  readonly stops?: readonly string[];
   /** Set when a town hunts you along the way; absent on every other trip. */
   readonly hunt?: JourneyHunt;
 }
@@ -255,13 +300,14 @@ export function pickTwist(def: MissionDef, roll: number): string | null {
 
 /** The stage awaiting the player, or undefined when every stage is done. */
 export function currentStage(def: MissionDef, run: MissionRun): MissionStage | undefined {
-  return def.stages[run.stageIndex];
+  return run.detour ?? def.stages[run.stageIndex];
 }
 
 /** Moves to the next stage, adding any notes describing what just happened. */
 export function advance(run: MissionRun, ...notes: MissionNote[]): MissionRun {
-  // What belonged to the stage just finished (an encounter, a camp, a road event) is left behind.
-  const { encounter: _encounter, camp: _camp, roadEvent: _event, ...kept } = run;
+  // What belonged to the stage just finished (an encounter, a camp, a road event, a detour) is left
+  // behind.
+  const { encounter: _encounter, camp: _camp, roadEvent: _event, detour: _detour, ...kept } = run;
   return { ...kept, stageIndex: run.stageIndex + 1, notes: [...run.notes, ...notes] };
 }
 

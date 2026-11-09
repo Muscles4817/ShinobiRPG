@@ -33,7 +33,9 @@ export const KAKASHI_ARSENAL: PersonArsenal = {
     'rasengan',
     'evil-sealing-method',
   ],
-  perks: ['insight', 'foresight', 'mimicry'],
+  perks: ['insight'],
+  // The Sharingan stays under his headband until the fight calls for it: it drains him.
+  veiled: ['foresight', 'mimicry'],
 };
 
 /** His canon trench-knife jutsu (wind chakra flowed through the blades) and Burning Ash. */

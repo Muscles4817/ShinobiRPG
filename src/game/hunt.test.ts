@@ -1,5 +1,5 @@
 import { CONTENT_PACKS } from '@/content';
-import { act, newGame } from '@/test/gameFixtures';
+import { act, keepClear, newGame } from '@/test/gameFixtures';
 
 import { createGameContext, type GameContext } from './context';
 import { HUNT_THREAD, huntForTrip, settleHunt } from './hunt';
@@ -26,7 +26,7 @@ function cross(start: GameState, ctx: GameContext, answering: Answering): Crossi
   const stages: string[] = [];
   for (let step = 0; step < 40 && state.mission; step++) {
     if (state.mission.roadEvent) {
-      state = act(state, { type: 'missionDecide', optionIndex: 0 }, ctx);
+      state = act(state, keepClear(state, ctx), ctx);
       continue;
     }
     const stage = activeStage(state, ctx);

@@ -90,7 +90,7 @@ const HIT_MOMENTS: Readonly<Record<HitWeight, SceneLines>> = {
       '{a.poss} {what} {verb} {t}{again}{guard}, far harder than anyone means to hit in a spar.',
     ],
     late: [
-      '{a.poss} {what} {verb} {t}{again}{guard}, and this late in the fight {t} {t.has} nothing left to take it with.',
+      '{a} find{a.s} one more heavy blow this late in the fight, and {a.poss} {what} {verb} {t}{again}{guard}.',
     ],
   },
 };

@@ -27,10 +27,12 @@ export const BRING_HER_HOME: MissionDef = {
   energyCost: 25,
   reward: { ryo: 640, reputation: 2 },
   minMissionsCompleted: 4,
+  goesTo: 'shukuba-town',
   endsAt: 'konohagakure',
   stages: [
     {
-      kind: 'leg',
+      kind: 'road',
+      to: 'outbound',
       text: 'Down the pilgrim road, Ochō silent beside you.',
       variants: [
         {
@@ -38,8 +40,6 @@ export const BRING_HER_HOME: MissionDef = {
           text: 'Down the pilgrim road, Ochō silent beside you. She comes because you asked her to, and that is worse.',
         },
       ],
-      days: 2,
-      region: 'mountain-pass',
     },
     {
       kind: 'decision',
@@ -79,7 +79,7 @@ export const BRING_HER_HOME: MissionDef = {
         },
       ],
     },
-    { kind: 'leg', text: 'Home down the post road.', days: 1 },
+    { kind: 'road', to: 'home', text: 'Home down the post road.' },
   ],
 };
 
@@ -92,15 +92,15 @@ export const WORD_OF_HER_DEATH: MissionDef = {
     'Tell Danjūrō his daughter drowned crossing the river, and leave her at the temple. He will pay for the news, not for the job.',
   slots: 1,
   energyCost: 20,
-  reward: { ryo: 380, reputation: 1 },
+  reward: { ryo: 480, reputation: 1 },
   minMissionsCompleted: 4,
+  goesTo: 'shukuba-town',
   endsAt: 'konohagakure',
   stages: [
     {
-      kind: 'leg',
+      kind: 'road',
+      to: 'outbound',
       text: 'Down the pilgrim road without her, her comb wrapped in a cloth.',
-      days: 2,
-      region: 'mountain-pass',
     },
     {
       kind: 'decision',
@@ -131,7 +131,7 @@ export const WORD_OF_HER_DEATH: MissionDef = {
         },
       ],
     },
-    { kind: 'leg', text: 'Home down the post road.', days: 1 },
+    { kind: 'road', to: 'home', text: 'Home down the post road.' },
   ],
 };
 
@@ -197,7 +197,7 @@ export const BEFORE_THE_MAGISTRATE: MissionDef = {
         },
       ],
     },
-    { kind: 'leg', text: 'Home down the pilgrim road and through the forest.', days: 2 },
+    { kind: 'road', to: 'home', text: 'Home down the pilgrim road and through the forest.' },
   ],
 };
 

@@ -1,4 +1,10 @@
-import { startRun, type JourneyPlan, type MissionDef, type MissionStage } from '@/systems/missions';
+import {
+  startRun,
+  type JourneyPlan,
+  type MissionDef,
+  type MissionRun,
+  type MissionStage,
+} from '@/systems/missions';
 import { findJourney, type Journey, type RouteDef } from '@/systems/travel';
 
 import type { GameContext } from './context';
@@ -9,7 +15,9 @@ import { keepsToSafeRoads } from './leave';
 import { arriving, leaving, tripCrew } from './trips';
 import type { GameState } from './state';
 import { placeInText } from './placeName';
+import { hearOf } from './atlas';
 import { bearing } from './compass';
+import { stopAt } from './journeyStops';
 import { homeVillageId } from './homeVillage';
 import { heatAfterTrip, huntedLeg, huntThread } from './hunt';
 
@@ -54,7 +62,8 @@ export function plannedJourneyTo(
   return findJourney(ctx.content.routes.all, state.locationId, locationId);
 }
 
-const CAMP: MissionStage = {
+/** The fire between stretches of road, a trip's or a job's. */
+export const CAMP: MissionStage = {
   kind: 'camp',
   text: CAMP_TEXT,
   picks: CAMP_PICKS,
@@ -85,6 +94,19 @@ function headed(ctx: GameContext, leg: PlanLeg, from: string): string {
   return `${leg.text} The road runs ${way} from ${placeInText(start.name)}, towards ${toward}.`;
 }
 
+/**
+ * A stop where a stretch ends at a place the trip chose to stop at (`plannedStops`): a town's
+ * inn, a landmark's sight, a day in wild country. A trip planned before stops were chosen stops
+ * wherever a place offers it, unless it hurries.
+ */
+function stopAfter(plan: JourneyPlan, i: number, ctx: GameContext): MissionStage[] {
+  const here = plan.legs[i]?.toward;
+  const next = plan.legs[i + 1]?.toward;
+  if (!here || here === next || !stopAt(ctx, here)) return [];
+  const stops = plan.stops ?? (plan.quick ? [] : [here]);
+  return stops.includes(here) ? [{ kind: 'stop', locationId: here }] : [];
+}
+
 function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
   const starts = startsOf(plan);
   return plan.legs.flatMap((leg, i): MissionStage[] => {
@@ -92,10 +114,28 @@ function stagesOf(plan: JourneyPlan, ctx: GameContext): MissionStage[] {
     // Only the first day of a stretch says where it heads; the rest are the same road.
     const fresh = i === 0 || plan.legs[i - 1]?.toward !== leg.toward;
     const text = fresh ? headed(ctx, leg, from) : leg.text;
-    const walk = { kind: 'leg' as const, text, days: leg.days, region: leg.region };
+    const walk = {
+      kind: 'leg' as const,
+      text,
+      days: leg.days,
+      region: leg.region,
+      ...(leg.danger ? { danger: leg.danger } : {}),
+    };
     const road = plan.hunt ? huntedLeg(plan.hunt, ctx, walk) : [walk];
-    return plan.quick || i === plan.legs.length - 1 ? road : [...road, CAMP];
+    if (i === plan.legs.length - 1) return road;
+    const stop = stopAfter(plan, i, ctx);
+    return plan.quick ? [...road, ...stop] : [...road, ...stop, CAMP];
   });
+}
+
+/**
+ * How many legs are behind you: those passed, and one whose road event (or the foes it brought)
+ * waits on you.
+ */
+export function legsWalked(run: MissionRun, stages: readonly MissionStage[]): number {
+  const passed = stages.slice(0, run.stageIndex).filter((s) => s.kind === 'leg').length;
+  const held = run.roadEvent !== undefined || run.detour !== undefined;
+  return held && stages[run.stageIndex]?.kind === 'leg' ? passed + 1 : passed;
 }
 
 /** The legs walked so far, walked back the other way: each heads where the one before began. */
@@ -107,12 +147,17 @@ export function legsBack(plan: JourneyPlan, walked: number): JourneyPlan['legs']
     .reverse();
 }
 
+/** "The road to Kiri Ford". */
+export function journeyTitle(plan: JourneyPlan, ctx: GameContext): string {
+  return `The road to ${ctx.content.locations.require(plan.to).name}`;
+}
+
 /** The trip as a mission the run can play: no client, no pay, only the road. */
 export function journeyMission(plan: JourneyPlan, ctx: GameContext): MissionDef {
   const destination = ctx.content.locations.require(plan.to).name;
   return {
     id: `journey:${plan.from}:${plan.to}`,
-    title: `The road to ${destination}`,
+    title: journeyTitle(plan, ctx),
     rank: 'D',
     client: '',
     summary: `You set out for ${destination}.`,
@@ -136,11 +181,16 @@ export interface Departure {
 export function setOut(state: GameState, ctx: GameContext, trip: Departure): GameState {
   const { plan, passage } = trip;
   const def = journeyMission(plan, ctx);
-  const going = leaving(state, ctx, plan, trip.companionId);
+  // The towns you plan your road through are on your map now: you asked the way.
+  const asked = hearOf(
+    state,
+    plan.legs.flatMap((leg) => (leg.toward ? [leg.toward] : [])),
+  );
+  const going = leaving(asked, ctx, plan, trip.companionId);
   const crew = tripCrew(going.people.companionId);
   const run = settle(def, { ...startRun(def, crew), journey: plan });
   return log(
-    { ...going, mission: run },
+    { ...going, mission: run, journeyEnd: null },
     {
       heading: def.title,
       text: def.summary,
@@ -150,6 +200,11 @@ export function setOut(state: GameState, ctx: GameContext, trip: Departure): Gam
   );
 }
 
+/** Turning back at a camp, for the log. */
+export function turningBack(state: GameState, text: string): GameState {
+  return log(state, { heading: 'Turning back', text, tone: 'warning' });
+}
+
 /** The last leg walked: you are there. */
 export function arrive(state: GameState, ctx: GameContext, plan: JourneyPlan): GameState {
   const destination = ctx.content.locations.require(plan.to);
@@ -157,7 +212,8 @@ export function arrive(state: GameState, ctx: GameContext, plan: JourneyPlan): G
   const home = destination.id === homeVillageId(state, ctx);
   const place = placeInText(destination.name);
   const trailed = heatAfterTrip(state);
-  return log(arriving({ ...trailed, mission: null, locationId: destination.id }, ctx, plan), {
+  const there = { ...trailed, mission: null, journeyEnd: plan, locationId: destination.id };
+  return log(arriving(there, ctx, plan), {
     heading: home ? `Home in ${place}` : `Arrived in ${place}`,
     text: home
       ? `You are back in ${place}, with the road still in your legs.`

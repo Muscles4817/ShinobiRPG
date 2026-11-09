@@ -4,9 +4,11 @@
  * used at all (`TechniqueDef.needsOpen`: Daytime Tiger needs the seventh gate). One opening
  * climbs at most `LADDER_REACH` steps past the one already open (the third gate, then the seventh), so the deep steps are reached
  * through the shallow ones. What each step does in a fight lives in `combat/rules/verbs/ladders.ts`.
+ * Sage Mode is a ladder too: natural energy drawn in from stillness (an empower that is `still`),
+ * imperfect (a toad's marks round the eyes) and then perfect.
  */
 
-export const LADDERS = ['gates'] as const;
+export const LADDERS = ['gates', 'sage'] as const;
 export type LadderId = (typeof LADDERS)[number];
 
 export interface LadderStep {
@@ -16,7 +18,7 @@ export interface LadderStep {
 }
 
 /** The last step of each ladder. */
-export const LADDER_TOP: Readonly<Record<LadderId, number>> = { gates: 8 };
+export const LADDER_TOP: Readonly<Record<LadderId, number>> = { gates: 8, sage: 2 };
 
 /** How many steps one opening may climb past the step already open. */
 export const LADDER_REACH = 4;
@@ -46,10 +48,15 @@ export function highestReachable(openings: readonly number[]): number {
 
 const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'];
 
-/** What one step of each ladder is called. */
-const STEP_NOUN: Readonly<Record<LadderId, string>> = { gates: 'gate' };
+/** Sage Mode's steps in words: the imperfect one first. */
+const SAGE_STEPS = ['the sage mode', 'the perfect sage mode'];
 
-/** A step in words, never a number: "the third gate". */
+/** A step in words, never a number: "the third gate", "the sage mode". */
 export function stepWords({ ladder, step }: LadderStep): string {
-  return `the ${ORDINALS[step - 1] ?? 'last'} ${STEP_NOUN[ladder]}`;
+  switch (ladder) {
+    case 'gates':
+      return `the ${ORDINALS[step - 1] ?? 'last'} gate`;
+    case 'sage':
+      return SAGE_STEPS[step - 1] ?? 'the perfect sage mode';
+  }
 }
